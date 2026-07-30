@@ -29,7 +29,8 @@ const KSHOP_MODULE_SOURCES = [
 ].map(name => path.join(WEB_ROOT, 'modules', name));
 const NPCSHOP_SECONDARY_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop-secondary-pages.js');
 const INVENTORY_WORKBENCH_MODULE_SOURCES = [
-    'inventory-workbench-config.js', 'inventory-workbench-header.js',
+    'inventory-workbench-config.js', 'inventory-workbench-preparation-menu.js',
+    'inventory-workbench-navigation.js', 'inventory-workbench-header.js',
     'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js',
     'inventory-tuning-scope.js',
     'inventory-storage-workbench.js'
@@ -126,8 +127,9 @@ function auditArchitectureBoundaries() {
     }
     if (!kshopSource.includes('new WorkbenchComponents.HelpAction(')
             || !kshopSource.includes("kind:'kshop-help'")
-            || !inventoryWorkbenchSource.includes('new WorkbenchComponents.HelpAction(')
-            || !storageWorkbenchSource.includes("kind:'inventory-storage-help'")) {
+            || !inventoryWorkbenchSource.includes('components:WorkbenchComponents')
+            || !inventoryWorkbenchUiSource.includes('new options.components.HelpAction(')
+            || !inventoryWorkbenchUiSource.includes("kind:'inventory-storage-help'")) {
         throw new Error('KShop and battlebox must use the standard workbench help capability');
     }
     const retiredQuantityTokens = ['kshop-qty-popup', 'showQuantityInput', 'kshop-qty-btn'];
@@ -215,8 +217,11 @@ function auditArchitectureBoundaries() {
     }
     if (returnToPanelStart < 0 || returnToPanelEnd < 0
             || !returnToPanelBody.includes('openReturnTarget(')
-            || !inventoryWorkbenchSource.includes("button('return-panel', '返回合成', returnToPanel)")
-            || !inventoryWorkbenchSource.includes("returnButton.classList.add('inventory-return-crafting-btn')")) {
+            || !inventoryWorkbenchSource.includes('onReturnPanel:returnToPanel')
+            || !inventoryWorkbenchUiSource.includes(
+                "storageActions, 'return-panel', '返回合成', options.onReturnPanel")
+            || !inventoryWorkbenchUiSource.includes(
+                "returnButton.classList.add('inventory-return-crafting-btn')")) {
         throw new Error('Inventory workbench crafting returnTarget requires the explicit return button path');
     }
     if (!kshopUiSource.includes('InventoryUI.renderOwnedSlot(')
@@ -703,6 +708,285 @@ function tooltipRegressionFailed(state) {
         || state.placement.anchorOverlap > 0;
 }
 
+async function snapshotSecondaryPage(page, selector) {
+    return page.$eval(selector, node => {
+        const style = getComputedStyle(node);
+        return {
+            display:style.display,
+            zIndex:style.zIndex,
+            visibility:style.visibility,
+            opacity:Number(style.opacity),
+            pointerEvents:style.pointerEvents,
+            transform:style.transform,
+            transitionDuration:style.transitionDuration,
+            ariaHidden:node.getAttribute('aria-hidden'),
+            animationCount:typeof node.getAnimations === 'function'
+                ? node.getAnimations().length : 0
+        };
+    });
+}
+
+function isReducedSecondaryTerminal(state, active) {
+    return state.display === 'grid'
+        && state.zIndex === '55'
+        && state.transitionDuration === '0s'
+        && state.animationCount === 0
+        && state.transform === 'none'
+        && (active
+            ? state.visibility === 'visible' && state.opacity === 1
+                && state.pointerEvents === 'auto' && state.ariaHidden === 'false'
+            : state.visibility === 'hidden' && state.opacity === 0
+                && state.pointerEvents === 'none' && state.ariaHidden === 'true');
+}
+
+async function probeSemanticBusyMotion(page) {
+    async function snapshot() {
+        return page.evaluate(() => {
+            let fixture = document.getElementById('kshop-g3-motion-fixture');
+            if (!fixture) {
+                fixture = document.createElement('div');
+                fixture.id = 'kshop-g3-motion-fixture';
+                fixture.className = 'workbench-shell kshop-workbench';
+                fixture.setAttribute('data-profile', 'catalog-checkout');
+                fixture.setAttribute('data-workbench-skin', 'shop');
+                fixture.style.cssText = 'position:fixed;left:0;top:0;width:360px;height:160px;z-index:9999';
+                fixture.innerHTML = '<div class="workbench-status" data-state="busy">处理中</div>'
+                    + '<div class="inventory-slot-card quick-transfer-inflight">转移中</div>'
+                    + '<div class="kshop-loading">读取中</div>';
+                document.body.appendChild(fixture);
+            }
+            const panel = document.getElementById('panel-container');
+            const tooltip = document.getElementById('panel-tooltip');
+            if (!window.__kshopG4TooltipRestore) {
+                window.__kshopG4TooltipRestore = {
+                    panelKind:panel ? panel.getAttribute('data-panel') : null,
+                    display:tooltip ? tooltip.style.display : ''
+                };
+            }
+            if (panel) panel.setAttribute('data-panel', 'kshop');
+            let tooltipLoading = document.getElementById('kshop-g4-tooltip-motion-probe');
+            if (!tooltipLoading && tooltip) {
+                tooltipLoading = document.createElement('div');
+                tooltipLoading.id = 'kshop-g4-tooltip-motion-probe';
+                tooltipLoading.className = 'kshop-tt-loading';
+                tooltipLoading.textContent = '读取说明中';
+                tooltip.appendChild(tooltipLoading);
+                tooltip.style.display = 'block';
+            }
+            function animationNode(node, pseudo) {
+                const style = getComputedStyle(node, pseudo || null);
+                const rect = node.getBoundingClientRect();
+                return {
+                    animationName:style.animationName,
+                    animationDuration:style.animationDuration,
+                    animationTimingFunction:style.animationTimingFunction,
+                    animationIterationCount:style.animationIterationCount,
+                    content:pseudo ? style.content : node.textContent,
+                    display:style.display,
+                    opacity:Number(style.opacity),
+                    width:rect.width,
+                    height:rect.height
+                };
+            }
+            return {
+                status:animationNode(fixture.querySelector('.workbench-status'), '::before'),
+                transfer:animationNode(fixture.querySelector('.quick-transfer-inflight'), '::before'),
+                loading:animationNode(fixture.querySelector('.kshop-loading')),
+                tooltip:animationNode(tooltipLoading)
+            };
+        });
+    }
+    function visible(state) {
+        return state.display !== 'none'
+            && state.width > 0 && state.height > 0
+            && state.opacity > 0
+            && state.content !== 'none' && state.content !== 'normal'
+            && state.content !== '';
+    }
+    function normalState(state) {
+        return visible(state)
+            && state.animationName === 'wb-pulse-busy'
+            && state.animationDuration === '1s'
+            && state.animationTimingFunction === 'cubic-bezier(0.2, 0.8, 0.25, 1)'
+            && state.animationIterationCount === 'infinite';
+    }
+    function reducedState(state) {
+        return visible(state)
+            && state.animationName === 'none'
+            && state.animationDuration === '0s';
+    }
+
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    const normal = await snapshot();
+    await page.emulateMedia({reducedMotion:'reduce'});
+    const reduced = await snapshot();
+    const outOfScopeTooltip = await page.evaluate(() => {
+        const panel = document.getElementById('panel-container');
+        const node = document.getElementById('kshop-g4-tooltip-motion-probe');
+        if (panel) panel.setAttribute('data-panel', 'tasks');
+        const style = getComputedStyle(node);
+        return {
+            animationName:style.animationName,
+            animationDuration:style.animationDuration,
+            animationTimingFunction:style.animationTimingFunction,
+            animationIterationCount:style.animationIterationCount,
+            content:node.textContent,
+            display:style.display,
+            opacity:Number(style.opacity),
+            width:node.getBoundingClientRect().width,
+            height:node.getBoundingClientRect().height,
+            outsideShell:!node.closest('.workbench-shell')
+        };
+    });
+    await page.evaluate(() => {
+        const fixture = document.getElementById('kshop-g3-motion-fixture');
+        if (fixture) fixture.remove();
+        const tooltipProbe = document.getElementById('kshop-g4-tooltip-motion-probe');
+        if (tooltipProbe) tooltipProbe.remove();
+        const restore = window.__kshopG4TooltipRestore;
+        const panel = document.getElementById('panel-container');
+        const tooltip = document.getElementById('panel-tooltip');
+        if (panel && restore) {
+            if (restore.panelKind == null) panel.removeAttribute('data-panel');
+            else panel.setAttribute('data-panel', restore.panelKind);
+        }
+        if (tooltip && restore) tooltip.style.display = restore.display;
+        delete window.__kshopG4TooltipRestore;
+    });
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    return {
+        normal,
+        reduced,
+        outOfScopeTooltip,
+        pass:Object.keys(normal).every(key => normalState(normal[key]))
+            && Object.keys(reduced).every(key => reducedState(reduced[key]))
+            && outOfScopeTooltip.outsideShell
+            && normalState(outOfScopeTooltip)
+    };
+}
+
+async function probeEquipmentInspectorMotion(page) {
+    async function snapshot(reducedMotion) {
+        await page.emulateMedia({reducedMotion});
+        return page.evaluate(async () => {
+            const shell = new Workbench.DualPaneShell({
+                profile:'catalog-decision',
+                title:'G4 inspector motion fixture',
+                leftLabel:'SOURCE',
+                rightLabel:'TARGET'
+            });
+            const shellRoot = shell.getRoot();
+            shellRoot.style.cssText = 'position:fixed;left:0;top:0;width:720px;height:520px;z-index:9998';
+            document.body.appendChild(shellRoot);
+            const controller = EquipmentInspector.open({
+                shell,
+                item:{
+                    name:'图标-测试药剂',
+                    displayName:'G4 静态检视',
+                    majorType:'消耗品',
+                    icon:'图标-测试药剂'
+                },
+                context:'g4-motion-probe'
+            });
+            const stage = shellRoot.querySelector('.equipment-inspector-stage');
+            stage.style.transform = 'translate3d(0px,0px,0) scale(1)';
+            stage.getBoundingClientRect();
+            stage.style.transform = 'translate3d(12px,0px,0) scale(1)';
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            const style = getComputedStyle(stage);
+            const state = controller.debugState();
+            const result = {
+                reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,
+                animationEnabled:state.animationEnabled,
+                source:state.source,
+                transitionProperty:style.transitionProperty,
+                transitionDuration:style.transitionDuration,
+                transitionCount:typeof stage.getAnimations === 'function'
+                    ? stage.getAnimations().length : 0,
+                stageInShell:stage.closest('.workbench-shell') === shellRoot,
+                modalInShell:!!shellRoot.querySelector(
+                    '.workbench-modal[data-modal-kind="equipment-inspector"]')
+            };
+            controller.destroy();
+            shell.destroy();
+            return result;
+        });
+    }
+    const normal = await snapshot('no-preference');
+    const reduced = await snapshot('reduce');
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    return {
+        normal,
+        reduced,
+        pass:normal.reduced === false
+            && normal.animationEnabled === true
+            && normal.source === 'icon'
+            && normal.transitionProperty === 'transform'
+            && parseFloat(normal.transitionDuration) > 0
+            && normal.transitionCount > 0
+            && normal.stageInShell && normal.modalInShell
+            && reduced.reduced === true
+            && reduced.animationEnabled === false
+            && reduced.transitionDuration === '0s'
+            && reduced.transitionCount === 0
+            && reduced.stageInShell && reduced.modalInShell
+    };
+}
+
+async function probeReducedSecondaryPage(page, origin) {
+    await page.emulateMedia({reducedMotion:'reduce'});
+    await page.goto(origin + '/modules/kshop/dev/harness.html?visual=settlement', {waitUntil:'load'});
+    await page.waitForFunction(() => window.__visualReady === true, null, {timeout:5000});
+    const active = await snapshotSecondaryPage(page, '.kshop-settlement-page');
+    await page.$eval('[data-kshop-settlement-back]', node => node.click());
+    const inactive = await snapshotSecondaryPage(page, '.kshop-settlement-page');
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    return {
+        active,
+        inactive,
+        pass:isReducedSecondaryTerminal(active, true)
+            && isReducedSecondaryTerminal(inactive, false)
+    };
+}
+
+async function probeOwnedInventoryScrollbar(page, origin, viewport) {
+    await page.setViewportSize({width:1024,height:576});
+    await page.goto(origin + '/modules/kshop/dev/harness.html?visual=battlebox-owned-overflow', {waitUntil:'load'});
+    await page.waitForFunction(() => window.__visualReady === true, null, {timeout:20000});
+    const result = await page.$eval('.inventory-owned-backpack .inventory-owned-grid', grid => {
+        const style = getComputedStyle(grid);
+        const bar = getComputedStyle(grid, '::-webkit-scrollbar');
+        const track = getComputedStyle(grid, '::-webkit-scrollbar-track');
+        const thumb = getComputedStyle(grid, '::-webkit-scrollbar-thumb');
+        const button = getComputedStyle(grid, '::-webkit-scrollbar-button');
+        const corner = getComputedStyle(grid, '::-webkit-scrollbar-corner');
+        grid.scrollTop = Math.min(60, grid.scrollHeight - grid.clientHeight);
+        return {
+            overflow:grid.scrollHeight > grid.clientHeight,
+            horizontalOverflow:grid.scrollWidth > grid.clientWidth + 1,
+            scrollTop:grid.scrollTop,
+            standardWidth:style.scrollbarWidth,
+            width:bar.width,
+            track:track.backgroundColor,
+            thumb:thumb.backgroundColor,
+            thumbBorder:thumb.borderTopWidth,
+            buttonDisplay:button.display,
+            buttonWidth:button.width,
+            corner:corner.backgroundColor
+        };
+    });
+    await page.setViewportSize(viewport);
+    result.pass = result.overflow && !result.horizontalOverflow && result.scrollTop > 0
+        && result.standardWidth === 'thin'
+        && parseFloat(result.width) > 0 && parseFloat(result.width) <= 8
+        && result.track !== 'rgba(0, 0, 0, 0)'
+        && result.thumb !== 'rgba(0, 0, 0, 0)'
+        && parseFloat(result.thumbBorder) >= 1
+        && (result.buttonDisplay === 'none' || parseFloat(result.buttonWidth) === 0)
+        && result.corner !== 'rgba(0, 0, 0, 0)';
+    return result;
+}
+
 (async function() {
     const architectureAudit = auditArchitectureBoundaries();
     if (!fs.existsSync(PLAYWRIGHT)) {
@@ -850,6 +1134,11 @@ function tooltipRegressionFailed(state) {
     }
     await page.waitForFunction(() => window.__qaResult && window.__qaResult.qa, null, {timeout:20000});
     const qa = await page.evaluate(() => window.__qaResult.qa);
+    const origin = 'http://127.0.0.1:' + server.address().port;
+    const semanticBusyMotion = await probeSemanticBusyMotion(page);
+    const equipmentInspectorMotion = await probeEquipmentInspectorMotion(page);
+    const reducedSecondaryMotion = await probeReducedSecondaryPage(page, origin);
+    const ownedInventoryScrollbar = await probeOwnedInventoryScrollbar(page, origin, parseViewport());
     await page.goto('http://127.0.0.1:' + server.address().port + '/modules/kshop/dev/harness.html?visual=battlebox-real-icons', {waitUntil:'load'});
     await page.waitForFunction(() => window.__visualReady === true, null, {timeout:20000});
     const realTooltip = await page.evaluate(() => window.__visualTooltipState || null);
@@ -857,10 +1146,13 @@ function tooltipRegressionFailed(state) {
     await browser.close();
     server.close();
 
-    const output = {browser:'edge',executablePath,architectureAudit,qa,realTooltip,pageErrors,failedRequests};
+    const output = {browser:'edge',executablePath,architectureAudit,qa,semanticBusyMotion,equipmentInspectorMotion,reducedSecondaryMotion,ownedInventoryScrollbar,
+        realTooltip,pageErrors,failedRequests};
     process.stdout.write(JSON.stringify(output, null, 2) + '\n');
     const tooltipFailed = tooltipRegressionFailed(realTooltip);
-    if (qa.failed || tooltipFailed || pageErrors.length || failedRequests.length) process.exit(1);
+    if (qa.failed || !semanticBusyMotion.pass || !equipmentInspectorMotion.pass
+            || !reducedSecondaryMotion.pass || !ownedInventoryScrollbar.pass || tooltipFailed
+            || pageErrors.length || failedRequests.length) process.exit(1);
 })().catch(error => {
     console.error(error && error.stack ? error.stack : String(error));
     process.exit(2);

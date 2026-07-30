@@ -9,6 +9,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function(ItemFilter) {
     'use strict';
 
+    var MAX_VISIBLE_MOD_SLOT_CAPACITY = 64;
     var LOADOUT_SLOT_KEYS = {
         '头部装备':true, '上装装备':true, '下装装备':true,
         '手部装备':true, '脚部装备':true, '颈部装备':true,
@@ -16,7 +17,8 @@
     };
 
     function wireRef(slot) {
-        return {containerId:'背包', slot:Number(slot.physicalSlot != null ? slot.physicalSlot : slot.slot),
+        return {sourceKind:'inventory', containerId:'背包',
+            slot:Number(slot.physicalSlot != null ? slot.physicalSlot : slot.slot),
             expectedLease:String(slot.slotLease != null ? slot.slotLease : slot.expectedLease)};
     }
     function sameRef(a, b) { return a && b && a.containerId === b.containerId && Number(a.slot) === Number(b.slot); }
@@ -246,6 +248,23 @@
         }
         return false;
     }
+    function modSlotCapacityProjection(equipment, installedCount) {
+        if (!equipment
+                || !Object.prototype.hasOwnProperty.call(
+                    equipment,
+                    'modSlotCapacity'
+                )) {
+            return {state:'absent', value:null};
+        }
+        var capacity = equipment.modSlotCapacity;
+        if (typeof capacity !== 'number' || !isFinite(capacity)
+                || Math.floor(capacity) !== capacity || capacity < 0
+                || capacity > MAX_VISIBLE_MOD_SLOT_CAPACITY
+                || installedCount > capacity) {
+            return {state:'malformed', value:null};
+        }
+        return {state:'known', value:capacity};
+    }
     function compactQuantity(value) {
         if (typeof InventoryUI !== 'undefined' && InventoryUI.compactQuantity) return InventoryUI.compactQuantity(value);
         var quantity = Math.max(0, Math.floor(Number(value) || 0));
@@ -355,6 +374,8 @@
         enhancementAvailableMax:enhancementAvailableMax,
         enhancementHardMax:enhancementHardMax,
         candidateInstalled:candidateInstalled,
+        modSlotCapacityProjection:modSlotCapacityProjection,
+        MAX_VISIBLE_MOD_SLOT_CAPACITY:MAX_VISIBLE_MOD_SLOT_CAPACITY,
         compactQuantity:compactQuantity,
         modStatus:modStatus,
         normalizeModSymbol:normalizeModSymbol,

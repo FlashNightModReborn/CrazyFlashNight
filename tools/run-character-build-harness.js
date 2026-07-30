@@ -29,6 +29,11 @@ function staticAudit() {
     const presentation = view + '\n' + template;
     const actionView = read(
         'launcher/web/modules/character-build/character-build-action-view.js');
+    const candidateState = read(
+        'launcher/web/modules/character-build/character-build-candidate-state.js');
+    const facetCounts = read(
+        'launcher/web/modules/character-build/character-build-facet-counts.js');
+    const candidatePresentation = presentation + '\n' + candidateState;
     const statsView = read(
         'launcher/web/modules/character-build/character-build-stats-view.js');
     const dollPreview = read(
@@ -38,6 +43,9 @@ function staticAudit() {
     const controller = read('launcher/web/modules/character-build.js');
     const renderer = read('launcher/web/modules/dressup-doll-renderer.js');
     const facade = read('launcher/web/modules/inventory-workbench.js');
+    const config = read(
+        'launcher/web/modules/inventory-workbench-config.js');
+    const headerModule = read('launcher/web/modules/inventory-workbench-header.js');
     const cssFacade = read('launcher/web/css/panels.css');
     const css = read('launcher/web/css/workbench/character-build.css')
         + read('launcher/web/css/workbench/character-build-stats.css');
@@ -95,21 +103,54 @@ function staticAudit() {
     check(!/READ ONLY SPIKE|<span>LOOK<\/span>|<span>LOADOUT<\/span>|<span>COMPARE<\/span>|单 Canvas|全宽 SecondaryPage/.test(presentation),
         'visible view copy contains no prototype or implementation labels');
     check(['头部装备','上装装备','下装装备','手部装备','脚部装备','颈部装备',
-        '长枪','手枪','手枪2','刀','手雷'].every(key => view.includes("id:'" + key + "'")),
-        'view freezes the exact eleven equipment protocol keys');
-    check(presentation.includes('选择一个装备或药剂槽')
-        && facade.includes("button('back-build', '← 返回构筑'")
+        '长枪','手枪','手枪2','刀','手雷'].every(key => template.includes("id:'" + key + "'"))
+        && view.includes('TemplateModule.armorSlots')
+        && view.includes('TemplateModule.weaponSlots'),
+        'template freezes and view consumes the exact eleven equipment protocol keys');
+    check(candidateState.includes("statement:'先选择左侧槽位'")
+        && candidateState.includes("statement:'正在查找可用装备'")
+        && candidateState.includes("statement:'此槽位暂无可用候选'")
+        && candidateState.includes("statement:'暂时无法读取候选'")
+        && candidateState.includes("statement:'候选与数量已同步'")
+        && headerModule.includes("append(buildActions, 'back-build', '← 返回构筑'")
         && facade.includes('statsRoot.insertBefore(header, statsRoot.firstChild)')
         && !view.includes('class="character-build-stats-back"'),
-        'candidate gate and single main-header stats return are explicit');
-    check(facade.includes('_buttons.stats.hidden = _buttons.skills.hidden = _statsMode;')
-        && facade.includes("initData.returnFocusAction === 'skills'")
+        'candidate five-state contract and single main-header stats return are explicit');
+    check(facetCounts.includes("if (kind === 'drug') return model.useCounts['药剂']")
+        && facetCounts.includes("if (id === '手枪2')")
+        && facetCounts.includes("return count == null ? '—' : String(count)")
+        && facetCounts.includes('decorateSlot:decorateSlot')
+        && !/Bridge\.send|PanelRequestMux|domain\s*:|cmd\s*:/.test(facetCounts),
+        'candidate count leaf maps the fixed 11+4 targets without transport or taxonomy guessing');
+    check(candidatePresentation.includes('WorkbenchPrimitives.EntityTile.bindActivation')
+        && candidatePresentation.includes('inspectable:true')
+        && candidatePresentation.includes('actionable:false')
+        && candidatePresentation.includes('onBlocked:function')
+        && candidatePresentation.includes('data-candidate-retry'),
+        'blocked candidates use shared inspectable semantics and error exposes one retry port');
+    check(headerModule.includes("stats:action(buildMode, '个人信息', locked, lockReason)")
+        && headerModule.includes("skills:action(buildMode && !preparationNavigationV1, '技能配置'")
+        && headerModule.includes("'preparation-menu':action(")
+        && headerModule.includes("'back-build':action(statsMode")
+        && headerModule.includes('applyProjection(state.buttons, projection)')
+        && facade.includes('InventoryWorkbenchHeader.renderWorkbenchHeader(')
+        && config.includes("returnFocusAction === 'skills'")
+        && config.includes("returnFocusAction === 'preparation-menu'")
+        && config.includes("typeof initData.returnFocusAction !== 'string'")
+        && config.includes('returnFocusAction === null')
+        && facade.includes("launch.returnFocusAction === 'skills'")
+        && !facade.includes('initData.returnFocusAction')
+        && !/querySelector\s*\([^)]*returnFocusAction/.test(config + '\n' + facade)
         && facade.includes('_buttons.skills.focus()')
         && workbenchHarness.includes(
             "visibleHeaderActions().join('|') === 'back-build|help|close'")
+        && workbenchHarness.includes(
+            "=== 'preparation-menu|stats|help|close'")
+        && workbenchHarness.includes("returnFocusAction:'preparation-menu'")
         && workbenchHarness.includes("returnFocusAction:'skills'")
+        && workbenchHarness.includes('document.activeElement === trigger')
         && workbenchHarness.includes('document.activeElement === skillsButton'),
-        'stats hides Skills and Skills-origin navigation restores its header focus');
+        'stats hides navigation; gate-paired focus parsing restores the production preparation trigger or legacy Skills action');
     check(!presentation.includes('character-build-vitals') && !presentation.includes('data-preview-action')
         && !presentation.includes('data-info-action') && !presentation.includes('data-info-panel')
         && !actionView.includes('data-info-action') && !actionView.includes('data-info-panel')
@@ -119,6 +160,8 @@ function staticAudit() {
             < presentation.indexOf('character-build-candidate-focus-summary')
         && !presentation.includes('character-build-candidate-actions p')
         && actionView.includes("event.key === 'Enter' && !event.repeat && selected")
+        && actionView.includes("event.key === ' ' && selected")
+        && actionView.includes('this._clearCandidateSelection()')
         && actionView.includes('this._tryCommit(this._getCandidate())')
         && actionView.includes("this._state === 'mutation_reconcile'")
         && actionView.includes("action === 'unequip'"),
@@ -149,8 +192,10 @@ function staticAudit() {
         && css.includes('var(--wb-') && !/:root\s*\{/.test(css),
         'feature CSS reuses the shared token system without a second root palette');
     check(harness.includes('fixtures.empty') && harness.includes('fixtures.blocked')
-        && harness.includes('fixtures.long') && view.includes('当前装备保持不变'),
-        'static harness includes empty, blocked, long-copy, and honest preview fixtures');
+        && harness.includes('fixtures.long') && harness.includes('fixtures.unknown')
+        && harness.includes('candidateFacets:candidateFacets()')
+        && view.includes('当前装备保持不变'),
+        'static harness includes zero/unknown counts, empty, blocked, long-copy, and honest preview fixtures');
 }
 
 function edgeExecutable() {
@@ -262,6 +307,25 @@ async function metrics(page) {
             height:getComputedStyle(node).height
         }));
         const protocolKeys = equipment.map(node => node.getAttribute('data-slot-protocol-key'));
+        const slotCandidateCounts = {};
+        equipment.concat(drugs).forEach(node => {
+            const key = node.getAttribute('data-slot-kind') + ':'
+                + node.getAttribute('data-slot-id');
+            const badge = node.querySelector('[data-slot-candidate-count]');
+            const badgeRect = badge.getBoundingClientRect();
+            const cardRect = node.querySelector('.character-build-slot-card')
+                .getBoundingClientRect();
+            slotCandidateCounts[key] = {
+                text:badge.textContent,
+                state:badge.getAttribute('data-count-state'),
+                value:node.getAttribute('data-candidate-count'),
+                aria:node.getAttribute('aria-label'),
+                fontSize:parseFloat(getComputedStyle(badge).fontSize),
+                insideCard:badgeRect.top >= cardRect.top - 1
+                    && badgeRect.right <= cardRect.right + 1
+                    && badgeRect.bottom <= cardRect.bottom + 1
+            };
+        });
         const state = CharacterBuildHarness.view.debugState();
         return {
             equipment:equipment.length,
@@ -364,6 +428,10 @@ async function metrics(page) {
             hitTargetGroups,
             hitTargetComputed,
             protocolKeys,
+            slotCandidateCounts,
+            slotCandidateBadgeCount:root.querySelectorAll(
+                '[data-slot-candidate-count]').length,
+            focusSummaryText:focusSummary.textContent,
             selectedSlots:equipment.concat(drugs).filter(node => node.getAttribute('aria-selected') === 'true').length,
             selectedCandidates:candidates.filter(node => node.getAttribute('aria-selected') === 'true').length,
             selectedSlotKey:state.selectedSlotKey,
@@ -373,7 +441,12 @@ async function metrics(page) {
                 && getComputedStyle(candidateOverlay).display === 'none',
             routineNoticeKind:routineNotice.getAttribute('data-notice-kind'),
             routineNoticeHidden:getComputedStyle(routineNotice).display === 'none',
-            emptyCandidateCopy:(root.querySelector('.character-build-candidate-empty') || {}).textContent || '',
+            candidateState:(root.querySelector('[data-candidate-list]') || {})
+                .getAttribute('data-candidate-state'),
+            candidateStatement:(root.querySelector('.character-build-candidate-statement') || {})
+                .textContent || '',
+            candidateNextStep:(root.querySelector('.character-build-candidate-next-step') || {})
+                .textContent || '',
             rootRect:(() => {
                 const rect = document.querySelector('.workbench-shell').getBoundingClientRect();
                 return {left:rect.left, top:rect.top, width:rect.width, height:rect.height};
@@ -564,9 +637,132 @@ async function runViewport(browser, port, viewport) {
             && base.selectedSlotKey === '' && base.selectedCandidateKey === ''
             && base.overlayCopy === '' && base.overlayHidden && base.candidates === 0
             && base.routineNoticeKind === 'browsing' && base.routineNoticeHidden
-            && base.emptyCandidateCopy === '选择一个装备或药剂槽',
+            && base.candidateState === 'unselected'
+            && base.candidateStatement === '先选择左侧槽位'
+            && base.candidateNextStep.indexOf('选择一个槽位') >= 0,
             label + ' fresh open hides empty preview and routine footer chrome',
             JSON.stringify(base));
+        check(base.slotCandidateBadgeCount === 15
+            && base.slotCandidateCounts['armor:头部装备'].value === '2'
+            && base.slotCandidateCounts['armor:下装装备'].value === '0'
+            && base.slotCandidateCounts['armor:颈部装备'].value === '0'
+            && base.slotCandidateCounts['weapon:长枪'].value === '3'
+            && base.slotCandidateCounts['weapon:手枪'].value === '2'
+            && base.slotCandidateCounts['weapon:手枪2'].value === '3'
+            && base.slotCandidateCounts['weapon:刀'].value === '0'
+            && base.slotCandidateCounts['weapon:手雷'].value === '5'
+            && ['drug:drug1','drug:drug2','drug:drug3','drug:drug4']
+                .every(key => base.slotCandidateCounts[key].value === '7')
+            && Object.values(base.slotCandidateCounts).every(count =>
+                count.state === 'known' && count.fontSize >= 10
+                    && count.insideCard && count.aria.indexOf('背包候选') >= 0),
+            label + ' initial unselected snapshot renders authoritative 11+4 counts, explicit zero and pistol alias',
+            JSON.stringify(base.slotCandidateCounts));
+        const countFallback = await page.evaluate(() => {
+            const harness = CharacterBuildHarness;
+            const key = 'weapon:长枪';
+            const readsBefore = harness.actionLog.candidateReads.length;
+            const scroll = document.querySelector(
+                '.character-build-candidate-scroll');
+            document.querySelector(
+                '[data-roving-key="' + key + '"]').focus();
+            const scrollBefore = scroll.scrollTop;
+            harness.setScenario('unknown');
+            const badges = Array.from(document.querySelectorAll(
+                '[data-slot-candidate-count]'));
+            const unknown = {
+                badgeCount:badges.length,
+                allUnknown:badges.every(node =>
+                    node.getAttribute('data-count-state') === 'unknown'
+                        && node.textContent === '—'),
+                focusKey:document.activeElement
+                    && document.activeElement.getAttribute('data-roving-key'),
+                summary:document.querySelector('[data-focus-summary]').textContent,
+                scrollTop:scroll.scrollTop
+            };
+            harness.setScenario('full');
+            return {
+                unknown,
+                restoredCount:document.querySelector(
+                    '[data-roving-key="' + key + '"]')
+                    .getAttribute('data-candidate-count'),
+                restoredFocus:document.activeElement
+                    && document.activeElement.getAttribute('data-roving-key'),
+                reads:harness.actionLog.candidateReads.length - readsBefore,
+                scrollStable:scroll.scrollTop === scrollBefore
+            };
+        });
+        check(countFallback.unknown.badgeCount === 15
+            && countFallback.unknown.allUnknown
+            && countFallback.unknown.focusKey === 'weapon:长枪'
+            && countFallback.unknown.summary.indexOf('暂不可用') >= 0
+            && countFallback.restoredCount === '3'
+            && countFallback.restoredFocus === 'weapon:长枪'
+            && countFallback.reads === 0 && countFallback.scrollStable,
+            label + ' legacy omission stays unknown while snapshot redraw preserves focus/scroll and emits no business read',
+            JSON.stringify(countFallback));
+        const candidateStates = await page.evaluate(() => {
+            const harness = CharacterBuildHarness;
+            const host = document.querySelector('[data-candidate-list]');
+            function state() {
+                const debug = harness.view.debugState();
+                return {
+                    kind:host.getAttribute('data-candidate-state'),
+                    statement:host.getAttribute('data-candidate-statement'),
+                    nextStep:host.getAttribute('data-candidate-next-step'),
+                    role:host.getAttribute('role'),
+                    busy:host.getAttribute('aria-busy'),
+                    requestKey:debug.candidateRequestKey,
+                    count:debug.candidateCount
+                };
+            }
+            const states = [state()];
+            harness.holdCandidateRead();
+            document.querySelector('[data-roving-key="armor:头部装备"]').click();
+            states.push(state());
+            harness.resolveCandidateRead('empty');
+            states.push(state());
+            harness.holdCandidateRead();
+            document.querySelector('[data-roving-key="armor:上装装备"]').click();
+            harness.resolveCandidateRead('error');
+            states.push(state());
+            const failedRequestKey = harness.view.debugState().candidateRequestKey;
+            const readsBeforeRetry = harness.actionLog.candidateReads.length;
+            const retry = document.querySelector('[data-candidate-retry]');
+            retry.focus();
+            retry.click();
+            retry.click();
+            const lateAccepted = harness.view.setCandidates(
+                failedRequestKey, harness.fixtures.full.candidates);
+            states.push(state());
+            const result = {
+                states,
+                retryRequests:harness.actionLog.candidateReads.length - readsBeforeRetry,
+                lateAccepted,
+                retryDetached:!retry.isConnected,
+                retryBindingGone:!retry.onclick,
+                focusRestored:document.activeElement
+                    && document.activeElement.hasAttribute('data-candidate-key')
+            };
+            harness.reset();
+            return result;
+        });
+        check(candidateStates.states.map(state => state.kind).join('|')
+                === 'unselected|loading|empty|error|ready'
+            && new Set(candidateStates.states.map(state => state.statement)).size === 5
+            && new Set(candidateStates.states.map(state => state.nextStep)).size === 5
+            && candidateStates.states.map(state => state.role).join('|')
+                === 'status|status|status|alert|listbox'
+            && candidateStates.states.map(state => state.busy).join('|')
+                === 'false|true|false|false|false',
+            label + ' candidate presenter distinguishes all five statement/next-step states',
+            JSON.stringify(candidateStates));
+        check(candidateStates.retryRequests === 1 && !candidateStates.lateAccepted
+            && candidateStates.retryDetached && candidateStates.retryBindingGone
+            && candidateStates.focusRestored && candidateStates.states[4].count === 12
+            && candidateStates.states[3].requestKey !== candidateStates.states[4].requestKey,
+            label + ' error retry issues once, restores focus, and rejects the late request',
+            JSON.stringify(candidateStates));
         check(Math.abs(base.rootRect.width - 1024) < 1 && Math.abs(base.rootRect.height - 576) < 1,
             label + ' preserves the 1024x576 design canvas', JSON.stringify(base.rootRect));
         await page.evaluate(() => {
@@ -841,6 +1037,19 @@ async function runViewport(browser, port, viewport) {
             && candidateArrow.overlayHidden,
             label + ' candidate Arrow navigation updates summary without selecting or previewing',
             JSON.stringify(candidateArrow));
+        await page.click('.character-build-candidate[data-roving-key="candidate-2"]');
+        await page.click('.character-build-candidate[data-roving-key="candidate-2"]');
+        const pointerDeselection = await page.evaluate(() => ({
+            state:CharacterBuildHarness.view.debugState(),
+            selected:document.querySelectorAll(
+                '.character-build-candidate[aria-selected="true"]').length,
+            overlayHidden:document.querySelector(
+                '[data-layer="candidate-preview"]').hidden
+        }));
+        check(pointerDeselection.state.selectedCandidateKey === ''
+            && pointerDeselection.selected === 0 && pointerDeselection.overlayHidden,
+            label + ' repeated pointer activation clears a legal empty preview state',
+            JSON.stringify(pointerDeselection));
         await page.keyboard.press('Space');
         const explicitSelection = await page.evaluate(() => ({
             state:CharacterBuildHarness.view.debugState(),
@@ -859,9 +1068,9 @@ async function runViewport(browser, port, viewport) {
             JSON.stringify(explicitSelection));
         const threeActionRow = await metrics(page);
         check(threeActionRow.candidateActionCount === 3
-            && threeActionRow.actionLabels.join('|') === '装备|调制|卸下'
+            && threeActionRow.actionLabels.join('|') === '装备|调制候选|卸下'
             && threeActionRow.actionAria.join('|') ===
-                '装备所选候选|调制当前装备|卸下当前物品'
+                '装备所选候选|调制所选候选：烈火吉他|卸下当前物品'
             && threeActionRow.actionSameRow && threeActionRow.actionInsideHeading
             && !threeActionRow.actionOverflow && !threeActionRow.actionClipped
             && !threeActionRow.actionWrapped && threeActionRow.minActionWidth >= 44
@@ -871,12 +1080,23 @@ async function runViewport(browser, port, viewport) {
         check(await page.evaluate(() => CharacterBuildHarness.actionLog.commits.length === 0),
             label + ' first candidate activation never submits');
         await page.keyboard.press('Space');
-        check(await page.evaluate(() => CharacterBuildHarness.actionLog.commits.length === 0),
-            label + ' repeated Space keeps the selected preview and never submits');
+        const spaceDeselection = await page.evaluate(() => ({
+            state:CharacterBuildHarness.view.debugState(),
+            selected:document.querySelectorAll(
+                '.character-build-candidate[aria-selected="true"]').length,
+            overlayHidden:document.querySelector(
+                '[data-layer="candidate-preview"]').hidden
+        }));
+        check(spaceDeselection.state.selectedCandidateKey === ''
+            && spaceDeselection.selected === 0 && spaceDeselection.overlayHidden
+            && await page.evaluate(() => CharacterBuildHarness.actionLog.commits.length === 0),
+            label + ' repeated Space clears the preview without submitting',
+            JSON.stringify(spaceDeselection));
         await page.evaluate(() => document.activeElement.dispatchEvent(new KeyboardEvent(
             'keydown', {key:'Enter', repeat:true, bubbles:true, cancelable:true})));
-        check(await page.evaluate(() => CharacterBuildHarness.actionLog.commits.length === 0),
-            label + ' an auto-repeat Enter keydown cannot cross the shared commit gate');
+        check(await page.evaluate(() => CharacterBuildHarness.actionLog.commits.length === 0
+                && CharacterBuildHarness.view.debugState().selectedCandidateKey === 'candidate-2'),
+            label + ' an auto-repeat Enter may restore preview but cannot cross the shared commit gate');
         await page.keyboard.press('Enter');
         check(await page.evaluate(() =>
             CharacterBuildHarness.actionLog.commits.join('|') === 'candidate-2'),
@@ -1041,8 +1261,23 @@ async function runViewport(browser, port, viewport) {
 
         await page.evaluate(() => CharacterBuildHarness.setScenario('blocked'));
         await page.click('[data-armor-grid] [data-roving-key="armor:头部装备"]');
-        await page.evaluate(() => document.querySelector(
-            '.character-build-candidate[data-roving-key="candidate-1"]').focus());
+        const blockedBefore = await page.evaluate(() =>
+            CharacterBuildHarness.actionLog.commits.length);
+        await page.evaluate(() => {
+            const node = document.querySelector(
+                '.character-build-candidate[data-roving-key="candidate-1"]');
+            window.__characterBuildBlockedCandidate = node;
+            node.dispatchEvent(new MouseEvent('click', {
+                button:0, bubbles:true, cancelable:true
+            }));
+            node.focus();
+            node.dispatchEvent(new KeyboardEvent('keydown', {
+                key:'Enter', bubbles:true, cancelable:true
+            }));
+            node.dispatchEvent(new KeyboardEvent('keydown', {
+                key:' ', bubbles:true, cancelable:true
+            }));
+        });
         const blocked = await page.evaluate(() => ({
             previewActions:document.querySelectorAll('[data-preview-action]').length,
             blockedCandidates:document.querySelectorAll('.character-build-candidate[data-blocked="true"]').length,
@@ -1055,16 +1290,42 @@ async function runViewport(browser, port, viewport) {
             focusTitle:document.querySelector('[data-candidate-focus-summary]').title,
             selected:document.querySelectorAll('.character-build-candidate[aria-selected="true"]').length,
             commitDisabled:document.querySelector('[data-build-action="commit"]').disabled,
-            commits:CharacterBuildHarness.actionLog.commits.length
+            commits:CharacterBuildHarness.actionLog.commits.length,
+            candidateState:CharacterBuildHarness.view.debugState().candidateState,
+            reason:document.querySelector('.character-build-candidate-blocked-reason').textContent,
+            reasonOpacity:getComputedStyle(document.querySelector(
+                '.character-build-candidate-blocked-reason')).opacity,
+            cardOpacity:getComputedStyle(document.querySelector(
+                '.character-build-candidate[data-blocked="true"]')).opacity,
+            describedBy:document.querySelector(
+                '.character-build-candidate[data-blocked="true"]').getAttribute('aria-describedby'),
+            overlayHidden:document.querySelector('[data-layer="candidate-preview"]').hidden
         }));
         check(blocked.previewActions === 0 && blocked.blockedCandidates === 12 && blocked.blockedAria
-            && blocked.notice === 'blocked' && blocked.focusSummary.indexOf('镜之虎彻') >= 0
+            && blocked.notice === 'blocked' && blocked.focusSummary.indexOf('不可装备') >= 0
             && blocked.focusTitle === blocked.focusSummary
-            && blocked.selected === 0 && blocked.commitDisabled && blocked.commits === 1,
-            label + ' blocked candidate stays inspectable, announced disabled, and cannot submit',
+            && blocked.selected === 0 && blocked.commitDisabled
+            && blocked.commits === blockedBefore && blocked.overlayHidden
+            && blocked.candidateState.blockedActivations === 3
+            && blocked.candidateState.lastBlockedOrigin === 'keyboard'
+            && blocked.reason.indexOf('不兼容') >= 0
+            && blocked.reasonOpacity === '1' && blocked.cardOpacity === '1'
+            && !!blocked.describedBy,
+            label + ' blocked pointer/Enter/Space explains at body contrast with zero business intent',
             JSON.stringify(blocked));
+        if (shotArg) {
+            const directory = path.resolve(shotArg.slice('--shot-dir='.length));
+            await page.screenshot({
+                path:path.join(directory, 'character-build-' + label + '-blocked.png'),
+                fullPage:true
+            });
+        }
 
         await page.evaluate(() => CharacterBuildHarness.setScenario('long'));
+        check(await page.evaluate(() => {
+            const old = window.__characterBuildBlockedCandidate;
+            return old && !old.isConnected && old.__workbenchEntityTileBinding === null;
+        }), label + ' candidate rerender tears down the blocked EntityTile binding');
         const longCopy = await metrics(page);
         check(!longCopy.horizontalOverflow && longCopy.minFont >= 9,
             label + ' long Chinese copy stays inside the canvas without shrinking body text',
@@ -1211,6 +1472,25 @@ async function runViewport(browser, port, viewport) {
                 fullPage:true
             });
         }
+        const candidateDestroy = await page.evaluate(() => {
+            CharacterBuildHarness.setScenario('blocked');
+            document.querySelector('[data-roving-key="armor:头部装备"]').click();
+            const tile = document.querySelector(
+                '.character-build-candidate[data-blocked="true"]');
+            const first = CharacterBuildHarness.view.destroy();
+            return {
+                first,
+                second:CharacterBuildHarness.view.destroy(),
+                detached:!tile.isConnected,
+                binding:tile.__workbenchEntityTileBinding,
+                rootCount:document.querySelectorAll('.character-build-workbench').length
+            };
+        });
+        check(candidateDestroy.first && !candidateDestroy.second
+            && candidateDestroy.detached && candidateDestroy.binding === null
+            && candidateDestroy.rootCount === 0,
+            label + ' candidate presenter destroy is idempotent and removes EntityTile listeners',
+            JSON.stringify(candidateDestroy));
     } finally {
         await page.close();
     }

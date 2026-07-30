@@ -248,9 +248,14 @@ var Panels = (function() {
     function rejectPanelMount(id, panel, initData) {
         if (_pendingOpen && _pendingOpen.id === id) _pendingOpen = null;
         if (panel && panel._el) panel._el.style.display = 'none';
-        _container.style.display = 'none';
-        _container.removeAttribute('data-panel');
-        _content.removeAttribute('data-panel');
+        // A Host command can arrive before Panels.init() (or expose a missing
+        // registry during boot). Failing that mount must still send the exact
+        // tracked close envelope without dereferencing an unbound DOM host.
+        if (_container) {
+            _container.style.display = 'none';
+            _container.removeAttribute('data-panel');
+        }
+        if (_content) _content.removeAttribute('data-panel');
         _active = null;
         _activePanelInstanceId = null;
         _activeHostOwner = null;

@@ -18,6 +18,11 @@ namespace CF7Launcher.Config
         public int WebOverlayFrameRateLimit { get; private set; }
         public bool WebView2DisableGpu { get; private set; }
         public string WebView2AdditionalArgs { get; private set; }
+        /// <summary>
+        /// 显式 WebView2 开发模式。默认 false；仅开启浏览器 accelerator、DevTools
+        /// 与默认右键菜单，不重新开放用户缩放或 pinch zoom。
+        /// </summary>
+        public bool WebView2DeveloperMode { get; private set; }
         public bool NativeCursorOverlayEnabled { get; private set; }
         /// <summary>"off" | "auto" | "on"。控制是否把 launcher 与 WebView2 标记为高性能 GPU。见 GpuPreferenceManager。</summary>
         public string GpuPreference { get; private set; }
@@ -25,6 +30,12 @@ namespace CF7Launcher.Config
         public bool DevGpuProbeHotkey { get; private set; }
         /// <summary>开关 Native HUD + PanelHostController 装配。缺 key 时代码 fallback false；随仓 config.toml 当前显式设 true。</summary>
         public bool UseNativeHud { get; private set; }
+        /// <summary>
+        /// 临时整备 IA 原子 rollout gate。B7 起代码默认与随仓配置均为 true；
+        /// 显式 false 可把整套呈现原子回退到旧 HUD/header/focus；
+        /// 它只切换新旧 presentation，不参与任何 route authorization。
+        /// </summary>
+        public bool PreparationNavigationV1 { get; private set; }
         /// <summary>
         /// Panel 态是否显式接管前台 + WebView 焦点（默认 true）。
         /// true：ResumeForPanel 剥 WS_EX_NOACTIVATE + SetForegroundWindow(this) + controller.MoveFocus(Programmatic)；
@@ -71,10 +82,12 @@ namespace CF7Launcher.Config
             WebOverlayFrameRateLimit = 60;
             WebView2DisableGpu = false;
             WebView2AdditionalArgs = "";
+            WebView2DeveloperMode = false;
             NativeCursorOverlayEnabled = true;
             GpuPreference = "off";
             DevGpuProbeHotkey = false;
             UseNativeHud = false;
+            PreparationNavigationV1 = true;
             UseDesktopCursorOverlay = true;
             WebOverlayPanelTakeForeground = true;
             DiagLayerAudit = false;
@@ -113,6 +126,8 @@ namespace CF7Launcher.Config
                         WebView2DisableGpu = ParseBool(val, false);
                     else if (string.Equals(key, "webView2AdditionalArgs", StringComparison.OrdinalIgnoreCase))
                         WebView2AdditionalArgs = val;
+                    else if (string.Equals(key, "webView2DeveloperMode", StringComparison.OrdinalIgnoreCase))
+                        WebView2DeveloperMode = ParseBool(val, false);
                     else if (string.Equals(key, "nativeCursorOverlay", StringComparison.OrdinalIgnoreCase))
                         NativeCursorOverlayEnabled = ParseBool(val, true);
                     else if (string.Equals(key, "gpuPreference", StringComparison.OrdinalIgnoreCase))
@@ -121,6 +136,8 @@ namespace CF7Launcher.Config
                         DevGpuProbeHotkey = ParseBool(val, false);
                     else if (string.Equals(key, "useNativeHud", StringComparison.OrdinalIgnoreCase))
                         UseNativeHud = ParseBool(val, false);
+                    else if (string.Equals(key, "preparationNavigationV1", StringComparison.OrdinalIgnoreCase))
+                        PreparationNavigationV1 = ParseBool(val, false);
                     else if (string.Equals(key, "useDesktopCursorOverlay", StringComparison.OrdinalIgnoreCase))
                         UseDesktopCursorOverlay = ParseBool(val, true);
                     else if (string.Equals(key, "webOverlayPanelTakeForeground", StringComparison.OrdinalIgnoreCase))
@@ -179,6 +196,11 @@ namespace CF7Launcher.Config
             string extraArgs = Environment.GetEnvironmentVariable("CF7_WEBVIEW2_ARGS");
             if (!string.IsNullOrEmpty(extraArgs))
                 WebView2AdditionalArgs = extraArgs;
+
+            string developerMode = Environment.GetEnvironmentVariable("CF7_WEBVIEW2_DEV_MODE");
+            if (!string.IsNullOrEmpty(developerMode))
+                WebView2DeveloperMode = ParseBoolLike(
+                    developerMode, WebView2DeveloperMode);
 
             string nativeCursorOverlay = Environment.GetEnvironmentVariable("CF7_NATIVE_CURSOR_OVERLAY");
             if (!string.IsNullOrEmpty(nativeCursorOverlay))

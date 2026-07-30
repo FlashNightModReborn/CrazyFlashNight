@@ -4,15 +4,18 @@ var EquipmentTuningView = (function() {
 
     var Model = typeof EquipmentTuningModel !== 'undefined' ? EquipmentTuningModel : null;
     var Renderer = typeof EquipmentTuningRender !== 'undefined' ? EquipmentTuningRender : null;
-    if (!Model || !Renderer) {
-        throw new Error('EquipmentTuningView load order: item-filter.js, equipment-tuning-model.js, equipment-tuning-render.js, then equipment-tuning-view.js.');
-    }
+    var DecisionPresenter = typeof EquipmentTuningDecisionPresenter !== 'undefined'
+        ? EquipmentTuningDecisionPresenter : null;
+    var WriteLifecycle =
+        typeof EquipmentTuningWriteLifecycle !== 'undefined'
+            ? EquipmentTuningWriteLifecycle : null;
+    if (!Model || !Renderer || !DecisionPresenter || !WriteLifecycle) throw new Error(
+        'EquipmentTuningView load order: model, decision presenter, renderer, confirmation, interaction, write lifecycle, then view.');
     var wireRef = Model.wireRef;
     var sameRef = Model.sameRef;
     var refKey = Model.refKey;
     var normalizeTuningSource = Model.normalizeTuningSource;
     var tuningSourceSupports = Model.tuningSourceSupports;
-    var quickCommitEligible = Model.quickCommitEligible;
     var normalizeConversionCandidates = Model.normalizeConversionCandidates;
     var previewIntentKey = Model.previewIntentKey;
     var isOperation = Model.isOperation;
@@ -21,6 +24,12 @@ var EquipmentTuningView = (function() {
     var errorMessage = Model.errorMessage;
     var enhancementAvailableMax = Model.enhancementAvailableMax;
     var candidateInstalled = Model.candidateInstalled;
+    var Confirmation = typeof EquipmentTuningConfirmation !== 'undefined'
+        ? EquipmentTuningConfirmation : null;
+    var Components = typeof WorkbenchComponents !== 'undefined'
+        ? WorkbenchComponents : null;
+    var Interaction = typeof EquipmentTuningInteraction !== 'undefined'
+        ? EquipmentTuningInteraction : null;
 
 
     function create(options) {
@@ -29,6 +38,11 @@ var EquipmentTuningView = (function() {
 
     function TuningView(options) {
         var self = this;
+        if (!Confirmation || !Confirmation.shared || !Components
+                || !Components.ChoiceGroup || !Components.CommitBar
+                || !Interaction || !Interaction.interactionLockProjection) {
+            throw new Error('EquipmentTuningView requires confirmation, interaction, and workbench component ports.');
+        }
         this.instanceKey = String(options.instanceKey || 'equipment-tuning');
         this.instancePolicy = 'singletonByBinding';
         this.viewKind = 'equipment-tuning';
@@ -84,8 +98,19 @@ var EquipmentTuningView = (function() {
         this._replaceCandidateName = '';
         this._infoPanelOpen = false;
         this._infoSubject = null;
-        this._modConfirmationMode = options.modConfirmationMode === 'fast' ? 'fast' : 'safe';
+        this._confirmationPort = options.confirmationPort || Confirmation.shared;
+        this._modConfirmationMode = this._confirmationPort.read();
+        this._confirmationControl = null;
+        this._confirmationChoice = null;
+        this._confirmationBoundary = null;
+        this._confirmationReason = null;
+        this._confirmationUnsubscribe = null;
+        this._commitBar = null;
+        this._previewFocusIntent = null;
+        this._detailScrollAnchor = null;
+        this._interactionAnnouncement = '';
         this._quickCommitIntent = null;
+        this._modIntent = null;
         this._busy = false;
         this._inventoryWriteHandle = null;
         this._readPending = false;
@@ -102,6 +127,9 @@ var EquipmentTuningView = (function() {
             send:function(message) { return self._send(message); },
             timeoutMs:options.timeoutMs,
             sessionNonce:options.sessionNonce
+        });
+        this._confirmationUnsubscribe = this._confirmationPort.subscribe(function(mode) {
+            self._applyModConfirmationMode(mode);
         });
     }
 
@@ -120,6 +148,56 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.subscribe = function() { return null; };
+
+    TuningView.prototype.getInteractionProjection = function() {
+        return Interaction.interactionLockProjection({
+            operation:this._operation,
+            sourceKind:this._source && this._source.sourceKind || '',
+            busy:this._busy,
+            readPending:this._readPending,
+            previewPendingOperation:this._previewPendingOperation,
+            previewScheduled:!!this._enhancePreviewTimer
+                || this._queuedEnhanceLevel != null,
+            detaching:this._detaching,
+            needsReconcile:this._needsReconcile,
+            refreshRetryRequired:this._refreshRetryRequired,
+            refreshRetryPending:this._refreshRetryPending,
+            inventoryWritePending:!!this._inventoryWriteHandle,
+            conversionLoading:this._conversionLoading,
+            loadoutBarrier:this._loadoutBarrier,
+            allowSourceRecovery:this._needsReconcile && !this._source
+                && !!EquipmentTuningRuntime.safeToken(this._lastCommitCallId),
+            hasPreviewToken:!!(this._preview && this._preview.tuningToken),
+            mux:this._mux.debugState()
+        });
+    };
+
+    TuningView.prototype._allowInteraction = function(capability, announce) {
+        var projection = this.getInteractionProjection();
+        if (projection[capability] === true) return true;
+        if (announce !== false && projection.reason
+                && projection.reason !== this._interactionAnnouncement) {
+            this._interactionAnnouncement = projection.reason;
+            this._toast(projection.reason);
+        }
+        return false;
+    };
+
+    TuningView.prototype._capturePreviewFocusIntent = function(forceControlOrigin) {
+        var document = this._root && this._root.ownerDocument;
+        var active = document && document.activeElement;
+        var editing = !!(active && active.matches
+            && active.matches('input,textarea,select,[contenteditable="true"]'));
+        if (editing) {
+            this._previewFocusIntent = null;
+            return false;
+        }
+        var fromControl = !!(active && this._root.contains(active)
+            && active !== document.body);
+        this._previewFocusIntent = forceControlOrigin || fromControl
+            ? {origin:active || null} : null;
+        return !!this._previewFocusIntent;
+    };
 
     TuningView.prototype.openSession = function(panelInstanceId) {
         this.closeSession();
@@ -150,6 +228,7 @@ var EquipmentTuningView = (function() {
         this._previewPendingOperation = '';
         this._previewIntentKey = '';
         this._quickCommitIntent = null;
+        this._modIntent = null;
         this._mux.closeSession();
         this._panelInstanceId = '';
         this._viewSessionId = '';
@@ -181,6 +260,10 @@ var EquipmentTuningView = (function() {
         this._replaceCandidateName = '';
         this._resetInfoPanel();
         this._quickCommitIntent = null;
+        this._modIntent = null;
+        this._previewFocusIntent = null;
+        this._detailScrollAnchor = null;
+        this._interactionAnnouncement = '';
         this._status = '调制会话已关闭';
         this._emit();
         this.render({preserveScroll:false});
@@ -190,6 +273,17 @@ var EquipmentTuningView = (function() {
         this.closeSession();
         this._mux.destroy();
         if (this._modNavigator) { this._modNavigator.destroy(); this._modNavigator = null; }
+        if (this._confirmationUnsubscribe) this._confirmationUnsubscribe();
+        this._confirmationUnsubscribe = null;
+        if (this._confirmationChoice) this._confirmationChoice.destroy();
+        this._confirmationChoice = null;
+        this._confirmationControl = null;
+        this._confirmationBoundary = null;
+        this._confirmationReason = null;
+        if (this._commitBar) this._commitBar.destroy();
+        this._commitBar = null;
+        this._previewFocusIntent = null;
+        this._detailScrollAnchor = null;
         if (this._densityController && this._densityController.unregister) this._densityController.unregister(this);
         this._root = null;
     };
@@ -241,10 +335,8 @@ var EquipmentTuningView = (function() {
         var recoveryCallId = this._needsReconcile && !this._source
             ? EquipmentTuningRuntime.safeToken(this._lastCommitCallId) : '';
         if (!slot || !slot.occupied || !slot.item || slot.item.itemKind !== 'equipment'
-                || this._busy || this._readPending || this._detaching
-                || this._refreshRetryRequired || this._refreshRetryPending
-                || (this._needsReconcile && !recoveryCallId)
-                || this._mux.debugState().pendingCount > 0) return false;
+                || !this._allowInteraction('source', false)
+                || (this._needsReconcile && !recoveryCallId)) return false;
         this._closeInspector();
         var ref = normalizeTuningSource({
             sourceKind:'inventory',
@@ -264,8 +356,10 @@ var EquipmentTuningView = (function() {
         this._replaceCandidateKey = '';
         this._replaceCandidateName = '';
         this._quickCommitIntent = null;
+        this._modIntent = null;
         this._needsReconcile = !!recoveryCallId;
         this._status = recoveryCallId ? '正在用新位置完成未知提交对账' : '正在读取权威调制状态';
+        this._emit();
         this.render({preserveScroll:false});
         this.requestSnapshot(recoveryCallId);
         return true;
@@ -274,9 +368,8 @@ var EquipmentTuningView = (function() {
     TuningView.prototype.handleLoadoutSelection = function(source, item) {
         var normalized = normalizeTuningSource(source);
         if (!normalized || normalized.sourceKind !== 'loadout' || !item
-                || item.itemKind !== 'equipment' || this._busy || this._readPending
-                || this._detaching || this._refreshRetryRequired || this._refreshRetryPending
-                || this._needsReconcile || this._mux.debugState().pendingCount > 0) return false;
+                || item.itemKind !== 'equipment'
+                || !this._allowInteraction('source', false)) return false;
         this._closeInspector();
         this._setConversionProjection(false);
         this._source = normalized;
@@ -289,8 +382,10 @@ var EquipmentTuningView = (function() {
         this._replaceCandidateName = '';
         this._resetInfoPanel();
         this._quickCommitIntent = null;
+        this._modIntent = null;
         if (!tuningSourceSupports(normalized, this._operation)) this._operation = 'enhance';
         this._status = '正在读取当前槽位的权威调制状态';
+        this._emit();
         this.render({preserveScroll:false});
         this.requestSnapshot();
         return true;
@@ -300,8 +395,7 @@ var EquipmentTuningView = (function() {
         if (this._operation !== 'convert' || !this._source || !this._snapshot
                 || !tuningSourceSupports(this._source, 'convert')
                 || !slot || !slot.occupied || !slot.item || slot.item.itemKind !== 'equipment'
-                || this._busy || this._readPending || this._detaching || this._conversionLoading
-                || this._refreshRetryRequired || this._refreshRetryPending || this._needsReconcile) return false;
+                || !this._allowInteraction('conversionCandidate')) return false;
         var ref = wireRef(slot);
         if (sameRef(this._source, ref) || String(slot.item.use || '') !== String(this._sourceItem && this._sourceItem.use || '')) {
             return false;
@@ -313,18 +407,18 @@ var EquipmentTuningView = (function() {
         this._target = ref;
         this._targetItem = slot.item;
         this._preview = null;
+        this._capturePreviewFocusIntent(true);
         this.render();
-        return this.requestPreview('convert', {target:ref});
+        return this.requestPreview('convert', {target:ref, focusNext:true});
+    };
+
+    TuningView.prototype._inspectAvailable = function(item) {
+        var gender = this._snapshot && String(this._snapshot.gender || '');
+        return this._inspectorAvailable && !!item && (gender === '男' || gender === '女');
     };
 
     TuningView.prototype._canInspect = function(item) {
-        var gender = this._snapshot && String(this._snapshot.gender || '');
-        return this._inspectorAvailable && !!item && (gender === '男' || gender === '女')
-            && !this._busy && !this._readPending && !this._detaching && !this._needsReconcile
-            && !this._refreshRetryRequired && !this._refreshRetryPending
-            && !this._inventoryWriteHandle && !this._conversionLoading && !this._enhancePreviewTimer
-            && this._queuedEnhanceLevel == null
-            && this._mux.debugState().pendingCount === 0;
+        return this._inspectAvailable(item) && this._allowInteraction('inspect', false);
     };
 
     TuningView.prototype.inspectCurrentEquipment = function() {
@@ -348,6 +442,7 @@ var EquipmentTuningView = (function() {
         this._previewPendingOperation = '';
         this._previewIntentKey = '';
         this._quickCommitIntent = null;
+        this._modIntent = null;
         this._status = reconcileAfterCallId ? '正在对账未知提交' : '正在同步调制状态';
         this._readPending = true;
         this.render();
@@ -403,13 +498,19 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.requestPreview = function(operation, extra) {
-        if (!this._source || this._busy || this._readPending || this._detaching
-                || this._refreshRetryRequired || this._refreshRetryPending || this._needsReconcile) return false;
         operation = String(operation || this._operation);
         if (!isOperation(operation) || !tuningSourceSupports(this._source, operation)) return false;
+        extra = extra || {};
+        var capability = operation === 'enhance' ? 'stepper'
+            : operation === 'convert' ? 'conversionCandidate'
+            : operation === 'install_tier' ? 'tier'
+            : operation === 'detach_mod' || operation === 'detach_all_mods'
+                ? 'detach' : 'candidate';
+        if (!this._source || !this._allowInteraction(capability)) return false;
+        if (operation === 'enhance') this._previewFocusIntent = null;
+        else this._capturePreviewFocusIntent(extra.focusNext === true);
         this._operation = operation;
         var payload = {operation:operation, source:this._source};
-        extra = extra || {};
         if (operation === 'enhance') payload.targetLevel = Math.floor(Number(extra.targetLevel || this._targetLevel));
         else if (operation === 'convert') payload.target = extra.target || this._target;
         else if (operation !== 'detach_all_mods') payload.candidateKey = String(extra.candidateKey || '');
@@ -433,9 +534,17 @@ var EquipmentTuningView = (function() {
         } : null;
         this._previewIntentKey = intentKey;
         this._previewPendingOperation = operation;
-        this._status = '正在核算调制结果';
+        this._modIntent = this._createModIntent(
+            operation,
+            payload,
+            extra,
+            intentKey
+        );
+        this._status = this._modIntent
+            ? this._modIntentStatus('preview_pending')
+            : '正在核算调制结果';
         this._readPending = true;
-        this.render();
+        this.render({previewOnly:true});
         var callId = this._mux.request('preview', payload, function(response) {
             self._readPending = false;
             self._previewPendingOperation = '';
@@ -443,53 +552,51 @@ var EquipmentTuningView = (function() {
             if (isLatestIntent && response && response.success === true) {
                 self._preview = response;
                 self._status = response.noOp ? '该操作不会改变装备' : '';
+                self._setModIntentPhase('preview_ready');
             } else if (isLatestIntent) {
                 self._preview = null;
+                self._modIntent = null;
                 self._status = errorMessage(response && response.error);
             } else {
                 self._preview = null;
+                self._modIntent = null;
                 self._status = '正在核算最新目标';
             }
-            self._emit();
-            self.render();
-            if (isLatestIntent && self._preview && self._quickCommitIntent
-                    && self._quickCommitIntent.intentKey === intentKey) {
-                self._tryQuickCommit(intentKey);
+            var quickIntentReady = isLatestIntent && !!self._preview
+                && self._quickCommitIntent
+                && self._quickCommitIntent.intentKey === intentKey;
+            if (quickIntentReady && self._tryQuickCommit(intentKey)) {
+                self._drainEnhancementPreview();
+                return;
             }
+            self._emit();
+            self.render({
+                previewOnly:true,
+                focusNext:isLatestIntent && !!self._preview
+            });
             self._drainEnhancementPreview();
         });
         if (!callId && this._readPending) {
-            this._readPending = false; this._previewPendingOperation = ''; this.render();
+            this._readPending = false;
+            this._previewPendingOperation = '';
+            this._previewFocusIntent = null;
+            this._modIntent = null;
+            this.render({previewOnly:true});
         }
         return !!callId;
     };
 
-    TuningView.prototype._finishInventoryWrite = function(operation, needsRefresh, callback) {
-        if (!operation || this._inventoryWriteHandle !== operation) return false;
-        var self = this;
-        var completed = this._completeWrite(operation, !!needsRefresh, function(result) {
-            if (self._inventoryWriteHandle !== operation) return;
-            self._inventoryWriteHandle = null;
-            self._busy = false;
-            if (typeof callback === 'function') callback(result);
-        });
-        if (!completed && this._inventoryWriteHandle === operation) {
-            this._inventoryWriteHandle = null;
-            this._busy = false;
-        }
-        return !!completed;
-    };
-
     TuningView.prototype.commit = function() {
-        if (this._busy || this._readPending || this._detaching || this._needsReconcile
-            || this._refreshRetryRequired || this._refreshRetryPending
-            || !this._preview || !this._preview.tuningToken) return false;
+        if (!this._preview || !this._preview.tuningToken
+                || !this._allowInteraction('commit')) return false;
         if (this._source && this._source.sourceKind === 'loadout') {
             return this._commitLoadout();
         }
         this._quickCommitIntent = null;
+        this._setModIntentPhase('write_pending');
         var inventoryWrite = this._beginWrite('equipment_tuning.commit');
         if (!inventoryWrite) {
+            this._setModIntentPhase('preview_ready');
             this._toast('背包正在执行其他操作，请稍候。');
             return false;
         }
@@ -497,8 +604,10 @@ var EquipmentTuningView = (function() {
         var self = this;
         var committedOperation = String(this._preview.operation || '');
         this._busy = true;
-        this._status = '正在提交，期间不会重放';
-        this.render();
+        this._status = this._modIntent
+            ? this._modIntentStatus('write_pending')
+            : '正在提交，期间不会重放';
+        this.render({previewOnly:true});
         var commitResponseSettled = false;
         var callId = this._mux.request('commit', {expectedTuningToken:String(this._preview.tuningToken)}, function(response) {
             commitResponseSettled = true;
@@ -506,6 +615,8 @@ var EquipmentTuningView = (function() {
             var ambiguous = EquipmentTuningRuntime.isAmbiguous(response);
             var noOp = !!(response && response.success === true && response.noOp);
             if (response && response.success === true) {
+                var committedSnapshot = response.snapshot || null;
+                if (committedSnapshot) self._snapshot = committedSnapshot;
                 self._preview = null;
                 if (committedOperation === 'replace_mod' || committedOperation === 'detach_mod') {
                     self._replaceCandidateKey = '';
@@ -513,9 +624,20 @@ var EquipmentTuningView = (function() {
                     self._operation = 'install_mod';
                 }
                 self._lastCommitCallId = '';
-                self._status = noOp ? '无变化，未写入存档' : '提交成功，正在刷新背包';
+                self._setModIntentPhase('committed_syncing');
+                self._status = noOp ? '无变化，未写入存档'
+                    : self._modIntent
+                        ? self._modIntentStatus('committed_syncing')
+                        : '提交成功，正在刷新背包';
+                self._emit();
+                self.render();
                 if (!self._finishInventoryWrite(inventoryWrite, !noOp, function(refreshResult) {
-                    self._afterInventoryRefresh('', !noOp, refreshResult);
+                    self._afterInventoryRefresh(
+                        '',
+                        !noOp,
+                        refreshResult,
+                        committedSnapshot
+                    );
                 })) return;
                 self._toast(noOp ? '两件装备强化度相同，无需写入。' : '装备调制已提交。');
                 return;
@@ -526,12 +648,14 @@ var EquipmentTuningView = (function() {
                     || EquipmentTuningRuntime.safeToken(callId);
                 self._needsReconcile = true;
                 self._lastCommitCallId = barrierId;
+                self._setModIntentPhase('uncertain');
                 self._status = '提交结果不明确，正在刷新并对账';
                 if (!self._finishInventoryWrite(inventoryWrite, true, function(refreshResult) {
                     self._afterInventoryRefresh(barrierId, true, refreshResult);
                 })) return;
             } else {
                 self._lastCommitCallId = '';
+                self._modIntent = null;
                 self._status = errorMessage(response && response.error);
                 var staleLease = response && (response.error === 'stale_state' || response.error === 'stale_lease');
                 if (!self._finishInventoryWrite(inventoryWrite, !!staleLease, function(refreshResult) {
@@ -545,6 +669,7 @@ var EquipmentTuningView = (function() {
         if (!callId && this._inventoryWriteHandle === inventoryWrite) {
             this._needsReconcile = false;
             this._lastCommitCallId = '';
+            this._modIntent = null;
             this._status = errorMessage('not_sent');
             this._finishInventoryWrite(inventoryWrite, false, function() { self.requestSnapshot(); });
             this._emit();
@@ -571,8 +696,10 @@ var EquipmentTuningView = (function() {
         if (!this._source || this._source.sourceKind !== 'loadout'
                 || !tuningSourceSupports(this._source, this._preview.operation)) return false;
         this._quickCommitIntent = null;
+        this._setModIntentPhase('write_pending');
         var write = this._beginWrite('equipment_tuning.commit.loadout');
         if (!write) {
+            this._setModIntentPhase('preview_ready');
             this._toast('角色构筑正在执行其他操作，请稍候。');
             return false;
         }
@@ -580,9 +707,11 @@ var EquipmentTuningView = (function() {
         var self = this;
         var operation = String(this._preview.operation || '');
         this._busy = true;
-        this._status = '正在提交当前装备调制，期间不会重放';
+        this._status = this._modIntent
+            ? this._modIntentStatus('write_pending')
+            : '正在提交当前装备调制，期间不会重放';
         this._emit();
-        this.render();
+        this.render({previewOnly:true});
         var settled = false;
         var callId = this._mux.request(
             'commit',
@@ -599,6 +728,7 @@ var EquipmentTuningView = (function() {
                     self._snapshot = response.snapshot;
                     self._needsReconcile = false;
                     self._lastCommitCallId = '';
+                    self._setModIntentPhase('committed_syncing');
                     self._loadoutBarrier = {
                         kind:'known',
                         callId:String(response.callId || ''),
@@ -611,9 +741,10 @@ var EquipmentTuningView = (function() {
                             expectedLoadoutRevision:self._source.expectedLoadoutRevision
                         }
                     };
-                    self._status = response.noOp
-                        ? '调制无变化，正在同步完整构筑'
-                        : '调制已确认，正在同步完整构筑';
+                    self._status = response.noOp ? '调制无变化，正在同步完整构筑'
+                        : self._modIntent
+                            ? self._modIntentStatus('committed_syncing')
+                            : '调制已确认，正在同步完整构筑';
                     self._emit();
                     self.render();
                     self._beginLoadoutRefresh();
@@ -626,6 +757,7 @@ var EquipmentTuningView = (function() {
                         || EquipmentTuningRuntime.safeToken(callId);
                     self._needsReconcile = !!barrierId;
                     self._lastCommitCallId = barrierId;
+                    self._setModIntentPhase('uncertain');
                     self._loadoutBarrier = barrierId ? {
                         kind:'unknown',
                         callId:barrierId,
@@ -651,6 +783,7 @@ var EquipmentTuningView = (function() {
                 }
                 self._loadoutBarrier = null;
                 self._lastCommitCallId = '';
+                self._modIntent = null;
                 self._status = errorMessage(response && response.error);
                 self._finishInventoryWrite(write, false, function() {
                     self.requestSnapshot();
@@ -663,6 +796,7 @@ var EquipmentTuningView = (function() {
             this._loadoutBarrier = null;
             this._needsReconcile = false;
             this._lastCommitCallId = '';
+            this._modIntent = null;
             this._status = errorMessage('not_sent');
             this._finishInventoryWrite(write, false, function() { self.requestSnapshot(); });
             this._emit();
@@ -708,6 +842,7 @@ var EquipmentTuningView = (function() {
             if (!accepted) {
                 self._busy = false;
                 self._refreshRetryRequired = true;
+                self._modIntent = null;
                 self._status = '完整构筑同步失败；必须重试成功后才能继续';
                 self._emit();
                 self.render();
@@ -749,6 +884,7 @@ var EquipmentTuningView = (function() {
         this._refreshRetryRequired = false;
         this._refreshRetryPending = false;
         this._busy = false;
+        this._modIntent = null;
         this._status = barrier.changed
             ? '当前装备调制已提交并同步'
             : '当前装备状态已确认';
@@ -765,7 +901,7 @@ var EquipmentTuningView = (function() {
         return true;
     };
 
-    TuningView.prototype.setModConfirmationMode = function(mode) {
+    TuningView.prototype._applyModConfirmationMode = function(mode) {
         mode = mode === 'fast' ? 'fast' : 'safe';
         if (this._modConfirmationMode === mode) return true;
         this._modConfirmationMode = mode;
@@ -775,115 +911,27 @@ var EquipmentTuningView = (function() {
         return true;
     };
 
-    TuningView.prototype._tryQuickCommit = function(intentKey) {
-        var intent = this._quickCommitIntent;
-        if (!intent || intent.intentKey !== intentKey || this._modConfirmationMode !== 'fast'
-                || !this._preview || this._previewIntentKey !== intentKey || this._preview.noOp
-                || !this._preview.tuningToken || this._busy || this._readPending || this._needsReconcile) return false;
-        var eligible = quickCommitEligible(this._preview, intent);
-        this._quickCommitIntent = null;
-        if (!eligible) {
-            this._status = '检测到连带变更，已停在预览';
-            this._toast('快速模式检测到连带变更，已停在预览，请确认。');
-            this._emit();
-            this.render();
-            return false;
-        }
-        return this.commit();
+    TuningView.prototype.setModConfirmationMode = function(mode) {
+        if (!this._allowInteraction('confirmation')) return false;
+        return this._confirmationPort.set(mode) === (mode === 'fast' ? 'fast' : 'safe');
     };
 
-    TuningView.prototype._afterInventoryRefresh = function(reconcileAfterCallId, changed, refreshResult) {
-        reconcileAfterCallId = EquipmentTuningRuntime.safeToken(reconcileAfterCallId);
-        if (!refreshResult || refreshResult.success !== true) {
-            this._setConversionProjection(false);
-            this._refreshRetryRequired = true;
-            this._refreshRetryPending = false;
-            this._refreshReconcileCallId = reconcileAfterCallId;
-            this._refreshChanged = !!changed;
-            this._needsReconcile = !!reconcileAfterCallId;
-            this._snapshot = null;
-            this._preview = null;
-            this._status = '背包刷新失败；必须重试成功后才能使用新租约对账';
-            this._emit();
-            this.render();
-            return false;
-        }
-        this._refreshRetryRequired = false;
-        this._refreshRetryPending = false;
-        this._refreshReconcileCallId = '';
-        this._refreshChanged = false;
-        this._setConversionProjection(false);
-        this._resetInfoPanel();
-        var slot = this._source ? this._resolveSlot(this._source.containerId, this._source.slot) : null;
-        if (!slot || !slot.occupied || !slot.item || slot.item.itemKind !== 'equipment') {
-            this._source = null;
-            this._sourceItem = null;
-            this._snapshot = null;
-            this._preview = null;
-            this._needsReconcile = !!reconcileAfterCallId;
-            this._status = changed ? '装备已移动，请重新选择' : '请选择左侧背包装备';
-            this._emit();
-            this.render();
-            return false;
-        }
-        this._source = normalizeTuningSource({
-            sourceKind:'inventory',
-            containerId:'背包',
-            slot:Number(slot.physicalSlot != null ? slot.physicalSlot : slot.slot),
-            expectedLease:String(slot.slotLease != null ? slot.slotLease : slot.expectedLease)
+    TuningView.prototype.getConfirmationState = function() {
+        return Confirmation.project(this._modConfirmationMode, {
+            interaction:this.getInteractionProjection()
         });
-        if (!this._source) {
-            this._sourceItem = null;
-            this._snapshot = null;
-            this._preview = null;
-            this._status = '背包装备租约无效，请重新选择';
-            this._emit();
-            this.render();
-            return false;
-        }
-        this._sourceItem = slot.item;
-        this._target = null;
-        this._targetItem = null;
-        this._snapshot = null;
-        this._preview = null;
-        this._emit();
-        this.requestSnapshot(reconcileAfterCallId);
-        return true;
     };
 
-    TuningView.prototype.retryInventoryRefresh = function() {
-        if (!this._refreshRetryRequired || this._refreshRetryPending || this._busy
-                || this._readPending || this._detaching) return false;
-        if (this._source && this._source.sourceKind === 'loadout') {
-            return this._beginLoadoutRefresh();
-        }
-        var self = this;
-        var reconcileAfterCallId = this._refreshReconcileCallId;
-        var changed = this._refreshChanged;
-        this._refreshRetryPending = true;
-        this._status = '正在重试背包刷新';
-        this._emit();
-        this.render();
-        var callbackCalled = false;
-        var started = this._refreshInventory(function(result) {
-            callbackCalled = true;
-            self._refreshRetryPending = false;
-            if (result && result.success === true) {
-                self._afterInventoryRefresh(reconcileAfterCallId, changed, result);
-                return;
-            }
-            self._refreshRetryRequired = true;
-            self._status = '背包刷新仍未成功，请重试';
-            self._emit();
-            self.render();
-        });
-        if (!started && !callbackCalled) {
-            this._refreshRetryPending = false;
-            this._status = '当前无法重试背包刷新';
-            this._emit();
-            this.render();
-        }
-        return !!started;
+    TuningView.prototype.openHelp = function(openModal) {
+        if (!this._root) return false;
+        if (typeof openModal === 'function') return !!openModal(Confirmation.helpSpec());
+        this._infoSubject = {
+            key:'confirmation-help',
+            title:'逐次确认与单件快捷',
+            detail:'逐次确认会停在预览等待提交；单件快捷只自动提交安全的单件配件操作。'
+                + Confirmation.BOUNDARY_TEXT + '。打开或收起说明不会改变可执行能力。'
+        };
+        return this._openInfoPanel();
     };
 
     TuningView.prototype._resetInfoPanel = function() {
@@ -892,9 +940,9 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.setOperation = function(operation) {
-        if (!isOperationGroup(operation) || this._busy || this._readPending || this._detaching
-                || this._refreshRetryRequired || this._refreshRetryPending
-                || !tuningSourceSupports(this._source, operation)) return false;
+        if (!isOperationGroup(operation)
+                || !tuningSourceSupports(this._source, operation)
+                || !this._allowInteraction('tabs')) return false;
         this._closeInspector();
         if (operation !== 'enhance') {
             if (this._enhancePreviewTimer) clearTimeout(this._enhancePreviewTimer);
@@ -908,38 +956,44 @@ var EquipmentTuningView = (function() {
         this._preview = null;
         this._previewIntentKey = '';
         this._quickCommitIntent = null;
+        this._modIntent = null;
         if (operation !== 'install_mod') {
             this._replaceCandidateKey = '';
             this._replaceCandidateName = '';
         }
         if (operation !== 'convert') { this._target = null; this._targetItem = null; }
         if (wasConvert !== (operation === 'convert')) this._setConversionProjection(operation === 'convert');
+        if (operation === 'enhance' && this._snapshot) {
+            this.scheduleEnhancementPreview(this._targetLevel, 80);
+        }
         this.render({preserveScroll:false});
-        if (operation === 'enhance' && this._snapshot) this.scheduleEnhancementPreview(this._targetLevel, 80);
         return true;
     };
 
     TuningView.prototype._selectReplacementCandidate = function(candidate) {
-        if (!candidate || !candidate.candidateKey || this._busy || this._readPending
-                || this._detaching || this._needsReconcile) return false;
+        if (!candidate || !candidate.candidateKey
+                || !this._allowInteraction('slot')) return false;
         this._operation = 'install_mod';
         this._replaceCandidateKey = String(candidate.candidateKey);
         this._replaceCandidateName = String(candidate.itemName || '');
         this._preview = null;
         this._previewIntentKey = '';
         this._quickCommitIntent = null;
+        this._modIntent = null;
         this._status = '请选择要替换成的配件';
         this.render();
         return true;
     };
 
     TuningView.prototype._clearReplacementCandidate = function() {
+        if (!this._allowInteraction('slot')) return false;
         this._replaceCandidateKey = '';
         this._replaceCandidateName = '';
         if (this._operation === 'replace_mod') this._operation = 'install_mod';
         this._preview = null;
         this._previewIntentKey = '';
         this._quickCommitIntent = null;
+        this._modIntent = null;
         this._status = '已取消配件替换';
         this.render();
         return true;
@@ -1037,6 +1091,15 @@ var EquipmentTuningView = (function() {
             infoPanelOpen:this._infoPanelOpen,
             infoSubjectKey:this._infoSubject ? String(this._infoSubject.key || '') : '',
             modConfirmationMode:this._modConfirmationMode, quickCommitPending:!!this._quickCommitIntent,
+            modIntent:this._modIntent ? {
+                intentKey:this._modIntent.intentKey,
+                operation:this._modIntent.operation,
+                candidateKey:this._modIntent.candidateKey,
+                replaceCandidateKey:this._modIntent.replaceCandidateKey,
+                phase:this._modIntent.phase
+            } : null,
+            confirmationChoice:this.getConfirmationState(),
+            interaction:this.getInteractionProjection(),
             sourceKind:this._source && this._source.sourceKind || '',
             loadoutBarrier:this._loadoutBarrier ? {
                 kind:this._loadoutBarrier.kind,
@@ -1052,6 +1115,8 @@ var EquipmentTuningView = (function() {
 
     TuningView.prototype._emit = function() { this._onStateChange(this.debugState()); };
 
+    WriteLifecycle.install(TuningView, Model);
+    DecisionPresenter.install(TuningView, Model);
     Renderer.install(TuningView, Model);
 
     return {create:create};

@@ -189,7 +189,8 @@ function Get-Cf7ProductionChecks {
         'bootstrap.html', 'bootstrap-main.js', 'overlay.html', 'config\version.js',
         'css\bootstrap.css', 'css\game-ui-behavior.css', 'css\welcome.css', 'css\overlay.css',
         'css\panels.css', 'css\panels\foundation-top.css', 'css\workbench\tokens.css',
-        'css\panels\foundation-rest.css', 'css\workbench\core.css', 'css\panels\features.css',
+        'css\panels\foundation-rest.css', 'css\workbench\core.css', 'css\workbench\profiles.css',
+        'css\panels\features.css',
         'css\workbench\inventory.css', 'css\workbench\skins.css', 'css\workbench\entities.css',
         'css\workbench\crafting.css', 'css\workbench\skills.css', 'css\workbench\equipment-tuning.css',
         'css\workbench\components.css', 'css\workbench\character-build.css',
@@ -211,31 +212,43 @@ function Get-Cf7ProductionChecks {
         'modules\combo.js', 'modules\lazy-loader.js', 'modules\panels.js',
         'modules\panel-scale.js', 'modules\panels-lazy-registry.js', 'modules\tooltip.js',
         'modules\icons.js', 'modules\panel-runtime.js', 'modules\workbench-lifecycle.js',
-        'modules\workbench-focus.js', 'modules\workbench-primitives.js', 'modules\workbench.js',
+        'modules\workbench-focus.js', 'modules\workbench-primitives.js',
+        'modules\workbench-profile.js', 'modules\workbench.js',
         'modules\workbench-components.js', 'modules\workbench-inspection-viewport.js',
         'modules\character-build\character-build-mutation.js',
         'modules\character-build-session.js',
         'modules\character-build\character-build-action-view.js',
+        'modules\character-build\character-build-tuning-adapter.js',
+        'modules\character-build\character-build-candidate-tooltip.js',
+        'modules\character-build\character-build-candidate-state.js',
+        'modules\character-build\character-build-facet-counts.js',
         'modules\character-build\character-build-stats-view.js',
         'modules\character-build\character-build-doll-preview.js',
         'modules\character-build\character-build-template.js',
         'modules\character-build-view.js', 'modules\character-build\character-build-tuning.js',
         'modules\character-build\character-build-slot-transition.js',
         'modules\character-build\character-build-pose.js',
+        'modules\character-build\character-build-projection.js',
         'modules\character-build.js',
         'modules\item-filter.js', 'modules\kshop-runtime.js',
         'modules\inventory-runtime.js', 'modules\inventory-ui.js', 'modules\equipment-tuning-runtime.js',
-        'modules\equipment-tuning-model.js', 'modules\equipment-tuning-render.js',
+        'modules\equipment-tuning-model.js', 'modules\equipment-tuning-decision-presenter.js',
+        'modules\equipment-tuning-render.js', 'modules\equipment-tuning-interaction.js',
+        'modules\equipment-tuning-write-lifecycle.js',
+        'modules\equipment-tuning-source-marker.js',
         'modules\equipment-tuning-view.js', 'modules\inventory-tuning-scope.js',
         'modules\inventory-storage-workbench.js',
         'modules\inventory-workbench.js', 'modules\kshop.js',
         'modules\kshop-views.js', 'modules\kshop-cart-controller.js',
         'modules\kshop-catalog-presenter.js', 'modules\kshop-owned-inventory-presenter.js',
         'modules\kshop-tooltip-presenter.js', 'modules\inventory-workbench-config.js',
+        'modules\inventory-workbench-preparation-menu.js',
+        'modules\equipment-tuning-confirmation.js', 'modules\inventory-workbench-navigation.js',
         'modules\inventory-workbench-header.js', 'modules\inventory-workbench-quick-transfer.js',
         'modules\inventory-workbench-owned-view.js', 'modules\npcshop-runtime.js',
         'modules\npcshop-secondary-pages.js', 'modules\npcshop.js', 'modules\crafting-runtime.js',
-        'modules\crafting.js', 'modules\hairdresser-runtime.js', 'modules\hairdresser.js',
+        'modules\crafting-detail-presenter.js', 'modules\crafting.js',
+        'modules\hairdresser-runtime.js', 'modules\hairdresser.js',
         'modules\skills-runtime.js', 'modules\skills-library.js',
         'modules\skills-trainer.js', 'modules\skills-loadout.js', 'modules\skills-interactions.js',
         'modules\skills-render.js', 'modules\skills-diagnostics.js', 'modules\skills.js',
@@ -277,8 +290,15 @@ function Get-Cf7ProductionChecks {
         -Root (Join-Path $ProjectRoot 'launcher\web') -Paths $requiredWebPaths
     $checks += New-Cf7CommandCheck -Name 'workbench-css-closure' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\check-workbench-css-bundle.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'workbench-ui-ratchet-regression' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-workbench-ui-ratchet.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'workbench-ui-release-tree-audit' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\audit-workbench-ui.js'), '--release-tree', '--text', '--strict-warnings') `
+        -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'workbench-inspection-viewport' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\test-workbench-inspection-viewport.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'inventory-preparation-menu' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-inventory-workbench-preparation-menu.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'map-lossless-webp-closure' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\audit-map-webp-assets.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'map-scale-experience' -FilePath $node `

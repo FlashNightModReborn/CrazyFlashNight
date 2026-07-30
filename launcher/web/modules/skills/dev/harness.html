@@ -154,6 +154,7 @@ window.Icons={
 <script src="../../workbench-lifecycle.js"></script>
 <script src="../../workbench-focus.js"></script>
 <script src="../../workbench-primitives.js"></script>
+<script src="../../workbench-profile.js"></script>
 <script src="../../workbench.js"></script>
 <script src="../../workbench-components.js"></script>
 <script src="../../item-filter.js"></script>
@@ -176,6 +177,16 @@ window.Icons={
   function sent(cmd){return __sent.filter(function(item){return item.cmd===cmd})}
   function row(key){return Array.prototype.find.call(document.querySelectorAll('.skills-library-row'),function(node){return node.getAttribute('data-skill-key')===key})}
   function clickModalConfirm(){var node=document.querySelector('.workbench-modal-action.primary');if(node)node.click();return!!node}
+  function helpCapability(){
+    var state=SkillsPanel.debugState();
+    return JSON.stringify({view:state.view,selectedKey:state.selectedKey,snapshotRevision:state.snapshotRevision,
+      loadoutConfirmationMode:state.loadoutConfirmationMode,coordinatorState:state.coordinator.state,
+      writes:['equip','unequip','moveSlot','reorder','setPassive','learnCommit'].map(function(cmd){return sent(cmd).length}),
+      rows:Array.prototype.map.call(document.querySelectorAll('.skills-library-row'),function(node){
+        return [node.getAttribute('data-skill-key'),node.getAttribute('aria-disabled'),
+          node.getAttribute('data-entity-inspectable'),node.getAttribute('data-entity-actionable')].join(':');
+      })});
+  }
   function setHost(init){init=Object.assign({canReturnTrainer:false,canReturnCharacterBuild:false},init||{});Object.assign(__host,init);
     Panels.open('skills',{panelInstanceId:__host.instance,view:__host.view,
       trainerSession:__host.view==='trainer'?__host.trainerSession:undefined,
@@ -184,7 +195,12 @@ window.Icons={
   try{
     Panels.init();setHost({instance:'inst-manage',view:'manage',snapshotDelay:0,invalidTrainer:false,canReturnTrainer:false,returnSession:null});
     await until(function(){return document.querySelectorAll('.skills-slot').length===12});
-    ok('manage mounts library plus action-strip workbench views',document.querySelector('[data-instance-key="skills:library"]')&&document.querySelector('[data-instance-key="skills:actions"]'));
+    var manageProfileShell=document.querySelector('.skills-panel');
+    ok('manage mounts library-action-strip views without horizontal shell overflow',
+      manageProfileShell&&manageProfileShell.getAttribute('data-profile')==='library-action-strip'
+        &&manageProfileShell.scrollWidth<=manageProfileShell.clientWidth+1
+        &&document.querySelector('[data-instance-key="skills:library"]')
+        &&document.querySelector('[data-instance-key="skills:actions"]'));
     var skillFrames=document.querySelectorAll('.skills-panel .workbench-slot'),skillMarkers=document.querySelectorAll('.skills-panel .workbench-slot-marker');
     ok('redundant L/R marker bars are visually removed while slot semantics remain',skillMarkers.length===2
       &&Array.prototype.every.call(skillMarkers,function(node){return getComputedStyle(node).display==='none'})
@@ -224,7 +240,8 @@ window.Icons={
     ok('skill selection patches the row in place while preserving overflowing library scroll and entity focus',skillScrollBefore>0&&Math.abs(skillScrollAfter-skillScrollBefore)<=1&&document.activeElement===skillScrollSelection&&skillScrollSelection===skillScrollTarget,
       JSON.stringify({before:skillScrollBefore,after:skillScrollAfter,focus:document.activeElement&&document.activeElement.getAttribute('data-skill-key')}));
     skillScrollProbe.style.cssText=skillScrollStyle;skillScrollProbe.scrollTop=0;row('闪现').click();
-    var beforeHelp=__sent.length,manageHelpButton=document.querySelector('.skills-help-btn');manageHelpButton.focus();manageHelpButton.click();
+    var beforeHelp=__sent.length,manageHelpCapabilityBefore=helpCapability(),manageHelpButton=document.querySelector('.skills-help-btn');manageHelpButton.focus();manageHelpButton.click();
+    var manageHelpCapabilityDuring=helpCapability();
     ok('manage help explains equip reorder keyboard fallback filters and search without transport',document.querySelector('.workbench-modal[data-modal-kind="skills-help"]')
       &&document.querySelector('.workbench-modal').getAttribute('aria-label')==='技能管理帮助'
       &&document.querySelector('.workbench-modal').textContent.indexOf('快捷槽可互相拖动')>=0
@@ -240,7 +257,12 @@ window.Icons={
     ok('help modal stays inside the smallest scaled panel canvas',helpRect.top>=panelRect.top-1&&helpRect.left>=panelRect.left-1
       &&helpRect.right<=panelRect.right+1&&helpRect.bottom<=panelRect.bottom+1);
     document.querySelector('.workbench-modal-action.primary').click();
+    var manageHelpCapabilityAfter=helpCapability();
     ok('closing help restores the header help-button focus',document.activeElement===manageHelpButton&&!document.querySelector('.workbench-modal'));
+    ok('shared Skills HelpAction preserves capability before during and after help',
+      manageHelpButton.getAttribute('data-header-action')==='help'
+        &&manageHelpCapabilityBefore===manageHelpCapabilityDuring
+        &&manageHelpCapabilityBefore===manageHelpCapabilityAfter);
     var layeredCloseCount=sent('close').length;manageHelpButton.click();
     (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(5);
     ok('panel ESC consumes the help modal before panel close',Panels.getActive()==='skills'
@@ -273,10 +295,15 @@ window.Icons={
     var slotTops=Array.prototype.map.call(document.querySelectorAll('.skills-slot'),function(node){return Math.round(node.getBoundingClientRect().top)});
     ok('manage presents the twelve shortcuts as one continuous skill band',Math.max.apply(Math,slotTops)-Math.min.apply(Math,slotTops)<=1);
     var densityToggle=document.querySelector('.skills-density-toggle');
+    var manageCompactSplit=getComputedStyle(manageProfileShell.querySelector('.workbench-body')).gridTemplateColumns;
+    densityToggle.querySelector('[data-layout-mode="full"]').click();
+    var manageFullSplit=getComputedStyle(manageProfileShell.querySelector('.workbench-body')).gridTemplateColumns;
+    densityToggle.querySelector('[data-layout-mode="compact"]').click();
     ok('density switch is explicitly scoped to the skill library',densityToggle.getAttribute('aria-label')==='技能库布局'
       &&densityToggle.querySelector('.item-grid-mode-label').textContent==='技能库'&&densityToggle.title.indexOf('快捷技能带保持固定')>=0
       &&densityToggle.querySelector('[data-layout-mode="compact"]').getAttribute('aria-pressed')==='true'
-      &&document.querySelector('.skills-panel').classList.contains('skills-density-compact'));
+      &&document.querySelector('.skills-panel').classList.contains('skills-density-compact')
+      &&manageFullSplit===manageCompactSplit);
     var firstSlot=document.querySelector('[data-slot="1"]'),firstSlotIcon=firstSlot.querySelector('.skills-slot-icon');
     var fixedSlotGeometry={width:firstSlot.offsetWidth,height:firstSlot.offsetHeight,icon:firstSlotIcon.offsetWidth};
     ok('hotbar uses fixed item-like square slots with larger readable icons',fixedSlotGeometry.width===64&&fixedSlotGeometry.height===64
@@ -487,7 +514,12 @@ window.Icons={
     setHost({instance:'inst-trainer-A',view:'trainer',trainerSession:'trainer-A',snapshotDelay:0});
     await until(function(){return SkillsPanel.debugState().view==='trainer'&&document.querySelector('.skills-trainer-actions')});await wait(110);
     ok('same-panel manage to trainer performs real rebind',Panels.getActive()==='skills'&&SkillsPanel.debugState().coordinator.panelInstanceId==='inst-trainer-A');
-    ok('late old-instance snapshot cannot overwrite trainer view',document.querySelector('.workbench-title').textContent==='技能研习'&&SkillsPanel.debugState().view==='trainer');
+    var trainerProfileShell=document.querySelector('.skills-panel');
+    ok('late old-instance snapshot cannot overwrite library-decision trainer view',
+      document.querySelector('.workbench-title').textContent==='技能研习'
+        &&SkillsPanel.debugState().view==='trainer'
+        &&trainerProfileShell.getAttribute('data-profile')==='library-decision'
+        &&trainerProfileShell.scrollWidth<=trainerProfileShell.clientWidth+1);
     ok('trainer omits the manage-only loadout confirmation control',!document.querySelector('.skills-confirmation-toggle')
       &&document.querySelector('.skills-density-toggle')&&SkillsPanel.debugState().loadoutConfirmationMode==='fast');
     ok('trainer consumes full projected entries',row('新手冲拳')&&document.querySelector('.skills-detail-meta').textContent.indexOf('MP')>=0);
@@ -503,13 +535,18 @@ window.Icons={
       &&document.querySelector('[data-metric="level"]')&&document.querySelector('[data-metric="sp"]')
       &&!document.querySelector('[data-metric="revision"]')
       &&document.querySelector('.skills-panel').textContent.indexOf('权威')<0);
-    document.querySelector('.skills-help-btn').click();
+    var trainerHelpCapabilityBefore=helpCapability();document.querySelector('.skills-help-btn').click();
+    var trainerHelpCapabilityDuring=helpCapability();
     ok('trainer help switches to learning rules and page navigation',document.querySelector('.workbench-modal').getAttribute('aria-label')==='技能研习帮助'
       &&document.querySelector('.workbench-modal').textContent.indexOf('自动计算消耗')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('第一次固定学习 1 级')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('“管理技能”')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('直接拖到目标槽位')<0);
     document.querySelector('.workbench-modal-action.primary').click();
+    var trainerHelpCapabilityAfter=helpCapability();
+    ok('trainer HelpAction leaves learning capability unchanged after close',
+      trainerHelpCapabilityBefore===trainerHelpCapabilityDuring
+        &&trainerHelpCapabilityBefore===trainerHelpCapabilityAfter);
     var wrongTrainerSession=authoritativeSnapshot('trainer');wrongTrainerSession.trainer.session='trainer-other';
     ok('trainer rejects a snapshot from another capability',SkillsPanel.validateSnapshot(wrongTrainerSession).ok===false);
     var previewCountBeforeSelection=sent('learnPreview').length;row('新手冲拳').click();
@@ -518,9 +555,12 @@ window.Icons={
     var preview=sent('learnPreview').slice(-1)[0];
     ok('selection automatically previews with trainer session revision and desired level',preview.payload.trainerSession==='trainer-A'&&preview.payload.desiredLevel===1&&Number.isInteger(preview.payload.expectedRevision));
     var validPreviewNode=document.querySelector('.skills-preview-result.ok');
+    var trainerCommit=document.querySelector('.skills-trainer-commit');
+    trainerCommit.focus();
     ok('valid preview fills cost, balance and requirements before enabling the sticky action',validPreviewNode.textContent.indexOf('160 → 155')>=0
       &&getComputedStyle(validPreviewNode).backgroundImage!=='none'
-      &&document.querySelectorAll('.skills-trainer-requirements .ok').length===3&&!document.querySelector('.skills-trainer-commit').disabled);
+      &&document.querySelectorAll('.skills-trainer-requirements .ok').length===3
+      &&!trainerCommit.disabled&&document.activeElement===trainerCommit);
     var previewCountBeforeFreshen=sent('learnPreview').length;await wait(170);document.querySelector('.skills-trainer-commit').click();
     await until(function(){return sent('learnPreview').length>previewCountBeforeFreshen&&document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')},300);
     ok('stale automatic preview is silently refreshed before confirmation',sent('learnPreview').length===previewCountBeforeFreshen+1);

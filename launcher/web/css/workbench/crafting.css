@@ -14,7 +14,6 @@
     --crafting-active-inset:inset 0 0 0 1px var(--dls-crystal-deep);
 }
 .crafting-panel .workbench-body {
-    grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr);
     gap:6px; padding:8px;
 }
 .crafting-panel .workbench-flow-rail { color:var(--wb-muted); }
@@ -41,6 +40,9 @@
     gap:7px;
 }
 .crafting-detail-body {
+    flex:1 1 auto;
+    min-height:0;
+    overflow:auto;
     scrollbar-gutter:stable;
     scrollbar-width:thin;
     scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
@@ -122,7 +124,7 @@
 }
 .crafting-output-inspect-trigger:hover,
 .crafting-output-inspect-trigger:focus-visible {
-    border-color:var(--dls-crystal); box-shadow:0 0 10px var(--dls-glow); outline:none;
+    border-color:var(--dls-crystal); box-shadow:0 0 10px var(--dls-glow);
 }
 .crafting-card-copy { min-width:0; flex:1 1 auto; display:flex; flex-direction:column; gap:3px; }
 .crafting-card-copy b,
@@ -130,7 +132,7 @@
 .crafting-card-copy small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .crafting-card-copy b { color:#f3f5f6; font:700 12px/1.2 "Microsoft YaHei",sans-serif; }
 .crafting-card-copy span { color:#939fa8; font:10px/1.2 "Microsoft YaHei",sans-serif; }
-.crafting-card-copy small { color:#c69b42; font:9px/1.2 Consolas,"Microsoft YaHei",sans-serif; }
+.crafting-card-copy small { color:var(--wb-accent); font:10px/1.25 "Microsoft YaHei",sans-serif; }
 .crafting-card-availability {
     flex:0 0 auto; align-self:flex-start; min-width:42px; padding:3px 5px;
     border:1px solid #505961; background:#11161a; color:#8d979f;
@@ -139,7 +141,7 @@
 .crafting-card-availability.ready {
     color:#a9dfa5; border-color:rgba(120,188,115,.55); background:rgba(74,130,70,.16);
 }
-.crafting-detail-body { min-height:0; overflow:auto; padding:10px 12px 14px; }
+.crafting-detail-body { padding:10px 12px 14px; }
 .crafting-detail-empty {
     height:100%; min-height:210px; display:grid; place-items:center;
     color:#68747e; font:12px/1.5 "Microsoft YaHei",sans-serif; text-align:center;
@@ -151,31 +153,38 @@
 }
 .crafting-output-card h2 { margin:0 0 5px; color:#dff9ff; font:700 16px/1.2 "Microsoft YaHei",sans-serif; }
 .crafting-output-card p { margin:0; color:#b4bdc2; font:10px/1.4 "Microsoft YaHei",sans-serif; }
-.crafting-quantity-control {
-    margin-top:8px; min-height:36px; padding:5px 7px;
-    display:grid; grid-template-columns:auto auto 1fr; align-items:center; gap:9px;
-    border:1px solid #244c57; background:#0d1519;
+.crafting-quantity-panel {
+    margin-top:8px;
+    min-height:82px;
+    padding:7px 9px;
+    display:grid;
+    grid-template-columns:minmax(92px,auto) minmax(0,1fr);
+    align-items:start;
+    gap:10px;
+    border:1px solid var(--wb-line);
+    background:var(--wb-surface);
 }
-.crafting-quantity-label { color:#9ba6ac; font:700 10px/1 "Microsoft YaHei",sans-serif; letter-spacing:.08em; }
-.crafting-quantity-stepper { display:inline-flex; min-height:26px; border:1px solid var(--dls-crystal-dim); background:#080c0f; }
-.crafting-quantity-btn {
-    min-width:28px; padding:0 7px; border:0; border-right:1px solid #1a2b33;
-    background:#0b1418; color:#bdf5ff; font:700 11px/1 Consolas,"Microsoft YaHei",sans-serif; cursor:pointer;
+.crafting-quantity-heading {
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    min-width:0;
+    color:var(--wb-muted);
+    font:700 11px/1.25 "Microsoft YaHei",sans-serif;
 }
-.crafting-quantity-btn:last-child { min-width:42px; border-right:0; }
-.crafting-quantity-btn:hover:not(:disabled) { background:#122932; color:#e5fbff; }
-.crafting-quantity-btn:disabled { color:#53585c; background:#0b0f12; cursor:default; }
-.crafting-quantity-value {
-    min-width:38px; display:grid; place-items:center; border-right:1px solid #1a2b33;
-    color:#bdf5ff; font:700 12px/1 Consolas,"Microsoft YaHei",sans-serif;
+.crafting-quantity-heading b { color:var(--wb-text); }
+.crafting-quantity-hint { color:var(--wb-muted); font:11px/1.3 "Microsoft YaHei",sans-serif; }
+.crafting-quantity-inputs {
+    width:100%;
+    grid-template-columns:28px minmax(46px,1fr) 28px 36px 48px;
+    justify-content:stretch;
 }
-.crafting-quantity-control small { color:#727e86; font:9px/1.2 "Microsoft YaHei",sans-serif; }
+.crafting-quantity-inputs button,
+.crafting-quantity-inputs .workbench-quantity-number,
+.crafting-quantity-inputs .workbench-quantity-scale,
+.crafting-quantity-inputs .workbench-quantity-feedback { font-size:11px; }
 
-/* 材料档案复用合成工作台的双栏骨架；左侧负责检索，右侧只读呈现来源与用途。 */
-.crafting-panel[data-crafting-view="materials"] .workbench-body {
-    grid-template-columns:minmax(0,44fr) 28px minmax(360px,56fr);
-    grid-template-rows:minmax(0,1fr);
-}
+/* 材料档案复用 archive-reference 骨架；左侧负责检索，右侧只读呈现来源与用途。 */
 .crafting-material-catalog-view,
 .crafting-material-detail-view {
     display:flex;
@@ -199,7 +208,6 @@
     background:#080c0f;
     border:1px solid rgba(var(--dls-crystal-rgb),.28);
     border-radius:0;
-    outline:none;
     font:10px/1 "Microsoft YaHei",sans-serif;
 }
 .crafting-material-search:focus {
@@ -211,7 +219,7 @@
     min-width:40px;
     height:27px;
     padding:0 6px;
-    font-size:9px;
+    font-size:11px;
 }
 .crafting-material-grid {
     flex:1 1 auto;
@@ -273,8 +281,8 @@
     text-overflow:ellipsis;
     white-space:nowrap;
 }
-.crafting-material-card-copy small { color:#aebcc2; font:9px/1.2 Consolas,"Microsoft YaHei",sans-serif; }
-.crafting-material-card-meta { color:#74858d; font:9px/1.2 "Microsoft YaHei",sans-serif; }
+.crafting-material-card-copy small { color:var(--wb-muted); font:10px/1.25 "Microsoft YaHei",sans-serif; }
+.crafting-material-card-meta { color:var(--wb-muted); font:10px/1.25 "Microsoft YaHei",sans-serif; }
 .crafting-material-card-owned { display:none; }
 .crafting-material-grid.item-grid-compact {
     grid-template-columns:repeat(7,minmax(0,1fr));
@@ -367,9 +375,9 @@
 }
 .crafting-material-source-list article { grid-template-columns:minmax(0,1fr); gap:2px; }
 .crafting-material-source-list b,
-.crafting-material-use-row b { color:#e0ecef; font:700 10px/1.25 "Microsoft YaHei",sans-serif; }
+.crafting-material-use-row b { color:var(--wb-text); font:700 11px/1.25 "Microsoft YaHei",sans-serif; }
 .crafting-material-source-list small,
-.crafting-material-use-row small { color:#819198; font:9px/1.35 "Microsoft YaHei",sans-serif; }
+.crafting-material-use-row small { color:var(--wb-muted); font:10px/1.4 "Microsoft YaHei",sans-serif; }
 .crafting-material-use-row {
     grid-template-columns:34px minmax(0,1fr);
     align-items:center;
@@ -385,11 +393,12 @@
 .crafting-material-use-row > span:last-child { display:flex; flex-direction:column; min-width:0; gap:2px; }
 .crafting-material-empty-copy { margin:0; color:#75848a; font:10px/1.5 "Microsoft YaHei",sans-serif; }
 .crafting-detail-view [data-title] { position:relative; }
-.crafting-detail-view [data-title]:hover::after {
+.crafting-detail-view [data-title]:hover::after,
+.crafting-detail-view [data-title]:focus-visible::after {
     content:attr(data-title); position:absolute; left:50%; bottom:calc(100% + 4px); transform:translateX(-50%);
-    padding:3px 6px; border:1px solid var(--dls-crystal-soft,#4a9fb3); border-radius:1px; background:#05080a; color:#d9faff;
-    font:9px/1.2 "Microsoft YaHei",sans-serif; white-space:nowrap; pointer-events:none; z-index:10;
-    box-shadow:0 0 8px rgba(var(--dls-crystal-rgb),.18);
+    padding:3px 6px; border:1px solid var(--wb-line); border-radius:1px; background:var(--wb-bg); color:var(--wb-text);
+    font:11px/1.25 "Microsoft YaHei",sans-serif; white-space:nowrap; pointer-events:none; z-index:10;
+    box-shadow:0 0 8px var(--dls-glow);
 }
 .crafting-material-list { margin-top:10px; }
 .crafting-material-list h3 { margin:0 0 6px; color:#9ba6ac; font:700 10px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.12em; }
@@ -402,7 +411,7 @@
 .crafting-material-row.bad { border-left:2px solid var(--wb-semantic-danger); }
 .crafting-material-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .crafting-material-copy b { color:#d8dfe3; font:600 11px/1.2 "Microsoft YaHei",sans-serif; }
-.crafting-material-copy small { color:#7f8b94; font:9px/1.2 Consolas,"Microsoft YaHei",sans-serif; }
+.crafting-material-copy small { color:var(--wb-muted); font:10px/1.25 "Microsoft YaHei",sans-serif; }
 .crafting-material-mark { color:var(--wb-semantic-success); font:700 10px/1 Consolas,"Microsoft YaHei",sans-serif; }
 .crafting-material-row.bad .crafting-material-mark { color:var(--wb-semantic-danger); }
 .crafting-material-empty { padding:18px; color:#66727b; text-align:center; border:1px dashed rgba(157,172,183,.2); }
@@ -415,16 +424,21 @@
 .crafting-capacity { margin-left:auto; }
 .crafting-capacity.ok { color:var(--wb-semantic-success); }
 .crafting-capacity.bad { color:var(--wb-semantic-danger); }
-.crafting-commit-status { margin:9px 0 6px; font:10px/1.3 "Microsoft YaHei",sans-serif; }
+.crafting-commit-bar {
+    flex:0 0 auto;
+    border-top-color:var(--wb-line);
+}
+.crafting-commit-status { font:11px/1.35 "Microsoft YaHei",sans-serif; }
 .crafting-commit-status.ok { color:var(--wb-semantic-success); }
 .crafting-commit-status.bad { color:var(--wb-semantic-danger); }
 .crafting-commit-btn {
-    width:100%; min-height:38px; border:1px solid var(--dls-crystal-deep); border-radius:0;
-    background:linear-gradient(180deg,rgba(var(--dls-crystal-rgb),.34),rgba(16,66,78,.72)); color:#d8f9ff;
+    min-width:148px; min-height:40px; border:1px solid var(--wb-focus); border-radius:0;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--wb-accent) 54%,var(--wb-surface)),var(--wb-accent)); color:var(--wb-bg);
     font:800 13px/1 "Microsoft YaHei",sans-serif; letter-spacing:.14em; cursor:pointer;
 }
-.crafting-commit-btn:hover:not(:disabled) { border-color:var(--dls-crystal); color:#fff; box-shadow:inset 0 0 18px rgba(var(--dls-crystal-rgb),.18),0 0 11px rgba(var(--dls-crystal-rgb),.22); }
-.crafting-commit-btn:disabled { border-color:#454e55; background:#252c31; color:#646e75; cursor:default; }
+.crafting-commit-btn:hover:not(:disabled),
+.crafting-commit-btn:focus-visible { border-color:var(--wb-focus); color:var(--wb-bg); box-shadow:inset 0 0 18px var(--wb-accent-soft),0 0 11px var(--dls-glow); }
+.crafting-commit-btn:disabled { border-color:var(--wb-line); background:var(--wb-surface-2); color:var(--wb-semantic-disabled); cursor:default; }
 
 /* Crafting right-pane chrome & divider convergence */
 .crafting-detail-view .workbench-view-chrome { padding:7px 9px 6px; background:rgba(5,8,10,.55); border-bottom:1px solid rgba(var(--dls-crystal-rgb),.18); }

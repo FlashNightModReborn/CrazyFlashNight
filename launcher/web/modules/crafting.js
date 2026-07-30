@@ -1,16 +1,18 @@
 /** 合成工作台 — 左侧配方目录，右侧 Flash 权威预览与一次性提交。 */
 var CraftingPanel = (function() {
     'use strict';
-    var _shellEl, _shell, _catalogView, _detailView, _catalogRenderer, _detailBody;
+    var _shellEl, _shell, _catalogView, _detailView, _catalogRenderer, _detailPresenter;
     var _mode = 'recipes', _materials = null, _materialRequestSeq = 0;
     var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
     var _busy = false, _previewBusy = false, _organizerBusy = false, _needsReconcile = false, _needsRefresh = false, _generation = 0;
-    var _scaleHandle = null, _retryButton = null, _organizerButton = null, _commitButton = null, _craftableToggle = null, _tooltipCache = {};
+    var _previewFlight = null, _previewQueued = null, _checkpointRetryIntent = null;
+    var _scaleHandle = null, _retryButton = null, _organizerButton = null, _craftableToggle = null, _tooltipCache = {};
     var _inspector = null, _tooltipScope = null;
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
     var _craftableOnly = false;
-    var _detailScrollTop = 0, _detailScrollLeft = 0;
     var _densityController = null, _helpAction = null;
+    var _returnCharacterBuildButton = null, _returnNavigationTimer = null;
+    var _panelInstanceId = '', _canReturnCharacterBuild = false;
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
     var _mux = new CraftingRuntime.RequestMux({
         send:function(message) { return Bridge.send(message); },
@@ -37,9 +39,11 @@ var CraftingPanel = (function() {
         if (_materials) { _materials.destroy(); _materials = null; }
         if (_densityController) { _densityController.destroy(); _densityController = null; }
         if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
+        if (_detailPresenter) { _detailPresenter.destroy(); _detailPresenter = null; }
         if (_shell) _shell.destroy();
         Workbench.clearElement(_shellEl);
         _shell = new Workbench.DualPaneShell({
+            profile:_mode === 'materials' ? 'archive-reference' : 'catalog-decision',
             title:_mode === 'materials' ? '材料档案' : (_category || '合成工作台'),
             subtitle:_mode === 'materials' ? '来源与用途' : '权威预览',
             status:'同步中',
@@ -76,6 +80,19 @@ var CraftingPanel = (function() {
                 root.setAttribute('data-layout-mode', mode);
             }));
         }
+        _returnCharacterBuildButton = null;
+        if (_canReturnCharacterBuild) {
+            _returnCharacterBuildButton = document.createElement('button');
+            _returnCharacterBuildButton.type = 'button';
+            _returnCharacterBuildButton.className =
+                'workbench-mode-btn crafting-return-character-btn';
+            _returnCharacterBuildButton.textContent = '← 返回装备';
+            _returnCharacterBuildButton.setAttribute(
+                'aria-label', '返回角色构筑装备并重新读取当前装备');
+            _returnCharacterBuildButton.addEventListener(
+                'click', requestCharacterBuild);
+            _shell.addHeaderAction(_returnCharacterBuildButton);
+        }
         _helpAction = new WorkbenchComponents.HelpAction({
             shell:_shell,
             spec:_mode === 'materials' ? {
@@ -89,8 +106,8 @@ var CraftingPanel = (function() {
             kind:'crafting-help',
             ariaLabel:'查看合成工作台帮助',
             title:'合成工作台帮助',
-            message:'选择配方后，右侧会显示权威材料、费用、容量与产物预览。批量配方可直接输入份数；最终结果以最近一次预览为准。',
-            detail:'“只看可合成”只在当前目录内筛选。“背包 / 战备箱”可暂时进入收纳界面，返回后会重新核算原配方。提交前请确认材料、费用和产物数量。',
+            message:'选择配方后，右侧会显示权威材料、费用、容量与产物预览。批量配方可用 − / +、+5、“最大”、数字输入或滑杆选择 1–99 份；核算期间仍可继续调整，提交会等最新份数核算完成。',
+            detail:'数字输入按 Enter 确认、按 Esc 撤回未确认文字。滑杆可用方向键逐份调整，Shift + 方向键每次 5 份，Page Up / Page Down 跨数量级，Home / End 到两端。“只看可合成”只筛选当前目录；“背包 / 战备箱”返回后会重新核算原配方。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
         }});
         var close = document.createElement('button');
@@ -101,7 +118,6 @@ var CraftingPanel = (function() {
 
         if (_mode === 'materials') {
             _catalogRenderer = null;
-            _detailBody = null;
             _craftableToggle = null;
             _materials = CraftingMaterials.create({
                 iconHtml:iconHtml,
@@ -152,16 +168,17 @@ var CraftingPanel = (function() {
     }
 
     function createDetailView() {
-        var root = document.createElement('div'); root.className = 'workbench-view crafting-detail-view';
-        var chrome = new Workbench.ViewChrome({title:'合成详情', kicker:'权威核算', meta:'请选择配方'});
-        _detailBody = document.createElement('div'); _detailBody.className = 'crafting-detail-body';
-        _detailScrollTop = 0; _detailScrollLeft = 0;
-        root.appendChild(chrome.root); root.appendChild(_detailBody);
-        return {instanceKey:'crafting:detail', instancePolicy:'singletonByBinding', allowedSlots:['R'],
-            viewKind:'detail', root:root, chrome:chrome,
-            mount:function(container) { container.appendChild(root); },
-            unmount:function() { if (root.parentNode) root.parentNode.removeChild(root); },
-            render:renderDetail};
+        _detailPresenter = new CraftingDetailPresenter.Presenter({
+            document:document,
+            iconHtml:iconHtml,
+            bindTooltip:bindTooltip,
+            renderMaterialRow:renderMaterialRow,
+            onInspect:openInspector,
+            onQuantityChange:setCraftCount,
+            onCommit:commitCraft,
+            onRender:renderDetail
+        });
+        return _detailPresenter.getView();
     }
 
     function renderRecipeCard(recipe) {
@@ -265,111 +282,160 @@ var CraftingPanel = (function() {
         renderDetail({preserveScroll:false}); requestPreview();
     }
 
-    function requestPreview(callback) {
-        if (_selectedIndex < 0 || !_category || _previewBusy) return false;
-        _previewBusy = true; refreshControls(); renderDetail();
-        var generation = _generation, requestedIndex = _selectedIndex, requestedCount = _craftCount;
-        return !!request('preview', {category:_category, recipeIndex:requestedIndex, craftCount:requestedCount}, function(response) {
-            if (generation !== _generation) return;
-            _previewBusy = false;
-            if (requestedIndex !== _selectedIndex || requestedCount !== _craftCount) {
-                renderDetail(); refreshControls(); requestPreview(); return;
-            }
-            if (response.success) {
-                _preview = response; rememberPreview(response, requestedIndex, requestedCount);
-                _needsReconcile = false; _needsRefresh = false; applyBalance(response.balance);
-            } else if (requiresReconcile(response)) {
-                _preview = null; clearPreviewCheckpoint(); _needsReconcile = true;
-                toast(errorMessage(response.error));
-            } else if (requiresAuthorityRefresh(response)) {
-                _preview = null; clearPreviewCheckpoint(); _needsRefresh = true;
-                toast(errorMessage(response.error));
-                renderDetail(); refreshControls();
-                refreshSnapshot(requestedIndex, requestedCount);
-                if (callback) callback(response);
-                return;
-            } else {
-                var restored = !_needsReconcile && restorePreviewCheckpoint(requestedIndex);
-                if (!restored) {
-                    _preview = null;
-                    if (!_needsReconcile) _needsRefresh = true;
-                }
-                toast(errorMessage(response.error));
-            }
-            renderDetail(); refreshControls(); if (callback) callback(response);
+    function requestPreview() {
+        if (_selectedIndex < 0 || !_category) return false;
+        var intent = {
+            generation:_generation,
+            category:_category,
+            recipeIndex:_selectedIndex,
+            craftCount:_craftCount,
+            revision:authorityRevision(_snapshot)
+        };
+        if (_previewFlight && samePreviewIntent(_previewFlight, intent)) {
+            // The latest desired value returned to the in-flight intent, so a
+            // superseded queued value must not run afterward and invalidate it.
+            _previewQueued = null;
+            return true;
+        }
+        if (_previewQueued && samePreviewIntent(_previewQueued, intent)) return true;
+        _previewQueued = intent;
+        _previewBusy = true;
+        renderDetail();
+        refreshControls();
+        dispatchPreviewIntent();
+        return true;
+    }
+
+    function dispatchPreviewIntent() {
+        if (_previewFlight || !_previewQueued) return false;
+        var intent = _previewQueued;
+        _previewQueued = null;
+        _previewFlight = intent;
+        request('preview', {
+            category:intent.category,
+            recipeIndex:intent.recipeIndex,
+            craftCount:intent.craftCount
+        }, function(response) {
+            completePreviewIntent(intent, response);
         });
+        return true;
+    }
+
+    function completePreviewIntent(intent, response) {
+        if (_previewFlight !== intent) return;
+        _previewFlight = null;
+        var isCurrent = intent.generation === _generation
+            && intent.category === _category
+            && intent.recipeIndex === _selectedIndex
+            && intent.craftCount === _craftCount
+            && sameIntentRevision(intent.revision, authorityRevision(_snapshot));
+        var exactResponse = !response.success || responseMatchesPreviewIntent(response, intent);
+
+        // Superseded read replies are deliberately silent: they cannot change
+        // the checkpoint, controls, focus, scroll, balance or player messaging.
+        if (!isCurrent || !exactResponse) {
+            if (_previewQueued) {
+                dispatchPreviewIntent();
+            } else {
+                _previewBusy = false;
+                renderDetail();
+                refreshControls();
+            }
+            return;
+        }
+
+        _previewBusy = !!_previewQueued;
+        var retryRestoredPreview = false;
+        if (response.success) {
+            _preview = response;
+            rememberPreview(response, intent.recipeIndex, intent.craftCount);
+            _needsReconcile = false;
+            _needsRefresh = false;
+            applyBalance(response.balance);
+        } else if (requiresReconcile(response)) {
+            _preview = null;
+            clearPreviewCheckpoint();
+            _needsReconcile = true;
+            toast(errorMessage(response.error));
+        } else if (requiresAuthorityRefresh(response)) {
+            _preview = null;
+            clearPreviewCheckpoint();
+            _needsRefresh = true;
+            toast(errorMessage(response.error));
+        } else {
+            if (!_needsReconcile && !restorePreviewCheckpoint(intent.recipeIndex)) {
+                _preview = null;
+            } else if (_preview && !previewMatchesCurrent()
+                    && !samePreviewIntent(_checkpointRetryIntent, intent)) {
+                _checkpointRetryIntent = Object.assign({}, intent);
+                retryRestoredPreview = true;
+            }
+            toast(errorMessage(response.error));
+        }
+        renderDetail();
+        refreshControls();
+        if (retryRestoredPreview) {
+            requestPreview();
+        } else if (_previewQueued && !_needsReconcile && !_needsRefresh) {
+            _previewBusy = true;
+            dispatchPreviewIntent();
+        } else if (isCurrent && exactResponse && !response.success
+                && requiresAuthorityRefresh(response)) {
+            refreshSnapshot(intent.recipeIndex, intent.craftCount);
+        }
     }
 
     function renderDetail(renderOptions) {
-        if (!_detailBody) return;
+        if (!_detailPresenter) return;
         renderOptions = renderOptions || {};
-        var preserveScroll = renderOptions.preserveScroll !== false;
-        if (!preserveScroll) { _detailScrollTop = 0; _detailScrollLeft = 0; }
-        else if (_detailBody.querySelector('.crafting-output-card')) {
-            _detailScrollTop = _detailBody.scrollTop; _detailScrollLeft = _detailBody.scrollLeft;
-        }
-        var previousScrollTop = _detailScrollTop;
-        var previousScrollLeft = _detailScrollLeft;
-        function restoreScroll() {
-            _detailBody.scrollTop = previousScrollTop;
-            _detailBody.scrollLeft = previousScrollLeft;
-        }
-        Workbench.clearElement(_detailBody);
-        if (_selectedIndex < 0) { appendEmpty('从左侧选择一项配方'); restoreScroll(); return; }
-        if (_previewBusy || !_preview) { appendEmpty(_previewBusy ? '正在向 Flash 核算材料与容量…' : '等待权威预览'); restoreScroll(); return; }
-        var output = _preview.output || {};
-        _detailView.chrome.setTitle(output.displayName || output.name || '合成详情', '权威核算');
-        _detailView.chrome.setMeta(_snapshot && _snapshot.note ? _snapshot.note : '提交前会再次校验');
+        var recipe = findRecipe(_selectedIndex);
+        var selected = !!recipe && _selectedIndex >= 0;
+        var preview = _preview;
+        var output = preview && preview.output;
+        var previewCurrent = previewMatchesCurrent();
+        var cost = preview && preview.cost || {};
+        var canCommit = !_busy && !_previewBusy && !_organizerBusy && !_needsReconcile && !_needsRefresh
+            && previewCurrent && preview.canCommit === true && !!preview.craftToken;
+        var commitStatus = detailCommitStatus(selected, preview, previewCurrent);
+        var commitState = canCommit ? 'ready'
+            : _needsReconcile || _needsRefresh || preview && preview.blockingError ? 'error'
+                : _previewBusy || _busy ? 'busy' : 'blocked';
+        var previewState = _needsReconcile || _needsRefresh ? 'error'
+            : _previewBusy ? 'updating'
+                : previewCurrent ? 'ready' : preview ? 'stale' : selected ? 'waiting' : 'empty';
+        var recipeOutput = recipe && recipe.output || {};
 
-        var hero = document.createElement('section'); hero.className = 'crafting-output-card';
-        var icon = document.createElement('button'); icon.type = 'button';
-        icon.className = 'crafting-output-icon crafting-output-inspect-trigger';
-        icon.setAttribute('aria-label', '检视 ' + String(output.displayName || output.name || '合成产物'));
-        icon.setAttribute('data-title', '打开装备检视器');
-        icon.innerHTML = iconHtml(output.icon || output.name, 'kshop-icon');
-        icon.addEventListener('click', function() { openInspector(output); });
-        bindTooltip(icon, output);
-        var copy = document.createElement('div'); copy.className = 'crafting-output-copy';
-        var title = document.createElement('h2'); title.textContent = output.displayName || output.name || '产物';
-        var value = document.createElement('p');
-        value.textContent = output.itemKind === 'equipment'
-            ? '装备强化 +' + Number(output.enhancementLevel || 1) + ' · 需求等级 ' + Number(output.requiredLevel || 0)
-            : '产出数量 ×' + Number(output.quantity || output.value || 1);
-        copy.appendChild(title); copy.appendChild(value); hero.appendChild(icon); hero.appendChild(copy);
-        _detailBody.appendChild(hero);
-        if (_preview.batchEligible) _detailBody.appendChild(renderQuantityControl());
-
-        var list = document.createElement('section'); list.className = 'crafting-material-list';
-        var heading = document.createElement('h3'); heading.textContent = '所需材料'; list.appendChild(heading);
-        var rows = _preview.materials || [];
-        if (!rows.length) {
-            var noMaterial = document.createElement('div'); noMaterial.className = 'crafting-material-empty';
-            noMaterial.textContent = '该配方不消耗材料'; list.appendChild(noMaterial);
-        }
-        rows.forEach(function(material) { list.appendChild(renderMaterialRow(material)); });
-        _detailBody.appendChild(list);
-
-        var summary = document.createElement('section'); summary.className = 'crafting-cost-summary';
-        var cost = _preview.cost || {};
-        summary.innerHTML = '<span>金币 <b>' + formatNumber(cost.money) + '</b></span>'
-            + '<span>K 点 <b>' + formatNumber(cost.kpoints) + '</b></span>'
-            + '<span class="crafting-capacity ' + (_preview.enoughSpace ? 'ok' : 'bad') + '">'
-            + (_preview.enoughSpace ? '容量可用' : '背包空间不足') + '</span>';
-        _detailBody.appendChild(summary);
-
-        var status = document.createElement('div');
-        status.className = 'crafting-commit-status ' + (_preview.canCommit ? 'ok' : 'bad');
-        status.textContent = _preview.canCommit
-            ? '条件满足，可安全提交 ' + Number(_preview.craftCount || 1) + ' 份'
-            : errorMessage(_preview.blockingError);
-        _detailBody.appendChild(status);
-        _commitButton = document.createElement('button'); _commitButton.type = 'button';
-        _commitButton.className = 'crafting-commit-btn'; _commitButton.textContent = _busy ? '提交中…' : '确认合成';
-        _commitButton.setAttribute('aria-label', '确认合成 ' + Number(_preview.craftCount || 1) + ' 份');
-        _commitButton.setAttribute('data-title', '确认合成');
-        _commitButton.disabled = _busy || _needsReconcile || _needsRefresh || !_preview.canCommit || !_preview.craftToken;
-        _commitButton.addEventListener('click', commitCraft); _detailBody.appendChild(_commitButton);
-        restoreScroll();
+        _detailPresenter.render({
+            preserveScroll:renderOptions.preserveScroll !== false,
+            selected:selected,
+            title:(output && (output.displayName || output.name))
+                || recipeOutput.displayName || recipeOutput.name || '合成详情',
+            kicker:'权威核算',
+            meta:_snapshot && _snapshot.note ? _snapshot.note : '提交前会再次校验',
+            emptyText:_previewBusy ? '正在向 Flash 核算材料与容量…' : '等待权威预览',
+            previewState:previewState,
+            pending:_previewBusy,
+            output:output || null,
+            outputSummary:output ? (output.itemKind === 'equipment'
+                ? '装备强化 +' + Number(output.enhancementLevel || 1)
+                    + ' · 需求等级 ' + Number(output.requiredLevel || 0)
+                : '产出数量 ×' + Number(output.quantity || output.value || 1)) : '',
+            materials:preview && preview.materials || [],
+            moneyText:formatNumber(cost.money),
+            kpointsText:formatNumber(cost.kpoints),
+            enoughSpace:!!(preview && preview.enoughSpace),
+            batchEligible:!!(recipe && recipe.batchEligible === true),
+            craftCount:_craftCount,
+            presetMax:preview ? Number(preview.maxCraftCount) || 0 : 0,
+            quantityDisabled:_busy || _organizerBusy || _needsReconcile || _needsRefresh,
+            canCommit:canCommit,
+            commitBusy:_busy || _previewBusy,
+            commitLabel:_busy ? '提交中…' : '确认合成',
+            commitStatus:commitStatus,
+            commitState:commitState,
+            commitAriaLabel:'确认合成 ' + _craftCount + ' 份',
+            commitTitle:'确认合成'
+        });
     }
 
     function openInspector(output) {
@@ -385,40 +451,78 @@ var CraftingPanel = (function() {
         return !!_inspector;
     }
 
-    function renderQuantityControl() {
-        var max = Math.max(0, Number(_preview.maxCraftCount) || 0);
-        var control = document.createElement('section'); control.className = 'crafting-quantity-control';
-        var label = document.createElement('span'); label.className = 'crafting-quantity-label'; label.textContent = '合成份数';
-        var group = document.createElement('div'); group.className = 'crafting-quantity-stepper';
-        var minus = quantityButton('−', '减少一份', function() { setCraftCount(_craftCount - 1); });
-        var value = document.createElement('output'); value.className = 'crafting-quantity-value';
-        value.value = String(_craftCount); value.textContent = String(_craftCount);
-        var plus = quantityButton('+', '增加一份', function() { setCraftCount(_craftCount + 1); });
-        var maximum = quantityButton('最大', '使用当前权威可合成上限', function() { if (max > 0) setCraftCount(max); });
-        minus.setAttribute('data-title', '减少一份');
-        plus.setAttribute('data-title', '增加一份');
-        maximum.setAttribute('data-title', '合成上限 ' + max + ' 份');
-        minus.disabled = _craftCount <= 1 || _busy || _previewBusy || _needsReconcile || _needsRefresh;
-        plus.disabled = max <= 0 || _craftCount >= max || _busy || _previewBusy || _needsReconcile || _needsRefresh;
-        maximum.disabled = max <= 0 || _craftCount === max || _busy || _previewBusy || _needsReconcile || _needsRefresh;
-        group.appendChild(minus); group.appendChild(value); group.appendChild(plus); group.appendChild(maximum);
-        var hint = document.createElement('small'); hint.textContent = max > 0 ? '当前最多 ' + max + ' 份' : '当前资源不足 1 份';
-        control.appendChild(label); control.appendChild(group); control.appendChild(hint); return control;
-    }
-
-    function quantityButton(text, ariaLabel, handler) {
-        var button = document.createElement('button'); button.type = 'button';
-        button.className = 'crafting-quantity-btn'; button.textContent = text;
-        button.setAttribute('aria-label', ariaLabel); button.addEventListener('click', handler); return button;
-    }
-
     function setCraftCount(value) {
-        if (_busy || _previewBusy || _needsReconcile || _needsRefresh || !_preview || !_preview.batchEligible) return false;
-        var max = Math.max(0, Number(_preview.maxCraftCount) || 0);
+        var recipe = findRecipe(_selectedIndex);
+        if (_busy || _organizerBusy || _needsReconcile || _needsRefresh
+                || !recipe || recipe.batchEligible !== true) return false;
         var next = Math.max(1, Math.min(99, Math.floor(Number(value) || 1)));
-        if (max > 0) next = Math.min(next, max);
         if (next === _craftCount) return false;
-        _craftCount = next; _preview = null; renderDetail(); requestPreview(); return true;
+        _craftCount = next;
+        requestPreview();
+        return true;
+    }
+
+    function samePreviewIntent(left, right) {
+        return !!left && !!right
+            && left.generation === right.generation
+            && left.category === right.category
+            && left.recipeIndex === right.recipeIndex
+            && left.craftCount === right.craftCount
+            && sameIntentRevision(left.revision, right.revision);
+    }
+
+    function authorityRevision(value) {
+        if (!value || typeof value !== 'object') return null;
+        var keys = ['revision', 'stateRevision', 'snapshotRevision'];
+        for (var i = 0; i < keys.length; i++) {
+            if (!Object.prototype.hasOwnProperty.call(value, keys[i])) continue;
+            var revision = Number(value[keys[i]]);
+            if (isFinite(revision)) return revision;
+        }
+        return null;
+    }
+
+    function sameIntentRevision(left, right) {
+        if (left == null || right == null) return left == null && right == null;
+        return Number(left) === Number(right);
+    }
+
+    function matchesExpectedRevision(expected, actual) {
+        return expected == null || actual != null && Number(expected) === Number(actual);
+    }
+
+    function responseMatchesPreviewIntent(response, intent) {
+        return !!response
+            && String(response.category || '') === intent.category
+            && Number(response.recipeIndex) === intent.recipeIndex
+            && Number(response.craftCount) === intent.craftCount
+            && matchesExpectedRevision(intent.revision, authorityRevision(response));
+    }
+
+    function previewMatchesCurrent() {
+        if (!_preview) return false;
+        return responseMatchesPreviewIntent(_preview, {
+            category:_category,
+            recipeIndex:_selectedIndex,
+            craftCount:_craftCount,
+            revision:authorityRevision(_snapshot)
+        });
+    }
+
+    function detailCommitStatus(selected, preview, previewCurrent) {
+        if (!selected) return '请先选择配方';
+        if (_needsReconcile) return '状态需要重新核对，暂不可提交';
+        if (_needsRefresh) return '配方状态已变化，正在重新同步';
+        if (_busy) return '正在提交，请稍候';
+        if (_previewBusy) return '正在核算 ' + _craftCount + ' 份；仍可调整数量';
+        if (!preview) return '等待权威预览';
+        if (!previewCurrent) {
+            return '上次核算为 ' + Number(preview.craftCount || 1)
+                + ' 份；当前 ' + _craftCount + ' 份尚未核算';
+        }
+        return preview.canCommit
+            ? '条件满足，可安全提交 ' + _craftCount + ' 份'
+            : errorMessage(preview.blockingError);
     }
 
     function renderMaterialRow(material) {
@@ -441,7 +545,8 @@ var CraftingPanel = (function() {
     }
 
     function commitCraft() {
-        if (_busy || _needsReconcile || _needsRefresh || !_preview || !_preview.canCommit || !_preview.craftToken) return;
+        if (_busy || _previewBusy || _needsReconcile || _needsRefresh || !previewMatchesCurrent()
+                || !_preview.canCommit || !_preview.craftToken) return;
         _busy = true; refreshControls(); renderDetail();
         var preferred = _selectedIndex, preferredCount = _craftCount;
         var issuing = true;
@@ -552,7 +657,7 @@ var CraftingPanel = (function() {
 
     function openOrganizer() {
         if (_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh || !_category) return false;
-        _organizerBusy = true; refreshControls();
+        _organizerBusy = true; renderDetail(); refreshControls();
         var generation = _generation;
         return !!request('snapshot', {category:_category}, function(response) {
             if (generation !== _generation) return;
@@ -580,11 +685,6 @@ var CraftingPanel = (function() {
         balance = balance || {};
         _shell.setMetric('money', '金币', formatNumber(balance.money));
         _shell.setMetric('kpoints', 'K 点', formatNumber(balance.kpoints));
-    }
-
-    function appendEmpty(text) {
-        var empty = document.createElement('div'); empty.className = 'crafting-detail-empty';
-        empty.textContent = text; _detailBody.appendChild(empty);
     }
 
     function refreshControls() {
@@ -615,7 +715,6 @@ var CraftingPanel = (function() {
         if (_organizerButton) _organizerButton.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh;
         if (_filterNavigator) _filterNavigator.setDisabled(_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh);
         if (_craftableToggle) _craftableToggle.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh;
-        if (_commitButton) _commitButton.disabled = _busy || _needsReconcile || _needsRefresh || !_preview || !_preview.canCommit || !_preview.craftToken;
     }
 
     function onOpen(el, initData) {
@@ -624,14 +723,22 @@ var CraftingPanel = (function() {
         if (_tooltipScope) _tooltipScope.dispose();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('crafting') : null;
-        _mode = initData && initData.view === 'materials' ? 'materials' : 'recipes';
+        initData = initData || {};
+        _mode = initData.view === 'materials' ? 'materials' : 'recipes';
+        _panelInstanceId = typeof initData.panelInstanceId === 'string'
+            ? initData.panelInstanceId : '';
+        _canReturnCharacterBuild = _mode === 'materials'
+            && initData.canReturnCharacterBuild === true
+            && initData.navigationOrigin === 'character_build'
+            && !!_panelInstanceId;
         var nextCategory = _mode === 'materials'
-            ? '' : (initData && typeof initData.category === 'string' ? initData.category : '');
+            ? '' : (typeof initData.category === 'string' ? initData.category : '');
         if (nextCategory !== _category) { _filterPath = []; _craftableOnly = false; }
         _category = nextCategory;
         var preferredIndex = initData && Number(initData.preferredRecipeIndex);
         var preferredCount = initData && Number(initData.preferredCraftCount);
         _snapshot = null; _preview = null; clearPreviewCheckpoint(); _selectedIndex = -1; _busy = false; _previewBusy = false;
+        _previewFlight = null; _previewQueued = null;
         _craftCount = 1; _organizerBusy = false; _needsReconcile = false; _needsRefresh = false; _tooltipCache = {}; buildDOM();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
@@ -642,6 +749,11 @@ var CraftingPanel = (function() {
 
     function cleanup() {
         _generation++; _materialRequestSeq++; _mux.closeSession();
+        if (_returnNavigationTimer !== null) {
+            clearTimeout(_returnNavigationTimer);
+            _returnNavigationTimer = null;
+        }
+        _previewFlight = null; _previewQueued = null;
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         if (_shell) _shell.closeModal();
         _inspector = null;
@@ -651,7 +763,11 @@ var CraftingPanel = (function() {
         if (_materials) { _materials.destroy(); _materials = null; }
         if (_densityController) { _densityController.destroy(); _densityController = null; }
         if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
+        if (_detailPresenter) { _detailPresenter.destroy(); _detailPresenter = null; }
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
+        _returnCharacterBuildButton = null;
+        _panelInstanceId = '';
+        _canReturnCharacterBuild = false;
     }
 
     function disposeFilterNavigator() {
@@ -669,6 +785,37 @@ var CraftingPanel = (function() {
             return false;
         }
         Panels.close();
+        return true;
+    }
+
+    function requestCharacterBuild() {
+        if (!_canReturnCharacterBuild || !_panelInstanceId
+                || !_returnCharacterBuildButton) return false;
+        if (_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh) {
+            toast('材料档案正在确认状态，请稍候。');
+            return false;
+        }
+        _returnCharacterBuildButton.disabled = true;
+        _returnCharacterBuildButton.textContent = '返回中…';
+        if (Bridge.send({
+                type:'panel',
+                panel:'crafting',
+                cmd:'close',
+                panelInstanceId:_panelInstanceId,
+                reason:'navigate_character_build'
+            }) === false) {
+            _returnCharacterBuildButton.disabled = false;
+            _returnCharacterBuildButton.textContent = '← 返回装备';
+            toast('启动器连接不可用，暂时无法返回装备。');
+            return false;
+        }
+        _returnNavigationTimer = setTimeout(function() {
+            _returnNavigationTimer = null;
+            if (!_returnCharacterBuildButton) return;
+            _returnCharacterBuildButton.disabled = false;
+            _returnCharacterBuildButton.textContent = '← 返回装备';
+            toast('返回装备未完成，请重试。');
+        }, 4000);
         return true;
     }
 
@@ -697,15 +844,19 @@ var CraftingPanel = (function() {
 
     function rememberPreview(response, recipeIndex, craftCount) {
         _previewCheckpoint = {category:_category, recipeIndex:Number(recipeIndex), craftCount:Number(craftCount), preview:response};
+        _checkpointRetryIntent = null;
     }
 
     function restorePreviewCheckpoint(recipeIndex) {
         var checkpoint = _previewCheckpoint;
         if (!checkpoint || checkpoint.category !== _category || checkpoint.recipeIndex !== Number(recipeIndex)) return false;
-        _craftCount = checkpoint.craftCount; _preview = checkpoint.preview; applyBalance(_preview.balance); return true;
+        _preview = checkpoint.preview; applyBalance(_preview.balance); return true;
     }
 
-    function clearPreviewCheckpoint() { _previewCheckpoint = null; }
+    function clearPreviewCheckpoint() {
+        _previewCheckpoint = null;
+        _checkpointRetryIntent = null;
+    }
 
     function requiresReconcile(response) {
         return !!(response && response.requiresReconcile) || (response && response.error) === 'reconcile_required';
@@ -763,10 +914,19 @@ var CraftingPanel = (function() {
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, organizerBusy:_organizerBusy,
         needsReconcile:_needsReconcile, needsRefresh:_needsRefresh,
+        previewFlight:_previewFlight ? {recipeIndex:_previewFlight.recipeIndex, craftCount:_previewFlight.craftCount} : null,
+        previewQueued:_previewQueued ? {recipeIndex:_previewQueued.recipeIndex, craftCount:_previewQueued.craftCount} : null,
+        checkpointRetry:_checkpointRetryIntent ? {
+            recipeIndex:_checkpointRetryIntent.recipeIndex,
+            craftCount:_checkpointRetryIntent.craftCount
+        } : null,
         previewCheckpoint:_previewCheckpoint ? {category:_previewCheckpoint.category,
             recipeIndex:_previewCheckpoint.recipeIndex, craftCount:_previewCheckpoint.craftCount} : null,
         gender:_snapshot && _snapshot.gender,
         inspector:_inspector && _inspector.debugState ? _inspector.debugState() : null,
         materials:_materials && _materials.debugState ? _materials.debugState() : null,
+        detail:_detailPresenter && _detailPresenter.debugState ? _detailPresenter.debugState() : null,
+        canReturnCharacterBuild:_canReturnCharacterBuild,
+        panelInstanceId:_panelInstanceId,
         mux:_mux.debugState()}; }};
 })();

@@ -26,7 +26,7 @@ $longGunSkillSource = Get-RepoText `
     'scripts\逻辑\单位函数\单位函数_雾人_aka_fs_主动战技.as'
 $drugWriter = [regex]::Match(
     $drugInputSource,
-    'public static function updateSlot\([\s\S]*?\n    public static function syncView'
+    'public static function updateSlot\([\s\S]*?\r?\n    public static function syncView'
 ).Value
 $submitWriter = [regex]::Match(
     $itemUtilSource,
@@ -38,7 +38,7 @@ $grenadeWriter = [regex]::Match(
 ).Value
 $readinessProbe = [regex]::Match(
     $characterBuildSource,
-    'public static function canOpenPanel\(\):Boolean \{[\s\S]*?\n    \}\n\n    /\*\*\n     \* 建立新的观察基线'
+    'public static function canOpenPanel\(\):Boolean \{[\s\S]*?\r?\n    \}\r?\n\r?\n    /\*\*\r?\n     \* 建立新的观察基线'
 ).Value
 $grenadeDirtyCount = [regex]::Matches(
     $grenadeWriter,
@@ -101,11 +101,11 @@ $characterBuildProtocolSource = Get-RepoText `
     'launcher\src\Guardian\CharacterBuildProtocol.cs'
 $productionResolver = [regex]::Match(
     $characterBuildHostSource,
-    'private static bool TryResolveProductionCommand[\s\S]*?\n        private bool TryNormalizeProductionPayload'
+    'private static bool TryResolveProductionCommand[\s\S]*?\r?\n        private bool TryNormalizeProductionPayload'
 ).Value
 $mutationResolver = [regex]::Match(
     $characterBuildProtocolSource,
-    'internal static bool TryResolveMutationAction[\s\S]*?\n        internal static bool TryNormalizeMutationPayload'
+    'internal static bool TryResolveMutationAction[\s\S]*?\r?\n        internal static bool TryNormalizeMutationPayload'
 ).Value
 $combinedResolvers = $productionResolver + "`n" + $mutationResolver
 $resolvedWebActions = [regex]::Matches(
@@ -172,11 +172,11 @@ $saveManagerSource = Get-RepoText `
     'scripts\类定义\org\flashNight\neur\Server\SaveManager.as'
 $flushNowBody = [regex]::Match(
     $saveManagerSource,
-    'public function flushNow\(\):Boolean \{[\s\S]*?\n    \}'
+    'public function flushNow\(\):Boolean \{[\s\S]*?\r?\n    \}'
 ).Value
 $debounceBody = [regex]::Match(
     $saveManagerSource,
-    'private function _onDebounceFire\(\):Void \{[\s\S]*?\n    \}'
+    'private function _onDebounceFire\(\):Void \{[\s\S]*?\r?\n    \}'
 ).Value
 if (($flushNowBody -notmatch
         'pushUiState\("sv:1"\)[\s\S]*?允许存档\s*!==\s*true') -or
@@ -213,7 +213,7 @@ if (($lootFenceIndex -lt 0) -or ($buildFenceIndex -le $lootFenceIndex) -or
 
 $openMaterialUi = [regex]::Match(
     $uiManagerSource,
-    '_root\.gameCommands\["openMaterialUI"\]\s*=\s*function\(\)\s*\{(?<body>[\s\S]*?)\r?\n\};'
+    '_root\.gameCommands\["openMaterialUI"\]\s*=\s*function\(params\)\s*\{(?<body>[\s\S]*?)\r?\n\};'
 )
 $openEquipUi = [regex]::Match(
     $uiManagerSource,
@@ -221,7 +221,11 @@ $openEquipUi = [regex]::Match(
 )
 if ((-not $openMaterialUi.Success) -or
         ($openMaterialUi.Groups['body'].Value -notmatch
-            'CraftingPanelService\.openMaterialsPanel\("nativehud_materials"\)') -or
+            'missingOpenRequestId:Boolean[\s\S]*?typeof\(params\.openRequestId\)\s*==\s*"undefined"') -or
+        ($openMaterialUi.Groups['body'].Value -notmatch
+            'CraftingPanelService\.openMaterialsPanel\(\s*"nativehud_materials"\s*\)') -or
+        ($openMaterialUi.Groups['body'].Value -notmatch
+            'CraftingPanelService\.openMaterialsPanel\(\s*"nativehud_materials"\s*,\s*params\.openRequestId\s*\)') -or
         ($openMaterialUi.Groups['body'].Value -match
             '__legacyMaterialOnly|物品栏界面|gotoAndStop') -or
         (-not $openEquipUi.Success) -or
@@ -251,11 +255,11 @@ Write-Host '[STATIC_PASS] Web material route and legacy inventory navigation sep
 
 $socketRetainBody = [regex]::Match(
     $characterBuildSource,
-    'public static function reconcileSocketDetach\(\):Object \{[\s\S]*?\n    \}'
+    'public static function reconcileSocketDetach\(\):Object \{[\s\S]*?\r?\n    \}'
 ).Value
 $exactRecoveryBody = [regex]::Match(
     $characterBuildSource,
-    'private static function recoverExactAuthority\(\):Object \{[\s\S]*?\n    \}'
+    'private static function recoverExactAuthority\(\):Object \{[\s\S]*?\r?\n    \}'
 ).Value
 if (($socketRetainBody -notmatch
         'retainCapturedPause\s*\(\s*"socket_detach"\s*\)') -or

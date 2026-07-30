@@ -18,13 +18,12 @@
     border-top:1px solid rgba(var(--dls-crystal-rgb),.16);
 }
 .equipment-inspector-source { color:var(--dls-crystal-bright); font:700 11px/1.2 "Microsoft YaHei",sans-serif; }
-.equipment-inspector-help { color:var(--wb-muted); font:9px/1.2 "Microsoft YaHei",sans-serif; white-space:nowrap; }
+.equipment-inspector-help { color:var(--wb-muted); font:10px/1.25 "Microsoft YaHei",sans-serif; white-space:nowrap; }
 .equipment-inspector-viewport {
     position:relative; width:100%; height:338px; overflow:hidden; box-sizing:border-box;
     border:1px solid var(--dls-crystal-dim); background:var(--wb-panel);
-    cursor:grab; touch-action:none; user-select:none; outline:none;
+    cursor:grab; touch-action:none; user-select:none;
 }
-.equipment-inspector-viewport:focus-visible { border-color:var(--dls-crystal); box-shadow:inset 0 0 0 1px var(--dls-crystal-deep); }
 .equipment-inspector-viewport.is-dragging { cursor:grabbing; }
 .equipment-inspector-checker {
     position:absolute; inset:0; pointer-events:none;
@@ -63,14 +62,11 @@
 }
 .equipment-inspector-control:hover:not(:disabled),
 .equipment-inspector-control:focus-visible {
-    border-color:var(--dls-crystal); color:var(--wb-text); background:var(--dls-crystal-soft); outline:none;
+    border-color:var(--dls-crystal); color:var(--wb-text); background:var(--dls-crystal-soft);
 }
 .equipment-inspector-control:disabled { color:var(--wb-semantic-disabled); border-color:var(--wb-semantic-disabled); cursor:default; }
 .equipment-inspector-status {
     min-width:42px; height:30px; display:grid; place-items:center;
     color:var(--wb-text); border-block:1px solid var(--dls-crystal-dim);
     font:700 10px/1 Consolas,sans-serif;
-}
-@media (prefers-reduced-motion: reduce) {
-    .equipment-inspector-stage { transition:none; }
 }

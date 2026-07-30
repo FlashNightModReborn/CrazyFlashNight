@@ -7,7 +7,11 @@
         ? require('../equipment-tuning-model.js') : root && root.EquipmentTuningModel;
     var actionView = typeof module !== 'undefined' && module.exports
         ? require('./character-build-action-view.js') : root && root.CharacterBuildActionView;
-    var api = factory(tuningView, tuningModel, actionView, root);
+    var sourceMarker = typeof module !== 'undefined' && module.exports
+        ? require('../equipment-tuning-source-marker.js') : root && root.EquipmentTuningSourceMarker;
+    var tuningAdapter = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-tuning-adapter.js') : root && root.CharacterBuildTuningAdapter;
+    var api = factory(tuningView, tuningModel, actionView, sourceMarker, tuningAdapter, root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -15,7 +19,8 @@
         root.CharacterBuildTuning = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, global) {
+function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView,
+        EquipmentTuningSourceMarker, TuningAdapter, global) {
     'use strict';
     if (!EquipmentTuningModel || !EquipmentTuningModel.normalizeTuningSource) {
         throw new Error('CharacterBuildTuning requires EquipmentTuningModel');
@@ -23,28 +28,11 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
     if (!CharacterBuildActionView || !CharacterBuildActionView.tuningCapability) {
         throw new Error('CharacterBuildTuning requires CharacterBuildActionView');
     }
-    function findLoadoutItem(payload, slotKey) {
-        var rows = payload && payload.equipment || [];
-        for (var i = 0; i < rows.length; i++) {
-            if (rows[i] && rows[i].slotKey === slotKey && rows[i].occupied === true
-                    && rows[i].item) return rows[i].item;
-        }
-        return null;
+    if (!EquipmentTuningSourceMarker || !TuningAdapter
+            || !TuningAdapter.CandidateFlow) {
+        throw new Error('CharacterBuildTuning requires source marker and candidate flow');
     }
-    function findEquipment(payload, slotKey) {
-        var item = findLoadoutItem(payload, slotKey);
-        return CharacterBuildActionView.tuningCapability(item).available ? item : null;
-    }
-
-    function sourceFor(session, slotKey) {
-        var state = session && session.debugState ? session.debugState() : null;
-        return EquipmentTuningModel.normalizeTuningSource({
-            sourceKind:'loadout',
-            sessionGeneration:state && state.sessionGeneration,
-            slotKey:String(slotKey || ''),
-            expectedLoadoutRevision:state && state.loadoutRevision
-        });
-    }
+    var findEquipment = TuningAdapter.findEquipment, sourceFor = TuningAdapter.loadoutSourceFor;
 
     function CharacterBuildTuning(options) {
         options = options || {};
@@ -65,9 +53,15 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         this._paneLabelledBy = ''; this._mount = null; this._root = null;
         this._tuningView = null; this._writeHandle = null; this._returnState = null;
         this._inspector = null;
-        this._scrollRestoreGeneration = 0;
         this._exitGeneration = 0;
         this._density = options.density === 'compact' ? 'compact' : 'full';
+        this._candidateFlow = new TuningAdapter.CandidateFlow({
+            session:this._session,
+            view:this._buildView,
+            ports:this._ports,
+            projectCandidates:options.projectCandidates || function() { return []; },
+            invalidateTooltip:options.invalidateCandidateTooltip
+        });
     }
 
     CharacterBuildTuning.prototype._createPane = function(item) {
@@ -75,7 +69,9 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         var root = document.createElement('section');
         root.className = 'character-build-tuning-shell';
         root.innerHTML = '<header class="character-build-tuning-heading">'
-            + '<div class="character-build-tuning-title"><span>当前装备调制</span><h2></h2></div><div class="character-build-tuning-tools"><div data-build-density-mount></div><button type="button" data-build-tuning-return>← 返回候选</button></div></header>'
+            + '<div class="character-build-tuning-title"><span>'
+            + (this._candidateFlow.isActive() ? '候选装备调制' : '当前装备调制')
+            + '</span><h2></h2></div><div class="character-build-tuning-tools"><div data-build-density-mount></div><button type="button" data-build-tuning-return>← 返回候选</button></div></header>'
             + '<div class="character-build-tuning-mount"></div>';
         root.querySelector('h2').textContent = String(item.displayName || item.name || this._slotKey);
         var self = this;
@@ -103,24 +99,23 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
             this._paneChildren[i].setAttribute('inert', '');
         }
         pane.removeAttribute('aria-labelledby');
-        pane.setAttribute('aria-label', '当前装备调制');
+        pane.setAttribute('aria-label',
+            this._candidateFlow.isActive() ? '候选装备调制' : '当前装备调制');
         pane.setAttribute('data-build-pane', 'tuning');
         pane.classList.add('character-build-tuning-pane');
         this._buildView.root.setAttribute('data-build-subview', 'tuning');
         return true;
     };
     CharacterBuildTuning.prototype._syncLoadoutSlots = function() {
-        if (!this._active) return false;
-        var nodes = this._buildView.root.querySelectorAll('.character-build-slot');
-        var locked = !this._tuningView || !this._tuningView.canClose();
-        for (var i = 0; i < nodes.length; i++) {
-            var eligible = nodes[i].getAttribute('data-slot-kind') !== 'drug'
-                && nodes[i].getAttribute('data-empty') !== 'true'
-                && nodes[i].getAttribute('data-blocked') !== 'true';
-            nodes[i].disabled = locked || !eligible;
-            nodes[i].setAttribute('aria-disabled', nodes[i].disabled ? 'true' : 'false');
-        }
-        if (this._buildView.refreshSlotNavigation) this._buildView.refreshSlotNavigation();
+        if (!this._buildView.root.querySelectorAll) return false;
+        var loadoutActive = this._active && !this._candidateFlow.isActive();
+        var locked = loadoutActive && (!this._tuningView || !this._tuningView.canClose());
+        EquipmentTuningSourceMarker.projectLoadout(
+            this._buildView.root,
+            loadoutActive ? this._slotKey : '',
+            loadoutActive ? locked : null
+        );
+        if (this._active && this._buildView.refreshSlotNavigation) this._buildView.refreshSlotNavigation();
         return true;
     };
     CharacterBuildTuning.prototype._notifyStateChange = function() {
@@ -135,44 +130,39 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         this._notifyStateChange();
         return handle;
     };
-    CharacterBuildTuning.prototype._completeWrite = function(handle, _, callback) {
+    CharacterBuildTuning.prototype._completeWrite = function(handle, needsRefresh, callback) {
         if (!handle || handle !== this._writeHandle) return false;
-        var completed = this._ports.completeExternalWrite
-            ? this._ports.completeExternalWrite(handle, null) : true;
-        if (!completed) return false;
-        this._writeHandle = null;
-        this._notifyStateChange();
-        if (callback) callback({success:true, refreshed:false});
-        return true;
+        var self = this;
+        function complete(result) {
+            if (handle !== self._writeHandle) return;
+            self._writeHandle = null;
+            self._notifyStateChange();
+            if (callback) callback(result);
+        }
+        var completed = this._candidateFlow.isActive()
+            ? this._candidateFlow.completeWrite(handle, !!needsRefresh, complete)
+            : this._ports.completeExternalWrite
+                ? this._ports.completeExternalWrite(handle, null, complete, false)
+                : (complete({success:true, refreshed:false}), true);
+        if (!completed && handle === this._writeHandle) {
+            this._writeHandle = null;
+            this._notifyStateChange();
+        }
+        return !!completed;
+    };
+    CharacterBuildTuning.prototype._refreshInventory = function(callback) { return this._candidateFlow.refreshInventory(callback); };
+    CharacterBuildTuning.prototype._resolveCandidateSlot = function(containerId, slot) {
+        return this._candidateFlow.resolveSlot(containerId, slot);
     };
     CharacterBuildTuning.prototype._refreshLoadout = function(source, callback) {
-        var requestedSource = EquipmentTuningModel.normalizeTuningSource(source);
-        var currentSource = sourceFor(this._session, this._slotKey);
-        if (!this._active || !requestedSource || !this._entrySource
-                || !EquipmentTuningModel.sameLoadoutIdentity(
-                    requestedSource, this._entrySource)
-                || !EquipmentTuningModel.sameLoadoutIdentity(
-                    currentSource, this._entrySource)
-                || this._session.getState() !== 'idle') return false;
         var self = this;
-        var callId = this._session.refreshSnapshot(function(response, accepted) {
-            if (!self._active) return;
-            if (!accepted || !response || !response.payload) {
-                callback({success:false, error:response && response.error || 'loadout_snapshot_failed'});
-                return;
-            }
-            var nextSource = sourceFor(self._session, self._slotKey);
-            var item = findEquipment(response.payload, self._slotKey);
-            if (!nextSource || !EquipmentTuningModel.sameLoadoutIdentity(
-                    nextSource, self._entrySource) || !item) {
-                callback({success:false, error:'loadout_projection_incomplete'});
-                return;
-            }
-            self._adoptSnapshot(response.payload, false);
-            self._syncLoadoutSlots();
-            callback({success:true, source:nextSource, item:item});
-        });
-        return !!callId;
+        return TuningAdapter.refreshLoadout({
+            session:this._session, slotKey:this._slotKey,
+            entrySource:this._entrySource,
+            active:function() { return self._active; },
+            adopt:function(payload) { self._adoptSnapshot(payload, false); },
+            sync:function() { self._syncLoadoutSlots(); }
+        }, source, callback);
     };
     CharacterBuildTuning.prototype._openInspector = function(item, gender, role) {
         var shell = this._ports.shell;
@@ -206,19 +196,18 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         else if (controller.destroy) controller.destroy();
         return true;
     };
-    CharacterBuildTuning.prototype.enter = function(slotKey, item, panelInstanceId) {
-        var source = sourceFor(this._session, slotKey);
+    CharacterBuildTuning.prototype._enter = function(
+            slotKey, item, panelInstanceId, source, inventorySlot) {
         if (!this._tuningModule || !this._tuningModule.create || this._active
                 || !source || !CharacterBuildActionView.tuningCapability(item).available
                 || this._session.getState() !== 'idle' || !String(panelInstanceId || '')) return false;
-        this._scrollRestoreGeneration++;
-        var scroll = this._buildView.root.querySelector('.character-build-candidate-scroll');
-        this._returnState = {
-            slotKey:'armor:' + slotKey,
-            scrollTop:scroll ? scroll.scrollTop : 0
-        };
-        if (this._buildView.getSelectedSlotKey().indexOf('weapon:') === 0) {
-            this._returnState.slotKey = 'weapon:' + slotKey;
+        if (!inventorySlot) {
+            var scroll = this._buildView.root.querySelector('.character-build-candidate-scroll');
+            this._returnState = {
+                slotKey:(this._buildView.getSelectedSlotKey().indexOf('weapon:') === 0
+                    ? 'weapon:' : 'armor:') + slotKey,
+                scrollTop:scroll ? scroll.scrollTop : 0
+            };
         }
         this._slotKey = String(slotKey);
         this._entrySource = source;
@@ -234,6 +223,8 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
             sessionNonce:this._sessionNonce,
             beginWrite:this._beginWrite.bind(this),
             completeWrite:this._completeWrite.bind(this),
+            refreshInventory:this._refreshInventory.bind(this),
+            resolveSlot:this._resolveCandidateSlot.bind(this),
             refreshLoadout:this._refreshLoadout.bind(this),
             onStateChange:this._notifyStateChange.bind(this),
             toast:this._ports.toast || function() {}
@@ -245,7 +236,9 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         this._tuningView = this._tuningModule.create(options);
         this._tuningView.mount(this._mount);
         if (!this._tuningView.openSession(this._panelInstanceId)
-                || !this._tuningView.handleLoadoutSelection(source, item)) {
+                || !(inventorySlot
+                    ? this._tuningView.handleInventorySelection(inventorySlot)
+                    : this._tuningView.handleLoadoutSelection(source, item))) {
             this._finishExit();
             return false;
         }
@@ -254,9 +247,23 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         if (returnButton) returnButton.focus();
         return true;
     };
+    CharacterBuildTuning.prototype.enter = function(slotKey, item, panelInstanceId) {
+        return this._enter(slotKey, item, panelInstanceId,
+            sourceFor(this._session, slotKey), null);
+    };
+    CharacterBuildTuning.prototype.enterCandidate = function(
+            candidate, target, panelInstanceId) {
+        var entry = this._candidateFlow.begin(candidate, target, panelInstanceId);
+        if (!entry) return false;
+        var entered = this._enter(
+            target.slotKey, entry.item, panelInstanceId, entry.source, entry.slot);
+        if (!entered && this._candidateFlow.isActive()) this._candidateFlow.deactivate();
+        return entered;
+    };
     CharacterBuildTuning.prototype.selectSlot = function(slotKey, item, viewKey) {
         var source = sourceFor(this._session, slotKey);
-        if (!this._active || !this._tuningView || !this._tuningView.canClose()
+        if (!this._active || this._candidateFlow.isActive()
+                || !this._tuningView || !this._tuningView.canClose()
                 || !source || !CharacterBuildActionView.tuningCapability(item).available) return false;
         if (this._slotKey !== String(slotKey)) {
             var previousSlotKey = this._slotKey, previousSource = this._entrySource;
@@ -271,23 +278,12 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         this._syncLoadoutSlots();
         return true;
     };
-    CharacterBuildTuning.prototype._restoreScroll = function(state, attempts, generation) {
-        if (!state || generation !== this._scrollRestoreGeneration
-                || !this._buildView || !this._buildView.root) return;
-        var scroll = this._buildView.root.querySelector('.character-build-candidate-scroll');
-        if (scroll) scroll.scrollTop = state.scrollTop;
-        if (attempts > 0 && this._buildView.debugState().candidateCount === 0) {
-            var self = this;
-            setTimeout(function() {
-                self._restoreScroll(state, attempts - 1, generation);
-            }, 25);
-        }
-    };
     CharacterBuildTuning.prototype._finishExit = function(options) {
         options = options || {};
         this._exitGeneration++;
         var state = this._returnState;
-        var restoreGeneration = ++this._scrollRestoreGeneration;
+        var postSource = this._candidateFlow.postSource(this._tuningView);
+        var candidateState = this._candidateFlow.deactivate();
         this._closeInspector();
         if (this._tuningView) this._tuningView.destroy();
         this._tuningView = null;
@@ -306,10 +302,16 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         this._active = false; this._slotKey = ''; this._entrySource = null;
         this._panelInstanceId = ''; this._pane = null; this._paneChildren = [];
         this._root = null; this._mount = null; this._returnState = null;
+        this._syncLoadoutSlots();
         this._buildView.setInteractionState(this._session.getState());
-        if (state && options.restore !== false) {
+        if (candidateState && options.restore !== false) {
+            this._buildView.restoreCandidateTuning(
+                this._candidateFlow.returnPlan(candidateState, postSource),
+                candidateState);
+        } else if (state && options.restore !== false) {
             this._buildView.restoreSlot(state.slotKey);
-            this._restoreScroll(state, 8, restoreGeneration);
+            var scroll = this._buildView.root.querySelector('.character-build-candidate-scroll');
+            if (scroll) scroll.scrollTop = state.scrollTop;
         }
         this._onLockChange();
         return true;
@@ -335,6 +337,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         if (this._mount) this._mount.classList.toggle('item-grid-compact', this._density === 'compact');
         return true;
     };
+    CharacterBuildTuning.prototype.openHelp = function() { return !!(this._tuningView && this._tuningView.openHelp(this._ports.openModal)); };
     CharacterBuildTuning.prototype.isActive = function() { return this._active; };
     CharacterBuildTuning.prototype.consumeEscape = function() {
         if (!this._active) return false;
@@ -353,10 +356,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
             && this._tuningView && this._tuningView.canClose());
     };
     CharacterBuildTuning.prototype.destroy = function() {
-        if (!this._active) { this._scrollRestoreGeneration++; return false; }
-        var destroyed = this._finishExit({restore:false});
-        this._scrollRestoreGeneration++;
-        return destroyed;
+        return this._active ? this._finishExit({restore:false}) : false;
     };
     CharacterBuildTuning.prototype.debugState = function() {
         return {
@@ -364,6 +364,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
             slotKey:this._slotKey,
             entrySessionGeneration:this._entrySource
                 ? this._entrySource.sessionGeneration : 0,
+            candidateSource:this._candidateFlow.isActive(),
             writePending:!!this._writeHandle,
             tuning:this._tuningView ? this._tuningView.debugState() : null
         };
@@ -372,7 +373,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView, gl
         CharacterBuildTuning:CharacterBuildTuning,
         sourceFor:sourceFor,
         tuningCapability:CharacterBuildActionView.tuningCapability,
-        findLoadoutItem:findLoadoutItem,
+        findLoadoutItem:TuningAdapter.findLoadoutItem,
         findEquipment:findEquipment
     };
 });

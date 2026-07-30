@@ -439,6 +439,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             value.state.backpackSnapshotCalls++;
             var bag:Object = root.物品栏.背包;
             var rows:Array = [];
+            var facets:Array = [];
             var occupiedCount:Number = 0;
             for (var slot:Number = 0; slot < 50; slot++) {
                 var item:Object = bag.getItem(String(slot));
@@ -450,6 +451,38 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 };
                 if (item != null) {
                     occupiedCount++;
+                    var catalogData:Object =
+                        root.itemCatalog[String(item.name)];
+                    var majorType:String = catalogData == null
+                            || catalogData.type == undefined
+                        ? "" : String(catalogData.type);
+                    var majorId:String = "other";
+                    var majorLabel:String = "其他";
+                    if (majorType == "武器") {
+                        majorId = "weapon";
+                        majorLabel = "武器";
+                    } else if (majorType == "防具") {
+                        majorId = "armor";
+                        majorLabel = "防具";
+                    } else if (majorType == "消耗品") {
+                        majorId = "consumable";
+                        majorLabel = "消耗品";
+                    } else if (majorType == "材料") {
+                        majorId = "material";
+                        majorLabel = "材料";
+                    } else if (majorType == "收集品") {
+                        majorId = "collection";
+                        majorLabel = "收集品";
+                    }
+                    var useName:String = catalogData == null
+                            || catalogData.use == undefined
+                            || String(catalogData.use) == ""
+                        ? "其他" : String(catalogData.use);
+                    var majorFacet:Object = fixtureFacetNode(
+                        facets, majorId, majorLabel);
+                    majorFacet.count++;
+                    fixtureFacetNode(
+                        majorFacet.children, useName, useName).count++;
                     var projection:Object =
                         fixtureItemProjection(root, item);
                     row.item = projection;
@@ -472,13 +505,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 offset:0,
                 limit:50,
                 slots:rows,
-                filterFacets:occupiedCount == 0 ? [] : [{
-                    id:"all",
-                    label:"全部",
-                    order:0,
-                    count:occupiedCount,
-                    children:[]
-                }],
+                filterFacets:facets,
                 filterItemCount:occupiedCount,
                 setFacets:[],
                 setFilterItemCount:0
@@ -623,6 +650,32 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             modMeta:null,
             rarity:""
         };
+    }
+
+    private static function fixtureFacetNode(
+        nodes:Array, id:String, label:String):Object {
+        for (var i:Number = 0; i < nodes.length; i++) {
+            if (String(nodes[i].id) == id) return nodes[i];
+        }
+        var node:Object = {
+            id:id, label:label, order:0, count:0, children:[]
+        };
+        nodes.push(node);
+        return node;
+    }
+
+    private static function facetUseCount(
+        facets:Array, useName:String):Number {
+        var count:Number = 0;
+        for (var i:Number = 0; i < facets.length; i++) {
+            var children:Array = facets[i].children;
+            for (var j:Number = 0; j < children.length; j++) {
+                if (String(children[j].id) == useName) {
+                    count += Number(children[j].count);
+                }
+            }
+        }
+        return count;
     }
 
     private static function fixtureConfirmProjection(
@@ -870,6 +923,10 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && payload.equipment[1].occupied === false
                 && payload.drugs.length == 4,
             "snapshot 投影固定有序 11 装备 + 4 药剂且空槽显式");
+        check(payload.candidateFacets.scope == "all"
+                && payload.candidateFacets.filterItemCount == 0
+                && payload.candidateFacets.filterFacets.length == 0,
+            "空背包仍显式投影已知 0 的构筑 facet counts");
         check(cooldown.occupied && cooldown.quantity == 3
                 && cooldown.keyLabel == "K49" && !cooldown.ready
                 && cooldown.remainingMs == expectedRemaining
@@ -949,6 +1006,21 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var opened:Object = CharacterBuildService.execute(
             "snapshot", wireParams("workbench.candidates.1",
                 "character-build.candidates.open"));
+        check(opened.payload.candidateFacets.scope == "all"
+                && opened.payload.candidateFacets.filterItemCount == 5
+                && facetUseCount(
+                    opened.payload.candidateFacets.filterFacets,
+                    "头部装备") == 2
+                && facetUseCount(
+                    opened.payload.candidateFacets.filterFacets,
+                    "手枪") == 1
+                && facetUseCount(
+                    opened.payload.candidateFacets.filterFacets,
+                    "药剂") == 1
+                && facetUseCount(
+                    opened.payload.candidateFacets.filterFacets,
+                    "刀") == 0,
+            "初始 snapshot 复用完整背包 facets，分别保留非零与显式零候选类别");
         var projectionCallsBeforeMissing:Number =
             callback.state.projectCalls;
         var backpackCallsBeforeMissing:Number =
@@ -1027,6 +1099,20 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && callback.state.drugCooldownCalls == 1
                 && callback.state.drugCooldownKey == "drug:2",
             "药剂候选只接受 getItemData use=药剂且单次读取 drugKey 冷却权威");
+
+        var buildSnapshot:Function = callback.buildBackpackSnapshot;
+        callback.buildBackpackSnapshot = function():Object {
+            var drifted:Object = buildSnapshot();
+            drifted.containerVersion++;
+            return drifted;
+        };
+        var driftedSnapshot:Object = CharacterBuildService.execute(
+            "snapshot", wireParams("workbench.candidates.1",
+                "character-build.candidates.drifted-facets"));
+        callback.buildBackpackSnapshot = buildSnapshot;
+        check(driftedSnapshot.success
+                && driftedSnapshot.payload.candidateFacets == undefined,
+            "facet 与资格双扫描被 containerVersion fence 绑定，版本漂移降级 unknown");
 
         headParams.expectedLoadoutRevision = opened.loadoutRevision + 1;
         var stale:Object = CharacterBuildService.execute(
@@ -1110,6 +1196,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var opened:Object = CharacterBuildService.execute(
             "snapshot", wireParams("workbench.candidates.rules",
                 "character-build.candidates.rules.open"));
+        check(opened.payload.candidateFacets == undefined,
+            "相关 use 含畸形 type/value/level 时整组 counts 降级 unknown 而不伪造 0");
 
         var headParams:Object = wireParams(
             "workbench.candidates.rules",

@@ -309,10 +309,14 @@ namespace CF7Launcher.Guardian
             JObject payload,
             bool requireHealthy)
         {
+            bool hasCandidateFacets =
+                payload != null && payload["candidateFacets"] != null;
+            var expectedKeys = Set(
+                "equipment", "drugs", "portrait",
+                "stateHealth", "diagnostics");
+            if (hasCandidateFacets) expectedKeys.Add("candidateFacets");
             if (!IsExactObject(
-                    payload,
-                    Set("equipment", "drugs", "portrait",
-                        "stateHealth", "diagnostics"))
+                    payload, expectedKeys)
                 || !(payload["equipment"] is JArray equipment)
                 || equipment.Count != EquipmentSlots.Length
                 || !(payload["drugs"] is JArray drugs)
@@ -384,7 +388,35 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
             }
-            return true;
+            return !hasCandidateFacets
+                || IsCandidateFacetProjection(
+                    payload["candidateFacets"] as JObject);
+        }
+
+        /// <summary>
+        /// Optional v1 facet projection. Older AS2 payloads omit it and remain readable; once
+        /// present, the complete inventory facet tree is strict and self-consistent so Web can
+        /// distinguish an authoritative zero from an unavailable/unknown count.
+        /// </summary>
+        internal static bool IsCandidateFacetProjection(JObject projection)
+        {
+            int filterItemCount;
+            int facetItemCount;
+            return IsExactObject(
+                    projection,
+                    Set("scope", "filterFacets", "filterItemCount"))
+                && ReadString(projection["scope"]) == "all"
+                && TryReadInteger(
+                    projection["filterItemCount"],
+                    0,
+                    BackpackSlotCount,
+                    out filterItemCount)
+                && IsFacetArray(
+                    projection["filterFacets"] as JArray,
+                    0,
+                    false,
+                    out facetItemCount)
+                && facetItemCount == filterItemCount;
         }
 
         internal static bool TryValidateItemProjection(
@@ -527,7 +559,7 @@ namespace CF7Launcher.Guardian
                 || IsBalanceSummary(item["balanceSummary"] as JObject);
         }
 
-        private static bool TryNormalizeBackpackSource(
+        internal static bool TryNormalizeBackpackSource(
             JObject source,
             out JObject normalized)
         {

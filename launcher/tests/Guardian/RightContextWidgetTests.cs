@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
@@ -67,6 +68,23 @@ namespace CF7Launcher.Tests.Guardian
                 MapDisplayPreference.Compact);
             w.ForceGameReady(true);
             return w;
+        }
+
+        private static SafeExitPanelWidget MakeSafeExitWidget()
+        {
+            Capture cap = new Capture();
+            LauncherCommandRouter router = new LauncherCommandRouter(
+                socketServer: null,
+                onSendKey: k => { },
+                onToggleFullscreen: () => { },
+                onToggleLog: () => { },
+                onForceExit: () => { },
+                postToWeb: s => cap.Posts.Add(s),
+                onPanelStateChanged: b => { },
+                setActivePanel: name => { });
+            SafeExitPanelWidget widget = new SafeExitPanelWidget(new Control(), router);
+            widget.ForceGameReady(true);
+            return widget;
         }
 
         private static IReadOnlyDictionary<string, string> Snapshot(params string[] kvPieces)
@@ -161,19 +179,347 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void SafeExitReservation_IsConditionalAndIndependentFromMapHeader()
+        public void MissingOwner_LeavesConditionalSlotWithoutVisualOrHitBox()
         {
             Capture c;
             RightContextWidget w = MakeWidget(out c);
-            Assert.False(w.ExternalStatusSlotActiveForTest);
-            Assert.False(w.StatusSlotVisibleForTest);
+            w.ForceHoveredToolForTest(2);
 
-            w.SetExternalStatusSlotActive(true);
-            Assert.True(w.ExternalStatusSlotActiveForTest);
-            Assert.True(w.StatusSlotVisibleForTest);
-
-            w.SetExternalStatusSlotActive(false);
+            Assert.True(w.RequestsContextHint);
+            Assert.Equal(RightContextSlotOwner.Hidden, w.SlotOwnerForTest);
             Assert.False(w.StatusSlotVisibleForTest);
+            Assert.False(w.PaintsContextHintForTest);
+            Assert.False(w.PaintsActionableNoticeForTest);
+            Assert.False(w.SlotHitBoxActiveForTest);
+        }
+
+        [Fact]
+        public void EquipmentHint_AddsRouteAndNeighborInformation()
+        {
+            Capture c;
+            RightContextWidget w = MakeWidget(out c);
+
+            Assert.Equal(
+                "打开角色构筑；其他整备功能在刘海或装备页",
+                w.ResolveActionHint(2));
+        }
+
+        [Fact]
+        public void NativeHudSlotOwner_SwitchesPriorityAndProjectsOneOwnerToBothWidgets()
+        {
+            Capture c;
+            RightContextWidget right = MakeWidget(out c);
+            SafeExitPanelWidget safeExit = MakeSafeExitWidget();
+
+            right.ForceHoveredToolForTest(2);
+            Assert.Equal(
+                RightContextSlotOwner.ContextHint,
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(right, safeExit));
+            Assert.Equal(RightContextSlotOwner.ContextHint, right.SlotOwnerForTest);
+            Assert.Equal(RightContextSlotOwner.ContextHint, safeExit.SlotOwnerForTest);
+            Assert.True(right.PaintsContextHintForTest);
+            Assert.False(right.SlotHitBoxActiveForTest);
+            Assert.False(safeExit.PaintsTransactionDecisionForTest);
+
+            right.ForceDeliverState(true, "base_dorm", true, "1");
+            Assert.Equal(
+                RightContextSlotOwner.ActionableNotice,
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(right, safeExit));
+            Assert.True(right.PaintsActionableNoticeForTest);
+            Assert.False(right.PaintsContextHintForTest);
+            Assert.True(right.SlotHitBoxActiveForTest);
+            Assert.False(safeExit.SlotHitBoxActiveForTest);
+
+            safeExit.Arm();
+            Assert.Equal(
+                RightContextSlotOwner.TransactionDecision,
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(right, safeExit));
+            Assert.Equal(RightContextSlotOwner.TransactionDecision, right.SlotOwnerForTest);
+            Assert.Equal(RightContextSlotOwner.TransactionDecision, safeExit.SlotOwnerForTest);
+            Assert.False(right.PaintsActionableNoticeForTest);
+            Assert.False(right.PaintsContextHintForTest);
+            Assert.False(right.SlotHitBoxActiveForTest);
+            Assert.True(safeExit.PaintsTransactionDecisionForTest);
+            Assert.True(safeExit.SlotHitBoxActiveForTest);
+
+            safeExit.OnUiDataChanged(
+                Snapshot("sv:2"),
+                new HashSet<string> { "sv" });
+            safeExit.InternalDownIndex = 0;
+            Assert.Equal(
+                SafeExitPanelWidget.ClickOutcome.Cancelled,
+                safeExit.TryFireButtonClick(0));
+            Assert.Equal(
+                RightContextSlotOwner.ActionableNotice,
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(right, safeExit));
+
+            right.ForceTaskDone(false);
+            Assert.Equal(
+                RightContextSlotOwner.ContextHint,
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(right, safeExit));
+
+            right.ForceHoveredToolForTest(-1);
+            Assert.Equal(
+                RightContextSlotOwner.Hidden,
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(right, safeExit));
+            Assert.False(right.StatusSlotVisibleForTest);
+            Assert.False(right.PaintsContextHintForTest);
+            Assert.False(right.PaintsActionableNoticeForTest);
+            Assert.False(right.SlotHitBoxActiveForTest);
+            Assert.False(safeExit.Visible);
+            Assert.False(safeExit.SlotHitBoxActiveForTest);
+        }
+
+        [Fact]
+        public void NativeHudAddWidget_RealBoundsSubscriptionReconcilesAndProjectsEveryOwner()
+        {
+            using (Form owner = new Form())
+            {
+                owner.ClientSize = new Size(1024, 576);
+                Panel anchor = new Panel();
+                anchor.Bounds = new Rectangle(0, 0, 1024, 576);
+                owner.Controls.Add(anchor);
+                owner.CreateControl();
+                anchor.CreateControl();
+
+                Capture cap = new Capture();
+                LauncherCommandRouter router = new LauncherCommandRouter(
+                    socketServer: null,
+                    onSendKey: k => { },
+                    onToggleFullscreen: () => { },
+                    onToggleLog: () => { },
+                    onForceExit: () => { },
+                    postToWeb: s => cap.Posts.Add(s),
+                    onPanelStateChanged: b => { },
+                    setActivePanel: name => { });
+                RightContextWidget right = new RightContextWidget(
+                    anchor,
+                    router,
+                    MapHudDataCatalog.FromPayload(BuildPayload()),
+                    MapDisplayPreference.Compact);
+                right.ForceGameReady(true);
+                SafeExitPanelWidget safeExit = new SafeExitPanelWidget(anchor, router);
+                safeExit.ForceGameReady(true);
+
+                // 先产生 demand，再注册，证明 AddWidget 是“先订阅、再首次 reconcile”。
+                right.OnLegacyUiData("task", new[] { "先发任务" });
+                safeExit.Arm();
+
+                using (NativeHudOverlay hud = new NativeHudOverlay(owner, anchor))
+                {
+                    hud.AddWidget(right);
+                    Assert.Equal(
+                        RightContextSlotOwner.ActionableNotice,
+                        hud.RightContextSlotOwnerForTest);
+                    Assert.True(right.PaintsActionableNoticeForTest);
+
+                    hud.AddWidget(safeExit);
+                    Assert.Equal(
+                        RightContextSlotOwner.TransactionDecision,
+                        hud.RightContextSlotOwnerForTest);
+                    Assert.Equal(hud.RightContextSlotOwnerForTest, right.SlotOwnerForTest);
+                    Assert.Equal(hud.RightContextSlotOwnerForTest, safeExit.SlotOwnerForTest);
+                    Assert.False(right.PaintsActionableNoticeForTest);
+                    Assert.False(right.PaintsContextHintForTest);
+                    Assert.False(right.SlotHitBoxActiveForTest);
+                    Assert.True(safeExit.SlotHitBoxActiveForTest);
+
+                    // BoundsOrVisibilityChanged 的真实订阅把 transaction → notice 切回。
+                    safeExit.OnUiDataChanged(
+                        Snapshot("sv:2"),
+                        new HashSet<string> { "sv" });
+                    safeExit.InternalDownIndex = 0;
+                    safeExit.TryFireButtonClick(0);
+                    Assert.Equal(
+                        RightContextSlotOwner.ActionableNotice,
+                        hud.RightContextSlotOwnerForTest);
+                    Assert.True(right.PaintsActionableNoticeForTest);
+                    Assert.False(safeExit.Visible);
+
+                    // notice 到期的真实 Bounds event 收敛到 hidden。
+                    right.Tick(5001);
+                    Assert.Equal(
+                        RightContextSlotOwner.Hidden,
+                        hud.RightContextSlotOwnerForTest);
+                    Assert.False(right.StatusSlotVisibleForTest);
+
+                    // 实际 mouse path 触发 hint demand，再由相同订阅投影为 contextHint。
+                    FlashCoordinateMapper mapper =
+                        new FlashCoordinateMapper(anchor, 1024f, 576f);
+                    Rectangle tools = RightHudLayout.GetTopToolsRect(anchor, mapper);
+                    Rectangle equipment =
+                        RightHudLayout.ActionButtonRectFromTools(tools, 1f, 2);
+                    right.OnMouseEvent(
+                        new MouseEventArgs(
+                            MouseButtons.None,
+                            0,
+                            equipment.Left + equipment.Width / 2,
+                            equipment.Top + equipment.Height / 2,
+                            0),
+                        MouseEventKind.Move);
+                    Assert.Equal(
+                        RightContextSlotOwner.ContextHint,
+                        hud.RightContextSlotOwnerForTest);
+                    Assert.True(right.PaintsContextHintForTest);
+                    Assert.False(right.SlotHitBoxActiveForTest);
+                    Assert.False(safeExit.SlotHitBoxActiveForTest);
+
+                    right.OnMouseEvent(
+                        new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0),
+                        MouseEventKind.Leave);
+                    Assert.Equal(
+                        RightContextSlotOwner.Hidden,
+                        hud.RightContextSlotOwnerForTest);
+                    Assert.False(right.StatusSlotVisibleForTest);
+                }
+            }
+        }
+
+        [Fact]
+        public void SlotProjection_PaintAndHitOwnershipAreMutuallyExclusive()
+        {
+            using (Form owner = new Form())
+            {
+                owner.ClientSize = new Size(1024, 576);
+                Panel anchor = new Panel();
+                anchor.Bounds = new Rectangle(0, 0, 1024, 576);
+                owner.Controls.Add(anchor);
+                owner.CreateControl();
+                anchor.CreateControl();
+
+                Capture cap = new Capture();
+                LauncherCommandRouter router = new LauncherCommandRouter(
+                    socketServer: null,
+                    onSendKey: k => { },
+                    onToggleFullscreen: () => { },
+                    onToggleLog: () => { },
+                    onForceExit: () => { },
+                    postToWeb: s => cap.Posts.Add(s),
+                    onPanelStateChanged: b => { },
+                    setActivePanel: name => { });
+                RightContextWidget right = new RightContextWidget(
+                    anchor,
+                    router,
+                    MapHudDataCatalog.FromPayload(BuildPayload()),
+                    MapDisplayPreference.Off);
+                right.ForceGameReady(true);
+                right.ForceHoveredToolForTest(2);
+                right.ForceDeliverState(true, "base_dorm", true, "1");
+                SafeExitPanelWidget safeExit =
+                    new SafeExitPanelWidget(anchor, router);
+                safeExit.ForceGameReady(true);
+                safeExit.Arm();
+
+                FlashCoordinateMapper mapper =
+                    new FlashCoordinateMapper(anchor, 1024f, 576f);
+                Rectangle viewport =
+                    RightHudLayout.GetViewportRect(anchor, mapper);
+                float scale = RightHudLayout.ScaleForViewport(viewport);
+                Rectangle context =
+                    RightHudLayout.ContextPanelRectFromViewport(
+                        viewport,
+                        scale,
+                        EffectiveMapDisplayMode.Hidden,
+                        true);
+                Rectangle slot =
+                    RightHudLayout.StatusSlotRectFromContext(
+                        context,
+                        scale,
+                        true);
+                Point slotCenter =
+                    new Point(slot.Left + slot.Width / 2, slot.Top + slot.Height / 2);
+
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                    right,
+                    safeExit);
+                Assert.Equal(
+                    RightContextSlotOwner.TransactionDecision,
+                    right.SlotOwnerForTest);
+                Assert.True(right.ScreenBounds.Contains(slotCenter)); // 仅为地图让位的共享布局占位
+                Assert.Equal(slot, safeExit.ScreenBounds);
+                Assert.False(right.TryHitTest(slotCenter));
+                Assert.True(safeExit.TryHitTest(slotCenter));
+                Assert.False(right.PaintsActionableNoticeForTest);
+                Assert.False(right.PaintsContextHintForTest);
+                Assert.True(SlotHasVisiblePixels(safeExit, slot));
+                Assert.False(SlotHasVisiblePixels(right, slot));
+
+                safeExit.OnUiDataChanged(
+                    Snapshot("sv:2"),
+                    new HashSet<string> { "sv" });
+                safeExit.InternalDownIndex = 0;
+                safeExit.TryFireButtonClick(0);
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                    right,
+                    safeExit);
+                Assert.Equal(
+                    RightContextSlotOwner.ActionableNotice,
+                    right.SlotOwnerForTest);
+                Assert.True(right.TryHitTest(slotCenter));
+                Assert.False(safeExit.TryHitTest(slotCenter));
+                Assert.True(right.PaintsActionableNoticeForTest);
+                Assert.False(right.PaintsContextHintForTest);
+                Assert.True(SlotHasVisiblePixels(right, slot));
+
+                right.ForceTaskDone(false);
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                    right,
+                    safeExit);
+                Assert.Equal(
+                    RightContextSlotOwner.ContextHint,
+                    right.SlotOwnerForTest);
+                Assert.False(right.TryHitTest(slotCenter));
+                Assert.False(safeExit.TryHitTest(slotCenter));
+                Assert.False(right.PaintsActionableNoticeForTest);
+                Assert.True(right.PaintsContextHintForTest);
+                Assert.True(SlotHasVisiblePixels(right, slot));
+
+                right.ForceHoveredToolForTest(-1);
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                    right,
+                    safeExit);
+                Assert.Equal(
+                    RightContextSlotOwner.Hidden,
+                    right.SlotOwnerForTest);
+                Assert.False(right.StatusSlotVisibleForTest);
+                Rectangle tools =
+                    RightHudLayout.TopToolsRectFromViewport(viewport, scale);
+                Assert.Equal(tools.Bottom, right.ScreenBounds.Bottom);
+                Assert.True(right.CompositeBounds.Bottom >= slot.Bottom); // 透明 hover/repaint reserve
+                Assert.False(right.TryHitTest(slotCenter));
+                Assert.False(safeExit.TryHitTest(slotCenter));
+                Assert.False(SlotHasVisiblePixels(right, slot));
+            }
+        }
+
+        private static bool SlotHasVisiblePixels(
+            INativeHudWidget widget,
+            Rectangle slot)
+        {
+            Rectangle bounds = widget.ScreenBounds;
+            if (bounds.Width <= 0 || bounds.Height <= 0) return false;
+            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.Clear(Color.Transparent);
+                widget.Paint(graphics, 1f, bounds.Location);
+                Rectangle local = new Rectangle(
+                    slot.X - bounds.X + 2,
+                    slot.Y - bounds.Y + 2,
+                    System.Math.Max(0, slot.Width - 4),
+                    System.Math.Max(0, slot.Height - 4));
+                Rectangle clipped = Rectangle.Intersect(
+                    new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                    local);
+                for (int y = clipped.Top; y < clipped.Bottom; y++)
+                {
+                    for (int x = clipped.Left; x < clipped.Right; x++)
+                    {
+                        if (bitmap.GetPixel(x, y).A != 0) return true;
+                    }
+                }
+                return false;
+            }
         }
 
         [Fact]

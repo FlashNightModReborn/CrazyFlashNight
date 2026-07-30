@@ -1,18 +1,16 @@
-/**
- * Workbench Gate A1 primitives.
- *
- * This module owns layout, view lifecycle, grid rendering and pointer gesture matching only.
- * Domain coordinators are injected by consumers through neutral OperationIntent callbacks.
- */
+/** Shared workbench layout, view lifecycle, grid rendering and pointer gesture primitives. */
 (function(root, factory) {
-    'use strict';
     var primitives = root && root.WorkbenchPrimitives;
     var focus = root && (root.WorkbenchFocus || root.CF7 && root.CF7.WorkbenchFocus);
+    var shellProfile = root && root.WorkbenchShellProfile;
     if (!primitives && typeof module !== 'undefined' && module.exports) {
         primitives = require('./workbench-primitives.js');
     }
     if (!focus && typeof module !== 'undefined' && module.exports) {
         focus = require('./workbench-focus.js');
+    }
+    if (!shellProfile && typeof module !== 'undefined' && module.exports) {
+        shellProfile = require('./workbench-profile.js');
     }
     if (!primitives) {
         throw new Error('workbench.js requires workbench-primitives.js to load first');
@@ -20,10 +18,13 @@
     if (!focus || typeof focus.FocusScope !== 'function') {
         throw new Error('workbench.js requires workbench-focus.js to load first');
     }
-    var api = factory(primitives, focus);
+    if (!shellProfile || typeof shellProfile.requireProfile !== 'function') {
+        throw new Error('workbench.js requires workbench-profile.js to load first');
+    }
+    var api = factory(primitives, focus, shellProfile);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.Workbench = api;
-})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchPrimitives, WorkbenchFocus) {
+})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchPrimitives, WorkbenchFocus, WorkbenchShellProfile) {
     'use strict';
     var primitiveNames = ['EntityTile', 'ItemCard', 'InteractionBroker', 'PointerDragController'];
     for (var primitiveIndex = 0; primitiveIndex < primitiveNames.length; primitiveIndex++) {
@@ -68,10 +69,7 @@
         return false;
     }
 
-    /**
-     * 工作台状态机统一枚举。
-     * 旧代码中的 'busy' 视为 'loading' 的遗留同义词，仍被接受但建议逐步迁移。
-     */
+    // 'busy' remains a legacy alias of the canonical loading state.
     var WorkbenchState = {
         IDLE: 'idle',
         LOADING: 'loading',
@@ -160,10 +158,13 @@
 
     function DualPaneShell(options) {
         options = options || {};
+        const profile = WorkbenchShellProfile.requireProfile(options.profile);
         this._views = {};
         this._defaults = { L: null, R: null };
         this._root = makeElement('div', 'workbench-shell');
         this._root.setAttribute('data-workbench-version', '1');
+        this._root.setAttribute('data-profile', profile);
+        this._profile = profile;
 
         this._header = makeElement('header', 'workbench-header');
         var identity = makeElement('div', 'workbench-identity');
@@ -254,7 +255,7 @@
     DualPaneShell.prototype.getRoot = function() { return this._root; };
     DualPaneShell.prototype.getHost = function(slotId) { return this._hosts[slotId] || null; };
     DualPaneShell.prototype.getSlotFrame = function(slotId) { return this._slotFrames[slotId] || null; };
-
+    DualPaneShell.prototype.setProfile = WorkbenchShellProfile.setProfile;
     DualPaneShell.prototype.setSlotLabel = function(slotId, label) {
         var frame = this._slotFrames[slotId];
         if (!frame) return false;

@@ -70,6 +70,90 @@ namespace CF7Launcher.Bus
                 request["openRequestId"];
             JObject initData =
                 request["initData"] as JObject;
+            bool materialAttempt =
+                IsMaterialPanelOpenAttempt(
+                    request,
+                    source);
+            if (materialAttempt)
+            {
+                bool hasOpenRequestId =
+                    request.Property(
+                        "openRequestId") != null;
+                if (!IsExactMaterialPanelRequest(
+                        request,
+                        hasOpenRequestId))
+                {
+                    rejectionReason =
+                        "material_contract";
+                    return false;
+                }
+                if (!hasOpenRequestId)
+                    return true;
+                if (token == null
+                    || token.Type
+                        != JTokenType.String)
+                {
+                    rejectionReason =
+                        "invalid_open_request_id_type";
+                    return false;
+                }
+                string materialValue =
+                    token.Value<string>();
+                if (!IsOpaqueOpenRequestId(
+                        materialValue))
+                {
+                    rejectionReason =
+                        "invalid_open_request_id";
+                    return false;
+                }
+                openRequestId =
+                    materialValue;
+                return true;
+            }
+            bool nativeEquipmentTuningAttempt =
+                IsNativeEquipmentTuningOpenAttempt(
+                    request,
+                    source);
+            if (nativeEquipmentTuningAttempt)
+            {
+                bool hasOpenRequestId =
+                    request.Property(
+                        "openRequestId") != null;
+                if (!IsExactNativeEquipmentTuningPanelRequest(
+                        request,
+                        hasOpenRequestId))
+                {
+                    rejectionReason =
+                        "native_equipment_tuning_contract";
+                    return false;
+                }
+                if (!hasOpenRequestId)
+                {
+                    rejectionReason =
+                        "missing_open_request_id";
+                    return false;
+                }
+                if (token == null
+                    || token.Type
+                        != JTokenType.String)
+                {
+                    rejectionReason =
+                        "invalid_open_request_id_type";
+                    return false;
+                }
+                string tuningValue =
+                    token.Value<string>();
+                if (!IsOpaqueOpenRequestId(
+                        tuningValue))
+                {
+                    rejectionReason =
+                        "invalid_open_request_id";
+                    return false;
+                }
+                openRequestId =
+                    tuningValue;
+                return true;
+            }
             bool exactNativeEquipmentBuild =
                 string.Equals(
                     panel,
@@ -162,6 +246,147 @@ namespace CF7Launcher.Bus
             return true;
         }
 
+        private static bool IsNativeEquipmentTuningOpenAttempt(
+            JObject request,
+            string source)
+        {
+            if (string.Equals(
+                    source,
+                    "nativehud_equipment_tuning",
+                    StringComparison.Ordinal))
+            {
+                return true;
+            }
+            JToken token =
+                request == null
+                    ? null
+                    : request["openRequestId"];
+            return token != null
+                && token.Type == JTokenType.String
+                && token.Value<string>()
+                    .StartsWith(
+                        "tuning.open.",
+                        StringComparison.Ordinal);
+        }
+
+        private static bool IsExactNativeEquipmentTuningPanelRequest(
+            JObject request,
+            bool hasOpenRequestId)
+        {
+            if (request == null
+                || request.Count
+                    != (hasOpenRequestId ? 5 : 4)
+                || request["task"] == null
+                || request["task"].Type
+                    != JTokenType.String
+                || !string.Equals(
+                    request.Value<string>("task"),
+                    "panel_request",
+                    StringComparison.Ordinal)
+                || request["panel"] == null
+                || request["panel"].Type
+                    != JTokenType.String
+                || !string.Equals(
+                    request.Value<string>("panel"),
+                    "workbench",
+                    StringComparison.Ordinal)
+                || request["source"] == null
+                || request["source"].Type
+                    != JTokenType.String
+                || !string.Equals(
+                    request.Value<string>("source"),
+                    "nativehud_equipment_tuning",
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+            JObject initData =
+                request["initData"] as JObject;
+            return initData != null
+                && initData.Count == 2
+                && initData["profile"] != null
+                && initData["profile"].Type
+                    == JTokenType.String
+                && string.Equals(
+                    initData.Value<string>("profile"),
+                    "battlebox",
+                    StringComparison.Ordinal)
+                && initData["view"] != null
+                && initData["view"].Type
+                    == JTokenType.String
+                && string.Equals(
+                    initData.Value<string>("view"),
+                    "tuning",
+                    StringComparison.Ordinal);
+        }
+
+        private static bool IsMaterialPanelOpenAttempt(
+            JObject request,
+            string source)
+        {
+            if (string.Equals(
+                    source,
+                    "nativehud_materials",
+                    StringComparison.Ordinal))
+            {
+                return true;
+            }
+            JToken token =
+                request == null
+                    ? null
+                    : request["openRequestId"];
+            return token != null
+                && token.Type == JTokenType.String
+                && token.Value<string>()
+                    .StartsWith(
+                        "material.open.",
+                        StringComparison.Ordinal);
+        }
+
+        private static bool IsExactMaterialPanelRequest(
+            JObject request,
+            bool hasOpenRequestId)
+        {
+            if (request == null
+                || request.Count
+                    != (hasOpenRequestId ? 5 : 4)
+                || request["task"] == null
+                || request["task"].Type
+                    != JTokenType.String
+                || !string.Equals(
+                    request.Value<string>("task"),
+                    "panel_request",
+                    StringComparison.Ordinal)
+                || request["panel"] == null
+                || request["panel"].Type
+                    != JTokenType.String
+                || !string.Equals(
+                    request.Value<string>("panel"),
+                    "crafting",
+                    StringComparison.Ordinal)
+                || request["source"] == null
+                || request["source"].Type
+                    != JTokenType.String
+                || !string.Equals(
+                    request.Value<string>("source"),
+                    "nativehud_materials",
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+            JObject initData =
+                request["initData"] as JObject;
+            return initData != null
+                && initData.Count == 1
+                && initData["view"] != null
+                && initData["view"].Type
+                    == JTokenType.String
+                && string.Equals(
+                    initData.Value<string>("view"),
+                    "materials",
+                    StringComparison.Ordinal);
+        }
+
         /// <summary>
         /// 向 MessageRouter 注册所有 JSON 路由的 task（快车道 task 不在此注册）。
         /// </summary>
@@ -197,7 +422,8 @@ namespace CF7Launcher.Bus
             ArchiveTask archiveTask,
             BenchTask benchTask,
             FontPackTask fontPackTask,
-            WebOverlayForm webOverlay)
+            WebOverlayForm webOverlay,
+            LauncherCommandRouter commandRouter)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
@@ -348,6 +574,26 @@ namespace CF7Launcher.Bus
                             out openRequestId,
                             out openRequestIdRejection))
                     {
+                        if (commandRouter != null
+                            && IsNativeEquipmentTuningOpenAttempt(
+                                request,
+                                source))
+                        {
+                            commandRouter
+                                .RejectPendingNativeEquipmentTuningPanelRequest(
+                                    openRequestIdRejection);
+                        }
+                        if (commandRouter != null
+                            && request.Property(
+                                "openRequestId") != null
+                            && IsMaterialPanelOpenAttempt(
+                                request,
+                                source))
+                        {
+                            commandRouter
+                                .RejectPendingMaterialPanelRequest(
+                                    openRequestIdRejection);
+                        }
                         LogManager.Log(
                             "event=panel_open_rejected reason="
                             + openRequestIdRejection

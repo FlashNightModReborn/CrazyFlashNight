@@ -1,10 +1,4 @@
 /* Equipment tuning view inside the owned inventory workbench. */
-.inventory-workbench-panel[data-workbench-view="tuning"] .workbench-body {
-    grid-template-columns:minmax(0,52fr) 26px minmax(360px,48fr);
-}
-.inventory-workbench-panel[data-workbench-view="tuning"][data-layout-mode="compact"] .workbench-body {
-    grid-template-columns:minmax(300px,42fr) 26px minmax(430px,58fr);
-}
 .inventory-workbench-panel[data-workbench-view="tuning"] .workbench-flow-rail { color:var(--wb-muted); }
 .equipment-tuning-view {
     --wb-scrollbar-track:#081014;
@@ -26,7 +20,6 @@
     --tuning-danger-bg:#211413;
     --tuning-convert-arrow:#5cd7ee;
     --tuning-delta:#d4bd85;
-    --tuning-fast:#e1b75c;
     height:100%; min-height:0; display:grid; grid-template-rows:auto auto auto minmax(0,1fr) auto;
     overflow:hidden; color:#d9eef2;
     background:
@@ -35,6 +28,7 @@
         linear-gradient(180deg,rgba(8,31,40,.55),rgba(6,13,17,.35) 48%),#05080a;
 }
 .equipment-tuning-summary {
+    grid-row:1;
     min-height:64px; padding:8px; box-sizing:border-box; display:grid;
     grid-template-columns:52px minmax(0,1fr) auto auto;
     align-items:center; gap:8px; border-bottom:1px solid #244d58;
@@ -51,7 +45,7 @@
     color:var(--dls-crystal-bright); font:700 11px/1 Consolas,sans-serif; pointer-events:none;
 }
 .equipment-tuning-main-icon:hover:not(:disabled),.equipment-tuning-main-icon:focus-visible {
-    outline:0; border-color:var(--dls-crystal); box-shadow:0 0 9px rgba(var(--dls-crystal-rgb),.28);
+    border-color:var(--dls-crystal); box-shadow:0 0 9px rgba(var(--dls-crystal-rgb),.28);
 }
 .equipment-tuning-main-icon:disabled { cursor:default; opacity:.58; }
 .equipment-tuning-main-icon img,.equipment-tuning-candidate img,.equipment-tuning-convert-item img,.equipment-tuning-conversion-card img {
@@ -60,7 +54,7 @@
 .equipment-tuning-main-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .equipment-tuning-main-copy b { overflow:hidden; color:#dff9ff; font:700 13px/1.2 "Microsoft YaHei",sans-serif; text-overflow:ellipsis; white-space:nowrap; }
 .equipment-tuning-main-copy span { color:#b4bdc2; font:10px/1.2 Consolas,"Microsoft YaHei",sans-serif; }
-.equipment-tuning-main-copy small { overflow:hidden; color:#77848b; font:9px/1.2 "Microsoft YaHei",sans-serif; text-overflow:ellipsis; white-space:nowrap; }
+.equipment-tuning-main-copy small { overflow:hidden; color:var(--wb-muted); font:10px/1.25 "Microsoft YaHei",sans-serif; text-overflow:ellipsis; white-space:nowrap; }
 .equipment-tuning-main-copy small:empty { display:none; }
 .equipment-tuning-empty-mark {
     width:44px; height:44px; display:grid; place-items:center; border:1px dashed #2c6878;
@@ -68,21 +62,47 @@
 }
 .equipment-tuning-summary-copy { min-width:0; display:flex; flex-direction:column; gap:4px; }
 .equipment-tuning-summary-copy b { color:#d9dee2; font:700 12px/1.2 "Microsoft YaHei",sans-serif; }
-.equipment-tuning-summary-copy small { color:#758087; font:9px/1.3 "Microsoft YaHei",sans-serif; }
-.equipment-tuning-confirmation-toggle[hidden] { display:none; }
-.equipment-tuning-confirmation-toggle { --tuning-fast:#e1b75c; margin-right:3px; margin-left:3px; border-color:#244f5a; background:#081216; }
-.equipment-tuning-confirmation-toggle .equipment-tuning-mode-label { color:#5f919e; }
-.equipment-tuning-confirmation-toggle .equipment-tuning-mode-option { color:#9aaab1; }
-.equipment-tuning-confirmation-toggle .equipment-tuning-mode-option[aria-pressed="false"]:hover { color:#d8f8ff; background:#0f1b20; }
-.equipment-tuning-confirmation-toggle .equipment-tuning-confirmation-option[data-confirmation-mode="safe"][aria-pressed="true"] {
-    color:#06161b; background:var(--dls-crystal); box-shadow:inset 0 0 0 1px rgba(219,250,255,.48),0 0 8px rgba(var(--dls-crystal-rgb),.18);
+.equipment-tuning-summary-copy small { color:var(--wb-muted); font:10px/1.35 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-confirmation {
+    grid-column:1/-1;
+    min-width:0;
+    padding-top:6px;
+    display:grid;
+    grid-template-columns:max-content minmax(0,1fr);
+    align-items:center;
+    gap:4px 8px;
+    border-top:1px solid var(--wb-line);
 }
-.equipment-tuning-confirmation-toggle .equipment-tuning-confirmation-option[data-confirmation-mode="fast"][aria-pressed="true"] {
-    color:#17120a; background:var(--tuning-fast); box-shadow:inset 0 0 0 1px rgba(255,242,205,.38),0 0 8px rgba(225,183,92,.16);
+.equipment-tuning-confirmation-toggle { align-self:start; }
+.equipment-tuning-confirmation-option {
+    min-height:30px;
+    padding:0 9px;
+    border:1px solid var(--wb-line);
+    color:var(--wb-muted);
+    background:var(--wb-bg);
+    font:700 11px/1.2 "Microsoft YaHei",sans-serif;
 }
-.equipment-tuning-confirmation-toggle .equipment-tuning-confirmation-option[data-confirmation-mode="fast"][aria-pressed="false"] {
-    color:#f0d9a0; background:rgba(225,183,92,.10); box-shadow:inset 0 0 0 1px rgba(225,183,92,.25);
-    text-shadow:0 0 6px rgba(225,183,92,.22);
+.equipment-tuning-confirmation-option:hover:not(:disabled),
+.equipment-tuning-confirmation-option:focus-visible {
+    color:var(--wb-text);
+    border-color:var(--wb-focus);
+}
+.equipment-tuning-confirmation-option[aria-pressed="true"] {
+    color:var(--wb-bg);
+    border-color:var(--wb-accent);
+    background:var(--wb-accent);
+    box-shadow:var(--tuning-active-glow);
+}
+.equipment-tuning-confirmation-boundary,
+.equipment-tuning-confirmation-reason {
+    min-width:0;
+    margin:0;
+    color:var(--wb-muted);
+    font:600 10px/1.35 "Microsoft YaHei",sans-serif;
+}
+.equipment-tuning-confirmation-reason {
+    grid-column:1/-1;
+    color:var(--wb-warning);
 }
 .equipment-tuning-installed-state { display:flex; align-items:center; justify-content:flex-end; gap:3px; }
 .equipment-tuning-info-open {
@@ -90,7 +110,7 @@
     color:#9feafa; font:700 11px/1.2 "Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .equipment-tuning-info-open:hover,.equipment-tuning-info-open:focus-visible {
-    outline:0; border-color:var(--dls-crystal); color:#e4fbff;
+    border-color:var(--dls-crystal); color:var(--wb-text);
 }
 .equipment-tuning-status-icon {
     position:relative; width:25px; height:25px; padding:1px; display:grid; place-items:center; box-sizing:border-box;
@@ -98,6 +118,58 @@
 }
 .equipment-tuning-status-icon.tier { border-color:var(--tuning-tier-gold); box-shadow:inset 0 0 0 1px var(--tuning-tier-gold-soft); }
 .equipment-tuning-status-icon.mod { border-color:var(--equipment-mod-grade-color,#58636e); }
+.equipment-tuning-mod-slots {
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:3px;
+}
+.equipment-tuning-status-icon.mod.empty {
+    border-color:color-mix(in srgb,var(--wb-muted) 84%,var(--wb-line));
+    background:
+        linear-gradient(135deg,transparent 47%,rgba(var(--dls-crystal-rgb),.16) 48% 52%,transparent 53%),
+        var(--wb-bg);
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.06);
+    cursor:pointer;
+}
+.equipment-tuning-status-icon.tier.empty {
+    border-style:dashed;
+    background:color-mix(in srgb,var(--wb-bg) 88%,var(--tuning-tier-gold-soft));
+}
+.equipment-tuning-status-icon.tier.empty::before {
+    content:"";
+    width:8px;
+    height:8px;
+    box-sizing:border-box;
+    border:1px solid var(--tuning-tier-gold);
+    transform:rotate(45deg);
+    opacity:.66;
+}
+.equipment-tuning-status-icon.mod.empty:hover:not(:disabled),
+.equipment-tuning-status-icon.mod.empty:focus-visible {
+    border-color:var(--dls-crystal-dim);
+    background:
+        linear-gradient(135deg,transparent 47%,rgba(var(--dls-crystal-rgb),.28) 48% 52%,transparent 53%),
+        color-mix(in srgb,var(--wb-bg) 88%,var(--wb-surface));
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.18);
+}
+.equipment-tuning-status-icon.mod.empty::after {
+    content:"";
+    width:8px;
+    height:8px;
+    box-sizing:border-box;
+    border:1px solid var(--wb-muted);
+    transform:rotate(45deg);
+    opacity:.78;
+}
+.equipment-tuning-slot-capacity {
+    min-width:24px;
+    color:var(--wb-muted);
+    font:700 10px/1 Consolas,"Microsoft YaHei",sans-serif;
+    font-variant-numeric:tabular-nums;
+    text-align:right;
+    white-space:nowrap;
+}
 .equipment-tuning-status-icon:disabled { opacity:.7; cursor:default; }
 .equipment-tuning-status-icon > .kshop-icon,.equipment-tuning-status-icon > img { width:21px; height:21px; object-fit:contain; }
 .equipment-tuning-status-mark {
@@ -113,6 +185,7 @@
     filter:none; pointer-events:none;
 }
 .equipment-tuning-tabs { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid #233d44; background:#081014; }
+.equipment-tuning-tabs { grid-row:2; }
 .equipment-tuning-view[data-source-kind="loadout"] .equipment-tuning-tabs { grid-template-columns:repeat(3,1fr); }
 .equipment-tuning-tab {
     min-height:34px; padding:0 4px; border:0; border-right:1px solid #21363d; border-radius:0;
@@ -125,6 +198,7 @@
 }
 .equipment-tuning-tab:disabled { opacity:.4; cursor:default; }
 .equipment-tuning-info-panel {
+    grid-row:3;
     display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px 9px; padding:7px 9px;
     border-bottom:1px solid #28515b; background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.08),transparent),#081014;
 }
@@ -135,7 +209,24 @@
 .equipment-tuning-info-copy > p { margin:3px 0 0; color:#8aa0a6; font:10px/1.35 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-info-actions { display:flex; align-items:center; gap:4px; }
 .equipment-tuning-info-actions .equipment-tuning-action { min-height:40px; }
-.equipment-tuning-body { min-height:0; overflow:auto; padding:9px; scrollbar-width:thin; scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track); }
+.equipment-tuning-detail {
+    grid-row:4;
+    min-height:0;
+    overflow:auto;
+    scrollbar-width:thin;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+    scrollbar-gutter:stable;
+}
+.equipment-tuning-detail::-webkit-scrollbar { width:7px; height:7px; }
+.equipment-tuning-detail::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
+.equipment-tuning-detail::-webkit-scrollbar-thumb {
+    background:var(--wb-scrollbar-thumb);
+    border:1px solid var(--wb-scrollbar-thumb-border);
+}
+.equipment-tuning-detail::-webkit-scrollbar-thumb:hover { background:var(--wb-scrollbar-thumb-hover); }
+.equipment-tuning-detail::-webkit-scrollbar-button { display:none; width:0; height:0; }
+.equipment-tuning-detail::-webkit-scrollbar-corner { background:var(--wb-scrollbar-track); }
+.equipment-tuning-body { min-height:0; overflow:visible; padding:9px; }
 .equipment-tuning-empty { min-height:54px; display:grid; place-items:center; padding:8px; color:#69747a; font:10px/1.5 "Microsoft YaHei",sans-serif; text-align:center; }
 .equipment-tuning-enhance-reactor {
     position:relative; min-height:68px; margin-bottom:6px; padding:7px 9px 7px 72px; display:grid;
@@ -159,7 +250,7 @@
 .equipment-tuning-stone-core::before,.equipment-tuning-stone-core::after {
     content:""; position:absolute; inset:4px; border:1px solid rgba(var(--dls-crystal-rgb),.28); transform:rotate(45deg); pointer-events:none;
 }
-.equipment-tuning-stone-core::after { inset:10px; border-color:rgba(var(--dls-crystal-rgb),.12); animation:equipment-tuning-core-pulse 1.8s ease-in-out infinite; }
+.equipment-tuning-stone-core::after { inset:10px; border-color:rgba(var(--dls-crystal-rgb),.12); animation:equipment-tuning-core-pulse var(--wb-motion-ambient) var(--wb-ease-standard) infinite; }
 .equipment-tuning-stone-icon { position:relative; z-index:1; width:50px; height:50px; object-fit:contain; }
 .equipment-tuning-reactor-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .equipment-tuning-reactor-copy > span { color:#60c9df; font:9px/1.1 Consolas,sans-serif; letter-spacing:.13em; }
@@ -167,7 +258,7 @@
 .equipment-tuning-reactor-balance { min-width:0; display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 9px; }
 .equipment-tuning-reactor-balance > span { display:inline-flex; align-items:baseline; gap:5px; color:#8da8af; font:10px/1.25 "Microsoft YaHei",sans-serif; white-space:nowrap; }
 .equipment-tuning-reactor-balance strong { color:#c6f7ff; font:700 14px/1 Consolas,"Microsoft YaHei",sans-serif; text-shadow:0 0 6px rgba(var(--dls-crystal-rgb),.24); }
-.equipment-tuning-reactor-balance > em { color:#7fa1aa; font:normal 9px/1.3 "Microsoft YaHei",sans-serif; white-space:nowrap; }
+.equipment-tuning-reactor-balance > em { color:var(--wb-muted); font:normal 10px/1.35 "Microsoft YaHei",sans-serif; white-space:nowrap; }
 .equipment-tuning-reactor-balance > em b { color:#aeeffc; font:700 10px/1 Consolas,"Microsoft YaHei",sans-serif; }
 .equipment-tuning-reactor-balance > .equipment-tuning-reactor-pending { color:#62818a; }
 .equipment-tuning-reactor-readout { min-width:76px; padding-right:2px; display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
@@ -181,7 +272,7 @@
 .equipment-tuning-level-heading i { color:#68747a; font-style:normal; }
 .equipment-tuning-level-panel.capped { min-height:92px; align-content:center; border-color:#2b6979; }
 
-.equipment-tuning-cap-copy { margin:0; color:#78949d; font:9px/1.5 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-cap-copy { margin:0; color:var(--wb-muted); font:10px/1.5 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-level-controls { display:flex; align-items:center; gap:8px; }
 .equipment-tuning-level-stepper { display:grid; grid-template-columns:26px minmax(48px,64px) 26px; justify-content:center; gap:4px; flex:0 0 auto; }
 .equipment-tuning-level-step { min-width:0; padding:0; font:700 15px/1 Consolas,sans-serif; }
@@ -193,10 +284,10 @@
 .equipment-tuning-level-mark.active { border-color:var(--tuning-active-border); color:#d9faff; background:var(--tuning-active-bg); box-shadow:var(--tuning-active-inset),var(--tuning-active-glow); }
 .equipment-tuning-level-mark:disabled { opacity:.4; cursor:default; }
 .equipment-tuning-level-cap { width:100%; }
-.equipment-tuning-hint { margin:8px 0 0; color:#7b878d; font:9px/1.5 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-hint { margin:8px 0 0; color:var(--wb-muted); font:10px/1.5 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-action,.equipment-tuning-retry {
-    min-height:28px; padding:0 9px; border:1px solid #286577; border-radius:0;
-    background:#102229; color:#b9edf7; font:700 9px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
+    min-height:28px; padding:0 9px; border:1px solid var(--dls-crystal-dim); border-radius:0;
+    background:var(--wb-surface); color:var(--dls-crystal-bright); font:700 11px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .equipment-tuning-action:hover:not(:disabled),.equipment-tuning-retry:hover:not(:disabled) { border-color:#45d5f5; color:#effdff; }
 .equipment-tuning-action:disabled,.equipment-tuning-retry:disabled { opacity:.35; cursor:default; }
@@ -214,7 +305,7 @@
 .equipment-tuning-convert-item .equipment-tuning-empty-mark { width:40px; height:40px; font-size:17px; }
 .equipment-tuning-convert-item > span { min-width:0; display:flex; flex-direction:column; gap:2px; }
 .equipment-tuning-convert-item b,.equipment-tuning-convert-item small,.equipment-tuning-convert-item em { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.equipment-tuning-convert-item b { color:#e1e5e7; font:700 9px/1.2 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-convert-item b { color:var(--wb-text); font:700 11px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-convert-item small { color:#758087; font:10px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-convert-item em { color:#83d8e8; font:normal 9px/1.2 Consolas,"Microsoft YaHei",sans-serif; }
 .equipment-tuning-convert-item.inspectable { padding-right:30px; }
@@ -224,23 +315,23 @@
     font:700 12px/1 Consolas,sans-serif; cursor:zoom-in;
 }
 .equipment-tuning-convert-inspect:hover:not(:disabled),.equipment-tuning-convert-inspect:focus-visible {
-    outline:0; border-color:var(--dls-crystal); box-shadow:0 0 7px rgba(var(--dls-crystal-rgb),.25);
+    border-color:var(--dls-crystal); box-shadow:0 0 7px rgba(var(--dls-crystal-rgb),.25);
 }
 .equipment-tuning-convert-inspect:disabled { opacity:.42; cursor:default; }
 .equipment-tuning-conversion-heading { margin:9px 0 5px; display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
-.equipment-tuning-conversion-heading b { color:#9ba6ac; font:700 9px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.08em; }
+.equipment-tuning-conversion-heading b { color:var(--wb-text); font:700 11px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.04em; }
 .equipment-tuning-conversion-heading span { color:#68757b; font:10px/1.2 Consolas,"Microsoft YaHei",sans-serif; }
 .equipment-tuning-conversion-candidates { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); gap:5px; }
 .equipment-tuning-conversion-card {
     position:relative; min-width:0; min-height:50px; padding:5px; display:grid; grid-template-columns:38px minmax(0,1fr); align-items:center; gap:6px;
     border:1px solid #333b40; border-radius:0; background:#11171b; color:#cdd4d8; text-align:left; cursor:pointer;
 }
-.equipment-tuning-conversion-card:hover,.equipment-tuning-conversion-card:focus-visible { outline:0; border-color:#41cbe9; box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.16); }
+.equipment-tuning-conversion-card:hover,.equipment-tuning-conversion-card:focus-visible { border-color:var(--wb-focus); box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.16); }
 .equipment-tuning-conversion-card.selected { border-color:var(--tuning-active-border); background:var(--tuning-active-bg); box-shadow:var(--tuning-active-inset),var(--tuning-active-glow); }
 .equipment-tuning-conversion-card > img,.equipment-tuning-conversion-card > .kshop-icon,.equipment-tuning-conversion-card > .kshop-icon-placeholder { width:36px; height:36px; object-fit:contain; }
 .equipment-tuning-conversion-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .equipment-tuning-conversion-copy b,.equipment-tuning-conversion-copy small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.equipment-tuning-conversion-copy b { font:700 9px/1.2 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-conversion-copy b { font:700 11px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-conversion-copy small { color:#77848b; font:10px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-conversion-level {
     position:absolute; right:2px; bottom:2px; min-width:16px; padding:1px 2px; box-sizing:border-box;
@@ -254,11 +345,54 @@
     border:1px solid #333b40; border-radius:0; background:#11171b; color:#cdd4d8; text-align:left; cursor:pointer;
 }
 .equipment-tuning-candidate.available { border-left:3px solid var(--equipment-mod-grade-color,#b78938); }
-.equipment-tuning-candidate.blocked { opacity:.42; cursor:default; }
+.equipment-tuning-candidate.is-intent-pending,
+.equipment-tuning-installed-entry.is-intent-pending > .equipment-tuning-installed-card,
+.equipment-tuning-installed-entry.is-intent-pending > .equipment-tuning-installed-empty {
+    opacity:1;
+    border-color:var(--dls-crystal);
+    box-shadow:
+        inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.44),
+        0 0 0 1px color-mix(in srgb,var(--dls-crystal) 54%,transparent),
+        0 0 9px rgba(var(--dls-crystal-rgb),.18);
+}
+.equipment-tuning-candidate.is-intent-pending::after,
+.equipment-tuning-installed-entry.is-intent-pending::after {
+    content:"…";
+    position:absolute;
+    z-index:3;
+    top:2px;
+    right:2px;
+    min-width:14px;
+    height:14px;
+    display:grid;
+    place-items:center;
+    box-sizing:border-box;
+    border:1px solid var(--dls-crystal-dim);
+    background:var(--wb-bg);
+    color:var(--dls-crystal);
+    font:700 10px/1 Consolas,sans-serif;
+    pointer-events:none;
+}
+.equipment-tuning-installed-entry.is-intent-pending[data-pending-action="detach"]::after {
+    content:"−";
+    color:color-mix(in srgb,var(--wb-danger) 55%,var(--wb-text));
+    border-color:color-mix(in srgb,var(--wb-danger) 64%,var(--wb-line));
+}
+.equipment-tuning-candidate.is-intent-pending:disabled,
+.equipment-tuning-installed-entry.is-intent-pending > button:disabled {
+    opacity:1;
+}
+.equipment-tuning-candidate.blocked {
+    color:var(--wb-muted);
+    border-color:var(--wb-line);
+    background:var(--wb-surface);
+    cursor:help;
+}
+.equipment-tuning-candidate.blocked small { color:var(--wb-warning); }
 .equipment-tuning-candidate > img,.equipment-tuning-candidate > .kshop-icon-placeholder { width:36px; height:36px; }
 .equipment-tuning-candidate span { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .equipment-tuning-candidate b,.equipment-tuning-candidate small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.equipment-tuning-candidate b { font:700 10px/1.2 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-candidate b { font:700 11px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-candidate small { color:#77848b; font:10px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-role-glyph {
     position:absolute; left:2px; bottom:2px; width:5px; height:5px;
@@ -273,7 +407,7 @@
     color:#c8d0d6; background:rgba(8,11,14,.92); border:1px solid rgba(154,166,180,.35);
     font:700 9px/1 Consolas,sans-serif; text-align:center; pointer-events:none;
 }
-.equipment-tuning-section-title { margin:0 0 6px; color:#9ba6ac; font:700 9px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.08em; }
+.equipment-tuning-section-title { margin:0 0 6px; color:var(--wb-text); font:700 11px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.04em; }
 .equipment-tuning-section-title:not(:first-child) { margin-top:10px; }
 .equipment-tuning-installed { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; }
 .equipment-tuning-installed-entry { position:relative; min-width:0; min-height:42px; }
@@ -282,23 +416,72 @@
     align-items:center; gap:5px; border:1px solid var(--equipment-mod-grade-color,#58636e);
     border-radius:0; background:#101519; color:#d4dadd; text-align:left; cursor:pointer;
 }
-.equipment-tuning-installed-card:hover:not(:disabled),.equipment-tuning-installed-card:focus-visible { outline:0; box-shadow:inset 0 0 0 1px #e9d193; }
+.equipment-tuning-installed-card:hover:not(:disabled),.equipment-tuning-installed-card:focus-visible { box-shadow:inset 0 0 0 1px var(--tuning-tier-gold); }
 .equipment-tuning-installed-card.selected { border-color:var(--tuning-active-border); background:var(--tuning-active-bg); box-shadow:var(--tuning-active-inset),var(--tuning-active-glow); }
 .equipment-tuning-installed-card:disabled { opacity:.5; cursor:default; }
 .equipment-tuning-installed-card > .kshop-icon,.equipment-tuning-installed-card > img { width:32px; height:32px; object-fit:contain; }
 .equipment-tuning-installed-card > span { min-width:0; display:flex; flex-direction:column; gap:2px; }
 .equipment-tuning-installed-card b,.equipment-tuning-installed-card small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.equipment-tuning-installed-card b { font:700 9px/1.2 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-installed-card b { font:700 11px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-installed-card small { color:#77848b; font:10px/1.2 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-installed-empty {
+    position:relative; width:100%; min-width:0; min-height:42px; padding:4px;
+    display:grid; grid-template-columns:34px minmax(0,1fr); align-items:center; gap:5px;
+    border:1px dashed color-mix(in srgb,var(--wb-semantic-disabled) 70%,transparent);
+    border-radius:0; background:color-mix(in srgb,var(--wb-bg) 82%,var(--wb-surface));
+    color:var(--wb-muted); text-align:left; cursor:pointer;
+}
+.equipment-tuning-installed-empty:hover:not(:disabled),
+.equipment-tuning-installed-empty:focus-visible {
+    color:var(--wb-text);
+    border-color:var(--dls-crystal-dim);
+    background:linear-gradient(110deg,rgba(var(--dls-crystal-rgb),.08),transparent 70%),var(--wb-bg);
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.12);
+}
+.equipment-tuning-installed-empty:disabled { opacity:.5; cursor:default; }
+.equipment-tuning-installed-empty-glyph {
+    width:32px; height:32px; display:grid; place-items:center; box-sizing:border-box;
+    border:1px solid color-mix(in srgb,var(--wb-semantic-disabled) 58%,transparent);
+    background:
+        linear-gradient(135deg,transparent 47%,rgba(var(--dls-crystal-rgb),.12) 48% 52%,transparent 53%),
+        var(--wb-bg);
+}
+.equipment-tuning-installed-empty-glyph i {
+    width:9px; height:9px; box-sizing:border-box; border:1px solid currentColor;
+    transform:rotate(45deg); opacity:.72;
+}
+.equipment-tuning-installed-empty-copy {
+    min-width:0; display:flex; flex-direction:column; gap:2px;
+}
+.equipment-tuning-installed-empty-copy b,
+.equipment-tuning-installed-empty-copy small {
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.equipment-tuning-installed-empty-copy b { font:700 11px/1.2 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-installed-empty-copy small { color:var(--wb-semantic-disabled); font:10px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-installed-quick-detach {
     position:absolute; z-index:2; top:2px; right:2px; width:16px; height:16px; padding:0; display:grid; place-items:center;
     border:1px solid #5d3030; background:#170d0e; color:#d78383; font:700 12px/1 Consolas,sans-serif; cursor:pointer;
 }
 .equipment-tuning-installed-quick-detach:hover:not(:disabled),.equipment-tuning-installed-quick-detach:focus-visible {
-    outline:0; border-color:#d36f6f; background:#351516; color:#ffd0d0;
+    color:color-mix(in srgb,var(--wb-danger) 55%,var(--wb-text));
+    border-color:var(--wb-danger);
+    background:color-mix(in srgb,var(--wb-danger) 18%,var(--wb-bg));
 }
 .equipment-tuning-installed-quick-detach:disabled { opacity:.38; cursor:default; }
-.equipment-tuning-detach-all,.equipment-tuning-detach-selected,.equipment-tuning-replace-cancel { min-height:42px; }
+.equipment-tuning-installed-rail {
+    display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:5px;
+}
+.equipment-tuning-installed-actions {
+    display:grid; place-items:stretch; align-self:start;
+}
+.equipment-tuning-detach-all {
+    width:42px; height:42px; min-height:42px; padding:0; display:grid; place-items:center;
+    font-size:0;
+}
+.equipment-tuning-detach-all::before {
+    content:"××"; font:700 12px/1 Consolas,sans-serif; letter-spacing:-2px;
+}
 .equipment-tuning-mod-filter {
     position:relative; margin:0 0 7px; padding:4px; display:grid; gap:4px; overflow:hidden;
     border:1px solid rgba(var(--dls-crystal-rgb),.18); background:repeating-linear-gradient(135deg,rgba(var(--dls-crystal-rgb),.018) 0 12px,transparent 12px 24px),#071014;
@@ -331,19 +514,27 @@
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed {
     display:flex; flex-wrap:wrap; gap:var(--workbench-compact-gap,4px);
 }
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-rail {
+    grid-template-columns:minmax(0,1fr) var(--workbench-compact-tile-size,48px);
+    gap:var(--workbench-compact-gap,4px);
+}
+.item-grid-compact .equipment-tuning-view .equipment-tuning-detach-all {
+    width:var(--workbench-compact-tile-size,48px);
+    height:var(--workbench-compact-tile-size,48px);
+    min-height:var(--workbench-compact-tile-size,48px);
+}
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-entry {
     width:var(--workbench-compact-tile-size,48px); height:var(--workbench-compact-tile-size,48px);
     min-height:var(--workbench-compact-tile-size,48px);
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card,
-.item-grid-compact .equipment-tuning-view .equipment-tuning-detach-all,
-.item-grid-compact .equipment-tuning-view .equipment-tuning-detach-selected,
-.item-grid-compact .equipment-tuning-view .equipment-tuning-replace-cancel {
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-empty {
     width:var(--workbench-compact-tile-size,48px); height:var(--workbench-compact-tile-size,48px);
     min-height:var(--workbench-compact-tile-size,48px); padding:3px; box-sizing:border-box;
 }
-.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card {
-    display:grid; grid-template-columns:1fr; place-items:center; gap:0; padding:3px;
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card,
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-empty {
+    display:grid; grid-template-columns:1fr; place-items:center; gap:0;
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach { top:1px; right:1px; width:14px; height:14px; font-size:10px; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card > .kshop-icon,
@@ -351,20 +542,19 @@
     width:var(--workbench-compact-icon-size,40px); height:var(--workbench-compact-icon-size,40px);
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card > span { display:none; }
-.item-grid-compact .equipment-tuning-view .equipment-tuning-detach-all,
-.item-grid-compact .equipment-tuning-view .equipment-tuning-detach-selected,
-.item-grid-compact .equipment-tuning-view .equipment-tuning-replace-cancel { padding:0; font-size:0; display:grid; place-items:center; }
-.item-grid-compact .equipment-tuning-view .equipment-tuning-detach-selected::before { content:'✕'; font-size:13px; }
-.item-grid-compact .equipment-tuning-view .equipment-tuning-replace-cancel::before { content:'↩'; font-size:13px; }
-.item-grid-compact .equipment-tuning-view .equipment-tuning-detach-all::before { content:'✕✕'; font-size:10px; letter-spacing:-2px; }
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-empty-glyph {
+    width:var(--workbench-compact-icon-size,40px);
+    height:var(--workbench-compact-icon-size,40px);
+}
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-empty-copy { display:none; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action { position:relative; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action[data-title]:hover::after,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action[data-title]:focus-visible::after,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach[data-title]:hover::after,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach[data-title]:focus-visible::after {
     content:attr(data-title); position:absolute; left:50%; bottom:calc(100% + 4px); transform:translateX(-50%);
-    padding:3px 6px; border:1px solid var(--dls-crystal-soft,#4a9fb3); border-radius:1px; background:#05080a; color:#d9faff;
-    font:9px/1.2 "Microsoft YaHei",sans-serif; white-space:nowrap; pointer-events:none; z-index:10;
+    padding:3px 6px; border:1px solid var(--dls-crystal-soft); border-radius:1px; background:var(--wb-bg); color:var(--wb-text);
+    font:10px/1.25 "Microsoft YaHei",sans-serif; white-space:nowrap; pointer-events:none; z-index:10;
     box-shadow:0 0 8px rgba(var(--dls-crystal-rgb),.18);
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-candidates {
@@ -383,7 +573,8 @@
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-candidate:hover:not(:disabled),
 .item-grid-compact .equipment-tuning-view .equipment-tuning-candidate:focus-visible {
-    outline:0; box-shadow:inset 0 0 0 1px #f2d17e,0 0 5px color-mix(in srgb,var(--equipment-mod-grade-color,#58636e) 55%,transparent);
+    box-shadow:inset 0 0 0 1px var(--tuning-tier-gold),
+        0 0 5px color-mix(in srgb,var(--equipment-mod-grade-color,var(--wb-line)) 55%,transparent);
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-candidate.blocked::after {
     content:'×'; position:absolute; right:1px; top:1px; width:13px; height:13px; display:grid; place-items:center;
@@ -398,7 +589,7 @@
     filter:none;
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-owned-count {
-    right:-1px; bottom:-1px; display:block !important; max-width:36px; z-index:5;
+    right:-1px; bottom:-1px; display:block; max-width:36px; z-index:5;
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-candidate > img,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-candidate > .kshop-icon,
@@ -440,23 +631,22 @@
 .inventory-workbench-panel .workbench-modal[data-modal-kind="equipment-tuning-help"] { width:510px; }
 .inventory-workbench-panel .workbench-modal[data-modal-kind="equipment-tuning-help"] .workbench-modal-message,
 .inventory-workbench-panel .workbench-modal[data-modal-kind="equipment-tuning-help"] .workbench-modal-detail { white-space:pre-line; }
-.equipment-tuning-preview { min-height:78px; max-height:172px; overflow:auto; padding:8px; border-top:1px solid #28515b; background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.04),transparent 45%),#081014; }
+.equipment-tuning-preview { min-height:78px; overflow:visible; padding:8px; border-top:1px solid var(--dls-crystal-dim); background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.04),transparent 45%),var(--wb-bg); }
 .equipment-tuning-preview.is-empty:not(.enhance-compact) { min-height:0; max-height:0; padding:0; border:0; background:transparent; overflow:hidden; }
 .equipment-tuning-preview.is-empty:not(.enhance-compact) .equipment-tuning-empty { display:none; }
 .equipment-tuning-preview.enhance-compact { min-height:0; max-height:none; overflow:visible; padding:7px 8px; }
-.equipment-tuning-preview.enhance-compact .equipment-tuning-commit { margin-top:0; }
 .equipment-tuning-preview.enhance-compact .equipment-tuning-empty { min-height:30px; }
 .equipment-tuning-preview .equipment-tuning-empty { min-height:54px; padding:0; }
 .equipment-tuning-preview-heading { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
 .equipment-tuning-preview-heading b { color:#bceffc; font:700 11px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-preview-heading span { color:#77838a; font:10px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-equipment-deltas { margin-top:6px; display:grid; gap:3px; }
-.equipment-tuning-equipment-delta { display:grid; grid-template-columns:minmax(72px,.7fr) minmax(0,1.3fr); gap:8px; color:#98a3a9; font:9px/1.35 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-equipment-delta { display:grid; grid-template-columns:minmax(72px,.7fr) minmax(0,1.3fr); gap:8px; color:var(--wb-muted); font:10px/1.4 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-equipment-delta b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#d9e0e3; }
 .equipment-tuning-equipment-delta span { overflow-wrap:anywhere; }
 .equipment-tuning-equipment-delta i { color:var(--tuning-delta); font-style:normal; }
 .equipment-tuning-material-deltas { margin-top:6px; display:grid; gap:3px; }
-.equipment-tuning-material-delta { min-height:24px; display:flex; align-items:center; justify-content:space-between; gap:8px; color:#919ca2; font:9px/1.3 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-material-delta { min-height:24px; display:flex; align-items:center; justify-content:space-between; gap:8px; color:var(--wb-muted); font:10px/1.35 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-material-delta b { color:var(--tuning-delta); font-family:Consolas,"Microsoft YaHei",sans-serif; }
 .equipment-tuning-material-label { min-width:0; display:flex; align-items:center; gap:5px; }
 .equipment-tuning-material-label em { overflow:hidden; font-style:normal; text-overflow:ellipsis; white-space:nowrap; }
@@ -464,25 +654,75 @@
 .equipment-tuning-material-delta.strengthening-stone { padding:3px 5px; border-left:2px solid var(--dls-crystal); background:rgba(var(--dls-crystal-rgb),.045); }
 .equipment-tuning-material-delta.strengthening-stone em { color:#a8eaf6; }
 .equipment-tuning-material-delta.strengthening-stone b { color:#c7f6ff; }
-.equipment-tuning-removed { margin:6px 0 0; color:#d08b80; font:9px/1.35 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-removed { margin:6px 0 0; color:color-mix(in srgb,var(--wb-role-reject) 68%,var(--wb-text)); font:10px/1.4 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-commit {
-    width:100%; margin-top:7px; min-height:40px;
+    width:100%; min-height:40px;
     border-color:var(--dls-crystal-deep); color:#d8f9ff;
     background:linear-gradient(180deg,rgba(var(--dls-crystal-rgb),.34),rgba(16,66,78,.72));
     box-shadow:inset 0 0 16px rgba(var(--dls-crystal-rgb),.09),0 0 8px rgba(var(--dls-crystal-rgb),.08);
 }
+.equipment-tuning-commit-bar {
+    grid-row:5;
+    position:relative;
+    z-index:2;
+    flex:0 0 auto;
+    background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.055),transparent 62%),var(--wb-bg);
+    box-shadow:0 -5px 13px color-mix(in srgb,var(--wb-bg) 72%,transparent);
+}
+.equipment-tuning-commit-bar .workbench-commit-status { padding-left:2px; }
 .workbench-shell .equipment-tuning-commit { min-height:40px; }
 .equipment-tuning-commit:hover:not(:disabled) { border-color:var(--dls-crystal); color:#fff; box-shadow:inset 0 0 18px rgba(var(--dls-crystal-rgb),.18),0 0 11px rgba(var(--dls-crystal-rgb),.22); }
 .item-grid-compact .equipment-tuning-enhance-reactor { min-height:68px; padding-left:71px; }
 .item-grid-compact .equipment-tuning-stone-core { width:54px; height:54px; }
 .item-grid-compact .equipment-tuning-stone-icon { width:49px; height:49px; }
-.item-grid-compact .equipment-tuning-reactor-balance > span { font-size:9px; }
+.item-grid-compact .equipment-tuning-reactor-balance > span { font-size:10px; }
 .item-grid-compact .equipment-tuning-reactor-balance strong { font-size:13px; }
-.item-grid-compact .equipment-tuning-reactor-balance > em { font-size:9px; }
+.item-grid-compact .equipment-tuning-reactor-balance > em { font-size:10px; }
 .inventory-workbench-panel[data-workbench-view="tuning"] .inventory-owned-backpack .inventory-discard-btn { display:none !important; }
-.inventory-workbench-panel[data-workbench-view="tuning"] .inventory-slot-card.equipment-conversion-source { box-shadow:inset 0 0 0 2px #45d5f5; }
-.inventory-workbench-panel[data-workbench-view="tuning"] .inventory-slot-card.equipment-conversion-source::after { content:"源"; position:absolute; right:2px; top:2px; padding:1px 3px; background:#2fb8d5; color:#061217; font:700 10px/1 "Microsoft YaHei",sans-serif; }
+.inventory-workbench-panel[data-workbench-view="tuning"] .inventory-slot-card.equipment-tuning-authority-source {
+    box-shadow:inset 0 0 0 2px var(--wb-focus);
+}
+.character-build-slot.equipment-tuning-authority-source .character-build-slot-card {
+    box-shadow:inset 0 0 0 2px var(--wb-focus);
+}
+.inventory-workbench-panel[data-workbench-view="tuning"] .inventory-slot-card.equipment-tuning-authority-source::after,
+.character-build-slot.equipment-tuning-authority-source::after {
+    content:"";
+    position:absolute;
+    right:3px;
+    top:3px;
+    z-index:4;
+    width:12px;
+    height:12px;
+    box-sizing:border-box;
+    display:grid;
+    place-items:center;
+    border:1px solid var(--wb-focus);
+    background:
+        linear-gradient(90deg,transparent 44%,var(--wb-focus) 45% 55%,transparent 56%),
+        linear-gradient(transparent 44%,var(--wb-focus) 45% 55%,transparent 56%),
+        radial-gradient(circle,var(--wb-focus) 0 1px,transparent 1.5px),
+        var(--wb-bg);
+    box-shadow:
+        0 0 5px rgba(var(--dls-crystal-rgb),.38),
+        inset 0 0 0 2px color-mix(in srgb,var(--wb-bg) 86%,transparent);
+    pointer-events:none;
+}
+.inventory-workbench-panel[data-workbench-view="tuning"] .inventory-slot-card.equipment-conversion-source::after,
+.character-build-slot.equipment-conversion-source::after {
+    content:"↔";
+    color:var(--wb-focus);
+    background:var(--wb-bg);
+    font:700 10px/1 Consolas,sans-serif;
+    text-shadow:0 0 4px rgba(var(--dls-crystal-rgb),.55);
+}
+.kshop-workbench .workbench-mode-btn.equipment-tuning-view-switch[aria-pressed="true"] {
+    color:var(--wb-bg);
+    border-color:var(--dls-crystal);
+    background:var(--dls-crystal);
+    box-shadow:var(--tuning-active-inset),var(--tuning-active-glow);
+}
 @media (prefers-reduced-motion:reduce) {
-    .equipment-tuning-stone-core::after { animation:none; opacity:.55; }
+    .equipment-tuning-stone-core::after { opacity:.55; }
 }
 .skills-tooltip .skills-tt-icon { display:block; width:100%; height:100%; object-fit:contain; }

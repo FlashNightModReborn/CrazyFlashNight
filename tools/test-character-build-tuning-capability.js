@@ -113,11 +113,16 @@ function fakeElement(attributes) {
         getAttribute:function(name) {
             return Object.prototype.hasOwnProperty.call(attrs, name) ? attrs[name] : null;
         },
+        closest:function(selector) {
+            return selector === '[data-build-action]'
+                && attrs['data-build-action'] ? this : null;
+        },
         setAttribute:function(name, value) { attrs[name] = String(value); },
         removeAttribute:function(name) { delete attrs[name]; }
     };
 }
 
+let selectedCandidate = null;
 let selectedSlotKey = 'weapon:手雷';
 let selectedSlot = fakeElement({
     'data-empty':'false',
@@ -125,9 +130,9 @@ let selectedSlot = fakeElement({
     'data-tunable':'false',
     'data-tuning-reason':'数量型手雷不能调制'
 });
-const commitButton = fakeElement();
-const tuneButton = fakeElement();
-const unequipButton = fakeElement();
+const commitButton = fakeElement({'data-build-action':'commit'});
+const tuneButton = fakeElement({'data-build-action':'tune'});
+const unequipButton = fakeElement({'data-build-action':'unequip'});
 const root = {
     querySelector:function(selector) {
         if (selector === '[data-build-action="commit"]') return commitButton;
@@ -142,15 +147,16 @@ const root = {
     setAttribute:function() {},
     contains:function() { return true; }
 };
+let tuneIntents = 0;
 const actionView = new ActionModule.ActionView({
     root:root,
     candidateList:{},
-    getCandidate:function() { return null; },
+    getCandidate:function() { return selectedCandidate; },
     getCandidateKey:function() { return ''; },
     getSlotKey:function() { return selectedSlotKey; },
     selectCandidate:function() {},
     onCommit:function() {},
-    onTune:function() {},
+    onTune:function() { tuneIntents += 1; },
     onUnequip:function() {},
     onReconcile:function() {}
 });
@@ -207,6 +213,51 @@ equal({
     ariaLabel:'调制当前装备',
     title:null
 }, 'valid equipment exposes the ordinary tuning action');
+
+selectedCandidate = {
+    name:'候选长枪',
+    tunable:true,
+    tuningReason:'',
+    blocked:false
+};
+selectedSlot = fakeElement({
+    'data-empty':'false',
+    'data-slot-kind':'weapon',
+    'data-tunable':'false',
+    'data-tuning-reason':'当前装备不能调制'
+});
+actionView.sync();
+equal({
+    disabled:tuneButton.disabled,
+    label:tuneButton.textContent,
+    ariaLabel:tuneButton.getAttribute('aria-label')
+}, {
+    disabled:false,
+    label:'调制候选',
+    ariaLabel:'调制所选候选：候选长枪'
+}, 'selected tunable candidate takes action-target precedence over the equipped loadout');
+actionView._handleClick({target:tuneButton});
+equal(tuneIntents, 1, 'candidate tuning activation emits one explicit intent');
+
+selectedCandidate = {
+    name:'无效候选',
+    tunable:false,
+    tuningReason:'候选位置凭据已失效，请重新选择当前槽位',
+    blocked:false
+};
+actionView.sync();
+actionView._handleClick({target:tuneButton});
+equal({
+    disabled:tuneButton.disabled,
+    label:tuneButton.textContent,
+    title:tuneButton.getAttribute('title'),
+    tuneIntents:tuneIntents
+}, {
+    disabled:true,
+    label:'不可调制',
+    title:'候选位置凭据已失效，请重新选择当前槽位',
+    tuneIntents:1
+}, 'untunable candidate stays readable and emits zero tuning intent');
 actionView.destroy();
 
 function exitAdapter(mode) {

@@ -25,11 +25,14 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/workbench-lifecycle.js"></script>
 <script src="modules/workbench-focus.js"></script>
 <script src="modules/workbench-primitives.js"></script>
+<script src="modules/workbench-profile.js"></script>
 <script src="modules/workbench.js"></script>
 <script src="modules/workbench-components.js"></script>
 <script src="modules/workbench-inspection-viewport.js"></script>
 <script src="modules/inventory-ui.js"></script>
 <script src="modules/character-build/character-build-action-view.js"></script>
+<script src="modules/character-build/character-build-candidate-state.js"></script>
+<script src="modules/character-build/character-build-facet-counts.js"></script>
 <script src="modules/character-build/character-build-stats-view.js"></script>
 <script src="modules/character-build/character-build-doll-preview.js"></script>
 <script src="modules/character-build/character-build-template.js"></script>
@@ -39,6 +42,32 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     'use strict';
 
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
+    function facet(id, count, children) {
+        return {
+            id:id, label:id, order:0, count:count, children:children || []
+        };
+    }
+    function candidateFacets() {
+        return {
+            scope:'all',
+            filterFacets:[
+                facet('armor', 8, [
+                    facet('头部装备', 2),
+                    facet('上装装备', 1),
+                    facet('手部装备', 4),
+                    facet('脚部装备', 1)
+                ]),
+                facet('weapon', 11, [
+                    facet('长枪', 3),
+                    facet('手枪', 2),
+                    facet('手枪2', 1),
+                    facet('手雷', 5)
+                ]),
+                facet('consumable', 7, [facet('药剂', 7)])
+            ],
+            filterItemCount:26
+        };
+    }
     function item(name, meta, fields) {
         var quantity = /×\s*(\d+)/.exec(name);
         var level = /\+(\d+)/.exec(meta || '');
@@ -81,14 +110,19 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 summary:longText
                     ? '这是用于验证长中文摘要自动折行、截断且不会挤压直接操作区域的测试内容。'
                     : '伤害与机动的权威对比摘要；选择只更新临时预览。',
+                tunable:index % 5 >= 1,
+                tuningReason:index % 5 >= 1 ? '' : '该装备缺少有效的强化等级',
                 presentation:{
                     name:displayName, displayName:displayName, icon:name,
-                    itemKind:'equipment', enhancementLevel:index % 5,
+                    itemKind:'equipment', majorType:'武器', use:'长枪',
+                    enhancementLevel:index % 5,
                     tierSlotAvailable:true, tierSlotUsed:index % 2 === 0,
                     modSlotCapacity:3, modSlotUsed:index % 3
                 },
                 physicalSlot:index,
-                blocked:!!blocked
+                blocked:!!blocked,
+                blockedReason:blocked
+                    ? '候选与当前槽位不兼容；当前装备不会改变。' : ''
             };
         });
     }
@@ -118,10 +152,14 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             drug4:item('解毒剂 × 4','异常清除')
         },
         candidates:candidates(false, false),
+        candidateFacets:candidateFacets(),
         stats:CharacterBuildStatsFixture.create()
     };
 
     var fixtures = {full:base};
+    fixtures.unknown = clone(base);
+    fixtures.unknown.playerName = '旧协议未知计数';
+    delete fixtures.unknown.candidateFacets;
     fixtures.empty = clone(base);
     fixtures.empty.playerName = '空槽校验';
     fixtures.empty.equipment['头部装备'] = null;
@@ -149,6 +187,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     }];
 
     var shell = new Workbench.DualPaneShell({
+        profile:'character-build',
         title:'角色构筑',
         status:'已同步',
         leftLabel:'背包',
@@ -183,7 +222,9 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 
     var scenario = 'full';
     var view = null;
-    var actionLog = {commits:[], unequips:0, reconciles:0};
+    var actionLog = {commits:[], unequips:0, reconciles:0, candidateReads:[]};
+    var candidateReadMode = 'sync';
+    var pendingCandidateSelection = null;
     var storageButton = headerButton('storage', '收纳');
     var statsButton = headerButton('stats', '个人信息', function() {
         view.setStats(fixtures[scenario].stats);
@@ -204,7 +245,14 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             return '<img class="' + className + '" data-icon-name="' + safeName
                 + '" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 fill=%22%233dd5ff%22/%3E%3Cpath d=%22M3 8h10M8 3v10%22 stroke=%22%2305090c%22/%3E%3C/svg%3E" alt="">';
         },
-        onSlotSelect:function() { return clone(fixtures[scenario].candidates); },
+        onSlotSelect:function(selection) {
+            actionLog.candidateReads.push(clone(selection));
+            if (candidateReadMode === 'hold') {
+                pendingCandidateSelection = clone(selection);
+                return 'candidate-read-held';
+            }
+            return clone(fixtures[scenario].candidates);
+        },
         onCommitCandidate:function(candidate) {
             actionLog.commits.push(candidate && candidate.key);
             return !!candidate;
@@ -247,6 +295,20 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             view.setDensity(mode);
             return view.debugState();
         },
+        holdCandidateRead:function() {
+            candidateReadMode = 'hold';
+            pendingCandidateSelection = null;
+            return true;
+        },
+        resolveCandidateRead:function(kind) {
+            var selection = pendingCandidateSelection;
+            pendingCandidateSelection = null;
+            candidateReadMode = 'sync';
+            if (!selection) return false;
+            if (kind === 'error') return view.setCandidateFailure(selection.requestKey);
+            return view.setCandidates(selection.requestKey,
+                kind === 'empty' ? [] : clone(fixtures[scenario].candidates));
+        },
         reset:function() {
             view.clearCandidateSelection();
             view.setDensity('full');
@@ -254,6 +316,9 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             actionLog.commits = [];
             actionLog.unequips = 0;
             actionLog.reconciles = 0;
+            actionLog.candidateReads = [];
+            candidateReadMode = 'sync';
+            pendingCandidateSelection = null;
             return this.setScenario('full');
         }
     };

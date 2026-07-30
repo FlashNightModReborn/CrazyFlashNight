@@ -100,6 +100,114 @@ namespace CF7Launcher.Tests.Bus
             Assert.Null(rejectionReason);
         }
 
+        [Fact]
+        public void NativeTuningOpenRequestId_RequiresExactTupleAndOpaqueToken()
+        {
+            JObject request =
+                JObject.Parse(
+                    "{\"task\":\"panel_request\","
+                    + "\"panel\":\"workbench\","
+                    + "\"source\":\"nativehud_equipment_tuning\","
+                    + "\"initData\":{\"profile\":\"battlebox\",\"view\":\"tuning\"},"
+                    + "\"openRequestId\":\"tuning.open.1.valid\"}");
+
+            string openRequestId;
+            string rejectionReason;
+            Assert.True(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    request,
+                    "workbench",
+                    "nativehud_equipment_tuning",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Equal(
+                "tuning.open.1.valid",
+                openRequestId);
+            Assert.Null(rejectionReason);
+
+            request.Remove("openRequestId");
+            Assert.False(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    request,
+                    "workbench",
+                    "nativehud_equipment_tuning",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Equal(
+                "missing_open_request_id",
+                rejectionReason);
+        }
+
+        [Theory]
+        [InlineData(
+            "{\"task\":\"panel_request\",\"panel\":\"workbench\",\"source\":\"nativehud_equipment_tunin\",\"initData\":{\"profile\":\"battlebox\",\"view\":\"tuning\"},\"openRequestId\":\"tuning.open.1.valid\"}")]
+        [InlineData(
+            "{\"task\":\"panel_request\",\"panel\":\"workbench\",\"source\":\"nativehud_equipment_tuning\",\"initData\":{\"profile\":\"battlebox\",\"view\":\"tuning\"},\"openRequestId\":\"tuning.open.1.valid\",\"extra\":true}")]
+        [InlineData(
+            "{\"task\":\"panel_request\",\"panel\":\"workbench\",\"source\":\"nativehud_equipment_tuning\",\"initData\":{\"profile\":\"battlebox\",\"view\":\"tuning\",\"extra\":true},\"openRequestId\":\"tuning.open.1.valid\"}")]
+        [InlineData(
+            "{\"task\":\"panel_request\",\"panel\":\"workbench\",\"source\":\"nativehud_equipment_tuning\",\"initData\":{\"profile\":\"battlebox\",\"view\":\"build\"},\"openRequestId\":\"tuning.open.1.valid\"}")]
+        [InlineData(
+            "{\"task\":\"panel_request\",\"panel\":\"crafting\",\"source\":\"nativehud_equipment_tuning\",\"initData\":{\"profile\":\"battlebox\",\"view\":\"tuning\"},\"openRequestId\":\"tuning.open.1.valid\"}")]
+        public void NativeTuningOpenRequestId_RejectsForgedSourceAndNearShapes(
+            string json)
+        {
+            JObject request =
+                JObject.Parse(json);
+
+            string openRequestId;
+            string rejectionReason;
+            Assert.False(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    request,
+                    request.Value<string>("panel"),
+                    request.Value<string>("source"),
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Null(openRequestId);
+            Assert.Equal(
+                "native_equipment_tuning_contract",
+                rejectionReason);
+        }
+
+        [Theory]
+        [InlineData("bad token")]
+        [InlineData("bad/token")]
+        [InlineData("")]
+        public void NativeTuningOpenRequestId_RejectsMalformedToken(
+            string value)
+        {
+            JObject request =
+                new JObject
+                {
+                    ["task"] = "panel_request",
+                    ["panel"] = "workbench",
+                    ["source"] =
+                        "nativehud_equipment_tuning",
+                    ["initData"] =
+                        new JObject
+                        {
+                            ["profile"] = "battlebox",
+                            ["view"] = "tuning"
+                        },
+                    ["openRequestId"] = value
+                };
+
+            string openRequestId;
+            string rejectionReason;
+            Assert.False(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    request,
+                    "workbench",
+                    "nativehud_equipment_tuning",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Null(openRequestId);
+            Assert.Equal(
+                "invalid_open_request_id",
+                rejectionReason);
+        }
+
         [Theory]
         [InlineData("{\"initData\":{\"profile\":\"battlebox\",\"view\":\"build\"}}")]
         [InlineData("{\"initData\":{\"profile\":\"battlebox\",\"view\":\"storage\"},\"openRequestId\":\"workbench.open.1\"}")]
@@ -163,6 +271,109 @@ namespace CF7Launcher.Tests.Bus
             Assert.Equal(
                 "skill.open.1.valid",
                 openRequestId);
+        }
+
+        [Fact]
+        public void MaterialsOpenRequestId_AllowsOnlyExactWireAndLegacyMissingToken()
+        {
+            string openRequestId;
+            string rejectionReason;
+            JObject legacy =
+                JObject.Parse(
+                    "{\"task\":\"panel_request\","
+                    + "\"panel\":\"crafting\","
+                    + "\"source\":\"nativehud_materials\","
+                    + "\"initData\":{\"view\":\"materials\"}}");
+            Assert.True(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    legacy,
+                    "crafting",
+                    "nativehud_materials",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Null(openRequestId);
+            Assert.Null(rejectionReason);
+
+            JObject correlated =
+                JObject.Parse(
+                    "{\"task\":\"panel_request\","
+                    + "\"panel\":\"crafting\","
+                    + "\"source\":\"nativehud_materials\","
+                    + "\"openRequestId\":\"material.open.1.Valid_-~\","
+                    + "\"initData\":{\"view\":\"materials\"}}");
+            Assert.True(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    correlated,
+                    "crafting",
+                    "nativehud_materials",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Equal(
+                "material.open.1.Valid_-~",
+                openRequestId);
+            Assert.Null(rejectionReason);
+        }
+
+        [Theory]
+        [InlineData("{\"task\":\"panel_request\",\"panel\":\"crafting\",\"source\":\"nativehud_materials\",\"openRequestId\":\"material.open.1.valid\",\"view\":\"materials\",\"initData\":{}}")]
+        [InlineData("{\"task\":\"panel_request\",\"panel\":\"crafting\",\"source\":\"nativehud_materials\",\"openRequestId\":\"material.open.1.valid\",\"initData\":{\"view\":\"materials\",\"extra\":true}}")]
+        [InlineData("{\"task\":\"panel_request\",\"panel\":\"crafting\",\"source\":\"nativehud_materials\",\"openRequestId\":\"material.open.1.valid\",\"initData\":{\"view\":\"material\"}}")]
+        [InlineData("{\"task\":\"panel_request\",\"panel\":\"Crafting\",\"source\":\"nativehud_materials\",\"openRequestId\":\"material.open.1.valid\",\"initData\":{\"view\":\"materials\"}}")]
+        [InlineData("{\"task\":\"panel_request\",\"panel\":\"crafting\",\"source\":\"nativehud_material\",\"openRequestId\":\"material.open.1.valid\",\"initData\":{\"view\":\"materials\"}}")]
+        [InlineData("{\"task\":\"panel_request\",\"panel\":\"crafting\",\"source\":\"nativehud_materials\",\"openRequestId\":\"material.open.1.valid\",\"initData\":{\"view\":\"materials\"},\"returnTo\":\"workbench\"}")]
+        [InlineData("{\"task\":\"panel_request\",\"panel\":\"crafting\",\"source\":\"nativehud_materials\",\"openRequestId\":\"bad/token\",\"initData\":{\"view\":\"materials\"}}")]
+        [InlineData("{\"task\":\"panel_request\",\"panel\":\"crafting\",\"source\":\"nativehud_materials\",\"openRequestId\":7,\"initData\":{\"view\":\"materials\"}}")]
+        public void MaterialsOpenRequestId_RejectsNearWrongLayerAndExtraShape(
+            string json)
+        {
+            JObject request =
+                JObject.Parse(json);
+            string openRequestId;
+            string rejectionReason;
+
+            Assert.False(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    request,
+                    request.Value<string>("panel"),
+                    request.Value<string>("source"),
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Null(openRequestId);
+            Assert.False(
+                string.IsNullOrEmpty(
+                    rejectionReason));
+        }
+
+        [Fact]
+        public void MaterialsOpenRequestId_RejectsOverlongToken()
+        {
+            JObject request =
+                new JObject
+                {
+                    ["task"] = "panel_request",
+                    ["panel"] = "crafting",
+                    ["source"] = "nativehud_materials",
+                    ["openRequestId"] =
+                        new string('a', 161),
+                    ["initData"] =
+                        new JObject
+                        {
+                            ["view"] = "materials"
+                        }
+                };
+            string openRequestId;
+            string rejectionReason;
+
+            Assert.False(
+                TaskRegistry.TryReadPanelOpenRequestId(
+                    request,
+                    "crafting",
+                    "nativehud_materials",
+                    out openRequestId,
+                    out rejectionReason));
+            Assert.Equal(
+                "invalid_open_request_id",
+                rejectionReason);
         }
     }
 }

@@ -17,12 +17,13 @@ window.__NPCSHOP_CONFIG__={requestTimeoutMs:300,sessionNonce:'harness'};
 window.__contractPurchaseProbe=Number(new URLSearchParams(location.search).get('contractQuantity'))||4549;
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__tradeSeq=0;window.__lastTrade=null;window.__malformedCommit=false;
 window.__tradePreviewQuantityCeiling=null;window.__tradePreviewMaxOverride=null;window.__nextTradePreviewDelay=0;window.__nextTradeCommitDelay=0;window.__dropNextTradePreview=false;window.__nextTradePreviewError='';window.__rejectedTradePreviews=0;
+window.__nextInventoryDelay=0;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   send:function(message){
     __sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd==='close')return;
     if(message.cmd==='tradePreview'&&__dropNextTradePreview){__dropNextTradePreview=false;return}
-    var delay=message.cmd==='tradePreview'?Number(__nextTradePreviewDelay||0):(message.cmd==='tradeCommit'?Number(__nextTradeCommitDelay||0):0);if(message.cmd==='tradePreview')__nextTradePreviewDelay=0;else if(message.cmd==='tradeCommit')__nextTradeCommitDelay=0;
+    var delay=message.domain==='inventory'?Number(__nextInventoryDelay||0):(message.cmd==='tradePreview'?Number(__nextTradePreviewDelay||0):(message.cmd==='tradeCommit'?Number(__nextTradeCommitDelay||0):0));if(message.domain==='inventory')__nextInventoryDelay=0;else if(message.cmd==='tradePreview')__nextTradePreviewDelay=0;else if(message.cmd==='tradeCommit')__nextTradeCommitDelay=0;
     setTimeout(function(){respond(message)},delay)
   }
 };
@@ -68,7 +69,7 @@ var balance=10000,materialQty=3,inventorySeq=0,inventoryRevision=1,spaceFreed=fa
 var catalog=[
   {catalogIndex:0,itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',majorType:'武器',use:'手枪',actionType:'',weaponType:'手枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false,balanceSummary:{state:'confirmed',weightLayers:1,formula:1,level:1}},
   {catalogIndex:1,itemName:'强化石',displayName:'强化石',icon:'强化石',majorType:'收集品',use:'材料',basePrice:100,unitPrice:100,maxQuantity:100,requiredInfo:'',locked:false,balanceSummary:{state:'review',weightLayers:7,formula:1,level:1}},
-  {catalogIndex:2,itemName:'符线溯源笔记',displayName:'符线溯源笔记',icon:'符线溯源笔记',majorType:'收集品',use:'情报',basePrice:300,unitPrice:300,maxQuantity:100,requiredInfo:'',locked:false},
+  {catalogIndex:2,itemName:'符线溯源笔记',displayName:'符线溯源笔记',icon:'符线溯源笔记',majorType:'收集品',use:'情报',basePrice:300,unitPrice:300,maxQuantity:100,requiredInfo:'符线档案',locked:true},
   {catalogIndex:3,itemName:'训练步枪',displayName:'训练步枪',icon:'训练步枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'突击步枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
   {catalogIndex:4,itemName:'训练霰弹枪',displayName:'训练霰弹枪',icon:'训练霰弹枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'霰弹枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
   {catalogIndex:5,itemName:'训练背心',displayName:'训练背心',icon:'训练背心',majorType:'防具',use:'上装装备',actionType:'',weaponType:'',basePrice:500,unitPrice:500,maxQuantity:50,requiredInfo:'',locked:false},
@@ -142,6 +143,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
 <script src="../../workbench-lifecycle.js"></script>
 <script src="../../workbench-focus.js"></script>
 <script src="../../workbench-primitives.js"></script>
+<script src="../../workbench-profile.js"></script>
 <script src="../../workbench.js"></script>
 <script src="../../workbench-components.js"></script>
 <script src="../../item-filter.js"></script>
@@ -153,6 +155,25 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
 <script>
 (async function(){
   var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(ms){return new Promise(function(r){setTimeout(r,ms==null?25:Number(ms))})}
+  function nextFrame(){return new Promise(function(resolve){requestAnimationFrame(function(){resolve()})})}
+  function secondaryMotionSnapshot(node){
+    var style=getComputedStyle(node);
+    var animations=typeof node.getAnimations==='function'?node.getAnimations().map(function(animation){
+      var timing=animation.effect&&animation.effect.getTiming?animation.effect.getTiming():{};
+      return{property:animation.transitionProperty||'',duration:Number(timing.duration||0),playState:animation.playState||''}
+    }):[];
+    return{display:style.display,zIndex:style.zIndex,visibility:style.visibility,opacity:Number(style.opacity),
+      pointerEvents:style.pointerEvents,transform:style.transform,transitionDuration:style.transitionDuration,
+      animations:animations}
+  }
+  function hasStructuralTransition(snapshot,property){return snapshot.animations.some(function(animation){
+    return animation.property===property&&animation.duration>=180&&animation.duration<=220&&animation.playState==='running'
+  })}
+  function capability(){var state=NpcShop.debugState(),inventory=state.inventory||{};return JSON.stringify({
+    busy:state.busy,needsReconcile:state.needsReconcile,purchaseCount:state.purchaseCount,
+    saleCount:state.saleCount,settling:state.settling,organizingSpace:state.organizingSpace,
+    inventoryReady:inventory.ready,inventoryBusyOwner:inventory.busyOwner,
+    inventoryRefreshRequired:inventory.refreshRequired});}
   function quantityInput(scope){return document.querySelector(scope+' .workbench-quantity-number')}
   function quantityRange(scope){return document.querySelector(scope+' .workbench-quantity-range')}
   function quantityValue(scope){var input=quantityInput(scope);return input?Number(input.value):NaN}
@@ -167,6 +188,17 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
     document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();
     document.querySelector('.npcshop-checkout-btn').click();await wait();
     setQuantity('[data-purchase-lines]',568797);await wait();
+    window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
+  }
+  if(harnessVisualMode==='secondary-help'||harnessVisualMode==='secondary-settlement'){
+    Panels.open('npcshop',{shopId:'前治安官'});await wait();
+    if(harnessVisualMode==='secondary-help'){
+      document.querySelector('.npcshop-help-btn').click();
+    }else{
+      document.querySelector('.npcshop-catalog-card').click();
+      document.querySelector('.npcshop-checkout-btn').click();
+    }
+    await wait();
     window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
   }
   Panels.open('npcshop',{shopId:'前治安官'});await wait();
@@ -238,6 +270,24 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
     &&npcKeyboardOwnedSelected&&npcKeyboardOwnedSelected.getAttribute('aria-selected')==='true';
   if(npcKeyboardOwnedSelected)npcKeyboardOwnedSelected.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
   ok('NPC catalog and owned tiles keep Enter/Space parity with pointer in initial compact mode',npcCatalogKeyboardWorks&&npcOwnedKeyboardWorks&&NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0);
+  var lockedCatalog=document.querySelector('.npcshop-catalog-card[data-catalog-index="2"]');
+  var lockedBusinessBefore=__sent.filter(function(message){return message.cmd==='tradePreview'||message.cmd==='tradeCommit'}).length;
+  var lockedToastsBefore=__toasts.length;
+  if(lockedCatalog){
+    lockedCatalog.focus();
+    lockedCatalog.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+    lockedCatalog.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+  }
+  ok('locked NPC catalog tile stays keyboard-inspectable and explains Enter/Space without business intent',
+    lockedCatalog&&lockedCatalog.getAttribute('tabindex')==='0'
+      &&lockedCatalog.getAttribute('aria-disabled')==='true'
+      &&lockedCatalog.getAttribute('data-entity-inspectable')==='true'
+      &&lockedCatalog.getAttribute('data-entity-actionable')==='false'
+      &&lockedCatalog.textContent.indexOf('需要情报：符线档案')>=0
+      &&__toasts.length===lockedToastsBefore+2
+      &&__toasts.slice(-2).every(function(message){return message==='需要情报：符线档案'})
+      &&NpcShop.debugState().purchaseCount===0
+      &&__sent.filter(function(message){return message.cmd==='tradePreview'||message.cmd==='tradeCommit'}).length===lockedBusinessBefore);
   var npcDensityToggle=document.querySelector('.item-grid-mode-toggle');
   var npcFullDensityOption=npcDensityToggle&&npcDensityToggle.querySelector('[data-layout-mode="full"]');
   var npcCompactDensityOption=npcDensityToggle&&npcDensityToggle.querySelector('[data-layout-mode="compact"]');
@@ -303,21 +353,89 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   document.querySelector('.npcshop-bag-view .npcshop-owned-card').click();
   ok('equipment click selects lease-bound sale intent',NpcShop.debugState().saleCount===1&&document.querySelector('.npcshop-bag-view .selected'));
   bagFilter.querySelector('[data-filter-path="consumable"]').click();await wait();
-  var sentBeforeHelp=__sent.length;
+  var sentBeforeHelp=__sent.length,capabilityBeforeHelp=capability();
   document.querySelector('.npcshop-help-btn').click();
-  ok('header help opens a secondary guide page',document.querySelector('.npcshop-help-page.active')&&NpcShop.debugState().helping);
   var helpPage=document.querySelector('.npcshop-help-page');
+  await nextFrame();
+  var helpEntryMotion=secondaryMotionSnapshot(helpPage);
+  ok('help secondary page enters through the shared structural transition',
+    helpEntryMotion.display==='grid'&&helpEntryMotion.zIndex==='55'
+      &&helpEntryMotion.visibility==='visible'
+      &&hasStructuralTransition(helpEntryMotion,'opacity')
+      &&hasStructuralTransition(helpEntryMotion,'transform'),
+    JSON.stringify(helpEntryMotion));
+  await wait(220);
+  var capabilityDuringHelp=capability();
+  ok('header help opens a secondary guide page',document.querySelector('.npcshop-help-page.active')&&NpcShop.debugState().helping);
+  var helpActiveMotion=secondaryMotionSnapshot(helpPage);
+  ok('help secondary page reaches the shared visible terminal state',
+    helpActiveMotion.display==='grid'&&helpActiveMotion.zIndex==='55'
+      &&helpActiveMotion.visibility==='visible'&&helpActiveMotion.opacity===1
+      &&helpActiveMotion.pointerEvents==='auto'&&helpActiveMotion.transform==='none',
+    JSON.stringify(helpActiveMotion));
   ok('help page covers four workflows without canvas overflow',document.querySelectorAll('.npcshop-help-card').length===4&&helpPage.textContent.indexOf('选择 ≠ 交易')>=0&&helpPage.textContent.indexOf('商品不会直接购买到战备箱')>=0&&helpPage.scrollWidth<=helpPage.clientWidth+1&&helpPage.scrollHeight<=helpPage.clientHeight+1);
   var helpRect=helpPage.getBoundingClientRect(),body=document.querySelector('.npcshop-panel .workbench-body'),bodyRect=body.getBoundingClientRect();
   ok('help secondary page exactly covers the dual-pane body',Math.abs(helpRect.top-bodyRect.top)<1&&Math.abs(helpRect.bottom-bodyRect.bottom)<1&&getComputedStyle(body).visibility==='hidden');
+  var lowerHeader=document.querySelector('.npcshop-panel .workbench-header');
+  var lowerHeaderActions=document.querySelector('.npcshop-panel .workbench-header-actions');
+  var lowerHeaderRect=lowerHeaderActions.getBoundingClientRect(),lowerHelp=document.querySelector('.npcshop-help-btn');
+  lowerHelp.focus();
+  ok('secondary help hides and inerts every lower header action with no focus or hitbox leak',
+    lowerHeader.inert&&lowerHeaderActions.hidden&&getComputedStyle(lowerHeaderActions).display==='none'
+      &&lowerHeaderRect.width===0&&lowerHeaderRect.height===0&&document.activeElement!==lowerHelp
+      &&Array.from(helpPage.querySelectorAll('[data-secondary-action]')).map(function(node){return node.getAttribute('data-secondary-action')}).join(',')==='back,close');
   ok('opening help preserves intents and sends no authority request',__sent.length===sentBeforeHelp&&NpcShop.debugState().purchaseCount===1&&NpcShop.debugState().saleCount===1);
   document.querySelector('[data-help-back]').click();
+  await nextFrame();
+  var helpExitMotion=secondaryMotionSnapshot(helpPage);
+  ok('help secondary page exits without an unlayered display cutoff',
+    helpExitMotion.display==='grid'&&helpExitMotion.zIndex==='55'
+      &&helpExitMotion.visibility==='visible'&&helpExitMotion.pointerEvents==='none'
+      &&hasStructuralTransition(helpExitMotion,'opacity')
+      &&hasStructuralTransition(helpExitMotion,'transform'),
+    JSON.stringify(helpExitMotion));
+  await wait(220);
+  var helpClosedMotion=secondaryMotionSnapshot(helpPage);
+  ok('closed help keeps its structural box while becoming hidden and non-interactive',
+    helpClosedMotion.display==='grid'&&helpClosedMotion.zIndex==='55'
+      &&helpClosedMotion.visibility==='hidden'&&helpClosedMotion.opacity===0
+      &&helpClosedMotion.pointerEvents==='none',
+    JSON.stringify(helpClosedMotion));
+  var capabilityAfterHelp=capability();
   ok('leaving help returns to selection without clearing intents',!NpcShop.debugState().helping&&NpcShop.debugState().purchaseCount===1&&NpcShop.debugState().saleCount===1);
+  ok('shared NPC HelpAction preserves capability before during and after help',
+    document.querySelector('.npcshop-help-btn').getAttribute('data-header-action')==='help'
+      &&capabilityBeforeHelp===capabilityDuringHelp&&capabilityBeforeHelp===capabilityAfterHelp);
   document.querySelector('[data-view-id="collection"]').click();
   ok('collection defaults to material child',document.querySelector('[data-instance-key="npcshop:material"]'));
   document.querySelector('[data-collection-view="intelligence"]').click();
-  ok('intelligence stays read-only',document.querySelector('.npcshop-intelligence-view .read-only')&&!document.querySelector('.npcshop-intelligence-view .selected'));
-  document.querySelector('.npcshop-checkout-btn').click();await wait();
+  var intelligenceCard=document.querySelector('.npcshop-intelligence-view .read-only');
+  var intelligenceReason=intelligenceCard&&intelligenceCard.querySelector('.workbench-entity-lock-reason');
+  ok('intelligence stays inspectable read-only with an exact reason',intelligenceCard
+    &&!document.querySelector('.npcshop-intelligence-view .selected')
+    &&intelligenceCard.getAttribute('tabindex')==='0'
+    &&intelligenceCard.getAttribute('aria-disabled')==='true'
+    &&intelligenceCard.getAttribute('data-entity-inspectable')==='true'
+    &&intelligenceCard.getAttribute('data-entity-actionable')==='false'
+    &&intelligenceReason&&!intelligenceReason.hidden
+    &&intelligenceReason.textContent==='此栏仅供查看，不能加入待售。');
+  document.querySelector('.npcshop-checkout-btn').click();
+  var settlementPage=document.querySelector('.npcshop-settlement-page');
+  await nextFrame();
+  var settlementEntryMotion=secondaryMotionSnapshot(settlementPage);
+  ok('settlement secondary page enters through the shared structural transition',
+    settlementEntryMotion.display==='grid'&&settlementEntryMotion.zIndex==='55'
+      &&settlementEntryMotion.visibility==='visible'
+      &&hasStructuralTransition(settlementEntryMotion,'opacity')
+      &&hasStructuralTransition(settlementEntryMotion,'transform'),
+    JSON.stringify(settlementEntryMotion));
+  await wait(220);
+  var settlementActiveMotion=secondaryMotionSnapshot(settlementPage);
+  ok('settlement secondary page reaches the shared visible terminal state',
+    settlementActiveMotion.display==='grid'&&settlementActiveMotion.zIndex==='55'
+      &&settlementActiveMotion.visibility==='visible'&&settlementActiveMotion.opacity===1
+      &&settlementActiveMotion.pointerEvents==='auto'&&settlementActiveMotion.transform==='none',
+    JSON.stringify(settlementActiveMotion));
   ok('checkout requests one authoritative preview',__sent.some(function(m){return m.cmd==='tradePreview'&&m.payload.purchases.length===1&&m.payload.sales[0].source.containerId==='背包'}));
   ok('checkout uses the stable inventory-domain lease',__sent.some(function(m){return m.cmd==='tradePreview'&&/^iw\.r1\./.test(m.payload.sales[0].source.expectedLease)}));
   ok('secondary settlement page opens',document.querySelector('.npcshop-settlement-page.active')&&NpcShop.debugState().settling);
@@ -332,20 +450,26 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   quantityButton('[data-purchase-lines]','−').click();await wait();
   settlementScrollProbe=document.querySelector('[data-purchase-lines]');settlementScrollProbe.style.cssText=settlementScrollStyle;settlementScrollProbe.scrollTop=0;
   ok('settlement quantity re-preview preserves its overflowing list position',settlementScrollPreserved,JSON.stringify({before:settlementScrollBefore,after:settlementScrollAfter}));
-  sentBeforeHelp=__sent.length;
+  sentBeforeHelp=__sent.length;var settlementCapabilityBeforeHelp=capability();
   var settlementHelp=document.querySelector('[data-trade-help]');
   settlementHelp.focus();
   ok('settlement header help stays keyboard-reachable inside the active dialog',document.activeElement===settlementHelp&&!settlementHelp.closest('[inert]'));
   settlementHelp.click();
+  var settlementCapabilityDuringHelp=capability();
   ok('help can overlay settlement without closing it',NpcShop.debugState().helping&&NpcShop.debugState().settling
     &&document.querySelector('.npcshop-settlement-page').inert
     &&document.querySelector('.npcshop-settlement-page').getAttribute('aria-hidden')==='true'
     &&document.querySelector('.npcshop-help-page').getAttribute('aria-hidden')==='false');
   document.querySelector('[data-help-back]').click();
+  var settlementCapabilityAfterHelp=capability();
   ok('returning from help restores the existing settlement',!NpcShop.debugState().helping&&NpcShop.debugState().settling&&__sent.length===sentBeforeHelp
     &&!document.querySelector('.npcshop-settlement-page').inert
     &&document.querySelector('.npcshop-settlement-page').getAttribute('aria-hidden')==='false'
     &&document.activeElement===settlementHelp);
+  ok('settlement exposes exact Back Help Close actions and help preserves its capability',
+    Array.from(document.querySelectorAll('.npcshop-settlement-page [data-secondary-action]')).map(function(node){return node.getAttribute('data-secondary-action')}).join(',')==='back,help,close'
+      &&settlementCapabilityBeforeHelp===settlementCapabilityDuringHelp
+      &&settlementCapabilityBeforeHelp===settlementCapabilityAfterHelp);
   Array.from(document.querySelectorAll('[data-sale-lines] .npcshop-stepper button')).filter(function(b){return b.textContent==='同名全售'})[0].click();await wait();
   var previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('same-name bulk sale sends only seed lease and plain-only policy',previews[previews.length-1].payload.sales[0].scope==='same_name'&&previews[previews.length-1].payload.sales[0].policy==='plain_only'&&previews[previews.length-1].payload.sales[0].quantity===undefined);
@@ -371,6 +495,21 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('quantity controls recover after a rejected preview',previews[previews.length-1].payload.purchases[0].quantity===4&&quantityValue('[data-purchase-lines]')===4);
   document.querySelector('[data-trade-back]').click();
+  await nextFrame();
+  var settlementExitMotion=secondaryMotionSnapshot(settlementPage);
+  ok('settlement secondary page exits without an unlayered display cutoff',
+    settlementExitMotion.display==='grid'&&settlementExitMotion.zIndex==='55'
+      &&settlementExitMotion.visibility==='visible'&&settlementExitMotion.pointerEvents==='none'
+      &&hasStructuralTransition(settlementExitMotion,'opacity')
+      &&hasStructuralTransition(settlementExitMotion,'transform'),
+    JSON.stringify(settlementExitMotion));
+  await wait(220);
+  var settlementClosedMotion=secondaryMotionSnapshot(settlementPage);
+  ok('closed settlement keeps its structural box while becoming hidden and non-interactive',
+    settlementClosedMotion.display==='grid'&&settlementClosedMotion.zIndex==='55'
+      &&settlementClosedMotion.visibility==='hidden'&&settlementClosedMotion.opacity===0
+      &&settlementClosedMotion.pointerEvents==='none',
+    JSON.stringify(settlementClosedMotion));
   document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();
   document.querySelector('.npcshop-checkout-btn').click();await wait();
   ok('returning to selection after rejection can add another item that appears in the next settlement',NpcShop.debugState().purchaseCount===2&&document.querySelectorAll('[data-purchase-lines] .npcshop-settlement-line').length===2&&document.querySelector('[data-purchase-lines]').textContent.indexOf('强化石')>=0);
@@ -378,15 +517,60 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('first inventory-full result explains the organizer route',__toasts.some(function(message){return message.indexOf('整理空间')>=0&&message.indexOf('重新核算')>=0}));
   document.querySelector('[data-space-organize]').click();await wait();
   ok('organization route uses shared inventory domain',NpcShop.debugState().organizingSpace&&__sent.some(function(m){return m.domain==='inventory'&&m.cmd==='snapshot'}));
+  var spacePage=document.querySelector('.npcshop-space-page');
+  var spaceStyle=getComputedStyle(spacePage),spaceRect=spacePage.getBoundingClientRect();
+  var settlementRect=settlementPage.getBoundingClientRect();
+  ok('nested space organizer retains its explicit settlement-local inset and stacking exception',
+    spaceStyle.display==='grid'&&spaceStyle.zIndex==='4'
+      &&Math.abs(spaceRect.top-settlementRect.top)<=1&&Math.abs(spaceRect.right-settlementRect.right)<=1
+      &&Math.abs(spaceRect.bottom-settlementRect.bottom)<=1&&Math.abs(spaceRect.left-settlementRect.left)<=1,
+    JSON.stringify({display:spaceStyle.display,zIndex:spaceStyle.zIndex,
+      space:{top:spaceRect.top,right:spaceRect.right,bottom:spaceRect.bottom,left:spaceRect.left},
+      settlement:{top:settlementRect.top,right:settlementRect.right,bottom:settlementRect.bottom,left:settlementRect.left}}));
   var transferable=document.querySelector('[data-space-grid="背包"] .npcshop-space-transferable');
-  ok('organization route renders transferable inventory slots',transferable);
-  if(transferable)transferable.click();await wait();
+  var readySpaceCards=Array.prototype.slice.call(document.querySelectorAll('.npcshop-space-transferable'));
+  ok('organization route renders one exact ready projection',transferable&&readySpaceCards.every(function(node){
+    var reason=node.querySelector('.workbench-entity-lock-reason');
+    return node.getAttribute('aria-disabled')==='false'
+      &&node.getAttribute('data-entity-inspectable')==='true'
+      &&node.getAttribute('data-entity-actionable')==='true'&&reason&&reason.hidden;
+  }));
+  window.__nextInventoryDelay=120;
+  if(transferable)transferable.click();await wait(15);
+  var busyAutoTransfers=__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length;
+  var blockedTransferable=document.querySelector('.npcshop-space-transferable');
+  var blockedSpaceReason=blockedTransferable&&blockedTransferable.querySelector('.workbench-entity-lock-reason');
+  if(blockedTransferable){
+    blockedTransferable.click();
+    blockedTransferable.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+    blockedTransferable.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+  }
+  ok('space busyOwner preserves pointer, Enter, and Space inspection but emits zero extra transfers',
+    blockedTransferable&&blockedTransferable.getAttribute('aria-disabled')==='true'
+      &&blockedTransferable.getAttribute('tabindex')==='0'
+      &&blockedTransferable.getAttribute('data-entity-inspectable')==='true'
+      &&blockedTransferable.getAttribute('data-entity-actionable')==='false'
+      &&blockedSpaceReason&&!blockedSpaceReason.hidden
+      &&blockedSpaceReason.textContent==='库存正在处理另一项操作。'
+      &&__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length===busyAutoTransfers);
+  await wait(130);
   ok('organizer quick-transfers through authority autoTransfer',__sent.some(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'&&m.payload.targetContainerId==='战备箱'}));
   var spaceBackAfterTransfer=document.querySelector('[data-space-back]');
   ok('organizer remains mounted and keyboard-returnable after quick transfer',
     !!spaceBackAfterTransfer&&NpcShop.debugState().organizingSpace,
     JSON.stringify({hasBack:!!spaceBackAfterTransfer,state:NpcShop.debugState()}));
-  if(spaceBackAfterTransfer)spaceBackAfterTransfer.click();await wait();await wait();
+  window.__nextInventoryDelay=100;
+  if(spaceBackAfterTransfer)spaceBackAfterTransfer.click();await wait(15);
+  var returningCard=document.querySelector('.npcshop-space-transferable');
+  var returningReason=returningCard&&returningCard.querySelector('.workbench-entity-lock-reason');
+  var returningTransfers=__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length;
+  if(returningCard)returningCard.click();
+  ok('space return projection locks the grid with the exact _spaceBusy reason',
+    returningCard&&returningCard.getAttribute('aria-disabled')==='true'
+      &&returningReason&&!returningReason.hidden
+      &&returningReason.textContent==='正在载入或核对整理空间。'
+      &&__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length===returningTransfers);
+  await wait(110);await wait();
   var fullBagRebind=__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='snapshot'&&m.payload.requests&&m.payload.requests.length===1&&m.payload.requests[0].containerId==='背包'&&m.payload.requests[0].filterKey==='all'}).pop();
   ok('returning from organizer uses a full bag snapshot, preserves filtered-out sales, and re-previews',fullBagRebind&&NpcShop.debugState().saleCount===1&&!NpcShop.debugState().organizingSpace&&__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length>=2);
   quantityButton('[data-purchase-lines]','可用').click();await wait();
@@ -395,6 +579,30 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('settlement keeps number and range controls synchronized',document.querySelectorAll('.npcshop-settlement-page input[type="number"]').length>=2&&document.querySelectorAll('.npcshop-settlement-page input[type="range"]').length>=2&&quantityInput('[data-purchase-lines]').value===quantityRange('[data-purchase-lines]').value);
   window.__nextTradeCommitDelay=120;document.querySelector('[data-trade-commit]').click();
   var commitsDuringWrite=__sent.filter(function(m){return m.cmd==='tradeCommit'}).length,busyQuantity=quantityInput('[data-purchase-lines]').value;
+  var busyOwnedCard=document.querySelector('.npcshop-owned-view .inventory-slot-card.occupied');
+  var busyOwnedReason=busyOwnedCard&&busyOwnedCard.querySelector('.workbench-entity-lock-reason');
+  var busySaleCount=NpcShop.debugState().saleCount;
+  if(busyOwnedCard){
+    busyOwnedCard.click();
+    busyOwnedCard.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+    busyOwnedCard.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+  }
+  ok('transaction busy projects the exact inspectable lock and suppresses pointer/Enter/Space sale intents',
+    busyOwnedCard&&busyOwnedCard.getAttribute('aria-disabled')==='true'
+      &&busyOwnedCard.getAttribute('tabindex')==='0'
+      &&busyOwnedCard.getAttribute('data-entity-inspectable')==='true'
+      &&busyOwnedCard.getAttribute('data-entity-actionable')==='false'
+      &&busyOwnedReason&&!busyOwnedReason.hidden
+      &&busyOwnedReason.textContent==='交易正在由游戏确认。'
+      &&getComputedStyle(busyOwnedCard).opacity==='1'
+      &&NpcShop.debugState().saleCount===busySaleCount,
+    JSON.stringify({aria:busyOwnedCard&&busyOwnedCard.getAttribute('aria-disabled'),
+      tab:busyOwnedCard&&busyOwnedCard.getAttribute('tabindex'),
+      inspectable:busyOwnedCard&&busyOwnedCard.getAttribute('data-entity-inspectable'),
+      actionable:busyOwnedCard&&busyOwnedCard.getAttribute('data-entity-actionable'),
+      reason:busyOwnedReason&&busyOwnedReason.textContent,hidden:busyOwnedReason&&busyOwnedReason.hidden,
+      opacity:busyOwnedCard&&getComputedStyle(busyOwnedCard).opacity,
+      sales:[busySaleCount,NpcShop.debugState().saleCount]}));
   var busyBack=document.querySelector('[data-trade-back]'),busyMinus=quantityButton('[data-purchase-lines]','−'),busyCommit=document.querySelector('[data-trade-commit]');
   busyBack.dispatchEvent(new MouseEvent('click',{bubbles:true}));busyMinus.dispatchEvent(new MouseEvent('click',{bubbles:true}));busyCommit.dispatchEvent(new MouseEvent('click',{bubbles:true}));await wait(35);
   ok('in-flight commit locks settlement navigation and quantity mutation',NpcShop.debugState().busy&&NpcShop.debugState().settling&&busyBack.disabled&&busyMinus.disabled&&quantityInput('[data-purchase-lines]').value===busyQuantity&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===commitsDuringWrite);
@@ -490,6 +698,14 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   }
 
   Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+  var panelCloseBefore=__sent.filter(function(message){return message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'}).length;
+  document.querySelector('[data-trade-close]').click();await wait();
+  ok('secondary Close ends the NPC panel while Back remains a local return',
+    Panels.getActive()===null&&!document.querySelector('.npcshop-settlement-page.active')
+      &&__sent.filter(function(message){return message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'}).length===panelCloseBefore+1);
+
+  Panels.open('npcshop',{shopId:'前治安官'});await wait();
   document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
   var snapshotsBeforeMalformed=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
   window.__malformedCommit=true;document.querySelector('[data-trade-commit]').click();await wait();await wait();window.__malformedCommit=false;

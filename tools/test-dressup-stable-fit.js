@@ -73,7 +73,8 @@ function manifest() {
         ['手枪站立', 20, 4],
         ['手枪2站立', 35, 6],
         ['双枪站立', 60, 8],
-        ['兵器站立', 80, 2]
+        ['兵器站立', 80, 2],
+        ['手雷站立', 45, 5]
     ].forEach(([label, x, y]) => {
         states[label] = {holders:[holder(x, y)]};
     });
@@ -230,7 +231,7 @@ function main() {
 
     assert.deepStrictEqual(
         Array.from(poses, value => value.stateLabel),
-        ['空手站立','长枪站立','手枪站立','手枪2站立','双枪站立','兵器站立']
+        ['空手站立','长枪站立','手枪站立','手枪2站立','双枪站立','兵器站立','手雷站立']
     );
     poses[0].stateLabel = '被调用方修改';
     assert.strictEqual(Pose.cameraEnvelopePoses()[0].stateLabel, '空手站立',

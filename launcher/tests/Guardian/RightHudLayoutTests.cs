@@ -77,6 +77,42 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(context, map);
         }
 
+        [Theory]
+        [InlineData(RightContextSlotOwner.Hidden, false)]
+        [InlineData(RightContextSlotOwner.ContextHint, true)]
+        [InlineData(RightContextSlotOwner.ActionableNotice, true)]
+        [InlineData(RightContextSlotOwner.TransactionDecision, true)]
+        public void ConditionalSlotGeometry_ExistsOnlyForAnExactOwner(
+            RightContextSlotOwner owner,
+            bool expectedVisible)
+        {
+            Rectangle viewport = new Rectangle(0, 0, 1024, 576);
+            float scale = RightHudLayout.ScaleForViewport(viewport);
+            bool hasOwner = owner != RightContextSlotOwner.Hidden;
+            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(
+                viewport,
+                scale,
+                EffectiveMapDisplayMode.Hidden,
+                hasOwner);
+            Rectangle status = RightHudLayout.StatusSlotRectFromContext(
+                context,
+                scale,
+                hasOwner);
+
+            Assert.Equal(expectedVisible, !status.IsEmpty);
+            if (!expectedVisible)
+            {
+                Assert.True(context.IsEmpty);
+                Assert.True(status.IsEmpty);
+            }
+            else
+            {
+                Assert.Equal(
+                    WidgetScaler.Px(RightHudLayout.StatusSlotHeightBase, scale),
+                    status.Height);
+            }
+        }
+
         [Fact]
         public void SafeExit_UsesSameRightOffset()
         {

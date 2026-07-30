@@ -7,6 +7,19 @@
 })(typeof window !== 'undefined' ? window : globalThis, function() {
     'use strict';
 
+    var ARMOR_SLOTS = [
+        {id:'头部装备', label:'头部'}, {id:'上装装备', label:'上装'},
+        {id:'下装装备', label:'下装'}, {id:'手部装备', label:'手部'},
+        {id:'脚部装备', label:'脚部'}, {id:'颈部装备', label:'颈部'}
+    ];
+    var WEAPON_SLOTS = [
+        {id:'长枪', label:'长枪'}, {id:'手枪', label:'手枪'},
+        {id:'手枪2', label:'手枪 2'}, {id:'刀', label:'刀'}, {id:'手雷', label:'手雷'}
+    ];
+    var DRUG_SLOTS = [
+        {id:'drug1', label:'药剂 I'}, {id:'drug2', label:'药剂 II'},
+        {id:'drug3', label:'药剂 III'}, {id:'drug4', label:'药剂 IV'}
+    ];
     function create() {
         return ''
             + '<main class="character-build-body" data-build-underlay data-pane-layout="55-45">'
@@ -35,7 +48,7 @@
             + '        <button type="button" data-build-action="tune" aria-label="调制当前装备" hidden disabled>调制</button>'
             + '        <button type="button" data-build-action="unequip" aria-label="卸下当前物品" disabled>卸下</button></div>'
             + '        <div data-build-density-mount></div><b data-candidate-count>0 项</b></div></header>'
-            + '    <div class="character-build-candidate-focus-summary" data-body-copy data-candidate-focus-summary>方向键只浏览摘要；Enter 或 Space 固定预览，仅再次按 Enter 才提交。</div>'
+            + '    <div class="character-build-candidate-focus-summary" data-body-copy data-candidate-focus-summary>方向键只浏览摘要；Enter 或 Space 固定预览；再次点击或按 Space 取消。</div>'
             + '    <div class="character-build-candidate-scroll" data-scroll-region="candidates"><div class="character-build-candidate-list inventory-owned-grid" data-candidate-list role="listbox" aria-label="装备候选"></div></div>'
             + '  </aside>'
             + '</main>'
@@ -46,5 +59,10 @@
             + '</section>';
     }
 
-    return {create:create};
+    return {
+        create:create,
+        armorSlots:ARMOR_SLOTS,
+        weaponSlots:WEAPON_SLOTS,
+        drugSlots:DRUG_SLOTS
+    };
 });

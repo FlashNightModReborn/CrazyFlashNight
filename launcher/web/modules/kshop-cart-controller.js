@@ -191,6 +191,13 @@
             setQuantity:function(idx, value) { self.setQuantity(idx, value); },
             onInspect:function(idx, anchor) { if (self._intent.inspect) self._intent.inspect(idx, anchor); },
             onBack:function() { self.closeSettlement(); },
+            onHelp:function(event) {
+                if (self._intent.openHelp) self._intent.openHelp(event && event.currentTarget);
+            },
+            onClose:function() {
+                self.closeSettlement();
+                if (self._intent.requestPanelClose) self._intent.requestPanelClose();
+            },
             onCommit:function() { self.checkout(); }
         });
         this._settlement.mount(panelRoot);
@@ -318,13 +325,18 @@
 
     CartController.prototype.bindRow = function(row) {
         var self = this;
-        row.addEventListener('click', function(event) {
-            if (event.target.closest && event.target.closest('button')) return;
-            if (self._intent.inspect) self._intent.inspect(Number(row.getAttribute('data-idx')), row);
+        var item = this._state.findCatalogItem(Number(row.getAttribute('data-idx')));
+        if (item) Workbench.EntityTile.bindActivation(row, {
+            itemName:item.displayname,
+            label:'查看商品详情；移除操作使用行内按钮',
+            inspectable:true,
+            actionable:true,
+            onActivate:function() {
+                if (self._intent.inspect) self._intent.inspect(Number(row.getAttribute('data-idx')), row);
+            }
         });
         var remove = row.querySelector('.kshop-cart-remove-btn');
         if (remove) {
-            var item = this._state.findCatalogItem(Number(row.getAttribute('data-idx')));
             remove.setAttribute('aria-label', '从购物车移除'
                 + (item ? '“' + item.displayname + '”' : '该商品'));
             remove.addEventListener('click', function(event) {

@@ -65,6 +65,17 @@
         return '操作失败，请重试。';
     }
 
+    function storageHelpSpec(containerId) {
+        var target = containerId === '战备箱' ? '战备箱' : '仓库';
+        return {
+            kind:'inventory-storage-help',
+            title:target + '收纳帮助',
+            message:'常用操作\n• 精确放置：先选择一侧物品，再选择另一侧目标格；也可以直接拖拽到目标位置。\n• 单件快移：按住 Ctrl 单击物品，系统会优先合并同名堆叠，再寻找首个空格。',
+            detail:'批量处理\n• 点击下方“批量存入”或“批量取出”，再依次点击多个物品完成暂存；重复点击可取消。\n• 确认计数后点击“执行转移”，队列会逐件使用现有自动落位规则。\n• Esc 会先取消尚未执行的批次；任一物品状态过期、目标已满或同步失败时，队列会停止并重新核对。\n\n浏览\n• 紧凑模式适合快速收纳，完整模式显示名称与状态；筛选、分页和整理都基于完整权威容器。',
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+        };
+    }
+
     function presentationFor(containerId, snapshot) {
         var equipmentScope = snapshot && String(snapshot.scope || 'all') === 'equipment';
         var filtered = snapshot && (String(snapshot.filterKey || 'all') !== 'all' || equipmentScope);
@@ -79,6 +90,53 @@
         return {emptyText:emptyText, meta:meta};
     }
 
+    function authorityInteraction(state, allowAutoTransfer) {
+        state = state || {};
+        if (state.refreshRequired) {
+            return {inspectable:true, actionable:false, reason:'库存同步失败，请先重试。'};
+        }
+        if (!state.ready) {
+            return {inspectable:true, actionable:false, reason:'库存正在同步，请稍候。'};
+        }
+        if (state.busyOwner && !(allowAutoTransfer
+                && state.busyOwner === 'inventory.autoTransfer')) {
+            return {inspectable:true, actionable:false, reason:'库存正在处理另一项操作。'};
+        }
+        return {inspectable:true, actionable:true, reason:''};
+    }
+
+    function ensureReasonNode(node) {
+        var reason = node && node.querySelector
+            ? node.querySelector('.workbench-entity-lock-reason') : null;
+        if (reason) return reason;
+        reason = document.createElement('span');
+        reason.className = 'workbench-entity-lock-reason';
+        reason.hidden = true;
+        node.appendChild(reason);
+        return reason;
+    }
+
+    function ensureActionReasonNode(action) {
+        if (action && action.__workbenchActionReasonNode) {
+            return action.__workbenchActionReasonNode;
+        }
+        var reason = document.createElement('span');
+        reason.className = 'workbench-entity-lock-reason workbench-entity-action-lock-reason';
+        reason.hidden = true;
+        if (action && action.parentNode) action.parentNode.insertBefore(reason, action.nextSibling);
+        if (action) action.__workbenchActionReasonNode = reason;
+        return reason;
+    }
+
+    function projectNode(entityTile, node, projection, reasonNode) {
+        return entityTile.projectInteraction(node, {
+            inspectable:projection.inspectable,
+            actionable:projection.actionable,
+            reason:projection.reason,
+            reasonNode:reasonNode
+        });
+    }
+
     function createView(options) {
         options = options || {};
         var UI = options.inventoryUI;
@@ -90,6 +148,7 @@
             throw new Error('Inventory owned view requires presentation adapters and explicit state ports');
         }
         var containerId = String(options.containerId);
+        var interaction = authorityInteraction(options.getAuthorityState(), false);
         var ownedShell = new UI.OwnedInventoryViewShell({
             containerId:containerId,
             instanceKey:'inventory:' + containerId,
@@ -105,7 +164,9 @@
                     allowDiscard:containerId === '背包'
                 });
             },
-            bindItem:function(node, slot) { options.bindSlot(containerId, node, slot); },
+            bindItem:function(node, slot) {
+                options.bindSlot(containerId, node, slot, function() { return interaction; });
+            },
             exportOffer:function(slot) {
                 var state = options.getAuthorityState() || {};
                 if (!slot || !slot.occupied || !state.ready || state.busyOwner || state.refreshRequired) return null;
@@ -134,7 +195,14 @@
             view:ownedShell.view,
             shell:ownedShell,
             getSnapshot:function() { return options.getSnapshot(containerId); },
-            keyOf:function(slot) { return slot && slot.physicalSlot; }
+            keyOf:function(slot) { return slot && slot.physicalSlot; },
+            interaction:interaction,
+            onInteractionChange:function(projection) {
+                interaction = projection;
+                if (typeof options.onInteractionChange === 'function') {
+                    options.onInteractionChange(containerId, projection, ownedShell.view);
+                }
+            }
         });
         return {view:pane.view, pane:pane};
     }
@@ -190,11 +258,16 @@
     return {
         countOccupied:countOccupied,
         presentationFor:presentationFor,
+        authorityInteraction:authorityInteraction,
+        ensureReasonNode:ensureReasonNode,
+        ensureActionReasonNode:ensureActionReasonNode,
+        projectNode:projectNode,
         primitiveProjection:primitiveProjection,
         basicTooltip:basicTooltip,
         richTooltip:richTooltip,
         iconHtml:iconHtml,
         errorMessage:errorMessage,
+        storageHelpSpec:storageHelpSpec,
         createView:createView,
         createToolbar:createToolbar
     };

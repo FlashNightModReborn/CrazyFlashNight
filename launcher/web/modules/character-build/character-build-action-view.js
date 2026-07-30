@@ -44,10 +44,12 @@
         this._commitButton = this._root.querySelector('[data-build-action="commit"]');
         this._tuneButton = this._root.querySelector('[data-build-action="tune"]');
         this._unequipButton = this._root.querySelector('[data-build-action="unequip"]');
+        this._overlayCopy = options.overlayCopy;
         this._getCandidate = options.getCandidate;
         this._getCandidateKey = options.getCandidateKey;
         this._getSlotKey = options.getSlotKey;
         this._selectCandidate = options.selectCandidate;
+        this._clearCandidateSelection = options.clearCandidateSelection;
         this._onCommit = options.onCommit;
         this._onTune = options.onTune;
         this._onUnequip = options.onUnequip;
@@ -82,6 +84,7 @@
         var selected = key === this._getCandidateKey();
         var value = this._getCandidate(key);
         if (event.key === 'Enter' && !event.repeat && selected) this._tryCommit(value);
+        else if (event.key === ' ' && selected) this._clearCandidateSelection();
         else this._selectCandidate(key);
     };
     ActionView.prototype.sync = function() {
@@ -98,20 +101,43 @@
             : this._state !== 'idle' || !candidate || candidate.blocked === true;
         var occupiedEquipment = !!slot && slot.getAttribute('data-empty') !== 'true'
             && slot.getAttribute('data-slot-kind') !== 'drug';
-        var tunable = occupiedEquipment && slot.getAttribute('data-tunable') === 'true'
+        var candidateSelected = !!candidate;
+        var tunable = candidateSelected
+            ? candidate.tunable === true && candidate.blocked !== true
+            : occupiedEquipment && slot.getAttribute('data-tunable') === 'true'
             && slot.getAttribute('data-blocked') !== 'true';
-        var tuningReason = slot && slot.getAttribute('data-tuning-reason')
+        var tuningReason = candidateSelected
+            ? candidate.tuningReason || '所选候选不能调制'
+            : slot && slot.getAttribute('data-tuning-reason')
             || (slot && slot.getAttribute('data-blocked') === 'true'
                 ? '当前装备状态不可用' : '该物品不能调制');
-        this._tuneButton.hidden = !occupiedEquipment;
-        this._tuneButton.textContent = tunable ? '调制' : '不可调制';
+        this._tuneButton.hidden = !candidateSelected && !occupiedEquipment;
+        this._tuneButton.textContent = tunable
+            ? candidateSelected ? '调制候选' : '调制' : '不可调制';
         this._tuneButton.disabled = this._state !== 'idle' || !tunable;
         this._tuneButton.setAttribute('aria-disabled', this._tuneButton.disabled ? 'true' : 'false');
-        this._tuneButton.setAttribute('aria-label', tunable ? '调制当前装备' : tuningReason);
+        this._tuneButton.setAttribute('aria-label', tunable
+            ? candidateSelected ? '调制所选候选：' + String(candidate.name || '未命名候选')
+                : '调制当前装备'
+            : tuningReason);
         if (tunable) this._tuneButton.removeAttribute('title');
         else this._tuneButton.setAttribute('title', tuningReason);
         this._unequipButton.disabled = this._state !== 'idle'
             || !slot || slot.getAttribute('data-empty') === 'true';
+    };
+    ActionView.prototype.syncCandidateSelection = function(key) {
+        var buttons = this._candidateList.querySelectorAll('[data-candidate-key]');
+        for (var i = 0; i < buttons.length; i++) {
+            var selected = buttons[i].getAttribute('data-candidate-key') === key;
+            buttons[i].setAttribute('aria-selected', selected ? 'true' : 'false');
+            buttons[i].classList.toggle('workbench-source-selected', selected);
+        }
+        this.sync();
+        var candidate = this._getCandidate(key);
+        this._overlayCopy.parentNode.hidden = !candidate;
+        this._overlayCopy.textContent = candidate
+            ? '预览 · ' + String(candidate.name || '候选') : '';
+        return candidate;
     };
     ActionView.prototype.setState = function(state) {
         this._state = String(state || 'opening');

@@ -820,7 +820,8 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static function attachSnapshotRequestExtras(params:Object,
                                                         current:Object,
                                                         clearNeedsReconcile:Boolean):Object {
-        attachSnapshotProjection(current);
+        var backpackSnapshot:Object = buildBackpackSnapshot();
+        attachSnapshotProjection(current, backpackSnapshot);
         if (params.reconcileAfterCallId == undefined
                 || params.reconcileAfterCallId == null) {
             return current;
@@ -829,7 +830,6 @@ class org.flashNight.arki.item.CharacterBuildService {
                 || String(params.reconcileAfterCallId) == "") {
             return fail("invalid_payload");
         }
-        var backpackSnapshot:Object = buildBackpackSnapshot();
         if (!validBackpackSnapshot(backpackSnapshot)) {
             return fail("projection_failed");
         }
@@ -980,34 +980,14 @@ class org.flashNight.arki.item.CharacterBuildService {
 
             var disabled:Boolean = false;
             var blockedReason:String = "";
-            if (hasEquipment && slotKey != "手雷") {
-                if (typeof itemData.type != "string"
-                        || (itemData.type != "武器"
-                            && itemData.type != "防具")) {
-                    diagnostics.push(
-                        "candidate_type_incompatible:" + physicalSlot);
-                    continue;
-                }
-                if (typeof item.value != "object" || item.value == null) {
-                    diagnostics.push(
-                        "candidate_value_incompatible:" + physicalSlot);
-                    continue;
-                }
-            } else if (!finiteNumber(item.value) || Number(item.value) <= 0) {
-                diagnostics.push(
-                    "candidate_value_incompatible:" + physicalSlot);
+            var shapeError:String = candidateShapeError(
+                item, itemData, hasEquipment, slotKey, playerLevel);
+            if (shapeError != "") {
+                diagnostics.push(shapeError + ":" + physicalSlot);
                 continue;
             }
 
             if (hasEquipment) {
-                if (itemData.data == null
-                        || typeof itemData.data != "object"
-                        || !finiteNumber(itemData.data.level)
-                        || !finiteNumber(playerLevel)) {
-                    diagnostics.push(
-                        "candidate_level_invalid:" + physicalSlot);
-                    continue;
-                }
                 // 与现役 ItemUtil.moveItemToEquipment 一致：只读 catalog 等级，
                 // 绝不把实例 value.level（强化度）当角色等级门。
                 if (itemData.data.level > playerLevel) {
@@ -1497,7 +1477,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             return poison("needs_reconcile");
         }
         var result:Object = state(true, loadoutChanged, drugChanged);
-        attachSnapshotProjection(result);
+        attachSnapshotProjection(result, backpackSnapshot);
         if (result.payload == null
                 || result.payload.stateHealth != "ok") {
             return poison("needs_reconcile");
@@ -1872,19 +1852,157 @@ class org.flashNight.arki.item.CharacterBuildService {
             Number(params.expectedLoadoutRevision));
     }
 
-    private static function attachSnapshotProjection(current:Object):Object {
+    private static function attachSnapshotProjection(
+        current:Object, backpackSnapshot:Object):Object {
         var diagnostics:Array = [];
         var equipment:Array = buildEquipmentProjection(diagnostics);
         var drugs:Array = buildDrugProjection(diagnostics);
         var portrait:Object = buildPortraitProjection(diagnostics);
-        current.payload = {
+        var payload:Object = {
             equipment:equipment,
             drugs:drugs,
             portrait:portrait,
             stateHealth:diagnostics.length == 0 ? "ok" : "degraded",
             diagnostics:diagnostics
         };
+        var candidateFacets:Object =
+            buildCandidateFacetProjection(backpackSnapshot);
+        if (candidateFacets != null) {
+            payload.candidateFacets = candidateFacets;
+        }
+        current.payload = payload;
         return current;
+    }
+
+    /**
+     * 初始构筑页复用 inventory `scope=all` 的完整背包 facet 真值。
+     *
+     * facet 树负责 taxonomy 与计数；本服务只用与 candidates 相同的资格检查证明
+     * 构筑相关 use 没有被结构损坏的行过计。等级锁定与药剂冷却仍属于可查看候选，
+     * 因而继续计数。任一相关 use 对不上时省略整组字段，让旧 payload / 异常数据
+     * 统一渐进降级为 unknown，绝不把 unknown 伪造为 0。
+     */
+    private static function buildCandidateFacetProjection(
+        backpackSnapshot:Object):Object {
+        if (!validBackpackSnapshot(backpackSnapshot)
+                || !(backpackSnapshot.filterFacets instanceof Array)
+                || !wholeInRange(
+                    Number(backpackSnapshot.filterItemCount), 0, 50)) {
+            return null;
+        }
+        var snapshotRevision:Number =
+            Number(backpackSnapshot.containerVersion);
+        if (!wholeNumber(snapshotRevision)
+                || readRevision(_backpackInventory) != snapshotRevision) {
+            return null;
+        }
+        var actual:Object = {};
+        var rootCount:Number = collectFacetUseCounts(
+            backpackSnapshot.filterFacets, actual);
+        if (rootCount < 0
+                || rootCount != Number(backpackSnapshot.filterItemCount)) {
+            return null;
+        }
+
+        var expected:Object = {};
+        var playerLevel = root().等级;
+        for (var slot:Number = 0; slot < 50; slot++) {
+            var item:Object = null;
+            try {
+                item = _backpackInventory.getItem(String(slot));
+            } catch (readError) {
+                return null;
+            }
+            if (item == null || typeof item.name != "string") continue;
+            var itemData:Object = getCandidateItemData(item);
+            if (itemData == null || typeof itemData.use != "string") {
+                continue;
+            }
+            var useName:String = String(itemData.use);
+            var hasEquipment:Boolean = SLOT_ALLOWLIST[useName] === true;
+            if (!hasEquipment && useName != "药剂") continue;
+            if (candidateShapeError(
+                    item, itemData, hasEquipment, useName, playerLevel) != "") {
+                continue;
+            }
+            expected[useName] = Number(expected[useName] || 0) + 1;
+        }
+        if (readRevision(_backpackInventory) != snapshotRevision) {
+            return null;
+        }
+
+        var compared:Object = {药剂:true};
+        for (var i:Number = 0; i < SLOT_KEYS.length; i++) {
+            compared[String(SLOT_KEYS[i])] = true;
+        }
+        for (var useKey:String in compared) {
+            if (Number(actual[useKey] || 0)
+                    != Number(expected[useKey] || 0)) {
+                return null;
+            }
+        }
+        return {
+            scope:"all",
+            filterFacets:backpackSnapshot.filterFacets,
+            filterItemCount:Number(backpackSnapshot.filterItemCount)
+        };
+    }
+
+    private static function collectFacetUseCounts(
+        facets:Array, useCounts:Object):Number {
+        var total:Number = 0;
+        for (var i:Number = 0; i < facets.length; i++) {
+            var major:Object = facets[i];
+            if (major == null || !wholeInRange(Number(major.count), 0, 50)
+                    || !(major.children instanceof Array)) {
+                return -1;
+            }
+            total += Number(major.count);
+            if (total > 50) return -1;
+            for (var j:Number = 0; j < major.children.length; j++) {
+                var useFacet:Object = major.children[j];
+                if (useFacet == null || typeof useFacet.id != "string"
+                        || !wholeInRange(Number(useFacet.count), 0, 50)
+                        || !(useFacet.children instanceof Array)) {
+                    return -1;
+                }
+                var useName:String = String(useFacet.id);
+                useCounts[useName] =
+                    Number(useCounts[useName] || 0)
+                    + Number(useFacet.count);
+                if (Number(useCounts[useName]) > 50) return -1;
+            }
+        }
+        return total;
+    }
+
+    /**
+     * candidates 与初始 facet counts 共用的结构资格检查。
+     * 返回既有 diagnostics 前缀；空串表示该行属于可见候选口径。
+     */
+    private static function candidateShapeError(
+        item:Object, itemData:Object, hasEquipment:Boolean,
+        slotKey:String, playerLevel):String {
+        if (hasEquipment && slotKey != "手雷") {
+            if (typeof itemData.type != "string"
+                    || (itemData.type != "武器"
+                        && itemData.type != "防具")) {
+                return "candidate_type_incompatible";
+            }
+            if (typeof item.value != "object" || item.value == null) {
+                return "candidate_value_incompatible";
+            }
+        } else if (!finiteNumber(item.value)
+                || Number(item.value) <= 0) {
+            return "candidate_value_incompatible";
+        }
+        if (hasEquipment && (itemData.data == null
+                || typeof itemData.data != "object"
+                || !finiteNumber(itemData.data.level)
+                || !finiteNumber(playerLevel))) {
+            return "candidate_level_invalid";
+        }
+        return "";
     }
 
     private static function buildEquipmentProjection(

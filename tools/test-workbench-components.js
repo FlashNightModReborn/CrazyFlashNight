@@ -106,6 +106,31 @@ test('production module consumes the shared DisposableStack contract', () => {
     assert(!source.includes('this._disposers'));
 });
 
+test('HelpAction exposes the stable header identity without coupling help to capability', () => {
+    const document = new FakeDocument();
+    const actions = [];
+    const modals = [];
+    const shell = {
+        addHeaderAction(node) { actions.push(node); },
+        openModal(spec) { modals.push(spec); }
+    };
+    const help = new Components.HelpAction({
+        document,
+        shell,
+        spec:{ariaLabel:'查看测试帮助'}
+    });
+    assert.strictEqual(actions.length, 1);
+    assert.strictEqual(help.button.getAttribute('data-header-action'), 'help');
+    assert.strictEqual(help.button.disabled, false);
+    assert.strictEqual(help.open(), true);
+    assert.strictEqual(modals.length, 1);
+    assert.strictEqual(help.button.disabled, false);
+    help.update(null);
+    assert.strictEqual(help.button.hidden, true);
+    assert.strictEqual(help.open(), false);
+    assert.strictEqual(help.destroy(), true);
+});
+
 test('SecondaryPage owns an idempotent mount/open/close lifecycle', () => {
     const document = new FakeDocument();
     const host = document.createElement('main');
@@ -123,7 +148,7 @@ test('SecondaryPage owns an idempotent mount/open/close lifecycle', () => {
     assert.strictEqual(page.mount(host), true);
     assert.strictEqual(page.mount(host), true);
     assert.strictEqual(host.children.length, 1);
-    assert.strictEqual(page.bindClose(back), true);
+    assert.strictEqual(page.bindBack(back), true);
     assert.strictEqual(page.open({id:'one'}), true);
     assert.strictEqual(page.isActive(), true);
     assert.strictEqual(page.root.classList.contains('active'), true);
@@ -136,6 +161,38 @@ test('SecondaryPage owns an idempotent mount/open/close lifecycle', () => {
     assert.strictEqual(host.children.length, 0);
     back.dispatch('click');
     assert.deepStrictEqual(events, ['open:one', 'back', 'close:back']);
+});
+
+test('SecondaryPage keeps Back, Help, and Close as distinct exact actions', () => {
+    const document = new FakeDocument();
+    const host = document.createElement('main');
+    const back = document.createElement('button');
+    const help = document.createElement('button');
+    const close = document.createElement('button');
+    const events = [];
+    const page = new Components.SecondaryPage({
+        document,
+        onClose:reason => events.push('lifecycle:' + reason)
+    });
+    page.mount(host);
+    page.bindBack(back, () => events.push('back'));
+    page.bindHelp(help, () => events.push('help'));
+    page.bindClose(close, () => events.push('close'));
+    assert.strictEqual(back.getAttribute('data-secondary-action'), 'back');
+    assert.strictEqual(help.getAttribute('data-secondary-action'), 'help');
+    assert.strictEqual(close.getAttribute('data-secondary-action'), 'close');
+
+    page.open();
+    help.dispatch('click');
+    assert.strictEqual(page.isActive(), true);
+    assert.deepStrictEqual(events, ['help']);
+    back.dispatch('click');
+    assert.deepStrictEqual(events, ['help', 'back', 'lifecycle:back']);
+
+    page.open();
+    close.dispatch('click');
+    assert.deepStrictEqual(events, ['help', 'back', 'lifecycle:back', 'close', 'lifecycle:close']);
+    page.destroy();
 });
 
 test('ChoiceGroup keeps value, pressed state, callbacks, and disabled state together', () => {
@@ -168,6 +225,39 @@ test('ChoiceGroup keeps value, pressed state, callbacks, and disabled state toge
     assert.deepStrictEqual(changes, ['owned']);
     assert.strictEqual(group.destroy(), true);
     assert.strictEqual(host.children.length, 0);
+});
+
+test('ChoiceGroup rolls presentation back when onChange rejects or throws', () => {
+    const document = new FakeDocument();
+    let mode = 'reject';
+    const group = new Components.ChoiceGroup({
+        document,
+        value:'safe',
+        choices:[
+            {value:'safe', label:'Safe'},
+            {value:'fast', label:'Fast'}
+        ],
+        onChange() {
+            if (mode === 'reject') return false;
+            if (mode === 'throw') throw new Error('storage unavailable');
+            return true;
+        }
+    });
+
+    assert.strictEqual(group.setValue('fast'), false);
+    assert.strictEqual(group.getValue(), 'safe');
+    assert.strictEqual(group.getButton('safe').getAttribute('aria-pressed'), 'true');
+    assert.strictEqual(group.getButton('fast').getAttribute('aria-pressed'), 'false');
+
+    mode = 'throw';
+    assert.throws(() => group.setValue('fast'), /storage unavailable/);
+    assert.strictEqual(group.getValue(), 'safe');
+    assert.strictEqual(group.getButton('safe').classList.contains('active'), true);
+
+    mode = 'accept';
+    assert.strictEqual(group.setValue('fast'), true);
+    assert.strictEqual(group.getValue(), 'fast');
+    group.destroy();
 });
 
 test('CommitBar centralizes status, gate state, and commit listener teardown', () => {
@@ -428,11 +518,66 @@ test('OwnedInventoryPane reconciles exact snapshots and serializes quick transfe
     assert.strictEqual(view.ownedInventoryPane, null);
 });
 
+test('OwnedInventoryPane projects inspectability and action authority to its consumer', () => {
+    const document = new FakeDocument();
+    const root = document.createElement('section');
+    const projections = [];
+    const transfers = [];
+    const pane = new Components.OwnedInventoryPane({
+        root,
+        onInteractionChange(projection) {
+            projections.push(projection);
+        },
+        onQuickTransfer(intent) {
+            transfers.push(intent);
+            return true;
+        }
+    });
+
+    assert.deepStrictEqual(projections[0], {
+        inspectable:true,
+        actionable:true,
+        reason:''
+    });
+    assert.strictEqual(root.getAttribute('aria-disabled'), 'false');
+    assert.strictEqual(root.getAttribute('data-owned-inspectable'), 'true');
+    assert.strictEqual(root.getAttribute('data-owned-actionable'), 'true');
+
+    pane.setInteraction({
+        inspectable:true,
+        actionable:false,
+        reason:'正在重新同步'
+    });
+    assert.deepStrictEqual(projections[1], {
+        inspectable:true,
+        actionable:false,
+        reason:'正在重新同步'
+    });
+    assert.strictEqual(root.getAttribute('aria-disabled'), 'true');
+    assert.strictEqual(root.getAttribute('data-owned-inspectable'), 'true');
+    assert.strictEqual(root.getAttribute('data-owned-actionable'), 'false');
+    assert.strictEqual(root.getAttribute('data-owned-disabled-reason'), '正在重新同步');
+    assert.strictEqual(pane.quickTransfer({physicalSlot:2}, 'warehouse'), false);
+    assert.strictEqual(transfers.length, 0);
+    assert.deepStrictEqual(pane.debugState().interaction, {
+        inspectable:true,
+        actionable:false,
+        reason:'正在重新同步'
+    });
+
+    pane.setDisabled(false);
+    assert.strictEqual(root.getAttribute('aria-disabled'), 'false');
+    assert.strictEqual(root.getAttribute('data-owned-disabled-reason'), null);
+    assert.strictEqual(pane.quickTransfer({physicalSlot:2}, 'warehouse'), true);
+    assert.strictEqual(transfers.length, 1);
+    pane.destroy();
+});
+
 test('shared lifecycle teardown keeps listener ownership flat across updates and repeated destroy', () => {
     const document = new FakeDocument();
     const back = document.createElement('button');
     const page = new Components.SecondaryPage({document});
-    page.bindClose(back);
+    page.bindBack(back);
     page.update({active:true});
     page.update({active:false});
     assert.strictEqual(back.listenerCount('click'), 1);

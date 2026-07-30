@@ -14,7 +14,7 @@ const WORKBENCH_COMPONENTS_SOURCE=path.join(WEB,'modules','workbench-components.
 const NPCSHOP_SECONDARY_SOURCE=path.join(WEB,'modules','npcshop-secondary-pages.js');
 const PANEL_CONTRACT_SOURCE=path.join(ROOT,'launcher','contracts','panel-contracts.v2.json');
 const KSHOP_MODULE_SOURCES=['kshop-cart-controller.js','kshop-catalog-presenter.js','kshop-owned-inventory-presenter.js','kshop-tooltip-presenter.js'];
-const INVENTORY_WORKBENCH_MODULE_SOURCES=['inventory-workbench-config.js','inventory-workbench-header.js','inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js','inventory-tuning-scope.js','inventory-storage-workbench.js'];
+const INVENTORY_WORKBENCH_MODULE_SOURCES=['inventory-workbench-config.js','inventory-workbench-preparation-menu.js','inventory-workbench-navigation.js','inventory-workbench-header.js','inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js','inventory-tuning-scope.js','inventory-storage-workbench.js'];
 
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','npcshop.js'),'utf8');
@@ -34,7 +34,8 @@ function audit(){
       ||!itemFilter.includes('function FilterNavigator(')||!itemFilter.includes('item.weaponType || item.actionType'))throw new Error('shared hierarchical grouping or manual override missing');
   if(itemFilter.includes('npcshop-category-row'))throw new Error('shared navigator leaked an NPC-shop skin class');
   if(!panel.includes('new InventoryUI.InventoryFilterControl(')||!panel.includes("setFilterSpec('背包'")
-      ||!panelUi.includes('workbench-secondary-page npcshop-help-page')||!css.includes('top:var(--workbench-header-height,48px)'))throw new Error('shop bag authority tree or secondary-page coverage contract missing');
+      ||!panelUi.includes('workbench-secondary-page npcshop-help-page')
+      ||!css.includes('inset:var(--wb-header-height,48px) 0 0'))throw new Error('shop bag authority tree or shared secondary-page coverage contract missing');
   if(!panel.includes("presentation:'drilldown'")||panel.includes("presentation:'popover'")
       ||!panel.includes("navigatorPresentation:'drilldown'")
       ||!panel.includes('view.chrome.title.appendChild(hint)')
@@ -103,4 +104,79 @@ function edge(){return[
   path.join(process.env.ProgramFiles||'C:\\Program Files','Microsoft','Edge','Application','msedge.exe')
 ].find(fs.existsSync)}
 function server(){return new Promise(resolve=>{const s=http.createServer((req,res)=>{const pathname=decodeURIComponent(url.parse(req.url).pathname);const file=path.normalize(path.join(WEB,pathname));const rel=path.relative(WEB,file);if(rel.startsWith('..')||path.isAbsolute(rel)){res.writeHead(403);res.end();return}fs.readFile(file,(err,data)=>{if(err){res.writeHead(404);res.end();return}const ext=path.extname(file);res.writeHead(200,{'Content-Type':ext==='.html'?'text/html; charset=utf-8':ext==='.css'?'text/css; charset=utf-8':ext==='.js'?'text/javascript; charset=utf-8':'application/octet-stream'});res.end(data)})});s.listen(0,'127.0.0.1',()=>resolve(s))})}
-(async()=>{audit();const contractQuantity=contractQuantityProbe();if(!fs.existsSync(PLAYWRIGHT))throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');const executablePath=edge();if(!executablePath)throw new Error('Microsoft Edge not found');const {chromium}=require(PLAYWRIGHT),s=await server(),browser=await chromium.launch({executablePath,headless:true});try{const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[],failed=[];page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failed.push(r.url()));await page.goto('http://127.0.0.1:'+s.address().port+'/modules/npcshop/dev/harness.html?contractQuantity='+encodeURIComponent(contractQuantity),{waitUntil:'load'});await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:20000});const result=await page.evaluate(()=>({result:window.__qaResult,error:window.__qaError}));if(result.error)throw new Error(result.error);if(errors.length)throw new Error('page errors: '+errors.join(' | '));if(failed.length)throw new Error('failed requests: '+failed.join(' | '));if(!result.result||result.result.passed!==result.result.total){const bad=result.result?result.result.checks.filter(c=>!c.ok):[];throw new Error('harness failed: '+JSON.stringify(bad))}console.log('NPC shop harness '+result.result.passed+'/'+result.result.total+' passed (contract quantity '+contractQuantity+')')}finally{await browser.close();await new Promise(r=>s.close(r))}})().catch(error=>{console.error(error.stack||error);process.exit(1)});
+async function secondarySnapshot(page, selector) {
+  return page.$eval(selector, node => {
+    const style=getComputedStyle(node);
+    return {
+      display:style.display,zIndex:style.zIndex,visibility:style.visibility,
+      opacity:Number(style.opacity),pointerEvents:style.pointerEvents,
+      transform:style.transform,transitionDuration:style.transitionDuration,
+      ariaHidden:node.getAttribute('aria-hidden'),
+      animationCount:typeof node.getAnimations==='function'?node.getAnimations().length:0
+    };
+  });
+}
+function isReducedTerminal(state, active) {
+  return state.display==='grid'&&state.zIndex==='55'
+    &&state.transitionDuration==='0s'&&state.animationCount===0
+    &&state.transform==='none'
+    &&(active
+      ? state.visibility==='visible'&&state.opacity===1&&state.pointerEvents==='auto'&&state.ariaHidden==='false'
+      : state.visibility==='hidden'&&state.opacity===0&&state.pointerEvents==='none'&&state.ariaHidden==='true');
+}
+async function probeReducedSecondaryPages(page, origin, contractQuantity) {
+  const scenarios=[
+    {mode:'secondary-help',selector:'.npcshop-help-page',close:'[data-help-back]'},
+    {mode:'secondary-settlement',selector:'.npcshop-settlement-page',close:'[data-trade-back]'}
+  ];
+  const results=[];
+  await page.emulateMedia({reducedMotion:'reduce'});
+  for(const scenario of scenarios){
+    await page.goto(origin+'/modules/npcshop/dev/harness.html?visual='+scenario.mode
+      +'&contractQuantity='+encodeURIComponent(contractQuantity),{waitUntil:'load'});
+    await page.waitForFunction(()=>window.__visualReady===true,null,{timeout:5000});
+    const active=await secondarySnapshot(page,scenario.selector);
+    await page.$eval(scenario.close,node=>node.click());
+    const inactive=await secondarySnapshot(page,scenario.selector);
+    results.push({mode:scenario.mode,active,inactive,
+      pass:isReducedTerminal(active,true)&&isReducedTerminal(inactive,false)});
+  }
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  return results;
+}
+(async()=>{
+  audit();
+  const contractQuantity=contractQuantityProbe();
+  if(!fs.existsSync(PLAYWRIGHT))throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');
+  const executablePath=edge();
+  if(!executablePath)throw new Error('Microsoft Edge not found');
+  const {chromium}=require(PLAYWRIGHT),s=await server();
+  const browser=await chromium.launch({executablePath,headless:true});
+  try{
+    const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[],failed=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    page.on('requestfailed',r=>failed.push(r.url()));
+    const origin='http://127.0.0.1:'+s.address().port;
+    await page.goto(origin+'/modules/npcshop/dev/harness.html?contractQuantity='
+      +encodeURIComponent(contractQuantity),{waitUntil:'load'});
+    await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:20000});
+    const result=await page.evaluate(()=>({result:window.__qaResult,error:window.__qaError}));
+    if(result.error)throw new Error(result.error);
+    if(!result.result||result.result.passed!==result.result.total){
+      const bad=result.result?result.result.checks.filter(c=>!c.ok):[];
+      throw new Error('harness failed: '+JSON.stringify(bad));
+    }
+    const reducedMotion=await probeReducedSecondaryPages(page,origin,contractQuantity);
+    if(reducedMotion.some(result=>!result.pass)){
+      throw new Error('reduced-motion secondary-page probe failed: '+JSON.stringify(reducedMotion));
+    }
+    if(errors.length)throw new Error('page errors: '+errors.join(' | '));
+    if(failed.length)throw new Error('failed requests: '+failed.join(' | '));
+    console.log('NPC shop harness '+result.result.passed+'/'+result.result.total
+      +' passed; reduced SecondaryPage '+reducedMotion.length+'/'+reducedMotion.length
+      +' passed (contract quantity '+contractQuantity+')');
+  }finally{
+    await browser.close();
+    await new Promise(r=>s.close(r));
+  }
+})().catch(error=>{console.error(error.stack||error);process.exit(1)});

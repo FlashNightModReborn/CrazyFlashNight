@@ -36,10 +36,30 @@ test('bulk-sale protection copy wins over generic settlement copy', () => {
 });
 
 test('space status is a deterministic projection of inventory authority state', () => {
+    assert.strictEqual(Pages.spaceStatus({returning:true, ready:true}), '重新核对中…');
+    assert.strictEqual(Pages.spaceStatus({spaceBusy:true, ready:true}), '准备整理空间…');
     assert.strictEqual(Pages.spaceStatus({refreshRequired:true, ready:true}), '同步失败');
     assert.strictEqual(Pages.spaceStatus({busyOwner:'inventory.autoTransfer', ready:true}), '转移中…');
     assert.strictEqual(Pages.spaceStatus({ready:true}), '点击快速转移');
     assert.strictEqual(Pages.spaceStatus({ready:false}), '同步中…');
+});
+
+test('owned panes expose exact inspectable lock reasons for every NPC authority state', () => {
+    assert.deepStrictEqual(Pages.ownedInteraction({ready:true}),
+        {inspectable:true, actionable:true, reason:''});
+    [
+        [{ready:false}, '库存正在同步，请稍候。'],
+        [{ready:true, busyOwner:'inventory.autoTransfer'}, '库存正在处理另一项操作。'],
+        [{ready:true, refreshRequired:true}, '库存同步失败，请先重试。'],
+        [{ready:true, transactionBusy:true}, '交易正在由游戏确认。'],
+        [{ready:true, reconcileRequired:true}, '商店状态需要重新同步。'],
+        [{ready:true, spaceBusy:true}, '正在载入或核对整理空间。'],
+        [{ready:true, returning:true}, '正在重新核对商店与库存。'],
+        [{ready:true, readOnly:true}, '此栏仅供查看，不能加入待售。']
+    ].forEach(([state, reason]) => {
+        assert.deepStrictEqual(Pages.ownedInteraction(state),
+            {inspectable:true, actionable:false, reason});
+    });
 });
 
 test('presenters reject missing explicit ports before touching authority', () => {

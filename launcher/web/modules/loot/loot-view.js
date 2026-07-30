@@ -44,6 +44,35 @@ var LootView = (function() {
             && Math.floor(value) === value && value > 0;
     }
 
+    function interactionForState(state, claimAll, organizerActive) {
+        state = state || {};
+        if (organizerActive) return {inspectable:true, actionable:false, reason:'正在整理背包并重新核对当前箱子。'};
+        if (claimAll) return {inspectable:true, actionable:false, reason:'正在逐项领取，请等待游戏确认。'};
+        if (state.phase === 'reconcile_required') return {inspectable:true, actionable:false, reason:'上一次操作结果未知，请先重新核对。'};
+        if (state.phase === 'opening') return {inspectable:true, actionable:false, reason:'正在读取箱子内容。'};
+        if (state.phase === 'write_pending' || state.pending) return {inspectable:true, actionable:false, reason:'领取正在由游戏确认。'};
+        if (state.phase !== 'active') return {inspectable:true, actionable:false, reason:'当前箱子不可领取。'};
+        return {inspectable:true, actionable:true, reason:''};
+    }
+
+    function ensureReasonNode(node) {
+        var reason = node.querySelector('.workbench-entity-lock-reason');
+        if (!reason) {
+            reason = document.createElement('span');
+            reason.className = 'workbench-entity-lock-reason';
+            reason.hidden = true;
+            node.appendChild(reason);
+        }
+        return reason;
+    }
+
+    function projectNode(node, projection, reasonNode) {
+        return Workbench.EntityTile.projectInteraction(node, {
+            inspectable:projection.inspectable, actionable:projection.actionable,
+            reason:projection.reason, reasonNode:reasonNode
+        });
+    }
+
     function View(options) {
         options = options || {};
         this.options = options;
@@ -56,6 +85,7 @@ var LootView = (function() {
         this.backpackPane = null;
         this.lootPane = null;
         this.commitBar = null;
+        this.helpAction = null;
         this.closeButton = null;
         this.abandonButton = null;
         this.reconcileButton = null;
@@ -65,26 +95,35 @@ var LootView = (function() {
         this.scaleHandle = null;
         this.tooltipCache = {};
         this.tooltipSuppressed = false;
+        this.interaction = interactionForState({}, false, false);
         this.destroyed = false;
     }
 
     View.prototype.mount = function(host, mountSession) {
         var self = this;
         this.shell = new Workbench.DualPaneShell({
-            eyebrow:'TRANSFER-PAIR / MAP CHEST',
+            profile:'transfer-pair',
             title:this.init.displayName,
-            subtitle:'权威瞬态容器 · 物品只可从战利品箱领取到玩家域',
+            subtitle:'从战利品箱领取物品到背包',
             leftLabel:'玩家背包',
             rightLabel:'战利品箱',
             flowLabel:'只出不进',
             status:'同步中'
         });
-        this.shell.getRoot().classList.add('loot-workbench','workbench-profile-transfer-pair');
-        this.shell.getRoot().setAttribute('data-profile','transfer-pair');
+        this.shell.getRoot().classList.add('loot-workbench');
         this.shell.getRoot().setAttribute('data-domain','loot');
         this.shell.getRoot().setAttribute('data-authority-exclusive','loot');
         this.shell.getRoot().style.setProperty('--loot-columns',String(this.init.columns));
         mountSession.defer(function() { if (self.shell) self.shell.destroy(); });
+        this.helpAction = new WorkbenchComponents.HelpAction({shell:this.shell,spec:{
+            kind:'loot-help',
+            ariaLabel:'查看战利品整理帮助',
+            title:'战利品整理帮助',
+            message:'领取物品\n• Enter、双击或 Ctrl+单击可直接领取。\n• 空格先选择，再到背包侧确认。\n• Ctrl+A 或底部“全部收取”会逐项领取。',
+            detail:'空间不足时可进入整理页，在背包与战备箱之间转移物品。\n普通关闭会保留未领取内容并返回游戏；“放弃剩余”会永久丢弃箱内剩余内容。',
+            actions:[{id:'close',label:'知道了',primary:true}]
+        }});
+        mountSession.defer(function() { if (self.helpAction) self.helpAction.destroy(); });
 
         this.closeButton = document.createElement('button');
         this.closeButton.type = 'button';
@@ -103,8 +142,11 @@ var LootView = (function() {
         this.reconcileButton.type = 'button';
         this.reconcileButton.className = 'workbench-mode-btn loot-reconcile-btn';
         this.reconcileButton.textContent = '重新核对';
-        this.reconcileButton.setAttribute('aria-label','向游戏查询上一次领取或关闭的权威结果');
+        this.reconcileButton.setAttribute('aria-label','重新查询上一次领取或关闭的实际结果');
         this.reconcileButton.hidden = true;
+        this.reconcileButton.setAttribute('data-header-action','reconcile');
+        this.abandonButton.setAttribute('data-header-action','abandon');
+        this.closeButton.setAttribute('data-header-action','close');
         this.shell.addHeaderAction(this.reconcileButton);
         this.shell.addHeaderAction(this.abandonButton);
         this.shell.addHeaderAction(this.closeButton);
@@ -138,13 +180,17 @@ var LootView = (function() {
             view:this.leftGrid.view,
             root:this.leftGrid.root,
             getSnapshot:function() { var p=self._projection(); return p && p.backpack; },
-            syncSnapshot:function() { if (self.leftGrid) self.leftGrid.render(); }
+            syncSnapshot:function() { if (self.leftGrid) self.leftGrid.render(); },
+            interaction:this.interaction,
+            onInteractionChange:function() { self._projectGridInteractions(); }
         });
         this.lootPane = new WorkbenchComponents.OwnedInventoryPane({
             view:this.rightGrid.view,
             root:this.rightGrid.root,
             getSnapshot:function() { var p=self._projection(); return p && p.loot; },
-            syncSnapshot:function() { if (self.rightGrid) self.rightGrid.render(); }
+            syncSnapshot:function() { if (self.rightGrid) self.rightGrid.render(); },
+            interaction:this.interaction,
+            onInteractionChange:function() { self._projectGridInteractions(); }
         });
         mountSession.defer(function() { if (self.backpackPane) self.backpackPane.destroy(); });
         mountSession.defer(function() { if (self.lootPane) self.lootPane.destroy(); });
@@ -158,6 +204,7 @@ var LootView = (function() {
                 if (typeof self.options.onPrimary === 'function') self.options.onPrimary();
             }
         });
+        this.commitBar.root.setAttribute('data-workbench-shell-footer', '');
         this.commitBar.mount(this.shell.getRoot());
         mountSession.defer(function() { if (self.commitBar) self.commitBar.destroy(); });
         host.appendChild(this.shell.getRoot());
@@ -170,8 +217,8 @@ var LootView = (function() {
             instancePolicy:'singletonByBinding',
             itemModel:'owned',
             title:isLoot ? this.init.displayName : '背包',
-            kicker:isLoot ? 'AUTHORITY SOURCE' : 'PLAYER OWNED',
-            meta:isLoot ? '等待权威快照' : '领取目标由游戏决定',
+            kicker:isLoot ? '战利品箱' : '我的背包',
+            meta:isLoot ? '等待箱子内容' : '领取目标由游戏决定',
             className:isLoot ? 'loot-source-view inventory-owned-view'
                 : 'loot-backpack-view inventory-owned-view',
             gridClassName:(isLoot ? 'loot-source-grid' : 'loot-backpack-grid')
@@ -290,6 +337,7 @@ var LootView = (function() {
         this.backpackPane = null;
         this.lootPane = null;
         this.commitBar = null;
+        this.helpAction = null;
         this.closeButton = null;
         this.abandonButton = null;
         this.reconcileButton = null;
@@ -303,13 +351,18 @@ var LootView = (function() {
     View.prototype._bindSlot = function(kind,node,slot) {
         var self=this,isLoot=kind==='loot',item=slot.item || {};
         var itemName=slot.occupied ? String(item.displayName || item.name || '未知物品') : '空槽';
+        var reasonNode=ensureReasonNode(node);
         Workbench.EntityTile.bindActivation(node,{
             itemName:itemName,
             label:isLoot && slot.occupied
                 ? itemName + '，按 Enter、双击或 Ctrl+单击领取；空格选择后可在左侧确认'
                 : itemName + (isLoot ? '' : '，战利品只能领取到此侧，不能放回箱子'),
             selected:function(){return self.broker && self.broker.isSelectedNode(node);},
-            disabled:function(){return isLoot ? (!slot.occupied || !self._canWrite()) : !self._canWrite();},
+            inspectable:function(){return self._tileInteraction(kind,slot).inspectable;},
+            actionable:function(){return self._tileInteraction(kind,slot).actionable;},
+            reason:function(){return self._tileInteraction(kind,slot).reason;},
+            reasonNode:reasonNode,
+            onBlocked:function(){self._toast(self._tileInteraction(kind,slot).reason);},
             onActivate:function(event,context){
                 if (self.drag && self.drag.consumeClick()) return;
                 if (isLoot) {
@@ -326,7 +379,26 @@ var LootView = (function() {
                     self.broker.activateSelected(self.leftGrid.view,{item:slot,node:node},context.origin);
             }
         });
+        node.__lootInteractionRefresh=function(){
+            var projection=self._tileInteraction(kind,slot);
+            projectNode(node,projection,reasonNode);
+            node.classList.toggle('write-locked',!projection.actionable);
+        };
+        node.__lootInteractionRefresh();
         if (isLoot && slot.occupied) this._bindTooltip(node,slot);
+    };
+
+    View.prototype._tileInteraction = function(kind,slot) {
+        if (kind === 'loot' && (!slot || !slot.occupied))
+            return {inspectable:false,actionable:false,reason:''};
+        if (!this.interaction.actionable) return this.interaction;
+        return this.interaction;
+    };
+    View.prototype._projectGridInteractions = function() {
+        var nodes=this.shell ? this.shell.getRoot().querySelectorAll(
+            '.loot-source-slot,.loot-backpack-slot') : [];
+        for (var i=0;i<nodes.length;i++)
+            if (nodes[i].__lootInteractionRefresh) nodes[i].__lootInteractionRefresh();
     };
 
     View.prototype._bindTooltip = function(node,slot) {
@@ -351,17 +423,19 @@ var LootView = (function() {
 
     View.prototype.render = function(state,projection,claimAll,organizerActive) {
         if (!this.shell || !state) return;
+        this.interaction=interactionForState(state,claimAll,organizerActive);
+        if (this.backpackPane) this.backpackPane.setInteraction(this.interaction);
+        if (this.lootPane) this.lootPane.setInteraction(this.interaction);
         if (this.broker) this.broker.clearSelection();
         if (this.backpackPane) this.backpackPane.update(projection && projection.backpack || null,{});
         if (this.lootPane) this.lootPane.update(projection && projection.loot || null,{});
         if (this.leftGrid) this.leftGrid.chrome.setMeta(projection && projection.backpack
             ? '窗口 '+(projection.backpack.offset+1)+'–'
                 +(projection.backpack.offset+projection.backpack.limit)+' / '+projection.backpack.capacity
-            : '等待权威快照');
+            : '等待背包内容');
         if (this.rightGrid) this.rightGrid.chrome.setMeta(projection && projection.loot
-            ? '完整容器 · '+state.remainingCount+' 个非空槽位' : '等待权威快照');
+            ? '箱内 '+state.remainingCount+' 个非空槽位' : '等待箱子内容');
         this.shell.setMetric('remaining','剩余槽位',state.remainingCount == null ? '—' : state.remainingCount);
-        this.shell.setMetric('revision','权威版本',state.authorityRevision < 0 ? '—' : state.authorityRevision);
         var busy=state.phase==='opening'||state.phase==='write_pending'||!!state.pending
             ||claimAll||organizerActive;
         if (state.phase==='reconcile_required') this.shell.setStatus('需要核对','warning');
@@ -369,7 +443,7 @@ var LootView = (function() {
         else if (state.phase==='suspended') this.shell.setStatus('已保留箱内物品','ready');
         else if (busy) this.shell.setStatus(organizerActive ? '整理背包中'
             : claimAll ? '逐项领取中' : '游戏确认中','busy');
-        else if (state.phase==='active') this.shell.setStatus('权威状态已同步','ready');
+        else if (state.phase==='active') this.shell.setStatus('箱子状态已同步','ready');
         else this.shell.setStatus('等待连接','idle');
         this.shell.setFlowState(state.phase==='reconcile_required' ? 'reject'
             : busy ? 'pending' : state.phase==='active' ? 'accept' : 'idle');
@@ -390,10 +464,6 @@ var LootView = (function() {
             this.abandonButton.hidden=state.phase!=='active'||state.remainingCount<=0;
             this.abandonButton.disabled=busy;
         }
-        if (this.backpackPane) this.backpackPane.setDisabled(
-            state.phase!=='active'||claimAll||organizerActive);
-        if (this.lootPane) this.lootPane.setDisabled(
-            state.phase!=='active'||claimAll||organizerActive);
         if (this.commitBar) this.commitBar.update(
             commitPresentation(state,claimAll,organizerActive));
     };
@@ -402,13 +472,16 @@ var LootView = (function() {
     View.prototype.closeModal = function(reason) {
         return this.shell ? this.shell.closeModal(reason || 'cancel') : false;
     };
+    View.prototype.openHelp = function(opener) {
+        return this.helpAction ? this.helpAction.open(opener) : false;
+    };
     View.prototype.openAbandon = function(remainingCount,onAbandon) {
         if (!this.shell) return false;
         this.shell.openModal({
             kind:'loot-abandon',
             kicker:'尚有 ' + remainingCount + ' 个非空槽位',
             title:'永久放弃剩余战利品？',
-            message:'确认后，箱内尚未领取的内容将由游戏权威永久标记为放弃。',
+            message:'确认后，游戏会永久标记箱内尚未领取的内容为放弃。',
             detail:'普通关闭只返回游戏并保留箱子；此操作无法撤销。',
             closeOnBackdrop:true,
             actions:[
@@ -445,10 +518,11 @@ var LootView = (function() {
     };
     View.prototype.rejectDirection = function() {
         if (this.shell) this.shell.setFlowState('reject');
-        this._toast('战利品只允许从箱子领取到玩家域，不能放回或交换。');
+        this._toast('战利品只允许从箱子领取到背包，不能放回或交换。');
     };
     View.prototype.debugState = function() {
-        return {hasShell:!!this.shell,hasDrag:!!this.drag,hasFocusScope:!!this.focusScope};
+        return {hasShell:!!this.shell,hasDrag:!!this.drag,
+            hasFocusScope:!!this.focusScope,interaction:this.interaction};
     };
 
     View.prototype._projection = function() {
@@ -495,7 +569,7 @@ var LootView = (function() {
         var block=blockMessage(state.blockReason);
         if (state.phase==='reconcile_required') return {
             label:'重新核对',
-            status:'写入结果未知。只查询权威状态，不会重放领取或放弃。',
+            status:'上一次操作结果未知。这里只重新查询结果，不会再次领取或放弃。',
             state:'blocked',canCommit:!state.pending,busy:!!state.pending
         };
         if (state.phase==='terminal') return {
@@ -514,11 +588,11 @@ var LootView = (function() {
             state:'busy',disabled:true,busy:true
         };
         if (claimAll) return {
-            label:'逐项领取中',status:'按权威回包串行领取；不会并发提交。',
+            label:'逐项领取中',status:'按游戏确认的顺序逐项领取；不会并发提交。',
             state:'busy',disabled:true,busy:true
         };
         if (state.remainingCount===0) return {
-            label:'关闭空箱',status:'游戏确认箱内已空；关闭将提交 CONSUMED。',
+            label:'关闭空箱',status:'游戏确认箱内已空；关闭会结束本次拾取。',
             state:'ready',canCommit:true
         };
         if (isInventoryCapacityBlock(state.blockReason)) return {
@@ -541,8 +615,8 @@ var LootView = (function() {
             capacity_reached:'目标容量不足，当前物品保持不变。',
             cap_reached:'目标资产已达上限，整格未领取。',
             stale_lease:'箱内状态已变化，请重新核对。',
-            stale_state:'权威状态已变化，请重新核对。',
-            reconcile_required:'上一次操作结果未知，必须先查询游戏权威状态。'
+            stale_state:'箱内状态已变化，请重新核对。',
+            reconcile_required:'上一次操作结果未知，必须先向游戏查询实际结果。'
         };
         var key=String(error||'');
         return Object.prototype.hasOwnProperty.call(map,key) ? map[key] : '';
@@ -550,9 +624,9 @@ var LootView = (function() {
     function errorMessage(error) {
         var fallback={
             disconnected:'与游戏桥接已断开，未猜测领取结果。',
-            client_timeout:'等待权威回包超时，未重发写操作。',
-            malformed_response:'权威回包不完整，已锁定写入并等待核对。',
-            stale_reconcile:'查询尚未越过未知操作水位，请重试。',
+            client_timeout:'等待游戏响应超时，没有再次提交操作。',
+            malformed_response:'游戏响应不完整，已暂停操作并等待重新核对。',
+            stale_reconcile:'查询结果仍未包含上一次操作，请重试。',
             busy:'游戏正在处理另一项操作。'
         },key=String(error||'');
         return blockMessage(error)||(Object.prototype.hasOwnProperty.call(fallback,key)
@@ -566,7 +640,7 @@ var LootView = (function() {
     function basicTooltip(item) {
         return '<div class="kshop-tt-header"><b>'+escapeHtml(item.displayName||item.name||'未知物品')+'</b></div>'
             +'<div class="kshop-tt-divider"></div><span class="kshop-tt-dim">来源</span> 地图资源箱'
-            +'<div class="kshop-tt-loading">读取权威说明…</div>';
+            +'<div class="kshop-tt-loading">读取物品说明…</div>';
     }
     function richTooltip(item,data) {
         data=data||{};
@@ -601,6 +675,7 @@ var LootView = (function() {
         View:View,
         normalizeInitData:normalizeInitData,
         commitPresentation:commitPresentation,
+        interactionForState:interactionForState,
         isInventoryCapacityBlock:isInventoryCapacityBlock,
         blockMessage:blockMessage,
         errorMessage:errorMessage,

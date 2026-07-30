@@ -21,6 +21,8 @@ namespace CF7Launcher.Tasks
             public string WebCmd;
             public string WebPanel;
             public string WebPanelInstanceId;
+            public Func<bool> CompletionFence;
+            public bool StrictTooltipResponse;
         }
 
         private const int DefaultTimeoutMs = 10000;
@@ -31,6 +33,14 @@ namespace CF7Launcher.Tasks
         private static readonly Regex ValidLease = new Regex(
             "^[A-Za-z0-9._-]{1,128}$",
             RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly HashSet<string> CharacterTooltipErrors =
+            new HashSet<string>(StringComparer.Ordinal)
+            {
+                "busy", "unsupported_version", "unsupported_cmd",
+                "invalid_payload", "unsupported_container", "invalid_slot",
+                "slot_locked", "stale_state", "item_data_missing",
+                "tooltip_failed"
+            };
 
         private readonly Func<bool> _isClientReady;
         private readonly Func<string, bool> _trySend;
@@ -76,6 +86,22 @@ namespace CF7Launcher.Tasks
         }
 
         public void HandleWebRequest(string cmd, JObject parsed)
+        {
+            HandleWebRequestCore(cmd, parsed, null, false);
+        }
+
+        internal void HandleCharacterCandidateTooltip(
+            JObject parsed,
+            Func<bool> completionFence)
+        {
+            HandleWebRequestCore("tooltip", parsed, completionFence, true);
+        }
+
+        private void HandleWebRequestCore(
+            string cmd,
+            JObject parsed,
+            Func<bool> completionFence,
+            bool strictTooltipResponse)
         {
             string webCallId = parsed != null ? parsed.Value<string>("callId") : null;
             string webPanel = parsed != null ? parsed.Value<string>("panel") : null;
@@ -124,6 +150,12 @@ namespace CF7Launcher.Tasks
                     webPanel, webPanelInstanceId);
                 return;
             }
+            if (strictTooltipResponse && !IsCompletionFenceCurrent(completionFence))
+            {
+                RejectAndRemember(webCallId, cmd, "stale_state",
+                    webPanel, webPanelInstanceId);
+                return;
+            }
             if (!_isClientReady())
             {
                 RejectAndRemember(webCallId, cmd, "disconnected",
@@ -145,7 +177,9 @@ namespace CF7Launcher.Tasks
                     WebCallId = webCallId,
                     WebCmd = cmd,
                     WebPanel = webPanel,
-                    WebPanelInstanceId = webPanelInstanceId
+                    WebPanelInstanceId = webPanelInstanceId,
+                    CompletionFence = completionFence,
+                    StrictTooltipResponse = strictTooltipResponse
                 };
                 _activeWebCallIds.Add(webCallId);
             }
@@ -177,7 +211,30 @@ namespace CF7Launcher.Tasks
                 CompletePendingLocked(fid, entry);
             }
 
-            JObject webMessage = msg != null ? (JObject)msg.DeepClone() : new JObject();
+            if (entry.StrictTooltipResponse
+                && !IsCompletionFenceCurrent(entry.CompletionFence))
+            {
+                RespondError(entry.WebCallId, entry.WebCmd, "stale_state",
+                    entry.WebPanel, entry.WebPanelInstanceId);
+                if (respond != null) respond(null);
+                return;
+            }
+
+            JObject webMessage;
+            if (entry.StrictTooltipResponse)
+            {
+                if (!TryNormalizeCharacterTooltipResponse(msg, fid, out webMessage))
+                {
+                    RespondError(entry.WebCallId, entry.WebCmd, "malformed_response",
+                        entry.WebPanel, entry.WebPanelInstanceId);
+                    if (respond != null) respond(null);
+                    return;
+                }
+            }
+            else
+            {
+                webMessage = msg != null ? (JObject)msg.DeepClone() : new JObject();
+            }
             webMessage.Remove("task");
             // AS2 is not allowed to manufacture or retain a Web panel capability.  Restore these
             // fields solely from the Host-validated pending request (or omit them for legacy calls).
@@ -472,6 +529,140 @@ namespace CF7Launcher.Tasks
             return value > 0 && value <= max;
         }
 
+        private static bool IsCompletionFenceCurrent(Func<bool> fence)
+        {
+            if (fence == null) return false;
+            try { return fence(); }
+            catch { return false; }
+        }
+
+        private static string PendingError(PendingRequest entry, string fallback)
+        {
+            return entry != null && entry.StrictTooltipResponse
+                    && !IsCompletionFenceCurrent(entry.CompletionFence)
+                ? "stale_state" : fallback;
+        }
+
+        private static bool TryNormalizeCharacterTooltipResponse(
+            JObject message,
+            int backendCallId,
+            out JObject normalized)
+        {
+            normalized = null;
+            if (message == null
+                || !HasExactString(message["task"], "inventory_response")
+                || !HasExactInteger(message["callId"], backendCallId)
+                || message["success"] == null
+                || message["success"].Type != JTokenType.Boolean)
+            {
+                return false;
+            }
+
+            bool success = message.Value<bool>("success");
+            if (!success)
+            {
+                if (!HasExactKeys(
+                        message,
+                        "task", "callId", "success", "error")
+                    || !IsBoundedText(message["error"], 64, false))
+                {
+                    return false;
+                }
+                string error = message.Value<string>("error");
+                if (!CharacterTooltipErrors.Contains(error)) return false;
+                normalized = new JObject
+                {
+                    ["success"] = false,
+                    ["error"] = error
+                };
+                return true;
+            }
+
+            if (!HasExactKeys(
+                    message,
+                    "task", "callId", "success", "v", "itemName",
+                    "displayname", "iconName", "itemType", "descHTML",
+                    "introHTML")
+                || !HasExactInteger(message["v"], 1)
+                || !IsBoundedText(message["itemName"], 256, true)
+                || !IsBoundedText(message["displayname"], 256, true)
+                || !IsBoundedText(message["iconName"], 256, true)
+                || !IsBoundedText(message["itemType"], 128, true)
+                || !IsBoundedText(message["descHTML"], 131072, true)
+                || !IsBoundedText(message["introHTML"], 131072, true))
+            {
+                return false;
+            }
+
+            normalized = new JObject
+            {
+                ["success"] = true,
+                ["v"] = 1,
+                ["itemName"] = message.Value<string>("itemName"),
+                ["displayname"] = message.Value<string>("displayname"),
+                ["iconName"] = message.Value<string>("iconName"),
+                ["itemType"] = message.Value<string>("itemType"),
+                ["descHTML"] = message.Value<string>("descHTML"),
+                ["introHTML"] = message.Value<string>("introHTML")
+            };
+            return true;
+        }
+
+        private static bool HasExactKeys(JObject value, params string[] expected)
+        {
+            if (value == null || value.Count != expected.Length) return false;
+            foreach (JProperty property in value.Properties())
+            {
+                bool found = false;
+                for (int i = 0; i < expected.Length; i++)
+                {
+                    if (string.Equals(
+                        property.Name, expected[i], StringComparison.Ordinal))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) return false;
+            }
+            return true;
+        }
+
+        private static bool HasExactString(JToken token, string expected)
+        {
+            return token != null && token.Type == JTokenType.String
+                && string.Equals(
+                    token.Value<string>(), expected, StringComparison.Ordinal);
+        }
+
+        private static bool HasExactInteger(JToken token, int expected)
+        {
+            if (token == null || token.Type != JTokenType.Integer) return false;
+            try { return token.ToObject<long>() == expected; }
+            catch { return false; }
+        }
+
+        private static bool IsBoundedText(
+            JToken token,
+            int maxLength,
+            bool allowEmpty)
+        {
+            if (token == null || token.Type != JTokenType.String) return false;
+            string value = token.Value<string>();
+            if (value == null || value.Length > maxLength
+                || (!allowEmpty && value.Length == 0)) return false;
+            for (int i = 0; i < value.Length; i++)
+            {
+                char current = value[i];
+                if (char.IsControl(current)
+                    && current != '\r' && current != '\n' && current != '\t')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void HandleTimeout(int fid)
         {
             if (_disposed) return;
@@ -481,7 +672,8 @@ namespace CF7Launcher.Tasks
                 if (!_pending.TryGetValue(fid, out entry)) return;
                 CompletePendingLocked(fid, entry);
             }
-            RespondError(entry.WebCallId, entry.WebCmd, "timeout",
+            RespondError(entry.WebCallId, entry.WebCmd,
+                PendingError(entry, "timeout"),
                 entry.WebPanel, entry.WebPanelInstanceId);
         }
 
@@ -493,7 +685,8 @@ namespace CF7Launcher.Tasks
                 if (!_pending.TryGetValue(fid, out entry)) return;
                 CompletePendingLocked(fid, entry);
             }
-            RespondError(entry.WebCallId, entry.WebCmd, "disconnected",
+            RespondError(entry.WebCallId, entry.WebCmd,
+                PendingError(entry, "disconnected"),
                 entry.WebPanel, entry.WebPanelInstanceId);
         }
 

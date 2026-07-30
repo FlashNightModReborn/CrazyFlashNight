@@ -218,6 +218,47 @@ namespace CF7Launcher.Guardian
                     "navigate_character_build");
         }
 
+        internal static bool IsValidPreparationChildReturnCloseEnvelope(
+            JObject parsed,
+            string activePanel,
+            string activePanelInstanceId)
+        {
+            if (parsed == null
+                || !LauncherCommandRouter
+                    .IsPreparationChildPanelName(activePanel)
+                || string.IsNullOrEmpty(activePanelInstanceId)
+                || parsed.Count != 5)
+            {
+                return false;
+            }
+            foreach (JProperty property in parsed.Properties())
+            {
+                if (property.Name != "type"
+                    && property.Name != "panel"
+                    && property.Name != "cmd"
+                    && property.Name != "panelInstanceId"
+                    && property.Name != "reason")
+                {
+                    return false;
+                }
+            }
+            return HasExactStringValue(
+                    parsed["type"],
+                    "panel")
+                && HasExactStringValue(
+                    parsed["panel"],
+                    activePanel)
+                && HasExactStringValue(
+                    parsed["cmd"],
+                    "close")
+                && HasExactStringValue(
+                    parsed["panelInstanceId"],
+                    activePanelInstanceId)
+                && HasExactStringValue(
+                    parsed["reason"],
+                    "navigate_character_build");
+        }
+
         internal static bool IsValidWorkbenchCloseEnvelope(JObject parsed,
             string activePanel, string activePanelInstanceId)
         {
@@ -236,11 +277,78 @@ namespace CF7Launcher.Guardian
             if (!hasReason) return true;
             string reason = parsed["reason"].Type == JTokenType.String
                 ? (string)parsed["reason"] : null;
+            LauncherCommandRouter.CharacterBuildPreparationTarget
+                preparationTarget;
             return reason == "mount_failed"
                 || reason == "lazy_user_cancel" || reason == "lazy_cancel"
                 || reason == "lazy_load_failed" || reason == "lazy_register_failed"
                 || reason == "lazy_register_missing"
-                || reason == "navigate_skills";
+                || LauncherCommandRouter
+                    .TryParseCharacterBuildPreparationCloseReason(
+                        reason,
+                        out preparationTarget);
+        }
+
+        internal static string
+            BuildCharacterBuildPreparationRecoveryPayload(
+                string panelInstanceId,
+                bool preparationNavigationV1 = false)
+        {
+            if (string.IsNullOrEmpty(panelInstanceId))
+                return null;
+            string returnFocusAction;
+            if (!LauncherCommandRouter
+                    .TryNormalizeCharacterBuildReturnFocusAction(
+                        preparationNavigationV1
+                            ? "preparation-menu"
+                            : "skills",
+                        out returnFocusAction))
+            {
+                return null;
+            }
+            JObject initData =
+                new JObject
+                {
+                    ["mode"] = "runtime",
+                    ["profile"] = "battlebox",
+                    ["view"] = "build",
+                    ["source"] = "nativehud_equipment",
+                    ["debug"] = false,
+                    ["returnFocusAction"] =
+                        returnFocusAction
+                };
+            if (preparationNavigationV1)
+                initData["preparationNavigationV1"] = true;
+            return PanelHostController.BuildPanelOpenPayload(
+                "workbench",
+                initData.ToString(
+                    Newtonsoft.Json.Formatting.None),
+                panelInstanceId);
+        }
+
+        private void RestoreCharacterBuildAfterPreparationArmFailure(
+            string panelInstanceId,
+            LauncherCommandRouter.CharacterBuildPreparationTarget
+                target,
+            string reason)
+        {
+            string payload =
+                BuildCharacterBuildPreparationRecoveryPayload(
+                    panelInstanceId,
+                    _commandRouter != null
+                        && _commandRouter.PreparationNavigationV1);
+            bool restored =
+                payload != null
+                && TryPostToWeb(payload);
+            PostToWeb(
+                "{\"type\":\"toast\",\"text\":\"整备导航当前不可用，已返回角色构筑\"}");
+            LogManager.Log(
+                "event=character_build_preparation_navigation_preserved target="
+                + target.ToString().ToLowerInvariant()
+                + " panel_instance=" + panelInstanceId
+                + " reason=" + (reason ?? "unknown")
+                + " web_restored="
+                + (restored ? "true" : "false"));
         }
 
         internal static string BuildPanelForceClosePayload(string activePanel,
@@ -342,6 +450,59 @@ namespace CF7Launcher.Guardian
                 && request != null
                 && request.Value<string>("panel") == "workbench"
                 && request.Value<string>("panelInstanceId") == activePanelInstanceId;
+        }
+
+        internal static bool TryValidateCharacterBuildCandidateTooltipEnvelope(
+            JObject parsed,
+            string activePanel,
+            string activePanelInstanceId,
+            out JObject normalizedSource,
+            out long sessionGeneration)
+        {
+            normalizedSource = null;
+            sessionGeneration = 0;
+            if (parsed == null
+                || !HasOnlyObjectKeys(
+                    parsed,
+                    "type", "panel", "domain", "cmd", "callId",
+                    "panelInstanceId", "payload")
+                || activePanel != "workbench"
+                || string.IsNullOrEmpty(activePanelInstanceId)
+                || !HasExactStringValue(parsed["type"], "panel")
+                || !HasExactStringValue(parsed["panel"], "workbench")
+                || !HasExactStringValue(parsed["domain"], "inventory")
+                || !HasExactStringValue(parsed["cmd"], "tooltip")
+                || !IsNonEmptyString(parsed["callId"])
+                || !HasExactStringValue(
+                    parsed["panelInstanceId"], activePanelInstanceId))
+            {
+                return false;
+            }
+
+            JObject payload = parsed["payload"] as JObject;
+            JObject context = payload != null ? payload["context"] as JObject : null;
+            if (!HasOnlyObjectKeys(payload, "v", "source", "context")
+                || !IsBoundedInteger(payload["v"], 1, 1)
+                || !HasOnlyObjectKeys(
+                    context, "kind", "sessionGeneration")
+                || !HasExactStringValue(
+                    context["kind"], "character_build_candidate")
+                || !IsBoundedInteger(
+                    context["sessionGeneration"], 1, int.MaxValue)
+                || !CharacterBuildProtocol.TryNormalizeBackpackSource(
+                    payload["source"] as JObject, out normalizedSource))
+            {
+                return false;
+            }
+            sessionGeneration =
+                context["sessionGeneration"].ToObject<long>();
+            return true;
+        }
+
+        internal static bool HasInventoryPayloadContext(JObject parsed)
+        {
+            JObject payload = parsed != null ? parsed["payload"] as JObject : null;
+            return payload != null && payload.Property("context") != null;
         }
 
         /// <summary>
@@ -575,6 +736,7 @@ namespace CF7Launcher.Guardian
         private readonly int _frameRateLimit;
         private readonly bool _webView2DisableGpu;
         private readonly string _webView2AdditionalArgs;
+        private readonly bool _webView2DeveloperMode;
         // Focus restore primitive：由 Program.cs 注入 WindowManager.RestoreFlashInputFocus；
         // 带 AttachThreadInput 兜底 + verify + [FocusRestore] 日志。
         // null 时 panel→idle 路径跳过 Flash 前台回推（开发/测试场景；生产路径必传）。
@@ -724,6 +886,7 @@ namespace CF7Launcher.Guardian
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
             int frameRateLimit,
             bool webView2DisableGpu, string webView2AdditionalArgs,
+            bool webView2DeveloperMode,
             bool panelTakeForeground, bool hotReloadEnabled,
             Func<string, bool> flashFocusRestorer)
         {
@@ -739,6 +902,7 @@ namespace CF7Launcher.Guardian
             _frameRateLimit = NormalizeFrameRateLimit(frameRateLimit);
             _webView2DisableGpu = webView2DisableGpu;
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
+            _webView2DeveloperMode = webView2DeveloperMode;
             _flashFocusRestorer = flashFocusRestorer; // 可空：null 时 panel→idle 跳过 Flash 前台回推
             _projectRoot = ResolveProjectRoot(webDir, projectRoot);
 
@@ -973,6 +1137,11 @@ namespace CF7Launcher.Guardian
                 SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
                     1.0, "core_ready_pre_nav", true);
 
+                WebView2BrowserPolicy.Apply(
+                    _webView.CoreWebView2.Settings,
+                    _webView2DeveloperMode,
+                    "WebOverlayForm");
+
                 // 透明背景：WebView2 透明区域显示 Form BackColor (=TransparencyKey) → 视觉穿透
                 _webView.DefaultBackgroundColor = Color.Transparent;
 
@@ -1035,10 +1204,6 @@ namespace CF7Launcher.Guardian
                 };
                 await _webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(
                     "window.CF7_FRAME_RATE_LIMIT=" + _frameRateLimit.ToString(CultureInfo.InvariantCulture) + ";");
-
-                // 调试阶段保留开发者工具
-                _webView.CoreWebView2.Settings.AreDevToolsEnabled = true;
-                _webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
 
                 // 导航到 overlay 页面
                 // _webReady 延迟到 JS "ready" 消息到达时才置真（OnWebMessageReceived）
@@ -4204,6 +4369,73 @@ namespace CF7Launcher.Guardian
                     : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
                 string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
                     : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                bool hasInventoryContext =
+                    HasInventoryPayloadContext(parsed);
+                if (hasInventoryContext)
+                {
+                    if (!IsActiveCharacterBuildPanel(
+                        activeName, activeInstance, parsed))
+                    {
+                        RespondPanelDomainError(
+                            parsed, "panel_instance_expired");
+                        return;
+                    }
+                    JObject envelopeSource;
+                    long sessionGeneration;
+                    if (!TryValidateCharacterBuildCandidateTooltipEnvelope(
+                        parsed,
+                        activeName,
+                        activeInstance,
+                        out envelopeSource,
+                        out sessionGeneration))
+                    {
+                        RespondPanelDomainError(parsed, "invalid_payload");
+                        return;
+                    }
+                    if (_characterBuildTask == null)
+                    {
+                        RespondPanelDomainError(
+                            parsed, "loadout_unavailable");
+                        return;
+                    }
+                    JObject normalizedSource;
+                    Func<bool> completionFence;
+                    if (!_characterBuildTask.TryCaptureCandidateTooltipFence(
+                        activeInstance,
+                        sessionGeneration,
+                        envelopeSource,
+                        out normalizedSource,
+                        out completionFence))
+                    {
+                        RespondPanelDomainError(parsed, "stale_state");
+                        return;
+                    }
+                    if (_inventoryTask == null)
+                    {
+                        RespondPanelDomainError(
+                            parsed, "inventory_unavailable");
+                        return;
+                    }
+                    var trustedRequest = new JObject
+                    {
+                        ["type"] = "panel",
+                        ["panel"] = "workbench",
+                        ["domain"] = "inventory",
+                        ["cmd"] = "tooltip",
+                        ["callId"] = parsed["callId"].DeepClone(),
+                        ["panelInstanceId"] = activeInstance,
+                        ["payload"] = new JObject
+                        {
+                            ["v"] = 1,
+                            ["source"] = normalizedSource
+                        }
+                    };
+                    LogManager.Log(
+                        "[Panel] Routing Character candidate tooltip through InventoryTask");
+                    _inventoryTask.HandleCharacterCandidateTooltip(
+                        trustedRequest, completionFence);
+                    return;
+                }
                 if (activeName == "loot" || parsed.Value<string>("panel") == "loot")
                 {
                     bool exactLootInventory = IsValidLootInventoryEnvelope(
@@ -4353,10 +4585,19 @@ namespace CF7Launcher.Guardian
                         string panel = parsed.Value<string>("panel") ?? "";
                         bool characterBuildPauseReleaseHandled = false;
                         bool characterBuildVisualRetirePending = false;
-                        bool navigateSkills = false;
                         bool navigateCharacterBuild = false;
+                        bool navigatePreparation = false;
+                        bool navigatePreparationChild = false;
+                        LauncherCommandRouter
+                            .CharacterBuildPreparationTarget
+                            preparationTarget =
+                                LauncherCommandRouter
+                                    .CharacterBuildPreparationTarget
+                                    .Skills;
                         string exactWorkbenchInstance = null;
                         string exactSkillInstance = null;
+                        string exactPreparationChildPanel = null;
+                        string exactPreparationChildInstance = null;
                         bool trackedHairdresserClose = panel == "hairdresser"
                             && _panelHost != null
                             && _panelHost.IsPanelOpen
@@ -4372,10 +4613,27 @@ namespace CF7Launcher.Guardian
                                 LogManager.Log("[Workbench] rejected stale/malformed close envelope");
                                 return;
                             }
-                            navigateSkills = string.Equals(
-                                parsed.Value<string>("reason"),
-                                "navigate_skills",
-                                StringComparison.Ordinal);
+                            navigatePreparation =
+                                LauncherCommandRouter
+                                    .TryParseCharacterBuildPreparationCloseReason(
+                                        parsed.Value<string>(
+                                            "reason"),
+                                        out preparationTarget);
+                            if (navigatePreparation
+                                && !LauncherCommandRouter
+                                    .IsCharacterBuildPreparationTargetEnabled(
+                                        preparationTarget))
+                            {
+                                LogManager.Log(
+                                    "event=character_build_preparation_navigation_rejected target="
+                                    + preparationTarget
+                                        .ToString()
+                                        .ToLowerInvariant()
+                                    + " reason=target_disabled");
+                                PostToWeb(
+                                    "{\"type\":\"toast\",\"text\":\"该整备入口尚未开放\"}");
+                                return;
+                            }
                             bool tuningBound = _equipmentTuningTask != null
                                 && _equipmentTuningTask.PanelInstanceId == activeInstance;
                             bool exactLoadoutBinding = _characterBuildTask != null
@@ -4395,28 +4653,40 @@ namespace CF7Launcher.Guardian
                                 LogManager.Log("[CharacterBuildTask] close deferred until exact finalize proof");
                                 return;
                             }
-                            if (navigateSkills)
+                            if (navigatePreparation)
                             {
                                 bool navigationArmed =
                                     exactLoadoutBinding
                                     && _commandRouter != null
                                     && _commandRouter
-                                        .TryArmCharacterBuildSkillsNavigation(
-                                            activeInstance);
+                                        .TryArmCharacterBuildPreparationNavigation(
+                                            activeInstance,
+                                            preparationTarget);
                                 if (!navigationArmed)
                                 {
                                     string pendingNavigation =
                                         _commandRouter != null
                                             ? _commandRouter
-                                                .PendingCharacterBuildSkillsNavigationInstance
+                                                .PendingCharacterBuildPreparationNavigationInstance
+                                            : null;
+                                    string pendingTarget =
+                                        _commandRouter != null
+                                            ? _commandRouter
+                                                .PendingCharacterBuildPreparationTarget
                                             : null;
                                     if (string.Equals(
                                         pendingNavigation,
                                         activeInstance,
-                                        StringComparison.Ordinal))
+                                        StringComparison.Ordinal)
+                                        && string.Equals(
+                                            pendingTarget,
+                                            preparationTarget
+                                                .ToString()
+                                                .ToLowerInvariant(),
+                                            StringComparison.Ordinal))
                                     {
                                         LogManager.Log(
-                                            "[CharacterBuildTask] rejected duplicate Skills navigation handoff");
+                                            "[CharacterBuildTask] rejected duplicate preparation navigation handoff");
                                         return;
                                     }
                                     if (_commandRouter != null
@@ -4424,28 +4694,35 @@ namespace CF7Launcher.Guardian
                                             pendingNavigation))
                                     {
                                         _commandRouter
-                                            .CancelCharacterBuildSkillsNavigation(
+                                            .CancelCharacterBuildPreparationNavigation(
                                                 pendingNavigation,
+                                                null,
                                                 "superseded_by_ordinary_close");
                                     }
-                                    // Web has already retired its local DOM before sending this
-                                    // envelope.  If the optional navigation intent cannot arm,
-                                    // preserve the authoritative ordinary-close path instead of
-                                    // stranding Host visual/pause ownership.
-                                    navigateSkills = false;
-                                    LogManager.Log(
-                                        "[CharacterBuildTask] Skills navigation unavailable; continuing ordinary close");
+                                    // Web retires its local DOM after sending this envelope. A
+                                    // pre-close arm failure must therefore remount the same exact
+                                    // Build instance and leave Host visual/pause ownership intact.
+                                    RestoreCharacterBuildAfterPreparationArmFailure(
+                                        activeInstance,
+                                        preparationTarget,
+                                        "arm_rejected");
+                                    return;
                                 }
                             }
                             if (tuningBound
                                 && !_equipmentTuningTask.HandlePanelClosed(activeInstance))
                             {
-                                if (navigateSkills)
+                                if (navigatePreparation)
                                 {
                                     _commandRouter
-                                        .CancelCharacterBuildSkillsNavigation(
+                                        .CancelCharacterBuildPreparationNavigation(
                                             activeInstance,
+                                            preparationTarget,
                                             "equipment_tuning_close_race");
+                                    RestoreCharacterBuildAfterPreparationArmFailure(
+                                        activeInstance,
+                                        preparationTarget,
+                                        "equipment_tuning_close_race");
                                 }
                                 LogManager.Log("[EquipmentTuningTask] close lost coordinator race");
                                 return;
@@ -4459,12 +4736,17 @@ namespace CF7Launcher.Guardian
                                         _characterBuildTask
                                             .PanelInstanceId))
                                 {
-                                    if (navigateSkills)
+                                    if (navigatePreparation)
                                     {
                                         _commandRouter
-                                            .CancelCharacterBuildSkillsNavigation(
+                                            .CancelCharacterBuildPreparationNavigation(
                                                 activeInstance,
+                                                preparationTarget,
                                                 "character_close_race");
+                                        RestoreCharacterBuildAfterPreparationArmFailure(
+                                            activeInstance,
+                                            preparationTarget,
+                                            "character_close_race");
                                     }
                                     LogManager.Log(
                                         "[CharacterBuildTask] close recovery lost coordinator race");
@@ -4545,6 +4827,86 @@ namespace CF7Launcher.Guardian
                                 return;
                             }
                         }
+                        if (LauncherCommandRouter
+                            .IsPreparationChildPanelName(panel))
+                        {
+                            string activeName =
+                                _panelHost != null
+                                    ? _panelHost.ActivePanelName
+                                    : (_commandRouter != null
+                                        ? _commandRouter
+                                            .ActiveFallbackPanelName
+                                        : _activePanel);
+                            string activeInstance =
+                                _panelHost != null
+                                    ? _panelHost
+                                        .ActivePanelInstanceId
+                                    : (_commandRouter != null
+                                        ? _commandRouter
+                                            .ActiveFallbackPanelInstanceId
+                                        : null);
+                            bool requestsCharacterBuild =
+                                string.Equals(
+                                    parsed.Value<string>(
+                                        "reason"),
+                                    "navigate_character_build",
+                                    StringComparison.Ordinal);
+                            if (requestsCharacterBuild)
+                            {
+                                if (!IsValidPreparationChildReturnCloseEnvelope(
+                                        parsed,
+                                        activeName,
+                                        activeInstance))
+                                {
+                                    LogManager.Log(
+                                        "[PreparationChild] rejected stale/malformed Character Build return envelope");
+                                    return;
+                                }
+                                exactPreparationChildPanel =
+                                    activeName;
+                                exactPreparationChildInstance =
+                                    activeInstance;
+                                navigatePreparationChild =
+                                    _commandRouter != null
+                                    && _commandRouter
+                                        .TryArmPreparationChildCharacterBuildNavigation(
+                                            activeName,
+                                            activeInstance);
+                                if (!navigatePreparationChild)
+                                {
+                                    bool duplicate =
+                                        _commandRouter != null
+                                        && string.Equals(
+                                            _commandRouter
+                                                .PendingPreparationChildReturnPanelName,
+                                            activeName,
+                                            StringComparison.Ordinal)
+                                        && string.Equals(
+                                            _commandRouter
+                                                .PendingPreparationChildReturnInstance,
+                                            activeInstance,
+                                            StringComparison.Ordinal);
+                                    if (duplicate)
+                                    {
+                                        LogManager.Log(
+                                            "[PreparationChild] rejected duplicate Character Build return handoff");
+                                        return;
+                                    }
+                                    LogManager.Log(
+                                        "[PreparationChild] Character Build return capability unavailable; continuing ordinary close");
+                                    PostToWeb(
+                                        "{\"type\":\"toast\",\"text\":\"返回装备当前不可用，页面将正常关闭\"}");
+                                }
+                            }
+                            else if (_commandRouter != null)
+                            {
+                                _commandRouter
+                                    .CancelPreparationChildCharacterBuildNavigation(
+                                        activeName,
+                                        activeInstance,
+                                        "ordinary_close");
+                            }
+                        }
                         // dismissReturnStack=true 表示业务流程触发的关闭（如 arena enter success 后 AS2
                         // 已跳关到战场），必须清整个 return stack 防止 PanelHostController 自动 reopen
                         // 上层 panel 遮挡 Flash 视野。默认 false = 用户主动取消，pop 一层。
@@ -4579,8 +4941,9 @@ namespace CF7Launcher.Guardian
                         {
                             // 顺序很关键：必须先清栈再 ClosePanel，否则 ExecuteCommand Close path
                             // 还会读到栈顶 entry 并 enqueue reopen 命令。
-                            if (dismissReturnStack || navigateSkills
-                                || navigateCharacterBuild)
+                            if (dismissReturnStack || navigatePreparation
+                                || navigateCharacterBuild
+                                || navigatePreparationChild)
                                 _panelHost.ClearReturnStack();
                             if (panel == "workbench")
                             {
@@ -4598,12 +4961,13 @@ namespace CF7Launcher.Guardian
                                         closeInstance,
                                         0,
                                         "normal_close",
-                                        navigateSkills
+                                        navigatePreparation
                                             ? (Action)delegate
                                             {
                                                 _commandRouter
-                                                    .CancelCharacterBuildSkillsNavigation(
+                                                    .CancelCharacterBuildPreparationNavigation(
                                                         closeInstance,
+                                                        preparationTarget,
                                                         "visual_retire_failed");
                                             }
                                             : null)
@@ -4677,6 +5041,50 @@ namespace CF7Launcher.Guardian
                                         "[SkillTask] exact Host close was not queued");
                                 }
                             }
+                            else if (navigatePreparationChild)
+                            {
+                                bool closeQueued =
+                                    _panelHost
+                                        .TryRetirePanelVisualExact(
+                                            exactPreparationChildPanel,
+                                            exactPreparationChildInstance,
+                                            delegate(
+                                                PanelHostController
+                                                    .VisualRetireOutcome
+                                                    outcome)
+                                            {
+                                                if (outcome
+                                                        == PanelHostController
+                                                            .VisualRetireOutcome
+                                                            .RetiredExact
+                                                    || outcome
+                                                        == PanelHostController
+                                                            .VisualRetireOutcome
+                                                            .VisualAlreadyAbsent)
+                                                {
+                                                    _commandRouter
+                                                        .TryCompletePreparationChildCharacterBuildNavigation(
+                                                            exactPreparationChildPanel,
+                                                            exactPreparationChildInstance);
+                                                    return;
+                                                }
+                                                _commandRouter
+                                                    .CancelPreparationChildCharacterBuildNavigation(
+                                                        exactPreparationChildPanel,
+                                                        exactPreparationChildInstance,
+                                                        "visual_retire_failed");
+                                            });
+                                if (!closeQueued)
+                                {
+                                    _commandRouter
+                                        .CancelPreparationChildCharacterBuildNavigation(
+                                            exactPreparationChildPanel,
+                                            exactPreparationChildInstance,
+                                            "visual_retire_not_queued");
+                                    LogManager.Log(
+                                        "[PreparationChild] exact Host visual retire was not queued");
+                                }
+                            }
                             else
                             {
                                 _panelHost.ClosePanel();
@@ -4691,11 +5099,12 @@ namespace CF7Launcher.Guardian
                             if (!_characterBuildTask
                                     .ContinueDetachRecoveryAfterVisualRetired(
                                         0)
-                                && navigateSkills)
+                                && navigatePreparation)
                             {
                                 _commandRouter
-                                    .CancelCharacterBuildSkillsNavigation(
+                                    .CancelCharacterBuildPreparationNavigation(
                                         exactWorkbenchInstance,
+                                        preparationTarget,
                                         "visual_retire_continuation_failed");
                             }
                         }
@@ -4709,6 +5118,16 @@ namespace CF7Launcher.Guardian
                                 "skills_character_build_navigation");
                             _commandRouter
                                 .TryCompleteSkillsCharacterBuildNavigation();
+                        }
+                        else if (_panelHost == null
+                            && navigatePreparationChild)
+                        {
+                            ForceIdleState(
+                                "preparation_child_character_build_navigation");
+                            _commandRouter
+                                .TryCompletePreparationChildCharacterBuildNavigation(
+                                    exactPreparationChildPanel,
+                                    exactPreparationChildInstance);
                         }
                         if (panel == "hairdresser" && !trackedHairdresserClose
                             && _hairdresserTask != null)

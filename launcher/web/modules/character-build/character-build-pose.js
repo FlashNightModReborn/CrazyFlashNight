@@ -21,7 +21,8 @@
         ['手枪站立', '手枪'],
         ['手枪2站立', '手枪2'],
         ['双枪站立', '双枪'],
-        ['兵器站立', '兵器']
+        ['兵器站立', '兵器'],
+        ['手雷站立', '手雷']
     ];
     var BODY_DRAW_FIELDS = [
         '身体', '脸型', '发型', '面具', '屁股',
@@ -32,7 +33,6 @@
         '长枪_装扮', '手枪_装扮', '手枪2_装扮',
         '刀_装扮', '刀2_装扮', '刀3_装扮', '手雷_装扮'
     ];
-
     function pose(stateLabel, attackMode) {
         return {stateLabel:stateLabel, attackMode:attackMode};
     }
@@ -61,7 +61,7 @@
         case '刀':
             return pose('兵器站立', '兵器');
         case '手雷':
-            return pose('空手站立', '手雷');
+            return pose('手雷站立', '手雷');
         default:
             return null;
         }

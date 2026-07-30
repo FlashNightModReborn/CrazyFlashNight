@@ -2,6 +2,8 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 const Model = require('../launcher/web/modules/equipment-tuning-model.js');
 const CharacterBuildTuning = require(
     '../launcher/web/modules/character-build/character-build-tuning.js').CharacterBuildTuning;
@@ -23,8 +25,9 @@ const candidates = [
     {occupied:true,physicalSlot:3,slotLease:'lease.target',item:{itemKind:'equipment',use:'手枪',enhancementLevel:9}}
 ];
 
-equal(Model.wireRef(candidates[1]), {containerId:'背包',slot:3,expectedLease:'lease.target'},
-    'wire ref uses physical slot and lease');
+equal(Model.wireRef(candidates[1]), {
+    sourceKind:'inventory',containerId:'背包',slot:3,expectedLease:'lease.target'
+}, 'wire ref uses the exact four-key inventory authority shape');
 equal(Model.sameRef(source, {containerId:'背包',slot:2,expectedLease:'rotated'}), true,
     'identity ignores rotating lease');
 equal(Model.normalizeTuningSource({
@@ -115,35 +118,6 @@ equal(refreshResult && refreshResult.success, false,
     'loadout adapter rejects a generation change that races the refresh callback');
 equal(adoptedPayloads, 0,
     'cross-generation refresh is rejected before Character Build adopts its projection');
-const scheduledScrollRestores = [];
-const originalSetTimeout = global.setTimeout;
-const scrollProbe = {scrollTop:0};
-const scrollAdapter = new CharacterBuildTuning({
-    session:adapterSession,
-    view:{
-        root:{querySelector:function() { return scrollProbe; }},
-        debugState:function() { return {candidateCount:0}; }
-    }
-});
-try {
-    global.setTimeout = function(callback) {
-        scheduledScrollRestores.push(callback);
-        return scheduledScrollRestores.length;
-    };
-    scrollAdapter._scrollRestoreGeneration = 1;
-    scrollAdapter._restoreScroll({scrollTop:73}, 1, 1);
-    equal(scrollProbe.scrollTop, 73,
-        'tuning return restores the captured candidate scroll position');
-    equal(scheduledScrollRestores.length, 1,
-        'an empty candidate projection schedules one bounded restore retry');
-    scrollAdapter._scrollRestoreGeneration = 2;
-    scrollProbe.scrollTop = 19;
-    scheduledScrollRestores.shift()();
-    equal(scrollProbe.scrollTop, 19,
-        'a later tuning generation cancels stale scroll restore timers');
-} finally {
-    global.setTimeout = originalSetTimeout;
-}
 equal(Model.tuningSourceSupports({
     sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9
 }, 'enhance'), true, 'loadout source admits first-round single-item tuning');
@@ -212,5 +186,151 @@ const tree = Model.buildModFilterTree([
 equal(tree.children.map(node => node.id), ['grade','scope','role','status'], 'mod filter branches');
 equal(Model.modMatchesFilter({grade:'medium'}, ['grade','medium']), true, 'mod grade filter match');
 equal(Model.modMatchesFilter({grade:'low'}, ['grade','medium']), false, 'mod grade filter reject');
+equal(
+    Model.modSlotCapacityProjection({modSlotCapacity:4}, 1),
+    {state:'known',value:4},
+    'plugin capacity accepts the authoritative four-slot equipment projection'
+);
+equal(
+    Model.modSlotCapacityProjection({modSlotCapacity:0}, 0),
+    {state:'known',value:0},
+    'authoritative zero means no plugin slots'
+);
+equal(
+    Model.modSlotCapacityProjection({}, 1),
+    {state:'absent',value:null},
+    'missing capacity stays absent instead of inferring from installed plugins'
+);
+equal(
+    Model.modSlotCapacityProjection({modSlotCapacity:1}, 2),
+    {state:'malformed',value:null},
+    'installed plugins beyond capacity fail closed'
+);
+equal(
+    Model.modSlotCapacityProjection({modSlotCapacity:'4'}, 1),
+    {state:'malformed',value:null},
+    'capacity does not coerce a non-authoritative string'
+);
+equal(
+    Model.modSlotCapacityProjection({
+        modSlotCapacity:Model.MAX_VISIBLE_MOD_SLOT_CAPACITY + 1
+    }, 0),
+    {state:'malformed',value:null},
+    'pathological authority capacity fails closed before unbounded DOM projection'
+);
+
+const tuningServiceBytes = fs.readFileSync(path.join(
+    __dirname,
+    '..',
+    'scripts',
+    '类定义',
+    'org',
+    'flashNight',
+    'arki',
+    'item',
+    'EquipmentTuningService.as'
+));
+equal(
+    Array.from(tuningServiceBytes.subarray(0, 3)),
+    [0xEF, 0xBB, 0xBF],
+    'AS2 tuning service keeps its mandatory UTF-8 BOM'
+);
+const tuningServiceSource = tuningServiceBytes.toString('utf8');
+const equipmentProjectionSource = (
+    tuningServiceSource.match(
+        /private static function buildEquipmentProjection[\s\S]*?\r?\n    }\r?\n/
+    ) || []
+)[0] || '';
+equal(
+    /typeof item\.getData == "function"[\s\S]*?data\.data\.modslot/.test(
+        equipmentProjectionSource
+    ),
+    true,
+    'AS2 tuning snapshot derives plugin capacity from current equipment data'
+);
+equal(
+    /modSlotCapacityKnown:Boolean = data != null[\s\S]*?data\.data\.hasOwnProperty\("modslot"\)[\s\S]*?data\.data\.modslot != undefined/.test(
+        equipmentProjectionSource
+    ),
+    true,
+    'AS2 tuning snapshot treats an absent modslot field as unknown'
+);
+equal(
+    /isNaN\(rawModSlotCapacity\)[\s\S]*?Number\.POSITIVE_INFINITY[\s\S]*?Number\.NEGATIVE_INFINITY[\s\S]*?rawModSlotCapacity < 0[\s\S]*?Math\.floor\(rawModSlotCapacity\) != rawModSlotCapacity/.test(
+        equipmentProjectionSource
+    )
+        && !/rawModSlotCapacity\s*>\s*3/.test(equipmentProjectionSource),
+    true,
+    'AS2 tuning snapshot accepts any finite nonnegative integer without a UI-owned slot cap'
+);
+equal(
+    /if \(modSlotCapacityKnown\)[\s\S]*?projection\.modSlotCapacity = modSlotCapacity/.test(
+        equipmentProjectionSource
+    ),
+    true,
+    'AS2 tuning snapshot emits capacity only from a known valid authority value'
+);
+
+const tuningServiceTestBytes = fs.readFileSync(path.join(
+    __dirname,
+    '..',
+    'scripts',
+    '类定义',
+    'org',
+    'flashNight',
+    'arki',
+    'item',
+    'EquipmentTuningServiceTest.as'
+));
+equal(
+    Array.from(tuningServiceTestBytes.subarray(0, 3)),
+    [0xEF, 0xBB, 0xBF],
+    'AS2 tuning service test keeps its mandatory UTF-8 BOM'
+);
+const tuningServiceTestSource = tuningServiceTestBytes.toString('utf8');
+const malformedModSlotFixturePatterns = [
+    /name:"测试负数槽手枪"[\s\S]*?modslot:-1/,
+    /name:"测试小数槽手枪"[\s\S]*?modslot:1\.5/,
+    /name:"测试非数值槽手枪"[\s\S]*?modslot:"not-a-number"/,
+    /name:"测试NaN槽手枪"[\s\S]*?modslot:Number\("not-a-number"\)/,
+    /name:"测试正无穷槽手枪"[\s\S]*?modslot:Number\.POSITIVE_INFINITY/,
+    /name:"测试负无穷槽手枪"[\s\S]*?modslot:Number\.NEGATIVE_INFINITY/
+];
+const malformedModSlotReplayPatterns = [
+    /getRawItemData\("测试负数槽手枪"\)\.data\.modslot\s*=\s*-1/,
+    /getRawItemData\("测试小数槽手枪"\)\.data\.modslot\s*=\s*1\.5/,
+    /getRawItemData\("测试非数值槽手枪"\)\.data\.modslot\s*=\s*[\s\S]*?"not-a-number"/,
+    /getRawItemData\("测试NaN槽手枪"\)\.data\.modslot\s*=\s*[\s\S]*?Number\("not-a-number"\)/,
+    /getRawItemData\("测试正无穷槽手枪"\)\.data\.modslot\s*=\s*[\s\S]*?Number\.POSITIVE_INFINITY/,
+    /getRawItemData\("测试负无穷槽手枪"\)\.data\.modslot\s*=\s*[\s\S]*?Number\.NEGATIVE_INFINITY/
+];
+equal(
+    /female\.snapshot\.equipment\.modSlotCapacity == 4/.test(
+        tuningServiceTestSource
+    )
+        && /delete ItemUtil\.getRawItemData\("测试未知槽手枪"\)\.data\.modslot/.test(
+            tuningServiceTestSource
+        )
+        && /!unknown\.snapshot\.equipment\.hasOwnProperty\("modSlotCapacity"\)/.test(
+            tuningServiceTestSource
+        )
+        && malformedModSlotFixturePatterns.every(function(pattern) {
+            return pattern.test(tuningServiceTestSource);
+        })
+        && malformedModSlotReplayPatterns.every(function(pattern) {
+            return pattern.test(tuningServiceTestSource);
+        })
+        && /malformedSlots:Array = \[2, 3, 4, 5, 6, 7\]/.test(
+            tuningServiceTestSource
+        )
+        && /var malformedCurrentOmitted:Boolean = malformed\.success[\s\S]*?!malformed\.snapshot\.equipment\.hasOwnProperty\([\s\S]*?"modSlotCapacity"\)/.test(
+            tuningServiceTestSource
+        )
+        && /malformedCapacityOmitted\s*=\s*[\s\S]*?malformedCurrentOmitted && malformedCapacityOmitted/.test(
+            tuningServiceTestSource
+        ),
+    true,
+    'AS2 regression covers four authoritative slots and omits missing or malformed capacities'
+);
 
 console.log('Equipment tuning model ' + checks + '/' + checks + ' passed');

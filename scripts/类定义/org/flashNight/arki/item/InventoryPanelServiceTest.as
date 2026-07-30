@@ -251,6 +251,54 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && captured.indexOf(
                     '"openRequestId":"' + validOpenRequestId + '"') >= 0,
             "nativehud_equipment 角色构筑顶层原样回显 160 字符合法 openRequestId");
+        var nativeHudTuningOpened:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"tuning",
+                source:"nativehud_equipment_tuning",
+                openRequestId:validOpenRequestId
+            });
+        assertTrue(nativeHudTuningOpened && sendCount == 7
+                && captured.indexOf('"profile":"battlebox"') >= 0
+                && captured.indexOf('"view":"tuning"') >= 0
+                && captured.indexOf(
+                    '"source":"nativehud_equipment_tuning"') >= 0
+                && captured.indexOf(
+                    '"openRequestId":"' + validOpenRequestId + '"') >= 0,
+            "nativehud_equipment_tuning 只按 battlebox/tuning 精确 tuple 原样回显 nonce");
+        var rejectedMissingTuningOpenRequestId:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"tuning",
+                source:"nativehud_equipment_tuning"
+            });
+        var rejectedNearTuningView:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"storage",
+                source:"nativehud_equipment_tuning",
+                openRequestId:validOpenRequestId
+            });
+        var rejectedNearTuningProfile:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"warehouse",
+                view:"tuning",
+                source:"nativehud_equipment_tuning",
+                openRequestId:validOpenRequestId
+            });
+        var rejectedNearTuningSource:Boolean =
+            InventoryPanelService.requestOpenWorkbench({
+                profile:"battlebox",
+                view:"tuning",
+                source:"nativehud_equipment_tuning_extra",
+                openRequestId:validOpenRequestId
+            });
+        assertTrue(!rejectedMissingTuningOpenRequestId
+                && !rejectedNearTuningView
+                && !rejectedNearTuningProfile
+                && !rejectedNearTuningSource
+                && sendCount == 7,
+            "生产调制 opener 缺 nonce 或 source/profile/view 近似 tuple 都零发送");
         var rejectedStorageOpenRequestId:Boolean =
             InventoryPanelService.requestOpenWorkbench({
                 profile:"battlebox",
@@ -275,8 +323,8 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(!rejectedStorageOpenRequestId
                 && !rejectedTuningOpenRequestId
                 && !rejectedAgentOpenRequestId
-                && sendCount == 6,
-            "openRequestId 只允许 nativehud_equipment + battlebox/build 精确 tuple，其他组合零发送");
+                && sendCount == 7,
+            "openRequestId 只允许两个 nativehud 精确 tuple，其他组合零发送");
         var tooLongOpenRequestId:String =
             validOpenRequestId + "x";
         var rejectedNumericOpenRequestId:Boolean =
@@ -327,7 +375,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && !rejectedWhitespaceOpenRequestId
                 && !rejectedSlashOpenRequestId
                 && !rejectedLongOpenRequestId
-                && sendCount == 6,
+                && sendCount == 7,
             "显式 openRequestId 拒绝非字符串、空值、非法字符与 161 字符超长值且零发送");
         readinessRoot.gameworld = null;
         var rejectedNotReadyBuild:Boolean =
@@ -351,7 +399,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(!rejectedNotReadyBuild
                 && storageWhileBuildNotReady
                 && tuningWhileBuildNotReady
-                && sendCount == 8,
+                && sendCount == 9,
             "build readiness 失败零发送，且 storage/tuning 准入不受影响");
         var rejected:Boolean = InventoryPanelService.requestOpenWorkbench({profile: "仓库"});
         var rejectedView:Boolean = InventoryPanelService.requestOpenWorkbench({profile:"warehouse", view:"editor"});
@@ -384,7 +432,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && !rejectedMissingBuildSource
                 && !rejectedNearBuildSource
                 && !rejectedPaddedBuildSource
-                && sendCount == 8,
+                && sendCount == 9,
             "build 仍拒绝非法 profile/view、缺 source、前缀/尾空格及白名单外 source");
 
         CharacterBuildService.testOnlyReset();

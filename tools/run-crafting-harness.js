@@ -5,7 +5,8 @@ const {readCssBundle}=require('./lib/read-css-bundle.js');
 const ROOT=path.resolve(__dirname,'..'),WEB=path.join(ROOT,'launcher','web');
 const PLAYWRIGHT=path.join(ROOT,'launcher','perf','node_modules','playwright');
 const INVENTORY_WORKBENCH_MODULES=[
-  'inventory-workbench-config.js','inventory-workbench-header.js',
+  'inventory-workbench-config.js','inventory-workbench-preparation-menu.js',
+  'inventory-workbench-navigation.js','inventory-workbench-header.js',
   'inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js',
   'inventory-tuning-scope.js',
   'inventory-storage-workbench.js',
@@ -14,6 +15,7 @@ const INVENTORY_WORKBENCH_MODULES=[
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','crafting.js'),'utf8');
   const materials=fs.readFileSync(path.join(WEB,'modules','crafting-materials.js'),'utf8');
+  const detailPresenter=fs.readFileSync(path.join(WEB,'modules','crafting-detail-presenter.js'),'utf8');
   const harness=fs.readFileSync(path.join(WEB,'modules','crafting','dev','harness.html'),'utf8');
   const equipmentInspector=fs.readFileSync(path.join(WEB,'modules','equipment-inspector.js'),'utf8');
   const craftingInspector=fs.readFileSync(path.join(WEB,'modules','crafting-inspector.js'),'utf8');
@@ -49,7 +51,17 @@ function audit(){
   if(!harness.includes("mode:'delay'")||!harness.includes("mode:'drop'")||!harness.includes("mode:'send_false'")
       ||!harness.includes("error:'malformed_response'")||!harness.includes("'item_not_found'")
       ||!harness.includes("'insufficient_money'"))throw new Error('transport and authority fault regression matrix missing');
-  if(!panel.includes('ItemFilter.FilterNavigator')||!panel.includes("visualStyle:'catalog'")||!panel.includes('craftCount:requestedCount')||!panel.includes("Panels.open('workbench'"))throw new Error('filter, batch, or organizer route missing');
+  if(!panel.includes('ItemFilter.FilterNavigator')||!panel.includes("visualStyle:'catalog'")
+      ||!panel.includes('craftCount:intent.craftCount')||!panel.includes("Panels.open('workbench'"))throw new Error('filter, batch, or organizer route missing');
+  if(!panel.includes('function dispatchPreviewIntent')||!panel.includes('function responseMatchesPreviewIntent')
+      ||!panel.includes('Superseded read replies are deliberately silent')
+      ||!detailPresenter.includes('new WorkbenchComponents.QuantityControl')
+      ||!detailPresenter.includes('new WorkbenchComponents.CommitBar')
+      ||!detailPresenter.includes('max:99')||!detailPresenter.includes('sliderMax:99')
+      ||!detailPresenter.includes('Presenter.prototype.destroy')
+      ||detailPresenter.includes('craftToken')||detailPresenter.includes('expectedCraftToken')) {
+    throw new Error('stable detail presenter or latest-wins quantity protocol missing');
+  }
   if(!panel.includes('canCraftOne === true')||!panel.includes('craftableOnly:_craftableOnly')||!panel.includes('crafting-craftable-toggle'))throw new Error('snapshot availability or craftable-only contract missing');
   if(!inventoryWorkbench.includes('function returnToPanel()')||!inventoryWorkbench.includes("target.panel !== 'crafting'")
       ||!inventoryWorkbenchPanel.includes('InventoryWorkbenchConfig.resolveLaunchContext(initData)')
@@ -57,10 +69,21 @@ function audit(){
       ||!inventoryWorkbench.includes("hostOwner === 'crafting'"))throw new Error('battlebox return/owner contract missing');
   if(!runtime.includes("require('./panel-runtime.js')")||!runtime.includes('new PanelRuntime.PanelRequestMux')
       ||!runtime.includes("data.domain === 'crafting'")||!panelRuntime.includes('entry.generation !== this._generation'))throw new Error('strict shared crafting mux missing');
-  if(!registry.includes("registerLazy('crafting'")||!registry.includes("'modules/item-filter.js'")||!registry.includes("'modules/crafting-materials.js'")
+  if(!registry.includes("registerLazy('crafting'")||!registry.includes("'modules/item-filter.js'")
+      ||!registry.includes("'modules/crafting-materials.js'")||!registry.includes("'modules/crafting-detail-presenter.js'")
       ||!css.includes('.crafting-commit-btn')||!css.includes('.crafting-catalog-grid::-webkit-scrollbar')
-      ||!css.includes('.crafting-material-card')||!css.includes('[data-crafting-view="materials"]'))throw new Error('lazy registry or crafting skin missing');
+      ||!css.includes('.crafting-material-card')||!css.includes('[data-profile="archive-reference"]')
+      ||!panel.includes("profile:_mode === 'materials' ? 'archive-reference' : 'catalog-decision'"))
+    throw new Error('lazy registry, profile mapping, or crafting skin missing');
   if(!css.includes('.item-filter-catalog .item-filter-option')||!css.includes('grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr)')||!css.includes('.crafting-recipe-card.craftable'))throw new Error('shared filter, 60:40 layout, or craftable marker skin missing');
+  if(!css.includes('.crafting-commit-bar')||!css.includes('flex:1 1 auto')
+      ||!css.includes('.crafting-detail-view [data-title]:focus-visible::after')
+      ||!css.includes('font:11px/1.25 "Microsoft YaHei",sans-serif')
+      ||!harness.includes('returning to the in-flight value cancels a superseded queued preview')
+      ||!harness.includes('overflow CTA is a visible hit-testable scroller sibling at this viewport')
+      ||!harness.includes('destroyed detail presenter releases quantity listeners and detached DOM')) {
+    throw new Error('fixed crafting CTA, keyboard tooltip, or A4 lifecycle coverage missing');
+  }
   if(!css.includes('grid-template-columns:minmax(0,44fr) 28px minmax(360px,56fr)')
       ||!css.includes('grid-template-rows:minmax(0,1fr)')
       ||!css.includes('grid-auto-rows:minmax(58px,auto)')
@@ -75,13 +98,14 @@ function audit(){
   const harnessInspectorIndex=harness.indexOf('equipment-inspector.js');
   if(harnessViewportIndex<0||harnessInspectorIndex<=harnessViewportIndex)throw new Error('crafting harness must load the shared inspection viewport before EquipmentInspector');
   const harnessMaterialsIndex=harness.indexOf('crafting-materials.js');
+  const harnessPresenterIndex=harness.indexOf('crafting-detail-presenter.js');
   const harnessRuntimeIndex=harness.indexOf('crafting-runtime.js');
-  if(harnessMaterialsIndex<0||harnessRuntimeIndex<=harnessMaterialsIndex
+  if(harnessMaterialsIndex<0||harnessPresenterIndex<=harnessMaterialsIndex||harnessRuntimeIndex<=harnessPresenterIndex
       ||!harness.includes("Panels.open('crafting',{view:'materials'")
       ||!harness.includes("message.cmd==='materials'")
       ||!harness.includes("message.cmd==='materialDetail'"))throw new Error('crafting material harness coverage or dependency order missing');
   const craftingRegistry=registry.slice(registry.indexOf("registerLazy('crafting'"),registry.indexOf("registerLazy('skills'"));
-  const orderedInspectorDeps=['modules/asset-timeline.js','modules/dressup-doll-renderer.js','modules/workbench-inspection-viewport.js','modules/equipment-inspector.js','modules/crafting-inspector.js','modules/crafting-materials.js','modules/crafting-runtime.js'];
+  const orderedInspectorDeps=['modules/asset-timeline.js','modules/dressup-doll-renderer.js','modules/workbench-inspection-viewport.js','modules/equipment-inspector.js','modules/crafting-inspector.js','modules/crafting-materials.js','modules/crafting-detail-presenter.js','modules/crafting-runtime.js','modules/crafting.js'];
   let previousDependencyIndex=-1;
   orderedInspectorDeps.forEach(dependency=>{
     const dependencyIndex=craftingRegistry.indexOf("'"+dependency+"'");

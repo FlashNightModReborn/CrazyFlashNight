@@ -139,6 +139,35 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void EquipmentTuningAgentOpenerUsesFixedPayloadAndShutdownAdmission()
+        {
+            string source =
+                File.ReadAllText(
+                    FindProgramSource());
+            string opener =
+                Slice(
+                    source,
+                    "agentControlTask.SetEquipmentTuningOpenAction(delegate",
+                    "agentControlTask.SetCharacterBuildOpenAction(delegate");
+            Assert.Contains(
+                "\\\"task\\\":\\\"cmd\\\",\\\"action\\\":\\\"openInventoryWorkbench\\\"",
+                opener);
+            Assert.Contains(
+                "\\\"profile\\\":\\\"battlebox\\\",\\\"view\\\":\\\"tuning\\\","
+                    + "\\\"source\\\":\\\"agent_control\\\"",
+                opener);
+            Assert.Contains(
+                "!form.IsShutdownAdmissionClosed",
+                opener);
+            Assert.DoesNotContain(
+                "panelName",
+                opener);
+            Assert.DoesNotContain(
+                "initData",
+                opener);
+        }
+
+        [Fact]
         public void CharacterBuildShutdownFenceIsWiredBeforeEarlyCleanup()
         {
             string source =
@@ -362,6 +391,12 @@ namespace Launcher.Tests.Tasks
                 program);
             Assert.Contains(
                 "new Action(form.ForceExit)",
+                Slice(
+                    program,
+                    "LauncherCommandRouter commandRouter = new LauncherCommandRouter(",
+                    "commandRouter.SetFallbackVisualRetire"));
+            Assert.Contains(
+                "config.PreparationNavigationV1",
                 Slice(
                     program,
                     "LauncherCommandRouter commandRouter = new LauncherCommandRouter(",

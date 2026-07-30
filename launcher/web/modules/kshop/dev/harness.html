@@ -121,6 +121,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/workbench-lifecycle.js"></script>
 <script src="modules/workbench-focus.js"></script>
 <script src="modules/workbench-primitives.js"></script>
+<script src="modules/workbench-profile.js"></script>
 <script src="modules/workbench.js"></script>
 <script src="modules/workbench-components.js"></script>
 <script src="modules/item-filter.js"></script>
@@ -129,7 +130,13 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/inventory-ui.js"></script>
 <script src="modules/equipment-tuning-runtime.js"></script>
 <script src="modules/equipment-tuning-model.js"></script>
+<script src="modules/equipment-tuning-decision-presenter.js"></script>
 <script src="modules/equipment-tuning-render.js"></script>
+<script src="modules/inventory-workbench-config.js"></script>
+<script src="modules/equipment-tuning-confirmation.js"></script>
+<script src="modules/equipment-tuning-interaction.js"></script>
+<script src="modules/equipment-tuning-write-lifecycle.js"></script>
+<script src="modules/equipment-tuning-source-marker.js"></script>
 <script src="modules/equipment-tuning-view.js"></script>
 <script src="modules/kshop-views.js"></script>
 <script src="modules/kshop-cart-controller.js"></script>
@@ -137,7 +144,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/kshop-owned-inventory-presenter.js"></script>
 <script src="modules/kshop-tooltip-presenter.js"></script>
 <script src="modules/kshop.js"></script>
-<script src="modules/inventory-workbench-config.js"></script>
+<script src="modules/inventory-workbench-navigation.js"></script>
 <script src="modules/inventory-workbench-header.js"></script>
 <script src="modules/inventory-workbench-quick-transfer.js"></script>
 <script src="modules/inventory-workbench-owned-view.js"></script>
@@ -158,11 +165,87 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         }
         return !!predicate();
     }
+    function nextFrame() {
+        return new Promise(function(resolve) { requestAnimationFrame(function() { resolve(); }); });
+    }
+    function secondaryMotionSnapshot(node) {
+        var style = getComputedStyle(node);
+        var animations = typeof node.getAnimations === 'function'
+            ? node.getAnimations().map(function(animation) {
+                var timing = animation.effect && animation.effect.getTiming
+                    ? animation.effect.getTiming() : {};
+                return {
+                    property:animation.transitionProperty || '',
+                    duration:Number(timing.duration || 0),
+                    playState:animation.playState || ''
+                };
+            }) : [];
+        return {
+            display:style.display,
+            zIndex:style.zIndex,
+            visibility:style.visibility,
+            opacity:Number(style.opacity),
+            pointerEvents:style.pointerEvents,
+            transform:style.transform,
+            top:style.top,
+            right:style.right,
+            bottom:style.bottom,
+            left:style.left,
+            transitionDuration:style.transitionDuration,
+            animations:animations
+        };
+    }
+    function hasStructuralTransition(snapshot, property) {
+        return snapshot.animations.some(function(animation) {
+            return animation.property === property
+                && animation.duration >= 180 && animation.duration <= 220
+                && animation.playState === 'running';
+        });
+    }
+    function resolvedRoleColor(node,token) {
+        var probe=document.createElement('span');
+        probe.style.cssText='position:absolute;width:0;height:0;color:var('+token+')';
+        (node.closest('.workbench-shell')||node.parentNode).appendChild(probe);
+        var color=getComputedStyle(probe).color;
+        probe.remove();
+        return color;
+    }
+    function focusRingSnapshot(node) {
+        node.focus();
+        var style=getComputedStyle(node);
+        return {
+            focusVisible:node.matches(':focus-visible'),
+            outlineColor:style.outlineColor,
+            outlineStyle:style.outlineStyle,
+            outlineWidth:style.outlineWidth,
+            outlineOffset:style.outlineOffset,
+            borderColor:style.borderColor,
+            token:resolvedRoleColor(node,'--wb-focus'),
+            selectedToken:resolvedRoleColor(node,'--wb-role-selected')
+        };
+    }
+    function consumesFocusRing(snapshot) {
+        return snapshot.focusVisible
+            && snapshot.outlineColor===snapshot.token
+            && snapshot.outlineStyle==='solid'
+            && snapshot.outlineWidth==='2px'
+            && snapshot.outlineOffset==='2px';
+    }
     function countCmd(cmd) {
         return Host.sent.filter(function(message) { return message.cmd === cmd; }).length;
     }
     function countInventoryCmd(cmd) {
         return Host.sent.filter(function(message) { return message.domain === 'inventory' && message.cmd === cmd; }).length;
+    }
+    function businessCounts() {
+        return JSON.stringify(['saveCart','checkoutCommit','claim'].map(function(cmd){ return countCmd(cmd); }));
+    }
+    function helpCapability() {
+        var state=KShop.debugState(),write=state.write||{},inventory=state.inventory||{};
+        return JSON.stringify({shopReady:state.shopReady,cartCount:state.cartCount,purchasedCount:state.purchasedCount,
+            settling:state.settling,hasCheckoutPreview:state.hasCheckoutPreview,writeExclusive:write.exclusive,
+            writeReconciling:write.reconciling,canEditCart:write.canEditCart,canStartWrite:write.canStartWrite,
+            inventoryReady:inventory.ready,inventoryBusyOwner:inventory.busyOwner});
     }
     function click(selector) {
         var element = document.querySelector(selector);
@@ -905,6 +988,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && keyboardCatalogAction.getAttribute('aria-label').indexOf(keyboardCatalogName) >= 0
                 && lockedCatalogCard && lockedCatalogCard.getAttribute('aria-disabled') === 'true'
                 && lockedCatalogCard.getAttribute('tabindex') === '-1');
+        var catalogEntityFocus=focusRingSnapshot(keyboardCatalogCard);
+        assert('g2-focus-entity','真实 EntityTile 的最终 focus-visible 轮廓消费工作台 focus 角色 token',
+            consumesFocusRing(catalogEntityFocus),JSON.stringify(catalogEntityFocus));
         await waitFor(function() {
             var write = KShop.debugState().write;
             return write && !write.saveInFlight && !write.dirty && !write.exclusive;
@@ -913,7 +999,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var modalFixture = document.createElement('div');
         var modalOpener = document.createElement('button');
         modalOpener.type = 'button'; modalOpener.textContent = '打开测试对话框';
-        var modalShell = new Workbench.DualPaneShell({title:'焦点测试'});
+        var modalShell = new Workbench.DualPaneShell({profile:'catalog-decision', title:'焦点测试'});
         modalFixture.appendChild(modalOpener); modalFixture.appendChild(modalShell.getRoot());
         document.body.appendChild(modalFixture); modalOpener.focus();
         modalShell.openModal({
@@ -984,6 +1070,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var categoryRailStable = Math.abs(categoryRail.getBoundingClientRect().height - categoryRailHeight) < 1
             && Math.abs(categoryGridWrap.getBoundingClientRect().top - categoryGridTop) < 1
             && getComputedStyle(document.querySelector('.kshop-category-navigator .item-filter-option')).transitionDuration === '0s';
+        var categoryButtonFocus=focusRingSnapshot(
+            document.querySelector('.kshop-category-navigator .item-filter-option'));
+        assert('g2-focus-button','真实分类 button 的最终 focus-visible 轮廓消费工作台 focus 角色 token',
+            consumesFocusRing(categoryButtonFocus),JSON.stringify(categoryButtonFocus));
         assert('kshop-ui2l','商城刀类继续下钻，并可从标题面包屑单行快速返回上级',
             browseModesVisible && setRootFiltered && setGroupFiltered && curatedGroupsVisible && curatedGroupFiltered
                 && knifeSubtypeVisible && knifeLeafFiltered && categoryRailStable
@@ -1037,8 +1127,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var readyStatus = shell.querySelector('.workbench-status');
         assert('kshop-ui2g','商城默认只显示玩家决策文案，正常同步状态收敛为状态点',
             shell.querySelector('.workbench-title').textContent === 'K点商城'
+                && shell.getAttribute('data-kshop-mode') === 'shop'
                 && shell.querySelector('.workbench-mode-btn[data-mode="shop"]').textContent === '商城'
                 && shell.querySelector('.workbench-mode-btn[data-mode="inventory"]').textContent === '战备箱'
+                && shell.querySelector('[data-header-action="close"]').getAttribute('aria-label') === '关闭商城'
+                && shell.querySelector('[data-header-action="help"]').getAttribute('aria-label') === '查看 K 点商城帮助'
                 && !/(PROCUREMENT|WORKBENCH|CATALOG|INTENT|RECEIPT|DRAG|LOCKED|权威|AS2)/.test(shopPlayerText)
                 && !shell.querySelector('.kshop-card-drag-hint')
                 && getComputedStyle(shell.querySelector('.workbench-slot-marker')).display === 'none'
@@ -1058,6 +1151,25 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui2help-focus','关闭商城帮助后焦点返回标准帮助入口',
             !document.querySelector('.workbench-modal[data-modal-kind="kshop-help"]')
                 &&document.activeElement===kshopHelpButton);
+        var cartInspectRow=document.querySelector('.kshop-cart-row[data-idx="0"]');
+        var purchasedInspectRow=document.querySelector('.kshop-claim-row[data-idx="0"]');
+        var inspectBusinessBefore=businessCounts();
+        PanelTooltip.hide();cartInspectRow.focus();
+        cartInspectRow.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+        var cartEnterInspected=PanelTooltip.isVisible();PanelTooltip.hide();
+        cartInspectRow.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+        var cartSpaceInspected=PanelTooltip.isVisible();PanelTooltip.hide();purchasedInspectRow.focus();
+        purchasedInspectRow.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+        var purchasedEnterInspected=PanelTooltip.isVisible();PanelTooltip.hide();
+        purchasedInspectRow.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+        var purchasedSpaceInspected=PanelTooltip.isVisible();
+        assert('kshop-keyboard-inspection','购物车与历史待领取行都用真实 Enter/Space 检视且零业务意图',
+            cartInspectRow&&purchasedInspectRow
+                &&cartInspectRow.getAttribute('role')==='option'&&purchasedInspectRow.getAttribute('role')==='option'
+                &&cartInspectRow.getAttribute('tabindex')==='0'&&purchasedInspectRow.getAttribute('tabindex')==='0'
+                &&cartEnterInspected&&cartSpaceInspected&&purchasedEnterInspected&&purchasedSpaceInspected
+                &&businessCounts()===inspectBusinessBefore);
+        PanelTooltip.hide();
 
         assert('kshop-ui2h','共享 ItemCard/ItemGrid 原语已导出',
             typeof Workbench.ItemCard === 'function' && typeof Workbench.ItemCard.renderCatalog === 'function'
@@ -1067,6 +1179,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var compactDensityOption = densityToggle && densityToggle.querySelector('[data-layout-mode="compact"]');
         var densityCloseButton = document.querySelector('.workbench-header-actions .workbench-close-btn');
         var catalogGrid = document.querySelector('.kshop-grid');
+        var shopCompactSplit = getComputedStyle(shell.querySelector('.workbench-body')).gridTemplateColumns;
         assert('kshop-ui2i','目录初始默认紧凑，完整/紧凑目标均可直接选择',
             densityToggle && fullDensityOption && compactDensityOption
                 && fullDensityOption.getAttribute('aria-pressed') === 'false'
@@ -1097,14 +1210,17 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && parseFloat(compactAddVisual.height) === 16
                 && lockedCompactCard && !lockedCompactCard.querySelector('.kshop-add-btn'));
         fullDensityOption.click();
+        var shopFullSplit = getComputedStyle(shell.querySelector('.workbench-body')).gridTemplateColumns;
         assert('kshop-ui2k','切回完整模式恢复目录网格密度',
             !document.querySelector('.kshop-grid').classList.contains('item-grid-compact')
-                && fullDensityOption.getAttribute('aria-pressed') === 'true');
+                && fullDensityOption.getAttribute('aria-pressed') === 'true'
+                && shopFullSplit === shopCompactSplit);
 
         document.querySelector('.workbench-slot[data-slot="R"]').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:61,pointerType:'mouse',isPrimary:true,button:0}));
         var focusMoved = shell.getAttribute('data-active-slot') === 'R';
         assert('kshop-ui2a','Gate A1 双栏壳挂载 CatalogView 与 CartView',
             !!shell && leftHost && rightHost
+                && shell.getAttribute('data-profile') === 'catalog-decision'
                 && shell.getAttribute('data-workbench-skin') === 'shop'
                 && leftHost.getAttribute('data-instance-key') === 'shop:catalog'
                 && rightHost.getAttribute('data-instance-key') === 'shop:cart'
@@ -1114,10 +1230,25 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var shellRect = shell.getBoundingClientRect();
         var leftRect = document.querySelector('.workbench-slot[data-slot="L"]').getBoundingClientRect();
         var rightRect = document.querySelector('.workbench-slot[data-slot="R"]').getBoundingClientRect();
+        var primaryBody=shell.querySelector(':scope > .workbench-body');
+        var shellStyle=getComputedStyle(shell);
+        // Shell scrollHeight also counts the hidden SecondaryPage's intentional
+        // inactive translateY(6px). Check the visible body and clipping contract;
+        // the page's own geometry/transition is asserted separately below.
         assert('kshop-ui2b','1024×576 设计画布经 PanelScale 保形且双栏不重叠',
             Math.abs((shellRect.width / shellRect.height) - (1024 / 576)) < 0.02
-                && leftRect.right < rightRect.left && shell.scrollHeight <= shell.clientHeight,
-            Math.round(shellRect.width) + 'x' + Math.round(shellRect.height));
+                && leftRect.right < rightRect.left
+                && shellStyle.overflowX==='hidden'&&shellStyle.overflowY==='hidden'
+                && primaryBody.scrollWidth<=primaryBody.clientWidth
+                && primaryBody.scrollHeight<=primaryBody.clientHeight,
+            JSON.stringify({
+                shell:Math.round(shellRect.width) + 'x' + Math.round(shellRect.height),
+                leftRight:Math.round(leftRect.right),
+                rightLeft:Math.round(rightRect.left),
+                bodyScroll:primaryBody.scrollWidth+'x'+primaryBody.scrollHeight,
+                bodyClient:primaryBody.clientWidth+'x'+primaryBody.clientHeight,
+                overflow:shellStyle.overflowX+'/'+shellStyle.overflowY
+            }));
 
         var primitiveNames = ['DualPaneShell','WorkbenchViewHost','ViewChrome','GridRenderer','ContainerViewAdapter','GridContainerView','InteractionBroker','PointerDragController'];
         var contractStatus = Workbench.contractStatus();
@@ -1272,6 +1403,21 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         claimButtons[0].click();
         var allLocked = Array.from(document.querySelectorAll('.kshop-claim-btn')).every(function(button){ return button.disabled; });
         claimButtons[1].click();
+        var blockedClaimRow=document.querySelectorAll('.kshop-claim-row')[1];
+        var blockedClaimBusinessBefore=businessCounts();
+        PanelTooltip.hide();blockedClaimRow.focus();
+        blockedClaimRow.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+        var blockedClaimEnterInspected=PanelTooltip.isVisible();PanelTooltip.hide();
+        blockedClaimRow.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+        var blockedClaimSpaceInspected=PanelTooltip.isVisible();
+        assert('kshop-keyboard-inspection-blocked',
+            '领取写入锁定期间，待领取行仍可用 Enter/Space 检视且不会生成第二个业务意图',
+            allLocked&&blockedClaimRow.getAttribute('tabindex')==='0'
+                &&blockedClaimRow.getAttribute('data-entity-inspectable')==='true'
+                &&blockedClaimRow.getAttribute('data-entity-actionable')==='true'
+                &&blockedClaimEnterInspected&&blockedClaimSpaceInspected
+                &&businessCounts()===blockedClaimBusinessBefore);
+        PanelTooltip.hide();
         await wait(40);
         var claimMessage = Host.sent.find(function(message){ return message.cmd === 'claim'; });
         await waitFor(function(){ return countInventoryCmd('snapshot') === snapshotsBeforeClaim + 1
@@ -1307,14 +1453,50 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 &&!document.querySelector('.kshop-qty-btn'));
         var checkoutBeforeModal = countCmd('checkoutCommit');
         var settlementOpener=document.querySelector('#kshop-checkout');
+        var settlementNode=document.querySelector('.kshop-settlement-page');
+        var settlementUnderlay=document.querySelector('.kshop-workbench > .workbench-body');
+        await wait(220);
+        var settlementInactiveMotion=secondaryMotionSnapshot(settlementNode);
+        assert('kshop-ui8-motion-inactive',
+            '结算页未激活时仍保留共享 grid/z-index/结构盒，仅以 visibility 与 pointer 状态退出',
+            settlementInactiveMotion.display==='grid'
+                &&settlementInactiveMotion.zIndex==='55'
+                &&settlementInactiveMotion.visibility==='hidden'
+                &&settlementInactiveMotion.opacity===0
+                &&settlementInactiveMotion.pointerEvents==='none'
+                &&settlementInactiveMotion.top==='48px'
+                &&settlementInactiveMotion.right==='0px'
+                &&settlementInactiveMotion.bottom==='0px'
+                &&settlementInactiveMotion.left==='0px',
+            JSON.stringify(settlementInactiveMotion));
         settlementOpener.focus();
         settlementOpener.click();
+        await nextFrame();
+        var settlementEntryMotion=secondaryMotionSnapshot(settlementNode);
+        assert('kshop-ui8-motion-entry',
+            '结算页进入保留共享 structural opacity/transform 过渡',
+            settlementEntryMotion.display==='grid'
+                &&settlementEntryMotion.zIndex==='55'
+                &&settlementEntryMotion.visibility==='visible'
+                &&hasStructuralTransition(settlementEntryMotion,'opacity')
+                &&hasStructuralTransition(settlementEntryMotion,'transform'),
+            JSON.stringify(settlementEntryMotion));
         await waitFor(function(){ return document.querySelector('.kshop-settlement-page.active'); },300);
-        var settlementNode = document.querySelector('.kshop-settlement-page.active');
+        await wait(220);
+        settlementNode = document.querySelector('.kshop-settlement-page.active');
         var settlementVisible = !!settlementNode;
         var settlementPlayerCopy = settlementNode && !/(BATCH|COMMIT|AS2|写请求)/.test(settlementNode.innerText)
             && settlementNode.querySelector('h2').textContent === '结算核对';
-        var settlementUnderlay=document.querySelector('.kshop-workbench > .workbench-body');
+        var settlementActiveMotion=secondaryMotionSnapshot(settlementNode);
+        assert('kshop-ui8-motion-active',
+            '结算页进入完成后落在共享可见静态终态',
+            settlementActiveMotion.display==='grid'
+                &&settlementActiveMotion.zIndex==='55'
+                &&settlementActiveMotion.visibility==='visible'
+                &&settlementActiveMotion.opacity===1
+                &&settlementActiveMotion.pointerEvents==='auto'
+                &&settlementActiveMotion.transform==='none',
+            JSON.stringify(settlementActiveMotion));
         assert('kshop-ui8a11y','K 点结算复用共享 SecondaryPage 的 modal、inert、初始焦点与键盘详情入口',
             settlementNode&&settlementNode.getAttribute('role')==='dialog'
                 &&settlementNode.getAttribute('aria-modal')==='true'
@@ -1322,12 +1504,48 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 &&settlementUnderlay&&settlementUnderlay.inert
                 &&document.activeElement===settlementNode.querySelector('[data-kshop-settlement-back]')
                 &&settlementNode.querySelector('.kshop-settlement-inspect[aria-label*="查看"]'));
+        var settlementShell=settlementNode.closest('.workbench-shell');
+        var settlementLowerHeader=settlementShell.querySelector(':scope > .workbench-header');
+        var settlementLowerActions=settlementLowerHeader.querySelector('.workbench-header-actions');
+        var settlementLowerRect=settlementLowerActions.getBoundingClientRect();
+        kshopHelpButton.focus();
+        assert('kshop-ui8a-actions',
+            '结算页隐藏并惰化下层 Header，且二级动作集合精确为 Back Help Close',
+            settlementLowerHeader.inert&&settlementLowerActions.hidden
+                &&getComputedStyle(settlementLowerActions).display==='none'
+                &&settlementLowerRect.width===0&&settlementLowerRect.height===0
+                &&document.activeElement!==kshopHelpButton
+                &&Array.from(settlementNode.querySelectorAll('[data-secondary-action]'))
+                    .map(function(node){return node.getAttribute('data-secondary-action');}).join(',')==='back,help,close');
+        await waitFor(function(){return !KShop.debugState().previewBusy;},500);
+        var settlementHelpButton=settlementNode.querySelector('[data-kshop-settlement-help]');
+        var settlementHelpBefore=helpCapability(),settlementHelpBusinessBefore=businessCounts();
+        settlementHelpButton.focus();settlementHelpButton.click();
+        var settlementHelpDuring=helpCapability();
+        var settlementHelpModal=document.querySelector('.workbench-modal[data-modal-kind="kshop-help"]');
+        assert('kshop-ui8a-help',
+            '结算 Help 复用共享动作，并在打开期间保持商城与库存 capability 不变',
+            settlementHelpModal&&settlementHelpModal.contains(document.activeElement)
+                &&settlementHelpBefore===settlementHelpDuring
+                &&businessCounts()===settlementHelpBusinessBefore);
+        settlementHelpModal.querySelector('[data-action="close"]').click();
+        assert('kshop-ui8a-help-restore',
+            '关闭结算 Help 后恢复焦点与完全相同的 capability',
+            document.activeElement===settlementHelpButton
+                &&settlementHelpBefore===helpCapability()
+                &&businessCounts()===settlementHelpBusinessBefore);
         var kshopSettlementList=settlementNode.querySelector('.kshop-settlement-list'),kshopSettlementStyle=kshopSettlementList.style.cssText;
         kshopSettlementList.style.cssText+=';height:28px!important;min-height:28px!important;max-height:28px!important;overflow:auto!important';kshopSettlementList.scrollTop=kshopSettlementList.scrollHeight;
         var kshopStackLine=kshopSettlementList.querySelector('.kshop-settlement-line[data-idx="1"]');
         var kshopQuantityInput=kshopStackLine.querySelector('.workbench-quantity-number');
         var kshopQuantityRange=kshopStackLine.querySelector('.workbench-quantity-range');
         await waitFor(function(){return !kshopQuantityInput.disabled&&!KShop.debugState().previewBusy;},400);
+        var quantityInputFocus=focusRingSnapshot(kshopQuantityInput);
+        var quantityRangeFocus=focusRingSnapshot(kshopQuantityRange);
+        assert('g2-focus-input','真实 quantity input 的最终 focus-visible 轮廓消费工作台 focus 角色 token',
+            consumesFocusRing(quantityInputFocus),JSON.stringify(quantityInputFocus));
+        assert('g2-focus-range','真实 quantity range 的最终 focus-visible 轮廓消费工作台 focus 角色 token',
+            consumesFocusRing(quantityRangeFocus),JSON.stringify(quantityRangeFocus));
         var invalidPreviewCount=countCmd('checkoutPreview');
         kshopQuantityInput.focus();kshopQuantityInput.value='2.5';
         kshopQuantityInput.dispatchEvent(new Event('input',{bubbles:true}));
@@ -1368,11 +1586,45 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         kshopSettlementList.style.cssText=kshopSettlementStyle;kshopSettlementList.scrollTop=0;
         var checkoutBeforeConfirm = countCmd('checkoutCommit');
         window.__emitBridge('panel_esc',{});
+        await nextFrame();
+        var settlementExitMotion=secondaryMotionSnapshot(settlementNode);
+        assert('kshop-ui8-motion-exit',
+            '结算页退出期间保留 grid/z-index 与真实 structural 过渡，不被 display:none 截断',
+            settlementExitMotion.display==='grid'
+                &&settlementExitMotion.zIndex==='55'
+                &&settlementExitMotion.visibility==='visible'
+                &&settlementExitMotion.pointerEvents==='none'
+                &&hasStructuralTransition(settlementExitMotion,'opacity')
+                &&hasStructuralTransition(settlementExitMotion,'transform'),
+            JSON.stringify(settlementExitMotion));
+        await wait(220);
+        var settlementClosedMotion=secondaryMotionSnapshot(settlementNode);
+        assert('kshop-ui8-motion-closed',
+            '结算页退出完成后保持结构盒但不可见、不可命中',
+            settlementClosedMotion.display==='grid'
+                &&settlementClosedMotion.zIndex==='55'
+                &&settlementClosedMotion.visibility==='hidden'
+                &&settlementClosedMotion.opacity===0
+                &&settlementClosedMotion.pointerEvents==='none',
+            JSON.stringify(settlementClosedMotion));
         assert('kshop-ui8a','二级结算在确认前不下发 commit，ESC 先返回商城且保持购物车',
             checkoutBeforeModal === 0 && checkoutBeforeConfirm === 0 && settlementVisible && settlementPlayerCopy
                 && countCmd('checkoutCommit') === 0 && !document.querySelector('.kshop-settlement-page.active')
                 && Panels.isOpen() && document.querySelectorAll('.kshop-cart-row').length === 1
-                && !settlementUnderlay.inert && document.activeElement===settlementOpener);
+                && !settlementUnderlay.inert && document.activeElement===settlementOpener
+                && !document.activeElement.hasAttribute('data-mode'));
+        var settlementCloseBefore=Host.closeCount;
+        settlementOpener.click();
+        await waitFor(function(){return document.querySelector('.kshop-settlement-page.active');},300);
+        document.querySelector('[data-kshop-settlement-close]').click();
+        await waitFor(function(){
+            return Host.closeCount===settlementCloseBefore+1&&!Panels.isOpen();
+        },1000);
+        assert('kshop-ui8a-close',
+            '结算 Close 与 Back 语义分离：Close 走正常保存并关闭整个商城',
+            Host.closeCount===settlementCloseBefore+1&&!Panels.isOpen()
+                &&!document.querySelector('.kshop-settlement-page.active')
+                &&countCmd('checkoutCommit')===0);
 
         await Host.open();
         for (var fullSlot=0;fullSlot<Host.state.inventory.背包.length;fullSlot++) {
@@ -1426,7 +1678,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui8d','无 move/up 的 pointerdown 超时后清理 capture 与幽灵',
             !KShop.debugState().drag.active && !document.querySelector('.workbench-drag-ghost'));
 
-        var probeShell = new Workbench.DualPaneShell({title:'probe'});
+        var probeShell = new Workbench.DualPaneShell({profile:'catalog-decision', title:'probe'});
         function probeView(key, slots) {
             var node = document.createElement('div');
             return {
@@ -1487,14 +1739,67 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         renderProbe.destroy();
 
         await Host.open();
-        click('.workbench-mode-btn[data-mode="inventory"]');
+        var shopModeAction=shell.querySelector('.workbench-mode-btn[data-mode="shop"]');
+        var inventoryModeAction=shell.querySelector('.workbench-mode-btn[data-mode="inventory"]');
+        shopModeAction.focus();
+        shopModeAction.hidden=true;shopModeAction.disabled=true;
+        shopModeAction.setAttribute('aria-disabled','true');shopModeAction.title='stale';
+        shell.querySelector('[data-header-action="close"]').hidden=true;
+        shell.querySelector('[data-header-action="close"]').disabled=true;
+        inventoryModeAction.click();
+        await wait(20);
+        assert('kshop-ui8g-mode-focus','商城到物品管理原子投影 exact action set 并聚焦目标 ChoiceGroup action',
+            document.activeElement===inventoryModeAction
+                &&inventoryModeAction.getAttribute('aria-pressed')==='true'
+                &&shopModeAction.getAttribute('aria-pressed')==='false'
+                &&!inventoryModeAction.hidden&&!shopModeAction.hidden
+                &&!inventoryModeAction.disabled&&!shopModeAction.disabled
+                &&!shopModeAction.hasAttribute('aria-disabled')&&!shopModeAction.hasAttribute('title')
+                &&!shell.querySelector('[data-header-action="close"]').hidden
+                &&!shell.querySelector('[data-header-action="close"]').disabled
+                &&shell.getAttribute('data-profile')==='transfer-pair'
+                &&shell.querySelector('[data-header-action="help"]').getAttribute('aria-label')==='查看物品管理帮助'
+                &&shell.querySelector('[data-header-action="close"]').getAttribute('aria-label')==='关闭物品管理');
+        inventoryModeAction.hidden=true;inventoryModeAction.disabled=true;
+        inventoryModeAction.setAttribute('aria-disabled','true');inventoryModeAction.title='stale';
+        shopModeAction.click();
+        await wait(20);
+        assert('kshop-ui8g-mode-return-focus','物品管理返回商城不保留旧 mode focus 或 action 语义',
+            document.activeElement===shopModeAction
+                &&shopModeAction.getAttribute('aria-pressed')==='true'
+                &&inventoryModeAction.getAttribute('aria-pressed')==='false'
+                &&!inventoryModeAction.hidden&&!inventoryModeAction.disabled
+                &&!inventoryModeAction.hasAttribute('aria-disabled')
+                &&!inventoryModeAction.hasAttribute('title')
+                &&shell.getAttribute('data-kshop-mode')==='shop'
+                &&shell.getAttribute('data-profile')==='catalog-decision'
+                &&shell.querySelector('[data-header-action="help"]').getAttribute('aria-label')==='查看 K 点商城帮助'
+                &&shell.querySelector('[data-header-action="close"]').getAttribute('aria-label')==='关闭商城');
+        inventoryModeAction.click();
         await wait(20);
         assert('kshop-ui8g','Gate A2 挂载背包与战备箱 owned View，保留 physicalSlot',
             document.querySelector('.workbench-shell.kshop-workbench').getAttribute('data-workbench-skin') === 'inventory'
+                && document.querySelector('.workbench-shell.kshop-workbench').getAttribute('data-kshop-mode') === 'inventory'
                 && document.querySelector('.workbench-slot[data-slot="L"] .workbench-view-host').getAttribute('data-instance-key') === 'inventory:背包'
                 && document.querySelector('.workbench-slot[data-slot="R"] .workbench-view-host').getAttribute('data-instance-key') === 'inventory:战备箱'
                 && document.querySelectorAll('[data-item-model="owned"]').length === 2
                 && document.querySelectorAll('.inventory-slot-card[data-physical-slot]').length === 90);
+        var inventoryHelpButton=shell.querySelector('[data-header-action="help"]');
+        var inventoryCloseButton=shell.querySelector('[data-header-action="close"]');
+        inventoryHelpButton.focus();inventoryHelpButton.click();
+        var inventoryHelpModal=shell.querySelector('.workbench-modal[data-modal-kind="kshop-inventory-help"]');
+        assert('kshop-ui8g-context','同壳切到物品管理时原子更新帮助、关闭语义与焦点归还目标',
+            inventoryHelpModal
+                && inventoryHelpButton.getAttribute('aria-label') === '查看物品管理帮助'
+                && inventoryCloseButton.getAttribute('aria-label') === '关闭物品管理'
+                && inventoryHelpModal.textContent.indexOf('先选择一侧物品') >= 0
+                && inventoryHelpModal.textContent.indexOf('按住 Ctrl 单击') >= 0);
+        click('.workbench-modal-action[data-action="close"]');
+        assert('kshop-ui8g-context-focus','关闭物品管理帮助后焦点返回同一稳定入口',
+            !shell.querySelector('.workbench-modal[data-modal-kind="kshop-inventory-help"]')
+                && document.activeElement === inventoryHelpButton
+                && document.activeElement !== shopModeAction
+                && document.activeElement !== inventoryModeAction);
         assert('kshop-ui8ga','背包与战备箱以权威树筛选取代展示排序，并共用权威整理组件',
             document.querySelectorAll('.inventory-owned-backpack .inventory-sort-controls').length === 1
                 && document.querySelectorAll('.inventory-owned-warehouse .inventory-sort-controls').length === 1
@@ -1511,6 +1816,17 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var keyboardOwnedSelected = keyboardOwnedCard
             && keyboardOwnedCard.getAttribute('aria-selected') === 'true'
             && keyboardOwnedCard.classList.contains('workbench-source-selected');
+        var selectedEntityFocus=focusRingSnapshot(keyboardOwnedCard);
+        var authoritySelectFocus=focusRingSnapshot(
+            document.querySelector('.inventory-owned-backpack .inventory-authority-sort'));
+        assert('g2-focus-select','真实 inventory select 的最终 focus-visible 轮廓消费工作台 focus 角色 token',
+            consumesFocusRing(authoritySelectFocus),JSON.stringify(authoritySelectFocus));
+        assert('g2-focus-selected-entity',
+            'EntityTile 的 selected 角色与 focus-visible 角色可同时辨认',
+            keyboardOwnedSelected&&consumesFocusRing(selectedEntityFocus)
+                &&selectedEntityFocus.borderColor===selectedEntityFocus.selectedToken
+                &&selectedEntityFocus.selectedToken!==selectedEntityFocus.token,
+            JSON.stringify(selectedEntityFocus));
         if (keyboardOwnedCard) {
             keyboardOwnedCard.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
         }
@@ -1631,6 +1947,55 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && KShop.debugState().inventory.requests[0].offset === 0,
             JSON.stringify(KShop.debugState().inventory.requests));
 
+        await Host.open();
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        var backpackChrome = document.querySelector('.inventory-owned-backpack .workbench-view-chrome');
+        var backpackToolbar = document.querySelector('.inventory-owned-backpack .workbench-view-toolbar');
+        await waitFor(function(){ return !!backpackToolbar.querySelector(
+            '.item-filter-current-row [data-filter-path="weapon"]'); },600);
+        backpackToolbar.querySelector(
+            '.item-filter-current-row [data-filter-path="weapon"]').click();
+        await waitFor(function(){
+            return !KShop.debugState().inventory.busyOwner
+                &&!!document.querySelector(
+                    '.inventory-owned-backpack .workbench-view-breadcrumb-host [aria-current="page"]')
+                &&document.querySelector(
+                    '.inventory-owned-backpack .item-filter-current-row').getAttribute(
+                        'data-filter-depth')!=='0';
+        },600);
+        backpackChrome = document.querySelector('.inventory-owned-backpack .workbench-view-chrome');
+        backpackToolbar = document.querySelector('.inventory-owned-backpack .workbench-view-toolbar');
+        var backpackHeading = backpackChrome.querySelector('.workbench-view-heading');
+        var backpackMeta = backpackChrome.querySelector('.workbench-view-meta');
+        var backpackRow = backpackToolbar.querySelector('.item-filter-current-row');
+        var backpackFilter = backpackToolbar.querySelector('.inventory-filter-control.tree');
+        var backpackTopCenters = [backpackHeading,backpackMeta].map(function(node){
+            var rect=node.getBoundingClientRect();return rect.top+rect.height/2;
+        });
+        var backpackHeadingRect=backpackHeading.getBoundingClientRect();
+        var backpackToolbarRect=backpackToolbar.getBoundingClientRect();
+        var backpackFilterRect=backpackFilter.getBoundingClientRect();
+        var backpackButtonTops=Array.prototype.map.call(
+            backpackRow.querySelectorAll('.item-filter-option'),
+            function(node){return Math.round(node.getBoundingClientRect().top);});
+        assert('kshop-ui8gcv','宽屏背包保持上层标题面包屑、下层当前层级选项，选项不提前换行',
+            getComputedStyle(backpackChrome).gridTemplateRows.trim().split(/\s+/).length>=2
+                &&Math.max.apply(Math,backpackTopCenters)-Math.min.apply(Math,backpackTopCenters)<=2
+                &&backpackToolbarRect.top>=backpackHeadingRect.bottom-1
+                &&backpackChrome.scrollWidth<=backpackChrome.clientWidth+1
+                &&backpackRow.scrollWidth<=backpackRow.clientWidth+1
+                &&getComputedStyle(backpackRow).flexWrap==='wrap'
+                &&backpackFilterRect.width>=backpackToolbarRect.width-1
+                &&backpackButtonTops.every(function(top){return top===backpackButtonTops[0];})
+                &&getComputedStyle(backpackRow.querySelector('.item-filter-parent-option')).display!=='none'
+                &&getComputedStyle(backpackRow.querySelector('.item-filter-context-option')).display!=='none'
+                &&!!backpackChrome.querySelector(
+                    '.workbench-view-breadcrumb-host [aria-current="page"]'),
+            JSON.stringify({rows:getComputedStyle(backpackChrome).gridTemplateRows,
+                topCenters:backpackTopCenters,heading:backpackHeadingRect.toJSON(),
+                toolbar:backpackToolbarRect.toJSON(),filter:backpackFilterRect.toJSON(),
+                buttonTops:backpackButtonTops,
+                client:backpackChrome.clientWidth,scroll:backpackChrome.scrollWidth}));
         await Host.open();
         click('.workbench-mode-btn[data-mode="inventory"]');
         var warehouseToolbar = document.querySelector('.inventory-owned-warehouse .workbench-view-toolbar');
@@ -2029,10 +2394,18 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var tuningEntryRequest = Host.sent.filter(function(message){
             return message.domain === 'equipment_tuning' && message.cmd === 'snapshot';
         })[0];
+        var tuningProfileShell = document.querySelector('.inventory-workbench-panel');
+        var tuningCompactSplit = getComputedStyle(tuningProfileShell.querySelector('.workbench-body')).gridTemplateColumns;
+        click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="full"]');
+        var tuningFullSplit = getComputedStyle(tuningProfileShell.querySelector('.workbench-body')).gridTemplateColumns;
+        click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="compact"]');
         assert('workbench-tuning-entry','正常战备箱顶栏提供常驻装备调制入口，进入后自动选中背包内第一件可调制装备',
             InventoryWorkbench.debugState().view === 'tuning'
                 && tuningEntryRequest && tuningEntryRequest.panelInstanceId === 'panel.harness.tuning-entry'
-                && tuningEntryRequest.payload.source.containerId === '背包',
+                && tuningEntryRequest.payload.source.containerId === '背包'
+                && tuningProfileShell.getAttribute('data-profile') === 'library-decision'
+                && tuningCompactSplit === tuningFullSplit
+                && tuningProfileShell.scrollWidth <= tuningProfileShell.clientWidth + 1,
             JSON.stringify({state:InventoryWorkbench.debugState(),request:tuningEntryRequest}));
         var tuningScopedState = InventoryWorkbench.debugState();
         assert('workbench-tuning-scope','调制视图只消费背包 equipment scope，且权威整理在裁剪投影中禁用',
@@ -2071,15 +2444,27 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('workbench-tuning-live-inspector-close','关闭真实调制检视器销毁 controller 并把焦点还给入口',
             !InventoryWorkbench.debugState().equipmentInspector && document.activeElement === liveInspectorOpener);
         var tuningHelpButton = document.querySelector('.inventory-workbench-panel .workbench-help-btn');
+        var tuningHelpTraffic = Host.sent.length;
+        var tuningHelpMode = InventoryWorkbench.debugState().tuning.modConfirmationMode;
         if (tuningHelpButton) tuningHelpButton.click();
         var tuningHelpModal = document.querySelector('.workbench-modal[data-modal-kind="equipment-tuning-help"]');
-        assert('workbench-tuning-help','调制帮助与技能/商店对齐到工作台顶栏，并通过共享 modal 解释四类流程与预览后提交',
+        assert('workbench-tuning-help','调制帮助通过共享 modal 解释确认方式且不伪装为能力开关',
             !!tuningHelpButton && !tuningHelpButton.hidden && !!tuningHelpModal
-                && tuningHelpModal.textContent.indexOf('“强化度”') >= 0
-                && tuningHelpModal.textContent.indexOf('“交换”') >= 0
-                && tuningHelpModal.textContent.indexOf('进阶与配件') >= 0
-                && tuningHelpModal.textContent.indexOf('不会立刻修改存档') >= 0);
+                && tuningHelpModal.textContent.indexOf('逐次确认') >= 0
+                && tuningHelpModal.textContent.indexOf('单件快捷') >= 0
+                && tuningHelpModal.textContent
+                    .indexOf('批量、连锁与卸下全部始终需要确认') >= 0
+                && tuningHelpModal.textContent.indexOf('不会解锁配件能力') >= 0
+                && Host.sent.length === tuningHelpTraffic
+                && InventoryWorkbench.debugState().tuning.modConfirmationMode
+                    === tuningHelpMode);
         click('.workbench-modal-action[data-action="close"]');
+        assert('workbench-tuning-help-close','关闭调制帮助不改变业务能力或发送协议消息',
+            !document.querySelector(
+                '.workbench-modal[data-modal-kind="equipment-tuning-help"]')
+            && Host.sent.length === tuningHelpTraffic
+            && InventoryWorkbench.debugState().tuning.modConfirmationMode
+                === tuningHelpMode);
         var tuningConfirmation = document.querySelector('.equipment-tuning-confirmation-toggle');
         var tuningFast = tuningConfirmation && tuningConfirmation.querySelector('[data-confirmation-mode="fast"]');
         var tuningSafe = tuningConfirmation && tuningConfirmation.querySelector('[data-confirmation-mode="safe"]');
@@ -2087,8 +2472,17 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var fastPersisted = window.localStorage.getItem('cf7.equipmentTuning.modConfirmationMode');
         var fastState = InventoryWorkbench.debugState();
         if (tuningSafe) tuningSafe.click();
-        assert('workbench-tuning-confirmation','调制顶栏提供本地持久化的安全/快速配件模式，默认安全且不改变 AS2 协议',
+        assert('workbench-tuning-confirmation','调制决策区用共享 ChoiceGroup 持久化逐次确认/单件快捷且不改变协议',
             !!tuningConfirmation && !tuningConfirmation.hidden && !!tuningFast && !!tuningSafe
+                && tuningConfirmation.parentNode.classList.contains(
+                    'equipment-tuning-confirmation')
+                && tuningSafe.textContent.trim() === '逐次确认'
+                && tuningFast.textContent.trim() === '单件快捷'
+                && document.querySelector(
+                    '.workbench-header [data-confirmation-mode]') === null
+                && document.querySelector(
+                    '.equipment-tuning-confirmation-boundary').textContent.trim()
+                    === '批量、连锁与卸下全部始终需要确认'
                 && fastPersisted === 'fast' && fastState.modConfirmationMode === 'fast'
                 && fastState.tuning && fastState.tuning.modConfirmationMode === 'fast'
                 && InventoryWorkbench.debugState().modConfirmationMode === 'safe');
@@ -2149,6 +2543,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var battleboxPageOptions = document.querySelectorAll('.inventory-page-option');
         var normalTuningButtons = document.querySelectorAll('.inventory-owned-backpack .inventory-tuning-btn');
         var normalTuningSwitch = document.querySelector('.equipment-tuning-view-switch');
+        var storageProfileShell = document.querySelector('.inventory-workbench-panel');
+        var storageBody = storageProfileShell.querySelector('.workbench-body');
+        var storageBodyFooter = storageBody.querySelector(':scope > [data-workbench-body-footer]');
         assert('workbench-ui1','正常战备箱工作台默认紧凑、可切完整，常驻调制入口并按 40 槽显示最多 6 页',
             workbenchBulkQueries === 0
                 && sharedIconReady && Icons.loaded
@@ -2163,6 +2560,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && document.querySelectorAll('.inventory-authority-sort').length === 2
                 && normalTuningButtons.length === 0
                 && !!normalTuningSwitch
+                && storageProfileShell.getAttribute('data-profile') === 'transfer-pair'
+                && storageProfileShell.scrollWidth <= storageProfileShell.clientWidth + 1
+                && storageBody.scrollWidth <= storageBody.clientWidth + 1
+                && storageBodyFooter
+                && storageBodyFooter.parentNode === storageBody
                 && (function(){
                     var rect = document.getElementById('panel-content').getBoundingClientRect();
                     return Math.abs(rect.left) < 1 && Math.abs(rect.top) < 1
@@ -2344,12 +2746,47 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         click('.inventory-quick-transfer-btn[data-quick-mode="deposit"]');
         click('.inventory-owned-backpack [data-physical-slot="1"]');
         click('.inventory-owned-backpack [data-physical-slot="4"]');
+        var rapidCommit = document.querySelector('.inventory-quick-transfer-commit');
+        rapidCommit.focus();
         var rapidPendingVisual = document.querySelectorAll('.quick-transfer-pending').length === 2
             && InventoryWorkbench.debugState().quickTransfer.staged === 2
             && !InventoryWorkbench.debugState().quickTransfer.inFlight
-            && !document.querySelector('.inventory-quick-transfer-commit').disabled
-            && document.querySelector('.inventory-quick-transfer-commit').textContent.indexOf('2') >= 0;
-        click('.inventory-quick-transfer-commit');
+            && !rapidCommit.disabled && document.activeElement === rapidCommit
+            && rapidCommit.textContent.indexOf('2') >= 0;
+        rapidCommit.click();
+        await wait(10);
+        var autoBusyDiscard = document.querySelector('.inventory-owned-backpack .inventory-discard-btn');
+        var autoBusyTile = autoBusyDiscard && autoBusyDiscard.closest('.inventory-slot-card.occupied');
+        var autoBusyReason = autoBusyTile
+            && autoBusyTile.querySelector('.workbench-entity-action-lock-reason');
+        var autoBusyWrites = countInventoryCmd('autoTransfer'), autoBusyDiscards = countInventoryCmd('discard');
+        if (autoBusyTile) {
+            autoBusyTile.click();
+            autoBusyTile.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+            autoBusyTile.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+        }
+        if (autoBusyDiscard) autoBusyDiscard.click();
+        assert('workbench-ui7-lock','autoTransfer busyOwner 只保留既有 quick 路径，nested discard 独立锁定',
+            autoBusyTile && autoBusyTile.getAttribute('aria-disabled') === 'false'
+                && autoBusyTile.getAttribute('data-entity-actionable') === 'true'
+                && autoBusyDiscard && autoBusyDiscard.getAttribute('aria-disabled') === 'true'
+                && autoBusyDiscard.getAttribute('tabindex') === '0'
+                && autoBusyReason && !autoBusyReason.hidden
+                && autoBusyReason.textContent === '库存正在处理另一项操作。'
+                && countInventoryCmd('autoTransfer') === autoBusyWrites
+                && countInventoryCmd('discard') === autoBusyDiscards
+                && !document.querySelector('[data-modal-kind="discard"]'),
+            JSON.stringify({
+                tileDisabled:autoBusyTile && autoBusyTile.getAttribute('aria-disabled'),
+                tileActionable:autoBusyTile && autoBusyTile.getAttribute('data-entity-actionable'),
+                discardDisabled:autoBusyDiscard && autoBusyDiscard.getAttribute('aria-disabled'),
+                discardTabIndex:autoBusyDiscard && autoBusyDiscard.getAttribute('tabindex'),
+                reasonHidden:autoBusyReason && autoBusyReason.hidden,
+                reason:autoBusyReason && autoBusyReason.textContent,
+                autoTransfers:[autoBusyWrites,countInventoryCmd('autoTransfer')],
+                discards:[autoBusyDiscards,countInventoryCmd('discard')],
+                modal:!!document.querySelector('[data-modal-kind="discard"]')
+            }));
         await waitFor(function(){ return countInventoryCmd('autoTransfer') === rapidAutoBefore + 2
             && !InventoryWorkbench.debugState().coordinator.busyOwner
             && InventoryWorkbench.debugState().quickTransfer.completed === 2; }, 1200);
@@ -2586,6 +3023,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             var batchTarget=batchMatch?Number(batchMatch[1]||5):null;
             await Host.openWorkbench(240,'battlebox',batchTarget);
             if (mode === 'battlebox-compact') click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="compact"]');
+            if (mode === 'battlebox-owned-overflow') {
+                click('.inventory-workbench-panel .item-grid-mode-option[data-layout-mode="full"]');
+                await wait(40);
+            }
             if (batchMatch) {
                 click('.inventory-quick-transfer-btn[data-quick-mode="deposit"]');
                 var batchCards = document.querySelectorAll('.inventory-owned-backpack .inventory-slot-card.occupied');

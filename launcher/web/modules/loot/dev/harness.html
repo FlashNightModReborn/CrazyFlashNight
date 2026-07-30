@@ -154,6 +154,7 @@ function respond(message){
 <script src="../../workbench-lifecycle.js"></script>
 <script src="../../workbench-focus.js"></script>
 <script src="../../workbench-primitives.js"></script>
+<script src="../../workbench-profile.js"></script>
 <script src="../../workbench.js"></script>
   <script src="../../workbench-components.js"></script>
   <script src="../../inventory-ui.js"></script>
@@ -172,6 +173,87 @@ function respond(message){
   async function waitFor(test,timeout){var end=Date.now()+(timeout||1200);while(Date.now()<end){if(test())return true;await delay(15)}return false}
   function tasks(cmd){return __sent.filter(function(x){return x.type==='task'&&(!cmd||x.cmd===cmd)})}
   function inventoryTasks(cmd){return __sent.filter(function(x){return x.type==='panel'&&x.domain==='inventory'&&(!cmd||x.cmd===cmd)})}
+  function helpCapability(){
+    var state=LootPanel.debugState(),inventory=state.inventory||{};
+    return JSON.stringify({
+      phase:state.phase,remainingCount:state.remainingCount,blockReason:state.blockReason,
+      claimAll:state.claimAll,organizerActive:state.organizerActive,
+      organizerReturning:state.organizerReturning,
+      inventoryReady:inventory.ready,inventoryBusyOwner:inventory.busyOwner,
+      inventoryRefreshRequired:inventory.refreshRequired,
+      writes:['claim','close'].map(function(cmd){return tasks(cmd).length})
+    });
+  }
+  function colorChannels(value){
+    var text=String(value||'');
+    var match=text.match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/i);
+    if(match)return[Number(match[1]),Number(match[2]),Number(match[3])];
+    match=text.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/i);
+    return match?[Number(match[1])*255,Number(match[2])*255,Number(match[3])*255]:null;
+  }
+  function contrastRatio(foreground,background){
+    function luminance(channels){
+      var normalized=channels.map(function(value){
+        value=value/255;return value<=.04045?value/12.92:Math.pow((value+.055)/1.055,2.4);
+      });
+      return .2126*normalized[0]+.7152*normalized[1]+.0722*normalized[2];
+    }
+    var fore=colorChannels(foreground),back=colorChannels(background);
+    if(!fore||!back)return 0;
+    var bright=luminance(fore),dark=luminance(back);
+    return (Math.max(bright,dark)+.05)/(Math.min(bright,dark)+.05);
+  }
+  function resolvedTokenColor(node,name){
+    var probe=document.createElement('span');
+    probe.style.cssText='position:absolute;width:0;height:0;overflow:hidden;color:var('+name+')';
+    node.appendChild(probe);var value=getComputedStyle(probe).color;probe.remove();return value;
+  }
+  function scrollbarSnapshot(node){
+    var base=getComputedStyle(node);
+    var first=node.firstElementChild,last=node.lastElementChild;
+    var firstRect=first&&first.getBoundingClientRect(),lastRect=last&&last.getBoundingClientRect();
+    var bar=getComputedStyle(node,'::-webkit-scrollbar');
+    var track=getComputedStyle(node,'::-webkit-scrollbar-track');
+    var thumb=getComputedStyle(node,'::-webkit-scrollbar-thumb');
+    var button=getComputedStyle(node,'::-webkit-scrollbar-button');
+    var corner=getComputedStyle(node,'::-webkit-scrollbar-corner');
+    return{
+      selector:node.className,clientHeight:node.clientHeight,scrollHeight:node.scrollHeight,
+      childCount:node.children.length,
+      first:first&&{display:getComputedStyle(first).display,height:firstRect.height,top:firstRect.top},
+      last:last&&{display:getComputedStyle(last).display,height:lastRect.height,top:lastRect.top},
+      base:{display:base.display,rows:base.gridTemplateRows,width:base.scrollbarWidth,
+        color:base.scrollbarColor,gutter:base.scrollbarGutter},
+      tokens:{
+        track:resolvedTokenColor(node,'--wb-scrollbar-track'),
+        thumb:resolvedTokenColor(node,'--wb-scrollbar-thumb'),
+        border:resolvedTokenColor(node,'--wb-scrollbar-thumb-border')
+      },
+      webkit:{
+        width:bar.width,height:bar.height,
+        track:track.backgroundColor,
+        thumb:thumb.backgroundColor,
+        thumbBorderColor:thumb.borderTopColor,
+        thumbBorderWidth:thumb.borderTopWidth,
+        buttonDisplay:button.display,buttonWidth:button.width,buttonHeight:button.height,
+        corner:corner.backgroundColor
+      }
+    };
+  }
+  function exactScrollbarContract(snapshot){
+    var expectedColor=snapshot.tokens.thumb+' '+snapshot.tokens.track;
+    return snapshot.scrollHeight>snapshot.clientHeight
+      &&snapshot.base.width==='thin'&&snapshot.base.color===expectedColor
+      &&snapshot.base.gutter==='stable'
+      &&snapshot.webkit.width==='7px'&&snapshot.webkit.height==='7px'
+      &&snapshot.webkit.track===snapshot.tokens.track
+      &&snapshot.webkit.thumb===snapshot.tokens.thumb
+      &&snapshot.webkit.thumbBorderColor===snapshot.tokens.border
+      &&snapshot.webkit.thumbBorderWidth==='1px'
+      &&snapshot.webkit.buttonDisplay==='none'
+      &&snapshot.webkit.buttonWidth==='0px'&&snapshot.webkit.buttonHeight==='0px'
+      &&snapshot.webkit.corner===snapshot.tokens.track;
+  }
   try{
     var baselineHandlers=PanelRuntime.sharedResponseRouter.debugState().handlerCount;
     ok('initData accepts only the Host rebuilt eight-key shape',!!LootPanel.exactInitData(init('shape'))&&!LootPanel.exactInitData(Object.assign(init('shape-extra'),{source:'map_chest'}))&&!LootPanel.exactInitData(Object.assign(init('shape-string'),{capacity:'2'})));
@@ -188,11 +270,108 @@ function respond(message){
       &&inventoryFullPresentation.label==='整理背包');
     resetAuthority(true);__mode='full';Panels.open('loot',init('full'));
     await waitFor(function(){return document.querySelectorAll('.loot-source-slot').length===2});
-    ok('mounts transfer-pair shared shell',document.querySelector('.loot-workbench[data-profile="transfer-pair"]')&&document.querySelectorAll('.workbench-slot').length===2);
+    var lootProfileShell=document.querySelector('.loot-workbench[data-profile="transfer-pair"]');
+    var lootProfileFooter=lootProfileShell&&lootProfileShell.querySelector(':scope > [data-workbench-shell-footer]');
+    var lootProfileCta=lootProfileFooter&&lootProfileFooter.querySelector('[data-commit-primary]');
+    var lootHeader=lootProfileShell&&lootProfileShell.querySelector(':scope > .workbench-header');
+    var lootEyebrow=lootHeader&&lootHeader.querySelector('.workbench-eyebrow');
+    var lootTitle=lootHeader&&lootHeader.querySelector('.workbench-title');
+    var lootSubtitle=lootHeader&&lootHeader.querySelector('.workbench-subtitle');
+    var lootHeaderRect=lootHeader&&lootHeader.getBoundingClientRect();
+    var lootTitleRect=lootTitle&&lootTitle.getBoundingClientRect();
+    var lootSubtitleRect=lootSubtitle&&lootSubtitle.getBoundingClientRect();
+    if(lootProfileCta)lootProfileCta.focus();
+    ok('mounts overflow-safe transfer-pair shell with an exact direct root footer and reachable CTA',
+      lootProfileShell&&document.querySelectorAll('.workbench-slot').length===2
+        &&lootProfileShell.scrollWidth<=lootProfileShell.clientWidth+1
+        &&lootProfileFooter&&lootProfileFooter.parentNode===lootProfileShell
+        &&getComputedStyle(lootProfileShell).gridTemplateRows.split(' ').length===3
+        &&lootProfileCta&&document.activeElement===lootProfileCta);
+    var lootFocusProbe=document.createElement('span');
+    lootFocusProbe.style.cssText='position:absolute;width:0;height:0;color:var(--wb-focus)';
+    lootProfileShell.appendChild(lootFocusProbe);
+    var lootCtaFocusStyle=getComputedStyle(lootProfileCta);
+    var lootFocusSnapshot={
+      skin:lootProfileShell.getAttribute('data-workbench-skin'),
+      focusVisible:lootProfileCta.matches(':focus-visible'),
+      outlineColor:lootCtaFocusStyle.outlineColor,
+      outlineStyle:lootCtaFocusStyle.outlineStyle,
+      outlineWidth:lootCtaFocusStyle.outlineWidth,
+      outlineOffset:lootCtaFocusStyle.outlineOffset,
+      token:getComputedStyle(lootFocusProbe).color
+    };
+    lootFocusProbe.remove();
+    ok('skinless Loot production profile still consumes the final workbench focus role token',
+      lootFocusSnapshot.skin===null&&lootFocusSnapshot.focusVisible===true
+        &&lootFocusSnapshot.outlineColor===lootFocusSnapshot.token
+        &&lootFocusSnapshot.outlineStyle==='solid'
+        &&lootFocusSnapshot.outlineWidth==='2px'
+        &&lootFocusSnapshot.outlineOffset==='2px',
+      JSON.stringify(lootFocusSnapshot));
+    ok('Loot keeps a two-line identity inside the fixed 48px header',
+      lootEyebrow&&lootEyebrow.textContent.trim()===''
+        &&lootTitle&&lootTitle.textContent==='装备箱'
+        &&lootSubtitle&&lootSubtitle.textContent==='从战利品箱领取物品到背包'
+        &&Math.abs(lootHeaderRect.height-48)<=0.75
+        &&lootTitleRect.top>=lootHeaderRect.top-0.5
+        &&lootSubtitleRect.bottom<=lootHeaderRect.bottom+0.5,
+      lootHeaderRect?JSON.stringify({
+        header:[lootHeaderRect.top,lootHeaderRect.bottom],
+        title:lootTitleRect?[lootTitleRect.top,lootTitleRect.bottom]:null,
+        subtitle:lootSubtitleRect?[lootSubtitleRect.top,lootSubtitleRect.bottom]:null
+      }):'missing header identity');
     ok('marks a single Web loot authority surface',document.querySelector('[data-authority-exclusive="loot"]')&&document.querySelectorAll('[data-authority-exclusive]').length===1);
     ok('uses exact Host-injected identity',tasks('snapshot')[0].panelInstanceId==='panel.full'&&!Object.prototype.hasOwnProperty.call(tasks('snapshot')[0],'source'));
+    var lootHelpButton=document.querySelector('[data-workbench-help][data-header-action="help"]');
+    var lootHelpBefore=helpCapability(),lootHelpRequestsBefore=__sent.length;
+    lootHelpButton.focus();lootHelpButton.click();
+    var lootHelpDuring=helpCapability(),lootHelpModal=document.querySelector('.workbench-modal[data-modal-kind="loot-help"]');
+    ok('shared Loot HelpAction opens player guidance without changing capability or sending authority work',
+      lootHelpModal&&lootHelpModal.getAttribute('aria-label')==='查看战利品整理帮助'
+      &&lootHelpModal.contains(document.activeElement)
+      &&lootHelpBefore===lootHelpDuring&&__sent.length===lootHelpRequestsBefore);
+    lootHelpModal.querySelector('[data-action="close"]').click();
+    var lootHelpAfter=helpCapability();
+    ok('closing Loot help restores its stable header action and exact prior capability',
+      !document.querySelector('.workbench-modal[data-modal-kind="loot-help"]')
+      &&document.activeElement===lootHelpButton&&lootHelpBefore===lootHelpAfter);
     var lootNode=document.querySelector('.loot-source-slot.occupied');lootNode.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
     await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'});
+    var blockedCommit=document.querySelector('.workbench-commit-bar.is-blocked');
+    var blockedCommitStatus=blockedCommit&&blockedCommit.querySelector('.workbench-commit-status');
+    var blockedCommitCta=blockedCommit&&blockedCommit.querySelector('[data-commit-primary]');
+    var blockedCommitStyle=blockedCommit&&getComputedStyle(blockedCommit);
+    var blockedStatusStyle=blockedCommitStatus&&getComputedStyle(blockedCommitStatus);
+    var blockedStatusRect=blockedCommitStatus&&blockedCommitStatus.getBoundingClientRect();
+    var blockedStatusContrast=blockedCommitStatus
+      ?contrastRatio(blockedStatusStyle.color,blockedCommitStyle.backgroundColor):0;
+    if(blockedCommitCta)blockedCommitCta.focus();
+    ok('live blocked CommitBar keeps its reason fully opaque, readable, and actionable CTA semantics intact',
+      blockedCommit&&blockedCommitStatus&&blockedCommitCta
+      &&blockedCommitStyle.opacity==='1'&&blockedStatusStyle.opacity==='1'
+      &&blockedStatusStyle.visibility==='visible'&&blockedStatusStyle.display!=='none'
+      &&blockedStatusRect.width>0&&blockedStatusRect.height>0
+      &&blockedCommitStatus.getAttribute('data-state')==='blocked'
+      &&blockedCommitStatus.textContent.indexOf('当前页面')>=0
+      &&parseFloat(blockedStatusStyle.fontSize)>=10&&blockedStatusContrast>=4.5
+      &&blockedCommitCta.tagName==='BUTTON'&&blockedCommitCta.type==='button'
+      &&blockedCommitCta.disabled===false
+      &&blockedCommitCta.getAttribute('aria-busy')==='false'
+      &&blockedCommitCta.textContent==='整理背包'
+      &&document.activeElement===blockedCommitCta,
+      JSON.stringify({
+        rootOpacity:blockedCommitStyle&&blockedCommitStyle.opacity,
+        statusOpacity:blockedStatusStyle&&blockedStatusStyle.opacity,
+        statusColor:blockedStatusStyle&&blockedStatusStyle.color,
+        background:blockedCommitStyle&&blockedCommitStyle.backgroundColor,
+        contrast:blockedStatusContrast,
+        statusRect:blockedStatusRect&&[blockedStatusRect.width,blockedStatusRect.height],
+        cta:blockedCommitCta&&{
+          tag:blockedCommitCta.tagName,type:blockedCommitCta.type,
+          disabled:blockedCommitCta.disabled,busy:blockedCommitCta.getAttribute('aria-busy'),
+          label:blockedCommitCta.textContent,focused:document.activeElement===blockedCommitCta
+        }
+      }));
     ok('full backpack preserves loot and presents the in-panel organizer CTA',
       document.querySelectorAll('.loot-source-slot.occupied').length===1
       &&document.querySelector('[data-commit-primary]').textContent==='整理背包'
@@ -212,12 +391,42 @@ function respond(message){
     ok('organizer exposes discard only for backpack slots',
       document.querySelectorAll('[data-space-grid="背包"] .inventory-discard-btn').length===2
       &&document.querySelectorAll('[data-space-grid="战备箱"] .inventory-discard-btn').length===0);
+    var organizerPage=document.querySelector('.loot-organizer-page.active');
+    var organizerActions=Array.prototype.slice.call(organizerPage.querySelectorAll('[data-secondary-action]'));
+    var lowerHeader=document.querySelector('.loot-workbench > .workbench-header');
+    var lowerHeaderActions=lowerHeader.querySelector('.workbench-header-actions');
+    var lowerHeaderRect=lowerHeaderActions.getBoundingClientRect();
+    lootHelpButton.focus();
+    ok('organizer hides and inerts every lower header action and exposes exact Back Help Close semantics',
+      lowerHeader.inert&&lowerHeaderActions.hidden&&getComputedStyle(lowerHeaderActions).display==='none'
+      &&lowerHeaderRect.width===0&&lowerHeaderRect.height===0&&document.activeElement!==lootHelpButton
+      &&organizerActions.map(function(node){return node.getAttribute('data-secondary-action')}).join(',')==='back,help,close');
+    var organizerHelpBefore=helpCapability(),organizerHelpRequestsBefore=__sent.length;
+    var organizerHelpButton=document.querySelector('[data-loot-organizer-help]');
+    organizerHelpButton.focus();organizerHelpButton.click();
+    var organizerHelpDuring=helpCapability();
+    var organizerHelpModal=document.querySelector('.workbench-modal[data-modal-kind="loot-help"]');
+    ok('organizer Help reuses the shared action without changing inventory or loot capability',
+      organizerHelpModal&&organizerHelpModal.contains(document.activeElement)
+      &&organizerHelpBefore===organizerHelpDuring&&__sent.length===organizerHelpRequestsBefore);
+    organizerHelpModal.querySelector('[data-action="close"]').click();
+    ok('organizer Help restores focus and the same capability after closing',
+      document.activeElement===organizerHelpButton&&organizerHelpBefore===helpCapability());
+    var readyOrganizerCards=Array.prototype.slice.call(document.querySelectorAll('.loot-organizer-transferable'));
+    var readyOrganizerDiscard=document.querySelector('[data-space-grid="背包"] .inventory-discard-btn');
+    ok('ready organizer projects one exact actionable set to panes, tiles, and nested discard',
+      readyOrganizerCards.length>0&&readyOrganizerCards.every(function(node){
+        var reason=node.querySelector('.workbench-entity-lock-reason');
+        return node.getAttribute('aria-disabled')==='false'
+          &&node.getAttribute('data-entity-inspectable')==='true'
+          &&node.getAttribute('data-entity-actionable')==='true'&&reason&&reason.hidden;
+      })&&readyOrganizerDiscard&&readyOrganizerDiscard.getAttribute('aria-disabled')==='false');
     document.querySelector('[data-space-grid="背包"] .occupied').click();
     await waitFor(function(){var state=LootPanel.debugState();return inventoryTasks('autoTransfer').length===1&&!state.inventory.busyOwner});
     var organizerClosesBeforeReturn=tasks('close').length;
-    document.querySelector('.loot-organizer-close-btn').click();
+    document.querySelector('[data-loot-organizer-back]').click();
     await waitFor(function(){return !LootPanel.debugState().organizerActive});
-    ok('top organizer X waits for a fresh loot snapshot and returns without suspension or claim replay',
+    ok('organizer Back waits for a fresh loot snapshot and returns without suspension or claim replay',
       Panels.getActive()==='loot'&&!authority.suspended&&tasks('snapshot').length===organizeLootSnapshotsBefore+1
       &&tasks('claim').length===organizeClaimsBefore&&tasks('close').length===organizerClosesBeforeReturn
       &&LootPanel.debugState().blockReason===''&&!LootPanel.debugState().organizerActive);
@@ -225,6 +434,24 @@ function respond(message){
     await waitFor(function(){return Panels.getActive()===null&&authority.terminal&&authority.terminal.kind==='CONSUMED'});
     ok('claiming resumes only after organizer return and does not replay the rejected claim',
       tasks('claim').length===organizeClaimsBefore+1&&authority.terminal.remainingCount===0);
+
+    resetAuthority(true);__mode='full';Panels.open('loot',init('organizer-close'));
+    await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(
+      new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+    await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){var state=LootPanel.debugState();return state.organizerActive&&state.inventory.ready});
+    var semanticCloseSnapshots=tasks('snapshot').length;
+    var semanticCloseClaims=tasks('claim').length;
+    var semanticCloseWrites=tasks('close').length;
+    document.querySelector('[data-loot-organizer-close]').click();
+    await waitFor(function(){return Panels.getActive()===null},900);
+    ok('organizer Close is distinct from Back and safely exits the tracked loot panel',
+      !LootPanel.debugState().organizerActive&&authority.suspended
+      &&tasks('snapshot').length===semanticCloseSnapshots+1
+      &&tasks('claim').length===semanticCloseClaims
+      &&tasks('close').length===semanticCloseWrites+1);
 
     resetAuthority(true);__mode='full';Panels.open('loot',init('discard-confirm'));
     await waitFor(function(){return LootPanel.debugState().phase==='active'});
@@ -270,15 +497,51 @@ function respond(message){
       Panels.getActive()==='loot'&&LootPanel.debugState().organizerActive
       &&LootPanel.debugState().inventory.busyOwner==='inventory.discard'
       &&tasks('snapshot').length===timeoutLootSnapshots&&tasks('close').length===timeoutCloses);
+    var blockedTransfers=inventoryTasks('autoTransfer').length,blockedDiscards=inventoryTasks('discard').length;
+    var blockedCard=document.querySelector('.loot-organizer-transferable');
+    var blockedDiscard=document.querySelector('[data-space-grid="背包"] .inventory-discard-btn');
+    blockedCard.click();
+    blockedCard.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+    blockedCard.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+    blockedDiscard.click();await delay();
+    var blockedReason=blockedCard.querySelector('.workbench-entity-lock-reason');
+    ok('busy owner keeps pointer, Enter, Space, and nested discard inspectable but emits zero intents',
+      blockedCard.getAttribute('aria-disabled')==='true'
+      &&blockedCard.getAttribute('tabindex')==='0'
+      &&blockedCard.getAttribute('data-entity-inspectable')==='true'
+      &&blockedCard.getAttribute('data-entity-actionable')==='false'
+      &&blockedReason&&!blockedReason.hidden&&blockedReason.textContent==='库存正在处理另一项操作。'
+      &&blockedDiscard.getAttribute('aria-disabled')==='true'
+      &&blockedDiscard.getAttribute('aria-describedby')===blockedReason.id
+      &&inventoryTasks('autoTransfer').length===blockedTransfers
+      &&inventoryTasks('discard').length===blockedDiscards
+      &&!document.querySelector('[data-modal-kind="discard"]'));
+    var busyOrganizerPage=document.querySelector('.loot-organizer-page.active');
+    var busyInventoryBody=busyOrganizerPage.querySelector('.npcshop-space-columns');
+    var busyHeaderActions=Array.prototype.slice.call(
+      busyOrganizerPage.querySelectorAll('[data-secondary-action]'));
+    ok('inventory lock is scoped to the organizer body and preserves each header action capability',
+      busyInventoryBody.getAttribute('aria-disabled')==='true'
+      &&busyOrganizerPage.getAttribute('aria-disabled')!=='true'
+      &&busyHeaderActions.map(function(node){return node.getAttribute('data-secondary-action')}).join(',')==='back,help,close'
+      &&busyHeaderActions.every(function(node){
+        return !node.disabled&&node.getAttribute('aria-disabled')!=='true';
+      }));
     await waitFor(function(){return LootPanel.debugState().inventory.refreshRequired},900);
-    document.querySelector('.loot-organizer-close-btn').click();await delay();
+    var refreshCard=document.querySelector('.loot-organizer-transferable');
+    var refreshReason=refreshCard&&refreshCard.querySelector('.workbench-entity-lock-reason');
+    ok('refresh-required reprojects the exact visible reason without dimming the whole card',
+      refreshCard&&refreshCard.getAttribute('aria-disabled')==='true'
+      &&refreshReason&&!refreshReason.hidden&&refreshReason.textContent==='库存同步失败，请先重试。'
+      &&getComputedStyle(refreshCard).opacity==='1');
+    document.querySelector('[data-loot-organizer-close]').click();await delay();
     ok('failed timeout reconciliation blocks return and exposes retry without loot replay',
       LootPanel.debugState().organizerActive&&LootPanel.debugState().inventory.refreshRequired
       &&document.querySelector('[data-loot-organizer-retry]:not([hidden])')
       &&tasks('snapshot').length===timeoutLootSnapshots&&tasks('close').length===timeoutCloses);
     __failInventoryRefresh=false;document.querySelector('[data-loot-organizer-retry]').click();
     await waitFor(function(){var state=LootPanel.debugState().inventory;return state.ready&&!state.refreshRequired&&!state.busyOwner});
-    __failNextLootSnapshot=true;document.querySelector('.loot-organizer-close-btn').click();
+    __failNextLootSnapshot=true;document.querySelector('[data-loot-organizer-close]').click();
     await waitFor(function(){var state=LootPanel.debugState();return state.organizerActive&&!state.organizerReturning&&state.blockReason==='snapshot_failed'});
     ok('fresh loot snapshot failure keeps the organizer open and never replays a claim',
       LootPanel.debugState().organizerActive&&tasks('snapshot').length===timeoutLootSnapshots+1
@@ -288,7 +551,18 @@ function respond(message){
     ok('Escape returns to loot only after inventory and a fresh loot snapshot both settle',
       Panels.getActive()==='loot'&&!authority.suspended&&tasks('snapshot').length===timeoutLootSnapshots+2
       &&tasks('close').length===timeoutCloses);
+    var detachedOrganizerCard=document.querySelector('.loot-organizer-transferable');
+    var detachedTransfers=inventoryTasks('autoTransfer').length,detachedDiscards=inventoryTasks('discard').length;
     Panels.forceClose();await delay();
+    if(detachedOrganizerCard){
+      detachedOrganizerCard.click();
+      detachedOrganizerCard.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+      var detachedDiscard=detachedOrganizerCard.querySelector('.inventory-discard-btn');
+      if(detachedDiscard)detachedDiscard.click();
+    }
+    ok('organizer teardown leaves detached pointer and keyboard handlers unable to reach authority',
+      inventoryTasks('autoTransfer').length===detachedTransfers
+      &&inventoryTasks('discard').length===detachedDiscards);
 
     resetAuthority(true);__mode='inventory_full';Panels.open('loot',init('inventory-full'));
     await waitFor(function(){return LootPanel.debugState().phase==='active'});
@@ -312,7 +586,7 @@ function respond(message){
       &&malformedCapacityState.unknown.refreshOnly===true
       &&document.querySelector('[data-commit-primary]').textContent!=='整理背包'
       &&document.querySelector('.loot-reconcile-btn:not([hidden])')
-      &&__toasts.slice(malformedCapacityToasts).some(function(value){return value.indexOf('尚未由权威状态证明')>=0})
+      &&__toasts.slice(malformedCapacityToasts).some(function(value){return value.indexOf('尚未由游戏中的实际结果确认')>=0})
       &&!__toasts.slice(malformedCapacityToasts).some(function(value){return value.indexOf('保持不变')>=0}));
     document.querySelector('.loot-close-btn').click();await delay();
     ok('reconcile-required capacity failure blocks X from submitting close',
@@ -367,7 +641,7 @@ function respond(message){
       tasks('claim').length===manualRevisionClaims+1&&tasks('close').length===manualRevisionCloses
       &&LootPanel.debugState().remainingCount===1
       &&document.querySelectorAll('.loot-source-slot.occupied').length===1
-      &&__toasts.slice(manualRevisionToasts).some(function(value){return value.indexOf('尚未由权威状态证明')>=0}));
+      &&__toasts.slice(manualRevisionToasts).some(function(value){return value.indexOf('尚未由游戏中的实际结果确认')>=0}));
     var manualRevisionQueries=tasks('query').length;
     document.querySelector('.loot-reconcile-btn').click();await delay(80);
     ok('query cannot launder the same malformed manual-claim projection into active state',
@@ -385,7 +659,7 @@ function respond(message){
       tasks('claim').length===manualWrongSlotClaims+1&&tasks('close').length===manualWrongSlotCloses
       &&LootPanel.debugState().remainingCount===2
       &&document.querySelectorAll('.loot-source-slot.occupied').length===2
-      &&__toasts.slice(manualWrongSlotToasts).some(function(value){return value.indexOf('尚未由权威状态证明')>=0}));
+      &&__toasts.slice(manualWrongSlotToasts).some(function(value){return value.indexOf('尚未由游戏中的实际结果确认')>=0}));
     Panels.forceClose();await delay();
 
     resetAuthority(true);__mode='normal';Panels.open('loot',init('ordinary-close'));
@@ -407,7 +681,7 @@ function respond(message){
     ok('failed close capacity code cannot claim zero-write UX without a source proof',
       Panels.getActive()==='loot'&&tasks('close').length===rejectedCloseWrites+1
       &&rejectedCloseState.unknown&&rejectedCloseState.unknown.error==='target_full'
-      &&__toasts.slice(rejectedCloseToasts).some(function(value){return value.indexOf('尚未由权威状态证明')>=0})
+      &&__toasts.slice(rejectedCloseToasts).some(function(value){return value.indexOf('尚未由游戏中的实际结果确认')>=0})
       &&!__toasts.slice(rejectedCloseToasts).some(function(value){return value.indexOf('保持不变')>=0}));
     document.querySelector('.loot-close-btn').click();await delay();
     ok('reconcile-required close failure blocks a second close write',
@@ -606,7 +880,7 @@ function respond(message){
       tasks('claim').length===wrongSlotClaimsBefore+1&&tasks('close').length===wrongSlotClosesBefore
       &&remaining()===1&&authority.loot[0].occupied&&!authority.loot[1].occupied
       &&LootPanel.debugState().phase==='reconcile_required'
-      &&__toasts.slice(wrongSlotToastsBefore).some(function(value){return value.indexOf('尚未由权威状态证明')>=0})
+      &&__toasts.slice(wrongSlotToastsBefore).some(function(value){return value.indexOf('尚未由游戏中的实际结果确认')>=0})
       &&Panels.getActive()==='loot');
     Panels.forceClose();await delay();
 
@@ -614,6 +888,26 @@ function respond(message){
     await waitFor(function(){return document.querySelectorAll('.loot-source-slot').length===32&&LootPanel.debugState().phase==='active'});
     var grid=document.querySelector('.loot-source-grid'),widths=Array.from(document.querySelectorAll('.loot-source-slot')).map(function(node){return node.getBoundingClientRect().width});
     ok('eight-column chest keeps 44px targets without horizontal overflow',Math.min.apply(Math,widths)>=43.9&&grid.scrollWidth<=grid.clientWidth+1,JSON.stringify({minimum:Math.min.apply(Math,widths),client:grid.clientWidth,scroll:grid.scrollWidth}));
+    Panels.forceClose();await delay();
+
+    resetGridAuthority(64);
+    authority.backpack=[];
+    for(var overflowSlot=0;overflowSlot<50;overflowSlot++){
+      authority.backpack.push(overflowSlot===0
+        ?occupied(overflowSlot,'滚动背包物品','bag.scroll.0'):empty(overflowSlot));
+    }
+    Panels.open('loot',Object.assign(init('scrollbar-contract'),{capacity:64,columns:6}));
+    await waitFor(function(){
+      return document.querySelectorAll('.loot-source-slot').length===64
+        &&document.querySelectorAll('.loot-backpack-slot').length===50
+        &&LootPanel.debugState().phase==='active';
+    });
+    var lootScrollSnapshot=scrollbarSnapshot(document.querySelector('.loot-source-grid'));
+    var organizerScrollSnapshot=scrollbarSnapshot(document.querySelector('.loot-backpack-grid'));
+    ok('overflowed Loot and owned-organizer production grids expose the exact token scrollbar contract',
+      exactScrollbarContract(lootScrollSnapshot)
+      &&exactScrollbarContract(organizerScrollSnapshot),
+      JSON.stringify({loot:lootScrollSnapshot,organizer:organizerScrollSnapshot}));
     Panels.forceClose();await delay();
 
     resetAuthority(false);authority.loot[1]=occupied(1,'重绑后物资','lease.rebind.1');var rebindInit=init('rebind');

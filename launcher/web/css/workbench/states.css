@@ -1,8 +1,4 @@
 @layer workbench.states {
-    .workbench-choice-group[aria-disabled="true"],
-    .workbench-owned-pane[aria-disabled="true"],
-    .workbench-commit-bar.is-blocked { opacity:.56; }
-
     .workbench-commit-bar.busy,
     .workbench-commit-bar.is-busy { border-top-color:var(--wb-role-pending); }
     .workbench-commit-bar.is-ready { border-top-color:var(--wb-role-accept); }
@@ -11,7 +7,8 @@
     .workbench-commit-status[data-state="ready"] { color:var(--wb-role-accept); }
     .workbench-commit-status[data-state="busy"] { color:var(--wb-role-pending); }
 
-    .workbench-shell :where(button,[role="button"],[tabindex="0"]):focus-visible {
+    .workbench-shell :where(button,input,select,[role="button"],[role="option"],
+        [data-scroll-region],[tabindex="0"]):not(.character-build-slot):focus-visible {
         outline:2px solid var(--wb-focus);
         outline-offset:2px;
         box-shadow:0 0 0 1px var(--wb-bg),0 0 0 3px color-mix(in srgb,var(--wb-focus) 38%,transparent);
@@ -33,4 +30,27 @@
     .workbench-grid-empty[data-empty-kind="error"]::before { content:'!'; color:var(--wb-role-reject); }
     .workbench-empty-state[data-empty-kind="filtered"]::before,
     .workbench-grid-empty[data-empty-kind="filtered"]::before { content:'⌕'; color:var(--wb-role-pending); }
+}
+
+/* 现役 feature/skin 仍是 unlayered；终态禁用角色必须在其后收敛，避免旧规则压暗原因或制造假按钮。 */
+.workbench-choice-group[aria-disabled="true"] .workbench-choice-option:disabled {
+    color:color-mix(in srgb,var(--wb-role-disabled) 78%,var(--wb-text));
+    background:color-mix(in srgb,var(--wb-surface) 88%,var(--wb-bg));
+    border-color:color-mix(in srgb,var(--wb-role-disabled) 68%,var(--wb-line-soft));
+    filter:saturate(.5);
+}
+.workbench-choice-group[aria-disabled="true"] .workbench-choice-option[aria-pressed="true"]:disabled {
+    color:color-mix(in srgb,var(--wb-text) 72%,var(--wb-role-disabled));
+    background:color-mix(in srgb,var(--wb-accent) 38%,var(--wb-surface));
+    border-color:var(--wb-role-disabled);
+}
+.workbench-commit-bar.is-blocked .workbench-commit-primary:disabled {
+    color:color-mix(in srgb,var(--wb-text) 68%,var(--wb-role-disabled));
+    background:color-mix(in srgb,var(--wb-surface) 82%,var(--wb-bg));
+    border-color:var(--wb-role-disabled);
+    filter:saturate(.45);
+    cursor:not-allowed;
+}
+.workbench-commit-status[data-state="blocked"] {
+    color:color-mix(in srgb,var(--wb-role-reject) 68%,var(--wb-text));
 }

@@ -17,7 +17,8 @@ var CharacterBuildDressupFixture = (function() {
         longGun: 'HK416战术版',
         pistol: '极品UZI战术版',
         blade: '战术黑刀',
-        grenade: '战术核弹手雷'
+        grenade: '战术核弹手雷',
+        femaleFallbackUpper: '米色高腰背心'
     };
 
     return {
@@ -88,11 +89,20 @@ var CharacterBuildDressupFixture = (function() {
                 clearSlots:['长枪','手枪','手枪2','刀']
             },
             grenadeCombined: {
-                id:'grenade-combined-gap',
-                label:'手雷组合缺口',
-                stateLabel:'空手站立',
+                id:'grenade-combined',
+                label:'手雷站立',
+                stateLabel:'手雷站立',
                 attackMode:'手雷',
                 targetSlot:'手雷'
+            },
+            femaleArmFallback: {
+                id:'female-arm-fallback',
+                label:'女性裸臂兜底',
+                stateLabel:'空手站立',
+                attackMode:'空手',
+                targetSlot:'上装装备',
+                clearSlots:['长枪','手枪','手枪2','刀'],
+                equipmentOverrides:{upper:equipment.femaleFallbackUpper}
             },
             candidate: {
                 id:'candidate-overlay',

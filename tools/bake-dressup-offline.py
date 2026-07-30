@@ -55,7 +55,15 @@ BODY_FIELDS = ("身体", "上臂", "左下臂", "右下臂")
 LOWER_FIELDS = ("屁股", "左大腿", "右大腿", "小腿")
 HAND_FIELDS = ("左手", "右手")
 WEAPON_DRESSUP_FIELDS = ("dressup1", "dressup2", "dressup3")
-BATTLE_RIG_STATES = ("空手站立", "长枪站立", "手枪站立", "手枪2站立", "双枪站立", "兵器站立")
+BATTLE_RIG_STATES = (
+    "空手站立",
+    "长枪站立",
+    "手枪站立",
+    "手枪2站立",
+    "双枪站立",
+    "兵器站立",
+    "手雷站立",
+)
 BATTLE_RIG_DEFAULT_CHILD_LABELS = ("空闲", "站立")
 BATTLE_RIG_REQUIRED_FIELDS = {
     "空手站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具"),
@@ -64,6 +72,7 @@ BATTLE_RIG_REQUIRED_FIELDS = {
     "手枪2站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪2_装扮"),
     "双枪站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮", "手枪2_装扮"),
     "兵器站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "刀_装扮"),
+    "手雷站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手雷_装扮"),
 }
 
 BATTLE_SIDE_SPECIFIC_FIELDS = ("左下臂", "右下臂", "左手", "右手", "左大腿", "右大腿")
@@ -1250,13 +1259,9 @@ def compat_alias_for_key(key: str, assets: dict[str, dict[str, Any]]) -> dict[st
             }
         return None
 
-    opposite_key = opposite_gender_key(key)
-    if opposite_key and opposite_key in assets:
-        return {
-            "sourceKey": opposite_key,
-            "mode": "auto_opposite_gender",
-            "reason": "auto_compat_opposite_gender",
-        }
+    # 不自动借用异性身体/肢体。Flash attachMovie 找不到精确 linkage 时会让 holder
+    # 回退当前性别的基本款；把异性素材标成 covered 会绕过该语义，直接画出错误体型。
+    # 经人工确认可共用的个案仍必须写入 COMPAT_DRESSUP_ALIASES，并留下明确 reason。
     return None
 
 

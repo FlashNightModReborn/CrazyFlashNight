@@ -123,22 +123,41 @@ namespace CF7Launcher.Guardian
         /// - bootstrapWebDir != null：正常模式。创建 BootstrapPanel 启动期可见，FlashHostPanel 隐藏.
         /// - bootstrapWebDir == null：bus-only 模式。无 BootstrapPanel，FlashHostPanel 直接可见.
         /// </summary>
-        public GuardianForm() : this(null, false, "", false) { }
+        public GuardianForm() : this(null, false, "", false, false) { }
 
         public GuardianForm(string bootstrapWebDir)
-            : this(bootstrapWebDir, false, "", false)
+            : this(bootstrapWebDir, false, "", false, false)
         {
         }
 
         public GuardianForm(string bootstrapWebDir, bool bootstrapWebView2DisableGpu, string bootstrapWebView2AdditionalArgs)
-            : this(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs, false)
+            : this(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs, false, false)
         {
         }
 
         public GuardianForm(string bootstrapWebDir, bool bootstrapWebView2DisableGpu,
             string bootstrapWebView2AdditionalArgs, bool isolatedRuntimeCandidate)
+            : this(
+                bootstrapWebDir,
+                bootstrapWebView2DisableGpu,
+                bootstrapWebView2AdditionalArgs,
+                false,
+                isolatedRuntimeCandidate)
         {
-            InitializeComponent(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs,
+        }
+
+        public GuardianForm(
+            string bootstrapWebDir,
+            bool bootstrapWebView2DisableGpu,
+            string bootstrapWebView2AdditionalArgs,
+            bool bootstrapWebView2DeveloperMode,
+            bool isolatedRuntimeCandidate)
+        {
+            InitializeComponent(
+                bootstrapWebDir,
+                bootstrapWebView2DisableGpu,
+                bootstrapWebView2AdditionalArgs,
+                bootstrapWebView2DeveloperMode,
                 isolatedRuntimeCandidate);
             SetupTrayIcon();
             SetupHotkeys();
@@ -222,8 +241,12 @@ namespace CF7Launcher.Guardian
                 : "CF7:FlashNight";
         }
 
-        private void InitializeComponent(string bootstrapWebDir, bool bootstrapWebView2DisableGpu,
-            string bootstrapWebView2AdditionalArgs, bool isolatedRuntimeCandidate)
+        private void InitializeComponent(
+            string bootstrapWebDir,
+            bool bootstrapWebView2DisableGpu,
+            string bootstrapWebView2AdditionalArgs,
+            bool bootstrapWebView2DeveloperMode,
+            bool isolatedRuntimeCandidate)
         {
             this.Text = SelectWindowTitle(isolatedRuntimeCandidate);
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -340,7 +363,11 @@ namespace CF7Launcher.Guardian
             // Phase A: BootstrapPanel（仅正常模式；后加 = 更高 z-order 显示在 Flash 之上）
             if (bootstrapWebDir != null)
             {
-                _bootstrapPanel = new BootstrapPanel(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs);
+                _bootstrapPanel = new BootstrapPanel(
+                    bootstrapWebDir,
+                    bootstrapWebView2DisableGpu,
+                    bootstrapWebView2AdditionalArgs,
+                    bootstrapWebView2DeveloperMode);
                 _bootstrapPanel.Dock = DockStyle.Fill;
                 _bootstrapPanel.Visible = true;
                 this.Controls.Add(_bootstrapPanel);

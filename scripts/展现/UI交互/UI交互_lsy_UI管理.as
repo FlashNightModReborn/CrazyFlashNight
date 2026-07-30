@@ -183,8 +183,15 @@ _root.gameCommands["openTaskUI"] = function() {
     _root.从库中加载全屏UI("任务栏界面");
 };
 
-_root.gameCommands["openMaterialUI"] = function() {
-    if (!org.flashNight.arki.item.CraftingPanelService.openMaterialsPanel("nativehud_materials")) {
+_root.gameCommands["openMaterialUI"] = function(params) {
+    var missingOpenRequestId:Boolean = params == undefined || params == null
+        || typeof(params.openRequestId) == "undefined";
+    var opened:Boolean = missingOpenRequestId
+        ? org.flashNight.arki.item.CraftingPanelService.openMaterialsPanel(
+            "nativehud_materials")
+        : org.flashNight.arki.item.CraftingPanelService.openMaterialsPanel(
+            "nativehud_materials", params.openRequestId);
+    if (!opened) {
         _root.发布消息("材料面板暂时不可用");
     }
 };

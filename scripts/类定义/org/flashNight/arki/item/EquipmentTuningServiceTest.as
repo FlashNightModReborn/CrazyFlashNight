@@ -77,6 +77,13 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         ItemUtil.loadItemData([
             {name:"测试手枪A",displayname:"测试手枪A",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:4,damage:10}},
             {name:"测试手枪B",displayname:"测试手枪B",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:4,damage:10}},
+            {name:"测试未知槽手枪",displayname:"测试未知槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,damage:10}},
+            {name:"测试负数槽手枪",displayname:"测试负数槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:-1,damage:10}},
+            {name:"测试小数槽手枪",displayname:"测试小数槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:1.5,damage:10}},
+            {name:"测试非数值槽手枪",displayname:"测试非数值槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:"not-a-number",damage:10}},
+            {name:"测试NaN槽手枪",displayname:"测试NaN槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:Number("not-a-number"),damage:10}},
+            {name:"测试正无穷槽手枪",displayname:"测试正无穷槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:Number.POSITIVE_INFINITY,damage:10}},
+            {name:"测试负无穷槽手枪",displayname:"测试负无穷槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:Number.NEGATIVE_INFINITY,damage:10}},
             {name:"测试头盔",displayname:"测试头盔",icon:"测试",type:"防具",use:"头部装备",data:{level:1,modslot:4,defence:10}},
             // 调制材料与生产 XML 一致归入“收集品 / 材料”；富注释分栏依赖这组权威类型。
             {name:"强化石",displayname:"强化石",icon:"测试",type:"收集品",use:"材料",data:{}},
@@ -110,18 +117,66 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
 
     private static function testSnapshotGenderNormalization():Void {
         resetFixture();
+        // ItemUtil 会为缺省 modslot 补旧式默认值；这里删除该补值，模拟
+        // 上游权威字段确实缺失的输入，避免把“缺失”误测成合法 3 槽。
+        delete ItemUtil.getRawItemData("测试未知槽手枪").data.modslot;
+        // 同样在 loader 之后重放畸形权威值，避免 AS2 宽松等值比较把
+        // NaN / 非数值输入误判为空值并替换成旧式默认槽数。
+        ItemUtil.getRawItemData("测试负数槽手枪").data.modslot = -1;
+        ItemUtil.getRawItemData("测试小数槽手枪").data.modslot = 1.5;
+        ItemUtil.getRawItemData("测试非数值槽手枪").data.modslot =
+            "not-a-number";
+        ItemUtil.getRawItemData("测试NaN槽手枪").data.modslot =
+            Number("not-a-number");
+        ItemUtil.getRawItemData("测试正无穷槽手枪").data.modslot =
+            Number.POSITIVE_INFINITY;
+        ItemUtil.getRawItemData("测试负无穷槽手枪").data.modslot =
+            Number.NEGATIVE_INFINITY;
         _root.物品栏.背包.add(0, equipment("测试手枪A", 1, []));
+        _root.物品栏.背包.add(1, equipment("测试未知槽手枪", 1, []));
+        _root.物品栏.背包.add(2, equipment("测试负数槽手枪", 1, []));
+        _root.物品栏.背包.add(3, equipment("测试小数槽手枪", 1, []));
+        _root.物品栏.背包.add(4, equipment("测试非数值槽手枪", 1, []));
+        _root.物品栏.背包.add(5, equipment("测试NaN槽手枪", 1, []));
+        _root.物品栏.背包.add(6, equipment("测试正无穷槽手枪", 1, []));
+        _root.物品栏.背包.add(7, equipment("测试负无穷槽手枪", 1, []));
+        var inventory:Object = inventorySnapshot();
         var snapshotParams:Object = params("gender");
-        snapshotParams.source = sourceRef(inventorySnapshot(), 0);
+        snapshotParams.source = sourceRef(inventory, 0);
 
         _root.性别 = "女";
         var female:Object = EquipmentTuningService.execute("snapshot", snapshotParams);
         _root.性别 = "female";
         var normalized:Object = EquipmentTuningService.execute("snapshot", snapshotParams);
+        var unknownParams:Object = params("gender");
+        unknownParams.source = sourceRef(inventory, 1);
+        var unknown:Object = EquipmentTuningService.execute("snapshot", unknownParams);
+        var malformedSlots:Array = [2, 3, 4, 5, 6, 7];
+        var malformedCapacityOmitted:Boolean = true;
+        for (var malformedIndex:Number = 0;
+                malformedIndex < malformedSlots.length;
+                malformedIndex++) {
+            var malformedParams:Object =
+                params("modslot-malformed-" + malformedIndex);
+            malformedParams.source =
+                sourceRef(inventory, Number(malformedSlots[malformedIndex]));
+            var malformed:Object =
+                EquipmentTuningService.execute("snapshot", malformedParams);
+            var malformedCurrentOmitted:Boolean = malformed.success
+                && !malformed.snapshot.equipment.hasOwnProperty(
+                    "modSlotCapacity");
+            // 当前项放在左侧，确保前一项失败后仍逐项验证余下夹具。
+            malformedCapacityOmitted =
+                malformedCurrentOmitted && malformedCapacityOmitted;
+        }
 
         assertTrue(female.success && female.snapshot.gender == "女"
-                && normalized.success && normalized.snapshot.gender == "男",
-            "snapshot 顶层性别只投影规范化的男/女值");
+                && female.snapshot.equipment.modSlotCapacity == 4
+                && normalized.success && normalized.snapshot.gender == "男"
+                && unknown.success
+                && !unknown.snapshot.equipment.hasOwnProperty("modSlotCapacity")
+                && malformedCapacityOmitted,
+            "snapshot 规范化性别、保留 4 槽权威值，并对缺失、负数、小数、非数值、NaN 与正负无穷省略容量字段");
     }
 
     private static function equipment(name:String, level:Number, mods:Array):BaseItem {

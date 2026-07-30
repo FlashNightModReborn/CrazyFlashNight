@@ -51,6 +51,11 @@ namespace CF7Launcher.Guardian
         // NotchWidget 引用：AddWidget 时自动捕获，INotchSink.AddNotice/SetStatusItem/ClearStatusItem 路由到此
         private NotchWidget _notchWidget;
 
+        // 右侧条件槽只在这里做一次优先级仲裁；两个 widget 只消费同一个封闭 owner 投影。
+        private RightContextWidget _rightContextWidget;
+        private SafeExitPanelWidget _safeExitPanelWidget;
+        private RightContextSlotOwner _rightContextSlotOwner = RightContextSlotOwner.Hidden;
+
         private Bitmap _composedBitmap;
         private int _composedW;
         private int _composedH;
@@ -136,6 +141,8 @@ namespace CF7Launcher.Guardian
                 _widgets.Add(widget);
                 if (widget is ToastWidget) _toastWidget = (ToastWidget)widget;
                 if (widget is NotchWidget) _notchWidget = (NotchWidget)widget;
+                if (widget is RightContextWidget) _rightContextWidget = (RightContextWidget)widget;
+                if (widget is SafeExitPanelWidget) _safeExitPanelWidget = (SafeExitPanelWidget)widget;
                 if (widget is IUiDataConsumer) _uiDataConsumerCount++;
                 IUiDataLegacyConsumer legacy = widget as IUiDataLegacyConsumer;
                 if (legacy != null)
@@ -167,7 +174,9 @@ namespace CF7Launcher.Guardian
             widget.BoundsOrVisibilityChanged += OnWidgetBoundsChanged;
             widget.RepaintRequested += OnWidgetRepaintRequested;
             widget.AnimationStateChanged += OnWidgetAnimationStateChanged;
-            if (_ready) RecomputeBounds();
+            // 先完成真实事件订阅，再做首次 owner reconcile。即使 HUD 尚未 SetReady，
+            // 条件槽投影也必须已经一致；RecomputeBounds 会在仲裁后按 _ready 早退，不触碰窗口。
+            RecomputeBounds();
         }
 
         public void RemoveWidget(INativeHudWidget widget)
@@ -179,6 +188,8 @@ namespace CF7Launcher.Guardian
                 {
                     if (_toastWidget == widget) _toastWidget = null;
                     if (_notchWidget == widget) _notchWidget = null;
+                    if (_rightContextWidget == widget) _rightContextWidget = null;
+                    if (_safeExitPanelWidget == widget) _safeExitPanelWidget = null;
                     if (widget is IUiDataConsumer) _uiDataConsumerCount--;
                     if (widget is IUiDataLegacyConsumer)
                     {
@@ -219,7 +230,11 @@ namespace CF7Launcher.Guardian
             widget.BoundsOrVisibilityChanged -= OnWidgetBoundsChanged;
             widget.RepaintRequested -= OnWidgetRepaintRequested;
             widget.AnimationStateChanged -= OnWidgetAnimationStateChanged;
-            if (_ready) RecomputeBounds();
+            if (widget is RightContextWidget)
+                ((RightContextWidget)widget).ApplySlotOwner(RightContextSlotOwner.Hidden);
+            if (widget is SafeExitPanelWidget)
+                ((SafeExitPanelWidget)widget).ApplySlotOwner(RightContextSlotOwner.Hidden);
+            RecomputeBounds();
         }
 
         private void OnWidgetBoundsChanged(object sender, EventArgs e)
@@ -340,6 +355,7 @@ namespace CF7Launcher.Guardian
 
         private void RecomputeBounds()
         {
+            ReconcileRightContextSlotOwner();
             if (!_ready || _suspendedForPanel) return;
 
             INativeHudWidget[] snapshot;
@@ -381,6 +397,47 @@ namespace CF7Launcher.Guardian
             if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
             RenderToBitmapAndCommit();
             MaybeStartTick();
+        }
+
+        private void ReconcileRightContextSlotOwner()
+        {
+            RightContextWidget rightContext;
+            SafeExitPanelWidget safeExit;
+            lock (_widgetsLock)
+            {
+                rightContext = _rightContextWidget;
+                safeExit = _safeExitPanelWidget;
+            }
+            _rightContextSlotOwner =
+                ResolveAndProjectRightContextSlotOwner(rightContext, safeExit);
+        }
+
+        /// <summary>
+        /// 右侧条件槽唯一仲裁点。先计算一个封闭 owner，再把同一个值投影给两个 widget；
+        /// widget 不得各自推断优先级。
+        /// </summary>
+        internal static RightContextSlotOwner ResolveAndProjectRightContextSlotOwner(
+            RightContextWidget rightContext,
+            SafeExitPanelWidget safeExit)
+        {
+            RightContextSlotOwner owner;
+            if (safeExit != null && safeExit.RequestsTransactionDecision)
+                owner = RightContextSlotOwner.TransactionDecision;
+            else if (rightContext != null && rightContext.RequestsActionableNotice)
+                owner = RightContextSlotOwner.ActionableNotice;
+            else if (rightContext != null && rightContext.RequestsContextHint)
+                owner = RightContextSlotOwner.ContextHint;
+            else
+                owner = RightContextSlotOwner.Hidden;
+
+            if (rightContext != null) rightContext.ApplySlotOwner(owner);
+            if (safeExit != null) safeExit.ApplySlotOwner(owner);
+            return owner;
+        }
+
+        internal RightContextSlotOwner RightContextSlotOwnerForTest
+        {
+            get { return _rightContextSlotOwner; }
         }
 
         private void EnsureComposedBitmap(int w, int h)

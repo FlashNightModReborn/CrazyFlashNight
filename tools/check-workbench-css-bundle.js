@@ -16,6 +16,7 @@ const IMPORTS = [
     './workbench/tokens.css',
     './panels/foundation-rest.css',
     './workbench/core.css',
+    './workbench/profiles.css',
     './panels/features.css',
     './workbench/inventory.css',
     './workbench/skins.css',
@@ -29,7 +30,8 @@ const IMPORTS = [
     './workbench/character-build-stats.css',
     './workbench/states.css',
     './workbench/motion.css',
-    './hairdresser.css'
+    './hairdresser.css',
+    './workbench/utilities.css'
 ];
 
 function fail(message) {

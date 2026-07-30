@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 const fs=require('fs'),http=require('http'),path=require('path'),url=require('url');
+require('./test-player-copy.js').assertPlayerCopy();
 const ROOT=path.resolve(__dirname,'../../../../..');
 const WEB=path.join(ROOT,'launcher','web');
 const PLAYWRIGHT=path.join(ROOT,'launcher','perf','node_modules','playwright');

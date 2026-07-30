@@ -9,6 +9,7 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "launcher/web/assets/dressup/manifest.json"
+REPORT_PATH = PROJECT_ROOT / "launcher/web/assets/dressup/report.json"
 MERCENARIES_PATH = PROJECT_ROOT / "data/merc/mercenaries.json"
 HAIRSTYLE_PATH = PROJECT_ROOT / "data/items/hairstyle.xml"
 
@@ -51,9 +52,9 @@ BASIC_FALLBACK_FIELDS = {
     "脚",
 }
 
-# Compatibility aliases should resolve current checked-in mercenary equipment
-# without falling back to holder basic children — EXCEPT items whose source art
-# genuinely has no limb symbol, where bare-arm basic fallback is the correct look.
+# 只有人工 compat alias 可以复用其他素材。自动异性别名会绕过 Flash 的当前性别
+# holder basic fallback，因此 opposite_gender_only 审计项必须保留为 uncovered；
+# 佣兵实际命中这些部件时，basic fallback 是预期闭包而不是缺图。
 # 军绿防弹衣 是无袖防弹衣（源 SWF 仅身体符号）：上臂/下臂应回退 basic 裸臂。曾用
 # same_item_body_fallback 别名到身体皮 → battle 全身渲染手臂被画成躯干（Alex 实测），已撤别名。
 ALLOWED_BASIC_FALLBACK_SKINS: set[str] = {
@@ -108,10 +109,18 @@ def is_resolved_skin(skin: dict[str, Any] | None) -> bool:
 
 def main() -> None:
     manifest = read_json(MANIFEST_PATH)
+    report = read_json(REPORT_PATH)
     mercenaries = read_json(MERCENARIES_PATH)
     hair_map = parse_hair_map()
     items = manifest.get("items") or {}
     skin_keys = manifest.get("skinKeys") or {}
+    opposite_gender_only = {
+        key
+        for key, entry in (
+            ((report.get("missingSourceAudit") or {}).get("entries") or {}).items()
+        )
+        if entry.get("reason") == "opposite_gender_only"
+    }
 
     failures: list[str] = []
     total_equips = 0
@@ -148,7 +157,13 @@ def main() -> None:
                 if is_resolved_skin(skin):
                     resolved_parts += 1
                     continue
-                if skin_key in ALLOWED_BASIC_FALLBACK_SKINS and field in BASIC_FALLBACK_FIELDS:
+                if (
+                    field in BASIC_FALLBACK_FIELDS
+                    and (
+                        skin_key in ALLOWED_BASIC_FALLBACK_SKINS
+                        or skin_key in opposite_gender_only
+                    )
+                ):
                     fallback_parts += 1
                     continue
                 status = "missing" if not skin else "uncovered" if skin.get("covered") is False else "missing-export"
@@ -174,6 +189,7 @@ def main() -> None:
         "nonRenderedEquips": non_rendered_equips,
         "resolvedParts": resolved_parts,
         "basicFallbackParts": fallback_parts,
+        "oppositeGenderOnlyBasicFallbackSkinKeys": len(opposite_gender_only),
         "allowedBasicFallbackSkinKeys": unresolved_allowed,
         "failures": failures[:20],
     }

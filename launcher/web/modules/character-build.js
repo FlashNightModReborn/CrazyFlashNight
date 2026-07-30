@@ -16,7 +16,15 @@
     var slotTransition = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-slot-transition.js')
         : root && root.CharacterBuildSlotTransition;
-    var api = factory(runtime, session, view, tuning, mutation, pose, slotTransition, root);
+    var projection = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-projection.js')
+        : root && root.CharacterBuildProjection;
+    var candidateTooltip = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-candidate-tooltip.js')
+        : root && root.CharacterBuildCandidateTooltip;
+    var api = factory(
+        runtime, session, view, tuning, mutation, pose, slotTransition,
+        projection, candidateTooltip, root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -25,9 +33,8 @@
     }
 })(typeof window !== 'undefined' ? window : globalThis,
 function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
-        SlotTransition, global) {
+        SlotTransition, Projection, CandidateTooltipModule, global) {
     'use strict';
-
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
     if (!SessionModule || !SessionModule.CharacterBuildSession) throw new Error('CharacterBuildSession is required');
     if (!ViewModule || !ViewModule.CharacterBuildView) throw new Error('CharacterBuildView is required');
@@ -37,7 +44,12 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     if (!SlotTransition || !SlotTransition.handle) {
         throw new Error('CharacterBuildSlotTransition is required');
     }
-
+    if (!Projection || typeof Projection.viewSnapshot !== 'function') {
+        throw new Error('CharacterBuildProjection is required');
+    }
+    if (!CandidateTooltipModule || !CandidateTooltipModule.CandidateTooltip) {
+        throw new Error('CharacterBuildCandidateTooltip is required');
+    }
     var MANIFEST_URL = 'assets/dressup/manifest.json';
     // Structural body fields define stable framing; pose extremities stay draw-only for inspection.
     var CHARACTER_CAMERA_FIT_FIELDS = Pose.cameraFitFields();
@@ -50,67 +62,6 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             if (Object.prototype.hasOwnProperty.call(value, key)) result[key] = value[key];
         }
         return result;
-    }
-    function finite(value, fallback) {
-        value = Number(value);
-        return isFinite(value) && Math.floor(value) === value ? value : fallback;
-    }
-    function safeItem(row) {
-        if (!row || row.occupied !== true || !row.item) return null;
-        var item = row.item, capability = TuningModule.tuningCapability(item);
-        var suffix = [];
-        if (Number(item.enhancementLevel) > 0) suffix.push('+' + Number(item.enhancementLevel));
-        if (Number(row.quantity || item.quantity) > 1) suffix.push('× ' + Number(row.quantity || item.quantity));
-        return {
-            name:String(item.displayName || item.name || '未知物品'),
-            meta:suffix.join(' · ') || String(item.use || item.itemKind || '已装备'),
-            type:String(item.use || item.itemKind || ''),
-            presentation:item,
-            blocked:row.disabled === true,
-            tunable:capability.available,
-            tuningReason:capability.reason
-        };
-    }
-    function viewSnapshot(payload) {
-        var equipment = {}, drugs = {}, rows = payload && payload.equipment || [];
-        for (var i = 0; i < rows.length; i++) equipment[String(rows[i].slotKey || '')] = safeItem(rows[i]);
-        rows = payload && payload.drugs || [];
-        for (var j = 0; j < rows.length; j++) drugs['drug' + (Number(rows[j].slot) + 1)] = safeItem(rows[j]);
-        return {
-            equipment:equipment,
-            drugs:drugs,
-            portrait:payload && payload.portrait || {},
-            blocked:payload && payload.stateHealth !== 'ok',
-            blockedReason:payload && payload.stateHealth !== 'ok'
-                ? '部分角色数据不可用；请检查候选阻断原因，当前装备尚未改变。' : ''
-        };
-    }
-    function viewCandidates(payload) {
-        var rows = payload && payload.candidates || [], result = [];
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i] || {}, item = row.item || {}, source = row.source || {};
-            result.push({
-                key:'backpack:' + finite(row.physicalSlot, i) + ':' + String(source.expectedLease || i),
-                name:String(item.displayName || item.name || '未命名候选'),
-                type:String(item.use || item.itemKind || '背包候选'),
-                delta:'预览',
-                summary:String(row.blockedReason || '来自背包；首次选择只更新临时纸娃娃预览。'),
-                presentation:item,
-                physicalSlot:finite(row.physicalSlot, i),
-                badgeKind:'preview',
-                blocked:row.disabled === true,
-                raw:row
-            });
-        }
-        return result;
-    }
-    function targetForSelection(selection) {
-        if (!selection) return null;
-        if (selection.kind === 'drug') {
-            var slot = /^drug([1-4])$/.exec(String(selection.id || ''));
-            return slot ? {kind:'drug', drugSlot:Number(slot[1]) - 1} : null;
-        }
-        return /^(armor|weapon)$/.test(String(selection.kind || '')) && selection.id ? {kind:'equipment', slotKey:String(selection.id)} : null;
     }
     function createRequestMux(options) {
         options = options || {};
@@ -171,6 +122,16 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             onState:this._stateChanged.bind(this),
             onError:this._error.bind(this)
         });
+        this._candidateTooltip = new CandidateTooltipModule.CandidateTooltip({
+            send:options.send,
+            setTimer:options.setTimer,
+            clearTimer:options.clearTimer,
+            timeoutMs:options.timeoutMs,
+            sessionNonce:options.sessionNonce,
+            router:options.router,
+            mux:options.tooltipMux,
+            tooltip:options.tooltip || global.PanelTooltip
+        });
         var self = this;
         this._mutations = new Mutation.MutationCoordinator({
             session:this._session,
@@ -184,6 +145,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         this._snapshotPayload = null;
         this._selectedTarget = null;
         this._selectedSlotKey = '';
+        this._selectedCandidate = null;
         this._mountGeneration = 0;
         this._resizeObserver = null;
         this._panelInstanceId = '';
@@ -195,6 +157,11 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     }
 
     CharacterBuildController.prototype._stateChanged = function(state, reason, debug) {
+        if (this._candidateTooltip
+                && (reason === 'mutation_start' || reason === 'flush_start'
+                    || reason === 'finalize_start' || reason === 'finalize_retry')) {
+            this._candidateTooltip.invalidate();
+        }
         var tuningLocked = !!(this._tuning && this._tuning.isLocked());
         if (this._ports.setStatus) {
             var label = tuningLocked ? '正在同步装备调制'
@@ -227,7 +194,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         var error = response && response.error;
         if (this._ports.toast) this._ports.toast(command === 'finalize'
             ? '当前构筑尚未完成应用与保存，请重试关闭。'
-            : error === 'not_sent' ? '角色构筑连接不可用。' : '角色构筑同步失败，请重试。');
+            : error === 'not_sent' ? '角色构筑连接不可用。' : '角色构筑同步失败，请重试。', command, response);
     };
     CharacterBuildController.prototype._loadManifest = function() {
         if (this._ports.loadManifest) return this._ports.loadManifest();
@@ -248,7 +215,13 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             document:this._document,
             density:this._ports.getDensity ? this._ports.getDensity() : 'full',
             onSlotSelect:function(selection) { return self._selectSlot(selection); },
-            onCandidateSelect:function(candidate) { self._renderPortrait(candidate); },
+            onCandidateSelect:function(candidate) {
+                self._selectedCandidate = candidate; self._renderPortrait(candidate);
+            },
+            bindCandidateTooltip:function(node, candidate) {
+                return self._candidateTooltip
+                    ? self._candidateTooltip.bind(node, candidate) : null;
+            },
             onCommitCandidate:function(candidate) {
                 return self._mutations.equip(self._selectedTarget, candidate);
             },
@@ -296,6 +269,10 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             timeoutMs:this._tuningTransport.timeoutMs,
             sessionNonce:this._tuningTransport.sessionNonce,
             density:this._ports.getDensity ? this._ports.getDensity() : 'full',
+            projectCandidates:Projection.viewCandidates,
+            invalidateCandidateTooltip:function() {
+                if (self._candidateTooltip) self._candidateTooltip.invalidate();
+            },
             adoptSnapshot:function(payload, restore) { self._applySnapshot(payload, restore); },
             onLockChange:function() {
                 self._stateChanged(self._session.getState(), 'tuning_state', self._session.debugState());
@@ -363,7 +340,13 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     };
     CharacterBuildController.prototype._applySnapshot = function(payload, restoreSelection) {
         this._snapshotPayload = payload;
-        this._createView().setSnapshot(viewSnapshot(payload));
+        this._selectedCandidate = null;
+        if (this._candidateTooltip) {
+            this._candidateTooltip.reset(
+                this._panelInstanceId,
+                this._session.getSessionGeneration());
+        }
+        this._createView().setSnapshot(Projection.viewSnapshot(payload));
         this._ensureRenderer();
         this._renderPortrait(null);
         if (restoreSelection !== false && this._selectedSlotKey
@@ -373,7 +356,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         }
     };
     CharacterBuildController.prototype._selectSlot = function(selection) {
-        var target = targetForSelection(selection);
+        var target = Projection.targetForSelection(selection);
         if (!target) return false;
         var tuningResult = SlotTransition.handle(this, selection, target, TuningModule);
         if (tuningResult !== null) {
@@ -389,12 +372,15 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         this._selectedSlotKey = selection && String(selection.key || '');
         this._selectedTarget = target;
         this._renderPortrait(null);
+        if (this._candidateTooltip) this._candidateTooltip.invalidate();
         var self = this, sendRefused = false;
         var callId = this._session.requestCandidates(target, function(response, accepted) {
             sendRefused = !accepted && response && response.clientSynthetic === true && response.error === 'not_sent';
             if (!self._view) return;
             if (accepted) {
-                self._view.setCandidates(selection.requestKey, viewCandidates(response.payload));
+                self._view.setCandidates(
+                    selection.requestKey,
+                    Projection.viewCandidates(response.payload));
             } else {
                 self._view.setCandidateFailure(selection.requestKey);
             }
@@ -410,9 +396,16 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     CharacterBuildController.prototype._enterTuning = function() {
         if (!this._tuning || !this._selectedTarget
                 || this._selectedTarget.kind !== 'equipment' || !this._snapshotPayload) return false;
+        if (this._selectedCandidate) {
+            if (this._candidateTooltip) this._candidateTooltip.invalidate();
+            return this._tuning.enterCandidate(
+                this._selectedCandidate, this._selectedTarget, this._panelInstanceId);
+        }
         var item = TuningModule.findEquipment(
             this._snapshotPayload, this._selectedTarget.slotKey);
-        return !!item && this._tuning.enter(
+        if (!item) return false;
+        if (this._candidateTooltip) this._candidateTooltip.invalidate();
+        return this._tuning.enter(
             this._selectedTarget.slotKey, item, this._panelInstanceId);
     };
 
@@ -437,6 +430,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             });
         }
         if (this._snapshotPayload) this._applySnapshot(this._snapshotPayload, false);
+        if (this._candidateTooltip) this._candidateTooltip.invalidate();
         return !!this._session.refreshSnapshot(function(response, accepted) {
             if (generation === self._mountGeneration
                     && exactPanelInstanceId === self._panelInstanceId
@@ -447,6 +441,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     };
     CharacterBuildController.prototype.suspend = function() {
         this._mountGeneration++;
+        if (this._candidateTooltip) this._candidateTooltip.suspend();
         this._session.suspendView();
         if (this._tuning) this._tuning.destroy();
         this._tuning = null;
@@ -479,7 +474,9 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         if (this._tuning) this._tuning.setDensity(mode);
         return !!(this._view && this._view.setDensity(mode));
     };
+    CharacterBuildController.prototype.syncViewport = function() { if (this._view) this._view.syncDollViewport('mount'); };
     CharacterBuildController.prototype.openHelp = function() {
+        if (this._tuning && this._tuning.isActive()) return this._tuning.openHelp();
         return this._ports.openModal ? !!this._ports.openModal({
             kind:'character-build-help',
             title:'角色构筑帮助',
@@ -521,6 +518,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     };
     CharacterBuildController.prototype.destroy = function() {
         this.suspend();
+        if (this._candidateTooltip) this._candidateTooltip.destroy();
         this._session.destroy();
         this._mutations.destroy();
         return true;
@@ -533,6 +531,8 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             selectedSlotKey:this._selectedSlotKey,
             mutationPending:this._mutations.isPending(),
             tuning:this._tuning ? this._tuning.debugState() : null,
+            candidateTooltip:this._candidateTooltip
+                ? this._candidateTooltip.debugState() : null,
             session:this._session.debugState(),
             view:this._view ? this._view.debugState() : null
         };
@@ -541,9 +541,9 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     return {
         CharacterBuildController:CharacterBuildController,
         createRequestMux:createRequestMux,
-        targetForSelection:targetForSelection,
-        viewSnapshot:viewSnapshot,
-        viewCandidates:viewCandidates,
+        targetForSelection:Projection.targetForSelection,
+        viewSnapshot:Projection.viewSnapshot,
+        viewCandidates:Projection.viewCandidates,
         commands:SessionModule.commands.slice()
     };
 });

@@ -425,6 +425,7 @@ function Test-ReportContract {
     Assert-Equal ([string]$Report.runId) $ExpectedRunId 'runId'
     Assert-Equal ([string]$Report.measurementKind) `
         'actual_sta_hwnd_update_layered_window' 'measurementKind'
+    Assert-Equal ([string]$Report.status) 'passed' 'status'
     Assert-Equal ([int]$Report.qualification.visualSteps) 3000 `
         'qualification.visualSteps'
     Assert-Equal ([int]$Report.qualification.idleTicks) 3000 `
@@ -1706,7 +1707,6 @@ function Test-ReportContract {
     if (@($Report.failures).Count -ne 0) {
         throw "Report failures are non-empty: $($Report.failures -join '; ')"
     }
-    Assert-Equal ([string]$Report.status) 'passed' 'status'
 }
 
 if ([string]::IsNullOrWhiteSpace($ProjectRoot)) {
@@ -1864,14 +1864,43 @@ if ($reportBytes.Length -eq 0 -or
 }
 $report = Get-Content -LiteralPath $ReportPath -Raw -Encoding utf8 |
     ConvertFrom-Json
+if ($testExitCode -ne 0) {
+    Assert-Equal ([string]$report.schema) `
+        'cf7.player-info-hud.b0-06-runtime-qualification' 'failure.schema'
+    Assert-Equal ([int]$report.schemaVersion) 2 'failure.schemaVersion'
+    Assert-Equal ([string]$report.runId) $runId 'failure.runId'
+    Assert-Equal ([string]$report.status) 'failed' 'failure.status'
+    Assert-Equal ([string]$report.measurementKind) `
+        'actual_sta_hwnd_update_layered_window' 'failure.measurementKind'
+    $failureProperty = $report.PSObject.Properties['failure']
+    if ($null -ne $failureProperty) {
+        $failureType = [string]$report.failure.type
+        $failureMessage = [string]$report.failure.message
+        if ([string]::IsNullOrWhiteSpace($failureType) -or
+            [string]::IsNullOrWhiteSpace($failureMessage)) {
+            throw 'B0-06 exception report must identify failure.type and failure.message.'
+        }
+        $failureDetail = '{0}: {1}' -f $failureType, $failureMessage
+    } else {
+        $failureMessages = @(
+            $report.failures |
+                ForEach-Object { [string]$_ } |
+                Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+        if ($failureMessages.Count -eq 0) {
+            throw 'B0-06 failed report must contain exception or gate diagnostics.'
+        }
+        $failureDetail = $failureMessages -join '; '
+    }
+    throw (
+        'B0-06 focused qualification failed with exit code {0}: {1}' -f
+            $testExitCode,
+            $failureDetail)
+}
+
 Test-ReportContract `
     -Report $report `
     -ExpectedRunId $runId `
     -ExpectedAffinityMask $expectedAffinityMask
-
-if ($testExitCode -ne 0) {
-    throw "B0-06 focused qualification failed with exit code $testExitCode."
-}
 
 $reportSha256 = Get-Sha256Hex -LiteralPath $ReportPath
 Write-Host (

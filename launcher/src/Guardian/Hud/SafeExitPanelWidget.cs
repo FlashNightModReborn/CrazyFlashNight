@@ -44,6 +44,7 @@ namespace CF7Launcher.Guardian.Hud
         private volatile SaveState _state = SaveState.Idle;
         private volatile bool _armed;        // 仅由 SAFEEXIT click 路径置 true；通用 sv 推送不会显示面板
         private volatile bool _dismissed;
+        private volatile RightContextSlotOwner _slotOwner = RightContextSlotOwner.Hidden;
         private readonly object _exitAuthorizationGate =
             new object();
         private int _hoverIndex = -1;
@@ -67,10 +68,24 @@ namespace CF7Launcher.Guardian.Hud
         private float Scale { get { return WidgetScaler.GetScale(_mapper); } }
         private int StatusH { get { return WidgetScaler.Px(STATUS_H_BASE, Scale); } }
 
+        internal bool RequestsTransactionDecision
+        {
+            get { return _gameReady && _armed && !_dismissed; }
+        }
+
         public bool Visible
         {
-            // 必须 _armed：通用 sv:1/2 推送（自动存盘 / 商店关闭 / 升级）不会拉起面板
-            get { return _gameReady && _armed && !_dismissed; }
+            // 事务状态只是 demand；只有组合 owner 把 exact transactionDecision 投影回来才可绘制/命中。
+            get
+            {
+                return RequestsTransactionDecision
+                    && _slotOwner == RightContextSlotOwner.TransactionDecision;
+            }
+        }
+
+        internal void ApplySlotOwner(RightContextSlotOwner owner)
+        {
+            _slotOwner = owner;
         }
 
         /// <summary>
@@ -145,6 +160,9 @@ namespace CF7Launcher.Guardian.Hud
         internal bool IsDoneState { get { return _state == SaveState.Done; } }
         internal bool IsSavingState { get { return _state == SaveState.Saving; } }
         internal bool IsFailedState { get { return _state == SaveState.Failed; } }
+        internal RightContextSlotOwner SlotOwnerForTest { get { return _slotOwner; } }
+        internal bool PaintsTransactionDecisionForTest { get { return Visible; } }
+        internal bool SlotHitBoxActiveForTest { get { return Visible; } }
         internal int  InternalDownIndex { get { return _downIndex; } set { _downIndex = value; } }
         internal int DoneAutoDismissRemainingMsForTest { get { return _doneAutoDismissRemainingMs; } }
         internal static int DoneAutoDismissMsForTest { get { return DONE_AUTO_DISMISS_MS; } }

@@ -943,7 +943,26 @@ class org.flashNight.arki.item.EquipmentTuningService {
 
     private static function buildEquipmentProjection(item:Object, value:Object, lastUpdate:Number):Object {
         var raw:Object = ItemUtil.getRawItemData(item.name);
-        return {
+        var data:Object = typeof item.getData == "function"
+            ? item.getData() : raw;
+        var modSlotCapacity:Number = 0;
+        var modSlotCapacityKnown:Boolean = data != null
+            && data.data != undefined && data.data != null
+            && data.data.hasOwnProperty("modslot")
+            && data.data.modslot != undefined;
+        if (modSlotCapacityKnown) {
+            var rawModSlotCapacity:Number = Number(data.data.modslot);
+            if (isNaN(rawModSlotCapacity)
+                    || rawModSlotCapacity == Number.POSITIVE_INFINITY
+                    || rawModSlotCapacity == Number.NEGATIVE_INFINITY
+                    || rawModSlotCapacity < 0
+                    || Math.floor(rawModSlotCapacity) != rawModSlotCapacity) {
+                modSlotCapacityKnown = false;
+            } else {
+                modSlotCapacity = rawModSlotCapacity;
+            }
+        }
+        var projection:Object = {
             name:String(item.name),
             displayName:raw == null || raw.displayname == undefined ? String(item.name) : String(raw.displayname),
             icon:raw == null || raw.icon == undefined ? "" : String(raw.icon),
@@ -954,6 +973,10 @@ class org.flashNight.arki.item.EquipmentTuningService {
             mods:cloneArray(value.mods), lastUpdate:Number(lastUpdate),
             maxLevel:getEnhancementCap(), hardMaxLevel:EquipmentUtil.getMaxLevel()
         };
+        if (modSlotCapacityKnown) {
+            projection.modSlotCapacity = modSlotCapacity;
+        }
+        return projection;
     }
 
     private static function buildMaterialPlan(materials:Object, deltas:Object):Object {

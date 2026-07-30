@@ -4,14 +4,15 @@ var InventoryWorkbench = (function() {
 
     var _scaleEl, _scale, _shell, _root, _body, _buildHost, _storageActions, _buildActions;
     var _densityToggle, _helpAction;
-    var _density, _tuningHeader, _storageReady = false, _build = null;
-    var _profile, _view = 'storage', _panelInstanceId = '', _returnTarget = null;
+    var _density, _tuningHeader, _preparationMenu, _storageReady = false, _build = null;
+    var _profile, _view = 'storage', _panelInstanceId = '', _returnTarget = null, _navigation = null;
     var _nestedHostOwner = '';
     var _runtimeConfig = (typeof window !== 'undefined'
         && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _activationEpoch = 0;
     var _closing = false, _statsMode = false, _closeSent = false, _buttons = {};
     var _buildInteractionLocked = false, _buildLockReason = '';
+    var _preparationNavigationV1 = false;
 
     function toast(message) {
         if (typeof Toast !== 'undefined') Toast.add(message);
@@ -21,22 +22,6 @@ var InventoryWorkbench = (function() {
         return Panels.getActive
             ? Panels.getActive() === 'workbench'
             : Panels.isOpen();
-    }
-
-    function add(host, node) {
-        if (host && node) host.appendChild(node);
-        return node;
-    }
-
-    function button(id, label, handler) {
-        var node = document.createElement('button');
-        node.type = 'button';
-        node.className = 'workbench-mode-btn';
-        node.textContent = label;
-        node.setAttribute('data-header-action', id);
-        node.addEventListener('click', handler);
-        _buttons[id] = node;
-        return node;
     }
 
     function create() {
@@ -53,142 +38,102 @@ var InventoryWorkbench = (function() {
     function storageHeaderState() {
         return _storageReady
             ? InventoryStorageWorkbench.getHeaderState()
-            : {view:_view, confirmationMode:'safe', disabled:false};
+            : {view:_view, disabled:false};
+    }
+
+    function headerState() {
+        return {
+            shell:_shell,
+            root:_root,
+            profile:_profile,
+            view:_view,
+            statsMode:_statsMode,
+            storageActions:_storageActions,
+            buildActions:_buildActions,
+            storageState:storageHeaderState(),
+            storageReady:_storageReady,
+            returnTarget:!!_returnTarget,
+            buildAvailable:!!(_navigation && _navigation.canReturnTo('build')),
+            tuningHeader:_tuningHeader,
+            buttons:_buttons,
+            busy:_buildInteractionLocked,
+            reason:_buildLockReason,
+            preparationNavigationV1:_preparationNavigationV1,
+            preparationMenu:_preparationMenu,
+            helpAction:_helpAction,
+            densityToggle:_densityToggle,
+            buildHost:_buildHost,
+            onHelp:function() {
+                return (_view === 'build' || _statsMode) && _build
+                    ? _build.openHelp() : InventoryStorageWorkbench.openHelp();
+            }
+        };
     }
 
     function refreshHeader() {
-        var state = storageHeaderState();
-        if (_tuningHeader) _tuningHeader.update(state);
-        if (_buttons['return-build']) {
-            _buttons['return-build'].hidden = !_build || state.view !== 'storage';
-        }
+        InventoryWorkbenchHeader.renderWorkbenchHeader(
+            headerState(),
+            false);
     }
 
     function storageViewChanged(next) {
-        _view = next;
-        refreshHeader();
-        updateChrome();
+        if (_navigation && _navigation.storageChanged(next)) return;
+        toast('收到无效视图状态，请关闭工作台后重试。');
     }
 
     function updateChrome() {
         if (!_shell || !_profile) return;
-        _root.setAttribute('data-workbench-view', _statsMode ? 'stats' : _view);
-        _root.setAttribute('data-workbench-skin',
-            _view === 'build' || _view === 'tuning' || _statsMode ? 'character' : 'inventory');
-        _root.classList.toggle(
-            'character-build-shell',
-            _view === 'build' || _statsMode);
-        _root.querySelector('.workbench-header').classList.toggle(
-            'character-build-header',
-            _view === 'build' || _statsMode);
-        _storageActions.hidden = _view === 'build' || _statsMode;
-        _buildActions.hidden = _view !== 'build' && !_statsMode;
-        if (_statsMode) {
-            _shell.setTitle('个人信息', '角色档案 · 已应用构筑');
-        } else if (_view === 'build') {
-            _shell.setTitle('角色构筑', '装备与药剂 · 构筑预览');
-        } else if (_view === 'tuning') {
-            _shell.setTitle('装备调制', '背包装备 · DLS 调制终端');
-        } else {
-            _shell.setTitle(_profile.title, '');
-        }
-        _shell.setSlotLabel('R', _view === 'build' ? '候选对比'
-            : _view === 'tuning' ? '调制操作' : _profile.title);
-        syncHelp();
-        syncDensityToggle();
-    }
-
-    function syncHelp() {
-        if (!_helpAction || !_profile) return;
-        _helpAction.update({
-            ariaLabel:_statsMode || _view === 'build' ? '查看角色构筑帮助'
-                : _view === 'tuning' ? '查看装备调制帮助' : '查看' + _profile.title + '帮助',
-            disabled:(_view === 'storage' || _view === 'tuning') && !_storageReady,
-            onOpen:function() {
-                return (_view === 'build' || _statsMode) && _build
-                    ? _build.openHelp() : InventoryStorageWorkbench.openHelp();
-            }
-        });
-    }
-
-    function syncDensityToggle() {
-        if (!_densityToggle || !_storageActions) return;
-        var target = _view === 'build' && !_statsMode && _buildHost
-            ? _buildHost.querySelector(
-                '[data-build-subview="tuning"] .character-build-tuning-heading [data-build-density-mount]')
-                || _buildHost.querySelector(
-                    '.character-build-pane-tools [data-build-density-mount]') : null;
-        target = target || _storageActions;
-        if (_densityToggle.parentNode !== target) target.insertBefore(_densityToggle, target.firstChild);
+        InventoryWorkbenchHeader.renderWorkbenchHeader(
+            headerState(),
+            true);
     }
 
     function makeHeader() {
-        _storageActions = document.createElement('div');
-        _storageActions.className = 'inventory-workbench-mode-actions';
-        _buildActions = document.createElement('nav');
-        _buildActions.className = 'character-build-header-actions';
-        _buildActions.setAttribute('aria-label', '角色构筑视图');
-        _shell.addHeaderAction(_storageActions);
-        _shell.addHeaderAction(_buildActions);
-
-        add(_buildActions, button('storage', '收纳', function() {
-            requestView('storage');
-        }));
-        add(_buildActions, button('stats', '个人信息', function() {
-            if (_build) _build.openStats(_buttons.stats);
-        }));
-        add(_buildActions, button('skills', '技能配置', function() {
-            requestSkillsNavigation();
-        }));
-        add(_buildActions, button('back-build', '← 返回构筑', function() {
-            if (_build) _build.closeStats('back');
-        })).hidden = true;
-        add(_storageActions, button('return-build', '返回构筑', function() {
-            requestView('build');
-        })).hidden = true;
-
-        if (_returnTarget) {
-            var returnButton = add(
-                _storageActions,
-                button('return-panel', '返回合成', returnToPanel));
-            returnButton.classList.add('inventory-return-crafting-btn');
-            returnButton.setAttribute(
-                'aria-label',
-                '返回合成并重新核算原配方与份数');
-        }
-
-        _helpAction = new WorkbenchComponents.HelpAction({shell:_shell});
-        syncHelp();
-        var close = button('close', '×', function() {
-            requestClose('header');
+        var header = InventoryWorkbenchHeader.createWorkbenchHeader({
+            document:document, shell:_shell, returnTarget:!!_returnTarget,
+            components:WorkbenchComponents,
+            density:_density,
+            profile:_profile,
+            view:_view,
+            onStorage:function(event) {
+                requestView('storage', {
+                    origin:'header',
+                    opener:event && event.currentTarget || _buttons.storage
+                });
+            },
+            onStats:function() { if (_build) _build.openStats(_buttons.stats); },
+            onSkills:requestSkillsNavigation,
+            onBackBuild:function() { if (_build) _build.closeStats('back'); },
+            onReturnBuild:function(event) {
+                requestView('build', {
+                    origin:'header',
+                    opener:event && event.currentTarget || _buttons['return-build']
+                });
+            },
+            onReturnPanel:returnToPanel,
+            onClose:function() { requestClose('header'); },
+            preparationNavigationV1:_preparationNavigationV1,
+            preparationApi:typeof InventoryWorkbenchPreparationMenu !== 'undefined'
+                ? InventoryWorkbenchPreparationMenu : null,
+            uiData:typeof UiData !== 'undefined' ? UiData : null,
+            onPreparationSelect:selectPreparation,
+            onPreparationChange:refreshHeader,
+            onDensity:function(mode) {
+                if (_root) _root.setAttribute('data-layout-mode', mode);
+                if (_build) _build.setDensity(mode);
+            },
+            onTuningSwitch:function(next, opener) {
+                requestView(next, {origin:'header', opener:opener});
+            },
+            onBlocked:toast
         });
-        close.className = 'workbench-close-btn';
-        close.setAttribute('aria-label', '关闭工作台');
-        close.setAttribute('data-audio-cue', 'cancel');
-        _shell.addHeaderAction(close);
-
-        _densityToggle = _density.createToggle(function(mode) {
-            if (_root) _root.setAttribute('data-layout-mode', mode);
-            if (_build) _build.setDensity(mode);
-        });
-        _storageActions.insertBefore(_densityToggle, _storageActions.firstChild);
-
-        if (_profile.profile === 'battlebox') {
-            _tuningHeader = new InventoryWorkbenchHeader.TuningHeaderController({
-                document:document,
-                shell:{
-                    addHeaderAction:function(node) {
-                        add(_storageActions, node);
-                    }
-                },
-                view:_view,
-                confirmationMode:'safe',
-                onSwitch:requestView,
-                onConfirmationChange:function(mode) {
-                    InventoryStorageWorkbench.setConfirmationMode(mode, false);
-                }
-            });
-        }
+        _storageActions = header.storageActions;
+        _buildActions = header.buildActions;
+        _buttons = header.buttons;
+        _helpAction = header.helpAction;
+        _densityToggle = header.densityToggle;
+        _tuningHeader = header.tuningHeader;
+        _preparationMenu = header.preparationMenu;
     }
 
     function controllerPorts() {
@@ -199,7 +144,9 @@ var InventoryWorkbench = (function() {
             panelInstanceId:_panelInstanceId,
             densityController:_density,
             addHeaderAction:function(node) {
-                add(_storageActions, node);
+                if (_storageActions && node) {
+                    _storageActions.appendChild(node);
+                }
             },
             refreshHeader:refreshHeader,
             onViewChanged:storageViewChanged,
@@ -226,50 +173,65 @@ var InventoryWorkbench = (function() {
             getDensity:function() {
                 return _density.mode;
             },
-            syncDensityToggle:syncDensityToggle,
-            setStatus:function(text, state) {
-                _shell.setStatus(text, state);
-            },
+            syncDensityToggle:refreshHeader,
+            setStatus:function(text, state) { _shell.setStatus(text, state); },
             setInteractionLocked:function(locked, reason) {
                 _buildInteractionLocked = !!locked;
                 _buildLockReason = _buildInteractionLocked ? String(reason || '') : '';
-                for (var key in _buttons) {
-                    var explainable = key === 'storage' && _view === 'build';
-                    _buttons[key].disabled = _buildInteractionLocked && !explainable;
-                    if (explainable) {
-                        _buttons[key].setAttribute('aria-disabled',
-                            _buildInteractionLocked ? 'true' : 'false');
-                        _buttons[key].setAttribute('aria-label', _buildInteractionLocked
-                            ? '收纳，不可用：' + _buildLockReason : '收纳');
-                    }
+                if (_preparationMenu) {
+                    _preparationMenu.updateLock(
+                        _buildInteractionLocked,
+                        _buildLockReason);
                 }
+                refreshHeader();
             },
-            beginExternalWrite:function(owner) {
-                return _storageReady
-                    ? InventoryStorageWorkbench.beginExternalWrite(owner) : {detached:true};
+            beginExternalWrite:function(owner) { return _storageReady
+                ? InventoryStorageWorkbench.beginExternalWrite(owner) : {detached:true}; },
+            completeExternalWrite:function(operation, snapshots, callback, needsRefresh) {
+                if (operation && operation.detached === true) {
+                    if (callback) callback({success:true, refreshed:false});
+                    return true;
+                }
+                return _storageReady && InventoryStorageWorkbench.completeExternalWrite(
+                    operation, snapshots, callback, needsRefresh);
             },
-            completeExternalWrite:function(operation, snapshots) {
-                return operation && operation.detached === true ? true
-                    : _storageReady && InventoryStorageWorkbench.completeExternalWrite(
-                        operation, snapshots);
-            },
+            refreshExternalInventory:function(callback) { return !_storageReady ? (callback({success:true, refreshed:false}), true) : InventoryStorageWorkbench.refreshExternalInventory(callback); },
             requestClose:requestClose,
             statsMode:statsMode,
-            onMountFailed:function(panelInstanceId) {
-                rejectBuildMount(panelInstanceId, activationEpoch);
+            onSessionState:function(_, reason) {
+                if (reason === 'opened' || reason === 'snapshot') {
+                    setTimeout(function() {
+                        acceptBuildMount(_panelInstanceId, activationEpoch);
+                    }, 0);
+                }
+            },
+            onMountFailed:function(panelInstanceId, response) {
+                rejectBuildMount(panelInstanceId, activationEpoch, response);
             },
             openModal:function(spec) {
+                if (_preparationMenu) _preparationMenu.close(false);
                 return _shell.openModal(spec);
             },
-            toast:toast
+            toast:function(message, command) {
+                if (command === 'snapshot') rejectBuildMount(
+                    _panelInstanceId, activationEpoch);
+                toast(message);
+            }
         };
+    }
+
+    function acceptBuildMount(panelInstanceId, activationEpoch) {
+        if (activationEpoch !== _activationEpoch
+                || String(panelInstanceId || '') !== _panelInstanceId) return;
+        if (_navigation) _navigation.buildReady();
     }
 
     function rejectBuildMount(panelInstanceId, activationEpoch) {
         setTimeout(function() {
-            if (activationEpoch === _activationEpoch
-                    && String(panelInstanceId || '') === _panelInstanceId
-                    && Panels.rejectActiveMount) {
+            if (activationEpoch !== _activationEpoch
+                    || String(panelInstanceId || '') !== _panelInstanceId) return;
+            if (_navigation && _navigation.buildFailed()) return;
+            if (Panels.rejectActiveMount) {
                 Panels.rejectActiveMount('workbench', _panelInstanceId);
             }
         }, 0);
@@ -291,61 +253,45 @@ var InventoryWorkbench = (function() {
         return _build;
     }
 
-    function showBuild() {
-        _body.hidden = true;
-        _buildHost.hidden = false;
-        _view = 'build';
-        updateChrome();
-        var activated = ensureBuild().activate(_buildHost, _panelInstanceId);
-        syncDensityToggle();
-        return activated;
+    function createNavigation(viewStack) {
+        _navigation = InventoryWorkbenchNavigation.create({
+            document:document,
+            getRoot:function() { return _root; },
+            stack:viewStack,
+            view:_view,
+            storage:InventoryStorageWorkbench,
+            ensureStorage:ensureStorage,
+            storageReady:function() { return _storageReady; },
+            ensureBuild:ensureBuild,
+            getBuild:function() { return _build; },
+            body:_body,
+            buildHost:_buildHost,
+            panelInstanceId:_panelInstanceId,
+            getView:function() { return _view; },
+            onView:function(next) {
+                _view = next;
+                refreshHeader();
+                updateChrome();
+            },
+            toast:toast
+        });
     }
 
-    function showStorage() {
-        if (_build) _build.suspend();
-        _buildHost.hidden = true;
-        _body.hidden = false;
-        if (!ensureStorage('storage')) return false;
-        _view = InventoryStorageWorkbench.getView();
-        updateChrome();
-        return true;
-    }
-
-    function requestView(next) {
+    function requestView(next, options) {
+        if (_preparationMenu) _preparationMenu.close(false);
+        if (_navigation && _navigation.rejectIfPending()) return false;
         if (_buildInteractionLocked && _view === 'build') {
-            if (next === 'storage') toast(_buildLockReason
-                || '构筑操作完成前不能进入收纳。');
+            if (next === 'storage' || next === 'tuning') toast(_buildLockReason
+                || (next === 'storage' ? '构筑操作完成前不能进入收纳。' : '构筑操作完成前不能进入背包装备调制。'));
             return false;
         }
-        if (_closing
-                || (next !== 'storage' && next !== 'tuning' && next !== 'build')
-                || next === _view) {
-            return false;
-        }
-        if (next === 'build') {
-            if (!_build || !_storageReady || !_build.canLeave()) return false;
-            return InventoryStorageWorkbench.prepareLeave(
-                'build',
-                function(ready) {
-                    if (ready) showBuild();
-                });
-        }
-        if (_view === 'build') {
-            return next === 'storage' && !!_build.prepareLeave(function(ready) {
-                if (ready) showStorage();
-            });
-        }
-        return _storageReady
-            ? InventoryStorageWorkbench.switchView(next)
-            : ensureStorage(next);
+        return !!(!_closing && _navigation && _navigation.request(next, options));
     }
 
     function statsMode(activeStats, statsRoot, opener) {
         var header = _root.querySelector('.workbench-header');
+        if (_preparationMenu) _preparationMenu.close(false);
         _statsMode = !!activeStats;
-        _buttons.storage.hidden = _statsMode;
-        _buttons.stats.hidden = _buttons.skills.hidden = _statsMode;
-        _buttons['back-build'].hidden = !_statsMode;
         if (_statsMode) statsRoot.insertBefore(header, statsRoot.firstChild);
         else _root.insertBefore(header, _root.firstChild);
         updateChrome();
@@ -400,27 +346,59 @@ var InventoryWorkbench = (function() {
         return !!callId;
     }
 
-    function requestSkillsNavigation() {
+    function requestPreparationNavigation(reason) {
         if (_view !== 'build' || !_build || _closing) return false;
         if (_buildInteractionLocked) {
-            toast(_buildLockReason || '构筑操作完成前不能切换到技能配置。');
+            toast(_buildLockReason || '构筑操作完成前不能切换整备目标。');
             return false;
         }
-        if (_statsMode) _build.closeStats('navigate_skills');
-        return requestClose('navigate_skills');
+        if (_statsMode) _build.closeStats(reason);
+        return requestClose(reason);
+    }
+
+    function requestSkillsNavigation() {
+        return requestPreparationNavigation('navigate_skills');
+    }
+
+    function selectPreparation(identity, opener) {
+        switch (identity) {
+        case 'equipment': return false;
+        case 'battlebox': return requestView(
+            'storage', {origin:'preparation-menu',
+                opener:_preparationMenu && _preparationMenu.trigger || opener});
+        case 'tuning': return requestView(
+            'tuning', {origin:'preparation-menu',
+                opener:_preparationMenu && _preparationMenu.trigger || opener});
+        case 'skills': return requestSkillsNavigation();
+        case 'materials': return requestPreparationNavigation('navigate_materials');
+        case 'intelligence': return requestPreparationNavigation('navigate_intelligence');
+        default: return false;
+        }
     }
 
     function requestClose(reason) {
+        if (reason === 'escape' && _preparationMenu
+                && _preparationMenu.consumeEscape()) return true;
+        if (_preparationMenu) _preparationMenu.close(false);
         if (_closing) return false;
+        if (_navigation && _navigation.rejectIfPending()) return false;
         if (_shell && _shell.hasModal()) {
             return _shell.closeModal(reason || 'close');
-        }
-        if (reason === 'escape' && _build && _view !== 'build') {
-            return requestView('build');
         }
         if (reason === 'escape' && _view === 'build'
                 && _build && _build.consumeEscape()) {
             return true;
+        }
+        if (reason === 'escape' && _view !== 'build'
+                && InventoryStorageWorkbench.consumeEscape()) return true;
+        var returnPlan = reason === 'escape' && _navigation
+            ? _navigation.returnPlan('escape') : null;
+        if (returnPlan) {
+            return requestView(returnPlan.entry.viewId, {
+                origin:'escape',
+                opener:document.activeElement,
+                plan:returnPlan
+            });
         }
         if (_storageReady && _view !== 'build') {
             return InventoryStorageWorkbench.prepareClose(reason, function(ready) {
@@ -436,11 +414,13 @@ var InventoryWorkbench = (function() {
         if (_storageReady) InventoryStorageWorkbench.deactivate();
         if (_build) _build.destroy();
         if (_tuningHeader) _tuningHeader.destroy();
+        if (_preparationMenu) _preparationMenu.destroy();
         if (_density) _density.destroy();
         if (_scale) _scale.detach();
         if (_helpAction) _helpAction.destroy();
         if (_shell) _shell.destroy();
         _storageReady = false; _build = null; _tuningHeader = null;
+        _preparationMenu = null;
         _density = null; _densityToggle = null; _helpAction = null; _scale = null;
         _shell = null; _root = null; _body = null; _buildHost = null;
         _closing = false;
@@ -448,8 +428,11 @@ var InventoryWorkbench = (function() {
         _buttons = {};
         _buildInteractionLocked = false;
         _buildLockReason = '';
+        _preparationNavigationV1 = false;
         _profile = null;
         _view = 'storage';
+        if (_navigation) _navigation.destroy();
+        _navigation = null;
         _panelInstanceId = '';
         _returnTarget = null;
         _nestedHostOwner = '';
@@ -467,11 +450,20 @@ var InventoryWorkbench = (function() {
         }
         _profile = launch.profile;
         _view = launch.view;
+        _preparationNavigationV1 = launch.preparationNavigationV1;
+        var viewStack = new InventoryWorkbenchConfig.WorkbenchViewStack({
+            viewId:_view, origin:'launch',
+            returnTarget:launch.returnTarget ? 'crafting' : 'game',
+            focusKey:launch.returnFocusAction
+                ? 'header:' + launch.returnFocusAction : ''
+        });
         _panelInstanceId = launch.panelInstanceId;
         _returnTarget = launch.returnTarget;
         _nestedHostOwner = launch.hostOwner === 'crafting' ? 'crafting' : '';
         _closeSent = false;
         _shell = new Workbench.DualPaneShell({
+            profile:_view === 'build' ? 'character-build'
+                : _view === 'tuning' ? 'library-decision' : 'transfer-pair',
             title:_profile.title,
             status:'同步中',
             leftLabel:'背包',
@@ -495,14 +487,19 @@ var InventoryWorkbench = (function() {
         });
         _root.setAttribute('data-layout-mode', _density.mode);
         makeHeader();
+        createNavigation(viewStack);
         _scale = typeof PanelScale !== 'undefined'
             ? PanelScale.attach(_scaleEl, 1024, 576)
             : null;
         var mounted = _view === 'build'
-            ? showBuild()
+            ? _navigation.mountInitialBuild()
             : ensureStorage(_view);
         updateChrome();
-        if (mounted !== false && _view === 'build' && initData.returnFocusAction === 'skills') _buttons.skills.focus();
+        if (mounted !== false && _view === 'build') {
+            if (launch.returnFocusAction === 'skills') _buttons.skills.focus();
+            else if (launch.returnFocusAction === 'preparation-menu'
+                    && _preparationMenu) _preparationMenu.focusTrigger();
+        }
         return mounted !== false;
     }
 
@@ -543,6 +540,8 @@ var InventoryWorkbench = (function() {
                     initData:_returnTarget.initData
                 }
                 : null;
+            state.viewStack = _navigation ? _navigation.snapshot() : [];
+            state.viewTransition = _navigation ? _navigation.debugState() : null;
             return state;
         }
     };

@@ -191,6 +191,10 @@ var LootPanel = (function() {
             },
             onRequestDiscard:requestOrganizerDiscard,
             onBack:function() { requestOrganizerReturn(); return false; },
+            onHelp:function(event) {
+                if (_view) _view.openHelp(event && event.currentTarget);
+            },
+            onClose:function() { requestOrganizerReturn(true); return false; },
             onRetry:retryOrganizerInventory,
             onPageResult:function(result) {
                 if (!result || !result.success) toast('战备箱翻页失败。');
@@ -348,7 +352,7 @@ var LootPanel = (function() {
             else if (completedWithBlocks)
                 toast('已收取所有可放入物品；仍有 '
                 +state.remainingCount+' 个物品因背包或容量限制保留。');
-            else toast('权威箱内仍有未遍历物品，已停止全部收取，请人工核对。');
+            else toast('箱内仍有未遍历物品，已停止全部收取，请人工核对。');
             return;
         }
         var checkpoint={
@@ -378,7 +382,7 @@ var LootPanel = (function() {
             // another write; otherwise a future protocol drift could replay claims forever.
             if (!claimAllAdvanced(checkpoint)) {
                 stopClaimAll();
-                toast('权威领取结果未推进，已停止全部收取，请人工核对。');
+                toast('领取结果没有变化，已停止全部收取，请人工核对。');
                 return;
             }
             scheduleClaimAllDrain();
@@ -433,14 +437,14 @@ var LootPanel = (function() {
         });
     }
 
-    function requestOrganizerReturn() {
+    function requestOrganizerReturn(closePanel) {
         if (!_organizerActive||!_organizer||!_inventoryCoordinator) return false;
         if (_organizerReturning) {
             toast('正在重新核对当前箱子，请稍候。');
             return false;
         }
         if (_inventoryState.busyOwner) {
-            toast('库存写入或对账仍在进行，完成前不能返回战利品。');
+            toast('库存操作或结果核对仍在进行，完成前不能返回战利品。');
             return false;
         }
         if (_inventoryState.refreshRequired) {
@@ -462,7 +466,7 @@ var LootPanel = (function() {
                 render();
                 var state=_model&&_model.debugState();
                 if (state&&state.phase==='active')
-                    toast('当前箱子重新同步失败；仍停留在整理页，不会重放领取。');
+                    toast('当前箱子重新同步失败；仍停留在整理页，不会再次提交领取。');
                 return;
             }
             _claimAllBlockedSlots={};
@@ -474,6 +478,7 @@ var LootPanel = (function() {
             _inventoryCoordinator.close();
             render();
             toast('库存与当前箱子已重新同步，可以继续领取。');
+            if (closePanel) requestClose();
         });
         if (!accepted) {
             _organizerReturning=false;
@@ -523,7 +528,7 @@ var LootPanel = (function() {
         if (_organizerActive) { requestOrganizerReturn();return; }
         var state=_model&&_model.debugState();
         if (!state||state.phase==='opening') {
-            toast('正在读取权威箱子状态，请稍候。');
+            toast('正在读取箱子内容，请稍候。');
             return;
         }
         if (state.phase==='write_pending'||_claimAll) {
@@ -546,7 +551,7 @@ var LootPanel = (function() {
         var state=_model&&_model.debugState();
         if (!state||state.phase!=='active'||state.remainingCount<=0||_claimAll
                 ||_organizerActive||_organizerReturning) {
-            toast('当前不能永久放弃；请先完成正在进行的操作或权威核对。');
+            toast('当前不能永久放弃；请先完成正在进行的操作或结果核对。');
             return;
         }
         if (_view) _view.openAbandon(state.remainingCount,function(){commitClose(true);});
@@ -555,12 +560,12 @@ var LootPanel = (function() {
     function commitClose(abandon) {
         if (!_model||!_model.close(abandon,function(success,response){
             if (!success) toast(writeFailureMessage(response));
-        })) toast('当前无法结束箱子会话，请先完成权威核对。');
+        })) toast('当前无法结束箱子会话，请先完成结果核对。');
     }
     function writeFailureMessage(response) {
         var state=_model&&_model.debugState();
         if (state&&state.phase==='reconcile_required')
-            return '本次操作结果尚未由权威状态证明，请先重新核对；不会自动重试。';
+            return '本次操作结果尚未由游戏中的实际结果确认，请先重新核对；不会自动重试。';
         return LootView.errorMessage(response&&response.error);
     }
     function reconcile() {
@@ -570,8 +575,8 @@ var LootPanel = (function() {
         }
         if (!_model||!_model.query(function(success,response){
             if (!success) toast(LootView.errorMessage(response&&response.error||'stale_reconcile'));
-            else toast('已取得越过未知操作的权威状态。');
-        })) toast('当前没有可执行的对账查询，或查询仍在进行。');
+            else toast('已取得包含上一次操作的最新状态。');
+        })) toast('当前没有可执行的结果查询，或查询仍在进行。');
     }
     function render() {
         if (!_view||!_model) return;

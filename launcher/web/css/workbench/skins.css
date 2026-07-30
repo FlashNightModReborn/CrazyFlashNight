@@ -364,7 +364,6 @@
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-view-title { color:#e7e7e7; font-family:var(--wb-serif); font-size:17px; letter-spacing:1px; text-shadow:2px 2px 3px rgba(0,0,0,.55); }
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-view-meta { color:#a5a5a5; }
 .kshop-workbench[data-workbench-skin="inventory"] .workbench-grid-container { background:rgba(4,4,5,.62); }
-.kshop-workbench[data-workbench-skin="inventory"] .inventory-owned-grid { scrollbar-color:rgba(230,230,230,.32) rgba(255,255,255,.025); }
 .kshop-workbench[data-workbench-skin="inventory"] .inventory-slot-card {
     color:#c9c9c9;
     background:rgba(6,7,8,.76);
@@ -405,7 +404,6 @@
 /* ── Player-facing density: technical labels stay out of the visual hierarchy. ── */
 .kshop-workbench {
     --workbench-header-height:48px;
-    grid-template-rows:48px minmax(0,1fr);
 }
 .kshop-workbench .workbench-header {
     gap:10px;
@@ -456,7 +454,6 @@
 .kshop-workbench .workbench-close-btn,
 .kshop-workbench .kshop-close-btn { width:30px; height:30px; font-size:19px; line-height:27px; }
 .kshop-workbench .workbench-body {
-    grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr);
     gap:6px;
     padding:8px;
 }
@@ -485,7 +482,7 @@
 .kshop-workbench .inventory-discard-btn {
     opacity:0;
     pointer-events:none;
-    transition:opacity .1s;
+    transition:opacity var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .kshop-workbench .inventory-slot-card.workbench-source-selected .inventory-discard-btn,
 .kshop-workbench .inventory-slot-card:focus-within .inventory-discard-btn,
@@ -545,25 +542,19 @@
 .kshop-workbench .kshop-cart-drop-target.has-items .kshop-drop-glyph { font-size:17px; }
 .kshop-workbench .kshop-cart-drop-target.has-items .kshop-drop-copy small { display:none; }
 
-@media (prefers-reduced-motion:reduce) {
-    .kshop-workbench[data-workbench-skin] * { transition-duration:.001s !important; }
-}
-
 /* K 点商城二级结算：权威预览后原子扣款并直接交付；旧待领取仅兼容历史存档。 */
 .kshop-settling .workbench-body { visibility:hidden; pointer-events:none; }
 .kshop-settlement-page {
-    position:absolute; z-index:8; top:var(--workbench-header-height,48px); right:0; bottom:0; left:0; display:none;
     grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     color:#e6f4f7; background:linear-gradient(135deg,#050b0d,#070b0c 72%); border-top:1px solid rgba(var(--dls-crystal-rgb),.18);
 }
-.kshop-settlement-page.active { display:grid; }
 .kshop-settlement-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid rgba(var(--dls-crystal-rgb),.16); }
 .kshop-settlement-header button,.kshop-settlement-summary > button,.kshop-settlement-stepper > button {
     color:#8be0f1; border:1px solid rgba(var(--dls-crystal-rgb),.38); background:#050b0d; font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .kshop-settlement-header button { min-height:28px; padding:3px 10px; }
 .kshop-settlement-header h2 { margin:0; color:#e6f9ff; font-size:18px; }
-.kshop-settlement-header p { margin:2px 0 0; color:#5a7a85; font-size:9px; }
+.kshop-settlement-header p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
 .kshop-settlement-body { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(220px,.8fr); gap:10px; min-height:0; padding:9px 0; }
 .kshop-settlement-body > section,.kshop-settlement-ledger { min-height:0; border:1px solid rgba(var(--dls-crystal-rgb),.15); background:rgba(8,13,13,.88); }
 .kshop-settlement-body > section { display:grid; grid-template-rows:auto minmax(0,1fr); }
@@ -594,8 +585,6 @@
 .kshop-settlement-inspect:hover,
 .kshop-settlement-inspect:focus-visible {
     color:#a6f0ff;
-    outline:1px solid rgba(var(--dls-crystal-rgb),.5);
-    outline-offset:2px;
 }
 .kshop-settlement-inspect:disabled { color:#78858a; cursor:default; }
 .kshop-settlement-copy small { color:#ffd367; font:10px Consolas,monospace; }
@@ -604,14 +593,14 @@
 .kshop-settlement-stepper .workbench-quantity-control { flex:1 1 193px; width:193px; }
 .kshop-settlement-stepper > b { min-width:20px; text-align:center; font:11px Consolas,monospace; }
 .kshop-settlement-stepper > button { width:24px; height:24px; padding:0; }
-.kshop-settlement-stepper > button.wide { width:auto; min-width:45px; padding:0 5px; font-size:9px; }
+.kshop-settlement-stepper > button.wide { width:auto; min-width:45px; padding:0 5px; font-size:11px; }
 .kshop-settlement-stepper > button.remove { color:#e98888; border-color:#713f45; background:#211315; }
 .kshop-settlement-header button:hover,.kshop-settlement-summary > button:hover:not(:disabled),.kshop-settlement-stepper > button:hover:not(:disabled) { color:#050b0d; border-color:#a6f0ff; background:var(--dls-crystal); }
 .kshop-settlement-stepper > button:disabled,.kshop-settlement-summary > button:disabled { opacity:.35; cursor:not-allowed; }
 .kshop-settlement-ledger { display:flex; flex-direction:column; }
 .kshop-settlement-ledger [data-kshop-settlement-ledger] { display:grid; gap:7px; padding:12px; }
 .kshop-settlement-ledger [data-kshop-settlement-ledger] > div { display:flex; align-items:center; justify-content:space-between; padding-bottom:7px; border-bottom:1px solid rgba(var(--dls-crystal-rgb),.09); }
-.kshop-settlement-ledger span { color:#5a7a85; font-size:9px; }
+.kshop-settlement-ledger span { color:var(--wb-muted); font-size:10px; }
 .kshop-settlement-ledger strong { color:#ffd367; font:700 14px Consolas,monospace; }
 .kshop-settlement-ledger .kshop-settlement-balance strong { color:var(--dls-crystal); }
 .kshop-settlement-ledger .kshop-settlement-balance.negative strong { color:#e77d7d; }
@@ -649,9 +638,9 @@
 .item-filter-catalog .item-filter-option:focus-visible,
 .item-filter-option.item-filter-control:hover,
 .item-filter-option.item-filter-control:focus-visible {
-    color:var(--item-filter-hover-text,#f3d3a4);
-    border-color:var(--item-filter-hover-border,#9b7040);
-    background:var(--item-filter-hover-bg,#171b20); outline:none;
+    color:var(--item-filter-hover-text,var(--wb-text));
+    border-color:var(--item-filter-hover-border,var(--wb-focus));
+    background:var(--item-filter-hover-bg,var(--wb-surface-2));
 }
 .item-filter-catalog .item-filter-option.active,
 .item-filter-option.item-filter-control.active {
@@ -720,14 +709,14 @@
 .npcshop-owned-grid .inventory-slot-card .inventory-slot-name { max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .npcshop-owned-grid .inventory-slot-card.read-only { cursor:default; }
 .npcshop-bag-view .workbench-view-title { display:flex; align-items:baseline; gap:7px; min-width:0; }
-.npcshop-selection-hint { min-width:0; overflow:hidden; color:#818892; font:400 9px/1.2 "Microsoft YaHei",sans-serif; white-space:nowrap; text-overflow:ellipsis; }
+.npcshop-selection-hint { min-width:0; overflow:hidden; color:var(--wb-muted); font:400 10px/1.25 "Microsoft YaHei",sans-serif; white-space:nowrap; text-overflow:ellipsis; }
 .npcshop-bag-toolbar { display:block; min-width:0; width:100%; }
 .npcshop-bag-toolbar .inventory-filter-control { display:block; grid-area:auto; min-width:0; width:100%; }
 .npcshop-bag-toolbar .inventory-filter-navigator { width:100%; min-height:23px; max-height:52px; overflow-y:auto; scrollbar-width:thin; }
 .inventory-filter-control.popover.tree { position:relative; overflow:visible; }
 .inventory-filter-tree-trigger {
     position:relative; min-width:0; width:100%; height:24px; padding:0 22px 0 7px; overflow:hidden;
-    color:#c8cfd6; border:1px solid #3a424b; background:#0c1014; font:9px/22px "Microsoft YaHei",sans-serif;
+    color:var(--wb-text); border:1px solid var(--wb-line); background:var(--wb-bg); font:11px/22px "Microsoft YaHei",sans-serif;
     text-align:left; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;
 }
 .inventory-filter-tree-trigger::after { content:'▾'; position:absolute; top:0; right:7px; color:#dba454; }
@@ -750,11 +739,9 @@
 .npcshop-settling .workbench-body,
 .npcshop-helping .workbench-body { visibility:hidden; pointer-events:none; }
 .npcshop-settlement-page {
-    position:absolute; z-index:8; top:var(--workbench-header-height,48px); right:0; bottom:0; left:0; display:none;
     grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     color:#e8ebee; background:linear-gradient(135deg,#0d1014,#090b0e 70%); border-top:1px solid #292e35;
 }
-.npcshop-settlement-page.active { display:grid; }
 .npcshop-settlement-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
 .npcshop-settlement-header button,.npcshop-settlement-summary > button,.npcshop-stepper > button {
     color:#e9b96d; border:1px solid #68502e; background:#1c1710; font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
@@ -762,7 +749,7 @@
 .npcshop-settlement-header button { min-height:28px; padding:3px 10px; }
 .npcshop-settlement-header [data-trade-help] { margin-left:auto; min-width:28px; padding-right:7px; padding-left:7px; }
 .npcshop-settlement-header h2 { margin:0; font-size:18px; }
-.npcshop-settlement-header p { margin:2px 0 0; color:#818892; font-size:9px; }
+.npcshop-settlement-header p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
 .npcshop-settlement-columns { display:grid; grid-template-columns:1fr 1fr; gap:10px; min-height:0; padding:9px 0; }
 .npcshop-settlement-columns > section { display:grid; grid-template-rows:auto minmax(0,1fr); min-height:0; border:1px solid #292e35; background:#0d1014; }
 .npcshop-settlement-columns h3 { margin:0; padding:6px 9px; color:#b8bdc4; border-bottom:1px solid #292e35; font-size:11px; }
@@ -775,7 +762,7 @@
 .npcshop-stepper .workbench-quantity-control { flex:1 1 193px; width:193px; }
 .npcshop-stepper b { text-align:center; font:11px Consolas,monospace; }
 .npcshop-stepper > button { width:22px; height:23px; padding:0; }
-.npcshop-stepper > button.wide { width:auto; min-width:47px; padding:0 5px; font-size:9px; }
+.npcshop-stepper > button.wide { width:auto; min-width:47px; padding:0 5px; font-size:11px; }
 .npcshop-settlement-copy em { color:#858d96; font:normal 10px/1.35 "Microsoft YaHei",sans-serif; }
 .npcshop-stepper > button:hover:not(:disabled),.npcshop-settlement-header button:hover,.npcshop-settlement-summary > button:hover:not(:disabled) { color:#17191c; background:#e5a64d; border-color:#f4ca88; }
 .npcshop-stepper > button:disabled,.npcshop-settlement-summary > button:disabled { opacity:.35; cursor:not-allowed; }
@@ -790,6 +777,8 @@
 .npcshop-settlement-summary [data-trade-error].error { color:#df7f7f; }
 .npcshop-settlement-summary > button { min-width:104px; min-height:40px; padding:4px 13px; }
 
+/* Explicit nested-page exception: this organizer is anchored inside settlement,
+   so its local inset/z-index/display contract must not be promoted to shell pages. */
 .npcshop-space-page {
     position:absolute; z-index:4; inset:0; display:none; grid-template-rows:auto minmax(0,1fr);
     min-height:0; padding:10px 14px 12px; box-sizing:border-box; background:linear-gradient(135deg,#0d1014,#090b0e 70%);
@@ -798,8 +787,8 @@
 .npcshop-space-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
 .npcshop-space-header button { min-height:28px; padding:3px 10px; color:#e9b96d; border:1px solid #68502e; background:#1c1710; cursor:pointer; }
 .npcshop-space-header h2 { margin:0; font-size:18px; }
-.npcshop-space-header p { margin:2px 0 0; color:#818892; font-size:9px; }
-.npcshop-space-header [data-space-status] { margin-left:auto; color:#d7aa67; font-size:9px; }
+.npcshop-space-header p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
+.npcshop-space-header [data-space-status] { margin-left:auto; color:var(--wb-accent); font-size:10px; }
 .npcshop-space-columns { display:grid; grid-template-columns:1fr 1fr; gap:10px; min-height:0; padding-top:9px; }
 .npcshop-space-columns > section { display:grid; grid-template-rows:auto minmax(0,1fr); min-height:0; border:1px solid #292e35; background:#0d1014; }
 .npcshop-space-columns h3 { display:flex; align-items:center; gap:8px; min-height:29px; margin:0; padding:4px 8px; box-sizing:border-box; color:#b8bdc4; border-bottom:1px solid #292e35; font-size:11px; }
@@ -822,16 +811,14 @@
 .npcshop-space-grid::-webkit-scrollbar-thumb { background:#705a3c; border:1px solid #a47d43; }
 
 .npcshop-help-page {
-    position:absolute; z-index:12; top:var(--workbench-header-height,48px); right:0; bottom:0; left:0; display:none;
     grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     color:#e8ebee; background:linear-gradient(135deg,#101318,#090b0e 72%); border-top:1px solid #292e35;
 }
-.npcshop-help-page.active { display:grid; }
 .npcshop-help-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
 .npcshop-help-header button { min-height:28px; padding:3px 10px; color:#e9b96d; border:1px solid #68502e; background:#1c1710; cursor:pointer; }
 .npcshop-help-header button:hover { color:#17191c; border-color:#f4ca88; background:#e5a64d; }
 .npcshop-help-header h2 { margin:0; font-size:18px; }
-.npcshop-help-header p { margin:2px 0 0; color:#818892; font-size:9px; }
+.npcshop-help-header p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
 .npcshop-help-grid {
     display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:8px;
     min-height:0; padding:9px 0; overflow:hidden;
@@ -843,7 +830,7 @@
 }
 .npcshop-help-index { color:#e5a64d; font:700 21px/1 Consolas,monospace; opacity:.9; }
 .npcshop-help-card h3 { margin:0 0 5px; color:#edf0f2; font-size:12px; }
-.npcshop-help-card p { margin:0; color:#b1b7be; font-size:9px; line-height:1.55; }
+.npcshop-help-card p { margin:0; color:var(--wb-text); font-size:10px; line-height:1.55; }
 .npcshop-help-card small { display:block; margin-top:4px; color:#727a83; font-size:10px; line-height:1.45; }
 .npcshop-help-flow { display:flex; align-items:center; gap:7px; margin-top:8px; }
 .npcshop-help-flow i { padding:3px 7px; color:#e6b66b; border:1px solid #59462c; background:#19150f; font:normal 10px "Microsoft YaHei",sans-serif; }

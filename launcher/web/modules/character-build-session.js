@@ -619,6 +619,9 @@
 
     CharacterBuildSession.prototype.getSnapshot = function() { return this._snapshot; };
     CharacterBuildSession.prototype.getState = function() { return this._state; };
+    CharacterBuildSession.prototype.getSessionGeneration = function() {
+        return this._sessionGeneration;
+    };
     CharacterBuildSession.prototype.debugState = function() {
         return {
             state:this._state,

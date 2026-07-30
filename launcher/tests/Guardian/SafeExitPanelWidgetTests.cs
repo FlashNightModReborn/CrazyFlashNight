@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
@@ -48,11 +49,44 @@ namespace CF7Launcher.Tests.Guardian
             Control anchor = new Control();
             SafeExitPanelWidget w = new SafeExitPanelWidget(anchor, router);
             w.ForceGameReady(true);
+            // 模拟 NativeHudOverlay 的唯一组合 owner：每次 transaction demand 变化后
+            // 重新计算一次，并把同一个投影送回 widget。
+            w.BoundsOrVisibilityChanged += delegate
+            {
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(null, w);
+            };
             router.OnSafeExitArm = w.Arm;
             router.OnSafeExitSendFailed = w.FailAttempt;
             router.TryConsumeSafeExitConfirm =
                 w.TryAuthorizeExitConfirm;
             return w;
+        }
+
+        [Fact]
+        public void ArmedWithoutCompositionOwner_HasNoVisualGeometryOrHitBox()
+        {
+            Capture cap = new Capture();
+            LauncherCommandRouter router = MakeRouter(cap);
+            SafeExitPanelWidget w = new SafeExitPanelWidget(new Control(), router);
+            w.ForceGameReady(true);
+
+            w.Arm();
+
+            Assert.True(w.RequestsTransactionDecision);
+            Assert.Equal(RightContextSlotOwner.Hidden, w.SlotOwnerForTest);
+            Assert.False(w.Visible);
+            Assert.False(w.PaintsTransactionDecisionForTest);
+            Assert.False(w.SlotHitBoxActiveForTest);
+            Assert.Equal(Rectangle.Empty, w.ScreenBounds);
+            Assert.False(w.TryHitTest(Point.Empty));
+
+            w.ApplySlotOwner(RightContextSlotOwner.TransactionDecision);
+            Assert.True(w.Visible);
+            Assert.True(w.PaintsTransactionDecisionForTest);
+
+            w.ApplySlotOwner(RightContextSlotOwner.ActionableNotice);
+            Assert.False(w.Visible);
+            Assert.False(w.SlotHitBoxActiveForTest);
         }
 
         private static IReadOnlyDictionary<string, string> Snapshot(params string[] kvPieces)

@@ -26,7 +26,15 @@ REQUIRED_ITEM_HELMET_FLAGS = {
     "剑圣头部装甲": True,
     "锐刻幻影夜视仪": False,
 }
-BATTLE_STATES = ("空手站立", "长枪站立", "手枪站立", "手枪2站立", "双枪站立", "兵器站立")
+BATTLE_STATES = (
+    "空手站立",
+    "长枪站立",
+    "手枪站立",
+    "手枪2站立",
+    "双枪站立",
+    "兵器站立",
+    "手雷站立",
+)
 BATTLE_REQUIRED_FIELDS = {
     "空手站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具"),
     "长枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "长枪_装扮"),
@@ -34,6 +42,7 @@ BATTLE_REQUIRED_FIELDS = {
     "手枪2站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪2_装扮"),
     "双枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮", "手枪2_装扮"),
     "兵器站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "刀_装扮"),
+    "手雷站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手雷_装扮"),
 }
 
 
@@ -451,6 +460,49 @@ def assert_compat_alias_audit(manifest: dict[str, Any], report: dict[str, Any], 
     assert_audit_references(manifest, failures, "compatAliasAudit", audit_entries, bool(audit_entries))
 
 
+def assert_same_gender_basic_fallback(
+    manifest: dict[str, Any],
+    report: dict[str, Any],
+    failures: list[str],
+) -> None:
+    skin_keys = manifest.get("skinKeys") or {}
+    counts = report.get("counts") or {}
+    auto_aliases = {
+        key: skin
+        for key, skin in skin_keys.items()
+        if (skin.get("compatAlias") or {}).get("mode") == "auto_opposite_gender"
+    }
+    if auto_aliases:
+        failures.append(
+            f"automatic opposite-gender aliases must be disabled: {list(auto_aliases)[:8]}"
+        )
+    if int(counts.get("autoOppositeGenderCompatAliasSkinKeys") or 0) != 0:
+        failures.append(
+            "report counts.autoOppositeGenderCompatAliasSkinKeys should be 0"
+        )
+
+    item = (manifest.get("items") or {}).get("米色高腰背心") or {}
+    female_fields = (item.get("fieldsByGender") or {}).get("女") or {}
+    missing_audit = ((report.get("missingSourceAudit") or {}).get("entries") or {})
+    for field in ("上臂", "左下臂", "右下臂"):
+        expected_key = f"女变装-米色高腰背心{field}"
+        if female_fields.get(field) != expected_key:
+            failures.append(
+                f"米色高腰背心 female {field} key mismatch: {female_fields.get(field)}"
+            )
+            continue
+        skin = skin_keys.get(expected_key) or {}
+        if skin.get("covered") is not False or skin.get("export") or skin.get("compatAlias"):
+            failures.append(
+                f"{expected_key} should use uncovered same-gender holder basic fallback"
+            )
+        audit_entry = missing_audit.get(expected_key) or {}
+        if audit_entry.get("reason") != "opposite_gender_only":
+            failures.append(
+                f"{expected_key} missing audit should identify opposite_gender_only"
+            )
+
+
 _TORSO_FIELD = "身体"
 # 躯干皮绝不可贴到四肢。左右对称肢体共用同一 PNG（如武装jk 的 mirrored_limb）合法，故只查
 # 躯干 vs 臂/手，不查肢体互等。根因见 bake-dressup-offline 删掉的 same_item_body_fallback。
@@ -548,6 +600,7 @@ def main() -> None:
     assert_attack_mode_runtime_variant(manifest, failures)
     assert_missing_source_references(manifest, report, failures)
     assert_compat_alias_audit(manifest, report, failures)
+    assert_same_gender_basic_fallback(manifest, report, failures)
     assert_torso_png_not_on_limbs(manifest, failures)
     missing_exportable = assert_export_completeness(manifest, failures)
     orphaned_skin_pngs = assert_no_orphan_skin_pngs(manifest_dir, manifest, failures)

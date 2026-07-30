@@ -92,6 +92,33 @@
         return state.ready ? '点击物品快速转移' : '等待库存同步';
     }
 
+    function interactionForState(state) {
+        state = state || {};
+        if (state.returning) return {inspectable:true, actionable:false, reason:'正在重新核对当前箱子。'};
+        if (state.refreshRequired) return {inspectable:true, actionable:false, reason:'库存同步失败，请先重试。'};
+        if (!state.ready) return {inspectable:true, actionable:false, reason:'库存正在同步，请稍候。'};
+        if (state.busyOwner) return {inspectable:true, actionable:false, reason:'库存正在处理另一项操作。'};
+        return {inspectable:true, actionable:true, reason:''};
+    }
+
+    function ensureReasonNode(node) {
+        var reason = node.querySelector('.workbench-entity-lock-reason');
+        if (!reason) {
+            reason = document.createElement('span');
+            reason.className = 'workbench-entity-lock-reason';
+            reason.hidden = true;
+            node.appendChild(reason);
+        }
+        return reason;
+    }
+
+    function projectNode(workbench, node, projection, reasonNode) {
+        return workbench.EntityTile.projectInteraction(node, {
+            inspectable:projection.inspectable, actionable:projection.actionable,
+            reason:projection.reason, reasonNode:reasonNode
+        });
+    }
+
     function Presenter(options) {
         options = options || {};
         if (!options.document || !options.components || !options.inventoryUI
@@ -109,6 +136,8 @@
             autoTransfer:requirePort(options,'autoTransfer'),
             onRequestDiscard:requirePort(options,'onRequestDiscard'),
             onBack:requirePort(options,'onBack'),
+            onHelp:requirePort(options,'onHelp'),
+            onClose:requirePort(options,'onClose'),
             onRetry:requirePort(options,'onRetry'),
             onPageResult:requirePort(options,'onPageResult'),
             onTransferResult:requirePort(options,'onTransferResult'),
@@ -116,16 +145,17 @@
             toast:requirePort(options,'toast')
         };
         this._state = {};
+        this._interaction = interactionForState(this._state);
         this.root = this._document.createElement('section');
         this.root.className = 'npcshop-space-page loot-organizer-page';
         this.root.setAttribute('data-loot-organizer','');
-        this.root.innerHTML = '<header class="npcshop-space-header">'
+        this.root.innerHTML = '<header class="npcshop-space-header"><div class="workbench-secondary-actions">'
             + '<button type="button" data-loot-organizer-back>← 返回战利品</button>'
+            + '<button type="button" data-loot-organizer-help aria-label="查看战利品整理帮助">?</button>'
+            + '<button type="button" data-loot-organizer-close aria-label="关闭战利品面板">×</button></div>'
             + '<div><h2>整理背包</h2><p>点击物品可在背包与战备箱之间转移；返回前会重新同步当前箱子。</p></div>'
             + '<span data-space-status>同步中</span>'
-            + '<button type="button" data-loot-organizer-retry hidden>重试同步</button>'
-            + '<button type="button" class="workbench-close-btn loot-organizer-close-btn" '
-            + 'data-loot-organizer-close aria-label="返回战利品">×</button></header>'
+            + '<button type="button" data-loot-organizer-retry hidden>重试同步</button></header>'
             + '<div class="npcshop-space-columns">'
             + '<section><h3>背包 <small data-space-meta="背包"></small></h3>'
             + '<div class="npcshop-space-grid" data-space-grid="背包"></div></section>'
@@ -136,8 +166,9 @@
         this.secondary = new this._components.SecondaryPage({
             root:this.root, role:'dialog', ariaLabel:'整理战利品领取空间'
         });
-        this.secondary.bindClose(this.root.querySelector('[data-loot-organizer-back]'), this._ports.onBack);
-        this.secondary.bindClose(this.root.querySelector('[data-loot-organizer-close]'), this._ports.onBack);
+        this.secondary.bindBack(this.root.querySelector('[data-loot-organizer-back]'), this._ports.onBack);
+        this.secondary.bindHelp(this.root.querySelector('[data-loot-organizer-help]'), this._ports.onHelp);
+        this.secondary.bindClose(this.root.querySelector('[data-loot-organizer-close]'), this._ports.onClose);
         var self = this;
         this.retryButton = this.root.querySelector('[data-loot-organizer-retry]');
         this.retryButton.addEventListener('click', function(event) {
@@ -164,8 +195,18 @@
         });
         this.root.querySelector('[data-space-pager]').appendChild(this.pager.root);
         this.pager.attach();
+        this.inventoryBody = this.root.querySelector('.npcshop-space-columns');
         this.transferPane = new this._components.OwnedInventoryPane({
+            // Inventory synchronization only governs the two inventory columns.
+            // Back / Help / Close remain independent page actions while inventory
+            // writes are busy or waiting for a refresh.
+            root:this.inventoryBody,
             keyOf:function(slot) { return slot && slot.physicalSlot; },
+            interaction:this._interaction,
+            onInteractionChange:function(projection) {
+                self._interaction = projection;
+                self._projectInteraction();
+            },
             onQuickTransfer:function(transfer, done) {
                 return self._ports.autoTransfer(transfer.source,transfer.target,done);
             },
@@ -183,12 +224,10 @@
     Presenter.prototype.render = function(state) {
         if (!this.isActive()) return false;
         this._state = state || {};
-        var disabled = !this._state.ready || !!this._state.busyOwner
-            || !!this._state.refreshRequired || !!this._state.returning;
-        this.transferPane.setDisabled(disabled);
+        this.transferPane.setInteraction(interactionForState(this._state));
         this._renderGrid('背包');
         this._renderGrid('战备箱');
-        this.pager.setDisabled(disabled);
+        this.pager.setDisabled(!this._interaction.actionable);
         this.pager.refresh();
         this.root.querySelector('[data-space-status]').textContent = statusText(this._state);
         this.retryButton.hidden = !this._state.refreshRequired;
@@ -211,13 +250,23 @@
                 var action = containerId === '背包' ? '移入战备箱' : '移入背包';
                 node.setAttribute('aria-label',(node.getAttribute('aria-label') || '') + '，点击' + action);
                 (function(sourceContainer, sourceSlot, sourceNode) {
+                    var reasonNode = ensureReasonNode(sourceNode);
                     self._workbench.EntityTile.bindActivation(sourceNode,{
                         itemName:String(sourceSlot.item
                             && (sourceSlot.item.displayName || sourceSlot.item.name) || '未知物品'),
                         label:sourceNode.getAttribute('aria-label') || '',
-                        disabled:false,
+                        inspectable:function() { return self._interaction.inspectable; },
+                        actionable:function() { return self._interaction.actionable; },
+                        reason:function() { return self._interaction.reason; },
+                        reasonNode:reasonNode,
+                        onBlocked:function() { self._ports.toast(self._interaction.reason); },
                         onActivate:function() { self.transfer(sourceContainer,sourceSlot); }
                     });
+                    sourceNode.__lootOrganizerInteractionRefresh = function() {
+                        projectNode(self._workbench,sourceNode,self._interaction,reasonNode);
+                        sourceNode.classList.toggle('write-locked',!self._interaction.actionable);
+                    };
+                    sourceNode.__lootOrganizerInteractionRefresh();
                 })(containerId,slot,node);
                 var discardButton = node.querySelector('.inventory-discard-btn');
                 if (discardButton) {
@@ -227,9 +276,15 @@
                     (function(discardSlot, button) {
                         button.addEventListener('click',function(event) {
                             event.stopPropagation();
+                            if (!self._interaction.actionable) {
+                                self._ports.toast(self._interaction.reason);
+                                return;
+                            }
                             self._ports.onRequestDiscard(discardSlot);
                         });
                     })(slot,discardButton);
+                    projectNode(this._workbench,discardButton,this._interaction,
+                        node.querySelector('.workbench-entity-lock-reason'));
                 }
             } else {
                 this._workbench.EntityTile.applySemantics(node,{
@@ -244,9 +299,17 @@
             meta.textContent = '未解锁';
         else meta.textContent = slots.filter(function(candidate) { return candidate.occupied; }).length + ' 项';
     };
+    Presenter.prototype._projectInteraction = function() {
+        var nodes = this.root.querySelectorAll('.inventory-slot-card');
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].__lootOrganizerInteractionRefresh) nodes[i].__lootOrganizerInteractionRefresh();
+            var discard = nodes[i].querySelector('.inventory-discard-btn');
+            var reason = nodes[i].querySelector('.workbench-entity-lock-reason');
+            if (discard && reason) projectNode(this._workbench,discard,this._interaction,reason);
+        }
+    };
     Presenter.prototype.transfer = function(containerId, slot) {
-        if (!this._state.ready || this._state.busyOwner || this._state.refreshRequired
-                || this._state.returning || !slot || !slot.occupied) return false;
+        if (!this._interaction.actionable || !slot || !slot.occupied) return false;
         var source = {
             containerId:containerId, slot:Number(slot.physicalSlot),
             expectedLease:String(slot.slotLease), occupied:true, item:slot.item || null
@@ -264,6 +327,7 @@
         return {
             active:this.isActive(),
             status:statusText(this._state),
+            interaction:this._interaction,
             transfer:this.transferPane.debugState().quickTransfer
         };
     };
@@ -278,6 +342,7 @@
         RequestMux:RequestMux,
         Presenter:Presenter,
         statusText:statusText,
+        interactionForState:interactionForState,
         opaque:opaque
     };
 });

@@ -359,6 +359,12 @@
                 var ellipsis = document.createElement('span');
                 ellipsis.className = 'item-filter-breadcrumb-segment item-filter-breadcrumb-ellipsis';
                 ellipsis.setAttribute('aria-hidden', 'true');
+                ellipsis.setAttribute(
+                    'title',
+                    crumbs.slice(1, crumbs.length - 2)
+                        .map(function(entry) { return entry.label; })
+                        .join(' › ')
+                );
                 ellipsis.innerHTML = '<span class="item-filter-breadcrumb-separator">›</span><span>…</span>';
                 root.appendChild(ellipsis);
             }
@@ -378,8 +384,10 @@
             button.type = 'button';
             button.className = 'item-filter-breadcrumb';
             button.textContent = crumb.label;
-            button.setAttribute('aria-label', crumbs.slice(0, index + 1)
-                .map(function(entry) { return entry.label; }).join(' › '));
+            var fullLabel = crumbs.slice(0, index + 1)
+                .map(function(entry) { return entry.label; }).join(' › ');
+            button.setAttribute('aria-label', fullLabel);
+            button.setAttribute('title', fullLabel);
             button.setAttribute('data-filter-breadcrumb-path', crumb.path.join('/'));
             if (index === crumbs.length - 1) button.setAttribute('aria-current', 'page');
             button.disabled = this.disabled;
@@ -499,10 +507,17 @@
         if (contextPath.length) {
             var parentPath = contextPath.slice(0, -1);
             var parent = nodeAt(this.tree, parentPath) || this.tree;
-            row.appendChild(this._button('‹ ' + (parentPath.length ? parent.label : this.allLabel), null, parentPath, false, true));
+            var parentButton = this._button(
+                '‹ ' + (parentPath.length ? parent.label : this.allLabel),
+                null, parentPath, false, true);
+            parentButton.classList.add('item-filter-parent-option');
+            row.appendChild(parentButton);
         }
         var allText = contextPath.length ? this.allLabel + context.label : this.allLabel;
-        row.appendChild(this._button(allText, context.count, contextPath, this.path.length === contextPath.length));
+        var contextButton = this._button(
+            allText, context.count, contextPath, this.path.length === contextPath.length);
+        contextButton.classList.add('item-filter-context-option');
+        row.appendChild(contextButton);
         var children = context.children || [];
         for (var i = 0; i < children.length; i++) {
             row.appendChild(this._button(children[i].label, children[i].count, children[i].path,

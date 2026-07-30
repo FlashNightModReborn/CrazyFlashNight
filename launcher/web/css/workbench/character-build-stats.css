@@ -16,10 +16,6 @@
     scrollbar-width:thin;
     scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
 }
-.character-build-stats-scroll:focus-visible {
-    outline:1px solid var(--wb-focus);
-    outline-offset:-1px;
-}
 .character-build-stats-scroll::-webkit-scrollbar { width:7px; }
 .character-build-stats-scroll::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
 .character-build-stats-scroll::-webkit-scrollbar-thumb {

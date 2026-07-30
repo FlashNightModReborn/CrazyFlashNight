@@ -2723,6 +2723,94 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void SnapshotCandidateFacetsAreOptionalButForwardedExactlyWhenValid()
+        {
+            using (var legacy = new ProductionHarness())
+            {
+                legacy.Task.HandleWebRequest(
+                    "snapshot",
+                    WebRequest(
+                        "snapshot",
+                        "prod.snapshot.facets.legacy",
+                        new JObject { ["v"] = 1 }));
+                legacy.Task.HandleFlashResponse(
+                    SuccessResponse(
+                        Assert.Single(legacy.Flash),
+                        "snapshot",
+                        Generation,
+                        3,
+                        3,
+                        InitialDrugRevision,
+                        false),
+                    null);
+                JObject web = Assert.Single(legacy.Web);
+                Assert.True(web.Value<bool>("success"));
+                Assert.Null(web["payload"]["candidateFacets"]);
+            }
+
+            using (var current = new ProductionHarness())
+            {
+                current.Task.HandleWebRequest(
+                    "snapshot",
+                    WebRequest(
+                        "snapshot",
+                        "prod.snapshot.facets.current",
+                        new JObject { ["v"] = 1 }));
+                JObject response = SuccessResponse(
+                    Assert.Single(current.Flash),
+                    "snapshot",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                JObject facets = CandidateFacetProjection();
+                response["payload"]["candidateFacets"] =
+                    facets.DeepClone();
+                current.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(current.Web);
+                Assert.True(web.Value<bool>("success"));
+                Assert.True(
+                    JToken.DeepEquals(
+                        facets,
+                        web["payload"]["candidateFacets"]));
+            }
+        }
+
+        [Fact]
+        public void SnapshotCandidateFacetsRejectMalformedOrInconsistentShapes()
+        {
+            AssertCandidateFacetRejected(
+                delegate(JObject value) { value["scope"] = "equipment"; });
+            AssertCandidateFacetRejected(
+                delegate(JObject value) { value.Remove("scope"); });
+            AssertCandidateFacetRejected(
+                delegate(JObject value) { value["extra"] = true; });
+            AssertCandidateFacetRejected(
+                delegate(JObject value) { value["filterItemCount"] = -1; });
+            AssertCandidateFacetRejected(
+                delegate(JObject value) { value["filterItemCount"] = 4; });
+            AssertCandidateFacetRejected(
+                delegate(JObject value)
+                {
+                    ((JObject)value["filterFacets"][0])["count"] = 1;
+                });
+            AssertCandidateFacetRejected(
+                delegate(JObject value)
+                {
+                    JArray roots = (JArray)value["filterFacets"];
+                    roots.Add(roots[0].DeepClone());
+                });
+            AssertCandidateFacetRejected(
+                delegate(JObject value)
+                {
+                    ((JObject)value["filterFacets"][0]["children"][0])["id"] =
+                        "头部\u0001装备";
+                });
+        }
+
+        [Fact]
         public void FinalizeKeepsNestedPersistenceProofAndEnablesExactClose()
         {
             using (var harness = OpenProductionHarness())
@@ -4065,6 +4153,109 @@ namespace CF7Launcher.Tests.Guardian
                     disposed.Task));
         }
 
+        [Fact]
+        public void CandidateTooltipFenceAllowsOnlyLatestValidatedSourcesIncludingBlockedRows()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                JObject request = ProductionPayload("candidates");
+                JObject item = CandidateItem("手枪", "equipment", 1);
+                JObject web = CompleteCandidateResponse(
+                    harness,
+                    request,
+                    new JObject
+                    {
+                        ["kind"] = "equipment",
+                        ["slotKey"] = "手枪2"
+                    },
+                    new JArray(
+                        CandidateRow(2, item, false, ""),
+                        CandidateRow(
+                            4,
+                            (JObject)item.DeepClone(),
+                            true,
+                            "level_locked")));
+
+                JObject allowed = (JObject)web["payload"]["candidates"][1]["source"];
+                JObject normalized;
+                Func<bool> fence;
+                Assert.True(harness.Task.TryCaptureCandidateTooltipFence(
+                    Panel, Generation, allowed, out normalized, out fence));
+                Assert.Equal(4, normalized.Value<int>("slot"));
+                Assert.True(fence());
+
+                JObject forged = (JObject)allowed.DeepClone();
+                forged["expectedLease"] = "inv.candidate.forged";
+                Assert.False(harness.Task.TryCaptureCandidateTooltipFence(
+                    Panel, Generation, forged, out normalized, out fence));
+                Assert.False(harness.Task.TryCaptureCandidateTooltipFence(
+                    "panel.workbench.replaced",
+                    Generation,
+                    allowed,
+                    out normalized,
+                    out fence));
+                Assert.False(harness.Task.TryCaptureCandidateTooltipFence(
+                    Panel,
+                    Generation + 1,
+                    allowed,
+                    out normalized,
+                    out fence));
+            }
+        }
+
+        [Fact]
+        public void CandidateTooltipFenceExpiresOnSnapshotWriteAndPanelReplacement()
+        {
+            using (var snapshotHarness = OpenProductionHarness())
+            {
+                JObject source = CaptureCandidateTooltipSource(
+                    snapshotHarness, out Func<bool> snapshotFence);
+                long snapshotEpoch =
+                    snapshotHarness.Task.CandidateTooltipEpoch;
+                snapshotHarness.Task.HandleWebRequest(
+                    "snapshot",
+                    WebRequest(
+                        "snapshot",
+                        "prod.tooltip.snapshot.invalidate",
+                        new JObject
+                        {
+                            ["v"] = 1,
+                            ["sessionGeneration"] = Generation
+                        }));
+                Assert.True(
+                    snapshotHarness.Task.CandidateTooltipEpoch > snapshotEpoch);
+                Assert.False(snapshotFence());
+                Assert.False(snapshotHarness.Task.TryCaptureCandidateTooltipFence(
+                    Panel,
+                    Generation,
+                    source,
+                    out _,
+                    out _));
+            }
+
+            using (var writeHarness = OpenProductionHarness())
+            {
+                CaptureCandidateTooltipSource(
+                    writeHarness, out Func<bool> writeFence);
+                writeHarness.Task.HandleWebRequest(
+                    "equipEquipment",
+                    WebRequest(
+                        "equipEquipment",
+                        "prod.tooltip.write.invalidate",
+                        MutationPayload("equipEquipment")));
+                Assert.False(writeFence());
+            }
+
+            using (var replaceHarness = OpenProductionHarness())
+            {
+                CaptureCandidateTooltipSource(
+                    replaceHarness, out Func<bool> replaceFence);
+                Assert.True(replaceHarness.Task.BindPanelInstance(
+                    "panel.workbench.replaced"));
+                Assert.False(replaceFence());
+            }
+        }
+
         private static ProductionHarness OpenProductionHarness(
             int timeoutMs = 1000)
         {
@@ -4088,6 +4279,35 @@ namespace CF7Launcher.Tests.Guardian
                 null);
             Assert.Equal(Generation, harness.Task.SessionGeneration);
             return harness;
+        }
+
+        private static JObject CaptureCandidateTooltipSource(
+            ProductionHarness harness,
+            out Func<bool> fence)
+        {
+            JObject web = CompleteCandidateResponse(
+                harness,
+                ProductionPayload("candidates"),
+                new JObject
+                {
+                    ["kind"] = "equipment",
+                    ["slotKey"] = "手枪2"
+                },
+                new JArray(CandidateRow(
+                    2,
+                    CandidateItem("手枪", "equipment", 1),
+                    false,
+                    "")));
+            JObject source =
+                (JObject)web["payload"]["candidates"][0]["source"];
+            JObject normalized;
+            Assert.True(harness.Task.TryCaptureCandidateTooltipFence(
+                Panel,
+                Generation,
+                source,
+                out normalized,
+                out fence));
+            return normalized;
         }
 
         private static JObject WebRequest(
@@ -4450,6 +4670,78 @@ namespace CF7Launcher.Tests.Guardian
                 ["count"] = count,
                 ["children"] = children
             };
+        }
+
+        private static JObject CandidateFacetProjection()
+        {
+            return new JObject
+            {
+                ["scope"] = "all",
+                ["filterFacets"] = new JArray(
+                    Facet(
+                        "armor",
+                        "防具",
+                        2,
+                        new JArray(
+                            Facet(
+                                "头部装备",
+                                "头部装备",
+                                2,
+                                new JArray()))),
+                    Facet(
+                        "weapon",
+                        "武器",
+                        3,
+                        new JArray(
+                            Facet(
+                                "手枪",
+                                "手枪",
+                                2,
+                                new JArray(
+                                    Facet(
+                                        "自动手枪",
+                                        "自动手枪",
+                                        2,
+                                        new JArray()))),
+                            Facet(
+                                "刀",
+                                "刀",
+                                1,
+                                new JArray())))),
+                ["filterItemCount"] = 5
+            };
+        }
+
+        private static void AssertCandidateFacetRejected(
+            Action<JObject> mutate)
+        {
+            using (var harness = new ProductionHarness())
+            {
+                harness.Task.HandleWebRequest(
+                    "snapshot",
+                    WebRequest(
+                        "snapshot",
+                        "prod.snapshot.facets.invalid",
+                        new JObject { ["v"] = 1 }));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "snapshot",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                JObject facets = CandidateFacetProjection();
+                mutate(facets);
+                response["payload"]["candidateFacets"] = facets;
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.Equal(
+                    "malformed_response",
+                    web.Value<string>("error"));
+                Assert.Null(harness.Task.SessionGeneration);
+            }
         }
 
         private static JObject CandidateItem(

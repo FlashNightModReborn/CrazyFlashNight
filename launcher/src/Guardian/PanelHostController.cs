@@ -162,6 +162,7 @@ namespace CF7Launcher.Guardian
         private long _openAdmissionEpoch;
         private Func<string, bool> _openGate;
         private Func<string, bool> _rebindGate;
+        private Func<string, string, string, string> _securityInitDataEnricher;
         private Func<string, string, string, string> _initDataEnricher;
         private Action<string, string> _panelCloseObserver;
         public event Action<string, string> PanelClosed;
@@ -565,6 +566,11 @@ namespace CF7Launcher.Guardian
 
         public void SetOpenGate(Func<string, bool> gate) { _openGate = gate; }
         public void SetRebindGate(Func<string, bool> gate) { _rebindGate = gate; }
+        internal void SetSecurityInitDataEnricher(
+            Func<string, string, string, string> enricher)
+        {
+            _securityInitDataEnricher = enricher;
+        }
         public void SetInitDataEnricher(Func<string, string, string, string> enricher) { _initDataEnricher = enricher; }
         public void SetPanelCloseObserver(Action<string, string> observer) { _panelCloseObserver = observer; }
 
@@ -1390,6 +1396,10 @@ namespace CF7Launcher.Guardian
                         reservedPanelInstanceId)
                         ? NextPanelInstanceId()
                         : reservedPanelInstanceId;
+                ApplyInitDataEnrichers(
+                    name,
+                    initDataJson,
+                    testInstance);
                 _activePanel = name;
                 _activePanelInstanceId =
                     testInstance;
@@ -1444,8 +1454,11 @@ namespace CF7Launcher.Guardian
             // Step 7: 通知 web 打开 panel（panel_viewport_set 已在 ResumeForPanel 内 PostToWeb）
             string instanceId = string.IsNullOrEmpty(reservedPanelInstanceId)
                 ? NextPanelInstanceId() : reservedPanelInstanceId;
-            Func<string, string, string, string> enricher = _initDataEnricher;
-            if (enricher != null) initDataJson = enricher(name, initDataJson, instanceId);
+            initDataJson =
+                ApplyInitDataEnrichers(
+                    name,
+                    initDataJson,
+                    instanceId);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             bool delivered = true;
             try
@@ -1504,14 +1517,42 @@ namespace CF7Launcher.Guardian
         private void DoRebind(string name, string initDataJson)
         {
             string instanceId = NextPanelInstanceId();
-            Func<string, string, string, string> enricher = _initDataEnricher;
-            if (enricher != null) initDataJson = enricher(name, initDataJson, instanceId);
+            initDataJson =
+                ApplyInitDataEnrichers(
+                    name,
+                    initDataJson,
+                    instanceId);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             try { _web.PostToWeb(payload); }
             catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb rebind failed: " + ex.Message); throw; }
             _activePanelInstanceId = instanceId;
             try { _web.AssertWebPanelPause(); } catch { }
             LogManager.Log("[PanelHost] rebound: " + name + " instance=" + instanceId);
+        }
+
+        private string ApplyInitDataEnrichers(
+            string panelName,
+            string initDataJson,
+            string panelInstanceId)
+        {
+            Func<string, string, string, string> securityEnricher =
+                _securityInitDataEnricher;
+            if (securityEnricher != null)
+            {
+                initDataJson =
+                    securityEnricher(
+                        panelName,
+                        initDataJson,
+                        panelInstanceId);
+            }
+            Func<string, string, string, string> enricher =
+                _initDataEnricher;
+            return enricher != null
+                ? enricher(
+                    panelName,
+                    initDataJson,
+                    panelInstanceId)
+                : initDataJson;
         }
 
         private Control GetFlashPanelOrNull()

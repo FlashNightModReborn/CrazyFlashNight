@@ -253,6 +253,7 @@
         if (!document) throw new Error('Quick-transfer command bar requires a document');
         var root = document.createElement('section');
         root.className = 'inventory-quick-transfer-bar';
+        root.setAttribute('data-workbench-body-footer', '');
         root.setAttribute('aria-label', '批量转移');
         var statusNode = document.createElement('div');
         statusNode.className = 'inventory-quick-transfer-status';

@@ -28,6 +28,9 @@ var IntelligencePanel = (function() {
     var _resizeObserver = null;
     var _keyHandler = null;
     var _outsideClickHandler = null;
+    var _panelInstanceId = '';
+    var _canReturnCharacterBuild = false;
+    var _returnNavigationTimer = null;
     
     var _glossaryCatalog = [];          // 名词列表
     var _currentViewMode = 'intel';    // 'intel' 或 'glossary'
@@ -53,10 +56,10 @@ var IntelligencePanel = (function() {
 
     Bridge.on('panel_resp', function(data) {
         if (!data || data.panel !== 'intelligence') return;
-        var cb = _pending[data.callId];
-        if (!cb) return;
+        var request = _pending[data.callId];
+        if (!request) return;
         delete _pending[data.callId];
-        cb(data);
+        request.callback(data);
     });
 
     function createDOM() {
@@ -72,6 +75,7 @@ var IntelligencePanel = (function() {
                         '<div class="intel-name">未选择</div>' +
                         '<div class="intel-meta"></div>' +
                     '</div>' +
+                    '<button class="intel-return-character-btn" type="button" hidden>← 返回装备</button>' +
                     '<div class="intel-progress-box">' +
                         '<div class="intel-progress-label">收集进度</div>' +
                         '<div class="intel-progress-value"></div>' +
@@ -147,6 +151,7 @@ var IntelligencePanel = (function() {
             toggleBtn: _el.querySelector('.intel-toggle-btn'),
             prevBtn: _el.querySelector('.intel-prev-btn'),
             nextBtn: _el.querySelector('.intel-next-btn'),
+            returnCharacterBtn: _el.querySelector('.intel-return-character-btn'),
             closeBtn: _el.querySelector('.intel-close-btn'),
             catalogPanel: _el.querySelector('.intel-catalog-panel'),
             catalogToggle: _el.querySelector('.intel-catalog-toggle'),
@@ -173,6 +178,7 @@ var IntelligencePanel = (function() {
             renderPage();
         });
         _refs.closeBtn.addEventListener('click', doClose);
+        _refs.returnCharacterBtn.addEventListener('click', requestCharacterBuild);
         _refs.catalogToggle.addEventListener('click', toggleCatalogDrawer);
 
         // 显式 click toggle —— 不挂 hover，避免「只想点 prev/next」的玩家被误触发。
@@ -215,6 +221,11 @@ var IntelligencePanel = (function() {
         _currentViewMode = 'intel';
 
         initData = initData || {};
+        _panelInstanceId = typeof initData.panelInstanceId === 'string'
+            ? initData.panelInstanceId : '';
+        _canReturnCharacterBuild = initData.canReturnCharacterBuild === true
+            && initData.navigationOrigin === 'character_build'
+            && !!_panelInstanceId;
         _currentItemName = initData.itemName || '资料';
         _currentValue = Number(initData.value);
         if (isNaN(_currentValue)) _currentValue = 99;
@@ -242,6 +253,9 @@ var IntelligencePanel = (function() {
         if (_debugMode) _el.classList.add('is-debug');
         else _el.classList.remove('is-debug');
         _refs.devbar.hidden = !_debugMode;
+        _refs.returnCharacterBtn.hidden = !_canReturnCharacterBuild;
+        _refs.returnCharacterBtn.disabled = false;
+        _refs.returnCharacterBtn.textContent = '← 返回装备';
 
         _refs.valueInput.value = String(_currentValue);
         _refs.decryptInput.value = String(_decryptLevel);
@@ -277,6 +291,10 @@ var IntelligencePanel = (function() {
     }
 
     function onClose() {
+        if (_returnNavigationTimer !== null) {
+            clearTimeout(_returnNavigationTimer);
+            _returnNavigationTimer = null;
+        }
         if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hide();
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         unbindScaleWatcher();
@@ -284,6 +302,8 @@ var IntelligencePanel = (function() {
         _pagePopupOpen = false;
         _pending = {};
         _hoverTooltipName = '';
+        _panelInstanceId = '';
+        _canReturnCharacterBuild = false;
         if (typeof FontPackBanner !== 'undefined' && FontPackBanner && FontPackBanner.dispose) {
             try { FontPackBanner.dispose(); } catch (e) {}
         }
@@ -415,13 +435,26 @@ var IntelligencePanel = (function() {
 
     function sendRequest(cmd, payload, cb) {
         var callId = 'intel-' + (++_reqSeq);
-        _pending[callId] = cb;
+        _pending[callId] = {
+            cmd:String(cmd || ''),
+            callback:typeof cb === 'function' ? cb : function() {}
+        };
         var msg = payload || {};
         msg.type = 'panel';
         msg.panel = 'intelligence';
         msg.cmd = cmd;
         msg.callId = callId;
         Bridge.send(msg);
+    }
+
+    function hasReturnBlockingRequest() {
+        for (var callId in _pending) {
+            if (!Object.prototype.hasOwnProperty.call(_pending, callId)) continue;
+            var cmd = _pending[callId] && _pending[callId].cmd;
+            if (cmd === 'state' || cmd === 'bundle' || cmd === 'snapshot'
+                    || cmd === 'glossary_snapshot') return true;
+        }
+        return false;
     }
 
     function populateCatalog(preferProgress) {
@@ -1074,6 +1107,41 @@ var IntelligencePanel = (function() {
         Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence' });
     }
 
+    function requestCharacterBuild() {
+        if (!_canReturnCharacterBuild || !_panelInstanceId
+                || !_refs || !_refs.returnCharacterBtn) return false;
+        if (hasReturnBlockingRequest()) {
+            if (typeof Toast !== 'undefined') {
+                Toast.add('情报档案正在读取，请稍候。');
+            }
+            return false;
+        }
+        _refs.returnCharacterBtn.disabled = true;
+        _refs.returnCharacterBtn.textContent = '返回中…';
+        if (Bridge.send({
+                type:'panel',
+                panel:'intelligence',
+                cmd:'close',
+                panelInstanceId:_panelInstanceId,
+                reason:'navigate_character_build'
+            }) === false) {
+            _refs.returnCharacterBtn.disabled = false;
+            _refs.returnCharacterBtn.textContent = '← 返回装备';
+            if (typeof Toast !== 'undefined') {
+                Toast.add('启动器连接不可用，暂时无法返回装备。');
+            }
+            return false;
+        }
+        _returnNavigationTimer = setTimeout(function() {
+            _returnNavigationTimer = null;
+            if (!_refs || !_refs.returnCharacterBtn) return;
+            _refs.returnCharacterBtn.disabled = false;
+            _refs.returnCharacterBtn.textContent = '← 返回装备';
+            if (typeof Toast !== 'undefined') Toast.add('返回装备未完成，请重试。');
+        }, 4000);
+        return true;
+    }
+
     function togglePageStrip() {
         if (_pagePopupOpen) closePageStrip();
         else openPageStrip();
@@ -1223,6 +1291,10 @@ var IntelligencePanel = (function() {
                 catalogCollapsed: _drawerCollapsed,
                 pagePopupOpen: _pagePopupOpen,
                 devbarVisible: _refs && _refs.devbar ? !_refs.devbar.hidden : false,
+                canReturnCharacterBuild: _canReturnCharacterBuild,
+                panelInstanceId: _panelInstanceId,
+                pendingCount: Object.keys(_pending).length,
+                returnBlockedByRead: hasReturnBlockingRequest(),
                 catalogTab: _catalogTab,
                 scale: (_refs && _refs.shell && Number(_refs.shell.style.getPropertyValue('--panel-scale')))
                     || Number(_el.style.getPropertyValue('--intel-scale')) || 1

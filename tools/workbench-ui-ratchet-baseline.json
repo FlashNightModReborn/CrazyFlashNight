@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "cf7-workbench-ui-ratchet-baseline",
+  "sourceCommit": "c96f4c3d750561022b706c72a4d53050431e627d",
+  "cssScope": "launcher/web/css/",
+  "excludedCss": [],
+  "debtCeilings": {
+    "rawColor": 2637,
+    "fontBelow9": 0,
+    "font9PlayerText": 34,
+    "rawDuration": 144,
+    "rawEasing": 105,
+    "transitionAll": 16
+  },
+  "profileGate": {
+    "enabled": true,
+    "activation": "explicit-e-batch-handshake",
+    "productionCalls": [
+      {
+        "file": "launcher/web/modules/crafting.js",
+        "count": 1
+      },
+      {
+        "file": "launcher/web/modules/inventory-workbench.js",
+        "count": 1
+      },
+      {
+        "file": "launcher/web/modules/kshop.js",
+        "count": 1
+      },
+      {
+        "file": "launcher/web/modules/loot/loot-view.js",
+        "count": 1
+      },
+      {
+        "file": "launcher/web/modules/npcshop.js",
+        "count": 1
+      },
+      {
+        "file": "launcher/web/modules/skills.js",
+        "count": 1
+      }
+    ]
+  },
+  "shellGridExceptions": []
+}

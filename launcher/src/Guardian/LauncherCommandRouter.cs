@@ -23,6 +23,125 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class LauncherCommandRouter
     {
+        /// <summary>
+        /// 固定 opener 共享的机械 wait 容器。
+        /// 它不保存 tuple、source 或路由 handler，不能扩展为动态 opener registry。
+        /// </summary>
+        private sealed class FixedPanelOpenWait
+        {
+            internal System.Threading.Timer Timer;
+            internal int Generation;
+            internal bool Pending;
+            internal string RequestId;
+            internal string Origin;
+            internal string BaselinePanel;
+            internal string BaselineInstance;
+            internal bool HasHostAdmission;
+            internal long HostAdmission;
+            internal int LifecycleEpoch;
+
+            internal System.Threading.Timer Clear()
+            {
+                Pending = false;
+                Generation++;
+                RequestId = null;
+                Origin = null;
+                BaselinePanel = null;
+                BaselineInstance = null;
+                HasHostAdmission = false;
+                HostAdmission = 0;
+                LifecycleEpoch = 0;
+                System.Threading.Timer timer = Timer;
+                Timer = null;
+                return timer;
+            }
+        }
+
+        internal enum CharacterBuildPreparationTarget
+        {
+            Skills,
+            Materials,
+            Intelligence
+        }
+
+        private enum CharacterBuildPreparationPhase
+        {
+            None,
+            Armed,
+            RollbackAfterSettle
+        }
+
+        /// <summary>
+        /// Character Build 离场后的固定整备目标意图。它只保存相关性和阶段，
+        /// 不保存 handler、panelName/initData 或任意可注册 destination。
+        /// </summary>
+        private sealed class CharacterBuildPreparationNavigationIntent
+        {
+            internal CharacterBuildPreparationTarget Target;
+            internal string PanelInstanceId;
+            internal CharacterBuildPreparationPhase Phase;
+            internal int Generation;
+            internal int LifecycleEpoch;
+            internal System.Threading.Timer Timer;
+
+            internal bool Pending
+            {
+                get { return Phase != CharacterBuildPreparationPhase.None; }
+            }
+
+            internal System.Threading.Timer Clear()
+            {
+                Target = CharacterBuildPreparationTarget.Skills;
+                PanelInstanceId = null;
+                Phase = CharacterBuildPreparationPhase.None;
+                Generation++;
+                LifecycleEpoch = 0;
+                System.Threading.Timer timer = Timer;
+                Timer = null;
+                return timer;
+            }
+        }
+
+        private enum PreparationChildReturnPhase
+        {
+            None,
+            PendingInstanceBind,
+            Active,
+            Returning
+        }
+
+        /// <summary>
+        /// Host-owned one-shot capability for Materials/Intelligence -> Character Build.
+        /// The browser receives only a presentation hint; authorization remains bound here to
+        /// the exact child panel name, Host-issued instance and navigation lifecycle epoch.
+        /// </summary>
+        private sealed class PreparationChildReturnCapability
+        {
+            internal string PanelName;
+            internal string PanelInstanceId;
+            internal PreparationChildReturnPhase Phase;
+            internal int Generation;
+            internal int LifecycleEpoch;
+            internal System.Threading.Timer Timer;
+
+            internal bool Pending
+            {
+                get { return Phase != PreparationChildReturnPhase.None; }
+            }
+
+            internal System.Threading.Timer Clear()
+            {
+                PanelName = null;
+                PanelInstanceId = null;
+                Phase = PreparationChildReturnPhase.None;
+                Generation++;
+                LifecycleEpoch = 0;
+                System.Threading.Timer timer = Timer;
+                Timer = null;
+                return timer;
+            }
+        }
+
         private readonly Bus.XmlSocketServer _socketServer;
         private readonly Action<Keys> _onSendKey;
         private readonly Action _onToggleFullscreen;
@@ -31,6 +150,7 @@ namespace CF7Launcher.Guardian
         private readonly Action<string> _postToWeb;
         private readonly Action<bool> _onPanelStateChanged;
         private readonly Action<string> _setActivePanel;
+        private readonly bool _preparationNavigationV1;
         private PanelHostController _panelHost;
         private string _activeFallbackPanelInstanceId;
         private string _activeFallbackPanelName;
@@ -55,26 +175,43 @@ namespace CF7Launcher.Guardian
         private bool _skillOpenHasHostAdmission;
         private long _skillOpenHostAdmission;
         private int _skillOpenLifecycleEpoch;
-        private string _pendingCharacterBuildSkillsNavigationInstance;
-        private Action _beforeCharacterBuildSkillsNavigationConsumeForTests;
+        private readonly CharacterBuildPreparationNavigationIntent
+            _characterBuildPreparationNavigation =
+                new CharacterBuildPreparationNavigationIntent();
+        private Action _beforeCharacterBuildPreparationNavigationConsumeForTests;
         private Action _beforeSkillsCharacterBuildNavigationConsumeForTests;
         private Action _afterSkillOpenTimeoutClearedForTests;
         private System.Threading.Timer _skillsCharacterBuildNavigationTimer;
         private int _skillsCharacterBuildNavigationGeneration;
         private string _pendingSkillsCharacterBuildNavigationInstance;
-        private System.Threading.Timer _nativeEquipmentBuildOpenTimer;
-        private int _nativeEquipmentBuildOpenGeneration;
-        private bool _nativeEquipmentBuildOpenPending;
-        private string _nativeEquipmentBuildOpenRequestId;
-        private string _nativeEquipmentBuildOpenOrigin;
-        private string _nativeEquipmentBuildOpenBaselinePanel;
-        private string _nativeEquipmentBuildOpenBaselineInstance;
-        private bool _nativeEquipmentBuildOpenHasHostAdmission;
-        private long _nativeEquipmentBuildOpenHostAdmission;
-        private int _nativeEquipmentBuildOpenLifecycleEpoch;
+        private readonly PreparationChildReturnCapability
+            _preparationChildReturn =
+                new PreparationChildReturnCapability();
+        private readonly FixedPanelOpenWait
+            _nativeEquipmentBuildOpen =
+                new FixedPanelOpenWait();
+        private readonly FixedPanelOpenWait
+            _nativeEquipmentTuningOpen =
+                new FixedPanelOpenWait();
+        private readonly FixedPanelOpenWait
+            _materialOpen =
+                new FixedPanelOpenWait();
+        private string _lastSuccessfulNativeEquipmentTuningOpenRequestId;
         internal int SkillOpenTimeoutMs { get; set; } = 1800;
+        internal int MaterialPanelOpenTimeoutMs { get; set; } = 1800;
         internal int NativeEquipmentBuildOpenTimeoutMs { get; set; } = 1800;
+        internal int NativeEquipmentTuningOpenTimeoutMs { get; set; } = 1800;
+        internal int CharacterBuildPreparationNavigationTimeoutMs
+        {
+            get;
+            set;
+        } = 5000;
         internal int SkillsCharacterBuildNavigationTimeoutMs { get; set; } = 5000;
+        internal int PreparationChildCharacterBuildNavigationTimeoutMs
+        {
+            get;
+            set;
+        } = 5000;
 
         public LauncherCommandRouter(
             Bus.XmlSocketServer socketServer,
@@ -84,7 +221,8 @@ namespace CF7Launcher.Guardian
             Action onForceExit,
             Action<string> postToWeb,
             Action<bool> onPanelStateChanged,
-            Action<string> setActivePanel)
+            Action<string> setActivePanel,
+            bool preparationNavigationV1 = false)
         {
             _socketServer = socketServer;
             _onSendKey = onSendKey;
@@ -94,6 +232,7 @@ namespace CF7Launcher.Guardian
             _postToWeb = postToWeb;
             _onPanelStateChanged = onPanelStateChanged;
             _setActivePanel = setActivePanel;
+            _preparationNavigationV1 = preparationNavigationV1;
             WebInventoryWorkbenchEnabled = !string.Equals(
                 Environment.GetEnvironmentVariable("CF7_WEB_INVENTORY_WORKBENCH"),
                 "0",
@@ -101,10 +240,27 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>二阶段注入：Program.cs 先 new Router，再 new PanelHostController(...)，最后 SetPanelHost 回注。</summary>
-        public void SetPanelHost(PanelHostController host) { _panelHost = host; }
+        public void SetPanelHost(PanelHostController host)
+        {
+            if (_panelHost != null
+                && !object.ReferenceEquals(_panelHost, host))
+            {
+                _panelHost.SetSecurityInitDataEnricher(null);
+            }
+            _panelHost = host;
+            if (host != null)
+            {
+                host.SetSecurityInitDataEnricher(
+                    EnrichPreparationChildReturnInitData);
+            }
+        }
         public void SetSkillTask(SkillTask task) { _skillTask = task; }
         public void SetEquipmentTuningTask(EquipmentTuningTask task) { _equipmentTuningTask = task; }
         public void SetCharacterBuildTask(CharacterBuildTask task) { _characterBuildTask = task; }
+        internal bool PreparationNavigationV1
+        {
+            get { return _preparationNavigationV1; }
+        }
         internal void SetFallbackVisualRetire(Func<string, bool> retire)
         {
             _fallbackVisualRetire = retire;
@@ -112,7 +268,14 @@ namespace CF7Launcher.Guardian
         internal void SetGameCommandSenderForTests(Func<string, bool> sender) { _gameCommandSenderOverride = sender; }
         internal void SetBeforeCharacterBuildSkillsNavigationConsumeForTests(Action action)
         {
-            _beforeCharacterBuildSkillsNavigationConsumeForTests = action;
+            SetBeforeCharacterBuildPreparationNavigationConsumeForTests(
+                action);
+        }
+        internal void SetBeforeCharacterBuildPreparationNavigationConsumeForTests(
+            Action action)
+        {
+            _beforeCharacterBuildPreparationNavigationConsumeForTests =
+                action;
         }
         internal void SetBeforeSkillsCharacterBuildNavigationConsumeForTests(
             Action action)
@@ -137,7 +300,41 @@ namespace CF7Launcher.Guardian
             get
             {
                 lock (_panelNavigationLifecycleLock)
-                    return _pendingCharacterBuildSkillsNavigationInstance;
+                    return _characterBuildPreparationNavigation.Pending
+                        && _characterBuildPreparationNavigation.Target
+                            == CharacterBuildPreparationTarget.Skills
+                        ? _characterBuildPreparationNavigation.PanelInstanceId
+                        : null;
+            }
+        }
+        internal string PendingCharacterBuildPreparationNavigationInstance
+        {
+            get
+            {
+                lock (_panelNavigationLifecycleLock)
+                    return _characterBuildPreparationNavigation.Pending
+                        ? _characterBuildPreparationNavigation.PanelInstanceId
+                        : null;
+            }
+        }
+        internal string PendingCharacterBuildPreparationTarget
+        {
+            get
+            {
+                lock (_panelNavigationLifecycleLock)
+                    return _characterBuildPreparationNavigation.Pending
+                        ? CharacterBuildPreparationTargetName(
+                            _characterBuildPreparationNavigation.Target)
+                        : null;
+            }
+        }
+        internal string PendingCharacterBuildPreparationPhase
+        {
+            get
+            {
+                lock (_panelNavigationLifecycleLock)
+                    return CharacterBuildPreparationPhaseName(
+                        _characterBuildPreparationNavigation.Phase);
             }
         }
         internal string PendingSkillsCharacterBuildNavigationInstance
@@ -148,17 +345,341 @@ namespace CF7Launcher.Guardian
                     return _pendingSkillsCharacterBuildNavigationInstance;
             }
         }
+        internal string PendingPreparationChildReturnPanelName
+        {
+            get
+            {
+                lock (_panelNavigationLifecycleLock)
+                    return _preparationChildReturn.Pending
+                        ? _preparationChildReturn.PanelName
+                        : null;
+            }
+        }
+        internal string PendingPreparationChildReturnInstance
+        {
+            get
+            {
+                lock (_panelNavigationLifecycleLock)
+                    return _preparationChildReturn.Pending
+                        ? _preparationChildReturn.PanelInstanceId
+                        : null;
+            }
+        }
+        internal string PendingMaterialOpenRequestId
+        {
+            get
+            {
+                lock (_panelNavigationLifecycleLock)
+                    return _materialOpen.Pending
+                        ? _materialOpen.RequestId
+                        : null;
+            }
+        }
+        internal string PendingMaterialOpenOrigin
+        {
+            get
+            {
+                lock (_panelNavigationLifecycleLock)
+                    return _materialOpen.Pending
+                        ? _materialOpen.Origin
+                        : null;
+            }
+        }
 
-        /// <summary>
-        /// Arms the single exact-instance Character Build -> Skills intent.  The intent does not
-        /// open either surface: WebOverlay must still run the normal CharacterBuild close barrier,
-        /// visual retire, and acknowledged AS2 recovery before the coordinator-settled callback
-        /// may send the existing skillPanelOpen preflight.
-        /// </summary>
-        internal bool TryArmCharacterBuildSkillsNavigation(
+        internal static bool TryParseCharacterBuildPreparationCloseReason(
+            string reason,
+            out CharacterBuildPreparationTarget target)
+        {
+            switch (reason)
+            {
+                case "navigate_skills":
+                    target = CharacterBuildPreparationTarget.Skills;
+                    return true;
+                case "navigate_materials":
+                    target = CharacterBuildPreparationTarget.Materials;
+                    return true;
+                case "navigate_intelligence":
+                    target = CharacterBuildPreparationTarget.Intelligence;
+                    return true;
+                default:
+                    target = CharacterBuildPreparationTarget.Skills;
+                    return false;
+            }
+        }
+
+        internal static bool IsCharacterBuildPreparationTargetEnabled(
+            CharacterBuildPreparationTarget target)
+        {
+            return target == CharacterBuildPreparationTarget.Skills
+                || target == CharacterBuildPreparationTarget.Materials
+                || target == CharacterBuildPreparationTarget.Intelligence;
+        }
+
+        internal static JObject BuildIntelligenceProductionInitData()
+        {
+            return new JObject
+            {
+                ["mode"] = "prod",
+                ["source"] = "runtime",
+                ["debug"] = false
+            };
+        }
+
+        internal static bool TryNormalizeCharacterBuildReturnFocusAction(
+            string value,
+            out string normalized)
+        {
+            if (string.Equals(
+                    value,
+                    "skills",
+                    StringComparison.Ordinal)
+                || string.Equals(
+                    value,
+                    "preparation-menu",
+                    StringComparison.Ordinal))
+            {
+                normalized = value;
+                return true;
+            }
+            normalized = null;
+            return false;
+        }
+
+        private static string CharacterBuildPreparationTargetName(
+            CharacterBuildPreparationTarget target)
+        {
+            switch (target)
+            {
+                case CharacterBuildPreparationTarget.Skills:
+                    return "skills";
+                case CharacterBuildPreparationTarget.Materials:
+                    return "materials";
+                case CharacterBuildPreparationTarget.Intelligence:
+                    return "intelligence";
+                default:
+                    return "unknown";
+            }
+        }
+
+        private static string PreparationChildPanelName(
+            CharacterBuildPreparationTarget target)
+        {
+            switch (target)
+            {
+                case CharacterBuildPreparationTarget.Materials:
+                    return "crafting";
+                case CharacterBuildPreparationTarget.Intelligence:
+                    return "intelligence";
+                default:
+                    return null;
+            }
+        }
+
+        private static string PreparationChildReturnOrigin(
+            string panelName)
+        {
+            if (string.Equals(
+                    panelName,
+                    "crafting",
+                    StringComparison.Ordinal))
+            {
+                return "materials_return";
+            }
+            if (string.Equals(
+                    panelName,
+                    "intelligence",
+                    StringComparison.Ordinal))
+            {
+                return "intelligence_return";
+            }
+            return null;
+        }
+
+        internal static bool IsPreparationChildPanelName(
+            string panelName)
+        {
+            return PreparationChildReturnOrigin(panelName)
+                != null;
+        }
+
+        private static string CharacterBuildPreparationPhaseName(
+            CharacterBuildPreparationPhase phase)
+        {
+            switch (phase)
+            {
+                case CharacterBuildPreparationPhase.Armed:
+                    return "arm_to_settled";
+                case CharacterBuildPreparationPhase.RollbackAfterSettle:
+                    return "rollback_after_settle";
+                default:
+                    return null;
+            }
+        }
+
+        private bool TryArmPreparationChildReturnCapabilityLocked(
+            CharacterBuildPreparationTarget target)
+        {
+            string panelName =
+                PreparationChildPanelName(target);
+            if (panelName == null
+                || _preparationChildReturn.Pending)
+            {
+                return false;
+            }
+            _preparationChildReturn.Generation++;
+            _preparationChildReturn.PanelName =
+                panelName;
+            _preparationChildReturn.PanelInstanceId =
+                null;
+            _preparationChildReturn.Phase =
+                PreparationChildReturnPhase.PendingInstanceBind;
+            _preparationChildReturn.LifecycleEpoch =
+                _panelNavigationLifecycleEpoch;
+            return true;
+        }
+
+        private System.Threading.Timer
+            ClearPreparationChildReturnLocked()
+        {
+            return _preparationChildReturn.Clear();
+        }
+
+        private void CancelUnboundPreparationChildReturnForOrdinaryOpen(
+            string panelName)
+        {
+            System.Threading.Timer timer =
+                null;
+            bool cancelled =
+                false;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_preparationChildReturn.Phase
+                        == PreparationChildReturnPhase.PendingInstanceBind
+                    && string.Equals(
+                        _preparationChildReturn.PanelName,
+                        panelName,
+                        StringComparison.Ordinal))
+                {
+                    timer =
+                        ClearPreparationChildReturnLocked();
+                    cancelled =
+                        true;
+                }
+            }
+            if (timer != null)
+                timer.Dispose();
+            if (cancelled)
+            {
+                LogManager.Log(
+                    "event=preparation_child_return_capability_cancelled panel="
+                    + (panelName ?? "unknown")
+                    + " reason=ordinary_same_panel_open");
+            }
+        }
+
+        private string EnrichPreparationChildReturnInitData(
+            string panelName,
+            string initDataJson,
             string panelInstanceId)
         {
-            if (string.IsNullOrEmpty(panelInstanceId))
+            if (!IsPreparationChildPanelName(panelName))
+            {
+                System.Threading.Timer competingTimer =
+                    null;
+                lock (_panelNavigationLifecycleLock)
+                {
+                    if (_preparationChildReturn.Pending)
+                    {
+                        competingTimer =
+                            ClearPreparationChildReturnLocked();
+                    }
+                }
+                if (competingTimer != null)
+                    competingTimer.Dispose();
+                return initDataJson;
+            }
+
+            bool grant =
+                false;
+            System.Threading.Timer staleTimer =
+                null;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_preparationChildReturn.Pending
+                    && (_preparationChildReturn.LifecycleEpoch
+                            != _panelNavigationLifecycleEpoch
+                        || _preparationChildReturn.Phase
+                            != PreparationChildReturnPhase.PendingInstanceBind
+                        || !string.Equals(
+                            _preparationChildReturn.PanelName,
+                            panelName,
+                            StringComparison.Ordinal)
+                        || string.IsNullOrEmpty(panelInstanceId)))
+                {
+                    staleTimer =
+                        ClearPreparationChildReturnLocked();
+                }
+                else if (_preparationChildReturn.Phase
+                        == PreparationChildReturnPhase.PendingInstanceBind
+                    && string.Equals(
+                        _preparationChildReturn.PanelName,
+                        panelName,
+                        StringComparison.Ordinal)
+                    && !string.IsNullOrEmpty(panelInstanceId))
+                {
+                    _preparationChildReturn.PanelInstanceId =
+                        panelInstanceId;
+                    _preparationChildReturn.Phase =
+                        PreparationChildReturnPhase.Active;
+                    grant =
+                        true;
+                }
+            }
+            if (staleTimer != null)
+                staleTimer.Dispose();
+
+            JObject initData;
+            try
+            {
+                initData =
+                    string.IsNullOrEmpty(initDataJson)
+                        ? new JObject()
+                        : JObject.Parse(initDataJson);
+            }
+            catch (JsonException)
+            {
+                initData =
+                    new JObject();
+            }
+            // These fields are presentation hints only. Strip any untrusted source value and add
+            // them back exclusively when the Host has bound the exact issued instance above.
+            initData.Remove("canReturnCharacterBuild");
+            initData.Remove("navigationOrigin");
+            if (grant)
+            {
+                initData["canReturnCharacterBuild"] =
+                    true;
+                initData["navigationOrigin"] =
+                    "character_build";
+                LogManager.Log(
+                    "event=preparation_child_return_capability_bound panel="
+                    + panelName + " panel_instance="
+                    + panelInstanceId);
+            }
+            return initData.ToString(
+                Formatting.None);
+        }
+
+        /// <summary>
+        /// Arms one exact-instance Character Build post-close target. The fixed switch remains
+        /// closed over Skills, Materials and Intelligence; it is not a destination registry.
+        /// </summary>
+        internal bool TryArmCharacterBuildPreparationNavigation(
+            string panelInstanceId,
+            CharacterBuildPreparationTarget target)
+        {
+            if (string.IsNullOrEmpty(panelInstanceId)
+                || !IsCharacterBuildPreparationTargetEnabled(target))
                 return false;
             CharacterBuildTask task = _characterBuildTask;
             string activePanel = _panelHost != null
@@ -182,7 +703,7 @@ namespace CF7Launcher.Guardian
             }
             lock (_panelNavigationLifecycleLock)
             {
-                if (_pendingCharacterBuildSkillsNavigationInstance != null)
+                if (_characterBuildPreparationNavigation.Pending)
                     return false;
                 if (!task.IsBoundTo(panelInstanceId)
                     || !task.CanRebind
@@ -190,12 +711,82 @@ namespace CF7Launcher.Guardian
                 {
                     return false;
                 }
-                _pendingCharacterBuildSkillsNavigationInstance =
+                int generation =
+                    ++_characterBuildPreparationNavigation.Generation;
+                int lifecycleEpoch =
+                    _panelNavigationLifecycleEpoch;
+                _characterBuildPreparationNavigation.Target =
+                    target;
+                _characterBuildPreparationNavigation.PanelInstanceId =
                     panelInstanceId;
+                _characterBuildPreparationNavigation.Phase =
+                    CharacterBuildPreparationPhase.Armed;
+                _characterBuildPreparationNavigation.LifecycleEpoch =
+                    lifecycleEpoch;
+                _characterBuildPreparationNavigation.Timer =
+                    new System.Threading.Timer(
+                        delegate
+                        {
+                            OnCharacterBuildPreparationNavigationTimeout(
+                                generation,
+                                lifecycleEpoch,
+                                panelInstanceId,
+                                target);
+                        },
+                        null,
+                        Math.Max(
+                            1,
+                            CharacterBuildPreparationNavigationTimeoutMs),
+                        System.Threading.Timeout.Infinite);
             }
             LogManager.Log(
-                "event=character_build_skills_navigation_armed panel_instance="
-                + panelInstanceId);
+                "event=character_build_preparation_navigation_armed target="
+                + CharacterBuildPreparationTargetName(target)
+                + " panel_instance=" + panelInstanceId);
+            return true;
+        }
+
+        internal bool TryArmCharacterBuildSkillsNavigation(
+            string panelInstanceId)
+        {
+            return TryArmCharacterBuildPreparationNavigation(
+                panelInstanceId,
+                CharacterBuildPreparationTarget.Skills);
+        }
+
+        internal bool CancelCharacterBuildPreparationNavigation(
+            string panelInstanceId,
+            CharacterBuildPreparationTarget? expectedTarget,
+            string reason)
+        {
+            if (string.IsNullOrEmpty(panelInstanceId))
+                return false;
+            System.Threading.Timer timer;
+            CharacterBuildPreparationTarget target;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_characterBuildPreparationNavigation.Pending
+                    || !string.Equals(
+                        _characterBuildPreparationNavigation.PanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || (expectedTarget.HasValue
+                        && _characterBuildPreparationNavigation.Target
+                            != expectedTarget.Value))
+                {
+                    return false;
+                }
+                target =
+                    _characterBuildPreparationNavigation.Target;
+                timer =
+                    ClearCharacterBuildPreparationNavigationLocked();
+            }
+            if (timer != null) timer.Dispose();
+            LogManager.Log(
+                "event=character_build_preparation_navigation_cancelled target="
+                + CharacterBuildPreparationTargetName(target)
+                + " panel_instance=" + panelInstanceId + " reason="
+                + (reason ?? "unknown"));
             return true;
         }
 
@@ -203,48 +794,54 @@ namespace CF7Launcher.Guardian
             string panelInstanceId,
             string reason)
         {
-            if (string.IsNullOrEmpty(panelInstanceId))
-                return false;
-            lock (_panelNavigationLifecycleLock)
-            {
-                if (!string.Equals(
-                    _pendingCharacterBuildSkillsNavigationInstance,
-                    panelInstanceId,
-                    StringComparison.Ordinal))
-                {
-                    return false;
-                }
-                ClearCharacterBuildSkillsNavigationLocked();
-            }
-            LogManager.Log(
-                "event=character_build_skills_navigation_cancelled panel_instance="
-                + panelInstanceId + " reason="
-                + (reason ?? "unknown"));
-            return true;
+            return CancelCharacterBuildPreparationNavigation(
+                panelInstanceId,
+                CharacterBuildPreparationTarget.Skills,
+                reason);
         }
 
         /// <summary>
-        /// Called only from CharacterBuildTask's coordinator-settled callback.  A true result means
-        /// an armed handoff was consumed and competing deferred opens must not be replayed for this
-        /// edge-triggered navigation.
+        /// Called only from CharacterBuildTask's coordinator-settled callback. The arm timer is
+        /// consumed under the same lifecycle lock before the target-specific wait is installed.
         /// </summary>
-        internal bool TryCompleteCharacterBuildSkillsNavigation()
+        internal bool TryCompleteCharacterBuildPreparationNavigation()
         {
             string panelInstanceId;
+            CharacterBuildPreparationTarget target;
+            CharacterBuildPreparationPhase phase;
+            int intentGeneration;
+            int intentLifecycleEpoch;
             lock (_panelNavigationLifecycleLock)
             {
                 panelInstanceId =
-                    _pendingCharacterBuildSkillsNavigationInstance;
+                    _characterBuildPreparationNavigation.PanelInstanceId;
                 if (panelInstanceId == null) return false;
+                target =
+                    _characterBuildPreparationNavigation.Target;
+                phase =
+                    _characterBuildPreparationNavigation.Phase;
+                intentGeneration =
+                    _characterBuildPreparationNavigation.Generation;
+                intentLifecycleEpoch =
+                    _characterBuildPreparationNavigation.LifecycleEpoch;
             }
 
             CharacterBuildTask task = _characterBuildTask;
+            if (phase
+                    == CharacterBuildPreparationPhase.RollbackAfterSettle
+                && task != null
+                && (task.HasBoundPanel
+                    || task.RequiresDetachRecovery))
+            {
+                return false;
+            }
             if (task == null
                 || task.HasBoundPanel
                 || task.RequiresDetachRecovery)
             {
-                CancelCharacterBuildSkillsNavigation(
+                CancelCharacterBuildPreparationNavigation(
                     panelInstanceId,
+                    target,
                     "coordinator_not_settled");
                 return false;
             }
@@ -257,14 +854,53 @@ namespace CF7Launcher.Guardian
             if (!string.IsNullOrEmpty(activePanel)
                 || !string.IsNullOrEmpty(activeInstance))
             {
-                CancelCharacterBuildSkillsNavigation(
+                CancelCharacterBuildPreparationNavigation(
                     panelInstanceId,
+                    target,
                     "visual_not_idle");
                 return false;
             }
 
+            if (phase
+                == CharacterBuildPreparationPhase.RollbackAfterSettle)
+            {
+                System.Threading.Timer expiredTimer;
+                lock (_panelNavigationLifecycleLock)
+                {
+                    if (!_characterBuildPreparationNavigation.Pending
+                        || _characterBuildPreparationNavigation.Phase
+                            != CharacterBuildPreparationPhase.RollbackAfterSettle
+                        || _characterBuildPreparationNavigation.Generation
+                            != intentGeneration
+                        || _characterBuildPreparationNavigation.LifecycleEpoch
+                            != intentLifecycleEpoch
+                        || intentLifecycleEpoch
+                            != _panelNavigationLifecycleEpoch
+                        || !string.Equals(
+                            _characterBuildPreparationNavigation.PanelInstanceId,
+                            panelInstanceId,
+                            StringComparison.Ordinal)
+                        || _characterBuildPreparationNavigation.Target
+                            != target)
+                    {
+                        return false;
+                    }
+                    expiredTimer =
+                        ClearCharacterBuildPreparationNavigationLocked();
+                }
+                if (expiredTimer != null) expiredTimer.Dispose();
+                HandleCharacterBuildPreparationOpenFailure(
+                    target,
+                    "settle_timeout",
+                    intentLifecycleEpoch);
+                return true;
+            }
+
+            if (phase != CharacterBuildPreparationPhase.Armed)
+                return false;
+
             Action beforeConsume =
-                _beforeCharacterBuildSkillsNavigationConsumeForTests;
+                _beforeCharacterBuildPreparationNavigationConsumeForTests;
             if (beforeConsume != null)
                 beforeConsume();
 
@@ -273,60 +909,194 @@ namespace CF7Launcher.Guardian
             int generation =
                 0;
             bool preflightArmed;
+            string preflightFailureReason =
+                "preflight_admission";
             int failedLifecycleEpoch =
                 0;
+            System.Threading.Timer armTimer;
             lock (_panelNavigationLifecycleLock)
             {
-                if (!string.Equals(
-                    _pendingCharacterBuildSkillsNavigationInstance,
-                    panelInstanceId,
-                    StringComparison.Ordinal))
+                if (!_characterBuildPreparationNavigation.Pending
+                    || _characterBuildPreparationNavigation.Phase
+                        != CharacterBuildPreparationPhase.Armed
+                    || _characterBuildPreparationNavigation.Generation
+                        != intentGeneration
+                    || _characterBuildPreparationNavigation.LifecycleEpoch
+                        != intentLifecycleEpoch
+                    || intentLifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || !string.Equals(
+                        _characterBuildPreparationNavigation.PanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || _characterBuildPreparationNavigation.Target
+                        != target)
                 {
                     return false;
                 }
                 if (_panelHost != null)
                     _panelHost.DiscardDeferredBarrierOpen();
-                preflightArmed =
-                    TryBeginSkillOpenWait(
-                        "character_build",
-                        false,
-                        out generation,
-                        out openRequestId);
+                // End the arm phase before installing the target-specific wait. Both operations
+                // are linearized by this same lifecycle lock, so the expired arm callback cannot
+                // race the new target timer or observe an in-between externally visible state.
+                armTimer =
+                    ClearCharacterBuildPreparationNavigationLocked();
+                switch (target)
+                {
+                    case CharacterBuildPreparationTarget.Skills:
+                        preflightArmed =
+                            TryBeginSkillOpenWait(
+                                "character_build",
+                                false,
+                                out generation,
+                                out openRequestId);
+                        break;
+                    case CharacterBuildPreparationTarget.Materials:
+                        preflightArmed =
+                            TryBeginMaterialOpenWait(
+                                "character_build",
+                                false,
+                                out generation,
+                                out openRequestId);
+                        break;
+                    case CharacterBuildPreparationTarget.Intelligence:
+                        string baselinePanel;
+                        string baselineInstance;
+                        bool hasHostAdmission;
+                        long hostAdmission;
+                        if (!TryCapturePanelOpenBaseline(
+                                out baselinePanel,
+                                out baselineInstance,
+                                out hasHostAdmission,
+                                out hostAdmission)
+                            || !hasHostAdmission
+                            || !string.IsNullOrEmpty(baselinePanel)
+                            || !string.IsNullOrEmpty(baselineInstance))
+                        {
+                            preflightArmed =
+                                false;
+                            break;
+                        }
+                        if (!TryArmPreparationChildReturnCapabilityLocked(
+                                target))
+                        {
+                            preflightFailureReason =
+                                "return_capability_busy";
+                            preflightArmed =
+                                false;
+                            break;
+                        }
+                        try
+                        {
+                            preflightArmed =
+                                OpenPanel(
+                                    "intelligence",
+                                    BuildIntelligenceProductionInitData()
+                                        .ToString(Formatting.None),
+                                    null,
+                                    null,
+                                    true,
+                                    hostAdmission,
+                                    true);
+                            if (!preflightArmed)
+                            {
+                                preflightFailureReason =
+                                    "exact_admission";
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            preflightArmed =
+                                false;
+                            preflightFailureReason =
+                                "open_exception";
+                            LogManager.Log(
+                                "event=character_build_preparation_open_exception target=intelligence ex="
+                                + ex.Message);
+                        }
+                        if (!preflightArmed)
+                        {
+                            System.Threading.Timer capabilityTimer =
+                                ClearPreparationChildReturnLocked();
+                            if (capabilityTimer != null)
+                                capabilityTimer.Dispose();
+                        }
+                        break;
+                    default:
+                        preflightArmed = false;
+                        break;
+                }
                 if (!preflightArmed)
                 {
                     failedLifecycleEpoch =
-                        _panelNavigationLifecycleEpoch;
-                    ClearCharacterBuildSkillsNavigationLocked();
-                }
-                else
-                {
-                    _pendingCharacterBuildSkillsNavigationInstance =
-                        null;
+                        intentLifecycleEpoch;
                 }
             }
+            if (armTimer != null) armTimer.Dispose();
             if (!preflightArmed)
             {
                 LogManager.Log(
-                    "event=skill_panel_open_failed source=character_build "
-                    + "reason=preflight_admission");
-                HandleCharacterBuildSkillOpenFailure(
-                    "preflight_admission",
+                    "event=character_build_preparation_open_failed target="
+                    + CharacterBuildPreparationTargetName(target) + " "
+                    + "reason=" + preflightFailureReason);
+                HandleCharacterBuildPreparationOpenFailure(
+                    target,
+                    preflightFailureReason,
                     failedLifecycleEpoch);
                 return true;
             }
 
+            if (target
+                == CharacterBuildPreparationTarget.Intelligence)
+            {
+                LogManager.Log(
+                    "event=intelligence_panel_open_accepted source=character_build");
+                return true;
+            }
+
+            if (target == CharacterBuildPreparationTarget.Skills)
+            {
+                LogManager.Log(
+                    "event=skill_panel_open_requested source=character_build");
+                bool skillIntentCurrent;
+                if (!TrySendSkillPanelOpenCommandIfCurrent(
+                        generation,
+                        openRequestId,
+                        out skillIntentCurrent))
+                {
+                    if (!skillIntentCurrent)
+                        return true;
+                    int lifecycleEpoch;
+                    if (!CancelSkillOpenWait(
+                            generation,
+                            out lifecycleEpoch))
+                    {
+                        // A synchronous exact ACK (or a newer cancellation) already consumed the
+                        // generation; a late false transport result must not report a contradiction.
+                        return true;
+                    }
+                    LogManager.Log(
+                        "event=skill_panel_open_failed source=character_build reason=preflight_send");
+                    HandleCharacterBuildPreparationOpenFailure(
+                        target,
+                        "preflight_send",
+                        lifecycleEpoch);
+                }
+                return true;
+            }
+
             LogManager.Log(
-                "event=skill_panel_open_requested source=character_build");
-            bool skillIntentCurrent;
-            if (!TrySendSkillPanelOpenCommandIfCurrent(
+                "event=material_panel_open_requested source=character_build");
+            bool materialIntentCurrent;
+            if (!TrySendMaterialPanelOpenCommandIfCurrent(
                     generation,
                     openRequestId,
-                    out skillIntentCurrent))
+                    out materialIntentCurrent))
             {
-                if (!skillIntentCurrent)
+                if (!materialIntentCurrent)
                     return true;
                 int lifecycleEpoch;
-                if (!CancelSkillOpenWait(
+                if (!CancelMaterialOpenWait(
                         generation,
                         out lifecycleEpoch))
                 {
@@ -335,17 +1105,137 @@ namespace CF7Launcher.Guardian
                     return true;
                 }
                 LogManager.Log(
-                    "event=skill_panel_open_failed source=character_build reason=preflight_send");
-                HandleCharacterBuildSkillOpenFailure(
+                    "event=material_panel_open_failed source=character_build reason=preflight_send");
+                HandleCharacterBuildPreparationOpenFailure(
+                    target,
                     "preflight_send",
                     lifecycleEpoch);
             }
             return true;
         }
 
-        private void ClearCharacterBuildSkillsNavigationLocked()
+        internal bool TryCompleteCharacterBuildSkillsNavigation()
         {
-            _pendingCharacterBuildSkillsNavigationInstance = null;
+            return TryCompleteCharacterBuildPreparationNavigation();
+        }
+
+        private System.Threading.Timer
+            ClearCharacterBuildPreparationNavigationLocked()
+        {
+            return _characterBuildPreparationNavigation.Clear();
+        }
+
+        private void OnCharacterBuildPreparationNavigationTimeout(
+            int generation,
+            int lifecycleEpoch,
+            string panelInstanceId,
+            CharacterBuildPreparationTarget target)
+        {
+            System.Threading.Timer timer;
+            bool rollbackNow = false;
+            bool rollbackAfterSettle = false;
+            bool preserveBuild = false;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_characterBuildPreparationNavigation.Pending
+                    || _characterBuildPreparationNavigation.Phase
+                        != CharacterBuildPreparationPhase.Armed
+                    || _characterBuildPreparationNavigation.Generation
+                        != generation
+                    || _characterBuildPreparationNavigation.LifecycleEpoch
+                        != lifecycleEpoch
+                    || lifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || _characterBuildPreparationNavigation.Target
+                        != target
+                    || !string.Equals(
+                        _characterBuildPreparationNavigation.PanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return;
+                }
+
+                CharacterBuildTask task =
+                    _characterBuildTask;
+                if (task != null
+                    && task.RequiresDetachRecovery)
+                {
+                    // The destructive close has started but the coordinator still owns the exact
+                    // binding. Retain only a rollback-after-settle phase; the timed-out target can
+                    // no longer open, and the eventual settled callback can roll back once.
+                    timer =
+                        _characterBuildPreparationNavigation.Timer;
+                    _characterBuildPreparationNavigation.Timer =
+                        null;
+                    _characterBuildPreparationNavigation.Phase =
+                        CharacterBuildPreparationPhase.RollbackAfterSettle;
+                    _characterBuildPreparationNavigation.Generation++;
+                    rollbackAfterSettle = true;
+                }
+                else
+                {
+                    string activePanel =
+                        _panelHost != null
+                            ? _panelHost.ActivePanelName
+                            : _activeFallbackPanelName;
+                    string activeInstance =
+                        _panelHost != null
+                            ? _panelHost.ActivePanelInstanceId
+                            : _activeFallbackPanelInstanceId;
+                    bool hostIdle =
+                        string.IsNullOrEmpty(activePanel)
+                        && string.IsNullOrEmpty(activeInstance)
+                        && (_panelHost == null
+                            || _panelHost.IsIdleForTrackedOpen);
+                    rollbackNow =
+                        task != null
+                        && !task.HasBoundPanel
+                        && hostIdle;
+                    preserveBuild =
+                        task != null
+                        && task.IsBoundTo(panelInstanceId)
+                        && string.Equals(
+                            activePanel,
+                            "workbench",
+                            StringComparison.Ordinal)
+                        && string.Equals(
+                            activeInstance,
+                            panelInstanceId,
+                            StringComparison.Ordinal);
+                    timer =
+                        ClearCharacterBuildPreparationNavigationLocked();
+                }
+            }
+            if (timer != null) timer.Dispose();
+
+            LogManager.Log(
+                "event=character_build_preparation_navigation_timeout target="
+                + CharacterBuildPreparationTargetName(target)
+                + " panel_instance=" + panelInstanceId
+                + " phase="
+                + (rollbackAfterSettle
+                    ? "rollback_after_settle"
+                    : rollbackNow
+                        ? "rollback_now"
+                        : preserveBuild
+                            ? "build_preserved"
+                            : "cancelled"));
+            if (rollbackAfterSettle)
+                return;
+            if (rollbackNow)
+            {
+                HandleCharacterBuildPreparationOpenFailure(
+                    target,
+                    "settle_timeout",
+                    lifecycleEpoch);
+                return;
+            }
+            if (preserveBuild)
+            {
+                PostToWeb(
+                    "{\"type\":\"toast\",\"text\":\"整备导航等待超时，角色构筑保持打开\"}");
+            }
         }
 
         /// <summary>
@@ -581,10 +1471,307 @@ namespace CF7Launcher.Guardian
             return timer;
         }
 
-        private void HandleCharacterBuildSkillOpenFailure(
+        internal bool TryArmPreparationChildCharacterBuildNavigation(
+            string panelName,
+            string panelInstanceId)
+        {
+            if (!IsPreparationChildPanelName(panelName)
+                || string.IsNullOrEmpty(panelInstanceId))
+            {
+                return false;
+            }
+            string activePanel =
+                _panelHost != null
+                    ? _panelHost.ActivePanelName
+                    : _activeFallbackPanelName;
+            string activeInstance =
+                _panelHost != null
+                    ? _panelHost.ActivePanelInstanceId
+                    : _activeFallbackPanelInstanceId;
+            if (!string.Equals(
+                    activePanel,
+                    panelName,
+                    StringComparison.Ordinal)
+                || !string.Equals(
+                    activeInstance,
+                    panelInstanceId,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_preparationChildReturn.Phase
+                        != PreparationChildReturnPhase.Active
+                    || _preparationChildReturn.LifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || !string.Equals(
+                        _preparationChildReturn.PanelName,
+                        panelName,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _preparationChildReturn.PanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                int generation =
+                    ++_preparationChildReturn.Generation;
+                int lifecycleEpoch =
+                    _preparationChildReturn.LifecycleEpoch;
+                _preparationChildReturn.Phase =
+                    PreparationChildReturnPhase.Returning;
+                _preparationChildReturn.Timer =
+                    new System.Threading.Timer(
+                        delegate
+                        {
+                            OnPreparationChildCharacterBuildNavigationTimeout(
+                                generation,
+                                lifecycleEpoch,
+                                panelName,
+                                panelInstanceId);
+                        },
+                        null,
+                        Math.Max(
+                            1,
+                            PreparationChildCharacterBuildNavigationTimeoutMs),
+                        System.Threading.Timeout.Infinite);
+            }
+            LogManager.Log(
+                "event=preparation_child_character_build_navigation_armed panel="
+                + panelName + " panel_instance="
+                + panelInstanceId);
+            return true;
+        }
+
+        internal bool CancelPreparationChildCharacterBuildNavigation(
+            string panelName,
+            string panelInstanceId,
+            string reason)
+        {
+            System.Threading.Timer timer;
+            string boundPanel;
+            string boundInstance;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_preparationChildReturn.Pending
+                    || (!string.IsNullOrEmpty(panelName)
+                        && !string.Equals(
+                            _preparationChildReturn.PanelName,
+                            panelName,
+                            StringComparison.Ordinal))
+                    || (!string.IsNullOrEmpty(panelInstanceId)
+                        && !string.Equals(
+                            _preparationChildReturn.PanelInstanceId,
+                            panelInstanceId,
+                            StringComparison.Ordinal)))
+                {
+                    return false;
+                }
+                boundPanel =
+                    _preparationChildReturn.PanelName;
+                boundInstance =
+                    _preparationChildReturn.PanelInstanceId;
+                timer =
+                    ClearPreparationChildReturnLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            LogManager.Log(
+                "event=preparation_child_character_build_navigation_cancelled panel="
+                + (boundPanel ?? "unknown")
+                + " panel_instance="
+                + (boundInstance ?? "unbound")
+                + " reason=" + (reason ?? "unknown"));
+            return true;
+        }
+
+        internal bool TryCompletePreparationChildCharacterBuildNavigation(
+            string panelName,
+            string panelInstanceId)
+        {
+            if (!IsPreparationChildPanelName(panelName)
+                || string.IsNullOrEmpty(panelInstanceId))
+            {
+                return false;
+            }
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_preparationChildReturn.Phase
+                        != PreparationChildReturnPhase.Returning
+                    || _preparationChildReturn.LifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || !string.Equals(
+                        _preparationChildReturn.PanelName,
+                        panelName,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _preparationChildReturn.PanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            string activePanel =
+                _panelHost != null
+                    ? _panelHost.ActivePanelName
+                    : _activeFallbackPanelName;
+            string activeInstance =
+                _panelHost != null
+                    ? _panelHost.ActivePanelInstanceId
+                    : _activeFallbackPanelInstanceId;
+            if (string.Equals(
+                    activePanel,
+                    panelName,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    activeInstance,
+                    panelInstanceId,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+            if (!string.IsNullOrEmpty(activePanel)
+                || !string.IsNullOrEmpty(activeInstance)
+                || (_panelHost != null
+                    && !_panelHost.IsIdleForTrackedOpen))
+            {
+                CancelPreparationChildCharacterBuildNavigation(
+                    panelName,
+                    panelInstanceId,
+                    "competing_panel");
+                return false;
+            }
+
+            System.Threading.Timer timer;
+            int generation;
+            string openRequestId;
+            string origin =
+                PreparationChildReturnOrigin(panelName);
+            bool preflightArmed;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_preparationChildReturn.Phase
+                        != PreparationChildReturnPhase.Returning
+                    || _preparationChildReturn.LifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || !string.Equals(
+                        _preparationChildReturn.PanelName,
+                        panelName,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _preparationChildReturn.PanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                timer =
+                    ClearPreparationChildReturnLocked();
+                preflightArmed =
+                    TryBeginNativeEquipmentBuildOpenWait(
+                        origin,
+                        false,
+                        out generation,
+                        out openRequestId);
+            }
+            if (timer != null)
+                timer.Dispose();
+
+            LogManager.Log(
+                "event=character_build_open_requested source="
+                + origin);
+            if (!preflightArmed)
+            {
+                LogManager.Log(
+                    "event=character_build_open_failed source="
+                    + origin + " reason=preflight_busy");
+                PostToWeb(
+                    "{\"type\":\"toast\",\"text\":\"返回装备失败，请从装备入口重试\"}");
+                return true;
+            }
+            bool nativeIntentCurrent;
+            if (!TrySendNativeEquipmentBuildPreflightIfCurrent(
+                    generation,
+                    openRequestId,
+                    out nativeIntentCurrent))
+            {
+                if (!nativeIntentCurrent)
+                    return true;
+                if (!CancelNativeEquipmentBuildOpenWait(
+                        generation))
+                {
+                    return true;
+                }
+                LogManager.Log(
+                    "event=character_build_open_failed source="
+                    + origin + " reason=preflight_send");
+                PostToWeb(
+                    "{\"type\":\"toast\",\"text\":\"返回装备失败，请从装备入口重试\"}");
+            }
+            return true;
+        }
+
+        private void
+            OnPreparationChildCharacterBuildNavigationTimeout(
+                int generation,
+                int lifecycleEpoch,
+                string panelName,
+                string panelInstanceId)
+        {
+            System.Threading.Timer timer;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_preparationChildReturn.Phase
+                        != PreparationChildReturnPhase.Returning
+                    || _preparationChildReturn.Generation
+                        != generation
+                    || _preparationChildReturn.LifecycleEpoch
+                        != lifecycleEpoch
+                    || lifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || !string.Equals(
+                        _preparationChildReturn.PanelName,
+                        panelName,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _preparationChildReturn.PanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return;
+                }
+                timer =
+                    ClearPreparationChildReturnLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            LogManager.Log(
+                "event=preparation_child_character_build_navigation_cancelled panel="
+                + panelName + " panel_instance="
+                + panelInstanceId + " reason=visual_retire_timeout");
+            PostToWeb(
+                "{\"type\":\"toast\",\"text\":\"返回装备超时，请从装备入口重试\"}");
+        }
+
+        private void HandleCharacterBuildPreparationOpenFailure(
+            CharacterBuildPreparationTarget target,
             string reason,
             int lifecycleEpoch)
         {
+            if (!IsCharacterBuildPreparationTargetEnabled(target))
+            {
+                LogManager.Log(
+                    "event=character_build_preparation_open_failed target="
+                    + CharacterBuildPreparationTargetName(target)
+                    + " reason=" + (reason ?? "unknown")
+                    + " gate=target_not_enabled");
+                return;
+            }
             bool superseded;
             if (TryStartCharacterBuildRollback(
                     reason,
@@ -595,7 +1782,12 @@ namespace CF7Launcher.Guardian
                 return;
             }
             PostToWeb(
-                "{\"type\":\"toast\",\"text\":\"技能面板未打开；请从装备入口重新打开构筑\"}");
+                target == CharacterBuildPreparationTarget.Materials
+                    ? "{\"type\":\"toast\",\"text\":\"材料面板未打开；请从装备入口重新打开构筑\"}"
+                    : target
+                        == CharacterBuildPreparationTarget.Intelligence
+                        ? "{\"type\":\"toast\",\"text\":\"情报面板未打开；请从装备入口重新打开构筑\"}"
+                        : "{\"type\":\"toast\",\"text\":\"技能面板未打开；请从装备入口重新打开构筑\"}");
         }
 
         private bool TryStartCharacterBuildRollback(
@@ -611,11 +1803,13 @@ namespace CF7Launcher.Guardian
                     expectedLifecycleEpoch
                         != _panelNavigationLifecycleEpoch
                     || _skillOpenPending
-                    || _nativeEquipmentBuildOpenPending
-                    || _pendingCharacterBuildSkillsNavigationInstance
-                        != null
+                    || _materialOpen.Pending
+                    || _nativeEquipmentBuildOpen.Pending
+                    || _nativeEquipmentTuningOpen.Pending
+                    || _characterBuildPreparationNavigation.Pending
                     || _pendingSkillsCharacterBuildNavigationInstance
-                        != null;
+                        != null
+                    || _preparationChildReturn.Pending;
                 if (superseded)
                 {
                     LogManager.Log(
@@ -684,9 +1878,31 @@ namespace CF7Launcher.Guardian
 
         internal void ClearFallbackPanelInstance()
         {
+            System.Threading.Timer childTimer =
+                null;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_preparationChildReturn.Phase
+                        == PreparationChildReturnPhase.Active
+                    && string.Equals(
+                        _preparationChildReturn.PanelName,
+                        _activeFallbackPanelName,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _preparationChildReturn.PanelInstanceId,
+                        _activeFallbackPanelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    childTimer =
+                        ClearPreparationChildReturnLocked();
+                }
+            }
+            if (childTimer != null)
+                childTimer.Dispose();
             _activeFallbackPanelInstanceId = null;
             _activeFallbackPanelName = null;
             _deferredFallbackSkillInitData = null;
+            ClearSuccessfulNativeEquipmentTuningOpenProof();
         }
 
         internal void FlushDeferredFallbackSkillRebind()
@@ -837,11 +2053,17 @@ namespace CF7Launcher.Guardian
                 case "EQUIP_UI":
                     RouteEquipmentUi();
                     break;
+                case "EQUIPMENT_TUNING":
+                    RouteEquipmentTuning();
+                    break;
                 case "MATERIALS":
                     RouteMaterialUi();
                     break;
                 case "INTELLIGENCE":
-                    OpenPanel("intelligence", "{\"mode\":\"prod\",\"source\":\"runtime\",\"debug\":false}");
+                    OpenPanel(
+                        "intelligence",
+                        BuildIntelligenceProductionInitData()
+                            .ToString(Formatting.None));
                     break;
                 case "SKILLS":
                     LogManager.Log("[Router] SKILLS clicked");
@@ -976,6 +2198,51 @@ namespace CF7Launcher.Guardian
         {
             if (string.IsNullOrEmpty(panelName)) return;
             string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
+            bool exactNativeTuningSource =
+                string.Equals(
+                    safeSource,
+                    "nativehud_equipment_tuning",
+                    StringComparison.Ordinal);
+            bool carriesPendingNativeTuningNonce =
+                IsPendingNativeEquipmentTuningOpenRequestId(
+                    openRequestId);
+            bool exactMaterialSource =
+                string.Equals(
+                    safeSource,
+                    "nativehud_materials",
+                    StringComparison.Ordinal);
+            bool carriesMaterialNonce =
+                IsMaterialOpenRequestIdCandidate(
+                    openRequestId);
+            if ((exactNativeTuningSource
+                    || carriesPendingNativeTuningNonce)
+                && !string.Equals(
+                    panelName,
+                    "workbench",
+                    StringComparison.Ordinal))
+            {
+                RejectPendingNativeEquipmentTuningPanelRequest(
+                    "panel_contract");
+                return;
+            }
+            if ((exactMaterialSource
+                    || carriesMaterialNonce)
+                && !string.Equals(
+                    panelName,
+                    "crafting",
+                    StringComparison.Ordinal))
+            {
+                if (!string.IsNullOrEmpty(openRequestId))
+                {
+                    RejectPendingMaterialPanelRequest(
+                        "panel_contract");
+                }
+                LogManager.Log(
+                    "event=material_panel_open_rejected reason=panel_contract"
+                    + " panel=" + panelName
+                    + " source=" + safeSource);
+                return;
+            }
             if (string.Equals(panelName, "map", StringComparison.OrdinalIgnoreCase))
             {
                 OpenMapPanel(safeSource, pageId);
@@ -1015,7 +2282,14 @@ namespace CF7Launcher.Guardian
             }
             if (string.Equals(panelName, "crafting", StringComparison.OrdinalIgnoreCase))
             {
-                OpenCraftingPanel(safeSource, initDataExtrasJson);
+                OpenCraftingPanel(
+                    safeSource,
+                    initDataExtrasJson,
+                    string.Equals(
+                        panelName,
+                        "crafting",
+                        StringComparison.Ordinal),
+                    openRequestId);
                 return;
             }
             if (string.Equals(panelName, "hairdresser", StringComparison.OrdinalIgnoreCase))
@@ -1074,6 +2348,22 @@ namespace CF7Launcher.Guardian
             bool exactPanelName = true,
             string openRequestId = null)
         {
+            bool exactNativeTuningSource =
+                string.Equals(
+                    source,
+                    "nativehud_equipment_tuning",
+                    StringComparison.Ordinal);
+            bool carriesPendingNativeTuningNonce =
+                IsPendingNativeEquipmentTuningOpenRequestId(
+                    openRequestId);
+            bool nativeTuningIngress =
+                exactNativeTuningSource
+                || carriesPendingNativeTuningNonce;
+            if (!nativeTuningIngress
+                && TryRejectUncorrelatedNativeEquipmentTuningPanelRequest())
+            {
+                return false;
+            }
             if (!string.Equals(
                     source,
                     "nativehud_equipment",
@@ -1098,6 +2388,11 @@ namespace CF7Launcher.Guardian
                 catch (Exception ex)
                 {
                     LogManager.Log("[Router] OpenInventoryWorkbench extras parse failed: " + ex.Message);
+                    if (nativeTuningIngress)
+                    {
+                        RejectPendingNativeEquipmentTuningPanelRequest(
+                            "init_data_contract");
+                    }
                     return false;
                 }
             }
@@ -1105,6 +2400,11 @@ namespace CF7Launcher.Guardian
                 && !string.Equals(profile, "battlebox", StringComparison.Ordinal))
             {
                 LogManager.Log("[Router] OpenInventoryWorkbench rejected profile=" + profile);
+                if (nativeTuningIngress)
+                {
+                    RejectPendingNativeEquipmentTuningPanelRequest(
+                        "profile_contract");
+                }
                 return false;
             }
             if (!string.Equals(view, "storage", StringComparison.Ordinal)
@@ -1112,11 +2412,45 @@ namespace CF7Launcher.Guardian
                 && !string.Equals(view, "build", StringComparison.Ordinal))
             {
                 LogManager.Log("[Router] OpenInventoryWorkbench rejected view=" + view);
+                if (nativeTuningIngress)
+                {
+                    RejectPendingNativeEquipmentTuningPanelRequest(
+                        "view_contract");
+                }
                 return false;
             }
             if (view == "tuning" && !string.Equals(profile, "battlebox", StringComparison.Ordinal))
             {
                 LogManager.Log("[Router] OpenInventoryWorkbench rejected tuning profile=" + profile);
+                if (nativeTuningIngress)
+                {
+                    RejectPendingNativeEquipmentTuningPanelRequest(
+                        "profile_contract");
+                }
+                return false;
+            }
+            bool exactNativeTuning =
+                view == "tuning"
+                && string.Equals(
+                    profile,
+                    "battlebox",
+                    StringComparison.Ordinal)
+                && exactNativeTuningSource;
+            bool exactNativeTuningInit =
+                exactNativeTuning
+                && extras != null
+                && extras.Count == 2
+                && extras["profile"] != null
+                && extras["profile"].Type
+                    == JTokenType.String
+                && extras["view"] != null
+                && extras["view"].Type
+                    == JTokenType.String;
+            if (nativeTuningIngress
+                && !exactNativeTuning)
+            {
+                RejectPendingNativeEquipmentTuningPanelRequest(
+                    "tuple_contract");
                 return false;
             }
             if (view == "build"
@@ -1149,6 +2483,7 @@ namespace CF7Launcher.Guardian
                     == JTokenType.String;
 
             if (!exactNativeBuild
+                && !exactNativeTuning
                 && openRequestId != null)
             {
                 LogManager.Log(
@@ -1177,9 +2512,78 @@ namespace CF7Launcher.Guardian
                 ["source"] = source,
                 ["debug"] = false
             };
+            if (_preparationNavigationV1
+                && string.Equals(
+                    view,
+                    "build",
+                    StringComparison.Ordinal))
+            {
+                initData["preparationNavigationV1"] = true;
+            }
 
             bool opened;
-            if (exactNativeBuild)
+            if (exactNativeTuning)
+            {
+                if (!exactPanelName
+                    || !exactNativeTuningInit)
+                {
+                    RejectPendingNativeEquipmentTuningPanelRequest(
+                        !exactPanelName
+                            ? "panel_contract"
+                            : "init_data_contract");
+                    return false;
+                }
+
+                string rejectionReason;
+                bool hasHostAdmission;
+                long hostAdmission;
+                int lifecycleEpoch;
+                if (!TryConsumeNativeEquipmentTuningOpenWait(
+                        openRequestId,
+                        out rejectionReason,
+                        out hasHostAdmission,
+                        out hostAdmission,
+                        out lifecycleEpoch))
+                {
+                    LogManager.Log(
+                        "event=equipment_tuning_open_rejected source=nativehud_equipment_tuning reason="
+                        + (rejectionReason ?? "unknown"));
+                    if (string.Equals(
+                            rejectionReason,
+                            "missing_preflight",
+                            StringComparison.Ordinal)
+                        && IsSuccessfulNativeEquipmentTuningDuplicate(
+                            openRequestId))
+                    {
+                        LogManager.Log(
+                            "event=equipment_tuning_open_duplicate_ignored source=nativehud_equipment_tuning reason=already_active_bound");
+                        return false;
+                    }
+                    NotifyNativeEquipmentTuningOpenFailure(
+                        rejectionReason);
+                    return false;
+                }
+                lock (_panelNavigationLifecycleLock)
+                {
+                    if (lifecycleEpoch
+                        != _panelNavigationLifecycleEpoch)
+                    {
+                        NotifyNativeEquipmentTuningOpenFailure(
+                            "lifecycle_epoch");
+                        return false;
+                    }
+                    opened =
+                        OpenPanel(
+                            "workbench",
+                            initData.ToString(
+                                Formatting.None),
+                            null,
+                            null,
+                            hasHostAdmission,
+                            hostAdmission);
+                }
+            }
+            else if (exactNativeBuild)
             {
                 string rejectionReason =
                     null;
@@ -1219,12 +2623,38 @@ namespace CF7Launcher.Guardian
                         || string.Equals(
                             openOrigin,
                             "skill_open_rollback",
+                            StringComparison.Ordinal)
+                        || string.Equals(
+                            openOrigin,
+                            "materials_return",
+                            StringComparison.Ordinal)
+                        || string.Equals(
+                            openOrigin,
+                            "intelligence_return",
                             StringComparison.Ordinal))
                     {
+                        string returnFocusAction;
+                        if (!TryNormalizeCharacterBuildReturnFocusAction(
+                                string.Equals(
+                                    openOrigin,
+                                    "materials_return",
+                                    StringComparison.Ordinal)
+                                || string.Equals(
+                                    openOrigin,
+                                    "intelligence_return",
+                                    StringComparison.Ordinal)
+                                    ? "preparation-menu"
+                                    : _preparationNavigationV1
+                                        ? "preparation-menu"
+                                        : "skills",
+                                out returnFocusAction))
+                        {
+                            return false;
+                        }
                         initData["navigationOrigin"] =
                             openOrigin;
                         initData["returnFocusAction"] =
-                            "skills";
+                            returnFocusAction;
                     }
                     if (lifecycleEpoch
                         != _panelNavigationLifecycleEpoch)
@@ -1262,6 +2692,20 @@ namespace CF7Launcher.Guardian
                 PostToWeb(
                     "{\"type\":\"toast\",\"text\":\"装备面板被当前操作阻止，请稍后重试\"}");
             }
+            else if (!opened
+                && exactNativeTuning)
+            {
+                LogManager.Log(
+                    "event=equipment_tuning_open_failed source=nativehud_equipment_tuning reason=host_gate");
+                NotifyNativeEquipmentTuningOpenFailure(
+                    "host_gate");
+            }
+            else if (opened
+                && exactNativeTuning)
+            {
+                RememberSuccessfulNativeEquipmentTuningOpen(
+                    openRequestId);
+            }
             return opened;
         }
 
@@ -1289,23 +2733,202 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private void OpenCraftingPanel(string source, string initDataExtrasJson)
+        private void OpenCraftingPanel(
+            string source,
+            string initDataExtrasJson,
+            bool exactPanelName,
+            string openRequestId)
         {
-            if (string.IsNullOrEmpty(initDataExtrasJson)) return;
+            bool exactMaterialSource =
+                string.Equals(
+                    source,
+                    "nativehud_materials",
+                    StringComparison.Ordinal);
+            bool carriesOpenRequestId =
+                openRequestId != null;
+            if (string.IsNullOrEmpty(initDataExtrasJson))
+            {
+                if (carriesOpenRequestId)
+                {
+                    RejectPendingMaterialPanelRequest(
+                        "init_data_contract");
+                }
+                LogManager.Log(
+                    "[Router] OpenCraftingPanel rejected missing extras");
+                return;
+            }
             try
             {
                 JObject extras = JObject.Parse(initDataExtrasJson);
-                string view = extras.Value<string>("view");
-                if (string.Equals(view, "materials", StringComparison.Ordinal))
+                JToken viewToken =
+                    extras["view"];
+                string view =
+                    viewToken != null
+                    && viewToken.Type == JTokenType.String
+                        ? viewToken.Value<string>()
+                        : null;
+                bool materialIngress =
+                    exactMaterialSource
+                    || carriesOpenRequestId
+                    || viewToken != null;
+                if (materialIngress)
                 {
-                    var materialInitData = new JObject
+                    bool exactMaterialContract =
+                        exactPanelName
+                        && exactMaterialSource
+                        && extras.Count == 1
+                        && string.Equals(
+                            view,
+                            "materials",
+                            StringComparison.Ordinal);
+                    if (!exactMaterialContract)
                     {
-                        ["mode"] = "runtime",
-                        ["view"] = "materials",
-                        ["source"] = source,
-                        ["debug"] = false
-                    };
-                    OpenPanel("crafting", materialInitData.ToString(Formatting.None));
+                        // A nonce-bearing near match is a target failure. A missing-nonce
+                        // legacy envelope never consumes/replaces an armed/current material wait.
+                        if (carriesOpenRequestId)
+                        {
+                            RejectPendingMaterialPanelRequest(
+                                "tuple_contract");
+                        }
+                        LogManager.Log(
+                            "event=material_panel_open_rejected reason=tuple_contract"
+                            + " source=" + source
+                            + " view=" + (view ?? "<null>"));
+                        return;
+                    }
+
+                    if (openRequestId == null)
+                    {
+                        if (HasArmedMaterialIntentOrOpenWait())
+                        {
+                            LogManager.Log(
+                                "event=material_panel_open_rejected reason=missing_open_request_id"
+                                + " pending_preserved=true");
+                            PostToWeb(
+                                "{\"type\":\"toast\",\"text\":\"正在打开材料，请稍候\"}");
+                            return;
+                        }
+                        var legacyMaterialInitData =
+                            BuildMaterialsInitData();
+                        OpenPanel(
+                            "crafting",
+                            legacyMaterialInitData.ToString(
+                                Formatting.None));
+                        LogManager.Log(
+                            "event=material_panel_open_accepted source=legacy_nativehud");
+                        return;
+                    }
+
+                    string rejectionReason;
+                    string pendingOrigin;
+                    bool hasHostAdmission;
+                    long hostAdmission;
+                    int lifecycleEpoch;
+                    bool recoverCharacterBuild;
+                    if (!TryAdmitMaterialPanelRequest(
+                            source,
+                            view,
+                            openRequestId,
+                            out rejectionReason,
+                            out pendingOrigin,
+                            out hasHostAdmission,
+                            out hostAdmission,
+                            out lifecycleEpoch,
+                            out recoverCharacterBuild))
+                    {
+                        LogManager.Log(
+                            "event=material_panel_open_rejected reason="
+                            + (rejectionReason ?? "unknown")
+                            + " source=" + source
+                            + " pending_origin="
+                            + (pendingOrigin ?? "none"));
+                        if (recoverCharacterBuild)
+                        {
+                            HandleCharacterBuildPreparationOpenFailure(
+                                CharacterBuildPreparationTarget.Materials,
+                                "material_request_"
+                                    + (rejectionReason
+                                        ?? "rejected"),
+                                lifecycleEpoch);
+                        }
+                        else if (pendingOrigin != null)
+                        {
+                            NotifyMaterialOpenFailure(
+                                rejectionReason);
+                        }
+                        return;
+                    }
+
+                    JObject materialInitData =
+                        BuildMaterialsInitData();
+                    bool opened;
+                    System.Threading.Timer failedCapabilityTimer =
+                        null;
+                    lock (_panelNavigationLifecycleLock)
+                    {
+                        bool needsReturnCapability =
+                            string.Equals(
+                                pendingOrigin,
+                                "character_build",
+                                StringComparison.Ordinal);
+                        bool capabilityArmed =
+                            !needsReturnCapability
+                            || TryArmPreparationChildReturnCapabilityLocked(
+                                CharacterBuildPreparationTarget.Materials);
+                        opened =
+                            lifecycleEpoch
+                                == _panelNavigationLifecycleEpoch
+                            && capabilityArmed
+                            && OpenPanel(
+                                "crafting",
+                                materialInitData.ToString(
+                                    Formatting.None),
+                                null,
+                                null,
+                                hasHostAdmission,
+                                hostAdmission,
+                                needsReturnCapability);
+                        if (!opened
+                            && needsReturnCapability
+                            && capabilityArmed)
+                        {
+                            failedCapabilityTimer =
+                                ClearPreparationChildReturnLocked();
+                        }
+                    }
+                    if (failedCapabilityTimer != null)
+                        failedCapabilityTimer.Dispose();
+                    if (!opened)
+                    {
+                        LogManager.Log(
+                            "event=material_panel_open_failed reason=host_gate source="
+                            + (pendingOrigin ?? source));
+                        if (string.Equals(
+                                pendingOrigin,
+                                "character_build",
+                                StringComparison.Ordinal))
+                        {
+                            HandleCharacterBuildPreparationOpenFailure(
+                                CharacterBuildPreparationTarget.Materials,
+                                "material_host_gate",
+                                lifecycleEpoch);
+                        }
+                        else
+                        {
+                            NotifyMaterialOpenFailure(
+                                "host_gate");
+                        }
+                        return;
+                    }
+                    LogManager.Log(
+                        "event=material_panel_open_accepted source="
+                        + (pendingOrigin ?? source));
+                    return;
+                }
+                if (HasArmedMaterialIntentOrOpenWait())
+                {
+                    LogManager.Log(
+                        "event=crafting_panel_open_rejected reason=material_navigation_pending");
                     return;
                 }
                 string category = extras.Value<string>("category");
@@ -1326,7 +2949,23 @@ namespace CF7Launcher.Guardian
             catch (Exception ex)
             {
                 LogManager.Log("[Router] OpenCraftingPanel extras parse failed: " + ex.Message);
+                if (carriesOpenRequestId)
+                {
+                    RejectPendingMaterialPanelRequest(
+                        "init_data_contract");
+                }
             }
+        }
+
+        private static JObject BuildMaterialsInitData()
+        {
+            return new JObject
+            {
+                ["mode"] = "runtime",
+                ["view"] = "materials",
+                ["source"] = "nativehud_materials",
+                ["debug"] = false
+            };
         }
 
         private void OpenHairdresserPanel(string source)
@@ -1406,7 +3045,8 @@ namespace CF7Launcher.Guardian
                     + (pendingOrigin ?? "none"));
                 if (recoverCharacterBuild)
                 {
-                    HandleCharacterBuildSkillOpenFailure(
+                    HandleCharacterBuildPreparationOpenFailure(
+                        CharacterBuildPreparationTarget.Skills,
                         "skill_request_"
                             + (rejectionReason
                                 ?? "rejected"),
@@ -1464,7 +3104,8 @@ namespace CF7Launcher.Guardian
                         "character_build",
                         StringComparison.Ordinal))
                 {
-                    HandleCharacterBuildSkillOpenFailure(
+                    HandleCharacterBuildPreparationOpenFailure(
+                        CharacterBuildPreparationTarget.Skills,
                         "skill_host_gate",
                         lifecycleEpoch);
                 }
@@ -1717,8 +3358,14 @@ namespace CF7Launcher.Guardian
             string returnToPanel,
             string returnToInitDataJson,
             bool requireOpenAdmission = false,
-            long openAdmission = 0)
+            long openAdmission = 0,
+            bool preservePendingPreparationChildReturn = false)
         {
+            if (!preservePendingPreparationChildReturn)
+            {
+                CancelUnboundPreparationChildReturnForOrdinaryOpen(
+                    panelName);
+            }
             if (!CanAdmitPanel("open:" + (panelName ?? "<null>")))
                 return false;
             if (!string.Equals(
@@ -1738,6 +3385,16 @@ namespace CF7Launcher.Guardian
                     StringComparison.Ordinal))
             {
                 CancelPendingNativeEquipmentBuildOpenIntent(
+                    "competing_panel");
+                CancelPendingNativeEquipmentTuningOpenIntent(
+                    "competing_panel");
+            }
+            if (!string.Equals(
+                    panelName,
+                    "crafting",
+                    StringComparison.Ordinal))
+            {
+                CancelPendingMaterialOpenIntent(
                     "competing_panel");
             }
             string currentPanel = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
@@ -1822,7 +3479,21 @@ namespace CF7Launcher.Guardian
                 // capable of releasing the lease.  Production PumpQueue is posted to the UI
                 // thread, and DoOpen independently asserts the same idempotent lease.
                 if (accepted)
-                    TrySendGameCommand("webPanelPause");
+                {
+                    ClearSuccessfulNativeEquipmentTuningOpenProof();
+                    try
+                    {
+                        TrySendGameCommand("webPanelPause");
+                    }
+                    catch (Exception ex)
+                    {
+                        // Host admission already linearized the open. A late socket exception
+                        // cannot turn that accepted edge into a rollback or duplicate open.
+                        LogManager.Log(
+                            "[Router] webPanelPause send threw after accepted Host open: "
+                            + ex.Message);
+                    }
+                }
                 return accepted;
             }
             if (_postToWeb == null) return false;
@@ -1844,6 +3515,11 @@ namespace CF7Launcher.Guardian
             string instanceId = "fallback." + DateTime.UtcNow.Ticks.ToString("x") + "."
                 + System.Threading.Interlocked.Increment(ref _fallbackPanelInstanceSequence).ToString("x");
             JObject init;
+            initDataJson =
+                EnrichPreparationChildReturnInitData(
+                    panelName,
+                    initDataJson,
+                    instanceId);
             if (panelName == "skills" && _skillTask != null)
                 initDataJson = _skillTask.EnrichPanelInitData(initDataJson, instanceId);
             try { init = string.IsNullOrEmpty(initDataJson) ? new JObject() : JObject.Parse(initDataJson); }
@@ -1861,7 +3537,17 @@ namespace CF7Launcher.Guardian
             if (panelName != "skills") _deferredFallbackSkillInitData = null;
             if (_setActivePanel != null) _setActivePanel(panelName);
             if (_onPanelStateChanged != null) _onPanelStateChanged(true);
+            ClearSuccessfulNativeEquipmentTuningOpenProof();
             return true;
+        }
+
+        private static bool IsMaterialOpenRequestIdCandidate(
+            string value)
+        {
+            return !string.IsNullOrEmpty(value)
+                && value.StartsWith(
+                    "material.open.",
+                    StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -2090,12 +3776,30 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
+            int generation;
+            string openRequestId;
+            if (!TryBeginMaterialOpenWait(
+                    "nativehud_materials",
+                    true,
+                    out generation,
+                    out openRequestId))
+            {
+                LogManager.Log(
+                    "[Router] MATERIALS rejected: material preflight admission failed");
+                PostToWeb(
+                    "{\"type\":\"toast\",\"text\":\"材料面板暂时不可用\"}");
+                return;
+            }
+
             bool delivered = false;
+            bool intentCurrent = false;
             try
             {
                 delivered =
-                    TrySendGameCommand(
-                        "openMaterialUI");
+                    TrySendMaterialPanelOpenCommandIfCurrent(
+                        generation,
+                        openRequestId,
+                        out intentCurrent);
             }
             catch (Exception ex)
             {
@@ -2104,6 +3808,18 @@ namespace CF7Launcher.Guardian
                     + ex.Message);
             }
             if (delivered) return;
+            if (!intentCurrent)
+                return;
+
+            int lifecycleEpoch;
+            if (!CancelMaterialOpenWait(
+                    generation,
+                    out lifecycleEpoch))
+            {
+                // A synchronous exact panel_request may consume the wait before the sender
+                // returns. A late false/throw result must not contradict that accepted edge.
+                return;
+            }
 
             LogManager.Log(
                 "[Router] MATERIALS openMaterialUI was not delivered");
@@ -2189,6 +3905,495 @@ namespace CF7Launcher.Guardian
                 "{\"type\":\"toast\",\"text\":\"装备面板暂时不可用，请稍后重试\"}");
         }
 
+        private void RouteEquipmentTuning()
+        {
+            if (!CanAdmitPanel("equipment_tuning"))
+            {
+                CancelPendingNativeEquipmentTuningOpenIntent(
+                    "host_admission");
+                NotifyNativeEquipmentTuningOpenFailure(
+                    "host_admission");
+                return;
+            }
+            if (!WebInventoryWorkbenchEnabled)
+            {
+                CancelPendingNativeEquipmentTuningOpenIntent(
+                    "workbench_disabled");
+                LogManager.Log(
+                    "event=equipment_tuning_open_rejected source=nativehud_equipment_tuning reason=workbench_disabled");
+                NotifyNativeEquipmentTuningOpenFailure(
+                    "workbench_disabled");
+                return;
+            }
+
+            LogManager.Log(
+                "event=equipment_tuning_open_requested source=nativehud_equipment_tuning");
+            int generation;
+            string openRequestId;
+            if (!TryBeginNativeEquipmentTuningOpenWait(
+                    out generation,
+                    out openRequestId))
+            {
+                LogManager.Log(
+                    "event=equipment_tuning_open_rejected source=nativehud_equipment_tuning reason=host_not_idle");
+                NotifyNativeEquipmentTuningOpenFailure(
+                    "host_not_idle");
+                return;
+            }
+
+            bool intentCurrent;
+            if (TrySendNativeEquipmentTuningPreflightIfCurrent(
+                    generation,
+                    openRequestId,
+                    out intentCurrent))
+            {
+                return;
+            }
+            if (!intentCurrent)
+                return;
+            if (!CancelNativeEquipmentTuningOpenWait(
+                    generation))
+            {
+                return;
+            }
+            LogManager.Log(
+                "event=equipment_tuning_open_failed source=nativehud_equipment_tuning reason=preflight_send");
+            NotifyNativeEquipmentTuningOpenFailure(
+                "preflight_send");
+        }
+
+        private bool TrySendNativeEquipmentTuningPreflight(
+            string openRequestId)
+        {
+            if (!IsOpaqueToken(openRequestId))
+                return false;
+            string payload =
+                "{\"task\":\"cmd\",\"action\":\"openInventoryWorkbench\","
+                + "\"profile\":\"battlebox\",\"view\":\"tuning\","
+                + "\"source\":\"nativehud_equipment_tuning\","
+                + "\"openRequestId\":\""
+                + EscapeJsonString(openRequestId)
+                + "\"}\0";
+            if (_gameCommandSenderOverride != null)
+                return _gameCommandSenderOverride(
+                    payload);
+            if (_socketServer == null
+                || !_socketServer.IsClientReady)
+            {
+                return false;
+            }
+            return _socketServer.TrySend(
+                payload);
+        }
+
+        private bool TrySendNativeEquipmentTuningPreflightIfCurrent(
+            int generation,
+            string openRequestId,
+            out bool intentCurrent)
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                intentCurrent =
+                    _nativeEquipmentTuningOpen.Pending
+                    && generation
+                        == _nativeEquipmentTuningOpen.Generation
+                    && string.Equals(
+                        openRequestId,
+                        _nativeEquipmentTuningOpen.RequestId,
+                        StringComparison.Ordinal);
+                if (!intentCurrent)
+                    return false;
+                return TrySendNativeEquipmentTuningPreflight(
+                    openRequestId);
+            }
+        }
+
+        private bool TryBeginNativeEquipmentTuningOpenWait(
+            out int generation,
+            out string openRequestId)
+        {
+            generation = 0;
+            openRequestId = null;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_nativeEquipmentTuningOpen.Pending
+                    || _nativeEquipmentBuildOpen.Pending
+                    || _skillOpenPending
+                    || _materialOpen.Pending
+                    || _characterBuildPreparationNavigation.Pending
+                    || _pendingSkillsCharacterBuildNavigationInstance
+                        != null
+                    || _preparationChildReturn.Pending
+                    || (_equipmentTuningTask != null
+                        && _equipmentTuningTask.HasBoundPanel))
+                {
+                    return false;
+                }
+
+                string activePanel;
+                string activeInstance;
+                bool hasHostAdmission;
+                long hostAdmission;
+                if (!TryCapturePanelOpenBaseline(
+                        out activePanel,
+                        out activeInstance,
+                        out hasHostAdmission,
+                        out hostAdmission)
+                    || !string.IsNullOrEmpty(activePanel)
+                    || !string.IsNullOrEmpty(activeInstance))
+                {
+                    return false;
+                }
+
+                _panelNavigationLifecycleEpoch++;
+                ArmNativeEquipmentWorkbenchOpenWaitLocked(
+                    _nativeEquipmentTuningOpen,
+                    "tuning.open.",
+                    "nativehud_equipment_tuning",
+                    activePanel,
+                    activeInstance,
+                    hasHostAdmission,
+                    hostAdmission,
+                    NativeEquipmentTuningOpenTimeoutMs,
+                    OnNativeEquipmentTuningOpenTimeout,
+                    out generation,
+                    out openRequestId);
+            }
+            return true;
+        }
+
+        private bool TryConsumeNativeEquipmentWorkbenchOpenWait(
+            FixedPanelOpenWait wait,
+            string openRequestId,
+            bool clearOnNonceMismatch,
+            out string origin,
+            out string rejectionReason,
+            out bool hasHostAdmission,
+            out long hostAdmission,
+            out int lifecycleEpoch)
+        {
+            System.Threading.Timer timer =
+                null;
+            lock (_panelNavigationLifecycleLock)
+            {
+                origin =
+                    wait.Pending
+                        ? wait.Origin
+                        : null;
+                hasHostAdmission =
+                    false;
+                hostAdmission =
+                    0;
+                lifecycleEpoch =
+                    0;
+                if (!wait.Pending)
+                {
+                    rejectionReason =
+                        "missing_preflight";
+                    return false;
+                }
+                if (!IsOpaqueToken(openRequestId)
+                    || !string.Equals(
+                        openRequestId,
+                        wait.RequestId,
+                        StringComparison.Ordinal))
+                {
+                    if (clearOnNonceMismatch)
+                        timer = wait.Clear();
+                    rejectionReason =
+                        "preflight_nonce";
+                }
+                else
+                {
+                    string activePanel =
+                        _panelHost != null
+                            ? _panelHost.ActivePanelName
+                            : _activeFallbackPanelName;
+                    string activeInstance =
+                        _panelHost != null
+                            ? _panelHost.ActivePanelInstanceId
+                            : _activeFallbackPanelInstanceId;
+                    if (wait.LifecycleEpoch
+                            != _panelNavigationLifecycleEpoch)
+                    {
+                        timer = wait.Clear();
+                        rejectionReason =
+                            "lifecycle_epoch";
+                    }
+                    else if (!string.Equals(
+                            activePanel,
+                            wait.BaselinePanel,
+                            StringComparison.Ordinal)
+                        || !string.Equals(
+                            activeInstance,
+                            wait.BaselineInstance,
+                            StringComparison.Ordinal))
+                    {
+                        timer = wait.Clear();
+                        rejectionReason =
+                            "competing_panel";
+                    }
+                    else if (wait.HasHostAdmission
+                        && (_panelHost == null
+                            || !_panelHost
+                                .IsOpenAdmissionCurrent(
+                                    wait.HostAdmission,
+                                    wait.BaselinePanel,
+                                    wait.BaselineInstance)))
+                    {
+                        timer = wait.Clear();
+                        rejectionReason =
+                            "competing_host_lifecycle";
+                    }
+                    else
+                    {
+                        hasHostAdmission =
+                            wait.HasHostAdmission;
+                        hostAdmission =
+                            wait.HostAdmission;
+                        lifecycleEpoch =
+                            wait.LifecycleEpoch;
+                        timer = wait.Clear();
+                        rejectionReason =
+                            null;
+                    }
+                }
+            }
+            if (timer != null)
+                timer.Dispose();
+            return rejectionReason == null;
+        }
+
+        private bool TryConsumeNativeEquipmentTuningOpenWait(
+            string openRequestId,
+            out string rejectionReason,
+            out bool hasHostAdmission,
+            out long hostAdmission,
+            out int lifecycleEpoch)
+        {
+            string ignoredOrigin;
+            return TryConsumeNativeEquipmentWorkbenchOpenWait(
+                _nativeEquipmentTuningOpen,
+                openRequestId,
+                true,
+                out ignoredOrigin,
+                out rejectionReason,
+                out hasHostAdmission,
+                out hostAdmission,
+                out lifecycleEpoch);
+        }
+
+        private void OnNativeEquipmentTuningOpenTimeout(
+            int generation,
+            int lifecycleEpoch)
+        {
+            System.Threading.Timer timer;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_nativeEquipmentTuningOpen.Pending
+                    || generation
+                        != _nativeEquipmentTuningOpen.Generation
+                    || lifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || lifecycleEpoch
+                        != _nativeEquipmentTuningOpen.LifecycleEpoch)
+                {
+                    return;
+                }
+                timer =
+                    ClearNativeEquipmentTuningOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            LogManager.Log(
+                "event=equipment_tuning_open_failed source=nativehud_equipment_tuning reason=panel_request_timeout");
+            NotifyNativeEquipmentTuningOpenFailure(
+                "panel_request_timeout");
+        }
+
+        private bool CancelNativeEquipmentTuningOpenWait(
+            int expectedGeneration = 0)
+        {
+            System.Threading.Timer timer;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_nativeEquipmentTuningOpen.Pending
+                    || (expectedGeneration != 0
+                        && expectedGeneration
+                            != _nativeEquipmentTuningOpen.Generation))
+                {
+                    return false;
+                }
+                timer =
+                    ClearNativeEquipmentTuningOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            return true;
+        }
+
+        private bool IsPendingNativeEquipmentTuningOpenRequestId(
+            string openRequestId)
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                return _nativeEquipmentTuningOpen.Pending
+                    && string.Equals(
+                        openRequestId,
+                        _nativeEquipmentTuningOpen.RequestId,
+                        StringComparison.Ordinal);
+            }
+        }
+
+        internal bool CancelPendingNativeEquipmentTuningOpenIntent(
+            string reason)
+        {
+            System.Threading.Timer timer;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_nativeEquipmentTuningOpen.Pending)
+                    return false;
+                timer =
+                    ClearNativeEquipmentTuningOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            LogManager.Log(
+                "event=equipment_tuning_open_cancelled source=nativehud_equipment_tuning reason="
+                + (reason ?? "unknown"));
+            return true;
+        }
+
+        private bool TryRejectUncorrelatedNativeEquipmentTuningPanelRequest()
+        {
+            if (!CancelPendingNativeEquipmentTuningOpenIntent(
+                    "uncorrelated_workbench"))
+            {
+                return false;
+            }
+            LogManager.Log(
+                "event=equipment_tuning_open_rejected source=nativehud_equipment_tuning reason=uncorrelated_workbench pending_cleared=true");
+            NotifyNativeEquipmentTuningOpenFailure(
+                "uncorrelated_workbench");
+            return true;
+        }
+
+        private void RememberSuccessfulNativeEquipmentTuningOpen(
+            string openRequestId)
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                _lastSuccessfulNativeEquipmentTuningOpenRequestId =
+                    openRequestId;
+            }
+        }
+
+        private void ClearSuccessfulNativeEquipmentTuningOpenProof()
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                ClearSuccessfulNativeEquipmentTuningOpenProofLocked();
+            }
+        }
+
+        private void ClearSuccessfulNativeEquipmentTuningOpenProofLocked()
+        {
+            _lastSuccessfulNativeEquipmentTuningOpenRequestId =
+                null;
+        }
+
+        private bool IsSuccessfulNativeEquipmentTuningDuplicate(
+            string openRequestId)
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!string.Equals(
+                        openRequestId,
+                        _lastSuccessfulNativeEquipmentTuningOpenRequestId,
+                        StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                string activePanel =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelName
+                        : _activeFallbackPanelName;
+                string activeInstance =
+                    _panelHost != null
+                        ? _panelHost.ActivePanelInstanceId
+                        : _activeFallbackPanelInstanceId;
+                if (!string.Equals(
+                        activePanel,
+                        "workbench",
+                        StringComparison.Ordinal)
+                    || string.IsNullOrEmpty(
+                        activeInstance)
+                    || _equipmentTuningTask == null
+                    || !_equipmentTuningTask.HasBoundPanel
+                    || !string.Equals(
+                        _equipmentTuningTask.PanelInstanceId,
+                        activeInstance,
+                        StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        internal bool RejectPendingNativeEquipmentTuningPanelRequest(
+            string reason)
+        {
+            bool cleared =
+                CancelPendingNativeEquipmentTuningOpenIntent(
+                    reason);
+            LogManager.Log(
+                "event=equipment_tuning_open_rejected source=nativehud_equipment_tuning reason="
+                + (reason ?? "unknown")
+                + " pending_cleared="
+                + (cleared ? "true" : "false"));
+            NotifyNativeEquipmentTuningOpenFailure(
+                reason);
+            return cleared;
+        }
+
+        private void NotifyNativeEquipmentTuningOpenFailure(
+            string reason)
+        {
+            string text =
+                string.Equals(
+                    reason,
+                    "host_not_idle",
+                    StringComparison.Ordinal)
+                || string.Equals(
+                    reason,
+                    "competing_panel",
+                    StringComparison.Ordinal)
+                    ? "请先关闭当前面板或等待当前操作完成"
+                    : string.Equals(
+                        reason,
+                        "uncorrelated_workbench",
+                        StringComparison.Ordinal)
+                        ? "当前操作发生冲突，请重试"
+                        : string.Equals(
+                            reason,
+                            "missing_preflight",
+                            StringComparison.Ordinal)
+                            ? "装备调制请求已处理或过期"
+                    : string.Equals(
+                        reason,
+                        "panel_request_timeout",
+                        StringComparison.Ordinal)
+                        ? "装备调制服务未就绪，请稍后重试"
+                        : "装备调制未打开，请重试";
+            PostToWeb(
+                new JObject
+                {
+                    ["type"] = "toast",
+                    ["text"] = text
+                }.ToString(Formatting.None));
+        }
+
         private bool TrySendNativeEquipmentBuildPreflight(
             string openRequestId)
         {
@@ -2221,12 +4426,12 @@ namespace CF7Launcher.Guardian
             lock (_panelNavigationLifecycleLock)
             {
                 intentCurrent =
-                    _nativeEquipmentBuildOpenPending
+                    _nativeEquipmentBuildOpen.Pending
                     && generation
-                        == _nativeEquipmentBuildOpenGeneration
+                        == _nativeEquipmentBuildOpen.Generation
                     && string.Equals(
                         openRequestId,
-                        _nativeEquipmentBuildOpenRequestId,
+                        _nativeEquipmentBuildOpen.RequestId,
                         StringComparison.Ordinal);
                 if (!intentCurrent)
                     return false;
@@ -2279,6 +4484,61 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
+        private void ArmNativeEquipmentWorkbenchOpenWaitLocked(
+            FixedPanelOpenWait wait,
+            string requestIdPrefix,
+            string origin,
+            string activePanel,
+            string activeInstance,
+            bool hasHostAdmission,
+            long hostAdmission,
+            int timeoutMs,
+            Action<int, int> onTimeout,
+            out int generation,
+            out string openRequestId)
+        {
+            generation =
+                ++wait.Generation;
+            openRequestId =
+                requestIdPrefix
+                + generation.ToString("x")
+                + "."
+                + Guid.NewGuid().ToString("N");
+            wait.Pending =
+                true;
+            wait.RequestId =
+                openRequestId;
+            wait.Origin =
+                origin;
+            wait.BaselinePanel =
+                activePanel;
+            wait.BaselineInstance =
+                activeInstance;
+            wait.HasHostAdmission =
+                hasHostAdmission;
+            wait.HostAdmission =
+                hostAdmission;
+            wait.LifecycleEpoch =
+                _panelNavigationLifecycleEpoch;
+            int timerGeneration =
+                generation;
+            int timerLifecycleEpoch =
+                wait.LifecycleEpoch;
+            wait.Timer =
+                new System.Threading.Timer(
+                    delegate
+                    {
+                        onTimeout(
+                            timerGeneration,
+                            timerLifecycleEpoch);
+                    },
+                    null,
+                    Math.Max(
+                        1,
+                        timeoutMs),
+                    System.Threading.Timeout.Infinite);
+        }
+
         private bool TryBeginNativeEquipmentBuildOpenWait(
             string origin,
             bool isDirectUserIntent,
@@ -2289,11 +4549,21 @@ namespace CF7Launcher.Guardian
             openRequestId = null;
             System.Threading.Timer cancelledSkillTimer =
                 null;
+            System.Threading.Timer cancelledMaterialTimer =
+                null;
+            System.Threading.Timer supersededForwardTimer =
+                null;
             System.Threading.Timer supersededReverseTimer =
+                null;
+            System.Threading.Timer supersededPreparationChildTimer =
                 null;
             lock (_panelNavigationLifecycleLock)
             {
-                if (_nativeEquipmentBuildOpenPending)
+                if (_nativeEquipmentBuildOpen.Pending
+                    || _nativeEquipmentTuningOpen.Pending
+                    || (!isDirectUserIntent
+                        && (_materialOpen.Pending
+                            || _preparationChildReturn.Pending)))
                     return false;
 
                 string activePanel;
@@ -2315,12 +4585,21 @@ namespace CF7Launcher.Guardian
                     // navigation.  Advance the shared epoch so a timeout/rollback already in
                     // flight cannot recreate the superseded intent.
                     _panelNavigationLifecycleEpoch++;
-                    ClearCharacterBuildSkillsNavigationLocked();
+                    if (_characterBuildPreparationNavigation.Pending)
+                    {
+                        supersededForwardTimer =
+                            ClearCharacterBuildPreparationNavigationLocked();
+                    }
                     if (_pendingSkillsCharacterBuildNavigationInstance
                         != null)
                     {
                         supersededReverseTimer =
                             ClearSkillsCharacterBuildNavigationLocked();
+                    }
+                    if (_preparationChildReturn.Pending)
+                    {
+                        supersededPreparationChildTimer =
+                            ClearPreparationChildReturnLocked();
                     }
                 }
 
@@ -2328,54 +4607,38 @@ namespace CF7Launcher.Guardian
                 if (_skillOpenPending)
                     cancelledSkillTimer =
                         ClearSkillOpenWaitLocked();
+                if (isDirectUserIntent
+                    && _materialOpen.Pending)
+                {
+                    cancelledMaterialTimer =
+                        ClearMaterialOpenWaitLocked();
+                }
 
-                generation =
-                    ++_nativeEquipmentBuildOpenGeneration;
-                _nativeEquipmentBuildOpenPending =
-                    true;
-                openRequestId =
-                    "workbench.open."
-                    + generation.ToString("x")
-                    + "."
-                    + Guid.NewGuid().ToString("N");
-                _nativeEquipmentBuildOpenRequestId =
-                    openRequestId;
-                _nativeEquipmentBuildOpenOrigin =
+                ArmNativeEquipmentWorkbenchOpenWaitLocked(
+                    _nativeEquipmentBuildOpen,
+                    "workbench.open.",
                     string.IsNullOrEmpty(origin)
                         ? "unknown"
-                        : origin;
-                _nativeEquipmentBuildOpenBaselinePanel =
-                    activePanel;
-                _nativeEquipmentBuildOpenBaselineInstance =
-                    activeInstance;
-                _nativeEquipmentBuildOpenHasHostAdmission =
-                    hasHostAdmission;
-                _nativeEquipmentBuildOpenHostAdmission =
-                    hostAdmission;
-                _nativeEquipmentBuildOpenLifecycleEpoch =
-                    _panelNavigationLifecycleEpoch;
-                int timerGeneration =
-                    generation;
-                int timerLifecycleEpoch =
-                    _nativeEquipmentBuildOpenLifecycleEpoch;
-                _nativeEquipmentBuildOpenTimer =
-                    new System.Threading.Timer(
-                        delegate
-                        {
-                            OnNativeEquipmentBuildOpenTimeout(
-                                timerGeneration,
-                                timerLifecycleEpoch);
-                        },
-                        null,
-                        Math.Max(
-                            1,
-                            NativeEquipmentBuildOpenTimeoutMs),
-                        System.Threading.Timeout.Infinite);
+                        : origin,
+                    activePanel,
+                    activeInstance,
+                    hasHostAdmission,
+                    hostAdmission,
+                    NativeEquipmentBuildOpenTimeoutMs,
+                    OnNativeEquipmentBuildOpenTimeout,
+                    out generation,
+                    out openRequestId);
             }
             if (cancelledSkillTimer != null)
                 cancelledSkillTimer.Dispose();
+            if (cancelledMaterialTimer != null)
+                cancelledMaterialTimer.Dispose();
+            if (supersededForwardTimer != null)
+                supersededForwardTimer.Dispose();
             if (supersededReverseTimer != null)
                 supersededReverseTimer.Dispose();
+            if (supersededPreparationChildTimer != null)
+                supersededPreparationChildTimer.Dispose();
             return true;
         }
 
@@ -2387,87 +4650,15 @@ namespace CF7Launcher.Guardian
             out long hostAdmission,
             out int lifecycleEpoch)
         {
-            System.Threading.Timer timer;
-            lock (_panelNavigationLifecycleLock)
-            {
-                hasHostAdmission =
-                    false;
-                hostAdmission =
-                    0;
-                lifecycleEpoch =
-                    0;
-                origin =
-                    _nativeEquipmentBuildOpenPending
-                        ? _nativeEquipmentBuildOpenOrigin
-                        : null;
-                if (!_nativeEquipmentBuildOpenPending)
-                {
-                    rejectionReason =
-                        "missing_preflight";
-                    return false;
-                }
-                if (!IsOpaqueToken(openRequestId)
-                    || !string.Equals(
-                        openRequestId,
-                        _nativeEquipmentBuildOpenRequestId,
-                        StringComparison.Ordinal))
-                {
-                    rejectionReason =
-                        "preflight_nonce";
-                    return false;
-                }
-                string activePanel =
-                    _panelHost != null
-                        ? _panelHost.ActivePanelName
-                        : _activeFallbackPanelName;
-                string activeInstance =
-                    _panelHost != null
-                        ? _panelHost.ActivePanelInstanceId
-                        : _activeFallbackPanelInstanceId;
-                if (!string.Equals(
-                        activePanel,
-                        _nativeEquipmentBuildOpenBaselinePanel,
-                        StringComparison.Ordinal)
-                    || !string.Equals(
-                        activeInstance,
-                        _nativeEquipmentBuildOpenBaselineInstance,
-                        StringComparison.Ordinal))
-                {
-                    timer =
-                        ClearNativeEquipmentBuildOpenWaitLocked();
-                    rejectionReason =
-                        "competing_panel";
-                }
-                else if (_nativeEquipmentBuildOpenHasHostAdmission
-                    && (_panelHost == null
-                        || !_panelHost
-                            .IsOpenAdmissionCurrent(
-                                _nativeEquipmentBuildOpenHostAdmission,
-                                _nativeEquipmentBuildOpenBaselinePanel,
-                                _nativeEquipmentBuildOpenBaselineInstance)))
-                {
-                    timer =
-                        ClearNativeEquipmentBuildOpenWaitLocked();
-                    rejectionReason =
-                        "competing_host_lifecycle";
-                }
-                else
-                {
-                    hasHostAdmission =
-                        _nativeEquipmentBuildOpenHasHostAdmission;
-                    hostAdmission =
-                        _nativeEquipmentBuildOpenHostAdmission;
-                    lifecycleEpoch =
-                        _nativeEquipmentBuildOpenLifecycleEpoch;
-                    timer =
-                        ClearNativeEquipmentBuildOpenWaitLocked();
-                    rejectionReason =
-                        null;
-                }
-            }
-            if (timer != null)
-                timer.Dispose();
-            return rejectionReason == null;
+            return TryConsumeNativeEquipmentWorkbenchOpenWait(
+                _nativeEquipmentBuildOpen,
+                openRequestId,
+                false,
+                out origin,
+                out rejectionReason,
+                out hasHostAdmission,
+                out hostAdmission,
+                out lifecycleEpoch);
         }
 
         private void OnNativeEquipmentBuildOpenTimeout(
@@ -2479,13 +4670,13 @@ namespace CF7Launcher.Guardian
             string origin;
             lock (_panelNavigationLifecycleLock)
             {
-                if (!_nativeEquipmentBuildOpenPending
+                if (!_nativeEquipmentBuildOpen.Pending
                     || generation
-                        != _nativeEquipmentBuildOpenGeneration
+                        != _nativeEquipmentBuildOpen.Generation
                     || lifecycleEpoch
                         != _panelNavigationLifecycleEpoch
                     || lifecycleEpoch
-                        != _nativeEquipmentBuildOpenLifecycleEpoch)
+                        != _nativeEquipmentBuildOpen.LifecycleEpoch)
                 {
                     return;
                 }
@@ -2494,7 +4685,7 @@ namespace CF7Launcher.Guardian
                         ? _panelHost.ActivePanelName
                         : _activeFallbackPanelName;
                 origin =
-                    _nativeEquipmentBuildOpenOrigin;
+                    _nativeEquipmentBuildOpen.Origin;
                 timer =
                     ClearNativeEquipmentBuildOpenWaitLocked();
             }
@@ -2521,6 +4712,15 @@ namespace CF7Launcher.Guardian
                     "skills_return",
                     StringComparison.Ordinal)
                     ? "{\"type\":\"toast\",\"text\":\"返回构筑失败，请从装备入口重试\"}"
+                    : string.Equals(
+                        origin,
+                        "materials_return",
+                        StringComparison.Ordinal)
+                        || string.Equals(
+                            origin,
+                            "intelligence_return",
+                            StringComparison.Ordinal)
+                        ? "{\"type\":\"toast\",\"text\":\"返回装备失败，请从装备入口重试\"}"
                     : "{\"type\":\"toast\",\"text\":\"装备服务未就绪，请稍后重试\"}");
         }
 
@@ -2530,10 +4730,10 @@ namespace CF7Launcher.Guardian
             System.Threading.Timer timer;
             lock (_panelNavigationLifecycleLock)
             {
-                if (!_nativeEquipmentBuildOpenPending
+                if (!_nativeEquipmentBuildOpen.Pending
                     || (expectedGeneration != 0
                         && expectedGeneration
-                            != _nativeEquipmentBuildOpenGeneration))
+                            != _nativeEquipmentBuildOpen.Generation))
                 {
                     return false;
                 }
@@ -2552,10 +4752,10 @@ namespace CF7Launcher.Guardian
             string origin;
             lock (_panelNavigationLifecycleLock)
             {
-                if (!_nativeEquipmentBuildOpenPending)
+                if (!_nativeEquipmentBuildOpen.Pending)
                     return false;
                 origin =
-                    _nativeEquipmentBuildOpenOrigin;
+                    _nativeEquipmentBuildOpen.Origin;
                 timer =
                     ClearNativeEquipmentBuildOpenWaitLocked();
             }
@@ -2574,15 +4774,33 @@ namespace CF7Launcher.Guardian
                 null;
             System.Threading.Timer nativeTimer =
                 null;
+            System.Threading.Timer tuningTimer =
+                null;
+            System.Threading.Timer materialTimer =
+                null;
+            System.Threading.Timer forwardTimer =
+                null;
             System.Threading.Timer reverseTimer =
+                null;
+            System.Threading.Timer preparationChildTimer =
                 null;
             string skillOrigin =
                 null;
             string nativeOrigin =
                 null;
+            bool tuningPending =
+                false;
+            string materialOrigin =
+                null;
             string forwardInstance =
                 null;
+            string forwardTarget =
+                null;
             string reverseInstance =
+                null;
+            string preparationChildPanel =
+                null;
+            string preparationChildInstance =
                 null;
             lock (_panelNavigationLifecycleLock)
             {
@@ -2596,25 +4814,61 @@ namespace CF7Launcher.Guardian
                     skillTimer =
                         ClearSkillOpenWaitLocked();
                 }
-                if (_nativeEquipmentBuildOpenPending)
+                if (_nativeEquipmentBuildOpen.Pending)
                 {
                     nativeOrigin =
-                        _nativeEquipmentBuildOpenOrigin;
+                        _nativeEquipmentBuildOpen.Origin;
                     nativeTimer =
                         ClearNativeEquipmentBuildOpenWaitLocked();
                 }
-                forwardInstance =
-                    _pendingCharacterBuildSkillsNavigationInstance;
-                ClearCharacterBuildSkillsNavigationLocked();
+                if (_nativeEquipmentTuningOpen.Pending)
+                {
+                    tuningPending =
+                        true;
+                    tuningTimer =
+                        ClearNativeEquipmentTuningOpenWaitLocked();
+                }
+                if (_materialOpen.Pending)
+                {
+                    materialOrigin =
+                        _materialOpen.Origin;
+                    materialTimer =
+                        ClearMaterialOpenWaitLocked();
+                }
+                ClearSuccessfulNativeEquipmentTuningOpenProofLocked();
+                if (_characterBuildPreparationNavigation.Pending)
+                {
+                    forwardInstance =
+                        _characterBuildPreparationNavigation.PanelInstanceId;
+                    forwardTarget =
+                        CharacterBuildPreparationTargetName(
+                            _characterBuildPreparationNavigation.Target);
+                    forwardTimer =
+                        ClearCharacterBuildPreparationNavigationLocked();
+                }
                 reverseInstance =
                     _pendingSkillsCharacterBuildNavigationInstance;
                 if (reverseInstance != null)
                     reverseTimer =
                         ClearSkillsCharacterBuildNavigationLocked();
+                if (_preparationChildReturn.Pending)
+                {
+                    preparationChildPanel =
+                        _preparationChildReturn.PanelName;
+                    preparationChildInstance =
+                        _preparationChildReturn.PanelInstanceId;
+                    preparationChildTimer =
+                        ClearPreparationChildReturnLocked();
+                }
             }
             if (skillTimer != null) skillTimer.Dispose();
             if (nativeTimer != null) nativeTimer.Dispose();
+            if (tuningTimer != null) tuningTimer.Dispose();
+            if (materialTimer != null) materialTimer.Dispose();
+            if (forwardTimer != null) forwardTimer.Dispose();
             if (reverseTimer != null) reverseTimer.Dispose();
+            if (preparationChildTimer != null)
+                preparationChildTimer.Dispose();
             if (skillOrigin != null)
             {
                 LogManager.Log(
@@ -2629,11 +4883,25 @@ namespace CF7Launcher.Guardian
                     + nativeOrigin + " reason="
                     + (reason ?? "unknown"));
             }
+            if (tuningPending)
+            {
+                LogManager.Log(
+                    "event=equipment_tuning_open_cancelled source=nativehud_equipment_tuning reason="
+                    + (reason ?? "unknown"));
+            }
+            if (materialOrigin != null)
+            {
+                LogManager.Log(
+                    "event=material_panel_open_cancelled source="
+                    + materialOrigin + " reason="
+                    + (reason ?? "unknown"));
+            }
             if (forwardInstance != null)
             {
                 LogManager.Log(
-                    "event=character_build_skills_navigation_cancelled panel_instance="
-                    + forwardInstance + " reason="
+                    "event=character_build_preparation_navigation_cancelled target="
+                    + (forwardTarget ?? "unknown")
+                    + " panel_instance=" + forwardInstance + " reason="
                     + (reason ?? "unknown"));
             }
             if (reverseInstance != null)
@@ -2643,32 +4911,25 @@ namespace CF7Launcher.Guardian
                     + reverseInstance + " reason="
                     + (reason ?? "unknown"));
             }
+            if (preparationChildPanel != null)
+            {
+                LogManager.Log(
+                    "event=preparation_child_character_build_navigation_cancelled panel="
+                    + preparationChildPanel
+                    + " panel_instance="
+                    + (preparationChildInstance ?? "unbound")
+                    + " reason=" + (reason ?? "unknown"));
+            }
         }
 
         private System.Threading.Timer ClearNativeEquipmentBuildOpenWaitLocked()
         {
-            _nativeEquipmentBuildOpenPending =
-                false;
-            _nativeEquipmentBuildOpenGeneration++;
-            _nativeEquipmentBuildOpenRequestId =
-                null;
-            _nativeEquipmentBuildOpenOrigin =
-                null;
-            _nativeEquipmentBuildOpenBaselinePanel =
-                null;
-            _nativeEquipmentBuildOpenBaselineInstance =
-                null;
-            _nativeEquipmentBuildOpenHasHostAdmission =
-                false;
-            _nativeEquipmentBuildOpenHostAdmission =
-                0;
-            _nativeEquipmentBuildOpenLifecycleEpoch =
-                0;
-            System.Threading.Timer timer =
-                _nativeEquipmentBuildOpenTimer;
-            _nativeEquipmentBuildOpenTimer =
-                null;
-            return timer;
+            return _nativeEquipmentBuildOpen.Clear();
+        }
+
+        private System.Threading.Timer ClearNativeEquipmentTuningOpenWaitLocked()
+        {
+            return _nativeEquipmentTuningOpen.Clear();
         }
 
         private void SendGameCommand(string action)
@@ -2693,6 +4954,505 @@ namespace CF7Launcher.Guardian
             if (_gameCommandSenderOverride != null) return _gameCommandSenderOverride(payload);
             if (_socketServer == null || !_socketServer.IsClientReady) return false;
             return _socketServer.TrySend(payload);
+        }
+
+        private bool TrySendMaterialPanelOpenCommand(
+            string openRequestId)
+        {
+            if (!IsOpaqueToken(openRequestId))
+                return false;
+            string payload =
+                "{\"task\":\"cmd\",\"action\":\"openMaterialUI\","
+                + "\"openRequestId\":\""
+                + EscapeJsonString(openRequestId)
+                + "\"}\0";
+            if (_gameCommandSenderOverride != null)
+                return _gameCommandSenderOverride(payload);
+            if (_socketServer == null
+                || !_socketServer.IsClientReady)
+            {
+                return false;
+            }
+            return _socketServer.TrySend(payload);
+        }
+
+        private bool TrySendMaterialPanelOpenCommandIfCurrent(
+            int generation,
+            string openRequestId,
+            out bool intentCurrent)
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                intentCurrent =
+                    _materialOpen.Pending
+                    && generation
+                        == _materialOpen.Generation
+                    && string.Equals(
+                        openRequestId,
+                        _materialOpen.RequestId,
+                        StringComparison.Ordinal);
+                if (!intentCurrent)
+                    return false;
+                return TrySendMaterialPanelOpenCommand(
+                    openRequestId);
+            }
+        }
+
+        private bool TryBeginMaterialOpenWait(
+            string origin,
+            bool isDirectUserIntent,
+            out int generation,
+            out string openRequestId)
+        {
+            System.Threading.Timer previousMaterialTimer =
+                null;
+            System.Threading.Timer cancelledSkillTimer =
+                null;
+            System.Threading.Timer cancelledNativeTimer =
+                null;
+            System.Threading.Timer supersededForwardTimer =
+                null;
+            System.Threading.Timer supersededReverseTimer =
+                null;
+            System.Threading.Timer supersededPreparationChildTimer =
+                null;
+            generation =
+                0;
+            openRequestId =
+                null;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_nativeEquipmentTuningOpen.Pending)
+                    return false;
+                if (!isDirectUserIntent
+                    && (_materialOpen.Pending
+                        || _skillOpenPending
+                        || _nativeEquipmentBuildOpen.Pending
+                        || _preparationChildReturn.Pending))
+                {
+                    return false;
+                }
+
+                string activePanel;
+                string activeInstance;
+                bool hasHostAdmission;
+                long hostAdmission;
+                if (!TryCapturePanelOpenBaseline(
+                        out activePanel,
+                        out activeInstance,
+                        out hasHostAdmission,
+                        out hostAdmission)
+                    || !string.IsNullOrEmpty(activePanel)
+                    || !string.IsNullOrEmpty(activeInstance))
+                {
+                    return false;
+                }
+
+                if (isDirectUserIntent)
+                {
+                    _panelNavigationLifecycleEpoch++;
+                    if (_characterBuildPreparationNavigation.Pending)
+                    {
+                        supersededForwardTimer =
+                            ClearCharacterBuildPreparationNavigationLocked();
+                    }
+                    if (_pendingSkillsCharacterBuildNavigationInstance
+                        != null)
+                    {
+                        supersededReverseTimer =
+                            ClearSkillsCharacterBuildNavigationLocked();
+                    }
+                    if (_preparationChildReturn.Pending)
+                    {
+                        supersededPreparationChildTimer =
+                            ClearPreparationChildReturnLocked();
+                    }
+                    if (_materialOpen.Pending)
+                        previousMaterialTimer =
+                            ClearMaterialOpenWaitLocked();
+                    if (_skillOpenPending)
+                        cancelledSkillTimer =
+                            ClearSkillOpenWaitLocked();
+                    if (_nativeEquipmentBuildOpen.Pending)
+                        cancelledNativeTimer =
+                            ClearNativeEquipmentBuildOpenWaitLocked();
+                }
+
+                generation =
+                    ++_materialOpen.Generation;
+                openRequestId =
+                    "material.open."
+                    + generation.ToString("x")
+                    + "."
+                    + Guid.NewGuid().ToString("N");
+                _materialOpen.Pending =
+                    true;
+                _materialOpen.RequestId =
+                    openRequestId;
+                _materialOpen.Origin =
+                    string.IsNullOrEmpty(origin)
+                        ? "unknown"
+                        : origin;
+                _materialOpen.BaselinePanel =
+                    activePanel;
+                _materialOpen.BaselineInstance =
+                    activeInstance;
+                _materialOpen.HasHostAdmission =
+                    hasHostAdmission;
+                _materialOpen.HostAdmission =
+                    hostAdmission;
+                _materialOpen.LifecycleEpoch =
+                    _panelNavigationLifecycleEpoch;
+                int timerGeneration =
+                    generation;
+                int timerLifecycleEpoch =
+                    _materialOpen.LifecycleEpoch;
+                _materialOpen.Timer =
+                    new System.Threading.Timer(
+                        delegate
+                        {
+                            OnMaterialOpenTimeout(
+                                timerGeneration,
+                                timerLifecycleEpoch);
+                        },
+                        null,
+                        Math.Max(
+                            1,
+                            MaterialPanelOpenTimeoutMs),
+                        System.Threading.Timeout.Infinite);
+            }
+            if (previousMaterialTimer != null)
+                previousMaterialTimer.Dispose();
+            if (cancelledSkillTimer != null)
+                cancelledSkillTimer.Dispose();
+            if (cancelledNativeTimer != null)
+                cancelledNativeTimer.Dispose();
+            if (supersededForwardTimer != null)
+                supersededForwardTimer.Dispose();
+            if (supersededReverseTimer != null)
+                supersededReverseTimer.Dispose();
+            if (supersededPreparationChildTimer != null)
+                supersededPreparationChildTimer.Dispose();
+            return true;
+        }
+
+        private bool TryAdmitMaterialPanelRequest(
+            string source,
+            string view,
+            string openRequestId,
+            out string rejectionReason,
+            out string pendingOrigin,
+            out bool hasHostAdmission,
+            out long hostAdmission,
+            out int lifecycleEpoch,
+            out bool recoverCharacterBuild)
+        {
+            System.Threading.Timer timer =
+                null;
+            bool admitted =
+                false;
+            lock (_panelNavigationLifecycleLock)
+            {
+                pendingOrigin =
+                    _materialOpen.Pending
+                        ? _materialOpen.Origin
+                        : null;
+                hasHostAdmission =
+                    false;
+                hostAdmission =
+                    0;
+                lifecycleEpoch =
+                    _panelNavigationLifecycleEpoch;
+                recoverCharacterBuild =
+                    false;
+                if (!_materialOpen.Pending)
+                {
+                    rejectionReason =
+                        "missing_preflight";
+                }
+                else
+                {
+                    lifecycleEpoch =
+                        _materialOpen.LifecycleEpoch;
+                    recoverCharacterBuild =
+                        string.Equals(
+                            _materialOpen.Origin,
+                            "character_build",
+                            StringComparison.Ordinal);
+                    if (!string.Equals(
+                            source,
+                            "nativehud_materials",
+                            StringComparison.Ordinal)
+                        || !string.Equals(
+                            view,
+                            "materials",
+                            StringComparison.Ordinal))
+                    {
+                        rejectionReason =
+                            "preflight_contract";
+                        timer =
+                            ClearMaterialOpenWaitLocked();
+                    }
+                    else if (!IsOpaqueToken(
+                            openRequestId)
+                        || !string.Equals(
+                            openRequestId,
+                            _materialOpen.RequestId,
+                            StringComparison.Ordinal))
+                    {
+                        rejectionReason =
+                            "preflight_nonce";
+                        timer =
+                            ClearMaterialOpenWaitLocked();
+                    }
+                    else
+                    {
+                        string activePanel =
+                            _panelHost != null
+                                ? _panelHost.ActivePanelName
+                                : _activeFallbackPanelName;
+                        string activeInstance =
+                            _panelHost != null
+                                ? _panelHost.ActivePanelInstanceId
+                                : _activeFallbackPanelInstanceId;
+                        if (_materialOpen.LifecycleEpoch
+                                != _panelNavigationLifecycleEpoch)
+                        {
+                            rejectionReason =
+                                "lifecycle_epoch";
+                            timer =
+                                ClearMaterialOpenWaitLocked();
+                        }
+                        else if (!string.Equals(
+                                activePanel,
+                                _materialOpen.BaselinePanel,
+                                StringComparison.Ordinal)
+                            || !string.Equals(
+                                activeInstance,
+                                _materialOpen.BaselineInstance,
+                                StringComparison.Ordinal))
+                        {
+                            rejectionReason =
+                                "competing_panel";
+                            timer =
+                                ClearMaterialOpenWaitLocked();
+                        }
+                        else if (_materialOpen.HasHostAdmission
+                            && (_panelHost == null
+                                || !_panelHost
+                                    .IsOpenAdmissionCurrent(
+                                        _materialOpen.HostAdmission,
+                                        _materialOpen.BaselinePanel,
+                                        _materialOpen.BaselineInstance)))
+                        {
+                            rejectionReason =
+                                "competing_host_lifecycle";
+                            timer =
+                                ClearMaterialOpenWaitLocked();
+                        }
+                        else
+                        {
+                            rejectionReason =
+                                null;
+                            admitted =
+                                true;
+                            hasHostAdmission =
+                                _materialOpen.HasHostAdmission;
+                            hostAdmission =
+                                _materialOpen.HostAdmission;
+                            timer =
+                                ClearMaterialOpenWaitLocked();
+                        }
+                    }
+                }
+            }
+            if (timer != null)
+                timer.Dispose();
+            return admitted;
+        }
+
+        private bool HasArmedMaterialIntentOrOpenWait()
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                return _materialOpen.Pending
+                    || (_characterBuildPreparationNavigation.Pending
+                        && _characterBuildPreparationNavigation.Target
+                            == CharacterBuildPreparationTarget.Materials);
+            }
+        }
+
+        private void OnMaterialOpenTimeout(
+            int generation,
+            int lifecycleEpoch)
+        {
+            System.Threading.Timer timer;
+            string origin;
+            int intentLifecycleEpoch;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_materialOpen.Pending
+                    || generation
+                        != _materialOpen.Generation
+                    || lifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || lifecycleEpoch
+                        != _materialOpen.LifecycleEpoch)
+                {
+                    return;
+                }
+                origin =
+                    _materialOpen.Origin;
+                intentLifecycleEpoch =
+                    _materialOpen.LifecycleEpoch;
+                timer =
+                    ClearMaterialOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            LogManager.Log(
+                "event=material_panel_open_failed reason=panel_request_timeout source="
+                + (origin ?? "unknown"));
+            if (string.Equals(
+                    origin,
+                    "character_build",
+                    StringComparison.Ordinal))
+            {
+                HandleCharacterBuildPreparationOpenFailure(
+                    CharacterBuildPreparationTarget.Materials,
+                    "material_panel_request_timeout",
+                    intentLifecycleEpoch);
+                return;
+            }
+            NotifyMaterialOpenFailure(
+                "panel_request_timeout");
+        }
+
+        private bool CancelMaterialOpenWait(
+            int expectedGeneration,
+            out int lifecycleEpoch)
+        {
+            System.Threading.Timer timer;
+            lock (_panelNavigationLifecycleLock)
+            {
+                lifecycleEpoch =
+                    0;
+                if (!_materialOpen.Pending
+                    || (expectedGeneration != 0
+                        && expectedGeneration
+                            != _materialOpen.Generation))
+                {
+                    return false;
+                }
+                lifecycleEpoch =
+                    _materialOpen.LifecycleEpoch;
+                timer =
+                    ClearMaterialOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            return true;
+        }
+
+        internal bool CancelPendingMaterialOpenIntent(
+            string reason)
+        {
+            System.Threading.Timer timer;
+            string origin;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_materialOpen.Pending)
+                    return false;
+                origin =
+                    _materialOpen.Origin;
+                timer =
+                    ClearMaterialOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            LogManager.Log(
+                "event=material_panel_open_cancelled reason="
+                + (reason ?? "unknown")
+                + " source="
+                + (origin ?? "unknown"));
+            return true;
+        }
+
+        internal bool RejectPendingMaterialPanelRequest(
+            string reason)
+        {
+            System.Threading.Timer timer;
+            string origin;
+            int lifecycleEpoch;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!_materialOpen.Pending)
+                {
+                    LogManager.Log(
+                        "event=material_panel_open_rejected reason="
+                        + (reason ?? "unknown")
+                        + " pending_cleared=false");
+                    return false;
+                }
+                origin =
+                    _materialOpen.Origin;
+                lifecycleEpoch =
+                    _materialOpen.LifecycleEpoch;
+                timer =
+                    ClearMaterialOpenWaitLocked();
+            }
+            if (timer != null)
+                timer.Dispose();
+            LogManager.Log(
+                "event=material_panel_open_rejected reason="
+                + (reason ?? "unknown")
+                + " pending_cleared=true source="
+                + (origin ?? "unknown"));
+            if (string.Equals(
+                    origin,
+                    "character_build",
+                    StringComparison.Ordinal))
+            {
+                HandleCharacterBuildPreparationOpenFailure(
+                    CharacterBuildPreparationTarget.Materials,
+                    "material_request_"
+                        + (reason ?? "rejected"),
+                    lifecycleEpoch);
+            }
+            else
+            {
+                NotifyMaterialOpenFailure(
+                    reason);
+            }
+            return true;
+        }
+
+        private void NotifyMaterialOpenFailure(
+            string reason)
+        {
+            string text =
+                string.Equals(
+                    reason,
+                    "missing_preflight",
+                    StringComparison.Ordinal)
+                    ? "材料请求已处理或过期"
+                    : string.Equals(
+                        reason,
+                        "panel_request_timeout",
+                        StringComparison.Ordinal)
+                        ? "材料服务未就绪，请稍后重试"
+                        : "材料面板未打开，请重试";
+            PostToWeb(
+                new JObject
+                {
+                    ["type"] = "toast",
+                    ["text"] = text
+                }.ToString(Formatting.None));
+        }
+
+        private System.Threading.Timer ClearMaterialOpenWaitLocked()
+        {
+            return _materialOpen.Clear();
         }
 
         private bool TrySendSkillPanelOpenCommand(
@@ -2746,7 +5506,13 @@ namespace CF7Launcher.Guardian
             System.Threading.Timer previous;
             System.Threading.Timer cancelledNativeTimer =
                 null;
+            System.Threading.Timer cancelledMaterialTimer =
+                null;
+            System.Threading.Timer supersededForwardTimer =
+                null;
             System.Threading.Timer supersededReverseTimer =
+                null;
+            System.Threading.Timer supersededPreparationChildTimer =
                 null;
             generation =
                 0;
@@ -2754,6 +5520,11 @@ namespace CF7Launcher.Guardian
                 null;
             lock (_panelNavigationLifecycleLock)
             {
+                if (_nativeEquipmentTuningOpen.Pending
+                    || (!isDirectUserIntent
+                        && (_materialOpen.Pending
+                            || _preparationChildReturn.Pending)))
+                    return false;
                 string activePanel;
                 string activeInstance;
                 bool hasHostAdmission;
@@ -2773,17 +5544,31 @@ namespace CF7Launcher.Guardian
                     // Character Build handoff.  Invalidate both armed directions before the
                     // new preflight is installed.
                     _panelNavigationLifecycleEpoch++;
-                    ClearCharacterBuildSkillsNavigationLocked();
+                    if (_characterBuildPreparationNavigation.Pending)
+                    {
+                        supersededForwardTimer =
+                            ClearCharacterBuildPreparationNavigationLocked();
+                    }
                     if (_pendingSkillsCharacterBuildNavigationInstance
                         != null)
                     {
                         supersededReverseTimer =
                             ClearSkillsCharacterBuildNavigationLocked();
                     }
+                    if (_preparationChildReturn.Pending)
+                    {
+                        supersededPreparationChildTimer =
+                            ClearPreparationChildReturnLocked();
+                    }
+                    if (_materialOpen.Pending)
+                    {
+                        cancelledMaterialTimer =
+                            ClearMaterialOpenWaitLocked();
+                    }
                 }
 
                 // A newer Skills intent wins over an older native-build preflight.
-                if (_nativeEquipmentBuildOpenPending)
+                if (_nativeEquipmentBuildOpen.Pending)
                     cancelledNativeTimer =
                         ClearNativeEquipmentBuildOpenWaitLocked();
 
@@ -2827,8 +5612,14 @@ namespace CF7Launcher.Guardian
             if (previous != null) previous.Dispose();
             if (cancelledNativeTimer != null)
                 cancelledNativeTimer.Dispose();
+            if (cancelledMaterialTimer != null)
+                cancelledMaterialTimer.Dispose();
+            if (supersededForwardTimer != null)
+                supersededForwardTimer.Dispose();
             if (supersededReverseTimer != null)
                 supersededReverseTimer.Dispose();
+            if (supersededPreparationChildTimer != null)
+                supersededPreparationChildTimer.Dispose();
             return true;
         }
 
@@ -3045,7 +5836,8 @@ namespace CF7Launcher.Guardian
                     "character_build",
                     StringComparison.Ordinal))
             {
-                HandleCharacterBuildSkillOpenFailure(
+                HandleCharacterBuildPreparationOpenFailure(
+                    CharacterBuildPreparationTarget.Skills,
                     "skill_panel_request_timeout",
                     intentLifecycleEpoch);
                 return;

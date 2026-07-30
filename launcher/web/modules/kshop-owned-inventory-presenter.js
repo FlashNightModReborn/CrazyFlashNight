@@ -30,6 +30,34 @@
         return {emptyText:emptyText, meta:meta};
     }
 
+    function interactionForStatus(status) {
+        status = status || {};
+        if (status.refreshRequired) return {inspectable:true, actionable:false, reason:'背包同步失败，请先重试。'};
+        if (!status.ready) return {inspectable:true, actionable:false, reason:'背包正在同步，请稍候。'};
+        if (status.busyOwner) return {inspectable:true, actionable:false, reason:'库存正在处理另一项操作。'};
+        return {inspectable:true, actionable:true, reason:''};
+    }
+
+    function ensureReasonNode(node) {
+        var reason = node.querySelector('.workbench-entity-lock-reason');
+        if (!reason) {
+            reason = document.createElement('span');
+            reason.className = 'workbench-entity-lock-reason';
+            reason.hidden = true;
+            node.appendChild(reason);
+        }
+        return reason;
+    }
+
+    function projectNode(node, projection, reasonNode) {
+        return Workbench.EntityTile.projectInteraction(node, {
+            inspectable:projection.inspectable,
+            actionable:projection.actionable,
+            reason:projection.reason,
+            reasonNode:reasonNode
+        });
+    }
+
     function OwnedInventoryPresenter(options) {
         options = options || {};
         this._state = options.state || {};
@@ -40,6 +68,8 @@
         this._pager = null;
         this._backpackControls = null;
         this._warehouseControls = null;
+        this._interaction = interactionForStatus(
+            this._state.getStatus ? this._state.getStatus() : null);
     }
 
     OwnedInventoryPresenter.prototype.getViews = function() { return this._views.slice(); };
@@ -142,7 +172,8 @@
             bindItem:function(node, slot) { self._bindSlot(containerId, node, slot); },
             exportOffer:function(slot) {
                 var status = self._state.getStatus();
-                if (!slot || !slot.occupied || status.busyOwner || status.refreshRequired) return null;
+                if (!slot || !slot.occupied || !status.ready
+                        || status.busyOwner || status.refreshRequired) return null;
                 return {subjectKind:'ownedSlot', sourceRef:ownedSlotRef(containerId, slot), offeredOperations:['inventory.transfer']};
             },
             probeAccept:function(offer, hit) {
@@ -162,6 +193,11 @@
             view:ownedShell.view, shell:ownedShell,
             getSnapshot:function() { return self._state.getWindow(containerId); },
             keyOf:function(slot) { return slot && slot.physicalSlot; },
+            interaction:this._interaction,
+            onInteractionChange:function(projection) {
+                self._interaction = projection;
+                self._projectViewInteraction(containerId);
+            },
             onQuickTransfer:function(transfer, done) {
                 return self._intent.transfer({operationId:'inventory.transfer', sourceRef:transfer.source,
                     targetRef:transfer.target, hint:transfer.meta && transfer.meta.hint}, done);
@@ -188,10 +224,15 @@
         if (slot.occupied) this._intent.bindTooltip(node, containerId, slot);
         var itemName = slot.occupied && slot.item
             ? String(slot.item.displayName || slot.item.name || '未知物品') : '空槽';
+        var reasonNode = ensureReasonNode(node);
         Workbench.EntityTile.bindActivation(node, {
             itemName:itemName, label:node.getAttribute('aria-label') || itemName,
             selected:this._broker() ? this._broker().isSelectedNode(node) : false,
-            disabled:false,
+            inspectable:function() { return self._interaction.inspectable; },
+            actionable:function() { return self._interaction.actionable; },
+            reason:function() { return self._interaction.reason; },
+            reasonNode:reasonNode,
+            onBlocked:function() { self._intent.toast(self._interaction.reason); },
             onActivate:function(event, context) {
                 var broker = self._broker();
                 if (!broker || self.consumedClick()) return;
@@ -205,8 +246,27 @@
         if (discardButton) {
             Workbench.EntityTile.labelAction(discardButton, itemName, '丢弃整槽');
             discardButton.addEventListener('click', function(event) {
-                event.stopPropagation(); self.showDiscardConfirm(containerId, slot);
+                event.stopPropagation();
+                if (!self._interaction.actionable) {
+                    self._intent.toast(self._interaction.reason);
+                    return;
+                }
+                self.showDiscardConfirm(containerId, slot);
             });
+        }
+        node.__kshopOwnedInteractionRefresh = function() {
+            projectNode(node, self._interaction, reasonNode);
+            node.classList.toggle('write-locked', !self._interaction.actionable);
+            if (discardButton) projectNode(discardButton, self._interaction, reasonNode);
+        };
+        node.__kshopOwnedInteractionRefresh();
+    };
+
+    OwnedInventoryPresenter.prototype._projectViewInteraction = function(containerId) {
+        var view = this.getView(containerId);
+        var nodes = view ? view.root.querySelectorAll('.inventory-slot-card') : [];
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].__kshopOwnedInteractionRefresh) nodes[i].__kshopOwnedInteractionRefresh();
         }
     };
 
@@ -261,7 +321,11 @@
 
     OwnedInventoryPresenter.prototype.showDiscardConfirm = function(containerId, slot) {
         var self = this;
-        if (containerId !== '背包' || !slot.occupied || !this._state.getStatus().ready) return;
+        var interaction = interactionForStatus(this._state.getStatus());
+        if (containerId !== '背包' || !slot.occupied || !interaction.actionable) {
+            if (interaction.reason) this._intent.toast(interaction.reason);
+            return;
+        }
         var projection = slot.confirmProjection || slot.item || {};
         this._state.getWorkbenchShell().openModal({
             kind:'discard', kicker:'', title:'丢弃 ' + String(projection.displayName || '该物品') + '？',
@@ -270,6 +334,8 @@
             actions:[
                 {id:'cancel', label:'取消', audioCue:'cancel'},
                 {id:'discard', label:'确认丢弃', danger:true, audioCue:'error', onSelect:function() {
+                    var current = interactionForStatus(self._state.getStatus());
+                    if (!current.actionable) { self._intent.toast(current.reason); return; }
                     if (!self._intent.discard(ownedSlotRef(containerId, slot), function(result) {
                         self.render();
                         self._intent.toast(result.success ? '物品已丢弃。' : '丢弃失败，请重试。');
@@ -341,8 +407,10 @@
         for (var i = 0; i < this._dragControllers.length; i++) this._dragControllers[i].cancel();
     };
 
-    OwnedInventoryPresenter.prototype.setDisabled = function(disabled) {
-        for (var key in this._panes) this._panes[key].setDisabled(disabled);
+    OwnedInventoryPresenter.prototype.setAuthorityState = function(status) {
+        this._interaction = interactionForStatus(status);
+        for (var key in this._panes) this._panes[key].setInteraction(this._interaction);
+        var disabled = !this._interaction.actionable;
         if (this._pager) this._pager.setDisabled(disabled);
         if (this._backpackControls) this._backpackControls.setDisabled(disabled);
         if (this._warehouseControls) {
@@ -350,6 +418,10 @@
             var snapshot = this._state.getWindow('战备箱');
             this._warehouseControls.setAuthorityDisabled(disabled || !snapshot || Number(snapshot.accessibleCapacity) <= 0);
         }
+    };
+
+    OwnedInventoryPresenter.prototype.setDisabled = function(disabled) {
+        this.setAuthorityState({ready:!disabled, busyOwner:disabled ? 'legacy' : null});
     };
 
     OwnedInventoryPresenter.prototype.resetSession = function() {
@@ -382,6 +454,7 @@
     return {
         OwnedInventoryPresenter:OwnedInventoryPresenter,
         ownedSlotRef:ownedSlotRef,
-        presentationForSnapshot:presentationForSnapshot
+        presentationForSnapshot:presentationForSnapshot,
+        interactionForStatus:interactionForStatus
     };
 });

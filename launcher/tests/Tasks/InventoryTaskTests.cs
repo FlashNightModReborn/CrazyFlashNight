@@ -329,6 +329,208 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void CharacterCandidateTooltipEnvelopeRequiresExactInstanceContextAndSource()
+        {
+            JObject request = Request(
+                "tooltip", "character.tooltip.envelope.1");
+            request["panel"] = "workbench";
+            request["panelInstanceId"] = "panel.workbench.build.1";
+            request["payload"]["context"] = new JObject
+            {
+                ["kind"] = "character_build_candidate",
+                ["sessionGeneration"] = 7
+            };
+
+            JObject source;
+            long generation;
+            Assert.True(WebOverlayForm
+                .TryValidateCharacterBuildCandidateTooltipEnvelope(
+                    request,
+                    "workbench",
+                    "panel.workbench.build.1",
+                    out source,
+                    out generation));
+            Assert.Equal(7, generation);
+            Assert.Equal(2, source.Value<int>("slot"));
+            Assert.False(WebOverlayForm
+                .TryValidateCharacterBuildCandidateTooltipEnvelope(
+                    request,
+                    "workbench",
+                    "panel.workbench.replaced",
+                    out source,
+                    out generation));
+
+            request["cmd"] = "move";
+            Assert.False(WebOverlayForm
+                .TryValidateCharacterBuildCandidateTooltipEnvelope(
+                    request,
+                    "workbench",
+                    "panel.workbench.build.1",
+                    out source,
+                    out generation));
+            request["cmd"] = "tooltip";
+            request["payload"]["context"]["extra"] = true;
+            Assert.False(WebOverlayForm
+                .TryValidateCharacterBuildCandidateTooltipEnvelope(
+                    request,
+                    "workbench",
+                    "panel.workbench.build.1",
+                    out source,
+                    out generation));
+
+            request["payload"]["context"] = new JObject
+            {
+                ["kind"] = "character_build_candidates",
+                ["sessionGeneration"] = 7
+            };
+            Assert.True(WebOverlayForm.HasInventoryPayloadContext(request));
+            Assert.False(WebOverlayForm
+                .TryValidateCharacterBuildCandidateTooltipEnvelope(
+                    request,
+                    "workbench",
+                    "panel.workbench.build.1",
+                    out source,
+                    out generation));
+            request["payload"]["context"] = new JObject
+            {
+                ["sessionGeneration"] = 7
+            };
+            Assert.True(WebOverlayForm.HasInventoryPayloadContext(request));
+            Assert.False(WebOverlayForm
+                .TryValidateCharacterBuildCandidateTooltipEnvelope(
+                    request,
+                    "workbench",
+                    "panel.workbench.build.1",
+                    out source,
+                    out generation));
+            request["payload"]["context"] = "candidate";
+            Assert.True(WebOverlayForm.HasInventoryPayloadContext(request));
+            Assert.False(WebOverlayForm
+                .TryValidateCharacterBuildCandidateTooltipEnvelope(
+                    request,
+                    "workbench",
+                    "panel.workbench.build.1",
+                    out source,
+                    out generation));
+            ((JObject)request["payload"]).Remove("context");
+            Assert.False(WebOverlayForm.HasInventoryPayloadContext(request));
+        }
+
+        [Fact]
+        public void CharacterCandidateTooltipStrictlyRebuildsValidRichResponse()
+        {
+            string sent = null;
+            string posted = null;
+            var task = new InventoryTask(
+                () => true,
+                payload => { sent = payload; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request(
+                "tooltip", "character.tooltip.strict.valid");
+            request["panel"] = "workbench";
+            request["panelInstanceId"] = "panel.workbench.build.1";
+            task.HandleCharacterCandidateTooltip(request, () => true);
+            JObject flash = ParseSent(sent);
+
+            task.HandleFlashResponse(
+                CharacterTooltipSuccess(flash),
+                _ => { });
+
+            JObject response = JObject.Parse(posted);
+            Assert.True(response.Value<bool>("success"));
+            Assert.Equal("workbench", response.Value<string>("panel"));
+            Assert.Equal(
+                "panel.workbench.build.1",
+                response.Value<string>("panelInstanceId"));
+            Assert.Equal("<b>候选</b>", response.Value<string>("introHTML"));
+            Assert.Null(response["task"]);
+        }
+
+        [Fact]
+        public void CharacterCandidateTooltipRejectsExtraKeysAndControlMarkup()
+        {
+            Action<Action<JObject>> assertMalformed = mutate =>
+            {
+                string sent = null;
+                string posted = null;
+                var task = new InventoryTask(
+                    () => true,
+                    payload => { sent = payload; return true; });
+                task.SetPostToWeb(json => posted = json);
+                JObject request = Request(
+                    "tooltip",
+                    "character.tooltip.malformed."
+                        + Guid.NewGuid().ToString("N"));
+                request["panel"] = "workbench";
+                request["panelInstanceId"] = "panel.workbench.build.1";
+                task.HandleCharacterCandidateTooltip(request, () => true);
+                JObject response = CharacterTooltipSuccess(ParseSent(sent));
+                mutate(response);
+                task.HandleFlashResponse(response, _ => { });
+                JObject web = JObject.Parse(posted);
+                Assert.Equal(
+                    "malformed_response",
+                    web.Value<string>("error"));
+                Assert.Null(web["introHTML"]);
+                task.Dispose();
+            };
+
+            assertMalformed(response => response["extra"] = true);
+            assertMalformed(response => response["descHTML"] = "说明\0注入");
+        }
+
+        [Fact]
+        public void CharacterCandidateTooltipDropsRichDataWhenCompletionFenceExpires()
+        {
+            string sent = null;
+            string posted = null;
+            bool current = true;
+            var task = new InventoryTask(
+                () => true,
+                payload => { sent = payload; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request(
+                "tooltip", "character.tooltip.stale.1");
+            request["panel"] = "workbench";
+            request["panelInstanceId"] = "panel.workbench.build.1";
+            task.HandleCharacterCandidateTooltip(
+                request, () => current);
+            JObject flash = ParseSent(sent);
+            current = false;
+
+            task.HandleFlashResponse(
+                CharacterTooltipSuccess(flash),
+                _ => { });
+
+            JObject response = JObject.Parse(posted);
+            Assert.Equal("stale_state", response.Value<string>("error"));
+            Assert.Null(response["introHTML"]);
+            Assert.Null(response["descHTML"]);
+        }
+
+        [Fact]
+        public void GenericInventoryTooltipKeepsLegacyResponseContract()
+        {
+            string sent = null;
+            string posted = null;
+            var task = new InventoryTask(
+                () => true,
+                payload => { sent = payload; return true; });
+            task.SetPostToWeb(json => posted = json);
+            JObject request = Request(
+                "tooltip", "inventory.tooltip.legacy.1");
+            task.HandleWebRequest("tooltip", request);
+            JObject response = CharacterTooltipSuccess(ParseSent(sent));
+            response["legacyProjection"] = "kept";
+
+            task.HandleFlashResponse(response, _ => { });
+
+            Assert.Equal(
+                "kept",
+                JObject.Parse(posted).Value<string>("legacyProjection"));
+        }
+
+        [Fact]
         public void SortAndMerge_RebuildsContainerAndStrictMethodWhitelist()
         {
             string sent = null;
@@ -679,6 +881,23 @@ namespace CF7Launcher.Tests.Tasks
                 WebOverlayForm.ResolvePanelDomainRoute("claim", "unknown"));
             Assert.Equal(WebOverlayForm.PanelDomainRoute.Legacy,
                 WebOverlayForm.ResolvePanelDomainRoute("snapshot", null));
+        }
+
+        private static JObject CharacterTooltipSuccess(JObject flash)
+        {
+            return new JObject
+            {
+                ["task"] = "inventory_response",
+                ["callId"] = flash.Value<int>("callId"),
+                ["success"] = true,
+                ["v"] = 1,
+                ["itemName"] = "候选",
+                ["displayname"] = "候选",
+                ["iconName"] = "候选图标",
+                ["itemType"] = "武器",
+                ["descHTML"] = "候选说明",
+                ["introHTML"] = "<b>候选</b>"
+            };
         }
 
         [Fact]

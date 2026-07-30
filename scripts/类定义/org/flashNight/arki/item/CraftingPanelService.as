@@ -74,13 +74,34 @@ class org.flashNight.arki.item.CraftingPanelService {
         return _root.server.sendSocketMessage(payload);
     }
 
-    public static function openMaterialsPanel(source:String):Boolean {
+    public static function openMaterialsPanel(source:String, openRequestId):Boolean {
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
         if (source != "nativehud_materials") source = "nativehud_materials";
+        var fields:Array = [];
+        if (arguments.length >= 2) {
+            var safeRequestId:String = safeOpenRequestId(openRequestId);
+            if (safeRequestId == null) return false;
+            fields.push({name:"openRequestId", value:safeRequestId});
+        }
         var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build(
-            "crafting", source, [], [{name:"view", value:"materials"}]
+            "crafting", source, fields, [{name:"view", value:"materials"}]
         );
         return _root.server.sendSocketMessage(payload);
+    }
+
+    private static function safeOpenRequestId(value):String {
+        if (typeof(value) != "string") return null;
+        var token:String = String(value);
+        if (token.length < 1 || token.length > 160) return null;
+        for (var i:Number = 0; i < token.length; i++) {
+            var code:Number = token.charCodeAt(i);
+            var allowed:Boolean = (code >= 48 && code <= 57)
+                || (code >= 65 && code <= 90)
+                || (code >= 97 && code <= 122)
+                || code == 45 || code == 46 || code == 95 || code == 126;
+            if (!allowed) return null;
+        }
+        return token;
     }
 
     public static function handle(commandName:String, params:Object):Void {

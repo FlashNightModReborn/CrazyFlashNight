@@ -134,9 +134,18 @@ class org.flashNight.arki.item.InventoryPanelService {
             ? "inventory_workbench" : String(params.source);
         var hasOpenRequestId:Boolean = params != undefined
             && typeof params.openRequestId != "undefined";
-        var supportsOpenRequestId:Boolean = profile == "battlebox"
+        var exactNativeBuild:Boolean = profile == "battlebox"
             && view == "build"
             && source == "nativehud_equipment";
+        var exactNativeTuning:Boolean = profile == "battlebox"
+            && view == "tuning"
+            && source == "nativehud_equipment_tuning";
+        var supportsOpenRequestId:Boolean = exactNativeBuild
+            || exactNativeTuning;
+        if (source == "nativehud_equipment_tuning"
+                && (!exactNativeTuning || !hasOpenRequestId)) {
+            return false;
+        }
         var openRequestId:String;
         if (hasOpenRequestId) {
             if (!supportsOpenRequestId) return false;

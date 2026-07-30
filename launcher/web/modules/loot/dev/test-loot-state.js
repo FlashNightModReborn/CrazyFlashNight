@@ -961,4 +961,18 @@ test('organizer inventory mux permits only snapshot, transfer, and discard comma
     runtime.destroy();
 });
 
+test('organizer keeps blocked inventory inspectable with an exact authority reason', () => {
+    assert.deepStrictEqual(LootOrganizer.interactionForState({ready:true}),
+        {inspectable:true,actionable:true,reason:''});
+    [
+        [{ready:false},'库存正在同步，请稍候。'],
+        [{ready:true,busyOwner:'inventory.autoTransfer'},'库存正在处理另一项操作。'],
+        [{ready:true,refreshRequired:true},'库存同步失败，请先重试。'],
+        [{ready:true,returning:true},'正在重新核对当前箱子。']
+    ].forEach(([state,reason]) => {
+        assert.deepStrictEqual(LootOrganizer.interactionForState(state),
+            {inspectable:true,actionable:false,reason});
+    });
+});
+
 console.log('loot state ' + checks.length + '/' + checks.length + ' passed');

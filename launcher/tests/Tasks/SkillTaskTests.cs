@@ -515,7 +515,11 @@ namespace Launcher.Tests.Tasks
         public void TrainerCleanup_TimeoutRetriesWithoutReconnectAndAckReopensGate()
         {
             var sent = new List<JObject>();
-            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 20))
+            // The same timeout also guards the background snapshot. Keep this
+            // short enough to exercise the timeout path, but leave enough time
+            // for the test thread to answer after observing the emitted probe
+            // when the full xUnit suite is scheduling in parallel.
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 250))
             {
                 task.EnrichPanelInitData("{\"view\":\"manage\"}");
                 Assert.False(task.CanOpenTrainer);

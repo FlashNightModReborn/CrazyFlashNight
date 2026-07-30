@@ -168,7 +168,7 @@ test('pose selector gives a selected weapon slot preview precedence', () => {
         '手枪':{stateLabel:'双枪站立', attackMode:'双枪'},
         '手枪2':{stateLabel:'双枪站立', attackMode:'双枪'},
         '刀':{stateLabel:'兵器站立', attackMode:'兵器'},
-        '手雷':{stateLabel:'空手站立', attackMode:'手雷'}
+        '手雷':{stateLabel:'手雷站立', attackMode:'手雷'}
     };
     Object.keys(expected).forEach(slotKey => {
         assert.deepStrictEqual(Pose.select(equipment, {kind:'equipment', slotKey}),

@@ -25,6 +25,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
   <div id="panel-backdrop"></div>
   <div id="panel-content"></div>
 </div>
+<div id="panel-tooltip"></div>
 <pre id="qa-output">running…</pre>
 <script src="modules/asset-timeline.js"></script>
 <script src="modules/icons.js"></script>
@@ -54,6 +55,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script>
 (function() {
     'use strict';
+    try { localStorage.removeItem('cf7.equipmentTuning.modConfirmationMode'); } catch (_) {}
     var handlers = {};
     var dressup = CharacterBuildDressupFixture;
     var absentIconName = window.__characterBuildAbsentIcon = '__qa_icon_absent_from_manifest__';
@@ -79,18 +81,54 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         enhancementBySlot[slotKey] = slotKey === '手雷' ? 0 : index % 4 + 1;
     });
     var drugNames = ['普通hp药剂','普通mp药剂','抗生素',window.__characterBuild404Icon];
+    var candidateLease = 'lease.candidate.9';
+    var candidateEnhancement = 1;
     var portraitGender = '男';
+    function facet(id, count, children) {
+        return {
+            id:id, label:id, order:0, count:count, children:children || []
+        };
+    }
+    function candidateFacetProjection() {
+        return {
+            scope:'all',
+            filterFacets:[
+                facet('armor', 8, [
+                    facet('头部装备', 2),
+                    facet('上装装备', 1),
+                    facet('手部装备', 4),
+                    facet('脚部装备', 1)
+                ]),
+                facet('weapon', 11, [
+                    facet('长枪', 3),
+                    facet('手枪', 2),
+                    facet('手枪2', 1),
+                    facet('手雷', 5)
+                ]),
+                facet('consumable', 7, [facet('药剂', 7)])
+            ],
+            filterItemCount:26
+        };
+    }
     window.__routeHarness = {
         sent:[],
         events:[],
-        renderer:{created:0, active:0, maxActive:0, renders:0, destroyed:0, pixelRatios:[],
+        renderer:{created:0, active:0, maxActive:0, renders:0, destroyed:0, pixelRatios:[], animationModes:[],
             lastMeta:null, lastBuild:null, failNextField:'', expectedAssetFailures:0},
         manifest:{attempts:0, firstRejected:false, retryResolved:false, toasts:[]},
         shots:{},
         storage:{activations:0, leaves:0, closes:0, active:false, view:'storage',
-            externalBegins:0, externalCompletes:0, appliedSnapshots:0, busy:null},
+            externalBegins:0, externalCompletes:0, appliedSnapshots:0, busy:null,
+            failNextSwitch:false, switches:0, lastSwitch:'',
+            tuningSessions:0, tuningActive:false, tuningSource:null,
+            holdNextLeave:false, heldLeave:null, heldLeaveInvocations:0},
+        tooltip:{requests:0},
+        audio:{cues:[]},
+        candidateLease:candidateLease,
         refuseNextCandidateSend:false,
+        refuseNextSnapshotSend:false,
         refuseNextCloseSend:false,
+        throwNextBuildActivate:false,
         rejectNextCandidate:false,
         rejectNextSnapshot:false,
         rejectNextMutation:false,
@@ -112,6 +150,16 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         },
         authority:{writeEpoch:0, loadoutRevision:5, liveRevision:5,
             drugRevision:3, liveRefreshDirty:false}
+    };
+    window.BootstrapAudio = {
+        init:function() {},
+        resume:function() {},
+        playCancel:function() {
+            window.__routeHarness.audio.cues.push('cancel');
+        },
+        playError:function() {
+            window.__routeHarness.audio.cues.push('error');
+        }
     };
     window.__routeHarness.setPortraitGender = function(gender) {
         portraitGender = gender === '女' ? '女' : '男';
@@ -182,6 +230,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 appearance:dressup.appearanceByGender[portraitGender],
                 equipment:portraitEquipment
             },
+            candidateFacets:candidateFacetProjection(),
             stateHealth:'ok',
             diagnostics:[]
         };
@@ -307,7 +356,11 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 candidates:[{
                     physicalSlot:9,
                     disabled:false,
-                    source:{expectedLease:'lease.candidate.9'},
+                    source:{
+                        containerId:'背包',
+                        slot:9,
+                        expectedLease:candidateLease
+                    },
                     item:{
                         name:candidateName,
                         displayName:candidateName,
@@ -315,7 +368,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                         itemKind:stackGrenadeCandidate ? 'stack' : 'equipment',
                         majorType:stackGrenadeCandidate ? '消耗品' : '武器',
                         use:message.payload.slotKey || '药剂',
-                        enhancementLevel:stackGrenadeCandidate ? 0 : 1,
+                        enhancementLevel:stackGrenadeCandidate ? 0 : candidateEnhancement,
                         quantity:stackGrenadeCandidate ? 3 : 1,
                         tierSlotAvailable:true,
                         tierSlotUsed:false,
@@ -366,8 +419,15 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         };
     }
     function tuningSnapshot(source) {
-        var slotKey = source.slotKey;
-        var item = equipmentRows().filter(function(row) {
+        var inventorySource = source.sourceKind === 'inventory';
+        var slotKey = inventorySource ? '长枪' : source.slotKey;
+        var item = inventorySource ? {
+            name:dressup.scenarios.candidate.candidateItem,
+            displayName:dressup.scenarios.candidate.candidateItem,
+            icon:dressup.scenarios.candidate.candidateItem,
+            use:'长枪',
+            enhancementLevel:candidateEnhancement
+        } : equipmentRows().filter(function(row) {
             return row.slotKey === slotKey;
         })[0].item;
         return {
@@ -415,11 +475,17 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     }
     function applyTuning(source, targetLevel) {
         var harness = window.__routeHarness;
-        enhancementBySlot[source.slotKey] = targetLevel;
         harness.authority.writeEpoch++;
-        harness.authority.loadoutRevision++;
-        harness.authority.liveRefreshDirty = true;
         harness.tuning.transaction++;
+        if (source.sourceKind === 'inventory') {
+            candidateEnhancement = targetLevel;
+            candidateLease = 'lease.candidate.' + (9 + harness.tuning.transaction);
+            harness.candidateLease = candidateLease;
+        } else {
+            enhancementBySlot[source.slotKey] = targetLevel;
+            harness.authority.loadoutRevision++;
+            harness.authority.liveRefreshDirty = true;
+        }
     }
     function equipmentTuningResponse(message) {
         var harness = window.__routeHarness;
@@ -433,7 +499,8 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             }
         } else if (message.cmd === 'preview') {
             harness.tuning.lastSource = JSON.parse(JSON.stringify(message.payload.source));
-            var current = enhancementBySlot[message.payload.source.slotKey];
+            var current = message.payload.source.sourceKind === 'inventory'
+                ? candidateEnhancement : enhancementBySlot[message.payload.source.slotKey];
             var target = message.payload.operation === 'enhance'
                 ? message.payload.targetLevel : current;
             response.operation = message.payload.operation;
@@ -469,9 +536,13 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             response.operation = tokenParts[1] || 'enhance';
             response.transactionId = 'tuning.tx.' + harness.tuning.transaction;
             response.noOp = false;
+            if (harness.tuning.lastSource.sourceKind === 'inventory') {
+                harness.tuning.lastSource.expectedLease = candidateLease;
+            }
             response.snapshot = tuningSnapshot(harness.tuning.lastSource);
             response.materials = [{itemName:'强化石', before:20, delta:-1, after:19}];
-            response.inventorySnapshots = [];
+            response.inventorySnapshots = harness.tuning.lastSource.sourceKind === 'inventory'
+                ? [fullBackpack(40 + harness.tuning.transaction)] : [];
         } else if (message.cmd === 'tooltip') {
             response.candidateKey = message.payload.candidateKey;
             response.text = '权威调制候选';
@@ -486,6 +557,25 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             response.error = 'unsupported_cmd';
         }
         return response;
+    }
+    function inventoryTooltipResponse(message) {
+        window.__routeHarness.tooltip.requests++;
+        return {
+            type:'panel_resp',
+            panel:'workbench',
+            domain:'inventory',
+            cmd:'tooltip',
+            callId:message.callId,
+            panelInstanceId:message.panelInstanceId,
+            success:true,
+            v:1,
+            itemName:'构筑候选',
+            displayname:'构筑候选',
+            iconName:dressup.scenarios.candidate.candidateItem,
+            itemType:'武器',
+            descHTML:'<B>权威候选说明</B>',
+            introHTML:'<FONT COLOR=\"#66CCFF\">构筑候选详情</FONT>'
+        };
     }
     window.Bridge = {
         on:function(type, handler) {
@@ -510,6 +600,13 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 window.__routeHarness.events.push('candidates_send_refused');
                 return false;
             }
+            if (message.type === 'panel' && message.domain === 'loadout'
+                    && message.cmd === 'snapshot'
+                    && window.__routeHarness.refuseNextSnapshotSend) {
+                window.__routeHarness.refuseNextSnapshotSend = false;
+                window.__routeHarness.events.push('snapshot_send_refused');
+                return false;
+            }
             var captured = JSON.parse(JSON.stringify(message));
             window.__routeHarness.sent.push(captured);
             if (message.type === 'panel' && message.domain === 'loadout') {
@@ -530,6 +627,10 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                         return;
                     }
                     emit('panel_resp', response);
+                }, 0);
+            } else if (message.type === 'panel' && message.domain === 'inventory') {
+                setTimeout(function() {
+                    emit('panel_resp', inventoryTooltipResponse(message));
                 }, 0);
             } else if (message.type === 'panel' && message.domain === 'equipment_tuning') {
                 window.__routeHarness.events.push('tuning_' + message.cmd + '_request');
@@ -649,6 +750,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         for (key in options) if (Object.prototype.hasOwnProperty.call(options, key)) {
             observed[key] = options[key];
         }
+        metrics.animationModes.push(observed.animate !== false);
         var downstream = observed.onRender;
         observed.onRender = function(meta) {
             metrics.renders++;
@@ -681,27 +783,81 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             state.activations++;
             state.active = true;
             state.view = view;
+            if (view === 'tuning') {
+                state.tuningSessions++;
+                state.tuningActive = true;
+                state.tuningSource = {
+                    sourceKind:'inventory', containerId:'背包', slot:1,
+                    expectedLease:'standalone.' + state.tuningSessions
+                };
+            }
             this._ports = ports;
             if (ports.onViewChanged) ports.onViewChanged(view);
             return true;
         },
         deactivate:function() {
             window.__routeHarness.storage.active = false;
+            window.__routeHarness.storage.tuningActive = false;
+            window.__routeHarness.storage.tuningSource = null;
             this._ports = null;
             return true;
         },
-        switchView:function(view) {
-            window.__routeHarness.storage.view = view;
+        switchView:function(view, _, callback) {
+            var state = window.__routeHarness.storage;
+            state.switches++;
+            state.lastSwitch = view;
+            window.__routeHarness.events.push('storage_switch_' + view);
+            if (state.failNextSwitch) {
+                state.failNextSwitch = false;
+                setTimeout(function() {
+                    if (typeof callback === 'function') callback(false);
+                }, 0);
+                return true;
+            }
+            if (view === 'tuning') {
+                state.tuningSessions++;
+                state.tuningActive = true;
+                state.tuningSource = {
+                    sourceKind:'inventory', containerId:'背包', slot:1,
+                    expectedLease:'standalone.' + state.tuningSessions
+                };
+            } else {
+                state.tuningActive = false;
+                state.tuningSource = null;
+            }
+            state.view = view;
             if (this._ports && this._ports.onViewChanged) this._ports.onViewChanged(view);
+            if (typeof callback === 'function') callback(true);
             return true;
         },
         prepareLeave:function(view, callback) {
-            window.__routeHarness.storage.leaves++;
+            var state = window.__routeHarness.storage;
+            state.leaves++;
+            if (state.view === 'tuning') {
+                state.tuningActive = false;
+                state.tuningSource = null;
+                window.__routeHarness.events.push('standalone_tuning_detach');
+            }
+            if (state.holdNextLeave) {
+                state.holdNextLeave = false;
+                state.heldLeave = function() {
+                    state.heldLeaveInvocations++;
+                    callback(view === 'build');
+                };
+                return true;
+            }
             callback(view === 'build');
             return true;
         },
+        consumeEscape:function() { return false; },
         prepareClose:function(_, callback) {
-            window.__routeHarness.storage.closes++;
+            var state = window.__routeHarness.storage;
+            state.closes++;
+            if (state.view === 'tuning') {
+                state.tuningActive = false;
+                state.tuningSource = null;
+                window.__routeHarness.events.push('standalone_tuning_detach');
+            }
             callback(true);
             return true;
         },
@@ -712,12 +868,17 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             state.busy = {id:state.externalBegins, owner:owner};
             return state.busy;
         },
-        completeExternalWrite:function(operation, snapshots) {
+        completeExternalWrite:function(operation, snapshots, callback, needsRefresh) {
             var state = window.__routeHarness.storage;
             if (!operation || operation !== state.busy) return false;
             state.externalCompletes++;
             if (snapshots) state.appliedSnapshots += snapshots.length;
             state.busy = null;
+            if (callback) callback({success:true, refreshed:!!needsRefresh});
+            return true;
+        },
+        refreshExternalInventory:function(callback) {
+            if (callback) callback({success:true, refreshed:false});
             return true;
         },
         openHelp:function() { return true; },
@@ -729,17 +890,22 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         debugState:function() {
             return {
                 active:window.__routeHarness.storage.active,
-                view:window.__routeHarness.storage.view
+                view:window.__routeHarness.storage.view,
+                tuningActive:window.__routeHarness.storage.tuningActive,
+                tuningSource:window.__routeHarness.storage.tuningSource
             };
         }
     };
 })();
 </script>
 <script src="modules/panel-runtime.js"></script>
+<script src="modules/tooltip.js"></script>
 <script src="modules/panel-scale.js"></script>
+<script src="modules/uidata.js"></script>
 <script src="modules/workbench-lifecycle.js"></script>
 <script src="modules/workbench-focus.js"></script>
 <script src="modules/workbench-primitives.js"></script>
+<script src="modules/workbench-profile.js"></script>
 <script src="modules/workbench.js"></script>
 <script src="modules/workbench-components.js"></script>
 <script src="modules/workbench-inspection-viewport.js"></script>
@@ -747,14 +913,26 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/inventory-ui.js"></script>
 <script src="modules/equipment-tuning-runtime.js"></script>
 <script src="modules/equipment-tuning-model.js"></script>
+<script src="modules/equipment-tuning-decision-presenter.js"></script>
 <script src="modules/equipment-tuning-render.js"></script>
-<script src="modules/equipment-tuning-view.js"></script>
-<script src="modules/panels.js"></script>
 <script src="modules/inventory-workbench-config.js"></script>
+<script src="modules/inventory-workbench-preparation-menu.js"></script>
+<script src="modules/equipment-tuning-confirmation.js"></script>
+<script src="modules/equipment-tuning-interaction.js"></script>
+<script src="modules/equipment-tuning-write-lifecycle.js"></script>
+<script src="modules/equipment-tuning-source-marker.js"></script>
+<script src="modules/equipment-tuning-view.js"></script>
+<script src="modules/inventory-workbench-navigation.js"></script>
+<script src="modules/panels.js"></script>
+<script src="modules/overlay-audio-bindings.js"></script>
 <script src="modules/inventory-workbench-header.js"></script>
 <script src="modules/character-build/character-build-mutation.js"></script>
 <script src="modules/character-build-session.js"></script>
 <script src="modules/character-build/character-build-action-view.js"></script>
+<script src="modules/character-build/character-build-tuning-adapter.js"></script>
+<script src="modules/character-build/character-build-candidate-tooltip.js"></script>
+<script src="modules/character-build/character-build-candidate-state.js"></script>
+<script src="modules/character-build/character-build-facet-counts.js"></script>
 <script src="modules/character-build/character-build-stats-view.js"></script>
 <script src="modules/character-build/character-build-doll-preview.js"></script>
 <script src="modules/character-build/character-build-template.js"></script>
@@ -762,6 +940,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/character-build/character-build-tuning.js"></script>
 <script src="modules/character-build/character-build-slot-transition.js"></script>
 <script src="modules/character-build/character-build-pose.js"></script>
+<script src="modules/character-build/character-build-projection.js"></script>
 <script src="modules/character-build.js"></script>
 <script src="modules/inventory-workbench.js"></script>
 <script>
@@ -790,6 +969,14 @@ window.EquipmentInspector = {
             destroy:function() { return shell.closeModal('destroy'); }
         };
     }
+};
+var nativeBuildActivate = CharacterBuild.CharacterBuildController.prototype.activate;
+CharacterBuild.CharacterBuildController.prototype.activate = function(host, panelInstanceId) {
+    if (window.__routeHarness.throwNextBuildActivate) {
+        window.__routeHarness.throwNextBuildActivate = false;
+        throw new Error('qa_build_activate_throw');
+    }
+    return nativeBuildActivate.call(this, host, panelInstanceId);
 };
 (async function() {
     'use strict';
@@ -837,6 +1024,11 @@ window.EquipmentInspector = {
             return message.domain === 'loadout';
         });
     }
+    function inventoryMessages() {
+        return window.__routeHarness.sent.filter(function(message) {
+            return message.domain === 'inventory';
+        });
+    }
     function tuningMessages(command) {
         return window.__routeHarness.sent.filter(function(message) {
             return message.domain === 'equipment_tuning'
@@ -851,6 +1043,44 @@ window.EquipmentInspector = {
                 return !node.hidden && style.display !== 'none' && style.visibility !== 'hidden';
             })
             .map(function(node) { return node.getAttribute('data-header-action'); });
+    }
+    function preparationItem(identity) {
+        return document.querySelector(
+            '[data-preparation-route="' + identity + '"]');
+    }
+    function openPreparationMenu() {
+        var trigger = document.querySelector(
+            '[data-header-action="preparation-menu"]');
+        if (trigger && trigger.getAttribute('aria-expanded') !== 'true') {
+            trigger.click();
+        }
+        return trigger;
+    }
+    function activatePreparation(identity) {
+        var trigger = openPreparationMenu();
+        var target = preparationItem(identity);
+        if (target) target.click();
+        return {trigger:trigger, target:target};
+    }
+    function semanticHiddenContract(node) {
+        if (!node) return false;
+        var style = getComputedStyle(node);
+        var rect = node.getBoundingClientRect();
+        var previous = document.activeElement;
+        var focusables = [node].concat(Array.prototype.slice.call(
+            node.querySelectorAll('button,[href],input,select,textarea,[tabindex]')));
+        var focusLeak = focusables.some(function(target) {
+            if (typeof target.focus !== 'function') return false;
+            target.focus();
+            return document.activeElement === target;
+        });
+        if (previous && typeof previous.focus === 'function') previous.focus();
+        return node.hidden
+            && style.display === 'none'
+            && rect.width === 0
+            && rect.height === 0
+            && node.getClientRects().length === 0
+            && !focusLeak;
     }
     function candidateActionRow() {
         var toolbar = document.querySelector('.character-build-candidate-actions');
@@ -948,7 +1178,7 @@ window.EquipmentInspector = {
     }
     async function refreshProjection() {
         var snapshotBase = commandCount('snapshot');
-        document.querySelector('[data-header-action="storage"]').click();
+        activatePreparation('battlebox');
         if (!await until(function() {
             return InventoryWorkbench.debugState().view === 'storage';
         })) return false;
@@ -1028,7 +1258,7 @@ window.EquipmentInspector = {
             ['手枪','双枪站立','双枪','dual-pistol-primary'],
             ['手枪2','双枪站立','双枪','dual-pistol-secondary'],
             ['刀','兵器站立','兵器','blade'],
-            ['手雷','空手站立','手雷','grenade']
+            ['手雷','手雷站立','手雷','grenade']
         ];
         for (var index = 0; index < slots.length; index++) {
             var row = slots[index];
@@ -1251,6 +1481,7 @@ window.EquipmentInspector = {
         check('manifest retry probe releases its renderer before production routing',
             window.__routeHarness.renderer.active === 0);
 
+        UiData.dispatch('q:14');
         Panels.init();
         Bridge.emit('panel_cmd', {
             cmd:'open',
@@ -1258,6 +1489,7 @@ window.EquipmentInspector = {
             initData:{
                 profile:'battlebox',
                 view:'build',
+                preparationNavigationV1:true,
                 panelInstanceId:'panel.workbench.route-harness'
             }
         });
@@ -1275,8 +1507,133 @@ window.EquipmentInspector = {
         check('facade owns one shell and one visible header',
             document.querySelectorAll('.workbench-shell').length === 1
             && document.querySelectorAll('.workbench-header').length === 1
-            && visibleHeaderActions().join('|') === 'storage|stats|skills|help|close',
+            && document.querySelector('.inventory-workbench-panel').getAttribute(
+                'data-profile') === 'character-build'
+            && document.querySelector('.inventory-workbench-panel').scrollWidth
+                <= document.querySelector('.inventory-workbench-panel').clientWidth + 1
+            && visibleHeaderActions().join('|') === 'preparation-menu|stats|help|close',
             visibleHeaderActions().join('|'));
+        var preparationTrigger = openPreparationMenu();
+        var preparationPopover = document.querySelector(
+            '.inventory-preparation-popover');
+        var preparationRect = preparationPopover.getBoundingClientRect();
+        var helpRect = document.querySelector(
+            '[data-header-action="help"]').getBoundingClientRect();
+        var closeRect = document.querySelector(
+            '[data-header-action="close"]').getBoundingClientRect();
+        var preparationItems = Array.prototype.slice.call(
+            document.querySelectorAll('[data-preparation-route]'));
+        var preparationSentBase = window.__routeHarness.sent.length;
+        preparationItem('equipment').click();
+        check('production preparation menu has one fixed six-route projection and zero-business current item',
+            preparationTrigger.textContent === '整备 ▾'
+            && preparationTrigger.getAttribute('aria-haspopup') === 'menu'
+            && preparationTrigger.getAttribute('aria-expanded') === 'true'
+            && preparationItems.map(function(node) {
+                return node.getAttribute('data-preparation-route');
+            }).join('|') ===
+                'equipment|battlebox|tuning|skills|materials|intelligence'
+            && preparationItems.map(function(node) {
+                return node.querySelector('.inventory-preparation-label').textContent;
+            }).join('|') === '装备|战备箱|装备调制|技能|材料|情报'
+            && preparationItem('equipment').getAttribute('aria-current') === 'page'
+            && preparationItem('equipment').getAttribute('aria-disabled') === 'true'
+            && preparationItem('equipment').getAttribute('title') === '当前'
+            && window.__routeHarness.sent.length === preparationSentBase
+            && InventoryWorkbench.debugState().view === 'build');
+        var preparationFirstRect = preparationItems[0].getBoundingClientRect();
+        var preparationPreviousBottom = preparationRect.top;
+        check('preparation popover is a bounded one-column overlay that leaves Help and Close unobscured',
+            getComputedStyle(preparationPopover).width === '204px'
+            && preparationRect.width <= innerWidth - 24
+            && preparationRect.left >= 0
+            && preparationRect.right <= innerWidth
+            && preparationRect.top >= helpRect.bottom
+            && preparationRect.top >= closeRect.bottom
+            && preparationRect.right <= helpRect.left
+            && preparationRect.right <= closeRect.left
+            && preparationItems.every(function(node) {
+                var rect = node.getBoundingClientRect();
+                var ordered = rect.top >= preparationPreviousBottom;
+                preparationPreviousBottom = rect.bottom;
+                return getComputedStyle(node).minHeight === '42px'
+                    && Math.abs(rect.left - preparationFirstRect.left) <= 1
+                    && Math.abs(rect.right - preparationFirstRect.right) <= 1
+                    && rect.left >= preparationRect.left
+                    && rect.right <= preparationRect.right
+                    && ordered;
+            }),
+            JSON.stringify({
+                popover:[preparationRect.left, preparationRect.top,
+                    preparationRect.right, preparationRect.bottom],
+                help:[helpRect.left, helpRect.top, helpRect.right, helpRect.bottom],
+                close:[closeRect.left, closeRect.top, closeRect.right, closeRect.bottom]
+            }));
+        preparationItem('equipment').dispatchEvent(new KeyboardEvent(
+            'keydown', {key:'Escape', bubbles:true, cancelable:true}));
+        UiData.dispatch('q:13');
+        openPreparationMenu();
+        var progressionFocus = preparationItem('battlebox');
+        progressionFocus.focus();
+        var progressionBlocked =
+            progressionFocus.getAttribute('aria-disabled') === 'true'
+            && progressionFocus.getAttribute('title')
+                === '完成基地整备后开放'
+            && preparationItem('tuning').getAttribute('aria-disabled') === 'true'
+            && preparationItem('tuning').getAttribute('title')
+                === '完成基地整备后开放';
+        UiData.dispatch('q:14');
+        check('q progression updates the same focused route in place without closing the menu',
+            progressionBlocked
+            && document.activeElement === progressionFocus
+            && progressionFocus === preparationItem('battlebox')
+            && progressionFocus.getAttribute('aria-disabled') === 'false'
+            && progressionFocus.getAttribute('title') === null
+            && preparationTrigger.getAttribute('aria-expanded') === 'true');
+        progressionFocus.dispatchEvent(new KeyboardEvent(
+            'keydown', {key:'Escape', bubbles:true, cancelable:true}));
+        var initialCandidateCounts = Array.prototype.map.call(
+            document.querySelectorAll('[data-slot-candidate-count]'),
+            function(node) {
+                var slot = node.closest('[data-slot-id]');
+                return {
+                    key:slot.getAttribute('data-slot-kind') + ':'
+                        + slot.getAttribute('data-slot-id'),
+                    text:node.textContent,
+                    state:node.getAttribute('data-count-state'),
+                    value:slot.getAttribute('data-candidate-count')
+                };
+            });
+        function initialCount(key) {
+            return initialCandidateCounts.filter(function(row) {
+                return row.key === key;
+            })[0];
+        }
+        check('initial production snapshot exposes authoritative 11+4 facet badges before slot selection',
+            initialCandidateCounts.length === 15
+            && initialCandidateCounts.every(function(row) {
+                return row.state === 'known';
+            })
+            && initialCount('armor:头部装备').value === '2'
+            && initialCount('armor:下装装备').value === '0'
+            && initialCount('weapon:手枪').value === '2'
+            && initialCount('weapon:手枪2').value === '3'
+            && initialCount('weapon:刀').value === '0'
+            && initialCount('weapon:手雷').value === '5'
+            && initialCount('drug:drug1').value === '7'
+            && initialCount('drug:drug4').value === '7'
+            && document.querySelectorAll(
+                '.character-build-slot[aria-selected="true"]').length === 0
+            && commandCount('candidates') === 0,
+            JSON.stringify(initialCandidateCounts));
+        check('semantic hidden removes storage chrome and inactive back action from layout, hit testing, and focus',
+            semanticHiddenContract(document.querySelector('.inventory-workbench-mode-actions'))
+            && semanticHiddenContract(
+                document.querySelector('[data-header-action="back-build"]'))
+            && semanticHiddenContract(
+                document.querySelector('[data-header-action="storage"]'))
+            && semanticHiddenContract(
+                document.querySelector('[data-header-action="skills"]')));
         var densityToggle = document.querySelector(
             '[data-build-density-mount] .item-grid-mode-switch');
         var actionRow = candidateActionRow();
@@ -1448,6 +1805,55 @@ window.EquipmentInspector = {
             && candidate.getAttribute('aria-label').indexOf('装备可升阶但尚未升阶') >= 0
             && candidate.getAttribute('aria-label')
                 .indexOf('插件槽 1：候选稳定器，中级，结构与功能') >= 0);
+        var tooltipBase = inventoryMessages().length;
+        var candidateRect = candidate.getBoundingClientRect();
+        candidate.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:71,
+            pointerType:'mouse',
+            clientX:candidateRect.left + candidateRect.width / 2,
+            clientY:candidateRect.top + candidateRect.height / 2
+        }));
+        check('pointer candidate tooltip uses the exact read-only inventory envelope',
+            await until(function() {
+                return inventoryMessages().length === tooltipBase + 1
+                    && PanelTooltip.isVisible()
+                    && document.getElementById('panel-tooltip').textContent
+                        .indexOf('权威候选说明') >= 0;
+            }));
+        var tooltipRequest = inventoryMessages().slice(-1)[0];
+        check('candidate tooltip carries exact source plus Character session context only',
+            JSON.stringify(Object.keys(tooltipRequest).sort()) === JSON.stringify(
+                ['callId','cmd','domain','panel','panelInstanceId','payload','type'])
+            && JSON.stringify(Object.keys(tooltipRequest.payload).sort())
+                === JSON.stringify(['context','source','v'])
+            && tooltipRequest.payload.source.containerId === '背包'
+            && tooltipRequest.payload.source.slot === 9
+            && tooltipRequest.payload.source.expectedLease === 'lease.candidate.9'
+            && JSON.stringify(tooltipRequest.payload.context) === JSON.stringify({
+                kind:'character_build_candidate',
+                sessionGeneration:17
+            }));
+        candidate.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:71,
+            pointerType:'mouse'
+        }));
+        await wait(180);
+        document.dispatchEvent(new KeyboardEvent('keydown', {
+            key:'Tab',
+            bubbles:true
+        }));
+        candidate.focus();
+        check('keyboard focus exposes the same cached rich candidate tooltip',
+            await until(function() {
+                return PanelTooltip.isVisible()
+                    && candidate.getAttribute('aria-describedby')
+                        .split(/\s+/).indexOf('panel-tooltip') >= 0
+                    && document.getElementById('panel-tooltip').textContent
+                        .indexOf('权威候选说明') >= 0;
+            })
+            && inventoryMessages().length === tooltipBase + 1);
+        densityToggle.focus();
+        PanelTooltip.hide();
         var previewColorProbe = document.createElement('i');
         previewColorProbe.style.color = 'var(--dls-crystal-faint)';
         candidate.appendChild(previewColorProbe);
@@ -1475,9 +1881,11 @@ window.EquipmentInspector = {
         var selectedActionRow = candidateActionRow();
         check('1024 candidate PaneChrome keeps its three direct actions on one row',
             selectedActionRow.count === 3
-            && selectedActionRow.labels.join('|') === '装备|调制|卸下'
+            && selectedActionRow.labels.join('|') === '装备|调制候选|卸下'
             && selectedActionRow.aria.join('|') ===
-                '装备所选候选|调制当前装备|卸下当前物品'
+                '装备所选候选|调制所选候选：'
+                    + CharacterBuildDressupFixture.scenarios.candidate.candidateItem
+                    + '|卸下当前物品'
             && selectedActionRow.sameRow && selectedActionRow.inside
             && !selectedActionRow.overflow && !selectedActionRow.clipped
             && !selectedActionRow.wrapped && selectedActionRow.minWidth >= 44
@@ -1502,6 +1910,8 @@ window.EquipmentInspector = {
         var previewPixelRatioCount = window.__routeHarness.renderer.pixelRatios.length;
         var previewCandidateKey = InventoryWorkbench.debugState().build.view.selectedCandidateKey;
         var previewOverlayCopy = document.querySelector('[data-overlay-copy]').textContent;
+        openPreparationMenu();
+        preparationItem('equipment').focus();
         document.querySelector('[data-doll-preview-open]').click();
         check('single-canvas enlarged preview opens with inert backing and stable renderer ownership',
             await until(function() {
@@ -1515,6 +1925,8 @@ window.EquipmentInspector = {
                         > previewEmbeddedRect.width * previewEmbeddedRect.height * 1.5
                     && document.querySelector('.character-build-body').hasAttribute('inert')
                     && document.querySelector('.workbench-header').hasAttribute('inert')
+                    && preparationTrigger.getAttribute('aria-expanded') === 'false'
+                    && preparationPopover.hidden
                     && document.activeElement === previewMount
                     && window.__routeHarness.renderer.active === 1
                     && window.__routeHarness.renderer.maxActive === 1
@@ -1699,16 +2111,23 @@ window.EquipmentInspector = {
             var state = InventoryWorkbench.debugState().build;
             return state && state.view && state.view.selectedSlotKey === headKey
                 && state.view.candidateLoadFailed
-                && document.querySelector('[data-build-notice]')
-                    .textContent.indexOf('再次选择当前槽位') >= 0;
+                && state.view.candidateState.kind === 'error'
+                && document.querySelector('[data-candidate-retry]')
+                && document.querySelector('.character-build-candidate-statement').textContent
+                    .indexOf('暂时无法读取候选') >= 0;
         }));
         var failedCandidateCount = commandCount('candidates');
-        document.querySelector('[data-roving-key="' + headKey + '"]').click();
-        check('same-slot activation retries a failed candidate read', await until(function() {
+        var retryCandidateButton = document.querySelector('[data-candidate-retry]');
+        retryCandidateButton.focus();
+        retryCandidateButton.click();
+        retryCandidateButton.click();
+        check('the error retry port issues exactly one current-slot candidate read', await until(function() {
             var state = InventoryWorkbench.debugState().build;
             return state && state.view && !state.view.candidateLoadFailed
                 && state.view.candidateCount === 1
-                && commandCount('candidates') === failedCandidateCount + 1;
+                && state.view.candidateState.kind === 'ready'
+                && commandCount('candidates') === failedCandidateCount + 1
+                && document.activeElement.hasAttribute('data-candidate-key');
         }));
         document.querySelector('[data-roving-key="' + longGunKey + '"]').click();
         check('candidate retry flow can return to the original slot', await until(function() {
@@ -1718,13 +2137,17 @@ window.EquipmentInspector = {
         }));
         var candidateCountBeforeStorage = commandCount('candidates');
 
+        openPreparationMenu();
         document.querySelector('[data-header-action="stats"]').click();
         check('stats uses the same production session and common header', await until(function() {
             var state = InventoryWorkbench.debugState();
             return state.build && state.build.view && state.build.view.statsOpen;
-        }));
+        }) && document.querySelector('.inventory-workbench-panel').getAttribute(
+            'data-profile') === 'character-build');
         check('stats header exposes only back/help/close',
-            visibleHeaderActions().join('|') === 'back-build|help|close',
+            visibleHeaderActions().join('|') === 'back-build|help|close'
+            && preparationTrigger.getAttribute('aria-expanded') === 'false'
+            && semanticHiddenContract(preparationTrigger),
             visibleHeaderActions().join('|'));
         var statsTop = statsProbe();
         var exactStatsKeys = CharacterBuildStatsFixture.create().groups.reduce(
@@ -1854,21 +2277,21 @@ window.EquipmentInspector = {
             var inputProbe = window.__routeHarness.statsInputProbe || {};
             check('trusted reduced-motion keyboard and wheel input reaches the stats scroll region',
                 inputProbe.reducedMotion === true && inputProbe.keyboardFocused === true
-                && inputProbe.focusVisible === true && inputProbe.pageDownDelta > 1
-                && inputProbe.endReached === true && inputProbe.lastVisible === true
-                && inputProbe.homeReached === true && inputProbe.wheelDelta > 1,
+                    && inputProbe.focusVisible === true && inputProbe.pageDownDelta > 1
+                    && inputProbe.endReached === true && inputProbe.lastVisible === true
+                    && inputProbe.homeReached === true && inputProbe.wheelDelta > 1,
                 JSON.stringify(inputProbe));
             visual.stats.input = inputProbe;
         }
         document.querySelector('[data-header-action="back-build"]').click();
         check('stats return restores the build header', await until(function() {
-            return visibleHeaderActions().join('|') === 'storage|stats|skills|help|close';
+            return visibleHeaderActions().join('|') === 'preparation-menu|stats|help|close';
         }));
 
         var generationBeforeStorage =
             InventoryWorkbench.debugState().build.session.sessionGeneration;
         var densityToggleIdentity = document.querySelector('.item-grid-mode-switch');
-        document.querySelector('[data-header-action="storage"]').click();
+        activatePreparation('battlebox');
         check('build to storage suspends only view and renderer', await until(function() {
             var state = InventoryWorkbench.debugState();
             return state.view === 'storage' && state.build
@@ -1876,13 +2299,15 @@ window.EquipmentInspector = {
         }));
         check('storage keeps the same active loadout session',
             InventoryWorkbench.debugState().build.session.sessionGeneration === generationBeforeStorage
-            && InventoryWorkbench.debugState().build.session.state === 'idle');
+            && InventoryWorkbench.debugState().build.session.state === 'idle'
+            && document.querySelector('.inventory-workbench-panel').getAttribute(
+                'data-profile') === 'transfer-pair');
         check('the same density control moves back to storage chrome without duplication',
             densityToggleIdentity === document.querySelector(
                 '.inventory-workbench-mode-actions .item-grid-mode-switch')
             && document.querySelectorAll('.item-grid-mode-switch').length === 1);
         Bridge.emit('panel_esc', {});
-        check('Esc from storage returns to build with a fresh snapshot', await until(function() {
+        var storageEscReturned = await until(function() {
             var state = InventoryWorkbench.debugState();
             return state.view === 'build' && state.build && state.build.mounted
                 && state.build.session.state === 'idle'
@@ -1890,7 +2315,24 @@ window.EquipmentInspector = {
                 && commandCount('snapshot') === 2
                 && commandCount('candidates') === candidateCountBeforeStorage + 1
                 && rendererSettled();
-        }));
+        });
+        check('Esc from storage returns to build with a fresh snapshot',
+            storageEscReturned
+            && document.querySelector('.inventory-workbench-panel').getAttribute(
+                'data-profile') === 'character-build',
+            JSON.stringify({
+                workbench:InventoryWorkbench.debugState(),
+                snapshotCount:commandCount('snapshot'),
+                candidateCount:commandCount('candidates'),
+                expectedCandidateCount:candidateCountBeforeStorage + 1,
+                renderer:window.__routeHarness.renderer,
+                canvas:canvasProbe()
+            }));
+        check('storage return restores the exact build header with no hidden group hitbox or Tab stop',
+            visibleHeaderActions().join('|') === 'preparation-menu|stats|help|close'
+            && semanticHiddenContract(
+                document.querySelector('.inventory-workbench-mode-actions')),
+            visibleHeaderActions().join('|'));
         check('returning to build moves the same persisted density control into the new candidate pane',
             densityToggleIdentity === document.querySelector(
                 '[data-build-density-mount] .item-grid-mode-switch')
@@ -1903,11 +2345,12 @@ window.EquipmentInspector = {
             JSON.stringify(snapshots[1].payload) === '{"v":1,"sessionGeneration":17}');
         var restored = InventoryWorkbench.debugState().build;
         var activeElement = document.activeElement;
-        check('fresh snapshot restores legal selected slot, focus and candidates',
+        check('fresh snapshot restores legal selection and returns focus to the exact storage opener',
             restored.selectedSlotKey === longGunKey
             && restored.view.selectedSlotKey === longGunKey
             && restored.view.candidateCount === 1
-            && activeElement && activeElement.getAttribute('data-roving-key') === longGunKey
+            && activeElement === document.querySelector(
+                '[data-header-action="preparation-menu"]')
             && document.querySelector('.character-build-candidate-scroll').scrollTop === 0,
             JSON.stringify(restored.view));
         check('storage Esc does not close or finalize',
@@ -1918,7 +2361,179 @@ window.EquipmentInspector = {
             window.__routeHarness.renderer.maxActive === 1
             && window.__routeHarness.renderer.active === 1);
 
+        var transactionSnapshotBase = commandCount('snapshot');
+        var transactionCandidateBase = commandCount('candidates');
+        var transactionStorageOpener = document.querySelector(
+            '[data-header-action="preparation-menu"]');
+        transactionStorageOpener.focus();
+        activatePreparation('battlebox');
+        check('transaction rollback fixture enters storage through one committed push',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'storage' && !state.viewTransition
+                    && state.viewStack.length === 2;
+            }));
+        var transactionBody = document.querySelector('.inventory-workbench-panel .workbench-body');
+        var transactionLeftHost = transactionBody.querySelector(
+            '.workbench-slot[data-slot="L"] .workbench-view-host');
+        var transactionRightHost = transactionBody.querySelector(
+            '.workbench-slot[data-slot="R"] .workbench-view-host');
+        var transactionStack = JSON.stringify(InventoryWorkbench.debugState().viewStack);
+        var transactionHeader = visibleHeaderActions().join('|');
+        var transactionReturn = document.querySelector('[data-header-action="return-build"]');
+
+        window.__routeHarness.refuseNextSnapshotSend = true;
+        transactionReturn.focus();
+        transactionReturn.click();
+        check('immediate not_sent rolls navigation back atomically', await until(function() {
+            var state = InventoryWorkbench.debugState();
+            return state.view === 'storage' && !state.viewTransition
+                && window.__routeHarness.events.indexOf('snapshot_send_refused') >= 0;
+        }));
+        check('not_sent preserves exact storage DOM, stack, header, focus and write count',
+            transactionBody === document.querySelector(
+                '.inventory-workbench-panel .workbench-body')
+            && transactionLeftHost === transactionBody.querySelector(
+                '.workbench-slot[data-slot="L"] .workbench-view-host')
+            && transactionRightHost === transactionBody.querySelector(
+                '.workbench-slot[data-slot="R"] .workbench-view-host')
+            && JSON.stringify(InventoryWorkbench.debugState().viewStack) === transactionStack
+            && visibleHeaderActions().join('|') === transactionHeader
+            && document.activeElement === transactionReturn
+            && commandCount('snapshot') === transactionSnapshotBase
+            && commandCount('finalize') === 0
+            && commandCount('equipEquipment') === 0,
+            JSON.stringify({
+                body:transactionBody === document.querySelector(
+                    '.inventory-workbench-panel .workbench-body'),
+                left:transactionLeftHost === transactionBody.querySelector(
+                    '.workbench-slot[data-slot="L"] .workbench-view-host'),
+                right:transactionRightHost === transactionBody.querySelector(
+                    '.workbench-slot[data-slot="R"] .workbench-view-host'),
+                stack:InventoryWorkbench.debugState().viewStack,
+                expectedStack:JSON.parse(transactionStack),
+                header:visibleHeaderActions(),
+                expectedHeader:transactionHeader,
+                focus:document.activeElement
+                    && document.activeElement.getAttribute('data-header-action'),
+                snapshots:commandCount('snapshot'),
+                expectedSnapshots:transactionSnapshotBase
+            }));
+
+        window.__routeHarness.rejectNextSnapshot = true;
+        window.__routeHarness.holdNextSnapshot = true;
+        transactionReturn.focus();
+        transactionReturn.click();
+        check('delayed refresh failure keeps the source view authoritative while pending',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return !!window.__routeHarness.heldSnapshot
+                    && state.view === 'storage'
+                    && state.viewTransition
+                    && state.viewTransition.next === 'build'
+                    && JSON.stringify(state.viewStack) === transactionStack
+                    && transactionBody.hidden === false
+                    && document.activeElement === transactionReturn;
+            }));
+        window.__routeHarness.releaseSnapshot();
+        check('delayed refresh failure restores the exact source projection and opener',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'storage' && !state.viewTransition
+                    && JSON.stringify(state.viewStack) === transactionStack
+                    && visibleHeaderActions().join('|') === transactionHeader
+                    && document.activeElement === transactionReturn;
+            }));
+
+        window.__routeHarness.throwNextBuildActivate = true;
+        transactionReturn.focus();
+        transactionReturn.click();
+        check('activate throw restores DOM, stack, header and exact initiating focus',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'storage' && !state.viewTransition
+                    && JSON.stringify(state.viewStack) === transactionStack
+                    && transactionBody === document.querySelector(
+                        '.inventory-workbench-panel .workbench-body')
+                    && transactionLeftHost === transactionBody.querySelector(
+                        '.workbench-slot[data-slot="L"] .workbench-view-host')
+                    && transactionRightHost === transactionBody.querySelector(
+                        '.workbench-slot[data-slot="R"] .workbench-view-host')
+                    && visibleHeaderActions().join('|') === transactionHeader
+                    && document.activeElement === transactionReturn
+                    && commandCount('snapshot') === transactionSnapshotBase + 1
+                    && commandCount('finalize') === 0
+                    && commandCount('equipEquipment') === 0;
+            }));
+
+        var transactionTuning = document.querySelector('[data-workbench-key="tuning-switch"]');
+        window.__routeHarness.storage.failNextSwitch = true;
+        transactionTuning.focus();
+        transactionTuning.click();
+        check('delayed tuning entry failure rolls back without changing stack or opener focus',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'storage' && !state.viewTransition
+                    && JSON.stringify(state.viewStack) === transactionStack
+                    && visibleHeaderActions().join('|') === transactionHeader
+                    && document.activeElement === transactionTuning
+                    && commandCount('finalize') === 0
+                    && commandCount('equipEquipment') === 0;
+            }));
+        transactionTuning.click();
+        check('healthy tuning entry commits one explicit child view',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'tuning' && !state.viewTransition
+                    && state.viewStack.length === 3
+                    && state.viewStack[2].returnTarget === 'storage';
+            }));
+        var transactionTuningStack = JSON.stringify(
+            InventoryWorkbench.debugState().viewStack);
+        window.__routeHarness.storage.failNextSwitch = true;
+        transactionTuning.focus();
+        transactionTuning.click();
+        check('delayed storage return failure keeps tuning DOM, stack and exact switch focus',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'tuning' && !state.viewTransition
+                    && JSON.stringify(state.viewStack) === transactionTuningStack
+                    && document.activeElement === transactionTuning
+                    && commandCount('finalize') === 0
+                    && commandCount('equipEquipment') === 0;
+            }));
+        transactionTuning.click();
+        check('healthy storage return pops only tuning and restores its exact opener',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'storage' && !state.viewTransition
+                    && JSON.stringify(state.viewStack) === transactionStack
+                    && document.activeElement === transactionTuning;
+            }), JSON.stringify({
+                state:InventoryWorkbench.debugState(),
+                expectedStack:JSON.parse(transactionStack),
+                focus:document.activeElement
+                    && (document.activeElement.getAttribute('data-workbench-key')
+                        || document.activeElement.getAttribute('data-header-action'))
+            }));
+
+        Bridge.emit('panel_esc', {});
+        check('a later healthy return commits once and restores the original build opener',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'build' && !state.viewTransition
+                    && state.viewStack.length === 1
+                    && state.build && state.build.mounted
+                    && commandCount('snapshot') === transactionSnapshotBase + 2
+                    && commandCount('candidates') === transactionCandidateBase + 1
+                    && document.activeElement === transactionStorageOpener
+                    && rendererSettled();
+            }));
+
         var writesBefore = window.__routeHarness.storage.externalBegins;
+        var longGunCountBeforeWrite = document.querySelector(
+            '[data-roving-key="' + longGunKey
+                + '"] [data-slot-candidate-count]');
         document.querySelector('.character-build-candidate').click();
         document.querySelector('[data-build-action="commit"]').click();
         check('deterministic equip success adopts loadout and backpack then restores focus',
@@ -1935,6 +2550,17 @@ window.EquipmentInspector = {
                     && window.__routeHarness.storage.externalCompletes === 1
                     && window.__routeHarness.storage.appliedSnapshots === 1;
             }));
+        check('successful write adopts the returned facet snapshot without disturbing restored focus',
+            longGunCountBeforeWrite !== document.querySelector(
+                '[data-roving-key="' + longGunKey
+                    + '"] [data-slot-candidate-count]')
+            && document.querySelector(
+                '[data-roving-key="' + longGunKey + '"]')
+                .getAttribute('data-candidate-count') === '3'
+            && document.activeElement.getAttribute('data-roving-key')
+                === longGunKey
+            && document.querySelector(
+                '.character-build-candidate-scroll').scrollTop === 0);
         var firstEquip = loadoutMessages().filter(function(message) {
             return message.cmd === 'equipEquipment';
         })[0];
@@ -1964,18 +2590,29 @@ window.EquipmentInspector = {
             await until(function() {
                 var state = InventoryWorkbench.debugState().build;
                 var header = Array.prototype.slice.call(
-                    document.querySelectorAll('[data-header-action]'));
-                var storageAction = document.querySelector('[data-header-action="storage"]');
+                    document.querySelectorAll('[data-header-action]')).filter(function(node) {
+                        var style = getComputedStyle(node);
+                        return !node.hidden && style.display !== 'none'
+                            && style.visibility !== 'hidden';
+                    });
+                var preparationAction = document.querySelector(
+                    '[data-header-action="preparation-menu"]');
                 var roving = Array.prototype.slice.call(
                     document.querySelectorAll('[data-roving-key]'));
                 return state && state.session.state === 'needs_reconcile'
                     && window.__routeHarness.heldReconcile
                     && commandCount('equipEquipment') === 3
                     && header.every(function(node) {
-                        return node === storageAction
-                            ? !node.disabled && node.getAttribute('aria-disabled') === 'true'
-                            : node.disabled;
+                        return !node.disabled;
                     })
+                    && document.querySelector('[data-header-action="stats"]')
+                        .getAttribute('aria-disabled') === 'true'
+                    && document.querySelector('[data-header-action="close"]')
+                        .getAttribute('aria-disabled') === 'true'
+                    && preparationItem('battlebox')
+                        .getAttribute('aria-disabled') === 'true'
+                    && preparationItem('battlebox').getAttribute('title')
+                        .indexOf('完成对账后才能进入收纳') >= 0
                     && roving.every(function(node) {
                         return node.matches('.character-build-candidate')
                             ? node.hasAttribute('inert')
@@ -1990,12 +2627,96 @@ window.EquipmentInspector = {
             }));
         var storageActivationsWhileLocked = window.__routeHarness.storage.activations;
         var toastCountWhileLocked = Toast.messages.length;
-        document.querySelector('[data-header-action="storage"]').click();
+        var messagesWhileLocked = window.__routeHarness.sent.length;
+        var audioCuesWhileLocked = window.__routeHarness.audio.cues.length;
+        var lockedHeaderActions = ['stats', 'skills', 'close', 'storage'];
+        var lockedHeaderReason = document.querySelector(
+            '[data-header-action="stats"]').getAttribute(
+                'data-header-disabled-reason');
+        var lockedHeaderReasons = lockedHeaderActions.map(function(action) {
+            return document.querySelector(
+                '[data-header-action="' + action + '"]').getAttribute(
+                    'data-header-disabled-reason');
+        });
+        var statsLockedRect = document.querySelector(
+            '[data-header-action="stats"]').getBoundingClientRect();
+        var closeLockedRect = document.querySelector(
+            '[data-header-action="close"]').getBoundingClientRect();
+        var statsLockedHit = document.elementFromPoint(
+            statsLockedRect.left + statsLockedRect.width / 2,
+            statsLockedRect.top + statsLockedRect.height / 2);
+        var closeLockedHit = document.elementFromPoint(
+            closeLockedRect.left + closeLockedRect.width / 2,
+            closeLockedRect.top + closeLockedRect.height / 2);
+        lockedHeaderActions.forEach(function(action) {
+            document.querySelector(
+                '[data-header-action="' + action + '"]').click();
+        });
+        check('reasoned busy header actions retain real DOM activation and explain every block',
+            lockedHeaderReason
+            && statsLockedRect.width > 0 && statsLockedRect.height > 0
+            && closeLockedRect.width > 0 && closeLockedRect.height > 0
+            && (statsLockedHit === document.querySelector(
+                '[data-header-action="stats"]')
+                || document.querySelector(
+                    '[data-header-action="stats"]').contains(statsLockedHit))
+            && (closeLockedHit === document.querySelector(
+                '[data-header-action="close"]')
+                || document.querySelector(
+                    '[data-header-action="close"]').contains(closeLockedHit))
+            && lockedHeaderActions.every(function(action) {
+                var node = document.querySelector(
+                    '[data-header-action="' + action + '"]');
+                return !node.disabled
+                    && node.getAttribute('aria-disabled') === 'true';
+            })
+            && lockedHeaderReasons[0] === lockedHeaderReason
+            && lockedHeaderReasons[1] === lockedHeaderReason
+            && lockedHeaderReasons[2]
+                === lockedHeaderReason + '；完成后才能关闭工作台。'
+            && lockedHeaderReasons[3] === lockedHeaderReason
+            && Toast.messages.length === toastCountWhileLocked + 4
+            && JSON.stringify(Toast.messages.slice(-4))
+                === JSON.stringify(lockedHeaderReasons)
+            && window.__routeHarness.audio.cues.length
+                === audioCuesWhileLocked + 4
+            && window.__routeHarness.audio.cues.slice(-4).every(
+                function(cue) { return cue === 'error'; })
+            && window.__routeHarness.sent.length === messagesWhileLocked
+            && InventoryWorkbench.debugState().view === 'build'
+            && !InventoryWorkbench.debugState().build.view.statsOpen
+            && Panels.isOpen(),
+            JSON.stringify({
+                reason:lockedHeaderReason,
+                reasons:lockedHeaderReasons,
+                actions:lockedHeaderActions.map(function(action) {
+                    var node = document.querySelector(
+                        '[data-header-action="' + action + '"]');
+                    return {
+                        action:action,
+                        disabled:node.disabled,
+                        ariaDisabled:node.getAttribute('aria-disabled'),
+                        reason:node.getAttribute('data-header-disabled-reason')
+                    };
+                }),
+                toasts:Toast.messages.slice(-4),
+                audioCues:window.__routeHarness.audio.cues.slice(-4),
+                sentDelta:window.__routeHarness.sent.length - messagesWhileLocked,
+                view:InventoryWorkbench.debugState().view,
+                statsOpen:InventoryWorkbench.debugState().build.view.statsOpen
+            }));
+        toastCountWhileLocked = Toast.messages.length;
+        activatePreparation('battlebox');
         check('locked storage intent is explained without navigating',
             InventoryWorkbench.debugState().view === 'build'
             && window.__routeHarness.storage.activations === storageActivationsWhileLocked
-            && Toast.messages.length === toastCountWhileLocked + 1
-            && Toast.messages[Toast.messages.length - 1].indexOf('完成对账后才能进入收纳') >= 0
+            && Toast.messages.length === toastCountWhileLocked
+            && preparationItem('battlebox').getAttribute('aria-disabled') === 'true'
+            && preparationItem('battlebox').getAttribute('title')
+                .indexOf('完成对账后才能进入收纳') >= 0
+            && document.querySelector(
+                '[data-header-action="preparation-menu"]')
+                .getAttribute('aria-expanded') === 'true'
             && document.querySelector('.workbench-status').getAttribute('role') === 'status'
             && document.querySelector('.workbench-status').textContent === '等待结果确认');
         var unknownEquip = loadoutMessages().filter(function(message) {
@@ -2017,18 +2738,128 @@ window.EquipmentInspector = {
                     && state.view.candidateCount === 1
                     && document.activeElement.getAttribute('data-roving-key') === longGunKey
                     && document.querySelector('.workbench-status').textContent === '写入结果已确认'
-                    && !document.querySelector('[data-header-action="storage"]').disabled
-                    && document.querySelector('[data-header-action="storage"]')
+                    && preparationItem('battlebox')
                         .getAttribute('aria-disabled') === 'false'
+                    && document.querySelector('[data-header-action="close"]')
+                        .getAttribute('aria-label') === '关闭工作台'
+                    && document.querySelector('[data-header-action="close"]')
+                        .getAttribute('data-audio-cue') === 'cancel'
+                    && !document.querySelector('[data-header-action="stats"]')
+                        .hasAttribute('data-audio-cue')
                     && window.__routeHarness.storage.externalCompletes === 3
                     && window.__routeHarness.storage.appliedSnapshots === 2
                     && commandCount('equipEquipment') === 3;
             }));
 
+        var candidateTuningRequestBase = commandCount('candidates');
+        var candidateTuningCommitBase = tuningMessages('commit').length;
+        var candidateTuningStorageBase = window.__routeHarness.storage.activations;
+        var candidateTuningLeaseBefore = window.__routeHarness.candidateLease;
+        var candidateTuningScroll = document.querySelector(
+            '.character-build-candidate-scroll');
+        var candidateTuningList = document.querySelector(
+            '.character-build-candidate-list');
+        candidateTuningList.style.minHeight = '900px';
+        candidateTuningList.style.paddingTop = '160px';
+        candidateTuningScroll.scrollTop = 80;
+        var candidateTuningSavedScroll = candidateTuningScroll.scrollTop;
+        var candidateTuningInitialRect =
+            document.querySelector('.character-build-candidate').getBoundingClientRect();
+        var candidateTuningViewportRect = candidateTuningScroll.getBoundingClientRect();
+        check('candidate tuning captures a nonzero visible return scroll position',
+            candidateTuningSavedScroll > 0
+            && candidateTuningInitialRect.top >= candidateTuningViewportRect.top
+            && candidateTuningInitialRect.bottom <= candidateTuningViewportRect.bottom);
+        document.querySelector('.character-build-candidate').click();
+        check('selected candidate becomes the explicit tuning action target',
+            document.querySelector('[data-build-action="tune"]').textContent.trim()
+                === '调制候选'
+            && document.querySelector('[data-build-action="tune"]')
+                .getAttribute('aria-label').indexOf('调制所选候选：') === 0);
+        document.querySelector('[data-build-action="tune"]').click();
+        check('candidate enters shared tuning with the exact inventory source',
+            await until(function() {
+                var tuning = InventoryWorkbench.debugState().build.tuning;
+                return tuning && tuning.active && tuning.candidateSource
+                    && tuning.tuning && tuning.tuning.hasPreview
+                    && !tuning.tuning.readPending
+                    && JSON.stringify(tuning.tuning.source) === JSON.stringify({
+                        sourceKind:'inventory',
+                        containerId:'背包',
+                        slot:9,
+                        expectedLease:candidateTuningLeaseBefore
+                    });
+            })
+            && document.querySelector(
+                '.character-build-tuning-title > span').textContent.trim()
+                === '候选装备调制'
+            && window.__routeHarness.storage.activations === candidateTuningStorageBase);
+        document.querySelector('.equipment-tuning-commit').click();
+        check('candidate commit refreshes one exact target and rebinds the new lease',
+            await until(function() {
+                var tuning = InventoryWorkbench.debugState().build.tuning;
+                return tuningMessages('commit').length === candidateTuningCommitBase + 1
+                    && commandCount('candidates') === candidateTuningRequestBase + 1
+                    && tuning.tuning.source.expectedLease
+                        === window.__routeHarness.candidateLease
+                    && window.__routeHarness.candidateLease !== candidateTuningLeaseBefore
+                    && tuning.tuning.hasPreview && !tuning.tuning.readPending;
+            }));
+        var candidateReturnRequestCount = commandCount('candidates');
+        var candidateExpectedKey =
+            'backpack:9:' + window.__routeHarness.candidateLease;
+        candidateTuningList.style.minHeight = '3000px';
+        candidateTuningList.style.paddingTop = '2000px';
+        document.querySelector('[data-build-tuning-return]').click();
+        var candidateReturnVisible = await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var focused = document.querySelector(
+                    '[data-candidate-key="' + candidateExpectedKey + '"]');
+                var viewport = candidateTuningScroll.getBoundingClientRect();
+                var rect = focused && focused.getBoundingClientRect();
+                return !state.tuning.active
+                    && state.view.selectedCandidateKey === candidateExpectedKey
+                    && state.view.activeCandidateKey === candidateExpectedKey
+                    && document.activeElement
+                    && document.activeElement.getAttribute('data-candidate-key')
+                        === candidateExpectedKey
+                    && candidateTuningScroll.scrollTop > candidateTuningSavedScroll
+                    && rect && rect.top >= viewport.top - 1
+                    && rect.bottom <= viewport.bottom + 1
+                    && commandCount('candidates') === candidateReturnRequestCount
+                    && document.querySelector('[data-build-action="tune"]')
+                        .textContent.trim() === '调制候选';
+            });
+        var candidateReturnRect = document.querySelector(
+            '[data-candidate-key="' + candidateExpectedKey + '"]').getBoundingClientRect();
+        var candidateReturnViewport = candidateTuningScroll.getBoundingClientRect();
+        check('candidate return restores exact selection and nearest-visible focus without a second read',
+            candidateReturnVisible, JSON.stringify({
+                scrollTop:candidateTuningScroll.scrollTop,
+                savedScroll:candidateTuningSavedScroll,
+                item:[candidateReturnRect.top, candidateReturnRect.bottom],
+                viewport:[candidateReturnViewport.top, candidateReturnViewport.bottom],
+                state:InventoryWorkbench.debugState().build.view,
+                activeKey:document.activeElement
+                    && document.activeElement.getAttribute('data-candidate-key'),
+                reads:[commandCount('candidates'), candidateReturnRequestCount]
+            }));
+        candidateTuningList.style.minHeight = '';
+        candidateTuningList.style.paddingTop = '';
+        candidateTuningScroll.scrollTop = 0;
+        Bridge.emit('panel_esc', {});
+        check('clearing candidate selection restores loadout tuning parity',
+            InventoryWorkbench.debugState().build.view.selectedCandidateKey === ''
+            && document.querySelector('[data-build-action="tune"]').textContent.trim()
+                === '调制'
+            && document.querySelector('[data-build-action="tune"]')
+                .getAttribute('aria-label') === '调制当前装备');
+
         var tuningSnapshotBase = commandCount('snapshot');
         var tuningCommitBase = tuningMessages('commit').length;
         var tuningCompleteBase = window.__routeHarness.storage.externalCompletes;
         var tuningBackpackBase = window.__routeHarness.storage.appliedSnapshots;
+        var loadoutTuningSnapshotBase = tuningMessages('snapshot').length;
         document.querySelector('[data-build-action="tune"]').click();
         check('occupied equipment enters shared current-only tuning with an exact loadout source',
             await until(function() {
@@ -2103,7 +2934,8 @@ window.EquipmentInspector = {
                 var state = InventoryWorkbench.debugState().build.tuning.tuning;
                 return state.operation === 'enhance' && state.hasPreview && !state.readPending;
             }));
-        var firstTuningSource = tuningMessages('snapshot')[0].payload.source;
+        var firstTuningSource =
+            tuningMessages('snapshot')[loadoutTuningSnapshotBase].payload.source;
         check('loadout tuning source binds generation, slot and current revision only',
             JSON.stringify(firstTuningSource) === JSON.stringify({
                 sourceKind:'loadout',
@@ -2193,6 +3025,62 @@ window.EquipmentInspector = {
             && tuningMessages('preview').every(function(message) {
                 return message.payload.operation !== 'convert';
             }));
+        var embeddedConfirmation = document.querySelector(
+            '.equipment-tuning-confirmation');
+        var embeddedChoices = Array.prototype.slice.call(document.querySelectorAll(
+            '.equipment-tuning-confirmation [data-confirmation-mode]'));
+        check('embedded tuning owns one decision-area ChoiceGroup instead of a global-header selector',
+            embeddedConfirmation
+            && embeddedConfirmation.parentNode.classList.contains(
+                'equipment-tuning-summary')
+            && embeddedChoices.map(function(node) {
+                return node.textContent.trim();
+            }).join('|') === '逐次确认|单件快捷'
+            && embeddedChoices[0].getAttribute('aria-pressed') === 'true'
+            && document.querySelector(
+                '.workbench-header [data-confirmation-mode]') === null);
+        check('embedded confirmation keeps the exact safety boundary adjacent',
+            embeddedConfirmation.querySelector(
+                '.equipment-tuning-confirmation-boundary').textContent.trim()
+                === '批量、连锁与卸下全部始终需要确认');
+        var confirmationTrafficBase = tuningMessages().length;
+        document.querySelector('[data-confirmation-mode="fast"]').click();
+        check('embedded ChoiceGroup writes the one shared persistent preference',
+            InventoryWorkbench.debugState().build.tuning.tuning.modConfirmationMode
+                === 'fast'
+            && EquipmentTuningConfirmation.shared.read() === 'fast'
+            && localStorage.getItem('cf7.equipmentTuning.modConfirmationMode') === 'fast'
+            && tuningMessages().length === confirmationTrafficBase);
+        var helpTrafficBase = tuningMessages().length;
+        openPreparationMenu();
+        document.querySelector('[data-header-action="help"]').click();
+        var confirmationHelpModal = document.querySelector(
+            '.workbench-modal[data-modal-kind="equipment-tuning-help"]');
+        check('Character HelpAction explains confirmation without changing capability',
+            confirmationHelpModal
+            && confirmationHelpModal.textContent.indexOf('逐次确认') >= 0
+            && confirmationHelpModal.textContent.indexOf('单件快捷') >= 0
+            && confirmationHelpModal.textContent
+                .indexOf('批量、连锁与卸下全部始终需要确认') >= 0
+            && confirmationHelpModal.textContent
+                .indexOf('不会解锁配件能力') >= 0
+            && InventoryWorkbench.debugState().build.tuning.tuning.modConfirmationMode
+                === 'fast'
+            && preparationTrigger.getAttribute('aria-expanded') === 'false'
+            && preparationPopover.hidden
+            && tuningMessages().length === helpTrafficBase);
+        confirmationHelpModal.querySelector(
+            '.workbench-modal-action[data-action="close"]').click();
+        check('closing Character tuning help preserves the same capability',
+            !document.querySelector(
+                '.workbench-modal[data-modal-kind="equipment-tuning-help"]')
+            && InventoryWorkbench.debugState().build.tuning.tuning.modConfirmationMode
+                === 'fast'
+            && tuningMessages().length === helpTrafficBase);
+        document.querySelector('[data-confirmation-mode="safe"]').click();
+        check('embedded ChoiceGroup restores progressive confirmation through the same port',
+            EquipmentTuningConfirmation.shared.read() === 'safe'
+            && localStorage.getItem('cf7.equipmentTuning.modConfirmationMode') === 'safe');
         var tuningTabSize = parseFloat(getComputedStyle(
             document.querySelector('.equipment-tuning-tab')).fontSize);
         var tuningCommitHeight = parseFloat(getComputedStyle(
@@ -2296,6 +3184,23 @@ window.EquipmentInspector = {
                     && barrier.sessionGeneration === 17
                     && barrier.slotKey === '长枪';
             }));
+        var embeddedConfirmation = document.querySelector('.equipment-tuning-confirmation');
+        var embeddedConfirmationModes = document.querySelectorAll(
+            '.equipment-tuning-confirmation [data-confirmation-mode]');
+        var embeddedConfirmationReason = document.querySelector(
+            '.equipment-tuning-confirmation-reason');
+        check('embedded reconcile visibly locks the same ChoiceGroup with one readable reason',
+            embeddedConfirmation.getAttribute('data-confirmation-disabled') === 'true'
+            && Array.prototype.every.call(embeddedConfirmationModes,
+                function(node) { return node.disabled; })
+            && embeddedConfirmationReason.textContent.indexOf('正在核对调制结果') === 0,
+            JSON.stringify({
+                disabled:embeddedConfirmation.getAttribute('data-confirmation-disabled'),
+                choices:Array.prototype.map.call(embeddedConfirmationModes,
+                    function(node) { return node.disabled; }),
+                reason:embeddedConfirmationReason.textContent,
+                interaction:InventoryWorkbench.debugState().build.tuning.tuning.interaction
+            }));
         window.__routeHarness.releaseSnapshot();
         check('known tuning commit adopts a fresh full loadout before releasing the global lock',
             await until(function() {
@@ -2357,7 +3262,7 @@ window.EquipmentInspector = {
                     && barrier && barrier.kind === 'unknown'
                     && barrier.sessionGeneration === 17
                     && barrier.slotKey === '长枪'
-                    && document.querySelector('[data-header-action="storage"]')
+                    && preparationItem('battlebox')
                         .getAttribute('aria-disabled') === 'true';
             }));
         var unknownCommit = tuningMessages('commit')[unknownCommitBase];
@@ -2413,7 +3318,7 @@ window.EquipmentInspector = {
                 return !state.tuning.writePending
                     && !state.tuning.tuning.needsReconcile
                     && !state.tuning.tuning.loadoutBarrier
-                    && document.querySelector('[data-header-action="storage"]')
+                    && preparationItem('battlebox')
                         .getAttribute('aria-disabled') === 'false';
             })
             && tuningMessages('commit').length === unknownCommitBase + 1);
@@ -2517,20 +3422,171 @@ window.EquipmentInspector = {
                     && state.view.candidateCount === 1;
             }));
 
+        document.querySelector('[data-build-action="tune"]').click();
+        check('B3 embedded-to-standalone probe starts from an exact loadout source',
+            await until(function() {
+                var tuning = InventoryWorkbench.debugState().build.tuning;
+                return tuning && tuning.active && tuning.tuning.hasPreview
+                    && !tuning.tuning.readPending
+                    && tuning.tuning.source.sourceKind === 'loadout';
+            }));
+        var localSessionGeneration =
+            InventoryWorkbench.debugState().build.session.sessionGeneration;
+        var embeddedSourceBeforeStandalone = JSON.parse(JSON.stringify(
+            InventoryWorkbench.debugState().build.tuning.tuning.source));
+        var localDetachBase = tuningMessages('detach').length;
+        var localSwitchBase = window.__routeHarness.storage.switches;
+        var localRouteEventBase = window.__routeHarness.events.length;
+        var localFinalizeBase = commandCount('finalize');
+        window.__routeHarness.tuning.holdNextDetach = true;
+        activatePreparation('tuning');
+        check('standalone tuning waits behind the exact embedded detach barrier',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return !!window.__routeHarness.tuning.heldDetach
+                    && state.view === 'build' && state.viewTransition
+                    && state.viewTransition.next === 'tuning'
+                    && state.build.tuning.active
+                    && state.build.tuning.tuning.source.sourceKind === 'loadout'
+                    && window.__routeHarness.storage.switches === localSwitchBase;
+            }));
+        var lateEmbeddedDetach = JSON.parse(JSON.stringify(
+            window.__routeHarness.tuning.heldDetach));
+        window.__routeHarness.releaseTuningDetach();
+        check('exact detach precedes a direct standalone tuning mount in the same workbench',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'tuning' && !state.viewTransition
+                    && state.panelInstanceId === 'panel.workbench.route-harness'
+                    && state.build && !state.build.mounted
+                    && state.build.tuning === null
+                    && state.build.session.sessionGeneration === localSessionGeneration
+                    && state.storage && state.storage.tuningActive
+                    && state.storage.tuningSource
+                    && state.storage.tuningSource.sourceKind === 'inventory'
+                    && state.viewStack.length === 2
+                    && state.viewStack[0].viewId === 'build'
+                    && state.viewStack[1].viewId === 'tuning'
+                    && state.viewStack[1].returnTarget === 'build';
+            }));
+        var localRouteEvents = window.__routeHarness.events.slice(localRouteEventBase);
+        var standaloneSource = InventoryWorkbench.debugState().storage.tuningSource;
+        check('standalone source carries only a fresh backpack lease and no embedded return state',
+            embeddedSourceBeforeStandalone.sourceKind === 'loadout'
+            && JSON.stringify(Object.keys(standaloneSource).sort())
+                === JSON.stringify(['containerId','expectedLease','slot','sourceKind'])
+            && standaloneSource.containerId === '背包'
+            && standaloneSource.expectedLease.indexOf('standalone.') === 0
+            && localRouteEvents.indexOf('tuning_detach_response')
+                < localRouteEvents.indexOf('storage_switch_tuning')
+            && tuningMessages('detach').length === localDetachBase + 1
+            && commandCount('finalize') === localFinalizeBase,
+            JSON.stringify({embedded:embeddedSourceBeforeStandalone,
+                standalone:standaloneSource, events:localRouteEvents}));
+        var standaloneStack = JSON.stringify(
+            InventoryWorkbench.debugState().viewStack);
+        var standaloneSessionCount = window.__routeHarness.storage.tuningSessions;
+        Bridge.emit('panel_resp', lateEmbeddedDetach);
+        await wait();
+        check('a duplicate embedded detach callback cannot mutate standalone source or history',
+            InventoryWorkbench.debugState().view === 'tuning'
+            && JSON.stringify(InventoryWorkbench.debugState().viewStack)
+                === standaloneStack
+            && JSON.stringify(InventoryWorkbench.debugState().storage.tuningSource)
+                === JSON.stringify(standaloneSource)
+            && window.__routeHarness.storage.tuningSessions === standaloneSessionCount
+            && window.__routeHarness.storage.switches === localSwitchBase + 1);
+        var directReturnBuild = document.querySelector(
+            '[data-header-action="return-build"]');
+        check('standalone tuning exposes one explicit return to the exact Build ancestor',
+            !directReturnBuild.hidden
+            && getComputedStyle(directReturnBuild).display !== 'none'
+            && document.querySelectorAll(
+                '[data-header-action="return-build"]:not([hidden])').length === 1);
+        var localReturnSnapshotBase = commandCount('snapshot');
+        var localReturnCandidateBase = commandCount('candidates');
+        directReturnBuild.click();
+        check('explicit tuning return preserves Character session and never finalizes',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'build' && !state.viewTransition
+                    && state.panelInstanceId === 'panel.workbench.route-harness'
+                    && state.build && state.build.mounted
+                    && state.build.session.sessionGeneration === localSessionGeneration
+                    && state.viewStack.length === 1
+                    && state.viewStack[0].viewId === 'build'
+                    && commandCount('snapshot') === localReturnSnapshotBase + 1
+                    && commandCount('candidates') === localReturnCandidateBase + 1
+                    && commandCount('finalize') === localFinalizeBase
+                    && !window.__routeHarness.storage.tuningActive
+                    && !window.__routeHarness.storage.tuningSource
+                    && rendererSettled();
+            }));
+        var localReturnEvents = window.__routeHarness.events.slice(localRouteEventBase);
+        check('standalone detach completes before Build snapshot resumes',
+            localReturnEvents.lastIndexOf('standalone_tuning_detach')
+                < localReturnEvents.lastIndexOf('snapshot_request'),
+            localReturnEvents.join('|'));
+
         var candidateCountBeforeSecondStorage = commandCount('candidates');
         var snapshotCountBeforeSecondStorage = commandCount('snapshot');
 
-        document.querySelector('[data-header-action="storage"]').click();
+        activatePreparation('battlebox');
         check('second storage switch settles', await until(function() {
             return InventoryWorkbench.debugState().view === 'storage';
         }));
         InventoryStorageWorkbench.switchView('tuning');
         check('storage workbench exposes tuning state',
             InventoryWorkbench.debugState().view === 'tuning');
+        check('nested standalone tuning keeps one visible explicit Build return',
+            !document.querySelector('[data-header-action="return-build"]').hidden
+            && getComputedStyle(document.querySelector(
+                '[data-header-action="return-build"]')).display !== 'none');
+        var nestedReturnSnapshotBase = commandCount('snapshot');
+        var nestedReturnCandidateBase = commandCount('candidates');
+        document.querySelector('[data-header-action="return-build"]').click();
+        check('nested standalone tuning explicit return performs one bounded unwind to Build',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'build' && !state.viewTransition
+                    && state.viewStack.length === 1
+                    && state.viewStack[0].viewId === 'build'
+                    && state.build && state.build.mounted
+                    && state.build.session.sessionGeneration === localSessionGeneration
+                    && commandCount('snapshot') === nestedReturnSnapshotBase + 1
+                    && commandCount('candidates') === nestedReturnCandidateBase + 1
+                    && commandCount('finalize') === localFinalizeBase
+                    && document.activeElement
+                        === document.querySelector(
+                            '[data-header-action="preparation-menu"]')
+                    && rendererSettled();
+            }));
+        candidateCountBeforeSecondStorage = commandCount('candidates');
+        snapshotCountBeforeSecondStorage = commandCount('snapshot');
+        activatePreparation('battlebox');
+        check('layered Escape fixture re-enters storage', await until(function() {
+            return InventoryWorkbench.debugState().view === 'storage';
+        }));
+        InventoryStorageWorkbench.switchView('tuning');
+        check('layered Escape fixture re-enters standalone tuning',
+            InventoryWorkbench.debugState().view === 'tuning');
         Bridge.emit('panel_esc', {});
-        check('Esc from tuning returns to build without closing', await until(function() {
+        check('first Esc from tuning returns only to storage', await until(function() {
+            var state = InventoryWorkbench.debugState();
+            return state.view === 'storage'
+                && state.viewStack.length === 2
+                && state.viewStack[0].viewId === 'build'
+                && state.viewStack[1].viewId === 'storage'
+                && commandCount('snapshot') === snapshotCountBeforeSecondStorage
+                && commandCount('candidates') === candidateCountBeforeSecondStorage
+                && window.__routeHarness.events.indexOf('close_sent') < 0;
+        }));
+        Bridge.emit('panel_esc', {});
+        check('second Esc from storage returns to build without closing', await until(function() {
             var state = InventoryWorkbench.debugState();
             return state.view === 'build' && state.build && state.build.mounted
+                && state.viewStack.length === 1
+                && state.viewStack[0].viewId === 'build'
                 && state.build.selectedSlotKey === longGunKey
                 && state.build.view.selectedSlotKey === longGunKey
                 && state.build.view.candidateCount === 1
@@ -2538,9 +3594,9 @@ window.EquipmentInspector = {
                 && commandCount('candidates') === candidateCountBeforeSecondStorage + 1
                 && rendererSettled();
         }));
-        check('tuning Esc also preserves focus and avoids writes',
-            document.activeElement
-            && document.activeElement.getAttribute('data-roving-key') === longGunKey
+        check('explicit tuning and storage Esc layers preserve focus and avoid writes',
+            document.activeElement === document.querySelector(
+                '[data-header-action="preparation-menu"]')
             && commandCount('finalize') === 0
             && window.__routeHarness.events.indexOf('close_sent') < 0);
 
@@ -2565,7 +3621,7 @@ window.EquipmentInspector = {
             await refreshProjection());
         await selectPose('男', '长枪', '长枪站立', '长枪');
 
-        document.querySelector('[data-header-action="storage"]').click();
+        activatePreparation('battlebox');
         check('third storage switch settles', await until(function() {
             return InventoryWorkbench.debugState().view === 'storage';
         }));
@@ -2594,6 +3650,69 @@ window.EquipmentInspector = {
         check('panel is fully closed after proven finalize',
             Panels.isOpen() === false && window.__routeHarness.renderer.active === 0);
 
+        var hudFinalizeBase = commandCount('finalize');
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'tuning',
+                panelInstanceId:'panel.workbench.hud-tuning'
+            }
+        });
+        check('HUD standalone tuning has launch-root history and no synthetic Build return',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                var returnBuild = document.querySelector(
+                    '[data-header-action="return-build"]');
+                return state.view === 'tuning' && !state.build
+                    && state.viewStack.length === 1
+                    && state.viewStack[0].viewId === 'tuning'
+                    && state.viewStack[0].origin === 'launch'
+                    && returnBuild.hidden
+                    && window.__routeHarness.storage.tuningActive;
+            }));
+        Bridge.emit('panel_esc', {});
+        check('HUD standalone tuning Escape detaches then closes to game without finalize',
+            await until(function() {
+                return !Panels.isOpen()
+                    && window.__routeHarness.sent.some(function(message) {
+                        return message.type === 'panel' && message.cmd === 'close'
+                            && message.panelInstanceId === 'panel.workbench.hud-tuning';
+                    });
+            })
+            && commandCount('finalize') === hudFinalizeBase
+            && !window.__routeHarness.storage.tuningActive);
+
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'storage',
+                panelInstanceId:'panel.workbench.hud-storage'
+            }
+        });
+        check('HUD standalone storage also has no Build history',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.view === 'storage' && !state.build
+                    && state.viewStack.length === 1
+                    && state.viewStack[0].origin === 'launch'
+                    && document.querySelector(
+                        '[data-header-action="return-build"]').hidden;
+            }));
+        document.querySelector('[data-header-action="close"]').click();
+        check('HUD standalone storage ordinary Close returns to game without finalize',
+            await until(function() {
+                return !Panels.isOpen()
+                    && window.__routeHarness.sent.some(function(message) {
+                        return message.type === 'panel' && message.cmd === 'close'
+                            && message.panelInstanceId === 'panel.workbench.hud-storage';
+                    });
+            })
+            && commandCount('finalize') === hudFinalizeBase);
+
         window.__routeHarness.rejectNextSnapshot = true;
         Bridge.emit('panel_cmd', {
             cmd:'open',
@@ -2601,6 +3720,7 @@ window.EquipmentInspector = {
             initData:{
                 profile:'battlebox',
                 view:'build',
+                preparationNavigationV1:true,
                 panelInstanceId:'panel.workbench.rejected-harness'
             }
         });
@@ -2620,6 +3740,7 @@ window.EquipmentInspector = {
             initData:{
                 profile:'battlebox',
                 view:'build',
+                preparationNavigationV1:true,
                 panelInstanceId:'panel.workbench.skills-navigation'
             }
         });
@@ -2635,7 +3756,7 @@ window.EquipmentInspector = {
                 && message.reason === 'navigate_skills';
         }).length;
         window.__routeHarness.refuseNextCloseSend = true;
-        document.querySelector('[data-header-action="skills"]').click();
+        activatePreparation('skills');
         check('skills navigation transport failure keeps the authoritative build mounted and retryable',
             await until(function() {
                 return commandCount('finalize') === navigationFinalizeBase + 1
@@ -2648,7 +3769,7 @@ window.EquipmentInspector = {
                     && message.reason === 'navigate_skills';
             }).length === navigationCloseBase
             && window.__routeHarness.renderer.active === 1);
-        document.querySelector('[data-header-action="skills"]').click();
+        activatePreparation('skills');
         check('skills header action finalizes then emits one exact navigation close',
             await until(function() {
                 return commandCount('finalize') === navigationFinalizeBase + 1
@@ -2671,17 +3792,94 @@ window.EquipmentInspector = {
                 return message.type === 'panel_cmd' && message.cmd === 'open'
                     && message.panel === 'skills';
             }));
+        var fixedCloseRoutes = [];
+        for (var fixedRouteIndex = 0;
+                fixedRouteIndex < 2;
+                fixedRouteIndex++) {
+            var fixedRoute = fixedRouteIndex === 0
+                ? 'materials'
+                : 'intelligence';
+            var fixedReason = 'navigate_' + fixedRoute;
+            var fixedInstance = 'panel.workbench.' + fixedRoute + '-navigation';
+            Bridge.emit('panel_cmd', {
+                cmd:'open',
+                panel:'workbench',
+                initData:{
+                    profile:'battlebox',
+                    view:'build',
+                    preparationNavigationV1:true,
+                    panelInstanceId:fixedInstance
+                }
+            });
+            check(fixedRoute + ' menu route opens a fresh authoritative build',
+                await until(function() {
+                    var state = InventoryWorkbench.debugState();
+                    return state.build && state.build.session.state === 'idle'
+                        && state.panelInstanceId === fixedInstance;
+                }));
+            activatePreparation(fixedRoute);
+            check(fixedRoute + ' menu route emits one exact fixed close',
+                await until(function() {
+                    return Panels.isOpen() === false
+                        && window.__routeHarness.sent.some(function(message) {
+                            return message.type === 'panel'
+                                && message.cmd === 'close'
+                                && message.panel === 'workbench'
+                                && message.panelInstanceId === fixedInstance
+                                && message.reason === fixedReason
+                                && Object.keys(message).sort().join('|')
+                                    === 'cmd|panel|panelInstanceId|reason|type';
+                        });
+                }));
+            fixedCloseRoutes.push(fixedRoute);
+        }
+        check('Materials and Intelligence stay fixed post-close routes without Web panel descriptors',
+            fixedCloseRoutes.join('|') === 'materials|intelligence'
+            && !window.__routeHarness.sent.some(function(message) {
+                return message.panelName || message.initData
+                    || message.destination || message.routeTable;
+            }));
         Bridge.emit('panel_cmd', {
             cmd:'open',
             panel:'workbench',
             initData:{
                 profile:'battlebox',
                 view:'build',
+                preparationNavigationV1:true,
+                panelInstanceId:'panel.workbench.preparation-return',
+                returnFocusAction:'preparation-menu'
+            }
+        });
+        check('production return focus restores the stable preparation trigger',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                var trigger = document.querySelector(
+                    '[data-header-action="preparation-menu"]');
+                return state.build && state.build.session.state === 'idle'
+                    && state.panelInstanceId
+                        === 'panel.workbench.preparation-return'
+                    && visibleHeaderActions().join('|')
+                        === 'preparation-menu|stats|help|close'
+                    && document.activeElement === trigger;
+            }));
+        document.querySelector('[data-header-action="close"]').click();
+        check('preparation-return probe closes normally',
+            await until(function() {
+                return Panels.isOpen() === false
+                    && window.__routeHarness.renderer.active === 0;
+            }));
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                preparationNavigationV1:false,
                 panelInstanceId:'panel.workbench.skills-return',
                 returnFocusAction:'skills'
             }
         });
-        check('Skills return opens a fresh build and restores the Skills header focus',
+        check('explicit rollout-off fixture restores the legacy Build exact-set and Skills focus',
             await until(function() {
                 var state = InventoryWorkbench.debugState();
                 var skillsButton = document.querySelector('[data-header-action="skills"]');
@@ -2697,6 +3895,226 @@ window.EquipmentInspector = {
                 return Panels.isOpen() === false
                     && window.__routeHarness.renderer.active === 0;
             }));
+
+        var pendingRebindInstance = 'panel.workbench.pending-rebind';
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                preparationNavigationV1:true,
+                panelInstanceId:pendingRebindInstance
+            }
+        });
+        check('pending rebind probe opens Build',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.build && state.build.session.state === 'idle'
+                    && state.panelInstanceId === pendingRebindInstance;
+            }));
+        activatePreparation('battlebox');
+        check('pending rebind probe enters storage',
+            await until(function() {
+                return InventoryWorkbench.debugState().view === 'storage';
+            }));
+        var pendingRebindRoot = document.querySelector('.inventory-workbench-panel');
+        var pendingRebindHost = document.querySelector('.character-build-host');
+        window.__routeHarness.storage.holdNextLeave = true;
+        document.querySelector('[data-header-action="return-build"]').click();
+        check('storage-to-build prepare is held before same-instance rebind',
+            InventoryWorkbench.debugState().viewTransition
+                && InventoryWorkbench.debugState().viewTransition.next === 'build'
+                && typeof window.__routeHarness.storage.heldLeave === 'function');
+        var pendingRebindLeave = window.__routeHarness.storage.heldLeave;
+        window.__routeHarness.storage.heldLeave = null;
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                preparationNavigationV1:true,
+                panelInstanceId:pendingRebindInstance
+            }
+        });
+        check('same-instance rebind retires the pending source tree and mounts one replacement',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.build && state.build.session.state === 'idle'
+                    && state.panelInstanceId === pendingRebindInstance
+                    && !pendingRebindRoot.isConnected
+                    && window.__routeHarness.renderer.active === 1;
+            }));
+        var pendingRebindReplacement = document.querySelector('.inventory-workbench-panel');
+        var pendingRebindCreated = window.__routeHarness.renderer.created;
+        pendingRebindLeave();
+        await wait(40);
+        check('late storage-to-build callback cannot remount into the retired rebind host',
+            Panels.getActive() === 'workbench'
+            && document.querySelector('.inventory-workbench-panel')
+                === pendingRebindReplacement
+            && InventoryWorkbench.debugState().panelInstanceId
+                === pendingRebindInstance
+            && InventoryWorkbench.debugState().build
+            && InventoryWorkbench.debugState().build.mounted
+            && !InventoryWorkbench.debugState().viewTransition
+            && !pendingRebindHost.isConnected
+            && pendingRebindHost.childElementCount === 0
+            && window.__routeHarness.renderer.active === 1
+            && window.__routeHarness.renderer.created === pendingRebindCreated
+            && window.__routeHarness.storage.heldLeaveInvocations === 1);
+        document.querySelector('[data-header-action="close"]').click();
+        check('pending rebind replacement closes normally',
+            await until(function() {
+                return Panels.isOpen() === false
+                    && window.__routeHarness.renderer.active === 0;
+            }));
+
+        var sentinelMounts = 0;
+        var sentinelElement = null;
+        Panels.register('qa-lifecycle-sentinel', {
+            create:function() {
+                var node = document.createElement('section');
+                node.className = 'qa-lifecycle-sentinel';
+                node.textContent = 'lifecycle sentinel';
+                sentinelElement = node;
+                return node;
+            },
+            onOpen:function() {
+                sentinelMounts++;
+                return true;
+            }
+        });
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                preparationNavigationV1:true,
+                panelInstanceId:'panel.workbench.pending-cross-close'
+            }
+        });
+        check('cross-panel close probe opens Build',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.build && state.build.session.state === 'idle'
+                    && state.panelInstanceId
+                        === 'panel.workbench.pending-cross-close';
+            }));
+        activatePreparation('battlebox');
+        check('cross-panel close probe enters storage',
+            await until(function() {
+                return InventoryWorkbench.debugState().view === 'storage';
+            }));
+        var pendingCloseRoot = document.querySelector('.inventory-workbench-panel');
+        var pendingCloseHost = document.querySelector('.character-build-host');
+        window.__routeHarness.storage.holdNextLeave = true;
+        document.querySelector('[data-header-action="return-build"]').click();
+        check('storage-to-build prepare is held before cross-panel close',
+            InventoryWorkbench.debugState().viewTransition
+                && InventoryWorkbench.debugState().viewTransition.next === 'build'
+                && typeof window.__routeHarness.storage.heldLeave === 'function');
+        var pendingCloseLeave = window.__routeHarness.storage.heldLeave;
+        window.__routeHarness.storage.heldLeave = null;
+        Panels.open('qa-lifecycle-sentinel', {});
+        check('cross-panel switch closes workbench before mounting the sentinel',
+            await until(function() {
+                return Panels.getActive() === 'qa-lifecycle-sentinel'
+                    && sentinelMounts === 1
+                    && sentinelElement && sentinelElement.isConnected
+                    && !pendingCloseRoot.isConnected
+                    && window.__routeHarness.renderer.active === 0;
+            }));
+        pendingCloseLeave();
+        await wait(40);
+        check('late storage-to-build callback cannot resurrect a closed cross-panel tree',
+            Panels.getActive() === 'qa-lifecycle-sentinel'
+            && sentinelElement.isConnected
+            && sentinelElement.style.display !== 'none'
+            && !pendingCloseHost.isConnected
+            && pendingCloseHost.childElementCount === 0
+            && InventoryWorkbench.debugState().build === null
+            && InventoryWorkbench.debugState().viewTransition === null
+            && window.__routeHarness.renderer.active === 0
+            && window.__routeHarness.storage.heldLeaveInvocations === 2);
+        Panels.close();
+        check('lifecycle sentinel closes cleanly', Panels.isOpen() === false);
+
+        var originalDocumentAdd = document.addEventListener;
+        var originalDocumentRemove = document.removeEventListener;
+        var menuPointerListeners = [];
+        document.addEventListener = function(type, listener, options) {
+            if (type === 'pointerdown'
+                    && menuPointerListeners.indexOf(listener) < 0) {
+                menuPointerListeners.push(listener);
+            }
+            return originalDocumentAdd.call(this, type, listener, options);
+        };
+        document.removeEventListener = function(type, listener, options) {
+            var index = menuPointerListeners.indexOf(listener);
+            if (type === 'pointerdown' && index >= 0) {
+                menuPointerListeners.splice(index, 1);
+            }
+            return originalDocumentRemove.call(this, type, listener, options);
+        };
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                preparationNavigationV1:true,
+                panelInstanceId:'panel.workbench.menu-lifecycle-a'
+            }
+        });
+        check('menu lifecycle probe mounts the first exact instance',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                return state.build && state.build.session.state === 'idle'
+                    && state.panelInstanceId
+                        === 'panel.workbench.menu-lifecycle-a';
+            }));
+        var lifecycleTrigger = openPreparationMenu();
+        check('open menu installs one scoped outside-pointer listener',
+            lifecycleTrigger.getAttribute('aria-expanded') === 'true'
+            && menuPointerListeners.length === 1);
+        Bridge.emit('panel_cmd', {
+            cmd:'open',
+            panel:'workbench',
+            initData:{
+                profile:'battlebox',
+                view:'build',
+                preparationNavigationV1:true,
+                panelInstanceId:'panel.workbench.menu-lifecycle-b'
+            }
+        });
+        check('same-panel rebind destroys the old menu and removes its document listener',
+            await until(function() {
+                var state = InventoryWorkbench.debugState();
+                var trigger = document.querySelector(
+                    '[data-header-action="preparation-menu"]');
+                return state.build && state.build.session.state === 'idle'
+                    && state.panelInstanceId
+                        === 'panel.workbench.menu-lifecycle-b'
+                    && trigger !== lifecycleTrigger
+                    && !lifecycleTrigger.isConnected
+                    && trigger.getAttribute('aria-expanded') === 'false'
+                    && menuPointerListeners.length === 0;
+            }));
+        openPreparationMenu();
+        document.querySelector('[data-header-action="close"]').click();
+        check('close/deactivate/destroy removes the final menu listener before retiring DOM',
+            await until(function() {
+                return Panels.isOpen() === false
+                    && window.__routeHarness.renderer.active === 0
+                    && menuPointerListeners.length === 0
+                    && !document.querySelector(
+                        '[data-header-action="preparation-menu"]');
+            }));
+        document.addEventListener = originalDocumentAdd;
+        document.removeEventListener = originalDocumentRemove;
     } catch (error) {
         checks.push({name:'harness execution', ok:false, detail:error.stack || String(error)});
     }

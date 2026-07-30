@@ -161,7 +161,11 @@
         this.root = document.createElement('section');
         this.root.className = 'kshop-settlement-page';
         this.root.innerHTML = '<header class="kshop-settlement-header">'
+            + '<div class="workbench-secondary-actions">'
             + '<button type="button" data-kshop-settlement-back data-audio-cue="cancel">← 返回商城</button>'
+            + '<button type="button" data-kshop-settlement-help data-audio-cue="select" aria-label="查看商城帮助">?</button>'
+            + '<button type="button" data-kshop-settlement-close data-audio-cue="cancel" aria-label="关闭 K 点商城">×</button>'
+            + '</div>'
             + '<div><h2>结算核对</h2><p>价格、余额与交付容量由游戏实时核算；确认后整单扣款并直接交付。</p></div>'
             + '</header><div class="kshop-settlement-body">'
             + '<section><h3 data-kshop-settlement-count>购物车</h3><div class="kshop-settlement-list"></div></section>'
@@ -175,6 +179,8 @@
         this._status = this.root.querySelector('[data-kshop-settlement-status]');
         this._commit = this.root.querySelector('[data-kshop-settlement-commit]');
         this._back = this.root.querySelector('[data-kshop-settlement-back]');
+        this._help = this.root.querySelector('[data-kshop-settlement-help]');
+        this._close = this.root.querySelector('[data-kshop-settlement-close]');
         this._commitHandler = options.onCommit;
         this._commit.addEventListener('click', this._commitHandler);
         this.secondary = new this._components.SecondaryPage({
@@ -183,7 +189,9 @@
             ariaLabel:'K 点商城结算核对',
             removeOnDestroy:true
         });
-        this.secondary.bindClose(this._back, options.onBack);
+        this.secondary.bindBack(this._back, options.onBack);
+        this.secondary.bindHelp(this._help, options.onHelp);
+        this.secondary.bindClose(this._close, options.onClose);
     }
 
     SettlementPage.prototype.mount = function(container) { return this.secondary.mount(container); };

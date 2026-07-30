@@ -42,6 +42,7 @@
   <script src="/launcher/web/modules/workbench-lifecycle.js"></script>
   <script src="/launcher/web/modules/workbench-focus.js"></script>
   <script src="/launcher/web/modules/workbench-primitives.js"></script>
+  <script src="/launcher/web/modules/workbench-profile.js"></script>
   <script src="/launcher/web/modules/workbench.js"></script>
   <script src="/launcher/web/modules/item-filter.js"></script>
   <script src="/launcher/web/modules/inventory-runtime.js"></script>
@@ -77,24 +78,30 @@
     }
     function addOwnedCase(density){
       var stage=section('Owned 库存格',density,'owned'),grid=document.createElement('div');grid.className='inventory-owned-grid npcshop-owned-grid'+(density==='compact'?' item-grid-compact':'');stage.appendChild(grid);
+      stage.classList.add('inventory-workbench-panel');stage.setAttribute('data-workbench-view','tuning');
       var stack={physicalSlot:0,occupied:true,item:{name:'药剂',displayName:'高级药剂',icon:'药剂',itemKind:'stack',quantity:6806,majorType:'消耗品',use:'药剂'}};
-      var equip={physicalSlot:1,occupied:true,item:{name:'训练枪',displayName:'训练步枪 +13',icon:'训练枪',itemKind:'equipment',quantity:1,enhancementLevel:13,majorType:'武器',use:'长枪',balanceSummary:{state:'confirmed',weightLayers:-1,formula:1,level:20}}};
-      grid.appendChild(ownedCard(stack,{}));grid.appendChild(ownedCard(equip,{selected:true,icon:'EQ'}));grid.appendChild(ownedCard(Object.assign({},stack,{physicalSlot:2}),{readOnly:true,icon:'RO'}));grid.appendChild(ownedCard({physicalSlot:3,occupied:false},{}));
+      var equip={physicalSlot:1,occupied:true,item:{name:'训练枪',displayName:'训练步枪 +13',icon:'训练枪',itemKind:'equipment',quantity:1,enhancementLevel:13,majorType:'武器',use:'长枪',modSlotCapacity:3,modSlotUsed:1,modSlots:[{name:'稳定导轨',grade:'high',gradeLabel:'高级',gradeColor:'#0099FF',roleLabel:'稳定与防护',symbol:'square-outline'}],balanceSummary:{state:'confirmed',weightLayers:-1,formula:1,level:20}}};
+      var limited={physicalSlot:2,occupied:true,item:{name:'训练手枪',displayName:'单槽训练手枪',icon:'训练手枪',itemKind:'equipment',quantity:1,enhancementLevel:5,majorType:'武器',use:'手枪',modSlotCapacity:1,modSlotUsed:0,modSlots:[]}};
+      var sourceCard=ownedCard(equip,{selected:true,icon:'EQ'});
+      sourceCard.classList.add('equipment-tuning-authority-source');
+      sourceCard.setAttribute('data-tuning-source-role',density==='compact'?'exchange':'source');
+      if(density==='compact')sourceCard.classList.add('equipment-conversion-source');
+      grid.appendChild(ownedCard(stack,{}));grid.appendChild(sourceCard);grid.appendChild(ownedCard(limited,{readOnly:true,icon:'RO'}));grid.appendChild(ownedCard({physicalSlot:3,occupied:false},{}));
       stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>堆叠</span><span>装备·选中</span><span>只读</span><span>空槽</span></div>');
     }
     function addOverlayCase(){
       var stage=section('二级页面覆盖','body-overlay','overlay');stage.classList.add('matrix-overlay-stage');
-      var shell=new Workbench.DualPaneShell({title:'商店',status:''}),root=shell.getRoot();root.classList.add('kshop-workbench','npcshop-panel','npcshop-helping');
+      var shell=new Workbench.DualPaneShell({profile:'catalog-decision',title:'商店',status:''}),root=shell.getRoot();root.classList.add('kshop-workbench','npcshop-panel','npcshop-helping');
       var overlay=document.createElement('section');overlay.className='workbench-secondary-page npcshop-help-page active';overlay.innerHTML='<header class="npcshop-help-header"><div><h2>商店操作帮助</h2><p>覆盖层从 48px 顶栏下沿开始。</p></div></header><div class="npcshop-help-grid"><article class="npcshop-help-card"><span class="npcshop-help-index">✓</span><div><h3>底层双栏不可见</h3><p>帮助、结算等二级页面共享同一覆盖锚点。</p></div></article></div>';
       root.appendChild(overlay);stage.appendChild(root);stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>48px header</span><span>body fully covered</span></div>');
     }
     function addFilterCase(){
       var stage=section('自适应层级筛选','responsive','filter');stage.classList.add('matrix-filter-stage');
       var items=[{majorType:'武器',use:'刀',actionType:'刀剑',type:'武术联盟'},{majorType:'武器',use:'长枪',weaponType:'冲锋枪',type:'军火专柜'},{majorType:'武器',use:'长枪',weaponType:'霰弹枪',type:'军火专柜'},{majorType:'消耗品',use:'药剂',type:'医疗专柜'}],tree=ItemFilter.build(items,function(item){return ItemFilter.catalogPath(item)}),curated=ItemFilter.build(items,function(item){return [{id:item.type,label:item.type}]}),browseTree=ItemFilter.branchTree([{id:'category',label:'类别',tree:tree},{id:'curated',label:'专柜',tree:curated}],items.length);
-      var wide=document.createElement('div');wide.className='matrix-filter-wide';var wideChrome=new Workbench.ViewChrome({title:'商品'});var nav=new ItemFilter.FilterNavigator({tree:browseTree,presentation:'drilldown',breadcrumbHost:wideChrome.breadcrumbHost});wideChrome.setToolbar(nav.root);wide.appendChild(wideChrome.root);stage.appendChild(wide);nav.select(['category','weapon','刀','刀剑']);
+      var wide=document.createElement('div');wide.className='matrix-filter-wide inventory-owned-backpack';var wideChrome=new Workbench.ViewChrome({title:'背包'});var nav=new ItemFilter.FilterNavigator({tree:browseTree,presentation:'drilldown',breadcrumbHost:wideChrome.breadcrumbHost});var wideControl=document.createElement('div');wideControl.className='inventory-filter-control tree';wideControl.appendChild(nav.root);wideChrome.setToolbar(wideControl);wide.appendChild(wideChrome.root);stage.appendChild(wide);nav.select(['category','weapon','刀','刀剑']);
       var wideCurrent=wideChrome.breadcrumbHost.querySelector('[data-filter-breadcrumb-path="category/weapon/刀/刀剑"][aria-current="page"]'),wideAncestor=wideChrome.breadcrumbHost.querySelector('[data-filter-breadcrumb-path="category/weapon"]');
       var wideBreadcrumbReady=!!(wideCurrent&&wideAncestor);if(wideAncestor)wideAncestor.click();var wideReturnReady=nav.path.join('/')==='category/weapon'&&!!nav.root.querySelector('[data-filter-path="category/weapon/刀"]');
-      var narrow=document.createElement('div');narrow.className='matrix-filter-narrow npcshop-bag-toolbar';var narrowChrome=new Workbench.ViewChrome({title:'背包'});var control=new InventoryUI.InventoryFilterControl({options:InventoryUI.categoryFilterOptions(),navigatorPresentation:'drilldown',breadcrumbHost:narrowChrome.breadcrumbHost});narrowChrome.setToolbar(control.root);narrow.appendChild(narrowChrome.root);stage.appendChild(narrow);control.setSnapshot({filterKey:'all',filterFacets:tree.children,filterItemCount:tree.count});control.navigator.select(['weapon','刀','刀剑']);narrowChrome.breadcrumbHost.style.flex='0 0 52px';control.navigator.refreshBreadcrumbLayout();
+      var narrow=document.createElement('div');narrow.className='matrix-filter-narrow npcshop-bag-toolbar inventory-owned-backpack';narrow.style.width='150px';var narrowChrome=new Workbench.ViewChrome({title:'背包'});var control=new InventoryUI.InventoryFilterControl({options:InventoryUI.categoryFilterOptions(),navigatorPresentation:'drilldown',breadcrumbHost:narrowChrome.breadcrumbHost});narrowChrome.setToolbar(control.root);narrow.appendChild(narrowChrome.root);stage.appendChild(narrow);control.setSnapshot({filterKey:'all',filterFacets:tree.children,filterItemCount:tree.count});control.navigator.select(['weapon','刀','刀剑']);narrowChrome.breadcrumbHost.style.flex='0 0 52px';control.navigator.refreshBreadcrumbLayout();
       stage._matrixFilter={wide:wide,nav:nav,wideChrome:wideChrome,wideBreadcrumbReady:wideBreadcrumbReady,wideReturnReady:wideReturnReady,narrow:narrow,narrowChrome:narrowChrome,control:control};stage.parentNode.insertAdjacentHTML('beforeend','<div class="matrix-legend"><span>title breadcrumb</span><span>middle collapse</span><span>ancestor return</span></div>');
     }
     addCatalogCase('kshop','full');addCatalogCase('kshop','compact');addCatalogCase('npcshop','full');addCatalogCase('npcshop','compact');addOwnedCase('full');addOwnedCase('compact');addOverlayCase();addFilterCase();
@@ -119,12 +126,35 @@
     var compactOwnedMetrics=Array.prototype.map.call(document.querySelectorAll('[data-matrix-case="owned-compact"] .inventory-slot-card'),function(card){return card.getBoundingClientRect().width});
     var compactOwnedGrid=document.querySelector('[data-matrix-case="owned-compact"] .inventory-owned-grid'),compactOwnedTops=Array.prototype.map.call(compactOwnedGrid.querySelectorAll('.inventory-slot-card'),function(card){return Math.round(card.getBoundingClientRect().top)});
     check('compact owned cards stay icon-width instead of stretching across the pane',compactOwnedMetrics.length>0&&compactOwnedMetrics.every(function(width){return width>=47.9&&width<=48.1})&&compactOwnedTops.every(function(top){return top===compactOwnedTops[0]}),JSON.stringify({cards:compactOwnedMetrics,tops:compactOwnedTops,width:compactOwnedGrid.getBoundingClientRect().width,display:getComputedStyle(compactOwnedGrid).display}));
+    var fullModCard=document.querySelector('[data-matrix-case="owned-full"] [data-physical-slot="1"]'),compactModCard=document.querySelector('[data-matrix-case="owned-compact"] [data-physical-slot="1"]'),compactLimitedCard=document.querySelector('[data-matrix-case="owned-compact"] [data-physical-slot="2"]');
+    check('owned equipment renders authoritative used, empty and unavailable mod slots',
+      fullModCard.querySelectorAll('.inventory-equip-slot.used').length===1
+      &&fullModCard.querySelectorAll('.inventory-equip-slot.empty').length===2
+      &&compactModCard.querySelectorAll('.inventory-equip-slot-compact.used').length===1
+      &&compactModCard.querySelectorAll('.inventory-equip-slot-compact.empty').length===2
+      &&compactLimitedCard.querySelectorAll('.inventory-equip-slot-compact.empty').length===1
+      &&compactLimitedCard.querySelectorAll('.inventory-equip-slot-compact.unavailable').length===2);
+    var visibleEmptyStyle=getComputedStyle(compactModCard.querySelector('.inventory-equip-slot-compact.empty')),unavailableStyle=getComputedStyle(compactLimitedCard.querySelector('.inventory-equip-slot-compact.unavailable'));
+    check('compact empty slots are visibly distinct from nonexistent slots',
+      parseFloat(visibleEmptyStyle.opacity)>=.8
+      &&parseFloat(visibleEmptyStyle.opacity)-parseFloat(unavailableStyle.opacity)>=.5
+      &&visibleEmptyStyle.backgroundColor!==unavailableStyle.backgroundColor,
+      JSON.stringify({empty:{opacity:visibleEmptyStyle.opacity,background:visibleEmptyStyle.backgroundColor},unavailable:{opacity:unavailableStyle.opacity,background:unavailableStyle.backgroundColor}}));
+    var sourcePort=getComputedStyle(fullModCard,'::after'),exchangePort=getComputedStyle(compactModCard,'::after');
+    check('tuning source uses a compact source-port glyph and exchange arrow without text stickers',
+      parseFloat(sourcePort.width)<=12.1&&parseFloat(sourcePort.height)<=12.1
+      &&sourcePort.content.indexOf('调制源')<0
+      &&exchangePort.content.indexOf('↔')>=0,
+      JSON.stringify({source:{content:sourcePort.content,width:sourcePort.width,height:sourcePort.height},exchange:{content:exchangePort.content,width:exchangePort.width,height:exchangePort.height}}));
     check('all matrix stages avoid horizontal overflow',Array.prototype.every.call(document.querySelectorAll('.matrix-stage'),function(node){return node.scrollWidth<=node.clientWidth+1}));
     var overlay=document.querySelector('.matrix-overlay-stage .npcshop-help-page'),overlayBody=document.querySelector('.matrix-overlay-stage .workbench-body'),overlayRect=overlay.getBoundingClientRect(),overlayBodyRect=overlayBody.getBoundingClientRect();
     check('secondary overlay exactly covers workbench body',Math.abs(overlayRect.top-overlayBodyRect.top)<1&&Math.abs(overlayRect.bottom-overlayBodyRect.bottom)<1&&getComputedStyle(overlayBody).visibility==='hidden');
     var filterStage=document.querySelector('.matrix-filter-stage'),filterState=filterStage._matrixFilter,filterControl=filterState.control;
-    check('wide hierarchy keeps one row and title breadcrumb returns to an ancestor',filterState.nav.root.querySelectorAll('.item-filter-row').length===1&&filterState.wide.scrollWidth<=filterState.wide.clientWidth+1&&filterState.wideBreadcrumbReady&&filterState.wideReturnReady&&filterState.wideChrome.breadcrumbHost.querySelector('.item-filter-breadcrumbs').scrollHeight<=filterState.wideChrome.breadcrumbHost.clientHeight+1);
-    check('narrow hierarchy collapses breadcrumb middle and keeps native select hidden',filterControl.select.hidden&&!filterControl.trigger&&filterControl.navigator.root.classList.contains('item-filter-drilldown')&&getComputedStyle(filterControl.navigator.root).display==='flex'&&filterControl.navigator.root.querySelectorAll('.item-filter-row').length===1&&filterControl.navigator.root.scrollWidth<=filterControl.navigator.root.clientWidth+1&&filterState.narrowChrome.breadcrumbHost.querySelector('.item-filter-breadcrumbs').classList.contains('is-collapsed')&&getComputedStyle(filterState.narrowChrome.breadcrumbHost.querySelector('.item-filter-breadcrumb-middle')).display==='none');
+    var wideHeading=filterState.wideChrome.root.querySelector('.workbench-view-heading'),wideToolbar=filterState.wideChrome.toolbar,wideRow=filterState.nav.root.querySelector('.item-filter-current-row'),wideHeadingRect=wideHeading.getBoundingClientRect(),wideToolbarRect=wideToolbar.getBoundingClientRect(),wideButtonTops=Array.prototype.map.call(wideRow.querySelectorAll('.item-filter-option'),function(node){return Math.round(node.getBoundingClientRect().top)});
+    check('wide hierarchy keeps breadcrumb above one selectable row and returns to an ancestor',filterState.nav.root.querySelectorAll('.item-filter-row').length===1&&filterState.wide.scrollWidth<=filterState.wide.clientWidth+1&&filterState.wideBreadcrumbReady&&filterState.wideReturnReady&&filterState.wideChrome.breadcrumbHost.querySelector('.item-filter-breadcrumbs').scrollHeight<=filterState.wideChrome.breadcrumbHost.clientHeight+1&&wideToolbarRect.top>=wideHeadingRect.bottom-1&&getComputedStyle(wideRow).flexWrap==='wrap'&&wideRow.scrollWidth<=wideRow.clientWidth+1&&wideButtonTops.every(function(top){return top===wideButtonTops[0];}));
+    var narrowBreadcrumb=filterState.narrowChrome.breadcrumbHost.querySelector('.item-filter-breadcrumbs'),narrowEllipsis=narrowBreadcrumb.querySelector('.item-filter-breadcrumb-ellipsis'),narrowCurrent=narrowBreadcrumb.querySelector('[aria-current="page"]');
+    var narrowRow=filterControl.navigator.root.querySelector('.item-filter-current-row'),narrowButtonTops=Array.prototype.map.call(narrowRow.querySelectorAll('.item-filter-option'),function(node){return Math.round(node.getBoundingClientRect().top)});
+    check('narrow hierarchy collapses breadcrumb middle and naturally wraps without horizontal overflow',filterControl.select.hidden&&!filterControl.trigger&&filterControl.navigator.root.classList.contains('item-filter-drilldown')&&getComputedStyle(filterControl.navigator.root).display==='flex'&&filterControl.navigator.root.querySelectorAll('.item-filter-row').length===1&&narrowRow.scrollWidth<=narrowRow.clientWidth+1&&getComputedStyle(narrowRow).flexWrap==='wrap'&&narrowButtonTops.some(function(top){return top!==narrowButtonTops[0];})&&narrowBreadcrumb.classList.contains('is-collapsed')&&getComputedStyle(narrowBreadcrumb.querySelector('.item-filter-breadcrumb-middle')).display==='none'&&narrowEllipsis.title.length>0&&narrowCurrent.title===narrowCurrent.getAttribute('aria-label')&&narrowBreadcrumb.getAttribute('aria-label').indexOf(narrowCurrent.textContent)>=0);
     var failed=checks.filter(function(item){return !item.ok});window.__qaResult={total:checks.length,passed:checks.length-failed.length,failed:failed.length,checks:checks};window.__qaDone=true;window.__visualReady=true;
     document.getElementById('matrix-status').textContent=failed.length?'FAILED '+failed.length:'PASSED '+checks.length+'/'+checks.length;document.getElementById('matrix-output').textContent=JSON.stringify(window.__qaResult,null,2);
   })();

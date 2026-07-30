@@ -2534,6 +2534,12 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
         var safeExit = new SafeExitPanelWidget(anchor, router);
         safeExit.ForceGameReady(true);
         safeExit.Arm();
+        Assert.Equal(
+            RightContextSlotOwner.TransactionDecision,
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                rightContext,
+                safeExit));
+        Assert.True(safeExit.Visible);
 
         var combo = new ComboWidget(anchor);
         combo.ForceGameReady(true);

@@ -98,6 +98,8 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("lazy_register_missing")]
         [InlineData("mount_failed")]
         [InlineData("navigate_skills")]
+        [InlineData("navigate_materials")]
+        [InlineData("navigate_intelligence")]
         public void WorkbenchCloseEnvelope_LazyCloseRequiresWhitelistedReasonAndExactInstance(
             string reason)
         {

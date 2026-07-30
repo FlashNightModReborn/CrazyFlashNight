@@ -199,7 +199,8 @@ button[aria-pressed="true"] {
         <button type="button" data-scenario="pistol2" aria-pressed="false">手枪2</button>
         <button type="button" data-scenario="blade" aria-pressed="false">刀</button>
         <button type="button" data-scenario="empty" aria-pressed="false">空手</button>
-        <button type="button" data-scenario="grenadeCombined" aria-pressed="false">手雷缺口</button>
+        <button type="button" data-scenario="grenadeCombined" aria-pressed="false">手雷</button>
+        <button type="button" data-scenario="femaleArmFallback" aria-pressed="false">女性裸臂兜底</button>
     </header>
     <section class="qa-main">
         <div class="qa-stage">
@@ -269,7 +270,7 @@ button[aria-pressed="true"] {
     ];
     var CHARACTER_DRAW_FIELDS = BODY_FIT_FIELDS.concat([
         '长枪_装扮', '手枪_装扮', '手枪2_装扮',
-        '刀_装扮', '刀2_装扮', '刀3_装扮'
+        '刀_装扮', '刀2_装扮', '刀3_装扮', '手雷_装扮'
     ]);
 
     canvas.getContext = function(type) {
@@ -336,6 +337,9 @@ button[aria-pressed="true"] {
         var equipment = allEquipment();
         (scenario.clearSlots || []).forEach(function(slotKey) {
             equipment[slotKey] = '';
+        });
+        Object.keys(scenario.equipmentOverrides || {}).forEach(function(slotKey) {
+            equipment[slotKey] = scenario.equipmentOverrides[slotKey];
         });
         if (scenario.candidateItem) {
             equipment[scenario.targetSlot] = scenario.candidateItem;
@@ -449,10 +453,40 @@ button[aria-pressed="true"] {
         return (state && state.holders || []).map(function(holder) { return holder.field; });
     }
 
+    function basicEvidence(fields) {
+        var battle = manifest.rigs && manifest.rigs.battle;
+        var gender = battle && battle.genders && battle.genders[currentGender];
+        var state = gender && gender.states && gender.states[currentState.stateLabel];
+        var result = {};
+        (fields || []).forEach(function(field) {
+            var expected = [];
+            (state && state.holders || []).forEach(function(holder) {
+                if (holder.field === field) entryUris(holder.basic, expected, []);
+            });
+            expected = expected.filter(function(uri, index) {
+                return uri && expected.indexOf(uri) === index;
+            });
+            result[field] = {
+                linkageIds:(state && state.holders || []).filter(function(holder) {
+                    return holder.field === field;
+                }).map(function(holder) {
+                    return holder.basic && holder.basic.linkageId || '';
+                }).filter(Boolean),
+                expectedUris:expected,
+                drawnUris:expected.filter(function(uri) {
+                    return drawSources.indexOf(uri) >= 0;
+                })
+            };
+        });
+        return result;
+    }
+
     function currentEvidence() {
         var armor = {};
+        var scenario = fixture.scenarios[currentScenario] || fixture.scenarios.longGun;
         fixture.armorSlots.forEach(function(slot) {
-            armor[slot.id] = evidenceForItem(slot.item, currentGender);
+            var itemName = (scenario.equipmentOverrides || {})[slot.id] || slot.item;
+            armor[slot.id] = evidenceForItem(itemName, currentGender);
         });
         return {
             armor: armor,
@@ -460,6 +494,9 @@ button[aria-pressed="true"] {
             pistol: evidenceForItem(fixture.equipment.pistol, currentGender),
             blade: evidenceForItem(fixture.equipment.blade, currentGender),
             grenade: evidenceForItem(fixture.equipment.grenade, currentGender),
+            femaleFallbackUpper: evidenceForItem(
+                fixture.equipment.femaleFallbackUpper, currentGender),
+            armBasics: basicEvidence(['上臂','左下臂','右下臂']),
             candidate: evidenceForItem(fixture.scenarios.candidate.candidateItem, currentGender)
         };
     }
@@ -507,7 +544,8 @@ button[aria-pressed="true"] {
         factRoot.innerHTML = '';
         factRoot.appendChild(makeFact('单 Canvas', document.querySelectorAll('canvas').length === 1 ? 'pass' : 'gap'));
         factRoot.appendChild(makeFact('颈部 ' + facts.neckItemsWithoutProjection + '/' + facts.neckItems + ' 零投影', 'gap'));
-        factRoot.appendChild(makeFact('手雷 battle holder ' + facts.grenadeBattleHolders, 'gap'));
+        factRoot.appendChild(makeFact('手雷 battle holder ' + facts.grenadeBattleHolders,
+            facts.grenadeBattleHolders === 2 ? 'pass' : 'gap'));
         var camera = cameraMetrics();
         factRoot.appendChild(makeFact(camera
             ? '人物高度 ' + Math.round(camera.fitHeightRatio * 100) + '%' : '人物取景待定',
@@ -517,6 +555,7 @@ button[aria-pressed="true"] {
         var slots = document.getElementById('qa-slots');
         slots.innerHTML = '';
         fixture.armorSlots.forEach(function(slot) {
+            var itemName = (scenario.equipmentOverrides || {})[slot.id] || slot.item;
             var slotEvidence = evidence.armor[slot.id];
             var node = document.createElement('div');
             var isFault = currentFault && currentFault.slotId === slot.id;
@@ -525,7 +564,7 @@ button[aria-pressed="true"] {
             node.setAttribute('data-slot-id', slot.id);
             node.setAttribute('data-status', isGap ? 'gap' : 'projected');
             var title = document.createElement('strong');
-            title.textContent = slot.label + ' · ' + slot.item;
+            title.textContent = slot.label + ' · ' + itemName;
             var fields = document.createElement('span');
             fields.textContent = slotEvidence.fields.length
                 ? slotEvidence.fields.join(' / ') : 'manifest 无投影字段';
@@ -544,7 +583,9 @@ button[aria-pressed="true"] {
         document.getElementById('stage-gender').textContent = currentGender + ' · ' + scenario.label;
         document.getElementById('stage-item').textContent = currentScenario === 'candidate'
             ? fixture.equipment.longGun + ' → ' + scenario.candidateItem
-            : 'A兵团精致套装 / ' + fixture.equipment.longGun;
+            : currentScenario === 'femaleArmFallback'
+                ? fixture.equipment.femaleFallbackUpper
+                : 'A兵团精致套装 / ' + fixture.equipment.longGun;
         document.getElementById('stage-pose').textContent =
             (lastMeta ? lastMeta.rig : 'battle') + ' · ' + (lastMeta ? lastMeta.stateLabel : scenario.stateLabel);
         document.getElementById('runtime-canvas').textContent = String(document.querySelectorAll('canvas').length);

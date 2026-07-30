@@ -26,6 +26,93 @@
     /** Shared keyboard/focus contract for a repeated entity tile. */
     function EntityTile() {}
 
+    var entityReasonSequence = 0;
+
+    function optionValue(value, fallback) {
+        if (typeof value === 'function') return value();
+        return value == null ? fallback : value;
+    }
+
+    function interactionProjection(node, options) {
+        options = options || {};
+        var legacyDisabled = !!optionValue(options.disabled, false);
+        var inspectable = !!optionValue(
+            options.inspectable,
+            !legacyDisabled
+        );
+        var actionable = !!optionValue(
+            options.actionable,
+            !legacyDisabled
+        );
+        if (actionable) inspectable = true;
+        return {
+            inspectable:inspectable,
+            actionable:actionable,
+            reason:String(optionValue(options.reason, '') || '').trim(),
+            tabIndex:options.tabIndex == null ? 0 : options.tabIndex
+        };
+    }
+
+    function resolveReasonNode(node, options) {
+        if (!node || !options) return null;
+        if (options.reasonNode && options.reasonNode.setAttribute) {
+            return options.reasonNode;
+        }
+        if (options.reasonSelector && node.querySelector) {
+            return node.querySelector(options.reasonSelector);
+        }
+        return null;
+    }
+
+    EntityTile.projectInteraction = function(node, options) {
+        if (!node || !node.setAttribute) return null;
+        options = options || {};
+        var projection = interactionProjection(node, options);
+        node.setAttribute(
+            'aria-disabled',
+            projection.actionable ? 'false' : 'true'
+        );
+        node.setAttribute(
+            'tabindex',
+            projection.inspectable ? String(projection.tabIndex) : '-1'
+        );
+        node.setAttribute(
+            'data-entity-inspectable',
+            projection.inspectable ? 'true' : 'false'
+        );
+        node.setAttribute(
+            'data-entity-actionable',
+            projection.actionable ? 'true' : 'false'
+        );
+
+        var reasonNode = resolveReasonNode(node, options);
+        if (reasonNode) {
+            reasonNode.textContent = projection.reason;
+            reasonNode.hidden = !projection.reason;
+            if (projection.reason) {
+                if (!reasonNode.getAttribute('id')) {
+                    reasonNode.setAttribute(
+                        'id',
+                        'workbench-entity-reason-' + (++entityReasonSequence)
+                    );
+                }
+                reasonNode.setAttribute('data-entity-reason', '');
+                node.setAttribute(
+                    'aria-describedby',
+                    reasonNode.getAttribute('id')
+                );
+            } else {
+                node.removeAttribute('aria-describedby');
+            }
+        } else if (projection.reason) {
+            node.setAttribute('data-entity-reason', projection.reason);
+        } else {
+            node.removeAttribute('data-entity-reason');
+            node.removeAttribute('aria-describedby');
+        }
+        return projection;
+    };
+
     EntityTile.labelWithItemName = function(itemName, label) {
         var name = String(itemName || '').trim();
         var text = String(label || '').trim();
@@ -50,8 +137,11 @@
     EntityTile.setDisabled = function(node, disabled, tabIndex) {
         if (!node || !node.setAttribute) return false;
         disabled = !!disabled;
-        node.setAttribute('aria-disabled', disabled ? 'true' : 'false');
-        node.setAttribute('tabindex', disabled ? '-1' : String(tabIndex == null ? 0 : tabIndex));
+        EntityTile.projectInteraction(node, {
+            inspectable:!disabled,
+            actionable:!disabled,
+            tabIndex:tabIndex
+        });
         return disabled;
     };
 
@@ -60,10 +150,9 @@
         options = options || {};
         var itemName = String(options.itemName || options.name || '').trim();
         var role = options.role || 'option';
-        var disabled = typeof options.disabled === 'function' ? !!options.disabled() : !!options.disabled;
         var selected = typeof options.selected === 'function' ? !!options.selected() : !!options.selected;
         node.setAttribute('role', role);
-        EntityTile.setDisabled(node, disabled, options.tabIndex);
+        EntityTile.projectInteraction(node, options);
         EntityTile.setSelected(node, selected);
         if (options.label != null || itemName) {
             node.setAttribute('aria-label', EntityTile.labelWithItemName(itemName, options.label || itemName));
@@ -87,13 +176,21 @@
         }
         EntityTile.applySemantics(node, options);
 
-        function disabled() {
-            if (typeof options.disabled === 'function') return !!options.disabled();
-            return node.getAttribute('aria-disabled') === 'true';
-        }
-
         function activate(event, origin) {
-            if (disabled() || typeof options.onActivate !== 'function') return false;
+            var projection = EntityTile.projectInteraction(node, options);
+            if (!projection || !projection.inspectable) return false;
+            if (!projection.actionable) {
+                if (typeof options.onBlocked === 'function') {
+                    options.onBlocked(event, {
+                        origin:origin,
+                        node:node,
+                        reason:projection.reason
+                    });
+                    return true;
+                }
+                return false;
+            }
+            if (typeof options.onActivate !== 'function') return false;
             options.onActivate(event, { origin: origin, node: node });
             return true;
         }
@@ -109,7 +206,8 @@
 
         function onKeyDown(event) {
             if (event.target !== node || (event.key !== 'Enter' && event.key !== ' ')) return;
-            if (disabled()) return;
+            var projection = interactionProjection(node, options);
+            if (!projection.inspectable) return;
             event.preventDefault();
             activate(event, 'keyboard');
         }
@@ -457,10 +555,20 @@
         body.appendChild(name);
 
         var meta;
-        if (locked && skin === 'kshop') {
-            meta = makeElement('div', 'item-card-meta item-card-lock kshop-lock');
-            meta.textContent = options.lockReason || '';
-            meta.setAttribute('aria-label', options.lockReason || '');
+        var blockedReason = locked
+            ? (options.lockReason || options.lockTitle || '尚未解锁')
+            : nosale
+                ? (options.disabledReason || '当前不可购买')
+                : '';
+        if (locked || nosale) {
+            meta = makeElement(
+                skin === 'kshop' ? 'div' : 'small',
+                'item-card-meta item-card-lock'
+                    + (skin === 'kshop' ? ' kshop-lock' : '')
+            );
+            meta.textContent = blockedReason;
+            meta.setAttribute('aria-label', blockedReason);
+            meta.classList.add('item-card-interaction-reason');
         } else {
             meta = makeElement(skin === 'kshop' ? 'div' : 'small', 'item-card-meta'
                 + (skin === 'kshop' ? ' kshop-card-type' : ''));
@@ -496,7 +604,7 @@
         var stateLabel = options.ariaLabel || [
             options.name || '',
             options.priceText != null ? options.priceText : (options.price != null ? options.price : ''),
-            locked ? (options.lockTitle || options.lockReason || '未解锁') : ''
+            blockedReason
         ].filter(function(part) { return part !== ''; }).join('，');
         var balanceAria = ItemCard.balanceAriaLabel(balanceValue);
         if (balanceAria) stateLabel += (stateLabel ? '，' : '') + balanceAria;
@@ -504,7 +612,10 @@
             itemName: options.name || '',
             label: stateLabel,
             selected: selected,
-            disabled: locked || nosale,
+            inspectable:true,
+            actionable:!locked && !nosale,
+            reason:blockedReason,
+            reasonNode:meta,
             role: 'option'
         });
 

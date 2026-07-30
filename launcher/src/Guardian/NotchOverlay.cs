@@ -71,6 +71,8 @@ namespace CF7Launcher.Guardian
         private const int ToolbarPadBottom = 4;
         private const int ToolbarButtonH = 22;
         private const int ToolbarButtonGap = 2;
+        private const int ToolbarRowGap = 2;
+        private const int ToolbarGroupLabelW = 38;
         private const int ButtonPadX = 8;
 
         // 定时器
@@ -131,6 +133,9 @@ namespace CF7Launcher.Guardian
             public Keys KeyCode;
             public bool RequiresGameReady;
             public bool RequiresWarehouse;
+            public bool Visible;
+            public bool Enabled;
+            public string DisabledReason;
 
             public NotchButtonDef(string label, string commandKey, Keys keyCode, bool requiresGameReady, bool requiresWarehouse)
             {
@@ -139,6 +144,24 @@ namespace CF7Launcher.Guardian
                 KeyCode = keyCode;
                 RequiresGameReady = requiresGameReady;
                 RequiresWarehouse = requiresWarehouse;
+                Visible = true;
+                Enabled = true;
+                DisabledReason = "";
+            }
+
+            public static NotchButtonDef FromProjection(
+                NotchToolbarAction action)
+            {
+                NotchButtonDef result = new NotchButtonDef(
+                    action.Label,
+                    action.CommandKey,
+                    Keys.None,
+                    false,
+                    false);
+                result.Visible = action.Visible;
+                result.Enabled = action.Enabled;
+                result.DisabledReason = action.Reason;
+                return result;
             }
         }
 
@@ -147,7 +170,9 @@ namespace CF7Launcher.Guardian
         private readonly Action _onToggleLog;
         private readonly Action _onForceExit;
         private readonly Action<Keys> _onSendKey;
+        private readonly bool _preparationNavigationV1;
         private LauncherCommandRouter _router;
+        private NotchToolbarRow[] _toolbarRows;
 
         // 状态
         private bool _ready;
@@ -165,15 +190,6 @@ namespace CF7Launcher.Guardian
             new NotchButtonDef("全屏", "F", Keys.F, false, false),
             new NotchButtonDef("日志", "LOG", Keys.None, false, false),
             new NotchButtonDef("其他 ▸", null, Keys.None, false, false)
-        };
-        private static readonly NotchButtonDef[] ToolbarButtons = {
-            new NotchButtonDef("战队", "TEAM", Keys.None, true, false),
-            new NotchButtonDef("平板", "TABLET", Keys.None, true, false),
-            new NotchButtonDef("战备箱", "WAREHOUSE", Keys.None, true, true),
-            new NotchButtonDef("情报", "INTELLIGENCE", Keys.None, true, false),
-            new NotchButtonDef("材料", "MATERIALS", Keys.None, true, false),
-            new NotchButtonDef("技能", "SKILLS", Keys.None, true, false),
-            new NotchButtonDef("商城", "SHOP", Keys.None, true, false)
         };
         private static readonly NotchButtonDef[] OtherButtons = {
             new NotchButtonDef("Q 强退", "Q", Keys.Q, false, false),
@@ -235,7 +251,8 @@ namespace CF7Launcher.Guardian
         public NotchOverlay(Form owner, Control anchor, FpsRingBuffer fpsBuffer,
             string projectRoot,
             Action onToggleFullscreen, Action onToggleLog,
-            Action onForceExit, Action<Keys> onSendKey)
+            Action onForceExit, Action<Keys> onSendKey,
+            bool preparationNavigationV1 = false)
             : base(owner, anchor, 1024f, 576f)
         {
             _fpsBuffer = fpsBuffer;
@@ -244,6 +261,7 @@ namespace CF7Launcher.Guardian
             _onToggleLog = onToggleLog;
             _onForceExit = onForceExit;
             _onSendKey = onSendKey;
+            _preparationNavigationV1 = preparationNavigationV1;
 
             _ready = false;
             _trackingMouse = false;
@@ -266,6 +284,7 @@ namespace CF7Launcher.Guardian
             _gameNoticeSerial = 0;
             _gameReady = false;
             _questProgress = 0;
+            RefreshToolbarRows();
             _gold = new CurrencySlot();
             _kp = new CurrencySlot();
 
@@ -342,6 +361,7 @@ namespace CF7Launcher.Guardian
                         if (ready != _gameReady)
                         {
                             _gameReady = ready;
+                            RefreshToolbarRows();
                             if (!ready)
                             {
                                 _otherMenuOpen = false;
@@ -357,7 +377,12 @@ namespace CF7Launcher.Guardian
                     else if (key == "q")
                     {
                         int next = ParseInt(value, 0);
-                        if (next != _questProgress) { _questProgress = next; repaint = true; }
+                        if (next != _questProgress)
+                        {
+                            _questProgress = next;
+                            RefreshToolbarRows();
+                            repaint = true;
+                        }
                     }
                     else if (key == "g")
                     {
@@ -767,6 +792,16 @@ namespace CF7Launcher.Guardian
             if (index < 0 || index >= _buttonDefs.Length) return;
             NotchButtonDef def = _buttonDefs[index];
             if (def == null) return;
+            if (!def.Enabled)
+            {
+                AddNotice(
+                    "preparation_blocked",
+                    string.IsNullOrEmpty(def.DisabledReason)
+                        ? "当前入口不可用"
+                        : def.DisabledReason,
+                    Color.FromArgb(255, 205, 92));
+                return;
+            }
             if (def.Label == "其他 ▸")
             {
                 _otherMenuOpen = !_otherMenuOpen;
@@ -933,6 +968,24 @@ namespace CF7Launcher.Guardian
 
         #region 渲染
 
+        private void RefreshToolbarRows()
+        {
+            _toolbarRows = NotchToolbarProjection.Build(
+                false,
+                _preparationNavigationV1,
+                _gameReady,
+                _questProgress);
+        }
+
+        private NotchToolbarRow[] ToolbarRows
+        {
+            get
+            {
+                if (_toolbarRows == null) RefreshToolbarRows();
+                return _toolbarRows;
+            }
+        }
+
         private void GetCurrentSize(out int w, out int h)
         {
             float vpX, vpY, vpW, vpH;
@@ -948,7 +1001,9 @@ namespace CF7Launcher.Guardian
 
             w = collapsedW + (int)((expandedW - collapsedW) * eased);
             int row1H = Px(CollapsedH, scale);
-            int toolbarH = _gameReady ? Px(ToolbarPadTop + ToolbarButtonH + ToolbarPadBottom, scale) : 0;
+            int toolbarH = _gameReady
+                ? ExpandedToolbarHeight(scale, ToolbarRows.Length)
+                : 0;
             h = row1H + (int)(toolbarH * eased);
             // 每行信息 +RowGap+RowH
             int rowCount = _infoRows.Count;
@@ -992,7 +1047,11 @@ namespace CF7Launcher.Guardian
                     float t = _expandProgress;
                     float eased = t * (2f - t);
                     int row1H = Px(CollapsedH, scale);
-                    int toolbarH = _gameReady ? (int)(Px(ToolbarPadTop + ToolbarButtonH + ToolbarPadBottom, scale) * eased) : 0;
+                    int toolbarH = _gameReady
+                        ? (int)(ExpandedToolbarHeight(
+                            scale,
+                            ToolbarRows.Length) * eased)
+                        : 0;
                     int pillH = row1H + toolbarH;
 
                     DrawRoundedRect(g, 0, 0, w, pillH, Px(8, scale), ResolvePillColor());
@@ -1148,26 +1207,82 @@ namespace CF7Launcher.Guardian
 
         private void DrawToolbarButtons(Graphics g, int totalW, int row1H, float scale, Font font, byte alpha)
         {
+            int y = row1H + Px(ToolbarPadTop, scale);
+            NotchToolbarRow[] rows = ToolbarRows;
+            for (int rowIndex = 0; rowIndex < rows.Length; rowIndex++)
+            {
+                DrawToolbarButtonRow(
+                    g,
+                    rows[rowIndex],
+                    y,
+                    scale,
+                    font,
+                    alpha);
+                y += Px(ToolbarButtonH + ToolbarRowGap, scale);
+            }
+        }
+
+        private void DrawToolbarButtonRow(
+            Graphics g,
+            NotchToolbarRow row,
+            int y,
+            float scale,
+            Font font,
+            byte alpha)
+        {
             List<Rectangle> rects = new List<Rectangle>();
             List<NotchButtonDef> defs = new List<NotchButtonDef>();
             int btnH = Px(ToolbarButtonH, scale);
             int gap = Px(ToolbarButtonGap, scale);
             int x = Px(ToolbarPadX, scale);
-            int y = row1H + Px(ToolbarPadTop, scale);
-
-            for (int i = 0; i < ToolbarButtons.Length; i++)
+            if (!string.IsNullOrEmpty(row.Label))
             {
-                NotchButtonDef def = ToolbarButtons[i];
+                int labelW = Px(ToolbarGroupLabelW, scale);
+                Rectangle labelRect =
+                    new Rectangle(x, y, labelW, btnH);
+                using (SolidBrush labelBrush = new SolidBrush(
+                    Color.FromArgb(
+                        Math.Min(210, (int)alpha),
+                        190,
+                        190,
+                        194)))
+                using (StringFormat labelFmt = new StringFormat
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center
+                })
+                    g.DrawString(
+                        row.Label,
+                        font,
+                        labelBrush,
+                        labelRect,
+                        labelFmt);
+                x += labelW;
+            }
+
+            for (int i = 0; i < row.Actions.Length; i++)
+            {
+                NotchButtonDef def =
+                    NotchButtonDef.FromProjection(row.Actions[i]);
                 if (!ShouldShowButton(def)) continue;
-                int btnW = MeasureButtonWidth(g, font, def.Label, scale);
-                Rectangle r = new Rectangle(x, y, btnW, btnH);
+                int btnW =
+                    MeasureButtonWidth(g, font, def.Label, scale);
+                Rectangle r =
+                    new Rectangle(x, y, btnW, btnH);
                 int idx = _buttonDefs.Length + defs.Count;
-                PaintButton(g, r, font, def.Label, alpha, idx == _hoverButtonIndex, scale);
+                PaintButton(
+                    g,
+                    r,
+                    font,
+                    def.Label,
+                    alpha,
+                    idx == _hoverButtonIndex,
+                    scale,
+                    def.Enabled);
                 rects.Add(r);
                 defs.Add(def);
                 x += btnW + gap;
             }
-
             AppendButtonRects(rects, defs);
         }
 
@@ -1362,14 +1477,34 @@ namespace CF7Launcher.Guardian
             _buttonDefs = nextDefs;
         }
 
-        private void PaintButton(Graphics g, Rectangle r, Font font, string text, byte alpha, bool hover, float scale)
+        private void PaintButton(
+            Graphics g,
+            Rectangle r,
+            Font font,
+            string text,
+            byte alpha,
+            bool hover,
+            float scale,
+            bool enabled = true)
         {
-            using (SolidBrush bg = new SolidBrush(hover
+            bool activeHover = enabled && hover;
+            byte effectiveAlpha = enabled
+                ? alpha
+                : (byte)(alpha * 0.44f);
+            using (SolidBrush bg = new SolidBrush(activeHover
                 ? Color.FromArgb(alpha, 60, 60, 64)
-                : Color.FromArgb((byte)(alpha * 0.34f), 255, 255, 255)))
-            using (SolidBrush fg = new SolidBrush(hover
+                : Color.FromArgb(
+                    (byte)(effectiveAlpha * 0.34f),
+                    255,
+                    255,
+                    255)))
+            using (SolidBrush fg = new SolidBrush(activeHover
                 ? Color.FromArgb(alpha, 255, 255, 255)
-                : Color.FromArgb((byte)(alpha * 0.82f), 255, 255, 255)))
+                : Color.FromArgb(
+                    (byte)(effectiveAlpha * 0.82f),
+                    255,
+                    255,
+                    255)))
             using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
             {
                 DrawRoundedRectFill(g, r.X, r.Y, r.Width, r.Height, Px(3, scale), bg);
@@ -1472,15 +1607,65 @@ namespace CF7Launcher.Guardian
         {
             int collapsed = ComputeCollapsedWidth(scale);
             int row1Right = MeasureButtonsApprox(Row1Buttons, scale) + Px(Row1RightGap * (CountVisibleButtons(Row1Buttons) + 1), scale);
-            int toolbar = _gameReady
-                ? Px(ToolbarPadX * 2, scale) + MeasureButtonsApprox(ToolbarButtons, scale) + Px(ToolbarButtonGap * Math.Max(0, CountVisibleButtons(ToolbarButtons) - 1), scale)
-                : 0;
+            int toolbar = 0;
+            if (_gameReady)
+            {
+                NotchToolbarRow[] rows = ToolbarRows;
+                for (int i = 0; i < rows.Length; i++)
+                    toolbar = Math.Max(
+                        toolbar,
+                        MeasureToolbarRowApprox(rows[i], scale));
+            }
             int desired = Math.Max(collapsed + row1Right, toolbar);
             if (_chartVisible)
                 desired = Math.Max(desired, Px(ExpandedChartW, scale));
             desired = Math.Max(desired, collapsed);
-            int max = Math.Min(viewportW, Px(600, scale));
+            int max = _preparationNavigationV1
+                ? viewportW
+                : Math.Min(viewportW, Px(600, scale));
             return Math.Min(Math.Max(desired, collapsed), Math.Max(collapsed, max));
+        }
+
+        private int MeasureToolbarRowApprox(
+            NotchToolbarRow row,
+            float scale)
+        {
+            if (row == null) return 0;
+            int count = 0;
+            int buttons = 0;
+            for (int i = 0; i < row.Actions.Length; i++)
+            {
+                NotchToolbarAction action = row.Actions[i];
+                if (!action.Visible) continue;
+                count++;
+                buttons += Px(
+                    ButtonPadX * 2
+                    + Math.Max(
+                        28,
+                        action.Label.Length * 14 + 4),
+                    scale);
+            }
+            int label =
+                string.IsNullOrEmpty(row.Label)
+                    ? 0
+                    : ToolbarGroupLabelW;
+            return Px(ToolbarPadX * 2 + label, scale)
+                + buttons
+                + Px(
+                    ToolbarButtonGap * Math.Max(0, count - 1),
+                    scale);
+        }
+
+        private static int ExpandedToolbarHeight(
+            float scale,
+            int rowCount)
+        {
+            if (rowCount <= 0) return 0;
+            return Px(ToolbarPadTop, scale)
+                + Px(ToolbarButtonH, scale) * rowCount
+                + Px(ToolbarRowGap, scale)
+                    * Math.Max(0, rowCount - 1)
+                + Px(ToolbarPadBottom, scale);
         }
 
         private static int ExpandedChartHeight(float scale)
@@ -1526,6 +1711,7 @@ namespace CF7Launcher.Guardian
         private bool ShouldShowButton(NotchButtonDef def)
         {
             if (def == null) return false;
+            if (!def.Visible) return false;
             if (def.RequiresGameReady && !_gameReady) return false;
             if (def.RequiresWarehouse && _questProgress <= 13) return false;
             return true;
@@ -1989,9 +2175,42 @@ namespace CF7Launcher.Guardian
 
         internal static string[] ToolbarRoutesForTest()
         {
-            string[] routes = new string[ToolbarButtons.Length];
-            for (int i = 0; i < ToolbarButtons.Length; i++) routes[i] = ToolbarButtons[i].CommandKey;
+            NotchToolbarRow[] rows =
+                NotchToolbarProjection.Build(
+                    false,
+                    false,
+                    true,
+                    14);
+            string[] routes =
+                new string[rows[0].Actions.Length];
+            for (int i = 0; i < rows[0].Actions.Length; i++)
+                routes[i] = rows[0].Actions[i].CommandKey;
             return routes;
+        }
+
+        internal static NotchToolbarRow[] ToolbarRowsForTest(
+            bool preparationNavigationV1,
+            bool gameReady,
+            int questProgress)
+        {
+            return NotchToolbarProjection.Build(
+                false,
+                preparationNavigationV1,
+                gameReady,
+                questProgress);
+        }
+
+        internal static int ExpandedToolbarHeightForTest(
+            bool preparationNavigationV1,
+            float scale)
+        {
+            NotchToolbarRow[] rows =
+                NotchToolbarProjection.Build(
+                    false,
+                    preparationNavigationV1,
+                    true,
+                    14);
+            return ExpandedToolbarHeight(scale, rows.Length);
         }
 
         internal static FpsChartScale ComputeFpsChartScaleForTest(float[] points)

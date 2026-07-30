@@ -6,6 +6,7 @@ const modulePaths = [
     '../launcher/web/modules/workbench-lifecycle.js',
     '../launcher/web/modules/workbench-focus.js',
     '../launcher/web/modules/workbench-primitives.js',
+    '../launcher/web/modules/workbench-profile.js',
     '../launcher/web/modules/workbench-components.js',
     '../launcher/web/modules/workbench.js'
 ].map(require.resolve);
@@ -157,12 +158,31 @@ class FakeNode {
         }
         return false;
     }
-    setAttribute(name, value) { this.attributes[name] = String(value); }
+    setAttribute(name, value) {
+        this.attributes[name] = String(value);
+        if (this.ownerDocument && this.ownerDocument.attributeMutations) {
+            this.ownerDocument.attributeMutations.push({
+                node:this,
+                operation:'set',
+                name:String(name),
+                value:String(value)
+            });
+        }
+    }
     getAttribute(name) {
         return Object.prototype.hasOwnProperty.call(this.attributes, name) ? this.attributes[name] : null;
     }
     hasAttribute(name) { return Object.prototype.hasOwnProperty.call(this.attributes, name); }
-    removeAttribute(name) { delete this.attributes[name]; }
+    removeAttribute(name) {
+        delete this.attributes[name];
+        if (this.ownerDocument && this.ownerDocument.attributeMutations) {
+            this.ownerDocument.attributeMutations.push({
+                node:this,
+                operation:'remove',
+                name:String(name)
+            });
+        }
+    }
     matches(selector) { return matchesAny(this, selector); }
     closest(selector) {
         for (let current = this; current && current.nodeType === 1; current = current.parentNode) {
@@ -251,6 +271,8 @@ class FakeNode {
 class FakeDocument {
     constructor() {
         this.listeners = {};
+        this.createdElements = [];
+        this.attributeMutations = [];
         this.documentElement = new FakeNode('html', this);
         this.body = new FakeNode('body', this);
         this.documentElement.appendChild(this.body);
@@ -262,7 +284,11 @@ class FakeDocument {
             })
         };
     }
-    createElement(tagName) { return new FakeNode(tagName, this); }
+    createElement(tagName) {
+        const node = new FakeNode(tagName, this);
+        this.createdElements.push(node);
+        return node;
+    }
     createTextNode(text) { return new FakeTextNode(text, this); }
     addEventListener(type, handler, options) {
         (this.listeners[type] = this.listeners[type] || []).push({handler, options});
@@ -307,7 +333,7 @@ function makeShell(environment) {
     const opener = environment.document.createElement('button');
     environment.document.body.appendChild(opener);
     opener.focus();
-    const shell = new environment.Workbench.DualPaneShell({});
+    const shell = new environment.Workbench.DualPaneShell({profile:'catalog-decision'});
     environment.document.body.appendChild(shell.getRoot());
     return {shell, opener};
 }
@@ -331,6 +357,69 @@ function assertRestored(check, node, label) {
     check.equal(node.hasAttribute('inert'), false, label + ' inert attribute restored');
     check.equal(node.hasAttribute('aria-hidden'), false, label + ' aria-hidden restored');
 }
+
+test('DualPaneShell requires a closed profile and switches it atomically', check => {
+    const environment = loadEnvironment();
+    function expectMissingProfileFailsBeforeDom(label, construct) {
+        const createdBefore = environment.document.createdElements.length;
+        const mutationsBefore = environment.document.attributeMutations.length;
+        let missingError = null;
+        try {
+            construct();
+        } catch (error) {
+            missingError = error;
+        }
+        check.ok(missingError instanceof TypeError, label + ' fails with TypeError');
+        check.equal(environment.document.createdElements.length, createdBefore,
+            label + ' fails before creating an element');
+        check.equal(environment.document.attributeMutations.length, mutationsBefore,
+            label + ' fails before mutating an attribute');
+    }
+    expectMissingProfileFailsBeforeDom('omitted constructor options', () => {
+        new environment.Workbench.DualPaneShell();
+    });
+    expectMissingProfileFailsBeforeDom('empty constructor options', () => {
+        new environment.Workbench.DualPaneShell({});
+    });
+
+    const constructorMutationStart = environment.document.attributeMutations.length;
+    const {shell} = makeShell(environment);
+    const root = shell.getRoot();
+    const constructorProfileMutations = environment.document.attributeMutations
+        .slice(constructorMutationStart)
+        .filter(mutation => mutation.node === root && mutation.name === 'data-profile');
+    check.equal(constructorProfileMutations.length, 1,
+        'constructor mutates root data-profile exactly once');
+    check.deepEqual(constructorProfileMutations[0], {
+        node:root,
+        operation:'set',
+        name:'data-profile',
+        value:'catalog-decision'
+    }, 'constructor projects only the validated profile');
+    check.equal(shell.getRoot().getAttribute('data-profile'), 'catalog-decision',
+        'constructor projects the chosen profile');
+    const transitionMutationStart = environment.document.attributeMutations.length;
+    let invalidError = null;
+    try {
+        shell.setProfile('not-real');
+    } catch (error) {
+        invalidError = error;
+    }
+    check.ok(invalidError instanceof TypeError, 'invalid transition profile fails fast');
+    check.equal(environment.document.attributeMutations.length, transitionMutationStart,
+        'invalid transition performs no attribute mutation');
+    check.equal(shell.getRoot().getAttribute('data-profile'), 'catalog-decision',
+        'invalid transition leaves the current profile unchanged');
+    check.equal(shell.setProfile('transfer-pair'), true, 'valid transition succeeds');
+    const transitionProfileMutations = environment.document.attributeMutations
+        .slice(transitionMutationStart)
+        .filter(mutation => mutation.node === root && mutation.name === 'data-profile');
+    check.equal(transitionProfileMutations.length, 1,
+        'valid transition projects data-profile exactly once');
+    check.equal(shell.getRoot().getAttribute('data-profile'), 'transfer-pair',
+        'valid transition updates the profile in one projection');
+    shell.destroy();
+});
 
 test('shell modal portal remains interactive above an active SecondaryPage', check => {
     const environment = loadEnvironment();
@@ -677,6 +766,73 @@ test('SecondaryPage onClose reentrant reopen is rejected without creating a part
     page.destroy();
 });
 
+test('SecondaryPage hides underlay action strips while preserving exact page actions and nested restoration', check => {
+    const environment = loadEnvironment();
+    const document = environment.document;
+    const shell = document.createElement('main');
+    shell.className = 'workbench-shell';
+    const header = document.createElement('header');
+    header.className = 'workbench-header';
+    const headerActions = document.createElement('div');
+    headerActions.className = 'workbench-header-actions';
+    const mainHelp = document.createElement('button');
+    mainHelp.setAttribute('data-header-action', 'help');
+    headerActions.appendChild(mainHelp);
+    header.appendChild(headerActions);
+    const content = document.createElement('section');
+    shell.appendChild(header);
+    shell.appendChild(content);
+    document.body.appendChild(shell);
+
+    function pageFixture(label) {
+        const root = document.createElement('section');
+        const actions = document.createElement('div');
+        actions.className = 'workbench-secondary-actions';
+        const back = document.createElement('button');
+        const help = document.createElement('button');
+        const close = document.createElement('button');
+        actions.appendChild(back);
+        actions.appendChild(help);
+        actions.appendChild(close);
+        root.appendChild(actions);
+        const page = new environment.Components.SecondaryPage({root, document, ariaLabel:label});
+        page.mount(shell);
+        page.bindBack(back);
+        page.bindHelp(help);
+        page.bindClose(close);
+        return {page, root, actions, back, help, close};
+    }
+
+    const first = pageFixture('first');
+    const second = pageFixture('second');
+    first.page.open({initialFocus:first.back});
+    check.equal(header.inert, true, 'lower header is inert while first page owns focus');
+    check.equal(headerActions.hidden, true, 'lower header actions are visually hidden');
+    check.equal(headerActions.hasAttribute('hidden'), true, 'hidden state reaches the terminal utility');
+    check.deepEqual(
+        first.actions.children.map(node => node.getAttribute('data-secondary-action')),
+        ['back', 'help', 'close'],
+        'active page exposes the exact Back/Help/Close action set'
+    );
+    check.equal(first.actions.hidden, false, 'active page actions remain visible');
+
+    second.page.open({initialFocus:second.back});
+    check.equal(first.root.inert, true, 'lower secondary page is inert');
+    check.equal(first.actions.hidden, true, 'lower secondary actions are visually hidden');
+    first.page.close('out-of-order', {restoreFocus:false});
+    check.equal(headerActions.hidden, true, 'shared header stays hidden while upper page remains active');
+    check.equal(first.actions.hidden, true, 'upper page suppression survives lower page close');
+
+    second.page.close('done', {restoreFocus:false});
+    check.equal(header.inert, false, 'header inert state restores after final page close');
+    check.equal(headerActions.hidden, false, 'header actions restore their original visibility');
+    check.equal(headerActions.hasAttribute('hidden'), false, 'temporary hidden attribute is removed exactly');
+    check.equal(first.actions.hidden, false, 'nested action strip ref-count returns to its original state');
+    first.page.destroy();
+    second.page.destroy();
+    assertScopeResources(check, environment, 0, 'after secondary action suppression cleanup');
+});
+
 test('SecondaryPage close callback close-and-reopen is not closed a second time by _requestClose', check => {
     const environment = loadEnvironment();
     const document = environment.document;
@@ -689,7 +845,7 @@ test('SecondaryPage close callback close-and-reopen is not closed a second time 
     document.body.appendChild(root);
     const page = new environment.Components.SecondaryPage({root, document});
     page.mount(document.body);
-    page.bindClose(back, () => {
+    page.bindBack(back, () => {
         page.close('domain-old-session');
         page.open({opener:back, initialFocus:initial});
     });
@@ -716,7 +872,7 @@ test('SecondaryPage.destroy completes lifetime and DOM teardown when onClose thr
         onClose() { if (throwOnClose) throw new Error('secondary-teardown-boom'); }
     });
     page.mount(document.body);
-    page.bindClose(back);
+    page.bindBack(back);
     page.open();
     let caught = null;
     try { page.destroy(); } catch (error) { caught = error; }

@@ -60,6 +60,7 @@ namespace CF7Launcher.Guardian
             public bool IsDetachRecovery;
             public int RecoveryEpoch;
             public int TransportGeneration;
+            public long CandidateTooltipEpoch;
         }
 
         private const int DefaultTimeoutMs = 10000;
@@ -115,6 +116,9 @@ namespace CF7Launcher.Guardian
         private long _finalizedLoadoutRevision = -1;
         private long _finalizedLiveRevision = -1;
         private long _finalizedDrugRevision = -1;
+        private long _candidateTooltipEpoch;
+        private readonly HashSet<string> _candidateTooltipSources =
+            new HashSet<string>(StringComparer.Ordinal);
         private bool _disposed;
 
         public CharacterBuildTask(XmlSocketServer socket)
@@ -216,6 +220,10 @@ namespace CF7Launcher.Guardian
         internal long LiveRevision { get { lock (_gate) return _liveRevision; } }
         internal long DrugRevision { get { lock (_gate) return _drugRevision; } }
         internal bool LiveRefreshDirty { get { lock (_gate) return _liveRefreshDirty; } }
+        internal long CandidateTooltipEpoch
+        {
+            get { lock (_gate) return _candidateTooltipEpoch; }
+        }
         public bool HasBoundPanel
         {
             get { lock (_gate) return !_disposed && !string.IsNullOrEmpty(_panelInstanceId); }
@@ -256,6 +264,70 @@ namespace CF7Launcher.Guardian
                 return !_disposed && IsOpaque(panelInstanceId)
                     && string.Equals(
                         _panelInstanceId, panelInstanceId, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Grants a read-only tooltip capability only for a source emitted by the most recently
+        /// accepted candidates projection. The returned fence is rechecked when InventoryTask
+        /// completes, so a snapshot, write, candidates refresh or panel replacement revokes an
+        /// already-sent tooltip without exposing its rich payload.
+        /// </summary>
+        internal bool TryCaptureCandidateTooltipFence(
+            string panelInstanceId,
+            long sessionGeneration,
+            JObject source,
+            out JObject normalizedSource,
+            out Func<bool> completionFence)
+        {
+            normalizedSource = null;
+            completionFence = null;
+            JObject normalized;
+            if (!CanAdmitRequest()
+                || !CharacterBuildProtocol.TryNormalizeBackpackSource(
+                    source, out normalized))
+            {
+                return false;
+            }
+
+            string sourceKey = CandidateTooltipSourceKey(normalized);
+            int bindingEpoch;
+            long tooltipEpoch;
+            lock (_gate)
+            {
+                if (_disposed || _bindingChanging || _detachRecoveryRequired
+                    || _writeState != "idle"
+                    || !_sessionGeneration.HasValue
+                    || _sessionGeneration.Value != sessionGeneration
+                    || !string.Equals(
+                        _panelInstanceId, panelInstanceId, StringComparison.Ordinal)
+                    || !_candidateTooltipSources.Contains(sourceKey))
+                {
+                    return false;
+                }
+                bindingEpoch = _bindingEpoch;
+                tooltipEpoch = _candidateTooltipEpoch;
+                normalizedSource = (JObject)normalized.DeepClone();
+            }
+
+            completionFence = delegate
+            {
+                lock (_gate)
+                {
+                    return !_disposed && !_bindingChanging
+                        && !_detachRecoveryRequired
+                        && _writeState == "idle"
+                        && _bindingEpoch == bindingEpoch
+                        && _candidateTooltipEpoch == tooltipEpoch
+                        && _sessionGeneration.HasValue
+                        && _sessionGeneration.Value == sessionGeneration
+                        && string.Equals(
+                            _panelInstanceId,
+                            panelInstanceId,
+                            StringComparison.Ordinal)
+                        && _candidateTooltipSources.Contains(sourceKey);
+                }
+            };
+            return true;
         }
 
         /// <summary>
@@ -639,6 +711,8 @@ namespace CF7Launcher.Guardian
             }
             else
             {
+                if (string.Equals(entry.Command, "candidates", StringComparison.Ordinal))
+                    ApplyCandidateTooltipSourcesIfCurrent(entry, sanitized);
                 StampAndPostProductionResponse(sanitized, entry);
             }
             NotifyCoordinatorSettledIfReady();
@@ -935,6 +1009,9 @@ namespace CF7Launcher.Guardian
                     error = "duplicate";
                     return false;
                 }
+                if (command == "snapshot" || command == "candidates" || isWrite)
+                    InvalidateCandidateTooltipsLocked();
+                entry.CandidateTooltipEpoch = _candidateTooltipEpoch;
                 entry.BackendCallId = backendCallId;
                 if (postToWeb) _productionPending[backendCallId] = entry;
                 if (isWrite)
@@ -1645,8 +1722,57 @@ namespace CF7Launcher.Guardian
                 && liveRefreshDirty == (loadoutRevision != liveRevision);
         }
 
+        private static string CandidateTooltipSourceKey(JObject source)
+        {
+            return source.Value<int>("slot").ToString(CultureInfo.InvariantCulture)
+                + "\n" + ReadString(source["expectedLease"]);
+        }
+
+        private void InvalidateCandidateTooltipsLocked()
+        {
+            _candidateTooltipEpoch = _candidateTooltipEpoch == long.MaxValue
+                ? 1 : _candidateTooltipEpoch + 1;
+            _candidateTooltipSources.Clear();
+        }
+
+        private void ApplyCandidateTooltipSourcesIfCurrent(
+            PendingRequest entry,
+            JObject response)
+        {
+            JObject payload = response != null ? response["payload"] as JObject : null;
+            JArray candidates = payload != null ? payload["candidates"] as JArray : null;
+            if (entry == null || candidates == null) return;
+            lock (_gate)
+            {
+                if (!IsCurrentBindingLocked(entry)
+                    || _bindingChanging || _detachRecoveryRequired
+                    || _writeState != "idle"
+                    || entry.CandidateTooltipEpoch != _candidateTooltipEpoch
+                    || !_sessionGeneration.HasValue
+                    || !entry.SessionGeneration.HasValue
+                    || _sessionGeneration.Value != entry.SessionGeneration.Value)
+                {
+                    return;
+                }
+                _candidateTooltipSources.Clear();
+                foreach (JToken token in candidates)
+                {
+                    JObject row = token as JObject;
+                    JObject source = row != null ? row["source"] as JObject : null;
+                    JObject normalized;
+                    if (CharacterBuildProtocol.TryNormalizeBackpackSource(
+                        source, out normalized))
+                    {
+                        _candidateTooltipSources.Add(
+                            CandidateTooltipSourceKey(normalized));
+                    }
+                }
+            }
+        }
+
         private void ResetSessionLocked()
         {
+            InvalidateCandidateTooltipsLocked();
             ResetDetachRecoveryLocked();
             _sessionGeneration = null;
             _initialSnapshotOutcomeUnknown = false;

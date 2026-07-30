@@ -30,7 +30,15 @@ namespace CF7Launcher.Guardian.Hud
         private static readonly string[] TOOL_KEYS = { "TASK_MAP", "TASK_UI", "EQUIP_UI", "GAMESETTINGS", "PAUSE", "SAFEEXIT" };
         private static readonly string[] TOOL_LABELS_DEFAULT = { "地图", "任务", "装备", "⚙", "Ⅱ", "×" };
         private static readonly string[] TOOL_LABELS_PAUSED = { "地图", "任务", "装备", "⚙", "▶", "×" };
-        private static readonly string[] TOOL_TOOLTIPS = { "完整地图｜显示模式在刘海", "任务", "装备", "系统设置", "暂停游戏", "安全退出" };
+        private static readonly string[] TOOL_TOOLTIPS =
+        {
+            "打开完整地图；显示模式在刘海",
+            "打开任务面板",
+            "打开角色构筑；其他整备功能在刘海或装备页",
+            "打开系统设置",
+            "暂停游戏",
+            "安全退出"
+        };
         private const int IDX_PAUSE = 4;
 
         private static readonly string[] LEGACY_TYPES = { "task", "announce" };
@@ -65,7 +73,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private volatile bool _gameReady;
         private volatile bool _paused;
-        private volatile bool _externalStatusSlotActive;
+        private volatile RightContextSlotOwner _slotOwner = RightContextSlotOwner.Hidden;
 
         // AS2 mm 运行态只负责玩法语义；显示偏好与派生态必须独立，禁止互相覆盖。
         private RuntimeMapMode _runtimeMapMode = RuntimeMapMode.None;
@@ -104,7 +112,6 @@ namespace CF7Launcher.Guardian.Hud
         private static readonly Color C_TOOLS_FG          = NativeHudTheme.TextSecondary;
         private static readonly Color C_TOOLS_FG_HOVER    = NativeHudTheme.TextPrimary;
         private static readonly Color C_TOOLS_FG_PAUSED   = NativeHudTheme.Danger;
-        private static readonly Color C_CTX_BG            = NativeHudTheme.PanelFill;
         private static readonly Color C_QUEST_FG          = NativeHudTheme.TextSecondary;
         private static readonly Color C_LABEL_TEXT        = NativeHudTheme.TextPrimary;
 
@@ -307,10 +314,51 @@ namespace CF7Launcher.Guardian.Hud
             get { return CurrentNoticeMode != NoticeMode.Idle; }
         }
 
+        internal bool RequestsActionableNotice
+        {
+            get { return ShowNotice; }
+        }
+
+        internal bool RequestsContextHint
+        {
+            get
+            {
+                return _gameReady
+                    && _hover.Kind == HitKind.Tool
+                    && _hover.Index >= 0
+                    && _hover.Index < TOOL_TOOLTIPS.Length;
+            }
+        }
+
         private bool ShowStatusSlot
         {
-            // 状态槽只承载任务/SafeExit 语义；地图预览不再强制附带一条冗余 header。
-            get { return ShowNotice || _externalStatusSlotActive; }
+            get
+            {
+                if (_slotOwner == RightContextSlotOwner.TransactionDecision) return true;
+                if (_slotOwner == RightContextSlotOwner.ActionableNotice)
+                    return RequestsActionableNotice;
+                if (_slotOwner == RightContextSlotOwner.ContextHint)
+                    return RequestsContextHint;
+                return false;
+            }
+        }
+
+        private bool PaintsActionableNotice
+        {
+            get
+            {
+                return _slotOwner == RightContextSlotOwner.ActionableNotice
+                    && RequestsActionableNotice;
+            }
+        }
+
+        private bool PaintsContextHint
+        {
+            get
+            {
+                return _slotOwner == RightContextSlotOwner.ContextHint
+                    && RequestsContextHint;
+            }
         }
 
         public bool Visible { get { return _gameReady; } }
@@ -385,7 +433,8 @@ namespace CF7Launcher.Guardian.Hud
             float scale = RightHudLayout.ScaleForViewport(viewport);
             EffectiveMapDisplayMode mapMode = LayoutMapMode;
             bool showMap = mapMode != EffectiveMapDisplayMode.Hidden;
-            bool showNotice = ShowNotice;
+            bool showNotice = PaintsActionableNotice;
+            bool showHint = PaintsContextHint;
             bool showStatusSlot = ShowStatusSlot;
 
             Rectangle tools = RightHudLayout.TopToolsRectFromViewport(viewport, scale);
@@ -407,10 +456,7 @@ namespace CF7Launcher.Guardian.Hud
             try
             {
                 PaintTools(g, tools, scale);
-                if (_hover.Kind == HitKind.Tool && !showStatusSlot && !showMap)
-                    PaintActionTooltip(g, new Rectangle(tools.X, tools.Bottom, tools.Width,
-                        WidgetScaler.Px(RightHudLayout.StatusSlotHeightBase, scale)), scale);
-                PaintContextBackground(g, context, scale);
+                if (showHint) PaintActionTooltip(g, notice, scale);
                 if (showNotice) PaintNotice(g, notice, scale);
                 if (showMap) PaintMapCard(g, map, scale);
             }
@@ -448,12 +494,6 @@ namespace CF7Launcher.Guardian.Hud
             NativeHudTheme.DrawPanel(g, r, scale, NativeHudTheme.PanelFillDense,
                 Color.Empty, true);
             g.DrawString(TOOL_TOOLTIPS[index], _fontNoticeJuke11, BR_QUEST_FG, r, FMT_CENTER_ELLIPSIS);
-        }
-
-        private void PaintContextBackground(Graphics g, Rectangle r, float scale)
-        {
-            if (r.Width <= 0 || r.Height <= 0) return;
-            NativeHudTheme.DrawPanel(g, r, scale, C_CTX_BG, Color.Empty, true);
         }
 
         private void PaintMapCard(Graphics g, Rectangle card, float scale)
@@ -594,7 +634,7 @@ namespace CF7Launcher.Guardian.Hud
 
         public bool TryHitTest(Point screenPt)
         {
-            return Visible && ScreenBounds.Contains(screenPt);
+            return Visible && HitTest(screenPt).Kind != HitKind.None;
         }
 
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
@@ -631,7 +671,7 @@ namespace CF7Launcher.Guardian.Hud
             Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
             float scale = RightHudLayout.ScaleForViewport(viewport);
             EffectiveMapDisplayMode mapMode = LayoutMapMode;
-            bool showNotice = ShowNotice;
+            bool showNotice = PaintsActionableNotice;
             bool showStatusSlot = ShowStatusSlot;
             Rectangle tools = RightHudLayout.TopToolsRectFromViewport(viewport, scale);
             if (tools.Contains(pt))
@@ -695,8 +735,10 @@ namespace CF7Launcher.Guardian.Hud
         private void SetHover(HitInfo hit)
         {
             if (SameHit(_hover, hit)) return;
+            bool requestedHintBefore = RequestsContextHint;
             _hover = hit;
-            FireRepaint();
+            if (requestedHintBefore != RequestsContextHint) FireBounds();
+            else FireRepaint();
         }
 
         public void OnUiDataChanged(IReadOnlyDictionary<string, string> snapshot, ISet<string> changedKeys)
@@ -902,11 +944,9 @@ namespace CF7Launcher.Guardian.Hud
             FireBounds();
         }
 
-        public void SetExternalStatusSlotActive(bool active)
+        internal void ApplySlotOwner(RightContextSlotOwner owner)
         {
-            if (_externalStatusSlotActive == active) return;
-            _externalStatusSlotActive = active;
-            FireBounds();
+            _slotOwner = owner;
         }
 
         public void ToggleMapVisibility()
@@ -989,8 +1029,14 @@ namespace CF7Launcher.Guardian.Hud
         internal string MapMode { get { return ((int)_runtimeMapMode).ToString(); } }
         internal RuntimeMapMode RuntimeMapModeForTest { get { return _runtimeMapMode; } }
         internal MapDisplayPreference MapDisplayPreferenceForTest { get { return _mapDisplayPreference; } }
-        internal bool ExternalStatusSlotActiveForTest { get { return _externalStatusSlotActive; } }
         internal bool StatusSlotVisibleForTest { get { return ShowStatusSlot; } }
+        internal RightContextSlotOwner SlotOwnerForTest { get { return _slotOwner; } }
+        internal bool PaintsActionableNoticeForTest { get { return PaintsActionableNotice; } }
+        internal bool PaintsContextHintForTest { get { return PaintsContextHint; } }
+        internal bool SlotHitBoxActiveForTest
+        {
+            get { return PaintsActionableNotice; }
+        }
         internal EffectiveMapDisplayMode EffectiveMapDisplayModeForTest { get { return _effectiveMapDisplayMode; } }
         internal string DisplayText { get { return _noticeText; } }
         internal void ForceGameReady(bool ready) { _gameReady = ready; }
@@ -1034,6 +1080,16 @@ namespace CF7Launcher.Guardian.Hud
         internal string ResolveActionRoute(int index)
         {
             return index >= 0 && index < TOOL_KEYS.Length ? TOOL_KEYS[index] : null;
+        }
+        internal string ResolveActionHint(int index)
+        {
+            return index >= 0 && index < TOOL_TOOLTIPS.Length ? TOOL_TOOLTIPS[index] : null;
+        }
+        internal void ForceHoveredToolForTest(int index)
+        {
+            _hover = index >= 0 && index < TOOL_KEYS.Length
+                ? Hit(HitKind.Tool, index)
+                : NoHit();
         }
     }
 }

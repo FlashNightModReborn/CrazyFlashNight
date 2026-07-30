@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "kind": "cf7-workbench-important-ledger",
+  "scope": "resolved-launcher/web/css/panels.css",
+  "entries": [
+    {
+      "file": "launcher/web/css/panels/foundation-rest.css",
+      "ceiling": 2,
+      "classification": "migration-debt",
+      "reason": "Legacy panel foundation still overrides historical inline and unlayered declarations.",
+      "exitCondition": "Remove after the affected panel foundations consume shared state selectors without priority overrides."
+    },
+    {
+      "file": "launcher/web/css/workbench/core.css",
+      "ceiling": 8,
+      "classification": "migration-debt",
+      "reason": "Core shell compatibility still has to outrank pre-layer feature declarations.",
+      "exitCondition": "Remove as feature and skin ownership moves behind the shared layered shell contract."
+    },
+    {
+      "file": "launcher/web/css/panels/features.css",
+      "ceiling": 24,
+      "classification": "migration-debt",
+      "reason": "Historical feature panels contain priority overrides predating the workbench cascade contract.",
+      "exitCondition": "Retire file-local overrides feature by feature after computed-style and interaction fixtures cover each consumer."
+    },
+    {
+      "file": "launcher/web/css/workbench/inventory.css",
+      "ceiling": 2,
+      "classification": "migration-debt",
+      "reason": "Inventory compatibility selectors still bridge unlayered feature styles.",
+      "exitCondition": "Remove after inventory, KShop, NPC and Loot consumers share layered state ownership."
+    },
+    {
+      "file": "launcher/web/css/workbench/skins.css",
+      "ceiling": 10,
+      "classification": "migration-debt",
+      "reason": "Legacy skin rules still override structural declarations in the unlayered bundle.",
+      "exitCondition": "Delete each override when the corresponding skin becomes token-only and computed-style fixtures stay unchanged."
+    },
+    {
+      "file": "launcher/web/css/workbench/skills.css",
+      "ceiling": 1,
+      "classification": "migration-debt",
+      "reason": "The Skills surface retains one compatibility override against its historical feature selector.",
+      "exitCondition": "Remove after the Skills consumer moves that state to the shared layered contract."
+    },
+    {
+      "file": "launcher/web/css/workbench/equipment-tuning.css",
+      "ceiling": 1,
+      "classification": "migration-debt",
+      "reason": "Equipment Tuning retains one compatibility priority override during decision-area migration.",
+      "exitCondition": "Remove once tuning state and fixed commit-bar ownership no longer depend on the legacy selector."
+    },
+    {
+      "file": "launcher/web/css/workbench/motion.css",
+      "ceiling": 3,
+      "classification": "semantic-exception",
+      "reason": "Reduced-motion shutdown must currently outrank unlayered feature animations across the resolved bundle.",
+      "exitCondition": "Remove when every production motion consumer is layered and normal/reduced computed-style tests prove ordinary cascade wins."
+    },
+    {
+      "file": "launcher/web/css/workbench/utilities.css",
+      "ceiling": 1,
+      "classification": "semantic-exception",
+      "exceptionId": "WB-HIDDEN-001",
+      "reason": "The terminal unlayered semantic-hidden rule must outrank historical unlayered visible display declarations.",
+      "exitCondition": "Remove only after feature and skin CSS is layered and computed display, hitbox and Tab matrices pass without the exception."
+    }
+  ]
+}

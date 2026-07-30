@@ -1,0 +1,12 @@
+/*
+ * Terminal unlayered compatibility utility.
+ *
+ * Migration ledger WB-HIDDEN-001:
+ * - reason: historical unlayered feature/skin display rules outrank named shared layers;
+ * - scope: semantic hidden descendants of the production workbench shell only;
+ * - exit: remove only after feature/skin layering is complete and the computed
+ *   display/hitbox/Tab matrix proves that no unlayered display rule can revive hidden UI.
+ */
+.workbench-shell [hidden] {
+    display:none !important;
+}

@@ -10,6 +10,9 @@ webOverlayDisableVisualizers = false
 webOverlayFrameRateLimit = 60
 webView2DisableGpu = false
 webView2AdditionalArgs = ""
+# 显式开发模式：仅开发会话可设 true；也可用 CF7_WEBVIEW2_DEV_MODE=1 临时覆盖。
+# true 只开放 browser accelerator、DevTools 与默认右键；用户缩放/pinch 仍关闭。
+webView2DeveloperMode = false
 nativeCursorOverlay = true
 
 # Windows per-app GPU preference 管理
@@ -46,6 +49,10 @@ webOverlayHotReload = false
 # false = 旧 Web HUD 主路径；true = 启用 C# native HUD + panel host controller。
 # 详见 launcher/README.md「useNativeHud=true」段；env: CF7_NATIVE_HUD=1/0 一次性覆盖。
 useNativeHud = true
+
+# 临时整备 IA 原子 rollout gate。B1-B6 施工期间必须保持 false；
+# B7 已在 Native/legacy HUD、Build header、Host focus 与 Web mapping 同轮切换。
+preparationNavigationV1 = true
 
 # Desktop 顶层 ULW cursor（默认 true，2026-05 推 default-on）。
 # true  = DesktopCursorOverlay：scale 跟 GuardianForm.ClientSize（窗口级），跨 anchor 自由

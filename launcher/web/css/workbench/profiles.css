@@ -1,0 +1,78 @@
+/* Closed DualPaneShell macro layouts. Feature CSS owns only pane-internal composition. */
+.workbench-shell[data-profile="catalog-decision"],
+.workbench-shell[data-profile="archive-reference"],
+.workbench-shell[data-profile="transfer-pair"],
+.workbench-shell[data-profile="library-action-strip"],
+.workbench-shell[data-profile="library-decision"],
+.workbench-shell[data-profile="character-build"] {
+    grid-template-rows:var(--wb-header-height) minmax(0,1fr);
+}
+
+.workbench-shell[data-profile="catalog-decision"] > .workbench-body {
+    grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr);
+}
+.workbench-shell[data-profile="archive-reference"] > .workbench-body {
+    grid-template-columns:minmax(0,44fr) 28px minmax(360px,56fr);
+}
+.workbench-shell[data-profile="transfer-pair"] > .workbench-body {
+    grid-template-columns:minmax(0,1.25fr) 34px minmax(430px,1fr);
+}
+.workbench-shell[data-profile="library-decision"] > .workbench-body {
+    grid-template-columns:minmax(0,52fr) 26px minmax(360px,48fr);
+}
+.workbench-shell[data-profile="character-build"] > .workbench-body {
+    grid-template-columns:minmax(0,55fr) 26px minmax(360px,45fr);
+}
+.workbench-shell[data-profile="library-action-strip"] > .workbench-body {
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) 124px;
+}
+.workbench-shell[data-profile="library-action-strip"] > .workbench-body > .workbench-flow-rail {
+    display:none;
+}
+.workbench-shell[data-profile="library-action-strip"] > .workbench-body > .workbench-slot[data-slot="L"] {
+    grid-column:1;
+    grid-row:1;
+}
+.workbench-shell[data-profile="library-action-strip"] > .workbench-body > .workbench-slot[data-slot="R"] {
+    grid-column:1;
+    grid-row:2;
+}
+
+.workbench-shell[data-profile="transfer-pair"][data-workbench-view="storage"] > .workbench-body {
+    grid-template-rows:minmax(0,1fr) auto;
+}
+.workbench-shell[data-profile="transfer-pair"][data-workbench-view="storage"] > .workbench-body > .workbench-slot[data-slot="L"] {
+    grid-column:1;
+    grid-row:1;
+}
+.workbench-shell[data-profile="transfer-pair"][data-workbench-view="storage"] > .workbench-body > .workbench-flow-rail {
+    grid-column:2;
+    grid-row:1;
+}
+.workbench-shell[data-profile="transfer-pair"][data-workbench-view="storage"] > .workbench-body > .workbench-slot[data-slot="R"] {
+    grid-column:3;
+    grid-row:1;
+}
+.workbench-shell[data-profile="transfer-pair"][data-workbench-view="storage"] > .workbench-body > [data-workbench-body-footer] {
+    grid-column:1 / -1;
+    grid-row:2;
+}
+
+.workbench-shell[data-profile="catalog-decision"]:has(> [data-workbench-shell-footer]),
+.workbench-shell[data-profile="archive-reference"]:has(> [data-workbench-shell-footer]),
+.workbench-shell[data-profile="transfer-pair"]:has(> [data-workbench-shell-footer]),
+.workbench-shell[data-profile="library-action-strip"]:has(> [data-workbench-shell-footer]),
+.workbench-shell[data-profile="library-decision"]:has(> [data-workbench-shell-footer]),
+.workbench-shell[data-profile="character-build"]:has(> [data-workbench-shell-footer]) {
+    grid-template-rows:var(--wb-header-height) minmax(0,1fr) auto;
+}
+
+.workbench-shell[data-profile="catalog-decision"] > [data-workbench-shell-footer],
+.workbench-shell[data-profile="archive-reference"] > [data-workbench-shell-footer],
+.workbench-shell[data-profile="transfer-pair"] > [data-workbench-shell-footer],
+.workbench-shell[data-profile="library-action-strip"] > [data-workbench-shell-footer],
+.workbench-shell[data-profile="library-decision"] > [data-workbench-shell-footer],
+.workbench-shell[data-profile="character-build"] > [data-workbench-shell-footer] {
+    grid-row:3;
+}

@@ -77,19 +77,19 @@ function staticAudit() {
     check(neck.length === 99 && emptyNeck.length === 99,
         'all 99 neck entries have no current visual projection',
         JSON.stringify({neck: neck.length, emptyNeck: emptyNeck.length}));
-    check(grenadeHolders === 0,
-        'battle rig has no grenade holder; combined grenade is an explicit gap',
+    check(grenadeHolders === 2,
+        'battle rig exposes one grenade holder per gender',
         grenadeHolders);
     ['男','女'].forEach(gender => {
         const states = battle.genders[gender].states;
-        ['空手站立','长枪站立','手枪站立','手枪2站立','双枪站立','兵器站立']
+        ['空手站立','长枪站立','手枪站立','手枪2站立','双枪站立','兵器站立','手雷站立']
             .forEach(stateLabel => check(Boolean(states[stateLabel]),
                 gender + ' battle rig exposes current state ' + stateLabel));
     });
-    check(selected.length === 10 && selected.every(name => manifest.items[name]),
-        'fixture references ten real manifest items', selected.join(' | '));
+    check(selected.length === 11 && selected.every(name => manifest.items[name]),
+        'fixture references eleven real manifest items', selected.join(' | '));
 
-    selected.filter(name => name !== 'A兵团精致项链').forEach(name => {
+    selected.filter(name => name !== 'A兵团精致项链' && name !== '米色高腰背心').forEach(name => {
         const item = manifest.items[name];
         const branches = Object.values(item.fieldsByGender || {});
         const keys = branches.flatMap(fields => Object.values(fields || {}));
@@ -99,7 +99,15 @@ function staticAudit() {
     const grenade = manifest.items['战术核弹手雷'];
     check(grenade.fieldsByGender['男']['手雷_装扮']
         && grenade.fieldsByGender['女']['手雷_装扮'],
-        'grenade asset exists independently even though battle holder is absent');
+        'grenade asset and gender branches exist for the battle holder');
+    const vest = manifest.items['米色高腰背心'];
+    ['上臂','左下臂','右下臂'].forEach(field => {
+        const key = vest.fieldsByGender['女'][field];
+        const skin = manifest.skinKeys[key];
+        check(skin && skin.covered === false && !skin.export && !skin.compatAlias,
+            'female beige-vest ' + field + ' remains uncovered for same-gender holder basic fallback',
+            JSON.stringify({key, skin}));
+    });
 }
 
 function edgeExecutable() {
@@ -212,7 +220,8 @@ function assertCharacterCamera(value, label) {
         && !fitFields.some(field => /装扮$/.test(field)),
         label + ' camera fit is owned by body and armor fields', JSON.stringify(fitFields));
     check(drawFields.includes('身体') && drawFields.includes('长枪_装扮')
-        && drawFields.includes('手枪2_装扮') && drawFields.includes('刀_装扮'),
+        && drawFields.includes('手枪2_装扮') && drawFields.includes('刀_装扮')
+        && drawFields.includes('手雷_装扮'),
         label + ' camera still draws body and weapon fields', JSON.stringify(drawFields));
     check(camera.fitHeightRatio >= 0.6
         && camera.centerXRatio >= 0.42 && camera.centerXRatio <= 0.58,
@@ -263,7 +272,7 @@ async function runBrowserAudit(browser, port) {
             JSON.stringify(male));
         check(male.facts.neckItems === 99
             && male.facts.neckItemsWithoutProjection === 99
-            && male.facts.grenadeBattleHolders === 0,
+            && male.facts.grenadeBattleHolders === 2,
             'browser harness exposes the neck and grenade manifest facts',
             JSON.stringify(male.facts));
         assertArmorProjection(male);
@@ -273,7 +282,7 @@ async function runBrowserAudit(browser, port) {
         check(male.state.keyMap['手雷_装扮']
             && male.holderFields.indexOf('手雷_装扮') < 0
             && !male.evidence.grenade.drawn,
-            'combined state carries grenade quantity/item projection key but battle rig cannot draw it');
+            'inactive long-gun pose keeps grenade data without drawing the grenade holder');
         check(maleProbe.alphaPixels > 2000,
             'male combined Canvas contains visible projected pixels', JSON.stringify(maleProbe));
         await saveShot(page, 'character-build-dressup-male-1024x576.png');
@@ -298,7 +307,7 @@ async function runBrowserAudit(browser, port) {
             ['pistol2','手枪2站立','手枪2'],
             ['blade','兵器站立','兵器'],
             ['empty','空手站立','空手'],
-            ['grenadeCombined','空手站立','手雷']
+            ['grenadeCombined','手雷站立','手雷']
         ];
         for (const gender of ['男','女']) {
             for (const poseCase of poseCases) {
@@ -320,6 +329,12 @@ async function runBrowserAudit(browser, port) {
                         && rendered.holderFields.includes('手枪2_装扮'),
                         gender + ' dual-pistol state exposes both current holders',
                         rendered.holderFields.join('|'));
+                }
+                if (poseCase[0] === 'grenadeCombined') {
+                    check(rendered.holderFields.includes('手雷_装扮')
+                        && rendered.evidence.grenade.drawn,
+                        gender + ' grenade-ready state exposes and draws the grenade holder',
+                        JSON.stringify(rendered.evidence.grenade));
                 }
                 await saveShot(page, 'character-build-dressup-'
                     + (gender === '女' ? 'female-' : 'male-')
@@ -343,12 +358,12 @@ async function runBrowserAudit(browser, port) {
             'blade pose draws the mapped blade holder',
             JSON.stringify(blade.state));
 
-        const grenadeGap = await renderScenario(page, 'grenadeCombined', '男');
-        check(grenadeGap.state.keyMap['手雷_装扮']
-            && grenadeGap.holderFields.indexOf('手雷_装扮') < 0
-            && !grenadeGap.evidence.grenade.drawn,
-            'combined grenade path is proven absent rather than represented by a debug placeholder');
-        assertArmorProjection(grenadeGap);
+        const grenadeReady = await renderScenario(page, 'grenadeCombined', '男');
+        check(grenadeReady.state.keyMap['手雷_装扮']
+            && grenadeReady.holderFields.includes('手雷_装扮')
+            && grenadeReady.evidence.grenade.drawn,
+            'combined grenade path uses the real battle holder rather than a product-direct placeholder');
+        assertArmorProjection(grenadeReady);
 
         await page.evaluate(() => CharacterBuildDressupHarness.renderGrenadeProduct('男'));
         const grenadeProduct = await settle(page);
@@ -357,6 +372,24 @@ async function runBrowserAudit(browser, port) {
             && grenadeProduct.evidence.grenade.drawn,
             'the grenade baked asset itself renders through product-direct on the same Canvas',
             JSON.stringify(grenadeProduct.meta));
+
+        const femaleFallback = await renderScenario(page, 'femaleArmFallback', '女');
+        check(femaleFallback.state.stateLabel === '空手站立'
+            && femaleFallback.meta.missing === 0
+            && femaleFallback.meta.failedImages === 0
+            && femaleFallback.evidence.femaleFallbackUpper.drawn,
+            'female beige vest renders its body while uncovered arm skins resolve without missing parts',
+            JSON.stringify(femaleFallback));
+        ['上臂','左下臂','右下臂'].forEach(field => {
+            const evidence = femaleFallback.evidence.armBasics[field];
+            check(evidence.linkageIds.length > 0
+                && evidence.linkageIds.every(key => key.startsWith('女变装-裸体'))
+                && evidence.expectedUris.length > 0
+                && evidence.drawnUris.length === evidence.expectedUris.length,
+                'female beige-vest ' + field + ' draws the female naked holder basic',
+                JSON.stringify(evidence));
+        });
+        await saveShot(page, 'character-build-dressup-female-arm-fallback-1024x576.png');
 
         const candidate = await renderScenario(page, 'candidate', '男');
         check(candidate.canvasCount === 1

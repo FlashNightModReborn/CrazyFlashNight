@@ -10,6 +10,12 @@
     var actions = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-action-view.js')
         : root && root.CharacterBuildActionView;
+    var candidateState = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-candidate-state.js')
+        : root && root.CharacterBuildCandidateState;
+    var facetCounts = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-facet-counts.js')
+        : root && root.CharacterBuildFacetCounts;
     var stats = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-stats-view.js')
         : root && root.CharacterBuildStatsView;
@@ -19,7 +25,9 @@
     var template = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-template.js')
         : root && root.CharacterBuildTemplate;
-    var api = factory(focus, components, actions, stats, preview, template);
+    var api = factory(
+        focus, components, actions, candidateState, facetCounts,
+        stats, preview, template);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -27,8 +35,8 @@
         root.CharacterBuildView = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
-        DollPreviewModule, TemplateModule) {
+function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateModule,
+        FacetCountsModule, StatsViewModule, DollPreviewModule, TemplateModule) {
     'use strict';
     if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
         throw new Error('character-build-view.js requires RovingGridFocus');
@@ -38,6 +46,12 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
     }
     if (!ActionViewModule || !ActionViewModule.ActionView) {
         throw new Error('character-build-view.js requires CharacterBuildActionView');
+    }
+    if (!CandidateStateModule || !CandidateStateModule.CandidateState) {
+        throw new Error('character-build-view.js requires CharacterBuildCandidateState');
+    }
+    if (!FacetCountsModule || typeof FacetCountsModule.normalize !== 'function') {
+        throw new Error('character-build-view.js requires CharacterBuildFacetCounts');
     }
     if (!StatsViewModule || !StatsViewModule.StatsView) {
         throw new Error('character-build-view.js requires CharacterBuildStatsView');
@@ -49,20 +63,9 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         throw new Error('character-build-view.js requires CharacterBuildTemplate');
     }
 
-    var ARMOR_SLOTS = [
-        {id:'头部装备', label:'头部'}, {id:'上装装备', label:'上装'},
-        {id:'下装装备', label:'下装'}, {id:'手部装备', label:'手部'},
-        {id:'脚部装备', label:'脚部'}, {id:'颈部装备', label:'颈部'}
-    ];
-    var WEAPON_SLOTS = [
-        {id:'长枪', label:'长枪'}, {id:'手枪', label:'手枪'},
-        {id:'手枪2', label:'手枪 2'}, {id:'刀', label:'刀'},
-        {id:'手雷', label:'手雷'}
-    ];
-    var DRUG_SLOTS = [
-        {id:'drug1', label:'药剂 I'}, {id:'drug2', label:'药剂 II'},
-        {id:'drug3', label:'药剂 III'}, {id:'drug4', label:'药剂 IV'}
-    ];
+    var ARMOR_SLOTS = TemplateModule.armorSlots, WEAPON_SLOTS = TemplateModule.weaponSlots,
+        DRUG_SLOTS = TemplateModule.drugSlots;
+    var candidateViewSequence = 0;
     function text(value, fallback) {
         return String(value == null || value === '' ? fallback || '' : value);
     }
@@ -111,10 +114,11 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._activeSlotKey = '';
         this._activeCandidateKey = '';
         this._candidateRequestKey = '';
+        this._candidateFence = 'candidate-view-' + (++candidateViewSequence);
         this._candidateSequence = 0;
         this._candidateLoadFailed = false;
-        this._candidates = [];
         this._stats = null;
+        this._facetCounts = FacetCountsModule.normalize(null);
         this._interactionState = 'opening';
         this._lockedFocusKey = '';
         this._createDOM();
@@ -130,19 +134,32 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._bindInteractions();
         var self = this;
         this._actionView = new ActionViewModule.ActionView({
-            root:this.root, candidateList:this._candidateList,
+            root:this.root, candidateList:this._candidateList, overlayCopy:this._overlayCopy,
             getCandidate:function(key) { return self._candidateByKey(key || self._selectedCandidateKey); },
             getCandidateKey:function() { return self._selectedCandidateKey; },
             getSlotKey:function() { return self._selectedSlotKey; },
             selectCandidate:function(key) { return self._selectCandidate(key); },
+            clearCandidateSelection:function() { return self.clearCandidateSelection(); },
             onCommit:typeof options.onCommitCandidate === 'function'
                 ? options.onCommitCandidate : function() {},
             onTune:typeof options.onTune === 'function' ? options.onTune : function() {},
             onUnequip:typeof options.onUnequip === 'function' ? options.onUnequip : function() {},
             onReconcile:typeof options.onReconcile === 'function' ? options.onReconcile : function() {}
         });
+        this._candidateState = new CandidateStateModule.CandidateState({
+            document:this._document,
+            host:this._candidateList,
+            countNode:this._candidateCount,
+            renderOwnedSlot:this._renderOwnedSlot,
+            iconHtml:this._iconHtml,
+            bindTooltip:options.bindCandidateTooltip,
+            onBlocked:function(candidate, context) {
+                return self._explainBlockedCandidate(candidate, context);
+            },
+            onRetry:function(requestKey) { return self._retryCandidates(requestKey); }
+        });
+        this._setCandidateState('unselected', [], '');
     }
-
     CharacterBuildView.prototype._createDOM = function() {
         var root = this.root = this._document.createElement('section');
         root.className = 'character-build-workbench';
@@ -235,7 +252,10 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         });
         listen(this._listeners, this._candidateList, 'click', function(event) {
             var candidate = closest(event.target, '[data-roving-key]', self._candidateList);
-            if (candidate && self._interactionState === 'idle') self._selectCandidate(candidate.getAttribute('data-roving-key'), 'pointer');
+            if (!candidate || self._interactionState !== 'idle') return;
+            var key = candidate.getAttribute('data-roving-key');
+            if (key === self._selectedCandidateKey) self.clearCandidateSelection();
+            else self._selectCandidate(key, 'pointer');
         });
         listen(this._listeners, this.root, 'focusin', function(event) {
             var node = closest(event.target, '[data-roving-key]', self.root);
@@ -327,6 +347,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
             label.className = 'character-build-slot-label';
             label.textContent = definition.label;
             slot.appendChild(label);
+            FacetCountsModule.decorateSlot(
+                slot, this._facetCounts, kind, definition.id);
             fragment.appendChild(slot);
         }
         grid.innerHTML = '';
@@ -338,75 +360,19 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         return true;
     };
 
-    CharacterBuildView.prototype._renderCandidates = function(candidates) {
-        candidates = Array.isArray(candidates) ? candidates : [];
+    CharacterBuildView.prototype._setCandidateState = function(kind, candidates, requestKey) {
         var activeElement = this._document.activeElement;
         var restoreFocus = !!(activeElement && this._candidateList.contains(activeElement));
-        var fragment = this._document.createDocumentFragment();
-        for (var i = 0; i < candidates.length; i++) {
-            var candidate = candidates[i] || {};
-            var key = text(candidate.key, 'candidate-' + i);
-            var button = this._renderOwnedSlot('背包', {
-                occupied:true,
-                physicalSlot:candidate.physicalSlot == null ? i : candidate.physicalSlot,
-                item:candidate.presentation || {}
-            }, {iconHtml:this._iconHtml, allowDiscard:false});
-            button.classList.add('character-build-candidate');
-            button.setAttribute('role', 'option');
-            button.setAttribute('data-roving-key', key);
-            button.setAttribute('data-candidate-key', key);
-            button.setAttribute('aria-selected', key === this._selectedCandidateKey ? 'true' : 'false');
-            button.setAttribute('aria-label', button.getAttribute('aria-label') + '，'
-                + text(candidate.type, '背包候选') + '，' + text(candidate.summary, '可预览'));
-            if (candidate.blocked) {
-                button.setAttribute('data-blocked', 'true');
-                button.setAttribute('aria-disabled', 'true');
-            }
-            var delta = this._document.createElement('strong');
-            delta.className = 'character-build-candidate-delta';
-            delta.setAttribute('data-badge-kind',
-                candidate.badgeKind === 'preview' ? 'preview' : 'delta');
-            delta.textContent = candidate.delta || '±0';
-            button.appendChild(delta);
-            fragment.appendChild(button);
-        }
-        if (!candidates.length) {
-            var empty = this._document.createElement('div');
-            empty.className = 'character-build-candidate-empty';
-            empty.setAttribute('role', 'status');
-            empty.textContent = '选择一个装备或药剂槽';
-            fragment.appendChild(empty);
-        }
-        this._candidateList.innerHTML = '';
-        this._candidateList.appendChild(fragment);
+        this._candidateState.render(kind, candidates, requestKey);
         this._candidateRoving.refresh({preferredKey:this._activeCandidateKey, focus:restoreFocus});
-        this._candidateCount.textContent = candidates.length + ' 项';
         this._syncCandidateSelection();
+        return true;
     };
 
-    CharacterBuildView.prototype._syncCandidateSelection = function() {
-        var buttons = this._candidateList.querySelectorAll('[data-candidate-key]');
-        for (var i = 0; i < buttons.length; i++) {
-            var selected = buttons[i].getAttribute('data-candidate-key') === this._selectedCandidateKey;
-            buttons[i].setAttribute('aria-selected', selected ? 'true' : 'false');
-            buttons[i].classList.toggle('workbench-source-selected', selected);
-        }
-        var candidate = this._candidateByKey(this._selectedCandidateKey);
-        var overlay = this._overlayCopy.parentNode;
-        overlay.hidden = !candidate;
-        this._overlayCopy.textContent = candidate
-            ? '预览 · ' + text(candidate.name, '候选')
-            : '';
-        this._actionView.sync();
-    };
+    CharacterBuildView.prototype._syncCandidateSelection = function() { this._actionView.syncCandidateSelection(this._selectedCandidateKey); };
 
     CharacterBuildView.prototype._candidateByKey = function(key) {
-        if (!this._selectedSlotKey) return null;
-        var candidates = this._candidates;
-        for (var i = 0; i < candidates.length; i++) {
-            if (text(candidates[i] && candidates[i].key, 'candidate-' + i) === key) return candidates[i];
-        }
-        return null;
+        return this._selectedSlotKey ? this._candidateState.getCandidate(key) : null;
     };
 
     CharacterBuildView.prototype._syncSlotSelection = function() {
@@ -457,44 +423,36 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         return true;
     };
     CharacterBuildView.prototype._focusSlot = function(key) {
-        if (!key) return false;
-        this._activeSlotKey = String(key);
-        var node = this.root.querySelector('[data-roving-key="' + this._activeSlotKey.replace(/"/g, '\\"') + '"]');
-        this._slotFocusSummary.textContent = node
-            ? '浏览：' + node.getAttribute('data-focus-label') + ' · '
-                + node.getAttribute('data-focus-name') + ' · Enter 选择'
-            : '浏览：尚未选择槽位';
-        this._slotFocusSummary.title = node
-            ? node.getAttribute('data-focus-label') + ' · '
-                + node.getAttribute('data-focus-name') + ' · '
-                + node.getAttribute('data-focus-meta')
-            : '';
+        this._activeSlotKey = FacetCountsModule.syncFocusSummary(
+            this.root, this._slotFocusSummary, this._facetCounts, key);
         return true;
     };
-
     CharacterBuildView.prototype._focusCandidate = function(key) {
         if (!key) return false;
         this._activeCandidateKey = String(key);
         var candidate = this._candidateByKey(this._activeCandidateKey);
         this._candidateFocusSummary.textContent = candidate
             ? '浏览：' + text(candidate.name, '未命名候选') + ' · '
-                + text(candidate.summary, 'Enter 或 Space 固定预览；仅再次按 Enter 才提交。')
-            : '方向键只浏览摘要；Enter 或 Space 固定预览，仅再次按 Enter 才提交。';
+                + text(candidate.summary, this._activeCandidateKey === this._selectedCandidateKey
+                    ? '已固定预览；再次点击或按 Space 取消，按 Enter 提交。'
+                    : 'Enter 或 Space 固定预览；再次点击或按 Space 取消。')
+            : '方向键只浏览摘要；Enter 或 Space 固定预览；再次点击或按 Space 取消。';
         this._candidateFocusSummary.title = this._candidateFocusSummary.textContent;
         return true;
     };
-
     CharacterBuildView.prototype._selectSlot = function(key) {
         if (!key) return false;
         var nextKey = String(key);
         var changed = this._selectedSlotKey !== nextKey;
+        var previousCandidateState = this._candidateState.debugState();
         var previous = {
             selectedSlotKey:this._selectedSlotKey,
             selectedCandidateKey:this._selectedCandidateKey,
             activeCandidateKey:this._activeCandidateKey,
             candidateRequestKey:this._candidateRequestKey,
             candidateLoadFailed:this._candidateLoadFailed,
-            candidates:this._candidates.slice()
+            candidateState:previousCandidateState.kind,
+            candidates:this._candidateState.getCandidates()
         };
         var previousCandidate = this._candidateByKey(previous.selectedCandidateKey);
         this._selectedSlotKey = nextKey;
@@ -502,10 +460,10 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         if (changed || this._candidateLoadFailed) {
             this.clearCandidateSelection();
             this._activeCandidateKey = '';
-            this._candidates = [];
             this._candidateLoadFailed = false;
-            this._candidateRequestKey = this._selectedSlotKey + ':' + (++this._candidateSequence);
-            this._renderCandidates([]);
+            this._candidateRequestKey = this._candidateFence + ':'
+                + this._selectedSlotKey + ':' + (++this._candidateSequence);
+            this._setCandidateState('loading', [], this._candidateRequestKey);
             this._showBrowsingNotice('正在读取当前槽位的背包候选…');
             var parts = this._selectedSlotKey.split(':');
             var selection = {
@@ -521,8 +479,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
                 this._activeCandidateKey = previous.activeCandidateKey;
                 this._candidateRequestKey = previous.candidateRequestKey;
                 this._candidateLoadFailed = previous.candidateLoadFailed;
-                this._candidates = previous.candidates;
-                this._renderCandidates(this._candidates);
+                this._setCandidateState(previous.candidateState, previous.candidates,
+                    previous.candidateRequestKey);
                 this._syncSlotSelection();
                 if (previousCandidate) {
                     this._onCandidateSelect(previousCandidate, {
@@ -544,7 +502,21 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         }
         return true;
     };
-
+    CharacterBuildView.prototype._retryCandidates = function(requestKey) {
+        if (this._destroyed || !this._candidateLoadFailed || !this._selectedSlotKey
+                || requestKey !== this._candidateRequestKey
+                || this._candidateState.debugState().kind !== 'error') return false;
+        return this._selectSlot(this._selectedSlotKey);
+    };
+    CharacterBuildView.prototype._explainBlockedCandidate = function(candidate, context) {
+        var reason = text(context && context.reason || candidate && (
+            candidate.blockedReason || candidate.reason || candidate.summary
+        ), '此候选当前不可装备。');
+        this._candidateFocusSummary.textContent = '不可装备：' + reason;
+        this._candidateFocusSummary.title = this._candidateFocusSummary.textContent;
+        this._showStatusNotice('blocked', reason + ' 当前装备保持不变。');
+        return true;
+    };
     CharacterBuildView.prototype._selectCandidate = function(key) {
         if (!key || this._interactionState !== 'idle') return false;
         var candidate = this._candidateByKey(key);
@@ -557,7 +529,6 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         });
         return true;
     };
-
     CharacterBuildView.prototype.clearCandidateSelection = function() {
         if (!this._selectedCandidateKey) return false;
         this._selectedCandidateKey = '';
@@ -633,11 +604,12 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
     CharacterBuildView.prototype.setSnapshot = function(snapshot) {
         if (this._destroyed) return false;
         this._snapshot = snapshot || {};
+        this._facetCounts =
+            FacetCountsModule.normalize(this._snapshot.candidateFacets);
         if (this.root.getAttribute('data-build-subview') !== 'tuning') this._selectedSlotKey = '';
         this._selectedCandidateKey = '';
         this._candidateRequestKey = '';
         this._candidateLoadFailed = this.root.getAttribute('data-build-subview') === 'tuning';
-        this._candidates = [];
         this.root.setAttribute('data-build-state', this._snapshot.blocked ? 'blocked' : 'ready');
         this._renderSlotGroup(
             this._armorGrid, ARMOR_SLOTS, this._snapshot.equipment, 'armor', this._armorRoving);
@@ -645,7 +617,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
             this._weaponGrid, WEAPON_SLOTS, this._snapshot.equipment, 'weapon', this._weaponRoving);
         this._renderSlotGroup(
             this._drugGrid, DRUG_SLOTS, this._snapshot.drugs, 'drug', this._drugRoving);
-        this._renderCandidates([]);
+        this._focusSlot(this._activeSlotKey);
+        this._setCandidateState('unselected', [], '');
         this._notice.textContent = this._snapshot.blocked
             ? text(this._snapshot.blockedReason, '当前候选不满足权威条件。')
             : '选择槽位与候选可查看临时预览，当前装备保持不变。';
@@ -658,17 +631,18 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
     CharacterBuildView.prototype.setCandidates = function(requestKey, candidates) {
         if (this._destroyed || !requestKey || requestKey !== this._candidateRequestKey
                 || !this._selectedSlotKey) return false;
-        this._candidates = Array.isArray(candidates) ? candidates.slice() : [];
+        candidates = Array.isArray(candidates) ? candidates.slice() : [];
         this._candidateLoadFailed = false;
         this._selectedCandidateKey = '';
         this._activeCandidateKey = '';
-        this._renderCandidates(this._candidates);
+        this._setCandidateState(candidates.length ? 'ready' : 'empty',
+            candidates, requestKey);
         if (this._snapshot && this._snapshot.blocked) {
             this._notice.textContent = text(
                 this._snapshot.blockedReason, '部分角色数据不可用；请检查候选阻断原因。');
             this._notice.setAttribute('data-notice-kind', 'blocked');
         } else {
-            this._showBrowsingNotice(this._candidates.length
+            this._showBrowsingNotice(candidates.length
                 ? '已读取当前槽位候选；选择候选只会更新临时预览。'
                 : '当前背包没有可用于该槽位的候选。');
         }
@@ -679,9 +653,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         if (this._destroyed || !requestKey || requestKey !== this._candidateRequestKey
                 || !this._selectedSlotKey) return false;
         this._candidateLoadFailed = true;
-        this._candidates = [];
-        this._renderCandidates([]);
-        this._showStatusNotice('error', '候选读取失败；再次选择当前槽位即可重试。');
+        this._setCandidateState('error', [], requestKey);
+        this._showStatusNotice('error', '候选读取失败；可安全重试当前槽位，不会改动装备。');
         return true;
     };
 
@@ -693,6 +666,31 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._candidateList.parentNode.scrollTop = 0;
         this._selectSlot(this._activeSlotKey);
         try { node.focus({preventScroll:true}); } catch (_) { node.focus(); }
+        return true;
+    };
+    CharacterBuildView.prototype.getCandidates = function() { return this._candidateState.getCandidates(); };
+    CharacterBuildView.prototype.restoreCandidateTuning = function(plan, state) {
+        if (this._destroyed || !plan || !state || !this.restoreSlot(state.slotKey)) return false;
+        var scroll = this.root.querySelector('.character-build-candidate-scroll');
+        if (scroll) scroll.scrollTop = Number(state.scrollTop) || 0;
+        var candidate = plan.candidate;
+        if (candidate) {
+            this._activeCandidateKey = String(candidate.key || '');
+            if (!this._selectCandidate(this._activeCandidateKey)) return false;
+            this._candidateRoving.refresh({preferredKey:this._activeCandidateKey});
+            this._candidateState.focusCandidate(this._activeCandidateKey, scroll);
+            if (plan.kind === 'adjacent') this._showStatusNotice(
+                'changed', '原候选已移动或不再可用，已转到相邻候选。');
+            else this._showBrowsingNotice('已返回调制后的同一候选。');
+        } else {
+            var heading = this.root.querySelector('#character-build-candidate-title');
+            if (heading) {
+                heading.setAttribute('tabindex', '-1');
+                try { heading.focus({preventScroll:true}); } catch (_) { heading.focus(); }
+            }
+            this._showStatusNotice(
+                'changed', '原候选已移动或不再可用，当前槽位已没有可恢复的候选。');
+        }
         return true;
     };
 
@@ -725,7 +723,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
             activeCandidateKey:this._activeCandidateKey,
             candidateRequestKey:this._candidateRequestKey,
             candidateLoadFailed:this._candidateLoadFailed,
-            candidateCount:this._candidates.length,
+            candidateCount:this._candidateState.debugState().count,
+            candidateState:this._candidateState.debugState(),
             statsOpen:this._statsPage.isActive(),
             dollPreviewOpen:this._dollPreview.isOpen(),
             renderModel:this.root.getAttribute('data-render-model')
@@ -740,6 +739,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._drugRoving.destroy();
         this._candidateRoving.destroy();
         this._actionView.destroy();
+        this._candidateState.destroy();
         this._dollPreview.destroy();
         this._statsPage.destroy();
         for (var i = this._listeners.length - 1; i >= 0; i--) this._listeners[i]();
@@ -748,7 +748,6 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, StatsViewModule,
         this._mounted = false;
         return true;
     };
-
     return {
         CharacterBuildView:CharacterBuildView,
         equipmentSlots:ARMOR_SLOTS.concat(WEAPON_SLOTS),

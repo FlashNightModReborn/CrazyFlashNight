@@ -112,26 +112,32 @@
         this.button.className = 'workbench-mode-btn workbench-help-btn';
         this.button.textContent = '?';
         this.button.setAttribute('data-workbench-help', '');
+        this.button.setAttribute('data-header-action', 'help');
         this.button.setAttribute('data-audio-cue', 'select');
         var self = this;
-        this._unbind = listen(this.button, 'click', function() {
-            var current = self.spec;
-            if (!current || self._destroyed) return;
-            if (typeof current.onOpen === 'function') {
-                current.onOpen(self.button, self.shell);
-                return;
-            }
-            var modalSpec = {};
-            for (var key in current) modalSpec[key] = current[key];
-            if (!modalSpec.kind) modalSpec.kind = 'workbench-help';
-            if (!modalSpec.actions) modalSpec.actions = [
-                {id:'close', label:'知道了', primary:true, audioCue:'confirm'}
-            ];
-            self.shell.openModal(modalSpec);
-        });
+        this._unbind = listen(this.button, 'click', function() { self.open(self.button); });
         this.shell.addHeaderAction(this.button);
         this.update(options.spec || null);
     }
+    HelpAction.prototype.open = function(opener) {
+        var current = this.spec;
+        if (!current || this._destroyed || this.button.disabled) return false;
+        if (typeof current.onOpen === 'function') {
+            current.onOpen(opener || this.button, this.shell);
+            return true;
+        }
+        var modalSpec = {};
+        for (var key in current) modalSpec[key] = current[key];
+        if (!modalSpec.kind) modalSpec.kind = 'workbench-help';
+        if (!modalSpec.actions) modalSpec.actions = [
+            {id:'close', label:'知道了', primary:true, audioCue:'confirm'}
+        ];
+        var modal = this.shell.openModal(modalSpec);
+        if (modal && modal.dialog && modalSpec.ariaLabel) {
+            modal.dialog.setAttribute('aria-label', String(modalSpec.ariaLabel));
+        }
+        return true;
+    };
     HelpAction.prototype.update = function(spec) {
         if (this._destroyed) return false;
         this.spec = spec || null;
@@ -191,6 +197,79 @@
         return result;
     }
 
+    var secondaryActionSuppressions = [];
+    function secondaryActionRecord(node) {
+        for (var i = 0; i < secondaryActionSuppressions.length; i++) {
+            if (secondaryActionSuppressions[i].node === node) return secondaryActionSuppressions[i];
+        }
+        return null;
+    }
+    function suppressSecondaryActions(underlay) {
+        var candidates = [];
+        var seen = [];
+        var roots = underlay == null ? [] : typeof underlay.length === 'number'
+            && !underlay.nodeType ? underlay : [underlay];
+        function add(node) {
+            if (!node || seen.indexOf(node) >= 0) return;
+            seen.push(node);
+            candidates.push(node);
+        }
+        for (var i = 0; i < roots.length; i++) {
+            var root = roots[i];
+            if (!root) continue;
+            if (root.matches && root.matches('.workbench-header-actions,.workbench-secondary-actions')) add(root);
+            if (!root.querySelectorAll) continue;
+            var strips = root.querySelectorAll('.workbench-header-actions,.workbench-secondary-actions');
+            for (var j = 0; j < strips.length; j++) add(strips[j]);
+            var actions = root.querySelectorAll('[data-header-action],[data-secondary-action]');
+            for (var k = 0; k < actions.length; k++) {
+                var action = actions[k];
+                var covered = false;
+                for (var n = 0; n < candidates.length; n++) {
+                    if (candidates[n] !== action && candidates[n].contains
+                            && candidates[n].contains(action)) {
+                        covered = true;
+                        break;
+                    }
+                }
+                if (!covered) add(action);
+            }
+        }
+        var tokens = [];
+        for (var m = 0; m < candidates.length; m++) {
+            var node = candidates[m];
+            var record = secondaryActionRecord(node);
+            if (!record) {
+                record = {
+                    node:node,
+                    depth:0,
+                    hadHidden:node.hasAttribute && node.hasAttribute('hidden'),
+                    hidden:'hidden' in node ? !!node.hidden : false
+                };
+                secondaryActionSuppressions.push(record);
+            }
+            record.depth++;
+            tokens.push(record);
+            if ('hidden' in node) node.hidden = true;
+            if (node.setAttribute) node.setAttribute('hidden', '');
+        }
+        return tokens;
+    }
+    function restoreSecondaryActions(tokens) {
+        tokens = tokens || [];
+        for (var i = tokens.length - 1; i >= 0; i--) {
+            var record = tokens[i];
+            if (!record || !record.node) continue;
+            record.depth--;
+            if (record.depth > 0) continue;
+            if ('hidden' in record.node) record.node.hidden = record.hidden;
+            if (record.hadHidden && record.node.setAttribute) record.node.setAttribute('hidden', '');
+            else if (record.node.removeAttribute) record.node.removeAttribute('hidden');
+            var index = secondaryActionSuppressions.indexOf(record);
+            if (index >= 0) secondaryActionSuppressions.splice(index, 1);
+        }
+    }
+
     function secondaryRestoreTarget(page) {
         var target = page._focusScope && page._focusScope._opener;
         var visited = [];
@@ -222,6 +301,9 @@
         this._lifetime = new DisposableStack();
         this._activeClass = options.activeClass || 'active';
         this._backCallback = null;
+        this._closeCallback = null;
+        this._helpCallback = null;
+        this._actionSuppression = null;
         if (this.root.classList) {
             this.root.classList.add('workbench-secondary-page');
             if (options.className) {
@@ -258,24 +340,47 @@
         return true;
     };
 
-    SecondaryPage.prototype.bindClose = function(target, callback) {
+    SecondaryPage.prototype._bindAction = function(target, action, callback) {
         if (this._destroyed || this._destroying) return false;
         if (typeof target === 'string') target = this.root.querySelector(target);
         if (!target) return false;
-        if (typeof callback === 'function') this._backCallback = callback;
+        target.setAttribute('data-secondary-action', action);
+        if (typeof callback === 'function') {
+            if (action === 'back') this._backCallback = callback;
+            else if (action === 'close') this._closeCallback = callback;
+            else if (action === 'help') this._helpCallback = callback;
+        }
         var self = this;
         this._lifetime.defer(listen(target, 'click', function(event) {
             if (event && event.preventDefault) event.preventDefault();
-            self._requestClose('back', event, callback);
+            if (action === 'help') {
+                var help = callback || self._helpCallback || self._options.onHelp;
+                if (typeof help === 'function') help(event, action, self);
+                return;
+            }
+            self._requestClose(action, event, callback);
         }));
         return true;
+    };
+    SecondaryPage.prototype.bindBack = function(target, callback) {
+        return this._bindAction(target, 'back', callback);
+    };
+    SecondaryPage.prototype.bindHelp = function(target, callback) {
+        return this._bindAction(target, 'help', callback);
+    };
+    SecondaryPage.prototype.bindClose = function(target, callback) {
+        return this._bindAction(target, 'close', callback);
     };
 
     SecondaryPage.prototype._requestClose = function(reason, event, callback) {
         if (!this._active || this._destroyed) return false;
         if (reason === 'escape' && this._options.closeOnEscape === false) return false;
-        callback = callback || (reason === 'escape' && this._options.onEscape)
-            || this._backCallback || this._options.onBack;
+        if (!callback) {
+            if (reason === 'close') callback = this._closeCallback || this._options.onRequestClose;
+            else if (reason === 'back') callback = this._backCallback || this._options.onBack;
+            else callback = (reason === 'escape' && this._options.onEscape)
+                || this._backCallback || this._options.onBack;
+        }
         var generation = this._generation;
         var result = typeof callback === 'function' ? callback(event, reason, this) : undefined;
         if (result !== false && this._active && generation === this._generation) this.close(reason || 'close');
@@ -293,17 +398,25 @@
         this._stackOrder = ++secondaryOpenSequence;
         this._returnFocus = context.opener || this._document && this._document.activeElement || null;
         this._initialFocus = context.initialFocus || this._options.initialFocus || null;
+        // A feature presenter may mount and open in the same task. Commit the
+        // inactive geometry before toggling the active class so the first entry
+        // has a real CSS transition instead of jumping directly to its end state.
+        if (this.root && typeof this.root.getBoundingClientRect === 'function') {
+            this.root.getBoundingClientRect();
+        }
         this._active = true;
         setClass(this.root, this._activeClass, true);
         this.root.setAttribute('aria-hidden', 'false');
         try {
             if (typeof this._options.onOpen === 'function') this._options.onOpen(context, this.root);
             if (!this._active || this._destroyed || this._destroying || generation !== this._generation) return false;
+            var underlay = context.underlay != null ? context.underlay
+                : this._options.underlay != null ? this._options.underlay : secondaryUnderlay(this);
+            this._actionSuppression = suppressSecondaryActions(underlay);
             this._focusScope.activate({
                 opener:context.opener,
                 initialFocus:context.initialFocus != null ? context.initialFocus : this._options.initialFocus,
-                underlay:context.underlay != null ? context.underlay
-                    : this._options.underlay != null ? this._options.underlay : secondaryUnderlay(this)
+                underlay:underlay
             });
             syncSecondaryAccessibility(this._host || this.root.parentNode);
         } catch (error) {
@@ -312,6 +425,8 @@
                 this._active = false;
                 setClass(this.root, this._activeClass, false);
                 this.root.setAttribute('aria-hidden', 'true');
+                restoreSecondaryActions(this._actionSuppression);
+                this._actionSuppression = null;
                 try { this._focusScope.deactivate('open-error', {restoreFocus:false}); } catch (_) {}
                 syncSecondaryAccessibility(this._host || this.root.parentNode);
             }
@@ -331,8 +446,12 @@
         var firstError = null;
         var focusContext = {restoreFocus:context.restoreFocus};
         focusContext.restoreFocusTarget = secondaryRestoreTarget(this);
+        try {
+            restoreSecondaryActions(this._actionSuppression);
+            this._actionSuppression = null;
+        } catch (actionError) { if (!firstError) firstError = actionError; }
         try { this._focusScope.deactivate(reason || 'close', focusContext); }
-        catch (focusError) { firstError = focusError; }
+        catch (focusError) { if (!firstError) firstError = focusError; }
         syncSecondaryAccessibility(this._host || this.root.parentNode);
         try {
             if (typeof this._options.onClose === 'function') this._options.onClose(reason || 'close', this.root);
@@ -464,10 +583,27 @@
         value = String(value);
         if (!this._buttons[value] || this._buttons[value].disabled) return false;
         var changed = value !== this._value;
+        var previous = this._value;
         this._value = value;
         this._render();
         if (changed && !(meta && meta.silent) && typeof this._options.onChange === 'function') {
-            this._options.onChange(value, meta && meta.choice, meta && meta.event);
+            var accepted;
+            try {
+                accepted = this._options.onChange(
+                    value,
+                    meta && meta.choice,
+                    meta && meta.event
+                );
+            } catch (error) {
+                this._value = previous;
+                this._render();
+                throw error;
+            }
+            if (accepted === false) {
+                this._value = previous;
+                this._render();
+                return false;
+            }
         }
         return true;
     };
@@ -566,6 +702,27 @@
         return '';
     }
 
+    function ownedInteraction(state, fallback) {
+        state = state || {};
+        fallback = fallback || {
+            inspectable:true,
+            actionable:true,
+            reason:''
+        };
+        var actionable = state.actionable == null
+            ? !!fallback.actionable : !!state.actionable;
+        var inspectable = state.inspectable == null
+            ? !!fallback.inspectable : !!state.inspectable;
+        if (actionable) inspectable = true;
+        return {
+            inspectable:inspectable,
+            actionable:actionable,
+            reason:String(
+                state.reason == null ? fallback.reason : state.reason
+            ).trim()
+        };
+    }
+
     function OwnedInventoryPane(options) {
         options = options || {};
         this._options = options;
@@ -575,7 +732,15 @@
         this._keyOf = options.keyOf || defaultOwnedKey;
         this._snapshot = null;
         this._selection = {};
-        this._disabled = !!options.disabled;
+        this._interaction = ownedInteraction(
+            options.interaction,
+            {
+                inspectable:!options.disabled,
+                actionable:!options.disabled,
+                reason:''
+            }
+        );
+        this._disabled = !this._interaction.actionable;
         this._mounted = false;
         this._destroyed = false;
         this._queue = [];
@@ -586,6 +751,7 @@
         this._accepted = 0;
         if (this.root && this.root.classList) this.root.classList.add('workbench-owned-pane');
         if (this.view) this.view.ownedInventoryPane = this;
+        this._projectInteraction();
     }
 
     OwnedInventoryPane.prototype.mount = function(host) {
@@ -665,14 +831,61 @@
         return result;
     };
 
-    OwnedInventoryPane.prototype.setDisabled = function(disabled) {
-        this._disabled = !!disabled;
-        if (this.root) this.root.setAttribute('aria-disabled', this._disabled ? 'true' : 'false');
+    OwnedInventoryPane.prototype._projectInteraction = function() {
+        if (this.root) {
+            this.root.setAttribute(
+                'aria-disabled',
+                this._interaction.actionable ? 'false' : 'true'
+            );
+            this.root.setAttribute(
+                'data-owned-inspectable',
+                this._interaction.inspectable ? 'true' : 'false'
+            );
+            this.root.setAttribute(
+                'data-owned-actionable',
+                this._interaction.actionable ? 'true' : 'false'
+            );
+            if (this._interaction.reason) {
+                this.root.setAttribute(
+                    'data-owned-disabled-reason',
+                    this._interaction.reason
+                );
+            } else {
+                this.root.removeAttribute('data-owned-disabled-reason');
+            }
+        }
+        if (typeof this._options.onInteractionChange === 'function') {
+            this._options.onInteractionChange(
+                {
+                    inspectable:this._interaction.inspectable,
+                    actionable:this._interaction.actionable,
+                    reason:this._interaction.reason
+                },
+                this
+            );
+        }
+    };
+
+    OwnedInventoryPane.prototype.setInteraction = function(state) {
+        if (this._destroyed) return false;
+        this._interaction = ownedInteraction(state, this._interaction);
+        this._disabled = !this._interaction.actionable;
+        this._projectInteraction();
         this._emitTransferState();
+        return true;
+    };
+
+    OwnedInventoryPane.prototype.setDisabled = function(disabled) {
+        return this.setInteraction({
+            inspectable:!disabled,
+            actionable:!disabled,
+            reason:''
+        });
     };
 
     OwnedInventoryPane.prototype.quickTransfer = function(source, target, meta) {
-        if (this._destroyed || this._disabled || !source || typeof this._options.onQuickTransfer !== 'function') return false;
+        if (this._destroyed || !this._interaction.actionable || !source
+                || typeof this._options.onQuickTransfer !== 'function') return false;
         meta = meta || {};
         var key = meta.key || String(this._keyOf(source)) + '>' + String(target && this._keyOf(target) || target || 'auto');
         if (this._inflight && this._inflight.key === key) return false;
@@ -740,6 +953,11 @@
     OwnedInventoryPane.prototype.debugState = function() {
         return {
             disabled:this._disabled,
+            interaction:{
+                inspectable:this._interaction.inspectable,
+                actionable:this._interaction.actionable,
+                reason:this._interaction.reason
+            },
             selected:Object.keys(this._selection),
             snapshot:!!this._snapshot,
             quickTransfer:{pending:this._queue.length, inFlight:this._inflight ? this._inflight.key : null,

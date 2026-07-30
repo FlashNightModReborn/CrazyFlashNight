@@ -558,7 +558,10 @@ class Program
         PerfTrace.Duration("config.load", configStart);
         StartupDiagnostics.Mark("config.load_ok",
             "useNativeHud=" + config.UseNativeHud
+            + " preparationNavigationV1="
+            + config.PreparationNavigationV1
             + " webView2DisableGpu=" + config.WebView2DisableGpu
+            + " webView2DeveloperMode=" + config.WebView2DeveloperMode
             + " gpuPreference=" + config.GpuPreference);
         StartupDiagnostics.ProbeProjectFiles(projectRoot, config.FlashPlayerPath, config.SwfPath, !busOnly);
 
@@ -569,6 +572,7 @@ class Program
             bootstrapWebDir,
             config.WebView2DisableGpu,
             config.WebView2AdditionalArgs,
+            config.WebView2DeveloperMode,
             isolatedRuntimeCandidate);
         _guardianForm = form;
         PerfTrace.Duration("guardian.form_construct", formStart);
@@ -869,7 +873,8 @@ class Program
                     form.EmergencyExit(
                         GuardianForm.EmergencyExitReason.HardExitKeyQ);
                 },
-                new Action<Keys>(form.HandleButtonClick));
+                new Action<Keys>(form.HandleButtonClick),
+                config.PreparationNavigationV1);
         }
 
         // Phase 1 (11c): WebView2 全局硬依赖; 入口已预检, 这里 WebOverlayForm 构造异常直接 throw 到上游
@@ -904,6 +909,7 @@ class Program
                 config.WebOverlayFrameRateLimit,
                 config.WebView2DisableGpu,
                 config.WebView2AdditionalArgs,
+                config.WebView2DeveloperMode,
                 config.WebOverlayPanelTakeForeground,
                 config.WebOverlayHotReload,
                 flashFocusRestorer);
@@ -1007,7 +1013,8 @@ class Program
             new Action(form.ForceExit),
             new Action<string>(webOverlay.PostToWeb),
             new Action<bool>(form.HandlePanelStateChanged),
-            new Action<string>(webOverlay.SetActivePanel));
+            new Action<string>(webOverlay.SetActivePanel),
+            config.PreparationNavigationV1);
         commandRouter.SetFallbackVisualRetire(delegate(string reason)
         {
             webOverlay.ForceIdleState(reason);
@@ -1152,12 +1159,6 @@ class Program
             nativeHud.AddWidget(rightContext);
             safeExitPanel =
                 new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(form.FlashHostPanel, commandRouter);
-            // 地图不再常驻预留 header；仅 SafeExit 真正可见时通知 RightContext 留出状态槽，
-            // 避免确认条覆盖地图顶部，同时保持普通地图紧贴动作行。
-            safeExitPanel.BoundsOrVisibilityChanged += delegate
-            {
-                rightContext.SetExternalStatusSlotActive(safeExitPanel.Visible);
-            };
             nativeHud.AddWidget(safeExitPanel);
             CF7Launcher.Guardian.Hud.ComboWidget comboWidget =
                 new CF7Launcher.Guardian.Hud.ComboWidget(form.FlashHostPanel);
@@ -1183,7 +1184,8 @@ class Program
                             GuardianForm.EmergencyExitReason.HardExitKeyQ);
                     },
                     new Action<Keys>(form.HandleButtonClick),
-                    audioHudState);
+                    audioHudState,
+                    config.PreparationNavigationV1);
             notchWidget.SetCommandRouter(commandRouter);
             nativeHud.AddWidget(notchWidget);
             // 升级 webOverlay 的 toast/notch fallback：先前以 toastOverlay=null/notchOverlay=null 注入，
@@ -1418,12 +1420,12 @@ class Program
         });
         characterBuildTask.SetCoordinatorSettled(delegate
         {
-            bool skillsNavigationConsumed =
+            bool preparationNavigationConsumed =
                 commandRouter
-                    .TryCompleteCharacterBuildSkillsNavigation();
+                    .TryCompleteCharacterBuildPreparationNavigation();
             if (panelHost != null)
             {
-                if (!skillsNavigationConsumed)
+                if (!preparationNavigationConsumed)
                 {
                     panelHost.FlushDeferredBarrierOpen();
                     panelHost.FlushDeferredRebind("workbench");
@@ -1454,7 +1456,9 @@ class Program
         {
             const string payload = "{\"task\":\"cmd\",\"action\":\"openInventoryWorkbench\","
                 + "\"profile\":\"battlebox\",\"view\":\"tuning\",\"source\":\"agent_control\"}\0";
-            return socketServer != null && socketServer.IsClientReady && socketServer.TrySend(payload);
+            return !form.IsShutdownAdmissionClosed
+                && socketServer != null && socketServer.IsClientReady
+                && socketServer.TrySend(payload);
         });
         agentControlTask.SetCharacterBuildOpenAction(delegate
         {
@@ -1538,7 +1542,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

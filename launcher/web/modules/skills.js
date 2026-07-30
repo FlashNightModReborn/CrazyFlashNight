@@ -13,7 +13,7 @@ var SkillsPanel = (function() {
     }
 
 
-    var _scaleEl = null, _scaleHandle = null, _shell = null, _tooltipScope = null;
+    var _scaleEl = null, _scaleHandle = null, _shell = null, _tooltipScope = null, _helpAction = null;
     var _leftRoot = null, _rightRoot = null, _list = null, _search = null;
     var _searchToggle = null, _searchControls = null, _searchClose = null, _searchExpanded = false;
     var _filterNavigators = {}, _filterBoard = null, _filterResetButton = null;
@@ -123,9 +123,11 @@ var SkillsPanel = (function() {
     }
 
     function buildDOM() {
+        if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
         if (_shell) _shell.destroy();
         Workbench.clearElement(_scaleEl);
         _shell = new Workbench.DualPaneShell({
+            profile: _view === 'trainer' ? 'library-decision' : 'library-action-strip',
             title: _view === 'trainer' ? '技能研习' : '我的技能',
             subtitle: _view === 'trainer' ? '选择技能，查看说明后研习' : '技能库与快捷技能带',
             status: '读取中',
@@ -169,10 +171,10 @@ var SkillsPanel = (function() {
             _switchButton.title = '返回角色构筑并重新读取当前装备与属性';
             _shell.addHeaderAction(_switchButton);
         }
-        _helpButton = button('?', 'workbench-mode-btn skills-help-btn', openHelp);
-        _helpButton.setAttribute('aria-label', '查看技能操作帮助');
+        _helpAction = new WorkbenchComponents.HelpAction({shell:_shell, spec:skillHelpSpec()});
+        _helpButton = _helpAction.button;
+        _helpButton.classList.add('skills-help-btn');
         _helpButton.title = '查看操作帮助';
-        _shell.addHeaderAction(_helpButton);
         _refreshButton = button('刷新', 'workbench-mode-btn skills-refresh-btn', function() {
             if (_coordinator.getState() === 'needs_reconcile') _coordinator.retryReconcile();
             else requestSnapshot();
@@ -965,8 +967,7 @@ var SkillsPanel = (function() {
     }
     function loadoutSlot(number) { return Loadout.slotByNumber(_snapshot, number); }
     function requestManageView() { requestNavigation('manage'); }
-    function openHelp() {
-        if (!_shell) return;
+    function skillHelpSpec() {
         var trainer = _view === 'trainer';
         var title = trainer ? '技能研习帮助' : '技能管理帮助';
         var message = trainer
@@ -975,14 +976,11 @@ var SkillsPanel = (function() {
         var detail = trainer
             ? '等级规则\n• 未学技能第一次固定学习 1 级。\n• 已学技能可点任意可见刻度；− / + 用于逐级微调。\n• 滑动时旧消耗会保留，松开后自动计算消耗且只计算最终等级。\n\n页面切换\n• “管理技能”可进入快捷技能管理。\n• 返回研习后会自动恢复当前目标并重新计算。'
             : manageHelpDetail();
-        var actions = [{id:'close', label:'知道了', primary:true}];
-        var modal = _shell.openModal({
+        return {
             kind:'skills-help', title:title, message:message, detail:detail,
-            actions:actions
-        });
-        if (modal && modal.dialog) {
-            modal.dialog.setAttribute('aria-label', title);
-        }
+            ariaLabel:title,
+            actions:[{id:'close', label:'知道了', primary:true}]
+        };
     }
     function requestTrainerView() { requestNavigation('trainer'); }
     function requestCharacterBuild() { requestNavigation('character_build'); }
@@ -1061,6 +1059,7 @@ var SkillsPanel = (function() {
         if (_density) { _density.destroy(); _density = null; }
         _densityToggle = null; _confirmationToggle = null;
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
+        if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
         if (_shell) { _shell.destroy(); _shell = null; }
         _leftRoot = null; _rightRoot = null; _list = null; _search = null;
         _searchToggle = null; _searchControls = null; _searchClose = null; _searchExpanded = false;

@@ -44,6 +44,7 @@
             throw new Error('SettlementPresenter requires document, components, and host');
         }
         this._ports = {
+            onBack:requirePort(options, 'onBack'),
             onClose:requirePort(options, 'onClose'),
             onOrganize:requirePort(options, 'onOrganize'),
             onCommit:requirePort(options, 'onCommit'),
@@ -59,9 +60,12 @@
         this._lineRecords = {purchase:{}, sale:{}};
         this.root = this._document.createElement('section');
         this.root.className = 'workbench-secondary-page npcshop-settlement-page';
-        this.root.innerHTML = '<header class="npcshop-settlement-header"><button type="button" data-trade-back>← 返回选购</button>'
+        this.root.innerHTML = '<header class="npcshop-settlement-header"><div class="workbench-secondary-actions">'
+            + '<button type="button" data-trade-back>← 返回选购</button>'
+            + '<button type="button" data-trade-help aria-label="商店操作帮助">？</button>'
+            + '<button type="button" data-trade-close aria-label="关闭 NPC 商店">×</button></div>'
             + '<div><h2>交易结算</h2><p data-trade-context>价格与容量由游戏实时核算；确认后整单一次生效。</p></div>'
-            + '<button type="button" data-trade-help aria-label="商店操作帮助">？</button></header>'
+            + '</header>'
             + '<div class="npcshop-settlement-columns"><section><h3>待购</h3><div class="npcshop-settlement-list" data-purchase-lines></div></section>'
             + '<section><h3>待售</h3><div class="npcshop-settlement-list" data-sale-lines></div></section></div>'
             + '<footer class="npcshop-settlement-summary"><div data-trade-economy></div><span data-trade-error></span>'
@@ -70,10 +74,10 @@
         this.secondary = new this._components.SecondaryPage({
             root:this.root, role:'dialog', ariaLabel:'NPC 商店交易结算'
         });
-        this.secondary.bindClose(this.root.querySelector('[data-trade-back]'), this._ports.onClose);
+        this.secondary.bindBack(this.root.querySelector('[data-trade-back]'), this._ports.onBack);
         this._helpButton = this.root.querySelector('[data-trade-help]');
-        this._helpHandler = this._ports.onHelp;
-        this._helpButton.addEventListener('click', this._helpHandler);
+        this.secondary.bindHelp(this._helpButton, this._ports.onHelp);
+        this.secondary.bindClose(this.root.querySelector('[data-trade-close]'), this._ports.onClose);
         this._organizeButton = this.root.querySelector('[data-space-organize]');
         this._organizeHandler = this._ports.onOrganize;
         this._organizeButton.addEventListener('click', this._organizeHandler);
@@ -316,7 +320,6 @@
         button.type = 'button'; button.textContent = label; button.addEventListener('click', handler); return button;
     };
     SettlementPresenter.prototype.destroy = function() {
-        this._helpButton.removeEventListener('click', this._helpHandler);
         this._organizeButton.removeEventListener('click', this._organizeHandler);
         var kinds = ['purchase', 'sale'];
         for (var kindIndex = 0; kindIndex < kinds.length; kindIndex++) {
@@ -340,7 +343,9 @@
         if (!options.document || !options.components || !options.host) throw new Error('HelpPresenter requires document, components, and host');
         this.root = options.document.createElement('section');
         this.root.className = 'workbench-secondary-page npcshop-help-page';
-        this.root.innerHTML = '<header class="npcshop-help-header"><button type="button" data-help-back>← 返回商店</button>'
+        this.root.innerHTML = '<header class="npcshop-help-header"><div class="workbench-secondary-actions">'
+            + '<button type="button" data-help-back>← 返回商店</button>'
+            + '<button type="button" data-help-close aria-label="关闭 NPC 商店">×</button></div>'
             + '<div><h2>商店操作帮助</h2><p>所有选择都可以在确认交易前调整或取消。</p></div></header>'
             + '<div class="npcshop-help-grid">'
             + helpCard('01','选择商品','左侧点击商品加入待购；右侧点击背包或材料加入待售。','此时不会扣钱，也不会移除物品。','待购','待售')
@@ -351,7 +356,8 @@
             + '<small>关键提示只自动出现一次；本页可随时从标题栏“？”重新打开。</small></footer>';
         this.backButton = this.root.querySelector('[data-help-back]');
         this.secondary = new options.components.SecondaryPage({root:this.root, role:'dialog', ariaLabel:'NPC 商店操作帮助'});
-        this.secondary.bindClose(this.backButton, requirePort(options, 'onClose'));
+        this.secondary.bindBack(this.backButton, requirePort(options, 'onBack'));
+        this.secondary.bindClose(this.root.querySelector('[data-help-close]'), requirePort(options, 'onClose'));
         this.secondary.mount(options.host);
     }
     HelpPresenter.prototype.open = function(returnLabel) {
@@ -362,9 +368,110 @@
     HelpPresenter.prototype.isActive = function() { return this.secondary.isActive(); };
     HelpPresenter.prototype.destroy = function() { return this.secondary.destroy(); };
 
+    function ownedInteraction(state) {
+        state = state || {};
+        if (state.refreshRequired) return {inspectable:true, actionable:false, reason:'库存同步失败，请先重试。'};
+        if (state.reconcileRequired) return {inspectable:true, actionable:false, reason:'商店状态需要重新同步。'};
+        if (state.returning) return {inspectable:true, actionable:false, reason:'正在重新核对商店与库存。'};
+        if (state.spaceBusy) return {inspectable:true, actionable:false, reason:'正在载入或核对整理空间。'};
+        if (!state.ready) return {inspectable:true, actionable:false, reason:'库存正在同步，请稍候。'};
+        if (state.busyOwner) return {inspectable:true, actionable:false, reason:'库存正在处理另一项操作。'};
+        if (state.transactionBusy) return {inspectable:true, actionable:false, reason:'交易正在由游戏确认。'};
+        if (state.readOnly) return {inspectable:true, actionable:false, reason:'此栏仅供查看，不能加入待售。'};
+        return {inspectable:true, actionable:true, reason:''};
+    }
+
+    function bindCatalogActivation(options) {
+        options = options || {};
+        var item = options.item || {};
+        var atLimit = isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0;
+        var reason = item.locked
+            ? (item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁')
+            : (atLimit ? '已达持有上限' : '');
+        return options.workbench.EntityTile.bindActivation(options.node, {
+            itemName:item.displayName || item.itemName,
+            label:options.node.getAttribute('aria-label') || '',
+            selected:!!options.selected,
+            inspectable:true,
+            actionable:!item.locked && !atLimit,
+            reason:reason,
+            reasonNode:options.node.querySelector('.item-card-interaction-reason'),
+            onBlocked:function() { options.toast(reason); },
+            onActivate:options.onActivate
+        });
+    }
+
+    function ensureReasonNode(node) {
+        var reason = node.querySelector('.workbench-entity-lock-reason');
+        if (!reason) {
+            reason = document.createElement('span');
+            reason.className = 'workbench-entity-lock-reason';
+            reason.hidden = true;
+            node.appendChild(reason);
+        }
+        return reason;
+    }
+
+    function projectNode(workbench, node, projection, reasonNode) {
+        return workbench.EntityTile.projectInteraction(node, {
+            inspectable:projection.inspectable, actionable:projection.actionable,
+            reason:projection.reason, reasonNode:reasonNode
+        });
+    }
+
+    function bindOwnedTooltip(options) {
+        var slot = options.slot;
+        if (!slot || !slot.occupied) return;
+        var viewId = options.viewId;
+        var item = slot.item || {};
+        var payload = viewId === 'bag'
+            ? {source:{containerId:'背包', slot:Number(slot.physicalSlot), expectedLease:String(slot.slotLease)}}
+            : {itemName:String(item.name || '')};
+        options.tooltip.bindAsyncHover(options.node, {
+            cache:options.cache,
+            key:viewId + ':' + String(slot.slotLease || slot.collectionKey),
+            item:item,
+            renderBasic:options.renderBasic,
+            renderRich:options.renderRich,
+            fetch:function(_, callback) { options.request('tooltip', payload, callback); }
+        });
+    }
+
+    function tooltipBasic(item, escapeHtml, workbench) {
+        return '<div class="kshop-tt-header"><b>'
+            + escapeHtml(item.displayName || item.itemName || item.name || '物品')
+            + '</b></div>' + workbench.ItemCard.balanceTooltipMetaHtml(item)
+            + '<div class="kshop-tt-loading">加载中…</div>';
+    }
+
+    function tooltipRich(item, rich, tooltip, workbench) {
+        return tooltip.buildItemRichHtml({
+            iconHtml:tooltip.dynamicIconHtml(item.icon || item.name || item.itemName),
+            iconUrl:tooltip.staticIconUrl(item.icon || item.name || item.itemName),
+            introHTML:rich.introHTML || '', descHTML:rich.descHTML || '',
+            metaHTML:workbench.ItemCard.balanceTooltipMetaHtml(item),
+            rootClass:'npcshop-tooltip',
+            layoutType:tooltip.inferLayoutType(item.majorType || item.use)
+        });
+    }
+
+    function errorMessage(error) {
+        var messages = {
+            shop_not_found:'未找到该 NPC 的商店。', item_not_found:'商品或待售物品已经变化。', locked:'尚未获得所需情报。', insufficient_money:'金币不足。', inventory_full:'背包空间不足。',
+            destination_full:'对应收集项已达持有上限。',
+            stale_state:'物品状态已经变化。', invalid_price:'商品或售卖价格已经变化。', sell_forbidden:'该容器不允许出售。', insufficient_quantity:'物品数量不足。', duplicate_line:'交易清单包含重复物品。',
+            invalid_payload:'交易清单包含无效数据。', invalid_quantity:'购买或出售数量无效。', nothing_to_sell:'没有可批量出售的普通实例。', target_full:'目标容器已满。', slot_locked:'该战备箱槽位尚未解锁。',
+            busy:'商店正在处理另一项交易。', reconcile_required:'交易结果需要重新同步。', malformed_response:'交易回包不完整，需要重新核算。', invalid_response:'交易回包无效，需要重新核算。',
+            timeout:'商店响应超时。', client_timeout:'商店响应超时。', disconnected:'连接已断开。'
+        };
+        return messages[error] || '操作失败，请重试。';
+    }
+
     function spaceStatus(state) {
         state = state || {};
-        return state.refreshRequired ? '同步失败' : state.busyOwner ? '转移中…' : state.ready ? '点击快速转移' : '同步中…';
+        return state.returning ? '重新核对中…' : state.spaceBusy ? '准备整理空间…'
+            : state.refreshRequired ? '同步失败' : state.busyOwner ? '转移中…'
+            : state.ready ? '点击快速转移' : '同步中…';
     }
     function SpaceOrganizerPresenter(options) {
         options = options || {};
@@ -384,6 +491,7 @@
             iconHtml:requirePort(options, 'iconHtml'), toast:requirePort(options, 'toast')
         };
         this._state = {};
+        this._interaction = ownedInteraction(this._state);
         this.root = this._document.createElement('section');
         this.root.className = 'npcshop-space-page';
         this.root.innerHTML = '<header class="npcshop-space-header"><button type="button" data-space-back>← 返回结算</button>'
@@ -392,7 +500,7 @@
             + '<div class="npcshop-space-columns"><section><h3>背包 <small data-space-meta="背包"></small></h3><div class="npcshop-space-grid" data-space-grid="背包"></div></section>'
             + '<section><h3>战备箱 <span data-space-pager></span><small data-space-meta="战备箱"></small></h3><div class="npcshop-space-grid battlebox" data-space-grid="战备箱"></div></section></div>';
         this.secondary = new this._components.SecondaryPage({root:this.root, role:'dialog', ariaLabel:'整理购买空间'});
-        this.secondary.bindClose(this.root.querySelector('[data-space-back]'), this._ports.onBack);
+        this.secondary.bindBack(this.root.querySelector('[data-space-back]'), this._ports.onBack);
         this._grids = {
             '背包':this.root.querySelector('[data-space-grid="背包"]'),
             '战备箱':this.root.querySelector('[data-space-grid="战备箱"]')
@@ -414,7 +522,13 @@
         this.root.querySelector('[data-space-pager]').appendChild(this.pager.root);
         this.pager.attach();
         this.transferPane = new this._components.OwnedInventoryPane({
+            root:this.root,
             keyOf:function(slot) { return slot && slot.physicalSlot; },
+            interaction:this._interaction,
+            onInteractionChange:function(projection) {
+                self._interaction = projection;
+                self._projectInteraction();
+            },
             onQuickTransfer:function(transfer, done) { return self._ports.autoTransfer(transfer.source, transfer.target, done); },
             onQuickTransferResult:function(result) {
                 self._ports.onTransferResult(result);
@@ -429,9 +543,9 @@
     SpaceOrganizerPresenter.prototype.render = function(state) {
         if (!this.isActive()) return false;
         this._state = state || {};
-        this.transferPane.setDisabled(!this._state.ready || !!this._state.busyOwner);
+        this.transferPane.setInteraction(ownedInteraction(this._state));
         this._renderGrid('背包'); this._renderGrid('战备箱');
-        this.pager.setDisabled(!this._state.ready || !!this._state.busyOwner); this.pager.refresh();
+        this.pager.setDisabled(!this._interaction.actionable); this.pager.refresh();
         this.root.querySelector('[data-space-status]').textContent = spaceStatus(this._state);
         return true;
     };
@@ -449,11 +563,22 @@
                 var transferAction = containerId === '背包' ? '移入战备箱' : '移入背包';
                 node.setAttribute('aria-label', (node.getAttribute('aria-label') || '') + '，点击' + transferAction);
                 (function(sourceContainer, sourceSlot, sourceNode) {
+                    var reasonNode = ensureReasonNode(sourceNode);
                     self._workbench.EntityTile.bindActivation(sourceNode, {
                         itemName:String(sourceSlot.item && (sourceSlot.item.displayName || sourceSlot.item.name) || '未知物品'),
-                        label:sourceNode.getAttribute('aria-label') || '', disabled:false,
+                        label:sourceNode.getAttribute('aria-label') || '',
+                        inspectable:function() { return self._interaction.inspectable; },
+                        actionable:function() { return self._interaction.actionable; },
+                        reason:function() { return self._interaction.reason; },
+                        reasonNode:reasonNode,
+                        onBlocked:function() { self._ports.toast(self._interaction.reason); },
                         onActivate:function() { self.transfer(sourceContainer, sourceSlot); }
                     });
+                    sourceNode.__npcSpaceInteractionRefresh = function() {
+                        projectNode(self._workbench, sourceNode, self._interaction, reasonNode);
+                        sourceNode.classList.toggle('write-locked', !self._interaction.actionable);
+                    };
+                    sourceNode.__npcSpaceInteractionRefresh();
                 })(containerId, slot, node);
             } else {
                 this._workbench.EntityTile.applySemantics(node, {
@@ -467,8 +592,14 @@
         else if (containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0) meta.textContent = '未解锁';
         else meta.textContent = slots.filter(function(candidate) { return candidate.occupied; }).length + ' 项';
     };
+    SpaceOrganizerPresenter.prototype._projectInteraction = function() {
+        var nodes = this.root.querySelectorAll('.inventory-slot-card');
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].__npcSpaceInteractionRefresh) nodes[i].__npcSpaceInteractionRefresh();
+        }
+    };
     SpaceOrganizerPresenter.prototype.transfer = function(containerId, slot) {
-        if (!this._state.ready || this._state.busyOwner || !slot || !slot.occupied) return false;
+        if (!this._interaction.actionable || !slot || !slot.occupied) return false;
         var source = {containerId:containerId, slot:Number(slot.physicalSlot),
             expectedLease:String(slot.slotLease), occupied:true, item:slot.item || null};
         var target = containerId === '背包' ? '战备箱' : '背包';
@@ -495,6 +626,14 @@
         HelpPresenter:HelpPresenter,
         SpaceOrganizerPresenter:SpaceOrganizerPresenter,
         settlementViewModel:settlementViewModel,
-        spaceStatus:spaceStatus
+        spaceStatus:spaceStatus,
+        ownedInteraction:ownedInteraction,
+        bindCatalogActivation:bindCatalogActivation,
+        ensureReasonNode:ensureReasonNode,
+        projectNode:projectNode,
+        bindOwnedTooltip:bindOwnedTooltip,
+        tooltipBasic:tooltipBasic,
+        tooltipRich:tooltipRich,
+        errorMessage:errorMessage
     };
 });

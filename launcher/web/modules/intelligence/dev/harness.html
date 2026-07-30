@@ -270,7 +270,10 @@ window.Icons = {
                 value: isNaN(value) ? 0 : value,
                 decryptLevel: isNaN(decryptLevel) ? 0 : decryptLevel,
                 pcName: options.pcName || '测试玩家',
-                debug: debug
+                debug: debug,
+                panelInstanceId: options.panelInstanceId,
+                navigationOrigin: options.navigationOrigin,
+                canReturnCharacterBuild: options.canReturnCharacterBuild
             });
             statusEl.textContent = 'Opened ' + itemName + ' value=' + value + ' decrypt=' + decryptLevel;
         },

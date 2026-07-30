@@ -107,7 +107,10 @@ function staticAudit() {
     if (!panel.includes('new ItemFilter.FilterNavigator') || !panel.includes('skillFilterDefinitions')
         || !panel.includes('filterPathsForView') || !panel.includes('matchesSkillFilter')) throw new Error('direct composable skill facet integration missing');
     if (!panel.includes('function setSearchExpanded') || !panel.includes("event.key !== '/'") || !panel.includes('skills-search-toggle')) throw new Error('on-demand skill search/keyboard entry missing');
-    if (!panel.includes('function openHelp') || !panel.includes("kind:'skills-help'") || !panel.includes('skills-help-btn')) throw new Error('contextual skill help modal missing');
+    if (!panel.includes('new WorkbenchComponents.HelpAction')
+        || !panel.includes('function skillHelpSpec')
+        || !panel.includes("kind:'skills-help'")
+        || !panel.includes('skills-help-btn')) throw new Error('shared contextual skill HelpAction missing');
     if (!panel.includes('cf7.skills.loadoutConfirmationMode') || !panel.includes('manageHelpDetail')
         || !panel.includes('createLoadoutConfirmationToggle') || !panel.includes('skills-confirmation-toggle')
         || panel.includes("id:'confirmation-mode'") || !panel.includes("_loadoutConfirmationMode === 'fast'")
@@ -142,6 +145,7 @@ function staticAudit() {
         'modules/workbench-lifecycle.js',
         'modules/workbench-focus.js',
         'modules/workbench-primitives.js',
+        'modules/workbench-profile.js',
         'modules/workbench.js',
         'modules/workbench-components.js',
         'modules/item-filter.js',
@@ -260,6 +264,76 @@ function serve() {
     });
 }
 
+async function probeSemanticRejectMotion(page) {
+    async function snapshot() {
+        return page.evaluate(() => {
+            let fixture = document.getElementById('skills-g3-motion-fixture');
+            if (!fixture) {
+                fixture = document.createElement('div');
+                fixture.id = 'skills-g3-motion-fixture';
+                fixture.className = 'workbench-shell';
+                fixture.setAttribute('data-profile', 'library-decision');
+                fixture.style.cssText = 'position:fixed;left:0;top:0;width:320px;height:80px;z-index:9999';
+                const probe = document.createElement('div');
+                probe.className = 'skills-library-row workbench-drop-rejected';
+                probe.textContent = '拒绝状态仍可见';
+                const role = document.createElement('span');
+                role.setAttribute('data-reject-role-probe', '');
+                role.style.cssText = 'position:absolute;color:var(--wb-role-reject)';
+                fixture.appendChild(probe);
+                fixture.appendChild(role);
+                document.body.appendChild(fixture);
+            }
+            const probe = fixture.querySelector('.workbench-drop-rejected');
+            const style = getComputedStyle(probe);
+            const rect = probe.getBoundingClientRect();
+            return {
+                animationName:style.animationName,
+                animationDuration:style.animationDuration,
+                animationTimingFunction:style.animationTimingFunction,
+                animationIterationCount:style.animationIterationCount,
+                animationCount:typeof probe.getAnimations === 'function' ? probe.getAnimations().length : 0,
+                outlineStyle:style.outlineStyle,
+                outlineColor:style.outlineColor,
+                roleColor:getComputedStyle(fixture.querySelector('[data-reject-role-probe]')).color,
+                display:style.display,
+                width:rect.width,
+                height:rect.height,
+                text:probe.textContent
+            };
+        });
+    }
+
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    const normal = await snapshot();
+    await page.emulateMedia({reducedMotion:'reduce'});
+    const reduced = await snapshot();
+    await page.evaluate(() => {
+        const fixture = document.getElementById('skills-g3-motion-fixture');
+        if (fixture) fixture.remove();
+    });
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    return {
+        normal,
+        reduced,
+        pass:normal.animationName === 'wb-reject-pulse'
+            && normal.animationDuration === '0.25s'
+            && normal.animationTimingFunction === 'cubic-bezier(0.2, 0.8, 0.25, 1)'
+            && normal.animationIterationCount === '2'
+            && normal.animationCount > 0
+            && normal.outlineStyle !== 'none'
+            && normal.display !== 'none' && normal.width > 0 && normal.height > 0
+            && normal.text === '拒绝状态仍可见'
+            && reduced.animationName === 'none'
+            && reduced.animationDuration === '0s'
+            && reduced.animationCount === 0
+            && reduced.outlineStyle !== 'none'
+            && reduced.outlineColor === reduced.roleColor
+            && reduced.display !== 'none' && reduced.width > 0 && reduced.height > 0
+            && reduced.text === '拒绝状态仍可见'
+    };
+}
+
 async function runViewport(browser, server, viewport) {
     const page = await browser.newPage({viewport});
     const pageErrors = [], failedRequests = [];
@@ -268,12 +342,17 @@ async function runViewport(browser, server, viewport) {
     await page.goto(`http://127.0.0.1:${server.address().port}/modules/skills/dev/harness.html`, {waitUntil:'load'});
     await page.waitForFunction(() => window.__qaDone === true, null, {timeout:20000});
     const state = await page.evaluate(() => ({result:window.__qaResult,error:window.__qaError}));
+    const semanticRejectMotion = state.error ? null : await probeSemanticRejectMotion(page);
     await page.close();
     if (state.error) throw new Error(viewport.label + ': ' + state.error);
     if (pageErrors.length) throw new Error(viewport.label + ' page errors: ' + pageErrors.join(' | '));
     if (failedRequests.length) throw new Error(viewport.label + ' failed requests: ' + failedRequests.join(' | '));
     const bad = state.result && state.result.checks ? state.result.checks.filter(check => !check.ok) : [];
     if (!state.result || state.result.passed !== state.result.total) throw new Error(viewport.label + ' harness failed: ' + JSON.stringify(bad));
+    if (!semanticRejectMotion || !semanticRejectMotion.pass) {
+        throw new Error(viewport.label + ' semantic reject motion failed: ' + JSON.stringify(semanticRejectMotion));
+    }
+    state.result.semanticRejectMotion = semanticRejectMotion;
     return state.result;
 }
 
@@ -295,5 +374,5 @@ async function runViewport(browser, server, viewport) {
         await new Promise(resolve => server.close(resolve));
     }
     const cases = results[0] ? results[0].total : 0;
-    console.log(`Skills harness ${cases}/${cases} passed across ${results.length} viewport(s): ${viewports.map(v => v.label).join(', ')}`);
+    console.log(`Skills harness ${cases}/${cases} passed across ${results.length} viewport(s): ${viewports.map(v => v.label).join(', ')}; G3 reject motion normal/reduced passed`);
 })().catch(error => { console.error(error.stack || error); process.exit(1); });

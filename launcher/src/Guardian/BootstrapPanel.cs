@@ -21,6 +21,7 @@ namespace CF7Launcher.Guardian
         private readonly string _webDir;
         private readonly bool _webView2DisableGpu;
         private readonly string _webView2AdditionalArgs;
+        private readonly bool _webView2DeveloperMode;
         private WebView2 _webView;
         private bool _disposed;
         private bool _webViewSuspended;
@@ -34,15 +35,25 @@ namespace CF7Launcher.Guardian
         public event Action<string> BootstrapInitFailed;
 
         public BootstrapPanel(string webDir)
-            : this(webDir, false, "")
+            : this(webDir, false, "", false)
         {
         }
 
         public BootstrapPanel(string webDir, bool webView2DisableGpu, string webView2AdditionalArgs)
+            : this(webDir, webView2DisableGpu, webView2AdditionalArgs, false)
+        {
+        }
+
+        public BootstrapPanel(
+            string webDir,
+            bool webView2DisableGpu,
+            string webView2AdditionalArgs,
+            bool webView2DeveloperMode)
         {
             _webDir = webDir;
             _webView2DisableGpu = webView2DisableGpu;
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
+            _webView2DeveloperMode = webView2DeveloperMode;
 
             this.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(24, 24, 26);
@@ -90,14 +101,17 @@ namespace CF7Launcher.Guardian
                 PerfTrace.Duration("bootstrap.webview2.ensure_core", ensureStart);
                 StartupDiagnostics.Mark("bootstrap.webview2.ensure_core_ok");
 
+                WebView2BrowserPolicy.Apply(
+                    _webView.CoreWebView2.Settings,
+                    _webView2DeveloperMode,
+                    "BootstrapPanel");
+
                 _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
                     "bootstrap.local", _webDir,
                     CoreWebView2HostResourceAccessKind.Allow);
 
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
                 _webView.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
-                _webView.CoreWebView2.Settings.AreDevToolsEnabled = true;
-                _webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
 
                 StartupDiagnostics.Mark("bootstrap.webview2.navigate_start", "https://bootstrap.local/bootstrap.html");
                 PerfTrace.Mark("bootstrap.webview2.navigate_start");

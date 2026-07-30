@@ -54,6 +54,7 @@
   <script src="/launcher/web/modules/workbench-lifecycle.js"></script>
   <script src="/launcher/web/modules/workbench-focus.js"></script>
   <script src="/launcher/web/modules/workbench-primitives.js"></script>
+  <script src="/launcher/web/modules/workbench-profile.js"></script>
   <script src="/launcher/web/modules/workbench.js"></script>
   <script>
   (function () {
@@ -75,7 +76,7 @@
     function icon(label) { return '<span class="atlas-icon" aria-hidden="true">' + label + '</span>'; }
 
     var shell = new Workbench.DualPaneShell({
-      title:'工作台视觉合同', subtitle:'catalog-decision profile', status:'正在核算',
+      profile:'catalog-decision', title:'工作台视觉合同', subtitle:'catalog-decision profile', status:'正在核算',
       flowLabel:'PREVIEW', leftLabel:'目录', rightLabel:'权威决策'
     });
     var root = shell.getRoot();

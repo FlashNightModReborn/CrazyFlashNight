@@ -114,6 +114,14 @@ foreach ($relativePath in $jukeboxRequiredWebPaths) {
 }
 Assert-Cf7Test (-not $requiredWebPathsMatch.Groups['body'].Value.Contains("'modules\jukebox.js'")) `
     'production required-Web-assets must not resurrect retired modules\jukebox.js'
+Assert-Cf7Test ($validatorSource.Contains("-Name 'workbench-ui-ratchet-regression'")) `
+    'production policy must execute the workbench ratchet regression'
+Assert-Cf7Test ($validatorSource.Contains("-Name 'workbench-ui-release-tree-audit'")) `
+    'production policy must execute the strict workbench current-tree audit'
+Assert-Cf7Test ($validatorSource.Contains("-Name 'inventory-preparation-menu'")) `
+    'production policy must execute the fixed preparation menu regression'
+Assert-Cf7Test ($validatorSource.Contains("'--release-tree', '--text', '--strict-warnings'")) `
+    'production workbench audit must use the history-independent strict release-tree mode'
 
 New-Item -ItemType Directory -Path $fixtureRoot -Force | Out-Null
 try {

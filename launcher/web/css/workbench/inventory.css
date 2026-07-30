@@ -11,8 +11,18 @@
 .inventory-owned-grid {
     min-height:0; overflow:auto; padding:7px;
     display:grid; grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); align-content:start; gap:5px;
-    scrollbar-width:thin; scrollbar-color:rgba(242,160,75,.35) rgba(255,255,255,.03);
+    scrollbar-width:thin; scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+    scrollbar-gutter:stable;
 }
+.inventory-owned-grid::-webkit-scrollbar { width:7px; height:7px; }
+.inventory-owned-grid::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
+.inventory-owned-grid::-webkit-scrollbar-thumb {
+    background:var(--wb-scrollbar-thumb);
+    border:1px solid var(--wb-scrollbar-thumb-border);
+}
+.inventory-owned-grid::-webkit-scrollbar-thumb:hover { background:var(--wb-scrollbar-thumb-hover); }
+.inventory-owned-grid::-webkit-scrollbar-button { display:none; width:0; height:0; }
+.inventory-owned-grid::-webkit-scrollbar-corner { background:var(--wb-scrollbar-track); }
 .inventory-owned-warehouse .inventory-owned-grid { grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); }
 .inventory-slot-card {
     position:relative; min-width:0; height:var(--workbench-owned-card-height); display:flex; align-items:center; gap:5px;
@@ -23,7 +33,7 @@
     border-color:rgba(242,160,75,.72); background:#181610;
 }
 .inventory-slot-card.workbench-drop-active { outline:1px solid #f2a04b; outline-offset:-3px; }
-.inventory-slot-card.write-locked { opacity:.55; cursor:not-allowed; }
+.inventory-slot-card.write-locked { opacity:1; cursor:help; }
 .inventory-workbench-panel[data-quick-transfer-mode="deposit"] .inventory-owned-backpack .inventory-slot-card:not(.empty),
 .inventory-workbench-panel[data-quick-transfer-mode="withdraw"] .inventory-owned-warehouse .inventory-slot-card:not(.empty) {
     cursor:pointer; box-shadow:inset 0 0 0 1px rgba(240,164,58,.55);
@@ -34,10 +44,10 @@
 .inventory-slot-card.quick-transfer-pending::before {
     content:'待'; position:absolute; right:3px; top:3px; z-index:7; min-width:15px; height:15px;
     color:#211507; background:#e7aa4b; border:1px solid #ffdc94; border-radius:2px;
-    font:700 9px/14px "Microsoft YaHei",sans-serif; text-align:center;
+    font:700 10px/14px "Microsoft YaHei",sans-serif; text-align:center;
 }
 .inventory-slot-card.quick-transfer-inflight::before {
-    content:'转'; animation:kshop-pulse .75s ease-in-out infinite;
+    content:'转'; animation:wb-pulse-busy var(--wb-motion-busy) var(--wb-ease-standard) infinite;
 }
 .inventory-slot-card.empty { border-style:dashed; border-color:rgba(255,255,255,.06); background:#0a0d11; color:#46505b; }
 .inventory-slot-index { position:absolute; left:3px; top:2px; color:#59636e; font:9px/1 Consolas,monospace; }
@@ -64,7 +74,7 @@
 }
 .inventory-slot-value.level { color:#f3d648; border-color:rgba(226,189,53,.4); }
 .inventory-slot-copy { min-width:0; flex:1 1 auto; display:flex; flex-direction:column; gap:5px; }
-.inventory-slot-copy b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 10px/1.1 "Microsoft YaHei",sans-serif; }
+.inventory-slot-copy b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 11px/1.1 "Microsoft YaHei",sans-serif; }
 .inventory-owned-backpack .inventory-slot-copy b { padding-right:12px; }
 .inventory-tier-marker {
     position:absolute; left:0; top:0; z-index:2; width:8px; height:8px; box-sizing:border-box;
@@ -88,7 +98,23 @@
     background-image:linear-gradient(145deg,rgba(255,255,255,.035),rgba(0,0,0,.18));
     box-shadow:inset 1px 1px 1px rgba(255,255,255,.055),inset -1px -1px 2px rgba(0,0,0,.92),0 1px 1px rgba(0,0,0,.65);
 }
-.inventory-equip-slot.empty { border-color:#4a555f; background-color:#0a0e12; opacity:.84; }
+.inventory-equip-slot.empty {
+    border-color:var(--dls-crystal-faint);
+    background-color:var(--dls-crystal-soft);
+    box-shadow:
+        inset 0 0 0 1px var(--dls-crystal-soft),
+        inset 0 0 4px var(--dls-glow);
+    opacity:1;
+}
+.inventory-equip-slot.empty::after {
+    content:"";
+    width:5px;
+    height:5px;
+    box-sizing:border-box;
+    border:1px solid var(--dls-crystal-bright);
+    transform:rotate(45deg);
+    opacity:.78;
+}
 .inventory-equip-slot.used {
     border-color:#46525d; background-color:#0b0f13;
     box-shadow:inset 1px 1px 1px rgba(255,255,255,.07),inset -1px -1px 2px rgba(0,0,0,.94),0 1px 1px rgba(0,0,0,.7);
@@ -101,7 +127,13 @@
 .inventory-equip-slot.grade-medium::before { opacity:.24; }
 .inventory-equip-slot.grade-high::before { opacity:.3; }
 .inventory-equip-slot.grade-special::before { opacity:.34; }
-.inventory-equip-slot.unavailable { border-color:#252c33; background-color:#080b0e; background-image:none; box-shadow:inset 0 0 2px #000; opacity:.58; }
+.inventory-equip-slot.unavailable {
+    border-color:var(--wb-semantic-disabled);
+    background-color:transparent;
+    background-image:none;
+    box-shadow:none;
+    opacity:.34;
+}
 .inventory-mod-glyph {
     position:relative; z-index:1; display:block; width:7px; height:7px;
     box-sizing:border-box; background:var(--mod-core-color,#edf3f5);
@@ -158,48 +190,68 @@
     transform:rotate(45deg);
     border:1px solid #39444e; background:#080b0e;
 }
-.inventory-equip-slot-compact.empty { border-color:#252c33; background:#080b0e; opacity:.35; }
+.inventory-equip-slot-compact.empty {
+    border-color:var(--dls-crystal-faint);
+    background:var(--dls-crystal-soft);
+    box-shadow:
+        0 0 2px var(--dls-glow),
+        inset 0 0 1px var(--dls-crystal-soft);
+    opacity:.92;
+}
 .inventory-equip-slot-compact.empty::after { display:none; }
 .inventory-equip-slot-compact.used::after {
     content:""; position:absolute; left:50%; top:50%; width:2px; height:2px; transform:translate(-50%,-50%);
     background:var(--mod-grade-color,#58636e);
     box-shadow:0 0 2px var(--mod-grade-color,#58636e),0 0 5px var(--mod-grade-color,#58636e);
 }
-.inventory-equip-slot-compact.unavailable { border-color:#1a2025; background:transparent; opacity:.25; }
+.inventory-equip-slot-compact.unavailable {
+    border-color:var(--wb-semantic-disabled);
+    background:transparent;
+    opacity:.18;
+}
 .inventory-discard-btn {
     position:absolute; right:2px; top:2px; width:17px; height:17px; padding:0; border:1px solid rgba(220,95,77,.3);
     background:#1b1110; color:#bd6d60; font:12px/14px sans-serif; cursor:pointer;
 }
 .inventory-discard-btn:hover { color:#ff8e78; border-color:#d96854; }
 
-/* ── Map chest loot transfer-pair ──
-   Domain-specific geometry stays in the existing inventory fragment so the locked
-   workbench bundle order remains unchanged and every state still uses shared tokens. */
+/* ── Map chest loot transfer-pair skin; macro tracks live in profiles.css. ── */
 #panel-container[data-panel="loot"] #panel-content { inset:0; }
 #panel-container[data-panel="loot"] #panel-backdrop { background:#080b0d; }
 .loot-scale-shell { overflow:hidden; }
 .loot-workbench {
     --wb-accent:#d9a441;
     --wb-accent-soft:rgba(217,164,65,.14);
-    grid-template-rows:var(--wb-header-height) minmax(0,1fr) 54px;
     background:
         radial-gradient(circle at 82% 42%,rgba(188,140,50,.08),transparent 34%),
         linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
         linear-gradient(180deg,rgba(255,255,255,.012) 1px,transparent 1px),var(--wb-bg);
     background-size:auto,32px 32px,32px 32px,auto;
 }
-.loot-workbench .workbench-body { grid-template-columns:minmax(0,1.25fr) 34px minmax(430px,1fr); }
 .loot-workbench .workbench-flow-arrow { transform:rotate(180deg); }
 .loot-workbench .workbench-flow-rail[data-state="accept"] .workbench-flow-arrow,
 .loot-workbench .workbench-flow-rail[data-state="pending"] .workbench-flow-arrow {
     transform:rotate(180deg) translateY(-1px);
 }
 .loot-workbench .workbench-view { height:100%; min-height:0; }
-.loot-backpack-grid,.loot-source-grid { overflow:auto; align-content:start; scrollbar-width:thin; }
+.loot-backpack-grid,.loot-source-grid {
+    overflow:auto; align-content:start; scrollbar-width:thin;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+    scrollbar-gutter:stable;
+}
+.loot-backpack-grid::-webkit-scrollbar,.loot-source-grid::-webkit-scrollbar { width:7px; height:7px; }
+.loot-backpack-grid::-webkit-scrollbar-track,.loot-source-grid::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
+.loot-backpack-grid::-webkit-scrollbar-thumb,.loot-source-grid::-webkit-scrollbar-thumb {
+    background:var(--wb-scrollbar-thumb);
+    border:1px solid var(--wb-scrollbar-thumb-border);
+}
+.loot-backpack-grid::-webkit-scrollbar-thumb:hover,.loot-source-grid::-webkit-scrollbar-thumb:hover { background:var(--wb-scrollbar-thumb-hover); }
+.loot-backpack-grid::-webkit-scrollbar-button,.loot-source-grid::-webkit-scrollbar-button { display:none; width:0; height:0; }
+.loot-backpack-grid::-webkit-scrollbar-corner,.loot-source-grid::-webkit-scrollbar-corner { background:var(--wb-scrollbar-track); }
 .loot-backpack-grid { grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); }
 .loot-source-grid {
     grid-template-columns:repeat(var(--loot-columns,4),minmax(44px,1fr));
-    gap:7px; padding:10px;
+    gap:7px; padding:10px 7px 10px 10px;
 }
 .loot-source-slot {
     min-width:0; height:72px; border-color:rgba(217,164,65,.24);
@@ -214,10 +266,7 @@
 .loot-source-slot[data-target-domain="special"]::after {
     content:'入账'; color:#9fd5cf; border-color:rgba(93,183,170,.34);
 }
-.loot-source-slot[aria-disabled="true"],.loot-backpack-slot[aria-disabled="true"] { opacity:.54; cursor:not-allowed; }
-.loot-source-slot:focus-visible,.loot-backpack-slot:focus-visible,
-.loot-reconcile-btn:focus-visible,.loot-abandon-btn:focus-visible,.loot-close-btn:focus-visible,
-.loot-commit-bar .workbench-commit-primary:focus-visible { outline:2px solid var(--wb-focus); outline-offset:1px; }
+.loot-source-slot[aria-disabled="true"],.loot-backpack-slot[aria-disabled="true"] { opacity:1; cursor:help; }
 .loot-reconcile-btn { margin-right:5px; color:#f1c977; border-color:rgba(217,164,65,.52); }
 .loot-abandon-btn {
     margin-right:5px; color:#e59a8e; border-color:rgba(196,79,63,.58);
@@ -230,18 +279,32 @@
 .loot-commit-bar .workbench-commit-status { padding-left:4px; font-size:11px; }
 .loot-commit-bar .workbench-commit-primary { min-width:144px; min-height:40px; }
 .loot-drag-ghost .inventory-owned-icon { width:32px; height:32px; object-fit:contain; }
-@media (prefers-reduced-motion:reduce) {
-    .loot-workbench .workbench-flow-arrow,.loot-source-slot,.loot-commit-bar * {
-        animation:none!important; transition:none!important;
-    }
-}
 .inventory-workbench-panel .inventory-discard-btn {
-    opacity:0; pointer-events:none; transition:opacity 90ms;
+    opacity:0; pointer-events:none; transition:opacity var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .inventory-workbench-panel .inventory-slot-card.workbench-source-selected .inventory-discard-btn,
 .inventory-workbench-panel .inventory-slot-card:focus-within .inventory-discard-btn,
 .inventory-workbench-panel .inventory-discard-btn:focus-visible {
     opacity:1; pointer-events:auto;
+}
+.workbench-entity-lock-reason {
+    position:absolute; z-index:10; right:2px; bottom:2px; left:2px;
+    padding:2px 3px; border:1px solid var(--wb-role-pending);
+    color:var(--wb-text); background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
+    font:600 10px/1.25 "Microsoft YaHei",sans-serif; text-align:center;
+    pointer-events:none; opacity:0;
+    transition:opacity var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.inventory-slot-card[aria-disabled="true"]:hover > .workbench-entity-lock-reason:not(.workbench-entity-action-lock-reason),
+.inventory-slot-card[aria-disabled="true"]:focus-within > .workbench-entity-lock-reason:not(.workbench-entity-action-lock-reason) {
+    opacity:1;
+}
+.inventory-discard-btn[aria-disabled="true"]:hover + .workbench-entity-lock-reason,
+.inventory-discard-btn[aria-disabled="true"]:focus-visible + .workbench-entity-lock-reason {
+    opacity:1;
+}
+.inventory-discard-btn[aria-disabled="true"] {
+    color:var(--wb-role-disabled); border-color:var(--wb-role-disabled); cursor:help;
 }
 .inventory-drag-ghost { min-width:150px; }
 
@@ -256,24 +319,7 @@
     white-space:nowrap;
 }
 .inventory-workbench-mode-actions > * { flex:0 0 auto; }
-.inventory-workbench-panel[data-workbench-view="storage"] .workbench-body {
-    grid-template-rows:minmax(0,1fr) auto;
-}
-.inventory-workbench-panel[data-workbench-view="storage"] .workbench-body > .workbench-slot[data-slot="L"] {
-    grid-column:1;
-    grid-row:1;
-}
-.inventory-workbench-panel[data-workbench-view="storage"] .workbench-body > .workbench-flow-rail {
-    grid-column:2;
-    grid-row:1;
-}
-.inventory-workbench-panel[data-workbench-view="storage"] .workbench-body > .workbench-slot[data-slot="R"] {
-    grid-column:3;
-    grid-row:1;
-}
 .inventory-quick-transfer-bar {
-    grid-column:1 / -1;
-    grid-row:2;
     display:grid;
     grid-template-columns:minmax(220px,1fr) auto auto;
     align-items:center;
@@ -344,7 +390,9 @@
 }
 .inventory-warehouse-toolbar.inventory-no-pager {
     grid-template-columns:minmax(0,1.5fr) minmax(112px,.7fr) auto;
-    grid-template-areas:"filter authority commit";
+    grid-template-areas:
+        "filter filter filter"
+        "authority authority commit";
 }
 .inventory-sort-controls { display:contents; }
 .inventory-owned-warehouse .workbench-view-chrome { position:relative; z-index:3; }
@@ -357,7 +405,7 @@
     border-radius:0;
     background:#0d1115;
     color:#aab2bb;
-    font:9px/1 Consolas,"Microsoft YaHei",sans-serif;
+    font:11px/1 "Microsoft YaHei",Consolas,sans-serif;
 }
 .inventory-toolbar-btn { min-width:23px; padding:0 6px; cursor:pointer; }
 .inventory-toolbar-btn:hover:not(:disabled) { color:#17191c; border-color:#ffc06d; background:var(--wb-accent); }
@@ -365,7 +413,7 @@
 .inventory-toolbar-field select:disabled { opacity:.34; cursor:not-allowed; }
 .inventory-page-label {
     min-width:56px; padding:0 5px; color:#aeb7c1;
-    font:9px/1 Consolas,"Microsoft YaHei",monospace; text-align:center; white-space:nowrap;
+    font:11px/1 "Microsoft YaHei",Consolas,sans-serif; text-align:center; white-space:nowrap;
 }
 .inventory-page-label::after { content:"▾"; margin-left:4px; color:#d69a48; font-size:9px; }
 .inventory-page-label[aria-expanded="true"] { color:#17191c; border-color:#ffc06d; background:var(--wb-accent); }
@@ -390,8 +438,12 @@
     border:1px solid #29333d; border-radius:0; background:#10161c; color:#8794a0;
     font:9px/1 Consolas,monospace; cursor:pointer;
 }
-.inventory-page-option:hover,
-.inventory-page-option:focus-visible { z-index:1; outline:none; border-color:#d69a48; color:#ffe0ad; background:#21180f; }
+.inventory-page-option:hover {
+    z-index:1;
+    color:var(--wb-text);
+    border-color:var(--wb-accent);
+    background:var(--wb-surface-2);
+}
 .inventory-page-option.current {
     border-color:#ffc06d; background:#d99437; color:#17191c; font-weight:700;
     box-shadow:0 0 6px rgba(240,164,58,.3);
@@ -415,7 +467,10 @@
 }
 .inventory-filter-control.tree .item-filter-option small { margin-left:4px; color:#65717c; font:9px/1 Consolas,monospace; }
 .inventory-filter-control.tree .item-filter-option:hover,
-.inventory-filter-control.tree .item-filter-option:focus-visible { color:#f3d3a4; border-color:#9b7040; outline:none; }
+.inventory-filter-control.tree .item-filter-option:focus-visible {
+    color:var(--wb-text);
+    border-color:var(--wb-accent);
+}
 .inventory-filter-control.tree .item-filter-option.active { color:#17191c; border-color:#ffc06d; background:var(--wb-accent); }
 .inventory-filter-control.tree .item-filter-option.active small { color:#5a3b17; }
 .inventory-toolbar-field select { min-width:0; width:100%; padding:0 3px; }

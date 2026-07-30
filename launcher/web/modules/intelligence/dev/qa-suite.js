@@ -23,6 +23,104 @@ var IntelligenceHarnessQA = (function() {
                     return waitReady(api).then(function() { return 'lifecycle ok'; });
                 });
             }],
+            ['character-build-return', 'only Character Build origin exposes an exact return to equipment', function() {
+                host.open({ itemName: '资料', mode: 'prod', source: 'runtime' });
+                return waitReady(api).then(function(state) {
+                    api.assert(!state.canReturnCharacterBuild, 'ordinary runtime open has no return capability');
+                    api.assert(document.querySelector('.intel-return-character-btn').hidden,
+                        'ordinary runtime open hides return action');
+                    host.open({
+                        itemName: '资料',
+                        mode: 'prod',
+                        source: 'runtime',
+                        panelInstanceId: 'intelligence.return.1',
+                        navigationOrigin: 'character_build',
+                        canReturnCharacterBuild: true
+                    });
+                    return waitReady(api).then(function(returnState) {
+                        var button = document.querySelector('.intel-return-character-btn');
+                        api.assert(returnState.canReturnCharacterBuild, 'trusted origin enables return presentation');
+                        api.assert(!button.hidden, 'return action is visible');
+                        assertHit(api, button, 'return equipment button');
+                        var tooltipItem = findCatalogButton('资料');
+                        api.assert(!!tooltipItem, 'tooltip probe item exists');
+                        var tooltipStart = host.sentMessages.length;
+                        tooltipItem.dispatchEvent(new MouseEvent('mouseenter', {
+                            bubbles: true,
+                            clientX: 240,
+                            clientY: 200
+                        }));
+                        var tooltipPending = host.sentMessages.slice(tooltipStart).some(function(item) {
+                            return item && item.cmd === 'tooltip';
+                        });
+                        api.assert(tooltipPending, 'tooltip request is in flight');
+                        api.assert(!IntelligencePanel._debugGetState().returnBlockedByRead,
+                            'in-flight tooltip does not block return navigation');
+                        api.assert(!button.disabled,
+                            'return remains enabled while tooltip is pending');
+                        tooltipItem.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+
+                        document.querySelector('.intel-catalog-tab[data-tab="glossary"]').click();
+                        return api.waitFor(function() {
+                            return document.querySelector('.intel-glossary-item');
+                        }, 1000, 'return glossary catalog').then(function(glossaryItem) {
+                            glossaryItem.click();
+                            var glossaryBlockedStart = host.sentMessages.length;
+                            api.assert(IntelligencePanel._debugGetState().returnBlockedByRead,
+                                'in-flight glossary snapshot exposes the return barrier');
+                            button.click();
+                            var glossaryBlockedMessages = host.sentMessages.slice(glossaryBlockedStart)
+                                .filter(function(item) {
+                                    return item && item.cmd === 'close'
+                                        && item.reason === 'navigate_character_build';
+                                });
+                            api.assertEqual(glossaryBlockedMessages.length, 0,
+                                'in-flight glossary snapshot blocks return navigation');
+                            return api.waitFor(function() {
+                                return !IntelligencePanel._debugGetState().returnBlockedByRead;
+                            }, 2000, 'glossary return read barrier');
+                        }).then(function() {
+                            api.assert(!button.disabled,
+                                'return remains available after glossary snapshot settles');
+                            IntelligencePanel._debugRequestSnapshot();
+                            var blockedStart = host.sentMessages.length;
+                            button.click();
+                            var blockedMessages = host.sentMessages.slice(blockedStart)
+                                .filter(function(item) {
+                                    return item && item.cmd === 'close'
+                                        && item.reason === 'navigate_character_build';
+                                });
+                            api.assertEqual(blockedMessages.length, 0,
+                                'in-flight authoritative snapshot blocks return navigation');
+                            api.assert(IntelligencePanel._debugGetState().returnBlockedByRead,
+                                'debug state exposes the snapshot read barrier');
+                            return api.waitFor(function() {
+                                return !IntelligencePanel._debugGetState().returnBlockedByRead;
+                            }, 2000, 'snapshot return read barrier');
+                        }).then(function() {
+                            var start = host.sentMessages.length;
+                            button.click();
+                            var message = host.sentMessages.slice(start).filter(function(item) {
+                                return item && item.cmd === 'close'
+                                    && item.reason === 'navigate_character_build';
+                            })[0];
+                            api.assert(!!message, 'navigation close was sent');
+                            api.assertEqual(Object.keys(message).sort().join(','),
+                                'cmd,panel,panelInstanceId,reason,type', 'exact return envelope');
+                            api.assertEqual(message.panel, 'intelligence', 'exact return panel');
+                            api.assertEqual(message.panelInstanceId, 'intelligence.return.1',
+                                'exact return instance');
+                            api.assertEqual(Panels.getActive(), 'intelligence',
+                                'Web waits for Host visual retirement');
+                            api.assert(button.disabled, 'return action is single-flight');
+                            host.open({ itemName: '资料', mode: 'prod', source: 'runtime' });
+                            return waitReady(api).then(function() {
+                                return 'Character Build return ok';
+                            });
+                        });
+                    });
+                });
+            }],
             ['default-fixture', 'default fixture renders progress, icon and 18 pages', function() {
                 host.open({ itemName: '资料', value: 99, decryptLevel: 10 });
                 return waitReady(api).then(function(state) {

@@ -554,10 +554,10 @@ namespace CF7Launcher.Tests.Guardian
                 "case \"close\":",
                 "case \"bulkQuery\":");
             int exactReason = close.IndexOf(
-                "\"navigate_skills\"",
+                ".TryParseCharacterBuildPreparationCloseReason(",
                 StringComparison.Ordinal);
             int arm = close.IndexOf(
-                ".TryArmCharacterBuildSkillsNavigation(",
+                ".TryArmCharacterBuildPreparationNavigation(",
                 exactReason,
                 StringComparison.Ordinal);
             int closeBarrier = close.IndexOf(
@@ -573,20 +573,24 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(closeBarrier > arm);
             Assert.True(visualRetire > closeBarrier);
             Assert.Contains(
-                ".CancelCharacterBuildSkillsNavigation(",
+                ".CancelCharacterBuildPreparationNavigation(",
                 close);
             Assert.Contains(
-                "dismissReturnStack || navigateSkills",
+                "dismissReturnStack || navigatePreparation",
                 close);
             Assert.Contains(
                 "bool navigationArmed =",
                 close);
             Assert.Contains(
-                "navigateSkills = false;",
+                "RestoreCharacterBuildAfterPreparationArmFailure(",
                 close);
-            Assert.Contains(
+            string preparationArmFailure = Slice(
+                close,
+                "if (!navigationArmed)",
+                "if (tuningBound");
+            Assert.DoesNotContain(
                 "continuing ordinary close",
-                close);
+                preparationArmFailure);
 
             string program = File.ReadAllText(
                 FindRepositoryFile(
@@ -596,7 +600,7 @@ namespace CF7Launcher.Tests.Guardian
                 "characterBuildTask.SetCoordinatorSettled(delegate",
                 "MapTask mapTask");
             int complete = settled.IndexOf(
-                ".TryCompleteCharacterBuildSkillsNavigation()",
+                ".TryCompleteCharacterBuildPreparationNavigation()",
                 StringComparison.Ordinal);
             int deferredOpen = settled.IndexOf(
                 "panelHost.FlushDeferredBarrierOpen();",
@@ -604,7 +608,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(complete >= 0);
             Assert.True(deferredOpen > complete);
             Assert.Contains(
-                "if (!skillsNavigationConsumed)",
+                "if (!preparationNavigationConsumed)",
                 settled);
 
             string router = File.ReadAllText(
@@ -613,8 +617,8 @@ namespace CF7Launcher.Tests.Guardian
                     "LauncherCommandRouter.cs"));
             string completion = Slice(
                 router,
-                "internal bool TryCompleteCharacterBuildSkillsNavigation()",
-                "private void ClearCharacterBuildSkillsNavigationLocked()");
+                "internal bool TryCompleteCharacterBuildPreparationNavigation()",
+                "internal bool TryCompleteCharacterBuildSkillsNavigation()");
             int bindingFence = completion.IndexOf(
                 "task.HasBoundPanel",
                 StringComparison.Ordinal);
@@ -634,6 +638,12 @@ namespace CF7Launcher.Tests.Guardian
             Assert.DoesNotContain(
                 "OpenPanel(\"skills\"",
                 completion);
+            Assert.Contains(
+                "ClearCharacterBuildPreparationNavigationLocked();",
+                completion);
+            Assert.Contains(
+                "TryBeginSkillOpenWait(",
+                completion);
 
             string navigation = Slice(
                 overlay,
@@ -642,6 +652,209 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains(
                 ".CancelAllPanelNavigationIntents(",
                 navigation);
+        }
+
+        [Theory]
+        [InlineData("navigate_skills")]
+        [InlineData("navigate_materials")]
+        [InlineData("navigate_intelligence")]
+        public void CharacterBuildPreparationCloseReasonsAreExactAndClosed(
+            string reason)
+        {
+            JObject envelope =
+                JObject.Parse(
+                    "{\"type\":\"panel\",\"panel\":\"workbench\","
+                    + "\"cmd\":\"close\",\"panelInstanceId\":\"workbench.exact\","
+                    + "\"reason\":\"placeholder\"}");
+            envelope["reason"] = reason;
+            Assert.True(
+                WebOverlayForm.IsValidWorkbenchCloseEnvelope(
+                    envelope,
+                    "workbench",
+                    "workbench.exact"));
+
+            envelope["reason"] = reason + "_other";
+            Assert.False(
+                WebOverlayForm.IsValidWorkbenchCloseEnvelope(
+                    envelope,
+                    "workbench",
+                    "workbench.exact"));
+            envelope["reason"] = reason;
+            envelope["target"] = "skills";
+            Assert.False(
+                WebOverlayForm.IsValidWorkbenchCloseEnvelope(
+                    envelope,
+                    "workbench",
+                    "workbench.exact"));
+        }
+
+        [Theory]
+        [InlineData("crafting")]
+        [InlineData("intelligence")]
+        public void PreparationChildReturnCloseRequiresExactFiveKeyInstanceAndReason(
+            string panel)
+        {
+            JObject envelope =
+                JObject.Parse(
+                    "{\"type\":\"panel\",\"panel\":\"placeholder\","
+                    + "\"cmd\":\"close\",\"panelInstanceId\":\"child.exact\","
+                    + "\"reason\":\"navigate_character_build\"}");
+            envelope["panel"] =
+                panel;
+            Assert.True(
+                WebOverlayForm
+                    .IsValidPreparationChildReturnCloseEnvelope(
+                        envelope,
+                        panel,
+                        "child.exact"));
+
+            Assert.False(
+                WebOverlayForm
+                    .IsValidPreparationChildReturnCloseEnvelope(
+                        envelope,
+                        panel,
+                        "child.replacement"));
+            Assert.False(
+                WebOverlayForm
+                    .IsValidPreparationChildReturnCloseEnvelope(
+                        envelope,
+                        panel == "crafting"
+                            ? "intelligence"
+                            : "crafting",
+                        "child.exact"));
+            envelope["reason"] =
+                "navigate_character_build_other";
+            Assert.False(
+                WebOverlayForm
+                    .IsValidPreparationChildReturnCloseEnvelope(
+                        envelope,
+                        panel,
+                        "child.exact"));
+            envelope["reason"] =
+                "navigate_character_build";
+            envelope.Remove(
+                "panelInstanceId");
+            Assert.False(
+                WebOverlayForm
+                    .IsValidPreparationChildReturnCloseEnvelope(
+                        envelope,
+                        panel,
+                        "child.exact"));
+            envelope["panelInstanceId"] =
+                "child.exact";
+            envelope["extra"] =
+                true;
+            Assert.False(
+                WebOverlayForm
+                    .IsValidPreparationChildReturnCloseEnvelope(
+                        envelope,
+                        panel,
+                        "child.exact"));
+        }
+
+        [Theory]
+        [InlineData("crafting")]
+        [InlineData("intelligence")]
+        public void PreparationChildOrdinaryCloseCannotMasqueradeAsReturn(
+            string panel)
+        {
+            JObject ordinary =
+                JObject.Parse(
+                    "{\"type\":\"panel\",\"panel\":\"placeholder\","
+                    + "\"cmd\":\"close\"}");
+            ordinary["panel"] =
+                panel;
+            Assert.False(
+                WebOverlayForm
+                    .IsValidPreparationChildReturnCloseEnvelope(
+                        ordinary,
+                        panel,
+                        "child.exact"));
+        }
+
+        [Theory]
+        [InlineData(false, "skills")]
+        [InlineData(true, "preparation-menu")]
+        public void PreparationArmFailureRecoveryReopensOnlyTheSameBuildInstance(
+            bool preparationNavigationV1,
+            string expectedReturnFocusAction)
+        {
+            string payload =
+                WebOverlayForm
+                    .BuildCharacterBuildPreparationRecoveryPayload(
+                        "panel.workbench.exact",
+                        preparationNavigationV1);
+            JObject parsed =
+                JObject.Parse(payload);
+            Assert.Equal(
+                "open",
+                parsed.Value<string>("cmd"));
+            Assert.Equal(
+                "workbench",
+                parsed.Value<string>("panel"));
+            Assert.Equal(
+                "panel.workbench.exact",
+                parsed.Value<string>("panelInstanceId"));
+            JObject initData =
+                (JObject)parsed["initData"];
+            Assert.Equal(
+                "panel.workbench.exact",
+                initData.Value<string>("panelInstanceId"));
+            Assert.Equal(
+                "battlebox",
+                initData.Value<string>("profile"));
+            Assert.Equal(
+                "build",
+                initData.Value<string>("view"));
+            Assert.Equal(
+                expectedReturnFocusAction,
+                initData.Value<string>("returnFocusAction"));
+            Assert.Equal(
+                preparationNavigationV1
+                    ? true
+                    : (bool?)null,
+                initData.Value<bool?>(
+                    "preparationNavigationV1"));
+            Assert.Null(
+                WebOverlayForm
+                    .BuildCharacterBuildPreparationRecoveryPayload(
+                        null));
+        }
+
+        [Fact]
+        public void DisabledPreparationTargetsReturnBeforeAnyCloseOrOpenMutation()
+        {
+            string overlay =
+                File.ReadAllText(
+                    FindWebOverlaySource());
+            string close =
+                Slice(
+                    overlay,
+                    "case \"close\":",
+                    "case \"bulkQuery\":");
+            string disabledGate =
+                Slice(
+                    close,
+                    "if (navigatePreparation",
+                    "bool tuningBound =");
+            Assert.Contains(
+                ".IsCharacterBuildPreparationTargetEnabled(",
+                disabledGate);
+            Assert.Contains(
+                "reason=target_disabled",
+                disabledGate);
+            Assert.Contains(
+                "return;",
+                disabledGate);
+            Assert.DoesNotContain(
+                "BeginNormalCloseBarrier",
+                disabledGate);
+            Assert.DoesNotContain(
+                "TryClosePanel",
+                disabledGate);
+            Assert.DoesNotContain(
+                "BuildCharacterBuildPreparationRecoveryPayload",
+                disabledGate);
         }
 
         [Fact]
@@ -721,6 +934,77 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains(
                 "PendingSkillsCharacterBuildNavigationInstance",
                 skillSettled);
+        }
+
+        [Fact]
+        public void PreparationChildReturnRetiresExactVisualBeforeNativeBuildPreflight()
+        {
+            string overlay =
+                File.ReadAllText(
+                    FindWebOverlaySource());
+            string close =
+                Slice(
+                    overlay,
+                    "case \"close\":",
+                    "case \"bulkQuery\":");
+            int exactEnvelope =
+                close.IndexOf(
+                    "IsValidPreparationChildReturnCloseEnvelope(",
+                    StringComparison.Ordinal);
+            int arm =
+                close.IndexOf(
+                    ".TryArmPreparationChildCharacterBuildNavigation(",
+                    exactEnvelope,
+                    StringComparison.Ordinal);
+            int retire =
+                close.IndexOf(
+                    ".TryRetirePanelVisualExact(",
+                    close.IndexOf(
+                        "else if (navigatePreparationChild)",
+                        arm,
+                        StringComparison.Ordinal),
+                    StringComparison.Ordinal);
+            int complete =
+                close.IndexOf(
+                    ".TryCompletePreparationChildCharacterBuildNavigation(",
+                    retire,
+                    StringComparison.Ordinal);
+            Assert.True(
+                exactEnvelope >= 0);
+            Assert.True(
+                arm > exactEnvelope);
+            Assert.True(
+                retire > arm);
+            Assert.True(
+                complete > retire);
+            Assert.Contains(
+                "exactPreparationChildPanel",
+                close);
+            Assert.Contains(
+                "exactPreparationChildInstance",
+                close);
+
+            string router =
+                File.ReadAllText(
+                    FindRepositoryFile(
+                        "launcher",
+                        "src",
+                        "Guardian",
+                        "LauncherCommandRouter.cs"));
+            string completion =
+                Slice(
+                    router,
+                    "internal bool TryCompletePreparationChildCharacterBuildNavigation(",
+                    "OnPreparationChildCharacterBuildNavigationTimeout(");
+            Assert.Contains(
+                "TryBeginNativeEquipmentBuildOpenWait(",
+                completion);
+            Assert.Contains(
+                "TrySendNativeEquipmentBuildPreflightIfCurrent(",
+                completion);
+            Assert.DoesNotContain(
+                "OpenPanel(",
+                completion);
         }
 
         [Fact]

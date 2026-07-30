@@ -151,6 +151,7 @@ function respond(message){var result={type:'panel_resp',domain:'crafting',cmd:me
 <script src="../../workbench-lifecycle.js"></script>
 <script src="../../workbench-focus.js"></script>
 <script src="../../workbench-primitives.js"></script>
+<script src="../../workbench-profile.js"></script>
 <script src="../../workbench.js"></script>
 <script src="../../workbench-components.js"></script>
 <script src="../../item-filter.js"></script>
@@ -161,11 +162,12 @@ function respond(message){var result={type:'panel_resp',domain:'crafting',cmd:me
 <script src="../../equipment-inspector.js"></script>
 <script src="../../crafting-inspector.js"></script>
 <script src="../../crafting-materials.js"></script>
+<script src="../../crafting-detail-presenter.js"></script>
 <script src="../../crafting-runtime.js"></script>
 <script src="../../crafting.js"></script>
 <script>
 (async function(){var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(){return new Promise(function(r){setTimeout(r,35)})}async function waitFor(test,timeout){var deadline=Date.now()+(timeout||1000);while(Date.now()<deadline){if(test())return true;await wait()}return false}
-function quantityButton(label){return document.querySelector('.crafting-quantity-btn[aria-label="'+label+'"]')}
+ function quantityButton(label){return document.querySelector('.crafting-quantity-inputs button[aria-label^="'+label+'"]')}
 var harnessVisualMode=new URLSearchParams(location.search).get('visual');
 if(harnessVisualMode==='materials'||harnessVisualMode==='materials-full'||harnessVisualMode==='materials-help'){
   Panels.open('crafting',{view:'materials',source:'visual-harness'});
@@ -180,26 +182,50 @@ if(harnessVisualMode==='materials'||harnessVisualMode==='materials-full'||harnes
   window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
 }
 async function exercisePreviewReadFailure(name,fault,waitForLateResponse){
-  var before=CraftingPanel.debugState().craftCount;__queueCraftingFault(fault);quantityButton('增加一份').click();
-  await waitFor(function(){return !CraftingPanel.debugState().previewBusy},1400);
-  var restored=CraftingPanel.debugState(),restoredPlus=quantityButton('增加一份');
-  ok(name+' restores authoritative preview without reconcile',restored.craftCount===before&&restored.previewCheckpoint&&restored.previewCheckpoint.craftCount===before&&!restored.needsReconcile&&!restored.needsRefresh&&restoredPlus&&!restoredPlus.disabled,
+  var before=CraftingPanel.debugState().craftCount,quantityIdentity=document.querySelector('.crafting-quantity-inputs');
+  var commitIdentity=document.querySelector('.crafting-commit-bar'),scrollerIdentity=document.querySelector('.crafting-detail-body');
+  var previewsBefore=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  __queueCraftingFault(fault);quantityButton('增加 1').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy
+    &&state.previewCheckpoint&&state.previewCheckpoint.craftCount===before+1},1400);
+  var restored=CraftingPanel.debugState(),restoredPlus=quantityButton('增加 1');
+  ok(name+' automatically rechecks the restored draft without write reconcile',
+    restored.craftCount===before+1&&restored.previewCheckpoint.craftCount===before+1
+      &&__sent.filter(function(x){return x.cmd==='preview'}).length>=previewsBefore+2
+      &&!restored.needsReconcile&&!restored.needsRefresh&&restoredPlus&&!restoredPlus.disabled,
     JSON.stringify(restored));
-  restoredPlus.click();await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&state.craftCount===before+1},1200);
+  restoredPlus.click();await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&state.craftCount===before+2},1200);
+  var settled=CraftingPanel.debugState(),settledCheckpoint=JSON.stringify(settled.previewCheckpoint);
+  var settledToasts=__toasts.length;restoredPlus.focus();var settledFocus=document.activeElement;
+  scrollerIdentity.scrollTop=Math.min(scrollerIdentity.scrollHeight,Math.max(0,scrollerIdentity.scrollTop));
+  var settledScroll=scrollerIdentity.scrollTop;
   if(waitForLateResponse)await new Promise(function(resolve){setTimeout(resolve,Number(fault.delayMs)||0)});
   var recovered=CraftingPanel.debugState();
-  ok(name+' keeps quantity adjustable after recovery',recovered.craftCount===before+1&&!recovered.needsReconcile&&!recovered.needsRefresh&&document.querySelector('.crafting-output-card'),JSON.stringify(recovered));
+  ok(name+' keeps quantity adjustable after recovery',recovered.craftCount===before+2&&!recovered.needsReconcile&&!recovered.needsRefresh&&document.querySelector('.crafting-output-card'),JSON.stringify(recovered));
+  if(waitForLateResponse)ok(name+' late reply cannot mutate latest UI or checkpoint',
+    JSON.stringify(recovered.previewCheckpoint)===settledCheckpoint
+      &&__toasts.length===settledToasts&&document.activeElement===settledFocus
+      &&document.querySelector('.crafting-quantity-inputs')===quantityIdentity
+      &&document.querySelector('.crafting-commit-bar')===commitIdentity
+      &&document.querySelector('.crafting-detail-body')===scrollerIdentity
+      &&scrollerIdentity.scrollTop===settledScroll,
+    JSON.stringify({checkpoint:recovered.previewCheckpoint,toasts:[settledToasts,__toasts.length],scroll:[settledScroll,scrollerIdentity.scrollTop]}));
 }
 async function exerciseAuthorityRefresh(name,error){
   var before=CraftingPanel.debugState().craftCount,snapshots=__sent.filter(function(x){return x.cmd==='snapshot'}).length;
-  __queueCraftingFault({cmd:'preview',mode:'error',error:error});quantityButton('增加一份').click();
+  __queueCraftingFault({cmd:'preview',mode:'error',error:error});quantityButton('增加 1').click();
   await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&!state.needsRefresh&&state.craftCount===before+1&&document.querySelector('.crafting-output-card')},1400);
   var state=CraftingPanel.debugState();
   ok(name+' refreshes authoritative snapshot',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshots+1&&!state.needsReconcile&&!state.needsRefresh&&state.previewCheckpoint&&state.previewCheckpoint.craftCount===before+1,JSON.stringify(state));
 }
 try{
   Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelector('.crafting-output-card')});
-  ok('mounts dual panes',document.querySelector('[data-instance-key="crafting:catalog"]')&&document.querySelector('[data-instance-key="crafting:detail"]'));
+  var recipeProfileShell=document.querySelector('.crafting-panel');
+  ok('mounts catalog-decision dual panes without horizontal shell overflow',
+    recipeProfileShell&&recipeProfileShell.getAttribute('data-profile')==='catalog-decision'
+      &&recipeProfileShell.scrollWidth<=recipeProfileShell.clientWidth+1
+      &&document.querySelector('[data-instance-key="crafting:catalog"]')
+      &&document.querySelector('[data-instance-key="crafting:detail"]'));
   var panelRect=document.getElementById('panel-container').getBoundingClientRect(),contentRect=document.getElementById('panel-content').getBoundingClientRect(),shellRect=document.querySelector('.crafting-scale-shell').getBoundingClientRect();
   ok('crafting uses production full-screen anchor',contentRect.width/panelRect.width>.999&&contentRect.height/panelRect.height>.999&&shellRect.width/contentRect.width>.998&&shellRect.height/contentRect.height>.998,JSON.stringify({panel:[panelRect.width,panelRect.height],content:[contentRect.width,contentRect.height],shell:[shellRect.width,shellRect.height]}));
   var filterButton=document.querySelector('.crafting-catalog-toolbar .item-filter-option'),filterStyle=getComputedStyle(filterButton);
@@ -209,6 +235,15 @@ try{
   ok('renders authoritative catalog',document.querySelectorAll('.crafting-recipe-card').length===2);
   ok('snapshot marks cards and craftable count',document.querySelectorAll('.crafting-recipe-card.craftable').length===2&&document.querySelector('.crafting-catalog-view .workbench-view-meta').textContent.indexOf('可合成 2 / 2')>=0);
   ok('reuses shared category/set recipe tree',document.querySelector('[data-filter-path="category"]')&&document.querySelector('[data-filter-path="set"]'));
+  var recipeHelpButton=document.querySelector('.crafting-panel .workbench-help-btn');recipeHelpButton.focus();recipeHelpButton.click();
+  var recipeHelpModal=document.querySelector('.workbench-modal[data-modal-kind="crafting-help"]');
+  ok('recipe help tells the shared number, range and keyboard truth',
+    recipeHelpModal&&recipeHelpModal.textContent.indexOf('数字输入')>=0
+      &&recipeHelpModal.textContent.indexOf('滑杆')>=0
+      &&recipeHelpModal.textContent.indexOf('Page Up')>=0
+      &&recipeHelpModal.textContent.indexOf('Esc')>=0);
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();
+  ok('recipe help restores its header focus',document.activeElement===recipeHelpButton);
   document.querySelector('[data-filter-path="set"]').click();var setRootCount=document.querySelectorAll('.crafting-recipe-card').length;document.querySelector('[data-filter-path="set/test_sidearm"]').click();await wait();var setBreadcrumb=document.querySelector('.crafting-catalog-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="set"]'),setBreadcrumbCurrent=document.querySelector('.crafting-catalog-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="set/test_sidearm"][aria-current="page"]');
   ok('set branch filters recipes locally and exposes title breadcrumb',setRootCount===1&&document.querySelectorAll('.crafting-recipe-card').length===1&&CraftingPanel.debugState().filterPath.join('/')==='set/test_sidearm'&&setBreadcrumb&&setBreadcrumbCurrent);
   setBreadcrumb.click();document.querySelector('[data-filter-path=""]').click();await wait();
@@ -359,14 +394,134 @@ try{
   ok('ambiguous commit triggers preview reconcile',__toasts.some(function(x){return x.indexOf('对账')>=0})&&__sent.filter(function(x){return x.cmd==='preview'}).length>=3);
   ok('preview clears reconcile gate',!CraftingPanel.debugState().needsReconcile&&!document.querySelector('.crafting-commit-btn').disabled);
   window.__previewDelay=60;var cards=document.querySelectorAll('.crafting-recipe-card');cards[1].click();cards[0].click();await new Promise(function(r){setTimeout(r,160)});window.__previewDelay=0;
-  ok('rapid switch releases preview gate',!CraftingPanel.debugState().previewBusy&&document.querySelector('.crafting-output-card').textContent.indexOf('新测试枪')>=0);
-  document.querySelectorAll('.crafting-recipe-card')[1].click();await wait();
+  ok('rapid switch releases preview gate',!CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().previewCheckpoint.craftCount===1&&document.querySelector('.crafting-output-card').textContent.indexOf('新测试枪')>=0);
+  document.querySelectorAll('.crafting-recipe-card')[1].click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&state.selectedIndex===1&&state.previewCheckpoint&&state.previewCheckpoint.craftCount===1});
   var detailScrollProbe=document.querySelector('.crafting-detail-body'),detailScrollStyle=detailScrollProbe.style.cssText;
-  detailScrollProbe.style.cssText+=';height:72px!important;min-height:72px!important;max-height:72px!important;overflow:auto!important';detailScrollProbe.scrollTop=detailScrollProbe.scrollHeight;var detailScrollBefore=detailScrollProbe.scrollTop;
-  var plus=document.querySelector('.crafting-quantity-btn[aria-label="增加一份"]');ok('stack recipe exposes styled batch stepper',plus&&!plus.disabled);plus.click();await wait();
-  var detailScrollAfter=detailScrollProbe.scrollTop;ok('quantity preview refresh preserves overflowing detail position',detailScrollBefore>0&&Math.abs(detailScrollAfter-detailScrollBefore)<=1,JSON.stringify({before:detailScrollBefore,after:detailScrollAfter}));
+  var stableQuantity=document.querySelector('.crafting-quantity-inputs'),stableCommitBar=document.querySelector('.crafting-commit-bar'),stableCommit=document.querySelector('.crafting-commit-btn');
+  var stableViewChrome=document.querySelector('.crafting-detail-view .workbench-view-chrome');
+  ok('stack recipe exposes one shared protocol-wide quantity control',
+    stableQuantity&&!stableQuantity.closest('.crafting-quantity-panel').hidden
+      &&stableQuantity.getAttribute('data-max')==='99'
+      &&stableQuantity.getAttribute('data-slider-max')==='99'
+      &&stableQuantity.getAttribute('data-preset-max')==='30',
+    stableQuantity&&stableQuantity.outerHTML);
+  document.querySelectorAll('.crafting-recipe-card')[0].click();
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().selectedIndex===0});
+  ok('non-batch recipes hide rather than rebuild the quantity control',
+    document.querySelector('.crafting-quantity-inputs')===stableQuantity
+      &&stableQuantity.parentNode===document.querySelector('.crafting-quantity-panel')
+      &&stableQuantity.closest('.crafting-quantity-panel').hidden);
+  document.querySelectorAll('.crafting-recipe-card')[1].click();
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().selectedIndex===1});
+  ok('returning to batch preserves chrome, scroller, quantity and commit identities',
+    document.querySelector('.crafting-detail-body')===detailScrollProbe
+      &&document.querySelector('.crafting-quantity-inputs')===stableQuantity
+      &&document.querySelector('.crafting-commit-bar')===stableCommitBar
+      &&document.querySelector('.crafting-commit-btn')===stableCommit
+      &&document.querySelector('.crafting-detail-view .workbench-view-chrome')===stableViewChrome);
+
+  var detailViewRect=document.querySelector('.crafting-detail-view').getBoundingClientRect();
+  var detailScrollerRect=detailScrollProbe.getBoundingClientRect(),commitBarRect=stableCommitBar.getBoundingClientRect(),commitRect=stableCommit.getBoundingClientRect();
+  var commitHit=document.elementFromPoint(commitRect.left+commitRect.width/2,commitRect.top+commitRect.height/2);
+  stableCommit.focus();
+  ok('overflow CTA is a visible hit-testable scroller sibling at this viewport',
+    !detailScrollProbe.contains(stableCommitBar)&&stableCommitBar.parentNode===document.querySelector('.crafting-detail-view')
+      &&commitBarRect.top>=detailScrollerRect.bottom-1&&commitBarRect.bottom<=detailViewRect.bottom+1
+      &&commitRect.width>0&&commitRect.height>=38&&(commitHit===stableCommit||stableCommit.contains(commitHit))
+      &&getComputedStyle(stableCommit).pointerEvents!=='none'&&document.activeElement===stableCommit,
+    JSON.stringify({view:[detailViewRect.top,detailViewRect.bottom],scroller:[detailScrollerRect.top,detailScrollerRect.bottom],bar:[commitBarRect.top,commitBarRect.bottom],button:[commitRect.width,commitRect.height]}));
+
+  detailScrollProbe.style.cssText+=';height:72px!important;min-height:72px!important;max-height:72px!important;overflow:auto!important';
+  detailScrollProbe.scrollTop=detailScrollProbe.scrollHeight;var detailScrollBefore=detailScrollProbe.scrollTop;
+  var plus=quantityButton('增加 1'),stepRequests=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  ok('stack recipe exposes the shared batch quantity control',plus&&!plus.disabled);plus.click();
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===2});
+  var detailScrollAfter=detailScrollProbe.scrollTop;
+  ok('one step intent sends one preview and preserves stable detail state',
+    __sent.filter(function(x){return x.cmd==='preview'}).length===stepRequests+1
+      &&detailScrollBefore>0&&Math.abs(detailScrollAfter-detailScrollBefore)<=1
+      &&document.querySelector('.crafting-quantity-inputs')===stableQuantity
+      &&document.querySelector('.crafting-commit-bar')===stableCommitBar,
+    JSON.stringify({before:detailScrollBefore,after:detailScrollAfter}));
+  ok('batch preview binds count and total output',document.querySelector('.crafting-output-card').textContent.indexOf('×6')>=0);
+
+  window.__previewDelay=90;var focusPreviewRequests=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  plus.click();
+  var quantityInput=document.querySelector('.workbench-quantity-number');
+  if(!quantityInput)throw new Error('quantity input missing after pending update: '+JSON.stringify({state:CraftingPanel.debugState(),detail:document.querySelector('.crafting-detail-view').innerHTML}));
+  quantityInput.focus();quantityInput.value='17';
+  quantityInput.dispatchEvent(new Event('input',{bubbles:true}));var rawScroll=detailScrollProbe.scrollTop;
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===3},500);
+  ok('preview refresh preserves raw number draft, focus, scroll and persistent controls',
+    quantityInput.value==='17'&&document.activeElement===quantityInput
+      &&Math.abs(detailScrollProbe.scrollTop-rawScroll)<=1
+      &&document.querySelector('.crafting-quantity-inputs')===stableQuantity
+      &&document.querySelector('.crafting-commit-btn')===stableCommit
+      &&__sent.filter(function(x){return x.cmd==='preview'}).length===focusPreviewRequests+1,
+    JSON.stringify({value:quantityInput.value,focus:document.activeElement&&document.activeElement.className,scroll:[rawScroll,detailScrollProbe.scrollTop]}));
+  var closeBeforeFieldEscape=__sent.filter(function(x){return x.cmd==='close'}).length;
+  quantityInput.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+  ok('field Escape reverts only the raw draft and keeps panel focus',
+    quantityInput.value==='3'&&document.activeElement===quantityInput
+      &&__sent.filter(function(x){return x.cmd==='close'}).length===closeBeforeFieldEscape);
+  window.__previewDelay=0;
+
+  var numberRequests=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  quantityInput.value='7';quantityInput.dispatchEvent(new Event('input',{bubbles:true}));
+  quantityInput.dispatchEvent(new Event('change',{bubbles:true}));
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===7});
+  ok('one valid number intent sends exactly one preview',__sent.filter(function(x){return x.cmd==='preview'}).length===numberRequests+1);
+  var range=document.querySelector('.workbench-quantity-range'),rangeRequests=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  range.value='8';range.dispatchEvent(new Event('input',{bubbles:true}));range.dispatchEvent(new Event('change',{bubbles:true}));
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===8});
+  ok('one valid range intent sends exactly one preview',__sent.filter(function(x){return x.cmd==='preview'}).length===rangeRequests+1);
+  var keyRequests=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  range.focus();range.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true,cancelable:true}));
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===9});
+  ok('one range keyboard intent sends exactly one preview',__sent.filter(function(x){return x.cmd==='preview'}).length===keyRequests+1);
+
+  window.__previewDelay=80;var coalescedRequests=__sent.filter(function(x){return x.cmd==='preview'}).length,coalescedStart=CraftingPanel.debugState().craftCount;
+  quantityButton('增加 1').click();quantityButton('增加 1').click();quantityButton('增加 1').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&state.craftCount===coalescedStart+3&&state.previewCheckpoint&&state.previewCheckpoint.craftCount===coalescedStart+3},700);
+  window.__previewDelay=0;
+  ok('rapid quantity intents coalesce to the in-flight read and newest queued read',
+    __sent.filter(function(x){return x.cmd==='preview'}).length===coalescedRequests+2
+      &&CraftingPanel.debugState().previewCheckpoint.craftCount===coalescedStart+3,
+    JSON.stringify(CraftingPanel.debugState()));
+  window.__previewDelay=80;var returnRequests=__sent.filter(function(x){return x.cmd==='preview'}).length,returnStart=CraftingPanel.debugState().craftCount;
+  quantityButton('增加 1').click();quantityButton('增加 1').click();quantityButton('减少 1').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&state.craftCount===returnStart+1&&state.previewCheckpoint&&state.previewCheckpoint.craftCount===returnStart+1},500);
+  window.__previewDelay=0;
+  ok('returning to the in-flight value cancels a superseded queued preview',
+    __sent.filter(function(x){return x.cmd==='preview'}).length===returnRequests+1
+      &&CraftingPanel.debugState().previewCheckpoint.craftCount===returnStart+1,
+    JSON.stringify(CraftingPanel.debugState()));
+
+  var blockedRequests=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  quantityInput=document.querySelector('.workbench-quantity-number');quantityInput.value='99';
+  quantityInput.dispatchEvent(new Event('input',{bubbles:true}));quantityInput.dispatchEvent(new Event('change',{bubbles:true}));
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===99});
+  ok('protocol-valid but currently infeasible intent stays editable and blocks commit',
+    __sent.filter(function(x){return x.cmd==='preview'}).length===blockedRequests+1
+      &&stableQuantity.getAttribute('data-max')==='99'&&stableQuantity.getAttribute('data-slider-max')==='99'
+      &&stableQuantity.getAttribute('data-preset-max')==='30'&&!quantityInput.disabled&&stableCommit.disabled);
+  var maximumRequests=__sent.filter(function(x){return x.cmd==='preview'}).length;
+  quantityButton('设为当前权威可合成上限').click();
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===30});
+  ok('maximum recovery uses preview max once and restores commit',
+    __sent.filter(function(x){return x.cmd==='preview'}).length===maximumRequests+1&&!stableCommit.disabled);
+
+  var tooltipTarget=document.querySelector('.crafting-output-inspect-trigger');tooltipTarget.focus();
+  var tooltipStyle=getComputedStyle(tooltipTarget,'::after');
+  ok('data-title tooltip is keyboard-visible and readable',
+    tooltipStyle.content.indexOf('打开装备检视器')>=0&&parseFloat(tooltipStyle.fontSize)>=11,
+    JSON.stringify({content:tooltipStyle.content,fontSize:tooltipStyle.fontSize}));
   detailScrollProbe.style.cssText=detailScrollStyle;detailScrollProbe.scrollTop=0;
-  ok('batch preview binds count and total output',__sent.some(function(x){return x.cmd==='preview'&&x.payload.recipeIndex===1&&x.payload.craftCount===2})&&document.querySelector('.crafting-output-card').textContent.indexOf('×6')>=0);
+
+  quantityInput=document.querySelector('.workbench-quantity-number');quantityInput.value='2';
+  quantityInput.dispatchEvent(new Event('input',{bubbles:true}));quantityInput.dispatchEvent(new Event('change',{bubbles:true}));
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===2});
   await exercisePreviewReadFailure('late preview', {cmd:'preview',mode:'delay',delayMs:400}, true);
   await exercisePreviewReadFailure('dropped preview', {cmd:'preview',mode:'drop'}, false);
   await exercisePreviewReadFailure('Flash preview timeout', {cmd:'preview',mode:'error',error:'timeout'}, false);
@@ -377,7 +532,8 @@ try{
   await exerciseAuthorityRefresh('material drift preview', 'material_missing');
   await exerciseAuthorityRefresh('price drift preview', 'insufficient_money');
   document.querySelector('[data-filter-path="category"]').click();
-  var consumableFilter=document.querySelector('[data-filter-path="category/consumable"]');consumableFilter.click();await wait();
+  await waitFor(function(){return document.querySelector('[data-filter-path="category/consumable"]')});
+  var consumableFilter=document.querySelector('[data-filter-path="category/consumable"]');if(consumableFilter)consumableFilter.click();await wait();
   ok('shared tree filters recipe cards locally',document.querySelectorAll('.crafting-recipe-card').length===1&&CraftingPanel.debugState().filterPath.slice(0,2).join('/')==='category/consumable',JSON.stringify({cards:document.querySelectorAll('.crafting-recipe-card').length,path:CraftingPanel.debugState().filterPath}));
   __queueCraftingFault({cmd:'snapshot',mode:'drop'});Panels.open('crafting',{category:'武器合成'});
   await waitFor(function(){return CraftingPanel.debugState().needsRefresh},1400);
@@ -404,9 +560,13 @@ try{
   var materialState=CraftingPanel.debugState(),materialPanel=document.querySelector('.crafting-panel[data-crafting-view="materials"]');
   ok('material route mounts read-only catalog and detail panes',
     materialState.mode==='materials'&&materialPanel
+      &&materialPanel.getAttribute('data-profile')==='archive-reference'
+      &&materialPanel.scrollWidth<=materialPanel.clientWidth+1
       &&document.querySelector('[data-instance-key="crafting:materials:catalog"]')
       &&document.querySelector('[data-instance-key="crafting:materials:detail"]')
       &&!document.querySelector('.crafting-organizer-btn')
+      &&!document.querySelector('.crafting-return-character-btn')
+      &&materialState.canReturnCharacterBuild===false
       &&!document.querySelector('.crafting-commit-btn'),
     JSON.stringify(materialState));
   ok('material catalog selects the first indexed material',
@@ -417,6 +577,7 @@ try{
   var materialFullOption=materialDensityToggle&&materialDensityToggle.querySelector('[data-layout-mode="full"]');
   var materialCompactOption=materialDensityToggle&&materialDensityToggle.querySelector('[data-layout-mode="compact"]');
   var materialGrid=document.querySelector('.crafting-material-grid');
+  var materialCompactSplit=getComputedStyle(materialPanel.querySelector('.workbench-body')).gridTemplateColumns;
   ok('material archive exposes the shared full/compact switch and defaults to compact',
     materialDensityToggle&&materialFullOption&&materialCompactOption
       &&materialCompactOption.getAttribute('aria-pressed')==='true'
@@ -483,6 +644,7 @@ try{
       badge:firstMaterial.querySelector('.crafting-material-card-owned').textContent}));
   firstMaterial.focus();materialFullOption.click();
   var fullMaterialState=CraftingPanel.debugState().materials;
+  var materialFullSplit=getComputedStyle(materialPanel.querySelector('.workbench-body')).gridTemplateColumns;
   firstMaterial=document.querySelectorAll('.crafting-material-card')[0];
   var nextFullRowMaterial=document.querySelectorAll('.crafting-material-card')[2];
   firstCardRect=firstMaterial.getBoundingClientRect();
@@ -493,6 +655,7 @@ try{
       &&fullMaterialState.layoutMode==='full'
       &&getComputedStyle(firstMaterial.querySelector('.crafting-material-card-copy')).display!=='none'
       &&firstCardRect.height>=58&&nextFullRowRect.top>=firstCardRect.bottom+3
+      &&materialFullSplit===materialCompactSplit
       &&document.activeElement===firstMaterial
       &&firstMaterial.getAttribute('aria-selected')==='true'
       &&localStorage.getItem('cf7.itemgrid.mode.crafting-materials')==='full',
@@ -559,12 +722,42 @@ try{
     materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materials'})
       &&materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materialDetail'&&x.payload.itemName==='测试矿石'})
       &&materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materialDetail'&&x.payload.itemName==='索引材料223'}));
+  Panels.open('crafting',{view:'materials',source:'runtime',panelInstanceId:'crafting.materials.return.1',
+    navigationOrigin:'character_build',canReturnCharacterBuild:true});
+  await waitFor(function(){var state=CraftingPanel.debugState();return document.querySelector('.crafting-return-character-btn')
+    &&document.querySelectorAll('.crafting-material-card').length===223
+    &&state.materials&&!state.materials.detailLoading});
+  var materialReturnButton=document.querySelector('.crafting-return-character-btn'),materialReturnToasts=__toasts.length;
+  __queueCraftingFault({cmd:'close',mode:'send_false'});materialReturnButton.click();await wait();
+  ok('failed materials return remains mounted and retryable',
+    Panels.getActive()==='crafting'&&!materialReturnButton.disabled
+      &&materialReturnButton.textContent.indexOf('返回装备')>=0
+      &&__toasts.length===materialReturnToasts+1);
+  materialReturnButton.click();await wait();
+  var materialReturn=__sent.filter(function(x){return x.cmd==='close'&&x.reason==='navigate_character_build'}).slice(-1)[0];
+  ok('Character Build material origin exposes one exact instance-bound return without local reopen',
+    CraftingPanel.debugState().canReturnCharacterBuild
+      &&Panels.getActive()==='crafting'&&materialReturnButton.disabled
+      &&materialReturn
+      &&Object.keys(materialReturn).sort().join(',')==='cmd,panel,panelInstanceId,reason,type'
+      &&materialReturn.panel==='crafting'
+      &&materialReturn.panelInstanceId==='crafting.materials.return.1',
+    JSON.stringify({state:CraftingPanel.debugState(),active:Panels.getActive(),
+      disabled:materialReturnButton.disabled,message:materialReturn,
+      keys:materialReturn&&Object.keys(materialReturn).sort()}));
   Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelectorAll('.crafting-recipe-card').length===2});
   document.querySelectorAll('.crafting-recipe-card')[1].click();
   await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('测试药剂')>=0});
+  var routedQuantity=document.querySelector('.crafting-quantity-inputs'),routedPlus=quantityButton('增加 1'),routeRafBaseline=__rafStats.active;
   var snapshotsBeforeRoute=__sent.filter(function(x){return x.cmd==='snapshot'}).length;document.querySelector('.crafting-organizer-btn').click();await wait();
   var route=Panels.lastOpen();ok('organizer revokes token then routes to battlebox',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshotsBeforeRoute+1&&Panels.getActive()==='workbench'&&route.init.profile==='battlebox'&&route.init.returnTo.initData.preferredRecipeIndex===1);
-  ok('rebuild and route cleanup disconnect every ResizeObserver',__resizeObserverStats.active===0,JSON.stringify(__resizeObserverStats));
+  var previewsAfterRoute=__sent.filter(function(x){return x.cmd==='preview'}).length;routedPlus.click();await wait();
+  ok('destroyed detail presenter releases quantity listeners and detached DOM',
+    !routedQuantity.isConnected&&__sent.filter(function(x){return x.cmd==='preview'}).length===previewsAfterRoute
+      &&CraftingPanel.debugState().detail===null);
+  ok('rebuild and route cleanup releases observers and animation frames',
+    __resizeObserverStats.active===0&&__rafStats.active<=routeRafBaseline,
+    JSON.stringify({resize:__resizeObserverStats,raf:__rafStats,baseline:routeRafBaseline}));
   var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
 }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}})();
 </script>

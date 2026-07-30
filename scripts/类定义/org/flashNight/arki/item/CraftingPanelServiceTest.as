@@ -111,8 +111,12 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
 
     private static function testOpenRequestWire():Void {
         var previous:Object = _root.server;
-        _root.server = {sent:null};
-        _root.server.sendSocketMessage = function(message:String):Boolean { this.sent = message; return true; };
+        _root.server = {sent:null, sendCount:0};
+        _root.server.sendSocketMessage = function(message:String):Boolean {
+            this.sent = message;
+            this.sendCount++;
+            return true;
+        };
         var opened:Boolean = CraftingPanelService.openPanel("武器合成", "legacy_crafting_entry");
         check(opened && String(_root.server.sent) == '{"task":"panel_request","panel":"crafting","source":"legacy_crafting_entry","initData":{"category":"武器合成"}}',
             "legacy crafting entry emits strict panel request");
@@ -120,7 +124,28 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             "unknown crafting category is rejected before host");
         check(CraftingPanelService.openMaterialsPanel("nativehud_materials")
             && String(_root.server.sent) == '{"task":"panel_request","panel":"crafting","source":"nativehud_materials","initData":{"view":"materials"}}',
-            "native HUD material entry emits strict Web material request");
+            "missing material token retains the legacy ordinary envelope");
+        check(CraftingPanelService.openMaterialsPanel(
+                "nativehud_materials", "material.open.1.Valid_-~")
+            && String(_root.server.sent) == '{"task":"panel_request","panel":"crafting","source":"nativehud_materials","openRequestId":"material.open.1.Valid_-~","initData":{"view":"materials"}}',
+            "legal material token is echoed exactly at panel_request top level");
+        var beforeInvalid:Number = Number(_root.server.sendCount);
+        var overlong:String = "";
+        for (var i:Number = 0; i < 161; i++) overlong += "a";
+        check(!CraftingPanelService.openMaterialsPanel(
+                "nativehud_materials", null)
+            && !CraftingPanelService.openMaterialsPanel(
+                "nativehud_materials", 7)
+            && !CraftingPanelService.openMaterialsPanel(
+                "nativehud_materials", "")
+            && !CraftingPanelService.openMaterialsPanel(
+                "nativehud_materials", "bad token")
+            && !CraftingPanelService.openMaterialsPanel(
+                "nativehud_materials", "bad/token")
+            && !CraftingPanelService.openMaterialsPanel(
+                "nativehud_materials", overlong)
+            && Number(_root.server.sendCount) == beforeInvalid,
+            "explicit malformed or overlong material tokens perform zero sends");
         _root.server = previous;
     }
 

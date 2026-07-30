@@ -6,8 +6,10 @@ const path = require('path');
 const vm = require('vm');
 
 const primitivesPath = require.resolve('../launcher/web/modules/workbench-primitives.js');
+const profilePath = require.resolve('../launcher/web/modules/workbench-profile.js');
 const workbenchPath = require.resolve('../launcher/web/modules/workbench.js');
 const Primitives = require(primitivesPath);
+const Profile = require(profilePath);
 
 // Exercise the CommonJS dependency path rather than the browser global left by
 // the primitives UMD wrapper.
@@ -215,11 +217,23 @@ test('physical split stays within the audit limit and fails clearly without its 
     assert.throws(
         () => vm.runInNewContext(workbenchSource, {
             WorkbenchPrimitives:{EntityTile:function() {}},
-            WorkbenchFocus:{FocusScope:function() {}}
+            WorkbenchFocus:{FocusScope:function() {}},
+            WorkbenchShellProfile:Profile
         }, {filename:'workbench.js'}),
         /workbench-primitives\.js missing ItemCard/
     );
-    const browser = {WorkbenchPrimitives:Primitives, WorkbenchFocus:{FocusScope:function() {}}};
+    assert.throws(
+        () => vm.runInNewContext(workbenchSource, {
+            WorkbenchPrimitives:Primitives,
+            WorkbenchFocus:{FocusScope:function() {}}
+        }, {filename:'workbench.js'}),
+        /workbench\.js requires workbench-profile\.js to load first/
+    );
+    const browser = {
+        WorkbenchPrimitives:Primitives,
+        WorkbenchFocus:{FocusScope:function() {}},
+        WorkbenchShellProfile:Profile
+    };
     vm.runInNewContext(workbenchSource, browser, {filename:'workbench.js'});
     assert.strictEqual(browser.Workbench.EntityTile, Primitives.EntityTile);
     assert.strictEqual(browser.Workbench.PointerDragController, Primitives.PointerDragController);
@@ -271,6 +285,58 @@ test('EntityTile owns role, state, action labels and keyboard activation semanti
     assert.strictEqual(tile.__workbenchEntityTileBinding, null);
 }));
 
+test('EntityTile separates inspectability from action authority and explains blocked activation', () => withDocument(document => {
+    const tile = document.createElement('article');
+    const reason = document.createElement('span');
+    tile.appendChild(reason);
+    const blocked = [];
+    const actions = [];
+    const binding = Primitives.EntityTile.bindActivation(tile, {
+        itemName:'秘银甲',
+        label:'声望商品',
+        inspectable:true,
+        actionable:false,
+        reason:'需要声望 10',
+        reasonNode:reason,
+        onBlocked:(event, context) => blocked.push({
+            origin:context.origin,
+            reason:context.reason
+        }),
+        onActivate:() => actions.push('unexpected')
+    });
+
+    assert.strictEqual(tile.getAttribute('tabindex'), '0');
+    assert.strictEqual(tile.getAttribute('aria-disabled'), 'true');
+    assert.strictEqual(tile.getAttribute('data-entity-inspectable'), 'true');
+    assert.strictEqual(tile.getAttribute('data-entity-actionable'), 'false');
+    assert.strictEqual(reason.textContent, '需要声望 10');
+    assert.strictEqual(reason.hidden, false);
+    assert.strictEqual(reason.getAttribute('data-entity-reason'), '');
+    assert.strictEqual(tile.getAttribute('aria-describedby'), reason.getAttribute('id'));
+
+    tile.dispatch('click');
+    const enter = tile.dispatch('keydown', {key:'Enter'});
+    const space = tile.dispatch('keydown', {key:' '});
+    assert.strictEqual(enter.defaultPrevented, true);
+    assert.strictEqual(space.defaultPrevented, true);
+    assert.deepStrictEqual(blocked, [
+        {origin:'pointer', reason:'需要声望 10'},
+        {origin:'keyboard', reason:'需要声望 10'},
+        {origin:'keyboard', reason:'需要声望 10'}
+    ]);
+    assert.deepStrictEqual(actions, []);
+
+    Primitives.EntityTile.applySemantics(tile, {
+        inspectable:false,
+        actionable:false,
+        reason:'不可检查',
+        reasonNode:reason
+    });
+    assert.strictEqual(tile.getAttribute('tabindex'), '-1');
+    assert.strictEqual(tile.getAttribute('data-entity-inspectable'), 'false');
+    binding.destroy();
+}));
+
 test('ItemCard renders the shared catalog semantics for both skins', () => withDocument(() => {
     const kshop = Primitives.ItemCard.renderCatalog({
         skin:'kshop', id:7, name:'青锋剑', meta:'武器', priceText:'120', selected:true
@@ -290,8 +356,12 @@ test('ItemCard renders the shared catalog semantics for both skins', () => withD
     });
     assert.strictEqual(npcshop.getAttribute('data-catalog-index'), '3');
     assert.strictEqual(npcshop.getAttribute('role'), 'option');
-    assert.strictEqual(npcshop.getAttribute('tabindex'), '-1');
+    assert.strictEqual(npcshop.getAttribute('tabindex'), '0');
     assert.strictEqual(npcshop.getAttribute('aria-disabled'), 'true');
+    assert.strictEqual(npcshop.getAttribute('data-entity-inspectable'), 'true');
+    assert.strictEqual(npcshop.getAttribute('data-entity-actionable'), 'false');
+    assert.strictEqual(npcshop.children[1].children[1].textContent, '需要声望 10');
+    assert.strictEqual(npcshop.getAttribute('aria-describedby'), npcshop.children[1].children[1].getAttribute('id'));
     assert.strictEqual(npcshop.classList.contains('locked'), true);
     assert.throws(() => Primitives.ItemCard.renderCatalog({skin:'unknown'}), /Unsupported ItemCard skin/);
 }));

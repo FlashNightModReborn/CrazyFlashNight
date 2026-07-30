@@ -1,4 +1,12 @@
 @layer workbench.motion {
+    @keyframes wb-pulse-busy {
+        0%,100% { opacity:.4; }
+        50% { opacity:1; }
+    }
+    @keyframes wb-reject-pulse {
+        0%,100% { outline-color:var(--wb-role-reject); }
+        50% { outline-color:color-mix(in srgb,var(--wb-role-reject) 68%,var(--wb-text)); }
+    }
     .workbench-commit-bar.busy .workbench-commit-primary {
         cursor:progress;
         filter:saturate(.72);
@@ -11,6 +19,7 @@
 @media (prefers-reduced-motion: reduce) {
     .workbench-shell,
     .workbench-shell *,
+    .workbench-shell .workbench-secondary-page,
     .workbench-shell *::before,
     .workbench-shell *::after {
         animation:none !important;
@@ -18,6 +27,10 @@
         transition:none !important;
     }
     .workbench-secondary-page { transform:none; }
+    #panel-container:is([data-panel="kshop"],[data-panel="workbench"],[data-panel="npcshop"],[data-panel="crafting"],[data-panel="skills"],[data-panel="loot"])
+        ~ #panel-tooltip :is(.kshop-tt-loading, .flash-tt-loading) {
+        animation:none;
+    }
 }
 
 /* Compact KShop uses a 24px transparent hit target around a 16px glyph. The

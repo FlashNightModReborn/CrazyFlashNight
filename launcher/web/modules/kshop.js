@@ -57,7 +57,7 @@ var KShop = (function() {
     });
 
     // Workbench orchestration refs. Presenters own local DOM and interaction details.
-    var _workbenchShell, _workbenchHelp, _catalogView, _orderView, _backpackView, _warehouseView;
+    var _workbenchShell, _workbenchHelp, _closeButton, _catalogView, _orderView, _backpackView, _warehouseView;
     var _cartGridView, _purchasedGridView, _catalogRenderer, _interactionBroker, _dragController;
     var _shopModeButton, _inventoryModeButton, _inventoryRetryButton, _modeChoiceGroup;
     var _cartDropTarget, _selectedCatalogIdx = null;
@@ -134,6 +134,8 @@ var KShop = (function() {
             requestShop:requestShop,
             errorMessage:messageForError,
             commitCheckout:commitCheckout,
+            openHelp:function(opener) { if (_workbenchHelp) _workbenchHelp.open(opener); },
+            requestPanelClose:requestClose,
             activateSelected:function() {
                 return _interactionBroker.activateSelected(_orderView, {binding:'shop:cart'}, 'click');
             }
@@ -316,9 +318,7 @@ var KShop = (function() {
         if (_cartController.getSettlement()) _cartController.getSettlement().render();
         var claimButtons = _el.querySelectorAll('.kshop-claim-btn');
         for (var j = 0; j < claimButtons.length; j++) claimButtons[j].disabled = claimBlocked;
-        var ownedNodes = _el.querySelectorAll('.inventory-slot-card');
-        for (var k = 0; k < ownedNodes.length; k++) ownedNodes[k].classList.toggle('write-locked', inventoryBlocked);
-        _ownedPresenter.setDisabled(inventoryBlocked);
+        _ownedPresenter.setAuthorityState(_inventoryState);
         if (_inventoryRetryButton) _inventoryRetryButton.style.display = _inventoryState.refreshRequired ? '' : 'none';
         if (_cartDropTarget) {
             _cartDropTarget.classList.toggle('disabled', !!blockEdits);
@@ -355,6 +355,7 @@ var KShop = (function() {
         if (typeof Workbench === 'undefined') throw new Error('Workbench runtime is required before KShop');
         if (typeof KShopViews === 'undefined') throw new Error('KShop view composition is required before KShop');
         _workbenchShell = new Workbench.DualPaneShell({
+            profile: 'catalog-decision',
             eyebrow: '',
             title: 'K点商城',
             subtitle: '',
@@ -376,7 +377,10 @@ var KShop = (function() {
                 {value:'shop', label:'商城', className:'workbench-mode-btn', dataAttribute:'data-mode'},
                 {value:'inventory', label:'战备箱', className:'workbench-mode-btn', dataAttribute:'data-mode'}
             ],
-            onChange:function(mode) { if (mode === 'inventory') showInventoryMode(); else showShopMode(); }
+            onChange:function(mode) {
+                if (mode === 'inventory') showInventoryMode(true);
+                else showShopMode(true);
+            }
         });
         var modeSwitch = _modeChoiceGroup.root;
         _shopModeButton = _modeChoiceGroup.getButton('shop');
@@ -405,23 +409,16 @@ var KShop = (function() {
         var layoutToggle = _densityController.createToggle(function(mode) { _layoutMode = mode; });
         _workbenchShell.addHeaderAction(layoutToggle);
 
-        _workbenchHelp = new WorkbenchComponents.HelpAction({shell:_workbenchShell, spec:{
-            kind:'kshop-help',
-            ariaLabel:'查看 K 点商城帮助',
-            title:'K 点商城帮助',
-            message:'选购与结算\n• 单击商品或右上角“+”每次加购 1 件；拖入购物车仍可作为可选操作。\n• 购物车只负责查看与移除整行。需要精确数量时，点击“核对并结账”进入结算页统一调整。',
-            detail:'数量与交付\n• 结算页支持数字输入、− / + / +5、“可用”和滑条；大数量会使用对数滑条，输入值仍是实际件数。\n• “可用”表示当前可直接结算数量，最终价格、容量与上限由每次权威预览裁决。\n• 新购商品会直接进入背包；“历史待领取”只处理旧存档遗留商品。\n\n浏览与库存\n• “完整 / 紧凑”控制物品格密度；分类、套装和专柜可逐层筛选。\n• 顶部“战备箱”切换到库存整理，不会提交商城订单。',
-            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
-        }});
+        _workbenchHelp = new WorkbenchComponents.HelpAction({shell:_workbenchShell});
 
-        var closeButton = document.createElement('button');
-        closeButton.className = 'kshop-close-btn workbench-close-btn';
-        closeButton.type = 'button';
-        closeButton.textContent = '×';
-        closeButton.setAttribute('aria-label', '关闭商城');
-        closeButton.setAttribute('data-audio-cue', 'cancel');
-        closeButton.addEventListener('click', function() { requestClose(); });
-        _workbenchShell.addHeaderAction(closeButton);
+        _closeButton = document.createElement('button');
+        _closeButton.className = 'kshop-close-btn workbench-close-btn';
+        _closeButton.type = 'button';
+        _closeButton.textContent = '×';
+        _closeButton.setAttribute('data-header-action', 'close');
+        _closeButton.setAttribute('data-audio-cue', 'cancel');
+        _closeButton.addEventListener('click', function() { requestClose(); });
+        _workbenchShell.addHeaderAction(_closeButton);
 
         _catalogView = _catalogPresenter.createView(_densityController);
         var catalogComposition = _catalogPresenter.getComposition();
@@ -463,29 +460,67 @@ var KShop = (function() {
         return _shellEl;
     }
 
-    function showShopMode() {
+    function showShopMode(restoreModeFocus) {
         if (!_workbenchShell) return;
         _el.setAttribute('data-workbench-skin', 'shop');
         _ownedPresenter.setMenuOpen(false);
         _workbenchShell.moveView('L', _catalogView);
         _workbenchShell.moveView('R', _orderView);
-        if (_modeChoiceGroup) _modeChoiceGroup.update({value:'shop'});
-        _workbenchShell.setSlotLabel('L', '商品');
-        _workbenchShell.setSlotLabel('R', '购物车');
-        _workbenchShell.setTitle('K点商城', '');
+        updateModeContext('shop', restoreModeFocus);
     }
 
-    function showInventoryMode() {
+    function showInventoryMode(restoreModeFocus) {
         if (!_workbenchShell) return;
         _cartController.closeSettlement();
         _el.setAttribute('data-workbench-skin', 'inventory');
         _workbenchShell.moveView('L', _backpackView);
         _workbenchShell.moveView('R', _warehouseView);
-        if (_modeChoiceGroup) _modeChoiceGroup.update({value:'inventory'});
-        _workbenchShell.setSlotLabel('L', '背包');
-        _workbenchShell.setSlotLabel('R', '战备箱');
-        _workbenchShell.setTitle('物品管理', '');
+        updateModeContext('inventory', restoreModeFocus);
         _ownedPresenter.render();
+    }
+
+    function applyModeActionProjection(inventory) {
+        _modeChoiceGroup.update({value:inventory ? 'inventory' : 'shop', disabled:false});
+        [_shopModeButton, _inventoryModeButton].forEach(function(button) {
+            button.hidden = false;
+            button.disabled = false;
+            button.removeAttribute('aria-disabled');
+            button.removeAttribute('title');
+        });
+        _closeButton.hidden = false;
+        _closeButton.disabled = false;
+        _closeButton.removeAttribute('aria-disabled');
+        _closeButton.removeAttribute('title');
+    }
+
+    function updateModeContext(mode, restoreModeFocus) {
+        var inventory = mode === 'inventory';
+        _workbenchShell.setProfile(inventory ? 'transfer-pair' : 'catalog-decision');
+        _el.setAttribute('data-kshop-mode', inventory ? 'inventory' : 'shop');
+        applyModeActionProjection(inventory);
+        _workbenchShell.setSlotLabel('L', inventory ? '背包' : '商品');
+        _workbenchShell.setSlotLabel('R', inventory ? '战备箱' : '购物车');
+        _workbenchShell.setTitle(inventory ? '物品管理' : 'K点商城', '');
+        if (_closeButton) _closeButton.setAttribute(
+            'aria-label', inventory ? '关闭物品管理' : '关闭商城');
+        if (_workbenchHelp) _workbenchHelp.update(inventory ? {
+            kind:'kshop-inventory-help',
+            ariaLabel:'查看物品管理帮助',
+            title:'物品管理帮助',
+            message:'背包与战备箱\n• 先选择一侧物品，再选择另一侧目标格；也可以直接拖拽到目标位置。\n• 按住 Ctrl 单击物品可快速转移，系统会优先合并同名堆叠，再寻找空格。',
+            detail:'浏览与返回\n• “完整 / 紧凑”只改变物品格密度，不改变库存内容或操作能力。\n• 切回商城不会提交购物车；关闭按钮会关闭整个商城与物品管理面板。',
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+        } : {
+            kind:'kshop-help',
+            ariaLabel:'查看 K 点商城帮助',
+            title:'K 点商城帮助',
+            message:'选购与结算\n• 单击商品或右上角“+”每次加购 1 件；拖入购物车仍可作为可选操作。\n• 购物车只负责查看与移除整行。需要精确数量时，点击“核对并结账”进入结算页统一调整。',
+            detail:'数量与交付\n• 结算页支持数字输入、− / + / +5、“可用”和滑条；大数量会使用对数滑条，输入值仍是实际件数。\n• “可用”表示当前可直接结算数量，最终价格、容量与上限以每次游戏核算结果为准。\n• 新购商品会直接进入背包；“历史待领取”只处理旧存档遗留商品。\n\n浏览与库存\n• “完整 / 紧凑”控制物品格密度；分类、套装和专柜可逐层筛选。\n• 顶部“战备箱”切换到库存整理，不会提交商城订单。',
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+        });
+        if (restoreModeFocus) {
+            (inventory ? _inventoryModeButton : _shopModeButton).focus();
+        }
     }
 
     function installWorkbenchInteractions() {
@@ -576,7 +611,7 @@ var KShop = (function() {
         renderClaimed();
         _mux.openSession();
         _writeCoordinator.open();
-        showShopMode();
+        showShopMode(false);
         // 页码继续按会话记忆；分类筛选不跨打开/存档保留，避免新存档初始视图被旧筛选隐藏。
         _inventoryCoordinator.open(function(result) {
             if (!isKShopOpen()) return;
@@ -713,13 +748,16 @@ var KShop = (function() {
     function bindClaimRow(row, purchasedItem, purchasedIndex) {
         var button = row.querySelector('.kshop-claim-btn');
         if (button) button.addEventListener('click', onClaim);
-        if (!isNaN(Number(row.getAttribute('data-idx')))) row.addEventListener('click', onClaimRowClick);
-    }
-
-    function onClaimRowClick(e) {
-        if (e.target.classList.contains('kshop-claim-btn')) return;
-        var idx = Number(e.currentTarget.getAttribute('data-idx'));
-        if (!isNaN(idx)) _tooltipPresenter.showItemDetail(idx, e.currentTarget);
+        var idx = Number(row.getAttribute('data-idx'));
+        if (isNaN(idx)) return;
+        var item = findCatalogItem(idx);
+        Workbench.EntityTile.bindActivation(row, {
+            itemName:item ? item.displayname : String(purchasedItem && purchasedItem[1] || '待领取商品'),
+            label:'查看商品详情；领取操作使用行内按钮',
+            inspectable:true,
+            actionable:true,
+            onActivate:function() { _tooltipPresenter.showItemDetail(idx, row); }
+        });
     }
 
     function onClaim(e) {
