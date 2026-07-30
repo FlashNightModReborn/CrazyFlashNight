@@ -39,6 +39,8 @@
              Link="Production\PlayerInfoStrictSvg.cs" />
     <Compile Include="..\..\..\launcher\src\Guardian\Hud\PlayerInfo\PlayerInfoSvgAssetCatalog.cs"
              Link="Production\PlayerInfoSvgAssetCatalog.cs" />
+    <Compile Include="..\..\..\launcher\src\Guardian\Hud\PlayerInfo\PlayerInfoRasterPlan.cs"
+             Link="Production\PlayerInfoRasterPlan.cs" />
     <Using Include="CF7Launcher.Guardian.Hud.PlayerInfo" />
   </ItemGroup>
 

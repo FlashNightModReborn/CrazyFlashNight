@@ -313,6 +313,36 @@ Flash oracle, visible desktop composition, mouse click-through, visual
 aesthetics, promotion, or deployment. Exact audit identities and P2
 dispositions are recorded in the B0 ADR §9.7.
 
+## Main-space v2 builder-train status
+
+The first main-space v2 train permanently froze protected tag
+`runtime-build-v2/20260729-player-info-nativehud-b0-v2` to source
+`40853287e7ed04714d68935c0002f8ad6d8aea05`. Its q3 request
+`AC3917AB6AB79EB0C8B766F2E3C82D86E7C5CC05E7FF0867FF5A42B8B222EC4A`
+has a valid `physical-host-b` X509 result and remains at `1/2`; build identity
+is `DAE8A71C0AE04AF1BD89B0076DB1EF6EF5DFEEC51C32843D300D868581568ED1`
+and payload closure is
+`051FA840019E24763724B5DA0868486AF94322F3BB990B1354D181989AA94D2C`.
+The production policy then passed 22 of 23 checks. Its only failure was
+`candidate-player-info-svg-contract`, because the isolated qualification
+project did not link `PlayerInfoRasterPlan.cs`, which now owns a transform
+type consumed by `PlayerInfoStrictSvg.cs`. The failed receipt is 12,141 B /
+SHA-256
+`3B812E9576164D8472D16020AD0D88824127CB43F7D07B067C0BBAC108293315`.
+This train is retired by the policy gate; the producer/request itself did not
+fail, and no GitHub builder, quorum, preflight, promotion, deployment, or
+runtime/release-state mutation followed.
+
+The successor policy input links that production source file explicitly and
+binds cloud source ref
+`runtime-build-v2/20260730-player-info-nativehud-b0-v2-r2`. Before the r2
+freeze it passed the candidate production contract, the full isolated
+qualification (12/12 tests, 78/78 fail-closed cases, 8/8 canonical assets),
+the 8/8 positive/negative production-contract suite, and the full Launcher
+suite (1,747 pass + 3 opt-in skip / 1,750). The final F2 must still be built
+fresh in q4/w4 and pass 23/23 local and cloud policy/quorum `-VerifyOnly`.
+Never move or reuse the first tag, q3 CAS, local proof, or failed receipt.
+
 ## Historical v1 F source freeze and non-deploying builder quorum
 
 The historical v1 source input is commit
