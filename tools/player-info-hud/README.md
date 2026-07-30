@@ -720,8 +720,13 @@ an interactive browser backend. Skill visibility and unrestricted workspace
 access therefore do not establish a control session or desktop evidence.
 FFDec remains a binary-SWF diagnostic, and the formal runner exercises real
 HWND/ULW calls with an offscreen owner. Those routes did not substitute for the
-now-recorded human review. The strict B0 state is `b0_accepted`, while the
-Launcher result remains `candidate_executed / source-ahead / NOT_DEPLOYED`.
-No real UiData, business E2E, promotion, standard-entry verification, or
-deployment is claimed; the observed 144 DPI / dpr 1.5 acceptance also does not
-claim a switch to another physical monitor.
+now-recorded human review. The strict B0 state remains `b0_accepted`, with
+`oracle_frozen_for_b0`; the F2/r2 train itself remains the historical
+`candidate_executed / source-ahead / NOT_DEPLOYED` train. Its implementation
+bytes were subsequently included by the newer `9118eb5097…` formal runtime,
+but that release's standard-entry smoke covered only the production Equipment
+Tuning opener and the first authoritative snapshot from the exact workbench
+instance. It did not enable the PlayerInfo fixture, observe real `pi_*`, or
+establish PlayerInfo-specific E2E. The observed 144 DPI / dpr 1.5 acceptance
+also does not claim cross-renderer pixel parity or a switch to another physical
+monitor.

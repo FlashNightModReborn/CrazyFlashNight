@@ -16,6 +16,7 @@
           "Microsoft.Web.WebView2": "1.0.3856.49",
           "Newtonsoft.Json": "13.0.3",
           "SkiaSharp": "3.119.4",
+          "Svg.Skia": "5.1.1",
           "Vortice.DXGI": "3.6.2",
           "Microsoft.Web.WebView2.Core": "1.0.3856.49",
           "Microsoft.Web.WebView2.WinForms": "1.0.3856.49",
@@ -23,6 +24,35 @@
         },
         "runtime": {
           "CRAZYFLASHER7MercenaryEmpire.Core.dll": {}
+        }
+      },
+      "ExCSS/4.3.1": {
+        "runtime": {
+          "lib/net8.0/ExCSS.dll": {
+            "assemblyVersion": "4.3.1.0",
+            "fileVersion": "4.3.1.0"
+          }
+        }
+      },
+      "HarfBuzzSharp/8.3.1.3": {
+        "dependencies": {
+          "HarfBuzzSharp.NativeAssets.Win32": "8.3.1.3"
+        },
+        "runtime": {
+          "lib/net8.0/HarfBuzzSharp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "8.3.1.3"
+          }
+        }
+      },
+      "HarfBuzzSharp.NativeAssets.Win32/8.3.1.3": {
+        "native": {
+          "runtimes/win-x64/native/libHarfBuzzSharp.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libHarfBuzzSharp.pdb": {
+            "fileVersion": "0.0.0.0"
+          }
         }
       },
       "Microsoft.ClearScript.Core/7.4.5": {
@@ -95,6 +125,14 @@
           }
         }
       },
+      "ShimSkiaSharp/5.1.1": {
+        "runtime": {
+          "lib/net10.0/ShimSkiaSharp.dll": {
+            "assemblyVersion": "5.1.1.0",
+            "fileVersion": "5.1.1.0"
+          }
+        }
+      },
       "SkiaSharp/3.119.4": {
         "dependencies": {
           "SkiaSharp.NativeAssets.Win32": "3.119.4"
@@ -113,6 +151,73 @@
           },
           "runtimes/win-x64/native/libSkiaSharp.pdb": {
             "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Svg.Animation/5.1.1": {
+        "dependencies": {
+          "ShimSkiaSharp": "5.1.1",
+          "SkiaSharp": "3.119.4",
+          "Svg.Custom": "5.1.1",
+          "Svg.Model": "5.1.1"
+        },
+        "runtime": {
+          "lib/net10.0/Svg.Animation.dll": {
+            "assemblyVersion": "5.1.1.0",
+            "fileVersion": "5.1.1.0"
+          }
+        }
+      },
+      "Svg.Custom/5.1.1": {
+        "dependencies": {
+          "ExCSS": "4.3.1"
+        },
+        "runtime": {
+          "lib/net10.0/Svg.Custom.dll": {
+            "assemblyVersion": "5.1.1.0",
+            "fileVersion": "5.1.1.0"
+          }
+        }
+      },
+      "Svg.Model/5.1.1": {
+        "dependencies": {
+          "ShimSkiaSharp": "5.1.1",
+          "Svg.Custom": "5.1.1"
+        },
+        "runtime": {
+          "lib/net10.0/Svg.Model.dll": {
+            "assemblyVersion": "5.1.1.0",
+            "fileVersion": "5.1.1.0"
+          }
+        }
+      },
+      "Svg.SceneGraph/5.1.1": {
+        "dependencies": {
+          "ShimSkiaSharp": "5.1.1",
+          "Svg.Custom": "5.1.1",
+          "Svg.Model": "5.1.1"
+        },
+        "runtime": {
+          "lib/net10.0/Svg.SceneGraph.dll": {
+            "assemblyVersion": "5.1.1.0",
+            "fileVersion": "5.1.1.0"
+          }
+        }
+      },
+      "Svg.Skia/5.1.1": {
+        "dependencies": {
+          "HarfBuzzSharp": "8.3.1.3",
+          "HarfBuzzSharp.NativeAssets.Win32": "8.3.1.3",
+          "SkiaSharp": "3.119.4",
+          "Svg.Animation": "5.1.1",
+          "Svg.Custom": "5.1.1",
+          "Svg.Model": "5.1.1",
+          "Svg.SceneGraph": "5.1.1"
+        },
+        "runtime": {
+          "lib/net10.0/Svg.Skia.dll": {
+            "assemblyVersion": "5.1.1.0",
+            "fileVersion": "5.1.1.0"
           }
         }
       },
@@ -181,6 +286,27 @@
       "serviceable": false,
       "sha512": ""
     },
+    "ExCSS/4.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-A8UtcghHQlWxPJhJF5bsfEYO7068JHGTuJ7tzyyMjd5fE/N/xY1cVOUhzuLLFwMOCJVnM4mqSQc93W9fGfZ1kA==",
+      "path": "excss/4.3.1",
+      "hashPath": "excss.4.3.1.nupkg.sha512"
+    },
+    "HarfBuzzSharp/8.3.1.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NGZ2+ZVNPM+NdHB/asW0/ykWngyHWwcqjrbN2nDeH1B/aptPGlCUl8wkQ2cSJxw5fdWgdmIPmNuTPWpLwNVXWg==",
+      "path": "harfbuzzsharp/8.3.1.3",
+      "hashPath": "harfbuzzsharp.8.3.1.3.nupkg.sha512"
+    },
+    "HarfBuzzSharp.NativeAssets.Win32/8.3.1.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bx8CE8Js+XGX8PUxAHCBDEORt5aaBYtMN4Hr9QFs57Xithh6yjUyYqksizH6eRDhJkwsGI+SXWmPmMm8lZC9Pw==",
+      "path": "harfbuzzsharp.nativeassets.win32/8.3.1.3",
+      "hashPath": "harfbuzzsharp.nativeassets.win32.8.3.1.3.nupkg.sha512"
+    },
     "Microsoft.ClearScript.Core/7.4.5": {
       "type": "package",
       "serviceable": true,
@@ -237,6 +363,13 @@
       "path": "sharpgen.runtime.com/2.2.0-beta",
       "hashPath": "sharpgen.runtime.com.2.2.0-beta.nupkg.sha512"
     },
+    "ShimSkiaSharp/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yYLSkTgGliFONplDPaSOpmTbV0VhbjHySYAqA3NMJilqPA/OBevX3/4sJ0k4FRhbuI8akyw6O2RMO/xUKwFBxQ==",
+      "path": "shimskiasharp/5.1.1",
+      "hashPath": "shimskiasharp.5.1.1.nupkg.sha512"
+    },
     "SkiaSharp/3.119.4": {
       "type": "package",
       "serviceable": true,
@@ -250,6 +383,41 @@
       "sha512": "sha512-XOpbx/4CReO2wYsq2s6rbvdauc6dntG4Zv499sHGTJ87bwZaFXszFkwql3+FIZMc8kUPeaj3Mx2ezIJmo8a1Kg==",
       "path": "skiasharp.nativeassets.win32/3.119.4",
       "hashPath": "skiasharp.nativeassets.win32.3.119.4.nupkg.sha512"
+    },
+    "Svg.Animation/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HUaU5Pa1fvE2CcYMHhA6nQH+4dcJsDEJ5feYfVoO3ha0u506ugOR0gR1fKHANIwEapYs20nLJQHLb39DK/pJlg==",
+      "path": "svg.animation/5.1.1",
+      "hashPath": "svg.animation.5.1.1.nupkg.sha512"
+    },
+    "Svg.Custom/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i53zvhuauElnLtGzezyfzpAs/zJ3UaexqT+JuAQTL6yC5ym1nQXTnjntDhY4qrouJ5elGjEwjag1nzfdPPPGSQ==",
+      "path": "svg.custom/5.1.1",
+      "hashPath": "svg.custom.5.1.1.nupkg.sha512"
+    },
+    "Svg.Model/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j9j4kqKL5Girwr/2qwzzDRJ7CDXvGipchbNQfxmmUAk70JG3/6mXaF/QJLiIat6p6NU38MBYaOSilVuqaZuC5w==",
+      "path": "svg.model/5.1.1",
+      "hashPath": "svg.model.5.1.1.nupkg.sha512"
+    },
+    "Svg.SceneGraph/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-p0ti8uOikN7aEg/KDq042xBbWijbOl2sITWMpO9vJ2KEaBeB8jouTDQTK7QssMs8DynR1+FxOsn7WEftXF0jow==",
+      "path": "svg.scenegraph/5.1.1",
+      "hashPath": "svg.scenegraph.5.1.1.nupkg.sha512"
+    },
+    "Svg.Skia/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zBcxwGQlEOE1HKFOmcGl/Sl/0aeRajRv/yEE5lRFQqufhIERuuzCHmq6xWK0fyeA+B1uufOR/h5+MHGMatJz4w==",
+      "path": "svg.skia/5.1.1",
+      "hashPath": "svg.skia.5.1.1.nupkg.sha512"
     },
     "Vortice.DirectX/3.6.2": {
       "type": "package",
