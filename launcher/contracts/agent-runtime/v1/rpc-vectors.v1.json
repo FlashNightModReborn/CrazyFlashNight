@@ -1,0 +1,516 @@
+{
+  "schemaVersion": "cf7.agent_runtime.rpc_vectors.v1",
+  "protocolVersion": "1.0",
+  "validRequests": [
+    {
+      "name": "hello",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "hello-1",
+        "method": "runtime.hello",
+        "params": {
+          "protocolVersion": "1.0",
+          "clientInstanceId": "AAAAAAAAAAAAAAAAAAAAAA",
+          "clientKind": "jsonl_cli",
+          "requestedCapabilities": [
+            "session.status"
+          ],
+          "nonce": "BBBBBBBBBBBBBBBBBBBBBB",
+          "connectionToken": "CCCCCCCCCCCCCCCCCCCCCC",
+          "credentialProof": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+        }
+      }
+    },
+    {
+      "name": "content-read",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "read-1",
+        "method": "content.read",
+        "params": {
+          "handle": "EEEEEEEEEEEEEEEEEEEEEE",
+          "offset": 0,
+          "count": 4194300
+        }
+      }
+    },
+    {
+      "name": "direct-gui-method",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "window-1",
+        "method": "window.list",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "observationGrantId": "GGGGGGGGGGGGGGGGGGGGGG",
+          "dataScope": "window_metadata"
+        }
+      }
+    },
+    {
+      "name": "first-grant-from-lifecycle-ref",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "grant-1",
+        "method": "observation.grant.issue",
+        "params": {
+          "lifecycleRef": "LLLLLLLLLLLLLLLLLLLLLL",
+          "targetKinds": [
+            "flash"
+          ],
+          "dataScopes": [
+            "window_metadata"
+          ],
+          "requestedTtlMs": 1000,
+          "allowEphemeralKeyframes": false,
+          "allowPersistence": false,
+          "allowExport": false
+        }
+      }
+    },
+    {
+      "name": "one-shot-shutdown-lease",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "shutdown-lease-1",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "shutdown",
+          "capabilities": [
+            "session.shutdown"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 30000,
+          "requestedActionLimit": 1
+        }
+      }
+    }
+  ],
+  "invalidRequests": [
+    {
+      "name": "batch",
+      "value": []
+    },
+    {
+      "name": "notification",
+      "value": {
+        "jsonrpc": "2.0",
+        "method": "session.status",
+        "params": {}
+      }
+    },
+    {
+      "name": "numeric-id",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "session.status",
+        "params": {}
+      }
+    },
+    {
+      "name": "null-id",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": null,
+        "method": "session.status",
+        "params": {}
+      }
+    },
+    {
+      "name": "unknown-method",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-1",
+        "method": "action.execute",
+        "params": {}
+      }
+    },
+    {
+      "name": "extra-property",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-2",
+        "method": "session.status",
+        "params": {},
+        "meta": {}
+      }
+    },
+    {
+      "name": "hello-missing-required-member",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-3",
+        "method": "runtime.hello",
+        "params": {
+          "clientInstanceId": "AAAAAAAAAAAAAAAAAAAAAA",
+          "clientKind": "jsonl_cli",
+          "requestedCapabilities": [
+            "session.status"
+          ],
+          "nonce": "BBBBBBBBBBBBBBBBBBBBBB",
+          "connectionToken": "CCCCCCCCCCCCCCCCCCCCCC",
+          "credentialProof": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+        }
+      }
+    },
+    {
+      "name": "content-count-too-large",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-4",
+        "method": "content.read",
+        "params": {
+          "handle": "EEEEEEEEEEEEEEEEEEEEEE",
+          "offset": 0,
+          "count": 4194301
+        }
+      }
+    },
+    {
+      "name": "window-list-without-read-grant",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-5",
+        "method": "window.list",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF"
+        }
+      }
+    },
+    {
+      "name": "legacy-observation-scope-alias",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-6",
+        "method": "window.list",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "observationGrantId": "GGGGGGGGGGGGGGGGGGGGGG",
+          "dataScope": "frame"
+        }
+      }
+    },
+    {
+      "name": "client-supplied-revoke-reason",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-7",
+        "method": "observation.grant.revoke",
+        "params": {
+          "observationGrantId": "GGGGGGGGGGGGGGGGGGGGGG",
+          "reason": "client text"
+        }
+      }
+    },
+    {
+      "name": "automatic-lease-renewal-flag",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-8",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "gui_input",
+          "capabilities": [
+            "input.click"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1,
+          "allowAutomaticRenewal": true
+        }
+      }
+    },
+    {
+      "name": "shutdown-capability-on-gui-lease",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-shutdown-1",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "gui_input",
+          "capabilities": [
+            "session.shutdown"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "shutdown-lease-with-wrong-capability",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-shutdown-2",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "shutdown",
+          "capabilities": [
+            "input.click"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "shutdown-lease-with-multiple-targets",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-shutdown-3",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "shutdown",
+          "capabilities": [
+            "session.shutdown"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH",
+            "IIIIIIIIIIIIIIIIIIIIII"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "shutdown-lease-with-multiple-actions",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-shutdown-4",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "shutdown",
+          "capabilities": [
+            "session.shutdown"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 2
+        }
+      }
+    },
+    {
+      "name": "shutdown-lease-with-widened-ttl",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-shutdown-5",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "shutdown",
+          "capabilities": [
+            "session.shutdown"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 30001,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "legacy-first-grant-session-id",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-9",
+        "method": "observation.grant.issue",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "targetIds": [
+            "TTTTTTTTTTTTTTTTTTTTTT"
+          ],
+          "dataScopes": [
+            "window_metadata"
+          ],
+          "requestedTtlMs": 1000,
+          "allowEphemeralKeyframes": false,
+          "allowPersistence": false,
+          "allowExport": false
+        }
+      }
+    },
+    {
+      "name": "first-grant-missing-target-selector",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-10",
+        "method": "observation.grant.issue",
+        "params": {
+          "lifecycleRef": "LLLLLLLLLLLLLLLLLLLLLL",
+          "dataScopes": [
+            "window_metadata"
+          ],
+          "requestedTtlMs": 1000,
+          "allowEphemeralKeyframes": false,
+          "allowPersistence": false,
+          "allowExport": false
+        }
+      }
+    },
+    {
+      "name": "first-grant-ambiguous-target-selector",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-11",
+        "method": "observation.grant.issue",
+        "params": {
+          "lifecycleRef": "LLLLLLLLLLLLLLLLLLLLLL",
+          "targetIds": [
+            "TTTTTTTTTTTTTTTTTTTTTT"
+          ],
+          "targetKinds": [
+            "flash"
+          ],
+          "dataScopes": [
+            "window_metadata"
+          ],
+          "requestedTtlMs": 1000,
+          "allowEphemeralKeyframes": false,
+          "allowPersistence": false,
+          "allowExport": false
+        }
+      }
+    }
+  ],
+  "validResponses": [
+    {
+      "name": "success",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "request-1",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "structured-error",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "request-2",
+        "error": {
+          "code": -32029,
+          "message": "Rate limited",
+          "data": {
+            "reasonCode": "rate_limited",
+            "retryable": true,
+            "reconcileKind": "none",
+            "serverSequence": 12
+          }
+        }
+      }
+    }
+  ],
+  "invalidResponses": [
+    {
+      "name": "result-and-error",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-1",
+        "result": {},
+        "error": {
+          "code": -32000,
+          "message": "Bad",
+          "data": {
+            "reasonCode": "none",
+            "retryable": false,
+            "reconcileKind": "none",
+            "serverSequence": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "neither-result-nor-error",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-2"
+      }
+    },
+    {
+      "name": "reason-metadata-mismatch",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-3",
+        "error": {
+          "code": -32029,
+          "message": "Rate limited",
+          "data": {
+            "reasonCode": "rate_limited",
+            "retryable": false,
+            "reconcileKind": "none",
+            "serverSequence": 1
+          }
+        }
+      }
+    }
+  ],
+  "validBinaryChunks": [
+    {
+      "name": "single-final-chunk",
+      "metadata": {
+        "handle": "EEEEEEEEEEEEEEEEEEEEEE",
+        "offset": 0,
+        "totalLength": 3,
+        "final": true,
+        "contentHash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      },
+      "contentBase64": "YWJj"
+    }
+  ],
+  "invalidBinaryChunks": [
+    {
+      "name": "terminal-range-not-final",
+      "metadata": {
+        "handle": "EEEEEEEEEEEEEEEEEEEEEE",
+        "offset": 0,
+        "totalLength": 3,
+        "final": false,
+        "contentHash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      },
+      "contentBase64": "YWJj"
+    },
+    {
+      "name": "object-too-large",
+      "metadata": {
+        "handle": "EEEEEEEEEEEEEEEEEEEEEE",
+        "offset": 0,
+        "totalLength": 16777217,
+        "final": false,
+        "contentHash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      },
+      "contentBase64": "YQ=="
+    },
+    {
+      "name": "bad-hash-representation",
+      "metadata": {
+        "handle": "EEEEEEEEEEEEEEEEEEEEEE",
+        "offset": 0,
+        "totalLength": 1,
+        "final": true,
+        "contentHash": "not-a-sha256"
+      },
+      "contentBase64": "YQ=="
+    }
+  ]
+}

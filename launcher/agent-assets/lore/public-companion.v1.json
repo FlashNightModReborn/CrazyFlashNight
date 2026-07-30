@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "public-companion",
+  "catalogRevision": "public-companion.v1@88479aee4c",
+  "publicStoryPhaseIds": [
+    "sp_7Qm2vL8aR4nK9xT1cY6uP"
+  ],
+  "facts": [
+    {
+      "factId": "guidance.task.visible-state-only",
+      "sourceAuthority": "docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md#5.4",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "F1",
+      "statement": "任务建议只依据当前存档已经公开的进度和当前可见任务上下文；未显示的任务不会被当作已经接取。",
+      "guidanceDomains": [
+        "task"
+      ],
+      "guidanceKeys": [
+        "task.overview"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.task.daily-after-metro",
+      "sourceAuthority": "0.说明文件与教程/1.改动说明（含作弊码）.txt#L130",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "88479aee4c",
+      "statement": "每日任务会在地铁站任务之后开启。",
+      "guidanceDomains": [
+        "task"
+      ],
+      "guidanceKeys": [
+        "task.daily"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [
+          "milestone.metro_station_completed"
+        ],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.task.online-reward-after-rock-park",
+      "sourceAuthority": "0.说明文件与教程/1.改动说明（含作弊码）.txt#L119",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "88479aee4c",
+      "statement": "在线奖励会在摇滚公园任务之后开启。",
+      "guidanceDomains": [
+        "task"
+      ],
+      "guidanceKeys": [
+        "task.online_reward"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [
+          "milestone.rock_park_completed"
+        ],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.equipment.held-weapon-properties",
+      "sourceAuthority": "0.说明文件与教程/1.改动说明（含作弊码）.txt#L264",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "88479aee4c",
+      "statement": "武器的部分装备属性只有在持握该武器时才会触发。",
+      "guidanceDomains": [
+        "equipment"
+      ],
+      "guidanceKeys": [
+        "equipment.properties"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.equipment.inventory-capacity-rule",
+      "sourceAuthority": "0.说明文件与教程/1.改动说明（含作弊码）.txt#L250",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "88479aee4c",
+      "statement": "满背包判定会忽略货币等项目，高强化度装备按一件计算。",
+      "guidanceDomains": [
+        "equipment"
+      ],
+      "guidanceKeys": [
+        "equipment.inventory"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.route.map-click-teleport",
+      "sourceAuthority": "0.说明文件与教程/1.改动说明（含作弊码）.txt#L160",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "88479aee4c",
+      "statement": "地图支持点击传送到不同区域。",
+      "guidanceDomains": [
+        "route"
+      ],
+      "guidanceKeys": [
+        "route.map"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [
+          "feature.map_click_teleport_available"
+        ],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.ui.hairdresser-catalog-cas",
+      "sourceAuthority": "scripts/类定义/org/flashNight/arki/ui/HairdresserPanelService.as",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "88479aee4c",
+      "statement": "理发店发型切换只会提交免费目录内的标识，并用当前发型比较防止覆盖玩家刚刚做出的修改。",
+      "guidanceDomains": [
+        "ui"
+      ],
+      "guidanceKeys": [
+        "ui.hairdresser"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [
+          "panel.hairdresser.available"
+        ],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.ui.shell-hide-indicator",
+      "sourceAuthority": "docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md#5.5",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "F1",
+      "statement": "隐藏助手表现不会隐藏 Launcher 的中性观察指示器；暂停会停止采集和推理并收回写权限。",
+      "guidanceDomains": [
+        "ui"
+      ],
+      "guidanceKeys": [
+        "ui.wings_shell"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.task.difficulty-balanced",
+      "sourceAuthority": "0.说明文件与教程/1.改动说明（含作弊码）.txt#L111-L112",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "88479aee4c",
+      "statement": "平衡模式下前期任务不提供 K 点，中期提供少量，后期提供较多。",
+      "guidanceDomains": [
+        "task"
+      ],
+      "guidanceKeys": [
+        "task.rewards"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {
+          "difficulty": "balanced"
+        },
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "guidance.task.difficulty-easy",
+      "sourceAuthority": "0.说明文件与教程/1.改动说明（含作弊码）.txt#L111-L112",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "88479aee4c",
+      "statement": "简单模式的任务 K 点奖励沿用原版节奏。",
+      "guidanceDomains": [
+        "task"
+      ],
+      "guidanceKeys": [
+        "task.rewards"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {
+          "difficulty": "easy"
+        },
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "context.save.ng-plus",
+      "sourceAuthority": "save.progress.authority/v1",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "v1",
+      "statement": "当前存档被权威进度标记为新周目存档；建议可以使用该周目已经公开的条目。",
+      "guidanceDomains": [
+        "task",
+        "equipment",
+        "route",
+        "ui"
+      ],
+      "guidanceKeys": [
+        "context.save"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "new_game_plus",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {
+          "save.mode": "new_game_plus"
+        },
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "context.save.developer-unlocked",
+      "sourceAuthority": "save.progress.authority/v1",
+      "canonClass": "gameplay_public",
+      "sourceRevision": "v1",
+      "statement": "当前存档是全解锁开发验证档；公开指导仍只使用本 catalog 中的事实。",
+      "guidanceDomains": [
+        "task",
+        "equipment",
+        "route",
+        "ui"
+      ],
+      "guidanceKeys": [
+        "context.save"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "developer_unlocked",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {
+          "save.mode": "developer_unlocked"
+        },
+        "requiresRevealGrant": false
+      }
+    },
+    {
+      "factId": "cue.permission-scope-honesty",
+      "sourceAuthority": "docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md#5.2",
+      "canonClass": "presentation_cue",
+      "sourceRevision": "F1",
+      "statement": "我只会看你明确允许我看的部分。",
+      "guidanceDomains": [
+        "ui"
+      ],
+      "guidanceKeys": [
+        "cue.permission"
+      ],
+      "revealPredicate": {
+        "minimumSaveClass": "legacy",
+        "requiredProgressFlags": [],
+        "forbiddenProgressFlags": [],
+        "branchEquals": {},
+        "requiresRevealGrant": false
+      }
+    }
+  ]
+}

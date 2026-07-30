@@ -2,11 +2,13 @@
 "use strict";
 
 const assert = require("assert");
+const crypto = require("crypto");
 const fs = require("fs");
 const http = require("http");
 const net = require("net");
 const os = require("os");
 const path = require("path");
+const LegacyHttpAuth = require("./lib/legacy-http-auth");
 const Tool = require("./prepare-loot-target-full-save.js");
 
 let checks = 0;
@@ -142,8 +144,11 @@ try {
   });
   const socketPort = await listen(rawSocketServer);
   const requestedPaths = [];
+  const receivedTokens = [];
+  const token = crypto.randomBytes(32).toString("base64url");
   const launcherHttp = http.createServer((request, response) => {
     requestedPaths.push(request.method + " " + request.url);
+    receivedTokens.push(request.headers["x-cf7-automation-token"] || null);
     if (request.method === "POST" && request.url === "/testConnection") {
       response.writeHead(200, { "Content-Type": "application/x-www-form-urlencoded" });
       response.end("status=success");
@@ -160,11 +165,39 @@ try {
   });
   try {
     const httpPort = await listen(launcherHttp);
-    const pairedGuard = await Tool.assertTargetNotRunning(root, slot, { ports: [httpPort, socketPort] });
+    const localAppData = path.join(root, "local-app-data");
+    const credentialPath = LegacyHttpAuth.expectedCredentialPath(
+      root,
+      {localAppData});
+    fs.mkdirSync(path.dirname(credentialPath), {recursive: true});
+    fs.writeFileSync(path.join(root, "launcher_ports.json"), JSON.stringify({
+      pid: process.pid,
+      httpPort,
+      socketPort,
+      legacyHttpAuthFile: credentialPath,
+    }), "utf8");
+    fs.writeFileSync(credentialPath, JSON.stringify({
+      v: 1,
+      kind: "legacy_http_automation",
+      pid: process.pid,
+      processStartUtcTicks: "638900000000000000",
+      lifecycleId: crypto.randomBytes(16).toString("base64url"),
+      header: LegacyHttpAuth.HEADER_NAME,
+      token,
+      capabilities: ["legacy.task"],
+    }), "utf8");
+    const pairedGuard = await Tool.assertTargetNotRunning(root, slot, {
+      legacyHttpOptions: {
+        localAppData,
+        resolveProcessStartUtcTicks:
+          () => "638900000000000000",
+      },
+    });
     equal(pairedGuard.instances.map((instance) => instance.port), [httpPort], "the confirmed Launcher HTTP instance is scanned exactly once");
-    equal(pairedGuard.skippedSocketPorts, [socketPort], "the confirmed Launcher's paired XMLSocket port is skipped");
+    equal(pairedGuard.skippedSocketPorts, [], "exact launcher_ports.json avoids probing the paired XMLSocket port");
     equal(rawSocketConnections, 0, "the paired non-HTTP socket is never probed as HTTP");
-    equal(requestedPaths, ["POST /testConnection", "GET /getSocketPort", "GET /agent-control/status", "POST /task"], "Launcher identity and real status fallback endpoints are used");
+    equal(requestedPaths, ["POST /testConnection", "GET /getSocketPort", "POST /task"], "exact Launcher identity and authenticated status endpoints are used");
+    equal(receivedTokens, [null, null, token], "only the privileged /task request carries the lifecycle credential");
   } finally {
     rawSockets.forEach((socket) => socket.destroy());
     await Promise.all([close(launcherHttp), close(rawSocketServer)]);

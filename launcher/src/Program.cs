@@ -2,12 +2,19 @@
 // C# 5 语法
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using CF7Launcher.AgentRuntime.Contracts;
+using CF7Launcher.AgentRuntime.Integration;
+using CF7Launcher.AgentRuntime.Security;
+using CF7Launcher.AgentRuntime.Sessions;
+using CF7Launcher.AgentRuntime.TrustedRunner;
 using CF7Launcher.Bus;
 using CF7Launcher.Config;
 using CF7Launcher.Diagnostic;
@@ -19,10 +26,337 @@ using Microsoft.Web.WebView2.Core;
 
 class Program
 {
+    private sealed class AgentRuntimeSurfaceCache
+    {
+        private readonly object _sync = new object();
+        private readonly SessionProcessIdentity _launcherProcess;
+        private long _launcherHwnd;
+        private long _flashHwnd;
+        private long _webOverlayHwnd;
+        private long _nativeHudHwnd;
+        private SessionProcessIdentity _flashProcess;
+
+        internal AgentRuntimeSurfaceCache(
+            SessionProcessIdentity launcherProcess)
+        {
+            _launcherProcess = launcherProcess
+                ?? throw new ArgumentNullException(
+                    nameof(launcherProcess));
+        }
+
+        internal void Update(
+            long launcherHwnd,
+            long flashHwnd,
+            SessionProcessIdentity flashProcess,
+            long webOverlayHwnd,
+            long nativeHudHwnd)
+        {
+            lock (_sync)
+            {
+                _launcherHwnd = launcherHwnd;
+                _flashHwnd =
+                    flashProcess == null ? 0 : flashHwnd;
+                _flashProcess = flashProcess;
+                _webOverlayHwnd = webOverlayHwnd;
+                _nativeHudHwnd = nativeHudHwnd;
+            }
+        }
+
+        internal IReadOnlyCollection<WindowsSessionSurfaceSpec>
+            CreateSpecs(LauncherAgentRuntimeTargetIds targets)
+        {
+            long launcherHwnd;
+            long flashHwnd;
+            long webOverlayHwnd;
+            long nativeHudHwnd;
+            SessionProcessIdentity flashProcess;
+            lock (_sync)
+            {
+                launcherHwnd = _launcherHwnd;
+                flashHwnd = _flashHwnd;
+                webOverlayHwnd = _webOverlayHwnd;
+                nativeHudHwnd = _nativeHudHwnd;
+                flashProcess = _flashProcess;
+            }
+
+            var specs = new List<WindowsSessionSurfaceSpec>(4);
+            if (launcherHwnd > 0)
+            {
+                specs.Add(
+                    new WindowsSessionSurfaceSpec(
+                        targets.Launcher,
+                        SurfaceKind.Launcher,
+                        AgentTargetSafetyKind.RuntimeOwned,
+                        SessionSurfaceOwnerRelation
+                            .LauncherTopLevel,
+                        _launcherProcess,
+                        launcherHwnd,
+                        null,
+                        0,
+                        new[]
+                        {
+                            ObservationMode
+                                .WindowGraphicsCapture
+                        },
+                        Array.Empty<InputMode>(),
+                        10));
+            }
+            if (flashHwnd > 0 && flashProcess != null)
+            {
+                specs.Add(
+                    new WindowsSessionSurfaceSpec(
+                        targets.Flash,
+                        SurfaceKind.Flash,
+                        AgentTargetSafetyKind.RuntimeOwned,
+                        SessionSurfaceOwnerRelation.FlashTopLevel,
+                        flashProcess,
+                        flashHwnd,
+                        null,
+                        0,
+                        new[]
+                        {
+                            ObservationMode
+                                .WindowGraphicsCapture
+                        },
+                        new[]
+                        {
+                            InputMode.SendInputGuarded
+                        },
+                        20));
+            }
+            if (launcherHwnd > 0 && webOverlayHwnd > 0)
+            {
+                specs.Add(
+                    new WindowsSessionSurfaceSpec(
+                        targets.WebOverlay,
+                        SurfaceKind.WebOverlay,
+                        AgentTargetSafetyKind.RuntimeOwned,
+                        SessionSurfaceOwnerRelation.LauncherOwned,
+                        _launcherProcess,
+                        webOverlayHwnd,
+                        targets.Launcher,
+                        launcherHwnd,
+                        new[]
+                        {
+                            ObservationMode
+                                .WindowGraphicsCapture
+                        },
+                        new[]
+                        {
+                            InputMode.SendInputGuarded,
+                            InputMode.DomainTransaction
+                        },
+                        30));
+            }
+            if (launcherHwnd > 0 && nativeHudHwnd > 0)
+            {
+                specs.Add(
+                    new WindowsSessionSurfaceSpec(
+                        targets.NativeHud,
+                        SurfaceKind.NativeHud,
+                        AgentTargetSafetyKind.RuntimeOwned,
+                        SessionSurfaceOwnerRelation.LauncherOwned,
+                        _launcherProcess,
+                        nativeHudHwnd,
+                        targets.Launcher,
+                        launcherHwnd,
+                        new[]
+                        {
+                            ObservationMode
+                                .WindowGraphicsCapture
+                        },
+                        new[]
+                        {
+                            InputMode.SendInputGuarded
+                        },
+                        35));
+            }
+            return specs;
+        }
+    }
+
     // volatile: HandleUiThreadException 可能在 form 引用刚被赋值后立即跑 (Application.Run 早期),
     // 不写成 volatile 时 JIT 理论上能 hoist 出 null. 实际 UI 线程单点写 + 单点读, 但加 volatile 零成本上保险.
     static volatile GuardianForm _guardianForm;
     static int _fatalUiExceptionExiting;
+
+    private static long ReadExistingWindowHandle(
+        Control control)
+    {
+        try
+        {
+            if (control == null
+                || control.IsDisposed
+                || !control.IsHandleCreated)
+            {
+                return 0;
+            }
+            return control.Handle.ToInt64();
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    private static bool TryCaptureProcessIdentity(
+        Process process,
+        out SessionProcessIdentity identity)
+    {
+        identity = null;
+        try
+        {
+            if (process == null || process.HasExited)
+                return false;
+            string path = process.MainModule?.FileName;
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+            identity = new SessionProcessIdentity(
+                process.Id,
+                new DateTimeOffset(
+                    process.StartTime.ToUniversalTime()),
+                path);
+            if (process.HasExited)
+            {
+                identity = null;
+                return false;
+            }
+            return true;
+        }
+        catch
+        {
+            identity = null;
+            return false;
+        }
+    }
+
+    private static bool IsExactAgentRuntimeFlashBinding(
+        GameLaunchFlow launchFlow,
+        GuardianForm form,
+        string expectedTargetId,
+        LauncherAgentExactTargetBinding binding)
+    {
+        if (launchFlow == null
+            || form == null
+            || binding == null
+            || binding.WindowHandle == 0
+            || binding.OwnerProcess == null
+            || !string.Equals(
+                binding.TargetId,
+                expectedTargetId,
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        GameLaunchFlow.AgentRuntimeLaunchSnapshot snapshot =
+            launchFlow.CaptureAgentRuntimeLaunchSnapshot();
+        if (snapshot == null
+            || !string.Equals(
+                snapshot.AttemptId,
+                binding.AttemptId,
+                StringComparison.Ordinal)
+            || form.GetFlashHwnd().ToInt64()
+                != binding.WindowHandle
+            || !TryCaptureProcessIdentity(
+                snapshot.FlashProcess,
+                out SessionProcessIdentity currentProcess))
+        {
+            return false;
+        }
+        return binding.OwnerProcess.IsExact(currentProcess);
+    }
+
+    private static Task<bool> MarshalAgentRuntimeToUi(
+        Control owner,
+        Action callback,
+        CancellationToken cancellationToken)
+    {
+        if (owner == null
+            || callback == null
+            || cancellationToken.IsCancellationRequested)
+        {
+            return Task.FromResult(false);
+        }
+
+        var completion = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        int dispatchState = 0;
+        CancellationTokenRegistration registration = default;
+        if (cancellationToken.CanBeCanceled)
+        {
+            registration = cancellationToken.Register(
+                delegate
+                {
+                    if (Interlocked.CompareExchange(
+                            ref dispatchState,
+                            2,
+                            0) == 0)
+                    {
+                        completion.TrySetResult(false);
+                    }
+                });
+        }
+        _ = completion.Task.ContinueWith(
+            delegate { registration.Dispose(); },
+            CancellationToken.None,
+            TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
+
+        Action run = delegate
+        {
+            if (Interlocked.CompareExchange(
+                    ref dispatchState,
+                    1,
+                    0) != 0)
+            {
+                return;
+            }
+            try
+            {
+                callback();
+                completion.TrySetResult(true);
+            }
+            catch (Exception ex)
+            {
+                completion.TrySetException(ex);
+            }
+        };
+
+        try
+        {
+            if (owner.IsDisposed
+                || !owner.IsHandleCreated)
+            {
+                if (Interlocked.CompareExchange(
+                        ref dispatchState,
+                        2,
+                        0) == 0)
+                {
+                    completion.TrySetResult(false);
+                }
+            }
+            else if (owner.InvokeRequired)
+            {
+                owner.BeginInvoke(run);
+            }
+            else
+            {
+                run();
+            }
+        }
+        catch
+        {
+            if (Interlocked.CompareExchange(
+                    ref dispatchState,
+                    2,
+                    0) == 0)
+            {
+                completion.TrySetResult(false);
+            }
+        }
+        return completion.Task;
+    }
 
     // 退出早期把 overlay form 立即 SW_HIDE, 防 KillFlash WaitForExit / Dispose 期间任何窗口背景闪现.
     // 直接走 Form.Hide() 等价 ShowWindow(SW_HIDE), 不会触发 FormClosing.
@@ -118,6 +452,12 @@ class Program
     [STAThread]
     static int Main(string[] args)
     {
+        // This branch is the immutable unattended security identity. It must
+        // execute before diagnostics, WinForms, project-root walk-up, native
+        // bootstrap probing, or any worktree-controlled startup component.
+        if (TrustedUnattendedRunner.IsInvocation(args))
+            return TrustedUnattendedRunner.Run(args);
+
         // candidate runtime-only 是显式的人类验收能力，不能让目录 walk-up 隐式触发。
         string explicitProjectRoot = TryGetProjectRootFromArgs(args);
         string earlyProjectRoot = explicitProjectRoot
@@ -423,7 +763,11 @@ class Program
         int n = 0;
         for (int i = 0; i < args.Length; i++)
         {
-            if (string.Equals(args[i], "--project-root", StringComparison.OrdinalIgnoreCase)
+            if ((string.Equals(args[i], "--project-root", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(
+                        args[i],
+                        "--unattended-bootstrap-request",
+                        StringComparison.OrdinalIgnoreCase))
                 && i + 1 < args.Length)
             {
                 i++; // 跳过紧跟的路径值
@@ -435,6 +779,71 @@ class Program
         string[] result = new string[n];
         Array.Copy(tmp, result, n);
         return result;
+    }
+
+    static string TryGetUnattendedBootstrapRequestFromArgs(
+        string[] args)
+    {
+        if (args == null)
+            return null;
+        string result = null;
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (!string.Equals(
+                    args[i],
+                    "--unattended-bootstrap-request",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+            if (result != null
+                || i + 1 >= args.Length
+                || string.IsNullOrWhiteSpace(args[i + 1])
+                || !Path.IsPathFullyQualified(args[i + 1]))
+            {
+                throw new ArgumentException(
+                    "The unattended bootstrap request must be one absolute path.");
+            }
+            result = Path.GetFullPath(args[++i]);
+        }
+        return result;
+    }
+
+    internal static bool IsLegacyHttpAutomationMode(
+        string[] args)
+    {
+        if (args == null)
+            return false;
+        return Array.IndexOf(args, "--bus-only") >= 0
+            || Array.IndexOf(
+                args,
+                "--legacy-http-automation") >= 0;
+    }
+
+    internal static bool IsXmlSocketFlashLifecycleAuthorized(
+        CF7Launcher.Guardian.GameLaunchFlow.State state)
+    {
+        return state
+            == CF7Launcher.Guardian.GameLaunchFlow.State
+                .WaitingConnect
+            || state
+                == CF7Launcher.Guardian.GameLaunchFlow.State
+                    .WaitingHandshake
+            || state
+                == CF7Launcher.Guardian.GameLaunchFlow.State
+                    .PrewarmHandshakeHeld
+            || state
+                == CF7Launcher.Guardian.GameLaunchFlow.State
+                    .Embedding
+            || state
+                == CF7Launcher.Guardian.GameLaunchFlow.State
+                    .RepairPending
+            || state
+                == CF7Launcher.Guardian.GameLaunchFlow.State
+                    .WaitingGameReady
+            || state
+                == CF7Launcher.Guardian.GameLaunchFlow.State
+                    .Ready;
     }
 
     /// <summary>
@@ -495,14 +904,30 @@ class Program
         string exePath = Environment.ProcessPath;
         StartupDiagnostics.Init(projectRoot);
 
+        string unattendedBootstrapRequest =
+            TryGetUnattendedBootstrapRequestFromArgs(args);
         // 剥离已消费的 --project-root <path>，避免下游 flag 检测撞上路径字符串
         args = StripProjectRootArgs(args);
 
         bool busOnly = Array.IndexOf(args, "--bus-only") >= 0;
+        bool legacyHttpAutomation =
+            IsLegacyHttpAutomationMode(args);
+        if (unattendedBootstrapRequest != null
+            && legacyHttpAutomation)
+        {
+            throw new InvalidOperationException(
+                "Unattended Agent Runtime requires the formal non-legacy standard entry.");
+        }
         bool forceWebViewFail = Array.IndexOf(args, "--force-webview-fail") >= 0;
         StartupDiagnostics.LogCoreEnvironment(exePath, args, busOnly, forceWebViewFail);
         StartupDiagnostics.ProbeCoreSidecars();
-        StartupDiagnostics.Mark("core.run_start", "busOnly=" + busOnly);
+        StartupDiagnostics.Mark(
+            "core.run_start",
+            "busOnly=" + busOnly
+                + " controlPlane="
+                + (legacyHttpAutomation
+                    ? "legacy_http_automation"
+                    : "agent_runtime"));
         LogManager.InitFileLog(projectRoot);
         StartupDiagnostics.Mark("launcher_log.early_ready", "path=" + LogManager.LogFilePath);
         LogManager.Log("[Guardian] Early file log ready before WebView2 precheck");
@@ -752,7 +1177,24 @@ class Program
 
         int httpPort = portAlloc.ClaimPort();
 
-        XmlSocketServer socketServer = new XmlSocketServer(router);
+        ExactProcessXmlSocketPeerAuthority
+            exactXmlSocketPeerAuthority = null;
+        IXmlSocketPeerAuthority xmlSocketPeerAuthority;
+        if (legacyHttpAutomation)
+        {
+            xmlSocketPeerAuthority =
+                AllowLoopbackXmlSocketPeerAuthority.Instance;
+        }
+        else
+        {
+            exactXmlSocketPeerAuthority =
+                new ExactProcessXmlSocketPeerAuthority();
+            xmlSocketPeerAuthority =
+                exactXmlSocketPeerAuthority;
+        }
+        XmlSocketServer socketServer = new XmlSocketServer(
+            router,
+            xmlSocketPeerAuthority);
         int socketPort = portAlloc.ClaimPort();
         bool socketStarted = false;
         if (socketPort >= 0)
@@ -781,7 +1223,49 @@ class Program
         }
         StartupDiagnostics.Mark("socket.start_ok", "port=" + socketPort);
 
-        HttpApiServer httpServer = new HttpApiServer(socketPort, projectRoot, socketServer);
+        LegacyHttpAccessPolicy legacyHttpAccess =
+            LegacyHttpAccessPolicy.DenyAll();
+        if (legacyHttpAutomation)
+        {
+            try
+            {
+                legacyHttpAccess =
+                    LegacyHttpAccessPolicy.Create(projectRoot);
+                StartupDiagnostics.Mark(
+                    "http.legacy_credential_ready",
+                    legacyHttpAccess.CredentialFilePath);
+            }
+            catch (Exception ex)
+            {
+                // Public Flash probe/log endpoints may still run, but every
+                // privileged compatibility endpoint remains fail-closed.
+                legacyHttpAccess =
+                    LegacyHttpAccessPolicy.DenyAll();
+                LogManager.Log(
+                    "[Guardian] Legacy HTTP credential unavailable; privileged endpoints disabled: "
+                    + ex.Message);
+                StartupDiagnostics.Warn(
+                    "http.legacy_credential_unavailable",
+                    ex.GetType().Name);
+            }
+        }
+        else
+        {
+            // Standard normal mode has one privileged control plane only:
+            // Agent Runtime. Legacy HTTP keeps only its narrow public Flash
+            // compatibility endpoints and rejects privileged routes.
+            LogManager.Log(
+                "[Guardian] Legacy HTTP privileged automation disabled; "
+                + "Agent Runtime owns the control plane");
+            StartupDiagnostics.Mark(
+                "http.legacy_privileged_disabled",
+                "controlPlane=agent_runtime");
+        }
+        HttpApiServer httpServer = new HttpApiServer(
+            socketPort,
+            projectRoot,
+            socketServer,
+            legacyHttpAccess);
         bool httpStarted = false;
         if (httpPort >= 0)
         {
@@ -1580,6 +2064,12 @@ class Program
         httpServer.SetShutdownAction(delegate { form.ForceExit(); });
         agentControlTask.SetShutdownAction(delegate { form.ForceExit(); });
 
+        // Agent Runtime 只在 normal Guardian 生命周期下创建。早期退出回调
+        // 只能同步撤下 discovery / ingress；完整异步回收必须等消息循环返回。
+        LauncherAgentRuntimeHost agentRuntimeHost = null;
+        Action agentRuntimeDetachIngress = delegate { };
+        Action exactXmlSocketDetachIngress = delegate { };
+
         // CharacterBuild may own dirty live/loadout state even when Web has stopped responding.
         // Controlled exit must obtain the existing exact recoverDetach persistence proof before
         // any overlay suspension, task disposal, socket teardown, or Flash termination begins.
@@ -1612,6 +2102,43 @@ class Program
         // 退出前回调：在 Form dispose 之前断开快车道，防退出竞态
         form.OnShutdownEarly = delegate
         {
+            try
+            {
+                form.SetAgentRuntimeTrayActions(null, null);
+            }
+            catch { }
+            try
+            {
+                if (agentRuntimeHost != null)
+                    agentRuntimeHost.StopAdmission();
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[AgentRuntime] StopAdmission failed: "
+                    + ex.Message);
+            }
+            try { exactXmlSocketDetachIngress(); }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[XmlSocket] lifecycle detach failed: "
+                    + ex.Message);
+            }
+            try
+            {
+                exactXmlSocketPeerAuthority
+                    ?.ClearExpectedProcess();
+            }
+            catch { }
+            try { agentRuntimeDetachIngress(); }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[AgentRuntime] ingress detach failed: "
+                    + ex.Message);
+            }
+
             commandRouter.CancelAllPanelNavigationIntents(
                 "host_shutdown");
             // 顺序敏感: 这两步必须最前。
@@ -1658,7 +2185,10 @@ class Program
         string portsFile = Path.Combine(projectRoot, "launcher_ports.json");
         string portsJson = "{\"httpPort\":" + httpPort
             + ",\"socketPort\":" + socketPort
-            + ",\"pid\":" + Process.GetCurrentProcess().Id + "}";
+            + ",\"pid\":" + Process.GetCurrentProcess().Id
+            + ",\"legacyHttpAuthFile\":"
+            + JsonSerializer.Serialize(legacyHttpAccess.CredentialFilePath)
+            + "}";
         try
         {
             File.WriteAllText(portsFile, portsJson);
@@ -1874,6 +2404,113 @@ class Program
         form.InitializeLaunchFlow(launchFlow);
         agentControlTask.SetLaunchFlow(launchFlow);
 
+        // Standard-mode XMLSocket admission is a game-process invariant, not
+        // an Agent Runtime availability feature. Bind it directly to
+        // GameLaunchFlow so Flash can still connect if optional Agent host
+        // composition fails closed later in startup.
+        if (exactXmlSocketPeerAuthority != null)
+        {
+            int exactXmlSocketIngressDetached = 0;
+            object exactXmlSocketLifecycleGate = new object();
+            Action synchronizeExactXmlSocketPeer = null;
+            Action<string, string, bool>
+                exactXmlSocketLaunchStateChanged = null;
+            synchronizeExactXmlSocketPeer = delegate
+            {
+                if (Volatile.Read(
+                        ref exactXmlSocketIngressDetached) != 0)
+                {
+                    return;
+                }
+                try
+                {
+                    GameLaunchFlow.AgentRuntimeLaunchSnapshot
+                        snapshot =
+                            launchFlow
+                                .CaptureAgentRuntimeLaunchSnapshot();
+                    // Capture the launch snapshot before entering this gate.
+                    // SetState may invoke this callback while holding
+                    // GameLaunchFlow._stateLock on the UI thread, so the gate
+                    // must never acquire that lock in the opposite direction.
+                    lock (exactXmlSocketLifecycleGate)
+                    {
+                        // Detach may have won after the optimistic check above.
+                        // Recheck under the drain gate so an in-flight callback
+                        // cannot re-arm the expected process after teardown.
+                        if (Volatile.Read(
+                                ref exactXmlSocketIngressDetached) != 0)
+                        {
+                            return;
+                        }
+                        bool exactFlashLifecycle =
+                            snapshot != null
+                            && snapshot.FlashProcess != null
+                            && IsXmlSocketFlashLifecycleAuthorized(
+                                snapshot.LaunchState);
+                        string xmlPeerReason = null;
+                        if (!exactFlashLifecycle
+                            || !exactXmlSocketPeerAuthority
+                                .TrySetExpectedProcess(
+                                    snapshot.FlashProcess,
+                                    out xmlPeerReason))
+                        {
+                            exactXmlSocketPeerAuthority
+                                .ClearExpectedProcess();
+                            if (exactFlashLifecycle)
+                            {
+                                LogManager.Log(
+                                    "[XmlSocket] exact Flash peer "
+                                    + "binding failed: "
+                                    + (string.IsNullOrWhiteSpace(
+                                            xmlPeerReason)
+                                        ? "xml_socket_expected_process_unavailable"
+                                        : xmlPeerReason));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lock (exactXmlSocketLifecycleGate)
+                    {
+                        if (Volatile.Read(
+                                ref exactXmlSocketIngressDetached) == 0)
+                        {
+                            exactXmlSocketPeerAuthority
+                                .ClearExpectedProcess();
+                            LogManager.Log(
+                                "[XmlSocket] lifecycle sync failed: "
+                                + ex.Message);
+                        }
+                    }
+                }
+            };
+            exactXmlSocketLaunchStateChanged =
+                delegate(string state, string message, bool silent)
+                {
+                    synchronizeExactXmlSocketPeer();
+                };
+            exactXmlSocketDetachIngress = delegate
+            {
+                if (Interlocked.Exchange(
+                        ref exactXmlSocketIngressDetached,
+                        1) != 0)
+                {
+                    return;
+                }
+                launchFlow.OnStateChanged -=
+                    exactXmlSocketLaunchStateChanged;
+                lock (exactXmlSocketLifecycleGate)
+                {
+                    exactXmlSocketPeerAuthority
+                        .ClearExpectedProcess();
+                }
+            };
+            launchFlow.OnStateChanged +=
+                exactXmlSocketLaunchStateChanged;
+            synchronizeExactXmlSocketPeer();
+        }
+
         // Phase D Step D11: silent prewarm 状态不广播给 bootstrap UI,
         // 避免 archive-editor 进只读 / bootstrap.html 闪 running badge / BMH RequireIdle 挡 save.
         // silentAtEmit 在 SetState 锁内快照, 不受 BeginInvoke 排队延迟影响.
@@ -1908,6 +2545,449 @@ class Program
                 form.BootstrapPanel, fontPackTask);
         }
 
+        // Agent Runtime production composition belongs to the normal Guardian
+        // lifetime only. Surface discovery is deliberately absent: UI-owned
+        // callbacks refresh this exact HWND/process cache and the timer only
+        // reads the frozen cache.
+        if (!legacyHttpAutomation)
+        {
+        int agentRuntimeIngressDetached = 0;
+        AgentRuntimeSurfaceCache agentSurfaceCache = null;
+        Action synchronizeAgentRuntime = null;
+        Action<string, string, bool> agentLaunchStateChanged = null;
+        Action agentDocumentAdvanced = null;
+        Action<string, string> agentPanelChanged = null;
+        EventHandler agentWindowHandleChanged = null;
+        bool agentPanelUsesNativeHost = panelHost != null;
+        LauncherAgentRuntimeHost hostCandidate = null;
+        try
+        {
+            SessionProcessIdentity launcherIdentity =
+                SessionRegistryHostOwner
+                    .CaptureCurrentLauncher()
+                    .LauncherProcess;
+            agentSurfaceCache =
+                new AgentRuntimeSurfaceCache(launcherIdentity);
+
+            synchronizeAgentRuntime = delegate
+            {
+                if (Volatile.Read(
+                        ref agentRuntimeIngressDetached) != 0)
+                {
+                    return;
+                }
+                try
+                {
+                    if (form.IsDisposed
+                        || !form.IsHandleCreated)
+                    {
+                        return;
+                    }
+                    if (form.InvokeRequired)
+                    {
+                        form.BeginInvoke(
+                            synchronizeAgentRuntime);
+                        return;
+                    }
+
+                    GameLaunchFlow.AgentRuntimeLaunchSnapshot
+                        snapshot =
+                            launchFlow
+                                .CaptureAgentRuntimeLaunchSnapshot();
+                    SessionProcessIdentity flashIdentity = null;
+                    long flashHwnd = 0;
+                    if (snapshot != null
+                        && TryCaptureProcessIdentity(
+                            snapshot.FlashProcess,
+                            out flashIdentity))
+                    {
+                        try
+                        {
+                            flashHwnd =
+                                form.GetFlashHwnd().ToInt64();
+                        }
+                        catch
+                        {
+                            flashHwnd = 0;
+                        }
+                    }
+                    agentSurfaceCache.Update(
+                        ReadExistingWindowHandle(form),
+                        flashHwnd,
+                        flashIdentity,
+                        ReadExistingWindowHandle(webOverlay),
+                        ReadExistingWindowHandle(nativeHud));
+
+                    LauncherAgentRuntimeHost current =
+                        agentRuntimeHost;
+                    if (current != null)
+                    {
+                        current.SynchronizeLaunchSnapshot(
+                            snapshot);
+                        current.RefreshSurfaces();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[AgentRuntime] surface/lifecycle sync failed: "
+                        + ex.Message);
+                }
+            };
+
+            // Prime the cache on the UI thread without ever asking a Control
+            // to create its Handle.
+            synchronizeAgentRuntime();
+
+            hostCandidate =
+                LauncherAgentRuntimeHost.CreateProduction(
+                    new LauncherAgentRuntimeHostOptions
+                    {
+                        ProjectRoot = projectRoot,
+                        Owner = form,
+                        IsolatedRuntimeCandidate =
+                            isolatedRuntimeCandidate,
+                        UnattendedBootstrapRequestPath =
+                            unattendedBootstrapRequest,
+                        HairdresserTask = hairdresserTask,
+                        SurfaceSource = delegate(
+                            LauncherAgentRuntimeTargetIds targets)
+                        {
+                            return agentSurfaceCache
+                                .CreateSpecs(targets);
+                        },
+                        StructuredActions =
+                            new LauncherAgentStructuredActionBindings
+                            {
+                                MarshalToUi = delegate(
+                                    Action callback,
+                                    CancellationToken cancellation)
+                                {
+                                    return MarshalAgentRuntimeToUi(
+                                        form,
+                                        callback,
+                                        cancellation);
+                                },
+                                CreateTargetActivators = delegate(
+                                    LauncherAgentRuntimeTargetIds targets)
+                                {
+                                    return new Dictionary<
+                                        string,
+                                        Func<
+                                            LauncherAgentExactTargetBinding,
+                                            bool>>
+                                    {
+                                        [targets.Flash] =
+                                            delegate(
+                                                LauncherAgentExactTargetBinding
+                                                    binding)
+                                            {
+                                                if (!IsExactAgentRuntimeFlashBinding(
+                                                        launchFlow,
+                                                        form,
+                                                        targets.Flash,
+                                                        binding))
+                                                {
+                                                    return false;
+                                                }
+                                                bool restored =
+                                                    windowManager
+                                                        .RestoreFlashInputFocus(
+                                                            "agent_runtime_activate",
+                                                            new IntPtr(
+                                                                binding
+                                                                    .WindowHandle));
+                                                return restored
+                                                    && IsExactAgentRuntimeFlashBinding(
+                                                        launchFlow,
+                                                        form,
+                                                        targets.Flash,
+                                                        binding);
+                                            }
+                                    };
+                                },
+                                PrepareSafeExit =
+                                    form.TryPrepareAgentRuntimeExit,
+                                CompleteSafeExit =
+                                    form.CompleteAgentRuntimeExit,
+                                AbortSafeExit =
+                                    form.AbortAgentRuntimeExit,
+                                RevealLifecycle =
+                                    delegate
+                                    {
+                                        launchFlow.OnJsRevealOk();
+                                    },
+                                CancelLifecycle =
+                                    delegate
+                                    {
+                                        if (launchFlow.CurrentState
+                                                != "Idle")
+                                        {
+                                            launchFlow.Reset(
+                                                null,
+                                                "agent_cancel");
+                                        }
+                                    },
+                                TryOpenPanel =
+                                    commandRouter.TryOpenAgentPanel
+                            }
+                    });
+            agentRuntimeHost = hostCandidate;
+            if (form.BootstrapPanel != null)
+            {
+                form.BootstrapPanel
+                    .SetHumanOnlySecurityScopeFactory(
+                        hostCandidate
+                            .EnterHumanOnlySecuritySurface);
+            }
+
+            agentLaunchStateChanged =
+                delegate(string state, string message, bool silent)
+                {
+                    synchronizeAgentRuntime();
+                };
+            agentDocumentAdvanced =
+                delegate
+                {
+                    LauncherAgentRuntimeHost current =
+                        agentRuntimeHost;
+                    if (current != null
+                        && Volatile.Read(
+                            ref agentRuntimeIngressDetached) == 0)
+                    {
+                        current.AdvanceWebDocument();
+                    }
+                };
+            agentPanelChanged =
+                delegate(string name, string instanceId)
+                {
+                    LauncherAgentRuntimeHost current =
+                        agentRuntimeHost;
+                    if (current != null
+                        && Volatile.Read(
+                            ref agentRuntimeIngressDetached) == 0)
+                    {
+                        current.SetActivePanel(
+                            name,
+                            instanceId);
+                    }
+                };
+            agentWindowHandleChanged =
+                delegate(object sender, EventArgs eventArgs)
+                {
+                    synchronizeAgentRuntime();
+                };
+
+            Action detachAgentRuntime = delegate
+            {
+                if (Interlocked.Exchange(
+                        ref agentRuntimeIngressDetached,
+                        1) != 0)
+                {
+                    return;
+                }
+                if (form.BootstrapPanel != null)
+                {
+                    form.BootstrapPanel
+                        .SetHumanOnlySecurityScopeFactory(
+                            null);
+                }
+                launchFlow.OnStateChanged -=
+                    agentLaunchStateChanged;
+                webOverlay.DocumentAdvanced -=
+                    agentDocumentAdvanced;
+                if (agentPanelUsesNativeHost)
+                {
+                    panelHost.PanelChanged -=
+                        agentPanelChanged;
+                }
+                else
+                {
+                    commandRouter.PanelChanged -=
+                        agentPanelChanged;
+                }
+                form.HandleCreated -=
+                    agentWindowHandleChanged;
+                form.HandleDestroyed -=
+                    agentWindowHandleChanged;
+                webOverlay.HandleCreated -=
+                    agentWindowHandleChanged;
+                webOverlay.HandleDestroyed -=
+                    agentWindowHandleChanged;
+                if (nativeHud != null)
+                {
+                    nativeHud.HandleCreated -=
+                        agentWindowHandleChanged;
+                    nativeHud.HandleDestroyed -=
+                        agentWindowHandleChanged;
+                }
+            };
+            agentRuntimeDetachIngress = detachAgentRuntime;
+
+            launchFlow.OnStateChanged +=
+                agentLaunchStateChanged;
+            webOverlay.DocumentAdvanced +=
+                agentDocumentAdvanced;
+            if (agentPanelUsesNativeHost)
+            {
+                panelHost.PanelChanged +=
+                    agentPanelChanged;
+            }
+            else
+            {
+                commandRouter.PanelChanged +=
+                    agentPanelChanged;
+            }
+            form.HandleCreated +=
+                agentWindowHandleChanged;
+            form.HandleDestroyed +=
+                agentWindowHandleChanged;
+            webOverlay.HandleCreated +=
+                agentWindowHandleChanged;
+            webOverlay.HandleDestroyed +=
+                agentWindowHandleChanged;
+            if (nativeHud != null)
+            {
+                nativeHud.HandleCreated +=
+                    agentWindowHandleChanged;
+                nativeHud.HandleDestroyed +=
+                    agentWindowHandleChanged;
+            }
+
+            synchronizeAgentRuntime();
+            if (agentPanelUsesNativeHost)
+            {
+                agentRuntimeHost.SetActivePanel(
+                    panelHost.ActivePanelName,
+                    panelHost.ActivePanelInstanceId);
+            }
+            else
+            {
+                agentRuntimeHost.SetActivePanel(
+                    commandRouter.ActiveFallbackPanelName,
+                    commandRouter
+                        .ActiveFallbackPanelInstanceId);
+            }
+            string unattendedSlot =
+                agentRuntimeHost.UnattendedSlot;
+            if (!string.IsNullOrWhiteSpace(
+                    unattendedSlot))
+            {
+                if (launchFlow.CurrentState != "Idle")
+                {
+                    throw new InvalidOperationException(
+                        "Unattended launch requires an idle Host-observed launch flow.");
+                }
+                launchFlow.StartGame(
+                    unattendedSlot,
+                    false,
+                    true);
+                synchronizeAgentRuntime();
+            }
+
+            form.SetAgentRuntimeTrayActions(
+                delegate
+                {
+                    LauncherAgentRuntimeHost current =
+                        agentRuntimeHost;
+                    string reasonCode = null;
+                    if (current == null
+                        || !current.TryShowWings(
+                            out reasonCode))
+                    {
+                        using (IDisposable securityScope =
+                            current
+                                ?.EnterHumanOnlySecuritySurface())
+                        {
+                            MessageBox.Show(
+                                form,
+                                "Wings 当前不可用。请先进入一个有效的游戏存档。"
+                                    + (string.IsNullOrEmpty(reasonCode)
+                                        ? string.Empty
+                                        : "\n状态：" + reasonCode),
+                                "Wings",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                        }
+                    }
+                },
+                delegate
+                {
+                    LauncherAgentRuntimeHost current =
+                        agentRuntimeHost;
+                    string credentialPath =
+                        current
+                            ?.ShowDeveloperEnrollmentDialog();
+                    if (!string.IsNullOrWhiteSpace(
+                            credentialPath))
+                    {
+                        using (IDisposable securityScope =
+                            current
+                                ?.EnterHumanOnlySecuritySurface())
+                        {
+                            MessageBox.Show(
+                                form,
+                                "开发者凭据已写入受保护文件：\n"
+                                    + credentialPath
+                                    + "\n\n请由 cf7-agent 从该文件加载；"
+                                    + "凭据内容不会在界面或日志中显示。",
+                                "Agent 开发者授权",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                        }
+                    }
+                });
+            LogManager.Log(
+                "[AgentRuntime] production composition started; "
+                + "qualification and capabilities are host-derived");
+            StartupDiagnostics.Mark(
+                "agent_runtime.started",
+                "controlPlane=agent_runtime");
+        }
+        catch (Exception ex)
+        {
+            try { form.SetAgentRuntimeTrayActions(null, null); }
+            catch { }
+            try { agentRuntimeDetachIngress(); }
+            catch { }
+            try
+            {
+                if (hostCandidate != null)
+                {
+                    hostCandidate.StopAdmission();
+                    hostCandidate.DisposeAsync()
+                        .AsTask()
+                        .GetAwaiter()
+                        .GetResult();
+                }
+            }
+            catch (Exception cleanupEx)
+            {
+                LogManager.Log(
+                    "[AgentRuntime] startup rollback failed: "
+                    + cleanupEx.Message);
+            }
+            agentRuntimeHost = null;
+            LogManager.Log(
+                "[AgentRuntime] disabled after fail-closed startup: "
+                + ex.GetType().Name
+                + ": "
+                + ex.Message);
+            StartupDiagnostics.Warn(
+                "agent_runtime.startup_failed",
+                ex.GetType().Name);
+        }
+        }
+        else
+        {
+            LogManager.Log(
+                "[AgentRuntime] not started; legacy HTTP automation "
+                + "is the exclusive control plane");
+            StartupDiagnostics.Mark(
+                "agent_runtime.disabled",
+                "controlPlane=legacy_http_automation");
+        }
+
         // Phase A Step A3: GuardianContext 单 Form 模型（原 boot.FormClosed → guard.ForceExit 桥已删除）
         CF7Launcher.Guardian.GuardianContext ctx = new CF7Launcher.Guardian.GuardianContext(form);
 
@@ -1919,6 +2999,60 @@ class Program
         // 消息循环: ctx (GuardianForm MainForm, BootstrapPanel 作为其子控件，Ready 时 panel swap)
         Application.Run(ctx);
         StartupDiagnostics.Mark("application.run_returned");
+
+        // Agent Runtime owns ingress/capture/input/UI resources that depend on
+        // the live task and window graph below. Drain it before any of those
+        // dependencies are disposed.
+        try { form.SetAgentRuntimeTrayActions(null, null); }
+        catch { }
+        try
+        {
+            if (agentRuntimeHost != null)
+                agentRuntimeHost.StopAdmission();
+        }
+        catch (Exception ex)
+        {
+            LogManager.Log(
+                "[AgentRuntime] post-run StopAdmission failed: "
+                + ex.Message);
+        }
+        try { exactXmlSocketDetachIngress(); }
+        catch (Exception ex)
+        {
+            LogManager.Log(
+                "[XmlSocket] post-run lifecycle detach failed: "
+                + ex.Message);
+        }
+        try
+        {
+            exactXmlSocketPeerAuthority
+                ?.ClearExpectedProcess();
+        }
+        catch { }
+        try { agentRuntimeDetachIngress(); }
+        catch (Exception ex)
+        {
+            LogManager.Log(
+                "[AgentRuntime] post-run ingress detach failed: "
+                + ex.Message);
+        }
+        try
+        {
+            if (agentRuntimeHost != null)
+            {
+                agentRuntimeHost.DisposeAsync()
+                    .AsTask()
+                    .GetAwaiter()
+                    .GetResult();
+            }
+        }
+        catch (Exception ex)
+        {
+            LogManager.Log(
+                "[AgentRuntime] DisposeAsync failed: "
+                + ex.Message);
+        }
+        agentRuntimeHost = null;
 
         // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
         GuardianLifecycle.MarkShuttingDown();

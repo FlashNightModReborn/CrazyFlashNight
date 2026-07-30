@@ -273,28 +273,18 @@ $PortsFile = Join-Path $ProjectRoot 'launcher_ports.json'
 # Runtime 探测 — 共享 tools/dotnet-runtime-detect.ps1（与 bootstrap.cpp ScanOneDotnetRoot 等价：
 # 系统位置优先 + 必须含 Microsoft.WindowsDesktop.App.deps.json，避免半安装 user-scope 误命中）
 . (Join-Path $ProjectRoot 'tools\dotnet-runtime-detect.ps1')
-
-# 盲扫候选列表（fallback）
-$BusPorts = @(1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000)
+. (Join-Path $ProjectRoot 'tools\lib\LegacyHttpAuth.ps1')
 
 function Test-BusRunning {
-    # 优先从端口文件读取
-    if (Test-Path $PortsFile) {
-        try {
-            $json = Get-Content -Raw $PortsFile | ConvertFrom-Json
-            $r = Invoke-WebRequest -Uri "http://localhost:$($json.httpPort)/testConnection" `
-                -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing -ErrorAction Stop
-            if ($r.StatusCode -eq 200) { return $true }
-        } catch {}
-    }
-    # Fallback
-    foreach ($p in $BusPorts) {
-        try {
-            $r = Invoke-WebRequest -Uri "http://localhost:$p/testConnection" `
-                -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing -ErrorAction Stop
-            if ($r.StatusCode -eq 200) { return $true }
-        } catch {}
-    }
+    if (-not (Test-Path -LiteralPath $PortsFile)) { return $false }
+    try {
+        $ports = Get-Cf7LauncherPortsRecord -ProjectRoot $ProjectRoot
+        $response = Invoke-WebRequest `
+            -Uri "http://localhost:$($ports.HttpPort)/testConnection" `
+            -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing `
+            -ErrorAction Stop
+        if ($response.StatusCode -eq 200) { return $true }
+    } catch {}
     return $false
 }
 
@@ -303,11 +293,9 @@ function Get-SelfStartedBusHttpPort {
 
     if (-not (Test-Path -LiteralPath $PortsFile)) { return $null }
     try {
-        $ports = Get-Content -LiteralPath $PortsFile -Raw -Encoding UTF8 |
-            ConvertFrom-Json
-        if ([int]$ports.pid -ne $ExpectedPid) { return $null }
-        $httpPort = [int]$ports.httpPort
-        if ($httpPort -lt 1 -or $httpPort -gt 65535) { return $null }
+        $ports = Get-Cf7LauncherPortsRecord -ProjectRoot $ProjectRoot
+        if ($ports.Pid -ne $ExpectedPid) { return $null }
+        $httpPort = [int]$ports.HttpPort
         $response = Invoke-WebRequest `
             -Uri "http://localhost:$httpPort/testConnection" `
             -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing `
@@ -333,9 +321,16 @@ function Stop-SelfStartedBus {
         if (-not $Process.HasExited) {
             if ($null -ne $HttpPort) {
                 try {
+                    $context = Get-Cf7LegacyHttpContext `
+                        -ProjectRoot $ProjectRoot
+                    if ($context.Pid -ne $ExpectedPid -or
+                        $context.HttpPort -ne [int]$HttpPort) {
+                        throw 'legacy_http_shutdown_identity_mismatch'
+                    }
                     Invoke-WebRequest `
                         -Uri "http://localhost:$([int]$HttpPort)/shutdown" `
-                        -Method POST -Body '' -TimeoutSec 5 -UseBasicParsing `
+                        -Headers $context.Headers -Method POST -Body '' `
+                        -TimeoutSec 5 -UseBasicParsing `
                         -ErrorAction Stop | Out-Null
                 } catch {
                     Write-Warning (

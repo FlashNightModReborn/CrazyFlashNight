@@ -68,6 +68,10 @@ namespace CF7Launcher.Guardian
 
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _trayMenu;
+        private ToolStripMenuItem _wingsTrayItem;
+        private ToolStripMenuItem _agentEnrollmentTrayItem;
+        private Action _showWingsAction;
+        private Action _showAgentEnrollmentAction;
         private TextBox _logBox;
         private Panel _flashPanel;
         private BootstrapPanel _bootstrapPanel;  // Phase A: 启动期 UI（WebView2）
@@ -1021,6 +1025,28 @@ namespace CF7Launcher.Guardian
             _trayMenu = new ContextMenuStrip();
             _trayMenu.Items.Add("显示", null, delegate { ShowMainWindow(); });
             _trayMenu.Items.Add("日志", null, delegate { ShowMainWindow(); if (!_logVisible) ToggleLog(); });
+            _wingsTrayItem = new ToolStripMenuItem(
+                "Wings 助手",
+                null,
+                delegate
+                {
+                    InvokeAgentRuntimeTrayAction(
+                        _showWingsAction,
+                        "wings");
+                });
+            _wingsTrayItem.Visible = false;
+            _trayMenu.Items.Add(_wingsTrayItem);
+            _agentEnrollmentTrayItem = new ToolStripMenuItem(
+                "Agent 开发者授权…",
+                null,
+                delegate
+                {
+                    InvokeAgentRuntimeTrayAction(
+                        _showAgentEnrollmentAction,
+                        "developer_enrollment");
+                });
+            _agentEnrollmentTrayItem.Visible = false;
+            _trayMenu.Items.Add(_agentEnrollmentTrayItem);
             _trayMenu.Items.Add("-");
             _trayMenu.Items.Add("退出", null, delegate { ForceExit(); });
 
@@ -1033,6 +1059,70 @@ namespace CF7Launcher.Guardian
             try { _trayIcon.Icon = Icon.ExtractAssociatedIcon(Environment.ProcessPath); }
             catch { _trayIcon.Icon = SystemIcons.Application; }
             _trayIcon.DoubleClick += delegate { ShowMainWindow(); };
+        }
+
+        /// <summary>
+        /// 注入 Launcher-owned Agent Runtime 入口。菜单仅在对应中立 UI
+        /// 已真实装配后可见；null 会立即撤下入口，避免退出竞态调用已释放宿主。
+        /// </summary>
+        public void SetAgentRuntimeTrayActions(
+            Action showWings,
+            Action showDeveloperEnrollment)
+        {
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(
+                        new Action(
+                            delegate
+                            {
+                                SetAgentRuntimeTrayActions(
+                                    showWings,
+                                    showDeveloperEnrollment);
+                            }));
+                }
+                catch { }
+                return;
+            }
+
+            _showWingsAction = showWings;
+            _showAgentEnrollmentAction =
+                showDeveloperEnrollment;
+            if (_wingsTrayItem != null)
+            {
+                _wingsTrayItem.Enabled =
+                    showWings != null;
+                _wingsTrayItem.Visible =
+                    showWings != null;
+            }
+            if (_agentEnrollmentTrayItem != null)
+            {
+                _agentEnrollmentTrayItem.Enabled =
+                    showDeveloperEnrollment != null;
+                _agentEnrollmentTrayItem.Visible =
+                    showDeveloperEnrollment != null;
+            }
+        }
+
+        private static void InvokeAgentRuntimeTrayAction(
+            Action action,
+            string actionName)
+        {
+            if (action == null)
+                return;
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[Guardian] Agent Runtime tray action "
+                    + actionName
+                    + " failed: "
+                    + ex.GetType().Name);
+            }
         }
 
         /// <summary>Phase 1 (11b-β): Ready 时由 GameLaunchFlow.readyWiring 调用, 显示托盘图标。</summary>
@@ -1068,6 +1158,7 @@ namespace CF7Launcher.Guardian
         private int _closeTerminated;
         private int _exitStarted;
         private volatile bool _closeAlreadyInProgress;
+        private string _agentRuntimeExitPreparationToken;
         // Phase D Step D11: OnStateChanged 扩三元 (silentAtEmit), close watcher 签名同步.
         private Action<string, string, bool> _closeStateWatcher;
         private System.Windows.Forms.Timer _closeTimeoutTimer;
@@ -1200,6 +1291,139 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        /// <summary>
+        /// Phase one of Agent Runtime shutdown. The UI thread closes mutation
+        /// admission and proves the persistence fence, but deliberately keeps
+        /// the Runtime transport and process alive until every frame in the
+        /// success response has been written.
+        /// </summary>
+        public bool TryPrepareAgentRuntimeExit(string actionId)
+        {
+            if (string.IsNullOrWhiteSpace(actionId)
+                || this.InvokeRequired
+                || _closeAlreadyInProgress
+                || System.Threading.Interlocked.CompareExchange(
+                    ref _exitStarted,
+                    0,
+                    0) != 0
+                || _agentRuntimeExitPreparationToken != null)
+            {
+                return false;
+            }
+
+            _agentRuntimeExitPreparationToken = actionId;
+            _closeAlreadyInProgress = true;
+            System.Threading.Interlocked.Exchange(
+                ref _closeTerminated,
+                1);
+            if (!TryPassShutdownFence(
+                    consumeOnSuccess: false))
+            {
+                _agentRuntimeExitPreparationToken = null;
+                _closeAlreadyInProgress = false;
+                System.Threading.Interlocked.Exchange(
+                    ref _closeTerminated,
+                    0);
+                return false;
+            }
+
+            LogManager.Log(
+                "[Guardian] agent runtime shutdown prepared"
+                + " actionId=" + actionId);
+            return true;
+        }
+
+        /// <summary>
+        /// Phase two of Agent Runtime shutdown. The gateway calls this only
+        /// after every frame in the terminal success response has been
+        /// written.
+        /// </summary>
+        public void CompleteAgentRuntimeExit(string actionId)
+        {
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    if (this.IsHandleCreated && !this.IsDisposed)
+                    {
+                        this.BeginInvoke(
+                            new Action(
+                                delegate
+                                {
+                                    CompleteAgentRuntimeExit(
+                                        actionId);
+                                }));
+                    }
+                }
+                catch { }
+                return;
+            }
+            if (!IsExactAgentRuntimeExitPreparation(actionId))
+                return;
+
+            ClearAgentRuntimeExitPreparation();
+            LogManager.Log(
+                "[Guardian] agent runtime shutdown receipt written"
+                + " actionId=" + actionId);
+            DoExit(
+                false,
+                null,
+                shutdownFenceAlreadyPassed: true);
+        }
+
+        /// <summary>
+        /// A response write failure rolls the prepared shutdown back.
+        /// The persistence callback remains installed so a later fresh action
+        /// must prove the fence again.
+        /// </summary>
+        public void AbortAgentRuntimeExit(string actionId)
+        {
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    if (this.IsHandleCreated && !this.IsDisposed)
+                    {
+                        this.BeginInvoke(
+                            new Action(
+                                delegate
+                                {
+                                    AbortAgentRuntimeExit(
+                                        actionId);
+                                }));
+                    }
+                }
+                catch { }
+                return;
+            }
+            if (!IsExactAgentRuntimeExitPreparation(actionId))
+                return;
+
+            ClearAgentRuntimeExitPreparation();
+            _closeAlreadyInProgress = false;
+            System.Threading.Interlocked.Exchange(
+                ref _closeTerminated,
+                0);
+            LogManager.Log(
+                "[Guardian] agent runtime shutdown preparation aborted"
+                + " actionId=" + actionId);
+        }
+
+        private bool IsExactAgentRuntimeExitPreparation(
+            string actionId)
+        {
+            return !string.IsNullOrWhiteSpace(actionId)
+                && string.Equals(
+                    _agentRuntimeExitPreparationToken,
+                    actionId,
+                    StringComparison.Ordinal);
+        }
+
+        private void ClearAgentRuntimeExitPreparation()
+        {
+            _agentRuntimeExitPreparationToken = null;
+        }
+
         public void ForceExit()
         {
             if (this.InvokeRequired)
@@ -1313,6 +1537,13 @@ namespace CF7Launcher.Guardian
 
         private bool TryPassShutdownFence()
         {
+            return TryPassShutdownFence(
+                consumeOnSuccess: true);
+        }
+
+        private bool TryPassShutdownFence(
+            bool consumeOnSuccess)
+        {
             bool fencePassed = true;
             if (OnShutdownFence != null)
             {
@@ -1335,7 +1566,8 @@ namespace CF7Launcher.Guardian
                     "[Guardian] shutdown cancelled by persistence fence");
                 return false;
             }
-            OnShutdownFence = null;
+            if (consumeOnSuccess)
+                OnShutdownFence = null;
             return true;
         }
 
@@ -1350,6 +1582,26 @@ namespace CF7Launcher.Guardian
             bool skipShutdownFence,
             string emergencyReason)
         {
+            return DoExit(
+                skipShutdownFence,
+                emergencyReason,
+                shutdownFenceAlreadyPassed: false);
+        }
+
+        private bool DoExit(
+            bool skipShutdownFence,
+            string emergencyReason,
+            bool shutdownFenceAlreadyPassed)
+        {
+            if (!skipShutdownFence
+                && !shutdownFenceAlreadyPassed
+                && _agentRuntimeExitPreparationToken != null)
+            {
+                LogManager.Log(
+                    "[Guardian] exit deferred until agent runtime"
+                    + " shutdown receipt flush");
+                return false;
+            }
             if (System.Threading.Interlocked.CompareExchange(
                     ref _exitStarted, 1, 0) != 0)
             {
@@ -1358,6 +1610,7 @@ namespace CF7Launcher.Guardian
 
             if (skipShutdownFence)
             {
+                ClearAgentRuntimeExitPreparation();
                 LogManager.Log(
                     "[Guardian] event=emergency_exit reason="
                     + emergencyReason
@@ -1365,6 +1618,7 @@ namespace CF7Launcher.Guardian
             }
 
             if (!skipShutdownFence
+                && !shutdownFenceAlreadyPassed
                 && !TryPassShutdownFence())
             {
                 _closeAlreadyInProgress = false;
@@ -1374,7 +1628,8 @@ namespace CF7Launcher.Guardian
                     ref _exitStarted, 0);
                 return false;
             }
-            // Emergency exit intentionally consumes the callback without invoking it.
+            // Emergency and prepared exits intentionally consume the callback
+            // without invoking it here.
             OnShutdownFence = null;
             GuardianLifecycle.MarkShuttingDown();
 
@@ -1422,17 +1677,27 @@ namespace CF7Launcher.Guardian
 
         private void CleanupTrayIcon()
         {
+            _showWingsAction = null;
+            _showAgentEnrollmentAction = null;
             if (_trayIcon != null)
             {
                 try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { }
                 _trayIcon = null;
             }
+            if (_trayMenu != null)
+            {
+                try { _trayMenu.Dispose(); } catch { }
+                _trayMenu = null;
+            }
+            _wingsTrayItem = null;
+            _agentEnrollmentTrayItem = null;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
+                ClearAgentRuntimeExitPreparation();
                 if (_viewportSettleTimer != null)
                 {
                     _viewportSettleTimer.Stop();

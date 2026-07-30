@@ -8,6 +8,27 @@ using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian
 {
+    internal interface IFlashFocusWindowApi
+    {
+        IntPtr GetForegroundWindow();
+        uint GetWindowThreadProcessId(
+            IntPtr windowHandle,
+            out uint processId);
+        bool SetForegroundWindow(IntPtr windowHandle);
+        bool AttachThreadInput(
+            uint attachThreadId,
+            uint attachToThreadId,
+            bool attach);
+        IntPtr SetFocus(IntPtr windowHandle);
+        uint GetCurrentThreadId();
+        bool IsWindow(IntPtr windowHandle);
+        IntPtr GetRootWindow(IntPtr windowHandle);
+        IntPtr GetFocusedWindow(IntPtr windowHandle);
+        bool IsChild(
+            IntPtr parentWindow,
+            IntPtr candidateChild);
+    }
+
     /// <summary>
     /// 窗口管理：追踪 Flash 窗口句柄 + 嵌入到宿主 Panel。
     /// </summary>
@@ -89,6 +110,17 @@ namespace CF7Launcher.Guardian
         private static extern bool IsWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
+        private static extern IntPtr GetAncestor(
+            IntPtr hWnd,
+            uint gaFlags);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsChild(
+            IntPtr hWndParent,
+            IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         private static extern IntPtr GetMenu(IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -123,7 +155,9 @@ namespace CF7Launcher.Guardian
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_FRAMECHANGED = 0x0020;
+        private const uint GA_ROOT = 2;
 
+        private readonly IFlashFocusWindowApi _focusApi;
         private uint _flashProcessId;
         private uint _guardianProcessId;
         private IntPtr _flashHwnd;
@@ -144,7 +178,110 @@ namespace CF7Launcher.Guardian
         private EmbedPhase _embedPhase;
         private int _currentFlashPid;
 
+        public WindowManager()
+            : this(new Win32FlashFocusWindowApi(), IntPtr.Zero)
+        {
+        }
+
+        internal WindowManager(
+            IFlashFocusWindowApi focusApi,
+            IntPtr initialFlashWindow)
+        {
+            _focusApi = focusApi
+                ?? throw new ArgumentNullException(nameof(focusApi));
+            _flashHwnd = initialFlashWindow;
+        }
+
         public IntPtr FlashHwnd { get { return _flashHwnd; } }
+
+        private sealed class Win32FlashFocusWindowApi
+            : IFlashFocusWindowApi
+        {
+            public IntPtr GetForegroundWindow()
+            {
+                return WindowManager.GetForegroundWindow();
+            }
+
+            public uint GetWindowThreadProcessId(
+                IntPtr windowHandle,
+                out uint processId)
+            {
+                return WindowManager.GetWindowThreadProcessId(
+                    windowHandle,
+                    out processId);
+            }
+
+            public bool SetForegroundWindow(
+                IntPtr windowHandle)
+            {
+                return WindowManager.SetForegroundWindow(
+                    windowHandle);
+            }
+
+            public bool AttachThreadInput(
+                uint attachThreadId,
+                uint attachToThreadId,
+                bool attach)
+            {
+                return WindowManager.AttachThreadInput(
+                    attachThreadId,
+                    attachToThreadId,
+                    attach);
+            }
+
+            public IntPtr SetFocus(IntPtr windowHandle)
+            {
+                return WindowManager.SetFocus(windowHandle);
+            }
+
+            public uint GetCurrentThreadId()
+            {
+                return WindowManager.GetCurrentThreadId();
+            }
+
+            public bool IsWindow(IntPtr windowHandle)
+            {
+                return WindowManager.IsWindow(windowHandle);
+            }
+
+            public IntPtr GetRootWindow(IntPtr windowHandle)
+            {
+                return WindowManager.GetAncestor(
+                    windowHandle,
+                    GA_ROOT);
+            }
+
+            public IntPtr GetFocusedWindow(
+                IntPtr windowHandle)
+            {
+                uint processId;
+                uint threadId =
+                    WindowManager.GetWindowThreadProcessId(
+                        windowHandle,
+                        out processId);
+                if (threadId == 0)
+                    return IntPtr.Zero;
+                GUITHREADINFO info = new GUITHREADINFO
+                {
+                    cbSize =
+                        Marshal.SizeOf<GUITHREADINFO>()
+                };
+                return WindowManager.GetGUIThreadInfo(
+                        threadId,
+                        ref info)
+                    ? info.hwndFocus
+                    : IntPtr.Zero;
+            }
+
+            public bool IsChild(
+                IntPtr parentWindow,
+                IntPtr candidateChild)
+            {
+                return WindowManager.IsChild(
+                    parentWindow,
+                    candidateChild);
+            }
+        }
 
         /// <summary>
         /// Phase 1c：嵌入结果事件。true = 成功嵌入；false = 10s 内未找到 Flash 窗口或外部主动通知失败。
@@ -723,11 +860,37 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public bool RestoreFlashInputFocus(string reason)
         {
+            return RestoreFlashInputFocusCore(
+                reason,
+                _flashHwnd,
+                requireSetForegroundSuccess: false);
+        }
+
+        /// <summary>
+        /// Agent Runtime variant: pins the restore to the registry-bound HWND.
+        /// Success requires the exact Flash HWND (or its exact root) to be the
+        /// foreground window and the tracked handle to remain unchanged.
+        /// </summary>
+        internal bool RestoreFlashInputFocus(
+            string reason,
+            IntPtr expectedFlashHwnd)
+        {
+            return RestoreFlashInputFocusCore(
+                reason,
+                expectedFlashHwnd,
+                requireSetForegroundSuccess: true);
+        }
+
+        private bool RestoreFlashInputFocusCore(
+            string reason,
+            IntPtr expectedFlashHwnd,
+            bool requireSetForegroundSuccess)
+        {
             long totalStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.start", reason);
 
-            IntPtr flashHwnd = _flashHwnd;
-            if (flashHwnd == IntPtr.Zero || !IsWindow(flashHwnd))
+            IntPtr flashHwnd = expectedFlashHwnd;
+            if (!IsCurrentFlashWindow(flashHwnd))
             {
                 LogManager.Log("[FocusRestore] " + reason + ": no flash hwnd, skip");
                 LogFocusProbe(reason, totalStart, 0, 0, 0, 0, false, false, "no_flash");
@@ -735,7 +898,7 @@ namespace CF7Launcher.Guardian
             }
 
             long describeStart = Stopwatch.GetTimestamp();
-            IntPtr fgBefore = GetForegroundWindow();
+            IntPtr fgBefore = _focusApi.GetForegroundWindow();
             string fgBeforeDesc = DescribeWindow(fgBefore);
             double describeBeforeMs = ElapsedMs(describeStart);
             PerfTrace.Duration("focus_restore.describe_before", describeStart, reason);
@@ -744,17 +907,26 @@ namespace CF7Launcher.Guardian
             long pass1Start = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.pass1.start", reason);
             bool sfwOk1 = false;
-            try { sfwOk1 = SetForegroundWindow(flashHwnd); }
+            try
+            {
+                sfwOk1 = _focusApi.SetForegroundWindow(
+                    flashHwnd);
+            }
             catch (Exception ex)
             {
                 LogManager.Log("[FocusRestore] " + reason + " pass1 SetForegroundWindow threw: " + ex.Message);
             }
-            try { SetFocus(flashHwnd); } catch { }
+            try { _focusApi.SetFocus(flashHwnd); } catch { }
 
-            IntPtr fgAfter1 = GetForegroundWindow();
+            IntPtr fgAfter1 =
+                _focusApi.GetForegroundWindow();
             double pass1Ms = ElapsedMs(pass1Start);
             PerfTrace.Duration("focus_restore.pass1", pass1Start, reason);
-            if (IsWindowInFlashSession(fgAfter1))
+            if ((!requireSetForegroundSuccess || sfwOk1)
+                && IsExactFlashForeground(
+                    flashHwnd,
+                    fgAfter1,
+                    requireSetForegroundSuccess))
             {
                 describeStart = Stopwatch.GetTimestamp();
                 string fgAfter1Desc = DescribeWindow(fgAfter1);
@@ -773,13 +945,21 @@ namespace CF7Launcher.Guardian
             // Pass 2：AttachThreadInput hack
             long attachStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.attach.start", reason);
-            uint myTid = GetCurrentThreadId();
+            uint myTid = _focusApi.GetCurrentThreadId();
             uint fgPid2;
-            uint fgTid = GetWindowThreadProcessId(fgAfter1, out fgPid2);
+            uint fgTid = _focusApi.GetWindowThreadProcessId(
+                fgAfter1,
+                out fgPid2);
             bool attached = false;
             if (fgTid != 0 && fgTid != myTid)
             {
-                try { attached = AttachThreadInput(myTid, fgTid, true); }
+                try
+                {
+                    attached = _focusApi.AttachThreadInput(
+                        myTid,
+                        fgTid,
+                        true);
+                }
                 catch (Exception ex)
                 {
                     LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput attach threw: " + ex.Message);
@@ -790,16 +970,29 @@ namespace CF7Launcher.Guardian
 
             long pass2Start = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.pass2.start", reason);
+            bool sfwOk2 = false;
             try
             {
-                try { SetForegroundWindow(flashHwnd); } catch { }
-                try { SetFocus(flashHwnd); } catch { }
+                try
+                {
+                    sfwOk2 =
+                        _focusApi.SetForegroundWindow(
+                            flashHwnd);
+                }
+                catch { }
+                try { _focusApi.SetFocus(flashHwnd); } catch { }
             }
             finally
             {
                 if (attached)
                 {
-                    try { AttachThreadInput(myTid, fgTid, false); }
+                    try
+                    {
+                        _focusApi.AttachThreadInput(
+                            myTid,
+                            fgTid,
+                            false);
+                    }
                     catch (Exception ex)
                     {
                         // 这条若失败必须立刻报：输入队列绑死是进程级 bug，不会自愈
@@ -811,8 +1004,14 @@ namespace CF7Launcher.Guardian
             double pass2Ms = ElapsedMs(pass2Start);
             PerfTrace.Duration("focus_restore.pass2", pass2Start, reason);
 
-            IntPtr fgAfter2 = GetForegroundWindow();
-            bool finalOk = IsWindowInFlashSession(fgAfter2);
+            IntPtr fgAfter2 =
+                _focusApi.GetForegroundWindow();
+            bool finalOk =
+                (!requireSetForegroundSuccess || sfwOk2)
+                && IsExactFlashForeground(
+                    flashHwnd,
+                    fgAfter2,
+                    requireSetForegroundSuccess);
             describeStart = Stopwatch.GetTimestamp();
             string fgAfter1Desc2 = DescribeWindow(fgAfter1);
             string fgAfter2Desc = DescribeWindow(fgAfter2);
@@ -828,6 +1027,52 @@ namespace CF7Launcher.Guardian
             LogFocusProbe(reason, totalStart, pass1Ms, attachMs, pass2Ms,
                 describeBeforeMs + describeFinalMs, finalOk, true, "pass2");
             return finalOk;
+        }
+
+        private bool IsCurrentFlashWindow(
+            IntPtr expectedFlashHwnd)
+        {
+            if (expectedFlashHwnd == IntPtr.Zero)
+                return false;
+            lock (_embedClaimLock)
+            {
+                return _flashHwnd == expectedFlashHwnd
+                    && _focusApi.IsWindow(
+                        expectedFlashHwnd);
+            }
+        }
+
+        private bool IsExactFlashForeground(
+            IntPtr expectedFlashHwnd,
+            IntPtr foregroundHwnd,
+            bool requireExactInnerFocus)
+        {
+            if (foregroundHwnd == IntPtr.Zero
+                || !IsCurrentFlashWindow(
+                    expectedFlashHwnd))
+            {
+                return false;
+            }
+            bool exactForeground =
+                foregroundHwnd == expectedFlashHwnd;
+            if (!exactForeground)
+            {
+                IntPtr root = _focusApi.GetRootWindow(
+                    expectedFlashHwnd);
+                exactForeground = root != IntPtr.Zero
+                    && foregroundHwnd == root;
+            }
+            if (!exactForeground || !requireExactInnerFocus)
+                return exactForeground;
+
+            IntPtr focused =
+                _focusApi.GetFocusedWindow(
+                    expectedFlashHwnd);
+            return focused == expectedFlashHwnd
+                || (focused != IntPtr.Zero
+                    && _focusApi.IsChild(
+                        expectedFlashHwnd,
+                        focused));
         }
 
         private static void LogFocusProbe(string reason, long totalStart, double pass1Ms,

@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
+const LegacyHttpClient = require("./lib/legacy-http-client");
 
 const DEFAULT_SEED_SLOT = "crazyflasher7_saves";
 const DEFAULT_TARGET_SLOT = "cf7_agent_loot_target_full_v1";
@@ -15,7 +16,6 @@ const AGENT_SLOT_RE = /^cf7_agent_[A-Za-z0-9_-]+$/;
 const SAFE_SLOT_RE = /^[A-Za-z0-9_-]+$/;
 const LIVE_SLOT_RE = /^crazyflasher7_saves\d*$/;
 const SLOT_COUNT = 50;
-const PORT_CANDIDATES = [1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000];
 
 class PrepareError extends Error {
   constructor(code, message, details) {
@@ -317,12 +317,30 @@ function assertTargetSlotNotInUse(status, targetSlot, root) {
   return slots;
 }
 
-function requestJson(port, method, pathname, body, timeoutMs) {
+function requestJson(port, method, pathname, body, timeoutMs, legacyHttpContext) {
   return new Promise((resolve, reject) => {
     const payload = body == null ? "" : JSON.stringify(body);
+    let authorizationHeaders;
+    try {
+      authorizationHeaders = LegacyHttpClient.authorizationHeadersFor(
+        legacyHttpContext,
+        pathname
+      );
+    } catch (error) {
+      reject(error);
+      return;
+    }
     const request = http.request({
       hostname: "localhost", port, method, path: pathname, timeout: timeoutMs || 1500,
-      headers: body == null ? {} : { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) },
+      headers: Object.assign(
+        body == null
+          ? {}
+          : {
+              "Content-Type": "application/json",
+              "Content-Length": Buffer.byteLength(payload)
+            },
+        authorizationHeaders
+      ),
     }, (response) => {
       const chunks = [];
       response.on("data", (chunk) => chunks.push(chunk));
@@ -343,10 +361,12 @@ function isConnectionAbsent(error) {
   return error && ["ECONNREFUSED", "ENETUNREACH", "EHOSTUNREACH"].includes(error.code);
 }
 
-async function queryAgentStatus(port) {
+async function queryAgentStatus(legacyHttpContext) {
+  const port = legacyHttpContext.httpPort;
   let identity;
   try {
-    identity = await requestJson(port, "POST", "/testConnection", null);
+    identity = await requestJson(
+      port, "POST", "/testConnection", null, null, legacyHttpContext);
   } catch (error) {
     if (isConnectionAbsent(error)) return { reachable: false, status: null, socketPort: null };
     fail("runtime_status_unavailable", "unknown listener on localhost:" + port + " could not be identified as Launcher HTTP", { cause: error.message });
@@ -357,7 +377,8 @@ async function queryAgentStatus(port) {
   }
   let socketInfo;
   try {
-    socketInfo = await requestJson(port, "GET", "/getSocketPort", null);
+    socketInfo = await requestJson(
+      port, "GET", "/getSocketPort", null, null, legacyHttpContext);
   } catch (error) {
     fail("runtime_status_unavailable", "Launcher HTTP on localhost:" + port + " did not declare its paired socket port", { cause: error.message });
   }
@@ -367,44 +388,50 @@ async function queryAgentStatus(port) {
       || !Number.isInteger(socketPort) || socketPort < 1 || socketPort > 65535 || socketPort === port) {
     fail("runtime_status_unavailable", "Launcher HTTP on localhost:" + port + " returned an invalid paired socket port", { response: socketInfo.text.slice(0, 300) });
   }
-  let direct;
-  try {
-    direct = await requestJson(port, "GET", "/agent-control/status", null);
-  } catch (error) {
-    fail("runtime_status_unavailable", "could not safely query Launcher status on localhost:" + port, { cause: error.message });
-  }
-  if (direct.statusCode >= 200 && direct.statusCode < 300 && isPlainObject(direct.json)) {
-    return { reachable: true, status: direct.json, socketPort };
-  }
   let task;
   try {
-    task = await requestJson(port, "POST", "/task", { task: "agent_control", action: "status" });
+    task = await requestJson(
+      port,
+      "POST",
+      "/task",
+      { task: "agent_control", action: "status" },
+      null,
+      legacyHttpContext);
   } catch (error) {
     fail("runtime_status_unavailable", "reachable localhost:" + port + " did not provide a safe agent-control status", { cause: error.message });
   }
   if (task.statusCode >= 200 && task.statusCode < 300 && isPlainObject(task.json) && (task.json.success === true || task.json.ok === true)) {
     return { reachable: true, status: task.json, socketPort };
   }
-  fail("runtime_status_unavailable", "reachable localhost:" + port + " did not provide a successful agent-control status", { direct: direct.text.slice(0, 300), task: task.text.slice(0, 300) });
-}
-
-function candidatePorts(root) {
-  const ports = [];
-  const portsFile = path.join(root, "launcher_ports.json");
-  if (fs.existsSync(portsFile)) {
-    try {
-      const parsed = JSON.parse(fs.readFileSync(portsFile, "utf8"));
-      if (Number.isInteger(parsed.httpPort)) ports.push(parsed.httpPort);
-    } catch (_error) { /* stale port files must not bypass the candidate scan */ }
-  }
-  PORT_CANDIDATES.forEach((port) => { if (!ports.includes(port)) ports.push(port); });
-  return ports;
+  fail("runtime_status_unavailable", "reachable localhost:" + port + " did not provide a successful agent-control status", { task: task.text.slice(0, 300) });
 }
 
 async function assertTargetNotRunning(root, targetSlot, options) {
   const opts = options || {};
-  const ports = Array.isArray(opts.ports) ? opts.ports.slice() : candidatePorts(root);
-  const statusQuery = typeof opts.queryAgentStatus === "function" ? opts.queryAgentStatus : queryAgentStatus;
+  const injectedPorts = Array.isArray(opts.ports) ? opts.ports.slice() : null;
+  let exactContext = null;
+  let ports = injectedPorts;
+  if (ports === null) {
+    const portsFile = path.join(root, "launcher_ports.json");
+    if (!fs.existsSync(portsFile)) ports = [];
+    else {
+      exactContext = LegacyHttpClient.readExactLauncherHttpContext(
+        root,
+        opts.legacyHttpOptions || {});
+      ports = [exactContext.httpPort];
+    }
+  }
+  const statusQuery = typeof opts.queryAgentStatus === "function"
+    ? opts.queryAgentStatus
+    : (port) => {
+        if (!exactContext || port !== exactContext.httpPort) {
+          fail(
+            "runtime_status_unavailable",
+            "authenticated exact launcher_ports.json context is required",
+            {port});
+        }
+        return queryAgentStatus(exactContext);
+      };
   const instances = [];
   const pairedSocketPorts = new Set();
   const skippedSocketPorts = new Set();

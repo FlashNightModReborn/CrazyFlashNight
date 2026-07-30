@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cf7://agent-assets/lore/public-companion.v1.schema.json",
+  "title": "CF7 public companion lore catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "catalogId",
+    "catalogRevision",
+    "publicStoryPhaseIds",
+    "facts"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "catalogId": {
+      "const": "public-companion"
+    },
+    "catalogRevision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "publicStoryPhaseIds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{22,128}$"
+      }
+    },
+    "facts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/fact"
+      }
+    }
+  },
+  "$defs": {
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factId",
+        "sourceAuthority",
+        "canonClass",
+        "sourceRevision",
+        "statement",
+        "guidanceDomains",
+        "guidanceKeys",
+        "revealPredicate"
+      ],
+      "properties": {
+        "factId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]{2,127}$"
+        },
+        "sourceAuthority": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "canonClass": {
+          "enum": [
+            "gameplay_public",
+            "presentation_cue"
+          ]
+        },
+        "sourceRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "guidanceDomains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "task",
+              "equipment",
+              "route",
+              "ui"
+            ]
+          }
+        },
+        "guidanceKeys": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{2,127}$"
+          }
+        },
+        "revealPredicate": {
+          "$ref": "#/$defs/revealPredicate"
+        }
+      }
+    },
+    "revealPredicate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimumSaveClass",
+        "requiredProgressFlags",
+        "forbiddenProgressFlags",
+        "branchEquals",
+        "requiresRevealGrant"
+      ],
+      "properties": {
+        "minimumSaveClass": {
+          "enum": [
+            "legacy",
+            "standard",
+            "new_game_plus",
+            "developer_unlocked"
+          ]
+        },
+        "requiredProgressFlags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{2,127}$"
+          }
+        },
+        "forbiddenProgressFlags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{2,127}$"
+          }
+        },
+        "branchEquals": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9._-]{2,127}$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{0,127}$"
+          }
+        },
+        "requiresRevealGrant": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -78,8 +78,12 @@ function makeResponse(message,override){
   var response={type:'panel_resp',domain:'hairdresser',cmd:message.cmd,callId:message.callId};
   if(message.cmd==='snapshot')Object.assign(response,snapshotPayload());
   else if(message.cmd==='commit'){
-    __model.currentHair=message.payload.hairIdentifier;
-    Object.assign(response,{success:true,v:1,operation:'commit',currentHair:__model.currentHair})
+    if(message.payload.expectedCurrentHair!==__model.currentHair){
+      Object.assign(response,{success:false,v:1,error:'stale_state',currentHair:__model.currentHair})
+    }else{
+      __model.currentHair=message.payload.hairIdentifier;
+      Object.assign(response,{success:true,v:1,operation:'commit',currentHair:__model.currentHair})
+    }
   }
   if(override)Object.assign(response,clone(override));
   return response
@@ -263,9 +267,10 @@ window.Panels=(function(){
     var commitMessage=writes()[commitBefore];
     await reopenCurrent();
     state=HairdresserPanel.debugState();
-    ok('commit sends only the frozen v1 raw identifier payload',
-      commitMessage&&Object.keys(commitMessage.payload).sort().join(',')==='hairIdentifier,v'
-      &&commitMessage.payload.v===1&&commitMessage.payload.hairIdentifier==='发型-男式-平头',
+    ok('commit sends the frozen v1 target plus expected-current CAS payload',
+      commitMessage&&Object.keys(commitMessage.payload).sort().join(',')==='expectedCurrentHair,hairIdentifier,v'
+      &&commitMessage.payload.v===1&&commitMessage.payload.hairIdentifier==='发型-男式-平头'
+      &&commitMessage.payload.expectedCurrentHair==='光头',
       JSON.stringify(commitMessage));
     ok('definitive commit auto-closes once and reopen retains both duplicate current rows',
       closeMessages().length===commitCloseBefore+1

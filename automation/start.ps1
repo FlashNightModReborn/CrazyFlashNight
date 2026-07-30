@@ -1,15 +1,41 @@
 [CmdletBinding()]
 param(
-    [string]$CandidateRoot
+    [string]$CandidateRoot,
+    [switch]$EnableLegacyHttpAutomation,
+    [string]$UnattendedSlot,
+    [ValidateSet('jsonl','mcp')]
+    [string]$UnattendedAdapter = 'jsonl',
+    [string]$UnattendedClientInstanceId
 )
 
 # 默认只启动仓库根目录下已经正式部署的 runtime。
 # 隔离候选必须通过 -CandidateRoot 显式选择，且只能来自本仓库的 v2 candidate 目录。
+# 旧 localhost 高权限 HTTP 仅供显式迁移 runner；启用时 Launcher 不开放 Agent Runtime，
+# 避免同一进程内的低权限 pipe principal 借 same-user bearer 文件越权。
 $ErrorActionPreference = 'Stop'
 $scriptDirectory = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent -Path $MyInvocation.MyCommand.Path }
 $scriptDirectory = (Resolve-Path -LiteralPath $scriptDirectory).Path.TrimEnd('\')
 $projectRoot = (Split-Path -Parent $scriptDirectory).TrimEnd('\')
 $launchProjectRoot = [string]$projectRoot
+$unattendedRequested =
+    -not [string]::IsNullOrWhiteSpace($UnattendedSlot)
+if ($unattendedRequested) {
+    $allowedUnattendedSlots = @(
+        'cf7_agent_equipment_tuning',
+        'cf7_agent_arena_calibration',
+        'cf7_agent_character_build',
+        'cf7_agent_loot_target_full_v1'
+    )
+    if ($UnattendedSlot -cnotin $allowedUnattendedSlots) {
+        throw '-UnattendedSlot is not in the frozen unattended slot allowlist.'
+    }
+    if ($EnableLegacyHttpAutomation) {
+        throw 'Unattended Agent Runtime cannot enable legacy HTTP automation.'
+    }
+}
+if (-not [string]::IsNullOrWhiteSpace($UnattendedClientInstanceId)) {
+    throw '-UnattendedClientInstanceId was removed; the trusted Core runner generates its own identity.'
+}
 $dotnetRuntimeHelper = Join-Path $launchProjectRoot 'tools\dotnet-runtime-detect.ps1'
 if (-not (Test-Path -LiteralPath $dotnetRuntimeHelper -PathType Leaf)) {
     throw "Dotnet runtime detection helper is missing: $dotnetRuntimeHelper"
@@ -86,9 +112,13 @@ function Invoke-Cf7RuntimeVerifier {
     $startInfo.WorkingDirectory = $WorkingDirectory
     $startInfo.UseShellExecute = $false
     $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
     $process = [System.Diagnostics.Process]::Start($startInfo)
     if ($null -eq $process) { throw "Runtime verifier did not start: $Executable" }
     try {
+        $process.BeginOutputReadLine()
+        $process.BeginErrorReadLine()
         if (-not $process.WaitForExit(120000)) {
             try { $process.Kill() } catch { }
             [void]$process.WaitForExit(10000)
@@ -209,7 +239,11 @@ if ($null -ne $candidateMetadata) {
 # invoking the helper immediately keeps the environment result, not a fragile function name.
 . $dotnetRuntimeHelper
 $setDotnetRootCommand = Get-Command Set-DotnetRootForCore -CommandType Function -ErrorAction Stop
-if (-not (& $setDotnetRootCommand)) { exit 1 }
+if ($unattendedRequested) {
+    if (-not (& $setDotnetRootCommand -Quiet)) { exit 1 }
+} elseif (-not (& $setDotnetRootCommand)) {
+    exit 1
+}
 
 # Use the trusted repository verifier to validate the complete manifest inventory before
 # executing any candidate payload. The bootstrap then validates the actual launch mode.
@@ -222,26 +256,16 @@ if (-not (Test-Path -LiteralPath $bundleVerifier -PathType Leaf)) {
     throw "Runtime v2 verifier missing: $bundleVerifier"
 }
 $LASTEXITCODE = 0
-& $bundleVerifier -ProjectRoot $launchProjectRoot -DeploymentRoot $selectedDeploymentRoot -IntegrityOnly
+if ($unattendedRequested) {
+    & $bundleVerifier -ProjectRoot $launchProjectRoot -DeploymentRoot $selectedDeploymentRoot -IntegrityOnly *> $null
+} else {
+    & $bundleVerifier -ProjectRoot $launchProjectRoot -DeploymentRoot $selectedDeploymentRoot -IntegrityOnly
+}
 if ($LASTEXITCODE -ne 0) {
     throw "Runtime v2 bundle verifier rejected $selectedDeploymentRoot (exitCode=$LASTEXITCODE)."
 }
 $verifyArgument = if ($runtimeMode -eq 'isolated_candidate') { '--verify-runtime-only' } else { '--verify-only' }
 Invoke-Cf7RuntimeVerifier -Executable $selectedBootstrapExe -Arguments $verifyArgument -WorkingDirectory $selectedDeploymentRoot
-
-$coreSha256 = Get-Cf7Sha256 -Path $selectedCoreDll
-Write-Host '=== CF7 Runtime Launch Identity ===' -ForegroundColor Cyan
-Write-Host "  Runtime Mode    : $runtimeMode"
-Write-Host "  Deployment Root : $selectedDeploymentRoot"
-Write-Host "  Core Path       : $selectedCoreDll"
-Write-Host "  Core SHA256     : $coreSha256"
-Write-Host "  Build Identity  : $($manifestIdentity.buildIdentityHash)"
-Write-Host "  Payload Closure : $($manifestIdentity.payloadClosureHash)"
-if ($runtimeMode -eq 'isolated_candidate') {
-    Write-Host '  Deployment      : NOT_DEPLOYED (explicit candidate acceptance run)' -ForegroundColor Yellow
-} else {
-    Write-Host '  Deployment      : FORMAL_RUNTIME' -ForegroundColor Green
-}
 
 $portsFile = Join-Path $launchProjectRoot 'launcher_ports.json'
 if (Test-Path -LiteralPath $portsFile) {
@@ -258,12 +282,57 @@ if (Test-Path -LiteralPath $portsFile) {
     }
 }
 
+if ($unattendedRequested) {
+    $runnerStart = [Diagnostics.ProcessStartInfo]::new()
+    $runnerStart.FileName = [IO.Path]::GetFullPath($selectedCoreExe)
+    $runnerStart.WorkingDirectory = $selectedDeploymentRoot
+    $runnerStart.UseShellExecute = $false
+    # Windows PowerShell 5.1 exposes ProcessStartInfo without ArgumentList.
+    # Both interpolated values have already passed closed ASCII allowlists.
+    $runnerStart.Arguments =
+        "--agent-unattended-runner --adapter $UnattendedAdapter --slot $UnattendedSlot"
+    $trustedRunner = [Diagnostics.Process]::Start($runnerStart)
+    if ($null -eq $trustedRunner) {
+        throw 'Trusted unattended Core runner failed to start.'
+    }
+    $trustedRunner.WaitForExit()
+    $trustedRunnerExitCode = $trustedRunner.ExitCode
+    $trustedRunner.Dispose()
+    if ($trustedRunnerExitCode -ne 0) {
+        throw "Trusted unattended Core runner failed (exitCode=$trustedRunnerExitCode)."
+    }
+    return
+}
+
+$coreSha256 = Get-Cf7Sha256 -Path $selectedCoreDll
+Write-Host '=== CF7 Runtime Launch Identity ===' -ForegroundColor Cyan
+Write-Host "  Runtime Mode    : $runtimeMode"
+Write-Host "  Deployment Root : $selectedDeploymentRoot"
+Write-Host "  Core Path       : $selectedCoreDll"
+Write-Host "  Core SHA256     : $coreSha256"
+Write-Host "  Build Identity  : $($manifestIdentity.buildIdentityHash)"
+Write-Host "  Payload Closure : $($manifestIdentity.payloadClosureHash)"
+if ($runtimeMode -eq 'isolated_candidate') {
+    Write-Host '  Deployment      : NOT_DEPLOYED (explicit candidate acceptance run)' -ForegroundColor Yellow
+} else {
+    Write-Host '  Deployment      : FORMAL_RUNTIME' -ForegroundColor Green
+}
+
 $guardian = $null
 try {
     Write-Host "Starting CF7:ME Guardian Core ($runtimeMode)..."
+    if ($EnableLegacyHttpAutomation) {
+        Write-Host '  Control plane   : LEGACY_HTTP_AUTOMATION (Agent Runtime admission disabled)' -ForegroundColor Yellow
+    }
     Push-Location $launchProjectRoot
     try {
-        $guardian = [System.Diagnostics.Process]::Start($selectedCoreExe, "--project-root `"$launchProjectRoot`"")
+        $coreArguments = "--project-root `"$launchProjectRoot`""
+        if ($EnableLegacyHttpAutomation) {
+            $coreArguments += ' --legacy-http-automation'
+        }
+        $guardian = [System.Diagnostics.Process]::Start(
+            $selectedCoreExe,
+            $coreArguments)
     } finally {
         Pop-Location
     }
@@ -319,7 +388,6 @@ try {
         try { $guardian.Refresh() } catch { }
     }
     if ($null -eq $readyPorts) { throw 'Guardian did not write a matching launcher_ports.json within 30 seconds.' }
-
     Write-Host "Guardian bus ready: $($readyPorts | ConvertTo-Json -Compress)"
     Write-Host 'Guardian started successfully.'
     Write-Host "Runtime identity confirmed: mode=$runtimeMode coreSha256=$coreSha256 buildIdentity=$($manifestIdentity.buildIdentityHash) payloadClosure=$($manifestIdentity.payloadClosureHash)"

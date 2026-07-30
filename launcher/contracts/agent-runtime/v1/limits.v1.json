@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "cf7.agent_runtime.limits.v1",
+  "protocolVersion": "1.0",
+  "frame": {
+    "magic": "CF7A",
+    "headerBytes": 12,
+    "kinds": {
+      "jsonRpc": 1,
+      "binaryChunk": 2
+    },
+    "maximumJsonFrameBytes": 1048576,
+    "maximumBinaryChunkBytes": 4194304,
+    "binaryChunkMetadataLengthBytes": 4,
+    "maximumBinaryChunkMetadataBytes": 1024,
+    "maximumBinaryReadCount": 4194300,
+    "binaryDataBytesFormula": "4194304 - 4 - encodedMetadataLength",
+    "maximumBinaryObjectBytes": 16777216
+  },
+  "identifier": {
+    "minimumEntropyBits": 128,
+    "minimumCharacters": 22,
+    "maximumCharacters": 128,
+    "alphabet": "base64url-compatible"
+  },
+  "connection": {
+    "maximumConnectionTicketTtlMs": 30000,
+    "maximumConcurrentRequestsPerClient": 4,
+    "maximumClientQueueDepth": 16,
+    "maximumRequestsPerMinute": 120
+  },
+  "observation": {
+    "maximumObservationTtlMs": 10000,
+    "maximumGrantTtlMs": 900000,
+    "maximumContentHandleTtlMs": 15000
+  },
+  "scope": {
+    "maximumTargetScopeItems": 32
+  },
+  "action": {
+    "maximumDeadlineMs": 30000,
+    "maximumReasonCharacters": 512,
+    "canonicalIntegerMinimum": -9007199254740991,
+    "canonicalIntegerMaximum": 9007199254740991
+  },
+  "lease": {
+    "playerAssistGui": {
+      "maximumTtlMs": 30000,
+      "maximumActions": 8,
+      "maximumTargets": 1,
+      "automaticRenewal": false,
+      "maximumConsentCumulativeTtlMs": 120000
+    },
+    "playerAssistDomainTransaction": {
+      "maximumTtlMs": 60000,
+      "maximumActions": 1,
+      "automaticRenewal": false
+    },
+    "shutdown": {
+      "maximumTtlMs": 30000,
+      "maximumActions": 1,
+      "minimumTargets": 1,
+      "maximumTargets": 1,
+      "requiredTargetKind": "launcher",
+      "allowedSessionModes": [
+        "developer_interactive",
+        "unattended_test"
+      ],
+      "renewAfterAllowed": false,
+      "automaticRenewal": false,
+      "renewalOperationResult": "operation_invalid"
+    },
+    "developerInteractive": {
+      "maximumTtlMs": 300000,
+      "maximumRenewals": 1
+    },
+    "unattendedTest": {
+      "maximumTtlMs": 1800000,
+      "crossAttempt": false
+    }
+  },
+  "inputGuard": {
+    "minimumQuiescenceMs": 150,
+    "maximumHookHeartbeatAgeMs": 500
+  }
+}

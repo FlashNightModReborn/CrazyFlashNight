@@ -16,6 +16,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         testPricingGateHasNoWrite();
         testCatalogGateHasNoWrite();
         testCommitPreconditionsHaveNoWrite();
+        testCommitRejectsStaleState();
         testCommitWritesAndRefreshesOnce();
         testOpenPanelEnvelope();
         testResponseEnvelope();
@@ -102,10 +103,15 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         var badCommit:Object = HairdresserPanelService.execute("commit", {
             hairIdentifier:"测试发型-9"
         });
+        var missingExpected:Object = HairdresserPanelService.execute("commit", {
+            v:1, hairIdentifier:"测试发型-9"
+        });
         var unsupported:Object = HairdresserPanelService.execute("preview", {v:1});
         check(!badSnapshot.success && badSnapshot.error == "unsupported_version"
             && !badCommit.success && badCommit.error == "unsupported_version",
             "snapshot and commit require protocol v1");
+        check(!missingExpected.success && missingExpected.error == "invalid_payload",
+            "commit requires expectedCurrentHair for CAS");
         check(!unsupported.success && unsupported.error == "unsupported_cmd",
             "service exposes only snapshot and commit");
         check(_root.发型 == "测试发型-7" && actor().发型 == "测试发型-7"
@@ -118,7 +124,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         _root.发型价格[40] = 1;
         var snapshot:Object = HairdresserPanelService.execute("snapshot", {v:1});
         var commit:Object = HairdresserPanelService.execute("commit", {
-            v:1, hairIdentifier:"测试发型-9"
+            v:1, hairIdentifier:"测试发型-9", expectedCurrentHair:"测试发型-7"
         });
         check(!snapshot.success && snapshot.error == "pricing_unsupported"
             && !commit.success && commit.error == "pricing_unsupported",
@@ -133,7 +139,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         resetState();
         _root.发型名称库.pop();
         var mismatch:Object = HairdresserPanelService.execute("commit", {
-            v:1, hairIdentifier:"测试发型-9"
+            v:1, hairIdentifier:"测试发型-9", expectedCurrentHair:"测试发型-7"
         });
         check(!mismatch.success && mismatch.error == "catalog_invalid",
             "mismatched authority arrays fail closed");
@@ -151,7 +157,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
     private static function testCommitPreconditionsHaveNoWrite():Void {
         resetState();
         var unknown:Object = HairdresserPanelService.execute("commit", {
-            v:1, hairIdentifier:"不存在的发型"
+            v:1, hairIdentifier:"不存在的发型", expectedCurrentHair:"测试发型-7"
         });
         check(!unknown.success && unknown.error == "hair_not_found"
             && _root.发型 == "测试发型-7" && actor().发型 == "测试发型-7"
@@ -162,7 +168,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         var originalActor:Object = actor();
         _root.gameworld[_root.控制目标] = undefined;
         var missingActor:Object = HairdresserPanelService.execute("commit", {
-            v:1, hairIdentifier:"测试发型-9"
+            v:1, hairIdentifier:"测试发型-9", expectedCurrentHair:"测试发型-7"
         });
         check(!missingActor.success && missingActor.error == "actor_unavailable"
             && _root.发型 == "测试发型-7" && originalActor.发型 == "测试发型-7"
@@ -173,7 +179,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         var liveActor:Object = actor();
         _root.存档系统 = undefined;
         var missingSave:Object = HairdresserPanelService.execute("commit", {
-            v:1, hairIdentifier:"测试发型-9"
+            v:1, hairIdentifier:"测试发型-9", expectedCurrentHair:"测试发型-7"
         });
         check(!missingSave.success && missingSave.error == "save_unavailable"
             && _root.发型 == "测试发型-7" && liveActor.发型 == "测试发型-7"
@@ -184,7 +190,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         var noRefreshActor:Object = actor();
         noRefreshActor.gotoAndPlay = undefined;
         var missingRefresh:Object = HairdresserPanelService.execute("commit", {
-            v:1, hairIdentifier:"测试发型-9"
+            v:1, hairIdentifier:"测试发型-9", expectedCurrentHair:"测试发型-7"
         });
         check(!missingRefresh.success && missingRefresh.error == "refresh_unavailable"
             && _root.发型 == "测试发型-7" && noRefreshActor.发型 == "测试发型-7"
@@ -192,10 +198,25 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
             "missing dressup refresh entry is rejected before any write");
     }
 
+    private static function testCommitRejectsStaleState():Void {
+        resetState();
+        var stale:Object = HairdresserPanelService.execute("commit", {
+            v:1,
+            hairIdentifier:"测试发型-9",
+            expectedCurrentHair:"测试发型-6"
+        });
+        check(!stale.success && stale.v == 1 && stale.error == "stale_state"
+            && stale.currentHair == "测试发型-7",
+            "commit CAS rejects a stale expectedCurrentHair and returns current authority value");
+        check(_root.发型 == "测试发型-7" && actor().发型 == "测试发型-7"
+            && !_root.存档系统.dirtyMark && actor().refreshCount == 0,
+            "stale CAS rejection performs no appearance, refresh or save write");
+    }
+
     private static function testCommitWritesAndRefreshesOnce():Void {
         resetState();
         var result:Object = HairdresserPanelService.execute("commit", {
-            v:1, hairIdentifier:"测试发型-9"
+            v:1, hairIdentifier:"测试发型-9", expectedCurrentHair:"测试发型-7"
         });
         check(result.success && result.v == 1 && result.operation == "commit"
             && result.currentHair == "测试发型-9",
@@ -244,7 +265,8 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
             "snapshot handler emits parseable task and callId envelope");
 
         _root.gameCommands["hairdresserCommit"]({
-            v:1, callId:42, hairIdentifier:"测试发型-11"
+            v:1, callId:42, hairIdentifier:"测试发型-11",
+            expectedCurrentHair:"测试发型-7"
         });
         var commit:Object = new LiteJSON().parse(String(_root.server.sent));
         check(commit.task == "hairdresser_response" && commit.callId == 42

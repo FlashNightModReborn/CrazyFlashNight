@@ -1,0 +1,241 @@
+{
+  "schemaVersion": "cf7.agent_runtime.method_registry.v1",
+  "protocolVersion": "1.0",
+  "genericActionExecuteWireMethod": false,
+  "methods": [
+    {
+      "name": "runtime.hello",
+      "requiredCapability": null,
+      "parameterContract": "hello",
+      "preAuthentication": true
+    },
+    {
+      "name": "window.list",
+      "requiredCapability": "window.list",
+      "parameterContract": "windowList",
+      "preAuthentication": false
+    },
+    {
+      "name": "window.get",
+      "requiredCapability": "window.get",
+      "parameterContract": "windowTarget",
+      "preAuthentication": false
+    },
+    {
+      "name": "app.list",
+      "requiredCapability": "app.list",
+      "parameterContract": "empty",
+      "preAuthentication": false
+    },
+    {
+      "name": "app.launch",
+      "requiredCapability": "app.launch",
+      "parameterContract": "appLaunch",
+      "preAuthentication": false
+    },
+    {
+      "name": "window.state",
+      "requiredCapability": "window.state",
+      "parameterContract": "windowState",
+      "preAuthentication": false
+    },
+    {
+      "name": "input.click",
+      "requiredCapability": "input.click",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "input.press_key",
+      "requiredCapability": "input.press_key",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "input.type_text",
+      "requiredCapability": "input.type_text",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "input.scroll",
+      "requiredCapability": "input.scroll",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "semantic.set_value",
+      "requiredCapability": "semantic.set_value",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "input.drag",
+      "requiredCapability": "input.drag",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "semantic.secondary_action",
+      "requiredCapability": "semantic.secondary_action",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "window.activate",
+      "requiredCapability": "window.activate",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "session.status",
+      "requiredCapability": "session.status",
+      "parameterContract": "empty",
+      "preAuthentication": false
+    },
+    {
+      "name": "session.discover",
+      "requiredCapability": "session.discover",
+      "parameterContract": "empty",
+      "preAuthentication": false
+    },
+    {
+      "name": "session.attach",
+      "requiredCapability": "session.attach",
+      "parameterContract": "sessionBinding",
+      "preAuthentication": false
+    },
+    {
+      "name": "session.detach",
+      "requiredCapability": "session.detach",
+      "parameterContract": "sessionBinding",
+      "preAuthentication": false
+    },
+    {
+      "name": "session.shutdown",
+      "requiredCapability": "session.shutdown",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "lifecycle.reveal",
+      "requiredCapability": "lifecycle.reveal",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "lifecycle.cancel",
+      "requiredCapability": "lifecycle.cancel",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "panel.open",
+      "requiredCapability": "panel.open",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "lease.acquire",
+      "requiredCapability": "lease.acquire",
+      "parameterContract": "leaseAcquire",
+      "preAuthentication": false
+    },
+    {
+      "name": "lease.renew",
+      "requiredCapability": "lease.renew",
+      "parameterContract": "leaseRenew",
+      "preAuthentication": false
+    },
+    {
+      "name": "lease.release",
+      "requiredCapability": "lease.release",
+      "parameterContract": "leaseRelease",
+      "preAuthentication": false
+    },
+    {
+      "name": "trace.export",
+      "requiredCapability": "trace.export",
+      "parameterContract": "traceExport",
+      "preAuthentication": false
+    },
+    {
+      "name": "observation.grant.issue",
+      "requiredCapability": "observation.grant.manage",
+      "parameterContract": "observationGrantIssue",
+      "preAuthentication": false
+    },
+    {
+      "name": "observation.grant.revoke",
+      "requiredCapability": "observation.grant.manage",
+      "parameterContract": "observationGrantRevoke",
+      "preAuthentication": false
+    },
+    {
+      "name": "observation.capture",
+      "requiredCapability": "observation.capture",
+      "parameterContract": "observationCapture",
+      "preAuthentication": false
+    },
+    {
+      "name": "observation.get",
+      "requiredCapability": "observation.capture",
+      "parameterContract": "observationReference",
+      "preAuthentication": false
+    },
+    {
+      "name": "observation.ack",
+      "requiredCapability": "observation.capture",
+      "parameterContract": "observationReference",
+      "preAuthentication": false
+    },
+    {
+      "name": "content.read",
+      "requiredCapability": "content.read",
+      "parameterContract": "contentReadRequest",
+      "preAuthentication": false
+    },
+    {
+      "name": "action.get",
+      "requiredCapability": "action.get",
+      "parameterContract": "actionGet",
+      "preAuthentication": false
+    },
+    {
+      "name": "appearance.hair.change.v1.inspect",
+      "requiredCapability": "domain.appearance.hair.change.v1",
+      "parameterContract": "hairInspect",
+      "preAuthentication": false
+    },
+    {
+      "name": "appearance.hair.change.v1.preview",
+      "requiredCapability": "domain.appearance.hair.change.v1",
+      "parameterContract": "hairPreview",
+      "preAuthentication": false
+    },
+    {
+      "name": "appearance.hair.change.v1.consent",
+      "requiredCapability": "domain.appearance.hair.change.v1",
+      "parameterContract": "hairConsent",
+      "preAuthentication": false
+    },
+    {
+      "name": "appearance.hair.change.v1.commit",
+      "requiredCapability": "domain.appearance.hair.change.v1",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    },
+    {
+      "name": "appearance.hair.change.v1.reconcile",
+      "requiredCapability": "domain.appearance.hair.change.v1",
+      "parameterContract": "hairReconcile",
+      "preAuthentication": false
+    },
+    {
+      "name": "appearance.hair.change.v1.restore",
+      "requiredCapability": "domain.appearance.hair.change.v1",
+      "parameterContract": "actionEnvelope",
+      "preAuthentication": false
+    }
+  ]
+}

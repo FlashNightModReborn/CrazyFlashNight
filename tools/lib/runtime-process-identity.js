@@ -248,7 +248,11 @@ function resolveExpectedRuntimeIdentity(projectRoot, candidateRoot) {
   return readInstallationIdentity(projectRoot, "formal_runtime");
 }
 
-function buildLauncherStartArguments(scriptPath, expectedIdentity) {
+function buildLauncherStartArguments(
+  scriptPath,
+  expectedIdentity,
+  options = {},
+) {
   const args = ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", scriptPath];
   if (!expectedIdentity || !expectedIdentity.runtimeMode) {
     reject("runtime_identity_expected_missing", "expected runtime identity is required before launch");
@@ -263,6 +267,17 @@ function buildLauncherStartArguments(scriptPath, expectedIdentity) {
     args.push("-CandidateRoot", expectedIdentity.installRoot);
   } else if (expectedIdentity.runtimeMode !== "formal_runtime") {
     reject("runtime_identity_mode_invalid", "unsupported runtimeMode: " + expectedIdentity.runtimeMode);
+  }
+  if (options.enableLegacyHttpAutomation === true) {
+    args.push("-EnableLegacyHttpAutomation");
+  } else if (
+    options.enableLegacyHttpAutomation !== undefined
+    && options.enableLegacyHttpAutomation !== false
+  ) {
+    reject(
+      "legacy_http_automation_option_invalid",
+      "enableLegacyHttpAutomation must be an explicit boolean",
+    );
   }
   return args;
 }
@@ -508,11 +523,20 @@ function checkRuntimeIdentityContract() {
   const formalStartArgs = buildLauncherStartArguments("start.ps1", Object.assign({}, expected, {
     runtimeMode: "formal_runtime",
   }));
+  const legacyStartArgs = buildLauncherStartArguments(
+    "start.ps1",
+    Object.assign({}, expected, {
+      runtimeMode: "formal_runtime",
+    }),
+    { enableLegacyHttpAutomation: true },
+  );
   if (candidateStartArgs.slice(-2).join("|") !== "-CandidateRoot|C:\\check"
-      || formalStartArgs.includes("-CandidateRoot")) {
+      || formalStartArgs.includes("-CandidateRoot")
+      || formalStartArgs.includes("-EnableLegacyHttpAutomation")
+      || legacyStartArgs.at(-1) !== "-EnableLegacyHttpAutomation") {
     throw new Error("runtime candidate launch argument self-check failed");
   }
-  return { checks: 12 };
+  return { checks: 13 };
 }
 
 module.exports = {

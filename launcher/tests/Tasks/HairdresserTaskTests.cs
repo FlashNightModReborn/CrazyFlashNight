@@ -39,9 +39,15 @@ namespace Launcher.Tests.Tasks
                 Assert.True((int)flash["callId"] > 0);
                 Assert.Null(flash["payload"]);
                 if (cmd == "commit")
+                {
                     Assert.Equal(ExpectedHair, (string)flash["hairIdentifier"]);
+                    Assert.Equal(OtherHair, (string)flash["expectedCurrentHair"]);
+                }
                 else
+                {
                     Assert.Null(flash["hairIdentifier"]);
+                    Assert.Null(flash["expectedCurrentHair"]);
+                }
             }
         }
 
@@ -74,12 +80,73 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Fact]
+        public async Task AgentDomainPort_UsesSameStrictBridgeAndReturnsAuthoritativeSnapshot()
+        {
+            string sent = null;
+            using (var task = new HairdresserTask(
+                () => true,
+                value =>
+                {
+                    sent = value;
+                    return true;
+                }))
+            {
+                Task<JObject> pending = task.ExecuteAgentRequestAsync(
+                    "snapshot",
+                    new JObject { ["v"] = 1 });
+                JObject flash = ParseSent(sent);
+                Assert.Equal("hairdresserSnapshot", (string)flash["action"]);
+
+                task.HandleFlashResponse(
+                    SnapshotResponse((int)flash["callId"], OtherHair),
+                    null);
+                JObject response = await pending;
+
+                Assert.True(response.Value<bool>("success"));
+                Assert.Equal(OtherHair, response.Value<string>("currentHair"));
+                Assert.Equal("hairdresser", response.Value<string>("domain"));
+                Assert.StartsWith(
+                    "agent.hairdresser.",
+                    response.Value<string>("callId"));
+            }
+        }
+
+        [Fact]
+        public async Task AgentDomainPort_RejectsMalformedCommitBeforeFlashDispatch()
+        {
+            int sends = 0;
+            using (var task = new HairdresserTask(
+                () => true,
+                _ =>
+                {
+                    sends++;
+                    return true;
+                }))
+            {
+                JObject response = await task.ExecuteAgentRequestAsync(
+                    "commit",
+                    new JObject
+                    {
+                        ["v"] = 1,
+                        ["hairIdentifier"] = ExpectedHair
+                    });
+
+                Assert.Equal(0, sends);
+                Assert.False(response.Value<bool>("success"));
+                Assert.Equal("invalid_payload", response.Value<string>("error"));
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
         [Theory]
         [InlineData("snapshot", "string-version")]
         [InlineData("snapshot", "wrong-version")]
         [InlineData("snapshot", "extra-field")]
         [InlineData("commit", "numeric-identifier")]
         [InlineData("commit", "empty-identifier")]
+        [InlineData("commit", "missing-expected-current")]
+        [InlineData("commit", "numeric-expected-current")]
         [InlineData("commit", "extra-field")]
         public void RequestPayload_RequiresExactV1ShapeAndStringIdentifier(
             string cmd,
@@ -113,6 +180,12 @@ namespace Launcher.Tests.Tasks
                         break;
                     case "empty-identifier":
                         payload["hairIdentifier"] = "";
+                        break;
+                    case "missing-expected-current":
+                        payload.Remove("expectedCurrentHair");
+                        break;
+                    case "numeric-expected-current":
+                        payload["expectedCurrentHair"] = 12;
                         break;
                     case "extra-field":
                         payload["unexpected"] = true;
@@ -255,6 +328,7 @@ namespace Launcher.Tests.Tasks
         [InlineData("pricing_unsupported")]
         [InlineData("invalid_payload")]
         [InlineData("hair_not_found")]
+        [InlineData("stale_state")]
         [InlineData("actor_unavailable")]
         [InlineData("save_unavailable")]
         [InlineData("refresh_unavailable")]
@@ -548,6 +622,38 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task ClearOrDispose_CompletesAgentRequestAsDisconnected(
+            bool dispose)
+        {
+            string sent = null;
+            var task = NewCapturingTask(value => sent = value, _ => { });
+            try
+            {
+                Task<JObject> pending = task.ExecuteAgentRequestAsync(
+                    "snapshot",
+                    new JObject { ["v"] = 1 });
+                Assert.NotNull(sent);
+
+                if (dispose) task.Dispose();
+                else task.ClearPending();
+
+                JObject response = await pending.WaitAsync(TimeSpan.FromSeconds(2));
+                Assert.False(response.Value<bool>("success"));
+                Assert.Equal("disconnected", response.Value<string>("error"));
+                Assert.StartsWith(
+                    "agent.hairdresser.",
+                    response.Value<string>("callId"));
+                Assert.Equal("idle", task.WriteState);
+            }
+            finally
+            {
+                task.Dispose();
+            }
+        }
+
         [Fact]
         public void ClearingPendingRead_DoesNotCreateUnknownWriteState()
         {
@@ -785,10 +891,15 @@ namespace Launcher.Tests.Tasks
         private static JObject Request(
             string cmd,
             string callId,
-            string hairIdentifier = ExpectedHair)
+            string hairIdentifier = ExpectedHair,
+            string expectedCurrentHair = OtherHair)
         {
             var payload = new JObject { ["v"] = 1 };
-            if (cmd == "commit") payload["hairIdentifier"] = hairIdentifier;
+            if (cmd == "commit")
+            {
+                payload["hairIdentifier"] = hairIdentifier;
+                payload["expectedCurrentHair"] = expectedCurrentHair;
+            }
             return new JObject
             {
                 ["type"] = "panel",

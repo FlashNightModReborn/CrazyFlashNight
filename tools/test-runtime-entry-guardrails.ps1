@@ -39,6 +39,15 @@ function Assert-Cf7Contains {
     Assert-Cf7Guardrail -Condition ($Text.IndexOf($Needle, [StringComparison]::Ordinal) -ge 0) -Message $Message
 }
 
+function Assert-Cf7DoesNotContain {
+    param(
+        [Parameter(Mandatory=$true)][string]$Text,
+        [Parameter(Mandatory=$true)][string]$Needle,
+        [Parameter(Mandatory=$true)][string]$Message
+    )
+    Assert-Cf7Guardrail -Condition ($Text.IndexOf($Needle, [StringComparison]::Ordinal) -lt 0) -Message $Message
+}
+
 $buildPath = Join-Path $ProjectRoot 'launcher\build.ps1'
 $producerPath = Join-Path $ProjectRoot 'launcher\build-runtime-candidate.ps1'
 $startPath = Join-Path $ProjectRoot 'automation\start.ps1'
@@ -78,6 +87,10 @@ Assert-Cf7Contains $producer 'Runtime candidate producer changed the formal depl
 
 $start = Get-Content -LiteralPath $startPath -Raw -Encoding UTF8
 Assert-Cf7Contains $start '[string]$CandidateRoot' 'start must expose explicit CandidateRoot'
+Assert-Cf7Contains $start '[switch]$EnableLegacyHttpAutomation' `
+    'start must require an explicit switch for the legacy privileged control plane'
+Assert-Cf7Contains $start '--legacy-http-automation' `
+    'start must pass the exact legacy automation mode to Core only when requested'
 Assert-Cf7Contains $start '$runtimeMode = ''formal_runtime''' 'start must default to formal runtime'
 Assert-Cf7Contains $start '$runtimeMode = ''isolated_candidate''' 'start must label candidate runtime'
 Assert-Cf7Contains $start 'tmp\runtime-candidates\v2' 'start must bind candidates to the repository v2 tree'
@@ -96,6 +109,32 @@ Assert-Cf7Contains $start 'Guardian MainModule.FileName is not available yet.' `
 Assert-Cf7Contains $start 'Guardian exited before process path verification' `
     'start must distinguish early process exit from a transient MainModule race'
 Assert-Cf7Contains $start 'launcher_ports.json belongs to a different process' 'start must bind readiness to the process it launched'
+Assert-Cf7Contains $start '$runnerStart.FileName = [IO.Path]::GetFullPath($selectedCoreExe)' `
+    'unattended start must execute the exact selected Core'
+Assert-Cf7Contains $start '$runnerStart.WorkingDirectory = $selectedDeploymentRoot' `
+    'unattended start must bind the selected deployment root'
+Assert-Cf7Contains $start '$runnerStart.Arguments =' `
+    'unattended start must support Windows PowerShell 5.1 ProcessStartInfo'
+Assert-Cf7Contains $start '--agent-unattended-runner --adapter $UnattendedAdapter --slot $UnattendedSlot' `
+    'unattended start must expose only the closed trusted Core runner arguments'
+Assert-Cf7Contains $start '$setDotnetRootCommand -Quiet' `
+    'unattended start must not contaminate protocol stdout with runtime detection diagnostics'
+Assert-Cf7Guardrail `
+    -Condition ($start.IndexOf('$bundleVerifier =', [StringComparison]::Ordinal) -lt
+        $start.IndexOf('$runnerStart =', [StringComparison]::Ordinal)) `
+    -Message 'unattended start must verify the selected payload before first Core execution'
+Assert-Cf7Contains $start '-IntegrityOnly *> $null' `
+    'unattended pre-exec inventory verification must not contaminate protocol stdout'
+Assert-Cf7Contains $start '$startInfo.RedirectStandardOutput = $true' `
+    'native policy verification must not inherit protocol stdout'
+Assert-Cf7Contains $start '$startInfo.RedirectStandardError = $true' `
+    'native policy verification must not inherit protocol stderr'
+Assert-Cf7DoesNotContain $start '.ArgumentList' `
+    'start must not require the unavailable Windows PowerShell 5.1 ArgumentList API'
+Assert-Cf7DoesNotContain $start 'unattendedRequestPath' `
+    'start must not construct or clean up script-owned unattended bootstrap evidence'
+Assert-Cf7DoesNotContain $start 'Protect-Cf7CurrentUser' `
+    'start must not carry script-owned unattended credential protection code'
 
 $powershell = (Get-Command powershell.exe -ErrorAction Stop).Source
 function Assert-Cf7StartRejectsCandidateRoot {

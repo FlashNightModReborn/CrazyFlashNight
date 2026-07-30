@@ -15,38 +15,135 @@ set -e
 # 项目根目录（cfn-cli.sh 在 tools/ 下）
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-# 端口文件（launcher 启动时写入，优先读取）
+# launcher_ports.json 是唯一可接受的端点权威。
 PORTS_FILE="$PROJECT_ROOT/launcher_ports.json"
 
-# 盲扫候选列表（fallback，与 PortAllocator 种子 "1192433993" 一致）
-PORTS=(1192 1924 9243 2433 4339 3399 3993 11924 19243 24339 43399 33993 3000)
+read_exact_port() {
+    python - "$PROJECT_ROOT" "$PORTS_FILE" <<'PY'
+import json, os, stat, sys
+root, ports_file = sys.argv[1:3]
+try:
+    info = os.lstat(ports_file)
+    if not stat.S_ISREG(info.st_mode) or stat.S_ISLNK(info.st_mode):
+        raise ValueError("ports_not_regular")
+    with open(ports_file, "r", encoding="utf-8") as stream:
+        ports = json.load(stream)
+    pid = ports.get("pid")
+    http_port = ports.get("httpPort")
+    socket_port = ports.get("socketPort")
+    if (type(pid) is not int or pid <= 0
+            or type(http_port) is not int or not 1 <= http_port <= 65535
+            or type(socket_port) is not int or not 1 <= socket_port <= 65535
+            or http_port == socket_port):
+        raise ValueError("ports_shape")
+    os.kill(pid, 0)
+    print(http_port)
+except Exception as error:
+    print("Error: invalid exact launcher_ports.json: " + str(error), file=sys.stderr)
+    sys.exit(1)
+PY
+}
+
+read_legacy_auth_context() {
+    python - "$PROJECT_ROOT" "$PORTS_FILE" <<'PY'
+import hashlib, json, os, re, stat, subprocess, sys
+root, ports_file = sys.argv[1:3]
+try:
+    ports_stat = os.lstat(ports_file)
+    if not stat.S_ISREG(ports_stat.st_mode) or stat.S_ISLNK(ports_stat.st_mode):
+        raise ValueError("ports_not_regular")
+    with open(ports_file, "r", encoding="utf-8") as stream:
+        ports = json.load(stream)
+    pid = ports.get("pid")
+    http_port = ports.get("httpPort")
+    socket_port = ports.get("socketPort")
+    advertised = ports.get("legacyHttpAuthFile")
+    if (type(pid) is not int or pid <= 0
+            or type(http_port) is not int or not 1 <= http_port <= 65535
+            or type(socket_port) is not int or not 1 <= socket_port <= 65535
+            or http_port == socket_port
+            or not isinstance(advertised, str) or not advertised.strip()):
+        raise ValueError("ports_shape")
+    os.kill(pid, 0)
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    if not local_app_data:
+        raise ValueError("localappdata_unavailable")
+    canonical = os.path.abspath(root).rstrip("\\/").upper()
+    root_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:32]
+    expected = os.path.abspath(os.path.join(
+        local_app_data, "CF7FlashNight", "agent-runtime", "v1",
+        root_hash, "legacy-http-credential.json"))
+    if os.path.normcase(os.path.abspath(advertised)) != os.path.normcase(expected):
+        raise ValueError("credential_path_mismatch")
+    credential_stat = os.lstat(expected)
+    if (not stat.S_ISREG(credential_stat.st_mode)
+            or stat.S_ISLNK(credential_stat.st_mode)):
+        raise ValueError("credential_not_regular")
+    with open(expected, "r", encoding="utf-8") as stream:
+        credential = json.load(stream)
+    token = credential.get("token")
+    header = credential.get("header")
+    ticks = credential.get("processStartUtcTicks")
+    capabilities = credential.get("capabilities")
+    if (credential.get("v") != 1
+            or credential.get("kind") != "legacy_http_automation"
+            or credential.get("pid") != pid
+            or header != "X-CF7-Automation-Token"
+            or not isinstance(credential.get("lifecycleId"), str)
+            or not credential.get("lifecycleId")
+            or not isinstance(ticks, str)
+            or re.fullmatch(r"[1-9][0-9]{15,18}", ticks) is None
+            or not isinstance(token, str)
+            or re.fullmatch(r"[A-Za-z0-9_-]{43}", token) is None
+            or not isinstance(capabilities, list)):
+        raise ValueError("credential_shape")
+    powershell = os.path.join(
+        os.environ.get("SystemRoot", r"C:\Windows"),
+        "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
+    script = (
+        '$ErrorActionPreference = "Stop"; '
+        f'$processRecord = Get-Process -Id {pid}; '
+        '[Console]::Out.Write('
+        '$processRecord.StartTime.ToUniversalTime().Ticks.ToString('
+        '[Globalization.CultureInfo]::InvariantCulture))')
+    actual_ticks = subprocess.run(
+        [powershell, "-NoLogo", "-NoProfile", "-NonInteractive",
+         "-Command", script],
+        check=True, capture_output=True, text=True,
+        timeout=5).stdout.strip()
+    if actual_ticks != ticks:
+        raise ValueError("credential_process_identity_mismatch")
+    print(str(http_port) + "|" + header + "|" + token)
+except Exception as error:
+    print("Error: invalid legacy HTTP credential: " + str(error), file=sys.stderr)
+    sys.exit(1)
+PY
+}
 
 discover_port() {
-    # 优先从端口文件读取（用 python 解析，容忍任意 JSON 格式）
-    if [ -f "$PORTS_FILE" ]; then
-        local file_port=$(python -c "import json; print(json.load(open('$PORTS_FILE'))['httpPort'])" 2>/dev/null)
-        if [ -n "$file_port" ]; then
-            code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
-                "http://localhost:$file_port/testConnection" \
-                -H "Content-Length: 0" --connect-timeout 1 2>/dev/null) || true
-            if [ "$code" = "200" ]; then
-                echo "$file_port"
-                return 0
-            fi
-        fi
-    fi
+    [ -f "$PORTS_FILE" ] || return 1
+    local context file_port ignored_header ignored_token
+    context=$(read_legacy_auth_context) || return 1
+    IFS='|' read -r file_port ignored_header ignored_token <<< "$context"
+    local code
+    code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+        "http://localhost:$file_port/testConnection" \
+        -H "Content-Length: 0" --connect-timeout 1 2>/dev/null) || true
+    [ "$code" = "200" ] || return 1
+    echo "$file_port"
+}
 
-    # Fallback: 盲扫候选端口
-    for port in "${PORTS[@]}"; do
-        code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
-            "http://localhost:$port/testConnection" \
-            -H "Content-Length: 0" --connect-timeout 1 2>/dev/null) || true
-        if [ "$code" = "200" ]; then
-            echo "$port"
-            return 0
-        fi
-    done
-    return 1
+load_authenticated_port() {
+    local context
+    context=$(read_legacy_auth_context) || return 1
+    IFS='|' read -r AUTH_PORT AUTH_HEADER AUTH_TOKEN <<< "$context"
+    local public_port
+    public_port=$(discover_port) || return 1
+    [ "$AUTH_PORT" = "$public_port" ] || {
+        echo "Error: credential/launcher_ports.json port mismatch" >&2
+        return 1
+    }
+    PORT="$AUTH_PORT"
 }
 
 case "${1:-status}" in
@@ -138,20 +235,15 @@ case "${1:-status}" in
         ;;
 
     stop-bus)
-        # 优雅关闭：先尝试 /shutdown 端点，fallback 到 taskkill
-        PORT=$(discover_port 2>/dev/null) || true
-        if [ -n "$PORT" ]; then
-            curl -s -X POST "http://localhost:$PORT/shutdown" \
-                -H "Content-Length: 0" --connect-timeout 2 2>/dev/null
-            echo "Shutdown signal sent"
-            sleep 1
-        else
-            # 真正长跑的进程是 Core.exe（FDD apphost），bootstrap 在启动 Core 后立即退出；
-            # 同时尝试 kill 两个名字以兼容旧的 bus 进程（如果机器上还有 pre-bootstrap 时代的旧 exe 在跑）
-            taskkill //IM CRAZYFLASHER7MercenaryEmpire.Core.exe //F 2>/dev/null && echo "Bus killed (Core)" || \
-            taskkill //IM CRAZYFLASHER7MercenaryEmpire.exe //F 2>/dev/null && echo "Bus killed (legacy entry)" || \
-            echo "No bus process found"
-        fi
+        load_authenticated_port || {
+            echo "Error: no authenticated exact bus is available; refusing process-name fallback." >&2
+            exit 1
+        }
+        curl -fsS -X POST "http://localhost:$PORT/shutdown" \
+            -H "$AUTH_HEADER: $AUTH_TOKEN" \
+            -H "Content-Length: 0" --connect-timeout 2
+        echo "Shutdown signal sent"
+        sleep 1
         ;;
 
     wait)
@@ -170,9 +262,13 @@ case "${1:-status}" in
     wait-socket)
         # 等待 socket 连接（Flash 客户端已连上）
         TIMEOUT="${2:-60}"
-        PORT=$(discover_port) || { echo "Error: Bus not running" >&2; exit 1; }
+        load_authenticated_port || {
+            echo "Error: authenticated exact bus is not running" >&2
+            exit 1
+        }
         for i in $(seq 1 "$TIMEOUT"); do
-            connected=$(curl -s "http://localhost:$PORT/status" 2>/dev/null \
+            connected=$(curl -fsS "http://localhost:$PORT/status" \
+                -H "$AUTH_HEADER: $AUTH_TOKEN" 2>/dev/null \
                 | grep -o '"socketConnected":true' || true)
             if [ -n "$connected" ]; then
                 echo "Socket connected (port $PORT)"
@@ -194,32 +290,44 @@ case "${1:-status}" in
         if [ -z "$TASK" ] || [ -z "$OP" ]; then
             echo "Usage: cfn-cli task <task-name> <op> [slot]" >&2; exit 1
         fi
-        PORT=$(discover_port) || { echo "Error: Guardian Launcher not found." >&2; exit 1; }
+        load_authenticated_port || {
+            echo "Error: authenticated exact Guardian Launcher not found." >&2
+            exit 1
+        }
         if [ -n "$SLOT" ]; then
             PAYLOAD="{\"op\":\"$OP\",\"slot\":\"$SLOT\"}"
         else
             PAYLOAD="{\"op\":\"$OP\"}"
         fi
-        curl -s -X POST "http://localhost:$PORT/task" \
+        curl -fsS -X POST "http://localhost:$PORT/task" \
+            -H "$AUTH_HEADER: $AUTH_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{\"task\":\"$TASK\",\"payload\":$PAYLOAD}"
         echo
         ;;
 
     status|console|toast|log|port)
-        # 这些命令需要 bus 已在运行
-        PORT=$(discover_port) || { echo "Error: Guardian Launcher not found." >&2; exit 1; }
-
         case "$1" in
             status)
-                curl -s "http://localhost:$PORT/status" | python -m json.tool 2>/dev/null \
-                    || curl -s "http://localhost:$PORT/status"
+                load_authenticated_port || {
+                    echo "Error: authenticated exact Guardian Launcher not found." >&2
+                    exit 1
+                }
+                RESPONSE=$(curl -fsS "http://localhost:$PORT/status" \
+                    -H "$AUTH_HEADER: $AUTH_TOKEN")
+                printf '%s' "$RESPONSE" | python -m json.tool 2>/dev/null \
+                    || printf '%s\n' "$RESPONSE"
                 ;;
             console)
                 shift; CMD="$*"
                 if [ -z "$CMD" ]; then echo "Usage: cfn-cli console <command>" >&2; exit 1; fi
+                load_authenticated_port || {
+                    echo "Error: authenticated exact Guardian Launcher not found." >&2
+                    exit 1
+                }
                 SAFE_CMD=$(printf '%s' "$CMD" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))') || { echo "Error: python required for JSON escaping" >&2; exit 1; }
-                curl -s -X POST "http://localhost:$PORT/console" \
+                curl -fsS -X POST "http://localhost:$PORT/console" \
+                    -H "$AUTH_HEADER: $AUTH_TOKEN" \
                     -H "Content-Type: application/json" \
                     -d "{\"command\":$SAFE_CMD}" 2>/dev/null
                 echo
@@ -227,8 +335,13 @@ case "${1:-status}" in
             toast)
                 shift; MSG="$*"
                 if [ -z "$MSG" ]; then echo "Usage: cfn-cli toast <message>" >&2; exit 1; fi
+                load_authenticated_port || {
+                    echo "Error: authenticated exact Guardian Launcher not found." >&2
+                    exit 1
+                }
                 SAFE_MSG=$(printf '%s' "$MSG" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))') || { echo "Error: python required for JSON escaping" >&2; exit 1; }
-                curl -s -X POST "http://localhost:$PORT/task" \
+                curl -fsS -X POST "http://localhost:$PORT/task" \
+                    -H "$AUTH_HEADER: $AUTH_TOKEN" \
                     -H "Content-Type: application/json" \
                     -d "{\"task\":\"toast\",\"payload\":$SAFE_MSG}" 2>/dev/null
                 echo
@@ -236,11 +349,20 @@ case "${1:-status}" in
             log)
                 shift; MSG="$*"
                 if [ -z "$MSG" ]; then echo "Usage: cfn-cli log <message>" >&2; exit 1; fi
+                PORT=$(discover_port) || {
+                    echo "Error: exact Guardian Launcher not found." >&2
+                    exit 1
+                }
+                # /logBatch remains a public Flash compatibility endpoint.
                 curl -s -X POST "http://localhost:$PORT/logBatch" \
                     -d "frame=0&messages=$MSG" 2>/dev/null
                 echo "Logged: $MSG"
                 ;;
             port)
+                PORT=$(discover_port) || {
+                    echo "Error: exact Guardian Launcher not found." >&2
+                    exit 1
+                }
                 echo "$PORT"
                 ;;
         esac

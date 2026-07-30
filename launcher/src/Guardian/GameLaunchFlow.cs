@@ -11,10 +11,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Bus;
 using CF7Launcher.Diagnostic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
@@ -42,6 +46,29 @@ namespace CF7Launcher.Guardian
             Ready,
             Error,
             Resetting
+        }
+
+        internal sealed class AgentRuntimeLaunchSnapshot
+        {
+            internal AgentRuntimeLaunchSnapshot(
+                State state,
+                string attemptId,
+                string slot,
+                Process flashProcess,
+                string saveSignature)
+            {
+                LaunchState = state;
+                AttemptId = attemptId;
+                Slot = slot;
+                FlashProcess = flashProcess;
+                SaveSignature = saveSignature;
+            }
+
+            public State LaunchState { get; }
+            public string AttemptId { get; }
+            public string Slot { get; }
+            public Process FlashProcess { get; }
+            public string SaveSignature { get; }
         }
 
         // ==================== 依赖注入 ====================
@@ -91,6 +118,7 @@ namespace CF7Launcher.Guardian
         // 存档决议：Phase C protocol v2。StartGame 锁外解析后设置，HandleBootstrapHandshake 响应读取。
         // 每次 StartGame 重置；每次 attempt 一份。
         private CF7Launcher.Save.SolResolveResult _resolvedSave;
+        private string _agentRuntimeSaveSignature;
 
         // ==================== Phase D: prewarm / Reset coalescing 字段 ====================
         // Held handshake callback: prewarm 模式下 handshake 已到达但 user 未选 slot 时 park 这里,
@@ -158,6 +186,89 @@ namespace CF7Launcher.Guardian
         public bool RevealPerformed
         {
             get { lock (_stateLock) { return _revealPerformed; } }
+        }
+
+        internal AgentRuntimeLaunchSnapshot
+            CaptureAgentRuntimeLaunchSnapshot()
+        {
+            lock (_stateLock)
+            {
+                return new AgentRuntimeLaunchSnapshot(
+                    _state,
+                    _currentAttemptId,
+                    _pendingSlot,
+                    _currentFlashProcess,
+                    _agentRuntimeSaveSignature);
+            }
+        }
+
+        internal static string ComputeAgentRuntimeSaveSignature(
+            string slot,
+            CF7Launcher.Save.SolResolveResult resolvedSave)
+        {
+            if (string.IsNullOrEmpty(slot)
+                || resolvedSave == null)
+            {
+                return null;
+            }
+
+            var payload = new JObject
+            {
+                ["slot"] = slot,
+                ["decision"] =
+                    resolvedSave.WireDecision != null
+                        ? (JToken)resolvedSave.WireDecision
+                        : JValue.CreateNull(),
+                ["source"] =
+                    resolvedSave.Source != null
+                        ? (JToken)resolvedSave.Source
+                        : JValue.CreateNull(),
+                ["snapshot"] =
+                    resolvedSave.Snapshot != null
+                        ? resolvedSave.Snapshot.DeepClone()
+                        : JValue.CreateNull()
+            };
+            JToken canonical =
+                CanonicalizeSaveSignatureToken(payload);
+            byte[] utf8 = Encoding.UTF8.GetBytes(
+                canonical.ToString(Formatting.None));
+            return Convert.ToHexString(
+                SHA256.HashData(utf8));
+        }
+
+        private static JToken CanonicalizeSaveSignatureToken(
+            JToken token)
+        {
+            if (token == null)
+                return JValue.CreateNull();
+            if (token.Type == JTokenType.Object)
+            {
+                var canonicalObject = new JObject();
+                foreach (JProperty property
+                    in ((JObject)token).Properties()
+                        .OrderBy(
+                            value => value.Name,
+                            StringComparer.Ordinal))
+                {
+                    canonicalObject.Add(
+                        property.Name,
+                        CanonicalizeSaveSignatureToken(
+                            property.Value));
+                }
+                return canonicalObject;
+            }
+            if (token.Type == JTokenType.Array)
+            {
+                var canonicalArray = new JArray();
+                foreach (JToken item in (JArray)token)
+                {
+                    canonicalArray.Add(
+                        CanonicalizeSaveSignatureToken(
+                            item));
+                }
+                return canonicalArray;
+            }
+            return token.DeepClone();
         }
 
         public JObject BuildAgentSaveStatus()
@@ -292,6 +403,7 @@ namespace CF7Launcher.Guardian
             // Phase C protocol v2: 锁外解析存档决议。避免在握手状态锁里做文件 I/O。
             // SolResolver 自身线程安全（使用 ArchiveTask 的 _lock）。
             CF7Launcher.Save.SolResolveResult resolved = null;
+            string resolvedSaveSignature = null;
             bool configureAudioGate = false;
             bool armAudioGate = false;
             if (_saveCtx != null)
@@ -308,6 +420,19 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[LaunchFlow] SolResolver EXCEPTION: " + ex);
                     resolved = CF7Launcher.Save.SolResolveResult.CorruptFromException(ex);
                 }
+            }
+            try
+            {
+                resolvedSaveSignature =
+                    ComputeAgentRuntimeSaveSignature(
+                        slot,
+                        resolved);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[LaunchFlow] Agent Runtime save signature failed: "
+                    + ex.Message);
             }
 
             Action<string> heldCbToInvoke = null;
@@ -350,6 +475,8 @@ namespace CF7Launcher.Guardian
                         _pendingSlot = slot;
                         _currentAttemptId = Guid.NewGuid().ToString("N");
                         _resolvedSave = resolved;
+                        _agentRuntimeSaveSignature =
+                            resolvedSaveSignature;
                         _cachedReady.Clear();
                         CancelWaitTimerLocked();
                         CancelZombieTimerLocked();
@@ -363,6 +490,8 @@ namespace CF7Launcher.Guardian
                         // 待 handshake 到达时 HandleBootstrapHandshakeAsync 走 _pendingSlot != null 快路径.
                         _pendingSlot = slot;
                         _resolvedSave = resolved;
+                        _agentRuntimeSaveSignature =
+                            resolvedSaveSignature;
                         CancelPrewarmDeadlineLocked();
                         configureAudioGate = true;
                         armAudioGate = deferJsReveal;
@@ -400,6 +529,8 @@ namespace CF7Launcher.Guardian
                             _revealPerformed = false;
                             _pendingSlot = slot;
                             _resolvedSave = resolved;
+                            _agentRuntimeSaveSignature =
+                                resolvedSaveSignature;
                             CancelPrewarmDeadlineLocked();
                             configureAudioGate = true;
                             armAudioGate = deferJsReveal;
@@ -498,6 +629,7 @@ namespace CF7Launcher.Guardian
                 _currentAttemptId = Guid.NewGuid().ToString("N");
                 _pendingSlot = null;       // 明确标记 prewarm 模式
                 _resolvedSave = null;
+                _agentRuntimeSaveSignature = null;
                 _cachedReady.Clear();
                 CancelWaitTimerLocked();
                 CancelZombieTimerLocked();
@@ -689,6 +821,11 @@ namespace CF7Launcher.Guardian
                 if (_state == State.Idle && !_resetInFlight)
                 {
                     // 快路径: 已是 Idle 且无 worker, snapshot+clear 队列 flush outside lock
+                    _currentAttemptId = null;
+                    _pendingSlot = null;
+                    _currentFlashProcess = null;
+                    _resolvedSave = null;
+                    _agentRuntimeSaveSignature = null;
                     idleFlushIfAlready = new List<Action>(_pendingIdleCallbacks);
                     _pendingIdleCallbacks.Clear();
                 }
@@ -806,6 +943,7 @@ namespace CF7Launcher.Guardian
                         // (Retry → Reset(StartGame, "retry") → Idle → flush StartGame(slot) 必须能跑)
                         _pendingSlot = null;
                         _resolvedSave = null;
+                        _agentRuntimeSaveSignature = null;
                         // Phase 2b-ext: 清 defer reveal flags, 下一 attempt 全新开始
                         _revealWaitingJs = false;
                         _revealWaitingFlash = false;
@@ -814,6 +952,7 @@ namespace CF7Launcher.Guardian
 
                         if (finalOk)
                         {
+                            _currentAttemptId = null;
                             SetState(State.Idle, "");
                             _resetInFlight = false;
                             // 原子 snapshot+clear 队列, 锁外 flush

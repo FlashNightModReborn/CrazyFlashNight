@@ -72,7 +72,9 @@ namespace CF7Launcher.Tests.Guardian
         {
             int port = GetFreePort();
             var router = new MessageRouter();
-            using var server = new XmlSocketServer(router);
+            using var server = new XmlSocketServer(
+                router,
+                AllowLoopbackXmlSocketPeerAuthority.Instance);
             using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
             var flow = new GameLaunchFlow(server, router, processManager,
                 new WindowManager(), null, null, null, null, null);
@@ -115,7 +117,9 @@ namespace CF7Launcher.Tests.Guardian
         {
             int port = GetFreePort();
             var router = new MessageRouter();
-            using var server = new XmlSocketServer(router);
+            using var server = new XmlSocketServer(
+                router,
+                AllowLoopbackXmlSocketPeerAuthority.Instance);
             using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
             var flow = new GameLaunchFlow(server, router, processManager,
                 new WindowManager(), null, null, null, null, null);
@@ -200,7 +204,9 @@ namespace CF7Launcher.Tests.Guardian
         {
             int port = GetFreePort();
             var router = new MessageRouter();
-            using var server = new XmlSocketServer(router);
+            using var server = new XmlSocketServer(
+                router,
+                AllowLoopbackXmlSocketPeerAuthority.Instance);
             using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
             var flow = new GameLaunchFlow(server, router, processManager,
                 new WindowManager(), null, null, null, null, null);
@@ -286,7 +292,9 @@ namespace CF7Launcher.Tests.Guardian
         {
             int port = GetFreePort();
             var router = new MessageRouter();
-            using var server = new XmlSocketServer(router);
+            using var server = new XmlSocketServer(
+                router,
+                AllowLoopbackXmlSocketPeerAuthority.Instance);
             using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
             var flow = new GameLaunchFlow(server, router, processManager,
                 new WindowManager(), null, null, null, null, null);

@@ -1,0 +1,150 @@
+{
+  "schemaVersion": "cf7.agent_runtime.capability_applicability.v1",
+  "protocolVersion": "1.0",
+  "securitySurfacePolicy": "never_discover_capture_observe_or_input",
+  "capabilities": [
+    {
+      "name": "window.list",
+      "referenceName": "list_windows",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["launcher", "flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": false,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": false,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "window.get",
+      "referenceName": "get_window",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["launcher", "flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": false,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": false,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "app.list",
+      "referenceName": "list_apps",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": [],
+      "requiresObservationGrant": false,
+      "requiresWriteLease": false,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": false,
+      "preLaunchAllowed": true
+    },
+    {
+      "name": "app.launch",
+      "referenceName": "launch_app",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["launcher"],
+      "requiresObservationGrant": false,
+      "requiresWriteLease": false,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": false,
+      "preLaunchAllowed": true
+    },
+    {
+      "name": "window.state",
+      "referenceName": "get_window_state",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["launcher", "flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": false,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": false,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "input.click",
+      "referenceName": "click",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": true,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": true,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "input.press_key",
+      "referenceName": "press_key",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": true,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": true,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "input.type_text",
+      "referenceName": "type_text",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": true,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": true,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "input.scroll",
+      "referenceName": "scroll",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": true,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": true,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "semantic.set_value",
+      "referenceName": "set_value",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": [],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": true,
+      "requiresSemanticProvider": true,
+      "nativePathRequiresContainmentGate": false,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "input.drag",
+      "referenceName": "drag",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": true,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": true,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "semantic.secondary_action",
+      "referenceName": "perform_secondary_action",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": [],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": true,
+      "requiresSemanticProvider": true,
+      "nativePathRequiresContainmentGate": false,
+      "preLaunchAllowed": false
+    },
+    {
+      "name": "window.activate",
+      "referenceName": "activate_window",
+      "modes": ["developer_interactive", "unattended_test", "player_assist"],
+      "surfaces": ["flash"],
+      "requiresObservationGrant": true,
+      "requiresWriteLease": true,
+      "requiresSemanticProvider": false,
+      "nativePathRequiresContainmentGate": true,
+      "preLaunchAllowed": false
+    }
+  ]
+}

@@ -30,6 +30,8 @@ namespace CF7Launcher.Bus
         private Thread _acceptThread6;
         private volatile bool _running;
         private readonly MessageRouter _router;
+        private readonly IXmlSocketPeerAuthority
+            _peerAuthority;
         private readonly object _clientLock = new object();
         // Total-order barrier for externally observable connection transitions.  Always acquire
         // this before _clientLock.  Ready/disconnect callbacks run without _clientLock but while
@@ -73,8 +75,22 @@ namespace CF7Launcher.Bus
         public bool IsClientReady { get { return _clientReady && _client != null && _client.Connected; } }
 
         public XmlSocketServer(MessageRouter router)
+            : this(
+                router,
+                DenyAllXmlSocketPeerAuthority.Instance)
         {
-            _router = router;
+        }
+
+        internal XmlSocketServer(
+            MessageRouter router,
+            IXmlSocketPeerAuthority peerAuthority)
+        {
+            _router = router
+                ?? throw new ArgumentNullException(
+                    nameof(router));
+            _peerAuthority = peerAuthority
+                ?? throw new ArgumentNullException(
+                    nameof(peerAuthority));
         }
 
         public int CurrentGeneration { get { return _generation; } }
@@ -216,6 +232,34 @@ namespace CF7Launcher.Bus
             {
                 if (!_running)
                 {
+                    try { client.Close(); } catch { }
+                    return;
+                }
+                bool authorized;
+                string authorizationReason;
+                try
+                {
+                    authorized =
+                        _peerAuthority.TryAuthorize(
+                            client,
+                            out authorizationReason);
+                }
+                catch
+                {
+                    authorized = false;
+                    authorizationReason =
+                        "xml_socket_peer_authority_failed";
+                }
+                if (!authorized)
+                {
+                    LogManager.Log(
+                        "[XmlSocket] Rejected unauthorized peer: "
+                        + (string.IsNullOrWhiteSpace(
+                                authorizationReason)
+                            ? "xml_socket_peer_denied"
+                            : authorizationReason));
+                    PerfTrace.Mark(
+                        "socket.client_rejected");
                     try { client.Close(); } catch { }
                     return;
                 }

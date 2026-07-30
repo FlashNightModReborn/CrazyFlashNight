@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using CF7Launcher.Bus;
 using CF7Launcher.Guardian;
 using Newtonsoft.Json;
@@ -16,7 +17,15 @@ namespace CF7Launcher.Tasks
             public string WebCmd;
             public bool IsWrite;
             public string ExpectedHairIdentifier;
+            public string ExpectedCurrentHair;
             public string ReconcileExpectedHairIdentifier;
+            public Action<JObject> Completion;
+        }
+
+        private sealed class AgentRequestCompletion
+        {
+            public string CallId;
+            public Action<JObject> Complete;
         }
 
         private const int DefaultTimeoutMs = 10000;
@@ -31,6 +40,7 @@ namespace CF7Launcher.Tasks
                 "pricing_unsupported",
                 "invalid_payload",
                 "hair_not_found",
+                "stale_state",
                 "actor_unavailable",
                 "save_unavailable",
                 "refresh_unavailable"
@@ -38,6 +48,9 @@ namespace CF7Launcher.Tasks
 
         private readonly PanelPendingCallTracker<PendingRequest> _pendingCalls;
         private readonly object _lock = new object();
+        private readonly System.Threading.AsyncLocal<AgentRequestCompletion>
+            _agentCompletion =
+                new System.Threading.AsyncLocal<AgentRequestCompletion>();
         private Action<string> _postToWeb;
         private Action<Action> _invokeOnUI;
         private string _writeState = "idle";
@@ -89,7 +102,12 @@ namespace CF7Launcher.Tasks
             if (string.IsNullOrEmpty(callId)) return;
             if (!ValidCallId.IsMatch(callId))
             {
-                RespondError(callId, cmd, "invalid_call_id");
+                RespondError(
+                    callId,
+                    cmd,
+                    "invalid_call_id",
+                    false,
+                    TakeAgentCompletion(callId));
                 return;
             }
             if (!string.Equals(
@@ -124,19 +142,37 @@ namespace CF7Launcher.Tasks
             int fid;
             lock (_lock)
             {
-                if (_pendingCalls.IsKnownWebCallId(callId)) return;
+                Action<JObject> completion =
+                    TakeAgentCompletion(callId);
+                if (_pendingCalls.IsKnownWebCallId(callId))
+                {
+                    if (completion != null)
+                    {
+                        RespondError(
+                            callId,
+                            cmd,
+                            "duplicate_call_id",
+                            false,
+                            completion);
+                    }
+                    return;
+                }
                 if (isWrite && _writeState != "idle")
                 {
                     if (!_pendingCalls.TryRememberRejected(callId)) return;
                     RespondError(
                         callId,
                         cmd,
-                        _writeState == "needs_reconcile" ? "reconcile_required" : "busy");
+                        _writeState == "needs_reconcile" ? "reconcile_required" : "busy",
+                        false,
+                        completion);
                     return;
                 }
 
                 string expectedHairIdentifier =
                     isWrite ? normalized.Value<string>("hairIdentifier") : null;
+                string expectedCurrentHair =
+                    isWrite ? normalized.Value<string>("expectedCurrentHair") : null;
                 string reconcileExpectedHairIdentifier =
                     !isWrite && _writeState == "needs_reconcile"
                         ? _reconcileExpectedHairIdentifier
@@ -148,10 +184,21 @@ namespace CF7Launcher.Tasks
                         WebCmd = cmd,
                         IsWrite = isWrite,
                         ExpectedHairIdentifier = expectedHairIdentifier,
-                        ReconcileExpectedHairIdentifier = reconcileExpectedHairIdentifier
+                        ExpectedCurrentHair = expectedCurrentHair,
+                        ReconcileExpectedHairIdentifier = reconcileExpectedHairIdentifier,
+                        Completion = completion
                     },
                     out fid))
                 {
+                    if (completion != null)
+                    {
+                        RespondError(
+                            callId,
+                            cmd,
+                            "duplicate_call_id",
+                            false,
+                            completion);
+                    }
                     return;
                 }
                 if (isWrite) _writeState = "write_pending";
@@ -161,6 +208,70 @@ namespace CF7Launcher.Tasks
                 PanelBridge.BuildFlashCommand(action, fid, normalized).ToString(Formatting.None);
             LogManager.Log("[HairdresserTask] -> Flash: " + json);
             _pendingCalls.Send(fid, json + "\0");
+        }
+
+        /// <summary>
+        /// Programmatic domain port used by Agent Runtime. It goes through the
+        /// same strict payload normalization, single-writer gate, Flash callId
+        /// bridge and unknown/reconcile state as the Web panel.
+        /// </summary>
+        public Task<JObject> ExecuteAgentRequestAsync(string cmd, JObject payload)
+        {
+            var completion = new TaskCompletionSource<JObject>(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            string callId = "agent.hairdresser." + Guid.NewGuid().ToString("N");
+            var request = new JObject
+            {
+                ["domain"] = "hairdresser",
+                ["callId"] = callId,
+                ["payload"] = payload != null ? payload.DeepClone() : null
+            };
+            if (_agentCompletion.Value != null)
+            {
+                throw new InvalidOperationException(
+                    "Nested Agent hairdresser requests are not supported.");
+            }
+            var context = new AgentRequestCompletion
+            {
+                CallId = callId,
+                Complete = value => completion.TrySetResult(
+                    value != null
+                        ? (JObject)value.DeepClone()
+                        : null)
+            };
+            _agentCompletion.Value = context;
+            try
+            {
+                HandleWebRequest(cmd, request);
+            }
+            catch (Exception error)
+            {
+                completion.TrySetException(error);
+            }
+            finally
+            {
+                if (ReferenceEquals(_agentCompletion.Value, context))
+                {
+                    _agentCompletion.Value = null;
+                }
+            }
+            return completion.Task;
+        }
+
+        private Action<JObject> TakeAgentCompletion(string callId)
+        {
+            AgentRequestCompletion context =
+                _agentCompletion.Value;
+            if (context == null
+                || !string.Equals(
+                    context.CallId,
+                    callId,
+                    StringComparison.Ordinal))
+            {
+                return null;
+            }
+            _agentCompletion.Value = null;
+            return context.Complete;
         }
 
         public void HandleFlashResponse(JObject msg, Action<string> respond)
@@ -239,7 +350,7 @@ namespace CF7Launcher.Tasks
                 web["reconciled"] = true;
                 web["writeApplied"] = writeApplied;
             }
-            PostToWeb(web.ToString(Formatting.None));
+            Deliver(entry.Completion, web);
             if (respond != null) respond(null);
         }
 
@@ -292,19 +403,30 @@ namespace CF7Launcher.Tasks
             if (cmd == "commit")
             {
                 string hairIdentifier;
-                if (!HasExactProperties(payload, "v", "hairIdentifier")
+                string expectedCurrentHair;
+                if (!HasExactProperties(
+                        payload,
+                        "v",
+                        "hairIdentifier",
+                        "expectedCurrentHair")
                     || !TryReadSafeString(
                         payload["hairIdentifier"],
                         160,
                         false,
-                        out hairIdentifier))
+                        out hairIdentifier)
+                    || !TryReadSafeString(
+                        payload["expectedCurrentHair"],
+                        160,
+                        true,
+                        out expectedCurrentHair))
                 {
                     return false;
                 }
                 normalized = new JObject
                 {
                     ["v"] = 1,
-                    ["hairIdentifier"] = hairIdentifier
+                    ["hairIdentifier"] = hairIdentifier,
+                    ["expectedCurrentHair"] = expectedCurrentHair
                 };
                 return true;
             }
@@ -440,25 +562,48 @@ namespace CF7Launcher.Tasks
                     _reconcileExpectedHairIdentifier = entry.ExpectedHairIdentifier;
                 }
             }
-            if (reason == PanelPendingCallEndReason.Cleared) return;
+            if (reason == PanelPendingCallEndReason.Cleared
+                && entry.Completion == null)
+            {
+                return;
+            }
             RespondError(
                 pendingCall.WebCallId,
                 entry.WebCmd,
                 reason == PanelPendingCallEndReason.Timeout ? "timeout" : "disconnected",
-                entry.IsWrite);
+                entry.IsWrite,
+                entry.Completion);
         }
 
-        private void RejectAndRemember(string callId, string cmd, string error)
+        private void RejectAndRemember(
+            string callId,
+            string cmd,
+            string error,
+            Action<JObject> completion = null)
         {
-            if (!_pendingCalls.TryRememberRejected(callId)) return;
-            RespondError(callId, cmd, error);
+            completion = completion ?? TakeAgentCompletion(callId);
+            if (!_pendingCalls.TryRememberRejected(callId))
+            {
+                if (completion != null)
+                {
+                    RespondError(
+                        callId,
+                        cmd,
+                        "duplicate_call_id",
+                        false,
+                        completion);
+                }
+                return;
+            }
+            RespondError(callId, cmd, error, false, completion);
         }
 
         private void RespondError(
             string callId,
             string cmd,
             string error,
-            bool requiresReconcile = false)
+            bool requiresReconcile = false,
+            Action<JObject> completion = null)
         {
             var response = new JObject
             {
@@ -470,6 +615,16 @@ namespace CF7Launcher.Tasks
                 ["error"] = error
             };
             if (requiresReconcile) response["requiresReconcile"] = true;
+            Deliver(completion, response);
+        }
+
+        private void Deliver(Action<JObject> completion, JObject response)
+        {
+            if (completion != null)
+            {
+                completion(response);
+                return;
+            }
             PostToWeb(response.ToString(Formatting.None));
         }
 

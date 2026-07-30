@@ -114,6 +114,133 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(new[] { true }, c.StateCallbacks);
         }
 
+        [Theory]
+        [InlineData("help")]
+        [InlineData("map")]
+        [InlineData("tasks")]
+        [InlineData("team")]
+        [InlineData("jukebox")]
+        public void AgentPanelOpen_UsesNarrowNoInitWhitelist(
+            string panelName)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(c);
+
+            Assert.True(
+                router.TryOpenAgentPanel(panelName));
+
+            JObject posted =
+                JObject.Parse(Assert.Single(c.Posts));
+            Assert.Equal(
+                panelName,
+                (string)posted["panel"]);
+            JObject initData =
+                (JObject)posted["initData"];
+            JProperty identity =
+                Assert.Single(initData.Properties());
+            Assert.Equal(
+                "panelInstanceId",
+                identity.Name);
+            Assert.Equal(
+                (string)posted["panelInstanceId"],
+                (string)identity.Value);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("HELP")]
+        [InlineData("skills")]
+        [InlineData("workbench")]
+        [InlineData("../help")]
+        public void AgentPanelOpen_RejectsOutsideWhitelist(
+            string panelName)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(c);
+
+            Assert.False(
+                router.TryOpenAgentPanel(panelName));
+            Assert.Empty(c.Posts);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void AgentPanelOpen_PreservesUnifiedAdmissionGate()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(c);
+            router.SetPanelAdmissionGate(
+                () => false);
+
+            Assert.False(
+                router.TryOpenAgentPanel("help"));
+            Assert.Empty(c.Posts);
+        }
+
+        [Fact]
+        public void FallbackPanelChangedPublishesAfterOpenAndClear()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(c);
+            var changed =
+                new List<(string Name, string Instance)>();
+            router.PanelChanged += (name, instance) =>
+                changed.Add((name, instance));
+
+            Assert.True(
+                router.TryOpenAgentPanel("help"));
+            string instance =
+                router.ActiveFallbackPanelInstanceId;
+            router.ClearFallbackPanelInstance();
+
+            Assert.Collection(
+                changed,
+                opened =>
+                {
+                    Assert.Equal("help", opened.Name);
+                    Assert.Equal(
+                        instance,
+                        opened.Instance);
+                },
+                retired =>
+                {
+                    Assert.Null(retired.Name);
+                    Assert.Null(retired.Instance);
+                });
+        }
+
+        [Fact]
+        public void FallbackPanelChangedFailureDoesNotBreakOpen()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(c);
+            int healthySubscriberCalls = 0;
+            router.PanelChanged += delegate
+            {
+                throw new InvalidOperationException(
+                    "subscriber failure");
+            };
+            router.PanelChanged += delegate
+            {
+                healthySubscriberCalls++;
+            };
+
+            Assert.True(
+                router.TryOpenAgentPanel("help"));
+            Assert.Equal(
+                "help",
+                router.ActiveFallbackPanelName);
+            Assert.Equal(
+                1,
+                healthySubscriberCalls);
+        }
+
         [Fact]
         public void WAREHOUSE_WebOnlyRoute_UsesBattleboxStorageWithoutLegacyCommand()
         {
@@ -136,7 +263,8 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(new[] { true }, c.StateCallbacks);
             Assert.DoesNotContain(
                 commands,
-                payload => payload.Contains("\"action\":\"warehouse\""));
+                payload => payload.Contains(
+                    "\"action\":\"warehouse\""));
         }
 
         [Fact]
@@ -1110,7 +1238,8 @@ namespace CF7Launcher.Tests.Guardian
                 (string)command["source"]);
             Assert.DoesNotContain(
                 commands,
-                payload => payload.Contains("\"action\":\"openEquipUI\""));
+                payload => payload.Contains(
+                    "\"action\":\"openEquipUI\""));
             string openRequestId =
                 ReadWorkbenchOpenRequestId(
                     Assert.Single(commands));

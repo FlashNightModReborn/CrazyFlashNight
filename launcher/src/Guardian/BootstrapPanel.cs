@@ -25,6 +25,8 @@ namespace CF7Launcher.Guardian
         private WebView2 _webView;
         private bool _disposed;
         private bool _webViewSuspended;
+        private Func<IDisposable>
+            _humanOnlySecurityScopeFactory;
 
         public event Action<string> OnJsMessage;
 
@@ -366,9 +368,17 @@ namespace CF7Launcher.Guardian
         // Handle 由 WebView2 WebMessageReceived 事件在 UI 线程触发，
         // ShowDialog 以宿主 Form 作为 owner。
 
+        internal void SetHumanOnlySecurityScopeFactory(
+            Func<IDisposable> factory)
+        {
+            _humanOnlySecurityScopeFactory = factory;
+        }
+
         /// <summary>打开文件对话框，返回选中路径；用户取消返回 null。</summary>
         public string ShowOpenFileDialog(string filter, string title)
         {
+            using (IDisposable securityScope =
+                _humanOnlySecurityScopeFactory?.Invoke())
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
                 dlg.Filter = filter;
@@ -382,6 +392,8 @@ namespace CF7Launcher.Guardian
         /// <summary>保存文件对话框，返回选中路径；用户取消返回 null。</summary>
         public string ShowSaveFileDialog(string filter, string title, string defaultName)
         {
+            using (IDisposable securityScope =
+                _humanOnlySecurityScopeFactory?.Invoke())
             using (SaveFileDialog dlg = new SaveFileDialog())
             {
                 dlg.Filter = filter;
@@ -400,6 +412,7 @@ namespace CF7Launcher.Guardian
             _disposed = true;
             if (disposing)
             {
+                _humanOnlySecurityScopeFactory = null;
                 try { if (_webView != null) _webView.Dispose(); } catch { }
             }
             base.Dispose(disposing);

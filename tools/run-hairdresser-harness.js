@@ -37,7 +37,8 @@ function staticAudit() {
         throw new Error('hairdresser write timeout/reconcile classification missing');
     }
     if (!panel.includes("request('snapshot', {v: 1}")
-        || !panel.includes("request('commit', {v: 1, hairIdentifier: expected}")
+        || !panel.includes("hairIdentifier: expected")
+        || !panel.includes("expectedCurrentHair: expectedCurrent")
         || !panel.includes('snapshot.currentHair === expected')
         || !panel.includes('refreshSnapshot(true)')
         || !panel.includes("Bridge.send({type: 'panel', cmd: 'close', panel: 'hairdresser'})")) {
@@ -128,7 +129,10 @@ function runtimeAudit() {
         send() { return false; }
     });
     rejectedMux.openSession();
-    rejectedMux.request('commit', {v:1,hairIdentifier:'光头'}, response => { rejected = response; });
+    rejectedMux.request(
+        'commit',
+        {v:1,hairIdentifier:'光头',expectedCurrentHair:'发型-男式-平头'},
+        response => { rejected = response; });
     rejectedMux.destroy();
     if (!rejected || rejected.error !== 'not_sent' || rejected.requiresReconcile === true) {
         throw new Error('hairdresser Node mux confused pre-dispatch rejection with an unknown write');

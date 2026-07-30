@@ -156,6 +156,7 @@ namespace CF7Launcher.Guardian
         private string _activeFallbackPanelName;
         private string _deferredFallbackSkillInitData;
         private static long _fallbackPanelInstanceSequence;
+        internal event Action<string, string> PanelChanged;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private CharacterBuildTask _characterBuildTask;
@@ -289,6 +290,22 @@ namespace CF7Launcher.Guardian
         {
             _panelAdmissionGate = gate;
         }
+
+        internal bool TryOpenAgentPanel(string panelName)
+        {
+            switch (panelName)
+            {
+                case "help":
+                case "map":
+                case "tasks":
+                case "team":
+                case "jukebox":
+                    return OpenPanel(panelName, null);
+                default:
+                    return false;
+            }
+        }
+
         internal string ActiveFallbackPanelInstanceId { get { return _activeFallbackPanelInstanceId; } }
         internal string ActiveFallbackPanelName { get { return _activeFallbackPanelName; } }
         internal string PendingCharacterBuildSkillsNavigationInstance
@@ -1874,6 +1891,9 @@ namespace CF7Launcher.Guardian
 
         internal void ClearFallbackPanelInstance()
         {
+            bool hadPublishedFallback =
+                _activeFallbackPanelName != null
+                || _activeFallbackPanelInstanceId != null;
             System.Threading.Timer childTimer =
                 null;
             lock (_panelNavigationLifecycleLock)
@@ -1899,6 +1919,12 @@ namespace CF7Launcher.Guardian
             _activeFallbackPanelName = null;
             _deferredFallbackSkillInitData = null;
             ClearSuccessfulNativeEquipmentTuningOpenProof();
+            if (hadPublishedFallback)
+            {
+                PublishPanelChanged(
+                    null,
+                    null);
+            }
         }
 
         internal void FlushDeferredFallbackSkillRebind()
@@ -3511,11 +3537,39 @@ namespace CF7Launcher.Guardian
             // Post 成功返回才切换 Host 盖章实例，避免旧 RequestMux 的在途 reconcile 被提前改绑。
             _activeFallbackPanelInstanceId = instanceId;
             _activeFallbackPanelName = panelName;
+            PublishPanelChanged(
+                panelName,
+                instanceId);
             if (panelName != "skills") _deferredFallbackSkillInitData = null;
             if (_setActivePanel != null) _setActivePanel(panelName);
             if (_onPanelStateChanged != null) _onPanelStateChanged(true);
             ClearSuccessfulNativeEquipmentTuningOpenProof();
             return true;
+        }
+
+        private void PublishPanelChanged(
+            string panelName,
+            string panelInstanceId)
+        {
+            Action<string, string> changed =
+                PanelChanged;
+            if (changed == null) return;
+            foreach (Action<string, string> subscriber
+                in changed.GetInvocationList())
+            {
+                try
+                {
+                    subscriber(
+                        panelName,
+                        panelInstanceId);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[Router] fallback panel changed event failed: "
+                        + ex.Message);
+                }
+            }
         }
 
         private static bool IsMaterialOpenRequestIdCandidate(
@@ -3811,7 +3865,6 @@ namespace CF7Launcher.Guardian
                 CancelNativeEquipmentBuildOpenWait();
                 return;
             }
-
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
                 : _activeFallbackPanelName;

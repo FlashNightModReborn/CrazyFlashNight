@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "cf7.agent_runtime.canonical_json_vectors.v1",
+  "profile": "cf7-action-canonical-json-v1",
+  "genericVectors": [
+    {
+      "id": "ordinal-keys-arrays-unicode",
+      "input": "{\"z\":-0,\"a\":[3,{\"b\":true,\"a\":\"夜\"}]}",
+      "expected": "{\"a\":[3,{\"a\":\"夜\",\"b\":true}],\"z\":0}"
+    },
+    {
+      "id": "nested-null-and-integer-normalization",
+      "input": "{\"outer\":{\"n\":1e2,\"a\":null},\"flag\":false}",
+      "expected": "{\"flag\":false,\"outer\":{\"a\":null,\"n\":100}}"
+    }
+  ],
+  "actionVector": {
+    "action": {
+      "actionId": "aaaaaaaaaaaaaaaaaaaaaa",
+      "idempotencyKey": "bbbbbbbbbbbbbbbbbbbbbb",
+      "deadlineMs": 12000,
+      "sessionId": "cccccccccccccccccccccc",
+      "observationGrantId": "dddddddddddddddddddddd",
+      "leaseId": "eeeeeeeeeeeeeeeeeeeeee",
+      "observationId": "ffffffffffffffffffffff",
+      "expectedLifecycleGeneration": 2,
+      "targetId": "gggggggggggggggggggggg",
+      "expectedSurfaceEpoch": 9,
+      "expectedAttemptId": "iiiiiiiiiiiiiiiiiiiiii",
+      "expectedAttemptGeneration": 7,
+      "expectedPanelInstanceId": "jjjjjjjjjjjjjjjjjjjjjj",
+      "expectedCoordinateSpaceVersion": 4,
+      "expectedFocusEpoch": 5,
+      "expectedModalEpoch": 3,
+      "frameId": "hhhhhhhhhhhhhhhhhhhhhh",
+      "operation": "input.click",
+      "arguments": {
+        "y": 180,
+        "button": "left",
+        "x": 320,
+        "coordinateSpace": "observation_px"
+      },
+      "reason": "打开当前面板中的详情"
+    },
+    "equivalentAction": {
+      "actionId": "kkkkkkkkkkkkkkkkkkkkkk",
+      "idempotencyKey": "llllllllllllllllllllll",
+      "deadlineMs": 5000,
+      "sessionId": "cccccccccccccccccccccc",
+      "observationGrantId": "dddddddddddddddddddddd",
+      "leaseId": "eeeeeeeeeeeeeeeeeeeeee",
+      "observationId": "ffffffffffffffffffffff",
+      "expectedLifecycleGeneration": 2,
+      "targetId": "gggggggggggggggggggggg",
+      "expectedSurfaceEpoch": 9,
+      "expectedAttemptId": "iiiiiiiiiiiiiiiiiiiiii",
+      "expectedAttemptGeneration": 7,
+      "expectedPanelInstanceId": "jjjjjjjjjjjjjjjjjjjjjj",
+      "expectedCoordinateSpaceVersion": 4,
+      "expectedFocusEpoch": 5,
+      "expectedModalEpoch": 3,
+      "frameId": "hhhhhhhhhhhhhhhhhhhhhh",
+      "operation": "input.click",
+      "arguments": {
+        "coordinateSpace": "observation_px",
+        "x": 320,
+        "button": "left",
+        "y": 180
+      },
+      "reason": "不同显示理由不改变幂等正文"
+    },
+    "expectedPayload": "{\"arguments\":{\"button\":\"left\",\"coordinateSpace\":\"observation_px\",\"x\":320,\"y\":180},\"expectedAttemptGeneration\":7,\"expectedAttemptId\":\"iiiiiiiiiiiiiiiiiiiiii\",\"expectedCoordinateSpaceVersion\":4,\"expectedFocusEpoch\":5,\"expectedLifecycleGeneration\":2,\"expectedModalEpoch\":3,\"expectedPanelInstanceId\":\"jjjjjjjjjjjjjjjjjjjjjj\",\"expectedSurfaceEpoch\":9,\"frameId\":\"hhhhhhhhhhhhhhhhhhhhhh\",\"leaseId\":\"eeeeeeeeeeeeeeeeeeeeee\",\"observationGrantId\":\"dddddddddddddddddddddd\",\"observationId\":\"ffffffffffffffffffffff\",\"operation\":\"input.click\",\"sessionId\":\"cccccccccccccccccccccc\",\"targetId\":\"gggggggggggggggggggggg\"}",
+    "expectedSha256": "708F6A393382D4CA617D06B560E1B72547E88752C31FE9B1D2BC316440D6C0A3"
+  },
+  "invalidVectors": [
+    {
+      "id": "duplicate-property",
+      "input": "{\"a\":1,\"a\":2}",
+      "error": "duplicate_property"
+    },
+    {
+      "id": "fractional-number",
+      "input": "{\"a\":1.5}",
+      "error": "integer_required"
+    },
+    {
+      "id": "unsafe-integer",
+      "input": "{\"a\":9007199254740992}",
+      "error": "safe_integer_range"
+    }
+  ]
+}

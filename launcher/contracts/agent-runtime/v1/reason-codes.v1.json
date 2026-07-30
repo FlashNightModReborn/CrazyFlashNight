@@ -1,0 +1,356 @@
+{
+  "schemaVersion": "cf7.agent_runtime.reason_codes.v1",
+  "protocolVersion": "1.0",
+  "reasonCodes": {
+    "none": {
+      "retryable": false,
+      "outcomes": ["input_dispatched", "effect_observed", "domain_committed"],
+      "reconcileKinds": ["none"]
+    },
+    "shutdown_requested": {
+      "retryable": false,
+      "outcomes": ["input_dispatched"],
+      "reconcileKinds": ["none"]
+    },
+    "protocol_version_mismatch": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "malformed_frame": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "malformed_json": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "frame_oversize": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "binary_object_oversize": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "rate_limited": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "queue_full": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "authentication_failed": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "connection_ticket_expired": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "connection_ticket_replayed": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "credential_revoked": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "principal_mismatch": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "capability_denied": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "consent_required": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "consent_invalid": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "consent_expired": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "human_intervention_required": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "occupied_by_other_logon_or_elevation": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "session_not_found": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "session_mismatch": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "runtime_unqualified": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "attempt_mismatch": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "target_not_found": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "unsupported_for_surface": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "human_only_security_surface": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "target_minimized": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "capture_unavailable": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "desktop_unavailable": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "blocking_modal": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "observation_grant_required": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "observation_grant_expired": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "observation_grant_revoked": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "observation_scope_mismatch": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "lease_required": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "lease_expired": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "lease_revoked": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "lease_owner_mismatch": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "lease_busy": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "lease_action_limit": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_observation": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_lifecycle": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_attempt": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_surface": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_coordinate_space": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_focus": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_modal": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_document": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_panel_instance": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "stale_semantic_node": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "input_guard_unhealthy": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "input_not_quiescent": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "foreground_mismatch": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "hit_test_mismatch": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "integrity_mismatch": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "external_input_preempted": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "input_not_inserted": {
+      "retryable": false,
+      "outcomes": ["unknown"],
+      "reconcileKinds": ["visual_ambiguous", "manual_required"]
+    },
+    "idempotency_conflict": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "action_not_found": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "deadline_exceeded": {
+      "retryable": false,
+      "outcomes": ["rejected", "unknown"],
+      "reconcileKinds": ["none", "domain_authoritative", "visual_ambiguous", "manual_required"]
+    },
+    "operation_invalid": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "arguments_invalid": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "domain_revision_conflict": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "domain_token_required": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "domain_token_expired": {
+      "retryable": true,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "domain_token_replayed": {
+      "retryable": false,
+      "outcomes": ["rejected"],
+      "reconcileKinds": ["none"]
+    },
+    "domain_commit_unknown": {
+      "retryable": false,
+      "outcomes": ["unknown"],
+      "reconcileKinds": ["domain_authoritative", "manual_required"]
+    },
+    "reconcile_required": {
+      "retryable": false,
+      "outcomes": ["unknown"],
+      "reconcileKinds": ["domain_authoritative", "visual_ambiguous", "manual_required"]
+    },
+    "internal_error": {
+      "retryable": false,
+      "outcomes": ["rejected", "unknown"],
+      "reconcileKinds": ["none", "domain_authoritative", "visual_ambiguous", "manual_required"]
+    }
+  }
+}

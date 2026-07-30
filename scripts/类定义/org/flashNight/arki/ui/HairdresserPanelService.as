@@ -70,11 +70,23 @@ class org.flashNight.arki.ui.HairdresserPanelService {
     private static function executeCommit(params:Object):Object {
         var resolved:Object = resolveCatalog();
         if (!resolved.success) return resolved;
-        if (typeof params.hairIdentifier != "string" || String(params.hairIdentifier) == "") {
+        if (typeof params.hairIdentifier != "string"
+                || String(params.hairIdentifier) == ""
+                || typeof params.expectedCurrentHair != "string") {
             return fail("invalid_payload");
         }
 
         var hairIdentifier:String = String(params.hairIdentifier);
+        var expectedCurrentHair:String = String(params.expectedCurrentHair);
+        var currentHair:String = _root.发型 == undefined ? "" : String(_root.发型);
+        if (currentHair != expectedCurrentHair) {
+            return {
+                success:false,
+                v:1,
+                error:"stale_state",
+                currentHair:currentHair
+            };
+        }
         var found:Boolean = false;
         for (var i:Number = 0; i < resolved.catalog.length; i++) {
             if (String(resolved.catalog[i].identifier) == hairIdentifier) {

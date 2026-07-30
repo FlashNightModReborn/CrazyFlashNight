@@ -166,6 +166,7 @@ namespace CF7Launcher.Guardian
         private Func<string, string, string, string> _initDataEnricher;
         private Action<string, string> _panelCloseObserver;
         public event Action<string, string> PanelClosed;
+        internal event Action<string, string> PanelChanged;
         private PanelCommand? _deferredRebind;
         private PanelCommand? _deferredBarrierOpen;
         private bool _processing;
@@ -1403,6 +1404,9 @@ namespace CF7Launcher.Guardian
                 _activePanel = name;
                 _activePanelInstanceId =
                     testInstance;
+                PublishPanelChanged(
+                    name,
+                    testInstance);
                 if (requireTrackedDelivery
                     && trackedWebPostAccepted != null)
                 {
@@ -1495,6 +1499,9 @@ namespace CF7Launcher.Guardian
 
             _activePanel = name;
             _activePanelInstanceId = instanceId;
+            PublishPanelChanged(
+                name,
+                instanceId);
             // 任意真实打开 → 暂停游戏。覆盖 returnTo 自动重开（ExecuteCommand 从 _returnStack
             // enqueue 的 Open 不经 LauncherCommandRouter.OpenPanel，否则重开面板背后游戏已恢复运行）。
             // AS2 webPanelPause 幂等，首次打开与 router 路径重复发也安全。
@@ -1517,6 +1524,19 @@ namespace CF7Launcher.Guardian
         private void DoRebind(string name, string initDataJson)
         {
             string instanceId = NextPanelInstanceId();
+            if (_testPumpDispatcher != null)
+            {
+                ApplyInitDataEnrichers(
+                    name,
+                    initDataJson,
+                    instanceId);
+                _activePanelInstanceId =
+                    instanceId;
+                PublishPanelChanged(
+                    name,
+                    instanceId);
+                return;
+            }
             initDataJson =
                 ApplyInitDataEnrichers(
                     name,
@@ -1526,6 +1546,9 @@ namespace CF7Launcher.Guardian
             try { _web.PostToWeb(payload); }
             catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb rebind failed: " + ex.Message); throw; }
             _activePanelInstanceId = instanceId;
+            PublishPanelChanged(
+                name,
+                instanceId);
             try { _web.AssertWebPanelPause(); } catch { }
             LogManager.Log("[PanelHost] rebound: " + name + " instance=" + instanceId);
         }
@@ -1721,6 +1744,9 @@ namespace CF7Launcher.Guardian
                 ResumeHudCompanion();
                 _activePanel = null;
                 _activePanelInstanceId = null;
+                PublishPanelChanged(
+                    null,
+                    null);
                 PostPanelClosed(
                     testClosingName,
                     testClosingInstance);
@@ -1770,6 +1796,9 @@ namespace CF7Launcher.Guardian
 
             _activePanel = null;
             _activePanelInstanceId = null;
+            PublishPanelChanged(
+                null,
+                null);
             PostPanelClosed(closingName, closingInstance);
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
             PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
@@ -1872,6 +1901,31 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void PublishPanelChanged(
+            string panelName,
+            string panelInstanceId)
+        {
+            Action<string, string> changed =
+                PanelChanged;
+            if (changed == null) return;
+            foreach (Action<string, string> subscriber
+                in changed.GetInvocationList())
+            {
+                try
+                {
+                    subscriber(
+                        panelName,
+                        panelInstanceId);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[PanelHost] changed event failed: "
+                        + ex.Message);
+                }
+            }
+        }
+
         private void ReTopOverlay(Form f)
         {
             if (f == null) return;
@@ -1939,6 +1993,13 @@ namespace CF7Launcher.Guardian
             _activePanelInstanceId = null;
             _trackedLeasePanelName = null;
             _trackedLeaseInstanceId = null;
+            if (resetClosingName != null
+                || resetClosingInstance != null)
+            {
+                PublishPanelChanged(
+                    null,
+                    null);
+            }
             Action<string, string> resetClosed = PanelClosed;
             if (resetClosed != null && resetClosingName != null)
             {

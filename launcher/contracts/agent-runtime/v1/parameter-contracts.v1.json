@@ -1,0 +1,395 @@
+{
+  "schemaVersion": "cf7.agent_runtime.parameter_contracts.v1",
+  "protocolVersion": "1.0",
+  "connectionDerivedFields": [
+    "clientInstanceId",
+    "securityPrincipalId",
+    "credentialId"
+  ],
+  "observationDataScopes": [
+    "window_metadata",
+    "pixels",
+    "accessibility",
+    "focus",
+    "selection",
+    "player_state",
+    "lore_public",
+    "retention.persist",
+    "data.export"
+  ],
+  "contracts": {
+    "empty": {
+      "required": [],
+      "optional": []
+    },
+    "windowList": {
+      "required": [
+        "sessionId",
+        "observationGrantId",
+        "dataScope"
+      ],
+      "optional": [],
+      "constants": {
+        "dataScope": "window_metadata"
+      }
+    },
+    "windowTarget": {
+      "required": [
+        "sessionId",
+        "observationGrantId",
+        "dataScope",
+        "targetId"
+      ],
+      "optional": [],
+      "constants": {
+        "dataScope": "window_metadata"
+      }
+    },
+    "windowState": {
+      "required": [
+        "sessionId",
+        "observationGrantId",
+        "dataScope",
+        "targetId"
+      ],
+      "optional": [],
+      "allowedValues": {
+        "dataScope": [
+          "window_metadata",
+          "pixels"
+        ]
+      }
+    },
+    "appLaunch": {
+      "required": [
+        "launchRequestId",
+        "entryPoint",
+        "runtimeMode"
+      ],
+      "optional": [
+        "expectedBuildIdentity",
+        "expectedPayloadClosure"
+      ],
+      "constants": {
+        "entryPoint": "standard_entry"
+      },
+      "candidateRequires": [
+        "expectedBuildIdentity",
+        "expectedPayloadClosure"
+      ]
+    },
+    "sessionBinding": {
+      "required": [
+        "sessionId",
+        "lifecycleGeneration"
+      ],
+      "optional": []
+    },
+    "actionEnvelope": {
+      "required": [
+        "actionId",
+        "idempotencyKey",
+        "deadlineMs",
+        "sessionId",
+        "observationGrantId",
+        "leaseId",
+        "observationId",
+        "expectedLifecycleGeneration",
+        "targetId",
+        "expectedSurfaceEpoch",
+        "expectedCoordinateSpaceVersion",
+        "expectedFocusEpoch",
+        "expectedModalEpoch",
+        "operation",
+        "arguments",
+        "reason"
+      ],
+      "optional": [
+        "expectedAttemptId",
+        "expectedAttemptGeneration",
+        "expectedPanelInstanceId",
+        "expectedSemanticGeneration",
+        "expectedDocumentGeneration",
+        "frameId",
+        "semanticSnapshotId",
+        "nodeId"
+      ],
+      "operationEqualsWireMethod": true
+    },
+    "leaseAcquire": {
+      "required": [
+        "sessionId",
+        "kind",
+        "capabilities",
+        "targetScope",
+        "requestedTtlMs",
+        "requestedActionLimit"
+      ],
+      "optional": [
+        "consentReceipt",
+        "argumentBoundsHash",
+        "previewHash",
+        "expectedRevision",
+        "operation"
+      ],
+      "automaticRenewalAccepted": false,
+      "leaseKinds": [
+        "gui_input",
+        "domain_transaction",
+        "shutdown"
+      ],
+      "kindBindings": {
+        "shutdown": {
+          "capabilitiesExact": [
+            "session.shutdown"
+          ],
+          "minimumTargets": 1,
+          "maximumTargets": 1,
+          "requiredTargetKind": "launcher",
+          "allowedSessionModes": [
+            "developer_interactive",
+            "unattended_test"
+          ],
+          "maximumTtlMs": 30000,
+          "maximumActions": 1,
+          "operationDerivedByServer": "session.shutdown",
+          "renewAfterAllowed": false,
+          "renewalOperationResult": "operation_invalid",
+          "nativeInputContainment": false
+        }
+      }
+    },
+    "leaseRenew": {
+      "required": [
+        "leaseId",
+        "requestedTtlMs"
+      ],
+      "optional": []
+    },
+    "leaseRelease": {
+      "required": [
+        "leaseId"
+      ],
+      "optional": []
+    },
+    "traceExport": {
+      "required": [
+        "sessionId",
+        "observationGrantId",
+        "consentPurpose",
+        "fromServerSequence",
+        "maximumRecords",
+        "format"
+      ],
+      "optional": [],
+      "constants": {
+        "format": "jsonl"
+      },
+      "clientPathAccepted": false
+    },
+    "observationGrantIssue": {
+      "required": [
+        "lifecycleRef",
+        "dataScopes",
+        "requestedTtlMs",
+        "allowEphemeralKeyframes",
+        "allowPersistence",
+        "allowExport"
+      ],
+      "optional": [
+        "targetIds",
+        "targetKinds",
+        "consentReceipt"
+      ],
+      "targetSelector": "exactly_one_of_targetIds_or_targetKinds"
+    },
+    "observationGrantRevoke": {
+      "required": [
+        "observationGrantId"
+      ],
+      "optional": [],
+      "serverReason": "client_revoked"
+    },
+    "observationCapture": {
+      "required": [
+        "observationGrantId",
+        "sessionId",
+        "targetId",
+        "dataScope",
+        "allowValidatedFlashKeyframeFallback"
+      ],
+      "optional": [],
+      "constants": {
+        "dataScope": "pixels"
+      }
+    },
+    "observationReference": {
+      "required": [
+        "observationGrantId",
+        "sessionId",
+        "observationId"
+      ],
+      "optional": []
+    },
+    "contentReadRequest": {
+      "required": [
+        "handle",
+        "offset",
+        "count"
+      ],
+      "optional": []
+    },
+    "actionGet": {
+      "required": [
+        "sessionId",
+        "actionId"
+      ],
+      "optional": []
+    },
+    "hairInspect": {
+      "required": [
+        "observationGrantId",
+        "targetId",
+        "binding"
+      ],
+      "optional": [],
+      "requiredDataScope": "player_state"
+    },
+    "hairPreview": {
+      "required": [
+        "observationGrantId",
+        "targetId",
+        "binding",
+        "hairIdentifier",
+        "expectedCurrentHair",
+        "expectedRevision",
+        "expectedGeneration",
+        "expectedSnapshotHash"
+      ],
+      "optional": [],
+      "requiredDataScope": "player_state"
+    },
+    "hairConsent": {
+      "required": [
+        "observationGrantId",
+        "targetId",
+        "sessionId",
+        "lifecycleGeneration",
+        "transactionId",
+        "previewHash"
+      ],
+      "optional": [],
+      "requiredDataScope": "player_state",
+      "connectionDerivedPrincipalBinding": true,
+      "hostDecisionRequired": true
+    },
+    "hairReconcile": {
+      "required": [
+        "observationGrantId",
+        "targetId",
+        "transactionId"
+      ],
+      "optional": [],
+      "requiredDataScope": "player_state"
+    }
+  },
+  "nestedContracts": {
+    "hairSaveBinding": {
+      "required": [
+        "sessionId",
+        "lifecycleGeneration",
+        "attemptId",
+        "attemptGeneration",
+        "slotId",
+        "saveSignature"
+      ],
+      "optional": []
+    }
+  },
+  "actionArguments": {
+    "input.click": {
+      "coordinateRequired": [
+        "coordinateSpace",
+        "x",
+        "y",
+        "button",
+        "clickCount"
+      ],
+      "semanticRequired": [
+        "button",
+        "clickCount"
+      ]
+    },
+    "input.press_key": {
+      "required": [
+        "key",
+        "modifiers",
+        "repeat"
+      ]
+    },
+    "input.type_text": {
+      "required": [
+        "text"
+      ]
+    },
+    "input.scroll": {
+      "required": [
+        "coordinateSpace",
+        "x",
+        "y",
+        "deltaX",
+        "deltaY"
+      ]
+    },
+    "semantic.set_value": {
+      "required": [
+        "value"
+      ]
+    },
+    "input.drag": {
+      "required": [
+        "coordinateSpace",
+        "startX",
+        "startY",
+        "endX",
+        "endY",
+        "durationMs"
+      ]
+    },
+    "semantic.secondary_action": {
+      "required": [
+        "action"
+      ]
+    },
+    "window.activate": {
+      "required": []
+    },
+    "session.shutdown": {
+      "required": []
+    },
+    "lifecycle.reveal": {
+      "required": []
+    },
+    "lifecycle.cancel": {
+      "required": []
+    },
+    "panel.open": {
+      "required": [
+        "panel"
+      ]
+    },
+    "appearance.hair.change.v1.commit": {
+      "required": [
+        "transactionId",
+        "previewHash",
+        "consentToken"
+      ]
+    },
+    "appearance.hair.change.v1.restore": {
+      "required": [
+        "transactionId",
+        "restoreToken"
+      ]
+    }
+  }
+}

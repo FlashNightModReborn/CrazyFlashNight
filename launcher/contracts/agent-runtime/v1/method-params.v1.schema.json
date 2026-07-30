@@ -1,0 +1,1729 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cf7.local/contracts/agent-runtime/v1/method-params.v1.schema.json",
+  "title": "CF7 Agent Runtime exact method params v1",
+  "$ref": "#/$defs/methodRequestContract",
+  "$defs": {
+    "opaqueId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{22,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "empty": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 0
+    },
+    "windowList": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "observationGrantId",
+        "dataScope"
+      ],
+      "properties": {
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "dataScope": {
+          "const": "window_metadata"
+        }
+      }
+    },
+    "windowTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "observationGrantId",
+        "dataScope",
+        "targetId"
+      ],
+      "properties": {
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "dataScope": {
+          "const": "window_metadata"
+        },
+        "targetId": {
+          "$ref": "#/$defs/opaqueId"
+        }
+      }
+    },
+    "windowState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "observationGrantId",
+        "dataScope",
+        "targetId"
+      ],
+      "properties": {
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "dataScope": {
+          "enum": [
+            "window_metadata",
+            "pixels"
+          ]
+        },
+        "targetId": {
+          "$ref": "#/$defs/opaqueId"
+        }
+      }
+    },
+    "appLaunch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "launchRequestId",
+        "entryPoint",
+        "runtimeMode"
+      ],
+      "properties": {
+        "launchRequestId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "entryPoint": {
+          "const": "standard_entry"
+        },
+        "runtimeMode": {
+          "enum": [
+            "formal_runtime",
+            "isolated_candidate",
+            "unqualified_dev"
+          ]
+        },
+        "expectedBuildIdentity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "expectedPayloadClosure": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "if": {
+        "properties": {
+          "runtimeMode": {
+            "const": "isolated_candidate"
+          }
+        },
+        "required": [
+          "runtimeMode"
+        ]
+      },
+      "then": {
+        "required": [
+          "expectedBuildIdentity",
+          "expectedPayloadClosure"
+        ]
+      }
+    },
+    "sessionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "lifecycleGeneration"
+      ],
+      "properties": {
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "lifecycleGeneration": {
+          "$ref": "#/$defs/generation"
+        }
+      }
+    },
+    "leaseAcquire": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "kind",
+        "capabilities",
+        "targetScope",
+        "requestedTtlMs",
+        "requestedActionLimit"
+      ],
+      "properties": {
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "kind": {
+          "enum": [
+            "gui_input",
+            "domain_transaction",
+            "shutdown"
+          ]
+        },
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 30,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "agent-runtime.v1.schema.json#/$defs/capability"
+          }
+        },
+        "targetScope": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/opaqueId"
+          }
+        },
+        "requestedTtlMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1800000
+        },
+        "requestedActionLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "consentReceipt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "argumentBoundsHash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "operation": {
+          "enum": [
+            "appearance.hair.change.v1.commit",
+            "appearance.hair.change.v1.restore"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "domain_transaction"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "operation"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "operation"
+                  ]
+                },
+                {
+                  "required": [
+                    "previewHash"
+                  ]
+                },
+                {
+                  "required": [
+                    "expectedRevision"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "shutdown"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "capabilities": {
+                "minItems": 1,
+                "maxItems": 1,
+                "items": {
+                  "const": "session.shutdown"
+                }
+              },
+              "targetScope": {
+                "minItems": 1,
+                "maxItems": 1
+              },
+              "requestedTtlMs": {
+                "maximum": 30000
+              },
+              "requestedActionLimit": {
+                "const": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "capabilities": {
+                "not": {
+                  "contains": {
+                    "const": "session.shutdown"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "leaseRenew": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "leaseId",
+        "requestedTtlMs"
+      ],
+      "properties": {
+        "leaseId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "requestedTtlMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1800000
+        }
+      }
+    },
+    "leaseRelease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "leaseId"
+      ],
+      "properties": {
+        "leaseId": {
+          "$ref": "#/$defs/opaqueId"
+        }
+      }
+    },
+    "traceExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "observationGrantId",
+        "consentPurpose",
+        "fromServerSequence",
+        "maximumRecords",
+        "format"
+      ],
+      "properties": {
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "consentPurpose": {
+          "enum": [
+            "input.click",
+            "input.press_key",
+            "input.type_text",
+            "input.scroll",
+            "semantic.set_value",
+            "input.drag",
+            "semantic.secondary_action",
+            "window.activate",
+            "session.shutdown",
+            "lifecycle.reveal",
+            "lifecycle.cancel",
+            "panel.open",
+            "domain.appearance.hair.change.v1"
+          ]
+        },
+        "fromServerSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maximumRecords": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "format": {
+          "const": "jsonl"
+        }
+      }
+    },
+    "dataScope": {
+      "enum": [
+        "window_metadata",
+        "pixels",
+        "accessibility",
+        "focus",
+        "selection",
+        "player_state",
+        "lore_public",
+        "retention.persist",
+        "data.export"
+      ]
+    },
+    "observationGrantIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lifecycleRef",
+        "dataScopes",
+        "requestedTtlMs",
+        "allowEphemeralKeyframes",
+        "allowPersistence",
+        "allowExport"
+      ],
+      "properties": {
+        "lifecycleRef": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "targetIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/opaqueId"
+          }
+        },
+        "targetKinds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "agent-runtime.v1.schema.json#/$defs/surfaceKind"
+          }
+        },
+        "dataScopes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/dataScope"
+          }
+        },
+        "requestedTtlMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 900000
+        },
+        "allowEphemeralKeyframes": {
+          "type": "boolean"
+        },
+        "allowPersistence": {
+          "type": "boolean"
+        },
+        "allowExport": {
+          "type": "boolean"
+        },
+        "consentReceipt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "targetIds"
+          ],
+          "not": {
+            "required": [
+              "targetKinds"
+            ]
+          }
+        },
+        {
+          "required": [
+            "targetKinds"
+          ],
+          "not": {
+            "required": [
+              "targetIds"
+            ]
+          }
+        }
+      ]
+    },
+    "observationGrantRevoke": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationGrantId"
+      ],
+      "properties": {
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        }
+      }
+    },
+    "observationCapture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationGrantId",
+        "sessionId",
+        "targetId",
+        "dataScope",
+        "allowValidatedFlashKeyframeFallback"
+      ],
+      "properties": {
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "targetId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "dataScope": {
+          "const": "pixels"
+        },
+        "allowValidatedFlashKeyframeFallback": {
+          "type": "boolean"
+        }
+      }
+    },
+    "observationReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationGrantId",
+        "sessionId",
+        "observationId"
+      ],
+      "properties": {
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "observationId": {
+          "$ref": "#/$defs/opaqueId"
+        }
+      }
+    },
+    "contentRead": {
+      "$ref": "json-rpc.v1.schema.json#/$defs/contentReadRequest"
+    },
+    "actionGet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "actionId"
+      ],
+      "properties": {
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "actionId": {
+          "$ref": "#/$defs/opaqueId"
+        }
+      }
+    },
+    "hairSaveBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "lifecycleGeneration",
+        "attemptId",
+        "attemptGeneration",
+        "slotId",
+        "saveSignature"
+      ],
+      "properties": {
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "lifecycleGeneration": {
+          "$ref": "#/$defs/generation"
+        },
+        "attemptId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "attemptGeneration": {
+          "$ref": "#/$defs/generation"
+        },
+        "slotId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "saveSignature": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "hairInspect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationGrantId",
+        "targetId",
+        "binding"
+      ],
+      "properties": {
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "targetId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "binding": {
+          "$ref": "#/$defs/hairSaveBinding"
+        }
+      }
+    },
+    "hairPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationGrantId",
+        "targetId",
+        "binding",
+        "hairIdentifier",
+        "expectedCurrentHair",
+        "expectedRevision",
+        "expectedGeneration",
+        "expectedSnapshotHash"
+      ],
+      "properties": {
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "targetId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "binding": {
+          "$ref": "#/$defs/hairSaveBinding"
+        },
+        "hairIdentifier": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "expectedCurrentHair": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "expectedGeneration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "expectedSnapshotHash": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "hairConsent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationGrantId",
+        "targetId",
+        "sessionId",
+        "lifecycleGeneration",
+        "transactionId",
+        "previewHash"
+      ],
+      "properties": {
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "targetId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "sessionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "lifecycleGeneration": {
+          "$ref": "#/$defs/generation"
+        },
+        "transactionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "hairReconcile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationGrantId",
+        "targetId",
+        "transactionId"
+      ],
+      "properties": {
+        "observationGrantId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "targetId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "transactionId": {
+          "$ref": "#/$defs/opaqueId"
+        }
+      }
+    },
+    "clickCoordinateArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinateSpace",
+        "x",
+        "y",
+        "button",
+        "clickCount"
+      ],
+      "properties": {
+        "coordinateSpace": {
+          "const": "observation_px"
+        },
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "button": {
+          "$ref": "#/$defs/mouseButton"
+        },
+        "clickCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        }
+      }
+    },
+    "clickSemanticArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "button",
+        "clickCount"
+      ],
+      "properties": {
+        "button": {
+          "$ref": "#/$defs/mouseButton"
+        },
+        "clickCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        }
+      }
+    },
+    "mouseButton": {
+      "enum": [
+        "primary",
+        "secondary",
+        "middle"
+      ]
+    },
+    "pressKeyArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "modifiers",
+        "repeat"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "modifiers": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "ctrl",
+              "alt",
+              "shift"
+            ]
+          }
+        },
+        "repeat": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        }
+      }
+    },
+    "typeTextArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32768
+        }
+      }
+    },
+    "scrollArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinateSpace",
+        "x",
+        "y",
+        "deltaX",
+        "deltaY"
+      ],
+      "properties": {
+        "coordinateSpace": {
+          "const": "observation_px"
+        },
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "deltaX": {
+          "type": "integer",
+          "minimum": -120000,
+          "maximum": 120000
+        },
+        "deltaY": {
+          "type": "integer",
+          "minimum": -120000,
+          "maximum": 120000
+        }
+      },
+      "not": {
+        "properties": {
+          "deltaX": {
+            "const": 0
+          },
+          "deltaY": {
+            "const": 0
+          }
+        },
+        "required": [
+          "deltaX",
+          "deltaY"
+        ]
+      }
+    },
+    "setValueArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "type": "string",
+          "maxLength": 32768
+        }
+      }
+    },
+    "dragArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinateSpace",
+        "startX",
+        "startY",
+        "endX",
+        "endY",
+        "durationMs"
+      ],
+      "properties": {
+        "coordinateSpace": {
+          "const": "observation_px"
+        },
+        "startX": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "startY": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "endX": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "endY": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        }
+      }
+    },
+    "secondaryArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+        }
+      }
+    },
+    "panelArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "panel"
+      ],
+      "properties": {
+        "panel": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+        }
+      }
+    },
+    "hairCommitArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transactionId",
+        "previewHash",
+        "consentToken"
+      ],
+      "properties": {
+        "transactionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "consentToken": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "hairRestoreArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transactionId",
+        "restoreToken"
+      ],
+      "properties": {
+        "transactionId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "restoreToken": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "action": {
+      "allOf": [
+        {
+          "$ref": "agent-runtime.v1.schema.json#/$defs/actionEnvelope"
+        }
+      ]
+    },
+    "methodRequestContract": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/requestWindowList"
+        },
+        {
+          "$ref": "#/$defs/requestWindowTarget"
+        },
+        {
+          "$ref": "#/$defs/requestWindowState"
+        },
+        {
+          "$ref": "#/$defs/requestEmpty"
+        },
+        {
+          "$ref": "#/$defs/requestAppLaunch"
+        },
+        {
+          "$ref": "#/$defs/requestSessionBinding"
+        },
+        {
+          "$ref": "#/$defs/requestAction"
+        },
+        {
+          "$ref": "#/$defs/requestLeaseAcquire"
+        },
+        {
+          "$ref": "#/$defs/requestLeaseRenew"
+        },
+        {
+          "$ref": "#/$defs/requestLeaseRelease"
+        },
+        {
+          "$ref": "#/$defs/requestTraceExport"
+        },
+        {
+          "$ref": "#/$defs/requestObservationGrantIssue"
+        },
+        {
+          "$ref": "#/$defs/requestObservationGrantRevoke"
+        },
+        {
+          "$ref": "#/$defs/requestObservationCapture"
+        },
+        {
+          "$ref": "#/$defs/requestObservationReference"
+        },
+        {
+          "$ref": "#/$defs/requestContentRead"
+        },
+        {
+          "$ref": "#/$defs/requestActionGet"
+        },
+        {
+          "$ref": "#/$defs/requestHairInspect"
+        },
+        {
+          "$ref": "#/$defs/requestHairPreview"
+        },
+        {
+          "$ref": "#/$defs/requestHairConsent"
+        },
+        {
+          "$ref": "#/$defs/requestHairReconcile"
+        }
+      ]
+    },
+    "requestWindowList": {
+      "properties": {
+        "method": {
+          "const": "window.list"
+        },
+        "params": {
+          "$ref": "#/$defs/windowList"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestWindowTarget": {
+      "properties": {
+        "method": {
+          "const": "window.get"
+        },
+        "params": {
+          "$ref": "#/$defs/windowTarget"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestWindowState": {
+      "properties": {
+        "method": {
+          "const": "window.state"
+        },
+        "params": {
+          "$ref": "#/$defs/windowState"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestEmpty": {
+      "properties": {
+        "method": {
+          "enum": [
+            "app.list",
+            "session.status",
+            "session.discover"
+          ]
+        },
+        "params": {
+          "$ref": "#/$defs/empty"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestAppLaunch": {
+      "properties": {
+        "method": {
+          "const": "app.launch"
+        },
+        "params": {
+          "$ref": "#/$defs/appLaunch"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestSessionBinding": {
+      "properties": {
+        "method": {
+          "enum": [
+            "session.attach",
+            "session.detach"
+          ]
+        },
+        "params": {
+          "$ref": "#/$defs/sessionBinding"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestAction": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/actionClick"
+        },
+        {
+          "$ref": "#/$defs/actionPressKey"
+        },
+        {
+          "$ref": "#/$defs/actionTypeText"
+        },
+        {
+          "$ref": "#/$defs/actionScroll"
+        },
+        {
+          "$ref": "#/$defs/actionSetValue"
+        },
+        {
+          "$ref": "#/$defs/actionDrag"
+        },
+        {
+          "$ref": "#/$defs/actionSecondary"
+        },
+        {
+          "$ref": "#/$defs/actionEmpty"
+        },
+        {
+          "$ref": "#/$defs/actionPanel"
+        },
+        {
+          "$ref": "#/$defs/actionHairCommit"
+        },
+        {
+          "$ref": "#/$defs/actionHairRestore"
+        }
+      ]
+    },
+    "actionClick": {
+      "properties": {
+        "method": {
+          "const": "input.click"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "input.click"
+                },
+                "arguments": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/clickCoordinateArguments"
+                    },
+                    {
+                      "$ref": "#/$defs/clickSemanticArguments"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionPressKey": {
+      "$ref": "#/$defs/actionTemplatePressKey"
+    },
+    "actionTemplatePressKey": {
+      "properties": {
+        "method": {
+          "const": "input.press_key"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "input.press_key"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/pressKeyArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionTypeText": {
+      "properties": {
+        "method": {
+          "const": "input.type_text"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "input.type_text"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/typeTextArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionScroll": {
+      "properties": {
+        "method": {
+          "const": "input.scroll"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "input.scroll"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/scrollArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionSetValue": {
+      "properties": {
+        "method": {
+          "const": "semantic.set_value"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "semantic.set_value"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/setValueArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionDrag": {
+      "properties": {
+        "method": {
+          "const": "input.drag"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "input.drag"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/dragArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionSecondary": {
+      "properties": {
+        "method": {
+          "const": "semantic.secondary_action"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "semantic.secondary_action"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/secondaryArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionEmpty": {
+      "properties": {
+        "method": {
+          "enum": [
+            "window.activate",
+            "session.shutdown",
+            "lifecycle.reveal",
+            "lifecycle.cancel"
+          ]
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "arguments": {
+                  "$ref": "#/$defs/empty"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ],
+      "x-cf7-operationEqualsMethod": true
+    },
+    "actionPanel": {
+      "properties": {
+        "method": {
+          "const": "panel.open"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "panel.open"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/panelArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionHairCommit": {
+      "properties": {
+        "method": {
+          "const": "appearance.hair.change.v1.commit"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "appearance.hair.change.v1.commit"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/hairCommitArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "actionHairRestore": {
+      "properties": {
+        "method": {
+          "const": "appearance.hair.change.v1.restore"
+        },
+        "params": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "properties": {
+                "operation": {
+                  "const": "appearance.hair.change.v1.restore"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/hairRestoreArguments"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestLeaseAcquire": {
+      "properties": {
+        "method": {
+          "const": "lease.acquire"
+        },
+        "params": {
+          "$ref": "#/$defs/leaseAcquire"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestLeaseRenew": {
+      "properties": {
+        "method": {
+          "const": "lease.renew"
+        },
+        "params": {
+          "$ref": "#/$defs/leaseRenew"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestLeaseRelease": {
+      "properties": {
+        "method": {
+          "const": "lease.release"
+        },
+        "params": {
+          "$ref": "#/$defs/leaseRelease"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestTraceExport": {
+      "properties": {
+        "method": {
+          "const": "trace.export"
+        },
+        "params": {
+          "$ref": "#/$defs/traceExport"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestObservationGrantIssue": {
+      "properties": {
+        "method": {
+          "const": "observation.grant.issue"
+        },
+        "params": {
+          "$ref": "#/$defs/observationGrantIssue"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestObservationGrantRevoke": {
+      "properties": {
+        "method": {
+          "const": "observation.grant.revoke"
+        },
+        "params": {
+          "$ref": "#/$defs/observationGrantRevoke"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestObservationCapture": {
+      "properties": {
+        "method": {
+          "const": "observation.capture"
+        },
+        "params": {
+          "$ref": "#/$defs/observationCapture"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestObservationReference": {
+      "properties": {
+        "method": {
+          "enum": [
+            "observation.get",
+            "observation.ack"
+          ]
+        },
+        "params": {
+          "$ref": "#/$defs/observationReference"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestContentRead": {
+      "properties": {
+        "method": {
+          "const": "content.read"
+        },
+        "params": {
+          "$ref": "#/$defs/contentRead"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestActionGet": {
+      "properties": {
+        "method": {
+          "const": "action.get"
+        },
+        "params": {
+          "$ref": "#/$defs/actionGet"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestHairInspect": {
+      "properties": {
+        "method": {
+          "const": "appearance.hair.change.v1.inspect"
+        },
+        "params": {
+          "$ref": "#/$defs/hairInspect"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestHairPreview": {
+      "properties": {
+        "method": {
+          "const": "appearance.hair.change.v1.preview"
+        },
+        "params": {
+          "$ref": "#/$defs/hairPreview"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestHairConsent": {
+      "properties": {
+        "method": {
+          "const": "appearance.hair.change.v1.consent"
+        },
+        "params": {
+          "$ref": "#/$defs/hairConsent"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    },
+    "requestHairReconcile": {
+      "properties": {
+        "method": {
+          "const": "appearance.hair.change.v1.reconcile"
+        },
+        "params": {
+          "$ref": "#/$defs/hairReconcile"
+        }
+      },
+      "required": [
+        "method",
+        "params"
+      ]
+    }
+  }
+}

@@ -25,8 +25,7 @@ $BootstrapExe = Join-Path $ProjectRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
 $LauncherExe = Join-Path $ProjectRoot 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe'
 $PortsFile = Join-Path $ProjectRoot 'launcher_ports.json'
 . (Join-Path $ProjectRoot 'tools\dotnet-runtime-detect.ps1')
-
-$BusPorts = @(1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000)
+. (Join-Path $ProjectRoot 'tools\lib\LegacyHttpAuth.ps1')
 
 function Write-ProtocolUncertain {
     param([Parameter(Mandatory = $true)][string]$Reason)
@@ -49,34 +48,20 @@ function Write-ProtocolUncertain {
 function Get-BusHttpPort {
     param([int]$ExpectedPid = 0)
 
-    if (Test-Path -LiteralPath $PortsFile) {
-        try {
-            $json = Get-Content -LiteralPath $PortsFile -Raw -Encoding UTF8 |
-                ConvertFrom-Json
-            $httpPort = [int]$json.httpPort
-            if (($ExpectedPid -eq 0 -or [int]$json.pid -eq $ExpectedPid) -and
-                $httpPort -ge 1 -and $httpPort -le 65535) {
-                $response = Invoke-WebRequest `
-                    -Uri "http://localhost:$httpPort/testConnection" `
-                    -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing `
-                    -ErrorAction Stop
-                if ($response.StatusCode -eq 200) {
-                    return $httpPort
-                }
-            }
-        } catch {}
-    }
-    if ($ExpectedPid -gt 0) { return $null }
-
-    foreach ($p in $BusPorts) {
-        try {
-            $r = Invoke-WebRequest -Uri "http://localhost:$p/testConnection" `
-                -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing -ErrorAction Stop
-            if ($r.StatusCode -eq 200) {
-                return [int]$p
-            }
-        } catch {}
-    }
+    if (-not (Test-Path -LiteralPath $PortsFile)) { return $null }
+    try {
+        $ports = Get-Cf7LauncherPortsRecord -ProjectRoot $ProjectRoot
+        if ($ExpectedPid -gt 0 -and $ports.Pid -ne $ExpectedPid) {
+            return $null
+        }
+        $response = Invoke-WebRequest `
+            -Uri "http://localhost:$($ports.HttpPort)/testConnection" `
+            -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing `
+            -ErrorAction Stop
+        if ($response.StatusCode -eq 200) {
+            return [int]$ports.HttpPort
+        }
+    } catch {}
     return $null
 }
 
@@ -99,9 +84,19 @@ function Stop-BusIfReachable {
     $httpPort = Get-BusHttpPort -ExpectedPid $ExpectedPid
     if ($null -eq $httpPort) { return }
     try {
+        $context = Get-Cf7LegacyHttpContext -ProjectRoot $ProjectRoot
+        if (($ExpectedPid -gt 0 -and $context.Pid -ne $ExpectedPid) -or
+            $context.HttpPort -ne $httpPort) {
+            throw 'legacy_http_shutdown_identity_mismatch'
+        }
         Invoke-WebRequest -Uri "http://localhost:$httpPort/shutdown" `
-            -Method POST -Body '' -TimeoutSec 5 -UseBasicParsing -ErrorAction Stop | Out-Null
-    } catch {}
+            -Headers $context.Headers -Method POST -Body '' -TimeoutSec 5 `
+            -UseBasicParsing -ErrorAction Stop | Out-Null
+    } catch {
+        Write-Warning (
+            'Authenticated graceful shutdown was refused: ' +
+            $_.Exception.Message)
+    }
 }
 
 function Get-ClosedBenchLines {

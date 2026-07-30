@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
+const LegacyHttpClient = require("../lib/legacy-http-client");
 const {
   buildLauncherStartArguments,
   checkRuntimeIdentityContract,
@@ -17,10 +18,6 @@ const {
 } = require("../lib/runtime-process-identity");
 const { checkAgentEntryContract } = require("../test-agent-entry-contract");
 
-const PORT_CANDIDATES = [
-  1192, 1924, 9243, 2433, 4339, 3399, 3993,
-  11924, 19243, 24339, 43399, 33993, 3000,
-];
 const DEFAULT_AGENT_SLOT = "cf7_agent_equipment_tuning";
 const AGENT_SLOT_RE = /^cf7_agent_[A-Za-z0-9_-]+$/;
 const SAFE_SLOT_RE = /^[A-Za-z0-9_-]+$/;
@@ -30,6 +27,7 @@ const TITLE_FRAME_MARKER = "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cl
 const REVEAL_WATCHDOG_MARKER = "[LaunchFlow] Flash reveal watchdog fired";
 const AGENT_ENTER_COMMAND = "#func:_root.agentEnterResolvedSave()";
 const LOG_TAIL_LIMIT = 2000;
+let activeLegacyHttpContext = null;
 
 class RunnerError extends Error {
   constructor(code, phase, message, details) {
@@ -362,6 +360,16 @@ function prepareDedicatedSave(root, args, runDir) {
 function httpRequest(port, method, pathname, body, timeoutMs) {
   return new Promise((resolve, reject) => {
     const payload = body === undefined || body === null ? "" : JSON.stringify(body);
+    let authorizationHeaders;
+    try {
+      authorizationHeaders = LegacyHttpClient.authorizationHeadersFor(
+        activeLegacyHttpContext,
+        pathname
+      );
+    } catch (error) {
+      reject(error);
+      return;
+    }
     const req = http.request(
       {
         hostname: "localhost",
@@ -369,10 +377,10 @@ function httpRequest(port, method, pathname, body, timeoutMs) {
         path: pathname,
         method,
         timeout: timeoutMs || 5000,
-        headers: {
+        headers: Object.assign({
           "Content-Type": "application/json",
           "Content-Length": Buffer.byteLength(payload),
-        },
+        }, authorizationHeaders),
       },
       (res) => {
         const chunks = [];
@@ -416,28 +424,24 @@ async function testPort(port) {
 }
 
 async function discoverPort(root) {
-  const ports = [];
   const portsFile = path.join(root, "launcher_ports.json");
-  if (fs.existsSync(portsFile)) {
-    try {
-      const parsed = JSON.parse(fs.readFileSync(portsFile, "utf8"));
-      if (Number.isInteger(parsed.httpPort)) ports.push(parsed.httpPort);
-    } catch (_error) {
-      // Candidate scan below is the safe fallback for a stale/truncated ports file.
-    }
-  }
-  PORT_CANDIDATES.forEach((port) => {
-    if (!ports.includes(port)) ports.push(port);
-  });
-  for (const port of ports) {
-    if (await testPort(port)) return port;
-  }
-  return null;
+  activeLegacyHttpContext = null;
+  if (!fs.existsSync(portsFile)) return null;
+
+  const ports = LegacyHttpClient.readExactLauncherPorts(root);
+  if (!await testPort(ports.httpPort)) return null;
+  activeLegacyHttpContext =
+    LegacyHttpClient.readExactLauncherHttpContext(root);
+  return activeLegacyHttpContext.httpPort;
 }
 
 function startLauncher(root, expectedIdentity) {
   const script = path.join(root, "automation", "start.ps1");
-  const launchArgs = buildLauncherStartArguments(script, expectedIdentity);
+  const launchArgs = buildLauncherStartArguments(
+    script,
+    expectedIdentity,
+    { enableLegacyHttpAutomation: true },
+  );
   const result = childProcess.spawnSync(
     "powershell.exe",
     launchArgs,

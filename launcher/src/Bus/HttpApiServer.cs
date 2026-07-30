@@ -27,11 +27,17 @@ namespace CF7Launcher.Bus
     /// </summary>
     public class HttpApiServer : IDisposable
     {
+        // /logBatch remains intentionally available to the legacy Flash
+        // bootstrap in standard mode, so its unauthenticated body must stay
+        // small even when the sender uses chunked transfer encoding.
+        private const int LogBatchMaxBodyBytes = 64 * 1024;
+
         private HttpListener _listener;
         private Thread _thread;
         private volatile bool _running;
         private readonly int _socketPort;
         private readonly string _projectRoot;
+        private readonly LegacyHttpAccessPolicy _accessPolicy;
 
         // Console 命令的 FIFO 队列
         private readonly Queue<ConsoleEntry> _pendingConsole;
@@ -53,11 +59,16 @@ namespace CF7Launcher.Bus
 
         public int Port { get; private set; }
 
-        public HttpApiServer(int socketPort, string projectRoot, XmlSocketServer socketServer)
+        public HttpApiServer(
+            int socketPort,
+            string projectRoot,
+            XmlSocketServer socketServer,
+            LegacyHttpAccessPolicy accessPolicy = null)
         {
             _socketPort = socketPort;
             _projectRoot = projectRoot;
             _socketServer = socketServer;
+            _accessPolicy = accessPolicy ?? LegacyHttpAccessPolicy.DenyAll();
             _pendingConsole = new Queue<ConsoleEntry>();
         }
 
@@ -139,15 +150,39 @@ namespace CF7Launcher.Bus
 
             try
             {
-                // CORS headers
-                ctx.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-                ctx.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-                ctx.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+                ctx.Response.Headers.Add("Cache-Control", "no-store");
+
+                // Flash's compatibility probes do not use browser CORS. Reject
+                // every browser-origin request before routing so a random web
+                // page cannot drive ambient localhost authority.
+                if (_accessPolicy.IsBrowserOriginRequest(ctx.Request))
+                {
+                    ctx.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    ctx.Response.ContentType = "application/json";
+                    WriteResponse(
+                        ctx,
+                        "{\"ok\":false,\"error\":\"browser_origin_forbidden\"}");
+                    return;
+                }
 
                 if (method == "OPTIONS")
                 {
-                    ctx.Response.StatusCode = 200;
-                    ctx.Response.Close();
+                    ctx.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    ctx.Response.ContentType = "application/json";
+                    WriteResponse(
+                        ctx,
+                        "{\"ok\":false,\"error\":\"cors_not_supported\"}");
+                    return;
+                }
+
+                if (LegacyHttpAccessPolicy.IsPrivilegedPath(path)
+                    && !_accessPolicy.IsAuthorized(ctx.Request))
+                {
+                    ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    ctx.Response.ContentType = "application/json";
+                    WriteResponse(
+                        ctx,
+                        "{\"ok\":false,\"error\":\"legacy_http_credential_required\"}");
                     return;
                 }
 
@@ -165,7 +200,7 @@ namespace CF7Launcher.Bus
                     HandleTask(ctx);
                 else if (path == "/shutdown" && method == "POST")
                     HandleShutdown(ctx);
-                else if (path == "/crossdomain.xml")
+                else if (path == "/crossdomain.xml" && method == "GET")
                     HandleCrossDomain(ctx);
                 else if (path == "/save-push" && method == "POST")
                     HandleSavePush(ctx);
@@ -230,11 +265,33 @@ namespace CF7Launcher.Bus
 
         private void HandleLogBatch(HttpListenerContext ctx)
         {
-            string body = ReadBody(ctx);
+            string body;
+            if (!TryReadBoundedBody(
+                    ctx,
+                    LogBatchMaxBodyBytes,
+                    out body))
+            {
+                ctx.Response.StatusCode = 413;
+                ctx.Response.ContentType = "application/json";
+                WriteResponse(
+                    ctx,
+                    "{\"ok\":false,\"error\":\"request_body_too_large\"}");
+                return;
+            }
             // LogManager 走 BeginInvoke 异步写 TextBox，不阻塞 HTTP 线程
-            string decoded = Uri.UnescapeDataString(body);
+            // Keep one physical record per request. Otherwise an ambient
+            // localhost sender can forge launcher-looking continuation lines.
+            string decoded = NormalizeLogBatchForLog(body);
             LogManager.Log("[LogBatch] " + decoded);
             WriteResponse(ctx, "OK");
+        }
+
+        internal static string NormalizeLogBatchForLog(
+            string body)
+        {
+            return Uri.UnescapeDataString(body ?? "")
+                .Replace("\r", "\\r")
+                .Replace("\n", "\\n");
         }
 
         private void HandleConsole(HttpListenerContext ctx)
@@ -693,6 +750,44 @@ namespace CF7Launcher.Bus
             }
         }
 
+        private static bool TryReadBoundedBody(
+            HttpListenerContext ctx,
+            int maxBytes,
+            out string body)
+        {
+            body = null;
+            if (ctx == null
+                || maxBytes < 0
+                || ctx.Request.ContentLength64 > maxBytes)
+            {
+                return false;
+            }
+
+            using (Stream input = ctx.Request.InputStream)
+            using (var buffer = new MemoryStream())
+            {
+                byte[] chunk = new byte[4096];
+                while (true)
+                {
+                    int remainingWithSentinel =
+                        maxBytes + 1 - checked((int)buffer.Length);
+                    if (remainingWithSentinel <= 0)
+                        return false;
+                    int count = input.Read(
+                        chunk,
+                        0,
+                        Math.Min(chunk.Length, remainingWithSentinel));
+                    if (count == 0)
+                        break;
+                    buffer.Write(chunk, 0, count);
+                    if (buffer.Length > maxBytes)
+                        return false;
+                }
+                body = Encoding.UTF8.GetString(buffer.ToArray());
+                return true;
+            }
+        }
+
         private static void WriteResponse(HttpListenerContext ctx, string body)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(body);
@@ -710,6 +805,7 @@ namespace CF7Launcher.Bus
                 try { _listener.Close(); } catch { }
                 _listener = null;
             }
+            if (_accessPolicy != null) _accessPolicy.Dispose();
             LogManager.Log("[HTTP] Stopped");
         }
     }

@@ -1,0 +1,1129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cf7.local/contracts/agent-runtime/v1/agent-runtime.v1.schema.json",
+  "title": "CF7 Agent Runtime v1 payload",
+  "oneOf": [
+    { "$ref": "#/$defs/hello" },
+    { "$ref": "#/$defs/welcome" },
+    { "$ref": "#/$defs/appLaunchResult" },
+    { "$ref": "#/$defs/sessionDescriptor" },
+    { "$ref": "#/$defs/surfaceDescriptor" },
+    { "$ref": "#/$defs/observationGrantDescriptor" },
+    { "$ref": "#/$defs/leaseDescriptor" },
+    { "$ref": "#/$defs/observationEnvelope" },
+    { "$ref": "#/$defs/frameEnvelope" },
+    { "$ref": "#/$defs/actionEnvelope" },
+    { "$ref": "#/$defs/actionReceipt" },
+    { "$ref": "#/$defs/hairConsentDescriptor" }
+  ],
+  "$defs": {
+    "opaqueId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{22,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "protocolVersion": {
+      "const": "1.0"
+    },
+    "sessionMode": {
+      "enum": ["developer_interactive", "unattended_test", "player_assist"]
+    },
+    "runtimeMode": {
+      "enum": ["formal_runtime", "isolated_candidate", "unqualified_dev"]
+    },
+    "surfaceKind": {
+      "enum": ["launcher", "flash", "web_overlay", "native_hud", "wings_shell", "business_modal"]
+    },
+    "capability": {
+      "enum": [
+        "window.list",
+        "window.get",
+        "app.list",
+        "app.launch",
+        "window.state",
+        "input.click",
+        "input.press_key",
+        "input.type_text",
+        "input.scroll",
+        "semantic.set_value",
+        "input.drag",
+        "semantic.secondary_action",
+        "window.activate",
+        "session.status",
+        "session.discover",
+        "session.attach",
+        "session.detach",
+        "session.shutdown",
+        "lifecycle.reveal",
+        "lifecycle.cancel",
+        "panel.open",
+        "lease.acquire",
+        "lease.renew",
+        "lease.release",
+        "trace.export",
+        "domain.appearance.hair.change.v1",
+        "observation.grant.manage",
+        "observation.capture",
+        "content.read",
+        "action.get"
+      ]
+    },
+    "physicalRect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        "y": { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        "width": { "type": "integer", "minimum": 1, "maximum": 2147483647 },
+        "height": { "type": "integer", "minimum": 1, "maximum": 2147483647 }
+      }
+    },
+    "affineTransform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["m11", "m12", "m21", "m22", "dx", "dy"],
+      "properties": {
+        "m11": { "type": "number" },
+        "m12": { "type": "number" },
+        "m21": { "type": "number" },
+        "m22": { "type": "number" },
+        "dx": { "type": "number" },
+        "dy": { "type": "number" }
+      }
+    },
+    "hello": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocolVersion",
+        "clientInstanceId",
+        "clientKind",
+        "requestedCapabilities",
+        "nonce",
+        "connectionToken",
+        "credentialProof"
+      ],
+      "properties": {
+        "protocolVersion": { "$ref": "#/$defs/protocolVersion" },
+        "clientInstanceId": { "$ref": "#/$defs/opaqueId" },
+        "clientKind": { "enum": ["jsonl_cli", "mcp_stdio", "wings_internal", "test_harness"] },
+        "requestedCapabilities": {
+          "type": "array",
+          "maxItems": 30,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/capability" }
+        },
+        "nonce": { "$ref": "#/$defs/opaqueId" },
+        "connectionToken": { "$ref": "#/$defs/opaqueId" },
+        "credentialProof": { "type": "string", "minLength": 32, "maxLength": 4096 }
+      }
+    },
+    "minimalSessionReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectRunning", "qualificationState"],
+      "properties": {
+        "projectRunning": { "type": "boolean" },
+        "qualificationState": { "enum": ["verified", "unqualified"] },
+        "lifecycleRef": { "$ref": "#/$defs/opaqueId" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "projectRunning": { "const": true } },
+            "required": ["projectRunning"]
+          },
+          "then": { "required": ["lifecycleRef"] },
+          "else": {
+            "not": { "required": ["lifecycleRef"] }
+          }
+        }
+      ]
+    },
+    "appLaunchResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "launchRequestId",
+        "entryPoint",
+        "started",
+        "alreadyRunning",
+        "runtimeMode",
+        "minimalSessionRef"
+      ],
+      "properties": {
+        "launchRequestId": { "$ref": "#/$defs/opaqueId" },
+        "entryPoint": { "const": "standard_entry" },
+        "started": { "const": false },
+        "alreadyRunning": { "const": true },
+        "runtimeMode": { "$ref": "#/$defs/runtimeMode" },
+        "minimalSessionRef": {
+          "$ref": "#/$defs/minimalSessionReference"
+        }
+      }
+    },
+    "welcomeLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maximumJsonFrameBytes",
+        "maximumBinaryChunkBytes",
+        "maximumBinaryObjectBytes",
+        "maximumConcurrentRequests",
+        "maximumQueueDepth",
+        "maximumRequestsPerMinute",
+        "maximumActionDeadlineMs",
+        "maximumContentHandleTtlMs",
+        "maximumTargetScopeItems"
+      ],
+      "properties": {
+        "maximumJsonFrameBytes": { "type": "integer", "minimum": 1, "maximum": 1048576 },
+        "maximumBinaryChunkBytes": { "type": "integer", "minimum": 1, "maximum": 4194304 },
+        "maximumBinaryObjectBytes": { "type": "integer", "minimum": 1, "maximum": 16777216 },
+        "maximumConcurrentRequests": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "maximumQueueDepth": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "maximumRequestsPerMinute": { "type": "integer", "minimum": 1, "maximum": 120 },
+        "maximumActionDeadlineMs": { "type": "integer", "minimum": 1, "maximum": 30000 },
+        "maximumContentHandleTtlMs": { "type": "integer", "minimum": 1, "maximum": 15000 },
+        "maximumTargetScopeItems": { "type": "integer", "minimum": 1, "maximum": 32 }
+      }
+    },
+    "welcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serverInstanceId",
+        "protocolVersion",
+        "securityPrincipalId",
+        "minimalSessionRef",
+        "grantedCapabilities",
+        "limits",
+        "serverSequence"
+      ],
+      "properties": {
+        "serverInstanceId": { "$ref": "#/$defs/opaqueId" },
+        "protocolVersion": { "$ref": "#/$defs/protocolVersion" },
+        "securityPrincipalId": { "$ref": "#/$defs/opaqueId" },
+        "minimalSessionRef": { "$ref": "#/$defs/minimalSessionReference" },
+        "grantedCapabilities": {
+          "type": "array",
+          "maxItems": 30,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/capability" }
+        },
+        "limits": { "$ref": "#/$defs/welcomeLimits" },
+        "serverSequence": { "$ref": "#/$defs/generation" }
+      }
+    },
+    "runtimeQualification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "buildIdentity": { "$ref": "#/$defs/sha256" },
+        "payloadClosure": { "$ref": "#/$defs/sha256" },
+        "unqualifiedReason": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "activePanel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "instanceId", "targetId"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "instanceId": { "$ref": "#/$defs/opaqueId" },
+        "targetId": { "$ref": "#/$defs/opaqueId" }
+      }
+    },
+    "surfaceDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetId",
+        "kind",
+        "surfaceEpoch",
+        "boundsPhysical",
+        "dpi",
+        "zIndex",
+        "visible",
+        "coordinateSpaceVersion",
+        "focusEpoch",
+        "modalEpoch",
+        "observationModes",
+        "inputModes"
+      ],
+      "properties": {
+        "targetId": { "$ref": "#/$defs/opaqueId" },
+        "kind": { "$ref": "#/$defs/surfaceKind" },
+        "surfaceEpoch": { "$ref": "#/$defs/generation" },
+        "boundsPhysical": { "$ref": "#/$defs/physicalRect" },
+        "dpi": { "type": "integer", "minimum": 72, "maximum": 960 },
+        "zIndex": { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        "visible": { "type": "boolean" },
+        "coordinateSpaceVersion": { "$ref": "#/$defs/generation" },
+        "focusEpoch": { "$ref": "#/$defs/generation" },
+        "modalEpoch": { "$ref": "#/$defs/generation" },
+        "semanticGeneration": { "$ref": "#/$defs/generation" },
+        "documentGeneration": { "$ref": "#/$defs/generation" },
+        "observationModes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["window_graphics_capture", "flash_snapshot_keyframe", "uia", "web_semantic"]
+          }
+        },
+        "inputModes": {
+          "type": "array",
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["cdp", "send_input_guarded", "uia_value", "uia_invoke", "domain_transaction"]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "required": ["documentGeneration"] },
+          "then": {
+            "properties": { "kind": { "const": "web_overlay" } },
+            "required": ["kind"]
+          }
+        }
+      ]
+    },
+    "sessionDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocolVersion",
+        "sessionId",
+        "lifecycleGeneration",
+        "sessionMode",
+        "runtimeMode",
+        "slot",
+        "launcherPath",
+        "launcherPid",
+        "launcherStartTime",
+        "coreSha256",
+        "runtimeQualification",
+        "surfaces",
+        "capabilities"
+      ],
+      "properties": {
+        "protocolVersion": { "$ref": "#/$defs/protocolVersion" },
+        "sessionId": { "$ref": "#/$defs/opaqueId" },
+        "lifecycleGeneration": { "$ref": "#/$defs/generation" },
+        "sessionMode": { "$ref": "#/$defs/sessionMode" },
+        "runtimeMode": { "$ref": "#/$defs/runtimeMode" },
+        "attemptId": { "$ref": "#/$defs/opaqueId" },
+        "attemptGeneration": { "$ref": "#/$defs/generation" },
+        "slot": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "saveRevision": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "launcherPath": { "type": "string", "minLength": 3, "maxLength": 32767 },
+        "launcherPid": { "type": "integer", "minimum": 1, "maximum": 2147483647 },
+        "launcherStartTime": { "type": "string", "format": "date-time" },
+        "flashPid": { "type": "integer", "minimum": 1, "maximum": 2147483647 },
+        "flashStartTime": { "type": "string", "format": "date-time" },
+        "coreSha256": { "$ref": "#/$defs/sha256" },
+        "runtimeQualification": { "$ref": "#/$defs/runtimeQualification" },
+        "surfaces": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "$ref": "#/$defs/surfaceDescriptor" }
+        },
+        "activePanel": { "$ref": "#/$defs/activePanel" },
+        "capabilities": {
+          "type": "array",
+          "maxItems": 30,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/capability" }
+        }
+      },
+      "dependentRequired": {
+        "attemptId": ["attemptGeneration"],
+        "attemptGeneration": ["attemptId"],
+        "flashPid": ["flashStartTime"],
+        "flashStartTime": ["flashPid"]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "runtimeMode": { "enum": ["formal_runtime", "isolated_candidate"] } },
+            "required": ["runtimeMode"]
+          },
+          "then": {
+            "properties": {
+              "runtimeQualification": {
+                "required": ["buildIdentity", "payloadClosure"],
+                "not": { "required": ["unqualifiedReason"] }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "runtimeQualification": {
+                "required": ["unqualifiedReason"],
+                "not": {
+                  "anyOf": [
+                    { "required": ["buildIdentity"] },
+                    { "required": ["payloadClosure"] }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "sessionScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sessionId", "lifecycleGeneration", "crossAttempt"],
+      "properties": {
+        "sessionId": { "$ref": "#/$defs/opaqueId" },
+        "lifecycleGeneration": { "$ref": "#/$defs/generation" },
+        "attemptId": { "$ref": "#/$defs/opaqueId" },
+        "attemptGeneration": { "$ref": "#/$defs/generation" },
+        "crossAttempt": { "type": "boolean" }
+      },
+      "dependentRequired": {
+        "attemptId": ["attemptGeneration"],
+        "attemptGeneration": ["attemptId"]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "crossAttempt": { "const": true } },
+            "required": ["crossAttempt"]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                { "required": ["attemptId"] },
+                { "required": ["attemptGeneration"] }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "observationGrantDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationGrantId",
+        "ownerClientId",
+        "securityPrincipalId",
+        "sessionScope",
+        "targetScope",
+        "dataScope",
+        "issuedMonotonic",
+        "expiresMonotonic",
+        "allowEphemeralKeyframes",
+        "allowPersistence",
+        "allowExport",
+        "state"
+      ],
+      "properties": {
+        "observationGrantId": { "$ref": "#/$defs/opaqueId" },
+        "ownerClientId": { "$ref": "#/$defs/opaqueId" },
+        "securityPrincipalId": { "$ref": "#/$defs/opaqueId" },
+        "sessionScope": { "$ref": "#/$defs/sessionScope" },
+        "targetScope": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/opaqueId" }
+        },
+        "dataScope": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "window_metadata",
+              "pixels",
+              "accessibility",
+              "focus",
+              "selection",
+              "player_state",
+              "lore_public",
+              "retention.persist",
+              "data.export"
+            ]
+          }
+        },
+        "issuedMonotonic": { "$ref": "#/$defs/generation" },
+        "expiresMonotonic": { "$ref": "#/$defs/generation" },
+        "consentReceipt": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "allowEphemeralKeyframes": { "type": "boolean" },
+        "allowPersistence": { "type": "boolean" },
+        "allowExport": { "type": "boolean" },
+        "state": { "enum": ["active", "revoked", "expired"] },
+        "revokeReason": { "type": "string", "minLength": 1, "maxLength": 128 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "allowPersistence": { "const": true } },
+            "required": ["allowPersistence"]
+          },
+          "then": {
+            "properties": {
+              "dataScope": { "contains": { "const": "retention.persist" } }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "allowExport": { "const": true } },
+            "required": ["allowExport"]
+          },
+          "then": {
+            "properties": {
+              "dataScope": { "contains": { "const": "data.export" } }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "state": { "const": "revoked" } },
+            "required": ["state"]
+          },
+          "then": { "required": ["revokeReason"] }
+        }
+      ]
+    },
+    "leaseScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["session", "targetScope", "operationScope", "maximumActions"],
+      "properties": {
+        "session": { "$ref": "#/$defs/sessionScope" },
+        "targetScope": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/opaqueId" }
+        },
+        "operationScope": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 30,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/capability" }
+        },
+        "maximumActions": { "type": "integer", "minimum": 1, "maximum": 2147483647 },
+        "argumentBoundsHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "leaseDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "leaseId",
+        "ownerClientId",
+        "securityPrincipalId",
+        "sessionMode",
+        "purpose",
+        "scope",
+        "capabilities",
+        "issuedMonotonic",
+        "expiresMonotonic",
+        "humanOverridePolicy",
+        "state"
+      ],
+      "properties": {
+        "leaseId": { "$ref": "#/$defs/opaqueId" },
+        "ownerClientId": { "$ref": "#/$defs/opaqueId" },
+        "securityPrincipalId": { "$ref": "#/$defs/opaqueId" },
+        "sessionMode": { "$ref": "#/$defs/sessionMode" },
+        "purpose": { "enum": ["gui_input", "domain_transaction", "shutdown"] },
+        "scope": { "$ref": "#/$defs/leaseScope" },
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 30,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/capability" }
+        },
+        "issuedMonotonic": { "$ref": "#/$defs/generation" },
+        "expiresMonotonic": { "$ref": "#/$defs/generation" },
+        "renewAfter": { "$ref": "#/$defs/generation" },
+        "consentReceipt": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "humanOverridePolicy": { "const": "always_preempt" },
+        "state": { "enum": ["active", "revoked", "expired", "released", "consumed"] },
+        "revokeReason": { "type": "string", "minLength": 1, "maxLength": 128 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "sessionMode": { "const": "player_assist" } },
+            "required": ["sessionMode"]
+          },
+          "then": {
+            "required": ["consentReceipt"],
+            "properties": {
+              "scope": {
+                "properties": {
+                  "targetScope": { "minItems": 1, "maxItems": 1 }
+                },
+                "required": ["argumentBoundsHash"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "sessionMode": { "const": "player_assist" },
+              "purpose": { "const": "gui_input" }
+            },
+            "required": ["sessionMode", "purpose"]
+          },
+          "then": {
+            "properties": {
+              "scope": {
+                "properties": {
+                  "maximumActions": { "maximum": 8 }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "purpose": { "const": "shutdown" }
+            },
+            "required": ["purpose"]
+          },
+          "then": {
+            "not": { "required": ["renewAfter"] },
+            "properties": {
+              "sessionMode": {
+                "enum": ["developer_interactive", "unattended_test"]
+              },
+              "capabilities": {
+                "minItems": 1,
+                "maxItems": 1,
+                "items": { "const": "session.shutdown" }
+              },
+              "scope": {
+                "properties": {
+                  "targetScope": {
+                    "minItems": 1,
+                    "maxItems": 1
+                  },
+                  "operationScope": {
+                    "minItems": 1,
+                    "maxItems": 1,
+                    "items": { "const": "session.shutdown" }
+                  },
+                  "maximumActions": { "const": 1 }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "capabilities": {
+                "not": {
+                  "contains": { "const": "session.shutdown" }
+                }
+              },
+              "scope": {
+                "properties": {
+                  "operationScope": {
+                    "not": {
+                      "contains": { "const": "session.shutdown" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "sessionMode": { "const": "player_assist" },
+              "purpose": { "const": "domain_transaction" }
+            },
+            "required": ["sessionMode", "purpose"]
+          },
+          "then": {
+            "properties": {
+              "scope": {
+                "properties": {
+                  "maximumActions": { "const": 1 }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "state": { "const": "revoked" } },
+            "required": ["state"]
+          },
+          "then": { "required": ["revokeReason"] }
+        }
+      ]
+    },
+    "frameEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frameId",
+        "observationId",
+        "targetId",
+        "surfaceEpoch",
+        "sourceLayer",
+        "zIndex",
+        "capturedAtMonotonic",
+        "coordinateSpaceId",
+        "coordinateSpaceVersion",
+        "captureRectPhysical",
+        "clientRectPhysical",
+        "contentRectPhysical",
+        "frameToTargetContentTransform",
+        "width",
+        "height",
+        "dpi",
+        "pixelFormat",
+        "contentHash",
+        "opaqueContentHandle"
+      ],
+      "properties": {
+        "frameId": { "$ref": "#/$defs/opaqueId" },
+        "observationId": { "$ref": "#/$defs/opaqueId" },
+        "targetId": { "$ref": "#/$defs/opaqueId" },
+        "surfaceEpoch": { "$ref": "#/$defs/generation" },
+        "sourceLayer": {
+          "enum": ["launcher", "flash", "web_overlay", "native_hud", "wings_shell", "business_modal"]
+        },
+        "zIndex": { "type": "integer", "minimum": -2147483648, "maximum": 2147483647 },
+        "capturedAtMonotonic": { "$ref": "#/$defs/generation" },
+        "coordinateSpaceId": { "$ref": "#/$defs/opaqueId" },
+        "coordinateSpaceVersion": { "$ref": "#/$defs/generation" },
+        "captureRectPhysical": { "$ref": "#/$defs/physicalRect" },
+        "clientRectPhysical": { "$ref": "#/$defs/physicalRect" },
+        "contentRectPhysical": { "$ref": "#/$defs/physicalRect" },
+        "frameToTargetContentTransform": { "$ref": "#/$defs/affineTransform" },
+        "width": { "type": "integer", "minimum": 1, "maximum": 32768 },
+        "height": { "type": "integer", "minimum": 1, "maximum": 32768 },
+        "dpi": { "type": "integer", "minimum": 72, "maximum": 960 },
+        "pixelFormat": { "const": "bgra8_premultiplied" },
+        "contentHash": { "$ref": "#/$defs/sha256" },
+        "opaqueContentHandle": { "$ref": "#/$defs/opaqueId" }
+      }
+    },
+    "observationEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observationId",
+        "observationGrantId",
+        "sessionId",
+        "lifecycleGeneration",
+        "capturedUtc",
+        "capturedAtMonotonic",
+        "targetId",
+        "surfaceEpoch",
+        "coordinateSpaceVersion",
+        "focusEpoch",
+        "modalEpoch",
+        "visible",
+        "minimized",
+        "active",
+        "blockingModalKind",
+        "frames"
+      ],
+      "properties": {
+        "observationId": { "$ref": "#/$defs/opaqueId" },
+        "observationGrantId": { "$ref": "#/$defs/opaqueId" },
+        "sessionId": { "$ref": "#/$defs/opaqueId" },
+        "lifecycleGeneration": { "$ref": "#/$defs/generation" },
+        "capturedUtc": { "type": "string", "format": "date-time" },
+        "capturedAtMonotonic": { "$ref": "#/$defs/generation" },
+        "attemptId": { "$ref": "#/$defs/opaqueId" },
+        "attemptGeneration": { "$ref": "#/$defs/generation" },
+        "panelInstanceId": { "$ref": "#/$defs/opaqueId" },
+        "documentGeneration": { "$ref": "#/$defs/generation" },
+        "targetId": { "$ref": "#/$defs/opaqueId" },
+        "surfaceEpoch": { "$ref": "#/$defs/generation" },
+        "coordinateSpaceVersion": { "$ref": "#/$defs/generation" },
+        "focusEpoch": { "$ref": "#/$defs/generation" },
+        "modalEpoch": { "$ref": "#/$defs/generation" },
+        "semanticSnapshotId": { "$ref": "#/$defs/opaqueId" },
+        "semanticGeneration": { "$ref": "#/$defs/generation" },
+        "visible": { "type": "boolean" },
+        "minimized": { "type": "boolean" },
+        "active": { "type": "boolean" },
+        "blockingModalKind": {
+          "enum": ["none", "business_owned", "human_only_security", "foreign", "unknown"]
+        },
+        "frames": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "$ref": "#/$defs/frameEnvelope" }
+        },
+        "accessibility": { "type": ["object", "null"] },
+        "focus": { "type": ["object", "null"] },
+        "selection": { "type": ["object", "null"] }
+      },
+      "dependentRequired": {
+        "attemptId": ["attemptGeneration"],
+        "attemptGeneration": ["attemptId"],
+        "semanticSnapshotId": ["semanticGeneration"],
+        "semanticGeneration": ["semanticSnapshotId"]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "blockingModalKind": {
+                "enum": ["human_only_security", "foreign", "unknown"]
+              }
+            },
+            "required": ["blockingModalKind"]
+          },
+          "then": {
+            "properties": { "frames": { "maxItems": 0 } },
+            "not": {
+              "anyOf": [
+                { "required": ["accessibility"] },
+                { "required": ["focus"] },
+                { "required": ["selection"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "minimized": { "const": true } },
+            "required": ["minimized"]
+          },
+          "then": {
+            "properties": { "active": { "const": false } }
+          }
+        }
+      ]
+    },
+    "actionArguments": {
+      "type": "object",
+      "maxProperties": 64,
+      "additionalProperties": {
+        "$ref": "#/$defs/canonicalValue"
+      }
+    },
+    "canonicalValue": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        { "type": "string", "maxLength": 32768 },
+        {
+          "type": "array",
+          "maxItems": 1024,
+          "items": { "$ref": "#/$defs/canonicalValue" }
+        },
+        {
+          "type": "object",
+          "maxProperties": 64,
+          "additionalProperties": { "$ref": "#/$defs/canonicalValue" }
+        }
+      ]
+    },
+    "executableOperation": {
+      "enum": [
+        "input.click",
+        "input.press_key",
+        "input.type_text",
+        "input.scroll",
+        "semantic.set_value",
+        "input.drag",
+        "semantic.secondary_action",
+        "window.activate",
+        "session.shutdown",
+        "lifecycle.reveal",
+        "lifecycle.cancel",
+        "panel.open",
+        "appearance.hair.change.v1.inspect",
+        "appearance.hair.change.v1.preview",
+        "appearance.hair.change.v1.commit",
+        "appearance.hair.change.v1.reconcile",
+        "appearance.hair.change.v1.restore"
+      ]
+    },
+    "actionEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actionId",
+        "idempotencyKey",
+        "deadlineMs",
+        "sessionId",
+        "observationGrantId",
+        "leaseId",
+        "observationId",
+        "expectedLifecycleGeneration",
+        "targetId",
+        "expectedSurfaceEpoch",
+        "expectedCoordinateSpaceVersion",
+        "expectedFocusEpoch",
+        "expectedModalEpoch",
+        "operation",
+        "arguments",
+        "reason"
+      ],
+      "properties": {
+        "actionId": { "$ref": "#/$defs/opaqueId" },
+        "idempotencyKey": { "$ref": "#/$defs/opaqueId" },
+        "deadlineMs": { "type": "integer", "minimum": 1, "maximum": 30000 },
+        "sessionId": { "$ref": "#/$defs/opaqueId" },
+        "observationGrantId": { "$ref": "#/$defs/opaqueId" },
+        "leaseId": { "$ref": "#/$defs/opaqueId" },
+        "observationId": { "$ref": "#/$defs/opaqueId" },
+        "expectedLifecycleGeneration": { "$ref": "#/$defs/generation" },
+        "targetId": { "$ref": "#/$defs/opaqueId" },
+        "expectedSurfaceEpoch": { "$ref": "#/$defs/generation" },
+        "expectedAttemptId": { "$ref": "#/$defs/opaqueId" },
+        "expectedAttemptGeneration": { "$ref": "#/$defs/generation" },
+        "expectedPanelInstanceId": { "$ref": "#/$defs/opaqueId" },
+        "expectedSemanticGeneration": { "$ref": "#/$defs/generation" },
+        "expectedDocumentGeneration": { "$ref": "#/$defs/generation" },
+        "expectedCoordinateSpaceVersion": { "$ref": "#/$defs/generation" },
+        "expectedFocusEpoch": { "$ref": "#/$defs/generation" },
+        "expectedModalEpoch": { "$ref": "#/$defs/generation" },
+        "frameId": { "$ref": "#/$defs/opaqueId" },
+        "semanticSnapshotId": { "$ref": "#/$defs/opaqueId" },
+        "nodeId": { "$ref": "#/$defs/opaqueId" },
+        "operation": { "$ref": "#/$defs/executableOperation" },
+        "arguments": { "$ref": "#/$defs/actionArguments" },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 512 }
+      },
+      "dependentRequired": {
+        "expectedAttemptId": ["expectedAttemptGeneration"],
+        "expectedAttemptGeneration": ["expectedAttemptId"]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "operation": { "enum": ["input.scroll", "input.drag"] } },
+            "required": ["operation"]
+          },
+          "then": {
+            "required": ["frameId"],
+            "properties": {
+              "arguments": {
+                "required": ["coordinateSpace"],
+                "properties": {
+                  "coordinateSpace": { "const": "observation_px" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "operation": { "const": "input.click" } },
+            "required": ["operation"]
+          },
+          "then": {
+            "oneOf": [
+              {
+                "required": ["frameId"],
+                "properties": {
+                  "arguments": {
+                    "required": ["coordinateSpace"],
+                    "properties": {
+                      "coordinateSpace": { "const": "observation_px" }
+                    }
+                  }
+                },
+                "not": {
+                  "anyOf": [
+                    { "required": ["nodeId"] },
+                    { "required": ["semanticSnapshotId"] }
+                  ]
+                }
+              },
+              {
+                "required": ["nodeId", "semanticSnapshotId", "expectedSemanticGeneration"],
+                "not": { "required": ["frameId"] }
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "enum": ["semantic.set_value", "semantic.secondary_action"]
+              }
+            },
+            "required": ["operation"]
+          },
+          "then": {
+            "required": ["nodeId", "semanticSnapshotId", "expectedSemanticGeneration"]
+          }
+        }
+      ]
+    },
+    "actionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actionId",
+        "auditSequence",
+        "terminal",
+        "outcome",
+        "evidenceKind",
+        "reasonCode",
+        "reconcileKind",
+        "retryable",
+        "focusVerified",
+        "beforeObservationId",
+        "leaseState"
+      ],
+      "properties": {
+        "actionId": { "$ref": "#/$defs/opaqueId" },
+        "auditSequence": { "$ref": "#/$defs/generation" },
+        "terminal": { "const": true },
+        "outcome": {
+          "enum": ["rejected", "input_dispatched", "effect_observed", "domain_committed", "unknown"]
+        },
+        "evidenceKind": {
+          "enum": [
+            "none",
+            "broker_dispatch",
+            "post_observation",
+            "domain_ack",
+            "process_exit",
+            "reconciliation_required"
+          ]
+        },
+        "reasonCode": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "reconcileKind": {
+          "enum": ["none", "domain_authoritative", "visual_ambiguous", "manual_required"]
+        },
+        "retryable": { "type": "boolean" },
+        "actualTargetId": { "$ref": "#/$defs/opaqueId" },
+        "focusVerified": { "type": "boolean" },
+        "beforeObservationId": { "$ref": "#/$defs/opaqueId" },
+        "afterObservationId": { "$ref": "#/$defs/opaqueId" },
+        "leaseState": { "enum": ["active", "revoked", "expired", "released", "consumed"] },
+        "domainResult": { "$ref": "#/$defs/hairDomainActionResult" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "outcome": { "const": "unknown" } },
+            "required": ["outcome"]
+          },
+          "then": {
+            "properties": {
+              "evidenceKind": { "const": "reconciliation_required" },
+              "reconcileKind": {
+                "enum": ["domain_authoritative", "visual_ambiguous", "manual_required"]
+              },
+              "retryable": { "const": false }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "outcome": { "const": "input_dispatched" } },
+            "required": ["outcome"]
+          },
+          "then": {
+            "properties": { "evidenceKind": { "const": "broker_dispatch" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "outcome": { "const": "effect_observed" } },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["afterObservationId"],
+            "properties": { "evidenceKind": { "const": "post_observation" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "outcome": { "const": "domain_committed" } },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["domainResult"],
+            "properties": { "evidenceKind": { "const": "domain_ack" } }
+          },
+          "else": {
+            "not": { "required": ["domainResult"] }
+          }
+        }
+      ]
+    },
+    "hairDomainActionResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transactionId", "previewHash"],
+      "properties": {
+        "transactionId": { "$ref": "#/$defs/opaqueId" },
+        "previewHash": { "$ref": "#/$defs/sha256" },
+        "restoreToken": { "$ref": "#/$defs/opaqueId" },
+        "restoreExpiresAtUtc": { "type": "string", "format": "date-time" }
+      },
+      "dependentRequired": {
+        "restoreToken": ["restoreExpiresAtUtc"],
+        "restoreExpiresAtUtc": ["restoreToken"]
+      }
+    },
+    "hairConsentDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consentToken",
+        "consentReceipt",
+        "transactionId",
+        "previewHash",
+        "expiresInMs"
+      ],
+      "properties": {
+        "consentToken": { "$ref": "#/$defs/opaqueId" },
+        "consentReceipt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "transactionId": { "$ref": "#/$defs/opaqueId" },
+        "previewHash": { "$ref": "#/$defs/sha256" },
+        "expiresInMs": { "const": 60000 }
+      }
+    }
+  }
+}

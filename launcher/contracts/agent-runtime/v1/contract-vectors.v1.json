@@ -1,0 +1,250 @@
+{
+  "schemaVersion": "cf7.agent_runtime.contract_vectors.v1",
+  "valid": {
+    "session": {
+      "protocolVersion": "1.0",
+      "sessionId": "cccccccccccccccccccccc",
+      "lifecycleGeneration": 2,
+      "sessionMode": "player_assist",
+      "runtimeMode": "formal_runtime",
+      "attemptId": "iiiiiiiiiiiiiiiiiiiiii",
+      "attemptGeneration": 7,
+      "slot": "save_0",
+      "saveRevision": 41,
+      "launcherPath": "E:\\CF7\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "launcherPid": 4242,
+      "launcherStartTime": "2026-07-30T08:00:00Z",
+      "flashPid": 4343,
+      "flashStartTime": "2026-07-30T08:00:02Z",
+      "coreSha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "runtimeQualification": {
+        "buildIdentity": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+        "payloadClosure": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+      },
+      "surfaces": [
+        {
+          "targetId": "gggggggggggggggggggggg",
+          "kind": "flash",
+          "surfaceEpoch": 9,
+          "boundsPhysical": { "x": 100, "y": 80, "width": 1280, "height": 720 },
+          "dpi": 144,
+          "zIndex": 1,
+          "visible": true,
+          "coordinateSpaceVersion": 4,
+          "focusEpoch": 5,
+          "modalEpoch": 3,
+          "observationModes": ["window_graphics_capture", "flash_snapshot_keyframe"],
+          "inputModes": ["send_input_guarded"]
+        }
+      ],
+      "activePanel": {
+        "name": "inventory",
+        "instanceId": "jjjjjjjjjjjjjjjjjjjjjj",
+        "targetId": "gggggggggggggggggggggg"
+      },
+      "capabilities": ["window.state", "input.click"]
+    },
+    "observationGrant": {
+      "observationGrantId": "dddddddddddddddddddddd",
+      "ownerClientId": "mmmmmmmmmmmmmmmmmmmmmm",
+      "securityPrincipalId": "nnnnnnnnnnnnnnnnnnnnnn",
+      "sessionScope": {
+        "sessionId": "cccccccccccccccccccccc",
+        "lifecycleGeneration": 2,
+        "attemptId": "iiiiiiiiiiiiiiiiiiiiii",
+        "attemptGeneration": 7,
+        "crossAttempt": false
+      },
+      "targetScope": ["gggggggggggggggggggggg"],
+      "dataScope": ["pixels"],
+      "issuedMonotonic": 1000,
+      "expiresMonotonic": 5000,
+      "consentReceipt": "player-consent-1",
+      "allowEphemeralKeyframes": true,
+      "allowPersistence": false,
+      "allowExport": false,
+      "state": "active"
+    },
+    "lease": {
+      "leaseId": "eeeeeeeeeeeeeeeeeeeeee",
+      "ownerClientId": "mmmmmmmmmmmmmmmmmmmmmm",
+      "securityPrincipalId": "nnnnnnnnnnnnnnnnnnnnnn",
+      "sessionMode": "player_assist",
+      "purpose": "gui_input",
+      "scope": {
+        "session": {
+          "sessionId": "cccccccccccccccccccccc",
+          "lifecycleGeneration": 2,
+          "attemptId": "iiiiiiiiiiiiiiiiiiiiii",
+          "attemptGeneration": 7,
+          "crossAttempt": false
+        },
+        "targetScope": ["gggggggggggggggggggggg"],
+        "operationScope": ["input.click"],
+        "maximumActions": 8,
+        "argumentBoundsHash": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+      },
+      "capabilities": ["input.click"],
+      "issuedMonotonic": 1000,
+      "expiresMonotonic": 30000,
+      "renewAfter": 15000,
+      "consentReceipt": "player-consent-1",
+      "humanOverridePolicy": "always_preempt",
+      "state": "active"
+    },
+    "shutdownLease": {
+      "leaseId": "shutdownleaseeeeeeeeeee",
+      "ownerClientId": "mmmmmmmmmmmmmmmmmmmmmm",
+      "securityPrincipalId": "nnnnnnnnnnnnnnnnnnnnnn",
+      "sessionMode": "unattended_test",
+      "purpose": "shutdown",
+      "scope": {
+        "session": {
+          "sessionId": "cccccccccccccccccccccc",
+          "lifecycleGeneration": 2,
+          "attemptId": "iiiiiiiiiiiiiiiiiiiiii",
+          "attemptGeneration": 7,
+          "crossAttempt": false
+        },
+        "targetScope": ["gggggggggggggggggggggg"],
+        "operationScope": ["session.shutdown"],
+        "maximumActions": 1
+      },
+      "capabilities": ["session.shutdown"],
+      "issuedMonotonic": 1000,
+      "expiresMonotonic": 30000,
+      "humanOverridePolicy": "always_preempt",
+      "state": "active"
+    },
+    "observation": {
+      "observationId": "ffffffffffffffffffffff",
+      "observationGrantId": "dddddddddddddddddddddd",
+      "sessionId": "cccccccccccccccccccccc",
+      "lifecycleGeneration": 2,
+      "capturedUtc": "2026-07-30T08:00:05Z",
+      "capturedAtMonotonic": 2000,
+      "attemptId": "iiiiiiiiiiiiiiiiiiiiii",
+      "attemptGeneration": 7,
+      "panelInstanceId": "jjjjjjjjjjjjjjjjjjjjjj",
+      "targetId": "gggggggggggggggggggggg",
+      "surfaceEpoch": 9,
+      "coordinateSpaceVersion": 4,
+      "focusEpoch": 5,
+      "modalEpoch": 3,
+      "visible": true,
+      "minimized": false,
+      "active": true,
+      "blockingModalKind": "none",
+      "frames": [
+        {
+          "frameId": "hhhhhhhhhhhhhhhhhhhhhh",
+          "observationId": "ffffffffffffffffffffff",
+          "targetId": "gggggggggggggggggggggg",
+          "surfaceEpoch": 9,
+          "sourceLayer": "flash",
+          "zIndex": 1,
+          "capturedAtMonotonic": 2000,
+          "coordinateSpaceId": "oooooooooooooooooooooo",
+          "coordinateSpaceVersion": 4,
+          "captureRectPhysical": { "x": 100, "y": 80, "width": 1280, "height": 720 },
+          "clientRectPhysical": { "x": 100, "y": 80, "width": 1280, "height": 720 },
+          "contentRectPhysical": { "x": 100, "y": 80, "width": 1280, "height": 720 },
+          "frameToTargetContentTransform": {
+            "m11": 1,
+            "m12": 0,
+            "m21": 0,
+            "m22": 1,
+            "dx": 0,
+            "dy": 0
+          },
+          "width": 1280,
+          "height": 720,
+          "dpi": 144,
+          "pixelFormat": "bgra8_premultiplied",
+          "contentHash": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+          "opaqueContentHandle": "pppppppppppppppppppppp"
+        }
+      ]
+    },
+    "inputReceipt": {
+      "actionId": "aaaaaaaaaaaaaaaaaaaaaa",
+      "auditSequence": 81,
+      "terminal": true,
+      "outcome": "input_dispatched",
+      "evidenceKind": "broker_dispatch",
+      "reasonCode": "none",
+      "reconcileKind": "none",
+      "retryable": false,
+      "actualTargetId": "gggggggggggggggggggggg",
+      "focusVerified": true,
+      "beforeObservationId": "ffffffffffffffffffffff",
+      "leaseState": "active"
+    },
+    "domainReceipt": {
+      "actionId": "domainactionabcdefghijkl",
+      "auditSequence": 83,
+      "terminal": true,
+      "outcome": "domain_committed",
+      "evidenceKind": "domain_ack",
+      "reasonCode": "none",
+      "reconcileKind": "none",
+      "retryable": false,
+      "actualTargetId": "gggggggggggggggggggggg",
+      "focusVerified": true,
+      "beforeObservationId": "ffffffffffffffffffffff",
+      "leaseState": "consumed",
+      "domainResult": {
+        "transactionId": "hairtx_abcdefghijklmnopqrstuvwx",
+        "previewHash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+        "restoreToken": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq",
+        "restoreExpiresAtUtc": "2026-07-30T12:30:00+08:00"
+      }
+    },
+    "unknownReceipt": {
+      "actionId": "aaaaaaaaaaaaaaaaaaaaaa",
+      "auditSequence": 82,
+      "terminal": true,
+      "outcome": "unknown",
+      "evidenceKind": "reconciliation_required",
+      "reasonCode": "input_not_inserted",
+      "reconcileKind": "visual_ambiguous",
+      "retryable": false,
+      "actualTargetId": "gggggggggggggggggggggg",
+      "focusVerified": true,
+      "beforeObservationId": "ffffffffffffffffffffff",
+      "leaseState": "revoked"
+    }
+  },
+  "invalidCases": [
+    {
+      "id": "zero-focus-epoch",
+      "base": "canonical action",
+      "mutation": "expectedFocusEpoch=0",
+      "expectedViolationCode": "positive_required"
+    },
+    {
+      "id": "coordinate-action-without-frame",
+      "base": "canonical action",
+      "mutation": "frameId=null",
+      "expectedViolationCode": "opaque_id"
+    },
+    {
+      "id": "unknown-without-reconcile",
+      "base": "unknownReceipt",
+      "mutation": "reconcileKind=none",
+      "expectedViolationCode": "required"
+    },
+    {
+      "id": "player-lease-too-long",
+      "base": "lease",
+      "mutation": "expiresMonotonic=31001",
+      "expectedViolationCode": "maximum"
+    },
+    {
+      "id": "player-assist-shutdown-impossible",
+      "base": "shutdownLease",
+      "mutation": "sessionMode=player_assist",
+      "expectedViolationCode": "lease_kind_mismatch"
+    }
+  ]
+}

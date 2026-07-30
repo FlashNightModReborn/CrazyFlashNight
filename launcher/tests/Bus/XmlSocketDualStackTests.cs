@@ -42,7 +42,9 @@ namespace CF7Launcher.Tests.Bus
                 return "{\"ok\":true}";
             });
 
-            _server = new XmlSocketServer(_router);
+            _server = new XmlSocketServer(
+                _router,
+                AllowLoopbackXmlSocketPeerAuthority.Instance);
             _port = ProbeFreePort();
             Assert.True(_server.Start(_port), "XmlSocketServer failed to start on probed port " + _port);
         }

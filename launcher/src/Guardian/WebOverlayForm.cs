@@ -727,6 +727,7 @@ namespace CF7Launcher.Guardian
         private bool _webReadyBeforeNavigation;
         private bool _webNavigationLoadedNewDocument;
         private ulong _webNavigationId;
+        internal event Action DocumentAdvanced;
         private bool _shown;
         private bool _disposed;
         private bool _devMode;
@@ -1163,6 +1164,17 @@ namespace CF7Launcher.Guardian
                     CoreWebView2NavigationStartingEventArgs args)
                 {
                     if (_webNavigationId == 0) _webReadyBeforeNavigation = _webReady;
+                    if (ShouldAdvanceDocumentOnNavigationStart(
+                            _webNavigationId,
+                            args.NavigationId))
+                    {
+                        // Navigation invalidates every observation/action issued
+                        // against the old document immediately. A failed or
+                        // cancelled navigation may make the old visual document
+                        // ready again, but it must do so under the new Host-owned
+                        // document generation.
+                        PublishDocumentAdvanced();
+                    }
                     _webReady = false;
                     _webNavigationId = args.NavigationId;
                     _webNavigationLoadedNewDocument = false;
@@ -1224,6 +1236,36 @@ namespace CF7Launcher.Guardian
                 _webFailed = true;
                 // 激活 GDI+ fallback 并 flush 早期缓冲
                 ActivateFallback();
+            }
+        }
+
+        internal static bool
+            ShouldAdvanceDocumentOnNavigationStart(
+                ulong currentNavigationId,
+                ulong startingNavigationId)
+        {
+            return startingNavigationId != 0
+                && currentNavigationId
+                    != startingNavigationId;
+        }
+
+        private void PublishDocumentAdvanced()
+        {
+            Action advanced = DocumentAdvanced;
+            if (advanced == null) return;
+            foreach (Action subscriber
+                in advanced.GetInvocationList())
+            {
+                try
+                {
+                    subscriber();
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[WebOverlay] DocumentAdvanced event failed: "
+                        + ex.Message);
+                }
             }
         }
 

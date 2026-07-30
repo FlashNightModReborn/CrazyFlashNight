@@ -642,6 +642,7 @@ var HairdresserPanel = (function() {
         // The frozen v1 write identity is the identifier string. Duplicate
         // catalog rows stay visible and ordered, but share the same saved value.
         var expected = row.identifier;
+        var expectedCurrent = _snapshot.currentHair;
         _busy = true;
         _needsRefresh = false;
         _errorText = '';
@@ -651,7 +652,11 @@ var HairdresserPanel = (function() {
         var generation = _generation;
         var issuing = true;
         var callbackRan = false;
-        var callId = _mux.request('commit', {v: 1, hairIdentifier: expected}, function(response) {
+        var callId = _mux.request('commit', {
+            v: 1,
+            hairIdentifier: expected,
+            expectedCurrentHair: expectedCurrent
+        }, function(response) {
             callbackRan = true;
             if (generation !== _generation) return;
             var dispatched = !issuing;
@@ -684,7 +689,7 @@ var HairdresserPanel = (function() {
             }
             var error = response && response.error;
             _errorText = errorMessage(error);
-            _needsRefresh = error === 'hair_not_found'
+            _needsRefresh = error === 'hair_not_found' || error === 'stale_state'
                 || error === 'catalog_invalid' || error === 'pricing_unsupported';
             setStatus('更换未提交，可检查后手动重试。', 'error');
             refreshControls();
@@ -809,6 +814,7 @@ var HairdresserPanel = (function() {
             reconcile_required: '上一次更换仍需对账。',
             busy: '理发店正在处理另一项操作。',
             hair_not_found: '该发型已不在最新目录中，请重新同步。',
+            stale_state: '当前发型已被其他操作修改，请重新同步后再选择。',
             catalog_invalid: '游戏中的发型目录不可用。',
             pricing_unsupported: '目录含有当前 Web 理发店不支持的收费项。',
             invalid_payload: '发型选择无效。',
