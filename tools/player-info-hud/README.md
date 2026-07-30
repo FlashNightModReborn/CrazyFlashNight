@@ -54,13 +54,16 @@ Flash CS6 transaction, restores its temporary source/SWF state, and writes an
 ignored candidate beneath `tmp/player-info-hud/oracle/`. It does not publish or
 modify the production main or child SWF.
 
-The current main-stage candidate
+The source-bound main-stage candidate
 `20260729T143326Z-32f8ec2142ec47e29c5b191cf2ee339c` contains all 11 cases and
 records `strictToolIdentity=head_index_clean_filter_equal` for the two tracked
-capture-tool files; this does not assert a clean whole worktree. Its four
-manifest human-review fields and the independent source-identity onsite review
-remain unsigned, so its status is only
-`candidate_captured; awaiting_human_review`, never `oracle_frozen`.
+capture-tool files; this does not assert a clean whole worktree. Its
+capture-time manifest human-review fields remain unchanged, but the later
+runtime-bound human receipt freezes it for B0 as `oracle_frozen_for_b0`, with
+basis
+`actual_main_runtime_human_acceptance_plus_source_bound_main_rsl_equivalent_capture`.
+This is an external acceptance receipt, not a mutation of the capture manifest
+or a cross-renderer pixel-parity claim.
 
 ## Exact structural validation
 
@@ -381,11 +384,55 @@ current-truth documentation; only a commit carrying both qualifies as tracked
 evidence, while either item alone remains incomplete. It was produced with
 `-VerifyOnly`; runtime/release-state
 mutation, promotion, deployment, and reusable-as-promotion-input flags are all
-false. The result therefore closes only `candidate_built` reproducibility:
-it is still `source-ahead / NOT_DEPLOYED`, with no `candidate_executed`,
-`e2e_verified`, `promoted`, or `standard_entry_verified` claim. It does not
-claim that historical v1 Runtime Lane C was rerun on F2. Never move or reuse
-the first tag, q3 CAS, local proof, or failed receipt.
+false. Taken alone, the preflight result therefore closes only
+`candidate_built` reproducibility: it is `source-ahead / NOT_DEPLOYED` and
+contains no `candidate_executed`, `e2e_verified`, `promoted`, or
+`standard_entry_verified` claim. It does not claim that historical v1 Runtime
+Lane C was rerun on F2. Never move or reuse the first tag, q3 CAS, local proof,
+or failed receipt.
+
+After that preflight, a separate isolated development launch used candidate
+root basename
+`c-dae8a71c0ae0-08846e81b3-20260730t004223766z-e8ce2e3c`. Its metadata binds
+build identity
+`DAE8A71C0AE04AF1BD89B0076DB1EF6EF5DFEEC51C32843D300D868581568ED1`
+and payload closure
+`051FA840019E24763724B5DA0868486AF94322F3BB990B1354D181989AA94D2C`;
+Core SHA-256 is
+`6BBE712CB0F97AC127FA3DF18158CA3976D7A03A64DC8121794E7C7C1E18C6CC`.
+Guardian PID `21628` started from that exact candidate. After the user clicked
+`start_game` at `09:05:48`, successful child Flash PID `20644` had the exact
+human-live worktree command line for `Adobe Flash Player 20.exe` and
+`CRAZYFLASHER7MercenaryEmpire.swf`. The same attempt logged
+`WaitingGameReady -> Ready` at `09:05:49.800`;
+`bootstrap_reveal_ready: Flash reveal cleared` and
+`performing reveal (panel swap)` at `09:05:58.250`; and
+`[RevealProbe] setready.player_info_split 0.3ms` at `09:05:58.269`. The
+selected fixture remained `p50`, and the Launcher log contains the exact
+marker `[PlayerInfoSplitSurface] fixture-only surface enabled; case=p50; old Flash HUD remains untouched`. This later, independent launch and visible
+reveal advance current F2 to
+`candidate_executed / source-ahead / NOT_DEPLOYED`. They do not establish
+business E2E, promotion, standard-entry verification, or deployment; the
+launch evidence by itself also did not establish human visual acceptance, which
+is supplied separately by the receipt below.
+
+The same closeout tracks
+`evidence/b0-06/runtime-candidate-execution-main-space-v2.json` at 3,960 B /
+SHA-256
+`F7A7B03F0333C61B467B50B1F7003D77764A130C7FE745098B9B0DFE09928E50`
+and `evidence/b0-06/human-acceptance-main-space-v2.json` at 3,509 B / SHA-256
+`FB2ED0D6550F51A715E21FB21D110B7EF5B1B04BD46FBC3D5FEA69653C105831`.
+On that visible `p50` exact candidate the human maintainer answered
+`可接受，可继续推进`. The receipt accepts actual game composite, the old Flash
+HUD on the same screen and untouched, z-order/occlusion, orb visibility, HP
+glow strength/color, MP horizontal/baseline/bar alignment, transparent crop,
+desktop click-through, temporal appearance, overall aesthetics, and the
+observed 144 DPI / dpr 1.5 scaled desktop. It records
+`oracleDecision=oracle_frozen_for_b0` with basis
+`actual_main_runtime_human_acceptance_plus_source_bound_main_rsl_equivalent_capture`.
+It does not claim cross-renderer pixel parity, real UiData, a switch to another
+physical monitor, business E2E, promotion, standard-entry verification, or
+deployment.
 
 ## Historical v1 F source freeze and non-deploying builder quorum
 
@@ -551,8 +598,11 @@ contract; ad-hoc path/length/hash summaries are not interchangeable with that
 contract. Both direct reports independently produce a unique `bestDx=0` for
 MP label/current/maximum/percent. Label, maximum, and percent also have leading
 `anchorEdgeDx=0`; the right-aligned current value has trailing
-`anchorEdgeDx=0`. The reports remain `diagnostic_awaiting_human_review`, with
-`parityClaimed=false` and `flashOracleAccepted=false`.
+`anchorEdgeDx=0`. The automated reports remain
+`diagnostic_awaiting_human_review`, with `parityClaimed=false` and
+`flashOracleAccepted=false`; those immutable report-local fields are not
+rewritten. The later tracked human receipt separately freezes the oracle for
+B0 without asserting cross-renderer pixel parity.
 
 Build the local review viewer from either direct-edge report:
 
@@ -625,8 +675,9 @@ their distinct-path reports are indexed in
 a Flash Player candidate's 1024×64 raw captures. For the seventh-round
 candidate this means the standalone child-document profile described above,
 not the actual main RSL placement. It is not the v2 formal comparator. A
-placement-correct v2 candidate remains unaccepted until a human reviews its
-source, state, layer isolation, crop, and visual quality:
+placement-correct v2 candidate is not accepted by comparator output alone;
+source, state, layer isolation, crop, and visual quality require the separate
+human review recorded for the current candidate below:
 
 ```powershell
 node tools/player-info-hud/compare-flash-web-svg.js `
@@ -651,16 +702,15 @@ still-unsigned Flash candidate.
 ## Acceptance boundary
 
 Automated hashes and metrics can freeze structure and expose differences; they
-cannot promote a Flash candidate to `oracle_frozen`, assert visual parity, or
-accept the UI aesthetic. Human review is necessary but cannot repair a wrong
-placement profile. A source-bound v2 run has been captured as
+cannot alone freeze an oracle, assert visual parity, or accept the UI
+aesthetic. Human review cannot repair a wrong placement profile. A source-bound
+v2 run was captured as
 `20260729T143326Z-32f8ec2142ec47e29c5b191cf2ee339c`, with 1024×576
 main-stage/exported-symbol/wrapper-excluded semantics and strict tooling
-identity. Its four manifest human-review checks and independent source-identity
-onsite review remain unsigned, so B0-01B remains
-`standalone_child_diagnostic_captured; main_rsl_equivalent_candidate_captured; awaiting_human_review`,
-B0-04 remains without accepted visual parity, and the old Flash HUD remains
-the active visual reference.
+identity. Combined with the actual main-runtime receipt above, its oracle is
+now `oracle_frozen_for_b0` and the B0 result is `b0_accepted`. The old Flash HUD
+remained on the same screen and untouched during review. This decision still
+does not assert cross-renderer pixel parity.
 
 The repository-owned Playwright/local-Edge harness remains valid for
 deterministic Web/direct-edge rendering without an interactive App backend.
@@ -669,11 +719,9 @@ but initialization found neither an attached native desktop control pipe nor
 an interactive browser backend. Skill visibility and unrestricted workspace
 access therefore do not establish a control session or desktop evidence.
 FFDec remains a binary-SWF diagnostic, and the formal runner exercises real
-HWND/ULW calls with an offscreen owner. None of these routes proves visible
-desktop DWM composition, z-order/occlusion over the running game, a real hand
-click, game-scene composite, temporal smoothness, or aesthetic quality. Those
-items remain mandatory human evidence. Automated gates are closed, so the
-strict overall state is `awaiting_human_acceptance; human_exit_blocked`.
-Independently, the Launcher result remains `candidate_built / NOT_DEPLOYED`;
-human acceptance is still pending and does not itself imply candidate
-execution, E2E, promotion, or deployment.
+HWND/ULW calls with an offscreen owner. Those routes did not substitute for the
+now-recorded human review. The strict B0 state is `b0_accepted`, while the
+Launcher result remains `candidate_executed / source-ahead / NOT_DEPLOYED`.
+No real UiData, business E2E, promotion, standard-entry verification, or
+deployment is claimed; the observed 144 DPI / dpr 1.5 acceptance also does not
+claim a switch to another physical monitor.

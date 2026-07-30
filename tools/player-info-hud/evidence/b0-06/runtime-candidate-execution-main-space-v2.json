@@ -1,0 +1,88 @@
+{
+  "schema": "cf7-player-info-isolated-candidate-execution-evidence.v1",
+  "recordedAtUtc": "2026-07-30T01:06:47.0530230Z",
+  "source": {
+    "commit": "891d9b08dbd826d8b2624c6bdc59082b3db57ecd",
+    "tree": "5b65f9fde417f35ce34012edf68fd9c899cb1813",
+    "worktree": "C:\\cf7-integration\\player-info-b0-human-live-20260729\\resources",
+    "worktreeTrackedClean": true
+  },
+  "selection": {
+    "schema": "cf7-local-dev-runtime-selection.v1",
+    "candidateRootBasename": "c-dae8a71c0ae0-08846e81b3-20260730t004223766z-e8ce2e3c",
+    "activeSelectionSha256": "4F3CF3004C1D3B77DB274F6B391D0C0302819A90877DD93C30B474AF81E3F43D",
+    "artifactSourceHash": "6AAF891B6A27681B7493782FF9D85B3527DBD4B25AB086AABEDEEC02A062A4E0",
+    "producerRecipeHash": "B97998EA7246D6AB667902BCBBD7994DFA5F658A37CFA427D2EEEABA6924DE28",
+    "toolchainLockHash": "7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD",
+    "buildIdentityHash": "DAE8A71C0AE04AF1BD89B0076DB1EF6EF5DFEEC51C32843D300D868581568ED1",
+    "payloadClosureHash": "051FA840019E24763724B5DA0868486AF94322F3BB990B1354D181989AA94D2C",
+    "coreSha256": "6BBE712CB0F97AC127FA3DF18158CA3976D7A03A64DC8121794E7C7C1E18C6CC",
+    "activatedAtUtc": "2026-07-30T00:59:45.7961491Z"
+  },
+  "launch": {
+    "command": "automation/dev.ps1 -ReuseOnly",
+    "fixtureEnvironment": {
+      "name": "CF7_PLAYER_INFO_FIXTURE_CASE",
+      "value": "p50"
+    },
+    "resultSchema": "cf7-local-dev-runtime-result.v1",
+    "lifecycleState": "candidate_executed",
+    "runtimeMode": "isolated_candidate",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "guardian": {
+      "pid": 21628,
+      "executablePath": "C:\\cf7-integration\\player-info-b0-human-live-20260729\\resources\\tmp\\runtime-candidates\\v2\\c-dae8a71c0ae0-08846e81b3-20260730t004223766z-e8ce2e3c\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "projectRoot": "C:\\cf7-integration\\player-info-b0-human-live-20260729\\resources"
+    },
+    "successfulFlashAttempt": {
+      "pid": 20644,
+      "parentPid": 21628,
+      "playerPath": "C:\\cf7-integration\\player-info-b0-human-live-20260729\\resources\\Adobe Flash Player 20.exe",
+      "swfPath": "C:\\cf7-integration\\player-info-b0-human-live-20260729\\resources\\CRAZYFLASHER7MercenaryEmpire.swf",
+      "startGameLocalTime": "09:05:48.940",
+      "readyLocalTime": "09:05:49.800",
+      "revealLocalTime": "09:05:58.250",
+      "playerInfoSplitReadyLocalTime": "09:05:58.269"
+    },
+    "discardedPrewarmAttempt": {
+      "pid": 12196,
+      "outcome": "reset_before_user_start",
+      "reason": "prewarm_deadline",
+      "localTime": "09:00:30.985",
+      "usedAsVisibleAcceptanceEvidence": false
+    }
+  },
+  "logEvidence": {
+    "path": "C:\\cf7-integration\\player-info-b0-human-live-20260729\\resources\\logs\\launcher.log",
+    "markers": [
+      "[PlayerInfoSplitSurface] fixture-only surface enabled; case=p50; old Flash HUD remains untouched",
+      "[LaunchFlow] WaitingGameReady -> Ready",
+      "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared",
+      "[LaunchFlow] performing reveal (panel swap)",
+      "[RevealProbe] setready.player_info_split 0.3ms"
+    ]
+  },
+  "humanAcceptance": {
+    "receiptPath": "tools/player-info-hud/evidence/b0-06/human-acceptance-main-space-v2.json",
+    "recordedAtUtc": "2026-07-30T01:11:12.0172133Z",
+    "decision": "ACCEPTED_FOR_B0",
+    "response": "可接受，可继续推进",
+    "observedDpi": 144,
+    "observedDevicePixelRatio": 1.5
+  },
+  "claims": {
+    "candidateExecuted": true,
+    "flashReachedReady": true,
+    "visiblePanelSwapCompleted": true,
+    "playerInfoSplitSetReady": true,
+    "oldFlashHudModified": false,
+    "businessE2eVerified": false,
+    "humanVisualAcceptance": true,
+    "desktopClickthroughHumanVerified": true,
+    "observed144DpiHumanVerified": true,
+    "flashOracleHumanAccepted": true,
+    "promotionPerformed": false,
+    "standardEntryVerified": false,
+    "deploymentPerformed": false
+  }
+}

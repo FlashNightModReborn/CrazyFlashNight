@@ -1,0 +1,84 @@
+{
+  "schema": "cf7-player-info-b0-human-acceptance.v1",
+  "recordedAtUtc": "2026-07-30T01:11:12.0172133Z",
+  "decision": "ACCEPTED_FOR_B0",
+  "reviewer": {
+    "role": "human_maintainer",
+    "channel": "interactive_codex_session",
+    "response": "可接受，可继续推进"
+  },
+  "reviewedRuntime": {
+    "sourceCommit": "891d9b08dbd826d8b2624c6bdc59082b3db57ecd",
+    "candidateRootBasename": "c-dae8a71c0ae0-08846e81b3-20260730t004223766z-e8ce2e3c",
+    "buildIdentityHash": "DAE8A71C0AE04AF1BD89B0076DB1EF6EF5DFEEC51C32843D300D868581568ED1",
+    "payloadClosureHash": "051FA840019E24763724B5DA0868486AF94322F3BB990B1354D181989AA94D2C",
+    "coreSha256": "6BBE712CB0F97AC127FA3DF18158CA3976D7A03A64DC8121794E7C7C1E18C6CC",
+    "fixtureCase": "p50",
+    "runtimeMode": "isolated_candidate",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "flashPlayerPidAtReview": 20644,
+    "flashSwfPath": "C:\\cf7-integration\\player-info-b0-human-live-20260729\\resources\\CRAZYFLASHER7MercenaryEmpire.swf",
+    "readyAndVisible": true,
+    "observedDpi": {
+      "dpiX": 144,
+      "dpiY": 144,
+      "devicePixelRatio": 1.5,
+      "viewportPhysical": [
+        1600,
+        900
+      ]
+    }
+  },
+  "acceptedVisualAndInteractionScope": {
+    "actualGameComposite": true,
+    "oldFlashHudSameScreenAndUntouched": true,
+    "playerInfoZOrderAndOcclusion": true,
+    "orbRemainsVisible": true,
+    "hpGlowStrengthAndColor": true,
+    "mpTextHorizontalAlignment": true,
+    "mpTextBaseline": true,
+    "mpBarVerticalAlignment": true,
+    "transparentBoundsAndCrop": true,
+    "desktopMouseClickthrough": true,
+    "temporalAppearance": true,
+    "overallVisualAesthetics": true,
+    "scaledDesktopAppearanceAtObserved144Dpi": true
+  },
+  "oracleDecision": {
+    "status": "oracle_frozen_for_b0",
+    "basis": "actual_main_runtime_human_acceptance_plus_source_bound_main_rsl_equivalent_capture",
+    "flashCandidateRunId": "32f8ec2142ec47e29c5b191cf2ee339c",
+    "flashCandidateManifestSha256": "399B72E7D76444335215D14A15CDEFC200130B46BC805AF0FB28A057B9DDA68E",
+    "flashCandidatePngClosureSha256": "0197E9D2D77454CEB6174539B2931A6F2117B4339A1255A78325CF11A1D391BA",
+    "capturedPlacementProfile": "main_rsl_exported_symbol_equivalent",
+    "referencePlacementProfile": "main_rsl_exported_symbol",
+    "childDocumentWrapperApplied": false,
+    "mainRslPlacementEquivalent": true,
+    "diagnosticCorpusCopiedIntoRuntime": false,
+    "crossRendererPixelParityClaimed": false
+  },
+  "supportingEvidence": {
+    "candidateExecution": "tools/player-info-hud/evidence/b0-06/runtime-candidate-execution-main-space-v2.json",
+    "automatedVisualIndex": "tools/player-info-hud/evidence/b0-06/visual-evidence.json",
+    "runtimePreflight": "tools/player-info-hud/evidence/b0-06/runtime-promotion-preflight-main-space-v2.json",
+    "b005GateCount": "32/32",
+    "b006GateCount": "48/48",
+    "launcherRegression": "1747 pass + 3 opt-in skip / 1750",
+    "kimiAudit": "APPROVE_AUTOMATED_CLOSEOUT / K1_AUTOMATED_GATE=PASS"
+  },
+  "exitGateDecision": {
+    "oracleProvenanceAndHumanReviewComplete": true,
+    "desktopClickthroughHumanVerified": true,
+    "finalVisualUiHumanAcceptance": true,
+    "b0Accepted": true
+  },
+  "explicitBoundaries": {
+    "realUiDataIntegrated": false,
+    "businessE2eVerified": false,
+    "additionalPhysicalMonitorSwitchClaimed": false,
+    "newFlashAssetPublishRequiredForThisSlice": false,
+    "promotionPerformed": false,
+    "standardEntryVerified": false,
+    "deploymentPerformed": false
+  }
+}
