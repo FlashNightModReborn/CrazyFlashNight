@@ -8,9 +8,8 @@ const INVENTORY_WORKBENCH_MODULES=[
   'inventory-workbench-config.js','inventory-workbench-preparation-menu.js',
   'inventory-workbench-navigation.js','inventory-workbench-header.js',
   'inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js',
-  'inventory-tuning-scope.js',
   'inventory-storage-workbench.js',
-  'inventory-workbench.js'
+  'crafting-inventory-organizer.js'
 ];
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','crafting.js'),'utf8');
@@ -25,7 +24,6 @@ function audit(){
   const panelRuntime=fs.readFileSync(path.join(WEB,'modules','panel-runtime.js'),'utf8');
   const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
   const registry=fs.readFileSync(path.join(WEB,'modules','panels-lazy-registry.js'),'utf8');
-  const inventoryWorkbenchPanel=fs.readFileSync(path.join(WEB,'modules','inventory-workbench.js'),'utf8');
   const inventoryWorkbench=INVENTORY_WORKBENCH_MODULES
     .map(name=>fs.readFileSync(path.join(WEB,'modules',name),'utf8')).join('\n');
   if(!panel.includes("new Workbench.DualPaneShell")
@@ -52,7 +50,9 @@ function audit(){
       ||!harness.includes("error:'malformed_response'")||!harness.includes("'item_not_found'")
       ||!harness.includes("'insufficient_money'"))throw new Error('transport and authority fault regression matrix missing');
   if(!panel.includes('ItemFilter.FilterNavigator')||!panel.includes("visualStyle:'catalog'")
-      ||!panel.includes('craftCount:intent.craftCount')||!panel.includes("Panels.open('workbench'"))throw new Error('filter, batch, or organizer route missing');
+      ||!panel.includes('craftCount:intent.craftCount')
+      ||!panel.includes('CraftingInventoryOrganizer.mount(_shellEl')
+      ||panel.includes("Panels.open('workbench'"))throw new Error('filter, batch, or embedded organizer route missing');
   if(!panel.includes('function dispatchPreviewIntent')||!panel.includes('function responseMatchesPreviewIntent')
       ||!panel.includes('Superseded read replies are deliberately silent')
       ||!detailPresenter.includes('new WorkbenchComponents.QuantityControl')
@@ -63,10 +63,12 @@ function audit(){
     throw new Error('stable detail presenter or latest-wins quantity protocol missing');
   }
   if(!panel.includes('canCraftOne === true')||!panel.includes('craftableOnly:_craftableOnly')||!panel.includes('crafting-craftable-toggle'))throw new Error('snapshot availability or craftable-only contract missing');
-  if(!inventoryWorkbench.includes('function returnToPanel()')||!inventoryWorkbench.includes("target.panel !== 'crafting'")
-      ||!inventoryWorkbenchPanel.includes('InventoryWorkbenchConfig.resolveLaunchContext(initData)')
-      ||!inventoryWorkbench.includes("hostOwner:nestedCrafting ? 'crafting' : 'workbench'")
-      ||!inventoryWorkbench.includes("hostOwner === 'crafting'"))throw new Error('battlebox return/owner contract missing');
+  if(!inventoryWorkbench.includes('function requestReturn()')
+      ||!inventoryWorkbench.includes("kind:'crafting-organizer'")
+      ||!inventoryWorkbench.includes("panel:'crafting'")
+      ||!inventoryWorkbench.includes("data-workbench-owner-context', 'crafting-organizer'")
+      ||!panel.includes("Panels.getActive() !== 'crafting'")
+      ||!panel.includes('onReturn:restoreFromOrganizer'))throw new Error('embedded battlebox owner contract missing');
   if(!runtime.includes("require('./panel-runtime.js')")||!runtime.includes('new PanelRuntime.PanelRequestMux')
       ||!runtime.includes("data.domain === 'crafting'")||!panelRuntime.includes('entry.generation !== this._generation'))throw new Error('strict shared crafting mux missing');
   if(!registry.includes("registerLazy('crafting'")||!registry.includes("'modules/item-filter.js'")
@@ -81,7 +83,7 @@ function audit(){
       ||!css.includes('font:11px/1.25 "Microsoft YaHei",sans-serif')
       ||!harness.includes('returning to the in-flight value cancels a superseded queued preview')
       ||!harness.includes('overflow CTA is a visible hit-testable scroller sibling at this viewport')
-      ||!harness.includes('destroyed detail presenter releases quantity listeners and detached DOM')) {
+      ||!harness.includes('embedded organizer destroys the recipe detail presenter and its detached quantity listeners')) {
     throw new Error('fixed crafting CTA, keyboard tooltip, or A4 lifecycle coverage missing');
   }
   if(!css.includes('grid-template-columns:minmax(0,44fr) 28px minmax(360px,56fr)')

@@ -117,10 +117,10 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             this.sendCount++;
             return true;
         };
-        var opened:Boolean = CraftingPanelService.openPanel("武器合成", "legacy_crafting_entry");
-        check(opened && String(_root.server.sent) == '{"task":"panel_request","panel":"crafting","source":"legacy_crafting_entry","initData":{"category":"武器合成"}}',
-            "legacy crafting entry emits strict panel request");
-        check(!CraftingPanelService.openPanel("未知分类", "legacy_crafting_entry"),
+        var opened:Boolean = CraftingPanelService.openPanel("武器合成", "world_crafting_entry");
+        check(opened && String(_root.server.sent) == '{"task":"panel_request","panel":"crafting","source":"world_crafting_entry","initData":{"category":"武器合成"}}',
+            "world crafting entry emits strict panel request");
+        check(!CraftingPanelService.openPanel("未知分类", "world_crafting_entry"),
             "unknown crafting category is rejected before host");
         check(CraftingPanelService.openMaterialsPanel("nativehud_materials")
             && String(_root.server.sent) == '{"task":"panel_request","panel":"crafting","source":"nativehud_materials","initData":{"view":"materials"}}',

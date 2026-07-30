@@ -48,57 +48,33 @@
                 && (view === 'storage' || view === 'tuning' || view === 'build');
     }
 
-    function resolveReturnTarget(initData) {
-        var target = initData && initData.returnTo;
-        if (!target || target.panel !== 'crafting' || !target.initData
-                || typeof target.initData.category !== 'string' || !target.initData.category) return null;
-        var recipeIndex = Math.floor(Number(target.initData.preferredRecipeIndex));
-        var craftCount = Math.floor(Number(target.initData.preferredCraftCount));
-        return {
-            panel:'crafting',
-            initData:{
-                category:target.initData.category,
-                preferredRecipeIndex:isNaN(recipeIndex) ? -1 : recipeIndex,
-                preferredCraftCount:isNaN(craftCount) ? 1 : Math.max(1, Math.min(99, craftCount))
-            }
-        };
-    }
-
     function resolveLaunchContext(initData) {
         initData = initData || {};
         var profile = resolveProfile(initData);
         var view = resolveView(initData);
         var panelInstanceId = typeof initData.panelInstanceId === 'string'
             ? initData.panelInstanceId : '';
-        var returnTarget = resolveReturnTarget(initData);
         var returnFocusAction = resolveReturnFocusAction(initData);
         var preparationNavigationV1 =
             resolvePreparationNavigationV1(initData);
         var validInstance = /^[A-Za-z0-9._~-]{1,128}$/.test(panelInstanceId);
-        var nestedCrafting = !panelInstanceId && returnTarget
-            && profile && profile.profile === 'battlebox' && view === 'storage';
         if (!profile || !view || !isViewAllowed(profile, view)
                 || preparationNavigationV1 === null
                 || returnFocusAction === null
                 || returnFocusAction && returnFocusAction !==
                     (preparationNavigationV1 ? 'preparation-menu' : 'skills')
-                || (!validInstance && !nestedCrafting)
-                || (validInstance && returnTarget)) return null;
+                || !validInstance || initData.returnTo != null
+                || initData.ownerContext != null) return null;
         return {
             profile:profile,
             view:view,
             panelInstanceId:panelInstanceId,
-            returnTarget:returnTarget,
             returnFocusAction:returnFocusAction,
-            preparationNavigationV1:preparationNavigationV1,
-            hostOwner:nestedCrafting ? 'crafting' : 'workbench'
+            preparationNavigationV1:preparationNavigationV1
         };
     }
 
-    function createCloseMessage(hostOwner, panelInstanceId, reason) {
-        if (hostOwner === 'crafting') {
-            return {type:'panel', cmd:'close', panel:'crafting'};
-        }
+    function createCloseMessage(panelInstanceId, reason) {
         var message = {
             type:'panel', cmd:'close', panel:'workbench',
             panelInstanceId:String(panelInstanceId || '')
@@ -243,7 +219,6 @@
         resolveReturnFocusAction:resolveReturnFocusAction,
         resolvePreparationNavigationV1:resolvePreparationNavigationV1,
         isViewAllowed:isViewAllowed,
-        resolveReturnTarget:resolveReturnTarget,
         resolveLaunchContext:resolveLaunchContext,
         createCloseMessage:createCloseMessage,
         normalizeConfirmationMode:normalizeConfirmationMode,

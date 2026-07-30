@@ -23,6 +23,7 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
 
     public function ItemIcon(_icon:MovieClip,__name:String, _item) {
         this.icon = _icon;
+        this.icon.itemIcon = this;
         this.x = icon._x;
         this.y = icon._y;
         this.valuetext = icon.valuetext;

@@ -682,6 +682,8 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         'modules/inventory-workbench-navigation.js',
         'modules/overlay-audio-bindings.js',
         'modules/workbench-inspection-viewport.js',
+        'modules/inventory-tuning-scope.js',
+        'modules/inventory-workbench-feature-loader.js',
         'modules/character-build/character-build-mutation.js',
         'modules/character-build-session.js',
         'modules/character-build/character-build-action-view.js',

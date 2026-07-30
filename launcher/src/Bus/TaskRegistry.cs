@@ -602,20 +602,6 @@ namespace CF7Launcher.Bus
                         return null;
                     }
 
-                    // Web 调制仍处在人类反馈期：旧 AS2 插件改装入口一律留在原 renderer。
-                    // 即使运行中的旧 SWF 仍发送可信 callback，也只返回明确拒绝，不打开面板。
-                    if (panel == "workbench" && source == "legacy_equipment_tuning")
-                    {
-                        return new JObject
-                        {
-                            ["success"] = true,
-                            ["accepted"] = false,
-                            ["panel"] = "workbench",
-                            ["profile"] = "battlebox",
-                            ["view"] = "tuning",
-                            ["reason"] = "migration_paused"
-                        }.ToString(Newtonsoft.Json.Formatting.None);
-                    }
                     webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, returnFrameLabel,
                         returnToPanel, returnToInitDataJson, initDataExtrasJson,
                         openRequestId);

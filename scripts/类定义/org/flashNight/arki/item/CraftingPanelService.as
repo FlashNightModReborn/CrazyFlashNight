@@ -66,7 +66,7 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (!isCategory(category) || _root.改装清单 == undefined
                 || !(_root.改装清单[category] instanceof Array)) return false;
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
-        if (source != "legacy_crafting_entry" && source != "world_npc"
+        if (source != "world_crafting_entry" && source != "world_npc"
                 && source != "crafting_entry") source = "crafting_entry";
         var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build(
             "crafting", source, [], [{name:"category", value:category}]

@@ -31,14 +31,6 @@ test('profile and view resolution reject unknown launch shapes', () => {
     assert.strictEqual(Config.resolveView({view:'debug'}), null);
 });
 
-test('return target is normalized without retaining caller-owned objects', () => {
-    const source = {returnTo:{panel:'crafting', initData:{category:'weapon', preferredRecipeIndex:'4.9', preferredCraftCount:200}}};
-    const target = Config.resolveReturnTarget(source);
-    assert.deepStrictEqual(target, {panel:'crafting', initData:{category:'weapon', preferredRecipeIndex:4, preferredCraftCount:99}});
-    assert.notStrictEqual(target, source.returnTo);
-    assert.strictEqual(Config.resolveReturnTarget({returnTo:{panel:'npcshop', initData:{category:'x'}}}), null);
-});
-
 test('return focus action is a two-value migration enum, never a selector', () => {
     assert.strictEqual(Config.resolveReturnFocusAction({}), '');
     assert.strictEqual(Config.resolveReturnFocusAction({
@@ -99,53 +91,50 @@ test('preparation rollout bool is optional, strict, and atomically paired with f
         })).preparationNavigationV1, true);
 });
 
-test('launch context separates exact Host workbenches from the crafting-owned organizer child', () => {
+test('launch context accepts only exact Host-owned standalone workbenches', () => {
     const exact = Config.resolveLaunchContext({
         profile:'battlebox', view:'build', panelInstanceId:'panel.workbench.exact'
     });
-    assert.strictEqual(exact.hostOwner, 'workbench');
     assert.strictEqual(exact.panelInstanceId, 'panel.workbench.exact');
-    const nested = Config.resolveLaunchContext({
-        profile:'battlebox', view:'storage',
-        returnTo:{panel:'crafting', initData:{category:'weapon'}}
-    });
-    assert.strictEqual(nested.hostOwner, 'crafting');
-    assert.strictEqual(nested.panelInstanceId, '');
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(exact, 'hostOwner'), false);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(exact, 'returnTarget'), false);
+    assert.strictEqual(Config.resolveReturnTarget, undefined);
     assert.strictEqual(Config.resolveLaunchContext({
-        profile:'battlebox', view:'build',
+        profile:'battlebox', view:'storage',
         returnTo:{panel:'crafting', initData:{category:'weapon'}}
     }), null);
     assert.strictEqual(Config.resolveLaunchContext({
-        profile:'battlebox', view:'storage', panelInstanceId:'panel.workbench.mixed',
-        returnTo:{panel:'crafting', initData:{category:'weapon'}}
+        profile:'battlebox', view:'storage'
+    }), null);
+    assert.strictEqual(Config.resolveLaunchContext({
+        profile:'battlebox', view:'storage', panelInstanceId:'panel.workbench.exact',
+        ownerContext:{kind:'crafting-organizer'}
     }), null);
     assert.strictEqual(Config.resolveLaunchContext({
         profile:'battlebox', view:'storage', panelInstanceId:7
     }), null);
-    assert.deepStrictEqual(Config.createCloseMessage('crafting', '', 'escape'),
-        {type:'panel',cmd:'close',panel:'crafting'});
     assert.deepStrictEqual(Config.createCloseMessage(
-        'workbench', 'panel.workbench.exact', 'navigate_skills'), {
+        'panel.workbench.exact', 'navigate_skills'), {
         type:'panel',cmd:'close',panel:'workbench',
         panelInstanceId:'panel.workbench.exact',reason:'navigate_skills'
     });
     assert.deepStrictEqual(Config.createCloseMessage(
-        'workbench', 'panel.workbench.exact', 'navigate_materials'), {
+        'panel.workbench.exact', 'navigate_materials'), {
         type:'panel',cmd:'close',panel:'workbench',
         panelInstanceId:'panel.workbench.exact',reason:'navigate_materials'
     });
     assert.deepStrictEqual(Config.createCloseMessage(
-        'workbench', 'panel.workbench.exact', 'navigate_intelligence'), {
+        'panel.workbench.exact', 'navigate_intelligence'), {
         type:'panel',cmd:'close',panel:'workbench',
         panelInstanceId:'panel.workbench.exact',reason:'navigate_intelligence'
     });
     assert.deepStrictEqual(Config.createCloseMessage(
-        'workbench', 'panel.workbench.exact', 'navigate_panel'), {
+        'panel.workbench.exact', 'navigate_panel'), {
         type:'panel',cmd:'close',panel:'workbench',
         panelInstanceId:'panel.workbench.exact'
     });
     assert.deepStrictEqual(Config.createCloseMessage(
-        'workbench', 'panel.workbench.tuning', 'escape'), {
+        'panel.workbench.tuning', 'escape'), {
         type:'panel',cmd:'close',panel:'workbench',
         panelInstanceId:'panel.workbench.tuning'
     });
@@ -666,11 +655,11 @@ test('header projection enumerates build, stats, storage, lock, and tuning truth
         visibleActions(stats),
         ['back-build', 'help', 'close']);
     const storage = Header.InventoryWorkbenchHeaderProjection({
-        view:'storage', buildAvailable:true, returnTarget:true, tuningAvailable:true,
+        view:'storage', buildAvailable:true, tuningAvailable:true,
         tuningState:{disabled:true, reason:'正在同步'}
     });
     assert.strictEqual(storage['return-build'].visible, true);
-    assert.strictEqual(storage['return-panel'].visible, true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(storage, 'return-panel'), false);
     assert.strictEqual(storage.tuning.visible, true);
     assert.strictEqual(storage.tuning.disabled, true);
     const tuning = Header.InventoryWorkbenchHeaderProjection({
@@ -699,7 +688,7 @@ test('header projection keeps reasoned disabled actions explainable without invo
             () => activations.push(id),
             reason => blocked.push(id + ':' + reason));
     });
-    ['back-build', 'return-build', 'return-panel', 'help'].forEach(id => {
+    ['back-build', 'return-build', 'help'].forEach(id => {
         buttons[id] = new FakeNode('button');
     });
     buttons.legacy = new FakeNode('button');
@@ -967,7 +956,7 @@ test('owned inventory authority projection keeps inspection while locking exact 
         {ready:true, refreshRequired:true}).reason, '背包同步失败，请先重试。');
 });
 
-test('tuning scope restores exact request, viewport, and focused tile', () => {
+test('lazily created tuning scope restores exact request, viewport, and focused tile', () => {
     const calls = [];
     let request = {
         containerId:'背包', offset:50, limit:50, filterKey:'weapon',
@@ -995,10 +984,10 @@ test('tuning scope restores exact request, viewport, and focused tile', () => {
         removeEventListener(type) { delete this.listeners[type]; },
         contains:() => true, querySelectorAll:() => [tile]
     };
-    const transition = new TuningScope.Transition({coordinator, getRoot:() => root});
+    const transition = new TuningScope.Transition({
+        coordinator, getRoot:() => root, initialFocus:{key:'17', role:'tile'}
+    });
     transition.attach();
-    root.listeners.focusin({target:{closest:selector =>
-        selector === '[data-workbench-key]' ? tile : null}});
     const original = JSON.parse(JSON.stringify(request));
     assert.strictEqual(transition.enter(), true);
     assert.deepStrictEqual(calls[0].next,
@@ -1027,6 +1016,9 @@ test('direct tuning starts scoped but preserves the default return request', () 
 test('facade owns registration and delegates to the bounded storage controller', () => {
     const facade = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'inventory-workbench.js'), 'utf8');
     const source = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'inventory-storage-workbench.js'), 'utf8');
+    const organizer = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'crafting-inventory-organizer.js'), 'utf8');
+    const headerSource = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'inventory-workbench-header.js'), 'utf8');
+    const featureLoaderSource = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'inventory-workbench-feature-loader.js'), 'utf8');
     const buildSession = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'character-build-session.js'), 'utf8');
     const buildController = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'character-build.js'), 'utf8');
     const buildTuning = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'character-build', 'character-build-tuning.js'), 'utf8');
@@ -1034,13 +1026,14 @@ test('facade owns registration and delegates to the bounded storage controller',
     const extracted = ['inventory-workbench-config.js', 'inventory-workbench-navigation.js',
         'inventory-workbench-preparation-menu.js', 'inventory-workbench-header.js',
         'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js',
-        'inventory-tuning-scope.js']
+        'inventory-workbench-feature-loader.js', 'inventory-tuning-scope.js']
         .map(file => fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', file), 'utf8')).join('\n');
     assert(source.includes('InventoryWorkbenchQuickTransfer.QuickTransferController'));
     assert(source.includes('InventoryWorkbenchOwnedView.createView'));
     assert(source.includes('new InventoryTuningScope.Transition'));
     assert(source.includes('EquipmentTuningConfirmation.shared.read()'));
     assert(!source.includes('new InventoryWorkbenchConfig.ConfirmationPreference'));
+    assert(source.includes('function ensureTuningFeature()'));
     assert(source.includes('activate:activate'));
     assert(source.includes('deactivate:cleanup'));
     assert(source.includes('beginExternalWrite:beginExternalWrite'));
@@ -1057,6 +1050,14 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert.strictEqual(Header.TuningHeaderController.prototype._createConfirmationToggle, undefined);
     assert(facade.includes('InventoryWorkbenchHeader.renderWorkbenchHeader'));
     assert(extracted.includes('function InventoryWorkbenchHeaderProjection(state)'));
+    assert(facade.includes('InventoryWorkbenchFeatureLoader.createPanelGate({'));
+    assert(facade.includes('_featureGate.run(next, function()'));
+    assert(facade.includes('_featureGate.run(_view, mountInitial, {initial:true})'));
+    assert(featureLoaderSource.includes("loadTuning:function() { return loadView('tuning'); }"));
+    assert(featureLoaderSource.includes("loadBuild:function() { return loadView('build'); }"));
+    assert(featureLoaderSource.includes('load returned a non-thenable'));
+    assert(featureLoaderSource.includes('.catch(function(error)'));
+    assert(featureLoaderSource.includes('options.reject();'));
     assert(facade.includes('window.__INVENTORY_WORKBENCH_CONFIG__'));
     assert(facade.includes('timeoutMs:_runtimeConfig.requestTimeoutMs'));
     assert(facade.includes('sessionNonce:_runtimeConfig.sessionNonce'));
@@ -1101,6 +1102,17 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert(facade.includes("case 'materials': return requestPreparationNavigation('navigate_materials')"));
     assert(facade.includes("case 'intelligence': return requestPreparationNavigation('navigate_intelligence')"));
     assert(/reason === 'navigate_skills'[\s\S]{0,120}reason === 'navigate_materials'[\s\S]{0,120}reason === 'navigate_intelligence'/.test(extracted));
+    assert(organizer.includes('function requestReturn()'));
+    assert(organizer.includes("kind:'crafting-organizer'"));
+    assert(organizer.includes("panel:'crafting'"));
+    assert(!organizer.includes("Panels.open('workbench'"));
+    assert(!facade.includes("Panels.open('workbench'"));
+    assert(!facade.includes('function returnToPanel('));
+    assert(!facade.includes('openReturnTarget('));
+    assert(!facade.includes('onReturnPanel'));
+    assert(!headerSource.includes("'return-panel'"));
+    assert(!headerSource.includes('options.returnTarget'));
+    assert(!headerSource.includes('options.onReturnPanel'));
     assert(buildController.includes('new SessionModule.CharacterBuildSession'));
     assert(/prepareLeave[\s\S]*?_tuning\.exit[\s\S]*?_session\.prepareLeave/.test(buildController));
     assert(!/prepareLeave[\s\S]{0,500}?\.finalize\(/.test(buildController));
@@ -1120,7 +1132,7 @@ test('facade owns registration and delegates to the bounded storage controller',
     // Readable parent orchestration is budgeted explicitly; do not line-compress the facade merely
     // to satisfy the old pre-extraction threshold. audit-workbench-ui.js carries the same ceiling.
     assert(facade.split(/\r?\n/).length <= 550);
-    assert(source.split(/\r?\n/).length <= 900);
+    assert(source.split(/\r?\n/).length <= 950);
 });
 
 process.stdout.write('Inventory workbench modules: ' + passed + '/' + passed + ' passed\n');

@@ -31,6 +31,17 @@ function test(name, fn) {
         },
         ok(value, message) {
             if (!value) failures.push(message + ': expected truthy, got ' + printable(value));
+        },
+        throws(fn, matcher, message) {
+            try {
+                fn();
+                failures.push(message + ': expected an exception');
+            } catch (error) {
+                const rendered = String(error && error.message || error);
+                if (matcher && !matcher.test(rendered)) {
+                    failures.push(message + ': unexpected exception ' + printable(rendered));
+                }
+            }
         }
     };
     try {
@@ -380,6 +391,9 @@ test('DualPaneShell requires a closed profile and switches it atomically', check
     });
     expectMissingProfileFailsBeforeDom('empty constructor options', () => {
         new environment.Workbench.DualPaneShell({});
+    });
+    expectMissingProfileFailsBeforeDom('unknown constructor profile', () => {
+        new environment.Workbench.DualPaneShell({profile:'feature-magic'});
     });
 
     const constructorMutationStart = environment.document.attributeMutations.length;

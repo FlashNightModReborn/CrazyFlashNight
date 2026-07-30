@@ -233,10 +233,6 @@ namespace CF7Launcher.Guardian
             _onPanelStateChanged = onPanelStateChanged;
             _setActivePanel = setActivePanel;
             _preparationNavigationV1 = preparationNavigationV1;
-            WebInventoryWorkbenchEnabled = !string.Equals(
-                Environment.GetEnvironmentVariable("CF7_WEB_INVENTORY_WORKBENCH"),
-                "0",
-                StringComparison.Ordinal);
         }
 
         /// <summary>二阶段注入：Program.cs 先 new Router，再 new PanelHostController(...)，最后 SetPanelHost 回注。</summary>
@@ -1938,12 +1934,6 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public Action OnMapHudToggle { get; set; }
 
-        /// <summary>
-        /// 刘海屏战备箱 Web 工作台开关。默认开启；环境变量 CF7_WEB_INVENTORY_WORKBENCH=0
-        /// 或运行时显式置 false 时回退旧 Flash warehouse 命令。
-        /// </summary>
-        public bool WebInventoryWorkbenchEnabled { get; set; }
-
         public void Dispatch(string key) { Dispatch(key, null); }
 
         public void Dispatch(string key, string rawJson)
@@ -1961,16 +1951,8 @@ namespace CF7Launcher.Guardian
                 case "EXIT": ForceExit(); break;
                 case "PAUSE": SendGameCommand("togglePause"); break;
                 case "WAREHOUSE":
-                    if (WebInventoryWorkbenchEnabled)
-                    {
-                        LogManager.Log("[Router] WAREHOUSE clicked -> web inventory workbench");
-                        OpenInventoryWorkbench("nativehud", "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
-                    }
-                    else
-                    {
-                        LogManager.Log("[Router] WAREHOUSE web workbench disabled -> Flash fallback");
-                        SendGameCommand("warehouse");
-                    }
+                    LogManager.Log("[Router] WAREHOUSE clicked -> web inventory workbench");
+                    OpenInventoryWorkbench("nativehud", "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
                     break;
                 case "SETTINGS": SendGameCommand("toggleSettings"); break;
                 case "SHOP":
@@ -2260,11 +2242,6 @@ namespace CF7Launcher.Guardian
             }
             if (string.Equals(panelName, "workbench", StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(safeSource, "legacy_equipment_tuning", StringComparison.Ordinal))
-                {
-                    LogManager.Log("[Router] legacy AS2 equipment tuning redirect paused; keeping native renderer");
-                    return;
-                }
                 OpenInventoryWorkbench(
                     safeSource,
                     initDataExtrasJson,
@@ -3834,15 +3811,6 @@ namespace CF7Launcher.Guardian
                 CancelNativeEquipmentBuildOpenWait();
                 return;
             }
-            if (!WebInventoryWorkbenchEnabled)
-            {
-                CancelNativeEquipmentBuildOpenWait();
-                LogManager.Log(
-                    "[Router] EQUIP_UI web workbench explicitly disabled -> Flash fallback");
-                SendGameCommand(
-                    "openEquipUI");
-                return;
-            }
 
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
@@ -3915,17 +3883,6 @@ namespace CF7Launcher.Guardian
                     "host_admission");
                 return;
             }
-            if (!WebInventoryWorkbenchEnabled)
-            {
-                CancelPendingNativeEquipmentTuningOpenIntent(
-                    "workbench_disabled");
-                LogManager.Log(
-                    "event=equipment_tuning_open_rejected source=nativehud_equipment_tuning reason=workbench_disabled");
-                NotifyNativeEquipmentTuningOpenFailure(
-                    "workbench_disabled");
-                return;
-            }
-
             LogManager.Log(
                 "event=equipment_tuning_open_requested source=nativehud_equipment_tuning");
             int generation;

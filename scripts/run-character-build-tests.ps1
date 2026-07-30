@@ -196,8 +196,6 @@ Write-Host '[STATIC_PASS] Safe-exit save outcome projection contract'
 
 $uiManagerSource = Get-RepoText 'scripts\展现\UI交互\UI交互_lsy_UI管理.as'
 $uiManagerNormalized = $uiManagerSource -replace "`r`n", "`n"
-$legacyInventoryXfl = Get-RepoText `
-    'flashswf\UI\物品与技能相关界面\LIBRARY\新版物品栏界面.xml'
 $lootFenceIndex = $uiManagerNormalized.IndexOf('hasPendingTransportDetach')
 $buildFenceIndex = $uiManagerNormalized.IndexOf(
     'CharacterBuildService' + "`n" +
@@ -215,10 +213,6 @@ $openMaterialUi = [regex]::Match(
     $uiManagerSource,
     '_root\.gameCommands\["openMaterialUI"\]\s*=\s*function\(params\)\s*\{(?<body>[\s\S]*?)\r?\n\};'
 )
-$openEquipUi = [regex]::Match(
-    $uiManagerSource,
-    '_root\.gameCommands\["openEquipUI"\]\s*=\s*function\(\)\s*\{(?<body>[\s\S]*?)\r?\n\};'
-)
 if ((-not $openMaterialUi.Success) -or
         ($openMaterialUi.Groups['body'].Value -notmatch
             'missingOpenRequestId:Boolean[\s\S]*?typeof\(params\.openRequestId\)\s*==\s*"undefined"') -or
@@ -228,30 +222,11 @@ if ((-not $openMaterialUi.Success) -or
             'CraftingPanelService\.openMaterialsPanel\(\s*"nativehud_materials"\s*,\s*params\.openRequestId\s*\)') -or
         ($openMaterialUi.Groups['body'].Value -match
             '__legacyMaterialOnly|物品栏界面|gotoAndStop') -or
-        (-not $openEquipUi.Success) -or
-        ($openEquipUi.Groups['body'].Value -notmatch
-            '_visible\s*=\s*true;[\s\S]*?gotoAndStop\(_root\.物品栏界面\.界面\);') -or
-        ($legacyInventoryXfl -notmatch
-            'if\(_root\.存档系统\.dirtyMark\)\s*_root\.自动存盘\(\);\s*this\.关闭\(\);')) {
-    throw 'Web-only material open, full equipment open, and legacy inventory close contracts are incomplete.'
+        ($uiManagerSource -match
+            '_root\.gameCommands\["(?:openEquipUI|warehouse)"\]')) {
+    throw 'Web-only material open and retired AS2 equipment/warehouse command contracts are incomplete.'
 }
-
-if (($legacyInventoryXfl -match '__legacyMaterialOnly') -or
-        ($legacyInventoryXfl -match '此入口仅开放材料页')) {
-    throw 'Retired material-only fallback guards must be physically absent from the legacy inventory XFL.'
-}
-foreach ($targetFrame in @('技能', '个人信息', '情报', '物品栏')) {
-    $directNavigation =
-        'gotoAndStop\("' + [regex]::Escape($targetFrame) + '"\);'
-    if ($legacyInventoryXfl -notmatch $directNavigation) {
-        throw "Legacy inventory direct top navigation is missing for frame: $targetFrame"
-    }
-}
-if ($legacyInventoryXfl -notmatch
-        'on\s*\(\s*release\s*\)\s*\{\s*gotoAndStop\("材料"\);\s*\}') {
-    throw 'The legacy material tab must remain directly available.'
-}
-Write-Host '[STATIC_PASS] Web material route and legacy inventory navigation separation contract'
+Write-Host '[STATIC_PASS] Web-only material route and retired AS2 equipment/warehouse commands'
 
 $socketRetainBody = [regex]::Match(
     $characterBuildSource,

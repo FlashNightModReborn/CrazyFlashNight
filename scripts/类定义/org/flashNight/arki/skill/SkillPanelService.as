@@ -33,15 +33,10 @@ class org.flashNight.arki.skill.SkillPanelService {
         _root.gameCommands["skillReorder"] = function(params:Object):Void { SkillPanelService.handle("reorder", params); };
         _root.gameCommands["skillPanelClose"] = function(params:Object):Void { SkillPanelService.handle("close", params); };
 
-        _root.openSkillPanel = function(source:String):Object { return SkillPanelService.openManage(source); };
         _root.openSkillTrainer = function(npcRef:Object, source:String):Object { return SkillPanelService.openTrainer(npcRef, source); };
-        _root.legacySkillLearnCommit = function(skillKey:String, desiredLevel:Number, npcRef:Object):Object {
-            return SkillPanelService.legacyLearnCommit(skillKey, desiredLevel, npcRef);
+        _root.quickSkillUnequip = function(slot:Number):Object {
+            return SkillPanelService.quickHudUnequip(slot);
         };
-        _root.legacySkillEquip = function(skillKey:String, slot:Number):Object { return SkillPanelService.legacyEquip(skillKey, slot); };
-        _root.legacySkillUnequip = function(slot:Number):Object { return SkillPanelService.legacyUnequip(slot); };
-        _root.legacySkillSetPassive = function(skillKey:String, enabled:Boolean):Object { return SkillPanelService.legacySetPassive(skillKey, enabled); };
-        _root.legacySkillReorder = function(skillKey:String, targetIndex:Number):Object { return SkillPanelService.legacyReorder(skillKey, targetIndex); };
     }
 
     public static function handle(commandName:String, params:Object):Void {
@@ -81,10 +76,6 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (params == null) {
             return panelOpenFailure("invalid_payload");
         }
-        // 滚动部署兼容：旧 Host 的刘海屏 SKILLS 命令没有 openRequestId。
-        // 新 Host 始终发送 nonce，且 Host 侧不会接纳无 nonce 的 panel_request；
-        // 因而这里只维持旧 Host → 新 AS2 的单向兼容，不放宽新握手边界。
-        if (typeof params.openRequestId == "undefined") return openManage("nativehud", undefined);
         if (!safeOpenRequestId(params.openRequestId)) return panelOpenFailure("invalid_payload");
         return openManage("nativehud", String(params.openRequestId));
     }
@@ -112,31 +103,9 @@ class org.flashNight.arki.skill.SkillPanelService {
         return sent;
     }
 
-    public static function legacyLearnCommit(skillKey:String, desiredLevel:Number, npcRef:Object):Object {
-        if (npcRef == null) npcRef = resolveCurrentNpc();
-        var made:Object = createOrReuseSession(npcRef);
-        if (!made.success) return made;
-        var revision:Number = SkillLoadoutService.getRevision();
-        var preview:Object = calculatePreview(skillKey, desiredLevel, made.session.nonce, revision, false);
-        if (!preview.success) return preview;
-        if (!preview.canCommit) return fail(preview.blockingError);
-        return finalizeLegacyWrite(SkillLoadoutService.commitLearn(skillKey, desiredLevel, preview.cost, revision));
-    }
-
-    public static function legacyEquip(skillKey:String, slot:Number):Object {
-        return finalizeLegacyWrite(SkillLoadoutService.equip(skillKey, slot, SkillLoadoutService.getRevision()));
-    }
-    public static function legacyUnequip(slot:Number):Object {
-        return finalizeLegacyWrite(SkillLoadoutService.unequip(slot, SkillLoadoutService.getRevision()));
-    }
-    public static function legacySetPassive(skillKey:String, enabled:Boolean):Object {
-        return finalizeLegacyWrite(SkillLoadoutService.setPassive(skillKey, enabled, SkillLoadoutService.getRevision()));
-    }
-    public static function legacyReorder(skillKey:String, targetIndex:Number):Object {
-        return finalizeLegacyWrite(SkillLoadoutService.reorder(skillKey, targetIndex, SkillLoadoutService.getRevision()));
-    }
-
-    private static function finalizeLegacyWrite(result:Object):Object {
+    public static function quickHudUnequip(slot:Number):Object {
+        var result:Object = SkillLoadoutService.unequip(
+            slot, SkillLoadoutService.getRevision());
         if (result.success && result.changed) SkillLoadoutService.runOptionalRenderers();
         if (result.success) result.snapshot = SkillLoadoutService.buildSnapshot("manage", null);
         return result;

@@ -33,7 +33,7 @@ const INVENTORY_WORKBENCH_MODULE_SOURCES = [
     'inventory-workbench-navigation.js', 'inventory-workbench-header.js',
     'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js',
     'inventory-tuning-scope.js',
-    'inventory-storage-workbench.js'
+    'inventory-storage-workbench.js', 'crafting-inventory-organizer.js'
 ].map(name => path.join(WEB_ROOT, 'modules', name));
 const PANELS_SOURCE = path.join(WEB_ROOT, 'modules', 'panels.js');
 const PANELS_CSS_SOURCE = path.join(WEB_ROOT, 'css', 'panels.css');
@@ -90,6 +90,10 @@ function auditArchitectureBoundaries() {
         path.join(WEB_ROOT, 'modules', 'inventory-workbench-quick-transfer.js'), 'utf8');
     const storageWorkbenchSource = fs.readFileSync(
         path.join(WEB_ROOT, 'modules', 'inventory-storage-workbench.js'), 'utf8');
+    const inventoryWorkbenchHeaderSource = fs.readFileSync(
+        path.join(WEB_ROOT, 'modules', 'inventory-workbench-header.js'), 'utf8');
+    const craftingOrganizerSource = fs.readFileSync(
+        path.join(WEB_ROOT, 'modules', 'crafting-inventory-organizer.js'), 'utf8');
     const inventoryWorkbenchUiSource = [inventoryWorkbenchSource].concat(
         INVENTORY_WORKBENCH_MODULE_SOURCES.map(file => fs.readFileSync(file, 'utf8'))
     ).join('\n');
@@ -185,44 +189,40 @@ function auditArchitectureBoundaries() {
     const workbenchRequestCloseEnd = inventoryWorkbenchSource.indexOf('function teardown(', workbenchRequestCloseStart);
     const workbenchRequestCloseBody = inventoryWorkbenchSource.slice(
         workbenchRequestCloseStart, workbenchRequestCloseEnd);
-    const returnToPanelStart = inventoryWorkbenchSource.indexOf('function returnToPanel(');
-    const returnToPanelEnd = inventoryWorkbenchSource.indexOf('function finalizeClose(', returnToPanelStart);
-    const returnToPanelBody = inventoryWorkbenchSource.slice(returnToPanelStart, returnToPanelEnd);
     if (workbenchRequestCloseStart < 0 || workbenchRequestCloseEnd < 0
             || workbenchRequestCloseBody.includes('openReturnTarget(')
             || /reason\s*!==\s*['"]header['"]/.test(workbenchRequestCloseBody)) {
         throw new Error('Inventory workbench implicit close must not navigate to crafting returnTarget');
     }
-    if (!inventoryWorkbenchSource.includes(
-            "var nestedOwner = _nestedHostOwner === 'crafting';")
-            || !inventoryWorkbenchSource.includes(
-                'InventoryWorkbenchConfig.createCloseMessage(')
-            || !inventoryWorkbenchUiSource.includes(
-                "if (hostOwner === 'crafting')")
-            || !inventoryWorkbenchUiSource.includes(
-                "return {type:'panel', cmd:'close', panel:'crafting'}")
-            || !inventoryWorkbenchSource.includes("if (Bridge.send(message) === false)")
-            || !inventoryWorkbenchSource.includes("工作台保持打开")) {
-        throw new Error('Nested crafting organizer must close its real Host owner and remain open on transport failure');
+    if (!craftingOrganizerSource.includes(
+            "var message = {type:'panel', cmd:'close', panel:'crafting'}")
+            || !craftingOrganizerSource.includes("if (Bridge.send(message) === false)")
+            || !craftingOrganizerSource.includes("工作台保持打开")
+            || !craftingOrganizerSource.includes("kind:'crafting-organizer'")) {
+        throw new Error('Embedded crafting organizer must close its explicit Host owner and remain open on transport failure');
     }
-    if (!panelsSource.includes('function isNestedCraftingOrganizer(')
-            || !panelsSource.includes("return {type:'panel', cmd:'close', panel:'crafting'}")
+    if (panelsSource.includes('function isNestedCraftingOrganizer(')
+            || panelsSource.includes('_activeHostOwner')
             || !panelsSource.includes('panelCloseMessage(pending.id, pending.initData, reason)')
             || !panelsSource.includes("sendMountFailureClose(id, initData, 'mount_failed')")
             || !panelsSource.includes('panel mount threw for ')
             || !panelsSource.includes('panel rebind threw for ')
-            || !panelsSource.includes("_activeHostOwner === 'workbench'")
+            || !panelsSource.includes('var activeCapabilityWorkbench = activeWorkbench;')
             || !panelsSource.includes('!activeCapabilityWorkbench')) {
-        throw new Error('Nested crafting organizer lazy/mount failures must release the crafting Host owner');
+        throw new Error('Panels must keep exact standalone failure handling without a crafting/workbench alias');
     }
-    if (returnToPanelStart < 0 || returnToPanelEnd < 0
-            || !returnToPanelBody.includes('openReturnTarget(')
-            || !inventoryWorkbenchSource.includes('onReturnPanel:returnToPanel')
-            || !inventoryWorkbenchUiSource.includes(
-                "storageActions, 'return-panel', '返回合成', options.onReturnPanel")
-            || !inventoryWorkbenchUiSource.includes(
-                "returnButton.classList.add('inventory-return-crafting-btn')")) {
-        throw new Error('Inventory workbench crafting returnTarget requires the explicit return button path');
+    if (inventoryWorkbenchSource.includes('function returnToPanel(')
+            || inventoryWorkbenchSource.includes('openReturnTarget(')
+            || inventoryWorkbenchSource.includes('onReturnPanel')
+            || inventoryWorkbenchHeaderSource.includes("'return-panel'")
+            || inventoryWorkbenchHeaderSource.includes('options.returnTarget')
+            || inventoryWorkbenchHeaderSource.includes('options.onReturnPanel')
+            || !craftingOrganizerSource.includes('function requestReturn()')
+            || !craftingOrganizerSource.includes("button('返回合成'")
+            || !craftingOrganizerSource.includes('inventory-return-crafting-btn')
+            || !craftingOrganizerSource.includes('owner.onReturn()')
+            || craftingOrganizerSource.includes("Panels.open('workbench'")) {
+        throw new Error('Embedded crafting organizer requires the explicit local return path');
     }
     if (!kshopUiSource.includes('InventoryUI.renderOwnedSlot(')
             || !inventoryWorkbenchUiSource.includes('.renderOwnedSlot(')) {

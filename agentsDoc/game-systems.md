@@ -142,7 +142,7 @@
 - **状态收束**：空箱为 `CONSUMED`；非空 X/Esc/backdrop 为 `LOOT_SUSPENDED`；只有二次确认的“放弃剩余”进入 `ABANDONED`；anchor/场景失效进入 `EXPIRED`。同场景同 anchor 可重开同一 inventory，v1 不跨游戏进程持久化瞬态 loot。
 - **运输恢复**：Host 只管理 tracked panel、pause、bind/close 和重连；Web 只展示并发意图。初次、reopen、mount、navigation 或 socket 故障都必须保留同一 AS2 authority，不创建替代 renderer 或第二份奖励。scene teardown 在 authority 收束前 fail-closed。
 - **同页整理**：普通满包可在同一 `loot` panel 内切换背包—战备箱 organizer，保持同一 `panelInstanceId`、binding 与 pause；返回前必须取得 fresh `LOOT_ACTIVE` snapshot。collection cap 不映射 organizer。
-- **旧资产边界**：地图箱完成标准是旧 renderer/API 的地图生产引用不可达；共享 `资源箱界面` symbol 仍被仓库使用，仓库拆分前不得物理删除。
+- **旧资产边界**：地图箱完成标准是旧 renderer/API 的地图生产引用不可达；仓库已迁到 Web-only，主 XFL 的 Include、递归放置及发布 SWF 的 ImportAssets/linkage/PlaceObject 闭包都不得再到达 `资源箱界面`。standalone legacy XFL 可作为封存资产暂留磁盘，物理删除不是本轮准入条件，但不得恢复 main 可达性。
 - **S0 决策**：`ChestSessionService / ChestS0SocketBridge / DevLockboxS0` 及 Web bootstrap/adapter/wire 已退役。普通 Lockbox 小游戏可独立保留，但未来地图开锁必须另立协议和 ADR，不得恢复 dormant gate 或插入 loot 前置分流。
 - **验证口径**：静态门全量扫描 stage、掉落规则和 XFL callback；AS2/Host/Web 自动门覆盖网格边界、arbiter、journal、stale/duplicate/unknown、disconnect、organizer 与 teardown。真人只做正常标题帧/NativeHud、代表性装备箱领空、生存箱满包整理、保险箱单击 suspend/reopen，以及装备/生存破碎；direct 有现成夹具时顺带目视，数值、存盘与重启回读尽量自动化并合并标准入口验证。
 - **证据分层**：严格使用 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`。旧单-canary 的 candidate、promotion 和标准入口只作历史证据，不能覆盖当前全正网格 tree。

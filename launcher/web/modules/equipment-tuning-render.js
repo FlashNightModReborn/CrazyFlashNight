@@ -1054,22 +1054,23 @@ var EquipmentTuningRender = (function() {
                     + '</b></div><div class="kshop-tt-loading">加载中…</div>';
             },
             renderRich:function(value, rich) {
-                var rawHtml = rich && rich.html ? String(rich.html) : '';
-                var textHtml = rawHtml ? '' : escapeHtml(rich && rich.text || '');
+                var introHtml = rich && rich.introHTML ? String(rich.introHTML) : '';
+                var descHtml = rich && rich.descHTML ? String(rich.descHTML) : '';
+                var textHtml = escapeHtml(rich && rich.text || '');
                 if (!PanelTooltip.buildItemRichHtml) {
-                    return rawHtml && PanelTooltip.convertAS2Html
-                        ? PanelTooltip.convertAS2Html(rawHtml) : (rawHtml || textHtml);
+                    var combinedHtml = introHtml + descHtml;
+                    return combinedHtml && PanelTooltip.convertAS2Html
+                        ? PanelTooltip.convertAS2Html(combinedHtml) : (combinedHtml || textHtml);
                 }
                 var options = {
                     iconHtml:PanelTooltip.dynamicIconHtml ? PanelTooltip.dynamicIconHtml(value.itemName) : '',
                     iconUrl:PanelTooltip.staticIconUrl ? PanelTooltip.staticIconUrl(value.itemName) : '',
-                    descHTML:rich && rich.descHTML ? String(rich.descHTML) : '',
+                    descHTML:descHtml,
                     rootClass:'equipment-tuning-tooltip',
                     layoutType:PanelTooltip.inferLayoutType
                         ? PanelTooltip.inferLayoutType(rich && (rich.itemType || rich.itemUse) || 'material') : ''
                 };
-                if (rich && rich.introHTML) options.introHTML = String(rich.introHTML);
-                else if (rawHtml) options.introHTML = rawHtml;
+                if (introHtml) options.introHTML = introHtml;
                 else options.introWebHTML = textHtml;
                 return PanelTooltip.buildItemRichHtml(options);
             },

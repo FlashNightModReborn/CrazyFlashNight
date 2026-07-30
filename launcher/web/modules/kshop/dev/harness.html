@@ -148,8 +148,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/inventory-workbench-header.js"></script>
 <script src="modules/inventory-workbench-quick-transfer.js"></script>
 <script src="modules/inventory-workbench-owned-view.js"></script>
+<script src="modules/inventory-workbench-feature-loader.js"></script>
 <script src="modules/inventory-tuning-scope.js"></script>
 <script src="modules/inventory-storage-workbench.js"></script>
+<script src="modules/crafting-inventory-organizer.js"></script>
 <script src="modules/inventory-workbench.js"></script>
 <script>
 (function() {
@@ -2497,7 +2499,14 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && tuningRestoredState.coordinator.requests[0].filterKey === 'all'
                 && !tuningRestoredState.tuningScope.hasReturnState
                 && tuningReturnGrid.scrollTop === tuningReturnScroll
-                && document.activeElement.getAttribute('data-workbench-key') === tuningReturnKey);
+                && document.activeElement.getAttribute('data-workbench-key') === tuningReturnKey,
+            JSON.stringify({
+                request:tuningRestoredState.coordinator.requests[0],
+                hasReturnState:tuningRestoredState.tuningScope.hasReturnState,
+                scroll:[tuningReturnGrid.scrollTop,tuningReturnScroll],
+                focus:document.activeElement && document.activeElement.getAttribute('data-workbench-key'),
+                expectedFocus:tuningReturnKey
+            }));
         Panels.close();
 
         await Host.openWorkbench(240);
@@ -2835,38 +2844,56 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         Panels.close();
 
         var returnedCraftingInit = null;
+        var craftingOrganizerHost = null;
+        var localCraftingReturnCount = 0;
         Panels.register('crafting', {
-            create:function() { return document.createElement('div'); },
-            onOpen:function(el, initData) { returnedCraftingInit = clone(initData || {}); }
+            create:function() {
+                craftingOrganizerHost = document.createElement('div');
+                return craftingOrganizerHost;
+            },
+            onOpen:function(el, initData) { returnedCraftingInit = clone(initData || {}); },
+            onRequestClose:function(reason) {
+                return CraftingInventoryOrganizer.requestClose(reason);
+            },
+            onClose:function() {
+                CraftingInventoryOrganizer.teardown();
+            }
         });
         async function openCraftingReturnWorkbench() {
+            if (Panels.getActive()) Panels.close();
             Host.reset();
             Host.activePanel = 'crafting';
             returnedCraftingInit = null;
-            Panels.open('workbench', {
-                mode:'runtime',
-                profile:'battlebox',
-                returnTo:{panel:'crafting',initData:{
-                    category:'化学生产',preferredRecipeIndex:3,preferredCraftCount:7
-                }}
+            localCraftingReturnCount = 0;
+            Panels.open('crafting', {
+                category:'化学生产',preferredRecipeIndex:3,preferredCraftCount:7
             });
-            return waitFor(function(){ return Panels.getActive() === 'workbench'
-                && InventoryWorkbench.debugState().coordinator.ready; }, 1000);
+            var mounted = CraftingInventoryOrganizer.mount(craftingOrganizerHost, {
+                kind:'crafting-organizer',
+                panel:'crafting',
+                onReturn:function() {
+                    localCraftingReturnCount += 1;
+                    craftingOrganizerHost.textContent = '合成已恢复';
+                }
+            });
+            if (!mounted) throw new Error('crafting organizer embed rejected');
+            return waitFor(function(){ return Panels.getActive() === 'crafting'
+                && CraftingInventoryOrganizer.debugState().storage.coordinator.ready; }, 1000);
         }
 
         await openCraftingReturnWorkbench();
-        var backdropReturnState = InventoryWorkbench.debugState().returnTarget;
+        var backdropReturnState = CraftingInventoryOrganizer.debugState();
         var backdropCloseBefore = Host.closeCount;
         Host.failNextCloseTransport = true;
         click('#panel-backdrop');
         await wait(20);
         assert('workbench-ui10a','合成子路由关闭 transport 失败时保持同一页面并允许重试',
-            Panels.getActive() === 'workbench'
+            Panels.getActive() === 'crafting'
                 && Host.closeCount === backdropCloseBefore
                 && Host.activePanel === 'crafting'
-                && InventoryWorkbench.debugState().hostOwner === 'crafting',
+                && CraftingInventoryOrganizer.debugState().ownerContext === 'crafting-organizer',
             JSON.stringify({active:Panels.getActive(),closeCount:Host.closeCount,
-                hostOwner:InventoryWorkbench.debugState().hostOwner}));
+                hostOwner:CraftingInventoryOrganizer.debugState().hostOwner}));
         click('#panel-backdrop');
         await waitFor(function(){ return !Panels.getActive()
             && Host.closeCount === backdropCloseBefore + 1; }, 500);
@@ -2874,16 +2901,16 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             return message.panel === 'crafting' && message.cmd === 'close';
         }).pop();
         assert('workbench-ui10b','合成子路由点击 backdrop 关闭真实 Host owner，不隐式返回也不伪造 workbench identity',
-            backdropReturnState && backdropReturnState.panel === 'crafting'
-                && !returnedCraftingInit && !Panels.getActive()
+            backdropReturnState.ownerContext === 'crafting-organizer'
+                && localCraftingReturnCount === 0 && !Panels.getActive()
                 && backdropCloseMessage
                 && Object.keys(backdropCloseMessage).sort().join('|') === 'cmd|panel|type'
                 && Host.rejectedCloseCount === 0,
-            JSON.stringify({returnState:backdropReturnState,initData:returnedCraftingInit,
+            JSON.stringify({returnState:backdropReturnState,returnCount:localCraftingReturnCount,
                 closeCount:Host.closeCount,closeMessage:backdropCloseMessage}));
 
         await openCraftingReturnWorkbench();
-        var escapeReturnState = InventoryWorkbench.debugState().returnTarget;
+        var escapeReturnState = CraftingInventoryOrganizer.debugState();
         var escapeCloseBefore = Host.closeCount;
         window.__emitBridge('panel_esc', {});
         await waitFor(function(){ return !Panels.getActive()
@@ -2892,12 +2919,12 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             return message.panel === 'crafting' && message.cmd === 'close';
         }).pop();
         assert('workbench-ui10c','合成子路由按 Esc 关闭真实 Host owner，不隐式返回也不发送空实例',
-            escapeReturnState && escapeReturnState.panel === 'crafting'
-                && !returnedCraftingInit && !Panels.getActive()
+            escapeReturnState.ownerContext === 'crafting-organizer'
+                && localCraftingReturnCount === 0 && !Panels.getActive()
                 && escapeCloseMessage
                 && Object.keys(escapeCloseMessage).sort().join('|') === 'cmd|panel|type'
                 && Host.rejectedCloseCount === 0,
-            JSON.stringify({returnState:escapeReturnState,initData:returnedCraftingInit,
+            JSON.stringify({returnState:escapeReturnState,returnCount:localCraftingReturnCount,
                 closeCount:Host.closeCount,closeMessage:escapeCloseMessage}));
 
         await openCraftingReturnWorkbench();
@@ -2914,16 +2941,19 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         await openCraftingReturnWorkbench();
         var localReturnCloseBefore = Host.closeCount;
-        var returnState = InventoryWorkbench.debugState();
+        var returnState = CraftingInventoryOrganizer.debugState();
         click('.inventory-return-crafting-btn');
-        await waitFor(function(){ return Panels.getActive() === 'crafting'; }, 500);
+        await waitFor(function(){ return Panels.getActive() === 'crafting'
+            && localCraftingReturnCount === 1; }, 500);
         assert('workbench-ui10e','只有显式“返回合成”恢复子路由 UI 意图，不关闭 Host overlay 或复用库存写状态',
-            returnState.returnTarget && returnState.returnTarget.panel === 'crafting'
+            returnState.ownerContext === 'crafting-organizer'
                 && returnedCraftingInit && returnedCraftingInit.category === '化学生产'
                 && returnedCraftingInit.preferredRecipeIndex === 3
                 && returnedCraftingInit.preferredCraftCount === 7
+                && localCraftingReturnCount === 1
                 && Host.closeCount === localReturnCloseBefore,
-            JSON.stringify({returnState:returnState.returnTarget,initData:returnedCraftingInit,closeCount:Host.closeCount}));
+            JSON.stringify({ownerContext:returnState.ownerContext,initData:returnedCraftingInit,
+                returnCount:localCraftingReturnCount,closeCount:Host.closeCount}));
         Panels.close();
 
         var mountThrowCleanup = 0;
@@ -2946,24 +2976,23 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             });
         });
         Host.reset();
-        Host.activePanel = 'crafting';
+        Host.activePanel = 'workbench';
         Panels.open('workbench', {
             profile:'battlebox',
-            returnTo:{panel:'crafting',initData:{
-                category:'化学生产',
-                preferredRecipeIndex:3,
-                preferredCraftCount:7
-            }}
+            view:'storage',
+            panelInstanceId:'panel.harness.mount-throw'
         });
         await wait(30);
         var mountThrowMessages = Host.sent.filter(function(message) {
             return message.type === 'panel' && message.cmd === 'close';
         });
         var mountThrowNode = document.querySelector('.lifecycle-mount-throw-probe');
-        assert('panels-lifecycle1','lazy mount throw 以嵌套 crafting owner 恰好一次 fail-closed，并清空视觉与活动状态',
+        assert('panels-lifecycle1','standalone workbench lazy mount throw 以 exact identity 恰好一次 fail-closed，并清空视觉与活动状态',
             mountThrowMessages.length === 1
-                && Object.keys(mountThrowMessages[0]).sort().join('|') === 'cmd|panel|type'
-                && mountThrowMessages[0].panel === 'crafting'
+                && Object.keys(mountThrowMessages[0]).sort().join('|') === 'cmd|panel|panelInstanceId|reason|type'
+                && mountThrowMessages[0].panel === 'workbench'
+                && mountThrowMessages[0].panelInstanceId === 'panel.harness.mount-throw'
+                && mountThrowMessages[0].reason === 'mount_failed'
                 && mountThrowCleanup === 1
                 && Panels.getActive() === null
                 && document.getElementById('panel-container').style.display === 'none'

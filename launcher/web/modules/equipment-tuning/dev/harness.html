@@ -71,7 +71,7 @@ function respond(message){var result=base(message);
     transaction++;var token=message.payload.expectedTuningToken,operation=token.split('.')[1],noOp=operation==='convert'&&slots[2].item.enhancementLevel===slots[3].item.enhancementLevel;
     if(!noOp){writeEpoch++;if(operation==='enhance'){slots[2].item.enhancementLevel=6;materialCount-=3}slots[2].slotLease='lease.2.'+(transaction+1)}
     Object.assign(result,{success:true,operation:operation,transactionId:'tx.'+transaction,noOp:noOp,before:{source:projection(2,slots[2].item.enhancementLevel)},after:{source:projection(2,slots[2].item.enhancementLevel)},materials:[],inventorySnapshots:[],snapshot:snapshot({payload:{source:{sourceKind:'inventory',containerId:'背包',slot:2,expectedLease:slots[2].slotLease}}})});
-  } else if(message.cmd==='tooltip')Object.assign(result,{success:true,candidateKey:message.payload.candidateKey,itemType:'收集品',itemUse:'材料',introHTML:'<b>权威候选说明</b><br>收集品 材料',descHTML:'用于改装的高等材料。<br>这是一段必须保留在主描述栏中的长材料说明。',html:'<b>权威候选说明</b><br>收集品 材料用于改装的高等材料。<br>这是一段必须保留在主描述栏中的长材料说明。',text:'权威候选说明'});
+  } else if(message.cmd==='tooltip')Object.assign(result,{success:true,candidateKey:message.payload.candidateKey,itemType:'收集品',itemUse:'材料',introHTML:'<b>权威候选说明</b><br>收集品 材料',descHTML:'用于改装的高等材料。<br>这是一段必须保留在主描述栏中的长材料说明。',text:'权威候选说明'});
   else if(message.cmd==='detach')Object.assign(result,{success:true});
   emit(result)
 }

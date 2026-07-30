@@ -124,8 +124,10 @@ var REQUIRED_FILES = [
     'launcher/web/modules/inventory-workbench-header.js',
     'launcher/web/modules/inventory-workbench-quick-transfer.js',
     'launcher/web/modules/inventory-workbench-owned-view.js',
+    'launcher/web/modules/inventory-workbench-feature-loader.js',
     'launcher/web/modules/inventory-tuning-scope.js',
     'launcher/web/modules/inventory-storage-workbench.js',
+    'launcher/web/modules/crafting-inventory-organizer.js',
     'launcher/web/modules/kshop-cart-controller.js',
     'launcher/web/modules/kshop-catalog-presenter.js',
     'launcher/web/modules/kshop-owned-inventory-presenter.js',
@@ -153,6 +155,7 @@ var REQUIRED_FILES = [
     'tools/test-workbench-profile.js',
     'tools/test-workbench-components.js',
     'tools/test-workbench-inspection-viewport.js',
+    'tools/test-inventory-workbench-lazy-closure.js',
     'tools/test-inventory-runtime.js',
     'tools/test-inventory-workbench-modules.js',
     'tools/test-inventory-workbench-preparation-menu.js',
@@ -775,6 +778,52 @@ if (inspectionViewport) {
         'WB034', 'inspection viewport needs a pure Node regression entry',
         'tools/test-workbench-inspection-viewport.js');
 }
+
+var shellRel = 'launcher/web/modules/workbench.js';
+var shellSource = exists(shellRel) ? read(shellRel) : '';
+var shellProfileRel = 'launcher/web/modules/workbench-profile.js';
+var shellProfileSource = exists(shellProfileRel) ? read(shellProfileRel) : '';
+var layoutProfiles = [
+    'catalog-decision',
+    'archive-reference',
+    'transfer-pair',
+    'library-action-strip',
+    'library-decision',
+    'character-build'
+];
+expect(/WorkbenchShellProfile\.requireProfile\(options\.profile\)/.test(shellSource)
+        && /setAttribute\(['"]data-profile['"],\s*profile\)/.test(shellSource)
+        && /DualPaneShell\.prototype\.setProfile\s*=\s*WorkbenchShellProfile\.setProfile/.test(shellSource)
+        && !/data-workbench-profile|function requireLayoutProfile/.test(shellSource),
+    'WB142', 'DualPaneShell must consume the single closed profile owner and project only data-profile',
+    shellRel);
+layoutProfiles.forEach(function (profile) {
+    expect(new RegExp("'" + profile + "'\\s*:\\s*true").test(shellProfileSource),
+        'WB143', 'closed profile owner is missing a canonical profile',
+        shellProfileRel, null, profile);
+    expect(css.indexOf('[data-profile="' + profile + '"]') !== -1,
+        'WB144', 'canonical profile has no shell-level CSS projection',
+        'launcher/web/css/workbench/profiles.css', null, profile);
+});
+[
+    'launcher/web/css/workbench/crafting.css',
+    'launcher/web/css/workbench/inventory.css',
+    'launcher/web/css/workbench/skills.css',
+    'launcher/web/css/workbench/skins.css',
+    'launcher/web/css/workbench/character-build.css',
+    'launcher/web/css/workbench/equipment-tuning.css'
+].forEach(function (rel) {
+    if (!exists(rel)) return;
+    var source = read(rel).replace(/\/\*[\s\S]*?\*\//g, '');
+    var rule = /([^{}]*\.workbench-body[^{}]*)\{([^{}]*)\}/g;
+    var match;
+    while ((match = rule.exec(source)) !== null) {
+        if (!/grid-template-(?:columns|rows)\s*:/.test(match[2])) continue;
+        finding('error', 'WB042',
+            'feature CSS must not own shell-level workbench grid templates',
+            rel, lineOf(source, match.index), match[1].trim().slice(0, 180));
+    }
+});
 [
     'launcher/web/modules/crafting/dev/harness.html',
     'launcher/web/modules/kshop/dev/harness.html',
@@ -812,8 +861,10 @@ var moduleThresholds = {
     'launcher/web/modules/character-build-view.js':760,
     'launcher/web/modules/character-build.js':550,
     'launcher/web/modules/inventory-tuning-scope.js':200,
-    'launcher/web/modules/inventory-storage-workbench.js':900,
+    'launcher/web/modules/inventory-storage-workbench.js':950,
     'launcher/web/modules/inventory-workbench-preparation-menu.js':440,
+    'launcher/web/modules/crafting-inventory-organizer.js':200,
+    'launcher/web/modules/inventory-workbench-feature-loader.js':180,
     'launcher/web/modules/inventory-workbench.js':550,
     'launcher/web/modules/npcshop.js':1000,
     'launcher/web/modules/workbench.js':1000
@@ -1004,26 +1055,39 @@ if (exists(registryRel)) {
         'modules/kshop-tooltip-presenter.js',
         'modules/kshop.js'
     ], 'WB022', 'KShop presenter modules must load before the facade', registryRel);
-    expectOrdered(lazyBlock('workbench'), [
+    var workbenchBootOrder = [
+        'modules/inventory-runtime.js',
+        'modules/inventory-ui.js',
+        'modules/inventory-workbench-config.js',
+        'modules/inventory-workbench-preparation-menu.js',
+        'modules/inventory-workbench-navigation.js',
+        'modules/inventory-workbench-header.js',
+        'modules/inventory-workbench-quick-transfer.js',
+        'modules/inventory-workbench-owned-view.js',
+        'modules/inventory-workbench-feature-loader.js',
+        'modules/inventory-storage-workbench.js',
+        'modules/inventory-workbench.js'
+    ];
+    expectOrdered(lazyBlock('workbench'), workbenchBootOrder,
+        'WB023', 'inventory workbench storage closure must load before the facade',
+        registryRel);
+    var tuningFeatureOrder = [
+        'modules/asset-timeline.js',
         'modules/dressup-doll-renderer.js',
         'modules/workbench-inspection-viewport.js',
         'modules/equipment-inspector.js',
+        'modules/equipment-tuning-runtime.js',
         'modules/equipment-tuning-model.js',
         'modules/equipment-tuning-decision-presenter.js',
         'modules/equipment-tuning-render.js',
-        'modules/inventory-workbench-config.js',
-        'modules/inventory-workbench-preparation-menu.js',
         'modules/equipment-tuning-confirmation.js',
         'modules/equipment-tuning-interaction.js',
         'modules/equipment-tuning-write-lifecycle.js',
         'modules/equipment-tuning-source-marker.js',
         'modules/equipment-tuning-view.js',
-        'modules/inventory-workbench-navigation.js',
-        'modules/inventory-workbench-header.js',
-        'modules/inventory-workbench-quick-transfer.js',
-        'modules/inventory-workbench-owned-view.js',
-        'modules/inventory-tuning-scope.js',
-        'modules/inventory-storage-workbench.js',
+        'modules/inventory-tuning-scope.js'
+    ];
+    var buildFeatureOrder = [
         'modules/character-build/character-build-mutation.js',
         'modules/character-build-session.js',
         'modules/character-build/character-build-action-view.js',
@@ -1039,9 +1103,25 @@ if (exists(registryRel)) {
         'modules/character-build/character-build-slot-transition.js',
         'modules/character-build/character-build-pose.js',
         'modules/character-build/character-build-projection.js',
-        'modules/character-build.js',
-        'modules/inventory-workbench.js'
-    ], 'WB023', 'inventory workbench feature modules must load before the facade', registryRel);
+        'modules/character-build.js'
+    ];
+    tuningFeatureOrder.concat(buildFeatureOrder).forEach(function (dependency) {
+        expect(lazyBlock('workbench').indexOf(dependency) === -1,
+            'WB136', 'inventory storage boot closure preloads a view-level feature dependency',
+            registryRel, null, dependency);
+    });
+    var featureLoaderSource = read('launcher/web/modules/inventory-workbench-feature-loader.js');
+    expectOrdered(featureLoaderSource, tuningFeatureOrder,
+        'WB137', 'inventory workbench tuning feature closure is incomplete or out of order',
+        'launcher/web/modules/inventory-workbench-feature-loader.js');
+    expectOrdered(featureLoaderSource, buildFeatureOrder,
+        'WB137', 'inventory workbench Character Build feature closure is incomplete or out of order',
+        'launcher/web/modules/inventory-workbench-feature-loader.js');
+    expect(featureLoaderSource.indexOf("Promise.reject(new Error('LazyLoader is unavailable'))") !== -1
+            && featureLoaderSource.indexOf('load returned a non-thenable') !== -1
+            && featureLoaderSource.indexOf('closure did not initialize') !== -1,
+        'WB138', 'inventory workbench feature loader must fail closed when its lazy closure is unavailable or incomplete',
+        'launcher/web/modules/inventory-workbench-feature-loader.js');
     expectOrdered(lazyBlock('crafting'), [
         'modules/dressup-doll-renderer.js',
         'modules/workbench-inspection-viewport.js',
@@ -1051,6 +1131,33 @@ if (exists(registryRel)) {
         'modules/crafting-runtime.js',
         'modules/crafting.js'
     ], 'WB035', 'crafting inspection consumers must load after the shared viewport', registryRel);
+    var craftingSource = read('launcher/web/modules/crafting.js');
+    expectOrdered(craftingSource, [
+        'modules/inventory-runtime.js',
+        'modules/inventory-ui.js',
+        'modules/inventory-workbench-config.js',
+        'modules/inventory-workbench-quick-transfer.js',
+        'modules/inventory-workbench-owned-view.js',
+        'modules/inventory-storage-workbench.js',
+        'modules/crafting-inventory-organizer.js'
+    ], 'WB139', 'crafting organizer child closure is out of order',
+        'launcher/web/modules/crafting.js');
+    expect(craftingSource.indexOf("Panels.open('workbench'") === -1,
+        'WB140', 'crafting organizer must remain a local child view, not a workbench panel alias',
+        'launcher/web/modules/crafting.js');
+    var workbenchConfigSource = read('launcher/web/modules/inventory-workbench-config.js');
+    var workbenchFacadeSource = read('launcher/web/modules/inventory-workbench.js');
+    var workbenchHeaderSource = read('launcher/web/modules/inventory-workbench-header.js');
+    expect(workbenchConfigSource.indexOf('resolveReturnTarget') === -1
+            && workbenchConfigSource.indexOf('hostOwner') === -1
+            && workbenchFacadeSource.indexOf('function returnToPanel(') === -1
+            && workbenchFacadeSource.indexOf('openReturnTarget(') === -1
+            && workbenchFacadeSource.indexOf('onReturnPanel') === -1
+            && workbenchHeaderSource.indexOf("'return-panel'") === -1
+            && workbenchHeaderSource.indexOf('options.returnTarget') === -1
+            && workbenchHeaderSource.indexOf('options.onReturnPanel') === -1,
+        'WB141', 'standalone inventory workbench retains a crafting-owner fallback or return-target alias',
+        'launcher/web/modules/inventory-workbench.js');
     expectOrdered(lazyBlock('npcshop'), [
         'modules/npcshop-secondary-pages.js',
         'modules/npcshop.js'

@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/物品栏/物品互动提示" itemID="6b2d3a00-00000001" lastModified="1785380000">
+  <timeline>
+    <DOMTimeline name="物品互动提示">
+      <layers>
+        <DOMLayer name="Script Layer" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" name="空" labelType="name" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="高亮" labelType="name" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="卸下" labelType="name" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" name="锁定" labelType="name" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Frame" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/物品栏/物品满级框">
+                  <transformationPoint><Point/></transformationPoint>
+                  <filters><GlowFilter blurX="8" blurY="8" color="#66FF66" strength="2"/></filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/物品栏/物品满级框">
+                  <transformationPoint><Point/></transformationPoint>
+                  <filters><GlowFilter blurX="8" blurY="8" color="#FF6633" strength="2"/></filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/物品栏/物品满级框">
+                  <transformationPoint><Point/></transformationPoint>
+                  <color><Color alphaMultiplier="0.55" redMultiplier="0.55" greenMultiplier="0.55" blueMultiplier="0.55"/></color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -4,7 +4,8 @@ var CraftingPanel = (function() {
     var _shellEl, _shell, _catalogView, _detailView, _catalogRenderer, _detailPresenter;
     var _mode = 'recipes', _materials = null, _materialRequestSeq = 0;
     var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
-    var _busy = false, _previewBusy = false, _organizerBusy = false, _needsReconcile = false, _needsRefresh = false, _generation = 0;
+    var _busy = false, _previewBusy = false, _organizerBusy = false, _organizerMounted = false;
+    var _needsReconcile = false, _needsRefresh = false, _generation = 0;
     var _previewFlight = null, _previewQueued = null, _checkpointRetryIntent = null;
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _craftableToggle = null, _tooltipCache = {};
     var _inspector = null, _tooltipScope = null;
@@ -14,6 +15,15 @@ var CraftingPanel = (function() {
     var _returnCharacterBuildButton = null, _returnNavigationTimer = null;
     var _panelInstanceId = '', _canReturnCharacterBuild = false;
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
+    var ORGANIZER_DEPS = [
+        'modules/inventory-runtime.js',
+        'modules/inventory-ui.js',
+        'modules/inventory-workbench-config.js',
+        'modules/inventory-workbench-quick-transfer.js',
+        'modules/inventory-workbench-owned-view.js',
+        'modules/inventory-storage-workbench.js',
+        'modules/crafting-inventory-organizer.js'
+    ];
     var _mux = new CraftingRuntime.RequestMux({
         send:function(message) { return Bridge.send(message); },
         timeoutMs:_config.requestTimeoutMs,
@@ -661,18 +671,87 @@ var CraftingPanel = (function() {
         var generation = _generation;
         return !!request('snapshot', {category:_category}, function(response) {
             if (generation !== _generation) return;
-            _organizerBusy = false;
             if (!response.success) {
+                _organizerBusy = false;
                 if (requiresReconcile(response)) {
                     _preview = null; clearPreviewCheckpoint(); _needsReconcile = true;
                 }
                 toast(errorMessage(response.error)); renderDetail(); refreshControls(); return;
             }
             _preview = null; clearPreviewCheckpoint();
-            Panels.open('workbench', {profile:'battlebox', returnTo:{panel:'crafting', initData:{
-                category:_category, preferredRecipeIndex:_selectedIndex, preferredCraftCount:_craftCount
-            }}});
+            loadOrganizer(generation);
         });
+    }
+
+    function loadOrganizer(generation) {
+        var pending = null;
+        try {
+            pending = typeof LazyLoader !== 'undefined' && LazyLoader
+                && typeof LazyLoader.load === 'function'
+                ? LazyLoader.load(ORGANIZER_DEPS) : null;
+        } catch (error) {
+            failOrganizerMount(error, generation);
+            return false;
+        }
+        if (!pending || typeof pending.then !== 'function') {
+            failOrganizerMount(new Error('organizer dependency load returned a non-thenable'), generation);
+            return false;
+        }
+        pending.then(function() {
+            if (generation !== _generation || !Panels.getActive
+                    || Panels.getActive() !== 'crafting') return;
+            suspendForOrganizer();
+            var mounted = typeof CraftingInventoryOrganizer !== 'undefined'
+                && CraftingInventoryOrganizer.mount(_shellEl, {
+                    kind:'crafting-organizer',
+                    panel:'crafting',
+                    onReturn:restoreFromOrganizer
+                });
+            if (!mounted) {
+                failOrganizerMount(new Error('organizer mount was rejected'), generation);
+                return;
+            }
+            _organizerMounted = true;
+            _organizerBusy = false;
+        }).catch(function(error) {
+            failOrganizerMount(error, generation);
+        });
+        return true;
+    }
+
+    function suspendForOrganizer() {
+        disposeFilterNavigator();
+        if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
+        if (_detailPresenter) { _detailPresenter.destroy(); _detailPresenter = null; }
+        if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
+        if (_shell) { _shell.destroy(); _shell = null; }
+        Workbench.clearElement(_shellEl);
+    }
+
+    function restoreFromOrganizer() {
+        if (!_organizerMounted && !_organizerBusy) return false;
+        _organizerMounted = false;
+        _organizerBusy = false;
+        _preview = null;
+        clearPreviewCheckpoint();
+        _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+            ? PanelTooltip.createScope('crafting') : null;
+        buildDOM();
+        refreshSnapshot(_selectedIndex, _craftCount);
+        return true;
+    }
+
+    function failOrganizerMount(error, generation) {
+        if (generation !== _generation) return;
+        _organizerBusy = false;
+        _organizerMounted = false;
+        if (typeof console !== 'undefined' && console.error) {
+            console.error('[CraftingPanel] organizer mount failed:', error);
+        }
+        toast('背包整理资源加载失败，合成工作台已安全关闭。');
+        try { Bridge.send({type:'panel', cmd:'close', panel:'crafting'}); }
+        catch (_) {}
+        Panels.close();
     }
 
     function findRecipe(index) {
@@ -739,7 +818,8 @@ var CraftingPanel = (function() {
         var preferredCount = initData && Number(initData.preferredCraftCount);
         _snapshot = null; _preview = null; clearPreviewCheckpoint(); _selectedIndex = -1; _busy = false; _previewBusy = false;
         _previewFlight = null; _previewQueued = null;
-        _craftCount = 1; _organizerBusy = false; _needsReconcile = false; _needsRefresh = false; _tooltipCache = {}; buildDOM();
+        _craftCount = 1; _organizerBusy = false; _organizerMounted = false;
+        _needsReconcile = false; _needsRefresh = false; _tooltipCache = {}; buildDOM();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
         _mux.openSession();
@@ -754,10 +834,14 @@ var CraftingPanel = (function() {
             _returnNavigationTimer = null;
         }
         _previewFlight = null; _previewQueued = null;
+        if (_organizerMounted && typeof CraftingInventoryOrganizer !== 'undefined') {
+            CraftingInventoryOrganizer.teardown();
+        }
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         if (_shell) _shell.closeModal();
         _inspector = null;
-        _busy = false; _previewBusy = false; _organizerBusy = false; _snapshot = null; _preview = null;
+        _busy = false; _previewBusy = false; _organizerBusy = false;
+        _organizerMounted = false; _snapshot = null; _preview = null;
         clearPreviewCheckpoint(); _needsReconcile = false; _needsRefresh = false;
         disposeFilterNavigator(); _craftableToggle = null;
         if (_materials) { _materials.destroy(); _materials = null; }
@@ -776,6 +860,9 @@ var CraftingPanel = (function() {
     }
 
     function requestClose(reason) {
+        if (_organizerMounted && typeof CraftingInventoryOrganizer !== 'undefined') {
+            return CraftingInventoryOrganizer.requestClose(reason);
+        }
         if (_shell && _shell.hasModal()) {
             return _shell.closeModal(typeof reason === 'string' ? reason : 'close');
         }
@@ -913,6 +1000,7 @@ var CraftingPanel = (function() {
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, organizerBusy:_organizerBusy,
+        organizerMounted:_organizerMounted,
         needsReconcile:_needsReconcile, needsRefresh:_needsRefresh,
         previewFlight:_previewFlight ? {recipeIndex:_previewFlight.recipeIndex, craftCount:_previewFlight.craftCount} : null,
         previewQueued:_previewQueued ? {recipeIndex:_previewQueued.recipeIndex, craftCount:_previewQueued.craftCount} : null,

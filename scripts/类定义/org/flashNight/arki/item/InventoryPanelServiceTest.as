@@ -208,26 +208,23 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && captured.indexOf('"view":"build"') >= 0
                 && captured.indexOf('"source":"agent_control"') >= 0
                 && captured.indexOf('"openRequestId"') < 0,
-            "agent_control 旧角色构筑入口缺省 nonce 时保持兼容且不合成字段");
+            "agent_control 受控直达无需 nonce 且不合成字段");
         var nativeHudLegacyBuildOpened:Boolean =
             InventoryPanelService.requestOpenWorkbench({
                 profile:"battlebox",
                 view:"build",
                 source:"nativehud_equipment"
             });
-        assertTrue(nativeHudLegacyBuildOpened && sendCount == 4
-                && captured.indexOf('"openRequestId"') < 0,
-            "旧 Host 的 nativehud_equipment 角色构筑请求缺省 nonce 时 AS2 保持发送兼容");
+        assertTrue(!nativeHudLegacyBuildOpened && sendCount == 3,
+            "nativehud_equipment 角色构筑缺 nonce 时 fail-closed");
         var nativeHudLegacyStorageOpened:Boolean =
             InventoryPanelService.requestOpenWorkbench({
                 profile:"battlebox",
                 view:"storage",
                 source:"nativehud_equipment"
             });
-        assertTrue(nativeHudLegacyStorageOpened && sendCount == 5
-                && captured.indexOf('"view":"storage"') >= 0
-                && captured.indexOf('"openRequestId"') < 0,
-            "nativehud_equipment 非 build 请求缺省 nonce 时仍按普通工作台入口发送");
+        assertTrue(!nativeHudLegacyStorageOpened && sendCount == 3,
+            "nativehud_equipment 非 build tuple 直接拒绝");
         var validOpenRequestId:String =
             "workbench.open.Valid_1-2~3";
         for (var validNonceIndex:Number =
@@ -243,7 +240,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 source:"nativehud_equipment",
                 openRequestId:validOpenRequestId
             });
-        assertTrue(nativeHudBuildOpened && sendCount == 6
+        assertTrue(nativeHudBuildOpened && sendCount == 4
                 && captured.indexOf('"profile":"battlebox"') >= 0
                 && captured.indexOf('"view":"build"') >= 0
                 && captured.indexOf(
@@ -258,7 +255,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 source:"nativehud_equipment_tuning",
                 openRequestId:validOpenRequestId
             });
-        assertTrue(nativeHudTuningOpened && sendCount == 7
+        assertTrue(nativeHudTuningOpened && sendCount == 5
                 && captured.indexOf('"profile":"battlebox"') >= 0
                 && captured.indexOf('"view":"tuning"') >= 0
                 && captured.indexOf(
@@ -297,7 +294,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && !rejectedNearTuningView
                 && !rejectedNearTuningProfile
                 && !rejectedNearTuningSource
-                && sendCount == 7,
+                && sendCount == 5,
             "生产调制 opener 缺 nonce 或 source/profile/view 近似 tuple 都零发送");
         var rejectedStorageOpenRequestId:Boolean =
             InventoryPanelService.requestOpenWorkbench({
@@ -323,7 +320,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(!rejectedStorageOpenRequestId
                 && !rejectedTuningOpenRequestId
                 && !rejectedAgentOpenRequestId
-                && sendCount == 7,
+                && sendCount == 5,
             "openRequestId 只允许两个 nativehud 精确 tuple，其他组合零发送");
         var tooLongOpenRequestId:String =
             validOpenRequestId + "x";
@@ -375,7 +372,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && !rejectedWhitespaceOpenRequestId
                 && !rejectedSlashOpenRequestId
                 && !rejectedLongOpenRequestId
-                && sendCount == 7,
+                && sendCount == 5,
             "显式 openRequestId 拒绝非字符串、空值、非法字符与 161 字符超长值且零发送");
         readinessRoot.gameworld = null;
         var rejectedNotReadyBuild:Boolean =
@@ -399,7 +396,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(!rejectedNotReadyBuild
                 && storageWhileBuildNotReady
                 && tuningWhileBuildNotReady
-                && sendCount == 9,
+                && sendCount == 7,
             "build readiness 失败零发送，且 storage/tuning 准入不受影响");
         var rejected:Boolean = InventoryPanelService.requestOpenWorkbench({profile: "仓库"});
         var rejectedView:Boolean = InventoryPanelService.requestOpenWorkbench({profile:"warehouse", view:"editor"});
@@ -432,7 +429,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && !rejectedMissingBuildSource
                 && !rejectedNearBuildSource
                 && !rejectedPaddedBuildSource
-                && sendCount == 9,
+                && sendCount == 7,
             "build 仍拒绝非法 profile/view、缺 source、前缀/尾空格及白名单外 source");
 
         CharacterBuildService.testOnlyReset();

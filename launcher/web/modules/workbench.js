@@ -78,7 +78,6 @@
         WARNING: 'warning',
         ERROR: 'error',
         DISCONNECTED: 'disconnected',
-        // 遗留同义词
         BUSY: 'busy'
     };
     var _validStates = [
@@ -161,10 +160,10 @@
         const profile = WorkbenchShellProfile.requireProfile(options.profile);
         this._views = {};
         this._defaults = { L: null, R: null };
+        this._profile = profile;
         this._root = makeElement('div', 'workbench-shell');
         this._root.setAttribute('data-workbench-version', '1');
         this._root.setAttribute('data-profile', profile);
-        this._profile = profile;
 
         this._header = makeElement('header', 'workbench-header');
         var identity = makeElement('div', 'workbench-identity');
@@ -769,12 +768,7 @@
     GridContainerView.prototype.exportOffer = function(item, hit) { return this.adapter.exportOffer(item, hit); };
     GridContainerView.prototype.probeAccept = function(offer, hit) { return this.adapter.probeAccept(offer, hit); };
 
-    /**
-     * Shared item grid primitive. Wraps GridContainerView/ContainerViewAdapter
-     * and adds layoutMode support (full/compact) by toggling the
-     * `item-grid-compact` class on the grid root. Panels can persist the mode
-     * per panel id through localStorage.
-     */
+    /** Shared item grid with full/compact density persisted per panel. */
     function ItemGrid(options) {
         options = options || {};
         this.layoutMode = options.layoutMode || 'full';
@@ -887,12 +881,7 @@
         return group;
     };
 
-    /**
-     * One density state for every grid owned by a panel. Targets may be an
-     * ItemGrid, GridRenderer, view, or raw grid element. Registering a target
-     * immediately applies the current mode, so late-created subviews stay in
-     * sync without panel-specific applyLayoutMode loops.
-     */
+    /** Synchronizes one density state across all current and late-created panel grids. */
     function GridDensityController(options) {
         options = options || {};
         this.panelId = String(options.panelId || 'default');

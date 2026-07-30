@@ -171,10 +171,7 @@ onClipEvent(load){
 	var opened = _root.gameCommands != undefined
 		&& _root.gameCommands.openInventoryWorkbench != undefined
 		&& _root.gameCommands.openInventoryWorkbench({profile:"warehouse", source:"dormitory"});
-	if (!opened && _root.仓库名称 != "仓库") {
-		_root.仓库名称 = "仓库";
-		_root.物品UI函数.刷新仓库图标(_root.物品栏.仓库, 0);
-	}
+	if (!opened) _root.发布消息("仓库面板暂时不可用");
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

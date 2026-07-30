@@ -764,7 +764,6 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         _rendererDiagnostics = [];
         runRenderer(r, "技能系统投影Hero", "hero");
         runRenderer(r, "技能系统投影快捷栏", "quick_slot");
-        runRenderer(r, "技能系统投影旧列表", "legacy_list");
     }
 
     /**

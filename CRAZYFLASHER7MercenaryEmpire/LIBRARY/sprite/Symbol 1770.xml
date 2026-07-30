@@ -56,15 +56,14 @@ _root.全部翻译(this);
 	if (_root.gameworld[当前NPC].可学的技能 != undefined)
 	{
 		var 教师对象 = _root.gameworld[当前NPC];
-		var 打开结果 = _root.openSkillTrainer(教师对象, "world_skill_trainer");
+		var 打开结果 = {success:false, opened:false};
+		if (typeof _root.openSkillTrainer == "function")
+		{
+			打开结果 = _root.openSkillTrainer(教师对象, "world_skill_trainer");
+		}
 		if (!打开结果.success || !打开结果.opened)
 		{
-			_root.学习技能界面.教师对象 = 教师对象;
-			_root.学习技能界面.可学的技能 = 教师对象.可学的技能;
-			_root.学习技能界面.排列技能图标();
-			_root.学习技能界面._visible = 1;
-			_root.物品栏界面.gotoAndStop("技能");
-			_root.物品栏界面._visible = 1;
+			_root.发布消息("技能面板暂时不可用");
 		}
 	}
 	else
@@ -135,13 +134,19 @@ _root.全部翻译(this);
 	if (NPC对象.物品栏 != undefined)
 	{
 		var opened = false;
+		var shopId = String(NPC对象.NPC商店检索名);
+		var NPC商店服务 = _root.UI系统 == undefined ? undefined : _root.UI系统.NPC商店WebView;
+		if (shopId == "" && NPC商店服务 != undefined && NPC商店服务.resolveShopIdByCatalog != undefined)
+		{
+			shopId = NPC商店服务.resolveShopIdByCatalog(NPC对象.物品栏);
+		}
 		if (_root.gameCommands != undefined && _root.gameCommands["openNpcShop"] != undefined)
 		{
-			opened = _root.gameCommands["openNpcShop"]({shopId:String(NPC对象.NPC商店检索名), source:"world_npc_dialogue"});
+			opened = shopId != "" && _root.gameCommands["openNpcShop"]({shopId:shopId, source:"world_npc_dialogue"});
 		}
 		if (!opened)
 		{
-			_root.物品UI函数.刷新商店图标(NPC对象.物品栏);
+			_root.发布消息("商店面板暂时不可用");
 		}
 	}
 	else

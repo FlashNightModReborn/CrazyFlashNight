@@ -50,7 +50,6 @@ _root.__boot.f41_2 = function() {
     #include "../展现/UI交互/UI交互_lsy_物品栏UI.as"
 };
 _root.__boot.f41_3 = function() {
-    #include "../展现/UI交互/UI交互_lsy_物品栏UI_强化与样品栏.as"
 };
 _root.__boot.f41_4 = function() {
     #include "../展现/UI交互/UI交互_lsy_任务栏UI.as"

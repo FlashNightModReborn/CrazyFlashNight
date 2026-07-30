@@ -74,6 +74,16 @@ window.Panels=(function(){var specs={},active=null,lastOpen=null;return{
   close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null},getActive:function(){return active},lastOpen:function(){return lastOpen},_specs:specs
 }})();
 Panels.register('workbench',{create:function(){var node=document.createElement('div');node.className='workbench-route-stub';return node},onOpen:function(){},onClose:function(){}});
+window.__organizerMount=null;window.__organizerDeps=[];
+window.LazyLoader={load:function(deps){window.__organizerDeps=deps.slice();return Promise.resolve()}};
+window.CraftingInventoryOrganizer={
+  mount:function(host,context){
+    window.__organizerMount={host:host,context:context};
+    var node=document.createElement('div');node.className='embedded-organizer-stub';host.appendChild(node);return true
+  },
+  teardown:function(){return true},
+  requestClose:function(){return false}
+};
   var money=1000,materials=2,commitCount=0;window.__specialWeaponMode='';
 function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
 function availability(index){
@@ -749,13 +759,26 @@ try{
   document.querySelectorAll('.crafting-recipe-card')[1].click();
   await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('测试药剂')>=0});
   var routedQuantity=document.querySelector('.crafting-quantity-inputs'),routedPlus=quantityButton('增加 1'),routeRafBaseline=__rafStats.active;
-  var snapshotsBeforeRoute=__sent.filter(function(x){return x.cmd==='snapshot'}).length;document.querySelector('.crafting-organizer-btn').click();await wait();
-  var route=Panels.lastOpen();ok('organizer revokes token then routes to battlebox',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshotsBeforeRoute+1&&Panels.getActive()==='workbench'&&route.init.profile==='battlebox'&&route.init.returnTo.initData.preferredRecipeIndex===1);
+  var snapshotsBeforeRoute=__sent.filter(function(x){return x.cmd==='snapshot'}).length;document.querySelector('.crafting-organizer-btn').click();await wait();await wait();
+  ok('organizer revokes token then mounts an explicit crafting-owned child route',
+    __sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshotsBeforeRoute+1
+      &&Panels.getActive()==='crafting'
+      &&__organizerMount&&__organizerMount.context.kind==='crafting-organizer'
+      &&__organizerMount.context.panel==='crafting'
+      &&__organizerDeps.indexOf('modules/crafting-inventory-organizer.js')>=0
+      &&__organizerDeps.indexOf('modules/inventory-storage-workbench.js')>=0
+      &&__organizerDeps.indexOf('modules/inventory-workbench.js')<0
+      &&__organizerDeps.indexOf('modules/equipment-tuning-view.js')<0);
   var previewsAfterRoute=__sent.filter(function(x){return x.cmd==='preview'}).length;routedPlus.click();await wait();
-  ok('destroyed detail presenter releases quantity listeners and detached DOM',
-    !routedQuantity.isConnected&&__sent.filter(function(x){return x.cmd==='preview'}).length===previewsAfterRoute
+  ok('embedded organizer destroys the recipe detail presenter and its detached quantity listeners',
+    !routedQuantity.isConnected
+      &&__sent.filter(function(x){return x.cmd==='preview'}).length===previewsAfterRoute
       &&CraftingPanel.debugState().detail===null);
-  ok('rebuild and route cleanup releases observers and animation frames',
+  ok('local organizer retains only the crafting shell observer',
+    __resizeObserverStats.active===1&&__rafStats.active<=routeRafBaseline,
+    JSON.stringify({resize:__resizeObserverStats,raf:__rafStats,baseline:routeRafBaseline}));
+  Panels.close();await wait();
+  ok('route cleanup releases every observer and animation frame',
     __resizeObserverStats.active===0&&__rafStats.active<=routeRafBaseline,
     JSON.stringify({resize:__resizeObserverStats,raf:__rafStats,baseline:routeRafBaseline}));
   var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)

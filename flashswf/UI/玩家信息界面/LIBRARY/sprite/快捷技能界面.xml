@@ -28,7 +28,7 @@ function 刷新技能等级显示()
 
 function 取消装备技能(编号)
 {
-	var 卸载结果 = _root.legacySkillUnequip(编号);
+	var 卸载结果 = _root.quickSkillUnequip(编号);
 	if (!卸载结果.success)
 	{
 		_root.发布消息(_root.获得翻译("技能卸载失败") + "：" + 卸载结果.error);

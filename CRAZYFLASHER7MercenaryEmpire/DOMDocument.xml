@@ -551,14 +551,8 @@
           <Include href="import/UI组件/素材库-基地特殊UI.xml" itemID="67877020-00001f11" lastModified="1736929344"/>
           <Include href="import/UI组件/图片容器.xml" itemID="67363938-00000d15" lastModified="1731651812"/>
           <Include href="import/UI组件/玩家信息界面.xml" itemID="6651fab3-00001a7e" lastModified="1716650227"/>
-          <Include href="import/UI组件/物品改装界面.xml" itemID="6873700c-00000814" lastModified="1752395831"/>
-          <Include href="import/UI组件/物品图标.xml" itemID="659d38e8-0000310c" lastModified="1735117398"/>
-          <Include href="import/UI组件/新版仓库界面.xml" itemID="676fa4b6-0000094c" lastModified="1735369947"/>
-          <Include href="import/UI组件/新版商店界面.xml" itemID="676edc2a-00000978" lastModified="1735318643"/>
-          <Include href="import/UI组件/新版物品栏界面.xml" itemID="676bc98a-00000892" lastModified="1749362406"/>
           <Include href="import/UI组件/修改工具界面.xml" itemID="6749becf-0000094f" lastModified="1732886280"/>
           <Include href="import/UI组件/选关界面.xml" itemID="663b3b17-00000ddd" lastModified="1715157863"/>
-          <Include href="import/UI组件/资源箱界面.xml" itemID="684526b9-00000a86" lastModified="1749362422"/>
           <Include href="import/地图库-禁区.xml" loadImmediate="false" itemID="659d5b51-000067a5" lastModified="1752118761"/>
           <Include href="import/地图库-外部地图.xml" loadImmediate="false" itemID="65c79a79-00000dc4" lastModified="1780400005"/>
           <Include href="import/关卡地图/wuxianguotu_1.xml" itemID="659b414b-00000b2a" lastModified="1704673709"/>
@@ -760,8 +754,6 @@
           <Include href="sprite/Symbol 1654.xml" loadImmediate="false" itemID="6597607e-000009bf" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1672.xml" loadImmediate="false" itemID="6597607e-000009c3" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1770.xml" loadImmediate="false" itemID="6597607e-000009f7" lastModified="1747330625"/>
-          <Include href="sprite/Symbol 1775.xml" loadImmediate="false" itemID="6597607e-000009f9" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 1779.xml" loadImmediate="false" itemID="6597607e-000009fb" lastModified="1740678943"/>
           <Include href="sprite/Symbol 1792.xml" loadImmediate="false" itemID="6597607e-00000a08" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2224.xml" loadImmediate="false" itemID="6597607e-00000ad2" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2396.xml" loadImmediate="false" itemID="6597607e-00000b40" lastModified="1737624389"/>
@@ -5294,44 +5286,6 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="物品栏界面" color="#AEF0A1" parentLayerIndex="20" autoNamed="false" visible="false">
-                         <frames>
-                              <DOMFrame index="0" duration="130" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/UI组件/新版物品栏界面" name="物品栏界面" centerPoint3DX="790" centerPoint3DY="265.95">
-                                             <matrix>
-                                                  <Matrix a="0.999984741210938" d="0.999984741210938" tx="672" ty="100"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="购买物品界面" color="#EC5A72" parentLayerIndex="20" autoNamed="false" visible="false">
-                         <frames>
-                              <DOMFrame index="0" duration="130" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/UI组件/新版商店界面" name="购买物品界面" centerPoint3DX="454" centerPoint3DY="265.95">
-                                             <matrix>
-                                                  <Matrix tx="336" ty="100"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
                     <DOMLayer name="平板电脑界面" color="#99B8ED" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
@@ -5453,25 +5407,6 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="仓库界面" color="#F2AAC2" parentLayerIndex="20" autoNamed="false" visible="false">
-                         <frames>
-                              <DOMFrame index="0" duration="130" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/UI组件/新版仓库界面" name="仓库界面" centerPoint3DX="227.15" centerPoint3DY="170.6">
-                                             <matrix>
-                                                  <Matrix tx="109.15" ty="47.65"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
                     <DOMLayer name="委托任务界面" color="#27F8E8" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
@@ -5498,28 +5433,6 @@ on (rollOut) {
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="学习技能界面" color="#A17585" parentLayerIndex="20" autoNamed="false" visible="false">
-                         <frames>
-                              <DOMFrame index="0" duration="130" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 1779" name="学习技能界面" centerPoint3DX="468" centerPoint3DY="285.95">
-                                             <matrix>
-                                                  <Matrix tx="350" ty="120"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <filters>
-                                                  <AdjustColorFilter/>
-                                             </filters>
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>

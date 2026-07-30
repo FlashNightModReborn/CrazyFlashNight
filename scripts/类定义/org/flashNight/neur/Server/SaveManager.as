@@ -85,12 +85,9 @@ class org.flashNight.neur.Server.SaveManager {
      *
      * == 已审计路径（有 dirtyMark setter）==
      *   - scripts/通信/通信_鸡蛋_任务系统.as:135 → 修复错位的任务存档 末尾标脏
-     *   - scripts/展现/UI交互/UI交互_lsy_物品栏UI.as:149 / 230 → 购买/出售
-     *   - scripts/展现/UI交互/UI交互_lsy_物品栏UI_强化与样品栏.as:1140 / 1415 → 批量样品栏写入
      *   - scripts/类定义/.../EnemyKilledEventComponent.as:59 → 击杀统计更新
      *   - scripts/类定义/.../ItemUtil.as:218 / 246 / 254 → moveItem 三态（背包/装备栏/药剂栏迁移）
-     *   - scripts/类定义/.../itemIcon/InventoryIcon.as:194 / 308 / 320 → 物品图标拖拽/丢弃
-     *   - scripts/类定义/.../itemIcon/EquipmentIcon.as:33 → 装备图标交互
+     *   - NPC 商店、双栏工作台、装备操作已迁入各 Web PanelService 的事务提交路径
      *
      * == 补标路径（Plan A 本轮新增 dirtyMark = true）==
      *   - scripts/类定义/.../ItemUtil.as:516 (acquire return 前)

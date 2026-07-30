@@ -736,7 +736,7 @@ namespace Launcher.Tests.Tasks
                         ["containerId"] = "背包",
                         ["slot"] = 7,
                         ["expectedLease"] =
-                            "legacy.lease"
+                            "invalid.lease"
                     },
                     new JObject
                     {
@@ -918,7 +918,7 @@ namespace Launcher.Tests.Tasks
                 JObject request =
                     Request(
                         "preview",
-                        "tune.convert.legacy.target",
+                        "tune.convert.invalid.target",
                         "convert");
                 ((JObject)request["payload"][
                     "target"]).Remove(
@@ -1657,7 +1657,6 @@ namespace Launcher.Tests.Tasks
             response["descHTML"] = "候选说明";
             response["itemType"] = "收集品";
             response["itemUse"] = "材料";
-            response["html"] = "<b>候选</b>候选说明";
             response["text"] = "候选";
             return response;
         }

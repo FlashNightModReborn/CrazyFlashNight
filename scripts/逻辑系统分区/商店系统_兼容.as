@@ -1170,7 +1170,7 @@ _root.gameCommands["openNpcShop"] = function(params):Boolean {
     if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
     var source:String = params.source == undefined ? "world_npc" : String(params.source);
     if (source != "world_npc" && source != "world_npc_dialogue"
-            && source != "tablet_contacts" && source != "legacy_shop_refresh") source = "world_npc";
+            && source != "tablet_contacts" && source != "npc_shop_refresh") source = "world_npc";
     var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build(
         "npcshop",
         source,

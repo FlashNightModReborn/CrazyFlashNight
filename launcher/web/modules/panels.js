@@ -18,7 +18,6 @@ var Panels = (function() {
     var _registrationDecorators = {};
     var _active = null;
     var _activePanelInstanceId = null;
-    var _activeHostOwner = null;
     var _container, _backdrop, _content;
     // 所有生产 Panel 共用的最低资源门：物品 / 装备 / 奖励图标 manifest。
     // icons.js 本身是 boot 脚本，但 manifest 是异步加载；若不在生命周期层拦住首次 open，
@@ -34,22 +33,7 @@ var Panels = (function() {
         return typeof value === 'string' && value ? value : '';
     }
 
-    function isNestedCraftingOrganizer(id, initData) {
-        var target = initData && initData.returnTo;
-        return id === 'workbench'
-            && !readPanelInstanceId(initData)
-            && initData.profile === 'battlebox'
-            && (!initData.view || initData.view === 'storage')
-            && target && target.panel === 'crafting'
-            && target.initData
-            && typeof target.initData.category === 'string'
-            && !!target.initData.category;
-    }
-
     function panelCloseMessage(id, initData, reason) {
-        if (isNestedCraftingOrganizer(id, initData)) {
-            return {type:'panel', cmd:'close', panel:'crafting'};
-        }
         var closeMessage = {type:'panel', cmd:'close', panel:id};
         if (id === 'skills') {
             closeMessage.panelInstanceId = readPanelInstanceId(initData);
@@ -64,8 +48,7 @@ var Panels = (function() {
 
     function hostOwnsPanelMount(id, initData) {
         return id === 'loot' || id === 'workbench' || id === 'skills'
-            || id === 'crafting' || id === 'kshop'
-            || isNestedCraftingOrganizer(id, initData);
+            || id === 'crafting' || id === 'kshop';
     }
 
     function safeBridgeSend(message, context) {
@@ -177,8 +160,6 @@ var Panels = (function() {
     function _doOpen(id, initData) {
         if (_active === id) {
             _activePanelInstanceId = readPanelInstanceId(initData);
-            _activeHostOwner = isNestedCraftingOrganizer(id, initData)
-                ? 'crafting' : id;
             var activePanel = _registry[id];
             var rebindAccepted = true;
             try {
@@ -238,8 +219,6 @@ var Panels = (function() {
         }
         _active = id;
         _activePanelInstanceId = readPanelInstanceId(initData);
-        _activeHostOwner = isNestedCraftingOrganizer(id, initData)
-            ? 'crafting' : id;
         setTimeout(function() {
             if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
         }, 50);
@@ -258,7 +237,6 @@ var Panels = (function() {
         if (_content) _content.removeAttribute('data-panel');
         _active = null;
         _activePanelInstanceId = null;
-        _activeHostOwner = null;
         safeCleanupCallback(panel, 'onClose', 'rejected mount for ' + id);
         sendMountFailureClose(id, initData, 'mount_failed');
     }
@@ -381,7 +359,6 @@ var Panels = (function() {
         _content.removeAttribute('data-panel');
         _active = null;
         _activePanelInstanceId = null;
-        _activeHostOwner = null;
         // onClose：任何关闭路径（C# close / finishClose / 切换面板）都要触发，
         // 用于 observer/listener/rAF 清理。onForceClose 仍在 force_close 分支额外触发，
         // 语义窄化为"C# 强关时的状态复位"。
@@ -444,8 +421,7 @@ var Panels = (function() {
         else if (data.cmd === 'force_close') {
             var targetsWorkbench = data && data.panel === 'workbench';
             var activeWorkbench = _active === 'workbench';
-            var activeCapabilityWorkbench = activeWorkbench
-                && _activeHostOwner === 'workbench';
+            var activeCapabilityWorkbench = activeWorkbench;
             var pendingWorkbench = _pendingOpen && _pendingOpen.id === 'workbench';
             // A generic Host disconnect still belongs to an already-mounted ordinary panel.
             // close() also cancels any pending replacement so it cannot reopen after the fault.

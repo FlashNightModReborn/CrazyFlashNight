@@ -68,13 +68,6 @@ _root.gameCommands["togglePause"] = function() {
     }
 };
 
-_root.gameCommands["warehouse"] = function() {
-    if (_root.仓库名称 != "后勤战备箱") {
-        _root.仓库名称 = "后勤战备箱";
-        _root.物品UI函数.刷新仓库图标(_root.物品栏.战备箱, 0);
-    }
-};
-
 _root.gameCommands["toggleSettings"] = function() {
     if (_root.修改工具界面._visible || _root.isChallengeMode()) {
         _root.修改工具界面._visible = false;
@@ -194,11 +187,6 @@ _root.gameCommands["openMaterialUI"] = function(params) {
     if (!opened) {
         _root.发布消息("材料面板暂时不可用");
     }
-};
-
-_root.gameCommands["openEquipUI"] = function() {
-    _root.物品栏界面._visible = true;
-    _root.物品栏界面.gotoAndStop(_root.物品栏界面.界面);
 };
 
 _root.gameCommands["openSettings"] = function() {

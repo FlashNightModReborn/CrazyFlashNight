@@ -41,7 +41,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testWebCommitOperationMatrix();
         testTierProgression();
         testWebInstallModAndTooltip();
-        testLegacyDetachSemantics();
+        testDetachPolicySemantics();
         testFinalStateEventsAndBusyGuard();
         testStrictSourceKindsAndWornStaleFences();
         testWornCommitAndLiveDirtyBoundary();
@@ -545,27 +545,26 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         _root.收集品栏.材料.add("二阶复合防御组件", 1);
         _root.收集品栏.材料.add("三阶复合防御组件", 1);
         _root.收集品栏.材料.add("四阶复合防御组件", 1);
-        var denied:Object = EquipmentTuningService.executeLegacy(
-            "install_tier", _root.物品栏.背包, 0, item,
-            {candidateName:"三阶复合防御组件"}
-        );
-        assertTrue(!denied.success && denied.error == "invalid_transition"
+        var denied:Object = webCommit(
+            "tier-denied", "install_tier", 0, -1,
+            "三阶复合防御组件", undefined);
+        assertTrue(denied.preview != null
+                && !denied.preview.success
+                && denied.preview.error == "invalid_transition"
                 && item.value.tier == undefined
                 && _root.收集品栏.材料.getValue("三阶复合防御组件") == 1,
             "无 tier 装备不能跳过二阶");
-        var tier2:Object = EquipmentTuningService.executeLegacy(
-            "install_tier", _root.物品栏.背包, 0, item,
-            {candidateName:"二阶复合防御组件"}
-        );
-        var tier3:Object = EquipmentTuningService.executeLegacy(
-            "install_tier", _root.物品栏.背包, 0, item,
-            {candidateName:"三阶复合防御组件"}
-        );
-        var tier4:Object = EquipmentTuningService.executeLegacy(
-            "install_tier", _root.物品栏.背包, 0, item,
-            {candidateName:"四阶复合防御组件"}
-        );
-        assertTrue(tier2.success && tier3.success && tier4.success && item.value.tier == "四阶"
+        var tier2:Object = webCommit(
+            "tier-2", "install_tier", 0, -1,
+            "二阶复合防御组件", undefined);
+        var tier3:Object = webCommit(
+            "tier-3", "install_tier", 0, -1,
+            "三阶复合防御组件", undefined);
+        var tier4:Object = webCommit(
+            "tier-4", "install_tier", 0, -1,
+            "四阶复合防御组件", undefined);
+        assertTrue(tier2.commit.success && tier3.commit.success
+                && tier4.commit.success && item.value.tier == "四阶"
                 && _root.收集品栏.材料.getValue("二阶复合防御组件") == 0
                 && _root.收集品栏.材料.getValue("三阶复合防御组件") == 0
                 && _root.收集品栏.材料.getValue("四阶复合防御组件") == 0,
@@ -693,25 +692,26 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             "Web detach_all_mods 原子返还全部配件");
     }
 
-    private static function testLegacyDetachSemantics():Void {
+    private static function testDetachPolicySemantics():Void {
         resetFixture();
         var item:BaseItem = equipment("测试手枪A", 1, ["基础导轨","依赖瞄具","普通握把"]);
         _root.物品栏.背包.add(0, item);
-        var detached:Object = EquipmentTuningService.executeLegacy(
-            "detach_mod", _root.物品栏.背包, 0, item, {candidateName:"基础导轨"}
-        );
-        assertTrue(detached.success && item.value.mods.length == 1 && item.value.mods[0] == "普通握把"
+        var detached:Object = webCommit(
+            "detach-policy-direct", "detach_mod", 0, -1,
+            "基础导轨", undefined);
+        assertTrue(detached.commit.success
+                && item.value.mods.length == 1 && item.value.mods[0] == "普通握把"
                 && _root.收集品栏.材料.getValue("基础导轨") == 1
                 && _root.收集品栏.材料.getValue("依赖瞄具") == 1,
-            "卸载有依赖插件时保留真实旧语义：目标 + 一跳直接依赖");
+            "卸载有依赖插件时保持冻结策略：目标 + 一跳直接依赖");
 
         resetFixture();
         item = equipment("测试手枪A", 1, ["级联核心","普通握把"]);
         _root.物品栏.背包.add(0, item);
-        detached = EquipmentTuningService.executeLegacy(
-            "detach_mod", _root.物品栏.背包, 0, item, {candidateName:"级联核心"}
-        );
-        assertTrue(detached.success && item.value.mods.length == 0
+        detached = webCommit(
+            "detach-policy-cascade", "detach_mod", 0, -1,
+            "级联核心", undefined);
+        assertTrue(detached.commit.success && item.value.mods.length == 0
                 && _root.收集品栏.材料.getValue("级联核心") == 1
                 && _root.收集品栏.材料.getValue("普通握把") == 1,
             "无依赖且 detachPolicy=cascade 时卸下全部插件");
@@ -719,10 +719,10 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         resetFixture();
         item = equipment("测试手枪A", 1, ["基础导轨","依赖瞄具","普通握把"]);
         _root.物品栏.背包.add(0, item);
-        var all:Object = EquipmentTuningService.executeLegacy(
-            "detach_all_mods", _root.物品栏.背包, 0, item, {}
-        );
-        assertTrue(all.success && item.value.mods.length == 0
+        var all:Object = webCommit(
+            "detach-policy-all", "detach_all_mods", 0, -1,
+            "", undefined);
+        assertTrue(all.commit.success && item.value.mods.length == 0
                 && _root.收集品栏.材料.getValue("基础导轨") == 1
                 && _root.收集品栏.材料.getValue("依赖瞄具") == 1
                 && _root.收集品栏.材料.getValue("普通握把") == 1,
@@ -750,10 +750,9 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && tooltip.candidateKey == candidateKey
                 && typeof tooltip.introHTML == "string" && tooltip.introHTML.length > 0
                 && typeof tooltip.descHTML == "string" && tooltip.descHTML.length > 0
-                && tooltip.html == tooltip.introHTML + tooltip.descHTML
                 && tooltip.itemType == "收集品" && tooltip.itemUse == "材料"
                 && typeof tooltip.text == "string",
-            "snapshot 只暴露 ASCII opaque candidateKey，tooltip 保留 intro/desc 分段并兼容冻结 html/text");
+            "snapshot 只暴露 ASCII opaque candidateKey，tooltip 只保留 intro/desc 分段与 plain text");
         var previewParams:Object = params("install_mod");
         previewParams.operation = "install_mod";
         previewParams.source = lease;
@@ -1031,14 +1030,10 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         var missingKind:Object =
             EquipmentTuningService.execute(
                 "snapshot", strictParams);
-        var legacy:Object =
-            EquipmentTuningService.executeLegacy(
-                "enhance", _root.物品栏.背包, 0,
-                bagItem, {targetLevel:2});
         assertTrue(!missingKind.success
                 && missingKind.error == "invalid_payload"
-                && legacy.success && bagItem.value.level == 2,
-            "生产 wire 缺 sourceKind fail-closed；仅显式 legacy adapter 兼容旧来源");
+                && bagItem.value.level == 1,
+            "生产 wire 缺 sourceKind fail-closed，且不存在 legacy adapter 旁路");
 
         resetFixture();
         var item:BaseItem =

@@ -115,10 +115,17 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void WAREHOUSE_DefaultRoute_UsesBattleboxStorage()
+        public void WAREHOUSE_WebOnlyRoute_UsesBattleboxStorageWithoutLegacyCommand()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            var commands = new List<string>();
+            r.SetGameCommandSenderForTests(
+                value =>
+                {
+                    commands.Add(value);
+                    return true;
+                });
             r.Dispatch("WAREHOUSE");
             Assert.Single(c.Posts);
             Assert.Contains("\"panel\":\"workbench\"", c.Posts[0]);
@@ -127,6 +134,9 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("\"source\":\"nativehud\"", c.Posts[0]);
             Assert.Equal(new[] { "workbench" }, c.ActivePanels);
             Assert.Equal(new[] { true }, c.StateCallbacks);
+            Assert.DoesNotContain(
+                commands,
+                payload => payload.Contains("\"action\":\"warehouse\""));
         }
 
         [Fact]
@@ -1071,19 +1081,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void WAREHOUSE_DisabledRoute_DoesNotOpenWebPanel()
-        {
-            Capture c = new Capture();
-            LauncherCommandRouter r = MakeRouter(c);
-            r.WebInventoryWorkbenchEnabled = false;
-            r.Dispatch("WAREHOUSE");
-            Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
-            Assert.Empty(c.StateCallbacks);
-        }
-
-        [Fact]
-        public void EQUIP_UI_DefaultSendsFixedBuildPreflightWithoutOpeningPanel()
+        public void EQUIP_UI_WebOnlyRouteSendsFixedBuildPreflightWithoutLegacyFallback()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
@@ -1110,6 +1108,9 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(
                 "nativehud_equipment",
                 (string)command["source"]);
+            Assert.DoesNotContain(
+                commands,
+                payload => payload.Contains("\"action\":\"openEquipUI\""));
             string openRequestId =
                 ReadWorkbenchOpenRequestId(
                     Assert.Single(commands));
@@ -1818,49 +1819,11 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void EQUIP_UI_ExplicitDisabledFlagUsesLegacyEquipmentFallback()
-        {
-            Capture c = new Capture();
-            LauncherCommandRouter r = MakeRouter(c);
-            r.WebInventoryWorkbenchEnabled =
-                false;
-            var commands = new List<string>();
-            r.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
-            r.Dispatch("EQUIP_UI");
-
-            JObject command =
-                JObject.Parse(
-                    Assert.Single(commands)
-                        .TrimEnd('\0'));
-            Assert.Equal(
-                "openEquipUI",
-                (string)command["action"]);
-            Assert.Equal(2, command.Count);
-            Assert.Empty(c.Posts);
-        }
-
-        [Theory]
-        [InlineData("{\"profile\":\"battlebox\",\"view\":\"tuning\"}")]
-        [InlineData("{\"profile\":\"battlebox\",\"view\":\"storage\"}")]
-        [InlineData(null)]
-        public void RequestOpenPanel_LegacyEquipmentTuningRedirectIsPaused(string extras)
-        {
-            Capture c = new Capture();
-            LauncherCommandRouter r = MakeRouter(c);
-
-            r.RequestOpenPanel("workbench", "legacy_equipment_tuning", null, null, null, null, null, extras);
-
-            Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
-            Assert.Empty(c.StateCallbacks);
-        }
-
-        [Fact]
         public void CraftingRequest_WhitelistsCategoryAndBuildsRuntimeInitData()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
-            r.RequestOpenPanel("crafting", "legacy_crafting_entry", null, null, null, null, null,
+            r.RequestOpenPanel("crafting", "world_crafting_entry", null, null, null, null, null,
                 "{\"category\":\"武器合成\",\"ignored\":\"x\"}");
             Assert.Single(c.Posts);
             Assert.Contains("\"panel\":\"crafting\"", c.Posts[0]);
@@ -1874,7 +1837,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
-            r.RequestOpenPanel("crafting", "legacy_crafting_entry", null, null, null, null, null,
+            r.RequestOpenPanel("crafting", "world_crafting_entry", null, null, null, null, null,
                 "{\"category\":\"未知分类\"}");
             Assert.Empty(c.Posts);
             Assert.Empty(c.ActivePanels);
@@ -2380,52 +2343,6 @@ namespace CF7Launcher.Tests.Guardian
                     task.IsBoundTo(instance));
                 Assert.Empty(
                     capture.VisualRetires);
-            }
-        }
-
-        [Fact]
-        public void EQUIP_UI_DisabledFlagUsesLegacyEvenWhenBuildIsActive()
-        {
-            Capture capture = new Capture();
-            LauncherCommandRouter router =
-                MakeRouter(capture);
-            using (var task =
-                new CharacterBuildTask(_ => true))
-            {
-                string instance =
-                    OpenFallbackBuild(router);
-                Assert.True(
-                    task.TryBindPanelInstance(
-                        instance));
-                router.SetCharacterBuildTask(
-                    task);
-                router.WebInventoryWorkbenchEnabled =
-                    false;
-                capture.Posts.Clear();
-                var commands =
-                    new List<string>();
-                router.SetGameCommandSenderForTests(
-                    delegate(string payload)
-                    {
-                        commands.Add(payload);
-                        return true;
-                    });
-
-                router.Dispatch("EQUIP_UI");
-
-                JObject command =
-                    JObject.Parse(
-                        Assert.Single(commands)
-                            .TrimEnd('\0'));
-                Assert.Equal(
-                    "openEquipUI",
-                    (string)command["action"]);
-                Assert.Empty(capture.Posts);
-                Assert.Equal(
-                    instance,
-                    router.ActiveFallbackPanelInstanceId);
-                Assert.True(
-                    task.IsBoundTo(instance));
             }
         }
 

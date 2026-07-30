@@ -23,7 +23,7 @@
         this._coordinator = options.coordinator;
         this._getRoot = options.getRoot;
         this._returnState = null;
-        this._lastFocus = null;
+        this._lastFocus = clone(options.initialFocus);
         this._root = null;
         this._focusListener = this._onFocus.bind(this);
     }

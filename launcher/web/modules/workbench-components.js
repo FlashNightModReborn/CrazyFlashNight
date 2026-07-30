@@ -111,6 +111,7 @@
         this.button.type = 'button';
         this.button.className = 'workbench-mode-btn workbench-help-btn';
         this.button.textContent = '?';
+        this.button.setAttribute('data-header-action', 'help');
         this.button.setAttribute('data-workbench-help', '');
         this.button.setAttribute('data-header-action', 'help');
         this.button.setAttribute('data-audio-cue', 'select');

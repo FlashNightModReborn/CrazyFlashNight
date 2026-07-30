@@ -982,7 +982,6 @@ namespace CF7Launcher.Tasks
                 && msg["descHTML"] != null && msg["descHTML"].Type == JTokenType.String
                 && msg["itemType"] != null && msg["itemType"].Type == JTokenType.String
                 && msg["itemUse"] != null && msg["itemUse"].Type == JTokenType.String
-                && msg["html"] != null && msg["html"].Type == JTokenType.String
                 && msg["text"] != null && msg["text"].Type == JTokenType.String;
         }
 
@@ -1009,7 +1008,7 @@ namespace CF7Launcher.Tasks
                 else if (cmd == "tooltip")
                 {
                     keys.Add("candidateKey"); keys.Add("introHTML"); keys.Add("descHTML");
-                    keys.Add("itemType"); keys.Add("itemUse"); keys.Add("html"); keys.Add("text");
+                    keys.Add("itemType"); keys.Add("itemUse"); keys.Add("text");
                 }
             }
             foreach (JProperty property in msg.Properties())

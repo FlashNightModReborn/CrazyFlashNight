@@ -66,12 +66,6 @@
         append(buildActions, 'skills', '技能配置', options.onSkills);
         append(buildActions, 'back-build', '← 返回构筑', options.onBackBuild).hidden = true;
         append(storageActions, 'return-build', '返回构筑', options.onReturnBuild).hidden = true;
-        if (options.returnTarget) {
-            var returnButton = append(
-                storageActions, 'return-panel', '返回合成', options.onReturnPanel);
-            returnButton.classList.add('inventory-return-crafting-btn');
-            returnButton.setAttribute('aria-label', '返回合成并重新核算原配方与份数');
-        }
         return {
             storageActions:storageActions,
             buildActions:buildActions,
@@ -221,9 +215,6 @@
             'return-build':action(
                 !statsMode && view !== 'build' && !!state.buildAvailable,
                 '返回构筑', false, ''),
-            'return-panel':action(
-                !statsMode && view !== 'build' && !!state.returnTarget,
-                '返回合成', false, ''),
             tuning:action(
                 !statsMode && view === 'storage' && !!state.tuningAvailable,
                 '装备调制', !!tuningState.disabled, tuningState.reason || '',
@@ -277,7 +268,6 @@
         var projection = InventoryWorkbenchHeaderProjection({
             view:state.view,
             statsMode:state.statsMode,
-            returnTarget:!!state.returnTarget,
             buildAvailable:!!state.buildAvailable,
             tuningAvailable:!!state.tuningHeader,
             tuningState:{

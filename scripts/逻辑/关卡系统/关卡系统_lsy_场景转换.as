@@ -777,9 +777,6 @@ _root.清除游戏世界组件 = function():Boolean{
 	_root.对话框界面.关闭();
 	_root.对话框界面.followingEvent = null;
 
-	_root.购买物品界面.关闭();
-	_root.物品栏界面.关闭();
-	_root.仓库界面.关闭();
 	_root.关卡结束界面._visible = false;
 	_root.关卡结束界面.关卡是否结束 = false;
 

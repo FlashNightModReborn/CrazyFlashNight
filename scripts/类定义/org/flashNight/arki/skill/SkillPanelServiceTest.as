@@ -12,7 +12,7 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         testInstallRegistersCommandsAndBridges();
         testManageOpenUsesStrictJson();
         testGameCommandOpenEchoesRequestId();
-        testGameCommandOpenSupportsLegacyHostWithoutRequestId();
+        testGameCommandOpenRejectsMissingRequestId();
         testGameCommandOpenRejectsInvalidRequestId();
         testOrdinaryOpenersDoNotCarryRequestId();
         testManageOpenNotReadySendsNothing();
@@ -54,7 +54,7 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         testReplacedNpcExpiresSession();
         testDescriptionStrictJsonRoundTrip();
         testResponseWireEchoesReconcileBinding();
-        testLegacyLearnValidatesNpcWithoutWebSession();
+        testQuickHudUnequipUsesCurrentAuthority();
         testServiceNotReadyFailsClosed();
         testCloseIsIdempotent();
         SkillPanelService.closeSession();
@@ -67,14 +67,27 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         fixture(); SkillPanelService.install();
         check(typeof _root.gameCommands.skillSnapshot == "function" && typeof _root.gameCommands.skillLearnCommit == "function"
             && typeof _root.gameCommands.skillMoveSlot == "function"
-            && typeof _root.legacySkillEquip == "function" && typeof _root.openSkillTrainer == "function", "install registers all command and legacy root bridges");
+            && typeof _root.quickSkillUnequip == "function"
+            && typeof _root.openSkillTrainer == "function"
+            && typeof _root.openSkillPanel == "undefined"
+            && typeof _root.legacySkillLearnCommit == "undefined"
+            && typeof _root.legacySkillEquip == "undefined"
+            && typeof _root.legacySkillUnequip == "undefined"
+            && typeof _root.legacySkillSetPassive == "undefined"
+            && typeof _root.legacySkillReorder == "undefined",
+            "install registers Web commands, trainer opener and narrow quick-HUD unequip only");
     }
 
     private static function testManageOpenUsesStrictJson():Void {
         var f:Object = fixture();
-        var result:Object = SkillPanelService.openManage("native_hud");
+        var requestId:String = "skill.open.direct-test";
+        var result:Object = SkillPanelService.openManage("nativehud", requestId);
         var parsed:Object = (new JSON(false)).parse(f.root.server.sent[0]);
-        check(result.success && parsed.task == "panel_request" && parsed.panel == "skills" && parsed.initData.view == "manage" && parsed.source == "native_hud", "manage opener emits strict panel_request JSON");
+        check(result.success && parsed.task == "panel_request"
+            && parsed.panel == "skills" && parsed.initData.view == "manage"
+            && parsed.source == "nativehud"
+            && parsed.openRequestId == requestId,
+            "manage opener emits strict nonce-bound panel_request JSON");
     }
 
     private static function testGameCommandOpenEchoesRequestId():Void {
@@ -87,14 +100,11 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
             "skillPanelOpen echoes the exact Host openRequestId on the nativehud manage request");
     }
 
-    private static function testGameCommandOpenSupportsLegacyHostWithoutRequestId():Void {
+    private static function testGameCommandOpenRejectsMissingRequestId():Void {
         var f:Object = fixture();
         _root.gameCommands.skillPanelOpen({task:"cmd", action:"skillPanelOpen"});
-        var parsed:Object = (new JSON(false)).parse(f.root.server.sent[0]);
-        check(f.root.server.sent.length == 1 && parsed.task == "panel_request"
-            && parsed.panel == "skills" && parsed.initData.view == "manage"
-            && parsed.source == "nativehud" && parsed.openRequestId == undefined,
-            "skillPanelOpen supports the legacy Host command without synthesizing openRequestId");
+        check(f.root.server.sent.length == 0,
+            "skillPanelOpen rejects missing Host openRequestId without sending");
     }
 
     private static function testGameCommandOpenRejectsInvalidRequestId():Void {
@@ -112,26 +122,26 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
 
     private static function testOrdinaryOpenersDoNotCarryRequestId():Void {
         var f:Object = fixture();
-        var manage:Object = _root.openSkillPanel("nativehud");
         var trainer:Object = _root.openSkillTrainer(f.npc, "world_skill_trainer");
-        var manageWire:Object = (new JSON(false)).parse(f.root.server.sent[0]);
-        var trainerWire:Object = (new JSON(false)).parse(f.root.server.sent[1]);
-        check(manage.success && trainer.success && manageWire.openRequestId == undefined
-            && trainerWire.openRequestId == undefined,
-            "ordinary manage and trainer openers never synthesize or carry openRequestId");
+        var trainerWire:Object = (new JSON(false)).parse(f.root.server.sent[0]);
+        check(trainer.success && trainerWire.openRequestId == undefined
+            && typeof _root.openSkillPanel == "undefined",
+            "trainer opener carries no manage nonce and no direct root manage opener exists");
     }
 
     private static function testManageOpenNotReadySendsNothing():Void {
         SkillPanelService.testOnlyReset(); var server:Object = makeServer();
         SkillLoadoutService.testOnlyUseRoot({server:server}); SkillPanelService.install();
-        var result:Object = SkillPanelService.openManage("nativehud");
+        var result:Object = SkillPanelService.openManage(
+            "nativehud", "skill.open.not-ready");
         check(!result.success && result.error == "service_not_ready" && server.sent.length == 0,
             "unready AS2 domain fails closed before any panel_request");
     }
 
     private static function testManageOpenSendFalseFailsClosed():Void {
         var f:Object = fixture(); f.root.server.sendSocketMessage = function(m:String):Boolean{this.sent.push(m);return false;};
-        var result:Object = SkillPanelService.openManage("nativehud");
+        var result:Object = SkillPanelService.openManage(
+            "nativehud", "skill.open.send-false");
         check(!result.success && result.error == "launcher_unavailable" && !result.opened,
             "failed panel_request transport reports launcher_unavailable without claiming open");
     }
@@ -234,7 +244,8 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
     private static function testManageIntentPreservesActiveSession():Void {
         var f:Object = fixture(); var a:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
         SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:a.trainerSession});
-        var opened:Object = SkillPanelService.openManage("nativehud");
+        var opened:Object = SkillPanelService.openManage(
+            "nativehud", "skill.open.preserve-session");
         var stillActive:Object = SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:a.trainerSession});
         check(opened.success && stillActive.success, "manage panel intent does not revoke the active trainer before Host rebind cleanup");
     }
@@ -405,7 +416,6 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         var f:Object = fixture(); learn(f.root, 0, "闪现", 1);
         f.root.技能系统投影Hero = function():Object{return {success:false,error:"fixture_failure"};};
         f.root.技能系统投影快捷栏 = function():Boolean{return false;};
-        f.root.技能系统投影旧列表 = function():Boolean{return false;};
         var first:Object = SkillPanelService.execute("equip", {v:1, view:"manage", skillKey:"闪现", slot:2,
             expectedRevision:SkillLoadoutService.getRevision()});
         var second:Object = SkillPanelService.execute("unequip", {v:1, view:"manage", slot:2, expectedRevision:first.revision});
@@ -417,7 +427,7 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
 
     private static function testMissingRenderersSkipWithoutRollback():Void {
         var f:Object = fixture(); learn(f.root, 0, "闪现", 1);
-        delete f.root.技能系统投影Hero; delete f.root.技能系统投影快捷栏; delete f.root.技能系统投影旧列表;
+        delete f.root.技能系统投影Hero; delete f.root.技能系统投影快捷栏;
         var result:Object = SkillPanelService.execute("equip", {v:1, view:"manage", skillKey:"闪现", slot:3,
             expectedRevision:SkillLoadoutService.getRevision()});
         check(result.success && f.root.快捷技能栏3 == "闪现" && !hasDiagnostic(result.snapshot.diagnostics, "renderer_failed"),
@@ -471,11 +481,15 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
             "wire response keeps exact snapshot schema while Host owns reconcile binding");
     }
 
-    private static function testLegacyLearnValidatesNpcWithoutWebSession():Void {
-        var f:Object = fixture(); SkillPanelService.closeSession();
-        var ok:Object = SkillPanelService.legacyLearnCommit("闪现", 1, f.npc);
-        var denied:Object = SkillPanelService.legacyLearnCommit("内力爆发", 1, f.npc);
-        check(ok.success && f.root.技能点数 == 80 && !denied.success && denied.error == "trainer_skill_forbidden", "legacy teacher bridge validates live NPC catalog without a Web session");
+    private static function testQuickHudUnequipUsesCurrentAuthority():Void {
+        var f:Object = fixture();
+        learn(f.root, 0, "闪现", 1);
+        var equipped:Object = SkillLoadoutService.equip(
+            "闪现", 1, SkillLoadoutService.getRevision());
+        var unequipped:Object = _root.quickSkillUnequip(1);
+        check(equipped.success && unequipped.success
+            && unequipped.changed && f.root.快捷技能栏1 == "",
+            "quick HUD unequip uses current loadout authority without legacy UI bridges");
     }
 
     private static function testServiceNotReadyFailsClosed():Void {
@@ -506,7 +520,7 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         for(i=1;i<=12;i++){r["快捷技能栏"+i]="";r["快捷技能栏键"+i]=48+i;}
         r.isEasyMode=function():Boolean{return false;}; r.keyshow=function(n:Number):String{return "K"+n;};
         r.动态更新技能冷却领域=function():Void{}; r.技能系统投影Hero=function():Void{};
-        r.技能系统投影快捷栏=function():Void{}; r.技能系统投影旧列表=function():Void{};
+        r.技能系统投影快捷栏=function():Void{};
         var trainerCatalog:Object = {}; trainerCatalog[0] = "闪现"; trainerCatalog[3] = "刀技";
         var npc:Object = {_name:"技能教师", 可学的技能:trainerCatalog};
         r.gameworld[npc._name] = npc;

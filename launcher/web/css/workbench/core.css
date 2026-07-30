@@ -169,6 +169,41 @@
     padding:10px;
     box-sizing:border-box;
 }
+.workbench-shell[data-profile="catalog-decision"] > .workbench-body {
+    grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr);
+    grid-template-rows:minmax(0,1fr);
+}
+.workbench-shell[data-profile="archive-reference"] > .workbench-body {
+    grid-template-columns:minmax(0,44fr) 28px minmax(360px,56fr);
+    grid-template-rows:minmax(0,1fr);
+}
+.workbench-shell[data-profile="transfer-pair"] > .workbench-body {
+    grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) auto;
+}
+.workbench-shell[data-profile="library-decision"] > .workbench-body {
+    grid-template-columns:minmax(0,52fr) 26px minmax(360px,48fr);
+    grid-template-rows:minmax(0,1fr);
+}
+.workbench-shell[data-profile="library-action-strip"] > .workbench-body {
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) 124px;
+}
+.workbench-shell[data-profile="library-action-strip"] > .workbench-body > .workbench-flow-rail {
+    display:none;
+}
+.workbench-shell[data-profile="library-action-strip"] > .workbench-body > .workbench-slot[data-slot="L"] {
+    grid-column:1;
+    grid-row:1;
+}
+.workbench-shell[data-profile="library-action-strip"] > .workbench-body > .workbench-slot[data-slot="R"] {
+    grid-column:1;
+    grid-row:2;
+}
+.workbench-shell[data-profile="character-build"] > .workbench-body {
+    grid-template-columns:minmax(0,55fr) 28px minmax(360px,45fr);
+    grid-template-rows:minmax(0,1fr);
+}
 .workbench-shell > .workbench-body[hidden] { display:none; }
 .workbench-slot {
     position:relative;

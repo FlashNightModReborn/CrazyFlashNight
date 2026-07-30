@@ -10,7 +10,7 @@ var InventoryStorageWorkbench = (function() {
     var _backpackSortControls, _rightSortControls;
     var _quickBarView, _quickDepositButton, _quickWithdrawButton, _quickCommitButton, _quickCancelButton, _quickStatusNode;
     var _broker, _dragControllers = [], _equipmentInspector = null, _tuningScope = null, _state = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
-    var _tooltipCache = {}, _tooltipSuppressed = false;
+    var _tooltipCache = {}, _tooltipSuppressed = false, _lastBackpackFocus = null;
     var _layoutMode = 'full', _densityController = null, _openGeneration = 0;
     var _profile = 'battlebox';
     var _viewMode = 'storage', _panelInstanceId = '', _tuningOrigin = false;
@@ -82,6 +82,52 @@ var InventoryStorageWorkbench = (function() {
             else toast(errorMessage(error));
         }
     });
+    function tuningFeatureAvailable() {
+        return typeof InventoryTuningScope !== 'undefined'
+            && InventoryTuningScope && typeof InventoryTuningScope.Transition === 'function'
+            && typeof EquipmentTuningView !== 'undefined'
+            && EquipmentTuningView && typeof EquipmentTuningView.create === 'function'
+            && typeof EquipmentTuningRuntime !== 'undefined'
+            && EquipmentTuningRuntime && typeof EquipmentTuningRuntime.safeToken === 'function';
+    }
+
+    function ensureTuningFeature() {
+        if (_tuningScope && _tuningView) return true;
+        if (!tuningFeatureAvailable()) return false;
+        _tuningScope = new InventoryTuningScope.Transition({
+            coordinator:_coordinator, initialFocus:_lastBackpackFocus,
+            getRoot:function() { return _backpackView && _backpackView.renderer.root; }
+        });
+        _tuningView = EquipmentTuningView.create({
+            instanceKey:'equipment-tuning:' + _profile,
+            send:function(message) { return Bridge.send(message); },
+            timeoutMs:_runtimeConfig.requestTimeoutMs,
+            sessionNonce:_runtimeConfig.sessionNonce,
+            beginWrite:function(owner) { return _coordinator.beginExternalWrite(owner); },
+            completeWrite:function(operation, needsRefresh, callback) {
+                return _coordinator.completeExternalWrite(operation, needsRefresh, callback);
+            },
+            refreshInventory:function(callback) {
+                return _coordinator.debugState().refreshRequired
+                    ? _coordinator.retryRefresh(callback) : _coordinator.refresh(callback);
+            },
+            resolveSlot:function(containerId, physicalSlot) {
+                return findCurrentSlot(containerId, physicalSlot);
+            },
+            onStateChange:function() {
+                applyTuningSourceSlotState();
+                refreshControls();
+            },
+            densityController:_densityController,
+            loadConversionCandidates:loadTuningConversionCandidates,
+            openInspector:openEquipmentInspector,
+            closeInspector:closeEquipmentInspector,
+            toast:toast
+        });
+        _tuningScope.attach();
+        return true;
+    }
+
     function buildProfileDOM(config, initialView, context) {
         if (typeof Workbench === 'undefined') throw new Error('Workbench runtime is required');
         if (!config || !context || !context.shell || !context.root
@@ -97,7 +143,8 @@ var InventoryStorageWorkbench = (function() {
         if (_tuningView) { _tuningView.destroy(); _tuningView = null; }
         if (_tuningScope) { _tuningScope.destroy(); _tuningScope = null; }
         _shell = context.shell; _el = context.root; _ports = context;
-        _backpackView = null; _rightView = null; _pager = null; _renderedWindows = {};
+        _backpackView = null; _rightView = null; _pager = null;
+        _renderedWindows = {}; _lastBackpackFocus = null;
         _backpackSortControls = null; _rightSortControls = null;
         _quickBarView = null;
         _quickDepositButton = null; _quickWithdrawButton = null;
@@ -108,21 +155,22 @@ var InventoryStorageWorkbench = (function() {
         _panelInstanceId = String(context.panelInstanceId || '');
         _rightContainerId = config.rightContainerId; _rightLimit = config.rightLimit;
         _quickTransfer.configure({rightContainerId:_rightContainerId});
-        _tuningScope = new InventoryTuningScope.Transition({
-            coordinator:_coordinator,
-            getRoot:function() { return _backpackView && _backpackView.renderer.root; }
-        });
+        _densityController = context.densityController || null;
+        if (!_densityController) throw new Error('Inventory workbench density controller is required');
+        _layoutMode = _densityController.mode;
+        if (initialView === 'tuning' && !ensureTuningFeature()) {
+            throw new Error('Inventory tuning feature dependencies are unavailable');
+        }
+        var backpackRequest = {containerId:'背包', offset:0, limit:50, filterKey:'all'};
         if (!_coordinator.configureRequests([
-            _tuningScope.prepareInitial(
-                {containerId:'背包', offset:0, limit:50, filterKey:'all'}, initialView),
+            initialView === 'tuning'
+                ? _tuningScope.prepareInitial(backpackRequest, initialView)
+                : backpackRequest,
             {containerId:_rightContainerId, offset:0, limit:_rightLimit, filterKey:'all'}
         ])) throw new Error('Inventory workbench request profile rejected: ' + _profile);
         _el.setAttribute('data-inventory-profile', _profile);
         _el.setAttribute('data-workbench-view', _viewMode);
         installQuickTransferActions();
-        _densityController = context.densityController || null;
-        if (!_densityController) throw new Error('Inventory workbench density controller is required');
-        _layoutMode = _densityController.mode;
         _el.setAttribute('data-layout-mode', _layoutMode);
         _retryButton = document.createElement('button');
         _retryButton.type = 'button'; _retryButton.className = 'workbench-mode-btn warning';
@@ -130,31 +178,11 @@ var InventoryStorageWorkbench = (function() {
         _retryButton.addEventListener('click', retryRefresh);
         if (_ports.addHeaderAction) _ports.addHeaderAction(_retryButton);
         _backpackView = createInventoryView('背包', '背包', _layoutMode);
-        _rightView = createInventoryView(_rightContainerId, config.title, _layoutMode);
-        _tuningView = EquipmentTuningView.create({
-            instanceKey:'equipment-tuning:' + _profile,
-            send:function(message) { return Bridge.send(message); },
-            timeoutMs:_runtimeConfig.requestTimeoutMs,
-            sessionNonce:_runtimeConfig.sessionNonce,
-            beginWrite:function(owner) { return _coordinator.beginExternalWrite(owner); },
-            completeWrite:function(operation, needsRefresh, callback) {
-                return _coordinator.completeExternalWrite(operation, needsRefresh, callback);
-            },
-            refreshInventory:function(callback) {
-                return _coordinator.debugState().refreshRequired
-                    ? _coordinator.retryRefresh(callback) : _coordinator.refresh(callback);
-            },
-            resolveSlot:function(containerId, physicalSlot) { return findCurrentSlot(containerId, physicalSlot); },
-            onStateChange:function() {
-                applyTuningSourceSlotState();
-                refreshControls();
-            },
-            densityController:_densityController,
-            loadConversionCandidates:loadTuningConversionCandidates,
-            openInspector:openEquipmentInspector,
-            closeInspector:closeEquipmentInspector,
-            toast:toast
+        _backpackView.renderer.root.addEventListener('focusin', function(event) {
+            var tile = event.target && event.target.closest ? event.target.closest('[data-workbench-key]') : null;
+            if (tile) _lastBackpackFocus = {key:String(tile.getAttribute('data-workbench-key')), role:event.target.closest('.inventory-discard-btn') ? 'discard' : 'tile'};
         });
+        _rightView = createInventoryView(_rightContainerId, config.title, _layoutMode);
         _pager = new InventoryUI.InventoryWindowPager({
             containerId:_rightContainerId, containerLabel:config.title, columns:config.pageColumns,
             defaultOffset:0, defaultLimit:_rightLimit, defaultCapacity:config.rightCapacity,
@@ -175,7 +203,7 @@ var InventoryStorageWorkbench = (function() {
         }
         if (_ports.onViewChanged) _ports.onViewChanged(_viewMode);
         installInteractions();
-        _tuningScope.attach();
+        if (_tuningScope) _tuningScope.attach();
     }
     function switchView(nextView, preferredSlot, callback) {
         var onComplete = typeof callback === 'function' ? callback : function() {};
@@ -183,18 +211,25 @@ var InventoryStorageWorkbench = (function() {
         function complete(success) {
             if (!completed) { completed = true; onComplete(!!success); }
         }
-        if (!_tuningOrigin || !_shell || !_tuningView || !_rightView
+        if (!_tuningOrigin || !_shell || !_rightView
                 || (nextView !== 'storage' && nextView !== 'tuning')) return false;
+        if (nextView === 'tuning' && !ensureTuningFeature()) {
+            toast('装备调制资源尚未就绪。');
+            complete(false);
+            return false;
+        }
         if (_state.busyOwner || _quickTransfer.isBusy()) {
             toast('库存或调制写入尚未完成，请稍候切换。');
+            complete(false);
             return false;
         }
         if (_viewMode === 'tuning' && !_tuningView.canClose()) {
             toast('调制请求或对账尚未完成，请稍候切换。');
+            complete(false);
             return false;
         }
         if (nextView === _viewMode) {
-            var tuningState = _tuningView.debugState();
+            var tuningState = _tuningView && _tuningView.debugState();
             var scopeState = _tuningScope && _tuningScope.debugState();
             var ready = nextView === 'storage'
                 || tuningState && tuningState.mux && tuningState.mux.active
@@ -226,7 +261,10 @@ var InventoryStorageWorkbench = (function() {
                     complete(false);
                 }
             });
-            if (!started) toast('当前无法撤销调制令牌，请稍候重试。');
+            if (!started) {
+                toast('当前无法撤销调制令牌，请稍候重试。');
+                complete(false);
+            }
             return started;
         }
         var entering = _tuningScope.enter(function(result) {
@@ -244,7 +282,10 @@ var InventoryStorageWorkbench = (function() {
                 complete(true);
             }
         });
-        if (!entering) toast('当前无法切换装备调制，请稍候重试。');
+        if (!entering) {
+            toast('当前无法切换装备调制，请稍候重试。');
+            complete(false);
+        }
         return entering;
     }
     function finishViewSwitch(nextView, preferredSlot) {
@@ -890,7 +931,9 @@ var InventoryStorageWorkbench = (function() {
                 tuningScope:_tuningScope ? _tuningScope.debugState() : null,
                 equipmentInspector:_equipmentInspector && _equipmentInspector.debugState
                     ? _equipmentInspector.debugState() : null,
-                modConfirmationMode:EquipmentTuningConfirmation.shared.read(),
+                modConfirmationMode:typeof EquipmentTuningConfirmation !== 'undefined'
+                    && EquipmentTuningConfirmation.shared
+                    ? EquipmentTuningConfirmation.shared.read() : 'safe',
                 page:_pager ? _pager.getState() : null,
                 quickTransfer:_quickTransfer.debugState()
             };

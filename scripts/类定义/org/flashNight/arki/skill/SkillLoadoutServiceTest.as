@@ -482,13 +482,14 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
             && slotClip.对应数组号 == -1 && slotClip.数量 == 0 && slotClip.冷却时间 == 0
             && slotClip.消耗mp == 0 && slotClip.图标 == "" && slotClip.frames.length == 5 && slotClip.frames[4] == "空";
         check(equippedOk && replacedOk && clearedOk,
-            "legacy quick HUD rebuilds icon shell on equip replacement and clears the stale icon on unequip");
+            "quick HUD rebuilds icon shell on equip replacement and clears the stale icon on unequip");
     }
 
     private static function testAllOptionalRenderersMissing():Void {
-        var r:Object = fixture(80); learn(r, 0, "闪现", 1); delete r.技能系统投影Hero; delete r.技能系统投影快捷栏; delete r.技能系统投影旧列表;
+        var r:Object = fixture(80); learn(r, 0, "闪现", 1); delete r.技能系统投影Hero; delete r.技能系统投影快捷栏;
         var result:Object = SkillLoadoutService.equip("闪现", 10, SkillLoadoutService.getRevision());
-        check(result.success && r.快捷技能栏10 == "闪现", "hero HUD and legacy list may all be absent on successful write");
+        check(result.success && r.快捷技能栏10 == "闪现",
+            "all optional renderers may be absent on a successful domain write");
     }
 
     private static function fixture(length:Number):Object {
@@ -508,7 +509,6 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         r.动态更新技能冷却领域 = function():Boolean { this.domainCalls++; return true; };
         r.技能系统投影Hero = function():Void { this.heroCalls++; };
         r.技能系统投影快捷栏 = function():Void { this.hudCalls++; };
-        r.技能系统投影旧列表 = function():Void { this.listCalls++; };
         SkillLoadoutService.testOnlyUseRoot(r);
         return r;
     }

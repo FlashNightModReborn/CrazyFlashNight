@@ -18,6 +18,7 @@ class org.flashNight.arki.item.itemIcon.CollectionIcon extends ItemIcon{
 
     public function CollectionIcon(_icon:MovieClip, _collection, _index) {
         this.icon = _icon;
+        this.icon.itemIcon = this;
         this.x = icon._x;
         this.y = icon._y;
         this.valuetext = icon.valuetext;

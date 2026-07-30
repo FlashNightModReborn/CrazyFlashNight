@@ -13,7 +13,7 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
 
-/** 装备调制唯一权威写服务；Web 与旧 renderer 只提交不可信意图。 */
+/** 装备调制唯一权威写服务；Web 只提交不可信意图。 */
 class org.flashNight.arki.item.EquipmentTuningService {
     private static var _json:LiteJSON;
     private static var _installed:Boolean = false;
@@ -21,7 +21,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static var _sessionPanel:String = "";
     private static var _sessionView:String = "";
     private static var _sessionGeneration:Number = 0;
-    private static var _legacyGeneration:Number = 0;
     private static var _candidateNames:Object = {};
     private static var _plan:Object = null;
     private static var _tokenSeq:Number = 0;
@@ -560,10 +559,10 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var safeIntroHTML:String = introHTML.split('"').join("'");
         var safeDescHTML:String = descHTML.split('"').join("'");
         return {success:true, candidateKey:candidateKey,
-            // 分段字段是 Web 富注释自动分栏的权威输入；html 仅保留给旧消费者兼容。
+            // 分段字段是 Web 富注释自动分栏的唯一权威输入。
             introHTML:safeIntroHTML, descHTML:safeDescHTML,
             itemType:String(itemData.type), itemUse:String(itemData.use),
-            html:safeIntroHTML + safeDescHTML, text:displayName};
+            text:displayName};
     }
 
     /**
@@ -585,41 +584,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
         _sessionView = "";
         _sessionGeneration++;
         return {success:true};
-    }
-
-    /** 旧 AS2 renderer 的同步适配入口，内部仍严格执行 preview → token → commit。 */
-    public static function executeLegacy(operation:String,
-                                         sourceInventory:Object,
-                                         sourceSlot:Number,
-                                         sourceItem:Object,
-                                         intent:Object,
-                                         targetInventory:Object,
-                                         targetSlot:Number,
-                                         targetItem:Object):Object {
-        if (_busy) return decorateResponse(fail("busy"), "commit", {v:1});
-        if (_allowedOperations[operation] !== true) {
-            return decorateResponse(fail("unsupported_operation"), "commit", {v:1});
-        }
-        _legacyGeneration++;
-        var params:Object = {v:1, panelInstanceId:"legacy", viewSessionId:"legacy." + _legacyGeneration};
-        activateWebSession(params);
-        var source:Object = resolveLegacySlot(sourceInventory, sourceSlot, sourceItem);
-        if (!source.success) return decorateResponse(source, "commit", params);
-        var target:Object = null;
-        if (operation == "convert") {
-            target = resolveLegacySlot(targetInventory, targetSlot, targetItem);
-            if (!target.success) return decorateResponse(target, "commit", params);
-        }
-        if (intent == null) intent = {};
-        var candidateName:String = intent.candidateName == undefined ? "" : String(intent.candidateName);
-        var replaceCandidateName:String = intent.replaceCandidateName == undefined
-            ? "" : String(intent.replaceCandidateName);
-        var plan:Object = buildPlan(operation, source, target, candidateName,
-                                    replaceCandidateName, intent.targetLevel);
-        if (!plan.success) return decorateResponse(plan, "commit", params);
-        installPlan(plan);
-        params.expectedTuningToken = plan.tuningToken;
-        return execute("commit", params);
     }
 
     private static function buildPlan(operation:String,
@@ -689,7 +653,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         } else if (operation == "replace_mod") {
             if (candidateName == "" || replaceCandidateName == ""
                     || candidateName == replaceCandidateName) return fail("invalid_payload");
-            var replacementDetach:Object = buildLegacyDetachPlan(sourceItem, replaceCandidateName);
+            var replacementDetach:Object = buildDetachPlan(sourceItem, replaceCandidateName);
             if (!replacementDetach.success) return replacementDetach;
             var replacementValue:Object = ObjectUtil.clone(sourceValue);
             replacementValue.mods = cloneArray(replacementDetach.remainingMods);
@@ -708,7 +672,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
                 + "|" + removedMods.join(",") + "|" + replacementDetach.policy
                 + "|availability=" + replacementAvailability;
         } else if (operation == "detach_mod") {
-            var detach:Object = buildLegacyDetachPlan(sourceItem, candidateName);
+            var detach:Object = buildDetachPlan(sourceItem, candidateName);
             if (!detach.success) return detach;
             afterSource.mods = detach.remainingMods;
             removedMods = detach.removedMods;
@@ -751,7 +715,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         };
     }
 
-    private static function buildLegacyDetachPlan(item:BaseItem, candidateName:String):Object {
+    private static function buildDetachPlan(item:BaseItem, candidateName:String):Object {
         var mods:Array = item.value.mods;
         if (!(mods instanceof Array) || candidateName == "") return fail("invalid_mods");
         var index:Number = indexOfString(mods, candidateName);
@@ -762,7 +726,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var policy:String = "single";
         var i:Number;
         if (dependentMods != null && dependentMods.length > 0) {
-            // 当前真实旧 UI 语义：目标 + 一跳直接依赖；不递归扩闭包。
+            // 冻结玩法语义：目标 + 一跳直接依赖；不递归扩闭包。
             policy = "direct_dependents";
             var removeSet:Object = {};
             removeSet[candidateName] = true;
@@ -1055,7 +1019,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
             slot:checked.slot,
             expectedLease:String(ref.expectedLease)
         };
-        checked.legacy = false;
         checked.expectedValue = ObjectUtil.clone(checked.item.value);
         checked.expectedLastUpdate = Number(checked.item.lastUpdate);
         return checked;
@@ -1089,7 +1052,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
             inventory:resolved.inventory,
             slot:String(resolved.slotKey),
             item:resolved.item,
-            legacy:false,
             sessionGeneration:Number(resolved.sessionGeneration),
             expectedLoadoutRevision:Number(resolved.loadoutRevision),
             ref:{
@@ -1104,29 +1066,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
         };
     }
 
-    private static function resolveLegacySlot(inventory:Object, slot:Number, item:Object):Object {
-        if (_root.物品栏 == undefined || inventory !== _root.物品栏.背包) return fail("container_forbidden");
-        if (!isWholeNumber(slot) || slot < 0 || slot >= inventory.capacity) return fail("invalid_slot");
-        if (inventory.getItem(String(slot)) !== item) return fail("stale_state");
-        var valid:Object = validateEquipment(item);
-        if (!valid.success) return valid;
-        return {
-            success:true, sourceKind:"inventory",
-            containerId:"背包", inventory:inventory,
-            slot:Number(slot), item:item, legacy:true,
-            ref:{
-                sourceKind:"inventory",
-                containerId:"背包",
-                slot:Number(slot)
-            },
-            expectedValue:ObjectUtil.clone(item.value), expectedLastUpdate:Number(item.lastUpdate)
-        };
-    }
-
     private static function revalidateSlot(previous:Object):Object {
-        var current:Object;
-        if (previous.legacy == true) current = resolveLegacySlot(previous.inventory, previous.slot, previous.item);
-        else current = resolveWebSlot(previous.ref);
+        var current:Object = resolveWebSlot(previous.ref);
         if (!current.success) return current;
         if (current.item !== previous.item
                 || Number(current.item.lastUpdate) != Number(previous.expectedLastUpdate)
@@ -1252,7 +1193,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static function canReplaceMod(item:BaseItem, itemData:Object,
             installedName:String, candidateName:String):Boolean {
         if (installedName == "" || candidateName == "" || installedName == candidateName) return false;
-        var detach:Object = buildLegacyDetachPlan(item, installedName);
+        var detach:Object = buildDetachPlan(item, installedName);
         if (!detach.success) return false;
         var probeValue:Object = ObjectUtil.clone(item.value);
         probeValue.mods = cloneArray(detach.remainingMods);

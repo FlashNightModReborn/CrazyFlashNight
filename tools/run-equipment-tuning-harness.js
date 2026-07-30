@@ -35,11 +35,12 @@ function audit(){
   const ownedView=readModule('inventory-workbench-owned-view.js');
   const quickTransfer=readModule('inventory-workbench-quick-transfer.js');
   const tuningScope=readModule('inventory-tuning-scope.js');
+  const featureLoader=readModule('inventory-workbench-feature-loader.js');
   const workbench=readModule('inventory-storage-workbench.js');
   const facade=readModule('inventory-workbench.js');
-  const inventorySource=[config,preparationMenu,header,ownedView,quickTransfer,tuningScope,workbench,facade].join('\n');
+  const inventorySource=[config,preparationMenu,header,ownedView,quickTransfer,tuningScope,featureLoader,workbench,facade].join('\n');
   const registry=readModule('panels-lazy-registry.js');
-  const registryWorkbench=between(registry,"Panels.registerLazy('workbench'","Panels.registerLazy('npcshop'");
+  const registryWorkbench=between(registry,"Panels.registerLazy('workbench'","Panels.registerLazy('loot'");
   const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
   const infoProjection=between(render,'TuningView.prototype._renderHeader','TuningView.prototype._renderInstalledState');
   const operationTransition=between(view,'TuningView.prototype.setOperation','TuningView.prototype._selectReplacementCandidate');
@@ -65,6 +66,8 @@ function audit(){
       ||!hasAll(header,['function createWorkbenchHeader','new TuningHeaderController'])
       ||!hasAll(facade,["Panels.register('workbench'",'new Workbench.DualPaneShell',
         'InventoryWorkbenchHeader.createWorkbenchHeader','function requestView(next, options)',
+        'InventoryWorkbenchFeatureLoader.createPanelGate({',
+        '_featureGate.run(next, function()',
         'InventoryStorageWorkbench.activate(','controllerPorts(),','initialView);',
         'InventoryStorageWorkbench.deactivate()',
         'function rebind(el, initData)'])
@@ -74,7 +77,7 @@ function audit(){
       ||!openInventory.includes('else maybeSelectFirstTunable();')
       ||!hasAll(close,['_tuningView.canClose()','_tuningView.detachSession']))throw new Error('workbench view/rebind/direct-open/detach gate contract missing');
 
-  if(!hasAll(config,['function resolveProfile','function resolveReturnTarget','function ConfirmationPreference'])
+  if(!hasAll(config,['function resolveProfile','function resolveLaunchContext','function ConfirmationPreference'])
       ||!hasAll(ownedView,['function createView','function createToolbar','new Components.OwnedInventoryPane'])
       ||!hasAll(quickTransfer,['function QuickTransferController','QuickTransferController.prototype.acceptClick','QuickTransferController.prototype.isBusy'])
       ||!hasAll(workbench,['EquipmentTuningConfirmation.shared.read()','InventoryWorkbenchOwnedView.createView','InventoryWorkbenchOwnedView.createToolbar','new InventoryWorkbenchQuickTransfer.QuickTransferController','_quickTransfer.acceptClick']))throw new Error('inventory workbench split-module composition missing');
@@ -131,7 +134,58 @@ function audit(){
       ||!hasAll(css,['font:700 11px/1 "Microsoft YaHei",sans-serif',
         '.equipment-tuning-detail {','.equipment-tuning-commit-bar {',
         '[data-title]:focus-visible::after']))throw new Error('loadout identity or tuning usability debt gate missing');
-  if(!inOrder(registryWorkbench,["'modules/item-filter.js'","'modules/asset-timeline.js'","'modules/dressup-doll-renderer.js'","'modules/workbench-inspection-viewport.js'","'modules/equipment-inspector.js'","'modules/inventory-runtime.js'","'modules/inventory-ui.js'","'modules/equipment-tuning-runtime.js'","'modules/equipment-tuning-model.js'","'modules/equipment-tuning-decision-presenter.js'","'modules/equipment-tuning-render.js'","'modules/inventory-workbench-config.js'","'modules/inventory-workbench-preparation-menu.js'","'modules/equipment-tuning-confirmation.js'","'modules/equipment-tuning-interaction.js'","'modules/equipment-tuning-write-lifecycle.js'","'modules/equipment-tuning-source-marker.js'","'modules/equipment-tuning-view.js'","'modules/inventory-workbench-navigation.js'","'modules/inventory-workbench-header.js'","'modules/inventory-workbench-quick-transfer.js'","'modules/inventory-workbench-owned-view.js'","'modules/inventory-tuning-scope.js'","'modules/inventory-storage-workbench.js'","'modules/character-build/character-build-mutation.js'","'modules/character-build-session.js'","'modules/character-build/character-build-action-view.js'","'modules/character-build/character-build-tuning-adapter.js'","'modules/character-build/character-build-candidate-state.js'","'modules/character-build/character-build-facet-counts.js'","'modules/character-build/character-build-stats-view.js'","'modules/character-build/character-build-doll-preview.js'","'modules/character-build/character-build-template.js'","'modules/character-build-view.js'","'modules/character-build/character-build-tuning.js'","'modules/character-build/character-build-slot-transition.js'","'modules/character-build/character-build-pose.js'","'modules/character-build/character-build-projection.js'","'modules/character-build.js'","'modules/inventory-workbench.js'"])
+  const eagerWorkbenchClosure=[
+    "'modules/item-filter.js'",
+    "'modules/inventory-runtime.js'",
+    "'modules/inventory-ui.js'",
+    "'modules/inventory-workbench-config.js'",
+    "'modules/inventory-workbench-preparation-menu.js'",
+    "'modules/inventory-workbench-navigation.js'",
+    "'modules/inventory-workbench-header.js'",
+    "'modules/inventory-workbench-quick-transfer.js'",
+    "'modules/inventory-workbench-owned-view.js'",
+    "'modules/inventory-workbench-feature-loader.js'",
+    "'modules/inventory-storage-workbench.js'",
+    "'modules/inventory-workbench.js'"
+  ];
+  const tuningFeatureClosure=[
+    "'modules/asset-timeline.js'",
+    "'modules/dressup-doll-renderer.js'",
+    "'modules/workbench-inspection-viewport.js'",
+    "'modules/equipment-inspector.js'",
+    "'modules/equipment-tuning-runtime.js'",
+    "'modules/equipment-tuning-model.js'",
+    "'modules/equipment-tuning-decision-presenter.js'",
+    "'modules/equipment-tuning-render.js'",
+    "'modules/equipment-tuning-confirmation.js'",
+    "'modules/equipment-tuning-interaction.js'",
+    "'modules/equipment-tuning-write-lifecycle.js'",
+    "'modules/equipment-tuning-source-marker.js'",
+    "'modules/equipment-tuning-view.js'",
+    "'modules/inventory-tuning-scope.js'"
+  ];
+  const buildFeatureClosure=[
+    "'modules/character-build/character-build-mutation.js'",
+    "'modules/character-build-session.js'",
+    "'modules/character-build/character-build-action-view.js'",
+    "'modules/character-build/character-build-tuning-adapter.js'",
+    "'modules/character-build/character-build-candidate-tooltip.js'",
+    "'modules/character-build/character-build-candidate-state.js'",
+    "'modules/character-build/character-build-facet-counts.js'",
+    "'modules/character-build/character-build-stats-view.js'",
+    "'modules/character-build/character-build-doll-preview.js'",
+    "'modules/character-build/character-build-template.js'",
+    "'modules/character-build-view.js'",
+    "'modules/character-build/character-build-tuning.js'",
+    "'modules/character-build/character-build-slot-transition.js'",
+    "'modules/character-build/character-build-pose.js'",
+    "'modules/character-build/character-build-projection.js'",
+    "'modules/character-build.js'"
+  ];
+  if(!inOrder(registryWorkbench,eagerWorkbenchClosure)
+      ||tuningFeatureClosure.concat(buildFeatureClosure).some(token=>registryWorkbench.includes(token))
+      ||!inOrder(featureLoader,tuningFeatureClosure)
+      ||!inOrder(featureLoader,buildFeatureClosure)
       ||!hasAll(css,['.equipment-tuning-commit','.equipment-tuning-main-icon','.equipment-tuning-convert-inspect','.workbench-modal[data-modal-kind="equipment-inspector"]']))throw new Error('lazy split assets, load order, or tuning inspector skin missing');
 }
 function edge(){return[

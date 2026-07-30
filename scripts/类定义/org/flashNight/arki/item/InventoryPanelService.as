@@ -147,6 +147,10 @@ class org.flashNight.arki.item.InventoryPanelService {
             return false;
         }
         var openRequestId:String;
+        if (source == "nativehud_equipment"
+                && (!supportsOpenRequestId || !hasOpenRequestId)) {
+            return false;
+        }
         if (hasOpenRequestId) {
             if (!supportsOpenRequestId) return false;
             if (!safeOpenRequestId(params.openRequestId)) return false;
