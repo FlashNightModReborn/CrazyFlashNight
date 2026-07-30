@@ -333,15 +333,59 @@ This train is retired by the policy gate; the producer/request itself did not
 fail, and no GitHub builder, quorum, preflight, promotion, deployment, or
 runtime/release-state mutation followed.
 
-The successor policy input links that production source file explicitly and
-binds cloud source ref
-`runtime-build-v2/20260730-player-info-nativehud-b0-v2-r2`. Before the r2
-freeze it passed the candidate production contract, the full isolated
-qualification (12/12 tests, 78/78 fail-closed cases, 8/8 canonical assets),
-the 8/8 positive/negative production-contract suite, and the full Launcher
-suite (1,747 pass + 3 opt-in skip / 1,750). The final F2 must still be built
-fresh in q4/w4 and pass 23/23 local and cloud policy/quorum `-VerifyOnly`.
-Never move or reuse the first tag, q3 CAS, local proof, or failed receipt.
+The successor policy input links that production source file explicitly.
+Final source F2 is
+`891d9b08dbd826d8b2624c6bdc59082b3db57ecd`, release tree
+`5b65f9fde417f35ce34012edf68fd9c899cb1813`, frozen by protected tag
+`runtime-build-v2/20260730-player-info-nativehud-b0-v2-r2`. Its q4 request is
+`6B5E9BDD5393553871C646952B1266E877D8B8941D50AB510B5387FC1261460D`,
+binding artifact source
+`6AAF891B6A27681B7493782FF9D85B3527DBD4B25AB086AABEDEEC02A062A4E0`,
+producer recipe
+`B97998EA7246D6AB667902BCBBD7994DFA5F658A37CFA427D2EEEABA6924DE28`,
+toolchain lock
+`7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`,
+policy
+`4F3F7749564CD82272B014C5EFF7A962FB63A533185AD3B27612C79CFF12744B`,
+and build identity
+`DAE8A71C0AE04AF1BD89B0076DB1EF6EF5DFEEC51C32843D300D868581568ED1`.
+
+The local X509 signer
+`EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`
+in `physical-host-b` passed 23/23 production policy; its 12,144 B receipt has
+SHA-256
+`91BBF333D4EC65A387D9A7CF94A73F8B43F54A77E05F7C684821F767FAF630D5`.
+The independent GitHub OIDC signer
+`1B2F3B53CC50695D620A90CE423BEF3FC55C0866AEE958E7A8042BE682185630`
+in `github-hosted-windows` also passed 23/23 in run `30502544175`; artifact
+`8744105960` has archive digest
+`9D3B5B760AFEABEB3F7E89D5490421B3F44BAB777EF4A4FA4A4DF4C325D490F3`,
+and its 11,884 B policy receipt has SHA-256
+`454EA66A721BC59E63E81169F5E4832490788FDC21CC2C37925E9D0B76FB2C9F`.
+Both builders produced the same 33-file payload closure
+`051FA840019E24763724B5DA0868486AF94322F3BB990B1354D181989AA94D2C`,
+Core SHA-256
+`6BBE712CB0F97AC127FA3DF18158CA3976D7A03A64DC8121794E7C7C1E18C6CC`,
+and manifest SHA-256
+`53F44B8188A425728975197CD8B38FF5CE523B0306CA2EB8EE1ECBD76FF77261`.
+Here 33 is the payload file count enumerated by the manifest; the manifest
+itself is not a 34th payload file.
+
+The r2 machine result selected for the same closeout commit is
+`evidence/b0-06/runtime-promotion-preflight-main-space-v2.json`: 15,128 B,
+SHA-256
+`2D0A2A862ADFFF4254FB8AFB910B1529568DABD33350AE8E735AC20F52B47356`,
+schema `cf7-runtime-promotion-preflight.v2`, status `preflight-passed`, and
+`proofCount=2`. This closeout unit contains both the report and its
+current-truth documentation; only a commit carrying both qualifies as tracked
+evidence, while either item alone remains incomplete. It was produced with
+`-VerifyOnly`; runtime/release-state
+mutation, promotion, deployment, and reusable-as-promotion-input flags are all
+false. The result therefore closes only `candidate_built` reproducibility:
+it is still `source-ahead / NOT_DEPLOYED`, with no `candidate_executed`,
+`e2e_verified`, `promoted`, or `standard_entry_verified` claim. It does not
+claim that historical v1 Runtime Lane C was rerun on F2. Never move or reuse
+the first tag, q3 CAS, local proof, or failed receipt.
 
 ## Historical v1 F source freeze and non-deploying builder quorum
 
@@ -620,13 +664,16 @@ the active visual reference.
 
 The repository-owned Playwright/local-Edge harness remains valid for
 deterministic Web/direct-edge rendering without an interactive App backend.
-As of 2026-07-29 the ChatGPT App exposes Computer Use/Browser skills, but no
-control session has yet been initialized; skill visibility is not backend or
-desktop evidence. FFDec
-remains a binary-SWF diagnostic, and the formal runner exercises real HWND/ULW
-calls with an offscreen owner. None of these routes proves visible desktop DWM
-composition, z-order/occlusion over the running game, a real hand click,
-game-scene composite, temporal smoothness, or aesthetic quality. Those items
-remain mandatory human evidence. Independently, the Launcher result remains
-`NOT_DEPLOYED`; human acceptance is still pending and does not itself imply a
-deployment.
+In the current agent session the Computer Use and Browser skills were exposed,
+but initialization found neither an attached native desktop control pipe nor
+an interactive browser backend. Skill visibility and unrestricted workspace
+access therefore do not establish a control session or desktop evidence.
+FFDec remains a binary-SWF diagnostic, and the formal runner exercises real
+HWND/ULW calls with an offscreen owner. None of these routes proves visible
+desktop DWM composition, z-order/occlusion over the running game, a real hand
+click, game-scene composite, temporal smoothness, or aesthetic quality. Those
+items remain mandatory human evidence. Automated gates are closed, so the
+strict overall state is `awaiting_human_acceptance; human_exit_blocked`.
+Independently, the Launcher result remains `candidate_built / NOT_DEPLOYED`;
+human acceptance is still pending and does not itself imply candidate
+execution, E2E, promotion, or deployment.
