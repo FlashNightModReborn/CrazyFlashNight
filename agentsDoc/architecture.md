@@ -3,6 +3,8 @@
 **文档角色**：系统拓扑 canonical doc。  
 **最后核对代码基线**：commit `f01f4b121a4ceebd7dae051f14bb511c5ae3f1cb`（2026-07-30）已由 immutable tag `runtime-build-v2/20260730-workbench-no-as2-fallback-v1`、request `3BEBE136773D2C09022F01E5B3C176A788FE3D84E453F6500C6C560F03184C7B` 完成 v2 promotion；正式 runtime 绑定 identity `58F1C3F3B128B22CEA4EDAEF74B402976D13ACB09D4A934240FCCFF3FA7C0465`、closure `B529199F6CC00BC0687E8EED6950C6490F239C56E2A2D4AC27E90366CE2C8CAF` 与 Core `565C1F9710421E6B6CC5CB6DDA05DE36B8F1B22B3D7A7CA19617F9786C7D8A4B`。标准入口 attempt `8baf52bbcceb452da32da641e58d2922` 达到 `standard_entry_verified`，但只验证 production `EQUIPMENT_TUNING` opener → exact workbench instance → 同实例首个权威 snapshot → supported application shutdown；不外推为 Character、Materials、Intelligence、PlayerInfo、业务写、普通 panel close 或持久化专项验收。当前 cut 已退役仓库、装备、NPC 商店、合成与技能教师的全屏 legacy renderer/fallback，收口 main 资产可达闭包并通过 GUI 人工验收；首轮同身份 attempt `bfb6bfe515f14af58f9b4096c8c539dd` 的 watchdog fail-closed 证据继续保留。
 
+**Agent Runtime F7 source freeze（2026-07-31）**：最终 C1 source commit `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 冻结本轮 C# Host/CF7A、trusted Core unattended runner、Wings structured action、Hair transaction 与 scoped trace 实现；一期 ADR 文件名保留首次冻结日 `2026-07-30`，避免 canonical 路径与链接漂移。当前 documentation-only D1 只引用其父 C1，不能在自身内容中记录尚未知的 D1 commit hash。exact C1 tree `7362881e96d8ed0f9c20ccae580426c522f14946` 已通过 production policy **26/26**，达到 `candidate_built`：identity `F67F1054E7DD19600138C3196D0798CFA487701CB7143C4DDFD2DC426D26E372`、closure `3C2CA3E6E935BF23A061228ED3D9BDA3823E81186057E8C86118FAD5C7CEBF0D`、Core EXE SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`。当前非交互会话 `GetForegroundWindow()==0`，严格 `automation/start.ps1 -CandidateRoot` 入口按固定 30 秒凭据门返回 `trusted_runner_credential_timeout`，未产生 completion evidence，故未达到 `candidate_executed`、`e2e_verified` 或 `promoted`；状态仍为 `NOT_DEPLOYED`，上一段正式 runtime 身份不变。
+
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
 ## 1. 总体分层
@@ -15,7 +17,7 @@
                 │ XMLSocket / HTTP / 本地文件 / 启动参数
 ┌───────────────▼──────────────────────────────────────┐
 │ Guardian Launcher Host (C# / WinForms / net10.0-win) │
-│ 启动链路、TaskRegistry、音频、overlay 宿主、存档决议   │
+│ 启动链路、TaskRegistry、Agent Runtime/Wings、UI 宿主   │
 └───────────────┬──────────────────────────────────────┘
                 │ WebView2 postMessage / bridge
 ┌───────────────▼──────────────────────────────────────┐
@@ -26,6 +28,13 @@
 ┌───────────────▼──────────────────────────────────────┐
 │ Tooling & Native                                    │
 │ TypeScript/V8、Rust sol_parser、PowerShell、CLI      │
+└──────────────────────────────────────────────────────┘
+
+外部 developer adapters / trusted Core unattended runner
+                │ CF7A v1 当前用户本地命名管道
+                ▼
+┌──────────────────────────────────────────────────────┐
+│ Guardian Launcher Host                               │
 └──────────────────────────────────────────────────────┘
 ```
 
@@ -55,6 +64,7 @@
   - Flash Player SA 启动、预热、嵌入与 reveal
   - XMLSocket / HTTP 本地总线与 `TaskRegistry`
   - 音频系统、Notch / Toast / Web overlay 宿主
+  - standard normal 的 CF7 Agent Runtime/Wings composition；显式 legacy HTTP 与 `--bus-only` 不创建该控制面
   - Native HUD 组合：`NativeHudOverlay` 是右侧条件槽的唯一 owner，按 `transactionDecision > actionableNotice > contextHint > hidden` 计算一次并把同一 `RightContextSlotOwner` 投影给 RightContext 与 SafeExit；透明 `CompositeBounds` 只负责合成范围，不拥有命中
   - 启动前存档决议与 Protocol 2
 - 当前存档 authority 边界：
@@ -91,11 +101,28 @@
 
 ### Flash ↔ Launcher
 
-- 主通道：XMLSocket（快车道前缀 + JSON 路由）
-- 辅助通道：HTTP（端口发现、状态查询、日志与辅助接口）
+- 主通道：XMLSocket（快车道前缀 + JSON 路由）。standard normal 在 accepted loopback tuple 上解析 owner，并只接受 GameLaunchFlow 当前 exact Flash PID/start-time/path；校验先于旧连接替换、generation/ready 与 dispatch。显式 legacy/`--bus-only` 才使用 loopback compatibility authority。
+- 辅助通道：HTTP。standard normal 只保留 Flash 窄 probe/log/crossdomain，privileged legacy 路由为 `DenyAll`；只有显式 `--legacy-http-automation` / `--bus-only` 签发进程生命周期 credential，同时不创建 Agent Runtime/rendezvous/Wings。
 - 注册中心：`launcher/src/Bus/TaskRegistry.cs`
 - 集成测试入口：`--bus-only`
 - 鼠标手型迁移边界：AS2 `_root.鼠标` 是纯脚本兼容代理，只保留状态接口与物品拖拽容器；几何命中统一走 `_root._xmouse/_ymouse` 点命中和 `interactionMouseDown` / `interactionMouseUp` 事件，不再把 `_root.鼠标` 作为 `hitTest` 目标；`cursor_control` 只传低频状态。真实 cursor 视觉坐标由 Launcher 低级鼠标 hook / 坐标泵采样，视觉只由 C# `CursorOverlayForm` 原生 layered window 接管并按 monitor DPI 缩放；Web DOM 只通过 `cursorFeedback` 回传 hover/press 状态变化，不承担 cursor 视觉 fallback；AS2 仅在物品拖拽期间同步图标容器位置，不恢复旧鼠标视觉。
+
+### 外部 Agent / Wings ↔ CF7 Agent Runtime
+
+- source freeze `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 只在 standard normal 组合运行时。developer JSONL/MCP 客户端通过受当前用户 ACL 保护的 rendezvous 和 CF7A 命名管道接入；无人值守安全身份是已选定并验证完整 manifest/payload closure 的 exact `Core.exe --agent-unattended-runner`，Node/PowerShell 只可包装该固定入口，不能提供 principal 或替代 Core provenance。
+- `PipeOptions.CurrentUserOnly` 只保证当前用户边界；Host 仍从 OS peer token 独立验证 PID/start time、SID、Windows session 与 elevation，Hello 自报值不参与信任。协议 `1.0` 仍是 pre-release；任何 wire-breaking 都必须原子更新 schema/registry/server/JSONL/MCP，不允许部分 rollout。
+- session/surface 信任使用 exact process incarnation：可执行路径 + PID + process start time + HWND/owner relation，拒绝标题、EXE 名、PID 单项或重用 HWND。Web `activePanel` 精确为 `{name,instanceId,targetId}`；NavigationStarting 立即推进 document generation，使旧 node/observation 失效。读操作 `window.state` 与写操作 `window.activate` 是两个独立 method：后者必须经过 observation、独占 lease、dispatch 前重验、exact target activator 与 dispatch 后 exact binding/focus 复核；可能已 dispatch 但无法证实时只返回 unknown/reconcile。
+- `business_modal` 仍是 wire 闭集 selector，但 production 解析结果固定为空。Launcher-owned 中性同意卡内部登记为 `BusinessModal + HumanOnlySecuritySurface`，不进入 discover/capture/input；foreign modal 或第二个 security surface 出现即 fail closed。
+- `trace.export` 只对显式 enrolled developer 的 `DeveloperInteractive` 会话开放，并要求 `trace.export + observation.export`、exact `consentPurpose` capability，以及同 principal/session 的 `data.export + allowExport + consent receipt` grant。输出是 Runtime-owned、最多 8 MiB、先以 owner staging marker 原子取得共同 process-incarnation pending marker、再把临时文件同目录原子改名的 JSONL；可控失败只清理本调用 owned files，删除受阻时保留 marker，由后续调用在 owner 已确定死亡或同进程 transaction 已退出后重试，owner 无法确认则跳过。无 marker 的 legacy `.tmp` 仅在取得独占打开后清理，无 marker 的 `.jsonl` 永不推断删除。marker 删除是发布线性化点；此前 crash 可回收，此后 response-loss 可能留下调用方未知但已发布的 artifact，单文件 move 不等于 filesystem/audit 跨资源事务。wire 只返回 artifact ID/name 与 scoped chain 元数据，不返回任意路径。
+- Wings 自由文本永远零执行。生产 `window.activate` 与 Hair 均由 Launcher-owned immutable chooser/intent、Launcher-owned human-only prompt、virtual authenticated connection、共享 validator/dispatcher/grant/lease/broker/audit/reconcile 和 trusted receipt projection 组成；prompt 绑定 exact Launcher-owned HWND/instance，foreign input 或第二 security surface 关闭事务。
+- Hair 保持 `expectedCurrentHair` CAS、focused runner、commit 零 replay、close/reopen instance 隔离和同领域 restore。已确认 commit 的 raw restore token 只在 terminal receipt 一次性交付；unknown receipt 不携 token，只有同 transaction 实例、同 connection/principal/session/lifecycle/target 且 preview/store 均仍精确时，reconcile 证明 committed 后才可从 lifecycle-local escrow 消费一次。同 Core session/lifecycle 内的 transaction service restart 只从对应 durable service/store 重建状态并继续 reconcile，不能恢复或重建旧实例的 raw token；新 service/transaction 实例必须 fail closed。Core 重启还会改变 lifecycle 并拒绝旧事务。restore 前产品先 reconcile 持久记录为 `Committed`，无法确认时保留 commit receipt、绝不重放 commit。
+- `LeaseDescriptor.purpose` 必填，`renewAfter` 可选；shutdown descriptor 必须省略 `renewAfter`。`session.shutdown` 只允许 `DeveloperInteractive` / `UnattendedTest`；请求的 exact target scope 必须恰含当前一个 `RuntimeOwned` Launcher target，这是该 scope 的 cardinality，不推导整个 session 全局只有一个 Launcher surface。专用 lease 的唯一 capability/operation 为 `session.shutdown`、TTL≤30 秒、one action、no renew。`PlayerAssist` 只有语法有效、已认证且通过全部先行授权门、实际到达 issuance policy 的 acquire 才返回 `consent_required`；畸形、越权或直接 action 可更早失败。
+- lease live table 只保留 active 或尚在执行/交付的记录；terminal tombstone 按 FIFO 最多 256 条，已 committed shutdown session 的独立 latch 最多 64 条，容量溢出后转为全局 fail-closed，任何 eviction 都不能重新开放写入。renew/release 失败后的资源 cleanup 只允许 exact active owner，attacker、已 consumed 或仍 pending 的 lease 都不能借失败路径清理他人资源。
+- 同 session execution reservation 只归成功 consume 的 action owner，并从 consume 保持到 JSON 与可选 binary 等全部 CF7A response frames 完成 `WriteAsync` commit 或显式 abort；失败 consume 从未拥有 reservation，不能释放、abort 或覆盖其他 owner。abort callback 返回 false 或抛异常时 reservation 保持并标记 continuity lost；完整 frames 已写出后 commit callback 返回 false 或抛异常时字节不可回滚，只能标记 continuity lost，且不能保证 SafeExit continue。action 的唯一绝对 deadline 在完整 request frame 收到时开始，覆盖 parse、admission、scheduler、performer、response writer lock 与全部 response-frame `WriteAsync`，任何阶段不得重置。
+- SafeExit 只先 arm。Gateway 在首个成功 response 字节前顺序执行两道 claim：先 claim exact audit response identity，再 claim shutdown lease write ownership 与 human-input sequence fence；在 delivery ownership 建立前，external input 会撤销所有 active / execution-pending / delivery-pending / queued 且尚未取得交付写所有权的工作。第二道失败时必须保持零成功字节并同步 abort；一旦写所有权在首字节前成功 claim，随后 human override 不得回滚它，terminal 收束只归 response-completion state machine。
+- `action_response_written` / `action_response_unknown` 是 reserved audit facts，generic append 必须拒绝；只有绑定 exact pending terminal identity 的专用 claim/complete 路径可以追加。DeliveryUnknown 必须投影 `EvidenceKind.ReconciliationRequired`。Action ledger 对已收束结果 replay 原样返回 retained `ContractReceipt`（包括 Unknown），不得再次 dispatch 或二次合成。全部 required frames 完成 `WriteAsync` 只代表 server-side delivery disposition，不是 peer acknowledgement；正常追加唯一 `action_response_written`，写失败追加 exact `action_response_unknown`。后置 Flush、post-write audit append 或 commit callback 失败都不回滚已写字节；audit append 失败只允许 continuity lost、pending removal 与 `truncated` segment，后续 dispose 不得再合成 Unknown。
+- trusted Core runner 在每次完整 surface refresh（含周期 refresh）重试 credential publication；Host 以 single-flight 锁串行 publication，并在 teardown 先停止 admission/周期 refresh、再越过 publication barrier 后才 dispose 依赖。credential acquisition 使用 Core 内部固定、单调计时的 30 秒上限，调用方不可配置；它独立于 bootstrap request/session 最长 10 分钟寿命。退出观察固定 `allowValidatedFlashKeyframeFallback=false`，只信 exact target 的 `SourceLayer.Launcher` frame；shutdown lease 与 receipt 必须逐字段严格匹配。JSONL/MCP stdout 始终 protocol-only，不输出 credential、secret 或完成证据。只有 adapter exit code 0、strict shutdown receipt、同一 exact owned child exit code 0 且未发生 forced recovery 时，runner 才向 stderr 输出一行不超过 16 KiB 的非秘密证据，字段限于 schema、runtime mode、process path、Core SHA-256、build identity、payload closure、guardian PID 与 terminal receipt。
+- 本节仅描述 F7 source truth 与分层候选证据。Launcher fresh 全树为 **2678 passed + 3 explicit opt-in skipped / 2681 total，0 fail**，仓库 SDK resolver **7/7** 并精确解析 `.NET SDK 10.0.300`，Node client **37/37**，TrustedRunner 过滤为 **48/48**。exact C1 候选通过 production policy **26/26**，达到 `candidate_built / NOT_DEPLOYED`；严格入口在当前无前台会话按设计失败关闭且未产生 completion evidence，所以没有达到 `candidate_executed`、`e2e_verified` 或 `promoted`。正式 runtime 不变，当前单显示器证据不能替代物理双屏 gate。
 
 ### Save Snapshot / File-Custody Boundary
 

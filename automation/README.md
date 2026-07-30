@@ -3,6 +3,8 @@
 **文档角色**：启动与运行自动化入口。  
 **最后核对代码基线**：source commit `f01f4b121a4ceebd7dae051f14bb511c5ae3f1cb`（tag `runtime-build-v2/20260730-workbench-no-as2-fallback-v1`、request `3BEBE136773D2C09022F01E5B3C176A788FE3D84E453F6500C6C560F03184C7B`）已完成本地 X509 + GitHub OIDC/Sigstore 双故障域 promotion。exact isolated candidate 与无参 `automation/start.ps1` 正式入口 attempt `8baf52bbcceb452da32da641e58d2922` 均完成 production Equipment Tuning opener → exact workbench instance → 同实例首个权威 snapshot → supported application shutdown 的只读纵切，故 Launcher 生命周期在该范围内为 `standard_entry_verified`；GUI 人工验收已通过，但这不等于 Character Build / Workbench 全业务、写入、普通关闭、持久化或各功能专项 standard-entry 验收。首轮同身份 attempt `bfb6bfe515f14af58f9b4096c8c539dd` 的 reveal watchdog 失败保留为 fail-closed 证据。PlayerInfo F2/r2 自身仍是历史 non-deployment train；B0 仍为 `b0_accepted`、oracle 仍为 `oracle_frozen_for_b0`。精确证据见 [runtime v2 深层文档](../docs/runtime-build-reproducibility.md)、[本轮 no-AS2-fallback runtime 发布](../docs/evidence/workbench-no-as2-fallback-runtime-release-2026-07-30.md)和 [PlayerInfo 工具 README](../tools/player-info-hud/README.md)。
 
+**Agent Runtime F7 source freeze（2026-07-31）**：最终 C1 source commit `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 只冻结源码；一期 ADR 文件名保留首次冻结日 `2026-07-30`，避免 canonical 路径与链接漂移。当前 documentation-only D1 只引用其父 C1，不能在自身内容中记录尚未知的 D1 commit hash。exact C1 tree 已通过 production policy **26/26**，达到 `candidate_built / NOT_DEPLOYED`（identity `F67F1054E7DD19600138C3196D0798CFA487701CB7143C4DDFD2DC426D26E372` / closure `3C2CA3E6E935BF23A061228ED3D9BDA3823E81186057E8C86118FAD5C7CEBF0D`）；严格入口在当前无前台会话按固定凭据门失败关闭，未达到 `candidate_executed`、`e2e_verified` 或 `promoted`，正式 runtime 与上段正式身份保持不变。
+
 本目录只负责 **运行与启动自动化**。  
 Flash CS6 编译 smoke、JSFL、trace、截图与计划任务细节，统一放在 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
 
@@ -70,9 +72,20 @@ cd "<项目根目录>"
 .\automation\start.ps1
 # 低层诊断兼容入口：只接受已知的绝对 candidateRoot
 .\automation\start.ps1 -CandidateRoot "<absolute candidateRoot>"
+
+# trusted Core unattended：formal runtime
+node tools/cf7-agent/unattended.js --adapter jsonl --slot cf7_agent_equipment_tuning
+
+# trusted Core unattended：显式 candidate ID
+node tools/cf7-agent/unattended.js --adapter mcp --slot cf7_agent_character_build --candidate-id "<candidateId>"
+
+# 仅供尚未迁移的旧 HTTP runner；该进程不创建 Agent Runtime/Wings
+.\automation\start.ps1 -EnableLegacyHttpAutomation
 ```
 
 `automation/start.ps1` 无参数时不会扫描或猜选 `launcher/bin`、`tmp/runtime-candidates/` 中的开发输出。源码领先于正式二进制时，它仍运行上一次已 promotion 的身份。日常开发不再要求人工复制 candidateRoot；`start.ps1 -CandidateRoot` 仅保留给调试指定产物等低层场景。
+
+`-UnattendedSlot` 与 `-UnattendedAdapter jsonl|mcp` 选择 trusted Core runner；固定 allow-list 为 `cf7_agent_equipment_tuning`、`cf7_agent_arena_calibration`、`cf7_agent_character_build`、`cf7_agent_loot_target_full_v1`，不能由 caller 提交 principal、capability、路径或 legacy flag。formal/candidate 均先校验完整 v2 manifest inventory、Core row/hash/size、build identity、payload closure 与无 reparse 的固定目录；随后执行所选 payload 自身的 `Core.exe --agent-unattended-runner`。
 
 启动链负责：
 
@@ -83,7 +96,7 @@ cd "<项目根目录>"
 - `dev.ps1` 把选中的精确 candidate 交给 `start.ps1 -CandidateRoot`；后者只接受本仓 v2 candidate 的绝对 canonical 路径，使用候选自身 bootstrap `--verify-runtime-only`，拒绝 reparse / metadata / manifest / Core 字节身份漂移
 - 清理已失效的 `launcher_ports.json`，并等待新的端口文件写入后再返回；若 Core 进程提前退出或 30 秒内未写端口，脚本返回失败
 
-两种运行模式启动前后都打印并硬核验 `runtimeMode`（`formal_runtime|isolated_candidate`）、`processPath`、`coreSha256`、`buildIdentity`、`payloadClosure`；详见 [`launcher/README.md`](../launcher/README.md#离线开发入口与身份绑定候选)。统一状态为 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`；只有 promotion 后再由无参数标准入口验证同一身份，才可称“已部署 / 正式验收”。
+普通 formal/candidate 启动模式会打印并硬核验 `runtimeMode`（`formal_runtime|isolated_candidate`）、`processPath`、`coreSha256`、`buildIdentity`、`payloadClosure`；详见 [`launcher/README.md`](../launcher/README.md#离线开发入口与身份绑定候选)。trusted unattended 模式的 stdout 必须保持 JSONL/MCP protocol-only，身份不靠 stdout 自报，而由启动前 verifier、Core 最早分支自校验与 Host 的 exact peer/nonce/build/closure 绑定共同证明。统一状态为 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`；只有 promotion 后再由无参数标准入口验证同一身份，才可称“已部署 / 正式验收”。
 
 ### 全员直推与 native 事后审计
 
@@ -101,9 +114,31 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\audit-main-bran
 
 native 审计边界、正式 release 双生产者共识、三条零 Actions ruleset 与 GitHub Free 无服务端 path restriction 的残余风险，统一看 [协作者直推与 native/runtime 发布边界](../docs/contribution-workflow.md)。远端规则漂移只读复核：`powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\tools\audit-main-branch-admission.ps1`。
 
-### 无人值守运行态控制面
+### Trusted Core Agent 无人值守平面
 
-`agent_control` 是 localhost HTTP `/task` 的窄化控制面，不是任意 GUI/DOM 遥控器。通用 `readyForRuntimeAutomation` 只在 Launcher Ready、socket、安全 snapshot 决议、AS2 对同一 `attemptId/savePath` 的 `SaveManager.loadAll()` ack，以及 Host 从**非 legacy 的同一个 UiData 包**实收 `s:1|ga:<当前 save attemptId>` 后成立；`status.gameEnteredObserved/gameEnteredAttemptId` 显式暴露最后一项，裸 `s:1`、缺 `ga`、stale `ga` 或 legacy 包均不能解锁，缺失时 blocker 为 `game_enter_not_observed`。每次 `start` 都无条件清除旧 `gameEnteredObserved/gameEnteredAttemptId` 并重新上锁；实收 `s:0` 只作防御性清锁，目前没有现役正常退出调用它的证据。arena 在此基础上另加 arena status，继续使用 `readyForArenaCalibration`。
+该平面的安全身份是选定 runtime payload 内的 C# Core，不是 `tools/cf7-agent/unattended.js`、`automation/start.ps1`、父进程命令行或可修改的 Node/PowerShell 依赖。标准 `start.ps1` 在首次执行所选 Core 前先以仓库 verifier + 所选 native bootstrap 校验完整 inventory/native payload；Core 启动后的最早 `Main` 分支再对 selected on-disk process path/hash/size 与 manifest/payload closure 做纵深复验，它不是“二进制执行前自证”。随后 Core 生成 runner nonce/challenge、固定 client identity 和受限 bootstrap evidence；Host 只接受同一已验证 runner PID/start/path、nonce、slot、build identity 与 closure。JSONL/MCP 仅转换 stdio，不扩 capability。
+
+runner 创建并拥有一个新的 standard-normal Guardian，会话不与现有 Launcher 复用；四个固定专用槽以外全部拒绝，legacy HTTP 与 trusted Agent unattended 不能同时启用。正常 stdin 结束后 runner 必须请求 `allowValidatedFlashKeyframeFallback=false`、exact scope 中恰含当前一个 `RuntimeOwned` Launcher target 的 observation；该 cardinality 只约束本次 scope，不表示整个 session 全局只有一个 Launcher surface。只接受 exact target 的 `SourceLayer.Launcher` frame；Flash source 或 fallback frame 都不是退出 authority。shutdown lease 必须逐字段严格匹配 active `UnattendedTest`、purpose `Shutdown`、省略 `renewAfter`、exact owner/principal/session/attempt/target、singleton capability/operation、one action 与 issuer receipt。runner 发送 supported `session.shutdown` 后，terminal receipt 必须绑定同 action/target/before observation，并精确为 `terminal=true`、`outcome=input_dispatched`、`evidenceKind=broker_dispatch`、`reasonCode=shutdown_requested`、`reconcileKind=none`、`retryable=false`、`focusVerified=false`、`leaseState=consumed`；完整严格 receipt 后还必须观察同一 exact owned child 以 exit code 0 正常退出。
+
+Host 侧 `LeaseDescriptor.purpose` 必填、`renewAfter` 可选，shutdown descriptor 必须省略 `renewAfter`；shutdown 只允许 `DeveloperInteractive` / `UnattendedTest`，且请求的 exact scope 恰含当前一个 `RuntimeOwned` Launcher target，唯一 operation 为 `session.shutdown`、TTL≤30 秒、one action、no renew。只有语法有效、已认证、完全授权且到达 issuance policy 的 PlayerAssist acquire 返回 `consent_required`；畸形、越权或直接 action 可更早失败。lease live table 只保留 active 或仍在执行/交付的记录；terminal tombstone 是 FIFO 256，committed-shutdown session latch 是 64，后者溢出即全局 fail-closed，eviction 永不重新开放写入。renew/release 失败后的 cleanup 只属于 exact active owner，attacker、consumed 或 pending lease 不能借此释放资源。
+
+每个 action 的唯一绝对 deadline 从完整 request frame 收到时开始，覆盖 parse、admission、scheduler、performer、response writer lock 与全部 frame `WriteAsync`，不得分阶段重置。成功 consume 的 owner 独占 session execution reservation 到全部 response frames 完成或显式 abort；失败 consume 从未拥有 reservation。abort callback 返回 false 或抛异常时 reservation 保持并标记 continuity lost；完整 frames 已写出后 commit callback 返回 false 或抛异常时字节不可回滚，只能标记 continuity lost，且 SafeExit continue 不再有保证。
+
+SafeExit 只先 arm；首个成功字节前先 claim audit response identity，再 claim shutdown lease write ownership 与 human-input sequence fence。在写所有权建立前，external input 会撤销全部 active / execution-pending / delivery-pending / queued 且尚未 delivery-write-owned 的工作；第二道 claim 失败保持零成功字节并同步 abort。一旦写所有权成功 claim，随后 human override 不得回滚，terminal 收束只归 response-completion state machine。全部 required frames 的 `WriteAsync` 完成只表示 server-side delivery disposition，不是 peer acknowledgement；后置 Flush、post-write audit append 或 commit callback 失败均不回滚已写字节。
+
+`action_response_written` 与 `action_response_unknown` 是 reserved audit facts，generic append 必须拒绝，只有 exact pending terminal identity 的专用 claim/complete 路径可追加。DeliveryUnknown 一律使用 `EvidenceKind.ReconciliationRequired`。Action ledger replay 必须原样返回 retained `ContractReceipt`（包括 Unknown），不得再次 dispatch 或二次合成。post-write audit append 失败只标记 continuity lost、移除 pending 并以 `truncated` segment 收束，后续 dispose 不得再合成 Unknown。
+
+Host 在每次完整 surface refresh（含周期 refresh）重试 unattended credential publication；publication 以 single-flight 锁串行，teardown 先停止 admission/周期 refresh，再越过 in-flight publication barrier 后才 dispose bootstrap/authenticator。credential acquisition 使用受信 Core 内部固定的单调 30 秒上限，caller 没有覆盖参数；它独立于最长 10 分钟的 bootstrap request/session lifetime。
+
+每个已转发的 JSONL call 都有 30 秒 wall-clock 硬截止；每个 MCP `tools/call` 使用从 handler 启动贯穿 buffered response copy/flush 的同一绝对 30 秒预算，active-loop 的并发错误/控制输出复用剩余预算，initialize/tools-list/protocol-error 等 idle 输出则各有独立 30 秒 output budget。完整 shutdown transcript 另有 30 秒截止；截止时取消调用、异步关闭认证 pipe 且不伪造成功/错误 response，再进入 bounded exact-owned-child recovery，Kill 后 5 秒仍无法观察 exact child 退出必须显式失败。Node wrapper 仅把 `adapter/slot/candidateId` 映射到固定系统 PowerShell 与 `start.ps1` 参数数组，不能成为 provenance 或授权证据。
+
+trusted runner 的 stdout 始终只承载 JSONL/MCP protocol，不输出 credential、secret 或完成证据。只有 adapter exit code 0、strict shutdown receipt、同一 exact owned child exit code 0 且没有 forced recovery 时，才在 stderr 输出单行、不超过 16 KiB 的非秘密 completion evidence；字段限于 schema、runtime mode、process path、Core SHA-256、build identity、payload closure、guardian PID 与 terminal receipt。credential timeout、任一非零退出、receipt 不匹配或 forced recovery 都失败，不得记作 E2E 成功。
+
+source-level 测试必须覆盖 formal/candidate 固定路径、完整 manifest inventory、Core identity、nonce replay/tamper、slot allow-list、JSONL/MCP lifecycle/framing、正常 protocol shutdown、同步返回 Task 前阻塞、active response/concurrent error/idle lifecycle stdout 背压、无响应 JSONL call、无响应 MCP call/EOF、无响应 shutdown transcript、认证 pipe 的 bounded abort 和异常 exact-child cleanup。F7 fresh 证据为 Launcher 全树 **2678 passed + 3 explicit opt-in skipped / 2681 total，0 fail**、仓库 SDK resolver **7/7** 并精确解析 `.NET SDK 10.0.300`、Node client **37/37**、TrustedRunner 过滤 **48/48**。exact C1 candidate 的 production policy receipt 为 **26/26**（receipt SHA-256 `CC7ED850D18D2C72947DA69E74C28E529A6DC988CA37AAE4D486C43954FAB79B`），Core EXE SHA-256 为 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`，因此只达到 `candidate_built / NOT_DEPLOYED`。当前执行会话 `GetForegroundWindow()==0`；用该 exact candidate 走 `start.ps1 -CandidateRoot ... -UnattendedAdapter jsonl` 得到 `trusted_runner_credential_timeout`，未生成 completion evidence，post-check 无候选/Flash/热键进程、`launcher_ports.json`、live bootstrap request、credential 或 rendezvous 残留。这是 fail-closed 负向证据，不是 `candidate_executed`、`e2e_verified` 或部署；正式 runtime 保持不变。
+
+### Legacy HTTP 无人值守运行态控制面
+
+`agent_control` 是显式 `-EnableLegacyHttpAutomation` 进程中的 localhost HTTP `/task` 窄化兼容面，不是 Agent Runtime，也不是任意 GUI/DOM 遥控器。该模式签发进程生命周期 credential，并且不创建 Agent Runtime/rendezvous/Wings；Node/PowerShell runner 名称、slot 文本或 parent command line 都不能把它升级成 unattended principal。通用 `readyForRuntimeAutomation` 只在 Launcher Ready、socket、安全 snapshot 决议、AS2 对同一 `attemptId/savePath` 的 `SaveManager.loadAll()` ack，以及 Host 从**非 legacy 的同一个 UiData 包**实收 `s:1|ga:<当前 save attemptId>` 后成立；`status.gameEnteredObserved/gameEnteredAttemptId` 显式暴露最后一项，裸 `s:1`、缺 `ga`、stale `ga` 或 legacy 包均不能解锁，缺失时 blocker 为 `game_enter_not_observed`。每次 `start` 都无条件清除旧 `gameEnteredObserved/gameEnteredAttemptId` 并重新上锁；实收 `s:0` 只作防御性清锁，目前没有现役正常退出调用它的证据。arena 在此基础上另加 arena status，继续使用 `readyForArenaCalibration`。
 
 面板迁移可增加领域专用动作，例如装备调制的 `openEquipmentTuning`。该动作只接受与当前状态一致的 `expectedSlot/expectedAttemptId`，slot 必须为 `cf7_agent_*`，并固定发送正式 AS2 opener；客户端不能传任意 panel/initData。返回 `panel_open_requested` 只表示命令已发送，runner 还要等待 Host active panel instance 和该实例首个领域 snapshot。禁止直接调用 `PanelHost.OpenPanel`、Web `Panels.open`，也禁止通过 `/console` 调业务 preview/commit。
 
@@ -142,7 +177,7 @@ node tools/arena-calibration/run-unattended.js `
 
 `--slot` 缺省为 `cf7_agent_arena_calibration`，也可以显式传入；runner 会在启动前把该专用槽位从 `--seed-slot` 或最新有效 shadow 存档播种，并备份/移除目标槽位残留 SOL，避免复用运行中的旧 SOL。默认拒绝 `crazyflasher7_saves*` 正式槽位与 `--fresh`，除非显式传 `--allow-live-slot` / `--allow-fresh`，这两个开关只用于人工取证，不用于无人值守批跑。
 
-该脚本会在需要时调用 `automation/start.ps1` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；它必须在调用 `agent_control start` 前记录 `/logs` 水位，再观察到 start 后本轮新鲜 handoff 与水位后的真实 `[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared`，watchdog 不计入，缺失时报 `title_frame_not_observed`。随后才校验 exact slot / attempt 并只调用一次 agent enter。helper 先发正常入口同款 `notifyGameEntered()`，让同一 UiData 包携带 `s:1|ga:<attemptId>`，再 `gotoAndStop("读盘")`（已 loaded 时直接返回）。`readyForArenaCalibration` 必须同时满足安全 snapshot、同 attempt 的 `agent_runtime_status`、Host 的 `gameEnteredObserved=true` 且 `gameEnteredAttemptId` 精确匹配、socket 与 arena status，再调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
+该脚本会在需要时显式调用 `automation/start.ps1 -EnableLegacyHttpAutomation` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；它必须在调用 `agent_control start` 前记录 `/logs` 水位，再观察到 start 后本轮新鲜 handoff 与水位后的真实 `[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared`，watchdog 不计入，缺失时报 `title_frame_not_observed`。随后才校验 exact slot / attempt 并只调用一次 agent enter。helper 先发正常入口同款 `notifyGameEntered()`，让同一 UiData 包携带 `s:1|ga:<attemptId>`，再 `gotoAndStop("读盘")`（已 loaded 时直接返回）。`readyForArenaCalibration` 必须同时满足安全 snapshot、同 attempt 的 `agent_runtime_status`、Host 的 `gameEnteredObserved=true` 且 `gameEnteredAttemptId` 精确匹配、socket 与 arena status，再调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
 
 地图箱既有冻结证据分为自动门、精确隔离 candidate E2E 与正式标准入口三层。`node tools/test-agent-entry-contract.js` 静态锁定 notifier guard、`s:1|ga:<attemptId>` 同包与 `gotoAndStop("读盘")` 顺序；装备与斗兽 runner 的 `--check` 覆盖 post-watermark 真实 title-frame marker、watchdog 拒绝、`title_frame_not_observed`、fresh handoff、exact slot/attempt、single enter 和 attempt-bound `gameEnteredObserved`。地图箱隔离 candidate 以 build identity `7C72B92B0C1CF57EB9BC0D3C1024D31657EE52E6B13D7BBF9FDB94FD5A6186DB`、payload closure `7E5EDCD4FEA80E1269C0B8BCC325D1FE0994EE8C7321F0F71CB9AF4B369C4A44`、Core SHA-256 `3EB1D3910B764F0B7F9ACA1FA989A4D8732F75479E64325223F270502256A5DF` 在 attempt `82b9e602526c4e93a02d26aac0a44f20` 完成真人领取、满背包/整理背包、部分领取、情报上限、明确放弃、终态关闭、回到游戏与存盘，达到 `e2e_verified / NOT_DEPLOYED`；native bundle 不内嵌外部 `launcher/web`，Web 字节继续由 [地图箱实施与验收基线](../docs/地图资源箱-Web战利品工作台与开锁流程-前期调研-2026-07-17.md) 的源码哈希与 WebView2 实机日志绑定。随后同一 identity / closure 经 immutable request、production receipt、`builder-local-b` + GitHub OIDC quorum、strict verifier 与 promotion，正式无参入口 attempt `9e88d51425a54b8b84dff0aa21702eac` 完成真实地图箱领取、terminal close/unpause 与存盘，达到 `standard_entry_verified`；该次冷启动虽先出现 prewarm reveal watchdog，但真实 Flash `handoff` 与 `bootstrap_reveal_ready` 均在 runtime load 和真人业务操作前到达，因此成功结论不以 watchdog 为证据。
 

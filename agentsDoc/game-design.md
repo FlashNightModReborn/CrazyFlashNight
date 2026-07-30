@@ -25,6 +25,7 @@
 
 - **对话数据**：`data/dialogues/`
 - **支线规划**：`0.说明文件与教程/支线规划表.xlsx`
+- **Wings 桌宠 / Agent 一期方向**：[CF7 Agent Runtime 与 Wings Network 一期范围冻结 ADR](../docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)（F7 source freeze `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 已闭合中立 Agent Runtime、Wings Shell/Persona/offline backend、受限 lore projection、Launcher-owned structured action/receipt、production `window.activate` 与 Hair transaction 的源码纵切；当前 documentation-only D1 只引用父 C1。exact C1 候选已达到 `candidate_built / NOT_DEPLOYED`，但严格入口在当前无前台会话按凭据门失败关闭，未取得 `candidate_executed` / 实机 E2E / promotion / 标准入口证据。Wings 是复用项目中立底座的受限叙事客户端，自由文本永远零执行；桌宠口吻/视觉与最终 Boss 机制尚未冻结，既有剧情真相仍以 worldbuilding 权威路由为准）
 
 ## 4. 关卡与环境
 
