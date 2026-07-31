@@ -127,6 +127,189 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
         }
 
         [Fact]
+        public async Task ShutdownRetriesCaptureUnavailableAndReusesBindings()
+        {
+            (
+                ActionReceipt receipt,
+                Exception failure,
+                IReadOnlyList<string> methods) =
+                    await RunShutdownScenarioAsync(
+                        "capture_retry_success",
+                        CancellationToken.None);
+
+            Assert.Null(failure);
+            Assert.NotNull(receipt);
+            Assert.Equal(
+                new[]
+                {
+                    AgentMethodsV1
+                        .ObservationGrantIssue,
+                    AgentMethodsV1
+                        .ObservationCapture,
+                    AgentMethodsV1
+                        .ObservationCapture,
+                    AgentCapabilitiesV1
+                        .LeaseAcquire,
+                    AgentCapabilitiesV1
+                        .SessionShutdown
+                },
+                methods);
+        }
+
+        [Fact]
+        public async Task ShutdownRetriesLeaseInputNotQuiescentAndReusesBindings()
+        {
+            (
+                ActionReceipt receipt,
+                Exception failure,
+                IReadOnlyList<string> methods) =
+                    await RunShutdownScenarioAsync(
+                        "lease_retry_success",
+                        CancellationToken.None);
+
+            Assert.Null(failure);
+            Assert.NotNull(receipt);
+            Assert.Equal(
+                new[]
+                {
+                    AgentMethodsV1
+                        .ObservationGrantIssue,
+                    AgentMethodsV1
+                        .ObservationCapture,
+                    AgentCapabilitiesV1
+                        .LeaseAcquire,
+                    AgentCapabilitiesV1
+                        .LeaseAcquire,
+                    AgentCapabilitiesV1
+                        .SessionShutdown
+                },
+                methods);
+        }
+
+        [Theory]
+        [InlineData(
+            "capture_nonretryable",
+            "trusted_runner_shutdown_capture_failed",
+            2)]
+        [InlineData(
+            "capture_wrong_retryable_reason",
+            "trusted_runner_shutdown_capture_failed",
+            2)]
+        [InlineData(
+            "lease_nonretryable",
+            "trusted_runner_shutdown_call_failed:",
+            3)]
+        [InlineData(
+            "lease_wrong_retryable_reason",
+            "trusted_runner_shutdown_call_failed:",
+            3)]
+        public async Task ShutdownDoesNotRetryUnexpectedRpcErrors(
+            string fault,
+            string expectedMessage,
+            int expectedMethodCount)
+        {
+            (
+                ActionReceipt receipt,
+                Exception failure,
+                IReadOnlyList<string> methods) =
+                    await RunShutdownScenarioAsync(
+                        fault,
+                        CancellationToken.None);
+
+            Assert.Null(receipt);
+            InvalidOperationException rejected =
+                Assert.IsAssignableFrom<
+                    InvalidOperationException>(
+                        failure);
+            Assert.StartsWith(
+                expectedMessage,
+                rejected.Message,
+                StringComparison.Ordinal);
+            Assert.Equal(
+                expectedMethodCount,
+                methods.Count);
+        }
+
+        [Theory]
+        [InlineData(
+            "capture_retry_exhausted",
+            "trusted_runner_shutdown_capture_failed",
+            5)]
+        [InlineData(
+            "lease_retry_exhausted",
+            "trusted_runner_shutdown_call_failed:",
+            6)]
+        public async Task ShutdownFailsAfterStrictTransientRetriesAreExhausted(
+            string fault,
+            string expectedMessage,
+            int expectedMethodCount)
+        {
+            (
+                ActionReceipt receipt,
+                Exception failure,
+                IReadOnlyList<string> methods) =
+                    await RunShutdownScenarioAsync(
+                        fault,
+                        CancellationToken.None);
+
+            Assert.Null(receipt);
+            InvalidOperationException rejected =
+                Assert.IsAssignableFrom<
+                    InvalidOperationException>(
+                        failure);
+            Assert.StartsWith(
+                expectedMessage,
+                rejected.Message,
+                StringComparison.Ordinal);
+            Assert.Equal(
+                expectedMethodCount,
+                methods.Count);
+        }
+
+        [Fact]
+        public async Task ShutdownRetryDelayObservesCancellation()
+        {
+            var retryableErrorWritten =
+                new TaskCompletionSource<bool>(
+                    TaskCreationOptions
+                        .RunContinuationsAsynchronously);
+            using var cancellation =
+                new CancellationTokenSource();
+            Task<(
+                ActionReceipt Receipt,
+                Exception Failure,
+                IReadOnlyList<string> Methods)> scenario =
+                    RunShutdownScenarioAsync(
+                        "capture_retry_cancel",
+                        cancellation.Token,
+                        retryableErrorWritten);
+
+            await retryableErrorWritten.Task
+                .WaitAsync(
+                    TimeSpan.FromSeconds(5));
+            cancellation.Cancel();
+            (
+                ActionReceipt receipt,
+                Exception failure,
+                IReadOnlyList<string> methods) =
+                    await scenario;
+
+            Assert.Null(receipt);
+            Assert.IsAssignableFrom<
+                OperationCanceledException>(
+                    failure);
+            Assert.Equal(
+                new[]
+                {
+                    AgentMethodsV1
+                        .ObservationGrantIssue,
+                    AgentMethodsV1
+                        .ObservationCapture
+                },
+                methods);
+        }
+
+        [Fact]
         public void CompletionEvidenceRecordsExactRuntimeAndReceiptWithoutSecrets()
         {
             string line =
@@ -291,7 +474,9 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
         private static async Task ServeAsync(
             NamedPipeServerStream stream,
             ICollection<string> methods,
-            string fault = null)
+            string fault = null,
+            TaskCompletionSource<bool>
+                retryableErrorWritten = null)
         {
             var codec = new AgentFrameCodec(
                 AgentRendezvousStore.ProtocolMajor);
@@ -301,6 +486,15 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
                 "grant_foreign_target" => 1,
                 "observation_source_layer" => 2,
                 "lease_receipt" => 3,
+                "capture_retry_success" => 5,
+                "capture_retry_exhausted" => 5,
+                "capture_retry_cancel" => 2,
+                "capture_nonretryable" => 2,
+                "capture_wrong_retryable_reason" => 2,
+                "lease_retry_success" => 5,
+                "lease_retry_exhausted" => 6,
+                "lease_nonretryable" => 3,
+                "lease_wrong_retryable_reason" => 3,
                 _ => 4
             };
             for (int ordinal = 0;
@@ -321,33 +515,69 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
                     .GetProperty("method")
                     .GetString();
                 methods.Add(method);
-                object result = method switch
+                string errorReason =
+                    RetryErrorReason(
+                        fault,
+                        method,
+                        ordinal);
+                object response;
+                if (errorReason != null)
                 {
-                    AgentMethodsV1
-                        .ObservationGrantIssue =>
-                        Grant(request.RootElement, fault),
-                    AgentMethodsV1
-                        .ObservationCapture =>
-                        Observation(
-                            request.RootElement,
-                            fault),
-                    AgentCapabilitiesV1
-                        .LeaseAcquire =>
-                        Lease(request.RootElement, fault),
-                    AgentCapabilitiesV1
-                        .SessionShutdown =>
-                        Receipt(request.RootElement, fault),
-                    _ => throw new InvalidOperationException(
-                        method)
-                };
+                    _ = method switch
+                    {
+                        AgentMethodsV1
+                            .ObservationCapture =>
+                            Observation(
+                                request.RootElement,
+                                null),
+                        AgentCapabilitiesV1
+                            .LeaseAcquire =>
+                            Lease(
+                                request.RootElement,
+                                null),
+                        _ => throw new InvalidOperationException(
+                            method)
+                    };
+                    response = new
+                    {
+                        jsonrpc = "2.0",
+                        id,
+                        error = RpcError(
+                            errorReason,
+                            ordinal + 1)
+                    };
+                }
+                else
+                {
+                    object result = method switch
+                    {
+                        AgentMethodsV1
+                            .ObservationGrantIssue =>
+                            Grant(request.RootElement, fault),
+                        AgentMethodsV1
+                            .ObservationCapture =>
+                            Observation(
+                                request.RootElement,
+                                fault),
+                        AgentCapabilitiesV1
+                            .LeaseAcquire =>
+                            Lease(request.RootElement, fault),
+                        AgentCapabilitiesV1
+                            .SessionShutdown =>
+                            Receipt(request.RootElement, fault),
+                        _ => throw new InvalidOperationException(
+                            method)
+                    };
+                    response = new
+                    {
+                        jsonrpc = "2.0",
+                        id,
+                        result
+                    };
+                }
                 byte[] payload =
                     JsonSerializer.SerializeToUtf8Bytes(
-                        new
-                        {
-                            jsonrpc = "2.0",
-                            id,
-                            result
-                        },
+                        response,
                         AgentProtocolV1.JsonOptions);
                 await codec.WriteAsync(
                     stream,
@@ -357,7 +587,164 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
                         AgentFrameCodec.SupportedFlags,
                         payload),
                     CancellationToken.None);
+                if (errorReason != null
+                    && retryableErrorWritten != null)
+                {
+                    retryableErrorWritten
+                        .TrySetResult(true);
+                }
             }
+        }
+
+        private static string RetryErrorReason(
+            string fault,
+            string method,
+            int ordinal)
+        {
+            if (string.Equals(
+                    method,
+                    AgentMethodsV1.ObservationCapture,
+                    StringComparison.Ordinal))
+            {
+                return fault switch
+                {
+                    "capture_retry_success"
+                        when ordinal == 1 =>
+                            "capture_unavailable",
+                    "capture_retry_exhausted" =>
+                        "capture_unavailable",
+                    "capture_retry_cancel" =>
+                        "capture_unavailable",
+                    "capture_nonretryable" =>
+                        "unsupported_for_surface",
+                    "capture_wrong_retryable_reason" =>
+                        "input_not_quiescent",
+                    _ => null
+                };
+            }
+            if (string.Equals(
+                    method,
+                    AgentCapabilitiesV1.LeaseAcquire,
+                    StringComparison.Ordinal))
+            {
+                return fault switch
+                {
+                    "lease_retry_success"
+                        when ordinal == 2 =>
+                            "input_not_quiescent",
+                    "lease_retry_exhausted" =>
+                        "input_not_quiescent",
+                    "lease_nonretryable" =>
+                        "unsupported_for_surface",
+                    "lease_wrong_retryable_reason" =>
+                        "capture_unavailable",
+                    _ => null
+                };
+            }
+            return null;
+        }
+
+        private static object RpcError(
+            string reasonCode,
+            int serverSequence)
+        {
+            bool retryable =
+                reasonCode == "capture_unavailable"
+                || reasonCode == "input_not_quiescent";
+            return new
+            {
+                code = -32000,
+                message = reasonCode,
+                data = new
+                {
+                    reasonCode,
+                    retryable,
+                    reconcileKind = "none",
+                    serverSequence
+                }
+            };
+        }
+
+        private static async Task<(
+            ActionReceipt Receipt,
+            Exception Failure,
+            IReadOnlyList<string> Methods)>
+            RunShutdownScenarioAsync(
+                string fault,
+                CancellationToken cancellationToken,
+                TaskCompletionSource<bool>
+                    retryableErrorWritten = null)
+        {
+            string pipeName =
+                "cf7-trusted-shutdown-retry-"
+                + Guid.NewGuid().ToString("N");
+            await using var server =
+                new NamedPipeServerStream(
+                    pipeName,
+                    PipeDirection.InOut,
+                    1,
+                    PipeTransmissionMode.Byte,
+                    PipeOptions.Asynchronous);
+            await using var pipe =
+                new NamedPipeClientStream(
+                    ".",
+                    pipeName,
+                    PipeDirection.InOut,
+                    PipeOptions.Asynchronous);
+            Task wait =
+                server.WaitForConnectionAsync();
+            await pipe.ConnectAsync(5_000);
+            await wait;
+
+            var methods = new List<string>();
+            Task serve =
+                ServeAsync(
+                    server,
+                    methods,
+                    fault,
+                    retryableErrorWritten);
+            var credential =
+                new TrustedUnattendedCredential(
+                    "isolated_candidate",
+                    "proof_trusted_shutdown_AAAA",
+                    new[]
+                    {
+                        AgentCapabilitiesV1
+                            .ObservationGrantManage,
+                        AgentCapabilitiesV1
+                            .ObservationCapture,
+                        AgentCapabilitiesV1
+                            .LeaseAcquire,
+                        AgentCapabilitiesV1
+                            .SessionShutdown
+                    },
+                    new[] { TargetId },
+                    SessionId,
+                    "attempt_trusted_shutdown_AA",
+                    7,
+                    "receipt_trusted_shutdown_AA");
+            await using TrustedUnattendedAgentClient client =
+                TrustedUnattendedAgentClient
+                    .CreateAuthenticatedForTest(
+                        pipe,
+                        credential,
+                        LifecycleRef,
+                        credential.AllowedCapabilities,
+                        ClientId,
+                        PrincipalId);
+
+            ActionReceipt receipt = null;
+            Exception failure =
+                await Record.ExceptionAsync(
+                    async () =>
+                    {
+                        receipt =
+                            await client
+                                .ShutdownOwnedRuntimeAsync(
+                                    cancellationToken);
+                    });
+            await serve;
+            return (receipt, failure, methods);
         }
 
         private static object Grant(
@@ -414,8 +801,27 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
             JsonElement request,
             string fault)
         {
+            JsonElement capture =
+                request.GetProperty("params");
+            Assert.Equal(
+                GrantId,
+                capture.GetProperty(
+                        "observationGrantId")
+                    .GetString());
+            Assert.Equal(
+                SessionId,
+                capture.GetProperty("sessionId")
+                    .GetString());
+            Assert.Equal(
+                TargetId,
+                capture.GetProperty("targetId")
+                    .GetString());
+            Assert.Equal(
+                "pixels",
+                capture.GetProperty("dataScope")
+                    .GetString());
             Assert.False(
-                request.GetProperty("params")
+                capture
                     .GetProperty(
                         "allowValidatedFlashKeyframeFallback")
                     .GetBoolean());

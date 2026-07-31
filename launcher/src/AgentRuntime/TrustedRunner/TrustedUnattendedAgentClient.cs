@@ -19,6 +19,20 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
     {
         private const string PipePrefix =
             "CF7FlashNight.AgentRuntime.v1.";
+        private static readonly TimeSpan[]
+            ShutdownCaptureRetryDelays =
+            {
+                TimeSpan.FromMilliseconds(750),
+                TimeSpan.FromMilliseconds(1_250),
+                TimeSpan.FromMilliseconds(2_000)
+            };
+        private static readonly TimeSpan[]
+            ShutdownLeaseRetryDelays =
+            {
+                TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(200),
+                TimeSpan.FromMilliseconds(400)
+            };
         private static readonly UTF8Encoding StrictUtf8 =
             new UTF8Encoding(false, true);
         private readonly Stream _pipe;
@@ -389,7 +403,7 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                 try
                 {
                     JsonElement observationResult =
-                        await CallForResultAsync(
+                        await CallForResultWithStrictTransientRetryAsync(
                             AgentMethodsV1
                                 .ObservationCapture,
                             new
@@ -407,6 +421,8 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                                 allowValidatedFlashKeyframeFallback =
                                     false
                             },
+                            "capture_unavailable",
+                            ShutdownCaptureRetryDelays,
                             cancellationToken)
                             .ConfigureAwait(false);
                     if (!HasRequiredProperties(
@@ -514,7 +530,7 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
             }
 
             JsonElement leaseResult =
-                await CallForResultAsync(
+                await CallForResultWithStrictTransientRetryAsync(
                     AgentCapabilitiesV1
                         .LeaseAcquire,
                     new
@@ -534,6 +550,8 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                         consentReceipt =
                             _credential.IssuerReceipt
                     },
+                    "input_not_quiescent",
+                    ShutdownLeaseRetryDelays,
                     cancellationToken)
                     .ConfigureAwait(false);
             LeaseDescriptor lease =
@@ -751,6 +769,64 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
         }
 
         private async Task<JsonElement>
+            CallForResultWithStrictTransientRetryAsync(
+                string method,
+                object parameters,
+                string expectedReasonCode,
+                IReadOnlyList<TimeSpan> retryDelays,
+                CancellationToken cancellationToken)
+        {
+            for (int retry = 0; ;
+                retry++)
+            {
+                cancellationToken
+                    .ThrowIfCancellationRequested();
+                try
+                {
+                    return await CallForResultAsync(
+                            method,
+                            parameters,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (TrustedAgentRpcException exception)
+                {
+                    cancellationToken
+                        .ThrowIfCancellationRequested();
+                    if (retry
+                            >= retryDelays.Count
+                        || !IsStrictRetryableTransient(
+                            exception,
+                            expectedReasonCode))
+                    {
+                        throw;
+                    }
+                    await Task.Delay(
+                            retryDelays[
+                                retry],
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+            }
+        }
+
+        private static bool IsStrictRetryableTransient(
+            TrustedAgentRpcException exception,
+            string expectedReasonCode)
+        {
+            AgentJsonRpcErrorData data =
+                exception?.RpcError?.Data;
+            return data != null
+                && string.Equals(
+                    data.ReasonCode,
+                    expectedReasonCode,
+                    StringComparison.Ordinal)
+                && data.Retryable
+                && data.ReconcileKind
+                    == ReconcileKind.None;
+        }
+
+        private async Task<JsonElement>
             CallForResultAsync(
                 string method,
                 object parameters,
@@ -781,18 +857,43 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                     "result",
                     out JsonElement result))
             {
-                string reason =
-                    call.Response
-                        .TryGetProperty(
-                            "error",
-                            out JsonElement error)
-                        ? error.GetRawText()
-                        : "response_missing_result";
+                if (call.Response.TryGetProperty(
+                        "error",
+                        out JsonElement error))
+                {
+                    AgentJsonRpcError rpcError =
+                        error.Deserialize<
+                            AgentJsonRpcError>(
+                                AgentProtocolV1
+                                    .JsonOptions);
+                    if (rpcError != null)
+                    {
+                        throw new TrustedAgentRpcException(
+                            error.GetRawText(),
+                            rpcError);
+                    }
+                }
                 throw new InvalidOperationException(
                     "trusted_runner_shutdown_call_failed:"
-                        + reason);
+                        + "response_missing_result");
             }
             return result.Clone();
+        }
+
+        private sealed class TrustedAgentRpcException
+            : InvalidOperationException
+        {
+            public TrustedAgentRpcException(
+                string rawError,
+                AgentJsonRpcError rpcError)
+                : base(
+                    "trusted_runner_shutdown_call_failed:"
+                        + rawError)
+            {
+                RpcError = rpcError;
+            }
+
+            public AgentJsonRpcError RpcError { get; }
         }
 
         private async Task<IReadOnlyCollection<string>>

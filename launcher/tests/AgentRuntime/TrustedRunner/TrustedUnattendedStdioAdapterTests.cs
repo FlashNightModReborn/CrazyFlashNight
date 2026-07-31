@@ -809,6 +809,9 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
             Assert.Equal(
                 "trusted_runner_mcp_eof_call_timeout",
                 error.Message);
+            await output.BlockedWriteCancellation
+                .WaitAsync(
+                    TimeSpan.FromSeconds(1));
             Assert.True(
                 output.BlockedWriteCancellationObserved);
             Assert.Single(
@@ -891,6 +894,9 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
             Assert.Equal(
                 "trusted_runner_mcp_protocol_output_timeout",
                 error.Message);
+            await output.BlockedWriteCancellation
+                .WaitAsync(
+                    TimeSpan.FromSeconds(1));
             Assert.True(
                 output.BlockedWriteCancellationObserved);
             Assert.Empty(output.ToArray());
@@ -981,6 +987,9 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
             Assert.Equal(
                 "trusted_runner_mcp_call_timeout",
                 error.Message);
+            await output.BlockedWriteCancellation
+                .WaitAsync(
+                    TimeSpan.FromSeconds(1));
             Assert.True(
                 output.BlockedWriteCancellationObserved);
             Assert.Single(
@@ -1202,6 +1211,11 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
                     new TaskCompletionSource(
                         TaskCreationOptions
                             .RunContinuationsAsynchronously);
+            private readonly TaskCompletionSource
+                _blockedWriteCancellation =
+                    new TaskCompletionSource(
+                        TaskCreationOptions
+                            .RunContinuationsAsynchronously);
             private int
                 _acceptedFlushesBeforeBlocking;
             private volatile bool _blockWrites;
@@ -1226,6 +1240,8 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
 
             public Task WriteBlocked =>
                 _writeBlocked.Task;
+            public Task BlockedWriteCancellation =>
+                _blockedWriteCancellation.Task;
             public bool
                 BlockedWriteCancellationObserved
             {
@@ -1348,6 +1364,8 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
                 {
                     BlockedWriteCancellationObserved =
                         true;
+                    _blockedWriteCancellation
+                        .TrySetResult();
                     throw;
                 }
             }
