@@ -140,7 +140,7 @@ operator transcript 只允许项目 Agent Runtime/MCP lifecycle 与下列 CF7 to
 | Core EXE | `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD` / 261,120 bytes |
 | Core DLL | `0CEA0C64C037090ADAB4E9C38294075E58F1D298615DD447677D0D6725A9271E` / 3,150,336 bytes |
 | manifest | `A0A7CA0C992149DC2F9A4D5DDC60C2CAAC2EDC8BBC7907B0CF8EE4C7D5E694E4` |
-| consensus | `8E6292039E0BD01C7F1C0ADD1AE28DF840D676D4A8FB959337BBDAB07D285F26` |
+| consensus（promotion 后 Windows worktree bytes；非 Git clean-filter blob hash） | `8E6292039E0BD01C7F1C0ADD1AE28DF840D676D4A8FB959337BBDAB07D285F26` |
 
 根 bootstrap、Core EXE 与多数 payload 字节相对上一 formal bundle 相同；本次 tracked deployment 差量精确为 Core DLL、manifest 与 consensus。上一 bundle 的可恢复副本保留在 `tmp/runtime-promotions/20260731T035551270Z-a1ae4de95c394e98a2d6ca0d8da8f742/previous`，不得把它误称新 payload 或删除。
 
