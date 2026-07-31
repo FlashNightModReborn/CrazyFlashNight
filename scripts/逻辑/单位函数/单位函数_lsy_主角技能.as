@@ -1644,7 +1644,7 @@ _root.技能函数.扭转乾坤护盾释放 = function(target:Object, 技能等�
 	// === 参数计算 ===
 	var 持续帧数:Number = 50 + 技能等级 * 12;  // 转换为帧数（30fps）
 
-	var 护盾容量:Number = target.hp满血值 * (5 + 技能等级)/30 +  target.mp满血值 + target.内力 * 技能等级;
+	var 护盾容量:Number = target.hp满血值 * (5 + 技能等级)/30 +  (target.mp满血值? target.mp满血值 : 0) + target.内力 * 技能等级;
 	var 护盾强度:Number = 99999999;
 	target.man.扭转乾坤护盾容量 = 护盾容量;
 	
@@ -1673,8 +1673,10 @@ _root.技能函数.扭转乾坤护盾释放 = function(target:Object, 技能等�
 _root.技能函数.扭转乾坤恢复 = function(扭转乾坤护盾承伤量:Number, 技能等级:Number):Boolean {
 	if(扭转乾坤护盾承伤量 && 技能等级 && _parent.hp > 0){
 		// MP 走硬封顶；扭转乾坤不抬升 MP 上限
-		var mp恢复量 = Math.ceil(扭转乾坤护盾承伤量 * (0.05 + 0.005 * 技能等级 + Math.min(_parent.内力/7000,0.15)));
-		HealApplier.applyMpCapped(_parent, mp恢复量, _parent.mp满血值);
+		if(_parent.mp满血值){
+			var mp恢复量 = Math.ceil(扭转乾坤护盾承伤量 * (0.05 + 0.005 * 技能等级 + Math.min(_parent.内力/7000,0.15)));
+			HealApplier.applyMpCapped(_parent, mp恢复量, _parent.mp满血值);
+		}
 
 		// HP 走项目级溢出衰减曲线；原硬截断 1.5×M 现由 HealApplier 渐近实现
 		// 副作用：原本溢出区线性吃满 1.5M，现在遵循衰减曲线，需要更多承伤才能逼近 1.5M

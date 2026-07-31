@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" lastModified="1779511342" lastUniqueIdentifier="15">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" lastModified="1785514257" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="空手攻击容器-燃烧指节">
+    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="112">
       <layers>
-        <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="18" name="燃烧指节" labelType="name" keyMode="9728">
               <elements/>
@@ -13,10 +13,16 @@
             <DOMFrame index="30" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="31" duration="59" name="虎拳" labelType="name" keyMode="9728">
+            <DOMFrame index="31" duration="54" name="虎拳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="90" duration="42" name="日字冲拳" labelType="name" keyMode="9728">
+            <DOMFrame index="85" duration="5" name="虎拳提前结束" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="90" duration="38" name="日字冲拳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="128" duration="4" name="日字冲拳提前结束" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="132" duration="59" name="破极拳" labelType="name" keyMode="9728">
@@ -41,9 +47,15 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             <DOMFrame index="221" duration="66" name="截拳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="29" name="平踢" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <Actionscript>
@@ -79,6 +91,7 @@ function 攻击时四向移动(上, 下, 左, 右)
 		_parent.移动("右",右);
 	}
 }
+
 gotoAndPlay(_parent.近战招式);]]></script>
               </Actionscript>
               <elements/>
@@ -103,7 +116,52 @@ gotoAndPlay(_parent.近战招式);]]></script>
             <DOMFrame index="30" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="31" duration="58" keyMode="9728">
+            <DOMFrame index="31" duration="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var 当前敌人 = _root.gameworld[_parent.攻击目标];
+function 索敌转向(当前敌人)
+{
+	if (当前敌人.hp > 0)
+	{
+		距离X = 当前敌人._x - _parent._x;
+		距离Y = 当前敌人._y - _parent.Z轴坐标;
+		if (Math.abs(距离X) > 300 or Math.abs(距离Y) > 80)
+		{
+			gotoAndPlay("虎拳提前结束");
+		}
+		else if (距离X > 0)
+		{
+			_parent.方向改变("右");
+		}
+		else
+		{
+			_parent.方向改变("左");
+		}
+	}
+	else
+	{
+		gotoAndPlay("虎拳提前结束");
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[索敌转向(当前敌人);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[索敌转向(当前敌人);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="74" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[索敌转向(当前敌人);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="89" keyMode="9728">
@@ -113,7 +171,33 @@ gotoAndPlay(_parent.近战招式);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="90" duration="41" keyMode="9728">
+            <DOMFrame index="90" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="112" duration="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var 当前敌人 = _root.gameworld[_parent.攻击目标];
+if (当前敌人.hp > 0)
+{
+	距离X = 当前敌人._x - _parent._x;
+	距离Y = 当前敌人._y - _parent.Z轴坐标;
+	if(Math.abs(距离X)>200 or Math.abs(距离Y)>80){
+		gotoAndPlay("日字冲拳提前结束");
+	}else
+	if (距离X > 0)
+	{
+		_parent.方向改变("右");
+	}
+	else
+	{
+		_parent.方向改变("左");
+	}
+}
+else
+{
+	gotoAndPlay("日字冲拳提前结束");
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="131" keyMode="9728">
@@ -123,7 +207,46 @@ gotoAndPlay(_parent.近战招式);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="132" duration="58" keyMode="9728">
+            <DOMFrame index="132" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var 当前敌人 = _root.gameworld[_parent.攻击目标];
+function 索敌转向(当前敌人)
+{
+	if (当前敌人.hp > 0)
+	{
+		距离X = 当前敌人._x - _parent._x;
+		距离Y = 当前敌人._y - _parent.Z轴坐标;
+		if (Math.abs(距离X) > 300 or Math.abs(距离Y) > 80)
+		{
+			_parent.动画完毕();
+		}
+		else if (距离X > 0)
+		{
+			_parent.方向改变("右");
+		}
+		else
+		{
+			_parent.方向改变("左");
+		}
+	}
+	else
+	{
+		_parent.动画完毕();
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="152" duration="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[索敌转向(当前敌人);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="176" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[索敌转向(当前敌人);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="190" keyMode="9728">
@@ -191,9 +314,22 @@ gotoAndPlay(_parent.近战招式);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="305" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="音效" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -392,9 +528,22 @@ _parent.攻击呐喊();]]></script>
             <DOMFrame index="286" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" duration="28" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效2" color="#4F80FF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="音效2" color="#4F80FF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="133" keyMode="9728">
               <elements/>
@@ -471,6 +620,12 @@ _parent.攻击呐喊();]]></script>
             <DOMFrame index="220" duration="67" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="子弹层" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
@@ -496,7 +651,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
@@ -551,7 +706,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
@@ -728,10 +883,11 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.吸血 = 9;
 	
 	//非常用
 	/*
@@ -783,10 +939,11 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.吸血 = 9;
 	
 	//非常用
 	/*
@@ -838,10 +995,11 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.吸血 = 9;
 	
 	//非常用
 	/*
@@ -900,6 +1058,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.吸血 = 9;
 	
 	//非常用
 	/*
@@ -958,6 +1117,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.吸血 = 9;
 	
 	//非常用
 	/*
@@ -1012,10 +1172,11 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 4;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.吸血 = 9;
 	
 	//非常用
 	/*
@@ -1071,6 +1232,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.吸血 = 9;
 	
 	//非常用
 	/*
@@ -1125,10 +1287,12 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	
 	//非常用
 	/*
@@ -1183,10 +1347,12 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	
 	//非常用
 	/*
@@ -1241,10 +1407,12 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	
 	//非常用
 	/*
@@ -1299,10 +1467,12 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	
 	//非常用
 	/*
@@ -1357,10 +1527,12 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	
 	//非常用
 	/*
@@ -1415,10 +1587,12 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	
 	//非常用
 	/*
@@ -1473,10 +1647,12 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	
 	//非常用
 	/*
@@ -1515,7 +1691,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="127" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-218.95">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="157.75" centerPoint3DY="-218.95">
                   <matrix>
                     <Matrix a="19.7887115478516" d="5.82916259765625" tx="145.25" ty="-231.45"/>
                   </matrix>
@@ -1531,10 +1707,12 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	
 	//非常用
 	/*
@@ -1592,7 +1770,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
@@ -1647,7 +1825,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
@@ -1702,7 +1880,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
@@ -1812,7 +1990,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
@@ -3027,6 +3205,287 @@ _parent.攻击呐喊();]]></script>
             <DOMFrame index="284" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="81.65" centerPoint3DY="-29.3">
+                  <matrix>
+                    <Matrix a="1.80216979980469" d="1.35382080078125" tx="82.25" ty="-29.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="0.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="291" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="100.85" centerPoint3DY="-29.3">
+                  <matrix>
+                    <Matrix a="1.80216979980469" d="1.35382080078125" tx="101.45" ty="-29.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="0.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="293" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="294" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="167.45" centerPoint3DY="-29.3">
+                  <matrix>
+                    <Matrix a="3.11209106445313" d="1.35382080078125" tx="168.5" ty="-29.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="0.4"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="296" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="297" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="174.7" centerPoint3DY="-12.6">
+                  <matrix>
+                    <Matrix a="3.11209106445313" d="1.35382080078125" tx="175.75" ty="-13.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="0.4"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="300" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="154.15" centerPoint3DY="-55.9">
+                  <matrix>
+                    <Matrix a="3.11209106445313" d="1.35382080078125" tx="155.2" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="0.4"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="303" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="子弹层额外" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
@@ -3052,7 +3511,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
@@ -3107,7 +3566,7 @@ _parent.攻击呐喊();]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
@@ -3328,6 +3787,12 @@ _parent.攻击呐喊();]]></script>
             <DOMFrame index="286" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="追踪代码" color="#9933CC" autoNamed="false">
@@ -3374,6 +3839,9 @@ else
 	下速度 = Math.min(-速度Z, 速度上限 * 2);
 }]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="287" duration="30" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -3448,7 +3916,7 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(20,25);
+   _parent.攻击时移动(15,20);
 }
 ]]></script>
                   </Actionscript>
@@ -3484,7 +3952,7 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(20,25);
+   _parent.攻击时移动(15,20);
 }
 ]]></script>
                   </Actionscript>
@@ -3520,7 +3988,7 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(20,25);
+   _parent.攻击时移动(5,10);
 }
 ]]></script>
                   </Actionscript>
@@ -3746,13 +4214,10 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="147" duration="7" keyMode="9728">
+            <DOMFrame index="147" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="154" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="157" duration="4" keyMode="9728">
+            <DOMFrame index="156" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
                   <matrix>
@@ -3770,13 +4235,10 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="161" duration="5" keyMode="9728">
+            <DOMFrame index="161" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="166" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="169" duration="2" keyMode="9728">
+            <DOMFrame index="168" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
                   <matrix>
@@ -3794,13 +4256,10 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="171" duration="7" keyMode="9728">
+            <DOMFrame index="171" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="178" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="181" duration="5" keyMode="9728">
+            <DOMFrame index="180" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
                   <matrix>
@@ -3811,14 +4270,14 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(10,15);
+   _parent.攻击时移动(7,12);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="186" duration="5" keyMode="9728">
+            <DOMFrame index="185" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
@@ -3829,7 +4288,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="193" duration="27" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="12.5" centerPoint3DY="12.5">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -3953,6 +4412,24 @@ onClipEvent(enterFrame){
             <DOMFrame index="278" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+   _parent.攻击时移动(20,15);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="无敌标签" color="#808080" autoNamed="false">
@@ -4005,6 +4482,9 @@ onClipEvent(enterFrame){
             <DOMFrame index="220" duration="67" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" duration="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="刚体标签" color="#4F80FF" outline="true" useOutlineView="true" autoNamed="false">
@@ -4026,7 +4506,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="18" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -4105,7 +4585,7 @@ onClipEvent(enterFrame){
             <DOMFrame index="220" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="221" duration="66" keyMode="9728">
+            <DOMFrame index="221" duration="96" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
@@ -4119,7 +4599,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 8" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -4911,9 +5391,30 @@ onClipEvent(enterFrame){
             <DOMFrame index="282" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/上勾拳特效删减" centerPoint3DX="402.45" centerPoint3DY="-140.2">
+                  <matrix>
+                    <Matrix d="0.54290771484375" tx="352.2" ty="-119.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.25" y="-38.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F">
+        <DOMLayer name="图层 9" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -6313,9 +6814,105 @@ onClipEvent(enterFrame){
             <DOMFrame index="273" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="74.6" centerPoint3DY="-277.4">
+                  <matrix>
+                    <Matrix a="0.200820922851563" b="-0.821609497070313" c="0.821609497070313" d="0.200820922851563" tx="45.1" ty="-298.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="145.9" centerPoint3DY="-235">
+                  <matrix>
+                    <Matrix a="0.406631469726563" b="-0.74163818359375" c="0.74163818359375" d="0.406631469726563" tx="116.4" ty="-256.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="124.2" centerPoint3DY="-121.65">
+                  <matrix>
+                    <Matrix a="0.821609497070313" b="0.200820922851563" c="-0.200820922851563" d="0.821609497070313" tx="94.7" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="118.2" centerPoint3DY="-128.85">
+                  <matrix>
+                    <Matrix a="0.821609497070313" b="0.200820922851563" c="-0.200820922851563" d="0.821609497070313" tx="88.7" ty="-150.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="230.2" centerPoint3DY="-183.65">
+                  <matrix>
+                    <Matrix a="0.430801391601563" b="-0.730392456054688" c="0.730392456054688" d="0.430801391601563" tx="205.9" ty="-210.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="88.1" centerPoint3DY="-258.95">
+                  <matrix>
+                    <Matrix a="0.241424560546875" b="-0.813735961914063" c="0.813735961914063" d="0.241424560546875" tx="58.6" ty="-280.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC">
+        <DOMLayer name="图层 10" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -6902,9 +7499,105 @@ onClipEvent(enterFrame){
             <DOMFrame index="273" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="23" centerPoint3DY="-148.2">
+                  <matrix>
+                    <Matrix a="-0.768417358398438" b="-0.347000122070313" c="0.347000122070313" d="-0.768417358398438" tx="5.55" ty="-203.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="68.05" centerPoint3DY="-120.65">
+                  <matrix>
+                    <Matrix a="-0.652420043945313" b="-0.5340576171875" c="0.5340576171875" d="-0.652420043945313" tx="50.6" ty="-176.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="44.65" centerPoint3DY="-116.75">
+                  <matrix>
+                    <Matrix a="0.347000122070313" b="-0.768417358398438" c="0.768417358398438" d="0.347000122070313" tx="27.2" ty="-172.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="38.65" centerPoint3DY="-123.95">
+                  <matrix>
+                    <Matrix a="0.347000122070313" b="-0.768417358398438" c="0.768417358398438" d="0.347000122070313" tx="21.2" ty="-179.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="159" centerPoint3DY="-69.3">
+                  <matrix>
+                    <Matrix a="-0.702621459960938" b="-0.47039794921875" c="0.47039794921875" d="-0.702621459960938" tx="153.2" ty="-127.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="43.4" centerPoint3DY="-129">
+                  <matrix>
+                    <Matrix a="-0.796371459960938" b="-0.28662109375" c="0.28662109375" d="-0.796371459960938" tx="25.95" ty="-184.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A">
+        <DOMLayer name="图层 11" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -8013,9 +8706,105 @@ onClipEvent(enterFrame){
             <DOMFrame index="273" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-32.35" centerPoint3DY="-196.8">
+                  <matrix>
+                    <Matrix a="0.633316040039063" b="-0.557388305664063" c="0.557388305664063" d="0.633316040039063" tx="-56" ty="-263.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="30.35" centerPoint3DY="-183.1">
+                  <matrix>
+                    <Matrix a="0.755996704101563" b="-0.374481201171875" c="0.374481201171875" d="0.755996704101563" tx="6.7" ty="-250.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="96.4" centerPoint3DY="-175.65">
+                  <matrix>
+                    <Matrix a="0.702301025390625" b="0.467483520507813" c="-0.467483520507813" d="0.702301025390625" tx="72.75" ty="-242.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="90.4" centerPoint3DY="-182.85">
+                  <matrix>
+                    <Matrix a="0.702301025390625" b="0.467483520507813" c="-0.467483520507813" d="0.702301025390625" tx="66.75" ty="-249.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="142.3" centerPoint3DY="-140.35">
+                  <matrix>
+                    <Matrix a="0.83404541015625" b="-0.136398315429688" c="0.136398315429688" d="0.83404541015625" tx="132.9" ty="-210.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="17.85" centerPoint3DY="-197.1">
+                  <matrix>
+                    <Matrix a="0.7769775390625" b="-0.33453369140625" c="0.33453369140625" d="0.7769775390625" tx="-5.8" ty="-264.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
+        <DOMLayer name="图层 12" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -23893,9 +24682,105 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="7.85" centerPoint3DY="-290.5">
+                  <matrix>
+                    <Matrix a="0.9384765625" b="0.216354370117188" c="-0.216354370117188" d="0.9384765625" tx="-23.65" ty="-331.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="74.05" centerPoint3DY="-277.5">
+                  <matrix>
+                    <Matrix a="0.9384765625" b="0.216354370117188" c="-0.216354370117188" d="0.9384765625" tx="42.55" ty="-318.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="133" centerPoint3DY="-269.35">
+                  <matrix>
+                    <Matrix a="0.9384765625" b="0.216354370117188" c="-0.216354370117188" d="0.9384765625" tx="101.5" ty="-310.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="131.35" centerPoint3DY="-273.65">
+                  <matrix>
+                    <Matrix a="0.9384765625" b="0.216354370117188" c="-0.216354370117188" d="0.9384765625" tx="99.85" ty="-314.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="217.55" centerPoint3DY="-197.6">
+                  <matrix>
+                    <Matrix a="0.8118896484375" b="0.52227783203125" c="-0.52227783203125" d="0.8118896484375" tx="195.15" ty="-244"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="81.15" centerPoint3DY="-265.05">
+                  <matrix>
+                    <Matrix a="0.915084838867188" b="0.310546875" c="-0.310546875" d="0.915084838867188" tx="49.65" ty="-305.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 13" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -25539,9 +26424,108 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="56.8" centerPoint3DY="-67.1">
+                  <matrix>
+                    <Matrix a="0.842025756835938" b="-0.115219116210938" c="0.115219116210938" d="0.842025756835938" tx="-1.3" ty="-175.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="125.15" centerPoint3DY="-56.25">
+                  <matrix>
+                    <Matrix a="0.842025756835938" b="-0.115219116210938" c="0.115219116210938" d="0.842025756835938" tx="67.05" ty="-164.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="185.55" centerPoint3DY="-45.95">
+                  <matrix>
+                    <Matrix a="0.842025756835938" b="-0.115219116210938" c="0.115219116210938" d="0.842025756835938" tx="127.45" ty="-154.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="179.55" centerPoint3DY="-53.15">
+                  <matrix>
+                    <Matrix a="0.842025756835938" b="-0.115219116210938" c="0.115219116210938" d="0.842025756835938" tx="121.45" ty="-161.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="167.05" centerPoint3DY="11.4">
+                  <matrix>
+                    <Matrix a="0.776031494140625" b="0.349929809570313" c="-0.349929809570313" d="0.776031494140625" tx="132.4" ty="-106.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="85.35" centerPoint3DY="-42.2">
+                  <matrix>
+                    <Matrix a="0.8385009765625" b="0.15185546875" c="-0.15185546875" d="0.8385009765625" tx="27.25" ty="-150.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="310" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080">
+        <DOMLayer name="图层 14" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -27259,9 +28243,105 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-2.6" centerPoint3DY="93.8">
+                  <matrix>
+                    <Matrix a="0.814041137695313" b="0.240875244140625" c="-0.240875244140625" d="0.814041137695313" tx="-24.2" ty="19.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="65.65" centerPoint3DY="107.4">
+                  <matrix>
+                    <Matrix a="0.730697631835938" b="0.430831909179688" c="-0.430831909179688" d="0.730697631835938" tx="44.05" ty="33.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="83.85" centerPoint3DY="122.7">
+                  <matrix>
+                    <Matrix a="0.723968505859375" b="0.443359375" c="-0.443359375" d="0.723968505859375" tx="62.25" ty="48.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="82.85" centerPoint3DY="111.85">
+                  <matrix>
+                    <Matrix a="0.723968505859375" b="0.443359375" c="-0.443359375" d="0.723968505859375" tx="61.25" ty="37.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="54" centerPoint3DY="156.9">
+                  <matrix>
+                    <Matrix a="0.59417724609375" b="0.611053466796875" c="-0.611053466796875" d="0.59417724609375" tx="47.6" ty="79.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-11.45" centerPoint3DY="132.9">
+                  <matrix>
+                    <Matrix a="0.777359008789063" b="0.3507080078125" c="-0.3507080078125" d="0.777359008789063" tx="-33.05" ty="58.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 22" color="#808080">
+        <DOMLayer name="图层 22" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -28896,9 +29976,105 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-19.3" centerPoint3DY="205.95">
+                  <matrix>
+                    <Matrix a="0.747604370117188" b="0.397293090820313" c="-0.397293090820313" d="0.747604370117188" tx="-58.45" ty="172.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="9.65" centerPoint3DY="211.95">
+                  <matrix>
+                    <Matrix a="0.6802978515625" b="0.503250122070313" c="-0.503250122070313" d="0.6802978515625" tx="-29.5" ty="178.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="23.95" centerPoint3DY="210.6">
+                  <matrix>
+                    <Matrix a="0.747604370117188" b="0.397293090820313" c="-0.397293090820313" d="0.747604370117188" tx="-15.2" ty="176.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="23.95" centerPoint3DY="210.6">
+                  <matrix>
+                    <Matrix a="0.747604370117188" b="0.397293090820313" c="-0.397293090820313" d="0.747604370117188" tx="-15.2" ty="176.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-26.65" centerPoint3DY="209.5">
+                  <matrix>
+                    <Matrix a="0.851303100585938" b="-0.026275634765625" c="0.026275634765625" d="0.851303100585938" tx="-75.2" ty="189.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-58.3" centerPoint3DY="241.6">
+                  <matrix>
+                    <Matrix a="0.846328735351563" b="0.0995941162109375" c="-0.0995941162109375" d="0.846328735351563" tx="-97.45" ty="207.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 23" color="#4F80FF">
+        <DOMLayer name="图层 23" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -30500,9 +31676,105 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="12.25" centerPoint3DY="-32.15">
+                  <matrix>
+                    <Matrix a="0.837936401367188" b="0.122222900390625" c="-0.122222900390625" d="0.837936401367188" tx="-14" ty="-110.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="85.05" centerPoint3DY="-23.65">
+                  <matrix>
+                    <Matrix a="0.833221435546875" b="0.146820068359375" c="-0.146820068359375" d="0.833221435546875" tx="58.8" ty="-101.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="141.05" centerPoint3DY="-11">
+                  <matrix>
+                    <Matrix a="0.777755737304688" b="0.334930419921875" c="-0.334930419921875" d="0.777755737304688" tx="114.8" ty="-89.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="135.05" centerPoint3DY="-18.2">
+                  <matrix>
+                    <Matrix a="0.777755737304688" b="0.334930419921875" c="-0.334930419921875" d="0.777755737304688" tx="108.8" ty="-96.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="101.55" centerPoint3DY="26.65">
+                  <matrix>
+                    <Matrix a="0.790725708007813" b="0.316375732421875" c="-0.316375732421875" d="0.790725708007813" tx="91.5" ty="-55.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="24.6" centerPoint3DY="-1.55">
+                  <matrix>
+                    <Matrix a="0.822006225585938" b="0.224685668945313" c="-0.224685668945313" d="0.822006225585938" tx="-1.65" ty="-79.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F">
+        <DOMLayer name="图层 16" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -31666,9 +32938,111 @@ onClipEvent(enterFrame){
             <DOMFrame index="278" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="173.45" centerPoint3DY="-170.9">
+                  <matrix>
+                    <Matrix a="0.7757568359375" b="-0.356033325195313" c="0.356033325195313" d="0.7757568359375" tx="151.85" ty="-245"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="207.5" centerPoint3DY="-187.7">
+                  <matrix>
+                    <Matrix a="0.7757568359375" b="-0.356033325195313" c="0.356033325195313" d="0.7757568359375" tx="185.9" ty="-261.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="297.15" centerPoint3DY="-35.4">
+                  <matrix>
+                    <Matrix a="-0.0569305419921875" b="-0.850723266601563" c="0.850723266601563" d="-0.0569305419921875" tx="275.55" ty="-109.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="291.15" centerPoint3DY="-42.6">
+                  <matrix>
+                    <Matrix a="-0.0569305419921875" b="-0.850723266601563" c="0.850723266601563" d="-0.0569305419921875" tx="269.55" ty="-116.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="289.75" centerPoint3DY="67.1">
+                  <matrix>
+                    <Matrix a="0.85125732421875" b="-0.074310302734375" c="0.074310302734375" d="0.85125732421875" tx="263.7" ty="-5.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="139.1" centerPoint3DY="102.5">
+                  <matrix>
+                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="117.5" ty="28.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F">
+        <DOMLayer name="图层 17" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -32832,9 +34206,111 @@ onClipEvent(enterFrame){
             <DOMFrame index="278" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="257.55" centerPoint3DY="-71.75">
+                  <matrix>
+                    <Matrix a="0.591751098632813" b="-0.610748291015625" c="0.610748291015625" d="0.591751098632813" tx="218.4" ty="-105.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="297.5" centerPoint3DY="-82.05">
+                  <matrix>
+                    <Matrix a="0.591751098632813" b="-0.610748291015625" c="0.610748291015625" d="0.591751098632813" tx="258.35" ty="-115.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="486.75" centerPoint3DY="-90.1">
+                  <matrix>
+                    <Matrix a="-0.360076904296875" b="-0.769378662109375" c="0.769378662109375" d="-0.360076904296875" tx="447.6" ty="-123.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="480.05" centerPoint3DY="-101.95">
+                  <matrix>
+                    <Matrix a="-0.360076904296875" b="-0.769378662109375" c="0.769378662109375" d="-0.360076904296875" tx="440.9" ty="-135.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="336.35" centerPoint3DY="174.15">
+                  <matrix>
+                    <Matrix a="0.8489990234375" b="-0.090057373046875" c="0.090057373046875" d="0.8489990234375" tx="288.4" ty="154.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="157.55" centerPoint3DY="227.8">
+                  <matrix>
+                    <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="118.4" ty="194.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 18" color="#9933CC">
+        <DOMLayer name="图层 18" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -34001,9 +35477,111 @@ onClipEvent(enterFrame){
             <DOMFrame index="278" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="68.1" centerPoint3DY="-61.3">
+                  <matrix>
+                    <Matrix a="-0.560501098632813" b="-0.636749267578125" c="0.636749267578125" d="-0.560501098632813" tx="41.85" ty="-139.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="136.45" centerPoint3DY="-50.45">
+                  <matrix>
+                    <Matrix a="-0.706207275390625" b="-0.469985961914063" c="0.469985961914063" d="-0.706207275390625" tx="110.2" ty="-128.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="196.85" centerPoint3DY="-40.15">
+                  <matrix>
+                    <Matrix a="0.053924560546875" b="-0.846588134765625" c="0.846588134765625" d="0.053924560546875" tx="170.6" ty="-118.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="190.85" centerPoint3DY="-47.35">
+                  <matrix>
+                    <Matrix a="0.053924560546875" b="-0.846588134765625" c="0.846588134765625" d="0.053924560546875" tx="164.6" ty="-125.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="135.15" centerPoint3DY="28.65">
+                  <matrix>
+                    <Matrix a="0.29730224609375" b="-0.796783447265625" c="0.796798706054688" d="0.29730224609375" tx="125.2" ty="-53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="67.75" centerPoint3DY="-19.9">
+                  <matrix>
+                    <Matrix a="0.728927612304688" b="-0.438980102539063" c="0.438980102539063" d="0.728927612304688" tx="41.5" ty="-98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 19" color="#FF800A">
+        <DOMLayer name="图层 19" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -35491,9 +37069,105 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="66.95" centerPoint3DY="-97.8">
+                  <matrix>
+                    <Matrix a="0.604293823242188" b="-0.601974487304688" c="0.601974487304688" d="0.604293823242188" tx="20.95" ty="-133.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="135.3" centerPoint3DY="-86.95">
+                  <matrix>
+                    <Matrix a="0.604293823242188" b="-0.601974487304688" c="0.601974487304688" d="0.604293823242188" tx="89.3" ty="-122.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="195.7" centerPoint3DY="-76.65">
+                  <matrix>
+                    <Matrix a="0.604293823242188" b="-0.601974487304688" c="0.601974487304688" d="0.604293823242188" tx="149.7" ty="-112.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="189.7" centerPoint3DY="-83.85">
+                  <matrix>
+                    <Matrix a="0.604293823242188" b="-0.601974487304688" c="0.601974487304688" d="0.604293823242188" tx="143.7" ty="-119.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="144.9" centerPoint3DY="-17.95">
+                  <matrix>
+                    <Matrix a="0.774398803710938" b="0.361251831054688" c="-0.361251831054688" d="0.774398803710938" tx="107.1" ty="-61.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="67.55" centerPoint3DY="-63.25">
+                  <matrix>
+                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="21.55" ty="-99.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 20" color="#FF4FFF">
+        <DOMLayer name="图层 20" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -36744,9 +38418,105 @@ onClipEvent(enterFrame){
             <DOMFrame index="282" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="150.35" centerPoint3DY="-283.3">
+                  <matrix>
+                    <Matrix a="0.023681640625" b="-0.844818115234375" c="0.844818115234375" d="0.023681640625" tx="120.85" ty="-304.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="253.5" centerPoint3DY="-251.5">
+                  <matrix>
+                    <Matrix a="0.442916870117188" b="-0.71978759765625" c="0.71978759765625" d="0.442916870117188" tx="224" ty="-272.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="322.2" centerPoint3DY="-185.85">
+                  <matrix>
+                    <Matrix a="0.74346923828125" b="-0.401901245117188" c="0.401901245117188" d="0.74346923828125" tx="292.7" ty="-207.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="298.3" centerPoint3DY="-199.3">
+                  <matrix>
+                    <Matrix a="0.74346923828125" b="-0.401901245117188" c="0.401901245117188" d="0.74346923828125" tx="268.8" ty="-220.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="337.45" centerPoint3DY="-132.05">
+                  <matrix>
+                    <Matrix a="0.469375610351563" b="-0.704574584960938" c="0.704574584960938" d="0.469375610351563" tx="313.25" ty="-159.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="209.55" centerPoint3DY="-239.8">
+                  <matrix>
+                    <Matrix a="0.285140991210938" b="-0.798019409179688" c="0.798019409179688" d="0.285140991210938" tx="180.05" ty="-261.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 24" color="#FF4F4F">
+        <DOMLayer name="图层 24" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -38015,9 +39785,105 @@ onClipEvent(enterFrame){
             <DOMFrame index="282" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="115.75" centerPoint3DY="-156.15">
+                  <matrix>
+                    <Matrix a="-0.8043212890625" b="-0.25494384765625" c="0.25494384765625" d="-0.8043212890625" tx="98.3" ty="-211.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="180.6" centerPoint3DY="-147.7">
+                  <matrix>
+                    <Matrix a="-0.569091796875" b="-0.622955322265625" c="0.622955322265625" d="-0.569091796875" tx="163.15" ty="-203.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="217.85" centerPoint3DY="-120.65">
+                  <matrix>
+                    <Matrix a="-0.181365966796875" b="-0.82403564453125" c="0.82403564453125" d="-0.181365966796875" tx="200.4" ty="-176.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="198.9" centerPoint3DY="-137.05">
+                  <matrix>
+                    <Matrix a="-0.181365966796875" b="-0.82403564453125" c="0.82403564453125" d="-0.181365966796875" tx="181.45" ty="-192.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="266.25" centerPoint3DY="-28.45">
+                  <matrix>
+                    <Matrix a="-0.622116088867188" b="-0.572616577148438" c="0.572616577148438" d="-0.622116088867188" tx="260.35" ty="-86.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="158.35" centerPoint3DY="-123.25">
+                  <matrix>
+                    <Matrix a="-0.742935180664063" b="-0.405410766601563" c="0.405410766601563" d="-0.742935180664063" tx="140.9" ty="-178.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 26" color="#9933CC">
+        <DOMLayer name="图层 26" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -38938,9 +40804,105 @@ onClipEvent(enterFrame){
             <DOMFrame index="278" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="288" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="72.4" centerPoint3DY="-214.15">
+                  <matrix>
+                    <Matrix a="0.707351684570313" b="-0.457962036132813" c="0.457962036132813" d="0.707351684570313" tx="48.75" ty="-281.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="291" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="139.3" centerPoint3DY="-203.65">
+                  <matrix>
+                    <Matrix a="0.707351684570313" b="-0.457962036132813" c="0.457962036132813" d="0.707351684570313" tx="115.65" ty="-270.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="295" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="197.5" centerPoint3DY="-189">
+                  <matrix>
+                    <Matrix a="0.801773071289063" b="-0.25927734375" c="0.25927734375" d="0.801773071289063" tx="173.85" ty="-256.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="299" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="192.3" centerPoint3DY="-196.2">
+                  <matrix>
+                    <Matrix a="0.801773071289063" b="-0.25927734375" c="0.25927734375" d="0.801773071289063" tx="168.65" ty="-263.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="302" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="239.2" centerPoint3DY="-93.2">
+                  <matrix>
+                    <Matrix a="0.796905517578125" b="-0.28076171875" c="0.28076171875" d="0.796905517578125" tx="229.4" ty="-163.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="304" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="128.9" centerPoint3DY="-179">
+                  <matrix>
+                    <Matrix a="0.705963134765625" b="-0.465774536132813" c="0.465774536132813" d="0.705963134765625" tx="105.25" ty="-246.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="309" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 27" color="#FF800A">
+        <DOMLayer name="图层 27" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -39968,9 +41930,12 @@ onClipEvent(enterFrame){
             <DOMFrame index="278" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 28" color="#FF4FFF">
+        <DOMLayer name="图层 28" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -40972,9 +42937,12 @@ onClipEvent(enterFrame){
             <DOMFrame index="278" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 21" color="#4FFFFF">
+        <DOMLayer name="图层 21" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -41730,9 +43698,12 @@ onClipEvent(enterFrame){
             <DOMFrame index="221" duration="66" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF">
+        <DOMLayer name="图层 31" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -42145,9 +44116,12 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 32" color="#FF4F4F">
+        <DOMLayer name="图层 32" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -42549,9 +44523,12 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="内小腿" color="#9933CC" autoNamed="false">
+        <DOMLayer name="内小腿" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="220" keyMode="9728">
               <elements/>
@@ -42922,9 +44899,12 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="内大腿" color="#FF800A" autoNamed="false">
+        <DOMLayer name="内大腿" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="220" keyMode="9728">
               <elements/>
@@ -42933,6 +44913,9 @@ onClipEvent(enterFrame){
               <elements/>
             </DOMFrame>
             <DOMFrame index="221" duration="66" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -43425,6 +45408,9 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="内大腿" color="#4FFF4F" locked="true" autoNamed="false">
@@ -43911,6 +45897,9 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -44399,6 +46388,9 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="外正脚过渡" color="#4FFFFF" locked="true" autoNamed="false" layerType="folder"/>
@@ -44471,6 +46463,9 @@ onClipEvent(enterFrame){
               <elements/>
             </DOMFrame>
             <DOMFrame index="278" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -44777,6 +46772,9 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="外足 复制" color="#808080" parentLayerIndex="36" locked="true" autoNamed="false">
@@ -45080,6 +47078,9 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -45615,6 +47616,9 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -46585,6 +48589,9 @@ onClipEvent(enterFrame){
             <DOMFrame index="282" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="阴影" color="#4FFFFF" locked="true" autoNamed="false">
@@ -46784,11 +48791,17 @@ onClipEvent(enterFrame){
             <DOMFrame index="262" duration="25" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 39" color="#4F80FF">
+        <DOMLayer name="图层 39" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="287" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="287" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

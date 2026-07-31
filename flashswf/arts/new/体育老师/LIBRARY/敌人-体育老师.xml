@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779511326" lastUniqueIdentifier="341">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1785517836" lastUniqueIdentifier="342">
   <timeline>
-    <DOMTimeline name="敌人-体育老师" currentFrame="50">
+    <DOMTimeline name="敌人-体育老师">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -33,7 +33,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D5B125" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#D5B125" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -58,8 +58,8 @@
 斩杀技能库 = [];
 
 
-近战技能距离 = 150;
-中程技能距离 = 230;
+近战技能距离 = 190;
+中程技能距离 = 330;
 远程技能距离 = 500;
 //以下攻击范围在对应技能库启用时生效
 横向攻击Z轴范围 = 90;
@@ -68,8 +68,8 @@
 高空攻击X轴范围 = 250;
 
 近战技能库.push("虎拳","日字冲拳","破极拳");
-中程技能库.push("平踢","旋风腿","诛杀步","燃烧指节");
-远程技能库.push("燃烧指节","旋风腿","诛杀步");
+中程技能库.push("平踢","诛杀步","燃烧指节");
+远程技能库.push("旋风腿","诛杀步");
 超远程技能库.push();
 
 近战技能随机数 = 近战技能库.length;
@@ -90,10 +90,12 @@
 男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
 男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
 
+扭转乾坤次数 = 0;
+扭转乾坤次数上限 = 扭转乾坤次数上限 ? 扭转乾坤次数上限 : 5;
 
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
-]]></script>
+内力 = 内力? 内力 : 200 + 等级?等级:0;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -265,7 +267,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -293,7 +295,7 @@
             </DOMFrame>
             <DOMFrame index="18" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" selected="true" centerPoint3DX="240.85" centerPoint3DY="223.5">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" centerPoint3DX="240.85" centerPoint3DY="223.5">
                   <matrix>
                     <Matrix a="0.235855102539063" d="0.235610961914063" tx="3.35" ty="-56.9"/>
                   </matrix>
@@ -341,7 +343,7 @@
             </DOMFrame>
             <DOMFrame index="50" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-后撤步" name="man" selected="true" centerPoint3DX="-13.85" centerPoint3DY="-56.7">
+                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-后撤步" name="man" centerPoint3DX="-13.85" centerPoint3DY="-56.7">
                   <matrix>
                     <Matrix a="0.2269287109375" d="0.226791381835938" tx="1" ty="-65.35"/>
                   </matrix>
