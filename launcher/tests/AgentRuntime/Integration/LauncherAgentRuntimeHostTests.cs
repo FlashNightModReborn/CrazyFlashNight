@@ -160,7 +160,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
                 panelHost.ActivePanelInstanceId;
 
             Assert.Matches(
-                "^panel_[0-9a-f]{16}_[0-9a-f]{16}$",
+                "^panel_[A-Za-z0-9_-]{24}$",
                 panelInstanceId);
             Assert.True(
                 host.SetActivePanel(

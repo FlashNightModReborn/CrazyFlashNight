@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CF7Launcher.AgentRuntime.Security;
 using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian.Hud;
 
@@ -180,7 +181,6 @@ namespace CF7Launcher.Guardian
         private string _idleFenceToken;
         private readonly Action<Action> _testPumpDispatcher;
         private readonly Action<Action> _testClosedEventDispatcher;
-        private static long _panelInstanceSequence;
         public bool IsPanelOpen { get { return _activePanel != null; } }
         public string ActivePanelName { get { return _activePanel; } }
         public string ActivePanelInstanceId { get { return _activePanelInstanceId; } }
@@ -2048,9 +2048,7 @@ namespace CF7Launcher.Guardian
 
         private static string NextPanelInstanceId()
         {
-            long seq = System.Threading.Interlocked.Increment(ref _panelInstanceSequence);
-            return "panel_" + DateTime.UtcNow.Ticks.ToString("x16") + "_"
-                + seq.ToString("x16");
+            return OpaqueIdGenerator.Create("panel");
         }
     }
 }
