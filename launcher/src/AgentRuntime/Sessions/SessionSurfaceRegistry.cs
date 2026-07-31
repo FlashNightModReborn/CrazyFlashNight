@@ -1641,7 +1641,9 @@ namespace CF7Launcher.AgentRuntime.Sessions
                 if (registration.OwnerRelation
                         == SessionSurfaceOwnerRelation
                             .HumanOnlySecurityReported
-                    || observationModes.Length == 0)
+                    || (observationModes.Length == 0
+                        && (registration.Kind != SurfaceKind.Flash
+                            || inputModes.Length != 0)))
                 {
                     throw new InvalidOperationException(
                         "runtime_surface_registration_invalid");

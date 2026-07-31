@@ -1,6 +1,7 @@
 {
   "schemaVersion": "cf7.agent_runtime.capability_applicability.v1",
   "protocolVersion": "1.0",
+  "surfaceApplicabilitySemantics": "type_level_potential_requires_session_capability_and_surface_modes",
   "securitySurfacePolicy": "never_discover_capture_observe_or_input",
   "capabilities": [
     {

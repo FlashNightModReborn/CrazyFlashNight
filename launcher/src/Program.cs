@@ -26,7 +26,7 @@ using Microsoft.Web.WebView2.Core;
 
 class Program
 {
-    private sealed class AgentRuntimeSurfaceCache
+    internal sealed class AgentRuntimeSurfaceCache
     {
         private readonly object _sync = new object();
         private readonly SessionProcessIdentity _launcherProcess;
@@ -113,15 +113,11 @@ class Program
                         flashHwnd,
                         null,
                         0,
-                        new[]
-                        {
-                            ObservationMode
-                                .WindowGraphicsCapture
-                        },
-                        new[]
-                        {
-                            InputMode.SendInputGuarded
-                        },
+                        // Embedded Flash is a WS_CHILD surface. Until a
+                        // production pixel producer is qualified for that
+                        // topology, expose identity/geometry metadata only.
+                        Array.Empty<ObservationMode>(),
+                        Array.Empty<InputMode>(),
                         20));
             }
             if (launcherHwnd > 0 && webOverlayHwnd > 0)
@@ -173,6 +169,22 @@ class Program
             }
             return specs;
         }
+    }
+
+    internal static IReadOnlyDictionary<
+        string,
+        Func<LauncherAgentExactTargetBinding, bool>>
+            CreateProductionAgentRuntimeTargetActivators(
+                LauncherAgentRuntimeTargetIds targets)
+    {
+        if (targets == null)
+            throw new ArgumentNullException(nameof(targets));
+        // Embedded Flash is metadata-only in the frozen production
+        // topology. Keep activation unavailable until a separately
+        // qualified surface/input design replaces that topology.
+        return new Dictionary<
+            string,
+            Func<LauncherAgentExactTargetBinding, bool>>();
     }
 
     // volatile: HandleUiThreadException 可能在 form 引用刚被赋值后立即跑 (Application.Run 早期),
@@ -228,43 +240,6 @@ class Program
             identity = null;
             return false;
         }
-    }
-
-    private static bool IsExactAgentRuntimeFlashBinding(
-        GameLaunchFlow launchFlow,
-        GuardianForm form,
-        string expectedTargetId,
-        LauncherAgentExactTargetBinding binding)
-    {
-        if (launchFlow == null
-            || form == null
-            || binding == null
-            || binding.WindowHandle == 0
-            || binding.OwnerProcess == null
-            || !string.Equals(
-                binding.TargetId,
-                expectedTargetId,
-                StringComparison.Ordinal))
-        {
-            return false;
-        }
-
-        GameLaunchFlow.AgentRuntimeLaunchSnapshot snapshot =
-            launchFlow.CaptureAgentRuntimeLaunchSnapshot();
-        if (snapshot == null
-            || !string.Equals(
-                snapshot.AttemptId,
-                binding.AttemptId,
-                StringComparison.Ordinal)
-            || form.GetFlashHwnd().ToInt64()
-                != binding.WindowHandle
-            || !TryCaptureProcessIdentity(
-                snapshot.FlashProcess,
-                out SessionProcessIdentity currentProcess))
-        {
-            return false;
-        }
-        return binding.OwnerProcess.IsExact(currentProcess);
     }
 
     private static Task<bool> MarshalAgentRuntimeToUi(
@@ -2671,40 +2646,9 @@ class Program
                                 CreateTargetActivators = delegate(
                                     LauncherAgentRuntimeTargetIds targets)
                                 {
-                                    return new Dictionary<
-                                        string,
-                                        Func<
-                                            LauncherAgentExactTargetBinding,
-                                            bool>>
-                                    {
-                                        [targets.Flash] =
-                                            delegate(
-                                                LauncherAgentExactTargetBinding
-                                                    binding)
-                                            {
-                                                if (!IsExactAgentRuntimeFlashBinding(
-                                                        launchFlow,
-                                                        form,
-                                                        targets.Flash,
-                                                        binding))
-                                                {
-                                                    return false;
-                                                }
-                                                bool restored =
-                                                    windowManager
-                                                        .RestoreFlashInputFocus(
-                                                            "agent_runtime_activate",
-                                                            new IntPtr(
-                                                                binding
-                                                                    .WindowHandle));
-                                                return restored
-                                                    && IsExactAgentRuntimeFlashBinding(
-                                                        launchFlow,
-                                                        form,
-                                                        targets.Flash,
-                                                        binding);
-                                            }
-                                    };
+                                    return
+                                        CreateProductionAgentRuntimeTargetActivators(
+                                            targets);
                                 },
                                 PrepareSafeExit =
                                     form.TryPrepareAgentRuntimeExit,

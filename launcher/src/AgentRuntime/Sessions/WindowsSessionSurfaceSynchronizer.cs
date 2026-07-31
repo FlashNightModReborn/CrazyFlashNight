@@ -96,11 +96,17 @@ namespace CF7Launcher.AgentRuntime.Sessions
             }
             else if (ownerRelation
                     == SessionSurfaceOwnerRelation
-                        .HumanOnlySecurityReported
-                || frozenObservation.Length == 0)
+                        .HumanOnlySecurityReported)
             {
                 throw new ArgumentException(
-                    "Runtime surfaces require an observation mode and cannot use the human-only relation.");
+                    "Runtime surfaces cannot use the human-only relation.");
+            }
+            else if (frozenObservation.Length == 0
+                && (kind != SurfaceKind.Flash
+                    || frozenInput.Length != 0))
+            {
+                throw new ArgumentException(
+                    "Only Flash surfaces may be metadata-only, and they cannot advertise input modes.");
             }
 
             TargetId = targetId;

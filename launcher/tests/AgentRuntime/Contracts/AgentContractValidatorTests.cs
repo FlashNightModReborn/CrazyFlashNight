@@ -43,6 +43,98 @@ namespace CF7Launcher.Tests.AgentRuntime.Contracts
         }
 
         [Fact]
+        public void MetadataOnlySurfaceAllowsNoObservationOrInputModes()
+        {
+            using JsonDocument document =
+                ContractFixture.ReadDocument(
+                    "contract-vectors.v1.json");
+            SessionDescriptor session =
+                ContractFixture.Deserialize<SessionDescriptor>(
+                    document.RootElement
+                        .GetProperty("valid")
+                        .GetProperty("session"));
+            SurfaceDescriptor surface =
+                Assert.Single(
+                    session.Surfaces,
+                    value => value.Kind == SurfaceKind.Flash);
+            int surfaceIndex =
+                session.Surfaces.IndexOf(surface);
+            surface.ObservationModes.Clear();
+            surface.InputModes.Clear();
+
+            Assert.Empty(
+                AgentContractValidator.Validate(session));
+
+            surface.Kind = SurfaceKind.Launcher;
+            ContractViolation kindViolation =
+                Assert.Single(
+                    AgentContractValidator.Validate(session));
+            Assert.Equal(
+                "$.surfaces[" + surfaceIndex
+                    + "].observationModes",
+                kindViolation.Path);
+            Assert.Equal(
+                "surface_kind_mismatch",
+                kindViolation.Code);
+
+            surface.Kind = SurfaceKind.Flash;
+            surface.InputModes.Add(
+                InputMode.SendInputGuarded);
+            ContractViolation violation =
+                Assert.Single(
+                    AgentContractValidator.Validate(session));
+            Assert.Equal(
+                "$.surfaces[" + surfaceIndex
+                    + "].inputModes",
+                violation.Path);
+            Assert.Equal(
+                "observation_required",
+                violation.Code);
+        }
+
+        [Fact]
+        public void ValidVectorsKeepPixelAndInputExamplesOffMetadataOnlyFlash()
+        {
+            using JsonDocument document =
+                ContractFixture.ReadDocument(
+                    "contract-vectors.v1.json");
+            JsonElement valid =
+                document.RootElement.GetProperty("valid");
+            SessionDescriptor session =
+                ContractFixture.Deserialize<SessionDescriptor>(
+                    valid.GetProperty("session"));
+            SurfaceDescriptor flash =
+                Assert.Single(
+                    session.Surfaces,
+                    value => value.Kind == SurfaceKind.Flash);
+            Assert.Empty(flash.ObservationModes);
+            Assert.Empty(flash.InputModes);
+
+            ObservationEnvelope observation =
+                ContractFixture.Deserialize<ObservationEnvelope>(
+                    valid.GetProperty("observation"));
+            SurfaceDescriptor observed =
+                Assert.Single(
+                    session.Surfaces,
+                    value => string.Equals(
+                        value.TargetId,
+                        observation.TargetId,
+                        System.StringComparison.Ordinal));
+            Assert.Equal(SurfaceKind.WebOverlay, observed.Kind);
+            Assert.Contains(
+                ObservationMode.WindowGraphicsCapture,
+                observed.ObservationModes);
+            Assert.Contains(
+                InputMode.SendInputGuarded,
+                observed.InputModes);
+            Assert.All(
+                observation.Frames,
+                frame => Assert.Equal(
+                    SourceLayer.WebOverlay,
+                    frame.SourceLayer));
+        }
+
+        [Fact]
         public void FocusAndModalEpochs_AreMandatoryPositiveBindings()
         {
             ActionEnvelope action = ReadAction();

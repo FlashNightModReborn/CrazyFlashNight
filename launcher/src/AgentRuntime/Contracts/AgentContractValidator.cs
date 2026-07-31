@@ -774,10 +774,38 @@ namespace CF7Launcher.AgentRuntime.Contracts
                     Error(errors, path + ".documentGeneration", "surface_kind_mismatch",
                         "Only Web surfaces carry document generation.");
             }
-            if (value.ObservationModes == null || value.ObservationModes.Count == 0)
-                Error(errors, path + ".observationModes", "non_empty", "Surface must advertise observation modes.");
+            if (value.ObservationModes == null)
+            {
+                Error(
+                    errors,
+                    path + ".observationModes",
+                    "required",
+                    "Observation mode list is required.");
+            }
             if (value.InputModes == null)
+            {
                 Error(errors, path + ".inputModes", "required", "Input mode list is required.");
+            }
+            else if (value.ObservationModes != null
+                && value.ObservationModes.Count == 0)
+            {
+                if (value.Kind != SurfaceKind.Flash)
+                {
+                    Error(
+                        errors,
+                        path + ".observationModes",
+                        "surface_kind_mismatch",
+                        "Only Flash surfaces may be metadata-only.");
+                }
+                if (value.InputModes.Count != 0)
+                {
+                    Error(
+                        errors,
+                        path + ".inputModes",
+                        "observation_required",
+                        "Metadata-only surfaces cannot advertise input modes.");
+                }
+            }
         }
 
         private static void ValidateFrame(

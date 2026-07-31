@@ -1,8 +1,9 @@
 using System;
 using System.Windows.Forms;
+using CF7Launcher.AgentRuntime.Security;
+using CF7Launcher.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Guardian
 {
@@ -155,7 +156,6 @@ namespace CF7Launcher.Guardian
         private string _activeFallbackPanelInstanceId;
         private string _activeFallbackPanelName;
         private string _deferredFallbackSkillInitData;
-        private static long _fallbackPanelInstanceSequence;
         internal event Action<string, string> PanelChanged;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
@@ -3515,8 +3515,8 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Router] fallback skills rebind deferred");
                 return false;
             }
-            string instanceId = "fallback." + DateTime.UtcNow.Ticks.ToString("x") + "."
-                + System.Threading.Interlocked.Increment(ref _fallbackPanelInstanceSequence).ToString("x");
+            string instanceId =
+                OpaqueIdGenerator.Create("fallback");
             JObject init;
             initDataJson =
                 EnrichPreparationChildReturnInitData(

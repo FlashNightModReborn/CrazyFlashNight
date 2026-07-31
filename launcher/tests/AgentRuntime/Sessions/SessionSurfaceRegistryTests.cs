@@ -73,6 +73,68 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
         }
 
         [Fact]
+        public void MetadataOnlyRegistrationIsRestrictedToFlash()
+        {
+            Setup setup = CreateSetup();
+            setup.Registry.RegisterSession(
+                setup.Owner,
+                Session(
+                    setup,
+                    AttemptA,
+                    1,
+                    setup.Flash));
+            SessionSurfaceHostRegistration launcher =
+                SurfaceRegistration(
+                    setup.Launcher,
+                    LauncherTarget,
+                    SurfaceKind.Launcher,
+                    SessionSurfaceOwnerRelation
+                        .LauncherTopLevel,
+                    1001,
+                    Array.Empty<ObservationMode>(),
+                    Array.Empty<InputMode>());
+
+            InvalidOperationException rejected =
+                Assert.Throws<InvalidOperationException>(
+                    () => setup.Registry.RegisterSurface(
+                        setup.Owner,
+                        ExpectSession(
+                            setup.Registry,
+                            SessionId),
+                        launcher));
+            Assert.Equal(
+                "runtime_surface_registration_invalid",
+                rejected.Message);
+
+            setup.Registry.RegisterSurface(
+                setup.Owner,
+                ExpectSession(
+                    setup.Registry,
+                    SessionId),
+                SurfaceRegistration(
+                    setup.Flash,
+                    FlashTarget,
+                    SurfaceKind.Flash,
+                    SessionSurfaceOwnerRelation
+                        .FlashTopLevel,
+                    2001,
+                    Array.Empty<ObservationMode>(),
+                    Array.Empty<InputMode>()));
+            SessionSurfaceSnapshot flash =
+                Assert.Single(
+                    setup.Registry.GetSnapshot()
+                        .FindSession(SessionId)
+                        .Surfaces);
+            Assert.Equal(
+                SurfaceKind.Flash,
+                flash.Kind);
+            Assert.Empty(
+                flash.ObservationModes);
+            Assert.Empty(
+                flash.InputModes);
+        }
+
+        [Fact]
         public void HumanOnlySurfaceNeverLeaksAndRequiresFreshHumanAuthorization()
         {
             Setup setup = CreateRegisteredSetup();

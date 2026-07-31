@@ -24,7 +24,7 @@
       "surfaces": [
         {
           "targetId": "gggggggggggggggggggggg",
-          "kind": "flash",
+          "kind": "web_overlay",
           "surfaceEpoch": 9,
           "boundsPhysical": { "x": 100, "y": 80, "width": 1280, "height": 720 },
           "dpi": 144,
@@ -33,8 +33,23 @@
           "coordinateSpaceVersion": 4,
           "focusEpoch": 5,
           "modalEpoch": 3,
-          "observationModes": ["window_graphics_capture", "flash_snapshot_keyframe"],
+          "documentGeneration": 6,
+          "observationModes": ["window_graphics_capture", "web_semantic"],
           "inputModes": ["send_input_guarded"]
+        },
+        {
+          "targetId": "kkkkkkkkkkkkkkkkkkkkkk",
+          "kind": "flash",
+          "surfaceEpoch": 4,
+          "boundsPhysical": { "x": 100, "y": 80, "width": 1280, "height": 720 },
+          "dpi": 144,
+          "zIndex": 0,
+          "visible": true,
+          "coordinateSpaceVersion": 2,
+          "focusEpoch": 5,
+          "modalEpoch": 3,
+          "observationModes": [],
+          "inputModes": []
         }
       ],
       "activePanel": {
@@ -165,7 +180,7 @@
           "observationId": "ffffffffffffffffffffff",
           "targetId": "gggggggggggggggggggggg",
           "surfaceEpoch": 9,
-          "sourceLayer": "flash",
+          "sourceLayer": "web_overlay",
           "zIndex": 1,
           "capturedAtMonotonic": 2000,
           "coordinateSpaceId": "oooooooooooooooooooooo",

@@ -74,6 +74,68 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
         }
 
         [Fact]
+        public void MetadataOnlyRuntimeSurfaceSynchronizesWithoutInputModes()
+        {
+            var fixture = new Fixture();
+            fixture.Controller.SetAttempt(
+                "attempt_sync_metadata_aaaa",
+                fixture.Flash,
+                "developer_slot",
+                1);
+            fixture.Specs.Add(
+                fixture.LauncherSpec());
+            fixture.Specs.Add(
+                fixture.FlashSpec(
+                    Array.Empty<ObservationMode>(),
+                    Array.Empty<InputMode>()));
+            fixture.Probe.Windows[1001] =
+                Window(fixture.Launcher.ProcessId, 0, 96);
+            fixture.Probe.Windows[2001] =
+                Window(fixture.Flash.ProcessId, 20, 96);
+
+            WindowsSessionSurfaceRefreshResult result =
+                fixture.Synchronizer.Refresh();
+
+            Assert.Equal(
+                2,
+                result.SynchronizedSurfaceCount);
+            SessionSurfaceSnapshot surface =
+                fixture.Controller.Snapshot.Surfaces.Single(
+                    value => string.Equals(
+                        value.TargetId,
+                        FlashTarget,
+                        StringComparison.Ordinal));
+            Assert.Equal(
+                FlashTarget,
+                surface.TargetId);
+            Assert.Empty(
+                surface.ObservationModes);
+            Assert.Empty(
+                surface.InputModes);
+            Assert.Throws<ArgumentException>(
+                () => fixture.FlashSpec(
+                    Array.Empty<ObservationMode>(),
+                    new[]
+                    {
+                        InputMode.SendInputGuarded
+                    }));
+            Assert.Throws<ArgumentException>(
+                () => new WindowsSessionSurfaceSpec(
+                    LauncherTarget,
+                    SurfaceKind.Launcher,
+                    AgentTargetSafetyKind.RuntimeOwned,
+                    SessionSurfaceOwnerRelation
+                        .LauncherTopLevel,
+                    fixture.Launcher,
+                    1001,
+                    null,
+                    0,
+                    Array.Empty<ObservationMode>(),
+                    Array.Empty<InputMode>(),
+                    0));
+        }
+
+        [Fact]
         public void EveryRefreshAttemptNotifiesForFailClosedRetry()
         {
             var results =
@@ -592,7 +654,10 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
                     0);
             }
 
-            public WindowsSessionSurfaceSpec FlashSpec()
+            public WindowsSessionSurfaceSpec FlashSpec(
+                IEnumerable<ObservationMode>
+                    observationModes = null,
+                IEnumerable<InputMode> inputModes = null)
             {
                 return new WindowsSessionSurfaceSpec(
                     FlashTarget,
@@ -603,11 +668,12 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
                     2001,
                     LauncherTarget,
                     1001,
-                    new[]
+                    observationModes ?? new[]
                     {
-                        ObservationMode.FlashSnapshotKeyframe
+                        ObservationMode
+                            .FlashSnapshotKeyframe
                     },
-                    new[]
+                    inputModes ?? new[]
                     {
                         InputMode.SendInputGuarded
                     },

@@ -275,7 +275,6 @@
         "documentGeneration": { "$ref": "#/$defs/generation" },
         "observationModes": {
           "type": "array",
-          "minItems": 1,
           "maxItems": 4,
           "uniqueItems": true,
           "items": {
@@ -297,6 +296,21 @@
           "then": {
             "properties": { "kind": { "const": "web_overlay" } },
             "required": ["kind"]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "observationModes": { "maxItems": 0 }
+            },
+            "required": ["observationModes"]
+          },
+          "then": {
+            "properties": {
+              "kind": { "const": "flash" },
+              "inputModes": { "maxItems": 0 }
+            },
+            "required": ["kind", "inputModes"]
           }
         }
       ]

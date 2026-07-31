@@ -145,6 +145,9 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(
                 (string)posted["panelInstanceId"],
                 (string)identity.Value);
+            Assert.Matches(
+                "^fallback_[A-Za-z0-9_-]{24}$",
+                (string)posted["panelInstanceId"]);
         }
 
         [Theory]
@@ -212,6 +215,32 @@ namespace CF7Launcher.Tests.Guardian
                     Assert.Null(retired.Name);
                     Assert.Null(retired.Instance);
                 });
+        }
+
+        [Fact]
+        public void FallbackPanelInstancesUseFreshCspRngOpaqueIds()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router =
+                MakeRouter(c);
+
+            Assert.True(
+                router.TryOpenAgentPanel("help"));
+            string first =
+                router.ActiveFallbackPanelInstanceId;
+            router.ClearFallbackPanelInstance();
+            Assert.True(
+                router.TryOpenAgentPanel("map"));
+            string second =
+                router.ActiveFallbackPanelInstanceId;
+
+            Assert.Matches(
+                "^fallback_[A-Za-z0-9_-]{24}$",
+                first);
+            Assert.Matches(
+                "^fallback_[A-Za-z0-9_-]{24}$",
+                second);
+            Assert.NotEqual(first, second);
         }
 
         [Fact]

@@ -76,6 +76,37 @@ namespace CF7Launcher.Tests.AgentRuntime.Contracts
             Assert.True(actionProperties.TryGetProperty("semanticSnapshotId", out _));
             Assert.True(actionProperties.TryGetProperty("nodeId", out _));
 
+            JsonElement metadataOnlyCondition = definitions
+                .GetProperty("surfaceDescriptor")
+                .GetProperty("allOf")
+                .EnumerateArray()
+                .Single(item =>
+                    item.TryGetProperty(
+                        "if",
+                        out JsonElement condition)
+                    && condition.TryGetProperty(
+                        "properties",
+                        out JsonElement conditionalProperties)
+                    && conditionalProperties.TryGetProperty(
+                            "observationModes",
+                            out JsonElement modes)
+                    && modes.TryGetProperty(
+                        "maxItems",
+                        out JsonElement maximum)
+                    && maximum.GetInt32() == 0);
+            JsonElement metadataOnlyProperties =
+                metadataOnlyCondition.GetProperty("then")
+                    .GetProperty("properties");
+            Assert.Equal(
+                "flash",
+                metadataOnlyProperties.GetProperty("kind")
+                    .GetProperty("const").GetString());
+            Assert.Equal(
+                0,
+                metadataOnlyProperties
+                    .GetProperty("inputModes")
+                    .GetProperty("maxItems").GetInt32());
+
             HashSet<string> activePanelRequired = definitions
                 .GetProperty("activePanel")
                 .GetProperty("required")
@@ -374,6 +405,12 @@ namespace CF7Launcher.Tests.AgentRuntime.Contracts
             Assert.Equal(
                 "never_discover_capture_observe_or_input",
                 document.RootElement.GetProperty("securitySurfacePolicy").GetString());
+            Assert.Equal(
+                "type_level_potential_requires_session_capability_and_surface_modes",
+                document.RootElement
+                    .GetProperty(
+                        "surfaceApplicabilitySemantics")
+                    .GetString());
         }
 
         [Fact]

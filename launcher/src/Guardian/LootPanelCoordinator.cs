@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using CF7Launcher.AgentRuntime.Security;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -180,7 +181,11 @@ namespace CF7Launcher.Guardian
             _releasePause = releasePause;
             _requestRecovery = requestRecovery;
             _panelInstanceIdFactory = panelInstanceIdFactory
-                ?? delegate { return "panel.loot." + Guid.NewGuid().ToString("N"); };
+                ?? delegate
+                {
+                    return OpaqueIdGenerator.Create(
+                        "panelloot");
+                };
             _bindWatchdogMs = bindWatchdogMs;
             _closeRetryDelayMs = closeRetryDelayMs;
             _closeRetryMaximumMs = closeRetryMaximumMs;

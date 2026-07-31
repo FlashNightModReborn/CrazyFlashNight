@@ -75,6 +75,35 @@ namespace CF7Launcher.Tests.AgentRuntime.Observation
         }
 
         [Fact]
+        public void MetadataOnlyFlashSurfaceRejectsPixelCapture()
+        {
+            Setup setup = CreateSetup();
+            SessionSurfaceHostRegistration flash =
+                FlashSurface(
+                    setup,
+                    Array.Empty<ObservationMode>(),
+                    Array.Empty<InputMode>());
+            setup.Registry.RegisterSurface(
+                setup.Owner,
+                Expect(setup),
+                flash);
+            var authority =
+                new SessionSurfaceObservationAuthority(
+                    setup.Registry);
+
+            Assert.False(
+                authority.TryCreateCapturePlan(
+                    SessionId,
+                    FlashTarget,
+                    out ObservationCapturePlan plan,
+                    out string reason));
+            Assert.Null(plan);
+            Assert.Equal(
+                "unsupported_for_surface",
+                reason);
+        }
+
+        [Fact]
         public void SecurityAndUnknownModalsNeverEnterCapturePlan()
         {
             Setup setup = CreateSetup();
@@ -285,7 +314,9 @@ namespace CF7Launcher.Tests.AgentRuntime.Observation
         }
 
         private static SessionSurfaceHostRegistration FlashSurface(
-            Setup setup)
+            Setup setup,
+            ObservationMode[] observationModes = null,
+            InputMode[] inputModes = null)
         {
             return new SessionSurfaceHostRegistration
             {
@@ -302,12 +333,13 @@ namespace CF7Launcher.Tests.AgentRuntime.Observation
                 Dpi = 144,
                 ZIndex = 10,
                 Visible = true,
-                ObservationModes = new[]
+                ObservationModes = observationModes ?? new[]
                 {
                     ObservationMode.WindowGraphicsCapture,
                     ObservationMode.FlashSnapshotKeyframe
                 },
-                InputModes = Array.Empty<InputMode>()
+                InputModes =
+                    inputModes ?? Array.Empty<InputMode>()
             };
         }
 

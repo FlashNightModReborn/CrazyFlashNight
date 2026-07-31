@@ -179,6 +179,34 @@ namespace CF7Launcher.Tests.Tasks
             };
         }
 
+        [Fact]
+        public void DefaultPanelInstanceFactoryUsesFreshCspRngOpaqueIds()
+        {
+            var seen = new HashSet<string>(
+                StringComparer.Ordinal);
+
+            for (int index = 0; index < 128; index++)
+            {
+                var panel = new FakePanel();
+                using var coordinator =
+                    new LootPanelCoordinator(
+                        panel,
+                        delegate { return true; });
+
+                JObject ack = JObject.Parse(
+                    coordinator.HandlePanelRequest(
+                        PanelRequest()));
+
+                Assert.True(
+                    ack.Value<bool>("accepted"));
+                Assert.Matches(
+                    "^panelloot_[A-Za-z0-9_-]{24}$",
+                    panel.ReservedInstance);
+                Assert.True(
+                    seen.Add(panel.ReservedInstance));
+            }
+        }
+
         private static JObject Request(string cmd, string callId,
             string chestSessionId = ChestSessionId,
             string lootContainerId = LootContainerId, int containerEpoch = ContainerEpoch,
