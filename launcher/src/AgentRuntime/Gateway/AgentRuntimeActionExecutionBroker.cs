@@ -777,6 +777,53 @@ namespace CF7Launcher.AgentRuntime.Gateway
                             domainPreviewHash:
                                 lease.PreviewHash));
                 }
+                AgentRuntimeRevocationCoordinator
+                    .ActionCancellationRegistration pending;
+                try
+                {
+                    pending = _revocations.RegisterAction(
+                        context.ConnectionId,
+                        action.LeaseId,
+                        cancellationToken);
+                }
+                catch (InvalidOperationException)
+                {
+                    RejectBeforeDispatch(
+                        PredispatchCancellationReason(
+                            lease));
+                    return;
+                }
+                using AgentRuntimeRevocationCoordinator
+                    .ActionCancellationRegistration
+                        pendingRegistration = pending;
+                if (pending.Token.IsCancellationRequested)
+                {
+                    pending.Dispose();
+                    RejectBeforeDispatch(
+                        PredispatchCancellationReason(
+                            lease));
+                    return;
+                }
+                if (lease.Kind
+                        == WriteLeaseKind.StructuredAction
+                    && !_revocations
+                        .TryClaimStructuredActionDispatch(
+                            action.LeaseId))
+                {
+                    pending.Dispose();
+                    RejectBeforeDispatch(
+                        PredispatchCancellationReason(
+                            lease));
+                    return;
+                }
+                if (pending.Token.IsCancellationRequested)
+                {
+                    pending.Dispose();
+                    RejectBeforeDispatch(
+                        PredispatchCancellationReason(
+                            lease));
+                    return;
+                }
                 AppendAuditRequired(
                     AuditEvent(
                         context,
@@ -803,12 +850,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
                     identity,
                     ledgerReconcile);
                 dispatchStarted = true;
-                using AgentRuntimeRevocationCoordinator
-                    .ActionCancellationRegistration pending =
-                        _revocations.RegisterAction(
-                            context.ConnectionId,
-                            action.LeaseId,
-                            cancellationToken);
+                pending.Token.ThrowIfCancellationRequested();
                 AgentActionPerformance performance =
                     await _performer.PerformAsync(
                         context,
@@ -1701,6 +1743,36 @@ namespace CF7Launcher.AgentRuntime.Gateway
                 CompleteReservation,
                 _ => CompleteReservation(),
                 _ledger.MarkContinuityLost);
+        }
+
+        private string PredispatchCancellationReason(
+            WriteLease lease)
+        {
+            string reasonCode = lease?.RevokeReason;
+            if (string.Equals(
+                    reasonCode,
+                    "action_limit_consumed",
+                    StringComparison.Ordinal))
+            {
+                if (lease != null)
+                {
+                    _leases.Revoke(
+                        lease.LeaseId,
+                        "lease_revoked");
+                    reasonCode = lease.RevokeReason;
+                }
+                if (string.IsNullOrWhiteSpace(reasonCode)
+                    || string.Equals(
+                        reasonCode,
+                        "action_limit_consumed",
+                        StringComparison.Ordinal))
+                {
+                    reasonCode = "lease_revoked";
+                }
+            }
+            return string.IsNullOrWhiteSpace(reasonCode)
+                ? "internal_error"
+                : reasonCode;
         }
 
         private void ReleaseInactiveLease(WriteLease lease)

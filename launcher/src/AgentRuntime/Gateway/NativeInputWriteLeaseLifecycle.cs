@@ -10,7 +10,8 @@ namespace CF7Launcher.AgentRuntime.Gateway
     /// <summary>
     /// Activates a GUI lease only after binding it to the current
     /// Launcher-owned target generations and the healthy low-level guard.
-    /// Domain transactions do not enter the native-input containment path.
+    /// Structured Launcher actions share the human-input fence but never
+    /// bind the guard; domain transactions bypass native-input containment.
     /// </summary>
     internal sealed class NativeInputWriteLeaseLifecycle
         : IAgentWriteLeaseLifecycle
@@ -39,7 +40,9 @@ namespace CF7Launcher.AgentRuntime.Gateway
         {
             if (lease == null)
                 throw new ArgumentNullException(nameof(lease));
-            if (lease.Kind == WriteLeaseKind.Shutdown)
+            if (lease.Kind == WriteLeaseKind.Shutdown
+                || lease.Kind
+                    == WriteLeaseKind.StructuredAction)
             {
                 return _guard.TryAuthorizeShutdownLease(
                     out reasonCode);

@@ -878,6 +878,7 @@ function validateLeaseAcquireParams(params) {
   if (![
     'gui_input',
     'domain_transaction',
+    'structured_action',
     'shutdown',
   ].includes(params.kind)) {
     fail('enum', 'Lease kind is invalid', '$.params.kind');
@@ -919,8 +920,12 @@ function validateLeaseAcquireParams(params) {
       '$.params.argumentBoundsHash',
     );
   }
+  const requestsShutdown =
+    params.capabilities.includes('session.shutdown');
+  const requestsStructuredAction =
+    params.capabilities.includes('panel.open');
   if (params.kind === 'domain_transaction') {
-    if (params.capabilities.includes('session.shutdown')) {
+    if (requestsShutdown) {
       fail(
         'lease_kind_mismatch',
         'Shutdown requires the dedicated shutdown lease kind',
@@ -935,6 +940,13 @@ function validateLeaseAcquireParams(params) {
         'domain_operation_required',
         'Domain lease must bind a frozen hair write method',
         '$.params.operation',
+      );
+    }
+    if (requestsStructuredAction) {
+      fail(
+        'lease_kind_mismatch',
+        'panel.open requires the dedicated structured-action lease kind',
+        '$.params.capabilities',
       );
     }
   } else if (params.kind === 'shutdown') {
@@ -980,6 +992,63 @@ function validateLeaseAcquireParams(params) {
         '$.params',
       );
     }
+    if (requestsStructuredAction) {
+      fail(
+        'lease_kind_mismatch',
+        'panel.open requires the dedicated structured-action lease kind',
+        '$.params.capabilities',
+      );
+    }
+  } else if (params.kind === 'structured_action') {
+    if (requestsShutdown) {
+      fail(
+        'lease_kind_mismatch',
+        'session.shutdown requires the dedicated shutdown lease kind',
+        '$.params.capabilities',
+      );
+    }
+    if (
+      params.capabilities.length !== 1
+      || params.capabilities[0] !== 'panel.open'
+    ) {
+      fail(
+        'capability_scope_required',
+        'Structured-action lease requires exactly panel.open',
+        '$.params.capabilities',
+      );
+    }
+    if (params.targetScope.length !== 1) {
+      fail(
+        'exactly_one',
+        'Structured-action lease requires exactly one target',
+        '$.params.targetScope',
+      );
+    }
+    if (params.requestedTtlMs > 30_000) {
+      fail(
+        'maximum',
+        'Structured-action lease expires within 30 seconds',
+        '$.params.requestedTtlMs',
+      );
+    }
+    if (params.requestedActionLimit !== 1) {
+      fail(
+        'constant',
+        'Structured-action lease is one-shot',
+        '$.params.requestedActionLimit',
+      );
+    }
+    if (
+      Object.hasOwn(params, 'operation')
+      || Object.hasOwn(params, 'previewHash')
+      || Object.hasOwn(params, 'expectedRevision')
+    ) {
+      fail(
+        'structured_action_lease_fields',
+        'Structured-action operation binding is derived by the server',
+        '$.params',
+      );
+    }
   } else {
     if (
       Object.hasOwn(params, 'operation')
@@ -992,10 +1061,17 @@ function validateLeaseAcquireParams(params) {
         '$.params',
       );
     }
-    if (params.capabilities.includes('session.shutdown')) {
+    if (requestsShutdown) {
       fail(
         'lease_kind_mismatch',
         'Shutdown requires the dedicated shutdown lease kind',
+        '$.params.capabilities',
+      );
+    }
+    if (requestsStructuredAction) {
+      fail(
+        'lease_kind_mismatch',
+        'panel.open requires the dedicated structured-action lease kind',
         '$.params.capabilities',
       );
     }

@@ -555,7 +555,14 @@
         "ownerClientId": { "$ref": "#/$defs/opaqueId" },
         "securityPrincipalId": { "$ref": "#/$defs/opaqueId" },
         "sessionMode": { "$ref": "#/$defs/sessionMode" },
-        "purpose": { "enum": ["gui_input", "domain_transaction", "shutdown"] },
+        "purpose": {
+          "enum": [
+            "gui_input",
+            "domain_transaction",
+            "structured_action",
+            "shutdown"
+          ]
+        },
         "scope": { "$ref": "#/$defs/leaseScope" },
         "capabilities": {
           "type": "array",
@@ -603,6 +610,59 @@
               "scope": {
                 "properties": {
                   "maximumActions": { "maximum": 8 }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "purpose": { "const": "structured_action" }
+            },
+            "required": ["purpose"]
+          },
+          "then": {
+            "not": { "required": ["renewAfter"] },
+            "properties": {
+              "sessionMode": {
+                "enum": ["developer_interactive", "unattended_test"]
+              },
+              "capabilities": {
+                "minItems": 1,
+                "maxItems": 1,
+                "items": { "const": "panel.open" }
+              },
+              "scope": {
+                "properties": {
+                  "targetScope": {
+                    "minItems": 1,
+                    "maxItems": 1
+                  },
+                  "operationScope": {
+                    "minItems": 1,
+                    "maxItems": 1,
+                    "items": { "const": "panel.open" }
+                  },
+                  "maximumActions": { "const": 1 }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "capabilities": {
+                "not": {
+                  "contains": { "const": "panel.open" }
+                }
+              },
+              "scope": {
+                "properties": {
+                  "operationScope": {
+                    "not": {
+                      "contains": { "const": "panel.open" }
+                    }
+                  }
                 }
               }
             }

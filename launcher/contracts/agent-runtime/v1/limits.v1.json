@@ -55,6 +55,23 @@
       "maximumActions": 1,
       "automaticRenewal": false
     },
+    "structuredAction": {
+      "maximumTtlMs": 30000,
+      "maximumActions": 1,
+      "minimumTargets": 1,
+      "maximumTargets": 1,
+      "requiredTargetKind": "launcher",
+      "capabilitiesExact": [
+        "panel.open"
+      ],
+      "allowedSessionModes": [
+        "developer_interactive",
+        "unattended_test"
+      ],
+      "renewAfterAllowed": false,
+      "automaticRenewal": false,
+      "renewalOperationResult": "operation_invalid"
+    },
     "shutdown": {
       "maximumTtlMs": 30000,
       "maximumActions": 1,

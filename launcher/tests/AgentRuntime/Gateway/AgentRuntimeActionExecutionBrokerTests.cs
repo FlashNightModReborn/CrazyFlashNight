@@ -12,6 +12,7 @@ using CF7Launcher.AgentRuntime.Input;
 using CF7Launcher.AgentRuntime.NativeInput;
 using CF7Launcher.AgentRuntime.Observation;
 using CF7Launcher.AgentRuntime.Security;
+using CF7Launcher.AgentRuntime.Sessions;
 using CF7Launcher.Tests.AgentRuntime.Observation;
 using Xunit;
 
@@ -746,6 +747,434 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
         }
 
         [Fact]
+        public async Task
+            StructuredActionQueuedHumanBeforeClaimRejectsWithoutPerformer()
+        {
+            using var deliveryEntered =
+                new ManualResetEventSlim(false);
+            using var releaseDelivery =
+                new ManualResetEventSlim(false);
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true,
+                    externalInputDeliveryEntered:
+                        deliveryEntered,
+                    releaseExternalInputDelivery:
+                        releaseDelivery);
+            var performer = new ImmediatePerformer(
+                AgentActionPerformance.Completed(
+                    ActionOutcome.InputDispatched,
+                    EvidenceKind.BrokerDispatch,
+                    TargetId,
+                    false));
+            fixture.SetPerformer(performer);
+
+            try
+            {
+                fixture.ObserveExternalInput();
+                Assert.True(
+                    deliveryEntered.Wait(
+                        TimeSpan.FromSeconds(5)));
+
+                ActionReceipt receipt =
+                    await fixture.ExecuteAsync(
+                        fixture.Action())
+                        .WaitAsync(TimeSpan.FromSeconds(5));
+
+                Assert.Equal(
+                    ActionOutcome.Rejected,
+                    receipt.Outcome);
+                Assert.Equal(
+                    "external_input_preempted",
+                    receipt.ReasonCode);
+                Assert.Equal(
+                    "human_input",
+                    fixture.Lease.RevokeReason);
+                Assert.Equal(0, performer.CallCount);
+                Assert.Contains(
+                    fixture.AuditEntries(),
+                    entry => entry.EventType
+                        == AgentRuntimeAuditEventTypes
+                            .ActionBindingValidated);
+                Assert.DoesNotContain(
+                    fixture.AuditEntries(),
+                    entry => entry.EventType
+                        == AgentRuntimeAuditEventTypes
+                            .ActionDispatchStarted);
+            }
+            finally
+            {
+                releaseDelivery.Set();
+            }
+        }
+
+        [Fact]
+        public async Task
+            StructuredActionQueuedInjectedInputKeepsExternalClassification()
+        {
+            using var deliveryEntered =
+                new ManualResetEventSlim(false);
+            using var releaseDelivery =
+                new ManualResetEventSlim(false);
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true,
+                    externalInputDeliveryEntered:
+                        deliveryEntered,
+                    releaseExternalInputDelivery:
+                        releaseDelivery);
+            var performer = new ImmediatePerformer(
+                AgentActionPerformance.Completed(
+                    ActionOutcome.InputDispatched,
+                    EvidenceKind.BrokerDispatch,
+                    TargetId,
+                    false));
+            fixture.SetPerformer(performer);
+
+            try
+            {
+                fixture.ObserveInjectedExternalInput();
+                Assert.True(
+                    deliveryEntered.Wait(
+                        TimeSpan.FromSeconds(5)));
+
+                ActionReceipt receipt =
+                    await fixture.ExecuteAsync(
+                        fixture.Action())
+                        .WaitAsync(TimeSpan.FromSeconds(5));
+
+                Assert.Equal(
+                    ActionOutcome.Rejected,
+                    receipt.Outcome);
+                Assert.Equal(
+                    "external_input_preempted",
+                    receipt.ReasonCode);
+                Assert.Equal(
+                    "external_input",
+                    fixture.Lease.RevokeReason);
+                Assert.Equal(0, performer.CallCount);
+                Assert.Contains(
+                    fixture.AuditEntries(),
+                    entry => entry.EventType
+                        == AgentRuntimeAuditEventTypes
+                            .ActionBindingValidated);
+                Assert.DoesNotContain(
+                    fixture.AuditEntries(),
+                    entry => entry.EventType
+                        == AgentRuntimeAuditEventTypes
+                            .ActionDispatchStarted);
+            }
+            finally
+            {
+                releaseDelivery.Set();
+            }
+        }
+
+        [Fact]
+        public async Task
+            StructuredActionHookLossBeforeClaimRejectsWithoutPerformer()
+        {
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true);
+            var performer = new ImmediatePerformer(
+                AgentActionPerformance.Completed(
+                    ActionOutcome.InputDispatched,
+                    EvidenceKind.BrokerDispatch,
+                    TargetId,
+                    false));
+            fixture.SetPerformer(performer);
+            fixture.FailHookAfterNextHealthyCheck();
+
+            ActionReceipt receipt =
+                await fixture.ExecuteAsync(
+                    fixture.Action())
+                    .WaitAsync(TimeSpan.FromSeconds(5));
+
+            Assert.Equal(
+                ActionOutcome.Rejected,
+                receipt.Outcome);
+            Assert.Equal(
+                "input_guard_unhealthy",
+                receipt.ReasonCode);
+            Assert.Equal(
+                "input_guard_unhealthy",
+                fixture.Lease.RevokeReason);
+            Assert.Equal(0, performer.CallCount);
+            Assert.Contains(
+                fixture.AuditEntries(),
+                entry => entry.EventType
+                    == AgentRuntimeAuditEventTypes
+                        .ActionBindingValidated);
+            Assert.DoesNotContain(
+                fixture.AuditEntries(),
+                entry => entry.EventType
+                    == AgentRuntimeAuditEventTypes
+                        .ActionDispatchStarted);
+        }
+
+        [Fact]
+        public async Task
+            StructuredActionClaimBeforeHumanInputKeepsDispatchOwnership()
+        {
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true);
+            var performer =
+                new CancellationObservingBlockingPerformer();
+            fixture.SetPerformer(performer);
+            Task<ActionReceipt> pending =
+                fixture.ExecuteAsync(fixture.Action());
+            await performer.Entered.Task.WaitAsync(
+                TimeSpan.FromSeconds(5));
+            using var externalInputDelivered =
+                new ManualResetEventSlim(false);
+
+            fixture.ObserveExternalInput(
+                externalInputDelivered);
+
+            Assert.True(
+                externalInputDelivered.Wait(
+                    TimeSpan.FromSeconds(5)));
+            Assert.False(
+                performer.CancellationRequested);
+            Assert.Equal(
+                WriteLeaseState.Consumed,
+                fixture.Lease.State);
+
+            performer.Complete(
+                AgentActionPerformance.Completed(
+                    ActionOutcome.InputDispatched,
+                    EvidenceKind.BrokerDispatch,
+                    TargetId,
+                    false));
+            ActionReceipt receipt = await pending.WaitAsync(
+                TimeSpan.FromSeconds(5));
+
+            Assert.Equal(
+                ActionOutcome.InputDispatched,
+                receipt.Outcome);
+            Assert.Equal(1, performer.CallCount);
+            Assert.Contains(
+                fixture.AuditEntries(),
+                entry => entry.EventType
+                    == AgentRuntimeAuditEventTypes
+                        .ActionDispatchStarted);
+        }
+
+        [Theory]
+        [InlineData("credential")]
+        [InlineData("lifecycle")]
+        [InlineData("connection")]
+        public async Task
+            ClaimedStructuredActionStillHonorsSecurityRevocation(
+                string revocationKind)
+        {
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true);
+            var performer = new CancellationPerformer();
+            fixture.SetPerformer(performer);
+            Task<ActionReceipt> pending =
+                fixture.ExecuteAsync(fixture.Action());
+            await performer.Entered.Task.WaitAsync(
+                TimeSpan.FromSeconds(5));
+
+            switch (revocationKind)
+            {
+                case "credential":
+                    fixture.Revocations.RevokeCredential(
+                        fixture.Principal.CredentialId,
+                        "credential_revoked");
+                    break;
+                case "lifecycle":
+                    fixture.Revocations
+                        .HandleSessionInvalidation(
+                            new SessionScopeInvalidation(
+                                SessionInvalidationLevel
+                                    .Lifecycle,
+                                "stale_lifecycle",
+                                SessionId,
+                                fixture.Observation
+                                    .LifecycleGeneration + 1,
+                                SessionInvalidationFlags
+                                    .WriteLeases
+                                | SessionInvalidationFlags
+                                    .PendingActions,
+                                new[] { TargetId },
+                                affectsAllTargets: true,
+                                requiresHumanReauthorization:
+                                    false));
+                    break;
+                case "connection":
+                    fixture.Revocations.RevokeConnection(
+                        fixture.Context.ConnectionId,
+                        "connection_closed");
+                    break;
+                default:
+                    throw new InvalidOperationException(
+                        "unknown_revocation_kind");
+            }
+
+            Assert.True(
+                await performer.Cancelled.Task.WaitAsync(
+                    TimeSpan.FromSeconds(5)));
+            Assert.Equal(
+                WriteLeaseState.Revoked,
+                fixture.Lease.State);
+            try
+            {
+                _ = await pending.WaitAsync(
+                    TimeSpan.FromSeconds(5));
+            }
+            catch (InvalidOperationException)
+                when (revocationKind == "credential"
+                    || revocationKind == "connection")
+            {
+                // Revoking the exact credential or connection may also
+                // close the audit scope while the cancellation receipt is
+                // being sealed.
+            }
+        }
+
+        [Fact]
+        public async Task
+            StructuredActionConnectionRevokeBeforeRegistrationIsRejected()
+        {
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true);
+            var performer = new ImmediatePerformer(
+                AgentActionPerformance.Completed(
+                    ActionOutcome.InputDispatched,
+                    EvidenceKind.BrokerDispatch,
+                    TargetId,
+                    false));
+            var audit = new CallbackAuditSink(
+                AgentRuntimeAuditEventTypes
+                    .ActionBindingValidated,
+                () => fixture.Revocations
+                    .RevokeConnection(
+                        fixture.Context.ConnectionId,
+                        "connection_closed"));
+            fixture.SetAuditSink(audit);
+            fixture.SetPerformer(performer);
+
+            ActionReceipt receipt =
+                await fixture.ExecuteAsync(
+                    fixture.Action())
+                    .WaitAsync(TimeSpan.FromSeconds(5));
+
+            Assert.Equal(
+                ActionOutcome.Rejected,
+                receipt.Outcome);
+            Assert.Equal(
+                "lease_revoked",
+                receipt.ReasonCode);
+            Assert.Equal(0, performer.CallCount);
+            Assert.Equal(
+                WriteLeaseState.Revoked,
+                fixture.Lease.State);
+            Assert.Equal(
+                "connection_closed",
+                fixture.Lease.RevokeReason);
+            Assert.True(
+                audit.Contains(
+                    AgentRuntimeAuditEventTypes
+                        .ActionBindingValidated));
+            Assert.False(
+                audit.Contains(
+                    AgentRuntimeAuditEventTypes
+                        .ActionDispatchStarted));
+        }
+
+        [Fact]
+        public async Task
+            StructuredActionPredispatchCancellationNeverLeaksConsumedReason()
+        {
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true);
+            var performer = new ImmediatePerformer(
+                AgentActionPerformance.Completed(
+                    ActionOutcome.InputDispatched,
+                    EvidenceKind.BrokerDispatch,
+                    TargetId,
+                    false));
+            fixture.SetPerformer(performer);
+            using var cancellation =
+                new CancellationTokenSource();
+            cancellation.Cancel();
+
+            ActionReceipt receipt =
+                await fixture.ExecuteAsync(
+                    fixture.Action(),
+                    cancellation.Token)
+                    .WaitAsync(TimeSpan.FromSeconds(5));
+
+            Assert.Equal(
+                ActionOutcome.Rejected,
+                receipt.Outcome);
+            Assert.Equal(
+                "lease_revoked",
+                receipt.ReasonCode);
+            Assert.Equal(
+                "lease_revoked",
+                fixture.Lease.RevokeReason);
+            Assert.Equal(0, performer.CallCount);
+            Assert.DoesNotContain(
+                fixture.AuditEntries(),
+                entry => entry.EventType
+                    == AgentRuntimeAuditEventTypes
+                        .ActionDispatchStarted);
+        }
+
+        [Fact]
+        public async Task
+            GuiPredispatchCallerCancellationKeepsMultiActionLeaseActive()
+        {
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    requestedActionLimit: 2);
+            var performer = new ImmediatePerformer(
+                AgentActionPerformance.Completed(
+                    ActionOutcome.InputDispatched,
+                    EvidenceKind.BrokerDispatch,
+                    TargetId,
+                    true));
+            fixture.SetPerformer(performer);
+            using var cancellation =
+                new CancellationTokenSource();
+            cancellation.Cancel();
+
+            ActionReceipt receipt =
+                await fixture.ExecuteAsync(
+                    fixture.Action(),
+                    cancellation.Token)
+                    .WaitAsync(TimeSpan.FromSeconds(5));
+
+            Assert.Equal(
+                ActionOutcome.Rejected,
+                receipt.Outcome);
+            Assert.Equal(
+                "internal_error",
+                receipt.ReasonCode);
+            Assert.Equal(
+                WriteLeaseState.Active,
+                fixture.Lease.State);
+            Assert.Null(fixture.Lease.RevokeReason);
+            Assert.Equal(1, fixture.Lease.ActionsConsumed);
+            Assert.False(
+                fixture.Lease.ActionExecutionPending);
+            Assert.Equal(0, performer.CallCount);
+            Assert.DoesNotContain(
+                fixture.AuditEntries(),
+                entry => entry.EventType
+                    == AgentRuntimeAuditEventTypes
+                        .ActionDispatchStarted);
+        }
+
+        [Fact]
         public async Task ReleaseReturnsExactLeaseAndPreventsUse()
         {
             using ActionFixture fixture =
@@ -1059,6 +1488,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             private readonly AgentObservationEnvelopeStore
                 _observationStore;
             private readonly NativeInputGuard _nativeGuard;
+            private readonly ActionGuardWin32Facade _guardWin32;
             private IAgentRuntimeAuditSink _auditSink;
 
             private ActionFixture(
@@ -1075,6 +1505,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 ActionIdempotencyLedger ledger,
                 AgentRuntimeRevocationCoordinator revocations,
                 NativeInputGuard nativeGuard,
+                ActionGuardWin32Facade guardWin32,
                 ScopedAgentRuntimeAuditLedgerManager audit,
                 AgentRuntimeDispatchContext context,
                 ObservationEnvelope observation)
@@ -1092,6 +1523,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 Ledger = ledger;
                 Revocations = revocations;
                 _nativeGuard = nativeGuard;
+                _guardWin32 = guardWin32;
                 Audit = audit;
                 _auditSink = audit;
                 Context = context;
@@ -1121,15 +1553,33 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             public static async Task<ActionFixture> CreateAsync(
                 int requestedActionLimit = 8,
                 bool playerAssist = false,
-                bool shutdown = false)
+                bool shutdown = false,
+                bool structuredAction = false,
+                ManualResetEventSlim
+                    externalInputDeliveryEntered = null,
+                ManualResetEventSlim
+                    releaseExternalInputDelivery = null)
             {
+                if (shutdown && structuredAction)
+                {
+                    throw new ArgumentException(
+                        "Only one one-shot action kind may be selected.");
+                }
                 var clock = new ManualObservationClock();
                 var targets = new MutableObservationAuthority();
-                targets.TargetSurfaceKind = shutdown
+                bool launcherAction =
+                    shutdown || structuredAction;
+                string actionCapability =
+                    shutdown
+                        ? AgentCapabilitiesV1.SessionShutdown
+                        : structuredAction
+                            ? AgentCapabilitiesV1.PanelOpen
+                            : AgentCapabilitiesV1.Click;
+                targets.TargetSurfaceKind = launcherAction
                     ? SurfaceKind.Launcher
                     : SurfaceKind.Flash;
                 targets.AddTarget(TargetId);
-                targets.Plan = CapturePlan(shutdown);
+                targets.Plan = CapturePlan(launcherAction);
                 var credentialAuthority =
                     new PrincipalCredentialAuthority(
                         clock,
@@ -1146,10 +1596,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                             AllowedCapabilities = new[]
                             {
                                 "observe:pixels",
-                                shutdown
-                                    ? AgentCapabilitiesV1
-                                        .SessionShutdown
-                                    : AgentCapabilitiesV1.Click
+                                actionCapability
                             },
                             AllowedTargets =
                                 new[] { TargetId }
@@ -1163,10 +1610,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                             AllowedCapabilities = new[]
                             {
                                 "observe:pixels",
-                                shutdown
-                                    ? AgentCapabilitiesV1
-                                        .SessionShutdown
-                                    : AgentCapabilitiesV1.Click
+                                actionCapability
                             },
                             AllowedTargets =
                                 new[] { TargetId }
@@ -1251,11 +1695,29 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 revocations.RegisterConnection(
                     context.ConnectionId,
                     principal);
+                var guardWin32 =
+                    new ActionGuardWin32Facade(clock);
                 var nativeGuard = new NativeInputGuard(
                     new InputSafetyStateMachine(clock),
-                    new ActionGuardWin32Facade(clock),
+                    guardWin32,
                     revocations,
                     false);
+                if (externalInputDeliveryEntered != null)
+                {
+                    if (releaseExternalInputDelivery == null)
+                    {
+                        throw new ArgumentNullException(
+                            nameof(
+                                releaseExternalInputDelivery));
+                    }
+                    nativeGuard.ExternalInputObserved +=
+                        _ =>
+                        {
+                            externalInputDeliveryEntered.Set();
+                            releaseExternalInputDelivery.Wait(
+                                TimeSpan.FromSeconds(10));
+                        };
+                }
                 revocations.BindNativeGuard(nativeGuard);
                 clock.Advance(
                     TimeSpan.FromMilliseconds(
@@ -1285,20 +1747,17 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                                 .LifecycleGeneration,
                         Kind = shutdown
                             ? WriteLeaseKind.Shutdown
-                            : WriteLeaseKind.GuiInput,
+                            : structuredAction
+                                ? WriteLeaseKind
+                                    .StructuredAction
+                                : WriteLeaseKind.GuiInput,
                         Capabilities =
-                            new[]
-                            {
-                                shutdown
-                                    ? AgentCapabilitiesV1
-                                        .SessionShutdown
-                                    : AgentCapabilitiesV1.Click
-                            },
+                            new[] { actionCapability },
                         TargetScope = new[] { TargetId },
                         RequestedLifetime =
                             TimeSpan.FromMinutes(1),
                         RequestedActionLimit =
-                            shutdown
+                            launcherAction
                                 ? 1
                                 : requestedActionLimit,
                         ConsentReceipt =
@@ -1344,6 +1803,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                     ledger,
                     revocations,
                     nativeGuard,
+                    guardWin32,
                     audit,
                     context,
                     captured.Envelope);
@@ -1376,11 +1836,17 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         new AgentAuditScopeKey(
                             Principal.SecurityPrincipalId,
                             SessionId,
-                            Lease.Kind
-                                    == WriteLeaseKind.Shutdown
-                                ? AgentCapabilitiesV1
-                                    .SessionShutdown
-                                : AgentCapabilitiesV1.Click))
+                            Lease.Kind switch
+                            {
+                                WriteLeaseKind.Shutdown =>
+                                    AgentCapabilitiesV1
+                                        .SessionShutdown,
+                                WriteLeaseKind
+                                    .StructuredAction =>
+                                        AgentCapabilitiesV1
+                                            .PanelOpen,
+                                _ => AgentCapabilitiesV1.Click
+                            }))
                     .SelectMany(snapshot =>
                         snapshot.Segments)
                     .SelectMany(segment =>
@@ -1398,7 +1864,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             }
 
             public async Task<ActionReceipt> ExecuteAsync(
-                ActionEnvelope action)
+                ActionEnvelope action,
+                CancellationToken cancellationToken = default)
             {
                 if (Broker == null)
                 SetPerformer(
@@ -1409,14 +1876,17 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                             TargetId,
                             true)));
                 AgentRuntimeActionExecutionResult result =
-                    await ExecuteWithDeliveryAsync(action);
+                    await ExecuteWithDeliveryAsync(
+                        action,
+                        cancellationToken);
                 result.ResponseCompletion?.CommitAfterWrite();
                 return result.Receipt;
             }
 
             public Task<AgentRuntimeActionExecutionResult>
                 ExecuteWithDeliveryAsync(
-                    ActionEnvelope action)
+                    ActionEnvelope action,
+                    CancellationToken cancellationToken = default)
             {
                 if (Broker == null)
                     SetPerformer(
@@ -1429,11 +1899,16 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 return Broker.ExecuteAsync(
                     Context,
                     action,
-                    Lease.Kind == WriteLeaseKind.Shutdown
-                        ? AgentCapabilitiesV1
-                            .SessionShutdown
-                        : AgentCapabilitiesV1.Click,
-                    CancellationToken.None);
+                    Lease.Kind switch
+                    {
+                        WriteLeaseKind.Shutdown =>
+                            AgentCapabilitiesV1
+                                .SessionShutdown,
+                        WriteLeaseKind.StructuredAction =>
+                            AgentCapabilitiesV1.PanelOpen,
+                        _ => AgentCapabilitiesV1.Click
+                    },
+                    cancellationToken);
             }
 
             public ActionEnvelope Action()
@@ -1477,17 +1952,44 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                     FrameId = frame.FrameId,
                     SemanticSnapshotId =
                         Observation.SemanticSnapshotId,
-                    Operation =
-                        Lease.Kind == WriteLeaseKind.Shutdown
-                            ? AgentCapabilitiesV1
-                                .SessionShutdown
-                            : AgentCapabilitiesV1.Click,
+                    Operation = Lease.Kind switch
+                    {
+                        WriteLeaseKind.Shutdown =>
+                            AgentCapabilitiesV1
+                                .SessionShutdown,
+                        WriteLeaseKind.StructuredAction =>
+                            AgentCapabilitiesV1.PanelOpen,
+                        _ => AgentCapabilitiesV1.Click
+                    },
                     Arguments =
-                        Lease.Kind == WriteLeaseKind.Shutdown
-                            ? EmptyArguments()
-                            : ClickArguments(),
+                        Lease.Kind == WriteLeaseKind.GuiInput
+                            ? ClickArguments()
+                            : EmptyArguments(),
                     Reason = "focused test"
                 };
+            }
+
+            public void FailHookAfterNextHealthyCheck()
+            {
+                _guardWin32.HookSession
+                    .FailAfterHealthyChecks(1);
+            }
+
+            public void ObserveExternalInput(
+                ManualResetEventSlim delivered = null)
+            {
+                if (delivered != null)
+                {
+                    _nativeGuard.ExternalInputObserved +=
+                        _ => delivered.Set();
+                }
+                _nativeGuard.ObserveExternallyHeldControls(
+                    new[] { "key:A" });
+            }
+
+            public void ObserveInjectedExternalInput()
+            {
+                _guardWin32.EmitInjectedExternalInput();
             }
 
             public WriteLease AcquireReplacementShutdownLease()
@@ -1541,6 +2043,9 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 : INativeInputWin32Facade
             {
                 private readonly ManualObservationClock _clock;
+                private Func<NativeLowLevelHookEvent, bool>
+                    _hookCallback;
+                private ulong _runtimeInjectionTag;
 
                 public ActionGuardWin32Facade(
                     ManualObservationClock clock)
@@ -1551,6 +2056,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 public int CurrentProcessId => 111;
                 public long MonotonicMilliseconds =>
                     _clock.MonotonicMilliseconds;
+                public ActionHookSession HookSession { get; } =
+                    new ActionHookSession();
 
                 public INativeLowLevelHookSession
                     InstallLowLevelHooks(
@@ -1558,7 +2065,28 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         Func<NativeLowLevelHookEvent, bool>
                             callback)
                 {
-                    return new ActionHookSession();
+                    _runtimeInjectionTag =
+                        runtimeInjectionTag;
+                    _hookCallback = callback;
+                    return HookSession;
+                }
+
+                public void EmitInjectedExternalInput()
+                {
+                    Func<NativeLowLevelHookEvent, bool> callback =
+                        _hookCallback
+                        ?? throw new InvalidOperationException(
+                            "hook_not_installed");
+                    callback(
+                        new NativeLowLevelHookEvent(
+                            NativeHookDevice.Keyboard,
+                            "Key:17",
+                            NativeControlTransition.Down,
+                            isInjected: true,
+                            extraInfo:
+                                _runtimeInjectionTag ^ 1UL,
+                            screenPoint: null,
+                            nativeMessage: 0x0100));
                 }
 
                 public bool IsInteractiveDesktopAvailable()
@@ -1618,10 +2146,42 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             private sealed class ActionHookSession
                 : INativeLowLevelHookSession
             {
+                private readonly object _sync = new object();
+                private bool _healthy = true;
+                private int _healthyChecksBeforeFailure = -1;
+
+                public void FailAfterHealthyChecks(int count)
+                {
+                    if (count < 0)
+                    {
+                        throw new ArgumentOutOfRangeException(
+                            nameof(count));
+                    }
+                    lock (_sync)
+                    {
+                        _healthy = true;
+                        _healthyChecksBeforeFailure = count;
+                    }
+                }
+
                 public bool IsHealthy(
                     TimeSpan maximumHeartbeatAge)
                 {
-                    return true;
+                    lock (_sync)
+                    {
+                        if (!_healthy)
+                            return false;
+                        if (_healthyChecksBeforeFailure < 0)
+                            return true;
+                        if (_healthyChecksBeforeFailure == 0)
+                        {
+                            _healthy = false;
+                            _healthyChecksBeforeFailure = -1;
+                            return false;
+                        }
+                        _healthyChecksBeforeFailure--;
+                        return true;
+                    }
                 }
 
                 public bool TryRefresh(TimeSpan timeout)
@@ -1635,11 +2195,11 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             }
 
             private static ObservationCapturePlan CapturePlan(
-                bool shutdown = false)
+                bool launcherAction = false)
             {
                 var surface = new ObservationSurfacePlan(
                     TargetId,
-                    shutdown
+                    launcherAction
                         ? SurfaceKind.Launcher
                         : SurfaceKind.Flash,
                     101,
@@ -1765,6 +2325,69 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             }
         }
 
+        private sealed class CallbackAuditSink
+            : IAgentRuntimeAuditSink
+        {
+            private readonly object _sync = new object();
+            private readonly string _triggerEventType;
+            private readonly HashSet<string> _eventTypes =
+                new HashSet<string>(StringComparer.Ordinal);
+            private Action _callback;
+            private long _sequence;
+
+            public CallbackAuditSink(
+                string triggerEventType,
+                Action callback)
+            {
+                _triggerEventType = triggerEventType;
+                _callback = callback
+                    ?? throw new ArgumentNullException(
+                        nameof(callback));
+            }
+
+            public bool TryAppend(
+                AgentRuntimeAuditEventEnvelope auditEvent,
+                out AgentRuntimeAuditCommit commit,
+                out string reasonCode)
+            {
+                long sequence =
+                    Interlocked.Increment(ref _sequence);
+                commit = new AgentRuntimeAuditCommit(
+                    "audit_scope_test",
+                    sequence,
+                    "audit_segment_test",
+                    sequence,
+                    auditEvent.EventType,
+                    new string('A', 64),
+                    new string('B', 64));
+                reasonCode = null;
+                Action callback = null;
+                lock (_sync)
+                {
+                    _eventTypes.Add(
+                        auditEvent.EventType);
+                    if (string.Equals(
+                            auditEvent.EventType,
+                            _triggerEventType,
+                            StringComparison.Ordinal))
+                    {
+                        callback =
+                            Interlocked.Exchange(
+                                ref _callback,
+                                null);
+                    }
+                }
+                callback?.Invoke();
+                return true;
+            }
+
+            public bool Contains(string eventType)
+            {
+                lock (_sync)
+                    return _eventTypes.Contains(eventType);
+            }
+        }
+
         private sealed class FailFirstTerminalAuditSink
             : IAgentRuntimeAuditSink
         {
@@ -1858,10 +2481,52 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             }
         }
 
+        private sealed class
+            CancellationObservingBlockingPerformer
+            : IAgentRuntimeActionPerformer
+        {
+            private readonly
+                TaskCompletionSource<AgentActionPerformance>
+                _completion = new(
+                    TaskCreationOptions
+                        .RunContinuationsAsynchronously);
+            private CancellationToken _cancellationToken;
+
+            public int CallCount { get; private set; }
+            public bool CancellationRequested =>
+                _cancellationToken.IsCancellationRequested;
+            public TaskCompletionSource<bool> Entered { get; } =
+                new(
+                    TaskCreationOptions
+                        .RunContinuationsAsynchronously);
+
+            public Task<AgentActionPerformance> PerformAsync(
+                AgentRuntimeDispatchContext context,
+                ActionEnvelope action,
+                WriteLease lease,
+                CancellationToken cancellationToken)
+            {
+                CallCount++;
+                _cancellationToken = cancellationToken;
+                Entered.TrySetResult(true);
+                return _completion.Task;
+            }
+
+            public void Complete(
+                AgentActionPerformance performance)
+            {
+                _completion.TrySetResult(performance);
+            }
+        }
+
         private sealed class CancellationPerformer
             : IAgentRuntimeActionPerformer
         {
             public TaskCompletionSource<bool> Entered { get; } =
+                new(
+                    TaskCreationOptions
+                        .RunContinuationsAsynchronously);
+            public TaskCompletionSource<bool> Cancelled { get; } =
                 new(
                     TaskCreationOptions
                         .RunContinuationsAsynchronously);
@@ -1873,6 +2538,9 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 CancellationToken cancellationToken)
             {
                 Entered.TrySetResult(true);
+                using CancellationTokenRegistration registration =
+                    cancellationToken.Register(
+                        () => Cancelled.TrySetResult(true));
                 await Task.Delay(
                     Timeout.InfiniteTimeSpan,
                     cancellationToken);

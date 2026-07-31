@@ -30,6 +30,7 @@ namespace CF7Launcher.AgentRuntime.Contracts
     {
         private const ulong PlayerGuiLeaseMilliseconds = 30_000;
         private const ulong PlayerDomainLeaseMilliseconds = 60_000;
+        private const ulong StructuredActionLeaseMilliseconds = 30_000;
         private const ulong ShutdownLeaseMilliseconds = 30_000;
         private const ulong DeveloperLeaseMilliseconds = 300_000;
         private const ulong UnattendedLeaseMilliseconds = 1_800_000;
@@ -238,6 +239,14 @@ namespace CF7Launcher.AgentRuntime.Contracts
                 value.Scope?.OperationScope?.Contains(
                     AgentCapabilitiesV1.SessionShutdown,
                     StringComparer.Ordinal) == true;
+            bool hasStructuredActionCapability =
+                value.Capabilities?.Contains(
+                    AgentCapabilitiesV1.PanelOpen,
+                    StringComparer.Ordinal) == true;
+            bool hasStructuredActionOperationScope =
+                value.Scope?.OperationScope?.Contains(
+                    AgentCapabilitiesV1.PanelOpen,
+                    StringComparer.Ordinal) == true;
             if (value.Purpose == LeasePurpose.Shutdown)
             {
                 if (value.SessionMode == SessionMode.PlayerAssist)
@@ -306,9 +315,79 @@ namespace CF7Launcher.AgentRuntime.Contracts
                         "session.shutdown requires a shutdown lease.");
                 }
             }
+            if (value.Purpose == LeasePurpose.StructuredAction)
+            {
+                if (value.SessionMode == SessionMode.PlayerAssist)
+                {
+                    Error(
+                        errors,
+                        "$.sessionMode",
+                        "lease_kind_mismatch",
+                        "Player-assist sessions cannot carry structured-action leases.");
+                }
+                if (value.Capabilities == null
+                    || value.Capabilities.Count != 1
+                    || !hasStructuredActionCapability)
+                {
+                    Error(
+                        errors,
+                        "$.capabilities",
+                        "exactly_one",
+                        "Structured-action lease capability must be exactly panel.open.");
+                }
+                if (value.Scope?.OperationScope == null
+                    || value.Scope.OperationScope.Count != 1
+                    || !hasStructuredActionOperationScope)
+                {
+                    Error(
+                        errors,
+                        "$.scope.operationScope",
+                        "exactly_one",
+                        "Structured-action operation scope must be exactly panel.open.");
+                }
+                if (value.Scope?.TargetScope == null
+                    || value.Scope.TargetScope.Count != 1)
+                {
+                    Error(
+                        errors,
+                        "$.scope.targetScope",
+                        "exactly_one",
+                        "Structured-action leases bind exactly one target.");
+                }
+                if (value.Scope == null
+                    || value.Scope.MaximumActions != 1)
+                {
+                    Error(
+                        errors,
+                        "$.scope.maximumActions",
+                        "constant",
+                        "Structured-action leases are one-shot.");
+                }
+            }
+            else
+            {
+                if (hasStructuredActionCapability)
+                {
+                    Error(
+                        errors,
+                        "$.capabilities",
+                        "lease_kind_mismatch",
+                        "panel.open requires a structured-action lease.");
+                }
+                if (hasStructuredActionOperationScope)
+                {
+                    Error(
+                        errors,
+                        "$.scope.operationScope",
+                        "lease_kind_mismatch",
+                        "panel.open requires a structured-action lease.");
+                }
+            }
             ulong maximumDuration =
                 value.Purpose == LeasePurpose.Shutdown
                 ? ShutdownLeaseMilliseconds
+                : value.Purpose == LeasePurpose.StructuredAction
+                ? StructuredActionLeaseMilliseconds
                 : value.SessionMode switch
             {
                 SessionMode.PlayerAssist when value.Purpose == LeasePurpose.DomainTransaction =>
@@ -325,14 +404,15 @@ namespace CF7Launcher.AgentRuntime.Contracts
             {
                 Error(errors, "$.renewAfter", "range", "renewAfter must fall strictly inside the lease.");
             }
-            if (value.Purpose == LeasePurpose.Shutdown
+            if ((value.Purpose == LeasePurpose.Shutdown
+                 || value.Purpose == LeasePurpose.StructuredAction)
                 && value.RenewAfter.HasValue)
             {
                 Error(
                     errors,
                     "$.renewAfter",
                     "forbidden",
-                    "Shutdown leases are not renewable.");
+                    "Dedicated one-shot leases are not renewable.");
             }
             if (value.HumanOverridePolicy != HumanOverridePolicy.AlwaysPreempt)
             {

@@ -397,6 +397,18 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             Assert.Equal(1, recordingHost.CallCount);
             Assert.Empty(fixture.Win32.SentBatches);
 
+            AgentActionPerformance panel =
+                await fixture.PerformAsync(
+                    fixture.Action(
+                        AgentCapabilitiesV1.PanelOpen,
+                        new { panel = "help" }),
+                    fixture.StructuredActionLease());
+            Assert.Equal(
+                ActionOutcome.EffectObserved,
+                panel.Outcome);
+            Assert.Equal(2, recordingHost.CallCount);
+            Assert.Empty(fixture.Win32.SentBatches);
+
             fixture.ReplaceStructuredHost(
                 new FailClosedAgentStructuredActionHost());
             AgentActionPerformance rejected =
@@ -800,6 +812,16 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                     preview.ExpectedRevision.ToString());
             }
 
+            internal WriteLease StructuredActionLease()
+            {
+                return Lease(
+                    LeaseId,
+                    WriteLeaseKind.StructuredAction,
+                    AgentCapabilitiesV1.PanelOpen,
+                    null,
+                    null);
+            }
+
             internal ActionEnvelope Action(
                 string operation,
                 object arguments)
@@ -884,13 +906,17 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         PreviewHash = previewHash,
                         ExpectedRevision = revision,
                         Operation = kind
-                            == WriteLeaseKind.DomainTransaction
-                                ? capability
-                                : null
+                                is WriteLeaseKind.DomainTransaction
+                                or WriteLeaseKind.StructuredAction
+                            ? capability
+                            : null
                     },
                     0,
                     60_000,
-                    20);
+                    kind is WriteLeaseKind.StructuredAction
+                        or WriteLeaseKind.Shutdown
+                        ? 1
+                        : 20);
             }
 
             private static PrincipalCredential Principal()
@@ -908,6 +934,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                     new[]
                     {
                         AgentCapabilitiesV1.Click,
+                        AgentCapabilitiesV1.PanelOpen,
                         AgentCapabilitiesV1.PressKey,
                         AgentCapabilitiesV1.TypeText,
                         AgentCapabilitiesV1.Scroll,

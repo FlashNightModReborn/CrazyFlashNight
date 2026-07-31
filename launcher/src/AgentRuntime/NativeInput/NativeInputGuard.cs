@@ -111,6 +111,11 @@ namespace CF7Launcher.AgentRuntime.NativeInput
         private long _lastExternalObservedMonotonic =
             long.MinValue;
         private long _externalInputSequence;
+        // A fence mismatch is human evidence only when every newer input
+        // was physical. Preserve the highest foreign-injected sequence so
+        // the synchronous claim cannot overstate evidence before its worker
+        // notification arrives.
+        private long _lastOtherInjectedInputSequence;
         private long _deliveredExternalInputSequence;
 
         public NativeInputGuard(
@@ -206,15 +211,23 @@ namespace CF7Launcher.AgentRuntime.NativeInput
         internal bool TryClaimExternalInputSequence(
             long expectedSequence)
         {
+            return TryClaimExternalInputSequence(
+                expectedSequence,
+                out _);
+        }
+
+        internal bool TryClaimExternalInputSequence(
+            long expectedSequence,
+            out string reasonCode)
+        {
             lock (_sync)
             {
                 if (_disposed
                     || expectedSequence < 0
-                    || _externalInputSequence
-                        != expectedSequence
                     || _guardUnhealthyLatched
                     || _requiresHookRefresh)
                 {
+                    reasonCode = "input_guard_unhealthy";
                     return false;
                 }
                 try
@@ -225,6 +238,7 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                     {
                         _requiresHookRefresh = true;
                         _claimHealthFailurePending = true;
+                        reasonCode = "input_guard_unhealthy";
                         return false;
                     }
                 }
@@ -232,8 +246,20 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                 {
                     _requiresHookRefresh = true;
                     _claimHealthFailurePending = true;
+                    reasonCode = "input_guard_unhealthy";
                     return false;
                 }
+                if (_externalInputSequence
+                    != expectedSequence)
+                {
+                    reasonCode =
+                        _lastOtherInjectedInputSequence
+                            > expectedSequence
+                            ? "external_input"
+                            : "human_input";
+                    return false;
+                }
+                reasonCode = null;
                 return true;
             }
         }
@@ -738,6 +764,11 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                     _win32.MonotonicMilliseconds;
                 externalInputSequence =
                     ++_externalInputSequence;
+                if (hookEvent.IsInjected)
+                {
+                    _lastOtherInjectedInputSequence =
+                        externalInputSequence;
+                }
                 if (hookEvent.Transition
                     == NativeControlTransition.Down)
                 {

@@ -121,6 +121,107 @@ If no unique current session exists, the status result has no usable lifecycle
 reference and the caller must wait for Host lifecycle state to change rather than
 guess a session or target.
 
+## F8 structured Launcher panel action
+
+F8 gives the Host-owned `panel.open` callback its own non-native write boundary.
+An F8-matched client requests `kind:"structured_action"`; it must not request
+`gui_input`, infer native-input authority from the capability, or require the
+Launcher surface to advertise an input mode. The only F8 structured lease is
+exactly one `panel.open` action against exactly one current `RuntimeOwned`
+`Launcher` target, with a TTL no greater than 30 seconds. This developer flow
+therefore starts the JSONL client with only the capabilities it uses:
+
+```powershell
+node tools/cf7-agent/cli.js `
+  --project-root . `
+  --capability session.status `
+  --capability observation.grant.manage `
+  --capability observation.capture `
+  --capability window.list `
+  --capability lease.acquire `
+  --capability panel.open
+```
+
+First call `session.status` as shown above. Substitute its exact `lifecycleRef`
+into a Launcher-scoped pixels grant; the additional `window_metadata` scope is
+used only to select one exact registered Launcher target:
+
+```json
+{"jsonrpc":"2.0","id":"launcher-grant-request-01","method":"observation.grant.issue","params":{"lifecycleRef":"<exact lifecycleRef from status response>","targetKinds":["launcher"],"dataScopes":["window_metadata","pixels"],"requestedTtlMs":60000,"allowEphemeralKeyframes":false,"allowPersistence":false,"allowExport":false}}
+{"jsonrpc":"2.0","id":"launcher-list-request-001","method":"window.list","params":{"sessionId":"<grant.sessionScope.sessionId>","observationGrantId":"<grant.observationGrantId>","dataScope":"window_metadata"}}
+```
+
+Select one exact surface whose `kind` is `launcher`, whose `targetId` is in the
+grant's `targetScope`, and whose current state is eligible for the operation.
+This is selection of one authorized target, not an assertion that the logical
+session globally contains only one Launcher target. If the intended target
+cannot be selected without ambiguity, stop. Capture a fresh before-observation;
+Flash snapshot fallback is inapplicable and remains explicitly disabled:
+
+```json
+{"jsonrpc":"2.0","id":"launcher-capture-request1","method":"observation.capture","params":{"observationGrantId":"<grant.observationGrantId>","sessionId":"<grant.sessionScope.sessionId>","targetId":"<exact Launcher targetId>","dataScope":"pixels","allowValidatedFlashKeyframeFallback":false}}
+```
+
+Acquire the one-shot structured lease from the same session and exact target.
+The request must contain no domain transaction fields and no client-supplied
+operation binding:
+
+```json
+{"jsonrpc":"2.0","id":"panel-lease-request-0001","method":"lease.acquire","params":{"sessionId":"<before.sessionId>","kind":"structured_action","capabilities":["panel.open"],"targetScope":["<before.targetId>"],"requestedTtlMs":30000,"requestedActionLimit":1}}
+```
+
+The returned descriptor must have `purpose:"structured_action"`, exact
+`capabilities:["panel.open"]`, the same singleton target, `maximumActions:1`,
+and no `renewAfter`. Any mismatch is a terminal client-side validation failure.
+Use only values copied from the before-observation and lease response:
+
+```json
+{"jsonrpc":"2.0","id":"panel-open-request-00001","method":"panel.open","params":{"actionId":"<fresh opaque action ID>","idempotencyKey":"<fresh opaque idempotency key>","deadlineMs":30000,"sessionId":"<before.sessionId>","observationGrantId":"<before.observationGrantId>","leaseId":"<lease.leaseId>","observationId":"<before.observationId>","expectedLifecycleGeneration":1,"targetId":"<before.targetId>","expectedSurfaceEpoch":1,"expectedCoordinateSpaceVersion":1,"expectedFocusEpoch":1,"expectedModalEpoch":1,"frameId":"<exact Launcher frameId from before.frames>","operation":"panel.open","arguments":{"panel":"help"},"reason":"Open the allow-listed help panel"}}
+```
+
+The generation values shown as `1` are type-correct JSON examples, not
+constants; replace each with the exact corresponding integer from the
+before-observation. When the before-observation contains `attemptId` plus
+`attemptGeneration`, `panelInstanceId`, or `documentGeneration`, copy them
+exactly as `expectedAttemptId` plus `expectedAttemptGeneration`,
+`expectedPanelInstanceId`, and `expectedDocumentGeneration`; omit an optional
+binding only when the authoritative observation omits it. Do not invent,
+normalize, or carry a binding from an older observation.
+
+An `input_dispatched` / `broker_dispatch` receipt proves only that the trusted
+Launcher router accepted the allow-listed request. It does not prove that the
+WebOverlay became visible. After that receipt, issue a new grant rather than
+expanding or reusing the Launcher grant:
+
+```json
+{"jsonrpc":"2.0","id":"web-grant-request-000001","method":"observation.grant.issue","params":{"lifecycleRef":"<same still-current lifecycleRef>","targetKinds":["web_overlay"],"dataScopes":["window_metadata","pixels"],"requestedTtlMs":60000,"allowEphemeralKeyframes":false,"allowPersistence":false,"allowExport":false}}
+{"jsonrpc":"2.0","id":"web-list-request-0000001","method":"window.list","params":{"sessionId":"<fresh grant.sessionScope.sessionId>","observationGrantId":"<fresh grant.observationGrantId>","dataScope":"window_metadata"}}
+{"jsonrpc":"2.0","id":"web-capture-request-0001","method":"observation.capture","params":{"observationGrantId":"<fresh grant.observationGrantId>","sessionId":"<fresh grant.sessionScope.sessionId>","targetId":"<exact WebOverlay targetId selected from the fresh scope>","dataScope":"pixels","allowValidatedFlashKeyframeFallback":false}}
+```
+
+The client must stop if the lifecycle changed, the fresh grant is empty, or the
+intended WebOverlay cannot be selected exactly from its authorized scope. A
+fresh WebOverlay observation may support visual reconciliation; it does not
+turn the earlier broker-dispatch receipt into domain or causal proof.
+
+The compatibility boundary is fail closed:
+
+- `gui_input` plus `panel.open` is invalid after F8. Do not retry it as a
+  compatibility downgrade, and never add `send_input_guarded` to Launcher.
+- `structured_action` is a closed-enum contract addition. An older strict
+  client or Host that does not recognize it is incompatible and must stop
+  rather than forward, reinterpret, or downgrade the request.
+- `PlayerAssist` cannot acquire this phase-one structured lease. The ordinary
+  developer example above is not a consent path, and the Node wrapper never
+  becomes an unattended principal.
+- The structured path binds no `NativeInputGuard` lease and emits no mouse or
+  keyboard packet. It still participates in the session's single-writer,
+  observation, generation, audit, human-override, and revocation fences.
+- Trusted unattended shutdown is unchanged: the verified Core runner still
+  uses the dedicated shutdown lease, requests only an exact Launcher
+  observation with `allowValidatedFlashKeyframeFallback:false`, and accepts no
+  Flash or fallback frame as shutdown authority.
+
 ## F7 typed boundaries
 
 The adapters mirror the Host's exact parameter and result contracts:

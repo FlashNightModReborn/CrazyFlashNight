@@ -275,7 +275,96 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             Assert.True(
                 fixture.Leases.Revoke(
                     lease.LeaseId,
-                    reasonCode));
+                reasonCode));
+        }
+
+        [Fact]
+        public void
+            StructuredActionLeaseRequiresHumanFenceAndExternalInputRevokesIt()
+        {
+            Fixture unguarded = new Fixture();
+            using (var coordinator =
+                new AgentRuntimeRevocationCoordinator(
+                    unguarded.Credentials,
+                    unguarded.Grants,
+                    unguarded.Leases))
+            {
+                coordinator.RegisterConnection(
+                    ConnectionId,
+                    unguarded.Credential);
+                AgentRuntimeRevocationCoordinator
+                    .SessionFenceTicket fence =
+                        unguarded.CaptureFence(coordinator);
+                WriteLease lease =
+                    unguarded.IssueStructuredActionLease();
+
+                Assert.False(
+                    coordinator.TryTrackLease(
+                        fence,
+                        lease,
+                        out string reasonCode));
+                Assert.Equal(
+                    "input_guard_unhealthy",
+                    reasonCode);
+                Assert.True(
+                    unguarded.Leases.Revoke(
+                        lease.LeaseId,
+                        reasonCode));
+            }
+
+            Fixture fixture = new Fixture();
+            using var guarded =
+                new AgentRuntimeRevocationCoordinator(
+                    fixture.Credentials,
+                    fixture.Grants,
+                    fixture.Leases);
+            guarded.RegisterConnection(
+                ConnectionId,
+                fixture.Credential);
+            var win32 = new GuardWin32Facade();
+            using var guard = new NativeInputGuard(
+                new InputSafetyStateMachine(fixture.Clock),
+                win32,
+                guarded,
+                false);
+            guarded.BindNativeGuard(guard);
+            win32.AdvanceQuiescence();
+            AgentRuntimeRevocationCoordinator
+                .SessionFenceTicket guardedFence =
+                    fixture.CaptureFence(guarded);
+            WriteLease structured =
+                fixture.IssueStructuredActionLease();
+            Assert.True(
+                guarded.TryTrackLease(
+                    guardedFence,
+                    structured,
+                    out string trackReason),
+                trackReason);
+            Assert.False(
+                guard.TryGetBoundLease(
+                    out _,
+                    out _));
+            using AgentRuntimeRevocationCoordinator
+                .ActionCancellationRegistration action =
+                    guarded.RegisterAction(
+                        ConnectionId,
+                        structured.LeaseId,
+                        CancellationToken.None);
+
+            guard.ObserveExternallyHeldControls(
+                new[] { "key:A" });
+
+            Assert.True(
+                SpinWait.SpinUntil(
+                    () => structured.State
+                            == WriteLeaseState.Revoked
+                        && action.Token
+                            .IsCancellationRequested,
+                    TimeSpan.FromSeconds(3)));
+            Assert.False(
+                guard.TryGetBoundLease(
+                    out _,
+                    out _));
         }
 
         [Fact]
@@ -1061,6 +1150,32 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                     });
             }
 
+            public WriteLease IssueStructuredActionLease()
+            {
+                Targets.Set(
+                    SessionId,
+                    TargetId,
+                    kind: SurfaceKind.Launcher);
+                return Leases.Acquire(
+                    new WriteLeaseRequest
+                    {
+                        CredentialId = Credential.CredentialId,
+                        ClientInstanceId = ClientId,
+                        SessionId = SessionId,
+                        LifecycleGeneration = 1,
+                        Kind =
+                            WriteLeaseKind.StructuredAction,
+                        Capabilities = new[]
+                        {
+                            AgentCapabilitiesV1.PanelOpen
+                        },
+                        TargetScope = new[] { TargetId },
+                        RequestedLifetime =
+                            TimeSpan.FromSeconds(30),
+                        RequestedActionLimit = 1
+                    });
+            }
+
             public PrincipalCredential
                 IssueDeveloperCredential(
                     string clientInstanceId,
@@ -1087,6 +1202,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         AgentCapabilitiesV1.GetWindow,
                         AgentCapabilitiesV1.Click,
                         AgentCapabilitiesV1.SessionShutdown,
+                        AgentCapabilitiesV1.PanelOpen,
                         "observe:pixels"
                     },
                     AllowedTargets =

@@ -10,6 +10,7 @@ namespace CF7Launcher.AgentRuntime.Security
     {
         GuiInput,
         DomainTransaction,
+        StructuredAction,
         Shutdown
     }
 
@@ -98,6 +99,7 @@ namespace CF7Launcher.AgentRuntime.Security
         public WriteLeaseState State { get; internal set; }
         public string RevokeReason { get; internal set; }
         internal bool ActionExecutionPending { get; set; }
+        internal bool StructuredActionDispatchOwned { get; set; }
         internal bool ShutdownDeliveryPending { get; set; }
         internal bool ShutdownDeliveryWriteOwned { get; set; }
         internal bool ShutdownDeliveryCommitted { get; set; }
@@ -129,6 +131,8 @@ namespace CF7Launcher.AgentRuntime.Security
         private static readonly TimeSpan PlayerDomainLifetimeHardCap =
             TimeSpan.FromSeconds(60);
         private static readonly TimeSpan ShutdownLifetimeHardCap =
+            TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan StructuredActionLifetimeHardCap =
             TimeSpan.FromSeconds(30);
         private static readonly TimeSpan DeveloperLifetimeHardCap =
             TimeSpan.FromMinutes(5);
@@ -271,11 +275,13 @@ namespace CF7Launcher.AgentRuntime.Security
                 throw new InvalidOperationException("session_scope_mismatch");
             }
             if (credential.SessionMode == AgentSessionMode.PlayerAssist
-                && request.Kind == WriteLeaseKind.Shutdown)
+                && (request.Kind == WriteLeaseKind.Shutdown
+                    || request.Kind
+                        == WriteLeaseKind.StructuredAction))
             {
-                // Phase one has no issuer for a neutral, per-invocation
-                // player exit consent. A general enrollment receipt cannot
-                // authorize process termination.
+                // Phase one has no issuer for neutral, per-invocation
+                // player consent for process termination or Launcher-owned
+                // structured actions.
                 throw new InvalidOperationException("consent_required");
             }
 
@@ -310,7 +316,7 @@ namespace CF7Launcher.AgentRuntime.Security
                 RequireRuntimeOwnedTarget(
                     request.SessionId,
                     target,
-                    request.Kind == WriteLeaseKind.Shutdown
+                    RequiresLauncherTarget(request.Kind)
                         ? SurfaceKind.Launcher
                         : null);
             }
@@ -392,10 +398,14 @@ namespace CF7Launcher.AgentRuntime.Security
                             request.ArgumentBoundsHash,
                         PreviewHash = request.PreviewHash,
                         ExpectedRevision = request.ExpectedRevision,
-                        Operation = request.Kind
-                                == WriteLeaseKind.Shutdown
-                            ? AgentCapabilitiesV1.SessionShutdown
-                            : request.Operation
+                        Operation = request.Kind switch
+                        {
+                            WriteLeaseKind.Shutdown =>
+                                AgentCapabilitiesV1.SessionShutdown,
+                            WriteLeaseKind.StructuredAction =>
+                                AgentCapabilitiesV1.PanelOpen,
+                            _ => request.Operation
+                        }
                     },
                     _clock.MonotonicMilliseconds,
                     checked(_clock.MonotonicMilliseconds + lifetimeMs),
@@ -435,7 +445,9 @@ namespace CF7Launcher.AgentRuntime.Security
                         WriteLeaseState.Revoked);
                     return false;
                 }
-                if (lease.Kind == WriteLeaseKind.Shutdown)
+                if (lease.Kind == WriteLeaseKind.Shutdown
+                    || lease.Kind
+                        == WriteLeaseKind.StructuredAction)
                 {
                     reasonCode = "operation_invalid";
                     return false;
@@ -528,8 +540,15 @@ namespace CF7Launcher.AgentRuntime.Security
                     operation,
                     AgentCapabilitiesV1.SessionShutdown,
                     StringComparison.Ordinal);
+                bool structuredOperation = string.Equals(
+                    operation,
+                    AgentCapabilitiesV1.PanelOpen,
+                    StringComparison.Ordinal);
                 if ((lease.Kind == WriteLeaseKind.Shutdown)
                         != shutdownOperation
+                    || (lease.Kind
+                            == WriteLeaseKind.StructuredAction)
+                        != structuredOperation
                     || lease.Kind
                             == WriteLeaseKind.DomainTransaction
                         && !string.Equals(
@@ -543,7 +562,7 @@ namespace CF7Launcher.AgentRuntime.Security
                 if (!TryResolveRuntimeOwnedTarget(
                         lease.SessionId,
                         targetId,
-                        lease.Kind == WriteLeaseKind.Shutdown
+                        RequiresLauncherTarget(lease.Kind)
                             ? SurfaceKind.Launcher
                             : null,
                         out reasonCode))
@@ -601,6 +620,7 @@ namespace CF7Launcher.AgentRuntime.Security
                     return false;
                 }
                 lease.ActionExecutionPending = false;
+                lease.StructuredActionDispatchOwned = false;
                 RemoveExecutionReservationLocked(lease);
                 if (retainShutdownDelivery
                     && lease.Kind == WriteLeaseKind.Shutdown
@@ -614,6 +634,42 @@ namespace CF7Launcher.AgentRuntime.Security
                     RemoveActiveLeaseLocked(lease);
                     RetireTerminalLeaseLocked(lease);
                 }
+                return true;
+            }
+        }
+
+        internal bool TryClaimStructuredActionDispatch(
+            string leaseId,
+            Func<bool> claimHumanOverrideFence)
+        {
+            if (string.IsNullOrWhiteSpace(leaseId)
+                || claimHumanOverrideFence == null)
+            {
+                return false;
+            }
+            lock (_sync)
+            {
+                if (!_leases.TryGetValue(
+                        leaseId,
+                        out WriteLease lease)
+                    || lease.Kind
+                        != WriteLeaseKind.StructuredAction
+                    || !lease.ActionExecutionPending
+                    || lease.StructuredActionDispatchOwned
+                    || lease.State != WriteLeaseState.Consumed)
+                {
+                    return false;
+                }
+                try
+                {
+                    if (!claimHumanOverrideFence())
+                        return false;
+                }
+                catch
+                {
+                    return false;
+                }
+                lease.StructuredActionDispatchOwned = true;
                 return true;
             }
         }
@@ -773,6 +829,7 @@ namespace CF7Launcher.AgentRuntime.Security
                 if (lease.ShutdownDeliveryWriteOwned)
                     return false;
                 lease.ActionExecutionPending = false;
+                lease.StructuredActionDispatchOwned = false;
                 lease.ShutdownDeliveryPending = false;
                 RemoveExecutionReservationLocked(lease);
                 if (lease.State != WriteLeaseState.Active)
@@ -845,6 +902,12 @@ namespace CF7Launcher.AgentRuntime.Security
                     return false;
                 }
                 if (lease.Kind == WriteLeaseKind.Shutdown)
+                {
+                    reasonCode = "operation_invalid";
+                    return false;
+                }
+                if (lease.Kind
+                    == WriteLeaseKind.StructuredAction)
                 {
                     reasonCode = "operation_invalid";
                     return false;
@@ -922,10 +985,22 @@ namespace CF7Launcher.AgentRuntime.Security
 
         public int RevokeAllForHumanOverride(string reason)
         {
+            return RevokeAllForHumanOverride(
+                reason,
+                out _);
+        }
+
+        internal int RevokeAllForHumanOverride(
+            string reason,
+            out IReadOnlyCollection<string>
+                claimedStructuredActionLeaseIds)
+        {
             PrincipalCredentialAuthority.RequireValue(reason, nameof(reason));
             lock (_sync)
             {
                 int count = 0;
+                var claimedStructured =
+                    new List<string>();
                 WriteLease[] candidates =
                     _leases.Values.ToArray();
                 _lastHumanOverrideCandidateCount =
@@ -936,6 +1011,15 @@ namespace CF7Launcher.AgentRuntime.Security
                         || lease.ActionExecutionPending
                         || lease.ShutdownDeliveryPending)
                     {
+                        if (lease.Kind
+                                == WriteLeaseKind.StructuredAction
+                            && lease
+                                .StructuredActionDispatchOwned)
+                        {
+                            claimedStructured.Add(
+                                lease.LeaseId);
+                            continue;
+                        }
                         if (lease.ShutdownDeliveryWriteOwned
                             || lease.ShutdownDeliveryCommitted)
                         {
@@ -948,6 +1032,10 @@ namespace CF7Launcher.AgentRuntime.Security
                         count++;
                     }
                 }
+                claimedStructuredActionLeaseIds =
+                    claimedStructured.Count == 0
+                        ? Array.Empty<string>()
+                        : claimedStructured.ToArray();
                 return count;
             }
         }
@@ -1037,6 +1125,16 @@ namespace CF7Launcher.AgentRuntime.Security
                 lifetimeMs = Math.Min(
                     requestedMs,
                     (long)ShutdownLifetimeHardCap
+                        .TotalMilliseconds);
+                actionLimit = 1;
+                return;
+            }
+            if (request.Kind
+                == WriteLeaseKind.StructuredAction)
+            {
+                lifetimeMs = Math.Min(
+                    requestedMs,
+                    (long)StructuredActionLifetimeHardCap
                         .TotalMilliseconds);
                 actionLimit = 1;
                 return;
@@ -1369,9 +1467,26 @@ namespace CF7Launcher.AgentRuntime.Security
             bool hasShutdown = capabilities.Contains(
                 AgentCapabilitiesV1.SessionShutdown,
                 StringComparer.Ordinal);
+            bool hasStructuredAction = capabilities.Contains(
+                AgentCapabilitiesV1.PanelOpen,
+                StringComparer.Ordinal);
+            if (request.Kind == WriteLeaseKind.StructuredAction)
+            {
+                if (capabilities.Count != 1
+                    || !hasStructuredAction)
+                {
+                    throw new InvalidOperationException(
+                        "capability_scope_denied");
+                }
+                ValidateOneShotLauncherBinding(
+                    request,
+                    targets,
+                    AgentCapabilitiesV1.PanelOpen);
+                return;
+            }
             if (request.Kind != WriteLeaseKind.Shutdown)
             {
-                if (hasShutdown)
+                if (hasShutdown || hasStructuredAction)
                 {
                     throw new InvalidOperationException(
                         "capability_scope_denied");
@@ -1384,6 +1499,17 @@ namespace CF7Launcher.AgentRuntime.Security
                 throw new InvalidOperationException(
                     "capability_scope_denied");
             }
+            ValidateOneShotLauncherBinding(
+                request,
+                targets,
+                AgentCapabilitiesV1.SessionShutdown);
+        }
+
+        private static void ValidateOneShotLauncherBinding(
+            WriteLeaseRequest request,
+            IReadOnlyCollection<string> targets,
+            string operation)
+        {
             if (targets.Count != 1)
             {
                 throw new InvalidOperationException(
@@ -1397,7 +1523,7 @@ namespace CF7Launcher.AgentRuntime.Security
             if (!string.IsNullOrWhiteSpace(request.Operation)
                 && !string.Equals(
                     request.Operation,
-                    AgentCapabilitiesV1.SessionShutdown,
+                    operation,
                     StringComparison.Ordinal))
             {
                 throw new InvalidOperationException(
@@ -1411,6 +1537,13 @@ namespace CF7Launcher.AgentRuntime.Security
                 throw new InvalidOperationException(
                     "arguments_invalid");
             }
+        }
+
+        private static bool RequiresLauncherTarget(
+            WriteLeaseKind kind)
+        {
+            return kind == WriteLeaseKind.Shutdown
+                || kind == WriteLeaseKind.StructuredAction;
         }
 
         private static long ToPositiveMilliseconds(TimeSpan duration)

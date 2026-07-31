@@ -244,7 +244,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
         }
 
         [Fact]
-        public void ShutdownLeaseDoesNotRequireNativeInputModeOrGuardBinding()
+        public void
+            LauncherOnlyLeasesDoNotRequireNativeInputModeOrGuardBinding()
         {
             using var fixture = new LifecycleFixture(
                 setFocus: false,
@@ -274,6 +275,23 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
 
             fixture.Lifecycle.Release(shutdown);
             Assert.Empty(fixture.Sink.Notices);
+
+            WriteLease structured =
+                fixture.StructuredActionLease();
+            Assert.True(
+                fixture.Lifecycle.TryActivate(
+                    structured,
+                    out string structuredReason),
+                structuredReason);
+            Assert.Null(structuredReason);
+            Assert.False(
+                fixture.Guard.TryGetBoundLease(
+                    out _,
+                    out _));
+
+            fixture.Lifecycle.Release(structured);
+            Assert.Empty(fixture.Sink.Notices);
+            Assert.Empty(fixture.Win32.SentBatches);
         }
 
         private sealed class LifecycleFixture : IDisposable
@@ -399,6 +417,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         AgentCapabilitiesV1.PressKey,
                         AgentCapabilitiesV1
                             .SessionShutdown,
+                        AgentCapabilitiesV1.PanelOpen,
                         AgentMethodsV1.HairCommit
                     },
                     new[] { TargetId, "target_other_aaaa" },
@@ -496,6 +515,31 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         Operation =
                             AgentCapabilitiesV1
                                 .SessionShutdown
+                    },
+                    0,
+                    30_000,
+                    1);
+            }
+
+            internal WriteLease StructuredActionLease()
+            {
+                return new WriteLease(
+                    "lease_structured_lifecycle",
+                    Principal,
+                    new WriteLeaseRequest
+                    {
+                        SessionId = SessionId,
+                        LifecycleGeneration = 1,
+                        Kind =
+                            WriteLeaseKind.StructuredAction,
+                        Capabilities = new[]
+                        {
+                            AgentCapabilitiesV1.PanelOpen
+                        },
+                        TargetScope =
+                            new[] { TargetId },
+                        Operation =
+                            AgentCapabilitiesV1.PanelOpen
                     },
                     0,
                     30_000,

@@ -123,6 +123,62 @@ namespace CF7Launcher.AgentRuntime.Gateway
             return claimed;
         }
 
+        internal bool TryClaimStructuredActionDispatch(
+            string leaseId)
+        {
+            NativeInputGuard guard;
+            long expectedExternalInputSequence;
+            LeaseResource trackedLease;
+            lock (_sync)
+            {
+                if (_disposed)
+                    return false;
+                guard = _nativeGuard;
+                trackedLease = _connections.Values
+                    .SelectMany(resources =>
+                        resources.Leases.Values)
+                    .FirstOrDefault(resource =>
+                        resource.Kind
+                            == WriteLeaseKind.StructuredAction
+                        && string.Equals(
+                            resource.LeaseId,
+                            leaseId,
+                            StringComparison.Ordinal));
+                if (trackedLease == null)
+                    return false;
+                expectedExternalInputSequence =
+                    trackedLease.HumanOverrideFence;
+            }
+            if (guard == null)
+            {
+                return false;
+            }
+            if (!guard.PollHookHealth(false))
+            {
+                RevokeLeaseAndCancelQueuedActions(
+                    trackedLease.SessionId,
+                    trackedLease.LeaseId,
+                    "input_guard_unhealthy");
+                return false;
+            }
+            string claimReason = null;
+            bool claimed =
+                _leases.TryClaimStructuredActionDispatch(
+                    leaseId,
+                    () => guard.TryClaimExternalInputSequence(
+                        expectedExternalInputSequence,
+                        out claimReason));
+            guard.PreemptClaimHealthFailureIfAny();
+            if (!claimed)
+            {
+                RevokeLeaseAndCancelQueuedActions(
+                    trackedLease.SessionId,
+                    trackedLease.LeaseId,
+                    claimReason ?? "lease_revoked");
+            }
+            return claimed;
+        }
+
         public void RegisterConnection(
             string connectionId,
             PrincipalCredential credential)
@@ -448,7 +504,9 @@ namespace CF7Launcher.AgentRuntime.Gateway
                         lease.RevokeReason ?? "lease_revoked";
                     return false;
                 }
-                if (lease.Kind == WriteLeaseKind.Shutdown
+                if ((lease.Kind == WriteLeaseKind.Shutdown
+                        || lease.Kind
+                            == WriteLeaseKind.StructuredAction)
                     && (ticket.HumanOverrideFence < 0
                         || _nativeGuard == null
                         || !_nativeGuard
@@ -464,6 +522,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
                         lease.SessionId,
                         lease.LifecycleGeneration,
                         lease.LeaseId,
+                        lease.Kind,
                         ticket.HumanOverrideFence));
                 reasonCode = null;
                 return true;
@@ -677,9 +736,9 @@ namespace CF7Launcher.AgentRuntime.Gateway
                 _leases.Revoke(
                     lease.LeaseId,
                     "session_detached");
-                guard?.RevokeBoundLease(
-                    lease.SessionId,
-                    lease.LeaseId,
+                TryRevokeGuardLease(
+                    guard,
+                    lease,
                     "session_detached");
             }
             CancelAndDispose(
@@ -755,6 +814,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
         {
             RequireValue(reasonCode, nameof(reasonCode));
             NativeInputGuard guard;
+            LeaseResource trackedLease = null;
             List<CancellationTokenSource> actions;
             lock (_sync)
             {
@@ -773,6 +833,12 @@ namespace CF7Launcher.AgentRuntime.Gateway
                             actions.Add(action.Source);
                         }
                     }
+                    if (resources.Leases.TryGetValue(
+                            leaseId,
+                            out LeaseResource candidate))
+                    {
+                        trackedLease ??= candidate;
+                    }
                     resources.Leases.Remove(leaseId);
                 }
                 guard = _nativeGuard;
@@ -780,9 +846,9 @@ namespace CF7Launcher.AgentRuntime.Gateway
 
             _leases.Revoke(leaseId, reasonCode);
             Cancel(actions);
-            guard?.RevokeBoundLease(
-                sessionId,
-                leaseId,
+            TryRevokeGuardLease(
+                guard,
+                trackedLease,
                 reasonCode);
         }
 
@@ -793,6 +859,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
         {
             RequireValue(reasonCode, nameof(reasonCode));
             NativeInputGuard guard;
+            LeaseResource trackedLease = null;
             List<CancellationTokenSource> actions;
             lock (_sync)
             {
@@ -811,15 +878,21 @@ namespace CF7Launcher.AgentRuntime.Gateway
                             actions.Add(action.Source);
                         }
                     }
+                    if (resources.Leases.TryGetValue(
+                            leaseId,
+                            out LeaseResource candidate))
+                    {
+                        trackedLease ??= candidate;
+                    }
                     resources.Leases.Remove(leaseId);
                 }
                 guard = _nativeGuard;
             }
 
             Cancel(actions);
-            guard?.RevokeBoundLease(
-                sessionId,
-                leaseId,
+            TryRevokeGuardLease(
+                guard,
+                trackedLease,
                 reasonCode);
         }
 
@@ -966,9 +1039,9 @@ namespace CF7Launcher.AgentRuntime.Gateway
                 .DistinctBy(value => value.LeaseId))
             {
                 _leases.Revoke(lease.LeaseId, reason);
-                guard?.RevokeBoundLease(
-                    lease.SessionId,
-                    lease.LeaseId,
+                TryRevokeGuardLease(
+                    guard,
+                    lease,
                     reason);
             }
             if (invalidation.RequiresHumanReauthorization)
@@ -1114,10 +1187,21 @@ namespace CF7Launcher.AgentRuntime.Gateway
             {
                 if (_disposed)
                     return;
-                _leases.RevokeAllForHumanOverride(reason);
+                _leases.RevokeAllForHumanOverride(
+                    reason,
+                    out IReadOnlyCollection<string>
+                        claimedStructuredLeaseIds);
+                var claimedStructured =
+                    new HashSet<string>(
+                        claimedStructuredLeaseIds,
+                        StringComparer.Ordinal);
                 actions = _connections.Values
                     .SelectMany(resources =>
                         resources.Actions.Values)
+                    .Where(action =>
+                        action.LeaseId == null
+                        || !claimedStructured.Contains(
+                            action.LeaseId))
                     .Select(action => action.Source)
                     .Distinct()
                     .ToList();
@@ -1337,9 +1421,6 @@ namespace CF7Launcher.AgentRuntime.Gateway
                     guard = _nativeGuard;
                 }
             }
-            Cancel(
-                resources.Actions.Values.Select(
-                    action => action.Source));
             foreach (GrantResource grant
                 in resources.Grants.Values)
             {
@@ -1353,10 +1434,15 @@ namespace CF7Launcher.AgentRuntime.Gateway
                 _leases.Revoke(lease.LeaseId, reasonCode);
                 TryRevokeGuardLease(
                     guard,
-                    lease.SessionId,
-                    lease.LeaseId,
+                    lease,
                     reasonCode);
             }
+            // Publish revoked authority before cancellation can wake an
+            // action owner. That owner must never observe its one-shot
+            // action_limit_consumed marker as the revocation cause.
+            Cancel(
+                resources.Actions.Values.Select(
+                    action => action.Source));
             _credentials.Revoke(
                 resources.Credential.CredentialId,
                 reasonCode);
@@ -1405,15 +1491,16 @@ namespace CF7Launcher.AgentRuntime.Gateway
 
         private static void TryRevokeGuardLease(
             NativeInputGuard guard,
-            string sessionId,
-            string leaseId,
+            LeaseResource lease,
             string reasonCode)
         {
+            if (lease?.Kind != WriteLeaseKind.GuiInput)
+                return;
             try
             {
                 guard?.RevokeBoundLease(
-                    sessionId,
-                    leaseId,
+                    lease.SessionId,
+                    lease.LeaseId,
                     reasonCode);
             }
             catch (ObjectDisposedException)
@@ -1569,6 +1656,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
             string SessionId,
             ulong LifecycleGeneration,
             string LeaseId,
+            WriteLeaseKind Kind,
             long HumanOverrideFence);
 
         private sealed record GrantResource(

@@ -69,6 +69,26 @@
       }
     },
     {
+      "name": "one-shot-structured-action-lease",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "structured-action-lease-1",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "structured_action",
+          "capabilities": [
+            "panel.open"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 30000,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
       "name": "one-shot-shutdown-lease",
       "value": {
         "jsonrpc": "2.0",
@@ -325,6 +345,170 @@
           ],
           "requestedTtlMs": 30001,
           "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "panel-open-capability-on-gui-lease",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-structured-1",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "gui_input",
+          "capabilities": [
+            "panel.open"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "structured-action-lease-with-wrong-capability",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-structured-2",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "structured_action",
+          "capabilities": [
+            "input.click"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "structured-action-lease-with-mixed-capabilities",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-structured-3",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "structured_action",
+          "capabilities": [
+            "panel.open",
+            "input.click"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "structured-action-lease-with-multiple-targets",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-structured-4",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "structured_action",
+          "capabilities": [
+            "panel.open"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH",
+            "IIIIIIIIIIIIIIIIIIIIII"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "structured-action-lease-with-multiple-actions",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-structured-5",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "structured_action",
+          "capabilities": [
+            "panel.open"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 2
+        }
+      }
+    },
+    {
+      "name": "structured-action-lease-with-widened-ttl",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-structured-6",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "structured_action",
+          "capabilities": [
+            "panel.open"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 30001,
+          "requestedActionLimit": 1
+        }
+      }
+    },
+    {
+      "name": "structured-action-lease-with-client-operation",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-structured-7",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "structured_action",
+          "capabilities": [
+            "panel.open"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1,
+          "operation": "appearance.hair.change.v1.commit"
+        }
+      }
+    },
+    {
+      "name": "structured-action-lease-with-renew-after",
+      "value": {
+        "jsonrpc": "2.0",
+        "id": "bad-structured-8",
+        "method": "lease.acquire",
+        "params": {
+          "sessionId": "FFFFFFFFFFFFFFFFFFFFFF",
+          "kind": "structured_action",
+          "capabilities": [
+            "panel.open"
+          ],
+          "targetScope": [
+            "HHHHHHHHHHHHHHHHHHHHHH"
+          ],
+          "requestedTtlMs": 1000,
+          "requestedActionLimit": 1,
+          "renewAfter": 500
         }
       }
     },

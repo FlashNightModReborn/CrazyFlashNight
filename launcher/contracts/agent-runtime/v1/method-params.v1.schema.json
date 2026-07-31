@@ -176,6 +176,7 @@
           "enum": [
             "gui_input",
             "domain_transaction",
+            "structured_action",
             "shutdown"
           ]
         },
@@ -307,6 +308,50 @@
                 "not": {
                   "contains": {
                     "const": "session.shutdown"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "structured_action"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "capabilities": {
+                "minItems": 1,
+                "maxItems": 1,
+                "items": {
+                  "const": "panel.open"
+                }
+              },
+              "targetScope": {
+                "minItems": 1,
+                "maxItems": 1
+              },
+              "requestedTtlMs": {
+                "maximum": 30000
+              },
+              "requestedActionLimit": {
+                "const": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "capabilities": {
+                "not": {
+                  "contains": {
+                    "const": "panel.open"
                   }
                 }
               }

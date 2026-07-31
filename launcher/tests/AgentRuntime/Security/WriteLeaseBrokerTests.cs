@@ -406,6 +406,246 @@ namespace CF7Launcher.Tests.AgentRuntime.Security
 
         [Fact]
         public void
+            StructuredActionLease_IsExactLauncherOneShotNonrenewableAndModeBound()
+        {
+            var player = CreatePlayerSetup();
+            InvalidOperationException playerDenied =
+                Assert.Throws<InvalidOperationException>(
+                    () => player.Broker.Acquire(
+                        StructuredActionRequest(
+                            player.Credential,
+                            "wings-client",
+                            "flash-a")));
+            Assert.Equal(
+                "consent_required",
+                playerDenied.Message);
+
+            var setup = CreateDeveloperShutdownSetup();
+            setup.Targets.Set(
+                "session-a",
+                "launcher-b",
+                kind: SurfaceKind.Launcher);
+
+            WriteLeaseRequest exact = StructuredActionRequest(
+                setup.Credential,
+                "dev-client",
+                "launcher-a");
+            InvalidOperationException guiMismatch =
+                Assert.Throws<InvalidOperationException>(
+                    () => setup.Broker.Acquire(
+                        StructuredActionRequest(
+                            setup.Credential,
+                            "dev-client",
+                            "launcher-a",
+                            kind: WriteLeaseKind.GuiInput)));
+            Assert.Equal(
+                "capability_scope_denied",
+                guiMismatch.Message);
+
+            InvalidOperationException widenedCapabilities =
+                Assert.Throws<InvalidOperationException>(
+                    () => setup.Broker.Acquire(
+                        StructuredActionRequest(
+                            setup.Credential,
+                            "dev-client",
+                            "launcher-a",
+                            capabilities: new[]
+                            {
+                                AgentCapabilitiesV1.PanelOpen,
+                                AgentCapabilitiesV1.Click
+                            })));
+            Assert.Equal(
+                "capability_scope_denied",
+                widenedCapabilities.Message);
+
+            InvalidOperationException widenedTargets =
+                Assert.Throws<InvalidOperationException>(
+                    () => setup.Broker.Acquire(
+                        StructuredActionRequest(
+                            setup.Credential,
+                            "dev-client",
+                            "launcher-a",
+                            targets: new[]
+                            {
+                                "launcher-a",
+                                "launcher-b"
+                            })));
+            Assert.Equal(
+                "target_scope_denied",
+                widenedTargets.Message);
+
+            InvalidOperationException widenedActions =
+                Assert.Throws<InvalidOperationException>(
+                    () => setup.Broker.Acquire(
+                        StructuredActionRequest(
+                            setup.Credential,
+                            "dev-client",
+                            "launcher-a",
+                            actionLimit: 2)));
+            Assert.Equal(
+                "lease_action_limit",
+                widenedActions.Message);
+
+            InvalidOperationException flashTarget =
+                Assert.Throws<InvalidOperationException>(
+                    () => setup.Broker.Acquire(
+                        StructuredActionRequest(
+                            setup.Credential,
+                            "dev-client",
+                            "flash-a")));
+            Assert.Equal(
+                "unsupported_for_surface",
+                flashTarget.Message);
+
+            WriteLease lease = setup.Broker.Acquire(exact);
+            Assert.Equal(
+                WriteLeaseKind.StructuredAction,
+                lease.Kind);
+            Assert.Equal(
+                AgentCapabilitiesV1.PanelOpen,
+                lease.Operation);
+            Assert.Equal(30_000, lease.ExpiresMonotonic);
+            Assert.Equal(1, lease.ActionLimit);
+            Assert.Single(lease.Capabilities);
+            Assert.Single(lease.TargetScope);
+
+            InvalidOperationException writerConflict =
+                Assert.Throws<InvalidOperationException>(
+                    () => setup.Broker.Acquire(
+                        DeveloperGuiRequest(
+                            setup.Credential,
+                            "session-a")));
+            Assert.Equal(
+                "write_lease_already_held",
+                writerConflict.Message);
+
+            Assert.False(
+                setup.Broker.TryRenewDeveloper(
+                    lease.LeaseId,
+                    "dev-client",
+                    setup.Credential.SecurityPrincipalId,
+                    TimeSpan.FromSeconds(10),
+                    out _,
+                    out string renewReason));
+            Assert.Equal(
+                "operation_invalid",
+                renewReason);
+            Assert.False(
+                setup.Broker.TryConsumeAction(
+                    lease.LeaseId,
+                    "dev-client",
+                    setup.Credential.SecurityPrincipalId,
+                    out _,
+                    out string unboundReason));
+            Assert.Equal(
+                "operation_invalid",
+                unboundReason);
+            Assert.False(
+                setup.Broker.TryConsumeAction(
+                    lease.LeaseId,
+                    "dev-client",
+                    setup.Credential.SecurityPrincipalId,
+                    "session-a",
+                    AgentCapabilitiesV1.PanelOpen,
+                    "launcher-a",
+                    AgentCapabilitiesV1.Click,
+                    out _,
+                    out string wrongOperation));
+            Assert.Equal(
+                "operation_invalid",
+                wrongOperation);
+            Assert.True(
+                setup.Broker.TryConsumeAction(
+                    lease.LeaseId,
+                    "dev-client",
+                    setup.Credential.SecurityPrincipalId,
+                    "session-a",
+                    AgentCapabilitiesV1.PanelOpen,
+                    "launcher-a",
+                    AgentCapabilitiesV1.PanelOpen,
+                    out _,
+                    out string consumeReason),
+                consumeReason);
+            Assert.Equal(WriteLeaseState.Consumed, lease.State);
+            Assert.True(lease.ActionExecutionPending);
+
+            Assert.Equal(
+                1,
+                setup.Broker.RevokeAllForHumanOverride(
+                    "human_input"));
+            Assert.Equal(WriteLeaseState.Revoked, lease.State);
+            Assert.True(lease.ActionExecutionPending);
+            Assert.True(
+                setup.Broker.AbortPendingActionExecution(
+                    lease.LeaseId));
+        }
+
+        [Fact]
+        public void StructuredActionLease_AllowsExactUnattendedBinding()
+        {
+            var clock = new ManualAgentRuntimeClock();
+            var authority = new PrincipalCredentialAuthority(
+                clock,
+                new TestPrincipalEnrollmentVerifier());
+            PrincipalCredential credential =
+                authority.IssueUnattended(
+                    new UnattendedCredentialEvidence
+                    {
+                        ClientInstanceId = "runner-client",
+                        RunnerPolicyId = "trusted-runner",
+                        RunnerProcessId = 1234,
+                        RunnerProcessStartTimeUtc =
+                            DateTimeOffset.UtcNow,
+                        RunnerExecutablePath = "runner.exe",
+                        RunnerExecutableSha256 =
+                            new string('A', 64),
+                        RunnerExecutableSize = 1024,
+                        RuntimeExecutablePath =
+                            "Launcher.Core.exe",
+                        RequestNonce = "request-nonce",
+                        BuildIdentity = new string('B', 64),
+                        PayloadClosure = new string('C', 64),
+                        SessionId = "session-a",
+                        AttemptId = "attempt-a",
+                        AttemptGeneration = 1,
+                        Slot = "cf7_agent_test",
+                        CanonicalSavePath = "save-slot",
+                        RunnerDeadlineMonotonic = 60_000,
+                        AllowedCapabilities = new[]
+                        {
+                            AgentCapabilitiesV1.PanelOpen
+                        },
+                        AllowedTargets =
+                            new[] { "launcher-a" }
+                    });
+            var targets = new MutableAgentTargetAuthority();
+            targets.Set(
+                "session-a",
+                "launcher-a",
+                kind: SurfaceKind.Launcher);
+            targets.SetSessionMode(
+                "session-a",
+                SessionMode.UnattendedTest);
+            var broker = new WriteLeaseBroker(
+                clock,
+                authority,
+                targets);
+
+            WriteLease lease = broker.Acquire(
+                StructuredActionRequest(
+                    credential,
+                    "runner-client",
+                    "launcher-a"));
+
+            Assert.Equal(
+                WriteLeaseKind.StructuredAction,
+                lease.Kind);
+            Assert.Equal(30_000, lease.ExpiresMonotonic);
+            Assert.Equal(1, lease.ActionLimit);
+        }
+
+        [Fact]
+        public void
             ShutdownDeliveryClaim_HumanOverrideCannotRollBackWriteOwnership()
         {
             var setup = CreateDeveloperShutdownSetup();
@@ -1129,6 +1369,36 @@ namespace CF7Launcher.Tests.AgentRuntime.Security
             };
         }
 
+        private static WriteLeaseRequest
+            StructuredActionRequest(
+                PrincipalCredential credential,
+                string clientInstanceId,
+                string target,
+                string[] capabilities = null,
+                string[] targets = null,
+                int actionLimit = 1,
+                WriteLeaseKind kind =
+                    WriteLeaseKind.StructuredAction)
+        {
+            return new WriteLeaseRequest
+            {
+                CredentialId = credential.CredentialId,
+                ClientInstanceId = clientInstanceId,
+                SessionId = "session-a",
+                LifecycleGeneration = 1,
+                Kind = kind,
+                Capabilities = capabilities ?? new[]
+                {
+                    AgentCapabilitiesV1.PanelOpen
+                },
+                TargetScope =
+                    targets ?? new[] { target },
+                RequestedLifetime =
+                    TimeSpan.FromMinutes(5),
+                RequestedActionLimit = actionLimit
+            };
+        }
+
         private static WriteLeaseRequest DeveloperGuiRequest(
             PrincipalCredential credential,
             string sessionId)
@@ -1251,11 +1521,13 @@ namespace CF7Launcher.Tests.AgentRuntime.Security
                         {
                             AgentCapabilitiesV1
                                 .SessionShutdown,
-                            AgentCapabilitiesV1.Click
+                            AgentCapabilitiesV1.Click,
+                            AgentCapabilitiesV1.PanelOpen
                         },
                         AllowedTargets = new[]
                         {
                             "launcher-a",
+                            "launcher-b",
                             "flash-a"
                         }
                     });

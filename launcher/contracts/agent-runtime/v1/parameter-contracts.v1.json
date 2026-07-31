@@ -136,9 +136,28 @@
       "leaseKinds": [
         "gui_input",
         "domain_transaction",
+        "structured_action",
         "shutdown"
       ],
       "kindBindings": {
+        "structured_action": {
+          "capabilitiesExact": [
+            "panel.open"
+          ],
+          "minimumTargets": 1,
+          "maximumTargets": 1,
+          "requiredTargetKind": "launcher",
+          "allowedSessionModes": [
+            "developer_interactive",
+            "unattended_test"
+          ],
+          "maximumTtlMs": 30000,
+          "maximumActions": 1,
+          "operationDerivedByServer": "panel.open",
+          "renewAfterAllowed": false,
+          "renewalOperationResult": "operation_invalid",
+          "nativeInputContainment": false
+        },
         "shutdown": {
           "capabilitiesExact": [
             "session.shutdown"

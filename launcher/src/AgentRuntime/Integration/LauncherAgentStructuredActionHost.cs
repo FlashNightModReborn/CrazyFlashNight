@@ -486,10 +486,14 @@ namespace CF7Launcher.AgentRuntime.Integration
                 return false;
             }
             WriteLeaseKind requiredKind =
-                action.Operation
-                    == AgentCapabilitiesV1.SessionShutdown
-                    ? WriteLeaseKind.Shutdown
-                    : WriteLeaseKind.GuiInput;
+                action.Operation switch
+                {
+                    AgentCapabilitiesV1.SessionShutdown =>
+                        WriteLeaseKind.Shutdown,
+                    AgentCapabilitiesV1.PanelOpen =>
+                        WriteLeaseKind.StructuredAction,
+                    _ => WriteLeaseKind.GuiInput
+                };
             if (lease.Kind != requiredKind
                 || !lease.Capabilities.Contains(
                     action.Operation,
@@ -500,7 +504,9 @@ namespace CF7Launcher.AgentRuntime.Integration
                 reasonCode = "capability_denied";
                 return false;
             }
-            if (requiredKind == WriteLeaseKind.Shutdown
+            if ((requiredKind == WriteLeaseKind.Shutdown
+                    || requiredKind
+                        == WriteLeaseKind.StructuredAction)
                 && (lease.Capabilities.Count != 1
                     || lease.TargetScope.Count != 1
                     || lease.ActionLimit != 1))
@@ -575,7 +581,9 @@ namespace CF7Launcher.AgentRuntime.Integration
                     "human_only_security_surface";
                 return false;
             }
-            if (requiredKind == WriteLeaseKind.Shutdown
+            if ((requiredKind == WriteLeaseKind.Shutdown
+                    || requiredKind
+                        == WriteLeaseKind.StructuredAction)
                 && surface.Kind != SurfaceKind.Launcher)
             {
                 reasonCode = "unsupported_for_surface";

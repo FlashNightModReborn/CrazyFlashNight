@@ -92,6 +92,30 @@
       "humanOverridePolicy": "always_preempt",
       "state": "active"
     },
+    "structuredActionLease": {
+      "leaseId": "ssssssssssssssssssssss",
+      "ownerClientId": "mmmmmmmmmmmmmmmmmmmmmm",
+      "securityPrincipalId": "nnnnnnnnnnnnnnnnnnnnnn",
+      "sessionMode": "unattended_test",
+      "purpose": "structured_action",
+      "scope": {
+        "session": {
+          "sessionId": "cccccccccccccccccccccc",
+          "lifecycleGeneration": 2,
+          "attemptId": "iiiiiiiiiiiiiiiiiiiiii",
+          "attemptGeneration": 7,
+          "crossAttempt": false
+        },
+        "targetScope": ["gggggggggggggggggggggg"],
+        "operationScope": ["panel.open"],
+        "maximumActions": 1
+      },
+      "capabilities": ["panel.open"],
+      "issuedMonotonic": 1000,
+      "expiresMonotonic": 31000,
+      "humanOverridePolicy": "always_preempt",
+      "state": "active"
+    },
     "shutdownLease": {
       "leaseId": "shutdownleaseeeeeeeeeee",
       "ownerClientId": "mmmmmmmmmmmmmmmmmmmmmm",
@@ -245,6 +269,36 @@
       "base": "shutdownLease",
       "mutation": "sessionMode=player_assist",
       "expectedViolationCode": "lease_kind_mismatch"
+    },
+    {
+      "id": "player-assist-structured-action-impossible",
+      "base": "structuredActionLease",
+      "mutation": "sessionMode=player_assist; consentReceipt=player-consent-1; scope.argumentBoundsHash=sha256",
+      "expectedViolationCode": "lease_kind_mismatch"
+    },
+    {
+      "id": "structured-action-lease-too-long",
+      "base": "structuredActionLease",
+      "mutation": "expiresMonotonic=31001",
+      "expectedViolationCode": "maximum"
+    },
+    {
+      "id": "structured-action-lease-renewable",
+      "base": "structuredActionLease",
+      "mutation": "renewAfter=15000",
+      "expectedViolationCode": "forbidden"
+    },
+    {
+      "id": "panel-open-on-gui-input-purpose",
+      "base": "structuredActionLease",
+      "mutation": "purpose=gui_input",
+      "expectedViolationCode": "lease_kind_mismatch"
+    },
+    {
+      "id": "structured-action-wrong-operation-scope",
+      "base": "structuredActionLease",
+      "mutation": "scope.operationScope=[input.click]",
+      "expectedViolationCode": "exactly_one"
     }
   ]
 }

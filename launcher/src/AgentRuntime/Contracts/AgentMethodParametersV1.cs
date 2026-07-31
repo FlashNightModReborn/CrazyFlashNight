@@ -1076,6 +1076,7 @@ namespace CF7Launcher.AgentRuntime.Contracts
                 errors);
             if (kind != "gui_input"
                 && kind != "domain_transaction"
+                && kind != "structured_action"
                 && kind != "shutdown")
             {
                 Error(
@@ -1140,6 +1141,10 @@ namespace CF7Launcher.AgentRuntime.Contracts
                 requestedCapabilities?.Contains(
                     AgentCapabilitiesV1.SessionShutdown,
                     StringComparer.Ordinal) == true;
+            bool requestsStructuredAction =
+                requestedCapabilities?.Contains(
+                    AgentCapabilitiesV1.PanelOpen,
+                    StringComparer.Ordinal) == true;
             if (kind == "domain_transaction")
             {
                 if (requestsShutdown)
@@ -1169,6 +1174,14 @@ namespace CF7Launcher.AgentRuntime.Contracts
                         "$.params.capabilities",
                         "capability_scope_required",
                         "Hair domain lease requires its domain capability.");
+                }
+                if (requestsStructuredAction)
+                {
+                    Error(
+                        errors,
+                        "$.params.capabilities",
+                        "lease_kind_mismatch",
+                        "panel.open requires the dedicated structured-action lease kind.");
                 }
             }
             else if (kind == "shutdown")
@@ -1222,6 +1235,74 @@ namespace CF7Launcher.AgentRuntime.Contracts
                         "shutdown_lease_fields",
                         "Shutdown operation binding is derived by the server.");
                 }
+                if (requestsStructuredAction)
+                {
+                    Error(
+                        errors,
+                        "$.params.capabilities",
+                        "lease_kind_mismatch",
+                        "panel.open requires the dedicated structured-action lease kind.");
+                }
+            }
+            else if (kind == "structured_action")
+            {
+                if (requestsShutdown)
+                {
+                    Error(
+                        errors,
+                        "$.params.capabilities",
+                        "lease_kind_mismatch",
+                        "session.shutdown requires the dedicated shutdown lease kind.");
+                }
+                if (requestedCapabilities == null
+                    || requestedCapabilities.Count != 1
+                    || !requestsStructuredAction)
+                {
+                    Error(
+                        errors,
+                        "$.params.capabilities",
+                        "capability_scope_required",
+                        "Structured-action leases require exactly panel.open.");
+                }
+                if (requestedTargets == null
+                    || requestedTargets.Count != 1)
+                {
+                    Error(
+                        errors,
+                        "$.params.targetScope",
+                        "exactly_one",
+                        "Structured-action leases bind exactly one Runtime-owned target.");
+                }
+                if (requestedActionLimit != 1)
+                {
+                    Error(
+                        errors,
+                        "$.params.requestedActionLimit",
+                        "constant",
+                        "Structured-action leases are one-shot.");
+                }
+                if (requestedTtlMs > 30_000)
+                {
+                    Error(
+                        errors,
+                        "$.params.requestedTtlMs",
+                        "maximum",
+                        "Structured-action leases expire within 30 seconds.");
+                }
+                if (operation != null
+                    || parameters.TryGetProperty(
+                        "previewHash",
+                        out _)
+                    || parameters.TryGetProperty(
+                        "expectedRevision",
+                        out _))
+                {
+                    Error(
+                        errors,
+                        "$.params",
+                        "structured_action_lease_fields",
+                        "Structured-action operation binding is derived by the server.");
+                }
             }
             else
             {
@@ -1246,6 +1327,14 @@ namespace CF7Launcher.AgentRuntime.Contracts
                         "$.params.capabilities",
                         "lease_kind_mismatch",
                         "Shutdown requires the dedicated shutdown lease kind.");
+                }
+                if (requestsStructuredAction)
+                {
+                    Error(
+                        errors,
+                        "$.params.capabilities",
+                        "lease_kind_mismatch",
+                        "panel.open requires the dedicated structured-action lease kind.");
                 }
             }
         }

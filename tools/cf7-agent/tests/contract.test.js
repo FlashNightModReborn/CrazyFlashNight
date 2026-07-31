@@ -11,18 +11,30 @@ const {
   encodeBinaryPayload,
   methodInputSchema,
   methods,
+  parameterContracts,
   validateAppLaunchResult,
   validateRequest,
   validateResponse,
 } = require('../lib/contract');
 const { parseStrictJson } = require('../lib/strict-json');
 
-const vectorPath = path.resolve(
+const contractDirectory = path.resolve(
   __dirname,
-  '../../../launcher/contracts/agent-runtime/v1/rpc-vectors.v1.json',
+  '../../../launcher/contracts/agent-runtime/v1',
 );
-const vectors = parseStrictJson(
-  fs.readFileSync(vectorPath, 'utf8'),
+
+function readContractArtifact(name) {
+  return parseStrictJson(
+    fs.readFileSync(path.join(contractDirectory, name), 'utf8'),
+  );
+}
+
+const vectors = readContractArtifact('rpc-vectors.v1.json');
+const agentRuntimeSchema = readContractArtifact(
+  'agent-runtime.v1.schema.json',
+);
+const contractVectors = readContractArtifact(
+  'contract-vectors.v1.json',
 );
 
 test('strict JSON parser rejects duplicate and trailing properties', () => {
@@ -171,11 +183,47 @@ test('every MCP tool publishes its exact frozen input schema', () => {
   const leaseAcquire = methodInputSchema('lease.acquire');
   assert.deepEqual(
     leaseAcquire.properties.kind.enum,
-    ['gui_input', 'domain_transaction', 'shutdown'],
+    [
+      'gui_input',
+      'domain_transaction',
+      'structured_action',
+      'shutdown',
+    ],
   );
   assert.equal(
     leaseAcquire.properties.argumentBoundsHash.$ref,
     '#/$defs/sha256',
+  );
+  const structuredActionAcquireCondition =
+    leaseAcquire.allOf.find(
+      (entry) => entry.if?.properties?.kind?.const
+        === 'structured_action',
+    );
+  assert.ok(structuredActionAcquireCondition);
+  assert.equal(
+    structuredActionAcquireCondition.then.properties
+      .capabilities.items.const,
+    'panel.open',
+  );
+  assert.equal(
+    structuredActionAcquireCondition.then.properties
+      .targetScope.maxItems,
+    1,
+  );
+  assert.equal(
+    structuredActionAcquireCondition.then.properties
+      .requestedTtlMs.maximum,
+    30_000,
+  );
+  assert.equal(
+    structuredActionAcquireCondition.then.properties
+      .requestedActionLimit.const,
+    1,
+  );
+  assert.equal(
+    structuredActionAcquireCondition.else.properties
+      .capabilities.not.contains.const,
+    'panel.open',
   );
   assert.doesNotThrow(() => validateRequest({
     jsonrpc: '2.0',
@@ -258,6 +306,192 @@ test('every MCP tool publishes its exact frozen input schema', () => {
     assert.throws(
       () => validateRequest({
         ...shutdownLease,
+        id: name,
+        params,
+      }),
+      undefined,
+      name,
+    );
+  }
+  const structuredActionLease = {
+    jsonrpc: '2.0',
+    id: 'structured-action-lease',
+    method: 'lease.acquire',
+    params: {
+      sessionId: 'S'.repeat(22),
+      kind: 'structured_action',
+      capabilities: ['panel.open'],
+      targetScope: ['T'.repeat(22)],
+      requestedTtlMs: 30_000,
+      requestedActionLimit: 1,
+    },
+  };
+  assert.doesNotThrow(
+    () => validateRequest(structuredActionLease),
+  );
+  const structuredActionBinding =
+    parameterContracts.get('leaseAcquire')
+      .kindBindings.structured_action;
+  assert.deepEqual(
+    structuredActionBinding.capabilitiesExact,
+    ['panel.open'],
+  );
+  assert.equal(structuredActionBinding.minimumTargets, 1);
+  assert.equal(structuredActionBinding.maximumTargets, 1);
+  assert.equal(
+    structuredActionBinding.requiredTargetKind,
+    'launcher',
+  );
+  assert.deepEqual(
+    structuredActionBinding.allowedSessionModes,
+    ['developer_interactive', 'unattended_test'],
+  );
+  assert.equal(structuredActionBinding.maximumTtlMs, 30_000);
+  assert.equal(structuredActionBinding.maximumActions, 1);
+  assert.equal(
+    structuredActionBinding.operationDerivedByServer,
+    'panel.open',
+  );
+  assert.equal(
+    structuredActionBinding.renewAfterAllowed,
+    false,
+  );
+  assert.equal(
+    structuredActionBinding.renewalOperationResult,
+    'operation_invalid',
+  );
+  const leaseDescriptor =
+    agentRuntimeSchema.$defs.leaseDescriptor;
+  assert.equal(
+    leaseDescriptor.properties.purpose.enum.includes(
+      'structured_action',
+    ),
+    true,
+  );
+  const structuredActionDescriptorCondition =
+    leaseDescriptor.allOf.find(
+      (entry) => entry.if?.properties?.purpose?.const
+        === 'structured_action',
+    );
+  assert.ok(structuredActionDescriptorCondition);
+  assert.deepEqual(
+    structuredActionDescriptorCondition.then.properties
+      .sessionMode.enum,
+    ['developer_interactive', 'unattended_test'],
+  );
+  assert.equal(
+    structuredActionDescriptorCondition.then.not.required[0],
+    'renewAfter',
+  );
+  assert.equal(
+    structuredActionDescriptorCondition.then.properties
+      .capabilities.items.const,
+    'panel.open',
+  );
+  assert.equal(
+    structuredActionDescriptorCondition.then.properties
+      .scope.properties.operationScope.items.const,
+    'panel.open',
+  );
+  assert.equal(
+    structuredActionDescriptorCondition.then.properties
+      .scope.properties.maximumActions.const,
+    1,
+  );
+  assert.equal(
+    structuredActionDescriptorCondition.else.properties
+      .capabilities.not.contains.const,
+    'panel.open',
+  );
+  const structuredActionDescriptor =
+    contractVectors.valid.structuredActionLease;
+  assert.equal(
+    structuredActionDescriptor.purpose,
+    'structured_action',
+  );
+  assert.equal(
+    structuredActionDescriptor.sessionMode,
+    'unattended_test',
+  );
+  assert.deepEqual(
+    structuredActionDescriptor.capabilities,
+    ['panel.open'],
+  );
+  assert.deepEqual(
+    structuredActionDescriptor.scope.operationScope,
+    ['panel.open'],
+  );
+  assert.equal(
+    structuredActionDescriptor.scope.targetScope.length,
+    1,
+  );
+  assert.equal(
+    structuredActionDescriptor.expiresMonotonic
+      - structuredActionDescriptor.issuedMonotonic,
+    30_000,
+  );
+  assert.equal(
+    Object.hasOwn(structuredActionDescriptor, 'renewAfter'),
+    false,
+  );
+  for (const [name, params] of [
+    [
+      'gui-kind-with-panel-open-authority',
+      {
+        ...structuredActionLease.params,
+        kind: 'gui_input',
+      },
+    ],
+    [
+      'structured-action-kind-with-input-authority',
+      {
+        ...structuredActionLease.params,
+        capabilities: ['input.click'],
+      },
+    ],
+    [
+      'structured-action-kind-with-mixed-authority',
+      {
+        ...structuredActionLease.params,
+        capabilities: ['panel.open', 'input.click'],
+      },
+    ],
+    [
+      'structured-action-kind-with-multiple-targets',
+      {
+        ...structuredActionLease.params,
+        targetScope: [
+          'T'.repeat(22),
+          'U'.repeat(22),
+        ],
+      },
+    ],
+    [
+      'structured-action-kind-with-widened-ttl',
+      {
+        ...structuredActionLease.params,
+        requestedTtlMs: 30_001,
+      },
+    ],
+    [
+      'structured-action-kind-with-multiple-actions',
+      {
+        ...structuredActionLease.params,
+        requestedActionLimit: 2,
+      },
+    ],
+    [
+      'structured-action-kind-with-client-operation',
+      {
+        ...structuredActionLease.params,
+        operation:
+          'appearance.hair.change.v1.commit',
+      },
+    ],
+  ]) {
+    assert.throws(
+      () => validateRequest({
+        ...structuredActionLease,
         id: name,
         params,
       }),

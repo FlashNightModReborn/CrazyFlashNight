@@ -284,6 +284,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
         public async Task PanelOpenPassesOnlyPanelNameToRouterAllowListCallback()
         {
             using var fixture = new Fixture();
+            fixture.Snapshot = fixture.CreateSnapshot(
+                inputModes: Array.Empty<InputMode>());
             ActionEnvelope action = fixture.Action(
                 AgentCapabilitiesV1.PanelOpen);
             action.Arguments = JsonSerializer.SerializeToElement(
@@ -304,6 +306,28 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
             Assert.Equal("help", fixture.LastPanelName);
             Assert.Equal(1, fixture.PanelOpenCallCount);
             Assert.True(fixture.AllCallbacksRanOnUi);
+        }
+
+        [Fact]
+        public async Task PanelOpenWithGuiLeaseKindNeverReachesRouter()
+        {
+            using var fixture = new Fixture();
+            ActionEnvelope action = fixture.Action(
+                AgentCapabilitiesV1.PanelOpen);
+            WriteLease guiLease = fixture.Lease(
+                AgentCapabilitiesV1.PanelOpen,
+                Fixture.TargetId,
+                WriteLeaseKind.GuiInput);
+
+            AgentActionPerformance result =
+                await fixture.Host.PerformAsync(
+                    fixture.Context,
+                    action,
+                    guiLease,
+                    CancellationToken.None);
+
+            AssertRejected(result, "capability_denied");
+            Assert.Equal(0, fixture.PanelOpenCallCount);
         }
 
         [Fact]
@@ -844,11 +868,16 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
                         SessionId = SessionId,
                         LifecycleGeneration =
                             LifecycleGeneration,
-                        Kind = capability
-                                == AgentCapabilitiesV1
-                                    .SessionShutdown
-                            ? WriteLeaseKind.Shutdown
-                            : WriteLeaseKind.GuiInput,
+                        Kind = capability switch
+                        {
+                            AgentCapabilitiesV1
+                                .SessionShutdown =>
+                                WriteLeaseKind.Shutdown,
+                            AgentCapabilitiesV1.PanelOpen =>
+                                WriteLeaseKind
+                                    .StructuredAction,
+                            _ => WriteLeaseKind.GuiInput
+                        },
                         Capabilities =
                             new[] { capability },
                         TargetScope = new[] { targetId }
@@ -856,7 +885,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
                     0,
                     60_000,
                     capability
-                            == AgentCapabilitiesV1.SessionShutdown
+                            is AgentCapabilitiesV1.SessionShutdown
+                            or AgentCapabilitiesV1.PanelOpen
                         ? 1
                         : 20);
             }
@@ -881,7 +911,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
                     },
                     0,
                     60_000,
-                    kind == WriteLeaseKind.Shutdown
+                    kind is WriteLeaseKind.Shutdown
+                        or WriteLeaseKind.StructuredAction
                         ? 1
                         : 20);
             }
@@ -895,7 +926,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
                         TargetId,
                     string panelInstanceId =
                         PanelInstanceId,
-                    SessionProcessIdentity ownerProcess = null)
+                    SessionProcessIdentity ownerProcess = null,
+                    IReadOnlyCollection<InputMode> inputModes = null)
             {
                 SessionProcessIdentity process =
                     ownerProcess ?? ProcessIdentity();
@@ -928,7 +960,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
                         ObservationMode
                             .WindowGraphicsCapture
                     },
-                    inputModes: new[]
+                    inputModes: inputModes ?? new[]
                     {
                         InputMode.SendInputGuarded
                     });

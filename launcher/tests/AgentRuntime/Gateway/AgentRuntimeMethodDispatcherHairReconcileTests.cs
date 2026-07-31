@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
@@ -9,6 +10,7 @@ using CF7Launcher.AgentRuntime.Domain;
 using CF7Launcher.AgentRuntime.Gateway;
 using CF7Launcher.AgentRuntime.Input;
 using CF7Launcher.AgentRuntime.Integration;
+using CF7Launcher.AgentRuntime.NativeInput;
 using CF7Launcher.AgentRuntime.Observation;
 using CF7Launcher.AgentRuntime.Security;
 using CF7Launcher.AgentRuntime.Sessions;
@@ -142,6 +144,83 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 second.ReasonCode);
             Assert.False(action.Token.IsCancellationRequested);
             Assert.Empty(lifecycle.ReleasedLeaseIds);
+        }
+
+        [Fact]
+        public async Task
+            StructuredActionLeaseDispatchIsLauncherOnlyBoundedAndNonrenewable()
+        {
+            using var fixture = new Fixture();
+            var lifecycle = new RecordingLeaseLifecycle();
+            AgentRuntimeMethodDispatcher dispatcher =
+                fixture.CreateDispatcher(
+                    fixture.Transaction,
+                    fixture.OriginalPreviews,
+                    lifecycle);
+
+            AgentRuntimeDispatchResult acquired =
+                await fixture.DispatchLeaseAsync(
+                    dispatcher,
+                    AgentCapabilitiesV1.LeaseAcquire,
+                    new LeaseAcquireParametersV1
+                    {
+                        SessionId = fixture.SessionId,
+                        Kind = "structured_action",
+                        Capabilities = new()
+                        {
+                            AgentCapabilitiesV1.PanelOpen
+                        },
+                        TargetScope = new()
+                        {
+                            fixture.LauncherTargetId
+                        },
+                        RequestedTtlMs = 60_000,
+                        RequestedActionLimit = 1
+                    });
+
+            Assert.True(acquired.Success, acquired.ReasonCode);
+            LeaseDescriptor descriptor =
+                acquired.Result.Deserialize<LeaseDescriptor>(
+                    AgentProtocolV1.JsonOptions);
+            Assert.NotNull(descriptor);
+            Assert.Equal(
+                LeasePurpose.StructuredAction,
+                descriptor.Purpose);
+            ulong structuredTtl =
+                descriptor.ExpiresMonotonic
+                    - descriptor.IssuedMonotonic;
+            Assert.InRange(
+                structuredTtl,
+                1UL,
+                30_000UL);
+            Assert.Null(descriptor.RenewAfter);
+            Assert.Equal(
+                WriteLeaseKind.StructuredAction,
+                Assert.Single(lifecycle.ActivatedKinds));
+
+            AgentRuntimeDispatchResult renewed =
+                await fixture.DispatchLeaseAsync(
+                    dispatcher,
+                    AgentCapabilitiesV1.LeaseRenew,
+                    new LeaseRenewParametersV1
+                    {
+                        LeaseId = descriptor.LeaseId,
+                        RequestedTtlMs = 1_000
+                    });
+            Assert.False(renewed.Success);
+            Assert.Equal(
+                "operation_invalid",
+                renewed.ReasonCode);
+
+            AgentRuntimeDispatchResult released =
+                await fixture.DispatchLeaseAsync(
+                    dispatcher,
+                    AgentCapabilitiesV1.LeaseRelease,
+                    new LeaseReleaseParametersV1
+                    {
+                        LeaseId = descriptor.LeaseId
+                    });
+            Assert.True(released.Success, released.ReasonCode);
         }
 
         [Fact]
@@ -384,6 +463,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             private readonly WriteLeaseBroker _leases;
             private readonly AgentRuntimeRevocationCoordinator
                 _revocations;
+            private readonly NativeInputGuard _fenceGuard;
             private readonly ActionIdempotencyLedger _ledger;
             private readonly ScopedAgentRuntimeAuditLedgerManager
                 _audit;
@@ -427,10 +507,12 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                     new[]
                     {
                         AgentCapabilitiesV1
-                            .AppearanceHairChange
+                            .AppearanceHairChange,
+                        AgentCapabilitiesV1.PanelOpen
                     });
-                TargetId = Id("hair-target");
-                _controller.SynchronizeSurface(
+            TargetId = Id("hair-target");
+            LauncherTargetId = Id("launcher-target");
+            _controller.SynchronizeSurface(
                     new SessionSurfaceHostRegistration
                     {
                         TargetId = TargetId,
@@ -472,6 +554,46 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                             InputMode.DomainTransaction
                         }
                     });
+                _controller.SynchronizeSurface(
+                    new SessionSurfaceHostRegistration
+                    {
+                        TargetId = LauncherTargetId,
+                        Kind = SurfaceKind.Launcher,
+                        SafetyKind =
+                            AgentTargetSafetyKind.RuntimeOwned,
+                        OwnerRelation =
+                            SessionSurfaceOwnerRelation
+                                .LauncherTopLevel,
+                        OwnerProcess = launcher,
+                        WindowHandle = 1308,
+                        BoundsPhysical =
+                            new SessionPhysicalRect(
+                                0,
+                                0,
+                                800,
+                                600),
+                        ClientRectPhysical =
+                            new SessionPhysicalRect(
+                                0,
+                                0,
+                                800,
+                                600),
+                        ContentRectPhysical =
+                            new SessionPhysicalRect(
+                                0,
+                                0,
+                                800,
+                                600),
+                        Dpi = 96,
+                        Visible = true,
+                        ObservationModes = new[]
+                        {
+                            ObservationMode
+                                .WindowGraphicsCapture
+                        },
+                        InputModes =
+                            Array.Empty<InputMode>()
+                    });
 
                 SessionId = _controller.SessionId;
                 _credentials =
@@ -488,11 +610,16 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         {
                             AgentCapabilitiesV1
                                 .AppearanceHairChange,
+                            AgentCapabilitiesV1.PanelOpen,
                             "observe:"
                                 + ObservationDataScopesV1
                                     .PlayerState
                         },
-                        AllowedTargets = new[] { TargetId }
+                        AllowedTargets = new[]
+                        {
+                            TargetId,
+                            LauncherTargetId
+                        }
                     });
                 Grants = new ObservationGrantBroker(
                     Clock,
@@ -573,6 +700,15 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 _revocations.RegisterConnection(
                     Context.ConnectionId,
                     Principal);
+                var fenceWin32 =
+                    new HealthyLeaseFenceWin32Facade();
+                _fenceGuard = new NativeInputGuard(
+                    new InputSafetyStateMachine(Clock),
+                    fenceWin32,
+                    _revocations,
+                    false);
+                _revocations.BindNativeGuard(_fenceGuard);
+                fenceWin32.AdvanceQuiescence();
                 _ledger = new ActionIdempotencyLedger();
                 _audit =
                     new ScopedAgentRuntimeAuditLedgerManager(
@@ -620,6 +756,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             public HairAppearancePreview Preview { get; private set; }
             public string SessionId { get; }
             public string TargetId { get; }
+            public string LauncherTargetId { get; }
 
             public async Task PrepareEscrowAsync()
             {
@@ -907,6 +1044,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 _captures.Dispose();
                 _content.Dispose();
                 _revocations.Dispose();
+                _fenceGuard.Dispose();
                 _audit.Dispose();
             }
         }
@@ -931,11 +1069,16 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
         {
             public System.Collections.Generic.List<string>
                 ReleasedLeaseIds { get; } = new();
+            public List<WriteLeaseKind> ActivatedKinds
+            {
+                get;
+            } = new();
 
             public bool TryActivate(
                 WriteLease lease,
                 out string reasonCode)
             {
+                ActivatedKinds.Add(lease.Kind);
                 reasonCode = null;
                 return true;
             }
@@ -944,6 +1087,104 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             {
                 if (lease != null)
                     ReleasedLeaseIds.Add(lease.LeaseId);
+            }
+        }
+
+        private sealed class HealthyLeaseFenceWin32Facade
+            : INativeInputWin32Facade
+        {
+            private readonly HealthyLeaseFenceHookSession _hook =
+                new HealthyLeaseFenceHookSession();
+
+            public int CurrentProcessId => 111;
+            public long MonotonicMilliseconds { get; private set; } =
+                1_000;
+
+            public void AdvanceQuiescence()
+            {
+                MonotonicMilliseconds +=
+                    InputSafetyStateMachine
+                        .QuiescenceMilliseconds;
+            }
+
+            public INativeLowLevelHookSession
+                InstallLowLevelHooks(
+                    ulong runtimeInjectionTag,
+                    Func<NativeLowLevelHookEvent, bool> callback)
+            {
+                return _hook;
+            }
+
+            public bool IsInteractiveDesktopAvailable()
+            {
+                return true;
+            }
+
+            public IntPtr GetForegroundWindow()
+            {
+                return new IntPtr(9001);
+            }
+
+            public bool TryGetFocusedWindow(
+                IntPtr foregroundTopLevelHwnd,
+                out IntPtr focusedHwnd)
+            {
+                focusedHwnd = foregroundTopLevelHwnd;
+                return focusedHwnd != IntPtr.Zero;
+            }
+
+            public IntPtr WindowFromPoint(
+                NativeScreenPoint point)
+            {
+                return new IntPtr(9001);
+            }
+
+            public bool IsSameChildOrOwnedWindow(
+                IntPtr targetTopLevelHwnd,
+                IntPtr candidateHwnd)
+            {
+                return targetTopLevelHwnd == candidateHwnd;
+            }
+
+            public IReadOnlyCollection<string>
+                GetAsyncHeldModifiersAndButtons()
+            {
+                return Array.Empty<string>();
+            }
+
+            public bool TryGetProcessIntegrityLevel(
+                int processId,
+                out int integrityRid)
+            {
+                integrityRid = 0x2000;
+                return true;
+            }
+
+            public int SendInput(
+                IReadOnlyList<NativeInputPacket> packets,
+                ulong runtimeInjectionTag)
+            {
+                throw new InvalidOperationException(
+                    "native_input_not_expected");
+            }
+        }
+
+        private sealed class HealthyLeaseFenceHookSession
+            : INativeLowLevelHookSession
+        {
+            public bool IsHealthy(
+                TimeSpan maximumHeartbeatAge)
+            {
+                return true;
+            }
+
+            public bool TryRefresh(TimeSpan timeout)
+            {
+                return true;
+            }
+
+            public void Dispose()
+            {
             }
         }
     }

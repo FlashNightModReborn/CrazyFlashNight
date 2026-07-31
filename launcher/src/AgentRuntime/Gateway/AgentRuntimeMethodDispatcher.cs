@@ -1322,10 +1322,14 @@ namespace CF7Launcher.AgentRuntime.Gateway
         {
             if (context.Principal.SessionMode
                     == AgentSessionMode.PlayerAssist
-                && string.Equals(
-                    parameters.Kind,
-                    "shutdown",
-                    StringComparison.Ordinal))
+                && (string.Equals(
+                        parameters.Kind,
+                        "shutdown",
+                        StringComparison.Ordinal)
+                    || string.Equals(
+                        parameters.Kind,
+                        "structured_action",
+                        StringComparison.Ordinal)))
             {
                 return AgentRuntimeDispatchResult.Rejected(
                     "consent_required");
@@ -1379,6 +1383,9 @@ namespace CF7Launcher.AgentRuntime.Gateway
                     "domain_transaction" =>
                         WriteLeaseKind
                             .DomainTransaction,
+                    "structured_action" =>
+                        WriteLeaseKind
+                            .StructuredAction,
                     "shutdown" =>
                         WriteLeaseKind.Shutdown,
                     _ => throw new InvalidOperationException(
@@ -1409,11 +1416,15 @@ namespace CF7Launcher.AgentRuntime.Gateway
                     PreviewHash = parameters.PreviewHash,
                     ExpectedRevision =
                         parameters.ExpectedRevision,
-                    Operation = leaseKind
-                            == WriteLeaseKind.Shutdown
-                        ? AgentCapabilitiesV1
-                            .SessionShutdown
-                        : parameters.Operation
+                    Operation = leaseKind switch
+                    {
+                        WriteLeaseKind.Shutdown =>
+                            AgentCapabilitiesV1
+                                .SessionShutdown,
+                        WriteLeaseKind.StructuredAction =>
+                            AgentCapabilitiesV1.PanelOpen,
+                        _ => parameters.Operation
+                    }
                 });
             if (!_leaseLifecycle.TryActivate(
                     lease,
@@ -1472,8 +1483,9 @@ namespace CF7Launcher.AgentRuntime.Gateway
                             == AgentTargetSafetyKind.RuntimeOwned
                         && context.Principal.AllowsTarget(
                             targetId)
-                        && (lease.Kind
-                                != WriteLeaseKind.Shutdown
+                        && (!(lease.Kind
+                                is WriteLeaseKind.Shutdown
+                                or WriteLeaseKind.StructuredAction)
                             || surface.Kind
                                 == SurfaceKind.Launcher);
                 });
@@ -2212,6 +2224,8 @@ namespace CF7Launcher.AgentRuntime.Gateway
                         LeasePurpose.GuiInput,
                     WriteLeaseKind.DomainTransaction =>
                         LeasePurpose.DomainTransaction,
+                    WriteLeaseKind.StructuredAction =>
+                        LeasePurpose.StructuredAction,
                     WriteLeaseKind.Shutdown =>
                         LeasePurpose.Shutdown,
                     _ => throw new ArgumentOutOfRangeException()
@@ -2243,7 +2257,8 @@ namespace CF7Launcher.AgentRuntime.Gateway
                 ExpiresMonotonic = ToProtocolTime(
                     lease.ExpiresMonotonic),
                 RenewAfter = lease.Kind
-                        == WriteLeaseKind.Shutdown
+                        is WriteLeaseKind.Shutdown
+                        or WriteLeaseKind.StructuredAction
                     ? null
                     : ToProtocolTime(
                         lease.RenewAfterMonotonic),

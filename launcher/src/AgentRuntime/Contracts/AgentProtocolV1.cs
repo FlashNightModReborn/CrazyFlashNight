@@ -335,6 +335,7 @@ namespace CF7Launcher.AgentRuntime.Contracts
     {
         GuiInput,
         DomainTransaction,
+        StructuredAction,
         Shutdown
     }
 

@@ -24,6 +24,9 @@ namespace CF7Launcher.Tests.AgentRuntime.Contracts
                 ContractFixture.Deserialize<LeaseDescriptor>(
                     valid.GetProperty("shutdownLease"))));
             Assert.Empty(AgentContractValidator.Validate(
+                ContractFixture.Deserialize<LeaseDescriptor>(
+                    valid.GetProperty("structuredActionLease"))));
+            Assert.Empty(AgentContractValidator.Validate(
                 ContractFixture.Deserialize<ObservationEnvelope>(valid.GetProperty("observation"))));
             Assert.Empty(AgentContractValidator.Validate(
                 ContractFixture.Deserialize<ActionReceipt>(valid.GetProperty("inputReceipt"))));
@@ -159,6 +162,66 @@ namespace CF7Launcher.Tests.AgentRuntime.Contracts
                 violation.Code,
                 vector.GetProperty(
                     "expectedViolationCode").GetString());
+        }
+
+        [Fact]
+        public void PlayerAssistStructuredActionLease_IsAnImpossibleDescriptor()
+        {
+            LeaseDescriptor lease = ReadStructuredActionLease();
+            lease.SessionMode = SessionMode.PlayerAssist;
+            lease.ConsentReceipt = "player-consent-1";
+            lease.Scope.ArgumentBoundsHash =
+                "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD";
+
+            ContractViolation violation = Assert.Single(
+                AgentContractValidator.Validate(lease));
+
+            Assert.Equal("$.sessionMode", violation.Path);
+            Assert.Equal("lease_kind_mismatch", violation.Code);
+        }
+
+        [Fact]
+        public void StructuredActionLease_IsNonrenewable()
+        {
+            LeaseDescriptor lease = ReadStructuredActionLease();
+            lease.RenewAfter = 15_000;
+
+            ContractViolation violation = Assert.Single(
+                AgentContractValidator.Validate(lease));
+
+            Assert.Equal("$.renewAfter", violation.Path);
+            Assert.Equal("forbidden", violation.Code);
+        }
+
+        [Fact]
+        public void PanelOpenAuthority_RequiresStructuredActionPurposeReciprocally()
+        {
+            LeaseDescriptor wrongPurpose = ReadStructuredActionLease();
+            wrongPurpose.Purpose = LeasePurpose.GuiInput;
+
+            var wrongPurposeViolations =
+                AgentContractValidator.Validate(wrongPurpose);
+
+            Assert.Contains(
+                wrongPurposeViolations,
+                item => item.Path == "$.capabilities"
+                    && item.Code == "lease_kind_mismatch");
+            Assert.Contains(
+                wrongPurposeViolations,
+                item => item.Path == "$.scope.operationScope"
+                    && item.Code == "lease_kind_mismatch");
+
+            LeaseDescriptor wrongOperation = ReadStructuredActionLease();
+            wrongOperation.Scope.OperationScope =
+                new()
+                {
+                    AgentCapabilitiesV1.Click
+                };
+
+            Assert.Contains(
+                AgentContractValidator.Validate(wrongOperation),
+                item => item.Path == "$.scope.operationScope"
+                    && item.Code == "exactly_one");
         }
 
         [Fact]
@@ -412,6 +475,20 @@ namespace CF7Launcher.Tests.AgentRuntime.Contracts
                         .GetProperty("valid")
                         .GetProperty(
                             "shutdownLease"));
+        }
+
+        private static LeaseDescriptor
+            ReadStructuredActionLease()
+        {
+            using JsonDocument document =
+                ContractFixture.ReadDocument(
+                    "contract-vectors.v1.json");
+            return ContractFixture
+                .Deserialize<LeaseDescriptor>(
+                    document.RootElement
+                        .GetProperty("valid")
+                        .GetProperty(
+                            "structuredActionLease"));
         }
 
         private static ObservationEnvelope ReadObservation()

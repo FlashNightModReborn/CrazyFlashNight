@@ -1228,7 +1228,8 @@ namespace CF7Launcher.AgentRuntime.Gateway
                     "operation_invalid",
                 "client_revoked" =>
                     "observation_grant_revoked",
-                "human_input" =>
+                "human_input" or
+                "external_input" =>
                     "external_input_preempted",
                 "connection_cancelled" =>
                     "internal_error",

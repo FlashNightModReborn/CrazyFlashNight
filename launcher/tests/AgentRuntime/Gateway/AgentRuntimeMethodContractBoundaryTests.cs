@@ -68,6 +68,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             WriteLease guiLease = Lease(WriteLeaseKind.GuiInput);
             WriteLease domainLease =
                 Lease(WriteLeaseKind.DomainTransaction);
+            WriteLease structuredLease =
+                Lease(WriteLeaseKind.StructuredAction);
             WriteLease shutdownLease =
                 Lease(WriteLeaseKind.Shutdown);
 
@@ -79,6 +81,10 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 domainLease,
                 out string domainReason));
             Assert.Null(domainReason);
+            Assert.True(lifecycle.TryActivate(
+                structuredLease,
+                out string structuredReason));
+            Assert.Null(structuredReason);
             Assert.True(lifecycle.TryActivate(
                 shutdownLease,
                 out string shutdownReason));
