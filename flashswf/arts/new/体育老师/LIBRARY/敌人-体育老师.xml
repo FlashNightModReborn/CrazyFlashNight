@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1785517836" lastUniqueIdentifier="342">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1785520718" lastUniqueIdentifier="342">
   <timeline>
-    <DOMTimeline name="敌人-体育老师">
+    <DOMTimeline name="敌人-体育老师" currentFrame="26">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -33,7 +33,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D5B125" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#D5B125" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -41,7 +41,7 @@
 随机移动机率 = 500;
 攻击欲望 = 3;
 
-中心高度 = 25;
+中心高度 = 50;
 //以上为基础属性，以下为出招ai，在对应技能库中参考push方法添加技能，技能名对应近战元件中的帧名：
 
 
@@ -58,8 +58,8 @@
 斩杀技能库 = [];
 
 
-近战技能距离 = 190;
-中程技能距离 = 330;
+近战技能距离 = 180;
+中程技能距离 = 320;
 远程技能距离 = 500;
 //以下攻击范围在对应技能库启用时生效
 横向攻击Z轴范围 = 90;
@@ -92,10 +92,10 @@
 
 扭转乾坤次数 = 0;
 扭转乾坤次数上限 = 扭转乾坤次数上限 ? 扭转乾坤次数上限 : 5;
+内力 = 内力? 内力 : 200 + 等级?等级:0;
 
 初始化敌人模板 = _root.初始化敌人模板;
-初始化敌人模板();
-内力 = 内力? 内力 : 200 + 等级?等级:0;]]></script>
+初始化敌人模板();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -267,7 +267,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -307,7 +307,7 @@
             </DOMFrame>
             <DOMFrame index="24" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" name="man" centerPoint3DX="-17.95" centerPoint3DY="-67.25">
+                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" name="man" selected="true" centerPoint3DX="-17.95" centerPoint3DY="-67.25">
                   <matrix>
                     <Matrix a="0.236190795898438" d="0.236190795898438" tx="1" ty="-63.85"/>
                   </matrix>

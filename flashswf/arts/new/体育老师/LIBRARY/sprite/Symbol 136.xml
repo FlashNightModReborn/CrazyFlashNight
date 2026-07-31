@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 136" itemID="6577b699-000009b3" lastModified="1785517810" lastUniqueIdentifier="113">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 136" itemID="6577b699-000009b3" lastModified="1785519765" lastUniqueIdentifier="113">
   <timeline>
-    <DOMTimeline name="Symbol 136" currentFrame="80" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;261&lt;/guideline&gt;&lt;guideline direction="v"&gt;-90&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 136" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;261&lt;/guideline&gt;&lt;guideline direction="v"&gt;-90&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
@@ -30,12 +30,12 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
-if ( _parent.扭转乾坤次数 < _parent.扭转乾坤次数上限 && ((_parent.hp < _parent.hp满血值 * 0.5 && _root.成功率(35)) || _root.成功率(50)) )
+if ( _parent.扭转乾坤次数 < _parent.扭转乾坤次数上限 && ((_parent.hp < _parent.hp满血值 * 0.5 && _root.成功率(50)) || _root.成功率(30)) )
 {
 	gotoAndPlay("扭转乾坤");
 }
@@ -338,7 +338,7 @@ if ( _parent.扭转乾坤次数 < _parent.扭转乾坤次数上限 && ((_parent.
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="特效" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>

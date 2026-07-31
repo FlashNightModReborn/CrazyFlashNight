@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" lastModified="1785514257" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" lastModified="1785520975" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="112">
+    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="68">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -55,7 +55,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <Actionscript>
@@ -125,7 +125,7 @@ function 索敌转向(当前敌人)
 	{
 		距离X = 当前敌人._x - _parent._x;
 		距离Y = 当前敌人._y - _parent.Z轴坐标;
-		if (Math.abs(距离X) > 300 or Math.abs(距离Y) > 80)
+		if (Math.abs(距离X) > 210 or Math.abs(距离Y) > 80)
 		{
 			gotoAndPlay("虎拳提前结束");
 		}
@@ -181,7 +181,7 @@ if (当前敌人.hp > 0)
 {
 	距离X = 当前敌人._x - _parent._x;
 	距离Y = 当前敌人._y - _parent.Z轴坐标;
-	if(Math.abs(距离X)>200 or Math.abs(距离Y)>80){
+	if(Math.abs(距离X)>180 or Math.abs(距离Y)>70){
 		gotoAndPlay("日字冲拳提前结束");
 	}else
 	if (距离X > 0)
@@ -216,7 +216,7 @@ function 索敌转向(当前敌人)
 	{
 		距离X = 当前敌人._x - _parent._x;
 		距离Y = 当前敌人._y - _parent.Z轴坐标;
-		if (Math.abs(距离X) > 300 or Math.abs(距离Y) > 80)
+		if (Math.abs(距离X) > 180 or Math.abs(距离Y) > 80)
 		{
 			_parent.动画完毕();
 		}
@@ -1864,9 +1864,9 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="144" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="105.35" centerPoint3DY="-37.05">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="129.65" centerPoint3DY="-50.95">
                   <matrix>
-                    <Matrix a="4.9300537109375" d="1.85537719726563" tx="106.4" ty="-37.4"/>
+                    <Matrix a="5.94064331054688" d="2.00137329101563" tx="130.95" ty="-51.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.25" y="0.5"/>
@@ -3846,7 +3846,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -3964,7 +3964,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="67" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="12.5" centerPoint3DY="12.5">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -3988,7 +3988,7 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(5,10);
+   _parent.攻击时移动(7,12);
 }
 ]]></script>
                   </Actionscript>
@@ -4003,7 +4003,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="100" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -4012,7 +4012,7 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(10,10);
+   _parent.攻击时移动(15,15);
 }
 ]]></script>
                   </Actionscript>
@@ -4183,7 +4183,7 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(10,15);
+   _parent.攻击时移动(15,20);
 }
 ]]></script>
                   </Actionscript>
@@ -4193,10 +4193,10 @@ onClipEvent(enterFrame){
             <DOMFrame index="135" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="141" duration="3" keyMode="9728">
+            <DOMFrame index="141" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="144" duration="3" keyMode="9728">
+            <DOMFrame index="143" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
                   <matrix>
