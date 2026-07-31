@@ -1023,12 +1023,16 @@ namespace CF7Launcher.AgentRuntime.Gateway
                         actions.AddRange(
                             resources.Actions.Values
                                 .Where(action =>
-                                    invalidation
-                                        .RequiresHumanReauthorization
-                                    || string.Equals(
-                                        action.SessionId,
-                                        invalidation.SessionId,
-                                        StringComparison.Ordinal))
+                                    (invalidation
+                                            .RequiresHumanReauthorization
+                                        || string.Equals(
+                                            action.SessionId,
+                                            invalidation.SessionId,
+                                            StringComparison.Ordinal))
+                                    && !PreserveClaimedStructuredAction(
+                                        resources,
+                                        action,
+                                        invalidation))
                                 .Select(action => action.Source));
                     }
                 }
@@ -1055,6 +1059,50 @@ namespace CF7Launcher.AgentRuntime.Gateway
             {
                 guard?.FailAndPreempt(reason);
             }
+        }
+
+        private bool PreserveClaimedStructuredAction(
+            ConnectionResources resources,
+            PendingActionResource action,
+            SessionScopeInvalidation invalidation)
+        {
+            const SessionInvalidationFlags
+                SelfPanelMutationFlags =
+                    SessionInvalidationFlags.Observations
+                    | SessionInvalidationFlags.PendingActions
+                    | SessionInvalidationFlags
+                        .PendingDomainOperations
+                    | SessionInvalidationFlags
+                        .ExactInstanceLeases;
+            if (invalidation.Level
+                    != SessionInvalidationLevel.Panel
+                || (!string.Equals(
+                        invalidation.ReasonCode,
+                        "panel_opened",
+                        StringComparison.Ordinal)
+                    && !string.Equals(
+                        invalidation.ReasonCode,
+                        "panel_instance_changed",
+                        StringComparison.Ordinal))
+                || invalidation.Flags != SelfPanelMutationFlags
+                || invalidation.RequiresHumanReauthorization
+                || action.LeaseId == null
+                || !resources.Leases.TryGetValue(
+                    action.LeaseId,
+                    out LeaseResource lease)
+                || lease.Kind
+                    != WriteLeaseKind.StructuredAction
+                || !string.Equals(
+                    lease.SessionId,
+                    invalidation.SessionId,
+                    StringComparison.Ordinal)
+                || lease.LifecycleGeneration
+                    != invalidation.LifecycleGeneration)
+            {
+                return false;
+            }
+            return _leases.IsStructuredActionDispatchClaimed(
+                lease.LeaseId);
         }
 
         public void RevokeConnection(

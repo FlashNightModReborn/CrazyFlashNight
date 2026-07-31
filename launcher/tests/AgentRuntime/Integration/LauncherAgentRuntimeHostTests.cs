@@ -13,6 +13,7 @@ using CF7Launcher.AgentRuntime.Observation;
 using CF7Launcher.AgentRuntime.Security;
 using CF7Launcher.AgentRuntime.Sessions;
 using CF7Launcher.AgentRuntime.Transport;
+using CF7Launcher.Guardian;
 using CF7Launcher.Tests.AgentRuntime.Observation;
 using CF7Launcher.Tests.AgentRuntime.Sessions;
 using Xunit;
@@ -131,6 +132,53 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
                     .HasProductionActivationProvider(
                         flash,
                         targets));
+        }
+
+        [Fact]
+        public async Task
+            ProductionPanelInstanceRegistersAndRoundTrips()
+        {
+            using var fixture = new HostFixture();
+            await using LauncherAgentRuntimeHost host =
+                fixture.CreateHost();
+            var pumps = new Queue<Action>();
+            using var panelHost =
+                new PanelHostController(
+                    pumps.Enqueue,
+                    fire => fire());
+
+            Assert.True(
+                panelHost.TryOpenPanel(
+                    "help",
+                    null,
+                    null,
+                    null));
+            Action open = Assert.Single(pumps);
+            pumps.Clear();
+            open();
+            string panelInstanceId =
+                panelHost.ActivePanelInstanceId;
+
+            Assert.Matches(
+                "^panel_[0-9a-f]{16}_[0-9a-f]{16}$",
+                panelInstanceId);
+            Assert.True(
+                host.SetActivePanel(
+                    "help",
+                    panelInstanceId));
+            Assert.Equal(
+                "help",
+                host.SnapshotForTests.ActivePanelName);
+            Assert.Equal(
+                panelInstanceId,
+                host.SnapshotForTests.ActivePanelInstanceId);
+            Assert.Equal(
+                host.Targets.WebOverlay,
+                host.SnapshotForTests.ActivePanelTargetId);
+            Assert.Equal(
+                panelInstanceId,
+                host.SnapshotForTests.PanelInstanceIdForTarget(
+                    host.Targets.WebOverlay));
         }
 
         [Fact]

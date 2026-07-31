@@ -674,6 +674,24 @@ namespace CF7Launcher.AgentRuntime.Security
             }
         }
 
+        internal bool IsStructuredActionDispatchClaimed(
+            string leaseId)
+        {
+            if (string.IsNullOrWhiteSpace(leaseId))
+                return false;
+            lock (_sync)
+            {
+                return _leases.TryGetValue(
+                        leaseId,
+                        out WriteLease lease)
+                    && lease.Kind
+                        == WriteLeaseKind.StructuredAction
+                    && lease.ActionExecutionPending
+                    && lease.StructuredActionDispatchOwned
+                    && lease.State == WriteLeaseState.Consumed;
+            }
+        }
+
         internal bool MarkShutdownDeliveryPending(string leaseId)
         {
             if (string.IsNullOrWhiteSpace(leaseId))

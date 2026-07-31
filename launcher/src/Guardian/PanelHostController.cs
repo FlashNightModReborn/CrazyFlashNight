@@ -2049,7 +2049,8 @@ namespace CF7Launcher.Guardian
         private static string NextPanelInstanceId()
         {
             long seq = System.Threading.Interlocked.Increment(ref _panelInstanceSequence);
-            return "panel." + DateTime.UtcNow.Ticks.ToString("x") + "." + seq.ToString("x");
+            return "panel_" + DateTime.UtcNow.Ticks.ToString("x16") + "_"
+                + seq.ToString("x16");
         }
     }
 }

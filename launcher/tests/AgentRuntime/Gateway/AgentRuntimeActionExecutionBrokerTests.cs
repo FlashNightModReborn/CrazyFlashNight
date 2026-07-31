@@ -962,6 +962,114 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         .ActionDispatchStarted);
         }
 
+        [Fact]
+        public async Task
+            ClaimedStructuredActionSurvivesSynchronousPanelInvalidation()
+        {
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true);
+            var performer = new CallbackPerformer(
+                delegate
+                {
+                    fixture.Revocations.HandleSessionInvalidation(
+                        new SessionScopeInvalidation(
+                            SessionInvalidationLevel.Panel,
+                            "panel_opened",
+                            SessionId,
+                            fixture.Observation
+                                .LifecycleGeneration,
+                            SessionInvalidationFlags.Observations
+                            | SessionInvalidationFlags
+                                .PendingActions
+                            | SessionInvalidationFlags
+                                .PendingDomainOperations
+                            | SessionInvalidationFlags
+                                .ExactInstanceLeases,
+                            new[] { TargetId },
+                            affectsAllTargets: false,
+                            requiresHumanReauthorization:
+                                false));
+                },
+                AgentActionPerformance.Completed(
+                    ActionOutcome.InputDispatched,
+                    EvidenceKind.BrokerDispatch,
+                    TargetId,
+                    false));
+            fixture.SetPerformer(performer);
+
+            ActionReceipt receipt =
+                await fixture.ExecuteAsync(
+                    fixture.Action())
+                    .WaitAsync(TimeSpan.FromSeconds(5));
+
+            Assert.False(
+                performer.CancellationRequestedAfterCallback);
+            Assert.Equal(
+                ActionOutcome.InputDispatched,
+                receipt.Outcome);
+            Assert.Equal(
+                EvidenceKind.BrokerDispatch,
+                receipt.EvidenceKind);
+            Assert.Equal("none", receipt.ReasonCode);
+            Assert.Equal(1, performer.CallCount);
+        }
+
+        [Theory]
+        [InlineData((int)SessionInvalidationFlags.WriteLeases)]
+        [InlineData((int)SessionInvalidationFlags.PendingCoordinateActions)]
+        [InlineData((int)SessionInvalidationFlags.PendingInput)]
+        [InlineData((int)SessionInvalidationFlags.QueuedActions)]
+        [InlineData((int)SessionInvalidationFlags.RuntimeHeldInput)]
+        [InlineData((int)SessionInvalidationFlags.AttemptScopedAuthorities)]
+        public async Task
+            ClaimedStructuredActionRejectsStrongerPanelInvalidation(
+                int extraFlagValue)
+        {
+            var extraFlag =
+                (SessionInvalidationFlags)extraFlagValue;
+            using ActionFixture fixture =
+                await ActionFixture.CreateAsync(
+                    structuredAction: true);
+            var performer = new CancellationPerformer();
+            fixture.SetPerformer(performer);
+            Task<ActionReceipt> pending =
+                fixture.ExecuteAsync(fixture.Action());
+            await performer.Entered.Task.WaitAsync(
+                TimeSpan.FromSeconds(5));
+
+            fixture.Revocations.HandleSessionInvalidation(
+                new SessionScopeInvalidation(
+                    SessionInvalidationLevel.Panel,
+                    "panel_opened",
+                    SessionId,
+                    fixture.Observation
+                        .LifecycleGeneration,
+                    SessionInvalidationFlags.Observations
+                    | SessionInvalidationFlags
+                        .PendingActions
+                    | SessionInvalidationFlags
+                        .PendingDomainOperations
+                    | SessionInvalidationFlags
+                        .ExactInstanceLeases
+                    | extraFlag,
+                    new[] { TargetId },
+                    affectsAllTargets: false,
+                    requiresHumanReauthorization: false));
+
+            Assert.True(
+                await performer.Cancelled.Task.WaitAsync(
+                    TimeSpan.FromSeconds(5)));
+            ActionReceipt receipt = await pending.WaitAsync(
+                TimeSpan.FromSeconds(5));
+            Assert.Equal(
+                ActionOutcome.Unknown,
+                receipt.Outcome);
+            Assert.Equal(
+                "reconcile_required",
+                receipt.ReasonCode);
+        }
+
         [Theory]
         [InlineData("credential")]
         [InlineData("lifecycle")]
@@ -2444,6 +2552,41 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 CancellationToken cancellationToken)
             {
                 CallCount++;
+                return Task.FromResult(_performance);
+            }
+        }
+
+        private sealed class CallbackPerformer
+            : IAgentRuntimeActionPerformer
+        {
+            private readonly Action _callback;
+            private readonly AgentActionPerformance _performance;
+
+            public CallbackPerformer(
+                Action callback,
+                AgentActionPerformance performance)
+            {
+                _callback = callback;
+                _performance = performance;
+            }
+
+            public int CallCount { get; private set; }
+            public bool CancellationRequestedAfterCallback
+            {
+                get;
+                private set;
+            }
+
+            public Task<AgentActionPerformance> PerformAsync(
+                AgentRuntimeDispatchContext context,
+                ActionEnvelope action,
+                WriteLease lease,
+                CancellationToken cancellationToken)
+            {
+                CallCount++;
+                _callback();
+                CancellationRequestedAfterCallback =
+                    cancellationToken.IsCancellationRequested;
                 return Task.FromResult(_performance);
             }
         }

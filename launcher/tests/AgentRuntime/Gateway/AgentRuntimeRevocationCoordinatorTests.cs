@@ -367,6 +367,65 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                     out _));
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void PanelInvalidationStillCancelsUnclaimedAction(
+            bool structuredAction)
+        {
+            Fixture fixture = new Fixture();
+            using var coordinator =
+                new AgentRuntimeRevocationCoordinator(
+                    fixture.Credentials,
+                    fixture.Grants,
+                    fixture.Leases);
+            coordinator.RegisterConnection(
+                ConnectionId,
+                fixture.Credential);
+            var win32 = new GuardWin32Facade();
+            using var guard = new NativeInputGuard(
+                new InputSafetyStateMachine(fixture.Clock),
+                win32,
+                coordinator,
+                false);
+            coordinator.BindNativeGuard(guard);
+            win32.AdvanceQuiescence();
+            AgentRuntimeRevocationCoordinator
+                .SessionFenceTicket fence =
+                    fixture.CaptureFence(coordinator);
+            WriteLease lease = structuredAction
+                ? fixture.IssueStructuredActionLease()
+                : fixture.IssueLease();
+            Assert.True(
+                coordinator.TryTrackLease(
+                    fence,
+                    lease,
+                    out string trackReason),
+                trackReason);
+            using AgentRuntimeRevocationCoordinator
+                .ActionCancellationRegistration action =
+                    coordinator.RegisterAction(
+                        ConnectionId,
+                        lease.LeaseId,
+                        CancellationToken.None);
+
+            coordinator.HandleSessionInvalidation(
+                new SessionScopeInvalidation(
+                    SessionInvalidationLevel.Panel,
+                    "panel_opened",
+                    SessionId,
+                    1,
+                    SessionInvalidationFlags.PendingActions,
+                    new[] { TargetId },
+                    affectsAllTargets: false,
+                    requiresHumanReauthorization: false));
+
+            Assert.True(action.Token.IsCancellationRequested);
+            Assert.Equal(
+                WriteLeaseState.Active,
+                lease.State);
+        }
+
         [Fact]
         public void HookUnhealthyBeforeShutdownClaimFailsClosed()
         {
