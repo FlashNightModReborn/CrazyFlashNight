@@ -85,6 +85,9 @@ try {
         (('tools/runtime-build-v2-common.ps1' -in $repositoryProducerFiles) -and ('tools/runtime-build-v2-common.ps1' -notin $repositoryPolicyFiles))
     Assert-Equal 'attestation common belongs only to policy' $true `
         (('tools/runtime-build-attestation-v2-common.ps1' -in $repositoryPolicyFiles) -and ('tools/runtime-build-attestation-v2-common.ps1' -notin $repositoryProducerFiles))
+    Assert-Equal 'Agent Runtime C# contract README is policy-bound without entering artifact identity' $true `
+        (('launcher/src/AgentRuntime/Contracts/README.md' -cin $repositoryPolicyFiles) -and
+         ('launcher/src/AgentRuntime/Contracts/README.md' -cnotin $repositoryArtifactFiles))
     Assert-Equal 'third-party notice is an artifact source fixed file' $true `
         ('launcher/THIRD-PARTY-NOTICES.txt' -cin $repositoryArtifactFiles)
     $repositoryAttributes = [IO.File]::ReadAllText(

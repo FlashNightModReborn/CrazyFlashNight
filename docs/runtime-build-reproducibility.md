@@ -78,6 +78,8 @@ Windows EOL materialization 另留一项非阻断 tooling debt：系统 `core.au
 
 `buildIdentityHash = SHA256(artifactSourceHash + producerRecipeHash + toolchainLockHash)`，故意不含 `policyHash`。`releaseTreeOid` 冻结完整 Git tree，`requestId = SHA256(releaseTreeOid + policyHash)`；两者分别回答“发布哪棵树”和“用哪套政策批准”。
 
+native 源码前缀内的非二进制契约文档也必须显式绑定，不能因为扩展名不是 `.cs` 就落在 release descriptor 之外。当前 [`launcher/src/AgentRuntime/Contracts/README.md`](../launcher/src/AgentRuntime/Contracts/README.md) 作为 C# 对照实现的发布约束固定归入 `policyHash`；它会改变 request/receipt，但不进入 `artifactSourceHash`，也不会冒充 DLL 字节变化。这里采用单文件绑定，不把整个 `launcher/src/**/*.md` 扩成构建输入。
+
 `policyHash` 与日常审计触发集合不是同一个集合。`config/build/native-change-gate.v1.json` 联合前三域、payload、全局 native 扩展/入口名和 release 信任链路径，回答“这次 push/PR 是否值得启动 native/runtime 事后审计”；广义内容 policy 不因此变成 native。命中源码边界但未改部署字节时，Audit 成功报告 `source-ahead`，不要求即时 promotion。生成器、审计器和派生发布资产仍留在 `policyHash`，下一次正式 release 再用当时完整 release tree 建 request 与 receipt。
 
 `payloadClosureHash` 对根 `CRAZYFLASHER7MercenaryEmpire.exe` 与 `runtime/**` 的实际 payload 文件有序计算，明确排除 `runtime/cf7-runtime-manifest.tsv`、证明与 release record。这样 manifest/policy 元数据变化不会被误判成二进制失衡；manifest v2 再记录四个构建字段中的前三个、`buildIdentityHash`、`payloadClosureHash`、工具链可读名和逐文件大小/SHA-256。
