@@ -12,13 +12,23 @@ not-yet-created commit hash. At that D1 C1 had not reached
 `candidate_executed`, `e2e_verified`, or `promoted`; the formal runtime is
 unchanged. That identity remains historical evidence.
 
-The current F8 freeze is source `53caabc90941826ddacf626f536b0f473adbf049`, tree
+The F8 implementation freeze is source `53caabc90941826ddacf626f536b0f473adbf049`, tree
 `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`, immutable candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`, build identity
 `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`, payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`, and Core
 SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`. Its pure-MCP acceptance report is
 `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json` and transcript is `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. The exact identity
-reached `e2e_verified / NOT_DEPLOYED`; there was no promotion or standard-entry
-verification, so the installed formal runtime remains unchanged.
+reached `e2e_verified / NOT_DEPLOYED` at that historical candidate stage.
+
+The current formal release is source `6f3d50a52413c747b05b74be88d6ee46650f4597`,
+tree `253e57f6d20a90fef6addfa744d0487d88f00dfb`, tag
+`runtime-build-v2/20260731-agent-runtime-wings-f8-v1`, and request
+`A9B33601805709DBB5EAE6DAF312C2B7B0B502096FDD3BDCEA9CBE26D8B1299C`.
+Local X509 plus GitHub Hosted OIDC/Sigstore run `30602046108` promoted the same
+identity and closure. The no-candidate-id report
+`tmp/manual-agent-acceptance/formal-f8/agent-runtime-help-20260731T040942Z.json`
+binds `runtimeMode=formal_runtime`, 57 MCP calls, trusted shutdown, unchanged
+saves, and no residual delta; this narrow journey reached
+`standard_entry_verified`.
 
 Both developer entrypoints discover the Launcher through the current-user
 rendezvous document and verify its PID/start-time/lifecycle/ticket tuple; they do
@@ -457,8 +467,10 @@ for or kills a Guardian process. A valid non-formal rendezvous fails closed.
 
 This authority was present in C1
 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` but absent from the unchanged formal
-runtime at D1. F8 remains `NOT_DEPLOYED`, so the formal-runtime path still has no matching
-protected rendezvous or enrolled-developer `app.launch` grant and cannot complete.
+runtime at D1. The later F8 formal release now contains the matching authority,
+protected rendezvous, and enrolled trusted-runner path; the successful standard
+entry evidence above proves that exact bounded composition, not arbitrary
+`app.launch` authority for ordinary clients.
 
 The CLI reads and writes one strict CF7 JSON-RPC object per line. Its own
 `runtime.hello` is hidden and cannot be supplied on stdin. MCP uses the
@@ -502,15 +514,20 @@ F7 historical source evidence is Launcher **2678 passed + 3 explicit opt-in skip
 C1 source-level results only; C1 has not reached `candidate_executed`,
 `e2e_verified`, or `promoted`, and the formal runtime is unchanged.
 
-F8 current fresh gates are SDK resolver **7/7** resolving exact .NET SDK
+F8 fresh gates are SDK resolver **7/7** resolving exact .NET SDK
 **10.0.300**, Launcher **2724 passed + 3 explicit opt-in skipped / 2727 total,
 0 failed**, Node client **37/37**, TrustedRunner **57/57**, and production policy
-**26/26**. Evidence is bound only to source `53caabc90941826ddacf626f536b0f473adbf049`, tree
+**26/26**. First-stage evidence is bound to source `53caabc90941826ddacf626f536b0f473adbf049`, tree
 `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`, candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`, build identity
 `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`, payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`, Core
 SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`, report `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json`, and transcript
-`tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. It reached `e2e_verified / NOT_DEPLOYED`; the formal
-runtime is unchanged.
+`tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. It
+reached `e2e_verified / NOT_DEPLOYED` at the candidate stage. The later formal
+release retained the same identity/closure, added Core DLL SHA-256
+`0CEA0C64C037090ADAB4E9C38294075E58F1D298615DD447677D0D6725A9271E`,
+and reached the bounded `standard_entry_verified` status described above.
+Physical multi-monitor, Flash pixels/input, the GUI 13/13 matrix, Hair/Wings
+full product behavior, and human visual acceptance remain outside this evidence.
 
 stdout is reserved for protocol messages. Diagnostics, configuration failures,
 and malformed notification reports go to stderr.

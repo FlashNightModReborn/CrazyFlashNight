@@ -1,12 +1,14 @@
 # CF7 Agent Runtime F8 可见游戏/面板人工验收证据
 
-**严格状态**：`compiled → candidate_built → candidate_executed → e2e_verified / NOT_DEPLOYED`
+**当前严格状态**：`compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`
+
+**候选阶段历史状态**：§1–§8 的 exact isolated candidate 在当时为 `e2e_verified / NOT_DEPLOYED`；后续正式发布不反向改写该历史时点。
 
 **日期**：2026-07-31（UTC+08）
 
-**验收目标**：证明不借助 Codex Computer Use、浏览器自动化或 legacy HTTP，operator 仅通过项目自有 CF7 Agent Runtime MCP，在 exact isolated candidate 中启动可见 Launcher/游戏、核验 production surface capability truth、以 structured action 打开帮助面板并观察 exact WebOverlay；stdin 收束后再由 trusted wrapper 通过同一 Agent Runtime 协议完成受支持的 shutdown。
+**验收目标**：先证明不借助 Codex Computer Use、浏览器自动化或 legacy HTTP，operator 仅通过项目自有 CF7 Agent Runtime MCP，在 exact isolated candidate 中完成可见纵切；再以同一 build identity / payload closure 取得 v2 双故障域共识、promotion，并从无 candidate id 的正式标准入口重复帮助面板与可信 shutdown 旅程。
 
-本文只记录 F8 final source/candidate 的限定人工纵切。它不是 promotion receipt，不代表标准入口、Wings/Hair 完整产品验收、13/13 GUI capability 或多显示器矩阵通过。
+§1–§8 保留 F8 implementation source/candidate 的原始限定证据；§9 独立记录后续正式 v2 发布与标准入口复验。本文不代表 Wings/Hair 完整产品验收、13/13 GUI capability、多显示器矩阵、Flash pixels/input 或维护者目视签收。
 
 ## 1. 冻结身份
 
@@ -20,7 +22,7 @@
 | Core SHA-256 | `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD` |
 | production policy receipt | `tmp/manual-agent-acceptance/runtime-policy-f8-final-53ca-20260731T102324.json`；SHA-256 `3CC222798C895D91B619E0170316F2A0B59A76180AC0951D9AC715A211DF3C97` |
 
-candidate 只由该冻结 tree 构建；运行前后均复核实际进程路径、Core、build identity 与 payload closure。正式 runtime/根 bootstrap 未被 candidate build 或本次验收修改，因此结论保持 `NOT_DEPLOYED`。
+candidate 只由该冻结 tree 构建；运行前后均复核实际进程路径、Core、build identity 与 payload closure。截至该 isolated candidate 验收时，正式 runtime/根 bootstrap 未被修改，因此该阶段结论保持 `NOT_DEPLOYED`；后续发布见 §9。
 
 ## 2. Source 与 candidate 自动门
 
@@ -105,6 +107,57 @@ operator transcript 只允许项目 Agent Runtime/MCP lifecycle 与下列 CF7 to
 - 没有宣称 CF7 GUI v1 production 13/13；static applicability 不是 capability advertisement。
 - 没有验证 Flash pixels/input；F8 对它的正确结果就是 metadata-only + `unsupported_for_surface`。
 - 没有执行 `input.*`、`window.activate`、Hair transaction、Wings 玩家授权、legacy HTTP、UAC/security desktop 或 foreign modal 旅程。
-- 没有取得 immutable release request、local X509 + GitHub Hosted OIDC/Sigstore 双 signer/双 faultDomain、v2 promotion 或同身份 standard-entry 复核。
+- §1–§8 的 isolated candidate 当时没有取得 immutable release request、local X509 + GitHub Hosted OIDC/Sigstore 双 signer/双 faultDomain、v2 promotion 或同身份 standard-entry 复核；这些后续阶段由 §9 独立闭合。
 
-因此本证据的最高结论只能是：F8 exact isolated candidate 已在单显示器交互环境通过纯 CF7 Agent Runtime MCP 完成上述可见纵切，达到限定 `e2e_verified / NOT_DEPLOYED`；不能称“已部署”或 `standard_entry_verified`。
+因此 §1–§8 的最高结论仍只是：F8 exact isolated candidate 已在单显示器交互环境通过纯 CF7 Agent Runtime MCP 完成上述可见纵切，达到限定 `e2e_verified / NOT_DEPLOYED`。同一 identity / closure 的后续正式列车已由 §9 推进到 `standard_entry_verified`，但不会反向把候选阶段写成当时已部署。
+
+## 9. 后续正式 v2 发布与标准入口复验
+
+### 9.1 不可变请求与双故障域共识
+
+| 字段 | exact value |
+|---|---|
+| release source commit | `6f3d50a52413c747b05b74be88d6ee46650f4597` |
+| release Git tree | `253e57f6d20a90fef6addfa744d0487d88f00dfb` |
+| immutable tag | `runtime-build-v2/20260731-agent-runtime-wings-f8-v1` |
+| request ID | `A9B33601805709DBB5EAE6DAF312C2B7B0B502096FDD3BDCEA9CBE26D8B1299C` |
+| request commit / bundle tree | `b3730af5ae92b064248248cc8dce0d2a0284fb99` / `1a22fc0a68fd1408e6bdc9805e77b48d06e6bd80` |
+| source bundle SHA-256 | `C8BE97FA8686DA829A9515D3136BC848A205732B350DBCAE958504CCCD4385D4` |
+| artifact / recipe / toolchain / policy | `98000EBA762749C28583579271362FBED9E2E5FFE202FFF5FB0B0D8028456893` / `B97998EA7246D6AB667902BCBBD7994DFA5F658A37CFA427D2EEEABA6924DE28` / `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD` / `33A18135EEB9094F305C63ADA887600230C18AD49FA0AE151E469A4F68DDC09F` |
+| build identity / payload closure | `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C` / `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0` |
+
+本地票由 CurrentUser 不可导出 X509 keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`、thumbprint `647AFE92BD801518AF25F2A2EE1845E6847C2118` 在 `physical-host-a` 生成；队列 `C:\qf8` 关闭继承，只允许当前 Administrator、Administrators 与 SYSTEM FullControl。GitHub Hosted 票来自 run [`30602046108`](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/30602046108)、artifact `8782307580`，OIDC builder identity `2E05B5577CC8D2895DC56FC8778A05D09C440302832A05DD4AE551589C9AE918` / `github-hosted-windows`；artifact archive 为 23,719,566 bytes / SHA-256 `44FCAC67D301504DC9570773598CD5150D92DFA169E9E1A1CC91A430B86280D8`。两票的 source ref/commit/tree、identity、closure 与 33-file payload 全部一致。
+
+正式 production policy 26/26 receipt 为 `tmp/runtime-policy-receipts/f8-cloud-final-run30602046108.json`，SHA-256 `DA46C6E99CB02A268099ACB709C80B60E8B2D821134E1D32C9C84CB288EEC38C`。本地 preflight receipt `f8-local-preflight-a9b336-20260731.json` 和 `tmp/runtime-promotion-preflight/f8-a9b336-run30602046108.json` 只作支持性证据；后者虽通过 signer=2 / faultDomain=2 / fileCount=33，仍明确 `promotionPerformed=false`、`deploymentPerformed=false`、`reusableAsPromotionInput=false`，不能单独冒充 deployment。
+
+### 9.2 Promotion 字节
+
+唯一 promotion 入口于 `2026-07-31T03:56:21.4933374Z` 原子写入正式 bootstrap/runtime/manifest/consensus。严格 v2 bundle 与 consensus verifier 均通过，当前关键摘要为：
+
+| artifact | SHA-256 / size |
+|---|---|
+| root bootstrap | `55EABB5C3280FDFEE8302843D969C6B6354808F1AF4DC24DB5E2397AA80499D8` / 310,784 bytes |
+| Core EXE | `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD` / 261,120 bytes |
+| Core DLL | `0CEA0C64C037090ADAB4E9C38294075E58F1D298615DD447677D0D6725A9271E` / 3,150,336 bytes |
+| manifest | `A0A7CA0C992149DC2F9A4D5DDC60C2CAAC2EDC8BBC7907B0CF8EE4C7D5E694E4` |
+| consensus | `8E6292039E0BD01C7F1C0ADD1AE28DF840D676D4A8FB959337BBDAB07D285F26` |
+
+根 bootstrap、Core EXE 与多数 payload 字节相对上一 formal bundle 相同；本次 tracked deployment 差量精确为 Core DLL、manifest 与 consensus。上一 bundle 的可恢复副本保留在 `tmp/runtime-promotions/20260731T035551270Z-a1ae4de95c394e98a2d6ca0d8da8f742/previous`，不得把它误称新 payload 或删除。
+
+### 9.3 正式标准入口 pure-MCP 旅程
+
+正式 harness 不传 candidate id 或 `-CandidateRoot`，经 `tools/cf7-agent/unattended.js --adapter mcp --slot cf7_agent_equipment_tuning` 调用 formal `automation/start.ps1`；wrapper 仅传 `-UnattendedSlot` / `-UnattendedAdapter`，不选择隔离 candidate。报告绑定 promotion 后 consensus、Core EXE、Core DLL、source/tag/request/tree/identity/closure，并在旅程前后要求三项 tracked promotion 状态完全一致。
+
+| artifact | path / SHA-256 |
+|---|---|
+| formal report | `tmp/manual-agent-acceptance/formal-f8/agent-runtime-help-20260731T040942Z.json` / `4D7206C3183685806F6D9B82B8C100D99D44A2098C1A536441542A9CBD826A86` |
+| MCP/CF7 transcript | 同目录 `agent-runtime-help-20260731T040942Z.jsonl` / `2C9B2B09AD41F89B62BE9060FB000796C552777D9A20A85CB05E7A4700230FBB` |
+| trusted completion | 同目录 `agent-runtime-help-20260731T040942Z-completion.json` / `D47164F886098975936FB2620418401C3BA319475D9DAB01C21B247177FF0F27` |
+| residue before / after | `formal-residue-before-run.json` / `8495459C794F352FFB646EB39836051007A67DE819CD38B4E0FB26468D8F3E11`；`formal-residue-after-run.json` / `AEDDF16C41968F51922E48703D2F9CF2092F52CF3481B0E043FABFCABD8EE5B9` |
+| residue comparison | `formal-residue-comparison.json` / `0FF8B6E09C35749A1A3C8D3505DA321D1AE76703D121C4D4F633452B45F1B9D9` |
+
+结果为 `acceptancePassed=true`、`runtimeMode=formal_runtime`、wrapper exit 0、forced cleanup=false。operator 共执行 57 次 MCP call，只使用 `content.read`、`lease.acquire`、`observation.capture`、grant issue/revoke、`panel.open`、`session.status`、`window.list`、`window.state`；没有调用 Codex Computer Use、browser/Chrome、legacy privileged HTTP、`input.*` 或 `window.activate`。帮助面板 exact instance `panel_-clB6-04T-5-jrLaQGT5gA0F` 保持可见 12009 ms；Launcher、NativeHud、WebOverlay WGC 内存哈希分别为 `6DB81B6DA51671278E58D9040704AB9B2C4C8C0AD3BD466B557EAD087E35357E`、`3E23CE959D6AC2F1A94832A8293048F314AB4E66365871CDB20C803BE49E0494`、`EB4130ACDF352336C6C3EF20B5FB9277D6537982E4AF14990F61AF5DCECB8A31`。Flash 仍只暴露 metadata，pixel capture 精确拒绝为 `unsupported_for_surface`；没有 persistence/export、截图或其他像素文件。
+
+trusted wrapper 经同一 Agent Runtime 协议只发送一次 shutdown，completion 绑定正式进程路径、identity/closure 与成功 receipt。source/formal save slot SHA-256 均保持 `5B4066C6F481A7BB574BA318813D35D7F16A0EF88244D49BA02BC9CA77CE46C3`。residue comparison 为 `newRelevantProcesses=[]`、paths/bootstrap/credentials unchanged、`noResidualDelta=true`；baseline 原本已有历史 headless Flash PID `35372`，因此正确表述是“无新增残留差量”，不是“系统中没有任何 Flash 进程”。
+
+由此，同一 identity / closure 已完整经过 `promoted → standard_entry_verified`。该结论只覆盖单显示器 Help-panel 只读纵切；报告明确 `visibleDwellRequiresHumanObservation=true`，机器证据证明窗口保持但不能代签维护者亲眼接受。物理双屏/混合 DPI、“13/13”、Flash pixels/input、Wings 玩家授权、Hair transaction、security modal 与完整产品纵切仍未覆盖。

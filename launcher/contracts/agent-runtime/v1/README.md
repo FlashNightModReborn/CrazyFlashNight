@@ -16,14 +16,27 @@ not-yet-created commit hash. At that closeout point C1 had not reached
 unchanged. This remains historical evidence and is not the current source
 identity.
 
-The current F8 freeze is source `53caabc90941826ddacf626f536b0f473adbf049`, tree
+The F8 implementation freeze is source `53caabc90941826ddacf626f536b0f473adbf049`, tree
 `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`, immutable candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`, build identity
 `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`, payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`, and Core
 SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`. Its pure-MCP manual acceptance report is
 `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json` and its protocol transcript is `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. That
-exact identity reached `e2e_verified / NOT_DEPLOYED`; it was not promoted and
-has no standard-entry verification. Source or candidate presence still does not
-establish deployment.
+isolated candidate reached `e2e_verified / NOT_DEPLOYED` at that historical stage.
+
+The current formal release is source `6f3d50a52413c747b05b74be88d6ee46650f4597`,
+tree `253e57f6d20a90fef6addfa744d0487d88f00dfb`, tag
+`runtime-build-v2/20260731-agent-runtime-wings-f8-v1`, and request
+`A9B33601805709DBB5EAE6DAF312C2B7B0B502096FDD3BDCEA9CBE26D8B1299C`.
+Local X509 and GitHub Hosted OIDC/Sigstore run `30602046108` produced two
+signers in two fault domains for the same identity and closure, followed by v2
+promotion. The no-candidate-id MCP report
+`tmp/manual-agent-acceptance/formal-f8/agent-runtime-help-20260731T040942Z.json`
+and `formal-residue-comparison.json` bind `runtimeMode=formal_runtime`, strict
+shutdown, unchanged saves, and no residual delta; this narrow journey reached
+`standard_entry_verified`. F8 is therefore the first promoted v1 consumer.
+Future wire-breaking changes require a new revision/version and an atomic
+migration of schema, registries, models, server, clients, fixtures, harnesses,
+and docs; they cannot silently replace the deployed v1 contract.
 
 Files:
 
@@ -335,17 +348,27 @@ Launcher tests (0 failed), 7/7 SDK-resolver checks resolving exact SDK 10.0.300,
 source-level results only; C1 has not reached `candidate_executed`,
 `e2e_verified`, or `promoted`.
 
-F8 current fresh gates are SDK resolver **7/7** resolving exact .NET SDK
+F8 fresh gates are SDK resolver **7/7** resolving exact .NET SDK
 **10.0.300**, Launcher **2724 passed + 3 explicit opt-in skipped / 2727 total,
 0 failed**, Node client **37/37**, TrustedRunner **57/57**, and production policy
-**26/26**. Evidence is bound only to source `53caabc90941826ddacf626f536b0f473adbf049`, tree
+**26/26**. The first-stage evidence is bound to source `53caabc90941826ddacf626f536b0f473adbf049`, tree
 `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`, candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`, build identity
 `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`, payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`, Core
 SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`, report `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json`, and transcript
 `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. The operator used MCP only: no Codex Computer Use,
 browser/Chrome, legacy privileged HTTP, or `input.*` call. Pixel content was
-hashed in memory and neither written as PNG nor granted persistence/export. This
-is `e2e_verified / NOT_DEPLOYED`, not promotion.
+hashed in memory and neither written as PNG nor granted persistence/export. That
+candidate stage remains `e2e_verified / NOT_DEPLOYED`.
+
+The later formal release retained the same identity/closure and Core EXE, added
+Core DLL SHA-256 `0CEA0C64C037090ADAB4E9C38294075E58F1D298615DD447677D0D6725A9271E`,
+and bound manifest `A0A7CA0C992149DC2F9A4D5DDC60C2CAAC2EDC8BBC7907B0CF8EE4C7D5E694E4`
+plus consensus `8E6292039E0BD01C7F1C0ADD1AE28DF840D676D4A8FB959337BBDAB07D285F26`.
+The formal pure-MCP journey made 57 calls, held the help panel visible for
+12009 ms, completed the trusted shutdown, and left no new residue. Its exact
+scope is `standard_entry_verified`; physical multi-monitor, Flash pixels/input,
+the GUI 13/13 matrix, Hair/Wings full product behavior, and human visual
+acceptance remain outside this evidence.
 
 Canonical action JSON uses ordinal object-key ordering, preserves array order and
 Unicode code points, rejects duplicate properties, and permits only signed integers
