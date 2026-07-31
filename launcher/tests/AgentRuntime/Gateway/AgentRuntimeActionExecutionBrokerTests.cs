@@ -2680,13 +2680,32 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 WriteLease lease,
                 CancellationToken cancellationToken)
             {
-                Entered.TrySetResult(true);
+                var cancellationObserved =
+                    new TaskCompletionSource<bool>(
+                        TaskCreationOptions
+                            .RunContinuationsAsynchronously);
+                // Keep exactly one callback on this token. Awaiting
+                // Task.Delay(token) would install a second callback; its
+                // LIFO completion can resume this method and dispose
+                // registration before the callback below has run, losing
+                // the test's cancellation signal.
                 using CancellationTokenRegistration registration =
                     cancellationToken.Register(
-                        () => Cancelled.TrySetResult(true));
-                await Task.Delay(
-                    Timeout.InfiniteTimeSpan,
-                    cancellationToken);
+                        delegate
+                        {
+                            Cancelled.TrySetResult(true);
+                            cancellationObserved
+                                .TrySetResult(true);
+                        });
+                // Signal only after the cancellation observer is installed.
+                // Otherwise a full-suite continuation may revoke between
+                // Entered and Register, making this synchronization point
+                // report readiness before the performer is actually ready.
+                Entered.TrySetResult(true);
+                await cancellationObserved.Task
+                    .ConfigureAwait(false);
+                cancellationToken
+                    .ThrowIfCancellationRequested();
                 throw new InvalidOperationException(
                     "unreachable");
             }

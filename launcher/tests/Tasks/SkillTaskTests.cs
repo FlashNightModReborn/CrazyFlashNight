@@ -908,7 +908,9 @@ namespace Launcher.Tests.Tasks
         public void CloseBeforeWriteTimeout_BackgroundReconcileSettlesAndRunsCleanupWithoutReopen()
         {
             var sent = new List<JObject>();
-            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 20))
+            // The same timeout guards the emitted background snapshot.
+            // Leave the full-suite worker enough time to answer that probe.
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 250))
             {
                 task.HandleWebRequest("equip", Request("equip", "skill.background.close.first"));
                 Assert.True(task.HandlePanelClosed("skills.instance.1"));
@@ -932,7 +934,9 @@ namespace Launcher.Tests.Tasks
         public void WriteTimeoutThenClose_StartsBackgroundReconcileWithoutReopen()
         {
             var sent = new List<JObject>();
-            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 20))
+            // Once close emits the background snapshot, its response must not
+            // race a 20 ms wall-clock timeout under parallel test load.
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 250))
             {
                 task.HandleWebRequest("equip", Request("equip", "skill.background.timeout.first"));
                 Assert.True(SpinWait.SpinUntil(() => task.WriteState == "needs_reconcile", 2000));
@@ -957,7 +961,7 @@ namespace Launcher.Tests.Tasks
         {
             bool ready = true;
             var sent = new List<JObject>();
-            using (var task = new SkillTask(() => ready, value => { sent.Add(ParseWire(value)); return true; }, 20))
+            using (var task = new SkillTask(() => ready, value => { sent.Add(ParseWire(value)); return true; }, 250))
             {
                 task.BindPanelInstance("skills.instance.disconnect");
                 JObject write = Request("equip", "skill.background.disconnect");
