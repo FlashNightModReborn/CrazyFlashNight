@@ -25,7 +25,7 @@
 
 - **对话数据**：`data/dialogues/`
 - **支线规划**：`0.说明文件与教程/支线规划表.xlsx`
-- **Wings 桌宠 / Agent 一期方向**：[CF7 Agent Runtime 与 Wings Network 一期范围冻结 ADR](../docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)（F7 source freeze `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 已闭合中立 Agent Runtime、Wings Shell/Persona/offline backend、受限 lore projection、Launcher-owned structured action/receipt、production `window.activate` 与 Hair transaction 的源码纵切；当前 documentation-only D1 只引用父 C1。exact C1 候选已达到 `candidate_built / NOT_DEPLOYED`，但严格入口在当前无前台会话按凭据门失败关闭，未取得 `candidate_executed` / 实机 E2E / promotion / 标准入口证据。Wings 是复用项目中立底座的受限叙事客户端，自由文本永远零执行；桌宠口吻/视觉与最终 Boss 机制尚未冻结，既有剧情真相仍以 worldbuilding 权威路由为准）
+- **Wings 桌宠 / Agent 一期方向**：[CF7 Agent Runtime 与 Wings Network 一期范围冻结 ADR](../docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)（F7 C1 source freeze `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 与其 `candidate_built / NOT_DEPLOYED` 凭据超时结论保留为历史证据。F8 current source `53caabc90941826ddacf626f536b0f473adbf049` 已用纯 Agent Runtime MCP 完成单屏可见人工验收：本轮实测观察 Launcher、玩家 HUD 与经授权打开的帮助 Web 面板；production structured opener 的关闭 allow-list 另含地图、任务、队伍和点唱机，但本轮没有把其余四个面板写成人工目视通过。Flash 游戏画面本身只暴露可见性与窗口元数据，不向 Agent 提供像素、激活或原生输入。该结论为 `e2e_verified / NOT_DEPLOYED`，不表示 Agent 可以代打、控制战斗、读取 Flash 画面、跨物理双屏操作，也不表示已 promotion 或通过正式入口验收。Wings 仍是复用项目中立底座的受限叙事客户端，自由文本永远零执行；桌宠口吻/视觉与最终 Boss 机制尚未冻结，既有剧情真相仍以 worldbuilding 权威路由为准）
 
 ## 4. 关卡与环境
 

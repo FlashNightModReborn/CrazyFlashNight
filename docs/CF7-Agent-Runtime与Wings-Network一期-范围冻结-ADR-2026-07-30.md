@@ -2,19 +2,21 @@
 
 **文档角色**：CF7 项目内置 Agent 运行时与 Wings 桌宠/叙事客户端的一期工程决策真源；分别冻结技术底座、Wings 人格层、一期能力清单与永久禁区，并记录施工顺序和验收合同。
 
-**状态**：`ACCEPTED_SCOPE / SOURCE_FROZEN / SOURCE_IMPLEMENTATION_COMPLETE`。2026-07-31 的 F7 审阅已关闭一期会改变安全架构、wire 或完成定义的开放项；除 F6 已收束的 OS peer、surface generation、Hair unknown-token、trace export、production activation 与 trusted unattended runner 外，F7 进一步冻结 shutdown lease 的不可能状态、跨 response 的 reservation、首字节前顺序双 claim、单一绝对 action deadline、exact receipt replay、post-write/abort callback 失败、audit reserved event、bounded retention/fail-closed latch，以及 trusted runner 凭据等待、精确退出与完成证据判据。candidate、E2E、promotion 与标准入口状态仍只由第 13 节证据词典和对应身份的真实证据判定，不能从本状态行推导。
+**状态**：`ACCEPTED_SCOPE / SOURCE_FROZEN / SOURCE_IMPLEMENTATION_COMPLETE / CANDIDATE_BUILT / CANDIDATE_EXECUTED / E2E_VERIFIED / NOT_DEPLOYED`。2026-07-31 的 F8 收口在 F7 shutdown/runner 闭包之上，进一步按 production composer 的真实能力面冻结 surface advertise：Launcher、WebOverlay、NativeHud 才提供 WGC；嵌入式 Flash 只提供双空 mode 的 metadata descriptor，像素请求固定 `unsupported_for_surface`；production 不组合 `window.activate`。同一 exact candidate 的 operator 只通过 CF7 Agent Runtime MCP 完成可见游戏/面板纵切；operator 结束 stdin 后，再由 trusted wrapper 通过 Agent Runtime 协议执行唯一 shutdown 并严格核验退出。范围与缺口以第 12、13 节和独立证据记录为准；此状态绝不蕴含 promotion 或标准入口验收。
 
-**日期**：2026-07-31（F7 最终冻结）。文件名继续保留 `2026-07-30`，表示本 ADR 首次立项并进入范围冻结的日期；为避免 canonical 路径迁移和链接漂移，不因后续冻结修订改名。
+**日期**：2026-07-31（F8 最终冻结）。文件名继续保留 `2026-07-30`，表示本 ADR 首次立项并进入范围冻结的日期；为避免 canonical 路径迁移和链接漂移，不因后续冻结修订改名。
 
-**F7 source freeze**：commit `dd84230a1d262c6478591cae2d11051b7a8aa7b1`（immutable C1 source baseline）。
+**F8 final source freeze**：commit `53caabc90941826ddacf626f536b0f473adbf049`，tree `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`。F7 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 与其后 `7f1c21d9db` 可见 panel 取证只保留为历史阶段，不能与 F8 candidate 拼接或替代 F8 结论。
 
-**冻结修订**：`F7`。相对初稿已关闭精确 rendezvous/wire/credential、security surface、legacy HTTP bypass、XMLSocket peer ownership、dispatch-time input containment、lease hard cap、首个 Hairdresser transaction、offline Wings backend、lore fixture、真实 capability applicability、Wings structured action/receipt authority，以及 OS peer token、document generation、human-only business modal、scoped trace export、Hair unknown-token escrow、production `window.activate`、受信 Core 无人值守执行器和 shutdown response-delivery 边界；并纠正了本机 .NET 10 工具链事实。
+**冻结修订**：`F8`。F1–F7 的 rendezvous/wire/credential、security surface、legacy 隔离、XMLSocket peer、Hair、Wings structured action、shutdown response-delivery 与 trusted runner 决策继续有效；F8 以更窄的 production capability truth 取代 F6/F7 对 activation 与嵌入 Flash pixel/input 的宽表述，并冻结 panel instance 随机性、applicability 非 advertisement 语义和 pure-Runtime 人工验收边界。
 
 F2 修复了 F1 收据无法交付 Hair restore secret 的协议断路；F3 增加唯一 human-only one-shot Hair consent method；F4 修复首 grant 需要尚不可见 session/target 的启动死锁，冻结 `session.status → lifecycleRef → exactly-one targetKinds|targetIds`、唯一 current session、`RuntimeOwned ∩ AllowedTargets`、32-target cap 与签发前后复验。F5 进一步关闭实现期对抗审计发现的 exact Flash peer、live credential revoke、trusted player receipt、pixel/app/Hair authority 与 structured Wings action 边界。F6 确认：`CurrentUserOnly` 只证明当前用户，同 Windows session/elevation 仍必须验证独立 OS peer token；process/window 绑定必须覆盖可执行路径、PID、进程启动时间及 HWND/owner 关系；Web 导航开始即推进 document generation，`window.state` 与 `window.activate` 分离，production activation 全绑定并复核；`business_modal` selector 在 production 为空，内部 `BusinessModal` 永远 human-only；可信 scoped ledger 与使用共同 owner pending marker、同目录 atomic move 的 8 MiB Runtime-owned JSONL exporter 已完成后，`trace.export` 仅向明确 enrolled developer + consentPurpose 开放，且单文件 move 不冒充 filesystem/audit 跨资源原子事务；Hair unknown receipt 改为同事务实例 lifecycle-local escrow 与权威 reconcile 后单次交付；最终 unattended security boundary 落在受信 Core 二进制 runner，Node/PowerShell 只作便利包装。F7 关闭最后一轮 shutdown 对抗审阅：`LeaseDescriptor.purpose` 必填而 `renewAfter` 可选且 shutdown 必须省略；shutdown 只存在于 DeveloperInteractive/UnattendedTest，成功 consume 的 owner reservation 跨所有 response frame 写入，首字节前顺序取得 audit identity 与 lease/human-input fence；同 identity/canonical payload 的 duplicate 严格复用 retained receipt，完整写后 callback/audit 失败只能丢失 continuity，不能把已经写出的结果改写为 unknown；lease tombstone 与 committed-shutdown latch 有界且满载全局 fail closed；trusted runner 禁止 Flash keyframe fallback，只信 Launcher frame，以固定 30 秒凭据等待和有界 stderr completion evidence 核验正常退出。
 
-F2–F7 对已按更早冻结 artifact 严格实现的客户端均为 pre-release wire-breaking 或收紧；一期尚无 promoted v1 consumer，故协议版本保持 `1.0`，method registry、schema、生成物、CLI/MCP、服务端、fixture 与 harness 必须原子升级，禁止部分 rollout、兼容地产生缺失领域结果、绕过人工授权的 token、泄露 grant 前 session/target，或继续接受更宽的旧参数。后续改变这些项须新增修订号并记录兼容/迁移影响。
+F8 关闭“类型设计存在即可对生产 advertise”的最后一个口径漏洞：static applicability 只描述 method 对 surface kind 的**类型级潜在适用性**，不是 session capability advertisement；一次调用真正可达，必须同时满足当前 authenticated session 的 capability 与 exact `SurfaceDescriptor.observationModes/inputModes`。production composer 当前只给 Launcher、WebOverlay、NativeHud 注册 `window_graphics_capture`，嵌入 Flash descriptor 的 `observationModes=[]`、`inputModes=[]`，任何 Flash pixel capture 在进入 frame source 前即返回 `unsupported_for_surface`。`window.activate` 仍保留在 v1 registry/schema 以维持冻结合同，但 production 不组合 activator、Welcome/session capability 不 advertise，调用不可达。面板开启改由 `panel.open` structured action 的专用 one-shot lease 进入既有 Host broker，结果仍使用 action receipt，且 dispatch 原生键鼠 packet 数为零；所有 production panel instance ID 统一为至少 144-bit CSPRNG 的 opaque Base64URL 值，fallback/Loot 等 producer 不得再用时间戳或递增序号。
 
-**证据边界与两提交封装**：F7 source freeze 为 immutable C1 commit `dd84230a1d262c6478591cae2d11051b7a8aa7b1`。本轮按 `C1 source → D1 docs` 两提交闭合：C1 只冻结实现、schema、vectors 与测试；本 documentation-only D1 原子收口本 ADR 与 canonical mirrors，只引用其父 C1，不在正文嵌入 D1 自身 hash，也不夹带实现或 wire 变化。candidate/request 必须记录实际冻结的完整 Git tree，并同时区分 D1 tree identity 与其 C1 source baseline。exact C1 tree `7362881e96d8ed0f9c20ccae580426c522f14946` 已取得 production-policy **26/26** 的隔离 candidate，状态仅为 `candidate_built / NOT_DEPLOYED`；下文“已落盘/已有测试”与该候选证据均不继承当前正式 runtime `f01f4b121a4ceebd7dae051f14bb511c5ae3f1cb` 的 promotion，也不能外推为本轮 `candidate_executed`、`e2e_verified`、`promoted` 或 `standard_entry_verified`。
+F2–F8 对已按更早冻结 artifact 严格实现的客户端均为 pre-release wire-breaking 或收紧；一期尚无 promoted v1 consumer，故协议版本保持 `1.0`，method registry、schema、生成物、CLI/MCP、服务端、fixture 与 harness 必须原子升级，禁止部分 rollout、兼容地产生缺失领域结果、绕过人工授权的 token、泄露 grant 前 session/target，或继续接受更宽的旧参数。后续改变这些项须新增修订号并记录兼容/迁移影响。
+
+**证据边界与历史封装**：F7 C1 commit `dd84230a1d262c6478591cae2d11051b7a8aa7b1` / tree `7362881e96d8ed0f9c20ccae580426c522f14946` 的 production-policy **26/26** candidate 只达到 `candidate_built / NOT_DEPLOYED`，无前台凭据超时是 fail-closed 负向证据。其后 `7f1c21d9db` 的可见 panel E2E 证明了早期结构化 opener 与 WebOverlay WGC，但当时尚未冻结最终 Flash/activation advertise，故仅为历史诊断。F8 独立绑定 source `53caabc90941826ddacf626f536b0f473adbf049`、tree `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`、candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`、build identity `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`、payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0` 与 Core SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`；production policy receipt 为 `tmp/manual-agent-acceptance/runtime-policy-f8-final-53ca-20260731T102324.json`，SHA-256 `3CC222798C895D91B619E0170316F2A0B59A76180AC0951D9AC715A211DF3C97`。本轮最终严格状态是 `e2e_verified / NOT_DEPLOYED`，既不继承现役正式 runtime `f01f4b121a4ceebd7dae051f14bb511c5ae3f1cb` 的 promotion，也不外推为 `promoted` 或 `standard_entry_verified`。
 
 **适用范围**：开发期外部 Agent、无人值守测试 Agent、未来玩家助手 Wings，以及以后在游戏规则内工作的叙事/战术 Agent。只覆盖一个被精确绑定的 CF7 logical session，不建设通用桌面自动化产品。
 
@@ -47,7 +49,7 @@ F2–F7 对已按更早冻结 artifact 严格实现的客户端均为 pre-releas
 
 1. 生产执行器由 Launcher Host 持有，因为它掌握进程、HWND、attempt、存档启动决议、panel instance 和 build identity 的真实对应关系；独立 sidecar 只可用于早期 spike，不可成为另一套 session truth。
 2. 外部边界采用当前用户、当前 Windows 登录会话内的本地命名管道；提供 JSON CLI 与 MCP `stdio` 两层薄适配。不得依赖 Codex 私有插件、私有 pipe 或某一家 Agent 的调用格式。
-3. Runtime 遵循 **structured-first, visual-fallback**：有权威领域命令时走类型化命令；Flash 等不透明界面才使用截图和坐标输入。
+3. Runtime 遵循 **structured-first, visual-fallback**：有权威 Host/领域命令时走类型化命令；visual fallback 只能用于当前 production descriptor 明确 advertise 像素/输入 mode 的 surface。F8 中嵌入式 Flash 只可枚举 metadata，不能截图或输入；不得因它“不透明”而绕过双空 mode。
 4. 观察可以由多个持有 read grant 的读者并行；合成输入和领域写入只有一个短租约持有者。任何不带本租约精确 tag 的 external input，必须在下一次合成动作前撤销租约。
 5. 每个动作绑定本 principal 在 TTL 内取得、结构代际仍一致的 `observationId`；坐标动作必须再绑定具体 `frameId` 和 transform。动画像素变化或其他 reader 观察不使其失效，布局/焦点/lifecycle/attempt/surface/document/panel 变化则失效。动作结果不明时禁止盲重试。
 6. 开发期交互模式允许附着当前任意开发/测试存档；`cf7_agent_*` 限制只继续约束无人值守启动、重建、批处理和恢复流程。未来真实玩家存档允许观察、指导和经授权的正常游戏操作，但不允许 Runtime 直接重建或裸写。
@@ -81,7 +83,7 @@ F2–F7 对已按更早冻结 artifact 严格实现的客户端均为 pre-releas
 |---|---|---|---|
 | [`AgentControlTask.cs`](../launcher/src/Tasks/AgentControlTask.cs) | 已有 `status/start/revealOk/cancel/shutdown/openEquipmentTuning/openCharacterBuild` 和 attempt/readiness gate | 可复用启动生命周期、精确 runtime readiness、固定领域 opener | 不是任意 GUI/DOM 控制器，也不是多 Agent gateway |
 | [`GameLaunchFlow.cs`](../launcher/src/Guardian/GameLaunchFlow.cs) / [`ProcessManager.cs`](../launcher/src/Guardian/ProcessManager.cs) | 已持有锁保护的 attempt/save 状态、exact save handshake、进程启动与 stale process reference 防护；fresh 路径可能删除 shadow/tombstone/SOL | 构成 Session Authority 的进程/attempt 真值 | fresh/rebuild 不能混入普通交互 CU |
-| [`FlashSnapshot.cs`](../launcher/src/Guardian/FlashSnapshot.cs) | 对 Flash HWND 做 BitBlt、DPI 探针、16:9 content rect、黑帧检测和 backdrop 合成 | 可保留为 Flash 专用 fallback/关键帧来源 | 不是多窗口连续捕获或视频编码管线 |
+| [`FlashSnapshot.cs`](../launcher/src/Guardian/FlashSnapshot.cs) | 对 Flash HWND 做 BitBlt、DPI 探针、16:9 content rect、黑帧检测和 backdrop 合成 | 只保留 Launcher 内部启动诊断/历史探针价值 | F8 production Agent Runtime 不把它注册为 frame source 或 keyframe fallback；`FlashSnapshotKeyframe` 枚举位是 reserved/diagnostic，不是 capability |
 | [`OverlayCoordinateContext.cs`](../launcher/src/Guardian/OverlayCoordinateContext.cs) / [`InputShieldForm.cs`](../launcher/src/Guardian/InputShieldForm.cs) | 已有 physical/CSS/DPR/visual viewport/DPI 映射，并用 CDP 派发 Web 鼠标事件；已有低级鼠标 hook 遥测 | 可复用 Web overlay 的坐标与输入路由经验 | 不是 Agent 输入租约、键盘/Flash 控制或人工接管仲裁 |
 | [`WindowManager.cs`](../launcher/src/Guardian/WindowManager.cs) | 已有前台恢复、焦点校验与 `AttachThreadInput` fallback | 可复用精确窗口归属与焦点探针 | 不授权 Agent 静默抢焦点 |
 | [`PanelHostController.cs`](../launcher/src/Guardian/PanelHostController.cs) | 已有 active panel/instance、admission epoch、exact-instance close 与串行命令 | 可复用 expected instance/epoch/serialized mutation 模式 | 不提供任意 panel/initData/JS 入口 |
@@ -136,7 +138,7 @@ Launcher 当前目标为 `net10.0-windows`，`global.json` 固定 SDK `10.0.300`
 
 ### 1.4 可行性与难度判断
 
-结论为 **技术可行、架构复用价值高、工程难度中高**。F7 source freeze 已把仓库关键拼图收束为 Agent 可授权、可抢占、可审计的统一源码管线；剩余难点属于真实环境与发布证据：
+结论为 **技术可行、架构复用价值高、工程难度中高**。F8 source freeze 已把仓库关键拼图收束为 Agent 可授权、可抢占、可审计的统一源码管线，并以真实 production composer 收窄 Flash/activation advertise；剩余难点属于真实环境与发布证据：
 
 - 截图、点按本身是中等难度；
 - 真正困难的是精确 session 绑定、窗口生命周期、DPI/多显示器、焦点与 UIPI、人工接管、多 Agent 写入仲裁、动作结果不明时的恢复；
@@ -164,7 +166,7 @@ Launcher 当前目标为 `net10.0-windows`，`global.json` 固定 SDK `10.0.300`
 ### 2.2 一期目标
 
 - 为任何本地 Agent 提供供应商中立、版本化、可发现的 CF7 工具面；
-- 对一个精确 logical session 提供项目自有 CF7 GUI capability set v1 的 13 项范围；
+- 对一个精确 logical session 冻结项目自有 CF7 GUI capability set v1 的 13 项 registry/applicability 合同；production 只 advertise 当前 composer 与 surface modes 实际提供的子集，不以 13/13 为一期验收口号；
 - 优先提供结构化游戏状态和领域动作，视觉操作作为兼容层；
 - 支持任意当前开发存档的非破坏性交互；
 - 保留现役 `cf7_agent_*` 无人值守重建护栏；
@@ -382,7 +384,7 @@ Runtime 每次只允许一个 action 指向一个精确 session。绑定至少�
 
 ### 4.4 观察契约
 
-以下是冻结的最小语义字段。F1–F7 已在 source freeze `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 的 `launcher/contracts/agent-runtime/v1/` 物化精确 JSON Schema、reason-code registry 和 test vectors；它不等于 promoted runtime。生产 executor 不得绕过该合同，后续物化只可收紧表示、上限与条件必填关系，不能静默改变本节语义：
+以下是冻结的最小语义字段。F1–F8 已在 final source `53caabc90941826ddacf626f536b0f473adbf049` 的 `launcher/contracts/agent-runtime/v1/` 物化精确 JSON Schema、reason-code registry、test vectors 与 surface applicability 语义；它不等于 promoted runtime。生产 executor 不得绕过该合同，后续物化只可收紧表示、上限与条件必填关系，不能静默改变本节语义：
 
 ```text
 SessionDescriptor
@@ -434,6 +436,17 @@ FrameEnvelope
   width, height, dpi, pixelFormat, contentHash, opaqueContentHandle
 ```
 
+F8 production `SurfaceDescriptor` 另有不可放宽的 composer 不变量：
+
+| surface kind | `observationModes` | `inputModes` | 说明 |
+|---|---|---|---|
+| `launcher` | `window_graphics_capture` | 空 | 当前可见 Launcher 顶级 HWND 的 WGC 观察；structured panel action 不借 input mode |
+| `web_overlay` | `window_graphics_capture` | `send_input_guarded`、`domain_transaction` | panel target 由 exact instance/generation 绑定 |
+| `native_hud` | `window_graphics_capture` | `send_input_guarded` | 只覆盖已注册 NativeHud HWND |
+| `flash` | 空 | 空 | 嵌入式 `WS_CHILD` 仅 metadata；像素固定 `unsupported_for_surface` |
+
+Wings/business modal 等未在本表列出的 kind 不因 enum 或 static applicability 存在而自动获得能力；只有 production composer 的正向注册可以增加 mode。applicability artifact 固定声明 `surfaceApplicabilitySemantics=type_level_potential_requires_session_capability_and_surface_modes`；canonical pixel/input 正向 vector 使用 WebOverlay（WGC + `send_input_guarded`），Flash 使用独立 metadata-only 双空 vector，禁止再借 Flash vector暗示 pixels/input。`FlashTopLevel` 等内部模型命名不能推翻实际 `WS_CHILD` 归属，若未来要做 off-screen top-level + compositor，必须触发独立 ADR。`activePanel.instanceId` 以及所有 panel producer 的 instance ID 必须由统一 opaque generator 产生：至少 144-bit CSPRNG、Base64URL 编码；不可从时间、PID、递增 counter 或可预测业务字段导出。
+
 `LeaseDescriptor.purpose` 是 required discriminator；`renewAfter` 是可选的 server hint，不是续租权。shutdown descriptor 必须完全省略 `renewAfter`，不能发送 `null`、零值或伪提示来维持兼容。
 
 未取得有效 `ObservationGrantDescriptor` 前，不能产生截图、UIA/accessibility state、结构化玩家状态或模型上下文；未授权的 discover 只返回“固定 CF7 入口是否存在/是否运行”等最小非敏感信息。read grant 与 write lease 独立，持有 write lease 也不能扩大 target/data/export 范围；security surface 即使有人授予宽 scope 也不得进入结果。
@@ -451,7 +464,7 @@ F5 把“method 实际产生的数据”提升为强制 scope，不允许 caller
 
 `player_assist` 的 consent receipt 不是 client 可命名的标签。ObservationGrantBroker 与 WriteLeaseBroker 都必须用 constant-time exact comparison 验证它等于当前 active credential 的受信 `IssuerReceipt`，成功对象保存 server-normalized receipt；GUI lease 的累计 120 秒预算按 `securityPrincipalId + trusted issuer receipt` 记账。伪造、换字符串、跨 principal、跨 session、过期或 rotation 后的 receipt 都不能签发 grant/lease，也不能重置预算。
 
-捕获优先采用 Windows Graphics Capture 对每个项目所属 HWND 建立 frame source。多窗口/owned modal 返回有 z-order 的 frame 数组，不伪造成一张可能遮挡关系错误的全桌面图。`FlashSnapshot` 只作为 Flash 诊断/启动探针和经验证的局部关键帧来源；D3D/黑帧场景下不能被假定为 WGC 的可靠验收兜底。
+F8 production capture 只对 descriptor 明确含 `window_graphics_capture` 的 Launcher、WebOverlay、NativeHud HWND 建立 frame source；多窗口结果保留各自 z-order，不伪造成一张可能遮挡关系错误的全桌面图。嵌入式 Flash 的双空 mode 在 schema、typed validator、registry、Windows synchronizer 与 capture service 五层同时 fail closed；即使 caller 取得含 `pixels` 的 grant，`observation.capture` 也必须在触碰 frame source 前返回 `unsupported_for_surface`。`FlashSnapshot`/`FlashSnapshotKeyframe` 仅保留为 Launcher 内部诊断与 reserved 枚举，不构成 production fallback 或 advertisement。
 
 像素通过有大小上限、短生命周期的 opaque handle/bounded binary read 获取；不在 pipe JSON 中无界内嵌 base64。自带 CLI/MCP adapter 只有在 persistence/export grant 内才能写文件或形成持久 data URL；云传输还要独立 data-egress grant。采集采用 on-demand、per-source latest-frame-wins 和明确 backpressure，绝不阻塞 UI 线程。
 
@@ -508,17 +521,19 @@ HairDomainActionResult
 10. key/type 必须绑定 observation 的 target/focus 和相应 focus/document/panel generation；焦点变动即拒绝；
 11. `set_value` 与 secondary action 必须绑定 observation/semantic generation 下的稳定 nodeId，Web 还绑定 document generation，且 provider 明确支持相应 pattern。
 12. `domainResult` 只允许且必须出现在 `outcome=domain_committed`；一期 typed result 固定为 `HairDomainActionResult`，`transactionId + previewHash` 必填并通过 opaque ID/SHA-256 校验。commit 产生 restore secret 时，`restoreToken + restoreExpiresAtUtc` 必须在同一 terminal receipt 中成对返回；任一缺失都不是合法成功收据。非 `domain_committed`（包括 `unknown`）禁止携带 `domainResult`，避免把未获权威确认的写入冒充成可恢复提交。
+13. client 的 bounded retry 只允许用于 registry 明确列入 canonical retryable-transient allow-list、且 response 同时给出 `retryable=true` 的**未产生动作效果**请求；attempt 数、总时长与 backoff 都必须有硬上限。未知 reason、transport ambiguity、任何 terminal action receipt、`unknown`、idempotency conflict 与所有 mutation 均不得因“看起来瞬时”自行重试。`session.shutdown` action 绝不重试；响应丢失只能按 `action.get`/进程与 completion evidence 收束，不能发送第二个 shutdown。
 
 ### 4.6 输入路由
 
 | 目标 | 首选路径 | 失败边界 |
 |---|---|---|
 | WebView2 overlay | 现役坐标上下文 + CDP input | panel instance/focus 不匹配即拒绝 |
-| Flash/原生窗口键鼠 | Win32 `SendInput` + Runtime-tagged low-level containment guard；目标须先经显式 `activate_window` 激活 | guard/hook 健康未知、输入未静默、UIPI/integrity 不兼容、前台/命中/代际变化即拒绝 |
+| 嵌入式 Flash | F8 production 无输入路径 | `inputModes=[]`，任何 input method 都是 `unsupported_for_surface`；不得用 `SendInput` 或 legacy HTTP 绕过 |
+| 其他明确 advertise native input 的 surface | Win32 `SendInput` + Runtime-tagged low-level containment guard | guard/hook 健康未知、输入未静默、UIPI/integrity 不兼容、前台/命中/代际变化即拒绝 |
 | 可靠 UIA 编辑控件 | UIA Value/Invoke/secondary pattern | pattern 不存在不回退成猜测 |
 | 领域修改 | 类型化 domain transaction | revision/nonce/token/validation 任一失败即不提交 |
 
-`window.state` 是只读状态查询，绝不能隐式激活；`window.activate` 是独立显式动作，不是所有输入的隐蔽副作用。production activation 必须绑定并复核当前 `sessionId/lifecycleGeneration + attemptId + targetId + HWND/owner process incarnation + surfaceEpoch/coordinateSpaceVersion + focus/modal epoch`；它只能在有效 lease、没有新鲜 external input 且目标属于 session 时执行，并在 dispatch 后再次确认 exact binding。焦点恢复失败或复核歧义必须返回 `unknown`/对应 reason，而不是继续向当前前台发送输入。
+`window.state` 是只读状态查询，绝不能隐式激活。`window.activate` 仍是 registry/schema 中的独立显式动作，但 F8 production activator map 为空，Welcome/session capability 不含它；因此不存在“先激活再输入”的 production 隐式链。未来若重新引入 production activation，必须新增冻结修订并恢复 exact session/process/HWND/generation/focus/modal pre/post binding 的正负矩阵，不能仅把 provider 填回去。
 
 “调用 `SendInput` 前复核一次前台”不足以形成 containment。每个 Runtime-tagged native input batch 在 low-level hook 实际看到事件时，仍必须核对 lease/input epoch、foreground HWND、target generation、`focusEpoch/modalEpoch`、security modal 缺席；鼠标事件还要用实际 hit-test 证明该点最上层可输入 surface 就是 observation 绑定目标。任一不符由 guard 吞掉整批剩余事件、撤销 lease 并释放仅由 Runtime 持有的键/按钮。
 
@@ -814,7 +829,7 @@ in-process Wings 也不得直调 Hairdresser、domain adapter、NativeInput、br
 
 `TrustedWingsActionReceiptAuthority` 只接受 action broker 形成的 terminal `ActionReceipt`，按 principal + intent/actionId + session/save/lore/target/observation/lease exact 对账后，才投影 `rejected | input_dispatched | effect_observed | domain_committed | unknown` 给 Persona。Persona/模型不能自报 outcome/evidence；`unknown` 只能按 receipt 的 `reconcileKind` 收束，不能自动重试。
 
-F7 source freeze 已把 immutable intent/consent、Host-owned virtual connection、structured chooser/action card、可信 observation、写入 credential、逐 intent lease、五态 result authority 与 production coordinator 组成完整写入纵切；Hair 同样把可信 `player_state` projection、结构化发型选择、preview card、exact prompt evidence、preview-bound lease、commit/reconcile/restore 串在同一 connection/transaction 上。production `window.activate` 也已通过同一 intent/receipt 管线完成 exact binding 与 post-dispatch 复核。这里只声明 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 的 source implementation complete 与对应隔离 candidate 的 `candidate_built`；在该 candidate 的真实外部进程/窗口 execution、E2E 和标准入口尚未取证前，不得把 source component、unit/focused test、candidate build 或自由文本 Shell 解释为已部署产品能力。
+F7 source freeze 已把 immutable intent/consent、Host-owned virtual connection、structured chooser/action card、可信 observation、写入 credential、逐 intent lease、五态 result authority 与 production coordinator 组成完整写入纵切；Hair 同样把可信 `player_state` projection、结构化发型选择、preview card、exact prompt evidence、preview-bound lease、commit/reconcile/restore 串在同一 connection/transaction 上。F8 再冻结 production `panel.open`：调用必须绑定当前 Launcher target 的新鲜 WGC pixels observation/frame，并取得 purpose=`structured_action`、capability=`panel.open`、actionLimit=1 的专用 one-shot lease；Host 只接受 allow-list panel key，由现役 panel owner 生成新的 CSPRNG instance 并通过同一 broker 返回 terminal action receipt。该路径不调用 `window.activate`，不发送任何 native keyboard/mouse packet，也不接受自由文本生成 panel key。F8 exact candidate 已用该路径打开可见帮助 panel 并观察 exact WebOverlay instance；证据仅达到 `e2e_verified / NOT_DEPLOYED`，详见 [F8 人工验收记录](evidence/cf7-agent-runtime-f8-manual-acceptance-2026-07-31.md)。
 
 ---
 
@@ -830,7 +845,7 @@ F7 source freeze 已把 immutable intent/consent、Host-owned virtual connection
 | `get_window` | 按 opaque target ID 重新绑定并复核 generation | 不接受任意 HWND |
 | `list_apps` | 返回 CF7 `standard_entry`、运行状态和 grant-free opaque lifecycle/qualification 摘要 | 不枚举系统应用，不返回完整 session/PID/路径/target |
 | `launch_app` | pre-launch authority 从无参数 `automation/start.ps1` 正式入口启动 CF7；已运行 formal pipe 直接认证并只返回 minimal `alreadyRunning` 状态 | 不接受任意 EXE/path/runtime mode/legacy/candidate；source authority 已落盘仍不得冒充 candidate execution、promotion 或标准入口验收 |
-| `get_window_state` | 返回目标截图层、可选 UIA、焦点/可见性/modal | 不截全桌面 |
+| `get_window_state` | 返回获准目标的 metadata；仅 mode 明确支持时返回截图层/可选 UIA | 不截全桌面；Flash 只返回 metadata |
 | `click` | observation-bound 坐标或 semantic node 的单/双/左右/中键点击 | 目标外坐标/过期 node 拒绝 |
 | `press_key` | 向当前目标派发白名单键或组合键 | 禁 Win/Meta、系统全局快捷键和安全序列 |
 | `type_text` | 向当前焦点输入 literal text | 焦点不明即拒绝；不读取系统剪贴板 |
@@ -838,24 +853,24 @@ F7 source freeze 已把 immutable intent/consent、Host-owned virtual connection
 | `set_value` | 对可靠 UIA editable pattern 赋值 | Flash 不透明字段不猜测 |
 | `drag` | 目标内 observation-bound 拖拽 | 起终点均须命中 |
 | `perform_secondary_action` | 调用可靠 UIA 的展开/折叠等次级动作 | 只接受观察中声明的 action |
-| `activate_window` | 在授权和人工空闲条件下激活 session target | 激活失败即停止 |
+| `activate_window` | registry 中保留的显式激活动作 | F8 production 未组合、未 advertise |
 
-能力按 surface/mode 显式 advertise，并返回 unavailable reason，不要求每种 surface 支持所有操作。例如 Flash 可以支持截图、坐标点击和键盘，但对 `set_value` 返回 `unsupported_for_surface`；Web/native 只有在当前 semantic snapshot 明示 editable/action pattern 时才支持 `set_value` 或 secondary action。qualification harness 可验证协议，但某能力只有在真实受支持的 CF7 production surface 有正例后才能对产品 advertise，不能为了凑 13/13 人造无产品价值入口。
+能力是否可调用必须由两层同时成立：authenticated session capability + 当前 exact surface mode。`capability-applicability.v1.json` 只记录 surface kind 对 method 的类型级潜在适用性，用于 validator/harness，不是 advertisement；不能从表中存在一格就推导当前 session 可调用。F8 production Flash 的 observation/input 双空，所以除获准 metadata 枚举/状态外，其像素、坐标、键盘、semantic 操作全部 `unsupported_for_surface`；`window.activate` 则在 session capability 层即不可达。Web/native 也只有当前 descriptor 和 semantic snapshot 同时明示相应 mode/pattern 时才支持动作。qualification harness 可验证协议，但不能为了凑 13/13 人造无产品价值入口或宣称 production 13/13。
 
 一期真实 applicability matrix：
 
 | 能力组 | 必须完成的真实正例 | 正确拒绝 |
 |---|---|---|
 | discover/get/list/launch | 固定 CF7 standard entry + 当前 Launcher/Flash/Web/Native/Wings registry | 其他应用、任意 HWND/路径、跨 logon、UAC 返回 `human_intervention_required` |
-| state/capture | 可见未最小化的 Flash、Web overlay、Native HUD、Wings Shell 与显式业务 modal | security/foreign surface 永不返回；最小化=`target_minimized`，无新鲜帧/黑帧=`capture_unavailable` |
-| click/key/type/scroll/drag/activate | 至少分别在真实 Flash/Web/Wings 支持面取得正例；native `SendInput` 还须先通过 containment gate | 错前台/命中、stale epoch、held human key、hook loss、UIPI/高 integrity 全部 fail closed |
+| state/capture | Launcher、WebOverlay、NativeHud 的真实 WGC 正例；Flash metadata 正例 | Flash pixels=`unsupported_for_surface`；security/foreign surface 永不返回；最小化=`target_minimized`，有 mode 但无新鲜帧=`capture_unavailable` |
+| click/key/type/scroll/drag/activate | 只对当前 session capability + surface input mode 同时成立的真实面取证 | Flash 双空 mode；production activation capability 缺席；错前台/命中、stale epoch、held human key、hook loss、UIPI/高 integrity 全部 fail closed |
 | set_value/secondary | Wings Shell 或真实 Web/native semantic provider 的 editable、expand/collapse 正例 | Flash/OCR 猜测、pattern 缺失、旧 node=`unsupported_for_surface|stale_semantic_node` |
 
 CF7 扩展能力：
 
 - `session.status/discover/attach/detach/shutdown`（shutdown 一期仅 developer/unattended capability；`player_assist` 只有语法有效、已认证、获完整先行授权且到达 issuance policy 的 acquire 才因缺少逐次中性退出 consent issuer 返回 `consent_required`，畸形、越权或直接 action 可更早失败）；
 - 现役标准启动与 reveal/cancel lifecycle；
-- 类型化 panel opener；
+- 类型化 `panel.open` opener：只接受 allow-list panel key，使用 one-shot `structured_action` lease、同一 action broker/receipt，原生输入 packet 必须为零；
 - `lease.acquire/renew/release`；
 - `trace.export`（仅显式 enrolled developer 的 `DeveloperInteractive` 会话；要求 `trace.export + observation.export + consentPurpose`、同 principal/session 的 `data.export + allowExport` observation grant 与 consent receipt；从可信 scoped ledger 以 pending marker + same-directory atomic move 输出最多 8 MiB 的 Runtime-owned JSONL；可控失败做 owner-scoped cleanup，删除受阻时保留 marker 供 dead-owner janitor 重试，wire 只返 artifact ID/文件名）；
 - 一个白名单 modifier transaction 纵切。
@@ -928,7 +943,8 @@ Gateway 在写入成功 response 的第一个字节前执行顺序两阶段 clai
 - CLI 与 MCP 两种客户端通过同一协议合同；
 - 首 observation grant 的 JSONL/MCP bootstrap 通过：`session.status` 只给 opaque lifecycleRef，零/多 current session fail closed，`observation.grant.issue` 强制 exactly-one selector，并在 32-target cap 内完成 `RuntimeOwned ∩ AllowedTargets` 与签发前后复验；grant 前不泄露完整 session、target 或 AllowedTargets；
 - credential rotation/revocation 能终止旧连接并阻止已读未 dispatch 请求；`player_assist` 的伪造/替换/cross-principal/session/expired consent receipt 全部拒绝且不能重置累计预算；
-- v1 的 13 项能力按真实 applicability matrix 逐项完成正例或冻结的 unsupported 拒绝；发现/启动/观察 5 项覆盖 cross-session、opaque ID、任意路径、identity、security surface 与 capture-scope 负例；
+- v1 的 13 项 registry method 具有完整 applicability 映射；static applicability 明确不是 advertisement，真实正例/unsupported 必须按当前 session capability + surface modes 判定，不要求或宣称 production 13/13；发现/启动/观察覆盖 cross-session、opaque ID、任意路径、identity、security surface 与 capture-scope 负例；
+- production surface truth 逐字成立：Launcher/WebOverlay/NativeHud 才 advertise WGC，Flash observation/input 双空且 pixels=`unsupported_for_surface`，production session 不 advertise `window.activate`；所有 panel producer 的 instance ID 均使用至少 144-bit CSPRNG opaque 值；
 - `CurrentUserOnly` 之外还验证 OS peer token 的 Windows session/elevation/process incarnation；`observation.capture` 固定像素 scope，grant-free app 结果不泄露 session/target，`business_modal` selector 恒空；
 - `trace.export` 只接受 enrolled developer + `DeveloperInteractive` + `trace.export/observation.export` + exact consentPurpose/receipt + `data.export/allowExport`；8 MiB Runtime-owned JSONL 使用 pending marker + same-directory atomic move，可控失败只清理 owned files，删除受阻时由 dead-owner janitor 重试，wire 不返路径；
 - Hair 六方法只接受唯一 DomainTransaction WebOverlay target；unknown receipt 无 token，同事务 lifecycle-local escrow 只在 exact connection/principal/session/lifecycle/target 权威 reconcile 后单次消费，不同连接/transaction/Core lifecycle 永不交付；
@@ -942,7 +958,7 @@ Gateway 在写入成功 response 的第一个字节前执行顺序两阶段 clai
 - 错窗口、同名窗口、重用 HWND、重启、锁屏、最小化、黑帧、hook loss、security modal 和 UIPI/高 integrity 均按 matrix reason fail closed；
 - Web 导航开始立即推进 document generation，panel instance 切换只失效对应层，不误杀整个 session；pipe 的 DACL/OS peer token/principal mismatch/oversize/malformed/rate limit 均有负向测试；
 - Wings lore projection、neutral consent 与一期人格契约通过测试；
-- Wings action 只能从 Launcher-owned immutable structured intent 进入共享 validator/dispatcher/broker/ledger/audit 管线，自由文本与 Persona 不能构造动作或收据；production `window.activate` 与 Hair action 均完成 exact binding、human-only prompt 和 trusted receipt/reconcile 投影；
+- Wings action 只能从 Launcher-owned immutable structured intent 进入共享 validator/dispatcher/broker/ledger/audit 管线，自由文本与 Persona 不能构造动作或收据；`panel.open` 使用专用 one-shot structured-action lease、exact observation/target 与零 native packet，Hair action 维持 human-only prompt 和 trusted receipt/reconcile 投影；production `window.activate` 保持未组合；
 - unattended 只由 strict-verified exact Core trusted runner 执行，slot allow-list、固定单调 30 秒 credential acquisition、periodic committed-surface refresh 后 fail-closed publish retry、Launcher-only/no-fallback shutdown observation、strict receipt 全字段、10 秒内 exact child exit code 0 与失败态 exact-child cleanup 均通过；clean success 还必须只在 stderr 产生一条 ≤16 KiB 的 `cf7.agent_runtime.trusted_unattended_completion.v1` 完成证据并逐字段绑定 runtime/process/Core/build/closure/Guardian/terminal receipt，stdout 保持协议专用；
 - 一个 modifier transaction 完成 preview/consent/commit/reconcile/恢复验证；
 - 旧 HTTP privilege bypass gate 已关闭，未授权 client 不能绕过 pipe capability 调 `/console`、写 `/task`、`/save-push` 或 `/shutdown`；
@@ -960,8 +976,8 @@ Gateway 在写入成功 response 的第一个字节前执行顺序两阶段 clai
 
 | Capability | 一期状态 |
 |---|---|
-| 单次目标截图 | `true`（有效 observation grant 内） |
-| 一次动作前后关键帧 | `true`（默认短时内存） |
+| 单次目标截图 | `true`（仅有效 grant + 当前 descriptor 像素 mode；F8 Flash 为 `false`） |
+| 一次动作前后关键帧 | `true`（仅有 frame source 的 surface，默认短时内存） |
 | 结构化 action/domain trace | `true`（默认脱敏 metadata + hash） |
 | 手动导出调试 artifact | `true`（开发模式、显式请求） |
 | 内存环形帧缓冲 | `false / RESERVED` |
@@ -1132,31 +1148,31 @@ CaptureSession
 
 | Slice | 目标 | 粗略量级 | Exit gate |
 |---|---|---:|---|
-| S0 合同与三项证伪 | versioned wire/rendezvous/credential、legacy HTTP 隔离、WGC 全 surface、SendInput containment、13 项合同，配假窗口 harness | 1–2 周 | 合同/旁路负向测试 + 错窗口/断连/版本拒绝 + capture/input 可行性报告 |
-| S1 Observe-only | Launcher registry、WGC/UIA、frame/keyframe/audit | 2–3 周 | Flash/Web/Native/owned modal、DPI/多显示器测试 |
-| S2 Action lease | 8 项 input method、焦点、UIPI、人工接管、多 Agent lease | 2–3 周 | 输入动作及负向矩阵；与 S0/S1 合并覆盖全部 13 项 |
+| S0 合同与三项证伪 | versioned wire/rendezvous/credential、legacy HTTP 隔离、surface mode truth、SendInput containment、13 项 registry 合同，配假窗口 harness | 1–2 周 | 合同/旁路负向测试 + 错窗口/断连/版本拒绝 + capture/input 可行性报告 |
+| S1 Observe-only | Launcher registry、Launcher/WebOverlay/NativeHud WGC、Flash metadata-only、frame/audit | 2–3 周 | 三类 WGC 正例、Flash pixels unsupported、DPI/多显示器测试 |
+| S2 Action lease | production-advertised input/structured method、焦点、UIPI、人工接管、多 Agent lease | 2–3 周 | 实际 advertise 子集及负向矩阵；static applicability 不冒充 13/13 |
 | S3 Modifier vertical | `appearance.hair.change.v1` 发型切换与恢复 | 1–2 周 | CAS preview/validate/consent/commit/reconcile/restore |
 | S4 Wings vertical | Shell、Persona、LoreProjection、neutral Consent UI、offline reference backend、指导闭环 | 2–4 周 | public companion exact fact set 纵切与剧透/权限/fallback 测试 |
 | S5 产品收口 | E2E、标准入口、发布、文档同步 | 1–2 周 | 既有 v2 promotion 与 standard entry |
 
-### 12.1 F7 source freeze 的实现/证据状态矩阵
+### 12.1 F8 final source freeze 的实现/证据状态矩阵
 
-本表是 2026-07-31 immutable C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 的 source freeze 快照，由本 documentation-only D1 承载；D1 只引用父 C1，不嵌入自身 hash。测试列只记录同一 C1 已观察到的本地 source/candidate 证据，数字与命令由 `testing-guide.md` 和主任务验收记录收口，不继承既有正式 runtime 的 promotion。
+本表绑定 2026-07-31 F8 final source `53caabc90941826ddacf626f536b0f473adbf049` / tree `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`。F7 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 的 `candidate_built` 与 `trusted_runner_credential_timeout`、以及 `7f1c21d9db` 的早期可见 panel run，均保留为历史且不参与 F8 身份拼接。测试与人工验收只说明下列 exact source/candidate 的实际范围，不继承既有正式 runtime 的 promotion。
 
 | Slice/域 | 当前 source implementation | 本地/真实环境证据边界 | 尚未满足的产品 gate |
 |---|---|---|---|
-| F1–F7 contract + CLI/MCP | v1 schema/registry/vectors、strict CF7A/JSON-RPC、credential loader、JSONL/MCP adapter、formal-only pre-launch authority、lifecycleRef/selector、scope 收紧、scoped audit ledger 与 8 MiB Runtime-owned marker/atomic-move trace exporter 已落盘；production 仅在 enrolled developer + consentPurpose + 完整 scoped chain 全部成立时 advertise | Launcher fresh 全树 **2678 passed + 3 explicit opt-in skipped / 2681 total，0 fail**；仓库 SDK resolver **7/7** 并精确解析 `.NET SDK 10.0.300`；Node client **37/37**。contract/client/focused tests覆盖 fixed path/args、credential capability、MCP lifecycle/ID/notification、already-running、bootstrap handoff、OS peer、trace authority、final-move 后 audit failure、删除受阻保留 marker/dead-owner janitor、并发/既有同名不误删、legacy `.tmp` 独占清理与路径不泄露等；这些只证明 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 的 source freeze 行为 | installer/UAC/security-desktop/other-logon 真实负向、真实跨进程 client、真实 crash/power-loss 与 delete-denial 恢复演练、candidate execution、promotion 与标准入口 E2E |
-| S0 transport/auth/legacy HTTP/XMLSocket | named-pipe/rendezvous/authenticator、独立 OS peer token、principal/grant/lease/revocation、live connection termination、trusted issuer receipt、互斥 legacy HTTP 与 exact Flash XML peer authority 已在 source freeze | transport/security/legacy HTTP/XML peer 本地负向与 focused tests覆盖同用户但错 session/elevation、公开 log body cap 与 unauthorized peer 零替换/dispatch | standard entry 下真实 CLI/MCP、credential rotation、Flash 关闭/重启与跨进程全链 |
-| S1 observe | Host-owned session/surface registry、导航开始推进 document generation、`activePanel{name,instanceId,targetId}`、human-only `BusinessModal`、WGC/D3D11 capture 与 bounded content 已落盘 | 当前机器取得真实 Win11/GPU/WGC 单显示器 HWND 正例；selector/generation/fail-closed 有 source tests | 第二显示器物理迁移 gate、完整 Flash/Web/Native/owned-modal product matrix |
-| S2 action | observation-bound action、idempotency、单一绝对 deadline、lease、native input containment、external-input preemption、production `window.activate` exact-binding/postcheck，以及专用 shutdown lease、session execution reservation、SafeExit/response/audit 两阶段完成闭包已落盘；`player_assist + shutdown` descriptor 非法，合法完整 acquire 在 policy 门 `consent_required` | focused tests覆盖 `window.state` 零激活、activation stale/owner/foreground/unknown、失败 consume 不释放他人 reservation、普通 action receipt 交付前阻断 shutdown、human override 与首字节前 audit→lease/human-fence 顺序 claim 竞态、concurrent duplicate committed/aborted exact receipt replay、reserved audit event、256 tombstone/64 shutdown latch overflow、JSON+binary 全 frame deadline，以及完整写/写失败/后置 flush/post-write callback/audit append failure 的 committed/unknown/continuity-lost/truncated 单终态；本地 facade 不能替代全部真实前台、UIPI、security modal 和人工接管矩阵 | production surface 实机正例与全负向矩阵；exact candidate 的 supported shutdown/进程退出 E2E；不能仅凭 unit tests advertise 13/13 |
+| F1–F8 contract + CLI/MCP | v1 schema/registry/vectors、strict CF7A/JSON-RPC、credential loader、JSONL/MCP adapter、formal-only pre-launch authority、scope/trace/Hair/shutdown 闭包，以及 F8 surface mode/applicability/panel ID 不变量已落盘 | Launcher fresh 全树 **2724 passed + 3 explicit opt-in skipped / 2727 total，0 fail**；TrustedRunner **57/57**；仓库 SDK resolver **7/7** 并精确解析 `.NET SDK 10.0.300`；Node client **37/37**。测试覆盖 production composer exact capability、Flash 双空与 capture 早拒绝、三类 WGC、无 production activator、panel instance 144-bit CSPRNG、structured panel action 与 shutdown 时序；这只证明 source | installer/UAC/security-desktop/other-logon 真实负向、真实 crash/power-loss 与 delete-denial 恢复演练、promotion 与标准入口 |
+| S0 transport/auth/legacy HTTP/XMLSocket | named-pipe/rendezvous/authenticator、独立 OS peer token、principal/grant/lease/revocation、live connection termination、trusted issuer receipt、互斥 legacy HTTP 与 exact Flash XML peer authority 已在 source freeze | F8 人工纵切只走 Agent Runtime MCP；无 Computer Use、legacy HTTP 或 `input.*` 调用。transport/security/XML peer 的其余结论来自 source/focused tests | standard entry 下 credential rotation、Flash 关闭/重启、跨 logon/elevation 实机全链 |
+| S1 observe | Host-owned registry；Launcher/WebOverlay/NativeHud=WGC；Flash metadata-only 双空；human-only `BusinessModal`；panel instance 统一 CSPRNG | single-display Win11/GPU exact candidate：Launcher WGC hash `B1E849FF2472C276DA5C41B424C4395ED49C0C3A3FAD59A7A3AAE2B421E5CB22`、NativeHud hash `3E23CE959D6AC2F1A94832A8293048F314AB4E66365871CDB20C803BE49E0494`、Flash metadata/pixels=`unsupported_for_surface`、WebOverlay hash `C86D95D8577C648515247B020A8791CA19147467EFCA670597384A11A8735439`；像素只在 client 内存对账，没有写 PNG | 第二显示器物理迁移、NativeHud 在更多生命周期的产品矩阵、owned modal/security surface 实机全负向 |
+| S2 action | observation-bound action、idempotency/deadline/lease、external-input preemption、专用 shutdown 闭包；production 无 `window.activate`；`panel.open` 走 one-shot structured-action lease 且零 native packet；retry 仅限 canonical transient，shutdown 永不重试 | operator 以 57 次 MCP `tools/call` 完成纵切，`acceptancePassed=true`、0 failure；structured `panel.open` 打开 `panel_LBIeoY-dgrxurL6gELRDvCbH`，可见保持 12011 ms，operator transcript 中无 `window.activate`、`input.*` 或 `session.shutdown`。stdin EOF 后由 trusted wrapper 经 Agent Runtime 协议发送唯一 `session.shutdown`，严格 receipt 与 exact clean exit 成立 | 原生 input/UIPI/hook-loss/人工抢占完整实机矩阵；不能从本纵切宣称 13/13 |
 | S3 Hair | AS2/Host/Web CAS、focused runner、exact Launcher prompt、preview/consent/commit/reconcile/restore、同 transaction-instance unknown-token lifecycle escrow、持久 restore point 与 service restart durable-state reconstruction 已落盘；新 service/transaction 实例不恢复原始 token | Panel contracts **62/62**、runtime **27/27**、browser 三视口各 **39/39**；TestLoader run `4a4c842aa76e4723969aa90b1c4a9776` fresh **28/28**、Compiler **0/0**、32K retry **0**。publish-only `scripts/asLoader.swf` 为 **1,047,718 bytes**、SHA-256 `9608A2B3E0A6F22F812DAD72F68952A0B21952EA9DB0CB15E1F974573922E364`、**9,593 functions**、最大 **46,025B**；未编 main，非 runtime promotion | 对冻结身份执行真实中性 prompt、unknown/reconcile/token delivery、完整退出/重启回读与标准入口 exact transaction E2E |
-| S4 Wings | Shell/Persona/lore/offline backend、player-assist authority、structured chooser/card、Host virtual connection、可信 observation、写入 credential、逐 intent lease、五态 receipt、production activation 与 Hair coordinator 已组成 source production pipeline | focused/integration tests覆盖自由文本零执行、prompt/indicator、漂移撤销、参数 HMAC/current binding、activation 与 Hair unknown/reconcile；source test 不等于可见产品 E2E | 真实 privacy/action card、外部窗口/input 和标准入口 Wings/Hair E2E |
-| Production composer/runner | `Program.cs` 在 standard normal 装配 `LauncherAgentRuntimeHost.CreateProduction`；最早分支装配受信 Core unattended runner；legacy 两模式跳过 Agent control plane | `FullyQualifiedName~AgentRuntime.TrustedRunner` fresh **48/48**；覆盖固定单调 30 秒 credential acquisition、取消/timeout exact-child recovery、periodic surface-refresh publish retry、active response/concurrent error/idle lifecycle stdout 背压、单一 absolute deadline、bounded pipe abort、`allowValidatedFlashKeyframeFallback=false`、Launcher source-only observation、strict shutdown lease/receipt、exact child 10 秒/exit code 0，以及只在 clean success 输出单条 ≤16 KiB secret-free stderr completion evidence。这些只证明 source freeze | exact candidate process/rendezvous、真实 JSONL/MCP 与 supported shutdown E2E；必须捕获并核验 exact completion evidence，进程消失不算 |
-| S5 release/external | exact C1 tree `7362881e96d8ed0f9c20ccae580426c522f14946` 已生成隔离 candidate `c-f67f1054e7dd-afa36739a8-20260730t213150850z-03384437`；identity `F67F1054E7DD19600138C3196D0798CFA487701CB7143C4DDFD2DC426D26E372`、closure `3C2CA3E6E935BF23A061228ED3D9BDA3823E81186057E8C86118FAD5C7CEBF0D`、Core EXE SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`；production policy **26/26**，receipt SHA-256 `CC7ED850D18D2C72947DA69E74C28E529A6DC988CA37AAE4D486C43954FAB79B`，严格状态为 `candidate_built / NOT_DEPLOYED` | 当前执行会话 `GetForegroundWindow()==0`；exact candidate 经标准 `automation/start.ps1 -CandidateRoot` + JSONL unattended 入口返回 `trusted_runner_credential_timeout`，未产生 completion evidence。post-check 无候选/Flash/热键进程、`launcher_ports.json`、live bootstrap request、credential 或 rendezvous 残留；这是固定 30 秒 gate 的 fail-closed 负向证据，不是 `candidate_executed`/E2E。当前施工机只有一块显示器；现役 `f01f4b...` promotion 属于另一 source identity且未改变 | 具备真实交互前台的 exact candidate execution/E2E、immutable request、local X509 + GitHub Hosted OIDC/Sigstore 双 signer/双 faultDomain、strict v2 promotion、standard-entry 同身份复核与双屏证据 |
+| S4 Wings | Shell/Persona/lore/offline backend、player-assist authority、structured chooser/card、Host virtual connection、可信 observation、写入 credential、逐 intent lease、五态 receipt 与 Hair coordinator 已组成 source pipeline；production activation 明确缺席 | focused/integration tests覆盖自由文本零执行、prompt/indicator、漂移撤销、参数 HMAC/current binding、Hair unknown/reconcile；F8 visible panel 仅证明 shared structured action primitive | 真实 Wings privacy/action card、玩家授权、Hair 和标准入口 E2E |
+| Production composer/runner | `Program.cs` standard normal 精确组合三类 WGC、Flash metadata-only、空 activator map；最早分支装配受信 Core runner；legacy 模式跳过 Agent control plane | source composition tests + exact candidate MCP visible run；shutdown action 不重试，严格 receipt、exact process exit 与 residue compare 均记录在独立证据 | 仍需 standard-entry 同身份复核；完整 runner stderr completion contract 的各失败型实机演练 |
+| S5 release/external | exact candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`；identity `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`、closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`、Core `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`；production policy **26/26** | operator MCP 报告 `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json`（SHA-256 `486C3B2B82996791D3371098E823265C265C865883AFA0B5922A42B8D0AACF19`）、operator transcript `.jsonl`（SHA-256 `B3BA1B721C4EF89723152A45FCDE1CA05EFAB901211F79E0CD929AFA93CE59E6`）、trusted completion SHA-256 `CA6BA5ECBDD7DE362D6A375BEF54FB50E3BE917DF7154B3CC1C5640B7D58F67C`、residue compare SHA-256 `2C76FF28503AE5344FBBE4EE394C600A0A7330251EE9BED1F90A6005E8196072` 且 `noResidualDelta=true`；达到 `candidate_executed → e2e_verified / NOT_DEPLOYED` | immutable release request、local X509 + GitHub Hosted OIDC/Sigstore 双 signer/双 faultDomain、strict v2 promotion、standard-entry 同身份复核与双屏证据 |
 
 切片可部分并行，但 S0 的身份/协议/旧旁路、S1 的 session truth 和 S2 的 lease 不应跳过。当前机器已由仓库 resolver 核验精确 .NET SDK `10.0.300`，环境不是当前阻塞；正式证据仍必须来自每轮 exact resolver/build gate。spike 可暂放 `tools/` 的隔离 harness，但生产执行器必须回归 Launcher owner。
 
-最大技术未知是 WGC 对“嵌入 Flash child + 多个 Web/native 顶级 HWND”的完整捕获。S0 必须覆盖启动页、游戏、Web panel、Native HUD、owned modal、遮挡、最小化和恢复；初期允许像 Codex 一样返回多张有 z-order 的截图。若 WGC 对嵌入 Flash 持续黑帧或生命周期不可靠，才触发“Flash 改为 off-screen top-level + 合成器”的独立 ADR，粗略另增 **4–8+ engineer-weeks**，不得把该重构悄悄塞入一期。
+F8 已关闭“用 WGC 捕获嵌入 Flash child”的一期路径：它当前就是 metadata-only，不再把黑帧或 `internal_error` 当作待重试截图。若未来确有像素/输入需求，唯一允许的扩张方向是“Flash 改为 off-screen top-level + 合成器”的独立 ADR，粗略另增 **4–8+ engineer-weeks**；不得把该重构、BitBlt fallback 或 reserved `FlashSnapshotKeyframe` 悄悄塞回一期。当前仍需补足多显示器、更多 NativeHud 生命周期和 security modal 实机矩阵。
 
 后续投资触发：
 
@@ -1175,14 +1191,14 @@ CaptureSession
 | 域 | 必测 |
 |---|---|
 | Session | 正确实例、同名伪窗口、重启、HWND 重用、lifecycle/attempt/surface/document/panel 分层失效、formal/candidate identity、unqualified_dev 降权 |
-| Capture | observation grant、Flash/Web/Native/业务 owned modal、遮挡、100/125/150/200% DPI、多显示器、frame→content transform；minimized=`target_minimized`、无新鲜帧/黑帧=`capture_unavailable`，security/foreign surface 必须零像素/零 metadata |
-| Input | click/key/type/scroll/set/drag/secondary/activate；错焦点/越界/stale=`rejected`，UIPI/高 integrity=`integrity_mismatch` 或保守 unknown，hook loss=`input_guard_unhealthy`，external input 抢占且 cleanup 只释放 Runtime-owned input |
+| Capture | observation grant；Launcher/WebOverlay/NativeHud WGC；Flash metadata-only 双空与 pixels=`unsupported_for_surface`；遮挡、100/125/150/200% DPI、多显示器、frame→content transform；minimized=`target_minimized`、有 mode 但无新鲜帧=`capture_unavailable`，security/foreign surface 必须零像素/零 metadata |
+| Input | 13 项 registry 的 static applicability 非 advertisement；实际正负例只按 session capability + exact surface modes。production `window.activate` 缺席，Flash input 双空；其余 advertise input 覆盖错焦点/越界/stale、UIPI/高 integrity、hook loss、external input 抢占与仅释放 Runtime-owned input |
 | Concurrency | 多 scoped reader、reader 不使 writer stale、双 writer 竞争、lease timeout、client crash、Launcher crash；同 session execution reservation 必须由成功 consume 的 owner 跨 action consume→全部 JSON/optional-binary response frames commit/abort，失败 consume 不得释放他人 reservation。前序 mutation/restore-token receipt 未收束时 shutdown 不得越过；human/external input 抢占 active/execution-pending/delivery-pending/queued，但不能回滚已取得 delivery-write ownership 的 response；首字节前 audit→lease/human-fence 顺序双 claim 竞态只能有一个胜者。terminal tombstone FIFO 256、committed-shutdown exact-session latch 64 及其 overflow global fail-closed 必须覆盖 churn，tombstone eviction/renew/release 不得重开 writer |
-| Protocol | same user 之外独立 OS peer token 的 Windows session/elevation/process-incarnation 复验、remote/elevated/wrong-session client reject、ticket/credential/principal mismatch、version mismatch、malformed/oversize/rate limit、binary handle TTL/owner、action/idempotency conflict、receipt 丢失、not-found proof、三类 unknown reconcile；同 identity/canonical payload replay 必须返回同一 retained `ContractReceipt` 且零 redispatch/零二次通用 audit/零二次 receipt synthesis，concurrent shutdown duplicate 分别覆盖 committed 原 success 与 aborted 原 durable Unknown 的对象/字段一致。另覆盖完整 request frame 收到起贯穿 parse/admission/scheduler/performer/所有 response `WriteAsync` 的单一绝对 deadline，以及 `session.status → lifecycleRef`、零/多 current session、exactly-one selector、`business_modal` 恒空、`RuntimeOwned ∩ AllowedTargets`、32-target cap、签发前后 TOCTOU、导航开始代际失效、JSONL/MCP 等价 bootstrap、credential live revoke 与 scoped trace exporter 的授权/8 MiB/owned cleanup/pending marker/dead-owner janitor。shutdown 另固定仅 DeveloperInteractive/UnattendedTest、selector/lease scope 恰好一个当前 RuntimeOwned Launcher target（非 session 全局唯一断言）、TTL≤30 秒、one action/no renew、合法完整 PlayerAssist acquire=`consent_required`，以及 generic append 拒绝 reserved response event、response-pending→顺序双 claim→完整 frames 正常 `action_response_written`、写前/写中失败 `action_response_unknown`、后置 Flush 不回滚、post-write commit/audit failure continuity-lost/truncated、不合成 Unknown且不算 clean E2E、abort callback 不确认时 reservation 保持 fail closed 的单终态合同 |
+| Protocol | same user 之外独立 OS peer token 的 Windows session/elevation/process-incarnation 复验、remote/elevated/wrong-session client reject、ticket/credential/principal mismatch、version mismatch、malformed/oversize/rate limit、binary handle TTL/owner、action/idempotency conflict、receipt 丢失、not-found proof、三类 unknown reconcile；同 identity/canonical payload replay 必须返回同一 retained `ContractReceipt` 且零 redispatch/零二次通用 audit/零二次 receipt synthesis，concurrent shutdown duplicate 分别覆盖 committed 原 success 与 aborted 原 durable Unknown 的对象/字段一致。另覆盖完整 request frame 收到起贯穿 parse/admission/scheduler/performer/所有 response `WriteAsync` 的单一绝对 deadline，以及 `session.status → lifecycleRef`、零/多 current session、exactly-one selector、`business_modal` 恒空、`RuntimeOwned ∩ AllowedTargets`、32-target cap、签发前后 TOCTOU、导航开始代际失效、JSONL/MCP 等价 bootstrap、credential live revoke 与 scoped trace exporter 的授权/8 MiB/owned cleanup/pending marker/dead-owner janitor。bounded retry 只接受 canonical retryable transient + `retryable=true`，任何 ambiguity/mutation/unknown 禁止重试；shutdown action 永不重试。shutdown 另固定仅 DeveloperInteractive/UnattendedTest、selector/lease scope 恰好一个当前 RuntimeOwned Launcher target（非 session 全局唯一断言）、TTL≤30 秒、one action/no renew、合法完整 PlayerAssist acquire=`consent_required`，以及 generic append 拒绝 reserved response event、response-pending→顺序双 claim→完整 frames 正常 `action_response_written`、写前/写中失败 `action_response_unknown`、后置 Flush 不回滚、post-write commit/audit failure continuity-lost/truncated、不合成 Unknown且不算 clean E2E、abort callback 不确认时 reservation 保持 fail closed 的单终态合同 |
 | Legacy HTTP / XMLSocket | standard 未授权 `/console`、写 `/task`、`/save-push`、`/shutdown` 全拒绝；Flash 必需窄 probe/log 正例，`/logBatch` Content-Length/chunked 64 KiB 与 413/单行净化，`crossdomain` GET-only；legacy 与 Agent control plane 互斥。standard XML peer 必测 exact PID/start/path、PID reuse、expected identity race、unauthorized peer 不替换/不推进 generation/不 dispatch、Host composition fail-closed 后游戏仍可连与 teardown 不重武装 |
 | Save | 任意开发存档 attach、专用槽 unattended rebuild、玩家选择存档的 assist 正例、rebuild/delete/裸写拒绝、data-egress 分离 |
 | Domain | hair snapshot/preview、`expectedCurrentHair` CAS、focused runner、exact prompt HWND/instance、foreign input/second security surface fail-close、close/reopen 隔离、commit、unknown receipt 零 token、同 transaction 实例 escrow 单次交付、不同 connection/new transaction/Core lifecycle 拒绝、service restart 只重建 durable state 且不恢复原始 token、restore-first durable reconcile 与零 replay；六方法必须同一唯一 DomainTransaction WebOverlay target |
-| Wings | exact fact-set provenance、互斥分支、旧存档/NG+/全解锁开发存档、跨存档缓存隔离、offline reference backend、neutral consent、拒绝无惩罚、hide/pause、Boss principal 分离、cloud/data-egress 拒绝后的本地 fallback；structured pipeline 固定覆盖 canonical 参数哈希、generic wire 零 Host attestation、virtual lease exact binding、connection reason-bound revoke、五态 result HMAC/current binding、foreign trust domain、chooser/action card、attached write connection、production `window.activate` exact pre/post binding、Hair coordinator 与自由文本零执行。真实观察/输入/授权和标准入口 E2E 仍是外部 gate |
+| Wings | exact fact-set provenance、互斥分支、旧存档/NG+/全解锁开发存档、跨存档缓存隔离、offline reference backend、neutral consent、拒绝无惩罚、hide/pause、Boss principal 分离、cloud/data-egress 拒绝后的本地 fallback；structured pipeline 固定覆盖 canonical 参数哈希、generic wire 零 Host attestation、virtual lease exact binding、connection reason-bound revoke、五态 result HMAC/current binding、foreign trust domain、chooser/action card、attached write connection、`panel.open` 专用 lease/零 native packet、Hair coordinator 与自由文本零执行；production activation 保持缺席。真实玩家授权和标准入口 Wings/Hair E2E 仍是外部 gate |
 | Trusted runner | credential acquisition 固定单调 30 秒且与 10 分钟 bootstrap/credential lease 上限分离，wrapper/client 零可配置；取消与 `trusted_runner_credential_timeout` 均 exact-owned recovery。surface refresh callback 在 committed state 后、synchronizer lock 外执行，Host `IsStopping` gated 并于每次 periodic completion 重试 publish，失败不回滚 state 且保持 closed。只有 no forced recovery + protocol shutdown + adapter 0 + strict receipt + exact child 0 才向 stderr 输出恰好一条 ≤16 KiB `cf7.agent_runtime.trusted_unattended_completion.v1`；验证完整 process/Core/build/closure/Guardian/receipt、零 secret、stdout protocol-only |
 | Capture policy | 未授权无 frame、目标外窗口不出现、ephemeral/persist/export 分离、segment 删除、video capability 为 unavailable |
 
@@ -1206,18 +1222,18 @@ CaptureSession
 
 | 层 | 可以证明 | 不能证明 |
 |---|---|---|
-| source implementation | `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 冻结实现、schema、生成物、测试与本地 build/test 输出 | 正式 candidate 已执行、玩家标准入口可用，或旧正式 runtime 身份已包含本轮源码 |
+| source implementation | `53caabc90941826ddacf626f536b0f473adbf049` / `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d` 冻结实现、schema、生成物、测试与本地 build/test 输出 | 正式 runtime 已部署、玩家标准入口可用，或旧正式 runtime 身份已包含本轮源码 |
 | runtime candidate/promotion | 由 exact build identity、payload closure、实际进程路径与 v2 receipts 证明对应阶段 | 未达到的后一阶段；`candidate_built` 尤其不等于 `candidate_executed` 或部署 |
 | real external evidence | 在真实 Win11/GPU/Flash/多显示器/人工授权环境取得的限定正例或负例 | 未覆盖的硬件、显示器、DPI、security modal、玩家存档或跨进程全矩阵 |
 
-本轮 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 与本地测试进入第一层，production-policy 通过的 exact 隔离 candidate 只进入第二层的 `candidate_built`；无前台环境下的凭据超时只证明安全失败关闭，不能晋级为 `candidate_executed`。单显示器上的真实 WGC 正例只能证明该具体环境，不能补齐双显示器 gate。没有同一 source identity 的 immutable request、双 signer/双 faultDomain promotion receipt 和标准入口复核时，本文不得使用 `promoted`、`standard_entry_verified` 或“已部署”。
+本轮 `53caabc90941826ddacf626f536b0f473adbf049` 与本地测试进入第一层；production-policy **26/26** 的 exact `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a` 已实际执行，并在单显示器交互环境取得限定的 `e2e_verified`：operator 通过纯 Agent Runtime MCP 完成 `acceptancePassed=true`、0 failure、57 次 MCP tool call、帮助 panel `panel_LBIeoY-dgrxurL6gELRDvCbH` 可见保持 12011 ms，以及三类 WGC content hash 逐项对账；operator transcript 不含 `session.shutdown`。stdin EOF 后，trusted wrapper 再经 Agent Runtime 协议发送唯一 shutdown，并取得严格 completion 与 `noResidualDelta=true`。该结论只覆盖三类 production WGC/Flash metadata fail-closed/structured panel opener/严格 shutdown 与 cleanup；没有使用 Computer Use、legacy HTTP、`input.*` 或 `window.activate`，像素只在内存校验 hash，未写 PNG。它不能补齐双显示器、13/13、Wings/Hair 或安全 modal 全矩阵。没有同一 source identity 的 immutable request、双 signer/双 faultDomain promotion receipt 和标准入口复核时，本文不得使用 `promoted`、`standard_entry_verified` 或“已部署”。
 
-### 13.3 F1–F7 范围冻结审阅完成判据
+### 13.3 F1–F8 范围冻结审阅完成判据
 
 - 技术底座、Wings 人格层、一期能力与永久禁区都有独立一级章节；
 - “任意开发存档”与“专用无人值守存档”不再互相覆盖；
 - `player_assist` 的 observation grant、默认只建议、逐段 lease、独立 modifier consent、无 rebuild/delete 与 data-egress 分离都已写入；
-- CF7 v1 的 13 项能力有完整 applicability 映射；
+- CF7 v1 的 13 项 registry method 有完整 applicability 映射，且 applicability 被明确限定为类型级潜在适用性而非 production advertisement；
 - 视频接口预留与一期不实现同时明确；
 - 硬 canon、提案和本 ADR 新产品决策被分开；
 - 未把尚未落地的目标态写入现役 architecture/launcher/testing 文档；已落地切片必须同轮同步；
@@ -1227,13 +1243,14 @@ CaptureSession
 - 一期 current session 必须唯一；kind resolution 只产生 `RuntimeOwned ∩ authenticated principal AllowedTargets` 的 non-empty exact scope，最多 32 项；
 - 完整 AllowedTargets 不进入 Hello/method params/grant 前响应，签发前后均重验 lifecycle 与 exact target authority；
 - JSONL 与 MCP 都通过 `session.status` 启动并遵循相同的 grant bootstrap，不能从隐藏 Welcome、rendezvous 或窗口枚举另建一条路径；
-- standard/legacy 控制面互斥，standard XMLSocket exact Flash owner、credential live rotation/revoke、trusted player receipt、fixed pixel capture、minimal app result 与 unique Hair DomainTransaction target 均已成为服务端不变量；trace export 的 enrolled developer、consentPurpose、grant/receipt、scoped ledger、8 MiB、pending marker、owned cleanup 与 dead-owner janitor 门不可放宽；单文件 move 不得伪称为跨 audit/filesystem 的全失败零残留事务；
-- Wings 自由文本零执行，action 必须来自 Launcher-owned immutable intent、共享 validation/dispatch/broker/ledger/audit 管线与 exact trusted receipt projection；structured action、production activation 与 Hair source pipeline 已闭合；
+- standard/legacy 控制面互斥，standard XMLSocket exact Flash owner、credential live rotation/revoke、trusted player receipt、真实 surface pixel mode、minimal app result 与 unique Hair DomainTransaction target 均已成为服务端不变量；trace export 的 enrolled developer、consentPurpose、grant/receipt、scoped ledger、8 MiB、pending marker、owned cleanup 与 dead-owner janitor 门不可放宽；单文件 move 不得伪称为跨 audit/filesystem 的全失败零残留事务；
+- Wings 自由文本零执行，action 必须来自 Launcher-owned immutable intent、共享 validation/dispatch/broker/ledger/audit 管线与 exact trusted receipt projection；`panel.open` structured action 与 Hair source pipeline 已闭合，production activation 明确缺席；
 - F6 的 OS peer token、exact process/HWND incarnation、导航开始 generation、`business_modal` 恒空、enrolled-developer scoped trace、Hair escrow 与 trusted Core runner 已进入代码、contract 和测试闭集；
 - F7 的 required `purpose` / optional `renewAfter`、PlayerAssist+shutdown 不可能状态、shutdown selector scope 恰好一个当前 Launcher target（非 session 全局唯一断言）、成功 consume owner reservation、失败 consume 非 owner、首字节前 audit→lease/human-fence 顺序双 claim、external-input preemption ownership fence、same-canonical exact retained receipt replay、reserved audit event、256 tombstone/64 committed-shutdown latch 与 overflow fail-closed、完整 JSON+binary frame deadline、post-write/abort callback failure 的 continuity-lost/reservation fence、audit truncated/no-synthetic-Unknown，以及 runner 固定 30 秒 credential wait、surface-refresh publish retry、no-fallback/Launcher-only/strict-receipt/10 秒 exit-code-0/单条 bounded stderr evidence 已形成单终态闭包；
-- source 落盘、`candidate_built`、尚未完成的 candidate execution/promotion 与真实外部环境证据已在状态矩阵中分层；无前台凭据超时、双显示器和正式 v2 promotion 的缺口均保持显式。
+- F8 的 Launcher/WebOverlay/NativeHud WGC、Flash metadata 双空/pixel unsupported、production 无 `window.activate`、all-panel CSPRNG、applicability 非 advertisement、bounded retry allow-list 与 shutdown action zero-retry 已进入代码、contract、tests 和 exact candidate 取证；
+- source 落盘、`candidate_built → candidate_executed → e2e_verified`、尚未完成的 promotion/standard-entry 与真实外部环境证据已在状态矩阵中分层；双显示器、13/13 和正式 v2 promotion 的缺口均保持显式。
 
-满足本小节说明 F1–F7 的 `scope_accepted`、contract freeze 与 source implementation complete；不说明 candidate、E2E、promotion 或标准入口完成。产品完成仍只按第 6.4 节 `wings_network_phase1_verified` 及正式发布词典判定。
+满足本小节说明 F1–F8 的 `scope_accepted`、contract freeze、source implementation complete 与本文限定的 candidate E2E；不说明 promotion、标准入口或完整 Wings 产品完成。产品完成仍只按第 6.4 节 `wings_network_phase1_verified` 及正式发布词典判定。
 
 ---
 
@@ -1241,25 +1258,26 @@ CaptureSession
 
 | 文档 | 本轮处理 | 原因/后续触发 |
 |---|---|---|
-| 本 ADR | 修订到 F7 | 一期 source truth、安全闭环、Wings/Hair/activation/shutdown/trusted runner 与证据边界的唯一真源 |
-| [`agentsDoc/game-design.md`](../agentsDoc/game-design.md) | 同步 F7 路由 | Wings 桌宠/玩家授权/最终对手属于玩家侧设计方向；F7 只收紧技术完成合同，无新增游戏设计事实 |
-| [`docs/tech-stack-rationalization.md`](tech-stack-rationalization.md) | 同步 F7 source boundary | 冻结 Launcher-contained 技术边界与 wrapper 非权威 |
-| [`launcher/contracts/agent-runtime/v1/README.md`](../launcher/contracts/agent-runtime/v1/README.md) | 同步 F7 | wire schema、OS peer、scope、trace、Hair、shutdown 与原子升版 |
-| [`launcher/src/AgentRuntime/Contracts/README.md`](../launcher/src/AgentRuntime/Contracts/README.md) | 新增 | C# internal contract 对照与不得替代 wire 真源的边界 |
-| [`tools/cf7-agent/README.md`](../tools/cf7-agent/README.md) | 同步 F7 | JSONL/MCP bootstrap、trace/Hair、shutdown 与 trusted runner |
-| [`agentsDoc/architecture.md`](../agentsDoc/architecture.md) | 同步 F7 | production composition、Host-owned ingress、shutdown completion 与 source/release 分层 |
-| [`launcher/README.md`](../launcher/README.md) | 同步 F7 | 运行态边界、legacy 区分和受信 runner |
-| [`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md) | 同步 source/evidence | 固定自动门与 `candidate_built`，并显式保留双屏、candidate execution、promotion 与 standard-entry 缺口 |
-| [`automation/README.md`](../automation/README.md) | 同步 F7 | trusted Core runner、严格 shutdown 与 legacy HTTP 互斥 |
+| 本 ADR | 修订到 F8 | 一期 source truth、安全闭环、surface capability truth、structured panel/shutdown 与证据边界的唯一真源 |
+| [F8 人工验收证据](evidence/cf7-agent-runtime-f8-manual-acceptance-2026-07-31.md) | 新增 | exact candidate、operator MCP transcript、trusted completion、内存 hash 与 residue 边界 |
+| [`agentsDoc/game-design.md`](../agentsDoc/game-design.md) | 同步 F8 能力边界 | 不新增 lore，只区分本轮实测 help 面板、其余 allow-list 能力与 Flash metadata-only 限制 |
+| [`docs/tech-stack-rationalization.md`](tech-stack-rationalization.md) | 同步 F8 source boundary | 冻结 Launcher-contained 技术边界、Flash metadata-only 与 wrapper 非权威 |
+| [`launcher/contracts/agent-runtime/v1/README.md`](../launcher/contracts/agent-runtime/v1/README.md) | 同步 F8 | wire schema、surface modes、applicability、panel/shutdown 与原子升版 |
+| [`launcher/src/AgentRuntime/Contracts/README.md`](../launcher/src/AgentRuntime/Contracts/README.md) | 同步 F8 | C# internal contract 对照与不得替代 wire 真源的边界 |
+| [`tools/cf7-agent/README.md`](../tools/cf7-agent/README.md) | 同步 F8 | JSONL/MCP bootstrap、bounded retry、shutdown 与 pure Runtime evidence |
+| [`agentsDoc/architecture.md`](../agentsDoc/architecture.md) | 同步 F8 | production composition、Host-owned ingress、surface truth、shutdown completion 与 source/release 分层 |
+| [`launcher/README.md`](../launcher/README.md) | 同步 F8 | 运行态 surface/structured action 边界、legacy 区分和受信 runner |
+| [`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md) | 同步 source/evidence | 固定 fresh 自动门与 F8 candidate E2E，并显式保留双屏、promotion 与 standard-entry 缺口 |
+| [`automation/README.md`](../automation/README.md) | 同步 F8 | trusted Core runner、严格 zero-retry shutdown 与 legacy HTTP 互斥 |
 | [`AGENTS.md`](../AGENTS.md) | 更新 Launcher Host Context Pack 链接与基线 | 本 ADR 已成为未来施工的稳定入口，但不把目标态写成现役能力 |
-| 根 README | 不改 | 当前 Agent Runtime 虽已取得隔离 `candidate_built`，仍未 candidate-executed/promotion；顶层现役能力不展示未部署切片，维护者由 AGENTS/Launcher 文档路由 |
+| 根 README | 不改 | F8 虽已达到限定 `e2e_verified`，仍为 `NOT_DEPLOYED`；顶层现役能力不展示未部署切片，维护者由 AGENTS/Launcher 文档路由 |
 | worldbuilding 00/07/20 | 不改 | 本文不升格新 lore；若冻结 Boss 形态/桌宠身份为 canon，另走世界观治理 |
 
 ---
 
 ## 15. 冻结闭合项、非阻塞创作项与外部证据依赖
 
-F1–F7 审阅已关闭会让实现漂移、让调用链无法启动或让低权限数据/人格边界扩大的事项：
+F1–F8 审阅已关闭会让实现漂移、让调用链无法启动或让低权限数据/人格边界扩大的事项：
 
 - wire/rendezvous/credential 由第 3.3、4.2 节定版，S0 只能证伪或按升版流程修订，不能留到实现者临场选择；
 - 第一个 modifier 固定为第 5.6 节 `appearance.hair.change.v1`；
@@ -1268,9 +1286,10 @@ F1–F7 审阅已关闭会让实现漂移、让调用链无法启动或让低权
 - Hair commit 的 typed `domainResult`/restore token 交付与 direct human-only consent method 分别由 F2/F3 定版，不能回退为 out-of-band secret、caller approval 或无 UI token；
 - 首 observation grant 的 F4 bootstrap 固定为 `session.status → lifecycleRef → observation.grant.issue(exactly-one targetKinds|targetIds)`；一期唯一 current session、`RuntimeOwned ∩ AllowedTargets`、32-target cap 与签发前后复验均为 wire/security contract，不是 adapter 自由选择；
 - 完整 AllowedTargets 只作为已验证 principal 的 server-side authorization truth；client 不能在 Hello 或 method params 自报、扩大或替换，grant 前也不能据此枚举 target。
-- F5 把 exact Flash XML peer、credential live revoke/dispatch 双门、trusted player issuer receipt、fixed pixel capture、minimal grant-free app result 与 unique Hair DomainTransaction target 固定为服务端不变量；
-- F6 再冻结独立 OS peer token、exact process/HWND incarnation、Web navigation-start generation、human-only `BusinessModal`、enrolled-developer scoped trace exporter、同一 transaction 实例内的 Hair unknown-token escrow，以及 service restart 仅重建 durable state、绝不恢复 raw token 的边界，并冻结 production activation 与 trusted Core unattended runner；不得以兼容旧 client/wrapper 为由恢复宽行为；
+- F5 把 exact Flash XML peer、credential live revoke/dispatch 双门、trusted player issuer receipt、pixel scope integrity、minimal grant-free app result 与 unique Hair DomainTransaction target 固定为服务端不变量；
+- F6 再冻结独立 OS peer token、exact process/HWND incarnation、Web navigation-start generation、human-only `BusinessModal`、enrolled-developer scoped trace exporter、同一 transaction 实例内的 Hair unknown-token escrow，以及 service restart 仅重建 durable state、绝不恢复 raw token 的边界，并为 activation 与 trusted Core unattended runner 定义严合同；F8 已以更窄 production composition 取代其中 activation advertisement，不得引用 F6 恢复宽行为；
 - F7 冻结 shutdown descriptor/mode/selector-scope-cardinality/TTL/action/no-renew、成功 consume owner reservation 与失败 consume 非 owner、首字节前顺序双 claim、human/external-input ownership fence、same-canonical exact retained receipt replay、reserved response audit event、256 tombstone/64 committed-shutdown latch 与 overflow global fail-closed、单一绝对 action deadline、post-write/abort callback failure 的 continuity-lost/reservation fence、audit truncated/no-synthetic-Unknown，以及 trusted runner 的固定 30 秒 credential acquisition、committed-surface refresh 后 publish retry、no-fallback Launcher observation、strict receipt、10 秒 exit-code-0 与单条 bounded secret-free stderr completion evidence；不得把“合法完整 PlayerAssist acquire 返回 `consent_required`”扩大为越权/畸形请求的错误优先级旁路；
+- F8 冻结 Launcher/WebOverlay/NativeHud WGC、Flash metadata-only 双空与 pixel `unsupported_for_surface`、production activator 空映射、all-panel 144-bit CSPRNG instance、static applicability 非 advertisement、`panel.open` 专用 structured-action lease/零 native packet、仅 canonical retryable transient 的 bounded retry，以及 shutdown action 永不重试；
 - Wings action 固定为 Launcher-owned immutable structured intent + human-only consent + shared validation/dispatch/broker/ledger/audit + trusted receipt projection；自由文本/模型/Persona 永远零执行。
 
 以下创作/后续产品问题不阻塞一期技术范围：

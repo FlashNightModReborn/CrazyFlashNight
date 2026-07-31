@@ -4,14 +4,21 @@ This directory contains the dependency-free Node.js v1 client shared by the
 JSONL CLI and MCP stdio adapter. It uses only Node 20 standard-library modules;
 do not create or commit `node_modules`.
 
-F7 freezes this client and the Host contract on 2026-07-31 at source commit C1
+F7 froze this client and the Host contract on 2026-07-31 at source commit C1
 `dd84230a1d262c6478591cae2d11051b7a8aa7b1`. The ADR filename retains its
 initial 2026-07-30 freeze date to avoid canonical-path and link churn. This
 documentation-only D1 records its immutable parent C1; it cannot record its own
-not-yet-created commit hash. At this D1 C1 has not reached
+not-yet-created commit hash. At that D1 C1 had not reached
 `candidate_executed`, `e2e_verified`, or `promoted`; the formal runtime is
-unchanged. The existence of this directory therefore does not make the installed
-standard entry support the protocol.
+unchanged. That identity remains historical evidence.
+
+The current F8 freeze is source `53caabc90941826ddacf626f536b0f473adbf049`, tree
+`5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`, immutable candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`, build identity
+`0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`, payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`, and Core
+SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`. Its pure-MCP acceptance report is
+`tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json` and transcript is `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. The exact identity
+reached `e2e_verified / NOT_DEPLOYED`; there was no promotion or standard-entry
+verification, so the installed formal runtime remains unchanged.
 
 Both developer entrypoints discover the Launcher through the current-user
 rendezvous document and verify its PID/start-time/lifecycle/ticket tuple; they do
@@ -80,6 +87,17 @@ credential validation, but the adapter never forwards that array as authority.
 `targetIds` is for an already discovered exact target scope; it is not an HWND,
 title, path, or global discovery mechanism. Every resolved grant is non-empty and
 capped at 32 targets.
+
+F8 production advertises the embedded Flash target as metadata-only with exact
+`observationModes:[]` and `inputModes:[]`. A pixel-authorized grant does not add
+a producer: `observation.capture` against that target must fail exactly with
+`unsupported_for_surface`; never substitute a Flash keyframe, parent-window crop,
+or native input. Launcher, WebOverlay, and NativeHud use only
+`window_graphics_capture` (WGC) for production pixel observation. The type-level
+registry still describes potential capabilities, but an actual tool also needs
+the granted session capability and a matching current surface mode. In
+particular, F8 production neither grants nor lists `window.activate` and has an
+empty activator map.
 
 Start the JSONL client with only the capabilities the workflow needs:
 
@@ -204,6 +222,13 @@ intended WebOverlay cannot be selected exactly from its authorized scope. A
 fresh WebOverlay observation may support visual reconciliation; it does not
 turn the earlier broker-dispatch receipt into domain or causal proof.
 
+Production accepts only panel names `help`, `map`, `tasks`, `team`, and
+`jukebox`. Every production panel-instance producer, including PanelHost, the
+Loot coordinator, and Router fallback, generates an opaque ID with at least
+144 bits of CSPRNG entropy. Prefixes such as `panel`, `panelloot`, or `fallback`
+are diagnostic only and must never be interpreted as authority, ordering, or
+client-chosen identity.
+
 The compatibility boundary is fail closed:
 
 - `gui_input` plus `panel.open` is invalid after F8. Do not retry it as a
@@ -217,12 +242,18 @@ The compatibility boundary is fail closed:
 - The structured path binds no `NativeInputGuard` lease and emits no mouse or
   keyboard packet. It still participates in the session's single-writer,
   observation, generation, audit, human-override, and revocation fences.
-- Trusted unattended shutdown is unchanged: the verified Core runner still
+- Trusted unattended shutdown authority is unchanged: the verified Core runner still
   uses the dedicated shutdown lease, requests only an exact Launcher
   observation with `allowValidatedFlashKeyframeFallback:false`, and accepts no
   Flash or fallback frame as shutdown authority.
 
-## F7 typed boundaries
+The F8 visible acceptance used the trusted `--adapter mcp` path only. It did not
+use Codex Computer Use, browser/Chrome, legacy privileged HTTP, or any `input.*`
+tool; it kept captured pixels in memory only for SHA-256 verification, wrote no
+PNG, and requested neither persistence nor export. Those facts are bound to
+`tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json` and `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`, not inferred from this example.
+
+## F7 typed boundaries retained under F8
 
 The adapters mirror the Host's exact parameter and result contracts:
 
@@ -258,9 +289,10 @@ The adapters mirror the Host's exact parameter and result contracts:
   prompt binds its exact Launcher HWND/owner and prompt instance; foreign input,
   a second security surface, or any binding drift fails closed.
 - Web navigation start immediately advances document generation. `window.state`
-  remains read-only and distinct from `window.activate`; production activation
-  binds the exact process/HWND/owner, session/lifecycle, attempt, target, surface,
-  coordinate, focus, and modal generations and revalidates after dispatch.
+  remains read-only and type-level distinct from `window.activate`; F7 defined
+  exact process/HWND/owner, session/lifecycle, attempt, target, surface,
+  coordinate, focus, and modal binding for that action. F8 production does not
+  grant or advertise `window.activate`, and its activator map is empty.
 - Player-assist consent is server-bound to the credential issuer receipt. Neither
   JSONL nor MCP accepts a caller-selected principal, approval, issuer key, or receipt
   substitution as authority.
@@ -352,6 +384,15 @@ bound to the same action/target/before-observation with `terminal=true`,
 `reasonCode=shutdown_requested`, `reconcileKind=none`, `retryable=false`,
 `focusVerified=false`, and `leaseState=consumed`.
 
+Only two exact structured setup transients have bounded retries. Capture is
+attempted at most four times with 750/1250/2000 ms delays, and only
+`capture_unavailable / retryable=true / reconcileKind=none` permits another
+attempt. Shutdown lease acquire is attempted at most four times with
+100/200/400 ms delays, and only `input_not_quiescent / true / none` permits
+another attempt. Retries keep the same grant/session/target/parameters or the
+same lease scope, changing only the RPC request ID. All other errors fail
+immediately. The final `session.shutdown` action is never retried.
+
 After that strict receipt, the same exact owned child must exit within 10 seconds
 with exit code 0. A timeout, nonzero exit, or forced kill is failure and never E2E
 success. Each JSONL call has a 30-second wall-clock deadline. Each MCP `tools/call`, including one active after
@@ -414,9 +455,9 @@ never forwarded. Before authenticated handoff, timeout or failure may terminate
 only the PowerShell bootstrap child created by this invocation; it never scans
 for or kills a Guardian process. A valid non-formal rendezvous fails closed.
 
-This authority is present in C1
+This authority was present in C1
 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` but absent from the unchanged formal
-runtime at D1. Therefore the formal-runtime path currently has no matching
+runtime at D1. F8 remains `NOT_DEPLOYED`, so the formal-runtime path still has no matching
 protected rendezvous or enrolled-developer `app.launch` grant and cannot complete.
 
 The CLI reads and writes one strict CF7 JSON-RPC object per line. Its own
@@ -455,11 +496,21 @@ Run the standard-library test harness with:
 node --test tools/cf7-agent/tests
 ```
 
-F7 fresh source evidence is Launcher **2678 passed + 3 explicit opt-in skipped /
+F7 historical source evidence is Launcher **2678 passed + 3 explicit opt-in skipped /
 2681 total, 0 failed**, repository SDK resolver **7/7** resolving exact SDK
 **10.0.300**, Node client **37/37**, and TrustedRunner-filtered **48/48**. These are
 C1 source-level results only; C1 has not reached `candidate_executed`,
 `e2e_verified`, or `promoted`, and the formal runtime is unchanged.
+
+F8 current fresh gates are SDK resolver **7/7** resolving exact .NET SDK
+**10.0.300**, Launcher **2724 passed + 3 explicit opt-in skipped / 2727 total,
+0 failed**, Node client **37/37**, TrustedRunner **57/57**, and production policy
+**26/26**. Evidence is bound only to source `53caabc90941826ddacf626f536b0f473adbf049`, tree
+`5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`, candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`, build identity
+`0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`, payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`, Core
+SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`, report `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json`, and transcript
+`tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. It reached `e2e_verified / NOT_DEPLOYED`; the formal
+runtime is unchanged.
 
 stdout is reserved for protocol messages. Diagnostics, configuration failures,
 and malformed notification reports go to stderr.

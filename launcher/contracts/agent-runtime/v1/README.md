@@ -11,10 +11,19 @@ F7 was frozen on 2026-07-31 at source commit C1
 `dd84230a1d262c6478591cae2d11051b7a8aa7b1`. The ADR filename retains its
 initial 2026-07-30 freeze date to avoid canonical-path and link churn. This
 documentation-only D1 records its immutable parent C1; D1 cannot record its own
-not-yet-created commit hash. At this closeout point C1 has not reached
+not-yet-created commit hash. At that closeout point C1 had not reached
 `candidate_executed`, `e2e_verified`, or `promoted`; the formal runtime is
-unchanged. Source presence therefore does not establish deployment or
-standard-entry verification.
+unchanged. This remains historical evidence and is not the current source
+identity.
+
+The current F8 freeze is source `53caabc90941826ddacf626f536b0f473adbf049`, tree
+`5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`, immutable candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`, build identity
+`0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`, payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`, and Core
+SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`. Its pure-MCP manual acceptance report is
+`tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json` and its protocol transcript is `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. That
+exact identity reached `e2e_verified / NOT_DEPLOYED`; it was not promoted and
+has no standard-entry verification. Source or candidate presence still does not
+establish deployment.
 
 Files:
 
@@ -29,8 +38,10 @@ Files:
   argument allowlists.
 - `method-params.v1.schema.json`: JSON Schema form of every non-Hello method
   parameter contract and every action argument contract.
-- `capability-applicability.v1.json`: the 13-item GUI capability set and its mode,
-  surface, observation, semantic, lease, and containment gates.
+- `capability-applicability.v1.json`: the 13-item type-level GUI capability set
+  and its mode, surface, observation, semantic, lease, and containment gates.
+  Type-level applicability is only a potential: an actual call still requires
+  both a granted session capability and the current surface modes.
 - `limits.v1.json`: frame, queue, TTL, rate, lease, and identifier hard caps.
 - `reason-codes.v1.json`: closed reason-code registry with legal outcome,
   reconciliation, and retry semantics.
@@ -106,10 +117,29 @@ requested kind. A mismatch revokes the new grant before returning a stale/scope
 rejection. A kind request that has no authorized intersection must not disclose
 whether an unauthorized target exists.
 
-## F5–F7 method and authority closure
+## F5–F8 method and authority closure
 
 F5 binds authorization to the data and target authority a method actually consumes:
 
+- F8 production registers embedded Flash as metadata-only:
+  `observationModes:[]` and `inputModes:[]`. A `pixels` grant does not manufacture
+  producer support; `observation.capture` against that Flash fails exactly with
+  `unsupported_for_surface`, without a snapshot-keyframe, parent-window crop, or
+  native-input fallback. The production pixel observation path for Launcher,
+  WebOverlay, and NativeHud is only `window_graphics_capture` (WGC).
+- `window.activate` remains in the closed type-level wire registry, but F8
+  production neither grants nor advertises it in MCP `tools/list`, and the
+  production exact-target activator map is empty. A schema entry cannot be used
+  as runtime activation authority.
+- F8 `panel.open` is a Host-owned `structured_action`, not GUI/native input. Its
+  lease must resolve exactly one current `RuntimeOwned` Launcher target, contain
+  only capability/operation `panel.open`, have TTL at most 30 seconds and
+  `maximumActions:1`, and omit renewal. Production accepts only the closed panel
+  allow-list `help`, `map`, `tasks`, `team`, and `jukebox`. It binds no
+  `NativeInputGuard` lease and emits no mouse or keyboard packet. The terminal
+  `input_dispatched / broker_dispatch` receipt proves broker dispatch only; a
+  fresh exact WebOverlay WGC observation is required to establish visibility.
+  `gui_input` is not a compatibility fallback.
 - `observation.capture` requires the exact constant assertion
   `dataScope:"pixels"`; it is not a selectable lower scope. `window.state`
   separately accepts only
@@ -265,6 +295,16 @@ strict terminal receipt bound to the same action, target, and before-observation
 observe the same exact owned child exit within 10 seconds with exit code 0; timeout,
 nonzero exit, or forced kill is failure, never successful E2E evidence.
 
+F8 bounds only two shutdown setup transients. Capture is attempted at most four
+times, with 750/1250/2000 ms between attempts, and only an exact structured
+`capture_unavailable / retryable=true / reconcileKind=none` error permits the
+next attempt. Shutdown lease acquire is attempted at most four times, with
+100/200/400 ms between attempts, and only exact
+`input_not_quiescent / true / none` permits the next attempt. Each sequence keeps
+the same grant/session/target/params or the same lease scope; only the RPC request
+ID changes. Every other error fails immediately, and the final
+`session.shutdown` action is never retried.
+
 Credential acquisition has a fixed internal 30-second monotonic deadline,
 independent of the bootstrap/session document's 10-minute maximum lifetime; no CLI,
 MCP, or caller option can tune it. While the Host is live, every periodic full
@@ -289,11 +329,23 @@ and contains only schema
 `guardianProcessId`, and the strict `terminalReceipt`; credential, ticket, and
 nonce secrets are forbidden. stdout remains protocol-only.
 
-F7 source evidence is 2678 passed plus 3 explicit opt-in skipped out of 2681
+F7 historical source evidence is 2678 passed plus 3 explicit opt-in skipped out of 2681
 Launcher tests (0 failed), 7/7 SDK-resolver checks resolving exact SDK 10.0.300,
 37/37 Node client tests, and 48/48 TrustedRunner-filtered tests. These are C1
 source-level results only; C1 has not reached `candidate_executed`,
 `e2e_verified`, or `promoted`.
+
+F8 current fresh gates are SDK resolver **7/7** resolving exact .NET SDK
+**10.0.300**, Launcher **2724 passed + 3 explicit opt-in skipped / 2727 total,
+0 failed**, Node client **37/37**, TrustedRunner **57/57**, and production policy
+**26/26**. Evidence is bound only to source `53caabc90941826ddacf626f536b0f473adbf049`, tree
+`5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d`, candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a`, build identity
+`0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`, payload closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0`, Core
+SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`, report `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json`, and transcript
+`tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`. The operator used MCP only: no Codex Computer Use,
+browser/Chrome, legacy privileged HTTP, or `input.*` call. Pixel content was
+hashed in memory and neither written as PNG nor granted persistence/export. This
+is `e2e_verified / NOT_DEPLOYED`, not promotion.
 
 Canonical action JSON uses ordinal object-key ordering, preserves array order and
 Unicode code points, rejects duplicate properties, and permits only signed integers
@@ -304,7 +356,10 @@ from the canonical idempotency payload.
 All opaque IDs are server/client generated base64url-compatible strings of 22 to 128
 characters, providing at least 128 bits of CSPRNG entropy. A UUID textual form also
 fits the representation, but sequential or display-derived identifiers do not satisfy
-the entropy contract.
+the entropy contract. F8 further requires every production panel-instance producer
+(PanelHost, the Loot coordinator, and Router fallback included) to use at least
+144 bits of CSPRNG entropy; its diagnostic prefix has no authority or ordering
+meaning.
 
 An `ObservationEnvelope` binds the requested primary target. Its `frames` array may
 also contain Launcher-owned business-modal or sibling-window surfaces from the same

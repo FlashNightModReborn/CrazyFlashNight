@@ -1,7 +1,7 @@
 # 技术栈保留 / 收敛评估
 
 **文档角色**：技术栈决策 canonical doc。  
-**最后核对代码基线**（全局技术栈评估的历史锚点）：commit `9f8f0c225`（2026-04-20）；它不是下文 §3 的 F7 source baseline。
+**最后核对代码基线**（全局技术栈评估的历史锚点）：commit `9f8f0c225`（2026-04-20）；它不是下文 §3 的 Agent Runtime source baseline。§3 保留 F7 C1 历史锚点，并以 F8 source `53caabc90941826ddacf626f536b0f473adbf049` / tree `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d` 作为 current 边界。
 
 ## 1. 总结结论
 
@@ -46,11 +46,12 @@
 
 ## 3. CF7 Agent Runtime / Wings 一期边界
 
-| 边界 | F7 source truth | 收敛原则与外部缺口 |
+| 边界 | source truth | 收敛原则与外部缺口 |
 |------|-----------------|--------------------|
-| CF7 Agent Runtime / Wings Network 一期 | §3 的 F7 source baseline 是最终 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1`（2026-07-31），包含 CF7A v1 当前用户命名管道、受 ACL 保护的 rendezvous、精确进程/HWND/session registry、观察 grant、独占 write lease、WGC/guarded input、结构化 action/receipt/reconcile、purpose-scoped audit，以及使用共同 owner pending marker 与同目录 atomic move 的 8 MiB Runtime-owned JSONL trace export；Wings Shell/Persona/offline backend、`window.activate`、Hair transaction 与 F7 shutdown/runner 单终态闭包均已接入同一 Host pipeline | 技术底座继续留在现役 C# Launcher；`CurrentUserOnly` 只保证当前用户，Host 仍独立验证 peer token、Windows session 与 elevation。standard normal 与 privileged legacy HTTP 互斥；无人值守安全入口是选中并验证的 Core 二进制 `--agent-unattended-runner`，Node/PowerShell 只作便利包装。协议 `1.0` 仍是 pre-release，wire-breaking 必须原子升级 server/schema/clients。单文件 atomic move 不构成 filesystem/audit 跨资源事务。source frozen 不等于 candidate 执行、实机 E2E、v2 promotion 或标准入口验收；物理双屏矩阵和正式发布仍是外部门，范围见 [F7 一期范围冻结 ADR](CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md) |
+| F7 C1 历史冻结 | 最终 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1`（2026-07-31）冻结 CF7A v1 当前用户命名管道、受 ACL 保护的 rendezvous、精确进程/HWND/session registry、观察 grant、独占 write lease、WGC/guarded input、结构化 action/receipt/reconcile、purpose-scoped audit，以及使用共同 owner pending marker 与同目录 atomic move 的 8 MiB Runtime-owned JSONL trace export；Wings Shell/Persona/offline backend、当时的 production `window.activate`、Hair transaction 与 F7 shutdown/runner 单终态闭包接入同一 Host pipeline | 该行只保留历史 source truth 和负向验收证据；其中 production `window.activate` 已由 F8 current 收紧，不得据此推导当前授权。C1 source frozen 不等于 candidate 执行、实机 E2E、v2 promotion 或标准入口验收 |
+| F8 current | source `53caabc90941826ddacf626f536b0f473adbf049` / tree `5ac63ec05fbbc9b89aa14f7f0b5ab25698f9742d` 将 embedded Flash 固定为 metadata-only（`observationModes=[]`、`inputModes=[]`，pixel capture 返回 `unsupported_for_surface`）；production 不发布 `window.activate` 且 activator map 为空，WGC 只落在 Launcher、WebOverlay、NativeHud。`panel.open` 只对 `help|map|tasks|team|jukebox` 生效，要求 exact `RuntimeOwned` Launcher singleton scope、one-shot lease，并以 broker receipt 证明 dispatch；所有 production panel producer 使用至少 144-bit CSPRNG instance ID。trusted shutdown 只有限重试 exact canonical `capture_unavailable` 或 `input_not_quiescent` transient，`session.shutdown` action zero-retry | 技术底座继续留在现役 C# Launcher；`CurrentUserOnly` 只保证当前用户，Host 仍独立验证 peer token、Windows session 与 elevation。standard normal 与 privileged legacy HTTP 互斥；无人值守安全入口是选中并验证的 Core 二进制 `--agent-unattended-runner`，Node/PowerShell 只作便利包装。类型级 capability 不等于实际授权，调用仍须满足 session grant 与 surface mode。协议 `1.0` 仍是 pre-release，wire-breaking 必须原子升级 server/schema/clients。单文件 atomic move 不构成 filesystem/audit 跨资源事务。当前只取得单屏 `e2e_verified / NOT_DEPLOYED`；Flash pixels/native input、物理双屏、v2 promotion 与标准入口仍是外部门，范围见 [一期范围冻结 ADR](CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md) |
 
-一期 ADR 文件名保留首次冻结日 `2026-07-30`，避免 canonical 路径与链接漂移。当前 documentation-only D1 只引用父 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1`；D1 不能在自身内容中记录尚未知的自身 commit hash。
+一期 ADR 文件名保留首次冻结日 `2026-07-30`，避免 canonical 路径与链接漂移。F7 documentation-only D1 只引用父 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1`；它仍是历史记录，不覆盖 F8 current source `53caabc90941826ddacf626f536b0f473adbf049`。
 
 F7 的 shutdown 边界不可下沉到脚本层：`LeaseDescriptor.purpose` 必填、`renewAfter` 可选且 shutdown 必须省略；只允许 `DeveloperInteractive` / `UnattendedTest`，请求的 exact scope 恰含当前一个 `RuntimeOwned` Launcher target（不推导 session 全局 singleton），并固定 `session.shutdown`、TTL≤30 秒、one action、no renew。lease 只将 active/执行中/待交付记录保持 live；terminal tombstone FIFO 256、committed-session latch 64，后者溢出即全局 fail-closed，eviction 不得重开写。renew/release cleanup 只属于 exact active owner。成功 consume 的 owner 持有 reservation 到全部 frames 完成或显式 abort；abort false 保留 reservation 并丢失 continuity，完整写后 commit false 不回滚字节并丢失 continuity。单一 action deadline 从完整 request frame 收到时开始，覆盖 parse/admission/scheduler/performer/writer lock/全部 frame `WriteAsync`。
 
@@ -58,7 +59,9 @@ SafeExit 只先 arm；首字节前先 claim reserved audit identity，再 claim 
 
 受信 runner 在每次完整/周期 surface refresh 重试 credential publication，以 single-flight 和 teardown barrier 隔离 dispose；Core 内部使用 caller 不可调的单调 30 秒 credential-acquisition 上限，独立于最长 10 分钟 bootstrap request/session。stdout 只承载 JSONL/MCP protocol 且无秘密；只有 adapter=0、strict receipt、exact child exit 0 且无 forced recovery 时，stderr 才输出一行 ≤16 KiB、只含 schema/runtime/process/Core hash/build identity/payload closure/PID/terminal receipt 的非秘密证据。
 
-F7 fresh source evidence 为 Launcher 全树 **2678 passed + 3 explicit opt-in skipped / 2681 total，0 fail**、SDK resolver **7/7**（精确 `.NET SDK 10.0.300`）、Node client **37/37**、TrustedRunner 过滤 **48/48**。exact C1 tree 的 production policy **26/26** 已达到 `candidate_built / NOT_DEPLOYED`（identity `F67F1054E7DD19600138C3196D0798CFA487701CB7143C4DDFD2DC426D26E372` / closure `3C2CA3E6E935BF23A061228ED3D9BDA3823E81186057E8C86118FAD5C7CEBF0D`）；严格入口在当前无前台会话按凭据门失败关闭且无 completion evidence，故未达到 `candidate_executed`、`e2e_verified` 或 `promoted`，正式 runtime 保持不变。
+F7 C1 历史 source evidence 为 Launcher 全树 **2678 passed + 3 explicit opt-in skipped / 2681 total，0 fail**、SDK resolver **7/7**（精确 `.NET SDK 10.0.300`）、Node client **37/37**、TrustedRunner 过滤 **48/48**。exact C1 tree 的 production policy **26/26** 达到 `candidate_built / NOT_DEPLOYED`（identity `F67F1054E7DD19600138C3196D0798CFA487701CB7143C4DDFD2DC426D26E372` / closure `3C2CA3E6E935BF23A061228ED3D9BDA3823E81186057E8C86118FAD5C7CEBF0D`）；当时严格入口在无前台会话按凭据门失败关闭且无 completion evidence，故未达到 `candidate_executed`、`e2e_verified` 或 `promoted`。
+
+F8 current exact candidate `c-0f4c92f237ab-98ebd18146-20260731t022411220z-20da007a` 绑定 identity `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C`、closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0` 与 Core SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`，production policy **26/26** receipt 为 `tmp/manual-agent-acceptance/runtime-policy-f8-final-53ca-20260731T102324.json`。可见人工验收只经 Agent Runtime MCP 完成 Launcher/NativeHud/WebOverlay WGC 观察、Flash metadata-only 负向检查、授权 `panel.open` 与 trusted protocol shutdown；未使用 Computer Use、browser、privileged legacy HTTP 或 `input.*`，像素只在内存中计算 hash 后清零，没有 PNG。report `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.json`、transcript `tmp/manual-agent-acceptance/agent-runtime-help-20260731T022753Z.jsonl`、residue comparison `tmp/manual-agent-acceptance/residue-compare-f8-final-53ca-attempt1.json` 共同将该单屏纵切定为 `e2e_verified / NOT_DEPLOYED`；正式 runtime 保持不变。
 
 ## 4. 为什么不是现在重写
 
