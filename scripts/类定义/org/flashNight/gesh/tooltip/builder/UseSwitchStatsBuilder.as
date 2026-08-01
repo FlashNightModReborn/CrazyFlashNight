@@ -3,6 +3,7 @@
  *
  * 职责：
  * - 构建 useSwitch 分支下的详细属性显示
+ * - 展示分支按装备类型生效的 provideTags / requireTags 结构条件
  * - 统一处理顶层 stats 和 useCase 分支的属性渲染逻辑
  * - 管理特殊属性（slay/silence/damagetype）的专用 builder 调用
  *
@@ -58,6 +59,18 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 }
                 if (condTags.length > 0) {
                     result.push("  <font color='" + TooltipConstants.COL_COND_PROVIDE + "'>" + TooltipConstants.LBL_COND_PROVIDE_TAGS + "：</font>", condTags.join(", "), "<BR>");
+                }
+            }
+
+            // 显示条件性 requireTags，使“仅机枪需供电”这类安装规则在注释层可见。
+            if (useCase.requireTagDict) {
+                var requiredTags:Array = [];
+                for (var rTag:String in useCase.requireTagDict) {
+                    if (ObjectUtil.isInternalKey(rTag)) continue;
+                    requiredTags.push(rTag);
+                }
+                if (requiredTags.length > 0) {
+                    result.push("  <font color='" + TooltipConstants.COL_INSTALL_COND + "'>" + TooltipConstants.LBL_COND_REQUIRE_TAGS + "：</font>", requiredTags.join(", "), "<BR>");
                 }
             }
 

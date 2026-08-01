@@ -51,7 +51,9 @@ equipment_mods/
 
 `ui_presentation.xml` 只维护 `modGrade/catalogScope/uiRole` ID 的标签、色号、受控符号和 `tag` 默认角色，不重新分配某个插件属于哪一档或哪类。解析顺序为：插件显式 `<uiRole>` → `tagDefault`；未知用途、角色、符号、档级或未覆盖的 `tag` 会让加载/构建审计失败。符号 token 由形状与填充方式组成，白名单为 `triangle|square|circle|diamond|star` × `solid|outline`，例如火力使用 `triangle-solid`（▲）、精准与操控使用 `triangle-outline`（△）。稳定与防护、续航、结构与功能分别使用线框方形、圆形、菱形，特殊机制保留实心星。Web 使用 CSS 图形渲染，不直接执行 XML 中的任意 Unicode 或 HTML。
 
-`data/items/收集品_材料_插件.xml` 以及 `收集品_材料.xml` 中的四个特殊材料仍只负责库存、经济、图标与说明，不重复维护档级/用途/定位。审计要求 104 个 mod 名称各自唯一对应一个物品条目，并要求 `收集品_材料_插件.xml` 的 100 个条目全部存在 mod 定义。
+`data/items/收集品_材料_插件.xml` 以及 `收集品_材料.xml` 中的四个特殊材料仍只负责库存、经济、图标与说明，不重复维护档级/用途/定位。审计要求 105 个 mod 名称各自唯一对应一个物品条目，并要求 `收集品_材料_插件.xml` 的 101 个条目全部存在 mod 定义。
+
+`<mod><name>` 是安装、库存与规则的稳定内部键，允许与物品条目的 `<displayname>` / `<icon>` 不同。装备调制 snapshot 必须同时投影 `itemName/displayName/icon`，Web 只用 `itemName` 发起操作，用后两者显示文案与图标。`node tools/audit-web-item-icon-closure.js` 会按 `equipment_mods/list.xml` 全量核对 mod 物品、manifest 键与实际图片文件闭包。
 
 一般插件不需要重复声明角色；只有 `tag` 默认角色无法准确表达主要功能时才覆盖：
 
@@ -685,7 +687,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 **与其他安装条件的层级关系：**
 ```
 1. use / weapontype        ← 类型层（装备大类/子类）
-2. requireTags / provideTags ← 结构层（插件依赖链）
+2. requireTags / useSwitch.requireTags / provideTags ← 结构层（插件依赖链）
 3. excludeBulletTypes       ← 子弹层（弹药排斥）
 4. requireBulletTypes       ← 子弹层（弹药要求）
 5. installCondition         ← 数值层（属性精准控制）
@@ -787,6 +789,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 **作用：** 插件安装前必须已存在的结构标签
 **判定：** 只看结构是否存在（由装备 inherentTags + 其他插件 provideTags 共同决定）
 **限制：** 不满足时 UI 不会列出 / 安装返回错误码 -16
+**范围：** 写在 `<mod>` 根层时对所有宿主生效；写在 `useSwitch.use` 分支内时仅对命中的装备类型生效
 
 ---
 
@@ -814,7 +817,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 **语义说明：**
 - 顶层stats：对所有装备统一生效的基础效果
 - useSwitch内的分支：当装备类型匹配时，追加执行（而非替换）
-- 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap）
+- 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap），也可声明条件性 `provideTags` / `requireTags`
 
 **匹配规则：**
 - 无前缀分支的 name 与装备的 use 或 weapontype 联合集合匹配；这是兼容既有数据的默认语义
@@ -854,9 +857,9 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 - 实现"专精"型配件（对某类武器效果更好）
 - 平衡不同武器类型的配件效果
 
-**【useSwitch 内的条件性 provideTags】**
+**【useSwitch 内的条件性 provideTags / requireTags】**
 
-useSwitch 分支内还可以包含 `<provideTags>` 元素，实现基于装备类型的条件性结构提供：
+useSwitch 分支内还可以包含 `<provideTags>` 或 `<requireTags>`，分别实现基于装备类型的条件性结构提供与安装前置：
 
 ```xml
 <stats>
@@ -867,6 +870,9 @@ useSwitch 分支内还可以包含 `<provideTags>` 元素，实现基于装备�
                 <power>10</power>                 <!-- 同时可以有数值加成 -->
             </percentage>
         </use>
+        <use name="weapontype:机枪,weapontype:压制机枪">
+            <requireTags>电力</requireTags>       <!-- 仅机枪类宿主安装时需要电力 -->
+        </use>
     </useSwitch>
 </stats>
 ```
@@ -875,6 +881,8 @@ useSwitch 分支内还可以包含 `<provideTags>` 元素，实现基于装备�
 - 条件性 provideTags 仅在装备类型匹配时生效
 - 与顶层 provideTags 叠加，不是替换
 - 影响 tagSwitch 和 requireTags 的判定
+- 条件性 requireTags 仅在分支命中时与根层 requireTags 合并，并统一影响候选过滤、安装检查、缺失标签提示和依赖拆卸
+- Tooltip 的按装备类型追加效果会在对应分支下显示“条件性前置需求”
 
 ---
 

@@ -26,7 +26,7 @@ window.Icons={
 };
 window.PanelTooltip={
   _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},isVisible:function(){return this._visible},updateContent:function(html){this.lastHtml=html},
-  dynamicIconHtml:function(){return ''},staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},convertAS2Html:function(html){return html},
+  dynamicIconHtml:function(name){this.lastDynamicIcon=String(name||'');return '<span data-tooltip-icon="'+this.lastDynamicIcon+'"></span>'},staticIconUrl:function(name){this.lastStaticIcon=String(name||'');return ''},inferLayoutType:function(){return 'narrow'},convertAS2Html:function(html){return html},
   buildItemRichHtml:function(options){this.lastRichOptions=options||{};var split=!!(options&&options.descHTML);return '<div class="flash-tt-rich'+(split?'':' flash-tt-rich--merge')+'">'+(options.introHTML||options.introWebHTML||'')+(split?'<div class="flash-tt-desc">'+options.descHTML+'</div>':'')+'</div>'},
   bindAsyncHover:function(node,options){var cache=options.cache||{};node.addEventListener('pointerenter',function(e){if(options.isSuppressed&&options.isSuppressed(e))return;var key=String(options.key),item=options.item;PanelTooltip.showAtMouse(options.renderBasic(item),e);if(!cache[key])options.fetch(item,function(response){if(response&&response.success===true){cache[key]=response;PanelTooltip.updateContent(options.renderRich(item,response))}})})}
 };
@@ -40,8 +40,8 @@ var slots={
 function modCandidates(){
   var grades=[['low','低级','#006600'],['medium','中等','#996600'],['high','高等','#0099FF'],['special','特殊','#FFFF00']];
   var roles=[['firepower','火力','triangle-solid'],['stability','稳定与防护','square-outline'],['sustain','续航','circle-outline'],['utility','结构与功能','diamond-outline'],['precision','精准与操控','triangle-outline'],['mechanism','特殊机制','star-solid']];
-  var list=[{candidateKey:'mod|基础导轨',itemName:'基础导轨',owned:0,available:false,installed:true,replaceableFrom:[],grade:'low',gradeLabel:'低级',gradeColor:'#006600',scope:'firearm',scopeLabel:'枪械',role:'utility',roleLabel:'结构与功能'}];
-  for(var i=1;i<=25;i++){var grade=grades[i%grades.length],role=roles[i%roles.length];list.push({candidateKey:'mod|测试配件'+i,itemName:i===1?'测试瞄具':(i===2?'禁用配件':'测试配件 '+i),owned:i+1,available:i!==2,reason:i===2?'条件不满足':'',replaceableFrom:i===2?[]:['mod|基础导轨'],grade:grade[0],gradeLabel:grade[1],gradeColor:grade[2],scope:i%5===0?'universal':'firearm',scopeLabel:i%5===0?'通用':'枪械',role:role[0],roleLabel:role[1],symbol:role[2]})}
+  var list=[{candidateKey:'mod|基础导轨',itemName:'基础导轨',displayName:'通用基础导轨',icon:'基础导轨图标',owned:0,available:false,installed:true,replaceableFrom:[],grade:'low',gradeLabel:'低级',gradeColor:'#006600',scope:'firearm',scopeLabel:'枪械',role:'utility',roleLabel:'结构与功能'}];
+  for(var i=1;i<=25;i++){var grade=grades[i%grades.length],role=roles[i%roles.length],candidate={candidateKey:'mod|测试配件'+i,itemName:i===1?'测试瞄具':(i===2?'禁用配件':'测试配件 '+i),owned:i+1,available:i!==2,reason:i===2?'条件不满足':'',replaceableFrom:i===2?[]:['mod|基础导轨'],grade:grade[0],gradeLabel:grade[1],gradeColor:grade[2],scope:i%5===0?'universal':'firearm',scopeLabel:i%5===0?'通用':'枪械',role:role[0],roleLabel:role[1],symbol:role[2]};if(i===1){candidate.displayName='光学测试瞄具';candidate.icon='测试瞄具图标'}list.push(candidate)}
   return list;
 }
 function modName(candidateKey){var candidates=modCandidates();for(var i=0;i<candidates.length;i++){if(candidates[i].candidateKey===candidateKey)return candidates[i].itemName}return''}
@@ -168,7 +168,7 @@ function respond(message){var result=base(message);
       &&document.querySelectorAll('.equipment-tuning-status-icon.mod:not(.empty)').length===1
       &&document.querySelectorAll('.equipment-tuning-status-icon.mod.empty').length===2
       &&document.querySelector('.equipment-tuning-status-icon.tier [data-icon="二阶复合防御组件"]')
-      &&document.querySelector('.equipment-tuning-status-icon.mod [data-icon="基础导轨"]')
+      &&document.querySelector('.equipment-tuning-status-icon.mod [data-icon="基础导轨图标"]')
       &&authoritativeSlots.getAttribute('data-mod-slot-capacity')==='3'
       &&authoritativeSlots.getAttribute('data-mod-slot-used')==='1'
       &&authoritativeSlots.getAttribute('aria-label')==='插件槽：已用 1，共 3'
@@ -322,7 +322,15 @@ function respond(message){var result=base(message);
     document.querySelector('.equipment-tuning-candidate').click();await until(function(){return view.debugState().hasPreview});
     ok('tier preview uses candidateKey',__sent.some(function(x){return x.cmd==='preview'&&x.payload.operation==='install_tier'&&x.payload.candidateKey==='tier|二阶复合防御组件'}));
     tabs=document.querySelectorAll('.equipment-tuning-tab');tabs[3].click();await wait();
-    ok('mod view distinguishes 25 install candidates and icon-based detach actions',document.querySelectorAll('.equipment-tuning-candidate').length===25&&document.querySelector('.equipment-tuning-installed-card [data-icon="基础导轨"]'));
+    var renamedMod=document.querySelector('[data-candidate-key="mod|测试配件1"]');
+    ok('mod view resolves item icon and display identity independently from the internal mod key',
+      document.querySelectorAll('.equipment-tuning-candidate').length===25
+      &&renamedMod&&renamedMod.querySelector('[data-icon="测试瞄具图标"]')
+      &&renamedMod.querySelector('b').textContent==='光学测试瞄具'
+      &&document.querySelector('.equipment-tuning-installed-card [data-icon="基础导轨图标"]')
+      &&document.querySelector('.equipment-tuning-installed-card b').textContent==='通用基础导轨');
+    PanelTooltip.lastDynamicIcon='';renamedMod.dispatchEvent(new Event('pointerenter'));await until(function(){return PanelTooltip.lastDynamicIcon});
+    ok('renamed mod rich tooltip uses the projected icon key',PanelTooltip.lastDynamicIcon==='测试瞄具图标');
     var operationSlots=document.querySelector('.equipment-tuning-installed[data-slot-surface="operation"]'),operationRail=document.querySelector('.equipment-tuning-installed-rail'),operationActions=document.querySelector('.equipment-tuning-installed-actions[data-tuning-command-surface="plugin-batch"]'),detachAll=document.querySelector('.equipment-tuning-detach-all'),operationEmptySlots=[].slice.call(document.querySelectorAll('.equipment-tuning-installed-empty'));
     ok('summary and operation surfaces expose the same authoritative three-plugin inventory with distinct roles',
       operationSlots&&operationSlots.getAttribute('data-mod-slot-capacity')==='3'

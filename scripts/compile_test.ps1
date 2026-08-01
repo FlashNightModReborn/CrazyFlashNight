@@ -31,6 +31,7 @@ $ProjectDir = Split-Path -Parent $ScriptDir
 $Marker = Join-Path $ScriptDir 'publish_done.marker'
 $ErrorMarker = Join-Path $ScriptDir 'publish_error.marker'
 $UncertainMarker = Join-Path $ScriptDir 'compile_state_uncertain.marker'
+$ReopenMarker = Join-Path $ScriptDir 'compile_reopen.marker'
 $ScratchMarker = Join-Path $ScriptDir 'testloader_scratch_inflight.marker'
 $CompileOutput = Join-Path $ScriptDir 'compile_output.txt'
 $CompilerErrors = Join-Path $ScriptDir 'compiler_errors.txt'
@@ -295,6 +296,7 @@ $TargetCfg = Join-Path $ScriptDir 'compile_target.cfg'
 $ModeCfg = Join-Path $ScriptDir 'compile_mode.cfg'
 Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
 Remove-Item -Path $ModeCfg -ErrorAction SilentlyContinue
+Remove-Item -Path $ReopenMarker -ErrorAction SilentlyContinue
 $targetUri = ''
 $isTestLoaderTarget = $false
 # 编译动作模式：默认 test（testMovie，跑 trace / 刷新 SWF）。main（整套游戏主文件）走 publish——
@@ -444,6 +446,7 @@ if ($compileMode -eq 'publish') {
 }
 $inFlightUncertainBody = Write-CompileUncertain ('in-flight; target={0}' -f $Target)
 $compileTriggered = $true
+$reopenRequestCount = 0
 Start-ScheduledTask -TaskName 'CompileTriggerTask'
 
 for ($i = 1; $i -le $TimeoutSeconds; $i++) {
@@ -568,10 +571,10 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         }
 
         if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure) {
-            Remove-Item -Path $TargetCfg, $ModeCfg -ErrorAction SilentlyContinue
+            Remove-Item -Path $TargetCfg, $ModeCfg, $ReopenMarker -ErrorAction SilentlyContinue
             exit 1
         }
-        Remove-Item -Path $TargetCfg, $ModeCfg -ErrorAction SilentlyContinue
+        Remove-Item -Path $TargetCfg, $ModeCfg, $ReopenMarker -ErrorAction SilentlyContinue
         exit 0
     }
 
@@ -581,8 +584,46 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         Write-Host '[ERROR] 编译失败:'
         Get-Content -Path $ErrorMarker -Encoding UTF8
         Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
-        Remove-Item -Path $TargetCfg, $ModeCfg -ErrorAction SilentlyContinue
+        Remove-Item -Path $TargetCfg, $ModeCfg, $ReopenMarker -ErrorAction SilentlyContinue
         exit 1
+    }
+
+    if (Test-Path -LiteralPath $ReopenMarker) {
+        $reopenBody = [System.IO.File]::ReadAllText(
+            $ReopenMarker, [System.Text.Encoding]::UTF8)
+        $reopenParts = $reopenBody -split "\r?\n"
+        $reopenTargetUri = if ($reopenParts.Count -ge 1) { $reopenParts[0] } else { '' }
+        $reopenMode = if ($reopenParts.Count -ge 2) { $reopenParts[1] } else { '' }
+        $reopenValid = (
+            $reopenParts.Count -eq 2 -and
+            $reopenTargetUri -match '^file:///.*\.(fla|xfl)$' -and
+            $reopenMode -match '^(test|publish)$' -and
+            $reopenMode -eq $compileMode -and
+            ([string]::IsNullOrEmpty($targetUri) -or $reopenTargetUri -ceq $targetUri)
+        )
+
+        if (-not $reopenValid -or $reopenRequestCount -ge 1) {
+            $compileTerminalObserved = $true
+            Remove-OwnedCompileUncertain -ExpectedBody $inFlightUncertainBody
+            Write-Host '[ERROR] JSFL 二阶段重开请求畸形、目标漂移或重复；拒绝再次触发。'
+            Write-Host ('        body: {0}' -f ($reopenBody -replace "[\r\n]+", ' | '))
+            Remove-Item -Path $TargetCfg, $ModeCfg, $ReopenMarker -ErrorAction SilentlyContinue
+            exit 1
+        }
+
+        Remove-Item -LiteralPath $ReopenMarker
+        [System.IO.File]::WriteAllText(
+            $TargetCfg, $reopenTargetUri, (New-Object System.Text.UTF8Encoding($false)))
+        if ($reopenMode -eq 'publish') {
+            [System.IO.File]::WriteAllText(
+                $ModeCfg, $reopenMode, (New-Object System.Text.UTF8Encoding($false)))
+        } else {
+            Remove-Item -LiteralPath $ModeCfg -ErrorAction SilentlyContinue
+        }
+        $reopenRequestCount++
+        Write-Host ('[INFO] JSFL 已关闭目标；触发二阶段重开 ({0})' -f $reopenTargetUri)
+        Start-ScheduledTask -TaskName 'CompileTriggerTask'
+        continue
     }
 
     Start-Sleep -Seconds 1

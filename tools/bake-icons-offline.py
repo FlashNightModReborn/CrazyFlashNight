@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import shutil
@@ -40,6 +41,8 @@ ICON_PREFIX = "图标-"
 # the PIL save path. "webp" is the default migration target (lossless static frames +
 # single animated WebP for full-canvas animations); "png" keeps the legacy behavior.
 IMAGE_FORMAT = "webp"
+STATIC_BAKE_PROVENANCE_SCHEMA = 1
+STATIC_RENDER_RECIPE_VERSION = "ffdec-static-normalize-v1"
 # Lossy quality for assembled animated WebP icons; set from --animated-webp-quality in main().
 ANIMATED_WEBP_QUALITY = 80
 # WebP encoder effort for assembled animated WebP icons; set from --animated-webp-method in main().
@@ -246,6 +249,15 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Allow FFDec output to overwrite existing PNGs. By default existing icons are layout-protected: "
             "large diffs are reported but the old PNG is kept, so offline bake only fills missing icons safely."
+        ),
+    )
+    parser.add_argument(
+        "--no-source-aware-refresh",
+        action="store_true",
+        help=(
+            "Disable the default provenance-aware refresh for static f1 icons. Normally an existing icon is "
+            "auto-refreshed only when its prior trusted bake provenance matches the on-disk pixels and render "
+            "recipe, while both the source SWF digest and the normalized rendered pixels changed."
         ),
     )
     parser.add_argument(
@@ -2224,6 +2236,98 @@ def order_static_first_frame_entry(entry: dict[str, Any]) -> None:
         entry[key] = value
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def rgba_render_digest(image: Image.Image) -> str:
+    rgba = image.convert("RGBA")
+    pixels = bytearray(rgba.tobytes())
+    # Lossless WebP is free to discard RGB carried by fully transparent pixels.
+    # Those hidden channels cannot affect the rendered icon and must not make a
+    # freshly written file fail its own provenance check.
+    for alpha_index in range(3, len(pixels), 4):
+        if pixels[alpha_index] == 0:
+            pixels[alpha_index - 3:alpha_index] = b"\0\0\0"
+    digest = hashlib.sha256()
+    digest.update(f"{rgba.width}x{rgba.height}:".encode("ascii"))
+    digest.update(pixels)
+    return digest.hexdigest()
+
+
+def decoded_icon_digest(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    try:
+        with Image.open(path) as image:
+            return rgba_render_digest(image)
+    except Exception:
+        return None
+
+
+def static_render_recipe_digest(ffdec_sha256: str, zoom: int, icon_size: int) -> str:
+    payload = {
+        "schema": STATIC_BAKE_PROVENANCE_SCHEMA,
+        "recipeVersion": STATIC_RENDER_RECIPE_VERSION,
+        "ffdecSha256": ffdec_sha256,
+        "zoom": int(zoom),
+        "iconSize": int(icon_size),
+    }
+    canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def static_bake_provenance(
+    *,
+    swf_rel: str,
+    linkage_id: str,
+    character_id: int,
+    source_sha256: str,
+    source_mtime_ns: int,
+    recipe_sha256: str,
+    rendered_image: Image.Image,
+) -> dict[str, Any]:
+    return {
+        "schema": STATIC_BAKE_PROVENANCE_SCHEMA,
+        "mode": "ffdec-static-f1",
+        "sourceSwf": swf_rel,
+        "linkageId": linkage_id,
+        "characterId": int(character_id),
+        "sourceArtifactSha256": source_sha256,
+        "sourceArtifactMtimeNs": int(source_mtime_ns),
+        "renderRecipeSha256": recipe_sha256,
+        "renderRgbaSha256": rgba_render_digest(rendered_image),
+    }
+
+
+def source_aware_layout_refresh_decision(
+    previous: Any,
+    current: dict[str, Any],
+    existing_render_digest: str | None,
+) -> tuple[bool, str]:
+    if not isinstance(previous, dict):
+        return False, "provenance_missing"
+    if previous.get("schema") != STATIC_BAKE_PROVENANCE_SCHEMA:
+        return False, "provenance_schema_changed"
+    for key in ("mode", "sourceSwf", "linkageId", "characterId"):
+        if previous.get(key) != current.get(key):
+            return False, "source_identity_changed"
+    if previous.get("renderRecipeSha256") != current.get("renderRecipeSha256"):
+        return False, "render_recipe_changed"
+    previous_render = previous.get("renderRgbaSha256")
+    if not previous_render or existing_render_digest != previous_render:
+        return False, "output_drifted_from_provenance"
+    if previous.get("sourceArtifactSha256") == current.get("sourceArtifactSha256"):
+        return False, "source_artifact_unchanged"
+    if previous_render == current.get("renderRgbaSha256"):
+        return False, "rendered_pixels_unchanged"
+    return True, "source_and_render_changed"
+
+
 def write_icon_if_needed(
     output_dir: Path,
     filename: str,
@@ -2234,6 +2338,14 @@ def write_icon_if_needed(
     output_path = output_dir / filename
     unchanged, stats = image_diff(output_path, image)
     if unchanged:
+        # The normal layout guard deliberately treats tiny decoder/render noise as
+        # unchanged. An explicit or source-authorized refresh is different: it must
+        # actually make the on-disk pixels equal the candidate, otherwise a later
+        # provenance check can never trust the output it supposedly refreshed.
+        if stats.micro and output_path.exists() and not protect_existing_layout:
+            if not dry_run:
+                save_static_icon(image, output_path)
+            return "updated", stats
         return "unchanged", stats
     if output_path.exists() and protect_existing_layout:
         return "layout_protected", stats
@@ -3384,6 +3496,7 @@ def main() -> int:
         "zoom": args.zoom,
         "imageFormat": args.image_format,
         "protectExistingLayout": not bool(args.force_overwrite_existing),
+        "sourceAwareRefresh": not bool(args.no_source_aware_refresh),
         "targetCount": len(targets),
         "derivedTargetCount": len(derived_targets),
         "outputDir": str(output_dir),
@@ -3486,6 +3599,19 @@ def main() -> int:
     sprite_graphs: dict[str, dict[int, dict[str, Any]]] = {}
     xml_paths_by_swf: dict[str, Path] = {}
     timeline_controls_by_swf: dict[str, dict[int, dict[str, Any]]] = {}
+    ffdec_sha256 = sha256_file(ffdec)
+    static_recipe_sha256 = static_render_recipe_digest(ffdec_sha256, args.zoom, ICON_SIZE)
+    source_artifact_states: dict[str, dict[str, Any]] = {}
+    for swf_rel in by_swf:
+        source_path = project_root / swf_rel
+        if source_path.exists():
+            source_stat = source_path.stat()
+            source_artifact_states[swf_rel] = {
+                "sha256": sha256_file(source_path),
+                "mtimeNs": int(source_stat.st_mtime_ns),
+            }
+    report["staticRenderRecipeSha256"] = static_recipe_sha256
+
     for swf_rel, char_ids in char_ids_by_swf.items():
         if not char_ids:
             continue
@@ -3939,6 +4065,10 @@ def main() -> int:
                     record_issue(report, "nestedIconCanvasUnsupported", payload)
                     report["counts"]["nested_icon_canvas_unsupported"] += 1
 
+            if export_parent_animation or layered_canvas_entry is not None or nested_canvas_entry is not None:
+                # Static-f1 provenance must never authorize replacing an animated or layered entry.
+                entry.pop("bakeProvenance", None)
+
             if export_parent_animation and IMAGE_FORMAT == "webp":
                 normalized_parent_frames = normalize_parent_animation_frames(
                     exported_frames,
@@ -4119,15 +4249,69 @@ def main() -> int:
                         source_frame,
                         target_content_profile_size if frame_number == 1 else None,
                     )
+                    current_provenance: dict[str, Any] | None = None
+                    smart_refresh = False
+                    protection_reason = "layout_guard_default"
+                    previous_provenance = entry.get("bakeProvenance")
+                    existing_render_digest = decoded_icon_digest(output_dir / filename)
+                    previous_output_trusted = (
+                        isinstance(previous_provenance, dict)
+                        and bool(previous_provenance.get("renderRgbaSha256"))
+                        and previous_provenance.get("renderRgbaSha256") == existing_render_digest
+                    )
+                    if frame_number == 1:
+                        source_state = source_artifact_states.get(swf_rel)
+                        if source_state is not None:
+                            current_provenance = static_bake_provenance(
+                                swf_rel=swf_rel,
+                                linkage_id=target.linkage_id,
+                                character_id=char_id,
+                                source_sha256=str(source_state["sha256"]),
+                                source_mtime_ns=int(source_state["mtimeNs"]),
+                                recipe_sha256=static_recipe_sha256,
+                                rendered_image=normalized,
+                            )
+                            if args.no_source_aware_refresh:
+                                protection_reason = "source_aware_refresh_disabled"
+                            elif entry.get(frame_key) != filename:
+                                protection_reason = "output_filename_changed"
+                            else:
+                                smart_refresh, protection_reason = source_aware_layout_refresh_decision(
+                                    previous_provenance,
+                                    current_provenance,
+                                    existing_render_digest,
+                                )
                     action, stats = write_icon_if_needed(
                         output_dir,
                         filename,
                         normalized,
                         args.dry_run,
-                        protect_existing_layout=not args.force_overwrite_existing,
+                        protect_existing_layout=not args.force_overwrite_existing and not smart_refresh,
                     )
                     entry[frame_key] = filename
                     report["counts"][action] += 1
+                    if smart_refresh:
+                        report["counts"]["source_aware_refreshed"] += 1
+                        record_issue(
+                            report,
+                            "sourceAwareRefreshed",
+                            {
+                                "name": target.name,
+                                "frame": frame_key,
+                                "filename": filename,
+                                "reason": protection_reason,
+                                "previousSourceArtifactSha256": (previous_provenance or {}).get(
+                                    "sourceArtifactSha256"
+                                ),
+                                "sourceArtifactSha256": current_provenance.get("sourceArtifactSha256")
+                                if current_provenance else None,
+                                "previousSourceArtifactMtimeNs": (previous_provenance or {}).get(
+                                    "sourceArtifactMtimeNs"
+                                ),
+                                "sourceArtifactMtimeNs": current_provenance.get("sourceArtifactMtimeNs")
+                                if current_provenance else None,
+                            },
+                        )
                     if action == "layout_protected":
                         record_issue(
                             report,
@@ -4140,8 +4324,22 @@ def main() -> int:
                                 "maxChannelDelta": stats.max_channel_delta,
                                 "totalChannelDelta": stats.total_channel_delta,
                                 "changedAlphaPixels": stats.changed_alpha_pixels,
+                                "protectionReason": protection_reason,
                             },
                         )
+                    if current_provenance is not None and action != "layout_protected":
+                        if action in ("created", "updated") or stats.exact:
+                            entry["bakeProvenance"] = current_provenance
+                            if not isinstance(previous_provenance, dict):
+                                report["counts"]["static_provenance_seeded"] += 1
+                            elif previous_provenance != current_provenance:
+                                report["counts"]["static_provenance_updated"] += 1
+                        elif stats.micro and not previous_output_trusted:
+                            # Never bless a near-match as an exact provenance root.
+                            # A valid earlier root remains valid; a missing or stale
+                            # root must be bootstrapped by an explicit forced bake.
+                            if entry.pop("bakeProvenance", None) is not None:
+                                report["counts"]["static_provenance_untrusted_removed"] += 1
                     if stats.micro:
                         record_issue(
                             report,
@@ -4235,6 +4433,7 @@ def main() -> int:
         "animationCandidateFilterSelected",
         "animationCandidateFilterSkipped",
         "nestedIconLayerCropSamples",
+        "sourceAwareRefreshed",
         "layoutProtected",
         "microdiff",
     ):
@@ -4254,7 +4453,8 @@ def main() -> int:
     counts = report["counts"]
     print(
         "[icon-bake-offline] targets={targetCount} swfs={swfCount} "
-        "processed={processed} created={created} updated={updated} unchanged={unchanged} protected={protected} "
+        "processed={processed} created={created} updated={updated} source_refreshed={sourceRefreshed} "
+        "unchanged={unchanged} protected={protected} "
         "unresolved={unresolved} missing_symbol={missing_symbol} missing_frame={missing_frame} "
         "report={report}".format(
             targetCount=report["targetCount"],
@@ -4262,6 +4462,7 @@ def main() -> int:
             processed=counts.get("processed", 0),
             created=counts.get("created", 0),
             updated=counts.get("updated", 0),
+            sourceRefreshed=counts.get("source_aware_refreshed", 0),
             unchanged=counts.get("unchanged", 0),
             protected=counts.get("layout_protected", 0),
             unresolved=counts.get("unresolved", 0),

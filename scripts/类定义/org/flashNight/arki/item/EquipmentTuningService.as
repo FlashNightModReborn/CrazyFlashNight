@@ -816,10 +816,12 @@ class org.flashNight.arki.item.EquipmentTuningService {
             var tierKey:String = "tier." + tierCandidates.length;
             var tierAllowed:Boolean = isTierTransitionAllowed(item, tierMaterial);
             var tierOwned:Number = materials.getValue(tierMaterial);
+            var tierPresentation:Object = itemPresentation(tierMaterial);
             nextCandidates[tierKey] = {kind:"tier", itemName:tierMaterial};
             materialNames[tierMaterial] = true;
             tierCandidates.push({
                 candidateKey:tierKey, itemName:tierMaterial,
+                displayName:tierPresentation.displayName, icon:tierPresentation.icon,
                 tierName:String(EquipmentUtil.tierMaterialToNameDict[tierMaterial]),
                 owned:tierOwned, available:tierAllowed && tierOwned > 0,
                 reason:tierAllowed ? (tierOwned > 0 ? "" : "material_missing") : "tier_transition_rejected"
@@ -1295,13 +1297,37 @@ class org.flashNight.arki.item.EquipmentTuningService {
         return "mod_install_rejected";
     }
 
+    /**
+     * 内部物品名是交易与插件规则的稳定键；displayname / icon 是独立的展示键。
+     * 快照必须同时投影三者，否则 Web 会在射线类插件等“三名分离”数据上用内部名查图而显示空白。
+     */
+    private static function itemPresentation(itemName:String):Object {
+        var itemData:Object = ItemUtil.getItemData(itemName);
+        var displayName:String = itemName;
+        var icon:String = itemName;
+        if (itemData != null) {
+            if (itemData.displayname != undefined && itemData.displayname != null
+                    && String(itemData.displayname).length > 0) {
+                displayName = String(itemData.displayname);
+            }
+            if (itemData.icon != undefined && itemData.icon != null
+                    && String(itemData.icon).length > 0) {
+                icon = String(itemData.icon);
+            }
+        }
+        return {displayName:displayName, icon:icon};
+    }
+
     /** 将插件定义的单源元数据投影给 Web 候选目录；安装权威仍是 availabilityCode。 */
     private static function buildModCandidateProjection(candidateKey:String, modName:String, owned:Number,
             installed:Boolean, available:Boolean, availabilityCode:Number, reason:String):Object {
         var modData:Object = EquipmentUtil.modDict == undefined ? null : EquipmentUtil.modDict[modName];
+        var presentation:Object = itemPresentation(modName);
         var result:Object = {
             candidateKey:candidateKey,
             itemName:modName,
+            displayName:presentation.displayName,
+            icon:presentation.icon,
             owned:owned,
             installed:installed,
             available:available,

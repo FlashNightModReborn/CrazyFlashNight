@@ -78,6 +78,7 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_ObtainMethodsBuilder_no_index();
         test_ModStatBuilder_unknown_item();
         test_ModStatBuilder_curve();
+        test_ModStatBuilder_conditionalRequireTags();
         test_ModStatBuilder_hitBehavior_useSwitch();
         test_ModStatBuilder_skillSwitch();
         test_ModsBlockBuilder_hitBehavior_useSwitch();
@@ -414,6 +415,38 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         assertContains(joined, "20", "ModStatBuilder curve maps coefficient 1.414 to level 20");
         assertNotContains(joined, "√当前值", "ModStatBuilder curve hides sqrt formula");
         assertContains(joined, TooltipConstants.PROPERTY_DICT["diffusion"], "ModStatBuilder curve has diffusion label");
+    }
+
+    private static function test_ModStatBuilder_conditionalRequireTags():Void {
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict["条件供电注释插件"] = {
+            name: "条件供电注释插件",
+            use: "长枪",
+            tagValue: "下导轨",
+            stats: {
+                useSwitch: {
+                    useCases: [{
+                        name: "weapontype:机枪,weapontype:压制机枪",
+                        requireTagDict: {电力: true}
+                    }]
+                }
+            }
+        };
+        EquipmentUtil.modDict = dict;
+
+        var result:Array = ModStatBuilder.build("条件供电注释插件");
+        var joined:String = result.join("");
+
+        EquipmentUtil.modDict = oldDict;
+
+        assertContains(joined, TooltipConstants.LBL_COND_REQUIRE_TAGS,
+                       "ModStatBuilder shows conditional requireTags label");
+        assertContains(joined, "电力", "ModStatBuilder shows conditional required tag");
+        assertContains(joined, "武器子类：机枪/武器子类：压制机枪",
+                       "ModStatBuilder translates conditional branch qualifiers");
+        assertNotContains(joined, "weapontype:机枪",
+                          "ModStatBuilder hides conditional branch qualifier tokens");
     }
 
     private static function test_ModStatBuilder_hitBehavior_useSwitch():Void {

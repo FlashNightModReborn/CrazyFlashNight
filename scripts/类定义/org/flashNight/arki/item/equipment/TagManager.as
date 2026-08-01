@@ -9,7 +9,7 @@ import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
  * TagManager - 配件标签依赖管理器
  *
  * 处理配件的标签系统，包括：
- * - requireTags: 安装前置要求
+ * - requireTags / useSwitch.requireTags: 全局或按装备类型生效的安装前置要求
  * - provideTags: 提供的结构标签
  * - blockedTags: 装备禁止的标签
  * - tag互斥: 同tag配件不能共存
@@ -84,26 +84,8 @@ class org.flashNight.arki.item.equipment.TagManager {
     public static function buildPresentTagsDict(mods:Array, itemData:Object, modRegistry:Object):Object {
         var presentTags:Object = {};
 
-        // 预扫描：收集已安装配件的 grantsUse
-        var grantedUses:Object = null;
-        if (mods) {
-            for (var pre:Number = 0; pre < mods.length; pre++) {
-                var preModInfo:Object = modRegistry[mods[pre]];
-                if (preModInfo && preModInfo.grantsUseDict) {
-                    if (!grantedUses) grantedUses = {};
-                    for (var gu:String in preModInfo.grantsUseDict) {
-                        grantedUses[gu] = true;
-                    }
-                }
-            }
-        }
-
         // 构建装备的 use/weapontype 查找表
-        var useLookup:Object = ModRegistry.buildItemUseLookup(
-            itemData.use || "",
-            itemData.weapontype || "",
-            grantedUses
-        );
+        var useLookup:Object = buildUseLookupForMods(mods, itemData, modRegistry);
 
         // 1. 装备固有结构标签
         if (itemData.inherentTags) {
@@ -180,16 +162,21 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
 
-        // 检查tag依赖
-        if (modData.requireTagDict) {
-            var tagContext:Object = buildTagContext(item, itemData);
-            for (var reqTag:String in modData.requireTagDict) {
-                if (!tagContext.presentTags[reqTag]) {
-                    if (_debugMode) {
-                        trace("[TagManager] 插件 '" + modName + "' 需要tag '" + reqTag + "' 但当前装备没有");
-                    }
-                    return -16; // 缺少前置tag
+        // 构建当前装备类型；同时用于条件性结构依赖与特殊槽判定。
+        var itemUseLookup:Object = buildUseLookupForMods(mods, itemData, ModRegistry.getModDict());
+
+        // 检查 tag 依赖：根层 requireTags + 命中的 useSwitch.requireTags。
+        var requiredTagDict:Object = ModRegistry.resolveRequiredTagsForUse(modData, itemUseLookup);
+        var tagContext:Object = null;
+        for (var reqTag:String in requiredTagDict) {
+            if (!tagContext) {
+                tagContext = buildTagContext(item, itemData);
+            }
+            if (!tagContext.presentTags[reqTag]) {
+                if (_debugMode) {
+                    trace("[TagManager] 插件 '" + modName + "' 需要tag '" + reqTag + "' 但当前装备没有");
                 }
+                return -16; // 缺少前置tag
             }
         }
 
@@ -219,17 +206,6 @@ class org.flashNight.arki.item.equipment.TagManager {
         }
 
         // 检查特殊槽冲突。普通战技与长枪副武器共享同一个特殊槽。
-        var grantedUses:Object = null;
-        for (var guIndex:Number = 0; guIndex < mods.length; guIndex++) {
-            var guModData:Object = ModRegistry.getModData(mods[guIndex]);
-            if (guModData && guModData.grantsUseDict) {
-                if (!grantedUses) grantedUses = {};
-                for (var gu:String in guModData.grantsUseDict) {
-                    grantedUses[gu] = true;
-                }
-            }
-        }
-        var itemUseLookup:Object = ModRegistry.buildItemUseLookup(itemData.use || "", itemData.weapontype || "", grantedUses);
         var resolvedModSkill:Object = ModRegistry.resolveSkillForUse(modData, itemUseLookup);
         var resolvedModSubweapon:Object = modData.subweapon;
         if (resolvedModSkill || resolvedModSubweapon) {
@@ -289,12 +265,16 @@ class org.flashNight.arki.item.equipment.TagManager {
      */
     public static function getMissingTags(modName:String, item:BaseItem):Array {
         var modData:Object = ModRegistry.getModData(modName);
-        if (!modData || !modData.requireTagDict) return [];
+        if (!modData) return [];
 
-        var tagContext:Object = buildTagContext(item, null);
+        var itemData:Object = ItemUtil.getRawItemData(item.name) || {};
+        var mods:Array = item.value.mods || [];
+        var useLookup:Object = buildUseLookupForMods(mods, itemData, ModRegistry.getModDict());
+        var requiredTagDict:Object = ModRegistry.resolveRequiredTagsForUse(modData, useLookup);
+        var tagContext:Object = buildTagContext(item, itemData);
         var missingTags:Array = [];
 
-        for (var reqTag:String in modData.requireTagDict) {
+        for (var reqTag:String in requiredTagDict) {
             if (!tagContext.presentTags[reqTag]) {
                 missingTags.push(reqTag);
             }
@@ -313,10 +293,12 @@ class org.flashNight.arki.item.equipment.TagManager {
         var dependentMods:Array = [];
         var modToRemove:Object = ModRegistry.getModData(modNameToRemove);
 
-        // 如果要移除的插件不提供任何tag，则没有依赖问题
-        if (!modToRemove || !modToRemove.provideTagDict) {
+        if (!modToRemove) {
             return dependentMods;
         }
+
+        var itemData:Object = ItemUtil.getRawItemData(item.name) || {};
+        var modRegistry:Object = ModRegistry.getModDict();
 
         // 构建移除该插件后的tag上下文
         var tempMods:Array = [];
@@ -332,19 +314,22 @@ class org.flashNight.arki.item.equipment.TagManager {
             name: item.name,
             value: { mods: tempMods }
         };
-        var contextAfterRemoval:Object = buildTagContext(BaseItem(tempItem), null);
+        var contextBeforeRemoval:Object = buildTagContext(item, itemData);
+        var contextAfterRemoval:Object = buildTagContext(BaseItem(tempItem), itemData);
+        var useLookupAfterRemoval:Object = buildUseLookupForMods(tempMods, itemData, modRegistry);
 
         // 检查每个已安装的插件是否还满足依赖
         for (var j:Number = 0; j < mods.length; j++) {
             if (mods[j] === modNameToRemove) continue;
 
             var installedMod:Object = ModRegistry.getModData(mods[j]);
-            if (!installedMod || !installedMod.requireTagDict) continue;
+            if (!installedMod) continue;
+            var requiredTagDict:Object = ModRegistry.resolveRequiredTagsForUse(installedMod, useLookupAfterRemoval);
 
             // 检查该插件的依赖是否还能满足
-            for (var reqTag:String in installedMod.requireTagDict) {
-                // 如果移除后缺少必需的tag，且这个tag原本是由要移除的插件提供的
-                if (!contextAfterRemoval.presentTags[reqTag] && modToRemove.provideTagDict[reqTag]) {
+            for (var reqTag:String in requiredTagDict) {
+                // 只有移除前存在、移除后消失的结构，才算对当前拆卸的真实依赖。
+                if (contextBeforeRemoval.presentTags[reqTag] && !contextAfterRemoval.presentTags[reqTag]) {
                     dependentMods.push(mods[j]);
                     break;
                 }
@@ -386,6 +371,7 @@ class org.flashNight.arki.item.equipment.TagManager {
 
         var filtered:Array = [];
         var tagContext:Object = buildTagContext(item, itemData);
+        var itemUseLookup:Object = buildUseLookupForMods(item.value.mods || [], itemData, ModRegistry.getModDict());
 
         // 惰性计算的装备数据（仅在需要检查子弹类型或 scope="current" 条件时才计算）
         var calculatedItemData:Object = undefined;
@@ -405,16 +391,15 @@ class org.flashNight.arki.item.equipment.TagManager {
 
             var canUse:Boolean = true;
 
-            // 检查tag依赖
-            if (modData.requireTagDict) {
-                for (var reqTag:String in modData.requireTagDict) {
-                    if (!tagContext.presentTags[reqTag]) {
-                        canUse = false;
-                        if (_debugMode) {
-                            trace("[TagManager] 过滤掉 '" + modName + "': 缺少tag '" + reqTag + "'");
-                        }
-                        break;
+            // 检查 tag 依赖：根层 requireTags + 命中的 useSwitch.requireTags。
+            var requiredTagDict:Object = ModRegistry.resolveRequiredTagsForUse(modData, itemUseLookup);
+            for (var reqTag:String in requiredTagDict) {
+                if (!tagContext.presentTags[reqTag]) {
+                    canUse = false;
+                    if (_debugMode) {
+                        trace("[TagManager] 过滤掉 '" + modName + "': 缺少tag '" + reqTag + "'");
                     }
+                    break;
                 }
             }
 
@@ -490,6 +475,32 @@ class org.flashNight.arki.item.equipment.TagManager {
         }
 
         return filtered;
+    }
+
+    /**
+     * 根据装备本体与已安装配件的 grantsUse，构建类型查找表。
+     * @private
+     */
+    private static function buildUseLookupForMods(mods:Array, itemData:Object, modRegistry:Object):Object {
+        var grantedUses:Object = null;
+        if (!mods) mods = [];
+        if (!itemData) itemData = {};
+        if (!modRegistry) modRegistry = ModRegistry.getModDict();
+
+        for (var i:Number = 0; i < mods.length; i++) {
+            var modInfo:Object = modRegistry[mods[i]];
+            if (!modInfo || !modInfo.grantsUseDict) continue;
+            if (!grantedUses) grantedUses = {};
+            for (var grantedUse:String in modInfo.grantsUseDict) {
+                grantedUses[grantedUse] = true;
+            }
+        }
+
+        return ModRegistry.buildItemUseLookup(
+            itemData.use || "",
+            itemData.weapontype || "",
+            grantedUses
+        );
     }
 
     /**

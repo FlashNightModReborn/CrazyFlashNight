@@ -526,7 +526,7 @@ var EquipmentTuningRender = (function() {
         if (!candidate) return false;
         this._infoSubject = {
             key:String(candidate.candidateKey || candidate.itemName || ''),
-            title:String(candidate.itemName || candidate.candidateKey || '候选'),
+            title:candidateDisplayName(candidate, '候选'),
             detail:[
                 candidate.gradeLabel || candidate.tierName || '',
                 candidate.scopeLabel || '',
@@ -605,7 +605,7 @@ var EquipmentTuningRender = (function() {
             );
             tier.innerHTML = tierName
                 ? iconHtml(
-                    tierCandidate && tierCandidate.itemName || tierName,
+                    candidateIconName(tierCandidate, tierName),
                     'kshop-icon'
                 ) + '<span class="equipment-tuning-status-mark" aria-hidden="true">阶</span>'
                 : '<span class="equipment-tuning-status-mark" aria-hidden="true">阶</span>';
@@ -641,6 +641,7 @@ var EquipmentTuningRender = (function() {
         }
         installed.forEach(function(name, index) {
             var candidate = candidateForItem(candidates, name);
+            var displayName = candidateDisplayName(candidate, name);
             var button = element('button', 'equipment-tuning-status-icon mod grade-'
                 + String(candidate && candidate.grade || 'unknown'));
             button.type = 'button';
@@ -649,12 +650,12 @@ var EquipmentTuningRender = (function() {
                 + index + ':' + String(candidate && candidate.candidateKey || name));
             button.setAttribute(
                 'aria-label',
-                '插件槽 ' + (index + 1) + '：' + String(name) + '，点击选择替换'
+                '插件槽 ' + (index + 1) + '：' + displayName + '，点击选择替换'
             );
             if (candidate && candidate.gradeColor) {
                 button.style.setProperty('--equipment-mod-grade-color', String(candidate.gradeColor));
             }
-            button.innerHTML = iconHtml(name, 'kshop-icon')
+            button.innerHTML = iconHtml(candidateIconName(candidate, name), 'kshop-icon')
                 + '<i class="equipment-tuning-status-role inventory-mod-glyph symbol-'
                 + normalizeModSymbol(candidate && candidate.symbol) + '" aria-hidden="true"></i>';
             button.disabled = self._busy || self._readPending || self._needsReconcile
@@ -976,6 +977,8 @@ var EquipmentTuningRender = (function() {
         var self = this;
         if (!candidates.length) { body.appendChild(empty('当前装备没有可用候选。')); return; }
         candidates.forEach(function(candidate) {
+            var displayName = candidateDisplayName(candidate, '候选');
+            var iconName = candidateIconName(candidate, candidate.itemName || candidate.candidateKey);
             var button = element('button', 'equipment-tuning-candidate' + (candidate.available ? ' available' : ' blocked'));
             button.type = 'button'; button.disabled = self._busy || self._readPending || self._needsReconcile;
             button.setAttribute('aria-disabled', candidate.available ? 'false' : 'true');
@@ -998,20 +1001,20 @@ var EquipmentTuningRender = (function() {
                 !candidate.available,
                 true
             );
-            button.setAttribute('aria-label', String(candidate.itemName || candidate.candidateKey) + '，持有 '
+            button.setAttribute('aria-label', displayName + '，持有 '
                 + Number(candidate.owned || 0) + '，' + String(candidate.gradeLabel || candidate.tierName || '未分类')
                 + (candidate.scopeLabel ? '，' + String(candidate.scopeLabel) : '')
                 + (candidate.roleLabel ? '，' + String(candidate.roleLabel) : '')
                 + (candidate.reason ? '，' + String(candidate.reason) : ''));
             if (candidate.gradeColor) button.style.setProperty('--equipment-mod-grade-color', String(candidate.gradeColor));
             var owned = Math.max(0, Math.floor(Number(candidate.owned) || 0));
-            button.innerHTML = iconHtml(candidate.itemName || candidate.candidateKey, 'kshop-icon')
+            button.innerHTML = iconHtml(iconName, 'kshop-icon')
                 + '<i class="equipment-tuning-role-glyph inventory-mod-glyph symbol-'
                 + normalizeModSymbol(candidate.symbol) + '" aria-hidden="true"></i>'
                 + (owned > 1 ? '<span class="inventory-slot-value quantity equipment-tuning-owned-count" aria-label="持有数量 '
                     + exactQuantity(owned) + '">'
                     + compactQuantity(owned) + '</span>' : '')
-                + '<span><b>' + escapeHtml(candidate.itemName || candidate.candidateKey) + '</b><small>持有 '
+                + '<span><b>' + escapeHtml(displayName) + '</b><small>持有 '
                 + owned + ' · ' + escapeHtml(candidate.gradeLabel || candidate.tierName || '未分类')
                 + (candidate.scopeLabel ? ' · ' + escapeHtml(candidate.scopeLabel) : '')
                 + (candidate.roleLabel ? ' · ' + escapeHtml(candidate.roleLabel) : '')
@@ -1050,7 +1053,7 @@ var EquipmentTuningRender = (function() {
             item:candidate,
             isSuppressed:function() { return self._busy || !self._mux.debugState().active; },
             renderBasic:function(value) {
-                return '<div class="kshop-tt-header"><b>' + escapeHtml(value.itemName || value.candidateKey)
+                return '<div class="kshop-tt-header"><b>' + escapeHtml(candidateDisplayName(value, '候选'))
                     + '</b></div><div class="kshop-tt-loading">加载中…</div>';
             },
             renderRich:function(value, rich) {
@@ -1063,8 +1066,8 @@ var EquipmentTuningRender = (function() {
                         ? PanelTooltip.convertAS2Html(combinedHtml) : (combinedHtml || textHtml);
                 }
                 var options = {
-                    iconHtml:PanelTooltip.dynamicIconHtml ? PanelTooltip.dynamicIconHtml(value.itemName) : '',
-                    iconUrl:PanelTooltip.staticIconUrl ? PanelTooltip.staticIconUrl(value.itemName) : '',
+                    iconHtml:PanelTooltip.dynamicIconHtml ? PanelTooltip.dynamicIconHtml(candidateIconName(value, value.itemName)) : '',
+                    iconUrl:PanelTooltip.staticIconUrl ? PanelTooltip.staticIconUrl(candidateIconName(value, value.itemName)) : '',
                     descHTML:descHtml,
                     rootClass:'equipment-tuning-tooltip',
                     layoutType:PanelTooltip.inferLayoutType
@@ -1127,6 +1130,7 @@ var EquipmentTuningRender = (function() {
             var self = this;
             installed.forEach(function(name, slotIndex) {
                 var candidate = candidateForItem(candidates, name);
+                var displayName = candidateDisplayName(candidate, name);
                 var candidateKey = candidate && candidate.candidateKey;
                 var selected = candidateKey && candidateKey === replacementKey;
                 var entry = element('div', 'equipment-tuning-installed-entry');
@@ -1148,15 +1152,15 @@ var EquipmentTuningRender = (function() {
                     + slotIndex + ':' + String(candidateKey || name));
                 button.setAttribute(
                     'aria-label',
-                    '插件槽 ' + (slotIndex + 1) + '：' + String(name)
+                    '插件槽 ' + (slotIndex + 1) + '：' + displayName
                         + '，点击选择替换'
                 );
                 button.setAttribute('aria-pressed', selected ? 'true' : 'false');
                 if (candidate && candidate.gradeColor) {
                     button.style.setProperty('--equipment-mod-grade-color', String(candidate.gradeColor));
                 }
-                button.innerHTML = iconHtml(name, 'kshop-icon')
-                    + '<span><b>' + escapeHtml(name) + '</b><small>'
+                button.innerHTML = iconHtml(candidateIconName(candidate, name), 'kshop-icon')
+                    + '<span><b>' + escapeHtml(displayName) + '</b><small>'
                     + escapeHtml(candidate && candidate.gradeLabel || '已安装')
                     + (candidate && candidate.roleLabel ? ' · ' + escapeHtml(candidate.roleLabel) : '') + '</small></span>'
                     + '<i class="equipment-tuning-role-glyph inventory-mod-glyph symbol-'
@@ -1173,8 +1177,8 @@ var EquipmentTuningRender = (function() {
                 var detach = element('button', 'equipment-tuning-installed-quick-detach');
                 detach.type = 'button';
                 detach.textContent = '×';
-                detach.setAttribute('aria-label', '卸下配件：' + String(name));
-                detach.setAttribute('data-title', '卸下：' + String(name));
+                detach.setAttribute('aria-label', '卸下配件：' + displayName);
+                detach.setAttribute('data-title', '卸下：' + displayName);
                 detach.disabled = self._busy || self._readPending || self._needsReconcile || !candidateKey;
                 setCapability(detach, 'detach', !candidateKey);
                 detach.addEventListener('click', function(event) {
@@ -1398,6 +1402,14 @@ var EquipmentTuningRender = (function() {
     }
     function empty(text) { var node = element('div', 'equipment-tuning-empty'); node.textContent = text || ''; return node; }
     function actionButton(text, handler) { var button = element('button', 'equipment-tuning-action'); button.type = 'button'; button.textContent = text; if (handler) button.addEventListener('click', handler); return button; }
+    function candidateDisplayName(candidate, fallback) {
+        return String(candidate && (candidate.displayName || candidate.itemName)
+            || fallback || candidate && candidate.candidateKey || '');
+    }
+    function candidateIconName(candidate, fallback) {
+        return String(candidate && (candidate.icon || candidate.itemName)
+            || fallback || candidate && candidate.candidateKey || '');
+    }
     function iconHtml(name, cls) {
         var html = typeof Icons !== 'undefined' && Icons.html ? Icons.html(name, cls || 'kshop-icon', ' onerror="this.style.display=\'none\'"') : '';
         return html || '<span class="kshop-icon-placeholder"></span>';

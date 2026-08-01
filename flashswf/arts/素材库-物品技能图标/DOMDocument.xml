@@ -260,11 +260,13 @@
           <Include href="材料相关/图标-贯穿波束发生器.xml" itemID="69a40a78-000005ab" lastModified="1772362000"/>
           <Include href="材料相关/图标-国庆纪念币.xml" itemID="66adbf49-000018ac" lastModified="1760513297"/>
           <Include href="材料相关/图标-黑龙令.xml" itemID="66adbba0-0000182f" lastModified="1751172108"/>
+          <Include href="材料相关/图标-黑爪扩张弹.xml" itemID="6a6c7ba0-00000554" lastModified="1785494502"/>
           <Include href="材料相关/图标-猴年新年碎片.xml" itemID="66adbb7f-00001825" lastModified="1760513314"/>
           <Include href="材料相关/图标-护手.xml" itemID="66adbf6e-000018b1" lastModified="1756949376"/>
           <Include href="材料相关/图标-环格护手.xml" itemID="68f8fd46-00002e74" lastModified="1761274909"/>
           <Include href="材料相关/图标-环式棱栅折射阵列.xml" itemID="69a310e2-00000550" lastModified="1772295488"/>
           <Include href="材料相关/图标-黄铜.xml" itemID="66ea871f-00000d41" lastModified="1726646054"/>
+          <Include href="材料相关/图标-灰蛊裂隙弹.xml" itemID="6a6c7cbf-0000056e" lastModified="1785495855"/>
           <Include href="材料相关/图标-灰蛊蚀刻霰弹.xml" itemID="693d86a9-00002378" lastModified="1765641853"/>
           <Include href="材料相关/图标-辉光射线弹.xml" itemID="69a140a8-00001869" lastModified="1772175588"/>
           <Include href="材料相关/图标-辉光谐振折射器.xml" itemID="69a2e790-0000051c" lastModified="1772371426"/>
@@ -327,6 +329,7 @@
           <Include href="材料相关/图标-尸母标本.xml" itemID="66adba66-00001803" lastModified="1722661509"/>
           <Include href="材料相关/图标-石灰.xml" itemID="66ebd155-00000d5c" lastModified="1732027775"/>
           <Include href="材料相关/图标-石英磨刀石.xml" itemID="66adc0e7-000018e5" lastModified="1756949326"/>
+          <Include href="材料相关/图标-矢量偏转枪盾.xml" itemID="6a6d94ec-000011e2" lastModified="1785566534"/>
           <Include href="材料相关/图标-试验材料.xml" itemID="66adba27-000017fd" lastModified="1723122395"/>
           <Include href="材料相关/图标-手柄皮.xml" itemID="68f8e90e-00002e18" lastModified="1761894058"/>
           <Include href="材料相关/图标-手枪卡宾转换套件.xml" itemID="6a154fcd-00000dbd" lastModified="1779781719"/>
@@ -674,7 +677,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1783424404"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1785566454"/>
           <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1760513120"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="腿演迅驰环图片.xml" itemIcon="1" loadImmediate="false" itemID="69ea66fd-00000528" lastModified="1779798573"/>
@@ -1338,6 +1341,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4769777" publishTime="1785494540"/>
+          <PublishItem publishSize="4769782" publishTime="1785494514"/>
           <PublishItem publishSize="4754299" publishTime="1783428584"/>
           <PublishItem publishSize="4742087" publishTime="1783424325"/>
           <PublishItem publishSize="4736092" publishTime="1783424308"/>
@@ -1356,7 +1361,5 @@
           <PublishItem publishSize="4527015" publishTime="1776998479"/>
           <PublishItem publishSize="4526946" publishTime="1776998231"/>
           <PublishItem publishSize="4228431" publishTime="1772363227"/>
-          <PublishItem publishSize="4228411" publishTime="1772362633"/>
-          <PublishItem publishSize="4222896" publishTime="1772358991"/>
      </publishHistory>
 </DOMDocument>

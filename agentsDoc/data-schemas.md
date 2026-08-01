@@ -240,7 +240,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
 
-`useSwitch` / `skillSwitch` 的无前缀 `name` 继续匹配宿主 `use` 与 `weapontype` 的联合集合。需要消除同名歧义时可写 `use:值` 或 `weapontype:值`：例如 `weapontype:手枪` 只命中精确子类，不会命中仅因 `use=手枪` 而共用装备槽的冲锋手枪和大威力手枪。`grantsUse` 同时进入无前缀集合与 `use:` 限定集合。Tooltip 必须隐藏内部限定符，显示为“装备类型：…”或“武器子类：…”。
+`useSwitch` / `skillSwitch` 的无前缀 `name` 继续匹配宿主 `use` 与 `weapontype` 的联合集合。需要消除同名歧义时可写 `use:值` 或 `weapontype:值`：例如 `weapontype:手枪` 只命中精确子类，不会命中仅因 `use=手枪` 而共用装备槽的冲锋手枪和大威力手枪。`grantsUse` 同时进入无前缀集合与 `use:` 限定集合。Tooltip 必须隐藏内部限定符，显示为“装备类型：…”或“武器子类：…”。`stats.useSwitch.use` 分支除数值运算符外还可声明 `provideTags` 与 `requireTags`：前者仅在分支命中时提供结构，后者仅在分支命中时并入根层安装前置，并必须同时用于候选过滤、安装检查、缺失标签提示与拆卸依赖判定。
 
 ### 声明式子弹命中行为 `<hitBehavior>`
 
@@ -256,7 +256,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/equipment_mods/ui_presentation.xml` 是上述 ID 的受控标签/色号词典，以及插件格角色→符号、`tag`→默认角色的展示词典；它不得重新分配单个插件的档级或目录用途。`EquipModListLoader` 并行加载词典与子文件，向 `EquipmentUtil.modDict` 投影 `modGrade/catalogScope/uiGradeLabel/uiGradeColor/uiScopeLabel/uiRole/uiRoleLabel/uiSymbol`。角色符号采用 `形状-solid|outline` 受控 token；单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖，禁止填写任意 Unicode/HTML 符号。`EquipmentTuningService.modCandidates[]` 暴露档级/用途/定位/受控符号供候选树和紧凑瓦片展示，未知符号由 Web 白名单回退；`InventoryPanelService` 对松散插件材料附加 `modMeta`，但 `availabilityCode` 仍是安装可用性的唯一权威。
 
-`data/items/收集品_材料_插件.xml` 与 `收集品_材料.xml` 只维护库存、经济、图标和说明，不复制档级/用途/定位。构建门 `node tools/validate-equipment-mod-ui.js` 固定校验 104 个 mod、四档、六种 scope、全部现役 `tag`/角色/符号，并要求每个 mod 名称在 `data/items/list.xml` 引用的物品文件中恰好出现一次；其中插件材料文件的 100 个条目必须全部映射到 mod。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
+`data/items/收集品_材料_插件.xml` 与 `收集品_材料.xml` 只维护库存、经济、图标和说明，不复制档级/用途/定位。构建门 `node tools/validate-equipment-mod-ui.js` 固定校验 105 个 mod、四档、六种 scope、全部现役 `tag`/角色/符号，并要求每个 mod 名称在 `data/items/list.xml` 引用的物品文件中恰好出现一次；其中插件材料文件的 101 个条目必须全部映射到 mod。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
 
 ### 长枪副武器 `<subweapon>`
 

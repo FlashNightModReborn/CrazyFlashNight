@@ -715,6 +715,24 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                 use: "头部装备",
                 requireTags: "结构A"
             },
+            // useSwitch.requireTags 条件依赖测试用
+            {
+                name: "供电模块",
+                use: "长枪",
+                provideTags: "电力"
+            },
+            {
+                name: "条件供电插件",
+                use: "长枪",
+                stats: {
+                    useSwitch: {
+                        use: {
+                            name: "weapontype:机枪,weapontype:压制机枪",
+                            requireTags: "电力"
+                        }
+                    }
+                }
+            },
             // 状态码矩阵测试用
             {
                 name: "普通插件",
@@ -803,6 +821,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testTagManager_BasicDependency();
         result += testTagManager_TagExclusion();
         result += testTagManager_DependencyChain();
+        result += testTagManager_ConditionalDependency();
 
         // P0: 状态码矩阵测试
         result += testTagManager_StatusCode_Available();      // 1
@@ -875,6 +894,50 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var hasDependent:Boolean = (dependents.length == 1 && dependents[0] == "插件B");
 
         return hasDependent ? "✓ 依赖链测试通过\n" : "✗ 依赖链测试失败（依赖数=" + dependents.length + "）\n";
+    }
+
+    /**
+     * useSwitch.requireTags 只在指定武器类型上生效，并同时影响单项安装检查和候选过滤。
+     */
+    private static function testTagManager_ConditionalDependency():String {
+        var machineItem = {
+            name: "测试机枪",
+            value: { mods: [] }
+        };
+        var poweredMachineItem = {
+            name: "测试机枪",
+            value: { mods: ["供电模块"] }
+        };
+        var machineData:Object = {
+            use: "长枪",
+            weapontype: "机枪",
+            data: { modslot: 3 }
+        };
+        var rifleData:Object = {
+            use: "长枪",
+            weapontype: "突击步枪",
+            data: { modslot: 3 }
+        };
+
+        var missingPower:Number = TagManager.checkModAvailability(machineItem, machineData, "条件供电插件");
+        var hasPower:Number = TagManager.checkModAvailability(poweredMachineItem, machineData, "条件供电插件");
+        var rifleBypass:Number = TagManager.checkModAvailability(machineItem, rifleData, "条件供电插件");
+        var filteredWithoutPower:Array = TagManager.filterAvailableMods(["条件供电插件"], machineItem, machineData);
+        var filteredWithPower:Array = TagManager.filterAvailableMods(["条件供电插件"], poweredMachineItem, machineData);
+
+        var passed:Boolean = (
+            missingPower == -16 &&
+            hasPower == 1 &&
+            rifleBypass == 1 &&
+            filteredWithoutPower.length == 0 &&
+            filteredWithPower.length == 1
+        );
+
+        return passed
+            ? "✓ useSwitch 条件供电依赖测试通过\n"
+            : "✗ useSwitch 条件供电依赖测试失败（无电=" + missingPower +
+              "，有电=" + hasPower + "，非机枪=" + rifleBypass +
+              "，过滤=" + filteredWithoutPower.length + "/" + filteredWithPower.length + "）\n";
     }
 
     // ---------- 状态码矩阵测试 ----------
@@ -1447,6 +1510,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testEquipmentCalculator_PureVsNormal();
         result += testEquipmentCalculator_UseSwitchMatching();
         result += testEquipmentCalculator_QualifiedHandgunHitBehavior();
+        result += testEquipmentCalculator_GunShieldProfile();
 
         return result;
     }
@@ -1673,6 +1737,73 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         }
 
         return "✓ useSwitch多分支匹配测试通过\n";
+    }
+
+    /**
+     * 枪盾数值档回归：霰弹防御、NOAH 生存资源与压制类额外惩罚可同时叠加。
+     */
+    private static function testEquipmentCalculator_GunShieldProfile():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {}
+        });
+
+        ModRegistry.loadModData([{
+            name: "枪盾数值测试配件",
+            use: "长枪,手枪",
+            stats: {
+                flat: {weight: 2, toughness: 50, accuracy: -10},
+                useSwitch: {
+                    use: [
+                        {name: "weapontype:霰弹枪", flat: {defence: 20}},
+                        {name: "weapontype:压制机枪,weapontype:压制近战", requireTags: "电力", flat: {accuracy: -10, reloadPenalty: 20}}
+                    ]
+                },
+                tagSwitch: {
+                    tag: {name: "NOAH", flat: {accuracy: 10, hp: 15, mp: 15}}
+                }
+            }
+        }]);
+
+        var modRegistry:Object = {
+            枪盾数值测试配件: ModRegistry.getModData("枪盾数值测试配件")
+        };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+        var value:Object = {level: 1, mods: ["枪盾数值测试配件"]};
+
+        var shotgun:Object = EquipmentCalculator.calculatePure({
+            name: "测试霰弹枪",
+            use: "长枪",
+            weapontype: "霰弹枪",
+            data: {accuracy: 100, defence: 0, toughness: 0, weight: 0}
+        }, value, cfg, modRegistry);
+
+        var noahSuppressor:Object = EquipmentCalculator.calculatePure({
+            name: "测试NOAH压制机枪",
+            use: "长枪",
+            weapontype: "压制机枪",
+            inherentTags: "电力,NOAH",
+            data: {accuracy: 100, hp: 100, mp: 100, reloadPenalty: 0, toughness: 0, weight: 0}
+        }, value, cfg, modRegistry);
+
+        var passed:Boolean = (
+            shotgun.data.accuracy == 90 &&
+            shotgun.data.defence == 20 &&
+            shotgun.data.toughness == 50 &&
+            shotgun.data.weight == 2 &&
+            noahSuppressor.data.accuracy == 90 &&
+            noahSuppressor.data.hp == 115 &&
+            noahSuppressor.data.mp == 115 &&
+            noahSuppressor.data.reloadPenalty == 20 &&
+            noahSuppressor.data.toughness == 50 &&
+            noahSuppressor.data.weight == 2
+        );
+
+        return passed
+            ? "✓ 枪盾数值分支回归测试通过\n"
+            : "✗ 枪盾数值分支回归测试失败（霰弹枪=" + shotgun.data.accuracy + "/" + shotgun.data.defence +
+              "，NOAH压制=" + noahSuppressor.data.accuracy + "/" + noahSuppressor.data.hp + "/" +
+              noahSuppressor.data.mp + "/" + noahSuppressor.data.reloadPenalty + "）\n";
     }
 
     /**

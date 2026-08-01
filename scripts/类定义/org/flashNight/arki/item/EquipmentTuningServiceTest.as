@@ -92,7 +92,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             {name:"四阶复合防御组件",displayname:"四阶组件",icon:"测试",type:"收集品",use:"材料",data:{}},
             {name:"基础导轨",displayname:"基础导轨",icon:"测试",type:"收集品",use:"材料",data:{}},
             {name:"依赖瞄具",displayname:"依赖瞄具",icon:"测试",type:"收集品",use:"材料",data:{}},
-            {name:"普通握把",displayname:"普通握把",icon:"测试",type:"收集品",use:"材料",data:{}},
+            {name:"普通握把",displayname:"人体工学握把",icon:"握把专用图标",type:"收集品",use:"材料",data:{}},
             {name:"级联核心",displayname:"级联核心",icon:"测试",type:"收集品",use:"材料",data:{}}
         ]);
         _root.物品栏 = {
@@ -607,8 +607,10 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         assertTrue(modCandidate != null && modCandidate.owned == 0
                 && modCandidate.available == false && modCandidate.reason == "material_missing"
                 && modCandidate.grade == "medium" && modCandidate.scope == "firearm"
-                && modCandidate.role == "precision" && modCandidate.symbol == "triangle-outline",
-            "mod 候选投影目录元数据与符号");
+                && modCandidate.role == "precision" && modCandidate.symbol == "triangle-outline"
+                && modCandidate.displayName == "人体工学握把"
+                && modCandidate.icon == "握把专用图标",
+            "mod 候选投影内部名、显示名、图标与目录元数据");
         _root.收集品栏.材料.add("普通握把", 1);
         snapshotParams = params("availability");
         snapshotParams.source = sourceRef(inventorySnapshot(), 0);

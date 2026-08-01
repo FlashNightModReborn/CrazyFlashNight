@@ -5,6 +5,7 @@
 //   - 任务 catalog itemReqs/rewards
 //   - 成就原始 rewards（含 hidden，避免 catalog 脱敏后漏审）
 //   - 情报物品 XML（IntelligenceTask 从 data/items 取 iconName）
+//   - 装备插件 mod 内部名 -> 物品 displayname/icon -> Web manifest/文件闭包
 // 均必须指向 launcher/web/icons/manifest.json 中存在的 icon key。
 
 const fs = require('fs');
@@ -15,6 +16,8 @@ const projectRoot = path.resolve(__dirname, '..');
 const manifestPath = path.join(projectRoot, 'launcher', 'web', 'icons', 'manifest.json');
 const taskCatalogPath = path.join(projectRoot, 'launcher', 'web', 'modules', 'tasks', 'task-catalog.json');
 const achievementDir = path.join(projectRoot, 'data', 'achievement');
+const equipmentModDir = path.join(projectRoot, 'data', 'items', 'equipment_mods');
+const iconDir = path.dirname(manifestPath);
 
 function fail(msg) {
     console.error('[audit-web-item-icon-closure] ' + msg);
@@ -45,6 +48,14 @@ function readManifest(listFile, tagName) {
     while ((m = re.exec(raw)) !== null) out.push(m[1]);
     if (out.length === 0) fail('manifest ' + listFile + ' has no <' + tagName + '> entries');
     return out;
+}
+
+function childText(xml, tagName) {
+    const re = new RegExp('<' + tagName + '>\\s*([\\s\\S]*?)\\s*</' + tagName + '>');
+    const m = re.exec(String(xml || ''));
+    return m ? m[1].trim()
+        .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&') : '';
 }
 
 function parseReward(raw, ctx, metaByName) {
@@ -102,6 +113,73 @@ function auditIntelligence(manifest, metaByName, missing) {
     }
 }
 
+function manifestImageUris(entry, out) {
+    out = out || [];
+    if (typeof entry === 'string') {
+        if (/\.(?:png|webp|gif|jpe?g)$/i.test(entry) && out.indexOf(entry) < 0) out.push(entry);
+        return out;
+    }
+    if (!entry || typeof entry !== 'object') return out;
+    for (const key of Object.keys(entry)) manifestImageUris(entry[key], out);
+    return out;
+}
+
+function auditEquipmentMods(manifest, metaByName, missing) {
+    const files = readManifest(path.join(equipmentModDir, 'list.xml'), 'items');
+    const seen = Object.create(null);
+    let modCount = 0;
+    let presentationAliases = 0;
+    for (const rel of files) {
+        const raw = readText(path.join(equipmentModDir, rel));
+        const modRe = /<mod\b[^>]*>([\s\S]*?)<\/mod>/g;
+        let match;
+        while ((match = modRe.exec(raw)) !== null) {
+            const name = childText(match[1], 'name');
+            if (!name) fail('equipment mod without <name> in ' + rel);
+            if (seen[name]) fail('duplicate equipment mod name ' + name + ' in ' + seen[name] + ' and ' + rel);
+            seen[name] = rel;
+            modCount += 1;
+            const meta = metaByName[name];
+            if (!meta) {
+                missing.push({ctx:'equipment mod ' + rel, name, icon:'<missing item data>', reason:'item_missing'});
+                continue;
+            }
+            const icon = itemIcon(metaByName, name);
+            if ((meta.displayname && meta.displayname !== name) || icon !== name) presentationAliases += 1;
+            pushMissing(missing, manifest, 'equipment mod ' + rel, name, icon);
+            const entry = manifest[icon];
+            if (!entry) continue;
+            const uris = manifestImageUris(entry);
+            if (uris.length === 0) {
+                missing.push({ctx:'equipment mod ' + rel, name, icon, reason:'manifest_has_no_image'});
+                continue;
+            }
+            for (const uri of uris) {
+                const resolved = path.resolve(iconDir, uri);
+                const relative = path.relative(iconDir, resolved);
+                if (relative.startsWith('..') || path.isAbsolute(relative) || !fs.existsSync(resolved)) {
+                    missing.push({ctx:'equipment mod ' + rel, name, icon,
+                        reason:'asset_missing', asset:uri});
+                }
+            }
+        }
+    }
+    if (modCount === 0) fail('equipment mod manifest contains no <mod> definitions');
+
+    // 这道 release-policy 静态门与 browser harness 的动态反例共同锁定“三名分离”协议。
+    const service = readText(path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight',
+        'arki', 'item', 'EquipmentTuningService.as'));
+    const renderer = readText(path.join(projectRoot, 'launcher', 'web', 'modules',
+        'equipment-tuning-render.js'));
+    if (!service.includes('displayName:presentation.displayName')
+            || !service.includes('icon:presentation.icon')
+            || !renderer.includes('candidateDisplayName(candidate')
+            || !renderer.includes('candidateIconName(candidate')) {
+        fail('equipment tuning itemName/displayName/icon projection contract is missing');
+    }
+    return {modCount, presentationAliases};
+}
+
 function main() {
     const manifest = readJson(manifestPath);
     const metaByName = loadItemMeta(projectRoot, fail);
@@ -110,17 +188,20 @@ function main() {
     auditTaskCatalog(manifest, metaByName, missing);
     auditAchievements(manifest, metaByName, missing);
     auditIntelligence(manifest, metaByName, missing);
+    const equipmentMods = auditEquipmentMods(manifest, metaByName, missing);
 
     if (missing.length > 0) {
-        console.error('[audit-web-item-icon-closure] missing icon keys: ' + missing.length);
+        console.error('[audit-web-item-icon-closure] broken item icon closure: ' + missing.length);
         for (const m of missing.slice(0, 50)) {
-            console.error('  - ' + m.ctx + ': ' + m.name + ' -> ' + m.icon);
+            console.error('  - ' + m.ctx + ': ' + m.name + ' -> ' + m.icon
+                + (m.reason ? ' [' + m.reason + ']' : '') + (m.asset ? ' ' + m.asset : ''));
         }
         if (missing.length > 50) console.error('  ... +' + (missing.length - 50) + ' more');
         process.exit(1);
     }
 
-    console.log('[audit-web-item-icon-closure] OK: task/achievement/intelligence item icons resolve in launcher/web/icons/manifest.json');
+    console.log('[audit-web-item-icon-closure] OK: task/achievement/intelligence/equipment-mod item icons resolve; '
+        + equipmentMods.modCount + ' mods, ' + equipmentMods.presentationAliases + ' presentation aliases');
 }
 
 main();

@@ -253,6 +253,7 @@ function Clear-LegacyEnvironment {
     $repoArtifacts = @(
         @{ Path = (Join-Path $ScriptDir 'publish_done.marker'); Label = '旧完成标记' }
         @{ Path = (Join-Path $ScriptDir 'publish_error.marker'); Label = '旧错误标记' }
+        @{ Path = (Join-Path $ScriptDir 'compile_reopen.marker'); Label = '旧二阶段重开标记' }
         @{ Path = (Join-Path $ScriptDir 'flashlog.txt'); Label = '旧本地 trace 日志' }
         @{ Path = (Join-Path $ScriptDir 'compile_output.txt'); Label = '旧输出面板日志' }
         @{ Path = (Join-Path $ScriptDir 'compile_env.sh'); Label = '旧 shell 环境文件' }

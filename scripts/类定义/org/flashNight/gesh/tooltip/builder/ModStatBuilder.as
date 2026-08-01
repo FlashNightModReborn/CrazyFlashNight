@@ -2,7 +2,8 @@
  * ModStatBuilder - 配件属性构建器
  *
  * 从 TooltipTextBuilder.buildModStat 提取。
- * 包含配件查找、属性展示、installCondition 解析等逻辑。
+ * 包含配件查找、属性展示、installCondition 解析，
+ * 以及 useSwitch 内条件性 provideTags / requireTags 的注释层展示。
  */
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.equipment.ModRegistry;

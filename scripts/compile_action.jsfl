@@ -3,9 +3,65 @@
 
 function normalizeDocumentURI(uri) {
 	var value = String(uri || "");
-	try { value = FLfile.uriToPlatformPath(value); } catch (e1) {}
-	try { value = decodeURI(value); } catch (e2) {}
+	// Do not invoke a platform-path FLfile conversion for arbitrary open documents.
+	// Flash CS6 can abort the whole JSFL host on some unsaved/non-ASCII XFL
+	// paths, bypassing JavaScript try/catch. Pure string normalization is enough
+	// to compare encoded vs unencoded document URIs.
+	try { value = decodeURI(value); } catch (decodeError) {}
 	return value.replace(/\\/g, "/").replace(/\/+$/, "").toLowerCase();
+}
+
+// FLfile.exists() accepts the historical unescaped form
+// "file:///C|/Program Files/...", but fl.openDocument() is stricter. Encode
+// with pure JavaScript so path preparation cannot itself enter a fragile
+// FLfile host call.
+function canonicalizeDocumentURI(uri) {
+	var value = String(uri || "");
+	try { return encodeURI(decodeURI(value)); } catch (decodeError) {}
+	try { return encodeURI(value); } catch (encodeError) {}
+	return value;
+}
+
+var compileRuntimeState = {
+	phase: "bootstrap",
+	projectURI: "",
+	targetURI: ""
+};
+
+function describeJsflError(error) {
+	var parts = [];
+	try {
+		if (error && error.name) parts.push(String(error.name));
+		if (error && error.message) parts.push(String(error.message));
+		if (error && error.lineNumber) parts.push("line=" + error.lineNumber);
+		if (error && error.fileName) parts.push("file=" + error.fileName);
+	} catch (detailError) {}
+	if (parts.length == 0) {
+		try { parts.push(String(error)); } catch (stringError) { parts.push("unknown JSFL error"); }
+	}
+	return parts.join(" | ");
+}
+
+function writeFatalCompileError(error) {
+	var projectURI = compileRuntimeState.projectURI;
+	if (!projectURI) {
+		try {
+			projectURI = FLfile.read(fl.configURI + "Commands/flash_project_path.cfg");
+			if (projectURI) projectURI = projectURI.replace(/[\r\n]+$/, "");
+		} catch (configError) {}
+	}
+
+	var message = "[compile] FATAL phase=" + compileRuntimeState.phase +
+		" target=" + compileRuntimeState.targetURI +
+		" error=" + describeJsflError(error);
+	try { fl.trace(message); } catch (traceError) {}
+
+	if (projectURI) {
+		// Write the terminal marker before auxiliary Output Panel export so a
+		// second failure cannot degrade into a PowerShell timeout.
+		try { FLfile.write(projectURI + "/scripts/publish_error.marker", message); } catch (markerError) {}
+		try { fl.outputPanel.save(projectURI + "/scripts/compile_output.txt"); } catch (saveError) {}
+	}
 }
 
 function containsOnly32KCompilerErrors(text) {
@@ -36,11 +92,14 @@ function containsOnly32KCompilerErrors(text) {
 }
 
 function main() {
+	compileRuntimeState.phase = "read_project_config";
 	var cfgPath = fl.configURI + "Commands/flash_project_path.cfg";
 	var projectURI = FLfile.read(cfgPath);
 	projectURI = projectURI.replace(/[\r\n]+$/, "");
+	compileRuntimeState.projectURI = projectURI;
 	var doneMarker = projectURI + "/scripts/publish_done.marker";
 	var errorMarker = projectURI + "/scripts/publish_error.marker";
+	var reopenMarker = projectURI + "/scripts/compile_reopen.marker";
 	var outputLog = projectURI + "/scripts/compile_output.txt";
 	var compilerErrorsLog = projectURI + "/scripts/compiler_errors.txt";
 
@@ -79,6 +138,7 @@ function main() {
 
 	var doc;
 	if (targetURI) {
+		compileRuntimeState.targetURI = targetURI;
 		fl.trace("[compile] target cfg: " + targetURI);
 		if (!FLfile.exists(targetURI)) {
 			fl.trace("[compile] ERROR: target not found: " + targetURI);
@@ -87,17 +147,36 @@ function main() {
 			return;
 		}
 		// 目标若已打开 → 先关（false=不存盘，丢弃 in-memory，强制从盘重读外部编辑），再开 = 与活动文档路径同款 reload。
-		// pathURI 对中文路径可能返回 percent-encoded URI，而 cfg 可能是直写 Unicode；必须归一为平台路径比较，
+		// pathURI 对中文路径可能返回 percent-encoded URI，而 cfg 可能是直写 Unicode；必须以纯字符串 URI 归一化比较，
 		// 否则 openDocument 会复用带 * 的旧文档，publish 虽刷新 SWF 时间戳却仍编进旧 symbol bytecode。
 		var targetKey = normalizeDocumentURI(targetURI);
+		compileRuntimeState.phase = "close_opened_target";
+		var closedOpenedTarget = false;
 		for (var i = fl.documents.length - 1; i >= 0; i--) {
 			if (normalizeDocumentURI(fl.documents[i].pathURI) == targetKey) {
 				fl.trace("[compile] close opened target: " + targetURI);
 				fl.closeDocument(fl.documents[i], false);
+				closedOpenedTarget = true;
 			}
 		}
-		fl.trace("[compile] open target from disk: " + targetURI);
-		doc = fl.openDocument(targetURI);
+		if (closedOpenedTarget) {
+			// Flash CS6 can abort the whole JSFL host call when the same XFL is
+			// closed and immediately reopened in one stack. Ask compile_test.ps1
+			// to trigger a second task invocation after this call has returned.
+			compileRuntimeState.phase = "request_second_phase_reopen";
+			fl.trace("[compile] target closed; request second-phase reopen");
+			try { fl.outputPanel.save(outputLog); } catch (reopenOutputError) {}
+			FLfile.write(reopenMarker, targetURI + "\n" + compileMode);
+			return;
+		}
+		compileRuntimeState.phase = "open_target_from_disk";
+		var targetOpenURI = canonicalizeDocumentURI(targetURI);
+		fl.trace("[compile] open target from disk: " + targetOpenURI);
+		// openDocument can abort the JSFL host without throwing a catchable
+		// exception. Persist the exact URI immediately before crossing that
+		// boundary so failure diagnosis never depends on the live Output panel.
+		try { fl.outputPanel.save(outputLog); } catch (preOpenOutputError) {}
+		doc = fl.openDocument(targetOpenURI);
 	} else {
 		doc = fl.getDocumentDOM();
 		fl.trace("[compile] active doc: " + (doc ? doc.name : "null"));
@@ -107,10 +186,15 @@ function main() {
 			// 打开 FLA 时的旧 in-memory 表达，外部编辑全部不可见，最直观症状是
 			// "明明改了源文件，编译错误还指向旧行号 / 旧符号"。
 			var docUri = doc.pathURI;
+			compileRuntimeState.targetURI = docUri;
 			fl.trace("[compile] reload from disk: " + docUri);
+			compileRuntimeState.phase = "close_active_target";
 			fl.closeDocument(doc, false);  // false = 不提示保存（外部源是 SOT，丢弃 in-memory 改动）
-			doc = fl.openDocument(docUri);
-			fl.trace("[compile] reloaded doc: " + (doc ? doc.name : "null"));
+			compileRuntimeState.phase = "request_second_phase_reopen";
+			fl.trace("[compile] active target closed; request second-phase reopen");
+			try { fl.outputPanel.save(outputLog); } catch (activeReopenOutputError) {}
+			FLfile.write(reopenMarker, docUri + "\n" + compileMode);
+			return;
 		}
 	}
 
@@ -124,9 +208,11 @@ function main() {
 	// 默认 testMovie（TestLoader/显式测试目标需运行产 trace / 刷新 SWF）。
 	// compile_mode.cfg == "publish" 时只编译产出 SWF，不拉起全量游戏窗口。
 	if (compileMode == "publish") {
+		compileRuntimeState.phase = "publish_document";
 		fl.trace("[compile] publish (no testMovie): " + doc.name);
 		doc.publish();
 	} else {
+		compileRuntimeState.phase = "test_movie";
 		fl.trace("[compile] testMovie: " + doc.name);
 		doc.testMovie();
 	}
@@ -151,7 +237,12 @@ function main() {
 	fl.trace("[compile] done");
 	fl.outputPanel.save(outputLog);
 	FLfile.write(doneMarker, "ok");
+	compileRuntimeState.phase = "complete";
 }
 
 // 直接执行时（eval 调用）也能工作
-main();
+try {
+	main();
+} catch (fatalCompileError) {
+	writeFatalCompileError(fatalCompileError);
+}

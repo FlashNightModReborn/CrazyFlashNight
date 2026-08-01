@@ -81,6 +81,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_TAG_SWITCH_EFFECT:String = "【按结构标签追加效果】";
   public static var LBL_BULLET_SWITCH_EFFECT:String = "【按弹药类型追加效果】";
   public static var LBL_COND_PROVIDE_TAGS:String = "条件性提供结构";
+  public static var LBL_COND_REQUIRE_TAGS:String = "条件性前置需求";
 
   // ══════════════════════════════════════════════════════════════
   // 标签常量 - 操作类型标签 (Labels - Operation Tags)

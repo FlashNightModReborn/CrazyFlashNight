@@ -234,7 +234,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
 
     /**
      * 处理和优化useSwitch
-     * 支持 stats 运算符和条件性 provideTags
+     * 支持 stats 运算符、条件性 provideTags 和条件性 requireTags
      * @private
      */
     private static function processUseSwitch(mod:Object):Void {
@@ -284,6 +284,14 @@ class org.flashNight.arki.item.equipment.ModRegistry {
                 useCase.provideTagDict = buildDictFromList(useCase.provideTags);
                 if (_debugMode) {
                     trace("[ModRegistry] useSwitch分支 '" + useCase.name + "' 提供条件性tags: " + useCase.provideTags);
+                }
+            }
+
+            // 条件性 requireTags：仅当该 useSwitch 分支命中时成为安装前置。
+            if (useCase.requireTags) {
+                useCase.requireTagDict = buildDictFromList(useCase.requireTags);
+                if (_debugMode) {
+                    trace("[ModRegistry] useSwitch分支 '" + useCase.name + "' 需要条件性tags: " + useCase.requireTags);
                 }
             }
         }
@@ -608,6 +616,36 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     public static function matchUseSwitch(modData:Object, itemUseLookup:Object):Object {
         var matched:Array = matchUseSwitchAll(modData, itemUseLookup);
         return (matched.length > 0) ? matched[0] : null;
+    }
+
+    /**
+     * 解析当前装备类型下配件的完整结构需求。
+     * 根层 requireTags 始终生效，命中的 useSwitch.requireTags 与之叠加。
+     *
+     * @param modData 配件数据
+     * @param itemUseLookup 装备的 use/weapontype 查找表
+     * @return 需求标签字典
+     */
+    public static function resolveRequiredTagsForUse(modData:Object, itemUseLookup:Object):Object {
+        var required:Object = {};
+        if (!modData) return required;
+
+        if (modData.requireTagDict) {
+            for (var rootTag:String in modData.requireTagDict) {
+                required[rootTag] = true;
+            }
+        }
+
+        var matched:Array = matchUseSwitchAll(modData, itemUseLookup || {});
+        for (var i:Number = 0; i < matched.length; i++) {
+            var useCase:Object = matched[i];
+            if (!useCase || !useCase.requireTagDict) continue;
+            for (var conditionalTag:String in useCase.requireTagDict) {
+                required[conditionalTag] = true;
+            }
+        }
+
+        return required;
     }
 
     /**
