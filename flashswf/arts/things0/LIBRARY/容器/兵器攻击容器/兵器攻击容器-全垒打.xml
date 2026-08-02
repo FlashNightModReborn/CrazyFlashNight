@@ -224,7 +224,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-360.25" centerPoint3DY="164.15">
                   <matrix>
-                    <Matrix a="55.5605010986328" d="23.5523223876953" tx="-35.1" ty="87.85"/>
+                    <Matrix a="55.5604858398438" d="23.5523071289063" tx="-35.1" ty="87.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -362,7 +362,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-356.6" centerPoint3DY="118.2">
                   <matrix>
-                    <Matrix a="56.6444854736328" d="27.4654846191406" tx="-18.45" ty="-4.2"/>
+                    <Matrix a="56.6444702148438" d="27.4654693603516" tx="-18.45" ty="-4.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -4597,7 +4597,7 @@ Z轴攻击范围 = 30;
         </DOMLayer>
         <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="20" keyMode="15872">
+            <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>

@@ -241,7 +241,7 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="132.6" centerPoint3DY="67.5">
                   <matrix>
-                    <Matrix a="49.0526885986328" d="20.0120544433594" tx="376.2" ty="35.55"/>
+                    <Matrix a="49.0526733398438" d="20.0120544433594" tx="376.2" ty="35.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -309,7 +309,7 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-22.45" centerPoint3DY="67.5">
                   <matrix>
-                    <Matrix a="56.6264495849609" d="25.6284027099609" tx="313.7" ty="-34.1"/>
+                    <Matrix a="56.6264343261719" d="25.6283874511719" tx="313.7" ty="-34.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -375,7 +375,7 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="13" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="193.65" centerPoint3DY="67.5">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="193.65" centerPoint3DY="67.5">
                   <matrix>
                     <Matrix a="49.4687957763672" d="25.9117889404297" tx="443.45" ty="-38.8"/>
                   </matrix>
@@ -588,7 +588,7 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-52.4" centerPoint3DY="60.5">
                   <matrix>
-                    <Matrix a="54.0992736816406" d="29.5930023193359" tx="253.55" ty="-90.65"/>
+                    <Matrix a="54.0992584228516" d="29.5929870605469" tx="253.55" ty="-90.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -656,7 +656,7 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="166.65" centerPoint3DY="67.5">
                   <matrix>
-                    <Matrix a="50.0339660644531" d="23.5989227294922" tx="422.7" ty="-9.3"/>
+                    <Matrix a="50.0339508056641" d="23.5989227294922" tx="422.7" ty="-9.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -724,7 +724,7 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="161.65" centerPoint3DY="67.5">
                   <matrix>
-                    <Matrix a="45.4776916503906" d="23.5989227294922" tx="359.5" ty="-9.3"/>
+                    <Matrix a="45.4776763916016" d="23.5989227294922" tx="359.5" ty="-9.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -903,8 +903,8 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!15473 5465[9482 5208 1810 2458!1810 2458[-5859 -291 -10716 -3928!-10716 -3928[-15573 -7561 -14768 -9949!-14768 -9949[-13966 -12336 -7973 -12082!-7973 -12082[-1978 -11823 5690 -9074!5690 -9074[13362 -6322 18218 -2689!18218 -2689[23076
- 945 22271 3334!22271 3334[21470 5722 15473 5465"/>
+!18218 -2689[23076 945 22271 3334!22271 3334[21470 5722 15473 5465!15473 5465[9482 5208 1810 2458!1810 2458[-5859 -291 -10716 -3928!-10716 -3928[-15573 -7561 -14768 -9949!-14768 -9949[-13966 -12336 -7973 -12082!-7973 -12082[-1978 -11823
+ 5690 -9074!5690 -9074[13362 -6322 18218 -2689"/>
                   </edges>
                 </DOMShape>
               </elements>

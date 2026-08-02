@@ -430,7 +430,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="5" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -748,7 +748,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="105" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -1204,7 +1204,7 @@ onClipEvent (enterFrame) {
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="215.8" centerPoint3DY="414.65">
                   <matrix>
-                    <Matrix a="45.4979400634766" d="19.7667083740234" tx="282.5" ty="54.85"/>
+                    <Matrix a="45.4979400634766" d="19.7666931152344" tx="282.5" ty="54.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1270,7 +1270,7 @@ onClipEvent (enterFrame) {
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-233.15" centerPoint3DY="439.65">
                   <matrix>
-                    <Matrix a="58.6417846679688" d="27.0686340332031" tx="-2.15" ty="-11.1"/>
+                    <Matrix a="58.6417846679688" d="27.0686187744141" tx="-2.15" ty="-11.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1336,7 +1336,7 @@ onClipEvent (enterFrame) {
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-289.05" centerPoint3DY="168.7">
                   <matrix>
-                    <Matrix a="54.0620422363281" d="31.7433166503906" tx="-114.4" ty="-29"/>
+                    <Matrix a="54.0620269775391" d="31.7433013916016" tx="-114.4" ty="-29"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1399,7 +1399,7 @@ onClipEvent (enterFrame) {
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-119.7" centerPoint3DY="470.85">
                   <matrix>
-                    <Matrix a="41.5397033691406" d="22.3123016357422" tx="-144" ty="44.15"/>
+                    <Matrix a="41.5396881103516" d="22.3123016357422" tx="-144" ty="44.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1654,7 +1654,7 @@ onClipEvent (enterFrame) {
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507"/>
+                    <Edge fillStyle1="1" edges="!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2506,8 +2506,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664 -4254!18664 -4254[19255 -1998 14470 909!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653
- -465!-12653 -465[-7869 -3373 -514 -5226"/>
+!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653 -465!-12653 -465[-7869 -3373 -514 -5226!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664
+ -4254!18664 -4254[19255 -1998 14470 909"/>
                   </edges>
                 </DOMShape>
               </elements>

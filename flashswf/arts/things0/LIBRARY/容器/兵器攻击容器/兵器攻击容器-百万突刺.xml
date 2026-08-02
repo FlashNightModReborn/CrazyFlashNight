@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-百万突刺" itemID="695a240a-00001045" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-百万突刺" lastModified="1785146260" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-百万突刺" itemID="695a240a-00001045" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-百万突刺" lastModified="1785622799" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="兵器攻击容器-百万突刺" currentFrame="41">
       <layers>
@@ -137,7 +137,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -1371,7 +1371,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -1490,7 +1490,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂-2" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="左下臂-2" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -2226,7 +2226,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="刀" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -2746,7 +2746,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂-2" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="左上臂-2" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -3842,7 +3842,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -4398,7 +4398,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="手枪" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4738,7 +4738,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4856,7 +4856,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-100.5" centerPoint3DY="-6.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="-100.5" centerPoint3DY="-6.55">
                   <matrix>
                     <Matrix a="-0.53375244140625" b="-0.64495849609375" c="-0.644943237304688" d="0.533782958984375" tx="-137.65" ty="-13.05"/>
                   </matrix>
@@ -4871,7 +4871,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右脚" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="右脚" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5196,7 +5196,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-84.8" centerPoint3DY="-59.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-84.8" centerPoint3DY="-59.6">
                   <matrix>
                     <Matrix a="0.31793212890625" b="-0.73858642578125" c="-0.80352783203125" d="-0.345947265625" tx="-76.65" ty="10.9"/>
                   </matrix>
@@ -5211,7 +5211,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="副手刀" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="副手刀" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5572,7 +5572,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-182.85" centerPoint3DY="75.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-182.85" centerPoint3DY="75.45">
                   <matrix>
                     <Matrix a="-0.943572998046875" b="-0.328994750976563" c="-0.328582763671875" d="0.942352294921875" tx="-108.05" ty="-127.55"/>
                   </matrix>
@@ -5587,7 +5587,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="右大腿" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5870,7 +5870,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6177,7 +6177,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="20.7" centerPoint3DY="-0.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="20.7" centerPoint3DY="-0.2">
                   <matrix>
                     <Matrix a="0.683441162109375" b="0.492324829101563" c="-0.492324829101563" d="0.683441162109375" tx="-26.65" ty="-54.15"/>
                   </matrix>
@@ -6192,7 +6192,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左脚" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="左脚" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6499,7 +6499,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="57.85" centerPoint3DY="40.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="57.85" centerPoint3DY="40.65">
                   <matrix>
                     <Matrix a="0.18182373046875" b="0.982925415039063" c="-0.982925415039063" d="0.18182373046875" tx="-7.5" ty="27.6"/>
                   </matrix>
@@ -6514,7 +6514,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="屁股" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="屁股" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6821,7 +6821,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-88.75" centerPoint3DY="74.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-88.75" centerPoint3DY="74.9">
                   <matrix>
                     <Matrix a="-0.486251831054688" b="-0.696426391601563" c="-0.696426391601563" d="0.486251831054688" tx="-52.85" ty="144.3"/>
                   </matrix>
@@ -6836,7 +6836,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7143,7 +7143,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-178.45" centerPoint3DY="172.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-178.45" centerPoint3DY="172.7">
                   <matrix>
                     <Matrix a="-0.817062377929688" b="-0.220428466796875" c="-0.220428466796875" d="0.817062377929688" tx="-133.6" ty="198.85"/>
                   </matrix>
@@ -7158,7 +7158,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="身体" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7465,7 +7465,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-47.75" centerPoint3DY="60.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-47.75" centerPoint3DY="60.9">
                   <matrix>
                     <Matrix a="-0.51220703125" b="-0.67816162109375" c="-0.67816162109375" d="0.51220703125" tx="30.9" ty="82.35"/>
                   </matrix>
@@ -7480,7 +7480,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="左手" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7787,7 +7787,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="100.75" centerPoint3DY="154.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="100.75" centerPoint3DY="154.4">
                   <matrix>
                     <Matrix a="0.64093017578125" b="0.56085205078125" c="-0.56085205078125" d="0.64093017578125" tx="164.2" ty="108.15"/>
                   </matrix>
@@ -7802,7 +7802,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -8109,7 +8109,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="134.05" centerPoint3DY="215.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="134.05" centerPoint3DY="215.9">
                   <matrix>
                     <Matrix a="0.853515625" b="0.007293701171875" c="-0.0072784423828125" d="0.853515625" tx="94.55" ty="182.2"/>
                   </matrix>
@@ -8124,7 +8124,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 29" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 29" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -8458,7 +8458,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="103.95" centerPoint3DY="91.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="103.95" centerPoint3DY="91.95">
                   <matrix>
                     <Matrix a="0.830474853515625" b="-0.203155517578125" c="0.203155517578125" d="0.830474853515625" tx="49.55" ty="71.6"/>
                   </matrix>
@@ -8473,7 +8473,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 30" color="#808080" locked="true">
+        <DOMLayer name="图层 30" color="#808080">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -8807,7 +8807,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="49" centerPoint3DY="-70.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="49" centerPoint3DY="-70.3">
                   <matrix>
                     <Matrix a="0.963973999023438" b="0.031280517578125" c="-0.031280517578125" d="0.963973999023438" tx="6.75" ty="-101.1"/>
                   </matrix>
@@ -8822,7 +8822,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="左大腿" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -9129,7 +9129,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="154" centerPoint3DY="66.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="154" centerPoint3DY="66.35">
                   <matrix>
                     <Matrix a="0.82666015625" b="-0.203155517578125" c="0.1968994140625" d="0.801223754882813" tx="39.5" ty="23.65"/>
                   </matrix>
@@ -9144,7 +9144,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪2" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="手枪2" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -9451,7 +9451,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="112.8" centerPoint3DY="144.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="112.8" centerPoint3DY="144.45">
                   <matrix>
                     <Matrix a="0.2689208984375" b="-0.804824829101563" c="0.804824829101563" d="0.2689208984375" tx="71.7" ty="73.35"/>
                   </matrix>
@@ -9466,7 +9466,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 33" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -9827,7 +9827,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="133.55" centerPoint3DY="48.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="133.55" centerPoint3DY="48.85">
                   <matrix>
                     <Matrix a="0.245590209960938" b="0.96917724609375" c="-0.96917724609375" d="0.245590209960938" tx="67.85" ty="35.95"/>
                   </matrix>
@@ -9842,7 +9842,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 34" color="#9933CC" locked="true">
+        <DOMLayer name="图层 34" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -10203,7 +10203,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="194.3" centerPoint3DY="-101.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="194.3" centerPoint3DY="-101.9">
                   <matrix>
                     <Matrix a="0.80194091796875" b="0.240219116210938" c="-0.240249633789063" d="0.80194091796875" tx="214.55" ty="-70.3"/>
                   </matrix>
@@ -10218,7 +10218,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 35" color="#FF800A" locked="true">
+        <DOMLayer name="图层 35" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -10570,7 +10570,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="110.9" centerPoint3DY="-118.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="110.9" centerPoint3DY="-118.3">
                   <matrix>
                     <Matrix a="-0.0286712646484375" b="-0.838180541992188" c="0.838180541992188" d="-0.0286712646484375" tx="137" ty="-67.85"/>
                   </matrix>
@@ -10585,7 +10585,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="左下臂" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -10946,7 +10946,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="77.35" centerPoint3DY="1.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="77.35" centerPoint3DY="1.45">
                   <matrix>
                     <Matrix a="0.0260009765625" b="0.855987548828125" c="0.838333129882813" d="-0.0254669189453125" tx="53" ty="-66.1"/>
                   </matrix>
@@ -10961,7 +10961,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="左上臂" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -11268,7 +11268,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="125.95" centerPoint3DY="28.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="125.95" centerPoint3DY="28.8">
                   <matrix>
                     <Matrix a="-0.241912841796875" b="-0.961334228515625" c="-0.961334228515625" d="0.241912841796875" tx="-13.55" ty="83.3"/>
                   </matrix>
@@ -11283,7 +11283,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀3" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="刀3" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -11371,7 +11371,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="35" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="211.8" centerPoint3DY="-248.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="211.8" centerPoint3DY="-248.75">
                   <matrix>
                     <Matrix a="-0.0969390869140625" b="-0.975555419921875" c="0.975555419921875" d="-0.0969390869140625" tx="148.35" ty="-55.35"/>
                   </matrix>
@@ -11386,7 +11386,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="长枪" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="长枪" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -11432,7 +11432,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 40" color="#FF4F4F" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 40" color="#FF4F4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -11475,7 +11475,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements>

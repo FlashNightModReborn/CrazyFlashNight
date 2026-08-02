@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-双剑气" itemID="6a36ef14-0000189f" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双剑气" lastModified="1782300143" lastUniqueIdentifier="439">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-双剑气" itemID="6a36ef14-0000189f" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双剑气" lastModified="1785675398" lastUniqueIdentifier="441">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-双剑气" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-双剑气" currentFrame="11" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -87,14 +87,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -120,16 +120,16 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="394.3" centerPoint3DY="-142.25">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="26.35" centerPoint3DY="45.7">
                   <matrix>
-                    <Matrix a="17.1313629150391" d="7.18408203125" tx="423.1" ty="-13.85"/>
+                    <Matrix a="32.2070465087891" d="16.6671295166016" tx="243.6" ty="55.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -151,8 +151,8 @@
 	if(_parent._parent.被动技能.刀剑攻击 && _parent._parent.被动技能.刀剑攻击.等级){
 		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑攻击.等级 / 13;
 	}
-	子弹属性.子弹速度 = 25;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.子弹速度 = 50;
+	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 50;
 	子弹属性.水平击退速度 = 13;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -291,9 +291,9 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="11" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="274.3" centerPoint3DY="30.8">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-0.7" centerPoint3DY="42.8">
                   <matrix>
-                    <Matrix a="17.1313629150391" d="14.7848358154297" tx="303.1" ty="64.35"/>
+                    <Matrix a="25.93701171875" d="17.5053253173828" tx="138.6" ty="42.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -315,8 +315,8 @@ onClipEvent(load){
 	if(_parent._parent.被动技能.刀剑攻击 && _parent._parent.被动技能.刀剑攻击.等级){
 		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑攻击.等级 / 13;
 	}
-	子弹属性.子弹速度 = 25;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.子弹速度 = 50;
+	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 50;
 	子弹属性.水平击退速度 = 13;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -447,6 +447,99 @@ onClipEvent(load){
                   <color>
                     <Color alphaMultiplier="0"/>
                   </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="-212.45" centerPoint3DY="10.6">
+                  <matrix>
+                    <Matrix a="-0.983856201171875" b="0.178863525390625" c="0.793563842773438" d="0.522872924804688" tx="204.05" ty="76.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFFF" strength="1.2"/>
+                    <AdjustColorFilter brightness="100" contrast="100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="-107.65" centerPoint3DY="223.85">
+                  <matrix>
+                    <Matrix a="-0.187118530273438" b="0.261199951171875" c="0.948959350585938" d="-0.0509490966796875" tx="266.6" ty="29.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFFF" strength="1.2"/>
+                    <AdjustColorFilter brightness="100" contrast="100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" selected="true" centerPoint3DX="-28.05" centerPoint3DY="506">
+                  <matrix>
+                    <Matrix a="-0.179763793945313" b="-0.380233764648438" c="-1.34219360351563" d="0.0704345703125" tx="-72.75" ty="89.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFFF" strength="1.2"/>
+                    <AdjustColorFilter brightness="100" contrast="100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" selected="true" centerPoint3DX="501.05" centerPoint3DY="247.8">
+                  <matrix>
+                    <Matrix a="-0.7041015625" b="-0.365585327148438" c="0.159988403320313" d="0.942214965820313" tx="117.85" ty="78.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFFF" strength="1.2"/>
+                    <AdjustColorFilter brightness="100" contrast="100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="441.45" centerPoint3DY="-395.4">
+                  <matrix>
+                    <Matrix a="-0.66656494140625" b="0.72900390625" c="1.04862976074219" d="0.098419189453125" tx="177.9" ty="-70.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFFF" strength="1.2"/>
+                    <AdjustColorFilter brightness="100" contrast="100"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
