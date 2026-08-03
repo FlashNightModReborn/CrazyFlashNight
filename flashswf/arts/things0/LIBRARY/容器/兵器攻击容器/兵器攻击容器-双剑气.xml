@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-双剑气" itemID="6a36ef14-0000189f" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双剑气" lastModified="1785675398" lastUniqueIdentifier="441">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-双剑气" itemID="6a36ef14-0000189f" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双剑气" lastModified="1785769175" lastUniqueIdentifier="442">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-双剑气" currentFrame="11" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-双剑气" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -80,10 +80,19 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -120,7 +129,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -293,7 +302,7 @@ onClipEvent(load){
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-0.7" centerPoint3DY="42.8">
                   <matrix>
-                    <Matrix a="25.93701171875" d="17.5053253173828" tx="138.6" ty="42.35"/>
+                    <Matrix a="25.93701171875" d="17.5053100585938" tx="138.6" ty="42.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -497,7 +506,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" selected="true" centerPoint3DX="-28.05" centerPoint3DY="506">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="-28.05" centerPoint3DY="506">
                   <matrix>
                     <Matrix a="-0.179763793945313" b="-0.380233764648438" c="-1.34219360351563" d="0.0704345703125" tx="-72.75" ty="89.1"/>
                   </matrix>
@@ -513,7 +522,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" selected="true" centerPoint3DX="501.05" centerPoint3DY="247.8">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="501.05" centerPoint3DY="247.8">
                   <matrix>
                     <Matrix a="-0.7041015625" b="-0.365585327148438" c="0.159988403320313" d="0.942214965820313" tx="117.85" ty="78.65"/>
                   </matrix>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-迅捷连斩" itemID="6a661e08-00000f7e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-迅捷连斩" lastModified="1785085012" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-迅捷连斩" itemID="6a661e08-00000f7e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-迅捷连斩" lastModified="1785769395" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-迅捷连斩" currentFrame="11">
+    <DOMTimeline name="兵器攻击容器-迅捷连斩">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -43,7 +43,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -67,6 +67,22 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
 _root.播放音效("兵器4段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -443,7 +459,7 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -903,8 +919,8 @@ _root.播放音效("兵器4段攻击.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!18218 -2689[23076 945 22271 3334!22271 3334[21470 5722 15473 5465!15473 5465[9482 5208 1810 2458!1810 2458[-5859 -291 -10716 -3928!-10716 -3928[-15573 -7561 -14768 -9949!-14768 -9949[-13966 -12336 -7973 -12082!-7973 -12082[-1978 -11823
- 5690 -9074!5690 -9074[13362 -6322 18218 -2689"/>
+!15473 5465[9482 5208 1810 2458!1810 2458[-5859 -291 -10716 -3928!-10716 -3928[-15573 -7561 -14768 -9949!-14768 -9949[-13966 -12336 -7973 -12082!-7973 -12082[-1978 -11823 5690 -9074!5690 -9074[13362 -6322 18218 -2689!18218 -2689[23076
+ 945 22271 3334!22271 3334[21470 5722 15473 5465"/>
                   </edges>
                 </DOMShape>
               </elements>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影后撤" itemID="6a6e6915-00000e89" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影后撤" lastModified="1785631464">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影后撤" itemID="6a6e6915-00000e89" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影后撤" lastModified="1785769222" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="兵器攻击容器-疾影后撤">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" name="疾影后撤" labelType="name" keyMode="9728">
               <elements/>
@@ -12,8 +12,8 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="代码相关" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -121,7 +121,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -189,7 +189,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements>
@@ -205,7 +205,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements>
@@ -221,7 +221,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -334,7 +334,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -424,7 +424,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -625,7 +625,23 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_9" color="#00FFFF" locked="true">
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="1">
+          <frames>
+            <DOMFrame index="0" duration="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_9" color="#00FFFF">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -685,8 +701,8 @@ onClipEvent(unload){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13418 -1984S2[18615 -1077 18607 205!18607 205[18598 1488 13387 2395!13387 2395[8176 3302 817 3302!817 3302[-6541 3302 -11743 2395!-11743 2395[-16939 1488 -16930 205!-16930 205[-16921 -1077 -11711 -1984!-11711 -1984[-6497 -2892 860 -2892
-!860 -2892[8221 -2892 13418 -1984"/>
+!13387 2395S2[8176 3302 817 3302!817 3302[-6541 3302 -11743 2395!-11743 2395[-16939 1488 -16930 205!-16930 205[-16921 -1077 -11711 -1984!-11711 -1984[-6497 -2892 860 -2892!860 -2892[8221 -2892 13418 -1984!13418 -1984[18615 -1077 18607
+ 205!18607 205[18598 1488 13387 2395"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -707,8 +723,8 @@ onClipEvent(unload){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14914 -2244[20729 -1229 20720 205!20720 205[20710 1641 14879 2656!14879 2656[9049 3670 815 3670!815 3670[-7418 3670 -13238 2656!-13238 2656[-19051 1641 -19041 205!-19041 205[-19031 -1229 -13202 -2244!-13202 -2244[-7368 -3260 863 -3260
-!863 -3260[9099 -3260 14914 -2244"/>
+!14879 2656[9049 3670 815 3670!815 3670[-7418 3670 -13238 2656!-13238 2656[-19051 1641 -19041 205!-19041 205[-19031 -1229 -13202 -2244!-13202 -2244[-7368 -3260 863 -3260!863 -3260[9099 -3260 14914 -2244!14914 -2244[20729 -1229 20720 205
+!20720 205[20710 1641 14879 2656"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -718,7 +734,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#009999" locked="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#009999" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -4074,7 +4090,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements>

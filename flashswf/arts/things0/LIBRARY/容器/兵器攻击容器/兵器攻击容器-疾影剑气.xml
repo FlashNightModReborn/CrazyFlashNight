@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影剑气" itemID="6a6e6f31-00001208" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影剑气" lastModified="1785622501" lastUniqueIdentifier="441">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影剑气" itemID="6a6e6f31-00001208" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影剑气" lastModified="1785769300" lastUniqueIdentifier="442">
   <timeline>
     <DOMTimeline name="兵器攻击容器-疾影剑气" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="左手-2" color="#AFE9DD" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" name="疾影剑气" labelType="name" keyMode="9728">
               <elements/>
@@ -80,10 +80,19 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -120,7 +129,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -129,7 +138,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="273.8" centerPoint3DY="-1.35">
                   <matrix>
-                    <Matrix a="32.5152435302734" d="16.2869720458984" tx="494.45" ty="13.1"/>
+                    <Matrix a="32.5152282714844" d="16.2869567871094" tx="494.45" ty="13.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -293,7 +302,7 @@ onClipEvent(load){
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="230.3" centerPoint3DY="30.8">
                   <matrix>
-                    <Matrix a="30.7337799072266" d="17.3573303222656" tx="429.55" ty="32.55"/>
+                    <Matrix a="30.7337799072266" d="17.3573150634766" tx="429.55" ty="32.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -527,8 +536,8 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13141 3208[8854 4307 2798 4307!2798 4307[-3257 4307 -7539 3208!-7539 3208[-11813 2109 -11808 555!-11808 555[-11800 -999 -7513 -2100!-7513 -2100[-3221 -3199 2832 -3199!2832 -3199[8890 -3199 13166 -2100!13166 -2100[17443 -999 17436 555
-!17436 555[17430 2109 13141 3208"/>
+!13166 -2100[17443 -999 17436 555!17436 555[17430 2109 13141 3208!13141 3208[8854 4307 2798 4307!2798 4307[-3257 4307 -7539 3208!-7539 3208[-11813 2109 -11808 555!-11808 555[-11800 -999 -7513 -2100!-7513 -2100[-3221 -3199 2832 -3199!2832
+ -3199[8890 -3199 13166 -2100"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -549,8 +558,8 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13840 3388[9263 4561 2797 4561!2797 4561[-3667 4561 -8239 3388!-8239 3388[-12802 2215 -12797 556!-12797 556[-12788 -1104 -8211 -2279!-8211 -2279[-3629 -3452 2834 -3452!2834 -3452[9301 -3452 13867 -2279!13867 -2279[18433 -1104 18425 556
-!18425 556[18419 2215 13840 3388"/>
+!13867 -2279[18433 -1104 18425 556!18425 556[18419 2215 13840 3388!13840 3388[9263 4561 2797 4561!2797 4561[-3667 4561 -8239 3388!-8239 3388[-12802 2215 -12797 556!-12797 556[-12788 -1104 -8211 -2279!-8211 -2279[-3629 -3452 2834 -3452
+!2834 -3452[9301 -3452 13867 -2279"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -678,7 +687,7 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!7291 -1375|15287 -640!15287 -640[6422 5543 -3799 6868!-3799 6868|7291 -1375"/>
+!15287 -640[6422 5543 -3799 6868!-3799 6868|7291 -1375!7291 -1375|15287 -640"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -699,7 +708,7 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!7291 -1375|15287 -640!15287 -640[6422 5543 -3799 6868!-3799 6868|7291 -1375"/>
+!15287 -640[6422 5543 -3799 6868!-3799 6868|7291 -1375!7291 -1375|15287 -640"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -723,7 +732,7 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!8480 -281|13779 -2060!13779 -2060[#1ECD.24 #FFEF91.37 -3194 -3894!-3194 -3894|8480 -281"/>
+!13779 -2060[#1ECD.24 #FFEF91.37 -3194 -3894!-3194 -3894|8480 -281!8480 -281|13779 -2060"/>
                   </edges>
                 </DOMShape>
               </elements>

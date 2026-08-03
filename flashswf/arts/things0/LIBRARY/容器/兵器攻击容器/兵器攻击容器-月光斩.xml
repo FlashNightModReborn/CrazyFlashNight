@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1785622062" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1785769328" lastUniqueIdentifier="12">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="24">
+    <DOMTimeline name="兵器攻击容器-月光斩">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -86,6 +86,22 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
@@ -148,7 +164,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>

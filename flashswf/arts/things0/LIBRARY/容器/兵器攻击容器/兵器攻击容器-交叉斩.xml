@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-交叉斩" itemID="6a661c6a-00000dc6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-交叉斩" lastModified="1785347926" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-交叉斩" itemID="6a661c6a-00000dc6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-交叉斩" lastModified="1785769349" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-交叉斩" currentFrame="4">
+    <DOMTimeline name="兵器攻击容器-交叉斩">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,7 +10,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -68,10 +68,19 @@ shootZ = _root.gameworld[_parent.追踪目标].Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="26" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -166,7 +175,7 @@ shootZ = _root.gameworld[_parent.追踪目标].Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -255,7 +264,7 @@ shootZ = _root.gameworld[_parent.追踪目标].Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -453,8 +462,8 @@ shootZ = _root.gameworld[_parent.追踪目标].Z轴坐标;]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!15094 5158S2[14569 8346 11297 9190!11297 9190[10622 9363 9915 9417!9915 9417[7178 9624 3914 8042!3914 8042[-198 6045 -2734 2382!-2734 2382[-5270 -1283 -4752 -4471!-4752 -4471[-4392 -6658 -2741 -7742!-2741 -7742[-1985 -8239 -955 -8504
-!-955 -8504[2317 -9348 6428 -7356!6428 -7356[10540 -5361 13076 -1696!13076 -1696[15612 1967 15094 5158"/>
+                    <Edge fillStyle1="1" edges="!-2741 -7742S2[-1985 -8239 -955 -8504!-955 -8504[2317 -9348 6428 -7356!6428 -7356[10540 -5361 13076 -1696!13076 -1696[15612 1967 15094 5158!15094 5158[14569 8346 11297 9190!11297 9190[10622 9363 9915 9417!9915 9417[7178 9624 3914 8042
+!3914 8042[-198 6045 -2734 2382!-2734 2382[-5270 -1283 -4752 -4471!-4752 -4471[-4392 -6658 -2741 -7742"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -617,7 +626,7 @@ shootZ = _root.gameworld[_parent.追踪目标].Z轴坐标;]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!14078 3852S1[#2F9E.34 #FFEF9B.B1 -4867 -8488!-4867 -8488[2262 -2293 5581 1619!5581 1619|14078 3852"/>
+!5581 1619S1|14078 3852!14078 3852[#2F9E.34 #FFEF9B.B1 -4867 -8488!-4867 -8488[2262 -2293 5581 1619"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -693,7 +702,7 @@ shootZ = _root.gameworld[_parent.追踪目标].Z轴坐标;]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!13549 -1046[7135 -8208 -8986 -5592!-8986 -5592[4235 -3680 6960 668!6960 668|13549 -1046"/>
+!6960 668|13549 -1046!13549 -1046[7135 -8208 -8986 -5592!-8986 -5592[4235 -3680 6960 668"/>
                   </edges>
                 </DOMShape>
               </elements>

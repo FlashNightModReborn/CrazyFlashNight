@@ -1,22 +1,22 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-波动拳" itemID="6963b380-0000111d" linkageExportForAS="true" linkageIdentifier="空手攻击容器-波动拳" lastModified="1776885321" lastUniqueIdentifier="840">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-波动拳" itemID="6963b380-0000111d" linkageExportForAS="true" linkageIdentifier="空手攻击容器-波动拳" lastModified="1785769164" lastUniqueIdentifier="840">
   <timeline>
-    <DOMTimeline name="空手攻击容器-波动拳" currentFrame="10">
+    <DOMTimeline name="空手攻击容器-波动拳">
       <layers>
-        <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
+        <DOMLayer name="连段标识" color="#A0826C" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" name="波动拳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#D8AA90" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#D8AA90" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
@@ -45,7 +45,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#73BC75" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -109,14 +109,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#FF4F4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#FF4F4F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#4FB28F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -141,11 +141,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -157,7 +157,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#C4FF42" locked="true">
+        <DOMLayer name="Layer 6" color="#C4FF42">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -188,7 +188,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#EC89F1" locked="true">
+        <DOMLayer name="Layer 7" color="#EC89F1">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -243,7 +243,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 6" color="#808080" locked="true">
+        <DOMLayer name="图层 6" color="#808080">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -367,7 +367,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#A19AED" locked="true">
+        <DOMLayer name="Layer 8" color="#A19AED">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -491,7 +491,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#96D336" locked="true">
+        <DOMLayer name="Layer 9" color="#96D336">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -615,7 +615,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#52EAC0" locked="true">
+        <DOMLayer name="Layer 10" color="#52EAC0">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -739,7 +739,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#EBD099" locked="true">
+        <DOMLayer name="Layer 11" color="#EBD099">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -863,7 +863,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#A47BD2" locked="true">
+        <DOMLayer name="Layer 12" color="#A47BD2">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -987,7 +987,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#8F6DE4" locked="true">
+        <DOMLayer name="Layer 13" color="#8F6DE4">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1111,7 +1111,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#A7C8C1" locked="true">
+        <DOMLayer name="Layer 14" color="#A7C8C1">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1235,7 +1235,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#86B28D" locked="true">
+        <DOMLayer name="Layer 15" color="#86B28D">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1359,7 +1359,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#F10EA1" locked="true">
+        <DOMLayer name="Layer 16" color="#F10EA1">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1483,7 +1483,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#85CB3A" locked="true">
+        <DOMLayer name="Layer 17" color="#85CB3A">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1607,7 +1607,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#C0D5D5" locked="true">
+        <DOMLayer name="Layer 18" color="#C0D5D5">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1731,7 +1731,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#50EBC4" locked="true">
+        <DOMLayer name="Layer 19" color="#50EBC4">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1855,7 +1855,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#B3F06C" locked="true">
+        <DOMLayer name="Layer 20" color="#B3F06C">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1979,7 +1979,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#83F086" locked="true">
+        <DOMLayer name="Layer 21" color="#83F086">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2103,7 +2103,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#9A1BCC" locked="true">
+        <DOMLayer name="Layer 22" color="#9A1BCC">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2227,7 +2227,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#65BEA8" locked="true">
+        <DOMLayer name="Layer 23" color="#65BEA8">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2351,7 +2351,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#E0A430" locked="true">
+        <DOMLayer name="Layer 35" color="#E0A430">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2475,7 +2475,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#2E97BC" locked="true">
+        <DOMLayer name="Layer 36" color="#2E97BC">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2599,7 +2599,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#A37FA5" locked="true" autoNamed="false">
+        <DOMLayer name="影子" color="#A37FA5" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements>

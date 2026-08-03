@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1771725677">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1785769144">
   <timeline>
-    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="13">
+    <DOMTimeline name="空手攻击容器-燃烧指节">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -44,7 +44,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -299,7 +299,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -651,7 +651,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -682,7 +682,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -757,7 +757,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F">
+        <DOMLayer name="图层 8" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -767,7 +767,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F">
+        <DOMLayer name="图层 9" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -818,7 +818,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC">
+        <DOMLayer name="图层 10" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -970,7 +970,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
+        <DOMLayer name="图层 12" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1249,7 +1249,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 13" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1528,7 +1528,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080">
+        <DOMLayer name="图层 14" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1807,7 +1807,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="图层 15" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -2086,7 +2086,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F">
+        <DOMLayer name="图层 16" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2377,11 +2377,11 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F">
+        <DOMLayer name="图层 17" color="#4FFF4F" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-197.55" centerPoint3DY="245.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-197.55" centerPoint3DY="245.9">
                   <matrix>
                     <Matrix a="-0.809310913085938" b="-0.133926391601563" c="-0.133926391601563" d="0.809310913085938" tx="-152.5" ty="224.1"/>
                   </matrix>
@@ -2668,7 +2668,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 18" color="#9933CC">
+        <DOMLayer name="图层 18" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -2947,7 +2947,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 19" color="#FF800A">
+        <DOMLayer name="图层 19" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -3226,7 +3226,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 20" color="#FF4FFF">
+        <DOMLayer name="图层 20" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -3505,7 +3505,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 21" color="#4FFFFF">
+        <DOMLayer name="图层 21" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -3784,7 +3784,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 22" color="#808080">
+        <DOMLayer name="图层 22" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -4063,7 +4063,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 23" color="#4F80FF">
+        <DOMLayer name="图层 23" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -4342,7 +4342,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 24" color="#FF4F4F">
+        <DOMLayer name="图层 24" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -4621,7 +4621,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 25" color="#4FFF4F">
+        <DOMLayer name="图层 25" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -4900,7 +4900,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 26" color="#9933CC">
+        <DOMLayer name="图层 26" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -5179,7 +5179,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 27" color="#FF800A">
+        <DOMLayer name="图层 27" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -5458,7 +5458,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 28" color="#FF4FFF">
+        <DOMLayer name="图层 28" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -5737,7 +5737,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 29" color="#4FFFFF">
+        <DOMLayer name="图层 29" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -6016,7 +6016,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 30" color="#808080">
+        <DOMLayer name="图层 30" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -6295,7 +6295,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF">
+        <DOMLayer name="图层 31" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -6368,7 +6368,7 @@ _root.播放音效("兵器1段攻击.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 32" color="#FF4F4F">
+        <DOMLayer name="图层 32" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影上挑" itemID="6a6e6cd2-0000112e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影上挑" lastModified="1785622495" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影上挑" itemID="6a6e6cd2-0000112e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影上挑" lastModified="1785769308" lastUniqueIdentifier="12">
   <timeline>
     <DOMTimeline name="兵器攻击容器-疾影上挑">
       <layers>
@@ -72,10 +72,19 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -112,7 +121,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="31.2" centerPoint3DY="115.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="31.2" centerPoint3DY="115.35">
                   <matrix>
                     <Matrix a="20.5840454101563" d="34.6744384765625" tx="270.5" ty="-99.1"/>
                   </matrix>
@@ -184,7 +193,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="119.3" centerPoint3DY="54.7">
                   <matrix>
-                    <Matrix a="44.3502349853516" c="-0.081024169921875" d="34.5589447021484" tx="302.9" ty="-158.35"/>
+                    <Matrix a="44.3502349853516" c="-0.081024169921875" d="34.5589294433594" tx="302.9" ty="-158.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.55" y="12.5"/>
@@ -252,7 +261,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -392,7 +401,8 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!2832 -11513S2[8946 -11513 13262 -7823!13262 -7823[17578 -4125 17571 1092!17571 1092[17569 3097 16929 4876!16929 4876|-11172 5242!-11172 5242[-11945 3304 -11943 1092!-11943 1092[-11935 -4125 -7608 -7823!-7608 -7823[-3277 -11513 2832 -11513"/>
+                    <Edge fillStyle1="1" edges="!16929 4876S2|-11172 5242!-11172 5242[-11945 3304 -11943 1092!-11943 1092[-11935 -4125 -7608 -7823!-7608 -7823[-3277 -11513 2832 -11513!2832 -11513[8946 -11513 13262 -7823!13262 -7823[17578 -4125 17571 1092!17571 1092[17569 3097 16929
+ 4876"/>
                   </edges>
                 </DOMShape>
               </elements>

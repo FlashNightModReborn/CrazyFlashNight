@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-十六夜月华" itemID="695a2793-00001246" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-十六夜月华" lastModified="1785623120" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-十六夜月华" itemID="695a2793-00001246" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-十六夜月华" lastModified="1785769277" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-十六夜月华" currentFrame="20">
+    <DOMTimeline name="兵器攻击容器-十六夜月华">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -130,7 +130,23 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -944,8 +960,8 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!4634 591[-303 -283 -4030 -74!-4030 -74[-7761 129 -8108 1290!-8108 1290[-8447 2450 -5209 3887!-5209 3887[-1954 5326 2977 6196!2977 6196[7907 7065 11635 6860!11635 6860[15374 6656 15714 5494!15714 5494[16061 4335 12808 2895!12808 2895
-[9566 1459 4634 591"/>
+!-5209 3887[-1954 5326 2977 6196!2977 6196[7907 7065 11635 6860!11635 6860[15374 6656 15714 5494!15714 5494[16061 4335 12808 2895!12808 2895[9566 1459 4634 591!4634 591[-303 -283 -4030 -74!-4030 -74[-7761 129 -8108 1290!-8108 1290[-8447
+ 2450 -5209 3887"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1095,7 +1111,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -1216,7 +1232,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂-2" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="左上臂-2" color="#FF4F4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -4187,7 +4203,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4243,7 +4259,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2 复制" color="#9933CC" autoNamed="false">
+        <DOMLayer name="图层 2 复制" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>

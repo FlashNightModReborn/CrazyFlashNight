@@ -1,16 +1,16 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影剑舞" itemID="6a6e724e-00001556" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影剑舞" lastModified="1785633211" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影剑舞" itemID="6a6e724e-00001556" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影剑舞" lastModified="1785769187" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-疾影剑舞" currentFrame="1">
+    <DOMTimeline name="兵器攻击容器-疾影剑舞">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="47" name="疾影剑舞" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="代码相关" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -137,14 +137,14 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="47" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="消弹" color="#4F80FF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="消弹" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -307,7 +307,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -605,7 +605,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="47" keyMode="9728">
               <elements>
@@ -621,7 +621,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="47" keyMode="9728">
               <elements>
@@ -637,7 +637,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -691,7 +691,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="39" keyMode="9728">
               <elements/>
@@ -717,7 +717,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#4FFFFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="47" keyMode="9728">
               <elements>
@@ -733,7 +733,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="无敌标签" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="无敌标签" color="#808080" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -752,7 +752,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#FF800A" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#FF800A" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -762,7 +762,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1329,7 +1329,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1899,7 +1899,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_9" color="#00FFFF" locked="true">
+        <DOMLayer name="图层_9" color="#00FFFF">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -2445,8 +2445,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13387 2395S2[8176 3302 817 3302!817 3302[-6541 3302 -11743 2395!-11743 2395[-16939 1488 -16930 205!-16930 205[-16921 -1077 -11711 -1984!-11711 -1984[-6497 -2892 860 -2892!860 -2892[8221 -2892 13418 -1984!13418 -1984[18615 -1077 18607
- 205!18607 205[18598 1488 13387 2395"/>
+!13418 -1984S2[18615 -1077 18607 205!18607 205[18598 1488 13387 2395!13387 2395[8176 3302 817 3302!817 3302[-6541 3302 -11743 2395!-11743 2395[-16939 1488 -16930 205!-16930 205[-16921 -1077 -11711 -1984!-11711 -1984[-6497 -2892 860 -2892
+!860 -2892[8221 -2892 13418 -1984"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2467,8 +2467,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14879 2656[9049 3670 815 3670!815 3670[-7418 3670 -13238 2656!-13238 2656[-19051 1641 -19041 205!-19041 205[-19031 -1229 -13202 -2244!-13202 -2244[-7368 -3260 863 -3260!863 -3260[9099 -3260 14914 -2244!14914 -2244[20729 -1229 20720 205
-!20720 205[20710 1641 14879 2656"/>
+!14914 -2244[20729 -1229 20720 205!20720 205[20710 1641 14879 2656!14879 2656[9049 3670 815 3670!815 3670[-7418 3670 -13238 2656!-13238 2656[-19051 1641 -19041 205!-19041 205[-19031 -1229 -13202 -2244!-13202 -2244[-7368 -3260 863 -3260
+!863 -3260[9099 -3260 14914 -2244"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2478,7 +2478,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_8" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层_8" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -2580,8 +2580,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!17090 -2330[20472 220 19278 2023!19278 2023[18085 3826 13016 3826!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683
-!7730 -6683[13706 -4880 17090 -2330"/>
+!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683!7730 -6683[13706 -4880 17090 -2330!17090 -2330[20472 220 19278
+ 2023!19278 2023[18085 3826 13016 3826"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2617,8 +2617,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!17090 -2330[20472 220 19278 2023!19278 2023[18085 3826 13016 3826!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683
-!7730 -6683[13706 -4880 17090 -2330"/>
+!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683!7730 -6683[13706 -4880 17090 -2330!17090 -2330[20472 220 19278
+ 2023!19278 2023[18085 3826 13016 3826"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2639,8 +2639,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!18772 -2276S2[22598 609 21247 2648!21247 2648[19898 4688 14164 4688!14164 4688[8430 4688 1667 2648!1667 2648[-5091 609 -8917 -2276!-8917 -2276[-12745 -5160 -11395 -7199!-11395 -7199[-10042 -9239 -4310 -9239!-4310 -9239[1426 -9239 8185
- -7199!8185 -7199[14944 -5160 18772 -2276"/>
+!14164 4688S2[8430 4688 1667 2648!1667 2648[-5091 609 -8917 -2276!-8917 -2276[-12745 -5160 -11395 -7199!-11395 -7199[-10042 -9239 -4310 -9239!-4310 -9239[1426 -9239 8185 -7199!8185 -7199[14944 -5160 18772 -2276!18772 -2276[22598 609 21247
+ 2648!21247 2648[19898 4688 14164 4688"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2742,8 +2742,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!17090 -2330[20472 220 19278 2023!19278 2023[18085 3826 13016 3826!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683
-!7730 -6683[13706 -4880 17090 -2330"/>
+!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683!7730 -6683[13706 -4880 17090 -2330!17090 -2330[20472 220 19278
+ 2023!19278 2023[18085 3826 13016 3826"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2779,8 +2779,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!17090 -2330[20472 220 19278 2023!19278 2023[18085 3826 13016 3826!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683
-!7730 -6683[13706 -4880 17090 -2330"/>
+!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683!7730 -6683[13706 -4880 17090 -2330!17090 -2330[20472 220 19278
+ 2023!19278 2023[18085 3826 13016 3826"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2801,8 +2801,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!18772 -2276S2[22598 609 21247 2648!21247 2648[19898 4688 14164 4688!14164 4688[8430 4688 1667 2648!1667 2648[-5091 609 -8917 -2276!-8917 -2276[-12745 -5160 -11395 -7199!-11395 -7199[-10042 -9239 -4310 -9239!-4310 -9239[1426 -9239 8185
- -7199!8185 -7199[14944 -5160 18772 -2276"/>
+!14164 4688S2[8430 4688 1667 2648!1667 2648[-5091 609 -8917 -2276!-8917 -2276[-12745 -5160 -11395 -7199!-11395 -7199[-10042 -9239 -4310 -9239!-4310 -9239[1426 -9239 8185 -7199!8185 -7199[14944 -5160 18772 -2276!18772 -2276[22598 609 21247
+ 2648!21247 2648[19898 4688 14164 4688"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2904,8 +2904,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!17090 -2330[20472 220 19278 2023!19278 2023[18085 3826 13016 3826!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683
-!7730 -6683[13706 -4880 17090 -2330"/>
+!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683!7730 -6683[13706 -4880 17090 -2330!17090 -2330[20472 220 19278
+ 2023!19278 2023[18085 3826 13016 3826"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2941,8 +2941,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!17090 -2330[20472 220 19278 2023!19278 2023[18085 3826 13016 3826!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683
-!7730 -6683[13706 -4880 17090 -2330"/>
+!13016 3826[7947 3826 1968 2023!1968 2023[-4007 220 -7389 -2330!-7389 -2330[-10773 -4880 -9580 -6683!-9580 -6683[-8384 -8486 -3316 -8486!-3316 -8486[1755 -8486 7730 -6683!7730 -6683[13706 -4880 17090 -2330!17090 -2330[20472 220 19278
+ 2023!19278 2023[18085 3826 13016 3826"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2963,8 +2963,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!18772 -2276S2[22598 609 21247 2648!21247 2648[19898 4688 14164 4688!14164 4688[8430 4688 1667 2648!1667 2648[-5091 609 -8917 -2276!-8917 -2276[-12745 -5160 -11395 -7199!-11395 -7199[-10042 -9239 -4310 -9239!-4310 -9239[1426 -9239 8185
- -7199!8185 -7199[14944 -5160 18772 -2276"/>
+!14164 4688S2[8430 4688 1667 2648!1667 2648[-5091 609 -8917 -2276!-8917 -2276[-12745 -5160 -11395 -7199!-11395 -7199[-10042 -9239 -4310 -9239!-4310 -9239[1426 -9239 8185 -7199!8185 -7199[14944 -5160 18772 -2276!18772 -2276[22598 609 21247
+ 2648!21247 2648[19898 4688 14164 4688"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2977,7 +2977,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_7" color="#669900" locked="true">
+        <DOMLayer name="图层_7" color="#669900">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -3476,7 +3476,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_12" color="#FF4FFF" locked="true">
+        <DOMLayer name="图层_12" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -3894,7 +3894,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#009999" locked="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#009999" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -13638,7 +13638,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="47" keyMode="9728">
               <elements>
