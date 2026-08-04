@@ -314,6 +314,19 @@
         </attribute>
     </bullet>
     <bullet>
+        <name>fm直射刺弹</name>
+        <movement>
+            <func>accelerated</func>
+        </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
+    </bullet>
+    <bullet>
         <name>冰水晶</name>
         <attribute>
             <unitBullet>
