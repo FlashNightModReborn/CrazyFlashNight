@@ -1,13 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-微风拂柳" itemID="6a5cf19c-000027c2" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-微风拂柳" lastModified="1785769377" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-微风拂柳" itemID="6a5cf19c-000027c2" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-微风拂柳" lastModified="1785821450" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-微风拂柳">
+    <DOMTimeline name="兵器攻击容器-微风拂柳" currentFrame="32">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="17" name="微风拂柳" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="19" name="微风拂柳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" duration="14" name="追击斩" labelType="name" keyMode="9728">
+            <DOMFrame index="19" duration="14" name="追击斩" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -75,19 +75,19 @@ else
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" duration="11" keyMode="9728">
+            <DOMFrame index="5" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[消弹();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="16" keyMode="9728">
+            <DOMFrame index="18" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" duration="13" keyMode="9728">
+            <DOMFrame index="19" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("见切追斩中");
 
@@ -96,7 +96,7 @@ else
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" keyMode="9728">
+            <DOMFrame index="32" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
@@ -160,10 +160,10 @@ else
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="11" keyMode="9728">
+            <DOMFrame index="6" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" duration="7" keyMode="9728">
+            <DOMFrame index="19" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[if(_parent.性别 == "女")
 {
@@ -176,7 +176,7 @@ else
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" duration="7" keyMode="9728">
+            <DOMFrame index="26" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("裂地拳.wav");]]></script>
               </Actionscript>
@@ -186,7 +186,7 @@ else
         </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="17" keyMode="9728">
+            <DOMFrame index="0" duration="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-104.7" centerPoint3DY="279.25">
                   <matrix>
@@ -198,7 +198,7 @@ else
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" duration="14" keyMode="9728">
+            <DOMFrame index="19" duration="14" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-104.7" centerPoint3DY="279.25">
                   <matrix>
@@ -214,7 +214,7 @@ else
         </DOMLayer>
         <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="17" keyMode="9728">
+            <DOMFrame index="0" duration="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-104.7" centerPoint3DY="306.25">
                   <matrix>
@@ -226,7 +226,7 @@ else
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" duration="14" keyMode="9728">
+            <DOMFrame index="19" duration="14" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-104.7" centerPoint3DY="306.25">
                   <matrix>
@@ -265,10 +265,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="6" keyMode="9728">
+            <DOMFrame index="11" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" duration="6" keyMode="9728">
+            <DOMFrame index="19" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
@@ -290,16 +290,16 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="23" duration="8" keyMode="9728">
+            <DOMFrame index="25" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="1" locked="true">
           <frames>
-            <DOMFrame index="0" duration="31" keyMode="9728">
+            <DOMFrame index="0" duration="33" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -316,9 +316,9 @@ onClipEvent (enterFrame) {
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="6" keyMode="9728">
+            <DOMFrame index="11" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="77.45" centerPoint3DY="308.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="77.45" centerPoint3DY="308.75">
                   <matrix>
                     <Matrix tx="64.95" ty="296.25"/>
                   </matrix>
@@ -346,10 +346,10 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" duration="7" keyMode="9728">
+            <DOMFrame index="19" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" duration="7" keyMode="9728">
+            <DOMFrame index="26" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="200.25" centerPoint3DY="338.6">
                   <matrix>
@@ -384,209 +384,8 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="6" keyMode="9728">
+            <DOMFrame index="11" duration="8" keyMode="9728">
               <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="18" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-132.25" centerPoint3DY="37.5">
-                  <matrix>
-                    <Matrix a="51.4863739013672" d="16.8862457275391" tx="140.45" ty="46.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-12.5" y="12.5"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	子弹属性 = _root.子弹属性初始化(this);
-	
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 1;
-	子弹属性.子弹散射度 = 0;
-	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2 + _parent._parent.内力 * 2;
-	if (_parent._parent.mp攻击加成)
-	{子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;}
-	if(_parent._parent.被动技能.刀剑攻击 && _parent._parent.被动技能.刀剑攻击.等级 && _parent._parent.等级 >= 15)
-	{
-		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑攻击.等级 / 13;
-	}
-	if(_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.等级 && _parent._parent.等级 >= 15)
-	{
-		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.上挑.等级 / 10;
-	}
-	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
-	//子弹属性.水平击退速度 = 12;
-	子弹属性.击中后子弹的效果 = "斩打命中特效";
-	
-	//非常用
-	/*
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.发射效果 = "";
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.斩杀 = 5;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	*/
-	子弹属性.区域定位area = this.area;
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/
-	_root.子弹区域shoot传递(子弹属性);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="20" duration="11" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-121.3" centerPoint3DY="118.2">
-                  <matrix>
-                    <Matrix a="40.7908325195313" d="40.5690307617188" tx="18.95" ty="-169.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-12.5" y="12.5"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	子弹属性 = _root.子弹属性初始化(this);
-	
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 1;
-	子弹属性.子弹散射度 = 0;
-	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.1 + _parent._parent.刀属性.power * 0.1;
-	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
-	//子弹属性.水平击退速度 = 12;
-	子弹属性.击中后子弹的效果 = "斩打命中特效";
-	
-	//非常用
-	/*
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.发射效果 = "";
-	子弹属性.斩杀 = 5;
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	*/
-	子弹属性.区域定位area = this.area;
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/
-	_root.子弹区域shoot传递(子弹属性);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="3" duration="14" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-132.25" centerPoint3DY="37.5">
-                  <matrix>
-                    <Matrix a="51.4863739013672" d="16.8862457275391" tx="140.45" ty="46.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-12.5" y="12.5"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	子弹属性 = _root.子弹属性初始化(this);
-	
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 1;
-	子弹属性.子弹散射度 = 0;
-	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2 + _parent._parent.内力 * 2;
-	if (_parent._parent.mp攻击加成)
-	{子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;}
-	if(_parent._parent.被动技能.刀剑攻击 && _parent._parent.被动技能.刀剑攻击.等级 && _parent._parent.等级 >= 15)
-	{
-		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑攻击.等级 / 13;
-	}
-	if(_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.等级 && _parent._parent.等级 >= 15)
-	{
-		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.上挑.等级 / 10;
-	}
-	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
-	//子弹属性.水平击退速度 = 12;
-	子弹属性.击中后子弹的效果 = "斩打命中特效";
-	
-	//非常用
-	/*
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.发射效果 = "";
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.斩杀 = 5;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	*/
-	子弹属性.区域定位area = this.area;
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/
-	_root.子弹区域shoot传递(子弹属性);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
             <DOMFrame index="19" keyMode="9728">
               <elements/>
@@ -656,17 +455,218 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="9" keyMode="9728">
+            <DOMFrame index="22" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-121.3" centerPoint3DY="118.2">
+                  <matrix>
+                    <Matrix a="40.7908325195313" d="40.5690307617188" tx="18.95" ty="-169.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.1 + _parent._parent.刀属性.power * 0.1;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	//子弹属性.水平击退速度 = 12;
+	子弹属性.击中后子弹的效果 = "斩打命中特效";
+	
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.斩杀 = 5;
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-132.25" centerPoint3DY="37.5">
+                  <matrix>
+                    <Matrix a="51.4863739013672" d="16.8862457275391" tx="140.45" ty="46.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2 + _parent._parent.内力 * 2;
+	if (_parent._parent.mp攻击加成)
+	{子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;}
+	if(_parent._parent.被动技能.刀剑攻击 && _parent._parent.被动技能.刀剑攻击.等级 && _parent._parent.等级 >= 15)
+	{
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑攻击.等级 / 13;
+	}
+	if(_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.等级 && _parent._parent.等级 >= 15)
+	{
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.上挑.等级 / 10;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	//子弹属性.水平击退速度 = 12;
+	子弹属性.击中后子弹的效果 = "斩打命中特效";
+	
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.斩杀 = 5;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-132.25" centerPoint3DY="37.5">
+                  <matrix>
+                    <Matrix a="51.4863739013672" d="16.8862457275391" tx="140.45" ty="46.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2 + _parent._parent.内力 * 2;
+	if (_parent._parent.mp攻击加成)
+	{子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;}
+	if(_parent._parent.被动技能.刀剑攻击 && _parent._parent.被动技能.刀剑攻击.等级 && _parent._parent.等级 >= 15)
+	{
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑攻击.等级 / 13;
+	}
+	if(_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.等级 && _parent._parent.等级 >= 15)
+	{
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.上挑.等级 / 10;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	//子弹属性.水平击退速度 = 12;
+	子弹属性.击中后子弹的效果 = "斩打命中特效";
+	
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.斩杀 = 5;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层_3" color="#FF800A" locked="true">
           <frames>
-            <DOMFrame index="0" duration="23" keyMode="9728">
+            <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="23" keyMode="9728">
+            <DOMFrame index="25" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 491" symbolType="graphic" centerPoint3DX="221" centerPoint3DY="-120.35" loop="loop">
                   <matrix>
@@ -678,7 +678,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="重复项目文件夹/shape 460" symbolType="graphic" loop="loop">
                   <matrix>
@@ -690,7 +690,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="重复项目文件夹/shape 461" symbolType="graphic" loop="loop">
                   <matrix>
@@ -702,7 +702,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 462" symbolType="graphic" loop="loop">
                   <matrix>
@@ -714,7 +714,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 463" symbolType="graphic" loop="loop">
                   <matrix>
@@ -726,7 +726,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 465" symbolType="graphic" loop="loop">
                   <matrix>
@@ -738,7 +738,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="31" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="重复项目文件夹/shape 467" symbolType="graphic" loop="loop">
                   <matrix>
@@ -750,17 +750,17 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="32" motionTweenScale="false" keyMode="8192">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层_2" color="#9933CC" locked="true">
           <frames>
-            <DOMFrame index="0" duration="24" keyMode="9728">
+            <DOMFrame index="0" duration="26" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 2022" symbolType="graphic" loop="loop">
                   <matrix>
@@ -772,7 +772,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 2023" symbolType="graphic" loop="loop">
                   <matrix>
@@ -784,7 +784,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 2024" symbolType="graphic" loop="loop">
                   <matrix>
@@ -796,7 +796,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 2025" symbolType="graphic" loop="loop">
                   <matrix>
@@ -808,7 +808,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 2026" symbolType="graphic" loop="loop">
                   <matrix>
@@ -820,7 +820,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="31" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 2027" symbolType="graphic" loop="loop">
                   <matrix>
@@ -832,12 +832,12 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="32" motionTweenScale="false" keyMode="8192">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#009999" locked="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#009999" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1479,7 +1479,8 @@ onClipEvent(unload){
                     <Point x="2.55" y="-2.75"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-68.4" centerPoint3DY="-141.1">
@@ -1490,7 +1491,8 @@ onClipEvent(unload){
                     <Point x="-5.8" y="3.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="32.9" centerPoint3DY="-107.95">
@@ -1501,7 +1503,8 @@ onClipEvent(unload){
                     <Point x="4" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="37.75" centerPoint3DY="62.3">
@@ -1512,7 +1515,8 @@ onClipEvent(unload){
                     <Point x="-0.15" y="0.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="56.8" centerPoint3DY="-41.65">
@@ -1523,7 +1527,8 @@ onClipEvent(unload){
                     <Point x="-0.2" y="-0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="88.65" centerPoint3DY="202.05">
@@ -1534,7 +1539,8 @@ onClipEvent(unload){
                     <Point x="0.65" y="1.95"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="39.4" centerPoint3DY="56.45">
@@ -1545,7 +1551,8 @@ onClipEvent(unload){
                     <Point x="-2.55" y="6.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="57.6" centerPoint3DY="140.05">
@@ -1556,7 +1563,8 @@ onClipEvent(unload){
                     <Point x="4.95" y="3.7"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="7.75" centerPoint3DY="51.2">
@@ -1567,7 +1575,8 @@ onClipEvent(unload){
                     <Point x="12.4" y="24.85"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-28.05" centerPoint3DY="-195.9">
@@ -1578,7 +1587,8 @@ onClipEvent(unload){
                     <Point x="1.05" y="-2.85"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="23.5" centerPoint3DY="9.35">
@@ -1589,7 +1599,8 @@ onClipEvent(unload){
                     <Point x="-0.6" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="13.3" centerPoint3DY="49.2">
@@ -1600,7 +1611,8 @@ onClipEvent(unload){
                     <Point x="-5.75" y="5"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-41.8" centerPoint3DY="229.85">
@@ -1611,7 +1623,8 @@ onClipEvent(unload){
                     <Point x="-0.3" y="2.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-5.25" centerPoint3DY="184.2">
@@ -1622,7 +1635,8 @@ onClipEvent(unload){
                     <Point x="3.75" y="4.35"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-30.45" centerPoint3DY="-55.75">
@@ -1633,7 +1647,8 @@ onClipEvent(unload){
                     <Point x="-0.4" y="0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-93.75" centerPoint3DY="-91.95">
@@ -1644,7 +1659,8 @@ onClipEvent(unload){
                     <Point x="-0.55" y="-5.85"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-146.65" centerPoint3DY="-126.85">
@@ -1655,7 +1671,8 @@ onClipEvent(unload){
                     <Point x="-2.1" y="2.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="49.2" centerPoint3DY="18.4">
@@ -1665,6 +1682,10 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point x="2.65" y="113.2"/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
+                  </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-82.9" centerPoint3DY="-44.15">
                   <matrix>
@@ -1674,7 +1695,8 @@ onClipEvent(unload){
                     <Point x="3.5" y="-0.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <BevelFilter blurX="55" angle="27.9999994308176" distance="34" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -1689,7 +1711,8 @@ onClipEvent(unload){
                     <Point x="2.45" y="-2.85"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-114.25" centerPoint3DY="-213.75">
@@ -1700,7 +1723,8 @@ onClipEvent(unload){
                     <Point x="-5.75" y="3.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-74.3" centerPoint3DY="-119.5">
@@ -1711,7 +1735,8 @@ onClipEvent(unload){
                     <Point x="3.85" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="58.05" centerPoint3DY="-106.6">
@@ -1722,7 +1747,8 @@ onClipEvent(unload){
                     <Point x="-0.15" y="0.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="10.7" centerPoint3DY="-170.75">
@@ -1733,7 +1759,8 @@ onClipEvent(unload){
                     <Point x="-0.15" y="-0.25"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="50.85" centerPoint3DY="136.35">
@@ -1744,7 +1771,8 @@ onClipEvent(unload){
                     <Point x="0.75" y="2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-36.6" centerPoint3DY="-27.85">
@@ -1755,7 +1783,8 @@ onClipEvent(unload){
                     <Point x="-2.6" y="6.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="5.85" centerPoint3DY="76.5">
@@ -1766,7 +1795,8 @@ onClipEvent(unload){
                     <Point x="4.8" y="3.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="29.25" centerPoint3DY="-92.85">
@@ -1777,7 +1807,8 @@ onClipEvent(unload){
                     <Point x="12.45" y="24.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-174.5" centerPoint3DY="-254.9">
@@ -1788,7 +1819,8 @@ onClipEvent(unload){
                     <Point x="1.1" y="-3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="5.45" centerPoint3DY="-110.1">
@@ -1799,7 +1831,8 @@ onClipEvent(unload){
                     <Point x="-0.6" y="0.65"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-4.2" centerPoint3DY="-25.15">
@@ -1810,7 +1843,8 @@ onClipEvent(unload){
                     <Point x="-5.9" y="4.8"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="14.55" centerPoint3DY="164.5">
@@ -1821,7 +1855,8 @@ onClipEvent(unload){
                     <Point x="-0.2" y="2.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="23.1" centerPoint3DY="78.35">
@@ -1832,7 +1867,8 @@ onClipEvent(unload){
                     <Point x="3.8" y="4.35"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-73" centerPoint3DY="-142.05">
@@ -1843,7 +1879,8 @@ onClipEvent(unload){
                     <Point x="-0.35" y="0.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-143.65" centerPoint3DY="-121.6">
@@ -1854,7 +1891,8 @@ onClipEvent(unload){
                     <Point x="-0.55" y="-5.9"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-170" centerPoint3DY="-140.2">
@@ -1865,7 +1903,8 @@ onClipEvent(unload){
                     <Point x="-2.05" y="2.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-96.1" centerPoint3DY="-6.8">
@@ -1875,6 +1914,10 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point x="2.4" y="226.15"/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
+                  </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-91.2" centerPoint3DY="-63">
                   <matrix>
@@ -1884,7 +1927,8 @@ onClipEvent(unload){
                     <Point x="3.4" y="-0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="50" blurY="50"/>
+                    <BevelFilter blurX="7" blurY="7" angle="18.9999994308176" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -1899,7 +1943,8 @@ onClipEvent(unload){
                     <Point x="2.5" y="-2.85"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-189.6" centerPoint3DY="-126.95">
@@ -1910,7 +1955,8 @@ onClipEvent(unload){
                     <Point x="-5.75" y="3.25"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-101.85" centerPoint3DY="-74.85">
@@ -1921,7 +1967,8 @@ onClipEvent(unload){
                     <Point x="3.85" y="0.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-17.1" centerPoint3DY="-244.25">
@@ -1932,7 +1979,8 @@ onClipEvent(unload){
                     <Point x="-0.2" y="0.25"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-87.5" centerPoint3DY="-233.15">
@@ -1943,7 +1991,8 @@ onClipEvent(unload){
                     <Point x="-0.2" y="-0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="138.15" centerPoint3DY="-14.85">
@@ -1954,7 +2003,8 @@ onClipEvent(unload){
                     <Point x="0.75" y="1.95"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="2.85" centerPoint3DY="-115.4">
@@ -1965,7 +2015,8 @@ onClipEvent(unload){
                     <Point x="-2.6" y="5.95"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="77" centerPoint3DY="-57.1">
@@ -1976,7 +2027,8 @@ onClipEvent(unload){
                     <Point x="4.9" y="3.7"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-19.8" centerPoint3DY="-212.75">
@@ -1987,7 +2039,8 @@ onClipEvent(unload){
                     <Point x="12.6" y="24.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-261.4" centerPoint3DY="-115.9">
@@ -1998,7 +2051,8 @@ onClipEvent(unload){
                     <Point x="1.1" y="-2.95"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-41.45" centerPoint3DY="-193.65">
@@ -2009,7 +2063,8 @@ onClipEvent(unload){
                     <Point x="-0.55" y="0.65"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="20.8" centerPoint3DY="-139.9">
@@ -2020,7 +2075,8 @@ onClipEvent(unload){
                     <Point x="-5.9" y="5.05"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="154.3" centerPoint3DY="17.2">
@@ -2031,7 +2087,8 @@ onClipEvent(unload){
                     <Point x="-0.15" y="2.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="124.75" centerPoint3DY="-63.75">
@@ -2042,7 +2099,8 @@ onClipEvent(unload){
                     <Point x="4" y="4.35"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-112.95" centerPoint3DY="-148.45">
@@ -2053,7 +2111,8 @@ onClipEvent(unload){
                     <Point x="-0.35" y="0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-120" centerPoint3DY="-47.25">
@@ -2064,7 +2123,8 @@ onClipEvent(unload){
                     <Point x="-0.7" y="-5.85"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-152.1" centerPoint3DY="-45.5">
@@ -2075,7 +2135,8 @@ onClipEvent(unload){
                     <Point x="-2.1" y="2.35"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-6.45" centerPoint3DY="10.45">
@@ -2085,6 +2146,10 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point x="2.35" y="226.15"/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
+                  </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-50.65" centerPoint3DY="-24.05">
                   <matrix>
@@ -2094,7 +2159,8 @@ onClipEvent(unload){
                     <Point x="3.5" y="-0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="36" angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -2109,7 +2175,8 @@ onClipEvent(unload){
                     <Point x="2.7" y="-2.95"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-123.2" centerPoint3DY="-54">
@@ -2120,7 +2187,8 @@ onClipEvent(unload){
                     <Point x="-5.7" y="3.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-21.85" centerPoint3DY="-64">
@@ -2131,7 +2199,8 @@ onClipEvent(unload){
                     <Point x="3.95" y="0.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-158.5" centerPoint3DY="-274.75">
@@ -2142,7 +2211,8 @@ onClipEvent(unload){
                     <Point x="-0.2" y="0.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-176.85" centerPoint3DY="-213.7">
@@ -2153,7 +2223,8 @@ onClipEvent(unload){
                     <Point x="-0.1" y="-0.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="106.1" centerPoint3DY="-185.4">
@@ -2164,7 +2235,8 @@ onClipEvent(unload){
                     <Point x="0.8" y="2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-31" centerPoint3DY="-222.85">
@@ -2175,7 +2247,8 @@ onClipEvent(unload){
                     <Point x="-2.3" y="6.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="34.8" centerPoint3DY="-206.55">
@@ -2186,7 +2259,8 @@ onClipEvent(unload){
                     <Point x="5" y="3.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-132.65" centerPoint3DY="-256.4">
@@ -2197,7 +2271,8 @@ onClipEvent(unload){
                     <Point x="12.75" y="24.7"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-166.4" centerPoint3DY="0.8">
@@ -2208,7 +2283,8 @@ onClipEvent(unload){
                     <Point x="1.1" y="-3.05"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-117.8" centerPoint3DY="-228.4">
@@ -2219,7 +2295,8 @@ onClipEvent(unload){
                     <Point x="-0.55" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-42.5" centerPoint3DY="-248.9">
@@ -2230,7 +2307,8 @@ onClipEvent(unload){
                     <Point x="-6.1" y="5.05"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="159.85" centerPoint3DY="-198.5">
@@ -2241,7 +2319,8 @@ onClipEvent(unload){
                     <Point x="-0.05" y="2.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="98" centerPoint3DY="-258">
@@ -2252,7 +2331,8 @@ onClipEvent(unload){
                     <Point x="3.9" y="4.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-122.8" centerPoint3DY="-143.7">
@@ -2263,7 +2343,8 @@ onClipEvent(unload){
                     <Point x="-0.4" y="0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-11.2" centerPoint3DY="-72.3">
@@ -2274,7 +2355,8 @@ onClipEvent(unload){
                     <Point x="-0.65" y="-6.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-34.8" centerPoint3DY="-51.1">
@@ -2285,7 +2367,8 @@ onClipEvent(unload){
                     <Point x="-2.1" y="2.45"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="113.6" centerPoint3DY="-103.6">
@@ -2295,6 +2378,10 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point x="2.25" y="226.1"/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
+                  </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="61.15" centerPoint3DY="-85.2">
                   <matrix>
@@ -2304,7 +2391,8 @@ onClipEvent(unload){
                     <Point x="3.55" y="-0.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="60"/>
+                    <BevelFilter angle="0" distance="50" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -2319,7 +2407,8 @@ onClipEvent(unload){
                     <Point x="2.5" y="-3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-31.6" centerPoint3DY="-34.9">
@@ -2330,7 +2419,8 @@ onClipEvent(unload){
                     <Point x="-5.7" y="3.4"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-11.35" centerPoint3DY="-135.45">
@@ -2341,7 +2431,8 @@ onClipEvent(unload){
                     <Point x="3.9" y="0.65"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-238.25" centerPoint3DY="-151.4">
@@ -2352,7 +2443,8 @@ onClipEvent(unload){
                     <Point x="-0.25" y="0.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-200.35" centerPoint3DY="-101">
@@ -2363,7 +2455,8 @@ onClipEvent(unload){
                     <Point x="-0.05" y="-0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-188" centerPoint3DY="-357.45">
@@ -2374,7 +2467,8 @@ onClipEvent(unload){
                     <Point x="0.75" y="2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-183.7" centerPoint3DY="-207.55">
@@ -2385,7 +2479,8 @@ onClipEvent(unload){
                     <Point x="-2.35" y="6.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-187.3" centerPoint3DY="-283.3">
@@ -2396,7 +2491,8 @@ onClipEvent(unload){
                     <Point x="5.2" y="3.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-208.65" centerPoint3DY="-161.85">
@@ -2407,7 +2503,8 @@ onClipEvent(unload){
                     <Point x="12.7" y="24.8"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-21.25" centerPoint3DY="17.85">
@@ -2418,7 +2515,8 @@ onClipEvent(unload){
                     <Point x="1.05" y="-3.05"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-177.4" centerPoint3DY="-157">
@@ -2429,7 +2527,8 @@ onClipEvent(unload){
                     <Point x="-0.55" y="0.65"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-165.85" centerPoint3DY="-212.6">
@@ -2440,7 +2539,8 @@ onClipEvent(unload){
                     <Point x="-6" y="5.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-114.05" centerPoint3DY="-411.45">
@@ -2451,7 +2551,8 @@ onClipEvent(unload){
                     <Point x="-0.05" y="2.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-163.65" centerPoint3DY="-341.6">
@@ -2462,7 +2563,8 @@ onClipEvent(unload){
                     <Point x="3.85" y="4.45"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-111.9" centerPoint3DY="-103.3">
@@ -2473,7 +2575,8 @@ onClipEvent(unload){
                     <Point x="-0.35" y="0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="11.65" centerPoint3DY="-150.65">
@@ -2484,7 +2587,8 @@ onClipEvent(unload){
                     <Point x="-0.65" y="-6.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="30.45" centerPoint3DY="-113.1">
@@ -2495,7 +2599,8 @@ onClipEvent(unload){
                     <Point x="-2.05" y="2.35"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="39" centerPoint3DY="-268.3">
@@ -2505,6 +2610,10 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point x="2.25" y="226.1"/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
+                  </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="24.5" centerPoint3DY="-215.05">
                   <matrix>
@@ -2514,7 +2623,8 @@ onClipEvent(unload){
                     <Point x="3.7" y="-0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter angle="0" distance="40" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -2529,7 +2639,8 @@ onClipEvent(unload){
                     <Point x="2.5" y="-2.85"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="16.55" centerPoint3DY="-126.8">
@@ -2540,7 +2651,8 @@ onClipEvent(unload){
                     <Point x="-5.85" y="3.4"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-76.4" centerPoint3DY="-176.55">
@@ -2551,7 +2663,8 @@ onClipEvent(unload){
                     <Point x="3.95" y="0.65"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-214.4" centerPoint3DY="-20.3">
@@ -2562,7 +2675,8 @@ onClipEvent(unload){
                     <Point x="-0.2" y="0.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-150.1" centerPoint3DY="-21.2">
@@ -2573,7 +2687,8 @@ onClipEvent(unload){
                     <Point x="-0.15" y="-0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-353.45" centerPoint3DY="11.9">
@@ -2584,7 +2699,8 @@ onClipEvent(unload){
                     <Point x="0.7" y="2.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-203.85" centerPoint3DY="-37.3">
@@ -2595,7 +2711,8 @@ onClipEvent(unload){
                     <Point x="-2.4" y="6.3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-283" centerPoint3DY="-10.9">
@@ -2606,7 +2723,8 @@ onClipEvent(unload){
                     <Point x="4.95" y="3.75"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-204.35" centerPoint3DY="-50.15">
@@ -2617,7 +2735,8 @@ onClipEvent(unload){
                     <Point x="12.6" y="24.75"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="50.6" centerPoint3DY="-96.75">
@@ -2628,7 +2747,8 @@ onClipEvent(unload){
                     <Point x="1" y="-3.05"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-182.2" centerPoint3DY="-72.9">
@@ -2639,7 +2759,8 @@ onClipEvent(unload){
                     <Point x="-0.6" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-209.45" centerPoint3DY="-92.6">
@@ -2650,7 +2771,8 @@ onClipEvent(unload){
                     <Point x="-6.3" y="5.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-394.2" centerPoint3DY="-139.45">
@@ -2661,7 +2783,8 @@ onClipEvent(unload){
                     <Point x="-0.1" y="2.65"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-317.65" centerPoint3DY="-101.5">
@@ -2672,7 +2795,8 @@ onClipEvent(unload){
                     <Point x="3.75" y="4.8"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-99.95" centerPoint3DY="-94">
@@ -2683,7 +2807,8 @@ onClipEvent(unload){
                     <Point x="-0.3" y="0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-66.25" centerPoint3DY="-221.95">
@@ -2694,7 +2819,8 @@ onClipEvent(unload){
                     <Point x="-0.7" y="-6.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-13.45" centerPoint3DY="-227.85">
@@ -2705,7 +2831,8 @@ onClipEvent(unload){
                     <Point x="-1.95" y="2.65"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-151.5" centerPoint3DY="-292.95">
@@ -2715,6 +2842,10 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point x="2.35" y="226.1"/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
+                  </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-115.7" centerPoint3DY="-251.2">
                   <matrix>
@@ -2724,7 +2855,8 @@ onClipEvent(unload){
                     <Point x="3.75" y="-0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="40"/>
+                    <BevelFilter blurX="13" angle="0" distance="30" type="outer"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -2739,7 +2871,8 @@ onClipEvent(unload){
                     <Point x="2.45" y="-3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="43.25" centerPoint3DY="-171.9">
@@ -2750,7 +2883,8 @@ onClipEvent(unload){
                     <Point x="-5.7" y="3.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="81.05" centerPoint3DY="-74">
@@ -2761,7 +2895,8 @@ onClipEvent(unload){
                     <Point x="4" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-66.5" centerPoint3DY="60.6">
@@ -2772,7 +2907,8 @@ onClipEvent(unload){
                     <Point x="-0.2" y="0.35"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="3.1" centerPoint3DY="-38.25">
@@ -2783,7 +2919,8 @@ onClipEvent(unload){
                     <Point x="-0.15" y="-0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="177.9" centerPoint3DY="58.1">
@@ -2794,7 +2931,8 @@ onClipEvent(unload){
                     <Point x="0.75" y="2.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-3.15" centerPoint3DY="17.4">
@@ -2805,7 +2943,8 @@ onClipEvent(unload){
                     <Point x="-2.3" y="6.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="104" centerPoint3DY="53.95">
@@ -2816,7 +2955,8 @@ onClipEvent(unload){
                     <Point x="5.05" y="3.85"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-88.1" centerPoint3DY="37.85">
@@ -2827,7 +2967,8 @@ onClipEvent(unload){
                     <Point x="12.55" y="24.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-34.75" centerPoint3DY="-193.75">
@@ -2838,7 +2979,8 @@ onClipEvent(unload){
                     <Point x="1" y="-3.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-42.15" centerPoint3DY="2.55">
@@ -2849,7 +2991,8 @@ onClipEvent(unload){
                     <Point x="-0.6" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-29.25" centerPoint3DY="-33.4">
@@ -2860,7 +3003,8 @@ onClipEvent(unload){
                     <Point x="-6.35" y="4.8"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="99.05" centerPoint3DY="107.25">
@@ -2871,7 +3015,8 @@ onClipEvent(unload){
                     <Point x="-0.15" y="2.55"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="56.05" centerPoint3DY="33.5">
@@ -2882,7 +3027,8 @@ onClipEvent(unload){
                     <Point x="3.8" y="4.7"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-77.5" centerPoint3DY="-74.75">
@@ -2893,7 +3039,8 @@ onClipEvent(unload){
                     <Point x="-0.4" y="0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-33.55" centerPoint3DY="-172.95">
@@ -2904,7 +3051,8 @@ onClipEvent(unload){
                     <Point x="-0.75" y="-6.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-71.95" centerPoint3DY="-186.5">
@@ -2915,7 +3063,8 @@ onClipEvent(unload){
                     <Point x="-1.85" y="2.5"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="25.35" centerPoint3DY="-68.95">
@@ -2925,6 +3074,10 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point x="2.35" y="226.05"/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
+                  </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="10.6" centerPoint3DY="-121.9">
                   <matrix>
@@ -2934,7 +3087,8 @@ onClipEvent(unload){
                     <Point x="3.7" y="-0.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                    <GlowFilter blurX="29" blurY="29" color="#FFFFFF" strength="1.42"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -2949,7 +3103,7 @@ onClipEvent(unload){
                     <Point x="2.55" y="-3"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="33.5" centerPoint3DY="-15.25">
@@ -2960,7 +3114,7 @@ onClipEvent(unload){
                     <Point x="-5.9" y="3.7"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="127.95" centerPoint3DY="-55.3">
@@ -2971,7 +3125,7 @@ onClipEvent(unload){
                     <Point x="4.15" y="0.65"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-9.1" centerPoint3DY="166.85">
@@ -2982,7 +3136,7 @@ onClipEvent(unload){
                     <Point x="-0.2" y="0.35"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="58.15" centerPoint3DY="65.3">
@@ -2993,7 +3147,7 @@ onClipEvent(unload){
                     <Point x="-0.15" y="-0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="123.7" centerPoint3DY="235.1">
@@ -3004,7 +3158,7 @@ onClipEvent(unload){
                     <Point x="0.85" y="2.25"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="60.4" centerPoint3DY="110.55">
@@ -3015,7 +3169,7 @@ onClipEvent(unload){
                     <Point x="-2.25" y="6.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="88.45" centerPoint3DY="175.25">
@@ -3026,7 +3180,7 @@ onClipEvent(unload){
                     <Point x="5.05" y="3.9"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-31.3" centerPoint3DY="144.9">
@@ -3037,7 +3191,7 @@ onClipEvent(unload){
                     <Point x="12.5" y="24.9"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="32.25" centerPoint3DY="-92.45">
@@ -3048,7 +3202,7 @@ onClipEvent(unload){
                     <Point x="1.1" y="-3.15"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="14.75" centerPoint3DY="107.7">
@@ -3059,7 +3213,7 @@ onClipEvent(unload){
                     <Point x="-0.7" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="19.35" centerPoint3DY="110.85">
@@ -3070,7 +3224,7 @@ onClipEvent(unload){
                     <Point x="-6.95" y="5.05"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-55.1" centerPoint3DY="245.95">
@@ -3081,7 +3235,7 @@ onClipEvent(unload){
                     <Point x="-0.35" y="2.8"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-30.85" centerPoint3DY="244.45">
@@ -3092,7 +3246,7 @@ onClipEvent(unload){
                     <Point x="4.2" y="5.05"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-24" centerPoint3DY="32.3">
@@ -3103,7 +3257,7 @@ onClipEvent(unload){
                     <Point x="-0.4" y="0.1"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="25.5" centerPoint3DY="-85.85">
@@ -3114,7 +3268,7 @@ onClipEvent(unload){
                     <Point x="-0.55" y="-6.4"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-25.85" centerPoint3DY="-73.3">
@@ -3125,7 +3279,7 @@ onClipEvent(unload){
                     <Point x="-1.9" y="2.6"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="118.95" centerPoint3DY="-26.3">
@@ -3135,6 +3289,9 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point x="2.3" y="226.1"/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="10"/>
+                  </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="78.3" centerPoint3DY="-63.1">
                   <matrix>
@@ -3144,7 +3301,7 @@ onClipEvent(unload){
                     <Point x="3.7" y="-0.2"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter/>
+                    <BlurFilter blurX="10" blurY="10"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -3569,7 +3726,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" duration="4" keyMode="9728">
+            <DOMFrame index="13" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="54.35" centerPoint3DY="-79.65">
                   <matrix>
@@ -3626,34 +3783,34 @@ onClipEvent(unload){
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="114.55" centerPoint3DY="256.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="148.75" centerPoint3DY="244.75">
                   <matrix>
-                    <Matrix a="0.80511474609375" b="-0.080322265625" c="0.080322265625" d="0.80511474609375" tx="72.5" ty="228.95"/>
+                    <Matrix a="0.778793334960938" b="-0.219375610351563" c="0.219375610351563" d="0.778793334960938" tx="102.65" ty="225.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.1" y="2.3"/>
+                    <Point x="1.15" y="2.3"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-1.4" centerPoint3DY="140.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-11.1" centerPoint3DY="152.75">
                   <matrix>
-                    <Matrix a="0.28955078125" b="-0.8990478515625" c="0.8990478515625" d="0.289474487304688" tx="-83.25" ty="92.05"/>
+                    <Matrix a="0.469406127929688" b="-0.819610595703125" c="0.819625854492188" d="0.469329833984375" tx="-81.3" ty="88"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-2.4" y="6.3"/>
+                    <Point x="-2.45" y="6.3"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="62.75" centerPoint3DY="203.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="82.9" centerPoint3DY="206.6">
                   <matrix>
-                    <Matrix a="0.817138671875" b="-0.30682373046875" c="0.30682373046875" d="0.817138671875" tx="33.35" ty="128.9"/>
+                    <Matrix a="0.610549926757813" b="-0.623764038085938" c="0.623764038085938" d="0.610549926757813" tx="24.5" ty="151.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="5.25" y="3.95"/>
+                    <Point x="5.3" y="3.95"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -3779,7 +3936,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="50.15" centerPoint3DY="-154.2">
                   <matrix>
@@ -3989,7 +4146,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
+            <DOMFrame index="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="85.15" centerPoint3DY="-230.85">
                   <matrix>
@@ -4199,7 +4356,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" keyMode="9728">
+            <DOMFrame index="21" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-7.95" centerPoint3DY="-340.8">
                   <matrix>
@@ -4409,7 +4566,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
+            <DOMFrame index="22" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-51.6" centerPoint3DY="-280.95">
                   <matrix>
@@ -4619,7 +4776,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" keyMode="9728">
+            <DOMFrame index="23" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-65.5" centerPoint3DY="-282.95">
                   <matrix>
@@ -4829,7 +4986,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" keyMode="9728">
+            <DOMFrame index="24" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-69.55" centerPoint3DY="-283.8">
                   <matrix>
@@ -5039,7 +5196,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="23" keyMode="9728">
+            <DOMFrame index="25" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="1.65" centerPoint3DY="-270.8">
                   <matrix>
@@ -5249,7 +5406,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="7" keyMode="9728">
+            <DOMFrame index="26" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="335.95" centerPoint3DY="54.8">
                   <matrix>
@@ -5463,7 +5620,7 @@ onClipEvent(unload){
         </DOMLayer>
         <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="31" keyMode="9728">
+            <DOMFrame index="0" duration="33" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
