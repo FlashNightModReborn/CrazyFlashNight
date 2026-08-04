@@ -161,9 +161,15 @@
         this._views = {};
         this._defaults = { L: null, R: null };
         this._profile = profile;
+        // slotMarkers:false 是官方 opt-out：领域自带栏位标签时可关闭 L/R marker 条
+        // （默认 true，既有消费方零影响）；关闭时 frame 的 aria-label 仍保留标签文本，
+        // root 与各 slot frame 同步投影 data-slot-markers="off"（frame 属性供 core.css
+        // 槽级单行 grid 挂钩，避免壳级 grid 选择器触发 WB129）。
+        this._slotMarkers = options.slotMarkers !== false;
         this._root = makeElement('div', 'workbench-shell');
         this._root.setAttribute('data-workbench-version', '1');
         this._root.setAttribute('data-profile', profile);
+        if (!this._slotMarkers) this._root.setAttribute('data-slot-markers', 'off');
 
         this._header = makeElement('header', 'workbench-header');
         var identity = makeElement('div', 'workbench-identity');
@@ -242,11 +248,16 @@
         frame.setAttribute('data-slot', slotId);
         frame.setAttribute('tabindex', '0');
         frame.setAttribute('aria-label', '工作台栏位 ' + slotId + ' ' + label);
-        var marker = makeElement('div', 'workbench-slot-marker');
-        marker.innerHTML = '<b>' + slotId + '</b><span></span>';
-        marker.querySelector('span').textContent = label;
         var host = makeElement('div', 'workbench-view-host');
-        frame.appendChild(marker);
+        if (this._slotMarkers) {
+            var marker = makeElement('div', 'workbench-slot-marker');
+            marker.innerHTML = '<b>' + slotId + '</b><span></span>';
+            marker.querySelector('span').textContent = label;
+            frame.appendChild(marker);
+        } else {
+            // 单行 grid 由 core.css 的槽级选择器接管（WB129：壳级 grid 不挂根属性选择器）
+            frame.setAttribute('data-slot-markers', 'off');
+        }
         frame.appendChild(host);
         return { frame: frame, host: host };
     };

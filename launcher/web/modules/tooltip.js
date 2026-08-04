@@ -1142,6 +1142,22 @@ var PanelTooltip = (function() {
             return false;
         }
 
+        // 嵌套绑定纪律：事件目标落在拥有自己 bindAsync 绑定的后代内时，祖先绑定不接手。
+        // pointermove 会冒泡——卡级 tip（如 merc 名册卡）内的装备/技能格（格级 tip）若不
+        // 拦截，卡级 onMove 每帧抢回 pointer owner 把格级 tooltip 顶掉（Phase K-A 根因，
+        // 已用 tmp/probe-merc-tooltip.js 实证）。pointerenter 的 target 恒为 node 本身，
+        // 不会命中此守卫；后代格子的 enter 随后正常接管。
+        function nestedBindingOwns(e) {
+            var target = e && e.target;
+            if (!target || target === node || !node.contains(target)) return false;
+            var cur = target;
+            while (cur && cur !== node) {
+                if (cur.__panelTooltipBinding) return true;
+                cur = cur.parentNode;
+            }
+            return false;
+        }
+
         function pointerIdOf(e) {
             return (e && typeof e.pointerId === 'number') ? e.pointerId : 'mouse';
         }
@@ -1362,6 +1378,7 @@ var PanelTooltip = (function() {
 
         function onMove(e) {
             if (disposed) return;
+            if (nestedBindingOwns(e)) return;   // 冒泡自嵌套绑定后代：不抢 owner
             var pointerId = pointerIdOf(e);
             if (!activePointers[pointerId]) return;
             lastPointerEvent = pointerSnapshot(e);
@@ -1393,6 +1410,7 @@ var PanelTooltip = (function() {
 
         function onFocusIn(e) {
             if (disposed || (e.relatedTarget && node.contains(e.relatedTarget))) return;
+            if (nestedBindingOwns(e)) return;   // 焦点落在嵌套绑定后代：由后代自己处理
             if (_inputModality !== 'keyboard') {
                 releaseKeyboardBinding(binding);
                 removeTooltipDescription();

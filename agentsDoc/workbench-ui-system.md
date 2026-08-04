@@ -23,7 +23,7 @@
 
 | profile | 用途 | 基本结构 |
 |---------|------|----------|
-| `catalog-decision` | KShop 商城、NPC 商店、合成配方 | 左侧浏览约 60%，窄 FlowRail，右侧权威决策约 40% |
+| `catalog-decision` | KShop 商城、NPC 商店、合成配方、战队（伙伴 / 战宠 / 机械 / 佣兵） | 左侧浏览约 60%，窄 FlowRail，右侧权威决策约 40% |
 | `archive-reference` | 材料档案等只读索引 | 左侧约 44% 稳定目录，右侧约 56% 详情；两栏分别滚动，选择按稳定 key 原位更新 |
 | `transfer-pair` | 背包—战备箱、背包—仓库 | 两个可操作容器近似对称；容量差异只能做受控 token 覆盖 |
 | `library-action-strip` | 技能管理 | 全宽库 + 固定 Hotbar；密度只作用技能库 |
@@ -53,6 +53,8 @@
 | Loot | `transfer-pair` |
 | Skills `manage` | `library-action-strip` |
 | Skills `trainer` | `library-decision` |
+| Team 伙伴/战宠/机械（pet-panel：roster / store / advance） | `catalog-decision` |
+| Team 佣兵（merc-panel：roster / hire / detail） | `catalog-decision` |
 
 KShop 与 Inventory Workbench 在同一 Shell 原位切 view 时，profile 也必须通过 Shell-owned 的封闭 `setProfile(profile)` 与 view attribute 在一次同步投影中更新；feature 不得直接写 `data-profile`。构造器与 setter 共用同一合法枚举校验，缺失或非法值 fail fast。Skills 与 Crafting 当前会在切 view 时重建 Shell，仍必须按目标 view 在新构造调用中选择对应 profile；不得把“会重建”当成省略 profile 或追加同值 setter 的理由。
 
@@ -286,7 +288,7 @@ tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc �
 
 | primitive | 共享职责 | 不应承担 |
 |-----------|----------|----------|
-| `DualPaneShell` | 画布、header、profile、slot、FlowRail | 领域请求与 ViewModel |
+| `DualPaneShell` | 画布、header、profile、slot、FlowRail；`slotMarkers:false` 是官方 opt-out（领域自带栏位标签时可关闭 L/R marker 条，root 与 slot frame 投影 `data-slot-markers="off"`，core.css 以槽级选择器收单行 grid，frame aria-label 保留；默认 true，其他消费方零影响） | 领域请求与 ViewModel |
 | `WorkbenchDialog/SecondaryPage` | focus stack、inert、Esc、opener restore | 交易/学习/调制规则 |
 | feature `HeaderProjection` / `ChoiceGroup` | 当前 view 的 action 可见/禁用/标签纯投影；ChoiceGroup 负责 pressed/disabled 机械 | action descriptor DSL、动态 toolbar registry、领域路由与 wire |
 | `HelpAction` | 唯一标准 `?` 入口、领域 spec 更新、modal 转交与确定性销毁 | 领域教程文案、业务请求与持久状态 |
@@ -398,13 +400,13 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 
 | 维度 | 已验证的现役基础 | 仍需按 ADR 闭环的真实缺口 |
 |------|------------------|----------------------------|
-| 布局与密度 | 1024×576 逻辑画布、48px header、owned 68/48/40 基线；六种封闭 profile 已由 Shell fail-fast 校验、`profiles.css` 与真实领域 fixture 接通，KShop/Inventory 原位 view 原子同步 profile，Skills/Crafting 重建时按目标 view 构造，compact 不再改变宏观 split | 后续新 consumer/profile 仍须先更新本 canonical 映射并补最低画布真实 fixture；不得把 E/G1–G5 或定向视觉 F 局部完成外推为剩余视觉债务已核销 |
+| 布局与密度 | 1024×576 逻辑画布、48px header、owned 68/48/40 基线；六种封闭 profile 已由 Shell fail-fast 校验、`profiles.css` 与真实领域 fixture 接通，KShop/Inventory 原位 view 原子同步 profile，Skills/Crafting 重建时按目标 view 构造，compact 不再改变宏观 split；战队（伙伴 / 战宠 / 机械 / 佣兵）四 tab 已按 `catalog-decision` 字面量重建壳并由 team 领域 harness 三视口 fixture 接通 | 后续新 consumer/profile 仍须先更新本 canonical 映射并补最低画布真实 fixture；不得把 E/G1–G5 或定向视觉 F 局部完成外推为剩余视觉债务已核销 |
 | 交互真实性 | G0/A1 已冻结 semantic hidden、Help/HeaderProjection 与显式导航计划；A2a/A2b 已完成 Tuning 共用 mode、固定 CommitBar、source、稳定 preview DOM 与全控制族锁投影；A3 已完成 shared SecondaryPage、Help、player-copy、键盘 inspection/blocked inspection 收口；A4 已固定 Crafting 决策结构；C1/C2/C3 已分别完成候选 counts、rich tooltip 与 candidate tuning 的 authority 纵切；ADR H1 已在 `f01f4b121a4c…` 冻结树接通 Character 来源 Materials/Intelligence exact 返回 | 未纳入本批的领域极值仍须按各自 authority 纵切闭环；H1/C3 实现字节虽已随 `f01f4b121a4c…` 正式部署，自动门与总体 promotion 仍不能外推为对应游戏 E2E 或专项 standard-entry 验收 |
 | 视觉层级 | semantic token、字号下限、Character Build/Stats 的角色色实践和 shared empty/state CSS 已存在；F0 建立 touched-line / baseline ratchet，本轮定向 F 已清零 `<9px`、把玩家正文/原因与主标签提升到角色下限、给三个真实溢出面接入 exact 7px scrollbar，并移除 Choice/Loot 的整组 blocked opacity；G5 已让 layered focus baseline 成为唯一生产来源并以 `WB135` 阻止 unlayered 回流 | 剩余 raw color 与 skin 结构债务继续按独立原子批收敛；不得把本轮定向完成外推为旧 CSS 全量清零，也不得为追求数字归零重写未触碰领域 |
 | 动效 | micro/standard/structural/reject/busy/ambient token 已由 G1–G5 接通 shared structural、焦点层叠、语义 fragments/KShop consumer、shell root reduced shutdown 与 exact workbench Tooltip owner；工作台 `.001s/.001ms` 已清零，Tuning 静态补偿及 Character/Inspector/Tuning 的实际静态终态已有 normal/reduced 门，ratchet raw duration ceiling 已继续下调 | 其余 feature unlayered structural 绕过与 named-layer 扩围仍需按 G6+ 收敛；非工作台 `task_panel.css` 的 `0.001s` 和 lockbox 动效明确不在 G4 范围 |
 | 可访问性 | EntityTile 激活、tooltip scope、FocusScope trap/inert/Esc/opener restore、shared SecondaryPage exact action、Tuning source/lock、KShop/NPC inspectability、QuantityControl 键盘合同与双宿主 WebView2 自动策略矩阵已具备；G2/G5 已以真实 fixture 覆盖 button/EntityTile/input/select/range/scroll 和 selected+focus 的 role-token focus ring；exact candidate 已在本机 150% DPI 下完成双宿主 production/development 实机输入 smoke | Native top-tool 独立键盘 focus 仍未建立；100% DPI 与真实触控/触控板 pinch 尚无物理设备证据，不能把 150% smoke 或 CDP 合成输入外推为完整 D 批 E2E |
 | 整备与 Native HUD | B1 frozen tuple、off/on 两套 HUD geometry fixture、统一 progression reason、B2 exact `EQUIPMENT_TUNING` opener、B3 Build/Storage/Tuning 有界局部导航、B4 封闭三目标 post-close intent/两阶段 timeout/双值 focus parser、B5 Materials exact handoff、B6 Intelligence 同步 exact admission、B7 默认 on 的两套 HUD/Build menu/Host focus/Web fixed mapping 原子切换，以及单一 `RightContextSlotOwner` 已落地 | 实现字节已随 `f01f4b121a4c…` promotion 部署；仍需真实 Native/legacy HUD 与 WebView2 游戏旅程、显式 off 回退，以及对应业务 E2E/专项标准入口验收，总体 promotion 不能代证这些旅程 |
-| 前端架构 | 单 Bridge router、generation-aware mux、DisposableStack/PanelLifecycle、`InventoryWorkbenchHeaderProjection`、封闭 Shell profile、shared SecondaryPage 及 feature-local navigation/confirmation/interaction/crafting presenter 已落地 | 其余能力继续接通现有 primitive，不建立 action DSL、layout registry、StagedCommandBar 或引导引擎 |
+| 前端架构 | 单 Bridge router、generation-aware mux、DisposableStack/PanelLifecycle、`InventoryWorkbenchHeaderProjection`、封闭 Shell profile、shared SecondaryPage 及 feature-local navigation/confirmation/interaction/crafting presenter 已落地 | 其余能力继续接通现有 primitive，不建立 action DSL、layout registry、StagedCommandBar 或引导引擎；team（pet-panel / merc-panel）已双栏化但仍保留各自的 `panel_resp` 直挂 listener 与 callId/session 守卫（协议零改动原则），panel-runtime Router/Mux 迁移列为后续独立批次；roster/hire 网格的 arrow-key roving 导航未实装（Tab + Enter/Space 等价已满足） |
 | 视觉验证 | 共享 atlas、物品格矩阵、六种 profile 的真实领域 browser fixture、F0/E 静态 ratchet、G1–G5 computed 门，以及本轮 Tuning disabled ChoiceGroup、Loot blocked CommitBar、三类真实 scrollbar overflow/pseudo computed、Character preparation menu 的 42px 单列与 normal/reduced 键盘几何均已提供可执行证据；双宿主 150% DPI production/development smoke 已完成 | atlas 仍只是一套 synthetic DOM 的 scale/DPI 矩阵；它不替代后续剩余颜色/skin/G6+ 的逐段视觉债务核销、100% DPI/真实 pinch 或完整人工游戏旅程 |
 
 后续仍需的 B7 真实游戏/专项标准入口验收、D 批剩余 100% DPI/真实 pinch，以及剩余颜色/skin 与 G6+ motion/cascade 原子批次，以 2026-07-29 ADR 为准。B7/C3 和定向视觉 F 的实现字节已随 `f01f4b121a4c…` 部署并闭合源码自动门，但不能冒充对应游戏 E2E 或专项验收；D 的 exact candidate 只用于双宿主 150% 输入 smoke；E/G1–G5 的 Shell/profile、SecondaryPage、focus、语义 motion 与 reduced-motion 代码/fixture 也不能外推为旧 CSS 全量治理完成；全面 named-layer 化、像素 golden 与物理拆分仍不得与领域任务流重构混成一个大批次。

@@ -215,6 +215,10 @@
     background:rgba(12,14,17,.94);
     border:1px solid var(--wb-line-soft);
 }
+/* slotMarkers:false 官方 opt-out（DualPaneShell options）：领域自带栏位标签时
+   marker 节点不挂载，槽体单行 grid 回收 22px 纵向空间（选择器挂在槽级，
+   壳层 root 同步投影 data-slot-markers="off" 供审计/QA） */
+.workbench-slot[data-slot-markers="off"] { grid-template-rows:minmax(0,1fr); }
 .workbench-slot.active { border-color:var(--wb-line-strong); box-shadow:inset 0 0 0 1px rgba(255,255,255,.025); }
 .workbench-slot.active .workbench-slot-marker b { background:var(--wb-accent); }
 .workbench-slot-marker {

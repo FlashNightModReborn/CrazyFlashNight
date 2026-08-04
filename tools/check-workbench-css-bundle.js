@@ -28,6 +28,7 @@ const IMPORTS = [
     './workbench/components.css',
     './workbench/character-build.css',
     './workbench/character-build-stats.css',
+    './workbench/team.css',
     './workbench/states.css',
     './workbench/motion.css',
     './hairdresser.css',

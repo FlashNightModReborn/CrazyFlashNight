@@ -1,0 +1,2566 @@
+/* ═══════════════════════════════════════════════════════
+   Team Workbench — 战队面板（佣兵 / 伙伴 / 战宠 / 机械）双栏工作台基座
+   ───────────────────────────────────────────────────────
+   Phase A：SHELL / SKIN / SHARED 三节基座；Phase B：PET 节；Phase C：MERC 节 + tab 条样式迁入。
+   Phase D（战术军械皮肤）：在双栏架构/交互/DOM 契约不变的前提下，把旧「军事战术拟物」
+   美术语言（大理石卡面 / 橙色 L 角标框 / 浅石牌按钮 / 分段进度条 / 金·紫资源色）以
+   token 合规方式复原。材质配方全部派生自 --dls-* / --theta-* / --wb-*（color-mix），
+   大理石贴图与任务面板共用 task_icon_bg.png，零新增美术资源。
+   Phase E（暖色人文垫图层）：战队系统偏人文关怀，面底从冷青拉回旧版中性暖灰
+   （--team-warm-* = --wb-text × --wb-bg 中性灰起手 + 4% --dls-energetic 调暖），
+   并按 data-team-roster 复原角色垫图背景（伙伴/战宠/机械 = 武装JK 陪伴图，
+   佣兵 = BPK 官方图）。配方原则（旧 CSS 原话）：灰白渐变底 + 英雄烤在其上
+   （整体偏中性灰、英雄清晰可辨），而非把英雄埋在近黑重罩下压成黑泥——
+   轻灰罩只做层次（86%~90%），中灰渐变兜底明度对齐旧 #41444b→#2a2c32，不许压黑。
+   Phase G（排版与可读性五连修）：① 壳级 slot marker 官方 opt-out（DualPaneShell
+      slotMarkers:false，pane 单行控件条已承担标签职能，回收 22px）；② compact 实体格
+      等级角标数字化（右下角纯数字，对齐物品格数量角标语言）+ 满级金框（data-level-max
+      暖金边框微光，蓝底 MAX 字牌让位）；③ header identity 单行化（标题与副题同一行，
+      修副题与橙分隔线碰撞；eyebrow 隐藏 + status/metrics/header 间距瘦身腾副题预算）；④ 浅石牌文字统一深墨，角色色移 ::before 左竖条；
+      ⑤ R 决策面标题长名容忍（换行至多两行 clamp，L 卡名保持 ellipsis）。
+   Phase F（气质调和）：Phase E 把 energetic 以 4% 混进每档面底 → 偏棕浊、与中性
+   灰白云纹大理石冲突，且整版垫图被 86%~90% 重罩压成「闷」。本轮：
+   ① warm 灰阶 energetic 混入量降到 2%（≈纯中性微暖，R-B≤1/255），各档明度上抬
+      对齐旧 #1a1c23→#272b35 带；石料罩/兜底回中性灰（对齐旧 rgba(42,45,53,.70)→
+      rgba(27,29,35,.82) / #30333a→#25272d），浅石牌兜底回旧 #dcdde0→#c9cace 白亮；
+      暖意只由 accent 系承担（角标/选中/metrics/焦点环再提一档）。
+   ② 垫图左栏化：根背景改程序渐变（顶部琥珀微光 + 细点阵 + 斜向微光 + 中灰渐变底，
+      零照片 url），hero 垫图移到 L 槽（名册栏）按 data-team-roster 挂图，veil 46%~54%
+      主体可辨；空位卡 veil 透到 36%，与实体卡 opaque 石料形成虚实对比。
+   ③ R 槽改程序式名册纹理（repeating-linear-gradient 细横行纹 1px/32px + 顶部琥珀
+      分规线 + 斜向微光 + 中性微暖渐变底，零图片），决策区文字/CommitBar 可读性优先；
+      决策面容器（team-pet-detail 等）背景透化，让槽纹理读出。
+   ④ --wb-focus token 覆盖为暖琥珀（energetic 72% × text），消除青焦点撞色。
+   Phase H2（卡片/雇佣/空态五连修）：① 满级视觉 full/compact 同源金——蓝底 MAX
+      字牌退役，full 卡改金色小角标（inset 8px 避开 L 角标框臂区）+ 金框；② pet full
+      卡体力 + 经验双 meter（6px 细条，卡高 68 不变，首屏行列不回退）；③ 浅石牌按钮
+      字重 600（CommitBar 主 CTA 700）+ 微字距；④ hire 右栏对齐培养页信息量（特质六维 /
+      技能行 / 装备格只读，复用培养页渲染器），密度切换对 hire 生效（compact 紧凑行，
+      与 roster 同一 panelId 状态）；⑤ 空态居中式版式（CSS 琥珀菱形标记 + statement +
+      nextStep，覆盖 pet 三态 roster / merc roster / R 未选中 / store 空分类 / hire 空池）。
+   Phase I（卡片信息分级与直操）：① 名册网格 3→4 列提密度（minmax 180→132），
+      merc full 卡补两行图标带——装备行 11 槽固定图标带（20px 迷你格 + 强化等级
+      角标，空槽虚线）+ 技能行图标流（18px + 等级角标，无技能不渲染），flex-wrap
+      换行零横向溢出；compact 佣兵卡加 9px 迷你装备行（11 枚压一行、省略等级角标、
+      title 兜底），技能不进 compact；② 卡片直操回防——pet full 卡「出战/休息 +
+      恢复·1000金」、merc full 卡「出战/休息（阵亡→复活·复活币×1）+ 解雇」，与右栏
+      同 handler/blocked/pending，嵌套按钮 stopPropagation 不触发卡片选中，compact
+      与 store/hire 候选卡不放按钮；③ 徽标同族角标对——状态字牌左上（出战中
+      energetic / 阵亡·体力耗尽 danger / 候选·唯一 info）与 MAX 金角标右上同几何
+      （inset 8px / padding 2px 5px / 圆角 3px / 1px 描边 / 700 9px），仅角色色区分，
+      满级出战卡成对同线不互挡，臂区 1px 净空规则双角保持。
+   Phase J（气质与细节五连修）：① 佣兵培养页相机控件右置——7 枚控件从底部 footer
+      移到视口右侧竖排轨（dollMain 行窄列：上→下 放大/缩小/全貌+读数小字，分隔线，
+      四向平移；26px 方钮透明底+细边+琥珀 hover），底排不再被排版裁切、不遮挡 doll；
+      ② 战宠培养页进阶方案区整体卡化（section 头带计数「进阶方案 · N」+ 容器撑满
+      右栏列高 + 少方案列表下一行中性提示 + 0 方案居中空态），左右栏同族 stone-soft
+      框架对称；③ 浅石牌柔化——暖玉石灰牌（兜底 92/84%→86/74% 掺 2~3% energetic
+      微暖 + 描边加深 + 常态细投影），名册垫图与培养页深底两背景都成立；
+      ④ header identity 徽章复原真 A兵团 emblem（a-legion-emblem.svg mask 以
+      accent-warm 渲染 20×18px，clip-path 三角退役）；⑤ 橙青温润调色——accent
+      从纯 energetic 金向温润橙（--team-accent-warm = energetic 55% × warning，
+      角标/选中/tab/徽章/metrics 金/滚动条/分隔线同源），环境 warm 灰阶 energetic
+      2% 换 theta-signal 4% 青蓝灰（B>R 小幅低饱和，明度维持 F 轮解闷水平）。
+
+   治理约束（静态门守护，禁止回退）：
+   - 只消费 --dls-* / --theta-* / --wb-semantic-* / --wb-role-* / --wb-motion-* /
+     --wb-ease-* 与 core.css 结构 token；零硬编码色值（派生色一律 color-mix）；
+   - transition 时长/缓动只消费 motion/ease token，禁止 transition:all；
+   - 不写任何 outline 规则（focus 环由 states.css 唯一提供，WB135）；
+   - 不覆盖壳级 grid-template-*（WB129）；不使用 !important（WB133/WB040）；
+   - 不新增 keyframes（busy 脉冲复用 shared wb-pulse-busy）；
+   - 不写本地 reduced-motion 块（shell 根统一关闭，motion.css）。
+   ═══════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════
+   SHELL：子视图宿主与子容器（team-panel.js 壳层挂载点）
+   - .team-host：position:absolute; inset:0 的子视图容器宿主；
+   - .team-child：merc / pet 两个子容器，填满 host；
+   - .team-tabs：唯一 tab 条（<nav>），经 initData.tabNav 作为 header 第一个 action
+     注入当前激活子 Shell，视觉与 workbench-mode-btn 同族；
+     激活态 = .team-tab-active + [aria-current="true"] 双投影（team-panel.js 同步维护）。
+   ═══════════════════════════════════════════════════════ */
+.team-host {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.team-host .team-view {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.team-host .team-view[hidden] {
+    display: none;
+}
+.team-host .team-child {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.team-host .team-child[hidden] {
+    display: none;
+}
+
+/* ── tab 条（header 第一个 action；激活态用 skin accent token）── */
+.team-workbench .team-tabs {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-right: 6px;
+}
+.team-workbench .team-tab {
+    min-height: 27px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    color: var(--wb-muted);
+    background: var(--wb-surface-2);
+    border: 1px solid var(--wb-line-soft);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-tab:hover {
+    color: var(--wb-text);
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-tab-active,
+.team-workbench .team-tab[aria-current="true"] {
+    color: var(--wb-accent);
+    background: color-mix(in srgb, var(--wb-accent) 10%, var(--wb-surface));
+    border-color: var(--wb-accent);
+    /* 战术 tab 签名：底部 2px 橙条 + 文字微光（对齐旧 .team-tab-active underline 语言） */
+    box-shadow: inset 0 -2px 0 var(--wb-accent);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--wb-accent) 45%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SKIN：team skin 的 token 覆盖与领域装饰
+   - accent 取 --team-accent-warm 温润橙（J5：energetic 55% × semantic-warning，对齐旧 #ef9442）；
+   - surface/line 由 --team-warm-* 蓝灰中性阶派生（J5：theta-signal 4% 青蓝灰回摆，
+     对齐旧 #1a1c23 系蓝灰中性；Phase E 暖灰 / F 微暖已迭代），scrollbar 随 accent-warm；
+   - 只覆盖 token 与装饰，不改布局 / 命中区 / 状态结构；语义色不覆盖。
+   战术军械材质配方（旧 pet_panel.css / merc_panel.css token 表的 token 化转写）：
+   - 大理石贴图与任务面板共用 task_icon_bg.png（相对本文件 ../../modules/...）；
+   - --team-stone* = 深灰渐变罩 + 大理石 + 不透明深石兜底（贴图含半透，防透底）；
+   - --team-marble-btn = 浅大理石石牌 + 深墨字阶（旧 --pet-marble-btn / --pet-ink*）；
+   - --team-bracket-* = L 角标框几何与常态/hover/选中三档色（旧 --pet-bracket-* +
+     rgba(239,148,66,.42/.85)/#ffb65a 三档的 color-mix 等价）。
+   ═══════════════════════════════════════════════════════ */
+.team-workbench[data-workbench-skin="team"] {
+    /* ── J5 橙青温润：accent 从纯 energetic 金向温润橙调（对齐旧 #ef9442；
+       energetic 55% × semantic-warning ≈ hue 39° 暖橙），角标/选中/tab 激活/徽章/metrics 金同源 ── */
+    --team-accent-warm: color-mix(in srgb, var(--dls-energetic) 55%, var(--wb-semantic-warning));
+    --wb-accent: var(--team-accent-warm);
+    --wb-accent-soft: color-mix(in srgb, var(--team-accent-warm) 14%, transparent);
+    /* ── J5 环境青蓝灰回摆：--wb-text × --wb-bg（core 中性深底 #090a0c）起手，
+       混入 4% --theta-signal 低饱和蓝灰（替代 Phase F 的 2% energetic 微暖），
+       对齐旧 #1a1c23 / #21242d / #272b35→#30333a 蓝灰中性带（B>R 小幅，非饱和青）；
+       四档明度维持 F 轮解闷水平不回黑，暖意只由 accent-warm 系承担。
+       注意：--wb-bg 本身不再重指向 warm-1——自定义属性不允许循环引用
+       （warm-1 依赖 --wb-bg），且 #090a0c 本为中性深底，留在原位承担墨字 / 阴影 / 深罩角色 ── */
+    --team-warm-1: color-mix(in srgb, color-mix(in srgb, var(--wb-text) 6%, var(--wb-bg)) 96%, var(--theta-signal));
+    --team-warm-2: color-mix(in srgb, color-mix(in srgb, var(--wb-text) 10%, var(--wb-bg)) 96%, var(--theta-signal));
+    --team-warm-3: color-mix(in srgb, color-mix(in srgb, var(--wb-text) 14%, var(--wb-bg)) 96%, var(--theta-signal));
+    --team-warm-4: color-mix(in srgb, color-mix(in srgb, var(--wb-text) 18%, var(--wb-bg)) 96%, var(--theta-signal));
+    --wb-surface: var(--team-warm-2);
+    --wb-surface-2: var(--team-warm-3);
+    /* 框线同步蓝灰中性（旧 --pet-line #474b55 / --pet-line-bright #6b7079 的明度带，
+       theta-signal 4~6% 染青灰，不再棕） */
+    --wb-line: color-mix(in srgb, var(--theta-signal) 6%, color-mix(in srgb, var(--wb-text) 26%, var(--wb-bg)));
+    --wb-line-soft: color-mix(in srgb, var(--theta-signal) 4%, var(--team-warm-3));
+    /* 滚动条随 accent 同步（温润橙 × 蓝灰底） */
+    --wb-scrollbar-thumb: color-mix(in srgb, var(--team-accent-warm) 30%, var(--team-warm-3));
+    --wb-scrollbar-thumb-border: color-mix(in srgb, var(--team-accent-warm) 40%, var(--team-warm-3));
+    --wb-scrollbar-thumb-hover: color-mix(in srgb, var(--team-accent-warm) 55%, var(--team-warm-3));
+    /* 选中态回归战术橙（旧选中 = 亮橙框 + 亮角标） */
+    --wb-role-selected: var(--team-accent-warm);
+    /* 焦点环随 accent-warm（token 覆盖，states.css 唯一消费 outline，此处不写 outline 规则），
+       暖橙 72% × text（≈ 旧 #ffb65a 档）与选中态同族、消除青焦点撞色 */
+    --wb-focus: color-mix(in srgb, var(--team-accent-warm) 72%, var(--wb-text));
+    /* 整框四角 L 角标（旧 .pet-panel::after）：臂长 22px 线宽 2px，
+       中性亮灰（旧 --pet-line-bright 级，不抢 accent 橙的语义） */
+    --team-frame-len: 22px;
+    --team-frame-w: 2px;
+    --team-frame-line: color-mix(in srgb, var(--wb-text) 46%, var(--wb-bg));
+
+    /* ── 大理石材质（Phase F 罩/兜底回中性灰，对齐旧 --pet-stone 配方：
+       罩 rgba(42,45,53,.70)→rgba(27,29,35,.82)、兜底 #30333a→#25272d；
+       贴图含半透，末层不透明深石兜底防透底）── */
+    --team-marble: url('../../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    --team-stone:
+        linear-gradient(160deg,
+            color-mix(in srgb, color-mix(in srgb, var(--wb-text) 14%, var(--wb-bg)) 70%, transparent),
+            color-mix(in srgb, color-mix(in srgb, var(--wb-text) 8%, var(--wb-bg)) 82%, transparent)),
+        var(--team-marble),
+        linear-gradient(160deg,
+            color-mix(in srgb, var(--wb-text) 17%, var(--wb-bg)),
+            color-mix(in srgb, var(--wb-text) 12%, var(--wb-bg)));
+    /* 次级容器底（摘要行 / 方案卡 / chrome 条）：罩更厚、兜底更暗（旧 --pet-stone-soft：
+       rgba(36,39,46,.76)→rgba(23,25,30,.86) / #2b2e35→#222429） */
+    --team-stone-soft:
+        linear-gradient(160deg,
+            color-mix(in srgb, color-mix(in srgb, var(--wb-text) 12%, var(--wb-bg)) 76%, transparent),
+            color-mix(in srgb, color-mix(in srgb, var(--wb-text) 6%, var(--wb-bg)) 86%, transparent)),
+        var(--team-marble),
+        linear-gradient(160deg,
+            color-mix(in srgb, var(--wb-text) 15%, var(--wb-bg)),
+            color-mix(in srgb, var(--wb-text) 11%, var(--wb-bg)));
+    /* ── K-B-3 温玉浮雕（浅石牌第三轮重做）：暖玉白渐变 hi text 88% / lo text 76%
+       （J3 的 86/74 再分化——顶端更亮、底端更沉，拉开浮雕纵深），各掺 2~3%
+       energetic 微暖不死白；hi/lo 独立成 token 供 QA 探针断言明度档 ── */
+    --team-placard-hi: color-mix(in srgb, color-mix(in srgb, var(--wb-text) 88%, var(--wb-bg)) 97.5%, var(--dls-energetic));
+    --team-placard-lo: color-mix(in srgb, color-mix(in srgb, var(--wb-text) 76%, var(--wb-bg)) 97%, var(--dls-energetic));
+    --team-marble-btn:
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--wb-bg) 5%, transparent),
+            color-mix(in srgb, var(--wb-bg) 15%, transparent)),
+        var(--team-marble),
+        linear-gradient(180deg, var(--team-placard-hi), var(--team-placard-lo));
+    /* 浅石牌上的深墨文字阶（旧 --pet-ink #2b2d33 / --pet-ink-dim #54585f） */
+    --team-ink: color-mix(in srgb, var(--wb-text) 15%, var(--wb-bg));
+    --team-ink-dim: color-mix(in srgb, var(--wb-text) 32%, var(--wb-bg));
+    /* L 角标框：13px 臂长 2px 线宽，常态 50% / hover 90% / 选中亮实色（J5 起随 accent-warm
+       温润橙——蓝灰夜幕上暖橙灯火的唯一跳出源） */
+    --team-bracket-len: 13px;
+    --team-bracket-w: 2px;
+    --team-bracket-c: color-mix(in srgb, var(--team-accent-warm) 50%, transparent);
+    --team-bracket-c-hover: color-mix(in srgb, var(--team-accent-warm) 90%, transparent);
+    --team-bracket-c-selected: color-mix(in srgb, var(--team-accent-warm) 88%, var(--wb-text));
+    /* 资源色：金币随 accent-warm 温润橙金 / K点亮紫（对齐旧 #ffc94a / #d98cff） */
+    --team-gold: color-mix(in srgb, var(--team-accent-warm) 80%, var(--wb-text));
+    --team-kpoint: color-mix(in srgb, var(--dls-memetic) 68%, var(--wb-text));
+}
+
+/* ── Phase F 垫图资产（挂 L 槽名册栏，不挂根）：伙伴 / 战宠 / 机械 = 武装JK 伸手陪伴图
+   （主体女孩在图右中，position 偏右）；佣兵 = BPK 官方图（人物在右侧，position 更偏右）── */
+.team-workbench[data-workbench-skin="team"][data-team-roster="partner"],
+.team-workbench[data-workbench-skin="team"][data-team-roster="pet"],
+.team-workbench[data-workbench-skin="team"][data-team-roster="mechanical"] {
+    --team-hero: url('../../assets/bg/battlepet-armed-jk-hero2-v2.png');
+    --team-hero-pos: 68% 30%;
+}
+.team-workbench[data-workbench-skin="team"][data-team-roster="mercenary"] {
+    --team-hero: url('../../assets/bg/official-bpk.jpg');
+    --team-hero-pos: 78% 20%;
+}
+/* 根背景（Phase F 程序式氛围底，零照片 url；旧 #41444b→#2a2c32 明度带保留）：
+   ① 顶部 energetic 4% 微光 → ② 细点阵（1px / 26px，text 4% alpha，克制）→
+   ③ 斜向微光 → ④ 中灰渐变底（text×scrollbar-track 24%→14%，明度对齐旧版） */
+.team-workbench[data-workbench-skin="team"][data-team-roster] {
+    background:
+        radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--team-accent-warm) 4%, transparent), transparent 55%),
+        radial-gradient(circle, color-mix(in srgb, var(--wb-text) 4%, transparent) 1px, transparent 1px) 0 0 / 26px 26px,
+        linear-gradient(115deg, color-mix(in srgb, var(--wb-text) 3%, transparent) 0%, transparent 42%),
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--wb-text) 24%, var(--wb-scrollbar-track)) 0%,
+            color-mix(in srgb, var(--wb-text) 14%, var(--wb-scrollbar-track)) 100%);
+}
+/* 整框四角 L 角标（旧 .pet-panel::after）：core 根伪元素本就有 inset  vignette
+   （content/position/pointer-events/box-shadow 全部保留），此处只改 inset/z-index
+   并叠 8 层 linear-gradient 画 4 个直角；z-index 30 低于 SecondaryPage 55 / modal 60 */
+.team-workbench[data-workbench-skin="team"]::after {
+    inset: 4px;
+    z-index: 30;
+    background:
+        linear-gradient(var(--team-frame-line), var(--team-frame-line)) 0 0 / var(--team-frame-len) var(--team-frame-w) no-repeat,
+        linear-gradient(var(--team-frame-line), var(--team-frame-line)) 0 0 / var(--team-frame-w) var(--team-frame-len) no-repeat,
+        linear-gradient(var(--team-frame-line), var(--team-frame-line)) 100% 0 / var(--team-frame-len) var(--team-frame-w) no-repeat,
+        linear-gradient(var(--team-frame-line), var(--team-frame-line)) 100% 0 / var(--team-frame-w) var(--team-frame-len) no-repeat,
+        linear-gradient(var(--team-frame-line), var(--team-frame-line)) 0 100% / var(--team-frame-len) var(--team-frame-w) no-repeat,
+        linear-gradient(var(--team-frame-line), var(--team-frame-line)) 0 100% / var(--team-frame-w) var(--team-frame-len) no-repeat,
+        linear-gradient(var(--team-frame-line), var(--team-frame-line)) 100% 100% / var(--team-frame-len) var(--team-frame-w) no-repeat,
+        linear-gradient(var(--team-frame-line), var(--team-frame-line)) 100% 100% / var(--team-frame-w) var(--team-frame-len) no-repeat;
+}
+/* 结构件透化 / 槽位分工（Phase F）：header 半透明罩随新环境色稍浅；
+   L 槽 = hero 垫图名册栏（veil 54%→46%，主体可辨；末层暖灰渐变兜底防 404 透根）；
+   R 槽 = 程序式名册纹理（决策面可读性优先：中性微暖渐变底不透明 + 极轻行纹/光泽）；
+   FlowRail 同步半透明 */
+.team-workbench[data-workbench-skin="team"] .workbench-header {
+    background:
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--team-warm-3) 74%, transparent),
+            color-mix(in srgb, var(--team-warm-2) 80%, transparent));
+}
+.team-workbench[data-workbench-skin="team"][data-team-roster] .workbench-slot[data-slot="L"] {
+    background:
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--team-warm-2) 52%, transparent) 0%,
+            color-mix(in srgb, var(--team-warm-1) 44%, transparent) 100%),
+        var(--team-hero) var(--team-hero-pos, 68% 30%) / cover no-repeat,
+        linear-gradient(180deg, var(--team-warm-3) 0%, var(--team-warm-1) 100%);
+}
+/* R 槽程序式名册纹理（零图片）：① 槽顶边框下一道琥珀细分规线（档案分规语感；
+   G1 marker opt-out 后从 23px 锚点上移到槽顶，避免横穿决策面内容）→
+   ② repeating-linear-gradient 细横名册行纹（1px / 32px 间隔，text 4% alpha 极轻）→
+   ③ 斜向微光 → ④ 中性微暖渐变不透明底（决策区文字 / CommitBar 可读性优先） */
+.team-workbench[data-workbench-skin="team"] .workbench-slot[data-slot="R"] {
+    background:
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--team-accent-warm) 42%, transparent),
+            color-mix(in srgb, var(--team-accent-warm) 42%, transparent)) 0 1px / 100% 1px no-repeat,
+        repeating-linear-gradient(180deg,
+            color-mix(in srgb, var(--wb-text) 4%, transparent) 0,
+            color-mix(in srgb, var(--wb-text) 4%, transparent) 1px,
+            transparent 1px,
+            transparent 32px),
+        linear-gradient(115deg, color-mix(in srgb, var(--wb-text) 3%, transparent) 0%, transparent 40%),
+        linear-gradient(180deg, var(--team-warm-2) 0%, var(--team-warm-1) 100%);
+}
+.team-workbench[data-workbench-skin="team"] .workbench-flow-rail {
+    background:
+        linear-gradient(180deg,
+            transparent,
+            color-mix(in srgb, var(--team-warm-1) 56%, transparent) 18%,
+            color-mix(in srgb, var(--team-warm-1) 56%, transparent) 82%,
+            transparent);
+}
+/* header 下分隔：细琥珀线 */
+.team-workbench .workbench-header {
+    border-bottom-color: color-mix(in srgb, var(--wb-accent) 30%, var(--wb-line));
+}
+/* body 背景微渐变：琥珀顶部微光压暗到底部；Phase E 起不再铺不透明底，
+   让根垫图在槽位间隙 / 内边距处读得出 */
+.team-workbench .workbench-body {
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--wb-accent) 6%, transparent), transparent 38%);
+}
+
+/* ── header 战术装饰：标题左 A兵团 emblem（J4 复原真 SVG 徽标——旧 .pet-title-mark 的
+   clip-path 三角退役；SVG 内嵌纯黑 fill 不可控色，用 mask 方案以 accent-warm 温润橙渲染，
+   20×18px 与标题基线对齐）、思源宋体标题、资源分色（金币暖金橙 / K点亮紫，带轻微辉光）── */
+.team-workbench[data-workbench-skin="team"] .workbench-identity {
+    position: relative;
+    padding-left: 26px;
+    /* Phase G3：identity 单行化——eyebrow 隐藏让位（规则见下），标题与副题并入同一行
+       （修三行竖排副题与 header 底部橙分隔线碰撞）；baseline 视觉对齐由
+       三等线高等 line box + center 对齐保证（行顶差 ≤2px，48px header 内不碰底边） */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.team-workbench[data-workbench-skin="team"] .workbench-eyebrow,
+.team-workbench[data-workbench-skin="team"] .workbench-title,
+.team-workbench[data-workbench-skin="team"] .workbench-subtitle {
+    margin-top: 0;
+    line-height: 24px;
+}
+.team-workbench[data-workbench-skin="team"] .workbench-eyebrow {
+    /* Phase G3 空间预算：单行横排后 eyebrow「战队」隐藏（标题已含领域名），
+       把宽度让给副题（出战/栏位统计必须完整可读） */
+    display: none;
+}
+/* Phase G3 单行横排空间预算：status / metrics 瘦身 + header 间距收紧，
+   「标题 + 副题」在 1024 逻辑宽度内完整成行（副题不再 ellipsis） */
+.team-workbench[data-workbench-skin="team"] .workbench-header {
+    gap: 12px;
+    padding-right: 10px;
+}
+.team-workbench[data-workbench-skin="team"] .workbench-status {
+    min-width: 92px;
+}
+.team-workbench[data-workbench-skin="team"] .workbench-metrics {
+    gap: 4px;
+}
+.team-workbench[data-workbench-skin="team"] .workbench-metric {
+    min-width: 80px;
+    padding: 4px 8px;
+}
+.team-workbench[data-workbench-skin="team"] .workbench-title {
+    flex: 0 0 auto;
+}
+.team-workbench[data-workbench-skin="team"] .workbench-subtitle {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+.team-workbench[data-workbench-skin="team"] .workbench-identity::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 20px;
+    height: 18px;
+    background: var(--wb-accent);
+    -webkit-mask: url('../../assets/logos/a-legion-emblem.svg') center / contain no-repeat;
+    mask: url('../../assets/logos/a-legion-emblem.svg') center / contain no-repeat;
+    transform: translateY(-50%);
+}
+.team-workbench[data-workbench-skin="team"] .workbench-title {
+    font-family: "思源宋体 CN Heavy", "Microsoft YaHei", sans-serif;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px color-mix(in srgb, var(--wb-bg) 75%, transparent);
+}
+.team-workbench[data-workbench-skin="team"] .workbench-metric[data-metric="gold"] b {
+    color: var(--team-gold);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--team-accent-warm) 38%, transparent);
+}
+.team-workbench[data-workbench-skin="team"] .workbench-metric[data-metric="kpoint"] b {
+    color: var(--team-kpoint);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--dls-memetic) 42%, transparent);
+}
+
+/* 右栏决策面：细角标框点缀（.team-card-frame 同一 8 层 gradient 技法的容器变体，
+   伪元素实现、无需 JS 挂载；pointer-events:none 不挡交互） */
+.team-workbench[data-workbench-skin="team"] .workbench-slot[data-slot="R"]::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    z-index: 5;
+    pointer-events: none;
+    background:
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 0 0 / var(--team-bracket-len) var(--team-bracket-w) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 0 0 / var(--team-bracket-w) var(--team-bracket-len) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 100% 0 / var(--team-bracket-len) var(--team-bracket-w) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 100% 0 / var(--team-bracket-w) var(--team-bracket-len) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 0 100% / var(--team-bracket-len) var(--team-bracket-w) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 0 100% / var(--team-bracket-w) var(--team-bracket-len) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 100% 100% / var(--team-bracket-len) var(--team-bracket-w) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 100% 100% / var(--team-bracket-w) var(--team-bracket-len) no-repeat;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SHARED：战队领域共用构件（类名前缀 team-）
+   空态 DOM 由 TeamShared.buildEmptyState 生成（.workbench-empty-state +
+   data-empty-kind），样式唯一来源是 states.css，本节不重复定义。
+   ═══════════════════════════════════════════════════════ */
+
+/* ── 实体卡（名册 / 目录卡片骨架）──
+   Phase I：pet 名册 3→4 列（minmax 180→132，1024 逻辑画布刚好 4 列不塌）；
+   K-A：merc 名册 / 雇佣网格改单栏宽行（覆盖见 K-A 节），pet 维持多列网格。
+   K-B-1：pet 名册回 3 列（.team-pet-grid 覆盖 minmax 132→172）——meta 文字行
+   退役后卡面变矮变宽，呼吸感回升；store 目录网格沿用 132 基线不动。
+   卡内行全部隐式 auto——body / 图标带 / 动作行自上而下堆叠，卡高随内容自适应 */
+.team-workbench .team-entity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: 6px;
+    padding: 8px;
+    align-content: start;
+}
+/* K-B-1 pet 名册 3 列：172min × 3 + 间隙刚好占满名册栏（1024 逻辑画布实测栏宽
+   ~566 → 卡面 ~184px）；4×172+18=706 > 栏宽保证不塌 4 列 */
+.team-workbench .team-pet-grid {
+    grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
+}
+.team-workbench .team-entity-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    /* 四行轨道：body / 装备带 / 技能带（1fr 吸收同行高差）/ 动作行（钉底）。
+       无技能带 / 无动作行的卡，空轨道塌 0——短卡不再把留白摊在动作行上方。
+       行距 0（空轨道不产生无效 gap），行间节奏由带/动作行自身 margin 承担 */
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 0 6px;
+    min-height: var(--workbench-owned-card-height, 68px);
+    padding: 6px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--wb-text);
+    background: var(--team-stone, var(--wb-surface));   /* 大理石石板卡面（token 配方见 SKIN 节） */
+    border: 1px solid var(--wb-line-soft);
+    border-radius: 6px;   /* 圆角矩形（对齐旧 pet-radius 拟物语言） */
+    cursor: pointer;
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
+        transform var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-entity-card:hover {
+    border-color: color-mix(in srgb, var(--wb-accent) 42%, var(--wb-line));
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--wb-bg) 62%, transparent);
+    transform: translateY(-2px);
+}
+/* Phase G2 满级金框：整卡暖金边框 + 微光（置于 hover 后 / data-state 前——
+   hover / selected / pending 等交互态投影仍优先，金框只在常态读出） */
+.team-workbench .team-entity-card[data-level-max="true"] {
+    border-color: color-mix(in srgb, var(--team-accent-warm) 78%, var(--wb-text));
+    box-shadow: 0 0 10px color-mix(in srgb, var(--team-accent-warm) 30%, transparent);
+}
+.team-workbench .team-entity-card[data-state="selected"] {
+    border-color: var(--wb-role-selected);
+    background: var(--team-stone, var(--wb-surface));
+    box-shadow: 0 0 0 1px var(--wb-role-selected),
+        0 0 14px color-mix(in srgb, var(--wb-accent) 28%, transparent);
+}
+.team-workbench .team-entity-card[data-state="pending"] {
+    border-color: var(--wb-role-pending);
+}
+.team-workbench .team-entity-card[data-state="blocked"] {
+    cursor: not-allowed;
+}
+/* blocked 只淡化图标；名称 / 原因文本保持正文对比度（§5.3） */
+.team-workbench .team-entity-card[data-state="blocked"] .team-entity-icon {
+    opacity: .45;
+}
+.team-workbench .team-entity-icon {
+    grid-row: 1;   /* Phase I：图标只占首行（图标带 / 动作行占后续行满宽），顶对齐 */
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    align-self: center;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--wb-bg) 72%, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-entity-icon img {
+    max-width: 42px;
+    max-height: 42px;
+}
+.team-workbench .team-entity-body {
+    min-width: 0;
+}
+.team-workbench .team-entity-name {
+    overflow: hidden;
+    color: var(--wb-text);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .team-entity-meta {
+    margin-top: 2px;
+    overflow: hidden;
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* H2-2 full 卡体力 + 经验双 meter：卡内改 6px 细条两行（决策面 / 培养页 8px 不变），
+   增量高度由卡内原有余量吸收（body ≤ 图标 50px，卡高 72px 与单 meter 基线持平，首屏行列不回退） */
+.team-workbench .team-entity-meters {
+    display: grid;
+    gap: 2px;
+    margin-top: 2px;
+}
+.team-workbench .team-entity-card .team-meter {
+    height: 6px;
+}
+/* I3 同族角标对：状态字牌（左上：出战中 / 阵亡 / 体力耗尽 / 候选 / 唯一）与
+   MAX 金角标（右上）同几何——inset 8px / padding 2px 5px / 圆角 3px / 1px 描边 /
+   700 9px Consolas，仅角色色区分（默认 energetic 实底 / info 青 / danger 红 /
+   max 金描边透底）。inset 8px 落在 L 角标框臂区之外（角标 inset 5px + 臂宽 2px
+   + 1px 净空：左上横臂 y∈[5,7]、纵臂 x∈[5,7]，角标左/上缘 8，双向净空），
+   满级出战卡两徽标成对同线不互挡 */
+.team-workbench .team-entity-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 1;
+    max-width: 60%;
+    padding: 2px 5px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--wb-bg);
+    background: var(--wb-accent);
+    border: 1px solid color-mix(in srgb, var(--team-accent-warm) 58%, var(--wb-line-soft));
+    border-radius: 3px;
+    font: 700 9px/1.3 "Consolas", "Microsoft YaHei", monospace;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .team-entity-badge[data-tone="info"] {
+    color: var(--wb-text);
+    background: var(--theta-kinetic);
+    border-color: color-mix(in srgb, var(--theta-kinetic) 58%, var(--wb-line-soft));
+}
+.team-workbench .team-entity-badge[data-tone="danger"] {
+    color: var(--wb-text);
+    background: var(--wb-semantic-danger);
+    border-color: color-mix(in srgb, var(--wb-semantic-danger) 58%, var(--wb-line-soft));
+}
+/* MAX 金角标（右上）：与状态字牌同族几何，仅金色系角色色 + 微光区分；
+   H2-1 起蓝底 MAX 字牌退役，与 compact 金框 / 金数字角标同源 */
+.team-workbench .team-entity-badge[data-badge-kind="max"] {
+    left: auto;
+    right: 8px;
+    color: color-mix(in srgb, var(--team-accent-warm) 82%, var(--wb-text));
+    background: color-mix(in srgb, var(--wb-bg) 74%, transparent);
+    border-color: color-mix(in srgb, var(--team-accent-warm) 58%, var(--wb-line-soft));
+    box-shadow: 0 0 6px color-mix(in srgb, var(--team-accent-warm) 22%, transparent);
+}
+/* Phase G2 等级角标（对齐物品格数量角标语言）：merc full 卡由 meta 行 / 内联 chip
+   承担等级，角标保持隐藏；K-B-1 起 pet full 卡 meta 行退役，角标转 full 唯一等级
+   出处（见下条 pet 专属规则）；compact 密度显示右下角纯数字角标 */
+.team-workbench .team-entity-lv-badge {
+    display: none;
+}
+/* K-B-1 pet full 卡等级数字角标：贴图标右下角（compact 同款位置语言）——图标框
+   48px + 卡 padding 6px → 图标右下角落点 padding-box (54,54)，角标右下缘 2px 内收；
+   几何 / 字号与 compact 角标同源（9px/700 badge 规格，走角标字号豁免）。
+   :not(compact) 守卫：compact 位置语言（卡右下）由既有 compact 规则承担不覆盖；
+   store / 候选卡不挂 lv 角标节点，本规则自然不命中 */
+.team-workbench .team-entity-grid:not(.team-grid-compact) .team-pet-card .team-entity-lv-badge {
+    position: absolute;
+    left: 52px;
+    top: 52px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    min-width: 14px;
+    padding: 1px 3px;
+    box-sizing: border-box;
+    color: var(--wb-text);
+    background: color-mix(in srgb, var(--wb-bg) 72%, transparent);
+    border: 1px solid var(--wb-line-soft);
+    font: 700 9px/1.2 "Consolas", "Microsoft YaHei", monospace;
+    pointer-events: none;
+    transform: translate(-100%, -100%);
+}
+/* K-B-1 pet full 满级：金数字角标与 MAX 金角标 / 金框同源（compact 金色同款配方） */
+.team-workbench .team-entity-grid:not(.team-grid-compact) .team-pet-card[data-level-max="true"] .team-entity-lv-badge {
+    color: color-mix(in srgb, var(--team-accent-warm) 72%, var(--wb-text));
+    border-color: color-mix(in srgb, var(--team-accent-warm) 55%, var(--wb-line-soft));
+}
+
+/* ── K-A 宽行卡图标带（merc 装备带 11 槽 + 技能带）：flex-wrap 带换行零横向溢出；
+   格尺寸卡作用域收成 20px 装备 / 18px 技能（detail / hire 预览 32px 规格不动），
+   角标 / 占位字同步收小；带块 .team-merc-row-bands 占宽行第 3 轨竖叠两带居中 ── */
+.team-workbench .team-entity-iconband {
+    grid-column: 1 / 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    margin-top: 2px;
+}
+.team-workbench .team-entity-iconband .merc-equip-cell {
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;   /* 20px 含描边：11 枚 + 间隙一行零换行 */
+}
+.team-workbench .team-entity-iconband .merc-skill-cell {
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;   /* 18px 含描边：13 枚技能一行零换行 */
+}
+.team-workbench .team-entity-iconband .merc-equip-badge,
+.team-workbench .team-entity-iconband .merc-skill-badge {
+    padding: 0 1px;
+}
+.team-workbench .team-entity-iconband .merc-equip-fallback,
+.team-workbench .team-entity-iconband .merc-skill-glyph {
+    font-size: 10px;
+}
+/* K-A 图标带块：宽行第 3 轨内装备带 + 技能带竖叠居中；带自身不再跨列 / 留 margin */
+.team-workbench .team-merc-row-bands {
+    display: grid;
+    gap: 3px;
+    align-content: center;
+    min-width: 0;
+}
+.team-workbench .team-merc-row-bands .team-entity-iconband {
+    grid-column: auto;
+    margin-top: 0;
+}
+
+/* ── K-A compact 迷你装备行（merc 专属）：与 full 带同构件（merc-equip-cell
+   收 15px + 强化等级角标保留 + scope rich tooltip），11 枚一行零溢卡；
+   技能不进 compact；full 密度整行隐藏 ── */
+.team-workbench .team-entity-ministrip {
+    display: none;
+}
+/* compact 下 full 卡图标带块（装备带 / 技能带）整体让位给迷你行——带块是卡级
+   兄弟节点（不在 body 内），必须显式隐藏，否则撑破 compact 宽行 */
+.team-workbench .team-grid-compact .team-entity-iconband,
+.team-workbench .team-grid-compact .team-merc-row-bands {
+    display: none;
+}
+.team-workbench .team-grid-compact .team-merc-card .team-entity-ministrip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    align-self: center;
+}
+.team-workbench .team-grid-compact .team-merc-rowcard .team-entity-ministrip .merc-equip-cell {
+    width: 15px;
+    height: 15px;
+    box-sizing: border-box;   /* 15px 含描边：11 枚 + 间隙一行零换行 */
+}
+.team-workbench .team-grid-compact .team-merc-rowcard .team-entity-ministrip .merc-equip-badge {
+    padding: 0 1px;
+}
+.team-workbench .team-grid-compact .team-merc-rowcard .team-entity-ministrip .merc-equip-fallback {
+    font-size: 10px;
+}
+
+/* ── I2 卡内直操动作行（full 密度底部满宽；compact 隐藏保持纯检视，
+   store / hire 候选卡不挂载）。石牌材质与 data-tone 角色色由 SHARED 体系供给 ── */
+.team-workbench .team-entity-actions {
+    grid-column: 1 / 3;
+    grid-row: 4;   /* 钉底：技能带轨道（1fr）吸收高差，动作行跨卡对齐同一底线 */
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+.team-workbench .team-entity-actions .team-action-btn {
+    flex: 1 1 auto;   /* basis=auto 按内容分配（恢复·1000金 宽钮 / 出战 窄钮），
+                         min-width:auto 兜底 min-content——窄卡也不裁字 */
+    min-height: 24px;
+    padding: 2px 4px;
+    font-size: 10px;
+    white-space: nowrap;   /* 「恢复·1000金」花费文案一行读完，不折行 */
+}
+.team-workbench .team-grid-compact .team-entity-actions {
+    display: none;
+}
+
+/* ── L 角标框（最强拟物签名，对齐旧 .pet-card-frame）：独立 span + 8 层 linear-gradient
+   画 4 个直角；常态 42% / hover 85% / 选中亮实色三档经 --team-bracket-c 切换；
+   独立 DOM span 避免与卡面大理石层串味，pointer-events:none 不挡点击 ── */
+.team-workbench .team-card-frame {
+    position: absolute;
+    inset: 5px;
+    z-index: 2;
+    pointer-events: none;
+    background:
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 0 0 / var(--team-bracket-len) var(--team-bracket-w) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 0 0 / var(--team-bracket-w) var(--team-bracket-len) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 100% 0 / var(--team-bracket-len) var(--team-bracket-w) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 100% 0 / var(--team-bracket-w) var(--team-bracket-len) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 0 100% / var(--team-bracket-len) var(--team-bracket-w) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 0 100% / var(--team-bracket-w) var(--team-bracket-len) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 100% 100% / var(--team-bracket-len) var(--team-bracket-w) no-repeat,
+        linear-gradient(var(--team-bracket-c), var(--team-bracket-c)) 100% 100% / var(--team-bracket-w) var(--team-bracket-len) no-repeat;
+}
+.team-workbench .team-entity-card:hover .team-card-frame {
+    --team-bracket-c: var(--team-bracket-c-hover);
+}
+.team-workbench .team-entity-card[data-state="selected"] .team-card-frame {
+    --team-bracket-c: var(--team-bracket-c-selected);
+}
+
+/* compact 密度变体：图标 + 角标为主，语义正文隐藏（由共享 tooltip 等价提供） */
+.team-workbench .team-grid-compact.team-entity-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--workbench-compact-gap, 4px);
+    padding: 6px;
+    justify-content: start;
+    align-content: start;
+}
+.team-workbench .team-grid-compact .team-entity-card {
+    display: grid;
+    place-items: center;
+    grid-template-columns: none;
+    grid-template-rows: none;
+    width: var(--workbench-compact-tile-size, 48px);
+    min-width: var(--workbench-compact-tile-size, 48px);
+    height: var(--workbench-compact-tile-size, 48px);
+    min-height: var(--workbench-compact-tile-size, 48px);
+    padding: 2px;
+    gap: 0;
+}
+.team-workbench .team-grid-compact .team-entity-card .team-entity-body {
+    display: none;
+}
+.team-workbench .team-grid-compact .team-entity-card .team-entity-icon {
+    grid-row: auto;
+    width: var(--workbench-compact-icon-size, 40px);
+    height: var(--workbench-compact-icon-size, 40px);
+    background: transparent;
+    border: 0;
+}
+.team-workbench .team-grid-compact .team-entity-card .team-entity-icon img {
+    max-width: 100%;
+    max-height: 100%;
+}
+/* compact 密度下角标框保留：内缩 + 臂长减半（48px 小格可读） */
+.team-workbench .team-grid-compact .team-entity-card .team-card-frame {
+    inset: 2px;
+    --team-bracket-len: 7px;
+}
+/* Phase G2 compact 等级角标：右下角纯数字（9px badge 规格，选择器含 badge 走角标字号豁免） */
+.team-workbench .team-grid-compact .team-entity-lv-badge {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    min-width: 14px;
+    padding: 1px 3px;
+    box-sizing: border-box;
+    color: var(--wb-text);
+    background: color-mix(in srgb, var(--wb-bg) 72%, transparent);
+    border: 1px solid var(--wb-line-soft);
+    font: 700 9px/1.2 "Consolas", "Microsoft YaHei", monospace;
+    pointer-events: none;
+}
+/* Phase G2 compact 满级：蓝底 MAX 字牌让位给整卡金框，数字角标同色金 */
+.team-workbench .team-grid-compact .team-entity-badge[data-badge-kind="max"] {
+    display: none;
+}
+.team-workbench .team-grid-compact .team-entity-card[data-level-max="true"] .team-entity-lv-badge {
+    color: color-mix(in srgb, var(--team-accent-warm) 72%, var(--wb-text));
+    border-color: color-mix(in srgb, var(--team-accent-warm) 55%, var(--wb-line-soft));
+}
+/* I3 compact 状态字牌：随 full 左上位（同族对齐），inset 5px 避开 compact 角标框
+   臂区（inset 2px + 臂宽 2px + 1px 净空），字号 / 字重与 full 徽标同为 9px/700 */
+.team-workbench .team-grid-compact .team-entity-badge {
+    top: 5px;
+    left: 5px;
+    padding: 1px 3px;
+}
+/* K-A compact 宽行（merc 名册 / 雇佣同骨架）：单栏 [头像 30][名称/等级][迷你
+   装备行 15px][右侧区（roster 空 / hire 价格牌）]；密度 class 与网格同元素
+   （GridDensityController 挂在网格上），网格选择器必须复写不带后代空格 */
+.team-workbench .team-grid-compact.team-merc-grid,
+.team-workbench .team-grid-compact.team-merc-hire-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 6px;
+    justify-content: stretch;
+    align-content: start;
+}
+.team-workbench .team-grid-compact .team-merc-rowcard {
+    grid-template-columns: 30px minmax(96px, auto) minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    place-items: normal;
+    gap: 0 8px;
+    width: auto;
+    min-width: 0;
+    height: auto;
+    min-height: 38px;
+    padding: 3px 6px;
+}
+.team-workbench .team-grid-compact .team-merc-rowcard .team-entity-icon {
+    grid-row: auto;
+    width: 30px;
+    height: 30px;
+    background: color-mix(in srgb, var(--wb-bg) 72%, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-grid-compact .team-merc-rowcard .team-entity-body {
+    display: block;
+    align-self: center;
+    min-width: 0;
+}
+.team-workbench .team-grid-compact .team-merc-rowcard .team-card-frame {
+    inset: 3px;
+    --team-bracket-len: 9px;
+}
+/* compact 等级数字角标贴头像右下角（宽行右端是价格牌 / 空轨，不再钉卡片右下） */
+.team-workbench .team-grid-compact .team-merc-rowcard .team-entity-lv-badge {
+    right: auto;
+    left: 26px;
+    bottom: 2px;
+}
+
+/* ── 领养空位卡（旧 .pet-slot-empty 复原 + Phase F 透化）：veil 36% 让 L 槽垫图透过
+   名册呼吸，与实体卡 opaque 石料形成虚实对比；虚线橙边 + 中央 ＋ 号 + 空位标签，
+   真 button，点击 → 领养目录；compact 密度仅留 ＋ 号 ── */
+.team-workbench .team-slot-empty {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: var(--workbench-owned-card-height, 68px);
+    padding: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--wb-muted);
+    background: color-mix(in srgb, var(--team-warm-2) 36%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--wb-accent) 32%, var(--wb-line-soft));
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 10px;
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard),
+        transform var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-slot-empty:hover {
+    color: var(--wb-accent);
+    background-color: color-mix(in srgb, var(--team-warm-3) 52%, transparent);
+    border-color: var(--wb-accent);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--wb-bg) 62%, transparent);
+    transform: translateY(-2px);
+}
+.team-workbench .team-slot-plus {
+    color: color-mix(in srgb, var(--wb-accent) 58%, var(--wb-muted));
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-slot-empty:hover .team-slot-plus {
+    color: var(--wb-accent);
+}
+.team-workbench .team-slot-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+/* compact 变体：与实体小格同几何，仅留 ＋ 号 */
+.team-workbench .team-grid-compact .team-slot-empty {
+    width: var(--workbench-compact-tile-size, 48px);
+    min-width: var(--workbench-compact-tile-size, 48px);
+    height: var(--workbench-compact-tile-size, 48px);
+    min-height: var(--workbench-compact-tile-size, 48px);
+    padding: 2px;
+    gap: 0;
+}
+.team-workbench .team-grid-compact .team-slot-empty .team-slot-label {
+    display: none;
+}
+
+/* ── 排序 / 筛选下拉（TeamShared.createDropdown 的 DOM 结构）── */
+.team-workbench .team-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.team-workbench .team-dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 26px;
+    padding: 3px 8px;
+    box-sizing: border-box;
+    color: var(--wb-text);
+    background: var(--wb-surface-2);
+    border: 1px solid var(--wb-line-soft);
+    font-size: 11px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-dropdown-trigger:hover,
+.team-workbench .team-dropdown-open .team-dropdown-trigger {
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-dropdown-caret {
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1;
+}
+.team-workbench .team-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    z-index: 20;
+    min-width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface-2));   /* 深石底菜单（对齐旧战术下拉） */
+    border: 1px solid var(--wb-line);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--wb-bg) 78%, transparent);
+}
+.team-workbench .team-dropdown-option {
+    display: block;
+    width: 100%;
+    padding: 5px 8px;
+    box-sizing: border-box;
+    color: var(--wb-text);
+    background: transparent;
+    border: 0;
+    font-size: 11px;
+    line-height: 1.3;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-dropdown-option:hover {
+    background: color-mix(in srgb, var(--wb-accent) 10%, var(--wb-surface-2));
+}
+.team-workbench .team-dropdown-option[aria-selected="true"] {
+    color: var(--wb-accent);
+}
+
+/* ── 仪表（体力 / 经验进度条：track + fill + data-tone）── */
+.team-workbench .team-meter {
+    position: relative;
+    height: 8px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--wb-bg) 78%, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+/* 分段刻度（对齐旧 .pet-bar::after 拟物条）：fill 保持 scaleX 投影数值，
+   track 上叠等距暗缝切成离散节段；pointer-events:none，纯视觉 */
+.team-workbench .team-meter::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: repeating-linear-gradient(90deg,
+        transparent 0, transparent 8px,
+        color-mix(in srgb, var(--wb-bg) 55%, transparent) 8px,
+        color-mix(in srgb, var(--wb-bg) 55%, transparent) 10px);
+}
+.team-workbench .team-meter-fill {
+    width: 100%;
+    height: 100%;
+    background: var(--wb-accent);
+    transform: scaleX(var(--team-meter-fill, 0));
+    transform-origin: left center;
+    transition: transform var(--wb-motion-standard) var(--wb-ease-standard);
+}
+/* 体力 = 绿方块段（旧 #347d2a→#5cba47 渐变的 token 等价） */
+.team-workbench .team-meter[data-tone="stamina"] .team-meter-fill {
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--wb-semantic-success) 52%, var(--wb-bg)),
+        var(--wb-semantic-success));
+}
+/* 经验 = 青方块段（旧 #1d7d8a→#3fb6c8；--theta-signal 向 --dls-crystal 调亮） */
+.team-workbench .team-meter[data-tone="xp"] .team-meter-fill {
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--theta-signal) 55%, var(--wb-bg)),
+        color-mix(in srgb, var(--theta-signal) 72%, var(--dls-crystal)));
+}
+/* 满级经验 = 紫方块段（旧 --pet-xp-max #c07bff；--dls-memetic 调亮） */
+.team-workbench .team-meter[data-tone="max"] .team-meter-fill {
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--dls-memetic) 55%, var(--wb-bg)),
+        color-mix(in srgb, var(--dls-memetic) 78%, var(--wb-text)));
+}
+.team-workbench .team-meter[data-tone="low"] .team-meter-fill {
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--wb-semantic-warning) 55%, var(--wb-bg)),
+        var(--wb-semantic-warning));
+}
+.team-workbench .team-meter[data-tone="depleted"] .team-meter-fill {
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--wb-semantic-danger) 52%, var(--wb-bg)),
+        var(--wb-semantic-danger));
+}
+
+/* ── 右栏决策面骨架（标题行 / chip 行 / 动作行）── */
+.team-workbench .team-detail-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+.team-workbench .team-detail-title {
+    overflow: hidden;
+    color: var(--wb-text);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    /* Phase G5 长名容忍：R 决策面是完整显示区，去掉 nowrap/ellipsis——
+       允许换行（break-all 兜长串拉丁/符号 ID），两行内自由排版，超两行才 clamp；
+       L 网格卡名（.team-entity-name）保持单行 ellipsis 不动 */
+    white-space: normal;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.team-workbench .team-detail-subtitle {
+    color: var(--wb-muted);
+    font-size: 10px;
+    white-space: nowrap;
+}
+.team-workbench .team-detail-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;   /* Phase F 排版收紧：标题行→chip 行 6→4 */
+}
+.team-workbench .team-detail-chip {
+    padding: 2px 6px;
+    color: var(--wb-muted);
+    background: color-mix(in srgb, var(--wb-accent) 8%, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+    font-size: 9px;
+    line-height: 1.3;
+}
+.team-workbench .team-detail-action-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;   /* Phase F 排版收紧：chip 行→动作行 10→8 */
+}
+
+/* ── 浅大理石石牌按钮体系（对齐旧 .pet-marble-btn 交互语汇：浅石牌 + 深墨字）──
+   .team-btn-placard = 材质配方类；右栏动作行（.team-action-btn）、PaneChrome 入口钮
+   （.team-pane-btn：＋领养/＋雇佣/扩容/返回/重试）、进阶钮（.team-promo-btn）、
+   CommitBar 主钮（.workbench-commit-primary）全部接入；各按钮自身的 min-height /
+   padding / font-size 布局声明保持原样（见 PET / MERC 节），此处只负责材质与色。
+   Phase G4 对比度重做：文字统一深墨（--team-ink，浅大理石底对比拉满），
+   角色色移到结构装饰——::before 左侧 3px 竖条（实色语义色），hover 竖条加宽。
+   K-B-3 温玉浮雕（第三轮重做）：牌面 hi 88% / lo 76% 暖玉白渐变（配方见
+   --team-placard-hi/lo），内阴影浮雕（顶 1px 亮边 / 底 1px 暗边）+ 1px 暖灰
+   描边（energetic 10% 染暖）+ 极轻外投影，边角 4px——从「平白亮牌」转向「温玉浮雕」 */
+.team-workbench .team-btn-placard,
+.team-workbench .team-action-btn,
+.team-workbench .team-pane-btn,
+.team-workbench .team-promo-btn,
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary {
+    position: relative;
+    color: var(--team-ink, var(--wb-text));
+    background: var(--team-marble-btn, var(--wb-surface-2));
+    border: 1px solid color-mix(in srgb, var(--dls-energetic) 10%,
+        color-mix(in srgb, var(--wb-bg) 58%, var(--wb-line-soft)));
+    border-radius: 4px;
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--wb-text) 62%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--wb-bg) 42%, transparent),
+        0 1px 3px color-mix(in srgb, var(--wb-bg) 34%, transparent);
+    text-shadow: 0 1px 0 color-mix(in srgb, var(--wb-text) 45%, transparent);
+    /* H2-3 浅石牌文字增强：深墨 + 角色色竖条结构不变，常规字重 400 在浅石牌上偏细弱，
+       字重提 600 + 微字距；CommitBar 主 CTA 再重一档（700） */
+    font-weight: 600;
+    letter-spacing: .02em;
+    /* hover 提亮走 box-shadow 过渡（action/pane/promo 自带等价 transition 清单），
+       commit-primary 无自带清单由本规则兜底——禁突变 */
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary {
+    font-weight: 700;
+}
+/* hover：整体明度 +~5%（999px 内亮纱可过渡）+ 描边加深 + 外投影略强，浮雕边保留
+   （不换深底染色，对齐旧石牌交互；竖条加宽由 ::before hover 规则承担） */
+.team-workbench .team-btn-placard:hover:not(:disabled):not([aria-disabled="true"]),
+.team-workbench .team-action-btn:hover:not(:disabled):not([aria-disabled="true"]),
+.team-workbench .team-pane-btn:hover:not(:disabled):not([aria-disabled="true"]),
+.team-workbench .team-promo-btn:hover:not(:disabled):not([aria-disabled="true"]),
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--dls-energetic) 14%,
+        color-mix(in srgb, var(--wb-bg) 74%, var(--wb-line-soft)));
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--wb-text) 66%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--wb-bg) 44%, transparent),
+        inset 0 0 0 999px color-mix(in srgb, var(--wb-text) 5%, transparent),
+        0 2px 6px color-mix(in srgb, var(--wb-bg) 36%, transparent);
+}
+/* K-B-3 深底变体：垫图 / 深色直接背景上的石牌（培养页 header 动作区、卡内直操行），
+   描边与外投影略加强保证轮廓（材质 / 浮雕几何不变，只加轮廓权重） */
+.team-workbench .team-advance-actions .team-action-btn,
+.team-workbench .team-entity-actions .team-action-btn {
+    border-color: color-mix(in srgb, var(--dls-energetic) 12%,
+        color-mix(in srgb, var(--wb-bg) 70%, var(--wb-line-soft)));
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--wb-text) 62%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--wb-bg) 42%, transparent),
+        0 1px 3px color-mix(in srgb, var(--wb-bg) 46%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--wb-bg) 26%, transparent);
+}
+/* 深底变体 hover：明度纱与浮雕边同体系 hover，轮廓环保留不闪断 */
+.team-workbench .team-advance-actions .team-action-btn:hover:not(:disabled):not([aria-disabled="true"]),
+.team-workbench .team-entity-actions .team-action-btn:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--wb-text) 66%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--wb-bg) 44%, transparent),
+        inset 0 0 0 999px color-mix(in srgb, var(--wb-text) 5%, transparent),
+        0 2px 6px color-mix(in srgb, var(--wb-bg) 42%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--wb-bg) 30%, transparent);
+}
+/* 禁用 / 阻断：灰石牌 + 墨灰字（旧灰石牌 #b7b8bb→#a7a8ac 的 token 等价） */
+.team-workbench .team-btn-placard:disabled,
+.team-workbench .team-btn-placard[aria-disabled="true"],
+.team-workbench .team-action-btn:disabled,
+.team-workbench .team-action-btn[aria-disabled="true"],
+.team-workbench .team-pane-btn:disabled,
+.team-workbench .team-promo-btn:disabled,
+.team-workbench .team-promo-btn[aria-disabled="true"],
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary:disabled {
+    color: var(--team-ink-dim, var(--wb-muted));
+    background: linear-gradient(180deg,
+        color-mix(in srgb, var(--wb-text) 66%, var(--wb-bg)),
+        color-mix(in srgb, var(--wb-text) 58%, var(--wb-bg)));
+    border-color: color-mix(in srgb, var(--wb-bg) 30%, var(--wb-line-soft));
+    text-shadow: none;
+    cursor: not-allowed;
+}
+/* Phase G4 data-tone 角色色竖条：文字不再染色（统一深墨），语义色移到 ::before 左侧
+   3px 实色竖条（deploy=success / restore=info / danger=danger / primary=energetic）——
+   色觉差异 + 文字双重编码保留，文字本身对比度拉满 */
+.team-workbench .team-btn-placard[data-tone]::before,
+.team-workbench .team-action-btn[data-tone]::before,
+.team-workbench .team-pane-btn[data-tone]::before,
+.team-workbench .team-promo-btn[data-tone]::before,
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone]::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    pointer-events: none;
+    transition: width var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-btn-placard[data-tone="deploy"]::before,
+.team-workbench .team-action-btn[data-tone="deploy"]::before,
+.team-workbench .team-pane-btn[data-tone="deploy"]::before,
+.team-workbench .team-promo-btn[data-tone="deploy"]::before,
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone="deploy"]::before {
+    background: var(--wb-semantic-success);
+}
+.team-workbench .team-btn-placard[data-tone="restore"]::before,
+.team-workbench .team-action-btn[data-tone="restore"]::before,
+.team-workbench .team-pane-btn[data-tone="restore"]::before,
+.team-workbench .team-promo-btn[data-tone="restore"]::before,
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone="restore"]::before {
+    background: var(--wb-semantic-info);
+}
+.team-workbench .team-btn-placard[data-tone="danger"]::before,
+.team-workbench .team-action-btn[data-tone="danger"]::before,
+.team-workbench .team-pane-btn[data-tone="danger"]::before,
+.team-workbench .team-promo-btn[data-tone="danger"]::before,
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone="danger"]::before {
+    background: var(--wb-semantic-danger);
+}
+.team-workbench .team-btn-placard[data-tone="primary"]::before,
+.team-workbench .team-action-btn[data-tone="primary"]::before,
+.team-workbench .team-pane-btn[data-tone="primary"]::before,
+.team-workbench .team-promo-btn[data-tone="primary"]::before,
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone="primary"]::before {
+    background: var(--dls-energetic);
+}
+/* hover：竖条加宽（牌面提亮 / 描边加深由体系 hover 规则承担） */
+.team-workbench .team-btn-placard[data-tone]:hover:not(:disabled):not([aria-disabled="true"])::before,
+.team-workbench .team-action-btn[data-tone]:hover:not(:disabled):not([aria-disabled="true"])::before,
+.team-workbench .team-pane-btn[data-tone]:hover:not(:disabled):not([aria-disabled="true"])::before,
+.team-workbench .team-promo-btn[data-tone]:hover:not(:disabled):not([aria-disabled="true"])::before,
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone]:hover:not(:disabled)::before {
+    width: 5px;
+}
+/* 禁用 / 阻断：灰牌 + 墨淡字之外，竖条同步灰化（语义色不再可读为可用态） */
+.team-workbench .team-btn-placard[data-tone]:disabled::before,
+.team-workbench .team-btn-placard[data-tone][aria-disabled="true"]::before,
+.team-workbench .team-action-btn[data-tone]:disabled::before,
+.team-workbench .team-action-btn[data-tone][aria-disabled="true"]::before,
+.team-workbench .team-pane-btn[data-tone]:disabled::before,
+.team-workbench .team-pane-btn[data-tone][aria-disabled="true"]::before,
+.team-workbench .team-promo-btn[data-tone]:disabled::before,
+.team-workbench .team-promo-btn[data-tone][aria-disabled="true"]::before,
+.team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone]:disabled::before {
+    background: color-mix(in srgb, var(--wb-muted) 42%, transparent);
+}
+
+/* ── 左栏 PaneChrome（Phase F 单行控件条 + G1 壳级 marker opt-out：pane 内不再
+   重复大标题；排序/筛选/入口钮一行排开，store/hire 页头把返回钮与 tabs/chips 并条）── */
+.team-workbench .team-pane-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border-bottom: 1px solid var(--wb-line);
+}
+.team-workbench .team-pane-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+/* store/hire 页头并条：tabs / chips 嵌进 pane-header 后剥掉自身的条级底与边线 */
+.team-workbench .team-pane-header .team-store-tabs,
+.team-workbench .team-pane-header .team-merc-hire-chips {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+    border-bottom: 0;
+}
+
+/* ── 滚动面（共享窄轨 scrollbar + 移除系统箭头按钮）── */
+.team-workbench .team-scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+    scrollbar-gutter: stable;
+}
+.team-workbench .team-scroll::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+.team-workbench .team-scroll::-webkit-scrollbar-track {
+    background: var(--wb-scrollbar-track);
+}
+.team-workbench .team-scroll::-webkit-scrollbar-thumb {
+    background: var(--wb-scrollbar-thumb);
+    border: 1px solid var(--wb-scrollbar-thumb-border);
+}
+.team-workbench .team-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--wb-scrollbar-thumb-hover);
+}
+.team-workbench .team-scroll::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+}
+.team-workbench .team-scroll::-webkit-scrollbar-corner {
+    background: var(--wb-scrollbar-track);
+}
+
+/* ── 头像 / 纸娃娃框 ── */
+.team-workbench .team-portrait {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--wb-bg) 70%, var(--wb-surface));
+    border: 1px solid color-mix(in srgb, var(--wb-accent) 45%, var(--wb-line));   /* 旧选中栏头像的橙框微光 */
+    box-shadow: 0 0 10px color-mix(in srgb, var(--wb-accent) 20%, transparent);
+}
+.team-workbench .team-portrait img,
+.team-workbench .team-portrait canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* ── 按钮 pending 投影（TeamShared.setPending 的统一 class；脉冲复用 shared keyframes）── */
+.team-workbench .team-is-pending {
+    cursor: progress;
+    animation: wb-pulse-busy var(--wb-motion-busy) var(--wb-ease-standard) infinite;
+}
+
+/* ── H2-5 居中式空态：DOM 仍由 TeamShared.buildEmptyState 生成（statement + nextStep 语义
+   结构不变），本节只负责版式——垂直 + 水平居中于所在栏。装饰标记为 CSS 绘制的琥珀菱形
+   （旋转方块，零图片）；error / filtered 换角色色描边；states.css 的「·」glyph 在 team 域退役 ── */
+.team-workbench .workbench-empty-state {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    padding: 18px 16px;
+    text-align: center;
+}
+/* 滚动列 / 决策面独占空态：撑满可视高度居中（R 未选中、store/hire 预览未选中） */
+.team-workbench .team-scroll > .workbench-empty-state:only-child {
+    min-height: 100%;
+}
+/* 网格空态：独占整行并在名册栏可视区内居中（roster 空 / store 空分类 / hire 空池 / filtered） */
+.team-workbench .team-entity-grid:has(> .workbench-empty-state) {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 100%;
+    align-content: center;
+    box-sizing: border-box;
+}
+.team-workbench .team-entity-grid > .workbench-empty-state {
+    width: 100%;
+    /* 网格空态位于 L 槽垫图之上：内容背后垫一团软边椭圆暗纱（暖阶 token，无硬边色块），
+       配合文字晕影保证跨图可读；R 决策面是不透明底，不需要 */
+    background: radial-gradient(56% 130% at 50% 50%,
+        color-mix(in srgb, var(--team-warm-1) 82%, transparent),
+        color-mix(in srgb, var(--team-warm-1) 40%, transparent) 58%,
+        transparent);
+}
+/* 网格空态位于 L 槽垫图之上：文字加深色晕影保证跨图可读（R 决策面是不透明底，不需要） */
+.team-workbench .team-entity-grid > .workbench-empty-state .workbench-empty-statement,
+.team-workbench .team-entity-grid > .workbench-empty-state .workbench-empty-next-step {
+    text-shadow: 0 1px 3px color-mix(in srgb, var(--wb-bg) 85%, transparent),
+        0 0 8px color-mix(in srgb, var(--wb-bg) 65%, transparent);
+}
+.team-workbench .team-entity-grid > .workbench-empty-state .workbench-empty-next-step {
+    color: color-mix(in srgb, var(--wb-text) 62%, var(--wb-muted));
+}
+.team-workbench .workbench-empty-state::before {
+    content: '';
+    width: 13px;
+    height: 13px;
+    border: 2px solid color-mix(in srgb, var(--wb-accent) 62%, var(--wb-line-soft));
+    box-shadow: 0 0 10px color-mix(in srgb, var(--wb-accent) 24%, transparent);
+    transform: rotate(45deg);
+}
+.team-workbench .workbench-empty-state[data-empty-kind="error"]::before {
+    border-color: color-mix(in srgb, var(--wb-role-reject) 70%, var(--wb-line-soft));
+    box-shadow: none;
+}
+.team-workbench .workbench-empty-state[data-empty-kind="filtered"]::before {
+    border-color: color-mix(in srgb, var(--wb-role-pending) 70%, var(--wb-line-soft));
+    box-shadow: none;
+}
+.team-workbench .workbench-empty-statement {
+    color: var(--wb-text);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.team-workbench .workbench-empty-next-step {
+    margin: 0;
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+/* === PET（Phase B 追加） === */
+/* 伙伴 / 战宠 / 机械三 tab 统一视图：roster 名册 / store 领养 / advance 培养页。
+   只消费 token 与 color-mix；不写 outline、不覆盖壳级 grid-template、不新增 keyframes。 */
+
+/* ── 视图骨架：pane-header 固定 + 滚动区弹性 ── */
+.team-workbench .team-pet-view {
+    display: flex;
+    flex-direction: column;
+}
+.team-workbench .team-pet-view > .team-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.team-workbench .team-pet-detail,
+.team-workbench .team-store-preview {
+    padding: 10px;
+    background: transparent;   /* Phase F：决策面透化，R 槽程序式名册纹理作底；区块卡仍走 stone-soft */
+}
+
+/* ── pane 工具按钮（领养入口 / 扩容 / 返回名册 / 空态重试）──
+   材质由 SHARED 石牌体系统一供给，此处只保留布局与节奏 */
+.team-workbench .team-pane-btn {
+    min-height: 26px;
+    padding: 3px 10px;
+    box-sizing: border-box;
+    font-size: 11px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-empty-retry {
+    margin-top: 8px;
+}
+
+/* ── 加载骨架（脉冲复用 shared wb-pulse-busy）── */
+.team-workbench .team-skel-card {
+    min-height: 68px;
+    background: color-mix(in srgb, var(--wb-surface) 82%, var(--wb-bg));
+    border: 1px solid var(--wb-line-soft);
+    animation: wb-pulse-busy var(--wb-motion-busy) var(--wb-ease-standard) infinite;
+}
+
+/* ── 世界内招募候选卡：accent 描边标识置顶 ── */
+.team-workbench .team-pet-card-candidate {
+    border-color: color-mix(in srgb, var(--wb-accent) 45%, var(--wb-line-soft));
+}
+
+/* ── 右栏决策面 ── */
+.team-workbench .team-detail-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.team-workbench .team-detail-head-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.team-workbench .team-detail-meters {
+    display: grid;
+    gap: 6px;
+    margin-top: 8px;   /* Phase F 排版收紧：10→8 */
+}
+.team-workbench .team-meter-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 64px;
+    align-items: center;
+    gap: 6px;
+}
+.team-workbench .team-meter-label {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-meter-val {
+    color: var(--wb-text);
+    font: 10px "Consolas", monospace;
+    text-align: right;
+}
+.team-workbench .team-chip-deployed {
+    color: var(--wb-accent);
+    border-color: color-mix(in srgb, var(--wb-accent) 45%, var(--wb-line-soft));
+}
+.team-workbench .team-chip-danger {
+    color: var(--wb-semantic-danger);
+    border-color: color-mix(in srgb, var(--wb-semantic-danger) 45%, var(--wb-line-soft));
+}
+.team-workbench .team-combat-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 8px;   /* Phase F 排版收紧：12→8 */
+    padding: 8px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-combat-cell {
+    display: grid;
+    gap: 2px;
+    text-align: center;
+}
+.team-workbench .team-combat-label {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-combat-value {
+    color: var(--wb-text);
+    font: 11px "Consolas", monospace;
+}
+
+/* ── 动作按钮（直接动作：pending 走 TeamShared.setPending；blocked 可读原因）──
+   材质与 data-tone 角色色由 SHARED 石牌体系供给，此处只保留布局与节奏 */
+.team-workbench .team-action-btn {
+    min-height: 32px;
+    padding: 5px 12px;
+    box-sizing: border-box;
+    font-size: 11px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-action-btn[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+.team-workbench .team-cand-price {
+    margin-top: 8px;   /* Phase F 排版收紧：10→8 */
+    color: var(--wb-accent);
+    font-size: 11px;
+}
+.team-workbench .team-cand-note {
+    margin-top: 8px;   /* Phase F 排版收紧：10→8 */
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+/* ── 快捷进阶开关（binary / cycle 小药丸）── */
+.team-workbench .team-quick-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;   /* Phase F 排版收紧：12→8 */
+}
+.team-workbench .team-qadv {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    padding: 3px 8px;
+    box-sizing: border-box;
+    color: var(--wb-text);
+    background: var(--team-stone-soft, var(--wb-surface-2));
+    border: 1px solid var(--wb-line-soft);
+    font-size: 11px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-qadv:hover {
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-qadv-switch {
+    position: relative;
+    width: 22px;
+    height: 12px;
+    box-sizing: border-box;
+    background: color-mix(in srgb, var(--wb-bg) 70%, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-qadv-switch::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 8px;
+    height: 8px;
+    background: var(--wb-muted);
+}
+.team-workbench .team-qadv-on {
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-qadv-on .team-qadv-switch {
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-qadv-on .team-qadv-switch::after {
+    left: 11px;
+    background: var(--wb-accent);
+}
+.team-workbench .team-qadv-value {
+    color: var(--wb-accent);
+    font-size: 10px;
+}
+.team-workbench .team-qadv-empty {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+
+/* ── store：分类 tabs ── */
+.team-workbench .team-store-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border-bottom: 1px solid var(--wb-line);
+}
+.team-workbench .team-store-tab {
+    min-height: 26px;
+    padding: 3px 10px;
+    box-sizing: border-box;
+    color: var(--wb-muted);
+    background: transparent;
+    border: 1px solid var(--wb-line-soft);
+    font-size: 11px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-store-tab:hover {
+    color: var(--wb-text);
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-store-tab-active {
+    color: var(--wb-accent);
+    background: color-mix(in srgb, var(--wb-accent) 10%, var(--wb-surface));
+    border-color: var(--wb-accent);
+    /* 旧商店 tab 签名：激活 = 橙字 + 底部 2px 橙条 */
+    box-shadow: inset 0 -2px 0 var(--wb-accent);
+}
+
+/* ── store：右栏预览 + CommitBar 固定底部 ── */
+.team-workbench .team-store-decision {
+    display: flex;
+    flex-direction: column;
+}
+.team-workbench .team-store-decision .team-store-preview {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.team-workbench .team-store-decision .workbench-commit-bar {
+    flex: 0 0 auto;
+}
+.team-workbench .team-store-req {
+    margin-top: 8px;
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+
+/* ── advance 培养页（SecondaryPage 内部布局）── */
+.team-workbench .team-advance {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.team-workbench .team-advance-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border-bottom: 1px solid var(--wb-line);
+}
+.team-workbench .team-advance-title {
+    overflow: hidden;
+    color: var(--wb-text);
+    font-size: 15px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .team-advance-chips {
+    margin-top: 0;
+}
+.team-workbench .team-advance-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+.team-workbench .team-advance-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 10px 12px;
+    box-sizing: border-box;
+}
+/* ── H1 战宠培养页：两栏（左 属性/战斗属性 ~40% / 右 进阶方案滚动列 ~60%）── */
+.team-workbench .team-pet-advance-body {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 12px;
+    overflow: hidden;
+}
+.team-workbench .team-pet-advance-left,
+.team-workbench .team-pet-advance-right {
+    min-width: 0;
+    min-height: 0;
+}
+/* J2：右栏进阶方案区整体卡化——section 撑满列高（少方案不再「半张卡挂天上」） */
+.team-workbench .team-pet-advance-right {
+    display: flex;
+    flex-direction: column;
+}
+.team-workbench .team-pet-advance-right .team-promo-section {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    margin-bottom: 0;
+}
+.team-workbench .team-promo-section .team-promos {
+    flex: 0 0 auto;
+}
+/* 0 方案：居中版空态（H2-5 同版式）撑满 section */
+.team-workbench .team-promo-section .workbench-empty-state {
+    flex: 1 1 auto;
+}
+/* 少方案（1~2 张）：列表下一行克制中性提示（纯文案零协议）。
+   不锚 section 底缘——该页底缘处于壳级慢性裁切区（同 J1 底排被裁根因），锚底会隐形 */
+.team-workbench .team-promos-more {
+    margin-top: 8px;
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1.5;
+    text-align: center;
+}
+/* 窄栏紧凑排布：战斗属性条带改单列，Lv.1 / 满级标注改上下两行小字 */
+.team-workbench .team-pet-advance-left .team-stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+.team-workbench .team-pet-advance-left .team-growth-ends {
+    flex-direction: column;
+    gap: 1px;
+}
+.team-workbench .team-advance-section {
+    margin-bottom: 10px;   /* Phase F 排版收紧：section 间距 14→10 */
+    /* 培养页 section 卡化：深石底 + 细边（对齐旧进阶页 stone-soft 区块语言） */
+    padding: 8px 10px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-advance-section-title {
+    margin: 0 0 6px;
+    color: var(--wb-text);
+    font-size: 12px;
+    font-weight: 700;
+}
+.team-workbench .team-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 14px;
+}
+.team-workbench .team-stat {
+    min-width: 0;
+}
+.team-workbench .team-stat-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+.team-workbench .team-stat-label {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-stat-value {
+    color: var(--wb-text);
+    font: 11px "Consolas", monospace;
+}
+.team-workbench .team-stat-sub {
+    margin-top: 3px;
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-growth-ends {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ── advance：进阶方案卡 ── */
+.team-workbench .team-promos {
+    display: grid;
+    gap: 6px;
+}
+.team-workbench .team-promo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-promo-on {
+    border-color: color-mix(in srgb, var(--wb-accent) 45%, var(--wb-line-soft));
+}
+.team-workbench .team-promo-locked .team-promo-cost {
+    color: var(--wb-semantic-warning);
+}
+.team-workbench .team-promo-name {
+    color: var(--wb-text);
+    font-size: 12px;
+    font-weight: 700;
+}
+.team-workbench .team-promo-desc {
+    margin-top: 3px;
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1.45;
+}
+.team-workbench .team-promo-cost {
+    margin-top: 4px;
+    color: var(--wb-accent);
+    font-size: 10px;
+}
+.team-workbench .team-promo-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.team-workbench .team-promo-btn {
+    min-height: 28px;
+    padding: 4px 10px;
+    box-sizing: border-box;
+    font-size: 11px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-promo-btn:disabled,
+.team-workbench .team-promo-btn[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+.team-workbench .team-promo-cycle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+/* 进阶兑现值 chip 同走浅石牌（旧 .pet-promo-value-chip 收尾语汇） */
+.team-workbench .team-promo-value-chip {
+    padding: 1px 6px;
+    color: color-mix(in srgb, var(--team-accent-warm) 55%, var(--wb-bg));
+    background: var(--team-marble-btn, color-mix(in srgb, var(--wb-accent) 10%, var(--wb-surface)));
+    border: 1px solid color-mix(in srgb, var(--wb-bg) 45%, var(--wb-line-soft));
+    font-size: 9px;
+}
+.team-workbench .team-promo-empty {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+
+/* ── advance：binary 开关（track + 状态文案）── */
+.team-workbench .team-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    padding: 3px 8px;
+    box-sizing: border-box;
+    color: var(--wb-muted);
+    background: var(--wb-surface-2);
+    border: 1px solid var(--wb-line-soft);
+    font-size: 11px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-toggle:hover {
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-toggle-track {
+    position: relative;
+    width: 22px;
+    height: 12px;
+    box-sizing: border-box;
+    background: color-mix(in srgb, var(--wb-bg) 70%, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-toggle-track::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 8px;
+    height: 8px;
+    background: var(--wb-muted);
+}
+.team-workbench .team-toggle-on {
+    color: var(--wb-accent);
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-toggle-on .team-toggle-track {
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-toggle-on .team-toggle-track::after {
+    left: 11px;
+    background: var(--wb-accent);
+}
+
+/* === MERC（Phase C 追加） === */
+/* 佣兵 tab 特殊形态：roster 名册（纸娃娃卡 + 出战/阵亡徽标 + 世界内候选置顶）/
+   hire 雇佣市场（等级定位 chips + 无缝下滑池 + CommitBar）/ detail 培养页（SecondaryPage）。
+   只消费 token 与 color-mix；不写 outline、不覆盖壳级 grid-template、不新增 keyframes。 */
+
+/* ── 视图骨架：pane-header / chips 固定 + 滚动区弹性（与 pet 同构）── */
+.team-workbench .team-merc-view {
+    display: flex;
+    flex-direction: column;
+}
+.team-workbench .team-merc-view > .team-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.team-workbench .team-merc-detail,
+.team-workbench .team-merc-hire-preview {
+    padding: 10px;
+    background: transparent;   /* Phase F：决策面透化，R 槽程序式名册纹理作底；区块卡仍走 stone-soft */
+}
+
+/* ── 名册卡：纸娃娃头像框（小图档；占位剪影用 token 派生色）── */
+.team-workbench .team-merc-icon {
+    padding: 0;
+}
+.team-workbench .merc-card-portrait {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--wb-bg) 72%, var(--wb-surface));
+}
+.team-workbench .team-merc-icon .merc-card-portrait img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+}
+.team-workbench .merc-card-portrait-fallback::before {
+    content: "";
+    position: absolute;
+    left: 29%;
+    top: 16%;
+    width: 42%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--wb-muted) 45%, var(--wb-bg));
+}
+.team-workbench .merc-card-portrait-fallback::after {
+    content: "";
+    position: absolute;
+    left: 15%;
+    bottom: -12%;
+    width: 70%;
+    height: 52%;
+    border-radius: 50% 50% 12% 12%;
+    background: color-mix(in srgb, var(--wb-muted) 35%, var(--wb-bg));
+}
+.team-workbench .merc-dressup-ready::before,
+.team-workbench .merc-dressup-ready::after {
+    display: none;
+}
+
+/* ── K-A 统一宽行卡（merc 名册 / 雇佣 / 候选同骨架）：名册网格收单栏（与 hire
+   同语言，一排一个）；宽行四轨 [头像 56][信息块][图标带块][右侧区]，右侧区按
+   模式分野（roster=直操按钮列 / hire·候选=价格牌）；石料卡面 / L 角标框 /
+   徽标角标对几何沿用 SHARED 体系 ── */
+.team-workbench .team-merc-grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 6px 8px;   /* K-A 单栏：上下各让 2px，5 佣兵 + 候选 6 宽行一屏放得下 */
+}
+.team-workbench .team-merc-rowcard {
+    grid-template-columns: 56px 120px minmax(0, 1fr) 84px;
+    grid-template-rows: auto;
+    align-items: center;
+    gap: 0 8px;
+    min-height: 66px;
+    padding: 5px 8px;
+}
+.team-workbench .team-merc-rowcard .team-entity-icon {
+    grid-column: 1;
+    grid-row: auto;
+    width: 56px;
+    height: 56px;
+}
+.team-workbench .team-merc-rowcard .team-entity-icon img {
+    max-width: 50px;
+    max-height: 50px;
+}
+.team-workbench .team-merc-rowcard .team-entity-body {
+    grid-column: 2;
+    align-self: center;
+}
+.team-workbench .team-merc-rowcard .team-merc-row-bands {
+    grid-column: 3;
+}
+.team-workbench .team-merc-rowcard .team-entity-ministrip {
+    grid-column: 3;
+}
+.team-workbench .team-merc-rowcard .team-entity-actions {
+    grid-column: 4;
+    grid-row: auto;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 0;
+    align-self: center;
+}
+.team-workbench .team-merc-rowcard .team-entity-actions .team-action-btn {
+    width: 100%;
+}
+/* K-A 右侧价格牌（hire / 候选）：label + 金额右对齐两行 */
+.team-workbench .team-merc-row-price {
+    grid-column: 4;
+    display: grid;
+    gap: 2px;
+    justify-items: end;
+    align-self: center;
+    text-align: right;
+}
+.team-workbench .team-merc-row-price-label {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-merc-row-price-val {
+    color: var(--wb-accent);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;   /* 分币种植行：「5,000 金」「200 K」各自整行不折散 */
+}
+
+/* K-A 满级 MAX 金 chip：宽行右上被右侧区（按钮列 / 价格牌）占据，角标无落点，
+   改投 meta 行首内联 chip 并顶替等级数字（满级即 MAX，金框仍由 data-level-max 承担）；
+   compact 由 SHARED 规则藏 chip（金框 + 金数字角标承担），等级数字回显 */
+.team-workbench .team-merc-rowcard .team-entity-badge[data-badge-kind="max"] {
+    position: static;
+    margin-right: 3px;
+}
+.team-workbench .team-merc-rowcard[data-level-max="true"] .team-merc-lv-num {
+    display: none;
+}
+.team-workbench .team-grid-compact .team-merc-rowcard .team-merc-lv-num {
+    display: inline;
+}
+
+/* ── 世界内雇佣候选卡：info 色描边标识置顶（与 pet 候选同语言）── */
+.team-workbench .team-merc-card-candidate {
+    border-color: color-mix(in srgb, var(--theta-kinetic) 45%, var(--wb-line-soft));
+}
+
+/* ── 阵亡卡：头像去彩 + 信息压暗（出战暖辉不可能并存）── */
+.team-workbench .team-merc-card-dead .merc-card-portrait img {
+    filter: grayscale(1) brightness(.75);
+}
+.team-workbench .team-merc-card-dead .team-entity-name,
+.team-workbench .team-merc-card-dead .team-entity-meta {
+    color: var(--wb-muted);
+}
+
+/* ── 右栏决策面：中号纸娃娃 + 属性摘要 + 技能流 ── */
+.team-workbench .team-merc-portrait-mid {
+    width: 120px;
+    height: 120px;
+    padding: 0;
+}
+.team-workbench .team-merc-summary {
+    display: grid;
+    gap: 4px;
+    margin-top: 8px;   /* Phase F 排版收紧：10→8 */
+    padding: 8px 10px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-merc-summary-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+.team-workbench .team-merc-summary-label {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-merc-summary-val {
+    color: var(--wb-text);
+    font-size: 10px;
+}
+.team-workbench .team-merc-skill-label {
+    margin-top: 8px;   /* Phase F 排版收紧：12→8 */
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-merc-skill-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+.team-workbench .team-merc-skill-empty {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+
+/* ── 装备 / 技能 32px 图标格（培养页与右栏技能流共用；
+   占位 = 虚线 + 类型首字；命中烘焙图 = 实线实底）── */
+.team-workbench .merc-equip-cell,
+.team-workbench .merc-skill-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: color-mix(in srgb, var(--wb-bg) 60%, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+    cursor: help;
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .merc-equip-cell:hover,
+.team-workbench .merc-skill-cell:hover {
+    border-color: var(--wb-accent);
+}
+.team-workbench .merc-equip-cell img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+.team-workbench .merc-equip-empty {
+    background: color-mix(in srgb, var(--wb-surface) 88%, var(--wb-bg));
+    border-style: dashed;
+    cursor: default;
+}
+.team-workbench .merc-equip-empty:hover {
+    border-color: var(--wb-line-soft);
+}
+.team-workbench .merc-equip-badge,
+.team-workbench .merc-skill-badge {
+    position: absolute;
+    right: 1px;
+    bottom: 0;
+    padding: 1px 2px;
+    color: var(--wb-accent);
+    background: color-mix(in srgb, var(--wb-bg) 70%, transparent);
+    font: 600 9px/1 "Consolas", monospace;
+    pointer-events: none;
+}
+.team-workbench .merc-equip-fallback {
+    color: var(--wb-muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+.team-workbench .merc-skill-cell {
+    background: color-mix(in srgb, var(--wb-accent) 5%, var(--wb-surface));
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--wb-accent) 30%, var(--wb-line-soft));
+}
+.team-workbench .merc-skill-cell-baked {
+    background: color-mix(in srgb, var(--wb-bg) 60%, var(--wb-surface));
+    border-style: solid;
+    border-color: var(--wb-line-soft);
+}
+.team-workbench .merc-skill-icon {
+    position: absolute;
+    max-width: 100%;
+    max-height: 100%;
+}
+.team-workbench .merc-skill-glyph {
+    color: var(--wb-accent);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ── hire：等级定位 chips（真 button，激活态 + aria-pressed 双投影）── */
+.team-workbench .team-merc-hire-chips {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border-bottom: 1px solid var(--wb-line);
+}
+.team-workbench .team-merc-lvl-chip {
+    min-height: 26px;
+    padding: 2px 10px;
+    box-sizing: border-box;
+    color: var(--wb-muted);
+    background: color-mix(in srgb, var(--wb-bg) 55%, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+    font-size: 11px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-merc-lvl-chip:hover:not(:disabled) {
+    color: var(--wb-text);
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-merc-lvl-chip-active,
+.team-workbench .team-merc-lvl-chip[aria-pressed="true"] {
+    color: var(--wb-accent);
+    background: color-mix(in srgb, var(--wb-accent) 12%, var(--wb-surface));
+    border-color: var(--wb-accent);
+    font-weight: 700;
+    /* 旧等级 chip 签名：激活 = 橙字 + 底部 2px 橙条 */
+    box-shadow: inset 0 -2px 0 var(--wb-accent);
+}
+.team-workbench .team-merc-lvl-chip:disabled {
+    color: color-mix(in srgb, var(--wb-muted) 70%, var(--wb-bg));
+    background: color-mix(in srgb, var(--wb-surface) 85%, var(--wb-bg));
+    border-style: dashed;
+    cursor: not-allowed;
+}
+.team-workbench .team-merc-hire-note {
+    margin-left: auto;
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+
+/* ── hire：无缝下滑池（单列列表保证触底加载语义可触发）+ 哨兵行 ── */
+.team-workbench .team-merc-hire-grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+.team-workbench .team-merc-hire-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0 2px;
+    color: var(--wb-muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+.team-workbench .team-merc-hire-more-loading {
+    color: var(--wb-accent);
+    animation: wb-pulse-busy var(--wb-motion-busy) var(--wb-ease-standard) infinite;
+}
+.team-workbench .team-merc-hire-price {
+    margin-top: 8px;   /* Phase F 排版收紧：10→8 */
+    color: var(--wb-accent);
+    font-size: 11px;
+}
+
+/* ── hire：右栏预览 + CommitBar 固定底部（对齐 pet store 决策面）── */
+.team-workbench .team-merc-hire-decision {
+    display: flex;
+    flex-direction: column;
+}
+.team-workbench .team-merc-hire-decision .team-merc-hire-preview {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.team-workbench .team-merc-hire-decision .workbench-commit-bar {
+    flex: 0 0 auto;
+}
+
+/* ── H1 detail 培养页：两栏（左栏纸娃娃整列 / 右栏纵向滚动列）── */
+.team-workbench .team-merc-detail-body {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 12px;
+    overflow: hidden;
+}
+.team-workbench .team-merc-detail-left {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+}
+.team-workbench .team-merc-doll-section {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    margin-bottom: 0;
+}
+.team-workbench .team-merc-doll-viewport {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background-color: color-mix(in srgb, var(--wb-bg) 82%, var(--wb-surface));
+    background-image:
+        linear-gradient(90deg, color-mix(in srgb, var(--wb-line-soft) 55%, transparent) 1px, transparent 1px),
+        linear-gradient(color-mix(in srgb, var(--wb-line-soft) 55%, transparent) 1px, transparent 1px);
+    background-size: 24px 24px;
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-merc-dressup-host {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: var(--wb-muted);
+    font-size: 11px;
+}
+/* ── K-B-2 控件顶部化：dollMain 行 = viewport 独占（右缘竖轨退役，宽度全量还给 doll）── */
+.team-workbench .team-merc-doll-main {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 6px;
+    min-width: 0;
+    min-height: 0;
+}
+.team-workbench .team-merc-doll-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    margin-top: 6px;
+}
+/* K-B-2 顶部横条：控件 host 挂在造型预览 section 内顶缘（标题行下 / viewport 上），
+   一行横排不折行——缩放组（− 读数 ＋ 全貌） + 竖分隔 + 四向平移组（←↑↓→） */
+.team-workbench .team-merc-doll-controls {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    min-width: 0;
+    margin: 0 0 6px;
+}
+.team-workbench .team-merc-doll-controls .workbench-inspection-controls {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+}
+.team-workbench .team-merc-doll-controls .workbench-inspection-zoom-controls,
+.team-workbench .team-merc-doll-controls .workbench-inspection-pan-controls {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 3px;
+}
+.team-workbench .team-merc-doll-controls .workbench-inspection-zoom-controls {
+    order: 1;
+}
+.team-workbench .team-merc-doll-controls .workbench-inspection-pan-controls {
+    order: 2;
+    padding-left: 6px;
+    border-left: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-merc-doll-controls .workbench-inspection-control {
+    width: 26px;
+    height: 26px;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    color: var(--wb-muted);
+    background: color-mix(in srgb, var(--team-warm-2) 42%, transparent);
+    border: 1px solid var(--wb-line-soft);
+    font-size: 12px;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-merc-doll-controls .workbench-inspection-control:hover:not(:disabled),
+.team-workbench .team-merc-doll-controls .workbench-inspection-control:focus-visible {
+    color: var(--wb-accent);
+    background: color-mix(in srgb, var(--wb-accent) 12%, transparent);
+    border-color: var(--wb-accent);
+}
+/* 横排阅读序：缩小 → 读数 → 放大 → 全貌（order 重排，DOM 序不变） */
+.team-workbench .team-merc-doll-controls [data-inspection-action="zoom-out"] { order: 1; }
+.team-workbench .team-merc-doll-controls .workbench-inspection-status {
+    order: 2;
+    min-width: 3ch;
+    font-size: 10px;
+    text-align: center;
+}
+.team-workbench .team-merc-doll-controls [data-inspection-action="zoom-in"] { order: 3; }
+.team-workbench .team-merc-doll-controls [data-inspection-action="fit"] {
+    order: 4;
+    font-size: 10px;
+}
+.team-workbench .team-merc-doll-hint {
+    overflow: hidden;
+    color: var(--wb-muted);
+    font-size: 10px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .team-merc-detail-right {
+    min-width: 0;
+    min-height: 0;
+}
+.team-workbench .team-merc-dressup-loading {
+    animation: wb-pulse-busy var(--wb-motion-busy) var(--wb-ease-standard) infinite;
+}
+.team-workbench .team-merc-dressup-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* K-B-2 防御：固有尺寸不得撑破 host（渲染器首帧按终态视口量尺后本约束恒真） */
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* ── detail：性格特质六维条（最高维度「主导」accent 标记）── */
+.team-workbench .team-merc-traits-grid {
+    display: grid;
+    gap: 8px;
+}
+.team-workbench .team-merc-trait {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 30px auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-merc-trait-name {
+    color: var(--wb-muted);
+    font-size: 11px;
+    font-weight: 700;
+}
+.team-workbench .team-merc-trait .team-meter-fill {
+    background: color-mix(in srgb, var(--wb-accent) 45%, var(--wb-muted));
+}
+.team-workbench .team-merc-trait-top .team-merc-trait-name {
+    color: var(--wb-accent);
+}
+.team-workbench .team-merc-trait-top .team-meter-fill {
+    background: var(--wb-accent);
+}
+.team-workbench .team-merc-trait-val {
+    color: var(--wb-text);
+    font: 10px "Consolas", monospace;
+    text-align: right;
+}
+.team-workbench .team-merc-trait-tag {
+    padding: 1px 5px;
+    color: var(--wb-accent);
+    background: color-mix(in srgb, var(--wb-accent) 12%, var(--wb-surface));
+    border: 1px solid color-mix(in srgb, var(--wb-accent) 30%, var(--wb-line-soft));
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+/* ── detail：战斗技能行（图标 + 名称/描述 + 冷却/消耗）── */
+.team-workbench .team-merc-skill-rows {
+    display: grid;
+    gap: 6px;
+}
+.team-workbench .team-merc-skill-row {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-merc-skill-row-info {
+    min-width: 0;
+}
+.team-workbench .team-merc-skill-row-name {
+    overflow: hidden;
+    color: var(--wb-text);
+    font-size: 11px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .team-merc-skill-row-lv {
+    margin-left: 6px;
+    color: var(--wb-accent);
+    font-size: 10px;
+}
+.team-workbench .team-merc-skill-row-desc {
+    margin-top: 2px;
+    overflow: hidden;
+    color: var(--wb-muted);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .team-merc-skill-row-stats {
+    color: var(--wb-muted);
+    font: 10px/1.5 "Consolas", "Microsoft YaHei", monospace;
+    text-align: right;
+    white-space: nowrap;
+}
+.team-workbench .team-merc-empty-row {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-merc-section-hint {
+    margin: 0 0 6px;
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+
+/* ── detail：装备调配只读 11 槽（「更换」禁用占位，筹备中）── */
+.team-workbench .team-merc-equip-manage-grid {
+    display: grid;
+    gap: 6px;
+}
+.team-workbench .team-merc-equip-slot {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-merc-equip-slot-info {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+.team-workbench .team-merc-equip-slot-label {
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-merc-equip-slot-name {
+    overflow: hidden;
+    color: var(--wb-text);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .team-merc-equip-slot-vacant {
+    color: var(--wb-muted);
+}
+
+/* ── 战术文书字：详情/培养页标题与实体名回归思源宋体（旧军事文档感；
+   font-family 非受控属性，仅字腔、不动字号字重）── */
+.team-workbench[data-workbench-skin="team"] .team-detail-title,
+.team-workbench[data-workbench-skin="team"] .team-advance-title,
+.team-workbench[data-workbench-skin="team"] .team-advance-section-title,
+.team-workbench[data-workbench-skin="team"] .team-entity-name {
+    font-family: "思源宋体 CN Heavy", "Microsoft YaHei", sans-serif;
+}
+
+/* ── 装备 rich tooltip 宿主（#panel-tooltip 在 shell 外：rootClass 钩子 + team 面板域限定；
+   布局/配色主体仍在 foundation-rest.css 的 kshop-tt 体系，此处只做 skin accent 点缀）── */
+#panel-container[data-panel="team"] ~ #panel-tooltip .merc-tt-rich .kshop-tt-header b,
+#panel-container[data-panel="team"] ~ #panel-tooltip .merc-tt-basic .kshop-tt-header b {
+    color: var(--dls-energetic);
+}

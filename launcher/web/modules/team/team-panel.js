@@ -1,10 +1,12 @@
 (function() {
     'use strict';
 
-    // 战队壳层 = 薄协调器：不再渲染自己的顶栏/画布（避免子面板二次缩放损失空间），
-    // 而是把唯一一条 tab 条（.team-tabs）注入当前激活子视图列表页 header 的
-    // .team-tabs-slot 槽位（替换原「战宠管理/佣兵管理」标题位，徽标/资源条/关闭钮
-    // 由子面板自有 header 承载）。切换标签时 tab 条 DOM 整体迁移到目标子视图。
+    // 战队壳层 = 薄协调器：不渲染自己的顶栏/画布（避免子面板二次缩放损失空间）。
+    // 两个子控制器（merc / pet）均已双栏工作台化：唯一一条 tab 条（.team-tabs）
+    // 经 initData.tabNav 传给当前激活控制器，由其 _shell.addHeaderAction(tabNav)
+    // 作为 header 第一个 action 注入；切换标签时子 controller 重建 Shell（对齐
+    // Skills/Crafting 换 view 重建的现役模式），tab 条 DOM 随 initData 迁入新壳。
+    // CSS 全量走 panels.css 静态闭包（css/workbench/team.css），无运行时注入。
     var PET_TABS = { partner: true, pet: true, mechanical: true };
     var TABS = [
         { id: 'mercenary', label: '佣兵' },
@@ -18,7 +20,7 @@
     var _activeController = null;
     var _lastTab = 'partner';
     var _views = {};
-    // 世界内雇佣候选（NPC 处，旧 Symbol 2035 的 web 等价）：改为「置顶在 roster 顶部的真·战队卡」
+    // 世界内雇佣候选（NPC 处，旧 Symbol 2035 的 web 等价）：「置顶在 roster 顶部的真·战队卡」
     // 的内聚式设计——玩家可与现役队员比较、满员先解雇腾位。候选下发给 kind 匹配的控制器置顶渲染，
     // 不再是壳层独立浮层。整段写操作（world_hire/world_adopt）在控制器内走各自通道。
     var _hireCandidate = null;
@@ -35,14 +37,14 @@
         _el.className = 'team-host';
         _el.innerHTML =
             '<div class="team-view" data-view="mercenary"></div>' +
-            '<div class="team-view" data-view="partner"></div>';
+            '<div class="team-view" data-view="pets"></div>';
 
         _views.mercenary = _el.querySelector('[data-view="mercenary"]');
-        _views.pet = _el.querySelector('[data-view="partner"]');
+        _views.pets = _el.querySelector('[data-view="pets"]');
         var mercEl = MercTeamController.create(_views.mercenary);
-        var petEl = PetTeamController.create(_views.pet);
+        var petEl = PetTeamController.create(_views.pets);
         _views.mercenary.appendChild(mercEl);
-        _views.pet.appendChild(petEl);
+        _views.pets.appendChild(petEl);
 
         _tabsEl = document.createElement('nav');
         _tabsEl.className = 'team-tabs';
@@ -62,7 +64,6 @@
     }
 
     function onOpen(el, initData) {
-        ensureCss();
         window.TeamPanelHost = { requestClose: requestClose };
         // 世界内雇佣：携 {view:'hire', kind, detail} → 切到 kind 对应 tab，候选置顶进 roster
         // （非独立浮层；玩家可与现役比较、满员先解雇）。控制器据 hireCandidate 渲染置顶候选卡。
@@ -91,15 +92,19 @@
         _lastTab = tab;
         _activeController = controllerFor(tab);
         _views.mercenary.hidden = tab !== 'mercenary';
-        _views.pet.hidden = tab === 'mercenary';
-        mountTabs(tab === 'mercenary' ? _views.mercenary : _views.pet);
+        _views.pets.hidden = tab === 'mercenary';
         var tabs = _tabsEl.querySelectorAll('.team-tab');
-        for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('team-tab-active', tabs[i].dataset.tab === tab);
+        for (var i = 0; i < tabs.length; i++) {
+            var active = tabs[i].dataset.tab === tab;
+            tabs[i].classList.toggle('team-tab-active', active);
+            tabs[i].setAttribute('aria-current', active ? 'true' : 'false');
+        }
 
-        // 候选只投给 kind 匹配的 tab（merc 候选→佣兵 tab；pet 候选→宠物各 tab），切走再切回不丢
+        // 候选只投给 kind 匹配的 tab（merc 候选→佣兵 tab；pet 候选→宠物各 tab），切走再切回不丢；
+        // tabNav 必须是子壳 header 的第一个 action
         var cand = candidateFor(tab);
-        if (PET_TABS[tab]) _activeController.onOpen(_views.pet.firstChild, { rosterType: tab, embedded: true, hireCandidate: cand });
-        else _activeController.onOpen(_views.mercenary.firstChild, { embedded: true, hireCandidate: cand });
+        if (PET_TABS[tab]) _activeController.onOpen(_views.pets.firstChild, { rosterType: tab, embedded: true, hireCandidate: cand, tabNav: _tabsEl });
+        else _activeController.onOpen(_views.mercenary.firstChild, { embedded: true, hireCandidate: cand, tabNav: _tabsEl });
     }
 
     function candidateFor(tab) {
@@ -107,12 +112,6 @@
         var isPetTab = !!PET_TABS[tab];
         var isPetCand = _hireCandidate.kind === 'pet';
         return (isPetTab === isPetCand) ? _hireCandidate : null;
-    }
-
-    // tab 条迁移到目标子视图列表页 header 的槽位
-    function mountTabs(view) {
-        var slot = view.querySelector('.team-tabs-slot');
-        if (slot && _tabsEl.parentNode !== slot) slot.appendChild(_tabsEl);
     }
 
     function requestClose() {
@@ -127,20 +126,5 @@
         _activeTab = null;
         _hireCandidate = null;
         window.TeamPanelHost = null;
-    }
-
-    function ensureCss() {
-        ensureLink('pet-panel-css', 'css/pet_panel.css');
-        ensureLink('merc-panel-css', 'css/merc_panel.css');
-        ensureLink('team-panel-css', 'css/team_panel.css');
-    }
-
-    function ensureLink(id, href) {
-        if (document.getElementById(id)) return;
-        var link = document.createElement('link');
-        link.id = id;
-        link.rel = 'stylesheet';
-        link.href = href;
-        document.head.appendChild(link);
     }
 })();
