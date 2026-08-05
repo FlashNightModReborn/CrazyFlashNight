@@ -61,6 +61,16 @@
       从纯 energetic 金向温润橙（--team-accent-warm = energetic 55% × warning，
       角标/选中/tab/徽章/metrics 金/滚动条/分隔线同源），环境 warm 灰阶 energetic
       2% 换 theta-signal 4% 青蓝灰（B>R 小幅低饱和，明度维持 F 轮解闷水平）。
+   Phase J 视觉气质对齐轮（2026-08-04）：用户验收「架构升级但青橙配色与细节缺乏
+      原版人文气息」后的回摆批次——① accent 回橘（energetic 60% × danger ≈#ea9748
+      hue 29.3°，对齐旧 #ef9442 的 28.4°，挂 accent-warm 的全链自动跟随）；② tab
+      回归思源宋体 13px / 字距 2px；③ 出战徽章 accent 实底 → 金渐变奖章（accent-warm
+      62%×text→accent-warm + 深暖棕字 + 微光）；④ 垫图 veil 加深（L 槽 52/44→66/60、
+      空位卡 36→55、＋号 20→24px）；⑤ pet full 卡排版回升（卡名 serif 13px + 名内
+      inline Lv.X 暖橙 / 卡内 meter 行回升「label + 8px track + 数值」/ padding 8px /
+      动作钮 26px，full 图标角标退役）；⑥ merc 宽行降噪（技能带下卡对齐旧版「技能
+      不上卡」，装备格 gap 3px，卡名 serif 13px）。大理石按钮不回彩墨字（用户裁决：
+      旧彩墨在浅石牌上对比不足，G4 深墨 + 语义竖条保留）。
 
    治理约束（静态门守护，禁止回退）：
    - 只消费 --dls-* / --theta-* / --wb-semantic-* / --wb-role-* / --wb-motion-* /
@@ -116,9 +126,12 @@
     color: var(--wb-muted);
     background: var(--wb-surface-2);
     border: 1px solid var(--wb-line-soft);
-    font-size: 11px;
+    /* Phase J：tab 回归思源宋体（旧版 tab 宋体重黑语言；字链与 header 标题 / 实体名同族），
+       11→13px + 字距 2px（对齐标题 letter-spacing 语言），min-height 27px 结构不动 */
+    font-family: "思源宋体 CN Heavy", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: .04em;
+    letter-spacing: 2px;
     cursor: pointer;
     transition: color var(--wb-motion-micro) var(--wb-ease-standard),
         border-color var(--wb-motion-micro) var(--wb-ease-standard),
@@ -140,7 +153,7 @@
 
 /* ═══════════════════════════════════════════════════════
    SKIN：team skin 的 token 覆盖与领域装饰
-   - accent 取 --team-accent-warm 温润橙（J5：energetic 55% × semantic-warning，对齐旧 #ef9442）；
+   - accent 取 --team-accent-warm 温润橙（J5 → Phase J 回橘：energetic 60% × semantic-danger，对齐旧 #ef9442）；
    - surface/line 由 --team-warm-* 蓝灰中性阶派生（J5：theta-signal 4% 青蓝灰回摆，
      对齐旧 #1a1c23 系蓝灰中性；Phase E 暖灰 / F 微暖已迭代），scrollbar 随 accent-warm；
    - 只覆盖 token 与装饰，不改布局 / 命中区 / 状态结构；语义色不覆盖。
@@ -152,9 +165,11 @@
      rgba(239,148,66,.42/.85)/#ffb65a 三档的 color-mix 等价）。
    ═══════════════════════════════════════════════════════ */
 .team-workbench[data-workbench-skin="team"] {
-    /* ── J5 橙青温润：accent 从纯 energetic 金向温润橙调（对齐旧 #ef9442；
-       energetic 55% × semantic-warning ≈ hue 39° 暖橙），角标/选中/tab 激活/徽章/metrics 金同源 ── */
-    --team-accent-warm: color-mix(in srgb, var(--dls-energetic) 55%, var(--wb-semantic-warning));
+    /* ── J5 橙青温润 → Phase J 回橘：accent 对齐旧 #ef9442 篝火橘橙——
+       energetic 60% × semantic-danger（实测解析 ≈#ea9748 / hue 29.3°，贴旧 hue 28.4°；
+       原 55% × semantic-warning ≈#ecb043 / hue 38.7° 偏金约 10°，本轮退役），
+       角标/选中/tab 激活/徽章/metrics 金/滚动条/空位虚线全链随 token 自动回橘 ── */
+    --team-accent-warm: color-mix(in srgb, var(--dls-energetic) 60%, var(--wb-semantic-danger));
     --wb-accent: var(--team-accent-warm);
     --wb-accent-soft: color-mix(in srgb, var(--team-accent-warm) 14%, transparent);
     /* ── J5 环境青蓝灰回摆：--wb-text × --wb-bg（core 中性深底 #090a0c）起手，
@@ -277,7 +292,8 @@
         linear-gradient(var(--team-frame-line), var(--team-frame-line)) 100% 100% / var(--team-frame-w) var(--team-frame-len) no-repeat;
 }
 /* 结构件透化 / 槽位分工（Phase F）：header 半透明罩随新环境色稍浅；
-   L 槽 = hero 垫图名册栏（veil 54%→46%，主体可辨；末层暖灰渐变兜底防 404 透根）；
+   L 槽 = hero 垫图名册栏（Phase J veil 52/44% → 66%/60% 加深：立绘隐约可辨但不与
+   卡片争主角，对齐旧版垫图 87-90% 深罩方向；末层暖灰渐变兜底防 404 透根）；
    R 槽 = 程序式名册纹理（决策面可读性优先：中性微暖渐变底不透明 + 极轻行纹/光泽）；
    FlowRail 同步半透明 */
 .team-workbench[data-workbench-skin="team"] .workbench-header {
@@ -289,8 +305,8 @@
 .team-workbench[data-workbench-skin="team"][data-team-roster] .workbench-slot[data-slot="L"] {
     background:
         linear-gradient(180deg,
-            color-mix(in srgb, var(--team-warm-2) 52%, transparent) 0%,
-            color-mix(in srgb, var(--team-warm-1) 44%, transparent) 100%),
+            color-mix(in srgb, var(--team-warm-2) 66%, transparent) 0%,
+            color-mix(in srgb, var(--team-warm-1) 60%, transparent) 100%),
         var(--team-hero) var(--team-hero-pos, 68% 30%) / cover no-repeat,
         linear-gradient(180deg, var(--team-warm-3) 0%, var(--team-warm-1) 100%);
 }
@@ -355,13 +371,17 @@
     display: none;
 }
 /* Phase G3 单行横排空间预算：status / metrics 瘦身 + header 间距收紧，
-   「标题 + 副题」在 1024 逻辑宽度内完整成行（副题不再 ellipsis） */
+   「标题 + 副题」在 1024 逻辑宽度内完整成行（副题不再 ellipsis）。
+   Phase J：tab serif 13px/字距 2px 变宽约 30px，status「就绪」内容盒 100px、
+   metrics 文本钉 80px 均无可压余量 → header gap 12→8 再收紧（省 12px），
+   副题完整成行保持（harness team-g3 锁定） */
 .team-workbench[data-workbench-skin="team"] .workbench-header {
-    gap: 12px;
+    gap: 8px;
     padding-right: 10px;
 }
 .team-workbench[data-workbench-skin="team"] .workbench-status {
-    min-width: 92px;
+    min-width: 80px;   /* Phase J：92→80——tab serif 13px/字距 2px 变宽约 30px，
+                          status 短文本让位 12px 保副题完整成行（g3 空间预算再平衡） */
 }
 .team-workbench[data-workbench-skin="team"] .workbench-metrics {
     gap: 4px;
@@ -450,8 +470,8 @@
     position: relative;
     display: grid;
     grid-template-columns: 48px minmax(0, 1fr);
-    /* 四行轨道：body / 装备带 / 技能带（1fr 吸收同行高差）/ 动作行（钉底）。
-       无技能带 / 无动作行的卡，空轨道塌 0——短卡不再把留白摊在动作行上方。
+    /* 四行轨道：body / 装备带 / 弹性余量轨（1fr 吸收同行高差）/ 动作行（钉底）。
+       无装备带 / 无动作行的卡，空轨道塌 0——短卡不再把留白摊在动作行上方。
        行距 0（空轨道不产生无效 gap），行间节奏由带/动作行自身 margin 承担 */
     grid-template-rows: auto auto minmax(0, 1fr) auto;
     gap: 0 6px;
@@ -532,8 +552,10 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-/* H2-2 full 卡体力 + 经验双 meter：卡内改 6px 细条两行（决策面 / 培养页 8px 不变），
-   增量高度由卡内原有余量吸收（body ≤ 图标 50px，卡高 72px 与单 meter 基线持平，首屏行列不回退） */
+/* H2-2 full 卡体力 + 经验双 meter：卡内改细条两行（决策面 / 培养页 8px 不变），
+   增量高度由卡内原有余量吸收（body ≤ 图标 50px，卡高与单 meter 基线持平，首屏行列不回退）。
+   Phase J：pet full 卡内 track 回升 8px（见下方 Phase J 区块），merc 宽行 / store /
+   详情页路径仍走本规则 */
 .team-workbench .team-entity-meters {
     display: grid;
     gap: 2px;
@@ -542,12 +564,75 @@
 .team-workbench .team-entity-card .team-meter {
     height: 6px;
 }
+/* ── Phase J pet full 卡排版回升（对齐旧版卡片信息量与人文排印）──
+   ① 卡名回归思源宋体 13px（旧版卡名重黑宋体感；候选 / store 卡同族跟随）；
+   ② 等级 inline 回名称行（Lv.X 暖橙 700，旧版同级语言），图标右下数字角标退役
+      （compact 角标语言由 SHARED compact 规则承担，不受影响）；
+   ③ 卡内双 meter 回升为「label + track + 数值」行（旧版分段仪表带标签数值语言：
+      体力/经验 10px muted label + 8px track + 右对齐数值），行容器与详情页
+      meterRow（34/1fr/64 三轨）同构、卡宽自适应列；
+   ④ 卡 padding 6→8px 呼吸感回升 */
+.team-workbench .team-pet-card {
+    padding: 8px;
+}
+.team-workbench .team-pet-card .team-entity-name {
+    display: flex;   /* Phase K：名 + Lv 同排 flex——名字可缩 ellipsis、Lv 固定不缩 */
+    align-items: baseline;
+    gap: 4px;
+    font-family: "思源宋体 CN Heavy", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
+}
+/* Phase K：名字文本独占可缩轨（ellipsis 只裁名字不裁 Lv）；
+   候选卡 / store 卡无 Lv 时 name-text 独占一行同样正常 */
+.team-workbench .team-pet-name-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .team-pet-lv {
+    flex-shrink: 0;   /* Phase K：Lv 不缩（原 margin-left 4px 由名称行 gap 承担） */
+    color: var(--team-accent-warm);
+    font-size: 11px;
+    font-weight: 700;
+}
+/* Phase K：满级卡名称行右移避让——MAX 金角标（右上 inset 8px，宽约 26px）下方不钻字 */
+.team-workbench .team-pet-card[data-level-max="true"] .team-entity-name {
+    padding-right: 34px;
+}
+.team-workbench .team-card-meter-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 4px;
+}
+.team-workbench .team-pet-card .team-meter {
+    height: 8px;
+}
+.team-workbench .team-card-meter-label {
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1.2;
+}
+.team-workbench .team-card-meter-chip {
+    min-width: 28px;   /* Phase K：数值列定宽——「170」vs「0%」同宽，两条 track 从此等长 */
+    color: var(--wb-text);
+    font-size: 9px;   /* chip 角色词走 9px badge/chip 字号豁免；tabular-nums 数字列对齐 */
+    font-weight: 700;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
 /* I3 同族角标对：状态字牌（左上：出战中 / 阵亡 / 体力耗尽 / 候选 / 唯一）与
    MAX 金角标（右上）同几何——inset 8px / padding 2px 5px / 圆角 3px / 1px 描边 /
-   700 9px Consolas，仅角色色区分（默认 energetic 实底 / info 青 / danger 红 /
+   700 9px Consolas，仅角色色区分（默认金渐变奖章 / info 青 / danger 红 /
    max 金描边透底）。inset 8px 落在 L 角标框臂区之外（角标 inset 5px + 臂宽 2px
    + 1px 净空：左上横臂 y∈[5,7]、纵臂 x∈[5,7]，角标左/上缘 8，双向净空），
-   满级出战卡两徽标成对同线不互挡 */
+   满级出战卡两徽标成对同线不互挡。
+   Phase J：默认款（无 data-tone = 出战中）accent 实底 → 金渐变奖章（旧 #ffd271→#f0a93a
+   的 token 等价：accent-warm 62%×text 顶端亮色 → accent-warm 底端）+ 深暖棕字
+   （旧 #2a1c05 的 token 等价）+ 微光辉光；几何 / 字号 / info·danger·max 分支不动 */
 .team-workbench .team-entity-badge {
     position: absolute;
     top: 8px;
@@ -557,10 +642,11 @@
     padding: 2px 5px;
     box-sizing: border-box;
     overflow: hidden;
-    color: var(--wb-bg);
-    background: var(--wb-accent);
+    color: color-mix(in srgb, var(--team-accent-warm) 15%, var(--wb-bg));
+    background: linear-gradient(180deg, color-mix(in srgb, var(--team-accent-warm) 62%, var(--wb-text)), var(--team-accent-warm));
     border: 1px solid color-mix(in srgb, var(--team-accent-warm) 58%, var(--wb-line-soft));
     border-radius: 3px;
+    box-shadow: 0 0 6px color-mix(in srgb, var(--team-accent-warm) 30%, transparent);
     font: 700 9px/1.3 "Consolas", "Microsoft YaHei", monospace;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -585,48 +671,33 @@
     border-color: color-mix(in srgb, var(--team-accent-warm) 58%, var(--wb-line-soft));
     box-shadow: 0 0 6px color-mix(in srgb, var(--team-accent-warm) 22%, transparent);
 }
+/* 双状态字牌共存（「出战中」与「体力耗尽」可同卡并存，审阅收尾轮）：同列纵向
+   堆叠——第二枚下移首枚牌高 18px + 2px 缝（top 8→28；compact 牌高 16px + 1px 缝，
+   top 5→22 同语言）。只命中无 data-badge-kind 的状态字牌相邻对，右上 MAX 金角标
+   路径不受影响（i6 徽标对几何不变） */
+.team-workbench .team-entity-badge:not([data-badge-kind]) + .team-entity-badge:not([data-badge-kind]) {
+    top: 28px;
+}
+.team-workbench .team-grid-compact .team-entity-badge:not([data-badge-kind]) + .team-entity-badge:not([data-badge-kind]) {
+    top: 22px;
+}
 /* Phase G2 等级角标（对齐物品格数量角标语言）：merc full 卡由 meta 行 / 内联 chip
-   承担等级，角标保持隐藏；K-B-1 起 pet full 卡 meta 行退役，角标转 full 唯一等级
-   出处（见下条 pet 专属规则）；compact 密度显示右下角纯数字角标 */
+   承担等级，角标保持隐藏；pet full 卡 Phase J 起等级 inline 回名称行（.team-pet-lv，
+   K-B-1 的 full 图标右下数字角标规则连同满级金色变体一并退役）；compact 密度
+   显示右下角纯数字角标（语言由下方 compact 规则承担，不受影响） */
 .team-workbench .team-entity-lv-badge {
     display: none;
 }
-/* K-B-1 pet full 卡等级数字角标：贴图标右下角（compact 同款位置语言）——图标框
-   48px + 卡 padding 6px → 图标右下角落点 padding-box (54,54)，角标右下缘 2px 内收；
-   几何 / 字号与 compact 角标同源（9px/700 badge 规格，走角标字号豁免）。
-   :not(compact) 守卫：compact 位置语言（卡右下）由既有 compact 规则承担不覆盖；
-   store / 候选卡不挂 lv 角标节点，本规则自然不命中 */
-.team-workbench .team-entity-grid:not(.team-grid-compact) .team-pet-card .team-entity-lv-badge {
-    position: absolute;
-    left: 52px;
-    top: 52px;
-    z-index: 1;
-    display: grid;
-    place-items: center;
-    min-width: 14px;
-    padding: 1px 3px;
-    box-sizing: border-box;
-    color: var(--wb-text);
-    background: color-mix(in srgb, var(--wb-bg) 72%, transparent);
-    border: 1px solid var(--wb-line-soft);
-    font: 700 9px/1.2 "Consolas", "Microsoft YaHei", monospace;
-    pointer-events: none;
-    transform: translate(-100%, -100%);
-}
-/* K-B-1 pet full 满级：金数字角标与 MAX 金角标 / 金框同源（compact 金色同款配方） */
-.team-workbench .team-entity-grid:not(.team-grid-compact) .team-pet-card[data-level-max="true"] .team-entity-lv-badge {
-    color: color-mix(in srgb, var(--team-accent-warm) 72%, var(--wb-text));
-    border-color: color-mix(in srgb, var(--team-accent-warm) 55%, var(--wb-line-soft));
-}
 
-/* ── K-A 宽行卡图标带（merc 装备带 11 槽 + 技能带）：flex-wrap 带换行零横向溢出；
+/* ── K-A 宽行卡图标带（merc 装备带 11 槽；Phase J 技能带下卡，对齐旧版
+   「技能不上卡」——技能详情由右栏决策面 / 培养页承担）：flex-wrap 带换行零横向溢出；
    格尺寸卡作用域收成 20px 装备 / 18px 技能（detail / hire 预览 32px 规格不动），
-   角标 / 占位字同步收小；带块 .team-merc-row-bands 占宽行第 3 轨竖叠两带居中 ── */
+   角标 / 占位字同步收小；带块 .team-merc-row-bands 占宽行第 3 轨居中 ── */
 .team-workbench .team-entity-iconband {
     grid-column: 1 / 3;
     display: flex;
     flex-wrap: wrap;
-    gap: 2px;
+    gap: 3px;   /* Phase J：2→3，技能带下卡后装备格间距呼吸感回升 */
     margin-top: 2px;
 }
 .team-workbench .team-entity-iconband .merc-equip-cell {
@@ -647,7 +718,8 @@
 .team-workbench .team-entity-iconband .merc-skill-glyph {
     font-size: 10px;
 }
-/* K-A 图标带块：宽行第 3 轨内装备带 + 技能带竖叠居中；带自身不再跨列 / 留 margin */
+/* K-A 图标带块：宽行第 3 轨内装备带居中（Phase J 技能带下卡后仅剩装备带，
+   单带不再竖叠）；带自身不再跨列 / 留 margin */
 .team-workbench .team-merc-row-bands {
     display: grid;
     gap: 3px;
@@ -665,8 +737,8 @@
 .team-workbench .team-entity-ministrip {
     display: none;
 }
-/* compact 下 full 卡图标带块（装备带 / 技能带）整体让位给迷你行——带块是卡级
-   兄弟节点（不在 body 内），必须显式隐藏，否则撑破 compact 宽行 */
+/* compact 下 full 卡图标带块（Phase J 技能带下卡后仅装备带）整体让位给迷你行——
+   带块是卡级兄弟节点（不在 body 内），必须显式隐藏，否则撑破 compact 宽行 */
 .team-workbench .team-grid-compact .team-entity-iconband,
 .team-workbench .team-grid-compact .team-merc-row-bands {
     display: none;
@@ -693,18 +765,26 @@
    store / hire 候选卡不挂载）。石牌材质与 data-tone 角色色由 SHARED 体系供给 ── */
 .team-workbench .team-entity-actions {
     grid-column: 1 / 3;
-    grid-row: 4;   /* 钉底：技能带轨道（1fr）吸收高差，动作行跨卡对齐同一底线 */
+    grid-row: 4;   /* 钉底：弹性余量轨道（1fr）吸收高差，动作行跨卡对齐同一底线 */
     display: flex;
     gap: 6px;
     margin-top: 4px;
 }
 .team-workbench .team-entity-actions .team-action-btn {
-    flex: 1 1 auto;   /* basis=auto 按内容分配（恢复·1000金 宽钮 / 出战 窄钮），
-                         min-width:auto 兜底 min-content——窄卡也不裁字 */
-    min-height: 24px;
+    flex: 1 1 0;   /* Phase K：basis 0 等分起点，主次由 flex-grow 表达（原 basis=auto
+                      按内容定宽，「恢复·1000金」反而比「出战」宽，主次倒挂） */
+    min-width: min-content;   /* basis 0 下 button 的 min-width:auto 不兜底（实测收紧裁字），
+                                 显式 min-content 保底——窄卡也不裁字 */
+    min-height: 26px;   /* Phase J：24→26，石牌按钮命中高度回升（对齐旧版卡内按钮手感） */
     padding: 2px 4px;
-    font-size: 10px;
+    font-size: 11px;   /* canonical §4.1 按钮字号下限 11px；nowrap + 184px 卡宽仍排得下 */
     white-space: nowrap;   /* 「恢复·1000金」花费文案一行读完，不折行 */
+}
+/* Phase K 主次修正：出战是高频主操作（用户裁决）——等分起点上 grow 1.7 加宽 + 700 字重；
+   恢复 / 解雇等次操作保持 grow 1。仅卡内直操行（详情页动作行走 .team-detail-action-row 不受影响） */
+.team-workbench .team-entity-actions .team-act-deploy {
+    flex-grow: 1.7;
+    font-weight: 700;
 }
 .team-workbench .team-grid-compact .team-entity-actions {
     display: none;
@@ -853,9 +933,9 @@
     bottom: 2px;
 }
 
-/* ── 领养空位卡（旧 .pet-slot-empty 复原 + Phase F 透化）：veil 36% 让 L 槽垫图透过
-   名册呼吸，与实体卡 opaque 石料形成虚实对比；虚线橙边 + 中央 ＋ 号 + 空位标签，
-   真 button，点击 → 领养目录；compact 密度仅留 ＋ 号 ── */
+/* ── 领养空位卡（旧 .pet-slot-empty 复原 + Phase F 透化）：Phase J veil 36% → 55%
+   加深（垫图透得更克制，空位卡不再过曝），与实体卡 opaque 石料形成虚实对比；
+   虚线橙边 + 中央 ＋ 号 + 空位标签，真 button，点击 → 领养目录；compact 密度仅留 ＋ 号 ── */
 .team-workbench .team-slot-empty {
     position: relative;
     display: flex;
@@ -868,12 +948,12 @@
     box-sizing: border-box;
     overflow: hidden;
     color: var(--wb-muted);
-    background: color-mix(in srgb, var(--team-warm-2) 36%, transparent);
+    background: color-mix(in srgb, var(--team-warm-2) 55%, transparent);
     border: 1px dashed color-mix(in srgb, var(--wb-accent) 32%, var(--wb-line-soft));
     border-radius: 6px;
     cursor: pointer;
     font-family: inherit;
-    font-size: 10px;
+    font-size: 11px;   /* canonical §4.1 按钮字号下限 11px（空位槽本身即可点按钮） */
     transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
         color var(--wb-motion-micro) var(--wb-ease-standard),
         box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
@@ -889,7 +969,7 @@
 }
 .team-workbench .team-slot-plus {
     color: color-mix(in srgb, var(--wb-accent) 58%, var(--wb-muted));
-    font-size: 20px;
+    font-size: 24px;   /* Phase J：20→24（veil 加深后 ＋ 号可读性补偿） */
     font-weight: 300;
     line-height: 1;
     transition: color var(--wb-motion-micro) var(--wb-ease-standard);
@@ -898,7 +978,7 @@
     color: var(--wb-accent);
 }
 .team-workbench .team-slot-label {
-    font-size: 10px;
+    font-size: 11px;   /* 与槽位按钮字号下限对齐（compact 变体整体隐藏 label，不受影响） */
     letter-spacing: 2px;
 }
 /* compact 变体：与实体小格同几何，仅留 ＋ 号 */
@@ -1086,7 +1166,7 @@
 }
 
 /* ── 浅大理石石牌按钮体系（对齐旧 .pet-marble-btn 交互语汇：浅石牌 + 深墨字）──
-   .team-btn-placard = 材质配方类；右栏动作行（.team-action-btn）、PaneChrome 入口钮
+   右栏动作行（.team-action-btn）、PaneChrome 入口钮
    （.team-pane-btn：＋领养/＋雇佣/扩容/返回/重试）、进阶钮（.team-promo-btn）、
    CommitBar 主钮（.workbench-commit-primary）全部接入；各按钮自身的 min-height /
    padding / font-size 布局声明保持原样（见 PET / MERC 节），此处只负责材质与色。
@@ -1095,7 +1175,6 @@
    K-B-3 温玉浮雕（第三轮重做）：牌面 hi 88% / lo 76% 暖玉白渐变（配方见
    --team-placard-hi/lo），内阴影浮雕（顶 1px 亮边 / 底 1px 暗边）+ 1px 暖灰
    描边（energetic 10% 染暖）+ 极轻外投影，边角 4px——从「平白亮牌」转向「温玉浮雕」 */
-.team-workbench .team-btn-placard,
 .team-workbench .team-action-btn,
 .team-workbench .team-pane-btn,
 .team-workbench .team-promo-btn,
@@ -1125,7 +1204,6 @@
 }
 /* hover：整体明度 +~5%（999px 内亮纱可过渡）+ 描边加深 + 外投影略强，浮雕边保留
    （不换深底染色，对齐旧石牌交互；竖条加宽由 ::before hover 规则承担） */
-.team-workbench .team-btn-placard:hover:not(:disabled):not([aria-disabled="true"]),
 .team-workbench .team-action-btn:hover:not(:disabled):not([aria-disabled="true"]),
 .team-workbench .team-pane-btn:hover:not(:disabled):not([aria-disabled="true"]),
 .team-workbench .team-promo-btn:hover:not(:disabled):not([aria-disabled="true"]),
@@ -1161,8 +1239,6 @@
         0 0 0 1px color-mix(in srgb, var(--wb-bg) 30%, transparent);
 }
 /* 禁用 / 阻断：灰石牌 + 墨灰字（旧灰石牌 #b7b8bb→#a7a8ac 的 token 等价） */
-.team-workbench .team-btn-placard:disabled,
-.team-workbench .team-btn-placard[aria-disabled="true"],
 .team-workbench .team-action-btn:disabled,
 .team-workbench .team-action-btn[aria-disabled="true"],
 .team-workbench .team-pane-btn:disabled,
@@ -1180,7 +1256,6 @@
 /* Phase G4 data-tone 角色色竖条：文字不再染色（统一深墨），语义色移到 ::before 左侧
    3px 实色竖条（deploy=success / restore=info / danger=danger / primary=energetic）——
    色觉差异 + 文字双重编码保留，文字本身对比度拉满 */
-.team-workbench .team-btn-placard[data-tone]::before,
 .team-workbench .team-action-btn[data-tone]::before,
 .team-workbench .team-pane-btn[data-tone]::before,
 .team-workbench .team-promo-btn[data-tone]::before,
@@ -1194,28 +1269,24 @@
     pointer-events: none;
     transition: width var(--wb-motion-micro) var(--wb-ease-standard);
 }
-.team-workbench .team-btn-placard[data-tone="deploy"]::before,
 .team-workbench .team-action-btn[data-tone="deploy"]::before,
 .team-workbench .team-pane-btn[data-tone="deploy"]::before,
 .team-workbench .team-promo-btn[data-tone="deploy"]::before,
 .team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone="deploy"]::before {
     background: var(--wb-semantic-success);
 }
-.team-workbench .team-btn-placard[data-tone="restore"]::before,
 .team-workbench .team-action-btn[data-tone="restore"]::before,
 .team-workbench .team-pane-btn[data-tone="restore"]::before,
 .team-workbench .team-promo-btn[data-tone="restore"]::before,
 .team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone="restore"]::before {
     background: var(--wb-semantic-info);
 }
-.team-workbench .team-btn-placard[data-tone="danger"]::before,
 .team-workbench .team-action-btn[data-tone="danger"]::before,
 .team-workbench .team-pane-btn[data-tone="danger"]::before,
 .team-workbench .team-promo-btn[data-tone="danger"]::before,
 .team-workbench[data-workbench-skin="team"] .workbench-commit-primary[data-tone="danger"]::before {
     background: var(--wb-semantic-danger);
 }
-.team-workbench .team-btn-placard[data-tone="primary"]::before,
 .team-workbench .team-action-btn[data-tone="primary"]::before,
 .team-workbench .team-pane-btn[data-tone="primary"]::before,
 .team-workbench .team-promo-btn[data-tone="primary"]::before,
@@ -1223,7 +1294,6 @@
     background: var(--dls-energetic);
 }
 /* hover：竖条加宽（牌面提亮 / 描边加深由体系 hover 规则承担） */
-.team-workbench .team-btn-placard[data-tone]:hover:not(:disabled):not([aria-disabled="true"])::before,
 .team-workbench .team-action-btn[data-tone]:hover:not(:disabled):not([aria-disabled="true"])::before,
 .team-workbench .team-pane-btn[data-tone]:hover:not(:disabled):not([aria-disabled="true"])::before,
 .team-workbench .team-promo-btn[data-tone]:hover:not(:disabled):not([aria-disabled="true"])::before,
@@ -1231,8 +1301,6 @@
     width: 5px;
 }
 /* 禁用 / 阻断：灰牌 + 墨淡字之外，竖条同步灰化（语义色不再可读为可用态） */
-.team-workbench .team-btn-placard[data-tone]:disabled::before,
-.team-workbench .team-btn-placard[data-tone][aria-disabled="true"]::before,
 .team-workbench .team-action-btn[data-tone]:disabled::before,
 .team-workbench .team-action-btn[data-tone][aria-disabled="true"]::before,
 .team-workbench .team-pane-btn[data-tone]:disabled::before,
@@ -1323,6 +1391,16 @@
 .team-workbench .team-is-pending {
     cursor: progress;
     animation: wb-pulse-busy var(--wb-motion-busy) var(--wb-ease-standard) infinite;
+}
+
+/* ── busy 指针锁（旧 .pet-busy 的等价物）：controller beginOp/endOp 操作锁期间在壳层 root
+   挂 data-team-busy="true"，未参与本次操作的动作 / 入口 / 进阶钮整体禁点 + 降不透明度；
+   发起操作的 pending 按钮自身由 .team-is-pending 投影（见上），不在此重复 ── */
+[data-team-busy="true"] .team-action-btn,
+[data-team-busy="true"] .team-pane-btn,
+[data-team-busy="true"] .team-promo-btn {
+    pointer-events: none;
+    opacity: .55;
 }
 
 /* ── H2-5 居中式空态：DOM 仍由 TeamShared.buildEmptyState 生成（statement + nextStep 语义
@@ -1801,6 +1879,10 @@
 .team-workbench .team-promo-on {
     border-color: color-mix(in srgb, var(--wb-accent) 45%, var(--wb-line-soft));
 }
+/* 已满档（pet-panel team-promo-maxed）：成功色描边标识「已完成」终态，与 accent 选中态区分 */
+.team-workbench .team-promo-maxed {
+    border-color: color-mix(in srgb, var(--wb-semantic-success) 45%, var(--wb-line-soft));
+}
 .team-workbench .team-promo-locked .team-promo-cost {
     color: var(--wb-semantic-warning);
 }
@@ -2001,6 +2083,12 @@
 .team-workbench .team-merc-rowcard .team-entity-body {
     grid-column: 2;
     align-self: center;
+}
+/* Phase J：merc 卡名回归思源宋体 13px（旧版名册宋体重黑名签语言；
+   与 pet 卡名 / tab / header 标题同族字链，nowrap 省略号逻辑不变） */
+.team-workbench .team-merc-card .team-entity-name {
+    font-family: "思源宋体 CN Heavy", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
 }
 .team-workbench .team-merc-rowcard .team-merc-row-bands {
     grid-column: 3;
@@ -2327,14 +2415,27 @@
     gap: 4px;
     margin-top: 6px;
 }
-/* K-B-2 顶部横条：控件 host 挂在造型预览 section 内顶缘（标题行下 / viewport 上），
-   一行横排不折行——缩放组（− 读数 ＋ 全貌） + 竖分隔 + 四向平移组（←↑↓→） */
+/* Phase K 打磨：造型预览标题行——h3 与相机控件同一 flex 行（标题左 / 控件右，
+   垂直居中），控件不再独占一行；行底距 6px 承接原 h3/控件两行的节奏 */
+.team-workbench .team-merc-doll-titlerow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 6px;
+}
+.team-workbench .team-merc-doll-titlerow .team-advance-section-title {
+    margin: 0;
+}
+/* K-B-2 顶部横条：控件 host 挂在造型预览标题行右端（viewport 之上），
+   一行横排不折行——缩放组（− 读数 ＋ 全貌） + 竖分隔 + 四向平移组（←↑↓→）；
+   Phase K：独立行 margin 清零（行容器 .team-merc-doll-titlerow 承担间距） */
 .team-workbench .team-merc-doll-controls {
     display: flex;
     flex: 0 0 auto;
     align-items: center;
     min-width: 0;
-    margin: 0 0 6px;
+    margin: 0;
 }
 .team-workbench .team-merc-doll-controls .workbench-inspection-controls {
     flex-direction: row;
@@ -2388,7 +2489,7 @@
 .team-workbench .team-merc-doll-controls [data-inspection-action="zoom-in"] { order: 3; }
 .team-workbench .team-merc-doll-controls [data-inspection-action="fit"] {
     order: 4;
-    font-size: 10px;
+    font-size: 11px;   /* canonical §4.1 按钮字号下限 11px */
 }
 .team-workbench .team-merc-doll-hint {
     overflow: hidden;

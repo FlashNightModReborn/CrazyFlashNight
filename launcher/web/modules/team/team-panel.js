@@ -1,6 +1,13 @@
 (function() {
     'use strict';
 
+    // ── 依赖 fail-fast：缺共享层 / 子控制器直接报错，不做半初始化 ──
+    if (typeof TeamShared === 'undefined'
+            || typeof MercTeamController === 'undefined'
+            || typeof PetTeamController === 'undefined') {
+        throw new Error('team-panel.js 需要先加载 team/team-shared.js、merc-panel.js 与 pet-panel.js');
+    }
+
     // 战队壳层 = 薄协调器：不渲染自己的顶栏/画布（避免子面板二次缩放损失空间）。
     // 两个子控制器（merc / pet）均已双栏工作台化：唯一一条 tab 条（.team-tabs）
     // 经 initData.tabNav 传给当前激活控制器，由其 _shell.addHeaderAction(tabNav)
@@ -81,11 +88,19 @@
 
     function switchTab(tab, initial) {
         if (!PET_TABS[tab] && tab !== 'mercenary') tab = 'partner';
-        if (_activeController && _activeController.isBusy && _activeController.isBusy()) return;
+        if (_activeController && _activeController.isBusy && _activeController.isBusy()) {
+            // 用户切换被操作锁拦下时给反馈；initial 程序化打开保持静默
+            if (!initial) TeamShared.toast('操作进行中，请稍候…');
+            return;
+        }
         if (!initial && tab === _activeTab) {
             _activeController.resetToList();
             return;
         }
+        // teardown 前记录焦点是否在 tab 条内：旧 controller onClose 会销毁承载 _tabsEl 的
+        // Shell，焦点掉 BODY；新 Shell 重建后按 WAI tabs 惯例把焦点还到「新激活」tab。
+        // 程序化切换（initial 打开 / 候选路由）时 activeElement 本就不在 tabs 内，不触发恢复。
+        var refocusTab = !!(_tabsEl && _tabsEl.contains(document.activeElement));
         if (_activeController) _activeController.onClose();
 
         _activeTab = tab;
@@ -105,6 +120,11 @@
         var cand = candidateFor(tab);
         if (PET_TABS[tab]) _activeController.onOpen(_views.pets.firstChild, { rosterType: tab, embedded: true, hireCandidate: cand, tabNav: _tabsEl });
         else _activeController.onOpen(_views.mercenary.firstChild, { embedded: true, hireCandidate: cand, tabNav: _tabsEl });
+
+        if (refocusTab) {
+            var refocusEl = _tabsEl.querySelector('.team-tab[data-tab="' + tab + '"]');
+            if (refocusEl) refocusEl.focus();
+        }
     }
 
     function candidateFor(tab) {
@@ -115,7 +135,11 @@
     }
 
     function requestClose() {
-        if (_activeController && _activeController.isBusy && _activeController.isBusy()) return;
+        if (_activeController && _activeController.isBusy && _activeController.isBusy()) {
+            // 关闭被操作锁拦下时同样给反馈，不再静默
+            TeamShared.toast('操作进行中，请稍候…');
+            return;
+        }
         Panels.close();
         Bridge.send({ type: 'panel', panel: 'team', cmd: 'close' });
     }

@@ -77,6 +77,8 @@
     var _storeCategories = [];
     var _storeCache = {};           // 分类缓存：rosterType:catIdx → { adoptable, categories }
     var _adoptPetId = null;         // store 右栏选中候选
+    var _commitError = null;        // 领养失败的可读原因（truthy 期间 renderStorePreview 保留 CommitBar error 投影）
+    var _adoptListSeq = 0;          // adopt_list 请求序号：同 session 连切分类时只接受最新回包
 
     // DOM refs / 视图对象
     var _rosterLeftRoot = null, _rosterRightRoot = null;
@@ -115,6 +117,7 @@
         _pets = [];
         _selectedSlot = _hireCandidate ? CANDIDATE_SLOT : -1;
         _adoptPetId = null;
+        _commitError = null;
         _storeCategoryIdx = 0;
         _storeData = [];
         _storeCategories = [];
@@ -147,7 +150,7 @@
     }
 
     function requestClose() {
-        if (_busy) return;
+        if (guardBusy()) return;
         if (window.TeamPanelHost && TeamPanelHost.requestClose) {
             TeamPanelHost.requestClose();
             return;
@@ -298,6 +301,9 @@
         _rosterScrollEl.setAttribute('data-scroll-region', '');
         _gridEl = document.createElement('div');
         _gridEl.className = 'team-entity-grid team-pet-grid';
+        // 名册网格是单选列表容器：EntityTile 卡与空位 tile 均为其 role=option
+        _gridEl.setAttribute('role', 'listbox');
+        _gridEl.setAttribute('aria-label', noun + '名册');
         _rosterScrollEl.appendChild(_gridEl);
         _rosterLeftRoot.appendChild(_rosterScrollEl);
         _density.register(_gridEl);
@@ -336,6 +342,8 @@
         _storeScrollEl.setAttribute('data-scroll-region', '');
         _storeGridEl = document.createElement('div');
         _storeGridEl.className = 'team-entity-grid team-store-grid';
+        _storeGridEl.setAttribute('role', 'listbox');
+        _storeGridEl.setAttribute('aria-label', '领养' + noun + '目录');
         _storeScrollEl.appendChild(_storeGridEl);
         _storeLeftRoot.appendChild(_storeScrollEl);
 
@@ -406,6 +414,11 @@
             }
             _snapshot = data.snapshot;
             _pets = data.snapshot.pets || [];
+            // 领养失败的对账回包：此刻数据才真的重新同步，给保留中的 CommitBar error 补后缀
+            if (_commitError && _commitBar && _view === 'store') {
+                _commitBar.update({ busy: false, state: 'error',
+                    status: _commitError + ' · 数据已重新同步，请重新确认' });
+            }
             if (!_petLib) { renderRosterGrid(); return; }   // 等 pet_lib 收尾（骨架保持）
             renderAfterDataReady();
         });
@@ -431,15 +444,19 @@
 
     function requestAdoptList(catIdx, cb) {
         var cacheKey = _rosterType + ':' + catIdx;
+        var reqSession = _session;
+        // 乱序回包守卫：连切分类时同 session 可能有多个请求在飞（缓存命中也自增序号），
+        // 只接受最新一次写回 _storeData / _storeCategoryIdx，迟到回包直接丢弃
+        var reqAdoptSeq = ++_adoptListSeq;
         if (_storeCache[cacheKey]) {  // 命中缓存：零延迟
             _storeData = _storeCache[cacheKey].adoptable;
             _storeCategories = _storeCache[cacheKey].categories || _storeCategories;
             if (cb) cb(true);
             return;
         }
-        var reqSession = _session;
         sendPanelMsg('adopt_list', { categoryIndex: catIdx, rosterType: _rosterType }, function(data) {
             if (reqSession !== _session) return;
+            if (reqAdoptSeq !== _adoptListSeq) return;   // 已有更新的请求 / 缓存命中接管
             if (!data.success) {
                 TeamShared.toast('获取领养列表失败：' + (data.error || '超时'));
                 if (cb) cb(false);
@@ -538,6 +555,9 @@
         var tile = document.createElement('button');
         tile.type = 'button';
         tile.className = 'team-slot-empty';
+        // 领养入口真 button，在名册 listbox 内按 option 投影（入口永不被选中）
+        tile.setAttribute('role', 'option');
+        tile.setAttribute('aria-selected', 'false');
         tile.setAttribute('aria-label', '空栏位：前往领养' + noun);
         tile.title = '空栏位：前往领养' + noun;
         var plus = document.createElement('span');
@@ -601,20 +621,38 @@
         body.className = 'team-entity-body';
         var name = document.createElement('div');
         name.className = 'team-entity-name';
-        name.textContent = pet.name;
+        // Phase J 视觉对齐：等级 inline 回名称行（「名 + Lv」同排，对齐旧版卡片语言），
+        // 图标右下数字角标退役；节点保留 append 供 compact 密度角标使用（见下方 levelBadge）
+        // Phase K 打磨：名字文本包 .team-pet-name-text（flex 下可缩 + ellipsis 只裁名字），
+        // Lv 固定不缩——长名不再把 Lv 一起裁掉
+        var nameText = document.createElement('span');
+        nameText.className = 'team-pet-name-text';
+        nameText.textContent = pet.name;
+        name.appendChild(nameText);
+        var lvInline = document.createElement('span');
+        lvInline.className = 'team-pet-lv';
+        lvInline.textContent = 'Lv.' + pet.level;
+        name.appendChild(lvInline);
         body.appendChild(name);
-        // K-B-1：meta 文字行（Lv · 体力 x/y）退役——等级由图标右下数字角标承担、
-        // 体力只留横条（数值细节在卡级 tooltip 与右栏决策面）；标题行只留名称。
+        // K-B-1：meta 文字行（Lv · 体力 x/y）退役——Phase J 起等级由名内 inline Lv 承担、
+        // 体力/经验数值随下方卡内 meter 行（label + track + 数值）回卡。
         var maxSt = pet.maxStamina || 200;
         // H2-2：full 卡体力 + 经验双 meter（对齐旧版卡片与右栏决策面信息量；
         // 满级经验条投 max 紫；compact 密度整个 body 隐藏，不受影响）
+        // Phase J 视觉对齐：卡内 meter 回升为「label（体力/经验）+ track + 右对齐数值」行
+        // （旧版分段仪表带标签数值语言；经验百分比、满级投 MAX；
+        //   Phase K 起体力数值精简为当前值整数，上限在右栏决策面 / tooltip 仍有）
         var meters = document.createElement('div');
         meters.className = 'team-entity-meters';
-        meters.appendChild(meterNode(staminaTone(pet.stamina), ratioOf(pet.stamina, maxSt)));
+        // Phase K 打磨：卡内体力数值精简为当前值整数（对齐旧版卡语言；
+        // 上限细节在右栏决策面与 tooltip 仍有），数值列定宽后两条 track 等长
+        meters.appendChild(cardMeterRow('体力', staminaTone(pet.stamina), ratioOf(pet.stamina, maxSt),
+            String(Math.round(pet.stamina))));
         if (isMaxLevel(pet)) {
-            meters.appendChild(meterNode('max', 1));
+            meters.appendChild(cardMeterRow('经验', 'max', 1, 'MAX'));
         } else {
-            meters.appendChild(meterNode('xp', ratioOf(pet.xp, pet.xpNeeded)));
+            meters.appendChild(cardMeterRow('经验', 'xp', ratioOf(pet.xp, pet.xpNeeded),
+                Math.round(ratioOf(pet.xp, pet.xpNeeded) * 100) + '%'));
         }
         body.appendChild(meters);
         card.appendChild(body);
@@ -622,15 +660,15 @@
         // I2：卡内直操动作行（full 密度投 bottom 动作行；compact 由 CSS 隐藏保持纯检视）
         card.appendChild(buildCardActions(pet));
 
-        // I3：同族角标对——状态字牌左上（出战中/体力耗尽），满级金角标右上，
+        // I3：同族角标对——状态字牌左上（出战中 / 体力耗尽可共存），满级金角标右上，
         // 满级出战卡两徽标成对同线（同 inset 8px、同几何，仅角色色区分）
-        var badge = statusBadge(pet);
-        if (badge) card.appendChild(badge);
+        var badges = statusBadge(pet);
+        for (var bi = 0; bi < badges.length; bi++) card.appendChild(badges[bi]);
         var maxB = maxBadge(pet);
         if (maxB) card.appendChild(maxB);
-        // G2 等级数字角标：K-B-1 起 full 密度同显（贴图标右下，compact 同款位置语言），
-        // 是卡面等级的唯一文字出处；满级卡挂 data-level-max 投影金框
-        // （H2-1 起 full/compact 满级同为金色系，full 金数字角标与 MAX 金角标同源）
+        // G2 等级数字角标：full 密度 Phase J 起退役（等级由名内 inline Lv 承担），
+        // 节点仅为 compact 密度右下角数字角标保留（SHARED compact 规则显影）
+        //（H2-1 起 full/compact 满级同为金色系，compact 金数字角标与整卡金框同源）
         card.appendChild(levelBadge(pet.level));
         if (isMaxLevel(pet)) card.setAttribute('data-level-max', 'true');
 
@@ -707,7 +745,11 @@
         body.className = 'team-entity-body';
         var name = document.createElement('div');
         name.className = 'team-entity-name';
-        name.textContent = cand.name;
+        // Phase K：与现役卡同名结构（.team-pet-name-text 独占，flex 名称行下保持 ellipsis）
+        var nameText = document.createElement('span');
+        nameText.className = 'team-pet-name-text';
+        nameText.textContent = cand.name;
+        name.appendChild(nameText);
         body.appendChild(name);
         var metaLine = document.createElement('div');
         metaLine.className = 'team-entity-meta';
@@ -736,7 +778,7 @@
     }
 
     function selectPet(slot) {
-        if (_busy) return;
+        if (guardBusy()) return;
         _selectedSlot = slot;
         var cards = _gridEl.querySelectorAll('.team-pet-card');
         for (var i = 0; i < cards.length; i++) {
@@ -789,10 +831,31 @@
         if (idx < 0) return;
         var old = _gridEl.querySelector('.team-pet-card[data-slot="' + slotIndex + '"]');
         if (!old) return;
+        // 换卡会销毁旧节点：先记下焦点落点（卡本体或卡内哪个动作），
+        // 替换后恢复到新卡等价控件，避免焦点掉 body（对齐 renderRosterGrid 的焦点恢复）
+        var focusSelector = null, focusOnCard = false;
+        if (typeof document !== 'undefined' && document.activeElement && old.contains(document.activeElement)) {
+            var active = document.activeElement;
+            if (active === old) {
+                focusOnCard = true;
+            } else if (active.closest && active.closest('.team-act-deploy')) {
+                focusSelector = '.team-act-deploy';
+            } else if (active.closest && active.closest('.team-act-restore')) {
+                focusSelector = '.team-act-restore';
+            } else {
+                focusOnCard = true;   // 卡内其他落点：退回卡本体
+            }
+        }
         var fresh = buildPetCard(_pets[idx]);
         // 原位替换前先释放旧卡上的 EntityTile / tooltip 绑定，避免域内 detached 绑定累积
         Workbench.releaseElementBindings(old);
         old.parentNode.replaceChild(fresh, old);
+        if (focusSelector) {
+            var focusBtn = fresh.querySelector(focusSelector);
+            if (focusBtn) focusBtn.focus();
+        } else if (focusOnCard) {
+            fresh.focus();
+        }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -900,7 +963,10 @@
 
         var block = '';
         var totalPets = _pets ? _pets.length : 0;
-        if (_snapshot && _snapshot.maxSlots > 0 && totalPets >= _snapshot.maxSlots) block = noun + '栏位已满，请先删除部分' + noun;
+        // snapshot 未到达前按「加载中」禁用（对齐 adoptGate 的未就绪模式）：
+        // 首开一瞬 gold 按 0 算会误挂「金币不足」，snapshot 到达后重渲自愈
+        if (!_snapshot) block = '数据加载中…';
+        else if (_snapshot.maxSlots > 0 && totalPets >= _snapshot.maxSlots) block = noun + '栏位已满，请先删除部分' + noun;
         else if (gold < cand.goldPrice) block = '金币不足';
 
         var actions = document.createElement('div');
@@ -985,7 +1051,8 @@
     // store 视图：领养目录 + CommitBar
     // ═══════════════════════════════════════════════════════════
     function enterStore() {
-        if (_busy || _view === 'store' || !_shell) return;
+        if (guardBusy()) return;
+        if (_view === 'store' || !_shell) return;
         if (!_storeL) buildStoreViews();
         _view = 'store';
         _adoptPetId = null;
@@ -1047,7 +1114,8 @@
             tab.setAttribute('aria-label', '领养分类 ' + categories[c].name);
             tab.addEventListener('click', function() {
                 var ci = parseInt(this.getAttribute('data-index'), 10);
-                if (ci === _storeCategoryIdx || _busy) return;
+                if (ci === _storeCategoryIdx) return;
+                if (guardBusy()) return;
                 _storeCategoryIdx = ci;
                 renderStoreContent();
             });
@@ -1059,6 +1127,9 @@
         if (!_storeGridEl || _view !== 'store') return;
         Workbench.clearElement(_storeGridEl);
         if (!_storeData || _storeData.length === 0) {
+            // 请求在途（无数据且当前分类无缓存）投骨架而非空态：消除 enterStore 首进
+            // attach 渲染闪一帧「暂无可领养」的假空态；真空分类回包后缓存已建，仍走空态
+            if (!_storeCache[_rosterType + ':' + _storeCategoryIdx]) { appendSkeleton(_storeGridEl); return; }
             _storeGridEl.appendChild(TeamShared.buildEmptyState({
                 kind: 'empty',
                 statement: '该分类下暂无可领养' + meta().noun,
@@ -1087,7 +1158,11 @@
         body.className = 'team-entity-body';
         var name = document.createElement('div');
         name.className = 'team-entity-name';
-        name.textContent = item.name;
+        // Phase K：与现役卡同名结构（.team-pet-name-text 独占，flex 名称行下保持 ellipsis）
+        var nameText = document.createElement('span');
+        nameText.className = 'team-pet-name-text';
+        nameText.textContent = item.name;
+        name.appendChild(nameText);
         body.appendChild(name);
         var metaLine = document.createElement('div');
         metaLine.className = 'team-entity-meta';
@@ -1121,6 +1196,8 @@
     }
 
     function selectStoreItem(petId) {
+        if (guardBusy()) return;    // commit 飞行中禁止改选：重渲会冲掉 CommitBar busy 投影
+        _commitError = null;        // 用户改选：旧领养失败 error 投影随之失效
         _adoptPetId = petId;
         var cards = _storeGridEl.querySelectorAll('.team-store-card');
         for (var i = 0; i < cards.length; i++) {
@@ -1139,6 +1216,7 @@
 
     function renderStorePreview() {
         if (!_storePreviewEl || !_commitBar || _view !== 'store') return;
+        if (_commitError) return;   // 领养失败 error 投影保留到用户改选 / 重新提交，不被常规重渲冲掉
         Workbench.clearElement(_storePreviewEl);
         var item = findStoreItem(_adoptPetId);
         if (!item) {
@@ -1147,7 +1225,7 @@
                 statement: '选择左侧目标查看价格与确认领养',
                 nextStep: '价格、余额与条件在提交前再次核对'
             }));
-            _commitBar.update({ status: '未选择目标', disabled: true, state: '', busy: false });
+            if (!_busy) _commitBar.update({ status: '未选择目标', disabled: true, state: '', busy: false });
             return;
         }
 
@@ -1171,28 +1249,30 @@
         _storePreviewEl.appendChild(req);
 
         var gate = adoptGate(item);
+        if (_busy) return;   // commit 飞行中：预览内容已重渲，CommitBar busy 投影保持不覆盖
         if (gate) {
             _commitBar.update({ status: gate, canCommit: false, state: 'blocked', busy: false });
         } else {
-            var balance = '余额 金币 ' + TeamShared.fmtMoney(_snapshot ? _snapshot.gold : 0)
-                + ' · K点 ' + TeamShared.fmtMoney(_snapshot ? _snapshot.kpoint : 0);
-            _commitBar.update({ status: priceText(item) + ' · ' + balance, canCommit: true, state: 'ready', busy: false });
+            // Phase K 打磨：ready 态改短文案——价格已在右栏 detailHead 副题、
+            // 余额在 header metrics，CommitBar 不复述（长文本与 CTA/滚动区挤碰遮挡）
+            _commitBar.update({ status: '可确认领养', canCommit: true, state: 'ready', busy: false });
         }
     }
 
     // CommitBar 唯一主 CTA：busy 到回包；成功 → 刷新 snapshot 并回名册；
-    // 失败 → status error + 重拉 snapshot 对账，绝不自动重放。
+    // 失败 → status error 保留到用户改选 / 重新提交 + 重拉 snapshot 对账，绝不自动重放。
     function onCommitAdopt() {
-        if (_busy || _adoptPetId == null) return;
+        if (guardBusy()) return;
+        if (_adoptPetId == null) return;
+        _commitError = null;   // 重新提交：旧失败 error 投影失效
         var item = findStoreItem(_adoptPetId);
         if (!item) return;
         var gate = adoptGate(item);
         if (gate) { TeamShared.toast(gate); renderStorePreview(); return; }
-        _busy = true;
-        if (_shell) _shell.setStatus('处理中', Workbench.WorkbenchState.PENDING);
+        beginOp(null);   // 与其他操作同锁：data-team-busy 投影同样覆盖领养 commit 飞行期
         _commitBar.update({ busy: true, status: '领养确认中', state: 'busy' });
         sendPanelMsg('adopt', { petId: _adoptPetId }, function(data) {
-            _busy = false;
+            endOp(null);
             if (data.success) {
                 if (_snapshot) { _snapshot.gold = data.gold; _snapshot.kpoint = data.kpoint; }
                 _storeCache = {};   // 领养改变拥有态 / 价格，失效缓存
@@ -1201,12 +1281,12 @@
                 if (_commitBar) _commitBar.update({ busy: false, status: '已领养', state: 'ready' });
                 backToRoster();
                 requestSnapshot();
-                if (_shell) _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
             } else {
                 var msg = '领养失败：' + (data.reason || data.error || '未知错误');
+                _commitError = msg;   // error 投影保留到用户改选 / 重新提交
                 TeamShared.toast(msg);
-                if (_commitBar) _commitBar.update({ busy: false, state: 'error', status: msg + ' · 数据已重新同步，请重新确认' });
-                if (_shell) _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
+                // 先只呈现失败原因；「数据已重新同步」后缀由对账 snapshot 回包后再补，文案不抢跑
+                if (_commitBar) _commitBar.update({ busy: false, state: 'error', status: msg });
                 requestSnapshot();   // 对账重拉
             }
         });
@@ -1216,7 +1296,7 @@
     // advance 培养页（SecondaryPage 覆盖 body）
     // ═══════════════════════════════════════════════════════════
     function openAdvance(slotIndex) {
-        if (_busy) return;
+        if (guardBusy()) return;
         var pet = findPetBySlot(slotIndex);
         if (!pet) return;
         _advanceSlot = slotIndex;
@@ -1505,6 +1585,7 @@
                 statusText = '已完成';
                 actionNode = button('已完成', 'team-promo-btn', null);
                 actionNode.disabled = true;
+                actionNode.title = '已完成全部进阶';
             } else if (!levelOk) {
                 statusText = (status && status.lockReason === 'prereq') ? '需先完成前置训练' : ('需 Lv.' + (scheme.unlockLevel || 0) + ' 解锁');
                 actionNode = button('未解锁', 'team-promo-btn', null);
@@ -1587,7 +1668,7 @@
     // 操作处理（协议与现役逐条一致；按钮 pending + blocked 可读原因）
     // ═══════════════════════════════════════════════════════════
     function onToggleDeploy(slotIndex, btn) {
-        if (_busy) return;
+        if (guardBusy()) return;
         var pet = findPetBySlot(slotIndex);
         if (!pet) return;
         beginOp(btn);
@@ -1598,7 +1679,8 @@
                 if (_snapshot) _snapshot.currentDeployCount = data.currentDeployCount;
                 updateHeaderMetrics();
                 reflowCardAfterMutation(slotIndex);
-                if (_selectedSlot === slotIndex) renderDetail();
+                // 选中候选卡时右栏招募门控也随操作后数据重算（卡内直操不影响选中态）
+                if (_selectedSlot === slotIndex || _selectedSlot === CANDIDATE_SLOT) renderDetail();
                 renderAdvance();
                 TeamShared.toast(pet.deployed ? '已出战' : '已休息');
             } else {
@@ -1608,7 +1690,7 @@
     }
 
     function onRestoreStamina(slotIndex, btn) {
-        if (_busy) return;
+        if (guardBusy()) return;
         var pet = findPetBySlot(slotIndex);
         if (!pet) return;
         if (pet.stamina >= (pet.maxStamina || 200)) return;
@@ -1620,7 +1702,8 @@
                 if (_snapshot) _snapshot.gold = data.gold;
                 updateHeaderMetrics();
                 reflowCardAfterMutation(slotIndex);
-                if (_selectedSlot === slotIndex) renderDetail();
+                // 卡内直操扣金币后，选中候选卡时右栏招募门控的余额判断需重算
+                if (_selectedSlot === slotIndex || _selectedSlot === CANDIDATE_SLOT) renderDetail();
                 renderAdvance();
                 TeamShared.toast('体力已恢复至 ' + data.stamina);
             } else {
@@ -1634,7 +1717,7 @@
     }
 
     function onLevelUp(btn) {
-        if (_busy) return;
+        if (guardBusy()) return;
         var pet = findPetBySlot(_advanceSlot);
         if (!pet) return;
         beginOp(btn);
@@ -1654,7 +1737,8 @@
     }
 
     function confirmDelete(pet) {
-        if (_busy || !_shell) return;
+        if (guardBusy()) return;
+        if (!_shell) return;
         var xpNeeded = pet.xpNeeded || 0;
         var refund = Math.floor(Math.sqrt(pet.level) * 0.8 * xpNeeded / 10000);
         if (isNaN(refund) || refund < 0) refund = 0;
@@ -1673,7 +1757,7 @@
     }
 
     function doDelete(slotIndex) {
-        if (_busy) return;
+        if (guardBusy()) return;
         beginOp(null);
         sendPanelMsg('delete', { slotIndex: slotIndex }, function(data) {
             endOp(null);
@@ -1691,7 +1775,7 @@
 
     // slotIndex 省略时取培养页当前宠；右栏快捷开关显式传选中 slot
     function onAdvance(schemeName, btn, slotIndex, okMsg) {
-        if (_busy) return;
+        if (guardBusy()) return;
         var slot = (slotIndex != null) ? slotIndex : _advanceSlot;
         var pet = findPetBySlot(slot);
         if (!pet) return;
@@ -1712,7 +1796,7 @@
     // 世界内招募（NPC 处，旧 Symbol 2035 宠物分支的 web 等价）：world_adopt 走 pets 通道，
     // AS2 用 _pendingHireNpc 读权威、扣费、写 宠物信息、加载宠物 + 删 NPC。回 hired:true → 关面板。
     function onWorldAdopt(btn) {
-        if (_busy) return;
+        if (guardBusy()) return;
         beginOp(btn);
         sendPanelMsg('world_adopt', {}, function(data) {
             endOp(btn);
@@ -1731,7 +1815,7 @@
     }
 
     function onExpandSlot(btn) {
-        if (_busy) return;
+        if (guardBusy()) return;
         beginOp(btn);
         sendPanelMsg('expand_slot', null, function(data) {
             endOp(btn);
@@ -1739,6 +1823,7 @@
                 if (_snapshot) { _snapshot.gold = data.gold; _snapshot.maxSlots = data.maxSlots; }
                 updateHeaderMetrics();
                 renderRosterGrid();
+                renderDetail();   // 扩容解除「栏位已满」blocked：右栏（含候选招募门控）同步重渲
                 TeamShared.toast(meta().noun + '栏已扩充至 ' + data.maxSlots);
             } else {
                 var msg = '扩充失败';
@@ -1750,19 +1835,34 @@
         });
     }
 
-    // 操作锁 + 按钮 pending（TeamShared.setPending 投影）
+    // 操作锁 + 按钮 pending（TeamShared.setPending 投影）；
+    // busy 期间壳根挂 data-team-busy（旧版 .pet-busy 指针锁的 workbench 等价，供皮肤层投影）
     function beginOp(btn) {
         _busy = true;
         if (btn) TeamShared.setPending(btn, true);
-        if (_shell) _shell.setStatus('处理中', Workbench.WorkbenchState.PENDING);
+        if (_shell) {
+            _shell.getRoot().setAttribute('data-team-busy', 'true');
+            _shell.setStatus('处理中', Workbench.WorkbenchState.PENDING);
+        }
     }
     function endOp(btn) {
         _busy = false;
         if (btn) TeamShared.setPending(btn, false);
-        if (_shell && !_loadError) {
-            _shell.setStatus(_snapshot ? '就绪' : '读取中',
-                _snapshot ? Workbench.WorkbenchState.READY : Workbench.WorkbenchState.LOADING);
+        if (_shell) {
+            _shell.getRoot().removeAttribute('data-team-busy');
+            if (!_loadError) {
+                _shell.setStatus(_snapshot ? '就绪' : '读取中',
+                    _snapshot ? Workbench.WorkbenchState.READY : Workbench.WorkbenchState.LOADING);
+            }
         }
+    }
+
+    // busy 守卫反馈（设计 §4：操作锁期间的用户动作不允许可点外观 + silent no-op）：
+    // 所有用户动作处理器入口统一走本守卫给壳级可读状态；纯内部程序化路径仍直接判 _busy 静默返回
+    function guardBusy() {
+        if (!_busy) return false;
+        if (_shell) _shell.setStatus('操作进行中，请稍候…', Workbench.WorkbenchState.PENDING);
+        return true;
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -1866,6 +1966,25 @@
         row.appendChild(meterNode(tone, ratioValue));
         var val = document.createElement('span');
         val.className = 'team-meter-val';
+        val.textContent = valueText;
+        row.appendChild(val);
+        return row;
+    }
+
+    // Phase J 卡内 meter 行（pet full 卡；旧版分段仪表「标签 + 数值」语言回升）：
+    // 与详情页 meterRow 同构——label（10px muted）+ track（卡内 8px）+ 右对齐数值
+    // （chip 角色词类名走 9px 字号豁免，tabular-nums 等宽数字）；
+    // 列轨由 .team-card-meter-row 自适应（卡宽比详情面窄，不用 34/1fr/64 固定轨）
+    function cardMeterRow(label, tone, ratioValue, valueText) {
+        var row = document.createElement('div');
+        row.className = 'team-card-meter-row';
+        var lab = document.createElement('span');
+        lab.className = 'team-card-meter-label';
+        lab.textContent = label;
+        row.appendChild(lab);
+        row.appendChild(meterNode(tone, ratioValue));
+        var val = document.createElement('span');
+        val.className = 'team-card-meter-chip';
         val.textContent = valueText;
         row.appendChild(val);
         return row;
@@ -1981,14 +2100,16 @@
         var levelLimit = _snapshot ? (_snapshot.levelLimit || 100) : 100;
         return pet.level >= levelLimit;
     }
-    // I3 徽标拆分：状态字牌（左上：出战中 / 体力耗尽 danger）与满级金角标
-    // （右上 data-badge-kind=max）独立投影；满级出战卡两徽标成对同线不互挡。
+    // I3 徽标拆分：状态字牌（左上：出战中 / 体力耗尽 danger，两字牌可共存不互斥）与
+    // 满级金角标（右上 data-badge-kind=max）独立投影；满级出战卡两徽标成对同线不互挡。
     // 蓝底 MAX 字牌保持退役（H2-1），满级视觉仍与 compact 金框/金数字角标同源
     function statusBadge(pet) {
-        var text = '', tone = '';
-        if (pet.deployed) text = '出战中';
-        else if (pet.stamina <= 0) { text = '体力耗尽'; tone = 'danger'; }
-        if (!text) return null;
+        var badges = [];
+        if (pet.deployed) badges.push(buildStatusBadge('出战中', ''));
+        if (pet.stamina <= 0) badges.push(buildStatusBadge('体力耗尽', 'danger'));
+        return badges;
+    }
+    function buildStatusBadge(text, tone) {
         var badge = document.createElement('span');
         badge.className = 'team-entity-badge';
         if (tone) badge.setAttribute('data-tone', tone);
@@ -2022,7 +2143,8 @@
         return pet.name + ' · Lv.' + pet.level
             + ' · 体力 ' + pet.stamina + '/' + maxSt
             + ' · 经验 ' + xpText
-            + (pet.deployed ? ' · 出战中' : ' · 休息中');
+            + (pet.deployed ? ' · 出战中' : ' · 休息中')
+            + (pet.stamina <= 0 ? ' · 体力耗尽' : '');
     }
 
     function effectivePrice(item) {
@@ -2060,20 +2182,6 @@
         backToRoster();
     }
 
-    function setRosterType(rosterType) {
-        if (!rosterType || rosterType === _rosterType) return;
-        _rosterType = rosterType;
-        _storeCategoryIdx = 0;
-        _storeData = [];
-        backToRoster();
-        if (_shell) {
-            _shell.getRoot().setAttribute('data-team-roster', _rosterType);
-            updateHeaderMetrics();
-            renderRosterGrid();
-            renderDetail();
-        }
-    }
-
     // 测试 / 调试用
     if (typeof window !== 'undefined') {
         window.PetPanel = {
@@ -2096,7 +2204,6 @@
         onClose: onClose,
         requestClose: requestClose,
         resetToList: resetToList,
-        setRosterType: setRosterType,
         isBusy: function() { return _busy; }
     };
 })();

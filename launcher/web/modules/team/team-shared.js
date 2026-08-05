@@ -2,7 +2,8 @@
  * TeamShared — 战队面板（佣兵 / 伙伴 / 战宠 / 机械）共享纯 DOM 工具层。
  *
  * 职责边界（双栏工作台翻新 Phase A 基座）：
- *  - escapeHtml / escapeAttr：统一转义（归一 pet 的 escapeHtml 与 merc 的 escHtml 两套写法）；
+ *  - escapeHtml：统一转义（归一 pet 的 escapeHtml 与 merc 的 escHtml 两套写法；
+ *    引号一并转义，文本节点 / innerHTML 与属性值拼接通用）；
  *  - fmtMoney：金币格式化（逻辑搬自 pet-panel.js formatMoney，保持玩家可见输出不变）；
  *  - toast：共享 Toast.add 包装（同 skills.js 模式，替代 pet 三色队列与 merc 单 toast）；
  *  - setPending：按钮 pending 投影（team-is-pending + aria-busy + disabled），
@@ -24,7 +25,7 @@
     'use strict';
 
     // ── 转义 ──
-    // escapeHtml 用于文本节点/innerHTML 拼接；escapeAttr 用于属性值拼接（额外转义引号）。
+    // escapeHtml 引号一并转义，文本节点 / innerHTML 拼接与属性值拼接通用。
     function escapeHtml(s) {
         if (s == null) return '';
         return String(s)
@@ -33,9 +34,6 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
-    }
-    function escapeAttr(s) {
-        return escapeHtml(s);
     }
 
     // ── 金币格式化（搬自 pet-panel.js formatMoney，行为保持一致）──
@@ -94,7 +92,8 @@
 
     // ── 排序/筛选下拉 ──
     // 触发器与选项均为真 button（原生 Enter/Space 激活）；Esc 关闭并归还焦点给触发器；
-    // document 捕获相 pointerdown 外点关闭；destroy 幂等并清理 document listener。
+    // document 捕获相 pointerdown 外点关闭；focusout（Tab 离开 rootEl）收起且不抢焦点；
+    // destroy 幂等并清理 document listener。
     function createDropdown(options) {
         var opts = options || {};
         var label = opts.label == null ? '' : String(opts.label);
@@ -154,6 +153,8 @@
         var destroyed = false;
         var activeIndex = items.length ? 0 : -1;
         if (opts.activeValue !== undefined) {
+            // activeValue 提供但未命中任何选项时保持 -1，不误选首项（renderTriggerText 兼容 -1）
+            activeIndex = -1;
             for (var a = 0; a < items.length; a++) {
                 if (items[a].value === opts.activeValue) { activeIndex = a; break; }
             }
@@ -211,6 +212,15 @@
             closeMenu(false);
         }
 
+        // Tab 离开收起：focusout 后 setTimeout(0) 等焦点落定再判——activeElement 已移出
+        // rootEl（含菜单）才关，且不抢焦点（用户主动 Tab 走，尊重其去向）；菜单内 Tab
+        // 顺序移动 contains 为真不关。监听挂在 rootEl 上随 DOM 销毁，destroy 无需额外清理。
+        rootEl.addEventListener('focusout', function() {
+            setTimeout(function() {
+                if (isOpen && !rootEl.contains(document.activeElement)) closeMenu(false);
+            }, 0);
+        });
+
         trigger.addEventListener('click', function() {
             if (isOpen) closeMenu(false);
             else open();
@@ -267,7 +277,6 @@
 
     return {
         escapeHtml: escapeHtml,
-        escapeAttr: escapeAttr,
         fmtMoney: fmtMoney,
         toast: toast,
         setPending: setPending,

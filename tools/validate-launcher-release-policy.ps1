@@ -194,6 +194,7 @@ function Get-Cf7ProductionChecks {
         'css\workbench\inventory.css', 'css\workbench\skins.css', 'css\workbench\entities.css',
         'css\workbench\crafting.css', 'css\workbench\skills.css', 'css\workbench\equipment-tuning.css',
         'css\workbench\components.css', 'css\workbench\character-build.css',
+        'css\workbench\character-build-stats.css',
         'css\workbench\states.css', 'css\workbench\motion.css',
         'css\hairdresser.css', 'css\task_panel.css', 'css\workbench\team.css',
         'lib\marked.min.js', 'help\controls.md', 'help\worldview.md', 'help\easter-eggs.md',

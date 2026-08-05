@@ -260,7 +260,7 @@
     // ── team (战队：佣兵 / 伙伴 / 战宠 / 机械) ──
     // 子视图继续使用 pets / mercs 协议，但只有 team 是生产 Panel。
     // team 已接入 workbench 共享层，顺序固定：共享层（lifecycle/focus/primitives/profile/shell/
-    // components）→ 领域（asset-timeline/dressup/merc-data/team-shared/pet/merc）→ 壳（team-panel）。
+    // components/inspection-viewport）→ 领域（asset-timeline/dressup/merc-data/team-shared/pet/merc）→ 壳（team-panel）。
     Panels.registerLazy('team',
         ['modules/workbench-lifecycle.js',
          'modules/workbench-focus.js',
@@ -268,9 +268,9 @@
          'modules/workbench-profile.js',
          'modules/workbench.js',
          'modules/workbench-components.js',
+         'modules/workbench-inspection-viewport.js',
          'modules/asset-timeline.js',
          'modules/dressup-doll-renderer.js',
-         'modules/workbench-inspection-viewport.js',
          'modules/merc-data.js',
          'modules/team/team-shared.js',
          'modules/pet-panel.js',

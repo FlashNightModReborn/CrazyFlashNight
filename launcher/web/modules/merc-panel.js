@@ -3,7 +3,8 @@
  *
  * 视图地图（设计 §3.2，profile = catalog-decision）：
  *  - roster（默认）：左栏名册（K-A 起单栏宽行卡 buildMercRowCard：小纸娃娃头像 +
- *    名称/元信息 + 装备带 11 槽 + 技能带 + 右侧直操；世界内雇佣候选置顶带「候选」
+ *    名称/元信息 + 装备带 11 槽 + 右侧直操——Phase J 起技能带下卡，对齐旧版
+ *    「技能不上卡」，技能详情由右栏 / 培养页承担；世界内雇佣候选置顶带「候选」
  *    标识；名册网格挂 GridDensityController panelId='team-merc'，compact 收成
  *    [小头像 + 名称/等级 + 迷你装备行] 宽行），右栏决策面（中号纸娃娃、名称/等级/状态、
  *    关键属性摘要、出战 · 休息（阵亡→复活 · 复活币×1）、「培养 →」）；
@@ -173,7 +174,7 @@
         _hiredMercs = [];
         _hireData = [];
         _ttCache = {};
-        _dressupThumbCache = {};
+        // _dressupThumbCache 不清：着装在面板关闭期间不会变，重开免全量重跑 alpha 测量（旧版跨会话保留）
         _selectedSlot = -1;
         _selectedPoolIdx = -1;
         _detailSlot = -1;
@@ -182,7 +183,8 @@
     }
 
     function requestClose() {
-        if (_busy) return;  // pending 操作期间阻止关闭，防止状态泄漏（对齐 pet 模式）
+        // pending 操作期间阻止关闭，防止状态泄漏（对齐 pet 模式）；用户动作守卫给可读反馈
+        if (_busy) { notifyBusy(); return; }
         if (window.TeamPanelHost && TeamPanelHost.requestClose) {
             TeamPanelHost.requestClose();
             return;
@@ -298,6 +300,7 @@
         var hireEntry = button('＋ 雇佣佣兵', 'team-pane-btn team-goto-hire', enterHire);
         hireEntry.setAttribute('data-tone', 'primary');
         hireEntry.setAttribute('aria-label', '打开雇佣市场');
+        hireEntry.setAttribute('data-audio-cue', 'confirm');
         tools.appendChild(hireEntry);
         paneHeader.appendChild(tools);
         _rosterLeftRoot.appendChild(paneHeader);
@@ -307,6 +310,9 @@
         _rosterScrollEl.setAttribute('data-scroll-region', '');
         _gridEl = document.createElement('div');
         _gridEl.className = 'team-entity-grid team-merc-grid';
+        // EntityTile 卡均为 role=option，容器补 listbox 语义（空态/骨架条目见各自投影）
+        _gridEl.setAttribute('role', 'listbox');
+        _gridEl.setAttribute('aria-label', '佣兵名册');
         _rosterScrollEl.appendChild(_gridEl);
         _rosterLeftRoot.appendChild(_rosterScrollEl);
         _density.register(_gridEl);
@@ -330,6 +336,7 @@
         paneHeader.className = 'team-pane-header';
         var backBtn = button('‹ 返回名册', 'team-pane-btn team-back-roster', backToRoster);
         backBtn.setAttribute('aria-label', '返回佣兵名册');
+        backBtn.setAttribute('data-audio-cue', 'cancel');
         paneHeader.appendChild(backBtn);
 
         // 等级快速定位：池按等级升序，chip 跳到对应区间起点（保持无缝下滑）
@@ -353,6 +360,9 @@
         _hireScrollEl.setAttribute('data-scroll-region', '');
         _hireGridEl = document.createElement('div');
         _hireGridEl.className = 'team-entity-grid team-merc-hire-grid';
+        // 同名册网格：EntityTile 卡为 role=option，容器补 listbox 语义
+        _hireGridEl.setAttribute('role', 'listbox');
+        _hireGridEl.setAttribute('aria-label', '可雇佣佣兵列表');
         _hireScrollEl.appendChild(_hireGridEl);
         // H2-4：hire 与 roster 共享同一密度状态（同 panelId='team-merc'），
         // compact 时 hire 卡收为紧凑行（头像小 + 名称/等级/价格一行），full 保持现状
@@ -441,6 +451,8 @@
             renderRosterGrid();
             renderDetail();
             renderDetailPage();
+            // 雇佣失败对账重拉后，hire 右栏余额 / 门控显示值同步刷新
+            if (_view === 'hire') renderHirePreview();
         });
     }
 
@@ -489,17 +501,23 @@
         for (var i = 0; i < 5; i++) {
             var cell = document.createElement('div');
             cell.className = 'team-skel-card';
+            // 骨架是纯加载装饰：aria-hidden 移出 listbox 语义树
+            cell.setAttribute('aria-hidden', 'true');
             grid.appendChild(cell);
         }
     }
 
     function rosterEmptyState() {
         // H2-5 人文向文案：statement 变化 + nextStep 指回雇佣入口（居中版式由 team.css 承担）
-        return TeamShared.buildEmptyState({
+        var node = TeamShared.buildEmptyState({
             kind: 'empty',
             statement: '佣兵名册空空如也',
             nextStep: '点「＋ 雇佣佣兵」，迎接第一位同行的佣兵'
         });
+        // listbox 内非 EntityTile 条目：投影为未选中 option，保证容器语义合法
+        node.setAttribute('role', 'option');
+        node.setAttribute('aria-selected', 'false');
+        return node;
     }
 
     function errorEmptyState(statement, onRetry) {
@@ -508,13 +526,16 @@
             statement: statement,
             nextStep: '检查连接后重试'
         });
+        // 同上空态：listbox 内投影为未选中 option（含重试钮，不能 aria-hidden）
+        node.setAttribute('role', 'option');
+        node.setAttribute('aria-selected', 'false');
         node.appendChild(button('重试', 'team-pane-btn team-empty-retry', onRetry));
         return node;
     }
 
     // ═══════════════════════════════════════════════════════════
     // K-A 统一宽行卡（名册 / 雇佣 / 世界内候选同骨架，单栏一排一个）：
-    //   [头像][信息块 名称+元信息][图标带块 装备带+技能带][右侧区]
+    //   [头像][信息块 名称+元信息][图标带块 装备带（Phase J 技能带下卡）][右侧区]
     // 右侧区按 mode 分野：roster = 卡内直操（出战/休息·复活 + 解雇）；
     // hire / candidate = 价格牌（选中进右栏预览，无按钮——购买走 CommitBar，
     // 候选走右栏确认雇佣）。full / compact 双态 DOM 一并投影（图标带 + 迷你
@@ -566,12 +587,12 @@
         body.appendChild(metaLine);
         card.appendChild(body);
 
-        // 图标带块：装备带 11 槽 + 技能带（无技能不渲染；compact 由 CSS 整隐）
+        // 图标带块：装备带 11 槽（compact 由 CSS 整隐）。
+        // Phase J 视觉对齐：技能带下卡——对齐旧版「技能不上卡」降噪（技能详情由右栏
+        // 决策面技能流 / 培养页承担，见 buildSkillBlock），宽行只留装备带
         var bands = document.createElement('div');
         bands.className = 'team-merc-row-bands';
         bands.appendChild(buildEquipBand(merc));
-        var skillBand = buildSkillBand(merc);
-        if (skillBand) bands.appendChild(skillBand);
         card.appendChild(bands);
         // K-A compact 迷你装备行：与 full 带同构件（buildEquipCell = 烘焙图标/占位
         // + 强化等级角标 + scope rich tooltip），仅装备、CSS 收 15px；技能不进 compact
@@ -674,6 +695,8 @@
     // 宽行卡装备带：11 槽固定图标带（复用 buildEquipCell 烘焙图标/占位回退/
     // 强化等级小角标/scope tooltip；空槽 = 虚线空格 + title 槽位名）。
     // 行内尺寸由 team.css 卡作用域收成 20px（detail / hire 预览 32px 规格不动）。
+    // Phase J：同卡技能带（buildSkillBand）已随「技能不上卡」下卡删除——技能详情
+    // 由右栏决策面技能流（buildSkillBlock）/ 培养页承担。
     function buildEquipBand(merc) {
         var band = document.createElement('div');
         band.className = 'team-entity-iconband team-merc-card-equips';
@@ -694,17 +717,6 @@
                 band.appendChild(emptyCell);
             }
         }
-        return band;
-    }
-
-    // 宽行卡技能带：技能图标 + 等级角标（复用 buildSkillCell 烘焙命中/
-    // 类型首字占位/scope tooltip 同模式）；无技能不渲染（行高随内容自适应）
-    function buildSkillBand(merc) {
-        var skills = merc.skills;
-        if (!skills || !skills.length) return null;
-        var band = document.createElement('div');
-        band.className = 'team-entity-iconband team-merc-card-skills';
-        for (var i = 0; i < skills.length; i++) band.appendChild(buildSkillCell(skills[i]));
         return band;
     }
 
@@ -783,7 +795,7 @@
     }
 
     function selectMerc(slot) {
-        if (_busy) return;
+        if (_busy) { notifyBusy(); return; }
         _selectedSlot = slot;
         var cards = _gridEl.querySelectorAll('.team-merc-card');
         for (var i = 0; i < cards.length; i++) {
@@ -858,9 +870,11 @@
 
         var price = document.createElement('div');
         price.className = 'team-cand-price';
+        // 余额写法对齐 hire 预览 CommitBar status：K点价 > 0 时补 K点余额
         price.textContent = '契约金 ' + TeamShared.fmtMoney(cand.goldPrice)
             + ((cand.kPrice || 0) > 0 ? ' / ' + TeamShared.fmtMoney(cand.kPrice) + ' K' : '')
-            + ' · 余额 ' + TeamShared.fmtMoney(_snapshot ? _snapshot.gold : 0);
+            + ' · 余额 金币 ' + TeamShared.fmtMoney(_snapshot ? _snapshot.gold : 0)
+            + ((cand.kPrice || 0) > 0 ? ' · K点 ' + TeamShared.fmtMoney(_snapshot ? _snapshot.kpoint : 0) : '');
         _detailEl.appendChild(price);
 
         var gate = candidateGate(cand);
@@ -973,6 +987,7 @@
             openDetail(merc.slotIndex);
         });
         trainBtn.setAttribute('data-tone', 'primary');
+        trainBtn.setAttribute('data-audio-cue', 'confirm');
         trainBtn.setAttribute('aria-label', '培养 ' + merc.name);
         trainBtn.title = '造型预览 / 性格特质 / 技能详情 / 装备调配';
         actions.appendChild(trainBtn);
@@ -1034,7 +1049,8 @@
     // hire 视图：雇佣市场（L/R 原位切换，对齐 pet store）
     // ═══════════════════════════════════════════════════════════
     function enterHire() {
-        if (_busy || _view === 'hire' || !_shell) return;
+        if (_busy) { notifyBusy(); return; }
+        if (_view === 'hire' || !_shell) return;
         if (!_hireL) buildHireViews();
         _view = 'hire';
         _hireMinLevel = 0;
@@ -1045,6 +1061,7 @@
     }
 
     function backToRoster() {
+        if (_busy) { notifyBusy(); return; }   // 旧版 navigateTo 的 busy 守卫（重写时丢失）
         if (_view !== 'hire' || !_shell) return;
         _view = 'roster';
         _selectedPoolIdx = -1;
@@ -1053,7 +1070,8 @@
     }
 
     function onLevelChip(chip) {
-        if (_busy || _view !== 'hire') return;
+        if (_busy) { notifyBusy(); return; }
+        if (_view !== 'hire') return;
         var min = Number(chip.getAttribute('data-min')) || 0;
         if (min === _hireMinLevel) return;
         _hireMinLevel = min;
@@ -1202,11 +1220,15 @@
         if (_hireData.length === 0) {
             // 首包在途保持空网格 + 哨兵「加载中」；只有首包真返回空池才显示空态
             if (_hireLoaded && !_busy) {
-                _hireGridEl.appendChild(TeamShared.buildEmptyState({
+                var emptyState = TeamShared.buildEmptyState({
                     kind: 'empty',
                     statement: '暂时没有可雇佣的佣兵',
                     nextStep: '稍后再来看看'
-                }));
+                });
+                // 同名册：listbox 内非 EntityTile 条目投影为未选中 option
+                emptyState.setAttribute('role', 'option');
+                emptyState.setAttribute('aria-selected', 'false');
+                _hireGridEl.appendChild(emptyState);
             }
             renderHirePreview();
             return;
@@ -1235,7 +1257,7 @@
     }
 
     function selectHire(poolIndex) {
-        if (_busy) return;
+        if (_busy) { notifyBusy(); return; }
         _selectedPoolIdx = poolIndex;
         applyHireSelection();
         renderHirePreview();
@@ -1312,9 +1334,9 @@
         if (gate) {
             _commitBar.update({ status: gate, canCommit: false, state: 'blocked', busy: false });
         } else {
-            var balance = '余额 金币 ' + TeamShared.fmtMoney(_snapshot ? _snapshot.gold : 0)
-                + ' · K点 ' + TeamShared.fmtMoney(_snapshot ? _snapshot.kpoint : 0);
-            _commitBar.update({ status: priceText(item) + ' · ' + balance, canCommit: true, state: 'ready', busy: false });
+            // Phase K 打磨：ready 态改短文案——价格已在右栏预览 .team-merc-hire-price 行、
+            // 余额在 header metrics，CommitBar 不复述（长文本与 CTA/滚动区挤碰遮挡）
+            _commitBar.update({ status: '可确认雇佣', canCommit: true, state: 'ready', busy: false });
         }
     }
 
@@ -1323,7 +1345,8 @@
     // 带 mercId 让 AS2 做身份校验：列表刷新前的快速连点会携带已位移的
     // stale poolIndex（hire splice / 解雇回池重排），只靠索引会雇错人。
     function onCommitHire() {
-        if (_busy || _selectedPoolIdx < 0) return;
+        if (_busy) { notifyBusy(); return; }
+        if (_selectedPoolIdx < 0) return;
         var item = findHireByPoolIdx(_selectedPoolIdx);
         if (!item) return;
         var gate = hireGate(item);
@@ -1364,13 +1387,14 @@
     // detail 培养页（SecondaryPage 覆盖 body）
     // ═══════════════════════════════════════════════════════════
     function openDetail(slotIndex) {
-        if (_busy) return;
+        if (_busy) { notifyBusy(); return; }
         var merc = findMercBySlot(slotIndex);
         if (!merc) return;
         _detailSlot = slotIndex;
         if (!_detailPage) buildDetailPage();
-        renderDetailPage();
+        // 先 open 后 render：renderDetailPage 对未激活页早退（不重建 DOM / 不发 manifest promise）
         _detailPage.open({ initialFocus: _detailRightEl });
+        renderDetailPage();
     }
 
     function buildDetailPage() {
@@ -1392,6 +1416,7 @@
         header.className = 'team-advance-header';
         var back = button('‹ 返回', 'team-pane-btn team-merc-detail-back', null);
         back.setAttribute('aria-label', '返回名册');
+        back.setAttribute('data-audio-cue', 'cancel');
         _detailPage.bindBack(back);
         header.appendChild(back);
         _detailTitleEl = document.createElement('div');
@@ -1418,12 +1443,18 @@
         _detailDollViewport.setAttribute('tabindex', '0');
         _detailDollViewport.setAttribute('role', 'region');
         _detailDollViewport.setAttribute('aria-label', '佣兵造型预览，可拖拽或使用方向键移动');
-        // K-B-2：相机控件从视口右缘竖轨移到造型预览 section 内部顶部横条（培养页 header
+        // K-B-2：相机控件从视口右缘竖轨移到造型预览 section 内部顶部（培养页 header
         // 不挪用），视口宽度全量还给 doll 展示；横排一行（缩放/读数/全貌 + 四向平移），
-        // controlsHost 仅换挂载点，相机三路清零合同不变；footer 只留操作提示
+        // controlsHost 仅换挂载点，相机三路清零合同不变；footer 只留操作提示。
+        // Phase K 打磨：h3 标题与控件并入同一标题行（标题左 / 控件右，垂直居中），
+        // 省掉控件独占的一行高度；detailSection 是通用函数不动，仅在此把 h3 移入 titlerow
+        var dollTitleRow = document.createElement('div');
+        dollTitleRow.className = 'team-merc-doll-titlerow';
+        dollTitleRow.appendChild(dollSection.querySelector('.team-advance-section-title'));
         _detailDollControls = document.createElement('div');
         _detailDollControls.className = 'team-merc-doll-controls';
-        dollSection.appendChild(_detailDollControls);
+        dollTitleRow.appendChild(_detailDollControls);
+        dollSection.appendChild(dollTitleRow);
         var dollMain = document.createElement('div');
         dollMain.className = 'team-merc-doll-main';
         dollMain.appendChild(_detailDollViewport);
@@ -1448,10 +1479,14 @@
 
     function renderDetailPage() {
         if (!_detailPage || !_detailBodyEl) return;
+        // 未激活早退：培养页关闭时不重建 DOM / 不发 manifest promise（onDeploy / onRevive /
+        // requestSnapshot 的例行刷新在页面关闭时是纯浪费）；「佣兵消失 → 关页」只需在激活时
+        // 判断，并入下方分支后语义不变
+        if (!_detailPage.isActive()) return;
         var merc = findMercBySlot(_detailSlot);
         if (!merc) {
             // 佣兵不存在（被解雇/数据刷新）→ 关闭培养页回名册
-            if (_detailPage.isActive()) _detailPage.close('merc-gone');
+            _detailPage.close('merc-gone');
             return;
         }
         _detailTitleEl.textContent = merc.name + ' Lv.' + merc.level;
@@ -1470,6 +1505,7 @@
             var coins = _snapshot ? (_snapshot.reviveCoins || 0) : 0;
             var reviveBtn = button('复活 · 复活币×1', 'team-action-btn team-merc-act-revive', null);
             reviveBtn.setAttribute('data-tone', 'restore');
+            reviveBtn.setAttribute('data-audio-cue', 'confirm');
             reviveBtn.setAttribute('aria-label', '复活 ' + merc.name + '（消耗 1 枚复活币）');
             setActionBlocked(reviveBtn, coins <= 0 ? '复活币不足（商城/战利品可获得）' : '');
             if (coins > 0) reviveBtn.title = '消耗 1 枚复活币（持有 ' + coins + '）';
@@ -1481,6 +1517,7 @@
         } else {
             var deployBtn = button(merc.deployed ? '休息' : '出战', 'team-action-btn team-merc-act-deploy', null);
             deployBtn.setAttribute('data-tone', 'deploy');
+            deployBtn.setAttribute('data-audio-cue', 'confirm');
             deployBtn.setAttribute('aria-label', (merc.deployed ? '休息 ' : '出战 ') + merc.name);
             deployBtn.addEventListener('click', function() {
                 if (guardBlocked(this)) return;
@@ -1664,10 +1701,12 @@
 
     // 解雇：共享 modal（danger 主按钮），替代自绘 confirm overlay
     function confirmDismiss(merc) {
-        if (_busy || !_shell) return;
+        if (_busy) { notifyBusy(); return; }
+        if (!_shell) return;
         _shell.openModal({
             kind: 'confirm',
-            kicker: '佣兵培养',
+            // 名册卡直操解雇也触发此 modal，kicker 用中性的「佣兵管理」（不只培养页入口）
+            kicker: '佣兵管理',
             title: '确认解雇',
             message: '确定要解雇 ' + merc.name + '（Lv.' + merc.level + '）吗？',
             detail: '解雇后将回到雇佣市场。',
@@ -1680,7 +1719,7 @@
     }
 
     function doDismiss(slotIndex) {
-        if (_busy) return;
+        if (_busy) { notifyBusy(); return; }
         beginOp(null);
         sendPanelMsg('dismiss', { mercIndex: slotIndex }, function(data) {
             endOp(null);
@@ -1699,7 +1738,7 @@
     // 操作处理（协议与现役逐条一致；按钮 pending + blocked 可读原因）
     // ═══════════════════════════════════════════════════════════
     function onDeploy(slotIndex, btn) {
-        if (_busy) return;
+        if (_busy) { notifyBusy(); return; }
         var merc = findMercBySlot(slotIndex);
         if (!merc) return;
         beginOp(btn);
@@ -1720,7 +1759,7 @@
 
     // 阵亡佣兵复活：消耗 1 枚复活币；no_revive_coin 映射「复活币不足」（与现役一致）
     function onRevive(slotIndex, btn) {
-        if (_busy) return;
+        if (_busy) { notifyBusy(); return; }
         var merc = findMercBySlot(slotIndex);
         if (!merc) return;
         beginOp(btn);
@@ -1747,7 +1786,7 @@
     // 世界内雇佣（NPC 处确认）：旧 Symbol 2035 的 web 等价。world_hire 走 mercs 通道，
     // AS2 用 _pendingHireNpc 读权威、扣费、写入、spawn 于 NPC 位 + 删 NPC。回 hired:true → 关面板。
     function onWorldHire(btn) {
-        if (_busy) return;
+        if (_busy) { notifyBusy(); return; }
         beginOp(btn);
         sendPanelMsg('world_hire', {}, function(data) {
             endOp(btn);
@@ -1766,19 +1805,29 @@
         });
     }
 
-    // 操作锁 + 按钮 pending（TeamShared.setPending 投影）
+    // 操作锁 + 按钮 pending（TeamShared.setPending 投影）；
+    // data-team-busy 投影到壳根（指针锁样式由 team.css 消费，对齐旧版 .pet-busy 语义）
     function beginOp(btn) {
         _busy = true;
+        if (_shell) _shell.getRoot().setAttribute('data-team-busy', 'true');
         if (btn) TeamShared.setPending(btn, true);
         if (_shell) _shell.setStatus('处理中', Workbench.WorkbenchState.PENDING);
     }
     function endOp(btn) {
         _busy = false;
+        // onClose / teardown 后 shell 可能已销毁（_shell 置空），必须判空
+        if (_shell) _shell.getRoot().removeAttribute('data-team-busy');
         if (btn) TeamShared.setPending(btn, false);
         if (_shell && !_loadError) {
             _shell.setStatus(_snapshot ? '就绪' : '读取中',
                 _snapshot ? Workbench.WorkbenchState.READY : Workbench.WorkbenchState.LOADING);
         }
+    }
+
+    // busy 守卫的可读反馈（设计 §4：blocked 给可读原因，不允许可点外观 + silent no-op）。
+    // 仅用户动作处理器调用；纯内部程序化路径（requestHireList / maybeAutoFill / onHireScroll）保持静默
+    function notifyBusy() {
+        if (_shell) _shell.setStatus('操作进行中，请稍候…', Workbench.WorkbenchState.PENDING);
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -2419,6 +2468,8 @@
     function resetToList() {
         if (_detailPage && _detailPage.isActive()) _detailPage.close('reset');
         backToRoster();
+        // 旧版 navigateTo('list') 会重拉 snapshot：保留 team-panel 重复点当前 tab 的手动刷新名册通道
+        requestSnapshot();
     }
 
     window.MercTeamController = {

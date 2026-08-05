@@ -599,6 +599,7 @@ launcher/
 │       ├── npcshop.js                     NPC 商品目录 + 待购/待售选择 + 权威原子二级结算
 │       ├── npcshop/dev/harness.html        NPC 商店 browser harness
 │       ├── team/team-panel.js             战队唯一生产 Panel（薄协调器：无独立顶栏，唯一 tab 条经 initData.tabNav 作为 header 第一个 action 注入当前激活子壳）
+│       ├── team/team-shared.js            战队共享纯 DOM 工具层（escapeHtml/fmtMoney/toast/setPending/buildEmptyState/createDropdown）
 │       ├── team/dev/harness.html           战队 browser harness（四标签 / 双栏结构 / 佣兵名册·雇佣·培养 / 会话记忆）
 │       ├── pet-panel.js                   可嵌入宠物子控制器（伙伴/战宠/机械三 tab 统一的双栏工作台形态：roster 名册 / store 领养 / advance 培养页；tabNav 作为 header 第一个 action 注入）
 │       ├── merc-panel.js / merc-data.js   可嵌入佣兵子控制器（双栏工作台形态：roster 名册纸娃娃卡 / hire 雇佣市场 CommitBar / detail 培养 SecondaryPage）+ 槽位常量

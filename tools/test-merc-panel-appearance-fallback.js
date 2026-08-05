@@ -7,6 +7,7 @@ const vm = require('vm');
 
 const projectRoot = path.resolve(__dirname, '..');
 const panelPath = path.join(projectRoot, 'launcher', 'web', 'modules', 'merc-panel.js');
+const mercDataPath = path.join(projectRoot, 'launcher', 'web', 'modules', 'merc-data.js');
 const manifestPath = path.join(projectRoot, 'launcher', 'web', 'assets', 'dressup', 'manifest.json');
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -23,7 +24,11 @@ source = source.replace(marker, [
     '        normalizeMercGender: normalizeMercGender,',
     '        dressupEquipmentFromMerc: dressupEquipmentFromMerc,',
     '        dressupAppearanceFromMerc: dressupAppearanceFromMerc,',
-    '        renderDressupSnapshot: renderDressupSnapshot',
+    // renderDressupSnapshot 现多一个 isAlive 参数（面板关闭即停 tick）；
+    // 测试无 DOM 生命周期，包一层恒活适配，保持既有 4 参调用不变
+    '        renderDressupSnapshot: function(state, width, height, callback) {',
+    '            renderDressupSnapshot(state, width, height, function() { return true; }, callback);',
+    '        }',
     '    };',
     marker
 ].join('\n'));
@@ -56,10 +61,16 @@ const context = {
         }
     },
     window: {
-        MercData: { SLOTS: [], SLOT_NAMES: {} },
         addEventListener: function() {},
         removeEventListener: function() {}
     },
+    // merc-panel.js 顶层 fail-fast（typeof 检查）依赖的最小 stub：被测函数
+    // dressupEquipmentFromMerc / dressupAppearanceFromMerc / renderDressupSnapshot
+    // 均不触碰这四个全局，空对象仅为通过加载时检查
+    TeamShared: {},
+    Workbench: {},
+    WorkbenchComponents: {},
+    PanelScale: {},
     Bridge: {
         on: function() {},
         send: function() {}
@@ -92,6 +103,12 @@ const context = {
     }
 };
 context.globalThis = context;
+
+// MercData 保持单源：直接执行 merc-data.js（零依赖 IIFE，只写 window.MercData），
+// 不硬编码 DRESSUP_SLOT_BY_INDEX 副本。浏览器中 window 即全局；VM 中 window 只是
+// 普通对象，需显式同步到全局，merc-panel.js 的裸标识符引用与 fail-fast 才能命中。
+vm.runInNewContext(fs.readFileSync(mercDataPath, 'utf8'), context, { filename: mercDataPath });
+context.MercData = context.window.MercData;
 
 vm.runInNewContext(source, context, { filename: panelPath });
 

@@ -122,14 +122,21 @@ var MockHost = {
   mercDeploy:{0:true},    // 佣兵出战态（slotIndex → bool）：snapshot 与 deploy 回包共用
   mercDead:{2:true},      // 佣兵阵亡态（佣兵丙初始阵亡）
   mercCoins:2,            // 复活币余额（snapshot.reviveCoins）
+  failAdopt:false,        // R：adopt 回 {success:false, reason}（CommitBar error 分支注入）
+  failSnapshot:false,     // R：pets snapshot 回 {success:false, error}（roster error 空态注入）
+  dualBadge:false,        // R：伙伴乙（出战中）体力归零 →「出战中」+「体力耗尽」双字牌共存样例
   handle:function(msg){
     if(msg.cmd === 'close'){ this.closeCount++; return; }
     var resp={type:'panel_resp',panel:msg.panel,cmd:msg.cmd,callId:msg.callId,success:true};
     if(msg.panel === 'pets' && msg.cmd === 'snapshot'){
       emit('panel_resp',{type:'panel_resp',panel:'mercs',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{hiredMercs:[]}});
+      if(this.failSnapshot){ resp.success=false; resp.error='模拟快照故障'; }
+      else{
       resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,false),pet(1,'伙伴乙',3,5,true),pet(2,'战宠甲',1,20,false),pet(3,'机械甲',2,10,false)],
         gold:999999,kpoint:999,currentDeployCount:1,maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:999,
         schemes:{'淬毒':{gold:500,desc:'攻击附带毒素',type:'开关',unlockLevel:1,buttonText:'进阶'}},priceOverrides:{}};
+      if(this.dualBadge && resp.snapshot.pets.length>1) resp.snapshot.pets[1].stamina=0;
+      }
     }
     if(msg.panel === 'pets' && msg.cmd === 'pet_lib') resp.petLib=PET_LIB;
     if(msg.panel === 'pets' && msg.cmd === 'adopt_list'){
@@ -151,7 +158,11 @@ var MockHost = {
     if(msg.panel === 'pets' && msg.cmd === 'level_up'){ resp.stoneCost=21; }
     if(msg.panel === 'pets' && msg.cmd === 'delete'){ this.lastDelete=msg; resp.stoneRefund=3; }
     if(msg.panel === 'pets' && msg.cmd === 'advance'){ resp.gold=998999; resp.kpoint=999; }
-    if(msg.panel === 'pets' && msg.cmd === 'adopt'){ this.lastAdopt=msg; resp.gold=998999; resp.kpoint=999; }
+    if(msg.panel === 'pets' && msg.cmd === 'adopt'){
+      this.lastAdopt=msg;
+      if(this.failAdopt){ resp.success=false; resp.reason='模拟领养失败原因'; }
+      else{ resp.gold=998999; resp.kpoint=999; }
+    }
     if(msg.panel === 'pets' && msg.cmd === 'expand_slot'){ resp.gold=998999; resp.maxSlots=9; }
     if(msg.panel === 'mercs' && msg.cmd === 'snapshot'){
       emit('panel_resp',{type:'panel_resp',panel:'pets',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{pets:[]}});
@@ -258,7 +269,7 @@ var MockHost = {
   function mercCards(){ return document.querySelectorAll('.team-merc-child .team-merc-grid .team-merc-card'); }
   function mercCardName(card){ var n=card && card.querySelector('.team-entity-name'); return n?n.textContent:''; }
   function ttBindings(node){ return PanelTooltip.__bindingsFor(node); }
-  function cardName(card){ var n=card && card.querySelector('.team-entity-name'); return n?n.textContent:''; }
+  function cardName(card){ var n=card && card.querySelector('.team-entity-name'); if(!n) return ''; var nt=n.querySelector('.team-pet-name-text'); if(nt) return nt.textContent; var t=''; for(var i=0;i<n.childNodes.length;i++){ if(n.childNodes[i].nodeType===3) t+=n.childNodes[i].textContent; } return t; }   // Phase K：pet 卡名文本包 .team-pet-name-text（名 + inline .team-pet-lv 分离），优先读 span；merc 侧仍拼文本节点
   function dropdownAt(idx){ return document.querySelectorAll('.team-pane-tools .team-dropdown')[idx]; }
   function pickOption(ddRoot, label){
     ddRoot.querySelector('.team-dropdown-trigger').click();
@@ -543,9 +554,10 @@ var MockHost = {
     storeCards[0].click(); await wait(10);
     var commitBar=document.querySelector('.workbench-commit-bar');
     var commitPrimary=document.querySelector('.workbench-commit-primary');
-    assert('team-p22','选候选 → CommitBar ready（价格 + 余额）',
+    assert('team-p22','选候选 → CommitBar ready（Phase K 短文案「可确认领养」，价格在右栏副题）',
       commitBar.classList.contains('is-ready') && !commitPrimary.disabled &&
-      document.querySelector('.workbench-commit-status').textContent.indexOf('1,000')>=0,
+      document.querySelector('.workbench-commit-status').textContent==='可确认领养' &&
+      document.querySelector('.team-store-preview .team-detail-subtitle').textContent.indexOf('1,000')>=0,
       document.querySelector('.workbench-commit-status').textContent);
     commitPrimary.click();
     var commitBusy=commitBar.classList.contains('busy') && commitPrimary.disabled;
@@ -700,14 +712,15 @@ var MockHost = {
     // ── hire 雇佣市场 ──
     document.querySelector('.team-merc-child .team-goto-hire').click();
     await waitFor(function(){ return document.querySelectorAll('.team-merc-child .team-merc-hire-grid .team-merc-hire-card').length===6; },3000);
-    assert('team-m13','雇佣市场：chips 5 真 button + 首页 6 卡 + 默认选中 + CommitBar ready（价格+余额）',
+    assert('team-m13','雇佣市场：chips 5 真 button + 首页 6 卡 + 默认选中 + CommitBar ready（Phase K 短文案「可确认雇佣」，价格在右栏价格行）',
       document.querySelectorAll('.team-merc-child .team-merc-lvl-chip').length===5 &&
       Array.from(document.querySelectorAll('.team-merc-child .team-merc-lvl-chip')).every(function(c){ return c.tagName==='BUTTON'; }) &&
       document.querySelectorAll('.team-merc-child .team-merc-hire-grid .team-merc-hire-card').length===6 &&
       document.querySelectorAll('.team-merc-child .team-merc-hire-grid .team-merc-hire-card[data-state="selected"]').length===1 &&
       document.querySelector('.team-merc-child .workbench-commit-bar').classList.contains('is-ready') &&
       !document.querySelector('.team-merc-child .workbench-commit-primary').disabled &&
-      document.querySelector('.team-merc-child .workbench-commit-status').textContent.indexOf('5,000')>=0,
+      document.querySelector('.team-merc-child .workbench-commit-status').textContent==='可确认雇佣' &&
+      document.querySelector('.team-merc-child .team-merc-hire-price').textContent.indexOf('5,000')>=0,
       document.querySelector('.team-merc-child .workbench-commit-status').textContent);
     assert('team-m13b','hire 候选卡含 L 角标框挂载点',
       document.querySelectorAll('.team-merc-child .team-merc-hire-card').length===6 &&
@@ -815,14 +828,23 @@ var MockHost = {
       mDollViewport.getAttribute('data-inspection-active')==='true' &&
       document.querySelectorAll('.team-merc-child .team-merc-doll-controls [data-inspection-action]').length===7);
     // ── K-B-2：相机控件顶部横条（controlsHost 在 viewport 顶缘之上 + 7 控件一行 + viewport 无溢出）──
+    //   Phase K：控件并入造型预览标题行（.team-merc-doll-titlerow：h3 左 / 控件右，垂直居中）
     var jCtlHost=document.querySelector('.team-merc-child .team-merc-doll-controls');
+    var jTitleRow=document.querySelector('.team-merc-child .team-merc-doll-titlerow');
+    var jTitleH3=jTitleRow?jTitleRow.querySelector('.team-advance-section-title'):null;
     var jVpRect=mDollViewport.getBoundingClientRect();
     var jCtlRect=jCtlHost?jCtlHost.getBoundingClientRect():null;
+    var jH3Rect=jTitleH3?jTitleH3.getBoundingClientRect():null;
     var jCtlKids=jCtlHost?Array.from(jCtlHost.querySelectorAll('[data-inspection-action]')):[];
     var jRowTops=jCtlKids.map(function(b){ return b.getBoundingClientRect().top; });
     var jOneRow=jRowTops.length>0 && jRowTops.every(function(t){ return Math.abs(t-jRowTops[0])<=1; });
-    assert('team-j1','K-B-2：相机控件顶部横条（host 贴 viewport 顶缘 + 7 控件 24-26px 一行不折 + viewport 无横纵溢出）',
-      !!jCtlRect && jCtlRect.bottom<=jVpRect.top+1 &&
+    assert('team-j1','K-B-2/Phase K：相机控件并入标题行（titlerow 内 h3 左 + 控件右垂直居中同行 + host 贴 viewport 顶缘 + 7 控件 24-26px 一行不折 + viewport 无横纵溢出）',
+      !!jTitleRow && !!jTitleH3 && jTitleH3.textContent==='造型预览' &&
+      jCtlHost.parentNode===jTitleRow &&
+      !!jH3Rect && !!jCtlRect &&
+      Math.abs((jH3Rect.top+jH3Rect.height/2)-(jCtlRect.top+jCtlRect.height/2))<=1 &&
+      jH3Rect.right<=jCtlRect.left+1 &&
+      jCtlRect.bottom<=jVpRect.top+1 &&
       jCtlRect.left>=jVpRect.left-12 && jCtlRect.right<=jVpRect.right+12 &&
       jCtlKids.length===7 && jOneRow &&
       jCtlKids.every(function(b){ return b.offsetWidth>=24 && b.offsetWidth<=26 && b.offsetHeight>=24 && b.offsetHeight<=26; }) &&
@@ -1023,10 +1045,10 @@ var MockHost = {
     var eRBg=getComputedStyle(eSlotR).backgroundImage;
     var eVeilL=layerAlpha(eLBg,false);
     var eBaseR=layerAlpha(eRBg,true);
-    assert('team-e3','L 槽 veil 45~55%（hero 可辨）+ R 槽名册纹理（repeating 行纹 + 不透明底 + 零 url）',
-      eVeilL>=0.4 && eVeilL<=0.6 &&
+    assert('team-e3','L 槽 veil 60~70%（Phase J 加深：hero 隐约可辨不与卡片争主角）+ R 槽名册纹理（repeating 行纹 + 不透明底 + 零 url）',
+      eVeilL>=0.6 && eVeilL<=0.7 &&
       eRBg.indexOf('repeating-linear-gradient(')>=0 && eRBg.indexOf('url(')<0 && eBaseR===1,
-      'L veil='+eVeilL+', R base alpha='+eBaseR);
+      'L veil='+eVeilL+', R base alpha='+eBaseR);   /* Phase J 新基线：veil 52/44% → 66%/60%（探测值 ≈0.66） */
     var eBg=getComputedStyle(eWb).backgroundImage;
     var eLastLinear=eBg.lastIndexOf('linear-gradient(');
     assert('team-e4','根程序底：细点阵 radial 氛围层 + 末层中灰 linear-gradient（零 url）',
@@ -1056,13 +1078,13 @@ var MockHost = {
       fStoreHead.offsetHeight>0 && fStoreHead.offsetHeight<=40,
       'height='+(fStoreHead&&fStoreHead.offsetHeight));
     document.querySelector('.team-back-roster').click(); await wait(30);
-    // ── 空位卡透化：veil 36% 让垫图透过名册，与实体卡 opaque 石料虚实对比 ──
+    // ── 空位卡透化：Phase J veil 36% → 55%（垫图透得更克制），与实体卡 opaque 石料虚实对比保持 ──
     var fSlot=document.querySelector('.team-pet-grid .team-slot-empty');
     var fEnt=document.querySelector('.team-pet-grid .team-pet-card');
     var fSlotAlpha=fSlot ? alphaOfColor(getComputedStyle(fSlot).backgroundColor) : -1;
     var fEntAlpha=fEnt ? layerAlpha(getComputedStyle(fEnt).backgroundImage,false) : -1;
-    assert('team-f3','空位卡透化（veil 25~45%）× 实体卡石料（罩 ≥55%）虚实对比',
-      fSlotAlpha>=0.25 && fSlotAlpha<=0.45 && fEntAlpha>=0.55,
+    assert('team-f3','空位卡透化（Phase J veil 50~60%，新基线 55%）× 实体卡石料（罩 ≥55%）虚实对比',
+      fSlotAlpha>=0.5 && fSlotAlpha<=0.6 && fEntAlpha>=0.55 && fSlotAlpha<fEntAlpha,
       'empty veil='+fSlotAlpha+', entity veil='+fEntAlpha);
     // ── 焦点环暖化：--wb-focus 解析为暖琥珀（R≫B，非默认青），与选中态同族不同色 ──
     var fProbe=document.createElement('button');
@@ -1235,29 +1257,57 @@ var MockHost = {
       hNormMeters[1].getAttribute('data-tone')==='xp' &&
       hNormCard.offsetHeight<=110 && hGridCols===3,
       'cardH='+hNormCard.offsetHeight+', cols='+hGridCols+', xpTone='+(hNormMeters[1]&&hNormMeters[1].getAttribute('data-tone')));
-    // ── K-B-1：pet full 卡紧凑语言化（meta 体力文字退役 / 等级数字角标贴图标右下 / 3 列 / 按钮单行）──
+    // ── Phase J：pet full 卡排版回升（meta 文字行保持退役 / 等级 inline 回名称行 /
+    //   卡内 meter 行带标签数值 / 3 列 / 按钮单行）——K-B-1 的图标右下数字角标语言退役 ──
     var kbCard=document.querySelector('.team-pet-grid .team-pet-card[data-slot="3"]');
     var kbMaxCardB=document.querySelector('.team-pet-grid .team-pet-card[data-slot="0"]');
     var kbMetaNodes=document.querySelectorAll('.team-pet-grid .team-pet-card:not(.team-pet-card-candidate) .team-entity-meta');
-    var kbLv=kbCard.querySelector('.team-entity-lv-badge');
-    var kbMaxLv=kbMaxCardB.querySelector('.team-entity-lv-badge');
-    var kbLvCs=getComputedStyle(kbLv), kbMaxLvCs=getComputedStyle(kbMaxLv);
-    var kbIcon=kbCard.querySelector('.team-entity-icon');
-    var kbScale=kbCard.getBoundingClientRect().width/kbCard.offsetWidth;
-    var kbIR=kbIcon.getBoundingClientRect(), kbLR=kbLv.getBoundingClientRect();
+    var kbName=kbCard.querySelector('.team-entity-name');
+    var kbNameCs=getComputedStyle(kbName);
+    var kbNameText=kbCard.querySelector('.team-pet-name-text');
+    var kbLv=kbCard.querySelector('.team-pet-lv');
+    var kbMaxLv=kbMaxCardB.querySelector('.team-pet-lv');
+    var kbLvBadge=kbCard.querySelector('.team-entity-lv-badge');
+    var kbMaxLvC=kbMaxLv?rgbOf(getComputedStyle(kbMaxLv).color):null;
+    var kbRows=kbCard.querySelectorAll('.team-card-meter-row');
+    var kbMaxRows=kbMaxCardB.querySelectorAll('.team-card-meter-row');
+    var kbRowTrack=kbRows.length?getComputedStyle(kbRows[0].querySelector('.team-meter')):null;
     var kbActs=Array.from(kbCard.querySelectorAll('.team-entity-actions .team-action-btn'));
-    var kbMaxLvC=rgbOf(kbMaxLvCs.color);
     var kbScroll=document.querySelector('.team-pet-roster-scroll');
-    assert('team-kb1','K-B-1：full 卡零体力文字（无 meta 节点）+ 等级数字角标贴图标右下（满级金色同源）+ 直操钮单行不裁字 + 首屏零纵溢',
+    assert('team-kb1','Phase J/K：full 卡名 serif 13px + 名内 inline Lv（名字 .team-pet-name-text 可缩 / Lv 不缩；暖橙 / 满级 MAX 行）+ meter 行「label+8px track+数值」（体力整数 · 经验 %）+ 角标退役 + 直操钮单行不裁字 + 首屏零纵溢',
       kbMetaNodes.length===0 &&
-      kbCard.textContent.indexOf('体力')<0 &&
-      kbLv.textContent==='5' && kbLvCs.display!=='none' && kbLvCs.position==='absolute' &&
-      Math.abs((kbIR.right-kbLR.right)/kbScale-2)<=2.5 && Math.abs((kbIR.bottom-kbLR.bottom)/kbScale-2)<=2.5 &&
+      (kbNameCs.fontFamily.indexOf('思源宋体')>=0 || kbNameCs.fontFamily.indexOf('Source Han Serif')>=0) &&
+      kbNameCs.fontSize==='13px' &&
+      !!kbNameText && kbNameText.parentNode===kbName && kbNameText.textContent.length>0 &&
+      !!kbLv && kbLv.parentNode===kbName && kbLv.previousSibling===kbNameText && kbLv.textContent==='Lv.5' &&
+      !!kbMaxLv && kbMaxLv.textContent==='Lv.100' &&
       !!kbMaxLvC && kbMaxLvC[0]>kbMaxLvC[2]+0.1 &&
+      !!kbLvBadge && getComputedStyle(kbLvBadge).display==='none' &&
+      kbRows.length===2 &&
+      kbRows[0].querySelector('.team-card-meter-label').textContent==='体力' &&
+      kbRows[0].querySelector('.team-card-meter-chip').textContent==='100' &&
+      kbRows[1].querySelector('.team-card-meter-label').textContent==='经验' &&
+      kbRows[1].querySelector('.team-card-meter-chip').textContent==='10%' &&
+      !!kbRowTrack && kbRowTrack.height==='8px' &&
+      kbMaxRows.length===2 && kbMaxRows[1].querySelector('.team-card-meter-chip').textContent==='MAX' &&
+      kbMaxRows[1].querySelector('.team-meter').getAttribute('data-tone')==='max' &&
       kbActs.length===2 && kbActs.every(function(b){ return getComputedStyle(b).whiteSpace==='nowrap' && b.scrollWidth<=b.clientWidth+1; }) &&
       kbScroll.scrollHeight<=kbScroll.clientHeight+1,
-      'meta='+kbMetaNodes.length+', badgeΔ='+((kbIR.right-kbLR.right)/kbScale).toFixed(1)+'/'+((kbIR.bottom-kbLR.bottom)/kbScale).toFixed(1)+
-      ', scroll='+kbScroll.scrollHeight+'/'+kbScroll.clientHeight);
+      'name='+kbNameCs.fontSize+'/'+kbNameCs.fontFamily.slice(0,24)+', lv='+(kbLv&&kbLv.textContent)+
+      ', nt='+(!!kbNameText)+'/'+(kbNameText&&kbNameText.parentNode===kbName)+'/'+(!!kbLv&&kbLv.previousSibling===kbNameText)+
+      ', chip='+(kbRows[0]&&kbRows[0].querySelector('.team-card-meter-chip').textContent)+
+      ', actW='+kbActs.map(function(b){return b.scrollWidth+'/'+b.clientWidth;}).join('|')+
+      ', rows='+kbRows.length+', scroll='+kbScroll.scrollHeight+'/'+kbScroll.clientHeight);
+    // ── Phase K：同卡双 meter track 等长（数值列 .team-card-meter-chip 定宽 28px，
+    //   「170」vs「10%」不再撑出不等长 bar；缩放归一写法仿 i6/r5b）──
+    var pkCard=document.querySelector('.team-pet-grid .team-pet-card[data-slot="3"]');
+    var pkRows=pkCard.querySelectorAll('.team-card-meter-row');
+    var pkScale=pkCard.getBoundingClientRect().width/pkCard.offsetWidth;
+    var pkT0=pkRows.length?pkRows[0].querySelector('.team-meter').getBoundingClientRect().width/pkScale:0;
+    var pkT1=pkRows.length>1?pkRows[1].querySelector('.team-meter').getBoundingClientRect().width/pkScale:0;
+    assert('team-pk1','Phase K：同卡双 meter track 等长（数值列定宽，track 宽度差 ≤1px）',
+      pkRows.length===2 && Math.abs(pkT0-pkT1)<=1,
+      'track='+pkT0.toFixed(1)+'/'+pkT1.toFixed(1)+' @scale'+pkScale.toFixed(2));
     // ── H2-3：浅石牌字重（computed：action / pane / promo ≥600，CommitBar 主 CTA ≥700）──
     hNormCard.click(); await wait(10);
     var hActionW=parseInt(getComputedStyle(document.querySelector('.team-pet-detail .team-action-btn')).fontWeight,10);
@@ -1301,28 +1351,28 @@ var MockHost = {
       hPrev.querySelector('.team-detail-subtitle').textContent.indexOf('180cm')>=0 &&
       document.querySelector('.team-merc-child .workbench-commit-bar').classList.contains('is-ready'),
       'traits='+hPrev.querySelectorAll('.team-merc-trait').length+', skills='+hPrev.querySelectorAll('.team-merc-skill-row').length+', equips='+hPrev.querySelectorAll('.team-merc-equip-slot').length);
-    // ── K-A：hire 卡与名册同骨架（装备带 + 技能带 + 右侧价格牌；格级 tooltip 同 rich/basic 绑定）──
+    // ── K-A：hire 卡与名册同骨架（装备带 + 右侧价格牌；格级 tooltip 同 rich/basic 绑定）──
+    // Phase J：技能带下卡（对齐旧版「技能不上卡」）——卡面零 .merc-skill-cell；
+    // 技能格 basic tooltip 子断言迁 hire 预览右栏技能行（.team-merc-skill-rows 为技能格宿主）
     var kaHireCard=document.querySelector('.team-merc-child .team-merc-hire-card');
     var kaHEq=kaHireCard.querySelector('.team-merc-card-equips');
-    var kaHSk=kaHireCard.querySelector('.team-merc-card-skills');
     var kaHEqBs=ttBindings(kaHEq.querySelector('.merc-equip-cell:not(.merc-equip-empty)'));
-    var kaHSkCell=kaHSk.querySelector('.merc-skill-cell');
-    var kaHSkBs=ttBindings(kaHSkCell);
+    var kaHSkCell=document.querySelector('.team-merc-child .team-merc-hire-preview .team-merc-skill-rows .merc-skill-cell');
+    var kaHSkBs=kaHSkCell?ttBindings(kaHSkCell):[];
     var kaHSkHtml=kaHSkBs.length && kaHSkBs[0].opts.renderBasic ? kaHSkBs[0].opts.renderBasic(kaHSkBs[0].opts.item) : '';
-    assert('team-ka1','K-A：hire 卡同骨架（装备带 11 满一行 / 技能带 4（2 烘焙）/ 价格牌无按钮 / 零溢出；装备 rich + 技能 basic tooltip 绑定）',
+    assert('team-ka1','K-A：hire 卡同骨架（装备带 11 满一行 / 技能带下卡（Phase J）/ 价格牌无按钮 / 零溢出；装备 rich tooltip + 预览右栏技能格 basic 绑定）',
       kaHireCard.classList.contains('team-merc-rowcard') &&
       kaHEq.querySelectorAll('.merc-equip-cell').length===11 &&
       kaHEq.querySelectorAll('.merc-equip-cell:not(.merc-equip-empty)').length===11 &&
       kaHEq.querySelectorAll('.merc-equip-badge').length===11 &&
       kaHEq.scrollWidth<=kaHEq.clientWidth &&
-      kaHSk.querySelectorAll('.merc-skill-cell').length===4 &&
-      kaHSk.querySelectorAll('.merc-skill-cell-baked').length===2 &&
-      kaHSk.scrollWidth<=kaHSk.clientWidth &&
+      !kaHireCard.querySelector('.team-merc-card-skills') &&
+      kaHireCard.querySelectorAll('.merc-skill-cell').length===0 &&
       kaHireCard.querySelector('.team-merc-row-price').textContent.indexOf('5,000')>=0 &&
       kaHireCard.querySelectorAll('.team-entity-actions').length===0 &&
       kaHEqBs.length===1 && typeof kaHEqBs[0].opts.fetch==='function' && typeof kaHEqBs[0].opts.renderRich==='function' &&
       kaHSkBs.length===1 && kaHSkHtml.indexOf('小跳')>=0,
-      'eq='+kaHEq.querySelectorAll('.merc-equip-cell').length+', sk='+kaHSk.querySelectorAll('.merc-skill-cell').length+', price="'+kaHireCard.querySelector('.team-merc-row-price').textContent+'"');
+      'eq='+kaHEq.querySelectorAll('.merc-equip-cell').length+', skOnCard='+kaHireCard.querySelectorAll('.merc-skill-cell').length+', skTip="'+kaHSkHtml.slice(0,24)+'", price="'+kaHireCard.querySelector('.team-merc-row-price').textContent+'"');
     var hHireCard=document.querySelector('.team-merc-child .team-merc-hire-card');
     var hFullH=hHireCard.offsetHeight;
     document.querySelector('.team-merc-child .item-grid-mode-toggle button[data-layout-mode="compact"]').click(); await wait(20);
@@ -1408,32 +1458,35 @@ var MockHost = {
     // （I1 merc full 装备/技能图标带 + compact 迷你装备行 / I2 卡内直操 + 嵌套纪律 /
     //   I3 徽标同族角标对几何对齐）
     // ═══════════════════════════════════════════════════════════
-    // ── I1：merc full 卡图标带（fresh open 保 full 密度）──
+    // ── I1：merc full 卡图标带（fresh open 保 full 密度）；Phase J：技能带下卡
+    //   （对齐旧版「技能不上卡」，卡面零技能格；技能详情由右栏决策面 / 培养页承担），
+    //   顺带锁 merc 卡名 serif 13px ──
     Panels.open('team',{initialTab:'mercenary'});
     await waitFor(function(){ return document.querySelectorAll('.team-merc-child .team-merc-grid .team-merc-card').length===3; },3000);
     document.querySelector('.team-merc-child .item-grid-mode-toggle button[data-layout-mode="full"]').click(); await wait(20);
     var iMCards=document.querySelectorAll('.team-merc-child .team-merc-grid .team-merc-card');
     var iEqBand=iMCards[0].querySelector('.team-merc-card-equips');
     var iEqCells=iEqBand?iEqBand.querySelectorAll('.merc-equip-cell'):[];
-    var iSkBand=iMCards[0].querySelector('.team-merc-card-skills');
     var iGridCols=getComputedStyle(document.querySelector('.team-merc-child .team-merc-grid')).gridTemplateColumns.split(' ').length;
-    assert('team-i1','K-A：名册单栏宽行（1 列一排一个）+ full 装备带 11 槽一行（10 满 + 1 空槽虚线 / 强化角标 / 零横向溢出）+ 技能带 13 枚一行（2 烘焙）+ 无技能不渲染 + 右侧直操列（无价格牌）',
+    var iNameCs=getComputedStyle(iMCards[0].querySelector('.team-entity-name'));
+    assert('team-i1','K-A：名册单栏宽行（1 列一排一个）+ full 装备带 11 槽一行（10 满 + 1 空槽虚线 / 强化角标 / 零横向溢出）+ 技能带下卡（Phase J 卡面零技能格）+ 卡名 serif 13px + 右侧直操列（无价格牌）',
       iEqCells.length===11 &&
       iEqBand.querySelectorAll('.merc-equip-cell:not(.merc-equip-empty)').length===10 &&
       iEqBand.querySelectorAll('.merc-equip-empty').length===1 &&
       iEqBand.querySelectorAll('.merc-equip-badge').length===10 &&
       iEqBand.scrollWidth<=iEqBand.clientWidth &&
-      !!iSkBand && iSkBand.querySelectorAll('.merc-skill-cell').length===13 &&
-      iSkBand.querySelectorAll('.merc-skill-cell-baked').length===2 &&
-      iSkBand.scrollWidth<=iSkBand.clientWidth &&
+      !iMCards[0].querySelector('.team-merc-card-skills') &&
+      iMCards[0].querySelectorAll('.merc-skill-cell').length===0 &&
       !iMCards[1].querySelector('.team-merc-card-skills') &&
+      (iNameCs.fontFamily.indexOf('思源宋体')>=0 || iNameCs.fontFamily.indexOf('Source Han Serif')>=0) &&
+      iNameCs.fontSize==='13px' &&
       iGridCols===1 &&
       iMCards[0].classList.contains('team-merc-rowcard') &&
       !!iMCards[0].querySelector('.team-entity-actions .team-merc-act-deploy') &&
       !!iMCards[0].querySelector('.team-entity-actions .team-merc-act-dismiss') &&
       !iMCards[0].querySelector('.team-merc-row-price') &&
       iMCards[0].scrollWidth<=iMCards[0].clientWidth+1,
-      'equips='+iEqCells.length+'(空 '+iEqBand.querySelectorAll('.merc-equip-empty').length+'), skills='+(iSkBand?iSkBand.querySelectorAll('.merc-skill-cell').length:0)+', cols='+iGridCols);
+      'equips='+iEqCells.length+'(空 '+iEqBand.querySelectorAll('.merc-equip-empty').length+'), skOnCard='+iMCards[0].querySelectorAll('.merc-skill-cell').length+', name='+iNameCs.fontSize+', cols='+iGridCols);
     // ── K-A：merc compact 宽行（头像 30 + 名称/等级 + 迷你装备行 15px 带角标；无技能带/无按钮）──
     document.querySelector('.team-merc-child .item-grid-mode-toggle button[data-layout-mode="compact"]').click(); await wait(20);
     var iCCards=document.querySelectorAll('.team-merc-child .team-merc-grid .team-merc-card');
@@ -1456,7 +1509,10 @@ var MockHost = {
       iHeights.every(function(h){return h===iHeights[0];}),
       'mini='+iMiniCells.length+', strip='+ (iStrip?iStrip.scrollWidth:-1)+'≤'+(iStrip?iStrip.clientWidth:-1)+', cellW='+(iMiniCells.length?getComputedStyle(iMiniCells[0]).width:'?')+', h='+iHeights.join(','));
     document.querySelector('.team-merc-child .item-grid-mode-toggle button[data-layout-mode="full"]').click(); await wait(20);
-    // ── K-A：名册卡 tooltip 绑定（mock 层）——装备格 rich 协议 + 技能格 basic + 迷你行同绑定 + 卡级 tip 共存 ──
+    // ── K-A：名册卡 tooltip 绑定（mock 层）——装备格 rich 协议 + 迷你行同绑定 + 卡级 tip 共存；
+    //   Phase J 技能带下卡后，技能格 basic 子断言迁右栏决策面技能流
+    //   （.team-merc-detail .team-merc-skill-flow 为技能格唯一名册域宿主；
+    //   fresh open 默认选中出战佣兵甲，13 技能首格烘焙名「小跳」）──
     var kaCard0=document.querySelector('.team-merc-grid .team-merc-card[data-slot="0"]');
     var kaEqCells=kaCard0.querySelectorAll('.team-merc-card-equips .merc-equip-cell:not(.merc-equip-empty)');
     var kaEqBound=Array.from(kaEqCells).every(function(cell){
@@ -1467,12 +1523,12 @@ var MockHost = {
         typeof bs[0].opts.key==='string' && bs[0].opts.key.indexOf('|')>0 &&
         bs[0].opts.cache && typeof bs[0].opts.cache==='object';
     });
-    var kaSkCell=kaCard0.querySelector('.team-merc-card-skills .merc-skill-cell');
-    var kaSkBs=ttBindings(kaSkCell);
+    var kaSkCell=document.querySelector('.team-merc-child .team-merc-detail .team-merc-skill-flow .merc-skill-cell');
+    var kaSkBs=kaSkCell?ttBindings(kaSkCell):[];
     var kaSkHtml=kaSkBs.length && kaSkBs[0].opts.renderBasic ? kaSkBs[0].opts.renderBasic(kaSkBs[0].opts.item) : '';
     var kaMiniCell=kaCard0.querySelector('.team-entity-ministrip .merc-equip-cell:not(.merc-equip-empty)');
     var kaMiniBs=ttBindings(kaMiniCell);
-    assert('team-ka2','K-A：名册卡 tooltip 绑定（装备格 rich=fetch/renderRich/key raw|level/cache + 技能格 basic 含技能名 + 迷你行同 rich + 卡级 tip 共存）',
+    assert('team-ka2','K-A：名册卡 tooltip 绑定（装备格 rich=fetch/renderRich/key raw|level/cache + 迷你行同 rich + 卡级 tip 共存；技能格 basic 迁右栏技能流，Phase J 技能带下卡）',
       kaEqCells.length===10 && kaEqBound &&
       kaSkBs.length===1 && kaSkHtml.indexOf('小跳')>=0 && kaSkHtml.indexOf('Lv.')>=0 &&
       kaMiniBs.length===1 && typeof kaMiniBs[0].opts.fetch==='function' &&
@@ -1685,6 +1741,144 @@ var MockHost = {
     assert('team-j5b','J5：surface 青蓝灰（B>R 小幅 0.008~0.06，低饱和非纯中性非饱和青）',
       !!jSurface && jSurface[2]>jSurface[0] && (jSurface[2]-jSurface[0])>=0.008 && (jSurface[2]-jSurface[0])<=0.06,
       'surface='+(jSurface?jSurface.map(function(x){return x.toFixed(3);}).join('/'):'?'));
+    // ── Phase J 视觉气质对齐轮（2026-08-04）：tab serif 化 + accent 回橘窄域锁定 ──
+    var jTabCs=getComputedStyle(document.querySelector('.team-tab'));
+    assert('team-j6a','Phase J：tab 回归思源宋体（font-family 含 思源宋体/Source Han Serif + 13px + 字距 2px，min-height 27px 结构不动）',
+      (jTabCs.fontFamily.indexOf('思源宋体')>=0 || jTabCs.fontFamily.indexOf('Source Han Serif')>=0) &&
+      jTabCs.fontSize==='13px' && jTabCs.letterSpacing==='2px' && jTabCs.minHeight==='27px',
+      'font='+jTabCs.fontFamily.slice(0,40)+', size='+jTabCs.fontSize+', ls='+jTabCs.letterSpacing);
+    // j5a 的宽域（20~48°）保留不删；本条窄域（26~32°）锁本轮回橘成果（对齐旧 #ef9442 的 28.4°）
+    assert('team-j6b','Phase J：accent 回橘窄域（hue 26~32°，对齐旧 #ef9442 的 28.4°）',
+      jAccentHue>=26 && jAccentHue<=32,
+      'accent hue='+jAccentHue.toFixed(1));
+    Panels.close(); await wait(20);
+    // ═══════════════════════════════════════════════════════════
+    // Phase R：审阅收尾回归（P2 tab 焦点恢复 / 下拉 focusout 收起 /
+    //   busy 投影 data-team-busy / adopt 失败 CommitBar error 保留 /
+    //   snapshot 失败 error 空态 / 双字牌共存几何）
+    // ═══════════════════════════════════════════════════════════
+    // ── R1a：tab 焦点恢复——焦点在 tab 条内触发切换，新 Shell 挂载后还到新激活 tab ──
+    Panels.open('team',{initialTab:'partner'});
+    await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },3000);
+    var rTabPet=document.querySelector('.team-tab[data-tab="pet"]');
+    rTabPet.focus();
+    rTabPet.click();   // JS click 不搬焦点：teardown 时 activeElement 仍在 tab 条内
+    await waitFor(function(){ return petWorkbench() && petWorkbench().getAttribute('data-team-roster')==='pet' &&
+      document.querySelectorAll('.team-pet-child .team-pet-card').length===1; },3000);
+    var rNewTab=document.querySelector('.team-tab[data-tab="pet"]');
+    assert('team-r1a','P2：tab 焦点恢复（焦点在 tab 条内切换 → 还到新激活 tab 按钮）',
+      document.activeElement===rNewTab && rNewTab.classList.contains('team-tab-active') && active()==='pet',
+      'activeElement='+(document.activeElement&&document.activeElement.className));
+    // ── R1b/c：下拉 focusout——菜单内移动不收起；移出 rootEl 收起且不抢焦点 ──
+    click('partner');
+    await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },2000);
+    var rDd=dropdownAt(0);
+    var rTrig=rDd.querySelector('.team-dropdown-trigger');
+    var rMenu=rDd.querySelector('.team-dropdown-menu');
+    rTrig.click();
+    rTrig.focus();
+    var rOptIn=rMenu.querySelectorAll('.team-dropdown-option')[1];
+    rOptIn.focus();   // 焦点在菜单内移动：focusout 的 setTimeout(0) 判定 contains 为真不关
+    await wait(30);
+    assert('team-r1b','P2：下拉 focusout 菜单内移动不收起',
+      !rMenu.hidden && rTrig.getAttribute('aria-expanded')==='true');
+    var rOutside=document.querySelector('.team-goto-store');
+    rOutside.focus();   // Tab 离开 rootEl：下一轮事件循环后收起且不抢焦点
+    await wait(30);
+    assert('team-r1c','P2：下拉 focusout 移出 rootEl 收起（hidden + aria-expanded=false + 不抢焦点）',
+      rMenu.hidden && rTrig.getAttribute('aria-expanded')==='false' &&
+      document.activeElement===rOutside);
+    // ── R2：busy 投影——deploy 发起→回包前壳根 data-team-busy，回包后摘除 ──
+    var rDeployBtn=document.querySelector('.team-pet-detail .team-act-deploy');
+    rDeployBtn.click();
+    var rBusyOn=petWorkbench().getAttribute('data-team-busy')==='true';   // 同一事件轮次内捕获
+    var rDeployReq=MockHost.lastDeploy && MockHost.lastDeploy.cmd==='deploy' && MockHost.lastDeploy.slotIndex===3;
+    await wait(40);
+    var rBusyOff=!petWorkbench().hasAttribute('data-team-busy');
+    assert('team-r2','busy 投影：deploy 飞行期壳根 data-team-busy="true"，回包后摘除',
+      rBusyOn && rDeployReq && rBusyOff,
+      'busyOn='+rBusyOn+', busyOff='+rBusyOff);
+    // ── R3：adopt 失败——CommitBar error 保留 + 对账 snapshot 回包补后缀；改选清除 ──
+    MockHost.failAdopt=true;
+    document.querySelector('.team-goto-store').click();
+    await waitFor(function(){ return document.querySelectorAll('.team-store-card').length===2; },2000);
+    document.querySelectorAll('.team-store-card')[0].click(); await wait(10);
+    var rCommitBar=document.querySelector('.workbench-commit-bar');
+    var rCommitPrimary=document.querySelector('.workbench-commit-primary');
+    rCommitPrimary.click();
+    var rCommitBusy=rCommitBar.classList.contains('busy') &&
+      petWorkbench().getAttribute('data-team-busy')==='true';   // 领养 commit 同走操作锁
+    var rErrShown=await waitFor(function(){
+      return rCommitBar.classList.contains('is-error') &&
+        document.querySelector('.workbench-commit-status').textContent.indexOf('领养失败')>=0;
+    },2000);
+    var rSuffix=await waitFor(function(){
+      return document.querySelector('.workbench-commit-status').textContent.indexOf('· 数据已重新同步，请重新确认')>=0;
+    },2000);
+    assert('team-r3a','adopt 失败：CommitBar error（含原因）+ 对账回包补「重新确认」后缀且 error 保留',
+      rCommitBusy && rErrShown && rSuffix &&
+      rCommitBar.classList.contains('is-error') &&
+      document.querySelector('.workbench-commit-status').textContent.indexOf('模拟领养失败原因')>=0 &&
+      toastHas('领养失败'),
+      document.querySelector('.workbench-commit-status').textContent);
+    document.querySelectorAll('.team-store-card')[0].click(); await wait(10);   // 用户改选：error 投影失效
+    assert('team-r3b','adopt 失败后改选：CommitBar error 清除回 ready',
+      !rCommitBar.classList.contains('is-error') && rCommitBar.classList.contains('is-ready') &&
+      !rCommitPrimary.disabled &&
+      document.querySelector('.workbench-commit-status').textContent.indexOf('重新确认')<0,
+      document.querySelector('.workbench-commit-status').textContent);
+    MockHost.failAdopt=false;
+    document.querySelector('.team-back-roster').click(); await wait(20);
+    // ── R4：snapshot 失败——roster error 空态（原因 + 重试钮）；重试后名册恢复 ──
+    MockHost.failSnapshot=true;
+    Panels.close(); await wait(30);
+    Panels.open('team',{initialTab:'partner'});
+    var rErrReady=await waitFor(function(){
+      return document.querySelector('.team-pet-grid .workbench-empty-state[data-empty-kind="error"]');
+    },3000);
+    var rErrState=document.querySelector('.team-pet-grid .workbench-empty-state[data-empty-kind="error"]');
+    var rErrStmt=rErrState && rErrState.querySelector('.workbench-empty-statement');
+    assert('team-r4a','snapshot 失败：roster error 空态（陈述含失败原因 + 重试钮 + toast）',
+      rErrReady && rErrStmt.textContent.indexOf('获取伙伴数据失败')>=0 &&
+      rErrStmt.textContent.indexOf('模拟快照故障')>=0 &&
+      !!rErrState.querySelector('.team-empty-retry') && toastHas('获取伙伴数据失败'),
+      rErrStmt?rErrStmt.textContent:'no error state');
+    MockHost.failSnapshot=false;
+    rErrState.querySelector('.team-empty-retry').click();
+    var rRecovered=await waitFor(function(){
+      return document.querySelectorAll('.team-pet-child .team-pet-card').length===2;
+    },3000);
+    assert('team-r4b','error 空态重试 → 数据恢复名册重建',
+      rRecovered && !document.querySelector('.team-pet-grid .workbench-empty-state[data-empty-kind="error"]'));
+    // ── R5：双字牌共存——出战 + 体力耗尽同卡并存，纵向堆叠几何不重叠 ──
+    MockHost.dualBadge=true;
+    Panels.close(); await wait(30);
+    Panels.open('team',{initialTab:'partner'});
+    await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },3000);
+    var rDualCard=document.querySelector('.team-pet-grid .team-pet-card[data-slot="3"]');
+    var rBadges=rDualCard.querySelectorAll('.team-entity-badge:not([data-badge-kind])');
+    var rTipBs=ttBindings(rDualCard);
+    var rTipHtml=rTipBs.length && rTipBs[0].opts.renderBasic ? rTipBs[0].opts.renderBasic() : '';
+    assert('team-r5a','双字牌共存：「出战中」+「体力耗尽」(danger) 同卡并存 + aria-label/cardTip 同步',
+      rBadges.length===2 &&
+      rBadges[0].textContent==='出战中' && rBadges[1].textContent==='体力耗尽' &&
+      rBadges[1].getAttribute('data-tone')==='danger' &&
+      (rDualCard.getAttribute('aria-label')||'').indexOf('体力耗尽')>=0 &&
+      rTipHtml.indexOf('· 体力耗尽')>=0,
+      'tip='+rTipHtml.slice(-24));
+    var rCardRect=rDualCard.getBoundingClientRect();
+    var rScale=rCardRect.width/rDualCard.offsetWidth;
+    var rB0=rBadges[0].getBoundingClientRect(), rB1=rBadges[1].getBoundingClientRect();
+    var rCs0=getComputedStyle(rBadges[0]), rCs1=getComputedStyle(rBadges[1]);
+    var rLeft0=(rB0.left-rCardRect.left)/rScale, rLeft1=(rB1.left-rCardRect.left)/rScale;
+    assert('team-r5b','双字牌几何：同列堆叠不重叠 + 同 inset 8px + 不越卡界（缩放归一）',
+      rCs0.left==='8px' && rCs1.left==='8px' && rCs0.top==='8px' && rCs1.top==='28px' &&
+      rBadges[0].offsetHeight===rBadges[1].offsetHeight &&
+      rB0.bottom<=rB1.top+0.5*rScale &&
+      rLeft0>=8.5 && rLeft0<=9.5 && rLeft1>=8.5 && rLeft1<=9.5 &&
+      rB1.bottom<=rCardRect.bottom+1,
+      'b0.bottom='+rB0.bottom.toFixed(1)+', b1.top='+rB1.top.toFixed(1)+', leftΔ='+rLeft0.toFixed(1)+'/'+rLeft1.toFixed(1));
+    MockHost.dualBadge=false;
     Panels.close(); await wait(20);
     var failed=results.filter(function(x){return !x.pass;}).length;
     window.__qaResult={qa:{total:results.length,passed:results.length-failed,failed:failed,results:results}};
