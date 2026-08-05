@@ -310,8 +310,9 @@
         _rosterScrollEl.setAttribute('data-scroll-region', '');
         _gridEl = document.createElement('div');
         _gridEl.className = 'team-entity-grid team-merc-grid';
-        // EntityTile 卡均为 role=option，容器补 listbox 语义（空态/骨架条目见各自投影）
-        _gridEl.setAttribute('role', 'listbox');
+        // 卡内嵌直操真按钮，APG 明确 listbox/option 不包容嵌套交互控件——
+        // 容器投 role=list，EntityTile 卡为 role=listitem（选中态 aria-current，见 fixupCardA11y）
+        _gridEl.setAttribute('role', 'list');
         _gridEl.setAttribute('aria-label', '佣兵名册');
         _rosterScrollEl.appendChild(_gridEl);
         _rosterLeftRoot.appendChild(_rosterScrollEl);
@@ -360,8 +361,8 @@
         _hireScrollEl.setAttribute('data-scroll-region', '');
         _hireGridEl = document.createElement('div');
         _hireGridEl.className = 'team-entity-grid team-merc-hire-grid';
-        // 同名册网格：EntityTile 卡为 role=option，容器补 listbox 语义
-        _hireGridEl.setAttribute('role', 'listbox');
+        // 同名册网格（外审二轮 P2-4）：listbox→list，EntityTile 卡为 role=listitem
+        _hireGridEl.setAttribute('role', 'list');
         _hireGridEl.setAttribute('aria-label', '可雇佣佣兵列表');
         _hireScrollEl.appendChild(_hireGridEl);
         // H2-4：hire 与 roster 共享同一密度状态（同 panelId='team-merc'），
@@ -501,7 +502,7 @@
         for (var i = 0; i < 5; i++) {
             var cell = document.createElement('div');
             cell.className = 'team-skel-card';
-            // 骨架是纯加载装饰：aria-hidden 移出 listbox 语义树
+            // 骨架是纯加载装饰：aria-hidden 移出 list 语义树
             cell.setAttribute('aria-hidden', 'true');
             grid.appendChild(cell);
         }
@@ -514,9 +515,7 @@
             statement: '佣兵名册空空如也',
             nextStep: '点「＋ 雇佣佣兵」，迎接第一位同行的佣兵'
         });
-        // listbox 内非 EntityTile 条目：投影为未选中 option，保证容器语义合法
-        node.setAttribute('role', 'option');
-        node.setAttribute('aria-selected', 'false');
+        // list 容器内空态为纯展示：默认语义即可，不再投 role=option
         return node;
     }
 
@@ -526,9 +525,7 @@
             statement: statement,
             nextStep: '检查连接后重试'
         });
-        // 同上空态：listbox 内投影为未选中 option（含重试钮，不能 aria-hidden）
-        node.setAttribute('role', 'option');
-        node.setAttribute('aria-selected', 'false');
+        // 同上：不投 role=option（重试钮自身是真 button，不借容器语义）
         node.appendChild(button('重试', 'team-pane-btn team-empty-retry', onRetry));
         return node;
     }
@@ -623,22 +620,24 @@
             Workbench.EntityTile.bindActivation(card, {
                 itemName: merc.name,
                 label: cardLabel(merc),
-                role: 'option',
+                role: 'listitem',
                 selected: merc.slotIndex === _selectedSlot,
                 onActivate: function() { selectMerc(merc.slotIndex); }
             });
+            fixupCardA11y(card, merc.slotIndex === _selectedSlot);
             if (merc.slotIndex === _selectedSlot) card.setAttribute('data-state', 'selected');
             bindCardTip(card, function() { return cardTipText(merc); });
         } else if (mode === 'hire') {
             Workbench.EntityTile.bindActivation(card, {
                 itemName: merc.name,
                 label: merc.name + '，' + priceText(merc),
-                role: 'option',
+                role: 'listitem',
                 selected: merc.poolIndex === _selectedPoolIdx,
                 actionable: true,   // 选候选是本地 browse（零写入）；门控由右栏 CommitBar 阻断
                 reason: gate,
                 onActivate: function() { selectHire(merc.poolIndex); }
             });
+            fixupCardA11y(card, merc.poolIndex === _selectedPoolIdx);
             if (merc.poolIndex === _selectedPoolIdx) card.setAttribute('data-state', 'selected');
             else if (gate) card.setAttribute('data-state', 'blocked');
             bindCardTip(card, function() {
@@ -648,10 +647,11 @@
             Workbench.EntityTile.bindActivation(card, {
                 itemName: merc.name,
                 label: '雇佣候选 ' + merc.name + '，Lv.' + merc.level,
-                role: 'option',
+                role: 'listitem',
                 selected: _selectedSlot === CANDIDATE_SLOT,
                 onActivate: function() { selectMerc(CANDIDATE_SLOT); }
             });
+            fixupCardA11y(card, _selectedSlot === CANDIDATE_SLOT);
             if (_selectedSlot === CANDIDATE_SLOT) card.setAttribute('data-state', 'selected');
             bindCardTip(card, function() {
                 return '雇佣候选 ' + merc.name + ' · Lv.' + merc.level + ' · 契约金 ' + TeamShared.fmtMoney(merc.goldPrice);
@@ -794,6 +794,16 @@
         });
     }
 
+    // listitem 选中态修正（外审二轮 P2-4）：共享层 EntityTile.applySemantics / setSelected 照写
+    // aria-selected（真 listbox 面板仍需要），但 role=listitem 不支持该属性——team 局部在
+    // bindActivation / setSelected 调用点后改投 aria-current；选中态视觉不受影响（走 data-state）
+    function fixupCardA11y(card, selected) {
+        if (!card) return;
+        card.removeAttribute('aria-selected');
+        if (selected) card.setAttribute('aria-current', 'true');
+        else card.removeAttribute('aria-current');
+    }
+
     function selectMerc(slot) {
         if (_busy) { notifyBusy(); return; }
         _selectedSlot = slot;
@@ -801,6 +811,7 @@
         for (var i = 0; i < cards.length; i++) {
             var sel = cards[i].getAttribute('data-slot') === String(slot);
             Workbench.EntityTile.setSelected(cards[i], sel);
+            fixupCardA11y(cards[i], sel);
             if (sel) cards[i].setAttribute('data-state', 'selected');
             else cards[i].removeAttribute('data-state');
         }
@@ -1225,9 +1236,7 @@
                     statement: '暂时没有可雇佣的佣兵',
                     nextStep: '稍后再来看看'
                 });
-                // 同名册：listbox 内非 EntityTile 条目投影为未选中 option
-                emptyState.setAttribute('role', 'option');
-                emptyState.setAttribute('aria-selected', 'false');
+                // 同名册：list 容器内空态为纯展示，不再投 role=option
                 _hireGridEl.appendChild(emptyState);
             }
             renderHirePreview();
@@ -1269,6 +1278,7 @@
         for (var i = 0; i < cards.length; i++) {
             var sel = cards[i].getAttribute('data-pool-idx') === String(_selectedPoolIdx);
             Workbench.EntityTile.setSelected(cards[i], sel);
+            fixupCardA11y(cards[i], sel);
             if (sel) {
                 cards[i].setAttribute('data-state', 'selected');
             } else {

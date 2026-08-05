@@ -301,8 +301,10 @@
         _rosterScrollEl.setAttribute('data-scroll-region', '');
         _gridEl = document.createElement('div');
         _gridEl.className = 'team-entity-grid team-pet-grid';
-        // 名册网格是单选列表容器：EntityTile 卡与空位 tile 均为其 role=option
-        _gridEl.setAttribute('role', 'listbox');
+        // 名册网格是单选列表容器：卡内嵌「出战/恢复」真按钮，APG 明确 listbox/option 不包容
+        // 嵌套交互控件——投 role=list + 卡 role=listitem（选中态 aria-current，见 fixupCardA11y）；
+        // 空位 tile 是无语义真 button
+        _gridEl.setAttribute('role', 'list');
         _gridEl.setAttribute('aria-label', noun + '名册');
         _rosterScrollEl.appendChild(_gridEl);
         _rosterLeftRoot.appendChild(_rosterScrollEl);
@@ -342,7 +344,8 @@
         _storeScrollEl.setAttribute('data-scroll-region', '');
         _storeGridEl = document.createElement('div');
         _storeGridEl.className = 'team-entity-grid team-store-grid';
-        _storeGridEl.setAttribute('role', 'listbox');
+        // 同名册网格（外审二轮 P2-4）：listbox→list，目录卡 role=listitem
+        _storeGridEl.setAttribute('role', 'list');
         _storeGridEl.setAttribute('aria-label', '领养' + noun + '目录');
         _storeScrollEl.appendChild(_storeGridEl);
         _storeLeftRoot.appendChild(_storeScrollEl);
@@ -555,9 +558,7 @@
         var tile = document.createElement('button');
         tile.type = 'button';
         tile.className = 'team-slot-empty';
-        // 领养入口真 button，在名册 listbox 内按 option 投影（入口永不被选中）
-        tile.setAttribute('role', 'option');
-        tile.setAttribute('aria-selected', 'false');
+        // 领养入口真 button：名册网格 listbox→list 后不再投 option，保留原生按钮无语义角色（入口永不被选中）
         tile.setAttribute('aria-label', '空栏位：前往领养' + noun);
         tile.title = '空栏位：前往领养' + noun;
         var plus = document.createElement('span');
@@ -675,10 +676,11 @@
         Workbench.EntityTile.bindActivation(card, {
             itemName: pet.name,
             label: cardLabel(pet),
-            role: 'option',
+            role: 'listitem',
             selected: pet.slotIndex === _selectedSlot,
             onActivate: function() { selectPet(pet.slotIndex); }
         });
+        fixupCardA11y(card, pet.slotIndex === _selectedSlot);
         if (pet.slotIndex === _selectedSlot) card.setAttribute('data-state', 'selected');
         bindCardTip(card, function() { return cardTipText(pet); });
         return card;
@@ -731,6 +733,16 @@
         });
     }
 
+    // listitem 选中态修正（外审二轮 P2-4）：共享层 EntityTile.applySemantics / setSelected 照写
+    // aria-selected（真 listbox 面板仍需要），但 role=listitem 不支持该属性——team 局部在
+    // bindActivation / setSelected 调用点后改投 aria-current；选中态视觉不受影响（走 data-state）
+    function fixupCardA11y(card, selected) {
+        if (!card) return;
+        card.removeAttribute('aria-selected');
+        if (selected) card.setAttribute('aria-current', 'true');
+        else card.removeAttribute('aria-current');
+    }
+
     // 世界内招募候选卡（旧 Symbol 2035 宠物分支的 web 等价）：置顶在现役上方，
     // 只展示 图标/名字/等级/契约金 + 「候选」标识；门控在右栏决策面按实时 snapshot 复算。
     function buildCandidateCard(cand) {
@@ -766,10 +778,11 @@
         Workbench.EntityTile.bindActivation(card, {
             itemName: cand.name,
             label: '招募候选 ' + cand.name + '，Lv.' + cand.level,
-            role: 'option',
+            role: 'listitem',
             selected: _selectedSlot === CANDIDATE_SLOT,
             onActivate: function() { selectPet(CANDIDATE_SLOT); }
         });
+        fixupCardA11y(card, _selectedSlot === CANDIDATE_SLOT);
         if (_selectedSlot === CANDIDATE_SLOT) card.setAttribute('data-state', 'selected');
         bindCardTip(card, function() {
             return '招募候选 ' + cand.name + ' · Lv.' + cand.level + ' · 契约金 ' + TeamShared.fmtMoney(cand.goldPrice);
@@ -784,6 +797,7 @@
         for (var i = 0; i < cards.length; i++) {
             var sel = cards[i].getAttribute('data-slot') === String(slot);
             Workbench.EntityTile.setSelected(cards[i], sel);
+            fixupCardA11y(cards[i], sel);
             if (sel) cards[i].setAttribute('data-state', 'selected');
             else cards[i].removeAttribute('data-state');
         }
@@ -1056,15 +1070,18 @@
         if (!_storeL) buildStoreViews();
         _view = 'store';
         _adoptPetId = null;
+        _commitError = null;   // 进商店即新 browse 会话，旧领养失败投影随之失效
         _shell.moveView('L', _storeL);
         _shell.moveView('R', _storeR);
         renderStoreContent();
     }
 
     function backToRoster() {
+        if (guardBusy()) return;   // pointer-events 锁不挡键盘，busy 期 Enter 可触达本 handler
         if (_view !== 'store' || !_shell) return;
         _view = 'roster';
         _adoptPetId = null;
+        _commitError = null;   // 出商店即新 browse 会话，旧领养失败投影随之失效
         _shell.moveView('L', _rosterL);
         _shell.moveView('R', _rosterR);
     }
@@ -1181,12 +1198,13 @@
         Workbench.EntityTile.bindActivation(card, {
             itemName: item.name,
             label: item.name + '，' + priceText(item),
-            role: 'option',
+            role: 'listitem',
             selected: item.petId === _adoptPetId,
             actionable: true,   // 选候选是本地 browse（零写入）；门控由右栏 CommitBar 阻断
             reason: gate,
             onActivate: function() { selectStoreItem(item.petId); }
         });
+        fixupCardA11y(card, item.petId === _adoptPetId);
         if (item.petId === _adoptPetId) card.setAttribute('data-state', 'selected');
         else if (gate) card.setAttribute('data-state', 'blocked');
         bindCardTip(card, function() {
@@ -1203,6 +1221,7 @@
         for (var i = 0; i < cards.length; i++) {
             var sel = cards[i].getAttribute('data-pet-id') === String(petId);
             Workbench.EntityTile.setSelected(cards[i], sel);
+            fixupCardA11y(cards[i], sel);
             if (sel) {
                 cards[i].setAttribute('data-state', 'selected');
             } else {
