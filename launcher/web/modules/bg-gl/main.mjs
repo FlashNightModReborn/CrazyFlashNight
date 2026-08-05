@@ -306,6 +306,7 @@ function enterSynchronized() {
 
 // Ready / flash_ready 入口：对角扫描在播则挂起等播完，否则立即同步
 function requestSynchronized() {
+  if (machine.phase === PHASE.SYNCHRONIZED) return;
   if (machine.phase === PHASE.DIAGONAL && Number.isFinite(machine.duration)) {
     syncPending = true;
     return;
@@ -744,10 +745,10 @@ async function main() {
   // 5) 事件订阅：BootstrapApp 可能尚未定义，缺失时退化为 DOM 事件 + 环境循环
   const app = window.BootstrapApp;
   if (app && typeof app.onMessage === "function") {
-    app.onMessage("list_resp", onFirstListResp);
-    app.onMessage("state", onLaunchState);
-    app.onMessage("flash_ready", requestSynchronized);
-    app.onMessage("flash_ready", () => narrativeLog("封面帧到达 · 黑铁通路打开", "ok"));
+    app.onMessage("list_resp", onFirstListResp, { replayLatest: true });
+    app.onMessage("state", onLaunchState, { replayLatest: true });
+    app.onMessage("flash_ready", requestSynchronized, { replayLatest: true });
+    app.onMessage("flash_ready", () => narrativeLog("封面帧到达 · 黑铁通路打开", "ok"), { replayLatest: true });
   } else {
     console.warn("[bg-gl] BootstrapApp 未就绪，仅使用 DOM 事件 + 环境循环");
     enterAmbient();

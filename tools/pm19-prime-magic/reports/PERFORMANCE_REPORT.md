@@ -90,4 +90,3 @@ shader 负责扫描线、辉光、色偏、cell noise、同步脉冲、UV 抖动
 - Worker 保留：若主线程有布局尖峰或 renderer 整体迁移 OffscreenCanvas，则使用现成 `SharedArrayBuffer` 双缓冲与原子 reader pin，避免逐帧 transferable。
 - 不用 WASM：TypeScript 余量约五个数量级，361 次间接读写也不利于用边界调用换收益。
 - 只有目标 Chromium 的 `nextInto` P99 接近切换预算，或单次批量生成数千棋盘，才重新评估 WASM。
-

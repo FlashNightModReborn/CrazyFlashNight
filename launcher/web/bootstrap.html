@@ -182,14 +182,14 @@
 <!-- Web Audio 合成的 UI 音效 (独立于 bootstrap-main.js, 先加载以便 main 能直接引 BootstrapAudio) -->
 <script src="modules/audio.js"></script>
 
+<!-- C 期: tooltip 层 (经典 script, 暴露 window.BootTooltip; 须先于主控加载以完成同步绑定) -->
+<script src="modules/boot-tooltip.js"></script>
+
 <!-- 主控 IIFE -->
 <script src="bootstrap-main.js"></script>
 
 <!-- PM19 质数幻方 WebGL2 背景层（首个 ESM 模块，自包含；失败静默回退，不影响主流程） -->
 <script type="module" src="modules/bg-gl/main.mjs"></script>
-
-<!-- C 期: tooltip 层 (经典 script, 挂 window.BootTooltip; 样式在 welcome.css) -->
-<script src="modules/boot-tooltip.js"></script>
 
 <!-- 初始化阵营渲染（依赖 factions.js 已加载 + DOM 已准备） -->
 <script src="modules/factions.js"></script>

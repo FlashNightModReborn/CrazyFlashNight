@@ -48,6 +48,9 @@
   var _welcomeSlot = null;        // 当前欢迎页展示的默认槽位对象
   var _introActive = false;       // 片头视频是否正在播
   var _handlers = {};             // onMessage 注册表
+  // 仅保留启动阶段的小型权威状态，供晚加载的 ESM 消费者补收最新值。
+  // 不缓存任意消息，避免长期持有导入数据、诊断结果等大 payload。
+  var _replayMessages = {};
 
   // Phase 2b: UserPrefs 字段, 初次 list_resp 前是未初始化占位 —
   //   lastPlayedSlot: null 表示"没有已记录的上次槽位" (新玩家 / 偏好文件不存在)
@@ -993,6 +996,12 @@
   function dispatchMessage(msg) {
     var cmd = msg.cmd;
     if (!cmd) return;
+    if (cmd === 'list_resp' || cmd === 'flash_ready') _replayMessages[cmd] = msg;
+    else if (cmd === 'state') {
+      _replayMessages.state = msg;
+      // flash_ready 只对当前 Ready 周期有效，离开 Ready 后不得向新订阅者重放旧事件。
+      if (msg.state !== 'Ready') delete _replayMessages.flash_ready;
+    }
     var arr = _handlers[cmd];
     if (arr) for (var i = 0; i < arr.length; i++) {
       try { arr[i](msg); } catch (e) { logLine('tag-err', 'handler error [' + cmd + ']: ' + e.message); }
@@ -1231,9 +1240,13 @@
   window.BootstrapApp = {
     send: function(obj) { send(obj); },
     playUiCue: playUiCue,
-    onMessage: function(cmd, handler) {
+    onMessage: function(cmd, handler, options) {
       if (!_handlers[cmd]) _handlers[cmd] = [];
       _handlers[cmd].push(handler);
+      if (options && options.replayLatest && _replayMessages[cmd]) {
+        try { handler(_replayMessages[cmd]); }
+        catch (e) { logLine('tag-err', 'replay handler error [' + cmd + ']: ' + e.message); }
+      }
       return function unsubscribe() {
         var arr = _handlers[cmd]; if (!arr) return;
         var i = arr.indexOf(handler); if (i >= 0) arr.splice(i, 1);
@@ -1449,6 +1462,8 @@
   function initKeyboardNav() {
     // #cards 在 showSlots 时被聚焦 (tabindex=-1); 卡片按钮 Tab 聚焦时 keydown 也冒泡到这里
     cardsEl.addEventListener('keydown', function(e) {
+      // 真实按钮保留浏览器原生键盘语义；容器级方向键/Enter 只处理卡片导航焦点。
+      if (e.target && e.target.closest && e.target.closest('button')) return;
       var cards = kbCardList();
       if (!cards.length) return;
       var idx = cards.indexOf(_kbFocusCard);

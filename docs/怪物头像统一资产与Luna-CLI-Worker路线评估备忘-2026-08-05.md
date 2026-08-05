@@ -629,4 +629,3 @@ source_resolved
 - [OpenAI Developer Community 复现与 custom-agent 假阳性说明](https://community.openai.com/t/gpt-5-6-luna-is-advertised-for-custom-agents-but-rejected-by-sol-terra-multi-agent-v2/1389020)
 - [Codex Subagents 文档](https://learn.chatgpt.com/docs/agent-configuration/subagents)
 - [Codex CLI 参考](https://learn.chatgpt.com/docs/developer-commands?surface=cli#cli-codex-exec)
-
