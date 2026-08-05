@@ -1,0 +1,20 @@
+{
+  "format": "prime-magic-python-test-summary/v1",
+  "timestampUtc": "2026-08-05T00:52:45Z",
+  "command": "PYTHONPATH=python python -m unittest discover -s python/tests -v",
+  "tests": 12,
+  "passed": 12,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "durationSeconds": 0.782,
+  "coverageNotes": [
+    "deterministic primality and range rejection",
+    "full seed invariants and PM19 binary round-trip",
+    "dimension, magicSum, checksum, format, composite, duplicate, ragged and U32 rejection",
+    "deterministic route-A upgrade and exact diagonal hit",
+    "last-allowed assignment move exact hit regression",
+    "manifest top-level magicSum binding",
+    "checkpoint missing completed artifact rejection"
+  ]
+}

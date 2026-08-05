@@ -1,0 +1,78 @@
+{
+  "verdict": "VALID: seed00 and its two-stage reduction witness independently confirmed",
+  "checks": {
+    "source_sha256": true,
+    "dimension": true,
+    "strict_integers": true,
+    "row_permutation": true,
+    "column_permutation": true,
+    "main_assignment_bijection": true,
+    "matrix_is_claimed_double_permutation": true,
+    "tau_is_involution": true,
+    "tau_cycle_type_2pow9_1": true,
+    "column_order_is_assignment_of_row_order": true,
+    "mirrored_row_order_realizes_tau": true,
+    "first_assignment_exact": true,
+    "crossed_assignment_exact": true,
+    "crossed_assignment_bijection": true,
+    "same_element_multiset": true,
+    "global_uniqueness": true,
+    "all_prime_exhaustive_trial_division": true,
+    "rows_exact": true,
+    "columns_exact": true,
+    "main_diagonal_exact": true,
+    "secondary_diagonal_exact": true,
+    "javascript_safe": true,
+    "canonical_checksum": true,
+    "binary_header": true,
+    "binary_exact_length": true,
+    "binary_values_match_json": true
+  },
+  "fixed_row": 1,
+  "transpositions": [
+    [
+      0,
+      16
+    ],
+    [
+      2,
+      12
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      5,
+      11
+    ],
+    [
+      6,
+      10
+    ],
+    [
+      7,
+      15
+    ],
+    [
+      8,
+      13
+    ],
+    [
+      9,
+      17
+    ],
+    [
+      14,
+      18
+    ]
+  ],
+  "main_assignment_sum": 190000361,
+  "crossed_assignment_sum": 190000361,
+  "main_diagonal_sum": 190000361,
+  "secondary_diagonal_sum": 190000361,
+  "canonical_checksum": "a5e002e9047e02dba2608428ef7416493a0b1ce9148e6e77f3d57be04084413d",
+  "json_sha256": "3288ab7a2a18f000dfd86971ca3d0602fda7877edc1526a662785625f3a2f12a",
+  "binary_sha256": "5867419cf02b32838f4fd5f369a031a4d552b99153e2f78ee897019fcf6fce61",
+  "binary_bytes": 1460
+}

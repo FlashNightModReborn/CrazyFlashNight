@@ -501,6 +501,7 @@ launcher/
 │   │   └── task_panel.css                 任务 / 成就面板专用样式
 │   ├── assets/                            引导页 / cursor / map / stage-select / pets / 头像 / 字体 / dressup / dialogue 媒体
 │   │   ├── bg/                            背景图层资源
+│   │   ├── pm19/                          PM19 种子库（seed-bank.json + 8×1460B .bin，vendored 自 tools/pm19-prime-magic/runtime/web/assets）
 │   │   ├── cursor/native/                 C# CursorOverlayForm / DesktopCursorOverlay 贴图契约（64x64, hotspot 16,16）
 │   │   ├── dressup/                       对话框/战斗纸娃娃 manifest/report（tools/bake-dressup-offline.py 生成）
 │   │   ├── dialogue-portraits/            事件日志 Web 对话立绘 manifest/report + PNG（tools/bake-dialogue-portraits.py 生成）
@@ -519,6 +520,8 @@ launcher/
 │   │   └── lockbox-variants.json          开锁小游戏数据
 │   └── modules/
 │       ├── audio.js                       Web Audio 合成的 UI 音效（BootstrapAudio：hover/click/confirm/error + ambient hum）
+│       ├── bg-gl/                         PM19 质数幻方电子战背景层（web 侧首个 ESM：main.mjs 事件驱动相位机 + renderer.mjs WebGL2 / canvas-renderer.mjs 回退 + dihedral.mjs 二面体变轨 + pm19/ vendored 引擎；真源 tools/pm19-prime-magic）
+│       ├── boot-tooltip.js                启动页 tooltip 层（BootTooltip：bind/bindDelegate/unbind/hide，元素锚定 300ms 延迟 160ms 淡入）
 │       ├── asset-timeline.js              烘焙素材共享时间线选择器（timelineFrames / durationFrames / nested layer 独立周期）
 │       ├── overlay-audio-bindings.js      运行态 overlay 交互音效绑定（panel/notch 等接到 BootstrapAudio）
 │       ├── perf-frame-limiter.js          overlay rAF 限帧器（webOverlayFrameRateLimit 落地点）
@@ -1260,13 +1263,47 @@ bootstrap.html
 
 `BootstrapPanel` 本身不会在 `GuardianForm` 构造期同步拿到可用 WebView2；实际初始化发生在控件 `Load` 事件里。初始化阶段会分别记录 user-data 目录可写性、`CoreWebView2Environment.CreateAsync`、`EnsureCoreWebView2Async`、`Navigate` / `NavigationCompleted`，完成后才进入下面这套前端握手。
 
-**脚本加载顺序**（bootstrap.html body 尾）：`config/version.js` → `modules/audio.js`（暴露 `window.BootstrapAudio`）→ `bootstrap-main.js` 主控 IIFE → `modules/factions.js` + 4 个模态模块。
+**脚本加载顺序**（bootstrap.html body 尾）：`config/version.js` → `modules/audio.js`（暴露 `window.BootstrapAudio`）→ `bootstrap-main.js` 主控 IIFE → `modules/bg-gl/main.mjs`（`type="module"`，PM19 背景层，见下节）→ `modules/boot-tooltip.js`（`window.BootTooltip`，tooltip 层）→ `modules/factions.js` + 4 个模态模块。head 侧样式在 bootstrap.css/welcome.css 之前直引 `css/workbench/tokens.css`（纯 `:root` 变量无副作用：色板 `--dls-crystal` 族 + 动效 token `--wb-motion-*` / `--wb-ease-*`，bootstrap 与游戏内面板共用同一节奏）。
 
 **IIFE 初始化后的消息顺序**：
 1. 先 `send({cmd:'list'})` 取槽位 + 偏好（`list_resp` 固定带回 `slots` + 4 个固定偏好字段，`lastPlayedSlot` 仅非空时附带）
 2. 双 `requestAnimationFrame` 后再 `send({cmd:'ready'})` → C# 侧 `Prewarm()` silent 拉 Flash
 
 顺序不能颠倒：list 要先铺好欢迎页存档卡片与字号/音频偏好，ready 后即便 prewarm 状态机立即跳转，也会被 `silentAtEmit` 过滤不污染 UI（两层保险）。
+
+### PM19 质数幻方背景层（modules/bg-gl/）
+
+欢迎页背景层栈在 `.bg-photo` 与 `.bg-tint` 之间多了一层 `<canvas id="bg-gl">`：19×19 完整质数幻方矩阵（每行/列/双对角线和恒为 190000361）作电子战氛围层。它是 web 侧**首个 ESM 模块**（`type="module"`，自包含、无构建步骤、无第三方依赖），相位由真实启动事件驱动而非定时演示：
+
+| 事件 | 相位 |
+|------|------|
+| 页面加载 | SCRAMBLE 频谱扰动（环境底态，8–12Hz 换合法棋盘） |
+| 首个 `list_resp` | ROW ACQUISITION → COLUMN COHERENCE → 环境态（每 6–10s 插播行/列扫描） |
+| 点「确认」/ `Spawning`…`Embedding`/`WaitingGameReady` | DIAGONAL LOCK 双对角锁定（扫满 1.8s 后进保持期行波循环，**任何事件不截断扫描**） |
+| `Ready` / `flash_ready` | 扫描在播则 `syncPending` 挂起等播完 → MATRIX SYNCHRONIZED（保持到 panel swap）；否则直接同步 |
+| `Error` | FAULT INJECTION 敌对故障（故障只污染视觉层，不动权威矩阵） |
+| 回到 `Idle` | ORBIT RESCRAMBLE → 环境态 |
+
+- 事件源是 `BootstrapApp.onMessage` 注册表 + DOM 监听；BootstrapApp 缺失时退化为 DOM 事件 + 环境循环。
+- 循环动效：环境态除行/列插播扫描外，每 2–4 个插播周期偶发**二面体变轨**（`dihedral.mjs` 纯函数数据变换 + shader `uSpin/uMirror` 整盘旋转/镜像动画，结束瞬间换数据归零、视觉无缝；旋转后的幻方仍在同一轨道内恒合法）；换盘瞬时 `uSwapPulse` 微脉冲反馈；右下角校验和读数（行列扫描滚动收敛 `Σ=190000361`，SYNCHRONIZED 常显 `361/361 VALID`，变轨时显示 ORBIT 标签，DOM 运行时注入不碰 HTML）；**DIAGONAL 锁定保持期**（等待 Ready/flash_ready）双对角行波脉冲循环 + 读数呼吸，加载等待画面不死；**SYNCHRONIZED 进入瞬间**播 900ms 中心径向破门冲击波后归稳态。
+- **叙事日志（四期）**：底部居中事件流 `#bg-gl-log`（运行时注入，最多 5 行、12s 淡出），把相位与真实启动事件编成电子战 lore——种子库验讫 / 黑铁网络接入 / 行列捕获校验 / ORBIT 变轨 / 操作员确认 / θ-FLOOD 载波建立 / 诺亚终端握手 / AVM1 沙箱嵌入 / 封面帧到达 / 全轨道同步 / 敌对故障注入，时间戳真实，与 TRANSMISSION 三节点点亮同一事件源。
+- 渲染：WebGL2 instanced 单 draw call（`renderer.mjs`），失败回退 Canvas2D（`canvas-renderer.mjs`，变轨/脉冲降级为无动画），再失败静默撤下 canvas，绝不影响主流程；DPR 上限 1.0，CSS `opacity:.45` 压作背景。
+- **iGPU 性能压制（三期半，实测 240Hz 全速 rAF 把核显压到 80%+）**：限帧 `TARGET_FPS=30`（rAF 链保持、按帧间隔跳帧）+ 半分辨率渲染 `RENDER_SCALE=0.5`（低分辨率渲染 CSS 放大，填充率约降为 1/4）+ 色差分离纹理采样只在 fault>0.3 相位触发（环境态每像素省 2 次采样）；合计填充开销约降为全速的 1/16。常量在 `main.mjs` 顶部。
+- 节能与降级：`visibilitychange` 与 `body.intro-video`（MutationObserver）期间停 rAF；`#bg-gl` 已加入 welcome.css 的 intro-video 熄灯规则；`prefers-reduced-motion` 时换盘降 2–4Hz、故障强度 ×0.3、禁变轨、读数静态、`setVisualEffects(false)` 关残余着色器动画。
+- 资产与引擎是 vendored 字节级副本：引擎真源 `tools/pm19-prime-magic/runtime/dist/src/` → `modules/bg-gl/pm19/`，种子真源 `tools/pm19-prime-magic/runtime/web/assets/` → `assets/pm19/`；加载时 Web Crypto 逐张核对 SHA-256。升级路径与复现命令见 `tools/pm19-prime-magic/CF7-INTEGRATION.md`。
+
+### 启动界面翻新（2026-08-05 A/B/C 期）
+
+对齐游戏内 web 栈设计语言的一轮翻新（完整设计与施工记录见 `docs/启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md`）：
+
+- **Token 体系统一**：head 直引 `css/workbench/tokens.css`，welcome.css/bootstrap.css 全部 transition 走 `--wb-motion-*` / `--wb-ease-*` token；`@media (prefers-reduced-motion: reduce)` 兜底（JS 侧视图切换同步硬切）；`--dls` 族与 `--dls-crystal` 族数值同源不改名，`--rust`/`--bone` 作欢迎页风味色保留（注释标注游戏内语义对应）。
+- **视图进出场**：welcome ↔ slots 由 `[hidden]` 硬切改为 `viewEnter/viewLeave` 动画（`switchView()`，animationend + 300ms 定时器兜底 + 序号防连点竞态）。
+- **侧栏真实数据**：TRANSMISSION 的 `DLS SYNC` 绑首个 `list_resp` 的健康存档比例，`θ-FLOOD HUM/黑铁网络接入/诺亚终端握手` 三节点随 list_resp → 点确认 → flash_ready/Ready 依次点亮；BUILD 绑 `APP_META`（version/channel/tail）；REGION 为世界观风味文本保留写死。
+- **组件与美术**：`.corner-brackets` 四方位 L 角标（welcome-card / slots 卡片，纯 CSS 单 `::after` + 8 层渐变，hover/kb-focus 提亮）；`.slot-plate .icon` 菱形徽章化；卡片 `.card-gem` 菱形状态标（5 态复用 flag 色）；`#view-slots` 随机 `assets/dungeon-posters/` 通缉海报装饰（本次启动内不跳变）；JetBrains Mono `@font-face`（相对路径引用 shipped 兜底 `assets/fonts/jetbrains-mono.woff2`，不走 cfn-fonts.local、零 C# 改动）应用于 `.mono-num` 数据位。
+- **交互**：`BootTooltip`（topbar/切换/片头勾选/工具栏逐个 bind + 卡片操作按钮 `bindDelegate` 7 种文案）；slots 键盘导航（`#cards` keydown 委托，方向键按实推列数移动 `.kb-focus`，Enter 触发主操作 `.btn-start/.btn-newchar`、异常卡回退 `.btn-rebuild`、corrupt 卡不动）；welcome 页 document 级 Enter 仅在 activeElement 为 body、非 intro、无 modal 时触发确认；ESC 分层：intro（最高）→ tooltip → modal → slots 返回 welcome。
+- **垫图前台化（三期，三期半修正）**：全屏 `.bg-photo` 降为 .12 色调底，随机图作**中央 `.welcome-card` 垫图**（`.has-art`：深色罩渐变 82–88% 压文字可读性，图以质感透出；与 `.bg-photo` 同源同图，`loadRandomBackground()` 调用点提前到 listener 注册前）。
+- **slots 页深化（三期）**：卡片 `.card-divider` 信息分隔、`.flag` 徽章化、primary/danger 按钮主次、空槽点阵+「＋」引导、hover 位移；三期半起卡片**实底**（半透明下 PM19 矩阵高亮行经 2× 放大后会透印成"横线"穿透文字，probe 实测元素布局无重叠后才定性）。
+- **存档编辑器翻新（三期）**：`bootstrap.css` 编辑器全套样式 token 化（切角 tabs、dls focus 描边、JetBrains Mono 数字位、cat/danger 色徽标、tree/diff/raw/audio 段落同步），`archive-editor.js` inline style 收编为 class（逻辑零改动）；welcome.css `.modal-content .mode-tabs` 已对齐同规格。
 
 ### 槽位选中后的启动路径
 

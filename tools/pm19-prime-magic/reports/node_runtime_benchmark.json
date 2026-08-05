@@ -1,0 +1,62 @@
+{
+  "timestampUtc": "2026-08-05T00:33:09.545Z",
+  "runtime": {
+    "node": "v24.14.0",
+    "v8": "13.6.233.17-node.41",
+    "platform": "linux/x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9,
+    "totalMemoryBytes": 23548682240
+  },
+  "seed": {
+    "size": 19,
+    "cells": 361,
+    "checksum": "sha256:a5e002e9047e02dba2608428ef7416493a0b1ce9148e6e77f3d57be04084413d",
+    "source": "verified PM19 seed 00"
+  },
+  "warmupIterations": 25000,
+  "measurements": {
+    "randomOrbitTypedArray": {
+      "samples": 250000,
+      "medianMicroseconds": 1.0910000000308173,
+      "p95Microseconds": 1.1719999999968422,
+      "p99Microseconds": 1.5720000000101209,
+      "maxMicroseconds": 226.03599999999346,
+      "boardsPerSecond": 849246.9732183954,
+      "heapDeltaBytes": -2000
+    },
+    "randomEightSeedBankTypedArray": {
+      "samples": 250000,
+      "medianMicroseconds": 1.1719999999968422,
+      "p95Microseconds": 1.2520000000222353,
+      "p99Microseconds": 1.6120000000228174,
+      "maxMicroseconds": 354.15599999998904,
+      "boardsPerSecond": 775468.7279626329,
+      "heapDeltaBytes": -1712
+    },
+    "fixedPermutationTypedArray": {
+      "samples": 250000,
+      "medianMicroseconds": 0.5299999999124339,
+      "p95Microseconds": 0.5310000000235959,
+      "p99Microseconds": 0.5509999999731008,
+      "maxMicroseconds": 112.95800000004874,
+      "boardsPerSecond": 1752240.1408946852,
+      "heapDeltaBytes": 6272
+    },
+    "fixedPermutationOrdinaryArray": {
+      "samples": 250000,
+      "medianMicroseconds": 0.3409999999348656,
+      "p95Microseconds": 0.35100000013699173,
+      "p99Microseconds": 0.3699999999753345,
+      "maxMicroseconds": 1780.683999999951,
+      "boardsPerSecond": 2558663.632500987,
+      "heapDeltaBytes": 4040
+    }
+  },
+  "sink": 1008282,
+  "caveats": [
+    "Per-call performance.now() overhead is included in latency percentiles.",
+    "heapDeltaBytes is post-GC retained heap, not total allocation traffic.",
+    "Browser, Worker, renderer, and GPU metrics must be measured in target Chromium."
+  ]
+}

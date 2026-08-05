@@ -1,0 +1,24 @@
+{
+  "format": "prime-magic-browser-benchmark-status/v1",
+  "executed": false,
+  "timestampUtc": "2026-08-05T00:50:56Z",
+  "browserVersion": null,
+  "userAgent": null,
+  "gpu": null,
+  "samples": null,
+  "measurements": {
+    "mainVsWorker": null,
+    "typedArrayVsOrdinaryArray": null,
+    "dom": null,
+    "canvas2d": null,
+    "webgl2ShaderOff": null,
+    "webgl2ShaderOn": null,
+    "cpuAt60Hz": null,
+    "cpuAt144Hz": null,
+    "gc": null,
+    "allocationBytes": null
+  },
+  "reason": "Cloud Chromium security policy rejected access to the container localhost benchmark and prohibited data-URL injection; no browser or GPU values were fabricated.",
+  "executableHarness": "runtime/web/benchmark.html",
+  "localUrl": "http://127.0.0.1:4173/web/benchmark.html"
+}

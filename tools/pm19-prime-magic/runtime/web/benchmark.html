@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Prime Magic Orbit browser benchmark</title>
+    <link rel="stylesheet" href="/web/demo.css">
+    <style>
+      #benchmark-canvas, #canvas2d-benchmark { width: 320px; height: 320px; border: 1px solid #176d70; }
+      #canvas2d-benchmark { display: none; }
+      .dom-benchmark-grid { position: fixed; left: -10000px; top: 0; display: grid; grid-template-columns: repeat(19, auto); }
+      button { margin: 1rem 0; padding: .65rem 1rem; background: #0a3438; color: #8fffe9; border: 1px solid #258d86; }
+      pre { max-height: 50vh; overflow: auto; padding: 1rem; background: #010507; color: #8fffe9; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>CHROMIUM RUNTIME BENCHMARK</h1>
+      <canvas id="benchmark-canvas"></canvas>
+      <canvas id="canvas2d-benchmark"></canvas>
+      <div><button id="run-benchmark" type="button">运行基准</button></div>
+      <pre id="benchmark-output">idle</pre>
+    </main>
+    <script type="module" src="/dist/web/benchmark.js"></script>
+  </body>
+</html>

@@ -195,18 +195,143 @@
   }
 
   // ── 视图切换 ──
+  // A 期翻新: welcome ↔ slots 进出场动画 (CSS: welcome.css 的 .view-enter/.view-leave).
+  // 源 view 播完 leave 动画 (animationend, 300ms 定时器兜底) 后才置 hidden;
+  // reduced-motion 下 CSS 已关动画, JS 侧同步退化为硬切. 首次加载源 view 已 hidden, 不播动画.
+  var _reducedMotion = false;
+  try {
+    var _rmQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    _reducedMotion = _rmQuery.matches;
+    var _rmOnChange = function(e) { _reducedMotion = e.matches; };
+    if (typeof _rmQuery.addEventListener === 'function') _rmQuery.addEventListener('change', _rmOnChange);
+    else if (typeof _rmQuery.addListener === 'function') _rmQuery.addListener(_rmOnChange);
+  } catch (e) {}
+
+  var _viewAnimSeq = 0;   // 递增序号: 连点切换时作废旧动画的落地回调, 避免误 hidden 当前视图
+  function switchView(target, source) {
+    var seq = ++_viewAnimSeq;
+    if (window.BootTooltip) window.BootTooltip.hide();   // C 期: 视图切换时收掉残留 tooltip
+    viewWelcome.classList.remove('view-enter', 'view-leave');
+    viewSlots.classList.remove('view-enter', 'view-leave');
+    var animate = !_reducedMotion && source && !source.hidden && target !== source;
+    if (!animate) {
+      if (source) source.hidden = true;
+      target.hidden = false;
+      return;
+    }
+    target.hidden = false;
+    target.classList.add('view-enter');
+    source.classList.add('view-leave');
+    var done = false;
+    function finish() {
+      if (done || seq !== _viewAnimSeq) return;
+      done = true;
+      source.hidden = true;
+      source.classList.remove('view-leave');
+      target.classList.remove('view-enter');
+    }
+    source.addEventListener('animationend', function h(ev) {
+      if (ev.animationName !== 'viewLeave') return;   // 只认离场动画, 忽略子元素冒泡
+      source.removeEventListener('animationend', h);
+      finish();
+    });
+    setTimeout(finish, 300);   // 兜底: animationend 丢失也能落地
+  }
+
   function showWelcome() {
     var changed = viewWelcome.hidden || !viewSlots.hidden;
-    viewWelcome.hidden = false;
-    viewSlots.hidden = true;
     renderWelcomeSlot();
     if (changed) playUiCue('playTransition');
+    switchView(viewWelcome, viewSlots);
   }
   function showSlots() {
     var changed = viewSlots.hidden || !viewWelcome.hidden;
-    viewWelcome.hidden = true;
-    viewSlots.hidden = false;
     if (changed) playUiCue('playTransition');
+    switchView(viewSlots, viewWelcome);
+    loadSlotsPoster();
+    if (changed) {
+      // C 期: 进入 slots 时清掉旧键盘焦点, 并聚焦卡片容器让方向键有 keydown 冒泡源
+      setKbFocus(null);
+      try { cardsEl.focus({ preventScroll: true }); } catch (e) { cardsEl.focus(); }
+    }
+  }
+
+  // ── A 期翻新: 侧栏真实数据 ──
+  // BUILD 块: 从 config/version.js 的 window.APP_META 派生 (v + version + channel / 第二行 tail).
+  // 在 WebView2 listener 注册之前尽早调用 — 无宿主环境 (静态预览) 下 listener 注册会 throw,
+  // 提前填充保证 BUILD 块仍有真实数据; APP_META 缺失时保留 HTML 占位, 不报错.
+  function fillBuildMeta() {
+    try {
+      var meta = window.APP_META;
+      var buildEl = document.getElementById('build-val');
+      if (!meta || !buildEl) return;
+      buildEl.innerHTML = 'v' + escapeHtml(meta.version || '?')
+        + ' &middot; ' + escapeHtml(meta.channel || '?')
+        + '<br>' + escapeHtml(meta.tail || '?');
+    } catch (e) {}
+  }
+  fillBuildMeta();
+
+  // ── B 期: slots 页随机通缉令海报装饰 (dungeon-posters/manifest.json) ──
+  // 首次调用即 fetch; 之后每次进 slots 幂等重设 (本次启动内海报不跳变).
+  // 提前到 WebView2 listener 注册之前调用, 进 slots 页时海报已就绪; 失败静默, 不影响主流程.
+  var _slotsPoster = null;
+  function loadSlotsPoster() {
+    var el = document.getElementById('slots-poster');
+    if (!el) return;
+    if (_slotsPoster) {
+      el.style.backgroundImage = 'url(assets/dungeon-posters/' + _slotsPoster + '.png)';
+      return;
+    }
+    fetch('assets/dungeon-posters/manifest.json')
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(m) {
+        if (!m.posters || !m.posters.length) return;
+        _slotsPoster = m.posters[Math.floor(Math.random() * m.posters.length)];
+        el.style.backgroundImage = 'url(assets/dungeon-posters/' + _slotsPoster + '.png)';
+        logLine('tag-in', '[poster] ' + _slotsPoster);
+      })
+      .catch(function() { /* 海报装饰缺失静默 */ });
+  }
+  loadSlotsPoster();
+
+  // 随机垫图 + RECON 图窗喂图同样提前到 listener 注册之前 (无宿主静态预览下注册会 throw,
+  // 留在初始化段会永远跑不到; 与 loadSlotsPoster 同范式, 纯装饰 fetch 不依赖宿主)
+  loadRandomBackground();
+
+  // TRANSMISSION ◎ 点亮: 首个 list_resp → 第 1 行 + DLS SYNC 填健康存档比例;
+  // 点「确认」→ 第 2 行; flash_ready (或 state Ready) → 第 3 行.
+  // 依赖 window.BootstrapApp.onMessage, 在初始化段 (BootstrapApp 定义之后) 调用; 不可用时空转, 不报错.
+  function setTransNodeLit(idx) {
+    var el = document.getElementById('trans-node-' + idx);
+    if (el) el.classList.add('lit');
+  }
+  function initTransmissionLights() {
+    if (!window.BootstrapApp || typeof window.BootstrapApp.onMessage !== 'function') return;
+    var unsubList = window.BootstrapApp.onMessage('list_resp', function(msg) {
+      unsubList();
+      try {
+        var slots = (msg && msg.slots) || [];
+        var healthy = 0;
+        for (var i = 0; i < slots.length; i++) {
+          var s = slots[i];
+          if (s && !s.corrupt && !s.tombstoned) healthy++;
+        }
+        var el = document.getElementById('dls-sync-val');
+        if (el) el.textContent = slots.length ? (healthy / slots.length).toFixed(2) : '0.00';
+        setTransNodeLit(1);
+      } catch (e) {}
+    });
+    if (btnConfirmStart) btnConfirmStart.addEventListener('click', function() { setTransNodeLit(2); });
+    var thirdDone = false;
+    function lightThird() { if (thirdDone) return; thirdDone = true; setTransNodeLit(3); }
+    window.BootstrapApp.onMessage('flash_ready', lightThird);
+    window.BootstrapApp.onMessage('state', function(msg) {
+      if (msg && msg.state === 'Ready') lightThird();
+    });
   }
 
   // ── 欢迎页默认 slot 选择 ──
@@ -307,6 +432,8 @@
   }
 
   // ── 随机背景 ──
+  // 抽中的一张图喂给两处: .bg-photo 全屏垫图 (已退为低透明色调底) + 中央 .welcome-card
+  // 垫图 (.has-art, 深色罩 82-88% 压文字可读性, 图以质感透出). 卡片缺失时静默跳过.
   function loadRandomBackground() {
     var bgEl = document.getElementById('bg-photo');
     if (!bgEl) return;
@@ -322,6 +449,12 @@
         }
         var pick = m.backgrounds[Math.floor(Math.random() * m.backgrounds.length)];
         bgEl.style.backgroundImage = 'url(assets/bg/' + pick + ')';
+        var cardEl = document.querySelector('.welcome-card');
+        if (cardEl) {
+          cardEl.classList.add('has-art');
+          cardEl.style.backgroundImage =
+            'linear-gradient(180deg,rgba(10,14,18,.82) 0%,rgba(4,6,9,.88) 100%),url(assets/bg/' + pick + ')';
+        }
         logLine('tag-in', '[bg] ' + pick + ' (' + m.backgrounds.length + ' available)');
       })
       .catch(function(err) {
@@ -438,6 +571,7 @@
 
   function renderCards(slots) {
     cardsEl.innerHTML = '';
+    _kbFocusCard = null;   // C 期: 重绘后旧焦点卡已不在 DOM, 清除键盘导航焦点
     var merged = mergeSlots(slots || []);
     for (var i = 0; i < merged.length; i++) cardsEl.appendChild(renderCard(merged[i]));
   }
@@ -448,8 +582,16 @@
     if (s.corrupt)      classes.push('corrupt');
     if (s.tombstoned)   classes.push('tombstoned');
     if (s.inconsistent) classes.push('inconsistent');
+    classes.push('corner-brackets');   // B 期: 四方位 L 角标
     var card = document.createElement('div');
     card.className = classes.join(' ');
+
+    // B 期: 菱形状态标 (配色复用 flag 色; 优先级与下方 flag 显示逻辑一致)
+    var gemCls = 'g-ok';
+    if (s.__empty)         gemCls = 'g-empty';
+    else if (s.corrupt)    gemCls = 'g-corrupt';
+    else if (s.inconsistent) gemCls = 'g-incon';
+    else if (s.tombstoned) gemCls = 'g-tomb';
 
     var flags = '';
     if (s.__empty && s.__preset) flags += '<span class="flag empty">空槽位</span>';
@@ -490,10 +632,15 @@
     }
 
     card.innerHTML =
+      '<div class="card-gem ' + gemCls + '" aria-hidden="true"></div>' +
       '<div class="slot">' + escapeHtml(displayName) + '</div>' +
-      '<div class="slot-id">' + escapeHtml(s.slot) + '</div>' +
-      '<div class="progress">' + escapeHtml(progressText) + '</div>' +
-      '<div class="meta">' + flags + meta + '</div>' +
+      // 卡头/信息区分隔线 (rust-dim + dls 辉光短段, 样式见 welcome.css .card-divider)
+      '<div class="card-divider" aria-hidden="true"></div>' +
+      '<div class="slot-id mono-num">' + escapeHtml(s.slot) + '</div>' +
+      '<div class="progress mono-num">' + escapeHtml(progressText) + '</div>' +
+      '<div class="meta mono-num">' + flags + meta + '</div>' +
+      // 空槽中央大号「＋」引导符, 仅空槽插入
+      (s.__empty ? '<div class="empty-glyph" aria-hidden="true">＋</div>' : '') +
       '<div class="card-actions">' + actions + '</div>';
 
     var startBtn   = card.querySelector('.btn-start');
@@ -1064,9 +1211,18 @@
       }
       return;
     }
+    // C 期 ESC 分层: intro (上面, 优先级最高) → tooltip → modal → slots 返回 welcome
+    if (window.BootTooltip && window.BootTooltip.isVisible && window.BootTooltip.isVisible()) {
+      window.BootTooltip.hide();
+      return;   // consumed: 本次 ESC 只关 tooltip, 不继续下落
+    }
     if (_currentModal) {
       if (Audio) Audio.playCancel();
       tryCloseModal();
+      return;
+    }
+    if (!viewSlots.hidden) {
+      showWelcome();
       return;
     }
   });
@@ -1233,10 +1389,105 @@
     });
   }
 
+  // ── C 期: 交互语言 (BootTooltip 绑定 + 键盘导航) ──
+  function initBootTooltips() {
+    var TT = window.BootTooltip;
+    if (!TT) return;
+    TT.bind(document.getElementById('btn-display'), '显示：字号档位 / 显示偏好');
+    TT.bind(document.getElementById('btn-fullscreen'), '全屏：切换窗口全屏');
+    TT.bind(document.getElementById('btn-logs'), '日志：查看启动诊断日志');
+    TT.bind(document.getElementById('btn-about'), '其他：免责声明 / 音频 / 字号设置');
+    TT.bind(retryBtn, '重试：按上次参数重新启动');
+    TT.bind(cancelLaunchBtn, '取消启动：中止当前启动流程');
+    TT.bind(btnSwitchSlot, '切换：选择其他存档槽位');
+    TT.bind(document.querySelector('.chk-intro'), '加载片头动画：启动时播放开场视频');
+    TT.bind(document.getElementById('btn-back-welcome'), '返回：回到欢迎页 (ESC)');
+    TT.bind(document.getElementById('btn-refresh'), '刷新：重新扫描存档槽位');
+    TT.bind(document.getElementById('btn-new'), '新建角色：在新槽位创建角色');
+    TT.bind(document.getElementById('btn-import'), '导入存档：从 JSON 备份导入');
+    TT.bind(document.getElementById('btn-open-dir'), '打开存档目录：在资源管理器中查看');
+    // 卡片操作按钮是动态渲染 — 事件委托按 class 匹配, renderCard 重绘不丢绑定
+    if (TT.bindDelegate) TT.bindDelegate(cardsEl, {
+      'btn-start': '选择：设为启动存档并返回欢迎页',
+      'btn-edit': '编辑：打开存档数据编辑器',
+      'btn-export': '导出：备份为 JSON 文件',
+      'btn-delete': '删除：删除存档（不可恢复）',
+      'btn-rebuild': '重建：清空并重新开始（原数据丢弃）',
+      'btn-reset': '清理副本：清除 launcher 侧备份与删除标记',
+      'btn-newchar': '新建角色：在此空槽位创建角色'
+    });
+  }
+
+  // 键盘导航: slots 卡片网格方向键移动焦点 + Enter 主操作; welcome 页 Enter = 确认.
+  var _kbFocusCard = null;
+  function setKbFocus(card) {
+    if (_kbFocusCard === card) return;
+    if (_kbFocusCard) _kbFocusCard.classList.remove('kb-focus');
+    _kbFocusCard = card || null;
+    if (_kbFocusCard) {
+      _kbFocusCard.classList.add('kb-focus');
+      try { _kbFocusCard.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+    }
+  }
+  function kbCardList() {
+    var out = [];
+    for (var i = 0; i < cardsEl.children.length; i++) {
+      var c = cardsEl.children[i];
+      if (c.classList && c.classList.contains('card')) out.push(c);
+    }
+    return out;
+  }
+  // 列数从实际布局推: 第一行里 offsetTop 相同的卡片数 (auto-fit 网格不暴露列数)
+  function kbGridCols(cards) {
+    if (cards.length < 2) return 1;
+    var top = cards[0].offsetTop;
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].offsetTop !== top) return Math.max(1, i);
+    }
+    return cards.length;
+  }
+  function initKeyboardNav() {
+    // #cards 在 showSlots 时被聚焦 (tabindex=-1); 卡片按钮 Tab 聚焦时 keydown 也冒泡到这里
+    cardsEl.addEventListener('keydown', function(e) {
+      var cards = kbCardList();
+      if (!cards.length) return;
+      var idx = cards.indexOf(_kbFocusCard);
+      var cols = kbGridCols(cards);
+      var handled = true;
+      if (e.key === 'ArrowRight')     idx = (idx < 0) ? 0 : Math.min(cards.length - 1, idx + 1);
+      else if (e.key === 'ArrowLeft') idx = (idx < 0) ? 0 : Math.max(0, idx - 1);
+      else if (e.key === 'ArrowDown') idx = (idx < 0) ? 0 : Math.min(cards.length - 1, idx + cols);
+      else if (e.key === 'ArrowUp')   idx = (idx < 0) ? 0 : Math.max(0, idx - cols);
+      else if (e.key === 'Enter') {
+        if (idx < 0) { setKbFocus(cards[0]); e.preventDefault(); return; }
+        // 主操作: 选择 / 新建角色; 异常卡 (tombstoned/inconsistent) 回退到重建
+        var primary = cards[idx].querySelector('.btn-start, .btn-newchar, .btn-rebuild');
+        if (primary) primary.click();
+      }
+      else handled = false;
+      if (!handled) return;
+      e.preventDefault();   // 拦下方向键默认滚动, 滚动由 scrollIntoView(nearest) 精细控制
+      if (e.key !== 'Enter' && idx >= 0) setKbFocus(cards[idx]);
+    });
+    // welcome 页: 焦点不在任何可交互元素上 (activeElement 是 body) 时 Enter = 点「确认」
+    document.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter') return;
+      if (_introActive || _currentModal) return;
+      if (viewWelcome.hidden) return;
+      var ae = document.activeElement;
+      if (ae && ae !== document.body && ae !== document.documentElement) return;
+      e.preventDefault();
+      if (btnConfirmStart) btnConfirmStart.click();
+    });
+  }
+
   // ── 初始化 ──
-  loadRandomBackground();
+  // loadRandomBackground 已提前到 WebView2 listener 注册之前调用 (见 loadSlotsPoster 旁), 这里不重复
   initAudioBindings();
   showWelcome();   // 默认欢迎视图
+  initTransmissionLights();   // TRANSMISSION ◎ 点亮订阅 (BootstrapApp 已定义; 无宿主环境到不了这里, 内部有防御)
+  initBootTooltips();         // C 期: tooltip 绑定 (模块缺失时空转)
+  initKeyboardNav();          // C 期: 方向键 / Enter 导航
 
   logLine('tag-in', 'Bootstrap loaded');
   send({ cmd: 'list' });

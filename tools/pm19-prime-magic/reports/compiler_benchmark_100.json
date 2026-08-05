@@ -1,0 +1,841 @@
+{
+  "configuration": {
+    "baseSeed": 20260805,
+    "compilerConfig": {
+      "assignment_kick_swaps": 3,
+      "assignment_restarts": 128,
+      "assignment_steps": 256,
+      "exact_tail_nodes": 0,
+      "involution_restarts": 128,
+      "involution_steps": 512,
+      "outer_attempts": 64,
+      "seed": 0
+    },
+    "samples": 100
+  },
+  "failureRecords": [],
+  "format": "prime-magic-compiler-benchmark/v1",
+  "machine": {
+    "logicalCpuCount": 9,
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "python": "3.12.13"
+  },
+  "records": [
+    {
+      "candidateMoves": 518463,
+      "candidateMovesPerSecond": 2259347.315619806,
+      "elapsedSeconds": 0.2294746789993951,
+      "index": 0,
+      "peakRssKiB": 20904,
+      "seed": 7114379524547582761
+    },
+    {
+      "candidateMoves": 28989,
+      "candidateMovesPerSecond": 3696632.0975012947,
+      "elapsedSeconds": 0.007842003000405384,
+      "index": 1,
+      "peakRssKiB": 20904,
+      "seed": 10938693449418882334
+    },
+    {
+      "candidateMoves": 87093,
+      "candidateMovesPerSecond": 3261724.0596909267,
+      "elapsedSeconds": 0.026701523000156158,
+      "index": 2,
+      "peakRssKiB": 20904,
+      "seed": 2904858856458329953
+    },
+    {
+      "candidateMoves": 596034,
+      "candidateMovesPerSecond": 3010770.1125542223,
+      "elapsedSeconds": 0.197967290001543,
+      "index": 3,
+      "peakRssKiB": 20904,
+      "seed": 11360213066430607832
+    },
+    {
+      "candidateMoves": 97065,
+      "candidateMovesPerSecond": 2662089.841311786,
+      "elapsedSeconds": 0.036461955000049784,
+      "index": 4,
+      "peakRssKiB": 20904,
+      "seed": 16560655998542315884
+    },
+    {
+      "candidateMoves": 299097,
+      "candidateMovesPerSecond": 4206283.972801011,
+      "elapsedSeconds": 0.07110718200055999,
+      "index": 5,
+      "peakRssKiB": 20904,
+      "seed": 13829826944809191400
+    },
+    {
+      "candidateMoves": 319104,
+      "candidateMovesPerSecond": 3344005.2325901296,
+      "elapsedSeconds": 0.09542568800134177,
+      "index": 6,
+      "peakRssKiB": 20904,
+      "seed": 360079640246196816
+    },
+    {
+      "candidateMoves": 521370,
+      "candidateMovesPerSecond": 3962083.0995723144,
+      "elapsedSeconds": 0.13158986999951594,
+      "index": 7,
+      "peakRssKiB": 20904,
+      "seed": 59093266626347436
+    },
+    {
+      "candidateMoves": 90432,
+      "candidateMovesPerSecond": 3121618.113323661,
+      "elapsedSeconds": 0.028969590999622596,
+      "index": 8,
+      "peakRssKiB": 20904,
+      "seed": 2494608739056190041
+    },
+    {
+      "candidateMoves": 492093,
+      "candidateMovesPerSecond": 2972394.8058201238,
+      "elapsedSeconds": 0.16555438700015657,
+      "index": 9,
+      "peakRssKiB": 20904,
+      "seed": 10809790988356156497
+    },
+    {
+      "candidateMoves": 163647,
+      "candidateMovesPerSecond": 2592579.4374185116,
+      "elapsedSeconds": 0.06312130600053933,
+      "index": 10,
+      "peakRssKiB": 20904,
+      "seed": 6388465293657241163
+    },
+    {
+      "candidateMoves": 419085,
+      "candidateMovesPerSecond": 3402246.319584842,
+      "elapsedSeconds": 0.12317891199927544,
+      "index": 11,
+      "peakRssKiB": 20904,
+      "seed": 11696670760305676770
+    },
+    {
+      "candidateMoves": 102771,
+      "candidateMovesPerSecond": 3950115.0334233698,
+      "elapsedSeconds": 0.026017217000116943,
+      "index": 12,
+      "peakRssKiB": 20904,
+      "seed": 577711824853344901
+    },
+    {
+      "candidateMoves": 428004,
+      "candidateMovesPerSecond": 3258248.6837682156,
+      "elapsedSeconds": 0.1313601390011172,
+      "index": 13,
+      "peakRssKiB": 20904,
+      "seed": 8454490324458290242
+    },
+    {
+      "candidateMoves": 762921,
+      "candidateMovesPerSecond": 2132057.4927839804,
+      "elapsedSeconds": 0.3578332209999644,
+      "index": 14,
+      "peakRssKiB": 20904,
+      "seed": 2810112603753590297
+    },
+    {
+      "candidateMoves": 159579,
+      "candidateMovesPerSecond": 3631409.4905124702,
+      "elapsedSeconds": 0.04394409399901633,
+      "index": 15,
+      "peakRssKiB": 20904,
+      "seed": 10908601297056921968
+    },
+    {
+      "candidateMoves": 501318,
+      "candidateMovesPerSecond": 2749036.610512029,
+      "elapsedSeconds": 0.18236133999926096,
+      "index": 16,
+      "peakRssKiB": 20904,
+      "seed": 2910308732677559263
+    },
+    {
+      "candidateMoves": 382887,
+      "candidateMovesPerSecond": 3868007.8181997957,
+      "elapsedSeconds": 0.09898816600070859,
+      "index": 17,
+      "peakRssKiB": 20904,
+      "seed": 2458981184726646417
+    },
+    {
+      "candidateMoves": 62982,
+      "candidateMovesPerSecond": 3775544.5876327925,
+      "elapsedSeconds": 0.016681566999977804,
+      "index": 18,
+      "peakRssKiB": 20904,
+      "seed": 7776827918761903749
+    },
+    {
+      "candidateMoves": 233784,
+      "candidateMovesPerSecond": 4504257.942226157,
+      "elapsedSeconds": 0.051902888999393326,
+      "index": 19,
+      "peakRssKiB": 20904,
+      "seed": 7910430498787607733
+    },
+    {
+      "candidateMoves": 548658,
+      "candidateMovesPerSecond": 4028999.8280915255,
+      "elapsedSeconds": 0.13617722100025276,
+      "index": 20,
+      "peakRssKiB": 20904,
+      "seed": 3916289104499593854
+    },
+    {
+      "candidateMoves": 115335,
+      "candidateMovesPerSecond": 4548831.340390359,
+      "elapsedSeconds": 0.02535486400120135,
+      "index": 21,
+      "peakRssKiB": 20904,
+      "seed": 10758166612882586589
+    },
+    {
+      "candidateMoves": 251424,
+      "candidateMovesPerSecond": 2865543.023651433,
+      "elapsedSeconds": 0.08774043799894571,
+      "index": 22,
+      "peakRssKiB": 20904,
+      "seed": 8770552917586888347
+    },
+    {
+      "candidateMoves": 693495,
+      "candidateMovesPerSecond": 2505450.758520544,
+      "elapsedSeconds": 0.27679450399955385,
+      "index": 23,
+      "peakRssKiB": 20904,
+      "seed": 15831177349377515525
+    },
+    {
+      "candidateMoves": 148050,
+      "candidateMovesPerSecond": 2371046.80394607,
+      "elapsedSeconds": 0.062440775000141,
+      "index": 24,
+      "peakRssKiB": 20904,
+      "seed": 2647062955595768501
+    },
+    {
+      "candidateMoves": 142956,
+      "candidateMovesPerSecond": 2416631.5287313215,
+      "elapsedSeconds": 0.059155067001483985,
+      "index": 25,
+      "peakRssKiB": 20904,
+      "seed": 3215895674886202758
+    },
+    {
+      "candidateMoves": 22563,
+      "candidateMovesPerSecond": 4319157.048463021,
+      "elapsedSeconds": 0.005223936001129914,
+      "index": 26,
+      "peakRssKiB": 20904,
+      "seed": 7878625079572429743
+    },
+    {
+      "candidateMoves": 272853,
+      "candidateMovesPerSecond": 2548711.901645738,
+      "elapsedSeconds": 0.10705525399862381,
+      "index": 27,
+      "peakRssKiB": 20904,
+      "seed": 2468746445574076517
+    },
+    {
+      "candidateMoves": 33948,
+      "candidateMovesPerSecond": 4101739.771364809,
+      "elapsedSeconds": 0.008276488000774407,
+      "index": 28,
+      "peakRssKiB": 20904,
+      "seed": 15561350887052147024
+    },
+    {
+      "candidateMoves": 239994,
+      "candidateMovesPerSecond": 2354793.3138492084,
+      "elapsedSeconds": 0.10191722500167089,
+      "index": 29,
+      "peakRssKiB": 20904,
+      "seed": 7262861250768189036
+    },
+    {
+      "candidateMoves": 343818,
+      "candidateMovesPerSecond": 2556188.083590725,
+      "elapsedSeconds": 0.1345041869990382,
+      "index": 30,
+      "peakRssKiB": 20904,
+      "seed": 12918340300548429931
+    },
+    {
+      "candidateMoves": 110358,
+      "candidateMovesPerSecond": 3412291.4661571016,
+      "elapsedSeconds": 0.032341316999008995,
+      "index": 31,
+      "peakRssKiB": 20904,
+      "seed": 13249914586757113607
+    },
+    {
+      "candidateMoves": 120033,
+      "candidateMovesPerSecond": 2678158.28081633,
+      "elapsedSeconds": 0.044819233000453096,
+      "index": 32,
+      "peakRssKiB": 20904,
+      "seed": 12179580650269014564
+    },
+    {
+      "candidateMoves": 88902,
+      "candidateMovesPerSecond": 4424084.492582148,
+      "elapsedSeconds": 0.020095005000257515,
+      "index": 33,
+      "peakRssKiB": 20904,
+      "seed": 3075449036770122422
+    },
+    {
+      "candidateMoves": 120231,
+      "candidateMovesPerSecond": 5207542.423266512,
+      "elapsedSeconds": 0.023087858000508277,
+      "index": 34,
+      "peakRssKiB": 20904,
+      "seed": 11917499056671664901
+    },
+    {
+      "candidateMoves": 471906,
+      "candidateMovesPerSecond": 3003546.756008252,
+      "elapsedSeconds": 0.15711624899995513,
+      "index": 35,
+      "peakRssKiB": 20904,
+      "seed": 16166821437108990714
+    },
+    {
+      "candidateMoves": 590697,
+      "candidateMovesPerSecond": 2427359.8200398874,
+      "elapsedSeconds": 0.24334958300096332,
+      "index": 36,
+      "peakRssKiB": 20904,
+      "seed": 1013368598974936719
+    },
+    {
+      "candidateMoves": 85959,
+      "candidateMovesPerSecond": 2801308.0396558,
+      "elapsedSeconds": 0.03068530800010194,
+      "index": 37,
+      "peakRssKiB": 20904,
+      "seed": 13817667447100095905
+    },
+    {
+      "candidateMoves": 235449,
+      "candidateMovesPerSecond": 2462893.9316198896,
+      "elapsedSeconds": 0.09559851399899344,
+      "index": 38,
+      "peakRssKiB": 20904,
+      "seed": 3079561133744609935
+    },
+    {
+      "candidateMoves": 94707,
+      "candidateMovesPerSecond": 5051364.364649746,
+      "elapsedSeconds": 0.01874879600109125,
+      "index": 39,
+      "peakRssKiB": 20904,
+      "seed": 4921290650853278281
+    },
+    {
+      "candidateMoves": 64170,
+      "candidateMovesPerSecond": 3438200.1340078767,
+      "elapsedSeconds": 0.018663835000552353,
+      "index": 40,
+      "peakRssKiB": 20904,
+      "seed": 3480815491509921088
+    },
+    {
+      "candidateMoves": 227754,
+      "candidateMovesPerSecond": 4699595.183739,
+      "elapsedSeconds": 0.04846247199930076,
+      "index": 41,
+      "peakRssKiB": 20904,
+      "seed": 8879243356368109994
+    },
+    {
+      "candidateMoves": 211293,
+      "candidateMovesPerSecond": 4887651.650399815,
+      "elapsedSeconds": 0.04322996299924853,
+      "index": 42,
+      "peakRssKiB": 20904,
+      "seed": 5478248951490439175
+    },
+    {
+      "candidateMoves": 667971,
+      "candidateMovesPerSecond": 2285192.2266279706,
+      "elapsedSeconds": 0.29230407499926514,
+      "index": 43,
+      "peakRssKiB": 20904,
+      "seed": 9134285174216629975
+    },
+    {
+      "candidateMoves": 124542,
+      "candidateMovesPerSecond": 3572763.141707588,
+      "elapsedSeconds": 0.034858733999499236,
+      "index": 44,
+      "peakRssKiB": 20904,
+      "seed": 1299770694321410272
+    },
+    {
+      "candidateMoves": 153990,
+      "candidateMovesPerSecond": 2737195.8195817517,
+      "elapsedSeconds": 0.05625830600001791,
+      "index": 45,
+      "peakRssKiB": 20904,
+      "seed": 1658333287088102257
+    },
+    {
+      "candidateMoves": 136395,
+      "candidateMovesPerSecond": 2835386.319802708,
+      "elapsedSeconds": 0.048104555999088916,
+      "index": 46,
+      "peakRssKiB": 20904,
+      "seed": 10231673777010098213
+    },
+    {
+      "candidateMoves": 135558,
+      "candidateMovesPerSecond": 2744521.7477592845,
+      "elapsedSeconds": 0.04939221199856547,
+      "index": 47,
+      "peakRssKiB": 20904,
+      "seed": 16601651736396888933
+    },
+    {
+      "candidateMoves": 487251,
+      "candidateMovesPerSecond": 3205406.6339657474,
+      "elapsedSeconds": 0.15200910699968517,
+      "index": 48,
+      "peakRssKiB": 20904,
+      "seed": 3058783421939025176
+    },
+    {
+      "candidateMoves": 336402,
+      "candidateMovesPerSecond": 2985683.104474973,
+      "elapsedSeconds": 0.11267170300016005,
+      "index": 49,
+      "peakRssKiB": 20904,
+      "seed": 2570168380354272843
+    },
+    {
+      "candidateMoves": 283014,
+      "candidateMovesPerSecond": 3562558.356833912,
+      "elapsedSeconds": 0.07944122499975492,
+      "index": 50,
+      "peakRssKiB": 20904,
+      "seed": 6917704048452131272
+    },
+    {
+      "candidateMoves": 282186,
+      "candidateMovesPerSecond": 3122696.6963108005,
+      "elapsedSeconds": 0.09036612500131014,
+      "index": 51,
+      "peakRssKiB": 21032,
+      "seed": 18295920252257847775
+    },
+    {
+      "candidateMoves": 122040,
+      "candidateMovesPerSecond": 3785086.251477231,
+      "elapsedSeconds": 0.03224233000037202,
+      "index": 52,
+      "peakRssKiB": 21032,
+      "seed": 18324510526268032026
+    },
+    {
+      "candidateMoves": 70470,
+      "candidateMovesPerSecond": 4442216.577335894,
+      "elapsedSeconds": 0.015863701999478508,
+      "index": 53,
+      "peakRssKiB": 21032,
+      "seed": 5801985332636888366
+    },
+    {
+      "candidateMoves": 161208,
+      "candidateMovesPerSecond": 2734047.9484394747,
+      "elapsedSeconds": 0.05896312099866918,
+      "index": 54,
+      "peakRssKiB": 21032,
+      "seed": 4776357383490192104
+    },
+    {
+      "candidateMoves": 456408,
+      "candidateMovesPerSecond": 2074604.6482549866,
+      "elapsedSeconds": 0.2199975790008466,
+      "index": 55,
+      "peakRssKiB": 21032,
+      "seed": 17531881972792698291
+    },
+    {
+      "candidateMoves": 203364,
+      "candidateMovesPerSecond": 2306900.9011422037,
+      "elapsedSeconds": 0.08815463199971418,
+      "index": 56,
+      "peakRssKiB": 21032,
+      "seed": 16308668225570542814
+    },
+    {
+      "candidateMoves": 591453,
+      "candidateMovesPerSecond": 2381615.840663418,
+      "elapsedSeconds": 0.2483410589993582,
+      "index": 57,
+      "peakRssKiB": 21032,
+      "seed": 17283119832177872934
+    },
+    {
+      "candidateMoves": 314559,
+      "candidateMovesPerSecond": 4444485.95308084,
+      "elapsedSeconds": 0.0707751139998436,
+      "index": 58,
+      "peakRssKiB": 21032,
+      "seed": 7573359798049657963
+    },
+    {
+      "candidateMoves": 248364,
+      "candidateMovesPerSecond": 2375189.375665401,
+      "elapsedSeconds": 0.10456597799930023,
+      "index": 59,
+      "peakRssKiB": 21032,
+      "seed": 17369373532697436236
+    },
+    {
+      "candidateMoves": 307458,
+      "candidateMovesPerSecond": 2778095.1815103972,
+      "elapsedSeconds": 0.11067223399913928,
+      "index": 60,
+      "peakRssKiB": 21032,
+      "seed": 14345391249937035543
+    },
+    {
+      "candidateMoves": 144720,
+      "candidateMovesPerSecond": 2700371.3514677063,
+      "elapsedSeconds": 0.053592628999467706,
+      "index": 61,
+      "peakRssKiB": 21032,
+      "seed": 2817142775904456714
+    },
+    {
+      "candidateMoves": 216261,
+      "candidateMovesPerSecond": 2323115.1650643717,
+      "elapsedSeconds": 0.09309095100070408,
+      "index": 62,
+      "peakRssKiB": 21032,
+      "seed": 18001566544608650011
+    },
+    {
+      "candidateMoves": 158706,
+      "candidateMovesPerSecond": 3072606.786882925,
+      "elapsedSeconds": 0.0516519069988135,
+      "index": 63,
+      "peakRssKiB": 21032,
+      "seed": 11115333159992993917
+    },
+    {
+      "candidateMoves": 363771,
+      "candidateMovesPerSecond": 2452609.388669613,
+      "elapsedSeconds": 0.14831998999943607,
+      "index": 64,
+      "peakRssKiB": 21032,
+      "seed": 17394990710404923419
+    },
+    {
+      "candidateMoves": 667467,
+      "candidateMovesPerSecond": 2413014.1054633986,
+      "elapsedSeconds": 0.2766113130001031,
+      "index": 65,
+      "peakRssKiB": 21032,
+      "seed": 3273324874901887233
+    },
+    {
+      "candidateMoves": 80541,
+      "candidateMovesPerSecond": 5094671.213546296,
+      "elapsedSeconds": 0.01580887099953543,
+      "index": 66,
+      "peakRssKiB": 21032,
+      "seed": 3650624449020489894
+    },
+    {
+      "candidateMoves": 365535,
+      "candidateMovesPerSecond": 2334430.574567961,
+      "elapsedSeconds": 0.1565842239997437,
+      "index": 67,
+      "peakRssKiB": 21032,
+      "seed": 5104420879354748275
+    },
+    {
+      "candidateMoves": 119610,
+      "candidateMovesPerSecond": 2048755.306209414,
+      "elapsedSeconds": 0.05838178900012281,
+      "index": 68,
+      "peakRssKiB": 21032,
+      "seed": 5430025217593630700
+    },
+    {
+      "candidateMoves": 526680,
+      "candidateMovesPerSecond": 2774166.463393256,
+      "elapsedSeconds": 0.18985162100034358,
+      "index": 69,
+      "peakRssKiB": 21032,
+      "seed": 2353596126794678092
+    },
+    {
+      "candidateMoves": 45612,
+      "candidateMovesPerSecond": 4929835.339712424,
+      "elapsedSeconds": 0.009252235999156255,
+      "index": 70,
+      "peakRssKiB": 21032,
+      "seed": 2969858881653105001
+    },
+    {
+      "candidateMoves": 370449,
+      "candidateMovesPerSecond": 3811874.428908881,
+      "elapsedSeconds": 0.09718289699958405,
+      "index": 71,
+      "peakRssKiB": 21032,
+      "seed": 5207439393611597491
+    },
+    {
+      "candidateMoves": 90072,
+      "candidateMovesPerSecond": 2516373.8770397487,
+      "elapsedSeconds": 0.03579436300060479,
+      "index": 72,
+      "peakRssKiB": 21032,
+      "seed": 6020274842412235007
+    },
+    {
+      "candidateMoves": 246420,
+      "candidateMovesPerSecond": 2535186.437111766,
+      "elapsedSeconds": 0.09719995200066478,
+      "index": 73,
+      "peakRssKiB": 21032,
+      "seed": 12053917801156962254
+    },
+    {
+      "candidateMoves": 303093,
+      "candidateMovesPerSecond": 3169126.909437915,
+      "elapsedSeconds": 0.09563927499948477,
+      "index": 74,
+      "peakRssKiB": 21032,
+      "seed": 16441920909431610318
+    },
+    {
+      "candidateMoves": 183123,
+      "candidateMovesPerSecond": 3830670.567163055,
+      "elapsedSeconds": 0.04780442400078755,
+      "index": 75,
+      "peakRssKiB": 21032,
+      "seed": 16508275717221437576
+    },
+    {
+      "candidateMoves": 98163,
+      "candidateMovesPerSecond": 3802744.470199633,
+      "elapsedSeconds": 0.02581372500026191,
+      "index": 76,
+      "peakRssKiB": 21032,
+      "seed": 16323664104627282466
+    },
+    {
+      "candidateMoves": 188703,
+      "candidateMovesPerSecond": 2720892.397016756,
+      "elapsedSeconds": 0.06935334899935697,
+      "index": 77,
+      "peakRssKiB": 21032,
+      "seed": 7565599184473752450
+    },
+    {
+      "candidateMoves": 268803,
+      "candidateMovesPerSecond": 2987536.0122058676,
+      "elapsedSeconds": 0.0899748149986408,
+      "index": 78,
+      "peakRssKiB": 21032,
+      "seed": 6669234273588796371
+    },
+    {
+      "candidateMoves": 130239,
+      "candidateMovesPerSecond": 2464372.6632095375,
+      "elapsedSeconds": 0.0528487440005847,
+      "index": 79,
+      "peakRssKiB": 21032,
+      "seed": 8589332025336169730
+    },
+    {
+      "candidateMoves": 218007,
+      "candidateMovesPerSecond": 3678054.8749264167,
+      "elapsedSeconds": 0.0592723619993194,
+      "index": 80,
+      "peakRssKiB": 21032,
+      "seed": 4733431382026207359
+    },
+    {
+      "candidateMoves": 217638,
+      "candidateMovesPerSecond": 3731475.3921667673,
+      "elapsedSeconds": 0.058324919000369846,
+      "index": 81,
+      "peakRssKiB": 21032,
+      "seed": 6467745166193532954
+    },
+    {
+      "candidateMoves": 167742,
+      "candidateMovesPerSecond": 3274668.133869773,
+      "elapsedSeconds": 0.05122412200034887,
+      "index": 82,
+      "peakRssKiB": 21032,
+      "seed": 308231337152688194
+    },
+    {
+      "candidateMoves": 311364,
+      "candidateMovesPerSecond": 2578000.20875114,
+      "elapsedSeconds": 0.12077733700061799,
+      "index": 83,
+      "peakRssKiB": 21032,
+      "seed": 13979355782656779084
+    },
+    {
+      "candidateMoves": 390825,
+      "candidateMovesPerSecond": 2425226.1045372346,
+      "elapsedSeconds": 0.16114992299844744,
+      "index": 84,
+      "peakRssKiB": 21032,
+      "seed": 11248363679417131520
+    },
+    {
+      "candidateMoves": 126864,
+      "candidateMovesPerSecond": 2836737.4674901846,
+      "elapsedSeconds": 0.044721797999955015,
+      "index": 85,
+      "peakRssKiB": 21032,
+      "seed": 12570269671533439266
+    },
+    {
+      "candidateMoves": 107820,
+      "candidateMovesPerSecond": 3425503.806812735,
+      "elapsedSeconds": 0.03147566199913854,
+      "index": 86,
+      "peakRssKiB": 21032,
+      "seed": 2789869077652966854
+    },
+    {
+      "candidateMoves": 82332,
+      "candidateMovesPerSecond": 4753398.542238928,
+      "elapsedSeconds": 0.017320660001132637,
+      "index": 87,
+      "peakRssKiB": 21032,
+      "seed": 7623146235357991483
+    },
+    {
+      "candidateMoves": 304596,
+      "candidateMovesPerSecond": 3139199.2724963534,
+      "elapsedSeconds": 0.09702983900024265,
+      "index": 88,
+      "peakRssKiB": 21032,
+      "seed": 16275485814956755497
+    },
+    {
+      "candidateMoves": 357867,
+      "candidateMovesPerSecond": 3341949.8345026174,
+      "elapsedSeconds": 0.10708329499902902,
+      "index": 89,
+      "peakRssKiB": 21032,
+      "seed": 5841182040559641737
+    },
+    {
+      "candidateMoves": 207873,
+      "candidateMovesPerSecond": 2198819.4010783853,
+      "elapsedSeconds": 0.094538460001786,
+      "index": 90,
+      "peakRssKiB": 21032,
+      "seed": 1802875246065428661
+    },
+    {
+      "candidateMoves": 281097,
+      "candidateMovesPerSecond": 3654485.568066608,
+      "elapsedSeconds": 0.07691835000150604,
+      "index": 91,
+      "peakRssKiB": 21032,
+      "seed": 15076506395294646471
+    },
+    {
+      "candidateMoves": 364158,
+      "candidateMovesPerSecond": 2968796.6233530114,
+      "elapsedSeconds": 0.12266182100029255,
+      "index": 92,
+      "peakRssKiB": 21032,
+      "seed": 1647866473798741289
+    },
+    {
+      "candidateMoves": 326781,
+      "candidateMovesPerSecond": 3035830.954578328,
+      "elapsedSeconds": 0.10764136899888399,
+      "index": 93,
+      "peakRssKiB": 21032,
+      "seed": 3064045489274895450
+    },
+    {
+      "candidateMoves": 332424,
+      "candidateMovesPerSecond": 2455634.000739085,
+      "elapsedSeconds": 0.1353719649996492,
+      "index": 94,
+      "peakRssKiB": 21032,
+      "seed": 7872518757757083106
+    },
+    {
+      "candidateMoves": 5616,
+      "candidateMovesPerSecond": 3873418.6641800604,
+      "elapsedSeconds": 0.0014498820000881096,
+      "index": 95,
+      "peakRssKiB": 21032,
+      "seed": 9595770684378081373
+    },
+    {
+      "candidateMoves": 145440,
+      "candidateMovesPerSecond": 3281689.2233338943,
+      "elapsedSeconds": 0.04431863900026656,
+      "index": 96,
+      "peakRssKiB": 21032,
+      "seed": 10408865468296069921
+    },
+    {
+      "candidateMoves": 193248,
+      "candidateMovesPerSecond": 3018569.903189921,
+      "elapsedSeconds": 0.06401971999912348,
+      "index": 97,
+      "peakRssKiB": 21032,
+      "seed": 7957497776475407108
+    },
+    {
+      "candidateMoves": 378351,
+      "candidateMovesPerSecond": 3061642.5112397224,
+      "elapsedSeconds": 0.12357778499972483,
+      "index": 98,
+      "peakRssKiB": 21032,
+      "seed": 18376758983666441717
+    },
+    {
+      "candidateMoves": 502731,
+      "candidateMovesPerSecond": 3888048.3736002776,
+      "elapsedSeconds": 0.12930163199962408,
+      "index": 99,
+      "peakRssKiB": 21032,
+      "seed": 5486413454352230219
+    }
+  ],
+  "summary": {
+    "candidateMovesPerSecondMedian": 3048736.732909025,
+    "failures": 0,
+    "latencySeconds": {
+      "max": 0.3578332209999644,
+      "mean": 0.09045239517996378,
+      "median": 0.07094114800020179,
+      "min": 0.0014498820000881096,
+      "p95": 0.24359915680088304,
+      "p99": 0.29295936645927245
+    },
+    "peakRssKiBMax": 21032,
+    "successes": 100,
+    "wallSeconds": 9.055424100999517
+  }
+}

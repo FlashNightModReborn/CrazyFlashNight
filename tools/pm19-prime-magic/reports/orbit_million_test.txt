@@ -1,0 +1,13 @@
+Command:
+python3 python/orbit_group_check.py --iterations 1000000 --seed 103601
+
+Output:
+n=3: |H|=2, |G|=8 (exhaustive identity/inverse/closure/properties passed)
+n=5: |H|=8, |G|=32 (exhaustive identity/inverse/closure/properties passed)
+n=19: 1000000 random group transforms passed
+
+Interpretation:
+- n=3 and n=5 exhaustively checked identity, inverse, composition closure,
+  distinct coordinate-map count, and all magic invariants.
+- n=19 sampled one million independently generated group elements and fully
+  recomputed rows, columns, both diagonals, and global uniqueness every time.

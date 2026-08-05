@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <title>CF7:ME</title>
+<!-- 设计 token canonical 源: 纯 :root 变量声明, 无 @font-face / 选择器副作用, 直接引入保持数值同步 -->
+<link rel="stylesheet" href="css/workbench/tokens.css">
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/welcome.css">
 </head>
@@ -10,6 +12,7 @@
 
 <!-- 背景层栈 -->
 <div class="bg-photo" id="bg-photo"></div>
+<canvas id="bg-gl" aria-hidden="true"></canvas>
 <div class="bg-tint"></div>
 <div class="bg-rune"></div>
 <div class="bg-scan"></div>
@@ -39,24 +42,26 @@
       <div class="block">
         <div class="lbl">TRANSMISSION</div>
         <div class="val">
-          <span class="pulse-dot"></span> DLS SYNC <span class="m">0.73</span><br>
-          <span class="n">&#9678;</span> &theta;-FLOOD HUM<br>
-          <span class="n">&#9678;</span> 黑铁网络接入<br>
-          <span class="n">&#9678;</span> 诺亚终端握手
+          <!-- dls-sync-val: 首个 list_resp 后由 bootstrap-main.js 填健康存档比例; trans-node ◎ 随启动事件逐个点亮 -->
+          <span class="pulse-dot"></span> DLS SYNC <span class="m mono-num" id="dls-sync-val">&mdash;</span><br>
+          <span class="n trans-node" id="trans-node-1">&#9678;</span> &theta;-FLOOD HUM<br>
+          <span class="n trans-node" id="trans-node-2">&#9678;</span> 黑铁网络接入<br>
+          <span class="n trans-node" id="trans-node-3">&#9678;</span> 诺亚终端握手
         </div>
       </div>
       <div class="block">
         <div class="lbl">REGION</div>
-        <div class="val">堕落城 &middot; 外围<br>COORD <span class="m">31&deg;N 121&deg;E</span></div>
+        <div class="val">堕落城 &middot; 外围<br>COORD <span class="m mono-num">31&deg;N 121&deg;E</span></div>
       </div>
       <div class="block">
         <div class="lbl">BUILD</div>
-        <div class="val val-build">2025-10-25<br>1a8f&middot;c3e0&middot;7b12</div>
+        <!-- build-val 由 bootstrap-main.js 从 config/version.js 的 APP_META 派生填充, 这里只放占位 -->
+        <div class="val val-build mono-num" id="build-val">v&mdash;<br>&mdash;</div>
       </div>
     </div>
 
-    <!-- 中央卡片 -->
-    <div class="welcome-card">
+    <!-- 中央卡片 (corner-brackets: B 期四方位 L 角标, 见 welcome.css) -->
+    <div class="welcome-card corner-brackets">
       <div class="title-logo-wrap"><img src="assets/logos/cf7me-title.png" alt="闪客快打 7"></div>
       <div class="eyebrow">CRAZY FLASHER &#8566; &middot; MERCENARY EMPIRE</div>
       <div class="welcome-sub">佣 兵 帝 国 &middot; 2023 STANDALONE MOD</div>
@@ -64,7 +69,7 @@
       <div class="hr-rune" id="rune-divider"></div>
 
       <div class="slot-plate">
-        <div class="icon">&#9672;</div>
+        <div class="icon"><span>&#9672;</span></div>
         <div class="meta">
           <div class="name">存档 &middot; <b id="welcome-slot-name">&mdash;</b></div>
           <div class="time" id="welcome-slot-time">&mdash;</div>
@@ -103,13 +108,13 @@
     <div class="side-r">
       <div class="lbl">VERSION</div>
       <!-- ver / ver-tail / CHANNEL 值由 config/version.js 填充, 不要在这里写死 -->
-      <div class="ver" id="version-number"></div>
+      <div class="ver mono-num" id="version-number"></div>
       <div class="ver-tail" id="version-tail"></div>
 
-      <div class="row"><span class="k">CHANNEL</span><span class="v" id="version-channel"></span></div>
-      <div class="row"><span class="k">STEAM</span><span class="v g">&check; AVAILABLE</span></div>
-      <div class="row"><span class="k">ENGINE</span><span class="v">WEBVIEW2</span></div>
-      <div class="row"><span class="k">RUNTIME</span><span class="v">AVM1/SA</span></div>
+      <div class="row"><span class="k">CHANNEL</span><span class="v mono-num" id="version-channel"></span></div>
+      <div class="row"><span class="k">STEAM</span><span class="v g mono-num">&check; AVAILABLE</span></div>
+      <div class="row"><span class="k">ENGINE</span><span class="v mono-num">WEBVIEW2</span></div>
+      <div class="row"><span class="k">RUNTIME</span><span class="v mono-num">AVM1/SA</span></div>
 
       <div class="faction">
         <div class="lbl">FACTIONS</div>
@@ -123,6 +128,8 @@
 
 <!-- 槽位选择视图 -->
 <div id="view-slots" class="view" hidden>
+  <!-- B 期: 随机通缉令海报装饰 (bootstrap-main.js loadSlotsPoster 填充; 元素在 #view-slots 内, welcome 视图随 hidden 自动不显示) -->
+  <div class="slots-poster" id="slots-poster" aria-hidden="true"></div>
   <div class="wrap">
     <div class="slots-header">
       <button class="btn-back" id="btn-back-welcome">&larr; 返回</button>
@@ -134,7 +141,8 @@
       <button id="btn-import">导入存档</button>
       <button id="btn-open-dir">打开存档目录</button>
     </div>
-    <div id="cards" class="cards"></div>
+    <!-- tabindex=-1: showSlots 时脚本聚焦容器, 让方向键导航 (C 期) 有 keydown 冒泡源 -->
+    <div id="cards" class="cards" tabindex="-1"></div>
   </div>
 </div>
 
@@ -176,6 +184,12 @@
 
 <!-- 主控 IIFE -->
 <script src="bootstrap-main.js"></script>
+
+<!-- PM19 质数幻方 WebGL2 背景层（首个 ESM 模块，自包含；失败静默回退，不影响主流程） -->
+<script type="module" src="modules/bg-gl/main.mjs"></script>
+
+<!-- C 期: tooltip 层 (经典 script, 挂 window.BootTooltip; 样式在 welcome.css) -->
+<script src="modules/boot-tooltip.js"></script>
 
 <!-- 初始化阵营渲染（依赖 factions.js 已加载 + DOM 已准备） -->
 <script src="modules/factions.js"></script>

@@ -1,0 +1,29 @@
+{
+  "allOutputsByteIdentical": true,
+  "command": [
+    "python3",
+    "prime-magic-19/fixtures/prime_semimagic_search_original.py",
+    "19",
+    "--seed",
+    "1",
+    "--restarts",
+    "100"
+  ],
+  "dependency": "sympy 1.14.0 isolated vendor",
+  "format": "supplied-semimagic-generator-benchmark/v1",
+  "latencySeconds": {
+    "max": 1.0321773739997298,
+    "mean": 0.9897599383499255,
+    "median": 0.987526906000312,
+    "min": 0.9542847270004131,
+    "p95": 1.0177689672001633,
+    "p99": 1.0292956926398165
+  },
+  "machine": {
+    "logicalCpuCount": 9,
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+    "python": "3.12.13"
+  },
+  "samples": 20,
+  "stdoutSha256": "9238042d1bdc85b2cfd19904b4017c8709237c62b4893975ded97c43df179802"
+}

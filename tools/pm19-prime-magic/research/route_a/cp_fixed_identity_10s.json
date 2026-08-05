@@ -1,0 +1,33 @@
+{
+  "status": "UNKNOWN",
+  "elapsed_seconds": 10.008794445000603,
+  "first_solution_wall_time": null,
+  "row_permutation": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "random_seed": 1,
+  "workers": 4,
+  "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 454\nbooleans: 361\nconflicts: 42490\nbranches: 111188\npropagations: 891416\ninteger_propagations: 4294705\nrestarts: 13620\nlp_iterations: 217542\nwalltime: 10.0068\nusertime: 10.0068\ndeterministic_time: 33.5452\ngap_integral: 0\n",
+  "num_booleans": 361,
+  "num_branches": 111188,
+  "num_conflicts": 42490,
+  "wall_time": 10.006846755
+}

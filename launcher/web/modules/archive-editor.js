@@ -79,7 +79,7 @@
 
     _container.innerHTML =
       '<div class="modal-header">' +
-        '<h2>存档编辑: ' + escHtml(displayName) + ' <small style="color:#666">(' + escHtml(_slot) + ')</small></h2>' +
+        '<h2>存档编辑: ' + escHtml(displayName) + ' <small class="ed-dim">(' + escHtml(_slot) + ')</small></h2>' +
         '<button class="modal-close" id="ed-close">×</button>' +
       '</div>' +
       '<div id="ed-topbar" class="editor-topbar">' +
@@ -91,7 +91,7 @@
       '<div id="ed-banner"></div>' +
       '<div id="ed-mode-tabs" class="mode-tabs"></div>' +
       '<div id="ed-panel" style="position:relative"></div>' +
-      '<div id="ed-status" style="font-size:11px;color:#888;margin-top:8px"></div>' +
+      '<div id="ed-status" class="ed-status"></div>' +
       '<div class="modal-actions">' +
         '<button id="ed-save" class="primary">保存</button>' +
         '<button id="ed-reset-slot" class="danger">清理副本</button>' +
@@ -411,7 +411,7 @@
     }
 
     // 非白名单字段提示
-    html += '<div style="margin-top:16px;color:#666;font-size:11px">' +
+    html += '<div class="ed-footnote">' +
             '以上为常用字段。其他字段请切换到"树视图"或"高级模式"编辑。</div>';
 
     _panelEl.innerHTML = html;
@@ -896,7 +896,7 @@
     }
 
     var html = '<div class="diff-list">';
-    html += '<div class="diff-row" style="font-weight:600;color:#bbb;border-bottom:1px solid #444">' +
+    html += '<div class="diff-row diff-head">' +
               '<div>字段</div><div>当前值</div><div>默认值</div><div></div>' +
             '</div>';
     for (var r = 0; r < rows.length; r++) {
@@ -1263,7 +1263,7 @@
         setTimeout(function() { window.BootstrapApp.closeModal(); }, 800);
       } else {
         _statusEl.textContent = '保存失败: ' + (msg.error || 'unknown');
-        _statusEl.style.color = '#e06e6e';
+        _statusEl.classList.add('err');
         playUiCue('playError');
       }
     });

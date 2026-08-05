@@ -1,0 +1,22 @@
+{
+  "name": "prime-magic-orbit-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Allocation-free runtime orbit engine for verified prime-magic seeds",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/test/engine.test.js dist/test/real-seeds.test.js",
+    "test:stress": "npm run build && node --test dist/test/stress-million.test.js",
+    "test:all": "npm run build && node --test dist/test/*.test.js",
+    "bench": "npm run build && node --expose-gc dist/bench/orbit.bench.js",
+    "demo": "npm run build && node tools/static-server.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

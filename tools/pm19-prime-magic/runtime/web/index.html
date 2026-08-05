@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Prime Magic Orbit Engine — verified seed bank</title>
+    <link rel="stylesheet" href="/web/demo.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <div class="eyebrow">EW / MATRIX SYNCHRONIZATION</div>
+          <h1>19 × 19 MAGIC ORBIT</h1>
+        </div>
+        <div id="seed-status" class="verified">VERIFYING SEED BANK…</div>
+      </header>
+      <canvas id="matrix" aria-label="19 by 19 magic matrix"></canvas>
+      <footer>
+        <select id="seed-select" aria-label="Prime magic seed"></select>
+        <label for="board-rate">真实棋盘切换频率</label>
+        <input id="board-rate" type="range" min="1" max="30" value="10">
+        <output><span id="board-rate-value">10</span> Hz</output>
+        <span>Shader / display: RAF</span>
+      </footer>
+    </main>
+    <script type="module" src="/dist/web/demo.js"></script>
+  </body>
+</html>

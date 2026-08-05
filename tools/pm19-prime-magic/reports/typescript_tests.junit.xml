@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="19-order reversal centralizer has 9! * 2^9 elements" time="0.000847" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="identity, sampled transforms, and full magic invariants" time="0.010254" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="transform set is closed and inverse composes to identity" time="0.025318" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="composition convention agrees with sequential matrix actions" time="0.000512" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="same random seed is reproducible and PRNG state can be restored" time="0.031909" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="xoshiro bounded sampler is deterministic and exercises every small bucket" time="0.007075" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="n=5 sampler covers centralizer, independent axis reversal, and transpose uniformly" time="0.032841" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="19-order duplicate rate agrees with sampling a 743,178,240-state orbit" time="0.215537" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<!-- duplicates=8; birthday approximation=6.73 -->
+	<testcase name="double buffers alternate without creating new views" time="0.000594" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="SharedArrayBuffer views pin and release the front buffer" time="0.000341" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="eight-seed bank selection is reproducible and nearly uniform" time="0.254966" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="validator rejects nonsynchronous, duplicate, and noncommuting permutations" time="0.000465" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/engine.test.js"/>
+	<testcase name="all eight packaged PM19 seeds independently pass runtime-bank audit" time="0.007916" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/real-seeds.test.js"/>
+	<!-- 8 complete prime-magic seeds; 8 distinct centers; 5,945,425,920 total states -->
+	<testcase name="PM19 decoder rejects corrupt headers/lengths and Web Crypto matches binary hash" time="0.003444" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/real-seeds.test.js"/>
+	<testcase name="stress: 1,000,000 independently sampled legal transforms" time="1.375705" classname="test" file="/workspace/scratch/e33b8b755dd2/prime-magic-19/runtime/dist/test/stress-million.test.js"/>
+	<!-- tests 15 -->
+	<!-- suites 0 -->
+	<!-- pass 15 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 1455.927536 -->
+</testsuites>
