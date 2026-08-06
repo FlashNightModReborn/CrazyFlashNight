@@ -213,7 +213,18 @@ class org.flashNight.arki.item.InventoryPanelService {
         var sourceCheck:Object = validateSlotRef(params.source, true, false);
         if (!sourceCheck.success) return sourceCheck;
 
-        var item:Object = sourceCheck.item;
+        return buildTooltipProjection(sourceCheck.item);
+    }
+
+    /**
+     * 对已经由所属领域完成 exact identity 校验的真实物品实例生成 canonical 富注释。
+     * 本函数只负责展示投影，不签发容器能力，也不替调用方验证 source/slot/revision。
+     */
+    public static function buildTooltipProjection(item:Object):Object {
+        if (item == null || typeof item.name != "string") {
+            return fail("item_data_missing");
+        }
+
         // ItemUtil.getItemData 以 __proto__ 区分 String/Number；保留 BaseItem.name 原始值，
         // 不额外套 String(...)，否则部分 AS2 运行时会落到 null 分支。
         var itemData:Object = org.flashNight.arki.item.ItemUtil.getItemData(item.name);
@@ -234,6 +245,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         }
 
         var projection:Object = buildItemProjection(item);
+        if (projection == null) return fail("item_data_missing");
         var itemType:String = String(projection.majorType);
         if (itemType == "消耗品" && projection.use != undefined) itemType = String(projection.use);
         return {
@@ -976,7 +988,54 @@ class org.flashNight.arki.item.InventoryPanelService {
      * 调用方不得把该投影当成写入 descriptor；真实 BaseItem 仍只由 AS2 权威持有。
      */
     public static function buildItemProjection(item:Object):Object {
-        var data:Object = item != null && typeof item.getData == "function" ? item.getData() : null;
+        return buildItemProjectionInternal(item, false);
+    }
+
+    /**
+     * 为独立写领域生成提交前稳定产物原型。
+     * lastUpdate 尚未产生，因此 confirmProjection 只包含稳定字段；
+     * 装备值越界、分数或任何严格投影失败都返回 null。
+     */
+    public static function buildOutputPrototype(itemName:String, value:Number):Object {
+        if (!org.flashNight.arki.item.ItemUtil.isItem(itemName)
+                || !isStrictPositiveWholeNumber(value)) return null;
+        if (org.flashNight.arki.item.ItemUtil.isEquipment(itemName)
+                && value > EquipmentUtil.getMaxLevel()) return null;
+        var item:BaseItem = BaseItem.create(itemName, value, 0);
+        if (item == null) return null;
+        var projection:Object = buildItemProjectionInternal(item, true);
+        if (!isStrictOutputProjection(projection)) return null;
+        var confirm:Object = buildStableConfirmProjection(item, projection);
+        return confirm == null ? null : {item:projection, confirmProjection:confirm};
+    }
+
+    /**
+     * 为独立写领域投影提交后真实 BaseItem。这一路径严格关闭：
+     * 不能计算进阶资格或不能形成完整库存投影时，不允许下游猜测。
+     */
+    public static function buildOutputReceipt(item:Object):Object {
+        var lastUpdate:Number = item == null ? NaN : Number(item.lastUpdate);
+        if (!isStrictWholeNumber(lastUpdate) || lastUpdate < 0) return null;
+        var projection:Object = buildItemProjectionInternal(item, true);
+        if (!isStrictOutputProjection(projection)) return null;
+        var confirm:Object = buildConfirmProjectionFromItem(item, projection);
+        if (confirm == null || !isStrictWholeNumber(confirm.lastUpdate)
+                || Number(confirm.lastUpdate) < 0) return null;
+        return {item:projection, confirmProjection:confirm};
+    }
+
+    private static function buildItemProjectionInternal(item:Object, strictTier:Boolean):Object {
+        if (item == null || item.name == undefined || item.value == undefined
+                || item.value == null) return null;
+        var data:Object = null;
+        if (typeof item.getData == "function") {
+            try {
+                data = item.getData();
+            } catch (dataError) {
+                if (strictTier) return null;
+                trace("[InventoryPanelService projection] item data failed: " + dataError);
+            }
+        }
         var isEquipment:Boolean = typeof item.value == "object";
         var quantity:Number = !isEquipment ? Number(item.value) : 1;
         var enhancementLevel:Number = isEquipment ? Number(item.value.level) : 0;
@@ -990,9 +1049,9 @@ class org.flashNight.arki.item.InventoryPanelService {
         var setName = data == null || data.setName == undefined ? "" : data.setName;
         var setOrder:Number = data == null ? 0 : Number(data.setOrder);
         if (isNaN(setOrder)) setOrder = 0;
-        var iconName = data == null || data.icon == undefined ? item.name : data.icon;
-        var displayName = data == null || data.displayname == undefined || String(data.displayname).length == 0
-            ? item.name : data.displayname;
+        var itemIdentity:Object = buildLegacyIdentityProjection(String(item.name), data);
+        var iconName:String = itemIdentity.icon;
+        var displayName:String = itemIdentity.displayName;
         var maxEnhancementLevel:Number = EquipmentUtil.getMaxLevel();
         var tierSlotUsed:Boolean = isEquipment && item.value.tier != undefined
             && item.value.tier != null && String(item.value.tier) != "";
@@ -1028,6 +1087,7 @@ class org.flashNight.arki.item.InventoryPanelService {
                     var tierOptions:Array = TierSystem.getAvailableTierMaterials(BaseItem(item));
                     if (tierOptions != null && tierOptions.length > 0) tierSlotAvailable = true;
                 } catch (tierError) {
+                    if (strictTier) return null;
                     trace("[InventoryPanelService projection] tier probe failed: " + tierError);
                 }
             }
@@ -1067,6 +1127,61 @@ class org.flashNight.arki.item.InventoryPanelService {
             : buildBalanceSummary(rawItemData, balanceRoot, profileKey);
         if (balanceSummary != null) projection.balanceSummary = balanceSummary;
         return projection;
+    }
+
+    private static function isStrictPositiveWholeNumber(value:Number):Boolean {
+        return isStrictWholeNumber(value) && value > 0
+            && value <= 9007199254740991;
+    }
+
+    private static function isStrictWholeNumber(value:Number):Boolean {
+        return !isNaN(value) && isFinite(value) && Math.floor(value) == value;
+    }
+
+    private static function isStrictOutputProjection(projection:Object):Boolean {
+        if (projection == null
+                || !isStrictIdentityText(projection.name)
+                || !isStrictIdentityText(projection.displayName)
+                || !isStrictIdentityText(projection.icon)
+                || (projection.itemKind != "equipment" && projection.itemKind != "stack")
+                || !isStrictPositiveWholeNumber(Number(projection.quantity))
+                || !isStrictWholeNumber(Number(projection.enhancementLevel))
+                || !isStrictWholeNumber(Number(projection.maxEnhancementLevel))
+                || !isStrictWholeNumber(Number(projection.modSlotCapacity))
+                || !isStrictWholeNumber(Number(projection.modSlotUsed))
+                || !(projection.modSlots instanceof Array)
+                || projection.modSlots.length > 3
+                || projection.modSlots.length > Number(projection.modSlotUsed)
+                || typeof projection.isMaxEnhancement != "boolean"
+                || typeof projection.tierSlotAvailable != "boolean"
+                || typeof projection.tierSlotUsed != "boolean"
+                || (projection.tierSlotUsed && !projection.tierSlotAvailable)) return false;
+        if (projection.itemKind == "equipment") {
+            return Number(projection.quantity) == 1
+                && Number(projection.enhancementLevel) >= 1
+                && Number(projection.enhancementLevel) <= Number(projection.maxEnhancementLevel)
+                && projection.isMaxEnhancement
+                    == (Number(projection.enhancementLevel) >= Number(projection.maxEnhancementLevel));
+        }
+        return Number(projection.enhancementLevel) == 0
+            && projection.isMaxEnhancement == false
+            && projection.tierSlotAvailable == false
+            && projection.tierSlotUsed == false
+            && Number(projection.modSlotCapacity) == 0
+            && Number(projection.modSlotUsed) == 0
+            && projection.modSlots.length == 0;
+    }
+
+    private static function isStrictIdentityText(value):Boolean {
+        if (typeof value != "string") return false;
+        var text:String = String(value);
+        if (text.length < 1 || text.length > 256) return false;
+        var start:Number = 0;
+        var end:Number = text.length - 1;
+        while (start <= end && isIdentityWhitespace(text.charCodeAt(start))) start++;
+        while (end >= start && isIdentityWhitespace(text.charCodeAt(end))) end--;
+        return start <= end
+            && text.substring(start, end + 1).toLowerCase() != "undefined";
     }
 
     /**
@@ -1360,9 +1475,13 @@ class org.flashNight.arki.item.InventoryPanelService {
     /** 将存档中的插件名解析为纯展示投影；未知旧插件使用中性线框菱形，绝不影响库存读取。 */
     private static function buildModSlotProjection(modName:String):Object {
         var modData:Object = EquipmentUtil.modDict == undefined ? null : EquipmentUtil.modDict[modName];
+        var identity:Object = buildLegacyIdentityProjection(
+            modName, org.flashNight.arki.item.ItemUtil.getItemData(modName));
         if (modData == null) {
             return {
                 name: modName,
+                displayName: identity.displayName,
+                icon: identity.icon,
                 grade: "unknown",
                 gradeLabel: "未知档级",
                 gradeColor: "#58636E",
@@ -1374,6 +1493,8 @@ class org.flashNight.arki.item.InventoryPanelService {
         }
         return {
             name: modName,
+            displayName: identity.displayName,
+            icon: identity.icon,
             grade: String(modData.modGrade || "unknown"),
             gradeLabel: String(modData.uiGradeLabel || "未知档级"),
             gradeColor: String(modData.uiGradeColor || "#58636E"),
@@ -1384,22 +1505,60 @@ class org.flashNight.arki.item.InventoryPanelService {
         };
     }
 
+    /** 旧数据适配只在 AS2 权威边界发生；规则键保持内部名，展示键独立投影。 */
+    private static function buildLegacyIdentityProjection(itemName:String, itemData:Object):Object {
+        var displayValue = itemData == null ? undefined : itemData.displayname;
+        var iconValue = itemData == null ? undefined : itemData.icon;
+        return {
+            displayName: projectLegacyIdentityField(displayValue, itemName),
+            icon: projectLegacyIdentityField(iconValue, itemName)
+        };
+    }
+
+    private static function projectLegacyIdentityField(value, fallback:String):String {
+        if (typeof value != "string") return fallback;
+        var text:String = String(value);
+        var start:Number = 0;
+        var end:Number = text.length - 1;
+        while (start <= end && isIdentityWhitespace(text.charCodeAt(start))) start++;
+        while (end >= start && isIdentityWhitespace(text.charCodeAt(end))) end--;
+        if (start > end) return fallback;
+        if (text.substring(start, end + 1).toLowerCase() == "undefined") return fallback;
+        return text;
+    }
+
+    private static function isIdentityWhitespace(code:Number):Boolean {
+        return code <= 32 || code == 160;
+    }
+
     private static function buildConfirmProjection(item:Object):Object {
         if (item == null) return null;
         var projection:Object = buildItemProjection(item);
+        return projection == null ? null : buildConfirmProjectionFromItem(item, projection);
+    }
+
+    private static function buildConfirmProjectionFromItem(item:Object, projection:Object):Object {
+        if (item == null || projection == null) return null;
+        var stable:Object = buildStableConfirmProjection(item, projection);
+        if (stable == null) return null;
         var lastUpdate:Number = Number(item.lastUpdate);
         if (isNaN(lastUpdate)) lastUpdate = 0;
+        stable.lastUpdate = lastUpdate;
+        return stable;
+    }
+
+    private static function buildStableConfirmProjection(item:Object, projection:Object):Object {
+        if (item == null || projection == null) return null;
         return {
-            itemKind: projection.itemKind,
-            name: String(projection.name),
-            displayName: projection.displayName,
-            quantity: projection.quantity,
-            enhancementLevel: projection.enhancementLevel,
-            rarity: projection.rarity,
-            tier: typeof item.value == "object" && item.value != null && item.value.tier != undefined
+            itemKind:projection.itemKind,
+            name:String(projection.name),
+            displayName:projection.displayName,
+            quantity:projection.quantity,
+            enhancementLevel:projection.enhancementLevel,
+            rarity:projection.rarity,
+            tier:typeof item.value == "object" && item.value != null && item.value.tier != undefined
                 ? String(item.value.tier) : "",
-            modSignature: buildModifierSignature(item),
-            lastUpdate: lastUpdate
+            modSignature:buildModifierSignature(item)
         };
     }
 

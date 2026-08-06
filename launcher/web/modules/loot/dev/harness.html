@@ -66,12 +66,34 @@ var authority;
 function item(name){return{name:name,displayName:name,icon:name,itemKind:'stack',quantity:1,majorType:'材料',use:'材料'}}
 function occupied(index,name,lease){return{physicalSlot:index,occupied:true,slotLease:lease,item:item(name)}}
 function empty(index){return{physicalSlot:index,occupied:false,slotLease:'lease.empty.'+index}}
+function strictInventoryItem(source){
+  source=source||{};var equipment=source.itemKind==='equipment';
+  var enhancement=equipment?Math.max(0,Math.floor(Number(source.enhancementLevel)||0)):0;
+  var maxEnhancement=equipment?Math.max(enhancement,Math.floor(Number(source.maxEnhancementLevel)||13)):0;
+  return{name:String(source.name||'unknown'),displayName:String(source.displayName||source.name||'unknown'),
+    icon:String(source.icon||source.name||'unknown'),majorType:String(source.majorType||''),use:String(source.use||''),
+    actionType:String(source.actionType||''),weaponType:String(source.weaponType||''),setId:String(source.setId||''),
+    setName:String(source.setName||''),setOrder:Math.max(0,Math.floor(Number(source.setOrder)||0)),
+    itemKind:equipment?'equipment':'stack',quantity:equipment?1:Math.max(1,Math.floor(Number(source.quantity)||1)),
+    enhancementLevel:enhancement,maxEnhancementLevel:maxEnhancement,
+    isMaxEnhancement:equipment&&enhancement>=maxEnhancement,tierSlotAvailable:false,tierSlotUsed:false,
+    modSlotCapacity:0,modSlotUsed:0,modSlots:[],modMeta:null,rarity:String(source.rarity||'')}
+}
+function strictInventorySlot(source){
+  if(!source||!source.occupied)return{physicalSlot:Number(source&&source.physicalSlot)||0,occupied:false,
+    slotLease:String(source&&source.slotLease||'lease.empty')};
+  var projected=strictInventoryItem(source.item);
+  return{physicalSlot:Number(source.physicalSlot),occupied:true,slotLease:String(source.slotLease),item:projected,
+    confirmProjection:{itemKind:projected.itemKind,name:projected.name,displayName:projected.displayName,
+      quantity:projected.quantity,enhancementLevel:projected.enhancementLevel,rarity:projected.rarity,
+      tier:'',modSignature:'',lastUpdate:0}}
+}
   function addInventoryAuthority(){authority.battlebox=[empty(0),empty(1),empty(2),empty(3)];authority.inventoryRevision=1}
   function resetAuthority(full){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'强化石','lease.0'),empty(1)],backpack:full?[occupied(0,'背包物品A','bag.0'),occupied(1,'背包物品B','bag.1')]:[occupied(0,'背包物品A','bag.0'),empty(1)],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
   function resetClaimAllAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'物资A','lease.all.0'),occupied(1,'物资B','lease.all.1'),occupied(2,'物资C','lease.all.2')],backpack:[occupied(0,'背包物品A','bag.0'),empty(1),empty(2),empty(3)],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
   function resetMixedClaimAllAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'黑暗吉他','lease.mixed.guitar.1'),occupied(1,'抗生素','lease.mixed.antibiotic.1')],backpack:[occupied(0,'抗生素','bag.antibiotic'),occupied(1,'背包物品B','bag.1')],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
 function resetGridAuthority(capacity){resetAuthority(false);authority.loot=[];for(var i=0;i<capacity;i++)authority.loot.push(i===0?occupied(i,'保险柜物资','lease.grid.0'):empty(i))}
-function snapshot(containerId,slots){return{containerId:containerId,capacity:slots.length,accessibleCapacity:slots.length,viewCapacity:slots.length,filterKey:'all',pageSizeHint:slots.length,locked:false,snapshotSeq:authority.revision,containerEpoch:containerId.indexOf('loot.')===0?7:1,containerVersion:authority.version,offset:0,limit:slots.length,slots:slots,filterFacets:[],filterItemCount:slots.filter(function(x){return x.occupied}).length,setFacets:[],setFilterItemCount:0}}
+function snapshot(containerId,slots){var projectedSlots=containerId==='背包'?slots.map(strictInventorySlot):slots;return{containerId:containerId,capacity:slots.length,accessibleCapacity:slots.length,viewCapacity:slots.length,filterKey:'all',pageSizeHint:slots.length,locked:false,snapshotSeq:authority.revision,containerEpoch:containerId.indexOf('loot.')===0?7:1,containerVersion:authority.version,offset:0,limit:slots.length,slots:projectedSlots,filterFacets:[],filterItemCount:slots.filter(function(x){return x.occupied}).length,setFacets:[],setFilterItemCount:0}}
 function remaining(){return authority.loot.filter(function(x){return x.occupied}).length}
 function common(message){var inactive=authority.terminal||authority.suspended;return{type:'panel_resp',task:'loot_response',domain:'loot',panel:'loot',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,chestSessionId:message.chestSessionId,lootContainerId:message.lootContainerId,containerEpoch:message.containerEpoch,success:true,error:'',authorityRevision:authority.revision,lastAppliedOperationId:authority.lastOperation,state:authority.terminal?authority.terminal.kind:authority.suspended?'LOOT_SUSPENDED':'LOOT_ACTIVE',remainingCount:authority.terminal?authority.terminal.remainingCount:remaining(),closeLease:inactive?'':authority.closeLease,snapshots:[],tooltip:null,terminal:authority.terminal}}
   function emit(value){if(value&&value.terminal)__events.push('terminal_response');else if(value&&value.state==='LOOT_SUSPENDED')__events.push('suspended_response');(__handlers.panel_resp||[]).slice().forEach(function(fn){fn(value)})}
@@ -113,13 +135,20 @@ function respond(message){
 
   function inventorySlots(containerId){return containerId==='背包'?authority.backpack:containerId==='战备箱'?authority.battlebox:null}
   function inventorySnapshot(request){
-    var all=inventorySlots(request.containerId)||[],requestedOffset=Number(request.offset)||0,requestedLimit=Number(request.limit)||1;
+    var all=inventorySlots(request.containerId)||[],requestedOffset=Math.max(0,Math.floor(Number(request.offset)||0));
+    var requestedLimit=Math.min(100,Math.max(1,Math.floor(Number(request.limit)||1)));
     var offset=all.length<=0?0:requestedOffset>=all.length?Math.floor((all.length-1)/requestedLimit)*requestedLimit:requestedOffset;
-    var slots=all.slice(offset,offset+requestedLimit);
-    return{containerId:request.containerId,capacity:all.length,accessibleCapacity:all.length,viewCapacity:all.length,
-      filterKey:String(request.filterKey||'all'),snapshotSeq:authority.inventoryRevision,containerVersion:authority.inventoryRevision,
-      offset:offset,limit:slots.length,slots:slots,filterFacets:[],filterItemCount:all.filter(function(x){return x.occupied}).length,
-      setFacets:[],setFilterItemCount:0}
+    var slots=all.slice(offset,offset+requestedLimit).map(strictInventorySlot);
+    var occupiedCount=all.filter(function(x){return x.occupied}).length;
+    var snapshot={containerId:request.containerId,capacity:all.length,accessibleCapacity:all.length,viewCapacity:all.length,
+      filterKey:String(request.filterKey||'all'),pageSizeHint:requestedLimit,locked:all.length<=0,
+      snapshotSeq:authority.inventoryRevision,containerEpoch:1,containerVersion:authority.inventoryRevision,
+      offset:offset,limit:slots.length,slots:slots,
+      filterFacets:occupiedCount?[{id:'material',label:'材料',order:0,count:occupiedCount,children:[]}]:[],
+      filterItemCount:occupiedCount,setFacets:[],setFilterItemCount:0};
+    if(request.filterSpec!=null)snapshot.filterSpec=JSON.parse(JSON.stringify(request.filterSpec));
+    if(request.scope!=null)snapshot.scope=String(request.scope);
+    return snapshot
   }
   function inventoryResponse(message,success,error,snapshots){return{type:'panel_resp',domain:'inventory',panel:'loot',
     panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId,success:success,error:error||'',snapshots:snapshots||[]}}
@@ -379,7 +408,9 @@ function respond(message){
     var organizeClaimsBefore=tasks('claim').length,organizeClosesBefore=tasks('close').length;
     var organizeLootSnapshotsBefore=tasks('snapshot').length;
     document.querySelector('[data-commit-primary]').click();
-    await waitFor(function(){var state=LootPanel.debugState();return state.organizerActive&&state.inventory.ready});
+    var organizerReady=await waitFor(function(){var state=LootPanel.debugState();return state.organizerActive&&state.inventory.ready});
+    ok('organizer waits for a strict authoritative inventory snapshot before enabling writes',organizerReady,
+      JSON.stringify(LootPanel.debugState().inventory));
     var organizerInventoryOpen=inventoryTasks('snapshot').slice(-1)[0];
     ok('organize CTA keeps the exact tracked loot instance and opens an in-place secondary page',
       Panels.getActive()==='loot'&&!authority.suspended&&authority.terminal===null
@@ -421,8 +452,11 @@ function respond(message){
           &&node.getAttribute('data-entity-inspectable')==='true'
           &&node.getAttribute('data-entity-actionable')==='true'&&reason&&reason.hidden;
       })&&readyOrganizerDiscard&&readyOrganizerDiscard.getAttribute('aria-disabled')==='false');
-    document.querySelector('[data-space-grid="背包"] .occupied').click();
-    await waitFor(function(){var state=LootPanel.debugState();return inventoryTasks('autoTransfer').length===1&&!state.inventory.busyOwner});
+    var firstOrganizerSource=document.querySelector('[data-space-grid="背包"] .occupied');
+    if(firstOrganizerSource)firstOrganizerSource.click();
+    var organizerTransferCompleted=await waitFor(function(){var state=LootPanel.debugState();return inventoryTasks('autoTransfer').length===1&&!state.inventory.busyOwner});
+    ok('organizer only transfers from a proven actionable inventory tile',
+      !!firstOrganizerSource&&organizerTransferCompleted);
     var organizerClosesBeforeReturn=tasks('close').length;
     document.querySelector('[data-loot-organizer-back]').click();
     await waitFor(function(){return !LootPanel.debugState().organizerActive});

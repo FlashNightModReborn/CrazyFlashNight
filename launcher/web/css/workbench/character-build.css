@@ -658,10 +658,34 @@
 }
 .character-build-candidate-overlay[hidden] { display:none; }
 .character-build-candidate-pane > [hidden] { display:none; }
-.character-build-candidate-focus-summary {
+.character-build-candidate-context-row {
+    display:flex;
+    align-items:center;
+    gap:6px;
     min-width:0;
     min-height:31px;
     margin-bottom:6px;
+}
+.character-build-candidate-pane .character-build-candidate-scope-row {
+    flex:0 0 auto;
+    min-width:max-content;
+    gap:4px;
+}
+.character-build-candidate-scope-row > span {
+    color:var(--wb-muted);
+    font-size:11px;
+    white-space:nowrap;
+}
+.character-build-candidate-scope .workbench-choice-option {
+    flex:0 0 auto;
+    min-height:27px;
+    padding:0 8px;
+    white-space:nowrap;
+}
+.character-build-candidate-focus-summary {
+    flex:1 1 auto;
+    min-width:0;
+    min-height:31px;
     padding:5px 8px;
     box-sizing:border-box;
     overflow:hidden;

@@ -77,6 +77,7 @@ $registeredActions = [regex]::Matches(
 $expectedWebActions = @(
     'characterBuildSnapshot'
     'characterBuildCandidates'
+    'characterBuildTooltip'
     'characterBuildEquipEquipment'
     'characterBuildUnequipEquipment'
     'characterBuildEquipDrug'
@@ -93,7 +94,7 @@ $registeredActionSet = @($registeredActions | Sort-Object) -join '|'
 $expectedActionSet = @($expectedActions | Sort-Object) -join '|'
 if ((@($registeredActions).Count -ne $expectedActions.Count) -or
         ($registeredActionSet -ne $expectedActionSet)) {
-    throw 'CharacterBuild actions must be the exact nine Web actions plus one Host-only recovery action.'
+    throw 'CharacterBuild actions must be the exact ten Web actions plus one Host-only recovery action.'
 }
 $characterBuildHostSource = Get-RepoText `
     'launcher\src\Guardian\CharacterBuildTask.cs'
@@ -115,6 +116,7 @@ $resolvedWebActions = [regex]::Matches(
 $expectedWebCommands = @(
     'snapshot'
     'candidates'
+    'tooltip'
     'equipEquipment'
     'unequipEquipment'
     'equipDrug'
@@ -135,7 +137,7 @@ if (($productionResolver -notmatch
         (@($resolvedWebCommands).Count -ne $expectedWebCommands.Count) -or
         ((@($resolvedWebCommands | Sort-Object) -join '|') -ne
             (@($expectedWebCommands | Sort-Object) -join '|'))) {
-    throw 'CharacterBuild Web resolver must remain the exact nine-command/nine-action set.'
+    throw 'CharacterBuild Web resolver must remain the exact ten-command/ten-action set.'
 }
 if (($combinedResolvers -match 'RecoverDetach') -or
         ($combinedResolvers -match 'recoverDetach')) {
@@ -150,12 +152,93 @@ if (($characterBuildSource -match 'persistenceSucceeded') -or
         ($characterBuildSource -notmatch 'hasPendingChanges\s*\(') -or
         ($characterBuildSource -notmatch 'SaveManager\.getInstance\s*\(') -or
         ($characterBuildSource -notmatch 'ManualCooldownService[\s\S]{0,120}\.FRAME_MS') -or
-        ($characterBuildSource -notmatch 'getItemData\s*\(\s*item\.name\s*\)') -or
+        ($characterBuildSource -notmatch 'getEffectiveItemData\s*\(\s*item\s*\)') -or
+        ($characterBuildSource -notmatch 'typeof\s+item\.getData\s*!=\s*"function"') -or
+        ($characterBuildSource -match 'getEffectiveItemData[\s\S]{0,700}getItemData\s*\(') -or
         ($characterBuildSource -notmatch 'pause_lease_missing') -or
         ($characterBuildSource -notmatch 'live_unavailable') -or
         ($characterBuildSource -notmatch 'recoveryState:"authority_absent"')) {
     throw 'CharacterBuild wire/projection/persistence static contract is incomplete.'
 }
+
+[xml]$qualificationWeapons = Get-RepoText `
+    'data\items\武器_长枪_突击步枪.xml'
+[xml]$qualificationBlade = Get-RepoText `
+    'data\items\武器_刀_刀剑.xml'
+[xml]$qualificationArmor = Get-RepoText `
+    'data\items\防具_0-19级.xml'
+[xml]$qualificationMods = Get-RepoText `
+    'data\items\equipment_mods\高等材料_通用.xml'
+[xml]$qualificationEquipmentConfig = Get-RepoText `
+    'data\equipment\equipment_config.xml'
+$m4a1 = $qualificationWeapons.SelectSingleNode('//item[name="M4A1"]')
+$behemoth = $qualificationWeapons.SelectSingleNode('//item[name="巨兽"]')
+$garo = $qualificationBlade.SelectSingleNode('//item[name="远古诛神剑"]')
+$desertVest = $qualificationArmor.SelectSingleNode(
+    '//item[name="沙漠军装背心"]')
+$computerChip = $qualificationMods.SelectSingleNode(
+    '//mod[name="电脑芯片"]')
+$tierThreeMappings = $qualificationEquipmentConfig.SelectNodes(
+    '//TierMapping[@name="三阶"]')
+$iceMappings = $qualificationEquipmentConfig.SelectNodes(
+    '//TierMapping[@name="墨冰"]')
+$fireMappings = $qualificationEquipmentConfig.SelectNodes(
+    '//TierMapping[@name="狱火"]')
+if (($tierThreeMappings.Count -ne 1) -or
+        ([string]$tierThreeMappings[0].key -ne 'data_3') -or
+        ($iceMappings.Count -ne 1) -or
+        ([string]$iceMappings[0].key -ne 'data_ice') -or
+        ($fireMappings.Count -ne 1) -or
+        ([string]$fireMappings[0].key -ne 'data_fire') -or
+        ($null -eq $m4a1) -or ([string]$m4a1.type -ne '武器') -or
+        ([string]$m4a1.use -ne '长枪') -or
+        ([int]$m4a1.data.level -ne 10) -or
+        ([int]$m4a1.data_ice.level -ne 41) -or
+        ([int]$m4a1.data_fire.level -ne 41) -or
+        ($null -eq $behemoth) -or ([string]$behemoth.type -ne '武器') -or
+        ([string]$behemoth.use -ne '长枪') -or
+        ([int]$behemoth.data.level -ne 30) -or
+        ([string]$behemoth.inherentTags -notmatch '(^|,)电力(,|$)') -or
+        ($null -eq $garo) -or ([string]$garo.name -ne '远古诛神剑') -or
+        ([string]$garo.displayname -ne '牙狼剑') -or
+        ([string]$garo.icon -ne '远古诛神剑') -or
+        ([string]$garo.type -ne '武器') -or
+        ([string]$garo.use -ne '刀') -or
+        ([string]$garo.actiontype -ne '刀剑') -or
+        ([int]$garo.data.level -ne 60) -or
+        ($null -eq $desertVest) -or ([string]$desertVest.type -ne '防具') -or
+        ([string]$desertVest.use -ne '上装装备') -or
+        ([int]$desertVest.data.level -ne 10) -or
+        ([int]$desertVest.data_3.level -ne 25) -or
+        ($null -eq $computerChip) -or
+        ([string]$computerChip.use -notmatch '(^|,)长枪(,|$)') -or
+        ([string]$computerChip.requireTags -notmatch '(^|,)电力(,|$)') -or
+        ([int]$computerChip.stats.flat.level -ne -3)) {
+    throw 'Production XML no longer matches the Character effective-level family fixture.'
+}
+if (($characterBuildTestSource -notmatch
+        'new BaseItem\(\s*"M4A1"[\s\S]{0,160}level:13') -or
+        ($characterBuildTestSource -notmatch
+            'new BaseItem\(\s*"M4A1"[\s\S]{0,160}tier:"墨冰"') -or
+        ($characterBuildTestSource -notmatch
+            'new BaseItem\(\s*"M4A1"[\s\S]{0,160}tier:"狱火"') -or
+        ($characterBuildTestSource -notmatch
+            'new BaseItem\(\s*"巨兽"[\s\S]{0,180}mods:\["电脑芯片"\]') -or
+        ($characterBuildTestSource -notmatch
+            'new BaseItem\(\s*"远古诛神剑"[\s\S]{0,180}tier:""') -or
+        ($characterBuildTestSource -notmatch
+            'new BaseItem\(\s*"沙漠军装背心"[\s\S]{0,180}tier:"三阶"') -or
+        ($characterBuildTestSource -notmatch
+            'ordinary\.getData\(\)\.data\.level\s*==\s*10') -or
+        ($characterBuildTestSource -notmatch
+            'chipped\.getData\(\)\.data\.level\s*==\s*27') -or
+        ($characterBuildTestSource -notmatch
+            'garo\.getData\(\)\.data\.level\s*==\s*60') -or
+        ($characterBuildTestSource -match
+            'level:this\.value\.level')) {
+    throw 'Character effective-level coverage must use real BaseItem calculation and fail closed when unbound.'
+}
+Write-Host '[STATIC_PASS] Character real BaseItem effective-level XML families'
 
 $webViewInstallSource = Get-RepoText 'scripts\逻辑系统分区\物品系统_WebView.as'
 if ($webViewInstallSource -notmatch 'CharacterBuildService\.install\s*\(\s*\)') {

@@ -70,6 +70,7 @@ namespace CF7Launcher.Guardian
         {
             RetiredExact,
             VisualAlreadyAbsent,
+            Superseded,
             HostUnavailable
         }
 
@@ -90,6 +91,7 @@ namespace CF7Launcher.Guardian
             public bool IsTrackedClose;
             public bool IsExactClose;
             public bool IsVisualRetire;
+            public bool DismissReturnStackOnExactClose;
             public string ReservedPanelInstanceId;
             public Func<bool> TrackedExecutionGate;
             public Action<TrackedOpenOutcome> TrackedOpenCompleted;
@@ -112,6 +114,7 @@ namespace CF7Launcher.Guardian
                 IsTrackedClose = false;
                 IsExactClose = false;
                 IsVisualRetire = false;
+                DismissReturnStackOnExactClose = false;
                 ReservedPanelInstanceId = null;
                 TrackedExecutionGate = null;
                 TrackedOpenCompleted = null;
@@ -431,16 +434,31 @@ namespace CF7Launcher.Guardian
         public bool TryClosePanelExact(string panelName, string panelInstanceId,
             Action<bool> completed)
         {
+            return TryClosePanelExact(
+                panelName,
+                panelInstanceId,
+                false,
+                completed);
+        }
+
+        /// <summary>
+        /// Queues an exact close and optionally dismisses its return path. Deferred open/rebind
+        /// intent and the optional return-stack dismissal are consumed only after the exact active
+        /// instance still matches on execution; stale closes are side-effect free.
+        /// </summary>
+        public bool TryClosePanelExact(
+            string panelName,
+            string panelInstanceId,
+            bool dismissReturnStack,
+            Action<bool> completed)
+        {
             if (_disposed || string.IsNullOrEmpty(panelName)
                 || string.IsNullOrEmpty(panelInstanceId)) return false;
-            lock (_queueLock)
-            {
-                _deferredRebind = null;
-                _deferredBarrierOpen = null;
-            }
             PanelCommand command =
                 new PanelCommand(PanelCommandKind.Close, panelName, null);
             command.IsExactClose = true;
+            command.DismissReturnStackOnExactClose =
+                dismissReturnStack;
             command.ReservedPanelInstanceId = panelInstanceId;
             command.ExactCloseCompleted = completed;
             return EnqueueAndPump(command);
@@ -467,30 +485,14 @@ namespace CF7Launcher.Guardian
             lock (_queueLock)
             {
                 confirmedVisualIdle =
-                    _activePanel == null
-                    && _queue.Count == 0
-                    && !_processing
-                    && !_trackedOpenReserved;
+                    IsStableOpenAdmissionLocked(
+                        null,
+                        null);
                 if (_idleFenceToken != null
                     && !confirmedVisualIdle)
                 {
                     return false;
                 }
-                if (confirmedVisualIdle
-                    && string.Equals(
-                        _trackedLeasePanelName,
-                        panelName,
-                        StringComparison.Ordinal)
-                    && string.Equals(
-                        _trackedLeaseInstanceId,
-                        panelInstanceId,
-                        StringComparison.Ordinal))
-                {
-                    _trackedLeasePanelName = null;
-                    _trackedLeaseInstanceId = null;
-                }
-                _deferredRebind = null;
-                _deferredBarrierOpen = null;
             }
             if (confirmedVisualIdle)
             {
@@ -515,9 +517,9 @@ namespace CF7Launcher.Guardian
             get
             {
                 lock (_queueLock)
-                    return !_disposed && _activePanel == null && _queue.Count == 0
-                        && !_processing && !_trackedOpenReserved && _trackedLeaseInstanceId == null
-                        && _idleFenceToken == null;
+                    return IsStableOpenAdmissionLocked(
+                        null,
+                        null);
             }
         }
 
@@ -532,9 +534,9 @@ namespace CF7Launcher.Guardian
             if (string.IsNullOrEmpty(token)) return false;
             lock (_queueLock)
             {
-                if (_disposed || _idleFenceToken != null || _activePanel != null
-                    || _queue.Count != 0 || _processing || _trackedOpenReserved
-                    || _trackedLeaseInstanceId != null) return false;
+                if (!IsStableOpenAdmissionLocked(
+                        null,
+                        null)) return false;
                 _idleFenceToken = token;
                 _openAdmissionEpoch++;
                 return true;
@@ -588,7 +590,18 @@ namespace CF7Launcher.Guardian
                     _deferredRebind = null;
                 }
             }
-            if (deferred.HasValue) EnqueueAndPump(deferred.Value);
+            if (deferred.HasValue
+                && !EnqueueAndPump(deferred.Value))
+            {
+                lock (_queueLock)
+                {
+                    if (!_disposed
+                        && !_deferredRebind.HasValue)
+                    {
+                        _deferredRebind = deferred;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -606,8 +619,18 @@ namespace CF7Launcher.Guardian
                     _deferredBarrierOpen = null;
                 }
             }
-            if (deferred.HasValue)
-                EnqueueAndPump(deferred.Value);
+            if (deferred.HasValue
+                && !EnqueueAndPump(deferred.Value))
+            {
+                lock (_queueLock)
+                {
+                    if (!_disposed
+                        && !_deferredBarrierOpen.HasValue)
+                    {
+                        _deferredBarrierOpen = deferred;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -701,8 +724,9 @@ namespace CF7Launcher.Guardian
                 if (_idleFenceToken != null) return false;
                 if (cmd.IsTrackedOpen)
                 {
-                    if (_trackedOpenReserved || _trackedLeaseInstanceId != null
-                        || _activePanel != null || _queue.Count != 0 || _processing)
+                    if (!IsStableOpenAdmissionLocked(
+                            null,
+                            null))
                         return false;
                     _trackedOpenReserved = true;
                 }
@@ -935,7 +959,7 @@ namespace CF7Launcher.Guardian
                         _consecutiveFailures = 0;
                         return;
                     }
-                    DoRebind(cmd.Name, cmd.InitDataJson);
+                    DoRebind(cmd);
                     _consecutiveFailures = 0;
                     return;
                 }
@@ -1083,9 +1107,21 @@ namespace CF7Launcher.Guardian
                         + (cmd.ReservedPanelInstanceId ?? "<null>"));
                     return;
                 }
+                lock (_queueLock)
+                {
+                    _deferredRebind = null;
+                    _deferredBarrierOpen = null;
+                    if (cmd.DismissReturnStackOnExactClose)
+                        _returnStack.Clear();
+                }
                 DoClose();
                 closed = true;
-                if (_returnStack.Count > 0)
+                LogManager.Log(
+                    AuthorityLogFormatter.FormatPanelExactCloseCompleted(
+                        cmd.Name,
+                        cmd.ReservedPanelInstanceId));
+                if (!cmd.DismissReturnStackOnExactClose
+                    && _returnStack.Count > 0)
                     QueueReturnOpen();
                 _consecutiveFailures = 0;
             }
@@ -1110,6 +1146,7 @@ namespace CF7Launcher.Guardian
             PanelCommand cmd)
         {
             bool retiredExact = false;
+            bool superseded = false;
             try
             {
                 bool activeMatches =
@@ -1138,7 +1175,12 @@ namespace CF7Launcher.Guardian
                     && (!hasTrackedLease
                         || trackedLeaseMatches))
                 {
-                    _returnStack.Clear();
+                    lock (_queueLock)
+                    {
+                        _returnStack.Clear();
+                        _deferredRebind = null;
+                        _deferredBarrierOpen = null;
+                    }
                     DoClose();
                     if (trackedLeaseMatches)
                     {
@@ -1156,15 +1198,56 @@ namespace CF7Launcher.Guardian
                     _trackedLeasePanelName = null;
                     _trackedLeaseInstanceId = null;
                 }
-                else if (_activePanel != null)
+                else if (_activePanel != null
+                    && !activeMatches)
                 {
                     LogManager.Log(
-                        "[PanelHost] visual retire waiting for replacement: "
+                        "[PanelHost] stale visual retire superseded by replacement: "
                         + (_activePanel ?? "<null>") + " instance="
                         + (_activePanelInstanceId ?? "<null>")
                         + " requested=" + (cmd.Name ?? "<null>")
                         + " instance="
                         + (cmd.ReservedPanelInstanceId ?? "<null>"));
+                    superseded = true;
+                }
+
+                if (!superseded
+                    && _activePanel == null)
+                {
+                    lock (_queueLock)
+                    {
+                        superseded =
+                            _deferredRebind.HasValue
+                            || _deferredBarrierOpen.HasValue;
+                    }
+                    if (superseded)
+                    {
+                        LogManager.Log(
+                            "[PanelHost] visual retire superseded by deferred panel intent: "
+                            + (cmd.Name ?? "<null>") + " instance="
+                            + (cmd.ReservedPanelInstanceId ?? "<null>"));
+                    }
+                }
+
+                if (superseded)
+                {
+                    Action<VisualRetireOutcome> completed =
+                        cmd.VisualRetireCompleted;
+                    if (completed != null)
+                    {
+                        try
+                        {
+                            completed(
+                                VisualRetireOutcome.Superseded);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogManager.Log(
+                                "[PanelHost] visual retire completion failed: "
+                                + ex.Message);
+                        }
+                    }
+                    return;
                 }
 
                 lock (_queueLock)
@@ -1202,8 +1285,10 @@ namespace CF7Launcher.Guardian
         {
             lock (_queueLock)
             {
-                if (_visualRetireWaiters.Count != 0)
-                    return true;
+                // Only a retire command that has not executed yet orders before this open.
+                // Once a retire has installed its completion waiter, later opens must be
+                // allowed to run; the waiter will then complete as Superseded instead of
+                // waiting on an open that is itself waiting on the waiter.
                 foreach (PanelCommand queued in _queue)
                     if (queued.IsVisualRetire)
                         return true;
@@ -1214,10 +1299,10 @@ namespace CF7Launcher.Guardian
         private void CompleteVisualRetireWaitersIfIdle()
         {
             List<VisualRetireWaiter> completed = null;
+            bool superseded = false;
             lock (_queueLock)
             {
-                if (_activePanel != null
-                    || _queue.Count != 0
+                if (_queue.Count != 0
                     || _processing
                     || _trackedOpenReserved)
                 {
@@ -1225,6 +1310,14 @@ namespace CF7Launcher.Guardian
                 }
                 if (_visualRetireWaiters.Count == 0)
                     return;
+                superseded =
+                    _activePanel != null
+                    || _activePanelInstanceId != null
+                    || _trackedLeaseInstanceId != null
+                    || _idleFenceToken != null
+                    || _deferredRebind.HasValue
+                    || _deferredBarrierOpen.HasValue
+                    || _returnStack.Count != 0;
                 completed =
                     new List<VisualRetireWaiter>(
                         _visualRetireWaiters);
@@ -1239,9 +1332,11 @@ namespace CF7Launcher.Guardian
                 try
                 {
                     callback(
-                        waiter.RetiredExact
-                            ? VisualRetireOutcome.RetiredExact
-                            : VisualRetireOutcome.VisualAlreadyAbsent);
+                        superseded
+                            ? VisualRetireOutcome.Superseded
+                            : (waiter.RetiredExact
+                                ? VisualRetireOutcome.RetiredExact
+                                : VisualRetireOutcome.VisualAlreadyAbsent));
                 }
                 catch (Exception ex)
                 {
@@ -1523,6 +1618,17 @@ namespace CF7Launcher.Guardian
         /// <summary>同名 panel 的上下文切换不拆 backdrop/HUD，只换实例水位并让 Web 重建 session。</summary>
         private void DoRebind(string name, string initDataJson)
         {
+            DoRebind(
+                new PanelCommand(
+                    PanelCommandKind.Open,
+                    name,
+                    initDataJson));
+        }
+
+        private void DoRebind(PanelCommand command)
+        {
+            string name = command.Name;
+            string initDataJson = command.InitDataJson;
             string instanceId = NextPanelInstanceId();
             if (_testPumpDispatcher != null)
             {
@@ -1535,6 +1641,7 @@ namespace CF7Launcher.Guardian
                 PublishPanelChanged(
                     name,
                     instanceId);
+                ClearDeferredRebindAfterCommit(name);
                 return;
             }
             initDataJson =
@@ -1543,14 +1650,48 @@ namespace CF7Launcher.Guardian
                     initDataJson,
                     instanceId);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
-            try { _web.PostToWeb(payload); }
-            catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb rebind failed: " + ex.Message); throw; }
+            bool delivered = false;
+            try { delivered = _web.TryPostToWeb(payload); }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[PanelHost] TryPostToWeb rebind failed: "
+                    + ex.Message);
+            }
+            if (!delivered)
+            {
+                lock (_queueLock)
+                {
+                    _deferredRebind = command;
+                }
+                LogManager.Log(
+                    "[PanelHost] rebind post not delivered; deferred: "
+                    + name);
+                return;
+            }
             _activePanelInstanceId = instanceId;
             PublishPanelChanged(
                 name,
                 instanceId);
+            ClearDeferredRebindAfterCommit(name);
             try { _web.AssertWebPanelPause(); } catch { }
             LogManager.Log("[PanelHost] rebound: " + name + " instance=" + instanceId);
+        }
+
+        private void ClearDeferredRebindAfterCommit(
+            string panelName)
+        {
+            lock (_queueLock)
+            {
+                if (_deferredRebind.HasValue
+                    && string.Equals(
+                        _deferredRebind.Value.Name,
+                        panelName,
+                        StringComparison.Ordinal))
+                {
+                    _deferredRebind = null;
+                }
+            }
         }
 
         private string ApplyInitDataEnrichers(

@@ -81,7 +81,8 @@ namespace CF7Launcher.Guardian
             "panelInstanceId", "writeEpoch", "active", "sessionGeneration",
             "loadoutRevision", "liveRevision", "liveRefreshDirty", "drugRevision");
         private static readonly HashSet<string> CandidateBlockedReasons = Set(
-            "level_locked", "cooldown_active", "cooldown_unavailable");
+            "level_locked", "cooldown_active", "cooldown_unavailable",
+            "incompatible_item");
 
         private readonly object _gate = new object();
         private readonly object _bindingGate = new object();
@@ -1839,6 +1840,9 @@ namespace CF7Launcher.Guardian
                 case "candidates":
                     action = "characterBuildCandidates";
                     return true;
+                case "tooltip":
+                    action = "characterBuildTooltip";
+                    return true;
                 case "flushLive":
                     action = "characterBuildFlushLive";
                     return true;
@@ -1965,6 +1969,63 @@ namespace CF7Launcher.Guardian
             result["sessionGeneration"] = requiredGeneration;
 
             if (command == "candidates")
+            {
+                bool hasSlotKey = payload["slotKey"] != null;
+                bool hasDrugSlot = payload["drugSlot"] != null;
+                HashSet<string> expectedKeys = hasSlotKey
+                    ? Set("v", "sessionGeneration", "expectedLoadoutRevision",
+                        "expectedDrugRevision", "candidateScope", "slotKey")
+                    : Set("v", "sessionGeneration", "expectedLoadoutRevision",
+                        "expectedDrugRevision", "candidateScope", "drugSlot");
+                long expectedLoadout;
+                long expectedDrug;
+                string candidateScope = ReadString(payload["candidateScope"]);
+                if (hasSlotKey == hasDrugSlot
+                    || !IsExactObject(payload, expectedKeys)
+                    || (candidateScope != "compatible"
+                        && candidateScope != "backpack")
+                    || !TryReadInteger(
+                        payload["expectedLoadoutRevision"],
+                        0,
+                        int.MaxValue,
+                        out expectedLoadout)
+                    || !TryReadInteger(
+                        payload["expectedDrugRevision"],
+                        0,
+                        int.MaxValue,
+                        out expectedDrug))
+                {
+                    error = "invalid_payload";
+                    return false;
+                }
+                result["expectedLoadoutRevision"] = expectedLoadout;
+                result["expectedDrugRevision"] = expectedDrug;
+                result["candidateScope"] = candidateScope;
+                if (hasSlotKey)
+                {
+                    string slotKey = ReadString(payload["slotKey"]);
+                    if (!CharacterBuildProtocol.IsEquipmentSlotKey(slotKey))
+                    {
+                        error = "invalid_payload";
+                        return false;
+                    }
+                    result["slotKey"] = slotKey;
+                }
+                else
+                {
+                    int drugSlot;
+                    if (!TryReadInteger(payload["drugSlot"], 0, 3, out drugSlot))
+                    {
+                        error = "invalid_payload";
+                        return false;
+                    }
+                    result["drugSlot"] = drugSlot;
+                }
+                normalized = result;
+                return true;
+            }
+
+            if (command == "tooltip")
             {
                 bool hasSlotKey = payload["slotKey"] != null;
                 bool hasDrugSlot = payload["drugSlot"] != null;
@@ -2312,6 +2373,21 @@ namespace CF7Launcher.Guardian
                     return false;
                 web["payload"] = payload.DeepClone();
             }
+            else if (entry.Command == "tooltip")
+            {
+                JObject payload = message["payload"] as JObject;
+                if (loadoutRevision
+                        != entry.NormalizedPayload.Value<long>(
+                            "expectedLoadoutRevision")
+                    || drugRevision
+                        != entry.NormalizedPayload.Value<long>(
+                            "expectedDrugRevision")
+                    || !IsTooltipProjection(payload, entry.NormalizedPayload))
+                {
+                    return false;
+                }
+                web["payload"] = payload.DeepClone();
+            }
             else if (entry.Command == "statsSnapshot")
             {
                 JObject payload = message["payload"] as JObject;
@@ -2389,6 +2465,7 @@ namespace CF7Launcher.Guardian
                 }
             }
             else if (command == "candidates"
+                || command == "tooltip"
                 || command == "statsSnapshot")
             {
                 allowed.Add("payload");
@@ -2416,7 +2493,7 @@ namespace CF7Launcher.Guardian
         {
             if (!IsExactObject(
                     payload,
-                    Set("target", "candidates", "backpackVersion",
+                    Set("target", "candidateScope", "candidates", "backpackVersion",
                         "stateHealth", "diagnostics"))
                 || !(payload["target"] is JObject target)
                 || !(payload["candidates"] is JArray candidates)
@@ -2426,6 +2503,11 @@ namespace CF7Launcher.Guardian
                 || !IsStateHealth(payload["stateHealth"])
                 || (diagnostics.Count == 0)
                     != (ReadString(payload["stateHealth"]) == "ok"))
+                return false;
+            string candidateScope = ReadString(payload["candidateScope"]);
+            if (request == null
+                || (candidateScope != "compatible" && candidateScope != "backpack")
+                || ReadString(request["candidateScope"]) != candidateScope)
                 return false;
             int backpackVersion;
             if (!TryReadInteger(
@@ -2460,14 +2542,20 @@ namespace CF7Launcher.Guardian
                     return false;
             }
 
+            bool universalEquipmentBackpack =
+                candidateScope == "backpack" && kind == "equipment";
+
             int previousPhysicalSlot = -1;
             foreach (JToken token in candidates)
             {
                 JObject row = token as JObject;
                 if (!IsExactObject(
                         row,
-                        Set("physicalSlot", "disabled", "blockedReason",
-                            "item", "source")))
+                        universalEquipmentBackpack
+                            ? Set("physicalSlot", "disabled", "blockedReason",
+                                "item", "source", "equipmentEligibility")
+                            : Set("physicalSlot", "disabled", "blockedReason",
+                                "item", "source")))
                     return false;
 
                 int physicalSlot;
@@ -2487,14 +2575,7 @@ namespace CF7Launcher.Guardian
                 string blockedReason = ReadString(row["blockedReason"]);
                 if ((!disabled && blockedReason.Length != 0)
                     || (disabled
-                        && !CandidateBlockedReasons.Contains(blockedReason))
-                    || (kind == "equipment"
-                        && disabled
-                        && blockedReason != "level_locked")
-                    || (kind == "drug"
-                        && disabled
-                        && blockedReason != "cooldown_active"
-                        && blockedReason != "cooldown_unavailable"))
+                        && !CandidateBlockedReasons.Contains(blockedReason)))
                     return false;
 
                 JObject source = row["source"] as JObject;
@@ -2521,17 +2602,130 @@ namespace CF7Launcher.Guardian
                         out itemKind,
                         out use,
                         out majorType,
-                        out quantity)
-                    || !CharacterBuildProtocol.IsCandidateCompatible(
-                        kind,
-                        targetSlotKey,
-                        itemKind,
-                        use,
-                        majorType,
-                        quantity))
+                        out quantity))
                     return false;
+                string eligibilityReason = null;
+                if (universalEquipmentBackpack)
+                {
+                    JObject eligibility = row["equipmentEligibility"] as JObject;
+                    JArray eligibilitySlots = eligibility != null
+                        ? eligibility["slots"] as JArray : null;
+                    string[] expectedSlots =
+                        CharacterBuildProtocol.CompatibleEquipmentSlotKeys(
+                            itemKind, use, majorType, quantity);
+                    eligibilityReason = ReadString(
+                        eligibility != null ? eligibility["blockedReason"] : null);
+                    if (!IsExactObject(
+                            eligibility, Set("slots", "blockedReason"))
+                        || eligibilitySlots == null
+                        || eligibilitySlots.Count != expectedSlots.Length
+                        || !IsBoundedText(
+                            eligibility["blockedReason"], 32, true)
+                        || (expectedSlots.Length == 0
+                            && (itemKind == "equipment"
+                                || CharacterBuildProtocol.IsEquipmentSlotKey(use)
+                                || eligibilityReason.Length != 0))
+                        || (eligibilityReason.Length != 0
+                            && eligibilityReason != "level_locked"))
+                        return false;
+                    for (int eligibilityIndex = 0;
+                            eligibilityIndex < expectedSlots.Length;
+                            eligibilityIndex++)
+                    {
+                        JToken eligibilitySlot = eligibilitySlots[eligibilityIndex];
+                        if (eligibilitySlot == null
+                            || eligibilitySlot.Type != JTokenType.String
+                            || ReadString(eligibilitySlot)
+                                != expectedSlots[eligibilityIndex])
+                            return false;
+                    }
+                }
+                bool compatible = CharacterBuildProtocol.IsCandidateCompatible(
+                    kind,
+                    targetSlotKey,
+                    itemKind,
+                    use,
+                    majorType,
+                    quantity);
+                if (candidateScope == "compatible")
+                {
+                    if (!compatible
+                        || (kind == "equipment" && disabled
+                            && blockedReason != "level_locked")
+                        || (kind == "drug" && disabled
+                            && blockedReason != "cooldown_active"
+                            && blockedReason != "cooldown_unavailable"))
+                        return false;
+                }
+                else
+                {
+                    if (universalEquipmentBackpack
+                        && (compatible
+                            ? (disabled != (eligibilityReason.Length != 0)
+                                || blockedReason != eligibilityReason)
+                            : (!disabled
+                                || blockedReason != "incompatible_item")))
+                        return false;
+                    if ((!compatible
+                            && (!disabled
+                                || blockedReason != "incompatible_item"))
+                        || (compatible && blockedReason == "incompatible_item")
+                        || (blockedReason == "level_locked" && kind != "equipment")
+                        || ((blockedReason == "cooldown_active"
+                                || blockedReason == "cooldown_unavailable")
+                            && kind != "drug"))
+                        return false;
+                }
             }
             return true;
+        }
+
+        private static bool IsTooltipProjection(
+            JObject payload,
+            JObject request)
+        {
+            if (!IsExactObject(
+                    payload,
+                    Set("v", "target", "itemName", "displayName", "iconName",
+                        "itemType", "descHTML", "introHTML"))
+                || !HasVersion(payload)
+                || !IsTooltipTarget(payload["target"] as JObject, request)
+                || !IsIdentityText(payload["itemName"], 256)
+                || !IsIdentityText(payload["displayName"], 256)
+                || !IsIdentityText(payload["iconName"], 256)
+                || !IsBoundedText(payload["itemType"], 128, true)
+                || !IsBoundedText(payload["descHTML"], 131072, true)
+                || !IsBoundedText(payload["introHTML"], 131072, true)
+                || (ReadString(payload["descHTML"]).Length == 0
+                    && ReadString(payload["introHTML"]).Length == 0))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private static bool IsTooltipTarget(JObject target, JObject request)
+        {
+            if (target == null || request == null) return false;
+            string kind = ReadString(target["kind"]);
+            if (kind == "equipment")
+            {
+                string slotKey = ReadString(target["slotKey"]);
+                return IsExactObject(target, Set("kind", "slotKey"))
+                    && CharacterBuildProtocol.IsEquipmentSlotKey(slotKey)
+                    && ReadString(request["slotKey"]) == slotKey
+                    && request["drugSlot"] == null;
+            }
+            int targetDrugSlot;
+            int requestedDrugSlot;
+            return kind == "drug"
+                && IsExactObject(target, Set("kind", "drugSlot"))
+                && TryReadInteger(
+                    target["drugSlot"], 0, 3, out targetDrugSlot)
+                && request["slotKey"] == null
+                && TryReadInteger(
+                    request["drugSlot"], 0, 3, out requestedDrugSlot)
+                && requestedDrugSlot == targetDrugSlot;
         }
 
         private static bool IsStatsProjection(JObject payload)
@@ -2727,6 +2921,7 @@ namespace CF7Launcher.Guardian
             {
                 case "snapshot":
                 case "candidates":
+                case "tooltip":
                 case "statsSnapshot":
                     return true;
                 case "equipEquipment":
@@ -2906,6 +3101,15 @@ namespace CF7Launcher.Guardian
             foreach (char c in value)
                 if (char.IsControl(c)) return false;
             return true;
+        }
+
+        private static bool IsIdentityText(JToken token, int maximumLength)
+        {
+            string value = ReadString(token);
+            return IsBoundedText(token, maximumLength, false)
+                && value.Trim().Length != 0
+                && !string.Equals(
+                    value.Trim(), "undefined", StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool IsSafeText(

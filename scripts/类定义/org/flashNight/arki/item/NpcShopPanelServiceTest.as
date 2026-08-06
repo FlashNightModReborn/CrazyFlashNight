@@ -14,6 +14,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
     public static function runAllTests():Void {
         setup();
         testSnapshotAndGate();
+        testLegacyIdentityFallbackBoundary();
         testBagTooltip();
         testLegacyCatalogResolution();
         testOpenRequestWire();
@@ -22,7 +23,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         testTradePreviewResponseWire();
         testBuyRoutesCollections();
         testLargeStackPurchase();
-        testLeaseBoundSell();
+        testOrdinarySellRetired();
         testBatchSell();
         testAtomicTrade();
         testTradeUsesSaleProceeds();
@@ -44,6 +45,8 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         itemDict["解锁情报"] = itemData("解锁情报", "收集品", "情报", 300);
         itemDict["门槛商品"] = itemData("门槛商品", "消耗品", "消耗品", 400);
         itemDict["测试手枪"] = itemData("测试手枪", "武器", "手枪", 1000);
+        itemDict["测试手枪"].displayname = "棱镜折射阵列";
+        itemDict["测试手枪"].icon = "全光谱棱镜阵列";
         itemDict["测试手枪"].weapontype = "手枪";
         itemDict["测试手枪"].setId = "test_sidearm";
         itemDict["测试手枪"].setName = "测试侧武器套装";
@@ -142,6 +145,10 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(snapshot.catalog[4].weaponType == "手枪" && snapshot.catalog[4].actionType == ""
             && snapshot.catalog[4].setId == "test_sidearm" && snapshot.catalog[4].setName == "测试侧武器套装",
             "existing weapon subtype and set fields projected for automatic grouping");
+        check(snapshot.catalog[4].itemName == "测试手枪"
+            && snapshot.catalog[4].displayName == "棱镜折射阵列"
+            && snapshot.catalog[4].icon == "全光谱棱镜阵列",
+            "NPC catalog preserves internal, display, and icon identity roles");
         var summary:Object = snapshot.catalog[4].balanceSummary;
         var wire:String = new LiteJSON().stringify(snapshot.catalog[4]);
         check(summary != undefined && summary.state == "confirmed"
@@ -159,6 +166,54 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(snapshot.layout.title == "测试商人" && snapshot.layout.sections[0].entries.length == 5,"developer curated layout projected");
         var denied:Object = service().execute("buy",{shopId:"测试商店",catalogIndex:3,quantity:1});
         check(!denied.success && denied.error == "locked" && _root.金钱 == 5000,"locked buy has no write");
+    }
+
+    private static function testLegacyIdentityFallbackBoundary():Void {
+        resetOwned();
+        _root.收集品栏.材料.add("强化石", 1);
+        var data:Object = ItemUtil.itemDataDict["强化石"];
+        var previousDisplay:Object = data.displayname;
+        var previousIcon:Object = data.icon;
+        data.displayname = "   ";
+        delete data.icon;
+        var snapshot:Object = service().execute("snapshot", {shopId:"测试商店"});
+        var material:Object = snapshot.views.material.slots[0].item;
+        var snapshotWire:String = new LiteJSON().stringify({
+            catalog:snapshot.catalog[1], material:material
+        });
+        data.displayname = 17;
+        data.icon = {legacy:"bad"};
+        var wrongTypeSnapshot:Object = service().execute("snapshot", {shopId:"测试商店"});
+        var wrongTypeMaterial:Object = wrongTypeSnapshot.views.material.slots[0].item;
+        check(snapshot.success && snapshot.catalog[1].itemName == "强化石"
+            && snapshot.catalog[1].displayName == "强化石"
+            && snapshot.catalog[1].icon == "强化石"
+            && material.name == "强化石" && material.displayName == "强化石"
+            && material.icon == "强化石" && snapshotWire.indexOf("undefined") < 0
+            && wrongTypeSnapshot.catalog[1].displayName == "强化石"
+            && wrongTypeSnapshot.catalog[1].icon == "强化石"
+            && wrongTypeMaterial.displayName == "强化石"
+            && wrongTypeMaterial.icon == "强化石",
+            "NPC AS2 adapter replaces whitespace, undefined and wrong-type identities");
+
+        var previousTooltip:Object = _root.Web物品注释HTML;
+        _root.Web物品注释HTML = function(name:String):Object {
+            return {displayname:" Undefined ", descHTML:"desc", introHTML:"intro"};
+        };
+        var tooltip:Object = service().execute("tooltip", {itemName:"强化石"});
+        var tooltipWire:String = new LiteJSON().stringify(tooltip);
+        _root.Web物品注释HTML = function(name:String):Object {
+            return {displayname:{legacy:"bad"}, descHTML:"desc", introHTML:"intro"};
+        };
+        var wrongTypeTooltip:Object = service().execute("tooltip", {itemName:"强化石"});
+        check(tooltip.success && tooltip.itemName == "强化石"
+            && tooltip.displayname == "强化石" && tooltip.iconName == undefined
+            && wrongTypeTooltip.displayname == "强化石"
+            && tooltipWire.toLowerCase().indexOf("undefined") < 0,
+            "NPC AS2 optional-icon tooltip replaces wrapped undefined and wrong-type display without inventing iconName");
+        _root.Web物品注释HTML = previousTooltip;
+        data.displayname = previousDisplay;
+        data.icon = previousIcon;
     }
 
     private static function testBagTooltip():Void {
@@ -274,20 +329,18 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
             && response.saleLines[0].collection == undefined,"trade response excludes internal inventory references");
     }
 
-    private static function testLeaseBoundSell():Void {
+    private static function testOrdinarySellRetired():Void {
         resetOwned();
         _root.物品栏.背包.add(0,BaseItem.create("药剂",4));
-        _root.收集品栏.材料.add("强化石",5);
-        var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
-        var bag:Object = bagView();
-        var wrongShop:Object = service().execute("sell",{shopId:"另一商店",quantity:1,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}});
-        check(!wrongShop.success && wrongShop.error == "stale_state" && _root.物品栏.背包.getItem("0").value == 4,"owned lease is bound to active shop session");
-        var bagSell:Object = service().execute("sell",{shopId:"测试商店",quantity:2,source:{containerId:"背包",slot:0,expectedLease:bag.slots[0].slotLease}});
-        check(bagSell.success && _root.物品栏.背包.getItem("0").value == 2 && _root.金钱 == 5050,"bag partial sell uses inventory lease");
-        var materialSell:Object = service().execute("sell",{shopId:"测试商店",quantity:3,source:{viewId:"material",key:"强化石",expectedLease:bagSell.views.material.slots[0].slotLease}});
-        check(materialSell.success && _root.收集品栏.材料.getValue("强化石") == 2 && _root.金钱 == 5200,"material sell uses collection lease");
-        var forbidden:Object = service().execute("sell",{shopId:"测试商店",quantity:1,source:{viewId:"intelligence",key:"解锁情报",expectedLease:"fake"}});
-        check(!forbidden.success && forbidden.error == "sell_forbidden","intelligence view is read only");
+        var balanceBefore:Number = Number(_root.金钱);
+        var retired:Object = service().execute("sell",{shopId:"测试商店",quantity:1,
+            source:{containerId:"背包",slot:0,expectedLease:"retired"}});
+        check(!retired.success && retired.error == "unsupported_cmd"
+                && _root.物品栏.背包.getItem("0").value == 4
+                && Number(_root.金钱) == balanceBefore,
+            "ordinary sell is retired without mutating inventory or balance");
+        check(_root.gameCommands["npcShopSell"] == undefined,
+            "ordinary sell external game command is removed");
     }
 
     private static function testBatchSell():Void {

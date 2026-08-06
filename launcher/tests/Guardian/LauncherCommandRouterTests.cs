@@ -27,7 +27,8 @@ namespace CF7Launcher.Tests.Guardian
 
         private static LauncherCommandRouter MakeRouter(
             Capture c,
-            bool preparationNavigationV1 = false)
+            bool preparationNavigationV1 = false,
+            Action<string> postObserved = null)
         {
             LauncherCommandRouter router =
                 new LauncherCommandRouter(
@@ -36,7 +37,11 @@ namespace CF7Launcher.Tests.Guardian
                 onToggleFullscreen: () => c.Fullscreen++,
                 onToggleLog: () => c.Log++,
                 onForceExit: () => c.Exit++,
-                postToWeb: s => c.Posts.Add(s),
+                postToWeb: s =>
+                {
+                    c.Posts.Add(s);
+                    if (postObserved != null) postObserved(s);
+                },
                 onPanelStateChanged: b => c.StateCallbacks.Add(b),
                 setActivePanel: name => c.ActivePanels.Add(name),
                 preparationNavigationV1:
@@ -1319,30 +1324,35 @@ namespace CF7Launcher.Tests.Guardian
         public void EQUIP_UI_SendTrueWaitsForExactPanelRequestAndTimesOut()
         {
             Capture c = new Capture();
-            LauncherCommandRouter r = MakeRouter(c);
-            r.NativeEquipmentBuildOpenTimeoutMs = 500;
-            var commands = new List<string>();
-            r.SetGameCommandSenderForTests(
-                payload =>
-                {
-                    commands.Add(payload);
-                    return true;
-                });
+            using (var postObserved =
+                new System.Threading.ManualResetEventSlim(false))
+            {
+                LauncherCommandRouter r = MakeRouter(
+                    c,
+                    false,
+                    delegate { postObserved.Set(); });
+                r.NativeEquipmentBuildOpenTimeoutMs = 500;
+                var commands = new List<string>();
+                r.SetGameCommandSenderForTests(
+                    payload =>
+                    {
+                        commands.Add(payload);
+                        return true;
+                    });
 
-            r.Dispatch("EQUIP_UI");
+                r.Dispatch("EQUIP_UI");
 
-            Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
-            Assert.True(
-                System.Threading.SpinWait.SpinUntil(
-                    () => c.Posts.Count == 1,
-                    2000));
-            Assert.Contains(
-                "装备服务未就绪",
-                c.Posts[0]);
-            Assert.DoesNotContain(
-                "\"cmd\":\"open\"",
-                c.Posts[0]);
+                Assert.Empty(c.Posts);
+                Assert.Empty(c.ActivePanels);
+                Assert.True(postObserved.Wait(5000));
+                Assert.Single(c.Posts);
+                Assert.Contains(
+                    "装备服务未就绪",
+                    c.Posts[0]);
+                Assert.DoesNotContain(
+                    "\"cmd\":\"open\"",
+                    c.Posts[0]);
+            }
         }
 
         [Fact]
@@ -1509,35 +1519,39 @@ namespace CF7Launcher.Tests.Guardian
         public void EQUIP_UI_TimeoutRejectsLateNativeBuildAck()
         {
             Capture c = new Capture();
-            LauncherCommandRouter r = MakeRouter(c);
-            r.NativeEquipmentBuildOpenTimeoutMs = 100;
-            var commands = new List<string>();
-            r.SetGameCommandSenderForTests(
-                payload =>
-                {
-                    commands.Add(payload);
-                    return true;
-                });
+            using (var postObserved = new System.Threading.ManualResetEventSlim(false))
+            {
+                LauncherCommandRouter r = MakeRouter(
+                    c,
+                    false,
+                    delegate { postObserved.Set(); });
+                r.NativeEquipmentBuildOpenTimeoutMs = 250;
+                var commands = new List<string>();
+                r.SetGameCommandSenderForTests(
+                    payload =>
+                    {
+                        commands.Add(payload);
+                        return true;
+                    });
 
-            r.Dispatch("EQUIP_UI");
-            Assert.True(
-                System.Threading.SpinWait.SpinUntil(
-                    () => c.Posts.Count == 1,
-                    2000));
-            r.RequestOpenPanel(
-                "workbench",
-                "nativehud_equipment",
-                null,
-                null,
-                null,
-                null,
-                null,
-                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
-                ReadWorkbenchOpenRequestId(
-                    commands[0]));
+                r.Dispatch("EQUIP_UI");
+                Assert.True(
+                    postObserved.Wait(5000));
+                r.RequestOpenPanel(
+                    "workbench",
+                    "nativehud_equipment",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                    ReadWorkbenchOpenRequestId(
+                        commands[0]));
 
-            Assert.Single(c.Posts);
-            Assert.Empty(c.ActivePanels);
+                Assert.Single(c.Posts);
+                Assert.Empty(c.ActivePanels);
+            }
         }
 
         [Fact]

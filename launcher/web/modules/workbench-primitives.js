@@ -305,12 +305,18 @@
         this._allowInteractiveSource = options.allowInteractiveSource === true;
         this._threshold = Math.max(2, Number(options.threshold) || 5);
         this._timeoutMs = Math.max(50, Number(options.timeoutMs) || 1400);
+        this._windowTarget = options.windowTarget
+            || (this._sourceElement && this._sourceElement.ownerDocument
+                && this._sourceElement.ownerDocument.defaultView)
+            || (typeof window !== 'undefined' ? window : null);
         this._gesture = null;
         this._suppressedUntil = 0;
         this._boundDown = this._onPointerDown.bind(this);
         this._boundMove = this._onPointerMove.bind(this);
         this._boundUp = this._onPointerUp.bind(this);
-        this._boundCancel = this.cancel.bind(this);
+        this._boundCancel = this._onPointerCancel.bind(this);
+        this._boundLostCapture = this._onLostPointerCapture.bind(this);
+        this._boundWindowBlur = this._onWindowBlur.bind(this);
         if (this._sourceElement) this._sourceElement.addEventListener('pointerdown', this._boundDown);
     }
 
@@ -335,9 +341,33 @@
         };
         this._broker.select(source.view, source.item, source.node);
         try { if (source.node.setPointerCapture) source.node.setPointerCapture(event.pointerId); } catch (_) {}
+        if (source.node.addEventListener) {
+            source.node.addEventListener('lostpointercapture', this._boundLostCapture);
+        }
         document.addEventListener('pointermove', this._boundMove);
         document.addEventListener('pointerup', this._boundUp);
         document.addEventListener('pointercancel', this._boundCancel);
+        if (this._windowTarget && this._windowTarget.addEventListener) {
+            this._windowTarget.addEventListener('blur', this._boundWindowBlur);
+        }
+    };
+
+    PointerDragController.prototype._onPointerCancel = function(event) {
+        var gesture = this._gesture;
+        if (!gesture) return;
+        if (event && event.pointerId != null && event.pointerId !== gesture.pointerId) return;
+        this.cancel('pointercancel');
+    };
+
+    PointerDragController.prototype._onLostPointerCapture = function(event) {
+        var gesture = this._gesture;
+        if (!gesture) return;
+        if (event && event.pointerId != null && event.pointerId !== gesture.pointerId) return;
+        this.cancel('lostpointercapture');
+    };
+
+    PointerDragController.prototype._onWindowBlur = function() {
+        this.cancel('window_blur');
     };
 
     PointerDragController.prototype._onPointerMove = function(event) {
@@ -388,24 +418,32 @@
         return Date.now() < this._suppressedUntil;
     };
 
-    PointerDragController.prototype.cancel = function() {
+    PointerDragController.prototype.cancel = function(reason) {
         var gesture = this._gesture;
         if (!gesture) return;
+        if (gesture.dragging && reason !== 'complete') this._suppressedUntil = Date.now() + 80;
         clearTimeout(gesture.timer);
         if (gesture.target && gesture.target.node) {
             gesture.target.node.classList.remove('workbench-drop-active');
             gesture.target.node.classList.remove('workbench-drop-rejected');
         }
         if (gesture.ghost && gesture.ghost.parentNode) gesture.ghost.parentNode.removeChild(gesture.ghost);
+        document.removeEventListener('pointermove', this._boundMove);
+        document.removeEventListener('pointerup', this._boundUp);
+        document.removeEventListener('pointercancel', this._boundCancel);
+        if (gesture.captureNode && gesture.captureNode.removeEventListener) {
+            gesture.captureNode.removeEventListener('lostpointercapture', this._boundLostCapture);
+        }
+        if (this._windowTarget && this._windowTarget.removeEventListener) {
+            this._windowTarget.removeEventListener('blur', this._boundWindowBlur);
+        }
+        // Clear first: releasePointerCapture may synchronously emit lostpointercapture.
+        this._gesture = null;
         try {
             if (gesture.captureNode && gesture.captureNode.releasePointerCapture) {
                 gesture.captureNode.releasePointerCapture(gesture.pointerId);
             }
         } catch (_) {}
-        document.removeEventListener('pointermove', this._boundMove);
-        document.removeEventListener('pointerup', this._boundUp);
-        document.removeEventListener('pointercancel', this._boundCancel);
-        this._gesture = null;
         if (gesture.dragging) this._onDragEnd(gesture.source);
     };
 
@@ -413,6 +451,7 @@
         this.cancel();
         if (this._sourceElement) this._sourceElement.removeEventListener('pointerdown', this._boundDown);
         this._sourceElement = null;
+        this._windowTarget = null;
     };
 
     PointerDragController.prototype.debugState = function() {

@@ -147,7 +147,7 @@ var InventoryWorkbench = (function() {
         return {
             shell:_shell,
             root:_root,
-            profileConfig:_profile,
+            profileConfig:_profile, ownerPanel:'workbench',
             panelInstanceId:_panelInstanceId,
             densityController:_density,
             addHeaderAction:function(node) {

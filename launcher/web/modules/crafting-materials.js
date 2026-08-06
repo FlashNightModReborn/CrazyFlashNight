@@ -116,8 +116,7 @@ var CraftingMaterials = (function() {
                 if (state.filter === 'owned' && Number(item.owned || 0) <= 0) return false;
                 if (state.filter === 'used' && Number(item.useCount || 0) <= 0) return false;
                 if (!state.query) return true;
-                return String(item.displayName || item.name || '').toLowerCase().indexOf(state.query) >= 0
-                    || String(item.name || '').toLowerCase().indexOf(state.query) >= 0;
+                return String(item.displayName || '').toLowerCase().indexOf(state.query) >= 0;
             });
         }
 
@@ -137,17 +136,17 @@ var CraftingMaterials = (function() {
             card.setAttribute('role', 'option');
             card.setAttribute('tabindex', '-1');
             card.setAttribute('data-material-name', item.name);
-            card.setAttribute('aria-label', (item.displayName || item.name)
+            card.setAttribute('aria-label', (item.displayName || '未命名材料')
                 + '，持有 ' + Number(item.owned || 0)
                 + '，来源 ' + Number(item.sourceCount || 0)
                 + '，用途 ' + Number(item.useCount || 0));
             var icon = document.createElement('span');
             icon.className = 'crafting-material-card-icon';
-            icon.innerHTML = options.iconHtml(item.icon || item.name, 'kshop-icon');
+            icon.innerHTML = options.iconHtml(item.icon, 'kshop-icon');
             var copy = document.createElement('span');
             copy.className = 'crafting-material-card-copy';
             var name = document.createElement('b');
-            name.textContent = item.displayName || item.name;
+            name.textContent = item.displayName || '未命名材料';
             var owned = document.createElement('small');
             owned.textContent = '持有 ' + Number(item.owned || 0);
             var meta = document.createElement('span');
@@ -275,11 +274,11 @@ var CraftingMaterials = (function() {
         }
 
         function sourceTitle(source) {
-            if (source.kind === 'enemy') return '敌人 · ' + (source.displayName || source.enemyType || '未知');
+            if (source.kind === 'enemy') return '敌人 · ' + (source.displayName || '未知敌人');
             if (source.kind === 'stage') return '关卡 · ' + (source.stageName || '未知');
             if (source.kind === 'shop') return '商店 · ' + (source.npc || '未知');
             if (source.kind === 'kshop') return 'K 点商城 · ' + (source.category || '商品');
-            if (source.kind === 'quest') return '任务 · ' + (source.title || source.questId || '未知');
+            if (source.kind === 'quest') return '任务 · ' + (source.title || '未知任务');
             return '合成 · ' + (source.category || '未知分类');
         }
 
@@ -327,17 +326,17 @@ var CraftingMaterials = (function() {
             }
             if (state.detailLoading || !state.detail) { appendEmpty('正在读取来源与用途…'); return; }
             var material = state.detail.material || {};
-            detailChrome.setTitle(material.displayName || material.name || '材料档案', '来源与用途');
+            detailChrome.setTitle(material.displayName || '材料档案', '来源与用途');
             detailChrome.setMeta('当前持有 ' + Number(material.owned || 0));
 
             var hero = document.createElement('section');
             hero.className = 'crafting-material-hero';
             var icon = document.createElement('span');
             icon.className = 'crafting-material-hero-icon';
-            icon.innerHTML = options.iconHtml(material.icon || material.name, 'kshop-icon');
+            icon.innerHTML = options.iconHtml(material.icon, 'kshop-icon');
             var copy = document.createElement('div');
             var title = document.createElement('h2');
-            title.textContent = material.displayName || material.name;
+            title.textContent = material.displayName || '未命名材料';
             var owned = document.createElement('strong');
             owned.textContent = '持有 ' + Number(material.owned || 0);
             copy.appendChild(title);
@@ -392,10 +391,10 @@ var CraftingMaterials = (function() {
                     var row = document.createElement('article');
                     row.className = 'crafting-material-use-row';
                     var icon = document.createElement('span');
-                    icon.innerHTML = options.iconHtml(use.icon || use.name, 'kshop-icon');
+                    icon.innerHTML = options.iconHtml(use.icon, 'kshop-icon');
                     var copy = document.createElement('span');
                     var name = document.createElement('b');
-                    name.textContent = use.displayName || use.name;
+                    name.textContent = use.displayName || '未命名用途';
                     var meta = document.createElement('small');
                     meta.textContent = (use.category || '合成配方')
                         + (Number(use.required || 0) > 0 ? ' · 每份需要 ' + Number(use.required) : '');
@@ -405,7 +404,7 @@ var CraftingMaterials = (function() {
                     row.appendChild(copy);
                     if (typeof options.bindTooltip === 'function') {
                         row.setAttribute('tabindex', '0');
-                        row.setAttribute('aria-label', (use.displayName || use.name)
+                        row.setAttribute('aria-label', (use.displayName || '未命名用途')
                             + '，' + (use.category || '合成配方')
                             + (Number(use.required || 0) > 0 ? '，每份需要 ' + Number(use.required) : ''));
                         options.bindTooltip(row, use);

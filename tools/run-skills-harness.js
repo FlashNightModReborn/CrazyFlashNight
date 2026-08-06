@@ -132,9 +132,18 @@ function staticAudit() {
             || !rebindBody.includes('catch (e)')) {
         throw new Error('Panels same-name rebind hook missing');
     }
-    if (!panels.includes("if (id === 'skills')")
-        || !panels.includes('closeMessage.panelInstanceId = readPanelInstanceId(initData)')
-        || !panels.includes('panelCloseMessage(pending.id, pending.initData, reason)'))
+    const panelCloseStart = panels.indexOf('function panelCloseMessage(');
+    const panelCloseEnd = panels.indexOf('function hostOwnsPanelMount(', panelCloseStart);
+    const panelCloseBody = panelCloseStart >= 0 && panelCloseEnd > panelCloseStart
+        ? panels.slice(panelCloseStart, panelCloseEnd) : '';
+    const pendingCancelStart = panels.indexOf('function cancelPendingOpen(');
+    const pendingCancelEnd = panels.indexOf('function init()', pendingCancelStart);
+    const pendingCancelBody = pendingCancelStart >= 0 && pendingCancelEnd > pendingCancelStart
+        ? panels.slice(pendingCancelStart, pendingCancelEnd) : '';
+    if (!panelCloseBody.includes("id === 'skills'")
+        || !panelCloseBody.includes('closeMessage.panelInstanceId = readPanelInstanceId(initData)')
+        || !panels.includes('return sendExactCloseNotification(id, initData, reason, context)')
+        || !/sendPanelCloseNotification\(\s*pending\.id,\s*pending\.initData,\s*reason/.test(pendingCancelBody))
         throw new Error('skills lazy-cancel must use the instance-bound exact close envelope');
     const skillsRegistryStart = registry.indexOf("Panels.registerLazy('skills'");
     const skillsRegistryEnd = registry.indexOf('noop);', skillsRegistryStart);

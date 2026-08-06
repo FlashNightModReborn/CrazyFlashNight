@@ -18,6 +18,23 @@ _root.UI系统.商城WebView.pauseLeaseId = undefined;
 // JSON/AS2 Number 安全域内的单行技术护栏；不是设计配额。装备与情报另受动态容量约束。
 _root.UI系统.商城WebView.maxStackPurchaseQuantity = 999999;
 
+// KShop 的旧数据兼容只发生在 AS2 权威投影入口。越过本层后，
+// Host/Web 必须把 displayname/icon 当作已经完整的独立字段，不能再猜内部名。
+_root.UI系统.商城WebView.projectLegacyIdentityField = function(value, itemName:String):String {
+    if (typeof value != "string") return itemName;
+    var projected:String = String(value);
+    var start:Number = 0;
+    var end:Number = projected.length - 1;
+    while (start <= end && this.isLegacyIdentityWhitespace(projected.charCodeAt(start))) start++;
+    while (end >= start && this.isLegacyIdentityWhitespace(projected.charCodeAt(end))) end--;
+    if (start > end || projected.substring(start, end + 1).toLowerCase() == "undefined") return itemName;
+    return projected;
+};
+
+_root.UI系统.商城WebView.isLegacyIdentityWhitespace = function(code:Number):Boolean {
+    return code <= 32 || code == 160;
+};
+
 _root.UI系统.商城WebView.getPurchaseLimit = function(itemName:String):Number {
     if (org.flashNight.arki.item.ItemUtil.isEquipment(itemName)) return 1;
     if (org.flashNight.arki.item.ItemUtil.isInformation(itemName)) {
@@ -40,8 +57,10 @@ _root.UI系统.商城WebView.buildCatalog = function():Array {
                 id:          entry.id,
                 item:        entry.item,
                 type:        entry.type,
-                price:       entry.price,
-                displayname: String(itemData.displayname || entry.item),
+                // data/kshop 的历史文件把 price 存成 JSON 字符串；canonical
+                // AS2 投影在权威边界归一化为 Number，Host/Web 只接收单一类型。
+                price:       Number(entry.price),
+                displayname: this.projectLegacyIdentityField(itemData.displayname, String(entry.item)),
                 majorType:   String(attrs[2]),
                 subType:     String(attrs[3]),
                 actionType:  String(itemData.actiontype || ""),
@@ -50,7 +69,7 @@ _root.UI系统.商城WebView.buildCatalog = function():Array {
                 setName:     String(itemData.setName || ""),
                 setOrder:    Number(itemData.setOrder || 0),
                 level:       Number(attrs[9]),
-                icon:        String(attrs[1]),
+                icon:        this.projectLegacyIdentityField(attrs[1], String(entry.item)),
                 maxQuantity: this.getPurchaseLimit(String(entry.item))
             };
             var balanceSummary:Object = org.flashNight.arki.item.InventoryPanelService.buildBalanceSummary(
@@ -82,6 +101,33 @@ _root.UI系统.商城WebView.ensureState = function():Void {
     if (isNaN(_root.虚拟币)) {
         _root.虚拟币 = 0;
     }
+};
+
+// 历史待领取记录继续沿用存档中的五元数组；Web 只消费这份显式投影。
+// 任一旧记录无法解析时返回 null，让 Host fail-closed，禁止把内部名猜成显示名或图标名。
+_root.UI系统.商城WebView.buildPurchasedView = function():Array {
+    var result:Array = [];
+    for (var i:Number = 0; i < _root.商城已购买物品.length; i++) {
+        var row:Object = _root.商城已购买物品[i];
+        if (!(row instanceof Array) || row.length != 5) return null;
+        var itemName:String = String(row[1]);
+        var quantity:Number = Number(row[4]);
+        var itemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(itemName);
+        var attrs:Object = _root.根据物品名查找全部属性(itemName);
+        if (itemName == "" || isNaN(quantity) || quantity <= 0
+                || quantity != Math.floor(quantity) || itemData == undefined
+                || itemData.displayname == undefined || attrs == undefined
+                || attrs[1] == undefined || String(itemData.displayname) == ""
+                || String(attrs[1]) == "") return null;
+        result.push({
+            purchasedIdx:i,
+            item:itemName,
+            displayname:String(itemData.displayname),
+            icon:String(attrs[1]),
+            quantity:quantity
+        });
+    }
+    return result;
 };
 
 // sendResponse 是所有 Web panel 共用的 socket 出口（命名沿袭历史；语义上是 "WebView 通用响应"，不仅商城）
@@ -160,6 +206,7 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
         cart: cartMigrated,
         cartAdjusted: cartAdjusted,
         purchased: _root.商城已购买物品,
+        purchasedView: _root.UI系统.商城WebView.buildPurchasedView(),
         purchasedToken: _root.UI系统.商城WebView.purchasedToken
     };
     var respStr = _root.UI系统.商城WebView.json.stringify(resp);
@@ -202,8 +249,8 @@ _root.UI系统.商城WebView.resolveCheckoutLine = function(request:Object):Obje
         success:true,
         catalogIndex:idx,
         itemName:itemName,
-        displayName:String(itemData.displayname || itemName),
-        icon:String(attrs[1] || itemName),
+        displayName:this.projectLegacyIdentityField(itemData.displayname, itemName),
+        icon:this.projectLegacyIdentityField(attrs[1], itemName),
         quantity:quantity,
         unitPrice:unitPrice,
         total:unitPrice * quantity,
@@ -270,6 +317,7 @@ _root.UI系统.商城WebView.buildCheckoutPreview = function(cart:Array, issueTo
         var key:String = String(line.catalogIndex);
         if (seen[key]) return {success:false, error:"duplicate_line"};
         seen[key] = true;
+        delete line.success;
         lines.push(line);
         total += Number(line.total);
     }
@@ -331,6 +379,7 @@ _root.UI系统.商城WebView.finalizeCheckout = function(preview:Object, resp:Ob
     resp.delivered = preview.purchaseLines;
     resp.cart = [];
     resp.purchased = _root.商城已购买物品;
+    resp.purchasedView = this.buildPurchasedView();
     resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
     // 动态 maxQuantity 依赖本次交付后的情报剩余容量，成功回包必须同步刷新目录。
     resp.catalog = this.buildCatalog();
@@ -450,6 +499,7 @@ _root.gameCommands["shopClaim"] = function(params) {
             _root.商城已购买物品.splice(claimIdx, 1);
             resp.success = true;
             resp.purchased = _root.商城已购买物品;
+            resp.purchasedView = _root.UI系统.商城WebView.buildPurchasedView();
             resp.purchasedToken = _root.UI系统.商城WebView.rotatePurchasedToken();
             resp.catalog = _root.UI系统.商城WebView.buildCatalog();
             // Plan A: 商城 claim 真实从已购列表移除 + 物品入背包，必达。
@@ -478,6 +528,7 @@ _root.gameCommands["shopSaveCart"] = function(params) {
     var callId = params.callId;
     _root.UI系统.商城WebView.log("shopSaveCart callId=" + callId + " items=" + cart.length);
     _root.商城购物车 = [];
+    var savedCart:Array = [];
     for (var i = 0; i < cart.length; i++) {
         var idx = Number(cart[i].idx);
         var qty = Number(cart[i].qty);
@@ -488,6 +539,7 @@ _root.gameCommands["shopSaveCart"] = function(params) {
         if (maximum <= 0) continue;
         if (qty > maximum) qty = maximum;
         _root.商城购物车.push([entry.id, entry.item, entry.type, entry.price, qty]);
+        savedCart.push({idx:idx, qty:qty});
     }
     // Plan A audit: shopSaveCart 写 _root.商城购物车（save-relevant）。
     // 删除原本的 _root.保存购物车() 子层 flush（仅写 cart 子层 SOL，与 mydata 顶层
@@ -496,7 +548,7 @@ _root.gameCommands["shopSaveCart"] = function(params) {
     // 时 shopPanelClose 兜底 + SceneChanged hook unconditional flushNow 兜底。
     _root.存档系统.dirtyMark = true;
     _root.自动存盘();
-    var resp = { task: "shop_response", callId: callId, success: true };
+    var resp = { task: "shop_response", callId: callId, success: true, v:1, cart:savedCart };
     _root.UI系统.商城WebView.sendResponse(resp);
 };
 
@@ -515,7 +567,8 @@ _root.gameCommands["shopTooltip"] = function(params) {
     var entry = _root.kshop_list[idx];
     var itemName = entry.item;
     var tt = _root.Web物品注释HTML(itemName);
-    if (tt == null) {
+    var attrs = _root.根据物品名查找全部属性(itemName);
+    if (tt == null || attrs == undefined) {
         _root.UI系统.商城WebView.sendResponse({ task: "shop_response", callId: callId, success: false, error: "item_not_found" });
         return;
     }
@@ -526,7 +579,8 @@ _root.gameCommands["shopTooltip"] = function(params) {
         descHTML: tt.descHTML,
         introHTML: tt.introHTML,
         itemName: itemName,
-        displayname: tt.displayname
+        displayname: _root.UI系统.商城WebView.projectLegacyIdentityField(tt.displayname, String(itemName)),
+        iconName: _root.UI系统.商城WebView.projectLegacyIdentityField(attrs[1], String(itemName))
     });
 };
 

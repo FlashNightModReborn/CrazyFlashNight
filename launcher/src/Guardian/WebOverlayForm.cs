@@ -171,7 +171,8 @@ namespace CF7Launcher.Guardian
         internal static PanelDomainRoute ResolvePanelDomainRoute(string cmd, string domain)
         {
             if (cmd == "close") return PanelDomainRoute.Close;
-            if (string.IsNullOrEmpty(domain)) return PanelDomainRoute.Legacy;
+            if (domain == null) return PanelDomainRoute.Legacy;
+            if (domain.Length == 0) return PanelDomainRoute.Unsupported;
             if (domain == "inventory") return PanelDomainRoute.Inventory;
             if (domain == "npcshop") return PanelDomainRoute.NpcShop;
             if (domain == "crafting") return PanelDomainRoute.Crafting;
@@ -182,14 +183,41 @@ namespace CF7Launcher.Guardian
             return PanelDomainRoute.Unsupported;
         }
 
+        internal static PanelDomainRoute ResolvePanelDomainRouteFromEnvelope(
+            string cmd,
+            JObject parsed)
+        {
+            if (cmd == "close") return PanelDomainRoute.Close;
+            JProperty property = parsed != null
+                ? parsed.Property("domain")
+                : null;
+            if (property == null)
+                return ResolvePanelDomainRoute(cmd, (string)null);
+            if (property.Value == null
+                || property.Value.Type != JTokenType.String)
+            {
+                return PanelDomainRoute.Unsupported;
+            }
+            return ResolvePanelDomainRoute(
+                cmd,
+                property.Value.Value<string>());
+        }
+
+        internal static bool IsStrictDomainlessPanelEnvelope(JObject parsed)
+        {
+            return parsed != null && parsed.Property("domain") == null;
+        }
+
         /// <summary>
         /// Never serialize the generic minigame envelope at the routing boundary. Logging the raw
         /// JSON here would expose session payloads before game-specific handling can redact them.
         /// </summary>
         internal static string FormatPanelEnvelopeLog(string cmd, string json)
         {
-            return cmd == "minigame_session"
-                ? "[Panel] HandlePanelMessage: cmd=minigame_session payload=redacted"
+            string redacted;
+            return AuthorityLogFormatter.TryFormatPanelEnvelope(
+                    cmd, json, out redacted)
+                ? redacted
                 : "[Panel] HandlePanelMessage: " + json;
         }
 
@@ -361,7 +389,7 @@ namespace CF7Launcher.Guardian
                 ["cmd"] = "force_close",
                 ["reason"] = reason
             };
-            if (activePanel == "workbench")
+            if (IsExactHostOwnedPanel(activePanel))
             {
                 if (string.IsNullOrEmpty(activePanelInstanceId)) return null;
                 payload["panel"] = activePanel;
@@ -503,6 +531,108 @@ namespace CF7Launcher.Guardian
         {
             JObject payload = parsed != null ? parsed["payload"] as JObject : null;
             return payload != null && payload.Property("context") != null;
+        }
+
+        internal static bool IsInventoryOwnerPanel(string panel)
+        {
+            return panel == "workbench" || panel == "kshop"
+                || panel == "npcshop" || panel == "crafting";
+        }
+
+        internal static bool IsExactHostOwnedPanel(string panel)
+        {
+            return IsInventoryOwnerPanel(panel)
+                || panel == "loot" || panel == "skills";
+        }
+
+        internal static bool HasExactInventoryOwnerBinding(JObject parsed,
+            string activePanel, string activePanelInstanceId)
+        {
+            return parsed != null
+                && IsInventoryOwnerPanel(activePanel)
+                && !string.IsNullOrEmpty(activePanelInstanceId)
+                && HasExactStringValue(parsed["panel"], activePanel)
+                && HasExactStringValue(
+                    parsed["panelInstanceId"], activePanelInstanceId);
+        }
+
+        internal static bool HasExactPanelOwnerBinding(
+            JObject parsed,
+            string expectedPanel,
+            string activePanel,
+            string activePanelInstanceId)
+        {
+            return parsed != null
+                && !string.IsNullOrEmpty(expectedPanel)
+                && string.Equals(
+                    activePanel,
+                    expectedPanel,
+                    StringComparison.Ordinal)
+                && !string.IsNullOrEmpty(activePanelInstanceId)
+                && HasExactStringValue(parsed["panel"], expectedPanel)
+                && HasExactStringValue(
+                    parsed["panelInstanceId"],
+                    activePanelInstanceId);
+        }
+
+        /// <summary>
+        /// Generic Inventory traffic is accepted only from the exact Host-owned panel
+        /// document that created it. Loot and Character candidate tooltips keep their
+        /// narrower, domain-specific validators and must never enter through this gate.
+        /// </summary>
+        internal static bool IsValidInventoryOwnerEnvelope(JObject parsed,
+            string activePanel, string activePanelInstanceId)
+        {
+            return HasExactInventoryOwnerBinding(
+                    parsed, activePanel, activePanelInstanceId)
+                && HasOnlyObjectKeys(
+                    parsed,
+                    "type", "panel", "domain", "cmd", "callId",
+                    "panelInstanceId", "payload")
+                && HasExactStringValue(parsed["type"], "panel")
+                && HasExactStringValue(parsed["domain"], "inventory")
+                && IsNonEmptyString(parsed["cmd"])
+                && IsNonEmptyString(parsed["callId"])
+                && parsed["payload"] is JObject;
+        }
+
+        internal static bool IsValidInventoryOwnerCloseEnvelope(
+            JObject parsed,
+            string activePanel,
+            string activePanelInstanceId)
+        {
+            if (!HasExactInventoryOwnerBinding(
+                    parsed, activePanel, activePanelInstanceId))
+            {
+                return false;
+            }
+            if (activePanel == "workbench")
+            {
+                return IsValidWorkbenchCloseEnvelope(
+                    parsed, activePanel, activePanelInstanceId);
+            }
+            bool hasReason = parsed.Property("reason") != null;
+            if (!HasOnlyObjectKeys(
+                    parsed,
+                    hasReason
+                        ? new[] { "type", "panel", "cmd", "panelInstanceId", "reason" }
+                        : new[] { "type", "panel", "cmd", "panelInstanceId" })
+                || !HasExactStringValue(parsed["type"], "panel")
+                || !HasExactStringValue(parsed["cmd"], "close"))
+            {
+                return false;
+            }
+            if (!hasReason) return true;
+            string reason = parsed["reason"].Type == JTokenType.String
+                ? (string)parsed["reason"] : null;
+            return reason == "mount_failed"
+                || reason == "lazy_user_cancel"
+                || reason == "lazy_cancel"
+                || reason == "lazy_load_failed"
+                || reason == "lazy_register_failed"
+                || reason == "lazy_register_missing"
+                || (activePanel == "crafting"
+                    && reason == "navigate_character_build");
         }
 
         /// <summary>
@@ -790,6 +920,9 @@ namespace CF7Launcher.Guardian
         private IntelligenceTask _intelligenceTask;
         private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
+        private readonly PanelRequestOwnerLifecycle
+            _panelRequestOwnerLifecycle =
+                new PanelRequestOwnerLifecycle(IsInventoryOwnerPanel);
         private string _activePanel;  // null = 无面板, "kshop"/"help"/...
         private bool _pauseNeedsRestore;
         private int _lastSocketDisconnectGeneration;
@@ -1163,6 +1296,10 @@ namespace CF7Launcher.Guardian
                 _webView.CoreWebView2.NavigationStarting += delegate(object sender,
                     CoreWebView2NavigationStartingEventArgs args)
                 {
+                    // A document transition destroys the Web-side request owner. Drop
+                    // transport pending immediately; InventoryTask preserves any
+                    // in-flight write as needs_reconcile instead of forgetting it.
+                    RetireAllInventoryOwnerRequests();
                     if (_webNavigationId == 0) _webReadyBeforeNavigation = _webReady;
                     if (ShouldAdvanceDocumentOnNavigationStart(
                             _webNavigationId,
@@ -1189,6 +1326,7 @@ namespace CF7Launcher.Guardian
                             .CancelAllPanelNavigationIntents(
                                 "web_navigation");
                     }
+                    BeginInventoryOwnerWebNavigationRecovery();
                     BeginSkillWebNavigationRecovery();
                     BeginCharacterBuildWebNavigationRecovery();
                 };
@@ -1211,6 +1349,7 @@ namespace CF7Launcher.Guardian
                         if (restoreOldReady)
                         {
                             _webReady = true;
+                            FlushDeferredPanelDelivery();
                         }
                     }
                 };
@@ -1914,6 +2053,7 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[WebOverlay] JS side ready → activating web channel");
                     _webReady = true;
                     _webFailed = false; // 热重载恢复时清除降级标记
+                    FlushDeferredPanelDelivery();
                     ApplyWebPerfMode("ready");
 
                     // 取消热重载超时 Timer
@@ -2906,6 +3046,13 @@ namespace CF7Launcher.Guardian
 
         private void HandleDebugMessage(string json)
         {
+            string redacted;
+            if (AuthorityLogFormatter.TryFormatEquipmentTuningDebug(
+                    json, out redacted))
+            {
+                LogManager.Log(redacted);
+                return;
+            }
             try
             {
                 JObject parsed = JObject.Parse(json);
@@ -3391,10 +3538,15 @@ namespace CF7Launcher.Guardian
             {
                 if (_commandRouter != null)
                 {
+                    _commandRouter.PanelChanged -=
+                        OnAuthoritativePanelChanged;
                     _commandRouter
                         .CancelAllPanelNavigationIntents(
                             "web_overlay_dispose");
                 }
+                if (_panelHost != null)
+                    _panelHost.PanelChanged -=
+                        OnAuthoritativePanelChanged;
                 ShowSystemCursor();
                 if (_fpsTimer != null)
                 {
@@ -3462,6 +3614,56 @@ namespace CF7Launcher.Guardian
         #endregion
 
         #region 面板系统
+
+        private void OnAuthoritativePanelChanged(
+            string panelName,
+            string panelInstanceId)
+        {
+            string retiredPanel;
+            string retiredInstance;
+            if (_panelRequestOwnerLifecycle.Advance(
+                    panelName,
+                    panelInstanceId,
+                    out retiredPanel,
+                    out retiredInstance))
+            {
+                RetirePanelRequestOwner(retiredPanel);
+            }
+        }
+
+        private void RetirePanelRequestOwner(string panelName)
+        {
+            if (!IsInventoryOwnerPanel(panelName)) return;
+            if (_inventoryTask != null) _inventoryTask.ClearPending();
+            if (panelName == "kshop" && _shopTask != null)
+                _shopTask.ClearPending();
+            else if (panelName == "npcshop" && _npcShopTask != null)
+                _npcShopTask.ClearPending();
+            else if (panelName == "crafting" && _craftingTask != null)
+                _craftingTask.ClearPending();
+        }
+
+        private void SealPanelRequestOwner(
+            string panelName,
+            string panelInstanceId)
+        {
+            if (!IsInventoryOwnerPanel(panelName)
+                || string.IsNullOrEmpty(panelInstanceId)) return;
+            _panelRequestOwnerLifecycle.SealExact(
+                panelName,
+                panelInstanceId);
+            RetirePanelRequestOwner(panelName);
+        }
+
+        private void RetireAllInventoryOwnerRequests()
+        {
+            if (_inventoryTask != null) _inventoryTask.ClearPending();
+            if (_equipmentTuningTask != null)
+                _equipmentTuningTask.ClearPending();
+            if (_shopTask != null) _shopTask.ClearPending();
+            if (_npcShopTask != null) _npcShopTask.ClearPending();
+            if (_craftingTask != null) _craftingTask.ClearPending();
+        }
 
         public void SetShopTask(ShopTask task)
         {
@@ -3634,6 +3836,10 @@ namespace CF7Launcher.Guardian
         private volatile bool _frozenForIdle;
 
         public bool IsPanelMode { get { return _panelMode; } }
+        internal bool CanAcceptPanelDocumentMessages
+        {
+            get { return !_disposed && _webReady; }
+        }
 
         /// <summary>
         /// GuardianForm's process-level WM_ACTIVATEAPP(true) handoff.  The request is intentionally
@@ -3645,10 +3851,38 @@ namespace CF7Launcher.Guardian
             QueuePanelFocusRestore("app_reactivated");
         }
 
+        private void FlushDeferredPanelDelivery()
+        {
+            PanelHostController host = _panelHost;
+            if (host == null || !CanAcceptPanelDocumentMessages) return;
+            string activePanel = host.ActivePanelName;
+            if (!string.IsNullOrEmpty(activePanel))
+                host.FlushDeferredRebind(activePanel);
+            host.FlushDeferredBarrierOpen();
+        }
+
         /// <summary>二阶段注入：Program.cs 先 new WebOverlayForm，再 new PanelHostController(this,...)，最后调本方法回注。</summary>
         public void SetPanelHost(PanelHostController host)
         {
+            if (_panelHost != null)
+                _panelHost.PanelChanged -= OnAuthoritativePanelChanged;
+            if (_commandRouter != null)
+                _commandRouter.PanelChanged -= OnAuthoritativePanelChanged;
             _panelHost = host;
+            if (_panelHost != null)
+            {
+                _panelHost.PanelChanged += OnAuthoritativePanelChanged;
+                OnAuthoritativePanelChanged(
+                    _panelHost.ActivePanelName,
+                    _panelHost.ActivePanelInstanceId);
+            }
+            else if (_commandRouter != null)
+            {
+                _commandRouter.PanelChanged += OnAuthoritativePanelChanged;
+                OnAuthoritativePanelChanged(
+                    _commandRouter.ActiveFallbackPanelName,
+                    _commandRouter.ActiveFallbackPanelInstanceId);
+            }
         }
 
         /// <summary>
@@ -4347,12 +4581,64 @@ namespace CF7Launcher.Guardian
             LogManager.Log("event=loot_visual_close_consumed reason=force_detach");
         }
 
+        private bool HasExactActivePanelOwnerBinding(
+            JObject parsed,
+            string expectedPanel)
+        {
+            string activePanel = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : (_commandRouter != null
+                    ? _commandRouter.ActiveFallbackPanelName
+                    : null);
+            string activePanelInstanceId = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : (_commandRouter != null
+                    ? _commandRouter.ActiveFallbackPanelInstanceId
+                    : null);
+            return HasExactPanelOwnerBinding(
+                parsed,
+                expectedPanel,
+                activePanel,
+                activePanelInstanceId);
+        }
+
         private void HandlePanelMessage(string json)
         {
             JObject parsed;
             try { parsed = JObject.Parse(json); } catch { LogManager.Log("[Panel] JSON parse failed"); return; }
             string cmd = parsed.Value<string>("cmd");
             if (cmd == null) { LogManager.Log("[Panel] cmd is null"); return; }
+            string logCmd = AuthorityLogFormatter.FormatOperation(cmd);
+            if (!CanAcceptPanelDocumentMessages)
+            {
+                LogManager.Log(
+                    "[Panel] rejected message from a non-ready Web document cmd="
+                    + logCmd);
+                return;
+            }
+            string messagePanel = parsed.Value<string>("panel");
+            string messagePanelInstanceId =
+                parsed.Value<string>("panelInstanceId");
+            if (cmd != "close"
+                && IsInventoryOwnerPanel(messagePanel)
+                && !_panelRequestOwnerLifecycle.IsAdmittedExact(
+                    messagePanel,
+                    messagePanelInstanceId))
+            {
+                LogManager.Log(
+                    "[Panel] rejected message from a sealed/expired owner panel="
+                    + (messagePanel ?? "<missing>")
+                    + " instance="
+                    + (messagePanelInstanceId ?? "<missing>"));
+                if (!string.IsNullOrEmpty(
+                        parsed.Value<string>("callId")))
+                {
+                    RespondPanelDomainError(
+                        parsed,
+                        "panel_instance_expired");
+                }
+                return;
+            }
             if (cmd == "close" && parsed.Value<string>("panel") == "loot")
             {
                 HandleLootVisualClose(parsed);
@@ -4399,12 +4685,17 @@ namespace CF7Launcher.Guardian
                     : _commandRouter != null && _commandRouter.RebindSkillsToTrainer(activeInstance, focusSkillKey));
                 if (!rebound)
                 {
-                    LogManager.Log("[SkillTask] rejected stale/malformed " + cmd + " envelope");
+                    LogManager.Log("[SkillTask] rejected stale/malformed " + logCmd + " envelope");
                 }
                 return;
             }
-            string domain = parsed.Value<string>("domain");
-            PanelDomainRoute domainRoute = ResolvePanelDomainRoute(cmd, domain);
+            string domain = parsed["domain"] != null
+                    && parsed["domain"].Type == JTokenType.String
+                ? parsed["domain"].Value<string>()
+                : null;
+            PanelDomainRoute domainRoute = ResolvePanelDomainRouteFromEnvelope(
+                cmd,
+                parsed);
             if (domainRoute == PanelDomainRoute.Inventory)
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
@@ -4491,7 +4782,27 @@ namespace CF7Launcher.Guardian
                         return;
                     }
                 }
-                LogManager.Log("[Panel] Routing domain=inventory cmd=" + cmd
+                else
+                {
+                    if (!HasExactInventoryOwnerBinding(
+                            parsed, activeName, activeInstance))
+                    {
+                        LogManager.Log(
+                            "[InventoryTask] rejected expired/foreign owner envelope");
+                        RespondPanelDomainError(
+                            parsed, "panel_instance_expired");
+                        return;
+                    }
+                    if (!IsValidInventoryOwnerEnvelope(
+                            parsed, activeName, activeInstance))
+                    {
+                        LogManager.Log(
+                            "[InventoryTask] rejected malformed owner envelope");
+                        RespondPanelDomainError(parsed, "invalid_payload");
+                        return;
+                    }
+                }
+                LogManager.Log("[Panel] Routing domain=inventory cmd=" + logCmd
                     + " to InventoryTask, _inventoryTask=" + (_inventoryTask != null ? "ok" : "NULL"));
                 if (_inventoryTask != null) _inventoryTask.HandleWebRequest(cmd, parsed);
                 else RespondPanelDomainError(parsed, "inventory_unavailable");
@@ -4499,7 +4810,15 @@ namespace CF7Launcher.Guardian
             }
             if (domainRoute == PanelDomainRoute.NpcShop)
             {
-                LogManager.Log("[Panel] Routing domain=npcshop cmd=" + cmd
+                if (!HasExactActivePanelOwnerBinding(parsed, "npcshop"))
+                {
+                    LogManager.Log(
+                        "[NpcShopTask] rejected expired/foreign owner envelope");
+                    RespondPanelDomainError(
+                        parsed, "panel_instance_expired");
+                    return;
+                }
+                LogManager.Log("[Panel] Routing domain=npcshop cmd=" + logCmd
                     + " to NpcShopTask, _npcShopTask=" + (_npcShopTask != null ? "ok" : "NULL"));
                 if (_npcShopTask != null) _npcShopTask.HandleWebRequest(cmd, parsed);
                 else RespondPanelDomainError(parsed, "npcshop_unavailable");
@@ -4507,7 +4826,15 @@ namespace CF7Launcher.Guardian
             }
             if (domainRoute == PanelDomainRoute.Crafting)
             {
-                LogManager.Log("[Panel] Routing domain=crafting cmd=" + cmd
+                if (!HasExactActivePanelOwnerBinding(parsed, "crafting"))
+                {
+                    LogManager.Log(
+                        "[CraftingTask] rejected expired/foreign owner envelope");
+                    RespondPanelDomainError(
+                        parsed, "panel_instance_expired");
+                    return;
+                }
+                LogManager.Log("[Panel] Routing domain=crafting cmd=" + logCmd
                     + " to CraftingTask, _craftingTask=" + (_craftingTask != null ? "ok" : "NULL"));
                 if (_craftingTask != null) _craftingTask.HandleWebRequest(cmd, parsed);
                 else RespondPanelDomainError(parsed, "crafting_unavailable");
@@ -4515,7 +4842,7 @@ namespace CF7Launcher.Guardian
             }
             if (domainRoute == PanelDomainRoute.Hairdresser)
             {
-                LogManager.Log("[Panel] Routing domain=hairdresser cmd=" + cmd
+                LogManager.Log("[Panel] Routing domain=hairdresser cmd=" + logCmd
                     + " to HairdresserTask, _hairdresserTask=" + (_hairdresserTask != null ? "ok" : "NULL"));
                 if (_hairdresserTask != null) _hairdresserTask.HandleWebRequest(cmd, parsed);
                 else RespondPanelDomainError(parsed, "hairdresser_unavailable");
@@ -4527,7 +4854,7 @@ namespace CF7Launcher.Guardian
                     : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
                 string instanceId = _panelHost != null ? _panelHost.ActivePanelInstanceId
                     : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
-                LogManager.Log("[Panel] Routing domain=equipment_tuning cmd=" + cmd
+                LogManager.Log("[Panel] Routing domain=equipment_tuning cmd=" + logCmd
                     + " to EquipmentTuningTask, _equipmentTuningTask="
                     + (_equipmentTuningTask != null ? "ok" : "NULL"));
                 if (activeName != "workbench" || string.IsNullOrEmpty(instanceId))
@@ -4562,7 +4889,7 @@ namespace CF7Launcher.Guardian
                     ? _panelHost.ActivePanelInstanceId
                     : (_commandRouter != null
                         ? _commandRouter.ActiveFallbackPanelInstanceId : null);
-                LogManager.Log("[Panel] Routing domain=loadout cmd=" + cmd
+                LogManager.Log("[Panel] Routing domain=loadout cmd=" + logCmd
                     + " to CharacterBuildTask, _characterBuildTask="
                     + (_characterBuildTask != null ? "ok" : "NULL"));
                 if (activeName != "workbench"
@@ -4595,7 +4922,7 @@ namespace CF7Launcher.Guardian
             }
             if (domainRoute == PanelDomainRoute.Skills)
             {
-                LogManager.Log("[Panel] Routing domain=skills cmd=" + cmd
+                LogManager.Log("[Panel] Routing domain=skills cmd=" + logCmd
                     + " to SkillTask, _skillTask=" + (_skillTask != null ? "ok" : "NULL"));
                 if (_skillTask != null)
                 {
@@ -4640,6 +4967,26 @@ namespace CF7Launcher.Guardian
                         string exactSkillInstance = null;
                         string exactPreparationChildPanel = null;
                         string exactPreparationChildInstance = null;
+                        if (IsInventoryOwnerPanel(panel))
+                        {
+                            string activeName = _panelHost != null
+                                ? _panelHost.ActivePanelName
+                                : (_commandRouter != null
+                                    ? _commandRouter.ActiveFallbackPanelName
+                                    : _activePanel);
+                            string activeInstance = _panelHost != null
+                                ? _panelHost.ActivePanelInstanceId
+                                : (_commandRouter != null
+                                    ? _commandRouter.ActiveFallbackPanelInstanceId
+                                    : null);
+                            if (!IsValidInventoryOwnerCloseEnvelope(
+                                    parsed, activeName, activeInstance))
+                            {
+                                LogManager.Log(
+                                    "[InventoryTask] rejected stale/malformed owner close envelope");
+                                return;
+                            }
+                        }
                         bool trackedHairdresserClose = panel == "hairdresser"
                             && _panelHost != null
                             && _panelHost.IsPanelOpen
@@ -4954,27 +5301,29 @@ namespace CF7Launcher.Guardian
                         // 上层 panel 遮挡 Flash 视野。默认 false = 用户主动取消，pop 一层。
                         bool dismissReturnStack = parsed.Value<bool?>("dismissReturnStack") ?? false;
                         bool returnBase = ShouldReturnBaseOnPanelClose(panel, parsed);
-                        string closeAction = ResolvePanelCloseGameCommand(panel);
-                        if (closeAction == "shopPanelClose")
+                        bool inventoryOwnerClose =
+                            IsInventoryOwnerPanel(panel);
+                        if (inventoryOwnerClose)
                         {
-                            if (!TrySendGameCommand(closeAction))
-                                _pauseNeedsRestore = true;
+                            // The exact old Web document is already gone after this accepted
+                            // envelope, even if Host execution is later superseded by a queued
+                            // replacement. Drain only that document's request owners now; visual,
+                            // game-command and pause effects remain execution-bound below.
+                            SealPanelRequestOwner(
+                                panel,
+                                parsed.Value<string>(
+                                    "panelInstanceId"));
                         }
-                        else if (closeAction != null)
+                        bool deferInventoryOwnerCloseCommit =
+                            _panelHost != null
+                            && inventoryOwnerClose;
+                        if (!deferInventoryOwnerCloseCommit)
                         {
-                            TrySendGameCommand(closeAction);
+                            CommitAcceptedPanelCloseEffects(
+                                panel,
+                                returnBase,
+                                characterBuildPauseReleaseHandled);
                         }
-                        if (returnBase)
-                        {
-                            TrySendGameCommand("arenaReturnBase");
-                        }
-                        // 任意面板关闭 → 取消暂停（与 OpenPanel 的 webPanelPause 配对；AS2 幂等释放）
-                        if (!characterBuildPauseReleaseHandled)
-                            TryReleaseGenericWebPanelPause();
-                        // help 等纯 web 面板无需通知 Flash
-                        _activePanel = null;
-                        if (_commandRouter != null) _commandRouter.ClearFallbackPanelInstance();
-                        if (_onPanelStateChanged != null) _onPanelStateChanged(false);
                         // panel close 回流：让 PanelHostController 把 backdrop/HUD/shield 拨回 idle 不变量
                         // Phase 1 _panelHost._activePanel 始终为 null（PanelHost 未接管打开路径）→ ClosePanel 走 ExecuteCommand 内
                         // "if (_activePanel == null) return;" 早 return，无副作用
@@ -4986,7 +5335,10 @@ namespace CF7Launcher.Guardian
                             if (dismissReturnStack || navigatePreparation
                                 || navigateCharacterBuild
                                 || navigatePreparationChild)
-                                _panelHost.ClearReturnStack();
+                            {
+                                if (!deferInventoryOwnerCloseCommit)
+                                    _panelHost.ClearReturnStack();
+                            }
                             if (panel == "workbench")
                             {
                                 string closeInstance =
@@ -5012,11 +5364,33 @@ namespace CF7Launcher.Guardian
                                                         preparationTarget,
                                                         "visual_retire_failed");
                                             }
-                                            : null)
-                                    : _panelHost.TryClosePanelExact(
-                                        panel,
-                                        closeInstance,
-                                        null);
+                                            : null,
+                                        delegate
+                                        {
+                                            CommitAcceptedPanelCloseEffects(
+                                                panel,
+                                                returnBase,
+                                                characterBuildPauseReleaseHandled);
+                                        })
+                                     : _panelHost.TryClosePanelExact(
+                                         panel,
+                                         closeInstance,
+                                         dismissReturnStack,
+                                         deferInventoryOwnerCloseCommit
+                                             ? (Action<bool>)delegate(bool closed)
+                                             {
+                                                 if (!closed)
+                                                 {
+                                                     LogManager.Log(
+                                                         "[Workbench] stale exact Host close ignored after replacement");
+                                                     return;
+                                                 }
+                                                 CommitAcceptedPanelCloseEffects(
+                                                     panel,
+                                                     returnBase,
+                                                     characterBuildPauseReleaseHandled);
+                                             }
+                                             : null);
                                 if (!closeQueued)
                                 {
                                     LogManager.Log(
@@ -5104,6 +5478,13 @@ namespace CF7Launcher.Guardian
                                                             .VisualRetireOutcome
                                                             .VisualAlreadyAbsent)
                                                 {
+                                                    if (deferInventoryOwnerCloseCommit)
+                                                    {
+                                                        CommitAcceptedPanelCloseEffects(
+                                                            panel,
+                                                            returnBase,
+                                                            characterBuildPauseReleaseHandled);
+                                                    }
                                                     _commandRouter
                                                         .TryCompletePreparationChildCharacterBuildNavigation(
                                                             exactPreparationChildPanel,
@@ -5125,6 +5506,37 @@ namespace CF7Launcher.Guardian
                                             "visual_retire_not_queued");
                                     LogManager.Log(
                                         "[PreparationChild] exact Host visual retire was not queued");
+                                }
+                            }
+                            else if (deferInventoryOwnerCloseCommit)
+                            {
+                                string closeInstance =
+                                    parsed.Value<string>(
+                                        "panelInstanceId");
+                                bool closeQueued =
+                                    _panelHost.TryClosePanelExact(
+                                        panel,
+                                        closeInstance,
+                                        dismissReturnStack,
+                                        delegate(bool closed)
+                                        {
+                                            if (!closed)
+                                            {
+                                                LogManager.Log(
+                                                    "[InventoryTask] stale exact owner close ignored after replacement: "
+                                                    + panel + " instance=" + closeInstance);
+                                                return;
+                                            }
+                                            CommitAcceptedPanelCloseEffects(
+                                                panel,
+                                                returnBase,
+                                                characterBuildPauseReleaseHandled);
+                                        });
+                                if (!closeQueued)
+                                {
+                                    LogManager.Log(
+                                        "[InventoryTask] exact owner close was not queued: "
+                                        + panel + " instance=" + closeInstance);
                                 }
                             }
                             else
@@ -5184,6 +5596,21 @@ namespace CF7Launcher.Guardian
                 case "checkout":
                 case "claim":
                 case "saveCart":
+                    if (!IsStrictDomainlessPanelEnvelope(parsed))
+                    {
+                        LogManager.Log(
+                            "[ShopTask] rejected non-domainless KShop envelope");
+                        RespondPanelDomainError(parsed, "invalid_domain");
+                        break;
+                    }
+                    if (!HasExactActivePanelOwnerBinding(parsed, "kshop"))
+                    {
+                        LogManager.Log(
+                            "[ShopTask] rejected expired/foreign owner envelope");
+                        RespondPanelDomainError(
+                            parsed, "panel_instance_expired");
+                        break;
+                    }
                     LogManager.Log("[Panel] Routing cmd=" + cmd + " to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
                     if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
                     break;
@@ -5202,6 +5629,15 @@ namespace CF7Launcher.Guardian
                         }
                         else
                         {
+                            if (!HasExactActivePanelOwnerBinding(
+                                    parsed, "kshop"))
+                            {
+                                LogManager.Log(
+                                    "[ShopTask] rejected expired/foreign tooltip envelope");
+                                RespondPanelDomainError(
+                                    parsed, "panel_instance_expired");
+                                break;
+                            }
                             LogManager.Log("[Panel] Routing cmd=tooltip to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
                             if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
                         }
@@ -5331,11 +5767,20 @@ namespace CF7Launcher.Guardian
 
         private void RespondPanelDomainError(JObject request, string error)
         {
+            JObject response = BuildPanelDomainErrorResponse(request, error);
+            PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
+        }
+
+        internal static JObject BuildPanelDomainErrorResponse(
+            JObject request, string error)
+        {
+            string responseDomain = request != null
+                ? (request.Value<string>("domain") ?? "")
+                : "";
             var response = new JObject
             {
                 ["type"] = "panel_resp",
                 ["panel"] = request != null ? (request.Value<string>("panel") ?? "") : "",
-                ["domain"] = request != null ? (request.Value<string>("domain") ?? "") : "",
                 ["cmd"] = request != null ? (request.Value<string>("cmd") ?? "") : "",
                 ["callId"] = request != null ? (request.Value<string>("callId") ?? "") : "",
                 ["panelInstanceId"] = request != null
@@ -5343,7 +5788,21 @@ namespace CF7Launcher.Guardian
                 ["success"] = false,
                 ["error"] = error
             };
-            PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
+            if (!string.IsNullOrEmpty(responseDomain))
+                response["domain"] = responseDomain;
+            if (string.Equals(
+                    responseDomain,
+                    "equipment_tuning",
+                    StringComparison.Ordinal))
+            {
+                JObject payload = request != null
+                    ? request["payload"] as JObject
+                    : null;
+                response["viewSessionId"] = payload != null
+                    ? (payload.Value<string>("viewSessionId") ?? "")
+                    : "";
+            }
+            return response;
         }
 
         private void HandleMapOpenStageSelectRequest(JObject parsed)
@@ -5462,6 +5921,32 @@ namespace CF7Launcher.Guardian
             return TrySendGameCommand("webPanelUnpause");
         }
 
+        private void CommitAcceptedPanelCloseEffects(
+            string panel,
+            bool returnBase,
+            bool pauseReleaseHandled)
+        {
+            string closeAction = ResolvePanelCloseGameCommand(panel);
+            if (closeAction == "shopPanelClose")
+            {
+                if (!TrySendGameCommand(closeAction))
+                    _pauseNeedsRestore = true;
+            }
+            else if (closeAction != null)
+            {
+                TrySendGameCommand(closeAction);
+            }
+            if (returnBase)
+                TrySendGameCommand("arenaReturnBase");
+            if (!pauseReleaseHandled)
+                TryReleaseGenericWebPanelPause();
+            _activePanel = null;
+            if (_commandRouter != null)
+                _commandRouter.ClearFallbackPanelInstance();
+            if (_onPanelStateChanged != null)
+                _onPanelStateChanged(false);
+        }
+
         public bool ReleaseLootPanelPause()
         {
             LootTask lootTask = _lootTask;
@@ -5533,7 +6018,8 @@ namespace CF7Launcher.Guardian
             string panelInstanceId,
             int readyGeneration,
             string reason,
-            Action unavailable = null)
+            Action unavailable = null,
+            Action retired = null)
         {
             if (task == null || _panelHost == null)
                 return false;
@@ -5554,6 +6040,7 @@ namespace CF7Launcher.Guardian
                                     .VisualRetireOutcome
                                     .VisualAlreadyAbsent)
                         {
+                            if (retired != null) retired();
                             if (!task
                                     .ContinueDetachRecoveryAfterVisualRetired(
                                         readyGeneration)
@@ -5578,6 +6065,80 @@ namespace CF7Launcher.Guardian
                 if (unavailable != null) unavailable();
             }
             return queued;
+        }
+
+        internal static bool ShouldRetireInventoryOwnerOnWebNavigation(
+            string panelName,
+            bool characterBuildBound,
+            bool equipmentTuningBound)
+        {
+            if (!IsInventoryOwnerPanel(panelName)) return false;
+            return panelName != "workbench"
+                || (!characterBuildBound && !equipmentTuningBound);
+        }
+
+        private void BeginInventoryOwnerWebNavigationRecovery()
+        {
+            string panelName = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : (_commandRouter != null
+                    ? _commandRouter.ActiveFallbackPanelName
+                    : _activePanel);
+            string panelInstanceId = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : (_commandRouter != null
+                    ? _commandRouter.ActiveFallbackPanelInstanceId
+                    : null);
+            bool characterBuildBound = _characterBuildTask != null
+                && _characterBuildTask.HasBoundPanel;
+            bool equipmentTuningBound = _equipmentTuningTask != null
+                && _equipmentTuningTask.HasBoundPanel;
+            if (!ShouldRetireInventoryOwnerOnWebNavigation(
+                    panelName,
+                    characterBuildBound,
+                    equipmentTuningBound)
+                || string.IsNullOrEmpty(panelInstanceId))
+            {
+                return;
+            }
+
+            SealPanelRequestOwner(
+                panelName,
+                panelInstanceId);
+            if (_panelHost != null)
+            {
+                bool queued = _panelHost.TryClosePanelExact(
+                    panelName,
+                    panelInstanceId,
+                    true,
+                    delegate(bool closed)
+                    {
+                        if (!closed)
+                        {
+                            LogManager.Log(
+                                "[InventoryTask] web navigation exact close was superseded: "
+                                + panelName + " instance=" + panelInstanceId);
+                            return;
+                        }
+                        CommitAcceptedPanelCloseEffects(
+                            panelName,
+                            false,
+                            false);
+                    });
+                if (!queued)
+                {
+                    LogManager.Log(
+                        "[InventoryTask] web navigation exact close was not queued: "
+                        + panelName + " instance=" + panelInstanceId);
+                }
+                return;
+            }
+
+            CommitAcceptedPanelCloseEffects(
+                panelName,
+                false,
+                false);
+            ForceIdleState("inventory_owner_web_navigation");
         }
 
         private void BeginSkillWebNavigationRecovery()
@@ -5915,7 +6476,20 @@ namespace CF7Launcher.Guardian
         /// 二阶段注入：Program.cs 装配后调本方法绑定 router。
         /// 未注入时 HandleButtonClick 走旧 inline switch（仅过渡期；Phase 2 装配完成后所有路径都进 router）。
         /// </summary>
-        public void SetCommandRouter(LauncherCommandRouter router) { _commandRouter = router; }
+        public void SetCommandRouter(LauncherCommandRouter router)
+        {
+            if (_commandRouter != null)
+                _commandRouter.PanelChanged -= OnAuthoritativePanelChanged;
+            _commandRouter = router;
+            if (_commandRouter != null)
+            {
+                if (_panelHost != null) return;
+                _commandRouter.PanelChanged += OnAuthoritativePanelChanged;
+                OnAuthoritativePanelChanged(
+                    _commandRouter.ActiveFallbackPanelName,
+                    _commandRouter.ActiveFallbackPanelInstanceId);
+            }
+        }
 
         /// <summary>Router fallback 路径（Flag OFF）专用：把 _activePanel 状态从 router 注回 WebOverlay。</summary>
         public void SetActivePanel(string panelName) { _activePanel = panelName; }

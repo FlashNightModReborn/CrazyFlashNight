@@ -174,6 +174,7 @@ var LootPanel = (function() {
             components:WorkbenchComponents,
             inventoryUI:InventoryUI,
             workbench:Workbench,
+            tooltip:PanelTooltip,
             host:_view.getOrganizerHost(),
             getWindow:function(containerId) {
                 return _inventoryCoordinator && _inventoryCoordinator.getWindow(containerId);

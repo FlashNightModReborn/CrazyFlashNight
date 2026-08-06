@@ -23,7 +23,6 @@
         { "cmd": "batchPreview", "action": "npcShopBatchPreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "tradePreview", "action": "npcShopTradePreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "buy", "action": "npcShopBuy", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
-        { "cmd": "sell", "action": "npcShopSell", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
         { "cmd": "batchSell", "action": "npcShopBatchSell", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
         { "cmd": "tradeCommit", "action": "npcShopTradeCommit", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
       ],
@@ -85,10 +84,7 @@
           "argument": "payload[\"quantity\"]",
           "minimum": "1",
           "maximum": "MaxPurchaseQuantity",
-          "occurrences": 1,
-          "allowedAlternates": [
-            { "minimum": "1", "maximum": "int.MaxValue", "occurrences": 1 }
-          ]
+          "occurrences": 1
         },
         {
           "kind": "csharp-integer-guard",
@@ -207,7 +203,7 @@
       "hostTask": "launcher/src/Tasks/ShopTask.cs",
       "flashResponseTask": "shop_response",
       "hostResponseHandler": "shopTask.HandleFlashResponse",
-      "hostPayloadMode": "passthrough",
+      "hostPayloadMode": "normalized-domainless-owner-rebuilt",
       "flashCommandHandler": null,
       "flashSources": [
         "scripts/逻辑系统分区/商城系统_WebView.as"

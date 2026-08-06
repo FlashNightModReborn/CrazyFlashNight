@@ -48,6 +48,26 @@ function projection() {
     };
 }
 
+function itemProjection(overrides) {
+    return Object.assign({
+        name:'内部测试物品',
+        displayName:'测试展示物品',
+        icon:'测试物品图标',
+        itemKind:'equipment',
+        quantity:1,
+        enhancementLevel:0,
+        rarity:'普通',
+        modSlots:[],
+        modMeta:null
+    }, overrides || {});
+}
+
+function modProjection(overrides) {
+    return Object.assign({
+        name:'插件内部名',displayName:'插件展示名',icon:'插件图标'
+    },overrides || {});
+}
+
 function statsProjection() {
     return {
         v:1,
@@ -55,6 +75,19 @@ function statsProjection() {
         stateHealth:'ok',
         diagnostics:[]
     };
+}
+
+function tooltipProjection(target, overrides) {
+    return Object.assign({
+        v:1,
+        target,
+        itemName:'内部测试物品',
+        displayName:'测试展示物品',
+        iconName:'测试物品图标',
+        itemType:'武器',
+        descHTML:'<TEXTFORMAT>完整说明</TEXTFORMAT>',
+        introHTML:'<TEXTFORMAT>完整属性</TEXTFORMAT>'
+    }, overrides || {});
 }
 
 function fullBackpack(sequence) {
@@ -101,7 +134,8 @@ function responseFor(message, overrides) {
     return Object.assign(result, overrides || {});
 }
 
-function createFixture(send) {
+function createFixture(send, options) {
+    options = options || {};
     const messages = [];
     const errors = [];
     const states = [];
@@ -118,7 +152,8 @@ function createFixture(send) {
     const session = new SessionModule.CharacterBuildSession({
         mux,
         onError(response, command) { errors.push({response, command}); },
-        onState(state, reason) { states.push({state, reason}); }
+        onState(state, reason) { states.push({state, reason}); },
+        onCandidateAuthorityReset:options.onCandidateAuthorityReset
     });
     return {messages, errors, states, timers, mux, session};
 }
@@ -142,11 +177,11 @@ function openClean(fixture, revisions) {
     assert.strictEqual(fixture.session.getState(), 'idle');
 }
 
-test('B2B command whitelist contains five settlement reads and four frozen mutations', () => {
+test('B2B command whitelist contains six bounded reads and four frozen mutations', () => {
     assert.deepStrictEqual(
         Array.from(SessionModule.commands),
         [
-            'snapshot', 'candidates', 'flushLive', 'statsSnapshot', 'finalize',
+            'snapshot', 'candidates', 'tooltip', 'flushLive', 'statsSnapshot', 'finalize',
             'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug'
         ]
     );
@@ -289,11 +324,13 @@ test('subsequent snapshot and candidates carry exact generation and revisions in
         sessionGeneration:7,
         expectedLoadoutRevision:3,
         expectedDrugRevision:2,
-        slotKey:'头部装备'
+        slotKey:'头部装备',
+        candidateScope:'compatible'
     });
     fixture.mux.handleResponse(responseFor(fixture.messages[2], {
         payload:{
             target,
+            candidateScope:'compatible',
             candidates:[],
             backpackVersion:8,
             stateHealth:'ok',
@@ -301,6 +338,425 @@ test('subsequent snapshot and candidates carry exact generation and revisions in
         }
     }));
     assert.strictEqual(fixture.session.getState(), 'idle');
+});
+
+test('candidate cache is revision fenced and reprojects one authoritative equipment backpack', () => {
+    const controller = Object.create(Build.CharacterBuildController.prototype);
+    let state = {
+        sessionGeneration:7,
+        loadoutRevision:3,
+        drugRevision:2
+    };
+    controller._session = {debugState:() => Object.assign({}, state)};
+    controller._panelInstanceId = 'panel.cache.1';
+    controller._candidateCache = null;
+    const candidates = [{key:'backpack:4:lease.4'}];
+    const payload = {stateHealth:'ok', backpackVersion:12};
+    assert.strictEqual(controller._storeCandidateCache(
+        {kind:'equipment', slotKey:'手枪'}, 'compatible', payload, candidates), true);
+    assert.deepStrictEqual(controller._readCandidateCache(
+        {kind:'equipment', slotKey:'手枪2'}, 'compatible'), candidates);
+    assert.strictEqual(controller._readCandidateCache(
+        {kind:'equipment', slotKey:'长枪'}, 'compatible'), null);
+    const universalPayload = {
+        target:{kind:'equipment', slotKey:'长枪'},
+        candidateScope:'backpack',
+        candidates:[{
+            physicalSlot:4, disabled:false, blockedReason:'',
+            source:{containerId:'背包', slot:4, expectedLease:'lease.4'},
+            item:{name:'候选刀', displayName:'候选刀', icon:'候选刀',
+                itemKind:'equipment', majorType:'武器', use:'刀', quantity:1},
+            equipmentEligibility:{slots:['刀'], blockedReason:''}
+        },{
+            physicalSlot:5, disabled:true, blockedReason:'incompatible_item',
+            source:{containerId:'背包', slot:5, expectedLease:'lease.5'},
+            item:{name:'高阶手枪', displayName:'高阶手枪', icon:'高阶手枪',
+                itemKind:'equipment', majorType:'武器', use:'手枪', quantity:1},
+            equipmentEligibility:{slots:['手枪','手枪2'], blockedReason:'level_locked'}
+        }],
+        backpackVersion:12,stateHealth:'ok',diagnostics:[]
+    };
+    assert.strictEqual(controller._storeCandidateCache(
+        {kind:'equipment', slotKey:'长枪'}, 'backpack',
+        universalPayload, []), true);
+    const bladeRows = controller._readCandidateCache(
+        {kind:'equipment', slotKey:'刀'}, 'backpack');
+    assert.strictEqual(bladeRows[0].blocked, false);
+    assert.strictEqual(bladeRows[1].blocked, true);
+    const pistolRows = controller._readCandidateCache(
+        {kind:'equipment', slotKey:'手枪2'}, 'backpack');
+    assert.strictEqual(pistolRows[0].raw.blockedReason, 'incompatible_item');
+    assert.strictEqual(pistolRows[1].raw.blockedReason, 'level_locked');
+    state = Object.assign({}, state, {loadoutRevision:4});
+    assert.strictEqual(controller._readCandidateCache(
+        {kind:'equipment', slotKey:'手枪2'}, 'backpack'), null);
+    state = Object.assign({}, state, {loadoutRevision:3});
+    assert.strictEqual(controller._storeCandidateCache(
+        {kind:'equipment', slotKey:'刀'}, 'backpack',
+        {stateHealth:'degraded', backpackVersion:13}, candidates), false);
+    assert.strictEqual(controller._candidateCache, null);
+    assert.strictEqual(Build.candidateCacheTarget(
+        {kind:'equipment', slotKey:'长枪'}), '');
+    assert.strictEqual(Build.candidateCacheTarget(
+        {kind:'equipment', slotKey:'长枪'}, 'backpack'), 'equipment:backpack');
+    assert.strictEqual(Build.candidateCacheTarget(
+        {kind:'drug', drugSlot:0}), '');
+});
+
+test('equipped and drug tooltip reads carry exact target and revision fences', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const equipment = {kind:'equipment', slotKey:'长枪'};
+    let accepted = null;
+    fixture.session.requestLoadoutTooltip(equipment, (response, ok, key) => {
+        accepted = {response, ok, key};
+    });
+    const equipmentRequest = fixture.messages[1];
+    assert.deepStrictEqual(equipmentRequest.payload, {
+        v:1,
+        sessionGeneration:7,
+        slotKey:'长枪',
+        expectedLoadoutRevision:3,
+        expectedDrugRevision:2
+    });
+    fixture.mux.handleResponse(responseFor(equipmentRequest, {
+        payload:tooltipProjection(equipment)
+    }));
+    assert(accepted && accepted.ok);
+    assert.strictEqual(accepted.key, 'equipment:长枪');
+
+    const drug = {kind:'drug', drugSlot:2};
+    accepted = null;
+    fixture.session.requestLoadoutTooltip(drug, (response, ok, key) => {
+        accepted = {response, ok, key};
+    });
+    const drugRequest = fixture.messages[2];
+    assert.deepStrictEqual(drugRequest.payload, {
+        v:1,
+        sessionGeneration:7,
+        drugSlot:2,
+        expectedLoadoutRevision:3,
+        expectedDrugRevision:2
+    });
+    fixture.mux.handleResponse(responseFor(drugRequest, {
+        payload:tooltipProjection(drug)
+    }));
+    assert(accepted && accepted.ok);
+    assert.strictEqual(accepted.key, 'drug:2');
+});
+
+test('tooltip response exact shape and revision echo fail closed without advancing watermarks', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const target = {kind:'equipment', slotKey:'长枪'};
+    let accepted = true;
+    fixture.session.requestLoadoutTooltip(target, (_, ok) => { accepted = ok; });
+    const malformed = fixture.messages[1];
+    fixture.mux.handleResponse(responseFor(malformed, {
+        payload:Object.assign(tooltipProjection(target), {extra:'forbidden'})
+    }));
+    assert.strictEqual(accepted, false);
+    assert.strictEqual(fixture.session.debugState().loadoutRevision, 3);
+    assert.strictEqual(fixture.errors.at(-1).response.error, 'malformed_response');
+
+    accepted = true;
+    fixture.session.requestLoadoutTooltip(target, (_, ok) => { accepted = ok; });
+    const drifted = fixture.messages[2];
+    fixture.mux.handleResponse(responseFor(drifted, {
+        loadoutRevision:4,
+        payload:tooltipProjection(target)
+    }));
+    assert.strictEqual(accepted, false);
+    assert.strictEqual(fixture.session.debugState().loadoutRevision, 3);
+});
+
+test('starting a write cancels an in-flight equipped tooltip read', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const target = {kind:'equipment', slotKey:'长枪'};
+    const callbacks = [];
+    fixture.session.requestLoadoutTooltip(target, (response, accepted) => {
+        callbacks.push({response, accepted});
+    });
+    const tooltipRequest = fixture.messages[1];
+    assert(fixture.session.unequipEquipment('长枪'));
+    assert.strictEqual(fixture.mux.handleResponse(responseFor(tooltipRequest, {
+        payload:tooltipProjection(target)
+    })), false);
+    assert.strictEqual(callbacks.length, 1);
+    assert.strictEqual(callbacks[0].accepted, false);
+    assert.strictEqual(callbacks[0].response.error, 'mutation_start');
+    assert.strictEqual(fixture.session.getState(), 'write_pending');
+});
+
+test('A to B to A tooltip supersession releases each canceled binding for retry', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const longGun = {kind:'equipment', slotKey:'长枪'};
+    const blade = {kind:'equipment', slotKey:'刀'};
+    const callbacks = [];
+    fixture.session.requestLoadoutTooltip(longGun, (response, accepted) => {
+        callbacks.push({owner:'longGun:first', error:response && response.error, accepted});
+    });
+    const first = fixture.messages[1];
+    fixture.session.requestLoadoutTooltip(blade, (response, accepted) => {
+        callbacks.push({owner:'blade', error:response && response.error, accepted});
+    });
+    const second = fixture.messages[2];
+    fixture.session.requestLoadoutTooltip(longGun, (response, accepted) => {
+        callbacks.push({owner:'longGun:retry', error:response && response.error, accepted});
+    });
+    const retry = fixture.messages[3];
+    assert.strictEqual(fixture.mux.handleResponse(responseFor(first, {
+        payload:tooltipProjection(longGun)
+    })), false);
+    assert.strictEqual(fixture.mux.handleResponse(responseFor(second, {
+        payload:tooltipProjection(blade)
+    })), false);
+    fixture.mux.handleResponse(responseFor(retry, {
+        payload:tooltipProjection(longGun)
+    }));
+    assert.deepStrictEqual(callbacks.map(row => [row.owner, row.error || '', row.accepted]), [
+        ['longGun:first', 'superseded', false],
+        ['blade', 'superseded', false],
+        ['longGun:retry', '', true]
+    ]);
+});
+
+test('candidate scope is closed, inherited by refresh callers, and response echo is exact', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const target = {kind:'equipment', slotKey:'长枪'};
+    assert.strictEqual(fixture.session.getCandidateScope(), 'compatible');
+    assert.strictEqual(fixture.session.setCandidateScope('all'), false);
+    assert.strictEqual(fixture.session.getCandidateScope(), 'compatible');
+    assert.strictEqual(fixture.session.setCandidateScope('backpack'), true);
+
+    let result = null;
+    fixture.session.requestCandidates(target, (response, accepted, targetKey, scope) => {
+        result = {response, accepted, targetKey, scope};
+    });
+    const request = fixture.messages[1];
+    assert.strictEqual(request.payload.candidateScope, 'backpack');
+    fixture.mux.handleResponse(responseFor(request, {payload:{
+        target,
+        candidateScope:'backpack',
+        candidates:[{
+            physicalSlot:4,
+            disabled:false,
+            blockedReason:'',
+            source:{containerId:'背包',slot:4,expectedLease:'lease.4'},
+            item:itemProjection({majorType:'武器',use:'长枪'}),
+            equipmentEligibility:{slots:['长枪'],blockedReason:''}
+        }],
+        backpackVersion:8,
+        stateHealth:'ok',
+        diagnostics:[]
+    }}));
+    assert(result && result.accepted === true);
+    assert.strictEqual(result.targetKey, 'equipment:长枪');
+    assert.strictEqual(result.scope, 'backpack');
+
+    result = null;
+    fixture.session.requestCandidates(target, 'backpack', (response, accepted) => {
+        result = {response, accepted};
+    });
+    const mismatch = fixture.messages[2];
+    fixture.mux.handleResponse(responseFor(mismatch, {payload:{
+        target,
+        candidateScope:'compatible',
+        candidates:[],
+        backpackVersion:8,
+        stateHealth:'ok',
+        diagnostics:[]
+    }}));
+    assert(result && result.accepted === false);
+    assert.strictEqual(fixture.errors.at(-1).response.error, 'malformed_response');
+});
+
+test('universal equipment backpack eligibility shape fails closed in Web admission', () => {
+    const malformed = [
+        row => { delete row.equipmentEligibility; },
+        row => { row.equipmentEligibility.slots = ['未知槽位']; },
+        row => { row.equipmentEligibility.slots = ['手枪','手枪']; },
+        row => { row.equipmentEligibility.slots = ['手枪2','手枪']; },
+        row => { row.equipmentEligibility.blockedReason = 'cooldown_active'; }
+    ];
+    malformed.forEach(mutate => {
+        const fixture = createFixture();
+        openClean(fixture);
+        fixture.session.setCandidateScope('backpack');
+        const target = {kind:'equipment',slotKey:'长枪'};
+        let accepted = true;
+        fixture.session.requestCandidates(target, (_, ok) => { accepted = ok; });
+        const row = {
+            physicalSlot:4,
+            disabled:true,
+            blockedReason:'incompatible_item',
+            source:{containerId:'背包',slot:4,expectedLease:'lease.4'},
+            item:itemProjection({majorType:'武器',use:'手枪'}),
+            equipmentEligibility:{slots:['手枪','手枪2'],blockedReason:''}
+        };
+        mutate(row);
+        fixture.mux.handleResponse(responseFor(fixture.messages[1], {payload:{
+            target,
+            candidateScope:'backpack',
+            candidates:[row],
+            backpackVersion:8,
+            stateHealth:'ok',
+            diagnostics:[]
+        }}));
+        assert.strictEqual(accepted, false);
+        assert.strictEqual(fixture.errors.at(-1).response.error, 'malformed_response');
+    });
+});
+
+test('candidate authority reset is centralized on candidates and snapshot admission only', () => {
+    const resets = [];
+    const fixture = createFixture(null, {
+        onCandidateAuthorityReset:reason => resets.push(reason)
+    });
+    openClean(fixture);
+    const target = {kind:'equipment',slotKey:'长枪'};
+    fixture.session.requestCandidates(target, 'compatible');
+    assert.deepStrictEqual(resets, ['candidates']);
+    fixture.mux.handleResponse(responseFor(fixture.messages[1], {payload:{
+        target,
+        candidateScope:'compatible',
+        candidates:[],
+        backpackVersion:8,
+        stateHealth:'ok',
+        diagnostics:[]
+    }}));
+    fixture.session.requestLoadoutTooltip(target);
+    assert.deepStrictEqual(resets, ['candidates']);
+    fixture.mux.handleResponse(responseFor(fixture.messages[2], {
+        payload:tooltipProjection(target)
+    }));
+    fixture.session.refreshSnapshot();
+    assert.deepStrictEqual(resets, ['candidates','snapshot']);
+    fixture.mux.handleResponse(responseFor(fixture.messages[3], {
+        success:false,
+        error:'service_not_ready'
+    }));
+    assert.deepStrictEqual(resets, ['candidates','snapshot']);
+});
+
+test('latest candidate request fences a late response from the previous scope', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const target = {kind:'equipment', slotKey:'长枪'};
+    const accepted = [];
+    fixture.session.requestCandidates(target, 'compatible', (_, ok, __, scope) => {
+        if (ok) accepted.push(scope);
+    });
+    const compatible = fixture.messages[1];
+    fixture.session.requestCandidates(target, 'backpack', (_, ok, __, scope) => {
+        if (ok) accepted.push(scope);
+    });
+    const backpack = fixture.messages[2];
+    fixture.mux.handleResponse(responseFor(compatible, {payload:{
+        target,candidateScope:'compatible',candidates:[],backpackVersion:8,
+        stateHealth:'ok',diagnostics:[]
+    }}));
+    fixture.mux.handleResponse(responseFor(backpack, {payload:{
+        target,candidateScope:'backpack',candidates:[],backpackVersion:8,
+        stateHealth:'ok',diagnostics:[]
+    }}));
+    assert.deepStrictEqual(accepted, ['backpack']);
+});
+
+test('snapshot adoption rejects blank and wrapped-case undefined loadout item identities', () => {
+    [
+        ['name',' Undefined '],
+        ['displayName','   '],
+        ['icon','uNdEfInEd']
+    ].forEach(([field,value]) => {
+        const fixture=createFixture();
+        openClean(fixture);
+        const before=fixture.session.getSnapshot();
+        let accepted=true;
+        fixture.session.refreshSnapshot((_,ok) => { accepted=ok; });
+        const response=projection();
+        response.equipment[0]={
+            slotKey:'头部装备',occupied:true,item:itemProjection({[field]:value})
+        };
+        fixture.mux.handleResponse(responseFor(fixture.messages[1],{payload:response}));
+        assert.strictEqual(accepted,false);
+        assert.strictEqual(fixture.session.getSnapshot(),before);
+        assert.strictEqual(fixture.errors.at(-1).response.error,'malformed_response');
+    });
+});
+
+test('candidate adoption rejects blank and wrapped-case undefined item identities', () => {
+    [
+        ['name',' Undefined '],
+        ['displayName','   '],
+        ['icon','uNdEfInEd']
+    ].forEach(([field,value]) => {
+        const fixture=createFixture();
+        openClean(fixture);
+        const target={kind:'equipment',slotKey:'头部装备'};
+        let accepted=true;
+        fixture.session.requestCandidates(target,(_,ok) => { accepted=ok; });
+        fixture.mux.handleResponse(responseFor(fixture.messages[1],{
+            payload:{
+                target,
+                candidateScope:'compatible',
+                candidates:[{item:itemProjection({[field]:value})}],
+                backpackVersion:8,
+                stateHealth:'ok',
+                diagnostics:[]
+            }
+        }));
+        assert.strictEqual(accepted,false);
+        assert.strictEqual(fixture.errors.at(-1).response.error,'malformed_response');
+    });
+});
+
+test('snapshot, candidate and mutation adoption reject malformed nested mod triples', () => {
+    let fixture=createFixture();
+    openClean(fixture);
+    let accepted=true;
+    fixture.session.refreshSnapshot((_,ok) => { accepted=ok; });
+    let response=projection();
+    response.equipment[0]={slotKey:'头部装备',occupied:true,
+        item:itemProjection({modSlots:[modProjection({displayName:' Undefined '})]})};
+    fixture.mux.handleResponse(responseFor(fixture.messages[1],{payload:response}));
+    assert.strictEqual(accepted,false);
+    assert.strictEqual(fixture.errors.at(-1).response.error,'malformed_response');
+
+    fixture=createFixture();
+    openClean(fixture);
+    const target={kind:'equipment',slotKey:'头部装备'};
+    accepted=true;
+    fixture.session.requestCandidates(target,(_,ok) => { accepted=ok; });
+    fixture.mux.handleResponse(responseFor(fixture.messages[1],{payload:{
+        target,
+        candidateScope:'compatible',
+        candidates:[{item:itemProjection({modMeta:modProjection({icon:'   '})})}],
+        backpackVersion:8,stateHealth:'ok',diagnostics:[]
+    }}));
+    assert.strictEqual(accepted,false);
+    assert.strictEqual(fixture.errors.at(-1).response.error,'malformed_response');
+
+    fixture=createFixture();
+    openClean(fixture);
+    let result=null;
+    fixture.session.unequipEquipment('长枪',(mutationResponse,ok,unknown) => {
+        result={response:mutationResponse,accepted:ok,unknown};
+    });
+    const mutation=fixture.messages[1];
+    const backpack=fullBackpack(12);
+    backpack.slots[0]={physicalSlot:0,slotLease:'lease.mod.0',occupied:true,
+        item:itemProjection({modSlots:[modProjection({name:'uNdEfInEd'})]})};
+    fixture.mux.handleResponse(responseFor(mutation,{
+        writeEpoch:1,loadoutRevision:4,liveRevision:3,liveRefreshDirty:true,
+        changed:true,operation:'unequipEquipment',affectedBackpackSlot:0,
+        payload:projection(),inventorySnapshots:[backpack]
+    }));
+    assert(result && result.accepted===false && result.unknown===true);
+    assert.strictEqual(fixture.session.getState(),'needs_reconcile');
 });
 
 test('unknown flush uses a watermarked fresh snapshot before stats', () => {
@@ -646,6 +1102,42 @@ test('malformed mutation success is unknown even without a Host reconcile marker
     assert(result && result.accepted === false && result.unknown === true);
     assert.strictEqual(fixture.session.getState(), 'needs_reconcile');
     assert.strictEqual(fixture.session.getSnapshot() !== result.response.payload, true);
+});
+
+test('mutation adoption rejects malformed item identities in the backpack proof', () => {
+    [
+        ['name',' Undefined '],
+        ['displayName','   '],
+        ['icon','uNdEfInEd']
+    ].forEach(([field,value]) => {
+        const fixture=createFixture();
+        openClean(fixture);
+        let result=null;
+        fixture.session.unequipEquipment('长枪',(response,accepted,unknown) => {
+            result={response,accepted,unknown};
+        });
+        const mutation=fixture.messages[1];
+        const backpack=fullBackpack(12);
+        backpack.slots[0]={
+            physicalSlot:0,
+            slotLease:'lease.identity.0',
+            occupied:true,
+            item:itemProjection({[field]:value})
+        };
+        fixture.mux.handleResponse(responseFor(mutation,{
+            writeEpoch:1,
+            loadoutRevision:4,
+            liveRevision:3,
+            liveRefreshDirty:true,
+            changed:true,
+            operation:'unequipEquipment',
+            affectedBackpackSlot:0,
+            payload:projection(),
+            inventorySnapshots:[backpack]
+        }));
+        assert(result && result.accepted===false && result.unknown===true);
+        assert.strictEqual(fixture.session.getState(),'needs_reconcile');
+    });
 });
 
 test('Host requiresReconcile marker preserves the exact mutation watermark', () => {

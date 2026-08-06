@@ -824,7 +824,7 @@ window.Icons={
       &&Object.keys(escClose).sort().join(',')==='cmd,panel,panelInstanceId,type'
       &&escClose.panelInstanceId==='inst-esc');
     setHost({instance:'inst-disconnect',view:'manage'});await until(function(){return document.querySelectorAll('.skills-slot').length===12});
-    (__handlers.panel_cmd||[]).forEach(function(fn){fn({type:'panel_cmd',cmd:'force_close',reason:'disconnected'})});await wait(15);
+    (__handlers.panel_cmd||[]).forEach(function(fn){fn({type:'panel_cmd',cmd:'force_close',panel:'skills',panelInstanceId:'inst-disconnect',reason:'disconnected'})});await wait(15);
     ok('force-close/disconnect clears session and pending work',Panels.getActive()===null&&SkillsPanel.debugState().coordinator.state==='closed'&&SkillsPanel.debugState().coordinator.mux.pendingCount===0);
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks,viewport:[innerWidth,innerHeight]};
     window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)

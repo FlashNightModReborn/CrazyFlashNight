@@ -13,13 +13,13 @@ var InventoryStorageWorkbench = (function() {
     var _tooltipCache = {}, _tooltipSuppressed = false, _lastBackpackFocus = null;
     var _layoutMode = 'full', _densityController = null, _openGeneration = 0;
     var _profile = 'battlebox';
-    var _viewMode = 'storage', _panelInstanceId = '', _tuningOrigin = false;
+    var _viewMode = 'storage', _ownerPanel = '', _panelInstanceId = '', _tuningOrigin = false;
     var _rightContainerId = '战备箱';
     var _rightLimit = 40, _renderedWindows = {};
     var _ports = {};
     var _runtimeConfig = (typeof window !== 'undefined' && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _mux = new PanelRuntime.PanelRequestMux({
-        send: function(message) { Bridge.send(message); },
+        send: function(message) { return Bridge.send(message); },
         timeoutMs: _runtimeConfig.requestTimeoutMs,
         sessionNonce: _runtimeConfig.sessionNonce,
         callPrefix: 'inventory-workbench',
@@ -27,17 +27,22 @@ var InventoryStorageWorkbench = (function() {
         onProtocolError: function(message) {
             if (typeof console !== 'undefined' && console.warn) console.warn(message);
         },
+        validateSession:function(session) {
+            return !!session && /^(workbench|crafting|kshop|npcshop)$/.test(String(session.ownerPanel || ''))
+                && /^[A-Za-z0-9._~-]{1,128}$/.test(String(session.panelInstanceId || '')); },
         createMessage: function(context) {
-            return {type:'panel', domain:'inventory', panel:'workbench', cmd:context.entry.cmd,
+            return {type:'panel', domain:'inventory', panel:context.session.ownerPanel,
+                panelInstanceId:context.session.panelInstanceId, cmd:context.entry.cmd,
                 callId:context.entry.callId, payload:context.payload || {}};
         },
         validateResponse: function(data, entry) {
             return data && data.type === 'panel_resp' && data.domain === 'inventory'
-                && data.callId === entry.callId && data.cmd === entry.cmd;
+                && data.callId === entry.callId && data.cmd === entry.cmd && data.panel === entry.session.ownerPanel
+                && data.panelInstanceId === entry.session.panelInstanceId;
         },
         createSynthetic: function(context) {
-            return {type:'panel_resp', domain:'inventory', panel:'workbench',
-                cmd:context.entry.cmd, callId:context.entry.callId,
+            return {type:'panel_resp', domain:'inventory', panel:context.session.ownerPanel,
+                panelInstanceId:context.session.panelInstanceId, cmd:context.entry.cmd, callId:context.entry.callId,
                 success:false, error:context.error === 'not_sent' ? 'disconnected' : context.error,
                 clientSynthetic:true};
         }
@@ -90,7 +95,6 @@ var InventoryStorageWorkbench = (function() {
             && typeof EquipmentTuningRuntime !== 'undefined'
             && EquipmentTuningRuntime && typeof EquipmentTuningRuntime.safeToken === 'function';
     }
-
     function ensureTuningFeature() {
         if (_tuningScope && _tuningView) return true;
         if (!tuningFeatureAvailable()) return false;
@@ -127,7 +131,6 @@ var InventoryStorageWorkbench = (function() {
         _tuningScope.attach();
         return true;
     }
-
     function buildProfileDOM(config, initialView, context) {
         if (typeof Workbench === 'undefined') throw new Error('Workbench runtime is required');
         if (!config || !context || !context.shell || !context.root
@@ -152,7 +155,7 @@ var InventoryStorageWorkbench = (function() {
         _broker = null; _dragControllers = [];
         _quickTransfer.reset();
         _profile = config.profile; _viewMode = initialView;
-        _panelInstanceId = String(context.panelInstanceId || '');
+        _ownerPanel = String(context.ownerPanel || ''); _panelInstanceId = String(context.panelInstanceId || '');
         _rightContainerId = config.rightContainerId; _rightLimit = config.rightLimit;
         _quickTransfer.configure({rightContainerId:_rightContainerId});
         _densityController = context.densityController || null;
@@ -442,7 +445,7 @@ var InventoryStorageWorkbench = (function() {
     function bindSlot(containerId, node, slot, getInteraction) {
         if (slot.occupied) bindSlotTooltip(node, containerId, slot);
         var itemName = slot.occupied && slot.item
-            ? String(slot.item.displayName || slot.item.name || '未知物品') : '空槽';
+            ? String(slot.item.displayName || '未知物品') : '空槽';
         var reasonNode = InventoryWorkbenchOwnedView.ensureReasonNode(node);
         Workbench.EntityTile.bindActivation(node, {
             itemName:itemName,
@@ -533,8 +536,8 @@ var InventoryStorageWorkbench = (function() {
                 var item = source.item.item || {};
                 var ghost = document.createElement('div');
                 ghost.className = 'workbench-drag-ghost inventory-drag-ghost';
-                ghost.innerHTML = iconHtml(item.icon || item.name, 'kshop-row-icon')
-                    + '<span>' + escapeHtml(item.displayName || item.name || '物品') + '</span>';
+                ghost.innerHTML = iconHtml(item.icon || '', 'kshop-row-icon')
+                    + '<span>' + escapeHtml(item.displayName || '未知物品') + '</span>';
                 return ghost;
             },
             onDragStart:function() { _tooltipSuppressed = true; hideTooltip(); },
@@ -729,9 +732,12 @@ var InventoryStorageWorkbench = (function() {
     function activate(context, requestedView) {
         var generation = ++_openGeneration;
         context = context || {};
-        var profileConfig = context.profileConfig;
-        if (!profileConfig || (requestedView !== 'storage' && requestedView !== 'tuning')) return false;
-        _panelInstanceId = String(context.panelInstanceId || '');
+        var profileConfig = context.profileConfig, ownerPanel = String(context.ownerPanel || ''),
+            panelInstanceId = String(context.panelInstanceId || '');
+        if (!profileConfig || (requestedView !== 'storage' && requestedView !== 'tuning')
+                || !/^(workbench|crafting|kshop|npcshop)$/.test(ownerPanel)
+                || !/^[A-Za-z0-9._~-]{1,128}$/.test(panelInstanceId)) return false;
+        _ownerPanel = ownerPanel; _panelInstanceId = panelInstanceId;
         if (requestedView === 'tuning' && !EquipmentTuningRuntime.safeToken(_panelInstanceId)) {
             toast('装备调制缺少 Host 面板实例。');
             return false;
@@ -741,7 +747,7 @@ var InventoryStorageWorkbench = (function() {
         buildProfileDOM(profileConfig, requestedView, context);
         _quickTransfer.reset();
         _tooltipCache = {};
-        _mux.openSession();
+        if (!_mux.openSession({ownerPanel:_ownerPanel, panelInstanceId:_panelInstanceId})) return false;
         if (_pager) { _pager.detach(); _pager.attach(); }
         clearSelection();
         // 不跨存档记忆剧情容器页码；换到解锁更少的存档时必须从合法首页重新取 lease。
@@ -784,6 +790,7 @@ var InventoryStorageWorkbench = (function() {
         disposeInventoryControls();
         disposeOwnedPanes();
         _densityController = null; _renderedWindows = {};
+        _ownerPanel = ''; _panelInstanceId = '';
         _ports = {};
         _quickBarView = null;
         _quickDepositButton = null; _quickWithdrawButton = null;
@@ -922,7 +929,7 @@ var InventoryStorageWorkbench = (function() {
         debugState:function() {
             var right = _coordinator.getWindow(_rightContainerId);
             return {
-                profile:_profile, view:_viewMode, panelInstanceId:_panelInstanceId,
+                profile:_profile, view:_viewMode, hostOwner:_ownerPanel, panelInstanceId:_panelInstanceId,
                 rightContainerId:_rightContainerId,
                 coordinator:_coordinator.debugState(),
                 rightAccessibleCapacity:right ? Number(right.accessibleCapacity) : null,

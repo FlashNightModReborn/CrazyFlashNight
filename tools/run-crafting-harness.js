@@ -2,8 +2,10 @@
 'use strict';
 const fs=require('fs'),http=require('http'),path=require('path'),url=require('url');
 const {readCssBundle}=require('./lib/read-css-bundle.js');
+const BrowserChildResourceClosure=require('./workbench-live-e2e/lib/browser-child-resource-closure.js');
 const ROOT=path.resolve(__dirname,'..'),WEB=path.join(ROOT,'launcher','web');
 const PLAYWRIGHT=path.join(ROOT,'launcher','perf','node_modules','playwright');
+const IDENTITY_ONLY=process.argv.includes('--identity-only');
 const INVENTORY_WORKBENCH_MODULES=[
   'inventory-workbench-config.js','inventory-workbench-preparation-menu.js',
   'inventory-workbench-navigation.js','inventory-workbench-header.js',
@@ -22,6 +24,9 @@ function audit(){
   const dressupRenderer=fs.readFileSync(path.join(WEB,'modules','dressup-doll-renderer.js'),'utf8');
   const runtime=fs.readFileSync(path.join(WEB,'modules','crafting-runtime.js'),'utf8');
   const panelRuntime=fs.readFileSync(path.join(WEB,'modules','panel-runtime.js'),'utf8');
+  const craftingServicePath=path.join(ROOT,'scripts','类定义','org','flashNight','arki','item','CraftingPanelService.as');
+  const craftingServiceBytes=fs.readFileSync(craftingServicePath);
+  const craftingService=craftingServiceBytes.toString('utf8').replace(/\r\n/g,'\n');
   const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
   const registry=fs.readFileSync(path.join(WEB,'modules','panels-lazy-registry.js'),'utf8');
   const inventoryWorkbench=INVENTORY_WORKBENCH_MODULES
@@ -66,11 +71,69 @@ function audit(){
   if(!inventoryWorkbench.includes('function requestReturn()')
       ||!inventoryWorkbench.includes("kind:'crafting-organizer'")
       ||!inventoryWorkbench.includes("panel:'crafting'")
+      ||!inventoryWorkbench.includes('ownerPanel:_owner.panel')
+      ||!inventoryWorkbench.includes('panelInstanceId:_owner.panelInstanceId')
       ||!inventoryWorkbench.includes("data-workbench-owner-context', 'crafting-organizer'")
       ||!panel.includes("Panels.getActive() !== 'crafting'")
+      ||!panel.includes('panelInstanceId:_panelInstanceId')
       ||!panel.includes('onReturn:restoreFromOrganizer'))throw new Error('embedded battlebox owner contract missing');
+  if(!harness.includes("__craftingHarnessScenario==='pg-craft-current-coverage'")
+      ||!harness.includes("script.setAttribute('data-pg-craft-dependency',dep)")
+      ||!harness.includes('runPgCraftCurrentCoverage()')
+      ||!harness.includes('real organizer mount throw fails closed once')
+      ||!harness.includes("verifyOrganizerMountCloseFault('send_false'")
+      ||!harness.includes("verifyOrganizerMountCloseFault('throw'")
+      ||!panel.includes('function recoverOrganizerMountFailure()')
+      ||!panel.includes('if (!closeAccepted)')) {
+    throw new Error('dynamic crafting organizer current-coverage scenario missing');
+  }
+  if(!harness.includes("__craftingHarnessScenario==='pg-inventory-owner-fault'")
+      ||!harness.includes('runPgInventoryOwnerFault()')
+      ||!harness.includes('blocks the next writer while reconciliation is still required')
+      ||!harness.includes('rejects the retired instance response after close and rebinds')) {
+    throw new Error('crafting owner inventory fault scenario missing');
+  }
+  if(!harness.includes("__craftingHarnessScenario==='pg-crafting-identity'")
+      ||!harness.includes('runPgCraftingIdentity()')
+      ||!harness.includes('display search does not expose the internal lookup key')
+      ||!panel.includes("iconHtml(output.icon, 'kshop-icon')")
+      ||!panel.includes('escapeHtml(value.displayName')
+      ||panel.includes('output.icon || output.name')
+      ||panel.includes('value.icon || value.name')
+      ||materials.includes('item.icon || item.name')
+      ||materials.includes('item.displayName || item.name')
+      ||materials.includes('source.displayName || source.enemyType')
+      ||materials.includes('source.title || source.questId')) {
+    throw new Error('crafting identity triple projection contract missing');
+  }
+  if(craftingServiceBytes[0]!==0xef||craftingServiceBytes[1]!==0xbb||craftingServiceBytes[2]!==0xbf
+      ||!craftingService.includes('private static function projectLegacyIdentityField(value, name:String):String')
+      ||!craftingService.includes('trimmed.toLowerCase() == "undefined"')
+      ||!craftingService.includes('private static function projectVisibleSourceLabel')
+      ||!craftingService.includes('"未知敌人"')
+      ||!craftingService.includes('"未知任务"')
+      ||!craftingService.includes('displayName:projectLegacyIdentityField(data.displayname, name)')
+      ||!craftingService.includes('icon:projectLegacyIdentityField(data.icon, name)')
+      ||!craftingService.includes('crafted:current.output')) {
+    throw new Error('CraftingPanelService AS2 identity projection/BOM contract missing');
+  }
   if(!runtime.includes("require('./panel-runtime.js')")||!runtime.includes('new PanelRuntime.PanelRequestMux')
-      ||!runtime.includes("data.domain === 'crafting'")||!panelRuntime.includes('entry.generation !== this._generation'))throw new Error('strict shared crafting mux missing');
+      ||!runtime.includes("session.ownerPanel === 'crafting'")
+      ||!runtime.includes('panelInstanceId:context.session.panelInstanceId')
+      ||!runtime.includes("data.panel === 'crafting'")
+      ||!runtime.includes('data.panelInstanceId === entry.session.panelInstanceId')
+      ||!runtime.includes('validateBusinessResponse(data, entry)')
+      ||!runtime.includes("require('./inventory-runtime.js')")
+      ||!runtime.includes('InventoryRuntime.isValidItemProjection')
+      ||!runtime.includes('validOutputReceipt(data.outputReceipt, data.acceptedPlan, data.crafted)')
+      ||!runtime.includes("'outputPrototype'")
+      ||!runtime.includes("'outputReceipt'")
+      ||!runtime.includes('metadata:{payload:frozenPayload}')
+      ||!runtime.includes('data.material.name === payload.itemName')
+      ||!runtime.includes('data.itemName === payload.itemName')
+      ||!panel.includes("ownerPanel:'crafting'")
+      ||!harness.includes('mixedCraftingOwnerRejected')
+      ||!panelRuntime.includes('entry.generation !== this._generation'))throw new Error('strict shared crafting exact-owner mux missing');
   if(!registry.includes("registerLazy('crafting'")||!registry.includes("'modules/item-filter.js'")
       ||!registry.includes("'modules/crafting-materials.js'")||!registry.includes("'modules/crafting-detail-presenter.js'")
       ||!css.includes('.crafting-commit-btn')||!css.includes('.crafting-catalog-grid::-webkit-scrollbar')
@@ -133,14 +196,19 @@ function edge(){return[
   path.join(process.env['ProgramFiles(x86)']||'C:\\Program Files (x86)','Microsoft','Edge','Application','msedge.exe'),
   path.join(process.env.ProgramFiles||'C:\\Program Files','Microsoft','Edge','Application','msedge.exe')
 ].find(fs.existsSync)}
-function server(){return new Promise(resolve=>{const s=http.createServer((req,res)=>{const pathname=decodeURIComponent(url.parse(req.url).pathname);const file=path.normalize(path.join(WEB,pathname));const rel=path.relative(WEB,file);if(rel.startsWith('..')||path.isAbsolute(rel)){res.writeHead(403);res.end();return}fs.readFile(file,(err,data)=>{if(err){res.writeHead(404);res.end();return}const ext=path.extname(file);res.writeHead(200,{'Content-Type':ext==='.html'?'text/html; charset=utf-8':ext==='.css'?'text/css; charset=utf-8':ext==='.js'?'text/javascript; charset=utf-8':'application/octet-stream'});res.end(data)})});s.listen(0,'127.0.0.1',()=>resolve(s))})}
-async function runViewport(browser,serverInstance,viewport){
+function server(resourceLedger){return new Promise(resolve=>{const s=http.createServer((req,res)=>{const pathname=decodeURIComponent(url.parse(req.url).pathname);const file=path.normalize(path.join(WEB,pathname));const rel=path.relative(WEB,file);if(rel.startsWith('..')||path.isAbsolute(rel)){res.writeHead(403);res.end();return}const occurrence=resourceLedger.begin(req.url,file);fs.readFile(file,(err,data)=>{if(err){occurrence.failure('read_failed');res.writeHead(404);res.end();return}const ext=path.extname(file),mime=ext==='.html'?'text/html; charset=utf-8':ext==='.css'?'text/css; charset=utf-8':ext==='.js'?'text/javascript; charset=utf-8':'application/octet-stream';occurrence.success(data,mime);res.writeHead(200,{'Content-Type':mime});res.end(data)})});s.listen(0,'127.0.0.1',()=>resolve(s))})}
+async function runViewport(browser,serverInstance,viewport,query){
   const page=await browser.newPage({viewport}),errors=[],failed=[];
   page.on('pageerror',error=>errors.push(error.message));
   page.on('requestfailed',request=>failed.push(request.url()));
   try{
-    await page.goto('http://127.0.0.1:'+serverInstance.address().port+'/modules/crafting/dev/harness.html',{waitUntil:'load'});
-    await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:25000});
+    await page.goto('http://127.0.0.1:'+serverInstance.address().port+'/modules/crafting/dev/harness.html'+(query||''),{waitUntil:'load'});
+    const doneWait={timeout:25000};
+    // The legacy 120-check baseline observes the runner's RAF poll as its
+    // ambient animation-frame baseline.  The dedicated cleanup scenario must
+    // instead see only product frames so it can require a strict zero.
+    if(query)doneWait.polling=50;
+    await page.waitForFunction(()=>window.__qaDone===true,null,doneWait);
     const result=await page.evaluate(()=>({result:window.__qaResult,error:window.__qaError}));
     if(result.error)throw new Error(viewport.width+'x'+viewport.height+': '+result.error);
     if(errors.length)throw new Error(viewport.width+'x'+viewport.height+' page errors: '+errors.join(' | '));
@@ -152,19 +220,56 @@ async function runViewport(browser,serverInstance,viewport){
     return result.result;
   }finally{await page.close()}
 }
-(async()=>{
+async function run(){
   audit();
   if(!fs.existsSync(PLAYWRIGHT))throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');
   const executablePath=edge();if(!executablePath)throw new Error('Microsoft Edge not found');
-  const {chromium}=require(PLAYWRIGHT),serverInstance=await server(),browser=await chromium.launch({executablePath,headless:true});
+  const resourceLedger=BrowserChildResourceClosure.createServedResourceLedger({root:WEB});
+  const {chromium}=require(PLAYWRIGHT),serverInstance=await server(resourceLedger),
+    browser=await chromium.launch({executablePath,headless:true});
   const viewports=[{width:1024,height:576},{width:1366,height:768},{width:1920,height:1080}];
+  let output;
   try{
-    let first=null;
-    for(const viewport of viewports){
-      const result=await runViewport(browser,serverInstance,viewport);
-      if(!first)first=result;
-      else if(result.total!==first.total)throw new Error('harness check count changed across viewports');
+    if(IDENTITY_ONLY){
+      const identity=[];
+      for(const viewport of viewports){
+        const result=await runViewport(browser,serverInstance,viewport,'?scenario=pg-crafting-identity');
+        if(result.total!==10)throw new Error('PG-CRAFTING-IDENTITY must contain exactly 10 checks, got '+result.total);
+        identity.push(result);
+      }
+      output={mode:'identity-only',executablePath,viewports,identity,
+        summary:'PG-CRAFTING-IDENTITY '+identity[0].passed+'/'+identity[0].total
+          +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
+    }else{
+      const baseline=[],coverage=[],fault=[],identity=[];
+      for(const viewport of viewports){
+        const result=await runViewport(browser,serverInstance,viewport);
+        if(result.total!==120)throw new Error('baseline crafting harness must preserve all 120 checks, got '+result.total);
+        baseline.push(result);
+        const coverageResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-craft-current-coverage');
+        if(coverageResult.total!==15)throw new Error('PG-CRAFT-CURRENT-COVERAGE must contain exactly 15 checks, got '+coverageResult.total);
+        coverage.push(coverageResult);
+        const faultResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-inventory-owner-fault');
+        if(faultResult.total!==8)throw new Error('PG-INVENTORY-FAULT owner journey must contain exactly 8 checks, got '+faultResult.total);
+        fault.push(faultResult);
+        const identityResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-crafting-identity');
+        if(identityResult.total!==10)throw new Error('PG-CRAFTING-IDENTITY must contain exactly 10 checks, got '+identityResult.total);
+        identity.push(identityResult);
+      }
+      output={mode:'full',executablePath,viewports,baseline,coverage,fault,identity,
+        summary:'Crafting harness baseline '+baseline[0].passed+'/'+baseline[0].total
+          +' + PG-CRAFT-CURRENT-COVERAGE '+coverage[0].passed+'/'+coverage[0].total
+          +' + PG-INVENTORY-FAULT owner journey '+fault[0].passed+'/'+fault[0].total
+          +' + PG-CRAFTING-IDENTITY '+identity[0].passed+'/'+identity[0].total
+          +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
     }
-    console.log('Crafting harness '+first.passed+'/'+first.total+' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', '));
-  }finally{await browser.close();await new Promise(resolve=>serverInstance.close(resolve))}
-})().catch(error=>{console.error(error.stack||error);process.exit(1)});
+  }finally{
+    await browser.close();
+    await new Promise(resolve=>serverInstance.close(resolve));
+  }
+  output.servedResourceLedger=resourceLedger.snapshot();
+  return output;
+}
+module.exports={run};
+if(require.main===module)run().then(result=>console.log(result.summary))
+  .catch(error=>{console.error(error.stack||error);process.exitCode=1});

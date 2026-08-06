@@ -127,15 +127,24 @@ namespace CF7Launcher.Tests.Guardian
             int guard = handler.IndexOf(
                 "ShouldRejectForeignPanelClose(",
                 StringComparison.Ordinal);
-            int release = handler.IndexOf(
-                "TryReleaseGenericWebPanelPause();",
-                StringComparison.Ordinal);
-            int visualClose = handler.IndexOf(
-                "_panelHost.ClosePanel();",
-                StringComparison.Ordinal);
             Assert.True(guard >= 0);
-            Assert.True(release > guard);
-            Assert.True(visualClose > guard);
+            string[] acceptedCloseSideEffects =
+            {
+                "SealPanelRequestOwner(",
+                "CommitAcceptedPanelCloseEffects(",
+                "_panelHost.ClosePanel();",
+                ".TryClosePanelExact(",
+                ".TryRetirePanelVisualExact("
+            };
+            foreach (string marker in acceptedCloseSideEffects)
+            {
+                int sideEffect = handler.IndexOf(
+                    marker,
+                    StringComparison.Ordinal);
+                Assert.True(
+                    sideEffect > guard,
+                    marker + " must remain after the foreign-close guard");
+            }
         }
 
         [Fact]
@@ -159,7 +168,10 @@ namespace CF7Launcher.Tests.Guardian
                 "function sendMountFailureClose(",
                 "function applyRegistrationDecorators(");
             Assert.Contains(
-                "panelCloseMessage(id, initData, reason || 'mount_failed')",
+                "sendExactCloseNotification(",
+                mountFailure);
+            Assert.Contains(
+                "id, initData, reason || 'mount_failed'",
                 mountFailure);
 
             JObject emitted = JObject.Parse(
@@ -525,8 +537,27 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(recover >= 0);
             Assert.Equal(-1, directConsume);
             Assert.Contains(
-                "if (!characterBuildPauseReleaseHandled)",
+                "deferInventoryOwnerCloseCommit",
                 close);
+            Assert.Contains(
+                "CommitAcceptedPanelCloseEffects(",
+                close);
+
+            string closeEffects = Slice(
+                source,
+                "private void CommitAcceptedPanelCloseEffects(",
+                "public bool ReleaseLootPanelPause()");
+            Assert.Contains(
+                "if (!pauseReleaseHandled)",
+                closeEffects);
+
+            string visualRetire = Slice(
+                source,
+                "private bool TryRetireCharacterBuildHostVisual(",
+                "internal static bool ShouldRetireInventoryOwnerOnWebNavigation(");
+            Assert.Contains(
+                "if (retired != null) retired();",
+                visualRetire);
 
             string recoverySource = File.ReadAllText(
                 FindRepositoryFile(

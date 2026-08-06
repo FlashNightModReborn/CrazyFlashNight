@@ -42,8 +42,8 @@ namespace CF7Launcher.Guardian
             "modSlotCapacity", "modSlotUsed", "modSlots", "modMeta", "rarity");
 
         private static readonly HashSet<string> ModKeys = Set(
-            "name", "grade", "gradeLabel", "gradeColor", "role", "roleLabel",
-            "symbol", "scope");
+            "name", "displayName", "icon", "grade", "gradeLabel", "gradeColor",
+            "role", "roleLabel", "symbol", "scope");
 
         private static readonly HashSet<string> FullBackpackKeys = Set(
             "containerId", "capacity", "accessibleCapacity", "viewCapacity",
@@ -84,6 +84,22 @@ namespace CF7Launcher.Guardian
                 use,
                 majorType,
                 quantity);
+        }
+
+        internal static string[] CompatibleEquipmentSlotKeys(
+            string itemKind,
+            string use,
+            string majorType,
+            double quantity)
+        {
+            var result = new List<string>();
+            foreach (string slotKey in EquipmentSlots)
+            {
+                if (IsEquipmentSlotCompatible(
+                        slotKey, itemKind, use, majorType, quantity))
+                    result.Add(slotKey);
+            }
+            return result.ToArray();
         }
 
         internal static bool TryResolveMutationAction(
@@ -438,9 +454,9 @@ namespace CF7Launcher.Guardian
                 StringComparer.Ordinal);
             if (hasBalance) expectedKeys.Add("balanceSummary");
             if (!IsExactObject(item, expectedKeys)
-                || !IsBoundedText(item["name"], 256, false)
-                || !IsBoundedText(item["displayName"], 256, false)
-                || !IsBoundedText(item["icon"], 256, false))
+                || !IsIdentityText(item["name"], 256)
+                || !IsIdentityText(item["displayName"], 256)
+                || !IsIdentityText(item["icon"], 256))
             {
                 return false;
             }
@@ -961,7 +977,10 @@ namespace CF7Launcher.Guardian
             if (!IsExactObject(value, ModKeys)) return false;
             foreach (string key in ModKeys)
             {
-                if (!IsBoundedText(value[key], 128, true)) return false;
+                bool identity = key == "name" || key == "displayName" || key == "icon";
+                if (identity
+                    ? !IsIdentityText(value[key], 256)
+                    : !IsBoundedText(value[key], 128, true)) return false;
             }
             return true;
         }
@@ -1142,6 +1161,17 @@ namespace CF7Launcher.Guardian
                 if (char.IsControl(c)) return false;
             }
             return true;
+        }
+
+        private static bool IsIdentityText(
+            JToken token,
+            int maximumLength)
+        {
+            if (!IsBoundedText(token, maximumLength, false)) return false;
+            string value = token.Value<string>();
+            return !string.IsNullOrWhiteSpace(value)
+                && !string.Equals(
+                    value.Trim(), "undefined", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

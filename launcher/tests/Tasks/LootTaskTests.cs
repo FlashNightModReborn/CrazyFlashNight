@@ -1069,6 +1069,100 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("malformed_response", harness.PostedAt(1).Value<string>("error"));
         }
 
+        [Theory]
+        [InlineData("item_name_undefined")]
+        [InlineData("item_display_blank")]
+        [InlineData("item_icon_undefined")]
+        [InlineData("mod_slot_display_undefined")]
+        [InlineData("mod_meta_icon_blank")]
+        [InlineData("confirm_missing")]
+        [InlineData("confirm_item_kind")]
+        [InlineData("confirm_name")]
+        [InlineData("confirm_display_name")]
+        [InlineData("confirm_quantity")]
+        [InlineData("confirm_enhancement")]
+        [InlineData("confirm_rarity")]
+        public void InventoryProjectionRejectsIdentitySentinelsAndForgedConfirm(
+            string corruption)
+        {
+            using var harness = new Harness();
+            harness.Task.HandleWebRequest(Request(
+                "snapshot", "snapshot.identity." + corruption));
+            JObject response = ActiveResponse(Assert.Single(harness.Sent));
+            JObject backpack = (JObject)response["snapshots"][1];
+            backpack["filterItemCount"] = 1;
+            JObject item = ItemProjection();
+            JObject confirm = ConfirmProjection();
+            JObject occupied = new JObject
+            {
+                ["physicalSlot"] = 0,
+                ["occupied"] = true,
+                ["slotLease"] = "bag.identity.1",
+                ["item"] = item,
+                ["confirmProjection"] = confirm
+            };
+            ((JArray)backpack["slots"])[0] = occupied;
+            switch (corruption)
+            {
+                case "item_name_undefined":
+                    item["name"] = " Undefined ";
+                    confirm["name"] = " Undefined ";
+                    break;
+                case "item_display_blank":
+                    item["displayName"] = "   ";
+                    confirm["displayName"] = "   ";
+                    break;
+                case "item_icon_undefined":
+                    item["icon"] = "uNdEfInEd";
+                    break;
+                case "mod_slot_display_undefined":
+                    item["modSlots"] = new JArray(new JObject
+                    {
+                        ["name"] = "插件内部名",
+                        ["displayName"] = " Undefined ",
+                        ["icon"] = "插件图标",
+                        ["grade"] = "common",
+                        ["gradeLabel"] = "普通",
+                        ["gradeColor"] = "#FFFFFF",
+                        ["role"] = "utility",
+                        ["roleLabel"] = "功能",
+                        ["symbol"] = "diamond-outline",
+                        ["scope"] = "all"
+                    });
+                    break;
+                case "mod_meta_icon_blank":
+                    item["modMeta"] = new JObject
+                    {
+                        ["name"] = "插件内部名",
+                        ["displayName"] = "插件展示名",
+                        ["icon"] = "   ",
+                        ["grade"] = "common",
+                        ["gradeLabel"] = "普通",
+                        ["gradeColor"] = "#FFFFFF",
+                        ["role"] = "utility",
+                        ["roleLabel"] = "功能",
+                        ["symbol"] = "diamond-outline",
+                        ["scope"] = "all"
+                    };
+                    break;
+                case "confirm_missing": occupied.Remove("confirmProjection"); break;
+                case "confirm_item_kind": confirm["itemKind"] = "equipment"; break;
+                case "confirm_name": confirm["name"] = "伪造内部名"; break;
+                case "confirm_display_name": confirm["displayName"] = "伪造展示名"; break;
+                case "confirm_quantity": confirm["quantity"] = 1; break;
+                case "confirm_enhancement": confirm["enhancementLevel"] = 1; break;
+                case "confirm_rarity": confirm["rarity"] = "伪造品质"; break;
+                default: throw new InvalidOperationException(corruption);
+            }
+
+            harness.Task.HandleFlashResponse(response, null);
+
+            Assert.Equal(
+                "malformed_response",
+                harness.PostedAt(0).Value<string>("error"));
+            Assert.Empty((JArray)harness.PostedAt(0)["snapshots"]);
+        }
+
         [Fact]
         public void UnknownAuthorityField_IsNeverForwarded()
         {

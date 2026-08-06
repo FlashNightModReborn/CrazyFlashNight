@@ -161,12 +161,15 @@ namespace CF7Launcher.Guardian
         //   _revealWaitingJs     — 前端告知 "我还在播片头" (start_game 带 deferReveal:true 时 set)
         //   _revealWaitingFlash  — 等 Flash 帧 81 "封面" 发 bootstrap_reveal_ready (始终 set 当 require 时)
         // TryPerformRevealLocked: 两个 flag 都清才执行 DoPerformReveal (panel swap + hotkey + ready wiring).
-        // 看门狗: Flash 信号若 10s 未到 (Flash 渲染 hang / 旧 SWF 没加 sendRevealReady), 强行 reveal 防卡死.
+        // 看门狗: Flash 信号若 45s 未到 (Flash 渲染 hang / 旧 SWF 没加 sendRevealReady), 强行 reveal 防卡死.
+        // 45s 是生产默认值；测试可通过 internal 构造重载注入更短 deadline，但 watchdog
+        // 仍只是降级 reveal，永远不能充当 bootstrap_reveal_ready 的成功回执.
         private bool _revealWaitingJs;
         private bool _revealWaitingFlash;
         private bool _revealPerformed;
         private System.Threading.Timer _flashRevealWatchdog;
-        private const int FLASH_REVEAL_WATCHDOG_MS = 10000;
+        internal const int FLASH_REVEAL_WATCHDOG_DEFAULT_MS = 45000;
+        private readonly int _flashRevealWatchdogMs;
 
         // ==================== 公共 API ====================
 
@@ -329,7 +332,35 @@ namespace CF7Launcher.Guardian
             Action readyWiring,
             Action hotkeyGuardSpawn,
             CF7Launcher.Save.SaveResolutionContext saveCtx)
+            : this(
+                socketServer,
+                router,
+                processManager,
+                windowManager,
+                form,
+                bootstrapPanel,
+                readyWiring,
+                hotkeyGuardSpawn,
+                saveCtx,
+                FLASH_REVEAL_WATCHDOG_DEFAULT_MS)
         {
+        }
+
+        internal GameLaunchFlow(
+            XmlSocketServer socketServer,
+            MessageRouter router,
+            ProcessManager processManager,
+            WindowManager windowManager,
+            GuardianForm form,
+            BootstrapPanel bootstrapPanel,
+            Action readyWiring,
+            Action hotkeyGuardSpawn,
+            CF7Launcher.Save.SaveResolutionContext saveCtx,
+            int flashRevealWatchdogMs)
+        {
+            if (flashRevealWatchdogMs <= 0)
+                throw new ArgumentOutOfRangeException(nameof(flashRevealWatchdogMs));
+
             _socketServer = socketServer;
             _router = router;
             _processManager = processManager;
@@ -339,6 +370,7 @@ namespace CF7Launcher.Guardian
             _readyWiring = readyWiring;
             _hotkeyGuardSpawn = hotkeyGuardSpawn;
             _saveCtx = saveCtx;
+            _flashRevealWatchdogMs = flashRevealWatchdogMs;
 
             // Phase D Step D4: bootstrap_handshake 改 RegisterAsync 以支持 prewarm 模式的 held callback.
             // Async handler: 锁内判 prewarm/legacy 分支 → 锁外 respond() 同步写 socket (respond 本身 gen-bound).
@@ -862,6 +894,11 @@ namespace CF7Launcher.Guardian
                     CancelWaitTimerLocked();
                     CancelZombieTimerLocked();
                     CancelPrewarmDeadlineLocked();
+                    // Reset invalidates the reveal gate synchronously. Timer.Dispose alone cannot
+                    // retract an already queued callback, so clear the wait flag before disposal;
+                    // the callback's existing guard then drops without a fallback reveal/log.
+                    _revealWaitingFlash = false;
+                    CancelFlashRevealWatchdogLocked();
                     enterWorker = true;
                 }
             }
@@ -1090,7 +1127,7 @@ namespace CF7Launcher.Guardian
         /// <summary>HandleBootstrapReady 命中 WaitingGameReady 时调用（锁内）。
         /// Phase 2b-ext: 不再直接 panel swap. 改为 state=Ready 广播 + 触发 TryPerformRevealLocked;
         /// panel swap 真实执行视 _revealWaitingJs / _revealWaitingFlash 决定 (两 flag 都清才走).
-        /// Flash reveal 等待武装看门狗 (10s) 防 Flash 没加 sendRevealReady 时卡死. </summary>
+        /// Flash reveal 等待武装看门狗 (生产默认 45s) 防 Flash 没加 sendRevealReady 时卡死. </summary>
         private void TransitionToReady()
         {
             CancelWaitTimerLocked();  // 清 game_ready 超时
@@ -1239,7 +1276,7 @@ namespace CF7Launcher.Guardian
             CancelFlashRevealWatchdogLocked();
             _flashRevealWatchdog = new System.Threading.Timer(
                 delegate(object _) { OnFlashRevealWatchdogFired(attemptIdSnap); },
-                null, FLASH_REVEAL_WATCHDOG_MS, System.Threading.Timeout.Infinite);
+                null, _flashRevealWatchdogMs, System.Threading.Timeout.Infinite);
         }
 
         private void CancelFlashRevealWatchdogLocked()
@@ -1258,7 +1295,7 @@ namespace CF7Launcher.Guardian
                 if (_currentAttemptId != attemptIdSnap) return;  // attempt 已切换
                 if (!_revealWaitingFlash) return;                 // 已收到或已清
                 LogManager.Log("[LaunchFlow] Flash reveal watchdog fired after "
-                    + FLASH_REVEAL_WATCHDOG_MS + "ms, force-revealing (SWF 可能未部署 sendRevealReady)");
+                    + _flashRevealWatchdogMs + "ms, force-revealing (SWF 可能未部署 sendRevealReady)");
                 _revealWaitingFlash = false;
                 PerfTrace.Mark("launch.flash_reveal_watchdog", "attemptId=" + attemptIdSnap);
                 TryPerformRevealLocked();

@@ -43,7 +43,8 @@ var CraftingInventoryOrganizer = (function() {
             shell:_shell,
             root:_root,
             profileConfig:profile,
-            panelInstanceId:'',
+            ownerPanel:_owner.panel,
+            panelInstanceId:_owner.panelInstanceId,
             densityController:_density,
             addHeaderAction:function(node) { _shell.addHeaderAction(node); },
             refreshHeader:refreshHeader,
@@ -59,12 +60,15 @@ var CraftingInventoryOrganizer = (function() {
         if (_shell || !host || !ownerContext
                 || ownerContext.kind !== 'crafting-organizer'
                 || ownerContext.panel !== 'crafting'
+                || !/^[A-Za-z0-9._~-]{1,128}$/.test(
+                    String(ownerContext.panelInstanceId || ''))
                 || typeof ownerContext.onReturn !== 'function'
                 || !isActive()) return false;
         _host = host;
         _owner = {
             kind:'crafting-organizer',
             panel:'crafting',
+            panelInstanceId:String(ownerContext.panelInstanceId),
             onReturn:ownerContext.onReturn
         };
         _shell = new Workbench.DualPaneShell({
@@ -119,8 +123,13 @@ var CraftingInventoryOrganizer = (function() {
     function completeClose(reason) {
         if (_closeSent) return false;
         _closeSent = true;
-        var message = {type:'panel', cmd:'close', panel:'crafting'};
-        if (Bridge.send(message) === false) {
+        if (!_owner || !_owner.panelInstanceId) return false;
+        var message = {type:'panel', cmd:'close', panel:'crafting',
+            panelInstanceId:_owner.panelInstanceId};
+        var accepted = false;
+        try { accepted = Bridge.send(message) !== false; }
+        catch (_) { accepted = false; }
+        if (!accepted) {
             _closeSent = false;
             toast('启动器连接不可用，工作台保持打开。');
             return false;
@@ -172,6 +181,7 @@ var CraftingInventoryOrganizer = (function() {
             return {
                 ownerContext:_owner ? _owner.kind : '',
                 hostOwner:_owner ? _owner.panel : '',
+                panelInstanceId:_owner ? _owner.panelInstanceId : '',
                 storage:_storageReady ? InventoryStorageWorkbench.debugState() : null
             };
         }

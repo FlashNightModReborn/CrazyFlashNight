@@ -73,7 +73,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView,
             + (this._candidateFlow.isActive() ? '候选装备调制' : '当前装备调制')
             + '</span><h2></h2></div><div class="character-build-tuning-tools"><div data-build-density-mount></div><button type="button" data-build-tuning-return>← 返回候选</button></div></header>'
             + '<div class="character-build-tuning-mount"></div>';
-        root.querySelector('h2').textContent = String(item.displayName || item.name || this._slotKey);
+        root.querySelector('h2').textContent = String(item.displayName || '未命名装备');
         var self = this;
         root.querySelector('[data-build-tuning-return]').addEventListener('click', function() { self.exit(); });
         root.addEventListener('keydown', function(event) {
@@ -274,7 +274,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView,
         }
         if (this._returnState) this._returnState.slotKey = String(viewKey || '');
         var heading = this._root && this._root.querySelector('.character-build-tuning-heading h2');
-        if (heading) heading.textContent = String(item.displayName || item.name || this._slotKey);
+        if (heading) heading.textContent = String(item.displayName || '未命名装备');
         this._syncLoadoutSlots();
         return true;
     };

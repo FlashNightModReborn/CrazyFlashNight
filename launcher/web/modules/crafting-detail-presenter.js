@@ -107,10 +107,10 @@ var CraftingDetailPresenter = (function() {
         var icon = this._document.createElement('button');
         icon.type = 'button';
         icon.className = 'crafting-output-icon crafting-output-inspect-trigger';
-        icon.setAttribute('aria-label', '检视 ' + String(output.displayName || output.name || '合成产物'));
+        icon.setAttribute('aria-label', '检视 ' + String(output.displayName || '合成产物'));
         icon.setAttribute('data-title', '打开装备检视器');
         icon.innerHTML = typeof this._options.iconHtml === 'function'
-            ? this._options.iconHtml(output.icon || output.name, 'kshop-icon') : '';
+            ? this._options.iconHtml(output.icon, 'kshop-icon') : '';
         var self = this;
         icon.addEventListener('click', function() {
             if (typeof self._options.onInspect === 'function') self._options.onInspect(output);
@@ -119,7 +119,7 @@ var CraftingDetailPresenter = (function() {
 
         var copy = this._document.createElement('div');
         copy.className = 'crafting-output-copy';
-        copy.appendChild(textNode(this._document, 'h2', '', output.displayName || output.name || '产物'));
+        copy.appendChild(textNode(this._document, 'h2', '', output.displayName || '产物'));
         copy.appendChild(textNode(this._document, 'p', '', model.outputSummary || ''));
         hero.appendChild(icon);
         hero.appendChild(copy);

@@ -699,9 +699,8 @@ namespace CF7Launcher.Bus
             // 路由到 MessageRouter
             // Phase D Step D2: 响应走 gen-bound TrySendIfGen, 原连接已被替换时自动 drop.
             // 捕获 ReadLoop 形参 connectionGen 进闭包, 保持 "本消息的响应只发回发起它的 connection" 语义.
-            // The loot authority route can carry one-time capabilities, full container identities,
-            // and reward projections. Keep those payloads out of logs even though loot_response
-            // still travels through the generic task router.
+            // Authority routes can carry one-time capabilities, transaction identities, and full
+            // state projections. Keep those payloads out of transport logs before task validation.
             PerfTrace.Counter("socket.json");
             LogManager.Log(FormatJsonMessageLog(message));
 
@@ -730,106 +729,16 @@ namespace CF7Launcher.Bus
 
         internal static string FormatJsonMessageLog(string message)
         {
-            try
-            {
-                JObject envelope = JObject.Parse(message);
-                string task = envelope.Value<string>("task");
-                if (string.Equals(task, "loot_response", StringComparison.Ordinal))
-                {
-                    return "[XmlSocket:JSON] task=loot_response payload=redacted len="
-                        + message.Length;
-                }
-
-                JObject callbackPayload = envelope["payload"] as JObject;
-                string panel = callbackPayload != null
-                    ? callbackPayload.Value<string>("panel")
-                    : null;
-                if (string.IsNullOrEmpty(panel))
-                    panel = envelope.Value<string>("panel");
-                if (string.Equals(task, "panel_request", StringComparison.Ordinal)
-                    && string.Equals(panel, "loot", StringComparison.Ordinal))
-                {
-                    return "[XmlSocket:JSON] task=panel_request panel=loot payload=redacted len="
-                        + message.Length;
-                }
-            }
-            catch
-            {
-                // A truncated loot envelope can still contain one-time leases, full authority
-                // identity, and reward projections.  JObject.Parse cannot classify it, so use a
-                // deliberately narrow lexical fallback before the legacy raw diagnostic below.
-                // MessageRouter still owns parsing and the protocol error returned to the peer.
-                string sensitiveLog = FormatMalformedSensitiveLootLog(message);
-                if (sensitiveLog != null) return sensitiveLog;
-            }
+            string redacted;
+            if (AuthorityLogFormatter.TryFormatTransportEnvelope(
+                    message, out redacted))
+                return redacted;
 
             if (message.Length < 500)
                 return "[XmlSocket:JSON] " + message;
 
             return "[XmlSocket:JSON] (len=" + message.Length + ") "
                 + message.Substring(0, 120) + "...";
-        }
-
-        private static string FormatMalformedSensitiveLootLog(string message)
-        {
-            if (HasJsonStringFieldValue(message, "task", "loot_response"))
-            {
-                return "[XmlSocket:JSON] task=loot_response payload=redacted len="
-                    + message.Length;
-            }
-            if (HasJsonStringFieldValue(message, "task", "panel_request")
-                && HasJsonStringFieldValue(message, "panel", "loot"))
-            {
-                return "[XmlSocket:JSON] task=panel_request panel=loot payload=redacted len="
-                    + message.Length;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Minimal fail-closed probe used only after JSON parsing failed.  It recognizes the
-        /// protocol's fixed string fields with optional JSON whitespace and also accepts a value
-        /// whose closing quote was the truncation point.  It does not attempt to repair or route
-        /// malformed JSON.
-        /// </summary>
-        private static bool HasJsonStringFieldValue(string message, string fieldName,
-            string expectedValue)
-        {
-            if (string.IsNullOrEmpty(message)) return false;
-            string fieldToken = "\"" + fieldName + "\"";
-            int searchFrom = 0;
-            while (searchFrom < message.Length)
-            {
-                int fieldIndex = message.IndexOf(fieldToken, searchFrom,
-                    StringComparison.Ordinal);
-                if (fieldIndex < 0) return false;
-                int cursor = fieldIndex + fieldToken.Length;
-                while (cursor < message.Length && char.IsWhiteSpace(message[cursor])) cursor++;
-                if (cursor >= message.Length || message[cursor] != ':')
-                {
-                    searchFrom = fieldIndex + fieldToken.Length;
-                    continue;
-                }
-                cursor++;
-                while (cursor < message.Length && char.IsWhiteSpace(message[cursor])) cursor++;
-                if (cursor >= message.Length || message[cursor] != '"')
-                {
-                    searchFrom = fieldIndex + fieldToken.Length;
-                    continue;
-                }
-                cursor++;
-                if (cursor + expectedValue.Length > message.Length
-                    || string.CompareOrdinal(message, cursor, expectedValue, 0,
-                        expectedValue.Length) != 0)
-                {
-                    searchFrom = fieldIndex + fieldToken.Length;
-                    continue;
-                }
-                int suffix = cursor + expectedValue.Length;
-                if (suffix == message.Length || message[suffix] == '"') return true;
-                searchFrom = fieldIndex + fieldToken.Length;
-            }
-            return false;
         }
 
         /// <summary>

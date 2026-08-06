@@ -1124,7 +1124,7 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert.deepStrictEqual(
         require('../launcher/web/modules/character-build-session.js').commands,
         [
-            'snapshot', 'candidates', 'flushLive', 'statsSnapshot', 'finalize',
+            'snapshot', 'candidates', 'tooltip', 'flushLive', 'statsSnapshot', 'finalize',
             'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug'
         ]);
     assert(!/Panels\.register|Bridge\.send/.test(buildSession));
@@ -1133,6 +1133,68 @@ test('facade owns registration and delegates to the bounded storage controller',
     // to satisfy the old pre-extraction threshold. audit-workbench-ui.js carries the same ceiling.
     assert(facade.split(/\r?\n/).length <= 550);
     assert(source.split(/\r?\n/).length <= 950);
+});
+
+test('inventory writers bind every request response and close to the exact active owner instance', () => {
+    const root = path.join(__dirname, '..', 'launcher', 'web', 'modules');
+    const source = fs.readFileSync(path.join(root, 'inventory-storage-workbench.js'), 'utf8');
+    const facade = fs.readFileSync(path.join(root, 'inventory-workbench.js'), 'utf8');
+    const crafting = fs.readFileSync(path.join(root, 'crafting.js'), 'utf8');
+    const organizer = fs.readFileSync(path.join(root, 'crafting-inventory-organizer.js'), 'utf8');
+    const kshop = fs.readFileSync(path.join(root, 'kshop.js'), 'utf8');
+    const npcshop = fs.readFileSync(path.join(root, 'npcshop.js'), 'utf8');
+    const npcshopRuntime = fs.readFileSync(path.join(root, 'npcshop-runtime.js'), 'utf8');
+
+    assert(source.includes('validateSession:function(session)'));
+    assert(source.includes('panel:context.session.ownerPanel'));
+    assert(source.includes('panelInstanceId:context.session.panelInstanceId'));
+    assert(/data\.panel === entry\.session\.ownerPanel/.test(source));
+    assert(/data\.panelInstanceId === entry\.session\.panelInstanceId/.test(source));
+    assert(source.includes('_mux.openSession({'));
+    assert(source.includes('ownerPanel:_ownerPanel'));
+    assert(facade.includes("ownerPanel:'workbench'"));
+
+    assert(crafting.includes('panelInstanceId:_panelInstanceId'));
+    assert(/cmd:'close', panel:'crafting',\s*panelInstanceId:_panelInstanceId/.test(crafting));
+    assert(organizer.includes('panelInstanceId:String(ownerContext.panelInstanceId)'));
+    assert(organizer.includes('panelInstanceId:_owner.panelInstanceId'));
+    assert(organizer.includes('ownerPanel:_owner.panel'));
+
+    assert(kshop.includes('function createInventoryRequestMux()'), 'kshop exact inventory mux missing');
+    assert(kshop.includes("panel:'kshop'"), 'kshop inventory owner missing');
+    assert(kshop.includes('panelInstanceId:context.session.panelInstanceId'), 'kshop request instance missing');
+    assert(/data\.panelInstanceId === entry\.session\.panelInstanceId/.test(kshop), 'kshop response instance fence missing');
+    assert(kshop.includes('panelInstanceId:_panelInstanceId'), 'kshop exact close/session instance missing');
+
+    function ownsExactNpcInventoryChannel(facadeText, runtimeText) {
+        return facadeText.includes('NpcShopRuntime.createOwnerChannels(')
+            && facadeText.includes('_mux = _ownerChannels.business, _inventoryMux = _ownerChannels.inventory')
+            && facadeText.includes('_owner = _ownerChannels.owner')
+            && facadeText.includes('_owner.open(initData.panelInstanceId)')
+            && facadeText.includes('Bridge.send(_owner.closeMessage())')
+            && runtimeText.includes("var business = new RequestMux(muxOptions('npcshop', 'npc'));")
+            && runtimeText.includes("var inventory = new RequestMux(muxOptions('inventory', 'npc-inv'));")
+            && runtimeText.includes("owner:new OwnerLifecycle({panel:'npcshop', muxes:[business, inventory]})")
+            && runtimeText.includes('panelInstanceId:context.session.panelInstanceId')
+            && /data\.panelInstanceId === entry\.session\.panelInstanceId/.test(runtimeText)
+            && runtimeText.includes("return {type:'panel', cmd:'close', panel:this._panel,")
+            && runtimeText.includes('panelInstanceId:this.panelInstanceId');
+    }
+    assert(ownsExactNpcInventoryChannel(npcshop, npcshopRuntime),
+        'npcshop facade/runtime exact owner inventory mux composition missing');
+    const npcCompositionMutants = [
+        [npcshop.replace('NpcShopRuntime.createOwnerChannels(', 'NpcShopRuntime.createDetachedChannels('), npcshopRuntime],
+        [npcshop, npcshopRuntime.replace("muxOptions('inventory', 'npc-inv')", "muxOptions('npcshop', 'npc-inv')")],
+        [npcshop, npcshopRuntime.replace('muxes:[business, inventory]', 'muxes:[business]')],
+        [npcshop, npcshopRuntime.replace('data.panelInstanceId === entry.session.panelInstanceId', 'true')]
+    ];
+    npcCompositionMutants.forEach((mutant, index) => {
+        assert(!ownsExactNpcInventoryChannel(mutant[0], mutant[1]),
+            'npcshop composition mutation ' + (index + 1) + ' escaped exact owner/mux gate');
+    });
+    assert(source.includes('send:function(message) { return Bridge.send(message); }'));
+    assert(kshop.includes('send: function(message) { return Bridge.send(message); }'));
+    assert.strictEqual((npcshop.match(/function\(message\) \{ return Bridge\.send\(message\); \}/g) || []).length, 1);
 });
 
 process.stdout.write('Inventory workbench modules: ' + passed + '/' + passed + ' passed\n');

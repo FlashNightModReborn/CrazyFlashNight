@@ -18,10 +18,33 @@ const taskCatalogPath = path.join(projectRoot, 'launcher', 'web', 'modules', 'ta
 const achievementDir = path.join(projectRoot, 'data', 'achievement');
 const equipmentModDir = path.join(projectRoot, 'data', 'items', 'equipment_mods');
 const iconDir = path.dirname(manifestPath);
+const identityFixturePath = path.join(projectRoot, 'tools', 'equipment-tuning', 'fixtures',
+    'item-identity-triple.json');
 
 function fail(msg) {
     console.error('[audit-web-item-icon-closure] ' + msg);
     process.exit(1);
+}
+
+const requiredWebIdentityProbes = [
+    'malformed identity never falls back to internal name or icon',
+    'three all-distinct identity fixtures preserve display and icon roles'
+];
+
+function hasRequiredWebIdentityProbes(source) {
+    return requiredWebIdentityProbes.every(marker => source.includes(marker));
+}
+
+function auditWebIdentityProbeMutationGuard(source) {
+    let detected = 0;
+    for (const marker of requiredWebIdentityProbes) {
+        const mutant = source.replace(marker, '[mutated-web-identity-probe]');
+        if (mutant === source || hasRequiredWebIdentityProbes(mutant)) {
+            fail('Web identity probe mutation guard is ineffective for: ' + marker);
+        }
+        detected += 1;
+    }
+    return detected;
 }
 
 function readText(file) {
@@ -125,10 +148,36 @@ function manifestImageUris(entry, out) {
 }
 
 function auditEquipmentMods(manifest, metaByName, missing) {
+    const identityFixture = readJson(identityFixturePath);
+    const expectedCounts = identityFixture.expectedCounts || {};
+    const expectedAllDistinct = Array.isArray(identityFixture.allDistinct)
+        ? identityFixture.allDistinct : [];
+    if (identityFixture.schemaVersion !== 1
+            || identityFixture.domain !== 'equipment_tuning.modCandidates') {
+        fail('identity fixture schema/domain is not canonical v1 equipment tuning');
+    }
+    const fixtureKeys = new Set();
+    const fixtureNames = new Set();
+    for (const fixture of expectedAllDistinct) {
+        if (!fixture || !/^[A-Za-z0-9._~-]{1,128}$/.test(fixture.candidateKey || '')
+                || !fixture.itemName || !fixture.displayName || !fixture.icon
+                || fixture.itemName === fixture.displayName
+                || fixture.itemName === fixture.icon
+                || fixture.displayName === fixture.icon
+                || fixtureKeys.has(fixture.candidateKey)
+                || fixtureNames.has(fixture.itemName)) {
+            fail('identity fixture contains a malformed or duplicate all-distinct row');
+        }
+        fixtureKeys.add(fixture.candidateKey);
+        fixtureNames.add(fixture.itemName);
+    }
     const files = readManifest(path.join(equipmentModDir, 'list.xml'), 'items');
     const seen = Object.create(null);
     let modCount = 0;
     let presentationAliases = 0;
+    let iconKeyDivergence = 0;
+    let legacyInternalIconMisses = 0;
+    const allDistinct = [];
     for (const rel of files) {
         const raw = readText(path.join(equipmentModDir, rel));
         const modRe = /<mod\b[^>]*>([\s\S]*?)<\/mod>/g;
@@ -145,7 +194,15 @@ function auditEquipmentMods(manifest, metaByName, missing) {
                 continue;
             }
             const icon = itemIcon(metaByName, name);
-            if ((meta.displayname && meta.displayname !== name) || icon !== name) presentationAliases += 1;
+            const displayName = meta.displayname || name;
+            if (displayName !== name || icon !== name) presentationAliases += 1;
+            if (icon !== name) {
+                iconKeyDivergence += 1;
+                if (!manifest[name]) legacyInternalIconMisses += 1;
+            }
+            if (name !== displayName && name !== icon && displayName !== icon) {
+                allDistinct.push({itemName:name, displayName, icon});
+            }
             pushMissing(missing, manifest, 'equipment mod ' + rel, name, icon);
             const entry = manifest[icon];
             if (!entry) continue;
@@ -166,18 +223,78 @@ function auditEquipmentMods(manifest, metaByName, missing) {
     }
     if (modCount === 0) fail('equipment mod manifest contains no <mod> definitions');
 
+    const actualCounts = {
+        mods:modCount,
+        presentationAliases,
+        iconKeyDivergence,
+        allDistinct:allDistinct.length,
+        legacyInternalIconMisses
+    };
+    for (const key of Object.keys(actualCounts)) {
+        if (actualCounts[key] !== expectedCounts[key]) {
+            fail('identity count drift for ' + key + ': expected '
+                + expectedCounts[key] + ', got ' + actualCounts[key]);
+        }
+    }
+    if (expectedAllDistinct.length !== 3) {
+        fail('identity fixture must freeze exactly three all-distinct rows');
+    }
+    for (const expected of expectedAllDistinct) {
+        const actual = allDistinct.find(row => row.itemName === expected.itemName);
+        if (!actual || actual.displayName !== expected.displayName || actual.icon !== expected.icon) {
+            fail('all-distinct fixture drift for ' + expected.itemName);
+        }
+    }
+
     // 这道 release-policy 静态门与 browser harness 的动态反例共同锁定“三名分离”协议。
     const service = readText(path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight',
         'arki', 'item', 'EquipmentTuningService.as'));
     const renderer = readText(path.join(projectRoot, 'launcher', 'web', 'modules',
         'equipment-tuning-render.js'));
+    const serviceTest = readText(path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight',
+        'arki', 'item', 'EquipmentTuningServiceTest.as'));
+    const hostTest = readText(path.join(projectRoot, 'launcher', 'tests', 'Tasks',
+        'EquipmentTuningTaskTests.cs'));
+    const webHarness = readText(path.join(projectRoot, 'launcher', 'web', 'modules',
+        'equipment-tuning', 'dev', 'harness.html'));
     if (!service.includes('displayName:presentation.displayName')
             || !service.includes('icon:presentation.icon')
             || !renderer.includes('candidateDisplayName(candidate')
             || !renderer.includes('candidateIconName(candidate')) {
         fail('equipment tuning itemName/displayName/icon projection contract is missing');
     }
-    return {modCount, presentationAliases};
+    for (const fixture of expectedAllDistinct) {
+        for (const source of [serviceTest, hostTest, webHarness]) {
+            if (!source.includes(fixture.itemName)
+                    || !source.includes(fixture.displayName)
+                    || !source.includes(fixture.icon)) {
+                fail('cross-language all-distinct fixture missing for ' + fixture.itemName);
+            }
+        }
+    }
+    const displayHelper = renderer.slice(
+        renderer.indexOf('function candidateDisplayName'),
+        renderer.indexOf('function candidateIconName'));
+    const iconHelper = renderer.slice(
+        renderer.indexOf('function candidateIconName'),
+        renderer.indexOf('function iconHtml'));
+    if (displayHelper.includes('candidate.itemName')
+            || displayHelper.includes('candidate.candidateKey')
+            || iconHelper.includes('candidate.itemName')
+            || iconHelper.includes('candidate.candidateKey')) {
+        fail('Web candidate presentation must not guess display/icon from internal identity');
+    }
+    for (const marker of ['missing-display-name', 'wrong-icon-type', 'legacy-display-alias']) {
+        if (!hostTest.includes(marker)) {
+            fail('executable Host malformed identity case missing: ' + marker);
+        }
+    }
+    if (!hasRequiredWebIdentityProbes(webHarness)) {
+        fail('executable Web identity positive/negative probes are missing');
+    }
+    const webIdentityMutationsDetected = auditWebIdentityProbeMutationGuard(webHarness);
+    return {modCount, presentationAliases, iconKeyDivergence,
+        allDistinct, legacyInternalIconMisses, webIdentityMutationsDetected};
 }
 
 function main() {
@@ -200,8 +317,20 @@ function main() {
         process.exit(1);
     }
 
-    console.log('[audit-web-item-icon-closure] OK: task/achievement/intelligence/equipment-mod item icons resolve; '
-        + equipmentMods.modCount + ' mods, ' + equipmentMods.presentationAliases + ' presentation aliases');
+    console.log('[audit-web-item-icon-closure] identity counts:'
+        + ' mods=' + equipmentMods.modCount
+        + ' aliases=' + equipmentMods.presentationAliases
+        + ' icon-divergence=' + equipmentMods.iconKeyDivergence
+        + ' all-distinct=' + equipmentMods.allDistinct.length
+        + ' legacy-internal-icon-misses=' + equipmentMods.legacyInternalIconMisses
+        + ' web-probe-mutations-detected=' + equipmentMods.webIdentityMutationsDetected
+        + '/' + requiredWebIdentityProbes.length);
+    equipmentMods.allDistinct.forEach((row, index) => {
+        console.log('[audit-web-item-icon-closure] identity fixture ' + (index + 1)
+            + ': internal=' + row.itemName + ' | display=' + row.displayName
+            + ' | icon=' + row.icon);
+    });
+    console.log('[audit-web-item-icon-closure] OK: task/achievement/intelligence/equipment-mod item icons resolve');
 }
 
 main();

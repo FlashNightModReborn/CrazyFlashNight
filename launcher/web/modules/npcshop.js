@@ -3,7 +3,7 @@ var NpcShop = (function() {
     'use strict';
     var _shellEl, _shell, _catalogView, _catalogRenderer, _categoryToolbar, _categoryNavigator, _categoryTree;
     var _rightViews = {}, _ownedPanes = {}, _viewButtons = {}, _viewChoiceGroup, _activeRight = 'bag', _activeCollection = 'material';
-    var _state = null, _shopId = '', _busy = false, _needsReconcile = false, _generation = 0;
+    var _state = null, _shopId = '', _busy = false;
     var _scaleHandle = null, _retryButton, _checkoutButton, _helpButton, _helpAction, _category = {mode:'auto', path:[]}, _categoryInitialized = false;
     var _purchaseIntents = {}, _saleIntents = {}, _settlement = null, _settlementCheckpoint = '', _settlementPresenter = null;
     var _previewBusy = false, _previewQueued = false, _previewRevision = 0, _previewEpoch = 0, _activePreview = 0;
@@ -12,34 +12,29 @@ var NpcShop = (function() {
     var _spacePresenter = null, _spaceBusy = false, _spaceMutated = false;
     var _helpPresenter = null, _bagFilterControl = null;
     var _config = (typeof window !== 'undefined' && window.__NPCSHOP_CONFIG__) || {};
-    var _mux = new NpcShopRuntime.RequestMux({
-        send:function(message) { Bridge.send(message); },
-        timeoutMs:_config.requestTimeoutMs,
-        sessionNonce:_config.sessionNonce
-    });
-    var _inventoryMux = new NpcShopRuntime.RequestMux({
-        send:function(message) { Bridge.send(message); },
-        timeoutMs:_config.requestTimeoutMs,
-        sessionNonce:_config.sessionNonce,
-        domain:'inventory', panel:'npcshop', callPrefix:'npc-inv'
-    });
+    var _ownerChannels = NpcShopRuntime.createOwnerChannels(
+        function(message) { return Bridge.send(message); }, _config);
+    var _mux = _ownerChannels.business, _inventoryMux = _ownerChannels.inventory;
+    var _owner = _ownerChannels.owner;
     var _inventoryState = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
-    var _inventoryCoordinator = new InventoryRuntime.InventoryCoordinator({
-        request:requestInventory,
-        requests:[
-            {containerId:'背包', offset:0, limit:50, filterKey:'all'},
-            {containerId:'战备箱', offset:0, limit:40, filterKey:'all'}
-        ],
+    var _inventoryAdapter = NpcShopRuntime.createPhysicalInventoryAdapter({
+        inventoryRuntime:InventoryRuntime, request:requestInventory, owner:_owner,
         onStateChange:function(state) {
             _inventoryState = state;
             renderOwnedViews();
             renderSpaceOrganizer();
             refreshControls();
+        },
+        onApplied:function(result) {
+            if (result.success) rebindSaleIntentsFromViews({bag:_inventoryCoordinator.getWindow('背包')});
+            renderOwnedViews(); refreshControls();
         }
     });
+    var _inventoryCoordinator = _inventoryAdapter.coordinator;
     Panels.register('npcshop', {
         create:createDOM,
         onOpen:onOpen,
+        onRebind:function(el, initData) { cleanup(); return onOpen(el, initData); },
         onClose:cleanup,
         onRequestClose:requestClose,
         onForceClose:function() { cleanup(); toast('连接断开，NPC 商店已关闭'); }
@@ -87,7 +82,7 @@ var NpcShop = (function() {
         _checkoutButton.addEventListener('click', openSettlement);
         _shell.addHeaderAction(_checkoutButton);
         _retryButton = document.createElement('button');
-        _retryButton.type = 'button'; _retryButton.className = 'workbench-mode-btn warning'; _retryButton.textContent = '重新同步';
+        _retryButton.type = 'button'; _retryButton.className = 'workbench-mode-btn warning npcshop-retry-btn'; _retryButton.textContent = '重新同步';
         _retryButton.addEventListener('click', refreshSnapshot); _shell.addHeaderAction(_retryButton);
         var close = document.createElement('button');
         close.type = 'button'; close.className = 'workbench-close-btn'; close.textContent = '×'; close.setAttribute('aria-label', '关闭 NPC 商店');
@@ -138,7 +133,7 @@ var NpcShop = (function() {
         return NpcShopSecondaryPages.ownedInteraction({
             ready:!!_state && _inventoryState.ready, busyOwner:_inventoryState.busyOwner,
             refreshRequired:_inventoryState.refreshRequired, transactionBusy:_busy,
-            reconcileRequired:_needsReconcile, spaceBusy:_spaceBusy, readOnly:viewId === 'intelligence'
+            reconcileRequired:_owner.needsReconcile, spaceBusy:_spaceBusy, readOnly:viewId === 'intelligence'
         });
     }
     function reprojectOwned(viewId) {
@@ -179,7 +174,7 @@ var NpcShop = (function() {
             bindItem:function(node, slot) {
                 if (slot && slot.occupied) bindOwnedTooltip(node, viewId, slot);
                 var item = slot && slot.item || {};
-                var itemName = String(item.displayName || item.name || '未知物品');
+                var itemName = String(item.displayName || '未知物品');
                 var reasonNode = NpcShopSecondaryPages.ensureReasonNode(node);
                 Workbench.EntityTile.bindActivation(node, {
                     itemName:itemName,
@@ -287,8 +282,8 @@ var NpcShop = (function() {
             skin: 'npcshop',
             item: item,
             id: item.catalogIndex,
-            iconHtml: iconHtml(item.icon || item.itemName, 'kshop-icon'),
-            name: item.displayName || item.itemName,
+            iconHtml: iconHtml(item.icon, 'kshop-icon'),
+            name: item.displayName,
             meta: ItemFilter.catalogPath(item).map(function(part) { return part.label; }).join(' · '),
             priceText: '$ ' + Number(item.unitPrice || 0).toLocaleString(),
             locked: item.locked || atLimit,
@@ -357,7 +352,7 @@ var NpcShop = (function() {
     }
 
     function togglePurchase(item) {
-        if (_busy || _needsReconcile || !item || item.locked) return;
+        if (_busy || _owner.needsReconcile || !item || item.locked) return;
         var maximum = Number(item.maxQuantity);
         if (isFinite(maximum) && maximum <= 0) { toast('该情报已达持有上限。'); return; }
         var key = String(item.catalogIndex);
@@ -372,7 +367,7 @@ var NpcShop = (function() {
     }
 
     function toggleSale(viewId, slot) {
-        if (_busy || _needsReconcile || !_inventoryState.ready || _inventoryState.busyOwner
+        if (_busy || _owner.needsReconcile || !_inventoryState.ready || _inventoryState.busyOwner
                 || _inventoryState.refreshRequired || !slot || !slot.occupied
                 || viewId === 'intelligence') return;
         var identity = saleIdentity(viewId, slot);
@@ -497,9 +492,9 @@ var NpcShop = (function() {
         return {shopId:_shopId, purchases:purchases, sales:sales};
     }
 
-    function selectionCount() { return Object.keys(_purchaseIntents).length + Object.keys(_saleIntents).length; }
+    function selectionCount() { return Object.keys(_purchaseIntents).length + Object.keys(_saleIntents).length; } function inventoryWriteUnavailable() { return !_inventoryState.ready || !!_inventoryState.busyOwner || !!_inventoryState.refreshRequired; }
     function openSettlement() {
-        if (!selectionCount() || _busy || _needsReconcile) return;
+        if (!selectionCount() || _busy || _owner.needsReconcile || inventoryWriteUnavailable()) return;
         if (!_settlementPresenter) createSettlementPage();
         resetPreviewCycle();
         _settlement = null; _settlementCheckpoint = ''; _settlementPresenter.reset();
@@ -541,12 +536,12 @@ var NpcShop = (function() {
                 if (topic === 'inventory_full') showGuideOnce(topic,
                     '背包不足时可点“整理空间”；返回结算后，系统会重新核算数量与空位。');
             },
-            iconHtml:iconHtml,
-            errorMessage:errorMessage
+            tooltip:_tooltipScope || PanelTooltip, tooltipCache:_tooltipCache, renderTooltipBasic:buildTooltipBasic, renderTooltipRich:buildTooltipRich,
+            requestTooltip:request, iconHtml:iconHtml, errorMessage:errorMessage
         });
     }
     function requestTradePreview() {
-        if (_busy || _needsReconcile || !_settlementPresenter || !_settlementPresenter.isActive()) return;
+        if (_busy || _owner.needsReconcile || inventoryWriteUnavailable() || !_settlementPresenter || !_settlementPresenter.isActive()) return;
         if (!selectionCount()) { closeSettlement(); return; }
         if (_previewBusy) { _previewQueued = true; return; }
         _previewBusy = true; _previewQueued = false; _previewRevision++;
@@ -597,7 +592,7 @@ var NpcShop = (function() {
     function handlePreviewError(response) {
         var error = String(response && response.error || 'invalid_response');
         if ((response && response.requiresReconcile) || error === 'reconcile_required') {
-            _needsReconcile = true; refreshControls(); refreshSnapshot(); return;
+            _owner.enterNeedsReconcile(); refreshControls(); refreshSnapshot(); return;
         }
         if (['stale_state','shop_not_found','item_not_found','locked','invalid_price','invalid_quantity',
                 'insufficient_quantity','nothing_to_sell','sell_forbidden'].indexOf(error) >= 0) {
@@ -609,7 +604,7 @@ var NpcShop = (function() {
         renderSettlementFailure(error, recovered);
     }
     function setIntentQuantity(kind, identity, quantity, reason) {
-        var map = kind === 'purchase' ? _purchaseIntents : _saleIntents; var line = map[identity]; if (!line || _busy || _previewBusy || _needsReconcile) return;
+        var map = kind === 'purchase' ? _purchaseIntents : _saleIntents; var line = map[identity]; if (!line || _busy || _previewBusy || _owner.needsReconcile) return;
         var limit = kind === 'purchase' ? Number(line.purchaseLimit || line.maxQuantity) : line.maxQuantity;
         if (kind === 'purchase' && reason === 'maximum') {
             limit = Math.max(limit, Number(line.maxPurchasable || 0));
@@ -621,7 +616,7 @@ var NpcShop = (function() {
     }
     function setBulkSale(identity, enabled) {
         var line = _saleIntents[identity];
-        if (!line || _busy || _previewBusy || _needsReconcile || !line.source || line.source.containerId !== '背包') return;
+        if (!line || _busy || _previewBusy || _owner.needsReconcile || !line.source || line.source.containerId !== '背包') return;
         line.scope = enabled ? 'same_name' : 'slot';
         if (enabled) showGuideOnce('bulk_sale', '同名全售会扫描整个背包，并自动保护强化、进阶和带插件的装备。');
         syncAllIntentCards(); requestTradePreview();
@@ -697,8 +692,8 @@ var NpcShop = (function() {
                 else toast(errorMessage(result && result.error));
                 refreshControls();
             },
-            iconHtml:iconHtml,
-            toast:toast
+            tooltip:_tooltipScope || PanelTooltip, tooltipCache:_tooltipCache, renderTooltipBasic:buildTooltipBasic, renderTooltipRich:buildTooltipRich,
+            requestTooltip:request, iconHtml:iconHtml, toast:toast
         });
     }
 
@@ -728,8 +723,10 @@ var NpcShop = (function() {
                 toast('完整背包同步失败，暂时无法返回结算。');
                 return;
             }
+            var snapshotIntent = _owner.captureSnapshot();
             request('snapshot', {shopId:_shopId}, function(response) {
                 _spaceBusy = false;
+                if (!_owner.isCurrentSnapshot(snapshotIntent)) { renderSpaceOrganizer(); refreshControls(); return; }
                 if (!response.success) { handleWriteError(response); return; }
                 rebindSaleIntentsFromViews({
                     bag:fullBag,
@@ -791,14 +788,14 @@ var NpcShop = (function() {
     }
 
     function removeIntent(kind, identity) {
-        if (_busy || _previewBusy || _needsReconcile) return;
+        if (_busy || _previewBusy || _owner.needsReconcile) return;
         var map = kind === 'purchase' ? _purchaseIntents : _saleIntents; delete map[identity];
         syncAllIntentCards();
         if (!selectionCount()) closeSettlement(); else requestTradePreview();
     }
 
     function commitTrade() {
-        if (_busy || _needsReconcile || !_settlement || !_settlement.canCommit || _previewBusy) return;
+        if (_busy || _owner.needsReconcile || inventoryWriteUnavailable() || !_settlement || !_settlement.canCommit || _previewBusy) return;
         write('tradeCommit', {shopId:_shopId, expectedTradeToken:String(_settlement.tradeToken)}, function(response) {
             if (!response.success) { handleWriteError(response); return; }
             var trade = response.trade || {}; _purchaseIntents = {}; _saleIntents = {}; closeSettlement();
@@ -849,36 +846,37 @@ var NpcShop = (function() {
     }
 
     function onOpen(el, initData) {
+        initData = initData || {};
+        if (!NpcShopRuntime.isPanelInstanceId(initData.panelInstanceId)) return false;
         disposeSharedComponents();
         if (_tooltipScope) _tooltipScope.dispose();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('npcshop') : null;
-        _generation++; _shopId = initData && typeof initData.shopId === 'string' ? initData.shopId : '';
-        _state = null; _busy = false; _needsReconcile = false; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementCheckpoint = '';
+        _shopId = typeof initData.shopId === 'string' ? initData.shopId : '';
+        _state = null; _busy = false; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementCheckpoint = '';
         _spaceBusy = false; _spaceMutated = false; _helpButton = null;
         resetPreviewCycle(); _previewRevision = 0; _category = {mode:'auto', path:[]}; _categoryInitialized = false;
         _activeRight = 'bag'; _activeCollection = 'material'; _tooltipCache = {};
         buildDOM(); if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
-        _mux.openSession(); _inventoryMux.openSession();
-        _inventoryCoordinator.resetWindow('背包', 0, 50, 'all');
-        _inventoryCoordinator.resetWindow('战备箱', 0, 40, 'all');
+        if (!_inventoryAdapter.resetSession()) return false;
+        if (!_owner.open(initData.panelInstanceId)) return false;
         refreshSnapshot();
     }
 
     function refreshSnapshot() {
         if (!_shopId || _busy) return false;
         refreshInventory();
-        _shell.setStatus('同步中', 'loading'); var generation = _generation;
+        _shell.setStatus('同步中', 'loading'); var snapshotIntent = _owner.captureSnapshot();
         return !!request('snapshot', {shopId:_shopId}, function(response) {
-            if (generation !== _generation) return;
-            if (response.success) { _needsReconcile = false; _purchaseIntents = {}; _saleIntents = {}; closeSettlement(); applyState(response); }
-            else { _needsReconcile = true; handleError(response); refreshControls(); }
+            if (!_owner.isCurrentSnapshot(snapshotIntent)) return;
+            if (response.success) { _owner.acceptAuthorityState(); _purchaseIntents = {}; _saleIntents = {}; closeSettlement(); applyState(response); }
+            else { _owner.enterNeedsReconcile(); handleError(response); refreshControls(); }
         });
     }
 
     function applyState(response) {
-        _state = response; _busy = false; _needsReconcile = false;
+        _state = response; _busy = false; _owner.acceptAuthorityState();
         var title = response.layout && response.layout.title ? response.layout.title : _shopId;
         _shell.setTitle(title, 'NPC 物品商店'); _shell.setMetric('money', '金币', Number(response.balance || 0).toLocaleString());
         renderCategoryToolbar(); renderCatalog(); renderOwnedViews(); refreshControls();
@@ -886,15 +884,12 @@ var NpcShop = (function() {
 
     function request(cmd, payload, callback) { payload = payload || {}; payload.v = 1; return _mux.request(cmd, payload, callback); }
     function requestInventory(cmd, payload, callback) { return _inventoryMux.request(cmd, payload || {}, callback); }
-    function refreshInventory(callback) {
-        _inventoryCoordinator.open(function(result) {
-            if (result && result.success) rebindSaleIntentsFromViews({bag:_inventoryCoordinator.getWindow('背包')});
-            renderOwnedViews(); refreshControls();
-            if (callback) callback(result || {success:false});
-        });
-    }
+    function refreshInventory(callback) { return _inventoryAdapter.refresh(callback); }
     function write(cmd, payload, callback) {
-        if (_busy || _needsReconcile) { toast(_needsReconcile ? '请先重新同步商店状态。' : '正在处理上一项交易。'); return false; }
+        if (_busy || _owner.needsReconcile || inventoryWriteUnavailable()) {
+            toast(_owner.needsReconcile || _inventoryState.refreshRequired || !_inventoryState.ready
+                ? '请先重新同步商店状态。' : '正在处理上一项交易。');
+            return false; }
         _busy = true; refreshControls();
         return !!request(cmd, payload, function(response) { _busy = false; refreshControls(); callback(response); });
     }
@@ -902,21 +897,24 @@ var NpcShop = (function() {
         var error = response && response.error;
         if ((response && response.requiresReconcile) || error === 'timeout' || error === 'client_timeout'
                 || error === 'reconcile_required' || error === 'malformed_response') {
-            _needsReconcile = true; refreshControls(); refreshSnapshot(); return;
+            _owner.enterNeedsReconcile(); refreshControls(); refreshSnapshot(); return;
         }
         if (error === 'stale_state') { toast('物品状态已经变化，正在重新同步。'); refreshSnapshot(); return; }
         handleError(response); if (_settlementPresenter && _settlementPresenter.isActive()) requestTradePreview();
     }
-    function handleError(response) { toast(errorMessage(response && response.error)); }
+    function handleError(response) { toast(NpcShopSecondaryPages.errorMessage(response && response.error)); }
     function refreshControls() {
         if (!_shell) return;
-        if (_needsReconcile) _shell.setStatus('需要重新同步', 'error'); else if (_busy || _previewBusy || _spaceBusy || _inventoryState.busyOwner) _shell.setStatus('交易核算中', 'loading');
+        var needsInventoryRetry = !!_inventoryState.refreshRequired; if (_owner.needsReconcile) _shell.setStatus('需要重新同步', 'error');
+        else if (needsInventoryRetry) _shell.setStatus('库存需要重新同步', 'error');
+        else if (_busy || _previewBusy || _spaceBusy || _inventoryState.busyOwner) _shell.setStatus('交易核算中', 'loading');
         else if (_state) _shell.setStatus('', 'idle'); else _shell.setStatus('同步中', 'loading');
-        if (_retryButton) _retryButton.style.display = _needsReconcile ? '' : 'none';
+        if (_retryButton) _retryButton.style.display = _owner.needsReconcile || needsInventoryRetry ? '' : 'none';
         var count = selectionCount();
-        if (_checkoutButton) { _checkoutButton.textContent = count ? '结算 (' + count + ')' : '结算'; _checkoutButton.disabled = !count || _busy || _needsReconcile; }
+        if (_checkoutButton) { _checkoutButton.textContent = count ? '结算 (' + count + ')' : '结算';
+            _checkoutButton.disabled = !count || _busy || _owner.needsReconcile || inventoryWriteUnavailable(); }
         if (_helpButton) _helpButton.disabled = _busy || !!_inventoryState.busyOwner;
-        if (_bagFilterControl) _bagFilterControl.setDisabled(_busy || _needsReconcile || !_inventoryState.ready
+        if (_bagFilterControl) _bagFilterControl.setDisabled(_busy || _owner.needsReconcile || !_inventoryState.ready
             || !!_inventoryState.busyOwner || !!_inventoryState.refreshRequired);
         if (_viewChoiceGroup) _viewChoiceGroup.update({disabled:_busy});
         else for (var key in _viewButtons) _viewButtons[key].disabled = _busy;
@@ -926,11 +924,12 @@ var NpcShop = (function() {
     }
 
     function cleanup() {
-        _generation++; if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
-        _inventoryCoordinator.close(); _inventoryMux.closeSession();
-        if (_shell) _shell.closeModal(); _mux.closeSession();
+        if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
+        _inventoryAdapter.close(); _owner.close();
+        if (_shell) _shell.closeModal();
         disposeSharedComponents();
-        _busy = false; resetPreviewCycle(); _state = null; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementCheckpoint = '';
+        _busy = false; resetPreviewCycle(); _state = null;
+        _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementCheckpoint = '';
         _helpButton = null;
         disposeFilterNavigators();
         if (_densityController) { _densityController.destroy(); _densityController = null; }
@@ -959,7 +958,12 @@ var NpcShop = (function() {
         if (_settlementPresenter && _settlementPresenter.isActive()) { closeSettlement(); return; }
         if (_shell && _shell.hasModal()) { _shell.closeModal(); return; }
         if (_busy) { toast('交易正在确认，请稍候。'); return; }
-        Panels.close(); Bridge.send({type:'panel', cmd:'close', panel:'npcshop'});
+        if (Bridge.send(_owner.closeMessage()) === false) {
+            toast('启动器连接不可用，NPC 商店保持打开。');
+            return false;
+        }
+        Panels.close();
+        return true;
     }
     function requestPanelCloseFromSecondary() {
         if (_busy) { toast('交易正在确认，请稍候。'); return false; }
@@ -983,11 +987,12 @@ var NpcShop = (function() {
     function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
     function errorMessage(error) { return NpcShopSecondaryPages.errorMessage(error); }
     return {debugState:function() {
-        return {shopId:_shopId, activeRight:_activeRight, busy:_busy, needsReconcile:_needsReconcile,
+        return {shopId:_shopId, activeRight:_activeRight, busy:_busy, needsReconcile:_owner.needsReconcile,
+            reconcileEpoch:_owner.reconcileEpoch, panelInstanceId:_owner.panelInstanceId,
             purchaseCount:Object.keys(_purchaseIntents).length, saleCount:Object.keys(_saleIntents).length,
-            settling:!!(_settlementPresenter && _settlementPresenter.isActive()),
-            helping:!!(_helpPresenter && _helpPresenter.isActive()),
-            organizingSpace:!!(_spacePresenter && _spacePresenter.isActive()),
-            inventory:_inventoryCoordinator.debugState(), mux:_mux.debugState()};
+            settling:!!(_settlementPresenter && _settlementPresenter.isActive()), helping:!!(_helpPresenter && _helpPresenter.isActive()), organizingSpace:!!(_spacePresenter && _spacePresenter.isActive()),
+            inventory:_inventoryCoordinator.debugState(),
+            inventorySurface:_inventoryAdapter.getReceipt(),
+            mux:_mux.debugState()};
     }};
 })();

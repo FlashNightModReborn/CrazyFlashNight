@@ -27,6 +27,9 @@ var Panels = (function() {
     // _pendingOpen：required-assets / lazy 加载期间记录最新 open 请求；中途若被 close/切面板，
     //   这里被覆盖或清空。完成时按当前值决定是否真正打开，避免已关闭面板被异步拉起。
     var _pendingOpen = null;
+    // Host-owned surface 的 close 通知只能重试原始精确实例。新 open 会丢弃旧门闩，
+    // 防止 A 的延迟 ESC/backdrop 在 B 已成为权威实例后误关 B。
+    var _exactCloseRetry = null;
 
     function readPanelInstanceId(initData) {
         var value = initData && initData.panelInstanceId;
@@ -35,7 +38,8 @@ var Panels = (function() {
 
     function panelCloseMessage(id, initData, reason) {
         var closeMessage = {type:'panel', cmd:'close', panel:id};
-        if (id === 'skills') {
+        if (id === 'skills' || id === 'crafting' || id === 'kshop'
+                || id === 'npcshop') {
             closeMessage.panelInstanceId = readPanelInstanceId(initData);
             return closeMessage;
         }
@@ -48,7 +52,7 @@ var Panels = (function() {
 
     function hostOwnsPanelMount(id, initData) {
         return id === 'loot' || id === 'workbench' || id === 'skills'
-            || id === 'crafting' || id === 'kshop';
+            || id === 'crafting' || id === 'kshop' || id === 'npcshop';
     }
 
     function safeBridgeSend(message, context) {
@@ -59,6 +63,51 @@ var Panels = (function() {
             console.error('[Panels] Bridge.send threw during ' + context + ':', e);
             return false;
         }
+    }
+
+    function sameExactCloseTuple(record, panel, panelInstanceId) {
+        return !!record && record.panel === panel
+            && record.panelInstanceId === panelInstanceId;
+    }
+
+    function clearExactCloseRetry() {
+        _exactCloseRetry = null;
+    }
+
+    function sendExactCloseNotification(id, initData, reason, context) {
+        if (!hostOwnsPanelMount(id, initData)) return false;
+        var panelInstanceId = readPanelInstanceId(initData);
+        // A missing identity cannot be retried safely and must not be projected as an
+        // exact Host release.
+        if (!panelInstanceId) return false;
+        var record = {
+            panel:id,
+            panelInstanceId:panelInstanceId,
+            reason:reason || 'lazy_cancel',
+            message:panelCloseMessage(id, initData, reason)
+        };
+        if (safeBridgeSend(record.message, context)) {
+            clearExactCloseRetry();
+            return true;
+        }
+        // Keep only the newest failed exact tuple.  Never retain initData/capability data.
+        _exactCloseRetry = record;
+        return false;
+    }
+
+    function sendPanelCloseNotification(id, initData, reason, context) {
+        if (hostOwnsPanelMount(id, initData)) {
+            return sendExactCloseNotification(id, initData, reason, context);
+        }
+        return safeBridgeSend(panelCloseMessage(id, initData, reason), context);
+    }
+
+    function retryExactCloseNotification(context) {
+        var record = _exactCloseRetry;
+        if (!record) return false;
+        if (safeBridgeSend(record.message, context)) clearExactCloseRetry();
+        // The gesture belongs to this retry even when transport remains unavailable.
+        return true;
     }
 
     function safeCleanupCallback(panel, callbackName, context) {
@@ -72,8 +121,8 @@ var Panels = (function() {
 
     function sendMountFailureClose(id, initData, reason) {
         if (!hostOwnsPanelMount(id, initData)) return;
-        safeBridgeSend(
-            panelCloseMessage(id, initData, reason || 'mount_failed'),
+        sendExactCloseNotification(
+            id, initData, reason || 'mount_failed',
             'mount failure close for ' + id);
     }
 
@@ -102,13 +151,13 @@ var Panels = (function() {
         return true;
     }
 
-    function cancelPendingOpen(notifyHost, reason) {
-        if (!_pendingOpen) return null;
+    function cancelPendingOpen(notifyHost, reason, expectedPending) {
+        if (!_pendingOpen || (expectedPending && _pendingOpen !== expectedPending)) return null;
         var pending = _pendingOpen;
         _pendingOpen = null;
         if (notifyHost) {
-            safeBridgeSend(
-                panelCloseMessage(pending.id, pending.initData, reason),
+            sendPanelCloseNotification(
+                pending.id, pending.initData, reason,
                 'pending open cancel for ' + pending.id);
         }
         return pending;
@@ -158,6 +207,9 @@ var Panels = (function() {
     }
 
     function _doOpen(id, initData) {
+        // This is the completion of the latest authoritative open.  A close retry created
+        // by an older asynchronous owner can no longer apply to the mounted tuple.
+        clearExactCloseRetry();
         if (_active === id) {
             _activePanelInstanceId = readPanelInstanceId(initData);
             var activePanel = _registry[id];
@@ -225,7 +277,10 @@ var Panels = (function() {
     }
 
     function rejectPanelMount(id, panel, initData) {
-        if (_pendingOpen && _pendingOpen.id === id) _pendingOpen = null;
+        if (_pendingOpen && _pendingOpen.id === id
+                && readPanelInstanceId(_pendingOpen.initData) === readPanelInstanceId(initData)) {
+            _pendingOpen = null;
+        }
         if (panel && panel._el) panel._el.style.display = 'none';
         // A Host command can arrive before Panels.init() (or expose a missing
         // registry during boot). Failing that mount must still send the exact
@@ -250,9 +305,9 @@ var Panels = (function() {
         return true;
     }
 
-    function openAfterRequiredAssets(id) {
-        var pending = _pendingOpen;
-        if (!pending || pending.id !== id) return;
+    function openAfterRequiredAssets(pending) {
+        if (!pending || _pendingOpen !== pending) return;
+        var id = pending.id;
         var panel = _registry[id];
         if (!panel) {
             console.error('[Panels] panel not registered after asset gate: ' + id);
@@ -276,49 +331,55 @@ var Panels = (function() {
                     throw new Error('LazyLoader.load returned a non-thenable');
                 }
                 var lazyChain = lazyLoad.then(function() {
-                try {
-                    panel._registerFn();
-                } catch (e) {
-                    console.error('[Panels] lazy registerFn threw for ' + id + ':', e);
-                    if (_pendingOpen && _pendingOpen.id === id) cancelPendingOpen(true, 'lazy_register_failed');
-                    return;
-                }
-                // registerFn 应当已调用 Panels.register(id, {...})，覆盖了 _registry[id]
-                var resolved = _registry[id];
-                if (!resolved || resolved._lazy) {
-                    console.error('[Panels] lazy registerFn did not register panel: ' + id);
-                    if (_pendingOpen && _pendingOpen.id === id) cancelPendingOpen(true, 'lazy_register_missing');
-                    return;
-                }
-                // 检查 pending：可能在加载期间被 close 或切到别的 panel
-                var pending = _pendingOpen;
-                if (pending && pending.id === id) {
-                    _pendingOpen = null;
-                    _doOpen(id, pending.initData);
-                } else {
-                    console.log('[Panels] lazy load done but no longer pending: ' + id);
-                }
+                    if (_pendingOpen !== pending) {
+                        console.log('[Panels] lazy load done but request was superseded: ' + id);
+                        return;
+                    }
+                    try {
+                        panel._registerFn();
+                    } catch (e) {
+                        console.error('[Panels] lazy registerFn threw for ' + id + ':', e);
+                        cancelPendingOpen(true, 'lazy_register_failed', pending);
+                        return;
+                    }
+                    // registerFn 应当已调用 Panels.register(id, {...})，覆盖了 _registry[id]
+                    var resolved = _registry[id];
+                    if (!resolved || resolved._lazy) {
+                        console.error('[Panels] lazy registerFn did not register panel: ' + id);
+                        cancelPendingOpen(true, 'lazy_register_missing', pending);
+                        return;
+                    }
+                    // 检查 pending：可能在加载期间被 close 或切到别的 panel
+                    if (_pendingOpen === pending) {
+                        _pendingOpen = null;
+                        _doOpen(id, pending.initData);
+                    } else {
+                        console.log('[Panels] lazy load done but no longer pending: ' + id);
+                    }
                 });
                 if (!lazyChain || typeof lazyChain.catch !== 'function') {
                     throw new Error('LazyLoader.load.then returned a non-catchable chain');
                 }
                 lazyChain.catch(function(err) {
                     console.error('[Panels] lazy load failed for ' + id + ':', err);
-                    if (_pendingOpen && _pendingOpen.id === id) cancelPendingOpen(true, 'lazy_load_failed');
+                    cancelPendingOpen(true, 'lazy_load_failed', pending);
                 });
             } catch (err) {
                 console.error('[Panels] lazy load failed for ' + id + ':', err);
-                if (_pendingOpen && _pendingOpen.id === id) cancelPendingOpen(true, 'lazy_load_failed');
+                cancelPendingOpen(true, 'lazy_load_failed', pending);
             }
             return;
         }
 
+        if (_pendingOpen !== pending) return;
         _pendingOpen = null;
         _doOpen(id, pending.initData);
     }
 
     function open(id, initData) {
         console.log('[Panels] open called: id=' + id + ', _active=' + _active + ', registered=' + !!_registry[id]);
+        // Every Host open is newer authority than a retained transport retry.
+        clearExactCloseRetry();
         if (!_registry[id]) {
             console.error('[Panels] panel not registered: ' + id);
             if (hostOwnsPanelMount(id, initData)) {
@@ -344,8 +405,9 @@ var Panels = (function() {
 
         // 同一字段同时覆盖“资源门等待”和“lazy 依赖等待”的最新请求；close / 切 panel
         // 都能沿用既有取消语义，不会在 manifest 到达后把已关闭面板重新拉起。
-        _pendingOpen = { id: id, initData: initData };
-        ensureRequiredAssets(function() { openAfterRequiredAssets(id); });
+        var pending = { id: id, initData: initData };
+        _pendingOpen = pending;
+        ensureRequiredAssets(function() { openAfterRequiredAssets(pending); });
     }
 
     function close(preservePendingOpen) {
@@ -371,6 +433,8 @@ var Panels = (function() {
     }
 
     function triggerRequestClose(reason) {
+        if (retryExactCloseNotification(
+                'exact close retry from ' + (reason || 'close'))) return;
         if (_active && _registry[_active] && _registry[_active].onRequestClose) {
             _registry[_active].onRequestClose(reason || 'close');
         } else if (_pendingOpen) {
@@ -384,6 +448,83 @@ var Panels = (function() {
             // 其他通用面板保留既有加载期取消行为。
             console.log('[Panels] cancel pending lazy open: ' + _pendingOpen.id);
             cancelPendingOpen(true, 'lazy_user_cancel');
+        }
+    }
+
+    function handleForceClose(data) {
+        var validReason = data && typeof data.reason === 'string'
+            && !!data.reason;
+        if (!validReason) return;
+        var targetPanel = data && typeof data.panel === 'string' ? data.panel : '';
+        if (targetPanel && hostOwnsPanelMount(targetPanel)) {
+            var targetInstance = data && typeof data.panelInstanceId === 'string'
+                ? data.panelInstanceId : '';
+            // Capability surfaces never accept a missing/broadcast identity.
+            if (!targetInstance) return;
+
+            if (sameExactCloseTuple(_exactCloseRetry, targetPanel, targetInstance)) {
+                clearExactCloseRetry();
+            }
+
+            var pending = _pendingOpen;
+            var pendingExact = !!pending && pending.id === targetPanel
+                && readPanelInstanceId(pending.initData) === targetInstance;
+            var activeExact = _active === targetPanel
+                && _activePanelInstanceId === targetInstance;
+            // A stale A close must be a no-op after B has become active or pending.
+            if (!pendingExact && !activeExact) return;
+
+            if (pendingExact) cancelPendingOpen(false, 'force_close', pending);
+            if (!activeExact) {
+                // The exact pending tuple is the Host authority.  Any still-mounted
+                // surface underneath it belongs to the displaced document and must
+                // not survive after Host retires the pending owner.
+                if (_active) {
+                    var displacedPanel = _registry[_active];
+                    close();
+                    safeCleanupCallback(
+                        displacedPanel, 'onForceClose',
+                        'exact pending capability force close');
+                }
+                return;
+            }
+            var exactPanel = _registry[_active];
+            // A different pending replacement is newer authority and must survive A's close.
+            close(true);
+            safeCleanupCallback(
+                exactPanel, 'onForceClose', 'exact capability force close');
+            return;
+        }
+
+        // Legacy generic force-close is intentionally limited to ordinary Web surfaces.
+        // It may retire an ordinary pending replacement, but it never closes a mounted or
+        // pending Host-owned capability surface.
+        var activeOrdinary = !!_active && !hostOwnsPanelMount(_active);
+        var pendingOrdinary = !!_pendingOpen && !hostOwnsPanelMount(_pendingOpen.id);
+        var targetsActive = !targetPanel || targetPanel === _active;
+        var targetsPending = !targetPanel
+            || (_pendingOpen && targetPanel === _pendingOpen.id);
+
+        if (pendingOrdinary && targetsPending) {
+            var displacedByOrdinary = _active
+                ? _registry[_active] : null;
+            cancelPendingOpen(false, 'force_close', _pendingOpen);
+            if (_active) {
+                close();
+                safeCleanupCallback(
+                    displacedByOrdinary, 'onForceClose',
+                    'generic pending replacement force close');
+            }
+            return;
+        }
+        if (activeOrdinary && targetsActive) {
+            var ordinaryPanel = _registry[_active];
+            var preserveCapabilityPending = !!_pendingOpen
+                && hostOwnsPanelMount(_pendingOpen.id);
+            close(preserveCapabilityPending);
+            safeCleanupCallback(
+                ordinaryPanel, 'onForceClose', 'generic force close');
+            return;
         }
     }
 
@@ -418,72 +559,7 @@ var Panels = (function() {
         console.log('[Panels] panel_cmd received:', safePanelCommandLog(data));
         if (data.cmd === 'open') open(data.panel, data.initData);
         else if (data.cmd === 'close') close();
-        else if (data.cmd === 'force_close') {
-            var targetsWorkbench = data && data.panel === 'workbench';
-            var activeWorkbench = _active === 'workbench';
-            var activeCapabilityWorkbench = activeWorkbench;
-            var pendingWorkbench = _pendingOpen && _pendingOpen.id === 'workbench';
-            // A generic Host disconnect still belongs to an already-mounted ordinary panel.
-            // close() also cancels any pending replacement so it cannot reopen after the fault.
-            if (!targetsWorkbench && _active && !activeCapabilityWorkbench) {
-                var ordinaryPanel = _registry[_active];
-                close();
-                safeCleanupCallback(
-                    ordinaryPanel, 'onForceClose', 'generic force close');
-                return;
-            }
-            if (targetsWorkbench) {
-                var exactInstance = data && typeof data.panelInstanceId === 'string'
-                    ? data.panelInstanceId : '';
-                var pendingInstance = pendingWorkbench
-                    ? readPanelInstanceId(_pendingOpen.initData) : '';
-                var activeExact = !!exactInstance && activeWorkbench && !!_activePanelInstanceId
-                    && exactInstance === _activePanelInstanceId;
-                var pendingExact = !!exactInstance && pendingWorkbench && !!pendingInstance
-                    && exactInstance === pendingInstance;
-                var validReason = data && typeof data.reason === 'string' && !!data.reason;
-                // capability-bound workbench 不接受无目标广播。旧实例的延迟强关也不能
-                // 清掉已经 rebind/mount 的 replacement。
-                if (!validReason || (!activeExact && !pendingExact)) return;
-                if (pendingExact) cancelPendingOpen(false, 'force_close');
-                // A targeted failure of the pending workbench replacement also invalidates an
-                // ordinary panel that is still mounted underneath the switch.
-                if (!activeExact && _active && !activeWorkbench) {
-                    var replacedOrdinaryPanel = _registry[_active];
-                    close();
-                    safeCleanupCallback(
-                        replacedOrdinaryPanel,
-                        'onForceClose',
-                        'targeted pending workbench force close');
-                    return;
-                }
-                if (!activeExact) return;
-                var exactPanel = _registry[_active];
-                // 保留不同实例的 pending replacement；只关闭 exact active instance。
-                close(true);
-                safeCleanupCallback(
-                    exactPanel, 'onForceClose', 'exact workbench force close');
-                return;
-            }
-            // A generic fault normally cannot close a capability-bound workbench. During an
-            // in-flight switch to an ordinary panel, however, it must cancel that replacement
-            // and clear the old mounted workbench as one failed transition.
-            if (activeCapabilityWorkbench) {
-                if (!_pendingOpen || pendingWorkbench) return;
-                var switchingWorkbenchPanel = _registry[_active];
-                cancelPendingOpen(false, 'force_close');
-                close();
-                safeCleanupCallback(
-                    switchingWorkbenchPanel,
-                    'onForceClose',
-                    'workbench replacement force close');
-                return;
-            }
-            if (pendingWorkbench) return;
-            var panel = _active ? _registry[_active] : null;
-            close();
-            safeCleanupCallback(panel, 'onForceClose', 'fallback force close');
-        }
+        else if (data.cmd === 'force_close') handleForceClose(data);
     });
     Bridge.on('panel_viewport_set', function(data) {
         var w = Number(data && data.w) || 0;

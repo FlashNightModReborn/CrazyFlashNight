@@ -465,6 +465,7 @@ test('InteractionBroker keeps selection semantics and emits a neutral accepted i
 }));
 
 test('PointerDragController dispatches drag and tears down every transient resource', () => withDocument(document => {
+    const windowTarget = new FakeDocument();
     const sourceElement = document.createElement('section');
     const sourceNode = document.createElement('article');
     const targetNode = document.createElement('article');
@@ -490,6 +491,7 @@ test('PointerDragController dispatches drag and tears down every transient resou
         onDragStart:value => starts.push(value),
         onDragEnd:value => ends.push(value),
         broker,
+        windowTarget,
         threshold:5,
         timeoutMs:5000
     });
@@ -503,6 +505,8 @@ test('PointerDragController dispatches drag and tears down every transient resou
     assert.strictEqual(document.listenerCount('pointermove'), 1);
     assert.strictEqual(document.listenerCount('pointerup'), 1);
     assert.strictEqual(document.listenerCount('pointercancel'), 1);
+    assert.strictEqual(sourceNode.listenerCount('lostpointercapture'), 1);
+    assert.strictEqual(windowTarget.listenerCount('blur'), 1);
 
     document.dispatch('pointermove', {pointerId:9, clientX:12, clientY:12});
     assert.strictEqual(starts.length, 0);
@@ -531,11 +535,86 @@ test('PointerDragController dispatches drag and tears down every transient resou
     assert.strictEqual(document.listenerCount('pointermove'), 0);
     assert.strictEqual(document.listenerCount('pointerup'), 0);
     assert.strictEqual(document.listenerCount('pointercancel'), 0);
+    assert.strictEqual(sourceNode.listenerCount('lostpointercapture'), 0);
+    assert.strictEqual(windowTarget.listenerCount('blur'), 0);
     assert.strictEqual(ends.length, 1);
 
     controller.destroy();
     controller.destroy();
     assert.strictEqual(sourceElement.listenerCount('pointerdown'), 0);
+}));
+
+test('PointerDragController cancels exact lost capture, pointer cancellation, and window blur without dispatch', () => withDocument(document => {
+    const windowTarget = new FakeDocument();
+    const sourceElement = document.createElement('section');
+    const sourceNode = document.createElement('article');
+    sourceElement.appendChild(sourceNode);
+    let dispatches = 0;
+    let dragEnds = 0;
+    const controller = new Primitives.PointerDragController({
+        sourceElement,
+        getSource:() => ({view:{instanceKey:'bag'}, item:{id:'a'}, node:sourceNode}),
+        resolveTarget:() => ({view:{instanceKey:'warehouse'}, node:document.createElement('div')}),
+        broker:{select() {}, dispatch() { dispatches++; }},
+        onDragEnd:() => dragEnds++,
+        windowTarget,
+        threshold:2,
+        timeoutMs:5000
+    });
+
+    function begin(pointerId) {
+        sourceElement.dispatch('pointerdown', {
+            target:sourceNode, pointerId, clientX:0, clientY:0
+        });
+        document.dispatch('pointermove', {pointerId, clientX:8, clientY:8});
+        assert.strictEqual(controller.debugState().dragging, true);
+    }
+
+    begin(4);
+    sourceNode.dispatch('lostpointercapture', {pointerId:99});
+    assert.strictEqual(controller.debugState().active, true);
+    sourceNode.dispatch('lostpointercapture', {pointerId:4});
+    assert.strictEqual(controller.debugState().active, false);
+
+    begin(5);
+    document.dispatch('pointercancel', {pointerId:99});
+    assert.strictEqual(controller.debugState().active, true);
+    document.dispatch('pointercancel', {pointerId:5});
+    assert.strictEqual(controller.debugState().active, false);
+
+    begin(6);
+    windowTarget.dispatch('blur');
+    assert.strictEqual(controller.debugState().active, false);
+    assert.strictEqual(dispatches, 0);
+    assert.strictEqual(dragEnds, 3);
+    assert.strictEqual(controller.consumeClick(), true);
+    assert.strictEqual(sourceNode.listenerCount('lostpointercapture'), 0);
+    assert.strictEqual(windowTarget.listenerCount('blur'), 0);
+    controller.destroy();
+}));
+
+test('PointerDragController blank release never dispatches but suppresses the synthetic click', () => withDocument(document => {
+    const sourceElement = document.createElement('section');
+    const sourceNode = document.createElement('article');
+    sourceElement.appendChild(sourceNode);
+    let dispatches = 0;
+    const controller = new Primitives.PointerDragController({
+        sourceElement,
+        getSource:() => ({view:{instanceKey:'bag'}, item:{id:'a'}, node:sourceNode}),
+        resolveTarget:() => null,
+        broker:{select() {}, dispatch() { dispatches++; }},
+        threshold:2,
+        timeoutMs:5000
+    });
+    sourceElement.dispatch('pointerdown', {
+        target:sourceNode, pointerId:7, clientX:0, clientY:0
+    });
+    document.dispatch('pointermove', {pointerId:7, clientX:8, clientY:8});
+    document.dispatch('pointerup', {pointerId:7, clientX:8, clientY:8});
+    assert.strictEqual(dispatches, 0);
+    assert.strictEqual(controller.consumeClick(), true);
+    assert.strictEqual(controller.debugState().active, false);
+    controller.destroy();
 }));
 
 test('PointerDragController cancel before threshold is idempotent and does not emit drag end', () => withDocument(document => {

@@ -24,6 +24,7 @@ var EquipmentTuningRender = (function() {
         var buildModFilterTree = Model.buildModFilterTree;
         var modMatchesFilter = Model.modMatchesFilter;
         var commitLabel = Model.commitLabel;
+        var modPresentationForItem = Model.modPresentationForItem;
         var equipmentDiff = Model.equipmentDiff;
         var errorMessage = Model.errorMessage;
         var tuningSourceKey = Model.tuningSourceKey;
@@ -378,14 +379,14 @@ var EquipmentTuningRender = (function() {
         icon.type = 'button';
         icon.disabled = !this._inspectAvailable(item);
         icon.setAttribute('data-tuning-focus-key', 'source:inspect');
-        icon.setAttribute('aria-label', '检视当前装备：' + String(item.displayName || item.name || '装备'));
-        icon.innerHTML = iconHtml(item.icon || item.name, 'kshop-icon');
+        icon.setAttribute('aria-label', '检视当前装备：' + String(item.displayName));
+        icon.innerHTML = iconHtml(item.icon, 'kshop-icon');
         icon.addEventListener('click', function() { self.inspectCurrentEquipment(); });
         setCapability(icon, 'inspect', !this._inspectAvailable(item));
         var copy = element('div', 'equipment-tuning-main-copy equipment-tuning-summary-copy');
         var equipment = this._snapshot && this._snapshot.equipment;
         var level = equipment ? Number(equipment.level || 0) : Number(item.enhancementLevel || 0);
-        copy.innerHTML = '<b>' + escapeHtml(item.displayName || item.name) + '</b>'
+        copy.innerHTML = '<b>' + escapeHtml(item.displayName) + '</b>'
             + '<span>强化 +' + level + (equipment && equipment.tier ? ' · ' + escapeHtml(equipment.tier) : '') + '</span>'
             + '<small>' + escapeHtml(this._source && this._source.sourceKind === 'loadout'
                 ? String(this._source.slotKey || '当前槽位') + ' · ' + this._status
@@ -502,7 +503,7 @@ var EquipmentTuningRender = (function() {
         var snapshot = this._snapshot || {};
         var equipment = snapshot.equipment || {};
         var item = this._sourceItem || {};
-        var name = String(item.displayName || item.name || '当前装备');
+        var name = String(item.displayName);
         var operation = this._operation === 'replace_mod' ? 'install_mod' : this._operation;
         var detail;
         if (operation === 'enhance') {
@@ -605,7 +606,7 @@ var EquipmentTuningRender = (function() {
             );
             tier.innerHTML = tierName
                 ? iconHtml(
-                    candidateIconName(tierCandidate, tierName),
+                    candidateIconName(tierCandidate),
                     'kshop-icon'
                 ) + '<span class="equipment-tuning-status-mark" aria-hidden="true">阶</span>'
                 : '<span class="equipment-tuning-status-mark" aria-hidden="true">阶</span>';
@@ -641,7 +642,7 @@ var EquipmentTuningRender = (function() {
         }
         installed.forEach(function(name, index) {
             var candidate = candidateForItem(candidates, name);
-            var displayName = candidateDisplayName(candidate, name);
+            var displayName = candidateDisplayName(candidate, '已安装配件');
             var button = element('button', 'equipment-tuning-status-icon mod grade-'
                 + String(candidate && candidate.grade || 'unknown'));
             button.type = 'button';
@@ -655,7 +656,7 @@ var EquipmentTuningRender = (function() {
             if (candidate && candidate.gradeColor) {
                 button.style.setProperty('--equipment-mod-grade-color', String(candidate.gradeColor));
             }
-            button.innerHTML = iconHtml(candidateIconName(candidate, name), 'kshop-icon')
+            button.innerHTML = iconHtml(candidateIconName(candidate), 'kshop-icon')
                 + '<i class="equipment-tuning-status-role inventory-mod-glyph symbol-'
                 + normalizeModSymbol(candidate && candidate.symbol) + '" aria-hidden="true"></i>';
             button.disabled = self._busy || self._readPending || self._needsReconcile
@@ -874,7 +875,7 @@ var EquipmentTuningRender = (function() {
                 mark.addEventListener('focus', function() {
                     self._setInfoSubject({
                         candidateKey:'enhance:' + markLevel,
-                        itemName:'强化至 +' + markLevel,
+                        displayName:'强化至 +' + markLevel,
                         gradeLabel:'当前 +' + current,
                         scopeLabel:'可用上限 +' + max,
                         roleLabel:'先预览材料与结果，再提交'
@@ -954,11 +955,11 @@ var EquipmentTuningRender = (function() {
                 button.setAttribute('data-tuning-focus-key', 'conversion:'
                     + String(slot.physicalSlot) + ':' + String(slot.slotLease || ''));
                 button.setAttribute('aria-pressed', selected ? 'true' : 'false');
-                button.setAttribute('aria-label', String(item.displayName || item.name || '装备')
+                button.setAttribute('aria-label', String(item.displayName)
                     + '，强化 +' + Number(item.enhancementLevel || 0));
-                button.innerHTML = iconHtml(item.icon || item.name, 'kshop-icon')
+                button.innerHTML = iconHtml(item.icon, 'kshop-icon')
                     + '<span class="equipment-tuning-conversion-copy"><b>'
-                    + escapeHtml(item.displayName || item.name || '未知装备') + '</b><small>'
+                    + escapeHtml(item.displayName) + '</b><small>'
                     + escapeHtml(item.use || '同类装备') + ' · 强化 +' + Number(item.enhancementLevel || 0)
                     + '</small></span><i class="equipment-tuning-conversion-level">+'
                     + Number(item.enhancementLevel || 0) + '</i>';
@@ -978,7 +979,7 @@ var EquipmentTuningRender = (function() {
         if (!candidates.length) { body.appendChild(empty('当前装备没有可用候选。')); return; }
         candidates.forEach(function(candidate) {
             var displayName = candidateDisplayName(candidate, '候选');
-            var iconName = candidateIconName(candidate, candidate.itemName || candidate.candidateKey);
+            var iconName = candidateIconName(candidate);
             var button = element('button', 'equipment-tuning-candidate' + (candidate.available ? ' available' : ' blocked'));
             button.type = 'button'; button.disabled = self._busy || self._readPending || self._needsReconcile;
             button.setAttribute('aria-disabled', candidate.available ? 'false' : 'true');
@@ -1021,6 +1022,11 @@ var EquipmentTuningRender = (function() {
                 + (candidate.reason ? ' · ' + escapeHtml(candidate.reason) : '') + '</small></span>';
             button.addEventListener('click', function() {
                 var capability = operation === 'install_tier' ? 'tier' : 'candidate';
+                self._recordDiagnostic('candidate_hit', {
+                    operation:operation,
+                    capability:capability,
+                    candidateKey:candidate.candidateKey
+                });
                 if (!self._allowInteraction(capability)) return;
                 if (candidate.available) self.requestPreview(operation, {
                     candidateKey:candidate.candidateKey,
@@ -1029,7 +1035,14 @@ var EquipmentTuningRender = (function() {
                     replaceCandidateName:self._replaceCandidateName,
                     quickCommit:self._modConfirmationMode === 'fast'
                 });
-                else self._toast(String(candidate.reason || '当前候选不可用。'));
+                else {
+                    self._recordDiagnostic('intrinsic_unavailable', {
+                        operation:operation,
+                        capability:capability,
+                        candidateKey:candidate.candidateKey
+                    });
+                    self._toast(String(candidate.reason || '当前候选不可用。'));
+                }
             });
             self._bindCandidateTooltip(button, candidate);
             list.appendChild(button);
@@ -1066,8 +1079,8 @@ var EquipmentTuningRender = (function() {
                         ? PanelTooltip.convertAS2Html(combinedHtml) : (combinedHtml || textHtml);
                 }
                 var options = {
-                    iconHtml:PanelTooltip.dynamicIconHtml ? PanelTooltip.dynamicIconHtml(candidateIconName(value, value.itemName)) : '',
-                    iconUrl:PanelTooltip.staticIconUrl ? PanelTooltip.staticIconUrl(candidateIconName(value, value.itemName)) : '',
+                    iconHtml:PanelTooltip.dynamicIconHtml ? PanelTooltip.dynamicIconHtml(candidateIconName(value)) : '',
+                    iconUrl:PanelTooltip.staticIconUrl ? PanelTooltip.staticIconUrl(candidateIconName(value)) : '',
                     descHTML:descHtml,
                     rootClass:'equipment-tuning-tooltip',
                     layoutType:PanelTooltip.inferLayoutType
@@ -1078,7 +1091,14 @@ var EquipmentTuningRender = (function() {
                 return PanelTooltip.buildItemRichHtml(options);
             },
             fetch:function(value, callback) {
-                self._mux.request('tooltip', {candidateKey:String(value.candidateKey)}, callback);
+                self._mux.request('tooltip', {candidateKey:String(value.candidateKey)}, function(response, entry) {
+                    callback(response, entry);
+                    var previewDiagnostic = self._previewDiagnostic;
+                    if (self._preview && self._preview.tuningToken && previewDiagnostic
+                            && self._mux.debugState().pendingCount === 0) {
+                        self._recordDiagnostic('preview_adopted', previewDiagnostic);
+                    }
+                });
             }
         });
     };
@@ -1130,7 +1150,7 @@ var EquipmentTuningRender = (function() {
             var self = this;
             installed.forEach(function(name, slotIndex) {
                 var candidate = candidateForItem(candidates, name);
-                var displayName = candidateDisplayName(candidate, name);
+                var displayName = candidateDisplayName(candidate, '已安装配件');
                 var candidateKey = candidate && candidate.candidateKey;
                 var selected = candidateKey && candidateKey === replacementKey;
                 var entry = element('div', 'equipment-tuning-installed-entry');
@@ -1159,7 +1179,7 @@ var EquipmentTuningRender = (function() {
                 if (candidate && candidate.gradeColor) {
                     button.style.setProperty('--equipment-mod-grade-color', String(candidate.gradeColor));
                 }
-                button.innerHTML = iconHtml(candidateIconName(candidate, name), 'kshop-icon')
+                button.innerHTML = iconHtml(candidateIconName(candidate), 'kshop-icon')
                     + '<span><b>' + escapeHtml(displayName) + '</b><small>'
                     + escapeHtml(candidate && candidate.gradeLabel || '已安装')
                     + (candidate && candidate.roleLabel ? ' · ' + escapeHtml(candidate.roleLabel) : '') + '</small></span>'
@@ -1324,17 +1344,19 @@ var EquipmentTuningRender = (function() {
             heading.innerHTML = '<b>' + operationLabel(this._preview.operation) + '</b><span>'
                 + (this._preview.noOp ? '无需变更' : (this._preview.tuningToken ? '材料与结果已确认' : '条件不满足')) + '</span>';
             section.appendChild(heading);
-            var equipmentDelta = renderEquipmentDelta(this._preview.before, this._preview.after);
+            var equipmentDelta = renderEquipmentDelta(
+                this._preview.before,
+                this._preview.after,
+                this._snapshot && this._snapshot.modCandidates);
             if (equipmentDelta) section.appendChild(equipmentDelta);
             var materials = this._preview.materials || [];
             if (materials.length) {
                 var list = element('div', 'equipment-tuning-material-deltas');
                 materials.forEach(function(material) {
                     var row = element('div', 'equipment-tuning-material-delta');
-                    var materialName = String(material.itemName || '');
                     row.innerHTML = '<span class="equipment-tuning-material-label">'
-                        + materialIconHtml(materialName, 'equipment-tuning-material-icon', true)
-                        + '<em>' + escapeHtml(materialName) + '</em></span><b>'
+                        + materialIconHtml(material.icon, 'equipment-tuning-material-icon', true)
+                        + '<em>' + escapeHtml(material.displayName) + '</em></span><b>'
                         + Number(material.before || 0) + (Number(material.delta || 0) >= 0 ? ' +' : ' ')
                         + Number(material.delta || 0) + ' → ' + Number(material.after || 0) + '</b>';
                     list.appendChild(row);
@@ -1342,8 +1364,31 @@ var EquipmentTuningRender = (function() {
                 section.appendChild(list);
             }
             if (this._preview.removedMods && this._preview.removedMods.length) {
-                var removed = element('p', 'equipment-tuning-removed');
-                removed.textContent = '将返还：' + this._preview.removedMods.join('、'); section.appendChild(removed);
+                var removed = element('div', 'equipment-tuning-removed');
+                var removedPrefix = element('span', 'equipment-tuning-removed-prefix');
+                removedPrefix.textContent = '将返还：';
+                removed.appendChild(removedPrefix);
+                var removedList = element('span', 'equipment-tuning-removed-list');
+                var currentCandidates = this._snapshot && this._snapshot.modCandidates;
+                this._preview.removedMods.forEach(function(itemName) {
+                    var presentation = modPresentationForItem(
+                        currentCandidates, itemName);
+                    var removedItem = element(
+                        'span',
+                        'equipment-tuning-removed-item'
+                            + (presentation.known ? '' : ' is-unknown'));
+                    removedItem.innerHTML = presentation.known
+                        ? materialIconHtml(
+                            presentation.icon,
+                            'equipment-tuning-material-icon',
+                            true)
+                            + '<em>' + escapeHtml(presentation.displayName) + '</em>'
+                        : '<span class="kshop-icon kshop-icon-placeholder equipment-tuning-material-icon"></span>'
+                            + '<em>' + escapeHtml(presentation.displayName) + '</em>';
+                    removedList.appendChild(removedItem);
+                });
+                removed.appendChild(removedList);
+                section.appendChild(removed);
             }
         }
         return section;
@@ -1372,9 +1417,9 @@ var EquipmentTuningRender = (function() {
                 + (emptyTarget ? '从下方选择目标' : '未选择装备') + '</b></span>';
             return card;
         }
-        card.innerHTML = iconHtml(item.icon || item.name, 'kshop-icon')
+        card.innerHTML = iconHtml(item.icon, 'kshop-icon')
             + '<span><small>' + escapeHtml(label || '装备') + '</small><b>'
-            + escapeHtml(item.displayName || item.name || '未知装备') + '</b><em>强化 +'
+            + escapeHtml(item.displayName) + '</b><em>强化 +'
             + Number(item.enhancementLevel || 0) + '</em></span>';
         if (typeof onInspect === 'function') {
             card.classList.add('inspectable');
@@ -1383,7 +1428,7 @@ var EquipmentTuningRender = (function() {
             inspect.textContent = '⌕';
             inspect.disabled = !!inspectDisabled;
             setCapability(inspect, 'inspect', !!inspectDisabled);
-            inspect.setAttribute('aria-label', '检视交换目标：' + String(item.displayName || item.name || '装备'));
+            inspect.setAttribute('aria-label', '检视交换目标：' + String(item.displayName));
             inspect.addEventListener('click', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -1403,14 +1448,15 @@ var EquipmentTuningRender = (function() {
     function empty(text) { var node = element('div', 'equipment-tuning-empty'); node.textContent = text || ''; return node; }
     function actionButton(text, handler) { var button = element('button', 'equipment-tuning-action'); button.type = 'button'; button.textContent = text; if (handler) button.addEventListener('click', handler); return button; }
     function candidateDisplayName(candidate, fallback) {
-        return String(candidate && (candidate.displayName || candidate.itemName)
-            || fallback || candidate && candidate.candidateKey || '');
+        return String(candidate && typeof candidate.displayName === 'string'
+            && candidate.displayName ? candidate.displayName : fallback || '');
     }
-    function candidateIconName(candidate, fallback) {
-        return String(candidate && (candidate.icon || candidate.itemName)
-            || fallback || candidate && candidate.candidateKey || '');
+    function candidateIconName(candidate) {
+        return String(candidate && typeof candidate.icon === 'string'
+            && candidate.icon ? candidate.icon : '');
     }
     function iconHtml(name, cls) {
+        if (!name) return '<span class="kshop-icon kshop-icon-placeholder"></span>';
         var html = typeof Icons !== 'undefined' && Icons.html ? Icons.html(name, cls || 'kshop-icon', ' onerror="this.style.display=\'none\'"') : '';
         return html || '<span class="kshop-icon-placeholder"></span>';
     }
@@ -1429,7 +1475,7 @@ var EquipmentTuningRender = (function() {
     }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-    function renderEquipmentDelta(before, after) {
+    function renderEquipmentDelta(before, after, modCandidates) {
         before = before || {}; after = after || {};
         var keys = ['source','target'];
         var list = element('div', 'equipment-tuning-equipment-deltas');
@@ -1438,10 +1484,10 @@ var EquipmentTuningRender = (function() {
             var left = before[keys[i]] && before[keys[i]].equipment;
             var right = after[keys[i]] && after[keys[i]].equipment;
             if (!left || !right) continue;
-            var diff = equipmentDiff(left, right);
+            var diff = equipmentDiff(left, right, modCandidates);
             if (!diff) continue;
             var row = element('div', 'equipment-tuning-equipment-delta');
-            var name = right.displayName || right.name || left.displayName || left.name || (keys[i] === 'source' ? '主装备' : '目标装备');
+            var name = right.displayName || left.displayName || (keys[i] === 'source' ? '主装备' : '目标装备');
             row.innerHTML = '<b>' + escapeHtml(name) + '</b><span>' + escapeHtml(diff) + '</span>';
             list.appendChild(row); count++;
         }

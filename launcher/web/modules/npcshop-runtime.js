@@ -10,6 +10,144 @@
     'use strict';
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
 
+    var NPC_COMMANDS = {
+        snapshot:true, tooltip:true, batchPreview:true, tradePreview:true,
+        buy:true, batchSell:true, tradeCommit:true
+    };
+    var PANEL_INSTANCE_PATTERN = /^[A-Za-z0-9._~-]{1,128}$/;
+
+    function strictText(value) {
+        return typeof value === 'string' && value.length > 0 && value.length <= 256
+            && !/[\u0000-\u001f\u007f]/.test(value);
+    }
+
+    function identityText(value) {
+        return strictText(value) && value.trim().length > 0
+            && value.trim().toLowerCase() !== 'undefined';
+    }
+
+    function identityTriple(value, internalField) {
+        return !!value && typeof value === 'object'
+            && identityText(value[internalField])
+            && identityText(value.displayName)
+            && identityText(value.icon);
+    }
+
+    function validateStateIdentity(data, payload, cmd) {
+        if (!data || data.shopId !== payload.shopId || !Array.isArray(data.catalog)
+                || !data.views || !data.views.material || !data.views.intelligence) return false;
+        if (!data.catalog.every(function(item) { return identityTriple(item, 'itemName'); })) return false;
+        for (var key of ['material', 'intelligence']) {
+            var slots = data.views[key] && data.views[key].slots;
+            if (!Array.isArray(slots) || !slots.every(function(slot) {
+                return !slot.occupied || identityTriple(slot.item, 'name');
+            })) return false;
+        }
+        if (!cmd || cmd === 'snapshot') return true;
+        if (data.operation !== cmd) return false;
+        if (cmd === 'buy' && Number(data.quantity) !== Number(payload.quantity)) return false;
+        return true;
+    }
+
+    function validateBusinessResponse(data, entry) {
+        if (!data || data.success !== true) return !!data && data.success === false;
+        var payload = entry && entry.metadata && entry.metadata.payload || {};
+        var cmd = entry && entry.cmd;
+        if (cmd === 'snapshot' || cmd === 'buy'
+                || cmd === 'batchSell' || cmd === 'tradeCommit') {
+            return validateStateIdentity(data, payload, cmd);
+        }
+        if (cmd === 'tradePreview') {
+            return data.shopId === payload.shopId
+                && Array.isArray(data.purchaseLines) && Array.isArray(data.saleLines)
+                && data.purchaseLines.every(function(line) { return identityTriple(line, 'itemName'); })
+                && data.saleLines.every(function(line) { return identityTriple(line, 'itemName'); });
+        }
+        if (cmd === 'batchPreview') {
+            return Array.isArray(data.summary)
+                && data.summary.every(function(line) { return identityTriple(line, 'itemName'); });
+        }
+        if (cmd === 'tooltip') {
+            return identityText(data.itemName)
+                && identityText(data.displayname)
+                && (!Object.prototype.hasOwnProperty.call(data, 'iconName')
+                    || identityText(data.iconName))
+                && (!payload.itemName || data.itemName === payload.itemName);
+        }
+        return false;
+    }
+
+    function OwnerLifecycle(options) {
+        options = options || {};
+        this._panel = String(options.panel || 'npcshop');
+        this._muxes = Array.isArray(options.muxes) ? options.muxes.slice() : [];
+        this.panelInstanceId = '';
+        this.generation = 0;
+        this.needsReconcile = false;
+        this.reconcileEpoch = 0;
+    }
+
+    OwnerLifecycle.prototype.open = function(panelInstanceId) {
+        if (typeof panelInstanceId !== 'string' || !PANEL_INSTANCE_PATTERN.test(panelInstanceId)) {
+            return false;
+        }
+        var session = {ownerPanel:this._panel, panelInstanceId:panelInstanceId};
+        var opened = [];
+        this.generation++;
+        for (var i = 0; i < this._muxes.length; i++) {
+            var mux = this._muxes[i];
+            if (!mux || typeof mux.openSession !== 'function' || !mux.openSession(session)) {
+                for (var j = 0; j < opened.length; j++) opened[j].closeSession();
+                this.panelInstanceId = '';
+                this.needsReconcile = false;
+                this.reconcileEpoch = 0;
+                return false;
+            }
+            opened.push(mux);
+        }
+        this.panelInstanceId = panelInstanceId;
+        this.needsReconcile = false;
+        this.reconcileEpoch = 0;
+        return true;
+    };
+
+    OwnerLifecycle.prototype.close = function() {
+        this.generation++;
+        for (var i = 0; i < this._muxes.length; i++) {
+            if (this._muxes[i] && typeof this._muxes[i].closeSession === 'function') {
+                this._muxes[i].closeSession();
+            }
+        }
+        this.panelInstanceId = '';
+        this.needsReconcile = false;
+        this.reconcileEpoch = 0;
+    };
+
+    OwnerLifecycle.prototype.captureSnapshot = function() {
+        return {generation:this.generation, reconcileEpoch:this.reconcileEpoch,
+            isReconcileProbe:this.needsReconcile};
+    };
+
+    OwnerLifecycle.prototype.isCurrentSnapshot = function(intent) {
+        return !!intent && intent.generation === this.generation
+            && intent.reconcileEpoch === this.reconcileEpoch
+            && (!this.needsReconcile || intent.isReconcileProbe);
+    };
+
+    OwnerLifecycle.prototype.enterNeedsReconcile = function() {
+        if (!this.needsReconcile) this.reconcileEpoch++;
+        this.needsReconcile = true;
+    };
+
+    OwnerLifecycle.prototype.acceptAuthorityState = function() {
+        this.needsReconcile = false;
+    };
+
+    OwnerLifecycle.prototype.closeMessage = function() {
+        return {type:'panel', cmd:'close', panel:this._panel,
+            panelInstanceId:this.panelInstanceId};
+    };
+
     function RequestMux(options) {
         options = options || {};
         var domain = String(options.domain || 'npcshop');
@@ -24,26 +162,45 @@
             clearTimer:options.clearTimer,
             callPrefix:prefix,
             router:options.router || PanelRuntime.sharedResponseRouter,
+            validateSession:function(session) {
+                return !!session && session.ownerPanel === panel
+                    && /^[A-Za-z0-9._~-]{1,128}$/.test(String(session.panelInstanceId || ''));
+            },
             createMessage:function(context) {
                 return {type:'panel', domain:domain, panel:panel, cmd:context.entry.cmd,
+                    panelInstanceId:context.session.panelInstanceId,
                     callId:context.entry.callId, payload:context.payload || {}};
             },
             validateResponse:function(data, entry) {
                 return data && data.type === 'panel_resp' && data.domain === domain
-                    && data.callId === entry.callId && data.cmd === entry.cmd;
+                    && data.panel === panel
+                    && data.panelInstanceId === entry.session.panelInstanceId
+                    && data.callId === entry.callId && data.cmd === entry.cmd
+                    && (domain !== 'npcshop' || validateBusinessResponse(data, entry));
             },
             createSynthetic:function(context) {
                 return {type:'panel_resp', domain:domain, panel:panel, cmd:context.entry.cmd,
+                    panelInstanceId:context.session.panelInstanceId,
                     callId:context.entry.callId, success:false, error:context.error,
                     clientSynthetic:true};
             }
         });
     }
 
-    RequestMux.prototype.openSession = function() { return this._mux.openSession({}); };
+    RequestMux.prototype.openSession = function(session) { return this._mux.openSession(session || {}); };
     RequestMux.prototype.closeSession = function() { this._mux.closeSession(); };
     RequestMux.prototype.request = function(cmd, payload, callback) {
-        return this._mux.request(cmd, payload, {sendError:'disconnected'}, callback);
+        if (this._domain === 'npcshop' && !NPC_COMMANDS[String(cmd || '')]) {
+            if (typeof callback === 'function') callback({
+                success:false,error:'unsupported_cmd',clientSynthetic:true
+            });
+            return null;
+        }
+        var frozenPayload;
+        try { frozenPayload = JSON.parse(JSON.stringify(payload || {})); }
+        catch (_) { return null; }
+        return this._mux.request(cmd, payload, {sendError:'disconnected',
+            metadata:{payload:frozenPayload}}, callback);
     };
     RequestMux.prototype.handleResponse = function(data) { return this._mux.handleResponse(data); };
     RequestMux.prototype.destroy = function() { this._mux.destroy(); };
@@ -53,5 +210,92 @@
             active:state.active, pendingCount:state.pendingCount};
     };
 
-    return {RequestMux:RequestMux};
+    function createOwnerChannels(send, options) {
+        options = options || {};
+        function muxOptions(domain, callPrefix) {
+            return {send:send,
+                timeoutMs:options.timeoutMs == null ? options.requestTimeoutMs : options.timeoutMs,
+                sessionNonce:options.sessionNonce, setTimer:options.setTimer,
+                clearTimer:options.clearTimer, router:options.router,
+                domain:domain, panel:'npcshop', callPrefix:callPrefix};
+        }
+        var business = new RequestMux(muxOptions('npcshop', 'npc'));
+        var inventory = new RequestMux(muxOptions('inventory', 'npc-inv'));
+        return {business:business, inventory:inventory,
+            owner:new OwnerLifecycle({panel:'npcshop', muxes:[business, inventory]})};
+    }
+
+    function PhysicalInventoryAdapter(options) {
+        options = options || {};
+        var runtime = options.inventoryRuntime;
+        if (!runtime || typeof runtime.InventoryCoordinator !== 'function'
+                || typeof runtime.readPhysicalInventorySurface !== 'function'
+                || typeof options.request !== 'function' || !options.owner) {
+            throw new Error('NPC physical Inventory dependencies are required');
+        }
+        var request = options.request, owner = options.owner;
+        this._onApplied = typeof options.onApplied === 'function' ? options.onApplied : function() {};
+        this._surfaceReceipt = null;
+        this.coordinator = new runtime.InventoryCoordinator({
+            request:request,
+            readPhysicalSurface:function(isActive, callback) {
+                return runtime.readPhysicalInventorySurface(request,
+                    {isActive:isActive, expectedPanel:'npcshop',
+                        expectedPanelInstanceId:owner.panelInstanceId}, callback);
+            },
+            requests:[
+                {containerId:'背包', offset:0, limit:50, filterKey:'all'},
+                {containerId:'战备箱', offset:0, limit:40, filterKey:'all'}
+            ],
+            onStateChange:options.onStateChange
+        });
+    }
+
+    PhysicalInventoryAdapter.prototype.refresh = function(callback) {
+        var self = this, coordinator = this.coordinator;
+        coordinator.open(function(result) {
+            result = result || {success:false};
+            self._surfaceReceipt = result.success && result.surface
+                ? JSON.parse(JSON.stringify(result.surface)) : null;
+            self._onApplied(result);
+            if (typeof callback === 'function') callback(result);
+        });
+        return true;
+    };
+
+    PhysicalInventoryAdapter.prototype.resetSession = function() {
+        var coordinator = this.coordinator;
+        if (coordinator.debugState().opened) return false;
+        var backpack = coordinator.getRequest('背包');
+        var battlebox = coordinator.getRequest('战备箱');
+        if (!backpack || !battlebox) return false;
+        this._surfaceReceipt = null;
+        return coordinator.configureRequests([
+            {containerId:'背包', offset:backpack.offset, limit:50, filterKey:'all'},
+            {containerId:'战备箱', offset:battlebox.offset, limit:40, filterKey:'all'}
+        ]);
+    };
+
+    PhysicalInventoryAdapter.prototype.close = function() {
+        this.coordinator.close();
+        this._surfaceReceipt = null;
+    };
+
+    PhysicalInventoryAdapter.prototype.getReceipt = function() {
+        return this._surfaceReceipt ? JSON.parse(JSON.stringify(this._surfaceReceipt)) : null;
+    };
+
+    function createPhysicalInventoryAdapter(options) {
+        return new PhysicalInventoryAdapter(options);
+    }
+
+    return {RequestMux:RequestMux, OwnerLifecycle:OwnerLifecycle,
+        createOwnerChannels:createOwnerChannels,
+        createPhysicalInventoryAdapter:createPhysicalInventoryAdapter,
+        validateBusinessResponse:validateBusinessResponse,
+        identityTriple:identityTriple,
+        isPanelInstanceId:function(value) {
+            return typeof value === 'string' && PANEL_INSTANCE_PATTERN.test(value);
+        },
+        isSupportedCommand:function(cmd) { return !!NPC_COMMANDS[String(cmd || '')]; }};
 });

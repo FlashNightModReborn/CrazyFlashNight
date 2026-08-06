@@ -130,6 +130,24 @@ var EquipmentTuningWriteLifecycle = (function() {
             refreshResult,
             authoritativeSnapshot
         ) {
+            var self = this;
+            function recordRefresh(success) {
+                var commitDiagnostic = self._commitDiagnostic || {};
+                self._recordDiagnostic('inventory_refresh_settled', {
+                    operation:commitDiagnostic.operation || self._operation,
+                    webCallId:commitDiagnostic.webCallId,
+                    candidateKey:commitDiagnostic.candidateKey,
+                    intentKey:commitDiagnostic.intentKey,
+                    success:success === true,
+                    currentLeasePresent:!!(self._source
+                        && self._source.sourceKind === 'inventory'
+                        && self._source.expectedLease),
+                    needsReconcile:self._needsReconcile === true
+                });
+                if (success === true && self._needsReconcile !== true) {
+                    self._commitDiagnostic = null;
+                }
+            }
             reconcileAfterCallId =
                 EquipmentTuningRuntime.safeToken(reconcileAfterCallId);
             if (!refreshResult || refreshResult.success !== true) {
@@ -144,6 +162,7 @@ var EquipmentTuningWriteLifecycle = (function() {
                 this._modIntent = null;
                 this._status =
                     '背包刷新失败；必须重试成功后才能使用新租约对账';
+                recordRefresh(false);
                 this._emit();
                 this.render();
                 return false;
@@ -171,6 +190,7 @@ var EquipmentTuningWriteLifecycle = (function() {
                 this._status = changed
                     ? '装备已移动，请重新选择'
                     : '请选择左侧背包装备';
+                recordRefresh(true);
                 this._emit();
                 this.render();
                 return false;
@@ -194,6 +214,7 @@ var EquipmentTuningWriteLifecycle = (function() {
                 this._snapshot = null;
                 this._preview = null;
                 this._status = '背包装备租约无效，请重新选择';
+                recordRefresh(true);
                 this._emit();
                 this.render();
                 return false;
@@ -214,6 +235,7 @@ var EquipmentTuningWriteLifecycle = (function() {
                 this._targetLevel =
                     nextEnhancementLevel(authoritativeSnapshot);
                 this._status = '装备状态已同步';
+                recordRefresh(true);
                 this._emit();
                 this.render();
                 if (this._operation === 'enhance'
@@ -234,6 +256,7 @@ var EquipmentTuningWriteLifecycle = (function() {
             }
             this._snapshot = null;
             this._preview = null;
+            recordRefresh(true);
             this._emit();
             this.requestSnapshot(reconcileAfterCallId);
             return true;
@@ -266,12 +289,28 @@ var EquipmentTuningWriteLifecycle = (function() {
                 }
                 self._refreshRetryRequired = true;
                 self._status = '背包刷新仍未成功，请重试';
+                self._recordDiagnostic('inventory_refresh_settled', {
+                    operation:self._operation,
+                    success:false,
+                    currentLeasePresent:!!(self._source
+                        && self._source.sourceKind === 'inventory'
+                        && self._source.expectedLease),
+                    needsReconcile:self._needsReconcile === true
+                });
                 self._emit();
                 self.render();
             });
             if (!started && !callbackCalled) {
                 this._refreshRetryPending = false;
                 this._status = '当前无法重试背包刷新';
+                this._recordDiagnostic('inventory_refresh_settled', {
+                    operation:this._operation,
+                    success:false,
+                    currentLeasePresent:!!(this._source
+                        && this._source.sourceKind === 'inventory'
+                        && this._source.expectedLease),
+                    needsReconcile:this._needsReconcile === true
+                });
                 this._emit();
                 this.render();
             }

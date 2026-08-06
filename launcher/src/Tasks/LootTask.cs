@@ -95,7 +95,8 @@ namespace CF7Launcher.Tasks
             "itemKind", "name", "displayName", "quantity", "enhancementLevel", "rarity",
             "tier", "modSignature", "lastUpdate");
         private static readonly HashSet<string> ModKeys = Set(
-            "name", "grade", "gradeLabel", "gradeColor", "role", "roleLabel", "symbol", "scope");
+            "name", "displayName", "icon", "grade", "gradeLabel", "gradeColor",
+            "role", "roleLabel", "symbol", "scope");
         private static readonly HashSet<string> States = Set(
             "LOOT_COMMIT_PENDING", "LOOT_ACTIVE", "LOOT_SUSPENDED",
             "CONSUMED", "ABANDONED", "EXPIRED");
@@ -2073,7 +2074,10 @@ namespace CF7Launcher.Tasks
                     if (!isLoot)
                     {
                         JObject confirm;
-                        if (!TrySanitizeConfirm(slot["confirmProjection"] as JObject, out confirm))
+                        if (!TrySanitizeConfirm(
+                                slot["confirmProjection"] as JObject,
+                                item,
+                                out confirm))
                             return false;
                         row["confirmProjection"] = confirm;
                     }
@@ -2094,7 +2098,9 @@ namespace CF7Launcher.Tasks
             foreach (string key in strings)
             {
                 string value;
-                if (!TryReadBoundedText(input[key], 256, true, out value)) return false;
+                bool identity = key == "name" || key == "displayName" || key == "icon";
+                if (!TryReadBoundedText(input[key], 256, !identity, out value)
+                    || (identity && !IsIdentityText(value))) return false;
                 row[key] = value;
             }
             if (ReadString(input["itemKind"]) != "equipment"
@@ -2133,17 +2139,23 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool TrySanitizeConfirm(JObject input, out JObject output)
+        private static bool TrySanitizeConfirm(
+            JObject input,
+            JObject item,
+            out JObject output)
         {
             output = null;
-            if (!HasExactKeys(input, ConfirmKeys)) return false;
+            if (!HasExactKeys(input, ConfirmKeys) || item == null) return false;
             JObject row = new JObject();
             string[] strings = { "itemKind", "name", "displayName", "rarity", "tier", "modSignature" };
             foreach (string key in strings)
             {
                 string value;
-                if (!TryReadBoundedText(input[key], key == "modSignature" ? 1024 : 256,
-                        true, out value)) return false;
+                bool identity = key == "name" || key == "displayName";
+                if (!TryReadBoundedText(
+                        input[key], key == "modSignature" ? 1024 : 256,
+                        !identity, out value)
+                    || (identity && !IsIdentityText(value))) return false;
                 row[key] = value;
             }
             long quantity;
@@ -2152,7 +2164,13 @@ namespace CF7Launcher.Tasks
             if (!TryReadLongInteger(input["quantity"], 0, MaxSafeInteger, out quantity)
                 || !TryReadInteger(input["enhancementLevel"], 0, int.MaxValue, out level)
                 || !TryReadLongInteger(input["lastUpdate"], 0, MaxSafeInteger,
-                    out lastUpdate)) return false;
+                    out lastUpdate)
+                || row.Value<string>("itemKind") != item.Value<string>("itemKind")
+                || row.Value<string>("name") != item.Value<string>("name")
+                || row.Value<string>("displayName") != item.Value<string>("displayName")
+                || row.Value<string>("rarity") != item.Value<string>("rarity")
+                || quantity != item.Value<long>("quantity")
+                || level != item.Value<int>("enhancementLevel")) return false;
             row["quantity"] = quantity;
             row["enhancementLevel"] = level;
             row["lastUpdate"] = lastUpdate;
@@ -2183,7 +2201,9 @@ namespace CF7Launcher.Tasks
             foreach (string key in ModKeys)
             {
                 string value;
-                if (!TryReadBoundedText(input[key], 128, true, out value)) return false;
+                bool identity = key == "name" || key == "displayName" || key == "icon";
+                if (!TryReadBoundedText(input[key], identity ? 256 : 128, !identity, out value)
+                    || (identity && !IsIdentityText(value))) return false;
                 row[key] = value;
             }
             output = row;
@@ -2454,6 +2474,13 @@ namespace CF7Launcher.Tasks
                 return false;
             for (int i = 0; i < value.Length; i++) if (value[i] == '\0') return false;
             return true;
+        }
+
+        private static bool IsIdentityText(string value)
+        {
+            return !string.IsNullOrWhiteSpace(value)
+                && !string.Equals(
+                    value.Trim(), "undefined", StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool IsSafeWord(string value, bool allowEmpty)

@@ -36,6 +36,48 @@
         };
     }
 
+    function settlementInspection(kind, line, intent) {
+        line = line || {};
+        intent = intent || {};
+        var sourceItem = intent.item || {};
+        var item = {};
+        for (var key in sourceItem) {
+            if (Object.prototype.hasOwnProperty.call(sourceItem, key)) item[key] = sourceItem[key];
+        }
+        item.name = String(line.itemName || '');
+        item.itemName = item.name;
+        item.displayName = String(line.displayName || '');
+        item.icon = String(line.icon || '');
+        item.itemKind = String(line.itemKind || item.itemKind || '');
+        var source = intent.source || {};
+        if (kind === 'sale' && source.containerId === '背包') {
+            return {
+                viewId:'bag',
+                slot:{
+                    occupied:true,
+                    physicalSlot:Number(source.slot),
+                    slotLease:String(source.expectedLease || ''),
+                    item:item
+                }
+            };
+        }
+        if (kind === 'purchase') {
+            return {
+                viewId:'catalog',
+                slot:{occupied:true, slotLease:'', collectionKey:item.name, item:item}
+            };
+        }
+        return {
+            viewId:String(source.viewId || 'material'),
+            slot:{
+                occupied:true,
+                slotLease:String(source.expectedLease || ''),
+                collectionKey:String(source.key || line.sourceIdentity || item.name),
+                item:item
+            }
+        };
+    }
+
     function SettlementPresenter(options) {
         options = options || {};
         this._document = options.document;
@@ -43,6 +85,14 @@
         if (!this._document || !this._components || !options.host) {
             throw new Error('SettlementPresenter requires document, components, and host');
         }
+        if (!options.tooltip || typeof options.tooltip.bindAsyncHover !== 'function') {
+            throw new Error('SettlementPresenter requires NPC tooltip scope');
+        }
+        this._tooltip = options.tooltip;
+        this._tooltipCache = options.tooltipCache || {};
+        this._renderTooltipBasic = requirePort(options, 'renderTooltipBasic');
+        this._renderTooltipRich = requirePort(options, 'renderTooltipRich');
+        this._requestTooltip = requirePort(options, 'requestTooltip');
         this._ports = {
             onBack:requirePort(options, 'onBack'),
             onClose:requirePort(options, 'onClose'),
@@ -148,6 +198,7 @@
         var record = {identity:identity, variant:variant};
         record.row = this._document.createElement('article');
         record.row.className = 'npcshop-settlement-line';
+        record.row.tabIndex = 0;
         record.row.setAttribute('data-line-identity', identity);
         record.icon = this._document.createElement('span');
         record.icon.className = 'npcshop-card-icon';
@@ -201,8 +252,8 @@
         return record;
     };
     SettlementPresenter.prototype._updateLineRecord = function(record, kind, line, intent, ui) {
-        var displayName = line.displayName || line.itemName;
-        var iconKey = String(line.icon || line.itemName || '');
+        var displayName = line.displayName;
+        var iconKey = String(line.icon || '');
         if (record.iconKey !== iconKey) {
             record.iconKey = iconKey;
             record.icon.innerHTML = this._ports.iconHtml(iconKey, 'kshop-icon');
@@ -211,6 +262,8 @@
         record.total.textContent = (kind === 'purchase' ? '-$' : '+$')
             + Number(line.total || 0).toLocaleString();
         var blocked = !!(ui.busy || ui.previewBusy);
+        record.row.setAttribute('aria-label', displayName + '，'
+            + (kind === 'purchase' ? '待购物品' : '待售物品') + '，可查看物品说明');
         if (kind === 'purchase') {
             var purchaseLimit = Math.max(1, Math.floor(Number(
                 line.purchaseLimit || intent.purchaseLimit || intent.maxQuantity || 1)));
@@ -262,9 +315,39 @@
                 rowButtons[buttonIndex].disabled = blocked;
             }
         }
+        this._bindLineInspection(record, kind, line, intent);
+    };
+    SettlementPresenter.prototype._bindLineInspection = function(record, kind, line, intent) {
+        var inspection = settlementInspection(kind, line, intent);
+        var slot = inspection.slot;
+        var signature = inspection.viewId + ':' + String(slot.physicalSlot) + ':'
+            + String(slot.slotLease || slot.collectionKey) + ':' + slot.item.name + ':'
+            + slot.item.displayName + ':' + slot.item.icon;
+        if (record.tooltipSignature === signature) return;
+        if (record.tooltipBinding) record.tooltipBinding.destroy();
+        record.tooltipSignature = signature;
+        record.tooltipBinding = bindOwnedTooltip({
+            node:record.row,
+            viewId:inspection.viewId,
+            slot:slot,
+            tooltip:this._tooltip,
+            cache:this._tooltipCache,
+            renderBasic:this._renderTooltipBasic,
+            renderRich:this._renderTooltipRich,
+            request:this._requestTooltip,
+            isSuppressed:function(event) {
+                var target = event && event.target;
+                var tagName = target && String(target.tagName || '').toUpperCase();
+                return target !== record.row
+                    && (tagName === 'BUTTON' || tagName === 'INPUT'
+                        || tagName === 'SELECT' || tagName === 'TEXTAREA');
+            }
+        });
     };
     SettlementPresenter.prototype._destroyLineRecord = function(record) {
         if (!record) return;
+        if (record.tooltipBinding) record.tooltipBinding.destroy();
+        record.tooltipBinding = null;
         if (record.control) record.control.destroy();
         if (record.row.parentNode) record.row.parentNode.removeChild(record.row);
     };
@@ -389,7 +472,7 @@
             ? (item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁')
             : (atLimit ? '已达持有上限' : '');
         return options.workbench.EntityTile.bindActivation(options.node, {
-            itemName:item.displayName || item.itemName,
+            itemName:item.displayName,
             label:options.node.getAttribute('aria-label') || '',
             selected:!!options.selected,
             inspectable:true,
@@ -427,27 +510,28 @@
         var payload = viewId === 'bag'
             ? {source:{containerId:'背包', slot:Number(slot.physicalSlot), expectedLease:String(slot.slotLease)}}
             : {itemName:String(item.name || '')};
-        options.tooltip.bindAsyncHover(options.node, {
+        return options.tooltip.bindAsyncHover(options.node, {
             cache:options.cache,
             key:viewId + ':' + String(slot.slotLease || slot.collectionKey),
             item:item,
             renderBasic:options.renderBasic,
             renderRich:options.renderRich,
+            isSuppressed:options.isSuppressed,
             fetch:function(_, callback) { options.request('tooltip', payload, callback); }
         });
     }
 
     function tooltipBasic(item, escapeHtml, workbench) {
         return '<div class="kshop-tt-header"><b>'
-            + escapeHtml(item.displayName || item.itemName || item.name || '物品')
+            + escapeHtml(item.displayName || '物品')
             + '</b></div>' + workbench.ItemCard.balanceTooltipMetaHtml(item)
             + '<div class="kshop-tt-loading">加载中…</div>';
     }
 
     function tooltipRich(item, rich, tooltip, workbench) {
         return tooltip.buildItemRichHtml({
-            iconHtml:tooltip.dynamicIconHtml(item.icon || item.name || item.itemName),
-            iconUrl:tooltip.staticIconUrl(item.icon || item.name || item.itemName),
+            iconHtml:tooltip.dynamicIconHtml(item.icon),
+            iconUrl:tooltip.staticIconUrl(item.icon),
             introHTML:rich.introHTML || '', descHTML:rich.descHTML || '',
             metaHTML:workbench.ItemCard.balanceTooltipMetaHtml(item),
             rootClass:'npcshop-tooltip',
@@ -483,6 +567,14 @@
         this._inventoryUI = options.inventoryUI;
         this._workbench = options.workbench;
         this._densityController = options.densityController || null;
+        if (!options.tooltip || typeof options.tooltip.bindAsyncHover !== 'function') {
+            throw new Error('SpaceOrganizerPresenter requires NPC tooltip scope');
+        }
+        this._tooltip = options.tooltip;
+        this._tooltipCache = options.tooltipCache || {};
+        this._renderTooltipBasic = requirePort(options, 'renderTooltipBasic');
+        this._renderTooltipRich = requirePort(options, 'renderTooltipRich');
+        this._requestTooltip = requirePort(options, 'requestTooltip');
         this._ports = {
             getWindow:requirePort(options, 'getWindow'), getRequest:requirePort(options, 'getRequest'),
             setWindow:requirePort(options, 'setWindow'), autoTransfer:requirePort(options, 'autoTransfer'),
@@ -552,6 +644,7 @@
     SpaceOrganizerPresenter.prototype._renderGrid = function(containerId) {
         var self = this;
         var grid = this._grids[containerId];
+        if (typeof this._tooltip.releaseTree === 'function') this._tooltip.releaseTree(grid);
         while (grid.firstChild) grid.removeChild(grid.firstChild);
         var snapshot = this._ports.getWindow(containerId);
         var slots = snapshot && snapshot.slots ? snapshot.slots : [];
@@ -561,11 +654,22 @@
             if (slot.occupied) {
                 node.classList.add('npcshop-space-transferable');
                 var transferAction = containerId === '背包' ? '移入战备箱' : '移入背包';
-                node.setAttribute('aria-label', (node.getAttribute('aria-label') || '') + '，点击' + transferAction);
+                node.setAttribute('aria-label', (node.getAttribute('aria-label') || '')
+                    + '，可查看物品说明，点击' + transferAction);
+                bindOwnedTooltip({
+                    node:node,
+                    viewId:containerId === '背包' ? 'bag' : 'battlebox',
+                    slot:slot,
+                    tooltip:this._tooltip,
+                    cache:this._tooltipCache,
+                    renderBasic:this._renderTooltipBasic,
+                    renderRich:this._renderTooltipRich,
+                    request:this._requestTooltip
+                });
                 (function(sourceContainer, sourceSlot, sourceNode) {
                     var reasonNode = ensureReasonNode(sourceNode);
                     self._workbench.EntityTile.bindActivation(sourceNode, {
-                        itemName:String(sourceSlot.item && (sourceSlot.item.displayName || sourceSlot.item.name) || '未知物品'),
+                        itemName:String(sourceSlot.item && sourceSlot.item.displayName || '未知物品'),
                         label:sourceNode.getAttribute('aria-label') || '',
                         inspectable:function() { return self._interaction.inspectable; },
                         actionable:function() { return self._interaction.actionable; },
@@ -611,6 +715,7 @@
         return true;
     };
     SpaceOrganizerPresenter.prototype.destroy = function() {
+        if (typeof this._tooltip.releaseTree === 'function') this._tooltip.releaseTree(this.root);
         this.pager.detach();
         this.transferPane.destroy();
         if (this._densityController && typeof this._densityController.unregister === 'function') {
@@ -626,6 +731,7 @@
         HelpPresenter:HelpPresenter,
         SpaceOrganizerPresenter:SpaceOrganizerPresenter,
         settlementViewModel:settlementViewModel,
+        settlementInspection:settlementInspection,
         spaceStatus:spaceStatus,
         ownedInteraction:ownedInteraction,
         bindCatalogActivation:bindCatalogActivation,

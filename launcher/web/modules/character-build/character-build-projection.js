@@ -33,6 +33,23 @@ function(TuningAdapter) {
             ? value : fallback;
     }
 
+    function blockedCopy(reason) {
+        reason = String(reason || '');
+        if (reason === 'incompatible_item') {
+            return '与当前槽位不兼容；可查看说明，但不能装备。';
+        }
+        if (reason === 'level_locked') {
+            return '角色等级不足；可查看说明，但当前不能装备。';
+        }
+        if (reason === 'cooldown_active') {
+            return '该药剂槽仍在冷却；可查看说明，但当前不能装入。';
+        }
+        if (reason === 'cooldown_unavailable') {
+            return '暂时无法确认药剂冷却状态；可查看说明，但当前不能装入。';
+        }
+        return reason || '此候选当前不可装备；仍可查看说明。';
+    }
+
     function safeItem(row) {
         if (!row || row.occupied !== true || !row.item) return null;
         var item = row.item;
@@ -45,7 +62,7 @@ function(TuningAdapter) {
             suffix.push('× ' + Number(row.quantity || item.quantity));
         }
         return {
-            name:String(item.displayName || item.name || '未知物品'),
+            name:String(item.displayName || '未知物品'),
             meta:suffix.join(' · ')
                 || String(item.use || item.itemKind || '已装备'),
             type:String(item.use || item.itemKind || ''),
@@ -81,25 +98,46 @@ function(TuningAdapter) {
         };
     }
 
-    function viewCandidates(payload) {
+    function candidateRowForTarget(row, payload, target) {
+        var eligibility = row && row.equipmentEligibility;
+        if (!payload || payload.candidateScope !== 'backpack'
+                || !target || target.kind !== 'equipment'
+                || !eligibility || !Array.isArray(eligibility.slots)) return row;
+        var allowed = eligibility.slots.indexOf(String(target.slotKey || '')) >= 0;
+        var blockedReason = allowed
+            ? String(eligibility.blockedReason || '') : 'incompatible_item';
+        var projected = {};
+        for (var key in row) {
+            if (Object.prototype.hasOwnProperty.call(row, key)) projected[key] = row[key];
+        }
+        projected.disabled = blockedReason !== '';
+        projected.blockedReason = blockedReason;
+        return projected;
+    }
+
+    function viewCandidates(payload, targetOverride) {
         var rows = payload && payload.candidates || [];
+        var target = targetOverride || payload && payload.target || null;
         var result = [];
         for (var i = 0; i < rows.length; i++) {
-            var row = rows[i] || {};
+            var row = candidateRowForTarget(rows[i] || {}, payload, target);
             var item = row.item || {};
             var source = row.source || {};
+            var blocked = row.disabled === true;
+            var blockedReason = blocked ? blockedCopy(row.blockedReason) : '';
             var candidate = {
                 key:'backpack:' + finite(row.physicalSlot, i)
                     + ':' + String(source.expectedLease || i),
-                name:String(item.displayName || item.name || '未命名候选'),
+                name:String(item.displayName || '未命名候选'),
                 type:String(item.use || item.itemKind || '背包候选'),
                 delta:'预览',
-                summary:String(row.blockedReason
-                    || '来自背包；首次选择只更新临时纸娃娃预览。'),
+                summary:blockedReason
+                    || '来自背包；首次选择只更新临时纸娃娃预览。',
+                blockedReason:blockedReason,
                 presentation:item,
                 physicalSlot:finite(row.physicalSlot, i),
                 badgeKind:'preview',
-                blocked:row.disabled === true,
+                blocked:blocked,
                 raw:row
             };
             var tuning = TuningAdapter.capability(candidate);

@@ -125,6 +125,21 @@ _root.UI系统.NPC商店WebView.isWholeNumber = function(value):Boolean {
         && numberValue >= 0 && Math.floor(numberValue) == numberValue;
 };
 
+_root.UI系统.NPC商店WebView.projectLegacyIdentityField = function(value, itemName:String):String {
+    if (typeof value != "string") return itemName;
+    var projected:String = String(value);
+    var start:Number = 0;
+    var end:Number = projected.length - 1;
+    while (start <= end && this.isLegacyIdentityWhitespace(projected.charCodeAt(start))) start++;
+    while (end >= start && this.isLegacyIdentityWhitespace(projected.charCodeAt(end))) end--;
+    if (start > end || projected.substring(start, end + 1).toLowerCase() == "undefined") return itemName;
+    return projected;
+};
+
+_root.UI系统.NPC商店WebView.isLegacyIdentityWhitespace = function(code:Number):Boolean {
+    return code <= 32 || code == 160;
+};
+
 _root.UI系统.NPC商店WebView.beginCollectionSnapshot = function(shopId:String):Void {
     // 交易计划是一次性的，显式重同步后必须重新预览；资源 lease 则只在切换商店或资源变化时轮换。
     this.batchPlan = null;
@@ -236,8 +251,8 @@ _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
         var catalogItem:Object = {
             catalogIndex:keys[i],
             itemName:resolved.itemName,
-            displayName:String(itemData.displayname || resolved.itemName),
-            icon:String(itemData.icon || resolved.itemName),
+            displayName:this.projectLegacyIdentityField(itemData.displayname, resolved.itemName),
+            icon:this.projectLegacyIdentityField(itemData.icon, resolved.itemName),
             majorType:String(itemData.type || ""),
             use:String(itemData.use || ""),
             actionType:String(itemData.actiontype || ""),
@@ -310,8 +325,8 @@ _root.UI系统.NPC商店WebView.buildCollectionView = function(viewId:String, co
             item:{
                 itemKind:"stack",
                 name:itemName,
-                displayName:String(itemData.displayname || itemName),
-                icon:String(itemData.icon || itemName),
+                displayName:this.projectLegacyIdentityField(itemData.displayname, itemName),
+                icon:this.projectLegacyIdentityField(itemData.icon, itemName),
                 majorType:String(itemData.type || "收集品"),
                 use:String(itemData.use || ""),
                 quantity:quantity,
@@ -387,7 +402,7 @@ _root.UI系统.NPC商店WebView.executeTooltip = function(params:Object):Object 
         success:true,
         v:1,
         itemName:itemName,
-        displayname:String(tt.displayname || itemName),
+        displayname:this.projectLegacyIdentityField(tt.displayname, itemName),
         descHTML:String(tt.descHTML || "").split('"').join("'"),
         introHTML:String(tt.introHTML || "").split('"').join("'")
     };
@@ -449,70 +464,6 @@ _root.UI系统.NPC商店WebView.validateCollectionSource = function(source:Objec
     return {success:true, collection:_root.收集品栏.材料, key:key, count:count};
 };
 
-_root.UI系统.NPC商店WebView.executeSell = function(params:Object):Object {
-    var shopId:String = params == undefined ? "" : String(params.shopId);
-    if (shopId == "" || _root.shops == undefined || _root.shops[shopId] == undefined) return this.fail("shop_not_found");
-    if (shopId != this.activeShopId) return this.fail("stale_state");
-    var quantity:Number = Number(params == undefined ? NaN : params.quantity);
-    if (!this.isWholeNumber(quantity) || quantity <= 0) return this.fail("invalid_quantity");
-    var source:Object = params.source;
-    var item:Object;
-    var itemName:String;
-    var collection:Object;
-    var key;
-    var bagCheck:Object;
-    if (source != undefined && String(source.containerId) == "背包") {
-        bagCheck = org.flashNight.arki.item.InventoryPanelService.validateExternalSlotRef(source, false);
-        if (!bagCheck.success) return bagCheck;
-        item = bagCheck.item;
-        if (typeof item.value == "number") {
-            bagCheck = org.flashNight.arki.item.InventoryPanelService.validateExternalSlotRef(source, true);
-            if (!bagCheck.success) return bagCheck;
-            if (quantity > Number(item.value)) return this.fail("insufficient_quantity");
-        } else if (quantity != 1) return this.fail("invalid_quantity");
-        itemName = String(item.name);
-        collection = bagCheck.inventory;
-        key = String(bagCheck.slot);
-    } else {
-        var collectionCheck:Object = this.validateCollectionSource(source);
-        if (!collectionCheck.success) return collectionCheck;
-        if (quantity > collectionCheck.count) return this.fail("insufficient_quantity");
-        itemName = collectionCheck.key;
-        item = {name:itemName, value:collectionCheck.count};
-        collection = collectionCheck.collection;
-        key = itemName;
-    }
-    var priceInfo:Object = _root.物品UI函数.计算售卖总价(item, quantity);
-    if (bagCheck != undefined && typeof item.value == "object" && item.value.mods != undefined
-            && item.value.mods.length > 0) {
-        var returned:Array = [];
-        for (var modIndex:Number = 0; modIndex < item.value.mods.length; modIndex++) {
-            returned.push({name:item.value.mods[modIndex], value:1});
-        }
-        org.flashNight.arki.item.ItemUtil.acquire(returned);
-        item.value.mods = [];
-    }
-    if (typeof item.value == "number" && Number(item.value) > quantity) collection.addValue(key, -quantity);
-    else collection.remove(key);
-    if (bagCheck != undefined) {
-        org.flashNight.arki.item.InventoryPanelService.invalidateExternalSlot("背包", Number(bagCheck.slot));
-    }
-    _root.金钱 += Number(priceInfo.总价);
-    if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-        org.flashNight.arki.achievement.AchievementMetrics.record("出售次数", 1);
-        org.flashNight.arki.achievement.AchievementMetrics.record("出售所得金币", Number(priceInfo.总价));
-    }
-    _root.soundEffectManager.playSound("收银机.mp3");
-    _root.存档系统.dirtyMark = true;
-    var state:Object = this.buildState(String(params.shopId));
-    if (!state.success) return state;
-    state.operation = "sell";
-    state.itemName = itemName;
-    state.quantity = quantity;
-    state.total = Number(priceInfo.总价);
-    return state;
-};
-
 _root.UI系统.NPC商店WebView.executeBatchPreview = function(params:Object):Object {
     if (this.activeShopId == "" || _root.shops == undefined || _root.shops[this.activeShopId] == undefined) return this.fail("stale_state");
     var names:Array = params == undefined ? null : params.itemNames;
@@ -545,7 +496,12 @@ _root.UI系统.NPC商店WebView.executeBatchPreview = function(params:Object):Ob
         }
         if (nameQuantity > 0) {
             var data:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(itemName);
-            summary.push({itemName:itemName, displayName:String(data == null ? itemName : data.displayname || itemName), quantity:nameQuantity, money:nameMoney});
+            summary.push({itemName:itemName,
+                displayName:this.projectLegacyIdentityField(
+                    data == null ? undefined : data.displayname, itemName),
+                icon:this.projectLegacyIdentityField(
+                    data == null ? undefined : data.icon, itemName),
+                quantity:nameQuantity, money:nameMoney});
             totalQuantity += nameQuantity;
             totalMoney += nameMoney;
         }
@@ -616,8 +572,8 @@ _root.UI系统.NPC商店WebView.resolveTradePurchase = function(shopId:String, r
         success:true,
         catalogIndex:catalogIndex,
         itemName:resolved.itemName,
-        displayName:String(itemData.displayname || resolved.itemName),
-        icon:String(itemData.icon || resolved.itemName),
+        displayName:this.projectLegacyIdentityField(itemData.displayname, resolved.itemName),
+        icon:this.projectLegacyIdentityField(itemData.icon, resolved.itemName),
         quantity:quantity,
         unitPrice:unitPrice,
         total:total,
@@ -689,8 +645,8 @@ _root.UI系统.NPC商店WebView.resolveExactTradeSale = function(request:Object)
         slot:slot,
         ref:item,
         itemName:itemName,
-        displayName:String(itemData.displayname || itemName),
-        icon:String(itemData.icon || itemName),
+        displayName:this.projectLegacyIdentityField(itemData.displayname, itemName),
+        icon:this.projectLegacyIdentityField(itemData.icon, itemName),
         oldCount:oldCount,
         quantity:quantity,
         money:money,
@@ -757,8 +713,8 @@ _root.UI系统.NPC商店WebView.resolveTradeSale = function(request:Object):Obje
             slot:slot,
             ref:current,
             itemName:itemName,
-            displayName:String(itemData.displayname || itemName),
-            icon:String(itemData.icon || itemName),
+            displayName:this.projectLegacyIdentityField(itemData.displayname, itemName),
+            icon:this.projectLegacyIdentityField(itemData.icon, itemName),
             oldCount:quantity,
             quantity:quantity,
             money:money,
@@ -778,8 +734,8 @@ _root.UI系统.NPC商店WebView.resolveTradeSale = function(request:Object):Obje
         requestIdentity:"bag:" + Number(seedCheck.slot),
         entries:entries,
         itemName:itemName,
-        displayName:String(itemData.displayname || itemName),
-        icon:String(itemData.icon || itemName),
+        displayName:this.projectLegacyIdentityField(itemData.displayname, itemName),
+        icon:this.projectLegacyIdentityField(itemData.icon, itemName),
         itemKind:org.flashNight.arki.item.ItemUtil.isEquipment(itemName) ? "equipment" : "stack",
         quantity:totalQuantity,
         money:totalMoney,
@@ -1012,6 +968,7 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
     return {
         success:true,
         v:1,
+        shopId:plan.shopId,
         tradeToken:plan.token,
         purchaseLines:plan.purchases,
         saleLines:plan.publicSales,
@@ -1130,7 +1087,6 @@ _root.UI系统.NPC商店WebView.execute = function(commandName:String, params:Ob
     this.busy = true;
     var result:Object;
     if (commandName == "buy") result = this.executeBuy(params);
-    else if (commandName == "sell") result = this.executeSell(params);
     else if (commandName == "batchSell") result = this.executeBatchSell(params);
     else if (commandName == "tradeCommit") result = this.executeTradeCommit(params);
     else result = this.fail("unsupported_cmd");
@@ -1155,10 +1111,14 @@ _root.UI系统.NPC商店WebView.handle = function(commandName:String, params:Obj
 };
 
 _root.gameCommands = _root.gameCommands || {};
+// A3: ordinary sell was never consumed by the production Web UI and its
+// cross-domain postcondition could not be proven without an unnecessary global
+// Inventory registry. Remove any stale hot-reload binding; tradeCommit is the
+// sole production sale write.
+delete _root.gameCommands["npcShopSell"];
 _root.gameCommands["npcShopSnapshot"] = function(params) { _root.UI系统.NPC商店WebView.handle("snapshot", params); };
 _root.gameCommands["npcShopTooltip"] = function(params) { _root.UI系统.NPC商店WebView.handle("tooltip", params); };
 _root.gameCommands["npcShopBuy"] = function(params) { _root.UI系统.NPC商店WebView.handle("buy", params); };
-_root.gameCommands["npcShopSell"] = function(params) { _root.UI系统.NPC商店WebView.handle("sell", params); };
 _root.gameCommands["npcShopBatchPreview"] = function(params) { _root.UI系统.NPC商店WebView.handle("batchPreview", params); };
 _root.gameCommands["npcShopBatchSell"] = function(params) { _root.UI系统.NPC商店WebView.handle("batchSell", params); };
 _root.gameCommands["npcShopTradePreview"] = function(params) { _root.UI系统.NPC商店WebView.handle("tradePreview", params); };

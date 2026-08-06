@@ -40,6 +40,55 @@
         return typeof value === 'string' && value.length > 0 && value.length <= (limit || 200)
             ? value : '';
     }
+    function identityText(value, limit) {
+        return typeof value === 'string' && value.length <= (limit || 256)
+            && value.trim().length > 0 && value.trim().toLowerCase() !== 'undefined';
+    }
+    function boundedText(value, limit, allowEmpty) {
+        return typeof value === 'string' && value.length <= limit
+            && (allowEmpty || value.length > 0)
+            && !/[\u0000-\u001f\u007f]/.test(value);
+    }
+    function validModIdentity(mod) {
+        return !!mod && typeof mod === 'object' && !Array.isArray(mod)
+            && identityText(mod.name) && identityText(mod.displayName)
+            && identityText(mod.icon);
+    }
+    function validItemIdentity(item) {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) return false;
+        if (!identityText(item.name) || !identityText(item.displayName)
+                || !identityText(item.icon)) return false;
+        if (own(item, 'modSlots')) {
+            if (!Array.isArray(item.modSlots) || item.modSlots.length > 3) return false;
+            for (var i = 0; i < item.modSlots.length; i++) {
+                if (!validModIdentity(item.modSlots[i])) return false;
+            }
+        }
+        return !own(item, 'modMeta') || item.modMeta === null
+            || validModIdentity(item.modMeta);
+    }
+    function validConfirm(item, confirm) {
+        var keys = ['itemKind','name','displayName','quantity','enhancementLevel',
+            'rarity','tier','modSignature','lastUpdate'];
+        if (!hasExactKeys(confirm, keys)
+                || !identityText(confirm.name) || !identityText(confirm.displayName)) return false;
+        var quantity = integer(confirm.quantity);
+        var enhancement = integer(confirm.enhancementLevel);
+        var lastUpdate = integer(confirm.lastUpdate);
+        return boundedText(confirm.itemKind, 256, true)
+            && boundedText(confirm.rarity, 256, true)
+            && boundedText(confirm.tier, 256, true)
+            && boundedText(confirm.modSignature, 1024, true)
+            && quantity !== null && quantity >= 0
+            && enhancement !== null && enhancement >= 0
+            && lastUpdate !== null && lastUpdate >= 0
+            && confirm.itemKind === item.itemKind
+            && confirm.name === item.name
+            && confirm.displayName === item.displayName
+            && confirm.rarity === item.rarity
+            && quantity === item.quantity
+            && enhancement === item.enhancementLevel;
+    }
     function opaque(value) {
         return typeof value === 'string' && value.length > 0 && value.length <= 128
             && /^[A-Za-z0-9._~-]+$/.test(value) ? value : '';
@@ -56,7 +105,7 @@
         return result;
     }
 
-    function normalizeSlot(value, fallbackIndex, requireLease) {
+    function normalizeSlot(value, fallbackIndex, requireLease, requireConfirm) {
         if (!value || typeof value !== 'object' || Array.isArray(value)
                 || typeof value.occupied !== 'boolean') return null;
         var physicalSlot = integer(value.physicalSlot);
@@ -65,11 +114,19 @@
         var lease = opaque(value.slotLease);
         if (!lease || (occupied && (!value.item || typeof value.item !== 'object'
                 || Array.isArray(value.item)))) return null;
+        if (occupied && !validItemIdentity(value.item)) return null;
+        if (occupied && requireConfirm
+                && (!own(value, 'confirmProjection')
+                    || !validConfirm(value.item, value.confirmProjection))) return null;
+        if (occupied && !requireConfirm && own(value, 'confirmProjection')
+                && !validConfirm(value.item, value.confirmProjection)) return null;
         return {
             physicalSlot:physicalSlot,
             occupied:occupied,
             slotLease:lease,
             item:occupied ? clone(value.item) : null,
+            confirmProjection:occupied && own(value, 'confirmProjection')
+                ? clone(value.confirmProjection) : null,
             targetDomain:value.targetDomain == null ? '' : String(value.targetDomain),
             blockReason:value.blockReason == null ? '' : String(value.blockReason)
         };
@@ -91,7 +148,8 @@
         if (containerId !== expectedId) return null;
         var slots = [], seen = {};
         for (var i = 0; i < value.slots.length; i++) {
-            var slot = normalizeSlot(value.slots[i], offset + i, requireLease);
+            var slot = normalizeSlot(value.slots[i], offset + i, requireLease,
+                expectedId === '背包');
             if (!slot || slot.physicalSlot < offset || slot.physicalSlot >= offset + limit
                     || seen[slot.physicalSlot]) return null;
             seen[slot.physicalSlot] = true;

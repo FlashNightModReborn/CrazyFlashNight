@@ -152,6 +152,8 @@ F8 evidence 分为两个不可混写的阶段。implementation source `53caabc90
 
 所有专用 runner 的因果顺序固定为：在调用 `agent_control start` **之前**记录 `/logs` 水位 → 调用 `start` 并取得 expected slot / `attemptId` → 只接受该水位之后本轮新鲜 `[BootstrapAS] event=handoff` 与真实 `[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared` → 确认 watchdog 未触发后只调用一次 `_root.agentEnterResolvedSave()` → helper 先执行 `_root.notifyGameEntered()`，使同一 UiData 包携带 `s:1|ga:<_bootstrapAttemptId>`，再按 `SaveManager.loaded` 决定直接返回或 `gotoAndStop("读盘")` → Host 必须观察到 `gameEnteredAttemptId==expectedAttemptId`，并在同 attempt runtime ack 等其余门满足后才允许 runtime ready。reveal watchdog 不算标题帧回执，缺失统一失败为 `title_frame_not_observed`；notifier 尚未注入时必须 fail-closed。专用克隆槽负责隔离写入；真实 `crazyflasher7_saves*` 槽默认永不用于无人值守写测试。
 
+Launcher 的 Flash reveal watchdog 生产默认 deadline 现为从 Ready 起算的有界 **45,000ms**。原 20,000ms 已覆盖此前约 15.68s 的样本，但 A1 冷启动实测在同一精确候选上直到约 30.85s 才收到真实 title receipt，并被 20s watchdog 正确拒绝；45s 为该实测保留有界余量。测试可以在 `GameLaunchFlow` internal 构造注入更短值。这个调整只减少 deadline 竞争，不改变上述证据合同：watchdog 日志永不计为成功，watchdog 先到的 attempt 立即丢弃，迟到 title 不得解锁 `agentEnterResolvedSave()`，runner 也不得靠延长自身 ready timeout 续用旧 attempt。
+
 ### 装备调制只读直达门
 
 从仓库根运行：

@@ -969,19 +969,7 @@
     };
 
     return {
-        contractStatus: function() {
-            return {
-                shell: 'gate-a1-accepted',
-                viewHost: 'gate-a1-accepted',
-                grid: 'gate-a1-accepted',
-                pointerGesture: 'gate-a1-accepted',
-                interactionBroker: 'gate-a2-accepted',
-                ownedTransfer: 'gate-a2-accepted',
-                warehouseWindow: 'gate-a3-candidate'
-            };
-        },
         DualPaneShell: DualPaneShell,
-        WorkbenchViewHost: WorkbenchViewHost,
         ViewChrome: ViewChrome,
         GridRenderer: GridRenderer,
         ContainerViewAdapter: ContainerViewAdapter,

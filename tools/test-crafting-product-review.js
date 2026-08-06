@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 const ROOT = path.resolve(__dirname, '..');
 const PLAYWRIGHT = path.join(ROOT, 'launcher', 'perf', 'node_modules', 'playwright');
-const REVIEW_DATA = path.join(ROOT, 'tmp', 'crafting-product-review', 'review-data.json');
+const DEFAULT_REVIEW_DATA = path.join(ROOT, 'tmp', 'crafting-product-review', 'review-data.json');
 const { startServer, stopServer } = require(path.join(ROOT, 'launcher', 'perf', 'lib', 'server'));
 const EXPECTED_CRAFTING_DUAL_BLADES = ['輪舞', '黑煞', '炎寒对剑']
     .sort((left, right) => left.localeCompare(right, 'zh-CN'));
@@ -60,12 +60,24 @@ function argValue(name) {
     return index >= 0 ? process.argv[index + 1] || '' : '';
 }
 
+function resolveReviewData() {
+    const requested = argValue('--review-data');
+    const resolved = requested ? path.resolve(ROOT, requested) : DEFAULT_REVIEW_DATA;
+    const tmpRoot = path.join(ROOT, 'tmp');
+    const relative = path.relative(tmpRoot, resolved);
+    if (!relative || relative.startsWith('..' + path.sep) || path.isAbsolute(relative)) {
+        throw new Error('--review-data must name a file under tmp/');
+    }
+    return resolved;
+}
+
 async function main() {
-    if (!fs.existsSync(REVIEW_DATA)) throw new Error('missing review data; run node tools/build-crafting-product-review.js --sample first');
+    const reviewData = resolveReviewData();
+    if (!fs.existsSync(reviewData)) throw new Error('missing review data; run node tools/build-crafting-product-review.js --sample');
     if (!fs.existsSync(PLAYWRIGHT)) throw new Error('missing Playwright dependency');
     const executablePath = edge();
     if (!executablePath) throw new Error('Microsoft Edge not found');
-    const dataset = JSON.parse(fs.readFileSync(REVIEW_DATA, 'utf8'));
+    const dataset = JSON.parse(fs.readFileSync(reviewData, 'utf8'));
     const expectedSourceDigest = currentSourceDigest();
     if (dataset.sourceDigest !== expectedSourceDigest) {
         throw new Error('stale review data: actual=' + dataset.sourceDigest + ' current=' + expectedSourceDigest +
@@ -238,7 +250,7 @@ async function main() {
             };
             localStorage.setItem('cf7-crafting-product-review:legacy-test', JSON.stringify(decisions));
         }, { itemName: migrationItem.name, candidateId: migrationCandidate.id });
-        const data = encodeURIComponent('/tmp/crafting-product-review/review-data.json');
+        const data = encodeURIComponent('/' + slash(path.relative(ROOT, reviewData)));
         await page.goto(server.url + 'launcher/web/modules/crafting-product-review/dev/review.html?data=' + data, { waitUntil: 'load' });
         await page.waitForFunction(expected => document.querySelectorAll('.review-row').length === expected, dataset.items.length, { timeout: 20000 });
         const migrated = page.locator('[data-item-id="' + migrationItem.id + '"] input[value="' + migrationCandidate.id + '"]');

@@ -80,7 +80,7 @@
       var stage=section('Owned 库存格',density,'owned'),grid=document.createElement('div');grid.className='inventory-owned-grid npcshop-owned-grid'+(density==='compact'?' item-grid-compact':'');stage.appendChild(grid);
       stage.classList.add('inventory-workbench-panel');stage.setAttribute('data-workbench-view','tuning');
       var stack={physicalSlot:0,occupied:true,item:{name:'药剂',displayName:'高级药剂',icon:'药剂',itemKind:'stack',quantity:6806,majorType:'消耗品',use:'药剂'}};
-      var equip={physicalSlot:1,occupied:true,item:{name:'训练枪',displayName:'训练步枪 +13',icon:'训练枪',itemKind:'equipment',quantity:1,enhancementLevel:13,majorType:'武器',use:'长枪',modSlotCapacity:3,modSlotUsed:1,modSlots:[{name:'稳定导轨',grade:'high',gradeLabel:'高级',gradeColor:'#0099FF',roleLabel:'稳定与防护',symbol:'square-outline'}],balanceSummary:{state:'confirmed',weightLayers:-1,formula:1,level:20}}};
+      var equip={physicalSlot:1,occupied:true,item:{name:'训练枪',displayName:'训练步枪 +13',icon:'训练枪',itemKind:'equipment',quantity:1,enhancementLevel:13,majorType:'武器',use:'长枪',modSlotCapacity:3,modSlotUsed:1,modSlots:[{name:'稳定导轨',displayName:'复合稳定导轨',icon:'稳定导轨图标',grade:'high',gradeLabel:'高级',gradeColor:'#0099FF',role:'stability',roleLabel:'稳定与防护',symbol:'square-outline',scope:'weapon'}],balanceSummary:{state:'confirmed',weightLayers:-1,formula:1,level:20}}};
       var limited={physicalSlot:2,occupied:true,item:{name:'训练手枪',displayName:'单槽训练手枪',icon:'训练手枪',itemKind:'equipment',quantity:1,enhancementLevel:5,majorType:'武器',use:'手枪',modSlotCapacity:1,modSlotUsed:0,modSlots:[]}};
       var sourceCard=ownedCard(equip,{selected:true,icon:'EQ'});
       sourceCard.classList.add('equipment-tuning-authority-source');

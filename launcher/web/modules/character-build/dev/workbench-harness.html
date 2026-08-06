@@ -130,6 +130,12 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         refuseNextCloseSend:false,
         throwNextBuildActivate:false,
         rejectNextCandidate:false,
+        rejectNextLoadoutTooltip:false,
+        holdNextLoadoutTooltip:false,
+        heldLoadoutTooltip:null,
+        staleNextCandidate:false,
+        holdNextCandidate:false,
+        heldCandidate:null,
         rejectNextSnapshot:false,
         rejectNextMutation:false,
         unknownNextMutation:false,
@@ -195,10 +201,12 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                     modSlotCapacity:slotKey === '长枪' ? 3 : 0,
                     modSlotUsed:slotKey === '长枪' ? 2 : 0,
                     modSlots:slotKey === '长枪' ? [
-                        {name:'稳定导轨', grade:'high', gradeLabel:'高级',
-                            gradeColor:'#0099FF', roleLabel:'结构与功能', symbol:'diamond-solid'},
-                        {name:'战术镜片', grade:'special', gradeLabel:'特殊',
-                            gradeColor:'#FFFF00', roleLabel:'瞄准辅助', symbol:'star-outline'}
+                        {name:'稳定导轨', displayName:'复合稳定导轨', icon:'稳定导轨图标',
+                            grade:'high', gradeLabel:'高级', gradeColor:'#0099FF', role:'utility',
+                            roleLabel:'结构与功能', symbol:'diamond-solid', scope:'weapon'},
+                        {name:'战术镜片', displayName:'战术复合镜片', icon:'战术镜片图标',
+                            grade:'special', gradeLabel:'特殊', gradeColor:'#FFFF00', role:'precision',
+                            roleLabel:'瞄准辅助', symbol:'star-outline', scope:'weapon'}
                     ] : []
                 } : null
             };
@@ -339,23 +347,99 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             }
         }
         else if (message.cmd === 'candidates') {
+            if (window.__routeHarness.staleNextCandidate) {
+                window.__routeHarness.staleNextCandidate = false;
+                harness.authority.drugRevision++;
+                response = responseBase(message);
+                response.success = false;
+                response.error = 'stale_state';
+                return response;
+            }
             if (window.__routeHarness.rejectNextCandidate) {
                 window.__routeHarness.rejectNextCandidate = false;
                 response.success = false;
                 response.error = 'service_not_ready';
                 return response;
             }
-            var candidateName = message.payload.slotKey === '长枪'
-                ? dressup.scenarios.candidate.candidateItem
-                : equipmentBySlot[message.payload.slotKey] || drugNames[0];
-            var stackGrenadeCandidate = message.payload.slotKey === '手雷';
-            response.payload = {
-                target:message.payload.slotKey
-                    ? {kind:'equipment', slotKey:message.payload.slotKey}
-                    : {kind:'drug', drugSlot:message.payload.drugSlot},
-                candidates:[{
+            var universalEquipmentBackpack =
+                message.payload.candidateScope === 'backpack'
+                    && !!message.payload.slotKey;
+            var candidateRows;
+            if (universalEquipmentBackpack) {
+                var candidateItem = function(name, itemKind, majorType, use, quantity,
+                        enhancementLevel, modSlots) {
+                    modSlots = modSlots || [];
+                    return {
+                        name:name,
+                        displayName:name,
+                        icon:name,
+                        itemKind:itemKind,
+                        majorType:majorType,
+                        use:use,
+                        enhancementLevel:enhancementLevel,
+                        quantity:quantity,
+                        tierSlotAvailable:use === '长枪',
+                        tierSlotUsed:false,
+                        modSlotCapacity:modSlots.length ? 2 : 0,
+                        modSlotUsed:modSlots.length,
+                        modSlots:modSlots
+                    };
+                };
+                var equipmentBackpackRow = function(
+                        physicalSlot, lease, item, slots, authorityReason) {
+                    var currentReason = slots.indexOf(message.payload.slotKey) >= 0
+                        ? authorityReason : 'incompatible_item';
+                    return {
+                        physicalSlot:physicalSlot,
+                        disabled:currentReason !== '',
+                        blockedReason:currentReason,
+                        source:{containerId:'背包',slot:physicalSlot,expectedLease:lease},
+                        item:item,
+                        equipmentEligibility:{
+                            slots:slots,
+                            blockedReason:authorityReason
+                        }
+                    };
+                };
+                var candidateMod = {
+                    name:'候选稳定器', displayName:'候选复合稳定器', icon:'候选稳定器图标',
+                    grade:'medium', gradeLabel:'中级', gradeColor:'#996600', role:'utility',
+                    roleLabel:'结构与功能', symbol:'square-solid', scope:'weapon'
+                };
+                candidateRows = [
+                    equipmentBackpackRow(9, candidateLease,
+                        candidateItem(dressup.scenarios.candidate.candidateItem,
+                            'equipment','武器','长枪',1,candidateEnhancement,[candidateMod]),
+                        ['长枪'], ''),
+                    equipmentBackpackRow(10, 'lease.candidate.10',
+                        candidateItem(dressup.equipment.upper,
+                            'equipment','防具','上装装备',1,1,[]),
+                        ['上装装备'], ''),
+                    equipmentBackpackRow(12, 'lease.candidate.12',
+                        candidateItem(dressup.equipment.blade,
+                            'equipment','武器','刀',1,1,[]),
+                        ['刀'], ''),
+                    equipmentBackpackRow(13, 'lease.candidate.13',
+                        candidateItem(dressup.equipment.pistol,
+                            'equipment','武器','手枪',1,1,[]),
+                        ['手枪','手枪2'], ''),
+                    equipmentBackpackRow(14, 'lease.candidate.14',
+                        candidateItem(dressup.equipment.grenade,
+                            'stack','消耗品','手雷',3,0,[]),
+                        ['手雷'], ''),
+                    equipmentBackpackRow(11, 'lease.incompatible.11',
+                        candidateItem('测试药剂','stack','消耗品','药剂',2,0,[]),
+                        [], '')
+                ];
+            } else {
+                var candidateName = message.payload.slotKey === '长枪'
+                    ? dressup.scenarios.candidate.candidateItem
+                    : equipmentBySlot[message.payload.slotKey] || drugNames[0];
+                var stackGrenadeCandidate = message.payload.slotKey === '手雷';
+                candidateRows = [{
                     physicalSlot:9,
                     disabled:false,
+                    blockedReason:'',
                     source:{
                         containerId:'背包',
                         slot:9,
@@ -374,13 +458,68 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                         tierSlotUsed:false,
                         modSlotCapacity:2,
                         modSlotUsed:1,
-                        modSlots:[{name:'候选稳定器', grade:'medium', gradeLabel:'中级',
-                            gradeColor:'#996600', roleLabel:'结构与功能', symbol:'square-solid'}]
+                        modSlots:[{name:'候选稳定器', displayName:'候选复合稳定器', icon:'候选稳定器图标',
+                            grade:'medium', gradeLabel:'中级', gradeColor:'#996600', role:'utility',
+                            roleLabel:'结构与功能', symbol:'square-solid', scope:'weapon'}]
                     }
-                }],
+                }];
+                if (message.payload.candidateScope === 'backpack') {
+                    candidateRows.push({
+                        physicalSlot:11,
+                        disabled:true,
+                        blockedReason:'incompatible_item',
+                        source:{containerId:'背包', slot:11,
+                            expectedLease:'lease.incompatible.11'},
+                        item:{
+                            name:'测试药剂',
+                            displayName:'测试药剂',
+                            icon:'普通hp药剂',
+                            itemKind:'stack',
+                            majorType:'消耗品',
+                            use:'药剂',
+                            enhancementLevel:0,
+                            quantity:2,
+                            tierSlotAvailable:false,
+                            tierSlotUsed:false,
+                            modSlotCapacity:0,
+                            modSlotUsed:0,
+                            modSlots:[]
+                        }
+                    });
+                }
+            }
+            response.payload = {
+                target:message.payload.slotKey
+                    ? {kind:'equipment', slotKey:message.payload.slotKey}
+                    : {kind:'drug', drugSlot:message.payload.drugSlot},
+                candidateScope:message.payload.candidateScope,
+                candidates:candidateRows,
                 backpackVersion:12,
                 stateHealth:'ok',
                 diagnostics:[]
+            };
+        } else if (message.cmd === 'tooltip') {
+            if (harness.rejectNextLoadoutTooltip) {
+                harness.rejectNextLoadoutTooltip = false;
+                response.success = false;
+                response.error = 'service_not_ready';
+                return response;
+            }
+            var tooltipTarget = message.payload.slotKey
+                ? {kind:'equipment', slotKey:message.payload.slotKey}
+                : {kind:'drug', drugSlot:message.payload.drugSlot};
+            var tooltipName = message.payload.slotKey
+                ? equipmentBySlot[message.payload.slotKey]
+                : drugNames[message.payload.drugSlot];
+            response.payload = {
+                v:1,
+                target:tooltipTarget,
+                itemName:tooltipName,
+                displayName:tooltipName,
+                iconName:tooltipName,
+                itemType:message.payload.slotKey ? '武器' : '药剂',
+                descHTML:'<B>权威已装备说明</B><BR>获取方式：测试仓库',
+                introHTML:'<B>' + tooltipName + '</B><BR><FONT COLOR="#66CCFF">权威已装备属性</FONT><BR>强化 +3<BR>插件 2 / 3<BR>复合稳定导轨'
             };
         } else if (message.cmd === 'statsSnapshot') {
             response.payload = CharacterBuildStatsFixture.create();
@@ -418,7 +557,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             writeEpoch:window.__routeHarness.authority.writeEpoch
         };
     }
-    function tuningSnapshot(source) {
+    function tuningEquipment(source, level) {
         var inventorySource = source.sourceKind === 'inventory';
         var slotKey = inventorySource ? '长枪' : source.slotKey;
         var item = inventorySource ? {
@@ -431,38 +570,68 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             return row.slotKey === slotKey;
         })[0].item;
         return {
+            name:item.name,
+            displayName:item.displayName,
+            icon:item.icon,
+            type:'武器',
+            use:item.use,
+            level:level == null ? item.enhancementLevel : level,
+            tier:'',
+            mods:[],
+            lastUpdate:10,
+            maxLevel:13,
+            hardMaxLevel:13
+        };
+    }
+    function tuningProjection(source, level) {
+        return {source:{
+            source:JSON.parse(JSON.stringify(source)),
+            equipment:tuningEquipment(source, level)
+        }};
+    }
+    function tuningMaterial(before, delta) {
+        return {
+            itemName:'强化石',
+            displayName:'高能强化晶体',
+            icon:'强化晶体图标',
+            before:before,
+            delta:delta,
+            after:before + delta
+        };
+    }
+    function tuningSnapshot(source, materialCount) {
+        var equipment = tuningEquipment(source);
+        return {
             gender:'男',
             source:source,
-            equipment:{
-                name:item.name,
-                displayName:item.displayName,
-                icon:item.icon,
-                type:'武器',
-                use:item.use,
-                level:item.enhancementLevel,
-                tier:'',
-                mods:[],
-                lastUpdate:10,
-                maxLevel:13,
-                hardMaxLevel:13
-            },
+            equipment:equipment,
             enhance:{
-                currentLevel:item.enhancementLevel,
+                currentLevel:equipment.level,
+                maxLevel:13,
                 availableMaxLevel:13,
                 hardMaxLevel:13
             },
             tierCandidates:[{
-                candidateKey:'tier|测试进阶',
+                candidateKey:'tier.test',
                 itemName:'测试进阶',
+                displayName:'测试进阶组件',
+                icon:'测试进阶图标',
                 tierName:'一阶',
                 owned:1,
-                available:true
+                available:true,
+                reason:''
             }],
             modCandidates:[{
-                candidateKey:'mod|测试导轨',
+                candidateKey:'mod.test',
                 itemName:'测试导轨',
+                displayName:'测试导轨组件',
+                icon:'测试导轨图标',
                 owned:2,
+                installed:false,
                 available:true,
+                availabilityCode:1,
+                reason:'',
+                replaceableFrom:[],
                 grade:'low',
                 gradeLabel:'低级',
                 scope:'firearm',
@@ -470,7 +639,14 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 role:'utility',
                 roleLabel:'结构与功能'
             }],
-            materials:[{itemName:'强化石', count:20}]
+            materials:[{
+                itemName:'强化石',
+                displayName:'高能强化晶体',
+                icon:'强化晶体图标',
+                count:materialCount == null ? 20 : materialCount
+            }],
+            materialRevision:7,
+            inventoryRevision:11
         };
     }
     function applyTuning(source, targetLevel) {
@@ -506,14 +682,11 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             response.operation = message.payload.operation;
             response.tuningToken = 'token.' + message.payload.operation + '.' + target;
             response.noOp = target === current;
-            response.before = {source:{equipment:{level:current}}};
-            response.after = {source:{equipment:{level:target}}};
-            response.materials = target === current ? [] : [{
-                itemName:'强化石',
-                before:20,
-                delta:-1,
-                after:19
-            }];
+            response.canCommit = true;
+            response.before = tuningProjection(message.payload.source, current);
+            response.after = tuningProjection(message.payload.source, target);
+            response.materials = target === current
+                ? [] : [tuningMaterial(20, -1)];
             response.removedMods = [];
         } else if (message.cmd === 'commit') {
             if (harness.tuning.rejectNextCommit) {
@@ -524,6 +697,9 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             }
             var tokenParts = String(message.payload.expectedTuningToken || '').split('.');
             var targetLevel = Number(tokenParts[tokenParts.length - 1]);
+            var beforeSource = JSON.parse(JSON.stringify(harness.tuning.lastSource));
+            var beforeLevel = beforeSource.sourceKind === 'inventory'
+                ? candidateEnhancement : enhancementBySlot[beforeSource.slotKey];
             applyTuning(harness.tuning.lastSource, targetLevel);
             if (harness.tuning.unknownNextCommit) {
                 harness.tuning.unknownNextCommit = false;
@@ -534,17 +710,30 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 return response;
             }
             response.operation = tokenParts[1] || 'enhance';
+            response.tuningToken = message.payload.expectedTuningToken;
             response.transactionId = 'tuning.tx.' + harness.tuning.transaction;
             response.noOp = false;
+            response.canCommit = false;
             if (harness.tuning.lastSource.sourceKind === 'inventory') {
                 harness.tuning.lastSource.expectedLease = candidateLease;
+            } else {
+                harness.tuning.lastSource.expectedLoadoutRevision =
+                    harness.authority.loadoutRevision;
             }
+            response.before = tuningProjection(beforeSource, beforeLevel);
+            response.after = tuningProjection(
+                harness.tuning.lastSource, targetLevel);
             response.snapshot = tuningSnapshot(harness.tuning.lastSource);
-            response.materials = [{itemName:'强化石', before:20, delta:-1, after:19}];
+            response.materials = [];
+            response.removedMods = [];
             response.inventorySnapshots = harness.tuning.lastSource.sourceKind === 'inventory'
                 ? [fullBackpack(40 + harness.tuning.transaction)] : [];
         } else if (message.cmd === 'tooltip') {
             response.candidateKey = message.payload.candidateKey;
+            response.itemType = '收集品';
+            response.itemUse = '材料';
+            response.introHTML = '<b>权威调制候选</b>';
+            response.descHTML = '用于角色构筑调制的测试材料。';
             response.text = '权威调制候选';
         } else if (message.cmd === 'detach') {
             if (harness.tuning.rejectNextDetach) {
@@ -614,6 +803,20 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 setTimeout(function() {
                     if (message.cmd === 'finalize') window.__routeHarness.events.push('finalize_response');
                     var response = loadoutResponse(message);
+                    if (message.cmd === 'tooltip'
+                            && window.__routeHarness.holdNextLoadoutTooltip) {
+                        window.__routeHarness.holdNextLoadoutTooltip = false;
+                        window.__routeHarness.heldLoadoutTooltip = response;
+                        window.__routeHarness.events.push('loadout_tooltip_held');
+                        return;
+                    }
+                    if (message.cmd === 'candidates'
+                            && window.__routeHarness.holdNextCandidate) {
+                        window.__routeHarness.holdNextCandidate = false;
+                        window.__routeHarness.heldCandidate = response;
+                        window.__routeHarness.events.push('candidates_held');
+                        return;
+                    }
                     if (message.cmd === 'snapshot' && message.payload.reconcileAfterCallId
                             && window.__routeHarness.holdNextReconcile) {
                         window.__routeHarness.holdNextReconcile = false;
@@ -1021,6 +1224,31 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
         }
         return false;
     }
+    function pointerCenter(node) {
+        var rect = node.getBoundingClientRect();
+        return {x:rect.left + rect.width / 2, y:rect.top + rect.height / 2};
+    }
+    function beginPointerDrag(source, target, pointerId) {
+        var from = pointerCenter(source), to = pointerCenter(target);
+        source.dispatchEvent(new PointerEvent('pointerdown', {
+            bubbles:true, cancelable:true, pointerId:pointerId,
+            pointerType:'mouse', isPrimary:true, button:0, buttons:1,
+            clientX:from.x, clientY:from.y
+        }));
+        document.dispatchEvent(new PointerEvent('pointermove', {
+            bubbles:true, cancelable:true, pointerId:pointerId,
+            pointerType:'mouse', isPrimary:true, button:0, buttons:1,
+            clientX:to.x, clientY:to.y
+        }));
+    }
+    function endPointerDrag(target, pointerId, type) {
+        var to = pointerCenter(target);
+        document.dispatchEvent(new PointerEvent(type || 'pointerup', {
+            bubbles:true, cancelable:true, pointerId:pointerId,
+            pointerType:'mouse', isPrimary:true, button:0, buttons:0,
+            clientX:to.x, clientY:to.y
+        }));
+    }
     function loadoutMessages() {
         return window.__routeHarness.sent.filter(function(message) {
             return message.domain === 'loadout';
@@ -1170,6 +1398,25 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && Math.abs(probe.width - Math.round(probe.rectWidth * devicePixelRatio)) <= 1
             && Math.abs(probe.height - Math.round(probe.rectHeight * devicePixelRatio)) <= 1;
     }
+    function candidateProjectionReady(build, slotKey, expectedCount) {
+        var view = build && build.view;
+        var list = document.querySelector(
+            '[data-candidate-list][data-candidate-state="ready"]');
+        var nodes = list && list.querySelectorAll(
+            '.character-build-candidate[data-candidate-key]');
+        var expectedKey = 'backpack:9:' + window.__routeHarness.candidateLease;
+        return !!(build && view && list && nodes)
+            && build.selectedSlotKey === slotKey
+            && view.selectedSlotKey === slotKey
+            && !view.candidateLoadFailed
+            && !!view.candidateRequestKey
+            && view.candidateState.kind === 'ready'
+            && view.candidateState.requestKey === view.candidateRequestKey
+            && view.candidateCount === expectedCount
+            && nodes.length === expectedCount
+            && (expectedCount !== 1
+                || nodes[0].getAttribute('data-candidate-key') === expectedKey);
+    }
     var visual = {poseMatrix:[]};
     function captureCanvas(name) {
         var canvas = document.querySelector('.character-build-doll-canvas');
@@ -1199,13 +1446,29 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
         var sameActiveSlot = before && before.selectedSlotKey === key
             && before.view && before.view.selectedSlotKey === key
             && !before.view.candidateLoadFailed;
-        var expectedRequestCount = requestBase + (sameActiveSlot ? 0 : 1);
+        var previousHandgun = before && (before.selectedSlotKey === 'weapon:手枪'
+            || before.selectedSlotKey === 'weapon:手枪2');
+        var nextHandgun = key === 'weapon:手枪' || key === 'weapon:手枪2';
+        var beforeCandidateFence = before && before.session && before.view
+            ? [before.session.sessionGeneration, before.session.loadoutRevision,
+                before.session.drugRevision, before.view.candidateScope].join('|') : '';
+        var sameHandgunFence = !sameActiveSlot && previousHandgun && nextHandgun
+            && before.candidateCacheCount === 1
+            && before.view.candidateState.kind === 'ready'
+            && !before.view.candidateScopePending
+            && !!beforeCandidateFence;
+        var expectedRequestCount = requestBase
+            + (sameActiveSlot || sameHandgunFence ? 0 : 1);
         var node = document.querySelector('[data-roving-key="' + key + '"]');
         node.click();
         var settled = await until(function() {
             var build = window.__routeHarness.renderer.lastBuild;
             var state = InventoryWorkbench.debugState().build;
+            var currentCandidateFence = state && state.session && state.view
+                ? [state.session.sessionGeneration, state.session.loadoutRevision,
+                    state.session.drugRevision, state.view.candidateScope].join('|') : '';
             return commandCount('candidates') === expectedRequestCount
+                && (!sameHandgunFence || currentCandidateFence === beforeCandidateFence)
                 && state && state.view && state.view.selectedSlotKey === key
                 && state.view.candidateCount === 1
                 && document.querySelectorAll('.character-build-candidate').length === 1
@@ -1717,12 +1980,177 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && currentLongGunCard.querySelectorAll('.inventory-equip-slot-compact.used').length === 2);
         check('outer slot accessibility keeps canonical tier, mod and quantity semantics',
             currentLongGun.getAttribute('aria-label').indexOf('装备已升阶') >= 0
-            && currentLongGun.getAttribute('aria-label').indexOf('插件槽 1：稳定导轨，高级，结构与功能') >= 0
+            && currentLongGun.getAttribute('aria-label').indexOf('插件槽 1：复合稳定导轨，高级，结构与功能') >= 0
             && currentLongGun.getAttribute('aria-label').indexOf('插件槽 3：空闲') >= 0
             && document.querySelector('[data-roving-key="weapon:手雷"]')
                 .getAttribute('aria-label').indexOf('数量 3') >= 0
             && document.querySelector('[data-roving-key="drug:drug4"]')
                 .getAttribute('aria-label').indexOf('数量 4') >= 0);
+        var loadoutTooltipTraffic = commandCount('tooltip');
+        var loadoutTooltipRect = currentLongGun.getBoundingClientRect();
+        currentLongGun.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:61,
+            pointerType:'mouse',
+            clientX:loadoutTooltipRect.left + loadoutTooltipRect.width / 2,
+            clientY:loadoutTooltipRect.top + loadoutTooltipRect.height / 2
+        }));
+        check('equipped slot pointer inspection upgrades the compact summary to authoritative rich content',
+            await until(function() {
+                var copy = document.getElementById('panel-tooltip').textContent;
+                return PanelTooltip.isVisible()
+                    && currentLongGun.getAttribute('data-loadout-tooltip') === 'authoritative'
+                    && copy.indexOf(CharacterBuildDressupFixture.equipment.longGun) >= 0
+                    && copy.indexOf('权威已装备属性') >= 0
+                    && copy.indexOf('权威已装备说明') >= 0
+                    && copy.indexOf('获取方式：测试仓库') >= 0
+                    && copy.indexOf('强化 +3') >= 0
+                    && copy.indexOf('插件 2 / 3') >= 0
+                    && copy.indexOf('复合稳定导轨') >= 0;
+            }) && commandCount('tooltip') === loadoutTooltipTraffic + 1);
+        var loadoutTooltipRequest = loadoutMessages().filter(function(message) {
+            return message.cmd === 'tooltip';
+        }).slice(-1)[0];
+        check('equipped tooltip request carries the exact current target and both authority revisions',
+            JSON.stringify(Object.keys(loadoutTooltipRequest.payload).sort()) === JSON.stringify([
+                'expectedDrugRevision', 'expectedLoadoutRevision', 'sessionGeneration',
+                'slotKey', 'v'
+            ])
+            && loadoutTooltipRequest.payload.slotKey === '长枪'
+            && loadoutTooltipRequest.payload.sessionGeneration === 17
+            && loadoutTooltipRequest.payload.expectedLoadoutRevision
+                === window.__routeHarness.authority.loadoutRevision
+            && loadoutTooltipRequest.payload.expectedDrugRevision
+                === window.__routeHarness.authority.drugRevision);
+        currentLongGun.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:61,
+            pointerType:'mouse'
+        }));
+        await wait(180);
+        document.dispatchEvent(new KeyboardEvent('keydown', {
+            key:'Tab', bubbles:true
+        }));
+        currentLongGun.focus();
+        check('equipped slot keyboard inspection reuses the same accepted rich result without another request',
+            await until(function() {
+                return PanelTooltip.isVisible()
+                    && (currentLongGun.getAttribute('aria-describedby') || '')
+                        .split(/\s+/).indexOf('panel-tooltip') >= 0
+                    && document.getElementById('panel-tooltip').textContent
+                        .indexOf('复合稳定导轨') >= 0;
+            }) && commandCount('tooltip') === loadoutTooltipTraffic + 1);
+        densityToggle.focus();
+        PanelTooltip.hide();
+        var failedTooltipSlot = document.querySelector(
+            '[data-roving-key="armor:上装装备"]');
+        var failedTooltipRect = failedTooltipSlot.getBoundingClientRect();
+        var failedTooltipTraffic = commandCount('tooltip');
+        window.__routeHarness.rejectNextLoadoutTooltip = true;
+        failedTooltipSlot.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:62,
+            pointerType:'mouse',
+            clientX:failedTooltipRect.left + failedTooltipRect.width / 2,
+            clientY:failedTooltipRect.top + failedTooltipRect.height / 2
+        }));
+        check('equipped tooltip rejection replaces loading copy with an explicit retryable failure',
+            await until(function() {
+                var copy = document.getElementById('panel-tooltip').textContent;
+                return commandCount('tooltip') === failedTooltipTraffic + 1
+                    && PanelTooltip.isVisible()
+                    && copy.indexOf('完整说明暂时读取失败') >= 0
+                    && copy.indexOf('正在读取完整说明') < 0;
+            }));
+        failedTooltipSlot.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:62,
+            pointerType:'mouse'
+        }));
+        await wait(180);
+        failedTooltipSlot.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:63,
+            pointerType:'mouse',
+            clientX:failedTooltipRect.left + failedTooltipRect.width / 2,
+            clientY:failedTooltipRect.top + failedTooltipRect.height / 2
+        }));
+        check('leaving and re-entering a failed equipped tooltip retries and adopts rich content',
+            await until(function() {
+                var copy = document.getElementById('panel-tooltip').textContent;
+                return commandCount('tooltip') === failedTooltipTraffic + 2
+                    && PanelTooltip.isVisible()
+                    && failedTooltipSlot.getAttribute('data-loadout-tooltip') === 'authoritative'
+                    && copy.indexOf(CharacterBuildDressupFixture.equipment.upper) >= 0
+                    && copy.indexOf('权威已装备属性') >= 0
+                    && copy.indexOf('完整说明暂时读取失败') < 0;
+            }));
+        failedTooltipSlot.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:63,
+            pointerType:'mouse'
+        }));
+        await wait(180);
+
+        var oldTooltipOwner = document.querySelector(
+            '[data-roving-key="armor:下装装备"]');
+        var newTooltipOwner = document.querySelector(
+            '[data-roving-key="armor:手部装备"]');
+        var oldTooltipRect = oldTooltipOwner.getBoundingClientRect();
+        var newTooltipRect = newTooltipOwner.getBoundingClientRect();
+        var ownerTooltipTraffic = commandCount('tooltip');
+        window.__routeHarness.rejectNextLoadoutTooltip = true;
+        window.__routeHarness.holdNextLoadoutTooltip = true;
+        oldTooltipOwner.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:64,
+            pointerType:'mouse',
+            clientX:oldTooltipRect.left + oldTooltipRect.width / 2,
+            clientY:oldTooltipRect.top + oldTooltipRect.height / 2
+        }));
+        check('an old equipped tooltip owner can remain pending without losing loading ownership',
+            await until(function() {
+                return commandCount('tooltip') === ownerTooltipTraffic + 1
+                    && !!window.__routeHarness.heldLoadoutTooltip
+                    && PanelTooltip.isVisible()
+                    && document.getElementById('panel-tooltip').textContent
+                        .indexOf('正在读取完整说明') >= 0;
+            }));
+        oldTooltipOwner.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:64,
+            pointerType:'mouse'
+        }));
+        newTooltipOwner.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:65,
+            pointerType:'mouse',
+            clientX:newTooltipRect.left + newTooltipRect.width / 2,
+            clientY:newTooltipRect.top + newTooltipRect.height / 2
+        }));
+        check('a newer equipped tooltip owner adopts its rich result while the old failure is held',
+            await until(function() {
+                var copy = document.getElementById('panel-tooltip').textContent;
+                return commandCount('tooltip') === ownerTooltipTraffic + 2
+                    && PanelTooltip.isVisible()
+                    && PanelTooltip.debugState().pointerOwnerActive
+                    && copy.indexOf(CharacterBuildDressupFixture.equipment.hands) >= 0
+                    && copy.indexOf('权威已装备属性') >= 0;
+            }), JSON.stringify({
+                copy:document.getElementById('panel-tooltip').textContent,
+                visible:PanelTooltip.isVisible(),
+                describedBy:newTooltipOwner.getAttribute('aria-describedby'),
+                tooltipRequests:commandCount('tooltip'),
+                held:!!window.__routeHarness.heldLoadoutTooltip
+            }));
+        var heldLoadoutTooltip = window.__routeHarness.heldLoadoutTooltip;
+        window.__routeHarness.heldLoadoutTooltip = null;
+        Bridge.emit('panel_resp', heldLoadoutTooltip);
+        await wait(30);
+        var currentTooltipCopy = document.getElementById('panel-tooltip').textContent;
+        check('late failure from an old equipped tooltip owner cannot overwrite the current owner',
+            PanelTooltip.isVisible()
+            && PanelTooltip.debugState().pointerOwnerActive
+            && currentTooltipCopy.indexOf(CharacterBuildDressupFixture.equipment.hands) >= 0
+            && currentTooltipCopy.indexOf('权威已装备属性') >= 0
+            && currentTooltipCopy.indexOf('完整说明暂时读取失败') < 0);
+        newTooltipOwner.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:65,
+            pointerType:'mouse'
+        }));
+        densityToggle.focus();
+        PanelTooltip.hide();
         check('exactly one dressup renderer is mounted',
             window.__routeHarness.renderer.active === 1
             && window.__routeHarness.renderer.maxActive === 1);
@@ -1775,6 +2203,230 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 && image && image.complete && image.naturalWidth > 0;
         }));
         var candidate = document.querySelector('.character-build-candidate');
+        var compatibleCandidateHeight = document.querySelector(
+            '.character-build-candidate-scroll').clientHeight;
+        var candidateScopeGroup = document.querySelector(
+            '[data-build-candidate-scope-mount] .workbench-choice-group');
+        var compatibleScopeButton = candidateScopeGroup
+            && candidateScopeGroup.querySelector('[data-choice="compatible"]');
+        var backpackScopeButton = candidateScopeGroup
+            && candidateScopeGroup.querySelector('[data-choice="backpack"]');
+        var initialCandidateRequest = loadoutMessages().filter(function(message) {
+            return message.cmd === 'candidates';
+        }).slice(-1)[0];
+        check('candidate scope mounts as one compatible-default ChoiceGroup and reaches the strict wire',
+            !!candidateScopeGroup && !!compatibleScopeButton && !!backpackScopeButton
+            && compatibleScopeButton.getAttribute('aria-pressed') === 'true'
+            && backpackScopeButton.getAttribute('aria-pressed') === 'false'
+            && initialCandidateRequest.payload.candidateScope === 'compatible'
+            && InventoryWorkbench.debugState().build.view.candidateScope === 'compatible');
+        check('candidate scope labels remain single-line and non-shrinking at this viewport',
+            getComputedStyle(compatibleScopeButton).whiteSpace === 'nowrap'
+            && getComputedStyle(backpackScopeButton).whiteSpace === 'nowrap'
+            && compatibleScopeButton.scrollHeight <= compatibleScopeButton.clientHeight + 1
+            && backpackScopeButton.scrollHeight <= backpackScopeButton.clientHeight + 1
+            && compatibleScopeButton.getBoundingClientRect().width >= 38
+            && backpackScopeButton.getBoundingClientRect().width >= 38);
+
+        var scopeDensity = InventoryWorkbench.debugState().build.view.density;
+        var scopeCandidateBase = commandCount('candidates');
+        backpackScopeButton.click();
+        var scopePendingCount = commandCount('candidates');
+        compatibleScopeButton.click();
+        check('scope read enters a new request fence and disables both choices while pending',
+            scopePendingCount === scopeCandidateBase + 1
+            && commandCount('candidates') === scopePendingCount
+            && candidateScopeGroup.getAttribute('aria-disabled') === 'true'
+            && compatibleScopeButton.disabled && backpackScopeButton.disabled
+            && InventoryWorkbench.debugState().build.view.candidateScope === 'backpack'
+            && InventoryWorkbench.debugState().build.view.candidateScopePending
+            && InventoryWorkbench.debugState().build.view.candidateRequestKey
+                .indexOf(':backpack:') >= 0);
+        check('backpack scope projects incompatible rows as blocked inspection-only items',
+            await until(function() {
+                return InventoryWorkbench.debugState().build.view.candidateScope === 'backpack'
+                    && !InventoryWorkbench.debugState().build.view.candidateScopePending
+                    && document.querySelectorAll('.character-build-candidate').length === 6;
+            }));
+        var candidateContextRow = document.querySelector(
+            '.character-build-candidate-context-row');
+        var candidatePane = document.querySelector('.character-build-candidate-pane');
+        var candidateScrollForLayout = document.querySelector(
+            '.character-build-candidate-scroll');
+        var contextRect = candidateContextRow.getBoundingClientRect();
+        var paneRect = candidatePane.getBoundingClientRect();
+        var scrollRect = candidateScrollForLayout.getBoundingClientRect();
+        var candidateLayoutScale = scrollRect.width
+            / Math.max(1, candidateScrollForLayout.clientWidth);
+        var firstCandidateRect = document.querySelector(
+            '.character-build-candidate').getBoundingClientRect();
+        check('candidate scope and browse summary share one compact row while the grid owns remaining height',
+            candidatePane.children.length === 3
+            && candidateContextRow.children.length === 2
+            && candidateContextRow.clientHeight <= 35
+            && Math.abs(candidateScrollForLayout.clientHeight - compatibleCandidateHeight) <= 1
+            && scrollRect.height > paneRect.height * 0.65
+            && firstCandidateRect.top <= scrollRect.top + 8 * candidateLayoutScale + 1,
+            JSON.stringify({
+                pane:paneRect.height,
+                context:candidateContextRow.clientHeight,
+                compatible:compatibleCandidateHeight,
+                backpack:candidateScrollForLayout.clientHeight,
+                firstOffset:firstCandidateRect.top - scrollRect.top
+            }));
+        var backpackRequest = loadoutMessages().filter(function(message) {
+            return message.cmd === 'candidates';
+        }).slice(-1)[0];
+        var incompatibleCandidate = document.querySelector(
+            '.character-build-candidate[data-blocked="true"]');
+        check('backpack response echo and incompatible reason remain exact at the UI boundary',
+            backpackRequest.payload.candidateScope === 'backpack'
+            && incompatibleCandidate
+            && incompatibleCandidate.textContent.indexOf('与当前槽位不兼容') >= 0
+            && incompatibleCandidate.getAttribute('data-blocked') === 'true');
+        var incompatibleTooltipBase = inventoryMessages().length;
+        incompatibleCandidate.focus();
+        check('blocked incompatible row remains keyboard-inspectable through the existing tooltip source',
+            await until(function() {
+                var tooltipState = InventoryWorkbench.debugState().build.candidateTooltip;
+                return inventoryMessages().length === incompatibleTooltipBase + 1
+                    && PanelTooltip.isVisible()
+                    && incompatibleCandidate.getAttribute('aria-describedby')
+                        .split(/\s+/).indexOf('panel-tooltip') >= 0
+                    && document.getElementById('panel-tooltip').textContent
+                        .indexOf('权威候选说明') >= 0
+                    && tooltipState.cacheCount > 0
+                    && tooltipState.mux.pendingCount === 0;
+            }));
+        var incompatibleMutationBase = commandCount('equipEquipment');
+        incompatibleCandidate.click();
+        beginPointerDrag(incompatibleCandidate, currentLongGun, 79);
+        endPointerDrag(currentLongGun, 79, 'pointerup');
+        check('blocked incompatible row cannot select, expose CTA, or start candidate drag',
+            InventoryWorkbench.debugState().build.view.selectedCandidateKey === ''
+            && document.querySelector('[data-build-action="commit"]').disabled
+            && commandCount('equipEquipment') === incompatibleMutationBase
+            && !InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && !document.querySelector('.character-build-drag-ghost'));
+
+        PanelTooltip.hide();
+        var universalCandidateBase = commandCount('candidates');
+        var universalAuthorityBefore = InventoryWorkbench.debugState().build;
+        var universalSlots = [
+            'armor:上装装备', 'weapon:刀', 'weapon:手枪2',
+            'weapon:手雷', longGunKey
+        ];
+        var universalImmediateReady = true;
+        universalSlots.forEach(function(slotKey) {
+            document.querySelector('[data-roving-key="' + slotKey + '"]').click();
+            var immediate = InventoryWorkbench.debugState().build;
+            universalImmediateReady = universalImmediateReady
+                && commandCount('candidates') === universalCandidateBase
+                && candidateProjectionReady(immediate, slotKey, 6)
+                && !immediate.view.candidateScopePending
+                && document.querySelectorAll(
+                    '.character-build-candidate:not([data-blocked="true"])').length === 1
+                && immediate.candidateCacheCount === 1
+                && immediate.candidateTooltip.epoch
+                    === universalAuthorityBefore.candidateTooltip.epoch
+                && immediate.candidateTooltip.cacheCount
+                    === universalAuthorityBefore.candidateTooltip.cacheCount;
+        });
+        check('one authority-stamped backpack reprojects five equipment slots in the same JS turn',
+            universalImmediateReady,
+            JSON.stringify({
+                requests:commandCount('candidates'),
+                base:universalCandidateBase,
+                state:InventoryWorkbench.debugState().build
+            }));
+        var universalTooltipBase = inventoryMessages().length;
+        var universalCompatible = document.querySelector(
+            '.character-build-candidate:not([data-blocked="true"])');
+        document.dispatchEvent(new KeyboardEvent('keydown', {
+            key:'Tab',
+            bubbles:true
+        }));
+        universalCompatible.focus();
+        check('locally reprojected candidate keeps the original rich-tooltip source authority',
+            await until(function() {
+                var tooltipState = InventoryWorkbench.debugState().build.candidateTooltip;
+                return inventoryMessages().length === universalTooltipBase + 1
+                    && PanelTooltip.isVisible()
+                    && document.getElementById('panel-tooltip').textContent
+                        .indexOf('权威候选说明') >= 0
+                    && tooltipState.cacheCount >= 1
+                    && tooltipState.mux.pendingCount === 0;
+            }) && commandCount('candidates') === universalCandidateBase);
+        densityToggle.focus();
+        PanelTooltip.hide();
+
+        universalCompatible.click();
+        var universalTuningRequestBase = commandCount('candidates');
+        document.querySelector('[data-build-action="tune"]').click();
+        check('successful tuning entry revokes the universal optimistic read cache',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state.tuning && state.tuning.active
+                    && state.tuning.tuning && state.tuning.tuning.hasPreview
+                    && !state.tuning.tuning.readPending
+                    && state.candidateCacheCount === 0;
+            }) && commandCount('candidates') === universalTuningRequestBase);
+        document.querySelector('[data-build-tuning-return]').click();
+        var universalTuningReturned = await until(function() {
+            var state = InventoryWorkbench.debugState().build;
+            return state.tuning && !state.tuning.active
+                && state.candidateCacheCount === 0;
+        });
+        document.querySelector('[data-roving-key="armor:上装装备"]').click();
+        check('the first equipment-slot switch after tuning obtains fresh authority before reuse',
+            universalTuningReturned && await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return commandCount('candidates') === universalTuningRequestBase + 1
+                    && candidateProjectionReady(state, 'armor:上装装备', 6)
+                    && state.candidateCacheCount === 1;
+            }));
+        var universalReloadedBase = commandCount('candidates');
+        document.querySelector('[data-roving-key="' + longGunKey + '"]').click();
+        check('fresh post-tuning backpack authority is reusable across equipment slots again',
+            commandCount('candidates') === universalReloadedBase
+            && candidateProjectionReady(
+                InventoryWorkbench.debugState().build, longGunKey, 6)
+            && InventoryWorkbench.debugState().build.candidateCacheCount === 1);
+
+        var backpackCompatible = document.querySelector(
+            '.character-build-candidate:not([data-blocked="true"])');
+        var scopeWrongTarget = document.querySelector(
+            '[data-roving-key="armor:上装装备"]');
+        beginPointerDrag(backpackCompatible, scopeWrongTarget, 80);
+        check('backpack scope keeps A5b drag pinned to the exact selected slot',
+            InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && scopeWrongTarget.classList.contains('workbench-drop-rejected'));
+        endPointerDrag(scopeWrongTarget, 80, 'pointerup');
+        await wait(90);
+        backpackCompatible.click();
+        var candidateScroll = document.querySelector('.character-build-candidate-scroll');
+        candidateScroll.scrollTop = 77;
+        var compatibleReturnBase = commandCount('candidates');
+        compatibleScopeButton.click();
+        var compatiblePendingCount = commandCount('candidates');
+        backpackScopeButton.click();
+        check('returning scope clears preview, resets scroll, and rejects a second switch while pending',
+            compatiblePendingCount === compatibleReturnBase + 1
+            && commandCount('candidates') === compatiblePendingCount
+            && InventoryWorkbench.debugState().build.view.selectedCandidateKey === ''
+            && candidateScroll.scrollTop === 0
+            && candidateScopeGroup.getAttribute('aria-disabled') === 'true'
+            && !PanelTooltip.isVisible());
+        check('compatible scope adopts only its exact echoed response without changing density or target',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build.view;
+                return state.candidateScope === 'compatible'
+                    && !state.candidateScopePending
+                    && state.density === scopeDensity
+                    && state.selectedSlotKey === longGunKey
+                    && document.querySelectorAll('.character-build-candidate').length === 1;
+            }));
+        candidate = document.querySelector('.character-build-candidate');
         var densityTraffic = loadoutMessages().length;
         densityToggle.querySelector('[data-layout-mode="compact"]').click();
         check('compact build density uses the shared 48px icon tile without rebuilding authority',
@@ -1806,7 +2458,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && candidate.querySelector('.inventory-mod-glyph').classList.contains('symbol-square-solid')
             && candidate.getAttribute('aria-label').indexOf('装备可升阶但尚未升阶') >= 0
             && candidate.getAttribute('aria-label')
-                .indexOf('插件槽 1：候选稳定器，中级，结构与功能') >= 0);
+                .indexOf('插件槽 1：候选复合稳定器，中级，结构与功能') >= 0);
         var tooltipBase = inventoryMessages().length;
         var candidateRect = candidate.getBoundingClientRect();
         candidate.dispatchEvent(new PointerEvent('pointerenter', {
@@ -1856,6 +2508,97 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && inventoryMessages().length === tooltipBase + 1);
         densityToggle.focus();
         PanelTooltip.hide();
+        var pistolKey = 'weapon:手枪';
+        var pistol2Key = 'weapon:手枪2';
+        var handgunCandidateBase = commandCount('candidates');
+        document.querySelector('[data-roving-key="' + pistolKey + '"]').click();
+        check('the first handgun slot establishes one recent compatible candidate cache entry',
+            await until(function() {
+                return commandCount('candidates') === handgunCandidateBase + 1
+                    && candidateProjectionReady(
+                        InventoryWorkbench.debugState().build, pistolKey, 1)
+                    && InventoryWorkbench.debugState().build.candidateCacheCount === 1;
+            }));
+        var handgunCacheBefore = InventoryWorkbench.debugState().build;
+        var handgunTooltipEpoch = handgunCacheBefore.candidateTooltip.epoch;
+        var handgunTooltipCacheCount = handgunCacheBefore.candidateTooltip.cacheCount;
+        var pistol2CandidateBase = commandCount('candidates');
+        document.querySelector('[data-roving-key="' + pistol2Key + '"]').click();
+        var pistol2Immediate = InventoryWorkbench.debugState().build;
+        check('same-scope handgun to handgun2 adopts the recent cache in the same JS turn',
+            commandCount('candidates') === pistol2CandidateBase
+            && candidateProjectionReady(pistol2Immediate, pistol2Key, 1)
+            && !pistol2Immediate.view.candidateScopePending
+            && pistol2Immediate.view.candidateState.kind === 'ready'
+            && pistol2Immediate.candidateCacheCount === 1
+            && pistol2Immediate.candidateTooltip.epoch === handgunTooltipEpoch
+            && pistol2Immediate.candidateTooltip.cacheCount === handgunTooltipCacheCount,
+            JSON.stringify({before:handgunCacheBefore, immediate:pistol2Immediate,
+                candidates:commandCount('candidates')}));
+        var nonEquivalentCandidateBase = commandCount('candidates');
+        currentLongGun.click();
+        check('switching from the handgun family to a non-equivalent slot still performs one read',
+            await until(function() {
+                return commandCount('candidates') === nonEquivalentCandidateBase + 1
+                    && candidateProjectionReady(
+                        InventoryWorkbench.debugState().build, longGunKey, 1);
+            }));
+        candidate = document.querySelector('.character-build-candidate');
+        candidateRect = candidate.getBoundingClientRect();
+        candidateBadge = candidate.querySelector('[data-badge-kind]');
+        candidate.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:72,
+            pointerType:'mouse',
+            clientX:candidateRect.left + candidateRect.width / 2,
+            clientY:candidateRect.top + candidateRect.height / 2
+        }));
+        check('new candidate authority refreshes rich tooltip before the drag suppression probe',
+            await until(function() { return PanelTooltip.isVisible(); })
+            && inventoryMessages().length === tooltipBase + 2);
+        var dragMutationBase = commandCount('equipEquipment');
+        var wrongDropTarget = document.querySelector(
+            '[data-roving-key="armor:上装装备"]');
+        beginPointerDrag(candidate, wrongDropTarget, 81);
+        check('filtered candidate drag suppresses tooltip and marks an incompatible target',
+            InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && InventoryWorkbench.debugState().build.view.candidateDrag.controller.dragging
+            && wrongDropTarget.classList.contains('workbench-drop-rejected')
+            && candidate.classList.contains('character-build-drag-source')
+            && !!document.querySelector('.character-build-drag-ghost')
+            && !PanelTooltip.isVisible()
+            && inventoryMessages().length === tooltipBase + 2);
+        endPointerDrag(wrongDropTarget, 81, 'pointerup');
+        candidate.click();
+        check('wrong-target release emits no mutation and suppresses its synthetic click',
+            commandCount('equipEquipment') === dragMutationBase
+            && InventoryWorkbench.debugState().build.view.selectedCandidateKey === ''
+            && !InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && !document.querySelector('.character-build-drag-ghost')
+            && !wrongDropTarget.classList.contains('workbench-drop-rejected')
+            && !candidate.classList.contains('character-build-drag-source'));
+        beginPointerDrag(candidate, currentLongGun, 82);
+        check('compatible selected target receives the shared active drop state',
+            currentLongGun.classList.contains('workbench-drop-active')
+            && InventoryWorkbench.debugState().build.view.candidateDrag.active);
+        endPointerDrag(currentLongGun, 82, 'pointercancel');
+        check('pointer cancellation tears down the candidate drag without mutation',
+            commandCount('equipEquipment') === dragMutationBase
+            && !InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && !document.querySelector('.character-build-drag-ghost')
+            && !currentLongGun.classList.contains('workbench-drop-active'));
+        currentLongGun.setAttribute('data-blocked', 'true');
+        beginPointerDrag(candidate, currentLongGun, 83);
+        check('blocked selected target remains inspectable but rejects candidate drop',
+            currentLongGun.classList.contains('workbench-drop-rejected')
+            && InventoryWorkbench.debugState().build.view.candidateDrag.active);
+        endPointerDrag(currentLongGun, 83, 'pointerup');
+        currentLongGun.removeAttribute('data-blocked');
+        check('blocked release is mutation-free and restores drag/tooltip ownership',
+            commandCount('equipEquipment') === dragMutationBase
+            && !InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && !document.querySelector('.character-build-drag-ghost')
+            && !currentLongGun.classList.contains('workbench-drop-rejected'));
+        await wait(100);
         var previewColorProbe = document.createElement('i');
         previewColorProbe.style.color = 'var(--dls-crystal-faint)';
         candidate.appendChild(previewColorProbe);
@@ -1876,7 +2619,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             document.querySelector('[data-overlay-copy]').textContent.indexOf(
                 CharacterBuildDressupFixture.scenarios.candidate.candidateItem) >= 0
              && loadoutMessages().every(function(message) {
-                return ['snapshot','candidates','flushLive','statsSnapshot','finalize',
+                return ['snapshot','candidates','tooltip','flushLive','statsSnapshot','finalize',
                     'equipEquipment','unequipEquipment','equipDrug','unequipDrug']
                      .indexOf(message.cmd) >= 0;
              }));
@@ -2131,6 +2874,79 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 && commandCount('candidates') === failedCandidateCount + 1
                 && document.activeElement.hasAttribute('data-candidate-key');
         }));
+        var sameSlotState = InventoryWorkbench.debugState().build;
+        var sameSlotRequestCount = commandCount('candidates');
+        var sameSlotRequestKey = sameSlotState.view.candidateRequestKey;
+        document.querySelector('[data-roving-key="' + headKey + '"]').click();
+        document.querySelector('[data-roving-key="' + headKey + '"]').click();
+        check('repeated activation of the same ready slot preserves its exact candidate projection',
+            commandCount('candidates') === sameSlotRequestCount
+            && InventoryWorkbench.debugState().build.view.candidateRequestKey
+                === sameSlotRequestKey
+            && candidateProjectionReady(
+                InventoryWorkbench.debugState().build, headKey, 1));
+
+        var heldSlotKey = 'armor:上装装备';
+        var lateWinnerKey = 'armor:下装装备';
+        window.__routeHarness.heldCandidate = null;
+        window.__routeHarness.holdNextCandidate = true;
+        var lateCandidateBase = commandCount('candidates');
+        document.querySelector('[data-roving-key="' + heldSlotKey + '"]').click();
+        var heldCandidateReady = await until(function() {
+            return window.__routeHarness.heldCandidate
+                && InventoryWorkbench.debugState().build.view.candidateState.kind === 'loading';
+        });
+        document.querySelector('[data-roving-key="' + heldSlotKey + '"]').click();
+        check('same-slot activation while a candidate read is pending does not duplicate the read',
+            heldCandidateReady
+            && commandCount('candidates') === lateCandidateBase + 1);
+        document.querySelector('[data-roving-key="' + lateWinnerKey + '"]').click();
+        check('a newer slot becomes the sole candidate owner before the old response is released',
+            await until(function() {
+                return candidateProjectionReady(
+                    InventoryWorkbench.debugState().build, lateWinnerKey, 1);
+            }) && commandCount('candidates') === lateCandidateBase + 2);
+        var lateWinnerState = InventoryWorkbench.debugState().build;
+        var lateWinnerRequestKey = lateWinnerState.view.candidateRequestKey;
+        Bridge.emit('panel_resp', window.__routeHarness.heldCandidate);
+        window.__routeHarness.heldCandidate = null;
+        await wait(30);
+        lateWinnerState = InventoryWorkbench.debugState().build;
+        check('late candidate response cannot replace the newer slot or its request key',
+            lateWinnerState.selectedSlotKey === lateWinnerKey
+            && lateWinnerState.view.selectedSlotKey === lateWinnerKey
+            && lateWinnerState.view.candidateRequestKey === lateWinnerRequestKey
+            && candidateProjectionReady(lateWinnerState, lateWinnerKey, 1));
+
+        var staleSlotKey = headKey;
+        var staleCandidateBase = commandCount('candidates');
+        var staleSnapshotBase = commandCount('snapshot');
+        window.__routeHarness.heldSnapshot = null;
+        window.__routeHarness.staleNextCandidate = true;
+        window.__routeHarness.holdNextSnapshot = true;
+        document.querySelector('[data-roving-key="' + staleSlotKey + '"]').click();
+        check('definitive stale candidate state enters one locked same-slot snapshot recovery',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return window.__routeHarness.heldSnapshot && state.view.candidateRecoveryPending
+                    && state.view.candidateFailureCode === 'stale_state'
+                    && state.view.candidateState.kind === 'loading'
+                    && document.querySelector('[data-roving-key="' + staleSlotKey + '"]').disabled;
+            }));
+        document.querySelector('[data-roving-key="' + staleSlotKey + '"]').click();
+        check('repeated same-slot activation cannot fork the locked stale recovery',
+            commandCount('candidates') === staleCandidateBase + 1
+            && commandCount('snapshot') === staleSnapshotBase + 1);
+        Bridge.emit('panel_resp', window.__routeHarness.heldSnapshot);
+        window.__routeHarness.heldSnapshot = null;
+        check('stale recovery adopts one fresh snapshot then re-reads the same slot exactly once',
+            await until(function() {
+                return candidateProjectionReady(
+                    InventoryWorkbench.debugState().build, staleSlotKey, 1);
+            }) && commandCount('candidates') === staleCandidateBase + 2
+            && commandCount('snapshot') === staleSnapshotBase + 1
+            && !InventoryWorkbench.debugState().build.view.candidateRecoveryPending
+            && InventoryWorkbench.debugState().build.view.candidateFailureCode === '');
         document.querySelector('[data-roving-key="' + longGunKey + '"]').click();
         check('candidate retry flow can return to the original slot', await until(function() {
             var state = InventoryWorkbench.debugState().build;
@@ -2138,6 +2954,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 && state.view.candidateCount === 1;
         }));
         var candidateCountBeforeStorage = commandCount('candidates');
+        var snapshotCountBeforeStorage = commandCount('snapshot');
 
         openPreparationMenu();
         document.querySelector('[data-header-action="stats"]').click();
@@ -2314,7 +3131,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             return state.view === 'build' && state.build && state.build.mounted
                 && state.build.session.state === 'idle'
                 && state.build.view.candidateCount === 1
-                && commandCount('snapshot') === 2
+                && commandCount('snapshot') === snapshotCountBeforeStorage + 1
                 && commandCount('candidates') === candidateCountBeforeStorage + 1
                 && rendererSettled();
         });
@@ -2325,6 +3142,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             JSON.stringify({
                 workbench:InventoryWorkbench.debugState(),
                 snapshotCount:commandCount('snapshot'),
+                expectedSnapshotCount:snapshotCountBeforeStorage + 1,
                 candidateCount:commandCount('candidates'),
                 expectedCandidateCount:candidateCountBeforeStorage + 1,
                 renderer:window.__routeHarness.renderer,
@@ -2526,19 +3344,31 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 return state.view === 'build' && !state.viewTransition
                     && state.viewStack.length === 1
                     && state.build && state.build.mounted
+                    && candidateProjectionReady(state.build, longGunKey, 1)
                     && commandCount('snapshot') === transactionSnapshotBase + 2
                     && commandCount('candidates') === transactionCandidateBase + 1
                     && document.activeElement === transactionStorageOpener
                     && rendererSettled();
+            }), JSON.stringify({
+                state:InventoryWorkbench.debugState(),
+                snapshotCount:commandCount('snapshot'),
+                expectedSnapshotCount:transactionSnapshotBase + 2,
+                candidateRequestCount:commandCount('candidates'),
+                expectedCandidateRequestCount:transactionCandidateBase + 1,
+                candidateNodeCount:document.querySelectorAll(
+                    '.character-build-candidate').length
             }));
 
         var writesBefore = window.__routeHarness.storage.externalBegins;
         var longGunCountBeforeWrite = document.querySelector(
             '[data-roving-key="' + longGunKey
                 + '"] [data-slot-candidate-count]');
-        document.querySelector('.character-build-candidate').click();
-        document.querySelector('[data-build-action="commit"]').click();
-        check('deterministic equip success adopts loadout and backpack then restores focus',
+        var equipDragCandidate = document.querySelector('.character-build-candidate');
+        var equipDragTarget = document.querySelector(
+            '[data-roving-key="' + longGunKey + '"]');
+        beginPointerDrag(equipDragCandidate, equipDragTarget, 84);
+        endPointerDrag(equipDragTarget, 84, 'pointerup');
+        check('successful filtered-candidate drop adopts loadout and backpack then restores focus',
             await until(function() {
                 var state = InventoryWorkbench.debugState().build;
                 var slot = document.querySelector('[data-roving-key="' + longGunKey + '"]');
@@ -2573,6 +3403,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             }), JSON.stringify(firstEquip.payload));
 
         window.__routeHarness.rejectNextMutation = true;
+        await wait(90);
         document.querySelector('.character-build-candidate').click();
         document.querySelector('[data-build-action="commit"]').click();
         check('deterministic mutation failure keeps old authority and releases the write gate',
@@ -2627,6 +3458,18 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && document.querySelector('[data-build-action="commit"]')
                         .getAttribute('aria-label') === '重新确认结果';
             }));
+        var lockedDragCandidate = document.querySelector('.character-build-candidate');
+        var lockedDragTarget = document.querySelector(
+            '[data-roving-key="' + longGunKey + '"]');
+        var lockedDragWrites = commandCount('equipEquipment');
+        beginPointerDrag(lockedDragCandidate, lockedDragTarget, 85);
+        endPointerDrag(lockedDragTarget, 85, 'pointercancel');
+        check('reconcile-busy candidate cannot start drag or fork the equip mutation',
+            commandCount('equipEquipment') === lockedDragWrites
+            && !InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && !InventoryWorkbench.debugState().build.view.candidateDrag.controller.active
+            && !document.querySelector('.character-build-drag-ghost')
+            && !lockedDragTarget.classList.contains('workbench-drop-active'));
         var storageActivationsWhileLocked = window.__routeHarness.storage.activations;
         var toastCountWhileLocked = Toast.messages.length;
         var messagesWhileLocked = window.__routeHarness.sent.length;
@@ -2872,14 +3715,15 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             }));
         var candidateChrome = document.querySelectorAll(
             '.character-build-candidate-pane > .character-build-pane-heading,'
-            + '.character-build-candidate-pane > .character-build-candidate-focus-summary,'
+            + '.character-build-candidate-pane > .character-build-candidate-context-row,'
             + '.character-build-candidate-pane > .character-build-candidate-scroll');
         var candidateHeading = document.querySelector(
             '.character-build-candidate-pane > .character-build-pane-heading');
         var candidateActions = candidateHeading.querySelector(
             '.character-build-candidate-actions');
         check('embedded tuning has one visible chrome layer and hides the candidate decision face',
-            Array.prototype.every.call(candidateChrome, function(node) {
+            candidateChrome.length === 3
+            && Array.prototype.every.call(candidateChrome, function(node) {
                 return node.hidden && node.hasAttribute('inert')
                     && getComputedStyle(node).display === 'none';
             })
@@ -3515,6 +4359,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && state.panelInstanceId === 'panel.workbench.route-harness'
                     && state.build && state.build.mounted
                     && state.build.session.sessionGeneration === localSessionGeneration
+                    && candidateProjectionReady(state.build, longGunKey, 1)
                     && state.viewStack.length === 1
                     && state.viewStack[0].viewId === 'build'
                     && commandCount('snapshot') === localReturnSnapshotBase + 1
@@ -3555,6 +4400,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && state.viewStack[0].viewId === 'build'
                     && state.build && state.build.mounted
                     && state.build.session.sessionGeneration === localSessionGeneration
+                    && candidateProjectionReady(state.build, longGunKey, 1)
                     && commandCount('snapshot') === nestedReturnSnapshotBase + 1
                     && commandCount('candidates') === nestedReturnCandidateBase + 1
                     && commandCount('finalize') === localFinalizeBase
@@ -3589,9 +4435,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             return state.view === 'build' && state.build && state.build.mounted
                 && state.viewStack.length === 1
                 && state.viewStack[0].viewId === 'build'
-                && state.build.selectedSlotKey === longGunKey
-                && state.build.view.selectedSlotKey === longGunKey
-                && state.build.view.candidateCount === 1
+                && candidateProjectionReady(state.build, longGunKey, 1)
                 && commandCount('snapshot') === snapshotCountBeforeSecondStorage + 1
                 && commandCount('candidates') === candidateCountBeforeSecondStorage + 1
                 && rendererSettled();
@@ -4105,6 +4949,20 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && trigger.getAttribute('aria-expanded') === 'false'
                     && menuPointerListeners.length === 0;
             }));
+        document.querySelector('[data-roving-key="weapon:长枪"]').click();
+        check('destroy drag probe obtains one fresh filtered candidate',
+            await until(function() {
+                return candidateProjectionReady(
+                    InventoryWorkbench.debugState().build, 'weapon:长枪', 1);
+            }));
+        var destroyDragCandidate = document.querySelector('.character-build-candidate');
+        var destroyDragTarget = document.querySelector('[data-roving-key="weapon:长枪"]');
+        var destroyDragWrites = commandCount('equipEquipment');
+        beginPointerDrag(destroyDragCandidate, destroyDragTarget, 86);
+        check('destroy probe owns one live candidate drag before panel retirement',
+            InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && !!document.querySelector('.character-build-drag-ghost')
+            && destroyDragTarget.classList.contains('workbench-drop-active'));
         openPreparationMenu();
         document.querySelector('[data-header-action="close"]').click();
         check('close/deactivate/destroy removes the final menu listener before retiring DOM',
@@ -4113,8 +4971,13 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && window.__routeHarness.renderer.active === 0
                     && menuPointerListeners.length === 0
                     && !document.querySelector(
-                        '[data-header-action="preparation-menu"]');
+                        '[data-header-action="preparation-menu"]')
+                    && !document.querySelector('.character-build-drag-ghost');
             }));
+        endPointerDrag(destroyDragTarget, 86, 'pointerup');
+        check('late pointer release after destroy cannot dispatch a candidate mutation',
+            commandCount('equipEquipment') === destroyDragWrites
+            && !document.querySelector('.character-build-drag-ghost'));
         document.addEventListener = originalDocumentAdd;
         document.removeEventListener = originalDocumentRemove;
     } catch (error) {

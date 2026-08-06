@@ -2,6 +2,7 @@
 'use strict';
 const fs=require('fs'),http=require('http'),path=require('path'),url=require('url');
 const {readCssBundle}=require('./lib/read-css-bundle.js');
+const BrowserChildResourceClosure=require('./workbench-live-e2e/lib/browser-child-resource-closure.js');
 const ROOT=path.resolve(__dirname,'..'),WEB=path.join(ROOT,'launcher','web');
 const PLAYWRIGHT=path.join(ROOT,'launcher','perf','node_modules','playwright');
 
@@ -41,13 +42,30 @@ function audit(){
   const inventorySource=[config,preparationMenu,header,ownedView,quickTransfer,tuningScope,featureLoader,workbench,facade].join('\n');
   const registry=readModule('panels-lazy-registry.js');
   const registryWorkbench=between(registry,"Panels.registerLazy('workbench'","Panels.registerLazy('loot'");
+  const tuningHarness=fs.readFileSync(path.join(WEB,'modules','equipment-tuning','dev','harness.html'),'utf8');
   const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
   const infoProjection=between(render,'TuningView.prototype._renderHeader','TuningView.prototype._renderInstalledState');
   const operationTransition=between(view,'TuningView.prototype.setOperation','TuningView.prototype._selectReplacementCandidate');
   if(!hasAll(runtime,["domain:'equipment_tuning'",'panelInstanceId','viewSessionId',"'disconnected') return !!"]))throw new Error('strict tuning mux or definitive disconnect rule missing');
+  if(!hasAll(runtime,['response_tuple_mismatch','pendingKinds:state.pendingKinds'])
+      ||!hasAll(model,['function diagnosticAuthoritySourceKey','expectedLoadoutRevision','expectedLease'])
+      ||!hasAll(interaction,["String(pendingKinds[pendingIndex]) !== 'tooltip'",'authorityPending'])
+      ||!hasAll(view,["type:'debug'","scope:'equipment_tuning'",'preview_issued','preview_adopted','commit_issued','inventory_refresh_settled','reconcile_issued','reconcile_adopted'])
+      ||!hasAll(tuningHarness,['tooltip-first response interleave preserves candidate activation and adopts the preview token','preview-first response interleave keeps the adopted preview when the late tooltip settles','commit and inventory refresh expose redacted current-build receipts','reconcile issued and adopted expose the exact unknown-write watermark without raw authority data']))throw new Error('tuning concurrency diagnostics or exact authority receipt gate missing');
   if(!hasAll(model,['function quickCommitEligible','enhance|convert|install_tier|install_mod|replace_mod|detach_mod|detach_all_mods'])
       ||!hasAll(view,['expectedTuningToken',"requestPreview('convert'","if (operation === 'replace_mod')"])
       ||!hasAll(render,["replacementMode ? 'replace_mod' : 'install_mod'","requestPreview('detach_all_mods'","_mux.request('tooltip'"]))throw new Error('seven-operation preview/token/tooltip flow missing');
+  if(render.includes('item.displayName || item.name')
+      ||render.includes('item.icon || item.name')
+      ||render.includes('candidate.icon || candidate.itemName')
+      ||render.includes('candidate.displayName || candidate.itemName')
+      ||render.includes('materialIconHtml(material.itemName')
+      ||render.includes('escapeHtml(material.itemName')
+      ||render.includes('removedMods.join'))
+      throw new Error('Web renderer must consume strict displayName/icon projections without internal-name fallback');
+  if(!hasAll(model,['function modPresentationForItem','function equipmentDiff(left, right, modCandidates)','UNKNOWN_MOD_DISPLAY'])
+      ||!hasAll(render,['var presentation = modPresentationForItem(','currentCandidates, itemName);','equipmentDiff(left, right, modCandidates)']))
+      throw new Error('equipment mod rule arrays must render through the local canonical presentation map');
   if(/\(i\s*-\s*1\)\s*\*\s*\(i\s*-\s*1\)|smith.*0\.05/i.test(tuningSource))throw new Error('Web must not reproduce equipment formulas');
   if(!hasAll(view,['reconcileAfterCallId','_refreshRetryRequired'])
       ||!hasAll(writeLifecycle,['retryInventoryRefresh','this._completeWrite','authoritativeSnapshot'])
@@ -116,7 +134,7 @@ function audit(){
       ||workbench.includes('new InventoryWorkbenchConfig.ConfirmationPreference'))
       throw new Error('shared confirmation preference, ChoiceGroup, or help projection missing');
   if(!hasAll(render,['function focusRestoreVisible','this._renderFocusDeferred','root.addEventListener(\'pointerdown\''])
-      ||!hasAll(fs.readFileSync(path.join(WEB,'modules','equipment-tuning','dev','harness.html'),'utf8'),
+      ||!hasAll(tuningHarness,
         ['blank pointer intent cancels deferred focus','mod preview acknowledges the clicked intent in-frame',
          'editing draft preserves control identity, focus, value, and detail scroll',
         'aria-hidden or inert ancestors']))throw new Error('tuning focus ownership gates or counterexamples missing');
@@ -192,7 +210,8 @@ function edge(){return[
   path.join(process.env['ProgramFiles(x86)']||'C:\\Program Files (x86)','Microsoft','Edge','Application','msedge.exe'),
   path.join(process.env.ProgramFiles||'C:\\Program Files','Microsoft','Edge','Application','msedge.exe')
 ].find(fs.existsSync)}
-function server(){return new Promise(resolve=>{const s=http.createServer((req,res)=>{const pathname=decodeURIComponent(url.parse(req.url).pathname);const file=path.normalize(path.join(WEB,pathname));const rel=path.relative(WEB,file);if(rel.startsWith('..')||path.isAbsolute(rel)){res.writeHead(403);res.end();return}fs.readFile(file,(err,data)=>{if(err){res.writeHead(404);res.end();return}const ext=path.extname(file);res.writeHead(200,{'Content-Type':ext==='.html'?'text/html; charset=utf-8':ext==='.css'?'text/css; charset=utf-8':ext==='.js'?'text/javascript; charset=utf-8':'application/octet-stream'});res.end(data)})});s.listen(0,'127.0.0.1',()=>resolve(s))})}
+function server(resourceLedger){return new Promise(resolve=>{const s=http.createServer((req,res)=>{const pathname=decodeURIComponent(url.parse(req.url).pathname);const file=path.normalize(path.join(WEB,pathname));const rel=path.relative(WEB,file);if(rel.startsWith('..')||path.isAbsolute(rel)){res.writeHead(403);res.end();return}const occurrence=resourceLedger.begin(req.url,file);fs.readFile(file,(err,data)=>{if(err){occurrence.failure('read_failed');res.writeHead(404);res.end();return}const ext=path.extname(file);const mime=ext==='.html'?'text/html; charset=utf-8':ext==='.css'?'text/css; charset=utf-8':ext==='.js'?'text/javascript; charset=utf-8':'application/octet-stream';occurrence.success(data,mime);res.writeHead(200,{'Content-Type':mime});res.end(data)})});s.listen(0,'127.0.0.1',()=>resolve(s))})}
+function closeServer(value){return new Promise((resolve,reject)=>value.close(error=>error?reject(error):resolve()))}
 async function probeAmbientMotion(page){
   async function snapshot(){
     return page.evaluate(()=>{
@@ -235,13 +254,15 @@ async function probeAmbientMotion(page){
     &&reduced.animationDuration==='0s'&&reduced.animationCount===0
     &&Math.abs(reduced.opacity-.55)<.001&&reduced.width===56&&reduced.height===56};
 }
-(async()=>{
+async function run(){
   audit();
   if(!fs.existsSync(PLAYWRIGHT))throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');
   const executablePath=edge();if(!executablePath)throw new Error('Microsoft Edge not found');
-  const {chromium}=require(PLAYWRIGHT),s=await server(),browser=await chromium.launch({executablePath,headless:true});
+  const {chromium}=require(PLAYWRIGHT),resourceLedger=BrowserChildResourceClosure.createServedResourceLedger({root:WEB});
+  const s=await server(resourceLedger);let browser=null;let output=null;
   try{
-    const viewports=[[1024,576],[1366,768],[1920,1080]];let baseline=null,motionProof=null;
+    browser=await chromium.launch({executablePath,headless:true});
+    const viewports=[[1024,576],[1366,768],[1920,1080]],runs=[];let motionProof=null;
     for(const viewport of viewports){
       const page=await browser.newPage({viewport:{width:viewport[0],height:viewport[1]}}),errors=[],failed=[];
       page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failed.push(r.url()));
@@ -252,9 +273,21 @@ async function probeAmbientMotion(page){
       if(errors.length)throw new Error(viewport.join('x')+' page errors: '+errors.join(' | '));
       if(failed.length)throw new Error(viewport.join('x')+' failed requests: '+failed.join(' | '));
       if(!result.result||result.result.passed!==result.result.total){const bad=result.result?result.result.checks.filter(c=>!c.ok):[];throw new Error(viewport.join('x')+' harness failed: '+JSON.stringify(bad))}
+      const checks=result.result.checks||[],names=checks.map(check=>check&&check.name);
+      if(checks.length!==result.result.total||checks.some(check=>!check||check.ok!==true)
+          ||names.some(name=>typeof name!=='string'||!name)||new Set(names).size!==names.length)
+        throw new Error(viewport.join('x')+' harness check identity closure failed');
       if(!motionProof){motionProof=await probeAmbientMotion(page);if(!motionProof.pass)throw new Error('ambient normal/reduced motion contract failed: '+JSON.stringify(motionProof))}
-      baseline=result.result;await page.close();
+      runs.push({viewport:{width:viewport[0],height:viewport[1]},total:result.result.total,
+        passed:result.result.passed,checks:checks.map(check=>({name:check.name,ok:check.ok,detail:check.detail}))});
+      await page.close();
     }
-    console.log('Equipment tuning harness 3 viewports '+baseline.passed+'/'+baseline.total+' passed; ambient motion normal/reduced passed');
-  }finally{await browser.close();await new Promise(r=>s.close(r))}
-})().catch(error=>{console.error(error.stack||error);process.exit(1)});
+    output={mode:'full',viewports:viewports.map(viewport=>({width:viewport[0],height:viewport[1]})),
+      runs,motionProof,executablePath};
+  }finally{if(browser)await browser.close();await closeServer(s)}
+  output.servedResourceLedger=resourceLedger.snapshot();
+  return output;
+}
+module.exports={run};
+if(require.main===module){run().then(output=>process.stdout.write(JSON.stringify(output,null,2)+'\n'))
+  .catch(error=>{console.error(error.stack||error);process.exitCode=1})}

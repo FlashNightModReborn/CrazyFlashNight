@@ -1,9 +1,11 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
 
+import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.gesh.object.ObjectUtil;
-import org.flashNight.gesh.tooltip.TooltipBridge;
+import org.flashNight.gesh.string.StringUtils;
 
 /**
  * 合成 Web Panel 的 Flash 权威服务。
@@ -104,6 +106,17 @@ class org.flashNight.arki.item.CraftingPanelService {
         return token;
     }
 
+    /**
+     * 旧数据只在 AS2 authority projection 边界补齐展示与图标键。
+     * 空白值必须回落到内部名，不能继续下发给 Host/Web 再次猜测。
+     */
+    private static function projectLegacyIdentityField(value, name:String):String {
+        var projected:String = typeof value == "string" ? String(value) : "";
+        var trimmed:String = StringUtils.trim(projected);
+        return trimmed.length == 0 || trimmed.toLowerCase() == "undefined"
+            ? name : projected;
+    }
+
     public static function handle(commandName:String, params:Object):Void {
         var callId:Number = params == undefined ? 0 : Number(params.callId);
         var response:Object = execute(commandName, params || {});
@@ -168,8 +181,8 @@ class org.flashNight.arki.item.CraftingPanelService {
             var uses:Array = SynthesisIndex.getRecipesUsing(name);
             catalog.push({
                 name:name,
-                displayName:String(data.displayname || name),
-                icon:String(data.icon || name),
+                displayName:projectLegacyIdentityField(data.displayname, name),
+                icon:projectLegacyIdentityField(data.icon, name),
                 owned:Number(_root.收集品栏.材料.getValue(name) || 0),
                 sourceCount:records == null ? 0 : records.length,
                 useCount:uses.length,
@@ -204,8 +217,8 @@ class org.flashNight.arki.item.CraftingPanelService {
             view:"materials",
             material:{
                 name:name,
-                displayName:String(data.displayname || name),
-                icon:String(data.icon || name),
+                displayName:projectLegacyIdentityField(data.displayname, name),
+                icon:projectLegacyIdentityField(data.icon, name),
                 description:String(data.description || ""),
                 owned:Number(_root.收集品栏.材料.getValue(name) || 0),
                 sourceSummary:String(informationByName[name] || "")
@@ -247,7 +260,8 @@ class org.flashNight.arki.item.CraftingPanelService {
         }
         if (kind == ItemObtainIndex.KIND_QUEST) {
             return {kind:"quest", questId:String(record.questId || ""),
-                title:String(record.questTitle || ""), quantity:Number(record.quantity || 0)};
+                title:projectVisibleSourceLabel(record.questTitle, "未知任务"),
+                quantity:Number(record.quantity || 0)};
         }
         if (kind != ItemObtainIndex.KIND_DROP) return null;
         if (String(record.dropType) == ItemObtainIndex.DROP_TYPE_STAGE) {
@@ -256,11 +270,22 @@ class org.flashNight.arki.item.CraftingPanelService {
                 quantityMax:Number(record.quantityMax || 0)};
         }
         var enemyType:String = String(record.enemyType || "");
+        var enemyProperties:Object = _root.敌人属性表 == undefined
+            ? null : _root.敌人属性表[enemyType];
+        var resolvedEnemyName:Object = enemyProperties == null
+            ? undefined : enemyProperties.displayname;
         return {kind:"enemy", enemyType:enemyType,
-            displayName:String(TooltipBridge.getEnemyDisplayName(enemyType) || enemyType),
+            displayName:projectVisibleSourceLabel(resolvedEnemyName, "未知敌人"),
             probability:Number(record.probability || 0),
             minLevel:Number(record.minLevel || 0),
             maxLevel:Number(record.maxLevel || 0)};
+    }
+
+    private static function projectVisibleSourceLabel(value, fallback:String):String {
+        var projected:String = typeof value == "string" ? String(value) : "";
+        var trimmed:String = StringUtils.trim(projected);
+        if (trimmed.length == 0 || trimmed.toLowerCase() == "undefined") return fallback;
+        return projected;
     }
 
     private static function projectMaterialUse(inputName:String, productName:String,
@@ -286,8 +311,8 @@ class org.flashNight.arki.item.CraftingPanelService {
             break;
         }
         var item:Object = projectItem(productName, 1);
-        return {name:productName, displayName:String(data.displayname || productName),
-            icon:String(data.icon || productName), itemKind:String(item.itemKind || "stack"),
+        return {name:productName, displayName:projectLegacyIdentityField(data.displayname, productName),
+            icon:projectLegacyIdentityField(data.icon, productName), itemKind:String(item.itemKind || "stack"),
             category:category, required:required};
     }
 
@@ -338,6 +363,8 @@ class org.flashNight.arki.item.CraftingPanelService {
             Number(plan.craftCount), false);
         if (!current.success || current.stateSignature != String(plan.stateSignature)) return fail("stale_state");
         if (!current.canCommit) return fail(String(current.blockingError || "stale_state"));
+        // 配方、进阶配置与产物投影都必须在首次写入前与预览冻结计划完全一致。
+        if (!deepEqual(current.acceptedPlan, plan.acceptedPlan, 0)) return fail("stale_state");
 
         var bag:Object = _root.物品栏.背包;
         var drugs:Object = _root.物品栏.药剂栏;
@@ -349,9 +376,34 @@ class org.flashNight.arki.item.CraftingPanelService {
             dirty:_root.存档系统 == undefined ? undefined : _root.存档系统.dirtyMark};
 
         if (!ItemUtil.submit(current.requirements)) return fail("material_missing");
+        var actualRequire:Object = ItemUtil.singleRequire(current.output.name, current.output.value);
+        var actualDelivery:Object = projectOutputDelivery(
+            current.output.name, current.output.value, actualRequire);
+        if (!deepEqual(actualDelivery, plan.outputDelivery, 0)) {
+            restoreState(backup);
+            return fail("stale_state");
+        }
+        var targetBefore:Object = readOutputTarget(actualDelivery);
+        if (!outputTargetMatchesMode(targetBefore, current.output.name, actualDelivery)) {
+            restoreState(backup);
+            return fail("stale_state");
+        }
+        var beforeQuantity:Number = targetBefore == null ? 0 : Number(targetBefore.value);
         if (!ItemUtil.singleAcquire(current.output.name, current.output.value)) {
             restoreState(backup);
             return fail("inventory_full");
+        }
+        var outputReceipt:Object = null;
+        if (requiresPhysicalOutputReceipt(actualDelivery)) {
+            outputReceipt = InventoryPanelService.buildOutputReceipt(readOutputTarget(actualDelivery));
+            if (!outputReceiptMatchesPrototype(outputReceipt, plan.acceptedPlan.outputPrototype,
+                    actualDelivery, beforeQuantity)) {
+                restoreState(backup);
+                return fail("stale_state");
+            }
+        } else if (plan.acceptedPlan.outputPrototype != null) {
+            restoreState(backup);
+            return fail("stale_state");
         }
         _root.金钱 = Number(backup.money) - Number(current.cost.money);
         _root.虚拟币 = Number(backup.kpoints) - Number(current.cost.kpoints);
@@ -359,7 +411,8 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (_root.soundEffectManager != undefined) _root.soundEffectManager.playSound("收银机.mp3");
         return {success:true, v:1, operation:"commit", category:category,
             recipeIndex:Number(current.recipeIndex), craftCount:Number(current.craftCount),
-            crafted:current.output, balance:buildBalance()};
+            crafted:current.output, acceptedPlan:plan.acceptedPlan,
+            outputReceipt:outputReceipt, balance:buildBalance()};
     }
 
     private static function restoreState(backup:Object):Void {
@@ -378,30 +431,40 @@ class org.flashNight.arki.item.CraftingPanelService {
         var batchEligible:Boolean = isBatchEligible(recipe, baseRequirements);
         if (!batchEligible && craftCount != 1) return fail("batch_not_supported");
         var requirements:Array = scaleRequirements(baseRequirements, craftCount);
+        // contain() is the canonical deduction planner used by submit().  Project its
+        // concrete storage route instead of making the Web layer infer one from names.
+        var containmentPlan:Object = ItemUtil.contain(requirements);
         var materialRows:Array = [];
-        var allMaterials:Boolean = true;
+        var allMaterials:Boolean = containmentPlan != null;
         var inheritedLevel:Number = 1;
         var stateParts:Array = [];
         for (var i:Number = 0; i < requirements.length; i++) {
-            var projection:Object = projectRequirement(requirements[i]);
+            var projection:Object = projectRequirement(requirements[i], containmentPlan);
             if (projection == null) return fail("item_not_found");
             materialRows.push(projection);
-            allMaterials = allMaterials && projection.enough;
             if (projection.itemKind == "equipment") {
                 inheritedLevel = Math.max(inheritedLevel, projection.maxEnhancement);
             }
-            stateParts.push(projection.name + ":" + projection.owned + ":" + projection.maxEnhancement);
+            stateParts.push(projection.name + ":" + projection.owned + ":"
+                + projection.maxEnhancement + ":" + projection.storageKind);
         }
 
         var outputData:Object = ItemUtil.getRawItemData(String(recipe.name));
         if (outputData == null) return fail("item_not_found");
         var unitOutputValue:Number = Number(recipe.value);
-        if (isNaN(unitOutputValue) || unitOutputValue <= 0) unitOutputValue = 1;
+        var explicitOutputValue:Boolean = recipe.value != undefined && recipe.value != null
+            && String(recipe.value) != "";
+        if (!explicitOutputValue) unitOutputValue = 1;
+        else if (!isStrictWholeNumber(unitOutputValue) || unitOutputValue <= 0
+                || unitOutputValue > 9007199254740991) return fail("invalid_output_value");
         var outputValue:Number = ItemUtil.isEquipment(String(recipe.name))
             ? unitOutputValue : unitOutputValue * craftCount;
         var smith:Object = smithState();
         if (smith.enabled && ItemUtil.isEquipment(String(recipe.name))) {
             outputValue = Math.max(outputValue, inheritedLevel);
+        }
+        if (!isValidOutputValue(String(recipe.name), outputValue)) {
+            return fail("invalid_output_value");
         }
         var multiplier:Number = smith.enabled ? Math.max(0, 1 - smith.level * 0.05) : 1;
         // 旧 Flash 合成界面对每份折扣价先向下取整；批量等价于重复单份合成。
@@ -413,13 +476,24 @@ class org.flashNight.arki.item.CraftingPanelService {
         var levelAllowed:Boolean = Number(_root.等级) + reverseLevel >= requiredLevel;
         var enoughMoney:Boolean = Number(_root.金钱) >= cost.money;
         var enoughKpoints:Boolean = Number(_root.虚拟币) >= cost.kpoints;
-        // 与旧系统保持保守容量语义：在扣素材前核算，避免依赖“消耗后腾格”的时序。
-        var enoughSpace:Boolean = ItemUtil.singleRequire(String(recipe.name), outputValue) != null;
+        // 预览必须投影真实提交顺序：先扣素材，再为产物选择合并或空格。
+        // containPlan 不可用时预览仍可显示当前容量，但不会铸造 token。
+        var outputDelivery:Object = containmentPlan == null
+            ? projectOutputDelivery(String(recipe.name), outputValue,
+                ItemUtil.singleRequire(String(recipe.name), outputValue))
+            : projectOutputDeliveryAfterSubmit(
+                String(recipe.name), outputValue, containmentPlan);
+        var outputPrototype:Object = requiresPhysicalOutputReceipt(outputDelivery)
+            ? InventoryPanelService.buildOutputPrototype(String(recipe.name), outputValue) : null;
+        var projectionReady:Boolean = !requiresPhysicalOutputReceipt(outputDelivery)
+            || outputPrototype != null;
+        var enoughSpace:Boolean = outputDelivery.available && projectionReady;
         var blockingError:String = "";
         if (!levelAllowed) blockingError = "level_locked";
         else if (!allMaterials) blockingError = "material_missing";
         else if (!enoughMoney) blockingError = "insufficient_money";
         else if (!enoughKpoints) blockingError = "insufficient_kpoint";
+        else if (!projectionReady) blockingError = "output_projection_failed";
         else if (!enoughSpace) blockingError = "inventory_full";
         var maxCraftCount:Number = batchEligible
             ? (calculateMaximum
@@ -428,13 +502,19 @@ class org.flashNight.arki.item.CraftingPanelService {
             : (blockingError == "" ? 1 : 0);
         var output:Object = projectItem(String(recipe.name), outputValue);
         output.requiredLevel = requiredLevel;
+        var acceptedPlan:Object = {category:category, recipeIndex:recipeIndex,
+            craftCount:craftCount, output:output, materials:materialRows,
+            outputDelivery:outputDelivery, outputPrototype:outputPrototype, cost:cost};
         var stateSignature:String = [recipeSignature(recipe), Number(_root.金钱),
             Number(_root.虚拟币), Number(_root.等级), reverseLevel, smith.enabled, smith.level,
             inventoryRevision(_root.物品栏.背包), inventoryRevision(_root.物品栏.药剂栏),
-            craftCount, stateParts.join("|")].join(";");
+            craftCount, stateParts.join("|"), outputDelivery.storageKind,
+            outputDelivery.mode, outputDelivery.physicalSlot,
+            projectionSignature(outputPrototype)].join(";");
         return {success:true, category:category, recipeIndex:recipeIndex, craftCount:craftCount,
             recipeSignature:recipeSignature(recipe), stateSignature:stateSignature,
             requirements:requirements, materials:materialRows, output:output, cost:cost,
+            outputDelivery:outputDelivery, acceptedPlan:acceptedPlan,
             balance:buildBalance(), skills:buildSkills(), levelAllowed:levelAllowed,
             enoughMaterials:allMaterials, enoughMoney:enoughMoney, enoughKpoints:enoughKpoints,
             enoughSpace:enoughSpace, batchEligible:batchEligible, maxCraftCount:maxCraftCount,
@@ -446,12 +526,16 @@ class org.flashNight.arki.item.CraftingPanelService {
             recipeIndex:plan.recipeIndex, craftCount:plan.craftCount,
             batchEligible:plan.batchEligible, maxCraftCount:plan.maxCraftCount,
             output:plan.output, materials:plan.materials,
+            outputDelivery:plan.outputDelivery,
             cost:plan.cost, balance:plan.balance, skills:plan.skills,
             levelAllowed:plan.levelAllowed, enoughMaterials:plan.enoughMaterials,
             enoughMoney:plan.enoughMoney, enoughKpoints:plan.enoughKpoints,
             enoughSpace:plan.enoughSpace, canCommit:plan.canCommit,
             blockingError:plan.blockingError};
-        if (plan.canCommit) result.craftToken = plan.token;
+        if (plan.canCommit) {
+            result.craftToken = plan.token;
+            result.acceptedPlan = plan.acceptedPlan;
+        }
         return result;
     }
 
@@ -493,12 +577,20 @@ class org.flashNight.arki.item.CraftingPanelService {
 
     private static function canCraftCount(recipe:Object, requirements:Array,
             craftCount:Number, multiplier:Number):Boolean {
-        if (ItemUtil.contain(scaleRequirements(requirements, craftCount)) == null) return false;
+        var scaled:Array = scaleRequirements(requirements, craftCount);
+        var containmentPlan:Object = ItemUtil.contain(scaled);
+        if (containmentPlan == null) return false;
         if (Number(_root.金钱) < adjustedUnitCost(recipe.price, multiplier) * craftCount) return false;
         if (Number(_root.虚拟币) < adjustedUnitCost(recipe.kprice, multiplier) * craftCount) return false;
         var outputValue:Number = Number(recipe.value);
         if (isNaN(outputValue) || outputValue <= 0) outputValue = 1;
-        return ItemUtil.singleRequire(String(recipe.name), outputValue * craftCount) != null;
+        outputValue *= craftCount;
+        if (!isValidOutputValue(String(recipe.name), outputValue)) return false;
+        var delivery:Object = projectOutputDeliveryAfterSubmit(
+            String(recipe.name), outputValue, containmentPlan);
+        if (!delivery.available) return false;
+        return !requiresPhysicalOutputReceipt(delivery)
+            || InventoryPanelService.buildOutputPrototype(String(recipe.name), outputValue) != null;
     }
 
     private static function adjustedUnitCost(rawCost:Object, multiplier:Number):Number {
@@ -507,7 +599,7 @@ class org.flashNight.arki.item.CraftingPanelService {
         return Math.floor(cost * multiplier);
     }
 
-    private static function projectRequirement(req:Object):Object {
+    private static function projectRequirement(req:Object, containmentPlan:Object):Object {
         var name:String = String(req.name || "");
         var data:Object = ItemUtil.getRawItemData(name);
         if (data == null) return null;
@@ -536,10 +628,192 @@ class org.flashNight.arki.item.CraftingPanelService {
         }
         var enough:Boolean = kind == "equipment" && !req.isQuantity
             ? maxEnhancement >= required : owned >= required;
-        return {name:name, displayName:String(data.displayname || name), icon:String(data.icon || name),
+        return {name:name, displayName:projectLegacyIdentityField(data.displayname, name),
+            icon:projectLegacyIdentityField(data.icon, name),
             itemKind:kind, required:required, owned:owned, maxEnhancement:maxEnhancement,
             isQuantity:req.isQuantity === true, tier:req.tier == undefined ? "" : String(req.tier),
-            consumed:consumed, enough:enough};
+            consumed:consumed, enough:enough,
+            storageKind:projectRequirementStorage(name, containmentPlan)};
+    }
+
+    private static function projectRequirementStorage(name:String, containmentPlan:Object):String {
+        if (ItemUtil.isMaterial(name)) return "material_collection";
+        if (ItemUtil.isInformation(name)) return "information_collection";
+        if (containmentPlan == null) return "unavailable";
+        var inBag:Boolean = planContainsItem(containmentPlan.背包, _root.物品栏.背包, name);
+        var inDrug:Boolean = planContainsItem(containmentPlan.药剂栏, _root.物品栏.药剂栏, name);
+        if (inBag && inDrug) return "bag_and_drug";
+        if (inBag) return "bag";
+        if (inDrug) return "drug";
+        return "unavailable";
+    }
+
+    private static function planContainsItem(plan:Object, inventory:Object, name:String):Boolean {
+        if (plan == null || inventory == null) return false;
+        for (var key:String in plan) {
+            var item:Object = inventory.getItem(Number(key));
+            if (item != null && String(item.name) == name) return true;
+        }
+        return false;
+    }
+
+    private static function projectOutputDelivery(name:String, value:Number,
+            requirePlan:Object):Object {
+        var quantity:Number = ItemUtil.isEquipment(name) ? 1 : value;
+        if (requirePlan == null) return {available:false, storageKind:"unavailable",
+            mode:"none", physicalSlot:-1, quantity:quantity};
+        if (ItemUtil.isMaterial(name)) return {available:true,
+            storageKind:"material_collection", mode:"increment", physicalSlot:-1, quantity:quantity};
+        if (ItemUtil.isInformation(name)) return {available:true,
+            storageKind:"information_collection", mode:"increment", physicalSlot:-1, quantity:quantity};
+        for (var drugKey:String in requirePlan.药剂栏) {
+            var drugReq:Object = requirePlan.药剂栏[drugKey];
+            if (drugReq != null && String(drugReq.name) == name) {
+                return {available:true, storageKind:"drug", mode:"merge",
+                    physicalSlot:Number(drugKey), quantity:quantity};
+            }
+        }
+        for (var bagKey:String in requirePlan.背包) {
+            var bagReq:Object = requirePlan.背包[bagKey];
+            if (bagReq != null && String(bagReq.name) == name) {
+                var bagIndex:Number = Number(bagKey);
+                var mode:String = _root.物品栏.背包.isEmpty(bagIndex) ? "insert" : "merge";
+                return {available:true, storageKind:"bag", mode:mode,
+                    physicalSlot:bagIndex, quantity:quantity};
+            }
+        }
+        return {available:false, storageKind:"unavailable",
+            mode:"none", physicalSlot:-1, quantity:quantity};
+    }
+
+    /**
+     * 以 submit(requirements) 完成后的虚拟容器状态规划产物去向。
+     * 不写入、不制造 BaseItem；commit 会在真实 submit 后再用 singleRequire
+     * 核对一次，任何路由漂移都回滚。
+     */
+    private static function projectOutputDeliveryAfterSubmit(name:String, value:Number,
+            containmentPlan:Object):Object {
+        var quantity:Number = ItemUtil.isEquipment(name) ? 1 : value;
+        if (containmentPlan == null) return {available:false, storageKind:"unavailable",
+            mode:"none", physicalSlot:-1, quantity:quantity};
+        if (ItemUtil.isMaterial(name) || ItemUtil.isInformation(name)) {
+            return projectOutputDelivery(name, value, ItemUtil.singleRequire(name, value));
+        }
+
+        if (!ItemUtil.isEquipment(name)) {
+            var drugs:Object = _root.物品栏.药剂栏;
+            var drugIndexes:Array = drugs.getIndexes();
+            for (var d:Number = 0; d < drugIndexes.length; d++) {
+                var drugSlot:Number = Number(drugIndexes[d]);
+                var drugItem:Object = drugs.getItem(drugSlot);
+                if (remainingStackAfterSubmit(drugItem, containmentPlan.药剂栏, drugSlot, name) > 0) {
+                    return {available:true, storageKind:"drug", mode:"merge",
+                        physicalSlot:drugSlot, quantity:quantity};
+                }
+            }
+
+            var bag:Object = _root.物品栏.背包;
+            var bagIndexes:Array = bag.getIndexes();
+            for (var b:Number = 0; b < bagIndexes.length; b++) {
+                var bagSlot:Number = Number(bagIndexes[b]);
+                var bagItem:Object = bag.getItem(bagSlot);
+                if (remainingStackAfterSubmit(bagItem, containmentPlan.背包, bagSlot, name) > 0) {
+                    return {available:true, storageKind:"bag", mode:"merge",
+                        physicalSlot:bagSlot, quantity:quantity};
+                }
+            }
+        }
+
+        var vacancy:Number = firstBagVacancyAfterSubmit(containmentPlan.背包);
+        return vacancy < 0
+            ? {available:false, storageKind:"unavailable", mode:"none",
+                physicalSlot:-1, quantity:quantity}
+            : {available:true, storageKind:"bag", mode:"insert",
+                physicalSlot:vacancy, quantity:quantity};
+    }
+
+    private static function remainingStackAfterSubmit(item:Object, plan:Object,
+            slot:Number, expectedName:String):Number {
+        if (item == null || String(item.name) != expectedName || typeof item.value != "number") return 0;
+        var consumed:Number = plan == null || plan[String(slot)] == undefined
+            ? 0 : Number(plan[String(slot)]);
+        if (isNaN(consumed) || consumed < 0) return 0;
+        return Math.max(0, Number(item.value) - consumed);
+    }
+
+    private static function firstBagVacancyAfterSubmit(plan:Object):Number {
+        var bag:Object = _root.物品栏.背包;
+        for (var slot:Number = 0; slot < Number(bag.capacity); slot++) {
+            var item:Object = bag.getItem(slot);
+            if (item == null) return slot;
+            if (plan == null || plan[String(slot)] == undefined) continue;
+            if (typeof item.value != "number") return slot;
+            var consumed:Number = Number(plan[String(slot)]);
+            if (!isNaN(consumed) && consumed >= Number(item.value)) return slot;
+        }
+        return -1;
+    }
+
+    private static function requiresPhysicalOutputReceipt(delivery:Object):Boolean {
+        return delivery != null && delivery.available === true
+            && (delivery.storageKind == "bag" || delivery.storageKind == "drug");
+    }
+
+    private static function readOutputTarget(delivery:Object):Object {
+        if (!requiresPhysicalOutputReceipt(delivery)) return null;
+        var inventory:Object = delivery.storageKind == "bag"
+            ? _root.物品栏.背包 : _root.物品栏.药剂栏;
+        return inventory.getItem(Number(delivery.physicalSlot));
+    }
+
+    private static function outputTargetMatchesMode(target:Object, name:String,
+            delivery:Object):Boolean {
+        if (!requiresPhysicalOutputReceipt(delivery)) return true;
+        if (delivery.mode == "insert") return target == null;
+        return delivery.mode == "merge" && target != null
+            && String(target.name) == name && typeof target.value == "number"
+            && !isNaN(Number(target.value)) && isFinite(Number(target.value))
+            && Number(target.value) > 0;
+    }
+
+    private static function outputReceiptMatchesPrototype(receipt:Object,
+            prototype:Object, delivery:Object, beforeQuantity:Number):Boolean {
+        if (receipt == null || prototype == null || receipt.item == null
+                || receipt.confirmProjection == null || prototype.item == null
+                || prototype.confirmProjection == null) return false;
+        var expectedQuantity:Number = delivery.mode == "merge"
+            ? beforeQuantity + Number(delivery.quantity) : Number(delivery.quantity);
+        if (!isValidOutputValue(String(prototype.item.name), Number(prototype.item.quantity))
+                || !isStrictWholeNumber(expectedQuantity)
+                || Number(receipt.item.quantity) != expectedQuantity
+                || Number(receipt.confirmProjection.quantity) != expectedQuantity
+                || Number(prototype.item.quantity) != Number(delivery.quantity)
+                || Number(prototype.confirmProjection.quantity) != Number(delivery.quantity)
+                || !isStrictWholeNumber(Number(receipt.confirmProjection.lastUpdate))
+                || Number(receipt.confirmProjection.lastUpdate) < 0) return false;
+
+        var normalizedItem:Object = ObjectUtil.clone(receipt.item);
+        normalizedItem.quantity = prototype.item.quantity;
+        var normalizedConfirm:Object = ObjectUtil.clone(receipt.confirmProjection);
+        delete normalizedConfirm.lastUpdate;
+        normalizedConfirm.quantity = prototype.confirmProjection.quantity;
+        return deepEqual(normalizedItem, prototype.item, 0)
+            && deepEqual(normalizedConfirm, prototype.confirmProjection, 0);
+    }
+
+    private static function isValidOutputValue(name:String, value:Number):Boolean {
+        if (!isStrictWholeNumber(value) || value <= 0 || value > 9007199254740991) return false;
+        return !ItemUtil.isEquipment(name) || value <= EquipmentUtil.getMaxLevel();
+    }
+
+    private static function isStrictWholeNumber(value:Number):Boolean {
+        return !isNaN(value) && isFinite(value) && Math.floor(value) == value;
+    }
+
+    private static function projectionSignature(value:Object):String {
+        if (value == null) return "null";
+        if (_json == undefined) _json = new LiteJSON();
+        return _json.stringify(value);
     }
 
     private static function projectRecipe(category:String, recipe:Object, recipeIndex:Number):Object {
@@ -563,8 +837,9 @@ class org.flashNight.arki.item.CraftingPanelService {
         var equipment:Boolean = ItemUtil.isEquipment(name);
         var actionType:Object = data == null ? "" : (data.actiontype != undefined ? data.actiontype : data.actionType);
         var weaponType:Object = data == null ? "" : (data.weapontype != undefined ? data.weapontype : data.weaponType);
-        return {name:name, displayName:data == null ? name : String(data.displayname || name),
-            icon:data == null ? name : String(data.icon || name),
+        return {name:name,
+            displayName:projectLegacyIdentityField(data == null ? undefined : data.displayname, name),
+            icon:projectLegacyIdentityField(data == null ? undefined : data.icon, name),
             itemKind:equipment ? "equipment" : "stack", value:value,
             quantity:equipment ? 1 : value, enhancementLevel:equipment ? value : 0,
             majorType:data == null ? "" : String(data.type || ""),
@@ -635,6 +910,27 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (category == "插件合成") return "合成的经济消耗受铁匠等级影响";
         if (smithState().enabled) return "铁匠效果：减少货币消耗，装备继承素材最高强化度";
         return "改装后的装备默认强化等级为 1";
+    }
+
+    private static function deepEqual(left:Object, right:Object, depth:Number):Boolean {
+        if (left === right) return true;
+        if (depth > 16 || left == null || right == null || typeof left != typeof right) return false;
+        if (typeof left != "object") return String(left) == String(right);
+        var leftArray:Boolean = left instanceof Array;
+        if (leftArray != (right instanceof Array)) return false;
+        if (leftArray && left.length != right.length) return false;
+        var leftCount:Number = 0;
+        var rightCount:Number = 0;
+        for (var leftKey:String in left) {
+            if (typeof left.hasOwnProperty == "function" && !left.hasOwnProperty(leftKey)) continue;
+            leftCount++;
+            if (!deepEqual(left[leftKey], right[leftKey], depth + 1)) return false;
+        }
+        for (var rightKey:String in right) {
+            if (typeof right.hasOwnProperty == "function" && !right.hasOwnProperty(rightKey)) continue;
+            rightCount++;
+        }
+        return leftCount == rightCount;
     }
 
     private static function fail(errorCode:String):Object { return {success:false, error:errorCode}; }

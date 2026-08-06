@@ -1,12 +1,16 @@
 ﻿import org.flashNight.arki.item.CharacterBuildService;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.equipment.EquipmentConfigManager;
+import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.DrugInventory;
 import org.flashNight.arki.item.itemCollection.EquipmentInventory;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.gesh.object.ObjectUtil;
 
 /** CharacterBuildService 会话、只读 wire/projection、barrier 与 finalize 反例。 */
 class org.flashNight.arki.item.CharacterBuildServiceTest {
@@ -32,8 +36,10 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         testInstallAndWireIdentity();
         testReadinessProbeIsPure();
         testSnapshotProjectionAndCooldown();
+        testLoadoutTooltipAuthority();
         testCandidateProjectionAndUseAuthority();
         testCandidateEligibilityAndCooldownAuthority();
+        testEffectiveInstanceQualificationFamilies();
         testDrugInputWriterPersistence();
         testItemSubmitWriterPersistence();
         testLongGunGrenadeWriterPersistence();
@@ -117,9 +123,28 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             lastUpdate:lastUpdate
         };
         item.getData = function():Object {
-            return {use:"fixture", actiontype:"fixture", lifecycle:[], data:{
-                dressup:"fixture", weight:1, level:this.value.level
-            }};
+            if (this.__effectiveDataSet === true) {
+                if (this.__effectiveData == null) return null;
+                var effectiveCopy:Object = {};
+                for (var effectiveKey:String in this.__effectiveData) {
+                    var effectiveValue = this.__effectiveData[effectiveKey];
+                    if (effectiveValue instanceof Array) {
+                        effectiveCopy[effectiveKey] = effectiveValue.slice();
+                    } else if (effectiveValue != null
+                            && typeof effectiveValue == "object") {
+                        var nestedCopy:Object = {};
+                        for (var nestedKey:String in effectiveValue) {
+                            nestedCopy[nestedKey] = effectiveValue[nestedKey];
+                        }
+                        effectiveCopy[effectiveKey] = nestedCopy;
+                    } else {
+                        effectiveCopy[effectiveKey] = effectiveValue;
+                    }
+                }
+                return effectiveCopy;
+            }
+            // 未显式绑定有效数据就是测试准备错误；不得把强化度静默冒充需求等级。
+            return null;
         };
         return item;
     }
@@ -127,9 +152,27 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
     private static function stack(name:String, quantity:Number):Object {
         var item:Object = {name:name, value:quantity, lastUpdate:1};
         item.getData = function():Object {
-            return {use:"fixture", actiontype:"fixture", lifecycle:[], data:{
-                dressup:"fixture", weight:1, quantity:this.value
-            }};
+            if (this.__effectiveDataSet === true) {
+                if (this.__effectiveData == null) return null;
+                var effectiveCopy:Object = {};
+                for (var effectiveKey:String in this.__effectiveData) {
+                    var effectiveValue = this.__effectiveData[effectiveKey];
+                    if (effectiveValue instanceof Array) {
+                        effectiveCopy[effectiveKey] = effectiveValue.slice();
+                    } else if (effectiveValue != null
+                            && typeof effectiveValue == "object") {
+                        var nestedCopy:Object = {};
+                        for (var nestedKey:String in effectiveValue) {
+                            nestedCopy[nestedKey] = effectiveValue[nestedKey];
+                        }
+                        effectiveCopy[effectiveKey] = nestedCopy;
+                    } else {
+                        effectiveCopy[effectiveKey] = effectiveValue;
+                    }
+                }
+                return effectiveCopy;
+            }
+            return null;
         };
         return item;
     }
@@ -141,6 +184,35 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             use:useName,
             data:{level:requiredLevel}
         };
+    }
+
+    private static function setInstanceData(item:Object, data:Object):Object {
+        item.__effectiveDataSet = true;
+        item.__effectiveData = data;
+        return item;
+    }
+
+    private static function bindInstanceData(container:Object,
+                                             itemName:String,
+                                             data:Object):Void {
+        if (container == null || container.items == null) return;
+        for (var key:String in container.items) {
+            var item:Object = container.items[key];
+            if (item != null && String(item.name) == itemName) {
+                setInstanceData(item, data);
+            }
+        }
+    }
+
+    private static function setCatalogData(root:Object, itemName:String,
+                                           data:Object):Void {
+        root.itemCatalog[itemName] = data;
+        if (data != null && typeof data.use == "string") {
+            root.itemUses[itemName] = String(data.use);
+        }
+        bindInstanceData(root.物品栏.装备栏, itemName, data);
+        bindInstanceData(root.物品栏.药剂栏, itemName, data);
+        bindInstanceData(root.物品栏.背包, itemName, data);
     }
 
     private static function makeEquipmentContainer(items:Object):Object {
@@ -270,15 +342,12 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 data:{level:1}
             };
         };
-        root.itemCatalog["观察头盔"] =
-            catalog("防具", "头部装备", 1);
-        root.itemCatalog["观察长枪"] =
-            catalog("武器", "长枪", 1);
-        root.itemCatalog["观察手雷"] =
-            catalog("消耗品", "手雷", 1);
-        root.itemUses["观察头盔"] = "头部装备";
-        root.itemUses["观察长枪"] = "长枪";
-        root.itemUses["观察手雷"] = "手雷";
+        setCatalogData(root, "观察头盔",
+            catalog("防具", "头部装备", 1));
+        setCatalogData(root, "观察长枪",
+            catalog("武器", "长枪", 1));
+        setCatalogData(root, "观察手雷",
+            catalog("消耗品", "手雷", 1));
         installLiveFixture(root);
         return root;
     }
@@ -451,11 +520,15 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 };
                 if (item != null) {
                     occupiedCount++;
-                    var catalogData:Object =
-                        root.itemCatalog[String(item.name)];
-                    var majorType:String = catalogData == null
-                            || catalogData.type == undefined
-                        ? "" : String(catalogData.type);
+                    var effectiveData:Object = null;
+                    try {
+                        effectiveData = item.getData();
+                    } catch (itemDataError) {
+                        effectiveData = null;
+                    }
+                    var majorType:String = effectiveData == null
+                            || effectiveData.type == undefined
+                        ? "" : String(effectiveData.type);
                     var majorId:String = "other";
                     var majorLabel:String = "其他";
                     if (majorType == "武器") {
@@ -474,10 +547,10 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                         majorId = "collection";
                         majorLabel = "收集品";
                     }
-                    var useName:String = catalogData == null
-                            || catalogData.use == undefined
-                            || String(catalogData.use) == ""
-                        ? "其他" : String(catalogData.use);
+                    var useName:String = effectiveData == null
+                            || effectiveData.use == undefined
+                            || String(effectiveData.use) == ""
+                        ? "其他" : String(effectiveData.use);
                     var majorFacet:Object = fixtureFacetNode(
                         facets, majorId, majorLabel);
                     majorFacet.count++;
@@ -616,7 +689,12 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                                                   item:Object):Object {
         var equipmentLike:Boolean = typeof item.value == "object"
             && item.value != null;
-        var data:Object = root.itemCatalog[String(item.name)];
+        var data:Object = null;
+        try {
+            data = item.getData();
+        } catch (itemDataError) {
+            data = null;
+        }
         var majorType:String = data == null || data.type == undefined
             ? "" : String(data.type);
         var useName:String = data == null || data.use == undefined
@@ -712,6 +790,14 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             panelInstanceId:panelId,
             writeEpoch:19
         };
+    }
+
+    private static function tooltipWireParams(panelId:String,
+                                              requestId:String):Object {
+        var params:Object = wireParams(panelId, requestId);
+        params.task = "cmd";
+        params.action = "characterBuildTooltip";
+        return params;
     }
 
     private static function hasOnlyKeys(value:Object,
@@ -812,6 +898,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
 
         check(typeof root.gameCommands.characterBuildSnapshot == "function"
                 && typeof root.gameCommands.characterBuildCandidates == "function"
+                && typeof root.gameCommands.characterBuildTooltip == "function"
                 && typeof root.gameCommands.characterBuildEquipEquipment == "function"
                 && typeof root.gameCommands.characterBuildUnequipEquipment == "function"
                 && typeof root.gameCommands.characterBuildEquipDrug == "function"
@@ -819,7 +906,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && typeof root.gameCommands.characterBuildFlushLive == "function"
                 && typeof root.gameCommands.characterBuildStatsSnapshot == "function"
                 && typeof root.gameCommands.characterBuildFinalize == "function",
-            "install Web domain 只读与四个显式 mutation action");
+            "install Web domain 注册 tooltip 及完整只读/四 mutation actions");
         check(typeof root.gameCommands.characterBuildRecoverDetach == "function",
             "install 另注册 Host-only orphan recovery action");
         check(root.gameCommands.characterBuildOpen == undefined,
@@ -943,6 +1030,42 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && payload.diagnostics.length == 0,
             "portrait 只投影 gender/equipment/appearance");
 
+        var normalProjectItem:Function = callback.projectItem;
+        callback.projectItem = function(item:Object):Object {
+            var projected:Object = fixtureItemProjection(root, item);
+            if (String(item.name) == "观察头盔") {
+                projected.displayName = 73;
+                projected.icon = {legacy:"bad"};
+            }
+            return projected;
+        };
+        var wrongTypeParams:Object = wireParams("workbench.projection.1",
+            "character-build.projection.identity-wrong-type");
+        wrongTypeParams.sessionGeneration = snapshot.sessionGeneration;
+        var wrongType:Object = CharacterBuildService.execute(
+            "snapshot", wrongTypeParams);
+        callback.projectItem = function(item:Object):Object {
+            var projected:Object = fixtureItemProjection(root, item);
+            if (String(item.name) == "观察头盔") {
+                projected.displayName = " Undefined ";
+                projected.icon = "\t";
+            }
+            return projected;
+        };
+        var sentinelParams:Object = wireParams("workbench.projection.1",
+            "character-build.projection.identity-sentinel");
+        sentinelParams.sessionGeneration = snapshot.sessionGeneration;
+        var sentinel:Object = CharacterBuildService.execute(
+            "snapshot", sentinelParams);
+        callback.projectItem = normalProjectItem;
+        check(wrongType.success && sentinel.success
+                && wrongType.payload.equipment[0].item.name == "观察头盔"
+                && wrongType.payload.equipment[0].item.displayName == "观察头盔"
+                && wrongType.payload.equipment[0].item.icon == "观察头盔"
+                && sentinel.payload.equipment[0].item.displayName == "观察头盔"
+                && sentinel.payload.equipment[0].item.icon == "观察头盔",
+            "Character AS2 authority rejects wrong-type, blank and wrapped undefined identity projections");
+
         root.gameworld[root.控制目标].性别 = "未知";
         var degradedParams:Object = wireParams("workbench.projection.1",
             "character-build.projection.2");
@@ -971,6 +1094,208 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             .resetForTests();
     }
 
+    private static function testLoadoutTooltipAuthority():Void {
+        var root:Object = fixtureRoot(3);
+        var equipped:Object = equipment(
+            "注释头盔", 3, "", [], 101);
+        var drug:Object = stack("注释药剂", 4);
+        root.物品栏.装备栏.items["头部装备"] = equipped;
+        root.物品栏.药剂栏.items["1"] = drug;
+
+        var equipmentBase:Object = {
+            name:"注释头盔", displayname:"注释头盔基础名",
+            icon:"注释头盔基础图标", type:"防具", use:"头部装备",
+            price:1200, description:"基础装备注释",
+            data:{level:20, weight:2, defence:8, hp:12}
+        };
+        var equipmentEffective:Object = {
+            name:"注释头盔", displayname:"注释头盔实例名",
+            icon:"注释头盔实例图标", type:"防具", use:"头部装备",
+            price:1200, description:"实例装备富注释",
+            data:{level:20, weight:2, defence:11, hp:18}
+        };
+        var drugData:Object = {
+            name:"注释药剂", displayname:"注释药剂显示名",
+            icon:"注释药剂图标", type:"消耗品", use:"药剂",
+            price:100, description:"药剂富注释",
+            data:{heal:{value:50, target:"hp"}}
+        };
+        setCatalogData(root, "注释头盔", equipmentEffective);
+        setCatalogData(root, "注释药剂", drugData);
+        var itemData:Object = {};
+        itemData["注释头盔"] = equipmentBase;
+        itemData["注释药剂"] = drugData;
+        var binding:Object = bindItemUtilFixture(root, itemData, {});
+        var callback:Object = protocolCallbacks(root, false, true);
+        CharacterBuildService.testOnlyUseRoot(root);
+        CharacterBuildService.testOnlyUseCallbacks(callback);
+
+        var panelId:String = "workbench.tooltip.1";
+        var opened:Object = CharacterBuildService.execute(
+            "snapshot", wireParams(panelId,
+                "character-build.tooltip.open"));
+        var equipmentParams:Object = tooltipWireParams(
+            panelId, "character-build.tooltip.equipment");
+        equipmentParams.sessionGeneration = opened.sessionGeneration;
+        equipmentParams.expectedLoadoutRevision = opened.loadoutRevision;
+        equipmentParams.expectedDrugRevision = opened.drugRevision;
+        equipmentParams.writeEpoch = 0;
+        equipmentParams.slotKey = "头部装备";
+        var equipmentTooltip:Object = CharacterBuildService.execute(
+            "tooltip", equipmentParams);
+        check(equipmentTooltip.success
+                && equipmentTooltip.payload.target.kind == "equipment"
+                && equipmentTooltip.payload.target.slotKey == "头部装备"
+                && equipmentTooltip.payload.itemName == "注释头盔"
+                && equipmentTooltip.payload.displayName == "注释头盔实例名"
+                && equipmentTooltip.payload.iconName == "注释头盔实例图标"
+                && equipmentTooltip.payload.itemType == "防具"
+                && equipmentTooltip.payload.descHTML
+                    .indexOf("实例装备富注释") >= 0
+                && equipmentTooltip.payload.introHTML.length > 0
+                && hasOnlyKeys(equipmentTooltip.payload, {
+                    v:true, target:true, itemName:true, displayName:true,
+                    iconName:true, itemType:true, descHTML:true,
+                    introHTML:true
+                })
+                && hasOnlyKeys(equipmentTooltip.payload.target, {
+                    kind:true, slotKey:true
+                }),
+            "tooltip 初始 writeEpoch=0 时返回 exact 实例富注释与 canonical shape");
+
+        var extraParams:Object = {};
+        for (var extraKey:String in equipmentParams) {
+            extraParams[extraKey] = equipmentParams[extraKey];
+        }
+        extraParams.forgedSelector = "手枪";
+        var extraEnvelope:Object = CharacterBuildService.execute(
+            "tooltip", extraParams);
+        check(!extraEnvelope.success
+                && extraEnvelope.error == "invalid_payload",
+            "tooltip AS2 权威入口独立拒绝多余键，不依赖 Host 预清洗");
+
+        var stringRevisionParams:Object = {};
+        var negativeEpochParams:Object = {};
+        var missingRevisionParams:Object = {};
+        var missingSelectorParams:Object = {};
+        var bothSelectorParams:Object = {};
+        for (var strictKey:String in equipmentParams) {
+            stringRevisionParams[strictKey] = equipmentParams[strictKey];
+            negativeEpochParams[strictKey] = equipmentParams[strictKey];
+            if (strictKey != "expectedDrugRevision") {
+                missingRevisionParams[strictKey] = equipmentParams[strictKey];
+            }
+            if (strictKey != "slotKey") {
+                missingSelectorParams[strictKey] = equipmentParams[strictKey];
+            }
+            bothSelectorParams[strictKey] = equipmentParams[strictKey];
+        }
+        stringRevisionParams.expectedLoadoutRevision =
+            String(equipmentParams.expectedLoadoutRevision);
+        negativeEpochParams.writeEpoch = -1;
+        bothSelectorParams.drugSlot = 1;
+        var stringRevision:Object = CharacterBuildService.execute(
+            "tooltip", stringRevisionParams);
+        var negativeEpoch:Object = CharacterBuildService.execute(
+            "tooltip", negativeEpochParams);
+        var missingRevision:Object = CharacterBuildService.execute(
+            "tooltip", missingRevisionParams);
+        var missingSelector:Object = CharacterBuildService.execute(
+            "tooltip", missingSelectorParams);
+        var bothSelectors:Object = CharacterBuildService.execute(
+            "tooltip", bothSelectorParams);
+        check(!stringRevision.success
+                && stringRevision.error == "invalid_payload"
+                && !negativeEpoch.success
+                && negativeEpoch.error == "invalid_payload"
+                && !missingRevision.success
+                && missingRevision.error == "invalid_payload"
+                && !missingSelector.success
+                && missingSelector.error == "invalid_payload"
+                && !bothSelectors.success
+                && bothSelectors.error == "invalid_payload",
+            "tooltip AS2 exact envelope 接受 epoch 0，并拒绝负 epoch、字符串 revision、缺 revision 与零/双 selector");
+
+        var drugParams:Object = tooltipWireParams(
+            panelId, "character-build.tooltip.drug");
+        drugParams.sessionGeneration = opened.sessionGeneration;
+        drugParams.expectedLoadoutRevision = opened.loadoutRevision;
+        drugParams.expectedDrugRevision = opened.drugRevision;
+        drugParams.writeEpoch = 0;
+        drugParams.drugSlot = 1;
+        var drugTooltip:Object = CharacterBuildService.execute(
+            "tooltip", drugParams);
+        check(drugTooltip.success
+                && drugTooltip.payload.target.kind == "drug"
+                && drugTooltip.payload.target.drugSlot == 1
+                && drugTooltip.payload.itemName == "注释药剂"
+                && drugTooltip.payload.displayName == "注释药剂显示名"
+                && drugTooltip.payload.iconName == "注释药剂图标"
+                && drugTooltip.payload.itemType == "药剂"
+                && drugTooltip.payload.descHTML.indexOf("药剂富注释") >= 0
+                && drugTooltip.payload.introHTML.length > 0
+                && hasOnlyKeys(drugTooltip.payload.target, {
+                    kind:true, drugSlot:true
+                }),
+            "tooltip 初始 writeEpoch=0 的药剂槽复用 canonical composer 并保留药剂类型");
+
+        var emptyParams:Object = tooltipWireParams(
+            panelId, "character-build.tooltip.empty");
+        emptyParams.sessionGeneration = opened.sessionGeneration;
+        emptyParams.expectedLoadoutRevision = opened.loadoutRevision;
+        emptyParams.expectedDrugRevision = opened.drugRevision;
+        emptyParams.slotKey = "上装装备";
+        var empty:Object = CharacterBuildService.execute(
+            "tooltip", emptyParams);
+        check(!empty.success && empty.error == "stale_state",
+            "tooltip 空槽 fail closed，不生成名称级猜测注释");
+
+        root.物品栏.药剂栏.revision++;
+        drugParams.requestCallId = "character-build.tooltip.old-revision";
+        var oldRevision:Object = CharacterBuildService.execute(
+            "tooltip", drugParams);
+        check(!oldRevision.success && oldRevision.error == "stale_state"
+                && oldRevision.drugRevision > opened.drugRevision,
+            "tooltip 容器推进后拒绝旧 drug revision");
+
+        var refreshParams:Object = wireParams(
+            panelId, "character-build.tooltip.refresh");
+        refreshParams.sessionGeneration = opened.sessionGeneration;
+        var refreshed:Object = CharacterBuildService.execute(
+            "snapshot", refreshParams);
+        var replacement:Object = equipment(
+            "注释头盔", 3, "", [], 101);
+        setInstanceData(replacement, equipmentEffective);
+        var originalGetData:Function = equipped.getData;
+        var drifted:Boolean = false;
+        equipped.getData = function():Object {
+            var data:Object = originalGetData.call(this);
+            if (!drifted) {
+                drifted = true;
+                root.物品栏.装备栏.items["头部装备"] = replacement;
+            }
+            return data;
+        };
+        equipmentParams.requestCallId =
+            "character-build.tooltip.composer-drift";
+        equipmentParams.sessionGeneration = refreshed.sessionGeneration;
+        equipmentParams.expectedLoadoutRevision =
+            refreshed.loadoutRevision;
+        equipmentParams.expectedDrugRevision = refreshed.drugRevision;
+        var composerDrift:Object = CharacterBuildService.execute(
+            "tooltip", equipmentParams);
+        check(drifted && !composerDrift.success
+                && composerDrift.error == "stale_state"
+                && root.物品栏.装备栏.getItem("头部装备")
+                    === replacement
+                && composerDrift.loadoutRevision
+                    > refreshed.loadoutRevision,
+            "TooltipComposer 期间同签名实例换 ref 仍被 post-compose exact fence 拒绝");
+
+        CharacterBuildService.testOnlyReset();
+        restoreItemUtilFixture(binding);
+    }
+
     private static function testCandidateProjectionAndUseAuthority():Void {
         var root:Object = fixtureRoot(1);
         var headA:Object = equipment("候选头盔A", 1, "", [], 1);
@@ -978,6 +1303,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var drug:Object = stack("候选药剂", 5);
         var spoofed:Object = equipment("实例伪造头盔", 1, "", [], 1);
         var headB:Object = equipment("候选头盔B", 1, "", [], 1);
+        var unknownUse:Object = equipment("未知用途装备", 1, "", [], 1);
         headA.use = "药剂";
         spoofed.use = "头部装备";
         root.物品栏.背包.items["1"] = headA;
@@ -985,21 +1311,19 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         root.物品栏.背包.items["4"] = drug;
         root.物品栏.背包.items["6"] = spoofed;
         root.物品栏.背包.items["7"] = headB;
-        root.itemUses["候选头盔A"] = "头部装备";
-        root.itemUses["候选手枪"] = "手枪";
-        root.itemUses["候选药剂"] = "药剂";
-        root.itemUses["实例伪造头盔"] = "材料";
-        root.itemUses["候选头盔B"] = "头部装备";
-        root.itemCatalog["候选头盔A"] =
-            catalog("防具", "头部装备", 1);
-        root.itemCatalog["候选手枪"] =
-            catalog("武器", "手枪", 1);
-        root.itemCatalog["候选药剂"] =
-            catalog("消耗品", "药剂", 1);
-        root.itemCatalog["实例伪造头盔"] =
-            catalog("材料", "材料", 1);
-        root.itemCatalog["候选头盔B"] =
-            catalog("防具", "头部装备", 1);
+        root.物品栏.背包.items["8"] = unknownUse;
+        setCatalogData(root, "候选头盔A",
+            catalog("防具", "头部装备", 1));
+        setCatalogData(root, "候选手枪",
+            catalog("武器", "手枪", 1));
+        setCatalogData(root, "候选药剂",
+            catalog("消耗品", "药剂", 1));
+        setCatalogData(root, "实例伪造头盔",
+            catalog("材料", "材料", 1));
+        setCatalogData(root, "候选头盔B",
+            catalog("防具", "头部装备", 11));
+        setCatalogData(root, "未知用途装备",
+            catalog("武器", "未知用途", 1));
         var callback:Object = protocolCallbacks(root, false, true);
         CharacterBuildService.testOnlyUseRoot(root);
         CharacterBuildService.testOnlyUseCallbacks(callback);
@@ -1007,7 +1331,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             "snapshot", wireParams("workbench.candidates.1",
                 "character-build.candidates.open"));
         check(opened.payload.candidateFacets.scope == "all"
-                && opened.payload.candidateFacets.filterItemCount == 5
+                && opened.payload.candidateFacets.filterItemCount == 6
                 && facetUseCount(
                     opened.payload.candidateFacets.filterFacets,
                     "头部装备") == 2
@@ -1017,6 +1341,9 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && facetUseCount(
                     opened.payload.candidateFacets.filterFacets,
                     "药剂") == 1
+                && facetUseCount(
+                    opened.payload.candidateFacets.filterFacets,
+                    "未知用途") == 1
                 && facetUseCount(
                     opened.payload.candidateFacets.filterFacets,
                     "刀") == 0,
@@ -1045,13 +1372,18 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         headParams.sessionGeneration = opened.sessionGeneration;
         headParams.expectedLoadoutRevision = opened.loadoutRevision;
         headParams.expectedDrugRevision = opened.drugRevision;
+        headParams.candidateScope = "compatible";
         headParams.slotKey = "头部装备";
         var heads:Object = CharacterBuildService.execute(
             "candidates", headParams);
-        check(heads.success && heads.payload.target.kind == "equipment"
+        check(heads.success && heads.payload.candidateScope == "compatible"
+                && heads.payload.target.kind == "equipment"
                 && heads.payload.candidates.length == 2
                 && heads.payload.candidates[0].physicalSlot == 1
                 && heads.payload.candidates[1].physicalSlot == 7
+                && heads.payload.candidates[1].disabled
+                && heads.payload.candidates[1].blockedReason
+                    == "level_locked"
                 && heads.payload.candidates[0].source.containerId == "背包"
                 && heads.payload.candidates[0].source.slot == 1
                 && heads.payload.candidates[0].source.expectedLease
@@ -1060,7 +1392,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         check(heads.payload.candidates[0].item.name == "候选头盔A"
                 && heads.payload.candidates[0].item.use == "头部装备"
                 && heads.payload.candidates[0].item !== headA,
-            "候选过滤读取 getItemData(item.name).use，不信 item.use 或泄漏引用");
+            "候选过滤读取实例 getData().use，不信临时 item.use 或泄漏引用");
         check(hasOnlyKeys(heads.payload.candidates[0], {
                     physicalSlot:true, disabled:true, blockedReason:true,
                     item:true, source:true
@@ -1072,23 +1404,98 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                     itemProjectionWireKeys()),
             "候选 row/source 与 safe item projection 保持 exact 5/3/22 字段");
 
+        var backpackParams:Object = wireParams("workbench.candidates.1",
+            "character-build.candidates.backpack");
+        backpackParams.sessionGeneration = opened.sessionGeneration;
+        backpackParams.expectedLoadoutRevision = opened.loadoutRevision;
+        backpackParams.expectedDrugRevision = opened.drugRevision;
+        backpackParams.candidateScope = "backpack";
+        backpackParams.slotKey = "头部装备";
+        var backpack:Object = CharacterBuildService.execute(
+            "candidates", backpackParams);
+        check(backpack.success
+                && backpack.payload.candidateScope == "backpack"
+                && backpack.payload.candidates.length == 4
+                && backpack.payload.candidates[0].physicalSlot == 1
+                && !backpack.payload.candidates[0].disabled
+                && backpack.payload.candidates[1].physicalSlot == 3
+                && backpack.payload.candidates[1].disabled
+                && backpack.payload.candidates[1].blockedReason
+                    == "incompatible_item"
+                && backpack.payload.candidates[2].physicalSlot == 4
+                && backpack.payload.candidates[2].disabled
+                && backpack.payload.candidates[3].physicalSlot == 7
+                && backpack.payload.candidates[3].disabled
+                && backpack.payload.candidates[3].blockedReason
+                    == "level_locked"
+                && backpack.payload.stateHealth == "degraded"
+                && backpack.payload.diagnostics.indexOf(
+                    "candidate_use_incompatible:6") >= 0
+                && backpack.payload.diagnostics.indexOf(
+                    "candidate_use_incompatible:8") >= 0,
+            "backpack scope 返回全部结构有效物品、将数值型异类标成只读阻断，并拒绝伪装或未知 use 的装备实例");
+        check(hasOnlyKeys(backpack.payload.candidates[0], {
+                    physicalSlot:true, disabled:true, blockedReason:true,
+                    item:true, source:true, equipmentEligibility:true
+                })
+                && hasOnlyKeys(
+                    backpack.payload.candidates[0].equipmentEligibility, {
+                        slots:true, blockedReason:true
+                    })
+                && backpack.payload.candidates[0]
+                    .equipmentEligibility.slots.length == 1
+                && backpack.payload.candidates[0]
+                    .equipmentEligibility.slots[0] == "头部装备"
+                && backpack.payload.candidates[0]
+                    .equipmentEligibility.blockedReason == ""
+                && backpack.payload.candidates[1]
+                    .equipmentEligibility.slots.length == 2
+                && backpack.payload.candidates[1]
+                    .equipmentEligibility.slots[0] == "手枪"
+                && backpack.payload.candidates[1]
+                    .equipmentEligibility.slots[1] == "手枪2"
+                && backpack.payload.candidates[2]
+                    .equipmentEligibility.slots.length == 0
+                && backpack.payload.candidates[3]
+                    .equipmentEligibility.blockedReason == "level_locked",
+            "装备 backpack row 携 AS2 盖章的 canonical 跨槽 eligibility，异类为空且等级锁定不下沉 Web");
+
+        var missingScopeParams:Object = wireParams("workbench.candidates.1",
+            "character-build.candidates.scope-missing");
+        missingScopeParams.sessionGeneration = opened.sessionGeneration;
+        missingScopeParams.expectedLoadoutRevision = opened.loadoutRevision;
+        missingScopeParams.expectedDrugRevision = opened.drugRevision;
+        missingScopeParams.slotKey = "头部装备";
+        var missingScope:Object = CharacterBuildService.execute(
+            "candidates", missingScopeParams);
+        missingScopeParams.candidateScope = "everything";
+        missingScopeParams.requestCallId =
+            "character-build.candidates.scope-invalid";
+        var invalidScope:Object = CharacterBuildService.execute(
+            "candidates", missingScopeParams);
+        check(!missingScope.success && missingScope.error == "invalid_payload"
+                && !invalidScope.success && invalidScope.error == "invalid_payload",
+            "candidateScope 缺失或越出 compatible/backpack 闭集时拒绝");
+
         var pistolParams:Object = wireParams("workbench.candidates.1",
             "character-build.candidates.pistol");
         pistolParams.sessionGeneration = opened.sessionGeneration;
         pistolParams.expectedLoadoutRevision = opened.loadoutRevision;
         pistolParams.expectedDrugRevision = opened.drugRevision;
+        pistolParams.candidateScope = "compatible";
         pistolParams.slotKey = "手枪2";
         var pistols:Object = CharacterBuildService.execute(
             "candidates", pistolParams);
         check(pistols.success && pistols.payload.candidates.length == 1
                 && pistols.payload.candidates[0].physicalSlot == 3,
-            "手枪2 明确接受 getItemData use=手枪 特例");
+            "手枪2 明确接受实例有效 use=手枪 特例");
 
         var drugParams:Object = wireParams("workbench.candidates.1",
             "character-build.candidates.drug");
         drugParams.sessionGeneration = opened.sessionGeneration;
         drugParams.expectedLoadoutRevision = opened.loadoutRevision;
         drugParams.expectedDrugRevision = opened.drugRevision;
+        drugParams.candidateScope = "compatible";
         drugParams.drugSlot = 2;
         var drugs:Object = CharacterBuildService.execute(
             "candidates", drugParams);
@@ -1098,7 +1505,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && drugs.payload.candidates[0].physicalSlot == 4
                 && callback.state.drugCooldownCalls == 1
                 && callback.state.drugCooldownKey == "drug:2",
-            "药剂候选只接受 getItemData use=药剂且单次读取 drugKey 冷却权威");
+            "药剂候选只接受实例有效 use=药剂且单次读取 drugKey 冷却权威");
 
         var buildSnapshot:Function = callback.buildBackpackSnapshot;
         callback.buildBackpackSnapshot = function():Object {
@@ -1149,46 +1556,41 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         bag.items["15"] = equipment("对象药剂", 1, "", [], 1);
         bag.items["16"] = stack("负数药剂", -1);
 
-        root.itemCatalog["强化高但目录低级"] =
+        var enhancedLowRequirement:Object =
             catalog("防具", "头部装备", 2);
-        root.itemCatalog["强化高但目录低级"].profession = "刀客";
-        root.itemCatalog["强化低但目录高级"] =
-            catalog("防具", "头部装备", 11);
-        root.itemCatalog["头部错误目录类型"] =
-            catalog("材料", "头部装备", 1);
-        root.itemCatalog["头部错误实例形状"] =
-            catalog("防具", "头部装备", 1);
-        root.itemCatalog["目录缺失"] = null;
-        root.itemCatalog["目录等级畸形"] =
-            catalog("防具", "头部装备", "1");
-        root.itemCatalog["正常其他部位"] =
-            catalog("防具", "上装装备", 1);
-        root.itemCatalog["半枚手雷"] =
-            catalog("材料", "手雷", 1);
-        root.itemCatalog["零手雷"] =
-            catalog("消耗品", "手雷", 1);
-        root.itemCatalog["无限手雷"] =
-            catalog("消耗品", "手雷", 1);
-        root.itemCatalog["对象手雷"] =
-            catalog("武器", "手雷", 1);
-        root.itemCatalog["等级阻断手雷"] =
-            catalog("消耗品", "手雷", 11);
-        root.itemCatalog["四分之一药剂"] =
-            catalog("材料", "药剂", 1);
-        root.itemCatalog["零药剂"] =
-            catalog("消耗品", "药剂", 1);
-        root.itemCatalog["无限药剂"] =
-            catalog("消耗品", "药剂", 1);
-        root.itemCatalog["对象药剂"] =
-            catalog("防具", "药剂", 1);
-        root.itemCatalog["负数药剂"] =
-            catalog("消耗品", "药剂", 1);
-        for (var itemName:String in root.itemCatalog) {
-            var catalogData:Object = root.itemCatalog[itemName];
-            if (catalogData != null && typeof catalogData.use == "string") {
-                root.itemUses[itemName] = catalogData.use;
-            }
-        }
+        enhancedLowRequirement.profession = "刀客";
+        setCatalogData(root, "强化高但目录低级", enhancedLowRequirement);
+        setCatalogData(root, "强化低但目录高级",
+            catalog("防具", "头部装备", 11));
+        setCatalogData(root, "头部错误目录类型",
+            catalog("材料", "头部装备", 1));
+        setCatalogData(root, "头部错误实例形状",
+            catalog("防具", "头部装备", 1));
+        setCatalogData(root, "目录缺失", null);
+        setCatalogData(root, "目录等级畸形",
+            catalog("防具", "头部装备", "1"));
+        setCatalogData(root, "正常其他部位",
+            catalog("防具", "上装装备", 1));
+        setCatalogData(root, "半枚手雷",
+            catalog("材料", "手雷", 1));
+        setCatalogData(root, "零手雷",
+            catalog("消耗品", "手雷", 1));
+        setCatalogData(root, "无限手雷",
+            catalog("消耗品", "手雷", 1));
+        setCatalogData(root, "对象手雷",
+            catalog("武器", "手雷", 1));
+        setCatalogData(root, "等级阻断手雷",
+            catalog("消耗品", "手雷", 11));
+        setCatalogData(root, "四分之一药剂",
+            catalog("材料", "药剂", 1));
+        setCatalogData(root, "零药剂",
+            catalog("消耗品", "药剂", 1));
+        setCatalogData(root, "无限药剂",
+            catalog("消耗品", "药剂", 1));
+        setCatalogData(root, "对象药剂",
+            catalog("防具", "药剂", 1));
+        setCatalogData(root, "负数药剂",
+            catalog("消耗品", "药剂", 1));
 
         var callback:Object = protocolCallbacks(root, false, true);
         CharacterBuildService.testOnlyUseRoot(root);
@@ -1205,6 +1607,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         headParams.sessionGeneration = opened.sessionGeneration;
         headParams.expectedLoadoutRevision = opened.loadoutRevision;
         headParams.expectedDrugRevision = opened.drugRevision;
+        headParams.candidateScope = "compatible";
         headParams.slotKey = "头部装备";
         var heads:Object = CharacterBuildService.execute(
             "candidates", headParams);
@@ -1217,7 +1620,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && heads.payload.candidates[1].disabled
                 && heads.payload.candidates[1].blockedReason
                     == "level_locked",
-            "普通装备按 catalog level 阻断，绝不把实例强化度当等级门或追加职业门");
+            "普通装备按实例有效需求等级阻断，绝不把强化度当角色等级门或追加职业门");
         check(headDiagnostics.indexOf("candidate_type_incompatible:2") >= 0
                 && headDiagnostics.indexOf(
                     "candidate_value_incompatible:3") >= 0
@@ -1228,7 +1631,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && headDiagnostics.indexOf(":6") < 0
                 && heads.payload.stateHealth == "degraded"
                 && callback.state.drugCooldownCalls == 0,
-            "命中目标后的畸形 type/value/catalog/level 被排除并诊断，正常其他 use 静默过滤");
+            "命中目标后的畸形 type/value/effective data/level 被排除并诊断，正常其他 use 静默过滤");
 
         var grenadeParams:Object = wireParams(
             "workbench.candidates.rules",
@@ -1236,6 +1639,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         grenadeParams.sessionGeneration = opened.sessionGeneration;
         grenadeParams.expectedLoadoutRevision = opened.loadoutRevision;
         grenadeParams.expectedDrugRevision = opened.drugRevision;
+        grenadeParams.candidateScope = "compatible";
         grenadeParams.slotKey = "手雷";
         var grenades:Object = CharacterBuildService.execute(
             "candidates", grenadeParams);
@@ -1253,7 +1657,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && grenades.payload.candidates[1].disabled
                 && grenades.payload.candidates[1].blockedReason
                     == "level_locked",
-            "手雷只要求 catalog use 与正有限数，允许非整数 stack 并保留等级阻断");
+            "手雷只要求实例有效 use 与正有限数，允许非整数 stack 并保留等级阻断");
         check(grenadeDiagnostics.indexOf(
                     "candidate_value_incompatible:8") >= 0
                 && grenadeDiagnostics.indexOf(
@@ -1268,6 +1672,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         drugParams.sessionGeneration = opened.sessionGeneration;
         drugParams.expectedLoadoutRevision = opened.loadoutRevision;
         drugParams.expectedDrugRevision = opened.drugRevision;
+        drugParams.candidateScope = "compatible";
         drugParams.drugSlot = 3;
         callback.state.drugReady = false;
         var lockedDrugs:Object = CharacterBuildService.execute(
@@ -1321,6 +1726,278 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                     .indexOf("drug_cooldown_unavailable:3") >= 0
                 && callback.state.drugCooldownCalls == 3,
             "cooldown getter 异常只读一次并降级为不可提交候选，不误判 ready");
+    }
+
+    private static function effectiveQualificationCatalog():Object {
+        // 仅保留资格计算所需字段；PowerShell runner 会把这些值与生产 XML 锁在一起。
+        var data:Object = {};
+        data["M4A1"] = {
+            name:"M4A1", displayname:"M4A1", icon:"M4A1",
+            type:"武器", use:"长枪", weapontype:"突击步枪",
+            data:{level:10, weight:4, power:95},
+            data_ice:{level:41, power:420},
+            data_fire:{level:41, power:420}
+        };
+        data["巨兽"] = {
+            name:"巨兽", displayname:"巨兽", icon:"巨兽",
+            type:"武器", use:"长枪", weapontype:"突击步枪",
+            inherentTags:"下导轨挂点,侧导轨挂点,电力",
+            data:{level:30, weight:7, power:165}
+        };
+        data["远古诛神剑"] = {
+            name:"远古诛神剑", displayname:"牙狼剑", icon:"远古诛神剑",
+            type:"武器", use:"刀", actiontype:"刀剑",
+            data:{level:60, weight:10, power:1200}
+        };
+        data["沙漠军装背心"] = {
+            name:"沙漠军装背心", displayname:"沙漠军装背心",
+            icon:"沙漠军装背心", type:"防具", use:"上装装备",
+            data:{level:10, weight:6, defence:60},
+            data_3:{level:25, defence:180}
+        };
+        return data;
+    }
+
+    private static function effectiveQualificationConfig():Object {
+        var tierNameToKey:Object = {};
+        tierNameToKey["三阶"] = "data_3";
+        tierNameToKey["墨冰"] = "data_ice";
+        tierNameToKey["狱火"] = "data_fire";
+        return {
+            levelStatList:[1, 1, 1.06, 1.14, 1.24, 1.36, 1.5,
+                1.66, 1.84, 2.04, 2.26, 2.5, 2.76, 3.04],
+            decimalPropDict:{weight:1, rout:1, vampirism:1},
+            tierNameToKeyDict:tierNameToKey,
+            tierToMaterialDict:{},
+            defaultTierDataDict:{},
+            tierDataList:["data_3", "data_ice", "data_fire"]
+        };
+    }
+
+    private static function bindEffectiveQualificationFixture(
+        root:Object, itemData:Object):Object {
+        var receipt:Object = bindItemUtilFixture(root, itemData, {});
+        ItemUtil.equipmentDict = {};
+        ItemUtil.equipmentDict["M4A1"] = true;
+        ItemUtil.equipmentDict["巨兽"] = true;
+        ItemUtil.equipmentDict["远古诛神剑"] = true;
+        ItemUtil.equipmentDict["沙漠军装背心"] = true;
+        return receipt;
+    }
+
+    private static function installEffectiveRootCatalog(
+        root:Object, itemData:Object):Void {
+        for (var itemName:String in itemData) {
+            setCatalogData(root, itemName, itemData[itemName]);
+        }
+    }
+
+    private static function testEffectiveInstanceQualificationFamilies():Void {
+        var savedConfig:Object = ObjectUtil.cloneFast(
+            EquipmentConfigManager.getFullConfig());
+        EquipmentUtil.loadEquipmentConfig(effectiveQualificationConfig());
+        var modDict:Object = ModRegistry.getModDict();
+        var savedChip:Object = modDict["电脑芯片"];
+        var savedEquipmentModDict:Object = EquipmentUtil.modDict;
+        modDict["电脑芯片"] = {
+            name:"电脑芯片",
+            use:"头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪",
+            stats:{flat:{level:-3}},
+            requireTags:"电力",
+            tag:"等级校正"
+        };
+        EquipmentUtil.modDict = modDict;
+        var itemData:Object = effectiveQualificationCatalog();
+
+        var root:Object = fixtureRoot(1);
+        root.等级 = 27;
+        __activeMutationRoot = root;
+        var bag:Object = root.物品栏.背包;
+        var ordinary:BaseItem = new BaseItem(
+            "M4A1", {level:13, tier:"", mods:[]}, 21);
+        var chipped:BaseItem = new BaseItem(
+            "巨兽", {level:4, tier:"", mods:["电脑芯片"]}, 22);
+        bag.items["0"] = ordinary;
+        bag.items["1"] = chipped;
+        var binding:Object = bindEffectiveQualificationFixture(root, itemData);
+        installEffectiveRootCatalog(root, itemData);
+        check(ordinary.getData().data.level == 10
+                && new BaseItem("巨兽", {
+                    level:4, tier:"", mods:[]}, 20).getData().data.level == 30
+                && chipped.getData().data.level == 27,
+            "真实 BaseItem/EquipmentCalculator：强化 +13 不改需求 10，电脑芯片把巨兽 30 降为 27");
+
+        var panelId:String = "workbench.effective.chip";
+        var fixture:Object = mutationFixture(root, panelId);
+        var opened:Object = fixture.opened;
+        var candidateParams:Object = wireParams(
+            panelId, "character-build.effective.chip.candidates");
+        candidateParams.sessionGeneration = opened.sessionGeneration;
+        candidateParams.expectedLoadoutRevision = opened.loadoutRevision;
+        candidateParams.expectedDrugRevision = opened.drugRevision;
+        candidateParams.candidateScope = "backpack";
+        candidateParams.slotKey = "长枪";
+        var candidates:Object = CharacterBuildService.execute(
+            "candidates", candidateParams);
+        var ordinaryRow:Object = findCandidate(candidates, "M4A1", 0);
+        var chipRow:Object = findCandidate(candidates, "巨兽", 1);
+        check(candidates.success && ordinaryRow != null
+                && !ordinaryRow.disabled && chipRow != null
+                && !chipRow.disabled
+                && chipRow.equipmentEligibility.slots.length == 1
+                && chipRow.equipmentEligibility.slots[0] == "长枪"
+                && chipRow.equipmentEligibility.blockedReason == "",
+            "通用装备背包中普通强化与芯片实例均按 getData 的有效需求等级盖章");
+        var chipParams:Object = equipmentMutationParams(
+            "equipEquipment", panelId, opened, "长枪", 1);
+        chipParams.requestCallId =
+            "character-build.effective.chip.allowed";
+        var chipEquipped:Object = CharacterBuildService.execute(
+            "equipEquipment", chipParams);
+        check(chipEquipped.success
+                && root.物品栏.装备栏.getItem("长枪") === chipped,
+            "27 级角色可装备真实实例计算为 27 的电脑芯片巨兽");
+        restoreItemUtilFixture(binding);
+
+        root = fixtureRoot(1);
+        root.等级 = 27;
+        __activeMutationRoot = root;
+        bag = root.物品栏.背包;
+        var iceCoated:BaseItem = new BaseItem(
+            "M4A1", {level:3, tier:"墨冰", mods:[]}, 23);
+        var fireCoated:BaseItem = new BaseItem(
+            "M4A1", {level:2, tier:"狱火", mods:[]}, 24);
+        var garo:BaseItem = new BaseItem(
+            "远古诛神剑", {level:1, tier:"", mods:[]}, 25);
+        bag.items["0"] = iceCoated;
+        bag.items["1"] = fireCoated;
+        bag.items["2"] = garo;
+        binding = bindEffectiveQualificationFixture(root, itemData);
+        installEffectiveRootCatalog(root, itemData);
+        check(iceCoated.getData().data.level == 41
+                && fireCoated.getData().data.level == 41
+                && garo.getData().data.level == 60,
+            "真实 BaseItem/EquipmentCalculator：墨冰/狱火 M4A1 为 41，普通牙狼为 60");
+
+        panelId = "workbench.effective.coating";
+        fixture = mutationFixture(root, panelId);
+        opened = fixture.opened;
+        candidateParams = wireParams(
+            panelId, "character-build.effective.coating.candidates");
+        candidateParams.sessionGeneration = opened.sessionGeneration;
+        candidateParams.expectedLoadoutRevision = opened.loadoutRevision;
+        candidateParams.expectedDrugRevision = opened.drugRevision;
+        candidateParams.candidateScope = "backpack";
+        candidateParams.slotKey = "长枪";
+        candidates = CharacterBuildService.execute(
+            "candidates", candidateParams);
+        var iceRow:Object = findCandidate(candidates, "M4A1", 0);
+        var fireRow:Object = findCandidate(candidates, "M4A1", 1);
+        var garoRow:Object = findCandidate(
+            candidates, "远古诛神剑", 2);
+        check(iceRow != null && iceRow.disabled
+                && iceRow.blockedReason == "level_locked"
+                && iceRow.equipmentEligibility.blockedReason
+                    == "level_locked"
+                && fireRow != null && fireRow.disabled
+                && fireRow.blockedReason == "level_locked"
+                && fireRow.equipmentEligibility.blockedReason
+                    == "level_locked"
+                && garoRow != null && garoRow.disabled
+                && garoRow.blockedReason == "incompatible_item"
+                && garoRow.equipmentEligibility.slots.length == 1
+                && garoRow.equipmentEligibility.slots[0] == "刀"
+                && garoRow.equipmentEligibility.blockedReason
+                    == "level_locked",
+            "一份通用装备背包同时盖章墨冰/狱火长枪与普通牙狼的实例有效等级");
+        var bagWrites:Number = bag.writeCount;
+        var equipmentWrites:Number = root.物品栏.装备栏.writeCount;
+        var blockedParams:Object = equipmentMutationParams(
+            "equipEquipment", panelId, opened, "长枪", 0);
+        blockedParams.requestCallId =
+            "character-build.effective.coating.blocked";
+        var blocked:Object = CharacterBuildService.execute(
+            "equipEquipment", blockedParams);
+        check(!blocked.success && blocked.error == "level_locked"
+                && bag.writeCount == bagWrites
+                && root.物品栏.装备栏.writeCount == equipmentWrites
+                && bag.getItem("0") === iceCoated,
+            "涂层有效需求超限在 mutation 前 fail closed 且零写入");
+        restoreItemUtilFixture(binding);
+
+        root = fixtureRoot(1);
+        root.等级 = 22;
+        __activeMutationRoot = root;
+        bag = root.物品栏.背包;
+        var desertTier:BaseItem = new BaseItem(
+            "沙漠军装背心", {level:5, tier:"三阶", mods:[]}, 31);
+        bag.items["0"] = desertTier;
+        binding = bindEffectiveQualificationFixture(root, itemData);
+        installEffectiveRootCatalog(root, itemData);
+        check(desertTier.getData().data.level == 25,
+            "真实 BaseItem/EquipmentCalculator 将沙漠军装背心基础 10 投影为三阶 25");
+        panelId = "workbench.effective.desert.blocked";
+        fixture = mutationFixture(root, panelId);
+        opened = fixture.opened;
+        candidateParams = wireParams(
+            panelId, "character-build.effective.desert.candidates");
+        candidateParams.sessionGeneration = opened.sessionGeneration;
+        candidateParams.expectedLoadoutRevision = opened.loadoutRevision;
+        candidateParams.expectedDrugRevision = opened.drugRevision;
+        candidateParams.candidateScope = "backpack";
+        candidateParams.slotKey = "上装装备";
+        candidates = CharacterBuildService.execute(
+            "candidates", candidateParams);
+        var desertRow:Object = findCandidate(
+            candidates, "沙漠军装背心", 0);
+        bagWrites = bag.writeCount;
+        equipmentWrites = root.物品栏.装备栏.writeCount;
+        blockedParams = equipmentMutationParams(
+            "equipEquipment", panelId, opened, "上装装备", 0);
+        blockedParams.requestCallId =
+            "character-build.effective.desert.blocked";
+        blocked = CharacterBuildService.execute(
+            "equipEquipment", blockedParams);
+        check(desertRow != null && desertRow.disabled
+                && desertRow.blockedReason == "level_locked"
+                && desertRow.equipmentEligibility.slots.length == 1
+                && desertRow.equipmentEligibility.slots[0] == "上装装备"
+                && desertRow.equipmentEligibility.blockedReason
+                    == "level_locked"
+                && !blocked.success && blocked.error == "level_locked"
+                && bag.writeCount == bagWrites
+                && root.物品栏.装备栏.writeCount == equipmentWrites,
+            "22 级角色对基础 10/三阶有效 25 的真实沙漠军装实例一致阻断");
+        restoreItemUtilFixture(binding);
+
+        root = fixtureRoot(1);
+        root.等级 = 25;
+        __activeMutationRoot = root;
+        bag = root.物品栏.背包;
+        desertTier = new BaseItem(
+            "沙漠军装背心", {level:5, tier:"三阶", mods:[]}, 32);
+        bag.items["0"] = desertTier;
+        binding = bindEffectiveQualificationFixture(root, itemData);
+        installEffectiveRootCatalog(root, itemData);
+        panelId = "workbench.effective.desert.allowed";
+        fixture = mutationFixture(root, panelId);
+        opened = fixture.opened;
+        var allowedParams:Object = equipmentMutationParams(
+            "equipEquipment", panelId, opened, "上装装备", 0);
+        allowedParams.requestCallId =
+            "character-build.effective.desert.allowed";
+        var desertEquipped:Object = CharacterBuildService.execute(
+            "equipEquipment", allowedParams);
+        check(desertEquipped.success
+                && root.物品栏.装备栏.getItem("上装装备") === desertTier,
+            "25 级角色可装备实例有效需求 25 的真实三阶沙漠军装");
+        restoreItemUtilFixture(binding);
+
+        if (savedChip == undefined) delete modDict["电脑芯片"];
+        else modDict["电脑芯片"] = savedChip;
+        EquipmentUtil.modDict = savedEquipmentModDict;
+        EquipmentUtil.loadEquipmentConfig(savedConfig);
+        __activeMutationRoot = null;
     }
 
     private static function findCandidate(
@@ -1522,6 +2199,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             reopened.loadoutRevision;
         candidatesParams.expectedDrugRevision =
             reopened.drugRevision;
+        candidatesParams.candidateScope = "compatible";
         candidatesParams.drugSlot = 1;
         var candidates:Object = CharacterBuildService.execute(
             "candidates", candidatesParams);
@@ -1735,6 +2413,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             reopened.loadoutRevision;
         params.expectedDrugRevision =
             reopened.drugRevision;
+        params.candidateScope = "compatible";
         params.drugSlot = 0;
         var candidates:Object =
             CharacterBuildService.execute(
@@ -1818,9 +2497,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                                             majorType:String,
                                             useName:String,
                                             requiredLevel:Number):Void {
-        root.itemCatalog[name] =
-            catalog(majorType, useName, requiredLevel);
-        root.itemUses[name] = useName;
+        setCatalogData(root, name,
+            catalog(majorType, useName, requiredLevel));
     }
 
     private static function testEquipmentMutationMoveSwapAndUnequip():Void {

@@ -109,6 +109,20 @@ function codePositionMask(source) {
   return mask;
 }
 
+function executableMatches(source, pattern) {
+  const code = stripCodeComments(String(source));
+  const mask = codePositionMask(code);
+  const flags = pattern.flags.includes("g") ? pattern.flags : pattern.flags + "g";
+  const matcher = new RegExp(pattern.source, flags);
+  const matches = [];
+  let match;
+  while ((match = matcher.exec(code)) !== null) {
+    if (mask[match.index]) matches.push(match);
+    if (match[0].length === 0) matcher.lastIndex += 1;
+  }
+  return matches;
+}
+
 function isUnqualifiedIdentifierAt(source, index) {
   if (index > 0 && /[A-Za-z0-9_$\u0080-\uFFFF]/.test(source[index - 1])) {
     return false;
@@ -289,8 +303,13 @@ function validateContractSchema(contract, errors) {
       safeRelativeFile(domain.hostTask, at + ".hostTask", errors);
       stringValue(domain.flashResponseTask, at + ".flashResponseTask", errors);
       stringValue(domain.hostResponseHandler, at + ".hostResponseHandler", errors);
-      if (domain.hostPayloadMode !== "normalized" && domain.hostPayloadMode !== "passthrough") {
-        addError(errors, "schema.enum", at + ".hostPayloadMode", "expected normalized or passthrough");
+      if (domain.hostPayloadMode !== "normalized"
+          && domain.hostPayloadMode !== "passthrough"
+          && domain.hostPayloadMode !== "passthrough-owner-sanitized"
+          && domain.hostPayloadMode !== "normalized-domainless-owner-rebuilt") {
+        addError(errors, "schema.enum", at + ".hostPayloadMode",
+          "expected normalized, passthrough, passthrough-owner-sanitized, "
+            + "or normalized-domainless-owner-rebuilt");
       }
       if (domain.flashCommandHandler !== null
           && (typeof domain.flashCommandHandler !== "string"
@@ -1030,14 +1049,15 @@ function validateSources(contract, root, overrides, errors) {
       }
       const domainGuards = [];
       const handleWebRequest = findCSharpMethodBody(hostSource, "HandleWebRequest");
-      const domainGuardPattern = /if\s*\(\s*!\s*string\.Equals\s*\(\s*parsed\.Value<string>\s*\(\s*"domain"\s*\)\s*,\s*"([^"]+)"\s*,\s*StringComparison\.Ordinal\s*\)\s*\)\s*\{/g;
+      const domainGuardPattern = /if\s*\(\s*!\s*string\.Equals\s*\(\s*(?:parsed\.Value<string>\s*\(\s*"domain"\s*\)|ReadExactString\s*\(\s*parsed\s*\[\s*"domain"\s*\]\s*\))\s*,\s*"([^"]+)"\s*,\s*StringComparison\.Ordinal\s*\)\s*\)\s*\{/g;
       let domainGuardMatch;
       if (handleWebRequest.body !== null) {
-        const guardCodePositions = codePositionMask(handleWebRequest.body);
-        while ((domainGuardMatch = domainGuardPattern.exec(handleWebRequest.body)) !== null) {
+        const guardSource = stripCodeComments(handleWebRequest.body);
+        const guardCodePositions = codePositionMask(guardSource);
+        while ((domainGuardMatch = domainGuardPattern.exec(guardSource)) !== null) {
           if (!guardCodePositions[domainGuardMatch.index]) continue;
-          const guardOpen = handleWebRequest.body.lastIndexOf("{", domainGuardPattern.lastIndex - 1);
-          const guardBody = findBalancedBody(handleWebRequest.body, guardOpen);
+          const guardOpen = guardSource.lastIndexOf("{", domainGuardPattern.lastIndex - 1);
+          const guardBody = findBalancedBody(guardSource, guardOpen);
           const rejectCalls = guardBody === null
             ? { calls: [], error: "domain guard body is unterminated" }
             : parseBareCalls(guardBody, "RejectAndRemember");
@@ -1051,10 +1071,10 @@ function validateSources(contract, root, overrides, errors) {
             }
           }
           const exactRejects = rejectCalls.calls.filter(function (argumentsList) {
-            return argumentsList.length === 3
+            return argumentsList.length >= 3
               && canonicalExpression(argumentsList[0]) === "callId"
               && canonicalExpression(argumentsList[1]) === "cmd"
-              && quotedLiteral(argumentsList[2]) === "unsupported_domain";
+              && quotedLiteral(argumentsList[argumentsList.length - 1]) === "unsupported_domain";
           });
           domainGuards.push({
             domain: domainGuardMatch[1],
@@ -1106,7 +1126,10 @@ function validateSources(contract, root, overrides, errors) {
             ? { calls: [], error: "command resolver guard body is unterminated" }
             : parseBareCalls(guardBody, "RejectAndRemember");
           const exactRejects = rejectCalls.calls.filter(function (argumentsList) {
-            return (argumentsList.length === 2 || argumentsList.length === 3)
+            const callIdentity = canonicalExpression(argumentsList[0]);
+            return argumentsList.length >= 2
+              && (callIdentity === "callId" || callIdentity === "webCallId")
+              && canonicalExpression(argumentsList[1]) === "cmd"
               && quotedLiteral(argumentsList[argumentsList.length - 1]) === "unsupported_cmd";
           });
           let returnCount = 0;
@@ -1162,7 +1185,13 @@ function validateSources(contract, root, overrides, errors) {
             "HandleWebRequest must bind IsWrite=isWrite exactly once and use isWrite in a write gate");
         }
         const buildCalls = parseQualifiedCalls(handleWebRequest.body, "BuildFlashCommand");
-        const expectedPayload = domain.hostPayloadMode === "normalized" ? "normalized" : "parsed";
+        const expectedPayload = domain.hostPayloadMode === "normalized"
+          ? "normalized"
+          : domain.hostPayloadMode === "normalized-domainless-owner-rebuilt"
+            ? "normalizedPayload"
+          : domain.hostPayloadMode === "passthrough-owner-sanitized"
+            ? "flashRequest"
+            : "parsed";
         const exactBuildCalls = buildCalls.calls.filter(function (call) {
           return call.receiver === "PanelBridge"
             && call.arguments.length >= 3
@@ -1177,7 +1206,126 @@ function validateSources(contract, root, overrides, errors) {
                 + expectedPayload + ") dispatch");
         }
       }
-      if (domain.hostPayloadMode === "passthrough") {
+      if (domain.hostPayloadMode === "passthrough-owner-sanitized"
+          && handleWebRequest.body !== null) {
+        const body = handleWebRequest.body;
+        const bodyCodePositions = codePositionMask(body);
+        const requiredStatements = [
+          /\bvar\s+flashRequest\s*=\s*parsed\s*!=\s*null\s*\?\s*\(JObject\)\s*parsed\.DeepClone\s*\(\s*\)\s*:\s*new\s+JObject\s*\(\s*\)\s*;/g,
+          /\bflashRequest\.Remove\s*\(\s*"panelInstanceId"\s*\)\s*;/g,
+          /\bflashRequest\.Remove\s*\(\s*"domain"\s*\)\s*;/g
+        ];
+        const statementCounts = requiredStatements.map(function (pattern) {
+          let count = 0;
+          let match;
+          while ((match = pattern.exec(body)) !== null) {
+            if (bodyCodePositions[match.index]) count += 1;
+          }
+          return count;
+        });
+        if (statementCounts.some(function (count) { return count !== 1; })) {
+          addError(errors, "source.csharp_owner_sanitizer_drift",
+            domainAt + ".hostPayloadMode",
+            "owner-sanitized passthrough must deep-clone parsed exactly once and remove "
+              + "panelInstanceId/domain exactly once before Flash dispatch; counts="
+              + JSON.stringify(statementCounts));
+        }
+      }
+      if (domain.hostPayloadMode === "normalized-domainless-owner-rebuilt"
+          && handleWebRequest.body !== null) {
+        const body = stripCodeComments(handleWebRequest.body);
+        const bodyCodePositions = codePositionMask(body);
+        const domainlessPattern = /if\s*\(\s*!\s*WebOverlayForm\.IsStrictDomainlessPanelEnvelope\s*\(\s*parsed\s*\)\s*\)\s*\{/g;
+        const domainlessGuards = [];
+        let domainlessMatch;
+        while ((domainlessMatch = domainlessPattern.exec(body)) !== null) {
+          if (!bodyCodePositions[domainlessMatch.index]) continue;
+          const guardOpen = body.lastIndexOf("{", domainlessPattern.lastIndex - 1);
+          const guardBody = findBalancedBody(body, guardOpen);
+          const rejectCalls = guardBody === null
+            ? { calls: [], error: "domainless guard body is unterminated" }
+            : parseBareCalls(guardBody, "RejectAndRemember");
+          const exactRejects = rejectCalls.calls.filter(function (argumentsList) {
+            return argumentsList.length >= 3
+              && canonicalExpression(argumentsList[0]) === "webCallId"
+              && canonicalExpression(argumentsList[1]) === "cmd"
+              && quotedLiteral(argumentsList[argumentsList.length - 1]) === "invalid_domain";
+          });
+          const returnMatches = guardBody === null ? []
+            : executableMatches(guardBody, /\breturn\s*;/g);
+          domainlessGuards.push(guardBody !== null && !rejectCalls.error
+            && rejectCalls.calls.length === 1 && exactRejects.length === 1
+            && returnMatches.length === 1);
+        }
+
+        const normalizeCalls = parseBareCalls(body, "TryNormalizePayload");
+        const exactNormalizeCalls = normalizeCalls.calls.filter(function (argumentsList) {
+          return argumentsList.length === 3
+            && canonicalExpression(argumentsList[0]) === "cmd"
+            && canonicalExpression(argumentsList[1]) === "parsed"
+            && canonicalExpression(argumentsList[2]) === "outnormalizedPayload";
+        });
+        if (domainlessGuards.length !== 1 || domainlessGuards[0] !== true
+            || normalizeCalls.error || normalizeCalls.calls.length !== 1
+            || exactNormalizeCalls.length !== 1) {
+          addError(errors, "source.csharp_domainless_normalizer_drift",
+            domainAt + ".hostPayloadMode",
+            "domainless normalized mode requires one fail-closed strict-domainless guard "
+              + "and one TryNormalizePayload(cmd, parsed, out normalizedPayload) call");
+        }
+
+        const requiredOwnerBindings = [
+          /\bOwnerPanel\s*=\s*ownerPanel\b/g,
+          /\bOwnerPanelInstanceId\s*=\s*ownerPanelInstanceId\b/g,
+          /\bNormalizedPayload\s*=\s*\(JObject\)\s*normalizedPayload\.DeepClone\s*\(\s*\)/g
+        ];
+        const ownerBindingCounts = requiredOwnerBindings.map(function (pattern) {
+          return executableMatches(body, pattern).length;
+        });
+        const forbiddenRawCloneCount = executableMatches(
+          body, /\bparsed\.DeepClone\s*\(\s*\)/g).length;
+        const forbiddenFlashRequestCount = executableMatches(body, /\bflashRequest\b/g).length;
+        if (ownerBindingCounts.some(function (count) { return count !== 1; })
+            || forbiddenRawCloneCount !== 0 || forbiddenFlashRequestCount !== 0) {
+          addError(errors, "source.csharp_owner_rebuild_drift",
+            domainAt + ".hostPayloadMode",
+            "domainless normalized mode must freeze exact owner fields and a defensive normalized payload "
+              + "without cloning or stripping the raw Web envelope; counts="
+              + JSON.stringify(ownerBindingCounts.concat([
+                forbiddenRawCloneCount, forbiddenFlashRequestCount
+              ])));
+        }
+
+        const handleFlashResponse = findCSharpMethodBody(hostSource, "HandleFlashResponse");
+        const sanitizeCalls = handleFlashResponse.body === null
+          ? { calls: [], error: handleFlashResponse.error }
+          : parseBareCalls(handleFlashResponse.body, "TrySanitizeResponseLocked");
+        const exactSanitizeCalls = sanitizeCalls.calls.filter(function (argumentsList) {
+          return argumentsList.length === 3
+            && canonicalExpression(argumentsList[0]) === "msg"
+            && canonicalExpression(argumentsList[1]) === "entry"
+            && canonicalExpression(argumentsList[2]) === "outsanitized";
+        });
+        const responseOwnerBindings = handleFlashResponse.body === null ? [] : [
+          /\bwebMsg\s*\[\s*"panel"\s*\]\s*=\s*entry\.OwnerPanel\s*;/g,
+          /\bwebMsg\s*\[\s*"panelInstanceId"\s*\]\s*=\s*entry\.OwnerPanelInstanceId\s*;/g,
+          /\bwebMsg\s*\[\s*"cmd"\s*\]\s*=\s*entry\.WebCmd\s*;/g,
+          /\bwebMsg\s*\[\s*"callId"\s*\]\s*=\s*entry\.WebCallId\s*;/g
+        ].map(function (pattern) {
+          return executableMatches(handleFlashResponse.body, pattern).length;
+        });
+        if (handleFlashResponse.body === null || sanitizeCalls.error
+            || sanitizeCalls.calls.length !== 1 || exactSanitizeCalls.length !== 1
+            || responseOwnerBindings.length !== 4
+            || responseOwnerBindings.some(function (count) { return count !== 1; })) {
+          addError(errors, "source.csharp_response_owner_rebuild_drift",
+            domainAt + ".hostPayloadMode",
+            "domainless normalized mode must sanitize once and rebuild the exact Web owner envelope "
+              + "from pending state; owner counts=" + JSON.stringify(responseOwnerBindings));
+        }
+      }
+      if (domain.hostPayloadMode === "passthrough"
+          || domain.hostPayloadMode === "passthrough-owner-sanitized") {
         ["TryReadInteger", "TryNormalizePayload"].forEach(function (method) {
           const calls = parseCalls(hostSource, method);
           if (calls.error || calls.calls.length !== 0) {

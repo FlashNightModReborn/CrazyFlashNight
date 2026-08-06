@@ -122,6 +122,7 @@
          'modules/crafting-inspector.js',
          'modules/crafting-materials.js',
          'modules/crafting-detail-presenter.js',
+         'modules/inventory-runtime.js',
          'modules/crafting-runtime.js',
          'modules/crafting.js'],
         noop);

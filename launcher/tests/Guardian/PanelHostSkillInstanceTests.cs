@@ -50,6 +50,33 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void EquipmentTuningDomainError_EchoesExactMuxIdentity()
+        {
+            JObject request = JObject.Parse(@"{
+                'type':'panel','panel':'workbench','domain':'equipment_tuning','cmd':'preview',
+                'callId':'tune.route.error.1','panelInstanceId':'panel.workbench.requested',
+                'payload':{'v':1,'viewSessionId':'tuning.session.requested'}
+            }");
+
+            JObject response = WebOverlayForm.BuildPanelDomainErrorResponse(
+                request, "panel_instance_expired");
+
+            Assert.Equal("panel_resp", (string)response["type"]);
+            Assert.Equal("workbench", (string)response["panel"]);
+            Assert.Equal("equipment_tuning", (string)response["domain"]);
+            Assert.Equal("preview", (string)response["cmd"]);
+            Assert.Equal("tune.route.error.1", (string)response["callId"]);
+            Assert.Equal(
+                "panel.workbench.requested",
+                (string)response["panelInstanceId"]);
+            Assert.Equal(
+                "tuning.session.requested",
+                (string)response["viewSessionId"]);
+            Assert.False((bool)response["success"]);
+            Assert.Equal("panel_instance_expired", (string)response["error"]);
+        }
+
+        [Fact]
         public void LoadoutDomainRoute_RequiresActiveWorkbenchAndExactHostInstance()
         {
             JObject request = JObject.Parse(@"{
@@ -256,7 +283,10 @@ namespace CF7Launcher.Tests.Guardian
                 "public void FlushDeferredBarrierOpen()",
                 "public void ClearReturnStack()");
             Assert.Contains(
-                "EnqueueAndPump(deferred.Value);",
+                "!EnqueueAndPump(deferred.Value)",
+                flush);
+            Assert.Contains(
+                "_deferredBarrierOpen = deferred;",
                 flush);
 
             string open = Slice(

@@ -1801,14 +1801,19 @@ class Program
                 // CharacterBuild owns the shared pause authority until acknowledged recovery
                 // consumes its exact binding. This gate also covers PanelHost's internal returnTo
                 // reopen path, which never passes through LauncherCommandRouter.
-                  return !form.IsShutdownAdmissionClosed
-                      && !characterBuildTask.HasBoundPanel;
+                return !form.IsShutdownAdmissionClosed
+                    && webOverlay.CanAcceptPanelDocumentMessages
+                    && !characterBuildTask.HasBoundPanel;
             });
             panelHost.SetRebindGate(delegate(string panelName)
             {
+                if (!webOverlay.CanAcceptPanelDocumentMessages)
+                    return false;
                 if (panelName == "skills") return skillTask.CanRebind;
                 if (panelName == "workbench")
                 {
+                    if (characterBuildTask.HasBoundPanel)
+                        return false;
                     if (equipmentTuningTask.HasBoundPanel
                         && !equipmentTuningTask.CanRebind) return false;
                 }

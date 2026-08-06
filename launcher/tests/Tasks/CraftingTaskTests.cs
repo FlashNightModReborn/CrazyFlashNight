@@ -11,7 +11,10 @@ namespace Launcher.Tests.Tasks
 {
     public sealed class CraftingTaskTests
     {
-        private static JObject Request(string cmd, string callId)
+        private const string DefaultPanelInstanceId = "panel.crafting.instance.1";
+
+        private static JObject Request(string cmd, string callId,
+            string panelInstanceId = DefaultPanelInstanceId)
         {
             var payload = new JObject { ["v"] = 1 };
             if (cmd == "tooltip" || cmd == "materialDetail") payload["itemName"] = "不锈钢材";
@@ -25,8 +28,20 @@ namespace Launcher.Tests.Tasks
             return new JObject
             {
                 ["type"] = "panel", ["domain"] = "crafting", ["panel"] = "crafting",
+                ["panelInstanceId"] = panelInstanceId,
                 ["cmd"] = cmd, ["callId"] = callId, ["payload"] = payload
             };
+        }
+
+        private static void AssertOwnerTuple(JObject response, string cmd, string callId,
+            string panelInstanceId = DefaultPanelInstanceId)
+        {
+            Assert.Equal("panel_resp", (string)response["type"]);
+            Assert.Equal("crafting", (string)response["domain"]);
+            Assert.Equal("crafting", (string)response["panel"]);
+            Assert.Equal(panelInstanceId, (string)response["panelInstanceId"]);
+            Assert.Equal(cmd, (string)response["cmd"]);
+            Assert.Equal(callId, (string)response["callId"]);
         }
 
         [Theory]
@@ -38,13 +53,18 @@ namespace Launcher.Tests.Tasks
         [InlineData("commit", "craftingCommit")]
         public void WebRequest_MapsStrictCommands(string cmd, string expectedAction)
         {
-            string sent = null;
+            var sentCommands = new List<JObject>();
             string web = null;
-            using (var task = new CraftingTask(() => true, value => { sent = value; return true; }))
+            using (var task = new CraftingTask(() => true, value =>
+            {
+                sentCommands.Add(JObject.Parse(value.TrimEnd('\0')));
+                return true;
+            }))
             {
                 task.SetPostToWeb(value => web = value);
+                if (cmd == "commit") PrimeCommitAuthority(task, sentCommands);
                 task.HandleWebRequest(cmd, Request(cmd, "craft.command." + cmd));
-                JObject command = JObject.Parse(sent.TrimEnd('\0'));
+                JObject command = sentCommands[sentCommands.Count - 1];
                 Assert.Equal(expectedAction, (string)command["action"]);
                 Assert.Equal(1, (int)command["v"]);
                 Assert.Null(command["payload"]);
@@ -53,13 +73,14 @@ namespace Launcher.Tests.Tasks
                 {
                     task.HandleFlashResponse(SnapshotResponse((int)command["callId"]), null);
                     JObject response = JObject.Parse(web);
+                    AssertOwnerTuple(response, "snapshot", "craft.command.snapshot");
                     Assert.True((bool)response["success"]);
                     Assert.Equal("男", (string)response["gender"]);
                     Assert.True((bool)response["recipes"][0]["canCraftOne"]);
                     Assert.Equal("ready", (string)response["recipes"][0]["availability"]);
 
                     task.HandleWebRequest("snapshot", Request("snapshot", "craft.command.snapshot.inconsistent"));
-                    JObject inconsistentCommand = JObject.Parse(sent.TrimEnd('\0'));
+                    JObject inconsistentCommand = sentCommands[sentCommands.Count - 1];
                     JObject inconsistent = SnapshotResponse((int)inconsistentCommand["callId"]);
                     inconsistent["recipes"][0]["canCraftOne"] = false;
                     task.HandleFlashResponse(inconsistent, null);
@@ -89,13 +110,49 @@ namespace Launcher.Tests.Tasks
                 JObject detail = JObject.Parse(web);
                 Assert.True((bool)detail["success"]);
                 Assert.Equal("武器合成", (string)detail["uses"][0]["category"]);
+                Assert.Equal("enemy.internal", (string)detail["sources"][0]["enemyType"]);
+                Assert.Equal("敌人展示名", (string)detail["sources"][0]["displayName"]);
+                Assert.Equal("quest.internal", (string)detail["sources"][1]["questId"]);
+                Assert.Equal("任务展示名", (string)detail["sources"][1]["title"]);
+
+                task.HandleWebRequest("materialDetail", Request(
+                    "materialDetail", "craft.material.detail.equal"));
+                JObject equalDetail = MaterialDetailResponse(
+                    (int)JObject.Parse(sent.TrimEnd('\0'))["callId"]);
+                equalDetail["sources"][0]["displayName"] = "enemy.internal";
+                equalDetail["sources"][1]["title"] = "quest.internal";
+                task.HandleFlashResponse(equalDetail, null);
+                JObject equalResponse = JObject.Parse(web);
+                Assert.True((bool)equalResponse["success"]);
+                Assert.Equal("enemy.internal", (string)equalResponse["sources"][0]["displayName"]);
+                Assert.Equal("quest.internal", (string)equalResponse["sources"][1]["title"]);
+
+                for (int variant = 0; variant < 8; variant++)
+                {
+                    task.HandleWebRequest("materialDetail", Request(
+                        "materialDetail", "craft.material.detail.bad." + variant));
+                    JObject badDetail = MaterialDetailResponse(
+                        (int)JObject.Parse(sent.TrimEnd('\0'))["callId"]);
+                    bool enemy = variant < 4;
+                    JObject source = (JObject)badDetail["sources"][enemy ? 0 : 1];
+                    string field = enemy ? "displayName" : "title";
+                    int leafVariant = variant % 4;
+                    if (leafVariant == 0) source.Remove(field);
+                    else if (leafVariant == 1) source[field] = "   ";
+                    else if (leafVariant == 2) source[field] = " Undefined ";
+                    else source[field] = 17;
+                    task.HandleFlashResponse(badDetail, null);
+                    Assert.Equal("malformed_response", (string)JObject.Parse(web)["error"]);
+                }
 
                 task.HandleWebRequest("materials", Request("materials", "craft.materials.bad"));
                 int malformedFid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
                 JObject malformed = MaterialsResponse(malformedFid);
                 malformed["materials"][0]["sourceCount"] = -1;
                 task.HandleFlashResponse(malformed, null);
-                Assert.Equal("malformed_response", (string)JObject.Parse(web)["error"]);
+                JObject malformedResponse = JObject.Parse(web);
+                AssertOwnerTuple(malformedResponse, "materials", "craft.materials.bad");
+                Assert.Equal("malformed_response", (string)malformedResponse["error"]);
             }
         }
 
@@ -125,6 +182,7 @@ namespace Launcher.Tests.Tasks
                 female["gender"] = "女";
                 task.HandleFlashResponse(female, null);
                 JObject response = JObject.Parse(web);
+                AssertOwnerTuple(response, "snapshot", "craft.gender.female");
                 Assert.True((bool)response["success"]);
                 Assert.Equal("女", (string)response["gender"]);
             }
@@ -196,21 +254,205 @@ namespace Launcher.Tests.Tasks
             using (var task = new CraftingTask(() => true, value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
             {
                 task.SetPostToWeb(value => web = value);
+                PrimeCommitAuthority(task, sent);
                 task.HandleWebRequest("commit", Request("commit", "craft.commit.ok"));
-                int fid = (int)sent[0]["callId"];
-                task.HandleFlashResponse(new JObject
-                {
-                    ["task"] = "crafting_response", ["callId"] = fid, ["success"] = true, ["v"] = 1,
-                    ["operation"] = "commit", ["category"] = "武器合成", ["recipeIndex"] = 3,
-                    ["craftCount"] = 1,
-                    ["crafted"] = new JObject { ["name"] = "秋月" },
-                    ["balance"] = new JObject { ["money"] = 10, ["kpoints"] = 2 }
-                }, null);
+                int fid = (int)sent[sent.Count - 1]["callId"];
+                task.HandleFlashResponse(CommitResponse(fid), null);
                 JObject response = JObject.Parse(web);
+                AssertOwnerTuple(response, "commit", "craft.commit.ok");
                 Assert.True((bool)response["success"]);
                 Assert.Equal("commit", (string)response["operation"]);
+                Assert.Equal("光棱射线弹-强化", (string)response["crafted"]["name"]);
+                Assert.Equal("棱镜折射阵列", (string)response["crafted"]["displayName"]);
+                Assert.Equal("全光谱棱镜阵列", (string)response["crafted"]["icon"]);
+                Assert.Equal("bag", (string)response["acceptedPlan"]["materials"][0]["storageKind"]);
+                Assert.Equal("bag", (string)response["acceptedPlan"]["outputDelivery"]["storageKind"]);
                 Assert.Equal("idle", task.WriteState);
                 Assert.Null(response["requiresReconcile"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("rarity")]
+        [InlineData("maximum")]
+        [InlineData("mod-meta")]
+        [InlineData("mod-signature")]
+        [InlineData("balance-presence")]
+        [InlineData("balance-value")]
+        public void CommitReceipt_MustMatchEveryFrozenEquipmentProjectionField(string drift)
+        {
+            var sent = new List<JObject>();
+            JObject posted = null;
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted = JObject.Parse(value));
+                PrimeCommitAuthority(task, sent);
+                task.HandleWebRequest("commit", Request("commit", "craft.receipt." + drift));
+                JObject response = CommitResponse((int)sent[sent.Count - 1]["callId"]);
+                JObject item = (JObject)response["outputReceipt"]["item"];
+                JObject confirm = (JObject)response["outputReceipt"]["confirmProjection"];
+                if (drift == "rarity") item["rarity"] = "legendary";
+                else if (drift == "maximum") item["maxEnhancementLevel"] = 14;
+                else if (drift == "mod-meta") item["modMeta"] = ValidModProjection();
+                else if (drift == "mod-signature") confirm["modSignature"] = "1:x;";
+                else if (drift == "balance-presence") item.Remove("balanceSummary");
+                else item["balanceSummary"]["weightLayers"] = 3;
+
+                task.HandleFlashResponse(response, null);
+                Assert.False((bool)posted["success"]);
+                Assert.Equal("malformed_response", (string)posted["error"]);
+                Assert.True((bool)posted["requiresReconcile"]);
+                Assert.Equal("needs_reconcile", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("information_collection", "information_collection", "increment", -1, true)]
+        [InlineData("bag", "bag", "insert", 3, true)]
+        [InlineData("material_collection", "material_collection", "increment", -1, true)]
+        [InlineData("drug", "drug", "merge", 4, true)]
+        [InlineData("bag_and_drug", "bag", "merge", 5, true)]
+        [InlineData("unavailable", "unavailable", "none", -1, false)]
+        public void StorageRouteMatrix_PreviewAndCommitEchoExactAcceptedPlan(
+            string materialStorageKind, string deliveryStorageKind, string deliveryMode,
+            int physicalSlot, bool committable)
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value =>
+            {
+                sent.Add(JObject.Parse(value.TrimEnd('\0')));
+                return true;
+            }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                JObject previewRequest = Request("preview",
+                    "craft.route.matrix." + materialStorageKind);
+                previewRequest["payload"]["craftCount"] = 1;
+                task.HandleWebRequest("preview", previewRequest);
+                int previewFid = (int)sent[sent.Count - 1]["callId"];
+                JObject preview = RoutedPreviewResponse(previewFid, materialStorageKind,
+                    deliveryStorageKind, deliveryMode, physicalSlot, committable);
+                task.HandleFlashResponse(preview, null);
+
+                JObject previewPosted = posted[posted.Count - 1];
+                AssertOwnerTuple(previewPosted, "preview",
+                    "craft.route.matrix." + materialStorageKind);
+                Assert.True((bool)previewPosted["success"]);
+                Assert.Equal(materialStorageKind,
+                    (string)previewPosted["materials"][0]["storageKind"]);
+                Assert.Equal(deliveryStorageKind,
+                    (string)previewPosted["outputDelivery"]["storageKind"]);
+                if (!committable)
+                {
+                    Assert.False((bool)previewPosted["canCommit"]);
+                    Assert.Null(previewPosted["acceptedPlan"]);
+                    int sendsBeforeCommit = sent.Count;
+                    task.HandleWebRequest("commit", Request("commit",
+                        "craft.route.matrix.unavailable.commit"));
+                    Assert.Equal(sendsBeforeCommit, sent.Count);
+                    Assert.Equal("stale_state", (string)posted[posted.Count - 1]["error"]);
+                    return;
+                }
+
+                Assert.True((bool)previewPosted["canCommit"]);
+                Assert.True(JToken.DeepEquals(previewPosted["acceptedPlan"],
+                    preview["acceptedPlan"]));
+                Assert.True(JToken.DeepEquals(previewPosted["acceptedPlan"]["outputDelivery"],
+                    previewPosted["outputDelivery"]));
+
+                task.HandleWebRequest("commit", Request("commit",
+                    "craft.route.matrix.commit." + materialStorageKind));
+                int commitFid = (int)sent[sent.Count - 1]["callId"];
+                task.HandleFlashResponse(CommitResponseFromPreview(commitFid, preview), null);
+                JObject commitPosted = posted[posted.Count - 1];
+                AssertOwnerTuple(commitPosted, "commit",
+                    "craft.route.matrix.commit." + materialStorageKind);
+                Assert.True((bool)commitPosted["success"]);
+                Assert.True(JToken.DeepEquals(commitPosted["acceptedPlan"],
+                    preview["acceptedPlan"]));
+                Assert.True(JToken.DeepEquals(commitPosted["crafted"], preview["output"]));
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("missing")]
+        [InlineData("mismatch")]
+        [InlineData("extra")]
+        public void StorageRouteContracts_RejectShortMalformedVariants(string variant)
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value =>
+            {
+                sent.Add(JObject.Parse(value.TrimEnd('\0')));
+                return true;
+            }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                JObject request = Request("preview", "craft.route.invalid." + variant);
+                request["payload"]["craftCount"] = 1;
+                task.HandleWebRequest("preview", request);
+                JObject response = RoutedPreviewResponse(
+                    (int)sent[sent.Count - 1]["callId"], "bag", "bag", "insert", 3, true);
+                if (variant == "missing") ((JObject)response["outputDelivery"]).Remove("storageKind");
+                else if (variant == "mismatch")
+                    response["acceptedPlan"]["outputDelivery"]["mode"] = "merge";
+                else response["outputDelivery"]["legacyRoute"] = true;
+
+                task.HandleFlashResponse(response, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+            }
+        }
+
+        [Fact]
+        public void PreviewAndCommit_RequireExactStorageAndAcceptedPlanContracts()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value =>
+            {
+                sent.Add(JObject.Parse(value.TrimEnd('\0')));
+                return true;
+            }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+
+                task.HandleWebRequest("preview", Request("preview", "craft.route.missing"));
+                JObject missingRoute = PreviewResponse((int)sent[sent.Count - 1]["callId"]);
+                ((JObject)missingRoute["materials"][0]).Remove("storageKind");
+                task.HandleFlashResponse(missingRoute, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                task.HandleWebRequest("preview", Request("preview", "craft.delivery.mismatch"));
+                JObject mismatchedDelivery = PreviewResponse((int)sent[sent.Count - 1]["callId"]);
+                mismatchedDelivery["outputDelivery"] = OutputDelivery(
+                    false, "unavailable", "none", -1, 2);
+                task.HandleFlashResponse(mismatchedDelivery, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                JObject acceptedRequest = Request("preview", "craft.plan.mismatch");
+                acceptedRequest["payload"]["craftCount"] = 1;
+                task.HandleWebRequest("preview", acceptedRequest);
+                JObject mismatchedPlan = CommittablePreviewResponse(
+                    (int)sent[sent.Count - 1]["callId"]);
+                mismatchedPlan["acceptedPlan"]["materials"][0]["storageKind"] =
+                    "material_collection";
+                task.HandleFlashResponse(mismatchedPlan, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                PrimeCommitAuthority(task, sent);
+                task.HandleWebRequest("commit", Request("commit", "craft.plan.commit-drift"));
+                JObject commit = CommitResponse((int)sent[sent.Count - 1]["callId"]);
+                commit["acceptedPlan"]["cost"]["money"] = 1;
+                task.HandleFlashResponse(commit, null);
+                JObject failed = posted[posted.Count - 1];
+                Assert.Equal("malformed_response", (string)failed["error"]);
+                Assert.True((bool)failed["requiresReconcile"]);
+                Assert.Equal("needs_reconcile", task.WriteState);
             }
         }
 
@@ -222,8 +464,10 @@ namespace Launcher.Tests.Tasks
             using (var task = new CraftingTask(() => true, value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
             {
                 task.SetPostToWeb(value => web.Add(JObject.Parse(value)));
+                PrimeCommitAuthority(task, sent);
+                web.Clear();
                 task.HandleWebRequest("commit", Request("commit", "craft.commit.malformed"));
-                int commitFid = (int)sent[0]["callId"];
+                int commitFid = (int)sent[sent.Count - 1]["callId"];
                 task.HandleFlashResponse(new JObject
                 {
                     ["task"] = "crafting_response", ["callId"] = commitFid, ["success"] = true, ["v"] = 1,
@@ -237,7 +481,7 @@ namespace Launcher.Tests.Tasks
                 Assert.True((bool)web[0]["requiresReconcile"]);
 
                 task.HandleWebRequest("preview", Request("preview", "craft.preview.reconcile"));
-                int previewFid = (int)sent[1]["callId"];
+                int previewFid = (int)sent[sent.Count - 1]["callId"];
                 JObject inconsistentPreview = PreviewResponse(previewFid);
                 inconsistentPreview["batchEligible"] = false;
                 task.HandleFlashResponse(inconsistentPreview, null);
@@ -245,7 +489,7 @@ namespace Launcher.Tests.Tasks
                 Assert.Equal("malformed_response", (string)web[1]["error"]);
 
                 task.HandleWebRequest("preview", Request("preview", "craft.preview.reconcile.valid"));
-                previewFid = (int)sent[2]["callId"];
+                previewFid = (int)sent[sent.Count - 1]["callId"];
                 task.HandleFlashResponse(PreviewResponse(previewFid), null);
                 Assert.Equal("idle", task.WriteState);
                 Assert.True((bool)web[2]["success"]);
@@ -260,12 +504,16 @@ namespace Launcher.Tests.Tasks
             using (var task = new CraftingTask(() => true, value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }, 20))
             {
                 task.SetPostToWeb(value => web.Add(JObject.Parse(value)));
+                PrimeCommitAuthority(task, sent);
+                web.Clear();
                 task.HandleWebRequest("commit", Request("commit", "craft.timeout.1"));
                 Assert.True(SpinWait.SpinUntil(() => web.Count > 0, 2000));
+                AssertOwnerTuple(web[0], "commit", "craft.timeout.1");
                 Assert.Equal("needs_reconcile", task.WriteState);
                 Assert.True((bool)web[0]["requiresReconcile"]);
 
                 task.HandleWebRequest("commit", Request("commit", "craft.timeout.2"));
+                AssertOwnerTuple(web[1], "commit", "craft.timeout.2");
                 Assert.Equal("reconcile_required", (string)web[1]["error"]);
 
                 task.HandleWebRequest("preview", Request("preview", "craft.timeout.preview"));
@@ -289,6 +537,7 @@ namespace Launcher.Tests.Tasks
                 task.HandleWebRequest(cmd, Request(cmd, "craft.not-ready." + cmd));
 
                 JObject response = JObject.Parse(posted);
+                AssertOwnerTuple(response, cmd, "craft.not-ready." + cmd);
                 Assert.Equal(0, sends);
                 Assert.Equal("disconnected", (string)response["error"]);
                 Assert.Null(response["requiresReconcile"]);
@@ -302,13 +551,21 @@ namespace Launcher.Tests.Tasks
         public void SendFailure_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
         {
             string posted = null;
-            using (var task = new CraftingTask(() => true, _ => false))
+            var sent = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value =>
             {
+                JObject command = JObject.Parse(value.TrimEnd('\0'));
+                sent.Add(command);
+                return isWrite && sent.Count == 1;
+            }))
+            {
+                if (isWrite) PrimeCommitAuthority(task, sent);
                 task.SetPostToWeb(value => posted = value);
 
                 task.HandleWebRequest(cmd, Request(cmd, "craft.send-failure." + cmd));
 
                 JObject response = JObject.Parse(posted);
+                AssertOwnerTuple(response, cmd, "craft.send-failure." + cmd);
                 Assert.Equal("disconnected", (string)response["error"]);
                 Assert.Equal(isWrite, response.Value<bool?>("requiresReconcile") == true);
                 Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
@@ -321,14 +578,21 @@ namespace Launcher.Tests.Tasks
         public void Timeout_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
         {
             JObject posted = null;
+            var sent = new List<JObject>();
             using (var responseSeen = new ManualResetEventSlim(false))
-            using (var task = new CraftingTask(() => true, _ => true, 20))
+            using (var task = new CraftingTask(() => true, value =>
             {
+                sent.Add(JObject.Parse(value.TrimEnd('\0')));
+                return true;
+            }, 20))
+            {
+                if (isWrite) PrimeCommitAuthority(task, sent);
                 task.SetPostToWeb(value => { posted = JObject.Parse(value); responseSeen.Set(); });
 
                 task.HandleWebRequest(cmd, Request(cmd, "craft.timeout.matrix." + cmd));
                 Assert.True(responseSeen.Wait(TimeSpan.FromSeconds(2)), "Crafting timeout response was not posted");
 
+                AssertOwnerTuple(posted, cmd, "craft.timeout.matrix." + cmd);
                 Assert.Equal("timeout", (string)posted["error"]);
                 Assert.Equal(isWrite, posted.Value<bool?>("requiresReconcile") == true);
                 Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
@@ -376,19 +640,365 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Fact]
+        public void CommitAdmission_RequiresExactSingleUsePreviewToken()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                task.HandleWebRequest("commit", Request("commit", "craft.commit.no-preview"));
+                Assert.Empty(sent);
+                Assert.Equal("stale_state", (string)posted[posted.Count - 1]["error"]);
+
+                PrimeCommitAuthority(task, sent);
+                JObject wrongToken = Request("commit", "craft.commit.wrong-token");
+                wrongToken["payload"]["expectedCraftToken"] = "craft.10.2";
+                int sendsBeforeWrongToken = sent.Count;
+                task.HandleWebRequest("commit", wrongToken);
+                Assert.Equal(sendsBeforeWrongToken, sent.Count);
+                Assert.Equal("stale_state", (string)posted[posted.Count - 1]["error"]);
+
+                task.HandleWebRequest("commit", Request("commit", "craft.commit.exact"));
+                Assert.Equal(sendsBeforeWrongToken + 1, sent.Count);
+                int commitFid = (int)sent[sent.Count - 1]["callId"];
+                task.HandleFlashResponse(CommitResponse(commitFid), null);
+                Assert.True((bool)posted[posted.Count - 1]["success"]);
+
+                task.HandleWebRequest("commit", Request("commit", "craft.commit.replay"));
+                Assert.Equal(sendsBeforeWrongToken + 1, sent.Count);
+                Assert.Equal("stale_state", (string)posted[posted.Count - 1]["error"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("recipe")]
+        [InlineData("count")]
+        [InlineData("identity")]
+        public void CommitSuccess_MustMatchPreviewPostcondition(string drift)
+        {
+            var sent = new List<JObject>();
+            JObject posted = null;
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted = JObject.Parse(value));
+                PrimeCommitAuthority(task, sent);
+                task.HandleWebRequest("commit", Request("commit", "craft.commit.drift." + drift));
+                JObject response = CommitResponse((int)sent[sent.Count - 1]["callId"]);
+                if (drift == "recipe") response["recipeIndex"] = 4;
+                else if (drift == "count") response["craftCount"] = 2;
+                else response["crafted"]["icon"] = "环式棱栅折射阵列";
+                task.HandleFlashResponse(response, null);
+                Assert.False((bool)posted["success"]);
+                Assert.Equal("malformed_response", (string)posted["error"]);
+                Assert.True((bool)posted["requiresReconcile"]);
+                Assert.Equal("needs_reconcile", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void IdentityTriples_ArePreservedWhileNearShapeExtraAndCoercionFailClosed()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "craft.identity.valid"));
+                JObject valid = SnapshotResponse((int)sent[sent.Count - 1]["callId"]);
+                task.HandleFlashResponse(valid, null);
+                JObject accepted = posted[posted.Count - 1];
+                Assert.True((bool)accepted["success"]);
+                Assert.Equal("光棱射线弹-强化", (string)accepted["recipes"][0]["output"]["name"]);
+                Assert.Equal("棱镜折射阵列", (string)accepted["recipes"][0]["output"]["displayName"]);
+                Assert.Equal("全光谱棱镜阵列", (string)accepted["recipes"][0]["output"]["icon"]);
+
+                string[] malformedCases = { "missing-display", "icon-coercion",
+                    "legacy-near-shape", "whitespace-display", "whitespace-icon",
+                    "wrapped-undefined-icon" };
+                foreach (string malformedCase in malformedCases)
+                {
+                    task.HandleWebRequest(
+                        "snapshot", Request("snapshot", "craft.identity." + malformedCase));
+                    JObject malformed = SnapshotResponse((int)sent[sent.Count - 1]["callId"]);
+                    JObject output = (JObject)malformed["recipes"][0]["output"];
+                    if (malformedCase == "missing-display") output.Remove("displayName");
+                    else if (malformedCase == "icon-coercion") output["icon"] = 7;
+                    else if (malformedCase == "legacy-near-shape")
+                        output["displayname"] = "不得接受的旧字段";
+                    else if (malformedCase == "whitespace-display") output["displayName"] = "   ";
+                    else if (malformedCase == "whitespace-icon") output["icon"] = "   ";
+                    else output["icon"] = " Undefined ";
+                    task.HandleFlashResponse(malformed, null);
+                    JObject rejected = posted[posted.Count - 1];
+                    Assert.False((bool)rejected["success"]);
+                    Assert.Equal("malformed_response", (string)rejected["error"]);
+                    Assert.Null(rejected["recipes"]);
+                }
+            }
+        }
+
+        [Fact]
+        public void SuccessResponses_BindFrozenSelectorsAndSanitizeLegacyTooltipBoundary()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "craft.selector.snapshot"));
+                JObject snapshot = SnapshotResponse((int)sent[sent.Count - 1]["callId"]);
+                snapshot["category"] = "属性武器";
+                task.HandleFlashResponse(snapshot, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                task.HandleWebRequest("preview", Request("preview", "craft.selector.preview"));
+                JObject preview = PreviewResponse((int)sent[sent.Count - 1]["callId"]);
+                preview["recipeIndex"] = 4;
+                task.HandleFlashResponse(preview, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                JObject detailRequest = Request("materialDetail", "craft.selector.material");
+                detailRequest["payload"]["itemName"] = "光棱射线弹-强化";
+                task.HandleWebRequest("materialDetail", detailRequest);
+                JObject detail = MaterialDetailResponse((int)sent[sent.Count - 1]["callId"]);
+                detail["material"]["name"] = "光谱射线弹";
+                detail["material"]["displayName"] = "色散射线弹";
+                detail["material"]["icon"] = "棱栅射线弹";
+                task.HandleFlashResponse(detail, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                JObject tooltipRequest = Request("tooltip", "craft.selector.tooltip");
+                tooltipRequest["payload"]["itemName"] = "光谱射线弹-强化";
+                task.HandleWebRequest("tooltip", tooltipRequest);
+                task.HandleFlashResponse(
+                    TooltipResponse((int)sent[sent.Count - 1]["callId"],
+                        "光谱射线弹-强化", "全谱色散引擎"), null);
+                JObject tooltip = posted[posted.Count - 1];
+                Assert.True((bool)tooltip["success"]);
+                Assert.Equal("光谱射线弹-强化", (string)tooltip["itemName"]);
+                Assert.Equal("全谱色散引擎", (string)tooltip["displayName"]);
+                Assert.Null(tooltip["displayname"]);
+                Assert.Null(tooltip["task"]);
+            }
+        }
+
+        [Fact]
+        public void RequestSelectors_RejectExtraNearShapeAndTypeCoercionBeforeFlash()
+        {
+            var posted = new List<JObject>();
+            int sends = 0;
+            using (var task = new CraftingTask(() => true, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                JObject extra = Request("preview", "craft.request.extra");
+                extra["payload"]["displayName"] = "伪 selector";
+                task.HandleWebRequest("preview", extra);
+
+                JObject near = Request("materialDetail", "craft.request.near");
+                ((JObject)near["payload"]).Remove("itemName");
+                near["payload"]["itemname"] = "不锈钢材";
+                task.HandleWebRequest("materialDetail", near);
+
+                JObject coerced = Request("preview", "craft.request.coercion");
+                coerced["payload"]["recipeIndex"] = "3";
+                task.HandleWebRequest("preview", coerced);
+
+                Assert.Equal(0, sends);
+                Assert.Equal(3, posted.Count);
+                foreach (JObject response in posted)
+                    Assert.Equal("invalid_payload", (string)response["error"]);
+            }
+        }
+
+        [Fact]
+        public void InvalidOwnerTuple_IsDroppedBeforePendingOrFlash()
+        {
+            int sends = 0;
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(() => true, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+
+                JObject missingInstance = Request("preview", "craft.owner.missing");
+                missingInstance.Remove("panelInstanceId");
+                task.HandleWebRequest("preview", missingInstance);
+
+                JObject malformedInstance = Request(
+                    "preview", "craft.owner.malformed", "panel/crafting/malformed");
+                task.HandleWebRequest("preview", malformedInstance);
+
+                JObject wrongPanel = Request("preview", "craft.owner.wrong-panel");
+                wrongPanel["panel"] = "npcshop";
+                task.HandleWebRequest("preview", wrongPanel);
+
+                Assert.Equal(0, sends);
+                Assert.Empty(posted);
+            }
+        }
+
+        [Fact]
+        public void LocalValidationErrors_EchoExactOriginalOwnerTuple()
+        {
+            int sends = 0;
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(() => true, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+
+                task.HandleWebRequest("preview", Request("preview", "craft/bad-call"));
+                AssertOwnerTuple(posted[0], "preview", "craft/bad-call");
+                Assert.Equal("invalid_call_id", (string)posted[0]["error"]);
+
+                JObject wrongDomain = Request("preview", "craft.local.domain");
+                wrongDomain["domain"] = "npcshop";
+                task.HandleWebRequest("preview", wrongDomain);
+                AssertOwnerTuple(posted[1], "preview", "craft.local.domain");
+                Assert.Equal("unsupported_domain", (string)posted[1]["error"]);
+
+                task.HandleWebRequest("unknown", Request("unknown", "craft.local.command"));
+                AssertOwnerTuple(posted[2], "unknown", "craft.local.command");
+                Assert.Equal("unsupported_cmd", (string)posted[2]["error"]);
+
+                JObject invalidPayload = Request("preview", "craft.local.payload");
+                invalidPayload["payload"]["category"] = "不存在";
+                task.HandleWebRequest("preview", invalidPayload);
+                AssertOwnerTuple(posted[3], "preview", "craft.local.payload");
+                Assert.Equal("invalid_payload", (string)posted[3]["error"]);
+
+                Assert.Equal(0, sends);
+            }
+        }
+
+        [Fact]
+        public void ClearedInstanceA_LateResponseCannotReachSameNameInstanceB()
+        {
+            const string instanceA = "panel.crafting.same-name.A";
+            const string instanceB = "panel.crafting.same-name.B";
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+
+                task.HandleWebRequest(
+                    "preview", Request("preview", "craft.same-name.A", instanceA));
+                int fidA = (int)sent[0]["callId"];
+                task.ClearPending();
+
+                task.HandleWebRequest(
+                    "preview", Request("preview", "craft.same-name.B", instanceB));
+                int fidB = (int)sent[1]["callId"];
+                Assert.NotEqual(fidA, fidB);
+
+                task.HandleFlashResponse(PreviewResponse(fidA), null);
+                Assert.Empty(posted);
+
+                JObject responseB = PreviewResponse(fidB);
+                responseB["domain"] = "npcshop";
+                responseB["panel"] = "npcshop";
+                responseB["panelInstanceId"] = instanceA;
+                responseB["cmd"] = "commit";
+                task.HandleFlashResponse(responseB, null);
+
+                Assert.Single(posted);
+                AssertOwnerTuple(posted[0], "preview", "craft.same-name.B", instanceB);
+                Assert.False((bool)posted[0]["success"]);
+                Assert.Equal("malformed_response", (string)posted[0]["error"]);
+            }
+        }
+
+        [Fact]
+        public void SupersededPreviewCannotMintCommitAuthorityForANewerIntent()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value =>
+            {
+                sent.Add(JObject.Parse(value.TrimEnd('\0')));
+                return true;
+            }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                JObject oldRequest = Request("preview", "craft.epoch.old-read");
+                oldRequest["payload"]["craftCount"] = 1;
+                task.HandleWebRequest("preview", oldRequest);
+                int oldPreviewFid = (int)sent[sent.Count - 1]["callId"];
+
+                JObject newRequest = Request("preview", "craft.epoch.new-read");
+                newRequest["payload"]["craftCount"] = 1;
+                task.HandleWebRequest("preview", newRequest);
+                int newPreviewFid = (int)sent[sent.Count - 1]["callId"];
+
+                task.HandleFlashResponse(CommittablePreviewResponse(oldPreviewFid), null);
+                int sendsBeforeStaleCommit = sent.Count;
+                task.HandleWebRequest("commit", Request("commit", "craft.epoch.stale-commit"));
+                Assert.Equal(sendsBeforeStaleCommit, sent.Count);
+                Assert.Equal("stale_state", (string)posted[posted.Count - 1]["error"]);
+
+                task.HandleFlashResponse(CommittablePreviewResponse(newPreviewFid), null);
+                task.HandleWebRequest("commit", Request("commit", "craft.epoch.current-commit"));
+                Assert.Equal(sendsBeforeStaleCommit + 1, sent.Count);
+            }
+        }
+
+        [Fact]
+        public void TimedOutCommitRequiresFreshPreviewBeforeAnotherWrite()
+        {
+            var sent = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value =>
+            {
+                sent.Add(JObject.Parse(value.TrimEnd('\0')));
+                return true;
+            }, 20))
+            {
+                PrimeCommitAuthority(task, sent);
+                task.HandleWebRequest("commit", Request("commit", "craft.epoch.timeout.write"));
+                Assert.True(SpinWait.SpinUntil(() => task.WriteState == "needs_reconcile", 2000));
+
+                task.HandleWebRequest("preview", Request("preview", "craft.epoch.timeout.new-read"));
+                int newPreviewFid = (int)sent[sent.Count - 1]["callId"];
+                task.HandleFlashResponse(PreviewResponse(newPreviewFid), null);
+                Assert.Equal("idle", task.WriteState);
+
+                int sendsBeforeRejected = sent.Count;
+                task.HandleWebRequest("commit", Request("commit", "craft.epoch.timeout.no-authority"));
+                Assert.Equal(sendsBeforeRejected, sent.Count);
+            }
+        }
+
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
         public void ClearOrDispose_DrainsWriteAndLateResponseCannotReviveIt(bool dispose)
         {
             var posted = new List<JObject>();
-            string sent = null;
-            var task = new CraftingTask(() => true, value => { sent = value; return true; });
+            var sent = new List<JObject>();
+            var task = new CraftingTask(() => true, value =>
+            {
+                sent.Add(JObject.Parse(value.TrimEnd('\0')));
+                return true;
+            });
             try
             {
                 task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                PrimeCommitAuthority(task, sent);
+                posted.Clear();
                 task.HandleWebRequest("commit", Request("commit", "craft.drain." + dispose));
-                int fid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+                int fid = (int)sent[sent.Count - 1]["callId"];
 
                 if (dispose) task.Dispose();
                 else task.ClearPending();
@@ -423,9 +1033,103 @@ namespace Launcher.Tests.Tasks
                 ["category"] = "武器合成", ["recipeIndex"] = 3,
                 ["craftCount"] = 2, ["batchEligible"] = true, ["maxCraftCount"] = 4,
                 ["balance"] = new JObject { ["money"] = 10, ["kpoints"] = 2 },
-                ["output"] = new JObject { ["name"] = "秋月" },
-                ["materials"] = new JArray(), ["cost"] = new JObject { ["money"] = 0, ["kpoints"] = 0 },
-                ["canCommit"] = false
+                ["skills"] = new JObject
+                {
+                    ["reverseLevel"] = 0, ["smithEnabled"] = false, ["smithLevel"] = 0
+                },
+                ["output"] = ProjectedItem(
+                    "光谱射线弹", "色散射线弹", "棱栅射线弹", false, true, 2),
+                ["materials"] = new JArray
+                {
+                    Requirement("光棱射线弹-强化", "棱镜折射阵列", "全光谱棱镜阵列")
+                },
+                ["cost"] = new JObject { ["money"] = 0, ["kpoints"] = 0 },
+                ["levelAllowed"] = true, ["enoughMaterials"] = false,
+                ["enoughMoney"] = true, ["enoughKpoints"] = true, ["enoughSpace"] = true,
+                ["canCommit"] = false, ["blockingError"] = "material_missing",
+                ["outputDelivery"] = OutputDelivery(true, "bag", "insert", 1, 2)
+            };
+        }
+
+        private static JObject CommittablePreviewResponse(int fid)
+        {
+            JObject response = PreviewResponse(fid);
+            response["craftCount"] = 1;
+            response["batchEligible"] = false;
+            response["maxCraftCount"] = 1;
+            response["output"] = ProjectedItem(
+                "光棱射线弹-强化", "棱镜折射阵列", "全光谱棱镜阵列", true, true);
+            response["materials"][0]["owned"] = 2;
+            response["materials"][0]["enough"] = true;
+            response["enoughMaterials"] = true;
+            response["canCommit"] = true;
+            response["blockingError"] = "";
+            response["outputDelivery"] = OutputDelivery(true, "bag", "insert", 1, 1);
+            response["craftToken"] = "craft.10.1";
+            response["acceptedPlan"] = AcceptedPlanFromPreview(response);
+            return response;
+        }
+
+        private static JObject RoutedPreviewResponse(int fid, string materialStorageKind,
+            string deliveryStorageKind, string deliveryMode, int physicalSlot, bool committable)
+        {
+            JObject response = committable
+                ? CommittablePreviewResponse(fid)
+                : PreviewResponse(fid);
+            response["craftCount"] = 1;
+            response["batchEligible"] = false;
+            response["maxCraftCount"] = 1;
+            response["materials"][0]["storageKind"] = materialStorageKind;
+            if (deliveryStorageKind != "bag" || deliveryMode == "merge")
+            {
+                response["output"] = ProjectedItem(
+                    "测试药剂", "测试药剂", "测试药剂", false, true, 1);
+            }
+            response["outputDelivery"] = OutputDelivery(committable, deliveryStorageKind,
+                deliveryMode, physicalSlot, (int)response["output"]["quantity"]);
+            response["enoughSpace"] = committable;
+            response["enoughMaterials"] = committable;
+            response["canCommit"] = committable;
+            response["blockingError"] = committable ? "" : "material_missing";
+            if (committable) response["acceptedPlan"] = AcceptedPlanFromPreview(response);
+            else
+            {
+                ((JObject)response).Remove("craftToken");
+                ((JObject)response).Remove("acceptedPlan");
+            }
+            return response;
+        }
+
+        private static void PrimeCommitAuthority(
+            CraftingTask task, List<JObject> sent)
+        {
+            JObject request = Request(
+                "preview", "craft.prime." + Guid.NewGuid().ToString("N"));
+            request["payload"]["craftCount"] = 1;
+            task.HandleWebRequest("preview", request);
+            int fid = (int)sent[sent.Count - 1]["callId"];
+            task.HandleFlashResponse(CommittablePreviewResponse(fid), null);
+        }
+
+        private static JObject CommitResponse(int fid)
+        {
+            return CommitResponseFromPreview(fid, CommittablePreviewResponse(-1));
+        }
+
+        private static JObject CommitResponseFromPreview(int fid, JObject preview)
+        {
+            return new JObject
+            {
+                ["task"] = "crafting_response", ["callId"] = fid,
+                ["success"] = true, ["v"] = 1, ["operation"] = "commit",
+                ["category"] = preview["category"].DeepClone(),
+                ["recipeIndex"] = preview["recipeIndex"].DeepClone(),
+                ["craftCount"] = preview["craftCount"].DeepClone(),
+                ["crafted"] = preview["output"].DeepClone(),
+                ["acceptedPlan"] = preview["acceptedPlan"].DeepClone(),
+                ["outputReceipt"] = OutputReceiptFromPlan(
+                    preview["acceptedPlan"] as JObject),
+                ["balance"] = new JObject { ["money"] = 10, ["kpoints"] = 2 }
             };
         }
 
@@ -437,13 +1141,15 @@ namespace Launcher.Tests.Tasks
                 ["category"] = "武器合成", ["gender"] = "男",
                 ["balance"] = new JObject { ["money"] = 10, ["kpoints"] = 2 },
                 ["skills"] = new JObject { ["reverseLevel"] = 0, ["smithEnabled"] = false, ["smithLevel"] = 0 },
+                ["note"] = "改装后的装备默认强化等级为 1",
                 ["recipes"] = new JArray
                 {
                     new JObject
                     {
                         ["recipeIndex"] = 3, ["title"] = "秋月图纸", ["batchEligible"] = false,
                         ["canCraftOne"] = true, ["availability"] = "ready", ["materialCount"] = 2,
-                        ["output"] = new JObject { ["name"] = "秋月" },
+                        ["output"] = ProjectedItem(
+                            "光棱射线弹-强化", "棱镜折射阵列", "全光谱棱镜阵列", true, false),
                         ["baseCost"] = new JObject { ["money"] = 10, ["kpoints"] = 2 }
                     }
                 }
@@ -485,9 +1191,14 @@ namespace Launcher.Tests.Tasks
                 {
                     new JObject
                     {
-                        ["kind"] = "enemy", ["enemyType"] = "测试敌人",
-                        ["displayName"] = "测试敌人", ["probability"] = 0.1,
+                        ["kind"] = "enemy", ["enemyType"] = "enemy.internal",
+                        ["displayName"] = "敌人展示名", ["probability"] = 0.1,
                         ["minLevel"] = 0, ["maxLevel"] = 0
+                    },
+                    new JObject
+                    {
+                        ["kind"] = "quest", ["questId"] = "quest.internal",
+                        ["title"] = "任务展示名", ["quantity"] = 1
                     }
                 },
                 ["uses"] = new JArray
@@ -500,6 +1211,228 @@ namespace Launcher.Tests.Tasks
                     }
                 }
             };
+        }
+
+        private static JObject TooltipResponse(
+            int fid, string itemName, string displayName)
+        {
+            return new JObject
+            {
+                ["task"] = "crafting_response", ["callId"] = fid,
+                ["success"] = true, ["v"] = 1,
+                ["itemName"] = itemName, ["displayname"] = displayName,
+                ["descHTML"] = "<p>说明</p>", ["introHTML"] = "<b>简介</b>"
+            };
+        }
+
+        private static JObject ProjectedItem(
+            string name, string displayName, string icon, bool equipment,
+            bool withRequiredLevel, int value = 1)
+        {
+            var item = new JObject
+            {
+                ["name"] = name,
+                ["displayName"] = displayName,
+                ["icon"] = icon,
+                ["itemKind"] = equipment ? "equipment" : "stack",
+                ["value"] = value,
+                ["quantity"] = equipment ? 1 : value,
+                ["enhancementLevel"] = equipment ? value : 0,
+                ["majorType"] = equipment ? "武器" : "收集品",
+                ["use"] = equipment ? "枪械" : "材料",
+                ["actionType"] = equipment ? "长枪" : "",
+                ["weaponType"] = equipment ? "突击步枪" : "",
+                ["setId"] = "",
+                ["setName"] = "",
+                ["setOrder"] = 0
+            };
+            if (withRequiredLevel) item["requiredLevel"] = equipment ? 12 : 1;
+            return item;
+        }
+
+        private static JObject Requirement(string name, string displayName, string icon,
+            string storageKind = "bag")
+        {
+            return new JObject
+            {
+                ["name"] = name, ["displayName"] = displayName, ["icon"] = icon,
+                ["itemKind"] = "stack", ["required"] = 2, ["owned"] = 1,
+                ["maxEnhancement"] = 0, ["isQuantity"] = true, ["tier"] = "",
+                ["consumed"] = true, ["enough"] = false, ["storageKind"] = storageKind
+            };
+        }
+
+        private static JObject OutputDelivery(
+            bool available, string storageKind, string mode, int physicalSlot, int quantity)
+        {
+            return new JObject
+            {
+                ["available"] = available, ["storageKind"] = storageKind, ["mode"] = mode,
+                ["physicalSlot"] = physicalSlot, ["quantity"] = quantity
+            };
+        }
+
+        private static JObject AcceptedPlanFromPreview(JObject preview)
+        {
+            return new JObject
+            {
+                ["category"] = preview["category"].DeepClone(),
+                ["recipeIndex"] = preview["recipeIndex"].DeepClone(),
+                ["craftCount"] = preview["craftCount"].DeepClone(),
+                ["output"] = preview["output"].DeepClone(),
+                ["materials"] = preview["materials"].DeepClone(),
+                ["outputDelivery"] = preview["outputDelivery"].DeepClone(),
+                ["outputPrototype"] = OutputPrototype(
+                    preview["output"] as JObject,
+                    preview["outputDelivery"] as JObject),
+                ["cost"] = preview["cost"].DeepClone()
+            };
+        }
+
+        private static JToken OutputPrototype(JObject output, JObject delivery)
+        {
+            string storageKind = (string)delivery["storageKind"];
+            if (storageKind != "bag" && storageKind != "drug") return JValue.CreateNull();
+            JObject item = InventoryProjectionFromOutput(output);
+            return new JObject
+            {
+                ["item"] = item,
+                ["confirmProjection"] = StableConfirm(item)
+            };
+        }
+
+        private static JToken OutputReceiptFromPlan(JObject plan)
+        {
+            if (plan == null) return JValue.CreateNull();
+            JObject prototype = plan["outputPrototype"] as JObject;
+            JObject delivery = plan["outputDelivery"] as JObject;
+            if (prototype == null || delivery == null) return JValue.CreateNull();
+            JObject item = (JObject)prototype["item"].DeepClone();
+            long quantity = item.Value<long>("quantity");
+            if ((string)delivery["mode"] == "merge") quantity += 4;
+            item["quantity"] = quantity;
+            JObject confirm = StableConfirm(item);
+            confirm["lastUpdate"] = 123456789L;
+            return new JObject
+            {
+                ["item"] = item,
+                ["confirmProjection"] = confirm
+            };
+        }
+
+        private static JObject InventoryProjectionFromOutput(JObject output)
+        {
+            bool equipment = (string)output["itemKind"] == "equipment";
+            int enhancement = output.Value<int>("enhancementLevel");
+            var item = new JObject
+            {
+                ["name"] = output["name"].DeepClone(),
+                ["displayName"] = output["displayName"].DeepClone(),
+                ["icon"] = output["icon"].DeepClone(),
+                ["majorType"] = output["majorType"].DeepClone(),
+                ["use"] = output["use"].DeepClone(),
+                ["actionType"] = output["actionType"].DeepClone(),
+                ["weaponType"] = output["weaponType"].DeepClone(),
+                ["setId"] = output["setId"].DeepClone(),
+                ["setName"] = output["setName"].DeepClone(),
+                ["setOrder"] = output["setOrder"].DeepClone(),
+                ["itemKind"] = output["itemKind"].DeepClone(),
+                ["quantity"] = output["quantity"].DeepClone(),
+                ["enhancementLevel"] = output["enhancementLevel"].DeepClone(),
+                ["maxEnhancementLevel"] = 13,
+                ["isMaxEnhancement"] = equipment && enhancement >= 13,
+                ["tierSlotAvailable"] = false,
+                ["tierSlotUsed"] = false,
+                ["modSlotCapacity"] = equipment ? 1 : 0,
+                ["modSlotUsed"] = 0,
+                ["modSlots"] = new JArray(),
+                ["modMeta"] = JValue.CreateNull(),
+                ["rarity"] = equipment ? "rare" : ""
+            };
+            if (equipment)
+            {
+                item["balanceSummary"] = new JObject
+                {
+                    ["state"] = "confirmed", ["weightLayers"] = 2,
+                    ["formula"] = 1, ["level"] = enhancement
+                };
+            }
+            return item;
+        }
+
+        private static JObject StableConfirm(JObject item)
+        {
+            return new JObject
+            {
+                ["itemKind"] = item["itemKind"].DeepClone(),
+                ["name"] = item["name"].DeepClone(),
+                ["displayName"] = item["displayName"].DeepClone(),
+                ["quantity"] = item["quantity"].DeepClone(),
+                ["enhancementLevel"] = item["enhancementLevel"].DeepClone(),
+                ["rarity"] = item["rarity"].DeepClone(),
+                ["tier"] = "",
+                ["modSignature"] = ""
+            };
+        }
+
+        private static JObject ValidModProjection()
+        {
+            return new JObject
+            {
+                ["name"] = "测试插件", ["displayName"] = "测试插件",
+                ["icon"] = "测试插件", ["grade"] = "a", ["gradeLabel"] = "A",
+                ["gradeColor"] = "#ffffff", ["role"] = "utility",
+                ["roleLabel"] = "功能", ["symbol"] = "diamond",
+                ["scope"] = "equipment"
+            };
+        }
+
+        [Fact]
+        public void Commit_LogManagerCaptureNeverContainsRawAuthorityToken()
+        {
+            var sent = new List<JObject>();
+            var logs = new List<string>();
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                using (var task = new CraftingTask(
+                    () => true,
+                    value =>
+                    {
+                        sent.Add(JObject.Parse(value.TrimEnd('\0')));
+                        return true;
+                    }))
+                {
+                    PrimeCommitAuthority(task, sent);
+                    logs.Clear();
+                    task.HandleWebRequest("commit", Request(
+                        "commit", "craft.log-redaction.commit"));
+                }
+            }
+            finally
+            {
+                LogManager.ResetSink();
+            }
+
+            string flashLog = Assert.Single(logs,
+                value => value.Contains("[CraftingTask] -> Flash:"));
+            JObject command = sent[sent.Count - 1];
+            string binding = Assert.Single(logs,
+                value => value.StartsWith(
+                    "event=authority_flash_call_bound ",
+                    StringComparison.Ordinal));
+            Assert.Equal(
+                "event=authority_flash_call_bound domain=crafting"
+                + " webCallId=craft.log-redaction.commit"
+                + " flashCallId=" + (int)command["callId"]
+                + " panel=crafting panelInstanceId=" + DefaultPanelInstanceId
+                + " cmd=commit action=craftingCommit",
+                binding);
+            Assert.Contains("cmd=craftingCommit", flashLog);
+            Assert.Contains("expectedCraftTokenRef="
+                + AuthorityLogFormatter.CreateReference("craft.10.1"), flashLog);
+            Assert.All(logs,
+                value => Assert.DoesNotContain("craft.10.1", value));
         }
     }
 }

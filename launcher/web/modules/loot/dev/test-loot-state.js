@@ -2,6 +2,7 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
 const LootState = require('../loot-state.js');
 const LootRuntime = require('../loot-runtime.js');
@@ -83,6 +84,66 @@ test('projection requires complete loot window and exact remaining count', () =>
     assert.strictEqual(LootState.normalizeProjection(legacyState, identity), null);
     const stringRevision=active(1,[slot(0),slot(1)]);stringRevision.authorityRevision='1';
     assert.strictEqual(LootState.normalizeProjection(stringRevision,identity),null);
+});
+
+test('occupied item triples reject blank and wrapped-case undefined identities', () => {
+    ['name','displayName','icon'].forEach((field,index) => {
+        const response=active(1,[slot(0,'强化石','lease.identity.'+index),slot(1)]);
+        response.snapshots[0].slots[0].item[field]=index===1?'   ':' Undefined ';
+        assert.strictEqual(LootState.normalizeProjection(response,identity),null);
+    });
+});
+
+test('nested mod triples reject blank and wrapped-case undefined identities', () => {
+    ['name','displayName','icon'].forEach((field,index) => {
+        const response=active(1,[slot(0,'强化石','lease.mod.'+index),slot(1)]);
+        response.snapshots[0].slots[0].item.modSlots=[{
+            name:'插件内部名',displayName:'插件展示名',icon:'插件图标'
+        }];
+        response.snapshots[0].slots[0].item.modSlots[0][field]=
+            index===1?'   ':' Undefined ';
+        assert.strictEqual(LootState.normalizeProjection(response,identity),null);
+    });
+    const meta=active(1,[slot(0,'强化石','lease.mod.meta'),slot(1)]);
+    meta.snapshots[0].slots[0].item.modMeta={
+        name:'插件内部名',displayName:'插件展示名',icon:' Undefined '
+    };
+    assert.strictEqual(LootState.normalizeProjection(meta,identity),null);
+});
+
+test('occupied backpack slot requires an authoritative confirm projection', () => {
+    const response=active(1,[slot(0),slot(1)]);
+    const occupied=slot(0,'强化石','lease.confirm.missing');
+    Object.assign(occupied.item,{rarity:'普通',enhancementLevel:0});
+    response.snapshots[1].slots[0]=occupied;
+    assert.strictEqual(LootState.normalizeProjection(response,identity),null);
+});
+
+test('backpack confirm projection must agree exactly with its sanitized item identity and state', () => {
+    const corruptions=['itemKind','name','displayName','quantity','enhancementLevel','rarity'];
+    corruptions.forEach((field,index) => {
+        const response=active(1,[slot(0),slot(1)]);
+        const occupied=slot(0,'强化石','lease.confirm.'+index);
+        Object.assign(occupied.item,{rarity:'普通',enhancementLevel:0});
+        occupied.confirmProjection={
+            itemKind:'stack',name:'强化石',displayName:'强化石',quantity:1,
+            enhancementLevel:0,rarity:'普通',tier:'',modSignature:'',lastUpdate:1
+        };
+        occupied.confirmProjection[field]=field==='quantity'||field==='enhancementLevel'
+            ? 2 : '伪造值';
+        response.snapshots[1].slots[0]=occupied;
+        assert.strictEqual(LootState.normalizeProjection(response,identity),null);
+    });
+    const extra=active(1,[slot(0),slot(1)]);
+    const occupied=slot(0,'强化石','lease.confirm.extra');
+    Object.assign(occupied.item,{rarity:'普通',enhancementLevel:0});
+    occupied.confirmProjection={
+        itemKind:'stack',name:'强化石',displayName:'强化石',quantity:1,
+        enhancementLevel:0,rarity:'普通',tier:'',modSignature:'',lastUpdate:1,
+        unproved:true
+    };
+    extra.snapshots[1].slots[0]=occupied;
+    assert.strictEqual(LootState.normalizeProjection(extra,identity),null);
 });
 
 test('all frozen terminal tombstones are strict and carry no snapshots', () => {
@@ -973,6 +1034,34 @@ test('organizer keeps blocked inventory inspectable with an exact authority reas
         assert.deepStrictEqual(LootOrganizer.interactionForState(state),
             {inspectable:true,actionable:false,reason});
     });
+});
+
+test('organizer owned inspection binds pointer and keyboard tooltip without a new authority request', () => {
+    let captured = null;
+    const binding = {destroy:function() { return true; }};
+    const returned = LootOrganizer.bindOwnedInspection({
+        tooltip:{bindAsyncHover:function(node, options) { captured = {node, options}; return binding; }},
+        node:{id:'owned-slot'},
+        containerId:'背包',
+        slot:{occupied:true, physicalSlot:3, slotLease:'lease.inspect.3',
+            item:{name:'internal', displayName:'展示名', icon:'icon-name', majorType:'材料'}},
+        workbench:{ItemCard:{balanceTooltipMetaHtml:function(item) {
+            return '<meta>' + item.majorType + '</meta>';
+        }}}
+    });
+    assert.strictEqual(returned, binding);
+    assert.strictEqual(captured.node.id, 'owned-slot');
+    assert.strictEqual(captured.options.key, 'loot-organizer:背包:lease.inspect.3');
+    assert.strictEqual(typeof captured.options.fetch, 'undefined');
+    assert(captured.options.renderBasic(captured.options.item).includes('展示名'));
+    assert(captured.options.renderBasic(captured.options.item).includes('<meta>材料</meta>'));
+});
+
+test('organizer tooltip scope releases replaced trees and is disposed with the presenter', () => {
+    const source = fs.readFileSync(path.join(__dirname, '..', 'loot-organizer.js'), 'utf8');
+    assert(source.includes('this._tooltip.releaseTree(grid);'));
+    assert(source.includes('this._tooltip.dispose(); this._tooltip = null;'));
+    assert(source.includes("options.tooltip.createScope('loot-organizer')"));
 });
 
 console.log('loot state ' + checks.length + '/' + checks.length + ' passed');

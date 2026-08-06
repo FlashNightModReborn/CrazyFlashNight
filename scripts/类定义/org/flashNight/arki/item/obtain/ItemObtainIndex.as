@@ -658,7 +658,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * @param rewards 奖励数组，格式为 ["物品名#数量", ...] 或 [{item, qty}, ...]
      * @return Boolean 是否有新增发现（首次发现返回true）
      */
-    public function updateQuestRewards(questId:String, questTitle:String, rewards:Array):Boolean {
+    public function updateQuestRewards(questId:String, questTitle, rewards:Array):Boolean {
         if (!questId || !rewards || rewards.length == 0) return false;
 
         // 标记为已发现
@@ -678,7 +678,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * 从奖励数据重建任务的运行时缓存
      * @private
      */
-    private function rebuildQuestCacheFromData(questId:String, questTitle:String, rewards:Array):Void {
+    private function rebuildQuestCacheFromData(questId:String, questTitle, rewards:Array):Void {
         // 先清理该任务的旧记录
         this.clearQuestRecordsFromIndex(questId);
 
@@ -711,7 +711,9 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
 
         if (rewardList.length > 0) {
             this.questRewardCache[questId] = {
-                title: questTitle || questId,
+                // 保留“是否真的有展示标题”的来源信息；展示回填只允许在
+                // CraftingPanelService 的 authority projection 边界发生。
+                title: questTitle,
                 rewards: rewardList
             };
         }
@@ -747,7 +749,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * @param markChallengeCompleted 是否标记为挑战已完成（用于存档恢复），默认 true
      * @return Boolean 是否有新增记录
      */
-    public function appendQuestRewards(questId:String, questTitle:String, additionalRewards:Array, markChallengeCompleted:Boolean):Boolean {
+    public function appendQuestRewards(questId:String, questTitle, additionalRewards:Array, markChallengeCompleted:Boolean):Boolean {
         if (!questId || !additionalRewards || additionalRewards.length == 0) return false;
 
         // 默认标记挑战完成（用于交任务时的挑战奖励追加）
@@ -853,7 +855,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * 添加任务奖励记录到运行时索引
      * @private
      */
-    private function addQuestRecord(itemName:String, questId:String, questTitle:String, qty:Number):Void {
+    private function addQuestRecord(itemName:String, questId:String, questTitle, qty:Number):Void {
         if (!this.obtainIndex[itemName]) {
             this.obtainIndex[itemName] = [];
         }
@@ -867,7 +869,9 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         arr.push({
             kind: KIND_QUEST,
             questId: questId,
-            questTitle: questTitle || questId,
+            // 不在索引层把内部 ID 伪装成展示标题，否则 projection 无法
+            // 区分“合法显式同值”与“缺失后猜测内部 ID”。
+            questTitle: questTitle,
             quantity: isNaN(qty) ? 1 : qty
         });
     }
@@ -1106,10 +1110,18 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             var taskData:Object = tasksData[questId];
             if (!taskData || !taskData.rewards || taskData.rewards.length == 0) continue;
 
-            // 获取任务标题
-            var questTitle:String = taskData.title || String(questId);
-            if (_global.org.flashNight.arki.task.TaskUtil.getTaskText) {
-                questTitle = _global.org.flashNight.arki.task.TaskUtil.getTaskText(taskData.title);
+            // 保留展示标题的原始来源状态，不把内部 questId 预先伪装成标题，
+            // 也不让 TaskUtil 的错误类型结果在进入 projection 前被 String 强转。
+            var rawQuestTitle = taskData.title;
+            var questTitle = undefined;
+            if (typeof rawQuestTitle == "string") {
+                questTitle = rawQuestTitle;
+                if (_global.org.flashNight.arki.task.TaskUtil.getTaskText) {
+                    var resolvedQuestTitle = _global.org.flashNight.arki.task.TaskUtil
+                        .getTaskText(rawQuestTitle);
+                    questTitle = typeof resolvedQuestTitle == "string"
+                        ? resolvedQuestTitle : undefined;
+                }
             }
 
             // 只使用基础奖励重建缓存
@@ -1159,10 +1171,17 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             if (!taskData || !taskData.challenge ||
                 !taskData.challenge.rewards || taskData.challenge.rewards.length == 0) continue;
 
-            // 获取任务标题
-            var questTitle:String = taskData.title || String(questId);
-            if (TaskUtil.getTaskText) {
-                questTitle = TaskUtil.getTaskText(taskData.title);
+            // 保留展示标题的原始来源状态，不把内部 questId 预先伪装成标题，
+            // 也不让 TaskUtil 的错误类型结果在进入 projection 前被 String 强转。
+            var rawQuestTitle = taskData.title;
+            var questTitle = undefined;
+            if (typeof rawQuestTitle == "string") {
+                questTitle = rawQuestTitle;
+                if (TaskUtil.getTaskText) {
+                    var resolvedQuestTitle = TaskUtil.getTaskText(rawQuestTitle);
+                    questTitle = typeof resolvedQuestTitle == "string"
+                        ? resolvedQuestTitle : undefined;
+                }
             }
 
             // 追加挑战奖励（不再重复标记，因为已在集合中）

@@ -48,6 +48,7 @@ function createPanelsFixture(lazyLoader, sendOverride) {
                     return sendOverride(message, sent);
                 }
                 sent.push(message);
+                return true;
             }
         },
         Icons:{load(callback) { callback(); }},
@@ -118,6 +119,24 @@ function controlledLazyLoader() {
             assert.strictEqual(typeof resolve, 'function');
             resolve();
         }
+    };
+}
+
+function queuedControlledLazyLoader() {
+    const resolves = [];
+    return {
+        load() {
+            return {
+                then(callback) {
+                    resolves.push(callback);
+                    return {catch() {}};
+                }
+            };
+        },
+        resolveAll() {
+            while (resolves.length) resolves.shift()();
+        },
+        pendingCount() { return resolves.length; }
     };
 }
 
@@ -280,7 +299,8 @@ test('pending workbench lazy cancel reports the latest exact Host instance', () 
         });
 });
 
-test('pending cancel isolates Bridge.send throws and cannot revive cleared pending state', () => {
+test('pending cancel retries the exact tuple after Bridge.send throws and a newer open clears it', () => {
+    const closeReasons = [];
     const fixture = createPanelsFixture(
         pendingLazyLoader(),
         (message, sent) => {
@@ -298,14 +318,52 @@ test('pending cancel isolates Bridge.send throws and cannot revive cleared pendi
         fixture.sent[0].panelInstanceId,
         'panel.skills.pending-send-throw');
     fixture.handlers.panel_esc({});
-    assert.strictEqual(fixture.sent.length, 1);
+    assert.strictEqual(fixture.sent.length, 2);
+    assert.deepStrictEqual(
+        JSON.parse(JSON.stringify(fixture.sent[1])),
+        JSON.parse(JSON.stringify(fixture.sent[0])));
     fixture.Panels.register('help', {
-        create() { return {style:{}}; }
+        create() { return {style:{}}; },
+        onRequestClose(reason) { closeReasons.push(reason); }
     });
     fixture.handlers.panel_cmd({
         cmd:'open', panel:'help', initData:{}
     });
     assert.strictEqual(fixture.Panels.getActive(), 'help');
+    fixture.handlers.panel_esc({});
+    assert.strictEqual(fixture.sent.length, 2);
+    assert.deepStrictEqual(closeReasons, ['escape']);
+});
+
+test('pending exact close retries after a false send and cancelled lazy work cannot revive', () => {
+    const loader = controlledLazyLoader();
+    const fixture = createPanelsFixture(
+        loader,
+        (message, sent) => {
+            sent.push(message);
+            return sent.length > 1;
+        });
+    fixture.Panels.registerLazy('skills', ['skills.js'], () => {
+        fixture.Panels.register('skills', {
+            create() { return {style:{}}; }
+        });
+    });
+    fixture.handlers.panel_cmd({
+        cmd:'open', panel:'skills',
+        initData:{panelInstanceId:'panel.skills.retry-false'}
+    });
+    fixture.handlers.panel_esc({});
+    assert.strictEqual(fixture.sent.length, 1);
+    fixture.elements['panel-backdrop'].listeners.click({});
+    assert.strictEqual(fixture.sent.length, 2);
+    assert.deepStrictEqual(
+        JSON.parse(JSON.stringify(fixture.sent[1])),
+        JSON.parse(JSON.stringify(fixture.sent[0])));
+    fixture.handlers.panel_esc({});
+    assert.strictEqual(fixture.sent.length, 2);
+    loader.resolve();
+    assert.strictEqual(fixture.Panels.getActive(), null);
+    assert.strictEqual(fixture.Panels.isOpen(), false);
 });
 
 test('active panel receives distinct escape and backdrop close reasons', () => {
@@ -536,13 +594,27 @@ test('missing Host-owned registries release each owner exactly once and clear vi
         },
         {
             panel:'crafting',
-            initData:{category:'武器合成'},
-            expected:{type:'panel', cmd:'close', panel:'crafting'}
+            initData:{category:'武器合成', panelInstanceId:'panel.crafting.registry-missing'},
+            expected:{
+                type:'panel', cmd:'close', panel:'crafting',
+                panelInstanceId:'panel.crafting.registry-missing'
+            }
         },
         {
             panel:'kshop',
-            initData:{},
-            expected:{type:'panel', cmd:'close', panel:'kshop'}
+            initData:{panelInstanceId:'panel.kshop.registry-missing'},
+            expected:{
+                type:'panel', cmd:'close', panel:'kshop',
+                panelInstanceId:'panel.kshop.registry-missing'
+            }
+        },
+        {
+            panel:'npcshop',
+            initData:{panelInstanceId:'panel.npcshop.registry-missing'},
+            expected:{
+                type:'panel', cmd:'close', panel:'npcshop',
+                panelInstanceId:'panel.npcshop.registry-missing'
+            }
         }
     ].forEach(row => {
         const fixture = createPanelsFixture();
@@ -558,6 +630,132 @@ test('missing Host-owned registries release each owner exactly once and clear vi
         assert.deepStrictEqual(
             JSON.parse(JSON.stringify(fixture.sent[0])),
             row.expected);
+    });
+});
+
+test('rebind failure close retries only the rejected replacement tuple', () => {
+    const fixture = createPanelsFixture(
+        null,
+        (message, sent) => {
+            sent.push(message);
+            return sent.length > 1;
+        });
+    fixture.Panels.register('skills', {
+        create() { return {style:{}}; },
+        onRebind() { return false; }
+    });
+    fixture.handlers.panel_cmd({
+        cmd:'open', panel:'skills',
+        initData:{panelInstanceId:'panel.skills.rebind-original'}
+    });
+    fixture.handlers.panel_cmd({
+        cmd:'open', panel:'skills',
+        initData:{panelInstanceId:'panel.skills.rebind-rejected'}
+    });
+    assert.strictEqual(fixture.Panels.isOpen(), false);
+    assert.strictEqual(fixture.sent.length, 1);
+    assert.strictEqual(
+        fixture.sent[0].panelInstanceId, 'panel.skills.rebind-rejected');
+    fixture.handlers.panel_esc({});
+    assert.strictEqual(fixture.sent.length, 2);
+    assert.deepStrictEqual(
+        JSON.parse(JSON.stringify(fixture.sent[1])),
+        JSON.parse(JSON.stringify(fixture.sent[0])));
+});
+
+test('mount failure close retries the same exact tuple after a false send', () => {
+    const fixture = createPanelsFixture(
+        null,
+        (message, sent) => {
+            sent.push(message);
+            return sent.length > 1;
+        });
+    fixture.Panels.register('workbench', {
+        create() { return {style:{}}; },
+        onOpen() { return false; }
+    });
+    fixture.handlers.panel_cmd({
+        cmd:'open', panel:'workbench',
+        initData:{panelInstanceId:'panel.workbench.mount-retry'}
+    });
+    assert.strictEqual(fixture.sent.length, 1);
+    fixture.elements['panel-backdrop'].listeners.click({});
+    assert.strictEqual(fixture.sent.length, 2);
+    assert.deepStrictEqual(
+        JSON.parse(JSON.stringify(fixture.sent[1])),
+        JSON.parse(JSON.stringify(fixture.sent[0])));
+    fixture.handlers.panel_esc({});
+    assert.strictEqual(fixture.sent.length, 2);
+});
+
+['crafting', 'kshop', 'npcshop'].forEach(panelId => {
+    test(panelId + ' top-level owner rejects registry/lazy failures and loading cancel exactly once', () => {
+        function expectedClose(instance) {
+            return {
+                type:'panel', panel:panelId, cmd:'close',
+                panelInstanceId:instance
+            };
+        }
+
+        const missing = createPanelsFixture();
+        const missingInstance = 'panel.' + panelId + '.registry-missing-dynamic';
+        missing.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:missingInstance}
+        });
+        assert.deepStrictEqual(
+            JSON.parse(JSON.stringify(missing.sent)),
+            [expectedClose(missingInstance)]);
+        assert.strictEqual(missing.Panels.getActive(), null);
+        assert.strictEqual(missing.Panels.isOpen(), false);
+        assert.strictEqual(missing.elements['panel-container'].style.display, 'none');
+        missing.handlers.panel_esc({});
+        assert.strictEqual(missing.sent.length, 1);
+
+        const rejected = createPanelsFixture(rejectedLazyLoader());
+        const rejectedInstance = 'panel.' + panelId + '.lazy-rejected';
+        rejected.Panels.registerLazy(panelId, [panelId + '.js'], () => {});
+        rejected.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:rejectedInstance}
+        });
+        assert.deepStrictEqual(
+            JSON.parse(JSON.stringify(rejected.sent)),
+            [expectedClose(rejectedInstance)]);
+        assert.strictEqual(rejected.Panels.getActive(), null);
+        assert.strictEqual(rejected.Panels.isOpen(), false);
+        rejected.handlers.panel_esc({});
+        assert.strictEqual(rejected.sent.length, 1);
+
+        const loader = queuedControlledLazyLoader();
+        const cancelled = createPanelsFixture(loader);
+        const staleInstance = 'panel.' + panelId + '.loading-stale';
+        const currentInstance = 'panel.' + panelId + '.loading-current';
+        cancelled.Panels.registerLazy(panelId, [panelId + '.js'], () => {
+            cancelled.Panels.register(panelId, {
+                create() { return {style:{}}; }
+            });
+        });
+        cancelled.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:staleInstance}
+        });
+        cancelled.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:currentInstance}
+        });
+        assert.strictEqual(loader.pendingCount(), 2);
+        cancelled.handlers.panel_esc({});
+        assert.deepStrictEqual(
+            JSON.parse(JSON.stringify(cancelled.sent)),
+            [expectedClose(currentInstance)]);
+        cancelled.handlers.panel_esc({});
+        loader.resolveAll();
+        assert.strictEqual(cancelled.sent.length, 1);
+        assert.strictEqual(cancelled.Panels.getActive(), null);
+        assert.strictEqual(cancelled.Panels.isOpen(), false);
+        assert.notStrictEqual(
+            cancelled.elements['panel-container'].style.display, '');
     });
 });
 
@@ -590,7 +788,7 @@ test('async workbench rejection requires the exact active instance', () => {
     });
 });
 
-test('pending workbench lazy cancel keeps the exact field missing when Host omitted it', () => {
+test('pending Host-owned cancel suppresses an unsafe close when exact identity is missing', () => {
     const fixture = createPanelsFixture(pendingLazyLoader());
     fixture.Panels.registerLazy('workbench', ['workbench.js'], () => {});
     fixture.handlers.panel_cmd({cmd:'open', panel:'workbench', initData:{}});
@@ -598,9 +796,9 @@ test('pending workbench lazy cancel keeps the exact field missing when Host omit
         cmd:'force_close', panel:'workbench', reason:'disconnected'
     });
     fixture.handlers.panel_esc({});
-    assert.strictEqual(fixture.sent.length, 1);
-    assert.strictEqual(fixture.sent[0].panelInstanceId, '');
-    assert.strictEqual(fixture.sent[0].reason, 'lazy_user_cancel');
+    assert.strictEqual(fixture.sent.length, 0);
+    assert.strictEqual(fixture.Panels.getActive(), null);
+    assert.strictEqual(fixture.Panels.isOpen(), false);
 });
 
 test('workbench lazy load and registration failures retain exact Host identity', () => {
@@ -649,43 +847,173 @@ test('workbench lazy load and registration failures retain exact Host identity',
     });
 });
 
-test('workbench force close rejects missing and stale identity after replacement', () => {
-    const fixture = createPanelsFixture();
+test('all Host-owned surfaces reject generic, missing, and stale close after exact replacement', () => {
+    ['workbench', 'loot', 'skills', 'crafting', 'kshop', 'npcshop'].forEach(panelId => {
+        const fixture = createPanelsFixture();
+        let closes = 0;
+        let forceCloses = 0;
+        fixture.Panels.register(panelId, {
+            create() { return {style:{}}; },
+            onRebind() {},
+            onClose() { closes += 1; },
+            onForceClose() { forceCloses += 1; }
+        });
+        fixture.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:'panel.' + panelId + '.old'}
+        });
+        fixture.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:'panel.' + panelId + '.replacement'}
+        });
+        fixture.handlers.panel_cmd({cmd:'force_close', reason:'disconnected'});
+        fixture.handlers.panel_cmd({
+            cmd:'force_close', panel:panelId, reason:'disconnected'
+        });
+        fixture.handlers.panel_cmd({
+            cmd:'force_close', panel:panelId,
+            panelInstanceId:'panel.' + panelId + '.old', reason:'disconnected'
+        });
+        assert.strictEqual(fixture.Panels.getActive(), panelId);
+        assert.strictEqual(closes, 0);
+        assert.strictEqual(forceCloses, 0);
+
+        fixture.handlers.panel_cmd({
+            cmd:'force_close', panel:panelId,
+            panelInstanceId:'panel.' + panelId + '.replacement',
+            reason:'disconnected'
+        });
+        fixture.handlers.panel_cmd({
+            cmd:'force_close', panel:panelId,
+            panelInstanceId:'panel.' + panelId + '.replacement',
+            reason:'disconnected'
+        });
+        assert.strictEqual(fixture.Panels.isOpen(), false);
+        assert.strictEqual(closes, 1);
+        assert.strictEqual(forceCloses, 1);
+    });
+});
+
+test('all Host-owned pending surfaces require an exact tuple and retire displaced UI', () => {
+    ['workbench', 'loot', 'skills', 'crafting', 'kshop', 'npcshop'].forEach(panelId => {
+        const fixture = createPanelsFixture(pendingLazyLoader());
+        let closes = 0;
+        let forceCloses = 0;
+        fixture.Panels.register('help', {
+            create() { return {style:{}}; },
+            onClose() { closes += 1; },
+            onForceClose() { forceCloses += 1; }
+        });
+        fixture.Panels.registerLazy(panelId, [panelId + '.js'], () => {});
+        fixture.handlers.panel_cmd({cmd:'open', panel:'help', initData:{}});
+        fixture.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:'panel.' + panelId + '.pending'}
+        });
+        fixture.handlers.panel_cmd({cmd:'force_close', panel:panelId});
+        fixture.handlers.panel_cmd({
+            cmd:'force_close', panel:panelId,
+            panelInstanceId:'panel.' + panelId + '.stale',
+            reason:'disconnected'
+        });
+        assert.strictEqual(fixture.Panels.getActive(), 'help');
+
+        fixture.handlers.panel_cmd({
+            cmd:'force_close', panel:panelId,
+            panelInstanceId:'panel.' + panelId + '.pending',
+            reason:'disconnected'
+        });
+        fixture.handlers.panel_cmd({
+            cmd:'force_close', panel:panelId,
+            panelInstanceId:'panel.' + panelId + '.pending',
+            reason:'disconnected'
+        });
+        assert.strictEqual(fixture.Panels.getActive(), null);
+        assert.strictEqual(closes, 1);
+        assert.strictEqual(forceCloses, 1);
+        assert.strictEqual(fixture.sent.length, 0);
+        fixture.handlers.panel_esc({});
+        assert.strictEqual(fixture.sent.length, 0);
+    });
+});
+
+test('a failed exact close latch cannot act on a newer same-surface instance', () => {
+    const fixture = createPanelsFixture(
+        pendingLazyLoader(),
+        (message, sent) => {
+            sent.push(message);
+            return false;
+        });
+    const reasons = [];
     let closes = 0;
-    let forceCloses = 0;
+    fixture.Panels.registerLazy('workbench', ['workbench.js'], () => {});
+    fixture.handlers.panel_cmd({
+        cmd:'open', panel:'workbench',
+        initData:{panelInstanceId:'panel.workbench.latch-old'}
+    });
+    fixture.handlers.panel_esc({});
+    assert.strictEqual(fixture.sent.length, 1);
+
     fixture.Panels.register('workbench', {
         create() { return {style:{}}; },
-        onRebind() {},
-        onClose() { closes += 1; },
-        onForceClose() { forceCloses += 1; }
+        onRequestClose(reason) { reasons.push(reason); },
+        onClose() { closes += 1; }
     });
     fixture.handlers.panel_cmd({
         cmd:'open', panel:'workbench',
-        initData:{panelInstanceId:'panel.workbench.old'}
+        initData:{panelInstanceId:'panel.workbench.latch-new'}
     });
-    fixture.handlers.panel_cmd({
-        cmd:'open', panel:'workbench',
-        initData:{panelInstanceId:'panel.workbench.replacement'}
-    });
-    fixture.handlers.panel_cmd({cmd:'force_close', reason:'disconnected'});
+    fixture.elements['panel-backdrop'].listeners.click({});
+    assert.strictEqual(fixture.sent.length, 1);
+    assert.deepStrictEqual(reasons, ['backdrop']);
     fixture.handlers.panel_cmd({
         cmd:'force_close', panel:'workbench',
-        panelInstanceId:'panel.workbench.old', reason:'disconnected'
+        panelInstanceId:'panel.workbench.latch-old', reason:'disconnected'
     });
-    assert.strictEqual(fixture.Panels.isOpen(), true);
-    assert.strictEqual(closes, 0);
-    assert.strictEqual(forceCloses, 0);
-
+    assert.strictEqual(fixture.Panels.getActive(), 'workbench');
     fixture.handlers.panel_cmd({
         cmd:'force_close', panel:'workbench',
-        panelInstanceId:'panel.workbench.replacement', reason:'disconnected'
+        panelInstanceId:'panel.workbench.latch-new', reason:'disconnected'
     });
     assert.strictEqual(fixture.Panels.isOpen(), false);
     assert.strictEqual(closes, 1);
-    assert.strictEqual(forceCloses, 1);
 });
 
-test('pending workbench does not swallow generic force close for active ordinary panel', () => {
+test('older same-name lazy completion cannot overwrite the newer exact instance', () => {
+    const loader = queuedControlledLazyLoader();
+    const fixture = createPanelsFixture(loader);
+    let closes = 0;
+    fixture.Panels.registerLazy('skills', ['skills.js'], () => {
+        fixture.Panels.register('skills', {
+            create() { return {style:{}}; },
+            onClose() { closes += 1; }
+        });
+    });
+    fixture.handlers.panel_cmd({
+        cmd:'open', panel:'skills',
+        initData:{panelInstanceId:'panel.skills.lazy-old'}
+    });
+    fixture.handlers.panel_cmd({
+        cmd:'open', panel:'skills',
+        initData:{panelInstanceId:'panel.skills.lazy-new'}
+    });
+    assert.strictEqual(loader.pendingCount(), 2);
+    loader.resolveAll();
+    assert.strictEqual(fixture.Panels.getActive(), 'skills');
+    fixture.handlers.panel_cmd({
+        cmd:'force_close', panel:'skills',
+        panelInstanceId:'panel.skills.lazy-old', reason:'disconnected'
+    });
+    assert.strictEqual(fixture.Panels.getActive(), 'skills');
+    fixture.handlers.panel_cmd({
+        cmd:'force_close', panel:'skills',
+        panelInstanceId:'panel.skills.lazy-new', reason:'disconnected'
+    });
+    assert.strictEqual(fixture.Panels.isOpen(), false);
+    assert.strictEqual(closes, 1);
+});
+
+test('generic force close retires an ordinary active panel but preserves capability pending', () => {
     const fixture = createPanelsFixture(pendingLazyLoader());
     let closes = 0;
     let forceCloses = 0;
@@ -705,10 +1033,12 @@ test('pending workbench does not swallow generic force close for active ordinary
     assert.strictEqual(closes, 1);
     assert.strictEqual(forceCloses, 1);
     fixture.handlers.panel_esc({});
-    assert.strictEqual(fixture.sent.length, 0);
+    assert.strictEqual(fixture.sent.length, 1);
+    assert.strictEqual(
+        fixture.sent[0].panelInstanceId, 'panel.workbench.pending');
 });
 
-test('targeted pending workbench force close also clears the ordinary panel underneath', () => {
+test('targeted pending capability force close retires the displaced ordinary panel', () => {
     const fixture = createPanelsFixture(pendingLazyLoader());
     let closes = 0;
     let forceCloses = 0;
@@ -727,6 +1057,7 @@ test('targeted pending workbench force close also clears the ordinary panel unde
         cmd:'force_close', panel:'workbench',
         panelInstanceId:'panel.workbench.pending', reason:'disconnected'
     });
+    assert.strictEqual(fixture.Panels.getActive(), null);
     assert.strictEqual(fixture.Panels.isOpen(), false);
     assert.strictEqual(closes, 1);
     assert.strictEqual(forceCloses, 1);
@@ -734,7 +1065,7 @@ test('targeted pending workbench force close also clears the ordinary panel unde
     assert.strictEqual(fixture.sent.length, 0);
 });
 
-test('generic force close cancels an ordinary replacement and clears the old workbench', () => {
+test('generic force close cancels an ordinary replacement and retires its displaced capability', () => {
     const fixture = createPanelsFixture(pendingLazyLoader());
     let closes = 0;
     let forceCloses = 0;
@@ -750,6 +1081,7 @@ test('generic force close cancels an ordinary replacement and clears the old wor
     });
     fixture.handlers.panel_cmd({cmd:'open', panel:'help', initData:{}});
     fixture.handlers.panel_cmd({cmd:'force_close', reason:'disconnected'});
+    assert.strictEqual(fixture.Panels.getActive(), null);
     assert.strictEqual(fixture.Panels.isOpen(), false);
     assert.strictEqual(closes, 1);
     assert.strictEqual(forceCloses, 1);

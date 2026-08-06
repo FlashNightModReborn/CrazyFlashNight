@@ -1,0 +1,10 @@
+﻿trace("FocusedTestRunId kshop-checkout Start: __FOCUSED_RUN_ID__");
+_root.UI系统 = _root.UI系统 || {};
+_root.gameCommands = _root.gameCommands || {};
+_root.server = _root.server || {};
+if (_root.server.sendServerMessage == undefined) {
+    _root.server.sendServerMessage = function(message:String):Void {};
+}
+#include "逻辑系统分区/商城系统_WebView.as"
+org.flashNight.arki.item.KShopCheckoutServiceTest.runAllTests();
+trace("FocusedTestRunId kshop-checkout Complete: __FOCUSED_RUN_ID__");

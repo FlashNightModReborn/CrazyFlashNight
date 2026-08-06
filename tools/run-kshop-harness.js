@@ -6,6 +6,8 @@ const http = require('http');
 const path = require('path');
 const url = require('url');
 const {readCssBundle} = require('./lib/read-css-bundle.js');
+const BrowserChildResourceClosure = require(
+    './workbench-live-e2e/lib/browser-child-resource-closure.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const WEB_ROOT = path.join(ROOT, 'launcher', 'web');
@@ -20,6 +22,7 @@ const INVENTORY_WORKBENCH_SOURCE = path.join(WEB_ROOT, 'modules', 'inventory-wor
 const GAME_UI_BEHAVIOR_SOURCE = path.join(WEB_ROOT, 'modules', 'game-ui-behavior.js');
 const INSPECTION_VIEWPORT_SOURCE = path.join(WEB_ROOT, 'modules', 'workbench-inspection-viewport.js');
 const KSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop.js');
+const KSHOP_RUNTIME_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop-runtime.js');
 const KSHOP_HARNESS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop', 'dev', 'harness.html');
 const NPCSHOP_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop.js');
 const KSHOP_VIEWS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop-views.js');
@@ -40,6 +43,7 @@ const PANELS_CSS_SOURCE = path.join(WEB_ROOT, 'css', 'panels.css');
 const visualArg = process.argv.find(arg => arg.startsWith('--visual='));
 const shotArg = process.argv.find(arg => arg.startsWith('--shot='));
 const viewportArg = process.argv.find(arg => arg.startsWith('--viewport='));
+const identityOnly = process.argv.includes('--identity-only');
 
 function parseViewport() {
     if (!viewportArg) return {width:1366,height:768};
@@ -70,7 +74,23 @@ function auditArchitectureBoundaries() {
         throw new Error('Inventory operation resolver branches on concrete container pair');
     }
     const kshopSource = fs.readFileSync(KSHOP_SOURCE, 'utf8');
+    const kshopRuntimeSource = fs.readFileSync(KSHOP_RUNTIME_SOURCE, 'utf8');
     const kshopHarnessSource = fs.readFileSync(KSHOP_HARNESS_SOURCE, 'utf8');
+    if (!kshopSource.includes('onRebind: onRebind')
+            || !kshopHarnessSource.includes("assert('kshop-owner2'")
+            || !kshopHarnessSource.includes('商城 same-name rebind 丢弃旧业务/Inventory 回包')) {
+        throw new Error('KShop same-name owner rebind journey missing');
+    }
+    if (!kshopRuntimeSource.includes("session.ownerPanel === 'kshop'")
+            || !kshopRuntimeSource.includes("message.panel = 'kshop'")
+            || !kshopRuntimeSource.includes('message.panelInstanceId = context.session.panelInstanceId')
+            || !kshopRuntimeSource.includes("!Object.prototype.hasOwnProperty.call(data, 'domain')")
+            || !kshopRuntimeSource.includes('data.panelInstanceId === entry.session.panelInstanceId')
+            || !kshopSource.includes("ownerPanel:'kshop'")
+            || !kshopHarnessSource.includes('mixedKShopOwnerRejected')
+            || !kshopHarnessSource.includes('mixedKShopDomainRejected')) {
+        throw new Error('KShop domain-less exact owner mux contract missing');
+    }
     const inspectionViewportSource = fs.readFileSync(INSPECTION_VIEWPORT_SOURCE, 'utf8');
     const viewportScriptIndex = kshopHarnessSource.indexOf('modules/workbench-inspection-viewport.js');
     const inspectorScriptIndex = kshopHarnessSource.indexOf('modules/equipment-inspector.js');
@@ -195,20 +215,24 @@ function auditArchitectureBoundaries() {
         throw new Error('Inventory workbench implicit close must not navigate to crafting returnTarget');
     }
     if (!craftingOrganizerSource.includes(
-            "var message = {type:'panel', cmd:'close', panel:'crafting'}")
-            || !craftingOrganizerSource.includes("if (Bridge.send(message) === false)")
+            "var message = {type:'panel', cmd:'close', panel:'crafting',")
+            || !craftingOrganizerSource.includes('panelInstanceId:_owner.panelInstanceId')
+            || !craftingOrganizerSource.includes('accepted = Bridge.send(message) !== false')
+            || !craftingOrganizerSource.includes('catch (_) { accepted = false; }')
             || !craftingOrganizerSource.includes("工作台保持打开")
             || !craftingOrganizerSource.includes("kind:'crafting-organizer'")) {
         throw new Error('Embedded crafting organizer must close its explicit Host owner and remain open on transport failure');
     }
     if (panelsSource.includes('function isNestedCraftingOrganizer(')
             || panelsSource.includes('_activeHostOwner')
-            || !panelsSource.includes('panelCloseMessage(pending.id, pending.initData, reason)')
+            || !panelsSource.includes('sendPanelCloseNotification(')
+            || !panelsSource.includes('sendExactCloseNotification(')
+            || !panelsSource.includes('retryExactCloseNotification(')
             || !panelsSource.includes("sendMountFailureClose(id, initData, 'mount_failed')")
             || !panelsSource.includes('panel mount threw for ')
             || !panelsSource.includes('panel rebind threw for ')
-            || !panelsSource.includes('var activeCapabilityWorkbench = activeWorkbench;')
-            || !panelsSource.includes('!activeCapabilityWorkbench')) {
+            || !panelsSource.includes('var activeOrdinary = !!_active && !hostOwnsPanelMount(_active)')
+            || !panelsSource.includes('if (!pendingExact && !activeExact) return;')) {
         throw new Error('Panels must keep exact standalone failure handling without a crafting/workbench alias');
     }
     if (inventoryWorkbenchSource.includes('function returnToPanel(')
@@ -230,7 +254,8 @@ function auditArchitectureBoundaries() {
     }
     if (!panelsSource.includes('ensureRequiredAssets(')
             || !panelsSource.includes('Icons.load(finishRequiredAssets)')
-            || !panelsSource.includes('openAfterRequiredAssets(id)')) {
+            || !panelsSource.includes('openAfterRequiredAssets(pending)')
+            || !panelsSource.includes('ensureRequiredAssets(function() { openAfterRequiredAssets(pending); })')) {
         throw new Error('Panels lifecycle no longer gates first open on the shared icon manifest');
     }
     const fullAnchorBlocks = panelsCssSource.match(/[^{}]+\{[^{}]*inset:\s*0\s*;[^{}]*\}/g) || [];
@@ -312,7 +337,7 @@ function edgePath() {
     return candidates.find(fs.existsSync);
 }
 
-function createServer() {
+function createServer(resourceLedger) {
     return new Promise(resolve => {
         const server = http.createServer((request, response) => {
             const pathname = decodeURIComponent(url.parse(request.url).pathname);
@@ -321,19 +346,28 @@ function createServer() {
             if (relative.startsWith('..') || path.isAbsolute(relative)) {
                 response.writeHead(403); response.end(); return;
             }
+            const resourceOccurrence = resourceLedger.begin(request.url, file);
             fs.readFile(file, (error, data) => {
-                if (error) { response.writeHead(404); response.end(); return; }
+                if (error) {
+                    resourceOccurrence.failure('read_failed');
+                    response.writeHead(404); response.end(); return;
+                }
                 const extension = path.extname(file);
                 const mime = extension === '.html' ? 'text/html; charset=utf-8'
                     : extension === '.css' ? 'text/css; charset=utf-8'
                     : extension === '.js' ? 'text/javascript; charset=utf-8'
                     : 'application/octet-stream';
+                resourceOccurrence.success(data, mime);
                 response.writeHead(200, {'Content-Type': mime});
                 response.end(data);
             });
         });
         server.listen(0, '127.0.0.1', () => resolve(server));
     });
+}
+
+function closeServer(server) {
+    return new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
 }
 
 async function runPhysicalTooltipPointerProbe(page) {
@@ -987,15 +1021,16 @@ async function probeOwnedInventoryScrollbar(page, origin, viewport) {
     return result;
 }
 
-(async function() {
-    const architectureAudit = auditArchitectureBoundaries();
+async function run() {
+    const architectureAudit = identityOnly ? {identityOnly:true} : auditArchitectureBoundaries();
     if (!fs.existsSync(PLAYWRIGHT)) {
         throw new Error('Missing Playwright dependency. Run: npm --prefix launcher/perf ci --ignore-scripts');
     }
     const executablePath = edgePath();
     if (!executablePath) throw new Error('Microsoft Edge executable not found');
     const { chromium } = require(PLAYWRIGHT);
-    const server = await createServer();
+    const resourceLedger = BrowserChildResourceClosure.createServedResourceLedger({root:WEB_ROOT});
+    const server = await createServer(resourceLedger);
     const browser = await chromium.launch({executablePath, headless:true});
     const page = await browser.newPage({viewport:parseViewport()});
     const pageErrors = [];
@@ -1005,7 +1040,8 @@ async function probeOwnedInventoryScrollbar(page, origin, viewport) {
     const visualMode = visualArg ? visualArg.slice('--visual='.length) : '';
     const batchVisualMatch = /^battlebox-batch(?:-(0|1|5|50))?$/.exec(visualMode);
     const expectedBatchCount = batchVisualMatch ? Number(batchVisualMatch[1] || 5) : null;
-    const targetQuery = visualMode ? '?visual=' + encodeURIComponent(visualMode) : '?qa=1';
+    const targetQuery = identityOnly ? '?identity=1'
+        : visualMode ? '?visual=' + encodeURIComponent(visualMode) : '?qa=1';
     await page.goto('http://127.0.0.1:' + server.address().port + '/modules/kshop/dev/harness.html' + targetQuery, {waitUntil:'load'});
     if (visualMode) {
         await page.waitForFunction(() => window.__visualReady === true
@@ -1106,8 +1142,10 @@ async function probeOwnedInventoryScrollbar(page, origin, viewport) {
             ? await runPhysicalTooltipPointerProbe(page) : null;
         if (visualState.tooltip) visualState.tooltip.physicalPointer = physicalTooltipPointer;
         await browser.close();
-        server.close();
-        process.stdout.write(JSON.stringify({browser:'edge',executablePath,visualMode,visualState,pageErrors,failedRequests},null,2)+'\n');
+        await closeServer(server);
+        const servedResourceLedger = resourceLedger.snapshot();
+        const output = {browser:'edge',executablePath,visualMode,visualState,
+            servedResourceLedger,pageErrors,failedRequests};
         const tooltipFailed = visualMode === 'battlebox-real-icons'
             && tooltipRegressionFailed(visualState.tooltip);
         const headerFailed = visualMode.indexOf('battlebox') === 0
@@ -1129,11 +1167,31 @@ async function probeOwnedInventoryScrollbar(page, origin, viewport) {
                 || !(visualState.scrollbar.buttonDisplay === 'none'
                     || parseFloat(visualState.scrollbar.buttonWidth) === 0));
         if (pageErrors.length || failedRequests.length || tooltipFailed
-                || headerFailed || batchFailed || scrollbarFailed || visualState.bodyOverflow) process.exit(1);
-        return;
+                || headerFailed || batchFailed || scrollbarFailed || visualState.bodyOverflow) {
+            const error = new Error('KShop visual browser harness failed');
+            error.exitCode = 1;
+            error.result = output;
+            throw error;
+        }
+        return output;
     }
     await page.waitForFunction(() => window.__qaResult && window.__qaResult.qa, null, {timeout:20000});
     const qa = await page.evaluate(() => window.__qaResult.qa);
+    if (identityOnly) {
+        await browser.close();
+        await closeServer(server);
+        const servedResourceLedger = resourceLedger.snapshot();
+        const output = {browser:'edge',executablePath,
+            mode:'identity-only',qa,servedResourceLedger,pageErrors,failedRequests};
+        if (qa.total !== 7 || qa.passed !== 7 || qa.failed !== 0
+                || pageErrors.length || failedRequests.length) {
+            const error = new Error('KShop identity browser harness failed');
+            error.exitCode = 1;
+            error.result = output;
+            throw error;
+        }
+        return output;
+    }
     const origin = 'http://127.0.0.1:' + server.address().port;
     const semanticBusyMotion = await probeSemanticBusyMotion(page);
     const equipmentInspectorMotion = await probeEquipmentInspectorMotion(page);
@@ -1144,16 +1202,30 @@ async function probeOwnedInventoryScrollbar(page, origin, viewport) {
     const realTooltip = await page.evaluate(() => window.__visualTooltipState || null);
     if (realTooltip) realTooltip.physicalPointer = await runPhysicalTooltipPointerProbe(page);
     await browser.close();
-    server.close();
+    await closeServer(server);
+    const servedResourceLedger = resourceLedger.snapshot();
 
     const output = {browser:'edge',executablePath,architectureAudit,qa,semanticBusyMotion,equipmentInspectorMotion,reducedSecondaryMotion,ownedInventoryScrollbar,
-        realTooltip,pageErrors,failedRequests};
-    process.stdout.write(JSON.stringify(output, null, 2) + '\n');
+        realTooltip,servedResourceLedger,pageErrors,failedRequests};
     const tooltipFailed = tooltipRegressionFailed(realTooltip);
     if (qa.failed || !semanticBusyMotion.pass || !equipmentInspectorMotion.pass
             || !reducedSecondaryMotion.pass || !ownedInventoryScrollbar.pass || tooltipFailed
-            || pageErrors.length || failedRequests.length) process.exit(1);
-})().catch(error => {
-    console.error(error && error.stack ? error.stack : String(error));
-    process.exit(2);
-});
+            || pageErrors.length || failedRequests.length) {
+        const error = new Error('KShop browser harness failed');
+        error.exitCode = 1;
+        error.result = output;
+        throw error;
+    }
+    return output;
+}
+
+module.exports = {run};
+if (require.main === module) {
+    run().then(output => {
+        process.stdout.write(JSON.stringify(output, null, 2) + '\n');
+    }).catch(error => {
+        console.error(error && error.stack ? error.stack : String(error));
+        if (error && error.result) console.error(JSON.stringify(error.result));
+        process.exitCode = error && error.exitCode || 2;
+    });
+}

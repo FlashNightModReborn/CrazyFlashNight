@@ -262,7 +262,7 @@ function main() {
         .filter(entry => !iconManifest[entry.output.icon])
         .map(entry => entry.item.name)
         .sort((left, right) => left.localeCompare(right, 'zh-CN'));
-    assert(sameSet(missingIcons, ['灰蛊裂隙弹']),
+    assert(sameSet(missingIcons, []),
         'icon-fallback missing set changed: ' + JSON.stringify(missingIcons));
 
     const monkey = decisions.find(entry => entry.item.name === '申猴项链' && entry.gender === '女');

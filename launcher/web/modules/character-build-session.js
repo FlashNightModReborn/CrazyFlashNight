@@ -20,8 +20,12 @@
     'use strict';
 
     if (!Mutation) throw new Error('CharacterBuildMutation is required');
-    var COMMANDS = ['snapshot', 'candidates', 'flushLive', 'statsSnapshot', 'finalize']
+    var COMMANDS = ['snapshot', 'candidates', 'tooltip', 'flushLive', 'statsSnapshot', 'finalize']
         .concat(Mutation.commands);
+    var EQUIPMENT_SLOTS = [
+        '头部装备', '上装装备', '下装装备', '手部装备', '脚部装备', '颈部装备',
+        '长枪', '手枪', '手枪2', '刀', '手雷'
+    ];
     function noop() {}
     function integer(value, fallback) {
         value = Number(value);
@@ -43,6 +47,18 @@
         }
         return result;
     }
+    function ownKeys(value, expected) {
+        if (!value || typeof value !== 'object'
+                || Object.keys(value).length !== expected.length) return false;
+        for (var i = 0; i < expected.length; i++) {
+            if (!Object.prototype.hasOwnProperty.call(value, expected[i])) return false;
+        }
+        return true;
+    }
+    function boundedString(value, maximum, allowEmpty) {
+        return typeof value === 'string' && value.length <= maximum
+            && (allowEmpty === true || value.length > 0);
+    }
     function targetKey(target) {
         if (!target || typeof target !== 'object') return '';
         if (target.kind === 'equipment' && typeof target.slotKey === 'string' && target.slotKey) {
@@ -54,20 +70,82 @@
     function sameTarget(left, right) {
         return targetKey(left) !== '' && targetKey(left) === targetKey(right);
     }
+    function candidateScope(value) {
+        value = String(value || '');
+        return value === 'compatible' || value === 'backpack' ? value : '';
+    }
+    function validLoadoutItems(rows) {
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            if (!row || typeof row !== 'object') return false;
+            if (row.occupied === true && !Mutation.validItemIdentity(row.item)) return false;
+            if (row.item != null && !Mutation.validItemIdentity(row.item)) return false;
+        }
+        return true;
+    }
     function validProjection(payload) {
         return !!payload && typeof payload === 'object'
             && Array.isArray(payload.equipment) && payload.equipment.length === 11
             && Array.isArray(payload.drugs) && payload.drugs.length === 4
+            && validLoadoutItems(payload.equipment)
+            && validLoadoutItems(payload.drugs)
             && payload.portrait && typeof payload.portrait === 'object'
             && typeof payload.stateHealth === 'string'
             && Array.isArray(payload.diagnostics);
     }
-    function validCandidates(payload, target) {
-        return !!payload && typeof payload === 'object' && sameTarget(payload.target, target)
-            && Array.isArray(payload.candidates)
-            && integer(payload.backpackVersion, -1) >= 0
-            && typeof payload.stateHealth === 'string'
-            && Array.isArray(payload.diagnostics);
+    function validCandidates(payload, target, scope) {
+        scope = candidateScope(scope);
+        if (!payload || typeof payload !== 'object'
+                || !sameTarget(payload.target, target)
+                || !scope || payload.candidateScope !== scope
+                || !Array.isArray(payload.candidates)
+                || integer(payload.backpackVersion, -1) < 0
+                || typeof payload.stateHealth !== 'string'
+                || !Array.isArray(payload.diagnostics)) return false;
+        for (var i = 0; i < payload.candidates.length; i++) {
+            var row = payload.candidates[i];
+            if (!row || typeof row !== 'object'
+                    || !Mutation.validItemIdentity(row.item)) return false;
+            var universalEquipment = scope === 'backpack'
+                && target && target.kind === 'equipment';
+            var hasEligibility = Object.prototype.hasOwnProperty.call(
+                row, 'equipmentEligibility');
+            if (hasEligibility !== universalEquipment) return false;
+            if (universalEquipment) {
+                var eligibility = row.equipmentEligibility;
+                if (!ownKeys(eligibility, ['slots', 'blockedReason'])
+                        || !Array.isArray(eligibility.slots)
+                        || eligibility.slots.length > EQUIPMENT_SLOTS.length
+                        || (eligibility.blockedReason !== ''
+                            && eligibility.blockedReason !== 'level_locked')) return false;
+                var previousSlotIndex = -1;
+                for (var slotIndex = 0;
+                        slotIndex < eligibility.slots.length;
+                        slotIndex++) {
+                    var canonicalIndex = EQUIPMENT_SLOTS.indexOf(
+                        eligibility.slots[slotIndex]);
+                    if (canonicalIndex <= previousSlotIndex) return false;
+                    previousSlotIndex = canonicalIndex;
+                }
+            }
+        }
+        return true;
+    }
+    function validTooltip(payload, target) {
+        if (!ownKeys(payload, [
+                'v', 'target', 'itemName', 'displayName', 'iconName', 'itemType',
+                'descHTML', 'introHTML'
+            ]) || payload.v !== 1 || !sameTarget(payload.target, target)) return false;
+        var expectedTargetKeys = target && target.kind === 'equipment'
+            ? ['kind', 'slotKey'] : ['kind', 'drugSlot'];
+        return ownKeys(payload.target, expectedTargetKeys)
+            && boundedString(payload.itemName, 256, false)
+            && boundedString(payload.displayName, 256, false)
+            && boundedString(payload.iconName, 256, false)
+            && boundedString(payload.itemType, 128, true)
+            && boundedString(payload.descHTML, 131072, true)
+            && boundedString(payload.introHTML, 131072, true)
+            && (payload.descHTML.length > 0 || payload.introHTML.length > 0);
     }
     function validStats(payload) {
         return !!payload && typeof payload === 'object' && payload.v === 1
@@ -92,7 +170,11 @@
         this._mux = options.mux;
         this._onState = typeof options.onState === 'function' ? options.onState : noop;
         this._onError = typeof options.onError === 'function' ? options.onError : noop;
+        this._onCandidateAuthorityReset =
+            typeof options.onCandidateAuthorityReset === 'function'
+                ? options.onCandidateAuthorityReset : noop;
         this._state = 'closed';
+        this._candidateScope = 'compatible';
         this._panelInstanceId = '';
         this._sessionGeneration = null;
         this._writeEpoch = 0;
@@ -106,6 +188,7 @@
         this._openingAttempts = 0;
         this._reconcileCallId = '';
         this._reconcileIntent = null;
+        this._loadoutTooltipPending = null;
         this._destroyed = false;
     }
     CharacterBuildSession.prototype._emit = function(reason) {
@@ -248,9 +331,11 @@
             && (this._state === 'idle' || this._state === 'flush_failed');
         if (!ordinaryRefresh
                 && !(this._state === 'needs_reconcile' && options.reconcile)) return null;
+        this._cancelLoadoutTooltip('snapshot_refresh');
         var payload = this._basePayload();
         var watermark = token(options.reconcileAfterCallId);
         if (watermark) payload.reconcileAfterCallId = watermark;
+        this._onCandidateAuthorityReset('snapshot');
         var self = this;
         return this._mux.request('snapshot', payload, {
             kind:options.reconcile ? 'reconcile' : 'snapshot',
@@ -288,30 +373,117 @@
         });
     };
 
-    CharacterBuildSession.prototype.requestCandidates = function(target, callback) {
-        if (this._state !== 'idle' || !targetKey(target)) return null;
+    CharacterBuildSession.prototype.requestCandidates = function(target, scope, callback) {
+        if (typeof scope === 'function') {
+            callback = scope;
+            scope = this._candidateScope;
+        }
+        scope = candidateScope(scope || this._candidateScope);
+        if (this._state !== 'idle' || !targetKey(target) || !scope) return null;
+        var payload = this._basePayload();
+        if (target.kind === 'equipment') payload.slotKey = target.slotKey;
+        else payload.drugSlot = integer(target.drugSlot, -1);
+        payload.candidateScope = scope;
+        payload.expectedLoadoutRevision = this._loadoutRevision;
+        payload.expectedDrugRevision = this._drugRevision;
+        this._onCandidateAuthorityReset('candidates');
+        var self = this;
+        return this._mux.request('candidates', payload, {
+            kind:'candidates',
+            latestWins:true,
+            metadata:{target:copy(target), targetKey:targetKey(target), candidateScope:scope}
+        }, function(response, entry) {
+            var accepted = self._state === 'idle'
+                && self._commonValid(response, entry, false)
+                && response.success === true
+                && validCandidates(
+                    response.payload,
+                    entry.metadata.target,
+                    entry.metadata.candidateScope)
+                && self._applyCommon(response);
+            if (!accepted) {
+                if (response && response.success === true) self._malformed(response, entry, false);
+                else self._onError(response, 'candidates');
+            }
+            if (callback) callback(
+                response,
+                accepted,
+                entry.metadata.targetKey,
+                entry.metadata.candidateScope);
+        });
+    };
+
+    CharacterBuildSession.prototype.requestLoadoutTooltip = function(target, callback) {
+        var key = targetKey(target);
+        if (this._state !== 'idle' || !key) return null;
+        this._cancelLoadoutTooltip('superseded');
         var payload = this._basePayload();
         if (target.kind === 'equipment') payload.slotKey = target.slotKey;
         else payload.drugSlot = integer(target.drugSlot, -1);
         payload.expectedLoadoutRevision = this._loadoutRevision;
         payload.expectedDrugRevision = this._drugRevision;
         var self = this;
-        return this._mux.request('candidates', payload, {
-            kind:'candidates',
-            latestWins:true,
-            metadata:{target:copy(target), targetKey:targetKey(target)}
+        var expectedLoadoutRevision = this._loadoutRevision;
+        var expectedDrugRevision = this._drugRevision;
+        return this._mux.request('tooltip', payload, {
+            kind:'loadout-tooltip',
+            singleFlight:true,
+            metadata:{
+                target:copy(target),
+                targetKey:key,
+                loadoutRevision:expectedLoadoutRevision,
+                drugRevision:expectedDrugRevision
+            },
+            onIssued:function(entry) {
+                self._loadoutTooltipPending = {
+                    callId:entry.callId,
+                    callback:callback,
+                    targetKey:key
+                };
+            }
         }, function(response, entry) {
+            if (!self._loadoutTooltipPending
+                    || self._loadoutTooltipPending.callId !== entry.callId) return;
+            self._loadoutTooltipPending = null;
             var accepted = self._state === 'idle'
                 && self._commonValid(response, entry, false)
                 && response.success === true
-                && validCandidates(response.payload, entry.metadata.target)
-                && self._applyCommon(response);
+                && Number(response.loadoutRevision) === entry.metadata.loadoutRevision
+                && Number(response.drugRevision) === entry.metadata.drugRevision
+                && self._loadoutRevision === entry.metadata.loadoutRevision
+                && self._drugRevision === entry.metadata.drugRevision
+                && validTooltip(response.payload, entry.metadata.target);
             if (!accepted) {
                 if (response && response.success === true) self._malformed(response, entry, false);
-                else self._onError(response, 'candidates');
+                else self._onError(response, 'tooltip');
             }
             if (callback) callback(response, accepted, entry.metadata.targetKey);
         });
+    };
+
+    CharacterBuildSession.prototype._cancelLoadoutTooltip = function(reason) {
+        var pending = this._loadoutTooltipPending;
+        this._loadoutTooltipPending = null;
+        var canceled = this._mux.cancelKind('loadout-tooltip');
+        if (pending && typeof pending.callback === 'function') {
+            pending.callback({
+                success:false,
+                error:String(reason || 'canceled'),
+                clientSynthetic:true
+            }, false, pending.targetKey);
+        }
+        return canceled || !!pending;
+    };
+
+    CharacterBuildSession.prototype.setCandidateScope = function(scope) {
+        scope = candidateScope(scope);
+        if (!scope) return false;
+        this._candidateScope = scope;
+        return true;
+    };
+
+    CharacterBuildSession.prototype.getCandidateScope = function() {
+        return this._candidateScope;
     };
 
     CharacterBuildSession.prototype._requestMutation = function(intent, callback) {
@@ -322,6 +494,7 @@
             drugRevision:this._drugRevision
         });
         if (!payload) return null;
+        this._cancelLoadoutTooltip('mutation_start');
         this._state = 'write_pending';
         this._emit('mutation_start');
         var self = this;
@@ -473,6 +646,7 @@
 
     CharacterBuildSession.prototype._requestFlush = function(callback) {
         if (this._state !== 'idle' && this._state !== 'flush_failed') return null;
+        this._cancelLoadoutTooltip('flush_start');
         this._state = 'flush_pending';
         this._emit('flush_start');
         var payload = this._basePayload();
@@ -530,6 +704,7 @@
         var retry = this._state === 'needs_reconcile' && this._unknown
             && this._unknown.kind === 'finalize';
         if (this._state !== 'idle' && this._state !== 'flush_failed' && !retry) return null;
+        this._cancelLoadoutTooltip('finalize_start');
         var payload = this._basePayload();
         payload.expectedLoadoutRevision = this._loadoutRevision;
         if (retry) payload.reconcileAfterCallId = this._unknown.callId;
@@ -581,12 +756,14 @@
 
     CharacterBuildSession.prototype.suspendView = function() {
         this._mux.cancelKind('candidates');
+        this._cancelLoadoutTooltip('view_suspended');
         this._mux.cancelKind('snapshot');
         this._mux.cancelKind('stats');
         return this._state !== 'closed' && this._state !== 'finalized';
     };
 
     CharacterBuildSession.prototype.close = function() {
+        this._cancelLoadoutTooltip('session_closed');
         if (this._mux && this._mux.closeSession) this._mux.closeSession();
         this._state = 'closed';
         this._panelInstanceId = '';
@@ -602,6 +779,7 @@
         this._openingAttempts = 0;
         this._reconcileCallId = '';
         this._reconcileIntent = null;
+        this._loadoutTooltipPending = null;
     };
 
     CharacterBuildSession.prototype.destroy = function() {
@@ -631,6 +809,7 @@
             loadoutRevision:this._loadoutRevision,
             liveRevision:this._liveRevision,
             drugRevision:this._drugRevision,
+            candidateScope:this._candidateScope,
             liveRefreshDirty:this._liveRefreshDirty,
             unknown:this._unknown ? {kind:this._unknown.kind, callId:this._unknown.callId} : null,
             openingAttempts:this._openingAttempts,
@@ -643,9 +822,11 @@
         CharacterBuildSession:CharacterBuildSession,
         commands:COMMANDS.slice(),
         targetKey:targetKey,
+        candidateScope:candidateScope,
         validators:{
             projection:validProjection,
             candidates:validCandidates,
+            tooltip:validTooltip,
             stats:validStats
         }
     };

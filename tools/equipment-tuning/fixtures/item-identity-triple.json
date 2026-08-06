@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "domain": "equipment_tuning.modCandidates",
+  "expectedCounts": {
+    "mods": 105,
+    "presentationAliases": 19,
+    "iconKeyDivergence": 13,
+    "allDistinct": 3,
+    "legacyInternalIconMisses": 13
+  },
+  "allDistinct": [
+    {
+      "candidateKey": "mod.identity.0",
+      "itemName": "光棱射线弹-强化",
+      "displayName": "棱镜折射阵列",
+      "icon": "全光谱棱镜阵列"
+    },
+    {
+      "candidateKey": "mod.identity.1",
+      "itemName": "光谱射线弹",
+      "displayName": "色散射线弹",
+      "icon": "棱栅射线弹"
+    },
+    {
+      "candidateKey": "mod.identity.2",
+      "itemName": "光谱射线弹-强化",
+      "displayName": "全谱色散引擎",
+      "icon": "环式棱栅折射阵列"
+    }
+  ],
+  "malformed": [
+    {
+      "id": "missing-display-name",
+      "remove": "displayName"
+    },
+    {
+      "id": "wrong-icon-type",
+      "replace": {
+        "icon": 7
+      }
+    },
+    {
+      "id": "legacy-display-alias",
+      "add": {
+        "displayname": "不得接受的旧字段"
+      }
+    }
+  ]
+}

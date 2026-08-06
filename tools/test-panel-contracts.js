@@ -50,7 +50,7 @@ function run() {
     assert(report.ok, JSON.stringify(report.errors));
     assert(report.contractVersion === 2, "expected strict panel contract v2");
     assert(report.checked.domains === 4, "expected four governed domains");
-    assert(report.checked.commands === 23, "expected twenty-three governed command mappings");
+    assert(report.checked.commands === 22, "expected twenty-two governed command mappings");
     const hairdresser = contract.domains.find(function (domain) {
       return domain.id === "hairdresser";
     });
@@ -64,6 +64,33 @@ function run() {
       && hairdresser.sourceChecks.length === 0
       && !contract.vectors.hairdresser,
       "hairdresser must not invent numeric boundaries or filler vectors");
+    const kshop = contract.domains.find(function (domain) {
+      return domain.id === "kshop";
+    });
+    assert(kshop && kshop.hostPayloadMode === "normalized-domainless-owner-rebuilt",
+      "KShop must normalize each command, keep its AS2 wire domain-less, and rebuild owner metadata");
+  });
+
+  test("NPC ordinary sell remains fully retired while trade commit stays governed", function () {
+    const npcshop = contract.domains.find(function (domain) { return domain.id === "npcshop"; });
+    const host = read("launcher/src/Tasks/NpcShopTask.cs");
+    const runtime = read("launcher/web/modules/npcshop-runtime.js");
+    const as2 = read("scripts/逻辑系统分区/商店系统_兼容.as");
+    assert(npcshop && !npcshop.commands.some(function (command) {
+      return command.cmd === "sell" || command.action === "npcShopSell";
+    }), "retired ordinary sell must stay absent from the governed contract");
+    assert(!/case\s+"sell"\s*:/.test(host) && !host.includes("npcShopSell"),
+      "retired ordinary sell must stay absent from the Host resolver");
+    assert(!/\bsell\s*:\s*true\b/.test(runtime)
+      && runtime.includes("!NPC_COMMANDS[String(cmd || '')]"),
+      "NPC Web runtime must reject commands outside its closed allow-list");
+    assert(!/_root\.gameCommands\["npcShopSell"\]\s*=/.test(as2)
+      && (as2.match(/delete\s+_root\.gameCommands\["npcShopSell"\]/g) || []).length === 1,
+      "AS2 must remove a stale hot-reload sell binding without registering it");
+    assert(npcshop.commands.some(function (command) {
+      return command.cmd === "tradeCommit" && command.action === "npcShopTradeCommit";
+    }) && /_root\.gameCommands\["npcShopTradeCommit"\]\s*=/.test(as2),
+    "tradePreview/tradeCommit must remain the governed production sale write");
   });
 
   test("hairdresser AS2 opener is Web-only and retired renderer cannot return", function () {
@@ -77,10 +104,11 @@ function run() {
     const assetSourceMap = read("data/items/asset_source_map.xml");
     assert((service.match(/_root\.gameCommands\["openHairdresser"\]\s*=/g) || []).length === 1,
       "expected one openHairdresser command registration");
-    assert(service.includes(
-      'org.flashNight.arki.ui.PanelRequestEnvelope.build(\n'
-      + '            "hairdresser", "world_hairdresser", [], []\n'
-      + "        )"),
+    const openerPattern = new RegExp(
+      'org\\.flashNight\\.arki\\.ui\\.PanelRequestEnvelope\\.build\\s*\\(\\s*'
+      + '"hairdresser"\\s*,\\s*"world_hairdresser"\\s*,\\s*\\[\\s*\\]\\s*,\\s*'
+      + '\\[\\s*\\]\\s*\\)');
+    assert(openerPattern.test(service),
       "openHairdresser must emit the exact field-free panel_request");
     assert((install.match(
       /org\.flashNight\.arki\.ui\.HairdresserPanelService\.install\(\);/g) || []).length === 1,
@@ -314,7 +342,7 @@ function run() {
   test("Host domain guard must execute the fail-closed rejection branch", function () {
     const file = "launcher/src/Tasks/NpcShopTask.cs";
     const mutated = replaceOnce(read(file),
-      /\{\s*RejectAndRemember\(callId,\s*cmd,\s*"unsupported_domain"\);\s*return;\s*\}/,
+      /\{\s*RejectAndRemember\(callId,\s*cmd,\s*ownerPanel,\s*ownerPanelInstanceId,\s*"unsupported_domain"\);\s*return;\s*\}/,
       "{ }",
       "NpcShop no-op domain guard branch");
     const report = validator.validateRepository({
@@ -479,31 +507,102 @@ function run() {
     assertError(report, "source.as2_assignment_drift");
   });
 
-  test("KShop Host passthrough cannot acquire a fixed quantity guard", function () {
+  test("KShop strict domainless admission and command normalization cannot disappear", function () {
     const file = "launcher/src/Tasks/ShopTask.cs";
-    const mutated = replaceOnce(read(file),
-      /(\s+)(var flashMsg = PanelBridge\.BuildFlashCommand\(action, fid, parsed\);)/,
-      function (_match, whitespace, buildLine) {
-        return whitespace + "TryReadInteger(parsed[\"quantity\"], 1, 100, out ignored);" + whitespace + buildLine;
-      },
-      "ShopTask passthrough insertion");
-    const report = validator.validateRepository({
-      root: ROOT,
-      contract: clone(contract),
-      sourceOverrides: { [file]: mutated }
-    });
-    assertError(report, "source.csharp_passthrough_guard");
-
-    const decoy = replaceOnce(read(file),
-      "var flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);",
-      "PanelBridge.BuildFlashCommand(action, fid, parsed);\n"
-        + "            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, new JObject());",
-      "ShopTask unused raw forward decoy");
+    const source = read(file);
+    const missingDomainlessGuard = replaceOnce(source,
+      "if (!WebOverlayForm.IsStrictDomainlessPanelEnvelope(parsed))",
+      "if (false)",
+      "ShopTask strict domainless guard");
     assertError(validator.validateRepository({
       root: ROOT,
       contract: clone(contract),
-      sourceOverrides: { [file]: decoy }
+      sourceOverrides: { [file]: missingDomainlessGuard }
+    }), "source.csharp_domainless_normalizer_drift");
+
+    const commentedGuardDecoy = replaceOnce(source,
+      "if (!WebOverlayForm.IsStrictDomainlessPanelEnvelope(parsed))",
+      "// if (!WebOverlayForm.IsStrictDomainlessPanelEnvelope(parsed)) { "
+        + "RejectAndRemember(webCallId, cmd, ownerPanel, ownerPanelInstanceId, \"invalid_domain\"); return; }\n"
+        + "            if (false)",
+      "ShopTask commented strict domainless decoy");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: commentedGuardDecoy }
+    }), "source.csharp_domainless_normalizer_drift");
+
+    const missingNormalizer = replaceOnce(source,
+      "TryNormalizePayload(cmd, parsed, out normalizedPayload)",
+      "TryNormalizePayload(cmd, parsed, out replacementPayload)",
+      "ShopTask command normalizer");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: missingNormalizer }
+    }), "source.csharp_domainless_normalizer_drift");
+  });
+
+  test("KShop normalized wire cannot regress to a raw-envelope passthrough", function () {
+    const file = "launcher/src/Tasks/ShopTask.cs";
+    const source = read(file);
+    const rawDispatch = replaceOnce(source,
+      "PanelBridge.BuildFlashCommand(action, fid, normalizedPayload)",
+      "PanelBridge.BuildFlashCommand(action, fid, parsed)",
+      "ShopTask normalized dispatch");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: rawDispatch }
     }), "source.csharp_flash_dispatch_drift");
+
+    const rawClone = replaceOnce(source,
+      "var flashMsg = PanelBridge.BuildFlashCommand(action, fid, normalizedPayload);",
+      "var flashRequest = (JObject)parsed.DeepClone();\n"
+        + "            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, normalizedPayload);",
+      "ShopTask raw envelope clone decoy");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: rawClone }
+    }), "source.csharp_owner_rebuild_drift");
+  });
+
+  test("KShop response sanitizer and pending owner rebuild cannot disappear", function () {
+    const file = "launcher/src/Tasks/ShopTask.cs";
+    const source = read(file);
+    const missingSanitizer = replaceOnce(source,
+      "TrySanitizeResponseLocked(msg, entry, out sanitized)",
+      "TrySanitizeResponse(msg, entry, out sanitized)",
+      "ShopTask response sanitizer");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: missingSanitizer }
+    }), "source.csharp_response_owner_rebuild_drift");
+
+    const wrongOwner = replaceOnce(source,
+      'webMsg["panelInstanceId"] = entry.OwnerPanelInstanceId;',
+      'webMsg["panelInstanceId"] = "forged";',
+      "ShopTask owner envelope rebuild");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: wrongOwner }
+    }), "source.csharp_response_owner_rebuild_drift");
+  });
+
+  test("Crafting exact-type domain guard remains executable", function () {
+    const file = "launcher/src/Tasks/CraftingTask.cs";
+    const mutated = replaceOnce(read(file),
+      'ReadExactString(parsed["domain"])',
+      'ReadExactString(parsed["domain_typo"])',
+      "Crafting exact domain guard");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: mutated }
+    }), "source.csharp_domain_identity_drift");
   });
 
   test("C# cmd to action mapping drift is detected", function () {
@@ -599,9 +698,9 @@ function run() {
     }), "source.csharp_command_resolution_drift");
 
     const discardedResult = replaceOnce(read(file),
-      /if\s*\(!TryResolveCommand\(cmd,\s*out action,\s*out isWrite\)\)\s*\{\s*RejectAndRemember\(callId,\s*cmd,\s*"unsupported_cmd"\);\s*return;\s*\}/,
+      /if\s*\(!TryResolveCommand\(cmd,\s*out action,\s*out isWrite\)\)\s*\{\s*RejectAndRemember\(callId,\s*cmd,\s*ownerPanel,\s*ownerPanelInstanceId,\s*"unsupported_cmd"\);\s*return;\s*\}/,
       'TryResolveCommand(cmd, out action, out isWrite);\n'
-        + '            if (false) { RejectAndRemember(callId, cmd, "unsupported_cmd"); return; }',
+        + '            if (false) { RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, "unsupported_cmd"); return; }',
       "NpcShop discarded resolver result");
     assertError(validator.validateRepository({
       root: ROOT,
@@ -614,8 +713,8 @@ function run() {
       "isWrite = false;"
     ].forEach(function (overwrite) {
       const withOverwrite = replaceOnce(read(file),
-        "{ RejectAndRemember(callId, cmd, \"unsupported_cmd\"); return; }",
-        "{ RejectAndRemember(callId, cmd, \"unsupported_cmd\"); return; }\n"
+        "{\n                RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, \"unsupported_cmd\");\n                return;\n            }",
+        "{\n                RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, \"unsupported_cmd\");\n                return;\n            }\n"
           + "            " + overwrite,
         "NpcShop resolver output overwrite");
       assertError(validator.validateRepository({
@@ -661,7 +760,7 @@ function run() {
     const file = "scripts/逻辑系统分区/商店系统_兼容.as";
     const source = read(file);
     const occurrences = (source.match(/_root\.UI系统\.NPC商店WebView\.handle\(/g) || []).length;
-    assert(occurrences === 8, "expected all eight NpcShop delegated wrappers");
+    assert(occurrences === 7, "expected all seven governed NpcShop delegated wrappers");
     const mutated = source.replace(/_root\.UI系统\.NPC商店WebView\.handle\(/g,
       "_root.UI系统.NPC商店WebView.dispatch(");
     const report = validator.validateRepository({
@@ -728,7 +827,7 @@ function run() {
     const file = "scripts/逻辑系统分区/商店系统_兼容.as";
     const source = read(file);
     const occurrences = (source.match(/_root\.UI系统\.NPC商店WebView\.handle\(/g) || []).length;
-    assert(occurrences === 8, "expected all eight NpcShop delegated wrappers");
+    assert(occurrences === 7, "expected all seven governed NpcShop delegated wrappers");
     const mutated = source.replace(/_root\.UI系统\.NPC商店WebView\.handle\(/g,
       "_root.UI系统.OtherService.handle(");
     const report = validator.validateRepository({
@@ -754,8 +853,8 @@ function run() {
     assertError(report, "source.flash_dispatch_mode_drift");
 
     const responseDrift = replaceOnce(read(file),
-      'var resp = { task: "shop_response", callId: callId, success: true };',
-      'var resp = { task: "wrong_response", callId: callId, success: true };',
+      'var resp = { task: "shop_response", callId: callId, success: true, v:1, cart:savedCart };',
+      'var resp = { task: "wrong_response", callId: callId, success: true, v:1, cart:savedCart };',
       "KShop SaveCart response task");
     assertError(validator.validateRepository({
       root: ROOT,

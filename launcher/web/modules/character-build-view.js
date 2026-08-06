@@ -7,6 +7,9 @@
     var components = typeof module !== 'undefined' && module.exports
         ? require('./workbench-components.js')
         : root && (root.WorkbenchComponents || root.CF7 && root.CF7.WorkbenchComponents);
+    var primitives = typeof module !== 'undefined' && module.exports
+        ? require('./workbench-primitives.js')
+        : root && root.WorkbenchPrimitives;
     var actions = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-action-view.js')
         : root && root.CharacterBuildActionView;
@@ -26,7 +29,7 @@
         ? require('./character-build/character-build-template.js')
         : root && root.CharacterBuildTemplate;
     var api = factory(
-        focus, components, actions, candidateState, facetCounts,
+        focus, components, primitives, actions, candidateState, facetCounts,
         stats, preview, template);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
@@ -35,14 +38,22 @@
         root.CharacterBuildView = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateModule,
+function(WorkbenchFocus, WorkbenchComponents, WorkbenchPrimitives,
+        ActionViewModule, CandidateStateModule,
         FacetCountsModule, StatsViewModule, DollPreviewModule, TemplateModule) {
     'use strict';
     if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
         throw new Error('character-build-view.js requires RovingGridFocus');
     }
-    if (!WorkbenchComponents || typeof WorkbenchComponents.SecondaryPage !== 'function') {
-        throw new Error('character-build-view.js requires SecondaryPage');
+    if (!WorkbenchComponents
+            || typeof WorkbenchComponents.SecondaryPage !== 'function'
+            || typeof WorkbenchComponents.ChoiceGroup !== 'function') {
+        throw new Error('character-build-view.js requires SecondaryPage and ChoiceGroup');
+    }
+    if (!WorkbenchPrimitives
+            || typeof WorkbenchPrimitives.InteractionBroker !== 'function'
+            || typeof WorkbenchPrimitives.PointerDragController !== 'function') {
+        throw new Error('character-build-view.js requires workbench pointer primitives');
     }
     if (!ActionViewModule || !ActionViewModule.ActionView) {
         throw new Error('character-build-view.js requires CharacterBuildActionView');
@@ -69,6 +80,102 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
     function text(value, fallback) {
         return String(value == null || value === '' ? fallback || '' : value);
     }
+    function candidateScope(value) {
+        value = String(value || '');
+        return value === 'backpack' ? 'backpack'
+            : value === 'compatible' ? 'compatible' : '';
+    }
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function finiteNumber(value) {
+        value = Number(value);
+        return isFinite(value) ? value : null;
+    }
+    function loadoutBasicTooltipHtml(item, slotLabel) {
+        item = item || {};
+        var rows = [];
+        var type = item.majorType || item.use || item.itemKind || '物品';
+        rows.push(['槽位', slotLabel || item.use || '已装备']);
+        rows.push(['类型', type]);
+        var level = finiteNumber(item.balanceSummary && item.balanceSummary.level);
+        if (level !== null) rows.push(['需求等级', level]);
+        var enhancement = finiteNumber(item.enhancementLevel);
+        var maxEnhancement = finiteNumber(item.maxEnhancementLevel);
+        if (enhancement !== null && enhancement > 0) {
+            rows.push(['强化', '+' + enhancement
+                + (maxEnhancement !== null && maxEnhancement > 0
+                    ? ' / +' + maxEnhancement : '')]);
+        }
+        if (item.rarity) rows.push(['稀有度', item.rarity]);
+        if (item.setName) rows.push(['套装', item.setName
+            + (finiteNumber(item.setOrder) > 0 ? ' · 第 ' + Number(item.setOrder) + ' 件' : '')]);
+        var quantity = finiteNumber(item.quantity);
+        if (quantity !== null && quantity > 1) rows.push(['数量', quantity]);
+        if (item.tierSlotAvailable === true) {
+            rows.push(['进阶', item.tierSlotUsed === true ? '已安装' : '可安装']);
+        }
+        var modCapacity = finiteNumber(item.modSlotCapacity);
+        var modUsed = finiteNumber(item.modSlotUsed);
+        if (modCapacity !== null && modCapacity > 0) {
+            rows.push(['插件', Math.max(0, modUsed || 0) + ' / ' + modCapacity]);
+        }
+        var weight = finiteNumber(item.balanceSummary && item.balanceSummary.weightLayers);
+        if (weight !== null) rows.push(['重量层', weight]);
+        var html = '<div class="kshop-tt-header"><b>'
+            + escapeHtml(item.displayName || '未知物品') + '</b></div>'
+            + '<div class="kshop-tt-divider"></div>';
+        for (var i = 0; i < rows.length; i++) {
+            html += '<span class="kshop-tt-dim">' + escapeHtml(rows[i][0])
+                + '</span> ' + escapeHtml(rows[i][1]) + '<br>';
+        }
+        var mods = Array.isArray(item.modSlots) ? item.modSlots : [];
+        for (i = 0; i < mods.length; i++) {
+            var mod = mods[i] || {};
+            html += '<span class="kshop-tt-dim">插件 ' + (i + 1) + '</span> '
+                + escapeHtml(mod.displayName || '未命名插件')
+                + (mod.gradeLabel ? ' · ' + escapeHtml(mod.gradeLabel) : '')
+                + (mod.roleLabel ? ' · ' + escapeHtml(mod.roleLabel) : '') + '<br>';
+        }
+        return '<div class="character-build-loadout-tt-context">' + html
+            + '<div class="kshop-tt-loading">正在读取完整说明…</div></div>';
+    }
+    function loadoutRichTooltipHtml(item, slotLabel, tooltip, response) {
+        var data = response && response.payload;
+        if (!data || !tooltip || typeof tooltip.buildItemRichHtml !== 'function') {
+            return loadoutBasicTooltipHtml(item, slotLabel);
+        }
+        var iconKey = data.iconName || item && item.icon || '';
+        var meta = '<div class="character-build-loadout-tt-slot"><span class="kshop-tt-dim">当前槽位</span> '
+            + escapeHtml(slotLabel || '已装备') + '</div>';
+        return tooltip.buildItemRichHtml({
+            iconHtml:tooltip.dynamicIconHtml ? tooltip.dynamicIconHtml(iconKey) : '',
+            iconUrl:tooltip.staticIconUrl ? tooltip.staticIconUrl(iconKey) : '',
+            introHTML:data.introHTML || '',
+            descHTML:data.descHTML || '',
+            metaHTML:meta,
+            rootClass:'kshop-tt-rich-context character-build-loadout-tt-context',
+            layoutType:tooltip.inferLayoutType
+                ? tooltip.inferLayoutType(data.itemType || item && (
+                    item.majorType || item.use)) : undefined
+        });
+    }
+    function loadoutFailureTooltipHtml(item, slotLabel) {
+        return loadoutBasicTooltipHtml(item, slotLabel).replace(
+            '正在读取完整说明…',
+            '完整说明暂时读取失败；移开后重新悬停即可重试。');
+    }
+    function loadoutTarget(kind, id) {
+        if (kind === 'armor' || kind === 'weapon') {
+            return {kind:'equipment', slotKey:String(id || '')};
+        }
+        var drugSlot = /^drug([1-4])$/.test(String(id || ''))
+            ? Number(String(id).substring(4)) - 1 : -1;
+        return kind === 'drug' && drugSlot >= 0
+            ? {kind:'drug', drugSlot:drugSlot} : null;
+    }
     function itemAt(collection, id) {
         return collection && Object.prototype.hasOwnProperty.call(collection, id)
             ? collection[id] : null;
@@ -85,6 +192,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
 
     function CharacterBuildView(options) {
         options = options || {};
+        var self = this;
         this._document = options.document || (typeof document !== 'undefined' ? document : null);
         if (!this._document) throw new Error('CharacterBuildView requires a document');
         this._snapshot = null;
@@ -98,6 +206,10 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             ? options.onSlotSelect : function() {};
         this._onCandidateSelect = typeof options.onCandidateSelect === 'function'
             ? options.onCandidateSelect : function() {};
+        this._onCandidateScopeChange = typeof options.onCandidateScopeChange === 'function'
+            ? options.onCandidateScopeChange : function() { return true; };
+        this._onCommitCandidate = typeof options.onCommitCandidate === 'function'
+            ? options.onCommitCandidate : function() {};
         if (typeof options.renderOwnedSlot !== 'function') {
             throw new Error('CharacterBuildView requires InventoryUI.renderOwnedSlot');
         }
@@ -114,14 +226,44 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._activeSlotKey = '';
         this._activeCandidateKey = '';
         this._candidateRequestKey = '';
-        this._candidateFence = 'candidate-view-' + (++candidateViewSequence);
+        this._candidateScope = candidateScope(options.candidateScope) || 'compatible';
+        this._candidateScopeGroup = null;
+        var viewSequence = ++candidateViewSequence;
+        this._candidateFence = 'candidate-view-' + viewSequence;
         this._candidateSequence = 0;
         this._candidateLoadFailed = false;
+        this._candidateFailureCode = '';
+        this._candidateRecoveryPending = false;
+        this._candidateDrag = null;
+        this._candidateDragBroker = null;
+        this._candidateDragActive = false;
+        this._tooltip = options.tooltip || null;
+        this._fetchLoadoutTooltip = typeof options.fetchLoadoutTooltip === 'function'
+            ? options.fetchLoadoutTooltip : null;
+        this._loadoutTooltipCache = {};
+        this._loadoutTooltipEpoch = 0;
+        this._loadoutTooltipScope = this._tooltip
+                && typeof this._tooltip.createScope === 'function'
+            ? this._tooltip.createScope('character-build-loadout-' + viewSequence) : null;
         this._stats = null;
         this._facetCounts = FacetCountsModule.normalize(null);
         this._interactionState = 'opening';
         this._lockedFocusKey = '';
         this._createDOM();
+        this._candidateScopeGroup = new WorkbenchComponents.ChoiceGroup({
+            document:this._document,
+            value:this._candidateScope,
+            ariaLabel:'背包候选范围',
+            className:'character-build-candidate-scope',
+            choices:[
+                {value:'compatible', label:'兼容',
+                    ariaLabel:'只显示与当前槽位兼容的背包候选'},
+                {value:'backpack', label:'背包',
+                    ariaLabel:'显示背包全部物品'}
+            ],
+            onChange:function(scope) { return self._changeCandidateScope(scope); }
+        });
+        this._candidateScopeGroup.mount(this._candidateScopeMount);
         this.setDensity(this._density);
         this._statsView = new StatsViewModule.StatsView({
             host:this._statsGrid,
@@ -132,7 +274,6 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         });
         this._createFocusControllers();
         this._bindInteractions();
-        var self = this;
         this._actionView = new ActionViewModule.ActionView({
             root:this.root, candidateList:this._candidateList, overlayCopy:this._overlayCopy,
             getCandidate:function(key) { return self._candidateByKey(key || self._selectedCandidateKey); },
@@ -140,8 +281,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             getSlotKey:function() { return self._selectedSlotKey; },
             selectCandidate:function(key) { return self._selectCandidate(key); },
             clearCandidateSelection:function() { return self.clearCandidateSelection(); },
-            onCommit:typeof options.onCommitCandidate === 'function'
-                ? options.onCommitCandidate : function() {},
+            onCommit:this._onCommitCandidate,
             onTune:typeof options.onTune === 'function' ? options.onTune : function() {},
             onUnequip:typeof options.onUnequip === 'function' ? options.onUnequip : function() {},
             onReconcile:typeof options.onReconcile === 'function' ? options.onReconcile : function() {}
@@ -152,12 +292,18 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             countNode:this._candidateCount,
             renderOwnedSlot:this._renderOwnedSlot,
             iconHtml:this._iconHtml,
-            bindTooltip:options.bindCandidateTooltip,
+            bindTooltip:function(node, candidate) {
+                return typeof options.bindCandidateTooltip === 'function'
+                    ? options.bindCandidateTooltip(node, candidate, function() {
+                        return self._candidateDragActive;
+                    }) : null;
+            },
             onBlocked:function(candidate, context) {
                 return self._explainBlockedCandidate(candidate, context);
             },
             onRetry:function(requestKey) { return self._retryCandidates(requestKey); }
         });
+        this._installCandidateDrag();
         this._setCandidateState('unselected', [], '');
     }
     CharacterBuildView.prototype._createDOM = function() {
@@ -184,6 +330,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._slotFocusSummary = root.querySelector('[data-focus-summary]');
         this._candidateList = root.querySelector('[data-candidate-list]');
         this._candidateCount = root.querySelector('[data-candidate-count]');
+        this._candidateScopeMount = root.querySelector('[data-build-candidate-scope-mount]');
         this._candidateFocusSummary = root.querySelector('[data-candidate-focus-summary]');
         this._statsRoot = root.querySelector('.character-build-stats-page');
         this._statsScroll = root.querySelector('[data-scroll-region="stats"]');
@@ -251,6 +398,11 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             if (slot) self._selectSlot(slot.getAttribute('data-roving-key'), 'click');
         });
         listen(this._listeners, this._candidateList, 'click', function(event) {
+            if (self._candidateDrag && self._candidateDrag.consumeClick()) {
+                if (event.preventDefault) event.preventDefault();
+                if (event.stopPropagation) event.stopPropagation();
+                return;
+            }
             var candidate = closest(event.target, '[data-roving-key]', self._candidateList);
             if (!candidate || self._interactionState !== 'idle') return;
             var key = candidate.getAttribute('data-roving-key');
@@ -289,6 +441,130 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         }
     };
 
+    CharacterBuildView.prototype._candidateDropDecision = function(hit) {
+        if (this._interactionState !== 'idle') return {accepted:false, reason:'write_locked'};
+        if (!this._snapshot || this._snapshot.blocked) {
+            return {accepted:false, reason:'build_blocked'};
+        }
+        if (!hit || !hit.slotKey || hit.slotKey !== this._selectedSlotKey) {
+            return {accepted:false, reason:'target_mismatch'};
+        }
+        var node = hit.node;
+        if (!node || node.disabled || node.getAttribute('data-blocked') === 'true') {
+            return {accepted:false, reason:'target_blocked'};
+        }
+        return {accepted:true, operationId:'character-build.equip-candidate',
+            targetRef:{slotKey:this._selectedSlotKey}};
+    };
+
+    CharacterBuildView.prototype._commitDraggedCandidate = function(candidate, intent) {
+        if (!candidate || !intent || intent.operationId !== 'character-build.equip-candidate'
+                || !intent.targetRef
+                || intent.targetRef.slotKey !== this._selectedSlotKey
+                || this._candidateState.debugState().kind !== 'ready') return false;
+        var current = this._candidateByKey(candidate.key);
+        if (!current || current !== candidate || current.blocked === true
+                || !this._candidateDropDecision({
+                    slotKey:this._selectedSlotKey,
+                    node:this.root.querySelector('[data-roving-key="'
+                        + this._selectedSlotKey.replace(/"/g, '\\"') + '"]')
+                }).accepted) return false;
+        if (!this._selectCandidate(candidate.key)) return false;
+        return this._onCommitCandidate(current) !== false;
+    };
+
+    CharacterBuildView.prototype._setCandidateDragActive = function(active, source) {
+        this._candidateDragActive = active === true;
+        this.root.classList.toggle('character-build-candidate-dragging', this._candidateDragActive);
+        if (source && source.node) {
+            source.node.classList.toggle('character-build-drag-source', this._candidateDragActive);
+        }
+        if (this._candidateDragActive && this._tooltip
+                && typeof this._tooltip.hide === 'function') this._tooltip.hide();
+    };
+
+    CharacterBuildView.prototype._installCandidateDrag = function() {
+        var self = this;
+        var sourceView = {
+            instanceKey:'character-build:filtered-candidates',
+            exportOffer:function(candidate) {
+                if (!candidate || candidate.blocked === true
+                        || self._interactionState !== 'idle'
+                        || !self._snapshot || self._snapshot.blocked
+                        || self._candidateState.debugState().kind !== 'ready') return null;
+                return {
+                    subjectKind:'character-build-candidate',
+                    sourceRef:{candidateKey:String(candidate.key || ''),
+                        requestKey:self._candidateRequestKey}
+                };
+            }
+        };
+        var targetView = {
+            instanceKey:'character-build:selected-slot',
+            probeAccept:function(offer, hit) {
+                if (!offer || offer.subjectKind !== 'character-build-candidate'
+                        || !offer.sourceRef
+                        || offer.sourceRef.requestKey !== self._candidateRequestKey
+                        || !self._candidateByKey(offer.sourceRef.candidateKey)) {
+                    return {accepted:false, reason:'stale_candidate'};
+                }
+                return self._candidateDropDecision(hit);
+            }
+        };
+        this._candidateDragBroker = new WorkbenchPrimitives.InteractionBroker({
+            onIntent:function(intent, context) {
+                self._commitDraggedCandidate(context && context.sourceItem, intent);
+            },
+            onReject:function(result) {
+                if (!result || result.origin !== 'drag') return;
+                self._showStatusNotice('blocked', result.reason === 'write_locked'
+                    ? '构筑正在处理写入，当前拖拽已取消。'
+                    : result.reason === 'target_blocked' || result.reason === 'build_blocked'
+                        ? '当前目标不可装备此候选，现有装备保持不变。'
+                        : '筛选候选只可拖到当前已选槽位。');
+            }
+        });
+        var brokerPort = {
+            select:function() { return true; },
+            dispatch:function(source, item, target, hit, origin) {
+                return self._candidateDragBroker.dispatch(source, item, target, hit, origin);
+            }
+        };
+        this._candidateDrag = new WorkbenchPrimitives.PointerDragController({
+            sourceElement:this._candidateList,
+            broker:brokerPort,
+            getSource:function(target) {
+                if (self._interactionState !== 'idle' || !self._snapshot
+                        || self._snapshot.blocked
+                        || self._candidateState.debugState().kind !== 'ready') return null;
+                var node = closest(target, '[data-candidate-key]', self._candidateList);
+                var candidate = node && self._candidateByKey(
+                    node.getAttribute('data-candidate-key'));
+                return candidate && candidate.blocked !== true
+                    ? {view:sourceView, item:candidate, node:node} : null;
+            },
+            resolveTarget:function(clientX, clientY) {
+                var target = self._document.elementFromPoint(clientX, clientY);
+                var node = closest(target, '.character-build-slot', self.root);
+                if (!node) return null;
+                var hit = {slotKey:node.getAttribute('data-roving-key'), node:node};
+                return {view:targetView, hit:hit, node:node,
+                    accepted:self._candidateDropDecision(hit).accepted};
+            },
+            renderGhost:function(source) {
+                var item = source.item && source.item.presentation || {};
+                var ghost = self._document.createElement('div');
+                ghost.className = 'workbench-drag-ghost inventory-drag-ghost character-build-drag-ghost';
+                ghost.innerHTML = self._iconHtml(item.icon || '', 'inventory-owned-icon')
+                    + '<span>' + escapeHtml(item.displayName || source.item.name || '装备候选')
+                    + '</span>';
+                return ghost;
+            },
+            onDragStart:function(source) { self._setCandidateDragActive(true, source); },
+            onDragEnd:function(source) { self._setCandidateDragActive(false, source); }
+        });
+    };
+
     CharacterBuildView.prototype.mount = function(host) {
         if (this._destroyed || !host) return false;
         if (this.root.parentNode !== host) host.appendChild(this.root);
@@ -307,9 +583,114 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         return true;
     };
 
+    CharacterBuildView.prototype._candidateScopePending = function() {
+        return !!this._candidateState
+            && this._candidateState.debugState().kind === 'loading';
+    };
+
+    CharacterBuildView.prototype._syncCandidateScopeControl = function() {
+        if (!this._candidateScopeGroup) return false;
+        this._candidateScopeGroup.update({
+            value:this._candidateScope,
+            disabled:this._interactionState !== 'idle'
+                || this._candidateScopePending()
+        });
+        return true;
+    };
+
+    CharacterBuildView.prototype._changeCandidateScope = function(scope) {
+        scope = candidateScope(scope);
+        if (!scope || scope === this._candidateScope) return !!scope;
+        if (this._destroyed || this._interactionState !== 'idle'
+                || this._candidateScopePending()) return false;
+
+        var scroll = this._candidateList.parentNode;
+        var previousCandidateState = this._candidateState.debugState();
+        var previous = {
+            scope:this._candidateScope,
+            requestKey:this._candidateRequestKey,
+            selectedCandidateKey:this._selectedCandidateKey,
+            activeCandidateKey:this._activeCandidateKey,
+            candidateLoadFailed:this._candidateLoadFailed,
+            candidateFailureCode:this._candidateFailureCode,
+            candidateRecoveryPending:this._candidateRecoveryPending,
+            kind:previousCandidateState.kind,
+            candidates:this._candidateState.getCandidates(),
+            scrollTop:scroll ? scroll.scrollTop : 0
+        };
+        var previousCandidate = this._candidateByKey(previous.selectedCandidateKey);
+        this._candidateScope = scope;
+        if (scroll) scroll.scrollTop = 0;
+
+        if (!this._selectedSlotKey) {
+            if (this._onCandidateScopeChange(scope, null) === false) {
+                this._candidateScope = previous.scope;
+                this._syncCandidateScopeControl();
+                return false;
+            }
+            this._syncCandidateScopeControl();
+            return true;
+        }
+
+        this._selectedCandidateKey = '';
+        this._activeCandidateKey = '';
+        this._candidateLoadFailed = false;
+        this._candidateFailureCode = '';
+        this._candidateRecoveryPending = false;
+        this._syncCandidateSelection();
+        this._onCandidateSelect(null, {
+            slotKey:this._selectedSlotKey,
+            requestKey:this._candidateRequestKey
+        });
+        this._candidateRequestKey = this._candidateFence + ':'
+            + this._selectedSlotKey + ':' + scope + ':' + (++this._candidateSequence);
+        this._setCandidateState('loading', [], this._candidateRequestKey);
+        this._showBrowsingNotice(scope === 'backpack'
+            ? '正在读取背包全部物品；不兼容物品仅可查看说明…'
+            : '正在读取与当前槽位兼容的背包候选…');
+        var parts = this._selectedSlotKey.split(':');
+        var selection = {
+            key:this._selectedSlotKey,
+            kind:parts.shift(),
+            id:parts.join(':'),
+            requestKey:this._candidateRequestKey,
+            candidateScope:scope
+        };
+        var result = this._onCandidateScopeChange(scope, selection);
+        if (result === false || result == null) {
+            this._candidateScope = previous.scope;
+            this._candidateRequestKey = previous.requestKey;
+            this._selectedCandidateKey = previous.selectedCandidateKey;
+            this._activeCandidateKey = previous.activeCandidateKey;
+            this._candidateLoadFailed = previous.candidateLoadFailed;
+            this._candidateFailureCode = previous.candidateFailureCode;
+            this._candidateRecoveryPending = previous.candidateRecoveryPending;
+            this._setCandidateState(
+                previous.kind,
+                previous.candidates,
+                previous.requestKey);
+            if (scroll) scroll.scrollTop = previous.scrollTop;
+            if (previousCandidate) {
+                this._onCandidateSelect(previousCandidate, {
+                    slotKey:this._selectedSlotKey,
+                    requestKey:previous.requestKey
+                });
+            }
+            this._syncCandidateScopeControl();
+            this._showStatusNotice(
+                'error', '候选范围切换未完成；当前候选保持不变。');
+            return false;
+        }
+        if (Array.isArray(result)) this.setCandidates(selection.requestKey, result);
+        return true;
+    };
+
     CharacterBuildView.prototype._renderSlotGroup = function(grid, definitions, collection, kind, roving) {
         var activeElement = this._document.activeElement;
         var restoreFocus = !!(activeElement && grid.contains(activeElement));
+        if (this._loadoutTooltipScope && this._loadoutTooltipScope.releaseTree) {
+            this._loadoutTooltipScope.releaseTree(grid);
+        }
         var fragment = this._document.createDocumentFragment();
         for (var i = 0; i < definitions.length; i++) {
             var definition = definitions[i];
@@ -343,6 +724,9 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             slot.setAttribute('aria-label', card.getAttribute('aria-label'));
             card.setAttribute('aria-hidden', 'true');
             slot.appendChild(card);
+            if (item) this._bindLoadoutTooltip(
+                slot, key, definition.label, item.presentation || {},
+                loadoutTarget(kind, definition.id));
             var label = this._document.createElement('span');
             label.className = 'character-build-slot-label';
             label.textContent = definition.label;
@@ -360,12 +744,44 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         return true;
     };
 
+    CharacterBuildView.prototype._bindLoadoutTooltip = function(
+            slot, key, slotLabel, projection, target) {
+        if (!target || !this._loadoutTooltipScope
+                || typeof this._loadoutTooltipScope.bindAsync !== 'function') return false;
+        var self = this;
+        slot.setAttribute('data-loadout-tooltip',
+            this._fetchLoadoutTooltip ? 'authoritative' : 'projection-fallback');
+        this._loadoutTooltipScope.bindAsync(slot, {
+            key:'loadout:' + this._loadoutTooltipEpoch + ':' + key,
+            item:projection,
+            cache:this._loadoutTooltipCache,
+            isSuppressed:function() {
+                return self._candidateDragActive || self._interactionState !== 'idle';
+            },
+            renderBasic:function(value) {
+                return loadoutBasicTooltipHtml(value, slotLabel);
+            },
+            renderRich:function(value, response) {
+                return loadoutRichTooltipHtml(value, slotLabel, self._tooltip, response);
+            },
+            renderFailure:function(value) {
+                return loadoutFailureTooltipHtml(value, slotLabel);
+            },
+            fetch:this._fetchLoadoutTooltip ? function(_, callback) {
+                return self._fetchLoadoutTooltip(target, callback);
+            } : null
+        });
+        return true;
+    };
+
     CharacterBuildView.prototype._setCandidateState = function(kind, candidates, requestKey) {
+        if (this._candidateDrag) this._candidateDrag.cancel('candidate_render');
         var activeElement = this._document.activeElement;
         var restoreFocus = !!(activeElement && this._candidateList.contains(activeElement));
         this._candidateState.render(kind, candidates, requestKey);
         this._candidateRoving.refresh({preferredKey:this._activeCandidateKey, focus:restoreFocus});
         this._syncCandidateSelection();
+        this._syncCandidateScopeControl();
         return true;
     };
 
@@ -390,7 +806,14 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
 
     CharacterBuildView.prototype.setInteractionState = function(state) {
         state = String(state || 'opening');
+        if (state !== 'idle' && this._candidateDrag) {
+            this._candidateDrag.cancel('interaction_locked');
+        }
         var previous = this._interactionState;
+        if (previous === 'idle' && state !== 'idle'
+                && this._tooltip && typeof this._tooltip.hide === 'function') {
+            this._tooltip.hide();
+        }
         var active = closest(this._document.activeElement, '[data-roving-key]', this.root);
         if (previous === 'idle' && state !== 'idle') {
             this._lockedFocusKey = active ? active.getAttribute('data-roving-key') : '';
@@ -403,6 +826,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._weaponRoving.refresh({preferredKey:this._activeSlotKey});
         this._drugRoving.refresh({preferredKey:this._activeSlotKey});
         this._candidateRoving.refresh({preferredKey:this._activeCandidateKey});
+        this._syncCandidateScopeControl();
         if (state === 'write_pending') {
             this._showStatusNotice(
                 'write',
@@ -451,6 +875,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             activeCandidateKey:this._activeCandidateKey,
             candidateRequestKey:this._candidateRequestKey,
             candidateLoadFailed:this._candidateLoadFailed,
+            candidateFailureCode:this._candidateFailureCode,
+            candidateRecoveryPending:this._candidateRecoveryPending,
             candidateState:previousCandidateState.kind,
             candidates:this._candidateState.getCandidates()
         };
@@ -461,8 +887,11 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             this.clearCandidateSelection();
             this._activeCandidateKey = '';
             this._candidateLoadFailed = false;
+            this._candidateFailureCode = '';
+            this._candidateRecoveryPending = false;
             this._candidateRequestKey = this._candidateFence + ':'
-                + this._selectedSlotKey + ':' + (++this._candidateSequence);
+                + this._selectedSlotKey + ':' + this._candidateScope
+                + ':' + (++this._candidateSequence);
             this._setCandidateState('loading', [], this._candidateRequestKey);
             this._showBrowsingNotice('正在读取当前槽位的背包候选…');
             var parts = this._selectedSlotKey.split(':');
@@ -470,7 +899,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
                 key:this._selectedSlotKey,
                 kind:parts.shift(),
                 id:parts.join(':'),
-                requestKey:this._candidateRequestKey
+                requestKey:this._candidateRequestKey,
+                candidateScope:this._candidateScope
             };
             var result = this._onSlotSelect(selection), deferredSelection = result && result.deferSelection === true;
             if (result === false || result == null || deferredSelection) {
@@ -479,6 +909,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
                 this._activeCandidateKey = previous.activeCandidateKey;
                 this._candidateRequestKey = previous.candidateRequestKey;
                 this._candidateLoadFailed = previous.candidateLoadFailed;
+                this._candidateFailureCode = previous.candidateFailureCode;
+                this._candidateRecoveryPending = previous.candidateRecoveryPending;
                 this._setCandidateState(previous.candidateState, previous.candidates,
                     previous.candidateRequestKey);
                 this._syncSlotSelection();
@@ -603,6 +1035,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
 
     CharacterBuildView.prototype.setSnapshot = function(snapshot) {
         if (this._destroyed) return false;
+        this._loadoutTooltipEpoch++;
+        this._loadoutTooltipCache = {};
         this._snapshot = snapshot || {};
         this._facetCounts =
             FacetCountsModule.normalize(this._snapshot.candidateFacets);
@@ -610,6 +1044,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._selectedCandidateKey = '';
         this._candidateRequestKey = '';
         this._candidateLoadFailed = this.root.getAttribute('data-build-subview') === 'tuning';
+        this._candidateFailureCode = '';
+        this._candidateRecoveryPending = false;
         this.root.setAttribute('data-build-state', this._snapshot.blocked ? 'blocked' : 'ready');
         this._renderSlotGroup(
             this._armorGrid, ARMOR_SLOTS, this._snapshot.equipment, 'armor', this._armorRoving);
@@ -633,6 +1069,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
                 || !this._selectedSlotKey) return false;
         candidates = Array.isArray(candidates) ? candidates.slice() : [];
         this._candidateLoadFailed = false;
+        this._candidateFailureCode = '';
+        this._candidateRecoveryPending = false;
         this._selectedCandidateKey = '';
         this._activeCandidateKey = '';
         this._setCandidateState(candidates.length ? 'ready' : 'empty',
@@ -643,18 +1081,38 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             this._notice.setAttribute('data-notice-kind', 'blocked');
         } else {
             this._showBrowsingNotice(candidates.length
-                ? '已读取当前槽位候选；选择候选只会更新临时预览。'
-                : '当前背包没有可用于该槽位的候选。');
+                ? this._candidateScope === 'backpack'
+                    ? '已读取背包全部物品；不兼容物品可查看说明但不能装备。'
+                    : '已读取当前槽位候选；选择候选只会更新临时预览。'
+                : this._candidateScope === 'backpack'
+                    ? '当前背包没有可显示的物品。'
+                    : '当前背包没有可用于该槽位的候选。');
         }
         return true;
     };
 
-    CharacterBuildView.prototype.setCandidateFailure = function(requestKey) {
+    CharacterBuildView.prototype.beginCandidateRecovery = function(requestKey) {
+        if (this._destroyed || !requestKey || requestKey !== this._candidateRequestKey
+                || !this._selectedSlotKey) return false;
+        this._candidateLoadFailed = false;
+        this._candidateFailureCode = 'stale_state';
+        this._candidateRecoveryPending = true;
+        this._setCandidateState('loading', [], requestKey);
+        this._showStatusNotice(
+            'pending', '装备状态已更新；正在刷新当前槽位与可用候选…');
+        return true;
+    };
+
+    CharacterBuildView.prototype.setCandidateFailure = function(requestKey, error) {
         if (this._destroyed || !requestKey || requestKey !== this._candidateRequestKey
                 || !this._selectedSlotKey) return false;
         this._candidateLoadFailed = true;
+        this._candidateFailureCode = text(error, 'candidate_read_failed');
+        this._candidateRecoveryPending = false;
         this._setCandidateState('error', [], requestKey);
-        this._showStatusNotice('error', '候选读取失败；可安全重试当前槽位，不会改动装备。');
+        this._showStatusNotice('error', this._candidateFailureCode === 'snapshot_refresh_failed'
+            ? '装备状态刷新失败；可安全重试当前槽位，不会改动装备。'
+            : '候选读取失败；可安全重试当前槽位，不会改动装备。');
         return true;
     };
 
@@ -664,7 +1122,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         if (!node) return false;
         this._activeSlotKey = String(key);
         this._candidateList.parentNode.scrollTop = 0;
-        this._selectSlot(this._activeSlotKey);
+        if (!this._selectSlot(this._activeSlotKey)) return false;
         try { node.focus({preventScroll:true}); } catch (_) { node.focus(); }
         return true;
     };
@@ -717,12 +1175,21 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         return {
             mounted:this._mounted,
             density:this._density,
+            candidateScope:this._candidateScope,
+            candidateScopePending:this._candidateScopePending(),
             selectedSlotKey:this._selectedSlotKey,
             selectedCandidateKey:this._selectedCandidateKey,
             activeSlotKey:this._activeSlotKey,
             activeCandidateKey:this._activeCandidateKey,
             candidateRequestKey:this._candidateRequestKey,
             candidateLoadFailed:this._candidateLoadFailed,
+            candidateFailureCode:this._candidateFailureCode,
+            candidateRecoveryPending:this._candidateRecoveryPending,
+            candidateDrag:{
+                active:this._candidateDragActive,
+                controller:this._candidateDrag && this._candidateDrag.debugState
+                    ? this._candidateDrag.debugState() : null
+            },
             candidateCount:this._candidateState.debugState().count,
             candidateState:this._candidateState.debugState(),
             statsOpen:this._statsPage.isActive(),
@@ -734,12 +1201,22 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
     CharacterBuildView.prototype.destroy = function() {
         if (this._destroyed) return false;
         this._destroyed = true;
+        if (this._candidateDrag) this._candidateDrag.destroy();
+        this._candidateDrag = null;
+        this._candidateDragBroker = null;
+        this._setCandidateDragActive(false);
+        if (this._candidateScopeGroup) this._candidateScopeGroup.destroy();
+        this._candidateScopeGroup = null;
         this._armorRoving.destroy();
         this._weaponRoving.destroy();
         this._drugRoving.destroy();
         this._candidateRoving.destroy();
         this._actionView.destroy();
         this._candidateState.destroy();
+        if (this._loadoutTooltipScope && this._loadoutTooltipScope.dispose) {
+            this._loadoutTooltipScope.dispose();
+        }
+        this._loadoutTooltipScope = null;
         this._dollPreview.destroy();
         this._statsPage.destroy();
         for (var i = this._listeners.length - 1; i >= 0; i--) this._listeners[i]();

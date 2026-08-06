@@ -908,26 +908,45 @@ namespace Launcher.Tests.Tasks
         public void CloseBeforeWriteTimeout_BackgroundReconcileSettlesAndRunsCleanupWithoutReopen()
         {
             var sent = new List<JObject>();
+            var logs = new List<string>();
             // The same timeout guards the emitted background snapshot.
             // Leave the full-suite worker enough time to answer that probe.
-            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 250))
+            LogManager.SetSink(logs.Add);
+            try
             {
-                task.HandleWebRequest("equip", Request("equip", "skill.background.close.first"));
-                Assert.True(task.HandlePanelClosed("skills.instance.1"));
+                using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 250))
+                {
+                    task.HandleWebRequest("equip", Request("equip", "skill.background.close.first"));
+                    Assert.True(task.HandlePanelClosed("skills.instance.1"));
 
-                Assert.True(SpinWait.SpinUntil(() => sent.Count >= 2, 2000));
-                Assert.Equal("skillSnapshot", (string)sent[1]["action"]);
-                Assert.Equal("manage", (string)sent[1]["view"]);
-                JObject reconciled = Snapshot(13, 4, "闪现");
-                reconciled["task"] = "skill_response";
-                reconciled["callId"] = (int)sent[1]["callId"];
-                task.HandleFlashResponse(reconciled, null);
+                    Assert.True(SpinWait.SpinUntil(() => sent.Count >= 2, 2000));
+                    Assert.Equal("skillSnapshot", (string)sent[1]["action"]);
+                    Assert.Equal("manage", (string)sent[1]["view"]);
+                    JObject reconciled = Snapshot(13, 4, "闪现");
+                    reconciled["task"] = "skill_response";
+                    reconciled["callId"] = (int)sent[1]["callId"];
+                    task.HandleFlashResponse(reconciled, null);
 
-                Assert.Equal("idle", task.WriteState);
-                Assert.Equal("skillPanelClose", (string)sent[2]["action"]);
-                task.HandleFlashResponse(CleanupAck((int)sent[2]["callId"], 13), null);
-                Assert.True(task.CanOpenTrainer);
+                    Assert.Equal("idle", task.WriteState);
+                    Assert.Equal("skillPanelClose", (string)sent[2]["action"]);
+                    task.HandleFlashResponse(CleanupAck((int)sent[2]["callId"], 13), null);
+                    Assert.True(task.CanOpenTrainer);
+                }
             }
+            finally
+            {
+                LogManager.ResetSink();
+            }
+
+            string binding = Assert.Single(logs.FindAll(line =>
+                line.StartsWith(
+                    "event=authority_flash_call_bound ",
+                    StringComparison.Ordinal)));
+            Assert.Contains(" webCallId=skill.background.close.first ", binding);
+            Assert.Contains(" cmd=equip action=skillEquip", binding);
+            Assert.DoesNotContain(
+                " flashCallId=" + (int)sent[1]["callId"] + " ",
+                binding);
         }
 
         [Fact]
@@ -1178,6 +1197,72 @@ namespace Launcher.Tests.Tasks
                 Assert.Null(
                     unbound["canReturnCharacterBuild"]);
             }
+        }
+
+        [Fact]
+        public void LearnCommit_LogManagerCaptureNeverContainsRawAuthorityToken()
+        {
+            const string secret = "learn.log.secret.1";
+            var sent = new List<JObject>();
+            var logs = new List<string>();
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                using (var task = NewTask(
+                    value =>
+                    {
+                        sent.Add(ParseWire(value));
+                        return true;
+                    }))
+                {
+                    BindTrainerContext(task);
+                    task.HandleWebRequest(
+                        "learnPreview",
+                        Request("learnPreview", "skill.log.preview"));
+                    task.HandleFlashResponse(
+                        PreviewResponse(
+                            (int)sent[0]["callId"],
+                            secret,
+                            1),
+                        null);
+
+                    JObject commit = Request(
+                        "learnCommit",
+                        "skill.log.commit");
+                    commit["payload"]["expectedLearnToken"] = secret;
+                    task.HandleWebRequest("learnCommit", commit);
+                }
+            }
+            finally
+            {
+                LogManager.ResetSink();
+            }
+
+            string flashLog = Assert.Single(
+                logs.FindAll(line =>
+                    line.Contains("[SkillTask] -> Flash:")
+                    && line.Contains("cmd=skillLearnCommit")));
+            JObject command = sent[sent.Count - 1];
+            string binding = Assert.Single(
+                logs.FindAll(line =>
+                    line.StartsWith(
+                        "event=authority_flash_call_bound ",
+                        StringComparison.Ordinal)
+                    && line.EndsWith(
+                        " cmd=learnCommit action=skillLearnCommit",
+                        StringComparison.Ordinal)));
+            Assert.Equal(
+                "event=authority_flash_call_bound domain=skills"
+                + " webCallId=skill.log.commit"
+                + " flashCallId=" + (int)command["callId"]
+                + " panel=skills panelInstanceId=skills.instance.trainer"
+                + " cmd=learnCommit action=skillLearnCommit",
+                binding);
+            Assert.All(logs, line => Assert.DoesNotContain(secret, line));
+            Assert.Contains(
+                "expectedLearnTokenRef="
+                    + AuthorityLogFormatter.CreateReference(secret),
+                flashLog);
         }
 
         private static SkillTask NewTask(Func<string, bool> send, List<JObject> web = null, int timeout = 10000)

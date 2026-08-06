@@ -882,11 +882,11 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
             });
             const loadout = report.sent.filter(message => message.domain === 'loadout');
             const whitelist = [
-                'snapshot', 'candidates', 'flushLive', 'statsSnapshot', 'finalize',
+                'snapshot', 'candidates', 'tooltip', 'flushLive', 'statsSnapshot', 'finalize',
                 'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug'
             ];
             if (!loadout.length || loadout.some(message => !whitelist.includes(message.cmd))) {
-                throw new Error('production route escaped the nine-command whitelist');
+                throw new Error('production route escaped the ten-command whitelist');
             }
             if (report.renderer.maxActive !== 1 || report.renderer.active !== 0) {
                 throw new Error('renderer ownership did not settle: '

@@ -75,6 +75,16 @@
             : 'inventory:' + normalized.containerId + ':' + normalized.slot;
     }
 
+    function diagnosticAuthoritySourceKey(source) {
+        var normalized = normalizeTuningSource(source);
+        if (!normalized) return '';
+        return normalized.sourceKind === 'loadout'
+            ? 'loadout:' + normalized.sessionGeneration + ':' + normalized.slotKey
+                + ':' + normalized.expectedLoadoutRevision
+            : 'inventory:' + normalized.containerId + ':' + normalized.slot
+                + ':' + normalized.expectedLease;
+    }
+
     function sameLoadoutIdentity(left, right) {
         left = normalizeTuningSource(left);
         right = normalizeTuningSource(right);
@@ -332,7 +342,30 @@
         return '强化至 +' + target + (cost > 0 ? ' · ' + cost + ' 强化石' : '');
     }
 
-    function equipmentDiff(left, right) {
+    var UNKNOWN_MOD_DISPLAY = '未知配件';
+
+    function isPresentationText(value) {
+        return typeof value === 'string' && value.trim().length > 0
+            && value.trim().toLowerCase() !== 'undefined';
+    }
+
+    function modPresentationForItem(candidates, itemName) {
+        candidates = candidates instanceof Array ? candidates : [];
+        for (var index = 0; index < candidates.length; index++) {
+            var candidate = candidates[index];
+            if (!candidate || candidate.itemName !== itemName) continue;
+            if (!isPresentationText(candidate.displayName)
+                    || !isPresentationText(candidate.icon)) break;
+            return {
+                displayName:candidate.displayName,
+                icon:candidate.icon,
+                known:true
+            };
+        }
+        return {displayName:UNKNOWN_MOD_DISPLAY, icon:'', known:false};
+    }
+
+    function equipmentDiff(left, right, modCandidates) {
         var parts = [];
         var levelBefore = Number(left.level || 0), levelAfter = Number(right.level || 0);
         if (levelBefore !== levelAfter) parts.push('+' + levelBefore + ' → +' + levelAfter);
@@ -341,8 +374,12 @@
         var afterMods = right.mods || [];
         var removed = beforeMods.filter(function(m) { return afterMods.indexOf(m) < 0; });
         var added = afterMods.filter(function(m) { return beforeMods.indexOf(m) < 0; });
-        if (removed.length) parts.push('卸下 ' + removed.join('、'));
-        if (added.length) parts.push('安装 ' + added.join('、'));
+        if (removed.length) parts.push('卸下 ' + removed.map(function(itemName) {
+            return modPresentationForItem(modCandidates, itemName).displayName;
+        }).join('、'));
+        if (added.length) parts.push('安装 ' + added.map(function(itemName) {
+            return modPresentationForItem(modCandidates, itemName).displayName;
+        }).join('、'));
         return parts.join(' · ');
     }
 
@@ -352,6 +389,7 @@
         refKey:refKey,
         normalizeTuningSource:normalizeTuningSource,
         tuningSourceKey:tuningSourceKey,
+        diagnosticAuthoritySourceKey:diagnosticAuthoritySourceKey,
         sameLoadoutIdentity:sameLoadoutIdentity,
         tuningSourceSupports:tuningSourceSupports,
         tuningSnapshotRequest:tuningSnapshotRequest,
@@ -382,6 +420,8 @@
         buildModFilterTree:buildModFilterTree,
         modMatchesFilter:modMatchesFilter,
         commitLabel:commitLabel,
+        UNKNOWN_MOD_DISPLAY:UNKNOWN_MOD_DISPLAY,
+        modPresentationForItem:modPresentationForItem,
         equipmentDiff:equipmentDiff
     };
 });

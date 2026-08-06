@@ -35,6 +35,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testWireShapeAndReconcileBarrier();
         testInstallAndEnhanceCommit();
         testSnapshotAndDetachInvalidateTokens();
+        testPreviewAttemptRevokesPreviousToken();
         testSameLevelConvertNoOp();
         testStaleMaterialAndFailureRollback();
         testCandidateAvailabilityRequiresOwnedMaterial();
@@ -72,6 +73,10 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 catalogScope:"firearm",uiScopeLabel:"枪械",
                 uiRole:"precision",uiRoleLabel:"精准与操控",uiSymbol:"triangle-outline",
                 tag:"握柄包覆"},
+            {name:"光棱射线弹-强化",use:"手枪",detachPolicy:"single"},
+            {name:"光谱射线弹",use:"手枪",detachPolicy:"single"},
+            {name:"光谱射线弹-强化",use:"手枪",detachPolicy:"single"},
+            {name:"遗留握柄",use:"长枪",detachPolicy:"single"},
             {name:"级联核心",use:"手枪",detachPolicy:"cascade"}
         ]);
         ItemUtil.loadItemData([
@@ -93,6 +98,10 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             {name:"基础导轨",displayname:"基础导轨",icon:"测试",type:"收集品",use:"材料",data:{}},
             {name:"依赖瞄具",displayname:"依赖瞄具",icon:"测试",type:"收集品",use:"材料",data:{}},
             {name:"普通握把",displayname:"人体工学握把",icon:"握把专用图标",type:"收集品",use:"材料",data:{}},
+            {name:"光棱射线弹-强化",displayname:"棱镜折射阵列",icon:"全光谱棱镜阵列",type:"收集品",use:"材料",data:{}},
+            {name:"光谱射线弹",displayname:"色散射线弹",icon:"棱栅射线弹",type:"收集品",use:"材料",data:{}},
+            {name:"光谱射线弹-强化",displayname:"全谱色散引擎",icon:"环式棱栅折射阵列",type:"收集品",use:"材料",data:{}},
+            {name:"遗留握柄",displayname:"旧式握柄展示",icon:"旧式握柄图标",type:"收集品",use:"材料",data:{}},
             {name:"级联核心",displayname:"级联核心",icon:"测试",type:"收集品",use:"材料",data:{}}
         ]);
         _root.物品栏 = {
@@ -461,6 +470,73 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             "detach 幂等撤销 session/plan，旧 token 后续 commit 必败且零写");
     }
 
+    private static function testPreviewAttemptRevokesPreviousToken():Void {
+        resetFixture();
+        var item:BaseItem = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.add("强化石", 10);
+        var lease:Object = sourceRef(inventorySnapshot(), 0);
+        var snapshotParams:Object = params("preview-generation");
+        snapshotParams.source = lease;
+        EquipmentTuningService.execute("snapshot", snapshotParams);
+
+        var previewAParams:Object = params("preview-generation");
+        previewAParams.operation = "enhance";
+        previewAParams.source = lease;
+        previewAParams.targetLevel = 2;
+        var previewA:Object = EquipmentTuningService.execute(
+            "preview", previewAParams);
+        var previewBParams:Object = params("preview-generation");
+        previewBParams.operation = "enhance";
+        previewBParams.source = lease;
+        previewBParams.targetLevel = 3;
+        var previewB:Object = EquipmentTuningService.execute(
+            "preview", previewBParams);
+        var commitAParams:Object = params("preview-generation");
+        commitAParams.expectedTuningToken = previewA.tuningToken;
+        var commitA:Object = EquipmentTuningService.execute(
+            "commit", commitAParams);
+        var commitBParams:Object = params("preview-generation");
+        commitBParams.expectedTuningToken = previewB.tuningToken;
+        var commitB:Object = EquipmentTuningService.execute(
+            "commit", commitBParams);
+        assertTrue(previewA.success && previewB.success
+                && !commitA.success && commitA.error == "token_invalid"
+                && commitB.success && item.value.level == 3
+                && _root.收集品栏.材料.getValue("强化石") == 7,
+            "成功 preview B 立即替代 A；A 零写拒绝且 B 仍可一次提交");
+
+        resetFixture();
+        item = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.add("强化石", 10);
+        lease = sourceRef(inventorySnapshot(), 0);
+        snapshotParams = params("preview-failure-generation");
+        snapshotParams.source = lease;
+        EquipmentTuningService.execute("snapshot", snapshotParams);
+        previewAParams = params("preview-failure-generation");
+        previewAParams.operation = "enhance";
+        previewAParams.source = lease;
+        previewAParams.targetLevel = 2;
+        previewA = EquipmentTuningService.execute(
+            "preview", previewAParams);
+        var failedParams:Object = params("preview-failure-generation");
+        failedParams.operation = "enhance";
+        failedParams.source = lease;
+        failedParams.targetLevel = 99;
+        var failedPreview:Object = EquipmentTuningService.execute(
+            "preview", failedParams);
+        commitAParams = params("preview-failure-generation");
+        commitAParams.expectedTuningToken = previewA.tuningToken;
+        commitA = EquipmentTuningService.execute(
+            "commit", commitAParams);
+        assertTrue(previewA.success && !failedPreview.success
+                && !commitA.success && commitA.error == "token_invalid"
+                && item.value.level == 1
+                && _root.收集品栏.材料.getValue("强化石") == 10,
+            "同 session 新 preview 即使业务失败也撤销 A，旧 token 后续提交零写拒绝");
+    }
+
     private static function testSameLevelConvertNoOp():Void {
         resetFixture();
         var first:BaseItem = equipment("测试手枪A", 2, []);
@@ -604,13 +680,118 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 modCandidate = snapshot.modCandidates[i];
             }
         }
-        assertTrue(modCandidate != null && modCandidate.owned == 0
+        var identityProjectionOk:Boolean = modCandidate != null && modCandidate.owned == 0
                 && modCandidate.available == false && modCandidate.reason == "material_missing"
                 && modCandidate.grade == "medium" && modCandidate.scope == "firearm"
                 && modCandidate.role == "precision" && modCandidate.symbol == "triangle-outline"
                 && modCandidate.displayName == "人体工学握把"
-                && modCandidate.icon == "握把专用图标",
-            "mod 候选投影内部名、显示名、图标与目录元数据");
+                && modCandidate.icon == "握把专用图标";
+        var identityFixtures:Array = [
+            {itemName:"光棱射线弹-强化", displayName:"棱镜折射阵列", icon:"全光谱棱镜阵列"},
+            {itemName:"光谱射线弹", displayName:"色散射线弹", icon:"棱栅射线弹"},
+            {itemName:"光谱射线弹-强化", displayName:"全谱色散引擎", icon:"环式棱栅折射阵列"}
+        ];
+        for (var fixtureIndex:Number = 0; fixtureIndex < identityFixtures.length; fixtureIndex++) {
+            var expectedIdentity:Object = identityFixtures[fixtureIndex];
+            var projectedIdentity:Object = null;
+            for (i = 0; i < snapshot.modCandidates.length; i++) {
+                if (snapshot.modCandidates[i].itemName == expectedIdentity.itemName) {
+                    projectedIdentity = snapshot.modCandidates[i];
+                    break;
+                }
+            }
+            identityProjectionOk = identityProjectionOk && projectedIdentity != null
+                && String(projectedIdentity.candidateKey).indexOf("mod.") == 0
+                && projectedIdentity.itemName == expectedIdentity.itemName
+                && projectedIdentity.displayName == expectedIdentity.displayName
+                && projectedIdentity.icon == expectedIdentity.icon;
+        }
+        var selectorDriftParams:Object = params("availability");
+        selectorDriftParams.operation = "install_mod";
+        selectorDriftParams.source = lease;
+        selectorDriftParams.candidateKey = "棱镜折射阵列";
+        var selectorDrift:Object = EquipmentTuningService.execute(
+            "preview", selectorDriftParams);
+        identityProjectionOk = identityProjectionOk && !selectorDrift.success
+            && selectorDrift.error == "unknown_candidate";
+
+        ItemUtil.getRawItemData("普通握把").displayname = " \t ";
+        ItemUtil.getRawItemData("普通握把").icon = " undefined ";
+        ItemUtil.getRawItemData("光棱射线弹-强化").displayname =
+            " UnDeFiNeD ";
+        ItemUtil.getRawItemData("光棱射线弹-强化").icon = "\r\n";
+        snapshotParams = params("availability-sentinel");
+        snapshotParams.source = lease;
+        snapshot = EquipmentTuningService.execute(
+            "snapshot", snapshotParams).snapshot;
+        var fallbackGrip:Object = null;
+        var fallbackRay:Object = null;
+        for (i = 0; i < snapshot.modCandidates.length; i++) {
+            if (snapshot.modCandidates[i].itemName == "普通握把") {
+                fallbackGrip = snapshot.modCandidates[i];
+            }
+            if (snapshot.modCandidates[i].itemName ==
+                    "光棱射线弹-强化") {
+                fallbackRay = snapshot.modCandidates[i];
+            }
+        }
+        var fallbackTooltipParams:Object = params(
+            "availability-sentinel");
+        fallbackTooltipParams.candidateKey =
+            String(fallbackGrip.candidateKey);
+        var fallbackTooltip:Object = EquipmentTuningService.execute(
+            "tooltip", fallbackTooltipParams);
+        identityProjectionOk = identityProjectionOk
+            && fallbackGrip.displayName == "普通握把"
+            && fallbackGrip.icon == "普通握把"
+            && fallbackRay.displayName == "光棱射线弹-强化"
+            && fallbackRay.icon == "光棱射线弹-强化"
+            && fallbackTooltip.success
+            && fallbackTooltip.text == "普通握把";
+        assertTrue(identityProjectionOk,
+            "mod 三名全异候选分工投影，哨兵展示叶回退内部名，且显示名不能代替 candidateKey");
+
+        ItemUtil.getRawItemData("普通握把").displayname = 73;
+        ItemUtil.getRawItemData("普通握把").icon = {bad:true};
+        ItemUtil.getRawItemData("测试手枪A").displayname = {bad:true};
+        ItemUtil.getRawItemData("测试手枪A").icon = 74;
+        ItemUtil.getRawItemData("强化石").displayname = 75;
+        ItemUtil.getRawItemData("强化石").icon = {bad:true};
+        snapshotParams = params("availability-wrong-type");
+        snapshotParams.source = lease;
+        snapshot = EquipmentTuningService.execute(
+            "snapshot", snapshotParams).snapshot;
+        var wrongTypeGrip:Object = null;
+        var wrongTypeStone:Object = null;
+        for (i = 0; i < snapshot.modCandidates.length; i++) {
+            if (snapshot.modCandidates[i].itemName == "普通握把") {
+                wrongTypeGrip = snapshot.modCandidates[i];
+                break;
+            }
+        }
+        for (i = 0; i < snapshot.materials.length; i++) {
+            if (snapshot.materials[i].itemName == "强化石") {
+                wrongTypeStone = snapshot.materials[i];
+                break;
+            }
+        }
+        assertTrue(wrongTypeGrip != null && wrongTypeStone != null
+                && wrongTypeGrip.displayName == "普通握把"
+                && wrongTypeGrip.icon == "普通握把"
+                && snapshot.equipment.displayName == "测试手枪A"
+                && snapshot.equipment.icon == "测试手枪A"
+                && wrongTypeStone.displayName == "强化石"
+                && wrongTypeStone.icon == "强化石",
+            "legacy 展示字段仅接收 string；number/object 在候选、装备与材料投影均回退内部名");
+        var wrongTypeTooltipParams:Object = params(
+            "availability-wrong-type");
+        wrongTypeTooltipParams.candidateKey =
+            String(wrongTypeGrip.candidateKey);
+        var wrongTypeTooltip:Object = EquipmentTuningService.execute(
+            "tooltip", wrongTypeTooltipParams);
+        assertTrue(wrongTypeTooltip.success
+                && wrongTypeTooltip.text == "普通握把",
+            "tooltip 不把 number/object legacy 展示字段强转为伪身份");
         _root.收集品栏.材料.add("普通握把", 1);
         snapshotParams = params("availability");
         snapshotParams.source = sourceRef(inventorySnapshot(), 0);
@@ -729,6 +910,65 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && _root.收集品栏.材料.getValue("依赖瞄具") == 1
                 && _root.收集品栏.材料.getValue("普通握把") == 1,
             "一键卸下在同一材料 batch 中返还全部插件");
+
+        resetFixture();
+        item = equipment("测试手枪A", 1, ["遗留握柄"]);
+        _root.物品栏.背包.add(0, item);
+        var historicalSnapshotParams:Object = params(
+            "detach-policy-historical-snapshot");
+        historicalSnapshotParams.source = sourceRef(
+            inventorySnapshot(), 0);
+        var historicalPreSnapshot:Object = EquipmentTuningService.execute(
+            "snapshot", historicalSnapshotParams).snapshot;
+        var historicalPreMaterial:Object = null;
+        for (var historicalMaterialIndex:Number = 0;
+                historicalMaterialIndex
+                    < historicalPreSnapshot.materials.length;
+                historicalMaterialIndex++) {
+            if (historicalPreSnapshot.materials[
+                    historicalMaterialIndex].itemName
+                    == "遗留握柄") {
+                historicalPreMaterial = historicalPreSnapshot.materials[
+                    historicalMaterialIndex];
+                break;
+            }
+        }
+        var historical:Object = webCommit(
+            "detach-policy-historical", "detach_all_mods", 0, -1,
+            "", undefined);
+        var historicalPostMaterial:Object = null;
+        var historicalSnapshotMaterials:Array = historical.commit != null
+                && historical.commit.snapshot != null
+            ? historical.commit.snapshot.materials : [];
+        for (var materialIndex:Number = 0;
+                materialIndex < historicalSnapshotMaterials.length;
+                materialIndex++) {
+            if (historicalSnapshotMaterials[materialIndex].itemName
+                    == "遗留握柄") {
+                historicalPostMaterial =
+                    historicalSnapshotMaterials[materialIndex];
+                break;
+            }
+        }
+        assertTrue(historical.commit != null && historical.commit.success
+                && item.value.mods.length == 0
+                && historicalPreMaterial != null
+                && historicalPreMaterial.displayName
+                    == "旧式握柄展示"
+                && historicalPreMaterial.icon
+                    == "旧式握柄图标"
+                && historicalPreMaterial.count == 0
+                && historical.commit.materials[0].displayName
+                    == "旧式握柄展示"
+                && historical.commit.materials[0].icon
+                    == "旧式握柄图标"
+                && historicalPostMaterial != null
+                && historicalPostMaterial.displayName
+                    == "旧式握柄展示"
+                && historicalPostMaterial.icon
+                    == "旧式握柄图标"
+                && historicalPostMaterial.count == 1,
+            "已退出可安装池的历史插件在 pre-preview 与 post snapshot 均覆盖返还材料三元身份及计数");
     }
 
     private static function testWebInstallModAndTooltip():Void {
@@ -741,9 +981,16 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         snapshotParams.source = lease;
         var snapshot:Object = EquipmentTuningService.execute("snapshot", snapshotParams);
         var candidateKey:String = "";
+        var snapshotMaterial:Object = null;
         for (var i:Number = 0; i < snapshot.snapshot.modCandidates.length; i++) {
             var candidate:Object = snapshot.snapshot.modCandidates[i];
             if (candidate.itemName == "普通握把") candidateKey = String(candidate.candidateKey);
+        }
+        for (i = 0; i < snapshot.snapshot.materials.length; i++) {
+            if (snapshot.snapshot.materials[i].itemName == "普通握把") {
+                snapshotMaterial = snapshot.snapshot.materials[i];
+                break;
+            }
         }
         var tooltipParams:Object = params("install_mod");
         tooltipParams.candidateKey = candidateKey;
@@ -764,9 +1011,19 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         commitParams.expectedTuningToken = preview.tuningToken;
         var committed:Object = EquipmentTuningService.execute("commit", commitParams);
         assertTrue(preview.success && committed.success
+                && snapshotMaterial != null
+                && snapshotMaterial.itemName == "普通握把"
+                && snapshotMaterial.displayName == "人体工学握把"
+                && snapshotMaterial.icon == "握把专用图标"
+                && preview.materials[0].itemName == "普通握把"
+                && preview.materials[0].displayName == "人体工学握把"
+                && preview.materials[0].icon == "握把专用图标"
+                && committed.materials[0].itemName == "普通握把"
+                && committed.materials[0].displayName == "人体工学握把"
+                && committed.materials[0].icon == "握把专用图标"
                 && item.value.mods.length == 1 && item.value.mods[0] == "普通握把"
                 && _root.收集品栏.材料.getValue("普通握把") == 0,
-            "Web candidate 驱动 install_mod 并原子消费材料");
+            "Web candidate 驱动 install_mod，且 snapshot/preview/commit 材料三元身份一致后原子消费");
         assertTrue(_root._saveExt.成就.cnt["配件安装次数"] == 1,
             "成功安装只记录配件安装次数");
     }

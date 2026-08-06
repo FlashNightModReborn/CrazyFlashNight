@@ -1,7 +1,7 @@
 ﻿/**
  * 角色构筑会话、投影与窄原子写服务。
  *
- * Web domain 暴露 snapshot/candidates、四个显式装备/药剂 mutation、flushLive、
+ * Web domain 暴露 snapshot/candidates/tooltip、四个显式装备/药剂 mutation、flushLive、
  * statsSnapshot/finalize。另有 characterBuildRecoverDetach 仅供 Host 在 Web 文档或
  * socket 丢失后查询并结算 exact orphan authority，不属于 Web 业务命令。服务建立 exact
  * generation，观察 loadout/drug 漂移，投影 11+4 槽与人物信息，并在正常关闭/断线时
@@ -74,6 +74,9 @@ class org.flashNight.arki.item.CharacterBuildService {
         r.gameCommands["characterBuildCandidates"] = function(params) {
             org.flashNight.arki.item.CharacterBuildService.handle("candidates", params);
         };
+        r.gameCommands["characterBuildTooltip"] = function(params) {
+            org.flashNight.arki.item.CharacterBuildService.handle("tooltip", params);
+        };
         r.gameCommands["characterBuildEquipEquipment"] = function(params) {
             org.flashNight.arki.item.CharacterBuildService.handle("equipEquipment", params);
         };
@@ -127,6 +130,8 @@ class org.flashNight.arki.item.CharacterBuildService {
             result = executeSnapshot(params);
         } else if (commandName == "candidates") {
             result = executeCandidates(params);
+        } else if (commandName == "tooltip") {
+            result = executeTooltip(params);
         } else if (commandName == "equipEquipment") {
             result = executeMutation(commandName, params);
         } else if (commandName == "unequipEquipment") {
@@ -891,6 +896,15 @@ class org.flashNight.arki.item.CharacterBuildService {
             && params.drugSlot != null && String(params.drugSlot) != "";
         if (hasEquipment == hasDrug) return fail("invalid_payload");
 
+        // Host/Web 必须显式发送 closed enum；缺失与未知值一律拒绝，避免
+        // scope 缺省值在协议里形成第三种隐含状态。
+        var candidateScope:String = params.candidateScope == undefined
+            || params.candidateScope == null ? "" : String(params.candidateScope);
+        if (candidateScope != "compatible" && candidateScope != "backpack") {
+            return fail("invalid_payload");
+        }
+        var includeBackpack:Boolean = candidateScope == "backpack";
+
         var slotKey:String = "";
         var drugSlot:Number = -1;
         if (hasEquipment) {
@@ -964,31 +978,47 @@ class org.flashNight.arki.item.CharacterBuildService {
                 diagnostics.push("backpack_item_invalid:" + physicalSlot);
                 continue;
             }
-            var itemData:Object = getCandidateItemData(item);
+            var itemData:Object = getEffectiveItemData(item);
             if (itemData == null || typeof itemData != "object"
                     || typeof itemData.use != "string") {
                 diagnostics.push("candidate_catalog_invalid:" + physicalSlot);
                 continue;
             }
             var useName:String = String(itemData.use);
+            var equipmentEligibility:Object = null;
+            if (includeBackpack && hasEquipment) {
+                equipmentEligibility = buildEquipmentEligibility(
+                    item, itemData, playerLevel);
+                if (equipmentEligibility.success !== true) {
+                    diagnostics.push(String(equipmentEligibility.error)
+                        + ":" + physicalSlot);
+                    continue;
+                }
+            }
             var useMatches:Boolean = hasEquipment
-                ? (useName == slotKey
-                    || (slotKey == "手枪2" && useName == "手枪"))
+                ? equipmentUseMatchesSlot(useName, slotKey)
                 : useName == "药剂";
             // 背包中属于其他目标的正常物品只是被筛掉，不把常态异构背包误报为 degraded。
-            if (!useMatches) continue;
+            if (!useMatches && !includeBackpack) continue;
 
             var disabled:Boolean = false;
             var blockedReason:String = "";
-            var shapeError:String = candidateShapeError(
-                item, itemData, hasEquipment, slotKey, playerLevel);
+            // 只有 use 已命中当前目标时才检查该目标的实例形状；全量背包里的
+            // 普通异构物品是可检视的 target_incompatible，不是数据损坏。
+            var shapeError:String = useMatches && equipmentEligibility == null
+                ? candidateShapeError(
+                    item, itemData, hasEquipment, slotKey, playerLevel)
+                : "";
             if (shapeError != "") {
                 diagnostics.push(shapeError + ":" + physicalSlot);
                 continue;
             }
 
-            if (hasEquipment) {
-                // 与现役 ItemUtil.moveItemToEquipment 一致：只读 catalog 等级，
+            if (!useMatches) {
+                disabled = true;
+                blockedReason = "incompatible_item";
+            } else if (hasEquipment) {
+                // 与现役 ItemUtil.moveItemToEquipment 一致：只读实例有效需求等级，
                 // 绝不把实例 value.level（强化度）当角色等级门。
                 if (itemData.data.level > playerLevel) {
                     disabled = true;
@@ -1004,13 +1034,13 @@ class org.flashNight.arki.item.CharacterBuildService {
 
             var projection:Object = buildSafeItemProjection(
                 item, diagnostics, "candidate:" + physicalSlot);
-            // 候选展示里的分类字段也钉回同一次 catalog 读取，避免 item.getData
-            // 与资格判定使用不同来源时让 Host/Web 看见自相矛盾的 use/type。
+            // 候选展示里的分类字段也钉回同一次实例有效数据读取，避免
+            // projection 与资格判定使用不同来源时让 Host/Web 看见自相矛盾的 use/type。
             projection.use = useName;
             if (typeof itemData.type == "string") {
                 projection.majorType = String(itemData.type);
             }
-            candidates.push({
+            var candidateRow:Object = {
                 physicalSlot:physicalSlot,
                 disabled:disabled,
                 blockedReason:blockedReason,
@@ -1020,19 +1050,109 @@ class org.flashNight.arki.item.CharacterBuildService {
                     slot:physicalSlot,
                     expectedLease:lease
                 }
-            });
+            };
+            if (equipmentEligibility != null) {
+                candidateRow.equipmentEligibility = {
+                    slots:equipmentEligibility.slots,
+                    blockedReason:equipmentEligibility.blockedReason
+                };
+            }
+            candidates.push(candidateRow);
         }
 
         current.payload = {
             target:hasEquipment
                 ? {kind:"equipment", slotKey:slotKey}
                 : {kind:"drug", drugSlot:drugSlot},
+            candidateScope:candidateScope,
             candidates:candidates,
             backpackVersion:Number(backpackSnapshot.containerVersion),
             stateHealth:diagnostics.length == 0 ? "ok" : "degraded",
             diagnostics:diagnostics
         };
         return current;
+    }
+
+    /**
+     * 读取当前已穿戴装备或药剂槽的 exact 实例富注释。选择器与两个 revision
+     * 都由 Host 重建；任一状态变化都会返回 stale_state，不回退名称级猜测。
+     */
+    private static function executeTooltip(params:Object):Object {
+        if (!validTooltipEnvelope(params)) return fail("invalid_payload");
+        var identity:Object = panelGate(String(params.panelInstanceId));
+        if (!identity.success) return identity;
+        var current:Object = synchronize(Number(params.sessionGeneration));
+        if (!current.success) return current;
+        if (!expectedRevisionMatches(params.expectedLoadoutRevision,
+                _loadoutRevision)
+                || !expectedRevisionMatches(params.expectedDrugRevision,
+                    _drugRevision)) {
+            return fail("stale_state");
+        }
+
+        var hasEquipment:Boolean = params.slotKey != undefined
+            && params.slotKey != null && String(params.slotKey) != "";
+        var hasDrug:Boolean = params.drugSlot != undefined
+            && params.drugSlot != null && String(params.drugSlot) != "";
+        if (hasEquipment == hasDrug) return fail("invalid_payload");
+
+        var item:Object;
+        var target:Object;
+        var equipmentIndex:Number = -1;
+        var slotKey:String = "";
+        var drugSlot:Number = -1;
+        if (hasEquipment) {
+            slotKey = String(params.slotKey);
+            if (SLOT_ALLOWLIST[slotKey] !== true) return fail("invalid_slot");
+            equipmentIndex = slotIndex(slotKey);
+            item = _equipmentInventory.getItem(slotKey);
+            if (equipmentIndex < 0 || _slotRefs[equipmentIndex] !== item) {
+                return fail("stale_state");
+            }
+            target = {kind:"equipment", slotKey:slotKey};
+        } else {
+            drugSlot = Number(params.drugSlot);
+            if (!wholeInRange(drugSlot, 0, 3)) return fail("invalid_slot");
+            item = _drugInventory.getItem(String(drugSlot));
+            target = {kind:"drug", drugSlot:drugSlot};
+        }
+        if (item == null) return fail("stale_state");
+
+        var tooltip:Object = org.flashNight.arki.item.InventoryPanelService
+            .buildTooltipProjection(item);
+        if (tooltip == null || tooltip.success !== true) {
+            return fail("projection_failed");
+        }
+        // TooltipComposer 是跨模块调用；生成期间即使发生同步回调或容器漂移，
+        // 也不能把旧实例 HTML 包进当前 revision 的成功响应。
+        var fresh:Object = synchronize(Number(params.sessionGeneration));
+        if (!fresh.success) return fresh;
+        if (!expectedRevisionMatches(params.expectedLoadoutRevision,
+                _loadoutRevision)
+                || !expectedRevisionMatches(params.expectedDrugRevision,
+                    _drugRevision)) {
+            return fail("stale_state");
+        }
+        if (hasEquipment) {
+            if (equipmentIndex < 0 || _slotRefs[equipmentIndex] !== item
+                    || _equipmentInventory.getItem(slotKey) !== item) {
+                return fail("stale_state");
+            }
+        } else if (_drugInventory.getItem(String(drugSlot)) !== item) {
+            return fail("stale_state");
+        }
+        // 不把共享 helper 的内部 success 泄漏进领域 payload；Host 对下列字段
+        // 做 exact-shape 校验，Web 只消费当前槽位对应的权威展示投影。
+        return {success:true, payload:{
+            v:1,
+            target:target,
+            itemName:String(tooltip.itemName),
+            displayName:String(tooltip.displayname),
+            iconName:String(tooltip.iconName),
+            itemType:String(tooltip.itemType),
+            descHTML:String(tooltip.descHTML),
+            introHTML:String(tooltip.introHTML)
+        }};
     }
 
     /**
@@ -1094,7 +1214,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         var eligible:Object = validateEquipmentItem(sourceItem, slotKey);
         if (!eligible.success) return eligible;
 
-        // lease/catalog callbacks are module boundaries; recheck target authority afterwards.
+        // lease/effective-data callbacks are module boundaries; recheck target authority afterwards.
         var fresh:Object = synchronize(Number(params.sessionGeneration));
         if (!fresh.success) return fresh;
         if (!expectedRevisionMatches(params.expectedLoadoutRevision,
@@ -1197,7 +1317,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (targetBefore != null) {
             targetEligibility = validateDrugItem(targetBefore);
         }
-        // target catalog lookup is another module boundary. Recheck both
+        // target effective-data lookup is another module boundary. Recheck both
         // containers and the exact target before deriving merge/swap.
         var targetFresh:Object = synchronize(
             Number(params.sessionGeneration));
@@ -1534,13 +1654,12 @@ class org.flashNight.arki.item.CharacterBuildService {
                                                   slotKey:String):Object {
         if (item == null || typeof item.name != "string"
                 || String(item.name) == "") return fail("incompatible_item");
-        var itemData:Object = getCandidateItemData(item);
+        var itemData:Object = getEffectiveItemData(item);
         if (itemData == null || typeof itemData.use != "string") {
             return fail("incompatible_item");
         }
         var useName:String = String(itemData.use);
-        if (useName != slotKey
-                && !(slotKey == "手枪2" && useName == "手枪")) {
+        if (!equipmentUseMatchesSlot(useName, slotKey)) {
             return fail("incompatible_item");
         }
         if (slotKey == "手雷") {
@@ -1571,7 +1690,7 @@ class org.flashNight.arki.item.CharacterBuildService {
                 || !finiteNumber(item.value) || Number(item.value) <= 0) {
             return fail("incompatible_item");
         }
-        var itemData:Object = getCandidateItemData(item);
+        var itemData:Object = getEffectiveItemData(item);
         if (itemData == null || typeof itemData.use != "string"
                 || String(itemData.use) != "药剂") {
             return fail("incompatible_item");
@@ -1650,8 +1769,67 @@ class org.flashNight.arki.item.CharacterBuildService {
         return -1;
     }
 
+    /**
+     * Host 会重建 tooltip 的生产 envelope；AS2 仍独立锁定同一封闭键集，
+     * 避免任何额外选择器或近似字段在权威层被静默忽略。
+     */
+    private static function validTooltipEnvelope(params:Object):Boolean {
+        if (params == null || typeof params != "object"
+                || typeof params.task != "string" || params.task != "cmd"
+                || typeof params.action != "string"
+                || params.action != "characterBuildTooltip"
+                || typeof params.v != "number" || params.v !== 1
+                || typeof params.callId != "number"
+                || !wholeInRange(Number(params.callId), 1, 2147483647)
+                || !validAsciiToken(params.requestCallId, 96, false)
+                || !validAsciiToken(params.panelInstanceId, 128, true)
+                || typeof params.writeEpoch != "number"
+                // Read commands are valid before the first mutation, when Host's
+                // exact session write epoch is still zero.
+                || !wholeInRange(Number(params.writeEpoch), 0, 2147483647)
+                || typeof params.sessionGeneration != "number"
+                || !wholeInRange(
+                    Number(params.sessionGeneration), 1, 2147483647)
+                || typeof params.expectedLoadoutRevision != "number"
+                || !wholeInRange(
+                    Number(params.expectedLoadoutRevision), 0, 2147483647)
+                || typeof params.expectedDrugRevision != "number"
+                || !wholeInRange(
+                    Number(params.expectedDrugRevision), 0, 2147483647)) {
+            return false;
+        }
+        var hasEquipment:Boolean = params.slotKey != undefined
+            && params.slotKey != null;
+        var hasDrug:Boolean = params.drugSlot != undefined
+            && params.drugSlot != null;
+        if (hasEquipment == hasDrug) return false;
+        var allowed:Object = {
+            task:true, action:true, v:true, callId:true,
+            requestCallId:true, panelInstanceId:true, writeEpoch:true,
+            sessionGeneration:true, expectedLoadoutRevision:true,
+            expectedDrugRevision:true
+        };
+        if (hasEquipment) {
+            allowed.slotKey = true;
+            if (typeof params.slotKey != "string"
+                    || SLOT_ALLOWLIST[String(params.slotKey)] !== true) {
+                return false;
+            }
+        } else {
+            allowed.drugSlot = true;
+            if (typeof params.drugSlot != "number"
+                    || !wholeInRange(Number(params.drugSlot), 0, 3)) {
+                return false;
+            }
+        }
+        for (var key:String in params) {
+            if (allowed[key] !== true) return false;
+        }
+        return true;
+    }
+
     private static function validMutationEnvelope(commandName:String,
-                                                  params:Object):Boolean {
+                                                   params:Object):Boolean {
         if (params == null || typeof params != "object") return false;
         var expectedAction:String =
             mutationActionName(commandName);
@@ -1914,7 +2092,7 @@ class org.flashNight.arki.item.CharacterBuildService {
                 return null;
             }
             if (item == null || typeof item.name != "string") continue;
-            var itemData:Object = getCandidateItemData(item);
+            var itemData:Object = getEffectiveItemData(item);
             if (itemData == null || typeof itemData.use != "string") {
                 continue;
             }
@@ -2003,6 +2181,44 @@ class org.flashNight.arki.item.CharacterBuildService {
             return "candidate_level_invalid";
         }
         return "";
+    }
+
+    /**
+     * 装备背包模式只在 AS2 权威层生成一次跨槽 eligibility。Web 只按
+     * exact slotKey 查这份盖章表，不读取 use/type/level 复制资格规则。
+     */
+    private static function buildEquipmentEligibility(
+        item:Object, itemData:Object, playerLevel):Object {
+        var useName:String = String(itemData.use);
+        var slots:Array = [];
+        for (var i:Number = 0; i < SLOT_KEYS.length; i++) {
+            var candidateSlot:String = String(SLOT_KEYS[i]);
+            if (equipmentUseMatchesSlot(useName, candidateSlot)) {
+                slots.push(candidateSlot);
+            }
+        }
+        if (slots.length == 0) {
+            if (item != null && typeof item.value == "object"
+                    && item.value != null) {
+                return {success:false, error:"candidate_use_incompatible"};
+            }
+            return {success:true, slots:[], blockedReason:""};
+        }
+        var shapeError:String = candidateShapeError(
+            item, itemData, true, String(slots[0]), playerLevel);
+        if (shapeError != "") return {success:false, error:shapeError};
+        return {
+            success:true,
+            slots:slots,
+            blockedReason:Number(itemData.data.level) > Number(playerLevel)
+                ? "level_locked" : ""
+        };
+    }
+
+    private static function equipmentUseMatchesSlot(
+        useName:String, slotKey:String):Boolean {
+        return useName == slotKey
+            || (slotKey == "手枪2" && useName == "手枪");
     }
 
     private static function buildEquipmentProjection(
@@ -2217,17 +2433,12 @@ class org.flashNight.arki.item.CharacterBuildService {
             modSlotCapacity = 0;
             modSlotUsed = 0;
         }
+        var internalName:String = item == null ? "" : String(item.name);
         var result:Object = {
-            name:item == null ? "" : String(item.name),
-            displayName:projection.displayName == undefined
-                || projection.displayName == null
-                || String(projection.displayName) == ""
-                    ? (item == null ? "" : String(item.name))
-                    : String(projection.displayName),
-            icon:projection.icon == undefined || projection.icon == null
-                    || String(projection.icon) == ""
-                ? (item == null ? "" : String(item.name))
-                : String(projection.icon),
+            name:internalName,
+            displayName:projectIdentityField(
+                projection.displayName, internalName),
+            icon:projectIdentityField(projection.icon, internalName),
             majorType:projection.majorType == undefined
                 || projection.majorType == null
                     ? "" : String(projection.majorType),
@@ -2270,6 +2481,18 @@ class org.flashNight.arki.item.CharacterBuildService {
         return result;
     }
 
+    /**
+     * Character 只采纳 AS2 authority 已有的字符串展示字段。错误类型、空白和
+     * wrapped-case undefined 在此边界回落内部名，Host/Web 不再猜测。
+     */
+    private static function projectIdentityField(value, fallback:String):String {
+        if (typeof value != "string") return fallback;
+        var projected:String = String(value);
+        var trimmed:String = org.flashNight.gesh.string.StringUtils.trim(projected);
+        return trimmed.length == 0 || trimmed.toLowerCase() == "undefined"
+            ? fallback : projected;
+    }
+
     private static function buildBackpackSnapshot():Object {
         try {
             var callback:Function = _callbacks == null
@@ -2283,15 +2506,14 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     /**
-     * 候选资格只读取 getItemData(item.name)，不信 item 实例上的 use/type/level。
-     * 返回 null 交给调用方记录 diagnostics 并排除，禁止猜测兼容性。
+     * 已持有物品的资格、筛选与写入前校验只读取实例有效数据。
+     * BaseItem.getData() 会把 tier / mods 等实例变体应用到 catalog 克隆；
+     * 缺失或异常时 fail closed，禁止回退基础 catalog 掩盖实例规则。
      */
-    private static function getCandidateItemData(item:Object):Object {
+    private static function getEffectiveItemData(item:Object):Object {
         try {
-            var r:Object = root();
-            var data:Object = typeof r.getItemData == "function"
-                ? r.getItemData(item.name)
-                : org.flashNight.arki.item.ItemUtil.getItemData(item.name);
+            if (item == null || typeof item.getData != "function") return null;
+            var data:Object = item.getData();
             return data == null || typeof data != "object" ? null : data;
         } catch (itemDataError) {
             return null;
@@ -2336,6 +2558,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         };
         if (result.error != undefined) response.error = result.error;
         if (commandName == "snapshot" || commandName == "candidates"
+                || commandName == "tooltip"
                 || commandName == "statsSnapshot"
                 || commandName == "equipEquipment"
                 || commandName == "unequipEquipment"

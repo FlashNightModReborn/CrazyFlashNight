@@ -9,12 +9,14 @@ var EquipmentTuningView = (function() {
     var WriteLifecycle =
         typeof EquipmentTuningWriteLifecycle !== 'undefined'
             ? EquipmentTuningWriteLifecycle : null;
-    if (!Model || !Renderer || !DecisionPresenter || !WriteLifecycle) throw new Error(
+    if (!Model || typeof Model.diagnosticAuthoritySourceKey !== 'function'
+            || !Renderer || !DecisionPresenter || !WriteLifecycle) throw new Error(
         'EquipmentTuningView load order: model, decision presenter, renderer, confirmation, interaction, write lifecycle, then view.');
     var wireRef = Model.wireRef;
     var sameRef = Model.sameRef;
     var refKey = Model.refKey;
     var normalizeTuningSource = Model.normalizeTuningSource;
+    var diagnosticAuthoritySourceKey = Model.diagnosticAuthoritySourceKey;
     var tuningSourceSupports = Model.tuningSourceSupports;
     var normalizeConversionCandidates = Model.normalizeConversionCandidates;
     var previewIntentKey = Model.previewIntentKey;
@@ -80,6 +82,7 @@ var EquipmentTuningView = (function() {
         this._targetItem = null;
         this._snapshot = null;
         this._preview = null;
+        this._previewDiagnostic = null;
         this._tooltipCache = {};
         this._tooltipScope = null;
         this._operation = 'enhance';
@@ -88,6 +91,8 @@ var EquipmentTuningView = (function() {
         this._queuedEnhanceLevel = null;
         this._previewPendingOperation = '';
         this._previewIntentKey = '';
+        this._previewRequestGeneration = 0;
+        this._previewPendingGeneration = 0;
         this._conversionCandidates = [];
         this._conversionLoading = false;
         this._conversionError = '';
@@ -109,6 +114,11 @@ var EquipmentTuningView = (function() {
         this._previewFocusIntent = null;
         this._detailScrollAnchor = null;
         this._interactionAnnouncement = '';
+        this._diagnosticEvents = [];
+        this._diagnosticSequence = 0;
+        this._commitDiagnostic = null;
+        this._diagnosticSink = typeof options.onDiagnostic === 'function'
+            ? options.onDiagnostic : null;
         this._quickCommitIntent = null;
         this._modIntent = null;
         this._busy = false;
@@ -126,7 +136,8 @@ var EquipmentTuningView = (function() {
         this._mux = new EquipmentTuningRuntime.RequestMux({
             send:function(message) { return self._send(message); },
             timeoutMs:options.timeoutMs,
-            sessionNonce:options.sessionNonce
+            sessionNonce:options.sessionNonce,
+            diagnostic:function(event) { self._recordDiagnostic(event); }
         });
         this._confirmationUnsubscribe = this._confirmationPort.subscribe(function(mode) {
             self._applyModConfirmationMode(mode);
@@ -148,6 +159,134 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.subscribe = function() { return null; };
+
+    TuningView.prototype._recordDiagnostic = function(event, detail) {
+        if (typeof event === 'string') {
+            detail = detail || {};
+            detail.event = event;
+            event = detail;
+        }
+        event = event && typeof event === 'object' ? event : {};
+        var eventName = String(event.event || '');
+        if (!/^(candidate_hit|lock_denied|intrinsic_unavailable|preview_issued|response_tuple_mismatch|preview_adopted|commit_issued|commit_adopted|inventory_refresh_settled|reconcile_issued|reconcile_adopted)$/.test(eventName)) {
+            return false;
+        }
+        var record = {sequence:++this._diagnosticSequence, event:eventName};
+        ['cmd', 'operation', 'capability', 'phase'].forEach(function(key) {
+            var value = String(event[key] || '');
+            if (/^[a-z_]{1,40}$/.test(value)) record[key] = value;
+        });
+        if (!record.operation && isOperation(this._operation)) {
+            record.operation = this._operation;
+        }
+        if (event.mismatchFields instanceof Array) {
+            record.mismatchFields = event.mismatchFields.filter(function(value) {
+                return /^(type|domain|callId|cmd|panelInstanceId|viewSessionId)$/.test(String(value));
+            }).slice(0, 6);
+        }
+        var muxState = this._mux ? this._mux.debugState() : {pendingCount:0};
+        var sourceKey = event.sourceKey != null
+            ? String(event.sourceKey) : diagnosticAuthoritySourceKey(this._source);
+        var candidateKey = event.candidateKey != null
+            ? String(event.candidateKey)
+            : this._modIntent ? String(this._modIntent.candidateKey || '')
+                : this._commitDiagnostic ? String(this._commitDiagnostic.candidateKey || '')
+                    : this._previewDiagnostic ? String(this._previewDiagnostic.candidateKey || '') : '';
+        var intentKey = event.intentKey != null
+            ? String(event.intentKey)
+            : this._commitDiagnostic ? String(this._commitDiagnostic.intentKey || '')
+                : this._previewDiagnostic ? String(this._previewDiagnostic.intentKey || '')
+                    : String(this._previewIntentKey || '');
+        function bounded(value, limit) {
+            return String(value || '').replace(/[\u0000-\u001f\u007f]/g, '').slice(0, limit);
+        }
+        record.webCallId = EquipmentTuningRuntime.safeToken(event.webCallId
+            || event.event === 'inventory_refresh_settled'
+                && this._commitDiagnostic && this._commitDiagnostic.webCallId || '');
+        record.panelInstanceId = EquipmentTuningRuntime.safeToken(this._panelInstanceId);
+        record.viewSessionId = EquipmentTuningRuntime.safeToken(this._viewSessionId);
+        record.sourceKey = bounded(sourceKey, 180);
+        record.candidateKey = bounded(candidateKey, 180);
+        record.intentKey = bounded(intentKey, 384);
+        record.reconcileAfterCallId = EquipmentTuningRuntime.safeToken(
+            event.reconcileAfterCallId || ''
+        );
+        record.pendingCount = Math.max(0, Number(event.pendingCount != null
+            ? event.pendingCount : muxState.pendingCount) || 0);
+        ['success', 'tokenPresent', 'transactionIdPresent', 'requiresReconcile',
+            'currentLeasePresent', 'needsReconcile', 'reconciled', 'noOp'].forEach(function(key) {
+            if (typeof event[key] === 'boolean') record[key] = event[key];
+        });
+        if (typeof record.tokenPresent !== 'boolean') {
+            record.tokenPresent = !!(this._preview && this._preview.tuningToken);
+        }
+        if (typeof record.needsReconcile !== 'boolean') {
+            record.needsReconcile = this._needsReconcile === true;
+        }
+        record.confirmationMode = this._modConfirmationMode === 'fast' ? 'fast' : 'safe';
+        record.autoCommitPending = record.confirmationMode === 'fast'
+            && !!this._quickCommitIntent;
+        record.writeState = this._refreshRetryPending ? 'refresh_pending'
+            : this._refreshRetryRequired ? 'refresh_required'
+                : this._inventoryWriteHandle ? 'write_pending'
+                    : this._needsReconcile || this._loadoutBarrier
+                        ? 'reconcile_required'
+                        : this._readPending ? 'read_pending' : 'idle';
+        record.commitReady = this.getInteractionProjection().commit === true;
+        this._diagnosticEvents.push(record);
+        if (this._diagnosticEvents.length > 24) this._diagnosticEvents.shift();
+        try {
+            this._send({
+                type:'debug',
+                scope:'equipment_tuning',
+                sequence:record.sequence,
+                event:record.event,
+                cmd:record.cmd || '',
+                operation:record.operation || '',
+                capability:record.capability || '',
+                phase:record.phase || '',
+                webCallId:record.webCallId,
+                panelInstanceId:record.panelInstanceId,
+                viewSessionId:record.viewSessionId,
+                sourceKey:record.sourceKey,
+                candidateKey:record.candidateKey,
+                intentKey:record.intentKey,
+                reconcileAfterCallId:record.reconcileAfterCallId,
+                pendingCount:record.pendingCount,
+                tokenPresent:record.tokenPresent,
+                commitReady:record.commitReady,
+                confirmationMode:record.confirmationMode,
+                autoCommitPending:record.autoCommitPending,
+                writeState:record.writeState,
+                success:typeof record.success === 'boolean' ? record.success : null,
+                transactionIdPresent:typeof record.transactionIdPresent === 'boolean'
+                    ? record.transactionIdPresent : null,
+                requiresReconcile:typeof record.requiresReconcile === 'boolean'
+                    ? record.requiresReconcile : null,
+                currentLeasePresent:typeof record.currentLeasePresent === 'boolean'
+                    ? record.currentLeasePresent : null,
+                needsReconcile:typeof record.needsReconcile === 'boolean'
+                    ? record.needsReconcile : null,
+                reconciled:typeof record.reconciled === 'boolean'
+                    ? record.reconciled : null,
+                noOp:typeof record.noOp === 'boolean' ? record.noOp : null,
+                mismatchFields:record.mismatchFields || []
+            });
+        } catch (_) {}
+        if (this._diagnosticSink) this._diagnosticSink(record);
+        return true;
+    };
+
+    TuningView.prototype._bindCommitDiagnostic = function(operation, callId) {
+        var preview = this._previewDiagnostic || {};
+        this._commitDiagnostic = {
+            webCallId:EquipmentTuningRuntime.safeToken(callId),
+            operation:String(operation || ''),
+            candidateKey:String(preview.candidateKey || ''),
+            intentKey:String(preview.intentKey || this._previewIntentKey || '')
+        };
+        return this._commitDiagnostic;
+    };
 
     TuningView.prototype.getInteractionProjection = function() {
         return Interaction.interactionLockProjection({
@@ -175,6 +314,10 @@ var EquipmentTuningView = (function() {
     TuningView.prototype._allowInteraction = function(capability, announce) {
         var projection = this.getInteractionProjection();
         if (projection[capability] === true) return true;
+        this._recordDiagnostic('lock_denied', {
+            capability:String(capability || ''),
+            phase:String(projection.phase || '')
+        });
         if (announce !== false && projection.reason
                 && projection.reason !== this._interactionAnnouncement) {
             this._interactionAnnouncement = projection.reason;
@@ -201,6 +344,8 @@ var EquipmentTuningView = (function() {
 
     TuningView.prototype.openSession = function(panelInstanceId) {
         this.closeSession();
+        this._diagnosticEvents = [];
+        this._diagnosticSequence = 0;
         this._tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('equipment-tuning') : null;
         panelInstanceId = EquipmentTuningRuntime.safeToken(panelInstanceId);
@@ -227,6 +372,7 @@ var EquipmentTuningView = (function() {
         this._queuedEnhanceLevel = null;
         this._previewPendingOperation = '';
         this._previewIntentKey = '';
+        this._previewPendingGeneration = 0;
         this._quickCommitIntent = null;
         this._modIntent = null;
         this._mux.closeSession();
@@ -238,6 +384,7 @@ var EquipmentTuningView = (function() {
         this._targetItem = null;
         this._snapshot = null;
         this._preview = null;
+        this._previewDiagnostic = null;
         this._previewIntentKey = '';
         this._tooltipCache = {};
         if (this._tooltipScope) { this._tooltipScope.dispose(); this._tooltipScope = null; }
@@ -353,6 +500,7 @@ var EquipmentTuningView = (function() {
         this._targetItem = null;
         this._snapshot = null;
         this._preview = null;
+        this._previewDiagnostic = null;
         this._replaceCandidateKey = '';
         this._replaceCandidateName = '';
         this._quickCommitIntent = null;
@@ -441,12 +589,13 @@ var EquipmentTuningView = (function() {
         this._preview = null;
         this._previewPendingOperation = '';
         this._previewIntentKey = '';
+        this._previewPendingGeneration = 0;
         this._quickCommitIntent = null;
         this._modIntent = null;
         this._status = reconcileAfterCallId ? '正在对账未知提交' : '正在同步调制状态';
         this._readPending = true;
         this.render();
-        var callId = this._mux.request('snapshot', payload, function(response) {
+        var callId = this._mux.request('snapshot', payload, function(response, entry) {
             self._readPending = false;
             var resumeCallId = !reconcileAfterCallId && response && response.requiresReconcile
                 ? EquipmentTuningRuntime.safeToken(response.reconcileAfterCallId) : '';
@@ -479,6 +628,18 @@ var EquipmentTuningView = (function() {
                 self._status = reconcileAfterCallId && response && response.success === true
                     ? '权威快照尚未越过未知提交' : errorMessage(response && response.error);
             }
+            if (reconcileAfterCallId) {
+                self._recordDiagnostic('reconcile_adopted', {
+                    webCallId:entry && entry.callId,
+                    reconcileAfterCallId:reconcileAfterCallId,
+                    success:!!(response && response.success === true && reconcileConfirmed),
+                    reconciled:!!(response && response.reconciled === true
+                        && response.reconcileAfterCallId === reconcileAfterCallId),
+                    requiresReconcile:!!(response && response.requiresReconcile),
+                    needsReconcile:self._needsReconcile === true
+                });
+                if (!self._needsReconcile) self._commitDiagnostic = null;
+            }
             if (self._snapshot && self._operation === 'enhance'
                     && Number(self._snapshot.enhance.currentLevel) < enhancementAvailableMax(self._snapshot)) {
                 self.scheduleEnhancementPreview(self._targetLevel, 120);
@@ -492,7 +653,15 @@ var EquipmentTuningView = (function() {
                 return;
             }
             if (self._snapshot && self._operation === 'convert') self._setConversionProjection(true);
-        });
+        }, reconcileAfterCallId ? {
+            onIssued:function(entry) {
+                self._recordDiagnostic('reconcile_issued', {
+                    webCallId:entry && entry.callId,
+                    reconcileAfterCallId:reconcileAfterCallId,
+                    needsReconcile:true
+                });
+            }
+        } : null);
         if (!callId && this._readPending) { this._readPending = false; this.render(); }
         return !!callId;
     };
@@ -510,6 +679,12 @@ var EquipmentTuningView = (function() {
         if (operation === 'enhance') this._previewFocusIntent = null;
         else this._capturePreviewFocusIntent(extra.focusNext === true);
         this._operation = operation;
+        // A preview attempt immediately supersedes the prior token. Keep this
+        // boundary ahead of local payload checks so a rejected attempt cannot
+        // leave the old confirmation/commit path active.
+        this._preview = null;
+        this._previewDiagnostic = null;
+        this._quickCommitIntent = null;
         var payload = {operation:operation, source:this._source};
         if (operation === 'enhance') payload.targetLevel = Math.floor(Number(extra.targetLevel || this._targetLevel));
         else if (operation === 'convert') payload.target = extra.target || this._target;
@@ -517,13 +692,21 @@ var EquipmentTuningView = (function() {
         if (operation === 'replace_mod') {
             payload.replaceCandidateKey = String(extra.replaceCandidateKey || this._replaceCandidateKey || '');
         }
+        var intentKey = previewIntentKey(operation, payload);
+        this._previewIntentKey = intentKey;
         if ((operation === 'convert' && !payload.target)
                 || (operation !== 'enhance' && operation !== 'convert' && operation !== 'detach_all_mods'
                     && !payload.candidateKey)
-                || (operation === 'replace_mod' && !payload.replaceCandidateKey)) return false;
+                || (operation === 'replace_mod' && !payload.replaceCandidateKey)) {
+            this._previewPendingOperation = '';
+            this._modIntent = null;
+            this._readPending = false;
+            this._status = errorMessage('invalid_payload');
+            this._emit();
+            this.render({previewOnly:true});
+            return false;
+        }
         var self = this;
-        this._preview = null;
-        var intentKey = previewIntentKey(operation, payload);
         var quickCommit = extra.quickCommit === true && this._modConfirmationMode === 'fast'
             && (operation === 'install_mod' || operation === 'replace_mod' || operation === 'detach_mod');
         this._quickCommitIntent = quickCommit ? {
@@ -532,8 +715,9 @@ var EquipmentTuningView = (function() {
             candidateName:String(extra.candidateName || ''),
             replaceCandidateName:String(extra.replaceCandidateName || '')
         } : null;
-        this._previewIntentKey = intentKey;
         this._previewPendingOperation = operation;
+        var requestGeneration = ++this._previewRequestGeneration;
+        this._previewPendingGeneration = requestGeneration;
         this._modIntent = this._createModIntent(
             operation,
             payload,
@@ -545,24 +729,50 @@ var EquipmentTuningView = (function() {
             : '正在核算调制结果';
         this._readPending = true;
         this.render({previewOnly:true});
-        var callId = this._mux.request('preview', payload, function(response) {
+        var callId = this._mux.request('preview', payload, function(response, entry) {
+            var isLatestIntent = self._previewIntentKey === intentKey;
+            var ownsPending = self._previewPendingGeneration === requestGeneration;
+            // A late response belongs only to its superseded intent. It must not
+            // clear, restore, or otherwise mutate a newer in-flight generation. An
+            // enhancement request whose queued target changed still owns the pending
+            // lock, so settle only that lock and drain the queued latest target.
+            if (!isLatestIntent || !ownsPending) {
+                if (ownsPending) {
+                    self._readPending = false;
+                    self._previewPendingOperation = '';
+                    self._previewPendingGeneration = 0;
+                    self._emit();
+                    self.render({previewOnly:true});
+                    self._drainEnhancementPreview();
+                }
+                return;
+            }
             self._readPending = false;
             self._previewPendingOperation = '';
-            var isLatestIntent = self._previewIntentKey === intentKey;
-            if (isLatestIntent && response && response.success === true) {
+            self._previewPendingGeneration = 0;
+            if (response && response.success === true) {
                 self._preview = response;
+                self._previewDiagnostic = {
+                    webCallId:entry && entry.callId,
+                    operation:operation,
+                    candidateKey:String(payload.candidateKey || ''),
+                    intentKey:intentKey
+                };
+                self._recordDiagnostic('preview_adopted', {
+                    operation:operation,
+                    webCallId:entry && entry.callId,
+                    candidateKey:payload.candidateKey,
+                    intentKey:intentKey
+                });
                 self._status = response.noOp ? '该操作不会改变装备' : '';
                 self._setModIntentPhase('preview_ready');
-            } else if (isLatestIntent) {
-                self._preview = null;
-                self._modIntent = null;
-                self._status = errorMessage(response && response.error);
             } else {
                 self._preview = null;
+                self._previewDiagnostic = null;
                 self._modIntent = null;
-                self._status = '正在核算最新目标';
+                self._status = errorMessage(response && response.error);
             }
-            var quickIntentReady = isLatestIntent && !!self._preview
+            var quickIntentReady = !!self._preview
                 && self._quickCommitIntent
                 && self._quickCommitIntent.intentKey === intentKey;
             if (quickIntentReady && self._tryQuickCommit(intentKey)) {
@@ -572,15 +782,29 @@ var EquipmentTuningView = (function() {
             self._emit();
             self.render({
                 previewOnly:true,
-                focusNext:isLatestIntent && !!self._preview
+                focusNext:!!self._preview
             });
             self._drainEnhancementPreview();
+        }, {
+            onIssued:function(entry) {
+                self._recordDiagnostic('preview_issued', {
+                    operation:operation,
+                    webCallId:entry && entry.callId,
+                    candidateKey:payload.candidateKey,
+                    intentKey:intentKey
+                });
+            }
         });
         if (!callId && this._readPending) {
             this._readPending = false;
             this._previewPendingOperation = '';
+            if (this._previewPendingGeneration === requestGeneration) {
+                this._previewPendingGeneration = 0;
+            }
             this._previewFocusIntent = null;
             this._modIntent = null;
+            this._quickCommitIntent = null;
+            this._emit();
             this.render({previewOnly:true});
         }
         return !!callId;
@@ -609,11 +833,20 @@ var EquipmentTuningView = (function() {
             : '正在提交，期间不会重放';
         this.render({previewOnly:true});
         var commitResponseSettled = false;
-        var callId = this._mux.request('commit', {expectedTuningToken:String(this._preview.tuningToken)}, function(response) {
+        var callId = this._mux.request('commit', {expectedTuningToken:String(this._preview.tuningToken)}, function(response, entry) {
             commitResponseSettled = true;
             if (self._inventoryWriteHandle !== inventoryWrite) return;
             var ambiguous = EquipmentTuningRuntime.isAmbiguous(response);
             var noOp = !!(response && response.success === true && response.noOp);
+            self._recordDiagnostic('commit_adopted', {
+                operation:committedOperation,
+                webCallId:entry && entry.callId,
+                success:!!(response && response.success === true),
+                tokenPresent:true,
+                transactionIdPresent:!!(response && response.transactionId),
+                requiresReconcile:ambiguous,
+                noOp:!!(response && response.noOp === true)
+            });
             if (response && response.success === true) {
                 var committedSnapshot = response.snapshot || null;
                 if (committedSnapshot) self._snapshot = committedSnapshot;
@@ -665,6 +898,20 @@ var EquipmentTuningView = (function() {
             }
             self._emit();
             self.render();
+        }, {
+            onIssued:function(entry) {
+                var diagnostic = self._bindCommitDiagnostic(
+                    committedOperation,
+                    entry && entry.callId
+                );
+                self._recordDiagnostic('commit_issued', {
+                    operation:committedOperation,
+                    webCallId:entry && entry.callId,
+                    candidateKey:diagnostic.candidateKey,
+                    intentKey:diagnostic.intentKey,
+                    tokenPresent:true
+                });
+            }
         });
         if (!callId && this._inventoryWriteHandle === inventoryWrite) {
             this._needsReconcile = false;
@@ -716,12 +963,21 @@ var EquipmentTuningView = (function() {
         var callId = this._mux.request(
             'commit',
             {expectedTuningToken:String(this._preview.tuningToken)},
-            function(response) {
+            function(response, entry) {
                 settled = true;
                 if (self._inventoryWriteHandle !== write) return;
                 var exactSuccess = self._validLoadoutCommit(response);
                 var ambiguous = response && response.success === true
                     || EquipmentTuningRuntime.isAmbiguous(response);
+                self._recordDiagnostic('commit_adopted', {
+                    operation:operation,
+                    webCallId:entry && entry.callId,
+                    success:exactSuccess,
+                    tokenPresent:true,
+                    transactionIdPresent:!!(response && response.transactionId),
+                    requiresReconcile:ambiguous && !exactSuccess,
+                    noOp:!!(response && response.noOp === true)
+                });
                 self._preview = null;
                 self._busy = false;
                 if (exactSuccess) {
@@ -790,6 +1046,21 @@ var EquipmentTuningView = (function() {
                 });
                 self._emit();
                 self.render();
+            },
+            {
+                onIssued:function(entry) {
+                    var diagnostic = self._bindCommitDiagnostic(
+                        operation,
+                        entry && entry.callId
+                    );
+                    self._recordDiagnostic('commit_issued', {
+                        operation:operation,
+                        webCallId:entry && entry.callId,
+                        candidateKey:diagnostic.candidateKey,
+                        intentKey:diagnostic.intentKey,
+                        tokenPresent:true
+                    });
+                }
             }
         );
         if (!callId && this._inventoryWriteHandle === write) {
@@ -1110,7 +1381,8 @@ var EquipmentTuningView = (function() {
                 slotKey:this._loadoutBarrier.source
                     ? this._loadoutBarrier.source.slotKey : ''
             } : null,
-            lastCommitCallId:this._lastCommitCallId, mux:this._mux.debugState()};
+            lastCommitCallId:this._lastCommitCallId,
+            diagnostics:this._diagnosticEvents.slice(), mux:this._mux.debugState()};
     };
 
     TuningView.prototype._emit = function() { this._onStateChange(this.debugState()); };

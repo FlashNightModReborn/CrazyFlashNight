@@ -18,6 +18,7 @@ var KShop = (function() {
     var _cart = [];           // [{idx, qty}, ...]
     var _purchased = [];
     var _purchasedToken = '';
+    var _protocolCheckoutPreview = null;
     var _kpoints = 0;
     var _playerLevel = 0;
     var _reverseLevel = 0;
@@ -25,18 +26,60 @@ var KShop = (function() {
     var _closing = false;
     var _loading = false;
     var _writeState = null;
+    var _panelInstanceId = '';
     var _runtimeConfig = (typeof window !== 'undefined' && window.__KSHOP_RUNTIME_CONFIG__) || {};
     var _mux = new KShopRequestMux({
-        send: function(message) { Bridge.send(message); },
+        send: function(message) { return Bridge.send(message); },
         timeoutMs: _runtimeConfig.requestTimeoutMs,
         sessionNonce: _runtimeConfig.sessionNonce,
         onProtocolError: function(message) {
             if (typeof console !== 'undefined' && console.warn) console.warn(message);
         }
     });
+    function createInventoryRequestMux() {
+        return new PanelRuntime.PanelRequestMux({
+            send:function(message) { return Bridge.send(message); },
+            timeoutMs:_runtimeConfig.requestTimeoutMs,
+            sessionNonce:_runtimeConfig.sessionNonce,
+            callPrefix:'kshop-inventory',
+            router:PanelRuntime.sharedResponseRouter,
+            validateSession:function(session) {
+                return !!session && session.ownerPanel === 'kshop'
+                    && /^[A-Za-z0-9._~-]{1,128}$/.test(
+                        String(session.panelInstanceId || ''));
+            },
+            createMessage:function(context) {
+                return {type:'panel', domain:'inventory', panel:'kshop',
+                    panelInstanceId:context.session.panelInstanceId,
+                    cmd:context.entry.cmd, callId:context.entry.callId,
+                    payload:context.payload || {}};
+            },
+            validateResponse:function(data, entry) {
+                return !!data && data.type === 'panel_resp'
+                    && data.domain === 'inventory' && data.panel === 'kshop'
+                    && data.panelInstanceId === entry.session.panelInstanceId
+                    && data.callId === entry.callId && data.cmd === entry.cmd;
+            },
+            createSynthetic:function(context) {
+                return {type:'panel_resp', domain:'inventory', panel:'kshop',
+                    panelInstanceId:context.session.panelInstanceId,
+                    cmd:context.entry.cmd, callId:context.entry.callId,
+                    success:false, error:context.error, clientSynthetic:true};
+            },
+            onProtocolError:function(message) {
+                if (typeof console !== 'undefined' && console.warn) console.warn(message);
+            }
+        });
+    }
+    var _inventoryMux = createInventoryRequestMux();
     var _writeCoordinator = new KShopWriteCoordinator({
         request: requestShop,
         getCart: buildCartPayload,
+        acceptSavedCart: function(cart, adjusted) {
+            _cart = Array.isArray(cart) ? JSON.parse(JSON.stringify(cart)) : [];
+            if (_cartController) _cartController.render();
+            if (adjusted) toast('购物车中超过当前持有上限或已失效的数量已自动调整。');
+        },
         getPurchasedToken: function() { return _purchasedToken; },
         applyBulkSnapshot: applyBulkSnapshot,
         onStateChange: refreshWriteControls,
@@ -45,6 +88,11 @@ var KShop = (function() {
     var _inventoryState = { opened: false, ready: false, busyOwner: null, refreshRequired: false };
     var _inventoryCoordinator = new InventoryRuntime.InventoryCoordinator({
         request: requestInventory,
+        readPhysicalSurface:function(isActive, callback) {
+            return InventoryRuntime.readPhysicalInventorySurface(requestInventory,
+                {isActive:isActive,expectedPanel:'kshop',
+                    expectedPanelInstanceId:_panelInstanceId}, callback);
+        },
         onStateChange: function(state) {
             _inventoryState = state;
             if (_ownedPresenter) _ownedPresenter.render();
@@ -256,11 +304,38 @@ var KShop = (function() {
     }
 
     function requestShop(cmd, payload, callback) {
-        return _mux.request('shop', cmd, payload || {}, callback);
+        var normalized = KShopProtocol.normalizeRequest(cmd, payload || {});
+        if (!normalized) {
+            if (typeof callback === 'function') callback({success:false,error:'invalid_payload',clientSynthetic:true});
+            return null;
+        }
+        var authority = {
+            catalog:JSON.parse(JSON.stringify(_catalog || [])),
+            cart:JSON.parse(JSON.stringify(buildCartPayload() || [])),
+            purchased:JSON.parse(JSON.stringify(_purchased || [])),
+            purchasedToken:String(_purchasedToken || ''),
+            balance:Number(_kpoints),
+            preview:_protocolCheckoutPreview
+                ? JSON.parse(JSON.stringify(_protocolCheckoutPreview)) : null
+        };
+        if (cmd === 'checkoutPreview' || cmd === 'bulkQuery'
+                || cmd === 'checkout' || cmd === 'claim' || cmd === 'checkoutCommit') {
+            _protocolCheckoutPreview = null;
+        }
+        return _mux.request('shop', cmd, normalized, function(response) {
+            var sanitized = KShopProtocol.sanitizeResponse(cmd, normalized, response, authority);
+            if (!sanitized) sanitized = {success:false,error:'invalid_response',clientSynthetic:true};
+            if (cmd === 'checkoutPreview' && sanitized.success === true) {
+                _protocolCheckoutPreview = JSON.parse(JSON.stringify(sanitized));
+            }
+            if (typeof callback === 'function') callback(sanitized);
+        });
     }
 
     function requestInventory(cmd, payload, callback) {
-        return _mux.request('inventory', cmd, {panel: 'kshop', payload: payload || {}}, callback);
+        return _inventoryMux.request(cmd, payload || {}, {
+            sendError:'disconnected'
+        }, callback);
     }
 
     function isKShopOpen() {
@@ -346,6 +421,7 @@ var KShop = (function() {
     Panels.register('kshop', {
         create: createDOM,
         onOpen: onOpen,
+        onRebind: onRebind,
         onClose: onClose,
         onRequestClose: function() { requestClose(); },
         onForceClose: onForceClose
@@ -585,7 +661,14 @@ var KShop = (function() {
         for (var j = 0; j < roots.length; j++) { roots[j].scrollTop = 0; roots[j].scrollLeft = 0; }
     }
 
-    function onOpen(el) {
+    function onOpen(el, initData) {
+        initData = initData || {};
+        _panelInstanceId = typeof initData.panelInstanceId === 'string'
+            ? initData.panelInstanceId : '';
+        if (!/^[A-Za-z0-9._~-]{1,128}$/.test(_panelInstanceId)) {
+            _panelInstanceId = '';
+            return false;
+        }
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
         if (_tooltipScope) _tooltipScope.dispose();
@@ -598,6 +681,7 @@ var KShop = (function() {
         _cart = [];
         _purchased = [];
         _purchasedToken = '';
+        _protocolCheckoutPreview = null;
         _catalogPresenter.reset();
         resetSessionScrollPositions();
         _tooltipPresenter.reset();
@@ -609,7 +693,14 @@ var KShop = (function() {
         _catalogPresenter.rebuildCategories();
         _cartController.render();
         renderClaimed();
-        _mux.openSession();
+        if (!_mux.openSession({
+                ownerPanel:'kshop',
+                panelInstanceId:_panelInstanceId
+            })) return false;
+        if (!_inventoryMux.openSession({
+                ownerPanel:'kshop',
+                panelInstanceId:_panelInstanceId
+            })) return false;
         _writeCoordinator.open();
         showShopMode(false);
         // 页码继续按会话记忆；分类筛选不跨打开/存档保留，避免新存档初始视图被旧筛选隐藏。
@@ -646,6 +737,14 @@ var KShop = (function() {
                 toast('商城加载失败：' + messageForError('save', resp.error || 'invalid_response'));
             }
         });
+    }
+
+    function onRebind(el, initData) {
+        // Host same-name replacement is a new capability generation. Retire every
+        // old request/write/inventory owner before admitting the replacement so a
+        // late response cannot mutate the still-mounted DOM under the new owner.
+        onClose();
+        return onOpen(el, initData);
     }
 
     function handleWorkbenchIntent(intent) {
@@ -721,7 +820,7 @@ var KShop = (function() {
             _purchasedGridView.renderer.render(_purchased);
             var totalPending = 0;
             for (var p = 0; p < _purchased.length; p++) {
-                totalPending += Number(_purchased[p][_purchased[p].length - 1]) || 0;
+                totalPending += Number(_purchased[p].quantity) || 0;
             }
             _purchasedGridView.chrome.setMeta(totalPending > 0 ? totalPending + ' 件' : '');
         }
@@ -729,11 +828,11 @@ var KShop = (function() {
     }
 
     function renderClaimRow(purchasedItem, purchasedIndex) {
-        var itemName = String(purchasedItem[1]);
-        var qty = purchasedItem[purchasedItem.length - 1];
+        var itemName = String(purchasedItem.item);
+        var qty = Number(purchasedItem.quantity);
         var catItem = findCatalogByName(itemName);
-        var displayName = catItem ? catItem.displayname : itemName;
-        var iconName = catItem ? catItem.icon : itemName;
+        var displayName = String(purchasedItem.displayname);
+        var iconName = String(purchasedItem.icon);
         var row = document.createElement('article');
         row.className = 'kshop-claim-row';
         row.setAttribute('data-pidx', purchasedIndex);
@@ -752,7 +851,7 @@ var KShop = (function() {
         if (isNaN(idx)) return;
         var item = findCatalogItem(idx);
         Workbench.EntityTile.bindActivation(row, {
-            itemName:item ? item.displayname : String(purchasedItem && purchasedItem[1] || '待领取商品'),
+            itemName:item ? item.displayname : String(purchasedItem && purchasedItem.displayname || '待领取商品'),
             label:'查看商品详情；领取操作使用行内按钮',
             inspectable:true,
             actionable:true,
@@ -846,12 +945,25 @@ var KShop = (function() {
         _loading = false;
         _writeCoordinator.forceClose();
         _inventoryCoordinator.close();
+        _inventoryMux.closeSession();
         _mux.closeSession();
         _closing = false;
+        _panelInstanceId = '';
+        _protocolCheckoutPreview = null;
     }
 
     function doClose() {
-        if (Bridge.send({type:'panel', cmd:'close', panel:'kshop'}) === false) {
+        var accepted = false;
+        try {
+            accepted = Bridge.send({type:'panel', cmd:'close', panel:'kshop',
+                panelInstanceId:_panelInstanceId}) !== false;
+        } catch (_) {
+            accepted = false;
+        }
+        if (!accepted) {
+            // The cart was already saved before doClose. Re-arm the local write lifecycle so
+            // a failed owner-envelope transport remains genuinely retryable.
+            _writeCoordinator.open();
             toast('启动器连接不可用，商城保持打开。');
             _closing = false;
             return false;
@@ -903,11 +1015,14 @@ var KShop = (function() {
         if (_interactionBroker) _interactionBroker.clearSelection();
         _writeCoordinator.forceClose();
         _inventoryCoordinator.close();
+        _inventoryMux.closeSession();
         _mux.closeSession();
         dismissDialog();
         _cartController.closeSettlement();
         hideTooltip();
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
+        _panelInstanceId = '';
+        _protocolCheckoutPreview = null;
         toast('连接断开，商城已关闭');
     }
 
@@ -921,6 +1036,7 @@ var KShop = (function() {
                     modal: _workbenchShell.hasModal()
                 } : null,
                 requestMux: _mux.debugState(),
+                inventoryRequestMux:_inventoryMux.debugState(),
                 write: _writeCoordinator.debugState(),
                 inventory: _inventoryCoordinator.debugState(),
                 drag: _dragController ? _dragController.debugState() : null,
@@ -928,6 +1044,7 @@ var KShop = (function() {
                 shopReady: _shopReady,
                 cartCount: _cart.length,
                 purchasedCount: _purchased.length,
+                panelInstanceId:_panelInstanceId,
                 settling: cartDebug.settling,
                 previewBusy: cartDebug.previewBusy,
                 hasCheckoutPreview: cartDebug.hasCheckoutPreview,

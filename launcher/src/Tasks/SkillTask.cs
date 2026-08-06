@@ -861,7 +861,14 @@ namespace CF7Launcher.Tasks
             flash["view"] = entry.ExpectedView;
             if (entry.ExpectedView == "trainer") flash["trainerSession"] = entry.ExpectedTrainerSession;
             string json = flash.ToString(Formatting.None);
-            LogManager.Log("[SkillTask] -> Flash: " + json);
+            if (!entry.IsBackgroundReconcile && !entry.IsCleanup)
+            {
+                LogManager.Log(AuthorityLogFormatter.FormatAuthorityFlashCallBound(
+                    "SkillTask", entry.WebCallId, entry.FlashCallId, "skills",
+                    entry.PanelInstanceId, entry.WebCmd, entry.FlashAction));
+            }
+            LogManager.Log(AuthorityLogFormatter.FormatFlashCommand(
+                "SkillTask", flash));
             if (!_trySend(json + "\0")) HandleTransportFailure(entry.FlashCallId, "disconnected");
         }
 
@@ -1191,7 +1198,8 @@ namespace CF7Launcher.Tasks
             }
             JObject cleanup = PanelBridge.BuildFlashCommand(entry.FlashAction, entry.FlashCallId, entry.NormalizedPayload);
             string json = cleanup.ToString(Formatting.None);
-            LogManager.Log("[SkillTask] -> Flash cleanup: " + json);
+            LogManager.Log(AuthorityLogFormatter.FormatFlashCommand(
+                "SkillTask", cleanup));
             try
             {
                 if (!_trySend(json + "\0")) HandleTransportFailure(entry.FlashCallId, "disconnected");

@@ -1097,6 +1097,7 @@ var PanelTooltip = (function() {
      *   - cache: Object                                   可选外部缓存对象（按 key 存 fetch 结果）
      *   - renderBasic: function(item) -> html             未缓存/加载中显示的内容
      *   - renderRich: function(item, data) -> html        fetch 成功后显示的内容
+     *   - renderFailure: function(item, response) -> html 可选，读取失败但仍可重试
      *   - fetch: function(item, callback(response))       发起异步请求，成功后调 callback
      *   - isSuppressed: function(event) -> boolean        可选，拖拽等场景抑制 tooltip
      *   - events: 'pointer' | 'mouse'                     默认 pointer；mouse 兼容旧代码
@@ -1244,6 +1245,12 @@ var PanelTooltip = (function() {
             updateContent(options.renderRich(activeItem, response), owner);
         }
 
+        function renderFailureIfCurrent(key, response) {
+            if (!isLive() || activeKey !== key || !isVisible(owner)
+                    || typeof options.renderFailure !== 'function') return;
+            updateContent(options.renderFailure(activeItem, response), owner);
+        }
+
         function requestRich(key, item) {
             if (cache[key] || pending[key] || typeof options.fetch !== 'function') return;
             var requestId = ++requestSequence;
@@ -1252,7 +1259,10 @@ var PanelTooltip = (function() {
                 options.fetch(item, function(response) {
                     if (disposed || pending[key] !== requestId) return;
                     delete pending[key];
-                    if (!response || response.success !== true) return;
+                    if (!response || response.success !== true) {
+                        renderFailureIfCurrent(key, response);
+                        return;
+                    }
                     cache[key] = response;
                     if (typeof Icons === 'undefined' || !Icons || !Icons.load) {
                         renderRichIfCurrent(key, response);

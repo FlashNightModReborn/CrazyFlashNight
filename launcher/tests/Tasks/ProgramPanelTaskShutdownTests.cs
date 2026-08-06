@@ -66,7 +66,16 @@ namespace Launcher.Tests.Tasks
                 "panelHost.SetInitDataEnricher");
             Assert.Contains("equipmentTuningTask.HasBoundPanel", gate);
             Assert.Contains("!equipmentTuningTask.CanRebind", gate);
-            Assert.DoesNotContain("characterBuildTask", gate);
+            Assert.Contains(
+                "if (characterBuildTask.HasBoundPanel)",
+                gate);
+            Assert.True(
+                gate.IndexOf(
+                    "if (characterBuildTask.HasBoundPanel)",
+                    StringComparison.Ordinal)
+                < gate.IndexOf(
+                    "if (equipmentTuningTask.HasBoundPanel",
+                    StringComparison.Ordinal));
 
             string observer = Slice(
                 source,

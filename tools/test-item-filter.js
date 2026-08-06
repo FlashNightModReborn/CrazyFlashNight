@@ -32,6 +32,15 @@ const hydrated = ItemFilter.fromFacets(tree.children, tree.count);
 assert.strictEqual(ItemFilter.nodeAt(hydrated, ['collection', '材料']).count, 1);
 assert.strictEqual(hydrated.count, 5);
 
+const exhaustedSelection = ItemFilter.fromFacets([], 0);
+const selectedLeaf = ItemFilter.ensurePath(exhaustedSelection, ['consumable', '消耗品'],
+    (id, index) => index === 0 ? '消耗品' : id);
+assert.strictEqual(selectedLeaf.path.join('/'), 'consumable/消耗品');
+assert.strictEqual(selectedLeaf.count, 0);
+assert.deepStrictEqual(ItemFilter.validPath(exhaustedSelection, ['consumable', '消耗品']),
+    ['consumable', '消耗品']);
+assert.strictEqual(exhaustedSelection.count, 0);
+
 const manual = ItemFilter.manualSections([
     {id:'featured', label:'精选', entries:[1, 2]},
     {id:'supplies', label:'补给', entries:[3]}
@@ -63,4 +72,4 @@ const singleUseTree = ItemFilter.build([
 ], item => ItemFilter.catalogPath(item));
 assert.deepStrictEqual(ItemFilter.expandSingleChildren(singleUseTree, ['weapon']), ['weapon', '长枪']);
 
-console.log('item-filter model 22/22 passed');
+console.log('item-filter model 26/26 passed');

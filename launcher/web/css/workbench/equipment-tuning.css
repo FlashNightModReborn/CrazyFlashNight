@@ -654,7 +654,12 @@
 .equipment-tuning-material-delta.strengthening-stone { padding:3px 5px; border-left:2px solid var(--dls-crystal); background:rgba(var(--dls-crystal-rgb),.045); }
 .equipment-tuning-material-delta.strengthening-stone em { color:#a8eaf6; }
 .equipment-tuning-material-delta.strengthening-stone b { color:#c7f6ff; }
-.equipment-tuning-removed { margin:6px 0 0; color:color-mix(in srgb,var(--wb-role-reject) 68%,var(--wb-text)); font:10px/1.4 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-removed { margin:6px 0 0; display:flex; align-items:center; flex-wrap:wrap; gap:4px; color:color-mix(in srgb,var(--wb-role-reject) 68%,var(--wb-text)); font:10px/1.4 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-removed-list { display:inline-flex; align-items:center; flex-wrap:wrap; gap:4px; }
+.equipment-tuning-removed-item { display:inline-flex; align-items:center; gap:3px; }
+.equipment-tuning-removed-item + .equipment-tuning-removed-item::before { content:'、'; margin-right:1px; }
+.equipment-tuning-removed-item em { font-style:normal; }
+.equipment-tuning-removed-item.is-unknown { color:var(--wb-muted); }
 .equipment-tuning-commit {
     width:100%; min-height:40px;
     border-color:var(--dls-crystal-deep); color:#d8f9ff;

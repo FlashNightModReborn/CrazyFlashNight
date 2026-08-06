@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
 using CF7Launcher.Tests.Contracts;
 
@@ -10,23 +11,65 @@ namespace CF7Launcher.Tests.Tasks
 {
     public class NpcShopTaskTests
     {
+        private const string OwnerA = "panel.npcshop.owner-a";
+        private const string OwnerB = "panel.npcshop.owner-b";
+        private static int _primeSequence;
+
         private static JObject ParseSent(string payload) { return JObject.Parse(payload.TrimEnd('\0')); }
+
+        private static void AssertOwnerTuple(
+            JObject response, string cmd, string callId, string owner = OwnerA)
+        {
+            Assert.Equal("npcshop", (string)response["domain"]);
+            Assert.Equal("npcshop", (string)response["panel"]);
+            Assert.Equal(owner, (string)response["panelInstanceId"]);
+            Assert.Equal(cmd, (string)response["cmd"]);
+            Assert.Equal(callId, (string)response["callId"]);
+        }
 
         private static JObject StateResponse(int fid, string operation = null)
         {
             var response = new JObject
             {
                 ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true, ["v"] = 1,
-                ["shopId"] = "前治安官", ["balance"] = 5000, ["catalog"] = new JArray(),
-                ["layout"] = new JObject(),
+                ["shopId"] = "前治安官", ["balance"] = 5000, ["buyMultiplier"] = 1,
+                ["catalog"] = new JArray(new JObject
+                {
+                    ["catalogIndex"] = 3, ["itemName"] = "光棱射线弹-强化",
+                    ["displayName"] = "棱镜折射阵列", ["icon"] = "全光谱棱镜阵列",
+                    ["majorType"] = "武器", ["use"] = "手枪", ["actionType"] = "",
+                    ["weaponType"] = "手枪", ["setId"] = "", ["setName"] = "",
+                    ["setOrder"] = 0, ["basePrice"] = 1000, ["unitPrice"] = 1000,
+                    ["maxQuantity"] = 50, ["requiredInfo"] = "", ["locked"] = false
+                }),
+                ["layout"] = new JObject
+                {
+                    ["title"] = "前治安官", ["defaultSection"] = "", ["sections"] = new JArray()
+                },
                 ["views"] = new JObject
                 {
-                    ["material"] = new JObject(), ["intelligence"] = new JObject()
+                    ["material"] = EmptyCollectionView("材料"),
+                    ["intelligence"] = EmptyCollectionView("情报")
                 }
             };
             if (!string.IsNullOrEmpty(operation)) response["operation"] = operation;
-            if (operation == "tradeCommit") response["trade"] = new JObject { ["buyTotal"] = 0, ["sellTotal"] = 0 };
+            if (operation == "tradeCommit") response["trade"] = new JObject
+            {
+                ["buyTotal"] = 2000, ["sellTotal"] = 100, ["netDelta"] = -1900
+            };
+            if (operation == "tradeCommit") response["balance"] = 3100;
             return response;
+        }
+
+        private static JObject EmptyCollectionView(string containerId)
+        {
+            return new JObject
+            {
+                ["containerId"] = containerId, ["capacity"] = 0,
+                ["accessibleCapacity"] = 0, ["viewCapacity"] = 0,
+                ["offset"] = 0, ["limit"] = 0, ["filterKey"] = "all",
+                ["slots"] = new JArray()
+            };
         }
 
         private static JObject TradePreviewResponse(int fid)
@@ -34,11 +77,12 @@ namespace CF7Launcher.Tests.Tasks
             return new JObject
             {
                 ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true, ["v"] = 1,
-                ["tradeToken"] = "npctrade10.1",
+                ["shopId"] = "前治安官", ["tradeToken"] = "npctrade10.1",
                 ["purchaseLines"] = new JArray(new JObject
                 {
-                    ["catalogIndex"] = 3, ["itemName"] = "训练手枪", ["displayName"] = "训练手枪",
-                    ["icon"] = "训练手枪", ["itemKind"] = "equipment", ["quantity"] = 2,
+                    ["catalogIndex"] = 3, ["itemName"] = "光棱射线弹-强化",
+                    ["displayName"] = "棱镜折射阵列", ["icon"] = "全光谱棱镜阵列",
+                    ["itemKind"] = "equipment", ["quantity"] = 2,
                     ["unitPrice"] = 1000, ["total"] = 2000, ["maxQuantity"] = 50,
                     ["destinationView"] = "bag", ["purchaseLimit"] = 50, ["maxAffordable"] = 5,
                     ["maxByCapacity"] = 3, ["maxPurchasable"] = 3, ["limitingReason"] = "inventory_full"
@@ -56,7 +100,8 @@ namespace CF7Launcher.Tests.Tasks
             };
         }
 
-        private static JObject Request(string cmd, string callId = "npc.test.1")
+        private static JObject Request(
+            string cmd, string callId = "npc.test.1", string owner = OwnerA)
         {
             var payload = new JObject { ["v"] = 1 };
             if (cmd == "snapshot") payload["shopId"] = "前治安官";
@@ -65,15 +110,10 @@ namespace CF7Launcher.Tests.Tasks
             {
                 payload["shopId"] = "前治安官"; payload["catalogIndex"] = 3; payload["quantity"] = 2;
             }
-            else if (cmd == "sell")
-            {
-                payload["shopId"] = "前治安官"; payload["quantity"] = 4;
-                payload["source"] = new JObject { ["viewId"] = "material", ["key"] = "强化石", ["expectedLease"] = "npc1.c2" };
-            }
             else if (cmd == "batchPreview") payload["itemNames"] = new JArray("药剂", "弹药");
             else if (cmd == "batchSell")
             {
-                payload["shopId"] = "前治安官"; payload["expectedBatchToken"] = "npcbatch1.2";
+                payload["shopId"] = "前治安官"; payload["expectedBatchToken"] = "npcbatch10.1";
             }
             else if (cmd == "tradePreview")
             {
@@ -87,20 +127,376 @@ namespace CF7Launcher.Tests.Tasks
             }
             else if (cmd == "tradeCommit")
             {
-                payload["shopId"] = "前治安官"; payload["expectedTradeToken"] = "npctrade1.2";
+                payload["shopId"] = "前治安官"; payload["expectedTradeToken"] = "npctrade10.1";
             }
             return new JObject
             {
                 ["type"] = "panel", ["panel"] = "npcshop", ["domain"] = "npcshop",
+                ["panelInstanceId"] = owner,
                 ["cmd"] = cmd, ["callId"] = callId, ["payload"] = payload
             };
+        }
+
+        private static JObject BatchPreviewResponse(int fid)
+        {
+            return new JObject
+            {
+                ["task"] = "npcshop_response", ["callId"] = fid,
+                ["success"] = true, ["v"] = 1, ["batchToken"] = "npcbatch10.1",
+                ["summary"] = new JArray(
+                    new JObject
+                    {
+                        ["itemName"] = "药剂", ["displayName"] = "高级药剂",
+                        ["icon"] = "药剂专用图标", ["quantity"] = 3, ["money"] = 75
+                    },
+                    new JObject
+                    {
+                        ["itemName"] = "弹药", ["displayName"] = "制式弹药",
+                        ["icon"] = "弹药箱图标", ["quantity"] = 2, ["money"] = 40
+                    }),
+                ["totalQuantity"] = 5, ["totalMoney"] = 115, ["skipped"] = 0
+            };
+        }
+
+        private static JObject BuyResponse(int fid)
+        {
+            JObject response = StateResponse(fid, "buy");
+            response["destinationView"] = "bag";
+            response["itemName"] = "光棱射线弹-强化";
+            response["quantity"] = 2;
+            response["total"] = 2000;
+            response["balance"] = 3000;
+            return response;
+        }
+
+        private static string PrimeCallId(string kind)
+        {
+            return "npc.prime." + kind + "." + Interlocked.Increment(ref _primeSequence);
+        }
+
+        private static void PrimeCatalog(NpcShopTask task, Func<JObject> latestSent)
+        {
+            task.HandleWebRequest("snapshot", Request("snapshot", PrimeCallId("catalog")));
+            JObject flash = latestSent();
+            Assert.NotNull(flash);
+            task.HandleFlashResponse(StateResponse((int)flash["callId"]), null);
+        }
+
+        private static void PrimeTrade(NpcShopTask task, Func<JObject> latestSent)
+        {
+            PrimeCatalog(task, latestSent);
+            task.HandleWebRequest("tradePreview", Request("tradePreview", PrimeCallId("trade")));
+            JObject flash = latestSent();
+            Assert.NotNull(flash);
+            task.HandleFlashResponse(TradePreviewResponse((int)flash["callId"]), null);
+        }
+
+        private static void PrimeBatch(NpcShopTask task, Func<JObject> latestSent)
+        {
+            task.HandleWebRequest("batchPreview", Request("batchPreview", PrimeCallId("batch")));
+            JObject flash = latestSent();
+            Assert.NotNull(flash);
+            task.HandleFlashResponse(BatchPreviewResponse((int)flash["callId"]), null);
+        }
+
+        [Fact]
+        public void Snapshot_AllDistinctIdentity_IsForwardedButUntrustedTopLevelKeysAreDropped()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.identity.snapshot"));
+                JObject response = StateResponse((int)ParseSent(sent)["callId"]);
+                response["injectedAuthority"] = "must_not_cross_host";
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.True((bool)web["success"]);
+                Assert.Equal("光棱射线弹-强化", (string)web["catalog"][0]["itemName"]);
+                Assert.Equal("棱镜折射阵列", (string)web["catalog"][0]["displayName"]);
+                Assert.Equal("全光谱棱镜阵列", (string)web["catalog"][0]["icon"]);
+                Assert.Null(web["injectedAuthority"]);
+            }
+        }
+
+        [Fact]
+        public void Snapshot_ResponseMustBindRequestedShopSelector()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.selector.snapshot"));
+                JObject response = StateResponse((int)ParseSent(sent)["callId"]);
+                response["shopId"] = "伪造商店";
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("missing_display")]
+        [InlineData("legacy_display_alias")]
+        [InlineData("wrong_icon_type")]
+        [InlineData("blank_display")]
+        [InlineData("undefined_icon")]
+        [InlineData("extra_near_match")]
+        [InlineData("price_formula")]
+        public void Snapshot_CatalogIdentityLeafRejectsMalformedTriples(string mutation)
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.identity.bad." + mutation));
+                JObject response = StateResponse((int)ParseSent(sent)["callId"]);
+                JObject line = (JObject)response["catalog"][0];
+                if (mutation == "missing_display") line.Remove("displayName");
+                else if (mutation == "legacy_display_alias")
+                {
+                    line["displayname"] = line["displayName"];
+                    line.Remove("displayName");
+                }
+                else if (mutation == "wrong_icon_type") line["icon"] = 7;
+                else if (mutation == "blank_display") line["displayName"] = "   ";
+                else if (mutation == "undefined_icon") line["icon"] = " Undefined ";
+                else if (mutation == "price_formula") line["unitPrice"] = 999;
+                else line["displayname"] = line["displayName"];
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+            }
+        }
+
+        [Fact]
+        public void Tooltip_ResponseBindsInternalNameAndSanitizesProjection()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("tooltip", Request("tooltip", "npc.tooltip.identity"));
+                JObject response = new JObject
+                {
+                    ["task"] = "npcshop_response", ["callId"] = (int)ParseSent(sent)["callId"],
+                    ["success"] = true, ["v"] = 1, ["itemName"] = "强化石",
+                    ["displayname"] = "高纯强化石", ["iconName"] = "强化石专用图标",
+                    ["itemType"] = "材料", ["descHTML"] = "说明", ["introHTML"] = "简介",
+                    ["injectedAuthority"] = true
+                };
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.True((bool)web["success"]);
+                Assert.Equal("强化石", (string)web["itemName"]);
+                Assert.Equal("高纯强化石", (string)web["displayname"]);
+                Assert.Equal("强化石专用图标", (string)web["iconName"]);
+                Assert.Null(web["injectedAuthority"]);
+            }
+        }
+
+        [Fact]
+        public void Tooltip_ResponseRejectsDifferentInternalName()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("tooltip", Request("tooltip", "npc.tooltip.selector"));
+                task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "npcshop_response", ["callId"] = (int)ParseSent(sent)["callId"],
+                    ["success"] = true, ["v"] = 1, ["itemName"] = "伪造材料",
+                    ["displayname"] = "伪造材料", ["descHTML"] = "", ["introHTML"] = ""
+                }, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+            }
+        }
+
+        [Fact]
+        public void BatchPreview_AllDistinctLinesBindRequestedNamesAndSums()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("batchPreview", Request("batchPreview", "npc.batch.identity"));
+                JObject response = BatchPreviewResponse((int)ParseSent(sent)["callId"]);
+                response["injectedAuthority"] = "drop";
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.True((bool)web["success"]);
+                Assert.Equal("高级药剂", (string)web["summary"][0]["displayName"]);
+                Assert.Equal("药剂专用图标", (string)web["summary"][0]["icon"]);
+                Assert.Equal(5, (int)web["totalQuantity"]);
+                Assert.Equal(115, (int)web["totalMoney"]);
+                Assert.Null(web["injectedAuthority"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("selector")]
+        [InlineData("missing_display")]
+        [InlineData("wrong_icon_type")]
+        [InlineData("aggregate")]
+        public void BatchPreview_ResponseRejectsIdentitySelectorAndAggregateMismatch(string mutation)
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("batchPreview", Request("batchPreview", "npc.batch.bad." + mutation));
+                JObject response = BatchPreviewResponse((int)ParseSent(sent)["callId"]);
+                JObject line = (JObject)response["summary"][0];
+                if (mutation == "selector") line["itemName"] = "伪造药剂";
+                else if (mutation == "missing_display") line.Remove("displayName");
+                else if (mutation == "wrong_icon_type") line["icon"] = false;
+                else response["totalMoney"] = 114;
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+            }
+        }
+
+        [Fact]
+        public void Buy_ResponsePostconditionMustMatchRequestedQuantity()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                PrimeCatalog(task, () => ParseSent(sent));
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("buy", Request("buy", "npc.buy.postcondition"));
+                JObject response = BuyResponse((int)ParseSent(sent)["callId"]);
+                response["quantity"] = 1;
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+                Assert.True((bool)web["requiresReconcile"]);
+                Assert.Equal("needs_reconcile", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void Buy_AuthoritativePostconditionClosesWrite()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                PrimeCatalog(task, () => ParseSent(sent));
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("buy", Request("buy", "npc.buy.authoritative"));
+                task.HandleFlashResponse(BuyResponse((int)ParseSent(sent)["callId"]), null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.True((bool)web["success"]);
+                Assert.Equal(2, (int)web["quantity"]);
+                Assert.Equal("idle", task.WriteState);
+                Assert.Null(web["requiresReconcile"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("buy")]
+        [InlineData("tradePreview")]
+        public void CatalogBoundCommands_RejectBeforeFlashWithoutFreshOwnerSnapshot(string cmd)
+        {
+            int sends = 0;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(cmd, Request(cmd, "npc.catalog.missing." + cmd));
+
+                Assert.Equal(0, sends);
+                JObject response = JObject.Parse(posted);
+                Assert.Equal("stale_state", (string)response["error"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void Buy_CurrentCatalogIdentityMustMatchFrozenRequestedIndex()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                PrimeCatalog(task, () => ParseSent(sent));
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("buy", Request("buy", "npc.buy.wrong-triple"));
+                JObject response = BuyResponse((int)ParseSent(sent)["callId"]);
+                response["catalog"][0]["displayName"] = "近似但错误的显示名";
+                response["catalog"][0]["icon"] = "近似但错误的图标";
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+                Assert.True((bool)web["requiresReconcile"]);
+            }
+        }
+
+        [Fact]
+        public void Buy_SuccessCannotExceedFrozenCatalogLimit()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                PrimeCatalog(task, () => ParseSent(sent));
+                task.SetPostToWeb(json => posted = json);
+                JObject request = Request("buy", "npc.buy.over-frozen-limit");
+                request["payload"]["quantity"] = 51;
+                task.HandleWebRequest("buy", request);
+                JObject response = BuyResponse((int)ParseSent(sent)["callId"]);
+                response["quantity"] = 51;
+                response["total"] = 51000;
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+                Assert.True((bool)web["requiresReconcile"]);
+            }
         }
 
         [Theory]
         [InlineData("snapshot", "npcShopSnapshot")]
         [InlineData("tooltip", "npcShopTooltip")]
         [InlineData("buy", "npcShopBuy")]
-        [InlineData("sell", "npcShopSell")]
         [InlineData("batchPreview", "npcShopBatchPreview")]
         [InlineData("batchSell", "npcShopBatchSell")]
         [InlineData("tradePreview", "npcShopTradePreview")]
@@ -109,6 +505,13 @@ namespace CF7Launcher.Tests.Tasks
         {
             string sent = null;
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            if (cmd == "buy" || cmd == "tradePreview")
+                PrimeCatalog(task, () => ParseSent(sent));
+            else if (cmd == "batchSell")
+                PrimeBatch(task, () => ParseSent(sent));
+            else if (cmd == "tradeCommit")
+                PrimeTrade(task, () => ParseSent(sent));
+            sent = null;
             JObject request = Request(cmd);
             request["action"] = "evil";
             request["payload"]["unknown"] = "drop";
@@ -120,26 +523,23 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(action, (string)flash["action"]);
             Assert.Null(flash["payload"]);
             Assert.Null(flash["domain"]);
+            Assert.Null(flash["panelInstanceId"]);
             Assert.Null(flash["unknown"]);
         }
 
         [Fact]
-        public void Sell_AcceptsOnlyBagOrMaterialLeaseSources()
+        public void OrdinarySell_IsRetiredBeforeFlashDispatch()
         {
             int sends = 0;
             string posted = null;
             var task = new NpcShopTask(() => true, _ => { sends++; return true; });
             task.SetPostToWeb(json => posted = json);
             JObject request = Request("sell");
-            request["payload"]["source"] = new JObject
-            {
-                ["viewId"] = "intelligence", ["key"] = "机密", ["expectedLease"] = "npc1.c1"
-            };
 
             task.HandleWebRequest("sell", request);
 
             Assert.Equal(0, sends);
-            Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
+            Assert.Equal("unsupported_cmd", (string)JObject.Parse(posted)["error"]);
         }
 
         [Fact]
@@ -179,6 +579,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("npcshop", (string)web["domain"]);
             Assert.Equal("snapshot", (string)web["cmd"]);
             Assert.Equal("npc.web.snapshot.7", (string)web["callId"]);
+            AssertOwnerTuple(web, "snapshot", "npc.web.snapshot.7");
             Assert.Null(web["task"]);
         }
 
@@ -186,7 +587,7 @@ namespace CF7Launcher.Tests.Tasks
         public void AmbiguousWrite_BlocksFurtherWritesUntilSuccessfulSnapshot()
         {
             var sent = new List<JObject>();
-            bool failNext = true;
+            bool failNext = false;
             string lastPosted = null;
             var task = new NpcShopTask(() => true, json =>
             {
@@ -194,11 +595,14 @@ namespace CF7Launcher.Tests.Tasks
                 if (failNext) { failNext = false; return false; }
                 return true;
             });
+            PrimeCatalog(task, () => sent[sent.Count - 1]);
+            sent.Clear();
+            failNext = true;
             task.SetPostToWeb(json => lastPosted = json);
 
             task.HandleWebRequest("buy", Request("buy", "npc.write.1"));
             Assert.Equal("needs_reconcile", task.WriteState);
-            task.HandleWebRequest("sell", Request("sell", "npc.write.2"));
+            task.HandleWebRequest("buy", Request("buy", "npc.write.2"));
             Assert.Equal("reconcile_required", (string)JObject.Parse(lastPosted)["error"]);
 
             task.HandleWebRequest("snapshot", Request("snapshot", "npc.snapshot.2"));
@@ -213,6 +617,7 @@ namespace CF7Launcher.Tests.Tasks
         {
             string sent = null;
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            PrimeCatalog(task, () => ParseSent(sent));
             task.HandleWebRequest("buy", Request("buy", "npc.missing-shop.1"));
             int fid = (int)ParseSent(sent)["callId"];
 
@@ -246,6 +651,7 @@ namespace CF7Launcher.Tests.Tasks
         {
             string sent = null;
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            PrimeCatalog(task, () => ParseSent(sent));
             JObject request = Request("tradePreview");
             request["payload"]["purchases"][0]["clientPrice"] = 1;
             request["payload"]["sales"][0]["clientTotal"] = 999999;
@@ -267,6 +673,7 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
             {
+                PrimeCatalog(task, () => ParseSent(sent));
                 task.SetPostToWeb(json => posted = json);
                 task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.preview.valid.1"));
                 int fid = (int)ParseSent(sent)["callId"];
@@ -283,12 +690,44 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void TradePreview_TotalUsesAuthoritativeBasePriceMultiplierFormula()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.price-formula.snapshot"));
+                JObject snapshot = StateResponse((int)ParseSent(sent)["callId"]);
+                snapshot["buyMultiplier"] = 0.85;
+                snapshot["catalog"][0]["basePrice"] = 1001;
+                snapshot["catalog"][0]["unitPrice"] = 850;
+                task.HandleFlashResponse(snapshot, null);
+
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.price-formula.preview"));
+                JObject response = TradePreviewResponse((int)ParseSent(sent)["callId"]);
+                response["purchaseLines"][0]["unitPrice"] = 850;
+                response["purchaseLines"][0]["total"] = 1701;
+                response["buyTotal"] = 1701;
+                response["netDelta"] = -1601;
+                response["projectedBalance"] = 3399;
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.True((bool)web["success"]);
+                Assert.Equal(1701, (int)web["buyTotal"]);
+            }
+        }
+
+        [Fact]
         public void TradePreview_MalformedSuccess_IsReadFailureWithoutPoisoningWriteGate()
         {
             string sent = null;
             string posted = null;
             using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
             {
+                PrimeCatalog(task, () => ParseSent(sent));
                 task.SetPostToWeb(json => posted = json);
                 task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.preview.malformed.1"));
                 int fid = (int)ParseSent(sent)["callId"];
@@ -316,13 +755,21 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
             {
+                PrimeCatalog(task, () => ParseSent(sent));
+                if (blockingError == "insufficient_money")
+                {
+                    task.HandleWebRequest("snapshot", Request("snapshot", PrimeCallId("low-balance")));
+                    JObject lowBalance = StateResponse((int)ParseSent(sent)["callId"]);
+                    lowBalance["balance"] = 1000;
+                    task.HandleFlashResponse(lowBalance, null);
+                }
                 task.SetPostToWeb(json => posted = json);
                 task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.preview.blocked." + blockingError));
                 int fid = (int)ParseSent(sent)["callId"];
                 JObject response = TradePreviewResponse(fid);
                 response["canCommit"] = false;
                 response["blockingError"] = blockingError;
-                if (blockingError == "insufficient_money") response["projectedBalance"] = -1;
+                if (blockingError == "insufficient_money") response["projectedBalance"] = -900;
                 else if (blockingError == "inventory_full")
                 {
                     response["requiredSlots"] = 4; response["availableSlots"] = 3; response["missingSlots"] = 1;
@@ -348,7 +795,9 @@ namespace CF7Launcher.Tests.Tasks
 
         [Theory]
         [InlineData("purchase_identity")]
+        [InlineData("purchase_triple")]
         [InlineData("purchase_quantity")]
+        [InlineData("purchase_total")]
         [InlineData("purchase_bounds")]
         [InlineData("sale_identity")]
         [InlineData("sale_scope")]
@@ -356,7 +805,9 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("capacity_total")]
         [InlineData("commit_capacity_state")]
         [InlineData("commit_money_state")]
+        [InlineData("projected_balance")]
         [InlineData("slot_counts")]
+        [InlineData("shop_selector")]
         [InlineData("destination_without_source")]
         public void TradePreview_ResponseMustMatchIntentAndRemainSelfConsistent(string mutation)
         {
@@ -364,12 +815,20 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
             {
+                PrimeCatalog(task, () => ParseSent(sent));
                 task.SetPostToWeb(json => posted = json);
                 task.HandleWebRequest("tradePreview", Request("tradePreview", "npc.preview.mismatch." + mutation));
                 int fid = (int)ParseSent(sent)["callId"];
                 JObject response = TradePreviewResponse(fid);
-                if (mutation == "purchase_identity") response["purchaseLines"][0]["catalogIndex"] = 4;
+                if (mutation == "shop_selector") response["shopId"] = "伪造商店";
+                else if (mutation == "purchase_identity") response["purchaseLines"][0]["catalogIndex"] = 4;
+                else if (mutation == "purchase_triple")
+                {
+                    response["purchaseLines"][0]["displayName"] = "近似但错误的显示名";
+                    response["purchaseLines"][0]["icon"] = "近似但错误的图标";
+                }
                 else if (mutation == "purchase_quantity") response["purchaseLines"][0]["quantity"] = 3;
+                else if (mutation == "purchase_total") response["purchaseLines"][0]["total"] = 1999;
                 else if (mutation == "purchase_bounds") response["purchaseLines"][0]["maxPurchasable"] = 2;
                 else if (mutation == "sale_identity") response["saleLines"][0]["sourceIdentity"] = "material:伪造材料";
                 else if (mutation == "sale_scope") response["saleLines"][0]["scope"] = "same_name";
@@ -380,6 +839,7 @@ namespace CF7Launcher.Tests.Tasks
                     response["requiredSlots"] = 4; response["availableSlots"] = 3; response["missingSlots"] = 1;
                 }
                 else if (mutation == "commit_money_state") response["projectedBalance"] = -1;
+                else if (mutation == "projected_balance") response["projectedBalance"] = 3000;
                 else if (mutation == "slot_counts")
                 {
                     response["saleLines"][0]["matchedCount"] = 2;
@@ -407,14 +867,24 @@ namespace CF7Launcher.Tests.Tasks
         public void PendingSendFailure_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
         {
             string posted = null;
-            using (var task = new NpcShopTask(() => true, _ => false))
+            string sent = null;
+            bool failSend = false;
+            using (var task = new NpcShopTask(() => true, json =>
             {
+                sent = json;
+                return !failSend;
+            }))
+            {
+                if (cmd == "tradeCommit") PrimeTrade(task, () => ParseSent(sent));
+                else PrimeCatalog(task, () => ParseSent(sent));
+                failSend = true;
                 task.SetPostToWeb(json => posted = json);
 
                 task.HandleWebRequest(cmd, Request(cmd, "npc.send-failure." + cmd));
 
                 JObject response = JObject.Parse(posted);
                 Assert.Equal("disconnected", (string)response["error"]);
+                AssertOwnerTuple(response, cmd, "npc.send-failure." + cmd);
                 Assert.Equal(isWrite, response.Value<bool?>("requiresReconcile") == true);
                 Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
             }
@@ -436,6 +906,7 @@ namespace CF7Launcher.Tests.Tasks
                 JObject response = JObject.Parse(posted);
                 Assert.Equal(0, sends);
                 Assert.Equal("disconnected", (string)response["error"]);
+                AssertOwnerTuple(response, cmd, "npc.not-ready." + cmd);
                 Assert.Null(response["requiresReconcile"]);
                 Assert.Equal("idle", task.WriteState);
             }
@@ -447,17 +918,77 @@ namespace CF7Launcher.Tests.Tasks
         public void Timeout_RequiresReconcileOnlyForWrites(string cmd, bool isWrite)
         {
             JObject posted = null;
+            string sent = null;
             using (var responseSeen = new ManualResetEventSlim(false))
-            using (var task = new NpcShopTask(() => true, _ => true, 20))
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }, 20))
             {
+                if (cmd == "tradeCommit") PrimeTrade(task, () => ParseSent(sent));
+                else PrimeCatalog(task, () => ParseSent(sent));
                 task.SetPostToWeb(json => { posted = JObject.Parse(json); responseSeen.Set(); });
 
                 task.HandleWebRequest(cmd, Request(cmd, "npc.timeout." + cmd));
                 Assert.True(responseSeen.Wait(TimeSpan.FromSeconds(2)), "NPC shop timeout response was not posted");
 
                 Assert.Equal("timeout", (string)posted["error"]);
+                AssertOwnerTuple(posted, cmd, "npc.timeout." + cmd);
                 Assert.Equal(isWrite, posted.Value<bool?>("requiresReconcile") == true);
                 Assert.Equal(isWrite ? "needs_reconcile" : "idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void InvalidOwnerTuple_IsRejectedBeforePendingOrFlashDispatch()
+        {
+            int sends = 0;
+            var posted = new List<JObject>();
+            using (var task = new NpcShopTask(() => true, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+
+                JObject missingInstance = Request("snapshot", "npc.owner.missing");
+                missingInstance.Remove("panelInstanceId");
+                task.HandleWebRequest("snapshot", missingInstance);
+
+                JObject foreignPanel = Request("snapshot", "npc.owner.foreign");
+                foreignPanel["panel"] = "kshop";
+                task.HandleWebRequest("snapshot", foreignPanel);
+
+                task.HandleWebRequest("snapshot",
+                    Request("snapshot", "npc.owner.invalid", "invalid owner"));
+
+                Assert.Equal(0, sends);
+                Assert.Empty(posted);
+            }
+        }
+
+        [Fact]
+        public void ClearedOwnerA_LateResponseCannotSatisfySameNameOwnerB()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new NpcShopTask(
+                () => true,
+                json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+
+                task.HandleWebRequest("snapshot",
+                    Request("snapshot", "npc.owner-a.snapshot", OwnerA));
+                int ownerAFid = (int)sent[0]["callId"];
+                task.ClearPending();
+
+                task.HandleWebRequest("snapshot",
+                    Request("snapshot", "npc.owner-b.snapshot", OwnerB));
+                int ownerBFid = (int)sent[1]["callId"];
+
+                task.HandleFlashResponse(StateResponse(ownerAFid), null);
+                Assert.Empty(posted);
+
+                task.HandleFlashResponse(StateResponse(ownerBFid), null);
+                Assert.Single(posted);
+                Assert.True((bool)posted[0]["success"]);
+                AssertOwnerTuple(
+                    posted[0], "snapshot", "npc.owner-b.snapshot", OwnerB);
             }
         }
 
@@ -512,6 +1043,7 @@ namespace CF7Launcher.Tests.Tasks
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
             try
             {
+                PrimeTrade(task, () => ParseSent(sent));
                 task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
                 task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.drain." + dispose));
                 int fid = (int)ParseSent(sent)["callId"];
@@ -538,6 +1070,7 @@ namespace CF7Launcher.Tests.Tasks
                 string sent = null;
                 using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
                 {
+                    PrimeCatalog(task, () => ParseSent(sent));
                     JObject request = Request(cmd, "npc.quantity." + cmd + "." + quantity);
                     if (cmd == "buy") request["payload"]["quantity"] = quantity;
                     else request["payload"]["purchases"][0]["quantity"] = quantity;
@@ -602,6 +1135,7 @@ namespace CF7Launcher.Tests.Tasks
         {
             string sent = null;
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            PrimeCatalog(task, () => ParseSent(sent));
             JObject request = Request("tradePreview");
             request["payload"]["sales"] = new JArray(new JObject
             {
@@ -652,11 +1186,207 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
         }
 
+        [Theory]
+        [InlineData("batchSell")]
+        [InlineData("tradeCommit")]
+        public void PreviewBackedCommit_RejectsBeforeFlashWithoutOwnerLocalPreview(string cmd)
+        {
+            int sends = 0;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, _ => { sends++; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(cmd, Request(cmd, "npc.preview-authority.missing." + cmd));
+
+                Assert.Equal(0, sends);
+                JObject response = JObject.Parse(posted);
+                Assert.Equal("stale_state", (string)response["error"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("batchSell")]
+        [InlineData("tradeCommit")]
+        public void PreviewBackedCommit_WrongTokenDoesNotDestroyExactAuthority(string cmd)
+        {
+            var sent = new List<JObject>();
+            string posted = null;
+            using (var task = new NpcShopTask(
+                () => true,
+                json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                if (cmd == "batchSell") PrimeBatch(task, () => sent[sent.Count - 1]);
+                else PrimeTrade(task, () => sent[sent.Count - 1]);
+                sent.Clear();
+                task.SetPostToWeb(json => posted = json);
+                JObject request = Request(cmd, "npc.preview-authority.wrong-token." + cmd);
+                if (cmd == "batchSell") request["payload"]["expectedBatchToken"] = "npcbatch.wrong";
+                else request["payload"]["expectedTradeToken"] = "npctrade.wrong";
+
+                task.HandleWebRequest(cmd, request);
+
+                Assert.Empty(sent);
+                Assert.Equal("stale_state", (string)JObject.Parse(posted)["error"]);
+
+                task.HandleWebRequest(cmd, Request(cmd, "npc.preview-authority.correct-after-wrong." + cmd));
+                Assert.Single(sent);
+                Assert.Equal("write_pending", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("batchSell")]
+        [InlineData("tradeCommit")]
+        public void PreviewBackedCommit_NewerPreviewSupersedesOlderToken(string cmd)
+        {
+            var sent = new List<JObject>();
+            string posted = null;
+            using (var task = new NpcShopTask(
+                () => true,
+                json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                if (cmd == "batchSell") PrimeBatch(task, () => sent[sent.Count - 1]);
+                else PrimeTrade(task, () => sent[sent.Count - 1]);
+
+                string previewCmd = cmd == "batchSell" ? "batchPreview" : "tradePreview";
+                task.HandleWebRequest(previewCmd, Request(previewCmd, PrimeCallId("replacement")));
+                int previewFid = (int)sent[sent.Count - 1]["callId"];
+                JObject replacement = cmd == "batchSell"
+                    ? BatchPreviewResponse(previewFid)
+                    : TradePreviewResponse(previewFid);
+                string replacementToken = cmd == "batchSell" ? "npcbatch10.2" : "npctrade10.2";
+                replacement[cmd == "batchSell" ? "batchToken" : "tradeToken"] = replacementToken;
+                task.HandleFlashResponse(replacement, null);
+
+                sent.Clear();
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(cmd, Request(cmd, "npc.preview-authority.superseded." + cmd));
+                Assert.Empty(sent);
+                Assert.Equal("stale_state", (string)JObject.Parse(posted)["error"]);
+
+                JObject current = Request(cmd, "npc.preview-authority.latest." + cmd);
+                current["payload"][cmd == "batchSell"
+                    ? "expectedBatchToken" : "expectedTradeToken"] = replacementToken;
+                task.HandleWebRequest(cmd, current);
+                Assert.Single(sent);
+                Assert.Equal("write_pending", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("batchSell")]
+        [InlineData("tradeCommit")]
+        public void PreviewBackedCommit_ConsumesExactTokenAtFirstAdmission(string cmd)
+        {
+            var sent = new List<JObject>();
+            string posted = null;
+            using (var task = new NpcShopTask(
+                () => true,
+                json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                if (cmd == "batchSell") PrimeBatch(task, () => sent[sent.Count - 1]);
+                else PrimeTrade(task, () => sent[sent.Count - 1]);
+                sent.Clear();
+                task.SetPostToWeb(json => posted = json);
+
+                task.HandleWebRequest(cmd, Request(cmd, "npc.preview-authority.consume.1." + cmd));
+                int fid = (int)sent[0]["callId"];
+                task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "npcshop_response", ["callId"] = fid,
+                    ["success"] = false, ["error"] = "stale_state"
+                }, null);
+                task.HandleWebRequest(cmd, Request(cmd, "npc.preview-authority.consume.2." + cmd));
+
+                Assert.Single(sent);
+                Assert.Equal("stale_state", (string)JObject.Parse(posted)["error"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("batchSell")]
+        [InlineData("tradeCommit")]
+        public void PreviewBackedCommit_AuthoritativePostconditionClosesWrite(string cmd)
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                if (cmd == "batchSell") PrimeBatch(task, () => ParseSent(sent));
+                else PrimeTrade(task, () => ParseSent(sent));
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(cmd, Request(cmd, "npc.preview-authority.success." + cmd));
+                int fid = (int)ParseSent(sent)["callId"];
+                JObject response = StateResponse(fid, cmd);
+                if (cmd == "batchSell")
+                {
+                    response["quantity"] = 5;
+                    response["total"] = 115;
+                }
+
+                task.HandleFlashResponse(response, null);
+
+                Assert.True((bool)JObject.Parse(posted)["success"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("batch_quantity")]
+        [InlineData("batch_total")]
+        [InlineData("trade_total")]
+        [InlineData("trade_balance")]
+        [InlineData("trade_catalog_triple")]
+        public void PreviewBackedCommit_RejectsSelfConsistentButDifferentPostcondition(string mutation)
+        {
+            string sent = null;
+            string posted = null;
+            string cmd = mutation.StartsWith("batch", StringComparison.Ordinal)
+                ? "batchSell" : "tradeCommit";
+            using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
+            {
+                if (cmd == "batchSell") PrimeBatch(task, () => ParseSent(sent));
+                else PrimeTrade(task, () => ParseSent(sent));
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(cmd, Request(cmd, "npc.preview-authority.postcondition." + mutation));
+                int fid = (int)ParseSent(sent)["callId"];
+                JObject response = StateResponse(fid, cmd);
+                if (cmd == "batchSell")
+                {
+                    response["quantity"] = mutation == "batch_quantity" ? 4 : 5;
+                    response["total"] = mutation == "batch_total" ? 114 : 115;
+                }
+                else if (mutation == "trade_total")
+                {
+                    response["trade"]["buyTotal"] = 1900;
+                    response["trade"]["sellTotal"] = 100;
+                    response["trade"]["netDelta"] = -1800;
+                }
+                else if (mutation == "trade_balance") response["balance"] = 3101;
+                else
+                {
+                    response["catalog"][0]["displayName"] = "近似但错误的显示名";
+                    response["catalog"][0]["icon"] = "近似但错误的图标";
+                }
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
+                Assert.True((bool)web["requiresReconcile"]);
+                Assert.Equal("needs_reconcile", task.WriteState);
+            }
+        }
+
         [Fact]
         public void TradeCommit_IsAWriteAndDeterministicRejectionReopensGate()
         {
             string sent = null;
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            PrimeTrade(task, () => ParseSent(sent));
             task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.commit.1"));
             Assert.Equal("write_pending", task.WriteState);
             int fid = (int)ParseSent(sent)["callId"];
@@ -676,6 +1406,7 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             using (var task = new NpcShopTask(() => true, json => { sent = json; return true; }))
             {
+                PrimeTrade(task, () => ParseSent(sent));
                 task.SetPostToWeb(json => posted = json);
                 task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.destination-full.1"));
                 int fid = (int)ParseSent(sent)["callId"];
@@ -699,6 +1430,7 @@ namespace CF7Launcher.Tests.Tasks
             string sent = null;
             string posted = null;
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            PrimeTrade(task, () => ParseSent(sent));
             task.SetPostToWeb(json => posted = json);
             task.HandleWebRequest("snapshot", Request("snapshot", "npc.snapshot.domain.1"));
             int fid = (int)ParseSent(sent)["callId"];
@@ -718,6 +1450,7 @@ namespace CF7Launcher.Tests.Tasks
             string sent = null;
             string posted = null;
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            PrimeTrade(task, () => ParseSent(sent));
             task.SetPostToWeb(json => posted = json);
             task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.malformed.1"));
             int fid = (int)ParseSent(sent)["callId"];
@@ -739,6 +1472,8 @@ namespace CF7Launcher.Tests.Tasks
         {
             var sent = new List<JObject>();
             var task = new NpcShopTask(() => true, json => { sent.Add(ParseSent(json)); return true; });
+            PrimeTrade(task, () => sent[sent.Count - 1]);
+            sent.Clear();
             task.HandleWebRequest("snapshot", Request("snapshot", "npc.snapshot.concurrent.1"));
             int snapshotFid = (int)sent[0]["callId"];
             task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.concurrent.1"));
@@ -756,16 +1491,150 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void SnapshotIssuedBeforeDeliveryUnknownWrite_DoesNotClearReconcileEpoch()
+        {
+            var sent = new List<JObject>();
+            bool failNext = false;
+            using (var task = new NpcShopTask(() => true, json =>
+            {
+                sent.Add(ParseSent(json));
+                if (failNext) { failNext = false; return false; }
+                return true;
+            }))
+            {
+                PrimeTrade(task, () => sent[sent.Count - 1]);
+                sent.Clear();
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.epoch.old-read"));
+                int oldSnapshotFid = (int)sent[0]["callId"];
+
+                failNext = true;
+                task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.epoch.write"));
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                task.HandleFlashResponse(StateResponse(oldSnapshotFid), null);
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.epoch.new-read"));
+                int newSnapshotFid = (int)sent[sent.Count - 1]["callId"];
+                task.HandleFlashResponse(StateResponse(newSnapshotFid), null);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void SnapshotThatTimedOutBeforeWriteTimeout_CannotClearReconcileEpochWhenLate()
+        {
+            var sent = new List<JObject>();
+            using (var oldReadTimedOut = new ManualResetEventSlim(false))
+            using (var writeTimedOut = new ManualResetEventSlim(false))
+            using (var task = new NpcShopTask(() => true, json =>
+            {
+                sent.Add(ParseSent(json));
+                return true;
+            }, 100))
+            {
+                PrimeTrade(task, () => sent[sent.Count - 1]);
+                sent.Clear();
+                task.SetPostToWeb(json =>
+                {
+                    JObject response = JObject.Parse(json);
+                    if (response.Value<string>("error") != "timeout") return;
+                    if (response.Value<string>("callId")
+                        == "npc.epoch.timeout.old-read")
+                    {
+                        oldReadTimedOut.Set();
+                    }
+                    else if (response.Value<string>("callId")
+                        == "npc.epoch.timeout.write")
+                    {
+                        writeTimedOut.Set();
+                    }
+                });
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.epoch.timeout.old-read"));
+                int oldSnapshotFid = (int)sent[0]["callId"];
+                Assert.True(oldReadTimedOut.Wait(5000));
+
+                task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.epoch.timeout.write"));
+                Assert.True(writeTimedOut.Wait(5000));
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                task.HandleFlashResponse(StateResponse(oldSnapshotFid), null);
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "npc.epoch.timeout.new-read"));
+                int newSnapshotFid = (int)sent[sent.Count - 1]["callId"];
+                task.HandleFlashResponse(StateResponse(newSnapshotFid), null);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
         public void AuthoritativeTradeCommitSuccess_ReopensWriteGate()
         {
             string sent = null;
             var task = new NpcShopTask(() => true, json => { sent = json; return true; });
+            PrimeTrade(task, () => ParseSent(sent));
             task.HandleWebRequest("tradeCommit", Request("tradeCommit", "npc.trade.success.1"));
             int fid = (int)ParseSent(sent)["callId"];
 
             task.HandleFlashResponse(StateResponse(fid, "tradeCommit"), _ => { });
 
             Assert.Equal("idle", task.WriteState);
+        }
+
+        [Theory]
+        [InlineData("batchSell", "expectedBatchToken", "npcbatch10.1")]
+        [InlineData("tradeCommit", "expectedTradeToken", "npctrade10.1")]
+        public void PreviewBackedWrite_LogManagerCaptureNeverContainsRawAuthorityToken(
+            string cmd,
+            string tokenKey,
+            string secret)
+        {
+            var sent = new List<JObject>();
+            var logs = new List<string>();
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                using (var task = new NpcShopTask(
+                    () => true,
+                    value =>
+                    {
+                        sent.Add(ParseSent(value));
+                        return true;
+                    }))
+                {
+                    if (cmd == "batchSell")
+                        PrimeBatch(task, () => sent[sent.Count - 1]);
+                    else
+                        PrimeTrade(task, () => sent[sent.Count - 1]);
+                    logs.Clear();
+                    task.HandleWebRequest(cmd, Request(
+                        cmd, "npc.log-redaction." + cmd));
+                }
+            }
+            finally
+            {
+                LogManager.ResetSink();
+            }
+
+            string flashLog = Assert.Single(logs,
+                value => value.Contains("[NpcShopTask] -> Flash:"));
+            JObject command = sent[sent.Count - 1];
+            string binding = Assert.Single(logs,
+                value => value.StartsWith(
+                    "event=authority_flash_call_bound ",
+                    StringComparison.Ordinal));
+            Assert.Equal(
+                "event=authority_flash_call_bound domain=npcshop"
+                + " webCallId=npc.log-redaction." + cmd
+                + " flashCallId=" + (int)command["callId"]
+                + " panel=npcshop panelInstanceId=" + OwnerA
+                + " cmd=" + cmd + " action=" + (cmd == "batchSell"
+                    ? "npcShopBatchSell" : "npcShopTradeCommit"),
+                binding);
+            Assert.Contains(tokenKey + "Ref="
+                + AuthorityLogFormatter.CreateReference(secret), flashLog);
+            Assert.All(logs, value => Assert.DoesNotContain(secret, value));
         }
     }
 }

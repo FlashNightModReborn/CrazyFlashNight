@@ -33,20 +33,30 @@
   window.cancelAnimationFrame=function(id){if(active[id]){delete active[id];stats.active--;stats.cancelled++}return nativeCancel(id)};
 })(window.requestAnimationFrame.bind(window),window.cancelAnimationFrame.bind(window));
 window.__CRAFTING_CONFIG__={requestTimeoutMs:250,sessionNonce:'harness',inspectorManifestUrl:'../../../assets/dressup/manifest.json'};
+window.__INVENTORY_WORKBENCH_CONFIG__={requestTimeoutMs:250,sessionNonce:'crafting-inventory-harness',dragTimeoutMs:120};
+window.__craftingHarnessScenario=new URLSearchParams(location.search).get('scenario')||'';
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__ambiguous=false;window.__previewDelay=0;window.__bridgeFaults=[];
+window.__craftingCloseWitnesses=[];window.__inventoryWriteCommands=[];window.__droppedCraftingMessages=[];
 window.__queueCraftingFault=function(fault){window.__bridgeFaults.push(fault)};
 function takeCraftingFault(cmd){for(var i=0;i<__bridgeFaults.length;i++){if(!__bridgeFaults[i].cmd||__bridgeFaults[i].cmd===cmd)return __bridgeFaults.splice(i,1)[0]}return null}
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
-  send:function(message){
-    __sent.push(JSON.parse(JSON.stringify(message)));
-    var fault=takeCraftingFault(message.cmd);
+   send:function(message){
+     __sent.push(JSON.parse(JSON.stringify(message)));
+     if(message&&message.type==='panel'&&message.cmd==='close'&&message.panel==='crafting'&&!message.domain){
+       __craftingCloseWitnesses.push({
+         message:JSON.parse(JSON.stringify(message)),
+         lifecycle:window.Panels&&Panels.getLifecycle?Panels.getLifecycle():null
+       });
+     }
+     var fault=takeCraftingFault(message.cmd);
     if(fault){
       if(fault.mode==='send_false')return false;
       if(fault.mode==='throw')throw new Error('harness transport disconnected');
-      if(fault.mode==='drop')return true;
+      if(fault.mode==='drop'){__droppedCraftingMessages.push(JSON.parse(JSON.stringify(message)));return true}
       if(fault.mode==='error'){
-        setTimeout(function(){emit({type:'panel_resp',domain:'crafting',cmd:message.cmd,callId:message.callId,
+        setTimeout(function(){emit({type:'panel_resp',domain:'crafting',panel:message.panel,
+          panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId,
           success:false,error:fault.error,requiresReconcile:!!fault.requiresReconcile})},Number(fault.delayMs)||0);return true
       }
       if(fault.mode==='delay'){setTimeout(function(){respond(message)},Number(fault.delayMs)||0);return true}
@@ -69,46 +79,223 @@ window.PanelTooltip={
     var item=options.item;options.renderBasic(item);options.fetch(item,function(response){if(response&&response.success)options.renderRich(item,response)});
   })}
 };
-window.Panels=(function(){var specs={},active=null,lastOpen=null;return{
-  register:function(id,spec){specs[id]=spec},open:function(id,init){if(active&&specs[active].onClose)specs[active].onClose();active=id;lastOpen={id:id,init:init||{}};var host=document.getElementById('panel-content');host.innerHTML='';host.appendChild(specs[id].create());if(specs[id].onOpen)specs[id].onOpen(host,init||{})},
-  close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null},getActive:function(){return active},lastOpen:function(){return lastOpen},_specs:specs
-}})();
-Panels.register('workbench',{create:function(){var node=document.createElement('div');node.className='workbench-route-stub';return node},onOpen:function(){},onClose:function(){}});
-window.__organizerMount=null;window.__organizerDeps=[];
-window.LazyLoader={load:function(deps){window.__organizerDeps=deps.slice();return Promise.resolve()}};
-window.CraftingInventoryOrganizer={
-  mount:function(host,context){
-    window.__organizerMount={host:host,context:context};
-    var node=document.createElement('div');node.className='embedded-organizer-stub';host.appendChild(node);return true
+window.Panels=(function(){var specs={},active=null,activeEl=null,lastOpen=null,activeLifecycle=null,lastClosedLifecycle=null,lifecycleSeq=0;
+function copy(value){return value?JSON.parse(JSON.stringify(value)):null}
+function close(){
+  if(!active)return false;
+  var closing=active,closingSpec=specs[closing];
+  lastClosedLifecycle=copy(activeLifecycle);
+  if(closingSpec&&closingSpec.onClose)closingSpec.onClose();
+  active=null;activeEl=null;activeLifecycle=null;return true
+}
+return{
+  register:function(id,spec){specs[id]=spec},
+  open:function(id,init){
+    init=init||{};
+    if(id==='crafting'&&!init.panelInstanceId)init.panelInstanceId='crafting.harness.'+(lifecycleSeq+1);
+    if(active===id){
+      lastOpen={id:id,init:init};
+      activeLifecycle={owner:id,panelInstanceId:String(init.panelInstanceId||''),pauseLease:'pause.harness.'+(++lifecycleSeq)};
+      if(specs[id].onRebind)return specs[id].onRebind(activeEl,init)!==false;
+      return true
+    }
+    if(active)close();
+    active=id;
+    lastOpen={id:id,init:init};
+    activeLifecycle={owner:id,panelInstanceId:String(init.panelInstanceId||''),pauseLease:'pause.harness.'+(++lifecycleSeq)};
+    var host=document.getElementById('panel-content');host.innerHTML='';activeEl=specs[id].create();host.appendChild(activeEl);
+    if(specs[id].onOpen)specs[id].onOpen(activeEl,init)
   },
-  teardown:function(){return true},
-  requestClose:function(){return false}
-};
-  var money=1000,materials=2,commitCount=0;window.__specialWeaponMode='';
-function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
+  close:close,
+  requestClose:function(reason){return !!(active&&specs[active]&&specs[active].onRequestClose&&specs[active].onRequestClose(reason||'close'))},
+  forceClose:function(data){
+    if(!active||data&&data.panel&&data.panel!==active)return false;
+    if(data&&data.panelInstanceId&&activeLifecycle&&data.panelInstanceId!==activeLifecycle.panelInstanceId)return false;
+    var closingSpec=specs[active];close();if(closingSpec&&closingSpec.onForceClose)closingSpec.onForceClose();return true
+  },
+  getActive:function(){return active},lastOpen:function(){return lastOpen},
+  getLifecycle:function(){return copy(activeLifecycle)},getLastClosedLifecycle:function(){return copy(lastClosedLifecycle)},_specs:specs
+}})();
+Bridge.on('panel_esc',function(){Panels.requestClose('escape')});
+Bridge.on('panel_cmd',function(data){if(data&&data.cmd==='force_close')Panels.forceClose(data);else if(data&&data.cmd==='close')Panels.close()});
+document.getElementById('panel-backdrop').addEventListener('click',function(){Panels.requestClose('backdrop')});
+Panels.register('workbench',{create:function(){var node=document.createElement('div');node.className='workbench-route-stub';return node},onOpen:function(){},onClose:function(){}});
+window.__organizerMount=null;window.__organizerDeps=[];window.__organizerLoadedDeps=[];
+window.__organizerLazyRejectOnce=false;window.__organizerScriptCache={};
+if(window.__craftingHarnessScenario==='pg-craft-current-coverage'
+    ||window.__craftingHarnessScenario==='pg-inventory-owner-fault'){
+  window.LazyLoader={load:function(deps){
+    window.__organizerDeps=deps.slice();
+    if(window.__organizerLazyRejectOnce){window.__organizerLazyRejectOnce=false;return Promise.reject(new Error('expected organizer lazy rejection'))}
+    return deps.reduce(function(chain,dep){return chain.then(function(){
+      if(window.__organizerScriptCache[dep])return window.__organizerScriptCache[dep];
+      var relative=String(dep).replace(/^modules\//,'');
+      var promise=new Promise(function(resolve,reject){
+        var script=document.createElement('script');script.async=false;
+        script.src=new URL('../../'+relative,location.href).href;
+        script.setAttribute('data-pg-craft-dependency',dep);
+        script.onload=function(){window.__organizerLoadedDeps.push(dep);resolve()};
+        script.onerror=function(){delete window.__organizerScriptCache[dep];reject(new Error('failed organizer dependency: '+dep))};
+        document.head.appendChild(script)
+      });
+      window.__organizerScriptCache[dep]=promise;return promise
+    })},Promise.resolve())
+  }};
+}else{
+  window.LazyLoader={load:function(deps){window.__organizerDeps=deps.slice();return Promise.resolve()}};
+  window.CraftingInventoryOrganizer={
+    mount:function(host,context){
+      window.__organizerMount={host:host,context:context};
+      var node=document.createElement('div');node.className='embedded-organizer-stub';host.appendChild(node);return true
+    },
+    teardown:function(){return true},
+    requestClose:function(){return false}
+  };
+}
+  var money=1000,materials=2,commitCount=0,lastAcceptedPlan=null;window.__specialWeaponMode='';
+  var identityMode=window.__craftingHarnessScenario==='pg-crafting-identity';
+  var identityMalformed=false;
+  var identityTriples=[
+    {name:'光棱射线弹-强化',displayName:'棱镜折射阵列',icon:'全光谱棱镜阵列'},
+    {name:'光谱射线弹',displayName:'色散射线弹',icon:'棱栅射线弹'},
+    {name:'光谱射线弹-强化',displayName:'全谱色散引擎',icon:'环式棱栅折射阵列'}
+  ];
+  var inventorySnapshotSeq=0,inventoryLeaseSeq=0;
+function emitType(type,data){(__handlers[type]||[]).slice().forEach(function(fn){fn(data)})}
+function emit(data){emitType('panel_resp',data)}
+function inventoryFixtureItem(containerId,physicalSlot){
+  if(physicalSlot!==0)return null;
+  var equipment=containerId!=='背包';
+  return{name:equipment?'合成测试战备刀':'合成测试矿石',displayName:equipment?'合成测试战备刀':'合成测试矿石',
+    icon:equipment?'异形女王毒刺':'测试矿石',majorType:equipment?'武器':'收集品',use:equipment?'刀':'材料',
+    actionType:'',weaponType:'',setId:'',setName:'',setOrder:0,itemKind:equipment?'equipment':'stack',
+    quantity:equipment?1:7,enhancementLevel:0,maxEnhancementLevel:equipment?13:0,isMaxEnhancement:false,
+    tierSlotAvailable:false,tierSlotUsed:false,modSlotCapacity:0,modSlotUsed:0,modSlots:[],modMeta:null,rarity:''}
+}
+function inventorySnapshot(request){
+  request=request||{};
+  var containerId=String(request.containerId||''),capacity=containerId==='战备箱'?40:50;
+  var requestedOffset=Math.max(0,Math.floor(Number(request.offset)||0));
+  var requestedLimit=Math.max(1,Math.floor(Number(request.limit)||capacity));
+  var offset=requestedOffset>=capacity?Math.floor((capacity-1)/requestedLimit)*requestedLimit:requestedOffset;
+  var limit=Math.min(requestedLimit,Math.max(0,capacity-offset)),slots=[];
+  for(var i=0;i<limit;i++){
+    var physicalSlot=offset+i,item=inventoryFixtureItem(containerId,physicalSlot);
+    var entry={physicalSlot:physicalSlot,occupied:!!item,slotLease:'craft.inv.'+(++inventoryLeaseSeq)};
+    if(item){
+      entry.item=JSON.parse(JSON.stringify(item));
+      entry.confirmProjection={itemKind:item.itemKind,name:item.name,displayName:item.displayName,
+        quantity:item.quantity,enhancementLevel:item.enhancementLevel,rarity:item.rarity,
+        tier:'',modSignature:'',lastUpdate:0}
+    }
+    slots.push(entry)
+  }
+  var occupiedCount=slots.filter(function(slot){return slot.occupied}).length;
+  var snapshot={containerId:containerId,capacity:capacity,accessibleCapacity:capacity,viewCapacity:capacity,
+    filterKey:String(request.filterKey||'all'),pageSizeHint:Math.min(100,Math.max(1,requestedLimit)),locked:false,
+    snapshotSeq:++inventorySnapshotSeq,containerEpoch:1,containerVersion:1,
+    offset:offset,limit:limit,slots:slots,
+    filterFacets:occupiedCount?[{id:containerId==='背包'?'collection':'weapon',label:containerId==='背包'?'收集品':'武器',order:0,count:occupiedCount,children:[]}]:[],
+    filterItemCount:occupiedCount,setFacets:[],setFilterItemCount:0};
+  if(request.filterSpec!=null)snapshot.filterSpec=JSON.parse(JSON.stringify(request.filterSpec));
+  if(request.scope!=null)snapshot.scope=String(request.scope);
+  return snapshot
+}
 function availability(index){
   if(index===0){if(materials<2)return'material_missing';if(money<90)return'insufficient_money';return'ready'}
   return materials>=1?'ready':'material_missing'
 }
   function recipe(index,value){value.canCraftOne=availability(index)==='ready';value.availability=availability(index);return value}
   function weaponOutput(preview){
-    if(__specialWeaponMode==='dual')return{name:'炎寒对剑',displayName:'炎寒对剑',icon:'炎寒对剑',itemKind:'equipment',enhancementLevel:preview?5:1,requiredLevel:12,majorType:'武器',use:'刀',weaponType:'刀',actionType:'双刀'};
-    if(__specialWeaponMode==='sheath')return{name:'血刀配鞘版',displayName:'血刀-入鞘',icon:'血刀-入鞘',itemKind:'equipment',enhancementLevel:preview?5:1,requiredLevel:24,majorType:'武器',use:'刀',weaponType:'刀',actionType:'疾影'};
-    return{name:'异形女王毒刺',displayName:'新测试枪',icon:'异形女王毒刺',itemKind:'equipment',enhancementLevel:preview?5:1,requiredLevel:preview?12:undefined,majorType:'武器',use:'刀',weaponType:'刀',setId:'test_sidearm',setName:'测试侧武器套装'}
+    var identity=__specialWeaponMode==='dual'
+      ?{name:'炎寒对剑',displayName:'炎寒对剑',icon:'炎寒对剑',requiredLevel:12,actionType:'双刀',setId:'',setName:''}
+      :__specialWeaponMode==='sheath'
+        ?{name:'血刀配鞘版',displayName:'血刀-入鞘',icon:'血刀-入鞘',requiredLevel:24,actionType:'疾影',setId:'',setName:''}
+        :{name:'异形女王毒刺',displayName:'新测试枪',icon:'异形女王毒刺',requiredLevel:12,actionType:'',setId:'test_sidearm',setName:'测试侧武器套装'};
+    return{name:identity.name,displayName:identity.displayName,icon:identity.icon,itemKind:'equipment',
+      value:preview?5:1,quantity:1,enhancementLevel:preview?5:1,requiredLevel:identity.requiredLevel,
+      majorType:'武器',use:'刀',actionType:identity.actionType,weaponType:'刀',
+      setId:identity.setId,setName:identity.setName,setOrder:0}
+  }
+  function stackOutput(count){
+    return{name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',
+      value:3*count,quantity:3*count,enhancementLevel:0,requiredLevel:1,
+      majorType:'消耗品',use:'药剂',actionType:'',weaponType:'',setId:'',setName:'',setOrder:0}
+  }
+  function projectedMaterial(name,required,owned,consumed,enough,storageKind){
+    return{name:name,displayName:name,icon:name,itemKind:'stack',required:required,owned:owned,
+      maxEnhancement:0,isQuantity:true,tier:'',consumed:consumed,enough:enough,storageKind:storageKind}
+  }
+  function deliveryFor(output){
+    return output.use==='药剂'
+      ?{available:true,storageKind:'drug',mode:'merge',physicalSlot:0,quantity:output.quantity}
+      :{available:true,storageKind:'bag',mode:'insert',physicalSlot:1,quantity:output.quantity}
+  }
+  function outputPrototypeFor(output){
+    var item={name:output.name,displayName:output.displayName,icon:output.icon,
+      majorType:output.majorType,use:output.use,actionType:output.actionType,weaponType:output.weaponType,
+      setId:output.setId,setName:output.setName,setOrder:output.setOrder,itemKind:output.itemKind,
+      quantity:output.quantity,enhancementLevel:output.enhancementLevel,maxEnhancementLevel:13,
+      isMaxEnhancement:output.itemKind==='equipment'&&output.enhancementLevel>=13,
+      tierSlotAvailable:false,tierSlotUsed:false,modSlotCapacity:0,modSlotUsed:0,
+      modSlots:[],modMeta:null,rarity:''};
+    return{item:item,confirmProjection:{itemKind:item.itemKind,name:item.name,displayName:item.displayName,
+      quantity:item.quantity,enhancementLevel:item.enhancementLevel,rarity:item.rarity,
+      tier:'',modSignature:''}}
+  }
+  function outputReceiptFor(accepted){
+    var prototype=accepted.outputPrototype,delivery=accepted.outputDelivery;
+    if(!prototype)return null;
+    var receipt=JSON.parse(JSON.stringify(prototype)),postQuantity=delivery.mode==='merge'
+      ?prototype.item.quantity+4:prototype.item.quantity;
+    receipt.item.quantity=postQuantity;
+    receipt.confirmProjection.quantity=postQuantity;
+    receipt.confirmProjection.lastUpdate=Date.now();
+    return receipt
   }
   function snapshot(){return{success:true,v:1,category:'武器合成',gender:'女',note:'铁匠效果：减少货币消耗',
     balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},recipes:[
     recipe(0,{recipeIndex:0,title:'新测试枪图纸',batchEligible:false,output:weaponOutput(false),baseCost:{money:100,kpoints:0},materialCount:2}),
-    recipe(1,{recipeIndex:1,title:'测试药剂图纸',batchEligible:true,output:{name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',quantity:3,majorType:'消耗品',use:'药剂'},baseCost:{money:0,kpoints:0},materialCount:1})
+    recipe(1,{recipeIndex:1,title:'测试药剂图纸',batchEligible:true,output:stackOutput(1),baseCost:{money:0,kpoints:0},materialCount:1})
   ]}}
-function preview(index,count){count=Number(count)||1;var batch=index===1,max=batch?Math.min(99,materials):1,enough=index===0?(materials>=2&&money>=90):materials>=count;return{success:true,v:1,category:'武器合成',recipeIndex:index,craftCount:count,batchEligible:batch,maxCraftCount:max,
-  output:index===0?weaponOutput(true):{name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',quantity:3*count,requiredLevel:1,majorType:'消耗品',use:'药剂'},
-  materials:index===0?[{name:'测试图纸',displayName:'测试图纸',icon:'测试图纸',itemKind:'stack',required:1,owned:1,consumed:false,enough:true},{name:'测试矿石',displayName:'测试矿石',icon:'测试矿石',itemKind:'stack',required:2,owned:materials,consumed:true,enough:materials>=2}]:[{name:'测试矿石',displayName:'测试矿石',icon:'测试矿石',itemKind:'stack',required:count,owned:materials,consumed:true,enough:enough}],
-  cost:{money:index===0?90:0,kpoints:0},balance:{money:money,kpoints:100},enoughSpace:true,canCommit:enough,
-  blockingError:enough?'':(index===0&&materials>=2?'insufficient_money':'material_missing'),craftToken:enough?'craft.harness.'+index+'.'+commitCount:undefined}}
+function preview(index,count){
+  count=Number(count)||1;
+  var batch=index===1,max=batch?Math.min(99,materials):1;
+  var enoughMaterials=index===0?materials>=2:materials>=count;
+  var enoughMoney=index!==0||money>=90;
+  var output=index===0?weaponOutput(true):stackOutput(count);
+  var materialPlan=index===0
+    ?[projectedMaterial('测试图纸',1,1,false,true,'information_collection'),
+      projectedMaterial('测试矿石',2,materials,true,materials>=2,'material_collection')]
+    :[projectedMaterial('测试矿石',count,materials,true,enoughMaterials,'material_collection')];
+  var cost={money:index===0?90:0,kpoints:0},outputDelivery=deliveryFor(output);
+  var canCommit=enoughMaterials&&enoughMoney&&outputDelivery.available;
+  var result={success:true,v:1,category:'武器合成',recipeIndex:index,craftCount:count,
+    batchEligible:batch,maxCraftCount:max,output:output,materials:materialPlan,cost:cost,
+    balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},
+    levelAllowed:true,enoughMaterials:enoughMaterials,enoughMoney:enoughMoney,enoughKpoints:true,
+    enoughSpace:outputDelivery.available,canCommit:canCommit,
+    blockingError:canCommit?'':(enoughMaterials?'insufficient_money':'material_missing'),
+    outputDelivery:outputDelivery};
+  if(canCommit){
+    result.craftToken='craft.harness.'+index+'.'+commitCount;
+    result.acceptedPlan={category:result.category,recipeIndex:index,craftCount:count,
+      output:JSON.parse(JSON.stringify(output)),materials:JSON.parse(JSON.stringify(materialPlan)),
+      outputDelivery:JSON.parse(JSON.stringify(outputDelivery)),
+      outputPrototype:outputPrototypeFor(output),cost:JSON.parse(JSON.stringify(cost))};
+    lastAcceptedPlan=JSON.parse(JSON.stringify(result.acceptedPlan));
+  }else lastAcceptedPlan=null;
+  return result
+}
 function materialCatalog(){
+  var identity=identityTriples[0];
+  var first={name:identityMode?identity.name:'测试矿石',owned:7,sourceCount:20,useCount:24,hasSourceSummary:true};
+  if(!identityMalformed){
+    first.displayName=identityMode?identity.displayName:'测试矿石';
+    first.icon=identityMode?identity.icon:'测试矿石';
+  }
   var result=[
-    {name:'测试矿石',displayName:'测试矿石',icon:'测试矿石',owned:7,sourceCount:20,useCount:24,hasSourceSummary:true},
+    first,
     {name:'空用途材料',displayName:'空用途材料',icon:'空用途材料',owned:0,sourceCount:0,useCount:0,hasSourceSummary:false}
   ];
   for(var i=3;i<=223;i++){
@@ -137,22 +324,50 @@ function indexedUses(){
     itemKind:i%2?'equipment':'stack',category:i%2?'武器合成':'消耗品合成',required:1+(i%5)});
   return result;
 }
-function respond(message){var result={type:'panel_resp',domain:'crafting',cmd:message.cmd,callId:message.callId};
+function respond(message){
+  if(message.domain==='inventory'){
+    var inventoryResult={type:'panel_resp',domain:'inventory',panel:message.panel,
+      panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId};
+    if(message.cmd==='snapshot')Object.assign(inventoryResult,{success:true,v:1,snapshots:(message.payload&&message.payload.requests||[]).map(inventorySnapshot)});
+    else if(message.cmd==='tooltip')Object.assign(inventoryResult,{success:true,v:1,itemName:'合成测试物品',displayname:'合成测试物品',descHTML:'说明',introHTML:'简介'});
+    else{
+      __inventoryWriteCommands.push(message.cmd);
+      var writeRequests=message.cmd==='autoTransfer'?(message.payload&&message.payload.windows||[]):[];
+      if(message.cmd==='discard')writeRequests=[{containerId:message.payload.source.containerId,offset:0,
+        limit:message.payload.source.containerId==='背包'?50:40,filterKey:'all'}];
+      else if(message.cmd==='move'||message.cmd==='merge'||message.cmd==='swap')writeRequests=[message.payload.source,message.payload.target].map(function(ref){return{containerId:ref.containerId,offset:0,limit:ref.containerId==='背包'?50:40,filterKey:'all'}});
+      else if(message.cmd==='sortAndMerge')writeRequests=[message.payload.container];
+      Object.assign(inventoryResult,{success:true,v:1,operation:message.cmd,
+        snapshots:writeRequests.map(inventorySnapshot)})
+    }
+    emit(inventoryResult);return
+  }
+  var result={type:'panel_resp',domain:'crafting',panel:message.panel,
+    panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId};
   if(message.cmd==='snapshot')Object.assign(result,snapshot());
   else if(message.cmd==='preview')Object.assign(result,preview(message.payload.recipeIndex,message.payload.craftCount));
-  else if(message.cmd==='tooltip')Object.assign(result,{success:true,v:1,itemName:message.payload.itemName,displayname:message.payload.itemName,descHTML:'说明',introHTML:'简介'});
+  else if(message.cmd==='tooltip')Object.assign(result,{success:true,v:1,itemName:message.payload.itemName,displayName:message.payload.itemName,descHTML:'说明',introHTML:'简介'});
   else if(message.cmd==='materials')Object.assign(result,{success:true,v:1,view:'materials',materials:materialCatalog()});
   else if(message.cmd==='materialDetail'){
-    var materialName=message.payload.itemName,isTestOre=materialName==='测试矿石';
+    var materialName=message.payload.itemName,identityMaterial=identityTriples[0];
+    var isTestOre=materialName===(identityMode?identityMaterial.name:'测试矿石');
     Object.assign(result,{success:true,v:1,view:'materials',
-      material:{name:materialName,displayName:materialName,icon:materialName,description:isTestOre?'用于测试材料来源与合成用途。':'尚未建立索引。',owned:isTestOre?7:0,sourceSummary:isTestOre?'敌人与关卡均可掉落。':''},
+      material:{name:materialName,displayName:identityMode?identityMaterial.displayName:materialName,
+        icon:identityMode?identityMaterial.icon:materialName,description:isTestOre?'用于测试材料来源与合成用途。':'尚未建立索引。',owned:isTestOre?7:0,sourceSummary:isTestOre?'敌人与关卡均可掉落。':''},
       sources:isTestOre?indexedSources():[{kind:'stage',stageName:'末页可达关卡',probability:1,quantityMax:1}],
-      uses:isTestOre?indexedUses():[{name:'末页可达用途',displayName:'末页可达用途',icon:'测试药剂',itemKind:'stack',category:'测试合成',required:1}]
+      uses:isTestOre?(identityMode?[Object.assign({itemKind:'equipment',category:'武器合成',required:2},identityTriples[1])]:indexedUses()):[{name:'末页可达用途',displayName:'末页可达用途',icon:'测试药剂',itemKind:'stack',category:'测试合成',required:1}]
     });
   }
   else if(message.cmd==='commit'){
     if(__ambiguous){__ambiguous=false;Object.assign(result,{success:false,error:'malformed_response',requiresReconcile:true});emit(result);return}
-    commitCount++;materials-=2;money-=90;Object.assign(result,{success:true,v:1,operation:'commit',category:'武器合成',recipeIndex:0,craftCount:1,crafted:{name:'新测试枪',displayName:'新测试枪'},balance:{money:money,kpoints:100}})
+    var accepted=JSON.parse(JSON.stringify(lastAcceptedPlan));
+    commitCount++;
+    if(accepted.recipeIndex===0){materials-=2;money-=90}else materials-=accepted.craftCount;
+    Object.assign(result,{success:true,v:1,operation:'commit',category:accepted.category,
+      recipeIndex:accepted.recipeIndex,craftCount:accepted.craftCount,
+      crafted:JSON.parse(JSON.stringify(accepted.output)),acceptedPlan:accepted,
+      outputReceipt:outputReceiptFor(accepted),
+      balance:{money:money,kpoints:100}})
   }
   emit(result)
 }
@@ -173,6 +388,7 @@ function respond(message){var result={type:'panel_resp',domain:'crafting',cmd:me
 <script src="../../crafting-inspector.js"></script>
 <script src="../../crafting-materials.js"></script>
 <script src="../../crafting-detail-presenter.js"></script>
+<script src="../../inventory-runtime.js"></script>
 <script src="../../crafting-runtime.js"></script>
 <script src="../../crafting.js"></script>
 <script>
@@ -228,7 +444,411 @@ async function exerciseAuthorityRefresh(name,error){
   var state=CraftingPanel.debugState();
   ok(name+' refreshes authoritative snapshot',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshots+1&&!state.needsReconcile&&!state.needsRefresh&&state.previewCheckpoint&&state.previewCheckpoint.craftCount===before+1,JSON.stringify(state));
 }
+var pgOrganizerDeps=[
+  'modules/inventory-runtime.js','modules/inventory-ui.js','modules/inventory-workbench-config.js',
+  'modules/inventory-workbench-quick-transfer.js','modules/inventory-workbench-owned-view.js',
+  'modules/inventory-storage-workbench.js','modules/crafting-inventory-organizer.js'
+];
+function sameLifecycle(left,right){return !!left&&!!right&&left.owner===right.owner
+  &&left.panelInstanceId===right.panelInstanceId&&left.pauseLease===right.pauseLease}
+function craftingLifecycleSignals(){return __sent.filter(function(message){return message&&message.type==='panel'
+  &&(message.cmd==='open'||message.cmd==='close')}).length}
+function craftingSnapshotRequests(){return __sent.filter(function(message){return message.domain==='crafting'&&message.cmd==='snapshot'}).length}
+async function openPgCrafting(suffix){
+  if(Panels.getActive())Panels.close();
+  await wait();
+  Panels.open('crafting',{category:'武器合成',panelInstanceId:'crafting.pg.'+suffix});
+  await waitFor(function(){var button=document.querySelector('.crafting-organizer-btn'),state=CraftingPanel.debugState();
+    return button&&!button.disabled&&state.previewCheckpoint&&!state.previewBusy},1800);
+  return Panels.getLifecycle()
+}
+async function mountPgOrganizer(){
+  var button=document.querySelector('.crafting-organizer-btn');
+  if(!button||button.disabled)return false;
+  button.click();
+  return waitFor(function(){
+    if(typeof CraftingInventoryOrganizer==='undefined'||!CraftingInventoryOrganizer.isMounted
+        ||!CraftingInventoryOrganizer.isMounted())return false;
+    var state=CraftingInventoryOrganizer.debugState();
+    return state&&state.storage&&state.storage.coordinator&&state.storage.coordinator.ready
+  },2600)
+}
+function exactOrdinaryClose(witness,tuple){
+  return !!witness&&sameLifecycle(witness.lifecycle,tuple)
+    &&Object.keys(witness.message).sort().join(',')==='cmd,panel,panelInstanceId,type'
+    &&witness.message.type==='panel'&&witness.message.cmd==='close'&&witness.message.panel==='crafting'
+    &&witness.message.panelInstanceId===tuple.panelInstanceId
+}
+async function verifyOrganizerMountCloseFault(mode,suffix){
+  var tuple=await openPgCrafting(suffix),closeBefore=__craftingCloseWitnesses.length;
+  var realActivate=InventoryStorageWorkbench.activate,stayedVisible=false;
+  InventoryStorageWorkbench.activate=function(){throw new Error('expected organizer storage mount failure')};
+  try{
+    __queueCraftingFault({cmd:'close',mode:mode});
+    document.querySelector('.crafting-organizer-btn').click();
+    stayedVisible=await waitFor(function(){var state=CraftingPanel.debugState(),button=document.querySelector('.crafting-organizer-btn');
+      return Panels.getActive()==='crafting'&&sameLifecycle(Panels.getLifecycle(),tuple)
+        &&button&&!button.disabled&&state.previewCheckpoint&&!state.previewBusy
+        &&!CraftingInventoryOrganizer.isMounted()&&!InventoryStorageWorkbench.debugState().coordinator.opened
+        &&!document.querySelector('[data-workbench-owner-context="crafting-organizer"]')
+    },1800)
+  }finally{InventoryStorageWorkbench.activate=realActivate}
+  var witness=__craftingCloseWitnesses[closeBefore];
+  var retryMounted=stayedVisible&&await mountPgOrganizer();
+  var retryState=retryMounted?CraftingInventoryOrganizer.debugState():null;
+  if(retryMounted)document.querySelector('.inventory-return-crafting-btn').click();
+  var returned=retryMounted&&await waitFor(function(){var state=CraftingPanel.debugState();
+    return Panels.getActive()==='crafting'&&sameLifecycle(Panels.getLifecycle(),tuple)
+      &&!state.organizerMounted&&!state.previewBusy&&state.previewCheckpoint
+      &&!!document.querySelector('.crafting-organizer-btn')
+  },1800);
+  ok('PG current coverage organizer mount '+mode+' close keeps the exact owner visible and retryable',
+    stayedVisible&&__craftingCloseWitnesses.length===closeBefore+1&&exactOrdinaryClose(witness,tuple)
+      &&retryMounted&&retryState&&retryState.panelInstanceId===tuple.panelInstanceId&&returned,
+    JSON.stringify({mode:mode,witness:witness,retry:retryState,lifecycle:Panels.getLifecycle()}));
+  Panels.close();await wait()
+}
+async function runPgCraftCurrentCoverage(){
+  if(Panels.getActive())Panels.close();
+  __queueCraftingFault({cmd:'snapshot',mode:'delay',delayMs:180});
+  Panels.open('crafting',{category:'武器合成',panelInstanceId:'crafting.pg.rebind-old'});
+  await waitFor(function(){return __sent.some(function(message){return message.domain==='crafting'
+    &&message.cmd==='snapshot'&&message.payload.category==='武器合成'})},500);
+  var retiredSnapshot=__sent.filter(function(message){return message.domain==='crafting'
+    &&message.cmd==='snapshot'&&message.payload.category==='武器合成'}).slice(-1)[0];
+  Panels.open('crafting',{view:'materials',source:'runtime',panelInstanceId:'crafting.pg.rebind-new',
+    canReturnCharacterBuild:true,navigationOrigin:'character_build'});
+  var reboundMaterials=__sent.filter(function(message){return message.domain==='crafting'
+    &&message.cmd==='materials'&&message.panelInstanceId==='crafting.pg.rebind-new'}).slice(-1)[0];
+  var mixedCraftingPendingBefore=CraftingPanel.debugState().mux.pendingCount;
+  if(reboundMaterials)emit({type:'panel_resp',domain:'crafting',panel:'crafting',
+    panelInstanceId:'crafting.pg.rebind-old',cmd:'materials',callId:reboundMaterials.callId,
+    success:true,v:1,view:'materials',materials:materialCatalog()});
+  var mixedCraftingOwnerRejected=CraftingPanel.debugState().mux.pendingCount
+    ===mixedCraftingPendingBefore;
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.mode==='materials'
+    &&state.panelInstanceId==='crafting.pg.rebind-new'&&!state.previewBusy
+    &&!!document.querySelector('.crafting-material-catalog-view')},1000);
+  var reboundStateBeforeLate=JSON.stringify(CraftingPanel.debugState());
+  await wait(230);
+  var reboundStateAfterLate=CraftingPanel.debugState(),rebindTuple=Panels.getLifecycle();
+  var closeBeforeRebind=__craftingCloseWitnesses.length;
+  Panels.requestClose('close');
+  await waitFor(function(){return Panels.getActive()===null},600);
+  var rebindClose=__craftingCloseWitnesses[closeBeforeRebind];
+  await waitFor(function(){return __resizeObserverStats.active===0&&__rafStats.active===0},600);
+  ok('PG current coverage same-name crafting rebind retires old callbacks and rebuilds the new material owner exactly',
+    reboundStateBeforeLate===JSON.stringify(reboundStateAfterLate)
+      &&rebindTuple.panelInstanceId==='crafting.pg.rebind-new'
+      &&reboundStateAfterLate.mode==='materials'&&reboundStateAfterLate.canReturnCharacterBuild
+      &&reboundStateAfterLate.mux.pendingCount===0
+      &&retiredSnapshot&&retiredSnapshot.panel==='crafting'
+      &&retiredSnapshot.panelInstanceId==='crafting.pg.rebind-old'
+      &&reboundMaterials&&reboundMaterials.panel==='crafting'
+      &&reboundMaterials.panelInstanceId==='crafting.pg.rebind-new'
+      &&mixedCraftingOwnerRejected&&exactOrdinaryClose(rebindClose,rebindTuple)
+      &&__resizeObserverStats.active===0&&__rafStats.active===0,
+    JSON.stringify({retired:retiredSnapshot,rebound:reboundStateAfterLate,close:rebindClose,
+      resize:__resizeObserverStats,raf:__rafStats}));
+
+  var lazyTuple=await openPgCrafting('lazy');
+  var lazyCloseBefore=__craftingCloseWitnesses.length;
+  window.__organizerLazyRejectOnce=true;
+  document.querySelector('.crafting-organizer-btn').click();
+  await waitFor(function(){return Panels.getActive()===null},1200);
+  var lazyWitness=__craftingCloseWitnesses[lazyCloseBefore];
+  ok('PG current coverage lazy rejection closes the same crafting lifecycle exactly once without a partial mount',
+    __craftingCloseWitnesses.length===lazyCloseBefore+1&&exactOrdinaryClose(lazyWitness,lazyTuple)
+      &&__organizerDeps.join('|')===pgOrganizerDeps.join('|')&&__organizerLoadedDeps.length===0
+      &&typeof CraftingInventoryOrganizer==='undefined'&&__resizeObserverStats.active===0,
+    JSON.stringify({deps:__organizerDeps,witness:lazyWitness,resize:__resizeObserverStats}));
+
+  var returnTuple=await openPgCrafting('return');
+  var returnStateBefore=CraftingPanel.debugState(),returnCloseBefore=__craftingCloseWitnesses.length;
+  var returnSignalsBefore=craftingLifecycleSignals(),returnSnapshotsBefore=craftingSnapshotRequests();
+  var mounted=await mountPgOrganizer();
+  var organizerState=typeof CraftingInventoryOrganizer!=='undefined'&&CraftingInventoryOrganizer.debugState
+    ?CraftingInventoryOrganizer.debugState():null;
+  var dependencyNodes=document.querySelectorAll('script[data-pg-craft-dependency]');
+  ok('PG current coverage loads the exact seven production organizer dependencies in order',
+    mounted&&__organizerDeps.join('|')===pgOrganizerDeps.join('|')
+      &&__organizerLoadedDeps.join('|')===pgOrganizerDeps.join('|')&&dependencyNodes.length===7
+      &&typeof CraftingInventoryOrganizer.debugState==='function'
+      &&typeof InventoryStorageWorkbench.debugState==='function',
+    JSON.stringify({requested:__organizerDeps,loaded:__organizerLoadedDeps,nodes:dependencyNodes.length}));
+  ok('PG current coverage mounts the real storage coordinator and owned inventory panes',
+    mounted&&organizerState&&organizerState.ownerContext==='crafting-organizer'
+      &&organizerState.hostOwner==='crafting'&&organizerState.storage
+      &&organizerState.storage.profile==='battlebox'&&organizerState.storage.view==='storage'
+      &&organizerState.panelInstanceId===returnTuple.panelInstanceId
+      &&organizerState.storage.hostOwner==='crafting'
+      &&organizerState.storage.panelInstanceId===returnTuple.panelInstanceId
+      &&organizerState.storage.coordinator.ready
+      &&document.querySelector('[data-workbench-owner-context="crafting-organizer"]')
+      &&document.querySelector('.inventory-owned-backpack')&&document.querySelector('.inventory-owned-battlebox'),
+    JSON.stringify(organizerState));
+  ok('PG current coverage keeps the exact crafting owner instance and pause witness while the child is mounted',
+    mounted&&Panels.getActive()==='crafting'&&sameLifecycle(Panels.getLifecycle(),returnTuple)
+      &&CraftingPanel.debugState().panelInstanceId===returnTuple.panelInstanceId
+      &&craftingLifecycleSignals()===returnSignalsBefore&&__inventoryWriteCommands.length===0
+      &&!__sent.some(function(message){return message.type==='panel'&&message.cmd==='open'&&message.panel==='workbench'}),
+    JSON.stringify({before:returnTuple,after:Panels.getLifecycle(),state:CraftingPanel.debugState()}));
+  var returnSnapshotsMounted=craftingSnapshotRequests();
+  document.querySelector('.inventory-return-crafting-btn').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return Panels.getActive()==='crafting'
+    &&!state.organizerMounted&&!state.previewBusy&&state.previewCheckpoint&&document.querySelector('.crafting-output-card')},1800);
+  var returnStateAfter=CraftingPanel.debugState();
+  ok('PG current coverage explicit return alone restores recipes under the same lifecycle and fresh snapshot',
+    sameLifecycle(Panels.getLifecycle(),returnTuple)&&__craftingCloseWitnesses.length===returnCloseBefore
+      &&returnStateAfter.panelInstanceId===returnTuple.panelInstanceId
+      &&returnStateAfter.selectedIndex===returnStateBefore.selectedIndex
+      &&returnStateAfter.craftCount===returnStateBefore.craftCount
+      &&craftingSnapshotRequests()===returnSnapshotsMounted+1
+      &&craftingSnapshotRequests()>=returnSnapshotsBefore+2
+      &&!CraftingInventoryOrganizer.isMounted(),
+    JSON.stringify({before:returnStateBefore,after:returnStateAfter,snapshots:[returnSnapshotsBefore,returnSnapshotsMounted,craftingSnapshotRequests()]}));
+  Panels.close();await wait();
+
+  var escapeTuple=await openPgCrafting('escape'),escapeCloseBefore=__craftingCloseWitnesses.length;
+  await mountPgOrganizer();
+  document.querySelector('.workbench-help-btn').click();
+  await waitFor(function(){return !!document.querySelector('.workbench-modal')},600);
+  emitType('panel_esc',{});await wait();
+  ok('PG current coverage organizer modal consumes the first Escape without returning or closing',
+    Panels.getActive()==='crafting'&&sameLifecycle(Panels.getLifecycle(),escapeTuple)
+      &&!document.querySelector('.workbench-modal')&&__craftingCloseWitnesses.length===escapeCloseBefore
+      &&CraftingInventoryOrganizer.isMounted());
+  emitType('panel_esc',{});
+  await waitFor(function(){return Panels.getActive()===null},900);
+  ok('PG current coverage ordinary Escape closes the exact crafting owner instead of returning',
+    __craftingCloseWitnesses.length===escapeCloseBefore+1
+      &&exactOrdinaryClose(__craftingCloseWitnesses[escapeCloseBefore],escapeTuple)
+      &&!CraftingInventoryOrganizer.isMounted()&&__resizeObserverStats.active===0,
+    JSON.stringify({witness:__craftingCloseWitnesses[escapeCloseBefore],resize:__resizeObserverStats}));
+
+  var headerTuple=await openPgCrafting('header'),headerCloseBefore=__craftingCloseWitnesses.length;
+  await mountPgOrganizer();document.querySelector('.workbench-close-btn').click();
+  await waitFor(function(){return Panels.getActive()===null},900);
+  ok('PG current coverage header close releases the exact crafting lifecycle once',
+    __craftingCloseWitnesses.length===headerCloseBefore+1
+      &&exactOrdinaryClose(__craftingCloseWitnesses[headerCloseBefore],headerTuple)
+      &&sameLifecycle(Panels.getLastClosedLifecycle(),headerTuple)&&!CraftingInventoryOrganizer.isMounted());
+
+  var backdropTuple=await openPgCrafting('backdrop'),backdropCloseBefore=__craftingCloseWitnesses.length;
+  await mountPgOrganizer();document.getElementById('panel-backdrop').click();
+  await waitFor(function(){return Panels.getActive()===null},900);
+  ok('PG current coverage backdrop close has the same ordinary exact-owner semantics',
+    __craftingCloseWitnesses.length===backdropCloseBefore+1
+      &&exactOrdinaryClose(__craftingCloseWitnesses[backdropCloseBefore],backdropTuple)
+      &&sameLifecycle(Panels.getLastClosedLifecycle(),backdropTuple)&&!CraftingInventoryOrganizer.isMounted());
+
+  var forceTuple=await openPgCrafting('force'),forceCloseBefore=__craftingCloseWitnesses.length;
+  await mountPgOrganizer();
+  emitType('panel_cmd',{cmd:'force_close',panel:'crafting',panelInstanceId:forceTuple.panelInstanceId,reason:'disconnected'});
+  await waitFor(function(){return Panels.getActive()===null},900);
+  var forceStorageState=InventoryStorageWorkbench.debugState();
+  ok('PG current coverage Host force close tears down the child without outbound close or return',
+    __craftingCloseWitnesses.length===forceCloseBefore&&sameLifecycle(Panels.getLastClosedLifecycle(),forceTuple)
+      &&!CraftingInventoryOrganizer.isMounted()&&!forceStorageState.coordinator.opened
+      &&__resizeObserverStats.active===0,
+    JSON.stringify({lastClosed:Panels.getLastClosedLifecycle(),storage:forceStorageState,resize:__resizeObserverStats}));
+
+  await verifyOrganizerMountCloseFault('send_false','mount-close-send-false');
+  await verifyOrganizerMountCloseFault('throw','mount-close-throw');
+
+  var mountTuple=await openPgCrafting('mount-throw'),mountCloseBefore=__craftingCloseWitnesses.length;
+  var realActivate=InventoryStorageWorkbench.activate;
+  InventoryStorageWorkbench.activate=function(){throw new Error('expected organizer storage mount failure')};
+  try{
+    document.querySelector('.crafting-organizer-btn').click();
+    await waitFor(function(){return Panels.getActive()===null},1200)
+  }finally{InventoryStorageWorkbench.activate=realActivate}
+  var mountWitness=__craftingCloseWitnesses[mountCloseBefore];
+  ok('PG current coverage real organizer mount throw fails closed once and removes the half mount',
+    __craftingCloseWitnesses.length===mountCloseBefore+1&&exactOrdinaryClose(mountWitness,mountTuple)
+      &&sameLifecycle(Panels.getLastClosedLifecycle(),mountTuple)&&!CraftingInventoryOrganizer.isMounted()
+      &&!document.querySelector('[data-workbench-owner-context="crafting-organizer"]')
+      &&!InventoryStorageWorkbench.debugState().coordinator.opened&&__resizeObserverStats.active===0,
+    JSON.stringify({witness:mountWitness,storage:InventoryStorageWorkbench.debugState(),resize:__resizeObserverStats}));
+  await waitFor(function(){return __rafStats.active===0},600);
+  ok('PG current coverage leaves no inventory writes observers or animation frames after every lifecycle',
+    __inventoryWriteCommands.length===0&&Panels.getActive()===null&&!CraftingInventoryOrganizer.isMounted()
+      &&__resizeObserverStats.active===0&&__rafStats.active===0,
+    JSON.stringify({writes:__inventoryWriteCommands,resize:__resizeObserverStats,raf:__rafStats}));
+}
+function inventoryMessages(cmd){return __sent.filter(function(message){return message&&message.type==='panel'
+  &&message.domain==='inventory'&&(!cmd||message.cmd===cmd)})}
+function exactInventoryOwner(message,tuple){return !!message&&!!tuple&&message.panel==='crafting'
+  &&message.panelInstanceId===tuple.panelInstanceId&&message.domain==='inventory'}
+function ctrlTransferFirstBackpack(){
+  var card=document.querySelector('.inventory-owned-backpack .inventory-slot-card.occupied');
+  if(!card)return false;
+  card.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,ctrlKey:true}));return true
+}
+function retryInventoryButton(){return Array.from(document.querySelectorAll('.workbench-mode-btn.warning'))
+  .filter(function(button){return button.textContent.indexOf('重试同步')>=0})[0]||null}
+async function runPgInventoryOwnerFault(){
+  var tuple=await openPgCrafting('inventory-fault'),mounted=await mountPgOrganizer();
+  var initialMessages=inventoryMessages();
+  ok('PG inventory fault mounts the real writer with exact crafting owner and instance',
+    mounted&&initialMessages.length===1&&initialMessages.every(function(message){return exactInventoryOwner(message,tuple)})
+      &&CraftingInventoryOrganizer.debugState().panelInstanceId===tuple.panelInstanceId
+      &&InventoryStorageWorkbench.debugState().hostOwner==='crafting'
+      &&InventoryStorageWorkbench.debugState().panelInstanceId===tuple.panelInstanceId,
+    JSON.stringify({tuple:tuple,messages:initialMessages,state:InventoryStorageWorkbench.debugState()}));
+
+  var sendFalseWrites=inventoryMessages('autoTransfer').length;
+  var sendFalseSnapshots=inventoryMessages('snapshot').length,sendFalseStarted=performance.now();
+  __queueCraftingFault({cmd:'autoTransfer',mode:'send_false'});
+  var sendFalseActivated=ctrlTransferFirstBackpack();
+  await waitFor(function(){var state=InventoryStorageWorkbench.debugState().coordinator;
+    return inventoryMessages('autoTransfer').length===sendFalseWrites+1
+      &&inventoryMessages('snapshot').length===sendFalseSnapshots+1
+      &&state.ready&&!state.busyOwner&&!state.refreshRequired},900);
+  var sendFalseElapsed=performance.now()-sendFalseStarted;
+  var sendFalseMessage=inventoryMessages('autoTransfer')[sendFalseWrites];
+  ok('PG inventory fault propagates send=false immediately and reconciles without waiting for timeout',
+    sendFalseActivated&&sendFalseElapsed<__CRAFTING_CONFIG__.requestTimeoutMs
+      &&exactInventoryOwner(sendFalseMessage,tuple)
+      &&InventoryStorageWorkbench.debugState().coordinator.ready,
+    JSON.stringify({elapsed:sendFalseElapsed,message:sendFalseMessage,state:InventoryStorageWorkbench.debugState()}));
+
+  var lostWrites=inventoryMessages('autoTransfer').length,lostSnapshots=inventoryMessages('snapshot').length;
+  __queueCraftingFault({cmd:'autoTransfer',mode:'drop'});
+  __queueCraftingFault({cmd:'snapshot',mode:'drop'});
+  var lostActivated=ctrlTransferFirstBackpack();
+  await waitFor(function(){var state=InventoryStorageWorkbench.debugState().coordinator;
+    return state.refreshRequired&&!state.ready&&!state.busyOwner},1200);
+  var lostWrite=inventoryMessages('autoTransfer')[lostWrites];
+  var lostReconcile=inventoryMessages('snapshot')[lostSnapshots];
+  ok('PG inventory fault turns a lost write and lost reconcile response into an exact-owner refresh fence',
+    lostActivated&&exactInventoryOwner(lostWrite,tuple)&&exactInventoryOwner(lostReconcile,tuple)
+      &&__droppedCraftingMessages.some(function(message){return message.callId===lostWrite.callId})
+      &&__droppedCraftingMessages.some(function(message){return message.callId===lostReconcile.callId})
+      &&InventoryStorageWorkbench.debugState().coordinator.refreshRequired,
+    JSON.stringify({write:lostWrite,reconcile:lostReconcile,state:InventoryStorageWorkbench.debugState()}));
+
+  var blockedWrites=inventoryMessages('autoTransfer').length;
+  ctrlTransferFirstBackpack();await wait(40);
+  ok('PG inventory fault blocks the next writer while reconciliation is still required',
+    inventoryMessages('autoTransfer').length===blockedWrites
+      &&InventoryStorageWorkbench.debugState().coordinator.refreshRequired,
+    JSON.stringify(InventoryStorageWorkbench.debugState()));
+
+  var retrySnapshots=inventoryMessages('snapshot').length,retryButton=retryInventoryButton();
+  if(retryButton)retryButton.click();
+  await waitFor(function(){var state=InventoryStorageWorkbench.debugState().coordinator;
+    return state.ready&&!state.refreshRequired&&!state.busyOwner},900);
+  var retryMessage=inventoryMessages('snapshot')[retrySnapshots];
+  ok('PG inventory fault accepts only the exact-owner retry snapshot before reopening writes',
+    retryButton&&exactInventoryOwner(retryMessage,tuple)
+      &&InventoryStorageWorkbench.debugState().coordinator.ready,
+    JSON.stringify({retry:retryMessage,state:InventoryStorageWorkbench.debugState()}));
+
+  var recoveredWrites=inventoryMessages('autoTransfer').length;
+  ctrlTransferFirstBackpack();
+  await waitFor(function(){var state=InventoryStorageWorkbench.debugState().coordinator;
+    return inventoryMessages('autoTransfer').length===recoveredWrites+1&&state.ready&&!state.busyOwner},700);
+  var recoveredWrite=inventoryMessages('autoTransfer')[recoveredWrites];
+  ok('PG inventory fault allows the next write only after exact reconciliation succeeds',
+    exactInventoryOwner(recoveredWrite,tuple)&&__inventoryWriteCommands.indexOf('autoTransfer')>=0
+      &&InventoryStorageWorkbench.debugState().coordinator.ready,
+    JSON.stringify({write:recoveredWrite,state:InventoryStorageWorkbench.debugState()}));
+
+  var closeBefore=__craftingCloseWitnesses.length;
+  document.querySelector('.workbench-close-btn').click();
+  await waitFor(function(){return Panels.getActive()===null},700);
+  var closeWitness=__craftingCloseWitnesses[closeBefore];
+  ok('PG inventory fault closes the writer through the exact crafting owner envelope',
+    __craftingCloseWitnesses.length===closeBefore+1&&exactOrdinaryClose(closeWitness,tuple)
+      &&!CraftingInventoryOrganizer.isMounted(),JSON.stringify(closeWitness));
+
+  var reboundTuple=await openPgCrafting('inventory-rebound');
+  await mountPgOrganizer();
+  var staleResponse={type:'panel_resp',domain:'inventory',panel:'crafting',
+    panelInstanceId:tuple.panelInstanceId,cmd:lostWrite.cmd,callId:lostWrite.callId,
+    success:true,v:1,snapshots:(lostWrite.payload.windows||[]).map(inventorySnapshot)};
+  var beforeStale=JSON.stringify(InventoryStorageWorkbench.debugState().coordinator);
+  emit(staleResponse);await wait(40);
+  var staleIgnored=beforeStale===JSON.stringify(InventoryStorageWorkbench.debugState().coordinator);
+  var reboundWrites=inventoryMessages('autoTransfer').length;
+  ctrlTransferFirstBackpack();
+  await waitFor(function(){return inventoryMessages('autoTransfer').length===reboundWrites+1
+    &&InventoryStorageWorkbench.debugState().coordinator.ready},700);
+  var reboundWrite=inventoryMessages('autoTransfer')[reboundWrites];
+  ok('PG inventory fault rejects the retired instance response after close and rebinds the next writer exactly',
+    reboundTuple.panelInstanceId!==tuple.panelInstanceId
+      &&staleIgnored
+      &&exactInventoryOwner(reboundWrite,reboundTuple),
+    JSON.stringify({old:tuple,rebound:reboundTuple,stale:staleResponse,write:reboundWrite}));
+  Panels.close();await wait();
+}
+async function runPgCraftingIdentity(){
+  Panels.open('crafting',{view:'materials',source:'identity-gate'});
+  await waitFor(function(){return document.querySelector('[data-material-name="'+identityTriples[0].name+'"]')});
+  var triple=identityTriples[0],card=document.querySelector('[data-material-name="'+triple.name+'"]');
+  ok('PG identity catalog keeps internal name only as the stable selector',
+    card&&card.textContent.indexOf(triple.displayName)>=0&&card.textContent.indexOf(triple.name)<0);
+  ok('PG identity catalog renders only the canonical icon key',
+    card.querySelector('[data-icon="'+triple.icon+'"]')&&!card.querySelector('[data-icon="'+triple.name+'"]'));
+  ok('PG identity catalog ARIA uses display copy rather than the internal key',
+    card.getAttribute('aria-label').indexOf(triple.displayName)>=0&&card.getAttribute('aria-label').indexOf(triple.name)<0);
+  var search=document.querySelector('.crafting-material-search');search.value=triple.name;
+  search.dispatchEvent(new Event('input',{bubbles:true}));await wait();
+  ok('PG identity display search does not expose the internal lookup key',
+    document.querySelectorAll('.crafting-material-card').length===0);
+  search.value=triple.displayName;search.dispatchEvent(new Event('input',{bubbles:true}));await wait();
+  card=document.querySelector('[data-material-name="'+triple.name+'"]');
+  ok('PG identity display search resolves the display name',!!card);
+  var detailBefore=__sent.filter(function(x){return x.cmd==='materialDetail'}).length;card.click();
+  await waitFor(function(){return __sent.filter(function(x){return x.cmd==='materialDetail'}).length===detailBefore+1
+    &&document.querySelector('.crafting-material-hero')});
+  var detailRequest=__sent.filter(function(x){return x.cmd==='materialDetail'}).slice(-1)[0];
+  ok('PG identity material command sends only the internal name selector',
+    detailRequest.payload.itemName===triple.name);
+  var hero=document.querySelector('.crafting-material-hero');
+  ok('PG identity detail keeps display and icon projections distinct',
+    hero.textContent.indexOf(triple.displayName)>=0&&hero.textContent.indexOf(triple.name)<0
+      &&hero.querySelector('[data-icon="'+triple.icon+'"]'));
+  var use=identityTriples[1],useRow=document.querySelector('.crafting-material-use-row');
+  var tooltipBefore=__sent.filter(function(x){return x.cmd==='tooltip'}).length;
+  useRow.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));await wait();
+  var tooltipRequest=__sent.filter(function(x){return x.cmd==='tooltip'}).slice(-1)[0];
+  ok('PG identity use row renders display/icon while tooltip lookup sends internal name',
+    useRow.textContent.indexOf(use.displayName)>=0&&useRow.textContent.indexOf(use.name)<0
+      &&useRow.querySelector('[data-icon="'+use.icon+'"]')
+      &&__sent.filter(function(x){return x.cmd==='tooltip'}).length===tooltipBefore+1
+      &&tooltipRequest.payload.itemName===use.name);
+  Panels.close();await wait();
+  identityMalformed=true;
+  Panels.open('crafting',{view:'materials',source:'identity-gate-malformed'});
+  await waitFor(function(){return __toasts.indexOf('合成响应超时。')>=0},700);
+  ok('PG identity malformed canonical leaf is rejected before catalog adoption',
+    document.querySelectorAll('.crafting-material-card').length===0
+      &&CraftingPanel.debugState().materials.count===0);
+  var malformedText=document.querySelector('.crafting-detail-empty');
+  ok('PG identity rejection exposes no internal-name or icon fallback',
+    malformedText&&malformedText.textContent==='合成响应超时。'
+      &&malformedText.textContent.indexOf(triple.name)<0
+      &&CraftingPanel.debugState().mux.pendingCount===0);
+  Panels.close();await wait();
+}
 try{
+  if(window.__craftingHarnessScenario==='pg-craft-current-coverage'){
+    await runPgCraftCurrentCoverage();
+    var pgResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=pgResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(pgResult,null,2);return
+  }
+  if(window.__craftingHarnessScenario==='pg-inventory-owner-fault'){
+    await runPgInventoryOwnerFault();
+    var faultResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=faultResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(faultResult,null,2);return
+  }
+  if(window.__craftingHarnessScenario==='pg-crafting-identity'){
+    await runPgCraftingIdentity();
+    var identityResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=identityResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(identityResult,null,2);return
+  }
   Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelector('.crafting-output-card')});
   var recipeProfileShell=document.querySelector('.crafting-panel');
   ok('mounts catalog-decision dual panes without horizontal shell overflow',

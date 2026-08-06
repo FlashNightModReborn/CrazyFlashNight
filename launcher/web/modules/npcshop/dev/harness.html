@@ -17,14 +17,26 @@ window.__NPCSHOP_CONFIG__={requestTimeoutMs:300,sessionNonce:'harness'};
 window.__contractPurchaseProbe=Number(new URLSearchParams(location.search).get('contractQuantity'))||4549;
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__tradeSeq=0;window.__lastTrade=null;window.__malformedCommit=false;
 window.__tradePreviewQuantityCeiling=null;window.__tradePreviewMaxOverride=null;window.__nextTradePreviewDelay=0;window.__nextTradeCommitDelay=0;window.__dropNextTradePreview=false;window.__nextTradePreviewError='';window.__rejectedTradePreviews=0;
-window.__nextInventoryDelay=0;
+window.__nextInventoryDelay=0;window.__nextNpcSnapshotDelay=0;window.__failNextFilteredInventory=false;
+window.__driftNextFilteredInventoryVersion=false;
+window.__holdNextInventory=false;window.__heldInventoryMessage=null;
+window.__syncInventory=false;window.__lastTradePreviewResponse=null;
 window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   send:function(message){
-    __sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd==='close')return;
+    __sent.push(JSON.parse(JSON.stringify(message)));if(message.cmd==='close')return true;
+    if(message.domain==='inventory'&&__holdNextInventory){__holdNextInventory=false;__heldInventoryMessage=JSON.parse(JSON.stringify(message));return true}
     if(message.cmd==='tradePreview'&&__dropNextTradePreview){__dropNextTradePreview=false;return}
-    var delay=message.domain==='inventory'?Number(__nextInventoryDelay||0):(message.cmd==='tradePreview'?Number(__nextTradePreviewDelay||0):(message.cmd==='tradeCommit'?Number(__nextTradeCommitDelay||0):0));if(message.domain==='inventory')__nextInventoryDelay=0;else if(message.cmd==='tradePreview')__nextTradePreviewDelay=0;else if(message.cmd==='tradeCommit')__nextTradeCommitDelay=0;
-    setTimeout(function(){respond(message)},delay)
+    var delay=message.domain==='inventory'?Number(__nextInventoryDelay||0):
+      (message.cmd==='snapshot'?Number(__nextNpcSnapshotDelay||0):
+      (message.cmd==='tradePreview'?Number(__nextTradePreviewDelay||0):
+      (message.cmd==='tradeCommit'?Number(__nextTradeCommitDelay||0):0)));
+    if(message.domain==='inventory')__nextInventoryDelay=0;
+    else if(message.cmd==='snapshot')__nextNpcSnapshotDelay=0;
+    else if(message.cmd==='tradePreview')__nextTradePreviewDelay=0;
+    else if(message.cmd==='tradeCommit')__nextTradeCommitDelay=0;
+    if(message.domain==='inventory'&&window.__syncInventory){respond(message);return true}
+    setTimeout(function(){respond(message)},delay);return true
   }
 };
 window.Toast={add:function(message){__toasts.push(message)}};
@@ -59,15 +71,22 @@ window.PanelTooltip={
     node.addEventListener('pointerleave', onLeave);
   }
 };
-window.Panels=(function(){var specs={},active=null;return{
+window.Panels=(function(){var specs={},active=null,activeEl=null,openSeq=0;return{
   register:function(id,spec){specs[id]=spec},getActive:function(){return active},isOpen:function(){return!!active},
-  open:function(id,init){active=id;var host=document.getElementById('panel-content');host.innerHTML='';host.appendChild(specs[id].create());specs[id].onOpen(host,init||{})},
-  close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null},_specs:specs
+  open:function(id,init){
+    init=init||{};if(id==='npcshop'&&!init.panelInstanceId)init.panelInstanceId='panel.harness.npcshop.'+(++openSeq);
+    if(active===id){return specs[id].onRebind?specs[id].onRebind(activeEl,init)!==false:true}
+    if(active&&specs[active].onClose)specs[active].onClose();
+    active=id;var host=document.getElementById('panel-content');host.innerHTML='';activeEl=specs[id].create();host.appendChild(activeEl);
+    return specs[id].onOpen(host,init)!==false
+  },
+  close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null;activeEl=null},_specs:specs
 }})();
 
 var balance=10000,materialQty=3,inventorySeq=0,inventoryRevision=1,spaceFreed=false,manualLayout=false;
+var inventorySessionNonce='inventory.harness.session',battleAccessibleCapacity=240;
 var catalog=[
-  {catalogIndex:0,itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',majorType:'武器',use:'手枪',actionType:'',weaponType:'手枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false,balanceSummary:{state:'confirmed',weightLayers:1,formula:1,level:1}},
+  {catalogIndex:0,itemName:'光棱射线弹-强化',displayName:'棱镜折射阵列',icon:'全光谱棱镜阵列',majorType:'武器',use:'手枪',actionType:'',weaponType:'手枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false,balanceSummary:{state:'confirmed',weightLayers:1,formula:1,level:1}},
   {catalogIndex:1,itemName:'强化石',displayName:'强化石',icon:'强化石',majorType:'收集品',use:'材料',basePrice:100,unitPrice:100,maxQuantity:100,requiredInfo:'',locked:false,balanceSummary:{state:'review',weightLayers:7,formula:1,level:1}},
   {catalogIndex:2,itemName:'符线溯源笔记',displayName:'符线溯源笔记',icon:'符线溯源笔记',majorType:'收集品',use:'情报',basePrice:300,unitPrice:300,maxQuantity:100,requiredInfo:'符线档案',locked:true},
   {catalogIndex:3,itemName:'训练步枪',displayName:'训练步枪',icon:'训练步枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'突击步枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
@@ -83,21 +102,56 @@ var bagItems=[
 ];
 var battleItems=[];
 function slot(index,name,display,qty,lease,use,itemKind,level){return{physicalSlot:index,collectionKey:use==='材料'?name:undefined,occupied:true,slotLease:lease,item:{itemKind:itemKind||'stack',name:name,displayName:display,icon:name,majorType:itemKind==='equipment'?'武器':'收集品',use:use||'',quantity:qty,enhancementLevel:level||0,rarity:''}}}
+function strictInventoryItem(source){
+  source=source||{};var equipment=source.itemKind==='equipment';
+  var enhancement=equipment?Math.max(0,Math.floor(Number(source.enhancementLevel)||0)):0;
+  var maxEnhancement=equipment?Math.max(enhancement,Math.floor(Number(source.maxEnhancementLevel)||13)):0;
+  var item={name:String(source.name||'unknown'),displayName:String(source.displayName||source.name||'unknown'),icon:String(source.icon||source.name||'unknown'),
+    majorType:String(source.majorType||''),use:String(source.use||''),actionType:String(source.actionType||''),weaponType:String(source.weaponType||''),
+    setId:String(source.setId||''),setName:String(source.setName||''),setOrder:Math.max(0,Math.floor(Number(source.setOrder)||0)),
+    itemKind:equipment?'equipment':'stack',quantity:equipment?1:Math.max(1,Number(source.quantity)||1),
+    enhancementLevel:enhancement,maxEnhancementLevel:maxEnhancement,isMaxEnhancement:equipment&&enhancement>=maxEnhancement,
+    tierSlotAvailable:false,tierSlotUsed:false,modSlotCapacity:0,modSlotUsed:0,modSlots:[],modMeta:null,rarity:String(source.rarity||'')};
+  if(source.balanceSummary&&source.balanceSummary.state==='confirmed')item.balanceSummary={state:'confirmed',
+    weightLayers:Number(source.balanceSummary.weightLayers)||0,formula:1,level:Math.max(0,Math.floor(Number(source.balanceSummary.level)||0))};
+  return item
+}
+function strictInventoryFacet(source){source=source||{};return{id:String(source.id||'unknown'),label:String(source.label||source.id||'unknown'),
+  order:Number(source.order)||0,count:Math.max(0,Math.floor(Number(source.count)||0)),children:(source.children||[]).map(strictInventoryFacet)}}
 function inventorySnapshot(containerId){
-  var request=arguments[1]||{},items=containerId==='背包'?bagItems:battleItems,capacity=containerId==='背包'?50:40,seq=++inventorySeq,slots=[];
+  var request=arguments[1]||{},bag=containerId==='背包',items=bag?bagItems:battleItems;
+  var capacity=bag?50:400,accessible=bag?50:battleAccessibleCapacity,seq=++inventorySeq;
+  var offset=Math.max(0,Number(request.offset)||0),requestedLimit=Math.max(1,Number(request.limit)||1);
   var spec=request.filterSpec||null,path=spec&&spec.major!=='all'?[spec.major].concat(spec.use?[spec.use]:[]).concat(spec.subtype?[spec.subtype]:[]):[];
+  var physicalAll=!spec&&String(request.filterKey||'all')==='all'&&request.scope==null;
+  var projected=[];
   for(var i=0;i<items.length;i++){
     if(path.length&&!ItemFilter.matchesPath(items[i],path,function(item){return ItemFilter.catalogPath(item)}))continue;
-    var projected=slot(i,items[i].name,items[i].displayName,items[i].quantity,'iw.r'+inventoryRevision+'.'+i,items[i].use,items[i].itemKind,items[i].enhancementLevel);
-    projected.item.majorType=items[i].majorType||projected.item.majorType;projected.item.weaponType=items[i].weaponType||'';projected.item.actionType=items[i].actionType||'';projected.item.balanceSummary=items[i].balanceSummary?JSON.parse(JSON.stringify(items[i].balanceSummary)):undefined;slots.push(projected);
+    projected.push({physicalSlot:i,source:items[i]});
+  }
+  var viewCapacity=physicalAll?accessible:projected.length;
+  var limit=Math.min(requestedLimit,Math.max(0,viewCapacity-offset)),slots=[];
+  var leaseContainer=bag?'bag':'battle';
+  for(var ordinal=0;ordinal<limit;ordinal++){
+    var coordinate=offset+ordinal,record=physicalAll
+      ?(coordinate<projected.length?projected[coordinate]:null):projected[coordinate];
+    if(!record){slots.push({physicalSlot:coordinate,occupied:false,
+      slotLease:'iw.empty.r'+inventoryRevision+'.'+leaseContainer+'.'+coordinate});continue}
+    var item=strictInventoryItem(record.source),physicalSlot=physicalAll?coordinate:record.physicalSlot;
+    slots.push({physicalSlot:physicalSlot,occupied:true,slotLease:'iw.r'+inventoryRevision+'.'+leaseContainer+'.'+physicalSlot,item:item,
+      confirmProjection:{itemKind:item.itemKind,name:item.name,displayName:item.displayName,quantity:item.quantity,
+        enhancementLevel:item.enhancementLevel,rarity:item.rarity,tier:'',modSignature:'',lastUpdate:0}});
   }
   var tree=ItemFilter.build(items,function(item){return ItemFilter.catalogPath(item)});
-  var snapshot={containerId:containerId,capacity:capacity,accessibleCapacity:capacity,viewCapacity:slots.length,offset:0,limit:slots.length,filterKey:request.filterKey||'all',snapshotSeq:seq,filterFacets:tree.children,filterItemCount:items.length,slots:slots};
-  if(spec)snapshot.filterSpec=JSON.parse(JSON.stringify(spec));return snapshot;
+  var snapshot={containerId:containerId,capacity:capacity,accessibleCapacity:accessible,viewCapacity:viewCapacity,
+    filterKey:request.filterKey||'all',pageSizeHint:bag?50:40,locked:!bag&&accessible===0,
+    snapshotSeq:seq,containerEpoch:bag?1:2,containerVersion:inventoryRevision,offset:offset,limit:limit,slots:slots,
+    filterFacets:tree.children.map(strictInventoryFacet),filterItemCount:items.length,setFacets:[],setFilterItemCount:0};
+  if(spec)snapshot.filterSpec=JSON.parse(JSON.stringify(spec));if(request.scope!=null)snapshot.scope=String(request.scope);return snapshot;
 }
-function state(){return{
-  success:true,v:1,shopId:'前治安官',balance:balance,buyMultiplier:1,catalog:catalog,
-  layout:manualLayout?{title:'前治安官',defaultSection:'weapons',sections:[{id:'weapons',label:'制式武器',entries:[0,3,4]},{id:'supplies',label:'补给与其他',entries:[1,2,5,6]}]}:{title:'前治安官',defaultSection:'',sections:[]},
+function state(shopId){var resolvedShopId=typeof shopId==='string'&&shopId?shopId:'前治安官';return{
+  success:true,v:1,shopId:resolvedShopId,balance:balance,buyMultiplier:1,catalog:catalog,
+  layout:manualLayout?{title:resolvedShopId,defaultSection:'weapons',sections:[{id:'weapons',label:'制式武器',entries:[0,3,4]},{id:'supplies',label:'补给与其他',entries:[1,2,5,6]}]}:{title:resolvedShopId,defaultSection:'',sections:[]},
   views:{
     material:{containerId:'材料',capacity:1,accessibleCapacity:1,viewCapacity:1,offset:0,limit:1,filterKey:'all',slots:materialQty>0?[slot(0,'强化石','强化石',materialQty,'npc.c1','材料')]:[]},
     intelligence:{containerId:'情报',capacity:1,accessibleCapacity:1,viewCapacity:1,offset:0,limit:1,filterKey:'all',slots:[slot(0,'符线溯源笔记','符线溯源笔记',1,'npc.c2','情报')]}
@@ -106,24 +160,42 @@ function state(){return{
 function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
 function tradePreview(payload){
   var capacityMax=spaceFreed?3:2;
-  var purchaseLines=payload.purchases.map(function(line){var item=catalog.filter(function(x){return x.catalogIndex===line.catalogIndex})[0],override=Number(window.__tradePreviewMaxOverride);var maxPurchasable=isFinite(override)&&override>0?override:Math.min(5,capacityMax);return{catalogIndex:item.catalogIndex,itemName:item.itemName,displayName:item.displayName,icon:item.icon,itemKind:item.majorType==='武器'?'equipment':'stack',quantity:line.quantity,unitPrice:item.unitPrice,total:item.unitPrice*line.quantity,maxQuantity:item.maxQuantity,purchaseLimit:item.maxQuantity,maxAffordable:maxPurchasable,maxByCapacity:item.majorType==='武器'?capacityMax:item.maxQuantity,maxPurchasable:maxPurchasable,destinationView:item.use==='材料'?'material':'bag'}});
+  var purchaseLines=payload.purchases.map(function(line){var item=catalog.filter(function(x){return x.catalogIndex===line.catalogIndex})[0],override=Number(window.__tradePreviewMaxOverride);var maxPurchasable=isFinite(override)&&override>0?override:Math.min(5,capacityMax),maxByCapacity=item.majorType==='武器'?capacityMax:item.maxQuantity;return{catalogIndex:item.catalogIndex,itemName:item.itemName,displayName:item.displayName,icon:item.icon,itemKind:item.majorType==='武器'?'equipment':'stack',quantity:line.quantity,unitPrice:item.unitPrice,total:item.unitPrice*line.quantity,maxQuantity:item.maxQuantity,purchaseLimit:item.maxQuantity,maxAffordable:maxPurchasable,maxByCapacity:maxByCapacity,maxPurchasable:maxPurchasable,destinationView:item.use==='材料'?'material':'bag',limitingReason:maxPurchasable<item.maxQuantity?(maxByCapacity<=maxPurchasable?'inventory_full':'insufficient_money'):''}});
   var saleLines=payload.sales.map(function(line){var material=line.source.viewId==='material';if(material)return{itemName:'强化石',displayName:'强化石',icon:'强化石',itemKind:'stack',quantity:line.quantity,total:25*line.quantity,sourceIdentity:'material:'+line.source.key,scope:'slot',matchedCount:1,eligibleCount:1,protectedCount:0};var bulk=line.scope==='same_name';return{itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',itemKind:'equipment',quantity:bulk?2:1,total:bulk?500:250,sourceIdentity:'bag:'+line.source.slot,scope:bulk?'same_name':'slot',matchedCount:bulk?3:1,eligibleCount:bulk?2:1,protectedCount:bulk?1:0}});
   var buyTotal=purchaseLines.reduce(function(n,x){return n+x.total},0),sellTotal=saleLines.reduce(function(n,x){return n+x.total},0);
   var requested=purchaseLines.reduce(function(n,x){return n+(x.itemKind==='equipment'?x.quantity:0)},0),missing=Math.max(0,requested-capacityMax),moneyOk=balance+sellTotal>=buyTotal;
-  return{success:true,tradeToken:'npctrade.'+(++__tradeSeq),purchaseLines:purchaseLines,saleLines:saleLines,buyTotal:buyTotal,sellTotal:sellTotal,netDelta:sellTotal-buyTotal,projectedBalance:balance+sellTotal-buyTotal,requiredSlots:requested,availableSlots:capacityMax,missingSlots:missing,canCommit:moneyOk&&missing===0,blockingError:!moneyOk?'insufficient_money':missing?'inventory_full':''};
+  return{success:true,v:1,shopId:payload.shopId,tradeToken:'npctrade.'+(++__tradeSeq),purchaseLines:purchaseLines,saleLines:saleLines,buyTotal:buyTotal,sellTotal:sellTotal,netDelta:sellTotal-buyTotal,projectedBalance:balance+sellTotal-buyTotal,requiredSlots:requested,availableSlots:capacityMax,missingSlots:missing,canCommit:moneyOk&&missing===0,blockingError:!moneyOk?'insufficient_money':missing?'inventory_full':''};
 }
-function respond(message){var result={type:'panel_resp',domain:message.domain,cmd:message.cmd,callId:message.callId,success:true};
-  if(message.domain==='inventory'){
-    if(message.cmd==='snapshot')result.snapshots=(message.payload.requests||[]).map(function(request){return inventorySnapshot(request.containerId,request)});
+function inventoryResponse(message){var result={type:'panel_resp',domain:'inventory',panel:message.panel,
+  panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId,success:true,v:1};
+    if(message.cmd==='snapshot'){
+      var inventoryRequests=message.payload.requests||[];
+      result.sessionNonce=inventorySessionNonce;result.snapshots=inventoryRequests.map(function(request){return inventorySnapshot(request.containerId,request)});
+      if(window.__failNextFilteredInventory&&inventoryRequests.some(function(request){return !!request.filterSpec||request.scope!=null||request.filterKey!=='all'})){
+        window.__failNextFilteredInventory=false;result.v=2
+      }
+      if(window.__driftNextFilteredInventoryVersion&&inventoryRequests.some(function(request){return !!request.filterSpec||request.scope!=null||request.filterKey!=='all'})){
+        window.__driftNextFilteredInventoryVersion=false;result.snapshots[0].containerVersion++
+      }
+    }
     else if(message.cmd==='autoTransfer'){
       var from=message.payload.source.containerId==='背包'?bagItems:battleItems,to=message.payload.targetContainerId==='背包'?bagItems:battleItems;
       to.push(from.splice(message.payload.source.slot,1)[0]);inventoryRevision++;spaceFreed=true;
       result.snapshots=(message.payload.windows||[]).map(function(request){return inventorySnapshot(request.containerId,request)});
     }
-    emit(result);return;
+  return result
+}
+function respond(message){var result={type:'panel_resp',domain:message.domain,panel:message.panel,
+  panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId,success:true};
+  if(message.domain==='inventory'){
+    emit(inventoryResponse(message));return;
   }
-  if(message.cmd==='snapshot'){window.__lastNpcState=state();Object.assign(result,window.__lastNpcState)}
-  else if(message.cmd==='tooltip')Object.assign(result,{displayname:'物品',descHTML:'说明',introHTML:'简介'});
+  if(message.cmd==='snapshot'){window.__lastNpcState=state(message.payload&&message.payload.shopId);Object.assign(result,window.__lastNpcState)}
+  else if(message.cmd==='tooltip'){
+    var tooltipSource=message.payload&&message.payload.source,tooltipSlot=tooltipSource&&bagItems[Number(tooltipSource.slot)];
+    var tooltipName=String(message.payload&&message.payload.itemName||(tooltipSlot&&tooltipSlot.name)||'物品');
+    Object.assign(result,{v:1,itemName:tooltipName,displayname:String(tooltipSlot&&tooltipSlot.displayName||tooltipName),iconName:String(tooltipSlot&&tooltipSlot.icon||tooltipName),descHTML:'说明',introHTML:'简介'});
+  }
   else if(message.cmd==='tradePreview'){
     if(window.__nextTradePreviewError){var injectedError=window.__nextTradePreviewError;window.__nextTradePreviewError='';Object.assign(result,{success:false,error:injectedError});emit(result);return}
     var overCeiling=window.__tradePreviewQuantityCeiling!=null&&message.payload.purchases.some(function(line){return line.quantity>window.__tradePreviewQuantityCeiling});
@@ -134,8 +206,9 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
     if(window.__malformedCommit){Object.assign(result,{success:false,error:'malformed_response',requiresReconcile:true});emit(result);return}
     var plan=window.__lastTrade;balance=plan.projectedBalance;
     plan.purchaseLines.forEach(function(line){if(line.itemName==='强化石')materialQty+=line.quantity});
-    Object.assign(result,state(),{operation:'tradeCommit',trade:{buyTotal:plan.buyTotal,sellTotal:plan.sellTotal,netDelta:plan.netDelta}})
+    Object.assign(result,state(message.payload&&message.payload.shopId),{operation:'tradeCommit',trade:{buyTotal:plan.buyTotal,sellTotal:plan.sellTotal,netDelta:plan.netDelta}})
   }
+  if(message.cmd==='tradePreview')window.__lastTradePreviewResponse=result;
   emit(result)
 }
 </script>
@@ -156,6 +229,60 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
 (async function(){
   var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(ms){return new Promise(function(r){setTimeout(r,ms==null?25:Number(ms))})}
   function nextFrame(){return new Promise(function(resolve){requestAnimationFrame(function(){resolve()})})}
+  function waitForCondition(predicate,label,timeout){
+    var deadline=Date.now()+Number(timeout||1000);
+    return new Promise(function(resolve,reject){
+      function probe(){
+        var matched=false;
+        try{matched=!!predicate()}catch(error){}
+        if(matched){requestAnimationFrame(function(){resolve()});return}
+        if(Date.now()>=deadline){reject(new Error(String(label||'condition')+' timeout'));return}
+        requestAnimationFrame(probe)
+      }
+      requestAnimationFrame(probe)
+    })
+  }
+  async function reopenNpcShopReady(){
+    var previous=NpcShop.debugState().panelInstanceId;
+    Panels.close();Panels.open('npcshop',{shopId:'前治安官'});
+    await waitForCondition(function(){
+      var state=NpcShop.debugState();
+      return state.panelInstanceId&&state.panelInstanceId!==previous
+        &&state.inventory&&state.inventory.ready
+        &&document.querySelector('.npcshop-catalog-card')
+    },'NPC shop reopen ready',2000)
+  }
+  async function reopenPurchaseSettlement(selector){
+    await reopenNpcShopReady();
+    document.querySelector(selector||'.npcshop-catalog-card').click();
+    await waitForCondition(function(){
+      var button=document.querySelector('.npcshop-checkout-btn');return button&&!button.disabled
+    },'NPC checkout ready',1000);
+    document.querySelector('.npcshop-checkout-btn').click();
+    await waitForCondition(function(){
+      return !!document.querySelector('[data-purchase-lines] .npcshop-settlement-line')
+    },'NPC settlement ready',1000)
+  }
+  function waitForSecondaryTerminal(node,active){
+    var deadline=Date.now()+1000;
+    return new Promise(function(resolve,reject){
+      function probe(){
+        var style=getComputedStyle(node),opacity=Number(style.opacity);
+        var terminal=active
+          ? style.display==='grid'&&style.zIndex==='55'&&style.visibility==='visible'
+            &&opacity===1&&style.pointerEvents==='auto'&&style.transform==='none'
+          : style.display==='grid'&&style.zIndex==='55'&&style.visibility==='hidden'
+            &&opacity===0&&style.pointerEvents==='none';
+        if(terminal){requestAnimationFrame(function(){resolve()});return}
+        if(Date.now()>=deadline){reject(new Error('secondary transition terminal timeout: '
+          +JSON.stringify({active:active,display:style.display,zIndex:style.zIndex,
+            visibility:style.visibility,opacity:opacity,pointerEvents:style.pointerEvents,
+            transform:style.transform})));return}
+        requestAnimationFrame(probe)
+      }
+      requestAnimationFrame(probe)
+    })
+  }
   function secondaryMotionSnapshot(node){
     var style=getComputedStyle(node);
     var animations=typeof node.getAnimations==='function'?node.getAnimations().map(function(animation){
@@ -184,14 +311,14 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   var harnessVisualMode=new URLSearchParams(location.search).get('visual');
   if(harnessVisualMode==='large-quantity'){
     catalog[1].maxQuantity=999999;window.__tradePreviewMaxOverride=999999;
-    Panels.open('npcshop',{shopId:'前治安官'});await wait();
+    Panels.open('npcshop',{shopId:'前治安官'});await waitForCondition(function(){return document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]')},'large-quantity catalog');
     document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();
     document.querySelector('.npcshop-checkout-btn').click();await wait();
     setQuantity('[data-purchase-lines]',568797);await wait();
     window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
   }
   if(harnessVisualMode==='secondary-help'||harnessVisualMode==='secondary-settlement'){
-    Panels.open('npcshop',{shopId:'前治安官'});await wait();
+    Panels.open('npcshop',{shopId:'前治安官'});await waitForCondition(function(){return NpcShop.debugState().inventory.ready&&document.querySelector('.npcshop-catalog-card')},'secondary visual shop');
     if(harnessVisualMode==='secondary-help'){
       document.querySelector('.npcshop-help-btn').click();
     }else{
@@ -201,12 +328,159 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
     await wait();
     window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
   }
-  Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  window.__holdNextInventory=true;
+  Panels.open('npcshop',{shopId:'前治安官'});await waitForCondition(function(){return window.__heldInventoryMessage},'held initial Inventory request');
+  var heldInventory=window.__heldInventoryMessage;
+  var foreignInventory=inventoryResponse(heldInventory);foreignInventory.panel='kshop';emit(foreignInventory);await wait();
+  var foreignIgnored=!NpcShop.debugState().inventory.ready;
+  var staleInventory=inventoryResponse(heldInventory);staleInventory.panelInstanceId=heldInventory.panelInstanceId+'.retired';emit(staleInventory);await wait();
+  var staleIgnored=!NpcShop.debugState().inventory.ready;
+  emit(inventoryResponse(heldInventory));await waitForCondition(function(){return NpcShop.debugState().inventory.ready},'initial physical Inventory surface');
+  ok('NPC Inventory owner request and response require the exact npcshop panel instance',
+    heldInventory&&heldInventory.panel==='npcshop'&&heldInventory.panelInstanceId===NpcShop.debugState().panelInstanceId
+      &&NpcShop.debugState().inventory.ready,
+    JSON.stringify({request:heldInventory,state:NpcShop.debugState().inventory}));
+  ok('NPC Inventory mux ignores foreign owner and retired instance responses before accepting the exact tuple',
+    foreignIgnored&&staleIgnored&&NpcShop.debugState().inventory.ready);
+  var initialSurfaceRequests=__sent.filter(function(message){return message.domain==='inventory'
+    &&message.cmd==='snapshot'&&message.panelInstanceId===heldInventory.panelInstanceId}).map(function(message){
+      return (message.payload.requests||[]).map(function(request){return[request.containerId,request.offset,request.limit,request.filterKey]})
+    });
+  var initialSurfaceReceipt=NpcShop.debugState().inventorySurface;
+  var mergedSurfaceSlots=initialSurfaceReceipt&&initialSurfaceReceipt.snapshots
+    ?initialSurfaceReceipt.snapshots.reduce(function(total,snapshot){return total+snapshot.slots.length},0):0;
+  ok('NPC production open consumes the complete dynamic bag+battle physical surface contract',
+    JSON.stringify(initialSurfaceRequests)===JSON.stringify([
+      [['背包',0,50,'all'],['战备箱',0,100,'all']],
+      [['战备箱',100,100,'all']],
+      [['战备箱',200,40,'all']]
+    ])&&NpcShop.debugState().inventory.physicalSurface
+      &&NpcShop.debugState().inventory.physicalSurface.accessibleCapacity===240
+      &&NpcShop.debugState().inventory.physicalSurface.responseCount===3
+      &&initialSurfaceReceipt&&initialSurfaceReceipt.windows.length===4
+      &&initialSurfaceReceipt.snapshots.length===2&&mergedSurfaceSlots===290,
+    JSON.stringify({requests:initialSurfaceRequests,state:NpcShop.debugState().inventory,
+      receipt:initialSurfaceReceipt&&{windows:initialSurfaceReceipt.windows.length,
+        snapshots:initialSurfaceReceipt.snapshots.map(function(snapshot){return[snapshot.containerId,snapshot.slots.length]})}}));
+
+  window.__holdNextInventory=true;window.__nextNpcSnapshotDelay=180;
+  Panels.open('npcshop',{shopId:'重绑定旧商店',panelInstanceId:'panel.harness.npcshop.rebind-old'});
+  await wait();
+  var rebindHeldInventory=window.__heldInventoryMessage;
+  var retiredNpcSnapshot=__sent.filter(function(message){return message.domain!=='inventory'
+    &&message.cmd==='snapshot'&&message.payload&&message.payload.shopId==='重绑定旧商店'}).pop();
+  Panels.open('npcshop',{shopId:'重绑定新商店',panelInstanceId:'panel.harness.npcshop.rebind-new'});
+  var reboundNpcSnapshot=__sent.filter(function(message){return message.domain==='npcshop'
+    &&message.cmd==='snapshot'&&message.panelInstanceId==='panel.harness.npcshop.rebind-new'}).pop();
+  var mixedNpcPendingBefore=NpcShop.debugState().mux.pendingCount;
+  if(reboundNpcSnapshot){var mixedNpcResponse={type:'panel_resp',domain:'npcshop',panel:'npcshop',
+    panelInstanceId:'panel.harness.npcshop.rebind-old',cmd:'snapshot',callId:reboundNpcSnapshot.callId,
+    success:true};Object.assign(mixedNpcResponse,state('重绑定新商店'));emit(mixedNpcResponse)}
+  var mixedNpcOwnerRejected=NpcShop.debugState().mux.pendingCount===mixedNpcPendingBefore;
+  await waitForCondition(function(){var current=NpcShop.debugState();return current.panelInstanceId==='panel.harness.npcshop.rebind-new'&&current.inventory.ready},'rebound Inventory surface');
+  var reboundNpcBeforeLate=NpcShop.debugState();
+  var reboundNpcTitleBeforeLate=document.querySelector('.workbench-title').textContent;
+  emit(inventoryResponse(rebindHeldInventory));
+  await wait(220);
+  var reboundNpcAfterLate=NpcShop.debugState();
+  var reboundNpcTitleAfterLate=document.querySelector('.workbench-title').textContent;
+  var rebindCloseBefore=__sent.filter(function(message){return message.type==='panel'
+    &&message.panel==='npcshop'&&message.cmd==='close'}).length;
+  document.querySelector('.workbench-close-btn').click();await wait();
+  var rebindCloseMessages=__sent.filter(function(message){return message.type==='panel'
+    &&message.panel==='npcshop'&&message.cmd==='close'});
+  var exactRebindClose=rebindCloseMessages[rebindCloseMessages.length-1];
+  ok('NPC same-name rebind retires old domain and Inventory callbacks, adopts new initData, and closes the exact replacement owner',
+    rebindHeldInventory&&rebindHeldInventory.panelInstanceId==='panel.harness.npcshop.rebind-old'
+      &&retiredNpcSnapshot&&retiredNpcSnapshot.panel==='npcshop'
+      &&retiredNpcSnapshot.panelInstanceId==='panel.harness.npcshop.rebind-old'
+      &&reboundNpcSnapshot&&reboundNpcSnapshot.panel==='npcshop'
+      &&reboundNpcSnapshot.panelInstanceId==='panel.harness.npcshop.rebind-new'
+      &&mixedNpcOwnerRejected
+      &&reboundNpcBeforeLate.shopId==='重绑定新商店'
+      &&reboundNpcBeforeLate.panelInstanceId==='panel.harness.npcshop.rebind-new'
+      &&reboundNpcBeforeLate.inventory.ready
+      &&reboundNpcTitleBeforeLate==='重绑定新商店'
+      &&reboundNpcAfterLate.shopId==='重绑定新商店'
+      &&reboundNpcAfterLate.panelInstanceId==='panel.harness.npcshop.rebind-new'
+      &&reboundNpcAfterLate.inventory.ready
+      &&reboundNpcTitleAfterLate==='重绑定新商店'
+      &&rebindCloseMessages.length===rebindCloseBefore+1
+      &&exactRebindClose&&exactRebindClose.panelInstanceId==='panel.harness.npcshop.rebind-new'
+      &&Object.keys(exactRebindClose).sort().join(',')==='cmd,panel,panelInstanceId,type'
+      &&Panels.getActive()===null,
+    JSON.stringify({retiredInventory:rebindHeldInventory,retiredSnapshot:retiredNpcSnapshot,
+      before:reboundNpcBeforeLate,after:reboundNpcAfterLate,close:exactRebindClose}));
+  Panels.open('npcshop',{shopId:'前治安官'});await waitForCondition(function(){var current=NpcShop.debugState();return current.inventory.ready&&document.querySelector('.npcshop-bag-toolbar')&&document.querySelector('.npcshop-bag-view .inventory-filter-control.tree')},'production shop reopen');
+
+  var npcIdentityFixture={itemName:'光棱射线弹-强化',displayName:'棱镜折射阵列',icon:'全光谱棱镜阵列'};
+  var npcIdentityEntry={cmd:'tradePreview',metadata:{payload:{shopId:'前治安官'}}};
+  ok('NPC runtime accepts an all-distinct identity triple and rejects malformed identity leaves',
+    NpcShopRuntime.identityTriple(npcIdentityFixture,'itemName')
+      &&!NpcShopRuntime.identityTriple({itemName:npcIdentityFixture.itemName,displayname:npcIdentityFixture.displayName,icon:npcIdentityFixture.icon},'itemName')
+      &&!NpcShopRuntime.identityTriple({itemName:npcIdentityFixture.itemName,displayName:npcIdentityFixture.displayName,icon:7},'itemName')
+      &&!NpcShopRuntime.identityTriple({itemName:npcIdentityFixture.itemName,displayName:'   ',icon:npcIdentityFixture.icon},'itemName')
+      &&!NpcShopRuntime.identityTriple({itemName:npcIdentityFixture.itemName,displayName:npcIdentityFixture.displayName,icon:' Undefined '},'itemName')
+      &&NpcShopRuntime.validateBusinessResponse({success:true,itemName:'强化石',displayname:'高纯强化石'},
+        {cmd:'tooltip',metadata:{payload:{itemName:'强化石'}}})
+      &&NpcShopRuntime.validateBusinessResponse({success:true,itemName:'强化石',displayname:'高纯强化石',iconName:'强化石图标'},
+        {cmd:'tooltip',metadata:{payload:{itemName:'强化石'}}})
+      &&!NpcShopRuntime.validateBusinessResponse({success:true,itemName:'强化石'},
+        {cmd:'tooltip',metadata:{payload:{itemName:'强化石'}}})
+      &&!NpcShopRuntime.validateBusinessResponse({success:true,itemName:'强化石',displayname:'   '},
+        {cmd:'tooltip',metadata:{payload:{itemName:'强化石'}}})
+      &&!NpcShopRuntime.validateBusinessResponse({success:true,itemName:'强化石',displayname:'高纯强化石',iconName:' Undefined '},
+        {cmd:'tooltip',metadata:{payload:{itemName:'强化石'}}})
+      &&!NpcShopRuntime.validateBusinessResponse({success:true,itemName:'强化石',displayname:'高纯强化石',iconName:7},
+        {cmd:'tooltip',metadata:{payload:{itemName:'强化石'}}}));
+  ok('NPC runtime binds a trade preview identity response to the requested shop selector',
+    NpcShopRuntime.validateBusinessResponse({success:true,shopId:'前治安官',purchaseLines:[npcIdentityFixture],saleLines:[]},npcIdentityEntry)
+      &&!NpcShopRuntime.validateBusinessResponse({success:true,shopId:'伪造商店',purchaseLines:[npcIdentityFixture],saleLines:[]},npcIdentityEntry));
+  var ownerSessions=[],ownerCloseCount=0;
+  function ownerMux(label,accept){return {
+    openSession:function(session){ownerSessions.push({label:label,session:session});return accept!==false},
+    closeSession:function(){ownerCloseCount++}
+  }}
+  var ownerLifecycle=new NpcShopRuntime.OwnerLifecycle({panel:'npcshop',muxes:[ownerMux('business'),ownerMux('inventory')]});
+  var invalidOwnerRejected=!ownerLifecycle.open('bad owner');
+  var exactOwnerOpened=ownerLifecycle.open('panel.harness.npcshop.owner-lifecycle');
+  var ordinaryIntent=ownerLifecycle.captureSnapshot();ownerLifecycle.enterNeedsReconcile();
+  var ordinaryRetired=!ownerLifecycle.isCurrentSnapshot(ordinaryIntent);
+  var reconcileIntent=ownerLifecycle.captureSnapshot();ownerLifecycle.acceptAuthorityState();
+  var reconcileAccepted=ownerLifecycle.isCurrentSnapshot(reconcileIntent);
+  var ownerCloseMessage=ownerLifecycle.closeMessage();ownerLifecycle.close();
+  var rollbackCloseCount=0,rollbackOwner=new NpcShopRuntime.OwnerLifecycle({panel:'npcshop',muxes:[
+    {openSession:function(){return true},closeSession:function(){rollbackCloseCount++}},
+    {openSession:function(){return false},closeSession:function(){rollbackCloseCount+=100}}
+  ]});
+  ok('NPC owner lifecycle centralizes exact dual-mux admission, reconcile fencing, close identity, and partial-open rollback',
+    invalidOwnerRejected&&exactOwnerOpened&&ownerSessions.length===2
+      &&ownerSessions.every(function(entry){return entry.session.ownerPanel==='npcshop'
+        &&entry.session.panelInstanceId==='panel.harness.npcshop.owner-lifecycle'})
+      &&ordinaryRetired&&reconcileAccepted
+      &&Object.keys(ownerCloseMessage).sort().join(',')==='cmd,panel,panelInstanceId,type'
+      &&ownerCloseMessage.panelInstanceId==='panel.harness.npcshop.owner-lifecycle'
+      &&ownerCloseCount===2&&!rollbackOwner.open('panel.harness.npcshop.rollback')
+      &&rollbackCloseCount===1&&rollbackOwner.panelInstanceId==='');
+  var retiredSellSent=[],retiredSellResponse=null;
+  var retiredSellMux=new NpcShopRuntime.RequestMux({sessionNonce:'retired-sell',
+    send:function(message){retiredSellSent.push(message);return true}});
+  retiredSellMux.openSession({ownerPanel:'npcshop',panelInstanceId:'panel.harness.npcshop.retired-sell'});
+  var retiredSellCall=retiredSellMux.request('sell',{v:1},function(response){retiredSellResponse=response});
+  retiredSellMux.destroy();
+  ok('NPC ordinary sell is retired in the Web runtime before any Host/Flash dispatch',
+    !NpcShopRuntime.isSupportedCommand('sell')&&retiredSellCall===null&&retiredSellSent.length===0
+      &&retiredSellResponse&&retiredSellResponse.error==='unsupported_cmd');
   ok('opens catalog + bag',document.querySelector('[data-instance-key="npcshop:catalog"]')&&document.querySelector('[data-instance-key="npcshop:bag"]'));
   ok('NPC domain response excludes duplicate bag authority',__lastNpcState&&__lastNpcState.views&&__lastNpcState.views.bag===undefined);
   var npcConfirmedCard=document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]'),npcConfirmedBadge=npcConfirmedCard&&npcConfirmedCard.querySelector('.balance-weight-badge');
   var npcUnresolvedCard=document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]');
   var npcOwnedBalanceBadge=document.querySelector('.npcshop-bag-view .inventory-slot-card[data-physical-slot="0"] .balance-weight-badge');
+  ok('NPC catalog renders display copy and icon from their canonical fields without internal-name fallback',
+    npcConfirmedCard&&npcConfirmedCard.textContent.indexOf(npcIdentityFixture.displayName)>=0
+      &&npcConfirmedCard.textContent.indexOf(npcIdentityFixture.itemName)<0
+      &&npcConfirmedCard.querySelector('[data-icon="'+npcIdentityFixture.icon+'"]')
+      &&!npcConfirmedCard.querySelector('[data-icon="'+npcIdentityFixture.itemName+'"]'));
   ok('NPC 商店目录与 owned 格复用确认加权徽标，未确认条目不显示正式数字',npcConfirmedBadge&&npcConfirmedBadge.textContent.indexOf('◆+1')>=0&&npcConfirmedCard.getAttribute('aria-label').indexOf('平衡标定已确认')>=0&&npcUnresolvedCard&&!npcUnresolvedCard.querySelector('.balance-weight-badge')&&npcOwnedBalanceBadge&&npcOwnedBalanceBadge.textContent.indexOf('◆0')>=0);
   PanelTooltip.lastHTML='';PanelTooltip.lastRichOptions=null;var npcBalanceRect=npcConfirmedCard.getBoundingClientRect();
   npcConfirmedCard.dispatchEvent(new PointerEvent('pointerenter',{bubbles:false,clientX:npcBalanceRect.left+8,clientY:npcBalanceRect.top+8,pointerId:11,pointerType:'mouse',isPrimary:true}));
@@ -364,7 +638,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
       &&hasStructuralTransition(helpEntryMotion,'opacity')
       &&hasStructuralTransition(helpEntryMotion,'transform'),
     JSON.stringify(helpEntryMotion));
-  await wait(220);
+  await waitForSecondaryTerminal(helpPage,true);
   var capabilityDuringHelp=capability();
   ok('header help opens a secondary guide page',document.querySelector('.npcshop-help-page.active')&&NpcShop.debugState().helping);
   var helpActiveMotion=secondaryMotionSnapshot(helpPage);
@@ -394,7 +668,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
       &&hasStructuralTransition(helpExitMotion,'opacity')
       &&hasStructuralTransition(helpExitMotion,'transform'),
     JSON.stringify(helpExitMotion));
-  await wait(220);
+  await waitForSecondaryTerminal(helpPage,false);
   var helpClosedMotion=secondaryMotionSnapshot(helpPage);
   ok('closed help keeps its structural box while becoming hidden and non-interactive',
     helpClosedMotion.display==='grid'&&helpClosedMotion.zIndex==='55'
@@ -429,7 +703,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
       &&hasStructuralTransition(settlementEntryMotion,'opacity')
       &&hasStructuralTransition(settlementEntryMotion,'transform'),
     JSON.stringify(settlementEntryMotion));
-  await wait(220);
+  await waitForSecondaryTerminal(settlementPage,true);
   var settlementActiveMotion=secondaryMotionSnapshot(settlementPage);
   ok('settlement secondary page reaches the shared visible terminal state',
     settlementActiveMotion.display==='grid'&&settlementActiveMotion.zIndex==='55'
@@ -503,7 +777,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
       &&hasStructuralTransition(settlementExitMotion,'opacity')
       &&hasStructuralTransition(settlementExitMotion,'transform'),
     JSON.stringify(settlementExitMotion));
-  await wait(220);
+  await waitForSecondaryTerminal(settlementPage,false);
   var settlementClosedMotion=secondaryMotionSnapshot(settlementPage);
   ok('closed settlement keeps its structural box while becoming hidden and non-interactive',
     settlementClosedMotion.display==='grid'&&settlementClosedMotion.zIndex==='55'
@@ -527,6 +801,12 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
     JSON.stringify({display:spaceStyle.display,zIndex:spaceStyle.zIndex,
       space:{top:spaceRect.top,right:spaceRect.right,bottom:spaceRect.bottom,left:spaceRect.left},
       settlement:{top:settlementRect.top,right:settlementRect.right,bottom:settlementRect.bottom,left:settlementRect.left}}));
+  var spaceNext=document.querySelector('.npcshop-space-page .inventory-page-next');
+  if(spaceNext)spaceNext.click();await wait();
+  var pagedBattleRequest=NpcShop.debugState().inventory.requests.find(function(request){return request.containerId==='战备箱'});
+  ok('organizer can advance the visible battlebox page before a physical refresh',
+    spaceNext&&pagedBattleRequest&&pagedBattleRequest.offset===40,
+    JSON.stringify(pagedBattleRequest));
   var transferable=document.querySelector('[data-space-grid="背包"] .npcshop-space-transferable');
   var readySpaceCards=Array.prototype.slice.call(document.querySelectorAll('.npcshop-space-transferable'));
   ok('organization route renders one exact ready projection',transferable&&readySpaceCards.every(function(node){
@@ -555,6 +835,10 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
       &&__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length===busyAutoTransfers);
   await wait(130);
   ok('organizer quick-transfers through authority autoTransfer',__sent.some(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'&&m.payload.targetContainerId==='战备箱'}));
+  var refreshedBattleRequest=NpcShop.debugState().inventory.requests.find(function(request){return request.containerId==='战备箱'});
+  ok('quick-transfer full-surface refresh preserves the visible battlebox page',
+    refreshedBattleRequest&&refreshedBattleRequest.offset===40,
+    JSON.stringify(refreshedBattleRequest));
   var spaceBackAfterTransfer=document.querySelector('[data-space-back]');
   ok('organizer remains mounted and keyboard-returnable after quick transfer',
     !!spaceBackAfterTransfer&&NpcShop.debugState().organizingSpace,
@@ -563,13 +847,22 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   if(spaceBackAfterTransfer)spaceBackAfterTransfer.click();await wait(15);
   var returningCard=document.querySelector('.npcshop-space-transferable');
   var returningReason=returningCard&&returningCard.querySelector('.workbench-entity-lock-reason');
+  var returningStatus=document.querySelector('[data-space-status]');
+  var returningPagerNext=document.querySelector('.npcshop-space-page .inventory-page-next');
   var returningTransfers=__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length;
   if(returningCard)returningCard.click();
   ok('space return projection locks the grid with the exact _spaceBusy reason',
-    returningCard&&returningCard.getAttribute('aria-disabled')==='true'
-      &&returningReason&&!returningReason.hidden
-      &&returningReason.textContent==='正在载入或核对整理空间。'
-      &&__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length===returningTransfers);
+    returningStatus&&returningStatus.textContent==='准备整理空间…'
+      &&returningPagerNext&&returningPagerNext.disabled
+      &&(!returningCard||(returningCard.getAttribute('aria-disabled')==='true'
+        &&returningReason&&!returningReason.hidden
+        &&returningReason.textContent==='正在载入或核对整理空间。'))
+      &&__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length===returningTransfers,
+    JSON.stringify({card:!!returningCard,aria:returningCard&&returningCard.getAttribute('aria-disabled'),
+      reason:returningReason&&returningReason.textContent,hidden:returningReason&&returningReason.hidden,
+      status:returningStatus&&returningStatus.textContent,pagerDisabled:returningPagerNext&&returningPagerNext.disabled,
+      transfers:[returningTransfers,__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='autoTransfer'}).length],
+      state:NpcShop.debugState()}));
   await wait(110);await wait();
   var fullBagRebind=__sent.filter(function(m){return m.domain==='inventory'&&m.cmd==='snapshot'&&m.payload.requests&&m.payload.requests.length===1&&m.payload.requests[0].containerId==='背包'&&m.payload.requests[0].filterKey==='all'}).pop();
   ok('returning from organizer uses a full bag snapshot, preserves filtered-out sales, and re-previews',fullBagRebind&&NpcShop.debugState().saleCount===1&&!NpcShop.debugState().organizingSpace&&__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length>=2);
@@ -577,6 +870,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   previews=__sent.filter(function(m){return m.cmd==='tradePreview'});
   ok('authoritative max clamps equipment purchase after space change',previews[previews.length-1].payload.purchases[0].quantity===3);
   ok('settlement keeps number and range controls synchronized',document.querySelectorAll('.npcshop-settlement-page input[type="number"]').length>=2&&document.querySelectorAll('.npcshop-settlement-page input[type="range"]').length>=2&&quantityInput('[data-purchase-lines]').value===quantityRange('[data-purchase-lines]').value);
+  var postCommitInventoryStart=__sent.filter(function(message){return message.domain==='inventory'&&message.cmd==='snapshot'}).length;
   window.__nextTradeCommitDelay=120;document.querySelector('[data-trade-commit]').click();
   var commitsDuringWrite=__sent.filter(function(m){return m.cmd==='tradeCommit'}).length,busyQuantity=quantityInput('[data-purchase-lines]').value;
   var busyOwnedCard=document.querySelector('.npcshop-owned-view .inventory-slot-card.occupied');
@@ -606,14 +900,180 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   var busyBack=document.querySelector('[data-trade-back]'),busyMinus=quantityButton('[data-purchase-lines]','−'),busyCommit=document.querySelector('[data-trade-commit]');
   busyBack.dispatchEvent(new MouseEvent('click',{bubbles:true}));busyMinus.dispatchEvent(new MouseEvent('click',{bubbles:true}));busyCommit.dispatchEvent(new MouseEvent('click',{bubbles:true}));await wait(35);
   ok('in-flight commit locks settlement navigation and quantity mutation',NpcShop.debugState().busy&&NpcShop.debugState().settling&&busyBack.disabled&&busyMinus.disabled&&quantityInput('[data-purchase-lines]').value===busyQuantity&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===commitsDuringWrite);
-  await wait(120);
+  await wait(120);await wait(30);
   ok('commit sends opaque AS2 trade token',__sent.some(function(m){return m.cmd==='tradeCommit'&&/^npctrade\./.test(m.payload.expectedTradeToken)}));
   ok('successful commit clears intents and returns main page',NpcShop.debugState().purchaseCount===0&&NpcShop.debugState().saleCount===0&&!NpcShop.debugState().settling);
+  var postCommitSurfaceRequests=__sent.filter(function(message){return message.domain==='inventory'&&message.cmd==='snapshot'}).slice(postCommitInventoryStart).map(function(message){
+    return (message.payload.requests||[]).map(function(request){return{containerId:request.containerId,offset:request.offset,
+      limit:request.limit,filterKey:request.filterKey,filterSpec:request.filterSpec||null}})
+  });
+  var postCommitSurfaceReceipt=NpcShop.debugState().inventorySurface;
+  var postCommitBagRequest=NpcShop.debugState().inventory.requests.find(function(request){return request.containerId==='背包'});
+  var postCommitBattleRequest=NpcShop.debugState().inventory.requests.find(function(request){return request.containerId==='战备箱'});
+  ok('successful trade performs a complete physical read followed by the exact authority-filtered visible batch',
+    JSON.stringify(postCommitSurfaceRequests)===JSON.stringify([
+      [{containerId:'背包',offset:0,limit:50,filterKey:'all',filterSpec:null},{containerId:'战备箱',offset:0,limit:100,filterKey:'all',filterSpec:null}],
+      [{containerId:'战备箱',offset:100,limit:100,filterKey:'all',filterSpec:null}],
+      [{containerId:'战备箱',offset:200,limit:40,filterKey:'all',filterSpec:null}],
+      [{containerId:'背包',offset:0,limit:50,filterKey:'consumable',filterSpec:{major:'consumable',use:'消耗品'}},{containerId:'战备箱',offset:40,limit:40,filterKey:'all',filterSpec:null}]
+    ])&&postCommitSurfaceReceipt&&postCommitSurfaceReceipt.windows.length===4
+      &&postCommitSurfaceReceipt.snapshots.reduce(function(total,snapshot){return total+snapshot.slots.length},0)===290,
+    JSON.stringify({requests:postCommitSurfaceRequests,receipt:postCommitSurfaceReceipt&&{
+      windows:postCommitSurfaceReceipt.windows.length,snapshots:postCommitSurfaceReceipt.snapshots.map(function(snapshot){return[snapshot.containerId,snapshot.slots.length]})}}));
+  ok('post-trade adapter refresh preserves the caller visible battlebox page',
+    postCommitBattleRequest&&postCommitBattleRequest.offset===40,
+    JSON.stringify(postCommitBattleRequest));
+  var postCommitBagMode=document.querySelector('[data-view-id="bag"]');
+  if(postCommitBagMode)postCommitBagMode.click();await nextFrame();
+  var postCommitBagBreadcrumbs=Array.prototype.map.call(document.querySelectorAll('.npcshop-bag-view [data-filter-breadcrumb-path]'),function(node){return node.getAttribute('data-filter-breadcrumb-path')+(node.getAttribute('aria-current')?'*':'')});
+  var postCommitBagPaths=Array.prototype.map.call(document.querySelectorAll('.npcshop-bag-view [data-filter-path]'),function(node){return node.getAttribute('data-filter-path')+(node.getAttribute('aria-current')?'*':'')});
+  var postCommitGlobalBagPaths=Array.prototype.map.call(document.querySelectorAll('.npcshop-panel [data-filter-path]'),function(node){return(node.closest('.npcshop-bag-view')?'bag:':'other:')+node.getAttribute('data-filter-path')+(node.getAttribute('aria-current')?'*':'')});
+  ok('post-trade adapter refresh preserves the exact bag filter and breadcrumb',
+    postCommitBagRequest&&postCommitBagRequest.filterKey==='consumable'
+      &&postCommitBagRequest.filterSpec&&postCommitBagRequest.filterSpec.major==='consumable'
+      &&postCommitBagRequest.filterSpec.use==='消耗品'
+      &&document.querySelector('.npcshop-bag-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="consumable/消耗品"][aria-current="page"]'),
+    JSON.stringify({request:postCommitBagRequest,breadcrumbs:postCommitBagBreadcrumbs,paths:postCommitBagPaths,
+      globalPaths:postCommitGlobalBagPaths,filterControls:document.querySelectorAll('.npcshop-panel .inventory-filter-control').length}));
   var owned=document.querySelector('.npcshop-owned-grid');ok('owned grid has no horizontal overflow',owned.scrollWidth<=owned.clientWidth+1);
   ok('panel remains within design canvas',document.querySelector('.workbench-shell').getBoundingClientRect().width===1024);
   catalog[3].setId='training_long_gun';catalog[3].setName='训练长枪套装';
   catalog[4].setId='training_long_gun';catalog[4].setName='训练长枪套装';
-  Panels.close();manualLayout=true;Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  Panels.close();manualLayout=true;Panels.open('npcshop',{shopId:'前治安官'});
+  await waitForCondition(function(){return NpcShop.debugState().inventory.ready
+    &&document.querySelector('.npcshop-bag-view .inventory-filter-control.tree')},'new NPC session reset');
+  var reopenedBagRequest=NpcShop.debugState().inventory.requests.find(function(request){return request.containerId==='背包'});
+  var reopenedBattleRequest=NpcShop.debugState().inventory.requests.find(function(request){return request.containerId==='战备箱'});
+  var reopenedBagBreadcrumbs=Array.prototype.map.call(document.querySelectorAll('.npcshop-bag-view [data-filter-breadcrumb-path]'),function(node){return node.getAttribute('data-filter-breadcrumb-path')+(node.getAttribute('aria-current')?'*':'')});
+  var reopenedBagPaths=Array.prototype.map.call(document.querySelectorAll('.npcshop-bag-view [data-filter-path]'),function(node){return node.getAttribute('data-filter-path')+(node.getAttribute('aria-current')?'*':'')});
+  ok('a new NPC panel session atomically resets filters while retaining remembered pages',
+    reopenedBagRequest&&reopenedBagRequest.filterKey==='all'&&!reopenedBagRequest.filterSpec
+      &&reopenedBattleRequest&&reopenedBattleRequest.filterKey==='all'&&!reopenedBattleRequest.filterSpec
+      &&reopenedBattleRequest.offset===40
+      &&document.querySelector('.npcshop-bag-view [data-filter-path=""]')
+      &&document.querySelector('.npcshop-bag-view [data-filter-path="weapon"]')
+      &&!document.querySelector('.npcshop-bag-view [data-filter-breadcrumb-path][aria-current="page"]'),
+    JSON.stringify({bag:reopenedBagRequest,battlebox:reopenedBattleRequest,breadcrumbs:reopenedBagBreadcrumbs,paths:reopenedBagPaths}));
+  document.querySelector('.npcshop-bag-view [data-filter-path="weapon"]').click();
+  await waitForCondition(function(){
+    var request=NpcShop.debugState().inventory.requests.find(function(entry){return entry.containerId==='背包'});
+    return !NpcShop.debugState().inventory.busyOwner&&request&&request.filterSpec&&request.filterSpec.major==='weapon'
+      &&!!document.querySelector('.npcshop-bag-view [data-filter-path="weapon/手枪"]');
+  },'filtered retry setup');
+  var filteredRetrySetupRequest=NpcShop.debugState().inventory.requests.find(function(entry){return entry.containerId==='背包'});
+  if(!filteredRetrySetupRequest.filterSpec.use)document.querySelector('.npcshop-bag-view [data-filter-path="weapon/手枪"]').click();
+  await waitForCondition(function(){
+    var request=NpcShop.debugState().inventory.requests.find(function(entry){return entry.containerId==='背包'});
+    return !NpcShop.debugState().inventory.busyOwner&&request&&request.filterSpec&&request.filterSpec.use==='手枪';
+  },'filtered retry exact leaf');
+  var filteredRetryDesired=JSON.parse(JSON.stringify(NpcShop.debugState().inventory.requests));
+  var filteredRetryExpected=[
+    [{containerId:'背包',offset:0,limit:50,filterKey:'all'},{containerId:'战备箱',offset:0,limit:100,filterKey:'all'}],
+    [{containerId:'战备箱',offset:100,limit:100,filterKey:'all'}],
+    [{containerId:'战备箱',offset:200,limit:40,filterKey:'all'}],
+    filteredRetryDesired
+  ];
+  var versionDriftRetry=document.querySelector('.npcshop-retry-btn');
+  window.__driftNextFilteredInventoryVersion=true;
+  versionDriftRetry.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await waitForCondition(function(){return NpcShop.debugState().inventory.refreshRequired},'paired version drift rejection');
+  var versionDriftState=NpcShop.debugState();
+  ok('filtered authority projection rejects containerVersion drift from its paired physical receipt',
+    versionDriftState.inventory.refreshRequired&&!versionDriftState.inventory.ready
+      &&versionDriftState.inventorySurface===null,
+    JSON.stringify(versionDriftState));
+  versionDriftRetry.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await waitForCondition(function(){var inventory=NpcShop.debugState().inventory;return inventory.ready&&!inventory.refreshRequired&&!inventory.busyOwner},'paired version drift recovery');
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();
+  document.querySelector('.npcshop-checkout-btn').click();
+  await waitForCondition(function(){return NpcShop.debugState().settling&&window.__lastTradePreviewResponse&&window.__lastTradePreviewResponse.tradeToken},'write-fence settlement');
+  var writeFencePreview=window.__lastTradePreviewResponse,writeFenceToken=writeFencePreview.tradeToken;
+  var writeFenceRetry=document.querySelector('.npcshop-retry-btn'),writeFenceGetterCalls=0;
+  Object.defineProperty(writeFencePreview,'tradeToken',{configurable:true,get:function(){
+    writeFenceGetterCalls++;window.__syncInventory=true;window.__failNextFilteredInventory=true;
+    try{writeFenceRetry.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))}
+    finally{window.__syncInventory=false}
+    return writeFenceToken
+  }});
+  var writeFenceCommitBefore=__sent.filter(function(message){return message.cmd==='tradeCommit'}).length;
+  document.querySelector('[data-trade-commit]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await wait();
+  var writeFenceState=NpcShop.debugState(),writeFenceCommitAfter=__sent.filter(function(message){return message.cmd==='tradeCommit'}).length;
+  ok('generic write dispatch rechecks Inventory immediately before sending after an intervening synchronous failure',
+    writeFenceGetterCalls===1&&writeFenceState.inventory.refreshRequired&&!writeFenceState.inventory.ready
+      &&writeFenceCommitAfter===writeFenceCommitBefore,
+    JSON.stringify({getterCalls:writeFenceGetterCalls,before:writeFenceCommitBefore,after:writeFenceCommitAfter,state:writeFenceState}));
+  var previewFenceBefore=__sent.filter(function(message){return message.cmd==='tradePreview'}).length;
+  var previewFenceButton=quantityButton('[data-purchase-lines]','+');
+  if(previewFenceButton)previewFenceButton.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await wait();
+  ok('preview dispatch independently refuses an Inventory-invalid settlement mutation',
+    __sent.filter(function(message){return message.cmd==='tradePreview'}).length===previewFenceBefore,
+    JSON.stringify({before:previewFenceBefore,after:__sent.filter(function(message){return message.cmd==='tradePreview'}).length,state:NpcShop.debugState()}));
+  var commitFenceBefore=__sent.filter(function(message){return message.cmd==='tradeCommit'}).length;
+  document.querySelector('[data-trade-commit]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await wait();
+  ok('commit dispatch independently refuses an Inventory-invalid settlement',
+    __sent.filter(function(message){return message.cmd==='tradeCommit'}).length===commitFenceBefore,
+    JSON.stringify({before:commitFenceBefore,after:__sent.filter(function(message){return message.cmd==='tradeCommit'}).length,state:NpcShop.debugState()}));
+  document.querySelector('[data-trade-back]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await waitForCondition(function(){return !NpcShop.debugState().settling},'write-fence settlement close');
+  var openFencePreviewBefore=__sent.filter(function(message){return message.cmd==='tradePreview'}).length;
+  document.querySelector('.npcshop-checkout-btn').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await wait();
+  ok('settlement entry independently refuses an Inventory-invalid selection',
+    !NpcShop.debugState().settling&&__sent.filter(function(message){return message.cmd==='tradePreview'}).length===openFencePreviewBefore,
+    JSON.stringify({before:openFencePreviewBefore,after:__sent.filter(function(message){return message.cmd==='tradePreview'}).length,state:NpcShop.debugState()}));
+  writeFenceRetry.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  await waitForCondition(function(){var inventory=NpcShop.debugState().inventory;return inventory.ready&&!inventory.refreshRequired&&!inventory.busyOwner},'write-fence recovery');
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();
+  var filteredRetryButton=document.querySelector('.npcshop-retry-btn');
+  var filteredFailureSnapshotStart=__sent.filter(function(message){return message.domain==='inventory'&&message.cmd==='snapshot'}).length;
+  window.__failNextFilteredInventory=true;filteredRetryButton.click();
+  await waitForCondition(function(){return NpcShop.debugState().inventory.refreshRequired},'filtered authority projection failure');
+  var filteredFailureRequests=__sent.filter(function(message){return message.domain==='inventory'&&message.cmd==='snapshot'}).slice(filteredFailureSnapshotStart).map(function(message){return message.payload.requests});
+  var filteredFailureState=NpcShop.debugState();
+  var filteredFailureFilterButton=document.querySelector('.npcshop-bag-view [data-filter-path]');
+  var filteredFailureStatus=document.querySelector('.npcshop-panel .workbench-status');
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();
+  var filteredFailureCheckout=document.querySelector('.npcshop-checkout-btn');
+  var filteredFailureCommits=__sent.filter(function(message){return message.cmd==='tradeCommit'}).length;
+  filteredFailureCheckout.click();await wait();
+  var filteredFailureChecks={requests:JSON.stringify(filteredFailureRequests)===JSON.stringify(filteredRetryExpected),
+    required:filteredFailureState.inventory.refreshRequired&&!filteredFailureState.inventory.ready,
+    receipt:filteredFailureState.inventorySurface===null,retry:getComputedStyle(filteredRetryButton).display!=='none',
+    status:!!filteredFailureStatus&&filteredFailureStatus.textContent==='库存需要重新同步',
+    filterLocked:!document.querySelector('.npcshop-bag-view [data-filter-path]:not(:disabled)'),
+    ownedLocked:!document.querySelector('.npcshop-owned-view [data-entity-actionable="true"]'),
+    checkout:filteredFailureCheckout.disabled,
+    writes:__sent.filter(function(message){return message.cmd==='tradeCommit'}).length===filteredFailureCommits};
+  ok('filtered visible projection failure exposes an actionable retry and blocks the next trade write',
+    filteredFailureChecks.requests&&filteredFailureChecks.required&&filteredFailureChecks.receipt
+      &&filteredFailureChecks.retry&&filteredFailureChecks.status&&filteredFailureChecks.filterLocked
+      &&filteredFailureChecks.ownedLocked&&filteredFailureChecks.checkout&&filteredFailureChecks.writes,
+    JSON.stringify({checks:filteredFailureChecks,requests:filteredFailureRequests,expected:filteredRetryExpected,
+      state:filteredFailureState,status:filteredFailureStatus&&filteredFailureStatus.textContent}));
+  var filteredRecoverySnapshotStart=__sent.filter(function(message){return message.domain==='inventory'&&message.cmd==='snapshot'}).length;
+  filteredRetryButton.click();
+  await waitForCondition(function(){var inventory=NpcShop.debugState().inventory;return inventory.ready&&!inventory.refreshRequired&&!inventory.busyOwner},'filtered authority projection recovery');
+  var filteredRecoveryRequests=__sent.filter(function(message){return message.domain==='inventory'&&message.cmd==='snapshot'}).slice(filteredRecoverySnapshotStart).map(function(message){return message.payload.requests});
+  var filteredRecoveryState=NpcShop.debugState();
+  var filteredRecoveryBag=filteredRecoveryState.inventory.requests.find(function(request){return request.containerId==='背包'});
+  var filteredRecoveryBattle=filteredRecoveryState.inventory.requests.find(function(request){return request.containerId==='战备箱'});
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();
+  var filteredRecoveryCheckout=document.querySelector('.npcshop-checkout-btn');
+  var filteredRecoveryChecks={requests:JSON.stringify(filteredRecoveryRequests)===JSON.stringify(filteredRetryExpected),
+    receipt:!!filteredRecoveryState.inventorySurface&&filteredRecoveryState.inventorySurface.responseCount===3,
+    filter:!!filteredRecoveryBag&&!!filteredRecoveryBag.filterSpec&&filteredRecoveryBag.filterSpec.major==='weapon'&&filteredRecoveryBag.filterSpec.use==='手枪',
+    page:!!filteredRecoveryBattle&&filteredRecoveryBattle.offset===40,
+    breadcrumb:!!document.querySelector('.npcshop-bag-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="weapon/手枪"][aria-current="page"]'),
+    checkout:!filteredRecoveryCheckout.disabled};
+  ok('visible retry redoes 3 physical + exact filtered projection and restores the preserved filter/page/receipt',
+    filteredRecoveryChecks.requests&&filteredRecoveryChecks.receipt&&filteredRecoveryChecks.filter
+      &&filteredRecoveryChecks.page&&filteredRecoveryChecks.breadcrumb&&filteredRecoveryChecks.checkout,
+    JSON.stringify({checks:filteredRecoveryChecks,requests:filteredRecoveryRequests,expected:filteredRetryExpected,state:filteredRecoveryState}));
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();
+  document.querySelector('.npcshop-bag-view [data-filter-breadcrumb-path=""]').click();await wait();
   ok('developer curated sections remain selectable without replacing automatic categories',document.querySelector('[data-category="combined:curated:weapons"]')&&document.querySelector('[data-category="combined:curated:supplies"]'));
   ok('curated default section remains supported',document.querySelector('[data-category="combined:curated:weapons"].active')&&document.querySelectorAll('.npcshop-catalog-card').length===3);
   document.querySelector('.npcshop-category-tabs [data-filter-path=""]').click();
@@ -670,16 +1130,16 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   window.__tradePreviewMaxOverride=null;
 
   // A response from the previous settlement epoch must not replace the new two-line order.
-  Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();
+  await reopenNpcShopReady();
   document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();window.__nextTradePreviewDelay=120;
+  await waitForCondition(function(){var button=document.querySelector('.npcshop-checkout-btn');return button&&!button.disabled},'NPC delayed checkout ready',1000);
   document.querySelector('.npcshop-checkout-btn').click();document.querySelector('[data-trade-back]').click();
   document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait(45);
   var newEpochHasTwoLines=document.querySelectorAll('[data-purchase-lines] .npcshop-settlement-line').length===2;await wait(120);
   ok('late preview from a closed settlement cannot pollute a reopened settlement checkpoint',newEpochHasTwoLines&&NpcShop.debugState().purchaseCount===2&&document.querySelectorAll('[data-purchase-lines] .npcshop-settlement-line').length===2);
 
   // Read failures restore the last accepted preview; they do not poison the write gate.
-  Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();
-  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+  await reopenPurchaseSettlement('.npcshop-catalog-card[data-catalog-index="0"]');
   quantityButton('[data-purchase-lines]','+5').click();await wait();
   window.__dropNextTradePreview=true;quantityButton('[data-purchase-lines]','+5').click();await wait(340);
   var timeoutQuantity=quantityInput('[data-purchase-lines]'),timeoutMinus=quantityButton('[data-purchase-lines]','−');
@@ -691,19 +1151,22 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('authority-invalid preview refreshes catalog instead of retaining divergent speculative intent',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===snapshotsBeforeAuthorityRefresh+1&&!NpcShop.debugState().settling&&NpcShop.debugState().purchaseCount===0);
   var authorityPreviewErrors=['invalid_quantity','insufficient_quantity','nothing_to_sell','sell_forbidden'];
   for(var authorityErrorIndex=0;authorityErrorIndex<authorityPreviewErrors.length;authorityErrorIndex++){
-    Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+    await reopenPurchaseSettlement('.npcshop-catalog-card');
     var authorityError=authorityPreviewErrors[authorityErrorIndex],authoritySnapshots=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
     window.__nextTradePreviewError=authorityError;quantityButton('[data-purchase-lines]','+').click();await wait();await wait();
     ok(authorityError+' preview refreshes authority instead of restoring a divergent checkpoint',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===authoritySnapshots+1&&!NpcShop.debugState().settling&&NpcShop.debugState().purchaseCount===0);
   }
 
-  Panels.close();Panels.open('npcshop',{shopId:'前治安官'});await wait();
-  document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
+  await reopenPurchaseSettlement('.npcshop-catalog-card');
+  var panelCloseInstance=NpcShop.debugState().panelInstanceId;
   var panelCloseBefore=__sent.filter(function(message){return message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'}).length;
   document.querySelector('[data-trade-close]').click();await wait();
+  var panelCloseMessages=__sent.filter(function(message){return message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'});
+  var exactNpcClose=panelCloseMessages[panelCloseMessages.length-1];
   ok('secondary Close ends the NPC panel while Back remains a local return',
     Panels.getActive()===null&&!document.querySelector('.npcshop-settlement-page.active')
-      &&__sent.filter(function(message){return message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'}).length===panelCloseBefore+1);
+      &&panelCloseMessages.length===panelCloseBefore+1&&exactNpcClose.panelInstanceId===panelCloseInstance
+      &&Object.keys(exactNpcClose).sort().join(',')==='cmd,panel,panelInstanceId,type');
 
   Panels.open('npcshop',{shopId:'前治安官'});await wait();
   document.querySelector('.npcshop-catalog-card').click();document.querySelector('.npcshop-checkout-btn').click();await wait();
@@ -712,7 +1175,9 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,cm
   ok('malformed write response reconciles by snapshot without replay',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===snapshotsBeforeMalformed+1&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===2);
   window.__qaResult={total:checks.length,passed:checks.filter(function(c){return c.ok}).length,checks:checks};window.__qaDone=true;
   document.getElementById('qa-output').textContent=JSON.stringify(__qaResult,null,2);
-})().catch(function(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError});
+})().catch(function(error){window.__qaError=error.stack||String(error);
+  window.__qaResult={total:checks.length,passed:checks.filter(function(c){return c.ok}).length,checks:checks};
+  window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError});
 </script>
 </body>
 </html>

@@ -223,7 +223,7 @@
         var self = this;
         if (slot.occupied) this._intent.bindTooltip(node, containerId, slot);
         var itemName = slot.occupied && slot.item
-            ? String(slot.item.displayName || slot.item.name || '未知物品') : '空槽';
+            ? String(slot.item.displayName || '未知物品') : '空槽';
         var reasonNode = ensureReasonNode(node);
         Workbench.EntityTile.bindActivation(node, {
             itemName:itemName, label:node.getAttribute('aria-label') || itemName,
@@ -376,8 +376,8 @@
                         var item = source.item.item || {};
                         var ghost = document.createElement('div');
                         ghost.className = 'workbench-drag-ghost inventory-drag-ghost';
-                        ghost.innerHTML = self._intent.iconHtml(item.icon || item.name, 'kshop-row-icon')
-                            + '<span>' + self._intent.escapeHtml(item.displayName || item.name || 'owned item') + '</span>';
+                        ghost.innerHTML = self._intent.iconHtml(item.icon || '', 'kshop-row-icon')
+                            + '<span>' + self._intent.escapeHtml(item.displayName || '未知物品') + '</span>';
                         return ghost;
                     },
                     onDragStart:function() { self._intent.setDragSuppressed(true); self._intent.hideTooltip(); },

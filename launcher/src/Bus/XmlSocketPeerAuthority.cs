@@ -108,6 +108,13 @@ namespace CF7Launcher.Bus
     internal sealed class ExactProcessXmlSocketPeerAuthority
         : IXmlSocketPeerAuthority
     {
+        // A freshly started Flash projector can exist and own a window before
+        // Windows/.NET can return MainModule consistently. Keep admission
+        // fail-closed, but absorb that short initialization race before giving
+        // up for the whole launch attempt.
+        internal const int ExpectedProcessCaptureAttemptLimit = 20;
+        private const int ExpectedProcessCaptureRetryDelayMs = 10;
+
         private readonly object _sync = new object();
         private readonly IXmlSocketOwnerProcessResolver
             _ownerResolver;
@@ -165,37 +172,62 @@ namespace CF7Launcher.Bus
                     "xml_socket_expected_process_unavailable";
                 return false;
             }
+
+            XmlSocketPeerProcessIdentity identity = null;
+            for (int attempt = 1;
+                 attempt <= ExpectedProcessCaptureAttemptLimit;
+                 attempt++)
+            {
+                if (TryCaptureExpectedProcess(
+                        process,
+                        out identity))
+                {
+                    SetExpected(identity);
+                    reasonCode = null;
+                    return true;
+                }
+                if (attempt < ExpectedProcessCaptureAttemptLimit)
+                {
+                    System.Threading.Thread.Sleep(
+                        ExpectedProcessCaptureRetryDelayMs);
+                }
+            }
+
+            reasonCode =
+                "xml_socket_expected_process_unavailable";
+            return false;
+        }
+
+        private bool TryCaptureExpectedProcess(
+            Process process,
+            out XmlSocketPeerProcessIdentity identity)
+        {
+            identity = null;
             if (!_expectedProcessProbe.TryCapture(
                     process,
-                    out XmlSocketPeerProcessIdentity identity)
-                || !IsValid(identity)
+                    out XmlSocketPeerProcessIdentity captured)
+                || !IsValid(captured)
                 || !_processProbe.TryCapture(
-                    identity.ProcessId,
+                    captured.ProcessId,
                     out XmlSocketPeerProcessIdentity liveIdentity)
-                || !SameIdentity(identity, liveIdentity))
+                || !SameIdentity(captured, liveIdentity))
             {
-                reasonCode =
-                    "xml_socket_expected_process_unavailable";
                 return false;
             }
             try
             {
                 if (process.HasExited
-                    || process.Id != identity.ProcessId)
+                    || process.Id != captured.ProcessId)
                 {
-                    reasonCode =
-                        "xml_socket_expected_process_unavailable";
                     return false;
                 }
             }
             catch
             {
-                reasonCode =
-                    "xml_socket_expected_process_unavailable";
                 return false;
             }
-            SetExpected(identity);
-            reasonCode = null;
+
+            identity = captured;
             return true;
         }
 
@@ -347,6 +379,7 @@ namespace CF7Launcher.Bus
                 when (exception is ArgumentException
                     || exception is InvalidOperationException
                     || exception is NotSupportedException
+                    || exception is NullReferenceException
                     || exception is Win32Exception)
             {
                 return false;
@@ -390,6 +423,7 @@ namespace CF7Launcher.Bus
                 when (exception is ArgumentException
                     || exception is InvalidOperationException
                     || exception is NotSupportedException
+                    || exception is NullReferenceException
                     || exception is Win32Exception)
             {
                 return false;

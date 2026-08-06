@@ -119,6 +119,32 @@
         });
     }
 
+    function escapeHtml(value) {
+        return String(value == null ? '' : value).replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function organizerTooltipBasic(item, workbench) {
+        item = item || {};
+        return '<div class="kshop-tt-header"><b>'
+            + escapeHtml(item.displayName || '未知物品')
+            + '</b></div>' + workbench.ItemCard.balanceTooltipMetaHtml(item);
+    }
+
+    function bindOwnedInspection(options) {
+        options = options || {};
+        var slot = options.slot;
+        if (!slot || !slot.occupied || !options.tooltip) return null;
+        return options.tooltip.bindAsyncHover(options.node, {
+            key:'loot-organizer:' + String(options.containerId) + ':'
+                + String(slot.slotLease || slot.physicalSlot),
+            item:slot.item || {},
+            renderBasic:function(item) {
+                return organizerTooltipBasic(item, options.workbench);
+            }
+        });
+    }
+
     function Presenter(options) {
         options = options || {};
         if (!options.document || !options.components || !options.inventoryUI
@@ -129,6 +155,9 @@
         this._components = options.components;
         this._inventoryUI = options.inventoryUI;
         this._workbench = options.workbench;
+        if (!options.tooltip || typeof options.tooltip.createScope !== 'function') {
+            throw new Error('Loot organizer requires PanelTooltip scope support');
+        }
         this._ports = {
             getWindow:requirePort(options,'getWindow'),
             getRequest:requirePort(options,'getRequest'),
@@ -144,6 +173,7 @@
             iconHtml:requirePort(options,'iconHtml'),
             toast:requirePort(options,'toast')
         };
+        this._tooltip = options.tooltip.createScope('loot-organizer');
         this._state = {};
         this._interaction = interactionForState(this._state);
         this.root = this._document.createElement('section');
@@ -237,6 +267,7 @@
     };
     Presenter.prototype._renderGrid = function(containerId) {
         var self = this, grid = this._grids[containerId];
+        this._tooltip.releaseTree(grid);
         while (grid.firstChild) grid.removeChild(grid.firstChild);
         var snapshot = this._ports.getWindow(containerId);
         var slots = snapshot && snapshot.slots ? snapshot.slots : [];
@@ -248,12 +279,17 @@
             if (slot.occupied) {
                 node.classList.add('npcshop-space-transferable','loot-organizer-transferable');
                 var action = containerId === '背包' ? '移入战备箱' : '移入背包';
-                node.setAttribute('aria-label',(node.getAttribute('aria-label') || '') + '，点击' + action);
+                node.setAttribute('aria-label',(node.getAttribute('aria-label') || '')
+                    + '，可查看物品说明，点击' + action);
+                bindOwnedInspection({
+                    tooltip:this._tooltip, node:node, containerId:containerId,
+                    slot:slot, workbench:this._workbench
+                });
                 (function(sourceContainer, sourceSlot, sourceNode) {
                     var reasonNode = ensureReasonNode(sourceNode);
                     self._workbench.EntityTile.bindActivation(sourceNode,{
                         itemName:String(sourceSlot.item
-                            && (sourceSlot.item.displayName || sourceSlot.item.name) || '未知物品'),
+                            && sourceSlot.item.displayName || '未知物品'),
                         label:sourceNode.getAttribute('aria-label') || '',
                         inspectable:function() { return self._interaction.inspectable; },
                         actionable:function() { return self._interaction.actionable; },
@@ -271,7 +307,7 @@
                 var discardButton = node.querySelector('.inventory-discard-btn');
                 if (discardButton) {
                     this._workbench.EntityTile.labelAction(discardButton,
-                        String(slot.item && (slot.item.displayName || slot.item.name) || '未知物品'),
+                        String(slot.item && slot.item.displayName || '未知物品'),
                         '丢弃整槽');
                     (function(discardSlot, button) {
                         button.addEventListener('click',function(event) {
@@ -332,6 +368,7 @@
         };
     };
     Presenter.prototype.destroy = function() {
+        if (this._tooltip) { this._tooltip.dispose(); this._tooltip = null; }
         this.pager.detach();
         this.transferPane.destroy();
         this.secondary.destroy();
@@ -343,6 +380,8 @@
         Presenter:Presenter,
         statusText:statusText,
         interactionForState:interactionForState,
+        organizerTooltipBasic:organizerTooltipBasic,
+        bindOwnedInspection:bindOwnedInspection,
         opaque:opaque
     };
 });

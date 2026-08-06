@@ -1,0 +1,10 @@
+﻿trace("FocusedTestRunId item-panels-shared Start: __FOCUSED_RUN_ID__");
+// 与默认 All suite 使用完全相同的生产 leaf 初始化；Shared 只缩减测试调用，
+// 不缩减被测运行时闭包。
+_root.preloaders = _root.preloaders || [];
+_root.loaders = _root.loaders || [];
+#include "逻辑系统分区/商店系统_兼容.as"
+
+org.flashNight.arki.item.itemCollection.EquipmentInventoryTest.runAllTests();
+org.flashNight.arki.item.InventoryPanelServiceTest.runAllTests();
+trace("FocusedTestRunId item-panels-shared Complete: __FOCUSED_RUN_ID__");

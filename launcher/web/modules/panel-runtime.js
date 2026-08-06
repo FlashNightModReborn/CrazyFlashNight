@@ -182,7 +182,19 @@
         if (!entry) return false;
         this._clearTimer(entry.timer);
         delete this._pending[entry.callId];
-        if (this._pendingByKind[entry.kind] === entry.callId) delete this._pendingByKind[entry.kind];
+        if (this._pendingByKind[entry.kind] === entry.callId) {
+            delete this._pendingByKind[entry.kind];
+            var replacement = null;
+            for (var callId in this._pending) {
+                if (!Object.prototype.hasOwnProperty.call(this._pending, callId)
+                        || this._pending[callId].kind !== entry.kind) continue;
+                if (!replacement
+                        || this._pending[callId].issueOrdinal > replacement.issueOrdinal) {
+                    replacement = this._pending[callId];
+                }
+            }
+            if (replacement) this._pendingByKind[entry.kind] = replacement.callId;
+        }
         return true;
     };
 

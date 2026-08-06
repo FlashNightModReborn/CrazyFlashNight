@@ -9,13 +9,14 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const PLAYWRIGHT = path.join(ROOT, 'launcher', 'perf', 'node_modules', 'playwright');
 const { startServer, stopServer } = require(path.join(ROOT, 'launcher', 'perf', 'lib', 'server'));
-const OUTPUT_ROOT = path.join(ROOT, 'tmp', 'crafting-product-review');
-const CANDIDATE_ROOT = path.join(OUTPUT_ROOT, 'candidates');
-const ICON_256_ROOT = path.join(OUTPUT_ROOT, 'icons-256');
-const ICON_WORK_ROOT = path.join(OUTPUT_ROOT, 'icon-work');
-const ICON_REPORT = path.join(OUTPUT_ROOT, 'icon-bake-report.json');
-const REVIEW_DATA = path.join(OUTPUT_ROOT, 'review-data.json');
-const BUILD_REPORT = path.join(OUTPUT_ROOT, 'build-report.json');
+const DEFAULT_OUTPUT_ROOT = path.join(ROOT, 'tmp', 'crafting-product-review');
+let OUTPUT_ROOT = DEFAULT_OUTPUT_ROOT;
+let CANDIDATE_ROOT = path.join(OUTPUT_ROOT, 'candidates');
+let ICON_256_ROOT = path.join(OUTPUT_ROOT, 'icons-256');
+let ICON_WORK_ROOT = path.join(OUTPUT_ROOT, 'icon-work');
+let ICON_REPORT = path.join(OUTPUT_ROOT, 'icon-bake-report.json');
+let REVIEW_DATA = path.join(OUTPUT_ROOT, 'review-data.json');
+let BUILD_REPORT = path.join(OUTPUT_ROOT, 'build-report.json');
 
 const WEAPON_USES = new Set(['刀', '长枪', '手枪']);
 const ARMOR_USES = new Set(['头部装备', '上装装备', '下装装备', '手部装备', '脚部装备', '颈部装备']);
@@ -32,27 +33,95 @@ function parseArgs(argv) {
         sample: false,
         limit: 0,
         skipIconBake: false,
-        browser: 'edge'
+        browser: 'edge',
+        outputRoot: '',
+        cleanupOutputRoot: '',
+        buildOptionSeen: false
     };
     for (let index = 0; index < argv.length; index += 1) {
         const arg = argv[index];
-        if (arg === '--sample') result.sample = true;
-        else if (arg === '--skip-icon-bake') result.skipIconBake = true;
+        if (arg === '--sample') {
+            result.sample = true;
+            result.buildOptionSeen = true;
+        } else if (arg === '--skip-icon-bake') {
+            result.skipIconBake = true;
+            result.buildOptionSeen = true;
+        }
         else if (arg === '--limit') {
             result.limit = Number(argv[index + 1] || 0);
+            result.buildOptionSeen = true;
             index += 1;
         } else if (arg === '--browser') {
             result.browser = argv[index + 1] || 'edge';
+            result.buildOptionSeen = true;
+            index += 1;
+        } else if (arg === '--output-root') {
+            result.outputRoot = argv[index + 1] || '';
+            result.buildOptionSeen = true;
+            index += 1;
+        } else if (arg === '--cleanup-output-root') {
+            if (result.cleanupOutputRoot) throw new Error('--cleanup-output-root may appear only once');
+            result.cleanupOutputRoot = argv[index + 1] || '';
             index += 1;
         } else if (arg === '--help' || arg === '-h') {
-            console.log('usage: node tools/build-crafting-product-review.js [--sample] [--limit N] [--skip-icon-bake] [--browser edge|chrome]');
+            console.log('usage: node tools/build-crafting-product-review.js [--sample] [--limit N] [--skip-icon-bake] [--browser edge|chrome] [--output-root tmp/<unique-dir>]');
+            console.log('       node tools/build-crafting-product-review.js --cleanup-output-root tmp/identity-triple-gate/crafting-product-review-<unique>');
             process.exit(0);
         } else {
             throw new Error('unknown argument: ' + arg);
         }
     }
     if (!Number.isFinite(result.limit) || result.limit < 0) throw new Error('--limit must be a non-negative integer');
+    if (process.argv.includes('--output-root') && !result.outputRoot) throw new Error('--output-root requires a path');
+    if (process.argv.includes('--cleanup-output-root') && !result.cleanupOutputRoot) {
+        throw new Error('--cleanup-output-root requires a path');
+    }
+    if (result.cleanupOutputRoot && result.buildOptionSeen) {
+        throw new Error('--cleanup-output-root is an isolated mode and cannot be combined with build options');
+    }
+    delete result.buildOptionSeen;
     return result;
+}
+
+function configureOutputRoot(requestedRoot) {
+    const resolved = requestedRoot ? path.resolve(ROOT, requestedRoot) : DEFAULT_OUTPUT_ROOT;
+    const tmpRoot = path.join(ROOT, 'tmp');
+    const relative = path.relative(tmpRoot, resolved);
+    if (!relative || relative.startsWith('..' + path.sep) || path.isAbsolute(relative)) {
+        throw new Error('--output-root must name a child directory under tmp/');
+    }
+    OUTPUT_ROOT = resolved;
+    CANDIDATE_ROOT = path.join(OUTPUT_ROOT, 'candidates');
+    ICON_256_ROOT = path.join(OUTPUT_ROOT, 'icons-256');
+    ICON_WORK_ROOT = path.join(OUTPUT_ROOT, 'icon-work');
+    ICON_REPORT = path.join(OUTPUT_ROOT, 'icon-bake-report.json');
+    REVIEW_DATA = path.join(OUTPUT_ROOT, 'review-data.json');
+    BUILD_REPORT = path.join(OUTPUT_ROOT, 'build-report.json');
+}
+
+function cleanupIsolatedOutputRoot(requestedRoot) {
+    const resolved = path.resolve(ROOT, requestedRoot);
+    const gateRoot = path.join(ROOT, 'tmp', 'identity-triple-gate');
+    const relative = path.relative(gateRoot, resolved);
+    if (!relative || relative.startsWith('..' + path.sep) || path.isAbsolute(relative)
+            || !path.basename(resolved).startsWith('crafting-product-review-')) {
+        throw new Error('--cleanup-output-root must name a unique Crafting review child under tmp/identity-triple-gate/');
+    }
+    if (!fs.existsSync(resolved)) {
+        throw new Error('--cleanup-output-root target does not exist: ' + slash(path.relative(ROOT, resolved)));
+    }
+    const stat = fs.lstatSync(resolved);
+    if (stat.isSymbolicLink() || !stat.isDirectory()) {
+        throw new Error('--cleanup-output-root refuses symlinks and non-directories');
+    }
+    fs.rmSync(path.toNamespacedPath(resolved), {
+        recursive: true,
+        force: false,
+        maxRetries: 3,
+        retryDelay: 100
+    });
+    if (fs.existsSync(resolved)) throw new Error('--cleanup-output-root failed to remove the exact target');
+    console.log('[product-review] removed isolated output: ' + slash(path.relative(ROOT, resolved)));
 }
 
 function readJson(filePath) {
@@ -447,6 +516,11 @@ async function buildItemCandidates(page, serverUrl, item, iconManifest, icon256M
 
 async function main() {
     const args = parseArgs(process.argv.slice(2));
+    if (args.cleanupOutputRoot) {
+        cleanupIsolatedOutputRoot(args.cleanupOutputRoot);
+        return;
+    }
+    configureOutputRoot(args.outputRoot);
     if (!fs.existsSync(PLAYWRIGHT)) throw new Error('missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');
     fs.mkdirSync(OUTPUT_ROOT, { recursive: true });
     fs.mkdirSync(CANDIDATE_ROOT, { recursive: true });

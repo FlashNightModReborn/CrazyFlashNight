@@ -116,6 +116,9 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         addMeta("K点", "消耗品", "货币");
         addMeta("经验值", "消耗品", "货币");
         addMeta("技能点", "消耗品", "货币");
+        addMeta(MOD, "收集品", "材料");
+        ItemUtil.itemDataDict[MOD].displayname = "装备箱插件显示名";
+        ItemUtil.itemDataDict[MOD].icon = "装备箱插件图标名";
         ItemUtil.equipmentDict[EQUIPMENT] = true;
         ItemUtil.materialDict[MATERIAL] = true;
         ItemUtil.informationMaxValueDict[INFORMATION] = 5;
@@ -773,8 +776,11 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && equipmentProjection.itemKind == "equipment"
                 && equipmentProjection.enhancementLevel == 4
                 && equipmentProjection.tierSlotUsed
-                && equipmentProjection.modSlotUsed == 1,
-            "snapshot 同时投影 loot/背包 lease，并保留装备 level/tier/mods 描述");
+                && equipmentProjection.modSlotUsed == 1
+                && equipmentProjection.modSlots[0].name == MOD
+                && equipmentProjection.modSlots[0].displayName == "装备箱插件显示名"
+                && equipmentProjection.modSlots[0].icon == "装备箱插件图标名",
+            "snapshot 同时投影 loot/背包 lease、装备描述与插件三元身份");
 
         var equipmentClaim:Object = LootContainerService.execute(
             "claim", claimParams(first, 1, "claim.equipment"));

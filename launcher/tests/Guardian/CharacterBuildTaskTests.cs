@@ -1234,10 +1234,11 @@ namespace CF7Launcher.Tests.Guardian
 
         [Theory]
         [InlineData("candidates", "characterBuildCandidates")]
+        [InlineData("tooltip", "characterBuildTooltip")]
         [InlineData("flushLive", "characterBuildFlushLive")]
         [InlineData("statsSnapshot", "characterBuildStatsSnapshot")]
         [InlineData("finalize", "characterBuildFinalize")]
-        public void ProductionWhitelistMapsToFiveFixedFlashActions(
+        public void ProductionWhitelistMapsToFixedFlashActions(
             string command,
             string expectedAction)
         {
@@ -1258,6 +1259,259 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Equal(Generation, flash.Value<long>("sessionGeneration"));
                 Assert.Equal(Panel, flash.Value<string>("panelInstanceId"));
                 Assert.False(flash.ContainsKey("payload"));
+            }
+        }
+
+        [Fact]
+        public void TooltipIngressForwardsExactEquipmentAndDrugSelectors()
+        {
+            using (var equipment = OpenProductionHarness())
+            {
+                equipment.Flash.Clear();
+                equipment.Web.Clear();
+                equipment.Task.HandleWebRequest(
+                    "tooltip",
+                    WebRequest(
+                        "tooltip",
+                        "prod.tooltip.equipment",
+                        ProductionPayload("tooltip")));
+                JObject flash = Assert.Single(equipment.Flash);
+                AssertExactKeys(
+                    flash,
+                    "task", "action", "callId", "v", "panelInstanceId",
+                    "requestCallId", "writeEpoch", "sessionGeneration",
+                    "expectedLoadoutRevision", "expectedDrugRevision", "slotKey");
+                Assert.Equal(
+                    "characterBuildTooltip", flash.Value<string>("action"));
+                Assert.Equal(3, flash.Value<long>("expectedLoadoutRevision"));
+                Assert.Equal(
+                    InitialDrugRevision,
+                    flash.Value<long>("expectedDrugRevision"));
+                Assert.Equal("手枪2", flash.Value<string>("slotKey"));
+                Assert.Null(flash["drugSlot"]);
+            }
+
+            using (var drug = OpenProductionHarness())
+            {
+                drug.Flash.Clear();
+                drug.Web.Clear();
+                JObject payload = ProductionPayload("tooltip");
+                payload.Remove("slotKey");
+                payload["drugSlot"] = 2;
+                drug.Task.HandleWebRequest(
+                    "tooltip",
+                    WebRequest("tooltip", "prod.tooltip.drug", payload));
+                JObject flash = Assert.Single(drug.Flash);
+                AssertExactKeys(
+                    flash,
+                    "task", "action", "callId", "v", "panelInstanceId",
+                    "requestCallId", "writeEpoch", "sessionGeneration",
+                    "expectedLoadoutRevision", "expectedDrugRevision", "drugSlot");
+                Assert.Equal(2, flash.Value<int>("drugSlot"));
+                Assert.Null(flash["slotKey"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("missing_selector")]
+        [InlineData("both_selectors")]
+        [InlineData("extra_key")]
+        [InlineData("invalid_equipment_slot")]
+        [InlineData("invalid_drug_slot")]
+        [InlineData("missing_drug_revision")]
+        public void TooltipIngressRejectsNonExactPayloads(string mutation)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject payload = ProductionPayload("tooltip");
+                switch (mutation)
+                {
+                    case "missing_selector":
+                        payload.Remove("slotKey");
+                        break;
+                    case "both_selectors":
+                        payload["drugSlot"] = 1;
+                        break;
+                    case "extra_key":
+                        payload["candidateScope"] = "compatible";
+                        break;
+                    case "invalid_equipment_slot":
+                        payload["slotKey"] = "不存在的槽位";
+                        break;
+                    case "invalid_drug_slot":
+                        payload.Remove("slotKey");
+                        payload["drugSlot"] = 4;
+                        break;
+                    case "missing_drug_revision":
+                        payload.Remove("expectedDrugRevision");
+                        break;
+                }
+                harness.Task.HandleWebRequest(
+                    "tooltip",
+                    WebRequest(
+                        "tooltip",
+                        "prod.tooltip.invalid." + mutation,
+                        payload));
+                Assert.Empty(harness.Flash);
+                Assert.Equal(
+                    "invalid_payload",
+                    Assert.Single(harness.Web).Value<string>("error"));
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void TooltipSuccessRequiresExactTargetAndRichProjection(bool drug)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("tooltip");
+                if (drug)
+                {
+                    request.Remove("slotKey");
+                    request["drugSlot"] = 2;
+                }
+                harness.Task.HandleWebRequest(
+                    "tooltip",
+                    WebRequest(
+                        "tooltip",
+                        drug ? "prod.tooltip.success.drug"
+                            : "prod.tooltip.success.equipment",
+                        request));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "tooltip",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.True(web.Value<bool>("success"));
+                JObject projection = Assert.IsType<JObject>(web["payload"]);
+                AssertExactKeys(
+                    projection,
+                    "v", "target", "itemName", "displayName", "iconName",
+                    "itemType", "descHTML", "introHTML");
+                Assert.Equal("权威简介", projection.Value<string>("introHTML"));
+                Assert.Equal("权威说明", projection.Value<string>("descHTML"));
+                JObject target = Assert.IsType<JObject>(projection["target"]);
+                Assert.Equal(drug ? "drug" : "equipment",
+                    target.Value<string>("kind"));
+                if (drug) Assert.Equal(2, target.Value<int>("drugSlot"));
+                else Assert.Equal("手枪2", target.Value<string>("slotKey"));
+                Assert.Equal("idle", harness.Task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData("payload_extra")]
+        [InlineData("target_mismatch")]
+        [InlineData("target_extra")]
+        [InlineData("missing_field")]
+        [InlineData("oversized_html")]
+        [InlineData("both_html_empty")]
+        [InlineData("legacy_displayname")]
+        [InlineData("undefined_identity")]
+        [InlineData("revision_mismatch")]
+        public void TooltipResponseRejectsMalformedOrStaleProjection(string mutation)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                harness.Task.HandleWebRequest(
+                    "tooltip",
+                    WebRequest(
+                        "tooltip",
+                        "prod.tooltip.malformed." + mutation,
+                        ProductionPayload("tooltip")));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "tooltip",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                JObject payload = Assert.IsType<JObject>(response["payload"]);
+                switch (mutation)
+                {
+                    case "payload_extra":
+                        payload["success"] = true;
+                        break;
+                    case "target_mismatch":
+                        payload["target"] = new JObject
+                        {
+                            ["kind"] = "drug",
+                            ["drugSlot"] = 1
+                        };
+                        break;
+                    case "target_extra":
+                        payload["target"]["extra"] = true;
+                        break;
+                    case "missing_field":
+                        payload.Remove("introHTML");
+                        break;
+                    case "oversized_html":
+                        payload["descHTML"] = new string('x', 131073);
+                        break;
+                    case "both_html_empty":
+                        payload["descHTML"] = "";
+                        payload["introHTML"] = "";
+                        break;
+                    case "legacy_displayname":
+                        payload["displayname"] = payload["displayName"];
+                        payload.Remove("displayName");
+                        break;
+                    case "undefined_identity":
+                        payload["iconName"] = " Undefined ";
+                        break;
+                    case "revision_mismatch":
+                        response["loadoutRevision"] = 4;
+                        response["liveRefreshDirty"] = true;
+                        break;
+                }
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.Equal(
+                    "malformed_response", web.Value<string>("error"));
+                Assert.False(web.Value<bool?>("requiresReconcile") == true);
+                Assert.Null(web["reconcileAfterCallId"]);
+                Assert.Equal("idle", harness.Task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void TooltipTimeoutDoesNotRequireReconcile()
+        {
+            using (var harness = OpenProductionHarness(20))
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                harness.Task.HandleWebRequest(
+                    "tooltip",
+                    WebRequest(
+                        "tooltip",
+                        "prod.tooltip.timeout",
+                        ProductionPayload("tooltip")));
+                Assert.True(SpinWait.SpinUntil(
+                    () => harness.Web.Count == 1,
+                    2000));
+                JObject web = Assert.Single(harness.Web);
+                Assert.Equal("timeout", web.Value<string>("error"));
+                Assert.False(web.Value<bool?>("requiresReconcile") == true);
+                Assert.Null(web["reconcileAfterCallId"]);
+                Assert.Equal("idle", harness.Task.WriteState);
+                Assert.Null(harness.Task.ReconcileAfterCallId);
             }
         }
 
@@ -1331,6 +1585,217 @@ namespace CF7Launcher.Tests.Guardian
                             "cooldown_active")));
                 Assert.True(web.Value<bool>("success"));
             }
+
+            using (var backpack = OpenProductionHarness())
+            {
+                JObject request = ProductionPayload("candidates");
+                request["candidateScope"] = "backpack";
+                JObject web = CompleteCandidateResponse(
+                    backpack,
+                    request,
+                    new JObject
+                    {
+                        ["kind"] = "equipment",
+                        ["slotKey"] = "手枪2"
+                    },
+                    new JArray(
+                        CandidateRow(
+                            2,
+                            CandidateItem("手枪", "equipment", 1),
+                            false,
+                            "",
+                            new JArray("手枪", "手枪2"),
+                            ""),
+                        CandidateRow(
+                            3,
+                            CandidateItem("刀", "equipment", 1),
+                            true,
+                            "incompatible_item",
+                            new JArray("刀"),
+                            ""),
+                        CandidateRow(
+                            4,
+                            CandidateItem("药剂", "stack", 2),
+                            true,
+                            "incompatible_item",
+                            new JArray(),
+                            ""),
+                        CandidateRow(
+                            5,
+                            CandidateItem("手雷", "stack", 1.5),
+                            true,
+                            "incompatible_item",
+                            new JArray("手雷"),
+                            "")));
+                Assert.True(web.Value<bool>("success"));
+                Assert.Equal(
+                    "backpack",
+                    web["payload"].Value<string>("candidateScope"));
+            }
+        }
+
+        [Theory]
+        [InlineData("scope_mismatch")]
+        [InlineData("enabled_incompatible")]
+        [InlineData("compatible_misreported")]
+        public void BackpackCandidateProjectionRejectsScopeOrCompatibilityMismatch(
+            string mutation)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("candidates");
+                request["candidateScope"] = "backpack";
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.candidates.backpack.invalid." + mutation,
+                        request));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "candidates",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                JObject payload = (JObject)response["payload"];
+                if (mutation == "scope_mismatch")
+                {
+                    payload["candidateScope"] = "compatible";
+                }
+                else if (mutation == "enabled_incompatible")
+                {
+                    payload["candidates"] = new JArray(
+                        CandidateRow(
+                            3,
+                            CandidateItem("刀", "equipment", 1),
+                            false,
+                            "",
+                            new JArray("刀"),
+                            ""));
+                }
+                else
+                {
+                    payload["candidates"] = new JArray(
+                        CandidateRow(
+                            2,
+                            CandidateItem("手枪", "equipment", 1),
+                            true,
+                            "incompatible_item",
+                            new JArray("手枪", "手枪2"),
+                            ""));
+                }
+                harness.Task.HandleFlashResponse(response, null);
+                Assert.Equal(
+                    "malformed_response",
+                    Assert.Single(harness.Web).Value<string>("error"));
+            }
+        }
+
+        [Theory]
+        [InlineData("missing")]
+        [InlineData("unknown_slot")]
+        [InlineData("duplicate_slot")]
+        [InlineData("wrong_order")]
+        [InlineData("wrong_reason")]
+        [InlineData("null_reason")]
+        [InlineData("numeric_reason")]
+        [InlineData("bad_declared_equipment_shape")]
+        [InlineData("unknown_equipment_use")]
+        [InlineData("empty_slots_level_locked")]
+        [InlineData("omitted_alias")]
+        [InlineData("target_state_mismatch")]
+        public void UniversalEquipmentBackpackEligibilityFailsClosed(string mutation)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("candidates");
+                request["candidateScope"] = "backpack";
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.candidates.eligibility.invalid." + mutation,
+                        request));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "candidates",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                JObject row = CandidateRow(
+                    2,
+                    CandidateItem("手枪", "equipment", 1),
+                    false,
+                    "",
+                    new JArray("手枪", "手枪2"),
+                    "");
+                JObject eligibility = (JObject)row["equipmentEligibility"];
+                JArray slots = (JArray)eligibility["slots"];
+                switch (mutation)
+                {
+                    case "missing":
+                        row.Remove("equipmentEligibility");
+                        break;
+                    case "unknown_slot":
+                        slots[1] = "未知槽位";
+                        break;
+                    case "duplicate_slot":
+                        slots[1] = "手枪";
+                        break;
+                    case "wrong_order":
+                        slots[0] = "手枪2";
+                        slots[1] = "手枪";
+                        break;
+                    case "wrong_reason":
+                        eligibility["blockedReason"] = "cooldown_active";
+                        break;
+                    case "null_reason":
+                        eligibility["blockedReason"] = JValue.CreateNull();
+                        break;
+                    case "numeric_reason":
+                        eligibility["blockedReason"] = 7;
+                        break;
+                    case "bad_declared_equipment_shape":
+                        row["item"] = CandidateItem("手枪", "stack", 2);
+                        eligibility["slots"] = new JArray();
+                        row["disabled"] = true;
+                        row["blockedReason"] = "incompatible_item";
+                        break;
+                    case "unknown_equipment_use":
+                        row["item"] = CandidateItem("未知用途", "equipment", 1);
+                        eligibility["slots"] = new JArray();
+                        row["disabled"] = true;
+                        row["blockedReason"] = "incompatible_item";
+                        break;
+                    case "empty_slots_level_locked":
+                        row["item"] = CandidateItem("药剂", "stack", 2);
+                        eligibility["slots"] = new JArray();
+                        eligibility["blockedReason"] = "level_locked";
+                        row["disabled"] = true;
+                        row["blockedReason"] = "incompatible_item";
+                        break;
+                    case "omitted_alias":
+                        eligibility["slots"] = new JArray("手枪");
+                        break;
+                    case "target_state_mismatch":
+                        row["disabled"] = true;
+                        row["blockedReason"] = "level_locked";
+                        break;
+                }
+                response["payload"]["candidates"] = new JArray(row);
+                harness.Task.HandleFlashResponse(response, null);
+                Assert.Equal(
+                    "malformed_response",
+                    Assert.Single(harness.Web).Value<string>("error"));
+            }
         }
 
         [Theory]
@@ -1354,6 +1819,11 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("wrong_quantity")]
         [InlineData("item_extra")]
         [InlineData("item_nan")]
+        [InlineData("item_name_undefined")]
+        [InlineData("item_display_blank")]
+        [InlineData("item_icon_undefined")]
+        [InlineData("mod_slot_display_undefined")]
+        [InlineData("mod_meta_icon_blank")]
         [InlineData("health_mismatch")]
         public void CandidateProjectionRejectsMalformedOrInconsistentRows(
             string mutation)
@@ -1457,6 +1927,25 @@ namespace CF7Launcher.Tests.Guardian
                         break;
                     case "item_nan":
                         row["item"]["quantity"] = double.NaN;
+                        break;
+                    case "item_name_undefined":
+                        row["item"]["name"] = " Undefined ";
+                        break;
+                    case "item_display_blank":
+                        row["item"]["displayName"] = "   ";
+                        break;
+                    case "item_icon_undefined":
+                        row["item"]["icon"] = "uNdEfInEd";
+                        break;
+                    case "mod_slot_display_undefined":
+                        row["item"]["modSlots"] = new JArray(ModProjection(
+                            "插件内部名", " Undefined ", "插件图标"));
+                        row["item"]["modSlotCapacity"] = 1;
+                        row["item"]["modSlotUsed"] = 1;
+                        break;
+                    case "mod_meta_icon_blank":
+                        row["item"]["modMeta"] = ModProjection(
+                            "插件内部名", "插件展示名", "   ");
                         break;
                     case "health_mismatch":
                         payload["diagnostics"] = new JArray("candidate_invalid");
@@ -4159,6 +4648,7 @@ namespace CF7Launcher.Tests.Guardian
             using (var harness = OpenProductionHarness())
             {
                 JObject request = ProductionPayload("candidates");
+                request["candidateScope"] = "backpack";
                 JObject item = CandidateItem("手枪", "equipment", 1);
                 JObject web = CompleteCandidateResponse(
                     harness,
@@ -4169,12 +4659,23 @@ namespace CF7Launcher.Tests.Guardian
                         ["slotKey"] = "手枪2"
                     },
                     new JArray(
-                        CandidateRow(2, item, false, ""),
+                        CandidateRow(
+                            2, item, false, "",
+                            new JArray("手枪", "手枪2"), ""),
                         CandidateRow(
                             4,
                             (JObject)item.DeepClone(),
                             true,
-                            "level_locked")));
+                            "level_locked",
+                            new JArray("手枪", "手枪2"),
+                            "level_locked"),
+                        CandidateRow(
+                            6,
+                            CandidateItem("刀", "equipment", 1),
+                            true,
+                            "incompatible_item",
+                            new JArray("刀"),
+                            "")));
 
                 JObject allowed = (JObject)web["payload"]["candidates"][1]["source"];
                 JObject normalized;
@@ -4183,6 +4684,18 @@ namespace CF7Launcher.Tests.Guardian
                     Panel, Generation, allowed, out normalized, out fence));
                 Assert.Equal(4, normalized.Value<int>("slot"));
                 Assert.True(fence());
+                Func<bool> allowedFence = fence;
+
+                JObject crossSlot =
+                    (JObject)web["payload"]["candidates"][2]["source"];
+                Assert.True(harness.Task.TryCaptureCandidateTooltipFence(
+                    Panel,
+                    Generation,
+                    crossSlot,
+                    out JObject crossSlotNormalized,
+                    out Func<bool> crossSlotFence));
+                Assert.Equal(6, crossSlotNormalized.Value<int>("slot"));
+                Assert.True(crossSlotFence());
 
                 JObject forged = (JObject)allowed.DeepClone();
                 forged["expectedLease"] = "inv.candidate.forged";
@@ -4200,6 +4713,17 @@ namespace CF7Launcher.Tests.Guardian
                     allowed,
                     out normalized,
                     out fence));
+
+                JObject secondRequest = ProductionPayload("candidates");
+                secondRequest["candidateScope"] = "backpack";
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.tooltip.second-candidates.invalidate",
+                        secondRequest));
+                Assert.False(allowedFence());
+                Assert.False(crossSlotFence());
             }
         }
 
@@ -4329,6 +4853,17 @@ namespace CF7Launcher.Tests.Guardian
 
         private static JObject ProductionPayload(string command)
         {
+            if (command == "tooltip")
+            {
+                return new JObject
+                {
+                    ["v"] = 1,
+                    ["sessionGeneration"] = Generation,
+                    ["expectedLoadoutRevision"] = 3,
+                    ["expectedDrugRevision"] = InitialDrugRevision,
+                    ["slotKey"] = "手枪2"
+                };
+            }
             if (command == "candidates")
             {
                 return new JObject
@@ -4337,6 +4872,7 @@ namespace CF7Launcher.Tests.Guardian
                     ["sessionGeneration"] = Generation,
                     ["expectedLoadoutRevision"] = 3,
                     ["expectedDrugRevision"] = InitialDrugRevision,
+                    ["candidateScope"] = "compatible",
                     ["slotKey"] = "手枪2"
                 };
             }
@@ -4777,13 +5313,35 @@ namespace CF7Launcher.Tests.Guardian
             };
         }
 
+        private static JObject ModProjection(
+            string name,
+            string displayName,
+            string icon)
+        {
+            return new JObject
+            {
+                ["name"] = name,
+                ["displayName"] = displayName,
+                ["icon"] = icon,
+                ["grade"] = "common",
+                ["gradeLabel"] = "普通",
+                ["gradeColor"] = "#FFFFFF",
+                ["role"] = "utility",
+                ["roleLabel"] = "功能",
+                ["symbol"] = "diamond-outline",
+                ["scope"] = "all"
+            };
+        }
+
         private static JObject CandidateRow(
             int physicalSlot,
             JObject item,
             bool disabled,
-            string blockedReason)
+            string blockedReason,
+            JArray equipmentSlots = null,
+            string equipmentBlockedReason = null)
         {
-            return new JObject
+            var row = new JObject
             {
                 ["physicalSlot"] = physicalSlot,
                 ["disabled"] = disabled,
@@ -4796,6 +5354,15 @@ namespace CF7Launcher.Tests.Guardian
                     ["expectedLease"] = "inv.candidate." + physicalSlot
                 }
             };
+            if (equipmentSlots != null)
+            {
+                row["equipmentEligibility"] = new JObject
+                {
+                    ["slots"] = equipmentSlots,
+                    ["blockedReason"] = equipmentBlockedReason ?? ""
+                };
+            }
+            return row;
         }
 
         private static JObject CompleteCandidateResponse(
@@ -4867,10 +5434,42 @@ namespace CF7Launcher.Tests.Guardian
                         ["kind"] = "equipment",
                         ["slotKey"] = "手枪2"
                     },
+                    ["candidateScope"] = flash.Value<string>("candidateScope"),
                     ["candidates"] = new JArray(),
                     ["backpackVersion"] = 5,
                     ["stateHealth"] = "ok",
                     ["diagnostics"] = new JArray()
+                };
+            }
+            else if (command == "tooltip")
+            {
+                JObject target;
+                if (flash["slotKey"] != null)
+                {
+                    target = new JObject
+                    {
+                        ["kind"] = "equipment",
+                        ["slotKey"] = flash.Value<string>("slotKey")
+                    };
+                }
+                else
+                {
+                    target = new JObject
+                    {
+                        ["kind"] = "drug",
+                        ["drugSlot"] = flash.Value<int>("drugSlot")
+                    };
+                }
+                result["payload"] = new JObject
+                {
+                    ["v"] = 1,
+                    ["target"] = target,
+                    ["itemName"] = "权威内部名",
+                    ["displayName"] = "权威展示名",
+                    ["iconName"] = "权威图标名",
+                    ["itemType"] = "武器",
+                    ["descHTML"] = "权威说明",
+                    ["introHTML"] = "权威简介"
                 };
             }
             else if (command == "statsSnapshot")

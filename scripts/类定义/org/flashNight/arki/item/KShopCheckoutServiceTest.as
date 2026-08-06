@@ -13,6 +13,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
     public static function runAllTests():Void {
         setup();
         testCatalogProjection();
+        testIdentityTripleProjection();
+        testLegacyIdentityFallbackBoundary();
         testDirectDelivery();
         testExactBalance();
         testLargeStackQuantity();
@@ -36,6 +38,10 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         itemDict["强化石"] = itemData("强化石", "收集品", "材料", 200);
         itemDict["测试手枪"] = itemData("测试手枪", "武器", "手枪", 1000);
         itemDict["测试情报"] = itemData("测试情报", "收集品", "情报", 100);
+        itemDict["药剂"].displayname = "战地恢复剂";
+        itemDict["药剂"].icon = "恢复剂专用图标";
+        itemDict["测试手枪"].displayname = "训练用短铳";
+        itemDict["测试手枪"].icon = "训练短铳专用图标";
         itemDict["测试手枪"].weapontype = "手枪";
         itemDict["测试手枪"].setId = "test_sidearm";
         itemDict["测试手枪"].setName = "测试侧武器套装";
@@ -71,7 +77,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         ItemUtil.informationMaxValueDict["测试情报"] = 1;
 
         _root.kshop_list = [
-            {id:"potion", item:"药剂", type:"医疗专柜", price:40},
+            // 生产 data/kshop 保留历史字符串 price；AS2 canonical 投影必须统一成 Number。
+            {id:"potion", item:"药剂", type:"医疗专柜", price:"40"},
             {id:"material", item:"强化石", type:"研究专柜", price:25},
             {id:"pistol", item:"测试手枪", type:"训练专柜", price:500},
             {id:"intel", item:"测试情报", type:"研究专柜", price:100}
@@ -113,7 +120,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         _root.商城已购买物品 = [["legacy", "药剂", "消耗品", 40, 1]];
         _root.testKShopSaveCount = 0;
         _root.UI系统.商城WebView.checkoutPlan = null;
-        _root.kshop_list[0].price = 40;
+        _root.kshop_list[0].price = "40";
         _root.server.sent = null;
     }
 
@@ -122,11 +129,12 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         callSeq++;
         _root.gameCommands["shopBulkQuery"]({callId:callSeq});
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
-        check(response.success && response.catalog[2].type == "训练专柜"
+        check(response.success && typeof(response.catalog[0].price) == "number"
+            && response.catalog[0].price == 40 && response.catalog[2].type == "训练专柜"
             && response.catalog[2].majorType == "武器" && response.catalog[2].subType == "手枪"
             && response.catalog[2].weaponType == "手枪" && response.catalog[2].actionType == ""
             && response.catalog[2].setId == "test_sidearm" && response.catalog[2].setName == "测试侧武器套装",
-            "catalog projects curated group, automatic taxonomy and set metadata independently");
+            "catalog normalizes production string price and projects taxonomy/set metadata independently");
         var summary:Object = response.catalog[2].balanceSummary;
         var wire:String = String(_root.server.sent);
         check(summary != undefined && summary.state == "confirmed"
@@ -144,6 +152,92 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         check(stale.catalog[2].balanceSummary == undefined,
             "K 点目录在原始公式输入变化后 fail-closed 移除旧绿色摘要");
         ItemUtil.itemDataDict["测试手枪"].data.power = 100;
+    }
+
+    private static function testIdentityTripleProjection():Void {
+        resetState();
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var bulk:Object = new LiteJSON().parse(String(_root.server.sent));
+        var catalog:Object = bulk.catalog[2];
+        var purchased:Object = bulk.purchasedView[0];
+        check(catalog.item == "测试手枪" && catalog.displayname == "训练用短铳"
+            && catalog.icon == "训练短铳专用图标"
+            && catalog.item != catalog.displayname && catalog.item != catalog.icon
+            && catalog.displayname != catalog.icon,
+            "catalog keeps internal, display and icon identities independent");
+        check(purchased.purchasedIdx == 0 && purchased.item == "药剂"
+            && purchased.displayname == "战地恢复剂"
+            && purchased.icon == "恢复剂专用图标" && purchased.quantity == 1
+            && purchased.item != purchased.displayname && purchased.item != purchased.icon
+            && purchased.displayname != purchased.icon,
+            "legacy purchased storage receives an index-bound all-distinct display projection");
+
+        var preview:Object = requestPreview([{idx:2, qty:1}]);
+        var line:Object = preview.purchaseLines[0];
+        check(line.catalogIndex == 2 && line.itemName == "测试手枪"
+            && line.displayName == "训练用短铳" && line.icon == "训练短铳专用图标"
+            && line.success == undefined,
+            "checkout preview binds the request selector to the same all-distinct identity triple");
+    }
+
+    private static function testLegacyIdentityFallbackBoundary():Void {
+        resetState();
+        var data:Object = ItemUtil.itemDataDict["强化石"];
+        var previousDisplay:Object = data.displayname;
+        var previousIcon:Object = data.icon;
+        data.displayname = "   ";
+        data.icon = " Undefined ";
+
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var bulkWire:String = String(_root.server.sent);
+        var bulk:Object = new LiteJSON().parse(bulkWire);
+        var catalog:Object = bulk.catalog[1];
+        var preview:Object = requestPreview([{idx:1, qty:1}]);
+        var line:Object = preview.purchaseLines[0];
+        data.displayname = 17;
+        data.icon = {legacy:"bad"};
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var wrongTypeBulk:Object = new LiteJSON().parse(String(_root.server.sent));
+        var wrongTypeCatalog:Object = wrongTypeBulk.catalog[1];
+        check(catalog.item == "强化石" && catalog.displayname == "强化石"
+            && catalog.icon == "强化石" && line.itemName == "强化石"
+            && line.displayName == "强化石" && line.icon == "强化石"
+            && wrongTypeCatalog.displayname == "强化石"
+            && wrongTypeCatalog.icon == "强化石"
+            && bulkWire.toLowerCase().indexOf("undefined") < 0,
+            "AS2 KShop adapter replaces whitespace, wrapped-case undefined and wrong-type identities");
+
+        var previousTooltip:Object = _root.Web物品注释HTML;
+        _root.Web物品注释HTML = function(itemName:String):Object {
+            return {displayname:"\t", descHTML:"desc", introHTML:"intro"};
+        };
+        delete data.icon;
+        callSeq++;
+        _root.server.sent = null;
+        _root.gameCommands["shopTooltip"]({callId:callSeq, idx:1});
+        var tooltipWire:String = String(_root.server.sent);
+        var tooltip:Object = new LiteJSON().parse(tooltipWire);
+        _root.Web物品注释HTML = function(itemName:String):Object {
+            return {displayname:{legacy:"bad"}, descHTML:"desc", introHTML:"intro"};
+        };
+        data.icon = {legacy:"bad"};
+        callSeq++;
+        _root.server.sent = null;
+        _root.gameCommands["shopTooltip"]({callId:callSeq, idx:1});
+        var wrongTypeTooltip:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(tooltip.success && tooltip.itemName == "强化石"
+            && tooltip.displayname == "强化石" && tooltip.iconName == "强化石"
+            && wrongTypeTooltip.displayname == "强化石"
+            && wrongTypeTooltip.iconName == "强化石"
+            && tooltipWire.indexOf("undefined") < 0,
+            "AS2 KShop tooltip adapter replaces whitespace, undefined and wrong-type identities");
+
+        _root.Web物品注释HTML = previousTooltip;
+        data.displayname = previousDisplay;
+        data.icon = previousIcon;
     }
 
     private static function testDirectDelivery():Void {

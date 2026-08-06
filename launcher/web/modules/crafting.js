@@ -5,7 +5,7 @@ var CraftingPanel = (function() {
     var _mode = 'recipes', _materials = null, _materialRequestSeq = 0;
     var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
     var _busy = false, _previewBusy = false, _organizerBusy = false, _organizerMounted = false;
-    var _needsReconcile = false, _needsRefresh = false, _generation = 0;
+    var _needsReconcile = false, _needsRefresh = false, _reconcileEpoch = 0, _generation = 0;
     var _previewFlight = null, _previewQueued = null, _checkpointRetryIntent = null;
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _craftableToggle = null, _tooltipCache = {};
     var _inspector = null, _tooltipScope = null;
@@ -33,6 +33,7 @@ var CraftingPanel = (function() {
     Panels.register('crafting', {
         create:createDOM,
         onOpen:onOpen,
+        onRebind:onRebind,
         onClose:cleanup,
         onRequestClose:requestClose,
         onForceClose:function() { cleanup(); toast('连接断开，工作台已关闭'); }
@@ -198,9 +199,9 @@ var CraftingPanel = (function() {
         node.setAttribute('data-availability', recipe.availability || 'material_missing');
         var output = recipe.output || {};
         var icon = document.createElement('span'); icon.className = 'crafting-card-icon';
-        icon.innerHTML = iconHtml(output.icon || output.name, 'kshop-icon');
+        icon.innerHTML = iconHtml(output.icon, 'kshop-icon');
         var copy = document.createElement('span'); copy.className = 'crafting-card-copy';
-        var name = document.createElement('b'); name.textContent = output.displayName || output.name || recipe.title;
+        var name = document.createElement('b'); name.textContent = output.displayName || '未命名产物';
         var title = document.createElement('span'); title.textContent = recipe.title || '';
         var meta = document.createElement('small');
         var cost = recipe.baseCost || {};
@@ -299,7 +300,9 @@ var CraftingPanel = (function() {
             category:_category,
             recipeIndex:_selectedIndex,
             craftCount:_craftCount,
-            revision:authorityRevision(_snapshot)
+            revision:authorityRevision(_snapshot),
+            reconcileEpoch:_reconcileEpoch,
+            isReconcileProbe:_needsReconcile
         };
         if (_previewFlight && samePreviewIntent(_previewFlight, intent)) {
             // The latest desired value returned to the in-flight intent, so a
@@ -338,6 +341,8 @@ var CraftingPanel = (function() {
             && intent.category === _category
             && intent.recipeIndex === _selectedIndex
             && intent.craftCount === _craftCount
+            && intent.reconcileEpoch === _reconcileEpoch
+            && (!_needsReconcile || intent.isReconcileProbe)
             && sameIntentRevision(intent.revision, authorityRevision(_snapshot));
         var exactResponse = !response.success || responseMatchesPreviewIntent(response, intent);
 
@@ -365,7 +370,7 @@ var CraftingPanel = (function() {
         } else if (requiresReconcile(response)) {
             _preview = null;
             clearPreviewCheckpoint();
-            _needsReconcile = true;
+            enterNeedsReconcile();
             toast(errorMessage(response.error));
         } else if (requiresAuthorityRefresh(response)) {
             _preview = null;
@@ -418,8 +423,7 @@ var CraftingPanel = (function() {
         _detailPresenter.render({
             preserveScroll:renderOptions.preserveScroll !== false,
             selected:selected,
-            title:(output && (output.displayName || output.name))
-                || recipeOutput.displayName || recipeOutput.name || '合成详情',
+            title:(output && output.displayName) || recipeOutput.displayName || '合成详情',
             kicker:'权威核算',
             meta:_snapshot && _snapshot.note ? _snapshot.note : '提交前会再次校验',
             emptyText:_previewBusy ? '正在向 Flash 核算材料与容量…' : '等待权威预览',
@@ -478,6 +482,8 @@ var CraftingPanel = (function() {
             && left.category === right.category
             && left.recipeIndex === right.recipeIndex
             && left.craftCount === right.craftCount
+            && left.reconcileEpoch === right.reconcileEpoch
+            && left.isReconcileProbe === right.isReconcileProbe
             && sameIntentRevision(left.revision, right.revision);
     }
 
@@ -538,9 +544,9 @@ var CraftingPanel = (function() {
     function renderMaterialRow(material) {
         var row = document.createElement('div'); row.className = 'crafting-material-row ' + (material.enough ? 'ok' : 'bad');
         var icon = document.createElement('span'); icon.className = 'crafting-material-icon';
-        icon.innerHTML = iconHtml(material.icon || material.name, 'kshop-icon');
+        icon.innerHTML = iconHtml(material.icon, 'kshop-icon');
         var copy = document.createElement('span'); copy.className = 'crafting-material-copy';
-        var name = document.createElement('b'); name.textContent = material.displayName || material.name;
+        var name = document.createElement('b'); name.textContent = material.displayName || '未命名材料';
         var note = document.createElement('small');
         if (material.itemKind === 'equipment' && !material.isQuantity) {
             note.textContent = '最高 +' + Number(material.maxEnhancement || 0) + ' / 需要 +' + Number(material.required || 1);
@@ -556,19 +562,25 @@ var CraftingPanel = (function() {
 
     function commitCraft() {
         if (_busy || _previewBusy || _needsReconcile || _needsRefresh || !previewMatchesCurrent()
-                || !_preview.canCommit || !_preview.craftToken) return;
+                || !_preview.canCommit || !_preview.craftToken || !_preview.acceptedPlan) return;
         _busy = true; refreshControls(); renderDetail();
         var preferred = _selectedIndex, preferredCount = _craftCount;
+        var expectedAcceptedPlan = _preview.acceptedPlan;
         var issuing = true;
         var callId = request('commit', {category:_category, expectedCraftToken:_preview.craftToken}, function(response) {
             var dispatched = !issuing;
             _busy = false;
             if (response.success) {
-                toast('已合成 ' + ((response.crafted && response.crafted.displayName) || '目标物品'));
+                if (!sameJson(response.acceptedPlan, expectedAcceptedPlan)) {
+                    enterNeedsReconcile();
+                    toast('提交回包与权威预览不一致，正在向 Flash 对账。');
+                    requestPreview(); return;
+                }
+                toast('已合成 ' + response.crafted.displayName);
                 _preview = null; clearPreviewCheckpoint(); refreshSnapshot(preferred, preferredCount); return;
             }
             if (isWriteAmbiguous(response, dispatched)) {
-                _needsReconcile = true; toast('提交结果不明确，正在向 Flash 对账。');
+                enterNeedsReconcile(); toast('提交结果不明确，正在向 Flash 对账。');
                 requestPreview();
             } else if (requiresAuthorityRefresh(response)) {
                 toast(errorMessage(response.error)); _preview = null; clearPreviewCheckpoint();
@@ -591,7 +603,7 @@ var CraftingPanel = (function() {
             if (generation !== _generation) return;
             if (!response.success) {
                 if (requiresReconcile(response)) {
-                    _preview = null; clearPreviewCheckpoint(); _needsReconcile = true; _needsRefresh = false;
+                    _preview = null; clearPreviewCheckpoint(); enterNeedsReconcile(); _needsRefresh = false;
                 } else if (!_needsReconcile) _needsRefresh = true;
                 toast(errorMessage(response.error)); renderDetail(); refreshControls(); return;
             }
@@ -674,7 +686,7 @@ var CraftingPanel = (function() {
             if (!response.success) {
                 _organizerBusy = false;
                 if (requiresReconcile(response)) {
-                    _preview = null; clearPreviewCheckpoint(); _needsReconcile = true;
+                    _preview = null; clearPreviewCheckpoint(); enterNeedsReconcile();
                 }
                 toast(errorMessage(response.error)); renderDetail(); refreshControls(); return;
             }
@@ -705,6 +717,7 @@ var CraftingPanel = (function() {
                 && CraftingInventoryOrganizer.mount(_shellEl, {
                     kind:'crafting-organizer',
                     panel:'crafting',
+                    panelInstanceId:_panelInstanceId,
                     onReturn:restoreFromOrganizer
                 });
             if (!mounted) {
@@ -741,6 +754,20 @@ var CraftingPanel = (function() {
         return true;
     }
 
+    function recoverOrganizerMountFailure() {
+        if (!Panels.getActive || Panels.getActive() !== 'crafting') return false;
+        if (!_shell) {
+            _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+                ? PanelTooltip.createScope('crafting') : null;
+            buildDOM();
+            refreshSnapshot(_selectedIndex, _craftCount);
+        } else {
+            renderDetail();
+            refreshControls();
+        }
+        return true;
+    }
+
     function failOrganizerMount(error, generation) {
         if (generation !== _generation) return;
         _organizerBusy = false;
@@ -748,10 +775,21 @@ var CraftingPanel = (function() {
         if (typeof console !== 'undefined' && console.error) {
             console.error('[CraftingPanel] organizer mount failed:', error);
         }
+        var closeAccepted = false;
+        try {
+            closeAccepted = Bridge.send({type:'panel', cmd:'close', panel:'crafting',
+                panelInstanceId:_panelInstanceId}) !== false;
+        } catch (_) {
+            closeAccepted = false;
+        }
+        if (!closeAccepted) {
+            recoverOrganizerMountFailure();
+            toast('背包整理资源加载失败；启动器连接不可用，合成工作台保持打开，可重试。');
+            return false;
+        }
         toast('背包整理资源加载失败，合成工作台已安全关闭。');
-        try { Bridge.send({type:'panel', cmd:'close', panel:'crafting'}); }
-        catch (_) {}
         Panels.close();
+        return true;
     }
 
     function findRecipe(index) {
@@ -819,12 +857,23 @@ var CraftingPanel = (function() {
         _snapshot = null; _preview = null; clearPreviewCheckpoint(); _selectedIndex = -1; _busy = false; _previewBusy = false;
         _previewFlight = null; _previewQueued = null;
         _craftCount = 1; _organizerBusy = false; _organizerMounted = false;
-        _needsReconcile = false; _needsRefresh = false; _tooltipCache = {}; buildDOM();
+        _needsReconcile = false; _needsRefresh = false; _reconcileEpoch = 0; _tooltipCache = {}; buildDOM();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
-        _mux.openSession();
+        if (!_mux.openSession({
+                ownerPanel:'crafting',
+                panelInstanceId:_panelInstanceId
+            })) return false;
         if (_mode === 'materials') refreshMaterialsSnapshot();
         else refreshSnapshot(preferredIndex, preferredCount);
+    }
+
+    function onRebind(el, initData) {
+        // Same-name opens replace the Host capability. Invalidate lazy work,
+        // previews, organizer ownership and response callbacks before admitting
+        // the replacement category/material view on the existing panel host.
+        cleanup();
+        return onOpen(el, initData);
     }
 
     function cleanup() {
@@ -842,7 +891,7 @@ var CraftingPanel = (function() {
         _inspector = null;
         _busy = false; _previewBusy = false; _organizerBusy = false;
         _organizerMounted = false; _snapshot = null; _preview = null;
-        clearPreviewCheckpoint(); _needsReconcile = false; _needsRefresh = false;
+        clearPreviewCheckpoint(); _needsReconcile = false; _needsRefresh = false; _reconcileEpoch = 0;
         disposeFilterNavigator(); _craftableToggle = null;
         if (_materials) { _materials.destroy(); _materials = null; }
         if (_densityController) { _densityController.destroy(); _densityController = null; }
@@ -867,7 +916,8 @@ var CraftingPanel = (function() {
             return _shell.closeModal(typeof reason === 'string' ? reason : 'close');
         }
         if (_busy || _organizerBusy) { toast('工作台状态正在确认，请稍候。'); return; }
-        if (Bridge.send({type:'panel', cmd:'close', panel:'crafting'}) === false) {
+        if (Bridge.send({type:'panel', cmd:'close', panel:'crafting',
+                panelInstanceId:_panelInstanceId}) === false) {
             toast('启动器连接不可用，工作台保持打开。');
             return false;
         }
@@ -914,13 +964,13 @@ var CraftingPanel = (function() {
         tooltipBinder.bindAsyncHover(node, {
             cache:_tooltipCache, key:'craft:' + item.name, item:item,
             renderBasic:function(value) {
-                return '<div class="kshop-tt-header"><b>' + escapeHtml(value.displayName || value.name) + '</b></div>'
+                return '<div class="kshop-tt-header"><b>' + escapeHtml(value.displayName || '未命名物品') + '</b></div>'
                     + '<div class="kshop-tt-loading">加载中…</div>';
             },
             renderRich:function(value, rich) {
                 return PanelTooltip.buildItemRichHtml({
-                    iconHtml:PanelTooltip.dynamicIconHtml(value.icon || value.name),
-                    iconUrl:PanelTooltip.staticIconUrl(value.icon || value.name),
+                    iconHtml:PanelTooltip.dynamicIconHtml(value.icon),
+                    iconUrl:PanelTooltip.staticIconUrl(value.icon),
                     introHTML:rich.introHTML || '', descHTML:rich.descHTML || '',
                     rootClass:'crafting-tooltip', layoutType:PanelTooltip.inferLayoutType(value.majorType || value.use)
                 });
@@ -947,6 +997,26 @@ var CraftingPanel = (function() {
 
     function requiresReconcile(response) {
         return !!(response && response.requiresReconcile) || (response && response.error) === 'reconcile_required';
+    }
+
+    function sameJson(left, right) {
+        if (left === right) return true;
+        if (Array.isArray(left) || Array.isArray(right)) {
+            return Array.isArray(left) && Array.isArray(right)
+                && left.length === right.length && left.every(function(value, index) {
+                    return sameJson(value, right[index]);
+                });
+        }
+        if (!left || !right || typeof left !== 'object' || typeof right !== 'object') return false;
+        var leftKeys = Object.keys(left).sort(), rightKeys = Object.keys(right).sort();
+        return leftKeys.length === rightKeys.length && leftKeys.every(function(key, index) {
+            return key === rightKeys[index] && sameJson(left[key], right[key]);
+        });
+    }
+
+    function enterNeedsReconcile() {
+        if (!_needsReconcile) _reconcileEpoch++;
+        _needsReconcile = true;
     }
 
     function isTransportUncertain(response) {
@@ -979,6 +1049,9 @@ var CraftingPanel = (function() {
         return labels[code] || '暂不可合成';
     }
     function iconHtml(iconName, cls) {
+        if (typeof iconName !== 'string' || !iconName) {
+            return '<span class="kshop-icon-placeholder"></span>';
+        }
         var html = typeof Icons !== 'undefined' && Icons.html
             ? Icons.html(iconName, cls || 'kshop-icon', ' onerror="this.style.display=\'none\'"') : '';
         return html || '<span class="kshop-icon-placeholder"></span>';
@@ -1001,7 +1074,7 @@ var CraftingPanel = (function() {
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, organizerBusy:_organizerBusy,
         organizerMounted:_organizerMounted,
-        needsReconcile:_needsReconcile, needsRefresh:_needsRefresh,
+        needsReconcile:_needsReconcile, needsRefresh:_needsRefresh, reconcileEpoch:_reconcileEpoch,
         previewFlight:_previewFlight ? {recipeIndex:_previewFlight.recipeIndex, craftCount:_previewFlight.craftCount} : null,
         previewQueued:_previewQueued ? {recipeIndex:_previewQueued.recipeIndex, craftCount:_previewQueued.craftCount} : null,
         checkpointRetry:_checkpointRetryIntent ? {

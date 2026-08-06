@@ -60,6 +60,12 @@ equal(Model.normalizeTuningSource({
 equal(Model.tuningSourceKey({
     sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:9
 }), 'loadout:17:颈部装备', 'loadout focus identity binds generation while staying stable across revision refreshes');
+equal(Model.diagnosticAuthoritySourceKey({
+    sourceKind:'inventory',containerId:'背包',slot:2,expectedLease:'lease.source'
+}), 'inventory:背包:2:lease.source', 'inventory diagnostic identity includes the exact authority lease');
+equal(Model.diagnosticAuthoritySourceKey({
+    sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:9
+}), 'loadout:17:颈部装备:9', 'loadout diagnostic identity includes the exact authority revision');
 equal(Model.sameLoadoutIdentity(
     {sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:5},
     {sourceKind:'loadout',sessionGeneration:17,slotKey:'颈部装备',expectedLoadoutRevision:9}
@@ -171,8 +177,22 @@ equal(Model.materialCount([{itemName:'强化石',count:208589}], '强化石'), 2
 equal(Model.materialDeltaFor([{itemName:'强化石',delta:-3}], '强化石'),
     {itemName:'强化石',delta:-3}, 'material delta lookup');
 equal(Model.compactQuantity(12500), '1.2万', 'compact quantity floors one decimal');
-equal(Model.equipmentDiff({level:5,tier:'I',mods:['旧']},{level:7,tier:'II',mods:['新']}),
-    '+5 → +7 · I → II · 卸下 旧 · 安装 新', 'equipment delta summary');
+const diffPresentations = [
+    {itemName:'rule.old',displayName:'旧件展示名',icon:'旧件图标'},
+    {itemName:'rule.new',displayName:'新件展示名',icon:'新件图标'}
+];
+equal(Model.equipmentDiff(
+    {level:5,tier:'I',mods:['rule.old']},
+    {level:7,tier:'II',mods:['rule.new']},
+    diffPresentations),
+    '+5 → +7 · I → II · 卸下 旧件展示名 · 安装 新件展示名',
+    'equipment delta resolves internal mod rules through canonical display identities');
+equal(Model.equipmentDiff(
+    {level:5,tier:'I',mods:['secret.internal.old']},
+    {level:5,tier:'I',mods:['secret.internal.new']},
+    diffPresentations),
+    '卸下 未知配件 · 安装 未知配件',
+    'unknown mod rules use one neutral label without leaking internal identity');
 equal(Model.commitLabel({operation:'enhance',after:{source:{equipment:{level:8}}},
     materials:[{itemName:'强化石',delta:-3}]}), '强化至 +8 · 3 强化石', 'enhancement commit label');
 equal(Model.commitLabel({operation:'detach_all_mods'}), '卸下全部配件', 'non-enhance commit label');

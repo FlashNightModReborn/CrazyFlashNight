@@ -158,6 +158,108 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
     'use strict';
 
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
+    function strictKShopCatalog(value) {
+        return (value || []).map(function(item) {
+            var clean = {
+                idx:Number(item.idx),id:String(item.id),item:String(item.item),type:String(item.type),
+                price:Number(item.price),displayname:String(item.displayname),majorType:String(item.majorType || ''),
+                subType:String(item.subType || ''),actionType:String(item.actionType || ''),
+                weaponType:String(item.weaponType || ''),setId:String(item.setId || ''),
+                setName:String(item.setName || ''),setOrder:Number(item.setOrder || 0),
+                level:Number(item.level || 0),icon:String(item.icon),maxQuantity:Number(item.maxQuantity)
+            };
+            if (item.balanceSummary && item.balanceSummary.state === 'confirmed') {
+                clean.balanceSummary = clone(item.balanceSummary);
+            }
+            return clean;
+        });
+    }
+    function strictKShopPurchased(value, catalog) {
+        return (value || []).map(function(row,index) {
+            var itemName=String(row[1]);
+            var item=(catalog || []).find(function(entry){return entry.item===itemName;});
+            return {purchasedIdx:index,item:itemName,displayname:String(item.displayname),
+                icon:String(item.icon),quantity:Number(row[4])};
+        });
+    }
+    function strictKShopCartSnapshot(value, catalog) {
+        var cart=[],adjusted=false;
+        (value || []).forEach(function(row) {
+            var idx=Number(row&&row.idx),quantity=Number(row&&row.qty),item=null;
+            for(var i=0;i<(catalog||[]).length;i++) {
+                if(Number(catalog[i].idx)===idx){item=catalog[i];break;}
+            }
+            if(!Number.isInteger(idx)||!Number.isInteger(quantity)||quantity<=0||!item
+                    ||!Number.isInteger(Number(item.maxQuantity))||Number(item.maxQuantity)<=0){
+                adjusted=true;return;
+            }
+            var bounded=Math.min(quantity,Number(item.maxQuantity));
+            if(bounded!==quantity)adjusted=true;
+            cart.push({idx:idx,qty:bounded});
+        });
+        return {cart:cart,adjusted:adjusted};
+    }
+    function strictInventoryMod(value) {
+        value = value || {};
+        return {
+            name:String(value.name || ''), displayName:String(value.displayName || ''),
+            icon:String(value.icon || ''), grade:String(value.grade || ''),
+            gradeLabel:String(value.gradeLabel || ''), gradeColor:String(value.gradeColor || ''),
+            role:String(value.role || ''), roleLabel:String(value.roleLabel || ''),
+            symbol:String(value.symbol || ''), scope:String(value.scope || '')
+        };
+    }
+    function strictInventoryItem(value) {
+        value = value || {};
+        var equipment = value.itemKind === 'equipment';
+        var enhancement = equipment ? Math.max(0, Math.floor(Number(value.enhancementLevel) || 0)) : 0;
+        var maxEnhancement = equipment
+            ? Math.max(enhancement, Math.floor(Number(value.maxEnhancementLevel) || 13)) : 0;
+        var mods = equipment && Array.isArray(value.modSlots)
+            ? value.modSlots.slice(0, 3).map(strictInventoryMod) : [];
+        var modUsed = equipment ? Math.max(mods.length, Math.floor(Number(value.modSlotUsed) || 0)) : 0;
+        var item = {
+            name:String(value.name || 'unknown'), displayName:String(value.displayName || value.name || 'unknown'),
+            icon:String(value.icon || value.name || 'unknown'), majorType:String(value.majorType || ''),
+            use:String(value.use || ''), actionType:String(value.actionType || ''),
+            weaponType:String(value.weaponType || ''), setId:String(value.setId || ''),
+            setName:String(value.setName || ''), setOrder:Math.max(0, Math.floor(Number(value.setOrder) || 0)),
+            itemKind:equipment ? 'equipment' : 'stack', quantity:equipment ? 1 : Math.max(1, Number(value.quantity) || 1),
+            enhancementLevel:enhancement, maxEnhancementLevel:maxEnhancement,
+            isMaxEnhancement:equipment && enhancement >= maxEnhancement,
+            tierSlotAvailable:equipment && !!value.tierSlotAvailable,
+            tierSlotUsed:equipment && !!value.tierSlotAvailable && !!value.tierSlotUsed,
+            modSlotCapacity:equipment ? Math.max(modUsed, Math.floor(Number(value.modSlotCapacity) || 0)) : 0,
+            modSlotUsed:modUsed, modSlots:mods,
+            modMeta:equipment && value.modMeta ? strictInventoryMod(value.modMeta) : null,
+            rarity:String(value.rarity || '')
+        };
+        if (value.balanceSummary && value.balanceSummary.state === 'confirmed') {
+            item.balanceSummary = {
+                state:'confirmed', weightLayers:Number(value.balanceSummary.weightLayers) || 0,
+                formula:1, level:Math.max(0, Math.floor(Number(value.balanceSummary.level) || 0))
+            };
+        }
+        return item;
+    }
+    function strictInventoryConfirm(item, source) {
+        source = source || {};
+        return {
+            itemKind:item.itemKind, name:item.name, displayName:item.displayName,
+            quantity:item.quantity, enhancementLevel:item.enhancementLevel, rarity:item.rarity,
+            tier:String(source.tier || ''),
+            modSignature:item.modSlots.map(function(mod){ return mod.name; }).join('|'),
+            lastUpdate:Math.max(0, Number(source.lastUpdate) || 0)
+        };
+    }
+    function strictInventoryFacet(value) {
+        value = value || {};
+        return {
+            id:String(value.id || 'unknown'), label:String(value.label || value.id || 'unknown'),
+            order:Number(value.order) || 0, count:Math.max(0, Math.floor(Number(value.count) || 0)),
+            children:(value.children || []).map(strictInventoryFacet)
+        };
+    }
     function wait(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
     async function waitFor(predicate, timeout) {
         var started = Date.now();
@@ -278,14 +380,14 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
     }
 
     var BASE_CATALOG = [
-        {idx:0,id:'w0',item:'测试手枪',type:'训练军备',price:30,displayname:'测试手枪',majorType:'武器',use:'手枪',weaponType:'手枪',subType:'手枪',setId:'training_weapon',setName:'训练武器套装',level:1,icon:'图标-测试手枪',maxQuantity:1,balanceSummary:{state:'confirmed',weightLayers:2,formula:1,level:1}},
+        {idx:0,id:'w0',item:'rule.alpha',type:'训练军备',price:30,displayname:'测试手枪',majorType:'武器',use:'手枪',weaponType:'手枪',subType:'手枪',setId:'training_weapon',setName:'训练武器套装',level:1,icon:'图标-测试手枪',maxQuantity:1,balanceSummary:{state:'confirmed',weightLayers:2,formula:1,level:1}},
         {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂',maxQuantity:999999,dynamicCapacity:true,balanceSummary:{state:'review',weightLayers:8,formula:1,level:1}},
         {idx:2,id:'l2',item:'锁定装备',type:'封存装备',price:99,displayname:'锁定装备',majorType:'武器',subType:'防具',setId:'training_weapon',setName:'训练武器套装',level:99,icon:'图标-锁定装备',maxQuantity:1},
-        {idx:3,id:'k3',item:'测试刀剑',type:'训练军备',price:40,displayname:'测试刀剑',majorType:'武器',use:'刀',actionType:'刀剑',level:1,icon:'图标-测试刀剑',maxQuantity:1},
-        {idx:4,id:'k4',item:'测试长刀',type:'武术联盟',price:45,displayname:'测试长刀',majorType:'武器',use:'刀',actionType:'长刀',level:1,icon:'图标-测试长刀',maxQuantity:1}
+        {idx:3,id:'k3',item:'测试刀剑',type:'训练军备',price:40,displayname:'测试刀剑',majorType:'武器',subType:'刀',actionType:'刀剑',level:1,icon:'图标-测试刀剑',maxQuantity:1},
+        {idx:4,id:'k4',item:'测试长刀',type:'武术联盟',price:45,displayname:'测试长刀',majorType:'武器',subType:'刀',actionType:'长刀',level:1,icon:'图标-测试长刀',maxQuantity:1}
     ];
     var BASE_PURCHASED = [
-        ['w0','测试手枪','武器',30,1],
+        ['w0','rule.alpha','武器',30,1],
         ['c1','测试药剂','消耗品',5,2]
     ];
 
@@ -294,7 +396,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         closeCount: 0,
         rejectedCloseCount: 0,
         activePanel: null,
+        activePanelInstanceId: '',
+        panelOpenSeq: 0,
         failNextCloseTransport: false,
+        failedCloseTransportCount: 0,
         delays: {},
         nextSaveAmbiguous: false,
         nextCheckoutAmbiguous: false,
@@ -304,6 +409,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         inventorySession: 0,
         inventorySnapshotSeq: 0,
         inventoryEpochs: null,
+        inventoryVersions: null,
         checkoutSeq: 0,
         checkoutPlan: null,
         battleboxAccessibleCapacity: 240,
@@ -316,7 +422,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.closeCount = 0;
             this.rejectedCloseCount = 0;
             this.activePanel = null;
+            this.activePanelInstanceId = '';
             this.failNextCloseTransport = false;
+            this.failedCloseTransportCount = 0;
             this.delays = {};
             this.nextSaveAmbiguous = false;
             this.nextCheckoutAmbiguous = false;
@@ -326,6 +434,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.inventorySession = 0;
             this.inventorySnapshotSeq = 0;
             this.inventoryEpochs = {背包:1,仓库:1,战备箱:1};
+            this.inventoryVersions = {背包:1,仓库:1,战备箱:1};
             this.checkoutSeq = 0;
             this.checkoutPlan = null;
             this.battleboxAccessibleCapacity = 240;
@@ -348,8 +457,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 balanceSummary:{state:'confirmed',weightLayers:0,formula:1,level:35},
                 tierSlotAvailable:true,tierSlotUsed:false,modSlotCapacity:3,modSlotUsed:2,
                 modSlots:[
-                    {name:'脉冲式惯性阻尼器',grade:'medium',gradeLabel:'中等',gradeColor:'#996600',role:'precision',roleLabel:'精准与操控',symbol:'triangle-outline'},
-                    {name:'成长的勋章',grade:'special',gradeLabel:'特殊',gradeColor:'#FFFF00',role:'mechanism',roleLabel:'特殊机制',symbol:'star-solid'}
+                    {name:'脉冲式惯性阻尼器',displayName:'脉冲惯性稳定器',icon:'惯性阻尼器图标',grade:'medium',gradeLabel:'中等',gradeColor:'#996600',role:'precision',roleLabel:'精准与操控',symbol:'triangle-outline'},
+                    {name:'成长的勋章',displayName:'成长勋章',icon:'成长勋章图标',grade:'special',gradeLabel:'特殊',gradeColor:'#FFFF00',role:'mechanism',roleLabel:'特殊机制',symbol:'star-solid'}
                 ]
             };
             this.state.inventory.背包[2] = {name:'背包药剂',displayName:'背包药剂',icon:'背包药剂',majorType:'消耗品',use:'药剂',itemKind:'stack',quantity:3};
@@ -360,8 +469,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 enhancementLevel:7,maxEnhancementLevel:13,isMaxEnhancement:false,
                 tierSlotAvailable:true,tierSlotUsed:true,modSlotCapacity:3,modSlotUsed:2,
                 modSlots:[
-                    {name:'螺丝套件',grade:'low',gradeLabel:'低级',gradeColor:'#006600',role:'firepower',roleLabel:'火力',symbol:'triangle-solid'},
-                    {name:'传动装置',grade:'high',gradeLabel:'高等',gradeColor:'#0099FF',role:'sustain',roleLabel:'续航',symbol:'circle-outline'}
+                    {name:'螺丝套件',displayName:'精密螺丝套件',icon:'螺丝套件图标',grade:'low',gradeLabel:'低级',gradeColor:'#006600',role:'firepower',roleLabel:'火力',symbol:'triangle-solid'},
+                    {name:'传动装置',displayName:'强化传动装置',icon:'传动装置图标',grade:'high',gradeLabel:'高等',gradeColor:'#0099FF',role:'sustain',roleLabel:'续航',symbol:'circle-outline'}
                 ]
             };
             this.state.inventory.仓库[50] = {name:'Zulu仓储件',displayName:'Zulu仓储件',icon:'Zulu仓储件',majorType:'防具',use:'头部装备',itemKind:'equipment',quantity:1};
@@ -373,8 +482,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 enhancementLevel:13,maxEnhancementLevel:13,isMaxEnhancement:true,
                 tierSlotAvailable:true,tierSlotUsed:true,modSlotCapacity:3,modSlotUsed:2,
                 modSlots:[
-                    {name:'螺丝套件',grade:'low',gradeLabel:'低级',gradeColor:'#006600',role:'firepower',roleLabel:'火力',symbol:'triangle-solid'},
-                    {name:'传动装置',grade:'high',gradeLabel:'高等',gradeColor:'#0099FF',role:'sustain',roleLabel:'续航',symbol:'circle-outline'}
+                    {name:'螺丝套件',displayName:'精密螺丝套件',icon:'螺丝套件图标',grade:'low',gradeLabel:'低级',gradeColor:'#006600',role:'firepower',roleLabel:'火力',symbol:'triangle-solid'},
+                    {name:'传动装置',displayName:'强化传动装置',icon:'传动装置图标',grade:'high',gradeLabel:'高等',gradeColor:'#0099FF',role:'sustain',roleLabel:'续航',symbol:'circle-outline'}
                 ]
             };
             this.state.inventory.战备箱[40] = {name:'Zulu战备件',displayName:'Zulu战备件',icon:'Zulu战备件',majorType:'防具',use:'头部装备',itemKind:'equipment',quantity:1};
@@ -389,6 +498,22 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             var next = Number(this.state.purchasedToken.split('.').pop()) + 1;
             this.state.purchasedToken = 'shop.harness.' + next;
             return this.state.purchasedToken;
+        },
+
+        openPanel: function(panel, initData) {
+            initData = initData || {};
+            if (!initData.panelInstanceId) {
+                this.panelOpenSeq += 1;
+                initData.panelInstanceId = 'panel.harness.' + panel + '.' + this.panelOpenSeq;
+            }
+            if (panel === 'kshop' || panel === 'workbench') {
+                this.inventorySession += 1;
+                this.leases = {};
+            }
+            this.activePanel = panel;
+            this.activePanelInstanceId = initData.panelInstanceId;
+            Panels.open(panel, initData);
+            return initData.panelInstanceId;
         },
 
         itemMatchesFilter: function(item, filterKey) {
@@ -466,27 +591,33 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             var slots = [];
             for (var viewIndex=offset; viewIndex<Math.min(viewCapacity,offset+limit); viewIndex++) {
                 var slot=physicalSlots[viewIndex];
-                this.leaseSeq += 1;
-                var token = 'invh.' + this.inventorySession + '.' + this.leaseSeq;
                 var item = items[slot] || null;
-                this.leases[containerId + ':' + slot] = {token:token,item:item,quantity:item ? item.quantity : 0};
+                var leaseKey = containerId + ':' + slot;
+                var lease = this.leases[leaseKey];
+                var version = this.inventoryVersions[containerId] || 1;
+                if (!lease || lease.session !== this.inventorySession || lease.version !== version) {
+                    this.leaseSeq += 1;
+                    lease = {token:'invh.' + this.inventorySession + '.' + this.leaseSeq,
+                        item:item,quantity:item ? item.quantity : 0,
+                        session:this.inventorySession,version:version};
+                    this.leases[leaseKey] = lease;
+                }
+                var token = lease.token;
                 var entry = {physicalSlot:slot,occupied:!!item,slotLease:token};
                 if (item) {
-                    entry.item = clone(item);
-                    entry.confirmProjection = {
-                        itemKind:item.itemKind,displayName:item.displayName,quantity:item.quantity,
-                        enhancementLevel:item.enhancementLevel || 0,rarity:item.rarity || ''
-                    };
+                    entry.item = strictInventoryItem(item);
+                    entry.confirmProjection = strictInventoryConfirm(entry.item, item);
                 }
                 slots.push(entry);
             }
             this.inventorySnapshotSeq += 1;
             var snapshot = {containerId:containerId,capacity:items.length,accessibleCapacity:accessibleCapacity,
                 viewCapacity:viewCapacity,filterKey:filterKey,
-                filterFacets:facetTree.children,filterItemCount:facetTree.count,
-                setFacets:setTree.children,setFilterItemCount:setTree.count,
+                filterFacets:facetTree.children.map(strictInventoryFacet),filterItemCount:facetTree.count,
+                setFacets:setTree.children.map(strictInventoryFacet),setFilterItemCount:setTree.count,
                 pageSizeHint:containerId === '战备箱' ? 40 : 50,locked:accessibleCapacity <= 0,
                 snapshotSeq:this.inventorySnapshotSeq,containerEpoch:this.inventoryEpochs[containerId] || 1,
+                containerVersion:this.inventoryVersions[containerId] || 1,
                 offset:offset,limit:slots.length,slots:slots};
             if (filterSpec) snapshot.filterSpec = filterSpec;
             if (scope === 'equipment') snapshot.scope = scope;
@@ -504,8 +635,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             if (Panels.getActive && Panels.getActive()) Panels.close();
             this.reset();
             if (typeof setup === 'function') setup(this.state);
-            this.activePanel = 'kshop';
-            Panels.open('kshop');
+            this.openPanel('kshop');
             await waitFor(function() {
                 var loading = document.querySelector('#kshop-loading');
                 return Host.sent.some(function(message){ return message.cmd === 'bulkQuery'; })
@@ -535,8 +665,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 }
             }
             var normalizedProfile = profile === 'warehouse' ? 'warehouse' : 'battlebox';
-            this.activePanel = 'workbench';
-            Panels.open('workbench', {
+            this.openPanel('workbench', {
                 mode:'runtime', profile:normalizedProfile, view:'storage',
                 panelInstanceId:normalizedProfile === 'battlebox'
                     ? 'panel.harness.tuning-entry' : 'panel.harness.storage'
@@ -550,23 +679,31 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         respond: function(request, response, delay) {
             response.type = 'panel_resp';
             response.callId = request.callId;
-            if (request.domain) { response.domain = request.domain; response.cmd = request.cmd; }
+            response.cmd = request.cmd;
+            response.panel = request.panel;
+            response.panelInstanceId = request.panelInstanceId;
+            if (request.domain) {
+                response.domain = request.domain;
+            } else if (Object.prototype.hasOwnProperty.call(response, 'domain')) delete response.domain;
             setTimeout(function() { window.__emitBridge('panel_resp', response); }, delay || 0);
         },
 
         handle: function(message) {
             if (message.cmd === 'close' && this.failNextCloseTransport) {
                 this.failNextCloseTransport = false;
+                this.failedCloseTransportCount += 1;
                 return false;
             }
             this.sent.push(clone(message));
             if (message.cmd === 'close') {
-                if (this.activePanel && message.panel !== this.activePanel) {
+                if (this.activePanel && (message.panel !== this.activePanel
+                        || message.panelInstanceId !== this.activePanelInstanceId)) {
                     this.rejectedCloseCount += 1;
                     return;
                 }
                 this.closeCount += 1;
                 this.activePanel = null;
+                this.activePanelInstanceId = '';
                 return;
             }
             var delay = Number(this.delays[message.cmd]) || 0;
@@ -584,13 +721,20 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                         tuningCommon.success = false;
                         tuningCommon.error = 'stale_state';
                     } else {
+                        var tuningLevel = Math.max(1,
+                            Number(tuningItem.enhancementLevel || 1));
+                        var tuningMax = Math.max(tuningLevel, Math.min(13,
+                            Number(tuningItem.maxEnhancementLevel || 13)));
                         tuningCommon.snapshot = {
                             gender:'女',source:clone(tuningSource),
                             equipment:{name:tuningItem.name,displayName:tuningItem.displayName,icon:tuningItem.icon,
-                                level:Number(tuningItem.enhancementLevel || 0),tier:'',mods:[],lastUpdate:1,
-                                maxLevel:Number(tuningItem.maxEnhancementLevel || 13),hardMaxLevel:13},
-                            enhance:{currentLevel:Number(tuningItem.enhancementLevel || 0),maxLevel:13,availableMaxLevel:13,hardMaxLevel:13},
-                            tierCandidates:[],modCandidates:[],materials:[]
+                                type:tuningItem.majorType === '防具' ? '防具' : '武器',use:String(tuningItem.use || '长枪'),
+                                level:tuningLevel,tier:'',mods:[],lastUpdate:1,
+                                maxLevel:tuningMax,hardMaxLevel:13},
+                            enhance:{currentLevel:tuningLevel,maxLevel:tuningMax,
+                                availableMaxLevel:tuningMax,hardMaxLevel:13},
+                            tierCandidates:[],modCandidates:[],materials:[],
+                            materialRevision:1,inventoryRevision:1
                         };
                     }
                 } else if (message.cmd === 'detach') {
@@ -605,7 +749,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             if (message.domain === 'inventory') {
                 var payload = message.payload || {};
                 if (message.cmd === 'snapshot') {
-                    this.respond(message, {success:true,v:1,snapshots:this.inventorySnapshots(payload.requests,true)}, delay);
+                    this.respond(message, {success:true,v:1,
+                        sessionNonce:'inv.harness.' + this.inventorySession,
+                        snapshots:this.inventorySnapshots(payload.requests,false)}, delay);
                     return;
                 }
                 if (message.cmd === 'tooltip') {
@@ -659,6 +805,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     for (var mi=0; mi<merged.length; mi++) inventory[mi] = merged[mi];
                     Object.keys(this.leases).forEach(function(key){ if (key.indexOf(sortContainerId + ':') === 0) delete Host.leases[key]; });
                     this.inventoryEpochs[sortContainerId] += 1;
+                    this.inventoryVersions[sortContainerId] += 1;
                     this.respond(message, {success:true,v:1,operation:'sortAndMerge',methodName:methodName,
                         sortedCapacity:sortCapacity,snapshots:this.inventorySnapshots([{
                             containerId:sortContainerId,offset:Number(container.offset),limit:Number(container.limit),
@@ -724,6 +871,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     autoSourceItems[autoSource.slot] = null;
                     delete this.leases[autoSourceKey];
                     delete this.leases[autoTargetContainerId + ':' + autoTargetSlot];
+                    this.inventoryVersions[autoSource.containerId] += 1;
+                    if (autoTargetContainerId !== autoSource.containerId) {
+                        this.inventoryVersions[autoTargetContainerId] += 1;
+                    }
                     this.respond(message, {success:true,v:1,operation:autoOperation,policy:'mergeThenEmpty',
                         destination:{containerId:autoTargetContainerId,slot:autoTargetSlot},
                         snapshots:this.inventorySnapshots(payload.windows,false)}, delay);
@@ -743,6 +894,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 var sourceItems = this.state.inventory[source.containerId];
                 if (message.cmd === 'discard') {
                     sourceItems[source.slot] = null;
+                    this.inventoryVersions[source.containerId] += 1;
                     this.respond(message, {success:true,operation:'discard',snapshots:this.inventorySnapshots([
                         {containerId:'背包',offset:0,limit:50}
                     ],false)}, delay);
@@ -760,6 +912,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 } else if (message.cmd === 'swap') {
                     var held = targetItems[target.slot]; targetItems[target.slot] = sourceItems[source.slot]; sourceItems[source.slot] = held;
                 }
+                this.inventoryVersions[source.containerId] += 1;
+                if (target.containerId !== source.containerId) {
+                    this.inventoryVersions[target.containerId] += 1;
+                }
                 var sourcePageSize = source.containerId === '战备箱' ? 40 : 50;
                 var targetPageSize = target.containerId === '战备箱' ? 40 : 50;
                 var sourceWindow = {containerId:source.containerId,offset:Math.floor(Number(source.slot)/sourcePageSize)*sourcePageSize,limit:sourcePageSize};
@@ -774,25 +930,31 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             }
             if (message.cmd === 'bulkQuery') {
                 this.rotatePurchasedToken();
+                var cartSnapshot=strictKShopCartSnapshot(this.state.cart,this.state.catalog);
                 this.respond(message, {
                     success:true,
-                    catalog:clone(this.state.catalog), cart:clone(this.state.cart), purchased:clone(this.state.purchased),
+                    catalog:strictKShopCatalog(this.state.catalog), cart:cartSnapshot.cart,
+                    cartAdjusted:cartSnapshot.adjusted,purchased:strictKShopPurchased(this.state.purchased,this.state.catalog),
                     purchasedToken:this.state.purchasedToken,
                     kpoints:this.state.kpoints, playerLevel:this.state.playerLevel, reverseLevel:this.state.reverseLevel
                 }, delay);
                 return;
             }
             if (message.cmd === 'tooltip') {
-                this.respond(message, {success:true,introHTML:'<b>测试</b>',descHTML:'说明'}, delay);
+                var tooltipItem=this.state.catalog[Number(message.idx)];
+                this.respond(message, {success:true,introHTML:'<b>测试</b>',descHTML:'说明',
+                    itemName:tooltipItem.item,displayname:tooltipItem.displayname,iconName:tooltipItem.icon}, delay);
                 return;
             }
             if (message.cmd === 'saveCart') {
-                this.state.cart = clone(message.cart || []);
+                var savedCartSnapshot=strictKShopCartSnapshot(message.cart || [],this.state.catalog);
+                this.state.cart = clone(savedCartSnapshot.cart);
                 if (this.nextSaveAmbiguous) {
                     this.nextSaveAmbiguous = false;
                     this.respond(message, {success:false,error:'reconcile_required'}, delay);
                 } else {
-                    this.respond(message, {success:true}, delay);
+                    this.respond(message, {success:true,v:1,cart:clone(this.state.cart),
+                        adjusted:savedCartSnapshot.adjusted}, delay);
                 }
                 return;
             }
@@ -817,6 +979,16 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                         quantity:Number(cart[i].qty),unitPrice:Number(item.price),total:Number(item.price)*Number(cart[i].qty),
                         maxQuantity:maxQuantity,maxAffordable:maxAffordable,maxByCapacity:maxByCapacity,
                         maxPurchasable:Math.min(maxQuantity,maxAffordable,maxByCapacity),itemKind:equipment?'equipment':'stack'});
+                }
+                for(var boundIndex=0;boundIndex<lines.length;boundIndex++){
+                    var boundLine=lines[boundIndex];
+                    var remaining=Math.max(0,this.state.kpoints-(total-Number(boundLine.total)));
+                    boundLine.maxAffordable=Number(boundLine.unitPrice)<=0
+                        ? Number(boundLine.maxQuantity)
+                        : Math.max(0,Math.min(Number(boundLine.maxQuantity),
+                            Math.floor(remaining/Number(boundLine.unitPrice))));
+                    boundLine.maxPurchasable=Math.min(Number(boundLine.maxQuantity),
+                        Number(boundLine.maxAffordable),Number(boundLine.maxByCapacity));
                 }
                 var vacancies = 0;
                 for (var countIndex=0;countIndex<this.state.inventory.背包.length;countIndex++) {
@@ -851,6 +1023,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                             majorType:delivery.itemKind==='equipment'?'武器':'消耗品',itemKind:delivery.itemKind,quantity:delivery.quantity};
                     }
                 }
+                this.inventoryVersions.背包 += 1;
                 this.state.cart = [];
                 if (this.nextCheckoutMalformed) {
                     this.nextCheckoutMalformed = false;
@@ -860,7 +1033,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     this.respond(message, {success:false,error:'reconcile_required'}, delay);
                 } else {
                     this.respond(message, {success:true,v:1,newBalance:this.state.kpoints,delivered:clone(plan.lines),cart:[],
-                        catalog:clone(this.state.catalog),purchased:clone(this.state.purchased),purchasedToken:this.state.purchasedToken}, delay);
+                        catalog:strictKShopCatalog(this.state.catalog),
+                        purchased:strictKShopPurchased(this.state.purchased,this.state.catalog),
+                        purchasedToken:this.state.purchasedToken}, delay);
                 }
                 return;
             }
@@ -875,6 +1050,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                     var vacancy = this.state.inventory.背包.findIndex(function(item){ return !item; });
                     if (vacancy < 0) { this.respond(message,{success:false,error:'inventory_full',purchasedToken:this.state.purchasedToken},delay); return; }
                     this.state.inventory.背包[vacancy] = {name:String(receipt[1]),displayName:String(receipt[1]),icon:String(receipt[1]),itemKind:'stack',quantity:Number(receipt[receipt.length-1])};
+                    this.inventoryVersions.背包 += 1;
                     for (var catalogIndex=0;catalogIndex<this.state.catalog.length;catalogIndex++) {
                         var claimedCatalogItem=this.state.catalog[catalogIndex];
                         if (claimedCatalogItem.dynamicCapacity && claimedCatalogItem.item===String(receipt[1])) {
@@ -882,7 +1058,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                         }
                     }
                     this.state.purchased.splice(index, 1);
-                    this.respond(message, {success:true,catalog:clone(this.state.catalog),purchased:clone(this.state.purchased),purchasedToken:this.rotatePurchasedToken()}, delay);
+                    this.respond(message, {success:true,catalog:strictKShopCatalog(this.state.catalog),
+                        purchased:strictKShopPurchased(this.state.purchased,this.state.catalog),
+                        purchasedToken:this.rotatePurchasedToken()}, delay);
                 }
             }
         }
@@ -895,7 +1073,81 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         results.push({id:id,title:title,pass:!!pass,detail:detail || ''});
     }
 
+    function recordIdentityProtocolChecks() {
+        var identityCatalog=strictKShopCatalog(BASE_CATALOG);
+        var identityPurchased=strictKShopPurchased(BASE_PURCHASED,BASE_CATALOG);
+        var identityBulk={success:true,catalog:identityCatalog,cart:[],cartAdjusted:false,
+            purchased:identityPurchased,purchasedToken:'shop.protocol.1',kpoints:500,
+            playerLevel:20,reverseLevel:0};
+        var identityBulkClean=KShopProtocol.sanitizeResponse('bulkQuery',{},identityBulk,{});
+        var identityExtra=clone(identityBulk);identityExtra.catalog[0].unexpected='smuggled';
+        assert('kshop-protocol-triple','KShop Web sanitizer keeps an all-distinct internal/display/icon fixture',
+            identityBulkClean&&identityBulkClean.catalog[0].item==='rule.alpha'
+                &&identityBulkClean.catalog[0].displayname==='测试手枪'
+                &&identityBulkClean.catalog[0].icon==='图标-测试手枪'
+                &&new Set([identityBulkClean.catalog[0].item,identityBulkClean.catalog[0].displayname,
+                    identityBulkClean.catalog[0].icon]).size===3);
+        assert('kshop-protocol-request','KShop request selector rejects extra keys and wrong scalar types',
+            KShopProtocol.normalizeRequest('checkoutPreview',{v:1,cart:[{idx:0,qty:1}],extra:true})===null
+                &&KShopProtocol.normalizeRequest('checkoutPreview',{v:1,cart:[{idx:'0',qty:1}]})===null);
+        assert('kshop-protocol-extra','KShop catalog response rejects an extra leaf key',
+            KShopProtocol.sanitizeResponse('bulkQuery',{},identityExtra,{})===null);
+        var identityMissingDisplay=clone(identityBulk);delete identityMissingDisplay.catalog[0].displayname;
+        var identityMissingIcon=clone(identityBulk);delete identityMissingIcon.catalog[0].icon;
+        var identityBlankDisplay=clone(identityBulk);identityBlankDisplay.catalog[0].displayname='   ';
+        var identityUndefinedIcon=clone(identityBulk);identityUndefinedIcon.catalog[0].icon=' Undefined ';
+        assert('kshop-protocol-missing-identity','KShop Web rejects missing, blank and undefined identity fields',
+            KShopProtocol.sanitizeResponse('bulkQuery',{},identityMissingDisplay,{})===null
+                &&KShopProtocol.sanitizeResponse('bulkQuery',{},identityMissingIcon,{})===null
+                &&KShopProtocol.sanitizeResponse('bulkQuery',{},identityBlankDisplay,{})===null
+                &&KShopProtocol.sanitizeResponse('bulkQuery',{},identityUndefinedIcon,{})===null);
+        var identityPayload={v:1,cart:[{idx:0,qty:1}]};
+        var identityLine={catalogIndex:0,itemName:'rule.alpha',displayName:'测试手枪',icon:'图标-测试手枪',
+            quantity:1,unitPrice:30,total:30,maxQuantity:1,maxAffordable:1,maxByCapacity:1,
+            maxPurchasable:1,itemKind:'equipment'};
+        var identityAuthority={catalog:identityCatalog,cart:identityPayload.cart,purchased:identityPurchased,
+            purchasedToken:'shop.protocol.1',balance:500,preview:null};
+        var identityPreview={success:true,v:1,checkoutToken:'kcheckout.protocol.1',purchaseLines:[identityLine],
+            total:30,balance:500,projectedBalance:470,canCommit:true,blockingError:''};
+        var identityPreviewClean=KShopProtocol.sanitizeResponse('checkoutPreview',identityPayload,
+            identityPreview,identityAuthority);
+        var nearMatchPreview=clone(identityPreview);nearMatchPreview.purchaseLines[0].itemName='测试手枪';
+        var wrongSelectorPreview=clone(identityPreview);wrongSelectorPreview.purchaseLines[0].catalogIndex=1;
+        assert('kshop-protocol-selector','KShop preview rejects near-match identity and wrong selector echo',
+            identityPreviewClean
+                &&KShopProtocol.sanitizeResponse('checkoutPreview',identityPayload,nearMatchPreview,identityAuthority)===null
+                &&KShopProtocol.sanitizeResponse('checkoutPreview',identityPayload,wrongSelectorPreview,identityAuthority)===null);
+        var saveRequest={cart:[{idx:0,qty:2}]};
+        var savedClamp={success:true,v:1,cart:[{idx:0,qty:1}],adjusted:true};
+        var savedIncrease=clone(savedClamp);savedIncrease.cart[0].qty=3;
+        var savedWrongFlag=clone(savedClamp);savedWrongFlag.adjusted=false;
+        assert('kshop-protocol-save-postcondition','KShop saveCart adopts only an authority-bounded canonical cart',
+            KShopProtocol.sanitizeResponse('saveCart',saveRequest,savedClamp,identityAuthority)
+                &&KShopProtocol.sanitizeResponse('saveCart',saveRequest,savedIncrease,identityAuthority)===null
+                &&KShopProtocol.sanitizeResponse('saveCart',saveRequest,savedWrongFlag,identityAuthority)===null);
+        var commitAuthority=clone(identityAuthority);commitAuthority.preview=identityPreviewClean;
+        var wrongPostcondition={success:true,v:1,newBalance:471,delivered:[identityLine],cart:[],
+            purchased:identityPurchased,purchasedToken:'shop.protocol.1',catalog:identityCatalog};
+        var correctPostcondition=clone(wrongPostcondition);correctPostcondition.newBalance=470;
+        var wrongCatalogPostcondition=clone(correctPostcondition);
+        wrongCatalogPostcondition.catalog[0].displayname='近似但错误的显示名';
+        assert('kshop-protocol-postcondition','KShop commit rejects a success with the wrong projected balance',
+            KShopProtocol.sanitizeResponse('checkoutCommit',
+                {v:1,expectedCheckoutToken:'kcheckout.protocol.1'},wrongPostcondition,commitAuthority)===null
+                &&KShopProtocol.sanitizeResponse('checkoutCommit',
+                    {v:1,expectedCheckoutToken:'kcheckout.protocol.1'},wrongCatalogPostcondition,commitAuthority)===null);
+    }
+
     async function run() {
+        if(new URLSearchParams(location.search).get('identity')==='1'){
+            recordIdentityProtocolChecks();
+            var identityPassed=results.filter(function(item){return item.pass;}).length;
+            window.__qaResult={qa:{total:results.length,passed:identityPassed,
+                failed:results.length-identityPassed,results:results}};
+            document.getElementById('qa-status').textContent=identityPassed+'/'+results.length+' passed';
+            return;
+        }
+
         // Panel 生命周期级资源门：本 WebView 会话首个 panel 在 icon manifest 完成前
         // 不得创建内容或发业务快照；该门位于 Panels，后续迁移 UI 无需各自复制。
         var coldPanelOpen = Host.open();
@@ -909,9 +1161,34 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('panel-ui0','共享 Panel 前置在首次迁移 UI 打开前完成图标 manifest',
             sharedIconReady,
             'gate=' + sharedIconGateHeld + ' assets=' + Panels.requiredAssetsReady());
+        // 身份协议的纯同步变异检查放在冷启动资源门之后，避免增加门前 CPU 时间，
+        // 把 35ms 的 manifest 延迟耗尽并令资源门观察退化成非确定性时序测试。
+        recordIdentityProtocolChecks();
+        var firstShopRequest = Host.sent.filter(function(message){ return message.domain !== 'inventory' && message.callId; })[0];
         assert('kshop-ui1','首次打开使用 namespaced callId 并渲染目录',
-            /^wb\.harness\.\d+\.\d+$/.test(Host.sent[0].callId) && document.querySelectorAll('.kshop-card').length >= 2,
-            Host.sent[0] && Host.sent[0].callId);
+            firstShopRequest && /^wb\.harness\.\d+\.\d+$/.test(firstShopRequest.callId)
+                && document.querySelectorAll('.kshop-card').length >= 2,
+            firstShopRequest && firstShopRequest.callId);
+        var firstKShopInstance = KShop.debugState().panelInstanceId;
+        var firstInventoryMessages = Host.sent.filter(function(message){ return message.domain === 'inventory'; });
+        assert('kshop-owner1','商城全部 Inventory 请求绑定 exact owner panel 与 exact panelInstanceId',
+            firstInventoryMessages.length > 0 && firstInventoryMessages.every(function(message){
+                return message.panel === 'kshop' && message.panelInstanceId === firstKShopInstance;
+            }), JSON.stringify({instance:firstKShopInstance,messages:firstInventoryMessages}));
+        var initialSurfaceRequests = firstInventoryMessages.filter(function(message){
+            return message.cmd === 'snapshot';
+        }).map(function(message){ return message.payload.requests; });
+        assert('kshop-surface1','生产 KShop 首次打开先完成 0/100 探测与按 A=240 补齐的 50+A physical surface',
+            JSON.stringify(initialSurfaceRequests) === JSON.stringify([
+                [{containerId:'背包',offset:0,limit:50,filterKey:'all'},
+                    {containerId:'战备箱',offset:0,limit:100,filterKey:'all'}],
+                [{containerId:'战备箱',offset:100,limit:100,filterKey:'all'}],
+                [{containerId:'战备箱',offset:200,limit:40,filterKey:'all'}]
+            ]) && KShop.debugState().inventory.physicalSurface
+                && KShop.debugState().inventory.physicalSurface.accessibleCapacity === 240
+                && KShop.debugState().inventory.physicalSurface.responseCount === 3,
+            JSON.stringify({requests:initialSurfaceRequests,
+                surface:KShop.debugState().inventory.physicalSurface}));
         assert('kshop-ui2','生产格子走动态图标 HTML 入口',
             document.querySelectorAll('[data-icon]').length >= 3,
             document.querySelectorAll('[data-icon]').length + ' icons');
@@ -1252,22 +1529,19 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 overflow:shellStyle.overflowX+'/'+shellStyle.overflowY
             }));
 
-        var primitiveNames = ['DualPaneShell','WorkbenchViewHost','ViewChrome','GridRenderer','ContainerViewAdapter','GridContainerView','InteractionBroker','PointerDragController'];
-        var contractStatus = Workbench.contractStatus();
-        assert('kshop-ui2c','Gate A1/A2 复用于商城背包—战备箱库存态',
+        var primitiveNames = ['DualPaneShell','ViewChrome','GridRenderer','ContainerViewAdapter','GridContainerView','InteractionBroker','PointerDragController'];
+        assert('kshop-ui2c','商城只消费现役公开工作台能力，内部 ViewHost 与历史 gate 状态不再外露',
             primitiveNames.every(function(name){ return typeof Workbench[name] === 'function'; })
-                && contractStatus.shell === 'gate-a1-accepted'
-                && contractStatus.interactionBroker === 'gate-a2-accepted'
-                && contractStatus.ownedTransfer === 'gate-a2-accepted'
-                && contractStatus.warehouseWindow === 'gate-a3-candidate',
-            primitiveNames.join(',') + ' / warehouse=' + contractStatus.warehouseWindow);
+                && typeof Workbench.WorkbenchViewHost === 'undefined'
+                && typeof Workbench.contractStatus === 'undefined',
+            primitiveNames.join(','));
 
         addEquipment();
         Panels.close();
         Host.reset();
         Host.state.cart = [{idx:1,qty:2}];
         Host.delays.bulkQuery = 140;
-        Panels.open('kshop');
+        Host.openPanel('kshop');
         await wait(20);
         var loadingGateState = KShop.debugState();
         var loadingCheckout = document.querySelector('#kshop-checkout');
@@ -1285,9 +1559,15 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         Panels.close();
         Host.reset();
         Host.state.cart = [{idx:1,qty:1000000},{idx:99,qty:1}];
-        Panels.open('kshop');
-        await waitFor(function(){ return KShop.debugState().shopReady && countCmd('saveCart') === 1; }, 700);
-        assert('kshop-ui2f','首次快照自动清理的失效/超限购物车会写回权威恢复影子',
+        Host.openPanel('kshop');
+        await waitFor(function(){
+            var recoveryState = KShop.debugState();
+            return recoveryState.shopReady && countCmd('saveCart') === 1
+                && Host.state.cart.length === 1 && Host.state.cart[0].idx === 1
+                && Host.state.cart[0].qty === 999999
+                && !recoveryState.write.dirty && !recoveryState.write.saveInFlight;
+        }, 700);
+        assert('kshop-ui2-cart-reconcile','首次快照自动清理的失效/超限购物车会写回权威恢复影子',
             Host.state.cart.length === 1 && Host.state.cart[0].idx === 1
                 && Host.state.cart[0].qty === 999999 && !KShop.debugState().write.dirty,
             'cart=' + JSON.stringify(Host.state.cart) + ' state=' + JSON.stringify(KShop.debugState().write));
@@ -1297,18 +1577,24 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             send:function(message){ muxSent.push(message); }, sessionNonce:'mux', timeoutMs:500,
             onProtocolError:function(){ muxErrors += 1; }
         });
-        mux.openSession();
+        mux.openSession({ownerPanel:'kshop',panelInstanceId:'panel.harness.kshop.mux-a'});
         var muxId = mux.request('shop','bulkQuery',{},function(){ muxCalls += 1; });
-        var wrongConsumed = mux.handleResponse({type:'panel_resp',panel:'map',callId:muxId,success:true});
-        var rightConsumed = mux.handleResponse({type:'panel_resp',callId:muxId,success:true});
-        assert('kshop-ui3','错通道回包不消费 pending，正确回包只完成一次',
-            !wrongConsumed && rightConsumed && muxErrors === 1 && muxCalls === 1 && mux.pendingCount() === 0);
+        var wrongConsumed = mux.handleResponse({type:'panel_resp',panel:'map',
+            panelInstanceId:'panel.harness.kshop.mux-a',cmd:'bulkQuery',callId:muxId,success:true});
+        var mixedInstanceConsumed = mux.handleResponse({type:'panel_resp',panel:'kshop',
+            panelInstanceId:'panel.harness.kshop.mux-retired',cmd:'bulkQuery',callId:muxId,success:true});
+        var rightConsumed = mux.handleResponse({type:'panel_resp',panel:'kshop',
+            panelInstanceId:'panel.harness.kshop.mux-a',cmd:'bulkQuery',callId:muxId,success:true});
+        assert('kshop-ui3','错 owner 与同 callId/错 instance 不消费 pending，exact 回包只完成一次',
+            !wrongConsumed && !mixedInstanceConsumed && rightConsumed && muxErrors === 2
+                && muxCalls === 1 && mux.pendingCount() === 0);
 
         var lateCalls = 0;
         var lateId = mux.request('shop','tooltip',{},function(){ lateCalls += 1; });
         mux.closeSession();
-        mux.openSession();
-        var lateConsumed = mux.handleResponse({type:'panel_resp',callId:lateId,success:true});
+        mux.openSession({ownerPanel:'kshop',panelInstanceId:'panel.harness.kshop.mux-b'});
+        var lateConsumed = mux.handleResponse({type:'panel_resp',panel:'kshop',
+            panelInstanceId:'panel.harness.kshop.mux-a',cmd:'tooltip',callId:lateId,success:true});
         assert('kshop-ui4','close/open generation 隔离迟到回包',!lateConsumed && lateCalls === 0 && mux.pendingCount() === 0);
         mux.closeSession();
 
@@ -1347,14 +1633,14 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         await waitFor(function(){ return KShop.debugState().cartCount === 0 && !KShop.debugState().inventory.busyOwner; },600);
         assert('kshop-ui6b','新结算直接交付背包且不新增历史待领取记录',
             Host.state.purchased.length === BASE_PURCHASED.length
-                && Host.state.inventory.背包.some(function(item){ return item && item.name === '测试手枪'; })
+                && Host.state.inventory.背包.some(function(item){ return item && item.name === 'rule.alpha'; })
                 && KShop.debugState().purchasedCount === BASE_PURCHASED.length,
             'purchased=' + Host.state.purchased.length + ' cart=' + KShop.debugState().cartCount);
 
         Panels.close();
         Host.reset();
         Host.state.catalog[1].maxQuantity = 2;
-        Panels.open('kshop');
+        Host.openPanel('kshop');
         await waitFor(function(){ return KShop.debugState().shopReady; }, 500);
         addStackable(2);
         await confirmCheckout();
@@ -1422,13 +1708,182 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         PanelTooltip.hide();
         await wait(40);
         var claimMessage = Host.sent.find(function(message){ return message.cmd === 'claim'; });
-        await waitFor(function(){ return countInventoryCmd('snapshot') === snapshotsBeforeClaim + 1
+        await waitFor(function(){ return countInventoryCmd('snapshot') === snapshotsBeforeClaim + 3
             && !KShop.debugState().inventory.busyOwner; }, 800);
         assert('kshop-ui7','claim 全局单飞、携 purchased token，并锁到背包 snapshot 完成',
             countCmd('claim') === 1 && allLocked && claimMessage && !!claimMessage.expectedPurchasedToken
-                && countInventoryCmd('snapshot') === snapshotsBeforeClaim + 1
+                && countInventoryCmd('snapshot') === snapshotsBeforeClaim + 3
                 && !document.querySelector('.kshop-add-btn[data-idx="0"]'),
             'claim=' + countCmd('claim') + ' inventorySnapshot=' + countInventoryCmd('snapshot'));
+
+        await Host.open(function(state) {
+            for (var filteredBladeIndex=0; filteredBladeIndex<90; filteredBladeIndex++) {
+                state.inventory.战备箱[filteredBladeIndex] = {
+                    name:'筛选刀' + filteredBladeIndex,
+                    displayName:'筛选刀 ' + (filteredBladeIndex + 1),
+                    icon:'镜之虎彻',
+                    majorType:'武器',
+                    use:'刀',
+                    itemKind:'equipment',
+                    quantity:1
+                };
+            }
+        });
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        var filteredWarehouseToolbar = document.querySelector(
+            '.inventory-owned-warehouse .workbench-view-toolbar');
+        await waitFor(function(){
+            return !!filteredWarehouseToolbar.querySelector('[data-filter-path="category"]');
+        }, 600);
+        filteredWarehouseToolbar.querySelector('[data-filter-path="category"]').click();
+        await waitFor(function(){
+            var request = KShop.debugState().inventory.requests[1];
+            return !KShop.debugState().inventory.busyOwner && request.filterSpec
+                && request.filterSpec.branch === 'category' && request.filterSpec.major === 'all';
+        }, 600);
+        filteredWarehouseToolbar = document.querySelector(
+            '.inventory-owned-warehouse .workbench-view-toolbar');
+        await waitFor(function(){
+            return !!filteredWarehouseToolbar.querySelector('[data-filter-path="category/weapon"]');
+        }, 600);
+        filteredWarehouseToolbar.querySelector('[data-filter-path="category/weapon"]').click();
+        await waitFor(function(){
+            var request = KShop.debugState().inventory.requests[1];
+            return !KShop.debugState().inventory.busyOwner && request.filterSpec
+                && request.filterSpec.major === 'weapon'
+                && !!document.querySelector(
+                    '.inventory-owned-warehouse [data-filter-path="category/weapon/刀"]');
+        }, 600);
+        filteredWarehouseToolbar = document.querySelector(
+            '.inventory-owned-warehouse .workbench-view-toolbar');
+        filteredWarehouseToolbar.querySelector('[data-filter-path="category/weapon/刀"]').click();
+        await waitFor(function(){
+            var request = KShop.debugState().inventory.requests[1];
+            return !KShop.debugState().inventory.busyOwner && request.filterSpec
+                && request.filterSpec.use === '刀';
+        }, 600);
+        click('.inventory-owned-warehouse .inventory-page-next');
+        await waitFor(function(){
+            var request = KShop.debugState().inventory.requests[1];
+            return !KShop.debugState().inventory.busyOwner && request.offset === 40
+                && request.filterSpec && request.filterSpec.use === '刀';
+        }, 600);
+        var filteredDesiredRequests = clone(KShop.debugState().inventory.requests);
+        var filteredExpectedRefresh = [
+            [
+                {containerId:'背包',offset:0,limit:50,filterKey:'all'},
+                {containerId:'战备箱',offset:0,limit:100,filterKey:'all'}
+            ],
+            [{containerId:'战备箱',offset:100,limit:100,filterKey:'all'}],
+            [{containerId:'战备箱',offset:200,limit:40,filterKey:'all'}],
+            filteredDesiredRequests
+        ];
+        click('.workbench-mode-btn[data-mode="shop"]');
+        addEquipment();
+        await waitFor(function(){ return countCmd('saveCart') === 1 && Host.state.cart.length === 1; }, 500);
+        Host.delays.checkoutCommit = 30;
+        Host.delays.snapshot = 120;
+        var filteredCheckoutSnapshotStart = countInventoryCmd('snapshot');
+        await confirmCheckout();
+        await waitFor(function(){
+            return countInventoryCmd('snapshot') === filteredCheckoutSnapshotStart + 4
+                && !!KShop.debugState().inventory.busyOwner;
+        }, 1200);
+        var filteredCheckoutBusyAtFourth = !!KShop.debugState().inventory.busyOwner;
+        var filteredCheckoutMessages = Host.sent.filter(function(message){
+            return message.domain === 'inventory' && message.cmd === 'snapshot';
+        }).slice(filteredCheckoutSnapshotStart);
+        var filteredCheckoutRequests = filteredCheckoutMessages.map(function(message){
+            return message.payload.requests;
+        });
+        await waitFor(function(){ return !KShop.debugState().inventory.busyOwner; }, 700);
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        var filteredCheckoutState = KShop.debugState().inventory;
+        var filteredCheckoutBreadcrumb = document.querySelector(
+            '.inventory-owned-warehouse .workbench-view-breadcrumb-host '
+                + '[data-filter-breadcrumb-path="category/weapon/刀"][aria-current="page"]');
+        assert('kshop-filtered-checkout-surface',
+            '筛选翻页后的 checkout 先重取完整 physical surface，再以同 owner 取得 exact visible 投影',
+            JSON.stringify(filteredCheckoutRequests) === JSON.stringify(filteredExpectedRefresh)
+                && filteredCheckoutMessages.length === 4
+                && filteredCheckoutMessages.every(function(message){
+                    return message.panel === 'kshop'
+                        && message.panelInstanceId === KShop.debugState().panelInstanceId;
+                })
+                && filteredCheckoutBusyAtFourth
+                && !filteredCheckoutState.busyOwner
+                && JSON.stringify(filteredCheckoutState.requests) === JSON.stringify(filteredDesiredRequests)
+                && filteredCheckoutState.physicalSurface
+                && filteredCheckoutState.physicalSurface.schema === InventoryRuntime.physicalSurfaceSchema
+                && filteredCheckoutState.physicalSurface.accessibleCapacity === 240
+                && filteredCheckoutState.physicalSurface.responseCount === 3,
+            JSON.stringify({requests:filteredCheckoutRequests,state:filteredCheckoutState}));
+        assert('kshop-filtered-checkout-view',
+            'checkout 权威刷新保留结构化筛选、第二页与面包屑',
+            filteredCheckoutState.requests[1].offset === 40
+                && filteredCheckoutState.requests[1].filterSpec.branch === 'category'
+                && filteredCheckoutState.requests[1].filterSpec.major === 'weapon'
+                && filteredCheckoutState.requests[1].filterSpec.use === '刀'
+                && !!filteredCheckoutBreadcrumb,
+            JSON.stringify(filteredCheckoutState.requests[1]));
+
+        click('.workbench-mode-btn[data-mode="shop"]');
+        Host.delays.claim = 30;
+        Host.delays.snapshot = 120;
+        var filteredClaimCountStart = countCmd('claim');
+        var filteredClaimSnapshotStart = countInventoryCmd('snapshot');
+        click('.kshop-claim-btn');
+        await waitFor(function(){
+            return countCmd('claim') === filteredClaimCountStart + 1
+                && countInventoryCmd('snapshot') === filteredClaimSnapshotStart + 4
+                && !!KShop.debugState().inventory.busyOwner;
+        }, 1200);
+        var filteredClaimBusyAtFourth = !!KShop.debugState().inventory.busyOwner;
+        var filteredClaimMessages = Host.sent.filter(function(message){
+            return message.domain === 'inventory' && message.cmd === 'snapshot';
+        }).slice(filteredClaimSnapshotStart);
+        var filteredClaimRequests = filteredClaimMessages.map(function(message){
+            return message.payload.requests;
+        });
+        await waitFor(function(){ return !KShop.debugState().inventory.busyOwner; }, 700);
+        click('.workbench-mode-btn[data-mode="inventory"]');
+        var filteredClaimState = KShop.debugState().inventory;
+        var filteredClaimBreadcrumb = document.querySelector(
+            '.inventory-owned-warehouse .workbench-view-breadcrumb-host '
+                + '[data-filter-breadcrumb-path="category/weapon/刀"][aria-current="page"]');
+        assert('kshop-filtered-claim-surface',
+            '筛选翻页后的 claim 同样完成 3 批 physical + 1 批 exact visible，且第四回包前保持忙碌',
+            JSON.stringify(filteredClaimRequests) === JSON.stringify(filteredExpectedRefresh)
+                && filteredClaimMessages.length === 4
+                && filteredClaimMessages.every(function(message){
+                    return message.panel === 'kshop'
+                        && message.panelInstanceId === KShop.debugState().panelInstanceId;
+                })
+                && filteredClaimBusyAtFourth
+                && !filteredClaimState.busyOwner
+                && JSON.stringify(filteredClaimState.requests) === JSON.stringify(filteredDesiredRequests)
+                && filteredClaimState.physicalSurface
+                && filteredClaimState.physicalSurface.schema === InventoryRuntime.physicalSurfaceSchema
+                && filteredClaimState.physicalSurface.accessibleCapacity === 240
+                && filteredClaimState.physicalSurface.responseCount === 3,
+            JSON.stringify({requests:filteredClaimRequests,state:filteredClaimState}));
+        assert('kshop-filtered-claim-view',
+            'claim 权威刷新保留结构化筛选、第二页与面包屑',
+            filteredClaimState.requests[1].offset === 40
+                && filteredClaimState.requests[1].filterSpec.branch === 'category'
+                && filteredClaimState.requests[1].filterSpec.major === 'weapon'
+                && filteredClaimState.requests[1].filterSpec.use === '刀'
+                && !!filteredClaimBreadcrumb,
+            JSON.stringify(filteredClaimState.requests[1]));
+        var filteredRootBreadcrumb = document.querySelector(
+            '.inventory-owned-warehouse .workbench-view-breadcrumb-host '
+                + '[data-filter-breadcrumb-path=""]');
+        filteredRootBreadcrumb.click();
+        await waitFor(function(){
+            var request = KShop.debugState().inventory.requests[1];
+            return !KShop.debugState().inventory.busyOwner && request.offset === 0
+                && request.filterSpec && request.filterSpec.major === 'all';
+        }, 600);
 
         await Host.open();
         addEquipment();
@@ -1574,7 +2029,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui8quantity-range','大额数量使用完整权威上限、对数可用标记与至少 24px 滑条命中区',
             kshopStackLine.querySelector('.workbench-quantity-control').getAttribute('data-slider-scale')==='log'
                 &&Number(kshopStackLine.querySelector('.workbench-quantity-control').getAttribute('data-slider-max'))===999999
-                &&Number(kshopStackLine.querySelector('.workbench-quantity-control').getAttribute('data-preset-max'))===100
+                &&Number(kshopStackLine.querySelector('.workbench-quantity-control').getAttribute('data-preset-max'))===94
                 &&kshopQuantityRange.getBoundingClientRect().height>=24);
         var kshopSettlementAfter=kshopSettlementList.scrollTop;
         assert('kshop-ui8scroll','结算数量重算保留溢出列表位置',kshopSettlementBefore>0&&Math.abs(kshopSettlementAfter-kshopSettlementBefore)<=1,
@@ -1599,7 +2054,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 &&hasStructuralTransition(settlementExitMotion,'opacity')
                 &&hasStructuralTransition(settlementExitMotion,'transform'),
             JSON.stringify(settlementExitMotion));
-        await wait(220);
+        await waitFor(function(){
+            var closedMotion = secondaryMotionSnapshot(settlementNode);
+            return closedMotion.visibility === 'hidden' && closedMotion.opacity === 0;
+        }, 700);
         var settlementClosedMotion=secondaryMotionSnapshot(settlementNode);
         assert('kshop-ui8-motion-closed',
             '结算页退出完成后保持结构盒但不可见、不可命中',
@@ -2346,7 +2804,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && reachedLastPage && rememberedLastPage
                 && document.querySelector('.inventory-page-jump').textContent === '1 / 6'
                 && document.querySelector('.inventory-page-range').textContent === '1–40 / 240'
-                && directJumpSnapshots === 3 && countInventoryCmd('snapshot') === 2,
+                && directJumpSnapshots === 3 && countInventoryCmd('snapshot') === 4,
             'menu=' + menuOpened + '/' + escapeClosed + ' options=' + pageOptions.length
                 + ' last=' + reachedLastPage + ' remembered=' + rememberedLastPage
                 + ' snapshots=' + directJumpSnapshots + '/' + countInventoryCmd('snapshot'));
@@ -2368,14 +2826,119 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         assert('kshop-ui10','当前 open generation 内 callId 唯一且符合 Host 白名单',
             callIds.length === new Set(callIds).size && callIds.every(function(id){ return /^[A-Za-z0-9._-]{1,96}$/.test(id); }),
             callIds.join(','));
+        var retryCloseInstance = KShop.debugState().panelInstanceId;
         Host.failNextCloseTransport = true;
         click('.kshop-close-btn');
-        await wait(20);
+        await waitFor(function(){ return Host.failedCloseTransportCount === 1; }, 500);
         assert('kshop-ui10a','商城关闭 transport 失败时保持页面并允许重试',
             Panels.getActive() === 'kshop' && Host.closeCount === 0
-                && Host.activePanel === 'kshop');
+                && Host.activePanel === 'kshop' && Host.failedCloseTransportCount === 1
+                && KShop.debugState().write.canStartWrite);
         click('.kshop-close-btn');
         await waitFor(function(){ return !Panels.getActive() && Host.closeCount === 1; }, 500);
+        var exactKShopClose = Host.sent.filter(function(message){
+            return message.type === 'panel' && message.cmd === 'close' && message.panel === 'kshop';
+        }).pop();
+        assert('kshop-ui10b','商城 owner close 精确回送当前 panelInstanceId',
+            exactKShopClose && exactKShopClose.panelInstanceId === retryCloseInstance
+                && Object.keys(exactKShopClose).sort().join(',') === 'cmd,panel,panelInstanceId,type',
+            JSON.stringify({expected:retryCloseInstance,close:exactKShopClose,
+                keys:exactKShopClose&&Object.keys(exactKShopClose).sort(),rejected:Host.rejectedCloseCount}));
+
+        Panels.close();
+        Host.reset();
+        Host.state.kpoints = 111;
+        Host.delays.bulkQuery = 180;
+        Host.delays.snapshot = 180;
+        Host.openPanel('kshop', {panelInstanceId:'panel.harness.kshop.rebind-old'});
+        await wait(15);
+        var retiredKShopBulk = Host.sent.filter(function(message){
+            return message.cmd === 'bulkQuery';
+        }).pop();
+        var retiredKShopInventory = Host.sent.filter(function(message){
+            return message.domain === 'inventory' && message.cmd === 'snapshot'
+                && message.panelInstanceId === 'panel.harness.kshop.rebind-old';
+        }).pop();
+        Host.state.kpoints = 777;
+        Host.delays.bulkQuery = 0;
+        Host.delays.snapshot = 0;
+        Host.openPanel('kshop', {panelInstanceId:'panel.harness.kshop.rebind-new'});
+        var reboundKShopBulk = Host.sent.filter(function(message){
+            return message.cmd === 'bulkQuery'
+                && message.panelInstanceId === 'panel.harness.kshop.rebind-new';
+        }).pop();
+        var mixedKShopPendingBefore = KShop.debugState().requestMux.pendingCount;
+        ['', null, {unexpected:true}].forEach(function(invalidDomain){
+            if (!reboundKShopBulk) return;
+            window.__emitBridge('panel_resp', {
+                type:'panel_resp', panel:'kshop', domain:invalidDomain,
+                panelInstanceId:'panel.harness.kshop.rebind-new',
+                cmd:'bulkQuery', callId:reboundKShopBulk.callId, success:true,
+                catalog:clone(Host.state.catalog), cart:clone(Host.state.cart),
+                purchased:clone(Host.state.purchased), purchasedToken:Host.state.purchasedToken,
+                kpoints:Host.state.kpoints, playerLevel:Host.state.playerLevel,
+                reverseLevel:Host.state.reverseLevel
+            });
+        });
+        var mixedKShopDomainRejected = KShop.debugState().requestMux.pendingCount
+            === mixedKShopPendingBefore;
+        if (reboundKShopBulk) window.__emitBridge('panel_resp', {
+            type:'panel_resp', panel:'kshop',
+            panelInstanceId:'panel.harness.kshop.rebind-old',
+            cmd:'bulkQuery', callId:reboundKShopBulk.callId, success:true,
+            catalog:clone(Host.state.catalog), cart:clone(Host.state.cart),
+            purchased:clone(Host.state.purchased), purchasedToken:Host.state.purchasedToken,
+            kpoints:Host.state.kpoints, playerLevel:Host.state.playerLevel,
+            reverseLevel:Host.state.reverseLevel
+        });
+        var mixedKShopOwnerRejected = KShop.debugState().requestMux.pendingCount
+            === mixedKShopPendingBefore;
+        await waitFor(function(){
+            var state = KShop.debugState();
+            var balanceNode = document.querySelector('[data-metric="kpoints"] b');
+            return state.panelInstanceId === 'panel.harness.kshop.rebind-new'
+                && state.shopReady && state.inventory.ready
+                && balanceNode && balanceNode.textContent === '777';
+        }, 700);
+        var reboundKShopBeforeLate = KShop.debugState();
+        var reboundKShopBalanceBeforeLate = document.querySelector('[data-metric="kpoints"] b').textContent;
+        await wait(220);
+        var reboundKShopAfterLate = KShop.debugState();
+        var reboundKShopBalanceAfterLate = document.querySelector('[data-metric="kpoints"] b').textContent;
+        var rebindKShopCloseBefore = Host.closeCount;
+        click('.kshop-close-btn');
+        await waitFor(function(){ return !Panels.getActive(); }, 500);
+        var exactRebindKShopClose = Host.sent.filter(function(message){
+            return message.type === 'panel' && message.cmd === 'close' && message.panel === 'kshop';
+        }).pop();
+        assert('kshop-owner2','商城 same-name rebind 丢弃旧业务/Inventory 回包、采用新实例并精确关闭 replacement owner',
+            retiredKShopBulk && retiredKShopBulk.panel === 'kshop'
+                && retiredKShopBulk.panelInstanceId === 'panel.harness.kshop.rebind-old'
+                && !Object.prototype.hasOwnProperty.call(retiredKShopBulk, 'domain')
+                && reboundKShopBulk && reboundKShopBulk.panel === 'kshop'
+                && reboundKShopBulk.panelInstanceId === 'panel.harness.kshop.rebind-new'
+                && !Object.prototype.hasOwnProperty.call(reboundKShopBulk, 'domain')
+                && mixedKShopDomainRejected && mixedKShopOwnerRejected
+                && retiredKShopInventory
+                && reboundKShopBeforeLate.panelInstanceId === 'panel.harness.kshop.rebind-new'
+                && reboundKShopBeforeLate.shopReady && reboundKShopBeforeLate.inventory.ready
+                && reboundKShopBeforeLate.requestMux.pendingCount === 0
+                && reboundKShopBeforeLate.inventoryRequestMux.pendingCount === 0
+                && reboundKShopBalanceBeforeLate === '777'
+                && reboundKShopAfterLate.panelInstanceId === 'panel.harness.kshop.rebind-new'
+                && reboundKShopAfterLate.shopReady && reboundKShopAfterLate.inventory.ready
+                && reboundKShopAfterLate.requestMux.pendingCount === 0
+                && reboundKShopAfterLate.inventoryRequestMux.pendingCount === 0
+                && reboundKShopBalanceAfterLate === '777'
+                && Host.closeCount === rebindKShopCloseBefore + 1
+                && exactRebindKShopClose
+                && exactRebindKShopClose.panelInstanceId === 'panel.harness.kshop.rebind-new'
+                && Object.keys(exactRebindKShopClose).sort().join(',') === 'cmd,panel,panelInstanceId,type'
+                && Host.rejectedCloseCount === 0,
+            JSON.stringify({retiredBulk:retiredKShopBulk,retiredInventory:retiredKShopInventory,
+                before:reboundKShopBeforeLate,after:reboundKShopAfterLate,
+                balance:[reboundKShopBalanceBeforeLate,reboundKShopBalanceAfterLate],
+                close:exactRebindKShopClose,rejected:Host.rejectedCloseCount}));
 
         PanelTooltip.lastRichOptions = null;
         try { localStorage.removeItem('cf7.itemgrid.mode.workbench'); } catch (e) {}
@@ -2865,12 +3428,13 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             Host.activePanel = 'crafting';
             returnedCraftingInit = null;
             localCraftingReturnCount = 0;
-            Panels.open('crafting', {
+            Host.openPanel('crafting', {
                 category:'化学生产',preferredRecipeIndex:3,preferredCraftCount:7
             });
             var mounted = CraftingInventoryOrganizer.mount(craftingOrganizerHost, {
                 kind:'crafting-organizer',
                 panel:'crafting',
+                panelInstanceId:returnedCraftingInit.panelInstanceId,
                 onReturn:function() {
                     localCraftingReturnCount += 1;
                     craftingOrganizerHost.textContent = '合成已恢复';
@@ -2904,7 +3468,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             backdropReturnState.ownerContext === 'crafting-organizer'
                 && localCraftingReturnCount === 0 && !Panels.getActive()
                 && backdropCloseMessage
-                && Object.keys(backdropCloseMessage).sort().join('|') === 'cmd|panel|type'
+                && backdropCloseMessage.panelInstanceId === backdropReturnState.panelInstanceId
+                && Object.keys(backdropCloseMessage).sort().join('|') === 'cmd|panel|panelInstanceId|type'
                 && Host.rejectedCloseCount === 0,
             JSON.stringify({returnState:backdropReturnState,returnCount:localCraftingReturnCount,
                 closeCount:Host.closeCount,closeMessage:backdropCloseMessage}));
@@ -2922,16 +3487,19 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             escapeReturnState.ownerContext === 'crafting-organizer'
                 && localCraftingReturnCount === 0 && !Panels.getActive()
                 && escapeCloseMessage
-                && Object.keys(escapeCloseMessage).sort().join('|') === 'cmd|panel|type'
+                && escapeCloseMessage.panelInstanceId === escapeReturnState.panelInstanceId
+                && Object.keys(escapeCloseMessage).sort().join('|') === 'cmd|panel|panelInstanceId|type'
                 && Host.rejectedCloseCount === 0,
             JSON.stringify({returnState:escapeReturnState,returnCount:localCraftingReturnCount,
                 closeCount:Host.closeCount,closeMessage:escapeCloseMessage}));
 
         await openCraftingReturnWorkbench();
         var forceCloseCount = Host.closeCount;
+        var forceCraftingInstance = returnedCraftingInit.panelInstanceId;
         window.__emitBridge('panel_cmd', {
             cmd:'force_close',
             panel:'crafting',
+            panelInstanceId:forceCraftingInstance,
             reason:'disconnected'
         });
         await wait(20);
@@ -2977,7 +3545,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         });
         Host.reset();
         Host.activePanel = 'workbench';
-        Panels.open('workbench', {
+        Host.openPanel('workbench', {
             profile:'battlebox',
             view:'storage',
             panelInstanceId:'panel.harness.mount-throw'
@@ -3017,11 +3585,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         });
         Host.reset();
         Host.activePanel = 'skills';
-        Panels.open('skills', {panelInstanceId:'panel.skills.rebind-old'});
+        Host.openPanel('skills', {panelInstanceId:'panel.skills.rebind-old'});
         Host.sent = [];
         Host.closeCount = 0;
         Host.activePanel = 'skills';
-        Panels.open('skills', {panelInstanceId:'panel.skills.rebind-new'});
+        Host.openPanel('skills', {panelInstanceId:'panel.skills.rebind-new'});
         await wait(20);
         var rebindThrowMessages = Host.sent.filter(function(message) {
             return message.type === 'panel' && message.cmd === 'close';

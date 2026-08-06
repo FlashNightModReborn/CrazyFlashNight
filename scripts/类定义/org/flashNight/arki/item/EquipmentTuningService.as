@@ -117,6 +117,9 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static function executePreview(params:Object):Object {
         var session:Object = activateWebSession(params);
         if (!session.success) return session;
+        // 同一权威 session 中，每次新 preview 尝试都是单一当前计划的代际边界。
+        // 即使后续参数、候选或业务规则校验失败，也不得让旧 token 继续可提交。
+        revokeActivePlan();
         var operation:String = params.operation == undefined ? "" : String(params.operation);
         if (_allowedOperations[operation] !== true) return fail("unsupported_operation");
         var source:Object = resolveWebSlot(params.source);
@@ -276,7 +279,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
 
         var inventorySnapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
         var newSourceRef:Object = refFromInventorySnapshot(inventorySnapshot, source.slot);
-        var committedSnapshot:Object = buildTuningSnapshot(source, newSourceRef);
+        var committedSnapshot:Object = buildTuningSnapshot(
+            source, newSourceRef, fresh.materials);
         var committedAfter:Object = buildCommittedAfter(fresh, timestamp, inventorySnapshot);
         _busy = false;
         return {
@@ -379,7 +383,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var response:Object = null;
         try {
             committedSnapshot =
-                buildTuningSnapshot(source, postSource);
+                buildTuningSnapshot(source, postSource, plan.materials);
             var changed:Object = plan.changes[0];
             committedAfter = {
                 source:{
@@ -554,8 +558,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
         if (itemData == undefined || itemData == null) return fail("item_data_missing");
         var descHTML:String = TooltipComposer.generateItemDescriptionText(itemData, null);
         var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, {level:1});
-        var displayName:String = itemData.displayname == undefined
-            ? String(candidate.itemName) : String(itemData.displayname);
+        var displayName:String = String(
+            itemPresentation(String(candidate.itemName)).displayName);
         var safeIntroHTML:String = introHTML.split('"').join("'");
         var safeDescHTML:String = descHTML.split('"').join("'");
         return {success:true, candidateKey:candidateKey,
@@ -796,7 +800,9 @@ class org.flashNight.arki.item.EquipmentTuningService {
             && deepEqual(expected.affectedSlots, current.affectedSlots, 0);
     }
 
-    private static function buildTuningSnapshot(source:Object, sourceRef:Object):Object {
+    private static function buildTuningSnapshot(
+            source:Object, sourceRef:Object,
+            requiredMaterials:Array):Object {
         if (source == null || source.item == null) return null;
         var materials:Object = getMaterialCollection();
         if (materials == null) return null;
@@ -868,6 +874,16 @@ class org.flashNight.arki.item.EquipmentTuningService {
             }
         }
 
+        // 提交后已卸下的历史插件可能不再属于当前候选池；
+        // post snapshot 仍必须证明本次所有材料终值与展示身份。
+        if (requiredMaterials != undefined && requiredMaterials != null) {
+            for (i = 0; i < requiredMaterials.length; i++) {
+                var requiredName:String = String(
+                    requiredMaterials[i].itemName);
+                materialNames[requiredName] = true;
+            }
+        }
+
         // 逐个模拟“先拆旧件、再装新件”的最终状态，只投影可原子替换的旧件键。
         for (i = 0; i < modCandidates.length; i++) {
             var replacementProjection:Object = modCandidates[i];
@@ -886,7 +902,13 @@ class org.flashNight.arki.item.EquipmentTuningService {
         names.sort();
         var materialSnapshot:Array = [];
         for (i = 0; i < names.length; i++) {
-            materialSnapshot.push({itemName:names[i], count:materials.getValue(names[i])});
+            var materialPresentation:Object = itemPresentation(String(names[i]));
+            materialSnapshot.push({
+                itemName:names[i],
+                displayName:materialPresentation.displayName,
+                icon:materialPresentation.icon,
+                count:materials.getValue(names[i])
+            });
         }
         var level:Number = Number(item.value.level);
         var cap:Number = getEnhancementCap();
@@ -911,6 +933,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var raw:Object = ItemUtil.getRawItemData(item.name);
         var data:Object = typeof item.getData == "function"
             ? item.getData() : raw;
+        // 唯一 legacy metadata 适配点：Host/Web 只消费完整三元身份，绝不再猜内部名。
+        var presentation:Object = itemPresentation(String(item.name));
         var modSlotCapacity:Number = 0;
         var modSlotCapacityKnown:Boolean = data != null
             && data.data != undefined && data.data != null
@@ -930,8 +954,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
         }
         var projection:Object = {
             name:String(item.name),
-            displayName:raw == null || raw.displayname == undefined ? String(item.name) : String(raw.displayname),
-            icon:raw == null || raw.icon == undefined ? "" : String(raw.icon),
+            displayName:String(presentation.displayName),
+            icon:String(presentation.icon),
             type:raw == null || raw.type == undefined ? "" : String(raw.type),
             use:raw == null || raw.use == undefined ? "" : String(raw.use),
             level:Number(value.level),
@@ -954,7 +978,15 @@ class org.flashNight.arki.item.EquipmentTuningService {
         for (var i:Number = 0; i < names.length; i++) {
             var before:Number = materials.getValue(names[i]);
             var delta:Number = Number(deltas[names[i]]);
-            result.push({itemName:names[i], before:before, delta:delta, after:before + delta});
+            var presentation:Object = itemPresentation(String(names[i]));
+            result.push({
+                itemName:names[i],
+                displayName:presentation.displayName,
+                icon:presentation.icon,
+                before:before,
+                delta:delta,
+                after:before + delta
+            });
         }
         return {success:true, materials:result};
     }
@@ -963,7 +995,14 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var result:Array = [];
         for (var i:Number = 0; i < materials.length; i++) {
             var row:Object = materials[i];
-            result.push({itemName:row.itemName, before:row.before, delta:row.delta, after:row.after});
+            result.push({
+                itemName:row.itemName,
+                displayName:row.displayName,
+                icon:row.icon,
+                before:row.before,
+                delta:row.delta,
+                after:row.after
+            });
         }
         return result;
     }
@@ -1306,16 +1345,35 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var displayName:String = itemName;
         var icon:String = itemName;
         if (itemData != null) {
-            if (itemData.displayname != undefined && itemData.displayname != null
-                    && String(itemData.displayname).length > 0) {
-                displayName = String(itemData.displayname);
-            }
-            if (itemData.icon != undefined && itemData.icon != null
-                    && String(itemData.icon).length > 0) {
-                icon = String(itemData.icon);
-            }
+            displayName = presentationTextOrFallback(
+                itemData.displayname, itemName);
+            icon = presentationTextOrFallback(
+                itemData.icon, itemName);
         }
         return {displayName:displayName, icon:icon};
+    }
+
+    private static function presentationTextOrFallback(
+            value, fallback:String):String {
+        // legacy XML metadata is accepted only when it is already a string.
+        // Number/Object coercion would turn corrupt metadata into plausible Web identity.
+        if (value == undefined || value == null
+                || typeof value != "string") return fallback;
+        var text:String = String(value);
+        var start:Number = 0;
+        var end:Number = text.length - 1;
+        while (start <= end && isPresentationWhitespace(
+                text.charCodeAt(start))) start++;
+        while (end >= start && isPresentationWhitespace(
+                text.charCodeAt(end))) end--;
+        if (start > end) return fallback;
+        var trimmed:String = text.substring(start, end + 1);
+        if (trimmed.toLowerCase() == "undefined") return fallback;
+        return text;
+    }
+
+    private static function isPresentationWhitespace(code:Number):Boolean {
+        return code <= 32 || code == 160;
     }
 
     /** 将插件定义的单源元数据投影给 Web 候选目录；安装权威仍是 availabilityCode。 */

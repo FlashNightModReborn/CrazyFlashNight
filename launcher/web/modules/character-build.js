@@ -111,16 +111,44 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             }
         });
     }
+    function definitiveCandidateStale(response) {
+        return !!response && response.success === false
+            && String(response.error || '') === 'stale_state';
+    }
+    function candidateCacheTarget(target, scope) {
+        if (!target || typeof target !== 'object') return '';
+        if (target.kind === 'equipment') {
+            scope = SessionModule.candidateScope(scope || 'compatible');
+            if (scope === 'backpack') return 'equipment:backpack';
+            var slotKey = String(target.slotKey || '');
+            // Both handgun holders consume the same `use=手枪` candidate rule.
+            // Reusing their read model is safe; the eventual write still carries
+            // the exact selected holder and source lease.
+            return slotKey === '手枪' || slotKey === '手枪2'
+                ? 'equipment:手枪' : '';
+        }
+        // Drug readiness can change with time without advancing a revision. Do
+        // not cache it, and do not generalize this exception into a multi-key LRU.
+        return '';
+    }
 
     function CharacterBuildController(options) {
         options = options || {};
+        var self = this;
         this._document = options.document || global.document;
         this._ports = options.ports || {};
         this._mux = options.mux || createRequestMux(options);
+        this._tooltip = options.tooltip || global.PanelTooltip;
         this._session = new SessionModule.CharacterBuildSession({
             mux:this._mux,
             onState:this._stateChanged.bind(this),
-            onError:this._error.bind(this)
+            onError:this._error.bind(this),
+            onCandidateAuthorityReset:function() {
+                // Host revokes the previous candidate source set as soon as a
+                // candidates/snapshot read is admitted, even if it later fails.
+                self._candidateCache = null;
+                if (self._candidateTooltip) self._candidateTooltip.invalidate();
+            }
         });
         this._candidateTooltip = new CandidateTooltipModule.CandidateTooltip({
             send:options.send,
@@ -130,9 +158,8 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             sessionNonce:options.sessionNonce,
             router:options.router,
             mux:options.tooltipMux,
-            tooltip:options.tooltip || global.PanelTooltip
+            tooltip:this._tooltip
         });
-        var self = this;
         this._mutations = new Mutation.MutationCoordinator({
             session:this._session,
             ports:this._ports,
@@ -146,9 +173,15 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         this._selectedTarget = null;
         this._selectedSlotKey = '';
         this._selectedCandidate = null;
+        this._candidateScope = 'compatible';
+        // Deliberately one recent entry: Host authorizes candidate tooltips only
+        // for its latest candidate source set. A multi-key cache would let the UI
+        // redisplay rows whose rich-tooltip capability has already been replaced.
+        this._candidateCache = null;
         this._mountGeneration = 0;
         this._resizeObserver = null;
         this._panelInstanceId = '';
+        this._candidateRecoverySequence = 0;
         this._tuningTransport = {
             send:options.send,
             timeoutMs:options.timeoutMs,
@@ -161,6 +194,10 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
                 && (reason === 'mutation_start' || reason === 'flush_start'
                     || reason === 'finalize_start' || reason === 'finalize_retry')) {
             this._candidateTooltip.invalidate();
+        }
+        if (reason === 'mutation_start' || reason === 'flush_start'
+                || reason === 'finalize_start' || reason === 'finalize_retry') {
+            this._candidateCache = null;
         }
         var tuningLocked = !!(this._tuning && this._tuning.isLocked());
         if (this._ports.setStatus) {
@@ -192,6 +229,10 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     };
     CharacterBuildController.prototype._error = function(response, command) {
         var error = response && response.error;
+        if (command === 'candidates' && error === 'stale_state') return;
+        // Tooltip 是悬浮/焦点触发的展示增强；失败时保留本地紧凑摘要，
+        // 不用 toast 打断玩家当前的构筑操作。
+        if (command === 'tooltip') return;
         if (this._ports.toast) this._ports.toast(command === 'finalize'
             ? '当前构筑尚未完成应用与保存，请重试关闭。'
             : error === 'not_sent' ? '角色构筑连接不可用。' : '角色构筑同步失败，请重试。', command, response);
@@ -214,14 +255,29 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         this._view = new ViewModule.CharacterBuildView({
             document:this._document,
             density:this._ports.getDensity ? this._ports.getDensity() : 'full',
+            candidateScope:this._candidateScope,
             onSlotSelect:function(selection) { return self._selectSlot(selection); },
+            onCandidateScopeChange:function(scope, selection) {
+                return self._changeCandidateScope(scope, selection);
+            },
             onCandidateSelect:function(candidate) {
                 self._selectedCandidate = candidate; self._renderPortrait(candidate);
             },
-            bindCandidateTooltip:function(node, candidate) {
+            bindCandidateTooltip:function(node, candidate, isSuppressed) {
                 return self._candidateTooltip
-                    ? self._candidateTooltip.bind(node, candidate) : null;
+                    ? self._candidateTooltip.bind(node, candidate, isSuppressed) : null;
             },
+            fetchLoadoutTooltip:function(target, callback) {
+                var callId = self._session.requestLoadoutTooltip(
+                    target, function(response, accepted) {
+                        callback(accepted
+                            ? {success:true, payload:response.payload}
+                            : response || {success:false, error:'tooltip_failed'});
+                    });
+                if (!callId) callback({success:false, error:'not_issued'});
+                return callId;
+            },
+            tooltip:this._tooltip,
             onCommitCandidate:function(candidate) {
                 return self._mutations.equip(self._selectedTarget, candidate);
             },
@@ -338,9 +394,42 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         this._rendererState = this._portraitState(candidate);
         return this._rendererState ? !!this._renderer.render(this._rendererState) : false;
     };
+    CharacterBuildController.prototype._candidateCacheKey = function(target, scope) {
+        var targetKey = candidateCacheTarget(target, scope);
+        var state = this._session && this._session.debugState
+            ? this._session.debugState() : null;
+        if (!targetKey || !state || !state.sessionGeneration) return '';
+        return [this._panelInstanceId, state.sessionGeneration,
+            state.loadoutRevision, state.drugRevision,
+            SessionModule.candidateScope(scope), targetKey].join('\n');
+    };
+    CharacterBuildController.prototype._readCandidateCache = function(target, scope) {
+        var key = this._candidateCacheKey(target, scope);
+        var entry = this._candidateCache;
+        if (!key || !entry || entry.key !== key) return null;
+        return entry.payload
+            ? Projection.viewCandidates(entry.payload, target)
+            : Array.isArray(entry.candidates) ? entry.candidates.slice() : null;
+    };
+    CharacterBuildController.prototype._storeCandidateCache = function(
+            target, scope, payload, candidates) {
+        var key = this._candidateCacheKey(target, scope);
+        this._candidateCache = null;
+        if (!key || !payload || payload.stateHealth !== 'ok'
+                || !Array.isArray(candidates)) return false;
+        this._candidateCache = {
+            key:key,
+            backpackVersion:Number(payload.backpackVersion),
+            payload:scope === 'backpack' && target
+                    && target.kind === 'equipment' ? payload : null,
+            candidates:candidates.slice()
+        };
+        return true;
+    };
     CharacterBuildController.prototype._applySnapshot = function(payload, restoreSelection) {
         this._snapshotPayload = payload;
         this._selectedCandidate = null;
+        this._candidateCache = null;
         if (this._candidateTooltip) {
             this._candidateTooltip.reset(
                 this._panelInstanceId,
@@ -372,17 +461,27 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         this._selectedSlotKey = selection && String(selection.key || '');
         this._selectedTarget = target;
         this._renderPortrait(null);
-        if (this._candidateTooltip) this._candidateTooltip.invalidate();
+        var scope = this._candidateScope;
+        var cachedCandidates = this._readCandidateCache(target, scope);
+        if (cachedCandidates) return cachedCandidates;
         var self = this, sendRefused = false;
-        var callId = this._session.requestCandidates(target, function(response, accepted) {
+        var callId = this._session.requestCandidates(target, scope, function(
+                response, accepted, targetKey, responseScope) {
             sendRefused = !accepted && response && response.clientSynthetic === true && response.error === 'not_sent';
-            if (!self._view) return;
+            if (!self._view || self._candidateScope !== scope
+                    || responseScope !== scope) return;
             if (accepted) {
+                var candidates = Projection.viewCandidates(response.payload, target);
+                self._storeCandidateCache(target, scope, response.payload, candidates);
                 self._view.setCandidates(
                     selection.requestKey,
-                    Projection.viewCandidates(response.payload));
+                    candidates);
+            } else if (definitiveCandidateStale(response)
+                    && self._recoverCandidateSelection(selection)) {
+                return;
             } else {
-                self._view.setCandidateFailure(selection.requestKey);
+                self._view.setCandidateFailure(
+                    selection.requestKey, response && response.error);
             }
         });
         if (!callId || sendRefused) {
@@ -393,24 +492,114 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         }
         return sendRefused ? null : callId;
     };
+
+    CharacterBuildController.prototype._changeCandidateScope = function(scope, selection) {
+        scope = SessionModule.candidateScope(scope);
+        if (!scope) return false;
+        var previousScope = this._candidateScope;
+        if (scope === previousScope) return true;
+        this._candidateScope = scope;
+        if (!this._session.setCandidateScope(scope)) {
+            this._candidateScope = previousScope;
+            return false;
+        }
+        this._selectedCandidate = null;
+        this._renderPortrait(null);
+        if (!selection || !this._selectedTarget) return true;
+
+        var target = Projection.targetForSelection(selection);
+        if (!target
+                || SessionModule.targetKey(target)
+                    !== SessionModule.targetKey(this._selectedTarget)) {
+            this._candidateScope = previousScope;
+            this._session.setCandidateScope(previousScope);
+            return false;
+        }
+        var cachedCandidates = this._readCandidateCache(target, scope);
+        if (cachedCandidates) return cachedCandidates;
+        var self = this, sendRefused = false;
+        var callId = this._session.requestCandidates(target, scope, function(
+                response, accepted, targetKey, responseScope) {
+            sendRefused = !accepted && response && response.clientSynthetic === true
+                && response.error === 'not_sent';
+            if (!self._view || self._candidateScope !== scope
+                    || responseScope !== scope) return;
+            if (accepted) {
+                var candidates = Projection.viewCandidates(response.payload, target);
+                self._storeCandidateCache(target, scope, response.payload, candidates);
+                self._view.setCandidates(
+                    selection.requestKey,
+                    candidates);
+            } else if (definitiveCandidateStale(response)
+                    && self._recoverCandidateSelection(selection)) {
+                return;
+            } else {
+                self._view.setCandidateFailure(
+                    selection.requestKey, response && response.error);
+            }
+        });
+        if (!callId || sendRefused) {
+            this._candidateScope = previousScope;
+            this._session.setCandidateScope(previousScope);
+            this._renderPortrait(null);
+        }
+        return sendRefused ? false : callId;
+    };
+    CharacterBuildController.prototype._recoverCandidateSelection = function(selection) {
+        if (!this._view || !selection
+                || !this._view.beginCandidateRecovery(selection.requestKey)) return false;
+        var self = this;
+        var recovery = ++this._candidateRecoverySequence;
+        var generation = this._mountGeneration;
+        var panelInstanceId = this._panelInstanceId;
+        this._view.setInteractionState('opening');
+        var callId = this._session.refreshSnapshot({}, function(response, accepted) {
+            if (!self._view || recovery !== self._candidateRecoverySequence
+                    || generation !== self._mountGeneration
+                    || panelInstanceId !== self._panelInstanceId) return;
+            if (accepted) self._applySnapshot(response.payload, true);
+            else self._view.setCandidateFailure(
+                selection.requestKey, 'snapshot_refresh_failed');
+            if (self._view) {
+                self._view.setInteractionState(self._session.getState());
+            }
+        });
+        if (!callId && this._view && recovery === this._candidateRecoverySequence) {
+            this._view.setCandidateFailure(
+                selection.requestKey, 'snapshot_refresh_failed');
+            this._view.setInteractionState(this._session.getState());
+        }
+        return !!callId;
+    };
     CharacterBuildController.prototype._enterTuning = function() {
         if (!this._tuning || !this._selectedTarget
                 || this._selectedTarget.kind !== 'equipment' || !this._snapshotPayload) return false;
+        var entered = false;
         if (this._selectedCandidate) {
             if (this._candidateTooltip) this._candidateTooltip.invalidate();
-            return this._tuning.enterCandidate(
+            entered = this._tuning.enterCandidate(
                 this._selectedCandidate, this._selectedTarget, this._panelInstanceId);
+        } else {
+            var item = TuningModule.findEquipment(
+                this._snapshotPayload, this._selectedTarget.slotKey);
+            if (!item) return false;
+            if (this._candidateTooltip) this._candidateTooltip.invalidate();
+            entered = this._tuning.enter(
+                this._selectedTarget.slotKey, item, this._panelInstanceId);
         }
-        var item = TuningModule.findEquipment(
-            this._snapshotPayload, this._selectedTarget.slotKey);
-        if (!item) return false;
-        if (this._candidateTooltip) this._candidateTooltip.invalidate();
-        return this._tuning.enter(
-            this._selectedTarget.slotKey, item, this._panelInstanceId);
+        // Tuning owns a separate read/write lifecycle and may replace the exact
+        // inventory source lease. Only revoke the optimistic read after entry
+        // really succeeds; a refused attempt keeps the still-valid authority.
+        if (entered) this._candidateCache = null;
+        return entered;
     };
 
     CharacterBuildController.prototype.activate = function(host, panelInstanceId) {
         if (!host || !panelInstanceId) return false;
+        if (!this._view) {
+            this._candidateScope = 'compatible';
+            this._session.setCandidateScope(this._candidateScope);
+        }
         this._panelInstanceId = String(panelInstanceId);
         this._mountGeneration++;
         var generation = this._mountGeneration, exactPanelInstanceId = this._panelInstanceId;
@@ -440,8 +629,10 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         });
     };
     CharacterBuildController.prototype.suspend = function() {
+        this._candidateRecoverySequence++;
         this._mountGeneration++;
         if (this._candidateTooltip) this._candidateTooltip.suspend();
+        this._candidateCache = null;
         this._session.suspendView();
         if (this._tuning) this._tuning.destroy();
         this._tuning = null;
@@ -480,7 +671,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         return this._ports.openModal ? !!this._ports.openModal({
             kind:'character-build-help',
             title:'角色构筑帮助',
-            message:'方向键在槽位或候选组内移动；Enter 或 Space 首次选择只固定预览，Space 始终不提交；同一候选再次按 Enter 或使用主按钮才会提交。',
+            message:'方向键在槽位或候选组内移动；Enter 或 Space 首次选择只固定预览，Space 始终不提交；同一候选再次按 Enter、使用主按钮，或将筛选候选拖到当前已选槽位才会提交。',
             detail:'占用槽位可显式卸下或调制。写入和结果确认期间会锁定槽位、收纳、个人信息与关闭；未知结果只拉取相应领域的权威快照并越过提交水位，绝不重放写入。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
         }) : false;
@@ -517,6 +708,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         return !(this._tuning && this._tuning.isActive()) && this._session.canClose();
     };
     CharacterBuildController.prototype.destroy = function() {
+        this._candidateRecoverySequence++;
         this.suspend();
         if (this._candidateTooltip) this._candidateTooltip.destroy();
         this._session.destroy();
@@ -533,6 +725,7 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             tuning:this._tuning ? this._tuning.debugState() : null,
             candidateTooltip:this._candidateTooltip
                 ? this._candidateTooltip.debugState() : null,
+            candidateCacheCount:this._candidateCache ? 1 : 0,
             session:this._session.debugState(),
             view:this._view ? this._view.debugState() : null
         };
@@ -541,9 +734,6 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
     return {
         CharacterBuildController:CharacterBuildController,
         createRequestMux:createRequestMux,
-        targetForSelection:Projection.targetForSelection,
-        viewSnapshot:Projection.viewSnapshot,
-        viewCandidates:Projection.viewCandidates,
-        commands:SessionModule.commands.slice()
+        candidateCacheTarget:candidateCacheTarget
     };
 });

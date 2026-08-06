@@ -33,6 +33,31 @@
         value = String(value || '');
         return /^[A-Za-z0-9._~-]{1,128}$/.test(value) ? value : '';
     }
+    function own(value, key) {
+        return Object.prototype.hasOwnProperty.call(value || {}, key);
+    }
+    function validIdentityTriple(value) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+        var keys = ['name', 'displayName', 'icon'];
+        for (var i = 0; i < keys.length; i++) {
+            var text = value[keys[i]];
+            if (typeof text !== 'string' || text.length > 256
+                    || text.trim().length === 0
+                    || text.trim().toLowerCase() === 'undefined') return false;
+        }
+        return true;
+    }
+    function validItemIdentity(item) {
+        if (!validIdentityTriple(item)) return false;
+        if (own(item, 'modSlots')) {
+            if (!Array.isArray(item.modSlots) || item.modSlots.length > 3) return false;
+            for (var i = 0; i < item.modSlots.length; i++) {
+                if (!validIdentityTriple(item.modSlots[i])) return false;
+            }
+        }
+        return !own(item, 'modMeta') || item.modMeta === null
+            || validIdentityTriple(item.modMeta);
+    }
     function sourceForCandidate(candidate) {
         var raw = candidate && candidate.raw || {};
         var source = raw.source || {};
@@ -91,12 +116,20 @@
     function validFullBackpackSnapshots(snapshots) {
         var snapshot = Array.isArray(snapshots) && snapshots.length === 1
             ? snapshots[0] : null;
-        return !!snapshot && snapshot.containerId === '背包'
-            && Number(snapshot.capacity) === 50
-            && Number(snapshot.accessibleCapacity) === 50
-            && Number(snapshot.offset) === 0
-            && Number(snapshot.limit) === 50
-            && Array.isArray(snapshot.slots) && snapshot.slots.length === 50;
+        if (!snapshot || snapshot.containerId !== '背包'
+                || Number(snapshot.capacity) !== 50
+                || Number(snapshot.accessibleCapacity) !== 50
+                || Number(snapshot.offset) !== 0
+                || Number(snapshot.limit) !== 50
+                || !Array.isArray(snapshot.slots)
+                || snapshot.slots.length !== 50) return false;
+        for (var i = 0; i < snapshot.slots.length; i++) {
+            var slot = snapshot.slots[i];
+            if (!slot || typeof slot !== 'object') return false;
+            if (slot.occupied === true && !validItemIdentity(slot.item)) return false;
+            if (slot.item != null && !validItemIdentity(slot.item)) return false;
+        }
+        return true;
     }
     function validMutationResult(response, command, validProjection, expectedSourceSlot) {
         if (!response || MUTATIONS[command] !== true
@@ -194,11 +227,8 @@
 
     return {
         commands:Object.keys(MUTATIONS),
-        isMutation:function(command) { return MUTATIONS[String(command || '')] === true; },
-        sourceForCandidate:sourceForCandidate,
-        equipIntent:equipIntent,
-        unequipIntent:unequipIntent,
         buildPayload:buildPayload,
+        validItemIdentity:validItemIdentity,
         validFullBackpackSnapshots:validFullBackpackSnapshots,
         validMutationResult:validMutationResult,
         MutationCoordinator:MutationCoordinator

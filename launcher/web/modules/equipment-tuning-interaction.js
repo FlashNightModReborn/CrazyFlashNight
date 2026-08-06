@@ -11,6 +11,18 @@
         state = state || {};
         var pendingCount = state.mux
             ? Math.max(0, Number(state.mux.pendingCount) || 0) : 0;
+        var pendingKinds = state.mux && state.mux.pendingKinds instanceof Array
+            ? state.mux.pendingKinds : null;
+        var authorityPending = pendingCount > 0;
+        if (authorityPending && pendingKinds && pendingKinds.length) {
+            authorityPending = false;
+            for (var pendingIndex = 0; pendingIndex < pendingKinds.length; pendingIndex++) {
+                if (String(pendingKinds[pendingIndex]) !== 'tooltip') {
+                    authorityPending = true;
+                    break;
+                }
+            }
+        }
         var phase = 'idle';
         var reason = '';
 
@@ -40,7 +52,7 @@
         } else if (state.conversionLoading) {
             phase = 'conversion_loading';
             reason = '正在读取可交换装备，请等待结果。';
-        } else if (state.readPending || pendingCount > 0 || state.previewScheduled) {
+        } else if (state.readPending || authorityPending || state.previewScheduled) {
             phase = 'read_pending';
             reason = '正在读取调制状态，完成后才能继续操作。';
         }

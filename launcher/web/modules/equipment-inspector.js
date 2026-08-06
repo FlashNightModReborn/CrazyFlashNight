@@ -140,7 +140,7 @@ var EquipmentInspector = (function() {
         output = output || {};
         gender = normalizeGender(gender);
         var name = text(output.name);
-        var iconName = text(output.icon || name);
+        var iconName = text(output.icon);
         var majorType = text(output.majorType || output.type);
         var use = text(output.use);
         var actionType = text(output.actionType || output.actiontype);
@@ -327,7 +327,7 @@ var EquipmentInspector = (function() {
         var modal = shell.openModal({
             kind: modalKind,
             kicker: kicker,
-            title: text(output.displayName || output.name || kicker),
+            title: text(output.displayName || kicker),
             actions: [{id:'close', label:closeLabel, primary:true}],
             onClose: function(reason) {
                 destroy();
@@ -511,7 +511,7 @@ var EquipmentInspector = (function() {
 
         function mountIcon(reason) {
             clearRenderer();
-            iconState.name = source ? source.iconName : text(output.icon || output.name);
+            iconState.name = source ? source.iconName : text(output.icon);
             iconState.reason = reason || '';
             iconState.animated = iconIsAnimated(iconState.name);
             if (renderIcon()) camera.reset(DEFAULT_ZOOM);
@@ -603,7 +603,7 @@ var EquipmentInspector = (function() {
         }).catch(function() {
             if (!active) return;
             source = {
-                kind:'icon', label:'当前图标', iconName:text(output.icon || output.name),
+                kind:'icon', label:'当前图标', iconName:text(output.icon),
                 reason:'manifest_unavailable'
             };
             mountIcon(source.reason);

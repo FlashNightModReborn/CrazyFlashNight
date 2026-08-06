@@ -179,7 +179,7 @@ function(PanelRuntime, global) {
         }
         return true;
     };
-    CandidateTooltip.prototype.bind = function(node, candidate) {
+    CandidateTooltip.prototype.bind = function(node, candidate, isSuppressed) {
         var source = sourceOf(candidate);
         if (this._destroyed || !node || !source || !this._scope
                 || !this._tooltip || !this._scope.bindAsync) return noBinding();
@@ -194,8 +194,10 @@ function(PanelRuntime, global) {
             key:cacheKey,
             item:item,
             cache:this._cache,
+            isSuppressed:typeof isSuppressed === 'function'
+                ? isSuppressed : function() { return false; },
             renderBasic:function(projection) {
-                var name = projection && (projection.displayName || projection.name)
+                var name = projection && projection.displayName
                     || candidate && candidate.name || '未知物品';
                 var type = projection && (projection.majorType || projection.use
                     || projection.itemKind) || candidate && candidate.type || '背包候选';
@@ -207,7 +209,7 @@ function(PanelRuntime, global) {
             },
             renderRich:function(projection, data) {
                 var iconKey = data.iconName
-                    || projection && (projection.icon || projection.name);
+                    || projection && projection.icon || '';
                 return self._tooltip.buildItemRichHtml({
                     iconHtml:self._tooltip.dynamicIconHtml(iconKey),
                     iconUrl:self._tooltip.staticIconUrl(iconKey),
@@ -218,6 +220,13 @@ function(PanelRuntime, global) {
                         data.itemType || projection && (
                             projection.majorType || projection.use))
                 });
+            },
+            renderFailure:function(projection) {
+                var name = projection && projection.displayName
+                    || candidate && candidate.name || '未知物品';
+                return '<div class="kshop-tt-header"><b>' + escapeHtml(name)
+                    + '</b></div><div class="kshop-tt-divider"></div>'
+                    + '<div class="kshop-tt-loading">完整说明暂时读取失败；移开后重新悬停即可重试。</div>';
             },
             fetch:function(_, callback) {
                 var issuedEpoch = epoch;
@@ -265,9 +274,6 @@ function(PanelRuntime, global) {
     };
 
     return {
-        CandidateTooltip:CandidateTooltip,
-        createTooltipMux:createTooltipMux,
-        sourceOf:sourceOf,
-        validResponse:validResponse
+        CandidateTooltip:CandidateTooltip
     };
 });

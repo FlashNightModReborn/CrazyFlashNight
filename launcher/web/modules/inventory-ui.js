@@ -162,7 +162,7 @@
                 var grade = normalizeModGrade(mod.grade);
                 var symbol = normalizeModSymbol(mod.symbol);
                 var color = normalizeModGradeColor(mod.gradeColor, grade);
-                var label = '插件槽 ' + (index + 1) + '：' + String(mod.name || '未知插件')
+                var label = '插件槽 ' + (index + 1) + '：' + String(mod.displayName || '未知插件')
                     + '，' + String(mod.gradeLabel || '未知档级') + '，' + String(mod.roleLabel || '结构与功能');
                 html += '<span class="inventory-equip-slot mod used grade-' + grade
                     + '" style="--mod-grade-color:' + color + '" aria-label="' + escapeAttr(label) + '">'
@@ -185,7 +185,7 @@
                 var mod = slot.mod;
                 var grade = normalizeModGrade(mod.grade);
                 var color = normalizeModGradeColor(mod.gradeColor, grade);
-                var label = '插件槽 ' + (index + 1) + '：' + String(mod.name || '未知插件')
+                var label = '插件槽 ' + (index + 1) + '：' + String(mod.displayName || '未知插件')
                     + '，' + String(mod.gradeLabel || '未知档级');
                 html += '<span class="inventory-equip-slot-compact used grade-' + grade
                     + '" style="--mod-grade-color:' + color + '" aria-label="' + escapeAttr(label) + '"></span>';
@@ -211,7 +211,7 @@
             for (var index = 0; index < slots.length; index++) {
                 var slot = slots[index], label = '插件槽 ' + (index + 1) + '：';
                 if (slot.available && slot.mod) {
-                    label += String(slot.mod.name || '未知插件') + '，'
+                    label += String(slot.mod.displayName || '未知插件') + '，'
                         + String(slot.mod.gradeLabel || '未知档级') + '，'
                         + String(slot.mod.roleLabel || '结构与功能');
                 } else label += slot.available ? '空闲' : '不存在';
@@ -248,15 +248,15 @@
         var balanceAria = itemCard && itemCard.balanceAriaLabel ? itemCard.balanceAriaLabel(item) : '';
         var projectionAria = ownedProjectionAria(item);
         node.setAttribute('aria-label', containerId + '槽位 ' + (Number(slot.physicalSlot) + 1) + '，'
-            + String(item.displayName || item.name || '未知物品')
+            + String(item.displayName || '未知物品')
             + (projectionAria ? '，' + projectionAria : '') + (balanceAria ? '，' + balanceAria : ''));
         var icon = typeof options.iconHtml === 'function'
-            ? options.iconHtml(item.icon || item.name, 'inventory-owned-icon') : '';
+            ? options.iconHtml(item.icon || '', 'inventory-owned-icon') : '';
         var balanceBadge = itemCard && itemCard.renderBalanceBadge ? itemCard.renderBalanceBadge(item) : null;
         node.innerHTML = '<span class="item-card-icon inventory-slot-icon-frame"><span class="inventory-slot-icon">'
             + icon + '</span>' + (isEquipment ? renderTierMarker(item) : '') + badge
             + (isEquipment ? renderEquipmentSlotCompactRail(item) : '') + '</span>'
-            + '<span class="item-card-body inventory-slot-copy"><b>' + escapeHtml(item.displayName || item.name || '未知物品') + '</b>'
+            + '<span class="item-card-body inventory-slot-copy"><b>' + escapeHtml(item.displayName || '未知物品') + '</b>'
             + (isEquipment ? renderEquipmentSlotRail(item) : '') + '</span>'
             + (options.allowDiscard ? '<button class="inventory-discard-btn" type="button" aria-label="丢弃整槽" data-audio-cue="cancel">×</button>' : '');
         if (balanceBadge) {
@@ -512,6 +512,16 @@
         return path;
     }
 
+    function filterPathLabel(id, index, path) {
+        if (id === 'category') return '类别';
+        if (id === 'set') return '套装';
+        var majorIndex = path[0] === 'category' ? 1 : 0;
+        if (path[0] !== 'set' && index === majorIndex && ItemFilter.majorDefinition) {
+            return ItemFilter.majorDefinition(id).label;
+        }
+        return id;
+    }
+
     function InventoryFilterControl(options) {
         options = options || {};
         var self = this;
@@ -610,6 +620,7 @@
         var pendingPath = this.pendingSpec ? filterPathFromSpec(this.pendingSpec, 'all', branched) : null;
         if (pendingPath && pendingPath.join('/') === authoritativePath.join('/')) this.pendingSpec = null;
         var path = this.pendingSpec ? pendingPath : authoritativePath;
+        if (path.length && ItemFilter.ensurePath) ItemFilter.ensurePath(tree, path, filterPathLabel);
         this.navigator.root.hidden = false;
         this.navigator.setModel(tree, path);
         this.navigator.setDisabled(this.disabled);

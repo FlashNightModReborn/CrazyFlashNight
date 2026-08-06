@@ -226,6 +226,31 @@
         return node || null;
     }
 
+    /**
+     * Adds zero-count presentation nodes only for the currently selected authority path.
+     * This keeps the breadcrumb visible when a write removes the final matching item;
+     * it never changes the authority counts or performs client-side filtering.
+     */
+    function ensurePath(tree, path, labelForId) {
+        if (!tree || !Array.isArray(tree.children)) return null;
+        path = clonePath(path);
+        var node = tree;
+        for (var index = 0; index < path.length; index++) {
+            var id = path[index];
+            var child = findChild(node, id);
+            if (!child) {
+                var label = typeof labelForId === 'function'
+                    ? labelForId(id, index, path.slice()) : id;
+                child = {id:id, label:text(label || id), order:0,
+                    path:node.path.concat([id]), count:0, children:[]};
+                node.children.push(child);
+                sortTree(node);
+            }
+            node = child;
+        }
+        return node;
+    }
+
     function validPath(tree, path) {
         var result = [], node = tree;
         path = clonePath(path);
@@ -559,6 +584,7 @@
         manualSections:manualSections,
         branchTree:branchTree,
         nodeAt:nodeAt,
+        ensurePath:ensurePath,
         validPath:validPath,
         expandSingleChildren:expandSingleChildren,
         matchesPath:matchesPath,

@@ -42,7 +42,10 @@ test('every hard authority phase closes all editing families', () => {
         [{inventoryWritePending:true}, 'write_pending'],
         [{conversionLoading:true}, 'conversion_loading'],
         [{readPending:true}, 'read_pending'],
-        [{mux:{pendingCount:1}}, 'read_pending']
+        [{mux:{pendingCount:1}}, 'read_pending'],
+        [{mux:{pendingCount:1, pendingKinds:['snapshot']}}, 'read_pending'],
+        [{mux:{pendingCount:1, pendingKinds:['preview']}}, 'read_pending'],
+        [{mux:{pendingCount:1, pendingKinds:['commit']}}, 'read_pending']
     ];
     cases.forEach(([state, phase]) => {
         const value = projection(state);
@@ -56,6 +59,22 @@ test('every hard authority phase closes all editing families', () => {
         assert.strictEqual(value.retry, false);
         assert.strictEqual(value.reconcile, false);
     });
+});
+
+test('tooltip-only reads do not lock an otherwise actionable candidate', () => {
+    const value = projection({mux:{pendingCount:2, pendingKinds:['tooltip']}});
+    assert.strictEqual(value.phase, 'idle');
+    assert.strictEqual(value.candidate, true);
+    assert.strictEqual(value.commit, true);
+});
+
+test('tooltip overlap cannot conceal a business-authority request', () => {
+    const value = projection({
+        mux:{pendingCount:2, pendingKinds:['tooltip', 'preview']}
+    });
+    assert.strictEqual(value.phase, 'read_pending');
+    assert.strictEqual(value.candidate, false);
+    assert.strictEqual(value.commit, false);
 });
 
 test('failed refresh exposes retry as the only legal recovery action', () => {

@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
+const { performance } = require("perf_hooks");
 const LegacyHttpClient = require("../lib/legacy-http-client");
 const {
   buildLauncherStartArguments,
@@ -27,6 +28,8 @@ const TITLE_FRAME_MARKER = "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cl
 const REVEAL_WATCHDOG_MARKER = "[LaunchFlow] Flash reveal watchdog fired";
 const AGENT_ENTER_COMMAND = "#func:_root.agentEnterResolvedSave()";
 const LOG_TAIL_LIMIT = 2000;
+const CLONE_BASELINE_STABLE_MS = 1000;
+const CLONE_BASELINE_TIMEOUT_MS = 10000;
 let activeLegacyHttpContext = null;
 
 class RunnerError extends Error {
@@ -103,8 +106,8 @@ function printHelp() {
     "  --ready-timeout-ms <n>     Runtime readiness timeout. Default: 180000.",
     "  --panel-timeout-ms <n>     Workbench/snapshot evidence timeout. Default: 60000.",
     "  --poll-ms <n>              Status/log polling interval. Default: 500.",
-    "  --report <file>            JSON report path.",
-    "  --report-md <file>         Markdown report path.",
+    "  --report <file>            Diagnostic/open-only JSON path; live receipt gates require the default.",
+    "  --report-md <file>         Diagnostic/open-only Markdown path; live receipt gates require the default.",
     "  --candidate-root <dir>     Run and bind to one immutable local runtime candidate.",
     "  --shutdown                 Ask launcher to shut down after reporting.",
     "  --fresh                    Always rejected; fresh save automation is forbidden.",
@@ -201,6 +204,51 @@ function formatLocalSaveTimestamp(date) {
     + " " + pad(value.getHours()) + ":" + pad(value.getMinutes()) + ":" + pad(value.getSeconds());
 }
 
+const ORDER_INSENSITIVE_SOURCE_CACHE_KEYS = new Set([
+  "completedChallengeQuests",
+  "discoveredEnemies",
+  "discoveredQuests",
+  "discoveredStages",
+]);
+
+function canonicalizeCloneSemantic(value, trail) {
+  const pathTrail = trail || [];
+  const last = pathTrail.length > 0 ? pathTrail[pathTrail.length - 1] : "";
+  if (Array.isArray(value)) {
+    const projected = value.map((entry, index) => (
+      canonicalizeCloneSemantic(entry, pathTrail.concat(String(index)))
+    ));
+    if (pathTrail.length === 3
+        && pathTrail[0] === "others"
+        && pathTrail[1] === "物品来源缓存"
+        && ORDER_INSENSITIVE_SOURCE_CACHE_KEYS.has(last)) {
+      projected.sort((left, right) => {
+        const a = JSON.stringify(left);
+        const b = JSON.stringify(right);
+        return a < b ? -1 : a > b ? 1 : 0;
+      });
+    }
+    return projected;
+  }
+  if (value && typeof value === "object") {
+    const keys = Object.keys(value);
+    if (last === "mods" && keys.length === 0) return [];
+    const projected = {};
+    keys.sort().forEach((key) => {
+      if (pathTrail.length === 0 && key === "lastSaved") return;
+      projected[key] = canonicalizeCloneSemantic(value[key], pathTrail.concat(key));
+    });
+    return projected;
+  }
+  return value;
+}
+
+function cloneSemanticSha256(data) {
+  return crypto.createHash("sha256")
+    .update(JSON.stringify(canonicalizeCloneSemantic(data, [])), "utf8")
+    .digest("hex");
+}
+
 function isValidSaveData(data) {
   if (!data || data.version !== "3.0" || !data.lastSaved) return false;
   const player = data["0"];
@@ -222,8 +270,10 @@ function isValidSaveData(data) {
 }
 
 function tryReadValidSave(filePath) {
+  const snapshot = readRegularFileSnapshot(filePath, true, "save_seed");
+  if (!snapshot) return null;
   try {
-    const raw = fs.readFileSync(filePath, "utf8");
+    const raw = snapshot.raw.toString("utf8");
     const data = JSON.parse(raw);
     if (!isValidSaveData(data)) return null;
     return { filePath, data, raw };
@@ -237,11 +287,172 @@ function saveJsonPath(root, slot) {
 }
 
 function backupFile(source, backupDir, label) {
-  if (!fs.existsSync(source)) return null;
+  const snapshot = readRegularFileSnapshot(source, true, "save_backup");
+  if (!snapshot) return null;
   fs.mkdirSync(backupDir, { recursive: true });
   const destination = path.join(backupDir, label + "-" + path.basename(source));
-  fs.copyFileSync(source, destination);
+  fs.writeFileSync(destination, snapshot.raw, { flag: "wx" });
   return destination;
+}
+
+function samePath(left, right) {
+  return path.resolve(left).toLowerCase() === path.resolve(right).toLowerCase();
+}
+
+function sameBoundFileIdentity(left, right) {
+  return !!left && !!right
+    && left.dev === right.dev
+    && left.ino === right.ino
+    && left.size === right.size
+    && left.mtimeNs === right.mtimeNs;
+}
+
+function assertRegularFileLstat(stat, filePath, phase) {
+  if (!stat || !stat.isFile() || stat.isSymbolicLink()) {
+    fail("regular_file_reparse", phase, "file must be regular and non-reparse", {
+      path: filePath,
+    });
+  }
+  return stat;
+}
+
+function assertCanonicalDirectoryChain(root, directory, phase) {
+  const expectedRoot = path.resolve(root);
+  const expectedDirectory = path.resolve(directory);
+  const relative = path.relative(expectedRoot, expectedDirectory);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) {
+    fail("directory_path_escape", phase, "directory escaped the exact project root");
+  }
+  const volumeRoot = path.parse(expectedDirectory).root;
+  const segments = path.relative(volumeRoot, expectedDirectory).split(path.sep).filter(Boolean);
+  let current = volumeRoot;
+  for (const segment of segments) {
+    current = path.join(current, segment);
+    let stat;
+    let realPath;
+    try {
+      stat = fs.lstatSync(current);
+      realPath = fs.realpathSync.native(current);
+    } catch (error) {
+      fail("directory_chain_unavailable", phase, error.message, { path: current });
+    }
+    if (!stat.isDirectory() || stat.isSymbolicLink() || !samePath(realPath, current)) {
+      fail(
+        "directory_chain_reparse",
+        phase,
+        "directory chain must contain only exact non-reparse directories",
+        { path: current, realPath }
+      );
+    }
+  }
+  return expectedDirectory;
+}
+
+function readRegularFileSnapshot(filePath, allowMissing, phase) {
+  let before;
+  try {
+    before = fs.lstatSync(filePath, { bigint: true });
+  } catch (error) {
+    if (allowMissing && error && error.code === "ENOENT") return null;
+    fail("regular_file_unavailable", phase, error.message, { path: filePath });
+  }
+  assertRegularFileLstat(before, filePath, phase);
+  let realPath;
+  try {
+    realPath = fs.realpathSync.native(filePath);
+  } catch (error) {
+    fail("regular_file_realpath_failed", phase, error.message, { path: filePath });
+  }
+  if (!samePath(realPath, filePath)) {
+    fail("regular_file_realpath_mismatch", phase, "file real path is not exact", {
+      path: filePath,
+      realPath,
+    });
+  }
+  let raw;
+  let opened;
+  let afterHandle;
+  let handle = null;
+  try {
+    handle = fs.openSync(filePath, "r");
+    opened = fs.fstatSync(handle, { bigint: true });
+    if (!opened.isFile() || !sameBoundFileIdentity(before, opened)) {
+      fail("regular_file_changed_before_open", phase, "file identity changed before open", {
+        path: filePath,
+      });
+    }
+    raw = fs.readFileSync(handle);
+    afterHandle = fs.fstatSync(handle, { bigint: true });
+  } catch (error) {
+    if (error && error.code && error.phase) throw error;
+    fail("regular_file_read_failed", phase, error.message, { path: filePath });
+  } finally {
+    if (handle !== null) fs.closeSync(handle);
+  }
+  let after;
+  let afterRealPath;
+  try {
+    after = fs.lstatSync(filePath, { bigint: true });
+    afterRealPath = fs.realpathSync.native(filePath);
+  } catch (error) {
+    fail("regular_file_post_read_failed", phase, error.message, { path: filePath });
+  }
+  if (!after.isFile() || after.isSymbolicLink()
+      || !samePath(afterRealPath, filePath)
+      || !sameBoundFileIdentity(opened, afterHandle)
+      || !sameBoundFileIdentity(afterHandle, after)
+      || BigInt(raw.length) !== after.size) {
+    fail("regular_file_changed_during_read", phase, "file changed during the bound read", {
+      path: filePath,
+    });
+  }
+  return { raw, stat: after, realPath: afterRealPath };
+}
+
+function writeAtomicRegularFile(root, targetPath, content, phase) {
+  const parent = path.dirname(targetPath);
+  assertCanonicalDirectoryChain(root, parent, phase);
+  const tempPath = path.join(
+    parent,
+    "." + path.basename(targetPath) + "." + process.pid + "."
+      + crypto.randomBytes(8).toString("hex") + ".tmp"
+  );
+  let created = false;
+  try {
+    const handle = fs.openSync(tempPath, "wx", 0o600);
+    created = true;
+    try {
+      fs.writeFileSync(handle, content, "utf8");
+      fs.fsyncSync(handle);
+    } finally {
+      fs.closeSync(handle);
+    }
+    assertCanonicalDirectoryChain(root, parent, phase);
+    const existing = readRegularFileSnapshot(targetPath, true, phase);
+    if (existing && !samePath(existing.realPath, targetPath)) {
+      fail("target_realpath_mismatch", phase, "target path changed before replace");
+    }
+    fs.renameSync(tempPath, targetPath);
+    created = false;
+    assertCanonicalDirectoryChain(root, parent, phase);
+    return readRegularFileSnapshot(targetPath, false, phase);
+  } finally {
+    if (created) {
+      try { fs.unlinkSync(tempPath); } catch (_error) { /* owned temp cleanup */ }
+    }
+  }
+}
+
+function assertExactSeededTargetBytes(expected, observed) {
+  if (!Buffer.isBuffer(expected) || !Buffer.isBuffer(observed)
+      || !observed.equals(expected)) {
+    fail(
+      "seed_target_post_write_mismatch",
+      "save_seed",
+      "the dedicated clone no longer matches the exact intended seed bytes"
+    );
+  }
+  return true;
 }
 
 function solOwnershipSuffix(root, slot) {
@@ -309,7 +520,15 @@ function assertTargetSlotNotInUse(status, targetSlot) {
 }
 
 function prepareDedicatedSave(root, args, runDir) {
+  const savesRoot = assertCanonicalDirectoryChain(
+    root,
+    path.join(root, "saves"),
+    "save_seed"
+  );
   const seedPath = saveJsonPath(root, args.seedSlot);
+  if (!samePath(path.dirname(seedPath), savesRoot)) {
+    fail("seed_path_escape", "save_seed", "seed path escaped the exact saves directory");
+  }
   const seed = tryReadValidSave(seedPath);
   if (!seed) {
     fail(
@@ -320,6 +539,9 @@ function prepareDedicatedSave(root, args, runDir) {
   }
 
   const targetPath = saveJsonPath(root, args.slot);
+  if (!samePath(path.dirname(targetPath), savesRoot)) {
+    fail("target_path_escape", "save_seed", "target path escaped the exact saves directory");
+  }
   const backupDir = path.join(runDir, "save-backups");
   const preparation = {
     targetSlot: args.slot,
@@ -327,6 +549,8 @@ function prepareDedicatedSave(root, args, runDir) {
     seedSource: toProjectRelative(root, seedPath),
     targetJson: toProjectRelative(root, targetPath),
     seedSha256: crypto.createHash("sha256").update(seed.raw, "utf8").digest("hex"),
+    semanticContract: "startup_normalization.v1",
+    semanticSha256: cloneSemanticSha256(seed.data),
     role: seed.data["0"][0],
     level: seed.data["0"][3],
     backups: [],
@@ -347,13 +571,219 @@ function prepareDedicatedSave(root, args, runDir) {
 
   const clone = JSON.parse(JSON.stringify(seed.data));
   clone.lastSaved = formatLocalSaveTimestamp();
-  fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-  fs.writeFileSync(targetPath, JSON.stringify(clone), "utf8");
-  preparation.wroteSeed = true;
-  preparation.targetSha256 = crypto
+  const cloneText = JSON.stringify(clone);
+  const expectedCloneBytes = Buffer.from(cloneText, "utf8");
+  const expectedSeededTargetSha256 = crypto
     .createHash("sha256")
-    .update(fs.readFileSync(targetPath))
+    .update(expectedCloneBytes)
     .digest("hex");
+  const written = writeAtomicRegularFile(
+    root,
+    targetPath,
+    cloneText,
+    "save_seed"
+  );
+  assertExactSeededTargetBytes(expectedCloneBytes, written.raw);
+  preparation.wroteSeed = true;
+  preparation.seededTargetSha256 = expectedSeededTargetSha256;
+  preparation.targetSha256 = preparation.seededTargetSha256;
+  return preparation;
+}
+
+function cloneBaselineTarget(root, preparation) {
+  const expectedRelative = "saves/" + String(preparation.targetSlot) + ".json";
+  if (String(preparation.targetJson || "").replace(/\\/g, "/") !== expectedRelative) {
+    fail(
+      "clone_baseline_path_mismatch",
+      "clone_baseline",
+      "the clone baseline path no longer matches the dedicated target slot"
+    );
+  }
+  const targetPath = path.resolve(root, preparation.targetJson);
+  const savesRoot = assertCanonicalDirectoryChain(
+    root,
+    path.resolve(root, "saves"),
+    "clone_baseline"
+  );
+  if (!samePath(path.dirname(targetPath), savesRoot)
+      || path.basename(targetPath).toLowerCase()
+        !== (String(preparation.targetSlot) + ".json").toLowerCase()) {
+    fail(
+      "clone_baseline_path_escape",
+      "clone_baseline",
+      "the clone baseline path escaped the saves directory"
+    );
+  }
+  return targetPath;
+}
+
+function readCloneBaselineSample(root, preparation) {
+  const targetPath = cloneBaselineTarget(root, preparation);
+  let before;
+  try {
+    before = fs.lstatSync(targetPath, { bigint: true });
+  } catch (error) {
+    if (error && ["ENOENT", "EPERM", "EBUSY"].includes(error.code)) return null;
+    fail("clone_baseline_missing", "clone_baseline", error.message);
+  }
+  if (!before.isFile() || before.isSymbolicLink()) {
+    fail(
+      "clone_baseline_not_regular",
+      "clone_baseline",
+      "the clone baseline must be a regular non-reparse file"
+    );
+  }
+  let realPath;
+  try {
+    realPath = fs.realpathSync.native(targetPath);
+  } catch (error) {
+    if (error && ["ENOENT", "EPERM", "EBUSY"].includes(error.code)) return null;
+    fail("clone_baseline_realpath_failed", "clone_baseline", error.message);
+  }
+  if (!samePath(realPath, targetPath)) {
+    fail(
+      "clone_baseline_realpath_mismatch",
+      "clone_baseline",
+      "the clone baseline resolved outside its exact target path"
+    );
+  }
+
+  let raw;
+  let opened;
+  let afterHandle;
+  let handle = null;
+  try {
+    handle = fs.openSync(targetPath, "r");
+    opened = fs.fstatSync(handle, { bigint: true });
+    if (!opened.isFile() || !sameBoundFileIdentity(before, opened)) return null;
+    raw = fs.readFileSync(handle);
+    afterHandle = fs.fstatSync(handle, { bigint: true });
+  } catch (error) {
+    if (error && ["ENOENT", "EPERM", "EBUSY"].includes(error.code)) return null;
+    return null;
+  } finally {
+    if (handle !== null) fs.closeSync(handle);
+  }
+  let after;
+  try {
+    after = fs.lstatSync(targetPath, { bigint: true });
+  } catch (error) {
+    if (error && ["ENOENT", "EPERM", "EBUSY"].includes(error.code)) return null;
+    return null;
+  }
+  if (!after.isFile() || after.isSymbolicLink()
+      || !sameBoundFileIdentity(opened, afterHandle)
+      || !sameBoundFileIdentity(afterHandle, after)
+      || BigInt(raw.length) !== after.size) {
+    return null;
+  }
+  let afterRealPath;
+  try {
+    afterRealPath = fs.realpathSync.native(targetPath);
+  } catch (error) {
+    if (error && ["ENOENT", "EPERM", "EBUSY"].includes(error.code)) return null;
+    fail("clone_baseline_realpath_failed", "clone_baseline", error.message);
+  }
+  if (!samePath(afterRealPath, targetPath)) {
+    fail(
+      "clone_baseline_realpath_mismatch",
+      "clone_baseline",
+      "the clone baseline changed real path during sampling"
+    );
+  }
+  let data;
+  const text = raw.toString("utf8");
+  try {
+    data = JSON.parse(text);
+  } catch (_error) {
+    return null;
+  }
+  if (!isValidSaveData(data)) return null;
+  const digest = crypto.createHash("sha256").update(raw).digest("hex");
+  return {
+    sha256: digest,
+    utf8Bytes: raw.length,
+    textChars: text.length,
+    deviceId: String(after.dev),
+    fileId: String(after.ino),
+    mtimeNs: String(after.mtimeNs),
+    lastWriteTimeUtc: new Date(Number(after.mtimeNs / 1000000n)).toISOString(),
+    lastSaved: data.lastSaved == null ? "" : String(data.lastSaved),
+    semanticSha256: cloneSemanticSha256(data),
+    role: data["0"][0],
+    level: data["0"][3],
+    fingerprint: [
+      digest,
+      String(raw.length),
+      String(text.length),
+      String(after.mtimeNs),
+      String(after.dev),
+      String(after.ino),
+    ].join(":"),
+  };
+}
+
+async function captureStableCloneBaseline(root, preparation, dependencies) {
+  const options = dependencies || {};
+  const stableMs = options.stableMs || CLONE_BASELINE_STABLE_MS;
+  const timeoutMs = options.timeoutMs || CLONE_BASELINE_TIMEOUT_MS;
+  const monotonicNow = options.monotonicNow || (() => performance.now());
+  const readSample = options.readSample
+    || (() => readCloneBaselineSample(root, preparation));
+  const wait = options.wait || sleep;
+  const deadline = monotonicNow() + timeoutMs;
+  let stableSince = null;
+  let stableStartedAt = null;
+  let previousFingerprint = null;
+  let stableSampleCount = 0;
+  while (monotonicNow() <= deadline) {
+    const sample = readSample();
+    if (!sample) {
+      stableSince = null;
+      stableStartedAt = null;
+      previousFingerprint = null;
+      stableSampleCount = 0;
+    } else if (sample.fingerprint !== previousFingerprint) {
+      stableSince = monotonicNow();
+      stableStartedAt = new Date().toISOString();
+      previousFingerprint = sample.fingerprint;
+      stableSampleCount = 1;
+    } else {
+      stableSampleCount += 1;
+    }
+    if (sample && stableSampleCount >= 2
+        && monotonicNow() - stableSince >= stableMs) {
+      return {
+        sha256: sample.sha256,
+        utf8Bytes: sample.utf8Bytes,
+        textChars: sample.textChars,
+        deviceId: sample.deviceId,
+        fileId: sample.fileId,
+        mtimeNs: sample.mtimeNs,
+        lastWriteTimeUtc: sample.lastWriteTimeUtc,
+        lastSaved: sample.lastSaved,
+        semanticSha256: sample.semanticSha256,
+        role: sample.role,
+        level: sample.level,
+        stableStartedAt,
+        capturedAt: new Date().toISOString(),
+        stableWindowMs: stableMs,
+        stableSampleCount,
+        regularFileVerified: true,
+        realPathBound: true,
+      };
+    }
+    await wait(100);
+  }
+  fail(
+    "clone_baseline_unstable",
+    "clone_baseline",
+    "the dedicated clone did not remain stable long enough to bind the post-open baseline"
+  );
+}
+
+function bindCloneGateBaseline(preparation, baseline) {
+  preparation.gateBaseline = baseline;
   return preparation;
 }
 
@@ -421,6 +851,76 @@ async function testPort(port) {
   } catch (_error) {
     return false;
   }
+}
+
+function queryLauncherCoreProcesses() {
+  if (process.platform !== "win32") return [];
+  const script = [
+    "[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)",
+    "$records = @(Get-Process -Name 'CRAZYFLASHER7MercenaryEmpire.Core' -ErrorAction SilentlyContinue | ForEach-Object {",
+    "  $processPath = $null",
+    "  try { $processPath = $_.Path } catch {}",
+    "  [pscustomobject]@{ pid = $_.Id; processPath = $processPath }",
+    "})",
+    "ConvertTo-Json -InputObject $records -Compress",
+  ].join("\n");
+  const result = childProcess.spawnSync(
+    "powershell.exe",
+    ["-NoLogo", "-NoProfile", "-NonInteractive", "-Command", script],
+    { encoding: "utf8", windowsHide: true }
+  );
+  if (result.status !== 0) {
+    fail(
+      "launcher_process_inventory_failed",
+      "save_seed",
+      "could not prove exclusive Launcher ownership before mutating the clone",
+      { stderr: tailText(result.stderr || "") }
+    );
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(String(result.stdout || "[]"));
+  } catch (error) {
+    fail("launcher_process_inventory_invalid", "save_seed", error.message);
+  }
+  if (!Array.isArray(parsed)
+      || parsed.some((entry) => !entry || !Number.isInteger(entry.pid) || entry.pid <= 0)) {
+    fail(
+      "launcher_process_inventory_invalid",
+      "save_seed",
+      "Launcher process inventory was malformed"
+    );
+  }
+  return parsed;
+}
+
+function assertExclusiveLauncherProcess(processes, authenticatedPid) {
+  const records = Array.isArray(processes) ? processes : [];
+  if (authenticatedPid == null) {
+    if (records.length !== 0) {
+      fail(
+        "unverified_launcher_process_present",
+        "save_seed",
+        "a Launcher Core process exists without an authenticated automation context",
+        { pids: records.map((entry) => entry.pid) }
+      );
+    }
+    return true;
+  }
+  const others = records.filter((entry) => entry.pid !== authenticatedPid);
+  const authenticated = records.filter((entry) => entry.pid === authenticatedPid);
+  if (authenticated.length !== 1 || others.length !== 0) {
+    fail(
+      "launcher_process_not_exclusive",
+      "save_seed",
+      "the authenticated Launcher is not the only Launcher Core process",
+      {
+        authenticatedPid,
+        observedPids: records.map((entry) => entry.pid),
+      }
+    );
+  }
+  return true;
 }
 
 async function discoverPort(root) {
@@ -633,10 +1133,171 @@ function findFreshRevealWatchdog(records) {
   return records.find((record) => record.line.includes(REVEAL_WATCHDOG_MARKER)) || null;
 }
 
+function assertRuntimeEvidenceOrder(startWatermark, handoff, titleFrame) {
+  if (!startWatermark || !Number.isInteger(startWatermark.total)
+      || !handoff || !Number.isInteger(handoff.lineNumber)
+      || !titleFrame || !Number.isInteger(titleFrame.lineNumber)
+      || handoff.lineNumber <= startWatermark.total
+      || titleFrame.lineNumber <= handoff.lineNumber) {
+    fail(
+      "runtime_marker_order_invalid",
+      "runtime_ready",
+      "runtime evidence must satisfy start watermark < handoff < title frame"
+    );
+  }
+  return true;
+}
+
 function extractLogField(line, name) {
   const escaped = name.replace(/[.*+?^{}$()|[\]\\]/g, "\\$&");
   const match = String(line).match(new RegExp("(?:^|\\s)" + escaped + "=([^\\s]+)"));
   return match ? match[1] : null;
+}
+
+function decodeLogValue(value) {
+  if (value == null || value === "-") return "";
+  try {
+    return decodeURIComponent(String(value));
+  } catch (_error) {
+    return "";
+  }
+}
+
+function parseStartupArchiveReceipt(record, slot, targetPath) {
+  if (!record || typeof record.line !== "string") return null;
+  const body = record.line.replace(/^\d{2}:\d{2}:\d{2}\.\d{3}\s+/, "");
+  const match = body.match(
+    /^\[ArchiveTask\] Shadow saved: ([A-Za-z0-9_-]+) \((\d+) chars\) path=(.+)$/
+  );
+  if (!match || match[1] !== slot || !samePath(match[3], targetPath)) return null;
+  const archiveChars = Number(match[2]);
+  if (!Number.isSafeInteger(archiveChars) || archiveChars <= 0) return null;
+  return {
+    lineNumber: record.lineNumber,
+    archiveChars,
+    targetPath: path.resolve(match[3]),
+  };
+}
+
+function isEquipmentTuningBusinessRecord(record) {
+  const line = record && typeof record.line === "string" ? record.line : "";
+  if (/event=equipment_tuning_(?:preview|commit|reconcile)_settled(?:\s|$)/.test(line)) {
+    return true;
+  }
+  const marker = "[WebDebug] ";
+  const index = line.indexOf(marker);
+  if (index < 0) return false;
+  let message;
+  try {
+    message = JSON.parse(line.slice(index + marker.length).trim());
+  } catch (_error) {
+    return line.includes("equipment_tuning");
+  }
+  return message && message.scope === "equipment_tuning"
+    && /^(?:candidate_hit|preview_|commit_|inventory_refresh_|reconcile_)/.test(
+      String(message.event || "")
+    );
+}
+
+function establishInteractionLogWatermark(snapshotLineNumber, snapshot) {
+  const records = freshLogRecords({ total: snapshotLineNumber }, snapshot);
+  const premature = records.find(isEquipmentTuningBusinessRecord);
+  if (premature) {
+    fail(
+      "business_action_before_verifier",
+      "interaction_watermark",
+      "equipment-tuning business input occurred before the verifier interaction watermark",
+      { lineNumber: premature.lineNumber }
+    );
+  }
+  return logWatermark(snapshot);
+}
+
+function completeCloneGateBaseline(root, report, baseline, snapshot) {
+  const tuningSnapshot = report && report.snapshotGate
+    && report.snapshotGate.evidence
+    && report.snapshotGate.evidence.tuningSnapshot;
+  if (!tuningSnapshot || !report.startLogWatermark || !report.runtime) {
+    fail("clone_baseline_evidence_missing", "clone_baseline", "snapshot evidence is missing");
+  }
+  const handoffLine = report.runtime.handoffEvidence
+    && report.runtime.handoffEvidence.lineNumber;
+  const titleFrameLine = report.runtime.titleFrameEvidence
+    && report.runtime.titleFrameEvidence.lineNumber;
+  if (!Number.isInteger(handoffLine) || !Number.isInteger(titleFrameLine)) {
+    fail(
+      "clone_baseline_runtime_floor_missing",
+      "clone_baseline",
+      "fresh handoff/title-frame evidence is required before binding startup archive provenance"
+    );
+  }
+  assertRuntimeEvidenceOrder(
+    report.startLogWatermark,
+    report.runtime.handoffEvidence,
+    report.runtime.titleFrameEvidence
+  );
+  const archiveEvidenceFloorLine = Math.max(
+    report.startLogWatermark.total,
+    handoffLine,
+    titleFrameLine
+  );
+  if (baseline.semanticSha256 !== report.savePreparation.semanticSha256
+      || String(baseline.role) !== String(report.savePreparation.role)
+      || String(baseline.level) !== String(report.savePreparation.level)) {
+    fail(
+      "startup_normalization_semantic_drift",
+      "clone_baseline",
+      "startup archive changed data outside the narrow normalization contract"
+    );
+  }
+  const records = freshLogRecords(report.startLogWatermark, snapshot);
+  const postSnapshotBusiness = records.find((record) => (
+    record.lineNumber > tuningSnapshot.lineNumber
+      && isEquipmentTuningBusinessRecord(record)
+  ));
+  if (postSnapshotBusiness) {
+    fail(
+      "business_action_before_clone_baseline",
+      "clone_baseline",
+      "equipment-tuning business input occurred before the opener baseline closed",
+      { lineNumber: postSnapshotBusiness.lineNumber }
+    );
+  }
+  const targetPath = cloneBaselineTarget(root, report.savePreparation);
+  const archiveReceipt = records
+    .filter((record) => record.lineNumber > archiveEvidenceFloorLine
+      && record.lineNumber <= tuningSnapshot.lineNumber)
+    .map((record) => parseStartupArchiveReceipt(
+      record,
+      report.savePreparation.targetSlot,
+      targetPath
+    ))
+    .filter((receipt) => receipt && receipt.archiveChars === baseline.textChars)
+    .pop() || null;
+  const changedFromSeed = baseline.sha256
+    !== report.savePreparation.seededTargetSha256;
+  if (changedFromSeed && !archiveReceipt) {
+    fail(
+      "startup_archive_receipt_missing",
+      "clone_baseline",
+      "post-start clone normalization changed bytes without an exact startup archive receipt"
+    );
+  }
+  baseline.changedFromSeed = changedFromSeed;
+  baseline.semanticContract = report.savePreparation.semanticContract;
+  baseline.archiveEvidenceFloorLine = archiveEvidenceFloorLine;
+  baseline.attemptId = report.runtime.expectedAttemptId;
+  baseline.snapshot = {
+    panelInstanceId: tuningSnapshot.panelInstanceId,
+    viewSessionId: tuningSnapshot.viewSessionId,
+    callId: tuningSnapshot.callId,
+    sourceKey: tuningSnapshot.sourceKey,
+    stateRef: tuningSnapshot.stateRef,
+    lineNumber: tuningSnapshot.lineNumber,
+  };
+  baseline.startupArchiveReceipt = archiveReceipt;
+  baseline.postCaptureLogWatermark = logWatermark(snapshot);
+  return baseline;
 }
 
 function parsePanelBoundEvidence(record) {
@@ -657,9 +1318,15 @@ function parseSnapshotEvidence(record) {
   const callId = extractLogField(record.line, "callId");
   const panelInstanceId = extractLogField(record.line, "panelInstanceId");
   const viewSessionId = extractLogField(record.line, "viewSessionId");
+  const legacySourceKey = decodeLogValue(extractLogField(record.line, "sourceKey"));
+  const sourceKeyRef = decodeLogValue(extractLogField(record.line, "sourceKeyRef"));
+  const sourceKey = legacySourceKey || sourceKeyRef;
+  const stateRef = decodeLogValue(extractLogField(record.line, "stateRef"));
   const writeEpochText = extractLogField(record.line, "writeEpoch");
   const writeEpoch = writeEpochText == null ? NaN : Number(writeEpochText);
-  if (!callId || !panelInstanceId || !viewSessionId
+  if (!callId || !panelInstanceId || !viewSessionId || !sourceKey
+      || (sourceKeyRef && !/^sha256_[a-f0-9]{24}$/.test(sourceKeyRef))
+      || !/^sha256_[a-f0-9]{24}$/.test(stateRef)
       || !Number.isInteger(writeEpoch) || writeEpoch < 0) return null;
   return {
     kind: "tuning_snapshot",
@@ -667,6 +1334,9 @@ function parseSnapshotEvidence(record) {
     callId,
     panelInstanceId,
     viewSessionId,
+    sourceKey,
+    sourceKeyRef: sourceKeyRef || null,
+    stateRef,
     writeEpoch,
     lineNumber: record.lineNumber,
     line: record.line,
@@ -833,6 +1503,13 @@ async function waitForRuntimeReady(port, args, startWatermark, startResponse, ti
     }
     if (!state.revealWatchdogEvidence) {
       state.revealWatchdogEvidence = findFreshRevealWatchdog(freshRecords);
+    }
+    if (state.handoffEvidence && state.titleFrameEvidence) {
+      assertRuntimeEvidenceOrder(
+        startWatermark,
+        state.handoffEvidence,
+        state.titleFrameEvidence
+      );
     }
     if (state.revealWatchdogEvidence && !state.titleFrameEvidence) {
       fail(
@@ -1078,6 +1755,25 @@ function formatReportMarkdown(report) {
     lines.push("- Write epoch: " + String(evidence.tuningSnapshot.writeEpoch));
     lines.push("");
   }
+  if (report.savePreparation && report.savePreparation.gateBaseline) {
+    const preparation = report.savePreparation;
+    const baseline = preparation.gateBaseline;
+    lines.push("## Clone gate baseline", "");
+    lines.push("- Seed source SHA-256: " + preparation.seedSha256);
+    lines.push("- Seeded target SHA-256: " + preparation.seededTargetSha256);
+    lines.push("- Post-snapshot baseline SHA-256: " + baseline.sha256);
+    lines.push("- Changed by same-attempt startup archive: "
+      + String(baseline.changedFromSeed));
+    lines.push("- Stable samples/window: " + String(baseline.stableSampleCount)
+      + " / " + String(baseline.stableWindowMs) + "ms");
+    lines.push("- Startup archive line: " + String(
+      baseline.startupArchiveReceipt
+        ? baseline.startupArchiveReceipt.lineNumber : "not required"
+    ));
+    lines.push("- Post-capture log watermark: "
+      + String(baseline.postCaptureLogWatermark.total));
+    lines.push("");
+  }
   if (report.error) {
     lines.push("## Failure", "");
     lines.push("- Code: " + report.error.code);
@@ -1119,7 +1815,7 @@ function expectRejected(label, callback, expectedCode) {
   }
 }
 
-function runCheck() {
+async function runCheck() {
   const agentEntryContract = checkAgentEntryContract();
   const parsed = parseArgs(["--seed-slot", "crazyflasher7_saves2"]);
   assertSafeArgs(parsed);
@@ -1194,6 +1890,108 @@ function runCheck() {
     saveRuntime: { savePath: "different_runtime_slot" },
   }, parsed.slot);
 
+  const baselinePreparation = {
+    seededTargetSha256: "1".repeat(64),
+    targetSha256: "1".repeat(64),
+  };
+  bindCloneGateBaseline(baselinePreparation, {
+    sha256: "2".repeat(64),
+    utf8Bytes: 123,
+    textChars: 100,
+    lastWriteTimeUtc: "2026-08-02T00:00:00.000Z",
+    lastSaved: "2026-08-02 08:00:00",
+    capturedAt: "2026-08-02T00:00:01.000Z",
+    stableWindowMs: CLONE_BASELINE_STABLE_MS,
+    regularFileVerified: true,
+    realPathBound: true,
+  });
+  if (baselinePreparation.seededTargetSha256 !== "1".repeat(64)
+      || baselinePreparation.targetSha256 !== "1".repeat(64)
+      || baselinePreparation.gateBaseline.sha256 !== "2".repeat(64)) {
+    throw new Error("post-snapshot clone baseline binding lost seed provenance");
+  }
+
+  let fakeNow = 0;
+  let sampleIndex = 0;
+  const sampleA = {
+    sha256: "a".repeat(64),
+    utf8Bytes: 100,
+    textChars: 90,
+    lastWriteTimeUtc: "2026-08-02T00:00:00.000Z",
+    lastSaved: "2026-08-02 08:00:00",
+    fingerprint: "sample-a",
+  };
+  const sampleB = Object.assign({}, sampleA, {
+    sha256: "b".repeat(64),
+    fingerprint: "sample-b",
+  });
+  const samples = [null, sampleA, sampleA, sampleB, sampleB, sampleB];
+  const stableFixture = await captureStableCloneBaseline(null, null, {
+    stableMs: 200,
+    timeoutMs: 1000,
+    monotonicNow: () => fakeNow,
+    readSample: () => samples[Math.min(sampleIndex++, samples.length - 1)],
+    wait: async (milliseconds) => { fakeNow += milliseconds; },
+  });
+  if (stableFixture.sha256 !== sampleB.sha256
+      || stableFixture.stableSampleCount < 2
+      || stableFixture.stableWindowMs !== 200) {
+    throw new Error("stable clone sampler did not reset across missing/changed samples");
+  }
+  let unstableRejected = false;
+  fakeNow = 0;
+  sampleIndex = 0;
+  try {
+    await captureStableCloneBaseline(null, null, {
+      stableMs: 200,
+      timeoutMs: 450,
+      monotonicNow: () => fakeNow,
+      readSample: () => (sampleIndex++ % 2 === 0 ? sampleA : sampleB),
+      wait: async (milliseconds) => { fakeNow += milliseconds; },
+    });
+  } catch (error) {
+    unstableRejected = error && error.code === "clone_baseline_unstable";
+  }
+  if (!unstableRejected) {
+    throw new Error("unstable clone sampler fixture was accepted");
+  }
+
+  const semanticA = {
+    lastSaved: "old",
+    inventory: { slot: { value: { mods: {} } } },
+    others: {
+      "物品来源缓存": {
+        discoveredStages: ["B", "A"],
+        discoveredEnemies: ["Y", "X"],
+        discoveredQuests: ["2", "1"],
+        completedChallengeQuests: ["20", "10"],
+      },
+    },
+  };
+  const semanticB = JSON.parse(JSON.stringify(semanticA));
+  semanticB.lastSaved = "new";
+  semanticB.inventory.slot.value.mods = [];
+  Object.keys(semanticB.others["物品来源缓存"]).forEach((key) => {
+    semanticB.others["物品来源缓存"][key].reverse();
+  });
+  if (cloneSemanticSha256(semanticA) !== cloneSemanticSha256(semanticB)) {
+    throw new Error("narrow startup normalization semantic fixture changed hash");
+  }
+  semanticB.inventory.slot.value.level = 2;
+  if (cloneSemanticSha256(semanticA) === cloneSemanticSha256(semanticB)) {
+    throw new Error("out-of-contract startup semantic mutation was accepted");
+  }
+  assertExactSeededTargetBytes(Buffer.from("seed"), Buffer.from("seed"));
+  let replacedSeedRejected = false;
+  try {
+    assertExactSeededTargetBytes(Buffer.from("seed"), Buffer.from("other"));
+  } catch (error) {
+    replacedSeedRejected = error && error.code === "seed_target_post_write_mismatch";
+  }
+  if (!replacedSeedRejected) {
+    throw new Error("post-write seed replacement fixture was accepted");
+  }
+
   const watermark = { total: 2, capturedAt: "2026-07-16T00:00:00.000Z" };
   const snapshot = {
     total: 6,
@@ -1204,7 +2002,9 @@ function runCheck() {
       "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared",
       "event=equipment_tuning_panel_bound panelInstanceId=panel.workbench.7",
       "event=equipment_tuning_snapshot_confirmed callId=tune.check.1 "
-        + "panelInstanceId=panel.workbench.7 viewSessionId=view.check.1 writeEpoch=3",
+        + "panelInstanceId=panel.workbench.7 viewSessionId=view.check.1 "
+        + "sourceKeyRef=sha256_cccccccccccccccccccccccc "
+        + "stateRef=sha256_aaaaaaaaaaaaaaaaaaaaaaaa writeEpoch=3",
     ],
   };
   const records = freshLogRecords(watermark, snapshot);
@@ -1216,13 +2016,25 @@ function runCheck() {
   if (!titleFrame || titleFrame.lineNumber !== 4) {
     throw new Error("fresh title-frame watermark check failed");
   }
+  assertRuntimeEvidenceOrder(watermark, handoff, titleFrame);
+  expectRejected(
+    "title frame before handoff",
+    () => assertRuntimeEvidenceOrder(
+      watermark,
+      { lineNumber: 4 },
+      { lineNumber: 3 }
+    ),
+    "runtime_marker_order_invalid"
+  );
   if (findFreshRevealWatchdog(records)) {
     throw new Error("clean title-frame evidence unexpectedly contained a reveal watchdog");
   }
   const gate = selectWorkbenchSnapshotGate(records);
   if (!gate
       || gate.activeWorkbench.panelInstanceId !== gate.tuningSnapshot.panelInstanceId
-      || gate.tuningSnapshot.writeEpoch !== 3) {
+      || gate.tuningSnapshot.writeEpoch !== 3
+      || gate.tuningSnapshot.sourceKey !== "sha256_cccccccccccccccccccccccc"
+      || gate.tuningSnapshot.sourceKeyRef !== "sha256_cccccccccccccccccccccccc") {
     throw new Error("correlated workbench/snapshot evidence check failed");
   }
 
@@ -1234,7 +2046,9 @@ function runCheck() {
     {
       lineNumber: 4,
       line: "event=equipment_tuning_snapshot_confirmed callId=tune.bad.1 "
-        + "panelInstanceId=panel.workbench.B viewSessionId=view.bad.1 writeEpoch=0",
+        + "panelInstanceId=panel.workbench.B viewSessionId=view.bad.1 "
+        + "sourceKey=inventory%3A%E8%83%8C%E5%8C%85%3A7%3Alease.bad "
+        + "stateRef=sha256_bbbbbbbbbbbbbbbbbbbbbbbb writeEpoch=0",
     },
   ]);
   if (mismatched) throw new Error("cross-instance snapshot evidence was accepted");
@@ -1353,7 +2167,7 @@ function runCheck() {
   console.log(JSON.stringify({
     ok: true,
     slot: DEFAULT_AGENT_SLOT,
-    checks: 22 + identityContract.checks,
+    checks: 31 + identityContract.checks,
     agentEntryContract: agentEntryContract.uiState,
     scope: "open_snapshot_gate_only",
   }, null, 2));
@@ -1422,6 +2236,7 @@ async function runUnattended(args) {
         (observed) => recordObservedRuntimeIdentity(report.runtimeIdentity, observed)
       );
       recordVerifiedRuntimeIdentity(report.runtimeIdentity, actualIdentity);
+      assertExclusiveLauncherProcess(queryLauncherCoreProcesses(), actualIdentity.pid);
       report.httpPort = port;
       report.timeline.push({
         phase: "existing_launcher_runtime_identity_verified",
@@ -1443,6 +2258,7 @@ async function runUnattended(args) {
         runtimeSlot: report.preparationGuard.runtimeSlot,
       });
     } else {
+      assertExclusiveLauncherProcess(queryLauncherCoreProcesses(), null);
       if (!args.startLauncher) {
         fail(
           "launcher_not_running",
@@ -1474,6 +2290,7 @@ async function runUnattended(args) {
         (observed) => recordObservedRuntimeIdentity(report.runtimeIdentity, observed)
       );
       recordVerifiedRuntimeIdentity(report.runtimeIdentity, actualIdentity);
+      assertExclusiveLauncherProcess(queryLauncherCoreProcesses(), actualIdentity.pid);
       report.timeline.push({
         phase: "started_launcher_runtime_identity_verified",
         at: new Date().toISOString(),
@@ -1483,6 +2300,15 @@ async function runUnattended(args) {
       });
     }
     report.httpPort = port;
+    assertExclusiveLauncherProcess(
+      queryLauncherCoreProcesses(),
+      report.runtimeIdentity.pid
+    );
+    report.timeline.push({
+      phase: "launcher_process_exclusivity_reverified_after_seed",
+      at: new Date().toISOString(),
+      pid: report.runtimeIdentity.pid,
+    });
     if (!priorStatus) {
       priorStatus = await waitForAgentControl(
         port,
@@ -1562,6 +2388,50 @@ async function runUnattended(args) {
       panelInstanceId: report.snapshotGate.evidence.activeWorkbench.panelInstanceId,
       viewSessionId: report.snapshotGate.evidence.tuningSnapshot.viewSessionId,
     });
+    const snapshotIdentity = verifyRuntimeIdentity(
+      root,
+      port,
+      expectedIdentity,
+      (observed) => recordObservedRuntimeIdentity(report.runtimeIdentity, observed)
+    );
+    recordVerifiedRuntimeIdentity(report.runtimeIdentity, snapshotIdentity);
+    report.timeline.push({
+      phase: "runtime_identity_reverified_after_snapshot",
+      at: new Date().toISOString(),
+      pid: snapshotIdentity.pid,
+      coreSha256: snapshotIdentity.coreSha256,
+    });
+    let cloneBaseline = await captureStableCloneBaseline(
+      root,
+      report.savePreparation
+    );
+    const baselineLogSnapshot = await readLogSnapshot(port);
+    cloneBaseline = completeCloneGateBaseline(
+      root,
+      report,
+      cloneBaseline,
+      baselineLogSnapshot
+    );
+    bindCloneGateBaseline(report.savePreparation, cloneBaseline);
+    report.timeline.push({
+      phase: "post_snapshot_clone_baseline_bound",
+      at: cloneBaseline.capturedAt,
+      sha256: cloneBaseline.sha256,
+      utf8Bytes: cloneBaseline.utf8Bytes,
+      textChars: cloneBaseline.textChars,
+      deviceId: cloneBaseline.deviceId,
+      fileId: cloneBaseline.fileId,
+      mtimeNs: cloneBaseline.mtimeNs,
+      semanticContract: cloneBaseline.semanticContract,
+      semanticSha256: cloneBaseline.semanticSha256,
+      stableWindowMs: cloneBaseline.stableWindowMs,
+      stableSampleCount: cloneBaseline.stableSampleCount,
+      changedFromSeed: cloneBaseline.changedFromSeed,
+      startupArchiveLine: cloneBaseline.startupArchiveReceipt
+        ? cloneBaseline.startupArchiveReceipt.lineNumber : null,
+      archiveEvidenceFloorLine: cloneBaseline.archiveEvidenceFloorLine,
+      postCaptureLogTotal: cloneBaseline.postCaptureLogWatermark.total,
+    });
     const finalIdentity = verifyRuntimeIdentity(
       root,
       port,
@@ -1569,8 +2439,9 @@ async function runUnattended(args) {
       (observed) => recordObservedRuntimeIdentity(report.runtimeIdentity, observed)
     );
     recordVerifiedRuntimeIdentity(report.runtimeIdentity, finalIdentity);
+    assertExclusiveLauncherProcess(queryLauncherCoreProcesses(), finalIdentity.pid);
     report.timeline.push({
-      phase: "runtime_identity_reverified_after_snapshot",
+      phase: "runtime_identity_reverified_after_clone_baseline",
       at: new Date().toISOString(),
       pid: finalIdentity.pid,
       coreSha256: finalIdentity.coreSha256,
@@ -1616,7 +2487,7 @@ async function main(argv) {
     return;
   }
   if (args.check) {
-    runCheck();
+    await runCheck();
     return;
   }
   await runUnattended(args);
@@ -1628,10 +2499,22 @@ module.exports = {
   HANDOFF_MARKER,
   REVEAL_WATCHDOG_MARKER,
   TITLE_FRAME_MARKER,
+  agent,
+  assertCanonicalDirectoryChain,
+  assertExactSeededTargetBytes,
+  assertExclusiveLauncherProcess,
+  assertRegularFileLstat,
+  assertResponseSucceeded,
+  assertRuntimeEvidenceOrder,
   assertRuntimeReadyStatus,
   assertSafeArgs,
   assertTargetSlotNotInUse,
+  captureStableCloneBaseline,
+  cloneSemanticSha256,
+  discoverPort,
+  ensureLauncherPort,
   extractLogField,
+  establishInteractionLogWatermark,
   findFreshHandoff,
   findFreshRevealWatchdog,
   findFreshTitleFrame,
@@ -1643,13 +2526,25 @@ module.exports = {
   parseArgs,
   parsePanelBoundEvidence,
   parseSnapshotEvidence,
+  parseStartupArchiveReceipt,
+  queryLauncherCoreProcesses,
+  readCloneBaselineSample,
   readLogSnapshot,
+  readRegularFileSnapshot,
   resolveExpectedRuntimeIdentity,
   runCheck,
   selectWorkbenchSnapshotGate,
+  sameBoundFileIdentity,
+  shutdownLauncher,
   shouldRequestAgentEnter,
   solOwnershipSuffix,
+  startLauncher,
   statusAttemptForSlot,
+  waitForAgentControl,
+  waitForPort,
+  waitForRuntimeReady,
+  waitForWorkbenchSnapshotGate,
+  writeAtomicRegularFile,
 };
 
 if (require.main === module) {

@@ -958,6 +958,9 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         var balanceDictWasUndefined:Boolean = org.flashNight.arki.item.ItemUtil.balanceDataDict == undefined;
         if (balanceDictWasUndefined) org.flashNight.arki.item.ItemUtil.balanceDataDict = {};
         var previousMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict[name];
+        var previousModAMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["插件A"];
+        var previousModBMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["插件B"];
+        var previousModCMeta:Object = org.flashNight.arki.item.ItemUtil.itemDataDict["插件C"];
         var previousBalance:Object = org.flashNight.arki.item.ItemUtil.balanceDataDict[name];
         var previousModDict:Object = org.flashNight.arki.item.EquipmentUtil.modDict;
         org.flashNight.arki.item.ItemUtil.itemDataDict[name] = {
@@ -967,6 +970,18 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 bullet:"普通子弹", clipname:"手枪通用弹药", split:1, singleshoot:true
             },
             data_2: {level:2}
+        };
+        org.flashNight.arki.item.ItemUtil.itemDataDict["插件A"] = {
+            name:"插件A", displayname:"插件A展示名", icon:"插件A专用图标",
+            type:"收集品", use:"装备插件", price:1
+        };
+        org.flashNight.arki.item.ItemUtil.itemDataDict["插件B"] = {
+            name:"插件B", displayname:" \t ", icon:" Undefined ",
+            type:"收集品", use:"装备插件", price:1
+        };
+        org.flashNight.arki.item.ItemUtil.itemDataDict["插件C"] = {
+            name:"插件C", displayname:17, icon:{legacy:"bad"},
+            type:"收集品", use:"装备插件", price:1
         };
         org.flashNight.arki.item.ItemUtil.balanceDataDict[name] = {
             formulaFamily:"weapon", schemaVersion:1, workbookVersion:1,
@@ -992,11 +1007,15 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             插件B: {
                 modGrade: "special", uiGradeLabel: "特殊", uiGradeColor: "#FFFF00",
                 uiRole: "mechanism", uiRoleLabel: "特殊机制", uiSymbol: "star-solid"
+            },
+            插件C: {
+                modGrade: "unknown", uiGradeLabel: "未知档级", uiGradeColor: "#58636E",
+                uiRole: "utility", uiRoleLabel: "结构与功能", uiSymbol: "diamond-outline"
             }
         };
         var equipment:Object = {
             name: name,
-            value: {level: org.flashNight.arki.item.EquipmentUtil.getMaxLevel(), tier: "二阶", mods: ["插件A", "插件B"]},
+            value: {level: org.flashNight.arki.item.EquipmentUtil.getMaxLevel(), tier: "二阶", mods: ["插件A", "插件B", "插件C"]},
             lastUpdate: 1,
             getData: function():Object {
                 return {name: name, displayname: "GateA3展示名称", type: "武器", use: "手枪", icon: name, data: {modslot: 3}};
@@ -1016,14 +1035,40 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             name:name, value:{level:1, mods:[]}, lastUpdate:1,
             getData:function():Object { return {name:name, type:"武器", use:"手枪", data:{modslot:3}}; }
         });
+        var legacyIdentityName:String = "GateA3旧标识物品";
+        _root.物品栏.背包.add(5, {
+            name:legacyIdentityName, value:2, lastUpdate:1,
+            getData:function():Object {
+                return {
+                    name:legacyIdentityName,
+                    displayname:" \t ",
+                    icon:" Undefined ",
+                    type:"收集品",
+                    use:"材料"
+                };
+            }
+        });
+        var wrongTypeIdentityName:String = "GateA3错型标识物品";
+        _root.物品栏.背包.add(6, {
+            name:wrongTypeIdentityName, value:1, lastUpdate:1,
+            getData:function():Object {
+                return {
+                    name:wrongTypeIdentityName,
+                    displayname:17,
+                    icon:{legacy:"bad"},
+                    type:"收集品",
+                    use:"材料"
+                };
+            }
+        });
         var response:Object = snapshot(10, 10);
         var equipmentProjection:Object = response.snapshots[0].slots[0].item;
         var stackProjection:Object = response.snapshots[0].slots[1].item;
         assertTrue(equipmentProjection.isMaxEnhancement
             && equipmentProjection.maxEnhancementLevel == org.flashNight.arki.item.EquipmentUtil.getMaxLevel()
             && equipmentProjection.tierSlotAvailable && equipmentProjection.tierSlotUsed
-            && equipmentProjection.modSlotCapacity == 3 && equipmentProjection.modSlotUsed == 2
-            && equipmentProjection.modSlots.length == 2
+            && equipmentProjection.modSlotCapacity == 3 && equipmentProjection.modSlotUsed == 3
+            && equipmentProjection.modSlots.length == 3
             && equipmentProjection.name == name && equipmentProjection.displayName == "GateA3展示名称"
             && equipmentProjection.modSlots[0].grade == "medium"
             && equipmentProjection.modSlots[0].symbol == "triangle-outline"
@@ -1035,9 +1080,25 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             && equipmentProjection.balanceSummary.formula == 1
             && equipmentProjection.balanceSummary.level == 2,
             "库存进阶实例严格选择对应 balance profile，并保留展示与插件投影");
+        assertTrue(equipmentProjection.modSlots[0].name == "插件A"
+                && equipmentProjection.modSlots[0].displayName == "插件A展示名"
+                && equipmentProjection.modSlots[0].icon == "插件A专用图标"
+                && equipmentProjection.modSlots[0].name != equipmentProjection.modSlots[0].displayName
+                && equipmentProjection.modSlots[0].name != equipmentProjection.modSlots[0].icon
+                && equipmentProjection.modSlots[0].displayName != equipmentProjection.modSlots[0].icon,
+            "插件槽投影保持内部名、显示名、图标名三者独立");
+        assertTrue(equipmentProjection.modSlots[1].name == "插件B"
+                && equipmentProjection.modSlots[1].displayName == "插件B"
+                && equipmentProjection.modSlots[1].icon == "插件B"
+                && equipmentProjection.modSlots[2].displayName == "插件C"
+                && equipmentProjection.modSlots[2].icon == "插件C",
+            "插件槽旧数据适配在空白、wrapped-case undefined 与错型字段时仅在 AS2 回退内部名");
         assertTrue(stackProjection.itemKind == "stack" && stackProjection.quantity == 12345
             && !stackProjection.isMaxEnhancement && stackProjection.modSlotCapacity == 0
             && stackProjection.modMeta.grade == "medium"
+            && stackProjection.modMeta.name == "插件A"
+            && stackProjection.modMeta.displayName == "插件A展示名"
+            && stackProjection.modMeta.icon == "插件A专用图标"
             && stackProjection.modMeta.scope == "firearm"
             && stackProjection.modMeta.role == "precision",
             "插件材料投影读取数量与 mod 元数据");
@@ -1049,9 +1110,22 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && response.snapshots[0].slots[4].item.balanceSummary.level == 1
                 && response.snapshots[0].slots[4].item.balanceSummary.weightLayers == 0,
             "无进阶库存实例选择 data profile");
+        assertTrue(response.snapshots[0].slots[5].item.name == legacyIdentityName
+                && response.snapshots[0].slots[5].item.displayName == legacyIdentityName
+                && response.snapshots[0].slots[5].item.icon == legacyIdentityName
+                && response.snapshots[0].slots[6].item.name == wrongTypeIdentityName
+                && response.snapshots[0].slots[6].item.displayName == wrongTypeIdentityName
+                && response.snapshots[0].slots[6].item.icon == wrongTypeIdentityName,
+            "顶层物品展示与图标在空白、wrapped-case undefined 及错型时只由 AS2 适配为内部名");
 
         if (previousMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict[name];
         else org.flashNight.arki.item.ItemUtil.itemDataDict[name] = previousMeta;
+        if (previousModAMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["插件A"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["插件A"] = previousModAMeta;
+        if (previousModBMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["插件B"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["插件B"] = previousModBMeta;
+        if (previousModCMeta == undefined) delete org.flashNight.arki.item.ItemUtil.itemDataDict["插件C"];
+        else org.flashNight.arki.item.ItemUtil.itemDataDict["插件C"] = previousModCMeta;
         if (previousBalance == undefined) delete org.flashNight.arki.item.ItemUtil.balanceDataDict[name];
         else org.flashNight.arki.item.ItemUtil.balanceDataDict[name] = previousBalance;
         org.flashNight.arki.item.EquipmentUtil.modDict = previousModDict;

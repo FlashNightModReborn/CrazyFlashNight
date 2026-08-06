@@ -306,8 +306,8 @@ var LootView = (function() {
             renderGhost:function(source) {
                 var item=source.item.item || {},node=document.createElement('div');
                 node.className='workbench-drag-ghost inventory-drag-ghost loot-drag-ghost';
-                node.innerHTML=iconHtml(item.icon || item.name,'inventory-owned-icon')
-                    + '<span>' + escapeHtml(item.displayName || item.name || '战利品') + '</span>';
+                node.innerHTML=iconHtml(item.icon || '','inventory-owned-icon')
+                    + '<span>' + escapeHtml(item.displayName || '战利品') + '</span>';
                 return node;
             },
             onDragStart:function() { self.tooltipSuppressed=true;hideTooltip(); },
@@ -350,7 +350,7 @@ var LootView = (function() {
 
     View.prototype._bindSlot = function(kind,node,slot) {
         var self=this,isLoot=kind==='loot',item=slot.item || {};
-        var itemName=slot.occupied ? String(item.displayName || item.name || '未知物品') : '空槽';
+        var itemName=slot.occupied ? String(item.displayName || '未知物品') : '空槽';
         var reasonNode=ensureReasonNode(node);
         Workbench.EntityTile.bindActivation(node,{
             itemName:itemName,
@@ -638,7 +638,7 @@ var LootView = (function() {
             : value.kind==='ABANDONED' ? '剩余战利品已明确放弃' : '箱子已随场景失效';
     }
     function basicTooltip(item) {
-        return '<div class="kshop-tt-header"><b>'+escapeHtml(item.displayName||item.name||'未知物品')+'</b></div>'
+        return '<div class="kshop-tt-header"><b>'+escapeHtml(item.displayName||'未知物品')+'</b></div>'
             +'<div class="kshop-tt-divider"></div><span class="kshop-tt-dim">来源</span> 地图资源箱'
             +'<div class="kshop-tt-loading">读取物品说明…</div>';
     }
@@ -646,7 +646,7 @@ var LootView = (function() {
         data=data||{};
         if (typeof PanelTooltip==='undefined'||!PanelTooltip.buildItemRichHtml)
             return basicTooltip(item);
-        var iconKey=data.iconName||item.icon||item.name;
+        var iconKey=data.iconName||item.icon||'';
         return PanelTooltip.buildItemRichHtml({
             iconHtml:PanelTooltip.dynamicIconHtml(iconKey),
             iconUrl:PanelTooltip.staticIconUrl(iconKey),

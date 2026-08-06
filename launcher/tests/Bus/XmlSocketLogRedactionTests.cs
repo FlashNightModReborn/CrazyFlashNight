@@ -1,10 +1,216 @@
 using CF7Launcher.Bus;
+using CF7Launcher.Guardian;
 using Xunit;
 
 namespace CF7Launcher.Tests.Bus
 {
     public sealed class XmlSocketLogRedactionTests
     {
+        [Fact]
+        public void EquipmentTuningResponseLog_RedactsShortPayloadAndKeepsOnlySafeMetadata()
+        {
+            const string message = "{\"task\":\"equipment_tuning_response\","
+                + "\"callId\":\"call.secret\\r\\n[forged]\",\"command\":\"commit\","
+                + "\"success\":true,\"tuningToken\":\"token.secret\","
+                + "\"transactionId\":\"transaction.secret\","
+                + "\"snapshot\":{\"equipment\":\"snapshot.secret\"}}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.StartsWith("[XmlSocket:JSON] task=equipment_tuning_response command=commit"
+                + " callId=other success=true payload=redacted len=" + message.Length,
+                line);
+            Assert.Contains(" tuningTokenRef="
+                + AuthorityLogFormatter.CreateReference("token.secret"), line);
+            Assert.Contains(" transactionIdRef="
+                + AuthorityLogFormatter.CreateReference("transaction.secret"), line);
+            AssertEquipmentTuningSecretsAbsent(line);
+        }
+
+        [Fact]
+        public void EquipmentTuningResponseLog_RedactsLongPayloadWithoutPrefixSampling()
+        {
+            string message = "{\"task\":\"equipment_tuning_response\","
+                + "\"callId\":91,\"command\":\"snapshot\",\"success\":false,"
+                + "\"tuningToken\":\"token.secret\",\"transactionId\":\"transaction.secret\","
+                + "\"snapshot\":{\"equipment\":\"snapshot.secret\",\"padding\":\""
+                + new string('x', 600) + "\"}}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.True(message.Length >= 500);
+            Assert.StartsWith("[XmlSocket:JSON] task=equipment_tuning_response command=snapshot"
+                + " callId=91 success=false payload=redacted len=" + message.Length,
+                line);
+            Assert.Contains(" tuningTokenRef="
+                + AuthorityLogFormatter.CreateReference("token.secret"), line);
+            Assert.Contains(" transactionIdRef="
+                + AuthorityLogFormatter.CreateReference("transaction.secret"), line);
+            AssertEquipmentTuningSecretsAbsent(line);
+            Assert.DoesNotContain(new string('x', 20), line);
+        }
+
+        [Fact]
+        public void MalformedEquipmentTuningResponseLog_FailsClosedBeforeRawFallback()
+        {
+            const string message = "{\"task\" : \"equipment_tuning_response\","
+                + "\"callId\":17,\"command\":\"preview\",\"success\":true,"
+                + "\"tuningToken\":\"token.secret\",\"transactionId\":\"transaction.secret\","
+                + "\"snapshot\":{\"equipment\":\"snapshot.secret\"}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.Equal("[XmlSocket:JSON] task=equipment_tuning_response_family"
+                + " envelope=malformed payload=redacted len=" + message.Length, line);
+            AssertEquipmentTuningSecretsAbsent(line);
+        }
+
+        [Fact]
+        public void MalformedLongEquipmentTuningResponseLog_DoesNotExposePrefixSample()
+        {
+            string message = "{\"task\":\"equipment_tuning_response\","
+                + "\"tuningToken\":\"token.secret\",\"transactionId\":\"transaction.secret\","
+                + "\"snapshot\":{\"equipment\":\"snapshot.secret\",\"padding\":\""
+                + new string('x', 600);
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.True(message.Length >= 500);
+            Assert.Equal("[XmlSocket:JSON] task=equipment_tuning_response_family"
+                + " envelope=malformed payload=redacted len=" + message.Length, line);
+            AssertEquipmentTuningSecretsAbsent(line);
+            Assert.DoesNotContain(new string('x', 20), line);
+        }
+
+        [Theory]
+        [InlineData("equipment_tuning_response_v2")]
+        [InlineData("EQUIPMENT_TUNING_RESPONSE")]
+        [InlineData("equipment_tuning_respons")]
+        [InlineData("equipment_tuning_\\r\\n[forged]")]
+        public void NearMatchEquipmentTuningTaskLog_FailsClosedWithoutChangingRouting(
+            string task)
+        {
+            string message = "{\"task\":\"" + task + "\","
+                + "\"command\":\"preview\",\"success\":true,"
+                + "\"tuningToken\":\"token.secret\",\"transactionId\":\"transaction.secret\","
+                + "\"snapshot\":{\"equipment\":\"snapshot.secret\"}}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.Equal("[XmlSocket:JSON] task=equipment_tuning_response_family"
+                + " envelope=near_match payload=redacted len=" + message.Length, line);
+            AssertEquipmentTuningSecretsAbsent(line);
+            Assert.DoesNotContain("forged", line);
+            Assert.DoesNotContain("\r", line);
+            Assert.DoesNotContain("\n", line);
+        }
+
+        [Theory]
+        [InlineData("{\"task\":\"equipment_tuning_response\",\"task\":\"ping\",")]
+        [InlineData("{\"task\":\"ping\",\"task\":\"equipment_tuning_response\",")]
+        public void DuplicateTaskEquipmentTuningLog_CannotBypassRedaction(string prefix)
+        {
+            string message = prefix
+                + "\"command\":\"commit\",\"success\":true,"
+                + "\"tuningToken\":\"token.secret\",\"transactionId\":\"transaction.secret\","
+                + "\"snapshot\":{\"equipment\":\"snapshot.secret\"}}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.Equal("[XmlSocket:JSON] task=equipment_tuning_response_family"
+                + " envelope=malformed payload=redacted len=" + message.Length, line);
+            AssertEquipmentTuningSecretsAbsent(line);
+        }
+
+        [Fact]
+        public void EscapedDuplicateTaskKey_CannotBypassMalformedRedaction()
+        {
+            const string message = "{\"task\":\"ping\",\"\\u0074ask\":"
+                + "\"equipment_tuning_response\",\"command\":\"commit\","
+                + "\"tuningToken\":\"token.secret\","
+                + "\"transactionId\":\"transaction.secret\","
+                + "\"snapshot\":{\"equipment\":\"snapshot.secret\"}}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.Equal("[XmlSocket:JSON] envelope=malformed payload=redacted len="
+                + message.Length, line);
+            AssertEquipmentTuningSecretsAbsent(line);
+        }
+
+        [Fact]
+        public void OrdinaryMalformedJson_NeverFallsBackToRawOrPrefixLogging()
+        {
+            const string message = "{\"task\":\"ping\",\"diagnostic\":\"secret.value\"";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.Equal("[XmlSocket:JSON] envelope=malformed payload=redacted len="
+                + message.Length, line);
+            Assert.DoesNotContain("secret.value", line);
+        }
+
+        [Fact]
+        public void EquipmentTuningResponseLog_RejectsUntrustedMetadataFromSummary()
+        {
+            string callId = "call.secret" + new string('c', 600) + "\\r\\n[forged]";
+            string command = "preview" + new string('p', 600) + "\\r\\n[forged]";
+            string message = "{\"task\":\"equipment_tuning_response\","
+                + "\"callId\":\"" + callId + "\","
+                + "\"command\":\"" + command + "\","
+                + "\"success\":\"true\\r\\n[forged]\","
+                + "\"tuningToken\":\"token.secret\",\"transactionId\":\"transaction.secret\","
+                + "\"snapshot\":{\"equipment\":\"snapshot.secret\"}}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.StartsWith("[XmlSocket:JSON] task=equipment_tuning_response command=other"
+                + " callId=other success=unknown payload=redacted len=" + message.Length,
+                line);
+            AssertEquipmentTuningSecretsAbsent(line);
+            Assert.DoesNotContain("forged", line);
+            Assert.DoesNotContain("\r", line);
+            Assert.DoesNotContain("\n", line);
+            Assert.DoesNotContain(new string('c', 20), line);
+            Assert.DoesNotContain(new string('p', 20), line);
+        }
+
+        [Fact]
+        public void LoadoutCandidatesResponseLog_KeepsRoutingAndRedactsCandidateAuthority()
+        {
+            const string lease = "lease.character.secret";
+            const string itemName = "candidate.item.secret";
+            string message = "{\"task\":\"loadout_response\",\"command\":\"candidates\","
+                + "\"callId\":7,\"success\":true,\"payload\":{\"candidates\":[{"
+                + "\"item\":{\"name\":\"" + itemName + "\"},\"source\":{"
+                + "\"expectedLease\":\"" + lease + "\"}}]}}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.StartsWith("[XmlSocket:JSON] task=loadout_response cmd=candidates"
+                + " callId=7 success=true payload=redacted len=" + message.Length,
+                line);
+            Assert.Contains(AuthorityLogFormatter.CreateReference(lease), line);
+            Assert.DoesNotContain(lease, line);
+            Assert.DoesNotContain(itemName, line);
+        }
+
+        [Fact]
+        public void NearMatchLoadoutResponseLog_FailsClosed()
+        {
+            const string lease = "lease.near-match.secret";
+            string message = "{\"task\":\"loadout_response_v2\","
+                + "\"command\":\"candidates\",\"success\":true,"
+                + "\"expectedLease\":\"" + lease + "\"}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.Equal("[XmlSocket:JSON] task=authority_response_family"
+                + " envelope=near_match payload=redacted len=" + message.Length,
+                line);
+            Assert.DoesNotContain(lease, line);
+        }
+
         [Fact]
         public void LootResponseLog_RedactsIdentityAndRewards()
         {
@@ -156,6 +362,17 @@ namespace CF7Launcher.Tests.Bus
 
             Assert.Equal("[XmlSocket:JSON] " + message,
                 XmlSocketServer.FormatJsonMessageLog(message));
+        }
+
+        private static void AssertEquipmentTuningSecretsAbsent(string line)
+        {
+            Assert.DoesNotContain("call.secret", line);
+            Assert.DoesNotContain("\"tuningToken\"", line);
+            Assert.DoesNotContain("token.secret", line);
+            Assert.DoesNotContain("\"transactionId\"", line);
+            Assert.DoesNotContain("transaction.secret", line);
+            Assert.DoesNotContain("\"snapshot\"", line);
+            Assert.DoesNotContain("snapshot.secret", line);
         }
     }
 }

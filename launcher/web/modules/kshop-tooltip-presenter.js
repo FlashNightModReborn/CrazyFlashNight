@@ -33,11 +33,17 @@
     function ownedBasicFacts(item) {
         item = item || {};
         return {
-            name:String(item.displayName || item.name || '未知物品'),
+            name:String(item.displayName || '未知物品'),
             type:String(item.majorType || item.use || item.itemKind || '物品'),
             quantity:Math.max(0, Number(item.quantity) || 0),
             enhancementLevel:Math.max(0, Number(item.enhancementLevel) || 0)
         };
+    }
+
+    function ownedRichIconKey(item, data) {
+        item = item || {};
+        data = data || {};
+        return String(data.iconName || item.icon || '');
     }
 
     function balanceMetaHtml(item) {
@@ -104,7 +110,7 @@
 
     TooltipPresenter.prototype._ownedBasicHtml = function(item) {
         var facts = ownedBasicFacts(item);
-        var iconKey = item.icon || item.name;
+        var iconKey = item.icon || '';
         var intro = '<div class="kshop-tt-header"><b>' + escapeHtml(facts.name) + '</b></div>'
             + '<span class="kshop-tt-dim">类型</span> ' + escapeHtml(facts.type) + '<br>'
             + (facts.quantity > 1 ? '<span class="kshop-tt-dim">数量</span> ' + facts.quantity + '<br>' : '')
@@ -118,7 +124,7 @@
     };
 
     TooltipPresenter.prototype._ownedRichHtml = function(item, data) {
-        var iconKey = data.iconName || item.icon || item.name;
+        var iconKey = ownedRichIconKey(item, data);
         return PanelTooltip.buildItemRichHtml({
             iconHtml:this._iconHtml(iconKey), iconUrl:PanelTooltip.staticIconUrl(iconKey),
             introHTML:data.introHTML || '', descHTML:data.descHTML || '',
@@ -194,6 +200,7 @@
         ownedTooltipKey:ownedTooltipKey,
         catalogBasicFacts:catalogBasicFacts,
         ownedBasicFacts:ownedBasicFacts,
+        ownedRichIconKey:ownedRichIconKey,
         balanceMetaHtml:balanceMetaHtml,
         escapeHtml:escapeHtml
     };

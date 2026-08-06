@@ -30,7 +30,7 @@
         item = item || {};
         var safe = typeof escapeHtml === 'function' ? escapeHtml : String;
         var type = item.majorType || item.use || item.itemKind || '物品';
-        return '<div class="kshop-tt-header"><b>' + safe(item.displayName || item.name || '未知物品') + '</b></div>'
+        return '<div class="kshop-tt-header"><b>' + safe(item.displayName || '未知物品') + '</b></div>'
             + '<div class="kshop-tt-divider"></div><span class="kshop-tt-dim">类型</span> ' + safe(type) + '<br>'
             + (Number(item.quantity) > 1 ? '<span class="kshop-tt-dim">数量</span> ' + Number(item.quantity) + '<br>' : '')
             + (Number(item.enhancementLevel) > 0 ? '<span class="kshop-tt-dim">强化</span> +' + Number(item.enhancementLevel) + '<br>' : '')
@@ -40,7 +40,7 @@
     function richTooltip(item, data, tooltip) {
         item = item || {};
         data = data || {};
-        var iconKey = data.iconName || item.icon || item.name;
+        var iconKey = data.iconName || item.icon || '';
         return tooltip.buildItemRichHtml({
             iconHtml:tooltip.dynamicIconHtml(iconKey),
             iconUrl:tooltip.staticIconUrl(iconKey),
