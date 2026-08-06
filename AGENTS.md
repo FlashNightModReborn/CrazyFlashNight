@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：CF7 Agent Runtime / Wings F8 正式发布 source commit `6f3d50a52413c747b05b74be88d6ee46650f4597`、tree `253e57f6d20a90fef6addfa744d0487d88f00dfb`（2026-07-31），已完成 v2 双故障域 promotion 与纯 Agent Runtime MCP 标准入口复验。F8 implementation source `53caabc90941826ddacf626f536b0f473adbf049` 的隔离 candidate 与 F7 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 只保留为历史分层证据。
+**最后核对代码基线**：双栏工作台 A1–A6 正式发布 source commit `730c6be781ddd22bfd7a59a2e7773acce892f105`、release tree `1434e71d44fe41ad0fa426bc857085f1aff940dd`（2026-08-06），已完成 v2 双故障域 promotion 与无 candidate id 的纯 Agent Runtime MCP 标准入口复验，严格达到 `standard_entry_verified`。此前 F8 release `6f3d50a52413c747b05b74be88d6ee46650f4597`、F8 implementation candidate `53caabc90941826ddacf626f536b0f473adbf049` 与 F7 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 只保留为历史分层证据。
 
 ---
 
