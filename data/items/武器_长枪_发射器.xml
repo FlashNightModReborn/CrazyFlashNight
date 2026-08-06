@@ -689,7 +689,8 @@
       <velocity>10</velocity>
       <impact>20</impact>
       <range>50</range>
-      <damageType>物理</damageType>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
       <consumeMode>onLoadGroup</consumeMode>
       <consumeTiming>onReloadCommit</consumeTiming>
       <clipCostPerLoad>1</clipCostPerLoad>
