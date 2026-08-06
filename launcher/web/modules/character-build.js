@@ -1,8 +1,6 @@
 /** Character Build transport/session/view composition; the parent owns routing and close. */
 (function(root, factory) {
     'use strict';
-    var runtime = typeof module !== 'undefined' && module.exports
-        ? require('./panel-runtime.js') : root && root.PanelRuntime;
     var session = typeof module !== 'undefined' && module.exports
         ? require('./character-build-session.js') : root && root.CharacterBuildSession;
     var view = typeof module !== 'undefined' && module.exports
@@ -13,18 +11,21 @@
         ? require('./character-build/character-build-mutation.js') : root && root.CharacterBuildMutation;
     var pose = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-pose.js') : root && root.CharacterBuildPose;
-    var slotTransition = typeof module !== 'undefined' && module.exports
-        ? require('./character-build/character-build-slot-transition.js')
-        : root && root.CharacterBuildSlotTransition;
     var projection = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-projection.js')
         : root && root.CharacterBuildProjection;
     var candidateTooltip = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-candidate-tooltip.js')
         : root && root.CharacterBuildCandidateTooltip;
+    var transport = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-transport.js')
+        : root && root.CharacterBuildTransport;
+    var candidateChannel = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-candidate-channel.js')
+        : root && root.CharacterBuildCandidateChannel;
     var api = factory(
-        runtime, session, view, tuning, mutation, pose, slotTransition,
-        projection, candidateTooltip, root);
+        session, view, tuning, mutation, pose, projection, candidateTooltip,
+        transport, candidateChannel, root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -32,105 +33,33 @@
         root.CharacterBuild = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
-        SlotTransition, Projection, CandidateTooltipModule, global) {
+function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
+        CandidateTooltipModule, Transport, CandidateChannel, global) {
     'use strict';
-    if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
     if (!SessionModule || !SessionModule.CharacterBuildSession) throw new Error('CharacterBuildSession is required');
     if (!ViewModule || !ViewModule.CharacterBuildView) throw new Error('CharacterBuildView is required');
     if (!TuningModule || !TuningModule.CharacterBuildTuning) throw new Error('CharacterBuildTuning is required');
     if (!Mutation) throw new Error('CharacterBuildMutation is required');
     if (!Pose || !Pose.select) throw new Error('CharacterBuildPose is required');
-    if (!SlotTransition || !SlotTransition.handle) {
-        throw new Error('CharacterBuildSlotTransition is required');
-    }
     if (!Projection || typeof Projection.viewSnapshot !== 'function') {
         throw new Error('CharacterBuildProjection is required');
     }
     if (!CandidateTooltipModule || !CandidateTooltipModule.CandidateTooltip) {
         throw new Error('CharacterBuildCandidateTooltip is required');
     }
+    if (!Transport || typeof Transport.createRequestMux !== 'function') {
+        throw new Error('CharacterBuildTransport is required');
+    }
+    if (!CandidateChannel || typeof CandidateChannel.install !== 'function') {
+        throw new Error('CharacterBuildCandidateChannel is required');
+    }
     var MANIFEST_URL = 'assets/dressup/manifest.json';
     // Structural body fields define stable framing; pose extremities stay draw-only for inspection.
     var CHARACTER_CAMERA_FIT_FIELDS = Pose.cameraFitFields();
     var DRAW_FIELDS = Pose.drawFields();
     var manifestPromise = null;
-    function copy(value) {
-        var result = {};
-        value = value && typeof value === 'object' ? value : {};
-        for (var key in value) {
-            if (Object.prototype.hasOwnProperty.call(value, key)) result[key] = value[key];
-        }
-        return result;
-    }
-    function createRequestMux(options) {
-        options = options || {};
-        return new PanelRuntime.PanelRequestMux({
-            send:options.send,
-            setTimer:options.setTimer,
-            clearTimer:options.clearTimer,
-            timeoutMs:options.timeoutMs,
-            sessionNonce:options.sessionNonce,
-            callPrefix:'character-build',
-            router:options.router || PanelRuntime.sharedResponseRouter,
-            validateSession:function(session) { return !!String(session.panelInstanceId || ''); },
-            createMessage:function(context) {
-                var payload = copy(context.payload);
-                payload.v = 1;
-                return {
-                    type:'panel',
-                    panel:'workbench',
-                    domain:'loadout',
-                    cmd:context.entry.cmd,
-                    callId:context.entry.callId,
-                    panelInstanceId:context.session.panelInstanceId,
-                    payload:payload
-                };
-            },
-            validateResponse:function(data, entry, session) {
-                return !!data && data.type === 'panel_resp' && data.panel === 'workbench'
-                    && data.domain === 'loadout' && data.cmd === entry.cmd
-                    && data.callId === entry.callId
-                    && String(data.panelInstanceId || '') === session.panelInstanceId;
-            },
-            createSynthetic:function(context) {
-                var unknown = context.entry.write === true && context.error === 'client_timeout';
-                return {
-                    type:'panel_resp',
-                    panel:'workbench',
-                    domain:'loadout',
-                    cmd:context.entry.cmd,
-                    callId:context.entry.callId,
-                    panelInstanceId:context.session.panelInstanceId,
-                    success:false,
-                    error:context.error,
-                    clientSynthetic:true,
-                    requiresReconcile:unknown,
-                    reconcileAfterCallId:unknown ? context.entry.callId : ''
-                };
-            }
-        });
-    }
-    function definitiveCandidateStale(response) {
-        return !!response && response.success === false
-            && String(response.error || '') === 'stale_state';
-    }
-    function candidateCacheTarget(target, scope) {
-        if (!target || typeof target !== 'object') return '';
-        if (target.kind === 'equipment') {
-            scope = SessionModule.candidateScope(scope || 'compatible');
-            if (scope === 'backpack') return 'equipment:backpack';
-            var slotKey = String(target.slotKey || '');
-            // Both handgun holders consume the same `use=手枪` candidate rule.
-            // Reusing their read model is safe; the eventual write still carries
-            // the exact selected holder and source lease.
-            return slotKey === '手枪' || slotKey === '手枪2'
-                ? 'equipment:手枪' : '';
-        }
-        // Drug readiness can change with time without advancing a revision. Do
-        // not cache it, and do not generalize this exception into a multi-key LRU.
-        return '';
-    }
+    var copy = Transport.copy;
+    var createRequestMux = Transport.createRequestMux;
 
     function CharacterBuildController(options) {
         options = options || {};
@@ -394,38 +323,6 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         this._rendererState = this._portraitState(candidate);
         return this._rendererState ? !!this._renderer.render(this._rendererState) : false;
     };
-    CharacterBuildController.prototype._candidateCacheKey = function(target, scope) {
-        var targetKey = candidateCacheTarget(target, scope);
-        var state = this._session && this._session.debugState
-            ? this._session.debugState() : null;
-        if (!targetKey || !state || !state.sessionGeneration) return '';
-        return [this._panelInstanceId, state.sessionGeneration,
-            state.loadoutRevision, state.drugRevision,
-            SessionModule.candidateScope(scope), targetKey].join('\n');
-    };
-    CharacterBuildController.prototype._readCandidateCache = function(target, scope) {
-        var key = this._candidateCacheKey(target, scope);
-        var entry = this._candidateCache;
-        if (!key || !entry || entry.key !== key) return null;
-        return entry.payload
-            ? Projection.viewCandidates(entry.payload, target)
-            : Array.isArray(entry.candidates) ? entry.candidates.slice() : null;
-    };
-    CharacterBuildController.prototype._storeCandidateCache = function(
-            target, scope, payload, candidates) {
-        var key = this._candidateCacheKey(target, scope);
-        this._candidateCache = null;
-        if (!key || !payload || payload.stateHealth !== 'ok'
-                || !Array.isArray(candidates)) return false;
-        this._candidateCache = {
-            key:key,
-            backpackVersion:Number(payload.backpackVersion),
-            payload:scope === 'backpack' && target
-                    && target.kind === 'equipment' ? payload : null,
-            candidates:candidates.slice()
-        };
-        return true;
-    };
     CharacterBuildController.prototype._applySnapshot = function(payload, restoreSelection) {
         this._snapshotPayload = payload;
         this._selectedCandidate = null;
@@ -443,133 +340,6 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
             this._selectedSlotKey = '';
             this._selectedTarget = null;
         }
-    };
-    CharacterBuildController.prototype._selectSlot = function(selection) {
-        var target = Projection.targetForSelection(selection);
-        if (!target) return false;
-        var tuningResult = SlotTransition.handle(this, selection, target, TuningModule);
-        if (tuningResult !== null) {
-            if (tuningResult && tuningResult.deferCandidates === true) {
-                this._selectedSlotKey = selection && String(selection.key || '');
-                this._selectedTarget = target;
-                this._renderPortrait(null);
-            }
-            return tuningResult;
-        }
-        var previousSlotKey = this._selectedSlotKey;
-        var previousTarget = this._selectedTarget;
-        this._selectedSlotKey = selection && String(selection.key || '');
-        this._selectedTarget = target;
-        this._renderPortrait(null);
-        var scope = this._candidateScope;
-        var cachedCandidates = this._readCandidateCache(target, scope);
-        if (cachedCandidates) return cachedCandidates;
-        var self = this, sendRefused = false;
-        var callId = this._session.requestCandidates(target, scope, function(
-                response, accepted, targetKey, responseScope) {
-            sendRefused = !accepted && response && response.clientSynthetic === true && response.error === 'not_sent';
-            if (!self._view || self._candidateScope !== scope
-                    || responseScope !== scope) return;
-            if (accepted) {
-                var candidates = Projection.viewCandidates(response.payload, target);
-                self._storeCandidateCache(target, scope, response.payload, candidates);
-                self._view.setCandidates(
-                    selection.requestKey,
-                    candidates);
-            } else if (definitiveCandidateStale(response)
-                    && self._recoverCandidateSelection(selection)) {
-                return;
-            } else {
-                self._view.setCandidateFailure(
-                    selection.requestKey, response && response.error);
-            }
-        });
-        if (!callId || sendRefused) {
-            // Keep controller and View rollback transactional when transport admission fails.
-            this._selectedSlotKey = previousSlotKey;
-            this._selectedTarget = previousTarget;
-            this._renderPortrait(null);
-        }
-        return sendRefused ? null : callId;
-    };
-
-    CharacterBuildController.prototype._changeCandidateScope = function(scope, selection) {
-        scope = SessionModule.candidateScope(scope);
-        if (!scope) return false;
-        var previousScope = this._candidateScope;
-        if (scope === previousScope) return true;
-        this._candidateScope = scope;
-        if (!this._session.setCandidateScope(scope)) {
-            this._candidateScope = previousScope;
-            return false;
-        }
-        this._selectedCandidate = null;
-        this._renderPortrait(null);
-        if (!selection || !this._selectedTarget) return true;
-
-        var target = Projection.targetForSelection(selection);
-        if (!target
-                || SessionModule.targetKey(target)
-                    !== SessionModule.targetKey(this._selectedTarget)) {
-            this._candidateScope = previousScope;
-            this._session.setCandidateScope(previousScope);
-            return false;
-        }
-        var cachedCandidates = this._readCandidateCache(target, scope);
-        if (cachedCandidates) return cachedCandidates;
-        var self = this, sendRefused = false;
-        var callId = this._session.requestCandidates(target, scope, function(
-                response, accepted, targetKey, responseScope) {
-            sendRefused = !accepted && response && response.clientSynthetic === true
-                && response.error === 'not_sent';
-            if (!self._view || self._candidateScope !== scope
-                    || responseScope !== scope) return;
-            if (accepted) {
-                var candidates = Projection.viewCandidates(response.payload, target);
-                self._storeCandidateCache(target, scope, response.payload, candidates);
-                self._view.setCandidates(
-                    selection.requestKey,
-                    candidates);
-            } else if (definitiveCandidateStale(response)
-                    && self._recoverCandidateSelection(selection)) {
-                return;
-            } else {
-                self._view.setCandidateFailure(
-                    selection.requestKey, response && response.error);
-            }
-        });
-        if (!callId || sendRefused) {
-            this._candidateScope = previousScope;
-            this._session.setCandidateScope(previousScope);
-            this._renderPortrait(null);
-        }
-        return sendRefused ? false : callId;
-    };
-    CharacterBuildController.prototype._recoverCandidateSelection = function(selection) {
-        if (!this._view || !selection
-                || !this._view.beginCandidateRecovery(selection.requestKey)) return false;
-        var self = this;
-        var recovery = ++this._candidateRecoverySequence;
-        var generation = this._mountGeneration;
-        var panelInstanceId = this._panelInstanceId;
-        this._view.setInteractionState('opening');
-        var callId = this._session.refreshSnapshot({}, function(response, accepted) {
-            if (!self._view || recovery !== self._candidateRecoverySequence
-                    || generation !== self._mountGeneration
-                    || panelInstanceId !== self._panelInstanceId) return;
-            if (accepted) self._applySnapshot(response.payload, true);
-            else self._view.setCandidateFailure(
-                selection.requestKey, 'snapshot_refresh_failed');
-            if (self._view) {
-                self._view.setInteractionState(self._session.getState());
-            }
-        });
-        if (!callId && this._view && recovery === this._candidateRecoverySequence) {
-            this._view.setCandidateFailure(
-                selection.requestKey, 'snapshot_refresh_failed');
-            this._view.setInteractionState(this._session.getState());
-        }
-        return !!callId;
     };
     CharacterBuildController.prototype._enterTuning = function() {
         if (!this._tuning || !this._selectedTarget
@@ -731,9 +501,10 @@ function(PanelRuntime, SessionModule, ViewModule, TuningModule, Mutation, Pose,
         };
     };
 
+    CandidateChannel.install(CharacterBuildController.prototype);
     return {
         CharacterBuildController:CharacterBuildController,
         createRequestMux:createRequestMux,
-        candidateCacheTarget:candidateCacheTarget
+        candidateCacheTarget:CandidateChannel.candidateCacheTarget
     };
 });

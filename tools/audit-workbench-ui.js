@@ -102,18 +102,24 @@ var REQUIRED_FILES = [
     'launcher/web/modules/workbench-inspection-viewport.js',
     'launcher/web/modules/workbench.js',
     'launcher/web/modules/character-build/character-build-mutation.js',
+    'launcher/web/modules/character-build/character-build-session-contract.js',
     'launcher/web/modules/character-build/character-build-action-view.js',
     'launcher/web/modules/character-build/character-build-tuning-adapter.js',
+    'launcher/web/modules/character-build/character-build-candidate-eligibility.js',
     'launcher/web/modules/character-build/character-build-candidate-tooltip.js',
     'launcher/web/modules/character-build/character-build-candidate-state.js',
     'launcher/web/modules/character-build/character-build-facet-counts.js',
     'launcher/web/modules/character-build/character-build-stats-view.js',
     'launcher/web/modules/character-build/character-build-doll-preview.js',
     'launcher/web/modules/character-build/character-build-template.js',
+    'launcher/web/modules/character-build/character-build-loadout-presenter.js',
+    'launcher/web/modules/character-build/character-build-candidate-pane.js',
     'launcher/web/modules/character-build/character-build-tuning.js',
     'launcher/web/modules/character-build/character-build-slot-transition.js',
     'launcher/web/modules/character-build/character-build-pose.js',
     'launcher/web/modules/character-build/character-build-projection.js',
+    'launcher/web/modules/character-build/character-build-transport.js',
+    'launcher/web/modules/character-build/character-build-candidate-channel.js',
     'launcher/web/modules/character-build-session.js',
     'launcher/web/modules/character-build-view.js',
     'launcher/web/modules/character-build.js',
@@ -145,6 +151,7 @@ var REQUIRED_FILES = [
     'launcher/web/modules/equipment-tuning-confirmation.js',
     'launcher/web/modules/equipment-tuning-interaction.js',
     'launcher/web/modules/equipment-tuning-write-lifecycle.js',
+    'launcher/web/modules/equipment-tuning-loadout-lifecycle.js',
     'launcher/web/modules/equipment-tuning-source-marker.js',
     'launcher/web/modules/equipment-tuning-render.js',
     'tools/test-panel-runtime.js',
@@ -843,20 +850,27 @@ var moduleThresholds = {
     'launcher/web/modules/skills.js':1200,
     'launcher/web/modules/equipment-tuning-view.js':1200,
     'launcher/web/modules/equipment-tuning-write-lifecycle.js':360,
+    'launcher/web/modules/equipment-tuning-loadout-lifecycle.js':300,
     'launcher/web/modules/workbench-inspection-viewport.js':420,
     'launcher/web/modules/character-build/character-build-mutation.js':260,
+    'launcher/web/modules/character-build/character-build-session-contract.js':220,
     'launcher/web/modules/character-build/character-build-action-view.js':180,
     'launcher/web/modules/character-build/character-build-tuning-adapter.js':380,
+    'launcher/web/modules/character-build/character-build-candidate-eligibility.js':120,
     'launcher/web/modules/character-build/character-build-candidate-tooltip.js':320,
     'launcher/web/modules/character-build/character-build-candidate-state.js':280,
     'launcher/web/modules/character-build/character-build-facet-counts.js':220,
     'launcher/web/modules/character-build/character-build-stats-view.js':360,
     'launcher/web/modules/character-build/character-build-doll-preview.js':340,
     'launcher/web/modules/character-build/character-build-template.js':100,
+    'launcher/web/modules/character-build/character-build-loadout-presenter.js':260,
+    'launcher/web/modules/character-build/character-build-candidate-pane.js':600,
     'launcher/web/modules/character-build/character-build-tuning.js':380,
     'launcher/web/modules/character-build/character-build-slot-transition.js':100,
     'launcher/web/modules/character-build/character-build-pose.js':90,
     'launcher/web/modules/character-build/character-build-projection.js':160,
+    'launcher/web/modules/character-build/character-build-transport.js':180,
+    'launcher/web/modules/character-build/character-build-candidate-channel.js':300,
     'launcher/web/modules/character-build-session.js':700,
     'launcher/web/modules/character-build-view.js':760,
     'launcher/web/modules/character-build.js':550,
@@ -919,7 +933,8 @@ var candidateFacetRel =
 if (exists(candidateFacetRel)) {
     var candidateFacetSource = read(candidateFacetRel);
     var candidateFacetView = read(
-        'launcher/web/modules/character-build-view.js');
+        'launcher/web/modules/character-build-view.js') + '\n' + read(
+        'launcher/web/modules/character-build/character-build-loadout-presenter.js');
     var candidateFacetCss = read(
         'launcher/web/css/workbench/character-build.css');
     expect(candidateFacetSource.indexOf(
@@ -1083,12 +1098,14 @@ if (exists(registryRel)) {
         'modules/equipment-tuning-confirmation.js',
         'modules/equipment-tuning-interaction.js',
         'modules/equipment-tuning-write-lifecycle.js',
+        'modules/equipment-tuning-loadout-lifecycle.js',
         'modules/equipment-tuning-source-marker.js',
         'modules/equipment-tuning-view.js',
         'modules/inventory-tuning-scope.js'
     ];
     var buildFeatureOrder = [
         'modules/character-build/character-build-mutation.js',
+        'modules/character-build/character-build-session-contract.js',
         'modules/character-build-session.js',
         'modules/character-build/character-build-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
@@ -1098,11 +1115,16 @@ if (exists(registryRel)) {
         'modules/character-build/character-build-stats-view.js',
         'modules/character-build/character-build-doll-preview.js',
         'modules/character-build/character-build-template.js',
+        'modules/character-build/character-build-loadout-presenter.js',
+        'modules/character-build/character-build-candidate-pane.js',
         'modules/character-build-view.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',
         'modules/character-build/character-build-pose.js',
+        'modules/character-build/character-build-candidate-eligibility.js',
         'modules/character-build/character-build-projection.js',
+        'modules/character-build/character-build-transport.js',
+        'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js'
     ];
     tuningFeatureOrder.concat(buildFeatureOrder).forEach(function (dependency) {

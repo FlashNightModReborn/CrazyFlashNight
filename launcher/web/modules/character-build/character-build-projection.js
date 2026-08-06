@@ -10,7 +10,10 @@
     var tuningAdapter = typeof module !== 'undefined' && module.exports
         ? require('./character-build-tuning-adapter.js')
         : root && root.CharacterBuildTuningAdapter;
-    var api = factory(tuningAdapter);
+    var eligibility = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-candidate-eligibility.js')
+        : root && root.CharacterBuildCandidateEligibility;
+    var api = factory(tuningAdapter, eligibility);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -18,7 +21,7 @@
         root.CharacterBuildProjection = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(TuningAdapter) {
+function(TuningAdapter, CandidateEligibility) {
     'use strict';
 
     if (!TuningAdapter
@@ -26,28 +29,16 @@ function(TuningAdapter) {
         throw new Error(
             'character-build-projection.js requires CharacterBuildTuningAdapter');
     }
+    if (!CandidateEligibility
+            || typeof CandidateEligibility.rowForTarget !== 'function') {
+        throw new Error(
+            'character-build-projection.js requires CharacterBuildCandidateEligibility');
+    }
 
     function finite(value, fallback) {
         value = Number(value);
         return isFinite(value) && Math.floor(value) === value
             ? value : fallback;
-    }
-
-    function blockedCopy(reason) {
-        reason = String(reason || '');
-        if (reason === 'incompatible_item') {
-            return '与当前槽位不兼容；可查看说明，但不能装备。';
-        }
-        if (reason === 'level_locked') {
-            return '角色等级不足；可查看说明，但当前不能装备。';
-        }
-        if (reason === 'cooldown_active') {
-            return '该药剂槽仍在冷却；可查看说明，但当前不能装入。';
-        }
-        if (reason === 'cooldown_unavailable') {
-            return '暂时无法确认药剂冷却状态；可查看说明，但当前不能装入。';
-        }
-        return reason || '此候选当前不可装备；仍可查看说明。';
     }
 
     function safeItem(row) {
@@ -98,33 +89,18 @@ function(TuningAdapter) {
         };
     }
 
-    function candidateRowForTarget(row, payload, target) {
-        var eligibility = row && row.equipmentEligibility;
-        if (!payload || payload.candidateScope !== 'backpack'
-                || !target || target.kind !== 'equipment'
-                || !eligibility || !Array.isArray(eligibility.slots)) return row;
-        var allowed = eligibility.slots.indexOf(String(target.slotKey || '')) >= 0;
-        var blockedReason = allowed
-            ? String(eligibility.blockedReason || '') : 'incompatible_item';
-        var projected = {};
-        for (var key in row) {
-            if (Object.prototype.hasOwnProperty.call(row, key)) projected[key] = row[key];
-        }
-        projected.disabled = blockedReason !== '';
-        projected.blockedReason = blockedReason;
-        return projected;
-    }
-
     function viewCandidates(payload, targetOverride) {
         var rows = payload && payload.candidates || [];
         var target = targetOverride || payload && payload.target || null;
         var result = [];
         for (var i = 0; i < rows.length; i++) {
-            var row = candidateRowForTarget(rows[i] || {}, payload, target);
+            var row = CandidateEligibility.rowForTarget(
+                rows[i] || {}, payload, target);
             var item = row.item || {};
             var source = row.source || {};
             var blocked = row.disabled === true;
-            var blockedReason = blocked ? blockedCopy(row.blockedReason) : '';
+            var blockedReason = blocked
+                ? CandidateEligibility.blockedCopy(row.blockedReason) : '';
             var candidate = {
                 key:'backpack:' + finite(row.physicalSlot, i)
                     + ':' + String(source.expectedLease || i),

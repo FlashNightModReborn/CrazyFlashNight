@@ -540,10 +540,11 @@ function runSelfTests() {
       "browser-resource-inventory.v1.json"), "utf8"));
     assert.strictEqual(resourceInventory.schema,
       "workbench-live-e2e.browser-resource-inventory.v1");
-    assert.strictEqual(resourceInventory.files.length, 38);
+    assert.strictEqual(resourceInventory.files.length, 39);
     assert.strictEqual(resourceInventory.optionalFiles, undefined);
     assert(resourceInventory.files.includes("modules/equipment-tuning/dev/harness.html"));
     assert(resourceInventory.files.includes("modules/equipment-tuning-view.js"));
+    assert(resourceInventory.files.includes("modules/equipment-tuning-loadout-lifecycle.js"));
     assert.deepStrictEqual(resourceInventory.files, resourceInventory.files.slice().sort());
     const child = childProcess.spawnSync(process.execPath, [browserBootstrap], {
       cwd:REPOSITORY_ROOT, encoding:"utf8", windowsHide:true,

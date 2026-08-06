@@ -713,7 +713,7 @@ function run() {
       "isWrite = false;"
     ].forEach(function (overwrite) {
       const withOverwrite = replaceOnce(read(file),
-        "{\n                RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, \"unsupported_cmd\");\n                return;\n            }",
+        /\{\r?\n\s+RejectAndRemember\(callId,\s*cmd,\s*ownerPanel,\s*ownerPanelInstanceId,\s*"unsupported_cmd"\);\r?\n\s+return;\r?\n\s+\}/,
         "{\n                RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, \"unsupported_cmd\");\n                return;\n            }\n"
           + "            " + overwrite,
         "NpcShop resolver output overwrite");

@@ -26,7 +26,11 @@ function staticAudit() {
     const view = read('launcher/web/modules/character-build-view.js');
     const template = read(
         'launcher/web/modules/character-build/character-build-template.js');
-    const presentation = view + '\n' + template;
+    const loadoutPresenter = read(
+        'launcher/web/modules/character-build/character-build-loadout-presenter.js');
+    const candidatePane = read(
+        'launcher/web/modules/character-build/character-build-candidate-pane.js');
+    const presentation = [view, template, loadoutPresenter, candidatePane].join('\n');
     const actionView = read(
         'launcher/web/modules/character-build/character-build-action-view.js');
     const candidateState = read(
@@ -66,11 +70,11 @@ function staticAudit() {
         && view.includes('new WorkbenchComponents.SecondaryPage')
         && view.includes('new StatsViewModule.StatsView')
         && view.includes('DollPreviewModule.create')
-        && view.includes('character-build-slot-card')
-        && view.includes('this._renderOwnedSlot')
+        && presentation.includes('character-build-slot-card')
+        && presentation.includes('this._renderOwnedSlot')
         && inventory.includes("options.tagName === 'span' ? 'span' : 'article'"),
         'character build composes shared focus, SecondaryPage and owned-item primitives');
-    check(view.includes("this._interactionState !== 'idle'")
+    check(presentation.includes("this._interactionState !== 'idle'")
         && actionView.includes("nodes[i].setAttribute('inert', '')"),
         'candidate articles enforce busy state at the event boundary and roving focus boundary');
     check(!/Panels\.register|Bridge\.send|PanelRequestMux|domain\s*:|cmd\s*:/.test(view),
@@ -194,7 +198,7 @@ function staticAudit() {
     check(harness.includes('fixtures.empty') && harness.includes('fixtures.blocked')
         && harness.includes('fixtures.long') && harness.includes('fixtures.unknown')
         && harness.includes('candidateFacets:candidateFacets()')
-        && view.includes('当前装备保持不变'),
+        && presentation.includes('当前装备保持不变'),
         'static harness includes zero/unknown counts, empty, blocked, long-copy, and honest preview fixtures');
 }
 

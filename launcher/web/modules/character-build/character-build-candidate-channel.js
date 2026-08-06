@@ -1,0 +1,223 @@
+/** Optimistic read-only candidate cache and authoritative refresh orchestration. */
+(function(root, factory) {
+    'use strict';
+    var session = typeof module !== 'undefined' && module.exports
+        ? require('../character-build-session.js') : root && root.CharacterBuildSession;
+    var projection = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-projection.js') : root && root.CharacterBuildProjection;
+    var transition = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-slot-transition.js') : root && root.CharacterBuildSlotTransition;
+    var tuning = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-tuning.js') : root && root.CharacterBuildTuning;
+    var api = factory(session, projection, transition, tuning);
+    if (typeof module !== 'undefined' && module.exports) module.exports = api;
+    if (root) {
+        root.CF7 = root.CF7 || {};
+        root.CF7.CharacterBuildCandidateChannel = api;
+        root.CharacterBuildCandidateChannel = api;
+    }
+})(typeof window !== 'undefined' ? window : globalThis,
+function(SessionModule, Projection, SlotTransition, TuningModule) {
+    'use strict';
+    if (!SessionModule || typeof SessionModule.candidateScope !== 'function') {
+        throw new Error('CharacterBuildCandidateChannel requires CharacterBuildSession');
+    }
+    if (!Projection || typeof Projection.viewCandidates !== 'function') {
+        throw new Error('CharacterBuildCandidateChannel requires CharacterBuildProjection');
+    }
+    if (!SlotTransition || typeof SlotTransition.handle !== 'function') {
+        throw new Error('CharacterBuildCandidateChannel requires CharacterBuildSlotTransition');
+    }
+    if (!TuningModule || !TuningModule.CharacterBuildTuning) {
+        throw new Error('CharacterBuildCandidateChannel requires CharacterBuildTuning');
+    }
+
+    function definitiveCandidateStale(response) {
+        return !!response && response.success === false
+            && String(response.error || '') === 'stale_state';
+    }
+    function candidateCacheTarget(target, scope) {
+        if (!target || typeof target !== 'object') return '';
+        if (target.kind === 'equipment') {
+            scope = SessionModule.candidateScope(scope || 'compatible');
+            if (scope === 'backpack') return 'equipment:backpack';
+            var slotKey = String(target.slotKey || '');
+            // Both handgun holders consume the same `use=手枪` candidate rule.
+            // Reusing their read model is safe; the eventual write still carries
+            // the exact selected holder and source lease.
+            return slotKey === '手枪' || slotKey === '手枪2'
+                ? 'equipment:手枪' : '';
+        }
+        // Drug readiness can change with time without advancing a revision. Do
+        // not cache it, and do not generalize this exception into a multi-key LRU.
+        return '';
+    }
+
+    function install(controller) {
+        if (!controller) {
+            throw new Error('CharacterBuildCandidateChannel.install requires a controller method target');
+        }
+        controller._candidateCacheKey = function(target, scope) {
+            var targetKey = candidateCacheTarget(target, scope);
+            var state = this._session && this._session.debugState
+                ? this._session.debugState() : null;
+            if (!targetKey || !state || !state.sessionGeneration) return '';
+            return [this._panelInstanceId, state.sessionGeneration,
+                state.loadoutRevision, state.drugRevision,
+                SessionModule.candidateScope(scope), targetKey].join('\n');
+        };
+        controller._readCandidateCache = function(target, scope) {
+            var key = this._candidateCacheKey(target, scope);
+            var entry = this._candidateCache;
+            if (!key || !entry || entry.key !== key) return null;
+            return entry.payload
+                ? Projection.viewCandidates(entry.payload, target)
+                : Array.isArray(entry.candidates) ? entry.candidates.slice() : null;
+        };
+        controller._storeCandidateCache = function(
+                target, scope, payload, candidates) {
+            var key = this._candidateCacheKey(target, scope);
+            this._candidateCache = null;
+            if (!key || !payload || payload.stateHealth !== 'ok'
+                    || !Array.isArray(candidates)) return false;
+            this._candidateCache = {
+                key:key,
+                backpackVersion:Number(payload.backpackVersion),
+                payload:scope === 'backpack' && target
+                        && target.kind === 'equipment' ? payload : null,
+                candidates:candidates.slice()
+            };
+            return true;
+        };
+        controller._selectSlot = function(selection) {
+            var target = Projection.targetForSelection(selection);
+            if (!target) return false;
+            var tuningResult = SlotTransition.handle(this, selection, target, TuningModule);
+            if (tuningResult !== null) {
+                if (tuningResult && tuningResult.deferCandidates === true) {
+                    this._selectedSlotKey = selection && String(selection.key || '');
+                    this._selectedTarget = target;
+                    this._renderPortrait(null);
+                }
+                return tuningResult;
+            }
+            var previousSlotKey = this._selectedSlotKey;
+            var previousTarget = this._selectedTarget;
+            this._selectedSlotKey = selection && String(selection.key || '');
+            this._selectedTarget = target;
+            this._renderPortrait(null);
+            var scope = this._candidateScope;
+            var cachedCandidates = this._readCandidateCache(target, scope);
+            if (cachedCandidates) return cachedCandidates;
+            var self = this, sendRefused = false;
+            var callId = this._session.requestCandidates(target, scope, function(
+                    response, accepted, targetKey, responseScope) {
+                sendRefused = !accepted && response && response.clientSynthetic === true && response.error === 'not_sent';
+                if (!self._view || self._candidateScope !== scope
+                        || responseScope !== scope) return;
+                if (accepted) {
+                    var candidates = Projection.viewCandidates(response.payload, target);
+                    self._storeCandidateCache(target, scope, response.payload, candidates);
+                    self._view.setCandidates(
+                        selection.requestKey,
+                        candidates);
+                } else if (definitiveCandidateStale(response)
+                        && self._recoverCandidateSelection(selection)) {
+                    return;
+                } else {
+                    self._view.setCandidateFailure(
+                        selection.requestKey, response && response.error);
+                }
+            });
+            if (!callId || sendRefused) {
+                // Keep controller and View rollback transactional when transport admission fails.
+                this._selectedSlotKey = previousSlotKey;
+                this._selectedTarget = previousTarget;
+                this._renderPortrait(null);
+            }
+            return sendRefused ? null : callId;
+        };
+
+        controller._changeCandidateScope = function(scope, selection) {
+            scope = SessionModule.candidateScope(scope);
+            if (!scope) return false;
+            var previousScope = this._candidateScope;
+            if (scope === previousScope) return true;
+            this._candidateScope = scope;
+            if (!this._session.setCandidateScope(scope)) {
+                this._candidateScope = previousScope;
+                return false;
+            }
+            this._selectedCandidate = null;
+            this._renderPortrait(null);
+            if (!selection || !this._selectedTarget) return true;
+
+            var target = Projection.targetForSelection(selection);
+            if (!target
+                    || SessionModule.targetKey(target)
+                        !== SessionModule.targetKey(this._selectedTarget)) {
+                this._candidateScope = previousScope;
+                this._session.setCandidateScope(previousScope);
+                return false;
+            }
+            var cachedCandidates = this._readCandidateCache(target, scope);
+            if (cachedCandidates) return cachedCandidates;
+            var self = this, sendRefused = false;
+            var callId = this._session.requestCandidates(target, scope, function(
+                    response, accepted, targetKey, responseScope) {
+                sendRefused = !accepted && response && response.clientSynthetic === true
+                    && response.error === 'not_sent';
+                if (!self._view || self._candidateScope !== scope
+                        || responseScope !== scope) return;
+                if (accepted) {
+                    var candidates = Projection.viewCandidates(response.payload, target);
+                    self._storeCandidateCache(target, scope, response.payload, candidates);
+                    self._view.setCandidates(
+                        selection.requestKey,
+                        candidates);
+                } else if (definitiveCandidateStale(response)
+                        && self._recoverCandidateSelection(selection)) {
+                    return;
+                } else {
+                    self._view.setCandidateFailure(
+                        selection.requestKey, response && response.error);
+                }
+            });
+            if (!callId || sendRefused) {
+                this._candidateScope = previousScope;
+                this._session.setCandidateScope(previousScope);
+                this._renderPortrait(null);
+            }
+            return sendRefused ? false : callId;
+        };
+        controller._recoverCandidateSelection = function(selection) {
+            if (!this._view || !selection
+                    || !this._view.beginCandidateRecovery(selection.requestKey)) return false;
+            var self = this;
+            var recovery = ++this._candidateRecoverySequence;
+            var generation = this._mountGeneration;
+            var panelInstanceId = this._panelInstanceId;
+            this._view.setInteractionState('opening');
+            var callId = this._session.refreshSnapshot({}, function(response, accepted) {
+                if (!self._view || recovery !== self._candidateRecoverySequence
+                        || generation !== self._mountGeneration
+                        || panelInstanceId !== self._panelInstanceId) return;
+                if (accepted) self._applySnapshot(response.payload, true);
+                else self._view.setCandidateFailure(
+                    selection.requestKey, 'snapshot_refresh_failed');
+                if (self._view) {
+                    self._view.setInteractionState(self._session.getState());
+                }
+            });
+            if (!callId && this._view && recovery === this._candidateRecoverySequence) {
+                this._view.setCandidateFailure(
+                    selection.requestKey, 'snapshot_refresh_failed');
+                this._view.setInteractionState(this._session.getState());
+            }
+            return !!callId;
+        };
+        return controller;
+    }
+
+    return {install:install, candidateCacheTarget:candidateCacheTarget};
+});

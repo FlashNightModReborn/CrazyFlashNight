@@ -566,12 +566,18 @@ launcher/
 │       ├── kshop.js                       采购、权威直接交付结算 + 背包↔战备箱组合层
 │       ├── inventory-workbench.js         workbench 唯一注册、公共 header/close 与 storage/tuning/build dispatch
 │       ├── inventory-storage-workbench.js storage/tuning controller（不注册 Panel）
-│       ├── character-build-session.js     loadout mux、revision、写入/对账与 finalize gate
-│       ├── character-build-view.js        单 Canvas 纸娃娃 home、11+4 槽、候选与顶部动作组合
+│       ├── character-build-session.js     loadout session、revision、写入/对账与 finalize gate
+│       ├── character-build-view.js        单 Canvas 纸娃娃 home、stats 与子 presenter 组合
 │       ├── character-build.js             build controller，同实例组合 session/view/storage ports
 │       ├── character-build/
+│       │   ├── character-build-session-contract.js loadout 命令与响应 shape 的纯合同
 │       │   ├── character-build-template.js 静态双栏壳 markup（无行为/authority）
 │       │   ├── character-build-action-view.js 候选动作投影与唯一调制能力判定
+│       │   ├── character-build-loadout-presenter.js 11+4 槽与权威已装备注释 presentation
+│       │   ├── character-build-candidate-pane.js 候选范围、选择、恢复与 pointer drag
+│       │   ├── character-build-candidate-eligibility.js universal 背包候选的纯资格重投影
+│       │   ├── character-build-transport.js loadout PanelRequestMux framing
+│       │   ├── character-build-candidate-channel.js 单条只读缓存、候选读取与 stale recovery
 │       │   ├── character-build-tuning.js  已穿戴调制 adapter 与 exact detach
 │       │   ├── character-build-slot-transition.js 调制中槽位 rebind / detach 事务 leaf
 │       │   ├── character-build-pose.js    选中姿态与七种 battle pose 稳定取景集合
@@ -585,6 +591,8 @@ launcher/
 │       │   ├── loot-organizer.js          同一 loot panel 内嵌背包↔战备箱整理子页
 │       │   └── loot-panel.js              loot 生命周期编排、整理子页往返与实例级 cleanup
 │       ├── equipment-tuning-runtime.js    tuning-domain call/session mux + timeout/未知写结果对账
+│       ├── equipment-tuning-write-lifecycle.js 背包来源即时意图、写入与刷新/retry
+│       ├── equipment-tuning-loadout-lifecycle.js 已装备来源提交、完整构筑刷新与对账屏障
 │       ├── equipment-tuning-view.js       七类 wire operation / 四栏组合的 snapshot→preview→token-only commit 右栏 View
 │       ├── equipment-tuning/dev/harness.html  装备调制生产模块 browser harness
 │       ├── crafting-runtime.js             crafting-domain session/callId mux
@@ -1834,7 +1842,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 
 插件分类元数据的单源位于 `data/items/equipment_mods`：每个子文件根层显式声明 `modGrade/catalogScope`，每个 mod 的精确 `use/weapontype` 与 `tag→uiRole` 继续决定规则/定位；`ui_presentation.xml` 只把受控 ID 映射为标签、色号和符号。材料物品 XML 不复制这些字段。`EquipmentTuningService` 向右栏候选投影 grade/scope/role，`InventoryPanelService` 对松散插件材料附加 `modMeta`；安装可用性只认 AS2 返回的 `availabilityCode`。构建门 `node tools/validate-equipment-mod-ui.js` 同时校验 105 个 mod、四档、六种 scope、101 个插件材料与四个特殊材料的一对一物品映射。
 
-当前 Tuning 交换 target 必须重建 exact `{sourceKind:"inventory",containerId:"背包",slot,expectedLease}` 四键；旧三键 shape 会在进入 Flash 前以 `invalid_payload` 拒绝。单件插件点击立即在原候选和对应槽上投影 `aria-busy`/阶段文案，但这只是 presentation intent，不会乐观改写库存、槽内容、数量、lease 或 revision，也不排队重放。成功 commit 先展示 Host 已校验的写后 tuning snapshot，同时继续持有同一个 inventory external-write capability 直到 fresh 背包刷新完成；刷新 source ref 与写后 snapshot 匹配时直接采用并省去重复 tuning snapshot，漂移、畸形或刷新失败仍走 fresh read / retry / reconcile。`equipment-tuning-write-lifecycle.js` 只承载这段即时意图、write、refresh/retry 和 quick-commit 时序；`inventory-storage-workbench.js` 对 owner-only 状态变化仍刷新 controls/marker/pager，但不重绘引用未变化的 inventory pane。配件页“卸下全部”是槽 rail 最右侧、与槽卡等高的方形按钮，仍位于具名 slot group 外的独立批量动作组。
+当前 Tuning 交换 target 必须重建 exact `{sourceKind:"inventory",containerId:"背包",slot,expectedLease}` 四键；旧三键 shape 会在进入 Flash 前以 `invalid_payload` 拒绝。单件插件点击立即在原候选和对应槽上投影 `aria-busy`/阶段文案，但这只是 presentation intent，不会乐观改写库存、槽内容、数量、lease 或 revision，也不排队重放。成功 commit 先展示 Host 已校验的写后 tuning snapshot，同时继续持有同一个 inventory external-write capability 直到 fresh 背包刷新完成；刷新 source ref 与写后 snapshot 匹配时直接采用并省去重复 tuning snapshot，漂移、畸形或刷新失败仍走 fresh read / retry / reconcile。`equipment-tuning-write-lifecycle.js` 只承载背包来源的即时意图、write、refresh/retry 和 quick-commit 时序；`equipment-tuning-loadout-lifecycle.js` 独立承载已装备来源的 commit、完整 11+4 构筑刷新与 known/unknown 对账屏障。`inventory-storage-workbench.js` 对 owner-only 状态变化仍刷新 controls/marker/pager，但不重绘引用未变化的 inventory pane。配件页“卸下全部”是槽 rail 最右侧、与槽卡等高的方形按钮，仍位于具名 slot group 外的独立批量动作组。
 
 独立 Workbench 本地导航以 transaction generation + `destroyed` fence 保护 `build ↔ storage/tuning`：destroy 会先使 pending 失效并撤销端口，迟到的双向 prepare callback 不得再激活 Build、挂载 Storage、提交 history 或恢复旧焦点。pending 期间若 controller 上报另一个合法 view，该权威实际状态会先 supersede 旧事务、清 timeout、推进 generation，并在旧目标为 Build 时 suspend，再沿封闭三视图 plan/commit/reset 收敛；不会提交新 view 却遗留旧 pending。若所有既有领域 timeout 之后事务仍未终结，30 秒 watchdog 才 discard/abort 并恢复可操作态，迟到 callback 继续被 generation 拒绝。fresh 叶门为 inventory modules **30/30**，生产三视口为 **867/867**，另有 hidden/lifecycle **12/12** 与 preparation **18/18**。这关闭了可证的 teardown、分叉上报与 orphan navigation 竞态/活锁路径，但重启后恢复本身不是内存泄漏或 WebView renderer crash 的证据；tooltip/透明遮挡仍只是待现场 hit-test 的候选，未取得 ProcessFailed、heap、console/命中证据前不得写成根因。
 
@@ -1923,7 +1931,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 
   候选读取使用必填 `candidateScope:"compatible"|"backpack"`；Host 与 Web 都要求 AS2 回包精确回显。默认 `compatible` 保持原筛选；“背包”范围显示全部合法占用行。装备行必须携 `equipmentEligibility:{slots:[...],blockedReason:""|"level_locked"}`：AS2 按实例有效 `use/level` 生成，Host 重算 canonical 槽位有序子集并交叉校验封闭 reason 与当前 target 状态，Web 严格校验后才允许逐槽本地重投影。未知/空 use 的 equipment-like 损坏行拒绝或跳过；真正的非装备行才允许空槽集合。不兼容物品以 `incompatible_item` 禁用装备但保留 tooltip/键盘检视。范围切换保留目标槽与 density，清预览、滚动归顶并失效 tooltip。
 
-  乐观加速只缓存**一个权威盖章的只读条目**：装备 `backpack` 统一为 `equipment:backpack`，首次成功后可在全部装备槽间同步重投影；`compatible` 仅将 exact `手枪/手枪2` 归一为 `equipment:手枪`，其他装备族不缓存；药剂因时变冷却也不缓存，不扩张成多 key LRU。cache key 绑定 exact `panelInstanceId + sessionGeneration + loadoutRevision + drugRevision + candidateScope + family`。新的 candidates/snapshot authority request 在发送前即重置缓存；revision/generation/实例变化、mutation/write、flush/finalize、调制切入、suspend/rebind/close、degraded/失败响应也都会失效，loadout tooltip 等其他只读请求不误伤缓存。Host 只授权最近一次已验证 universal response 中的 source 检视能力。命中只省略重复 `candidates` 读取，绝不产生乐观写；最终写继续携当前 exact target、原 source lease 与 revision。候选拖拽也只落到当前精确已选槽位，成功时汇入既有 equip mutation；blocked、错误槽、busy/reconcile、取消或销毁均零 dispatch。该增强不增加写命令，也不在 Web 猜装备槽或复制资格规则。
+  `character-build-candidate-channel.js` 的乐观加速只缓存**一个权威盖章的只读条目**：装备 `backpack` 统一为 `equipment:backpack`，首次成功后可在全部装备槽间同步重投影；`compatible` 仅将 exact `手枪/手枪2` 归一为 `equipment:手枪`，其他装备族不缓存；药剂因时变冷却也不缓存，不扩张成多 key LRU。cache key 绑定 exact `panelInstanceId + sessionGeneration + loadoutRevision + drugRevision + candidateScope + family`。新的 candidates/snapshot authority request 在发送前即重置缓存；revision/generation/实例变化、mutation/write、flush/finalize、调制切入、suspend/rebind/close、degraded/失败响应也都会失效，loadout tooltip 等其他只读请求不误伤缓存。Host 只授权最近一次已验证 universal response 中的 source 检视能力。命中只省略重复 `candidates` 读取，绝不产生乐观写；最终写继续携当前 exact target、原 source lease 与 revision。候选拖拽由 `character-build-candidate-pane.js` 约束为只落到当前精确已选槽位，成功时汇入既有 equip mutation；blocked、错误槽、busy/reconcile、取消或销毁均零 dispatch。该增强不增加写命令，也不在 Web 猜装备槽或复制资格规则。
 
   个人信息 exact shape 是 9 组 47 行：首屏只把 AS2 已投影的 `weightRatio`、三段阈值和 `movementSpeed` 组成旧 PlayerInfo 负重色带，并显示摘要 KPI；完整明细为 3×3 分组，抗性摘要 4×2、明细 2×4，八个 `currentColor` SVG 只作装饰且保留字段文字/原始值。武器威力使用明确标注的 `log10(value+1)` 对数相对量级，抗性保持线性组内相对量级；两者都只在整组有限非负且不全零时出现，不复制速度/战斗公式、不预测候选、不把防御字段当可加和，也不把抗性硬定为 0–100。stats SecondaryPage 在 1024×576 打开时直接聚焦唯一滚动区，支持键盘/滚轮，正文至少 11px；缺比例、畸形阈值、缺值/负值/全零只撤误导性图形，原始 47 行仍保留。
 

@@ -137,6 +137,7 @@ const TUNING_LAZY_WEB = Object.freeze([
   "launcher/web/modules/equipment-tuning-confirmation.js",
   "launcher/web/modules/equipment-tuning-interaction.js",
   "launcher/web/modules/equipment-tuning-write-lifecycle.js",
+  "launcher/web/modules/equipment-tuning-loadout-lifecycle.js",
   "launcher/web/modules/equipment-tuning-source-marker.js",
   "launcher/web/modules/equipment-tuning-view.js",
   "launcher/web/modules/inventory-tuning-scope.js",

@@ -19,12 +19,14 @@
         'modules/equipment-tuning-confirmation.js',
         'modules/equipment-tuning-interaction.js',
         'modules/equipment-tuning-write-lifecycle.js',
+        'modules/equipment-tuning-loadout-lifecycle.js',
         'modules/equipment-tuning-source-marker.js',
         'modules/equipment-tuning-view.js',
         'modules/inventory-tuning-scope.js'
     ];
     var BUILD_DEPS = TUNING_DEPS.concat([
         'modules/character-build/character-build-mutation.js',
+        'modules/character-build/character-build-session-contract.js',
         'modules/character-build-session.js',
         'modules/character-build/character-build-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
@@ -34,11 +36,16 @@
         'modules/character-build/character-build-stats-view.js',
         'modules/character-build/character-build-doll-preview.js',
         'modules/character-build/character-build-template.js',
+        'modules/character-build/character-build-loadout-presenter.js',
+        'modules/character-build/character-build-candidate-pane.js',
         'modules/character-build-view.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',
         'modules/character-build/character-build-pose.js',
+        'modules/character-build/character-build-candidate-eligibility.js',
         'modules/character-build/character-build-projection.js',
+        'modules/character-build/character-build-transport.js',
+        'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js'
     ]);
 

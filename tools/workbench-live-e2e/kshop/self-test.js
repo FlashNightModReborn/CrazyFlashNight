@@ -1663,9 +1663,10 @@ function runSelfTests() {
       "browser-resource-inventory.v1.json"), "utf8"));
     assert.strictEqual(resourceInventory.schema,
       "workbench-live-e2e.browser-resource-inventory.v1");
-    assert.strictEqual(resourceInventory.files.length, 76);
+    assert.strictEqual(resourceInventory.files.length, 77);
     assert(resourceInventory.files.includes("modules/kshop/dev/harness.html"));
     assert(resourceInventory.files.includes("modules/kshop.js"));
+    assert(resourceInventory.files.includes("modules/equipment-tuning-loadout-lifecycle.js"));
     assert(resourceInventory.files.includes("css/panels.css"));
     assert.deepStrictEqual(resourceInventory.files, resourceInventory.files.slice().sort());
     const result = childProcess.spawnSync(process.execPath,

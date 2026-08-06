@@ -28,6 +28,7 @@ async function main() {
         'workbench-inspection-viewport.js',
         'equipment-inspector.js',
         'equipment-tuning-runtime.js',
+        'equipment-tuning-loadout-lifecycle.js',
         'equipment-tuning-view.js',
         'inventory-tuning-scope.js',
         'character-build.js'
@@ -62,10 +63,17 @@ async function main() {
     const loader = require(loaderPath);
     await loader.loadTuning();
     assert.strictEqual(calls.length, 1);
+    assert(calls[0].includes('modules/equipment-tuning-loadout-lifecycle.js'));
     assert(calls[0].includes('modules/equipment-tuning-view.js'));
     assert(!calls[0].includes('modules/character-build.js'));
     await loader.loadBuild();
     assert.strictEqual(calls.length, 2);
+    assert(calls[1].includes('modules/character-build/character-build-session-contract.js'));
+    assert(calls[1].includes('modules/character-build/character-build-candidate-eligibility.js'));
+    assert(calls[1].includes('modules/character-build/character-build-loadout-presenter.js'));
+    assert(calls[1].includes('modules/character-build/character-build-candidate-pane.js'));
+    assert(calls[1].includes('modules/character-build/character-build-transport.js'));
+    assert(calls[1].includes('modules/character-build/character-build-candidate-channel.js'));
     assert(calls[1].includes('modules/equipment-tuning-view.js'));
     assert(calls[1].includes('modules/character-build.js'));
     assert.strictEqual(loader.isTuningReady(), true);

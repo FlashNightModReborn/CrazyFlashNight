@@ -26,10 +26,11 @@ function audit(){
   const confirmation=readModule('equipment-tuning-confirmation.js');
   const interaction=readModule('equipment-tuning-interaction.js');
   const writeLifecycle=readModule('equipment-tuning-write-lifecycle.js');
+  const loadoutLifecycle=readModule('equipment-tuning-loadout-lifecycle.js');
   const sourceMarker=readModule('equipment-tuning-source-marker.js');
   const inspectionViewport=readModule('workbench-inspection-viewport.js');
   const inspector=readModule('equipment-inspector.js');
-  const tuningSource=[model,decisionPresenter,render,confirmation,interaction,writeLifecycle,sourceMarker,view].join('\n');
+  const tuningSource=[model,decisionPresenter,render,confirmation,interaction,writeLifecycle,loadoutLifecycle,sourceMarker,view].join('\n');
   const config=readModule('inventory-workbench-config.js');
   const preparationMenu=readModule('inventory-workbench-preparation-menu.js');
   const header=readModule('inventory-workbench-header.js');
@@ -67,7 +68,7 @@ function audit(){
       ||!hasAll(render,['var presentation = modPresentationForItem(','currentCandidates, itemName);','equipmentDiff(left, right, modCandidates)']))
       throw new Error('equipment mod rule arrays must render through the local canonical presentation map');
   if(/\(i\s*-\s*1\)\s*\*\s*\(i\s*-\s*1\)|smith.*0\.05/i.test(tuningSource))throw new Error('Web must not reproduce equipment formulas');
-  if(!hasAll(view,['reconcileAfterCallId','_refreshRetryRequired'])
+  if(!hasAll(tuningSource,['reconcileAfterCallId','_refreshRetryRequired'])
       ||!hasAll(writeLifecycle,['retryInventoryRefresh','this._completeWrite','authoritativeSnapshot'])
       ||!hasAll(workbench,['completeWrite:function(operation, needsRefresh, callback)','_coordinator.completeExternalWrite(operation, needsRefresh, callback)']))throw new Error('unknown-write reconcile or inventory refresh recovery missing');
 
@@ -111,11 +112,12 @@ function audit(){
       ||!hasAll(workbench,['EquipmentInspector.open','openInspector:openEquipmentInspector','closeInspector:closeEquipmentInspector',"gender !== '男' && gender !== '女'"]))throw new Error('shared tuning equipment inspector adapter missing');
   if(inventorySource.includes('syncTuningConversionFilter')||inventorySource.includes('_conversionFilterRestore')
       ||tuningSource.includes('syncConversionFilter')||tuningSource.includes('_conversionFilterActive'))throw new Error('legacy conversion mutation of visible bag filter remains');
-  if(!hasAll(view,['model, decision presenter, renderer, confirmation, interaction, write lifecycle, then view.',
-        'WriteLifecycle.install(TuningView, Model)','DecisionPresenter.install(TuningView, Model)','Renderer.install(TuningView, Model)'])
+  if(!hasAll(view,['model, decision presenter, renderer, confirmation, interaction, write lifecycle, loadout lifecycle, then view.',
+        'WriteLifecycle.install(TuningView, Model)','LoadoutLifecycle.install(TuningView, Model)','DecisionPresenter.install(TuningView, Model)','Renderer.install(TuningView, Model)'])
       ||!render.includes('function install(TuningView, Model)')
       ||!decisionPresenter.includes('function install(TuningView, Model)')
       ||!writeLifecycle.includes('function install(TuningView, Model)')
+      ||!loadoutLifecycle.includes('function install(TuningView, Model)')
       ||!interaction.includes('function interactionLockProjection')
       ||!sourceMarker.includes('function projectInventory'))
       throw new Error('tuning leaf composition or explicit browser load-order diagnosis missing');
@@ -140,7 +142,7 @@ function audit(){
         'aria-hidden or inert ancestors']))throw new Error('tuning focus ownership gates or counterexamples missing');
   if(!hasAll(model,['function sameLoadoutIdentity','left.sessionGeneration === right.sessionGeneration',
         'left.slotKey === right.slotKey'])
-      ||!hasAll(view,["kind:'known'","kind:'unknown'",'Model.sameLoadoutIdentity(source, expectedSource)'])
+      ||!hasAll(loadoutLifecycle,["kind:'known'","kind:'unknown'",'Model.sameLoadoutIdentity(source, expectedSource)'])
       ||!hasAll(infoProjection,['equipment-tuning-info-panel','data-tuning-info-title',
         "info.textContent = '调制说明'","info.setAttribute('aria-expanded'",
         "close.setAttribute('data-tuning-focus-key', 'info:close')",
@@ -178,12 +180,14 @@ function audit(){
     "'modules/equipment-tuning-confirmation.js'",
     "'modules/equipment-tuning-interaction.js'",
     "'modules/equipment-tuning-write-lifecycle.js'",
+    "'modules/equipment-tuning-loadout-lifecycle.js'",
     "'modules/equipment-tuning-source-marker.js'",
     "'modules/equipment-tuning-view.js'",
     "'modules/inventory-tuning-scope.js'"
   ];
   const buildFeatureClosure=[
     "'modules/character-build/character-build-mutation.js'",
+    "'modules/character-build/character-build-session-contract.js'",
     "'modules/character-build-session.js'",
     "'modules/character-build/character-build-action-view.js'",
     "'modules/character-build/character-build-tuning-adapter.js'",
@@ -193,11 +197,16 @@ function audit(){
     "'modules/character-build/character-build-stats-view.js'",
     "'modules/character-build/character-build-doll-preview.js'",
     "'modules/character-build/character-build-template.js'",
+    "'modules/character-build/character-build-loadout-presenter.js'",
+    "'modules/character-build/character-build-candidate-pane.js'",
     "'modules/character-build-view.js'",
     "'modules/character-build/character-build-tuning.js'",
     "'modules/character-build/character-build-slot-transition.js'",
     "'modules/character-build/character-build-pose.js'",
+    "'modules/character-build/character-build-candidate-eligibility.js'",
     "'modules/character-build/character-build-projection.js'",
+    "'modules/character-build/character-build-transport.js'",
+    "'modules/character-build/character-build-candidate-channel.js'",
     "'modules/character-build.js'"
   ];
   if(!inOrder(registryWorkbench,eagerWorkbenchClosure)
