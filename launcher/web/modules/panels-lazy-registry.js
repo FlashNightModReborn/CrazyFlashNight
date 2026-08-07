@@ -241,10 +241,22 @@
         noop);
 
     // ── arena ──
+    // P2 起接入 workbench 共享层，闭包构成/顺序固定（team 同款）：共享层（lifecycle/focus/primitives/
+    // profile/shell/components；arena 不消费 inspection-viewport，不列入）→ 领域模块 → 壳（arena-panel）。
     // arena-meta-rosters.js（派生 roster，M2 采样源）+ arena-factions.js（手作势力卡元数据：对标等级/波数档/
     // 启用/兵种白名单）先于 panel 载入。两者缺失时 arena-panel.js 各自优雅回退（全 merc / 全派生默认）。
+    // P4 工程拆分：原 arena-panel.js 单文件 IIFE 拆为 modules/arena/ 六模块（纯移动）——core（状态容器+
+    // 共享工具，首载并守卫 workbench 共享层）→ shell / challenge-browser / preview-authority /
+    // custom-editor / result（中间模块只守 core，跨模块调用解析于调用时）→ arena-panel.js 薄 facade
+    //（Panels.register 装配 + QA 接口，守六模块全集）。
     Panels.registerLazy('arena',
-        ['modules/arena-meta-rosters.js',
+        ['modules/workbench-lifecycle.js',
+         'modules/workbench-focus.js',
+         'modules/workbench-primitives.js',
+         'modules/workbench-profile.js',
+         'modules/workbench.js',
+         'modules/workbench-components.js',
+         'modules/arena-meta-rosters.js',
          'modules/arena-factions.js',
          'modules/arena-unit-catalog.js',
          'modules/arena-unit-param-presets.js',
@@ -255,6 +267,12 @@
          'modules/arena-custom-polling.js',
          'modules/arena-custom-param-editor.js',
          'modules/arena-custom-result-view.js',
+         'modules/arena/arena-core.js',
+         'modules/arena/arena-shell.js',
+         'modules/arena/arena-challenge-browser.js',
+         'modules/arena/arena-preview-authority.js',
+         'modules/arena/arena-custom-editor.js',
+         'modules/arena/arena-result.js',
          'modules/arena-panel.js'],
         noop);
 

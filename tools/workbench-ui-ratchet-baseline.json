@@ -5,17 +5,21 @@
   "cssScope": "launcher/web/css/",
   "excludedCss": [],
   "debtCeilings": {
-    "rawColor": 2637,
+    "rawColor": 2277,
     "fontBelow9": 0,
-    "font9PlayerText": 34,
-    "rawDuration": 144,
-    "rawEasing": 105,
-    "transitionAll": 16
+    "font9PlayerText": 32,
+    "rawDuration": 114,
+    "rawEasing": 100,
+    "transitionAll": 12
   },
   "profileGate": {
     "enabled": true,
     "activation": "explicit-e-batch-handshake",
     "productionCalls": [
+      {
+        "file": "launcher/web/modules/arena/arena-shell.js",
+        "count": 1
+      },
       {
         "file": "launcher/web/modules/crafting.js",
         "count": 1

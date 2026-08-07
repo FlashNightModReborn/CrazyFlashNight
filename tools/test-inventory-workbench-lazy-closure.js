@@ -4,6 +4,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const MODULES = path.join(ROOT, 'launcher', 'web', 'modules');
@@ -79,6 +80,89 @@ async function main() {
     assert.strictEqual(loader.isTuningReady(), true);
     assert.strictEqual(loader.isBuildReady(), true);
 
+    // ── arena 生产闭包（P2 双栏工作台化收尾）：cold-open + 失败恢复 ──
+    const arenaSection = section(registry, "Panels.registerLazy('arena'", "Panels.registerLazy('team'");
+    const arenaDeps = (arenaSection.match(/'modules\/[^']+'/g) || [])
+        .map(token => token.slice(1, -1));
+    assert.deepStrictEqual(arenaDeps, [
+        'modules/workbench-lifecycle.js',
+        'modules/workbench-focus.js',
+        'modules/workbench-primitives.js',
+        'modules/workbench-profile.js',
+        'modules/workbench.js',
+        'modules/workbench-components.js',
+        'modules/arena-meta-rosters.js',
+        'modules/arena-factions.js',
+        'modules/arena-unit-catalog.js',
+        'modules/arena-unit-param-presets.js',
+        'modules/arena-custom-presets.js',
+        'modules/arena-custom-match-code.js',
+        'modules/arena-custom-parameters.js',
+        'modules/arena-custom-undo.js',
+        'modules/arena-custom-polling.js',
+        'modules/arena-custom-param-editor.js',
+        'modules/arena-custom-result-view.js',
+        'modules/arena/arena-core.js',
+        'modules/arena/arena-shell.js',
+        'modules/arena/arena-challenge-browser.js',
+        'modules/arena/arena-preview-authority.js',
+        'modules/arena/arena-custom-editor.js',
+        'modules/arena/arena-result.js',
+        'modules/arena-panel.js'
+    ], 'arena lazy closure must prepend the shared workbench layer in team order (no inspection-viewport), then the P4 split modules in core->shell->browser->preview->editor->result->facade order');
+
+    function createArenaSandbox(registrations) {
+        const sandbox = {
+            console,
+            Panels:{
+                register(id, def) { registrations[id] = def; },
+                registerLazy() {},
+                isOpen() { return false; },
+                close() {}
+            },
+            Bridge:{ on() {}, send() {} },
+            setTimeout, clearTimeout, setInterval, clearInterval
+        };
+        sandbox.window = sandbox;
+        return vm.createContext(sandbox);
+    }
+    function loadArenaClosure(sandbox, deps) {
+        deps.forEach(dep => {
+            const source = fs.readFileSync(path.join(MODULES, dep.slice('modules/'.length)), 'utf8');
+            vm.runInContext(source, sandbox, {filename:dep});
+        });
+    }
+
+    // cold-open：按 registry 声明顺序冷加载真实闭包后，arena 面板完成自注册且可构造
+    const arenaRegistrations = {};
+    const coldSandbox = createArenaSandbox(arenaRegistrations);
+    loadArenaClosure(coldSandbox, arenaDeps);
+    assert(arenaRegistrations.arena && typeof arenaRegistrations.arena.create === 'function',
+        'arena cold-open must self-register a constructible panel');
+    assert.strictEqual(typeof coldSandbox.Workbench.DualPaneShell, 'function',
+        'arena cold-open must load the real shared workbench layer (no stubs)');
+
+    // 失败恢复 a：闭包缺项（少 workbench-components.js）→ arena/arena-core.js 守卫 fail-fast（P4 起共享层守卫自 facade 前移 core，报错文案不变），
+    // 报错点名缺失的共享层，且不做半初始化注册
+    const missingRegistrations = {};
+    assert.throws(
+        () => loadArenaClosure(createArenaSandbox(missingRegistrations),
+            arenaDeps.filter(dep => dep !== 'modules/workbench-components.js')),
+        /需要先加载 workbench-lifecycle\/focus\/primitives\/profile\/workbench\.js\/components 共享层/,
+        'arena must fail fast with a readable error when a shared-layer entry is missing');
+    assert(!missingRegistrations.arena,
+        'arena must not half-register when the shared layer is incomplete');
+
+    // 失败恢复 b：闭包乱序（workbench.js 先于 primitives）→ 共享层自身守卫 fail-fast，
+    // 报错可读并点名缺失依赖
+    const disorderedDeps = arenaDeps.slice();
+    disorderedDeps.splice(disorderedDeps.indexOf('modules/workbench.js'), 1);
+    disorderedDeps.splice(disorderedDeps.indexOf('modules/workbench-primitives.js'), 0, 'modules/workbench.js');
+    assert.throws(
+        () => loadArenaClosure(createArenaSandbox({}), disorderedDeps),
+        /workbench\.js requires workbench-primitives\.js to load first/,
+        'shared layer must fail fast with a readable error when closure order is violated');
+
     const crafting = read('crafting.js');
     const organizer = read('crafting-inventory-organizer.js');
     const panels = read('panels.js');
@@ -101,7 +185,7 @@ async function main() {
         'EquipmentInspector',
         'CharacterBuild'
     ].forEach(name => { delete global[name]; });
-    process.stdout.write('Inventory workbench lazy closure: 12/12 passed\n');
+    process.stdout.write('Inventory workbench + arena lazy closure: 24/24 passed\n');
 }
 
 main().catch(error => {

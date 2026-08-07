@@ -90,6 +90,24 @@ function buildCases() {
             }
         }
     }
+    // P4：arena 真实 feature 场景族（tools/visual/arena-scene.js 承载真实 panel 闭包）——
+    // 3 视口 × 3 状态（default 决策空态 / selected 选中+preview+CommitBar ready /
+    // blocked 金钱不足）× 2 reduced-motion = 18；既有 shop 合成族 48 场景逐位不变。
+    var arenaStates = ['default', 'selected', 'blocked'];
+    for (var av = 0; av < viewports.length; av++) {
+        for (var as = 0; as < arenaStates.length; as++) {
+            for (var ar = 0; ar < booleans.length; ar++) {
+                var arenaViewport = viewports[av];
+                cases.push({
+                    scene:'arena',
+                    viewport:arenaViewport,
+                    state:arenaStates[as],
+                    reduced:booleans[ar],
+                    id:'arena-' + arenaViewport.id + '-' + arenaStates[as] + '-' + (booleans[ar] ? 'reduce' : 'motion')
+                });
+            }
+        }
+    }
     return cases;
 }
 
@@ -130,6 +148,12 @@ function printText(report) {
         var failedRequests = [];
         page.on('pageerror', function (error) { pageErrors.push(error && error.message ? error.message : String(error)); });
         page.on('requestfailed', function (request) { failedRequests.push(request.url()); });
+        // cfn-fonts.local 是生产 FontPackTask 的虚拟主机（%LOCALAPPDATA%/CF7FlashNight/fonts/ 映射），
+        // atlas 沙盒无此主机；按 bridge.js「字体加载失败安静回退系统字体」的既定语义路由为空 200，
+        // 避免 DNS 失败污染 requestfailed 信号（P4 arena 场景族引入真实面板 CSS 后首次触达该字体）。
+        await page.route('https://cfn-fonts.local/*', function (route) {
+            route.fulfill({status:200, contentType:'font/ttf', body:''});
+        });
 
         for (var i = 0; i < cases.length; i++) {
             var scenario = cases[i];
@@ -137,12 +161,21 @@ function printText(report) {
             failedRequests = [];
             await page.setViewportSize({width:scenario.viewport.width, height:scenario.viewport.height});
             await page.emulateMedia({reducedMotion:scenario.reduced ? 'reduce' : 'no-preference'});
-            var query = [
-                'density=' + encodeURIComponent(scenario.density),
-                'focus=' + (scenario.focus ? '1' : '0'),
-                'reduced=' + (scenario.reduced ? '1' : '0'),
-                'secondary=' + (scenario.secondary ? '1' : '0')
-            ].join('&');
+            var query;
+            if (scenario.scene === 'arena') {
+                query = [
+                    'scene=arena',
+                    'state=' + encodeURIComponent(scenario.state),
+                    'reduced=' + (scenario.reduced ? '1' : '0')
+                ].join('&');
+            } else {
+                query = [
+                    'density=' + encodeURIComponent(scenario.density),
+                    'focus=' + (scenario.focus ? '1' : '0'),
+                    'reduced=' + (scenario.reduced ? '1' : '0'),
+                    'secondary=' + (scenario.secondary ? '1' : '0')
+                ].join('&');
+            }
             await page.goto('http://127.0.0.1:' + server.address().port + '/tools/visual/workbench-atlas.html?' + query, {waitUntil:'load'});
             await page.waitForFunction(function () { return window.__qaDone === true; }, null, {timeout:20000});
             var result = await page.evaluate(function () { return window.__qaResult; });
@@ -153,11 +186,13 @@ function printText(report) {
             if (shotDir) await page.screenshot({path:path.join(shotDir, scenario.id + '.png'), fullPage:true});
             results.push({
                 id:scenario.id,
+                scene:scenario.scene || 'shop',
+                state:scenario.state || null,
                 viewport:[scenario.viewport.width, scenario.viewport.height],
-                density:scenario.density,
-                focus:scenario.focus,
+                density:scenario.density || null,
+                focus:scenario.focus || false,
                 reducedMotion:scenario.reduced,
-                secondaryPage:scenario.secondary,
+                secondaryPage:scenario.secondary || false,
                 errors:errors,
                 warnings:warnings,
                 metrics:result ? result.metrics : null
@@ -176,7 +211,7 @@ function printText(report) {
         kind:'cf7-workbench-visual-atlas',
         browser:'edge',
         executablePath:executablePath,
-        dimensions:{viewports:['1024x576','1366x768','1920x1080'], densities:['full','compact'], focus:[false,true], reducedMotion:[false,true], secondaryPage:[false,true]},
+        dimensions:{scenes:['shop','arena'], viewports:['1024x576','1366x768','1920x1080'], densities:['full','compact'], focus:[false,true], reducedMotion:[false,true], secondaryPage:[false,true], arenaStates:['default','selected','blocked']},
         summary:{totalCases:results.length, passedCases:passedCases, errorCount:errorCount, warningCount:warningCount, strictWarnings:strictWarnings},
         cases:results
     };

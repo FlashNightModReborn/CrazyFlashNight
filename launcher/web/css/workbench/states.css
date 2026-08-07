@@ -14,6 +14,16 @@
         box-shadow:0 0 0 1px var(--wb-bg),0 0 0 3px color-mix(in srgb,var(--wb-focus) 38%,transparent);
     }
 
+    /* P1c→P2：arena 浏览面已迁入 DualPaneShell，壳内 focus 环由上方 .workbench-shell
+       规则提供；扩域收窄到壳外残留（.arena-xshell = 定制赛总览/阵容编辑器/结算页/toast，
+       含 textarea）。--wb-focus 由 arena skin 覆盖为战术橙（--wb-bg 在壳外不可解析，
+       box-shadow 与 P1c 同为无效声明、实际环 = outline，行为不变）。 */
+    .arena-xshell :where(button,input,select,textarea,[role="button"],[role="option"],[tabindex="0"]):focus-visible {
+        outline:2px solid var(--wb-focus);
+        outline-offset:2px;
+        box-shadow:0 0 0 1px var(--wb-bg),0 0 0 3px color-mix(in srgb,var(--wb-focus) 38%,transparent);
+    }
+
     .workbench-empty-state,
     .workbench-grid-empty {
         grid-template-rows:auto auto;

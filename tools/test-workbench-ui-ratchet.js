@@ -202,7 +202,7 @@ check('G4 keeps only the Tuning ambient static-state compensation locally',
     && !/@media\s*\(prefers-reduced-motion:reduce\)[\s\S]*?\.equipment-tuning-stone-core::after\s*\{[^}]*\b(?:animation|transition)\s*:/
         .test(g3WorkbenchSources['launcher/web/css/workbench/equipment-tuning.css']));
 check('G4 shared reducer owns shell descendants and exact out-of-shell workbench tooltip loading pulses',
-    /\.workbench-shell,\s*\.workbench-shell \*,\s*\.workbench-shell \.workbench-secondary-page,\s*\.workbench-shell \*::before,\s*\.workbench-shell \*::after\s*\{[^}]*animation:none !important;[^}]*transition:none !important;/
+    /\.workbench-shell,\s*\.workbench-shell \*,\s*\.workbench-shell \.workbench-secondary-page,\s*\.workbench-shell \*::before,\s*\.workbench-shell \*::after,\s*\.arena-xshell,\s*\.arena-xshell \*,\s*\.arena-xshell \*::before,\s*\.arena-xshell \*::after\s*\{[^}]*animation:none !important;[^}]*transition:none !important;/
         .test(sharedMotionSource)
     && /#panel-container:is\(\[data-panel="kshop"\],\[data-panel="workbench"\],\[data-panel="npcshop"\],\[data-panel="crafting"\],\[data-panel="skills"\],\[data-panel="loot"\]\)\s*~\s*#panel-tooltip\s*:is\(\.kshop-tt-loading,\s*\.flash-tt-loading\)\s*\{\s*animation:none;\s*\}/
         .test(sharedMotionSource));

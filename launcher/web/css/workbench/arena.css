@@ -1,0 +1,3283 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   Arena Panel (角斗场 / DEATH MATCH) — 双栏工作台迁移 P1c 拆出（原 features.css 尾段）
+   ────────────────────────────────────────────────────────────────────────────
+   P1c（2026-08-07）：自 features.css 机械拆出，视觉/行为逐值等价，仅改组织方式与
+   token 消费：
+   ① --arena-* 私有 token 孤岛改挂 skin 作用域（.arena-panel[data-workbench-skin="arena"]）：
+      全部色值以 rgb 通道 token 单源表达（--arena-*-rgb 三通道 + rgb()/rgba() 消费，
+      对齐 tokens.css --dls-crystal-rgb 惯例），与拆前字面量逐通道等价，消费点零改动；
+      面板根 data-workbench-skin="arena" 由 arena-panel.js createDOM 写入。
+   ② transition/animation 时长改消费 --wb-motion-*（共享档无原值，取最近语义档）：
+      0.14s → --wb-motion-standard（160ms，Δ+20ms，状态切换档 140–180ms）；
+      0.15s → --wb-motion-standard（160ms，Δ+10ms）；
+      0.08s / 0.12s → --wb-motion-micro（100ms，Δ+20/−20ms，hover/focus/press 档 90–120ms）；
+      0.25s → --wb-motion-reject（250ms，逐值相等）；
+      0.34s 卡片入场 → --wb-motion-structural（210ms，Δ−130ms；数值最近档 reject 250ms
+      语义为拒绝反馈，不适用入场）；0.7s 扫光 → --wb-motion-busy（1000ms，Δ+300ms）。
+      缓动除一例外均为隐式默认 ease 原样保留；例外 = arena-card-in 的
+      cubic-bezier(0.16,0.8,0.3,1) → --wb-ease-standard（最近共享缓动）。
+   ③ transition:all ×4 展开为显式属性列表（WB127），覆盖各规则状态迁移实际涉及的属性。
+   ④ focus outline 声明全部移除（WB135：focus 环由 states.css 唯一提供）。arena 面板根
+      非 .workbench-shell，states.css 已做最小扩域（.arena-panel 作用域，含 textarea）；
+      skin 块将 --wb-focus 覆盖为战术橙保持品牌色。键盘 focus 视觉由「橙色 1px 柔光 +
+      描边移位」变为「共享 2px outline 环 + 既有柔光/描边」，为治理强制对齐点。
+      P2 已完成归位：浏览面迁入 DualPaneShell 后壳内 focus 环由壳级规则提供，states.css
+      / motion.css 的 .arena-panel 扩域收窄为 .arena-xshell 壳外残留钩子（定制赛总览/
+      编辑器/结算页/toast 四个壳外节点，createDOM 挂类，含 textarea），注记同步更新。
+   ⑤ 不写本地 reduced-motion 块（WB104）：motion.css 根级关闭块覆盖 .workbench-shell 全域；
+      P2 起 .arena-panel 整板扩域收窄为 .arena-xshell 壳外钩子（reduced-motion 行为不变）。
+   ⑥ .arena-skill-level / .arena-equip-level 角标 9px → 10px（WB124：9px badge 豁免绑定
+      badge/chip 等类名关键词，本类名被 JS/QA 契约锁定不可改，取最近合规档，Δ+1px
+      仅这两枚图标角标）。
+   ⑦ 零新增 keyframes：arena-card-in（14px 浮升 + 0.97 缩放入场）与 arena-sweep（hover
+      扫光位移）与共享 wb-pulse-busy / wb-reject-pulse 无语义等价，存量原样保留。
+
+   P2（2026-08-07 双栏化）：标准/堕落/爬升三模式浏览面迁入 DualPaneShell
+   （profile: catalog-decision，构造点 P4 起在 arena/arena-shell.js buildWorkbenchShell）——
+   旧 58px 自写顶栏与 detail 整页视图退役：身份/A徽/金钱/模式 tabs/密度/帮助/关闭迁入壳
+   header（单行化身份 + tab 下划线语言保留）；左栏 = 模式内卡目录（控件条：换一批/全部
+   重抽；密度切换；模式内滚动记忆），右栏 = 选中挑战持续 preview + CommitBar 唯一主 CTA
+   「⚔ 开始挑战」（非滚动 decision footer，选中卡 Enter/Space 为同一 commit handler 别名，
+   P0 裁决 2）；卡片不再承载按钮，纯选中语义（role=option + aria-selected，选中边框消费
+   --wb-role-selected）。定制赛总览保持独立（D2）：定制赛模式壳 body 隐藏（core.css 壳级
+   [hidden] 规则），总览覆盖 body 区。
+
+   P3（2026-08-07 定制赛选择性收敛，合同 = 竞技场面板-双栏工作台栈对齐 §3 P3）：
+   ① 深层参数页（[data-custom-editor-page="params"]）迁入共享 SecondaryPage
+      （workbench-components.js）——只换承载机制（inert / Esc 分层 / opener 焦点归还 /
+      structural 进退场），参数编辑的信息架构与字段零改动；宿主 = 编辑器整页视图
+      （非 .workbench-shell，--wb-header-height 本地置 0 全幅覆盖，含编辑器头部），
+      本地几何/肤色适配见 .arena-custom-param-page 注记（z-index 5 让 L 角框保持可见）。
+   ② 确认条收敛共享 CommitBar：#arena-custom-confirm 拆为摘要体（随 render 重建）+
+      持久动作脚；主 CTA 的 click 归 CommitBar.onCommit 单一持有（委派路由不再持有
+      start 分支），busy = custom_start/enter 飞行中可见禁用（原实现静默 no-op），
+      失败原因除 toast 外落到条内 status（不随 toast 消失）。编辑器「完成」主确认动作
+      本就在非滚动编辑器头部（grid 行 auto + 视图 overflow:hidden），满足 §5.2
+      「主确认动作不滚出视野」，无需另行归位——评估结论登记于此。
+   ③ 焦点栈：编辑器/结算页各持 FocusScope，参数页由 SecondaryPage 内建 scope 压栈；
+      Esc 归宿主 panel_esc（onArenaRequestClose 逐层：modal → 参数页 → 编辑器 →
+      结算页 → 确认条 → 关闭）+ DOM keydown（FocusScope，harness/真实浏览器键盘），
+      自绘下拉菜单开着时 Esc 先收菜单；opener 归还走领域路径（阵容行/总览卡随 render
+      重建，按 side/index 与页面语义找回新节点）。
+   ④ .arena-custom-side-workbench → .arena-custom-side-panel（P0 裁决 4：与共享
+      Workbench 语义撞车，本地规范化；JS/QA 零其他引用点）。
+   ⑤ !important ×10 全部退役（ledger arena.css 条目同批移除）：native-select veil ×3
+      改 type 提级 (0,2,1)；side-target/filter active ×6 改父级限定 + 层序后移
+      （稳压同族 base/hover/:active，与原 priority 等价）；editor page hidden ×1 原
+      (0,2,0) 特异性本就高于各页 display (0,1,0)，直接摘除 priority。
+   ⑥ D2 transfer-pair 书面结论（不消费）：transfer-pair 是「两个可操作容器近似对称」
+      的壳级 profile（背包—战备箱/仓库、Loot），面向 lease 绑定的双向容器转移；
+      定制赛单方编辑是「目录 → 阵容草稿」单向装配——右栏单位目录是只读来源（分组
+      懒渲染/搜索/过滤），左栏阵容是本地草稿行（数量/等级/参数随改随写本地 state，
+      无逐行权威往返，唯一权威边界在 custom_start 整局提交）。强行套用会引入假
+      lease/双容器语义并破坏既有懒渲染浏览器；保留现有编辑 IA（合同：不机械复刻）。
+
+   P4（2026-08-07 工程拆分 + 结算页 D3 收尾，合同 = 竞技场面板-双栏工作台栈对齐 §3 P4）：
+   ① facade 拆分：arena-panel.js 单文件 IIFE（5423 行）拆为 modules/arena/ 六模块 +
+      薄 facade（纯移动，本文件零选择器/零结构影响，仅上条 P2 注记的构造点路径随行）。
+   ② D3 结算页共享状态色收尾（全屏战果仪式与 custom_result 回开路径不变）：
+      .arena-custom-result-title-failed（委托失败）金 #ffd36d → var(--wb-semantic-danger)；
+      .arena-custom-result-error 错误条金系三色 → --wb-semantic-danger 文字 +
+      color-mix 8%/16% 底与边（alpha 与原 rgba 档逐值相等）。
+      结算页其余色板保持身份：胜/负标题消费红蓝阵营色（身份色，非状态色）、
+      血条 hp→gold 渐变是数据可视化非状态色、无成功态元素（胜利 = 阵营色表达）。
+      编辑器侧运行状态芯片（status-chip ok/active/error）与赛程码 status 不进本批
+      （渲染面在编辑器页非结算页，类共享但归属编辑器视觉，留待编辑器域批次评估）。
+   ③ D3 核对结论（无改动项）：skin token 作用域（结果页在 .arena-panel skin 锚内）完整；
+      身份元素（L 角框 ::after、official-garage 底图+暗罩、橙系角色色）由面板基座承载，
+      结果页无缺项；焦点恢复/Esc（FocusScope 移入首焦点=返回基地、Tab trap、panel_esc
+      逐层）P3 已闭环无缺口；reduced-motion：结果页零动效声明，且 .arena-xshell 钩子在
+      motion.css 根级关闭块覆盖内。
+   ④ .arena-xshell 钩子保留理由：定制赛总览/编辑器/结算页/toast 四个节点按 D2/D3 裁决
+      不进 DualPaneShell（整页互斥视图），states.css（focus 环）与 motion.css
+      （reduced-motion 关闭块）需要壳外作用域钩子；节点挂类在 arena/arena-shell.js
+      createDOM，钩子随四页存续而保留。
+
+   治理约束（静态门守护，禁止回退）：
+   - 只消费 --dls-* / --theta-* / --wb-semantic-* / --wb-role-* / --wb-motion-* /
+     --wb-ease-* 与 skin 色谱通道 token（--arena-*-rgb）；零硬编码色值；
+   - transition 时长/缓动只消费 motion/ease token，禁止 transition:all；
+   - 不写任何 outline 规则（focus 环由 states.css 唯一提供，WB135）；
+   - 不覆盖壳级 grid-template-*（WB129）；!important 零存量（WB133，P3 已清账，
+     ledger 无 arena.css 条目，新增即红）；
+   - 不新增 keyframes；不写本地 reduced-motion 块（motion.css 根级统一关闭）。
+   ════════════════════════════════════════════════════════════════════════════ */
+/* ── SKIN：arena 皮肤色谱与角色 token（data-workbench-skin="arena" 作用域）──
+   色谱以 rgb 通道单源表达（--arena-*-rgb），消费一律 rgb(var(--x)) / rgba(var(--x),α)；
+   角色 token 沿用原 --arena-* 命名平移，下游 3000 行消费点零改动。
+   身份锚点：战术橙 #ef9442 / 大理石 task_icon_bg.png / 思源宋体标题 / 4 角 L 框 /
+   A 兵团徽 a-legion-emblem.svg / 红蓝阵营色——全部保留，逐通道等价。 */
+.arena-panel[data-workbench-skin="arena"] {
+    /* ── 战术橙身份族 ── */
+    --arena-accent-rgb: 239,148,66;        /* #ef9442 主身份橙 */
+    --arena-accent-2-rgb: 255,182,90;      /* #ffb65a 亮橙 */
+    --arena-accent-bright-rgb: 255,188,97; /* #ffbc61 CTA 渐变顶 */
+    --arena-accent-deep-rgb: 238,143,49;   /* #ee8f31 CTA 渐变底 */
+    --arena-accent-peak-rgb: 255,201,119;  /* #ffc977 CTA hover 顶 */
+    --arena-accent-hot-rgb: 242,154,62;    /* #f29a3e CTA hover 底 */
+    --arena-accent-edge-rgb: 255,186,96;   /* active 态描边档 */
+    --arena-accent-hi-rgb: 255,202,128;    /* active hover 描边档 */
+    /* ── 金（奖金/费用/隐藏金卡）── */
+    --arena-gold-rgb: 255,201,74;          /* #ffc94a */
+    --arena-gold-2-rgb: 255,211,109;       /* #ffd36d */
+    --arena-gold-deep-rgb: 110,78,20;      /* 参数脏标记底 */
+    /* ── 红蓝阵营 ── */
+    --arena-blue-rgb: 140,183,255;         /* #8cb7ff */
+    --arena-blue-deep-rgb: 93,152,255;     /* #5d98ff */
+    --arena-blue-line-rgb: 109,164,255;    /* #6da4ff */
+    --arena-red-rgb: 255,146,136;          /* #ff9288 */
+    --arena-red-line-rgb: 255,118,107;     /* #ff766b */
+    /* ── 危险/错误/成功 ── */
+    --arena-danger-rgb: 226,80,62;         /* #e2503e */
+    --arena-error-rgb: 255,80,80;
+    --arena-error-text-rgb: 255,170,160;   /* #ffaaa0 */
+    --arena-error-soft-rgb: 240,138,122;   /* #f08a7a */
+    --arena-error-hover-rgb: 244,169,156;  /* #f4a99c */
+    --arena-error-deep-rgb: 120,20,20;
+    --arena-success-rgb: 169,230,178;      /* #a9e6b2 */
+    --arena-success-line-rgb: 96,210,118;
+    --arena-success-deep-rgb: 30,92,42;
+    --arena-hp-rgb: 139,207,117;           /* #8bcf75 结算血条 */
+    /* ── 元战队紫罗兰（堕落/异界身份）── */
+    --arena-violet-rgb: 217,140,255;       /* #d98cff */
+    --arena-violet-bright-rgb: 228,170,255;
+    --arena-violet-title-rgb: 224,182,255; /* #e0b6ff */
+    --arena-violet-text-rgb: 217,196,239;  /* #d9c4ef */
+    --arena-violet-dim-rgb: 201,169,221;   /* #c9a9dd */
+    --arena-violet-deep-rgb: 90,74,110;    /* #5a4a6e */
+    --arena-violet-deeper-rgb: 78,64,96;   /* #4e4060 */
+    /* ── 暖金文字（tab hover / 等价芯片）── */
+    --arena-warm-text-rgb: 240,215,189;    /* #f0d7bd */
+    --arena-warm-gold-rgb: 240,215,160;    /* #f0d7a0 */
+    --arena-warm-dim-rgb: 217,193,136;     /* #d9c188 */
+    /* ── 橙实心 CTA 上的深墨字 ── */
+    --arena-cta-ink-rgb: 26,18,6;          /* #1a1206 */
+    --arena-cta-ink-2-rgb: 26,18,8;        /* #1a1208 */
+    --arena-cta-ink-3-rgb: 24,16,10;       /* #18100a */
+    /* ── 中性文字/线框灰阶 ── */
+    --arena-text-rgb: 214,217,222;         /* #d6d9de */
+    --arena-text-dim-rgb: 139,143,152;     /* #8b8f98 */
+    --arena-text-mute-rgb: 104,108,117;    /* #686c75 */
+    --arena-line-rgb: 71,75,85;            /* #474b55 */
+    --arena-line-bright-rgb: 107,112,121;  /* #6b7079 */
+    --arena-gray-mid-rgb: 136,136,136;     /* #888 */
+    --arena-white-rgb: 255,255,255;
+    --arena-black-rgb: 0,0,0;
+    /* ── 深墨面底阶（石板卡/控件/菜单/toast/底罩）── */
+    --arena-ink-rgb: 12,13,17;
+    --arena-ink-2-rgb: 10,12,17;
+    --arena-ink-3-rgb: 9,11,16;
+    --arena-ink-4-rgb: 8,10,15;
+    --arena-ink-5-rgb: 7,8,12;
+    --arena-ink-6-rgb: 20,21,26;
+    --arena-ink-7-rgb: 18,21,28;
+    --arena-ink-8-rgb: 18,21,27;
+    --arena-ink-9-rgb: 18,19,24;
+    --arena-ink-10-rgb: 17,18,24;
+    --arena-ink-11-rgb: 14,12,18;
+    --arena-ink-12-rgb: 3,5,8;
+    --arena-ink-13-rgb: 14,15,19;
+    /* ── 大理石石料配方（罩/兜底四联 + 定制卡罩 + 页底兜底）── */
+    --arena-stone-veil-hi-rgb: 42,45,53;
+    --arena-stone-veil-lo-rgb: 27,29,35;
+    --arena-stone-hi-rgb: 48,51,58;        /* #30333a */
+    --arena-stone-lo-rgb: 37,39,45;        /* #25272d */
+    --arena-stone-soft-veil-hi-rgb: 36,39,46;
+    --arena-stone-soft-veil-lo-rgb: 23,25,30;
+    --arena-stone-soft-hi-rgb: 43,46,53;   /* #2b2e35 */
+    --arena-stone-soft-lo-rgb: 34,36,41;   /* #222429 */
+    --arena-page-hi-rgb: 26,28,34;         /* #1a1c22 */
+    --arena-page-lo-rgb: 16,17,22;         /* #101116 */
+    --arena-veil-custom-hi-rgb: 37,42,50;
+    --arena-confirm-rgb: 50,31,15;
+    /* ── 头像剪影 / 滑杆 / 编队点 ── */
+    --arena-portrait-head-rgb: 73,68,61;   /* #49443d */
+    --arena-portrait-body-rgb: 64,59,53;   /* #403b35 */
+    --arena-thumb-rgb: 243,246,248;        /* #f3f6f8 */
+    --arena-cyan-rgb: 80,190,228;          /* range 轨道冷端 */
+    --arena-cyan-dot-rgb: 79,198,238;      /* #4fc6ee 编队点描边 */
+    --arena-dot-face-rgb: 240,247,255;     /* #f0f7ff */
+    --arena-ink-dot-rgb: 16,20,24;         /* #101418 编队点字 */
+    /* ── 难度热度梯度（d3/d6 复用 accent/danger 角色色）── */
+    --arena-d1-rgb: 138,154,126;           /* #8a9a7e */
+    --arena-d2-rgb: 185,192,106;           /* #b9c06a */
+    --arena-d4-rgb: 255,138,74;            /* #ff8a4a */
+    --arena-d5-rgb: 255,106,58;            /* #ff6a3a */
+
+    /* ── 角色 token（原 --arena-* 定义平移，值改走色谱通道，消费点零改动）── */
+    --arena-line: rgb(var(--arena-line-rgb));
+    --arena-line-bright: rgb(var(--arena-line-bright-rgb));
+    --arena-accent: rgb(var(--arena-accent-rgb));
+    --arena-accent-2: rgb(var(--arena-accent-2-rgb));
+    --arena-accent-dim: rgba(var(--arena-accent-rgb),0.14);
+    --arena-accent-glow: rgba(var(--arena-accent-rgb),0.45);
+    --arena-text: rgb(var(--arena-text-rgb));
+    --arena-text-dim: rgb(var(--arena-text-dim-rgb));
+    --arena-text-mute: rgb(var(--arena-text-mute-rgb));
+    --arena-gold: rgb(var(--arena-gold-rgb));
+    --arena-danger: rgb(var(--arena-danger-rgb));
+    --arena-radius: 7px;
+    --arena-radius-sm: 4px;
+    /* 拟物大理石底纹（与任务/战宠/佣兵面板共用 task_icon_bg.png，零新增美术资源） */
+    --arena-marble: url('../../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    --arena-stone: linear-gradient(160deg, rgba(var(--arena-stone-veil-hi-rgb),0.72), rgba(var(--arena-stone-veil-lo-rgb),0.84)), var(--arena-marble), linear-gradient(rgb(var(--arena-stone-hi-rgb)), rgb(var(--arena-stone-lo-rgb)));
+    --arena-stone-soft: linear-gradient(160deg, rgba(var(--arena-stone-soft-veil-hi-rgb),0.78), rgba(var(--arena-stone-soft-veil-lo-rgb),0.88)), var(--arena-marble), linear-gradient(rgb(var(--arena-stone-soft-hi-rgb)), rgb(var(--arena-stone-soft-lo-rgb)));
+    --arena-control-bg: linear-gradient(180deg, rgba(var(--arena-white-rgb),0.055), rgba(var(--arena-white-rgb),0.018)), rgba(var(--arena-ink-2-rgb),0.78);
+    --arena-control-bg-hover: linear-gradient(180deg, rgba(var(--arena-accent-rgb),0.14), rgba(var(--arena-accent-rgb),0.055)), rgba(var(--arena-ink-rgb),0.84);
+    --arena-control-border: rgba(var(--arena-white-rgb),0.14);
+    --arena-control-border-hover: rgba(var(--arena-accent-rgb),0.52);
+    /* focus 环品牌色：states.css 共享 outline 环在 arena 域消费此覆盖（战术橙）；
+       P2 迁入 DualPaneShell 后归位壳级 skin token 表 */
+    --wb-focus: rgb(var(--arena-accent-rgb));
+    /* P2 壳级 skin 覆盖：战术橙驱动壳内 accent 语义（slot active / flow rail / mode btn /
+       status loading 点），shell 深色面底与 arena 墨阶同域故 --wb-bg/--wb-surface 系不动 */
+    --wb-accent: rgb(var(--arena-accent-rgb));
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Arena Panel (角斗场)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* 沉浸全屏化 2026-06-12：arena 原为 C# 居中子矩形(Centered 1024×720)+ inset:2% 3% 卡片，浮在暗 backdrop 上。
+   改 C# 全 anchor + inset:0 + 固定 1024×576 画布(.panel-scale-shell 整体等比缩放)，铺满全 16:9。
+
+   视觉对齐 2026-06-13：从旧 cyberpunk 琥珀/等宽风改为军事战术风（对齐 merc/pet/task 面板）——
+   战术橙 token + 大理石石板卡面 + 4 角 L 框 + 思源宋体标题 + A 兵团徽 + 石牌/橙实心 CTA，
+   底图换 official-garage.jpg（人物密集、偏亮，用较重暗罩压成氛围底，不透明石板卡自会跳出）。
+   保留所有 arena-panel.js / QA harness 依赖的类名与 DOM 结构，仅换皮 + 增强标记元素。*/
+#panel-container[data-panel="arena"] #panel-content {
+    inset: 0;
+}
+#panel-container[data-panel="arena"] #panel-backdrop {
+    /* 幕布近黑（原 #0a0a0c 逐通道等价）：肤色谱挂 .arena-panel skin 根不逆流到容器层，
+       此通道为面板根外唯一消费点，就地定义 */
+    --arena-backdrop-rgb: 10,10,12;
+    background: rgb(var(--arena-backdrop-rgb));
+}
+
+/* ── 根容器：固定 1024×576 画布，由外层 .panel-scale-shell 整体缩放 ── */
+.arena-panel {
+    /* 设计 token 已上移 .arena-panel[data-workbench-skin="arena"] skin 块（P1c），此处只留结构与消费 */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 1024px;
+    height: 576px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--arena-text);
+    font-family: system-ui, "Microsoft YaHei", sans-serif;
+    user-select: none;
+    /* 背景层叠（上→下）：顶部橙光氛围 → 暗罩（角斗场底图人物密集且偏亮，
+       用较重暗罩压成战术氛围底，卡片为不透明石板自会跳出）→ official-garage.jpg →
+       渐变兜底。url 按 /css/ 目录相对寻址，兼容 overlay 与 file harness。 */
+    background:
+        radial-gradient(120% 90% at 50% -8%, rgba(var(--arena-accent-rgb),0.06), transparent 60%),
+        linear-gradient(180deg, rgba(var(--arena-ink-9-rgb),0.74) 0%, rgba(var(--arena-ink-rgb),0.90) 100%),
+        url('../../assets/bg/official-garage.jpg') center center / cover no-repeat,
+        linear-gradient(180deg, rgb(var(--arena-page-hi-rgb)) 0%, rgb(var(--arena-page-lo-rgb)) 100%);
+}
+.arena-panel * { box-sizing: border-box; }
+
+/* 外框战术角标（4 角，与战宠/佣兵一致） */
+.arena-panel::before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    pointer-events: none;
+    border: 1px solid rgba(var(--arena-white-rgb),0.04);
+    z-index: 0;
+}
+.arena-panel::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    pointer-events: none;
+    z-index: 30;
+    --c: var(--arena-line-bright);
+    --l: 22px;
+    --w: 2px;
+    background:
+        linear-gradient(var(--c),var(--c)) 0 0 / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 0 / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 0 / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 0 / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 100% / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 100% / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 100% / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 100% / var(--w) var(--l) no-repeat;
+}
+
+/* ── P2 壳接入：浏览面迁入 DualPaneShell（catalog-decision）──
+   壳级 tracks / header / body 布局归 profiles.css / core.css（WB129：本文件不做壳级 grid 覆盖），
+   本节只做壳件肤色适配与 pane 内部构图。旧 58px 自写顶栏（.arena-header）退役：
+   身份（A 徽 + 思源宋体标题）/ 金钱 / 模式 tabs / 密度 / 帮助 / 关闭全部由壳 header 承载。 */
+.arena-panel .workbench-identity {
+    position: relative;
+    padding-left: 26px;
+    /* 单行化（team Phase G3 同款）：标题与副题同一行，eyebrow 隐藏让位（标题已含领域名） */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.arena-panel .workbench-identity::before {
+    /* A 兵团三角螺旋徽（与 merc/pet/team 同源 SVG，mask 以战术橙渲染，品牌锚点保留） */
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 20px;
+    height: 18px;
+    background: var(--arena-accent);
+    -webkit-mask: url('../../assets/logos/a-legion-emblem.svg') center / contain no-repeat;
+    mask: url('../../assets/logos/a-legion-emblem.svg') center / contain no-repeat;
+    transform: translateY(-50%);
+}
+.arena-panel .workbench-eyebrow,
+.arena-panel .workbench-title,
+.arena-panel .workbench-subtitle {
+    margin-top: 0;
+    line-height: 24px;
+}
+.arena-panel .workbench-eyebrow { display: none; }
+.arena-panel .workbench-title {
+    flex: 0 0 auto;
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", "Microsoft YaHei", sans-serif;
+    font-size: 15px;
+    letter-spacing: 3px;
+}
+.arena-panel .workbench-subtitle {
+    flex: 0 1 auto;
+    min-width: 0;
+    letter-spacing: 2px;
+}
+/* header 空间预算（1024）：identity 单行 + status/metrics 瘦身 + gap 收紧，
+   4 个模式 tab + 密度切换 + 帮助 + 关闭完整成行 */
+.arena-panel .workbench-header { gap: 10px; }
+.arena-panel .workbench-status { min-width: 86px; }
+.arena-panel .workbench-metric { min-width: 84px; }
+
+/* 金钱 = 壳 header metric（label「金钱」+ 数值）；数值保持金色 tabular 身份 */
+.arena-money-value {
+    color: var(--arena-gold);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}
+
+/* 模式 tabs（壳 header 第一个 action）：下划线语言对齐战队界面，首个 = 标准模式 */
+.arena-modes {
+    display: flex;
+    align-self: stretch;
+    gap: 2px;
+}
+.arena-mode-tab {
+    min-width: 0;
+    padding: 0 10px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    color: var(--arena-text-dim);
+    background: transparent;
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: color var(--wb-motion-standard), background var(--wb-motion-standard), border-color var(--wb-motion-standard);
+}
+.arena-mode-tab:hover { color: rgb(var(--arena-warm-text-rgb)); background: rgba(var(--arena-accent-rgb),0.06); }
+.arena-mode-tab-active {
+    color: var(--arena-accent-2);
+    border-bottom-color: var(--arena-accent);
+    background: rgba(var(--arena-accent-rgb),0.1);
+}
+
+/* 左栏控件条按钮（换一批 / 全部重抽）沿用石牌语言；全部重抽右置 */
+.arena-reroll-all {
+    align-self: center;
+    margin-left: auto;
+    height: 30px;
+    padding: 0 14px;
+    background: rgba(var(--arena-white-rgb),0.04);
+    border: 1px solid rgba(var(--arena-white-rgb),0.12);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    border-radius: var(--arena-radius-sm);
+    cursor: pointer;
+    transition: color var(--wb-motion-standard), border-color var(--wb-motion-standard), background var(--wb-motion-standard);
+}
+.arena-reroll-all:hover:not(:disabled) {
+    color: var(--arena-accent);
+    border-color: var(--arena-accent);
+    background: var(--arena-accent-dim);
+}
+.arena-reroll-all:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.arena-reroll-all[hidden] { display: none; }
+
+/* ── 卡片网格（4×2，固定画布内）── */
+.arena-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 12px;
+    padding: 14px 18px;
+    flex: 1;
+    overflow-y: auto;
+    align-content: stretch;
+    min-height: 0;
+}
+/* 卡片数超过单屏（如堕落模式 18 张势力卡）：改顶部对齐的滚动布局，行高随内容、超出滚动。
+   不再用 2 行 1fr stretch（那是 8 卡铺满设计，多卡时顶部行会被压成只剩标题条 → 无法操作）。
+   行高由卡片内容决定（与标准卡同构 ≈ 等高），列数维持 4，纵向滚动浏览全部势力挑战。 */
+.arena-grid.arena-grid-scroll {
+    grid-template-rows: none;
+    grid-auto-rows: min-content;
+    align-content: start;
+}
+.arena-grid.arena-grid-custom {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    align-content: stretch;
+}
+
+/* ══ P2 壳内 pane 构图（壳级 split 归 profiles.css，WB129 不覆盖）══ */
+/* 左栏挑战目录：单行控件条（换一批 / 全部重抽）+ 可滚卡目录 */
+.arena-catalog {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+.arena-catalog-controls {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.06);
+    background: linear-gradient(180deg, rgba(var(--arena-accent-rgb),0.05), transparent);
+}
+.arena-catalog .arena-grid {
+    flex: 1 1 auto;
+    padding: 10px 12px;
+    gap: 10px;
+}
+
+/* 卡片 = 选中语义（P0 裁决 2）：pointer 选中态 + 键盘焦点由 states.css 壳级环承载 */
+.arena-catalog .arena-card { cursor: pointer; }
+.arena-card.arena-card-selected {
+    border-color: var(--wb-role-selected);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--wb-role-selected) 45%, transparent),
+        0 8px 22px rgba(var(--arena-black-rgb),0.42);
+}
+
+/* 目录密度（紧凑/标准，GridDensityController + localStorage 持久；首次进入默认紧凑）：
+   紧凑态隐藏「对手/等级」统计行并收紧留白——该信息选中后在右栏 preview 完整可读 */
+.arena-grid.arena-grid-compact .arena-card { padding: 7px 10px 8px; gap: 5px; }
+.arena-grid.arena-grid-compact .arena-card-stats { display: none; }
+.arena-grid.arena-grid-compact .arena-card-prize { margin-top: 0; }
+
+/* 右栏挑战决策：标题/meta（非滚动）+ preview 滚动区 + CommitBar 唯一主 CTA（非滚动 footer） */
+.arena-decision {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+.arena-decision-head {
+    flex-shrink: 0;
+    padding: 10px 12px 9px;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.06);
+    background: linear-gradient(180deg, rgba(var(--arena-accent-rgb),0.06), transparent);
+}
+.arena-decision .arena-opponents {
+    flex: 1 1 auto;
+    padding: 10px 12px;
+}
+/* 右栏未选中空态（{kind, statement, nextStep} 语义） */
+.arena-decision-empty {
+    margin: 2px 0;
+    padding: 26px 18px;
+    text-align: center;
+    background: var(--arena-stone-soft);
+    border: 1px solid rgba(var(--arena-white-rgb),0.07);
+    border-radius: var(--arena-radius);
+}
+.arena-decision-empty-statement {
+    color: var(--arena-text-dim);
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+.arena-decision-empty-next {
+    margin-top: 6px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+}
+
+/* CommitBar 肤色：战术橙实心主 CTA（沿用旧 .arena-detail-confirm 配方，
+   类名同时挂在 shared primary 按钮上）；status 文本保持正文对比度 */
+.arena-panel .workbench-commit-bar {
+    border-top: 1px solid rgba(var(--arena-white-rgb),0.08);
+    background: linear-gradient(0deg, rgba(var(--arena-accent-rgb),0.05), transparent);
+}
+
+/* 定制赛总览覆盖层（D2 总览独立）：定制赛模式壳 body 隐藏（core.css 壳级 [hidden] 规则），
+   总览覆盖 body 区、壳 header（模式 tabs）保持可达。top = 壳 header 高（core.css --wb-header-height 48px） */
+.arena-custom-overview {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 48px;
+    z-index: 5;
+    /* 与 .arena-panel 同配方背景（暗罩 + garage 底图），保持定制赛视觉连续 */
+    background:
+        radial-gradient(120% 90% at 50% -8%, rgba(var(--arena-accent-rgb),0.06), transparent 60%),
+        linear-gradient(180deg, rgba(var(--arena-ink-9-rgb),0.74) 0%, rgba(var(--arena-ink-rgb),0.90) 100%),
+        url('../../assets/bg/official-garage.jpg') center center / cover no-repeat,
+        linear-gradient(180deg, rgb(var(--arena-page-hi-rgb)) 0%, rgb(var(--arena-page-lo-rgb)) 100%);
+}
+.arena-custom-overview[hidden] { display: none; }
+.arena-custom-overview .arena-grid {
+    height: 100%;
+    min-height: 0;
+}
+
+/* ── 单张卡片：大理石石板 + 4 角 L 框 + 悬停抬升/扫光 ── */
+.arena-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 10px 12px 11px;
+    background: var(--arena-stone);
+    border: 1px solid rgba(var(--arena-white-rgb),0.08);
+    border-radius: var(--arena-radius);
+    overflow: hidden;
+    min-height: 0;
+    transition: border-color var(--wb-motion-standard), transform var(--wb-motion-standard), box-shadow var(--wb-motion-standard);
+    animation: arena-card-in var(--wb-motion-structural) var(--wb-ease-standard) both; /* P1c：原 0.34s/cubic-bezier(0.16,0.8,0.3,1)，Δ 与档选择见文件头 ② */
+    /* 难度热度色（按 levelMax 档位，d1 安全 → d6 致命） */
+    --d-color: var(--arena-accent);
+}
+
+.arena-card-custom {
+    max-width: none;
+    gap: 9px;
+    background:
+        linear-gradient(180deg, rgba(var(--arena-veil-custom-hi-rgb),0.96), rgba(var(--arena-ink-8-rgb),0.94)),
+        var(--arena-stone);
+    border-color: rgba(var(--arena-accent-rgb),0.26);
+    box-shadow: 0 18px 40px rgba(var(--arena-black-rgb),0.38), inset 0 0 0 1px rgba(var(--arena-white-rgb),0.035);
+}
+.arena-card-custom:hover {
+    transform: none;
+}
+.arena-card-custom-confirming .arena-custom-layout {
+    display: none;
+}
+.arena-card-custom-confirming .arena-custom-body {
+    grid-template-rows: auto minmax(0, 1fr);
+}
+.arena-card-custom-confirming .arena-custom-confirm {
+    align-self: stretch;
+    display: grid;
+    /* P3：确认条 = 摘要体（重建）+ 持久动作脚（共享 CommitBar）两行 */
+    grid-template-rows: minmax(0, 1fr) auto;
+}
+.arena-custom-confirm-body {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+}
+.arena-custom-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    min-height: 0;
+}
+.arena-custom-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+.arena-custom-title {
+    color: var(--arena-text);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.arena-custom-subtitle {
+    margin-top: 2px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+.arena-custom-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    min-height: 0;
+}
+.arena-custom-playbook,
+.arena-custom-share,
+.arena-custom-config-panel {
+    min-width: 0;
+    min-height: 0;
+    background: rgba(var(--arena-ink-2-rgb),0.78);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-playbook {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 12px;
+}
+.arena-custom-share {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 8px;
+    padding: 12px;
+}
+.arena-custom-config-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
+    gap: 10px;
+    padding: 9px 12px;
+}
+.arena-custom-editor-page {
+    min-height: 0;
+}
+/* P3：特异性 (0,2,0) 已高于各页 display 规则 (0,1,0)，!important 退役（ledger 同步销账） */
+.arena-custom-editor-page[hidden] {
+    display: none;
+}
+.arena-custom-config-page {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 10px;
+    overflow: hidden;
+}
+.arena-custom-battle-summary {
+    min-width: 0;
+    display: grid;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(var(--arena-ink-3-rgb),0.82);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-battle-summary-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.arena-custom-battle-summary-head .arena-custom-btn {
+    min-width: 92px;
+    height: 30px;
+}
+.arena-custom-battle-summary-grid {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.72fr) minmax(110px, 0.72fr) minmax(180px, 1.4fr) minmax(90px, 0.56fr);
+    gap: 8px;
+}
+.arena-custom-battle-summary-grid span {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    padding: 7px 9px;
+    background: rgba(var(--arena-black-rgb),0.2);
+    border: 1px solid rgba(var(--arena-white-rgb),0.09);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-battle-summary-grid em {
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    font-style: normal;
+    white-space: nowrap;
+}
+.arena-custom-battle-summary-grid b {
+    min-width: 0;
+    color: var(--arena-text);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 12px;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.arena-custom-battle-page {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+}
+.arena-custom-battle-editor-head {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.28fr);
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(var(--arena-ink-2-rgb),0.78);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-battle-editor-actions {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(78px, 1fr));
+    gap: 7px;
+    align-items: end;
+}
+.arena-custom-battle-editor-actions .arena-custom-btn,
+.arena-custom-battle-editor-actions .arena-card-btn-enter {
+    min-width: 0;
+    height: 34px;
+    padding: 0 8px;
+}
+.arena-custom-battle-params {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    gap: 8px;
+    padding: 10px 12px 12px;
+    background: rgba(var(--arena-ink-3-rgb),0.82);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-battle-params-editor {
+    align-content: start;
+}
+.arena-custom-battle-param-grid {
+    display: grid;
+    grid-template-columns: minmax(160px, 0.7fr) minmax(160px, 0.7fr) minmax(320px, 1.6fr);
+    gap: 10px;
+}
+.arena-custom-battle-page .arena-custom-battle-param-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.arena-custom-battle-param-card {
+    min-width: 0;
+    display: grid;
+    gap: 8px;
+    padding: 9px 10px;
+    background: rgba(var(--arena-black-rgb),0.2);
+    border: 1px solid rgba(var(--arena-white-rgb),0.1);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-battle-param-card-wide {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.arena-custom-battle-page .arena-custom-battle-param-card-wide {
+    grid-column: 1 / -1;
+}
+.arena-custom-battle-param-head,
+.arena-custom-spacing-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--arena-text-mute);
+    font-size: 12px;
+}
+.arena-custom-battle-param-head b,
+.arena-custom-spacing-row b {
+    color: var(--arena-text);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 13px;
+}
+.arena-custom-preset-row,
+.arena-custom-formation-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.arena-custom-preset-chip,
+.arena-custom-formation-option {
+    min-width: 0;
+    height: 26px;
+    padding: 0 9px;
+    color: var(--arena-text-dim);
+    font-size: 12px;
+    font-weight: 700;
+    background: linear-gradient(180deg, rgba(var(--arena-white-rgb),0.06), rgba(var(--arena-white-rgb),0.02));
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-preset-chip:hover,
+.arena-custom-formation-option:hover {
+    color: var(--arena-text);
+    border-color: rgba(var(--arena-accent-rgb),0.48);
+}
+.arena-custom-preset-chip-active,
+.arena-custom-formation-option-active {
+    color: rgb(var(--arena-cta-ink-3-rgb));
+    border-color: rgba(var(--arena-accent-edge-rgb),0.9);
+    background: linear-gradient(180deg, rgb(var(--arena-accent-bright-rgb)) 0%, rgb(var(--arena-accent-deep-rgb)) 100%);
+}
+.arena-custom-range {
+    width: 100%;
+    height: 18px;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+}
+.arena-custom-range::-webkit-slider-runnable-track {
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(var(--arena-cyan-rgb),0.75), rgba(var(--arena-accent-rgb),0.85));
+    border: 1px solid rgba(var(--arena-white-rgb),0.16);
+}
+.arena-custom-range::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: rgb(var(--arena-thumb-rgb));
+    border: 2px solid rgb(var(--arena-accent-rgb));
+    box-shadow: 0 2px 8px rgba(var(--arena-black-rgb),0.45);
+}
+.arena-custom-range:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 2px rgba(var(--arena-accent-rgb),0.3), 0 2px 8px rgba(var(--arena-black-rgb),0.45);
+}
+.arena-custom-formation-editors {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+}
+.arena-custom-formation-side {
+    min-width: 0;
+    display: grid;
+    grid-template-rows: auto auto 74px;
+    gap: 7px;
+    padding: 8px;
+    border: 1px solid rgba(var(--arena-white-rgb),0.1);
+    border-radius: var(--arena-radius-sm);
+    background: rgba(var(--arena-black-rgb),0.18);
+}
+.arena-custom-battle-page .arena-custom-formation-side {
+    grid-template-rows: auto auto 88px;
+}
+.arena-custom-formation-side-title {
+    color: var(--arena-text);
+    font-size: 12px;
+    font-weight: 800;
+}
+.arena-custom-formation-legend {
+    position: relative;
+    min-height: 74px;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(var(--arena-white-rgb),0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--arena-white-rgb),0.045) 1px, transparent 1px),
+        rgba(var(--arena-ink-12-rgb),0.34);
+    background-size: 20px 20px;
+    border: 1px solid rgba(var(--arena-white-rgb),0.08);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-battle-page .arena-custom-formation-legend {
+    min-height: 88px;
+}
+.arena-custom-formation-legend i {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    color: rgb(var(--arena-ink-dot-rgb));
+    font-style: normal;
+    font-size: 10px;
+    font-weight: 900;
+    background: rgb(var(--arena-dot-face-rgb));
+    border: 2px solid rgb(var(--arena-cyan-dot-rgb));
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(var(--arena-black-rgb),0.32);
+}
+.arena-custom-spacing-row {
+    justify-content: start;
+}
+.arena-custom-spacing-row .arena-custom-range {
+    flex: 1 1 auto;
+}
+.arena-custom-side-configs {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+}
+.arena-custom-side-config-card {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 9px;
+    padding: 12px 14px;
+    background: rgba(var(--arena-ink-3-rgb),0.82);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+    overflow: hidden;
+}
+.arena-custom-side-config-blue {
+    border-left: 3px solid rgb(var(--arena-blue-line-rgb));
+}
+.arena-custom-side-config-red {
+    border-left: 3px solid rgb(var(--arena-red-line-rgb));
+}
+.arena-custom-config-page .arena-custom-side-config-card {
+    grid-template-rows: auto minmax(28px, 1fr) auto auto;
+    gap: 7px;
+    padding: 10px 12px;
+}
+.arena-custom-side-config-player {
+    grid-template-rows: auto minmax(0, 1fr);
+}
+.arena-custom-side-config-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.arena-custom-side-config-roster {
+    min-height: 0;
+    padding: 8px 0;
+    color: var(--arena-text-dim);
+    font-size: 13px;
+    line-height: 1.55;
+    overflow-y: auto;
+}
+.arena-custom-config-page .arena-custom-side-config-roster {
+    padding: 5px 0;
+    line-height: 1.35;
+}
+.arena-custom-player-config-roster {
+    display: flex;
+    align-items: center;
+}
+.arena-custom-side-config-load {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 78px;
+    gap: 8px;
+}
+.arena-custom-side-config-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+.arena-custom-side-config-actions .arena-custom-btn,
+.arena-custom-side-config-load .arena-custom-btn {
+    min-width: 0;
+}
+.arena-custom-config-page .arena-custom-side-config-actions .arena-custom-btn,
+.arena-custom-config-page .arena-custom-side-config-load .arena-custom-btn {
+    height: 30px;
+    padding: 0 8px;
+}
+.arena-custom-config-code,
+.arena-custom-config-tools {
+    min-width: 0;
+    display: grid;
+    gap: 7px;
+    align-content: start;
+}
+.arena-custom-mode-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+.arena-custom-mode-switch .arena-custom-btn {
+    width: 100%;
+    min-width: 0;
+}
+.arena-custom-mode-active {
+    color: rgb(var(--arena-cta-ink-2-rgb));
+    border-color: rgba(var(--arena-accent-edge-rgb),0.92);
+    background: linear-gradient(180deg, rgb(var(--arena-accent-bright-rgb)) 0%, rgb(var(--arena-accent-deep-rgb)) 100%);
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-white-rgb),0.24);
+}
+.arena-custom-mode-active:hover {
+    color: rgb(var(--arena-cta-ink-2-rgb));
+    border-color: rgba(var(--arena-accent-hi-rgb),0.95);
+    background: linear-gradient(180deg, rgb(var(--arena-accent-peak-rgb)) 0%, rgb(var(--arena-accent-hot-rgb)) 100%);
+}
+.arena-custom-side-configs-pve {
+    grid-template-columns: minmax(0, 1fr);
+}
+.arena-custom-section-title {
+    color: var(--arena-accent-2);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+.arena-custom-code-label {
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+.arena-custom-code-input {
+    width: 100%;
+    min-height: 92px;
+    resize: none;
+    padding: 9px 10px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(180deg, rgba(var(--arena-white-rgb),0.04), rgba(var(--arena-white-rgb),0.01)), rgba(var(--arena-ink-rgb),0.72);
+    border: 1px solid var(--arena-control-border);
+    border-radius: var(--arena-radius-sm);
+    color: var(--arena-text);
+    caret-color: var(--arena-accent-2);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.16);
+    transition: border-color var(--wb-motion-standard), box-shadow var(--wb-motion-standard), background var(--wb-motion-standard);
+}
+.arena-custom-code-input:hover {
+    border-color: rgba(var(--arena-accent-rgb),0.36);
+}
+.arena-custom-code-input:focus {
+    border-color: rgba(var(--arena-accent-rgb),0.72);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.16);
+}
+.arena-custom-code-status {
+    min-height: 20px;
+    padding: 4px 7px;
+    border: 1px solid rgba(var(--arena-white-rgb),0.08);
+    border-radius: var(--arena-radius-sm);
+    background: rgba(var(--arena-black-rgb),0.16);
+    color: var(--arena-text-mute);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 10px;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.arena-custom-code-status-ok {
+    color: rgb(var(--arena-success-rgb));
+    border-color: rgba(var(--arena-success-line-rgb),0.24);
+    background: rgba(var(--arena-success-deep-rgb),0.16);
+}
+.arena-custom-code-status-error {
+    color: rgb(var(--arena-error-text-rgb));
+    border-color: rgba(var(--arena-error-rgb),0.28);
+    background: rgba(var(--arena-error-deep-rgb),0.18);
+}
+.arena-custom-actions {
+    display: flex;
+    gap: 8px;
+}
+.arena-custom-share-actions .arena-custom-btn {
+    flex: 1 1 0;
+}
+.arena-custom-editor-code-actions .arena-custom-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 8px;
+}
+.arena-custom-preset-select {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 30px;
+    padding: 0 30px 0 10px;
+    -webkit-appearance: none;
+    appearance: none;
+    background:
+        linear-gradient(45deg, transparent 50%, var(--arena-accent-2) 50%) calc(100% - 15px) 12px / 5px 5px no-repeat,
+        linear-gradient(135deg, var(--arena-accent-2) 50%, transparent 50%) calc(100% - 10px) 12px / 5px 5px no-repeat,
+        linear-gradient(90deg, transparent calc(100% - 31px), rgba(var(--arena-accent-rgb),0.12) calc(100% - 31px)),
+        var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
+    border-radius: var(--arena-radius-sm);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.16);
+    cursor: pointer;
+    transition: border-color var(--wb-motion-standard), box-shadow var(--wb-motion-standard), color var(--wb-motion-standard), background-color var(--wb-motion-standard);
+}
+.arena-custom-preset-select:hover {
+    color: var(--arena-text);
+    border-color: var(--arena-control-border-hover);
+}
+.arena-custom-preset-select:focus,
+.arena-custom-preset-select:focus-visible {
+    color: var(--arena-text);
+    border-color: rgba(var(--arena-accent-rgb),0.74);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.18), inset 0 0 0 1px rgba(var(--arena-black-rgb),0.20);
+}
+.arena-custom-preset-select::-ms-expand {
+    display: none;
+}
+.arena-custom-select-shell {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}
+/* P3：选择器加 type 提级 (0,2,1)，稳压 .arena-custom-editor-view .arena-custom-preset-select
+   (0,2,0) 的 width:100%，position/width/height 三处 !important 退役 */
+.arena-custom-select-shell select.arena-custom-native-select {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    min-width: 0;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+.arena-custom-select-open {
+    z-index: 34;
+}
+.arena-custom-select-trigger {
+    width: 100%;
+    min-width: 0;
+    height: 30px;
+    padding: 0 30px 0 10px;
+    -webkit-appearance: none;
+    appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background:
+        linear-gradient(45deg, transparent 50%, var(--arena-accent-2) 50%) calc(100% - 15px) 12px / 5px 5px no-repeat,
+        linear-gradient(135deg, var(--arena-accent-2) 50%, transparent 50%) calc(100% - 10px) 12px / 5px 5px no-repeat,
+        linear-gradient(90deg, transparent calc(100% - 31px), rgba(var(--arena-accent-rgb),0.12) calc(100% - 31px)),
+        var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
+    border-radius: var(--arena-radius-sm);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.16);
+    cursor: pointer;
+    transition: border-color var(--wb-motion-standard), box-shadow var(--wb-motion-standard), color var(--wb-motion-standard), background-color var(--wb-motion-standard);
+}
+.arena-custom-select-trigger:hover {
+    color: var(--arena-text);
+    border-color: var(--arena-control-border-hover);
+}
+.arena-custom-select-trigger:focus-visible,
+.arena-custom-select-open .arena-custom-select-trigger {
+    color: var(--arena-text);
+    border-color: rgba(var(--arena-accent-rgb),0.74);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.18), inset 0 0 0 1px rgba(var(--arena-black-rgb),0.20);
+}
+.arena-custom-select-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 4px);
+    max-height: 196px;
+    padding: 4px;
+    overflow-y: auto;
+    background:
+        linear-gradient(180deg, rgba(var(--arena-white-rgb),0.065), rgba(var(--arena-white-rgb),0.018)),
+        rgba(var(--arena-ink-10-rgb),0.98);
+    border: 1px solid rgba(var(--arena-accent-rgb),0.54);
+    border-radius: var(--arena-radius-sm);
+    box-shadow: 0 12px 28px rgba(var(--arena-black-rgb),0.52), inset 0 0 0 1px rgba(var(--arena-white-rgb),0.045);
+}
+.arena-custom-select-menu[hidden] {
+    display: none;
+}
+.arena-custom-side-config-load .arena-custom-select-menu {
+    top: auto;
+    bottom: calc(100% + 4px);
+    max-height: 158px;
+}
+.arena-custom-select-option {
+    width: 100%;
+    min-height: 26px;
+    padding: 0 9px;
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 26px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+.arena-custom-select-option:hover,
+.arena-custom-select-option:focus-visible {
+    color: var(--arena-text);
+    background: rgba(var(--arena-accent-rgb),0.13);
+}
+.arena-custom-select-option-active {
+    color: rgb(var(--arena-cta-ink-2-rgb));
+    background: linear-gradient(180deg, rgba(var(--arena-accent-bright-rgb),0.96), rgba(var(--arena-accent-deep-rgb),0.92));
+}
+.arena-custom-select-option-active:hover,
+.arena-custom-select-option-active:focus-visible {
+    color: rgb(var(--arena-cta-ink-2-rgb));
+    background: linear-gradient(180deg, rgba(var(--arena-accent-peak-rgb),0.98), rgba(var(--arena-accent-hot-rgb),0.94));
+}
+.arena-custom-btn {
+    height: 30px;
+    min-width: 86px;
+    padding: 0 12px;
+    background: var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
+    border-radius: var(--arena-radius-sm);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.14);
+    transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), box-shadow var(--wb-motion-standard), transform var(--wb-motion-micro);
+}
+.arena-custom-btn:hover {
+    color: var(--arena-accent);
+    border-color: var(--arena-accent);
+    background: var(--arena-control-bg-hover);
+}
+.arena-custom-btn:focus-visible {
+    color: var(--arena-accent-2);
+    border-color: rgba(var(--arena-accent-rgb),0.78);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.20), inset 0 0 0 1px rgba(var(--arena-black-rgb),0.20);
+}
+.arena-custom-btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+.arena-custom-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    color: var(--arena-text-mute);
+    border-color: rgba(var(--arena-white-rgb),0.10);
+    background: rgba(var(--arena-white-rgb),0.025);
+}
+.arena-custom-btn:disabled:hover {
+    color: var(--arena-text-mute);
+    border-color: rgba(var(--arena-white-rgb),0.10);
+    background: rgba(var(--arena-white-rgb),0.025);
+}
+.arena-custom-btn-warn {
+    color: rgb(var(--arena-gold-2-rgb));
+    border-color: rgba(var(--arena-gold-2-rgb),0.45);
+    background: rgba(var(--arena-gold-2-rgb),0.08);
+}
+.arena-custom-edit {
+    flex: 0 0 112px;
+}
+.arena-custom-editor-view {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    padding: 10px 18px 14px;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+    overflow: hidden;
+    /* P3：参数页 SecondaryPage 的定位上下文与 inset token——宿主是本整页视图而非
+       .workbench-shell，--wb-header-height 置 0 = 二级页全幅覆盖（含编辑器头部；
+       参数页自带 返回阵容/应用/保存返回 动作行，信息架构不变） */
+    position: relative;
+    --wb-header-height: 0px;
+}
+.arena-custom-editor-view[hidden] {
+    display: none;
+}
+.arena-custom-editor-header {
+    min-height: 0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 12px;
+    background: rgba(var(--arena-ink-7-rgb),0.92);
+    border: 1px solid rgba(var(--arena-accent-rgb),0.28);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-editor-title-block {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+.arena-custom-editor-kicker {
+    color: var(--arena-accent-2);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+.arena-custom-editor-title {
+    margin-top: 2px;
+    color: var(--arena-text);
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+.arena-custom-editor-meta {
+    margin-top: 2px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+}
+.arena-custom-editor-actions {
+    display: flex;
+    gap: 8px;
+}
+.arena-custom-editor-actions .arena-card-btn-enter {
+    min-height: 30px;
+    padding: 0 18px;
+}
+.arena-custom-editor-view .arena-custom-code-input {
+    min-height: 54px;
+    height: 54px;
+}
+.arena-custom-editor-view .arena-custom-preset-select {
+    width: 100%;
+}
+.arena-custom-side-page {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+}
+.arena-custom-param-page {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+    /* P3：本页由共享 SecondaryPage 承载（workbench-components.js）。以下为本地几何/肤色
+       适配（理由：宿主是定制赛编辑器整页视图而非 .workbench-shell——全幅覆盖时
+       共享 z-index:55 会遮住 .arena-panel::after 的 L 角身份框（z30），本地取 5 对齐
+       .arena-custom-overview 既有层级；padding 复刻编辑器视图留白；背景复刻 .arena-panel
+       暗罩+底图配方保持视觉连续；border-top 在 inset:0 下是多余分隔线。
+       退出条件：定制赛编辑器若整体迁入壳级承载，本适配块随 .arena-xshell 一并退场） */
+    z-index: 5;
+    padding: 10px 18px 14px;
+    border-top: 0;
+    background:
+        radial-gradient(120% 90% at 50% -8%, rgba(var(--arena-accent-rgb),0.06), transparent 60%),
+        linear-gradient(180deg, rgba(var(--arena-ink-9-rgb),0.74) 0%, rgba(var(--arena-ink-rgb),0.90) 100%),
+        url('../../assets/bg/official-garage.jpg') center center / cover no-repeat,
+        linear-gradient(180deg, rgb(var(--arena-page-hi-rgb)) 0%, rgb(var(--arena-page-lo-rgb)) 100%);
+}
+.arena-custom-side-editor-head {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.72fr);
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(var(--arena-ink-2-rgb),0.78);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-side-editor-title-block {
+    min-width: 0;
+}
+.arena-custom-param-editor-head {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(var(--arena-ink-2-rgb),0.78);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-side-editor-actions {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) repeat(4, minmax(58px, 74px));
+    gap: 7px;
+    align-items: end;
+}
+.arena-custom-param-editor-actions {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(72px, 1fr));
+    gap: 7px;
+    align-items: end;
+}
+.arena-custom-side-editor-actions .arena-custom-btn {
+    min-width: 0;
+    padding: 0 8px;
+}
+.arena-custom-param-editor-actions .arena-custom-btn,
+.arena-custom-param-editor-actions .arena-card-btn-enter {
+    min-width: 0;
+    height: 34px;
+    padding: 0 8px;
+}
+.arena-custom-param-editor-body {
+    min-height: 0;
+}
+.arena-custom-param-workbench {
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 0.34fr);
+    gap: 10px;
+}
+.arena-custom-param-main,
+.arena-custom-param-inspector {
+    min-width: 0;
+    min-height: 0;
+    background: rgba(var(--arena-ink-3-rgb),0.82);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-param-main {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+}
+.arena-custom-param-toolbar {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.09);
+    background: rgba(var(--arena-white-rgb),0.045);
+}
+.arena-custom-param-toolbar .arena-custom-btn {
+    height: 26px;
+    min-width: 62px;
+}
+.arena-custom-param-editor-input {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    resize: none;
+    padding: 10px 12px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(180deg, rgba(var(--arena-white-rgb),0.024), rgba(var(--arena-white-rgb),0)), rgba(var(--arena-black-rgb),0.22);
+    border: 0;
+    color: var(--arena-text);
+    caret-color: var(--arena-accent-2);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    white-space: pre;
+    overflow: auto;
+    transition: box-shadow var(--wb-motion-standard), background var(--wb-motion-standard);
+}
+.arena-custom-param-editor-input:hover {
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-accent-rgb),0.22);
+}
+.arena-custom-param-editor-input:focus {
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-accent-rgb),0.45);
+}
+.arena-custom-param-editor-input-invalid {
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-error-rgb),0.72);
+}
+.arena-custom-param-error {
+    padding: 6px 10px;
+    border-top: 1px solid rgba(var(--arena-error-rgb),0.28);
+    background: rgba(var(--arena-error-deep-rgb),0.22);
+    color: rgb(var(--arena-error-text-rgb));
+    font-size: 11px;
+}
+.arena-custom-param-dirty {
+    padding: 6px 10px;
+    border-top: 1px solid rgba(var(--arena-gold-2-rgb),0.26);
+    background: rgba(var(--arena-gold-deep-rgb),0.20);
+    color: rgb(var(--arena-gold-2-rgb));
+    font-size: 11px;
+}
+.arena-custom-param-inspector {
+    padding: 10px;
+    overflow-y: auto;
+}
+.arena-custom-param-inspector-title {
+    margin-top: 10px;
+    color: var(--arena-accent-2);
+    font-size: 11px;
+    font-weight: 900;
+}
+.arena-custom-param-inspector-title:first-child {
+    margin-top: 0;
+}
+.arena-custom-param-inspector-text {
+    margin-top: 5px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    line-height: 1.45;
+    word-break: break-word;
+}
+/* P3 改名：原 .arena-custom-side-workbench 与共享 Workbench 语义撞车（P0 裁决 4），
+   本地规范化 = .arena-custom-side-panel（单方编辑页的双栏工作区容器，纯布局身份不变） */
+.arena-custom-side-panel {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(340px, 0.82fr) minmax(0, 1.18fr);
+    gap: 10px;
+}
+.arena-custom-side-panel .arena-custom-roster-panel {
+    height: 100%;
+}
+.arena-custom-roster-head-count {
+    flex: 0 0 auto;
+    margin-right: 10px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+}
+.arena-custom-workbench {
+    grid-column: 1 / 3;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 10px;
+    min-height: 0;
+}
+.arena-custom-editor-view .arena-custom-workbench {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.35fr);
+    height: 100%;
+}
+.arena-custom-rosters {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+}
+.arena-custom-roster-panel,
+.arena-custom-browser {
+    min-width: 0;
+    min-height: 0;
+    background: rgba(var(--arena-ink-3-rgb),0.82);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-roster-panel {
+    display: grid;
+    grid-template-rows: 32px minmax(0, 1fr);
+    overflow: hidden;
+}
+.arena-custom-roster-active {
+    border-color: rgba(var(--arena-accent-rgb),0.58);
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-accent-rgb),0.10);
+}
+.arena-custom-roster-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.09);
+    background: rgba(var(--arena-white-rgb),0.06);
+}
+.arena-custom-roster-tab {
+    flex: 1 1 auto;
+    align-self: stretch;
+    border: 0;
+    background: transparent;
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: color var(--wb-motion-standard), background var(--wb-motion-standard), box-shadow var(--wb-motion-standard);
+}
+.arena-custom-roster-tab:hover,
+.arena-custom-roster-tab:focus-visible {
+    background: rgba(var(--arena-accent-rgb),0.08);
+    box-shadow: inset 0 -1px 0 rgba(var(--arena-accent-rgb),0.48);
+    color: var(--arena-accent-2);
+}
+.arena-custom-clear-side {
+    flex: 0 0 auto;
+    height: 24px;
+    margin-right: 6px;
+    padding: 0 8px;
+    border: 1px solid var(--arena-control-border);
+    border-radius: 3px;
+    background: var(--arena-control-bg);
+    color: var(--arena-text-mute);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.12);
+    transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), transform var(--wb-motion-micro);
+}
+.arena-custom-clear-side:hover {
+    color: rgb(var(--arena-gold-2-rgb));
+    border-color: rgba(var(--arena-gold-2-rgb),0.45);
+    background: rgba(var(--arena-gold-2-rgb),0.08);
+}
+.arena-custom-clear-side:focus-visible {
+    color: rgb(var(--arena-gold-2-rgb));
+    border-color: rgba(var(--arena-gold-2-rgb),0.60);
+}
+.arena-custom-clear-side:active {
+    transform: translateY(1px);
+}
+.arena-custom-roster-blue .arena-custom-roster-tab { color: rgb(var(--arena-blue-rgb)); }
+.arena-custom-roster-red .arena-custom-roster-tab { color: rgb(var(--arena-red-rgb)); }
+/* P3：.arena-custom-side-target-active 迁到 .arena-custom-side-switch 按钮族规则之后
+   （见下方 button.arena-custom-side-target-active），特异性+层序替代 !important */
+.arena-custom-roster-list {
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 6px;
+}
+.arena-custom-roster-empty,
+.arena-custom-unit-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--arena-text-mute);
+    font-size: 12px;
+}
+.arena-custom-roster-row {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 56px 84px minmax(76px, 0.52fr) 24px;
+    align-items: center;
+    gap: 5px;
+    min-height: 42px;
+    padding: 5px 6px;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.06);
+}
+.arena-custom-roster-row > * {
+    min-width: 0;
+}
+.arena-custom-roster-info {
+    min-width: 0;
+}
+.arena-custom-roster-info b,
+.arena-custom-unit-main b {
+    display: block;
+    color: var(--arena-text);
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.arena-custom-roster-info span,
+.arena-custom-unit-main em {
+    display: block;
+    color: var(--arena-text-mute);
+    font-size: 10px;
+    font-style: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.arena-custom-roster-row label {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+}
+.arena-custom-mini-input {
+    width: 38px;
+    height: 24px;
+    padding: 0 4px;
+    -webkit-appearance: none;
+    appearance: textfield;
+    background: linear-gradient(180deg, rgba(var(--arena-white-rgb),0.035), rgba(var(--arena-white-rgb),0.005)), rgba(var(--arena-black-rgb),0.28);
+    border: 1px solid var(--arena-control-border);
+    border-radius: 3px;
+    color: var(--arena-text);
+    caret-color: var(--arena-accent-2);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 11px;
+    text-align: center;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.12);
+    transition: border-color var(--wb-motion-standard), box-shadow var(--wb-motion-standard), background var(--wb-motion-standard);
+}
+.arena-custom-mini-input::-webkit-inner-spin-button,
+.arena-custom-mini-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.arena-custom-mini-input:hover {
+    border-color: rgba(var(--arena-accent-rgb),0.42);
+}
+.arena-custom-mini-input:focus {
+    border-color: rgba(var(--arena-accent-rgb),0.72);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.16), inset 0 0 0 1px rgba(var(--arena-black-rgb),0.18);
+}
+.arena-custom-count-stepper {
+    display: grid;
+    grid-template-columns: 22px 34px 22px;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+}
+.arena-custom-count-stepper button {
+    height: 24px;
+    border: 1px solid var(--arena-control-border);
+    border-radius: 3px;
+    background: var(--arena-control-bg);
+    color: var(--arena-text-dim);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.12);
+    transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), transform var(--wb-motion-micro);
+}
+.arena-custom-count-stepper button:hover {
+    color: var(--arena-accent);
+    border-color: rgba(var(--arena-accent-rgb),0.48);
+    background: var(--arena-control-bg-hover);
+}
+.arena-custom-count-stepper button:focus-visible {
+    color: var(--arena-accent-2);
+    border-color: rgba(var(--arena-accent-rgb),0.72);
+}
+.arena-custom-count-stepper button:active {
+    transform: translateY(1px);
+}
+.arena-custom-count-stepper .arena-custom-mini-input {
+    width: 34px;
+    text-align: center;
+}
+.arena-custom-param-pill {
+    min-width: 0;
+    height: 30px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+    padding: 0 7px;
+    background: var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
+    border-radius: 3px;
+    color: var(--arena-text-mute);
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.12);
+    transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), transform var(--wb-motion-micro);
+}
+.arena-custom-roster-row .arena-custom-param-pill {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 6px;
+}
+.arena-custom-roster-row .arena-custom-param-pill b {
+    display: none;
+}
+.arena-custom-param-pill span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10px;
+    text-align: left;
+}
+.arena-custom-param-pill b {
+    color: var(--arena-text-dim);
+    font-size: 10px;
+}
+.arena-custom-param-pill-active {
+    background: rgba(var(--arena-accent-rgb),0.12);
+    border-color: rgba(var(--arena-accent-rgb),0.42);
+    color: var(--arena-accent-2);
+}
+.arena-custom-param-pill:hover {
+    border-color: rgba(var(--arena-accent-rgb),0.58);
+    background: var(--arena-control-bg-hover);
+    color: var(--arena-text);
+}
+.arena-custom-param-pill:focus-visible {
+    border-color: rgba(var(--arena-accent-rgb),0.76);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.18), inset 0 0 0 1px rgba(var(--arena-black-rgb),0.16);
+}
+.arena-custom-param-pill:active {
+    transform: translateY(1px);
+}
+.arena-custom-icon-btn {
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--arena-control-border);
+    border-radius: 3px;
+    background: var(--arena-control-bg);
+    color: var(--arena-text-mute);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 900;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.12);
+    transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), transform var(--wb-motion-micro);
+}
+.arena-custom-icon-btn:hover {
+    color: rgb(var(--arena-gold-2-rgb));
+    border-color: rgba(var(--arena-gold-2-rgb),0.45);
+    background: rgba(var(--arena-gold-2-rgb),0.08);
+}
+.arena-custom-icon-btn:focus-visible {
+    color: rgb(var(--arena-gold-2-rgb));
+    border-color: rgba(var(--arena-gold-2-rgb),0.60);
+}
+.arena-custom-icon-btn:active {
+    transform: translateY(1px);
+}
+.arena-custom-browser {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    overflow: hidden;
+}
+.arena-custom-browser-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 7px;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.09);
+}
+.arena-custom-side-switch {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 4px;
+}
+.arena-custom-side-switch button,
+.arena-custom-unit-filters button {
+    height: 24px;
+    padding: 0 8px;
+    background: var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
+    border-radius: 3px;
+    color: var(--arena-text-mute);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.12);
+    transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), transform var(--wb-motion-micro);
+}
+.arena-custom-side-switch button:hover,
+.arena-custom-unit-filters button:hover,
+.arena-custom-side-switch button:focus-visible,
+.arena-custom-unit-filters button:focus-visible {
+    color: var(--arena-accent-2);
+    border-color: rgba(var(--arena-accent-rgb),0.56);
+    background: var(--arena-control-bg-hover);
+}
+.arena-custom-side-switch button:active,
+.arena-custom-unit-filters button:active {
+    transform: translateY(1px);
+}
+/* P3：active 态特异性提级 (0,2,1) 且层序在 base/hover/:active 之后——
+   与原 !important 等价地稳压同族按钮各态，!important ×6 退役 */
+.arena-custom-side-switch button.arena-custom-side-target-active {
+    background: rgba(var(--arena-accent-rgb),0.14);
+    border-color: rgba(var(--arena-accent-rgb),0.58);
+    color: var(--arena-accent-2);
+}
+.arena-custom-unit-filters {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 7px;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.07);
+}
+.arena-custom-unit-filters button.arena-custom-unit-filter-active {
+    color: var(--arena-accent-2);
+    border-color: rgba(var(--arena-accent-rgb),0.56);
+    background: rgba(var(--arena-accent-rgb),0.12);
+}
+.arena-custom-unit-search {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 24px;
+    padding: 0 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(180deg, rgba(var(--arena-white-rgb),0.035), rgba(var(--arena-white-rgb),0.005)), rgba(var(--arena-black-rgb),0.28);
+    border: 1px solid var(--arena-control-border);
+    border-radius: 3px;
+    color: var(--arena-text);
+    caret-color: var(--arena-accent-2);
+    font-family: inherit;
+    font-size: 12px;
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-black-rgb),0.12);
+    transition: border-color var(--wb-motion-standard), box-shadow var(--wb-motion-standard), background var(--wb-motion-standard);
+}
+.arena-custom-unit-search::placeholder {
+    color: rgba(var(--arena-text-dim-rgb),0.76);
+}
+.arena-custom-unit-search::-webkit-search-decoration,
+.arena-custom-unit-search::-webkit-search-results-button,
+.arena-custom-unit-search::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+.arena-custom-unit-search::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background:
+        linear-gradient(45deg, transparent calc(50% - 1px), rgba(var(--arena-accent-2-rgb),0.9) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+        linear-gradient(-45deg, transparent calc(50% - 1px), rgba(var(--arena-accent-2-rgb),0.9) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+        rgba(var(--arena-accent-rgb),0.16);
+    cursor: pointer;
+}
+.arena-custom-unit-search:hover {
+    border-color: rgba(var(--arena-accent-rgb),0.42);
+}
+.arena-custom-unit-search:focus {
+    border-color: rgba(var(--arena-accent-rgb),0.72);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.16), inset 0 0 0 1px rgba(var(--arena-black-rgb),0.18);
+}
+.arena-custom-unit-count {
+    flex: 0 0 108px;
+    color: var(--arena-text-mute);
+    font-size: 10px;
+    text-align: right;
+}
+.arena-custom-unit-list {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 6px;
+}
+.arena-custom-unit-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) 44px;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    margin: 0 0 4px;
+    padding: 5px 8px;
+    background: rgba(var(--arena-white-rgb),0.045);
+    border: 1px solid rgba(var(--arena-white-rgb),0.08);
+    border-radius: 3px;
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), transform var(--wb-motion-micro);
+}
+.arena-custom-unit-group:hover,
+.arena-custom-unit-group:focus-visible,
+.arena-custom-unit-group-expanded {
+    border-color: rgba(var(--arena-accent-rgb),0.36);
+    background: rgba(var(--arena-accent-rgb),0.09);
+    color: var(--arena-text);
+}
+.arena-custom-unit-group:active {
+    transform: translateY(1px);
+}
+.arena-custom-unit-group-search {
+    border-color: rgba(var(--arena-blue-rgb),0.24);
+}
+.arena-custom-unit-group-arrow {
+    color: var(--arena-accent-2);
+    font-size: 12px;
+    text-align: center;
+}
+.arena-custom-unit-group-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 900;
+}
+.arena-custom-unit-group-count {
+    color: var(--arena-text-mute);
+    font-size: 10px;
+    text-align: right;
+}
+.arena-custom-unit-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 112px;
+    align-items: center;
+    gap: 7px;
+    min-height: 42px;
+    padding: 5px 6px;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.06);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), transform var(--wb-motion-micro);
+}
+.arena-custom-unit-row:hover {
+    background: rgba(var(--arena-accent-rgb),0.08);
+}
+.arena-custom-unit-row:focus-visible {
+    border-color: rgba(var(--arena-accent-rgb),0.56);
+    background: rgba(var(--arena-accent-rgb),0.10);
+}
+.arena-custom-unit-row:active {
+    transform: translateY(1px);
+}
+.arena-custom-unit-row-preset {
+    background: rgba(var(--arena-blue-rgb),0.035);
+}
+.arena-custom-unit-row-preset .arena-custom-unit-mark {
+    border-color: rgba(var(--arena-gold-2-rgb),0.34);
+    color: rgb(var(--arena-gold-2-rgb));
+}
+.arena-custom-unit-row-nonhostile .arena-custom-unit-mark {
+    border-color: rgba(var(--arena-blue-rgb),0.34);
+    color: rgb(var(--arena-blue-rgb));
+}
+.arena-custom-unit-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 28px;
+    background: rgba(var(--arena-white-rgb),0.055);
+    border: 1px dashed rgba(var(--arena-white-rgb),0.18);
+    border-radius: 3px;
+    color: var(--arena-text-dim);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 10px;
+    font-weight: 800;
+}
+.arena-custom-unit-main {
+    min-width: 0;
+}
+.arena-custom-unit-meta {
+    color: var(--arena-text-mute);
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.arena-custom-unit-more {
+    padding: 10px 6px 4px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    text-align: center;
+}
+.arena-custom-confirm {
+    padding: 9px 10px;
+    background: rgba(var(--arena-confirm-rgb),0.86);
+    border: 1px solid rgba(var(--arena-accent-rgb),0.34);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-confirm-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+.arena-custom-confirm-title {
+    color: var(--arena-accent-2);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+.arena-custom-confirm-subtitle {
+    margin-top: 3px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+}
+.arena-custom-confirm-fee {
+    flex: 0 0 auto;
+    color: var(--arena-gold);
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+.arena-custom-confirm-grid {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) 70px minmax(0, 1fr);
+    gap: 4px 8px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+}
+.arena-custom-confirm-grid b {
+    min-width: 0;
+    color: var(--arena-text-dim);
+    font-weight: 600;
+    overflow: hidden;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+.arena-custom-confirm-actions {
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+/* P3：确认条主 CTA 迁入共享 CommitBar——条内嵌进确认面板，不再带共享条的
+   底面/上边线/内边距（确认面板自身已有底+border），只保留 status|primary 双栏结构
+   与 busy/disabled 状态投影；主按钮 40px 最小高度由共享 .workbench-commit-primary 提供 */
+.arena-custom-confirm-actions .workbench-commit-bar {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0;
+    background: transparent;
+    border-top: 0;
+}
+.arena-custom-confirm-actions .workbench-commit-primary {
+    min-width: 140px;
+}
+.arena-custom-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr);
+    align-items: stretch;
+    gap: 10px;
+    min-height: 148px;
+}
+.arena-custom-side {
+    min-width: 0;
+    min-height: 0;
+    padding: 10px;
+    background: rgba(var(--arena-ink-4-rgb),0.82);
+    border: 1px solid rgba(var(--arena-white-rgb),0.13);
+    border-radius: var(--arena-radius-sm);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 8px;
+}
+.arena-custom-side-blue { border-left: 3px solid rgb(var(--arena-blue-deep-rgb)); }
+.arena-custom-side-red  { border-left: 3px solid rgb(var(--arena-danger-rgb)); }
+.arena-custom-side-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+.arena-custom-side-title {
+    display: block;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.arena-custom-side-count {
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    white-space: nowrap;
+}
+.arena-custom-side-blue .arena-custom-side-title { color: rgb(var(--arena-blue-rgb)); }
+.arena-custom-side-red .arena-custom-side-title { color: rgb(var(--arena-red-rgb)); }
+.arena-custom-side-roster {
+    display: block;
+    color: var(--arena-text-dim);
+    font-size: 12px;
+    line-height: 1.45;
+    overflow: hidden;
+}
+.arena-custom-side-edit {
+    height: 28px;
+    border: 1px solid rgba(var(--arena-white-rgb),0.12);
+    border-radius: 3px;
+    background: rgba(var(--arena-white-rgb),0.035);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.arena-custom-side-edit:hover {
+    color: var(--arena-accent);
+    border-color: rgba(var(--arena-accent-rgb),0.55);
+}
+.arena-custom-vs-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--arena-accent);
+    font-size: 22px;
+    font-weight: 900;
+    font-style: italic;
+    text-shadow: 0 0 14px rgba(var(--arena-accent-rgb),0.35);
+}
+.arena-custom-rulebar {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 8px;
+}
+#arena-custom-case {
+    min-height: 24px;
+    padding: 6px 9px;
+    color: var(--arena-text-mute);
+    background: rgba(var(--arena-black-rgb),0.22);
+    border: 1px solid rgba(var(--arena-white-rgb),0.10);
+    border-radius: var(--arena-radius-sm);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#arena-custom-status {
+    min-height: 24px;
+    padding: 4px 5px;
+    color: var(--arena-text-dim);
+    background: rgba(var(--arena-accent-rgb),0.11);
+    border: 1px solid rgba(var(--arena-accent-rgb),0.22);
+    border-radius: var(--arena-radius-sm);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 11px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+.arena-custom-status-chip {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 5px;
+    border: 1px solid rgba(var(--arena-white-rgb),0.09);
+    border-radius: 3px;
+    background: rgba(var(--arena-black-rgb),0.18);
+}
+.arena-custom-status-chip em {
+    flex: 0 0 auto;
+    color: var(--arena-text-mute);
+    font-style: normal;
+    font-size: 10px;
+}
+.arena-custom-status-chip b {
+    min-width: 0;
+    color: var(--arena-text-dim);
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.arena-custom-status-chip-ok b,
+.arena-custom-status-chip-done b {
+    color: rgb(var(--arena-success-rgb));
+}
+.arena-custom-status-chip-active b {
+    color: rgb(var(--arena-gold-2-rgb));
+}
+.arena-custom-status-chip-error b {
+    color: rgb(var(--arena-error-text-rgb));
+}
+.arena-custom-status-chip-mono b {
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+}
+.arena-custom-footer {
+    align-items: stretch;
+}
+.arena-custom-fee {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 12px;
+    background: rgba(var(--arena-ink-rgb),0.42);
+    border: 1px solid rgba(var(--arena-gold-rgb),0.18);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-generate {
+    flex: 0 0 220px;
+}
+.arena-custom-abort {
+    flex: 0 0 74px;
+    height: auto;
+}
+.arena-custom-result-view {
+    /* P2：旧 58px 自写顶栏退役后，结算页作为 .arena-panel flex 子项占满整块画布
+       （原 calc(100% - 64px) 扣顶栏的写法随顶栏一并退场） */
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 18px 22px 20px;
+}
+.arena-custom-result-panel {
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    gap: 14px;
+}
+.arena-custom-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(var(--arena-white-rgb),0.10);
+}
+.arena-custom-result-kicker {
+    color: var(--arena-text-mute);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.arena-custom-result-title {
+    margin: 4px 0 2px;
+    color: var(--arena-text);
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: 0;
+}
+.arena-custom-result-title-blue { color: rgb(var(--arena-blue-rgb)); }
+.arena-custom-result-title-red { color: rgb(var(--arena-red-rgb)); }
+.arena-custom-result-title-neutral { color: var(--arena-text); }
+.arena-custom-result-title-failed { color: var(--wb-semantic-danger); }
+.arena-custom-result-meta {
+    min-height: 20px;
+    color: var(--arena-text-dim);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 12px;
+}
+.arena-custom-result-close {
+    flex: 0 0 118px;
+    height: 34px;
+    background: rgba(var(--arena-white-rgb),0.04);
+    border: 1px solid rgba(var(--arena-white-rgb),0.14);
+    border-radius: var(--arena-radius-sm);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+.arena-custom-result-close:hover {
+    color: var(--arena-accent);
+    border-color: var(--arena-accent);
+    background: var(--arena-accent-dim);
+}
+.arena-custom-result-sides {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
+    min-height: 0;
+}
+.arena-custom-result-side {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 10px;
+    padding: 14px;
+    background: rgba(var(--arena-ink-rgb),0.48);
+    border: 1px solid rgba(var(--arena-white-rgb),0.10);
+    border-radius: var(--arena-radius);
+}
+.arena-custom-result-side-blue { border-left: 4px solid rgb(var(--arena-blue-deep-rgb)); }
+.arena-custom-result-side-red { border-left: 4px solid rgb(var(--arena-danger-rgb)); }
+.arena-custom-result-side-title {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+.arena-custom-result-side-blue .arena-custom-result-side-title { color: rgb(var(--arena-blue-rgb)); }
+.arena-custom-result-side-red .arena-custom-result-side-title { color: rgb(var(--arena-red-rgb)); }
+.arena-custom-result-side-roster {
+    min-height: 0;
+    color: var(--arena-text-dim);
+    font-size: 13px;
+    line-height: 1.45;
+    overflow: hidden;
+}
+.arena-custom-result-side-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--arena-text-mute);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 12px;
+}
+.arena-custom-result-hpbar {
+    height: 8px;
+    overflow: hidden;
+    background: rgba(var(--arena-white-rgb),0.06);
+    border: 1px solid rgba(var(--arena-white-rgb),0.08);
+    border-radius: 2px;
+}
+.arena-custom-result-hpbar i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, rgb(var(--arena-hp-rgb)), rgb(var(--arena-gold-2-rgb)));
+}
+.arena-custom-result-codeblock {
+    display: grid;
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    background: rgba(var(--arena-white-rgb),0.035);
+    border: 1px solid rgba(var(--arena-white-rgb),0.08);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-result-label {
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.arena-custom-result-code {
+    min-width: 0;
+    color: var(--arena-text-dim);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.arena-custom-result-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+}
+.arena-custom-result-detail b {
+    min-width: 0;
+    color: var(--arena-text-dim);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.arena-custom-result-error {
+    padding: 8px 10px;
+    color: var(--wb-semantic-danger);
+    background: color-mix(in srgb, var(--wb-semantic-danger) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--wb-semantic-danger) 16%, transparent);
+    border-radius: var(--arena-radius-sm);
+    font-size: 12px;
+}
+.arena-custom-result-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.arena-custom-result-actions .arena-card-btn-enter {
+    flex: 0 0 180px;
+    min-height: 34px;
+}
+/* 保留理由（P1c 零新增 keyframes，存量原样）：卡片入场 14px 浮升+缩放，共享 wb-pulse-busy/wb-reject-pulse 无语义等价 */
+@keyframes arena-card-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.arena-card:hover {
+    border-color: rgba(var(--arena-accent-rgb),0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(var(--arena-black-rgb),0.45);
+}
+/* 顶部难度色条（按 --d-color） */
+.arena-card::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--d-color), transparent 85%);
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 3;
+}
+/* 扫光 */
+.arena-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(var(--arena-white-rgb),0.07), transparent);
+    pointer-events: none;
+    z-index: 3;
+}
+.arena-card:hover::before { animation: arena-sweep var(--wb-motion-busy) forwards; /* P1c：原 0.7s/ease（缓动隐式保留），Δ+300ms 见文件头 ② */ }
+/* 保留理由（P1c 零新增 keyframes，存量原样）：hover 扫光位移，共享 keyframes 无语义等价 */
+@keyframes arena-sweep { to { left: 160%; } }
+/* 4 角 L 框 */
+.arena-card-frame {
+    position: absolute; inset: 5px; pointer-events: none; z-index: 2;
+    --bk-len: 13px; --bk-w: 2px; --bk-c: rgba(var(--arena-accent-rgb),0.42);
+    background:
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 0      / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 0      / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 0   / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 0   / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 100%   / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 100%   / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 100%/ var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 100%/ var(--bk-w) var(--bk-len) no-repeat;
+}
+.arena-card:hover .arena-card-frame { --bk-c: rgba(var(--arena-accent-2-rgb),0.85); }
+
+/* 难度热度档位（按 levelMax 映射，见 arena-panel.js difficultyOf） */
+.arena-card-d1 { --d-color: rgb(var(--arena-d1-rgb)); }
+.arena-card-d2 { --d-color: rgb(var(--arena-d2-rgb)); }
+.arena-card-d3 { --d-color: rgb(var(--arena-accent-rgb)); }
+.arena-card-d4 { --d-color: rgb(var(--arena-d4-rgb)); }
+.arena-card-d5 { --d-color: rgb(var(--arena-d5-rgb)); }
+.arena-card-d6 { --d-color: rgb(var(--arena-danger-rgb)); }
+
+/* 金钱不足：整卡降权（不阻断 pointer events，detail 按钮仍可点：看对手装备 / 攒够钱再来；
+   enter 按钮的 disable 由按钮自身 :disabled 状态控制）。 */
+.arena-card-disabled {
+    opacity: 0.55;
+    filter: saturate(0.6);
+}
+.arena-card-disabled:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: rgba(var(--arena-white-rgb),0.08);
+}
+.arena-card-disabled:hover::before { animation: none; }
+
+/* ── 卡头：段位 + 难度标签 ── */
+.arena-card-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+.arena-card-rank {
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--arena-text);
+}
+.arena-card-icon {
+    font-size: 12px;
+    color: var(--d-color);
+    margin-left: auto;
+    line-height: 1;
+}
+.arena-card-diff {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--d-color);
+    padding: 1px 8px;
+    border-radius: var(--arena-radius-sm);
+    background: rgba(var(--arena-black-rgb),0.28);
+    border: 1px solid var(--d-color);
+}
+
+/* ── 卡片主体 ── */
+.arena-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+/* 数据双联：对手数量 / 等级区间 */
+.arena-card-stats {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.arena-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 4px 8px;
+    background: rgba(var(--arena-black-rgb),0.22);
+    border: 1px solid rgba(var(--arena-white-rgb),0.06);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-stat-label { font-size: 10px; color: var(--arena-text-mute); letter-spacing: 1px; }
+.arena-stat-value { font-size: 15px; font-weight: 700; color: var(--arena-text); font-variant-numeric: tabular-nums; }
+
+/* 奖金/押金：奖金主视觉（金色大字），押金次视觉（小字暗调） */
+.arena-card-prize {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 5px 9px 6px;
+    background: linear-gradient(180deg, rgba(var(--arena-accent-rgb),0.10), rgba(var(--arena-accent-rgb),0.03));
+    border: 1px solid rgba(var(--arena-accent-rgb),0.18);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-prize-main { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+.arena-prize-label { font-size: 10px; color: var(--arena-text-mute); letter-spacing: 1px; }
+.arena-prize-value {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--arena-gold);
+    text-shadow: 0 0 10px rgba(var(--arena-gold-rgb),0.25);
+    font-variant-numeric: tabular-nums;
+}
+.arena-prize-mult {
+    margin-top: 2px;
+    color: rgb(var(--arena-gold-2-rgb));
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+.arena-prize-deposit {
+    font-size: 11px;
+    color: var(--arena-text-mute);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── 卡片底部按钮区（P2 起仅定制赛使用：入口卡 footer / 编辑器动作条；
+   挑战卡已不再承载按钮——卡片 = 选中语义，commit 归右栏 CommitBar 唯一主 CTA）── */
+.arena-card-actions {
+    display: flex;
+    gap: 7px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+/* 橙色实心 CTA（角斗场核心动作语言；现服务定制赛「检查并确认 / 完成 / 保存返回」等）。 */
+.arena-card-btn-enter {
+    flex: 1;
+    height: 32px;
+    padding: 0;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgb(var(--arena-cta-ink-rgb));
+    background: linear-gradient(180deg, var(--arena-accent-2), var(--arena-accent));
+    border: none;
+    cursor: pointer;
+    border-radius: var(--arena-radius-sm);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.3), 0 2px 8px rgba(var(--arena-accent-rgb),0.22);
+    transition: filter var(--wb-motion-standard), box-shadow var(--wb-motion-standard);
+}
+.arena-card-btn-enter:hover:not(:disabled) {
+    filter: brightness(1.12);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-2-rgb),0.5), 0 3px 12px rgba(var(--arena-accent-rgb),0.4);
+}
+.arena-card-btn-enter:active:not(:disabled) { filter: brightness(0.95); }
+/* 禁用 = 暗色凹陷 + 虚线框（与可点实心彻底区分，对齐 merc 禁用语言） */
+.arena-card-btn-enter:disabled {
+    background: rgba(var(--arena-ink-rgb),0.55);
+    color: var(--arena-text-mute);
+    border: 1px dashed rgba(var(--arena-white-rgb),0.16);
+    box-shadow: none;
+    cursor: not-allowed;
+    letter-spacing: 1px;
+}
+
+/* ── 对手摘要 row ─────────────────────────────────────────────────────── */
+/* batch preview 回包后渲染："老王 Lv16 / 张三 Lv18 +2"；失败显示"⚠ ... ↻"可点重试 */
+.arena-card-opponents-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+/* 小分区标题（"对手阵容"，与 merc-card-seclabel 同语言：标签 + 渐隐分割线） */
+.arena-card-opponents-cap {
+    font-size: 10px;
+    color: var(--arena-text-mute);
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.arena-card-opponents-cap::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(var(--arena-accent-rgb),0.25), transparent);
+}
+.arena-card-opponents {
+    font-size: 11.5px;
+    color: var(--arena-text-dim);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0; /* flex item 默认 min-width:auto 会撑破 ellipsis，必须显式 0 */
+}
+
+.arena-card-opponents-loading {
+    color: var(--arena-text-mute);
+    font-style: italic;
+    font-weight: 400;
+}
+
+.arena-card-opponents-error {
+    color: rgb(var(--arena-error-soft-rgb));
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.arena-card-opponents-error:hover {
+    color: rgb(var(--arena-error-hover-rgb));
+    text-decoration: underline;
+}
+
+/* ── Toast 提示（对齐 merc-toast：底部居中 + 左侧强调边；JS 切 display + visible 类）── */
+.arena-toast {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    min-width: 180px; max-width: 460px;
+    padding: 9px 22px;
+    background: rgba(var(--arena-ink-6-rgb),0.94);
+    border: 1px solid rgba(var(--arena-white-rgb),0.14);
+    border-left: 3px solid var(--arena-danger);
+    color: rgb(var(--arena-white-rgb));
+    font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+    text-align: center;
+    border-radius: 7px;
+    box-shadow: 0 6px 20px rgba(var(--arena-black-rgb),0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--wb-motion-reject), transform var(--wb-motion-reject);
+    z-index: 100;
+}
+
+.arena-toast-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ══ 视图容器（P2：浏览面（壳）/ 结算页 / 定制赛编辑器三面互斥；detail 整页视图退役，
+   其信息内容（标题/meta/对手行/换一批）由右栏决策面吸收）══ */
+.arena-grid-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+    z-index: 1;
+}
+.arena-grid-view[hidden] {
+    display: none;
+}
+
+.arena-detail-title-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.arena-detail-title {
+    margin: 0;
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--arena-text);
+    letter-spacing: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.arena-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.arena-meta-chip {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 1px 9px;
+    border-radius: var(--arena-radius-sm);
+    color: var(--arena-text-dim);
+    background: rgba(var(--arena-white-rgb),0.05);
+    border: 1px solid rgba(var(--arena-white-rgb),0.10);
+}
+.arena-meta-chip.arena-meta-deposit { color: var(--arena-text); }
+.arena-meta-chip.arena-meta-reward  {
+    color: var(--arena-gold);
+    background: rgba(var(--arena-gold-rgb),0.10);
+    border-color: rgba(var(--arena-gold-rgb),0.32);
+}
+.arena-meta-chip.arena-meta-equivalent {
+    color: rgb(var(--arena-warm-gold-rgb));
+    background: rgba(var(--arena-accent-rgb),0.10);
+    border-color: rgba(var(--arena-accent-rgb),0.26);
+}
+.arena-meta-chip.arena-meta-actual,
+.arena-meta-chip.arena-meta-group {
+    color: rgb(var(--arena-violet-text-rgb));
+    background: rgba(var(--arena-violet-rgb),0.10);
+    border-color: rgba(var(--arena-violet-rgb),0.26);
+}
+
+.arena-detail-roll {
+    flex-shrink: 0;
+    height: 30px;
+    padding: 0 14px;
+    background: rgba(var(--arena-white-rgb),0.04);
+    border: 1px solid rgba(var(--arena-white-rgb),0.10);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    border-radius: var(--arena-radius);
+    cursor: pointer;
+    /* P1c WB127：transition:all 展开为显式列表（detail-roll（disabled 变 opacity，纳入列表保持淡入））；0.14s→--wb-motion-standard 160ms（Δ+20ms） */
+    transition: color var(--wb-motion-standard), border-color var(--wb-motion-standard), background var(--wb-motion-standard), opacity var(--wb-motion-standard);
+}
+.arena-detail-roll:hover:not(:disabled) {
+    color: var(--arena-accent);
+    border-color: var(--arena-accent);
+    background: var(--arena-accent-dim);
+}
+.arena-detail-roll:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.arena-opponents {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+}
+
+/* loading/error 占位是 detail 唯一在「裸 garega 底图」上画正文的位置（对手行本身是不透明石板）。
+   给它同款石板背板，避免文字直接压在透出的底图上读不清。 */
+.arena-opponents-loading,
+.arena-opponents-error {
+    padding: 26px;
+    text-align: center;
+    color: var(--arena-text-dim);
+    font-size: 13px;
+    letter-spacing: 1px;
+    background: var(--arena-stone-soft);
+    border: 1px solid rgba(var(--arena-white-rgb),0.07);
+    border-radius: var(--arena-radius);
+}
+.arena-opponents-error { color: var(--arena-danger); }
+
+.arena-opp-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 12px;
+    background: var(--arena-stone-soft);
+    border: 1px solid rgba(var(--arena-white-rgb),0.07);
+    border-radius: var(--arena-radius);
+    transition: border-color var(--wb-motion-standard);
+}
+.arena-opp-row:hover { border-color: rgba(var(--arena-accent-rgb),0.22); }
+
+/* 对手头像（无素材 → 剪影占位，与 merc-card-portrait-fallback 同源） */
+.arena-opp-portrait {
+    position: relative;
+    width: 46px; height: 46px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: rgb(var(--arena-ink-13-rgb));
+    border: 1px solid var(--arena-line);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-opp-portrait-fallback::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: 8px;
+    width: 16px; height: 16px;
+    margin-left: -8px;
+    border-radius: 50%;
+    background: rgb(var(--arena-portrait-head-rgb));
+}
+.arena-opp-portrait-fallback::after {
+    content: "";
+    position: absolute;
+    left: 50%; bottom: -5px;
+    width: 32px; height: 24px;
+    margin-left: -16px;
+    border-radius: 50% 50% 12% 12%;
+    background: rgb(var(--arena-portrait-body-rgb));
+}
+
+/* 对手卡右侧主区（纵向：名称行 → 装备行 → 技能行） */
+.arena-opp-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.arena-opp-topline { display: flex; align-items: baseline; gap: 8px; }
+
+.arena-opp-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--arena-text);
+    letter-spacing: 0.5px;
+}
+
+.arena-opp-level {
+    font-size: 12px;
+    color: var(--arena-accent);
+    font-weight: 700;
+}
+
+.arena-opp-equips {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+/* ── 对手技能流（复用佣兵技能图标范式：烘焙图实线 / 占位字虚线，规格同装备格 32px）── */
+.arena-opp-skills {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.arena-opp-skills-cap {
+    font-size: 10px;
+    color: var(--arena-text-mute);
+    letter-spacing: 2px;
+    flex-shrink: 0;
+    line-height: 32px;
+}
+.arena-opp-skills-flow {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+}
+.arena-opp-skills-empty {
+    font-size: 11px;
+    color: var(--arena-text-mute);
+    letter-spacing: 1px;
+    line-height: 32px;
+}
+.arena-skill-cell {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    cursor: help;
+    border-radius: 3px;
+    border: 1px dashed rgba(var(--arena-accent-rgb),0.30);
+    background: rgba(var(--arena-accent-rgb),0.05);
+    transition: border-color var(--wb-motion-micro), box-shadow var(--wb-motion-micro);
+}
+.arena-skill-cell:hover {
+    border-color: rgba(var(--arena-accent-rgb),0.6);
+    box-shadow: 0 0 6px rgba(var(--arena-accent-rgb),0.25);
+}
+/* 命中烘焙图：实线 + 暗底（与装备格一致），虚线仅留给占位回退 */
+.arena-skill-cell-baked {
+    border-style: solid;
+    border-color: rgba(var(--arena-white-rgb),0.12);
+    background: rgba(var(--arena-black-rgb),0.4);
+}
+.arena-skill-icon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+.arena-skill-icon.cfn-layered-icon { display: block; }
+.arena-skill-glyph {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(var(--arena-accent-rgb),0.75);
+    pointer-events: none;
+}
+.arena-skill-level {
+    position: absolute;
+    right: 1px;
+    bottom: 0;
+    font-size: 10px; /* P1c WB124：9px→10px 最近合规档（badge 豁免绑定类名关键词，类名被 JS/QA 契约锁定），Δ+1px 仅此角标 */
+    line-height: 1;
+    color: var(--arena-accent);
+    background: rgba(var(--arena-black-rgb),0.7);
+    padding: 1px 2px;
+    border-radius: 2px;
+    pointer-events: none;
+    font-weight: 600;
+}
+
+.arena-equip-cell {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    background: rgba(var(--arena-black-rgb),0.4);
+    border: 1px solid rgba(var(--arena-white-rgb),0.12);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: border-color var(--wb-motion-micro), box-shadow var(--wb-motion-micro);
+}
+.arena-equip-cell:hover {
+    border-color: rgba(var(--arena-accent-rgb),0.6);
+    box-shadow: 0 0 6px rgba(var(--arena-accent-rgb),0.25);
+}
+.arena-equip-cell img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+.arena-equip-cell .cfn-layered-icon {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.arena-equip-empty {
+    background: rgba(var(--arena-white-rgb),0.02);
+    border-style: dashed;
+    border-color: rgba(var(--arena-white-rgb),0.08);
+    cursor: default;
+}
+.arena-equip-empty:hover {
+    border-color: rgba(var(--arena-white-rgb),0.08);
+    box-shadow: none;
+}
+
+.arena-equip-level {
+    position: absolute;
+    right: 1px;
+    bottom: 0;
+    font-size: 10px; /* P1c WB124：9px→10px 最近合规档（badge 豁免绑定类名关键词，类名被 JS/QA 契约锁定），Δ+1px 仅此角标 */
+    line-height: 1;
+    color: var(--arena-accent);
+    background: rgba(var(--arena-black-rgb),0.7);
+    padding: 1px 2px;
+    border-radius: 2px;
+    pointer-events: none;
+    font-weight: 600;
+}
+
+.arena-equip-fallback {
+    font-size: 13px;
+    color: rgb(var(--arena-gray-mid-rgb));
+    font-weight: 600;
+}
+
+/* ── 元战队（非人形怪）混入：紫罗兰强调区分人形 merc 卡（堕落/异界感）── */
+.arena-card-monster .arena-card-opponents-cap { color: rgb(var(--arena-violet-rgb)); }
+.arena-card-monster .arena-card-opponents-cap::after {
+    background: linear-gradient(90deg, rgba(var(--arena-violet-rgb),0.3), transparent);
+}
+.arena-card-monster .arena-card-frame { --bk-c: rgba(var(--arena-violet-rgb),0.45); }
+.arena-card-monster:hover .arena-card-frame { --bk-c: rgba(var(--arena-violet-bright-rgb),0.85); }
+.arena-card-monster .arena-card-opponents { color: rgb(var(--arena-violet-dim-rgb)); }
+
+.arena-card-hidden {
+    border-color: rgba(var(--arena-gold-rgb),0.18);
+    background:
+        linear-gradient(135deg, rgba(var(--arena-gold-rgb),0.08), transparent 42%),
+        var(--arena-stone);
+}
+.arena-card-hidden .arena-card-rank {
+    color: rgb(var(--arena-gold-2-rgb));
+    text-shadow: 0 0 8px rgba(var(--arena-gold-rgb),0.28);
+}
+.arena-card-hidden .arena-card-frame { --bk-c: rgba(var(--arena-gold-rgb),0.42); }
+.arena-card-hidden:hover .arena-card-frame { --bk-c: rgba(var(--arena-gold-2-rgb),0.82); }
+.arena-card-hidden .arena-card-opponents-cap,
+.arena-card-hidden .arena-card-opponents {
+    color: rgb(var(--arena-warm-dim-rgb));
+}
+
+/* 堕落模式（Phase 2）势力挑战卡：rank 槽 = 势力名（卡片身份），紫罗兰强调 + 略大字号 */
+.arena-card-rank-faction {
+    color: rgb(var(--arena-violet-title-rgb));
+    font-size: 14px;
+    text-shadow: 0 0 8px rgba(var(--arena-violet-rgb),0.35);
+}
+
+/* 怪物对手行（detail，简版：无装备/技能） */
+.arena-opp-roster-brief {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 7px 10px;
+    background: rgba(var(--arena-ink-11-rgb),0.72);
+    border: 1px solid rgba(var(--arena-violet-rgb),0.22);
+    border-radius: var(--arena-radius);
+    color: rgb(var(--arena-violet-text-rgb));
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+.arena-opp-roster-brief span {
+    padding: 1px 7px;
+    background: rgba(var(--arena-white-rgb),0.045);
+    border: 1px solid rgba(var(--arena-white-rgb),0.08);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-opp-portrait-monster.arena-opp-portrait-fallback::before { background: rgb(var(--arena-violet-deep-rgb)); }
+.arena-opp-portrait-monster.arena-opp-portrait-fallback::after { background: rgb(var(--arena-violet-deeper-rgb)); }
+.arena-opp-monster-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    color: rgb(var(--arena-violet-rgb));
+    background: rgba(var(--arena-violet-rgb),0.12);
+    border: 1px solid rgba(var(--arena-violet-rgb),0.35);
+    padding: 0 6px; line-height: 16px;
+    border-radius: var(--arena-radius-sm);
+    white-space: nowrap;
+}
+.arena-opp-monster-note {
+    font-size: 11px;
+    color: var(--arena-text-mute);
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+/* P2：.arena-detail-confirm 现挂在右栏 CommitBar 的 shared primary 按钮上
+   （workbench-components.js），战术橙实心 CTA 配方不变；旧 .arena-detail-footer 容器退役。 */
+.arena-detail-confirm {
+    height: 38px;
+    padding: 0 36px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: rgb(var(--arena-cta-ink-rgb));
+    background: linear-gradient(180deg, var(--arena-accent-2), var(--arena-accent));
+    border: none;
+    cursor: pointer;
+    border-radius: var(--arena-radius);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.3), 0 2px 10px rgba(var(--arena-accent-rgb),0.28);
+    transition: filter var(--wb-motion-standard), box-shadow var(--wb-motion-standard);
+}
+.arena-detail-confirm:hover:not(:disabled) {
+    filter: brightness(1.12);
+    box-shadow: 0 0 0 1px rgba(var(--arena-accent-2-rgb),0.5), 0 3px 14px rgba(var(--arena-accent-rgb),0.45);
+}
+.arena-detail-confirm:active:not(:disabled) { filter: brightness(0.95); }
+.arena-detail-confirm:disabled {
+    background: rgba(var(--arena-ink-rgb),0.55);
+    color: var(--arena-text-mute);
+    border: 1px dashed rgba(var(--arena-white-rgb),0.16);
+    box-shadow: none;
+    cursor: not-allowed;
+    letter-spacing: 1px;
+}
+
+/* ── 滚动条（对齐 merc/task 面板：战术橙细条，取代浏览器默认灰条）──
+   覆盖标准竞技场、详情页与定制赛编辑器的所有可滚动工作区。 */
+.arena-grid,
+.arena-opponents,
+.arena-custom-roster-list,
+.arena-custom-unit-list,
+.arena-custom-param-editor-input,
+.arena-custom-param-inspector,
+.arena-custom-select-menu,
+.arena-custom-result-panel,
+.arena-custom-result-side-roster,
+.arena-custom-result-codeblock {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--arena-accent-rgb),0.36) rgba(var(--arena-white-rgb),0.035);
+}
+.arena-grid::-webkit-scrollbar,
+.arena-opponents::-webkit-scrollbar,
+.arena-custom-roster-list::-webkit-scrollbar,
+.arena-custom-unit-list::-webkit-scrollbar,
+.arena-custom-param-editor-input::-webkit-scrollbar,
+.arena-custom-param-inspector::-webkit-scrollbar,
+.arena-custom-select-menu::-webkit-scrollbar,
+.arena-custom-result-panel::-webkit-scrollbar,
+.arena-custom-result-side-roster::-webkit-scrollbar,
+.arena-custom-result-codeblock::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.arena-grid::-webkit-scrollbar-track,
+.arena-opponents::-webkit-scrollbar-track,
+.arena-custom-roster-list::-webkit-scrollbar-track,
+.arena-custom-unit-list::-webkit-scrollbar-track,
+.arena-custom-param-editor-input::-webkit-scrollbar-track,
+.arena-custom-param-inspector::-webkit-scrollbar-track,
+.arena-custom-select-menu::-webkit-scrollbar-track,
+.arena-custom-result-panel::-webkit-scrollbar-track,
+.arena-custom-result-side-roster::-webkit-scrollbar-track,
+.arena-custom-result-codeblock::-webkit-scrollbar-track {
+    background: rgba(var(--arena-white-rgb),0.025);
+    border-radius: 6px;
+}
+.arena-grid::-webkit-scrollbar-thumb,
+.arena-opponents::-webkit-scrollbar-thumb,
+.arena-custom-roster-list::-webkit-scrollbar-thumb,
+.arena-custom-unit-list::-webkit-scrollbar-thumb,
+.arena-custom-param-editor-input::-webkit-scrollbar-thumb,
+.arena-custom-param-inspector::-webkit-scrollbar-thumb,
+.arena-custom-select-menu::-webkit-scrollbar-thumb,
+.arena-custom-result-panel::-webkit-scrollbar-thumb,
+.arena-custom-result-side-roster::-webkit-scrollbar-thumb,
+.arena-custom-result-codeblock::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(var(--arena-accent-2-rgb),0.46), rgba(var(--arena-accent-rgb),0.28));
+    border: 2px solid rgba(var(--arena-ink-5-rgb),0.76);
+    border-radius: 8px;
+}
+.arena-grid::-webkit-scrollbar-thumb:hover,
+.arena-opponents::-webkit-scrollbar-thumb:hover,
+.arena-custom-roster-list::-webkit-scrollbar-thumb:hover,
+.arena-custom-unit-list::-webkit-scrollbar-thumb:hover,
+.arena-custom-param-editor-input::-webkit-scrollbar-thumb:hover,
+.arena-custom-param-inspector::-webkit-scrollbar-thumb:hover,
+.arena-custom-select-menu::-webkit-scrollbar-thumb:hover,
+.arena-custom-result-panel::-webkit-scrollbar-thumb:hover,
+.arena-custom-result-side-roster::-webkit-scrollbar-thumb:hover,
+.arena-custom-result-codeblock::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(var(--arena-accent-2-rgb),0.68), rgba(var(--arena-accent-rgb),0.46));
+}
+.arena-grid::-webkit-scrollbar-corner,
+.arena-opponents::-webkit-scrollbar-corner,
+.arena-custom-roster-list::-webkit-scrollbar-corner,
+.arena-custom-unit-list::-webkit-scrollbar-corner,
+.arena-custom-param-editor-input::-webkit-scrollbar-corner,
+.arena-custom-param-inspector::-webkit-scrollbar-corner,
+.arena-custom-select-menu::-webkit-scrollbar-corner,
+.arena-custom-result-panel::-webkit-scrollbar-corner,
+.arena-custom-result-side-roster::-webkit-scrollbar-corner,
+.arena-custom-result-codeblock::-webkit-scrollbar-corner {
+    background: rgba(var(--arena-ink-5-rgb),0.80);
+}
+
+/* ── Tooltip 复用 flash-tt-* 布局原语（PanelTooltip.buildItemRichHtml）；
+   arena-tt-rich/intel-tt-rich 是 "本面板上下文" 语义类，按设计系统约定
+   只允许 override 视觉 token（--tt-divider-color / --tt-icon-glow 等），
+   不要 override 尺寸/间距类变量。 ── */

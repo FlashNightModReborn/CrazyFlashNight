@@ -9,10 +9,15 @@ const perfRoot = path.join(projectRoot, 'launcher', 'perf');
 const playwrightModule = path.join(perfRoot, 'node_modules', 'playwright');
 const serverModule = path.join(perfRoot, 'lib', 'server');
 
+// 默认视口对齐工作台逻辑画布 1024x576（见 agentsDoc/workbench-ui-system.md）
+const DEFAULT_VIEWPORT = '1024x576';
+
 function parseArgs(argv) {
     const args = {
         browser: 'edge',
-        viewport: '1600x900',
+        viewport: DEFAULT_VIEWPORT,
+        viewportProvided: false,
+        viewports: '',
         caseId: '',
         headed: false,
         timeout: 120000
@@ -26,11 +31,18 @@ function parseArgs(argv) {
             i += 1;
         } else if (arg.indexOf('--browser=') === 0) {
             args.browser = arg.slice(10) || args.browser;
+        } else if (arg === '--viewports') {
+            args.viewports = argv[i + 1] || args.viewports;
+            i += 1;
+        } else if (arg.indexOf('--viewports=') === 0) {
+            args.viewports = arg.slice(12);
         } else if (arg === '--viewport') {
             args.viewport = argv[i + 1] || args.viewport;
+            args.viewportProvided = true;
             i += 1;
         } else if (arg.indexOf('--viewport=') === 0) {
             args.viewport = arg.slice(11) || args.viewport;
+            args.viewportProvided = true;
         } else if (arg === '--case') {
             args.caseId = argv[i + 1] || '';
             i += 1;
@@ -59,7 +71,7 @@ function parseArgs(argv) {
 
 function printHelp(exitCode, error) {
     if (error) console.error(error);
-    console.error('usage: node tools/run-arena-harness.js [--browser edge|chrome] [--viewport 1600x900] [--case <id>] [--timeout <ms>] [--headed]');
+    console.error('usage: node tools/run-arena-harness.js [--browser edge|chrome] [--viewport 1024x576] [--viewports 1024x576,1366x768,1920x1080] [--case <id>] [--timeout <ms>] [--headed]');
     process.exit(exitCode);
 }
 
@@ -82,32 +94,39 @@ function findBrowser(name) {
 function parseViewport(value) {
     const match = String(value || '').match(/^(\d+)x(\d+)$/);
     return {
-        width: match ? Number(match[1]) : 1600,
-        height: match ? Number(match[2]) : 900
+        width: match ? Number(match[1]) : 1024,
+        height: match ? Number(match[2]) : 576
     };
 }
 
-async function main() {
-    const args = parseArgs(process.argv.slice(2));
-    if (!args) return;
-    if (!fs.existsSync(playwrightModule)) {
-        throw new Error('Missing Playwright dependency. Run: npm --prefix launcher/perf ci --ignore-scripts');
+// --viewports（逗号分隔 <W>x<H>）存在时优先于 --viewport；非法条目直接失败，不静默回退
+function resolveViewportSpecs(args) {
+    if (!args.viewports) {
+        return [Object.assign({ label: args.viewport }, parseViewport(args.viewport))];
     }
+    const labels = args.viewports.split(',')
+        .map(item => item.trim().toLowerCase())
+        .filter(Boolean);
+    const invalid = labels.filter(label => !/^\d+x\d+$/.test(label));
+    if (!labels.length || invalid.length) {
+        console.error('[arena-harness] invalid --viewports value: ' + args.viewports + ' (expect comma-separated <W>x<H>, e.g. 1024x576,1366x768,1920x1080)');
+        process.exit(1);
+    }
+    return labels.map(label => Object.assign({ label }, parseViewport(label)));
+}
 
-    const { chromium } = require(playwrightModule);
-    const { startServer, stopServer } = require(serverModule);
-    const executablePath = findBrowser(args.browser);
-    const viewport = parseViewport(args.viewport);
-    const serverHandle = await startServer(projectRoot, 0);
-    const query = new URLSearchParams({ qa: '1', viewport: args.viewport });
+// 单视口完整跑一遍选定 case 集合：独立 server + 独立 browser/page，返回原始结果供汇总
+async function runViewportSession(deps, args, spec, logPrefix) {
+    const serverHandle = await deps.startServer(projectRoot, 0);
+    const query = new URLSearchParams({ qa: '1', viewport: spec.label });
     if (args.caseId) query.set('case', args.caseId);
     const url = serverHandle.url + 'launcher/web/modules/arena/dev/harness.html?' + query.toString();
 
-    const browser = await chromium.launch({
-        executablePath,
+    const browser = await deps.chromium.launch({
+        executablePath: deps.executablePath,
         headless: !args.headed
     });
-    const page = await browser.newPage({ viewport });
+    const page = await browser.newPage({ viewport: { width: spec.width, height: spec.height } });
     const failedRequests = [];
     const httpErrors = [];
     const pageErrors = [];
@@ -160,30 +179,91 @@ async function main() {
                 return { error: String(e) };
             }
         }).catch(() => null);
-        console.error('[arena-harness] wait failed:', error && error.message ? error.message : String(error));
-        console.error('[arena-harness] dump:', JSON.stringify(dump, null, 2));
+        console.error(logPrefix + 'wait failed:', error && error.message ? error.message : String(error));
+        console.error(logPrefix + 'dump:', JSON.stringify(dump, null, 2));
     } finally {
         await browser.close();
-        await stopServer(serverHandle);
+        await deps.stopServer(serverHandle);
     }
 
-    if (!bundle) {
-        process.exit(2);
-    }
+    return { spec, bundle, pageErrors, consoleErrors, failedRequests, httpErrors };
+}
 
-    console.log('[arena-harness] ' + bundle.passed + '/' + bundle.total + ' passed (failed=' + bundle.failed + ')');
+function failureCount(session) {
+    if (!session.bundle) return 0;
+    return (session.bundle.failed || 0)
+        + session.pageErrors.length
+        + session.consoleErrors.length
+        + session.failedRequests.length
+        + session.httpErrors.length;
+}
+
+function reportSession(session, multi) {
+    const bundle = session.bundle;
+    if (!bundle) return;
+    const headline = multi
+        ? '[arena-harness] viewport ' + session.spec.label + ': '
+        : '[arena-harness] ';
+    console.log(headline + bundle.passed + '/' + bundle.total + ' passed (failed=' + bundle.failed + ')');
     (bundle.results || []).forEach(item => {
         const mark = item.pass ? 'PASS' : 'FAIL';
         console.log('  ' + mark + ' ' + item.id + ' ' + item.title + (item.detail ? ' :: ' + item.detail : ''));
     });
 
-    if (pageErrors.length) console.error('[arena-harness] page errors:\n' + pageErrors.join('\n'));
-    if (consoleErrors.length) console.error('[arena-harness] console errors:\n' + consoleErrors.join('\n'));
-    if (failedRequests.length) console.error('[arena-harness] failed requests:\n' + failedRequests.join('\n'));
-    if (httpErrors.length) console.error('[arena-harness] http errors:\n' + httpErrors.join('\n'));
+    const errPrefix = multi ? '[arena-harness][' + session.spec.label + '] ' : '[arena-harness] ';
+    if (session.pageErrors.length) console.error(errPrefix + 'page errors:\n' + session.pageErrors.join('\n'));
+    if (session.consoleErrors.length) console.error(errPrefix + 'console errors:\n' + session.consoleErrors.join('\n'));
+    if (session.failedRequests.length) console.error(errPrefix + 'failed requests:\n' + session.failedRequests.join('\n'));
+    if (session.httpErrors.length) console.error(errPrefix + 'http errors:\n' + session.httpErrors.join('\n'));
+}
 
-    const failed = (bundle.failed || 0) + pageErrors.length + consoleErrors.length + failedRequests.length + httpErrors.length;
-    process.exit(failed ? 1 : 0);
+async function main() {
+    const args = parseArgs(process.argv.slice(2));
+    if (!args) return;
+    if (!fs.existsSync(playwrightModule)) {
+        throw new Error('Missing Playwright dependency. Run: npm --prefix launcher/perf ci --ignore-scripts');
+    }
+
+    const { chromium } = require(playwrightModule);
+    const { startServer, stopServer } = require(serverModule);
+    const executablePath = findBrowser(args.browser);
+    const multi = !!args.viewports;
+    if (multi && args.viewportProvided) {
+        console.log('[arena-harness] both --viewport and --viewports given; --viewports takes priority, ignoring --viewport=' + args.viewport);
+    }
+    const specs = resolveViewportSpecs(args);
+    const deps = { chromium, startServer, stopServer, executablePath };
+
+    const sessions = [];
+    for (let i = 0; i < specs.length; i += 1) {
+        const spec = specs[i];
+        const logPrefix = multi ? '[arena-harness][' + spec.label + '] ' : '[arena-harness] ';
+        if (multi) {
+            console.log('[arena-harness] === viewport ' + spec.label + ' (' + (i + 1) + '/' + specs.length + ') ===');
+        }
+        const session = await runViewportSession(deps, args, spec, logPrefix);
+        sessions.push(session);
+        reportSession(session, multi);
+    }
+
+    let noBundleCount = 0;
+    let failedTotal = 0;
+    let passedViewports = 0;
+    sessions.forEach(session => {
+        if (!session.bundle) {
+            noBundleCount += 1;
+            return;
+        }
+        if (failureCount(session) === 0) passedViewports += 1;
+        failedTotal += failureCount(session);
+    });
+
+    if (multi) {
+        console.log('[arena-harness] viewports ' + passedViewports + '/' + sessions.length + ' passed' + (noBundleCount ? ' (no-result=' + noBundleCount + ')' : ''));
+    }
+
+    if (noBundleCount) process.exit(2);
+    process.exit(failedTotal ? 1 : 0);
 }
 
 main().catch(error => {

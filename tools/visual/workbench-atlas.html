@@ -44,12 +44,19 @@
     .atlas-secondary-actions .primary { color:var(--wb-bg); border-color:var(--wb-accent); background:var(--wb-accent); font-weight:700; }
     #atlas-badge { position:fixed; left:7px; bottom:6px; z-index:200; padding:3px 7px; pointer-events:none; color:rgba(225,240,244,.78); border:1px solid rgba(225,240,244,.16); background:rgba(2,4,6,.72); font:9px/1.2 Consolas,monospace; }
     #atlas-output { position:absolute; left:-20000px; top:0; }
+    /* arena 场景族（P4）：panels.js 契约容器，全幅承载真实 panel */
+    #panel-container { position:fixed; inset:0; z-index:50; }
+    #panel-backdrop { position:absolute; inset:0; }
+    #panel-content { position:absolute; inset:0; }
   </style>
 </head>
 <body>
   <main id="atlas-host" aria-label="双栏工作台 visual atlas"></main>
   <div id="atlas-badge"></div>
   <pre id="atlas-output"></pre>
+  <!-- arena 场景族（P4）：panels.js 契约三件套 + 场景模块；shop 场景不消费 -->
+  <div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+  <script src="/tools/visual/arena-scene.js"></script>
   <script src="/launcher/web/modules/panel-scale.js"></script>
   <script src="/launcher/web/modules/workbench-lifecycle.js"></script>
   <script src="/launcher/web/modules/workbench-focus.js"></script>
@@ -65,6 +72,18 @@
     var focusMode = params.get('focus') === '1';
     var secondaryMode = params.get('secondary') === '1';
     var reducedExpected = params.get('reduced') === '1';
+
+    // P4 arena 场景族：scene=arena 时交棒 tools/visual/arena-scene.js（真实 feature 场景），
+    // 缺场景模块时落可读错误而不是让 runner 等 20s 超时。shop 场景（默认）零改动。
+    if ((params.get('scene') || 'shop') === 'arena') {
+      if (window.__atlasArenaScene && window.__atlasArenaScene.run) {
+        window.__atlasArenaScene.run();
+      } else {
+        window.__qaResult = {schemaVersion:1, caseId:'arena-scene-missing', errors:[{name:'arena scene module missing', detail:'tools/visual/arena-scene.js'}], warnings:[], metrics:{}};
+        window.__qaDone = true;
+      }
+      return;
+    }
     var errors = [];
     var warnings = [];
     var metrics = {};

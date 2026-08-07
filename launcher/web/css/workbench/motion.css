@@ -17,11 +17,11 @@
 /* Root-level motion preference wins over all feature keyframes. Persistent state
    remains visible through outline, icon and copy rather than a frozen mid-frame. */
 @media (prefers-reduced-motion: reduce) {
-    .workbench-shell,
-    .workbench-shell *,
-    .workbench-shell .workbench-secondary-page,
-    .workbench-shell *::before,
-    .workbench-shell *::after {
+    /* 壳级根关闭 + arena 壳外残留（.arena-xshell = 定制赛总览/阵容编辑器/结算页/toast；
+       P2：浏览面迁入壳后由 .workbench-shell 覆盖，P1c 的 .arena-panel 整板扩域随之收窄） */
+    .workbench-shell, .workbench-shell *, .workbench-shell .workbench-secondary-page,
+    .workbench-shell *::before, .workbench-shell *::after,
+    .arena-xshell, .arena-xshell *, .arena-xshell *::before, .arena-xshell *::after {
         animation:none !important;
         scroll-behavior:auto !important;
         transition:none !important;

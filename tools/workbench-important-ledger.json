@@ -19,7 +19,7 @@
     },
     {
       "file": "launcher/web/css/panels/features.css",
-      "ceiling": 24,
+      "ceiling": 14,
       "classification": "migration-debt",
       "reason": "Historical feature panels contain priority overrides predating the workbench cascade contract.",
       "exitCondition": "Retire file-local overrides feature by feature after computed-style and interaction fixtures cover each consumer."

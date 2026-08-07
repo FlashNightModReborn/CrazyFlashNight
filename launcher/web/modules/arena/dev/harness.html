@@ -7,35 +7,21 @@
     <link rel="stylesheet" href="../../../css/panels.css">
     <link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
     <style>
-        /* harness 专属样式 */
-        :root {
-            --arena-harness-line: #474b55;
-            --arena-harness-line-bright: #6b7079;
-            --arena-harness-accent: #ef9442;
-            --arena-harness-accent-2: #ffb65a;
-            --arena-harness-text: #d6d9de;
-            --arena-harness-dim: #8b8f98;
-            --arena-harness-muted: #686c75;
-            --arena-harness-control:
-                linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
-                rgba(10,12,17,0.84);
-            --arena-harness-control-hover:
-                linear-gradient(180deg, rgba(239,148,66,0.14), rgba(239,148,66,0.055)),
-                rgba(12,13,17,0.90);
-        }
+        /* harness 专属 chrome：颜色改消费 bundle 全局 token（tokens.css :root 的 --dls-*/--wb-*），
+           不再定义 --arena-harness-*、不再抄写 arena 肤色值（P1c 去重） */
         body {
             margin: 0;
             padding: 0;
             background:
-                radial-gradient(110% 90% at 50% -12%, rgba(239,148,66,0.10), transparent 58%),
+                radial-gradient(110% 90% at 50% -12%, color-mix(in srgb, var(--dls-energetic) 10%, transparent), transparent 58%),
                 linear-gradient(180deg, #191b21 0%, #0c0d11 100%);
             font-family: system-ui, "Microsoft YaHei", sans-serif;
-            color: var(--arena-harness-text);
+            color: rgba(255,255,255,0.85);
         }
         #harness-toolbar {
             min-height: 48px;
             padding: 8px 14px;
-            background: linear-gradient(180deg, rgba(239,148,66,0.08), rgba(12,13,17,0.92));
+            background: linear-gradient(180deg, color-mix(in srgb, var(--dls-energetic) 8%, transparent), rgba(0,0,0,0.88));
             border-bottom: 1px solid rgba(255,255,255,0.08);
             box-shadow: 0 12px 28px rgba(0,0,0,0.28);
             display: flex;
@@ -52,14 +38,14 @@
             right: 14px;
             bottom: -1px;
             height: 1px;
-            background: linear-gradient(90deg, var(--arena-harness-accent), transparent 70%);
+            background: linear-gradient(90deg, var(--dls-energetic), transparent 70%);
             opacity: 0.55;
             pointer-events: none;
         }
         #harness-toolbar label {
             font-size: 11px;
             line-height: 30px;
-            color: var(--arena-harness-muted);
+            color: rgba(255,255,255,0.45);
             font-weight: 800;
             letter-spacing: 1.5px;
             text-transform: uppercase;
@@ -69,13 +55,13 @@
             height: 30px;
             border: 1px solid rgba(255,255,255,0.14);
             border-radius: 4px;
-            color: var(--arena-harness-dim);
+            color: rgba(255,255,255,0.62);
             font: 700 12px/1 system-ui, "Microsoft YaHei", sans-serif;
             letter-spacing: 0.6px;
             outline: none;
             cursor: pointer;
             box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
-            transition: border-color 0.14s, background 0.14s, color 0.14s, box-shadow 0.14s, transform 0.08s;
+            transition: border-color var(--wb-motion-standard), background var(--wb-motion-standard), color var(--wb-motion-standard), box-shadow var(--wb-motion-standard), transform var(--wb-motion-micro);
         }
         #harness-toolbar select {
             min-width: 132px;
@@ -83,10 +69,10 @@
             -webkit-appearance: none;
             appearance: none;
             background:
-                linear-gradient(45deg, transparent 50%, var(--arena-harness-accent-2) 50%) calc(100% - 15px) 12px / 5px 5px no-repeat,
-                linear-gradient(135deg, var(--arena-harness-accent-2) 50%, transparent 50%) calc(100% - 10px) 12px / 5px 5px no-repeat,
-                linear-gradient(90deg, transparent calc(100% - 31px), rgba(239,148,66,0.12) calc(100% - 31px)),
-                var(--arena-harness-control);
+                linear-gradient(45deg, transparent 50%, var(--wb-semantic-warning) 50%) calc(100% - 15px) 12px / 5px 5px no-repeat,
+                linear-gradient(135deg, var(--wb-semantic-warning) 50%, transparent 50%) calc(100% - 10px) 12px / 5px 5px no-repeat,
+                linear-gradient(90deg, transparent calc(100% - 31px), color-mix(in srgb, var(--dls-energetic) 12%, transparent) calc(100% - 31px)),
+                linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)), rgba(0,0,0,0.78);
         }
         #harness-toolbar select::-ms-expand {
             display: none;
@@ -94,16 +80,18 @@
         #harness-toolbar button {
             min-width: 92px;
             padding: 0 12px;
-            background: var(--arena-harness-control);
+            background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)), rgba(0,0,0,0.78);
         }
         #harness-toolbar select:hover,
         #harness-toolbar select:focus,
         #harness-toolbar button:hover,
         #harness-toolbar button:focus-visible {
-            color: var(--arena-harness-accent-2);
-            border-color: rgba(239,148,66,0.60);
-            background: var(--arena-harness-control-hover);
-            box-shadow: 0 0 0 1px rgba(239,148,66,0.16), inset 0 0 0 1px rgba(0,0,0,0.18);
+            color: var(--wb-semantic-warning);
+            border-color: color-mix(in srgb, var(--dls-energetic) 60%, transparent);
+            background:
+                linear-gradient(180deg, color-mix(in srgb, var(--dls-energetic) 14%, transparent), color-mix(in srgb, var(--dls-energetic) 6%, transparent)),
+                rgba(0,0,0,0.82);
+            box-shadow: 0 0 0 1px color-mix(in srgb, var(--dls-energetic) 16%, transparent), inset 0 0 0 1px rgba(0,0,0,0.18);
         }
         #harness-toolbar button:active {
             transform: translateY(1px);
@@ -114,7 +102,7 @@
             background: rgba(8,9,12,0.92);
             border-bottom: 1px solid rgba(255,255,255,0.06);
             font-size: 12px;
-            color: var(--arena-harness-muted);
+            color: rgba(255,255,255,0.45);
             font-family: "Consolas", "Microsoft YaHei", monospace;
             white-space: nowrap;
             overflow: hidden;
@@ -122,10 +110,10 @@
         }
         #qa-panel,
         #debug-log {
-            background: rgba(10,12,17,0.90);
-            border: 1px solid rgba(239,148,66,0.30);
+            background: rgba(0,0,0,0.85);
+            border: 1px solid color-mix(in srgb, var(--dls-energetic) 30%, transparent);
             border-radius: 4px;
-            color: var(--arena-harness-text);
+            color: rgba(255,255,255,0.85);
             box-shadow: 0 14px 34px rgba(0,0,0,0.36), inset 0 0 0 1px rgba(255,255,255,0.035);
             font-family: "Consolas", "Microsoft YaHei", monospace;
         }
@@ -133,35 +121,37 @@
             width: min(440px, calc(100vw - 28px));
         }
         .qa-title {
-            color: var(--arena-harness-accent-2);
+            color: var(--wb-semantic-warning);
             letter-spacing: 1px;
         }
         #qa-run {
             height: 26px;
             padding: 0 10px;
-            background: var(--arena-harness-control);
+            background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)), rgba(0,0,0,0.78);
             border: 1px solid rgba(255,255,255,0.14);
             border-radius: 4px;
-            color: var(--arena-harness-dim);
+            color: rgba(255,255,255,0.62);
             font: 700 12px/1 system-ui, "Microsoft YaHei", sans-serif;
             cursor: pointer;
         }
         #qa-run:hover,
         #qa-run:focus-visible {
             outline: none;
-            color: var(--arena-harness-accent-2);
-            border-color: rgba(239,148,66,0.60);
-            background: var(--arena-harness-control-hover);
+            color: var(--wb-semantic-warning);
+            border-color: color-mix(in srgb, var(--dls-energetic) 60%, transparent);
+            background:
+                linear-gradient(180deg, color-mix(in srgb, var(--dls-energetic) 14%, transparent), color-mix(in srgb, var(--dls-energetic) 6%, transparent)),
+                rgba(0,0,0,0.82);
         }
         #qa-summary,
         #qa-list .detail {
-            color: var(--arena-harness-muted);
+            color: rgba(255,255,255,0.45);
         }
         #qa-list .pass {
-            color: #a9e6b2;
+            color: var(--wb-semantic-success);
         }
         #qa-list .fail {
-            color: #ffaaa0;
+            color: var(--wb-semantic-danger);
         }
         #debug-log {
             left: 14px;
@@ -170,15 +160,15 @@
             max-height: 150px;
             padding: 10px 12px;
             opacity: 0.78;
-            transition: opacity 0.14s, border-color 0.14s;
+            transition: opacity var(--wb-motion-standard), border-color var(--wb-motion-standard);
         }
         #debug-log:hover {
             opacity: 1;
-            border-color: rgba(239,148,66,0.52);
+            border-color: color-mix(in srgb, var(--dls-energetic) 52%, transparent);
         }
         #viewport-shell {
             margin: 14px auto 0;
-            border: 1px solid rgba(107,112,121,0.68);
+            border: 1px solid rgba(255,255,255,0.30);
             background: #000;
             position: relative;
             overflow: hidden;
@@ -260,6 +250,14 @@
     <script src="../../bridge.js"></script>
     <script src="../../panels.js"></script>
     <script src="../../panel-scale.js"></script>
+    <!-- 双栏工作台共享层（P2：arena 浏览面迁入 DualPaneShell；顺序与 team 注册项同款：
+         lifecycle → focus → primitives → profile → shell → components） -->
+    <script src="../../workbench-lifecycle.js"></script>
+    <script src="../../workbench-focus.js"></script>
+    <script src="../../workbench-primitives.js"></script>
+    <script src="../../workbench-profile.js"></script>
+    <script src="../../workbench.js"></script>
+    <script src="../../workbench-components.js"></script>
     <script src="../../tooltip.js"></script>
     <script src="../../asset-timeline.js"></script>
     <script>window.CF7_ICON_ROOT = '../../../icons/';</script>
@@ -281,6 +279,14 @@
     <script src="../../arena-custom-polling.js"></script>
     <script src="../../arena-custom-param-editor.js"></script>
     <script src="../../arena-custom-result-view.js"></script>
+    <!-- P4 拆分模块（纯移动；与 panels-lazy-registry arena 注册项同序）：core → shell →
+         challenge-browser → preview-authority → custom-editor → result → 薄 facade -->
+    <script src="../../arena/arena-core.js"></script>
+    <script src="../../arena/arena-shell.js"></script>
+    <script src="../../arena/arena-challenge-browser.js"></script>
+    <script src="../../arena/arena-preview-authority.js"></script>
+    <script src="../../arena/arena-custom-editor.js"></script>
+    <script src="../../arena/arena-result.js"></script>
     <script src="../../arena-panel.js"></script>
 
     <!-- Harness 初始化 -->
@@ -318,6 +324,13 @@
             '主角-男',
             '主角-尾上世莉架'
         ];
+        // 默认 knownEnemies 环境：全量已知（known-enemies-fixtures.js 的 all()，工厂未载时回退手写 5 条）。
+        // 全量已知让 monster/mixed 角色卡的本地采样确定性成功（部分已知会让怪物角色卡回退 merc，
+        // AS2 preview 条数随 Math.random 角色落位漂移 —— roll-again / grid-batch-preview 的 7 条断言依赖此默认）。
+        function defaultKnownEnemies() {
+            if (window.ArenaQaKnownFixtures) return window.ArenaQaKnownFixtures.all();
+            return DEFAULT_KNOWN_ENEMIES.slice();
+        }
         // ── Host 对象 ──
         var host = window.ArenaHarnessHost = {
             sentMessages: [],
@@ -332,7 +345,8 @@
             _customStatusPolls: 0,
             _customResultOpens: 0,
             _fixture: 'normal',
-            _knownEnemies: DEFAULT_KNOWN_ENEMIES.slice(),
+            // null = 未显式设置 → getSnapshot 注入默认环境（全量已知）
+            _knownEnemies: null,
 
             setViewport: function(value) {
                 var shell = document.getElementById('viewport-shell');
@@ -355,6 +369,12 @@
                 this._knownEnemies = (list || []).slice();
             },
 
+            // QA 用例前置复位：回到默认已知环境（null → getSnapshot 取 defaultKnownEnemies()），
+            // 保证每个用例拿到与 --case 单跑一致的起始态
+            resetKnownEnemies: function() {
+                this._knownEnemies = null;
+            },
+
             getSnapshot: function() {
                 var f = FIXTURES[this._fixture] || FIXTURES.normal;
                 return {
@@ -362,7 +382,7 @@
                     playerLevel: f.playerLevel,
                     reuseCount: f.reuseCount,
                     reuseLimit: f.reuseLimit,
-                    knownEnemies: this._knownEnemies.slice()
+                    knownEnemies: this._knownEnemies ? this._knownEnemies.slice() : defaultKnownEnemies()
                 };
             },
 
@@ -380,7 +400,9 @@
             },
 
             forceClose: function() {
-                chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'force_close' });
+                // panels.js handleForceClose 要求 data.reason 非空（真实 C# 强关必带 reason）；
+                // 缺 reason 会被静默忽略（2026-08-07 前 mock 缺字段导致 force-close 用例恒超时）
+                chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'force_close', reason: 'harness_force_close' });
             },
 
             // QA helper：让 next preview 命中此 cardIdx 时返回失败（模拟 stock_insufficient / network err）
@@ -690,7 +712,8 @@
     })();
     </script>
 
-    <!-- QA Suite -->
+    <!-- QA Suite（knownEnemies fixture 工厂先于用例定义加载） -->
+    <script src="./known-enemies-fixtures.js"></script>
     <script src="./qa-suite.js"></script>
 </body>
 </html>

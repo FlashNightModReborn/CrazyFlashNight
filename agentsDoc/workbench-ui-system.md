@@ -56,8 +56,9 @@
 | Skills `trainer` | `library-decision` |
 | Team 伙伴/战宠/机械（pet-panel：roster / store / advance） | `catalog-decision` |
 | Team 佣兵（merc-panel：roster / hire / detail） | `catalog-decision` |
+| Arena 标准/堕落/爬升挑战浏览器（arena/arena-shell，P4 拆分后构造点所在） | `catalog-decision` |
 
-当前生产源码共有 **9 个** `DualPaneShell` 直接构造点：`crafting.js`、`crafting-inventory-organizer.js`、`inventory-workbench.js`、`kshop.js`、`loot/loot-view.js`、`merc-panel.js`、`npcshop.js`、`pet-panel.js`、`skills.js`；`tools/workbench-ui-ratchet-baseline.json` 冻结同一 exact-set。这个构造数只描述 direct Shell consumer，不等于 Host owner、authority domain、view 或 `SecondaryPage` surface 数。
+当前生产源码共有 **10 个** `DualPaneShell` 直接构造点：`arena/arena-shell.js`、`crafting.js`、`crafting-inventory-organizer.js`、`inventory-workbench.js`、`kshop.js`、`loot/loot-view.js`、`merc-panel.js`、`npcshop.js`、`pet-panel.js`、`skills.js`；`tools/workbench-ui-ratchet-baseline.json` 冻结同一 exact-set。这个构造数只描述 direct Shell consumer，不等于 Host owner、authority domain、view 或 `SecondaryPage` surface 数。
 
 KShop 与 Inventory Workbench 在同一 Shell 原位切 view 时，profile 也必须通过 Shell-owned 的封闭 `setProfile(profile)` 与 view attribute 在一次同步投影中更新；feature 不得直接写 `data-profile`。构造器与 setter 共用同一合法枚举校验，缺失或非法值 fail fast。Skills、Crafting 与 Team 当前会在切 view 时重建 Shell，仍必须按目标 view 在新构造调用中选择对应 profile；不得把“会重建”当成省略 profile 或追加同值 setter 的理由。
 
@@ -341,7 +342,7 @@ B3 在同一 workbench instance 内增加了只接受 `build | storage | tuning`
 
 ## 10. CSS 级联与文件治理
 
-当前 `css/panels.css` 是纯 `@import` facade；历史样式按原顺序保存在 `panels/foundation-top.css`、`panels/foundation-rest.css`、`panels/features.css`，工作台样式物理拆为 `workbench/{tokens,core,profiles,inventory,skins,entities,crafting,equipment-inspector,skills,equipment-tuning,components,character-build,character-build-stats,states,motion,utilities}.css`。`profiles.css` 紧随 core 导入并独占壳级 profile tracks，`utilities.css` 保持最后一个 unlayered compatibility import。`tools/lib/read-css-bundle.js` 以与浏览器相同的顺序递归解析，拒绝循环、越根和丢失的外部 import；静态审计必须扫描聚合结果而不是只扫 facade。`launcher/build.ps1` 必须调用 `tools/check-workbench-css-bundle.js`，因此 transitive import 与本地 `url()` 闭包也是 candidate build 的 fail-fast 门；checker 与 reader 本身属于 runtime build recipe 身份输入。
+当前 `css/panels.css` 是纯 `@import` facade；历史样式按原顺序保存在 `panels/foundation-top.css`、`panels/foundation-rest.css`、`panels/features.css`，工作台样式物理拆为 `workbench/{tokens,core,profiles,arena,inventory,skins,entities,crafting,equipment-inspector,skills,equipment-tuning,components,character-build,character-build-stats,team,states,motion,utilities}.css`（`arena.css` 紧随 features.css 导入——P1c 自 features.css 尾段拆出，级联位置原位保持；`team.css` 为战队双栏工作台基座）。`profiles.css` 紧随 core 导入并独占壳级 profile tracks，`utilities.css` 保持最后一个 unlayered compatibility import。`tools/lib/read-css-bundle.js` 以与浏览器相同的顺序递归解析，拒绝循环、越根和丢失的外部 import；静态审计必须扫描聚合结果而不是只扫 facade。`launcher/build.ps1` 必须调用 `tools/check-workbench-css-bundle.js`，因此 transitive import 与本地 `url()` 闭包也是 candidate build 的 fail-fast 门；checker 与 reader 本身属于 runtime build recipe 身份输入。
 
 新共享规则已使用 `workbench.components → workbench.states → workbench.motion` named layers；历史 feature/skin 仍暂时保持 unlayered，以避免物理拆分同时重排既有级联。下一阶段的目标层序仍为 `tokens → reset/base → shell → components → states → feature → skin → utilities`，但只有在跨面板截图与 computed style 对照稳定后才迁移旧规则。组件 selector 不得依赖面板祖先超过一层；skin 通过 token 或明确 `data-workbench-skin` 覆盖。语义 hidden 的迁移例外登记为 `WB-HIDDEN-001`：`utilities.css` 作为 `panels.css` 最后一个、且不进入 named layer 的 import，使用 `.workbench-shell [hidden] { display:none !important; }` 压过现役 unlayered feature/skin；静态门拒绝任何可见 `display:... !important` 反向覆盖。该例外只能在历史 feature/skin 完成分层并通过 computed display / hitbox / Tab 矩阵后退出；其他 `!important` 不得借此获得许可。
 
