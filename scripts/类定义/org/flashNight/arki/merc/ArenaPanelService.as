@@ -150,15 +150,16 @@ class org.flashNight.arki.merc.ArenaPanelService {
      */
     public static function handleRollPreview(params:Object):Void {
         var callId = params.callId;
-        var expr:String = String(params.expr || "");
+        var authority:Object = buildAuthorityQuote(params);
+        if (authority == null || (authority.mode != "standard" && authority.mode != "hidden")) {
+            sendResponse({ task: "arena_response", callId: callId, success: false, error: "invalid_authority" });
+            return;
+        }
+        var expr:String = String(authority.expr);
         // cardIndex 来自 web batch preview 路径：每张卡发独立 preview 时带 idx 0..7。
         // 旧 callsite（如未来调试 / 兼容路径）不传 → NaN，本路径仅跳过缓存写入，业务行为不变。
         var cardIndex:Number = Number(params.cardIndex);
 
-        if (expr == "") {
-            sendResponse({ task: "arena_response", callId: callId, success: false, error: "invalid_expr", cardIndex: cardIndex });
-            return;
-        }
         if (!ArenaController.rollPreview(expr)) {
             sendResponse({ task: "arena_response", callId: callId, success: false, error: "stock_insufficient", cardIndex: cardIndex });
             return;
@@ -293,13 +294,21 @@ class org.flashNight.arki.merc.ArenaPanelService {
     public static function handleEnter(params:Object):Void {
         var callId = params.callId;
 
-        var expr:String = String(params.expr || "");
-        var deposit:Number = Number(params.deposit);
-        var reward:Number = Number(params.reward);
+        var authority:Object = buildAuthorityQuote(params);
+        if (authority == null) {
+            sendResponse({ task: "arena_response", callId: callId, success: false, error: "invalid_authority" });
+            return;
+        }
+        var expr:String = String(authority.expr);
+        var deposit:Number = Number(authority.deposit);
+        var reward:Number = Number(authority.reward);
         var enterMode:String = String(params.mode || "");
-        if (enterMode == "custom_pve") {
-            deposit = 0;
-            reward = 0;
+        if ((authority.mode == "escalation" && enterMode != "escalation")
+                || (authority.mode == "custom_pve" && enterMode != "custom_pve")
+                || ((authority.mode == "standard" || authority.mode == "hidden" || authority.mode == "fallen")
+                    && enterMode != "")) {
+            sendResponse({ task: "arena_response", callId: callId, success: false, error: "authority_mode_mismatch" });
+            return;
         }
         // difficulty 来自 stage-select 重定向链；dev 模式 ARENA_TEST 直开时为 ""。
         // 非空时在 commitArena 之前设 _root.当前关卡难度 + _root.难度等级，
@@ -307,14 +316,6 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // 任务 finish_requirements 里的 "DEATH MATCH角斗场#冒险" 规则。
         var difficulty:String = String(params.difficulty || "");
 
-        if (expr == "") {
-            sendResponse({ task: "arena_response", callId: callId, success: false, error: "invalid_expr" });
-            return;
-        }
-        if (isNaN(deposit) || isNaN(reward) || deposit < 0 || reward < 0) {
-            sendResponse({ task: "arena_response", callId: callId, success: false, error: "invalid_amounts" });
-            return;
-        }
         if (_root.金钱 < deposit) {
             sendResponse({ task: "arena_response", callId: callId, success: false, error: "insufficient_money" });
             return;
@@ -408,6 +409,11 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // ── 元战队 / 混编分叉：web M2 本地采样后下发 roster=[{type:"兵种N", level:L} | {kind:"merc", mercId}, ...] ──
         // 有 roster → 走 commitRoster（不碰佣兵 cache / reuse / pool）；否则落入下方人形 merc 路径。
         var rosterParam:Array = (params.roster != undefined) ? params.roster : null;
+        if ((authority.mode == "hidden" || authority.mode == "fallen" || authority.mode == "custom_pve")
+                && (rosterParam == null || rosterParam.length == 0)) {
+            sendResponse({ task: "arena_response", callId: callId, success: false, error: "roster_required" });
+            return;
+        }
         if (rosterParam != null && rosterParam.length > 0) {
             var squad:Array = [];
             var customPve:Boolean = (enterMode == "custom_pve");
@@ -510,6 +516,79 @@ class org.flashNight.arki.merc.ArenaPanelService {
             }
             trace("[ArenaPanelService.handleEnter] commitArena failed: " + e.message);
         }
+    }
+
+    /**
+     * P5 双端权威复算。C# 从 XML/JSON 真源生成本局输入；AS2 在任何写入前按同一公开公式
+     * 独立重算并精确比较 wire 上的 expr/deposit/reward。字符串数字、NaN/Infinity、分数人数
+     * 或缺少 source digest 均 fail-closed，避免旧 Web payload 绕过 Host 直达本层。
+     */
+    public static function buildAuthorityQuote(params:Object):Object {
+        if (params == null || typeof params.authorityId != "string" || String(params.authorityId) == ""
+                || typeof params.authorityMode != "string"
+                || typeof params.authoritySourceDigest != "string" || String(params.authoritySourceDigest) == "") {
+            return null;
+        }
+        var mode:String = String(params.authorityMode);
+        if (mode != "standard" && mode != "hidden" && mode != "fallen"
+                && mode != "escalation" && mode != "custom_pve") return null;
+
+        var levelMin:Number = readAuthorityInteger(params.levelMin, 1);
+        var levelMax:Number = readAuthorityInteger(params.levelMax, levelMin);
+        var opponentCount:Number = readAuthorityInteger(params.opponentCount, 1);
+        if (isNaN(levelMin) || isNaN(levelMax) || isNaN(opponentCount)) return null;
+
+        var expectedExpr:String = "#0@" + levelMin + "-" + levelMax + "%" + opponentCount;
+        var expectedReward:Number;
+        var expectedDeposit:Number;
+        if (mode == "custom_pve") {
+            expectedReward = 0;
+            expectedDeposit = 0;
+        } else if (mode == "standard" || mode == "hidden") {
+            if (typeof params.economyMultiplier != "number") return null;
+            var multiplier:Number = Number(params.economyMultiplier);
+            if (isNaN(multiplier) || multiplier == Infinity || multiplier == -Infinity
+                    || multiplier <= 0 || multiplier > 10) return null;
+            if (mode == "standard" && multiplier != 1) return null;
+            var perLevel:Number = levelMin >= 40 ? 1250 : 1000;
+            var baseReward:Number = roundAuthority(opponentCount * levelMin * perLevel, 1000);
+            expectedReward = roundAuthority(baseReward * multiplier, 1000);
+            expectedDeposit = Math.max(500, roundAuthority(expectedReward / 2, 500));
+        } else {
+            var benchLevel:Number = readAuthorityInteger(params.benchLevel, 1);
+            if (isNaN(benchLevel)) return null;
+            if (mode == "escalation") {
+                expectedReward = roundAuthority(benchLevel * opponentCount * 500, 100);
+                expectedDeposit = roundAuthority(expectedReward, 1000);
+            } else {
+                expectedReward = roundAuthority(benchLevel * opponentCount * 800, 1000);
+                expectedDeposit = roundAuthority(expectedReward * 0.4, 1000);
+            }
+        }
+
+        if (typeof params.expr != "string" || String(params.expr) != expectedExpr
+                || typeof params.deposit != "number" || Number(params.deposit) != expectedDeposit
+                || typeof params.reward != "number" || Number(params.reward) != expectedReward) {
+            return null;
+        }
+        return {
+            mode:mode,
+            expr:expectedExpr,
+            deposit:expectedDeposit,
+            reward:expectedReward
+        };
+    }
+
+    private static function readAuthorityInteger(value, minimum:Number):Number {
+        if (typeof value != "number") return NaN;
+        var number:Number = Number(value);
+        if (isNaN(number) || number == Infinity || number == -Infinity
+                || number < minimum || number != Math.floor(number)) return NaN;
+        return number;
+    }
+
+    private static function roundAuthority(value:Number, step:Number):Number {
+        return Math.max(step, Math.round(value / step) * step);
     }
 
     private static function sendResponse(resp:Object):Void {

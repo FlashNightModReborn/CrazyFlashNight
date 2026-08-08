@@ -1898,7 +1898,7 @@ class Program
         });
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
-        ArenaTask arenaTask = new ArenaTask(socketServer);
+        ArenaTask arenaTask = new ArenaTask(socketServer, projectRoot);
         ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
         agentControlTask = new AgentControlTask(
@@ -1928,6 +1928,13 @@ class Program
         {
             const string payload = "{\"task\":\"cmd\",\"action\":\"openInventoryWorkbench\","
                 + "\"profile\":\"battlebox\",\"view\":\"build\",\"source\":\"agent_control\"}\0";
+            return !form.IsShutdownAdmissionClosed
+                && socketServer != null && socketServer.IsClientReady
+                && socketServer.TrySend(payload);
+        });
+        agentControlTask.SetArenaOpenAction(delegate
+        {
+            const string payload = "{\"task\":\"cmd\",\"action\":\"openArenaForAgent\"}\0";
             return !form.IsShutdownAdmissionClosed
                 && socketServer != null && socketServer.IsClientReady
                 && socketServer.TrySend(payload);

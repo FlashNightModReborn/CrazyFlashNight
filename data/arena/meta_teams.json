@@ -2,14 +2,14 @@
   "generatedBy": "tools/derive-arena-meta-teams.js",
   "granularity": "subwave",
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
-  "stageFilesScanned": 211,
-  "stagesWithTeams": 196,
-  "teamCount": 2087,
+  "stageFilesScanned": 212,
+  "stagesWithTeams": 197,
+  "teamCount": 2099,
   "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
     "unknown": 105,
-    "亡灵/僵尸": 598,
+    "亡灵/僵尸": 610,
     "天网": 233,
     "异形": 262,
     "联合大学": 1,
@@ -118,7 +118,7 @@
       "unitCount": 9
     },
     "亡灵/僵尸": {
-      "teamCount": 598,
+      "teamCount": 610,
       "units": [
         {
           "type": "兵种72",
@@ -157,22 +157,49 @@
           "weight": 342
         },
         {
-          "type": "兵种7",
-          "name": "狂暴僵尸",
-          "spritename": "敌人-帽子瘦僵尸1",
-          "isHostile": true,
-          "minLevel": 2,
-          "maxLevel": 40,
-          "weight": 127
-        },
-        {
           "type": "兵种10",
           "name": "兽化僵尸",
           "spritename": "敌人-裸体兽化僵尸1",
           "isHostile": true,
           "minLevel": 15,
           "maxLevel": 35,
-          "weight": 126
+          "weight": 166
+        },
+        {
+          "type": "兵种7",
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "isHostile": true,
+          "minLevel": 2,
+          "maxLevel": 40,
+          "weight": 159
+        },
+        {
+          "type": "兵种39",
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "isHostile": true,
+          "minLevel": 18,
+          "maxLevel": 29,
+          "weight": 141
+        },
+        {
+          "type": "兵种401",
+          "name": "特战僵尸",
+          "spritename": "敌人-特警僵尸",
+          "isHostile": true,
+          "minLevel": 15,
+          "maxLevel": 50,
+          "weight": 133
+        },
+        {
+          "type": "兵种9",
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 40,
+          "weight": 128
         },
         {
           "type": "兵种3",
@@ -181,12 +208,12 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
-          "weight": 119
+          "weight": 123
         },
         {
-          "type": "兵种401",
-          "name": "特战僵尸",
-          "spritename": "敌人-特警僵尸",
+          "type": "兵种400",
+          "name": "防暴僵尸",
+          "spritename": "敌人-防爆服僵尸",
           "isHostile": true,
           "minLevel": 15,
           "maxLevel": 50,
@@ -202,15 +229,6 @@
           "weight": 103
         },
         {
-          "type": "兵种39",
-          "name": "狂躁僵尸",
-          "spritename": "敌人-士兵奔跑僵尸1",
-          "isHostile": true,
-          "minLevel": 18,
-          "maxLevel": 29,
-          "weight": 101
-        },
-        {
           "type": "兵种75",
           "name": "尸母",
           "spritename": "敌人-普通尸母",
@@ -220,31 +238,22 @@
           "weight": 100
         },
         {
-          "type": "兵种6",
-          "name": "僵尸",
-          "spritename": "敌人-黄色衣服男僵尸1",
-          "isHostile": true,
-          "minLevel": 1,
-          "maxLevel": 40,
-          "weight": 94
-        },
-        {
           "type": "兵种5",
           "name": "僵尸",
           "spritename": "敌人-胖僵尸1",
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 93
+          "weight": 98
         },
         {
-          "type": "兵种400",
-          "name": "防暴僵尸",
-          "spritename": "敌人-防爆服僵尸",
+          "type": "兵种6",
+          "name": "僵尸",
+          "spritename": "敌人-黄色衣服男僵尸1",
           "isHostile": true,
-          "minLevel": 15,
-          "maxLevel": 50,
-          "weight": 89
+          "minLevel": 1,
+          "maxLevel": 40,
+          "weight": 98
         },
         {
           "type": "兵种4",
@@ -253,7 +262,34 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
+          "weight": 90
+        },
+        {
+          "type": "兵种394",
+          "name": "血鼠",
+          "spritename": "敌人-血鼠",
+          "isHostile": true,
+          "minLevel": 15,
+          "maxLevel": 40,
+          "weight": 89
+        },
+        {
+          "type": "兵种2",
+          "name": "僵尸",
+          "spritename": "敌人-眼镜僵尸1",
+          "isHostile": true,
+          "minLevel": 2,
+          "maxLevel": 40,
           "weight": 86
+        },
+        {
+          "type": "兵种8",
+          "name": "僵尸",
+          "spritename": "敌人-小儿麻痹僵尸1",
+          "isHostile": true,
+          "minLevel": 2,
+          "maxLevel": 40,
+          "weight": 84
         },
         {
           "type": "兵种107",
@@ -274,33 +310,6 @@
           "weight": 83
         },
         {
-          "type": "兵种2",
-          "name": "僵尸",
-          "spritename": "敌人-眼镜僵尸1",
-          "isHostile": true,
-          "minLevel": 2,
-          "maxLevel": 40,
-          "weight": 82
-        },
-        {
-          "type": "兵种9",
-          "name": "兽化僵尸",
-          "spritename": "敌人-兽化僵尸1",
-          "isHostile": true,
-          "minLevel": 20,
-          "maxLevel": 40,
-          "weight": 81
-        },
-        {
-          "type": "兵种8",
-          "name": "僵尸",
-          "spritename": "敌人-小儿麻痹僵尸1",
-          "isHostile": true,
-          "minLevel": 2,
-          "maxLevel": 40,
-          "weight": 80
-        },
-        {
           "type": "兵种83",
           "name": "爆炸僵尸",
           "spritename": "敌人-普通爆炸僵尸",
@@ -308,6 +317,15 @@
           "minLevel": 42,
           "maxLevel": 60,
           "weight": 67
+        },
+        {
+          "type": "兵种11",
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "isHostile": true,
+          "minLevel": 5,
+          "maxLevel": 50,
+          "weight": 63
         },
         {
           "type": "兵种82",
@@ -337,15 +355,6 @@
           "weight": 57
         },
         {
-          "type": "兵种394",
-          "name": "血鼠",
-          "spritename": "敌人-血鼠",
-          "isHostile": true,
-          "minLevel": 15,
-          "maxLevel": 40,
-          "weight": 55
-        },
-        {
           "type": "兵种81",
           "name": "兽化改造僵尸",
           "spritename": "敌人-兽化改造僵尸",
@@ -353,6 +362,15 @@
           "minLevel": 40,
           "maxLevel": 60,
           "weight": 52
+        },
+        {
+          "type": "兵种13",
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "isHostile": true,
+          "minLevel": 10,
+          "maxLevel": 40,
+          "weight": 49
         },
         {
           "type": "兵种110",
@@ -382,12 +400,12 @@
           "weight": 46
         },
         {
-          "type": "兵种11",
-          "name": "巨型僵尸",
-          "spritename": "敌人-boss大僵尸",
+          "type": "兵种393",
+          "name": "僵尸",
+          "spritename": "敌人-瘦骨男尸",
           "isHostile": true,
-          "minLevel": 5,
-          "maxLevel": 50,
+          "minLevel": 20,
+          "maxLevel": 45,
           "weight": 42
         },
         {
@@ -400,11 +418,11 @@
           "weight": 38
         },
         {
-          "type": "兵种13",
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种1",
+          "name": "僵尸",
+          "spritename": "敌人-金发女僵尸1",
           "isHostile": true,
-          "minLevel": 10,
+          "minLevel": 2,
           "maxLevel": 40,
           "weight": 33
         },
@@ -425,15 +443,6 @@
           "minLevel": 40,
           "maxLevel": 44,
           "weight": 32
-        },
-        {
-          "type": "兵种1",
-          "name": "僵尸",
-          "spritename": "敌人-金发女僵尸1",
-          "isHostile": true,
-          "minLevel": 2,
-          "maxLevel": 40,
-          "weight": 29
         },
         {
           "type": "兵种182",
@@ -493,15 +502,6 @@
           "weight": 26
         },
         {
-          "type": "兵种393",
-          "name": "僵尸",
-          "spritename": "敌人-瘦骨男尸",
-          "isHostile": true,
-          "minLevel": 20,
-          "maxLevel": 45,
-          "weight": 25
-        },
-        {
           "type": "兵种179",
           "name": "远古尸母",
           "spritename": "敌人-普通尸母",
@@ -509,6 +509,15 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 23
+        },
+        {
+          "type": "兵种403",
+          "name": "异变盗贼",
+          "spritename": "敌人-异变盗贼",
+          "isHostile": true,
+          "minLevel": 35,
+          "maxLevel": 50,
+          "weight": 22
         },
         {
           "type": "兵种114",
@@ -545,6 +554,15 @@
           "minLevel": 30,
           "maxLevel": 45,
           "weight": 19
+        },
+        {
+          "type": "兵种42",
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "isHostile": true,
+          "minLevel": 5,
+          "maxLevel": 50,
+          "weight": 17
         },
         {
           "type": "兵种188",
@@ -665,15 +683,6 @@
           }
         },
         {
-          "type": "兵种403",
-          "name": "异变盗贼",
-          "spritename": "敌人-异变盗贼",
-          "isHostile": true,
-          "minLevel": 35,
-          "maxLevel": 50,
-          "weight": 11
-        },
-        {
           "type": "兵种85",
           "name": "暴走基因虫",
           "spritename": "敌人-普通基因虫",
@@ -699,15 +708,6 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 11
-        },
-        {
-          "type": "兵种42",
-          "name": "硬化僵尸",
-          "spritename": "敌人-硬化僵尸",
-          "isHostile": true,
-          "minLevel": 5,
-          "maxLevel": 50,
-          "weight": 10
         },
         {
           "type": "兵种175",
@@ -8090,6 +8090,15 @@
           "weight": 1
         },
         {
+          "type": "兵种456",
+          "name": "望风鸢",
+          "spritename": "敌人-盗贼小飞机",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 20,
+          "weight": 1
+        },
+        {
           "type": "兵种7",
           "name": "狂暴僵尸",
           "spritename": "敌人-帽子瘦僵尸1",
@@ -8102,7 +8111,7 @@
           }
         }
       ],
-      "unitCount": 35
+      "unitCount": 36
     },
     "虫群": {
       "teamCount": 35,
@@ -27146,34 +27155,6 @@
       "powerRating": 140
     },
     {
-      "id": "副本任务/挑战Blue.xml#0.0",
-      "sourceStage": "副本任务/挑战Blue.xml",
-      "sourceName": "挑战Blue",
-      "group": "0.0",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种274",
-          "id": 274,
-          "name": "Blue",
-          "spritename": "主角-男",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "gender": "男",
-          "humanoid": true
-        }
-      ],
-      "unitCount": 1,
-      "distinctTypes": 1,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 60
-    },
-    {
       "id": "副本任务/挑战BPK.xml#0.0",
       "sourceStage": "副本任务/挑战BPK.xml",
       "sourceName": "挑战BPK",
@@ -27264,31 +27245,32 @@
       "powerRating": 180
     },
     {
-      "id": "副本任务/挑战gazer.xml#0.0",
-      "sourceStage": "副本任务/挑战gazer.xml",
-      "sourceName": "挑战gazer",
+      "id": "副本任务/挑战Blue.xml#0.0",
+      "sourceStage": "副本任务/挑战Blue.xml",
+      "sourceName": "挑战Blue",
       "group": "0.0",
       "faction": "unknown",
       "factionConfidence": "unknown",
       "members": [
         {
-          "type": "兵种366",
-          "id": 366,
-          "name": "Gazer",
-          "spritename": "敌人-Gazer",
-          "level": 35,
+          "type": "兵种274",
+          "id": 274,
+          "name": "Blue",
+          "spritename": "主角-男",
+          "level": 60,
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "gender": "男",
+          "humanoid": true
         }
       ],
       "unitCount": 1,
       "distinctTypes": 1,
-      "avgLevel": 35,
-      "levelMin": 35,
-      "levelMax": 35,
-      "powerRating": 35
+      "avgLevel": 60,
+      "levelMin": 60,
+      "levelMax": 60,
+      "powerRating": 60
     },
     {
       "id": "副本任务/挑战Itinerant.xml#0.0",
@@ -27316,6 +27298,33 @@
       "levelMin": 50,
       "levelMax": 50,
       "powerRating": 50
+    },
+    {
+      "id": "副本任务/挑战gazer.xml#0.0",
+      "sourceStage": "副本任务/挑战gazer.xml",
+      "sourceName": "挑战gazer",
+      "group": "0.0",
+      "faction": "unknown",
+      "factionConfidence": "unknown",
+      "members": [
+        {
+          "type": "兵种366",
+          "id": 366,
+          "name": "Gazer",
+          "spritename": "敌人-Gazer",
+          "level": 35,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 1,
+      "distinctTypes": 1,
+      "avgLevel": 35,
+      "levelMin": 35,
+      "levelMax": 35,
+      "powerRating": 35
     },
     {
       "id": "副本任务/挑战surveyor.xml#0.0",
@@ -29565,6 +29574,979 @@
       "levelMin": 30,
       "levelMax": 45,
       "powerRating": 1145
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.0",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.0",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种13",
+          "id": 13,
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "level": 20,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种1",
+          "id": 1,
+          "name": "僵尸",
+          "spritename": "敌人-金发女僵尸1",
+          "level": 20,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种2",
+          "id": 2,
+          "name": "僵尸",
+          "spritename": "敌人-眼镜僵尸1",
+          "level": 20,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种3",
+          "id": 3,
+          "name": "僵尸",
+          "spritename": "敌人-光头军人僵尸1",
+          "level": 20,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种4",
+          "id": 4,
+          "name": "僵尸",
+          "spritename": "敌人-金发红衣服女僵尸1",
+          "level": 20,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种5",
+          "id": 5,
+          "name": "僵尸",
+          "spritename": "敌人-胖僵尸1",
+          "level": 20,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种6",
+          "id": 6,
+          "name": "僵尸",
+          "spritename": "敌人-黄色衣服男僵尸1",
+          "level": 20,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种8",
+          "id": 8,
+          "name": "僵尸",
+          "spritename": "敌人-小儿麻痹僵尸1",
+          "level": 20,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种400",
+          "id": 400,
+          "name": "防暴僵尸",
+          "spritename": "敌人-防爆服僵尸",
+          "level": 25,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种401",
+          "id": 401,
+          "name": "特战僵尸",
+          "spritename": "敌人-特警僵尸",
+          "level": 25,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 40,
+      "distinctTypes": 10,
+      "avgLevel": 21,
+      "levelMin": 20,
+      "levelMax": 25,
+      "powerRating": 840
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.1",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.1",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种7",
+          "id": 7,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "level": 22,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种13",
+          "id": 13,
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "level": 22,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种39",
+          "id": 39,
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "level": 22,
+          "count": 10,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种39",
+          "id": 39,
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "level": 25,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种401",
+          "id": 401,
+          "name": "特战僵尸",
+          "spritename": "敌人-特警僵尸",
+          "level": 25,
+          "count": 7,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种400",
+          "id": 400,
+          "name": "防暴僵尸",
+          "spritename": "敌人-防爆服僵尸",
+          "level": 25,
+          "count": 7,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 39,
+      "distinctTypes": 6,
+      "avgLevel": 23.5,
+      "levelMin": 22,
+      "levelMax": 25,
+      "powerRating": 915
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.2",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.2",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种9",
+          "id": 9,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "level": 26,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "id": 10,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "level": 26,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种7",
+          "id": 7,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "level": 26,
+          "count": 15,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种39",
+          "id": 39,
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "level": 26,
+          "count": 15,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种400",
+          "id": 400,
+          "name": "防暴僵尸",
+          "spritename": "敌人-防爆服僵尸",
+          "level": 30,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种401",
+          "id": 401,
+          "name": "特战僵尸",
+          "spritename": "敌人-特警僵尸",
+          "level": 30,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种393",
+          "id": 393,
+          "name": "僵尸",
+          "spritename": "敌人-瘦骨男尸",
+          "level": 30,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种394",
+          "id": 394,
+          "name": "血鼠",
+          "spritename": "敌人-血鼠",
+          "level": 30,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 56,
+      "distinctTypes": 8,
+      "avgLevel": 27.1,
+      "levelMin": 26,
+      "levelMax": 30,
+      "powerRating": 1520
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.3",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.3",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种9",
+          "id": 9,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "level": 27,
+          "count": 15,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "id": 10,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "level": 27,
+          "count": 15,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种394",
+          "id": 394,
+          "name": "血鼠",
+          "spritename": "敌人-血鼠",
+          "level": 30,
+          "count": 10,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 40,
+      "distinctTypes": 3,
+      "avgLevel": 27.8,
+      "levelMin": 27,
+      "levelMax": 30,
+      "powerRating": 1110
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.4",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.4",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 10,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种9",
+          "id": 9,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "level": 28,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "id": 10,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "level": 28,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 30,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种9",
+          "id": 9,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "level": 30,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "id": 10,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "level": 30,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 26,
+      "distinctTypes": 6,
+      "avgLevel": 28,
+      "levelMin": 10,
+      "levelMax": 30,
+      "powerRating": 728
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.5",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.5",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 12,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种7",
+          "id": 7,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "level": 29,
+          "count": 12,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种39",
+          "id": 39,
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "level": 29,
+          "count": 12,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 35,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种394",
+          "id": 394,
+          "name": "血鼠",
+          "spritename": "敌人-血鼠",
+          "level": 35,
+          "count": 10,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 40,
+      "distinctTypes": 5,
+      "avgLevel": 29.7,
+      "levelMin": 12,
+      "levelMax": 35,
+      "powerRating": 1187
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.6",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.6",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种42",
+          "id": 42,
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 2,
+      "distinctTypes": 2,
+      "avgLevel": 30,
+      "levelMin": 30,
+      "levelMax": 30,
+      "powerRating": 60
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.7",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.7",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 20,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "id": 10,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种42",
+          "id": 42,
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "level": 35,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种393",
+          "id": 393,
+          "name": "僵尸",
+          "spritename": "敌人-瘦骨男尸",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种394",
+          "id": 394,
+          "name": "血鼠",
+          "spritename": "敌人-血鼠",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种400",
+          "id": 400,
+          "name": "防暴僵尸",
+          "spritename": "敌人-防爆服僵尸",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种401",
+          "id": 401,
+          "name": "特战僵尸",
+          "spritename": "敌人-特警僵尸",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 16,
+      "distinctTypes": 7,
+      "avgLevel": 36.6,
+      "levelMin": 20,
+      "levelMax": 40,
+      "powerRating": 585
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.8",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.8",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种9",
+          "id": 9,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "level": 32,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "id": 10,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "level": 32,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 18,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种13",
+          "id": 13,
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "level": 32,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种42",
+          "id": 42,
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种394",
+          "id": 394,
+          "name": "血鼠",
+          "spritename": "敌人-血鼠",
+          "level": 35,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种403",
+          "id": 403,
+          "name": "异变盗贼",
+          "spritename": "敌人-异变盗贼",
+          "level": 35,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种401",
+          "id": 401,
+          "name": "特战僵尸",
+          "spritename": "敌人-特警僵尸",
+          "level": 35,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 36,
+      "distinctTypes": 8,
+      "avgLevel": 32.2,
+      "levelMin": 18,
+      "levelMax": 40,
+      "powerRating": 1159
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.9",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.9",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种9",
+          "id": 9,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "level": 33,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "id": 10,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "level": 33,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种403",
+          "id": 403,
+          "name": "异变盗贼",
+          "spritename": "敌人-异变盗贼",
+          "level": 40,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种394",
+          "id": 394,
+          "name": "血鼠",
+          "spritename": "敌人-血鼠",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种393",
+          "id": 393,
+          "name": "僵尸",
+          "spritename": "敌人-瘦骨男尸",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 28,
+      "distinctTypes": 6,
+      "avgLevel": 35.6,
+      "levelMin": 30,
+      "levelMax": 40,
+      "powerRating": 998
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.10",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.10",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 5,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种42",
+          "id": 42,
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "level": 45,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种393",
+          "id": 393,
+          "name": "僵尸",
+          "spritename": "敌人-瘦骨男尸",
+          "level": 45,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种403",
+          "id": 403,
+          "name": "异变盗贼",
+          "spritename": "敌人-异变盗贼",
+          "level": 45,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 12,
+      "distinctTypes": 4,
+      "avgLevel": 41.7,
+      "levelMin": 5,
+      "levelMax": 45,
+      "powerRating": 500
+    },
+    {
+      "id": "副本任务/新人救援.xml#0.11",
+      "sourceStage": "副本任务/新人救援.xml",
+      "sourceName": "新人救援",
+      "group": "0.11",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 20,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种42",
+          "id": 42,
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "level": 5,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种42",
+          "id": 42,
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "level": 50,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种403",
+          "id": 403,
+          "name": "异变盗贼",
+          "spritename": "敌人-异变盗贼",
+          "level": 50,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种401",
+          "id": 401,
+          "name": "特战僵尸",
+          "spritename": "敌人-特警僵尸",
+          "level": 50,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种11",
+          "id": 11,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "level": 50,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 13,
+      "distinctTypes": 6,
+      "avgLevel": 44.2,
+      "levelMin": 5,
+      "levelMax": 50,
+      "powerRating": 575
     },
     {
       "id": "副本任务/机器游荡区.xml#0.0",
@@ -60432,14 +61414,25 @@
           "parameters": {
             "汽车炸弹数量": 1
           }
+        },
+        {
+          "type": "兵种456",
+          "id": 456,
+          "name": "望风鸢",
+          "spritename": "敌人-盗贼小飞机",
+          "level": 20,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
         }
       ],
-      "unitCount": 9,
-      "distinctTypes": 4,
+      "unitCount": 10,
+      "distinctTypes": 5,
       "avgLevel": 20,
       "levelMin": 20,
       "levelMax": 20,
-      "powerRating": 180
+      "powerRating": 200
     },
     {
       "id": "基地车库/革命军哨所.xml#0.0",
@@ -65528,7 +66521,7 @@
           "name": "兽化僵尸",
           "spritename": "敌人-裸体兽化僵尸1",
           "level": 20,
-          "count": 5,
+          "count": 3,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -65539,18 +66532,18 @@
           "name": "狂躁僵尸",
           "spritename": "敌人-士兵奔跑僵尸1",
           "level": 20,
-          "count": 5,
+          "count": 4,
           "random": false,
           "isHostile": true,
           "humanoid": false
         }
       ],
-      "unitCount": 10,
+      "unitCount": 7,
       "distinctTypes": 2,
       "avgLevel": 20,
       "levelMin": 20,
       "levelMax": 20,
-      "powerRating": 200
+      "powerRating": 140
     },
     {
       "id": "基地门口/贫民窟.xml#4.0",
@@ -65566,7 +66559,7 @@
           "name": "兽化僵尸",
           "spritename": "敌人-裸体兽化僵尸1",
           "level": 20,
-          "count": 9,
+          "count": 6,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -65577,18 +66570,18 @@
           "name": "狂躁僵尸",
           "spritename": "敌人-士兵奔跑僵尸1",
           "level": 20,
-          "count": 6,
+          "count": 5,
           "random": false,
           "isHostile": true,
           "humanoid": false
         }
       ],
-      "unitCount": 15,
+      "unitCount": 11,
       "distinctTypes": 2,
       "avgLevel": 20,
       "levelMin": 20,
       "levelMax": 20,
-      "powerRating": 300
+      "powerRating": 220
     },
     {
       "id": "基地门口/贫民窟.xml#5.0",
@@ -65604,7 +66597,7 @@
           "name": "兽化僵尸",
           "spritename": "敌人-裸体兽化僵尸1",
           "level": 20,
-          "count": 13,
+          "count": 10,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -65621,12 +66614,12 @@
           "humanoid": false
         }
       ],
-      "unitCount": 20,
+      "unitCount": 17,
       "distinctTypes": 2,
       "avgLevel": 20,
       "levelMin": 20,
       "levelMax": 20,
-      "powerRating": 400
+      "powerRating": 340
     },
     {
       "id": "基地门口/超市废墟.xml#0.0",
@@ -125474,6 +126467,7 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "保留屏外尸体": true,
             "称号": "火凤堂赤旌"
           }
         }

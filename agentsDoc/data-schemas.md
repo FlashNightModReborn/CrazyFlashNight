@@ -65,6 +65,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
 | `data/intelligence_h5/` | Launcher Web 情报面板 H5 JSON 组件树正文 |
 | `data/shops/` | NPC 金币商店清单、逐 NPC 商品目录与开发者分组 |
+| `data/arena/` | 竞技场标准/隐藏卡 XML 真源、势力元数据 JSON 真源与关卡派生 roster |
 | `config/` | 系统配置 |
 
 大多数采用 **list.xml 主从模式**：
@@ -79,6 +80,9 @@ data/dictionaries/            → 材料/情报字典
 data/intelligence/            → 按情报名称存放的 legacy txt 正文
 data/intelligence_h5/         → 按情报名称存放的 H5 JSON 组件树正文
 data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一个文件）
+data/arena/arena_config.xml   → 标准/隐藏挑战卡运行时真源
+data/arena/arena_factions.json → 势力 benchLevel/scale/enabled/units 手作真源
+data/arena/meta_teams.json    → 从 data/stages/** 派生的 roster/merc 生成物
 ```
 
 ### 关卡敌人屏外尸体保留参数
@@ -99,6 +103,13 @@ data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一
 - 只应用于少量需要死亡结果可追溯的重要实例；不要给成群杂兵批量标记，避免同帧多次矢量 `draw()` 形成尖峰。
 
 当前代表验收点是 `黑铁会总部/黑铁会总堂.xml` 第二图首波的火凤。修改渲染器或该参数后，运行 `tools/test-offscreen-corpse-retention.ps1`；需要 Flash 行为证据时再运行 `scripts/run-offscreen-corpse-retention-tests.ps1`。
+
+### 竞技场 P5 权威配置
+
+- `arena_config.xml` 是标准卡与隐藏警报卡的运行时真源。`Cards/Card` 的 `id/index/countMin/countMax/levelMin/levelMax/exprTemplate` 和 `HiddenChallenges/HiddenChallenge` 的 offset、人数、mixed 要求与经济倍率由 C# `ArenaAuthorityCatalog` 启动期严格解析；损坏、重复 ID、倒置范围或模板与数字字段不一致会让竞技场 fail-closed，不回退 Web 硬编码。
+- `arena_factions.json` 是势力卡手作元数据真源，schemaVersion 固定为 1；每个 faction 必须命中 meta roster，`benchLevel` 只能为正整数或 null，`scale` 只能为 `small|large|coalition`，`enabled` 为布尔，`units` 为 null 或不重复的 `兵种N` 白名单。`launcher/web/modules/arena-factions.js` 由 `tools/derive-arena-factions.js` 生成，禁止手改。
+- `meta_teams.json` 与 `launcher/web/modules/arena-meta-rosters.js` 由 `tools/derive-arena-meta-teams.js` 从 `data/stages/**` 同步派生；`--check` 会 exact 比较 tracked 字节。release prepare 会先重建 meta/faction 投影，再重建 custom presets、unit catalog 和 parameter presets；任何 stale 输出必须非零失败。
+- 运行时 snapshot 的 `arenaAuthority.sourceDigest` 覆盖上述 XML、meta-team JSON 与 faction JSON 的原始字节。Web 只回传 session `cardId/cardIndex/roster`；C# 重建经济、表达式与爬升池，AS2 在写入前独立复算。完整协议与验证入口见 [Launcher README](../launcher/README.md) 和 [testing-guide](testing-guide.md)。
 
 ### 关卡地图资源箱声明
 

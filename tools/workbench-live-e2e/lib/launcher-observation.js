@@ -27,7 +27,9 @@ const LOG_BOUNDARY_SCHEMA = "workbench-live-e2e.launcher-terminal-boundary.v1";
 const ARCHIVE_SCHEMA = "workbench-live-e2e.archive-save-evidence.v1";
 const RESIDUE_SCHEMA = "workbench-live-e2e.runtime-residue.v1";
 const AGENT_ENTER_COMMAND = "#func:_root.agentEnterResolvedSave()";
-const AGENT_ACTIONS = new Set(["status", "start", "revealOk", "cancel", "shutdown"]);
+const AGENT_ACTIONS = new Set([
+  "status", "start", "revealOk", "cancel", "shutdown", "openArena",
+]);
 const HANDOFF_MARKER = "[BootstrapAS] event=handoff";
 const TITLE_FRAME_MARKER = "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared";
 const WATCHDOG_MARKER = "[LaunchFlow] Flash reveal watchdog fired";
@@ -95,7 +97,9 @@ function validateAgentFields(action, fields) {
   }
   const allowed = action === "start"
     ? new Set(["slot", "fresh", "deferReveal", "requireFlashReveal", "rememberSlot"])
-    : new Set();
+    : action === "openArena"
+      ? new Set(["expectedSlot", "expectedAttemptId"])
+      : new Set();
   const extras = Object.keys(value).filter((key) => !allowed.has(key));
   if (extras.length > 0) {
     contractFail("agent_control_fields_forbidden", "launcher_http",
@@ -105,6 +109,12 @@ function validateAgentFields(action, fields) {
       || !/^cf7_agent_[A-Za-z0-9_-]+$/.test(value.slot) || value.fresh !== false)) {
     contractFail("agent_control_start_invalid", "launcher_http",
       "agent start requires one dedicated snapshot slot and fresh=false");
+  }
+  if (action === "openArena" && (typeof value.expectedSlot !== "string"
+      || !/^cf7_agent_[A-Za-z0-9_-]+$/.test(value.expectedSlot)
+      || typeof value.expectedAttemptId !== "string" || !value.expectedAttemptId)) {
+    contractFail("agent_control_arena_open_invalid", "launcher_http",
+      "arena open requires the exact dedicated slot and current attempt watermark");
   }
   return value;
 }
@@ -198,7 +208,7 @@ function openAuthenticatedLegacyHttpSession(options) {
   async function agentControl(action, fields, timeoutMs) {
     if (!AGENT_ACTIONS.has(action)) {
       contractFail("agent_control_action_forbidden", "launcher_http",
-        "shared Launcher session does not expose domain openers", { action });
+        "shared Launcher session exposes only lifecycle and the fixed arena AS2 opener", { action });
     }
     const safeFields = validateAgentFields(action, fields);
     return request("POST", "/task", Object.assign({ task: "agent_control", action }, safeFields),

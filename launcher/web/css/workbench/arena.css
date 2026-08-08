@@ -2607,10 +2607,10 @@
 
 /* 奖金/押金：奖金主视觉（金色大字），押金次视觉（小字暗调） */
 .arena-card-prize {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 3px;
     flex-shrink: 0;
     padding: 5px 9px 6px;
     background: linear-gradient(180deg, rgba(var(--arena-accent-rgb),0.10), rgba(var(--arena-accent-rgb),0.03));
@@ -2636,9 +2636,10 @@
 }
 .arena-prize-deposit {
     font-size: 11px;
+    line-height: 1.2;
     color: var(--arena-text-mute);
     white-space: nowrap;
-    flex-shrink: 0;
+    justify-self: start;
 }
 
 /* ── 卡片底部按钮区（P2 起仅定制赛使用：入口卡 footer / 编辑器动作条；

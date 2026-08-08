@@ -13,6 +13,9 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
     public static function runAllTests():Void {
         setup();
         testCatalogProjection();
+        testLegacyPurchasedNumericStringProjection();
+        testLegacyPurchasedCorruptionFailsClosed();
+        testLegacyPurchasedProjectionDoesNotMutateSave();
         testIdentityTripleProjection();
         testLegacyIdentityFallbackBoundary();
         testDirectDelivery();
@@ -152,6 +155,64 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         check(stale.catalog[2].balanceSummary == undefined,
             "K 点目录在原始公式输入变化后 fail-closed 移除旧绿色摘要");
         ItemUtil.itemDataDict["测试手枪"].data.power = 100;
+    }
+
+    private static function testLegacyPurchasedNumericStringProjection():Void {
+        resetState();
+        _root.商城已购买物品 = [["legacy", "药剂", "消耗品", "200", "29"]];
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(response.success && typeof(response.purchased[0][3]) == "number"
+            && response.purchased[0][3] == 200
+            && typeof(response.purchased[0][4]) == "number"
+            && response.purchased[0][4] == 29
+            && response.purchasedView[0].quantity == 29,
+            "legacy purchased numeric strings are normalized at the AS2 authority boundary");
+    }
+
+    private static function testLegacyPurchasedCorruptionFailsClosed():Void {
+        var invalidRows:Array = [
+            ["legacy", "药剂", "消耗品", "", 1],
+            ["legacy", "药剂", "消耗品", "not-a-number", 1],
+            ["legacy", "药剂", "消耗品", -1, 1],
+            ["legacy", "药剂", "消耗品", "Infinity", 1],
+            ["legacy", "药剂", "消耗品", 40, 0],
+            ["legacy", "药剂", "消耗品", 40, "1.5"]
+        ];
+        var allRejected:Boolean = true;
+        for (var index:Number = 0; index < invalidRows.length; index++) {
+            resetState();
+            var row:Array = invalidRows[index];
+            _root.商城已购买物品 = [row];
+            var originalList:Array = _root.商城已购买物品;
+            callSeq++;
+            _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+            var response:Object = new LiteJSON().parse(String(_root.server.sent));
+            allRejected = allRejected && !response.success
+                && response.error == "invalid_legacy_purchased"
+                && _root.商城已购买物品 === originalList
+                && _root.商城已购买物品[0] === row
+                && _root.testKShopSaveCount == 0;
+        }
+        check(allRejected,
+            "corrupt legacy purchased values fail closed without save mutation");
+    }
+
+    private static function testLegacyPurchasedProjectionDoesNotMutateSave():Void {
+        resetState();
+        var row:Array = ["legacy", "药剂", "消耗品", "200", "29"];
+        _root.商城已购买物品 = [row];
+        var originalList:Array = _root.商城已购买物品;
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(response.success && _root.商城已购买物品 === originalList
+            && _root.商城已购买物品[0] === row
+            && typeof row[3] == "string" && row[3] == "200"
+            && typeof row[4] == "string" && row[4] == "29"
+            && response.purchased[0] !== row && _root.testKShopSaveCount == 0,
+            "legacy purchased projection returns a detached snapshot and never rewrites save state");
     }
 
     private static function testIdentityTripleProjection():Void {

@@ -455,6 +455,7 @@ async function attachPassiveObserver(options) {
   const pollMs = options.pollMs || 250;
   const cdpBinding = options.cdpBinding;
   const runtimeIdentity = options.runtimeIdentity;
+  const requirePanelRequestMux = options.requirePanelRequestMux !== false;
   if (!isPlainObject(runtimeIdentity) || runtimeIdentity.pid !== cdpBinding.runtimePid) {
     fail("cdp_runtime_binding_mismatch", "observer",
       "CDP endpoint is not bound to the authenticated candidate PID");
@@ -552,7 +553,8 @@ async function attachPassiveObserver(options) {
     }) + ")",
   "observer installation");
   if (!installed || installed.ok !== true || installed.url !== OVERLAY_URL
-      || installed.bridgeWrapped !== true || installed.panelRequestMuxWrapped !== true
+      || installed.bridgeWrapped !== true
+      || requirePanelRequestMux && installed.panelRequestMuxWrapped !== true
       || installed.webviewObserved !== true) {
     fail("observer_install_failed", "observer", "passive observer did not bind exact Overlay primitives", installed);
   }
@@ -575,7 +577,7 @@ async function attachPassiveObserver(options) {
         + "?marker.health():{installed:false,bridgeCurrent:false,uiDataCurrent:false,"
         + "panelRequestMuxCurrent:false,url:String(location.href)};})()", "observer health");
       if (!state.installed || !state.bridgeCurrent || !state.uiDataCurrent
-          || !state.panelRequestMuxCurrent
+          || requirePanelRequestMux && !state.panelRequestMuxCurrent
           || state.url !== OVERLAY_URL) {
         fail("observer_health_failed", "observer", "passive observer lost its exact bindings", state);
       }

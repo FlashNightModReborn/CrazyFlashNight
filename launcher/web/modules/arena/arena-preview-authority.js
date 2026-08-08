@@ -193,7 +193,7 @@
             cmd: 'preview',
             callId: reqId,
             cardIndex: cardIdx,
-            expr: card.expr
+            cardId: card.id
         });
     }
 
@@ -430,9 +430,15 @@
         var mercs = (typeof window !== 'undefined' && window.ArenaMetaRosters && window.ArenaMetaRosters.mercenaries)
             ? window.ArenaMetaRosters.mercenaries : null;
         if (!mercs || !mercs.length) return [];
+        var idCounts = {};
+        for (var c = 0; c < mercs.length; c++) {
+            var countedId = String(mercs[c] && mercs[c].id);
+            idCounts[countedId] = (idCounts[countedId] || 0) + 1;
+        }
         var pool = [];
         for (var i = 0; i < mercs.length; i++) {
             var merc = mercs[i];
+            if (idCounts[String(merc && merc.id)] !== 1) continue;
             var lvl = Number(merc.level) || 1;
             if (lvl < levelMin || lvl > levelMax) continue;
             pool.push(merc);

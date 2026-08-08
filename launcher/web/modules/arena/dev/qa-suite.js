@@ -186,8 +186,9 @@ var ArenaHarnessQA = (function() {
     // 测试新流程下进 detail 的标准准备步骤：先等 batch 完成，确保 cache 命中跳过 detail 内的 preview 请求。
     function waitBatchPreviewReady(api) {
         return api.waitFor(function() {
+            var cards = document.querySelectorAll('#arena-grid .arena-card');
             var loading = document.querySelectorAll('.arena-card-opponents-loading');
-            return loading.length === 0;
+            return cards.length > 0 && loading.length === 0;
         }, 3000, 'batch preview 全部完成（grid 摘要无 loading）');
     }
 
@@ -366,6 +367,11 @@ var ArenaHarnessQA = (function() {
                 }, 2000, 'panel active');
             })
             .then(function() {
+                return api.waitFor(function() {
+                    return document.querySelectorAll('#arena-grid .arena-card').length >= 10;
+                }, 2000, '权威标准卡 snapshot 渲染');
+            })
+            .then(function() {
                 // P2：浏览面 = 共享 DualPaneShell（catalog-decision 封闭 profile 投影）
                 var shell = document.querySelector('.arena-panel .workbench-shell');
                 api.assert(!!shell, 'workbench-shell 不存在');
@@ -461,7 +467,9 @@ var ArenaHarnessQA = (function() {
                 var msg = host.enterMessages[host.enterMessages.length - 1];
                 api.assert(msg.cmd === 'enter', '提交消息应为 enter');
                 api.assertEqual(msg.cardIndex, cardIdx, '入场应带所选 cardIndex');
-                api.assert(typeof msg.expr === 'string' && msg.expr.length > 0, 'enter 应携带 expr');
+                api.assert(typeof msg.cardId === 'string' && msg.cardId.indexOf('arena-') === 0, 'enter 应只携带权威 cardId');
+                api.assert(msg.expr === undefined && msg.deposit === undefined && msg.reward === undefined,
+                    'P5 Web enter 不得携带 expr/deposit/reward');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
@@ -1025,8 +1033,7 @@ var ArenaHarnessQA = (function() {
         function lastEnterPayload() {
             var msg = host.enterMessages[host.enterMessages.length - 1];
             return msg ? JSON.stringify({
-                cmd: msg.cmd, cardIndex: msg.cardIndex, expr: msg.expr,
-                deposit: msg.deposit, reward: msg.reward, difficulty: msg.difficulty,
+                cmd: msg.cmd, cardId: msg.cardId, cardIndex: msg.cardIndex, difficulty: msg.difficulty,
                 roster: msg.roster || null, mode: msg.mode || null
             }) : '';
         }
@@ -1052,6 +1059,23 @@ var ArenaHarnessQA = (function() {
                 api.assert(!grid.querySelector('.arena-card-btn-enter'), '目录卡不应再有 ⚔ 直入按钮');
                 api.assert(!grid.querySelector('.arena-card-btn-detail'), '目录卡不应再有 🔍 次按钮');
                 api.assert(!document.getElementById('arena-detail-view'), 'detail 整页视图应已退役');
+                var prizeBlocks = grid.querySelectorAll('.arena-card-prize');
+                api.assert(prizeBlocks.length >= 10, '标准目录应提供可量测的经济区');
+                for (var prizeIdx = 0; prizeIdx < prizeBlocks.length; prizeIdx++) {
+                    var prizeBlock = prizeBlocks[prizeIdx];
+                    var prizeValue = prizeBlock.querySelector('.arena-prize-value');
+                    var prizeDeposit = prizeBlock.querySelector('.arena-prize-deposit');
+                    var blockRect = prizeBlock.getBoundingClientRect();
+                    var valueRect = prizeValue.getBoundingClientRect();
+                    var depositRect = prizeDeposit.getBoundingClientRect();
+                    api.assert(valueRect.bottom <= depositRect.top + 0.5,
+                        '卡片 ' + prizeIdx + ' 奖金与押金不得重叠');
+                    api.assert(valueRect.left >= blockRect.left - 0.5
+                        && valueRect.right <= blockRect.right + 0.5
+                        && depositRect.left >= blockRect.left - 0.5
+                        && depositRect.right <= blockRect.right + 0.5,
+                        '卡片 ' + prizeIdx + ' 经济数值不得溢出容器');
+                }
                 var cards = window.ArenaPanel.getCards();
                 cardIdx = findPublicCardIndexByRole(cards, 'merc', 1);
                 api.assert(cardIdx >= 0, '应能找到佣兵公开卡');
@@ -1243,6 +1267,7 @@ var ArenaHarnessQA = (function() {
                 // 等至少一张佣兵卡摘要进入 error 态
                 return api.waitFor(function() {
                     var cards = window.ArenaPanel.getCards();
+                    if (!cards || cards.length < 10) return false;
                     for (var i = 0; i < 10; i++) {
                         if ((cards[i].standardRole || 'merc') !== 'merc') continue;
                         var sum = document.getElementById('arena-opp-summary-' + i);
@@ -2009,8 +2034,8 @@ var ArenaHarnessQA = (function() {
                 }
                 api.assert(!!enterMsg, '应找到 PVE enter 消息');
                 api.assertEqual(enterMsg.mode, 'custom_pve', 'PVE enter 应标记 custom_pve');
-                api.assertEqual(enterMsg.deposit, 0, 'PVE enter 押金应为 0');
-                api.assertEqual(enterMsg.reward, 0, 'PVE enter 奖金应为 0');
+                api.assert(enterMsg.expr === undefined && enterMsg.deposit === undefined && enterMsg.reward === undefined,
+                    'PVE Web enter 也不得携带经济字段；Host 固定重建零经济');
                 api.assert(enterMsg.matchCode && enterMsg.matchCode.indexOf('CF7ARENA:v1;mode=pve') === 0, 'PVE enter 应携带 canonical 赛程代码');
                 api.assert(enterMsg.roster && enterMsg.roster.length > 0, 'PVE enter 应携带展开后的怪物 roster');
                 var customStarts = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_start'; });
@@ -2325,19 +2350,27 @@ var ArenaHarnessQA = (function() {
             .then(function() {
                 var cards = window.ArenaPanel.getCards();
                 api.assertEqual(cards.length, EXPECTED.length, '堕落模式应出 18 张势力卡');
-                for (var i = 0; i < EXPECTED.length; i++) {
-                    api.assertEqual(cards[i].faction, EXPECTED[i][0], '堕落卡 ' + i + ' 势力应按挑战带升序排列');
-                    api.assertEqual(cards[i].levelMin, EXPECTED[i][1], EXPECTED[i][0] + ' 挑战带下限');
-                    api.assertEqual(cards[i].levelMax, EXPECTED[i][2], EXPECTED[i][0] + ' 挑战带上限');
-                    api.assert(cards[i].isFallen === true, EXPECTED[i][0] + ' 应带 isFallen 标记');
-                    api.assert(!cards[i].isEscalation, EXPECTED[i][0] + ' 堕落卡不应带 isEscalation');
+                var expectedByFaction = {};
+                for (var e = 0; e < EXPECTED.length; e++) expectedByFaction[EXPECTED[e][0]] = EXPECTED[e];
+                for (var i = 0; i < cards.length; i++) {
+                    var expected = expectedByFaction[cards[i].faction];
+                    api.assert(!!expected, '堕落卡应来自权威 18 势力集合：' + cards[i].faction);
+                    api.assertEqual(cards[i].levelMin, expected[1], cards[i].faction + ' 挑战带下限');
+                    api.assertEqual(cards[i].levelMax, expected[2], cards[i].faction + ' 挑战带上限');
+                    api.assert(cards[i].isFallen === true, cards[i].faction + ' 应带 isFallen 标记');
+                    api.assert(!cards[i].isEscalation, cards[i].faction + ' 堕落卡不应带 isEscalation');
+                    if (i > 0) {
+                        api.assert(cards[i - 1].levelMin <= cards[i].levelMin,
+                            'Host 权威卡在 Web 只按挑战带升序投影');
+                    }
                 }
                 // FALLEN_MIN_UNITS=4 过滤效果：联合大学/斯巴达各仅 1 单位，即使全量已知也不出卡
                 api.assert(findCardIndexByFaction(cards, '联合大学') < 0, '联合大学（1 单位）应被 FALLEN_MIN_UNITS 过滤');
                 api.assert(findCardIndexByFaction(cards, '斯巴达') < 0, '斯巴达（1 单位）应被 FALLEN_MIN_UNITS 过滤');
                 // 波斯军（排序后首卡）字段派生钉死：benchLevel 缺省回退 levelMax=59，
                 // count=clamp(3+⌊59/25⌋,4,6)=5，奖金=59×5×800=236000，押金=roundTo(奖金×0.4)=94000
-                var c = cards[0];
+                var persiaIdx = findCardIndexByFaction(cards, '波斯军');
+                var c = cards[persiaIdx];
                 api.assertEqual(c.opponentCount, 5, '波斯军对手数派生');
                 api.assertEqual(c.deposit, 94000, '波斯军押金派生');
                 api.assertEqual(c.reward, 236000, '波斯军奖金派生');
@@ -2345,16 +2378,16 @@ var ArenaHarnessQA = (function() {
                 api.assertEqual(c.unitCount, 6, '波斯军已知单位数');
                 api.assertEqual(host.previewMessages.length, 0, '堕落卡预览应为本地采样，全程零 AS2 preview');
                 // 卡面 DOM：建卡即紫罗兰怪物卡 + 势力名 rank + 麾下阵容 cap + 押金/奖金渲染
-                var el = document.querySelector('.arena-card[data-index="0"]');
+                var el = document.querySelector('.arena-card[data-index="' + persiaIdx + '"]');
                 api.assert(el.classList.contains('arena-card-monster'), '堕落卡应建卡即上 arena-card-monster（紫罗兰）');
                 api.assertEqual(el.querySelector('.arena-card-rank-faction').textContent, '波斯军', '堕落卡 rank 槽应为势力名');
                 api.assertEqual(el.querySelector('.arena-card-opponents-cap').textContent, '麾下阵容', '堕落卡阵容 cap 应为「麾下阵容」');
                 api.assert(el.querySelector('.arena-prize-value').textContent.indexOf('236,000') >= 0, '卡面应渲染奖金 236,000');
                 api.assert(el.querySelector('.arena-prize-deposit').textContent.indexOf('94,000') >= 0, '卡面应渲染押金 94,000');
-                var sum = document.getElementById('arena-opp-summary-0');
+                var sum = document.getElementById('arena-opp-summary-' + persiaIdx);
                 api.assert(sum.textContent.indexOf('实体×5') >= 0, 'grid 摘要应为 roster 实体格式（实际: ' + sum.textContent + '）');
                 // P2：本地采样 cache 落盘后，选中该卡 → 右栏 CommitBar 可用
-                clickCard(0);
+                clickCard(persiaIdx);
                 return waitCommitEnabled(api);
             })
             .then(function() { return { pass: true }; })
@@ -2435,9 +2468,9 @@ var ArenaHarnessQA = (function() {
                 var msg = host.enterMessages[host.enterMessages.length - 1];
                 api.assertEqual(msg.cmd, 'enter', '提交消息应为 enter');
                 api.assertEqual(msg.cardIndex, cardIdx, '入场应带所选 cardIndex');
-                api.assertEqual(msg.expr, '#0@44-59%5', 'enter 应携带卡片合成 expr');
-                api.assertEqual(msg.deposit, 94000, 'enter 押金');
-                api.assertEqual(msg.reward, 236000, 'enter 奖金');
+                api.assertEqual(msg.cardId, 'fallen-波斯军', 'enter 应只携带权威 cardId');
+                api.assert(msg.expr === undefined && msg.deposit === undefined && msg.reward === undefined,
+                    '堕落 Web enter 不得携带 expr/deposit/reward');
                 api.assertEqual(msg.difficulty, '', 'harness 直开 difficulty 为空串');
                 // 现行实现：堕落入场靠 roster 下发，不设 mode/faction/pool 字段（钉现状，非理想协议设计）
                 api.assert(msg.mode === undefined, '堕落 enter 现行不携带 mode 字段');
@@ -2499,11 +2532,14 @@ var ArenaHarnessQA = (function() {
             .then(function() {
                 var cards = window.ArenaPanel.getCards();
                 api.assertEqual(cards.length, EXPECTED.length, '部分已知（波斯军 6 sprite）应出 6 张卡（含跨势力污染）');
-                for (var i = 0; i < EXPECTED.length; i++) {
-                    api.assertEqual(cards[i].faction, EXPECTED[i][0], '部分已知出卡 ' + i + ' 势力');
-                    api.assertEqual(cards[i].levelMin, EXPECTED[i][1], EXPECTED[i][0] + ' 挑战带下限（按已知单位派生）');
-                    api.assertEqual(cards[i].levelMax, EXPECTED[i][2], EXPECTED[i][0] + ' 挑战带上限（按已知单位派生）');
-                    api.assertEqual(cards[i].unitCount, EXPECTED[i][3], EXPECTED[i][0] + ' 已知单位数');
+                var expectedByFaction = {};
+                for (var e = 0; e < EXPECTED.length; e++) expectedByFaction[EXPECTED[e][0]] = EXPECTED[e];
+                for (var i = 0; i < cards.length; i++) {
+                    var expected = expectedByFaction[cards[i].faction];
+                    api.assert(!!expected, '部分已知出卡应属于固定 6 势力集合：' + cards[i].faction);
+                    api.assertEqual(cards[i].levelMin, expected[1], cards[i].faction + ' 挑战带下限（按已知单位派生）');
+                    api.assertEqual(cards[i].levelMax, expected[2], cards[i].faction + ' 挑战带上限（按已知单位派生）');
+                    api.assertEqual(cards[i].unitCount, expected[3], cards[i].faction + ' 已知单位数');
                 }
                 // 斯巴达唯一单位 敌人-斯巴达战士 在波斯军 fixture 内（已知），但总单位数 1 < FALLEN_MIN_UNITS → 仍不出卡
                 api.assert(findCardIndexByFaction(cards, '斯巴达') < 0, '斯巴达即使唯一单位已知，也应被 FALLEN_MIN_UNITS 过滤');
@@ -2585,23 +2621,12 @@ var ArenaHarnessQA = (function() {
                 var msg = host.enterMessages[host.enterMessages.length - 1];
                 api.assertEqual(msg.cmd, 'enter', '提交消息应为 enter');
                 api.assertEqual(msg.cardIndex, cardIdx, '入场应带所选 cardIndex');
-                api.assertEqual(msg.mode, 'escalation', '爬升 enter 应标记 mode=escalation');
-                api.assertEqual(msg.faction, '波斯军', '爬升 enter 应携带势力名');
-                api.assertEqual(msg.baseCount, 5, '爬升 enter 起始波人数');
-                api.assertEqual(msg.baseLevelMin, 44, '爬升 enter 起始波等级下限');
-                api.assertEqual(msg.baseLevelMax, 59, '爬升 enter 起始波等级上限');
-                api.assertEqual(msg.maxWaves, 10, '爬升 enter 波数上限');
-                api.assertEqual(msg.deposit, 148000, '爬升 enter 押注');
-                api.assertEqual(msg.reward, 147500, '爬升 enter 波奖励基准');
-                // factionPool 按势力全量已知单位下发（不按挑战带过滤 → 含 maxLevel 20 的方舟妖姬，共 6 条）
-                api.assert(msg.pool && msg.pool.length === 6, '爬升 enter 应携带势力完整已知单位池（6 条）');
-                for (var i = 0; i < msg.pool.length; i++) {
-                    var p = msg.pool[i];
-                    api.assert(/^兵种/.test(String(p.type || '')), 'pool 条目应携带兵种 type（实际: ' + p.type + '）');
-                    api.assert(typeof p.minLevel === 'number' && typeof p.maxLevel === 'number' && typeof p.weight === 'number',
-                        'pool 条目应携带 minLevel/maxLevel/weight 数值');
-                }
-                api.assert(msg.roster === undefined, '爬升 enter 不下发 roster 快照（AS2 按 pool 逐波采样）');
+                api.assertEqual(msg.cardId, 'esc-波斯军', '爬升 enter 应只携带权威 cardId');
+                api.assert(msg.mode === undefined && msg.faction === undefined && msg.pool === undefined
+                    && msg.baseCount === undefined && msg.baseLevelMin === undefined && msg.baseLevelMax === undefined
+                    && msg.maxWaves === undefined && msg.deposit === undefined && msg.reward === undefined,
+                    '爬升 pool/波数/经济必须全部由 Host 注入，Web payload 不得出现');
+                api.assert(msg.roster === undefined, '爬升 Web enter 不下发 roster 快照');
                 return api.waitFor(function() {
                     return !Panels.getActive || Panels.getActive() !== 'arena';
                 }, 2000, 'enter 成功后 panel 关闭').then(function() {

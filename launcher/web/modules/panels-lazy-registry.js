@@ -243,8 +243,9 @@
     // ── arena ──
     // P2 起接入 workbench 共享层，闭包构成/顺序固定（team 同款）：共享层（lifecycle/focus/primitives/
     // profile/shell/components；arena 不消费 inspection-viewport，不列入）→ 领域模块 → 壳（arena-panel）。
-    // arena-meta-rosters.js（派生 roster，M2 采样源）+ arena-factions.js（手作势力卡元数据：对标等级/波数档/
-    // 启用/兵种白名单）先于 panel 载入。两者缺失时 arena-panel.js 各自优雅回退（全 merc / 全派生默认）。
+    // arena-meta-rosters.js（由 meta_teams.json 派生）+ arena-factions.js（由 arena_factions.json 派生的
+    // 势力卡展示投影）先于 panel 载入。P5 的经济/表达式/爬升池由 Host arenaAuthority 下发；缺失时
+    // arena 面板 fail-closed，不回退 Web 本地经济真值。
     // P4 工程拆分：原 arena-panel.js 单文件 IIFE 拆为 modules/arena/ 六模块（纯移动）——core（状态容器+
     // 共享工具，首载并守卫 workbench 共享层）→ shell / challenge-browser / preview-authority /
     // custom-editor / result（中间模块只守 core，跨模块调用解析于调用时）→ arena-panel.js 薄 facade

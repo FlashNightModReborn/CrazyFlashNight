@@ -5926,6 +5926,10 @@ namespace CF7Launcher.Guardian
             bool returnBase,
             bool pauseReleaseHandled)
         {
+            // Arena card IDs are session capabilities. Retire the exact session only after
+            // Host accepts the close, so a close/reopen cannot replay a card from the old DOM.
+            if (panel == "arena" && _arenaTask != null)
+                _arenaTask.ClearPending();
             string closeAction = ResolvePanelCloseGameCommand(panel);
             if (closeAction == "shopPanelClose")
             {

@@ -523,9 +523,6 @@
         return {
             cmd: 'enter',
             mode: 'custom_pve',
-            expr: options.expr || 'custom-pve',
-            deposit: 0,
-            reward: 0,
             difficulty: parsed.difficulty || '',
             player: 'current',
             matchCode: parsed.canonical || serializeMatchCode(parsed),

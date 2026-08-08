@@ -18,27 +18,11 @@
 
 
     // ════════════════════════════════════════════════════════════════════════════
-    // 标准模式档位。每次 panel open / 全部重抽会按 countMin-countMax
-    // 结算本 session 的固定人数、经济与 expr；preview / enter 全程复用这份卡片。
+    // P5：标准/隐藏/势力卡都来自 C# snapshot.arenaAuthority。
+    // Web 只分配展示用 roster 角色并提交 cardId；不再拥有经济公式或 XML 镜像常量。
     // ════════════════════════════════════════════════════════════════════════════
     var STANDARD_OPPONENT_CAP = 4; // Flash 战斗承压上限：标准 / 隐藏警报卡的佣兵等效人数均不超过 4
     var STANDARD_ROLE_COUNTS = { merc: 7, monster: 2, mixed: 1 }; // 公开 10 卡固定配比，位置每 session 随机
-    var STANDARD_TIERS = [
-        { levelMin: 1,  levelMax: 5,   countMin: 1, countMax: 1 },
-        { levelMin: 5,  levelMax: 10,  countMin: 1, countMax: 2 },
-        { levelMin: 10, levelMax: 15,  countMin: 2, countMax: 3 },
-        { levelMin: 15, levelMax: 20,  countMin: 2, countMax: 4 },
-        { levelMin: 20, levelMax: 30,  countMin: 3, countMax: 4 },
-        { levelMin: 30, levelMax: 35,  countMin: 3, countMax: 4 },
-        { levelMin: 35, levelMax: 40,  countMin: 4, countMax: 4 },
-        { levelMin: 40, levelMax: 50,  countMin: 4, countMax: 4 },
-        { levelMin: 50, levelMax: 60,  countMin: 4, countMax: 4 },
-        { levelMin: 60, levelMax: 100, countMin: 4, countMax: 4 }
-    ];
-    var STANDARD_HIDDEN_CHALLENGES = [
-        { offset: 1, multiplier: 1.5, label: '死线警报 I', countMin: 1, countMax: 3, requiresMixedRoster: true },
-        { offset: 2, multiplier: 2.0, label: '死线警报 II', countMin: 4, countMax: 4, requiresMixedRoster: true }
-    ];
     var CUSTOM_MATCH_CARD = {
         id: 'custom-match-p1',
         index: 0,
@@ -52,9 +36,6 @@
         expr: ''
     };
 
-    // 堕落模式卡片派生参数（业务可调）。
-    var FALLEN_MIN_UNITS = 4;     // 势力 roster 单位数门槛（剔单例 boss/误分类势力，如 联合大学/斯巴达）
-    var FALLEN_BAND_WINDOW = 15;  // 精英窗口：取势力顶端 N 级为挑战带，避免 1-60 这种跨度让挑战失焦
     var HIDDEN_MIXED_TEAM_MAX_UNITS = 12; // 单个怪物组展开上限；AS2 运行态按 12 活体上限分批补刷。
 
     function simpleView(key, kind, slots, root, renderer) {
@@ -318,25 +299,15 @@
     }
 
     function buildStandardSessionCards() {
-        var cards = [];
-        for (var i = 0; i < STANDARD_TIERS.length; i++) {
-            cards.push(buildStandardCard(STANDARD_TIERS[i], i + 1, null));
-        }
+        var cards = authorityCardsForModes({ standard: true, hidden: true });
         assignStandardPublicRoles(cards);
-
-        var playerTier = findPlayerTierIndex(getSnapshotPlayerLevel());
-        var lastTierIndex = STANDARD_TIERS.length - 1;
-        for (var h = 0; h < STANDARD_HIDDEN_CHALLENGES.length; h++) {
-            var meta = STANDARD_HIDDEN_CHALLENGES[h];
-            var targetIndex = Math.min(playerTier + meta.offset, lastTierIndex);
-            cards.push(buildStandardCard(STANDARD_TIERS[targetIndex], cards.length + 1, meta));
-        }
         return cards;
     }
 
     function assignStandardPublicRoles(cards) {
         var publicIdx = [];
-        for (var i = 0; i < STANDARD_TIERS.length && i < cards.length; i++) {
+        for (var i = 0; i < cards.length; i++) {
+            if (cards[i].mode !== 'standard') continue;
             cards[i].standardRole = 'merc';
             publicIdx.push(i);
         }
@@ -406,54 +377,22 @@
         return false;
     }
 
-    function buildStandardCard(tier, index, hiddenMeta) {
-        var rawCountMin = hiddenMeta && hiddenMeta.countMin != null ? hiddenMeta.countMin : tier.countMin;
-        var rawCountMax = hiddenMeta && hiddenMeta.countMax != null ? hiddenMeta.countMax : tier.countMax;
-        var countMin = Math.min(rawCountMin, STANDARD_OPPONENT_CAP);
-        var countMax = Math.min(rawCountMax, STANDARD_OPPONENT_CAP);
-        var count = ArenaCore.randomInt(countMin, countMax);
-        if (hiddenMeta && hiddenMeta.requiresMixedRoster && count < 2 && countMax >= 2) count = 2;
-        var multiplier = hiddenMeta ? hiddenMeta.multiplier : 1;
-        var reward = ArenaCore.roundTo(standardReward(tier, count) * multiplier, 1000);
-        var deposit = Math.max(500, ArenaCore.roundTo(reward / 2, 500));
-        return {
-            id: hiddenMeta ? ('arena-hidden-' + hiddenMeta.offset) : ('arena-' + index),
-            index: index,
-            name: 'DEATH MATCH角斗场',
-            opponentCount: count,
-            countMin: countMin,
-            countMax: countMax,
-            levelMin: tier.levelMin,
-            levelMax: tier.levelMax,
-            deposit: deposit,
-            reward: reward,
-            economyMultiplier: multiplier,
-            hiddenLabel: hiddenMeta ? hiddenMeta.label : '',
-            isHiddenChallenge: !!hiddenMeta,
-            requiresMixedRoster: !!(hiddenMeta && hiddenMeta.requiresMixedRoster),
-            expr: '#0@' + tier.levelMin + '-' + tier.levelMax + '%' + count
-        };
-    }
-
-    function standardReward(tier, count) {
-        var levelBase = Math.max(1, Number(tier.levelMin) || 1);
-        var perLevel = levelBase >= 40 ? 1250 : 1000;
-        return ArenaCore.roundTo(count * levelBase * perLevel, 1000);
-    }
-
-    function getSnapshotPlayerLevel() {
-        var level = S._snapshot ? Number(S._snapshot.playerLevel) : NaN;
-        return (!isNaN(level) && level > 0) ? level : 1;
-    }
-
-    function findPlayerTierIndex(level) {
-        level = Math.max(1, Math.floor(Number(level) || 1));
-        for (var i = 0; i < STANDARD_TIERS.length; i++) {
-            var tier = STANDARD_TIERS[i];
-            var isLast = i === STANDARD_TIERS.length - 1;
-            if (level >= tier.levelMin && (level < tier.levelMax || isLast)) return i;
+    function authorityCardsForModes(modes) {
+        var authority = S._snapshot && S._snapshot.arenaAuthority;
+        var source = authority && authority.schemaVersion === 1 && Array.isArray(authority.cards)
+            ? authority.cards : [];
+        var cards = [];
+        for (var i = 0; i < source.length; i++) {
+            var raw = source[i];
+            if (!raw || !modes[raw.mode] || typeof raw.id !== 'string') continue;
+            // 角色/选中态会在 Web session 内附着，必须与 Host snapshot 脱离，禁止反向改写权威快照。
+            var card = {};
+            for (var key in raw) {
+                if (Object.prototype.hasOwnProperty.call(raw, key)) card[key] = raw[key];
+            }
+            cards.push(card);
         }
-        return STANDARD_TIERS.length - 1;
+        return cards;
     }
 
     // 按模式重建卡片集与 DOM，并复位 per-card 派生状态。不发请求（caller 决定何时 batch）。
@@ -494,120 +433,17 @@
         S._rerollAllBtn.disabled = hidden || S._busy;
     }
 
-    // 堕落模式卡片派生：每个合格势力 → 一张「精英挑战」卡。
-    // 等级带取势力顶端 FALLEN_BAND_WINDOW 级（精英窗口）；对手数随等级档 4~6；
-    // 押金/奖金按 等级×人数 线性派生（业务可调）。合成 expr 仅为过 AS2 handleEnter 的非空校验，
-    // roster 分支不消费它（生成走 _root.角斗场roster阵容）。
+    // 堕落/爬升卡也只投影 Host 权威快照；本地 roster 数据仅用于 WYSIWYG 采样与展示。
     function buildFallenCards() {
-        var factions = ArenaShell.rostersAvailable() ? window.ArenaMetaRosters.factions : null;
-        if (!factions) return [];
-        var cards = [];
-        for (var name in factions) {
-            var units = factions[name].units || [];
-            if (units.length < FALLEN_MIN_UNITS) continue;
-            var knownUnits = ArenaPreviewAuthority.filterKnownUnits(units);
-            if (knownUnits.length === 0) continue;
-            var meta = factionMeta(name);
-            if (meta.enabled === false) continue;     // 手作禁用的势力不出卡
-            var lo = 99999, hi = 0;
-            for (var u = 0; u < knownUnits.length; u++) {
-                if (knownUnits[u].minLevel < lo) lo = knownUnits[u].minLevel;
-                if (knownUnits[u].maxLevel > hi) hi = knownUnits[u].maxLevel;
-            }
-            if (hi <= 0) continue;
-            var levelMin = Math.max(lo, hi - FALLEN_BAND_WINDOW);
-            var levelMax = hi;
-            // 对标等级（手标等效挑战等级，廉价怪通常远低于原始等级）：缺省回退 levelMax。
-            // 奖金/押金按对标等级算（而非原始怪物等级）→ 避免「难度太低奖励太高」。
-            var benchLevel = (meta.benchLevel != null) ? meta.benchLevel : levelMax;
-            var count = ArenaCore.clampInt(3 + Math.floor(levelMax / 25), 4, 6); // 45~60→4~5；100→6
-            var reward = ArenaCore.roundTo(benchLevel * count * 800, 1000);
-            var deposit = ArenaCore.roundTo(reward * 0.4, 1000);
-            cards.push({
-                id: 'fallen-' + name,
-                faction: name,
-                displayName: meta.displayName || name,
-                isFallen: true,
-                name: 'DEATH MATCH角斗场',
-                opponentCount: count,
-                levelMin: levelMin,
-                levelMax: levelMax,
-                benchLevel: benchLevel,
-                scale: meta.scale || null,        // small|large|coalition（爬升波数档）
-                unitCount: knownUnits.length,
-                deposit: deposit,
-                reward: reward,
-                expr: '#0@' + levelMin + '-' + levelMax + '%' + count
-            });
-        }
-        // 按挑战带升序 → grid 呈现难度递进
+        var cards = authorityCardsForModes({ fallen: true });
         cards.sort(function(a, b) { return (a.levelMin - b.levelMin) || (a.levelMax - b.levelMax); });
         return cards;
     }
 
-    // 手作势力卡元数据（launcher/web/modules/arena-factions.js → window.ArenaFactions），缺省回退派生值。
-    // 字段：benchLevel(对标等级=等效挑战等级，廉价怪远低于原始等级) / scale(small|large|coalition→波数 5|10|15)
-    //       / enabled(false=不出卡) / displayName(叙事名) / units(兵种白名单，预留)。策划逐势力填，未配置即全回退。
-    function factionMeta(faction) {
-        var F = (typeof window !== 'undefined' && window.ArenaFactions && window.ArenaFactions.factions)
-            ? window.ArenaFactions.factions[faction] : null;
-        return F || {};
-    }
-    // 势力规模档 → 爬升波数上限。缺省按 roster 单位数猜（小<6 / 大<12 / 联军≥12）。
-    function wavesForScale(scale, unitCount) {
-        if (scale === 'coalition') return 15;
-        if (scale === 'large') return 10;
-        if (scale === 'small') return 5;
-        return unitCount >= 12 ? 15 : (unitCount >= 6 ? 10 : 5);
-    }
-
-    // 爬升模式卡片（Phase 3）：与堕落卡同源（每势力一张），但带 isEscalation 标记 + 自己的押注经济。
-    // 卡面/预览复用堕落（isFallen=true → 紫罗兰 + 起始波小队采样预览）；差异在进场 payload：
-    // opponentCount/levelMin/levelMax 作为「起始波」基准，AS2 据势力单位池逐波爬升；maxWaves 为波数上限。
-    // 经济：波奖励基准 = 标准模式单场净收益@对标等级 = 对标等级×base对手数×500；AS2 按线性斜坡逐波发奖
-    //       （均值=效率目标 1.75 → 打满≈1.75×标准同时长收益）；押注 deposit≈一场净收益，战死没收。
     function buildEscalationCards() {
-        var base = buildFallenCards();
-        var out = [];
-        for (var i = 0; i < base.length; i++) {
-            var c = base[i];
-            var maxWaves = wavesForScale(c.scale, c.unitCount);
-            var waveBase = ArenaCore.roundTo(c.benchLevel * c.opponentCount * 500, 100); // 波奖励基准（= AS2 baseReward）
-            var deposit = ArenaCore.roundTo(waveBase, 1000);                              // 押注≈一场净收益
-            out.push({
-                id: 'esc-' + c.faction,
-                faction: c.faction,
-                displayName: c.displayName,
-                isFallen: true,        // 复用堕落卡视觉 + 怪物预览
-                isEscalation: true,    // 进场走爬升分叉
-                name: c.name,
-                opponentCount: c.opponentCount,
-                levelMin: c.levelMin,
-                levelMax: c.levelMax,
-                benchLevel: c.benchLevel,
-                maxWaves: maxWaves,
-                deposit: deposit,
-                reward: waveBase,      // = 波奖励基准
-                expr: c.expr
-            });
-        }
-        return out;
-    }
-
-    // 取某势力完整单位池（{type,minLevel,maxLevel,weight}）下发给 AS2 逐波采样。
-    function factionPool(faction) {
-        var factions = ArenaShell.rostersAvailable() ? window.ArenaMetaRosters.factions : null;
-        if (!factions || !factions[faction]) return [];
-        var units = ArenaPreviewAuthority.filterKnownUnits(factions[faction].units || []);
-        var pool = [];
-        for (var i = 0; i < units.length; i++) {
-            var u = units[i];
-            var entry = { type: u.type, minLevel: u.minLevel, maxLevel: u.maxLevel, weight: u.weight };
-            var parameters = u.Parameters || u.parameters || u['参数'];
-            if (ArenaCustomEditor.customHasParameters(parameters)) entry.Parameters = ArenaCustomEditor.cloneCustomParameters(parameters);
-            pool.push(entry);
-        }
-        return pool;
+        var cards = authorityCardsForModes({ escalation: true });
+        cards.sort(function(a, b) { return (a.levelMin - b.levelMin) || (a.levelMax - b.levelMax); });
+        return cards;
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -809,7 +645,12 @@
         // commit 可用性（右栏归空态）；新一批构成新窗口，目录滚动显式归顶。
         S._catalogScroll[S._activeMode] = 0;
         if (S._activeMode === 'standard') {
-            rebuildForMode('standard');
+            resetCardRuntimeState();
+            S._activeCards = [];
+            buildCards();
+            ArenaPreviewAuthority.requestSnapshot();
+            ArenaCore.showToast('正在获取新的权威挑战批次');
+            return;
         } else {
             resetCardRuntimeState();
             buildCards();
@@ -865,23 +706,15 @@
             panel: 'arena',
             cmd: 'enter',
             callId: reqId,
+            cardId: card.id,
             cardIndex: cardIdx,
-            expr: card.expr,
-            deposit: card.deposit,
-            reward: card.reward,
             // 来自 stage-select 重定向时是 "冒险"/"修罗" 等；dev 直开时是 ""。
             // AS2 ArenaPanelService 在非空时设 _root.当前关卡难度，让任务系统能匹配。
             difficulty: S._initDifficulty
         };
-        // 爬升模式：下发该势力完整单位池 + 起始波基准，AS2 逐波采样爬升（不发 roster 快照）。
+        // 爬升池、波数和经济均由 C# 按 cardId 注入；Web 不下发任何权威参数。
         if (card.isEscalation) {
-            msg.mode = 'escalation';
-            msg.faction = card.faction;
-            msg.baseCount = card.opponentCount;
-            msg.baseLevelMin = card.levelMin;
-            msg.baseLevelMax = card.levelMax;
-            msg.maxWaves = card.maxWaves;        // 波数上限（小5/大10/联军15）
-            msg.pool = factionPool(card.faction);
+            // 无额外字段。
         }
         // roster 卡（堕落/标准混入/隐藏混编）：把本地采样的小队作为 roster 下发 → AS2 走 commitRoster 生成混合阵容。
         // WYSIWYG：下发的就是 grid/detail 预览里那批怪（兵种 type 或 mercId + level 一一对应）。

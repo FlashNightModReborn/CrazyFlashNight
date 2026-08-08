@@ -52,6 +52,66 @@
     var RESULT_BY_CHALLENGE = { 'default': 'success', selected: 'failed', blocked: 'error' };
     var RESULT_MATCH_CODE = 'CF7ARENA:v1;mode=mvm;seed=519920;blue=u44@30x1,u45@30x1,u48@30x1,u49@30x1;red=u61@60x3,u62@60x3,u63@60x1';
 
+    // P5 Host authority fixture. Production builds these cards from arena_config.xml;
+    // atlas only mirrors the wire shape so the real Web panel cannot fall back to
+    // the retired client-side economy table.
+    var AUTHORITY_TIERS = [
+        [1, 5, 1, 1], [5, 10, 1, 2], [10, 15, 2, 3], [15, 20, 2, 4],
+        [20, 30, 3, 4], [30, 35, 3, 4], [35, 40, 4, 4], [40, 50, 4, 4],
+        [50, 60, 4, 4], [60, 100, 4, 4]
+    ];
+    function authorityRound(value, step) {
+        return Math.max(step, Math.round(value / step) * step);
+    }
+    function authorityCard(id, mode, index, tier, count, multiplier, label) {
+        var unitPrice = tier[0] >= 40 ? 1250 : 1000;
+        var reward = authorityRound(authorityRound(count * tier[0] * unitPrice, 1000) * multiplier, 1000);
+        return {
+            id: id,
+            mode: mode,
+            name: 'DEATH MATCH',
+            index: index,
+            previewIndex: index - 1,
+            opponentCount: count,
+            countMin: tier[2],
+            countMax: tier[3],
+            levelMin: tier[0],
+            levelMax: tier[1],
+            deposit: Math.max(500, authorityRound(reward / 2, 500)),
+            reward: reward,
+            expr: '#0@' + tier[0] + '-' + tier[1] + '%' + count,
+            economyMultiplier: multiplier,
+            hiddenLabel: label || '',
+            isHiddenChallenge: mode === 'hidden',
+            requiresMixedRoster: mode === 'hidden'
+        };
+    }
+    function buildAuthorityFixture(playerLevel) {
+        var cards = [];
+        for (var i = 0; i < AUTHORITY_TIERS.length; i++) {
+            cards.push(authorityCard('arena-' + (i + 1), 'standard', i + 1,
+                AUTHORITY_TIERS[i], AUTHORITY_TIERS[i][3], 1, ''));
+        }
+        var tierIndex = AUTHORITY_TIERS.length - 1;
+        for (var t = 0; t < AUTHORITY_TIERS.length; t++) {
+            if (playerLevel >= AUTHORITY_TIERS[t][0]
+                    && (playerLevel < AUTHORITY_TIERS[t][1] || t === AUTHORITY_TIERS.length - 1)) {
+                tierIndex = t;
+                break;
+            }
+        }
+        var hidden = [
+            ['arena-hidden-1', 1, 3, 1.5, 'Alert I'],
+            ['arena-hidden-2', 2, 4, 2.0, 'Alert II']
+        ];
+        for (var h = 0; h < hidden.length; h++) {
+            var target = AUTHORITY_TIERS[Math.min(tierIndex + hidden[h][1], AUTHORITY_TIERS.length - 1)];
+            cards.push(authorityCard(hidden[h][0], 'hidden', cards.length + 1,
+                target, hidden[h][2], hidden[h][3], hidden[h][4]));
+        }
+        return { schemaVersion: 1, source: 'atlas-authority-fixture', sourceDigest: 'ATLAS', cards: cards };
+    }
+
     var errors = [];
     var warnings = [];
     function error(name, detail) { errors.push({ name: name, detail: detail || '' }); }
@@ -61,6 +121,7 @@
     function installWebviewMock(state) {
         var listeners = [];
         var fixture = FIXTURES[state === 'blocked' ? 'broke' : 'normal'];
+        var authorityById = {};
         window.chrome = window.chrome || {};
         window.chrome.webview = {
             addEventListener: function(type, handler) {
@@ -79,6 +140,11 @@
         function handleMessage(message) {
             if (message.cmd === 'snapshot') {
                 setTimeout(function() {
+                    var authority = buildAuthorityFixture(fixture.playerLevel);
+                    authorityById = {};
+                    for (var a = 0; a < authority.cards.length; a++) {
+                        authorityById[authority.cards[a].id] = authority.cards[a];
+                    }
                     window.chrome.webview.__dispatch({
                         type: 'panel_resp', panel: 'arena', cmd: 'snapshot',
                         callId: message.callId, success: true,
@@ -87,14 +153,16 @@
                             playerLevel: fixture.playerLevel,
                             reuseCount: fixture.reuseCount,
                             reuseLimit: fixture.reuseLimit,
-                            knownEnemies: knownEnemies()
+                            knownEnemies: knownEnemies(),
+                            arenaAuthority: authority
                         }
                     });
                 }, 50);
             } else if (message.cmd === 'preview') {
                 var cardIdx = message.cardIndex;
                 setTimeout(function() {
-                    var m = String(message.expr || '').match(/@(\d+)-(\d+)%(\d+)/);
+                    var authorityCard = authorityById[message.cardId] || null;
+                    var m = String(authorityCard && authorityCard.expr || '').match(/@(\d+)-(\d+)%(\d+)/);
                     var lo = m ? Number(m[1]) : 1;
                     var hi = m ? Number(m[2]) : 10;
                     var count = m ? Number(m[3]) : 1;
@@ -118,7 +186,7 @@
                     window.chrome.webview.__dispatch({
                         type: 'panel_resp', panel: 'arena', cmd: 'preview',
                         callId: message.callId, cardIndex: cardIdx,
-                        success: true, expr: message.expr, opponents: opponents
+                        success: true, expr: authorityCard ? authorityCard.expr : '', opponents: opponents
                     });
                 }, 60);
             }

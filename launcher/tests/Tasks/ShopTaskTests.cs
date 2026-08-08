@@ -736,6 +736,32 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void BulkAuthority_RejectsUnnormalizedLegacyNumericStrings()
+        {
+            var sent = new List<string>();
+            var posted = new List<JObject>();
+            var task = new ShopTask(
+                () => true,
+                payload => { sent.Add(payload); return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+            task.HandleWebRequest("bulkQuery", Request(
+                "{\"callId\":\"shop.legacy-string.bulk\"}"));
+            JObject response = ResponseFor(sent[0], true);
+            response["purchased"][0][3] = "10";
+            response["purchased"][0][4] = "2";
+
+            task.HandleFlashResponse(response, _ => { });
+
+            Assert.Equal("invalid_response", (string)posted[0]["error"]);
+            int before = sent.Count;
+            task.HandleWebRequest("claim", Request(
+                "{\"callId\":\"shop.legacy-string.claim\",\"purchasedIdx\":0,"
+                + "\"expectedPurchasedToken\":\"shop.test.1\"}"));
+            Assert.Equal(before, sent.Count);
+            Assert.Equal("stale_state", (string)posted[1]["error"]);
+        }
+
+        [Fact]
         public void BulkAuthority_RejectsMalformedIdentityLeaves()
         {
             for (int variant = 0; variant < 6; variant++)

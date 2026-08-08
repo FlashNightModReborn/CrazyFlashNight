@@ -103,31 +103,68 @@ _root.UI系统.商城WebView.ensureState = function():Void {
     }
 };
 
-// 历史待领取记录继续沿用存档中的五元数组；Web 只消费这份显式投影。
-// 任一旧记录无法解析时返回 null，让 Host fail-closed，禁止把内部名猜成显示名或图标名。
-_root.UI系统.商城WebView.buildPurchasedView = function():Array {
-    var result:Array = [];
+// 历史待领取记录继续沿用存档中的五元数组。旧存档允许价格/数量为数字字符串，
+// 兼容只发生在此 AS2 权威边界：返回全新的 canonical 数组，绝不改写原存档数组。
+_root.UI系统.商城WebView.readLegacyNonNegativeNumber = function(value):Object {
+    var valueType:String = typeof value;
+    if (valueType != "number" && valueType != "string") return null;
+    if (valueType == "string") {
+        var text:String = String(value);
+        var hasValue:Boolean = false;
+        for (var index:Number = 0; index < text.length; index++) {
+            if (!this.isLegacyIdentityWhitespace(text.charCodeAt(index))) {
+                hasValue = true;
+                break;
+            }
+        }
+        if (!hasValue) return null;
+    }
+    var number:Number = Number(value);
+    if (isNaN(number) || number == Infinity || number == -Infinity || number < 0) return null;
+    return {value:number};
+};
+
+_root.UI系统.商城WebView.buildPurchasedSnapshot = function():Object {
+    var legacy:Array = [];
+    var view:Array = [];
     for (var i:Number = 0; i < _root.商城已购买物品.length; i++) {
         var row:Object = _root.商城已购买物品[i];
-        if (!(row instanceof Array) || row.length != 5) return null;
+        if (!(row instanceof Array) || row.length != 5
+                || typeof row[0] != "string" || String(row[0]).length < 1 || String(row[0]).length > 128
+                || typeof row[1] != "string" || String(row[1]).length < 1 || String(row[1]).length > 128
+                || typeof row[2] != "string" || String(row[2]).length > 128) {
+            return {success:false, error:"invalid_legacy_purchased"};
+        }
         var itemName:String = String(row[1]);
-        var quantity:Number = Number(row[4]);
+        var priceResult:Object = this.readLegacyNonNegativeNumber(row[3]);
+        var quantityResult:Object = this.readLegacyNonNegativeNumber(row[4]);
+        var quantity:Number = quantityResult == null ? NaN : Number(quantityResult.value);
         var itemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(itemName);
         var attrs:Object = _root.根据物品名查找全部属性(itemName);
-        if (itemName == "" || isNaN(quantity) || quantity <= 0
+        if (priceResult == null || quantityResult == null || quantity <= 0
                 || quantity != Math.floor(quantity) || itemData == undefined
                 || itemData.displayname == undefined || attrs == undefined
                 || attrs[1] == undefined || String(itemData.displayname) == ""
-                || String(attrs[1]) == "") return null;
-        result.push({
+                || String(attrs[1]) == "") {
+            return {success:false, error:"invalid_legacy_purchased"};
+        }
+        legacy.push([
+            String(row[0]), itemName, String(row[2]), Number(priceResult.value), quantity
+        ]);
+        view.push({
             purchasedIdx:i,
             item:itemName,
-            displayname:String(itemData.displayname),
-            icon:String(attrs[1]),
+            displayname:this.projectLegacyIdentityField(itemData.displayname, itemName),
+            icon:this.projectLegacyIdentityField(attrs[1], itemName),
             quantity:quantity
         });
     }
-    return result;
+    return {success:true, purchased:legacy, purchasedView:view};
+};
+
+_root.UI系统.商城WebView.buildPurchasedView = function():Array {
+    var snapshot:Object = this.buildPurchasedSnapshot();
+    return snapshot.success ? snapshot.purchasedView : null;
 };
 
 // sendResponse 是所有 Web panel 共用的 socket 出口（命名沿袭历史；语义上是 "WebView 通用响应"，不仅商城）
@@ -197,6 +234,14 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
             }
         } else cartAdjusted = true;
     }
+    var purchasedSnapshot:Object = _root.UI系统.商城WebView.buildPurchasedSnapshot();
+    if (!purchasedSnapshot.success) {
+        _root.UI系统.商城WebView.sendResponse({
+            task:"shop_response", callId:callId, success:false,
+            error:String(purchasedSnapshot.error)
+        });
+        return;
+    }
     var resp = {
         task: "shop_response", callId: callId, success: true,
         catalog: catalog,
@@ -205,8 +250,8 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
         kpoints: Number(_root.虚拟币),
         cart: cartMigrated,
         cartAdjusted: cartAdjusted,
-        purchased: _root.商城已购买物品,
-        purchasedView: _root.UI系统.商城WebView.buildPurchasedView(),
+        purchased: purchasedSnapshot.purchased,
+        purchasedView: purchasedSnapshot.purchasedView,
         purchasedToken: _root.UI系统.商城WebView.purchasedToken
     };
     var respStr = _root.UI系统.商城WebView.json.stringify(resp);
@@ -360,6 +405,12 @@ _root.UI系统.商城WebView.buildCheckoutPreview = function(cart:Array, issueTo
 
 // 新旧 checkout wire 共用唯一写入实现。历史待领取列表只读兼容，不再由任何结账入口增长。
 _root.UI系统.商城WebView.finalizeCheckout = function(preview:Object, resp:Object):Object {
+    var purchasedSnapshot:Object = this.buildPurchasedSnapshot();
+    if (!purchasedSnapshot.success) {
+        resp.success = false;
+        resp.error = String(purchasedSnapshot.error);
+        return resp;
+    }
     if (!org.flashNight.arki.item.ItemUtil.acquire(this.buildCheckoutAcquireItems(preview.purchaseLines))) {
         resp.success = false;
         resp.error = String(preview.blockingError || "inventory_full");
@@ -378,8 +429,8 @@ _root.UI系统.商城WebView.finalizeCheckout = function(preview:Object, resp:Ob
     resp.newBalance = _root.虚拟币;
     resp.delivered = preview.purchaseLines;
     resp.cart = [];
-    resp.purchased = _root.商城已购买物品;
-    resp.purchasedView = this.buildPurchasedView();
+    resp.purchased = purchasedSnapshot.purchased;
+    resp.purchasedView = purchasedSnapshot.purchasedView;
     resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
     // 动态 maxQuantity 依赖本次交付后的情报剩余容量，成功回包必须同步刷新目录。
     resp.catalog = this.buildCatalog();
@@ -490,16 +541,29 @@ _root.gameCommands["shopClaim"] = function(params) {
         resp.success = false; resp.error = "item_not_found";
         resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
     } else {
-        var item = _root.商城已购买物品[claimIdx];
+        var purchasedSnapshot:Object = _root.UI系统.商城WebView.buildPurchasedSnapshot();
+        if (!purchasedSnapshot.success) {
+            resp.success = false;
+            resp.error = String(purchasedSnapshot.error);
+            resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
+            _root.UI系统.商城WebView.sendResponse(resp);
+            return;
+        }
+        var item = purchasedSnapshot.purchased[claimIdx];
         var itemName = item[1];
-        var qty = Number(item[item.length - 1]);
-        if (isNaN(qty) || qty <= 0) qty = 1;
+        var qty = Number(item[4]);
 
         if (org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, qty)) {
             _root.商城已购买物品.splice(claimIdx, 1);
+            purchasedSnapshot.purchased.splice(claimIdx, 1);
+            purchasedSnapshot.purchasedView.splice(claimIdx, 1);
+            for (var purchasedIndex:Number = claimIdx;
+                    purchasedIndex < purchasedSnapshot.purchasedView.length; purchasedIndex++) {
+                purchasedSnapshot.purchasedView[purchasedIndex].purchasedIdx = purchasedIndex;
+            }
             resp.success = true;
-            resp.purchased = _root.商城已购买物品;
-            resp.purchasedView = _root.UI系统.商城WebView.buildPurchasedView();
+            resp.purchased = purchasedSnapshot.purchased;
+            resp.purchasedView = purchasedSnapshot.purchasedView;
             resp.purchasedToken = _root.UI系统.商城WebView.rotatePurchasedToken();
             resp.catalog = _root.UI系统.商城WebView.buildCatalog();
             // Plan A: 商城 claim 真实从已购列表移除 + 物品入背包，必达。

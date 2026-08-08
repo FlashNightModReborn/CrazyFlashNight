@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    竞技场（角斗场）挑战卡片配置
+    竞技场（角斗场）挑战卡片配置 —— P5 运行时真源
 
-    ⚠ WARNING: 本文件目前未被代码加载（无运行时读取路径）。运行时真值在
-       launcher/web/modules/arena-panel.js 的标准档位生成逻辑。
-       本 XML 仅作为人类可读参考 + 字段意义文档。若修改卡片数据需同时改两处。
+    标准卡与隐藏警报卡的档位、人数范围、表达式模板和经济倍率以本 XML 为唯一真源。
+    Launcher 启动时由 ArenaAuthorityCatalog 严格解析；解析失败时竞技场 fail-closed，
+    不回退 Web 硬编码。势力阵容与手作标定分别以 data/arena/meta_teams.json（生成物）
+    和 data/arena/arena_factions.json（手作真源）为准，三份输入的字节共同形成
+    arenaAuthority.sourceDigest。
 
     Runtime 入口：玩家在 stage-select panel 选 "DEATH MATCH角斗场" 难度 → 由
        StageSelectPanelService 识别 + 走 panel_request → LauncherCommandRouter.RequestOpenPanel
        → PanelHostController 自动替换 panel。dev 模式下也保留 LauncherCommandRouter
        的 "ARENA_TEST" 按钮直开入口。
 
-       下次开工方向（等表达力施工触发时一次性迁移）：
-         1. C# 启动期解析本 XML 为 ArenaConfig 内存对象，作为唯一权威源
-         2. ArenaTask 的 snapshot 回包附带 cards 数组下发给 web，
-            arena-panel.js 删标准档位硬编码，从 snapshot 拿
-         3. enter 消息只传 cardIndex；C# 按 cardIndex 反查 config，
-            组装完整 enter payload（expr/deposit/reward/stageUrl/...）下推 AS2
-         4. AS2 端保持薄：仅消费当前一场的参数，不持有卡片表，
-            新增字段在 AS2 侧不增加常驻内存
-       原因：表达力扩展走 launcher → AS2 的运行时消息下发，AS2 端不应预读 XML。
+       权威链：
+         1. ArenaTask 的 snapshot 回包附带 arenaAuthority.cards 与 sourceDigest
+         2. Web 只提交本 session 的 cardId/cardIndex 和必要 roster，不提交经济值
+         3. C# 按 cardId 反查同一 session，重建 expr/deposit/reward、势力与爬升池
+         4. AS2 ArenaPanelService 在扣款、预载或跳关前按公开公式独立复算并精确比对
+       AS2 不预读 XML，也不持有常驻卡片表；旧 snapshot、未知 cardId、伪造经济字段和
+       公式不一致均 fail-closed。
 
-    标准模式当前在 Web 打开 / 全部重抽时按 countMin-countMax 随机确定本局人数，
+    标准模式在 C# 每次取得 fresh snapshot 时按 countMin-countMax 随机确定本局人数，
     所有标准 / 隐藏警报卡的佣兵等效人数最终均封顶 4，避免 Flash 战斗压力过高。
     公开标准卡按会话固定配比随机落位：7 张佣兵卡、2 张怪物组卡、1 张 mixed 卡。
     mixed 卡优先使用真实 meta-team，数据不足时兜底为佣兵模板单位 + 已知怪物组。
@@ -36,10 +36,10 @@
     
     押金公式: Math.max(500, roundTo(reward / 2, 500))
 
-    奖金公式（运行时 arena-panel.js）:
-      - levelMin < 40:  opponentCount × levelMin × 1000
-      - levelMin >= 40: opponentCount × levelMin × 1250
-      - 隐藏警报卡：以上结果再乘 economyMultiplier
+    奖金公式（C# 生成 + AS2 复算）：
+      - levelMin < 40:  roundTo(opponentCount × levelMin × 1000, 1000)
+      - levelMin >= 40: roundTo(opponentCount × levelMin × 1250, 1000)
+      - 隐藏警报卡：以上结果乘 economyMultiplier 后再次 roundTo(..., 1000)
 
     注意: FadeTransitionFrame "角斗场-2" 仅作历史记录；实际进场调用 ArenaController
     内部 enterArenaCommon 跳转 "wuxianguotu_1"（无限过图通用入口）。

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -32,6 +33,8 @@ namespace CF7Launcher.Tasks
 
         private readonly Func<bool> _isClientReady;
         private readonly Action<string> _send;
+        private readonly ArenaAuthorityCatalog _authorityCatalog;
+        private ArenaAuthoritySession _authoritySession;
         private ArenaCalibrationTask _calibrationTask;
         private Action<JObject> _openCustomResultPanel;
         private Action<string> _postToWeb;
@@ -47,14 +50,32 @@ namespace CF7Launcher.Tasks
         public ArenaTask(XmlSocketServer socket)
             : this(
                 delegate { return socket != null && socket.IsClientReady; },
-                delegate(string payload) { if (socket != null) socket.Send(payload); })
+                delegate(string payload) { if (socket != null) socket.Send(payload); },
+                null)
+        {
+        }
+
+        public ArenaTask(XmlSocketServer socket, string projectRoot)
+            : this(
+                delegate { return socket != null && socket.IsClientReady; },
+                delegate(string payload) { if (socket != null) socket.Send(payload); },
+                ArenaAuthorityCatalog.Load(projectRoot))
         {
         }
 
         public ArenaTask(Func<bool> isClientReady, Action<string> send)
+            : this(isClientReady, send, null)
+        {
+        }
+
+        internal ArenaTask(
+            Func<bool> isClientReady,
+            Action<string> send,
+            ArenaAuthorityCatalog authorityCatalog)
         {
             _isClientReady = isClientReady ?? delegate { return false; };
             _send = send ?? delegate { };
+            _authorityCatalog = authorityCatalog;
             _pending = new Dictionary<int, PendingRequest>();
             _timers = new Dictionary<int, Timer>();
             _customBatchIds = new HashSet<string>(StringComparer.Ordinal);
@@ -100,19 +121,36 @@ namespace CF7Launcher.Tasks
             }
 
             string action;
+            JObject trustedFields = null;
             switch (cmd)
             {
                 case "snapshot":
+                    if (_authorityCatalog == null)
+                    {
+                        RespondError(webCallId, cmd, "arena_authority_unavailable");
+                        return;
+                    }
+                    _authoritySession = null;
                     action = "arenaSnapshot";
                     break;
                 case "preview":
                     action = "arenaRollPreview";
+                    if (!TryBuildPreviewFields(parsed, out trustedFields, out string previewError))
+                    {
+                        RespondError(webCallId, cmd, previewError);
+                        return;
+                    }
                     break;
                 case "equip_tooltip":
                     action = "arenaEquipTooltip";
                     break;
                 case "enter":
                     action = "arenaEnter";
+                    if (!TryBuildEnterFields(parsed, out trustedFields, out string enterError))
+                    {
+                        RespondError(webCallId, cmd, enterError);
+                        return;
+                    }
                     break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
@@ -147,12 +185,147 @@ namespace CF7Launcher.Tasks
 
             lock (_lock) { _timers[fid] = timer; }
 
-            // 信封构造 + 安全参数透传统一走 PanelBridge（含 action/task 保留键守卫，杜绝各桥漏抄）。
-            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);
+            // P5：preview/enter 只复制上面由 C# 权威目录重建的字段；客户端经济与 expr 永不透传。
+            // snapshot/equip_tooltip 仍走通用安全信封（它们不含写入经济）。
+            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, trustedFields ?? parsed);
 
             string flashJson = flashMsg.ToString(Formatting.None);
             LogManager.Log("[ArenaTask] -> Flash: " + flashJson);
             _send(flashJson + "\0");
+        }
+
+        private bool TryBuildPreviewFields(JObject parsed, out JObject fields, out string error)
+        {
+            fields = null;
+            if (!TryResolveCard(parsed, out ArenaAuthorityCard card, out error)) return false;
+            if (card.Mode != "standard" && card.Mode != "hidden")
+            {
+                error = "preview_not_supported";
+                return false;
+            }
+            JToken indexToken = parsed["cardIndex"];
+            if (indexToken?.Type != JTokenType.Integer || indexToken.Value<int>() != card.PreviewIndex)
+            {
+                error = "stale_authority";
+                return false;
+            }
+            fields = new JObject { ["cardIndex"] = card.PreviewIndex };
+            card.WriteAuthorityFields(fields);
+            fields["authoritySourceDigest"] = _authoritySession.SourceDigest;
+            return true;
+        }
+
+        private bool TryBuildEnterFields(JObject parsed, out JObject fields, out string error)
+        {
+            fields = null;
+            error = null;
+            if (_authoritySession == null)
+            {
+                error = "authority_snapshot_required";
+                return false;
+            }
+
+            string requestedMode = parsed.Value<string>("mode") ?? string.Empty;
+            if (requestedMode == "custom_pve")
+            {
+                if (!_authoritySession.TrySanitizeRoster(
+                        parsed["roster"], null, true, out JArray customRoster, out error))
+                {
+                    return false;
+                }
+                if (customRoster == null || customRoster.Count == 0)
+                {
+                    error = "roster_required";
+                    return false;
+                }
+                fields = new JObject
+                {
+                    ["mode"] = "custom_pve",
+                    ["authorityId"] = "custom-pve",
+                    ["authorityMode"] = "custom_pve",
+                    ["authoritySourceDigest"] = _authoritySession.SourceDigest,
+                    ["levelMin"] = 1,
+                    ["levelMax"] = 1,
+                    ["opponentCount"] = 1,
+                    ["economyMultiplier"] = 1,
+                    ["benchLevel"] = 1,
+                    ["expr"] = "#0@1-1%1",
+                    ["deposit"] = 0,
+                    ["reward"] = 0,
+                    ["roster"] = customRoster,
+                    ["difficulty"] = ReadDifficulty(parsed)
+                };
+                return true;
+            }
+
+            if (!TryResolveCard(parsed, out ArenaAuthorityCard card, out error)) return false;
+            if (!_authoritySession.TrySanitizeRoster(
+                    parsed["roster"], card, false, out JArray roster, out error))
+            {
+                return false;
+            }
+            if (card.Mode == "escalation" && roster != null)
+            {
+                error = "invalid_roster";
+                return false;
+            }
+
+            fields = new JObject
+            {
+                ["cardIndex"] = card.Mode == "standard" || card.Mode == "hidden"
+                    ? card.PreviewIndex
+                    : ReadNonNegativeIndex(parsed["cardIndex"]),
+                ["difficulty"] = ReadDifficulty(parsed)
+            };
+            card.WriteAuthorityFields(fields);
+            fields["authoritySourceDigest"] = _authoritySession.SourceDigest;
+            if (roster != null) fields["roster"] = roster;
+            if (card.Mode == "escalation")
+            {
+                fields["mode"] = "escalation";
+                fields["faction"] = card.Faction;
+                fields["baseCount"] = card.OpponentCount;
+                fields["baseLevelMin"] = card.LevelMin;
+                fields["baseLevelMax"] = card.LevelMax;
+                fields["maxWaves"] = card.MaxWaves;
+                fields["pool"] = card.Pool.DeepClone();
+            }
+            return true;
+        }
+
+        private bool TryResolveCard(JObject parsed, out ArenaAuthorityCard card, out string error)
+        {
+            card = null;
+            if (_authoritySession == null)
+            {
+                error = "authority_snapshot_required";
+                return false;
+            }
+            JToken token = parsed["cardId"];
+            if (token?.Type != JTokenType.String
+                    || !_authoritySession.TryGetCard(token.Value<string>(), out card))
+            {
+                error = "stale_authority";
+                return false;
+            }
+            error = null;
+            return true;
+        }
+
+        private static int ReadNonNegativeIndex(JToken token)
+        {
+            return token?.Type == JTokenType.Integer && token.Value<long>() >= 0
+                    && token.Value<long>() <= 10000
+                ? token.Value<int>()
+                : 0;
+        }
+
+        private static string ReadDifficulty(JObject parsed)
+        {
+            JToken token = parsed["difficulty"];
+            if (token?.Type != JTokenType.String) return string.Empty;
+            string value = token.Value<string>() ?? string.Empty;
+            return value.Length <= 64 ? value : string.Empty;
         }
 
         private void HandleCustomMatchRequest(string cmd, string webCallId, JObject parsed)
@@ -316,6 +489,17 @@ namespace CF7Launcher.Tasks
                 }
             }
 
+            if (entry.WebCmd == "snapshot")
+            {
+                if (!TryAttachAuthoritySnapshot(msg, out string authorityError))
+                {
+                    _authoritySession = null;
+                    msg["success"] = false;
+                    msg["error"] = authorityError;
+                    msg.Remove("snapshot");
+                }
+            }
+
             msg.Remove("task");
             msg["type"] = "panel_resp";
             msg["panel"] = "arena";
@@ -327,6 +511,36 @@ namespace CF7Launcher.Tasks
             respond(null);
         }
 
+        private bool TryAttachAuthoritySnapshot(JObject msg, out string error)
+        {
+            error = "invalid_authority_snapshot";
+            if (_authorityCatalog == null || msg.Value<bool?>("success") != true
+                    || msg["snapshot"] is not JObject snapshot)
+            {
+                return false;
+            }
+            JToken levelToken = snapshot["playerLevel"];
+            JToken enemiesToken = snapshot["knownEnemies"];
+            if ((levelToken?.Type != JTokenType.Integer && levelToken?.Type != JTokenType.Float)
+                    || enemiesToken is not JArray enemies
+                    || enemies.Any(token => token.Type != JTokenType.String))
+            {
+                return false;
+            }
+            double levelNumber = levelToken.Value<double>();
+            if (double.IsNaN(levelNumber) || double.IsInfinity(levelNumber)
+                    || levelNumber < 1 || levelNumber > int.MaxValue)
+            {
+                return false;
+            }
+            _authoritySession = _authorityCatalog.CreateSession(
+                checked((int)Math.Floor(levelNumber)),
+                enemies.Values<string>());
+            snapshot["arenaAuthority"] = _authoritySession.ToSnapshot();
+            error = null;
+            return true;
+        }
+
         public void ClearPending()
         {
             lock (_lock)
@@ -334,6 +548,7 @@ namespace CF7Launcher.Tasks
                 foreach (var t in _timers.Values) t.Dispose();
                 _timers.Clear();
                 _pending.Clear();
+                _authoritySession = null;
             }
         }
 

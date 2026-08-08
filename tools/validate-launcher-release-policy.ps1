@@ -184,6 +184,13 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-npc-shops.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'item-set-metadata' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-item-sets.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'arena-meta-teams-current' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\derive-arena-meta-teams.js'), '--check') -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'arena-factions-current' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\derive-arena-factions.js'), '--check') -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7RequiredPathsCheck -Name 'required-arena-authority-assets' `
+        -Root (Join-Path $ProjectRoot 'data\arena') `
+        -Paths @('arena_config.xml', 'arena_factions.json', 'meta_teams.json')
 
     $requiredWebPaths = @(
         'bootstrap.html', 'bootstrap-main.js', 'overlay.html', 'config\version.js',

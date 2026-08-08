@@ -1308,7 +1308,7 @@ async function runSelfTests() {
       CloneGuard.releaseCloneLock(ordinary);
     });
 
-    await test("authenticated legacy HTTP session exposes lifecycle only", async () => {
+    await test("authenticated legacy HTTP session exposes lifecycle plus fixed arena opener", async () => {
       const portsFile = path.join(root, "launcher_ports.json");
       const credentialFile = path.join(root, "legacy-http-credential.json");
       fs.writeFileSync(portsFile, JSON.stringify({ pid: 7001, httpPort: 18080, socketPort: 18081 }), "utf8");
@@ -1329,6 +1329,15 @@ async function runSelfTests() {
         } });
       await session.getStatus();
       await session.agentControl("start", { slot: "cf7_agent_fixture", fresh: false });
+      await session.agentControl("openArena", {
+        expectedSlot: "cf7_agent_fixture",
+        expectedAttemptId: "attempt-fixture",
+      });
+      await assert.rejects(() => session.agentControl("openArena", {
+        expectedSlot: "cf7_agent_fixture",
+        expectedAttemptId: "attempt-fixture",
+        panel: "arena",
+      }), (error) => error && error.code === "agent_control_fields_forbidden");
       await session.requestFixedAgentEnter();
       const emptyLog = await session.readTerminalLogSnapshot(2000);
       assert.strictEqual(emptyLog.total, 0);
@@ -1336,7 +1345,13 @@ async function runSelfTests() {
         (error) => error && error.code === "agent_control_action_forbidden");
       assert.strictEqual(JSON.stringify(session.evidence).includes("secret-token-not-public"), false);
       assert.deepStrictEqual(calls.map((entry) => entry.pathname),
-        ["/status", "/task", "/console", "/logs?lines=2000"]);
+        ["/status", "/task", "/task", "/console", "/logs?lines=2000"]);
+      assert.deepStrictEqual(calls[2].body, {
+        task: "agent_control",
+        action: "openArena",
+        expectedSlot: "cf7_agent_fixture",
+        expectedAttemptId: "attempt-fixture",
+      });
 
       const httpModule = require("http");
       const originalHttpRequest = httpModule.request;

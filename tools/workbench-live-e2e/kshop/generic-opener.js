@@ -9,6 +9,7 @@ const RuntimeGuard = require("../lib/runtime-guard");
 const { canonicalJson, fail, sha256Bytes, sha256Text } = require("./common");
 
 const OWNED_BASE_RELATIVE = path.join("tmp", "workbench-live-e2e", "kshop");
+const LAUNCHER_VERSION_MARKER = ".launcher-version-marker.json";
 
 function formatLocalSaveTimestamp(now) {
   const value = now || new Date();
@@ -52,6 +53,12 @@ function artifactEntry(root, appData, filePath, kind) {
     regularFile: true, exactRealPath: true };
 }
 
+function isSaveUniverseJsonName(name, excludedTargetSlot) {
+  const lower = String(name || "").toLowerCase();
+  return /\.json$/i.test(lower) && lower !== LAUNCHER_VERSION_MARKER
+    && lower !== (String(excludedTargetSlot || "") + ".json").toLowerCase();
+}
+
 function captureSaveUniverse(rootValue, appDataValue, excludedTargetSlot, capturedAt) {
   const root = SharedEvidence.assertExactDirectory(path.resolve(rootValue), "save_universe");
   const appData = SharedEvidence.assertExactDirectory(path.resolve(appDataValue), "save_universe");
@@ -61,8 +68,7 @@ function captureSaveUniverse(rootValue, appDataValue, excludedTargetSlot, captur
     const fullPath = path.join(saves, entry.name);
     if (entry.isSymbolicLink()) fail("save_universe_reparse", "save_universe",
       "saves/ contains a reparse entry", { fullPath });
-    if (entry.isFile() && /\.json$/i.test(entry.name)
-        && entry.name.toLowerCase() !== (excludedTargetSlot + ".json").toLowerCase()) {
+    if (entry.isFile() && isSaveUniverseJsonName(entry.name, excludedTargetSlot)) {
       artifacts.push(artifactEntry(root, appData, fullPath, "json"));
     }
   });
@@ -186,19 +192,25 @@ async function openGenericRuntime(root, args, runDir) {
   const appData = SharedEvidence.assertExactDirectory(path.resolve(process.env.APPDATA),
     "clone_prepare");
   let lock = null;
+  const ownedBaseRelative = args.ownedBaseRelative || OWNED_BASE_RELATIVE;
   const resolved = RuntimeGuard.resolveCandidateIdentityBeforeMutation({ root,
     candidateRoot: path.resolve(args.candidateRoot), assertNoRuntime: assertNoLauncherBeforeMutation,
     prepareClone: (_identity, candidateEvidence) => {
       lock = CloneSaveGuard.acquireCloneLock({ root, slot: args.slot, runDir,
-        ownedBaseRelative: OWNED_BASE_RELATIVE });
+        ownedBaseRelative });
       try {
         const collateralBefore = captureSaveUniverse(root, appData, args.slot);
-        const preparation = CloneSaveGuard.prepareDedicatedClone({ root, appData, runDir,
-          ownedBaseRelative: OWNED_BASE_RELATIVE, seedSlot: args.seedSlot, targetSlot: args.slot, lock,
-          validateSeed: isValidSaveData,
-          transformJson(data) { data.lastSaved = formatLocalSaveTimestamp(); return data; },
-          transformId: "kshop-clone-lastSaved-v1", validateTarget: isValidSaveData,
-        });
+        const cloneOptions = { root, appData, runDir,
+          ownedBaseRelative, seedSlot: args.seedSlot, targetSlot: args.slot, lock,
+          validateSeed: isValidSaveData, validateTarget: isValidSaveData };
+        if (args.preserveSeedBytes !== true) {
+          cloneOptions.transformJson = function(data) {
+            data.lastSaved = formatLocalSaveTimestamp();
+            return data;
+          };
+          cloneOptions.transformId = "kshop-clone-lastSaved-v1";
+        }
+        const preparation = CloneSaveGuard.prepareDedicatedClone(cloneOptions);
         return { preparation, collateralBefore, candidateEvidence };
       } catch (error) {
         try { CloneSaveGuard.releaseCloneLock(lock); } catch (_releaseError) {}
@@ -262,6 +274,7 @@ module.exports = {
   cleanupAuthenticatedPartialStart,
   formatLocalSaveTimestamp,
   isValidSaveData,
+  isSaveUniverseJsonName,
   openGenericRuntime,
   releaseGenericClone,
   restartGenericRuntime,

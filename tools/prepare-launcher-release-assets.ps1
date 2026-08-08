@@ -93,6 +93,8 @@ $nodeSteps = @(
     @{ Name = 'derive native HUD map data'; Script = 'tools\export-maphud-data.js' },
     @{ Name = 'derive task catalog'; Script = 'tools\derive-task-catalog.js' },
     @{ Name = 'derive achievement catalog'; Script = 'tools\derive-achievement-catalog.js' },
+    @{ Name = 'derive arena meta teams'; Script = 'tools\derive-arena-meta-teams.js' },
+    @{ Name = 'derive arena faction metadata'; Script = 'tools\derive-arena-factions.js' },
     @{ Name = 'derive arena unit catalog'; Script = 'tools\derive-arena-unit-catalog.js' },
     @{ Name = 'derive arena unit parameter presets'; Script = 'tools\derive-arena-unit-param-presets.js' },
     @{ Name = 'derive arena custom presets'; Script = 'tools\derive-arena-custom-presets.js' }
@@ -142,6 +144,9 @@ $generatedOutputs = @(
     'launcher/data/map_hud_data.json',
     'launcher/web/modules/tasks/task-catalog.json',
     'launcher/web/modules/tasks/achievement-catalog.json',
+    'data/arena/meta_teams.json',
+    'launcher/web/modules/arena-meta-rosters.js',
+    'launcher/web/modules/arena-factions.js',
     'launcher/web/modules/arena-unit-catalog.js',
     'launcher/web/modules/arena-unit-param-presets.js',
     'launcher/web/modules/arena-custom-presets.js',

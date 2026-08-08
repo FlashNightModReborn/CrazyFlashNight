@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "note": "竞技场势力卡手作元数据真源；launcher/web/modules/arena-factions.js 必须由 tools/derive-arena-factions.js 生成。",
+  "factions": {
+    "军阀势力": { "displayName": "军阀势力", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "摇滚公园": { "displayName": "摇滚公园", "benchLevel": null, "scale": "large", "enabled": true, "units": null },
+    "波斯军": { "displayName": "波斯军", "benchLevel": null, "scale": "large", "enabled": true, "units": null },
+    "不死军团": { "displayName": "不死军团", "benchLevel": null, "scale": "small", "enabled": true, "units": null },
+    "虫群": { "displayName": "虫群", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "堕落城": { "displayName": "堕落城", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "方舟": { "displayName": "方舟", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "黑铁会": { "displayName": "黑铁会", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "狂野玫瑰": { "displayName": "狂野玫瑰", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "忍者": { "displayName": "忍者", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "日本军": { "displayName": "日本军", "benchLevel": null, "scale": "large", "enabled": true, "units": null },
+    "天网": { "displayName": "天网", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "亡灵/僵尸": { "displayName": "亡灵/僵尸", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "雪山": { "displayName": "雪山", "benchLevel": null, "scale": "large", "enabled": true, "units": null },
+    "凤凰眷属": { "displayName": "凤凰眷属", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "魔神": { "displayName": "魔神", "benchLevel": null, "scale": "large", "enabled": true, "units": null },
+    "铁血": { "displayName": "铁血", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null },
+    "异形": { "displayName": "异形", "benchLevel": null, "scale": "coalition", "enabled": true, "units": null }
+  }
+}

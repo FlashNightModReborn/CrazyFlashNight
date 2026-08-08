@@ -29,6 +29,9 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         _root.gameCommands["openWebStageSelect"] = function(params) {
             return org.flashNight.arki.stageSelect.StageSelectPanelService.handleOpenWebStageSelect(params);
         };
+        _root.gameCommands["openArenaForAgent"] = function(params) {
+            return org.flashNight.arki.stageSelect.StageSelectPanelService.handleOpenArenaForAgent(params);
+        };
 
         _inited = true;
     }
@@ -173,11 +176,11 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
      *   - returnTo: 声明"关闭 arena 后回到 stage-select"。携带 returnFrameLabel/frameLabel
      *               让 PanelHostController 在 pop 栈时用对应 initData 重开 stage-select。
      */
-    private static function requestOpenArenaPanel(difficulty:String):Void {
-        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
+    private static function requestOpenArenaPanel(difficulty:String):Boolean {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
         var frameLabel:String = String(_root.Web选关当前帧值 || _root.关卡地图帧值 || "基地门口");
         var returnFrameLabel:String = String(_root.Web选关返回帧值 || _root.关卡地图帧值 || frameLabel);
-        _root.server.sendSocketMessage(_json.stringify({
+        return _root.server.sendSocketMessage(_json.stringify({
             task: "panel_request",
             panel: "arena",
             source: "stage_select_arena_redirect",
@@ -194,6 +197,16 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                 source: "arena_return"
             }
         }));
+    }
+
+    /**
+     * 无人值守真实 E2E 的窄入口。C# 先绑定专用 cf7_agent_* 存档与本次 attempt，
+     * 本函数再只复用正式 stage-select → panel_request → Host 白名单链路。
+     * params 故意完全忽略：HTTP 不能选择 panel、difficulty、returnTo 或 initData。
+     */
+    public static function handleOpenArenaForAgent(params:Object):Boolean {
+        cleanupStageSelectState();
+        return requestOpenArenaPanel("冒险");
     }
 
     /**

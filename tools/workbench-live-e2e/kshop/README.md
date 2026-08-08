@@ -4,6 +4,17 @@
 
 本目录提供 KShop A3 的隔离旅程编排、被动观察和证据验签。当前生产树已输出真正的 `event=panel_exact_close_completed`；verifier 要求首进程与重启进程各有且仅有一份同 owner 收据，并验证 `close request → [PanelHost] closed: kshop → completion receipt`。首进程收据必须早于 archive，重启进程收据必须是相关 Host 尾记录。
 
+P5 另增加一条不购买、不领取、不保存的旧存档读回旅程：[`../kshop-legacy-readback.js`](../kshop-legacy-readback.js) 只把显式授权的 seed 逐字节复制到专用 `cf7_agent_*` 槽，绑定 exact candidate 后，以真实 WebView2 和物理 GUI 输入完成同进程两次开关及新进程第三次读回。关闭证据只接受两种现役入口：命中可见且 enabled 的 header close button 的 `isTrusted` 左键 click，或紧邻 exact close request、哈希连续且已经隐藏面板的 Host `panel_esc`；后者在报告中固定标记 `browserIsTrusted:false / physicalInputAttestation:false`，不能冒充浏览器 DOM 物理点击，实际 Escape 操作仍由外部 GUI 执行记录证明。它固定核对 catalog 数量、K 点、历史待领取投影、原始数字字符串、clone 商城字段与玩家原档 SHA-256；任何 KShop 写命令、原档字节变化、clone 商城变化或跨次投影漂移都 fail closed。该入口用于旧存档只读兼容回归，不替代下文带一次购买、SAFEEXIT 和完整 Inventory surface 的 canonical A3 写旅程。关闭判定的纯函数反例先跑 `node tools/workbench-live-e2e/kshop-legacy-readback.self-test.js`，当前为 **7/7**。
+
+```powershell
+node tools/workbench-live-e2e/kshop-legacy-readback.js `
+  --candidate-root "...\tmp\runtime-candidates\v2\<candidate>" `
+  --seed-slot crazyflasher7_saves `
+  --slot cf7_agent_p5_kshop_legacy `
+  --expected-catalog-count 227 `
+  --allow-read-only-live-seed
+```
+
 2026-08-05 本轮先按独立终审意见把 production closure 加固到 `production-closure.v7` / `production-inventory-source-anchors.v3`：26 个语义锚点、51 个直接父级/执行位置/不可重绑定/受审 token 摘要断言和 3 个顺序 Gate 同时绑定 KShop 真实 `InventoryCoordinator` 完整构造赋值、同一对象内的最终 `requestInventory` 与 exact-owner physical-surface reader、真实 Inventory mux transport，以及 checkout/claim 的 begin → request → callback → complete/fallback 全 callable。38 个逐锚漂移、8 个注释/字符串/两类正则/marker 假象、15 个 dead-code/nested-function/unreachable 与 22 个外部写入/生效绑定/顺序及等频体漂移反例均已进入 canonical；不同作者的结构终审已给出 `PASS`，但当时 browser 仍是裸子进程，因此该阶段整体 `NO-GO` 痕迹继续保留。
 随后补齐 browser 子门：`run-kshop-harness.js` 以可嵌入 API 返回完整结果；独立 `browser-bootstrap.js` 在自己的 runtime journal 内封闭 280 个实际 Node 模块、23 个 builtin、76 个浏览器实际成功消费的 harness/生产 JS/CSS/图片/manifest 文件、固定资源 inventory、共享资源闭包 helper 与真实传给 Chromium launch 的 Edge 路径/字节/hash。HTTP ledger 保留 286 个有序 occurrence，并仅显式接纳唯一 `/favicon.ico` 404；资源缺失、额外、越界、未完成、磁盘漂移、实际 launch 路径不一致或四个 filtered checkout/claim 断言的 ID/detail 漂移都会使父级 canonical 失败。browser 当前为 `150/150`，child manifest 为 363 项。
 旧 `241/241`、journal `79ba38f9aef20bc2b2bbb9605b34eb0a5936ce6e4a66e6c42d494fdb266aa5c3`、裸 browser 作者复跑，以及补 manifest 输出前的首个当前树 `249/249` 均固定为 `Superseded / Reopened`。其后 manifest `b33f04e9370c9c23102ff6aafaf2dbda77beeb7623a3bb86db5115258498b564` / journal `d9767ede7040519e9b5eba43966ed58dbb82b35e1bed5332701f01860313dad0` 的 `249/249` 又因共享资源 helper 未从实际 occurrence 重建资源投影、父回执未持久绑定 child receipt 而固定为 `Superseded / Reopened`。2026-08-05 当前稳定串行 `bootstrap.js --check` 用时 `289.7s`，为 `249/249`、`ADMITTED / OFFLINE_VERIFIED`：父 manifest `50172e9ded78ccce344ad16b4b118e48a0b894fe2d6bbe1703a2386e71f59d55`、父 journal `4504caf937835dc3616c16c5f7e130fd490d7eed1a41a140e87601ac898289a2`、父回执 `7697ee9192c6fc0d8b921005a2d14cb841c7357eae20ad8d76b920183d903b55`。父回执直接绑定当前 Node、browser child、Edge、76 个资源/286 个 occurrence、固定 150 项 assertion ID 摘要与各层结果摘要；child receipt 为 `4313f57fc53be1387b1086df12616fc4043d02b8803bc5dfa3633124ac73190e`。这仍是作者侧离线证据，等待不同作者终审；状态保持 `LIVE_BLOCKED / NOT_DEPLOYED`。全程没有启动 Launcher、candidate、游戏或存档，也没有访问外部网络或取得 live capture。

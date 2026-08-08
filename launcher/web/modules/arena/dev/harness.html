@@ -331,6 +331,85 @@
             if (window.ArenaQaKnownFixtures) return window.ArenaQaKnownFixtures.all();
             return DEFAULT_KNOWN_ENEMIES.slice();
         }
+        // P5 Host authority fixture：生产由 ArenaAuthorityCatalog 从 XML/JSON 生成；harness 只复刻 wire 形状，
+        // 让 Web QA 验证“只消费 snapshot / 只提交 cardId”，不把这份测试数据当运行时真源。
+        var AUTHORITY_TIERS = [
+            [1, 5, 1, 1], [5, 10, 1, 2], [10, 15, 2, 3], [15, 20, 2, 4],
+            [20, 30, 3, 4], [30, 35, 3, 4], [35, 40, 4, 4], [40, 50, 4, 4],
+            [50, 60, 4, 4], [60, 100, 4, 4]
+        ];
+        function authorityRound(value, step) { return Math.max(step, Math.round(value / step) * step); }
+        function authorityStandardCard(id, mode, index, tier, count, multiplier, label) {
+            var reward = authorityRound(authorityRound(count * tier[0] * (tier[0] >= 40 ? 1250 : 1000), 1000) * multiplier, 1000);
+            return {
+                id: id, mode: mode, name: 'DEATH MATCH角斗场', index: index,
+                previewIndex: index - 1, opponentCount: count, countMin: tier[2], countMax: tier[3],
+                levelMin: tier[0], levelMax: tier[1], deposit: Math.max(500, authorityRound(reward / 2, 500)),
+                reward: reward, expr: '#0@' + tier[0] + '-' + tier[1] + '%' + count,
+                economyMultiplier: multiplier, hiddenLabel: label || '',
+                isHiddenChallenge: mode === 'hidden', requiresMixedRoster: mode === 'hidden'
+            };
+        }
+        function authorityPlayerTier(level) {
+            for (var i = 0; i < AUTHORITY_TIERS.length; i++) {
+                if (level >= AUTHORITY_TIERS[i][0] && (level < AUTHORITY_TIERS[i][1] || i === AUTHORITY_TIERS.length - 1)) return i;
+            }
+            return AUTHORITY_TIERS.length - 1;
+        }
+        function buildAuthorityFixture(playerLevel, knownEnemies) {
+            var cards = [];
+            for (var i = 0; i < AUTHORITY_TIERS.length; i++) {
+                cards.push(authorityStandardCard('arena-' + (i + 1), 'standard', i + 1,
+                    AUTHORITY_TIERS[i], AUTHORITY_TIERS[i][3], 1, ''));
+            }
+            var tier = authorityPlayerTier(playerLevel);
+            var hiddenMeta = [
+                ['arena-hidden-1', 1, 3, 1.5, '死线警报 I'],
+                ['arena-hidden-2', 2, 4, 2.0, '死线警报 II']
+            ];
+            for (var h = 0; h < hiddenMeta.length; h++) {
+                var target = AUTHORITY_TIERS[Math.min(tier + hiddenMeta[h][1], AUTHORITY_TIERS.length - 1)];
+                var count = hiddenMeta[h][2];
+                cards.push(authorityStandardCard(hiddenMeta[h][0], 'hidden', cards.length + 1,
+                    target, count, hiddenMeta[h][3], hiddenMeta[h][4]));
+            }
+            var known = {};
+            for (var k = 0; k < knownEnemies.length; k++) known[String(knownEnemies[k])] = true;
+            var rosters = window.ArenaMetaRosters && window.ArenaMetaRosters.factions || {};
+            var metaSource = window.ArenaFactions && window.ArenaFactions.factions || {};
+            for (var faction in metaSource) {
+                var roster = rosters[faction];
+                var meta = metaSource[faction];
+                if (!roster || !meta || meta.enabled === false || !roster.units || roster.units.length < 4) continue;
+                var units = roster.units.filter(function(unit) {
+                    return /主角/.test(String(unit.spritename || '')) || known[String(unit.spritename || '')] === true;
+                });
+                if (!units.length) continue;
+                var low = Math.min.apply(Math, units.map(function(unit) { return unit.minLevel; }));
+                var high = Math.max.apply(Math, units.map(function(unit) { return unit.maxLevel; }));
+                var levelMin = Math.max(low, high - 15);
+                var bench = meta.benchLevel == null ? high : meta.benchLevel;
+                var count = Math.max(4, Math.min(6, 3 + Math.floor(high / 25)));
+                var waves = meta.scale === 'small' ? 5 : (meta.scale === 'large' ? 10 : 15);
+                var fallenReward = authorityRound(bench * count * 800, 1000);
+                var waveReward = authorityRound(bench * count * 500, 100);
+                var common = {
+                    faction: faction, displayName: meta.displayName || faction, name: 'DEATH MATCH角斗场',
+                    opponentCount: count, countMin: count, countMax: count, levelMin: levelMin, levelMax: high,
+                    benchLevel: bench, maxWaves: waves, unitCount: units.length, isFallen: true,
+                    expr: '#0@' + levelMin + '-' + high + '%' + count
+                };
+                cards.push(Object.assign({}, common, {
+                    id: 'fallen-' + faction, mode: 'fallen', reward: fallenReward,
+                    deposit: authorityRound(fallenReward * 0.4, 1000)
+                }));
+                cards.push(Object.assign({}, common, {
+                    id: 'esc-' + faction, mode: 'escalation', isEscalation: true,
+                    reward: waveReward, deposit: authorityRound(waveReward, 1000)
+                }));
+            }
+            return { schemaVersion: 1, source: 'harness-authority-fixture', sourceDigest: 'HARNESS', cards: cards };
+        }
         // ── Host 对象 ──
         var host = window.ArenaHarnessHost = {
             sentMessages: [],
@@ -347,6 +426,7 @@
             _fixture: 'normal',
             // null = 未显式设置 → getSnapshot 注入默认环境（全量已知）
             _knownEnemies: null,
+            _authorityById: {},
 
             setViewport: function(value) {
                 var shell = document.getElementById('viewport-shell');
@@ -377,12 +457,17 @@
 
             getSnapshot: function() {
                 var f = FIXTURES[this._fixture] || FIXTURES.normal;
+                var knownEnemies = this._knownEnemies ? this._knownEnemies.slice() : defaultKnownEnemies();
+                var authority = buildAuthorityFixture(f.playerLevel, knownEnemies);
+                this._authorityById = {};
+                for (var i = 0; i < authority.cards.length; i++) this._authorityById[authority.cards[i].id] = authority.cards[i];
                 return {
                     money: f.money,
                     playerLevel: f.playerLevel,
                     reuseCount: f.reuseCount,
                     reuseLimit: f.reuseLimit,
-                    knownEnemies: this._knownEnemies ? this._knownEnemies.slice() : defaultKnownEnemies()
+                    knownEnemies: knownEnemies,
+                    arenaAuthority: authority
                 };
             },
 
@@ -489,8 +574,9 @@
                             });
                             return;
                         }
-                        // 简化 fixture：根据 expr 解析等级范围 / 人数，生成 placeholder 对手数据
-                        var m = String(message.expr || '').match(/@(\d+)-(\d+)%(\d+)/);
+                        // 简化 fixture：真实 Host 按 cardId 反查 XML 权威卡；mock 同样禁止从 Web expr 取值。
+                        var authorityCard = host._authorityById[message.cardId] || null;
+                        var m = String(authorityCard && authorityCard.expr || '').match(/@(\d+)-(\d+)%(\d+)/);
                         var lo = m ? Number(m[1]) : 1;
                         var hi = m ? Number(m[2]) : 10;
                         var count = m ? Number(m[3]) : 1;
@@ -527,7 +613,7 @@
                             callId: message.callId,
                             cardIndex: cardIdx,
                             success: true,
-                            expr: message.expr,
+                            expr: authorityCard ? authorityCard.expr : '',
                             opponents: opponents
                         });
                     }, 80);

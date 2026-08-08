@@ -686,6 +686,81 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void OpenArena_ReadyDedicatedSlot_SendsFixedAs2OpenerExactlyOnce()
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateRuntimeReadyTask(
+                "cf7_agent_arena_p5",
+                "attempt-arena");
+            task.SetArenaOpenAction(delegate
+            {
+                sendCount++;
+                return true;
+            });
+
+            JObject resp = JObject.Parse(task.Handle(
+                OpenArenaRequest("cf7_agent_arena_p5", "attempt-arena")));
+
+            Assert.True((bool)resp["success"]);
+            Assert.Equal("arena_panel_open_requested", (string)resp["note"]);
+            Assert.True((bool)resp["readyForRuntimeAutomation"]);
+            Assert.Equal(1, sendCount);
+        }
+
+        [Fact]
+        public void OpenArena_ReusesDedicatedRuntimeWatermarkGates()
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateTask(
+                "Ready",
+                true,
+                true,
+                "cf7_agent_arena_p5",
+                "attempt-arena",
+                false);
+            ObserveGameEntered(task);
+            task.SetArenaOpenAction(delegate { sendCount++; return true; });
+
+            JObject resp = JObject.Parse(task.Handle(
+                OpenArenaRequest("cf7_agent_arena_p5", "attempt-arena")));
+
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("runtime_not_ready", (string)resp["error"]);
+            Assert.Contains(
+                "runtime_save_not_loaded",
+                resp.Value<JArray>("runtimeReadyBlockedBy").Values<string>());
+            Assert.Equal(0, sendCount);
+        }
+
+        [Theory]
+        [InlineData(false, "arena_open_failed")]
+        [InlineData(null, "arena_open_unavailable")]
+        public void OpenArena_DoesNotClaimRequestWithoutSuccessfulAs2Opener(
+            bool? sendResult,
+            string expectedError)
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateRuntimeReadyTask(
+                "cf7_agent_arena_p5",
+                "attempt-arena");
+            if (sendResult.HasValue)
+            {
+                task.SetArenaOpenAction(delegate
+                {
+                    sendCount++;
+                    return sendResult.Value;
+                });
+            }
+
+            JObject resp = JObject.Parse(task.Handle(
+                OpenArenaRequest("cf7_agent_arena_p5", "attempt-arena")));
+
+            Assert.False((bool)resp["success"]);
+            Assert.Equal(expectedError, (string)resp["error"]);
+            Assert.Equal(sendResult.HasValue ? 1 : 0, sendCount);
+        }
+
+        [Fact]
         public void Start_RejectsUnsafeSlot()
         {
             bool started = false;
@@ -755,6 +830,19 @@ namespace CF7Launcher.Tests.Tasks
                 request["expectedSlot"] = expectedSlot;
             if (expectedAttempt != null)
                 request["expectedAttemptId"] = expectedAttempt;
+            return request;
+        }
+
+        private static JObject OpenArenaRequest(
+            string expectedSlot,
+            string expectedAttempt)
+        {
+            JObject request = new JObject
+            {
+                ["action"] = "openArena"
+            };
+            if (expectedSlot != null) request["expectedSlot"] = expectedSlot;
+            if (expectedAttempt != null) request["expectedAttemptId"] = expectedAttempt;
             return request;
         }
 
