@@ -112,8 +112,9 @@ function checkPvePayload() {
   ]);
   assert.strictEqual(parsed.enterPayload.cmd, "enter");
   assert.strictEqual(parsed.enterPayload.mode, "custom_pve");
-  assert.strictEqual(parsed.enterPayload.deposit, 0);
-  assert.strictEqual(parsed.enterPayload.reward, 0);
+  assert.strictEqual(parsed.enterPayload.expr, undefined);
+  assert.strictEqual(parsed.enterPayload.deposit, undefined);
+  assert.strictEqual(parsed.enterPayload.reward, undefined);
 }
 
 function checkRejections() {

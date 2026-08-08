@@ -1221,7 +1221,7 @@ test("NPC browser journeys execute under an independently verified child module 
     "browser-resource-inventory.v1.json"), "utf8"));
   assert.strictEqual(resourceInventory.schema,
     "workbench-live-e2e.browser-resource-inventory.v1");
-  assert.strictEqual(resourceInventory.files.length, 35);
+  assert.strictEqual(resourceInventory.files.length, 37);
   assert(resourceInventory.files.includes("modules/npcshop/dev/harness.html"));
   assert(resourceInventory.files.includes("modules/npcshop.js"));
   assert(resourceInventory.files.includes("modules/npcshop-runtime.js"));
@@ -1243,7 +1243,7 @@ test("NPC browser journeys execute under an independently verified child module 
   assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
   assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
   assert.strictEqual(receipt.journalVerification, "VERIFIED");
-  assert.strictEqual(receipt.moduleEntryCount, 322);
+  assert.strictEqual(receipt.moduleEntryCount, 324);
   assert.deepStrictEqual({passed:receipt.result.passed, total:receipt.result.total,
     reducedPassed:receipt.result.reducedPassed, reducedTotal:receipt.result.reducedTotal,
     contractQuantity:receipt.result.contractQuantity},
@@ -1264,8 +1264,8 @@ test("NPC browser journeys execute under an independently verified child module 
   ]);
   assert.strictEqual(receipt.servedResourceClosure.schema,
     "workbench-live-e2e.browser-resource-closure-receipt.v1");
-  assert.strictEqual(receipt.servedResourceClosure.resourceCount, 35);
-  assert(receipt.servedResourceClosure.occurrenceCount >= 35);
+  assert.strictEqual(receipt.servedResourceClosure.resourceCount, 37);
+  assert(receipt.servedResourceClosure.occurrenceCount >= 37);
   assert.strictEqual(receipt.servedResourceClosure.failureCount, 1);
   ["inventorySha256", "resourcesSha256", "occurrencesSha256", "failuresSha256",
     "evidenceSha256"].forEach((field) =>
@@ -1377,7 +1377,7 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
     "root:launcher/web/css/workbench/core.css"].forEach((locator) => assert(locators.has(locator), locator));
   assert.strictEqual(bundle.productionClosure.declarations.bootWeb.length, 23);
   assert.strictEqual(bundle.productionClosure.declarations.npcLazyWeb.length, 13);
-  assert.strictEqual(bundle.productionClosure.declarations.styleWeb.length, 27);
+  assert.strictEqual(bundle.productionClosure.declarations.styleWeb.length, 29);
   const physicalSurface = bundle.productionClosure.semanticContracts.inventoryPhysicalSurface;
   assert.strictEqual(physicalSurface.schema,
     "workbench-live-e2e.npc.production-inventory-surface.v10");
@@ -1422,14 +1422,14 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
   assert.deepStrictEqual(physicalSurface.sourceContract.closedSourceBytes, {
     policy:"exact_utf8_bytes_governance_pin",
     expected:{
-      consumer:"cdf1e4cb293daebaa443fc37322786a39bec62c42a3f6018cf2c5707ef1740aa",
-      adapter:"a2ba65fbb00aa104697bd8d89c92aef836c98dcd3b4e3152bfa8779d521366ad",
-      provider:"e35363921818d31049bc5bd9bdef6c37c07c97d535d4d93043e34738cb52cadc",
+      consumer:"aac86d778cd3773dc7b3fbe63d37d5464397e9b88ecb053d2c5f9e7537bdeec0",
+      adapter:"2abc6d198607eb45185111ebf5269e946fb81dc5d0286a9ac0d465efdf9e9267",
+      provider:"b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
     },
     actual:{
-      consumer:"cdf1e4cb293daebaa443fc37322786a39bec62c42a3f6018cf2c5707ef1740aa",
-      adapter:"a2ba65fbb00aa104697bd8d89c92aef836c98dcd3b4e3152bfa8779d521366ad",
-      provider:"e35363921818d31049bc5bd9bdef6c37c07c97d535d4d93043e34738cb52cadc",
+      consumer:"aac86d778cd3773dc7b3fbe63d37d5464397e9b88ecb053d2c5f9e7537bdeec0",
+      adapter:"2abc6d198607eb45185111ebf5269e946fb81dc5d0286a9ac0d465efdf9e9267",
+      provider:"b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
     },
   });
   assert.deepStrictEqual(physicalSurface.sourceContract.dynamicCode,
@@ -2741,7 +2741,10 @@ test("sixth-round machine output separates single JSON control modes from live N
     const source = fs.readFileSync(bootstrap, "utf8");
     const dispatchStart = source.indexOf("async function dispatch()");
     const checkStart = source.indexOf('if (mode === "check")', dispatchStart);
-    const liveStart = source.indexOf('\n\n  controller.checkpoint("domain_loaded");', checkStart);
+    const liveBoundary = source.slice(checkStart).search(
+      /\r?\n\r?\n  controller\.checkpoint\("domain_loaded"\);/);
+    assert(liveBoundary >= 0);
+    const liveStart = checkStart + liveBoundary;
     const checkBranch = source.slice(checkStart, liveStart);
     assert.strictEqual((checkBranch.match(/process\.stdout\.write/g) || []).length, 1);
     assert(source.includes('type: "final_status"'));

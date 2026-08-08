@@ -332,9 +332,9 @@ const INVENTORY_SURFACE_ACTIVE_PREFIX_SHA256 = Object.freeze({
 // of the three audited production sources requires an explicit review and pin
 // refresh in the same current tree.
 const INVENTORY_SURFACE_EXACT_SOURCE_SHA256 = Object.freeze({
-  consumer: "cdf1e4cb293daebaa443fc37322786a39bec62c42a3f6018cf2c5707ef1740aa",
-  adapter: "a2ba65fbb00aa104697bd8d89c92aef836c98dcd3b4e3152bfa8779d521366ad",
-  provider: "e35363921818d31049bc5bd9bdef6c37c07c97d535d4d93043e34738cb52cadc",
+  consumer: "aac86d778cd3773dc7b3fbe63d37d5464397e9b88ecb053d2c5f9e7537bdeec0",
+  adapter: "2abc6d198607eb45185111ebf5269e946fb81dc5d0286a9ac0d465efdf9e9267",
+  provider: "b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
 });
 const INVENTORY_SURFACE_ORDER_GROUPS = Object.freeze([
   Object.freeze({ id: "consumer_session_open", sourceName: "consumer", anchors: Object.freeze([
@@ -363,7 +363,7 @@ const INVENTORY_SURFACE_ORDER_GROUPS = Object.freeze([
   ]) }),
 ]);
 const EXPECTED_RUNTIME_DOMAIN_COUNTS = Object.freeze({
-  artifactSource: 297,
+  artifactSource: 298,
   producerRecipe: 9,
   toolchainLock: 3,
 });
