@@ -364,15 +364,12 @@ resolved `panels.css` 闭包中的全部现役 `!important` 由 `tools/workbench
 
 ## 11. Visual atlas 与验证矩阵
 
-参数化 atlas 位于 [tools/visual/workbench-atlas.html](../tools/visual/workbench-atlas.html)，覆盖以下完整笛卡尔积：
+参数化 atlas 位于 [tools/visual/workbench-atlas.html](../tools/visual/workbench-atlas.html)，当前由两个场景族组成：
 
-- 视口：`1024×576`、`1366×768`、`1920×1080`；
-- 密度：`full`、`compact`；
-- 键盘焦点：默认、`focus-visible`；
-- 动效偏好：默认、`prefers-reduced-motion: reduce`；
-- 页面层级：主双栏、secondary page。
+- 共享合成族：`3` 视口（`1024×576` / `1366×768` / `1920×1080`）× `2` 密度（`full` / `compact`）× `2` 焦点态 × `2` 动效偏好 × `2` 页面层级（主双栏 / secondary page）= `48` case；
+- Arena 真实 feature 族：`3` 视口 × `3` 挑战→结算映射（`default→success` / `selected→failed` / `blocked→error`）× `2` 动效偏好 = `18` case。每个 case 先验生产 `catalog-decision` 挑战态，再经 `Panels.close() → Bridge panel_cmd → Panels.open(custom_result)` 宿主生命周期切到结算页，最终截图也固定在结算态。
 
-即 `3×2×2×2×2 = 48` 个场景。自动 runner：
+合计 `48 + 18 = 66` 个场景。自动 runner：
 
 ```powershell
 node tools/run-workbench-visual-atlas.js
@@ -380,6 +377,7 @@ node tools/run-workbench-visual-atlas.js --shot-dir=tmp/workbench-visual-atlas
 node tools/audit-workbench-ui.js --strict-warnings
 node tools/check-workbench-css-bundle.js
 node tools/test-workbench-inspection-viewport.js
+node tools/test-panel-lazy-loader-browser.js
 node tools/run-item-grid-visual-matrix.js --shot=tmp/item-grid-visual-matrix.png
 ```
 
@@ -387,7 +385,7 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 
 | 改动面 | 必跑 |
 |--------|------|
-| 共享 shell/entity/state/motion/CSS token/inspection viewport | static audit + 48 场景 atlas + inspection viewport Node gate + item-grid matrix |
+| 共享 shell/entity/state/motion/CSS token/inspection viewport | static audit + 66 场景 atlas + inspection viewport Node gate + item-grid matrix |
 | KShop / NPC / Crafting / Inventory / Skills / Tuning feature | 上述共享门 + 对应 feature harness |
 | focus/modal/secondary page | atlas focus/secondary 场景 + 键盘人工走查 |
 | reduced-motion/keyframes | atlas reduced 场景 + computed animation/transition 断言 |
@@ -395,13 +393,13 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 
 截图用于人眼比较，不单独构成像素级通过证据；字体、Edge/WebView2 版本和资源闭包稳定前不启用脆弱的全图像素 golden。atlas 证明共享合同，不能替代各领域真实数据、滚动极值、中文长文案和游戏内动效验收。
 
-现役 48 场景使用一套 synthetic shop/catalog DOM，三个 16:9 viewport 在固定 1024×576 逻辑画布下主要属于 scale/DPI 样本；它不能单独证明六种 profile、真实 header action budget、长材料下固定 CTA 或 blocked/selected/busy 联合状态。G2/G5 的 input/select/range/EntityTile/scroll 与 selected+focus 结论来自 KShop、Loot 和 Character 的真实 computed fixture，不能倒推为 atlas 单独覆盖了这些控制族。
+现役 66 场景中，48 case 仍使用一套 synthetic shop/catalog DOM，三个 16:9 viewport 在固定 1024×576 逻辑画布下主要属于 scale/DPI 样本；新增 18 case 加载 Arena 生产 24-script 闭包与 dev transport fixture，覆盖挑战决策态、结算成功/委托失败/结果错误条、焦点、命中区、横向溢出、语义状态色与 reduced-motion。整体 atlas 仍不能单独证明六种 profile、其它领域的真实 header action budget、长材料下固定 CTA 或 blocked/selected/busy 联合状态。G2/G5 的 input/select/range/EntityTile/scroll 与 selected+focus 结论来自 KShop、Loot 和 Character 的真实 computed fixture，不能倒推为 atlas 单独覆盖了这些控制族。
 
 > **现役证据（ADR E 已完成）**：六种生产 profile 都已有至少一个真实 feature DOM/fixture：KShop/NPC/Crafting recipes 覆盖 `catalog-decision`，Crafting materials 覆盖 `archive-reference`，KShop inventory/Storage/Loot 覆盖 `transfer-pair`，Skills manage 覆盖 `library-action-strip`，Skills trainer/standalone Tuning 覆盖 `library-decision`，Character Build/Stats underlay 覆盖 `character-build`。领域矩阵在真实 1024×576 最低逻辑画布上检查横向溢出、computed split、长中文/长列表、blocked/busy、固定 CTA 命中与键盘焦点；root CommitBar 与 body footer 也分别按 exact 结构标记验证。共享 atlas 继续保留，不与领域 harness 相互替代。
 
 > **现役证据（ADR G2/G5 已完成）**：KShop production fixture 对 button、EntityTile、input、select、range 及 selected+focus 做最终 computed token 断言；Loot 以没有 `data-workbench-skin` 的真实 `transfer-pair` root 证明 named focus baseline 不依赖可选 skin；Character runner 分别验证 stats scroll 的 exact focus token，以及 slot inner-card focus token 与 selected border token 同时可辨。受影响的 NPC、Skills、Crafting、Tuning 领域 harness 和 atlas/matrix 同树通过，`WB135` 同时冻结无 bridge 回流。
 
-共享验收至少要求同一源码树的 atlas、物品格矩阵与 `--strict-warnings` 静态审计全部通过；当前 fresh `48/48`、`20/20` 和 `0 error / 0 warning` 是对应门的完整成功结果，不是可从历史输出继承的永久状态。角色构筑另有 workbench、领域控制器和 dressup combination 三条 browser runner；它们必须覆盖三个视口、`55:45` 且右栏不少于 `360px`、1024 下左内层 Canvas 至少 `300px`、槽区按内容收缩到约 `204px` 并贴右、三组槽位末格与左 pane 右缘对齐、四药剂同排且内层零横溢出、左 PaneChrome 的“当前构筑 + 浏览摘要”在左且放大入口在右、无总槽位/分组重复计数、空候选 overlay 隐藏、routine 底部提示折叠、候选 action group 最多三项（装备/调制/卸下，药剂为装入）且无通用详情/pin、完整 `aria-label`、1024 单行无溢出、无独立动作行和底部重复 rail、单一 density toggle DOM、候选 full/compact 往返零业务流量、stats 3×3 与抗性 4×2/2×4、power `data-scale=log10` / resistance linear、八 SVG `aria-hidden`、负值/缺值/全零降级、同一 Canvas/renderer identity、`空手/长枪/手枪/手枪2/双枪/兵器/手雷` 七种 battle pose 的当前状态结构骨架 fit envelope，并证明 `手雷站立` 真实消费 `手雷_装扮` 而非空手兼容、放大页 Canvas-only wheel/`+/-`/drag/arrows/full-view reset、关闭复位、嵌入态不吞输入、inert/focus/Esc、11+4 槽位、无 pin 且随 operation/focus 更新的“调制说明”、检视 modal/内联说明逐层 Esc 与权威写后刷新。纯几何 envelope 回归另由 `node tools/test-dressup-stable-fit.js` 固定，未传 envelope 的 renderer 默认路径也必须覆盖。case 总数随契约增加而变化，本文不冻结最终数字；验收只引用同一源码树的完整 runner 输出。Browser harness 仍须按受影响领域分别执行，不能用 atlas 数量替代。
+共享验收至少要求同一源码树的 atlas、物品格矩阵与 `--strict-warnings` 静态审计全部通过；当前 fresh `66/66`、`20/20` 和 `0 error / 0 warning` 是对应门的完整成功结果，不是可从历史输出继承的永久状态。角色构筑另有 workbench、领域控制器和 dressup combination 三条 browser runner；它们必须覆盖三个视口、`55:45` 且右栏不少于 `360px`、1024 下左内层 Canvas 至少 `300px`、槽区按内容收缩到约 `204px` 并贴右、三组槽位末格与左 pane 右缘对齐、四药剂同排且内层零横溢出、左 PaneChrome 的“当前构筑 + 浏览摘要”在左且放大入口在右、无总槽位/分组重复计数、空候选 overlay 隐藏、routine 底部提示折叠、候选 action group 最多三项（装备/调制/卸下，药剂为装入）且无通用详情/pin、完整 `aria-label`、1024 单行无溢出、无独立动作行和底部重复 rail、单一 density toggle DOM、候选 full/compact 往返零业务流量、stats 3×3 与抗性 4×2/2×4、power `data-scale=log10` / resistance linear、八 SVG `aria-hidden`、负值/缺值/全零降级、同一 Canvas/renderer identity、`空手/长枪/手枪/手枪2/双枪/兵器/手雷` 七种 battle pose 的当前状态结构骨架 fit envelope，并证明 `手雷站立` 真实消费 `手雷_装扮` 而非空手兼容、放大页 Canvas-only wheel/`+/-`/drag/arrows/full-view reset、关闭复位、嵌入态不吞输入、inert/focus/Esc、11+4 槽位、无 pin 且随 operation/focus 更新的“调制说明”、检视 modal/内联说明逐层 Esc 与权威写后刷新。纯几何 envelope 回归另由 `node tools/test-dressup-stable-fit.js` 固定，未传 envelope 的 renderer 默认路径也必须覆盖。case 总数随契约增加而变化，本文不冻结最终数字；验收只引用同一源码树的完整 runner 输出。Browser harness 仍须按受影响领域分别执行，不能用 atlas 数量替代。
 
 Character 右栏或 loadout inspection 变更还必须在上述 production workbench runner 中同时证明：右栏 direct child 恰为标题/单行上下文/候选网格三行，上下文行在三个视口保持紧凑，compatible/backpack 的候选滚动面等高且占 pane 余高；已装备装备和药剂各至少一例先显示 basic、再由 exact loadout `tooltip` 返回完整 rich HTML，第二次命中 cache 不重发。另需覆盖 A→B→A supersede、snapshot/写入、离开 `idle`、rebind/close 后 pending callback 释放且迟到结果不复活；这些领域门不能由 shared atlas、候选背包 tooltip 或本地 projection 代签。
 

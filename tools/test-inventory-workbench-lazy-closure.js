@@ -80,7 +80,9 @@ async function main() {
     assert.strictEqual(loader.isTuningReady(), true);
     assert.strictEqual(loader.isBuildReady(), true);
 
-    // ── arena 生产闭包（P2 双栏工作台化收尾）：cold-open + 失败恢复 ──
+    // ── arena 生产闭包（P4 工程拆分收尾）：cold-open + 缺项/乱序 fail-fast ──
+    // 本 vm 叶门不模拟浏览器 transport retry；真实 LazyLoader 中途 503 后的可重试恢复由
+    // tools/test-panel-lazy-loader-browser.js 在 Edge + HTTP server 上独立证明。
     const arenaSection = section(registry, "Panels.registerLazy('arena'", "Panels.registerLazy('team'");
     const arenaDeps = (arenaSection.match(/'modules\/[^']+'/g) || [])
         .map(token => token.slice(1, -1));
@@ -142,7 +144,7 @@ async function main() {
     assert.strictEqual(typeof coldSandbox.Workbench.DualPaneShell, 'function',
         'arena cold-open must load the real shared workbench layer (no stubs)');
 
-    // 失败恢复 a：闭包缺项（少 workbench-components.js）→ arena/arena-core.js 守卫 fail-fast（P4 起共享层守卫自 facade 前移 core，报错文案不变），
+    // fail-fast a：闭包缺项（少 workbench-components.js）→ arena/arena-core.js 守卫 fail-fast（P4 起共享层守卫自 facade 前移 core，报错文案不变），
     // 报错点名缺失的共享层，且不做半初始化注册
     const missingRegistrations = {};
     assert.throws(
@@ -153,7 +155,7 @@ async function main() {
     assert(!missingRegistrations.arena,
         'arena must not half-register when the shared layer is incomplete');
 
-    // 失败恢复 b：闭包乱序（workbench.js 先于 primitives）→ 共享层自身守卫 fail-fast，
+    // fail-fast b：闭包乱序（workbench.js 先于 primitives）→ 共享层自身守卫 fail-fast，
     // 报错可读并点名缺失依赖
     const disorderedDeps = arenaDeps.slice();
     disorderedDeps.splice(disorderedDeps.indexOf('modules/workbench.js'), 1);

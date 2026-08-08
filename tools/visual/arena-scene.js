@@ -1,9 +1,12 @@
 /**
  * workbench-atlas arena 场景族（P4 接入）——真实 feature 场景：加载生产闭包
  * （与 panels-lazy-registry arena 注册项同序的 24 脚本 + dev fixture），驱动真实
- * arena panel 的 catalog-decision 壳 + skin 关键状态：
+ * arena panel 的 catalog-decision 壳 + skin 关键状态，并在同一 case 的第二阶段切到
+ * 真实 custom_result 结算页：
  *   default（未选中·决策空态）/ selected（选中卡·右栏 preview·CommitBar ready）/
- *   blocked（金钱不足·CommitBar blocked）× reduced-motion（runner 媒体仿真轴）× 三视口。
+ *   blocked（金钱不足·CommitBar blocked）分别映射 success / failed / error 结算态，
+ *   再乘 reduced-motion（runner 媒体仿真轴）× 三视口。这样保留 canonical 66 case，
+ *   同时让 18 个 Arena case 都覆盖挑战态，且最终截图稳定落在结算页。
  * 由 workbench-atlas.html 在 scene=arena 时调用；复用页面级 __qaDone/__qaResult 合同，
  * 不另造报告体系。mock 仅覆写 chrome.webview 传输层，snapshot/preview 应答形状与
  * arena/dev/harness.html 同款（preview 对手为占位 fixture，不触发 enter）。
@@ -46,6 +49,8 @@
         normal: { money: 5717348, playerLevel: 28, reuseCount: 1, reuseLimit: 2 },
         broke: { money: 0, playerLevel: 8, reuseCount: 0, reuseLimit: 2 }
     };
+    var RESULT_BY_CHALLENGE = { 'default': 'success', selected: 'failed', blocked: 'error' };
+    var RESULT_MATCH_CODE = 'CF7ARENA:v1;mode=mvm;seed=519920;blue=u44@30x1,u45@30x1,u48@30x1,u49@30x1;red=u61@60x3,u62@60x3,u63@60x1';
 
     var errors = [];
     var warnings = [];
@@ -149,6 +154,7 @@
     function run() {
         var params = new URLSearchParams(location.search);
         var state = params.get('state') || 'default';
+        var resultState = params.get('resultState') || RESULT_BY_CHALLENGE[state] || 'success';
         var reducedExpected = params.get('reduced') === '1';
         var metrics = {};
 
@@ -165,7 +171,7 @@
                     && window.ArenaPanel && window.ArenaPanel.getState().snapshot);
             }, 9000, function(opened) {
                 expect('arena panel opens with workbench shell and snapshot', opened);
-                if (!opened) return finish(state, reducedExpected, metrics);
+                if (!opened) return finish(state, resultState, reducedExpected, metrics);
                 poll(function() {
                     var st = window.ArenaPanel.getState();
                     return document.querySelectorAll('#arena-grid .arena-card').length === 12
@@ -177,12 +183,12 @@
                             cached: window.ArenaPanel.getState().previewCacheCount,
                             cards: document.querySelectorAll('#arena-grid .arena-card').length
                         } : {}));
-                    driveState(state, function() { finish(state, reducedExpected, metrics); });
+                    driveState(state, function() { finish(state, resultState, reducedExpected, metrics); });
                 });
             });
         }, function(err) {
             error('arena closure load', err && err.message);
-            finish(state, reducedExpected, metrics);
+            finish(state, resultState, reducedExpected, metrics);
         });
     }
 
@@ -200,7 +206,180 @@
         });
     }
 
-    function finish(state, reducedExpected, metrics) {
+    function resultInitData(resultState) {
+        var failed = resultState === 'failed';
+        var errorResult = resultState === 'error';
+        return {
+            mode: 'custom_result',
+            source: 'workbench_atlas',
+            matchCode: RESULT_MATCH_CODE,
+            state: failed ? 'failed' : 'completed',
+            batchId: 'atlas-p4-001',
+            totalRuns: 1,
+            completedRuns: 1,
+            resultPath: 'logs/arena-custom/atlas-p4-results.jsonl',
+            lastError: failed ? '委托执行失败：未产生可信战果'
+                : errorResult ? '结果文件校验失败：错误条必须保持可见' : '',
+            lastResult: failed ? null : {
+                schema: 'arena-calibration.result.v1',
+                status: 'finished',
+                winner: 'blue',
+                frames: 196,
+                durationMs: 6533,
+                spawnDistance: 650,
+                blueFormation: 'line',
+                redFormation: 'shield',
+                formationSpacing: 54,
+                blue: { aliveCount: 3, startCount: 4, remainHp: 6840, maxHp: 9200 },
+                red: { aliveCount: 0, startCount: 7, remainHp: 0, maxHp: 12800 }
+            }
+        };
+    }
+
+    function driveResultState(resultState, done) {
+        if (typeof Panels === 'undefined' || !Panels.close
+                || !window.chrome || !window.chrome.webview || !window.chrome.webview.__dispatch) {
+            error('result state drive', 'Panels / WebView lifecycle unavailable');
+            done(false);
+            return;
+        }
+        try {
+            // 同一生产 DOM 先走 Panels.close()，再由 WebView panel_cmd 经过 Bridge ->
+            // Panels.open() 重开；不直接调用 ArenaShell 或写 innerHTML，避免 atlas 绕过
+            // 宿主生命周期及 normalize/build/render/focus/PanelScale 等结算页合同。
+            Panels.close();
+            window.chrome.webview.__dispatch({
+                type: 'panel_cmd',
+                cmd: 'open',
+                panel: 'arena',
+                initData: resultInitData(resultState)
+            });
+        } catch (e) {
+            error('result state drive', e && e.message ? e.message : String(e));
+            done(false);
+            return;
+        }
+        poll(function() {
+            var view = document.getElementById('arena-custom-result-view');
+            return !!(view && !view.hidden && view.querySelector('.arena-custom-result-panel')
+                && view.querySelector('.arena-custom-result-title'));
+        }, 5000, done);
+    }
+
+    function resolvedTokenColor(host, token) {
+        if (!host) return '';
+        var probe = document.createElement('span');
+        probe.style.cssText = 'position:absolute;visibility:hidden;color:var(' + token + ')';
+        host.appendChild(probe);
+        var value = getComputedStyle(probe).color;
+        host.removeChild(probe);
+        return value;
+    }
+
+    function zeroTimeList(value) {
+        return String(value || '').split(',').every(function(part) {
+            var number = parseFloat(part);
+            return !isNaN(number) && number === 0;
+        });
+    }
+
+    function validateResult(resultState, reducedExpected, scale, metrics) {
+        var panel = document.querySelector('.arena-panel');
+        var grid = document.getElementById('arena-grid-view');
+        var view = document.getElementById('arena-custom-result-view');
+        var resultPanel = view && view.querySelector('.arena-custom-result-panel');
+        var title = view && view.querySelector('.arena-custom-result-title');
+        var errorStrip = view && view.querySelector('.arena-custom-result-error');
+        var actions = view ? view.querySelectorAll('[data-custom-result-action]') : [];
+        var uniqueActions = {};
+        Array.prototype.forEach.call(actions, function(action) {
+            uniqueActions[action.getAttribute('data-custom-result-action')] = true;
+        });
+
+        expect('custom result phase opens through production lifecycle', !!(view && !view.hidden && resultPanel));
+        expect('challenge grid is hidden behind result phase', !!grid && grid.hidden);
+        expect('result actions expose copy/back/reopen paths', !!(uniqueActions.copy && uniqueActions.back && uniqueActions.reopen),
+            JSON.stringify(Object.keys(uniqueActions)));
+        expect('result focus scope moves focus into result page', !!(view && view.contains(document.activeElement)),
+            document.activeElement && document.activeElement.className);
+
+        if (view && resultPanel) {
+            var viewRect = view.getBoundingClientRect();
+            var resultRect = resultPanel.getBoundingClientRect();
+            expect('result page avoids horizontal overflow', view.scrollWidth <= view.clientWidth + 1
+                && resultPanel.scrollWidth <= resultPanel.clientWidth + 1,
+                JSON.stringify({ view: [view.scrollWidth, view.clientWidth], panel: [resultPanel.scrollWidth, resultPanel.clientWidth] }));
+            expect('result panel remains inside logical canvas', resultRect.left >= viewRect.left - 1
+                && resultRect.right <= viewRect.right + 1 && resultRect.top >= viewRect.top - 1
+                && resultRect.bottom <= viewRect.bottom + 1,
+                JSON.stringify({ view: [viewRect.left, viewRect.top, viewRect.right, viewRect.bottom],
+                    result: [resultRect.left, resultRect.top, resultRect.right, resultRect.bottom] }));
+        }
+        expect('result actions keep at least 24px logical hit height', actions.length > 0
+            && Array.prototype.every.call(actions, function(action) {
+                return action.getBoundingClientRect().height / scale >= 24;
+            }), String(actions.length));
+        var reopen = view && view.querySelector('[data-custom-result-action="reopen"]');
+        expect('result primary CTA keeps 40px logical hit height', !!reopen
+            && reopen.getBoundingClientRect().height / scale >= 40,
+            reopen ? String(reopen.getBoundingClientRect().height / scale) : 'missing');
+
+        if (resultState === 'failed') {
+            expect('failed result renders explicit failure title', !!title && title.textContent === '委托失败'
+                && title.classList.contains('arena-custom-result-title-failed'), title && title.textContent);
+            expect('failed title uses semantic danger token', !!title
+                && getComputedStyle(title).color === resolvedTokenColor(panel, '--wb-semantic-danger'),
+                title && getComputedStyle(title).color);
+        } else {
+            expect('completed result renders blue victory title', !!title && title.textContent === '蓝方胜'
+                && title.classList.contains('arena-custom-result-title-blue'), title && title.textContent);
+        }
+        if (resultState === 'success') {
+            expect('success result has no error strip', !errorStrip);
+        } else {
+            expect('failed/error result keeps error strip visible', !!errorStrip && errorStrip.textContent.length > 0);
+            expect('result error strip uses semantic danger token', !!errorStrip
+                && getComputedStyle(errorStrip).color === resolvedTokenColor(panel, '--wb-semantic-danger'),
+                errorStrip && getComputedStyle(errorStrip).color);
+            expect('result error strip keeps visible surface and border', !!errorStrip
+                && getComputedStyle(errorStrip).backgroundColor !== 'rgba(0, 0, 0, 0)'
+                && getComputedStyle(errorStrip).borderTopStyle !== 'none');
+        }
+
+        if (reducedExpected && view) {
+            var motionNodes = [view, resultPanel, title, actions[0]];
+            expect('reduced-motion strips result animations and transitions', motionNodes.every(function(node) {
+                if (!node) return false;
+                var style = getComputedStyle(node);
+                return style.animationName === 'none' && zeroTimeList(style.transitionDuration);
+            }), 'result motion sample');
+        }
+        metrics.resultTitle = title ? title.textContent : '';
+        metrics.resultActionCount = actions.length;
+        metrics.resultErrorVisible = !!errorStrip;
+    }
+
+    function complete(state, resultState, reducedExpected, metrics, shell) {
+        var caseId = 'arena-' + window.innerWidth + 'x' + window.innerHeight + '-' + state
+            + '-result-' + resultState + '-' + (reducedExpected ? 'reduce' : 'motion');
+        metrics.caseId = caseId;
+        metrics.viewport = [window.innerWidth, window.innerHeight];
+        metrics.scene = 'arena';
+        metrics.challengeState = state;
+        metrics.resultState = resultState;
+        metrics.reduced = reducedExpected;
+        var badge = document.getElementById('atlas-badge');
+        if (badge) badge.textContent = caseId;
+        document.title = 'CF7 Workbench Atlas · ' + caseId;
+        window.__qaResult = { schemaVersion: 1, caseId: caseId, errors: errors, warnings: warnings, metrics: metrics };
+        window.__qaDone = true;
+        window.__visualReady = true;
+        var output = document.getElementById('atlas-output');
+        if (output) output.textContent = JSON.stringify(window.__qaResult, null, 2);
+        if (shell) shell.setAttribute('data-atlas-result', errors.length ? 'error' : warnings.length ? 'warning' : 'pass');
+    }
+
+    function finish(state, resultState, reducedExpected, metrics) {
         var panel = document.querySelector('.arena-panel');
         var shell = panel && panel.querySelector('.workbench-shell');
         var scaleShell = document.querySelector('.arena-scale-shell');
@@ -261,20 +440,17 @@
             }
         }
 
-        var caseId = 'arena-' + window.innerWidth + 'x' + window.innerHeight + '-' + state + '-' + (reducedExpected ? 'reduce' : 'motion');
         metrics = {
-            caseId: caseId, viewport: [window.innerWidth, window.innerHeight], scene: 'arena', state: state,
-            reduced: reducedExpected, scale: scale, cards: cards.length
+            scale: scale, cards: cards.length
         };
-        var badge = document.getElementById('atlas-badge');
-        if (badge) badge.textContent = caseId;
-        document.title = 'CF7 Workbench Atlas · ' + caseId;
-        window.__qaResult = { schemaVersion: 1, caseId: caseId, errors: errors, warnings: warnings, metrics: metrics };
-        window.__qaDone = true;
-        window.__visualReady = true;
-        var output = document.getElementById('atlas-output');
-        if (output) output.textContent = JSON.stringify(window.__qaResult, null, 2);
-        if (shell) shell.setAttribute('data-atlas-result', errors.length ? 'error' : warnings.length ? 'warning' : 'pass');
+        driveResultState(resultState, function(ready) {
+            expect('custom result phase settles', ready, resultState);
+            var resultScaleShell = document.querySelector('.arena-scale-shell');
+            var resultScale = resultScaleShell
+                ? parseFloat(getComputedStyle(resultScaleShell).getPropertyValue('--panel-scale')) || scale : scale;
+            validateResult(resultState, reducedExpected, resultScale, metrics);
+            complete(state, resultState, reducedExpected, metrics, shell);
+        });
     }
 
     window.__atlasArenaScene = { run: run };

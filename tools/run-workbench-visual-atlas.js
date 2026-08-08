@@ -90,10 +90,12 @@ function buildCases() {
             }
         }
     }
-    // P4：arena 真实 feature 场景族（tools/visual/arena-scene.js 承载真实 panel 闭包）——
-    // 3 视口 × 3 状态（default 决策空态 / selected 选中+preview+CommitBar ready /
-    // blocked 金钱不足）× 2 reduced-motion = 18；既有 shop 合成族 48 场景逐位不变。
+    // P4：arena 真实 feature 两阶段场景族（tools/visual/arena-scene.js 承载生产 panel 闭包）——
+    // 每个 case 先验 default / selected / blocked 挑战态，再走真实 close -> custom_result open
+    // 生命周期，分别落 success / failed / error 结算态并以结算页作最终截图。
+    // 3 视口 × 3 映射 × 2 reduced-motion = 18；既有 shop 合成族 48 场景逐位不变，canonical 总数仍 66。
     var arenaStates = ['default', 'selected', 'blocked'];
+    var arenaResultStates = { 'default':'success', selected:'failed', blocked:'error' };
     for (var av = 0; av < viewports.length; av++) {
         for (var as = 0; as < arenaStates.length; as++) {
             for (var ar = 0; ar < booleans.length; ar++) {
@@ -102,8 +104,10 @@ function buildCases() {
                     scene:'arena',
                     viewport:arenaViewport,
                     state:arenaStates[as],
+                    resultState:arenaResultStates[arenaStates[as]],
                     reduced:booleans[ar],
-                    id:'arena-' + arenaViewport.id + '-' + arenaStates[as] + '-' + (booleans[ar] ? 'reduce' : 'motion')
+                    id:'arena-' + arenaViewport.id + '-' + arenaStates[as] + '-result-'
+                        + arenaResultStates[arenaStates[as]] + '-' + (booleans[ar] ? 'reduce' : 'motion')
                 });
             }
         }
@@ -166,6 +170,7 @@ function printText(report) {
                 query = [
                     'scene=arena',
                     'state=' + encodeURIComponent(scenario.state),
+                    'resultState=' + encodeURIComponent(scenario.resultState),
                     'reduced=' + (scenario.reduced ? '1' : '0')
                 ].join('&');
             } else {
@@ -188,6 +193,7 @@ function printText(report) {
                 id:scenario.id,
                 scene:scenario.scene || 'shop',
                 state:scenario.state || null,
+                resultState:scenario.resultState || null,
                 viewport:[scenario.viewport.width, scenario.viewport.height],
                 density:scenario.density || null,
                 focus:scenario.focus || false,
@@ -211,7 +217,7 @@ function printText(report) {
         kind:'cf7-workbench-visual-atlas',
         browser:'edge',
         executablePath:executablePath,
-        dimensions:{scenes:['shop','arena'], viewports:['1024x576','1366x768','1920x1080'], densities:['full','compact'], focus:[false,true], reducedMotion:[false,true], secondaryPage:[false,true], arenaStates:['default','selected','blocked']},
+        dimensions:{scenes:['shop','arena'], viewports:['1024x576','1366x768','1920x1080'], densities:['full','compact'], focus:[false,true], reducedMotion:[false,true], secondaryPage:[false,true], arenaStates:['default','selected','blocked'], arenaResultStates:['success','failed','error']},
         summary:{totalCases:results.length, passedCases:passedCases, errorCount:errorCount, warningCount:warningCount, strictWarnings:strictWarnings},
         cases:results
     };

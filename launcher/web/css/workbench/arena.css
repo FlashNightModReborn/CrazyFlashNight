@@ -2468,7 +2468,8 @@
 }
 .arena-custom-result-actions .arena-card-btn-enter {
     flex: 0 0 180px;
-    min-height: 34px;
+    /* 结算页「再赛一场」是该视图唯一主 CTA，遵守工作台主 CTA >= 40px 命中合同。 */
+    min-height: 40px;
 }
 /* 保留理由（P1c 零新增 keyframes，存量原样）：卡片入场 14px 浮升+缩放，共享 wb-pulse-busy/wb-reject-pulse 无语义等价 */
 @keyframes arena-card-in {
