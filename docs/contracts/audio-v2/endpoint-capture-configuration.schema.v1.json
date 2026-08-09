@@ -1,0 +1,109 @@
+{
+  "$id": "cf7.audio-v2.endpoint-capture-configuration.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "candidateBuildIdentity": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "candidatePayloadClosure": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "captureBytes": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "captureId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "captureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "caseId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "channels": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "deviceIdDigest": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "durationSeconds": {
+      "minimum": 1,
+      "type": "number"
+    },
+    "format": {
+      "const": "pcm_s16le"
+    },
+    "recordedAtUtc": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "runId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "sampleRate": {
+      "minimum": 8000,
+      "type": "integer"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.endpoint-capture-configuration.v1"
+    },
+    "selectedBackend": {
+      "enum": [
+        "wasapi",
+        "directsound",
+        "winmm"
+      ]
+    },
+    "tool": {
+      "additionalProperties": false,
+      "properties": {
+        "blobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "path": {
+          "const": "tools/audio-v2/capture-endpoint.ps1"
+        },
+        "sha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "blobOid",
+        "path",
+        "sha256"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "candidateBuildIdentity",
+    "candidatePayloadClosure",
+    "captureBytes",
+    "captureId",
+    "captureSha256",
+    "caseId",
+    "channels",
+    "deviceIdDigest",
+    "durationSeconds",
+    "format",
+    "recordedAtUtc",
+    "runId",
+    "sampleRate",
+    "schema",
+    "selectedBackend",
+    "tool"
+  ],
+  "type": "object"
+}

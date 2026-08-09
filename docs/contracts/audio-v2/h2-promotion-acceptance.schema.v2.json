@@ -1,0 +1,151 @@
+{
+  "$id": "cf7.audio-v2.h2-promotion-acceptance.schema.v2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authorization": {
+      "additionalProperties": false,
+      "properties": {
+        "promotionAuthorized": {
+          "const": true
+        }
+      },
+      "required": [
+        "promotionAuthorized"
+      ],
+      "type": "object"
+    },
+    "decision": {
+      "const": "accepted"
+    },
+    "evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "audioDeviceQualified": {
+          "const": true
+        },
+        "candidateVerificationSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "endpointCaptureToolSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "endpointClosureSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "listeningMatrixSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "manifestBlobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "manifestPath": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "manifestSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "qualificationRunnerSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "treeOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "audioDeviceQualified",
+        "candidateVerificationSha256",
+        "commit",
+        "endpointCaptureToolSha256",
+        "endpointClosureSha256",
+        "listeningMatrixSha256",
+        "qualificationRunnerSha256",
+        "manifestBlobOid",
+        "manifestPath",
+        "manifestSha256",
+        "treeOid"
+      ],
+      "type": "object"
+    },
+    "recordedAtUtc": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "releaseSource": {
+      "additionalProperties": false,
+      "properties": {
+        "buildIdentity": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "payloadClosure": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "treeOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "buildIdentity",
+        "commit",
+        "payloadClosure",
+        "treeOid"
+      ],
+      "type": "object"
+    },
+    "reviewer": {
+      "additionalProperties": false,
+      "properties": {
+        "channel": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "role": {
+          "const": "human-maintainer"
+        },
+        "verbatim": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "channel",
+        "role",
+        "verbatim"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.h2-promotion-acceptance.v2"
+    }
+  },
+  "required": [
+    "authorization",
+    "decision",
+    "evidence",
+    "recordedAtUtc",
+    "releaseSource",
+    "reviewer",
+    "schema"
+  ],
+  "type": "object"
+}

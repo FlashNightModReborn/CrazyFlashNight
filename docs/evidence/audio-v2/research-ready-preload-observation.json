@@ -1,0 +1,93 @@
+{
+  "conclusion": "six_sessions_show_sfx_preload_completed_after_launcher_ready",
+  "evidenceLevel": "E2_repeatable_observation_not_release_gate",
+  "limitations": [
+    "source_logs_are_gitignored_and_rotate",
+    "no_per_request_sfx_evidence",
+    "does_not_prove_player_reachable_audio_loss"
+  ],
+  "markers": {
+    "preload": "[Audio] SFX preload: 676 loaded, 0 failed, 3 overridden (scanned 3 packs)",
+    "ready": "[LaunchFlow] WaitingGameReady -> Ready",
+    "sessionStart": "[Guardian] Early file log ready"
+  },
+  "pairingRule": "split_by_session_start_then_pair_each_sessions_first_ready_and_first_preload_compute_signed_delta_and_report_positive_deltas",
+  "recordedAtUtc": "2026-08-09T03:16:38.6325158Z",
+  "schema": "cf7.audio-v2.research-ready-preload-observation.v1",
+  "sessions": [
+    {
+      "deltaSeconds": 5.215,
+      "log": "logs/launcher.log.1",
+      "preloadLine": 717,
+      "preloadRaw": "09:56:10.566 [Audio] SFX preload: 676 loaded, 0 failed, 3 overridden (scanned 3 packs)",
+      "readyLine": 712,
+      "readyRaw": "09:56:05.351 [LaunchFlow] WaitingGameReady -> Ready",
+      "sessionStartLine": 564,
+      "sessionStartRaw": "09:56:00.144 [Guardian] Early file log ready before WebView2 precheck"
+    },
+    {
+      "deltaSeconds": 3.935,
+      "log": "logs/launcher.log.1",
+      "preloadLine": 2383,
+      "preloadRaw": "11:33:49.017 [Audio] SFX preload: 676 loaded, 0 failed, 3 overridden (scanned 3 packs)",
+      "readyLine": 2379,
+      "readyRaw": "11:33:45.082 [LaunchFlow] WaitingGameReady -> Ready",
+      "sessionStartLine": 2231,
+      "sessionStartRaw": "11:33:35.563 [Guardian] Early file log ready before WebView2 precheck"
+    },
+    {
+      "deltaSeconds": 3.406,
+      "log": "logs/launcher.log.1",
+      "preloadLine": 8275,
+      "preloadRaw": "13:22:41.515 [Audio] SFX preload: 676 loaded, 0 failed, 3 overridden (scanned 3 packs)",
+      "readyLine": 8271,
+      "readyRaw": "13:22:38.109 [LaunchFlow] WaitingGameReady -> Ready",
+      "sessionStartLine": 8122,
+      "sessionStartRaw": "13:22:30.033 [Guardian] Early file log ready before WebView2 precheck"
+    },
+    {
+      "deltaSeconds": 0.9,
+      "log": "logs/launcher.log.1",
+      "preloadLine": 9463,
+      "preloadRaw": "14:59:10.776 [Audio] SFX preload: 676 loaded, 0 failed, 3 overridden (scanned 3 packs)",
+      "readyLine": 9460,
+      "readyRaw": "14:59:09.876 [LaunchFlow] WaitingGameReady -> Ready",
+      "sessionStartLine": 9311,
+      "sessionStartRaw": "14:59:01.743 [Guardian] Early file log ready before WebView2 precheck"
+    },
+    {
+      "deltaSeconds": 9.667,
+      "log": "logs/launcher.log.1",
+      "preloadLine": 10650,
+      "preloadRaw": "16:13:41.014 [Audio] SFX preload: 676 loaded, 0 failed, 3 overridden (scanned 3 packs)",
+      "readyLine": 10635,
+      "readyRaw": "16:13:31.347 [LaunchFlow] WaitingGameReady -> Ready",
+      "sessionStartLine": 10486,
+      "sessionStartRaw": "16:13:19.398 [Guardian] Early file log ready before WebView2 precheck"
+    },
+    {
+      "deltaSeconds": 1.148,
+      "log": "logs/launcher.log",
+      "preloadLine": 151,
+      "preloadRaw": "16:40:23.553 [Audio] SFX preload: 676 loaded, 0 failed, 3 overridden (scanned 3 packs)",
+      "readyLine": 136,
+      "readyRaw": "16:40:22.405 [LaunchFlow] WaitingGameReady -> Ready",
+      "sessionStartLine": 3,
+      "sessionStartRaw": "16:40:15.659 [Guardian] Early file log ready before WebView2 precheck"
+    }
+  ],
+  "sourceLogs": [
+    {
+      "lastWriteTimeUtc": "2026-08-08T08:20:27.0105469Z",
+      "path": "logs/launcher.log.1",
+      "sha256": "30706A520C3F0046311AED4DC7F641164F0629462EDF50B26A63985F15676FAE",
+      "size": 2114414
+    },
+    {
+      "lastWriteTimeUtc": "2026-08-08T09:25:54.8985248Z",
+      "path": "logs/launcher.log",
+      "sha256": "7C5882A554C13D8C484156B28D4FE72C1496C44BE83034750C04FBA1FC745A4E",
+      "size": 106220
+    }
+  ]
+}

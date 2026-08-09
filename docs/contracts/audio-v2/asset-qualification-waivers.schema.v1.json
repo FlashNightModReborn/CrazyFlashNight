@@ -1,0 +1,53 @@
+{
+  "$id": "cf7.audio-v2.asset-qualification-waivers.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "cf7.audio-v2.asset-qualification-waivers.v1"
+    },
+    "waivers": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "exceptionId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "owner": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "signalClass": {
+            "enum": [
+              "excluded_non_audio",
+              "intentional_silence"
+            ]
+          }
+        },
+        "required": [
+          "exceptionId",
+          "owner",
+          "path",
+          "reason",
+          "signalClass"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "waivers"
+  ],
+  "type": "object"
+}

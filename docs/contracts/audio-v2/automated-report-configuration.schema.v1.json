@@ -1,0 +1,54 @@
+{
+  "$id": "cf7.audio-v2.automated-report-configuration.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "argv": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "environment": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "valueSha256": {
+            "pattern": "^[A-F0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "valueSha256"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "reportId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.automated-report-configuration.v1"
+    },
+    "workingDirectory": {
+      "const": "release_source_root"
+    }
+  },
+  "required": [
+    "argv",
+    "environment",
+    "reportId",
+    "schema",
+    "workingDirectory"
+  ],
+  "type": "object"
+}

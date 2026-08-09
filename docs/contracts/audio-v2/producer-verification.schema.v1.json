@@ -1,0 +1,96 @@
+{
+  "$id": "cf7.audio-v2.producer-verification.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "candidateBuildIdentity": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "candidatePayloadClosure": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "caseEvidenceClosureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "caseResultsSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "configurationSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "inputClosureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "producerBlobOid": {
+      "pattern": "^[0-9a-f]{40,64}$",
+      "type": "string"
+    },
+    "producerDependencyClosureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "producerPath": {
+      "const": "tools/audio-v2/qualification-runner.js"
+    },
+    "producerSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "releaseSource": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "treeOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "commit",
+        "treeOid"
+      ],
+      "type": "object"
+    },
+    "reportId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "reportSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "result": {
+      "const": "passed"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.producer-verification.v1"
+    }
+  },
+  "required": [
+    "candidateBuildIdentity",
+    "candidatePayloadClosure",
+    "caseEvidenceClosureSha256",
+    "caseResultsSha256",
+    "configurationSha256",
+    "inputClosureSha256",
+    "producerBlobOid",
+    "producerDependencyClosureSha256",
+    "producerPath",
+    "producerSha256",
+    "releaseSource",
+    "reportId",
+    "reportSha256",
+    "result",
+    "schema"
+  ],
+  "type": "object"
+}

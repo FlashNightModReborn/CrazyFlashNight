@@ -20,3 +20,9 @@ scripts/asLoaderManifest/_collapsed_frame.as text eol=lf
 launcher/src/Guardian/Hud/PlayerInfo/Assets/**/*.svg text eol=lf
 launcher/src/Guardian/Hud/PlayerInfo/Assets/*.json text eol=lf
 launcher/THIRD-PARTY-NOTICES.txt text eol=lf whitespace=-blank-at-eol
+
+# Audio v2 contracts use raw SHA-256 over canonical LF bytes on every host.
+/docs/contracts/audio-v2/*.json text eol=lf
+/docs/evidence/audio-v2/*.json text eol=lf
+/docs/evidence/audio-v2/**/*.json text eol=lf
+/tools/audio-v2/*.js text eol=lf

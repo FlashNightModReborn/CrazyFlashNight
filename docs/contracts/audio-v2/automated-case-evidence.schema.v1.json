@@ -1,0 +1,152 @@
+{
+  "$id": "cf7.audio-v2.automated-case-evidence.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "candidateBuildIdentity": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "candidatePayloadClosure": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "captureIds": {
+      "items": {
+        "enum": [
+          "bgm_playback",
+          "sfx_playback",
+          "bgm_sfx_mix",
+          "device_recovery"
+        ]
+      },
+      "maxItems": 4,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "caseId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "checks": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "checkId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "measurement": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "boolean",
+                  "counter",
+                  "digest",
+                  "duration_ms",
+                  "identity",
+                  "ratio",
+                  "text"
+                ]
+              },
+              "unit": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "value": {
+                "type": [
+                  "boolean",
+                  "number",
+                  "string"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "unit",
+              "value"
+            ],
+            "type": "object"
+          },
+          "result": {
+            "const": "passed"
+          }
+        },
+        "required": [
+          "checkId",
+          "measurement",
+          "result"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "configurationSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "generatedAtUtc": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "inputClosureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "producerBlobOid": {
+      "pattern": "^[0-9a-f]{40,64}$",
+      "type": "string"
+    },
+    "producerSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "releaseSource": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "treeOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "commit",
+        "treeOid"
+      ],
+      "type": "object"
+    },
+    "reportId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "result": {
+      "const": "passed"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.automated-case-evidence.v1"
+    }
+  },
+  "required": [
+    "candidateBuildIdentity",
+    "candidatePayloadClosure",
+    "captureIds",
+    "caseId",
+    "checks",
+    "configurationSha256",
+    "generatedAtUtc",
+    "inputClosureSha256",
+    "producerBlobOid",
+    "producerSha256",
+    "releaseSource",
+    "reportId",
+    "result",
+    "schema"
+  ],
+  "type": "object"
+}

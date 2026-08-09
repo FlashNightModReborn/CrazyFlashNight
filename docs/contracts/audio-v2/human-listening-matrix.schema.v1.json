@@ -1,0 +1,231 @@
+{
+  "$id": "cf7.audio-v2.human-listening-matrix.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allPassed": {
+      "const": true
+    },
+    "candidateBuildIdentity": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "candidatePayloadClosure": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "cases": {
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "formats_shipped_and_new"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "bgm_transport_and_crossfade"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "dense_sfx_overlap_and_throttle"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "bgm_sfx_simultaneous"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "gain_zero_default_max"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "default_device_switch"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "physical_route_bluetooth_or_hdmi"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "sleep_resume"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "quality_pop_latency_channel_loudness"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "caseId": {
+                "const": "no_stale_sfx_after_recovery"
+              }
+            },
+            "required": [
+              "caseId"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        }
+      ],
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "captureIds": {
+            "items": {
+              "enum": [
+                "bgm_playback",
+                "sfx_playback",
+                "bgm_sfx_mix",
+                "device_recovery"
+              ]
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "caseId": {
+            "enum": [
+              "formats_shipped_and_new",
+              "bgm_transport_and_crossfade",
+              "dense_sfx_overlap_and_throttle",
+              "bgm_sfx_simultaneous",
+              "gain_zero_default_max",
+              "default_device_switch",
+              "physical_route_bluetooth_or_hdmi",
+              "sleep_resume",
+              "quality_pop_latency_channel_loudness",
+              "no_stale_sfx_after_recovery"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          },
+          "result": {
+            "const": "passed"
+          }
+        },
+        "required": [
+          "caseId",
+          "captureIds",
+          "notes",
+          "result"
+        ],
+        "type": "object"
+      },
+      "maxItems": 10,
+      "minItems": 10,
+      "type": "array"
+    },
+    "recordedAtUtc": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "reviewer": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.human-listening-matrix.v1"
+    }
+  },
+  "required": [
+    "allPassed",
+    "candidateBuildIdentity",
+    "candidatePayloadClosure",
+    "cases",
+    "recordedAtUtc",
+    "reviewer",
+    "schema"
+  ],
+  "type": "object"
+}

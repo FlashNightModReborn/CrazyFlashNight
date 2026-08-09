@@ -1,0 +1,80 @@
+{
+  "$id": "cf7.audio-v2.candidate-verification.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "candidate": {
+      "type": "object"
+    },
+    "fullPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "buildIdentityRecomputed": {
+          "const": true
+        },
+        "fileCount": {
+          "minimum": 3,
+          "type": "integer"
+        },
+        "payloadClosureRecomputed": {
+          "const": true
+        },
+        "runtimeInputsConfigBlobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "runtimeInputsConfigSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "sourceDomainsRecomputed": {
+          "const": true
+        },
+        "verifier": {
+          "const": "audio_v2_validator_mirror_cf7_runtime_v2_integrity"
+        }
+      },
+      "required": [
+        "buildIdentityRecomputed",
+        "fileCount",
+        "payloadClosureRecomputed",
+        "runtimeInputsConfigBlobOid",
+        "runtimeInputsConfigSha256",
+        "sourceDomainsRecomputed",
+        "verifier"
+      ],
+      "type": "object"
+    },
+    "observedAtUtc": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "observedRoot": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "result": {
+      "const": "passed"
+    },
+    "runtimeManifestArtifact": {
+      "type": "object"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.candidate-verification.v1"
+    },
+    "verifier": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "candidate",
+    "fullPayload",
+    "observedAtUtc",
+    "observedRoot",
+    "result",
+    "runtimeManifestArtifact",
+    "schema",
+    "verifier"
+  ],
+  "type": "object"
+}

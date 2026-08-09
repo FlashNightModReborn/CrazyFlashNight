@@ -1,0 +1,98 @@
+{
+  "$id": "cf7.audio-v2.automated-report-input-manifest.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "candidateBuildIdentity": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "candidatePayloadClosure": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "closureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "inputs": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "blobOid": {
+            "pattern": "^[0-9a-f]{40,64}$",
+            "type": "string"
+          },
+          "bytes": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "candidate_artifact",
+              "evidence_blob",
+              "release_source_blob"
+            ]
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "role": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[A-F0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bytes",
+          "kind",
+          "path",
+          "role",
+          "sha256"
+        ],
+        "type": "object"
+      },
+      "minItems": 4,
+      "type": "array"
+    },
+    "releaseSource": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "treeOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "commit",
+        "treeOid"
+      ],
+      "type": "object"
+    },
+    "reportId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.automated-report-input-manifest.v1"
+    }
+  },
+  "required": [
+    "candidateBuildIdentity",
+    "candidatePayloadClosure",
+    "closureSha256",
+    "inputs",
+    "releaseSource",
+    "reportId",
+    "schema"
+  ],
+  "type": "object"
+}

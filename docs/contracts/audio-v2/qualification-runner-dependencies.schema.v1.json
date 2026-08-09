@@ -1,0 +1,56 @@
+{
+  "$id": "cf7.audio-v2.qualification-runner-dependencies.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "closureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "dependencies": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "blobOid": {
+            "pattern": "^[0-9a-f]{40,64}$",
+            "type": "string"
+          },
+          "bytes": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[A-F0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "blobOid",
+          "bytes",
+          "path",
+          "sha256"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "runnerPath": {
+      "const": "tools/audio-v2/qualification-runner.js"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.qualification-runner-dependencies.v1"
+    }
+  },
+  "required": [
+    "closureSha256",
+    "dependencies",
+    "runnerPath",
+    "schema"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,252 @@
+{
+  "$defs": {
+    "artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "blobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "bytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "kind": {
+          "const": "tracked_blob"
+        },
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "schema": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "blobOid",
+        "bytes",
+        "kind",
+        "path",
+        "schema",
+        "sha256"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "cf7.audio-v2.asset-eof-results.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "candidateBuildIdentity": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "candidatePayloadClosure": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "caseId": {
+      "const": "shipped_corpus_all_files"
+    },
+    "configurationSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "entries": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "blobOid": {
+            "pattern": "^[0-9a-f]{40,64}$",
+            "type": "string"
+          },
+          "bytes": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "codec": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "container": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "decodeToEof": {
+            "type": "boolean"
+          },
+          "decodedFrames": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "exceptionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "qualificationResult": {
+            "enum": [
+              "owned_exception",
+              "passed"
+            ]
+          },
+          "sha256": {
+            "pattern": "^[A-F0-9]{64}$",
+            "type": "string"
+          },
+          "signalClass": {
+            "enum": [
+              "excluded_non_audio",
+              "intentional_silence",
+              "nonzero_pcm"
+            ]
+          }
+        },
+        "required": [
+          "blobOid",
+          "bytes",
+          "codec",
+          "container",
+          "decodeToEof",
+          "decodedFrames",
+          "exceptionId",
+          "path",
+          "qualificationResult",
+          "sha256",
+          "signalClass"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "generatedAtUtc": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "inputClosureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "inventoryExtensions": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "inventoryRoots": {
+      "const": [
+        "sounds",
+        "music"
+      ]
+    },
+    "producerBlobOid": {
+      "pattern": "^[0-9a-f]{40,64}$",
+      "type": "string"
+    },
+    "producerSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "releaseSource": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "treeOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "commit",
+        "treeOid"
+      ],
+      "type": "object"
+    },
+    "reportId": {
+      "const": "asset_offline_eof_qualification"
+    },
+    "result": {
+      "const": "passed"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.asset-eof-results.v1"
+    },
+    "summary": {
+      "additionalProperties": false,
+      "properties": {
+        "excludedNonAudio": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "intentionalSilence": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "nonzeroPcm": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "ownedExceptions": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "passed": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "total": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "excludedNonAudio",
+        "intentionalSilence",
+        "nonzeroPcm",
+        "ownedExceptions",
+        "passed",
+        "total"
+      ],
+      "type": "object"
+    },
+    "waiverManifestArtifact": {
+      "$ref": "#/$defs/artifact"
+    }
+  },
+  "required": [
+    "candidateBuildIdentity",
+    "candidatePayloadClosure",
+    "caseId",
+    "configurationSha256",
+    "entries",
+    "generatedAtUtc",
+    "inputClosureSha256",
+    "inventoryExtensions",
+    "inventoryRoots",
+    "producerBlobOid",
+    "producerSha256",
+    "releaseSource",
+    "reportId",
+    "result",
+    "schema",
+    "summary",
+    "waiverManifestArtifact"
+  ],
+  "type": "object"
+}
