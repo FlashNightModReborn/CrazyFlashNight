@@ -1,0 +1,129 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-campaign-feature-v13-two-stage-highres-localization-20260807",
+  "calibration": {
+    "parentProfile": {
+      "path": "tools/portrait-pilot/fixtures/campaign-feature-inference.v12.json",
+      "bytes": 8075,
+      "sha256": "53B61123BCEA93D53F4B0824C0AE201F4CE47DBFD8223B628975FD188E8E1BFD"
+    },
+    "cumulativeFeedbackDigest": "007E0CBFF89DA235F6C3E36D8B2B5028E52047C707CAAD314ABF63C4EFF8B6D0",
+    "latestHumanReviewReceiptDigest": "A2A99F5764EAA8AB41A4818EF00AEAFEFD1243F1804B7D3C463B74F9B4CA4BE5",
+    "latestGuidanceReceiptDigest": "D02908F2221D76063E26478720EE0B340A29FECCB787C8CDCC2EB75F08B7E2B4",
+    "latestGuidedRenderReportDigest": "D6B91445C92C63EC74642D319E3C6629BB2EA4676527058A1320C21F5CDBDFF8",
+    "verifiedHumanLabels": 108,
+    "verifiedGeometryRows": 87,
+    "medianHumanZoomIn": 1.349859,
+    "observedHumanZoomInRange": [0.637628, 4.474963],
+    "twoStageDevelopmentEvidence": {
+      "developmentReviewReceiptDigest": "A2A99F5764EAA8AB41A4818EF00AEAFEFD1243F1804B7D3C463B74F9B4CA4BE5",
+      "baselineEvaluationDigest": "F7C22A003F23ABB7A20040F36D291AF7DF5CC70CD53FC3B640126AFA7E8A1A32",
+      "bestLocalizationViewDigest": "A49DF34DD21A40F0AEFCC46E43CCDE1BB7A125D2DBBAC9773536E9D6A71E52EA",
+      "bestLocalizationModelReportDigest": "05C68D6949531DB834BCFEFD63DD39E6E2BDDED654473364C89BE21D58817ADF",
+      "bestLocalizationEvaluationDigest": "FBDCE3D0781AFF0725239B994B9AA5E4CBC382C0D23D92620640B175F0368EC8",
+      "proposalCandidateMatch": 1.0,
+      "proposalNearHumanTargetBefore": 0.25,
+      "proposalNearHumanTargetAfter": 0.583333,
+      "proposalMedianZoomCorrectionBefore": 1.568312,
+      "proposalMedianZoomCorrectionAfter": 1.002463,
+      "proposalMeanCenterDistanceBefore": 0.296285,
+      "proposalMeanCenterDistanceAfter": 0.113354,
+      "proposalMeanCropIoUBefore": 0.491947,
+      "proposalMeanCropIoUAfter": 0.663848,
+      "targetHumanGeometryTransmittedToModel": false,
+      "scope": "Development replay only. The next fresh shard is the required time-ordered holdout and remains subject to real human review."
+    },
+    "visualInputLayout": {
+      "selectionStage": "separate_current_candidates_and_retrieved_human_atlas_v2",
+      "localizationStage": "selected_high_resolution_views_v1",
+      "selectionUsesCurrentCandidatesFirst": true,
+      "selectionUsesCompactRetrievedHumanExamplesSecond": true,
+      "localizationLocksSelectedCandidate": true,
+      "localizationUsesOneEnlargedGridViewPerRow": true,
+      "localizationOmitsHumanAtlasPixels": true,
+      "fullRawReceiptsAndAtlasStillHashBound": true,
+      "humanTargetGeometryExcluded": true
+    },
+    "executionPolicy": {
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "max",
+      "serviceTier": "fast",
+      "maximumConcurrency": 3,
+      "perProcessTimeoutMs": 600000,
+      "fast6DevelopmentOutcome": "Three consecutive timeouts in one required job; no complete report.",
+      "fast3DevelopmentOutcome": "Two consecutive complete six-job runs with all jobs accepted on first attempt.",
+      "nextShardSize": 12,
+      "nextSourceGroups": 3,
+      "doublingBlockedBy": "24 * (1 - 0.583333) = 10.000008 > 6"
+    },
+    "policy": "Use accumulated human evidence once during frame selection, then lock the selected candidate and localize from enlarged high-resolution grid views. Geometry occupancy floors reject only structural invalidity; frozen human replay and the next real holdout judge composition. Do not apply the old 1.349859 median correction to the new localization output, whose development median correction is already 1.002463."
+  },
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框，也不是截取无法识别身份的局部纹理。",
+    "候选像素已经由管线限定为怪物内部命名 man MovieClip；不得把外层血条、等级、名称或其他 UI 当作身份特征。",
+    "选帧阶段第一张附件只包含当前最多四行候选，必须先定位当前角色；第二张附件是从完整真人证据闭包确定性检索出的紧凑偏好视图，只能学习构图，绝不能从中选择身份、candidateId 或坐标。",
+    "完整 108 条标签、87 个真人框选、原始回执和完整 atlas 由 manifest 哈希绑定；紧凑选帧输入包含全量统计、全部 pass 锚点、最新回执 adjustment 与全部异常负例。",
+    "选帧严格按五阶段推理：选单一主体且姿态清晰的帧；扫描整帧定位头部或主身份结构；写出当前像素中可见的具体地标；复核该位置确属当前角色；最后才给出暂定方框。",
+    "定位阶段必须锁定选帧结果，只查看逐行高分辨率网格图；不得换 candidateId，也不得接收开发集真人目标坐标。",
+    "人形单位默认以完整头部为主特征，只保留最少颈肩；若头部辨识较弱，才受控让渡给标志性武器结构与身体特质。非人单位沿身体轴寻找真实前端、眼、口、颌、头甲、传感器、核心或不可拆分复合结构。",
+    "featureBox 是紧贴真实身份特征的内框；mustIncludeBox 是包含 featureBox 与不可裁上下文的最小外框。必须满足 mx0 <= fx0 < fx1 <= mx1 且 my0 <= fy0 < fy1 <= my1。",
+    "视觉重点必须留在头像甜区并保留安全范围：头部上沿和面朝方向一侧优先；后脑侧、弱肩、普通武器末端、尾部与腿允许接近边缘或被裁。",
+    "在 80px 方形预览中最强识别特征必须成为第一焦点；若仍像全身像就收紧，若大小合适但偏离甜区则平移。",
+    "累计 87 个真实框选的旧单阶段中位倍率为 1.349859、范围 0.637628 至 4.474963；统计只用于诊断，禁止机械套到两阶段定位结果。",
+    "同素材换皮只迁移已确认的识别特征、相对构图与安全区语义；拟态投影复用方舟妖姬的决定不得扩展到黑无常索命。",
+    "若单个候选出现多个可分离主体而另有清晰单主体帧，必须拒绝多主体帧；多头生物自身不可拆分的全部头部才是 feature_group。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.1,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.8,
+        "featureHeightOccupancy": 0.8,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.35,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.2,
+        "featureAnchor": [0.5, 0.47]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.8,
+        "featureHeightOccupancy": 0.8,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.35,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.2,
+        "featureAnchor": [0.5, 0.47]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.78,
+        "featureHeightOccupancy": 0.78,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.35,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.2,
+        "featureAnchor": [0.5, 0.46]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.76,
+        "featureHeightOccupancy": 0.76,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.35,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.2,
+        "featureAnchor": [0.5, 0.5]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 16384,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "unclassified": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "先在当前候选图逐行比较所有帧，选单一主体、姿态清楚、头部或主身份结构完整的一帧；写出可见地标后再给暂定框。高分辨率定位阶段锁定该帧并精确找头：头是最常见重点，头弱时才让渡到标志性武器与身体特质。视觉重点留在甜区并保留头顶和面朝方向安全范围；弱肩、腿、尾巴、普通武器末端可裁。"
+    }
+  },
+  "reviewKeyOverrides": {
+    "敌人-拟态投影::default": {
+      "reasoningHint": "人类已拒绝多人重叠帧。C02/f13 与 C05/f48 是单人帧，应选择清晰单人并严格只保留完整头部、长发顶部和耳部轮廓。该身份已确认复用方舟妖姬头像；此 override 只保留为历史负例，不得扩展到黑无常索命。",
+      "requiredFeatureRegion": [0.405, 0.14, 0.56, 0.405],
+      "requiredMustIncludeRegion": [0.395, 0.13, 0.57, 0.415]
+    }
+  }
+}

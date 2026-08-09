@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>迷你黑洞 · 黑底转透明裁决</title>
+  <link rel="stylesheet" href="review.css">
+  <style>
+    :root { color-scheme: dark; }
+    .matte-list { display: grid; gap: 1rem; padding: 1rem; }
+    .matte-row { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow: hidden; }
+    .matte-row > header { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--line); }
+    .human-note { margin: .8rem 1rem 0; padding: .75rem; border-left: 3px solid #d6a04d; background: #201d18; color: #e7d8bc; }
+    .original-section, .candidate-section, .decision-panel { padding: 1rem; }
+    .original-grid, .candidate-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
+    .original-card, .matte-card { border: 1px solid var(--line); border-radius: 10px; padding: .8rem; background: #161d25; }
+    .matte-card[data-selected="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); }
+    .card-head { display: flex; justify-content: space-between; align-items: start; gap: .7rem; }
+    .card-head p { margin: .25rem 0 0; color: var(--muted); }
+    .recommended { padding: .2rem .48rem; border-radius: 999px; background: #4ecbbb; color: #09110f; font-weight: 800; }
+    .visual-pair { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .7rem; }
+    .visual { min-height: 270px; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; }
+    .visual.checker { background: repeating-conic-gradient(#d9dee5 0 25%, #aab2bd 0 50%) 0 / 24px 24px; }
+    .visual.light { background: #eef1f4; }
+    .visual.black { background: #000; }
+    .visual img { width: 100%; height: 300px; object-fit: contain; image-rendering: auto; }
+    .visual-label { position: absolute; align-self: start; justify-self: start; margin: .38rem; padding: .15rem .4rem; border-radius: 4px; background: #101820cc; color: #eaf2f7; font-size: .78rem; }
+    .preview-strip { display: flex; align-items: end; gap: .8rem; min-height: 102px; margin: .8rem 0; padding: .55rem; border: 1px solid var(--line); border-radius: 8px; background: repeating-conic-gradient(#39434e 0 25%, #27313a 0 50%) 0 / 16px 16px; }
+    .preview-strip figure { margin: 0; display: grid; justify-items: center; gap: .2rem; color: var(--muted); }
+    .preview-strip img[data-size="80"] { width: 80px; height: 80px; }
+    .preview-strip img[data-size="48"] { width: 48px; height: 48px; }
+    .preview-strip img[data-size="32"] { width: 32px; height: 32px; }
+    .metrics { display: flex; flex-wrap: wrap; gap: .45rem; color: var(--muted); font-size: .88rem; }
+    .select-matte { width: 100%; margin-top: .7rem; }
+    .decision-panel { border-top: 1px solid var(--line); }
+    .refine-button[aria-pressed="true"] { background: #c77744; color: #111; }
+    .decision-summary { color: var(--accent); font-weight: 700; }
+    @media (max-width: 1050px) {
+      .original-grid, .candidate-grid, .visual-pair { grid-template-columns: 1fr; }
+      .visual { min-height: 220px; }
+      .visual img { height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CF7 · 黑底柔性透明通道人工门</p>
+      <h1>迷你黑洞 · 选择透明度与构图</h1>
+      <p class="lede">帧不变、无需重新推理。请同时看棋盘格、浅色底和 80/48/32px：优先保住发光核心、旋涡层次，并避免留下方形黑底或明显黑边。</p>
+    </div>
+    <div class="progress-box" aria-live="polite">
+      <strong id="progress-count">0 / 0</strong>
+      <span id="progress-label">等待数据</span>
+      <div class="progress-track"><span id="progress-bar"></span></div>
+    </div>
+  </header>
+
+  <section class="evidence" aria-label="证据摘要">
+    <span id="source-digest">source —</span>
+    <span id="dataset-digest">dataset —</span>
+    <span id="candidate-count">candidates —</span>
+  </section>
+
+  <section class="controls" aria-label="导入导出">
+    <p>选中候选只冻结后处理参数与 4096px 输出，不会写入正式头像资产。</p>
+    <div class="control-actions">
+      <button id="import-button" type="button" class="secondary">导入完整决定</button>
+      <input id="import-file" type="file" accept="application/json" hidden>
+      <button id="export-button" type="button" disabled>导出透明化决定</button>
+    </div>
+  </section>
+
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <main id="app" class="matte-list" data-ready="false"></main>
+
+  <template id="row-template">
+    <article class="matte-row">
+      <header>
+        <div><span class="review-code"></span><h2 class="review-title"></h2><p class="review-meta"></p></div>
+        <div class="badges"></div>
+      </header>
+      <p class="human-note"></p>
+      <section class="original-section"><h3>原始黑底参考（不可选）</h3><div class="original-grid"></div></section>
+      <section class="candidate-section"><h3>透明化候选</h3><div class="candidate-grid"></div></section>
+      <section class="decision-panel">
+        <h3>裁决</h3>
+        <button type="button" class="refine-button secondary">现有 6 个都不合适，需要继续调参</button>
+        <label class="note-field"><span>备注（继续调参时必填）</span><textarea rows="2" placeholder="例如：外圈再透明一些，但核心不要变淡"></textarea></label>
+        <p class="decision-summary">尚未选择</p>
+      </section>
+    </article>
+  </template>
+
+  <template id="original-template">
+    <section class="original-card">
+      <div class="card-head"><div><strong class="role-label"></strong><p class="frame-meta"></p></div></div>
+      <div class="visual-pair"><a class="visual black" target="_blank" rel="noreferrer"><span class="visual-label">原黑底</span><img alt="原始黑底构图"></a></div>
+      <div class="preview-strip"></div>
+    </section>
+  </template>
+
+  <template id="candidate-template">
+    <section class="matte-card">
+      <div class="card-head"><div><strong class="candidate-label"></strong><p class="candidate-description"></p></div><span class="recommended" hidden>推荐档</span></div>
+      <div class="visual-pair">
+        <a class="visual checker candidate-link" target="_blank" rel="noreferrer"><span class="visual-label">棋盘格</span><img alt="透明候选棋盘格预览"></a>
+        <a class="visual light candidate-link-light" target="_blank" rel="noreferrer"><span class="visual-label">浅色底查黑边</span><img alt="透明候选浅色底预览"></a>
+      </div>
+      <div class="preview-strip"></div>
+      <div class="metrics"></div>
+      <button type="button" class="select-matte">选用这个候选</button>
+    </section>
+  </template>
+
+  <script src="black-matte.js"></script>
+</body>
+</html>

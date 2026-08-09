@@ -81,6 +81,12 @@ const context = {
     PanelTooltip: {
         hide: function() {}
     },
+    MercPortraits: {
+        BUST_FIT_FIELDS: ['脸型', '发型', '面具', '身体', '上臂'],
+        BATTLE_STATE: '空手站立',
+        create: function() { return {}; },
+        updateHost: function() {}
+    },
     DressupDollRenderer: {
         create: function() {
             let calls = 0;
@@ -103,6 +109,7 @@ const context = {
     }
 };
 context.globalThis = context;
+context.window.MercPortraits = context.MercPortraits;
 
 // MercData 保持单源：直接执行 merc-data.js（零依赖 IIFE，只写 window.MercData），
 // 不硬编码 DRESSUP_SLOT_BY_INDEX 副本。浏览器中 window 即全局；VM 中 window 只是

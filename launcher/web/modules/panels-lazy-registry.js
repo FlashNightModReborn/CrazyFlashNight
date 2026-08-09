@@ -249,7 +249,8 @@
     // P4 工程拆分：原 arena-panel.js 单文件 IIFE 拆为 modules/arena/ 六模块（纯移动）——core（状态容器+
     // 共享工具，首载并守卫 workbench 共享层）→ shell / challenge-browser / preview-authority /
     // custom-editor / result（中间模块只守 core，跨模块调用解析于调用时）→ arena-panel.js 薄 facade
-    //（Panels.register 装配 + QA 接口，守六模块全集）。
+    //（Panels.register 装配 + QA 接口，守六模块全集）。EnemyPortraits / MercPortraits 在 core 前加载，
+    // 供挑战目录、对手预览与全兵种目录共用身份解析 / 纸娃娃胸像 / fail-soft 回退。
     Panels.registerLazy('arena',
         ['modules/workbench-lifecycle.js',
          'modules/workbench-focus.js',
@@ -266,8 +267,13 @@
          'modules/arena-custom-parameters.js',
          'modules/arena-custom-undo.js',
          'modules/arena-custom-polling.js',
-         'modules/arena-custom-param-editor.js',
-         'modules/arena-custom-result-view.js',
+          'modules/arena-custom-param-editor.js',
+          'modules/arena-custom-result-view.js',
+          'modules/asset-timeline.js',
+          'modules/dressup-doll-renderer.js',
+          'modules/merc-data.js',
+          'modules/merc-portrait-renderer.js',
+          'modules/portrait-resolver.js',
          'modules/arena/arena-core.js',
          'modules/arena/arena-shell.js',
          'modules/arena/arena-challenge-browser.js',
@@ -280,7 +286,7 @@
     // ── team (战队：佣兵 / 伙伴 / 战宠 / 机械) ──
     // 子视图继续使用 pets / mercs 协议，但只有 team 是生产 Panel。
     // team 已接入 workbench 共享层，顺序固定：共享层（lifecycle/focus/primitives/profile/shell/
-    // components/inspection-viewport）→ 领域（asset-timeline/dressup/merc-data/team-shared/pet/merc）→ 壳（team-panel）。
+    // components/inspection-viewport）→ 领域（asset-timeline/dressup/merc-data/merc-portrait/team-shared/pet/merc）→ 壳（team-panel）。
     Panels.registerLazy('team',
         ['modules/workbench-lifecycle.js',
          'modules/workbench-focus.js',
@@ -289,10 +295,12 @@
          'modules/workbench.js',
          'modules/workbench-components.js',
          'modules/workbench-inspection-viewport.js',
-         'modules/asset-timeline.js',
-         'modules/dressup-doll-renderer.js',
-         'modules/merc-data.js',
-         'modules/team/team-shared.js',
+          'modules/asset-timeline.js',
+          'modules/dressup-doll-renderer.js',
+          'modules/merc-data.js',
+          'modules/merc-portrait-renderer.js',
+          'modules/team/team-shared.js',
+         'modules/portrait-resolver.js',
          'modules/pet-panel.js',
          'modules/merc-panel.js',
          'modules/team/team-panel.js'],

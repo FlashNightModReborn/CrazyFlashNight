@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>怪物头像特征特写复审</title>
+  <link rel="stylesheet" href="review.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CF7 · 语义特征人工视觉门</p>
+      <h1>怪物头像特征特写复审</h1>
+      <p class="lede">先看是否抓住头部或非人单位的身份特征，再看特写、安全边距、清晰度与变体。这里不会改写正式头像或游戏配置。</p>
+    </div>
+    <div class="progress-box" aria-live="polite">
+      <strong id="progress-count">0 / 0</strong>
+      <span id="progress-label">等待数据</span>
+      <div class="progress-track"><span id="progress-bar"></span></div>
+    </div>
+  </header>
+
+  <section class="evidence" aria-label="证据摘要">
+    <span id="source-digest">source —</span>
+    <span id="review-digest">review —</span>
+    <a id="contact-sheet-link" target="_blank" rel="noreferrer">打开当前批次总联系表</a>
+  </section>
+
+  <section class="controls" aria-label="筛选和导入导出">
+    <label>
+      <span>搜索</span>
+      <input id="search" type="search" placeholder="怪物、类别、审核键">
+    </label>
+    <label>
+      <span>筛选</span>
+      <select id="filter">
+        <option value="all">全部</option>
+        <option value="pending">待判断</option>
+        <option value="reviewed">已判断</option>
+        <option value="risk">有风险提示</option>
+        <option value="disagreement">A/B 分歧</option>
+        <option value="blocked">来源阻断</option>
+      </select>
+    </label>
+    <div class="control-actions">
+      <button id="import-button" type="button" class="secondary">导入完整决定</button>
+      <input id="import-file" type="file" accept="application/json" hidden>
+      <button id="export-button" type="button" disabled>导出完整决定</button>
+    </div>
+  </section>
+
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <main id="app" class="review-list" data-ready="false"></main>
+
+  <template id="card-template">
+    <article class="review-card">
+      <header class="card-header">
+        <div>
+          <span class="review-code"></span>
+          <h2 class="review-title"></h2>
+          <p class="review-meta"></p>
+        </div>
+        <div class="badges"></div>
+      </header>
+      <p class="review-notes"></p>
+      <p class="human-feedback" hidden></p>
+      <section class="visual-grid"></section>
+      <details class="candidate-context">
+        <summary>查看全部 FFDec 候选帧</summary>
+        <div class="candidate-strip"></div>
+      </details>
+      <section class="decision-panel">
+        <h3>你的判断</h3>
+        <div class="status-buttons"></div>
+        <label class="note-field">
+          <span>备注（非“通过”必填）</span>
+          <textarea rows="2" placeholder="说明主体、姿态、裁切、来源或变体问题"></textarea>
+        </label>
+      </section>
+    </article>
+  </template>
+
+  <script src="review.js"></script>
+</body>
+</html>

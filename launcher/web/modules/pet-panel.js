@@ -21,8 +21,9 @@
     if (typeof TeamShared === 'undefined'
             || typeof Workbench === 'undefined'
             || typeof WorkbenchComponents === 'undefined'
-            || typeof PanelScale === 'undefined') {
-        throw new Error('pet-panel.js 需要先加载 team/team-shared.js、workbench 共享层与 panel-scale.js');
+            || typeof PanelScale === 'undefined'
+            || typeof EnemyPortraits === 'undefined') {
+        throw new Error('pet-panel.js 需要先加载 team/team-shared.js、workbench 共享层、panel-scale.js 与 portrait-resolver.js');
     }
 
     var DESIGN_W = 1024;
@@ -211,9 +212,9 @@
 
         _density = new Workbench.GridDensityController({ panelId: 'team-pet', compactClass: 'team-grid-compact' });
         _densityToggle = _density.createToggle();
-        _densityToggle.setAttribute('aria-label', noun + '名册布局');
+        _densityToggle.setAttribute('aria-label', noun + '卡片布局');
         var densityLabel = _densityToggle.querySelector('.item-grid-mode-label');
-        if (densityLabel) densityLabel.textContent = '名册';
+        if (densityLabel) densityLabel.textContent = '布局';
         _shell.addHeaderAction(_densityToggle);
 
         _helpAction = new WorkbenchComponents.HelpAction({ shell: _shell, spec: helpSpec() });
@@ -233,7 +234,7 @@
             ariaLabel: noun + '管理帮助',
             message: '名册支持排序（出战优先 / 等级 / 体力 / 名称）与筛选（全部 / 仅出战 / 仅休息 / 体力不足）。'
                 + '点选卡片后，右栏可出战 · 休息、恢复体力、切换已解锁的快捷进阶（淬毒 / 发型等）；'
-                + '「培养 →」进入进阶页做强化、方案进阶与删除。',
+                + '「培养 →」进入进阶页做强化、方案进阶与删除。完整 / 紧凑布局同时作用于名册与领养目录。',
             detail: '「＋ 领养' + noun + '」打开领养目录：左侧按分类浏览，右侧确认价格与余额后提交唯一「确认领养」。'
                 + '条件不满足（主线 / 等级 / 唯一 / 栏位 / 余额）会写明原因且不可提交。'
                 + '世界内招募候选以「候选」卡置顶，契约金满足即可在右栏确认招募。'
@@ -349,6 +350,9 @@
         _storeGridEl.setAttribute('aria-label', '领养' + noun + '目录');
         _storeScrollEl.appendChild(_storeGridEl);
         _storeLeftRoot.appendChild(_storeScrollEl);
+        // 领养目录与名册共享同一持久化密度状态。store 是懒创建视图，register
+        // 会立即套用当前 mode，随后顶部完整/紧凑切换也会同步更新两个网格。
+        _density.register(_storeGridEl);
 
         _storeRightRoot = document.createElement('div');
         _storeRightRoot.className = 'workbench-view team-pet-view team-store-decision';
@@ -615,7 +619,7 @@
         card.className = 'team-entity-card team-pet-card';
         card.setAttribute('data-slot', pet.slotIndex);
 
-        card.appendChild(iconFrame('assets/pets/pet_' + pet.petId + '.png'));
+        card.appendChild(iconFrame('assets/pets/pet_' + pet.petId + '.png', portraitContext(pet)));
         card.appendChild(cardFrame());
 
         var body = document.createElement('div');
@@ -750,7 +754,7 @@
         card.className = 'team-entity-card team-pet-card team-pet-card-candidate';
         card.setAttribute('data-slot', String(CANDIDATE_SLOT));
 
-        card.appendChild(iconFrame('assets/pets/pet_' + cand.petId + '.png'));
+        card.appendChild(iconFrame('assets/pets/pet_' + cand.petId + '.png', portraitContext(cand)));
         card.appendChild(cardFrame());
 
         var body = document.createElement('div');
@@ -891,7 +895,7 @@
         }
 
         _detailEl.appendChild(detailHead(pet.name, 'Lv.' + pet.level,
-            'assets/pets/pet_' + pet.petId + '.png', statusChips(pet)));
+            'assets/pets/pet_' + pet.petId + '.png', statusChips(pet), portraitContext(pet)));
 
         var meters = document.createElement('div');
         meters.className = 'team-detail-meters';
@@ -966,7 +970,7 @@
         candChip.textContent = '招募候选';
         chips.push(candChip);
         _detailEl.appendChild(detailHead(cand.name, 'Lv.' + cand.level,
-            'assets/pets/pet_' + cand.petId + '.png', chips));
+            'assets/pets/pet_' + cand.petId + '.png', chips, portraitContext(cand)));
 
         var price = document.createElement('div');
         price.className = 'team-cand-price';
@@ -1161,14 +1165,14 @@
 
     function buildStoreCard(item) {
         var gate = adoptGate(item);
-        var taskLocked = item.unlockTask > 0 && _snapshot && item.unlockTask > (_snapshot.playerTask || 0);
+        var taskLocked = isMainlineLocked(item);
 
         var card = document.createElement('div');
         card.className = 'team-entity-card team-pet-card team-store-card';
         card.setAttribute('data-pet-id', item.petId);
-        card.appendChild(iconFrame(taskLocked
-            ? 'assets/pets/pet_locked.png'
-            : 'assets/pets/pet_' + item.petId + '.png'));
+        if (taskLocked) card.setAttribute('data-mainline-locked', 'true');
+        var storeIcon = taskLocked ? 'assets/pets/pet_locked.png' : 'assets/pets/pet_' + item.petId + '.png';
+        card.appendChild(iconFrame(storeIcon, portraitContext(item, { locked: taskLocked })));
         card.appendChild(cardFrame());
 
         var body = document.createElement('div');
@@ -1181,23 +1185,30 @@
         nameText.textContent = item.name;
         name.appendChild(nameText);
         body.appendChild(name);
+        // 「唯一」是身份属性：独立于经济信息占一条属性轨，也不复用左上状态徽标。
+        // 完整态保留该轨；紧凑态由 card body 一并隐藏，tooltip / aria / 右栏继续承接语义。
+        if (item.unique) {
+            var flags = document.createElement('div');
+            flags.className = 'team-store-flags';
+            var uniqueMark = document.createElement('span');
+            uniqueMark.className = 'team-store-unique-chip';
+            uniqueMark.textContent = '唯一';
+            uniqueMark.setAttribute('aria-label', '唯一战宠');
+            flags.appendChild(uniqueMark);
+            body.appendChild(flags);
+        }
         var metaLine = document.createElement('div');
         metaLine.className = 'team-entity-meta';
-        metaLine.textContent = priceText(item);
+        var price = document.createElement('span');
+        price.className = 'team-store-price';
+        price.textContent = priceText(item);
+        metaLine.appendChild(price);
         body.appendChild(metaLine);
         card.appendChild(body);
 
-        if (item.unique) {
-            var badge = document.createElement('span');
-            badge.className = 'team-entity-badge';
-            badge.setAttribute('data-tone', 'info');
-            badge.textContent = '唯一';
-            card.appendChild(badge);
-        }
-
         Workbench.EntityTile.bindActivation(card, {
             itemName: item.name,
-            label: item.name + '，' + priceText(item),
+            label: item.name + '，' + priceText(item) + (item.unique ? '，唯一' : ''),
             role: 'listitem',
             selected: item.petId === _adoptPetId,
             actionable: true,   // 选候选是本地 browse（零写入）；门控由右栏 CommitBar 阻断
@@ -1208,7 +1219,8 @@
         if (item.petId === _adoptPetId) card.setAttribute('data-state', 'selected');
         else if (gate) card.setAttribute('data-state', 'blocked');
         bindCardTip(card, function() {
-            return item.name + ' · ' + priceText(item) + (gate ? ' · ' + gate : ' · 可领养');
+            return item.name + ' · ' + priceText(item) + (item.unique ? ' · 唯一' : '')
+                + (gate ? ' · ' + gate : ' · 可领养');
         });
         return card;
     }
@@ -1255,8 +1267,14 @@
             chip.textContent = '唯一';
             chips.push(chip);
         }
-        _storePreviewEl.appendChild(detailHead(item.name, priceText(item),
-            'assets/pets/pet_' + item.petId + '.png', chips));
+        // 主线未解锁时，右侧必须与左卡使用同一视觉防剧透投影。locked context
+        // 令 resolver 在占位图后立即返回，不请求 manifest 或现代透明头像。
+        var taskLocked = isMainlineLocked(item);
+        var previewIcon = taskLocked ? 'assets/pets/pet_locked.png' : 'assets/pets/pet_' + item.petId + '.png';
+        var previewHead = detailHead(item.name, priceText(item), previewIcon, chips,
+            portraitContext(item, { locked: taskLocked }));
+        if (taskLocked) previewHead.setAttribute('data-mainline-locked', 'true');
+        _storePreviewEl.appendChild(previewHead);
 
         var req = document.createElement('div');
         req.className = 'team-store-req';
@@ -1896,14 +1914,14 @@
         return b;
     }
 
-    function iconFrame(src) {
+    function iconFrame(src, portraitOptions) {
         var icon = document.createElement('div');
         icon.className = 'team-entity-icon';
         var img = document.createElement('img');
-        img.src = src;
-        img.alt = '';
-        img.onerror = function() { this.onerror = null; this.src = 'assets/pets/pet_locked.png'; };
         icon.appendChild(img);
+        portraitOptions = portraitOptions || {};
+        portraitOptions.legacyUrl = src;
+        EnemyPortraits.mount(icon, img, portraitOptions);
         return icon;
     }
 
@@ -1915,16 +1933,16 @@
         return frame;
     }
 
-    function detailHead(name, sub, iconSrc, chips) {
+    function detailHead(name, sub, iconSrc, chips, portraitOptions) {
         var head = document.createElement('div');
         head.className = 'team-detail-head';
         var portrait = document.createElement('div');
         portrait.className = 'team-portrait';
         var img = document.createElement('img');
-        img.src = iconSrc;
-        img.alt = '';
-        img.onerror = function() { this.onerror = null; this.src = 'assets/pets/pet_locked.png'; };
         portrait.appendChild(img);
+        portraitOptions = portraitOptions || {};
+        portraitOptions.legacyUrl = iconSrc;
+        EnemyPortraits.mount(portrait, img, portraitOptions);
         head.appendChild(portrait);
         var main = document.createElement('div');
         main.className = 'team-detail-head-main';
@@ -2099,6 +2117,23 @@
         for (var i = 0; i < _petLib.length; i++) { if (_petLib[i].id === petId) return _petLib[i]; }
         return null;
     }
+    function portraitContext(item, extra) {
+        item = item || {};
+        var def = getPetLibDef(item.petId);
+        var context = {
+            consumer: 'team',
+            portraitRef: item.portraitRef || item.identifier || (def && (def.portraitRef || def.identifier)),
+            identifier: item.identifier || (def && def.identifier),
+            portraitVariant: item.portraitVariant || null,
+            schemeStatus: item.schemeStatus || null
+        };
+        if (extra) {
+            for (var key in extra) {
+                if (extra.hasOwnProperty(key)) context[key] = extra[key];
+            }
+        }
+        return context;
+    }
     function rosterTypeForPet(petId) {
         var def = getPetLibDef(petId);
         return def && def.rosterType ? def.rosterType : 'pet';
@@ -2179,6 +2214,10 @@
         if ((item.kprice || 0) > 0) { if (text) text += ' / '; text += TeamShared.fmtMoney(item.kprice) + ' K'; }
         if (!text) text = '免费';
         return text;
+    }
+    function isMainlineLocked(item) {
+        return !!(item && item.unlockTask > 0 && _snapshot
+            && item.unlockTask > (_snapshot.playerTask || 0));
     }
     // 领养门控（展示层复算；权威裁决仍在 AS2）：'' 可领养，否则可读原因
     function adoptGate(item) {

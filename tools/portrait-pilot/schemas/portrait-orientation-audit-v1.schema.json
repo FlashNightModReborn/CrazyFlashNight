@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "batchId",
+    "sourceDigest",
+    "promptDigest",
+    "runRole",
+    "assessments"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "cf7.portrait-orientation-visual-assessment.v1"
+    },
+    "batchId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceDigest": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$"
+    },
+    "promptDigest": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$"
+    },
+    "runRole": {
+      "type": "string",
+      "enum": ["proposal", "independent_review"]
+    },
+    "assessments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviewKey",
+          "currentDirection",
+          "landmark",
+          "confidence"
+        ],
+        "properties": {
+          "reviewKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "currentDirection": {
+            "type": "string",
+            "enum": ["left", "right", "frontal_or_symmetric", "ambiguous"]
+          },
+          "landmark": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    }
+  }
+}

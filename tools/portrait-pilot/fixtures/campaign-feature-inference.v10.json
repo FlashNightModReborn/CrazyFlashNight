@@ -1,0 +1,139 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-campaign-feature-v10-eight-round-split-visual-context-20260806",
+  "calibration": {
+    "parentProfile": {
+      "path": "tools/portrait-pilot/fixtures/campaign-feature-inference.v9.json",
+      "bytes": 10689,
+      "sha256": "69B87A375EF838C08CC695F29F6DE7CA95521BBE1BDBC9FBC9C0A15CD48FCB7E"
+    },
+    "sourceReviewBatchIds": [
+      "portrait-campaign-shard-r2-fast6-20260806T035300Z",
+      "portrait-campaign-shard-r6-calibrated-fast6-20260806T045256Z",
+      "portrait-campaign-shard-r16-visualcal-fast6-20260806T055055Z",
+      "portrait-campaign-shard-r22-v4-feedback-fast6-20260806T080559Z",
+      "portrait-campaign-shard-r29-v5-feedback-fast6-20260806T085057Z",
+      "portrait-campaign-shard-r35-v6-feedback-fast6",
+      "portrait-campaign-shard-r42-v7-feedback-fast6",
+      "portrait-campaign-shard-r52-v9-feedback-fast6"
+    ],
+    "humanReviewReceiptDigests": [
+      "14174DB2FA32E11EA75430C4956CD9466C2653DA6F3464CB8BFA61C60EFA240A",
+      "021BA20A67D041FF63150B466DC1BC2A0A54D169EDCCD9076310069E1A4950E4",
+      "A44E72EE0834E0F50052B673D1A21B3B141E2EBDE2BDB3A4DD6DCA269B44E7E1",
+      "F0AF2B5B6D1CD0CFF848BDBB425DB7E0BC0DB54BE23348F56F36295A5C275AB0",
+      "15EE7AF1F4AF30189A9AE4F50690AD91806A1E94193DAB1B2975D914441A8882",
+      "7CA7FF3A1103A88E574BD8C0D42BAD6EE47E3353FC0A81AAF958C212501F23D2",
+      "E71AE9BE74C93581081A75D91CF72482D4CFF9977E054E3290A073E0B65A235E",
+      "78A153437558D7C8A6DEDF77421D01CF9BF689E89E4BE7DB5AF0FAD6235CCB97"
+    ],
+    "latestGuidanceReceiptDigest": "2800BCBCB26ED7A698279A236AFA129847179534BD39A299385BEA0F2DF0615C",
+    "latestGuidedRenderReportDigest": "767F6A20B48FA9AC4587E36B73F2D5FAB0E19794465362DB5F5545AB9A8B197C",
+    "cumulativeFeedbackDigest": "4210F3934B4120604FFB54588D289A9C5A3949903AF162142AFA326BC99E46FC",
+    "verifiedHumanLabels": 96,
+    "verifiedGeometryRows": 78,
+    "medianHumanZoomIn": 1.349859,
+    "observedHumanZoomInRange": [0.637628, 4.474963],
+    "campaignFirstPassRates": [
+      {"batchId": "portrait-campaign-shard-r2-fast6-20260806T035300Z", "passed": 3, "eligible": 12, "rate": 0.25},
+      {"batchId": "portrait-campaign-shard-r6-calibrated-fast6-20260806T045256Z", "passed": 3, "eligible": 12, "rate": 0.25},
+      {"batchId": "portrait-campaign-shard-r16-visualcal-fast6-20260806T055055Z", "passed": 4, "eligible": 12, "rate": 0.333333},
+      {"batchId": "portrait-campaign-shard-r22-v4-feedback-fast6-20260806T080559Z", "passed": 0, "eligible": 12, "rate": 0},
+      {"batchId": "portrait-campaign-shard-r29-v5-feedback-fast6-20260806T085057Z", "passed": 2, "eligible": 12, "rate": 0.166667},
+      {"batchId": "portrait-campaign-shard-r35-v6-feedback-fast6", "passed": 0, "eligible": 12, "rate": 0},
+      {"batchId": "portrait-campaign-shard-r42-v7-feedback-fast6", "passed": 2, "eligible": 12, "rate": 0.166667},
+      {"batchId": "portrait-campaign-shard-r52-v9-feedback-fast6", "passed": 2, "eligible": 12, "rate": 0.166667}
+    ],
+    "latestRoundFindings": {
+      "passed": 2,
+      "adjustments": 10,
+      "headOrPrimaryFeatureLocalizationFailures": 10,
+      "headNotLocated": 7,
+      "headNotCenteredOrNeedsTranslation": 3,
+      "preferredIndependentReview": 1,
+      "excessRightSafetySpace": 1,
+      "guidanceZoomInRange": [1, 1.822119],
+      "guidanceMedianZoomIn": 1.161834,
+      "interpretation": "The dominant error is semantic localization and translation, not a universal need for more zoom. Four corrections kept zoom at 1 and moved the crop."
+    },
+    "visualInputLayout": {
+      "mode": "separate_current_candidates_and_full_human_atlas_v1",
+      "previousCurrentSheetDimensions": [1885, 1228],
+      "previousCompositeDimensions": [1885, 8008],
+      "previousCurrentVerticalShare": 0.153347,
+      "policy": "Attach the current four-row candidate sheet first at its native useful dimensions, then attach the complete human-preference atlas as a second image. Every human label remains bound, but historical examples may not reduce current-target resolution or be treated as candidates."
+    },
+    "policy": "All eight rounds, 96 human labels, 78 verified crops, raw notes, A/B preferences, source anomaly, and guided orientations must remain bound. r52 makes head or primary-feature localization the mandatory first checkpoint. Geometry may only be drawn after the model identifies a visible landmark in the current candidate image."
+  },
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框，也不是截取无法识别身份的局部纹理。",
+    "候选像素已经由管线限定为怪物内部命名 man MovieClip；不得把外层血条、等级、名称或其他 UI 当作身份特征。",
+    "第一张附件只包含当前最多四行候选，必须先在其中定位当前角色；第二张附件是完整真人偏好图谱，只能学习构图，绝不能从中选择身份、candidateId 或坐标。",
+    "严格按五阶段推理：选单一主体且姿态清晰的帧；扫描整帧定位头部或主身份结构；用 featureLabel 写出当前像素中可见的眼、脸、面罩、口器、头甲、感官簇、驾驶舱、核心或不可拆分复合结构；复核该位置确属当前角色；最后才画 featureBox 和 mustIncludeBox。",
+    "若声称使用 head_closeup，必须在当前候选像素中指出至少一个可见的眼、脸、口器、传感器、头甲、头冠或明确头部轮廓；无法指出就换帧或改为有证据的 feature_group，禁止把躯干中心冒充头。",
+    "人形单位默认以完整头部为主特征，只保留最少颈肩；非人单位先沿身体轴线寻找真实前端、眼、口、颌、头甲、触须根或传感器，不得默认使用画面中心、最大躯干、最长尾巴或最高对比特效。",
+    "r52 的 10 个 adjustment 全部涉及头部或主特征未定位、未居中或平移错误；因此定位正确性优先于占比门，不能靠扩大错误 featureBox 通过几何检查。",
+    "featureBox 是紧贴真实身份特征的内框；mustIncludeBox 是包含 featureBox 与不可裁上下文的外框。必须满足 mx0 <= fx0 < fx1 <= mx1 且 my0 <= fy0 < fy1 <= my1。",
+    "mustIncludeBox 只比 featureBox 多最少的不可裁轮廓；它不是可选留白框。若占比不足，应收紧外框或换帧，不能扩大 featureBox 到不可见像素。",
+    "安全范围围绕主焦点分配：头部上沿和面朝方向一侧优先，后脑侧、弱肩部、普通武器末端、尾部与腿允许更接近边缘或被裁。",
+    "在 80px 方形预览中，最强识别特征必须成为第一焦点。若仍像全身像就收紧；若头部大小合适但不在甜区，优先平移而不是继续缩放。",
+    "累计 78 个真实框选的中位倍率为 1.349859，范围 0.637628 至 4.474963；统计只用于反证模型是否仍给全身像或错位，禁止机械套用固定倍率。",
+    "若人类备注明确偏好 Luna B，则以 B 的候选与构图为强起点，仍须独立检查完整头部、安全边距和空白利用率。",
+    "同素材换皮只迁移已确认的识别特征、相对构图与安全区语义，仍必须在当前行选择当前像素；拟态投影复用方舟妖姬的决定不得扩展到黑无常索命。",
+    "若单个候选出现多个可分离主体而另有清晰单主体帧，必须拒绝多主体帧；多头生物自身不可拆分的全部头部才是 feature_group。",
+    "若人工备注同时要求裁切和翻转，先完成高分辨率特写，再对完成的特写执行方向变换；没有明确方向依据时保持源方向。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.1,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.8,
+        "featureHeightOccupancy": 0.8,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.76,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.56,
+        "featureAnchor": [0.5, 0.47]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.8,
+        "featureHeightOccupancy": 0.8,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.76,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.54,
+        "featureAnchor": [0.5, 0.47]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.78,
+        "featureHeightOccupancy": 0.78,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.74,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.5,
+        "featureAnchor": [0.5, 0.46]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.76,
+        "featureHeightOccupancy": 0.76,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.7,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.44,
+        "featureAnchor": [0.5, 0.5]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 16384,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "unclassified": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "先只看第一张当前候选图，逐行定位可见头部或非人主身份结构，并用 featureLabel 写出具体像素地标；定位闭合后才参考第二张完整人类偏好图谱决定构图。人形默认完整头部，非人先找眼、口器、颌、传感器、头甲、感官簇或可信前端。头部大小合适但偏离甜区时应平移，不应继续机械放大。featureBox 为内框、mustIncludeBox 为最小外框，头顶和面朝方向保留安全区，弱肩、腿、尾巴和普通武器可裁。"
+    }
+  },
+  "reviewKeyOverrides": {
+    "敌人-拟态投影::default": {
+      "reasoningHint": "人类已拒绝多人重叠帧。C02/f13 与 C05/f48 是单人帧，应选择清晰单人并严格只保留完整头部、长发顶部和耳部轮廓。该身份已确认复用方舟妖姬头像；此 override 只保留为历史负例，不得扩展到黑无常索命。",
+      "requiredFeatureRegion": [0.405, 0.14, 0.56, 0.405],
+      "requiredMustIncludeRegion": [0.395, 0.13, 0.57, 0.415]
+    }
+  }
+}

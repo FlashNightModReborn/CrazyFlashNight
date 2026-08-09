@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "batchId",
+    "sourceDigest",
+    "promptDigest",
+    "runRole",
+    "selections"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "enum": [
+        "cf7.enemy-portrait-internal-subject-rescue-selection.v1"
+      ]
+    },
+    "batchId": {
+      "type": "string"
+    },
+    "sourceDigest": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$"
+    },
+    "promptDigest": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$"
+    },
+    "runRole": {
+      "type": "string",
+      "enum": [
+        "proposal",
+        "independent_review"
+      ]
+    },
+    "selections": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviewKey",
+          "decision",
+          "candidateId",
+          "subjectLikeness",
+          "completeUnit",
+          "uiContamination",
+          "effectOnly",
+          "weaponOnly",
+          "identityFeatures",
+          "confidence",
+          "reason"
+        ],
+        "properties": {
+          "reviewKey": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "select",
+              "none"
+            ]
+          },
+          "candidateId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subjectLikeness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "completeUnit": {
+            "type": "boolean"
+          },
+          "uiContamination": {
+            "type": "boolean"
+          },
+          "effectOnly": {
+            "type": "boolean"
+          },
+          "weaponOnly": {
+            "type": "boolean"
+          },
+          "identityFeatures": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        }
+      }
+    }
+  }
+}

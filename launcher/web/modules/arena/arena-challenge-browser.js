@@ -5,13 +5,13 @@
  * DOM id·class 契约 / QA 断言不变）。转换规则：原顶层 `var _x` 状态 → ArenaCore.state._x（本文件内
  * 以 `S._x` 访问）；跨模块函数/常量引用 → `模块全局.名字`。加载顺序由 panels-lazy-registry 的
  * arena 注册项与 arena/dev/harness.html script 区固定（与本文件守卫一致）。
- * 依赖守卫：arena/arena-core.js。
+ * 依赖守卫：通用 EnemyPortraits / MercPortraits + arena/arena-core.js。
  */
 (function() {
     'use strict';
 
-    if (typeof window === 'undefined' || !window.ArenaCore) {
-        throw new Error('arena/arena-challenge-browser.js 需要先加载 arena/arena-core.js（共享基座：状态容器 + 跨模块工具 + 共享常量）');
+    if (typeof window === 'undefined' || !window.ArenaCore || !window.EnemyPortraits || !window.MercPortraits) {
+        throw new Error('arena/arena-challenge-browser.js 需要先加载 EnemyPortraits、MercPortraits 与 arena/arena-core.js');
     }
 
     var S = ArenaCore.state; // 共享状态（原顶层 var _x）
@@ -176,24 +176,32 @@
                     '<span class="arena-card-diff">' + diffText + '</span>' +
                 '</div>' +
                 '<div class="arena-card-body">' +
-                    '<div class="arena-card-stats">' +
-                        '<div class="arena-stat">' +
-                            '<span class="arena-stat-label">对手</span>' +
-                            '<span class="arena-stat-value">' + opponentText + '</span>' +
+                    '<div class="arena-card-overview">' +
+                        '<div class="arena-card-portrait' + (isHidden ? ' arena-card-portrait-hidden' : ' arena-card-portrait-loading') + '"' +
+                                ' data-arena-card-portrait="' + i + '" aria-hidden="true">' +
+                            '<span class="arena-card-portrait-seal">' + (isHidden ? '◆' : '⚔') + '</span>' +
                         '</div>' +
-                        '<div class="arena-stat">' +
-                            '<span class="arena-stat-label">等级</span>' +
-                            '<span class="arena-stat-value">' + levelText + '</span>' +
+                        '<div class="arena-card-economy">' +
+                            '<div class="arena-card-stats">' +
+                                '<div class="arena-stat">' +
+                                    '<span class="arena-stat-label">对手</span>' +
+                                    '<span class="arena-stat-value">' + opponentText + '</span>' +
+                                '</div>' +
+                                '<div class="arena-stat">' +
+                                    '<span class="arena-stat-label">等级</span>' +
+                                    '<span class="arena-stat-value">' + levelText + '</span>' +
+                                '</div>' +
+                            '</div>' +
+                            // 奖金主视觉（金色大字）/ 押金次视觉，回应"押注挑战"的风险-回报心智模型
+                            '<div class="arena-card-prize">' +
+                                '<div class="arena-prize-main">' +
+                                    '<span class="arena-prize-label">奖金</span>' +
+                                    '<span class="arena-prize-value">' + ArenaCore.formatMoney(card.reward) + '</span>' +
+                                    extraMeta +
+                                '</div>' +
+                                '<div class="arena-prize-deposit">押金 ' + ArenaCore.formatMoney(card.deposit) + '</div>' +
+                            '</div>' +
                         '</div>' +
-                    '</div>' +
-                    // 奖金主视觉（金色大字）/ 押金次视觉，回应"押注挑战"的风险-回报心智模型
-                    '<div class="arena-card-prize">' +
-                        '<div class="arena-prize-main">' +
-                            '<span class="arena-prize-label">奖金</span>' +
-                            '<span class="arena-prize-value">' + ArenaCore.formatMoney(card.reward) + '</span>' +
-                            extraMeta +
-                        '</div>' +
-                        '<div class="arena-prize-deposit">押金 ' + ArenaCore.formatMoney(card.deposit) + '</div>' +
                     '</div>' +
                     // 对手摘要 row：snapshot 回包后 batchRequestPreview 触发全卡并发抽签，
                     // 单卡回包后 renderCardSummary(cardIdx) 写入下方 span。
@@ -748,6 +756,105 @@
         }
     });
 
+    function isMercPortraitOpponent(opponent) {
+        if (!opponent) return false;
+        return opponent.source === 'mercenary'
+            || opponent.isMonster !== true;
+    }
+
+    function opponentPortraitRef(opponent) {
+        if (!opponent) return '';
+        return opponent.portraitRef || opponent.spritename
+            || (window.ArenaPreviewAuthority ? ArenaPreviewAuthority.rosterDisplaySpritename(opponent) : '');
+    }
+
+    // 同一挂载器服务卡片头像组与右栏明细。佣兵走纸娃娃，怪物走人工验收后的透明头像；
+    // 两条链都保留各自 fail-soft 回退，不把身份猜测写回权威数据。
+    function mountOpponentPortrait(host, opponent, variant, size) {
+        if (!host || !opponent) return Promise.resolve(null);
+        var img = host.querySelector('img');
+        if (!img) {
+            img = document.createElement('img');
+            img.alt = '';
+            img.draggable = false;
+            host.insertBefore(img, host.firstChild || null);
+        }
+        host.classList.remove('arena-card-portrait-loading', 'arena-card-portrait-item-loading', 'arena-opp-portrait-loading');
+        if (isMercPortraitOpponent(opponent)) {
+            host.classList.add('arena-portrait-merc');
+            host.classList.remove('arena-portrait-enemy');
+            return MercPortraits.mount(host, img, opponent, {
+                variant: variant || 'arena-detail',
+                size: size || 112,
+                alt: ''
+            });
+        }
+        host.classList.add('arena-portrait-enemy');
+        host.classList.remove('arena-portrait-merc', 'merc-portrait-fallback', 'merc-card-portrait-fallback');
+        img.hidden = false;
+        return EnemyPortraits.mount(host, img, {
+            consumer: 'arena',
+            portraitRef: opponentPortraitRef(opponent),
+            portraitVariant: opponent.portraitVariant,
+            schemeStatus: opponent.schemeStatus,
+            legacyUrl: EnemyPortraits.fallbackUrl()
+        });
+    }
+
+    function clearCardPortraitGroupState(host) {
+        var attrs = [
+            'data-portrait-ref', 'data-portrait-variant', 'data-portrait-source',
+            'data-merc-portrait-source', 'data-merc-portrait-state'
+        ];
+        for (var i = 0; i < attrs.length; i++) host.removeAttribute(attrs[i]);
+        host.classList.remove('entity-portrait-art', 'arena-portrait-enemy', 'arena-portrait-merc',
+            'merc-portrait-art', 'merc-dressup-ready', 'merc-portrait-fallback', 'merc-card-portrait-fallback');
+    }
+
+    // 完整态在 72px 识别区内批量呈现最多 4 个实际对手；紧凑态由 CSS 只保留首项。
+    // DOM 始终保留同一批数据，因此密度切换不会重新抽取、重建身份或触发第二次 Host 请求。
+    function mountCardPortrait(cardIdx, opponents) {
+        var cardEl = S._cardEls && S._cardEls[cardIdx];
+        var host = cardEl && cardEl.querySelector('[data-arena-card-portrait]');
+        if (!host || !opponents || !opponents.length) return;
+        clearCardPortraitGroupState(host);
+        host.classList.remove('arena-card-portrait-loading');
+        host.innerHTML = '';
+        var visible = opponents.slice(0, 4);
+        host.setAttribute('data-arena-portrait-count', String(visible.length));
+        var pending = [];
+        for (var i = 0; i < visible.length; i++) {
+            var item = document.createElement('span');
+            item.className = 'arena-card-portrait-item arena-card-portrait-item-loading';
+            item.setAttribute('data-arena-card-portrait-item', String(i));
+            item.setAttribute('aria-hidden', 'true');
+            var img = document.createElement('img');
+            img.alt = '';
+            img.draggable = false;
+            item.appendChild(img);
+            host.appendChild(item);
+            pending.push(Promise.resolve(mountOpponentPortrait(item, visible[i], 'arena-card', visible.length > 1 ? 64 : 96)));
+        }
+        if (opponents.length > visible.length) {
+            var overflow = document.createElement('span');
+            overflow.className = 'arena-card-portrait-overflow';
+            overflow.textContent = '+' + (opponents.length - visible.length);
+            host.appendChild(overflow);
+        }
+        return Promise.all(pending);
+    }
+
+    function mountDetailPortraits(opponents) {
+        if (!S._detailOpponentsEl) return;
+        var hosts = S._detailOpponentsEl.querySelectorAll('[data-arena-opp-portrait]');
+        for (var i = 0; i < hosts.length; i++) {
+            var index = Number(hosts[i].getAttribute('data-arena-opp-portrait'));
+            if (!isNaN(index) && opponents[index]) {
+                mountOpponentPortrait(hosts[i], opponents[index], 'arena-detail', 112);
+            }
+        }
+    }
+
     // 渲染单卡 grid 摘要 row：≤2 名全显，>2 名头 2 + "+N"。
     // 失败态显示 "⚠ ... ↻" 可点击重试。loading 态由 requestPreviewForCard 入口统一写。
     function renderCardSummary(cardIdx) {
@@ -777,6 +884,7 @@
             sumEl.textContent = '配置保密 · 已抽取';
             return;
         }
+        mountCardPortrait(cardIdx, opps);
         if (isRosterOpponents(opps)) {
             var stats = rosterStats(opps, card);
             var rosterParts = [];
@@ -889,7 +997,7 @@
             var noteText = ArenaPreviewAuthority.rosterDisplaySpritename(opp);
             if (opp.sourceGroupName && opp.rosterKind !== 'humanoid') noteText += ' · ' + opp.sourceGroupName;
             html += '<div class="arena-opp-row arena-opp-row-monster">';
-            html += '<div class="arena-opp-portrait arena-opp-portrait-fallback arena-opp-portrait-monster"></div>';
+            html += '<div class="arena-opp-portrait arena-opp-portrait-monster arena-opp-portrait-loading" data-arena-opp-portrait="' + i + '"><img alt="" draggable="false"></div>';
             html += '<div class="arena-opp-main">';
             html += '<div class="arena-opp-topline">';
             html += '<span class="arena-opp-name">' + ArenaCore.escapeHtml(opp.name) + '</span>';
@@ -900,6 +1008,7 @@
             html += '</div></div>';
         }
         S._detailOpponentsEl.innerHTML = html;
+        mountDetailPortraits(opponents);
     }
 
     function renderOpponents(opponents) {
@@ -919,8 +1028,7 @@
         for (var i = 0; i < opponents.length; i++) {
             var opp = opponents[i];
             html += '<div class="arena-opp-row">';
-            // 对手暂无头像素材 → 剪影占位（与佣兵卡同源），让对手行有"人"的视觉锚点
-            html += '<div class="arena-opp-portrait arena-opp-portrait-fallback"></div>';
+            html += '<div class="arena-opp-portrait arena-opp-portrait-loading" data-arena-opp-portrait="' + i + '"><img alt="" draggable="false"></div>';
             html += '<div class="arena-opp-main">';
             html += '<div class="arena-opp-topline">';
             html += '<span class="arena-opp-name">' + ArenaCore.escapeHtml(opp.name) + '</span>';
@@ -967,6 +1075,7 @@
             html += '</div>'; // arena-opp-row
         }
         S._detailOpponentsEl.innerHTML = html;
+        mountDetailPortraits(opponents);
 
         // 装备 hover → tooltip
         var cells = S._detailOpponentsEl.querySelectorAll('.arena-equip-cell[data-eq-raw]');

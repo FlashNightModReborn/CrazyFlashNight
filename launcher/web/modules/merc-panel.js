@@ -26,13 +26,14 @@
     'use strict';
 
     // ── 依赖 fail-fast：缺共享层直接报错，不做半初始化 ──
-    // DressupDollRenderer / AssetTimeline 不在此列：纸娃娃链缺失时优雅降级（无图卡片仍可用）。
+    // MercPortraits 内部仍对 DressupDollRenderer / AssetTimeline 缺失做 fail-soft；这里只守共享入口。
     if (typeof TeamShared === 'undefined'
             || typeof Workbench === 'undefined'
             || typeof WorkbenchComponents === 'undefined'
             || typeof PanelScale === 'undefined'
-            || typeof MercData === 'undefined') {
-        throw new Error('merc-panel.js 需要先加载 team/team-shared.js、workbench 共享层、panel-scale.js 与 merc-data.js');
+            || typeof MercData === 'undefined'
+            || typeof MercPortraits === 'undefined') {
+        throw new Error('merc-panel.js 需要先加载 team/team-shared.js、workbench 共享层、panel-scale.js、merc-data.js 与 merc-portrait-renderer.js');
     }
 
     var DESIGN_W = 1024;
@@ -41,21 +42,16 @@
     var LEVEL_JUMPS = [20, 40, 60, 80];
     var HIRE_SCROLL_TRIGGER = 220;  // 距底部多少 px 触发无缝加载（与现役一致）
 
+    // 培养页 live canvas 暂沿用本控制器的状态构建；卡片/右栏快照统一走 MercPortraits。
     var DRESSUP_MANIFEST_URL = 'assets/dressup/manifest.json';
     var DRESSUP_BODY_FIT_FIELDS = [
         '身体', '上臂', '左下臂', '右下臂', '左手', '右手',
         '屁股', '左大腿', '右大腿', '小腿', '脚',
         '脸型', '发型', '面具'
     ];
-    // 战斗形态胸像（反哺自主角对话立绘）：头+躯干定缩放、vAlign top、画战斗 rig 全身（含背后收纳
-    // 武器），对齐 NPC 立绘。战斗 rig 武器 holder 字段同为 _装扮，正好被 equipment→fieldsByGender 命中，
-    // 无需改 AS2。原 head-only（仅脸型/发型/面具）已被胸像取代。
-    var DRESSUP_BUST_FIT_FIELDS = ['脸型', '发型', '面具', '身体', '上臂'];
-    var DRESSUP_BATTLE_STATE = '空手站立'; // 武器收纳背后的站姿，最接近 NPC 立绘
-    var DRESSUP_FACE_BY_ID_FALLBACK = {
-        '0': '女变装-基本脸型',
-        '1': '男变装-基本脸型'
-    };
+    var DRESSUP_BUST_FIT_FIELDS = MercPortraits.BUST_FIT_FIELDS;
+    var DRESSUP_BATTLE_STATE = MercPortraits.BATTLE_STATE;
+    var DRESSUP_FACE_BY_ID_FALLBACK = { '0': '女变装-基本脸型', '1': '男变装-基本脸型' };
     var DRESSUP_HAIR_COMPAT_ALIASES = {
         '发型-女式-红马尾': '发型-女式-玫红色马尾',
         '发型-女式-白长发': '发型-女式-银色清爽直发',
@@ -107,10 +103,10 @@
     var _detailCamera = null;       // 内嵌 inspection 瞬态相机（随 detail canvas 建销）
     var _detailSlot = -1;
 
-    // 纸娃娃渲染链
+    // 培养页保留单个 live renderer；卡片/右栏快照由共享 MercPortraits 缓存与销毁。
     var _dressupManifest = null;
     var _dressupManifestPromise = null;
-    var _dressupThumbCache = {};
+    var _dressupThumbCache = {}; // 兼容旧私有快照函数；生产挂载已改走 MercPortraits。
     var _dressupDetailRenderer = null;
     var _dressupDetailCanvas = null;
 
@@ -174,7 +170,7 @@
         _hiredMercs = [];
         _hireData = [];
         _ttCache = {};
-        // _dressupThumbCache 不清：着装在面板关闭期间不会变，重开免全量重跑 alpha 测量（旧版跨会话保留）
+        // MercPortraits 的着装快照缓存跨面板会话复用；节点 token 会阻断迟到渲染。
         _selectedSlot = -1;
         _selectedPoolIdx = -1;
         _detailSlot = -1;
@@ -2160,13 +2156,13 @@
 
     function updatePortraitHost(host, merc, variant) {
         if (!host) return;
-        var portrait = host.querySelector('.merc-card-portrait');
-        if (!portrait) {
-            portrait = createPortrait(null, variant);
-            if (variant === 'decision') portrait.classList.add('merc-decision-portrait');
-            host.appendChild(portrait);
-        }
-        applyDressupPortrait(portrait, merc, variant);
+        MercPortraits.updateHost(host, merc, {
+            variant: variant || 'card',
+            selector: '.merc-card-portrait',
+            className: 'merc-card-portrait merc-dressup-portrait'
+                + (variant === 'decision' ? ' merc-decision-portrait' : ''),
+            alt: '佣兵造型'
+        });
     }
 
     function destroyDetailDressup() {
@@ -2258,19 +2254,12 @@
     }
 
     function createPortrait(merc, variant) {
-        var portrait = document.createElement('div');
-        portrait.className = 'merc-card-portrait merc-card-portrait-fallback merc-dressup-portrait';
-        portrait.innerHTML = '<img alt="佣兵造型" hidden>';
-        var img = portrait.querySelector('img');
-        img.addEventListener('load', function() {
-            if (img.getAttribute('src')) {
-                portrait.classList.remove('merc-card-portrait-fallback');
-                portrait.classList.add('merc-dressup-ready');
-            }
+        return MercPortraits.create(merc, {
+            variant: variant || 'card',
+            className: 'merc-card-portrait merc-dressup-portrait'
+                + (variant === 'decision' ? ' merc-decision-portrait' : ''),
+            alt: '佣兵造型'
         });
-        img.addEventListener('error', function() { clearDressupPortrait(portrait); });
-        if (merc) applyDressupPortrait(portrait, merc, variant || 'card');
-        return portrait;
     }
 
     // 装备图标格 — 11 槽固定渲染 (slot 6-16)，培养页装备调配行内使用

@@ -1,0 +1,152 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-campaign-feature-v5-four-round-human-calibrated-20260806",
+  "calibration": {
+    "sourceReviewBatchIds": [
+      "portrait-campaign-shard-r2-fast6-20260806T035300Z",
+      "portrait-campaign-shard-r6-calibrated-fast6-20260806T045256Z",
+      "portrait-campaign-shard-r16-visualcal-fast6-20260806T055055Z",
+      "portrait-campaign-shard-r22-v4-feedback-fast6-20260806T080559Z"
+    ],
+    "humanReviewReceiptDigests": [
+      "14174DB2FA32E11EA75430C4956CD9466C2653DA6F3464CB8BFA61C60EFA240A",
+      "021BA20A67D041FF63150B466DC1BC2A0A54D169EDCCD9076310069E1A4950E4",
+      "A44E72EE0834E0F50052B673D1A21B3B141E2EBDE2BDB3A4DD6DCA269B44E7E1",
+      "F0AF2B5B6D1CD0CFF848BDBB425DB7E0BC0DB54BE23348F56F36295A5C275AB0"
+    ],
+    "cumulativeFeedbackDigest": "6B258CAA37239411B563F26DFD47B1C2C7950F48E73366F6B71EE076A60CF48B",
+    "orientationRenderReportDigests": [
+      "15F3E0905B88F070FFF9CBAE685B686C8413FE4210E29F05336ADEDABD09DE30",
+      "6F2E167EDCEBE262A11A9399E0780D1744DBB41A70D759686EC799E187CF98FE"
+    ],
+    "latestGuidedRenderReportDigest": "59895BCF0331F61912AD28F14D7F726C6EB7998C6A3C889F69A365096CE3526F",
+    "latestGuidedOrientationRenderReportDigest": "6F2E167EDCEBE262A11A9399E0780D1744DBB41A70D759686EC799E187CF98FE",
+    "verifiedGeometryRows": 36,
+    "medianHumanZoomIn": 1.349859,
+    "observedHumanZoomInRange": [
+      0.637628,
+      4.474963
+    ],
+    "campaignFirstPassRates": [
+      {
+        "batchId": "portrait-campaign-shard-r2-fast6-20260806T035300Z",
+        "passed": 3,
+        "eligible": 12,
+        "rate": 0.25
+      },
+      {
+        "batchId": "portrait-campaign-shard-r6-calibrated-fast6-20260806T045256Z",
+        "passed": 3,
+        "eligible": 12,
+        "rate": 0.25
+      },
+      {
+        "batchId": "portrait-campaign-shard-r16-visualcal-fast6-20260806T055055Z",
+        "passed": 4,
+        "eligible": 12,
+        "rate": 0.333333
+      },
+      {
+        "batchId": "portrait-campaign-shard-r22-v4-feedback-fast6-20260806T080559Z",
+        "passed": 0,
+        "eligible": 12,
+        "rate": 0
+      }
+    ],
+    "policy": "四轮全部 48 条人类标签必须进入视觉上下文：10 个 pass 锚点、36 个真实框选、1 个仅朝向修正和 1 个 source 负例；T800 的方向修正叠加在其真实框选上，不重复计标签。v4 虽看到三轮样本仍为 0/12 直过，说明瓶颈不是统一倍率，而是模型没有先识别真正决定可识别度的视觉特征便开始构图。v5 将识别度判断置于裁切之前：头是最常见主焦点，但头较弱时允许让渡给标志性武器结构或身体特质。"
+  },
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框，也不是只截取角色的一小块而破坏完整身份轮廓。",
+    "候选像素已经由管线限定为怪物内部命名 man MovieClip；不得把外层血条、等级、名称或其他 UI 当作身份特征。",
+    "每张输入图下方都有 BOUND HUMAN PREFERENCE EXAMPLES 区域。它覆盖全部 48 条既有人类标签；不是当前行候选，绝对不能从示例区选择 candidateId、抄坐标或替换本批角色。",
+    "必须严格按三阶段推理：先选择单一主体且姿态清晰的候选帧；再在 featureLabel 中具体命名真正决定可识别度的视觉重点，例如头、脸、面罩、感官簇、口器、头冠、驾驶舱、核心，或在头部辨识较弱时命名头与标志性武器/身体结构的复合特征；最后才为这个已确认可见的重点画 featureBox 和 mustIncludeBox。不能先画大框再把框内整体泛称为身份特征。",
+    "提交前做反证检查：逐一想象移除身体、腿、尾巴、长矛、枪械或特效；移除后仍能立刻认出单位的弱组件不应挤占特写，移除后明显失去身份的标志性结构则可进入 feature_group。若 featureBox 内只有泛化胸腹、普通肢体或空白而没有可命名的识别特征，则必须重新定位。",
+    "人形单位默认以完整头部为主特征：脸、头骨或面罩、全部可见头发、耳朵、角、帽子和头饰构成首要轮廓，只保留最少颈肩上下文。仅当头部本身不足以区分该身份时，才可改用 feature_group，把确有辨识力的武器轮廓、背负结构或身体特质作为次焦点；普通胸腹、手臂和通用武器仍应排除。",
+    "非人单位也要先寻找生物学或机械意义上的头：眼睛或传感器、口器、颌部、头甲、头冠和连接轮廓通常构成首选 closeup。若头部弱而标志性武器结构、核心或身体形态才决定识别度，可改用 feature_group 并明确命名复合特征；full_subject 仍是最后手段，不能因为主体形状陌生就选全身。",
+    "异形、虫类和球形单位尤其不能把整条身体当作头。先沿躯干找到眼、口、颌、前端甲壳或感官簇；featureBox 只包该识别区及完整轮廓。v4 的异形女王、球形异形兵和肉色异形兵分别需要约 4.47、3.82、3.32 倍人工放大，证明模型初稿抓错了语义范围。",
+    "如果单个候选中出现多个重叠主体，而同一行存在清晰的单主体帧，必须拒绝多主体帧并选择单主体帧；不得把多个可分离角色误判为 feature_group。多头生物自身的全部头部才是不可拆分特征组。",
+    "载具或飞行器只有在整体轮廓本身就是唯一身份时才使用 full_subject；否则仍应锁定驾驶舱、传感器、机首、头部或核心。",
+    "featureBox 必须包住完整可见身份特征，而不是只包脸部中心；mustIncludeBox 应在此基础上保留不可裁掉的轮廓和少量上下文。遗漏帽檐、发梢、耳朵、角、头冠、口器或头顶即为失败。",
+    "在想象的 80px 方形预览中，最强识别特征必须落在视觉甜区并成为第一焦点。只有当头部辨识较弱时，标志性武器结构或身体特质才可成为受控次焦点或复合焦点；光效、轨道线、普通尾巴、泛化胸腹和透明死区不能抢焦。若仍像全身像，继续缩小 mustIncludeBox。",
+    "方形裁切应为主焦点和面朝方向留足安全范围，但不能留下压倒特征的大块空白；安全边距优先保护最强识别特征及其完整轮廓，允许虚拟裁切框越出候选 PNG 后透明补齐。辨识度较弱的次要肢体、武器末端、尾部或装饰在必要时允许受控顶边/侧边裁切，以换取主焦点位于甜区和足够大的有效占比。",
+    "累计 36 个真实框选的中位倍率为 1.349859，范围 0.637628 至 4.474963。范围两端同时有效：小于 1 表示模型过紧裁掉完整特征，大于 3 表示模型把身体误当特征。该统计只用于自检，禁止机械套用倍率。",
+    "若人类备注明确偏好 Luna B，则把 B 的候选与构图作为强起点；四轮中最新一轮有 3 个 B 偏好。仍须独立检查安全边距、武器占位和完整头部，不能把 B 当作自动通过。",
+    "若人工备注同时要求裁切和翻转，先完成高分辨率特写，再对完成的特写执行方向变换；方向不能通过换回更差的原始裁切实现。默认不擅自翻转，没有明确方向依据时保持源方向。",
+    "source 负例中的拟态投影要求先选只有一个人物的帧，再严格只框完整头部并隔离身体；类似多主体候选必须采用同一原则。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.08,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.84,
+        "featureHeightOccupancy": 0.84,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.78,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.52,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.86,
+        "featureHeightOccupancy": 0.86,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.8,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.52,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.84,
+        "featureHeightOccupancy": 0.82,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.74,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.46,
+        "featureAnchor": [
+          0.5,
+          0.46
+        ]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.82,
+        "featureHeightOccupancy": 0.82,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.72,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.44,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 16384,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "unclassified": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "这是绑定四轮 48 条真人偏好的视觉校准轮。先在当前行中选择单主体清晰帧，再用 featureLabel 明确指出真正决定可识别度的视觉重点；只有确认它实际可见后才画框。头是最常见主焦点：人形默认完整保留脸、头骨/面罩、全部头发、耳朵、角、帽子或头饰并留安全范围；非人先沿身体寻找眼、口器、颌、传感器、头甲或头冠。若头部辨识较弱，允许改用 feature_group，把确有身份意义的武器结构、核心或身体特质作为复合焦点，但普通胸腹、通用肢体和特效不得抢焦。提交前想象 80px 预览：最强特征必须位于甜区，安全边距优先保护它；辨识较弱的次要组件必要时可在顶边或侧边受控裁切。累计框选既有 0.64 倍放宽也有 4.47 倍放大，说明只能基于识别语义决定边界。不得从示例区抄 candidateId 或坐标。"
+    }
+  },
+  "reviewKeyOverrides": {
+    "敌人-拟态投影::default": {
+      "reasoningHint": "人类已明确拒绝多人重叠帧。C02/f13 与 C05/f48 是单人帧，应在二者中选择清晰单人构图；C01/C03 含多个独立人物，C04/C06 几乎只有特效，均不可选。使用 head_closeup，严格只保留完整头部、长发顶部和耳部轮廓，隔离胸腹与下半身。",
+      "requiredFeatureRegion": [
+        0.405,
+        0.14,
+        0.56,
+        0.405
+      ],
+      "requiredMustIncludeRegion": [
+        0.395,
+        0.13,
+        0.57,
+        0.415
+      ]
+    }
+  }
+}

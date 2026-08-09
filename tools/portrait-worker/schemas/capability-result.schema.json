@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "batchId",
+    "inputDigest",
+    "promptDigest",
+    "runRole",
+    "imageProbe",
+    "results"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "enum": ["cf7.portrait-worker-capability-result.v1"]
+    },
+    "batchId": {
+      "type": "string"
+    },
+    "inputDigest": {
+      "type": "string",
+      "pattern": "^[0-9A-F]{64}$"
+    },
+    "promptDigest": {
+      "type": "string",
+      "pattern": "^[0-9A-F]{64}$"
+    },
+    "runRole": {
+      "type": "string",
+      "enum": ["proposal", "independent_review"]
+    },
+    "imageProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["imageId", "classification"],
+      "properties": {
+        "imageId": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": ["locked_placeholder"]
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["taskId", "selectedCandidateId", "frame", "cropBox"],
+        "properties": {
+          "taskId": {
+            "type": "string"
+          },
+          "selectedCandidateId": {
+            "type": "string"
+          },
+          "frame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cropBox": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

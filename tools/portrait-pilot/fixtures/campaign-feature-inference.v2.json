@@ -1,0 +1,95 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-campaign-feature-v2-human-calibrated-20260806",
+  "calibration": {
+    "sourceReviewBatchId": "portrait-campaign-shard-r2-fast6-20260806T035300Z",
+    "humanReviewReceiptDigest": "14174DB2FA32E11EA75430C4956CD9466C2653DA6F3464CB8BFA61C60EFA240A",
+    "humanFramingGuidanceReceiptDigest": "3075AF61C48F2118BB1F6A3BC1E6ADD1584BE181C092D101BA0A5F90D8C7938F",
+    "humanGuidedRenderReportDigest": "16B97BCD1BB3211DC29C0F1A716F4620AF2ABE50CBB6F73843D895252DD37661",
+    "adjustmentRows": 9,
+    "tighterThanModelInitialCropRows": 9,
+    "independentReviewSelections": 5,
+    "medianHumanZoomIn": 1.35,
+    "observedHumanZoomInRange": [
+      1.162,
+      2.346
+    ],
+    "policy": "将真实人审用于提示与几何合同校准，不机械套用统一缩放倍率，也不把它声称为模型训练。"
+  },
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框。",
+    "当前是全量 campaign 的新身份，没有既往逐行裁切决定；必须先从候选像素判断人形或非人，再推理身份特征。",
+    "候选像素已经由管线限定为怪物内部首帧命名 man MovieClip；不得把外层血条、等级、名称或其他 UI 当作身份特征。",
+    "人形单位默认以头部、脸、发型和头部轮廓作为主特征，并保留可识别的最少颈肩上下文。",
+    "非人单位必须推理身份最强的特征；不得把几何中心、最长肢体、枪械、尾巴或特效自动当成视觉中心。",
+    "多头单位的全部头部属于一个不可拆分的特征组；载具或飞行器只有在整体轮廓本身就是身份时才使用完整主体构图。",
+    "绑定人审校准样本的 9 个 adjustment 全部需要比模型初框更紧，中位放大 1.35 倍、范围 1.16 至 2.35 倍；这说明主要失败是 featureBox 或 mustIncludeBox 过宽。新身份必须先质疑宽框，但不得机械套用同一倍率。",
+    "人形 featureBox 只包住实际可见的头脸、头发、头饰或头部轮廓；背负枪械、手持武器、抬臂、胸腹、披风和大块透明留白都必须排除。",
+    "mustIncludeBox 应尽量贴近 featureBox；除非轮廓确实不可分，四边新增上下文通常不得超过候选宽高的 0.02，不能用宽框保留可有可无的姿态。",
+    "在想象的 80px 方形预览中，身份特征必须成为第一视觉重心；如果右侧或顶部留白明显大于另一侧，或武器比头部更抢眼，应收紧并重定位，而不是接受宽泛构图。",
+    "所有必须保留的特征都要有透明安全边距；允许虚拟裁切框越出候选 PNG，并用透明像素补齐。",
+    "featureBox 必须紧贴身份特征；mustIncludeBox 只包住不可裁掉的最小上下文，不能把武器、下半身或宽泛全身姿态重新带回头像。",
+    "构图只有在最终方形画布中达到对应模式的特征占比下限才有效；文字声称 closeup 但像素仍是半身或全身时必须拒绝。",
+    "人形 head featureBox 的底边必须止于下颌、头发或头饰轮廓，不能把颈、胸、肩或抬起的手臂算进头部；mustIncludeBox 最多补入少量颈肩。",
+    "非人 featureBox 必须紧贴所命名的核心、头组或主躯干；如果方框同时吞入大部分尾巴、长肢、枪械或整个身体，就不再是 feature closeup。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.04,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.9,
+        "featureHeightOccupancy": 0.9,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.84,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.56,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.88,
+        "featureHeightOccupancy": 0.88,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.8,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.48,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.88,
+        "featureHeightOccupancy": 0.86,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.8,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.46,
+        "featureAnchor": [
+          0.5,
+          0.45
+        ]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.86,
+        "featureHeightOccupancy": 0.86,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.78,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.48,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 16384,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "unclassified": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "这是全量 campaign 的人审校准轮。先从候选像素判断人形或非人：人形必须改用 head_closeup，只框实际头脸、发型、头饰或头部轮廓并排除背枪、武器、肩胸和空白；非人则推理最强身份特征，选择 feature_closeup、feature_group 或确有必要时的 full_subject。上一绑定样本 9/9 需要比模型初框更紧，中位约 1.35 倍，但只能用来提醒检查宽框，不能机械缩放或裁断非人轮廓。提交前想象 80px 预览，确认身份特征压过武器和特效，且顶部、右侧没有不对称的无效留白。"
+    }
+  },
+  "reviewKeyOverrides": {}
+}

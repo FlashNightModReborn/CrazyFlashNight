@@ -1,6 +1,6 @@
 /**
  * workbench-atlas arena 场景族（P4 接入）——真实 feature 场景：加载生产闭包
- * （与 panels-lazy-registry arena 注册项同序的 24 脚本 + dev fixture），驱动真实
+ * （与 panels-lazy-registry arena 注册项同序的生产脚本 + dev fixture），驱动真实
  * arena panel 的 catalog-decision 壳 + skin 关键状态，并在同一 case 的第二阶段切到
  * 真实 custom_result 结算页：
  *   default（未选中·决策空态）/ selected（选中卡·右栏 preview·CommitBar ready）/
@@ -23,7 +23,11 @@
         'workbench-components.js',
         'tooltip.js',
         'asset-timeline.js',
+        'dressup-doll-renderer.js',
+        'merc-data.js',
+        'merc-portrait-renderer.js',
         'icons.js',
+        'portrait-resolver.js',
         'arena-meta-rosters.js',
         'arena-factions.js',
         'arena-unit-catalog.js',
@@ -171,11 +175,16 @@
                         var lvl = lo + Math.floor((hi - lo) * (i + 1) / (count + 1));
                         var eLvl = Math.max(1, Math.floor(lvl / 5));
                         opponents.push({
+                            id: 'arena-atlas-' + cardIdx + '-' + i,
                             name: 'Atlas-' + (cardIdx != null ? cardIdx + '-' : '') + (i + 1),
                             level: lvl,
+                            gender: i % 2 ? '女' : '男',
+                            face: i % 2 ? '女变装-基本脸型' : '男变装-基本脸型',
+                            hair: i % 2 ? '发型-女式-玫红色马尾' : '发型-男式-黑韩式头',
                             equips: [
-                                { slot: 6, raw: '铁盔', name: '铁盔', icon: '铁盔', displayname: '铁盔', level: eLvl },
-                                { slot: 10, raw: '铁靴', name: '铁靴', icon: '铁靴', displayname: '铁靴', level: eLvl }
+                                { slot: 6, raw: '锐刻幻影夜视仪', name: '锐刻幻影夜视仪', icon: '锐刻幻影夜视仪', displayname: '锐刻幻影夜视仪', level: eLvl },
+                                { slot: 7, raw: '蓝晶战斗服', name: '蓝晶战斗服', icon: '蓝晶战斗服', displayname: '蓝晶战斗服', level: eLvl },
+                                { slot: 12, raw: '战术巴雷特', name: '战术巴雷特', icon: '战术巴雷特', displayname: '战术巴雷特', level: eLvl }
                             ],
                             skills: [
                                 { name: '瞬步', level: 1 + (i % 5), type: '位移', trait: '闪避', cooldown: 8, cost: 20 },
@@ -228,6 +237,10 @@
 
         installWebviewMock(state);
         window.CF7_ICON_ROOT = '/launcher/web/icons/';
+        window.CF7_DRESSUP_MANIFEST_URL = '/launcher/web/assets/dressup/manifest.json';
+        window.CF7_PORTRAIT_ROOT = '/launcher/web/assets/enemy-portraits/';
+        window.CF7_PORTRAIT_LEGACY_ROOT = '/launcher/web/assets/pets/';
+        window.CF7_PORTRAIT_LOCKED_URL = '/launcher/web/assets/pets/pet_locked.png';
 
         loadScriptsSequentially(SCRIPT_CLOSURE.map(function(rel) { return MODULE_BASE + rel; }), function() {
             // panels.js 契约容器绑定（harness 里由 harness-base.js 代办，这里显式调用）
@@ -243,7 +256,8 @@
                 poll(function() {
                     var st = window.ArenaPanel.getState();
                     return document.querySelectorAll('#arena-grid .arena-card').length === 12
-                        && st.previewPendingCount === 0 && st.previewCacheCount > 0;
+                        && st.previewPendingCount === 0 && st.previewCacheCount > 0
+                        && !document.querySelector('#arena-grid [data-merc-portrait-state="pending"]');
                 }, 9000, function(ready) {
                     expect('catalog previews settle (12 cards, cache filled)', ready,
                         JSON.stringify(window.ArenaPanel.getState ? {
@@ -267,7 +281,8 @@
         card.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         poll(function() {
             var opponents = document.getElementById('arena-opponents');
-            return !!(opponents && opponents.childElementCount > 0);
+            return !!(opponents && opponents.childElementCount > 0
+                && !opponents.querySelector('[data-merc-portrait-state="pending"]'));
         }, 5000, function(ok) {
             expect('selected card fills decision preview', ok);
             done();

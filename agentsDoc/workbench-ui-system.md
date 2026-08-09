@@ -306,6 +306,7 @@ tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc �
 | feature `HeaderProjection` / `ChoiceGroup` | 当前 view 的 action 可见/禁用/标签纯投影；ChoiceGroup 负责 pressed/disabled 机械 | action descriptor DSL、动态 toolbar registry、领域路由与 wire |
 | `HelpAction` | 唯一标准 `?` 入口、领域 spec 更新、modal 转交与确定性销毁 | 领域教程文案、业务请求与持久状态 |
 | `EntityTile/ItemGrid` | 几何、密度、状态 slots、键盘入口 | 物品 taxonomy 与价格 |
+| `EnemyPortraits` / `MercPortraits` / `entity-portrait-art` | 怪物 `portraitRef + variant` 的 SVG→PNG→旧图→锁定图回退；佣兵外观投影经 dressup battle rig 生成可缓存胸像；两路都负责迟到加载 fence 与领域无关 fail-soft，透明怪物主体共享氛围舞台 | 怪物来源裁决、人审签署、领域身份生成、佣兵战斗权威、Arena/Team 布局与业务权威 |
 | `OwnedInventoryPane` | pager/filter/sort/grid/selection 机械能力 | transfer/sell/discard 权限裁决 |
 | `AuthorityPreview` 模式 / `CommitBar` | browse → preview → commit → reconcile 阶段；固定阻断原因、状态和单 CTA | 通用领域 preview schema、token 校验和 commit |
 | `QuantityControl` | 严格整数输入、线性/对数 range、真实数量键盘步进、`− / + / +5 / 可用`、`A/E` 标记、焦点与 listener 生命周期 | 价格、容量、两类上限来源和 commit 权威 |

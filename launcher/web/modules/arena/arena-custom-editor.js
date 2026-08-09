@@ -5,13 +5,13 @@
  * DOM id·class 契约 / QA 断言不变）。转换规则：原顶层 `var _x` 状态 → ArenaCore.state._x（本文件内
  * 以 `S._x` 访问）；跨模块函数/常量引用 → `模块全局.名字`。加载顺序由 panels-lazy-registry 的
  * arena 注册项与 arena/dev/harness.html script 区固定（与本文件守卫一致）。
- * 依赖守卫：arena/arena-core.js。
+ * 依赖守卫：通用 EnemyPortraits / MercPortraits + arena/arena-core.js。
  */
 (function() {
     'use strict';
 
-    if (typeof window === 'undefined' || !window.ArenaCore) {
-        throw new Error('arena/arena-custom-editor.js 需要先加载 arena/arena-core.js（共享基座：状态容器 + 跨模块工具 + 共享常量）');
+    if (typeof window === 'undefined' || !window.ArenaCore || !window.EnemyPortraits || !window.MercPortraits) {
+        throw new Error('arena/arena-custom-editor.js 需要先加载通用怪物/纸娃娃头像组件与 arena/arena-core.js');
     }
 
     var S = ArenaCore.state; // 共享状态（原顶层 var _x）
@@ -25,6 +25,9 @@
     var CUSTOM_SAVED_ROSTERS_KEY = 'cf7.arena.custom.savedRosters.v1';
     var CUSTOM_SAVED_ROSTER_LIMIT = 24;
     var CUSTOM_TIMEOUT_FPS = 30;
+    var _customPortraitCoveragePromise = null;
+    var _customPortraitObserver = null;
+    var _customTooltipScope = null;
     var CUSTOM_SPAWN_DISTANCE_PRESETS = [
         { label: '近', value: 520 },
         { label: '标准', value: 650 },
@@ -177,6 +180,7 @@
                         '</div>' +
                         '<input id="arena-custom-unit-search" class="arena-custom-unit-search" type="search" placeholder="搜索 ID / 名称 / 素材" spellcheck="false">' +
                         '<span class="arena-custom-unit-count" id="arena-custom-unit-count">--</span>' +
+                        '<span class="arena-custom-portrait-coverage" id="arena-custom-portrait-coverage" aria-live="polite" data-custom-tooltip="头像覆盖核对中">头像 --/--</span>' +
                     '</div>' +
                     '<div class="arena-custom-unit-filters">' +
                         '<button type="button" data-custom-unit-filter="all" data-audio-cue="confirm">全部</button>' +
@@ -775,7 +779,8 @@
         var label = option ? option.text : '';
         if (trigger) {
             trigger.textContent = label;
-            trigger.title = label;
+            trigger.removeAttribute('title');
+            trigger.setAttribute('data-custom-tooltip', label);
             trigger.disabled = !!select.disabled;
             trigger.setAttribute('aria-expanded', shell.classList.contains('arena-custom-select-open') ? 'true' : 'false');
         }
@@ -973,7 +978,11 @@
         var abortBtn = S._el ? S._el.querySelector('.arena-custom-abort') : null;
         var subtitleEl = S._el ? S._el.querySelector('.arena-custom-subtitle') : null;
         renderCustomEditor();
-        renderCustomUnitBrowser();
+        // 阵容增删/数量修改会经 syncCustomCodeFromEditor 回到这里。此时单位目录
+        // 的查询、筛选与展开集合都没有改变，重建目录不得把维护者送回顶部。
+        // 搜索、筛选、切换势力和首次进入单方页仍由各自入口无 preserveScroll
+        // 地渲染，因此语义变化后的结果起点保持不变。
+        renderCustomUnitBrowser({ preserveScroll: S._customEditorPage === 'side' });
         renderCustomConfirm();
         renderCustomCodeStatus();
         if (!summaryEl || !caseEl || !statusEl || !feeEl || !btn || !abortBtn) return;
@@ -1090,7 +1099,11 @@
 
         var activeRoster = getCustomSideRoster(S._customSelectedSide);
         var activeRosterEl = S._el.querySelector('#arena-custom-active-roster');
-        if (activeRosterEl) activeRosterEl.innerHTML = buildCustomRosterEditorHtml(S._customSelectedSide, activeRoster);
+        if (activeRosterEl) {
+            releaseCustomTooltips(activeRosterEl);
+            activeRosterEl.innerHTML = buildCustomRosterEditorHtml(S._customSelectedSide, activeRoster);
+            mountCustomUnitPortraits(activeRosterEl);
+        }
 
         var activePanel = S._el.querySelector('#arena-custom-active-roster-panel');
         if (activePanel) {
@@ -1133,6 +1146,7 @@
         }
         renderCustomParamEditor();
         enhanceCustomSelects();
+        bindCustomTooltips(S._customEditorViewEl);
         syncCustomParamPageVisibility();
     }
 
@@ -1373,7 +1387,7 @@
             var paramLabel = paramSummary ? truncateCustomText(paramSummary, 22) : '默认参数';
             var paramClass = customHasParameters(entry.parameters) ? ' arena-custom-param-pill-active' : '';
             html += '<div class="arena-custom-roster-row">' +
-                '<div class="arena-custom-unit-mark">u' + entry.id + '</div>' +
+                buildCustomUnitPortraitHtml(unit) +
                 '<div class="arena-custom-roster-info">' +
                     '<b>' + ArenaCore.escapeHtml(unit.name || ('兵种' + entry.id)) + '</b>' +
                     '<span>兵种' + entry.id + ' · ' + ArenaCore.escapeHtml(unit.spritename || '--') + (paramSummary ? ' · ' + ArenaCore.escapeHtml(paramSummary) : '') + '</span>' +
@@ -1384,11 +1398,11 @@
                     '<input class="arena-custom-mini-input" type="number" min="1" max="20" value="' + entry.count + '" data-custom-roster-input="count" data-side="' + side + '" data-index="' + i + '">' +
                     '<button type="button" data-custom-adjust-count="1" data-side="' + side + '" data-index="' + i + '" data-audio-cue="confirm">+</button>' +
                 '</div>' +
-                '<button class="arena-custom-param-pill' + paramClass + '" type="button" data-custom-edit-params data-side="' + side + '" data-index="' + i + '" title="' + ArenaCore.escapeAttr(paramSummary || '编辑单位参数') + '" data-audio-cue="confirm">' +
+                '<button class="arena-custom-param-pill' + paramClass + '" type="button" data-custom-edit-params data-side="' + side + '" data-index="' + i + '" data-custom-tooltip="' + ArenaCore.escapeAttr(paramSummary || '编辑单位参数') + '" data-audio-cue="confirm">' +
                     '<span>' + ArenaCore.escapeHtml(paramLabel) + '</span>' +
                     '<b>参数</b>' +
                 '</button>' +
-                '<button class="arena-custom-icon-btn" type="button" title="移除" data-custom-remove data-side="' + side + '" data-index="' + i + '" data-audio-cue="cancel">×</button>' +
+                '<button class="arena-custom-icon-btn" type="button" data-custom-tooltip="移除" data-custom-remove data-side="' + side + '" data-index="' + i + '" data-audio-cue="cancel">×</button>' +
             '</div>';
         }
         return html;
@@ -1400,6 +1414,8 @@
         var countEl = S._el ? S._el.querySelector('#arena-custom-unit-count') : null;
         var searchEl = S._el ? S._el.querySelector('#arena-custom-unit-search') : null;
         if (!listEl || !countEl || !searchEl) return;
+        disconnectCustomPortraitObserver();
+        releaseCustomTooltips(listEl);
         var previousScrollTop = options.preserveScroll ? listEl.scrollTop : 0;
         var editor = ensureCustomEditorState();
         editor.expandedFactions = editor.expandedFactions || {};
@@ -1431,6 +1447,7 @@
         groups.sort(sortCustomUnitGroups);
 
         countEl.textContent = matchCount + '/' + choices.length + ' 条目';
+        renderCustomPortraitCoverage();
         var filterBtns = S._el.querySelectorAll('[data-custom-unit-filter]');
         for (var f = 0; f < filterBtns.length; f++) {
             filterBtns[f].classList.toggle('arena-custom-unit-filter-active', filterBtns[f].getAttribute('data-custom-unit-filter') === filter);
@@ -1464,6 +1481,7 @@
             html += '<div class="arena-custom-unit-more">继续滚动加载剩余 ' + hiddenRows + ' 个单位</div>';
         }
         listEl.innerHTML = html;
+        mountCustomUnitPortraits(listEl);
         editor.unitScrollableRows = expandedRows;
         if (options.preserveScroll) listEl.scrollTop = previousScrollTop;
         else listEl.scrollTop = 0;
@@ -1525,13 +1543,191 @@
             (preset ? ' arena-custom-unit-row-preset' : '') +
             (unit.isHostile === false ? ' arena-custom-unit-row-nonhostile' : '');
         return '<button class="' + rowClass + '" type="button" data-custom-add-unit="' + unit.id + '"' + presetAttr + ' data-custom-faction="' + ArenaCore.escapeAttr(faction || '') + '" data-audio-cue="confirm">' +
-            '<span class="arena-custom-unit-mark">u' + unit.id + '</span>' +
+            buildCustomUnitPortraitHtml(unit) +
             '<span class="arena-custom-unit-main">' +
                 '<b>' + ArenaCore.escapeHtml(unit.name || ('兵种' + unit.id)) + '</b>' +
                 '<em>' + ArenaCore.escapeHtml(unit.spritename || '--') + '</em>' +
             '</span>' +
             '<span class="arena-custom-unit-meta">Lv.' + (preset && preset.defaultLevel ? preset.defaultLevel : (unit.level || 1)) + factionLabel + hostileLabel + presetLabel + (slots ? ' · ' + ArenaCore.escapeHtml(slots) : '') + '</span>' +
         '</button>';
+    }
+
+    function buildCustomUnitPortraitHtml(unit) {
+        unit = unit || {};
+        var portraitRef = unit.spritename || '';
+        var portraitKind = customUnitUsesDressupPortrait(unit) ? 'dressup' : 'enemy';
+        var title = portraitRef ? ((portraitKind === 'dressup' ? '纸娃娃头像：' : '怪物头像：') + portraitRef) : '头像来源缺失';
+        return '<span class="arena-custom-unit-portrait" data-arena-unit-id="' + ArenaCore.escapeAttr(unit.id == null ? '' : unit.id) + '" data-arena-portrait-kind="' + portraitKind + '" data-arena-portrait-ref="' + ArenaCore.escapeAttr(portraitRef) + '" data-custom-tooltip="' + ArenaCore.escapeAttr(title) + '">' +
+            '<img alt="" draggable="false">' +
+            '<span class="arena-custom-unit-id-badge">u' + (unit.id == null ? '--' : unit.id) + '</span>' +
+        '</span>';
+    }
+
+    function customUnitUsesDressupPortrait(unit) {
+        return !!(unit && unit.portrait && unit.portrait.kind === 'dressup'
+            && unit.portrait.actor && typeof unit.portrait.actor === 'object');
+    }
+
+    function getCustomTooltipScope() {
+        if (_customTooltipScope && !_customTooltipScope.disposed) return _customTooltipScope;
+        _customTooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.createScope)
+            ? PanelTooltip.createScope('arena-custom-editor') : null;
+        return _customTooltipScope;
+    }
+
+    function releaseCustomTooltips(root) {
+        if (!root) return;
+        // 释放旧 DOM 时不得为了“释放”反向创建一个全新 scope；首次真实绑定时再创建。
+        var scope = (_customTooltipScope && !_customTooltipScope.disposed) ? _customTooltipScope : null;
+        if (scope && scope.releaseTree) scope.releaseTree(root);
+        else if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.releaseTree) {
+            PanelTooltip.releaseTree(root);
+        }
+    }
+
+    function buildCustomTooltipHtml(text) {
+        return '<div class="arena-custom-simple-tooltip">' + ArenaCore.escapeHtml(text || '') + '</div>';
+    }
+
+    function bindCustomTooltips(root) {
+        if (!root) return;
+        var scope = getCustomTooltipScope();
+        if (!scope || !scope.bindAsync) return;
+        var nodes = root.querySelectorAll('[data-custom-tooltip]');
+        for (var i = 0; i < nodes.length; i++) {
+            nodes[i].removeAttribute('title');
+            scope.bindAsync(nodes[i], {
+                key: function(e, node) { return 'arena-custom:' + (node.getAttribute('data-custom-tooltip') || ''); },
+                resolveItem: function(e, node) { return node.getAttribute('data-custom-tooltip') || ''; },
+                renderBasic: buildCustomTooltipHtml
+            });
+        }
+    }
+
+    function disconnectCustomPortraitObserver() {
+        if (_customPortraitObserver) _customPortraitObserver.disconnect();
+        _customPortraitObserver = null;
+    }
+
+    function mountCustomUnitPortrait(node) {
+        if (!node || node.getAttribute('data-arena-portrait-mounted') === '1') return;
+        var img = node.querySelector('img');
+        if (!img) return;
+        node.setAttribute('data-arena-portrait-mounted', '1');
+        var unit = getCustomUnitById(node.getAttribute('data-arena-unit-id'));
+        if (customUnitUsesDressupPortrait(unit)) {
+            MercPortraits.mount(node, img, unit.portrait.actor, {
+                // 与佣兵卡共享同一个 cacheKey、胸像相机与 112px 快照；竞技场只决定窗口尺寸。
+                variant: 'card',
+                size: 112,
+                alt: ''
+            });
+            return;
+        }
+        EnemyPortraits.mount(node, img, {
+            consumer: 'arena',
+            portraitRef: node.getAttribute('data-arena-portrait-ref') || '',
+            legacyUrl: EnemyPortraits.fallbackUrl()
+        });
+    }
+
+    function mountCustomUnitPortraits(root) {
+        // 标准挑战页仍会预渲染隐藏的定制编辑器 DOM；隐藏态不应提前拉取
+        // manifest/头像。showCustomEditorView 会先取消 hidden 再重渲染，届时
+        // 才执行真实挂载，避免普通竞技场入口产生无意义请求和离页取消噪音。
+        if (!root || !window.EnemyPortraits || !window.MercPortraits || !S._customEditorViewEl || S._customEditorViewEl.hidden) return;
+        bindCustomTooltips(root);
+        var nodes = root.querySelectorAll('[data-arena-portrait-ref]');
+        var lazyList = root.id === 'arena-custom-unit-list' && typeof IntersectionObserver !== 'undefined';
+        if (lazyList) {
+            disconnectCustomPortraitObserver();
+            _customPortraitObserver = new IntersectionObserver(function(entries, observer) {
+                for (var j = 0; j < entries.length; j++) {
+                    if (!entries[j].isIntersecting) continue;
+                    observer.unobserve(entries[j].target);
+                    mountCustomUnitPortrait(entries[j].target);
+                }
+            }, {
+                root: root,
+                rootMargin: '144px 0px',
+                threshold: 0.01
+            });
+            for (var n = 0; n < nodes.length; n++) _customPortraitObserver.observe(nodes[n]);
+            return;
+        }
+        for (var i = 0; i < nodes.length; i++) {
+            mountCustomUnitPortrait(nodes[i]);
+        }
+    }
+
+    function customCatalogPortraitRoutes() {
+        var units = window.ArenaUnitCatalog && window.ArenaUnitCatalog.units || [];
+        var routes = {};
+        var enemyRefs = [];
+        var dressupReadyRefs = [];
+        var dressupMissingRefs = [];
+        for (var i = 0; i < units.length; i++) {
+            var ref = String(units[i].spritename || '').trim();
+            if (!ref) continue;
+            var dressupRef = ref.indexOf('主角-') === 0;
+            if (!routes[ref]) routes[ref] = { kind: dressupRef ? 'dressup' : 'enemy', ready: true };
+            if (dressupRef && !customUnitUsesDressupPortrait(units[i])) routes[ref].ready = false;
+        }
+        Object.keys(routes).forEach(function(ref) {
+            if (routes[ref].kind === 'dressup') {
+                (routes[ref].ready ? dressupReadyRefs : dressupMissingRefs).push(ref);
+            } else enemyRefs.push(ref);
+        });
+        return {
+            total: Object.keys(routes).length,
+            enemyRefs: enemyRefs,
+            dressupReadyRefs: dressupReadyRefs,
+            dressupMissingRefs: dressupMissingRefs
+        };
+    }
+
+    function customCatalogPortraitCoverage() {
+        var routes = customCatalogPortraitRoutes();
+        return EnemyPortraits.coverage(routes.enemyRefs).then(function(enemy) {
+            var dressupReady = routes.dressupReadyRefs.length;
+            var dressupMissing = routes.dressupMissingRefs.length;
+            return {
+                manifestAvailable: enemy.manifestAvailable,
+                total: routes.total,
+                ready: enemy.ready + dressupReady,
+                missing: enemy.missing + dressupMissing,
+                missingRefs: enemy.missingRefs.concat(routes.dressupMissingRefs),
+                routes: {
+                    enemy: { total: enemy.total, ready: enemy.ready, missing: enemy.missing },
+                    dressup: { total: dressupReady + dressupMissing, ready: dressupReady, missing: dressupMissing }
+                }
+            };
+        });
+    }
+
+    function renderCustomPortraitCoverage() {
+        var el = S._el ? S._el.querySelector('#arena-custom-portrait-coverage') : null;
+        if (!el || !window.EnemyPortraits || !S._customEditorViewEl || S._customEditorViewEl.hidden) return;
+        el.textContent = '头像核对中';
+        el.setAttribute('data-coverage-state', 'loading');
+        if (!_customPortraitCoveragePromise) {
+            _customPortraitCoveragePromise = customCatalogPortraitCoverage();
+        }
+        _customPortraitCoveragePromise.then(function(result) {
+            if (!el.isConnected) return;
+            el.textContent = '头像 ' + result.ready + '/' + result.total;
+            el.setAttribute('data-coverage-ready', result.ready);
+            el.setAttribute('data-coverage-missing', result.missing);
+            el.setAttribute('data-coverage-total', result.total);
+            el.setAttribute('data-coverage-enemy-ready', result.routes.enemy.ready);
+            el.setAttribute('data-coverage-dressup-ready', result.routes.dressup.ready);
+            el.setAttribute('data-coverage-state', result.manifestAvailable ? (result.missing ? 'partial' : 'complete') : 'unavailable');
+            el.setAttribute('data-custom-tooltip', result.manifestAvailable
+                ? ('纸娃娃 ' + result.routes.dressup.ready + '/' + result.routes.dressup.total +
+                    '；怪物清单 ' + result.routes.enemy.ready + '/' + result.routes.enemy.total +
+                    (result.missing ? ('；' + result.missing + ' 个仍使用锁定图回退') : '；全目录头像已闭合'))
+                : '头像清单不可用，当前全部使用锁定图回退');
+        });
     }
 
     function summarizeCustomSlots(unit) {
@@ -1967,7 +2163,10 @@
         if (editor.expandedFactions[factionKey]) delete editor.expandedFactions[factionKey];
         else editor.expandedFactions[factionKey] = true;
         resetCustomUnitBrowserWindow(editor);
-        renderCustomUnitBrowser();
+        // 展开/收起只改变当前目录的局部结构；分类按钮可能位于长目录深处，
+        // 重建分组时必须保留维护者所在位置。搜索、过滤等结果集变化仍由
+        // 各自入口使用默认渲染，从顶部展示新的语义结果。
+        renderCustomUnitBrowser({ preserveScroll: true });
     }
 
     function onCustomEditorInput(e) {

@@ -468,12 +468,17 @@
             }
             if (!pick) break;
             used[pick.id] = true;
+            var gender = String(pick.gender || '男');
             opponents.push({
+                id: pick.id,
                 name: pick.name,
                 level: Number(pick.level) || 1,
                 mercId: pick.id,
-                spritename: '主角-男',
-                gender: pick.gender || '',
+                spritename: gender === '女' ? '主角-女' : '主角-男',
+                gender: gender,
+                face: gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型',
+                hair: '',
+                equips: [],
                 isMonster: true,
                 humanoid: true,
                 rosterKind: 'humanoid',

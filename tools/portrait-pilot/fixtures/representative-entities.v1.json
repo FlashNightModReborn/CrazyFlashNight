@@ -1,0 +1,180 @@
+{
+  "schema": "cf7.portrait-pilot-representative-set.v1",
+  "batchId": "portrait-pilot-p2-20260805",
+  "maxCandidatesPerReview": 6,
+  "entities": [
+    {
+      "portraitRef": "敌人-武装JK",
+      "category": "state_variant",
+      "expectedClassification": "unique",
+      "variantResolution": "timeline_visual_proposal_human_verified",
+      "notes": "同一战斗根的发色状态；两项都必须保留，不能按文件名猜变体。",
+      "variants": [
+        {
+          "variantKey": "orange",
+          "oldReference": "launcher/web/assets/pets/pet_78_1.png"
+        },
+        {
+          "variantKey": "white",
+          "oldReference": "launcher/web/assets/pets/pet_78.png"
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-李小龙",
+      "category": "humanoid_boss",
+      "expectedClassification": "unique",
+      "notes": "人形 Boss 与旧头像对照。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": "launcher/web/assets/pets/pet_43.png"
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-柜员女僵尸",
+      "category": "pet_only_humanoid",
+      "expectedClassification": "unique",
+      "notes": "没有同名 enemy_properties 节点的合法 pet-only identity。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": "launcher/web/assets/pets/pet_93.png"
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-僵尸1-狗",
+      "category": "quadruped",
+      "expectedClassification": "unique",
+      "notes": "四足单位，不能套用人脸检测。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": "launcher/web/assets/pets/pet_0.png"
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-诺亚地狱三头犬",
+      "category": "multi_head_beast",
+      "expectedClassification": "unique",
+      "notes": "多头兽形，无旧头像。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-凤凰眷属飞行",
+      "category": "flying",
+      "expectedClassification": "unique",
+      "notes": "飞行单位与特效遮挡风险。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-魔神菲尼克斯",
+      "category": "effect_heavy_boss",
+      "expectedClassification": "unique",
+      "notes": "巨大、特效密集 Boss。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-方舟巨人",
+      "category": "giant_boss",
+      "expectedClassification": "unique",
+      "notes": "巨型人形，检查全身缩小与半身可读性。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-二足型机器人",
+      "category": "mechanical",
+      "expectedClassification": "unique",
+      "notes": "机械单位，以核心或头部为视觉焦点。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-蜘蛛形异形幼虫",
+      "category": "non_humanoid",
+      "expectedClassification": "unique",
+      "notes": "低矮非人形主体。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-忍者BOSS",
+      "category": "nested_animation_boss",
+      "expectedClassification": "unique",
+      "notes": "嵌套动画与姿态选择；旧头像仅作参考。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": "launcher/web/assets/pets/pet_51.png"
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-唐头肌肉男",
+      "category": "source_blocker_duplicate",
+      "expectedClassification": "duplicate",
+      "notes": "同一 SWF 内重复来源；P2 不自动挑选。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-巨臂僵尸",
+      "category": "source_blocker_conflict",
+      "expectedClassification": "conflict",
+      "notes": "跨 SWF 冲突；P2 不采用第一条命中。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    },
+    {
+      "portraitRef": "敌人-Serpent",
+      "category": "source_blocker_missing",
+      "expectedClassification": "missing",
+      "notes": "素材映射缺失；必须保持阻断。",
+      "variants": [
+        {
+          "variantKey": "default",
+          "oldReference": null
+        }
+      ]
+    }
+  ]
+}

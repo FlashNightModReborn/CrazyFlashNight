@@ -18,6 +18,7 @@ const IMPORTS = [
     './workbench/core.css',
     './workbench/profiles.css',
     './panels/features.css',
+    './workbench/portraits.css',
     './workbench/arena.css',
     './workbench/inventory.css',
     './workbench/skins.css',

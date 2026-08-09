@@ -419,21 +419,22 @@
 }
 .arena-reroll-all[hidden] { display: none; }
 
-/* ── 卡片网格（4×2，固定画布内）── */
+/* ── 卡片网格：完整 = 2 列可读卡；紧凑 = 3 列速览卡。1024 逻辑画布不再塞 4 列。── */
 .arena-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-auto-rows: minmax(150px, max-content);
     gap: 12px;
     padding: 14px 18px;
     flex: 1;
     overflow-y: auto;
-    align-content: stretch;
+    align-content: start;
     min-height: 0;
 }
 /* 卡片数超过单屏（如堕落模式 18 张势力卡）：改顶部对齐的滚动布局，行高随内容、超出滚动。
    不再用 2 行 1fr stretch（那是 8 卡铺满设计，多卡时顶部行会被压成只剩标题条 → 无法操作）。
-   行高由卡片内容决定（与标准卡同构 ≈ 等高），列数维持 4，纵向滚动浏览全部势力挑战。 */
+   行高由卡片内容决定，列数继承完整/紧凑语义，纵向滚动浏览全部势力挑战。 */
 .arena-grid.arena-grid-scroll {
     grid-template-rows: none;
     grid-auto-rows: min-content;
@@ -476,11 +477,42 @@
         0 8px 22px rgba(var(--arena-black-rgb),0.42);
 }
 
-/* 目录密度（紧凑/标准，GridDensityController + localStorage 持久；首次进入默认紧凑）：
-   紧凑态隐藏「对手/等级」统计行并收紧留白——该信息选中后在右栏 preview 完整可读 */
-.arena-grid.arena-grid-compact .arena-card { padding: 7px 10px 8px; gap: 5px; }
-.arena-grid.arena-grid-compact .arena-card-stats { display: none; }
-.arena-grid.arena-grid-compact .arena-card-prize { margin-top: 0; }
+/* 目录密度（GridDensityController + localStorage 持久）：
+   完整态强调识别与比较；紧凑态收成 3 列速览，但对手数 / 等级 / 奖金仍可见。 */
+.arena-grid.arena-grid-compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: minmax(108px, max-content);
+    gap: 7px;
+}
+.arena-grid.arena-grid-compact .arena-card { padding: 7px 8px 8px; gap: 4px; }
+.arena-grid.arena-grid-compact .arena-card-header { gap: 4px; }
+.arena-grid.arena-grid-compact .arena-card-rank { font-size: 11px; letter-spacing: 0; }
+.arena-grid.arena-grid-compact .arena-card-icon { display: none; }
+.arena-grid.arena-grid-compact .arena-card-diff { padding: 1px 5px; font-size: 10px; letter-spacing: 0; }
+.arena-grid.arena-grid-compact .arena-card-body { gap: 4px; }
+.arena-grid.arena-grid-compact .arena-card-overview { grid-template-columns: 48px minmax(0, 1fr); gap: 6px; }
+.arena-grid.arena-grid-compact .arena-card-portrait { width: 48px; height: 48px; display: block; padding: 1px; }
+.arena-grid.arena-grid-compact .arena-card-portrait-item { display: none; }
+.arena-grid.arena-grid-compact .arena-card-portrait-item:first-child {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.arena-grid.arena-grid-compact .arena-card-portrait-overflow { display: none; }
+.arena-grid.arena-grid-compact .arena-card-economy { gap: 2px; }
+.arena-grid.arena-grid-compact .arena-card-stats { gap: 4px; }
+.arena-grid.arena-grid-compact .arena-stat { padding: 0; border: 0; background: transparent; }
+.arena-grid.arena-grid-compact .arena-stat-label { display: none; }
+.arena-grid.arena-grid-compact .arena-stat-value { font-size: 10px; line-height: 1.1; color: var(--arena-text-dim); }
+.arena-grid.arena-grid-compact .arena-stat:nth-child(2) .arena-stat-value::before { content: 'Lv '; color: var(--arena-text-mute); }
+.arena-grid.arena-grid-compact .arena-card-prize { margin-top: 0; padding: 3px 5px; gap: 0; }
+.arena-grid.arena-grid-compact .arena-prize-label { display: none; }
+.arena-grid.arena-grid-compact .arena-prize-value { font-size: 14px; }
+.arena-grid.arena-grid-compact .arena-prize-deposit { font-size: 10px; }
+.arena-grid.arena-grid-compact .arena-card-opponents-row { gap: 0; }
+.arena-grid.arena-grid-compact .arena-card-opponents-cap { display: none; }
+.arena-grid.arena-grid-compact .arena-card-opponents { font-size: 9.5px; }
 
 /* 右栏挑战决策：标题/meta（非滚动）+ preview 滚动区 + CommitBar 唯一主 CTA（非滚动 footer） */
 .arena-decision {
@@ -1659,7 +1691,7 @@
     grid-template-columns: 42px minmax(0, 1fr) 56px 84px minmax(76px, 0.52fr) 24px;
     align-items: center;
     gap: 5px;
-    min-height: 42px;
+    min-height: 48px;
     padding: 5px 6px;
     border-bottom: 1px solid rgba(var(--arena-white-rgb),0.06);
 }
@@ -1944,10 +1976,33 @@
     box-shadow: 0 0 0 1px rgba(var(--arena-accent-rgb),0.16), inset 0 0 0 1px rgba(var(--arena-black-rgb),0.18);
 }
 .arena-custom-unit-count {
-    flex: 0 0 108px;
+    flex: 0 0 94px;
     color: var(--arena-text-mute);
     font-size: 10px;
     text-align: right;
+}
+.arena-custom-portrait-coverage {
+    flex: 0 0 72px;
+    padding: 3px 5px;
+    border: 1px solid rgba(var(--arena-white-rgb),0.12);
+    border-radius: 3px;
+    color: var(--arena-text-mute);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 10px;
+    text-align: center;
+    white-space: nowrap;
+}
+.arena-custom-portrait-coverage[data-coverage-state="partial"] {
+    border-color: rgba(var(--arena-gold-2-rgb),0.32);
+    color: rgb(var(--arena-gold-2-rgb));
+}
+.arena-custom-portrait-coverage[data-coverage-state="complete"] {
+    border-color: rgba(var(--arena-blue-rgb),0.38);
+    color: rgb(var(--arena-blue-rgb));
+}
+.arena-custom-portrait-coverage[data-coverage-state="unavailable"] {
+    border-color: rgba(var(--arena-red-rgb),0.38);
+    color: rgb(var(--arena-red-rgb));
 }
 .arena-custom-unit-list {
     min-height: 0;
@@ -2009,7 +2064,7 @@
     grid-template-columns: 42px minmax(0, 1fr) 112px;
     align-items: center;
     gap: 7px;
-    min-height: 42px;
+    min-height: 48px;
     padding: 5px 6px;
     background: transparent;
     border: 0;
@@ -2032,27 +2087,40 @@
 .arena-custom-unit-row-preset {
     background: rgba(var(--arena-blue-rgb),0.035);
 }
-.arena-custom-unit-row-preset .arena-custom-unit-mark {
-    border-color: rgba(var(--arena-gold-2-rgb),0.34);
-    color: rgb(var(--arena-gold-2-rgb));
+.arena-custom-unit-row-preset .arena-custom-unit-portrait {
+    --entity-portrait-a: rgb(var(--arena-gold-2-rgb));
 }
-.arena-custom-unit-row-nonhostile .arena-custom-unit-mark {
-    border-color: rgba(var(--arena-blue-rgb),0.34);
-    color: rgb(var(--arena-blue-rgb));
+.arena-custom-unit-row-nonhostile .arena-custom-unit-portrait {
+    --entity-portrait-a: rgb(var(--arena-blue-rgb));
 }
-.arena-custom-unit-mark {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.arena-custom-unit-portrait {
+    display: grid;
+    place-items: center;
+    position: relative;
     width: 38px;
-    height: 28px;
+    height: 38px;
+    overflow: hidden;
     background: rgba(var(--arena-white-rgb),0.055);
-    border: 1px dashed rgba(var(--arena-white-rgb),0.18);
+    border: 1px solid rgba(var(--arena-white-rgb),0.18);
     border-radius: 3px;
+}
+.arena-custom-unit-id-badge {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    z-index: 3;
+    max-width: 34px;
+    padding: 0 2px;
+    overflow: hidden;
+    background: rgba(var(--arena-black-rgb),0.78);
+    border-radius: 2px;
     color: var(--arena-text-dim);
     font-family: "Consolas", "Microsoft YaHei", monospace;
     font-size: 10px;
     font-weight: 800;
+    line-height: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .arena-custom-unit-main {
     min-width: 0;
@@ -2069,6 +2137,13 @@
     color: var(--arena-text-mute);
     font-size: 11px;
     text-align: center;
+}
+.arena-custom-simple-tooltip {
+    max-width: 320px;
+    color: var(--arena-text);
+    font-size: 12px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
 }
 .arena-custom-confirm {
     padding: 9px 10px;
@@ -2586,6 +2661,118 @@
     position: relative;
     z-index: 1;
 }
+/* 头像成为卡片第一识别锚点；右侧只承载比较信息，避免名称/数值/标签挤在同一窄列。 */
+.arena-card-overview {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    align-items: stretch;
+    gap: 9px;
+    min-width: 0;
+}
+.arena-card-economy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.arena-card-portrait {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    align-self: center;
+    display: grid;
+    gap: 2px;
+    padding: 2px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--d-color) 48%, var(--arena-line));
+    border-radius: var(--arena-radius-sm);
+    background:
+        radial-gradient(circle at 50% 68%, color-mix(in srgb, var(--d-color) 22%, transparent), transparent 55%),
+        rgba(var(--arena-black-rgb),0.28);
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-white-rgb),0.035);
+}
+.arena-card-portrait[data-arena-portrait-count="1"] {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+.arena-card-portrait[data-arena-portrait-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    align-content: center;
+}
+.arena-card-portrait[data-arena-portrait-count="2"] .arena-card-portrait-item {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    align-self: center;
+}
+.arena-card-portrait[data-arena-portrait-count="3"],
+.arena-card-portrait[data-arena-portrait-count="4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.arena-card-portrait[data-arena-portrait-count="3"] .arena-card-portrait-item:nth-child(3) {
+    grid-column: 1 / 3;
+    width: calc(50% - 1px);
+    justify-self: center;
+}
+.arena-card-portrait-item {
+    position: relative;
+    display: block;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid rgba(var(--arena-white-rgb),0.11);
+    border-radius: 2px;
+    background: rgba(var(--arena-black-rgb),0.22);
+}
+.arena-card-portrait-item > img {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+}
+.arena-card-portrait-item.arena-portrait-merc > img { object-fit: cover; }
+.arena-card-portrait-overflow {
+    position: absolute;
+    z-index: 5;
+    right: 2px;
+    bottom: 2px;
+    min-width: 18px;
+    height: 16px;
+    padding: 0 4px;
+    display: grid;
+    place-items: center;
+    color: var(--arena-text);
+    background: rgba(var(--arena-black-rgb),0.86);
+    border: 1px solid rgba(var(--arena-white-rgb),0.18);
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+}
+.arena-card-portrait-seal {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    color: color-mix(in srgb, var(--d-color) 78%, var(--arena-text-dim));
+    font-size: 22px;
+    text-shadow: 0 0 12px color-mix(in srgb, var(--d-color) 48%, transparent);
+}
+.arena-card-portrait[data-arena-portrait-count] > .arena-card-portrait-seal { display: none; }
+.arena-card-portrait-hidden {
+    border-style: dashed;
+    background:
+        repeating-linear-gradient(135deg, transparent 0 7px, rgba(var(--arena-gold-rgb),0.045) 7px 8px),
+        rgba(var(--arena-black-rgb),0.32);
+}
+.arena-card-portrait-hidden .arena-card-portrait-seal { color: rgb(var(--arena-gold-2-rgb)); }
 /* 数据双联：对手数量 / 等级区间 */
 .arena-card-stats {
     display: flex;
@@ -2894,7 +3081,7 @@
 }
 .arena-opp-row:hover { border-color: rgba(var(--arena-accent-rgb),0.22); }
 
-/* 对手头像（无素材 → 剪影占位，与 merc-card-portrait-fallback 同源） */
+/* 对手头像：怪物透明主体走 EnemyPortraits；佣兵胸像走 MercPortraits；两者各自 fail-soft。 */
 .arena-opp-portrait {
     position: relative;
     width: 46px; height: 46px;
@@ -2904,7 +3091,36 @@
     border: 1px solid var(--arena-line);
     border-radius: var(--arena-radius-sm);
 }
-.arena-opp-portrait-fallback::before {
+.arena-opp-portrait > img {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+}
+.arena-opp-portrait.arena-portrait-merc > img { object-fit: cover; }
+.arena-portrait-merc {
+    border-color: rgba(var(--arena-violet-rgb),0.42);
+    background:
+        radial-gradient(circle at 50% 72%, rgba(var(--arena-violet-rgb),0.22), transparent 56%),
+        rgb(var(--arena-ink-13-rgb));
+}
+.arena-opp-portrait-loading::before {
+    content: "⚔";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--arena-text-mute);
+    font-size: 15px;
+}
+.arena-opp-portrait-fallback::before,
+.arena-opp-portrait.merc-portrait-fallback::before,
+.arena-card-portrait.merc-portrait-fallback::before,
+.arena-card-portrait-item.merc-portrait-fallback::before {
     content: "";
     position: absolute;
     left: 50%; top: 8px;
@@ -2913,7 +3129,10 @@
     border-radius: 50%;
     background: rgb(var(--arena-portrait-head-rgb));
 }
-.arena-opp-portrait-fallback::after {
+.arena-opp-portrait-fallback::after,
+.arena-opp-portrait.merc-portrait-fallback::after,
+.arena-card-portrait.merc-portrait-fallback::after,
+.arena-card-portrait-item.merc-portrait-fallback::after {
     content: "";
     position: absolute;
     left: 50%; bottom: -5px;
@@ -2922,6 +3141,44 @@
     border-radius: 50% 50% 12% 12%;
     background: rgb(var(--arena-portrait-body-rgb));
 }
+.arena-card-portrait.merc-portrait-fallback::before {
+    top: 13px;
+    width: 23px;
+    height: 23px;
+    margin-left: -11.5px;
+}
+.arena-card-portrait.merc-portrait-fallback::after {
+    bottom: -7px;
+    width: 48px;
+    height: 36px;
+    margin-left: -24px;
+}
+.arena-card-portrait-item.merc-portrait-fallback::before {
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+}
+.arena-card-portrait-item.merc-portrait-fallback::after {
+    bottom: -3px;
+    width: 22px;
+    height: 16px;
+    margin-left: -11px;
+}
+.arena-grid.arena-grid-compact .arena-card-portrait-item.merc-portrait-fallback::before {
+    top: 8px;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+}
+.arena-grid.arena-grid-compact .arena-card-portrait-item.merc-portrait-fallback::after {
+    bottom: -5px;
+    width: 32px;
+    height: 24px;
+    margin-left: -16px;
+}
+.arena-portrait-merc.merc-dressup-ready::before,
+.arena-portrait-merc.merc-dressup-ready::after { display: none; }
 
 /* 对手卡右侧主区（纵向：名称行 → 装备行 → 技能行） */
 .arena-opp-main {

@@ -1,0 +1,111 @@
+/* ── 消费者无关的身份头像舞台 ──
+   透明 SVG/PNG 只承载主体；氛围底、地台与角框由 Web 消费端按 identity 主题绘制。
+   Team 与 Arena 共用同一语法，尺寸和布局仍由各自领域容器决定。 */
+.entity-portrait-art {
+    --entity-portrait-a: var(--wb-accent);
+    --entity-portrait-b: var(--theta-signal);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 76%,
+            color-mix(in srgb, var(--entity-portrait-a) 28%, transparent) 0 22%,
+            transparent 52%),
+        linear-gradient(145deg,
+            color-mix(in srgb, var(--entity-portrait-b) 14%, var(--wb-surface-2)),
+            color-mix(in srgb, var(--entity-portrait-a) 8%, var(--wb-bg)));
+    border-color: color-mix(in srgb, var(--entity-portrait-a) 46%, var(--wb-line));
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--wb-text) 6%, transparent),
+        inset 0 -9px 13px color-mix(in srgb, var(--entity-portrait-b) 10%, transparent),
+        0 0 9px color-mix(in srgb, var(--entity-portrait-a) 17%, transparent);
+}
+.entity-portrait-art[data-portrait-theme="machine"] {
+    --entity-portrait-a: var(--theta-signal);
+    --entity-portrait-b: color-mix(in srgb, var(--wb-text) 56%, var(--wb-line));
+}
+.entity-portrait-art[data-portrait-theme="undead"] {
+    --entity-portrait-a: var(--wb-semantic-danger);
+    --entity-portrait-b: var(--dls-memetic);
+}
+.entity-portrait-art[data-portrait-theme="beast"] {
+    --entity-portrait-a: var(--wb-semantic-warning);
+    --entity-portrait-b: var(--dls-energetic);
+}
+.entity-portrait-art[data-portrait-theme="ember"] {
+    --entity-portrait-a: var(--dls-energetic);
+    --entity-portrait-b: var(--wb-semantic-danger);
+}
+.entity-portrait-art[data-portrait-theme="arcane"] {
+    --entity-portrait-a: var(--dls-memetic);
+    --entity-portrait-b: var(--theta-signal);
+}
+.entity-portrait-art[data-portrait-theme="legacy"] {
+    --entity-portrait-a: color-mix(in srgb, var(--wb-muted) 70%, var(--wb-line));
+    --entity-portrait-b: var(--wb-line-soft);
+}
+.entity-portrait-art::before,
+.entity-portrait-art::after {
+    position: absolute;
+    z-index: 1;
+    content: "";
+    pointer-events: none;
+}
+/* 椭圆地台给透明主体稳定落点，头部特写仍保持视觉甜区。 */
+.entity-portrait-art::before {
+    right: 13%;
+    bottom: 5%;
+    left: 13%;
+    height: 13%;
+    border: 1px solid color-mix(in srgb, var(--entity-portrait-a) 58%, transparent);
+    border-radius: 50%;
+    background: radial-gradient(ellipse,
+        color-mix(in srgb, var(--entity-portrait-a) 36%, transparent),
+        transparent 70%);
+    box-shadow: 0 0 7px color-mix(in srgb, var(--entity-portrait-a) 26%, transparent);
+}
+/* 非满框四角刻线避免小尺寸头像被粗边框挤压。 */
+.entity-portrait-art::after {
+    inset: 2px;
+    background:
+        linear-gradient(var(--entity-portrait-a), var(--entity-portrait-a)) left top / 28% 1px no-repeat,
+        linear-gradient(var(--entity-portrait-a), var(--entity-portrait-a)) left top / 1px 28% no-repeat,
+        linear-gradient(var(--entity-portrait-a), var(--entity-portrait-a)) right top / 28% 1px no-repeat,
+        linear-gradient(var(--entity-portrait-a), var(--entity-portrait-a)) right top / 1px 28% no-repeat,
+        linear-gradient(var(--entity-portrait-a), var(--entity-portrait-a)) left bottom / 28% 1px no-repeat,
+        linear-gradient(var(--entity-portrait-a), var(--entity-portrait-a)) left bottom / 1px 28% no-repeat,
+        linear-gradient(var(--entity-portrait-a), var(--entity-portrait-a)) right bottom / 28% 1px no-repeat,
+        linear-gradient(var(--entity-portrait-a), var(--entity-portrait-a)) right bottom / 1px 28% no-repeat;
+    opacity: .72;
+}
+.entity-portrait-art > img {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 2px color-mix(in srgb, var(--wb-bg) 70%, transparent));
+}
+.entity-portrait-art[data-portrait-source="legacy"] > img,
+.entity-portrait-art[data-portrait-source="locked"] > img {
+    width: auto;
+    height: auto;
+    max-width: 88%;
+    max-height: 88%;
+}
+
+/* 纸娃娃快照已经由 MercPortraits 按共享胸像相机裁成正方形。消费者只负责把
+   这张正方形完整压入自己的头像窗；统一 cover 可避免未声明尺寸时以 112px
+   原图溢出小窗，只露出枪管或身体局部。 */
+.merc-portrait-art > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: 50% 50%;
+}

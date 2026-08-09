@@ -554,6 +554,31 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+/* 领养目录的「唯一」属于身份属性：完整态在名称与价格之间独占一条轻量属性轨，
+   不与经济信息争宽，也不占用头像左上状态徽标位。紧凑态随 body 隐藏，由 tooltip、
+   aria 与右栏详情承接；Boss 头像与 L 角标框在两种密度下都保持完整可见。 */
+.team-workbench .team-store-flags {
+    display: flex;
+    align-items: center;
+    min-height: 13px;
+    margin-top: 1px;
+}
+.team-workbench .team-store-price {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.team-workbench .team-store-unique-chip {
+    flex: 0 0 auto;
+    padding: 1px 4px;
+    color: color-mix(in srgb, var(--team-accent-warm) 78%, var(--wb-text));
+    background: color-mix(in srgb, var(--team-accent-warm) 9%, var(--wb-surface));
+    border: 1px solid color-mix(in srgb, var(--team-accent-warm) 48%, var(--wb-line-soft));
+    border-radius: 2px;
+    font: 700 9px/1.2 "Microsoft YaHei", sans-serif;
+    letter-spacing: .5px;
+}
 /* H2-2 full 卡体力 + 经验双 meter：卡内改细条两行（决策面 / 培养页 8px 不变），
    增量高度由卡内原有余量吸收（body ≤ 图标 50px，卡高与单 meter 基线持平，首屏行列不回退）。
    Phase J：pet full 卡内 track 回升 8px（见下方 Phase J 区块），merc 宽行 / store /
@@ -626,7 +651,7 @@
     font-variant-numeric: tabular-nums;
     text-align: right;
 }
-/* I3 同族角标对：状态字牌（左上：出战中 / 阵亡 / 体力耗尽 / 候选 / 唯一）与
+/* I3 同族角标对：状态字牌（左上：出战中 / 阵亡 / 体力耗尽 / 候选）与
    MAX 金角标（右上）同几何——inset 8px / padding 2px 5px / 圆角 3px / 1px 描边 /
    700 9px Consolas，仅角色色区分（默认金渐变奖章 / info 青 / danger 红 /
    max 金描边透底）。inset 8px 落在 L 角标框臂区之外（角标 inset 5px + 臂宽 2px

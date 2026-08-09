@@ -1,0 +1,137 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-campaign-feature-v4-three-round-human-calibrated-20260806",
+  "calibration": {
+    "sourceReviewBatchIds": [
+      "portrait-campaign-shard-r2-fast6-20260806T035300Z",
+      "portrait-campaign-shard-r6-calibrated-fast6-20260806T045256Z",
+      "portrait-campaign-shard-r16-visualcal-fast6-20260806T055055Z"
+    ],
+    "humanReviewReceiptDigests": [
+      "14174DB2FA32E11EA75430C4956CD9466C2653DA6F3464CB8BFA61C60EFA240A",
+      "021BA20A67D041FF63150B466DC1BC2A0A54D169EDCCD9076310069E1A4950E4",
+      "A44E72EE0834E0F50052B673D1A21B3B141E2EBDE2BDB3A4DD6DCA269B44E7E1"
+    ],
+    "cumulativeFeedbackDigest": "7FB97C80CCFBA5BD569DBCC477CB877174327A774EF31AFB06D890E970D8A2F4",
+    "orientationRenderReportDigest": "15F3E0905B88F070FFF9CBAE685B686C8413FE4210E29F05336ADEDABD09DE30",
+    "latestGuidedRenderReportDigest": "AEB72A4EB25241A3CBAF7F498F8E3D418F6631CD86BC972B0FAEC30CE2D37605",
+    "verifiedGeometryRows": 24,
+    "medianHumanZoomIn": 1.1665925,
+    "observedHumanZoomInRange": [
+      0.637628,
+      2.345799
+    ],
+    "campaignFirstPassRates": [
+      {
+        "batchId": "portrait-campaign-shard-r2-fast6-20260806T035300Z",
+        "passed": 3,
+        "eligible": 12,
+        "rate": 0.25
+      },
+      {
+        "batchId": "portrait-campaign-shard-r6-calibrated-fast6-20260806T045256Z",
+        "passed": 3,
+        "eligible": 12,
+        "rate": 0.25
+      },
+      {
+        "batchId": "portrait-campaign-shard-r16-visualcal-fast6-20260806T055055Z",
+        "passed": 4,
+        "eligible": 12,
+        "rate": 0.333333
+      }
+    ],
+    "policy": "三轮全部 36 条标签必须进入视觉上下文：10 个 pass 锚点、24 个真实框选、1 个朝向修正和 1 个 source 负例。前两轮主要纠正过宽与全身构图；第三轮暴露过紧裁掉头、耳朵或帽子的反向失败。目标不是越紧越好，而是最小但完整的身份特写。"
+  },
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框，也不是只截取角色的一小块而破坏完整身份轮廓。",
+    "候选像素已经由管线限定为怪物内部命名 man MovieClip；不得把外层血条、等级、名称或其他 UI 当作身份特征。",
+    "每张输入图下方都有 BOUND HUMAN PREFERENCE EXAMPLES 区域。它包含全部既有人类标签，包括通过锚点、模型初稿到人类结果、朝向修正和 source 负例；不是当前行候选，绝对不能从示例区选择 candidateId、抄坐标或替换本批角色。",
+    "三轮反馈共同表明错误存在两端：过宽会变成全身像、武器焦点或大块死区；过紧会裁掉头顶、发型、耳朵、帽子等身份特征。必须选择完整保留身份特征的最小方形构图，不得机械套用统一缩放倍率。",
+    "人形单位默认以完整头部为主特征：脸、头骨或面罩、全部可见头发、耳朵、角、帽子和头饰都属于不可裁切的头部轮廓；只保留最少颈肩上下文，并排除胸腹、手臂和武器。",
+    "如果单个候选中出现多个重叠主体，而同一行存在清晰的单主体帧，必须拒绝多主体帧并选择单主体帧；不得把多个可分离角色误判为 feature_group。",
+    "非人单位必须推理最强身份特征；不得把几何中心、最长肢体、枪械、尾巴或特效自动当作视觉中心。多头生物自身的全部头部才是不可拆分特征组，多个独立角色不是。",
+    "载具或飞行器只有在整体轮廓本身就是身份时才使用 full_subject；否则仍应锁定驾驶舱、传感器、头部、核心或其他稳定识别特征。",
+    "featureBox 必须包住完整可见身份特征，而不是只包脸部中心；mustIncludeBox 应在此基础上保留不可裁掉的轮廓和少量上下文。遗漏帽檐、发梢、耳朵、角或头顶即为失败。",
+    "在想象的 80px 方形预览中，身份特征必须成为第一视觉重心；武器、光效、轨道线、尾巴或透明死区都不能比身份特征更抢眼。",
+    "方形裁切应为面朝方向保留少量呼吸空间，但不能留下压倒特征的大块空白；所有必须保留的轮廓还要有透明安全边距，允许虚拟裁切框越出候选 PNG 后透明补齐。",
+    "累计 24 个真实框选的中位倍率为 1.1666，范围 0.6376 至 2.3458。倍率小于 1 的第三轮样本表示模型初框过紧，需要放宽以保全身份特征；这与早期放大样本同等重要。",
+    "若人类备注明确偏好 Luna B，则把 B 的候选与构图作为强起点；若备注要求介于 A/B 之间，则独立推理折中边界，不能盲选任一方案。",
+    "source 负例中的拟态投影要求先选只有一个人物的帧，再严格只框完整头部并隔离身体；类似多主体候选必须采用同一原则。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.08,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.82,
+        "featureHeightOccupancy": 0.82,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.76,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.5,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.84,
+        "featureHeightOccupancy": 0.84,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.76,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.48,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.84,
+        "featureHeightOccupancy": 0.82,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.74,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.46,
+        "featureAnchor": [
+          0.5,
+          0.46
+        ]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.82,
+        "featureHeightOccupancy": 0.82,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.72,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.44,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 16384,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "unclassified": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "这是绑定三轮全部真人偏好的视觉校准轮。先只看当前行候选，判断人形或非人并命名最强身份特征；再用下方全部人类示例自检。人形必须完整框住头脸、全部头发、耳朵、角、帽子或头饰，并留透明安全边距；禁止裁顶、切耳或把胸腹和武器带回。非人选择 feature_closeup、feature_group 或确有必要时的 full_subject。累计反馈既包含早期过宽样本，也包含第三轮过紧样本；目标是最小但完整，不得机械放大或缩小。多个独立人物不是 feature_group；存在单人帧时必须拒绝多人帧。不得从示例区抄 candidateId 或坐标。"
+    }
+  },
+  "reviewKeyOverrides": {
+    "敌人-拟态投影::default": {
+      "reasoningHint": "人类已明确拒绝多人重叠帧。C02/f13 与 C05/f48 是单人帧，应在二者中选择清晰单人构图；C01/C03 含多个独立人物，C04/C06 几乎只有特效，均不可选。使用 head_closeup，严格只保留完整头部、长发顶部和耳部轮廓，隔离胸腹与下半身。",
+      "requiredFeatureRegion": [
+        0.405,
+        0.14,
+        0.56,
+        0.405
+      ],
+      "requiredMustIncludeRegion": [
+        0.395,
+        0.13,
+        0.57,
+        0.415
+      ]
+    }
+  }
+}

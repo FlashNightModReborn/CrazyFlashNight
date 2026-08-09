@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>怪物头像人工框选指导</title>
+  <link rel="stylesheet" href="review.css">
+  <link rel="stylesheet" href="framing-guidance.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CF7 · 人工进入构图闭环</p>
+      <h1>怪物头像人工框选指导</h1>
+      <p class="lede">选择更合适的 A/B 帧，在来源图上拖动或缩放正方形头像框，并以实时 80px 预览判断。导出只写结构化指导，不改生产资产。</p>
+    </div>
+    <div class="progress-box" aria-live="polite">
+      <strong id="progress-count">0 / 0</strong>
+      <span id="progress-label">等待数据</span>
+      <div class="progress-track"><span id="progress-bar"></span></div>
+    </div>
+  </header>
+
+  <section class="evidence" aria-label="证据摘要">
+    <span id="parent-receipt">parent receipt —</span>
+    <span id="guidance-digest">guidance —</span>
+  </section>
+
+  <section class="controls" aria-label="框选导入导出">
+    <p class="guidance-summary">鼠标拖框移动；拖四角改变大小；滚轮缩放。键盘方向键平移，<kbd>+</kbd>/<kbd>-</kbd> 缩放。</p>
+    <div class="control-actions">
+      <button id="import-button" type="button" class="secondary">导入完整框选</button>
+      <input id="import-file" type="file" accept="application/json" hidden>
+      <button id="export-button" type="button" disabled>导出完整框选指导</button>
+    </div>
+  </section>
+
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <main id="app" class="review-list guidance-list" data-ready="false"></main>
+
+  <template id="guidance-card-template">
+    <article class="review-card guidance-card">
+      <header class="card-header">
+        <div>
+          <span class="review-code"></span>
+          <h2 class="review-title"></h2>
+          <p class="review-meta"></p>
+        </div>
+        <div class="badges"></div>
+      </header>
+      <p class="human-feedback"></p>
+
+      <section class="source-choice" aria-label="选择来源帧">
+        <h3>1. 选择作为框选基础的帧</h3>
+        <div class="source-choice-buttons"></div>
+        <div class="source-choice-reference"></div>
+      </section>
+
+      <section class="framing-workbench">
+        <div class="source-editor">
+          <div class="section-heading">
+            <div>
+              <h3>2. 在完整来源图上框选</h3>
+              <p>允许头像框越出来源边缘，越界部分会保持透明。</p>
+            </div>
+            <span class="crop-readout"></span>
+          </div>
+          <canvas class="source-canvas" width="760" height="520" tabindex="0" aria-label="可拖动和缩放的头像方形框"></canvas>
+          <div class="crop-controls">
+            <button type="button" class="secondary reset-crop">重置为当前模型框</button>
+            <button type="button" class="secondary zoom-in">放大头像 10%</button>
+            <button type="button" class="secondary zoom-out">缩小头像 10%</button>
+            <label>
+              <span>头像放大倍率</span>
+              <input class="zoom-slider" type="range" min="0" max="1000" step="1">
+            </label>
+          </div>
+        </div>
+
+        <aside class="live-preview-panel">
+          <h3>3. 实时检查</h3>
+          <p>大图用于辨认边缘；80px 是主要判断口径。</p>
+          <canvas class="preview-canvas preview-large" width="256" height="256" aria-label="256px 实时头像预览"></canvas>
+          <div class="preview-actual-row">
+            <canvas class="preview-canvas preview-80" width="80" height="80" aria-label="80px 实时头像预览"></canvas>
+            <div>
+              <strong>80px</strong>
+              <span class="visibility-readout"></span>
+            </div>
+          </div>
+          <button type="button" class="confirm-guidance">确认此框选</button>
+          <p class="confirm-state" role="status" aria-live="polite">尚未确认</p>
+        </aside>
+      </section>
+    </article>
+  </template>
+
+  <script src="framing-guidance.js"></script>
+</body>
+</html>

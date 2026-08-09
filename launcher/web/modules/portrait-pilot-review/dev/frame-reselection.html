@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>怪物头像重选帧</title>
+  <link rel="stylesheet" href="review.css">
+  <link rel="stylesheet" href="source-choice.css">
+  <style>
+    .frame-card { position: relative; }
+    .frame-card[data-rejected="true"] { opacity: .52; border-color: #a65f5f; }
+    .frame-card[data-rejected="true"]::after { content: "本轮已否决"; position: absolute; inset: .65rem .65rem auto auto; padding: .25rem .5rem; border-radius: 999px; background: #9a4545; color: white; font-weight: 700; }
+    .frame-visual { display: grid; grid-template-columns: minmax(0, 1fr) 112px; gap: .55rem; margin: .7rem 0; min-height: 390px; }
+    .frame-vector, .frame-raster { display: grid; place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: repeating-conic-gradient(#26303a 0 25%, #1b232b 0 50%) 0 / 20px 20px; }
+    .frame-vector img { width: 100%; height: 480px; object-fit: contain; }
+    .frame-raster img { width: 100%; height: 190px; object-fit: contain; }
+    .frame-meta { display: flex; flex-wrap: wrap; gap: .45rem; color: var(--muted); }
+    .select-frame { width: 100%; }
+    .expand-search[aria-pressed="true"] { background: #c77744; color: #111; }
+    @media (max-width: 850px) {
+      .frame-visual { grid-template-columns: 1fr; min-height: 0; }
+      .frame-vector img { height: 360px; }
+      .frame-raster img { height: 170px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CF7 · wrong_pose 人工帧门</p>
+      <h1>怪物头像重选帧</h1>
+      <p class="lede">优先查看可无限缩放的 SVG 原帧，选择能清楚露出头部或最强身份特征的状态。红色候选已被上一轮人审否决，不能再次选用。</p>
+    </div>
+    <div class="progress-box" aria-live="polite">
+      <strong id="progress-count">0 / 0</strong>
+      <span id="progress-label">等待数据</span>
+      <div class="progress-track"><span id="progress-bar"></span></div>
+    </div>
+  </header>
+
+  <section class="evidence" aria-label="证据摘要">
+    <span id="source-digest">source —</span>
+    <span id="dataset-digest">dataset —</span>
+    <span id="candidate-count">candidates —</span>
+  </section>
+
+  <section class="controls" aria-label="导入导出">
+    <p>选择只是冻结帧，不会直接写正式头像；下一步仍会在所选原生高分辨率帧上重新定位和裁切。</p>
+    <div class="control-actions">
+      <button id="import-button" type="button" class="secondary">导入完整决定</button>
+      <input id="import-file" type="file" accept="application/json" hidden>
+      <button id="export-button" type="button" disabled>导出重选帧决定</button>
+    </div>
+  </section>
+
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <main id="app" class="source-review-list" data-ready="false"></main>
+
+  <template id="row-template">
+    <article class="source-review-row">
+      <header class="card-header">
+        <div>
+          <span class="review-code"></span>
+          <h2 class="review-title"></h2>
+          <p class="review-meta"></p>
+        </div>
+        <div class="badges"></div>
+      </header>
+      <p class="human-note"></p>
+      <div class="source-grid"></div>
+      <section class="decision-panel">
+        <h3>裁决</h3>
+        <button type="button" class="expand-search secondary">现有帧都不可用，需要继续抽帧</button>
+        <label class="note-field">
+          <span>备注（继续抽帧时必填）</span>
+          <textarea rows="2" placeholder="可记录选择依据，或说明还需要什么状态"></textarea>
+        </label>
+        <p class="decision-summary">尚未选择</p>
+      </section>
+    </article>
+  </template>
+
+  <template id="frame-template">
+    <section class="source-card frame-card">
+      <header>
+        <strong class="source-code"></strong>
+        <span class="source-status"></span>
+      </header>
+      <div class="frame-meta"></div>
+      <div class="frame-visual">
+        <a class="frame-vector" target="_blank" rel="noreferrer" title="打开 SVG 原帧"><img alt="SVG 矢量原帧"></a>
+        <a class="frame-raster" target="_blank" rel="noreferrer" title="打开候选 PNG"><img alt="PNG 候选参考"></a>
+      </div>
+      <button type="button" class="select-frame">选用这个帧</button>
+    </section>
+  </template>
+
+  <script src="frame-reselection.js"></script>
+</body>
+</html>
