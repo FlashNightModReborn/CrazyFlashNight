@@ -1,225 +1,304 @@
-// CF7:ME Audio Engine — miniaudio P/Invoke wrapper
-// C# 5 syntax
+// CF7:ME Audio Engine compatibility facade.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
+using System.Threading;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Audio
 {
     /// <summary>
-    /// Thin P/Invoke wrapper for miniaudio_bridge.dll.
-    /// SFX uses handle-based API: native load() returns int handle,
-    /// C# caches filename->handle in a Dictionary for O(1) lookup.
+    /// The only process-level audio facade.
+    ///
+    /// Existing public method names remain during the A1-A4 migration, but every call
+    /// now passes through AudioCoordinator's single owner queue.  Raw P/Invoke belongs
+    /// exclusively to AudioNativeV2 and its caller-owned-memory adapter.
     /// </summary>
     internal static class AudioEngine
     {
-        private const string DLL = "miniaudio.dll";
+        private static readonly AudioCoordinator Coordinator =
+            new AudioCoordinator();
 
-        // === Lifecycle ===
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public static extern int ma_bridge_init(string basePath);
+        internal static IAudioCommandFacadeV2 CommandFacadeV2
+        {
+            get { return Coordinator; }
+        }
 
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ma_bridge_shutdown();
+        internal static AudioCoordinatorSnapshotV2 SnapshotV2
+        {
+            get { return Coordinator.Snapshot; }
+        }
 
-        // === BGM ===
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public static extern int ma_bridge_bgm_play(string path, int loop, float volume, float fadeSec);
+        internal static event Action<AudioCoordinatorSnapshotV2> SnapshotChanged
+        {
+            add { Coordinator.SnapshotChanged += value; }
+            remove { Coordinator.SnapshotChanged -= value; }
+        }
 
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ma_bridge_bgm_stop(float fadeSec);
+        public static bool IsSfxPreloadComplete
+        {
+            get { return Coordinator.Snapshot.IsSfxPreloadComplete; }
+        }
 
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ma_bridge_bgm_set_volume(float volume);
-
-        // === SFX (handle-based) ===
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public static extern int ma_bridge_sfx_load(string path);
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ma_bridge_sfx_play(int handle, float volume);
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ma_bridge_sfx_unload(int handle);
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ma_bridge_sfx_set_volume(float volume);
-
-        // === BGM info (peak / cursor / length / isPlaying) ===
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ma_bridge_bgm_get_peak(out float peakL, out float peakR);
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern float ma_bridge_bgm_get_cursor();
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern float ma_bridge_bgm_get_length();
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ma_bridge_bgm_is_playing();
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ma_bridge_bgm_seek(float seconds);
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ma_bridge_bgm_set_looping(int looping);
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ma_bridge_bgm_pause();
-
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ma_bridge_bgm_resume();
-
-        // === Global ===
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ma_bridge_set_master_volume(float volume);
-
-        // === Shutdown 幂等保护 ===
-        private static volatile bool _shutdown;
-
-        // === SFX handle cache ===
-        // 异步 preload 后 socket 线程会调 ResolveSfxHandle；preload 写、resolve 读，需要 lock
-        // （Dictionary 写入期间 reader 触发 hash bucket rehash 会读到坏指针）。
-        private static readonly Dictionary<string, int> _sfxHandles = new Dictionary<string, int>();
-        private static readonly object _sfxHandlesLock = new object();
-        // preload 完成信号：sfx_play 在 preload 未完成时 fallback 到 ResolveSfxHandle = -1（行为与"id 不存在"一致），
-        // 玩家不会听到错位音效，preload 完成后自然恢复。
-        private static volatile bool _sfxPreloadComplete;
-
-        public static bool IsSfxPreloadComplete { get { return _sfxPreloadComplete; } }
-
-        /// <summary>
-        /// Resolve a SFX id (filename) to its native handle.
-        /// Returns -1 if not found (含 preload 未完成期间).
-        /// </summary>
         public static int ResolveSfxHandle(string id)
         {
-            lock (_sfxHandlesLock)
-            {
-                int handle;
-                return _sfxHandles.TryGetValue(id, out handle) ? handle : -1;
-            }
+            return Coordinator.ResolveSfxHandle(id);
+        }
+
+        internal static AudioRuntimeProbeResultV2 ProbeRuntimeCompatibility(
+            string normalizedPath,
+            ulong fileSizeBytes,
+            long modifiedTimeUnixMilliseconds,
+            string first64kSha256,
+            string capabilityDigestSha256)
+        {
+            return Coordinator.ProbeRuntimeCompatibility(
+                normalizedPath,
+                fileSizeBytes,
+                modifiedTimeUnixMilliseconds,
+                first64kSha256,
+                capabilityDigestSha256);
+        }
+
+        internal static AudioCoordinatorSnapshotV2 CaptureQualificationSnapshot()
+        {
+            return Coordinator.CaptureQualificationSnapshot();
         }
 
         /// <summary>
-        /// Initialize the audio engine.
-        /// Call before XmlSocketServer.Start().
+        /// Performs one atomic v2 rebuild.  A missing ABI, unsupported capability or
+        /// lack of a real output device returns false and leaves the process running in
+        /// the explicit audio-unavailable state.
         /// </summary>
         public static bool Init(string projectRoot)
         {
-            int result = ma_bridge_init(projectRoot);
-            if (result != 0)
+            bool ready = Coordinator.Initialize(projectRoot);
+            AudioCoordinatorSnapshotV2 snapshot = Coordinator.Snapshot;
+            if (!ready)
             {
-                LogManager.Log("[Audio] ma_bridge_init failed: " + result);
-                PerfTrace.Mark("audio.init_failed", "rc=" + result);
+                LogManager.Log(
+                    "[AudioV2] unavailable: category=" +
+                    snapshot.FailureCategory +
+                    " messageKey=" + snapshot.MessageKey +
+                    " audioReadyGeneration=" +
+                    snapshot.AudioReadyGeneration);
+                PerfTrace.Mark(
+                    "audio.init_failed",
+                    "category=" + snapshot.FailureCategory);
                 return false;
             }
-            LogManager.Log("[Audio] Engine initialized (basePath: " + projectRoot + ")");
-            PerfTrace.Mark("audio.init_done");
+
+            LogManager.Log(
+                "[AudioV2] ready: basePath=" + snapshot.NormalizedBasePath +
+                " audioSessionId=" + snapshot.AudioSessionId +
+                " audioReadyGeneration=" + snapshot.AudioReadyGeneration +
+                " deviceGeneration=" + snapshot.DeviceGeneration +
+                " loaded=" + snapshot.Loaded);
+            PerfTrace.Mark(
+                "audio.init_done",
+                "readyGeneration=" + snapshot.AudioReadyGeneration +
+                " deviceGeneration=" + snapshot.DeviceGeneration);
             return true;
         }
 
-        // SFX pack scan order: later packs override earlier (same as original SoundPreprocessor)
-        private static readonly string[] SFX_PACK_ORDER = { "武器", "特效", "人物" };
+        internal static bool BeginInitialize(string projectRoot)
+        {
+            return Coordinator.BeginInitialize(projectRoot);
+        }
 
-        /// <summary>
-        /// Preload all SFX by scanning sounds/export/{武器,特效,人物}/ directories.
-        /// Filename = linkageId, override order: 武器 -> 特效 -> 人物 (last wins).
-        /// Returns number of successfully loaded sounds.
-        /// </summary>
+        internal static bool ConfigureInitialMasterGain(float gain)
+        {
+            return Coordinator.ConfigureInitialMasterGain(gain);
+        }
+
+        internal static bool ConfigureCatalogQualificationHook(
+            AudioCatalogQualificationHookV2 hook)
+        {
+            return Coordinator.ConfigureCatalogQualificationHook(hook);
+        }
+
+        internal static bool CompleteCatalogQualification(
+            string audioSessionId,
+            ulong audioReadyGeneration,
+            ulong deviceGeneration,
+            string capabilityDigest,
+            bool succeeded)
+        {
+            return Coordinator.CompleteCatalogQualification(
+                audioSessionId,
+                audioReadyGeneration,
+                deviceGeneration,
+                capabilityDigest,
+                succeeded);
+        }
+
+        internal static bool BeginCatalogRefreshRebuild(
+            string capabilityDigest)
+        {
+            return Coordinator.BeginCatalogRefreshRebuild(
+                capabilityDigest);
+        }
+
         public static int PreloadFromDirectories(string projectRoot)
         {
-            int loaded = 0;
-            int failed = 0;
-            int overridden = 0;
-
-            for (int p = 0; p < SFX_PACK_ORDER.Length; p++)
-            {
-                string packName = SFX_PACK_ORDER[p];
-                string dir = Path.Combine(projectRoot, "sounds", "export", packName);
-                if (!Directory.Exists(dir))
-                {
-                    LogManager.Log("[Audio] SFX dir not found: " + dir);
-                    continue;
-                }
-
-                string[] files = Directory.GetFiles(dir);
-                for (int i = 0; i < files.Length; i++)
-                {
-                    string filename = Path.GetFileName(files[i]);
-                    string relPath = "sounds/export/" + packName + "/" + filename;
-
-                    int handle = ma_bridge_sfx_load(relPath);
-                    if (handle >= 0)
-                    {
-                        // If same id was already loaded from an earlier pack, unload it
-                        int oldHandle;
-                        bool wasOverride;
-                        lock (_sfxHandlesLock)
-                        {
-                            wasOverride = _sfxHandles.TryGetValue(filename, out oldHandle);
-                            _sfxHandles[filename] = handle;
-                        }
-                        if (wasOverride)
-                        {
-                            ma_bridge_sfx_unload(oldHandle);
-                            overridden++;
-                        }
-                        loaded++;
-                    }
-                    else
-                    {
-                        if (failed < 3)
-                        {
-                            LogManager.Log("[Audio] SFX load FAIL: rc=" + handle + " path=" + relPath);
-                        }
-                        failed++;
-                    }
-                }
-            }
-
-            _sfxPreloadComplete = true;
-            LogManager.Log("[Audio] SFX preload: " + loaded + " loaded, " + failed + " failed, "
-                + overridden + " overridden (scanned " + SFX_PACK_ORDER.Length + " packs)");
-            PerfTrace.Mark("audio.sfx_preload_done",
-                "loaded=" + loaded + " failed=" + failed + " overridden=" + overridden);
+            int loaded = Coordinator.EnsurePreloaded(projectRoot);
+            AudioCoordinatorSnapshotV2 snapshot = Coordinator.Snapshot;
+            PerfTrace.Mark(
+                "audio.sfx_preload_done",
+                "loaded=" + loaded +
+                " failed=" + snapshot.Failed +
+                " overridden=" + snapshot.Overrides);
             return loaded;
         }
 
-        /// <summary>
-        /// 异步 preload 入口：fire-and-forget 后台线程加载 SFX。
-        /// 主线程不阻塞，UI 立即可见；preload 期间 sfx_play 走 ResolveSfxHandle = -1 fallback（与"id 不存在"等价，
-        /// 不会播错音效）。preload 完成 ~1.2s 后自然就绪。
-        /// </summary>
         public static void PreloadFromDirectoriesAsync(string projectRoot)
         {
-            System.Threading.ThreadPool.QueueUserWorkItem(delegate(object state)
+            ThreadPool.QueueUserWorkItem(delegate
             {
                 try
                 {
-                    PreloadFromDirectories((string)state);
+                    PreloadFromDirectories(projectRoot);
                 }
                 catch (Exception ex)
                 {
-                    LogManager.Log("[Audio] async preload threw: " + ex.Message);
-                    PerfTrace.Mark("audio.sfx_preload_failed", ex.Message);
+                    LogManager.Log(
+                        "[AudioV2] preload compatibility call failed: " +
+                        ex.GetType().Name);
+                    PerfTrace.Mark(
+                        "audio.sfx_preload_failed",
+                        ex.GetType().Name);
                 }
-            }, projectRoot);
+            });
         }
 
-        /// <summary>
-        /// Shutdown and cleanup.
-        /// </summary>
+        // Legacy signatures retained for callers being migrated in later slices.
+        public static int ma_bridge_init(string basePath)
+        {
+            return Coordinator.Initialize(basePath) ? 0 : -1;
+        }
+
+        public static void ma_bridge_shutdown()
+        {
+            Coordinator.Shutdown();
+        }
+
+        public static int ma_bridge_bgm_play(
+            string path,
+            int loop,
+            float volume,
+            float fadeSec)
+        {
+            return Coordinator.LegacyBgmPlay(
+                path,
+                loop,
+                volume,
+                fadeSec);
+        }
+
+        public static int ma_bridge_bgm_stop(float fadeSec)
+        {
+            return Coordinator.LegacyBgmControl(
+                AudioNativeV2.OperationBgmStop,
+                fadeSec,
+                0);
+        }
+
+        public static void ma_bridge_bgm_set_volume(float volume)
+        {
+            Coordinator.LegacySetGain(
+                AudioNativeV2.OperationBgmSetGain,
+                volume);
+        }
+
+        public static int ma_bridge_sfx_load(string path)
+        {
+            return Coordinator.LegacySfxLoad(path);
+        }
+
+        public static int ma_bridge_sfx_play(int handle, float volume)
+        {
+            return Coordinator.LegacySfxPlay(handle, volume);
+        }
+
+        public static void ma_bridge_sfx_unload(int handle)
+        {
+            Coordinator.LegacySfxUnload(handle);
+        }
+
+        public static void ma_bridge_sfx_set_volume(float volume)
+        {
+            Coordinator.LegacySetGain(
+                AudioNativeV2.OperationSfxSetGain,
+                volume);
+        }
+
+        public static void ma_bridge_bgm_get_peak(
+            out float peakL,
+            out float peakR)
+        {
+            AudioCoordinatorSnapshotV2 snapshot =
+                Coordinator.RefreshObservation();
+            peakL = snapshot.PeakLeft;
+            peakR = snapshot.PeakRight;
+        }
+
+        public static float ma_bridge_bgm_get_cursor()
+        {
+            return Coordinator.RefreshObservation().CursorSeconds;
+        }
+
+        public static float ma_bridge_bgm_get_length()
+        {
+            return Coordinator.RefreshObservation().LengthSeconds;
+        }
+
+        public static int ma_bridge_bgm_is_playing()
+        {
+            return Coordinator.RefreshObservation().BgmPlaying ? 1 : 0;
+        }
+
+        public static int ma_bridge_bgm_seek(float seconds)
+        {
+            return Coordinator.LegacyBgmControl(
+                AudioNativeV2.OperationBgmSeek,
+                seconds,
+                0);
+        }
+
+        public static void ma_bridge_bgm_set_looping(int looping)
+        {
+            Coordinator.LegacyBgmControl(
+                AudioNativeV2.OperationBgmSetLoop,
+                0f,
+                looping);
+        }
+
+        public static int ma_bridge_bgm_pause()
+        {
+            return Coordinator.LegacyBgmControl(
+                AudioNativeV2.OperationBgmPause,
+                0f,
+                0);
+        }
+
+        public static int ma_bridge_bgm_resume()
+        {
+            return Coordinator.LegacyBgmControl(
+                AudioNativeV2.OperationBgmResume,
+                0f,
+                0);
+        }
+
+        public static void ma_bridge_set_master_volume(float volume)
+        {
+            Coordinator.LegacySetGain(
+                AudioNativeV2.OperationSetMasterGain,
+                volume);
+        }
+
         public static void Shutdown()
         {
-            if (_shutdown) return;
-            _shutdown = true;
-            lock (_sfxHandlesLock) { _sfxHandles.Clear(); }
-            ma_bridge_shutdown();
-            LogManager.Log("[Audio] Engine shutdown");
+            Coordinator.Shutdown();
+            LogManager.Log("[AudioV2] coordinator shutdown");
         }
     }
 }

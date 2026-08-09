@@ -18,6 +18,13 @@ namespace CF7Launcher.Bus
         public delegate string TaskHandler(JObject message);
         public delegate void AsyncTaskHandler(JObject message, Action<string> respond);
 
+        private static readonly JsonLoadSettings StrictJsonSettings =
+            new JsonLoadSettings
+            {
+                DuplicatePropertyNameHandling =
+                    DuplicatePropertyNameHandling.Error
+            };
+
         private readonly Dictionary<string, TaskHandler> _syncHandlers;
         private readonly Dictionary<string, AsyncTaskHandler> _asyncHandlers;
 
@@ -48,7 +55,7 @@ namespace CF7Launcher.Bus
             JObject msg;
             try
             {
-                msg = JObject.Parse(json);
+                msg = JObject.Parse(json, StrictJsonSettings);
             }
             catch
             {

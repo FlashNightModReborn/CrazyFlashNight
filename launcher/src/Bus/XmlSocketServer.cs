@@ -563,9 +563,12 @@ namespace CF7Launcher.Bus
                 if (prefix == 'S')
                 {
                     PerfTrace.Counter("socket.fastlane.S");
-                    // SFX 快车道：同步分发（单线程，与 ReadLoop 串行）。
-                    // Flash 侧已将 S 消息调序到 F 之前发送，确保同批次内音效优先处理。
-                    CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(message);
+                    // Audio Platform v2 SFX fast lane.  TaskRegistry binds this router
+                    // to the same injected facade as the async BGM route.  The socket
+                    // connection generation stays here as a transport fence and is never
+                    // serialized or aliased as an audio generation.
+                    if (!TaskRegistry.TryDispatchAudioSfxV2(_router, message))
+                        PerfTrace.Counter("socket.fastlane.S2_rejected");
                     return;
                 }
 

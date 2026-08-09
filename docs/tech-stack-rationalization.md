@@ -34,6 +34,7 @@
 | Rust `sol_parser` | 单一 native 解析边界件 | 保持单一职责，不把 Rust 扩成新的业务主栈 |
 | PowerShell 自动化 | Windows 启动、Flash smoke、诊断 | 保留，但避免把核心业务逻辑沉到脚本层 |
 | Node 运行时 | TypeScript 构建、QA、developer JSONL/MCP 客户端与便利包装 | 只作为工具/适配运行时；无人值守安全身份、session truth、策略与执行器均在受验证的 C# Core/Host，不把 Node 或 PowerShell 叙述为生产 authority |
+| Native Audio Platform v2 | `miniaudio 0.11.25`、静态 Xiph decoder 与 Windows Media Foundation AAC 组成 Launcher 的单 DLL 音频边界 | 固定版本/源码 SHA/许可证与构建 flags；production 只允许 WASAPI/DirectSound/WinMM，禁止 Null；外部只见版本化 caller-owned ABI/capability，不把 codec 或设备对象扩散到 C#/AS2 |
 
 ### Retire / Stop Expanding
 
@@ -43,6 +44,7 @@
 | “当前运行态依赖 Node.js 本地服务器” | 停止扩散，仅保留历史语境说明 |
 | 与当前架构不符的旧版本 / 旧路径 / 旧测试说明 | 逐步清理并交给治理巡检拦截 |
 | 在入口文档重复复制子系统深文档 | 停止扩张，改为链接 canonical doc |
+| 用 FFmpeg/libVLC/GStreamer、系统 codec pack 或 loose codec DLL 扩张音频格式 | 本轮停止；甜区固定为 WAV/MP3/FLAC/Vorbis/AAC/Opus，新增格式必须先有资产需求、依赖治理与端点资格证据 |
 
 ## 3. CF7 Agent Runtime / Wings 一期边界
 

@@ -1,341 +1,392 @@
-// CF7:ME Audio Task — JSON handler for BGM + volume commands
-// C# 5 syntax
+// CF7:ME Audio Platform v2 task router.
 
 using System;
-using System.Globalization;
+using System.Threading;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Audio;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Tasks
 {
-    /// <summary>
-    /// Handles audio JSON messages routed via MessageRouter.
-    /// Commands: bgm_play, bgm_stop, bgm_vol, master_vol
-    ///
-    /// SFX uses fast-lane prefix 'S' in XmlSocketServer, not this handler.
-    /// </summary>
-    public class AudioTask
+    internal interface IAudioTaskQualificationObserverV2
     {
+        void RecordBgmRequest(AudioBgmRequestV2 request);
+        void RecordBgmResult(AudioBgmResultV2 result);
+        void RecordSfxBatch(AudioSfxBatchV2 batch);
+    }
+
+    /// <summary>
+    /// Strict Audio Platform v2 protocol adapter.
+    ///
+    /// This type owns no decoder, device, readiness or generation state.  It validates
+    /// the AS2 wire and forwards typed commands to one injected coordinator facade.
+    /// XMLSocket connection generations remain in XmlSocketServer and never enter this
+    /// class or the audio wire models.
+    /// </summary>
+    public sealed class AudioTask
+    {
+        private readonly IAudioCommandFacadeV2 _facade;
+        private readonly IAudioTaskQualificationObserverV2
+            _qualificationObserver;
+
+        private static IAudioCommandFacadeV2 _processFacade =
+            UnavailableAudioCommandFacadeV2.Instance;
+
         /// <summary>
-        /// Flash 侧发起 bgm_play/bgm_stop 时置 true,
-        /// WebOverlayForm.OnAudioTick 读取并转为 _manualStop, 防止误触 jukeboxTrackEnd。
-        /// volatile 保证跨线程可见性。
+        /// Compatibility signal consumed by the existing jukebox tick.  It records a
+        /// validated Flash BGM change intent, not proof that playback started.
         /// </summary>
         public static volatile bool FlashBgmChange;
 
-        // === 音量 sanity toast（迁移期临时兜底） ===
-        // 档持久化的 setGlobalVolume / setBGMVolume 一旦被存为 0 (或近 0)，
-        // 启动后会把整套音频静默掐死且无可见入口可恢复。这里在收到首次
-        // master_vol==0 或 bgm_vol<0.02 时弹一次 toast，提示用户存档编辑器临时入口。
-        // 进程级单次抑制：每次 launcher 启动只触发一次（再静默就重启 launcher 才会再提示）。
-        private static IToastSink _toastSink;
-        private static volatile bool _volumeWarningEmitted;
-        private const float SUSPICIOUS_MASTER_THRESHOLD = 0.001f;  // master_vol==0 视为可疑
-        private const float SUSPICIOUS_BGM_THRESHOLD = 0.02f;       // bgm_vol<0.02 视为可疑（≈Flash 侧 bgmVolume<2/100）
+        public AudioTask()
+            : this(UnavailableAudioCommandFacadeV2.Instance)
+        {
+        }
+
+        internal AudioTask(IAudioCommandFacadeV2 facade)
+            : this(facade, null)
+        {
+        }
+
+        internal AudioTask(
+            IAudioCommandFacadeV2 facade,
+            IAudioTaskQualificationObserverV2 qualificationObserver)
+        {
+            if (facade == null) throw new ArgumentNullException("facade");
+            _facade = facade;
+            _qualificationObserver = qualificationObserver;
+        }
 
         /// <summary>
-        /// 由 Program.cs 在 audioTask 创建后调用，注入 toast 通道。
-        /// 注入失败（null）时不会崩，仅静默不发 toast。
+        /// Retained until Program is moved to the coordinator-owned volume warning sink.
+        /// AudioTask no longer owns gain state and therefore cannot emit that warning.
         /// </summary>
         public static void SetToastSink(IToastSink sink)
         {
-            _toastSink = sink;
+            // Compatibility hook only.  The v2 facade/coordinator owns volume policy.
         }
-
-        private static void MaybeEmitVolumeToast(string trigger)
-        {
-            if (_volumeWarningEmitted) return;
-            IToastSink sink = _toastSink;
-            if (sink == null) return;
-            _volumeWarningEmitted = true;
-            try
-            {
-                sink.AddMessage(
-                    "<font color=\"#FFD27F\">音量被设为 0，所有音效将静默。</font><BR>"
-                    + "音频设置 UI 迁移中，可在「存档编辑→简易模式→系统」临时调整。"
-                    + "<BR><font color=\"#888888\">[" + trigger + "]</font>");
-                LogManager.Log("[Audio] volume sanity toast emitted (" + trigger + ")");
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[Audio] volume sanity toast FAILED: " + ex.Message);
-            }
-        }
-
-        private sealed class DeferredBgmPlay
-        {
-            public string Path;
-            public int Loop;
-            public float Vol;
-            public float Fade;
-            public float? Seek;
-            public int? LoopOverride;
-            public float? VolumeOverride;
-        }
-
-        private static readonly object _bootstrapGateLock = new object();
-        private static bool _bootstrapBgmGateActive;
-        private static DeferredBgmPlay _deferredBgmPlay;
 
         /// <summary>
-        /// 片头视频播放期间挂起 Flash 发来的 BGM 启动请求。
-        /// 这样游戏可以继续后台加载, 但不会在视频尚未播完时抢先出声。
+        /// Binds the same facade used by this registered task to the existing static
+        /// bootstrap lifecycle hooks in GameLaunchFlow.  TaskRegistry calls this exactly
+        /// when it installs the audio routes.
         /// </summary>
+        internal void BindAsProcessFacade()
+        {
+            Volatile.Write(ref _processFacade, _facade);
+        }
+
+        internal static void ResetProcessFacadeForTests()
+        {
+            Volatile.Write(
+                ref _processFacade,
+                UnavailableAudioCommandFacadeV2.Instance);
+            FlashBgmChange = false;
+        }
+
         public static void ArmBootstrapBgmGate()
         {
-            lock (_bootstrapGateLock)
-            {
-                _bootstrapBgmGateActive = true;
-                _deferredBgmPlay = null;
-            }
-            LogManager.Log("[Audio] bootstrap BGM gate armed");
+            InvokeLifecycle(
+                delegate(IAudioCommandFacadeV2 facade)
+                {
+                    facade.ArmBootstrapBgmGate();
+                },
+                "arm_bootstrap_gate");
         }
 
         public static void CancelBootstrapBgmGate()
         {
-            bool hadState;
-            lock (_bootstrapGateLock)
-            {
-                hadState = _bootstrapBgmGateActive || _deferredBgmPlay != null;
-                _bootstrapBgmGateActive = false;
-                _deferredBgmPlay = null;
-            }
-            if (hadState)
-                LogManager.Log("[Audio] bootstrap BGM gate cancelled");
+            InvokeLifecycle(
+                delegate(IAudioCommandFacadeV2 facade)
+                {
+                    facade.CancelBootstrapBgmGate();
+                },
+                "cancel_bootstrap_gate");
         }
 
         public static void ReleaseBootstrapBgmGate()
         {
-            DeferredBgmPlay pending;
-            lock (_bootstrapGateLock)
-            {
-                if (!_bootstrapBgmGateActive && _deferredBgmPlay == null)
-                    return;
-                _bootstrapBgmGateActive = false;
-                pending = _deferredBgmPlay;
-                _deferredBgmPlay = null;
-            }
+            InvokeLifecycle(
+                delegate(IAudioCommandFacadeV2 facade)
+                {
+                    facade.ReleaseBootstrapBgmGate();
+                },
+                "release_bootstrap_gate");
+        }
 
-            if (pending == null || string.IsNullOrEmpty(pending.Path))
+        /// <summary>
+        /// Async MessageRouter handler.  A facade may emit more than one correlated
+        /// completion (for example accepted_deferred, then started).  The router-provided
+        /// callback remains connection-generation-bound inside XmlSocketServer.
+        /// </summary>
+        public void HandleAsync(JObject message, Action<string> respond)
+        {
+            AudioBgmRequestV2 request;
+            string error;
+            if (!TryParseEnvelope(message, out request, out error))
             {
-                LogManager.Log("[Audio] bootstrap BGM gate released (no deferred track)");
+                RejectBgm(error);
                 return;
             }
 
-            LogManager.Log("[Audio] bootstrap BGM gate released -> play deferred path=" + pending.Path
-                + " loop=" + pending.Loop
-                + " vol=" + pending.Vol.ToString("F3")
-                + " fade=" + pending.Fade.ToString("F2"));
-
-            FlashBgmChange = true;
-            int rc = AudioEngine.ma_bridge_bgm_play(pending.Path, pending.Loop, pending.Vol, pending.Fade);
-            if (rc != 0)
+            if (request.Operation == AudioWireV2.BgmPlay
+                || request.Operation == AudioWireV2.BgmStop)
             {
-                LogManager.Log("[Audio] deferred bgm_play FAILED: rc=" + rc + " path=" + pending.Path);
-                return;
+                FlashBgmChange = true;
             }
 
-            if (pending.LoopOverride.HasValue)
-                AudioEngine.ma_bridge_bgm_set_looping(pending.LoopOverride.Value);
-            if (pending.VolumeOverride.HasValue)
-                AudioEngine.ma_bridge_bgm_set_volume(pending.VolumeOverride.Value);
-            if (pending.Seek.HasValue)
+            RecordQualificationBgmRequest(request);
+
+            try
             {
-                int seekRc = AudioEngine.ma_bridge_bgm_seek(pending.Seek.Value);
-                if (seekRc != 0)
-                    LogManager.Log("[Audio] deferred bgm_seek FAILED: rc=" + seekRc
-                        + " sec=" + pending.Seek.Value.ToString("F2"));
+                _facade.DispatchBgm(
+                    request,
+                    delegate(AudioBgmResultV2 result)
+                    {
+                        if (result == null) return;
+                        RecordQualificationBgmResult(result);
+                        if (respond == null) return;
+                        try
+                        {
+                            JObject serialized =
+                                AudioWireV2.SerializeBgmResult(result);
+                            respond(serialized.ToString(Formatting.None));
+                        }
+                        catch (Exception ex)
+                        {
+                            LogManager.Log(
+                                "[AudioV2] rejected facade BGM result: "
+                                + ex.GetType().Name);
+                        }
+                    });
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[AudioV2] BGM facade dispatch failed: "
+                    + ex.GetType().Name);
             }
         }
 
         /// <summary>
-        /// Sync handler registered with MessageRouter.
-        /// All audio commands are fire-and-forget (returns null).
+        /// Strict S2 fast-lane entry.  Returns true only when one typed batch was handed
+        /// to the facade.  Invalid/stale business state is classified by the facade and
+        /// never replayed by this adapter.
         /// </summary>
-        public string Handle(JObject message)
+        internal bool HandleSfxFastLane(string message)
         {
-            string cmd = message.Value<string>("cmd");
-            if (cmd == null)
+            AudioSfxBatchV2 batch;
+            string error;
+            if (!AudioWireV2.TryParseSfxBatch(message, out batch, out error))
             {
-                LogManager.Log("[Audio] Missing 'cmd' field");
-                return null;
+                RejectSfx(error);
+                return false;
             }
 
-            switch (cmd)
+            try
             {
-                case "bgm_play":
-                    HandleBgmPlay(message);
-                    break;
-                case "bgm_stop":
-                    HandleBgmStop(message);
-                    break;
-                case "bgm_vol":
-                    HandleBgmVol(message);
-                    break;
-                case "sfx_vol":
-                    HandleSfxVol(message);
-                    break;
-                case "master_vol":
-                    HandleMasterVol(message);
-                    break;
-                case "bgm_seek":
-                    HandleBgmSeek(message);
-                    break;
-                case "bgm_loop":
-                    HandleBgmLoop(message);
-                    break;
-                default:
-                    LogManager.Log("[Audio] Unknown cmd: " + cmd);
-                    break;
+                RecordQualificationSfxBatch(batch);
+                _facade.DispatchSfx(batch);
+                return true;
             }
-
-            return null; // fire-and-forget
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[AudioV2] SFX facade dispatch failed: "
+                    + ex.GetType().Name);
+                return false;
+            }
         }
 
-        private void HandleBgmPlay(JObject msg)
+        private static bool TryParseEnvelope(
+            JObject message,
+            out AudioBgmRequestV2 request,
+            out string error)
         {
-            string path = msg.Value<string>("path");
-            if (path == null) { LogManager.Log("[Audio] bgm_play: missing path"); return; }
-
-            int loop = msg.Value<int?>("loop") ?? 0;
-            float vol = msg.Value<float?>("vol") ?? 1.0f;
-            float fade = msg.Value<float?>("fade") ?? 0.0f;
-
-            lock (_bootstrapGateLock)
+            request = null;
+            error = null;
+            if (message == null
+                || message["task"] == null
+                || message["task"].Type != JTokenType.String
+                || !string.Equals(
+                    (string)message["task"],
+                    "audio",
+                    StringComparison.Ordinal))
             {
-                if (_bootstrapBgmGateActive)
+                error = "bgm.envelope";
+                return false;
+            }
+
+            var payload = new JObject();
+            foreach (JProperty property in message.Properties())
+            {
+                if (string.Equals(
+                    property.Name,
+                    "task",
+                    StringComparison.Ordinal))
                 {
-                    if (_deferredBgmPlay == null) _deferredBgmPlay = new DeferredBgmPlay();
-                    _deferredBgmPlay.Path = path;
-                    _deferredBgmPlay.Loop = loop;
-                    _deferredBgmPlay.Vol = vol;
-                    _deferredBgmPlay.Fade = fade;
-                    LogManager.Log("[Audio] bgm_play deferred by bootstrap gate: path=" + path
-                        + " loop=" + loop
-                        + " vol=" + vol.ToString("F3")
-                        + " fade=" + fade.ToString("F2"));
-                    return;
+                    continue;
                 }
+                payload.Add(property.Name, property.Value.DeepClone());
             }
 
-            LogManager.Log("[Audio] bgm_play: path=" + path + " loop=" + loop
-                + " vol=" + vol.ToString("F3") + " fade=" + fade.ToString("F2"));
-
-            FlashBgmChange = true;
-            int rc = AudioEngine.ma_bridge_bgm_play(path, loop, vol, fade);
-            if (rc != 0)
-                LogManager.Log("[Audio] bgm_play FAILED: rc=" + rc + " path=" + path);
+            return AudioWireV2.TryParseBgmRequest(
+                payload,
+                out request,
+                out error);
         }
 
-        private void HandleBgmStop(JObject msg)
+        private void RejectBgm(string error)
         {
-            float fade = msg.Value<float?>("fade") ?? 0.0f;
-            lock (_bootstrapGateLock)
+            string safeError = string.IsNullOrEmpty(error)
+                ? "bgm.protocol_error"
+                : error;
+            LogManager.Log("[AudioV2] rejected BGM wire: " + safeError);
+            try
             {
-                if (_bootstrapBgmGateActive)
-                {
-                    _deferredBgmPlay = null;
-                    LogManager.Log("[Audio] bgm_stop during bootstrap gate: clear deferred track, fade="
-                        + fade.ToString("F2"));
-                }
+                _facade.RejectBgm(safeError);
             }
-            LogManager.Log("[Audio] bgm_stop: fade=" + fade.ToString("F2"));
-            FlashBgmChange = true;
-            int rc = AudioEngine.ma_bridge_bgm_stop(fade);
-            if (rc != 0)
-                LogManager.Log("[Audio] bgm_stop FAILED: rc=" + rc);
-        }
-
-        private void HandleBgmVol(JObject msg)
-        {
-            float vol = msg.Value<float?>("vol") ?? 1.0f;
-            if (vol < SUSPICIOUS_BGM_THRESHOLD)
-                MaybeEmitVolumeToast("bgm_vol=" + vol.ToString("F3"));
-            lock (_bootstrapGateLock)
+            catch (Exception ex)
             {
-                if (_bootstrapBgmGateActive)
-                {
-                    if (_deferredBgmPlay == null) _deferredBgmPlay = new DeferredBgmPlay();
-                    _deferredBgmPlay.VolumeOverride = vol;
-                    LogManager.Log("[Audio] bgm_vol deferred by bootstrap gate: vol=" + vol.ToString("F3"));
-                    return;
-                }
+                LogManager.Log(
+                    "[AudioV2] BGM rejection callback failed: "
+                    + ex.GetType().Name);
             }
-            AudioEngine.ma_bridge_bgm_set_volume(vol);
         }
 
-        private void HandleSfxVol(JObject msg)
+        private void RejectSfx(string error)
         {
-            float vol = msg.Value<float?>("vol") ?? 1.0f;
-            AudioEngine.ma_bridge_sfx_set_volume(vol);
-        }
-
-        private void HandleMasterVol(JObject msg)
-        {
-            float vol = msg.Value<float?>("vol") ?? 1.0f;
-            if (vol <= SUSPICIOUS_MASTER_THRESHOLD)
-                MaybeEmitVolumeToast("master_vol=" + vol.ToString("F3"));
-            AudioEngine.ma_bridge_set_master_volume(vol);
-        }
-
-        private void HandleBgmLoop(JObject msg)
-        {
-            int loop = msg.Value<int?>("loop") ?? 1;
-            lock (_bootstrapGateLock)
+            string safeError = string.IsNullOrEmpty(error)
+                ? "sfx.protocol_error"
+                : error;
+            LogManager.Log("[AudioV2] rejected SFX wire: " + safeError);
+            try
             {
-                if (_bootstrapBgmGateActive)
-                {
-                    if (_deferredBgmPlay == null) _deferredBgmPlay = new DeferredBgmPlay();
-                    _deferredBgmPlay.LoopOverride = loop;
-                    LogManager.Log("[Audio] bgm_loop deferred by bootstrap gate: loop=" + loop);
-                    return;
-                }
+                _facade.RejectSfx(safeError);
             }
-            AudioEngine.ma_bridge_bgm_set_looping(loop);
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[AudioV2] SFX rejection callback failed: "
+                    + ex.GetType().Name);
+            }
         }
 
-        private void HandleBgmSeek(JObject msg)
+        private static void InvokeLifecycle(
+            Action<IAudioCommandFacadeV2> action,
+            string operation)
         {
-            float sec = msg.Value<float?>("sec") ?? 0.0f;
-            lock (_bootstrapGateLock)
+            IAudioCommandFacadeV2 facade =
+                Volatile.Read(ref _processFacade);
+            try
             {
-                if (_bootstrapBgmGateActive)
-                {
-                    if (_deferredBgmPlay == null) _deferredBgmPlay = new DeferredBgmPlay();
-                    _deferredBgmPlay.Seek = sec;
-                    LogManager.Log("[Audio] bgm_seek deferred by bootstrap gate: sec=" + sec.ToString("F2"));
-                    return;
-                }
+                action(facade);
             }
-            int rc = AudioEngine.ma_bridge_bgm_seek(sec);
-            if (rc != 0)
-                LogManager.Log("[Audio] bgm_seek FAILED: rc=" + rc + " sec=" + sec.ToString("F2"));
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[AudioV2] lifecycle " + operation + " failed: "
+                    + ex.GetType().Name);
+            }
+        }
+
+        private void RecordQualificationBgmRequest(
+            AudioBgmRequestV2 request)
+        {
+            try { _qualificationObserver?.RecordBgmRequest(request); }
+            catch
+            {
+                // Qualification observers are read-only and must never affect AS2.
+            }
+        }
+
+        private void RecordQualificationBgmResult(
+            AudioBgmResultV2 result)
+        {
+            try { _qualificationObserver?.RecordBgmResult(result); }
+            catch
+            {
+                // Qualification observers are read-only and must never affect AS2.
+            }
+        }
+
+        private void RecordQualificationSfxBatch(
+            AudioSfxBatchV2 batch)
+        {
+            try { _qualificationObserver?.RecordSfxBatch(batch); }
+            catch
+            {
+                // Qualification observers are read-only and must never affect AS2.
+            }
         }
 
         /// <summary>
-        /// SFX fast-lane handler. Called directly from XmlSocketServer
-        /// when message prefix is 'S'.
-        /// Batch format: S{id1}|{id2}|{id3} (pipe-delimited, all at vol=1.0)
-        /// Resolves string ids to native handles via AudioEngine cache (O(1) Dictionary lookup).
+        /// Fail-closed placeholder used until Program injects the real coordinator.
+        /// It never calls the legacy static AudioEngine and never reports audio ready.
         /// </summary>
-        public static void HandleSfxFastLane(string message)
+        private sealed class UnavailableAudioCommandFacadeV2
+            : IAudioCommandFacadeV2
         {
-            // Strip 'S' prefix
-            string payload = message.Substring(1);
-            if (payload.Length == 0) return;
+            public static readonly UnavailableAudioCommandFacadeV2 Instance =
+                new UnavailableAudioCommandFacadeV2();
 
-            // Split by pipe for batch playback
-            string[] ids = payload.Split('|');
-            for (int i = 0; i < ids.Length; i++)
+            private readonly string _audioSessionId =
+                Guid.NewGuid().ToString("D");
+
+            private UnavailableAudioCommandFacadeV2()
             {
-                string id = ids[i];
-                if (id.Length == 0) continue;
-                int handle = AudioEngine.ResolveSfxHandle(id);
-                if (handle >= 0)
-                {
-                    AudioEngine.ma_bridge_sfx_play(handle, 1.0f);
-                }
+            }
+
+            public void DispatchBgm(
+                AudioBgmRequestV2 request,
+                Action<AudioBgmResultV2> respond)
+            {
+                if (respond == null) return;
+                bool stale = !string.Equals(
+                    request.AudioSessionId,
+                    _audioSessionId,
+                    StringComparison.Ordinal)
+                    || request.AudioReadyGeneration != 0;
+                respond(new AudioBgmResultV2(
+                    request.RequestId,
+                    _audioSessionId,
+                    0,
+                    0,
+                    request.Operation,
+                    "failed",
+                    stale ? "stale_generation" : "not_ready",
+                    "admission",
+                    0,
+                    0,
+                    "none",
+                    stale
+                        ? "audio.stale_generation"
+                        : "audio.not_ready"));
+            }
+
+            public void RejectBgm(string protocolError)
+            {
+            }
+
+            public void DispatchSfx(AudioSfxBatchV2 batch)
+            {
+            }
+
+            public void RejectSfx(string protocolError)
+            {
+            }
+
+            public void ArmBootstrapBgmGate()
+            {
+            }
+
+            public void CancelBootstrapBgmGate()
+            {
+            }
+
+            public void ReleaseBootstrapBgmGate()
+            {
             }
         }
     }

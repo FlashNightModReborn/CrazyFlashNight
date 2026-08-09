@@ -1,5 +1,5 @@
 @echo off
-REM CF7:ME miniaudio native DLL build script
+REM CF7:ME Audio v2 native DLL build script
 REM Output: launcher\bin\Release\miniaudio.dll
 
 setlocal
@@ -24,43 +24,47 @@ echo [FAIL] Pinned MSVC/SDK baseline is not loaded. Run launcher\build.ps1.
 exit /b 1
 
 :build
-echo [INFO] Compiling miniaudio_bridge.c ...
+echo [INFO] Compiling Audio v2 native source closure ...
 
-if not defined CF7_MINIAUDIO_REPRO_SOURCE_DIR (
-    echo [FAIL] Canonical miniaudio source directory is missing. Run launcher\build.ps1.
-    exit /b 1
-)
-if not exist "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\miniaudio_bridge.c" (
-    echo [FAIL] Canonical miniaudio_bridge.c is missing: %CF7_MINIAUDIO_REPRO_SOURCE_DIR%
-    exit /b 1
-)
-if not exist "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\miniaudio.h" (
-    echo [FAIL] Canonical miniaudio.h is missing: %CF7_MINIAUDIO_REPRO_SOURCE_DIR%
-    exit /b 1
-)
+if not defined CF7_MINIAUDIO_REPRO_SOURCE_DIR goto :missing_source
+if not exist "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\audio-v2-build-inputs.v1.json" goto :missing_manifest
+if not exist "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\build-audio-v2.ps1" goto :missing_compiler
 
 REM Formal workers provide a per-job output directory so a proof build never
 REM deletes or overwrites another checkout's launcher\bin\Release.
-if defined CF7_NATIVE_OUTPUT_DIR (
-    set "OUTDIR=%CF7_NATIVE_OUTPUT_DIR%"
-) else (
-    set "OUTDIR=%~dp0..\bin\Release"
-)
+if defined CF7_NATIVE_OUTPUT_DIR goto :job_output
+set "OUTDIR=%~dp0..\bin\Release"
+goto :output_ready
+
+:job_output
+set "OUTDIR=%CF7_NATIVE_OUTPUT_DIR%"
+
+:output_ready
 if not exist "%OUTDIR%" mkdir "%OUTDIR%"
 
-REM build.ps1 先把 C/H 规范化为 LF；/experimental:deterministic 使 /pathmap 生效，
-REM 消除 checkout 换行、用户目录和仓库绝对路径对编译器确定性种子的影响。
-REM linker /Brepro 再固定 PE reproducibility hash。同一源码应在不同 builder 上逐字节一致。
-cl /nologo /utf-8 /experimental:deterministic /O2 /LD /W3 /D_CRT_SECURE_NO_WARNINGS ^
-  "/pathmap:%CF7_MINIAUDIO_REPRO_SOURCE_DIR%=C:\cf7-runtime-src" ^
-  "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\miniaudio_bridge.c" ^
-  /Fo:"%OUTDIR%\miniaudio_bridge.obj" /Fe:"%OUTDIR%\miniaudio.dll" ^
-  /link /Brepro ole32.lib
+REM The compiler consumes the tracked, ordered build-input manifest. Every
+REM source receives a stable object name and all codecs link into one DLL.
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%\build-audio-v2.ps1" ^
+  -SourceDirectory "%CF7_MINIAUDIO_REPRO_SOURCE_DIR%" ^
+  -OutputDirectory "%OUTDIR%"
 
 if errorlevel 1 (
-    echo [FAIL] Compilation failed.
+    echo [FAIL] Audio v2 compilation failed.
     exit /b 1
 )
 
 echo [OK] miniaudio.dll built successfully.
 endlocal
+exit /b 0
+
+:missing_source
+echo [FAIL] Canonical Audio v2 source directory is missing. Run launcher\build.ps1.
+exit /b 1
+
+:missing_manifest
+echo [FAIL] Canonical Audio v2 build input manifest is missing.
+exit /b 1
+
+:missing_compiler
+echo [FAIL] Canonical Audio v2 compiler is missing.
+exit /b 1

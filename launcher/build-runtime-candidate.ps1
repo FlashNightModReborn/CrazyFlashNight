@@ -285,6 +285,10 @@ function Copy-Cf7CanonicalLfFile {
         [Parameter(Mandatory=$true)][string]$Source,
         [Parameter(Mandatory=$true)][string]$Destination
     )
+    $destinationDirectory = Split-Path -Parent $Destination
+    if (-not (Test-Path -LiteralPath $destinationDirectory -PathType Container)) {
+        New-Item -ItemType Directory -Path $destinationDirectory -Force | Out-Null
+    }
     $bytes = [IO.File]::ReadAllBytes($Source)
     $output = New-Object System.Collections.Generic.List[byte]
     for ($i = 0; $i -lt $bytes.Length; $i++) {
@@ -334,12 +338,35 @@ try {
     Write-Host '[1/5] Build deterministic miniaudio.dll...' -ForegroundColor Yellow
     $canonicalNativeSource = Join-Path $jobTemp 'miniaudio-source'
     New-Item -ItemType Directory -Path $canonicalNativeSource -Force | Out-Null
-    Copy-Cf7CanonicalLfFile `
-        -Source (Join-Path $launcherDir 'native\miniaudio_bridge.c') `
-        -Destination (Join-Path $canonicalNativeSource 'miniaudio_bridge.c')
-    Copy-Cf7CanonicalLfFile `
-        -Source (Join-Path $launcherDir 'native\miniaudio.h') `
-        -Destination (Join-Path $canonicalNativeSource 'miniaudio.h')
+    $nativeSourceRoot = (Resolve-Path -LiteralPath (Join-Path $launcherDir 'native')).Path.TrimEnd('\')
+    $audioBuildInputPath = Join-Path $nativeSourceRoot 'audio-v2-build-inputs.v1.json'
+    if (-not (Test-Path -LiteralPath $audioBuildInputPath -PathType Leaf)) {
+        throw "Audio v2 build input manifest is missing: $audioBuildInputPath"
+    }
+    $audioBuildInputs = Get-Content -LiteralPath $audioBuildInputPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($audioBuildInputs.schema -ne 'cf7.audio-v2.native-build-inputs.v1') {
+        throw "Unexpected Audio v2 build input schema: $($audioBuildInputs.schema)"
+    }
+    foreach ($relativeInput in @($audioBuildInputs.materializedInputs)) {
+        $relativePath = [string]$relativeInput
+        if ([string]::IsNullOrWhiteSpace($relativePath) -or
+            [IO.Path]::IsPathRooted($relativePath) -or
+            $relativePath -match '(^|[\\/])\.\.([\\/]|$)') {
+            throw "Unsafe Audio v2 materialized input: $relativePath"
+        }
+        $sourcePath = [IO.Path]::GetFullPath((Join-Path $nativeSourceRoot $relativePath))
+        if (-not $sourcePath.StartsWith($nativeSourceRoot + '\', [StringComparison]::OrdinalIgnoreCase) -or
+            -not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
+            throw "Audio v2 materialized input is missing or escapes native root: $relativePath"
+        }
+        $sourceItem = Get-Item -LiteralPath $sourcePath -Force
+        if (($sourceItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+            throw "Audio v2 materialized input is a reparse point: $relativePath"
+        }
+        Copy-Cf7CanonicalLfFile `
+            -Source $sourcePath `
+            -Destination (Join-Path $canonicalNativeSource $relativePath)
+    }
     $env:CF7_MINIAUDIO_REPRO_SOURCE_DIR = $canonicalNativeSource
     Invoke-Cf7Batch -Path (Join-Path $launcherDir 'native\build.bat')
 

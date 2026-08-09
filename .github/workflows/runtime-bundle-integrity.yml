@@ -64,11 +64,14 @@ on:
       - automation/dev.ps1
       - automation/start.ps1
       - config/build/**
+      - config/audio-v2/**
+      - config/audio-v2/.gitattributes
       - config/build/main-branch-admission.v2.json
       - config/build/native-change-gate.v1.json
       - config/build/runtime-inputs.v2.json
       - config/build/runtime-toolchain.lock.json
       - CRAZYFLASHER7MercenaryEmpire.exe
+      - docs/contracts/audio-v2/**
       - global.json
       - launcher/app.ico
       - launcher/app.manifest
@@ -80,19 +83,30 @@ on:
       - launcher/contracts/panel-contracts.v2.json
       - launcher/Directory.Packages.props
       - launcher/native/**
+      - launcher/native/.gitattributes
+      - launcher/native/audio-v2-build-inputs.v1.json
       - launcher/native/assert-pinned-tools.bat
       - launcher/native/bootstrap/build.bat
       - launcher/native/build.bat
+      - launcher/native/build-audio-v2.ps1
+      - launcher/native/decoder-dependencies.lock.v1.json
       - launcher/native/sol_parser/**
       - launcher/native/sol_parser/.cargo/config.toml
       - launcher/native/sol_parser/build.bat
       - launcher/native/sol_parser/Cargo.lock
       - launcher/native/sol_parser/Cargo.toml
       - launcher/native/sol_parser/rust-toolchain.toml
+      - launcher/native/third_party/libogg-1.3.6/COPYING
+      - launcher/native/third_party/libvorbis-1.3.7/COPYING
+      - launcher/native/third_party/miniaudio-0.11.25/LICENSE
+      - launcher/native/third_party/opus-1.6.1/COPYING
+      - launcher/native/third_party/opusfile-0.12/COPYING
       - launcher/packages.lock.json
       - launcher/src/**
       - runtime/**
       - tools/arena-calibration/**
+      - tools/audio-v2/**
+      - tools/audio-v2/.gitattributes
       - tools/audit-main-branch-admission.ps1
       - tools/audit-native-cursor-assets.js
       - tools/bootstrap-runtime-**

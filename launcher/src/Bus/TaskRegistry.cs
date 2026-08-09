@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Tasks;
@@ -19,7 +20,7 @@ namespace CF7Launcher.Bus
     ///   toast        JSON sync      AS2→C#  httpCallable=true
     ///   gomoku_eval  JSON async     AS2↔C#  httpCallable=true
     ///   data_query   JSON async     AS2↔C#  httpCallable=true
-    ///   audio        JSON sync      AS2→C#  httpCallable=true
+    ///   audio        JSON async     AS2↔C#  httpCallable=false
     ///   sfx          快车道 S 前缀   AS2→C#  (XmlSocketServer 直分发，不经 MessageRouter)
     ///   console      JSON push      C#→AS2  (HttpApiServer /console 专用端点)
     ///   console_result  JSON event  AS2→C#  (内部事件，触发 OnConsoleResult)
@@ -38,6 +39,10 @@ namespace CF7Launcher.Bus
     public static class TaskRegistry
     {
         private static readonly HashSet<string> _httpCallable = new HashSet<string>();
+        private static readonly object _audioV2RoutesLock = new object();
+        private static readonly ConditionalWeakTable<MessageRouter, AudioTask>
+            _audioV2Routes =
+                new ConditionalWeakTable<MessageRouter, AudioTask>();
 
         /// <summary>
         /// 检查 task 是否允许经 HTTP /task 端点调用。
@@ -388,6 +393,51 @@ namespace CF7Launcher.Bus
         }
 
         /// <summary>
+        /// Installs both Audio Platform v2 ingress paths against the same task/facade.
+        /// The weak router binding lets XmlSocketServer route the S2 fast lane without
+        /// introducing a process-global task; repeated registration of the same pair is
+        /// idempotent so Program can install it before the listener is exposed.
+        /// </summary>
+        internal static void RegisterAudioV2(
+            MessageRouter router,
+            AudioTask audio)
+        {
+            if (router == null) throw new ArgumentNullException("router");
+            if (audio == null) throw new ArgumentNullException("audio");
+
+            lock (_audioV2RoutesLock)
+            {
+                AudioTask existing;
+                if (!_audioV2Routes.TryGetValue(router, out existing) ||
+                    !object.ReferenceEquals(existing, audio))
+                {
+                    router.RegisterAsync("audio", audio.HandleAsync);
+                    _audioV2Routes.Remove(router);
+                    _audioV2Routes.Add(router, audio);
+                }
+            }
+            audio.BindAsProcessFacade();
+        }
+
+        /// <summary>
+        /// Called only by the XMLSocket S2 prefix route.  The connection generation is
+        /// intentionally absent: it remains a transport fence in XmlSocketServer.
+        /// </summary>
+        internal static bool TryDispatchAudioSfxV2(
+            MessageRouter router,
+            string message)
+        {
+            if (router == null) return false;
+            AudioTask audio;
+            if (!_audioV2Routes.TryGetValue(router, out audio)
+                || audio == null)
+            {
+                return false;
+            }
+            return audio.HandleSfxFastLane(message);
+        }
+
+        /// <summary>
         /// 向 MessageRouter 注册所有 JSON 路由的 task（快车道 task 不在此注册）。
         /// </summary>
         public static void RegisterAll(
@@ -429,7 +479,7 @@ namespace CF7Launcher.Bus
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
             router.RegisterAsync("data_query", dataQuery.HandleAsync);
             router.RegisterSync("toast", toast.Handle);
-            router.RegisterSync("audio", audio.Handle);
+            RegisterAudioV2(router, audio);
             router.RegisterSync("icon_bake", iconBake.Handle);
             if (benchTask != null)
             {
@@ -695,7 +745,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "toast",          "json_sync", "AS2->C#", true,  first);
             first = AppendTask(sb, "gomoku_eval",    "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "data_query",     "json_async","AS2<->C#",true,  first);
-            first = AppendTask(sb, "audio",          "json_sync", "AS2->C#", true,  first);
+            first = AppendTask(sb, "audio",          "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "sfx",            "fast_lane", "AS2->C#", false, first);
             first = AppendTask(sb, "console",        "json_push", "C#->AS2", false, first);
             first = AppendTask(sb, "console_result", "json_event","AS2->C#", false, first);

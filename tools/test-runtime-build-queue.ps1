@@ -172,7 +172,15 @@ try {
         @('.c','.cpp','.h','.rc') -contains $_.Extension.ToLowerInvariant()
     })) {
         $relative = $source.FullName.Substring($ProjectRoot.Length + 1).Replace('\','/')
+        if ($relative.StartsWith('launcher/native/tests/', [StringComparison]::Ordinal)) { continue }
         Assert-QueueTest ($artifactSet.Contains($relative)) "native compile input is outside artifactSource: $relative"
+    }
+    foreach ($source in @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'launcher\native\tests') -Recurse -File | Where-Object {
+        @('.c','.cpp','.ps1') -contains $_.Extension.ToLowerInvariant()
+    })) {
+        $relative = $source.FullName.Substring($ProjectRoot.Length + 1).Replace('\','/')
+        Assert-QueueTest ($policySet.Contains($relative)) "native contract test is outside policyDomain: $relative"
+        Assert-QueueTest (-not $artifactSet.Contains($relative)) "native contract test leaked into artifactSource: $relative"
     }
     foreach ($source in @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'launcher\native\sol_parser\src') -Recurse -File -Filter '*.rs')) {
         $relative = $source.FullName.Substring($ProjectRoot.Length + 1).Replace('\','/')

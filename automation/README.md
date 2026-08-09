@@ -75,6 +75,10 @@ cd "<项目根目录>"
 # 低层诊断兼容入口：只接受已知的绝对 candidateRoot
 .\automation\start.ps1 -CandidateRoot "<absolute candidateRoot>"
 
+# Audio v2 A6 qualification-only：只观察 exact isolated candidate
+.\automation\start.ps1 -CandidateRoot "<absolute candidateRoot>" `
+  -AudioV2QualificationRunId "<32-lowercase-hex>"
+
 # trusted Core unattended：formal runtime
 node tools/cf7-agent/unattended.js --adapter jsonl --slot cf7_agent_equipment_tuning
 
@@ -86,6 +90,8 @@ node tools/cf7-agent/unattended.js --adapter mcp --slot cf7_agent_character_buil
 ```
 
 `automation/start.ps1` 无参数时不会扫描或猜选 `launcher/bin`、`tmp/runtime-candidates/` 中的开发输出。源码领先于正式二进制时，它仍运行上一次已 promotion 的身份。日常开发不再要求人工复制 candidateRoot；`start.ps1 -CandidateRoot` 仅保留给调试指定产物等低层场景。
+
+`-AudioV2QualificationRunId` 是 A6 exact-candidate 观察面的 qualification-only 开关，只接受 32 位 lowercase hex，并且必须同时显式提供 `-CandidateRoot`。它不能与 formal runtime、`-UnattendedAdapter/-UnattendedSlot`、`-EnableLegacyHttpAutomation` 等入口混用；不传该参数时不创建 qualification pipe。该观察面只允许 `begin_case/end_case` marker 与只读 `snapshot/journal`，不会替 operator 驱动音频；实际 BGM/SFX 动作仍必须经过游戏的生产 AS2 链。
 
 `-UnattendedSlot` 与 `-UnattendedAdapter jsonl|mcp` 选择 trusted Core runner；固定 allow-list 为 `cf7_agent_equipment_tuning`、`cf7_agent_arena_calibration`、`cf7_agent_character_build`、`cf7_agent_loot_target_full_v1`，不能由 caller 提交 principal、capability、路径或 legacy flag。formal/candidate 均先校验完整 v2 manifest inventory、Core row/hash/size、build identity、payload closure 与无 reparse 的固定目录；随后执行所选 payload 自身的 `Core.exe --agent-unattended-runner`。
 

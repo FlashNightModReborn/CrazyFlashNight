@@ -1,7 +1,7 @@
 # 项目技术架构总览
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：P4/P5 正式发布 source commit `bf9be8c43b223b84f487464a7e6aa9eb8211630b`、tree `44de7f66421a908723f196718e42867dce601f30`（2026-08-08）已由 immutable tag `runtime-build-v2/20260808-p4-p5-source-complete-v1`、request `424D9CC1975CF099A705C828E354215EF3F568B7198B6B19C13DB019CB25163C` 与本地 X509 `physical-host-b` + GitHub OIDC/Sigstore `github-hosted-windows` 双故障域共识完成 v2 promotion；正式 runtime 绑定 identity `D6AC04EB7EBE290819B41E2FE17DA7583F154FCB4D46BA258D17EF9866B74350`、closure `91C8AC7469EBF2788C9BDAF8AB13D8F3C02B59588D6B770F0DA6CAD1604DDF5B` 与 Core DLL `D5EDBA1277BB65D6741E9446415F2555D3D94BFD78723852E621F7366FB8616D`。无 candidate id 的正式入口 pure-MCP run `20260808T083940Z` 达到 `standard_entry_verified`；商城旧档与竞技场 P5 业务结论分别由同身份真实 E2E 持有，不能由 Help smoke 互相代证，也不外推为物理输入、物理双屏或未覆盖产品面验收。此前 F8 与 A1–A6 release 保留为历史。
+**最后核对代码基线**：P4/P5 正式发布 source commit `bf9be8c43b223b84f487464a7e6aa9eb8211630b`、tree `44de7f66421a908723f196718e42867dce601f30`（2026-08-08）已由 immutable tag `runtime-build-v2/20260808-p4-p5-source-complete-v1`、request `424D9CC1975CF099A705C828E354215EF3F568B7198B6B19C13DB019CB25163C` 与本地 X509 `physical-host-b` + GitHub OIDC/Sigstore `github-hosted-windows` 双故障域共识完成 v2 promotion；正式 runtime 绑定 identity `D6AC04EB7EBE290819B41E2FE17DA7583F154FCB4D46BA258D17EF9866B74350`、closure `91C8AC7469EBF2788C9BDAF8AB13D8F3C02B59588D6B770F0DA6CAD1604DDF5B` 与 Core DLL `D5EDBA1277BB65D6741E9446415F2555D3D94BFD78723852E621F7366FB8616D`。无 candidate id 的正式入口 pure-MCP run `20260808T083940Z` 达到 `standard_entry_verified`；商城旧档与竞技场 P5 业务结论分别由同身份真实 E2E 持有，不能由 Help smoke 互相代证，也不外推为物理输入、物理双屏或未覆盖产品面验收。此前 F8 与 A1–A6 release 保留为历史。Audio Platform v2 current source 以 H1 activation commit `c5ca5dfa9718e8a7714038e929a64081b7fd0026` 为合同底座；当前仍 **H2 blocked / NOT_DEPLOYED**，不属于上述正式 runtime。
 
 **Agent Runtime F7 historical source freeze（2026-07-31）**：C1 source commit `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 冻结当时的 C# Host/CF7A、trusted Core unattended runner、Wings structured action、Hair transaction 与 scoped trace 实现；一期 ADR 文件名保留首次冻结日 `2026-07-30`，避免 canonical 路径与链接漂移。exact C1 tree `7362881e96d8ed0f9c20ccae580426c522f14946` 通过 production policy **26/26**，达到 `candidate_built`：identity `F67F1054E7DD19600138C3196D0798CFA487701CB7143C4DDFD2DC426D26E372`、closure `3C2CA3E6E935BF23A061228ED3D9BDA3823E81186057E8C86118FAD5C7CEBF0D`、Core EXE SHA-256 `86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`；其无前台会话严格入口按设计返回 `trusted_runner_credential_timeout`，未达到 `candidate_executed`、`e2e_verified` 或 `promoted`。这些值只作历史证据。
 
@@ -65,7 +65,7 @@
   - 启动前 WebView2 预检与 BootstrapPanel
   - Flash Player SA 启动、预热、嵌入与 reveal
   - XMLSocket / HTTP 本地总线与 `TaskRegistry`
-  - 音频系统、Notch / Toast / Web overlay 宿主
+  - Audio Platform v2 的 `AudioCoordinator` 单 owner、资格化/ready barrier、Notch / Toast / Web overlay 宿主
   - standard normal 的 CF7 Agent Runtime/Wings composition；显式 legacy HTTP 与 `--bus-only` 不创建该控制面
   - Native HUD 组合：`NativeHudOverlay` 是右侧条件槽的唯一 owner，按 `transactionDecision > actionableNotice > contextHint > hidden` 计算一次并把同一 `RightContextSlotOwner` 投影给 RightContext 与 SafeExit；透明 `CompositeBounds` 只负责合成范围，不拥有命中
   - 启动前存档决议与 Protocol 2
@@ -91,6 +91,7 @@
 
 - `launcher/scripts/` 中的 TypeScript 编译为 V8 运行时代码
 - `launcher/native/sol_parser/` 通过 Rust 生成 `sol_parser.dll`
+- `launcher/native/` 的 Audio Platform v2 以多个 C/C++ TU 构建，并把静态 libvorbis/libopus 与 bridge 链接成单一 `miniaudio.dll`；构建输入与 decoder 依赖由 tracked manifest/lock 固定
 - Windows runtime 发布已分成正交控制面：prepare 只派生 tracked 资产；policy 只读审计并签发绑定 Git tree 的 receipt；纯 producer 只消费 artifact source + producer recipe + toolchain lock，在隔离输出中生成 payload/manifest，不让政策变化进入 build identity
 - release train 把最终 Git tree + policy hash 冻结为无自由命令字段的 request/Git bundle；bundle 内构建源码仍会执行，因此共享 queue 是 ACL 收紧的信任边界。本地 worker 清除外部 Git index/worktree/object 上下文，用 lease/heartbeat/mutex 在 MAX_PATH 预算内的短隔离 clone 构建，失败诊断受限归档，candidate 按 build identity + payload closure 进入 CAS。payload closure 排除 manifest，避免元数据变化伪装成二进制失衡
 - v2 生产证明有两个信任根：注册本地机器以 CurrentUser 不可导出 X509 key 签名；GitHub hosted Windows 以固定 repo/workflow/source-ref 的 OIDC/Sigstore keyless provenance 证明。promotion 同时要求不同 signer identity 与不同 faultDomain，推荐 local + GitHub 双域
@@ -108,6 +109,15 @@
 - 注册中心：`launcher/src/Bus/TaskRegistry.cs`
 - 集成测试入口：`--bus-only`
 - 鼠标手型迁移边界：AS2 `_root.鼠标` 是纯脚本兼容代理，只保留状态接口与物品拖拽容器；几何命中统一走 `_root._xmouse/_ymouse` 点命中和 `interactionMouseDown` / `interactionMouseUp` 事件，不再把 `_root.鼠标` 作为 `hitTest` 目标；`cursor_control` 只传低频状态。真实 cursor 视觉坐标由 Launcher 低级鼠标 hook / 坐标泵采样，视觉只由 C# `CursorOverlayForm` 原生 layered window 接管并按 monitor DPI 缩放；Web DOM 只通过 `cursorFeedback` 回传 hover/press 状态变化，不承担 cursor 视觉 fallback；AS2 仅在物品拖拽期间同步图标容器位置，不恢复旧鼠标视觉。
+
+### Audio Platform v2 current source
+
+- **authority / ABI**：`AudioEngine` 只是进程级兼容 facade；所有 native mutation 经 `AudioCoordinator` 单 owner 队列串行化，raw P/Invoke 只存在于 `AudioNativeV2` adapter。`audio_bridge_v2.h` 暴露 versioned fixed-width ABI、capability snapshot 与 runtime snapshot，不跨边界泄漏 C/miniaudio 平台类型。
+- **backend / codec / failure**：production backend 固定为 `WASAPI → DirectSound → WinMM`，禁止 Null；三者均失败时发布 `audio_unavailable` 并进入 no-output 降级，**不把 Launcher/游戏进程判 fatal**。decoder 能力为 miniaudio built-in WAV/MP3/FLAC、静态 libvorbis/libopus，以及 Windows Media Foundation AAC/M4A/MP4/ADTS；WMA deferred，不在当前能力声明内。多个 C/C++ TU 与静态 codec 最终只产出一个 `miniaudio.dll`，没有松散 codec side-car。
+- **qualification / ready**：`.wav/.mp3/.flac/.ogg/.m4a/.mp4/.aac/.adts/.opus` 仅作 discovery hint；`MusicCatalog` 必须执行 container/codec content sniff、extension mismatch 检查、production 间隔 1000ms 的两次 size+mtime 稳定观测与 bounded runtime probe。catalog 只投影 exact availability/reason；native/SFX 初始化后仍须等待 catalog qualification，再向同一连接发送 full catalog，最后才允许 `audio_ready`。A5 shipped-audio source inventory 为 `827 = 795 tracked + 32 ignored_source`，其中 11 个 content-sniff 为 AAC 的资产已由 `.wav` 重命名为 `.m4a`；这不等于已部署或物理可听。
+- **wire / recovery**：BGM 与生命周期使用 strict `wireRevision=2`，分别绑定 lowercase UUID `audioSessionId`、uint64 decimal `audioReadyGeneration` 与 `deviceGeneration`；transport `connectionGeneration` 不进 wire。BGM 按 requestId 相关，`accepted_deferred` 只表示接纳，随后 `started` 才投影播放开始，latest request 会 supersede 旧意图。SFX 只接受 `S2|session|readyGen|batchSeq|id...`；pre-ready、recovery、stale session/generation/batch 全部 drop + counter，禁止排队、补播或 replay。
+- **qualification observer**：A6 观察面只在 exact `isolated_candidate` Core 显式携带 32 位 lowercase-hex runId 时建立 CurrentUserOnly named pipe；formal/standard/unattended/legacy 入口携带该 flag 必须 fail-closed，无 flag 不创建 pipe。该面只以顺序 marker 划定 case、在 coordinator owner 队列取只读 snapshot 并返回 hash-chained journal；音频动作仍走生产 AS2 链，caller 不能填写 telemetry，响应与客户端 OS 检查共同绑定 Core PID/start/path/hash/build identity/payload closure。它不增加 native export，raw endpoint ID 不出进程，也不是 production control plane。
+- 当前 source 状态与 promotion 边界见 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)；Launcher 细节以 [launcher/README.md](../launcher/README.md) 为准。H2 尚未取得，因此严格为 **H2 blocked / NOT_DEPLOYED**。
 
 ### 外部 Agent / Wings ↔ CF7 Agent Runtime
 

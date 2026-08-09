@@ -8,6 +8,40 @@ distribution inventory, not a legal conclusion or legal advice.
 Package graph
 -------------
 
+The Audio Platform v2 native DLL statically links the following pinned
+upstream source releases. Exact source hashes and build flags are recorded in
+launcher/native/decoder-dependencies.lock.v1.json.
+
+* miniaudio 0.11.25
+  Copyright 2025 David Reid
+  License: Public Domain (Unlicense) or MIT No Attribution; this distribution
+  uses the Public Domain alternative
+  Project: https://github.com/mackron/miniaudio
+
+* libogg 1.3.6
+  Copyright (c) 2002 Xiph.org Foundation
+  License: 3-clause BSD-style Xiph license
+  Project: https://www.xiph.org/ogg/
+
+* libvorbis 1.3.7 and the official miniaudio libvorbis adapter
+  Copyright (c) 2002-2020 Xiph.org Foundation
+  License: 3-clause BSD-style Xiph license; miniaudio adapter uses the
+  miniaudio license above
+  Project: https://www.xiph.org/vorbis/
+
+* libopus 1.6.1
+  Copyright 2001-2023 Xiph.Org, Skype Limited, Octasic, Jean-Marc Valin,
+  Timothy B. Terriberry, CSIRO, Gregory Maxwell, Mark Borgerding,
+  Erik de Castro Lopo, Mozilla, Amazon
+  License: 3-clause BSD-style Opus license
+  Project: https://opus-codec.org/
+
+* opusfile 0.12 and the official miniaudio libopus adapter
+  Copyright (c) 1994-2013 Xiph.Org Foundation and contributors
+  License: 3-clause BSD-style Xiph license; miniaudio adapter uses the
+  miniaudio license above
+  Project: https://opus-codec.org/
+
 The following versions are resolved by the committed win-x64 NuGet lock graph:
 
 * SkiaSharp 3.119.4
@@ -107,6 +141,102 @@ The following versions are resolved by the committed win-x64 NuGet lock graph:
   License: MIT; package metadata requires license acceptance
   Project: https://github.com/mono/SkiaSharp
   Package: https://www.nuget.org/packages/HarfBuzzSharp.NativeAssets.macOS/8.3.1.3
+
+miniaudio Public Domain alternative
+-----------------------------------
+
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or distribute this
+software, either in source code form or as a compiled binary, for any purpose,
+commercial or non-commercial, and by any means.
+
+In jurisdictions that recognize copyright laws, the author or authors of this
+software dedicate any and all copyright interest in the software to the public
+domain. We make this dedication for the benefit of the public at large and to
+the detriment of our heirs and successors. We intend this dedication to be an
+overt act of relinquishment in perpetuity of all present and future rights to
+this software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <http://unlicense.org/>
+
+Xiph BSD-style licenses used by libogg, libvorbis and opusfile
+----------------------------------------------------------------
+
+Copyright (c) 2002 Xiph.org Foundation
+Copyright (c) 2002-2020 Xiph.org Foundation
+Copyright (c) 1994-2013 Xiph.Org Foundation and contributors
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+- Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+- Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+- Neither the name of the Xiph.org Foundation nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Opus license
+------------
+
+Copyright 2001-2023 Xiph.Org, Skype Limited, Octasic,
+                    Jean-Marc Valin, Timothy B. Terriberry,
+                    CSIRO, Gregory Maxwell, Mark Borgerding,
+                    Erik de Castro Lopo, Mozilla, Amazon
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+- Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+- Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+- Neither the name of Internet Society, IETF or IETF Trust, nor the names of
+  specific contributors, may be used to endorse or promote products derived
+  from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Opus is subject to the royalty-free patent licenses specified at:
+
+Xiph.Org Foundation: https://datatracker.ietf.org/ipr/1524/
+Microsoft Corporation: https://datatracker.ietf.org/ipr/1914/
+Broadcom Corporation: https://datatracker.ietf.org/ipr/1526/
 
 MIT license used by the managed package graph
 ---------------------------------------------

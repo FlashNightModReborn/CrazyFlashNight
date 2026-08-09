@@ -197,8 +197,8 @@ describe("filterFiles", () => {
     const files = [
       "sounds/bgm_list.xml",
       "sounds/BONUS/track.mp3",
-      "sounds/阿卡music/Call your name.wav",
-      "sounds/阿卡music/【Ayasa】God knows.wav"
+      "sounds/阿卡music/Call your name.m4a",
+      "sounds/阿卡music/【Ayasa】God knows.m4a"
     ];
 
     const result = filterFiles(files, config);

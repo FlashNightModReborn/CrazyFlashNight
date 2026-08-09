@@ -1,0 +1,1187 @@
+{
+  "compileDefinitions": [
+    "HAVE_LRINT",
+    "HAVE_LRINTF",
+    "NDEBUG",
+    "OGG_STATIC",
+    "OPUS_BUILD",
+    "USE_ALLOCA",
+    "_CRT_SECURE_NO_WARNINGS"
+  ],
+  "compileSources": [
+    {
+      "language": "c17",
+      "path": "miniaudio.c"
+    },
+    {
+      "language": "c17",
+      "path": "extras/decoders/libvorbis/miniaudio_libvorbis.c"
+    },
+    {
+      "language": "c17",
+      "path": "extras/decoders/libopus/miniaudio_libopus.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libogg-1.3.6/src/bitwise.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libogg-1.3.6/src/framing.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/analysis.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/bitrate.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/block.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/codebook.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/envelope.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/floor0.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/floor1.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/info.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/lookup.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/lpc.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/lsp.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/mapping0.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/mdct.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/psy.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/registry.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/res0.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/sharedbook.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/smallft.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/synthesis.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/window.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/libvorbis-1.3.7/lib/vorbisfile.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/opus.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/opus_decoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/opus_encoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/extensions.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/opus_multistream.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/opus_multistream_encoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/opus_multistream_decoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/repacketizer.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/opus_projection_encoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/opus_projection_decoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/mapping_matrix.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/analysis.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/mlp.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/src/mlp_data.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/CNG.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/code_signs.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/init_decoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/decode_core.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/decode_frame.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/decode_parameters.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/decode_indices.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/decode_pulses.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/decoder_set_fs.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/dec_API.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/enc_API.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/encode_indices.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/encode_pulses.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/gain_quant.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/interpolate.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/LP_variable_cutoff.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NLSF_decode.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NSQ.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NSQ_del_dec.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/PLC.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/shell_coder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/tables_gain.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/tables_LTP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/tables_NLSF_CB_NB_MB.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/tables_NLSF_CB_WB.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/tables_other.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/tables_pitch_lag.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/tables_pulses_per_block.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/VAD.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/control_audio_bandwidth.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/quant_LTP_gains.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/VQ_WMat_EC.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/HP_variable_cutoff.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NLSF_encode.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NLSF_VQ.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NLSF_unpack.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NLSF_del_dec_quant.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/process_NLSFs.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/stereo_LR_to_MS.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/stereo_MS_to_LR.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/check_control_input.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/control_SNR.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/init_encoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/control_codec.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/A2NLSF.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/ana_filt_bank_1.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/biquad_alt.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/bwexpander_32.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/bwexpander.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/debug.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/decode_pitch.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/inner_prod_aligned.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/lin2log.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/log2lin.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/LPC_analysis_filter.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/LPC_inv_pred_gain.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/table_LSF_cos.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NLSF2A.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NLSF_stabilize.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/NLSF_VQ_weights_laroia.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/pitch_est_tables.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/resampler.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/resampler_down2_3.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/resampler_down2.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/resampler_private_AR2.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/resampler_private_down_FIR.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/resampler_private_IIR_FIR.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/resampler_private_up2_HQ.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/resampler_rom.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/sigm_Q15.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/sort.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/sum_sqr_shift.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/stereo_decode_pred.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/stereo_encode_pred.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/stereo_find_predictor.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/stereo_quant_pred.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/LPC_fit.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/apply_sine_window_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/corrMatrix_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/encode_frame_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/find_LPC_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/find_LTP_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/find_pitch_lags_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/find_pred_coefs_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/LPC_analysis_filter_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/LTP_analysis_filter_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/LTP_scale_ctrl_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/noise_shape_analysis_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/process_gains_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/regularize_correlations_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/residual_energy_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/warped_autocorrelation_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/wrappers_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/autocorrelation_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/burg_modified_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/bwexpander_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/energy_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/inner_product_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/k2a_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/LPC_inv_pred_gain_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/pitch_analysis_core_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/scale_copy_vector_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/scale_vector_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/schur_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/silk/float/sort_FLP.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/bands.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/celt.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/celt_encoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/celt_decoder.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/cwrs.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/entcode.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/entdec.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/entenc.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/kiss_fft.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/laplace.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/mathops.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/mdct.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/modes.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/pitch.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/celt_lpc.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/quant_bands.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/rate.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opus-1.6.1/celt/vq.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opusfile-0.12/src/info.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opusfile-0.12/src/internal.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opusfile-0.12/src/opusfile.c"
+    },
+    {
+      "language": "c17",
+      "path": "third_party/opusfile-0.12/src/stream.c"
+    },
+    {
+      "language": "cpp17",
+      "path": "audio_mf_decoder.cpp"
+    },
+    {
+      "language": "c17",
+      "path": "audio_decoder_registry.c"
+    },
+    {
+      "language": "c17",
+      "path": "audio_backend_policy.c"
+    },
+    {
+      "language": "c17",
+      "path": "audio_bridge_support.c"
+    },
+    {
+      "language": "c17",
+      "path": "miniaudio_bridge.c"
+    }
+  ],
+  "decoderLock": {
+    "path": "decoder-dependencies.lock.v1.json",
+    "sha256": "AC539C0AC2F7925FF6CD10A598D8C20A5C8AD04745E228FAED84BA69ADF4254A"
+  },
+  "forceInclude": "audio_miniaudio_config.h",
+  "includeDirectories": [
+    ".",
+    "third_party/opus-1.6.1/include",
+    "third_party/opus-1.6.1/src",
+    "third_party/opus-1.6.1/celt",
+    "third_party/opus-1.6.1/silk",
+    "third_party/opus-1.6.1/silk/float",
+    "third_party/opusfile-0.12/include",
+    "third_party/opusfile-0.12/src",
+    "third_party/libogg-1.3.6/include",
+    "third_party/libvorbis-1.3.7/include",
+    "third_party/libvorbis-1.3.7/lib"
+  ],
+  "linkLibraries": [
+    "bcrypt.lib",
+    "mfplat.lib",
+    "mfreadwrite.lib",
+    "mfuuid.lib",
+    "ole32.lib",
+    "propsys.lib",
+    "shlwapi.lib"
+  ],
+  "materializedInputs": [
+    "audio_backend_policy.c",
+    "audio_backend_policy.h",
+    "audio_bridge_support.c",
+    "audio_bridge_support.h",
+    "audio_bridge_v2.h",
+    "audio_decoder_registry.c",
+    "audio_decoder_registry.h",
+    "audio_mf_decoder.cpp",
+    "audio_mf_decoder.h",
+    "audio_miniaudio_config.h",
+    "audio-v2-build-inputs.v1.json",
+    "build-audio-v2.ps1",
+    "decoder-dependencies.lock.v1.json",
+    "extras/decoders/libopus/miniaudio_libopus.c",
+    "extras/decoders/libopus/miniaudio_libopus.h",
+    "extras/decoders/libvorbis/miniaudio_libvorbis.c",
+    "extras/decoders/libvorbis/miniaudio_libvorbis.h",
+    "miniaudio_bridge.c",
+    "miniaudio.c",
+    "miniaudio.h",
+    "third_party/libogg-1.3.6/COPYING",
+    "third_party/libogg-1.3.6/include/Makefile.am",
+    "third_party/libogg-1.3.6/include/Makefile.in",
+    "third_party/libogg-1.3.6/include/ogg/config_types.h.in",
+    "third_party/libogg-1.3.6/include/ogg/Makefile.am",
+    "third_party/libogg-1.3.6/include/ogg/Makefile.in",
+    "third_party/libogg-1.3.6/include/ogg/ogg.h",
+    "third_party/libogg-1.3.6/include/ogg/os_types.h",
+    "third_party/libogg-1.3.6/src/bitwise.c",
+    "third_party/libogg-1.3.6/src/crctable.h",
+    "third_party/libogg-1.3.6/src/framing.c",
+    "third_party/libogg-1.3.6/src/Makefile.am",
+    "third_party/libogg-1.3.6/src/Makefile.in",
+    "third_party/libvorbis-1.3.7/COPYING",
+    "third_party/libvorbis-1.3.7/include/Makefile.am",
+    "third_party/libvorbis-1.3.7/include/Makefile.in",
+    "third_party/libvorbis-1.3.7/include/vorbis/codec.h",
+    "third_party/libvorbis-1.3.7/include/vorbis/Makefile.am",
+    "third_party/libvorbis-1.3.7/include/vorbis/Makefile.in",
+    "third_party/libvorbis-1.3.7/include/vorbis/vorbisenc.h",
+    "third_party/libvorbis-1.3.7/include/vorbis/vorbisfile.h",
+    "third_party/libvorbis-1.3.7/lib/analysis.c",
+    "third_party/libvorbis-1.3.7/lib/backends.h",
+    "third_party/libvorbis-1.3.7/lib/barkmel.c",
+    "third_party/libvorbis-1.3.7/lib/bitrate.c",
+    "third_party/libvorbis-1.3.7/lib/bitrate.h",
+    "third_party/libvorbis-1.3.7/lib/block.c",
+    "third_party/libvorbis-1.3.7/lib/books/coupled/Makefile.am",
+    "third_party/libvorbis-1.3.7/lib/books/coupled/Makefile.in",
+    "third_party/libvorbis-1.3.7/lib/books/coupled/res_books_51.h",
+    "third_party/libvorbis-1.3.7/lib/books/coupled/res_books_stereo.h",
+    "third_party/libvorbis-1.3.7/lib/books/floor/floor_books.h",
+    "third_party/libvorbis-1.3.7/lib/books/floor/Makefile.am",
+    "third_party/libvorbis-1.3.7/lib/books/floor/Makefile.in",
+    "third_party/libvorbis-1.3.7/lib/books/Makefile.am",
+    "third_party/libvorbis-1.3.7/lib/books/Makefile.in",
+    "third_party/libvorbis-1.3.7/lib/books/uncoupled/Makefile.am",
+    "third_party/libvorbis-1.3.7/lib/books/uncoupled/Makefile.in",
+    "third_party/libvorbis-1.3.7/lib/books/uncoupled/res_books_uncoupled.h",
+    "third_party/libvorbis-1.3.7/lib/CMakeLists.txt",
+    "third_party/libvorbis-1.3.7/lib/codebook.c",
+    "third_party/libvorbis-1.3.7/lib/codebook.h",
+    "third_party/libvorbis-1.3.7/lib/codec_internal.h",
+    "third_party/libvorbis-1.3.7/lib/envelope.c",
+    "third_party/libvorbis-1.3.7/lib/envelope.h",
+    "third_party/libvorbis-1.3.7/lib/floor0.c",
+    "third_party/libvorbis-1.3.7/lib/floor1.c",
+    "third_party/libvorbis-1.3.7/lib/highlevel.h",
+    "third_party/libvorbis-1.3.7/lib/info.c",
+    "third_party/libvorbis-1.3.7/lib/lookup_data.h",
+    "third_party/libvorbis-1.3.7/lib/lookup.c",
+    "third_party/libvorbis-1.3.7/lib/lookup.h",
+    "third_party/libvorbis-1.3.7/lib/lookups.pl",
+    "third_party/libvorbis-1.3.7/lib/lpc.c",
+    "third_party/libvorbis-1.3.7/lib/lpc.h",
+    "third_party/libvorbis-1.3.7/lib/lsp.c",
+    "third_party/libvorbis-1.3.7/lib/lsp.h",
+    "third_party/libvorbis-1.3.7/lib/Makefile.am",
+    "third_party/libvorbis-1.3.7/lib/Makefile.in",
+    "third_party/libvorbis-1.3.7/lib/mapping0.c",
+    "third_party/libvorbis-1.3.7/lib/masking.h",
+    "third_party/libvorbis-1.3.7/lib/mdct.c",
+    "third_party/libvorbis-1.3.7/lib/mdct.h",
+    "third_party/libvorbis-1.3.7/lib/misc.h",
+    "third_party/libvorbis-1.3.7/lib/modes/floor_all.h",
+    "third_party/libvorbis-1.3.7/lib/modes/Makefile.am",
+    "third_party/libvorbis-1.3.7/lib/modes/Makefile.in",
+    "third_party/libvorbis-1.3.7/lib/modes/psych_11.h",
+    "third_party/libvorbis-1.3.7/lib/modes/psych_16.h",
+    "third_party/libvorbis-1.3.7/lib/modes/psych_44.h",
+    "third_party/libvorbis-1.3.7/lib/modes/psych_8.h",
+    "third_party/libvorbis-1.3.7/lib/modes/residue_16.h",
+    "third_party/libvorbis-1.3.7/lib/modes/residue_44.h",
+    "third_party/libvorbis-1.3.7/lib/modes/residue_44p51.h",
+    "third_party/libvorbis-1.3.7/lib/modes/residue_44u.h",
+    "third_party/libvorbis-1.3.7/lib/modes/residue_8.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_11.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_16.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_22.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_32.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_44.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_44p51.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_44u.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_8.h",
+    "third_party/libvorbis-1.3.7/lib/modes/setup_X.h",
+    "third_party/libvorbis-1.3.7/lib/os.h",
+    "third_party/libvorbis-1.3.7/lib/psy.c",
+    "third_party/libvorbis-1.3.7/lib/psy.h",
+    "third_party/libvorbis-1.3.7/lib/psytune.c",
+    "third_party/libvorbis-1.3.7/lib/registry.c",
+    "third_party/libvorbis-1.3.7/lib/registry.h",
+    "third_party/libvorbis-1.3.7/lib/res0.c",
+    "third_party/libvorbis-1.3.7/lib/scales.h",
+    "third_party/libvorbis-1.3.7/lib/sharedbook.c",
+    "third_party/libvorbis-1.3.7/lib/smallft.c",
+    "third_party/libvorbis-1.3.7/lib/smallft.h",
+    "third_party/libvorbis-1.3.7/lib/synthesis.c",
+    "third_party/libvorbis-1.3.7/lib/tone.c",
+    "third_party/libvorbis-1.3.7/lib/vorbisenc.c",
+    "third_party/libvorbis-1.3.7/lib/vorbisfile.c",
+    "third_party/libvorbis-1.3.7/lib/window.c",
+    "third_party/libvorbis-1.3.7/lib/window.h",
+    "third_party/miniaudio-0.11.25/LICENSE",
+    "third_party/opus-1.6.1/celt_sources.mk",
+    "third_party/opus-1.6.1/celt/_kiss_fft_guts.h",
+    "third_party/opus-1.6.1/celt/arch.h",
+    "third_party/opus-1.6.1/celt/arm/arm_celt_map.c",
+    "third_party/opus-1.6.1/celt/arm/arm2gnu.pl",
+    "third_party/opus-1.6.1/celt/arm/armcpu.c",
+    "third_party/opus-1.6.1/celt/arm/armcpu.h",
+    "third_party/opus-1.6.1/celt/arm/armopts.s.in",
+    "third_party/opus-1.6.1/celt/arm/celt_fft_ne10.c",
+    "third_party/opus-1.6.1/celt/arm/celt_mdct_ne10.c",
+    "third_party/opus-1.6.1/celt/arm/celt_neon_intr.c",
+    "third_party/opus-1.6.1/celt/arm/celt_pitch_xcorr_arm-gnu.S",
+    "third_party/opus-1.6.1/celt/arm/celt_pitch_xcorr_arm.s",
+    "third_party/opus-1.6.1/celt/arm/fft_arm.h",
+    "third_party/opus-1.6.1/celt/arm/fixed_arm64.h",
+    "third_party/opus-1.6.1/celt/arm/fixed_armv4.h",
+    "third_party/opus-1.6.1/celt/arm/fixed_armv5e.h",
+    "third_party/opus-1.6.1/celt/arm/kiss_fft_armv4.h",
+    "third_party/opus-1.6.1/celt/arm/kiss_fft_armv5e.h",
+    "third_party/opus-1.6.1/celt/arm/mathops_arm.h",
+    "third_party/opus-1.6.1/celt/arm/mdct_arm.h",
+    "third_party/opus-1.6.1/celt/arm/meson.build",
+    "third_party/opus-1.6.1/celt/arm/pitch_arm.h",
+    "third_party/opus-1.6.1/celt/arm/pitch_neon_intr.c",
+    "third_party/opus-1.6.1/celt/bands.c",
+    "third_party/opus-1.6.1/celt/bands.h",
+    "third_party/opus-1.6.1/celt/celt_decoder.c",
+    "third_party/opus-1.6.1/celt/celt_encoder.c",
+    "third_party/opus-1.6.1/celt/celt_lpc.c",
+    "third_party/opus-1.6.1/celt/celt_lpc.h",
+    "third_party/opus-1.6.1/celt/celt.c",
+    "third_party/opus-1.6.1/celt/celt.h",
+    "third_party/opus-1.6.1/celt/cpu_support.h",
+    "third_party/opus-1.6.1/celt/cwrs.c",
+    "third_party/opus-1.6.1/celt/cwrs.h",
+    "third_party/opus-1.6.1/celt/ecintrin.h",
+    "third_party/opus-1.6.1/celt/entcode.c",
+    "third_party/opus-1.6.1/celt/entcode.h",
+    "third_party/opus-1.6.1/celt/entdec.c",
+    "third_party/opus-1.6.1/celt/entdec.h",
+    "third_party/opus-1.6.1/celt/entenc.c",
+    "third_party/opus-1.6.1/celt/entenc.h",
+    "third_party/opus-1.6.1/celt/fixed_debug.h",
+    "third_party/opus-1.6.1/celt/fixed_generic.h",
+    "third_party/opus-1.6.1/celt/float_cast.h",
+    "third_party/opus-1.6.1/celt/kiss_fft.c",
+    "third_party/opus-1.6.1/celt/kiss_fft.h",
+    "third_party/opus-1.6.1/celt/laplace.c",
+    "third_party/opus-1.6.1/celt/laplace.h",
+    "third_party/opus-1.6.1/celt/mathops.c",
+    "third_party/opus-1.6.1/celt/mathops.h",
+    "third_party/opus-1.6.1/celt/mdct.c",
+    "third_party/opus-1.6.1/celt/mdct.h",
+    "third_party/opus-1.6.1/celt/meson.build",
+    "third_party/opus-1.6.1/celt/mfrngcod.h",
+    "third_party/opus-1.6.1/celt/mini_kfft.c",
+    "third_party/opus-1.6.1/celt/mips/celt_mipsr1.h",
+    "third_party/opus-1.6.1/celt/mips/fixed_generic_mipsr1.h",
+    "third_party/opus-1.6.1/celt/mips/kiss_fft_mipsr1.h",
+    "third_party/opus-1.6.1/celt/mips/mdct_mipsr1.h",
+    "third_party/opus-1.6.1/celt/mips/pitch_mipsr1.h",
+    "third_party/opus-1.6.1/celt/modes.c",
+    "third_party/opus-1.6.1/celt/modes.h",
+    "third_party/opus-1.6.1/celt/opus_custom_demo.c",
+    "third_party/opus-1.6.1/celt/os_support.h",
+    "third_party/opus-1.6.1/celt/pitch.c",
+    "third_party/opus-1.6.1/celt/pitch.h",
+    "third_party/opus-1.6.1/celt/quant_bands.c",
+    "third_party/opus-1.6.1/celt/quant_bands.h",
+    "third_party/opus-1.6.1/celt/rate.c",
+    "third_party/opus-1.6.1/celt/rate.h",
+    "third_party/opus-1.6.1/celt/stack_alloc.h",
+    "third_party/opus-1.6.1/celt/static_modes_fixed_arm_ne10.h",
+    "third_party/opus-1.6.1/celt/static_modes_fixed.h",
+    "third_party/opus-1.6.1/celt/static_modes_float_arm_ne10.h",
+    "third_party/opus-1.6.1/celt/static_modes_float.h",
+    "third_party/opus-1.6.1/celt/tests/meson.build",
+    "third_party/opus-1.6.1/celt/tests/test_unit_cwrs32.c",
+    "third_party/opus-1.6.1/celt/tests/test_unit_dft.c",
+    "third_party/opus-1.6.1/celt/tests/test_unit_entropy.c",
+    "third_party/opus-1.6.1/celt/tests/test_unit_laplace.c",
+    "third_party/opus-1.6.1/celt/tests/test_unit_mathops.c",
+    "third_party/opus-1.6.1/celt/tests/test_unit_mdct.c",
+    "third_party/opus-1.6.1/celt/tests/test_unit_mini_kfft.c",
+    "third_party/opus-1.6.1/celt/tests/test_unit_rotation.c",
+    "third_party/opus-1.6.1/celt/tests/test_unit_types.c",
+    "third_party/opus-1.6.1/celt/vq.c",
+    "third_party/opus-1.6.1/celt/vq.h",
+    "third_party/opus-1.6.1/celt/x86/celt_lpc_sse.h",
+    "third_party/opus-1.6.1/celt/x86/celt_lpc_sse4_1.c",
+    "third_party/opus-1.6.1/celt/x86/pitch_avx.c",
+    "third_party/opus-1.6.1/celt/x86/pitch_sse.c",
+    "third_party/opus-1.6.1/celt/x86/pitch_sse.h",
+    "third_party/opus-1.6.1/celt/x86/pitch_sse2.c",
+    "third_party/opus-1.6.1/celt/x86/pitch_sse4_1.c",
+    "third_party/opus-1.6.1/celt/x86/vq_sse.h",
+    "third_party/opus-1.6.1/celt/x86/vq_sse2.c",
+    "third_party/opus-1.6.1/celt/x86/x86_arch_macros.h",
+    "third_party/opus-1.6.1/celt/x86/x86_celt_map.c",
+    "third_party/opus-1.6.1/celt/x86/x86cpu.c",
+    "third_party/opus-1.6.1/celt/x86/x86cpu.h",
+    "third_party/opus-1.6.1/COPYING",
+    "third_party/opus-1.6.1/include/meson.build",
+    "third_party/opus-1.6.1/include/opus_custom.h",
+    "third_party/opus-1.6.1/include/opus_defines.h",
+    "third_party/opus-1.6.1/include/opus_multistream.h",
+    "third_party/opus-1.6.1/include/opus_projection.h",
+    "third_party/opus-1.6.1/include/opus_types.h",
+    "third_party/opus-1.6.1/include/opus.h",
+    "third_party/opus-1.6.1/opus_sources.mk",
+    "third_party/opus-1.6.1/silk_sources.mk",
+    "third_party/opus-1.6.1/silk/A2NLSF.c",
+    "third_party/opus-1.6.1/silk/ana_filt_bank_1.c",
+    "third_party/opus-1.6.1/silk/API.h",
+    "third_party/opus-1.6.1/silk/arm/arm_silk_map.c",
+    "third_party/opus-1.6.1/silk/arm/biquad_alt_arm.h",
+    "third_party/opus-1.6.1/silk/arm/biquad_alt_neon_intr.c",
+    "third_party/opus-1.6.1/silk/arm/LPC_inv_pred_gain_arm.h",
+    "third_party/opus-1.6.1/silk/arm/LPC_inv_pred_gain_neon_intr.c",
+    "third_party/opus-1.6.1/silk/arm/macros_arm64.h",
+    "third_party/opus-1.6.1/silk/arm/macros_armv4.h",
+    "third_party/opus-1.6.1/silk/arm/macros_armv5e.h",
+    "third_party/opus-1.6.1/silk/arm/NSQ_del_dec_arm.h",
+    "third_party/opus-1.6.1/silk/arm/NSQ_del_dec_neon_intr.c",
+    "third_party/opus-1.6.1/silk/arm/NSQ_neon.c",
+    "third_party/opus-1.6.1/silk/arm/NSQ_neon.h",
+    "third_party/opus-1.6.1/silk/arm/SigProc_FIX_armv4.h",
+    "third_party/opus-1.6.1/silk/arm/SigProc_FIX_armv5e.h",
+    "third_party/opus-1.6.1/silk/biquad_alt.c",
+    "third_party/opus-1.6.1/silk/bwexpander_32.c",
+    "third_party/opus-1.6.1/silk/bwexpander.c",
+    "third_party/opus-1.6.1/silk/check_control_input.c",
+    "third_party/opus-1.6.1/silk/CNG.c",
+    "third_party/opus-1.6.1/silk/code_signs.c",
+    "third_party/opus-1.6.1/silk/control_audio_bandwidth.c",
+    "third_party/opus-1.6.1/silk/control_codec.c",
+    "third_party/opus-1.6.1/silk/control_SNR.c",
+    "third_party/opus-1.6.1/silk/control.h",
+    "third_party/opus-1.6.1/silk/debug.c",
+    "third_party/opus-1.6.1/silk/debug.h",
+    "third_party/opus-1.6.1/silk/dec_API.c",
+    "third_party/opus-1.6.1/silk/decode_core.c",
+    "third_party/opus-1.6.1/silk/decode_frame.c",
+    "third_party/opus-1.6.1/silk/decode_indices.c",
+    "third_party/opus-1.6.1/silk/decode_parameters.c",
+    "third_party/opus-1.6.1/silk/decode_pitch.c",
+    "third_party/opus-1.6.1/silk/decode_pulses.c",
+    "third_party/opus-1.6.1/silk/decoder_set_fs.c",
+    "third_party/opus-1.6.1/silk/define.h",
+    "third_party/opus-1.6.1/silk/enc_API.c",
+    "third_party/opus-1.6.1/silk/encode_indices.c",
+    "third_party/opus-1.6.1/silk/encode_pulses.c",
+    "third_party/opus-1.6.1/silk/errors.h",
+    "third_party/opus-1.6.1/silk/fixed/apply_sine_window_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/arm/warped_autocorrelation_FIX_arm.h",
+    "third_party/opus-1.6.1/silk/fixed/arm/warped_autocorrelation_FIX_neon_intr.c",
+    "third_party/opus-1.6.1/silk/fixed/autocorr_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/burg_modified_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/corrMatrix_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/encode_frame_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/find_LPC_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/find_LTP_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/find_pitch_lags_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/find_pred_coefs_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/k2a_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/k2a_Q16_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/LTP_analysis_filter_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/LTP_scale_ctrl_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/main_FIX.h",
+    "third_party/opus-1.6.1/silk/fixed/mips/warped_autocorrelation_FIX_mipsr1.h",
+    "third_party/opus-1.6.1/silk/fixed/noise_shape_analysis_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/pitch_analysis_core_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/process_gains_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/regularize_correlations_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/residual_energy_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/residual_energy16_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/schur_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/schur64_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/structs_FIX.h",
+    "third_party/opus-1.6.1/silk/fixed/vector_ops_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/warped_autocorrelation_FIX.c",
+    "third_party/opus-1.6.1/silk/fixed/x86/burg_modified_FIX_sse4_1.c",
+    "third_party/opus-1.6.1/silk/fixed/x86/vector_ops_FIX_sse4_1.c",
+    "third_party/opus-1.6.1/silk/float/apply_sine_window_FLP.c",
+    "third_party/opus-1.6.1/silk/float/autocorrelation_FLP.c",
+    "third_party/opus-1.6.1/silk/float/burg_modified_FLP.c",
+    "third_party/opus-1.6.1/silk/float/bwexpander_FLP.c",
+    "third_party/opus-1.6.1/silk/float/corrMatrix_FLP.c",
+    "third_party/opus-1.6.1/silk/float/encode_frame_FLP.c",
+    "third_party/opus-1.6.1/silk/float/energy_FLP.c",
+    "third_party/opus-1.6.1/silk/float/find_LPC_FLP.c",
+    "third_party/opus-1.6.1/silk/float/find_LTP_FLP.c",
+    "third_party/opus-1.6.1/silk/float/find_pitch_lags_FLP.c",
+    "third_party/opus-1.6.1/silk/float/find_pred_coefs_FLP.c",
+    "third_party/opus-1.6.1/silk/float/inner_product_FLP.c",
+    "third_party/opus-1.6.1/silk/float/k2a_FLP.c",
+    "third_party/opus-1.6.1/silk/float/LPC_analysis_filter_FLP.c",
+    "third_party/opus-1.6.1/silk/float/LPC_inv_pred_gain_FLP.c",
+    "third_party/opus-1.6.1/silk/float/LTP_analysis_filter_FLP.c",
+    "third_party/opus-1.6.1/silk/float/LTP_scale_ctrl_FLP.c",
+    "third_party/opus-1.6.1/silk/float/main_FLP.h",
+    "third_party/opus-1.6.1/silk/float/noise_shape_analysis_FLP.c",
+    "third_party/opus-1.6.1/silk/float/pitch_analysis_core_FLP.c",
+    "third_party/opus-1.6.1/silk/float/process_gains_FLP.c",
+    "third_party/opus-1.6.1/silk/float/regularize_correlations_FLP.c",
+    "third_party/opus-1.6.1/silk/float/residual_energy_FLP.c",
+    "third_party/opus-1.6.1/silk/float/scale_copy_vector_FLP.c",
+    "third_party/opus-1.6.1/silk/float/scale_vector_FLP.c",
+    "third_party/opus-1.6.1/silk/float/schur_FLP.c",
+    "third_party/opus-1.6.1/silk/float/SigProc_FLP.h",
+    "third_party/opus-1.6.1/silk/float/sort_FLP.c",
+    "third_party/opus-1.6.1/silk/float/structs_FLP.h",
+    "third_party/opus-1.6.1/silk/float/warped_autocorrelation_FLP.c",
+    "third_party/opus-1.6.1/silk/float/wrappers_FLP.c",
+    "third_party/opus-1.6.1/silk/float/x86/inner_product_FLP_avx2.c",
+    "third_party/opus-1.6.1/silk/gain_quant.c",
+    "third_party/opus-1.6.1/silk/HP_variable_cutoff.c",
+    "third_party/opus-1.6.1/silk/init_decoder.c",
+    "third_party/opus-1.6.1/silk/init_encoder.c",
+    "third_party/opus-1.6.1/silk/Inlines.h",
+    "third_party/opus-1.6.1/silk/inner_prod_aligned.c",
+    "third_party/opus-1.6.1/silk/interpolate.c",
+    "third_party/opus-1.6.1/silk/lin2log.c",
+    "third_party/opus-1.6.1/silk/log2lin.c",
+    "third_party/opus-1.6.1/silk/LP_variable_cutoff.c",
+    "third_party/opus-1.6.1/silk/LPC_analysis_filter.c",
+    "third_party/opus-1.6.1/silk/LPC_fit.c",
+    "third_party/opus-1.6.1/silk/LPC_inv_pred_gain.c",
+    "third_party/opus-1.6.1/silk/MacroCount.h",
+    "third_party/opus-1.6.1/silk/MacroDebug.h",
+    "third_party/opus-1.6.1/silk/macros.h",
+    "third_party/opus-1.6.1/silk/main.h",
+    "third_party/opus-1.6.1/silk/meson.build",
+    "third_party/opus-1.6.1/silk/mips/macros_mipsr1.h",
+    "third_party/opus-1.6.1/silk/mips/NSQ_mips.h",
+    "third_party/opus-1.6.1/silk/mips/sigproc_fix_mipsr1.h",
+    "third_party/opus-1.6.1/silk/NLSF_decode.c",
+    "third_party/opus-1.6.1/silk/NLSF_del_dec_quant.c",
+    "third_party/opus-1.6.1/silk/NLSF_encode.c",
+    "third_party/opus-1.6.1/silk/NLSF_stabilize.c",
+    "third_party/opus-1.6.1/silk/NLSF_unpack.c",
+    "third_party/opus-1.6.1/silk/NLSF_VQ_weights_laroia.c",
+    "third_party/opus-1.6.1/silk/NLSF_VQ.c",
+    "third_party/opus-1.6.1/silk/NLSF2A.c",
+    "third_party/opus-1.6.1/silk/NSQ_del_dec.c",
+    "third_party/opus-1.6.1/silk/NSQ.c",
+    "third_party/opus-1.6.1/silk/NSQ.h",
+    "third_party/opus-1.6.1/silk/pitch_est_defines.h",
+    "third_party/opus-1.6.1/silk/pitch_est_tables.c",
+    "third_party/opus-1.6.1/silk/PLC.c",
+    "third_party/opus-1.6.1/silk/PLC.h",
+    "third_party/opus-1.6.1/silk/process_NLSFs.c",
+    "third_party/opus-1.6.1/silk/quant_LTP_gains.c",
+    "third_party/opus-1.6.1/silk/resampler_down2_3.c",
+    "third_party/opus-1.6.1/silk/resampler_down2.c",
+    "third_party/opus-1.6.1/silk/resampler_private_AR2.c",
+    "third_party/opus-1.6.1/silk/resampler_private_down_FIR.c",
+    "third_party/opus-1.6.1/silk/resampler_private_IIR_FIR.c",
+    "third_party/opus-1.6.1/silk/resampler_private_up2_HQ.c",
+    "third_party/opus-1.6.1/silk/resampler_private.h",
+    "third_party/opus-1.6.1/silk/resampler_rom.c",
+    "third_party/opus-1.6.1/silk/resampler_rom.h",
+    "third_party/opus-1.6.1/silk/resampler_structs.h",
+    "third_party/opus-1.6.1/silk/resampler.c",
+    "third_party/opus-1.6.1/silk/shell_coder.c",
+    "third_party/opus-1.6.1/silk/sigm_Q15.c",
+    "third_party/opus-1.6.1/silk/SigProc_FIX.h",
+    "third_party/opus-1.6.1/silk/sort.c",
+    "third_party/opus-1.6.1/silk/stereo_decode_pred.c",
+    "third_party/opus-1.6.1/silk/stereo_encode_pred.c",
+    "third_party/opus-1.6.1/silk/stereo_find_predictor.c",
+    "third_party/opus-1.6.1/silk/stereo_LR_to_MS.c",
+    "third_party/opus-1.6.1/silk/stereo_MS_to_LR.c",
+    "third_party/opus-1.6.1/silk/stereo_quant_pred.c",
+    "third_party/opus-1.6.1/silk/structs.h",
+    "third_party/opus-1.6.1/silk/sum_sqr_shift.c",
+    "third_party/opus-1.6.1/silk/table_LSF_cos.c",
+    "third_party/opus-1.6.1/silk/tables_gain.c",
+    "third_party/opus-1.6.1/silk/tables_LTP.c",
+    "third_party/opus-1.6.1/silk/tables_NLSF_CB_NB_MB.c",
+    "third_party/opus-1.6.1/silk/tables_NLSF_CB_WB.c",
+    "third_party/opus-1.6.1/silk/tables_other.c",
+    "third_party/opus-1.6.1/silk/tables_pitch_lag.c",
+    "third_party/opus-1.6.1/silk/tables_pulses_per_block.c",
+    "third_party/opus-1.6.1/silk/tables.h",
+    "third_party/opus-1.6.1/silk/tests/meson.build",
+    "third_party/opus-1.6.1/silk/tests/test_unit_LPC_inv_pred_gain.c",
+    "third_party/opus-1.6.1/silk/tuning_parameters.h",
+    "third_party/opus-1.6.1/silk/typedef.h",
+    "third_party/opus-1.6.1/silk/VAD.c",
+    "third_party/opus-1.6.1/silk/VQ_WMat_EC.c",
+    "third_party/opus-1.6.1/silk/x86/main_sse.h",
+    "third_party/opus-1.6.1/silk/x86/NSQ_del_dec_avx2.c",
+    "third_party/opus-1.6.1/silk/x86/NSQ_del_dec_sse4_1.c",
+    "third_party/opus-1.6.1/silk/x86/NSQ_sse4_1.c",
+    "third_party/opus-1.6.1/silk/x86/SigProc_FIX_sse.h",
+    "third_party/opus-1.6.1/silk/x86/VAD_sse4_1.c",
+    "third_party/opus-1.6.1/silk/x86/VQ_WMat_EC_sse4_1.c",
+    "third_party/opus-1.6.1/silk/x86/x86_silk_map.c",
+    "third_party/opus-1.6.1/src/analysis.c",
+    "third_party/opus-1.6.1/src/analysis.h",
+    "third_party/opus-1.6.1/src/extensions.c",
+    "third_party/opus-1.6.1/src/mapping_matrix.c",
+    "third_party/opus-1.6.1/src/mapping_matrix.h",
+    "third_party/opus-1.6.1/src/meson.build",
+    "third_party/opus-1.6.1/src/mlp_data.c",
+    "third_party/opus-1.6.1/src/mlp.c",
+    "third_party/opus-1.6.1/src/mlp.h",
+    "third_party/opus-1.6.1/src/opus_compare.c",
+    "third_party/opus-1.6.1/src/opus_decoder.c",
+    "third_party/opus-1.6.1/src/opus_demo.c",
+    "third_party/opus-1.6.1/src/opus_encoder.c",
+    "third_party/opus-1.6.1/src/opus_multistream_decoder.c",
+    "third_party/opus-1.6.1/src/opus_multistream_encoder.c",
+    "third_party/opus-1.6.1/src/opus_multistream.c",
+    "third_party/opus-1.6.1/src/opus_private.h",
+    "third_party/opus-1.6.1/src/opus_projection_decoder.c",
+    "third_party/opus-1.6.1/src/opus_projection_encoder.c",
+    "third_party/opus-1.6.1/src/opus.c",
+    "third_party/opus-1.6.1/src/qext_compare.c",
+    "third_party/opus-1.6.1/src/repacketizer_demo.c",
+    "third_party/opus-1.6.1/src/repacketizer.c",
+    "third_party/opusfile-0.12/COPYING",
+    "third_party/opusfile-0.12/include/opusfile.h",
+    "third_party/opusfile-0.12/src/http.c",
+    "third_party/opusfile-0.12/src/info.c",
+    "third_party/opusfile-0.12/src/internal.c",
+    "third_party/opusfile-0.12/src/internal.h",
+    "third_party/opusfile-0.12/src/opusfile.c",
+    "third_party/opusfile-0.12/src/stream.c",
+    "third_party/opusfile-0.12/src/wincerts.c",
+    "third_party/opusfile-0.12/src/winerrno.h"
+  ],
+  "output": "miniaudio.dll",
+  "schema": "cf7.audio-v2.native-build-inputs.v1"
+}

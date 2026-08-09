@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
     [string]$CandidateRoot,
+    [string]$AudioV2QualificationRunId,
     [switch]$EnableLegacyHttpAutomation,
     [string]$UnattendedSlot,
     [ValidateSet('jsonl','mcp')]
@@ -19,6 +20,24 @@ $projectRoot = (Split-Path -Parent $scriptDirectory).TrimEnd('\')
 $launchProjectRoot = [string]$projectRoot
 $unattendedRequested =
     -not [string]::IsNullOrWhiteSpace($UnattendedSlot)
+$unattendedArgumentsSpecified =
+    $PSBoundParameters.ContainsKey('UnattendedSlot') -or
+    $PSBoundParameters.ContainsKey('UnattendedAdapter') -or
+    $PSBoundParameters.ContainsKey('UnattendedClientInstanceId')
+$audioV2QualificationRequested =
+    $PSBoundParameters.ContainsKey('AudioV2QualificationRunId')
+if ($audioV2QualificationRequested -and
+        [string]$AudioV2QualificationRunId -cnotmatch '^[0-9a-f]{32}$') {
+    throw '-AudioV2QualificationRunId must be exactly 32 lowercase hexadecimal characters.'
+}
+if ($audioV2QualificationRequested -and
+        [string]::IsNullOrWhiteSpace($CandidateRoot)) {
+    throw '-AudioV2QualificationRunId is available only with an explicit -CandidateRoot.'
+}
+if ($audioV2QualificationRequested -and
+        ($EnableLegacyHttpAutomation -or $unattendedArgumentsSpecified)) {
+    throw 'Audio v2 qualification cannot be combined with legacy HTTP or unattended startup.'
+}
 if ($unattendedRequested) {
     $allowedUnattendedSlots = @(
         'cf7_agent_equipment_tuning',
@@ -330,6 +349,11 @@ try {
         if ($EnableLegacyHttpAutomation) {
             $coreArguments += ' --legacy-http-automation'
         }
+        if ($audioV2QualificationRequested) {
+            $coreArguments +=
+                ' --audio-v2-qualification-run-id ' +
+                $AudioV2QualificationRunId
+        }
         $guardian = [System.Diagnostics.Process]::Start(
             $selectedCoreExe,
             $coreArguments)
@@ -366,6 +390,11 @@ try {
     }
 
     Write-Host "Guardian PID: $($guardian.Id)"
+    if ($audioV2QualificationRequested) {
+        Write-Host (
+            'Audio v2 qualification pipe: \\.\pipe\cf7-audio-v2-qualification-' +
+            $guardian.Id + '-' + $AudioV2QualificationRunId)
+    }
     $deadline = (Get-Date).AddSeconds(30)
     $readyPorts = $null
     while ((Get-Date) -lt $deadline) {

@@ -3,7 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
-> **最后核对架构与工作流**：竞技场 P4/P5 与商城旧档兼容 release source `bf9be8c43b223b84f487464a7e6aa9eb8211630b` 已由 immutable tag `runtime-build-v2/20260808-p4-p5-source-complete-v1`、release tree `44de7f66421a908723f196718e42867dce601f30`、request `424D9CC1975CF099A705C828E354215EF3F568B7198B6B19C13DB019CB25163C`、本地 X509 `physical-host-b` + GitHub OIDC/Sigstore `github-hosted-windows` run `31246561049` 双故障域共识完成正式 promotion；identity `D6AC04EB7EBE290819B41E2FE17DA7583F154FCB4D46BA258D17EF9866B74350`、closure `91C8AC7469EBF2788C9BDAF8AB13D8F3C02B59588D6B770F0DA6CAD1604DDF5B`。无 candidate id 的 pure-MCP 正式入口报告 `tmp/manual-agent-acceptance/workbench-v2/formal-workbench-20260808T083940Z.json` 完成 Launcher 与 allow-listed Help WebOverlay WGC、one-shot terminal receipt、supported shutdown、测试存档不变和无新增残留进程，故该明确窄纵切达到 `standard_entry_verified`。同身份的商城旧档与竞技场业务 E2E 另见本页对应领域段；这些证据不外推为物理双屏、物理设备输入、任意业务写或玩家目视签收。此前 A1–A6 与 F8 发布只保留为历史分层；通用判定见 [验证矩阵](../agentsDoc/testing-guide.md)。
+> **最后核对架构与工作流**：竞技场 P4/P5 与商城旧档兼容 release source `bf9be8c43b223b84f487464a7e6aa9eb8211630b` 已由 immutable tag `runtime-build-v2/20260808-p4-p5-source-complete-v1`、release tree `44de7f66421a908723f196718e42867dce601f30`、request `424D9CC1975CF099A705C828E354215EF3F568B7198B6B19C13DB019CB25163C`、本地 X509 `physical-host-b` + GitHub OIDC/Sigstore `github-hosted-windows` run `31246561049` 双故障域共识完成正式 promotion；identity `D6AC04EB7EBE290819B41E2FE17DA7583F154FCB4D46BA258D17EF9866B74350`、closure `91C8AC7469EBF2788C9BDAF8AB13D8F3C02B59588D6B770F0DA6CAD1604DDF5B`。无 candidate id 的 pure-MCP 正式入口报告 `tmp/manual-agent-acceptance/workbench-v2/formal-workbench-20260808T083940Z.json` 完成 Launcher 与 allow-listed Help WebOverlay WGC、one-shot terminal receipt、supported shutdown、测试存档不变和无新增残留进程，故该明确窄纵切达到 `standard_entry_verified`。同身份的商城旧档与竞技场业务 E2E 另见本页对应领域段；这些证据不外推为物理双屏、物理设备输入、任意业务写或玩家目视签收。Audio Platform v2 当前源码另以 H1 activation commit `c5ca5dfa9718e8a7714038e929a64081b7fd0026` 为已接受合同底座并在其后工作树实现；它尚未取得 H2、未 promotion，严格为 `NOT_DEPLOYED`，不得并入上述正式 runtime 结论。此前 A1–A6 与 F8 发布只保留为历史分层；通用判定见 [验证矩阵](../agentsDoc/testing-guide.md)。
 > **PlayerInfo 当前边界**：F2 `891d9b08dbd826d8b2624c6bdc59082b3db57ecd` / r2 自身仍是历史 non-deployment train；其实现字节先被 `730c6be781…`、现被 `bf9be8c43b…` release 包含并进入 formal runtime。B0 仍为 `b0_accepted`，oracle 仍为 `oracle_frozen_for_b0`；本轮 formal smoke 没有启用 PlayerInfo fixture、观察真实 `pi_*` 或完成 PlayerInfo-specific standard-entry E2E，不能从总体 runtime 的 `standard_entry_verified` 外推 PlayerInfo 专项验收。历史 identity、可见验收与边界继续见 [runtime v2 深层文档](../docs/runtime-build-reproducibility.md)、[PlayerInfo 工具证据](../tools/player-info-hud/README.md)和 [B0 专项 ADR](../docs/玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md)。
 > **退役 cut 历史证据（2026-07-30）**：旧 AS2 工作台 fallback、Skill 无 token 兼容与主文件 legacy UI 资产可达性已经移除，GUI 人工验收已通过；当时正式 runtime 绑定 build identity `58F1C3F3B128B22CEA4EDAEF74B402976D13ACB09D4A934240FCCFF3FA7C0465`、payload closure `B529199F6CC00BC0687E8EED6950C6490F239C56E2A2D4AC27E90366CE2C8CAF` 与 Core `565C1F9710421E6B6CC5CB6DDA05DE36B8F1B22B3D7A7CA19617F9786C7D8A4B`，严格状态为 `standard_entry_verified`。首轮同身份标准入口 attempt `bfb6bfe515f14af58f9b4096c8c539dd` 因 reveal watchdog 比真实 title receipt 早约 8 ms 而 fail-closed；后续 clean attempt `8baf52bbcceb452da32da641e58d2922` 取得 fresh handoff、真实 title receipt、单次 enter、首个权威 snapshot 与 supported shutdown，失败记录继续保留。
 > **冻结专项证据**：地图资源箱 Web-only source `2c87d31fecbbfb50c072ec199da0134755974402` 已由 immutable tag `runtime-build-v2/20260722-map-loot-web-only-v1`、request `F1F9493CF08DD88F26E1493FCACE306AC160866EA21440FC62698E5965A1AF04` 与 promotion commit `40119635ae5527225a425eb7f69af54f85115066` 完成正式发布；隔离 candidate attempt `82b9e602526c4e93a02d26aac0a44f20` 达到 `e2e_verified`，标准入口 attempt `9e88d51425a54b8b84dff0aa21702eac` 达到 `standard_entry_verified`。该结论只覆盖冻结的 build identity `7C72B92B0C1CF57EB9BC0D3C1024D31657EE52E6B13D7BBF9FDB94FD5A6186DB`、payload closure `7E5EDCD4FEA80E1269C0B8BCC325D1FE0994EE8C7321F0F71CB9AF4B369C4A44` 与 Core SHA-256 `3EB1D3910B764F0B7F9ACA1FA989A4D8732F75479E64325223F270502256A5DF`，不得外推到后续源码。
@@ -23,10 +23,10 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 | SDK pin | [`global.json`](../global.json) at repo root, `version: 10.0.300` + `rollForward: disable`；runtime 发布另受 toolchain lock 约束 |
 | UI | WinForms (`UseWindowsForms=true`, WinExe) 单窗体（GuardianForm）+ WebView2（BootstrapPanel 引导页 + WebOverlayForm 运行态 overlay） |
 | Native HUD 图像 | **SkiaSharp 3.119.4**（MIT；共享地图 WebP 按最长边 512px 解码）→ `System.Drawing.Bitmap`；PlayerInfo 的 8 个 canonical SVG 固定用 **Svg.Skia 5.1.1**，且只能经 `PlayerInfoStrictSvg` 受控 facade 解析并烘焙为原子 whole-batch：8 个 logical layer 拥有 10 个 PArgb payload；PlayerInfo active+inactive LRU 总预算 16 MiB，decoded/tinted 地图缓存分别使用 24/12 MiB |
-| 构建 | 纯 producer `build-runtime-candidate.ps1`：**`dotnet publish --self-contained false`**（FDD、无 PDB）+ MSVC `cl.exe`（miniaudio + bootstrap）+ Rust/Cargo（sol_parser）；TypeScript/派生资产准备与产品审计已从 producer 分离 |
+| 构建 | 纯 producer `build-runtime-candidate.ps1`：**`dotnet publish --self-contained false`**（FDD、无 PDB）+ MSVC `cl.exe`（Audio v2 多 TU/静态 codec → 单一 `miniaudio.dll`，另编 bootstrap）+ Rust/Cargo（sol_parser）；TypeScript/派生资产准备与产品审计已从 producer 分离 |
 | 包管理 | **PackageReference + [`Directory.Packages.props`](Directory.Packages.props)** 中心化版本锁定（`ManagePackageVersionsCentrally=true`） |
 | GPU 检测 | **`Vortice.DXGI` 3.6.2**（SharpDX 团队接力的社区项目，1:1 替代 SharpDX.DXGI） |
-| 音频 | miniaudio (Unlicense, 单头文件 C 库 → native DLL, WASAPI) |
+| 音频 | Audio Platform v2：`AudioCoordinator` 单 owner；miniaudio built-in + 静态 libvorbis/libopus + Windows Media Foundation AAC；production backend `WASAPI → DirectSound → WinMM`，禁止 Null |
 | 存档解析 | Rust `sol_parser.dll`（flash-lso git pin `4b049ff3`），AMF0 → JSON |
 | JS 引擎 | ClearScript 7.4.5 (Chromium V8, 替代 Node.js vm2) |
 | Web 覆盖层 | WebView2 1.0.3856.49 (Evergreen Runtime, 幽灵输入解耦架构) |
@@ -43,7 +43,7 @@ projectRoot/
 │   ├── CRAZYFLASHER7MercenaryEmpire.Core.dll   main managed assembly
 │   ├── *.dll (ClearScript / WebView2 / Vortice / SkiaSharp / Svg.Skia managed/native 闭包)
 │   ├── THIRD-PARTY-NOTICES.txt                    第三方包与分发 notice
-│   ├── miniaudio.dll                            P/Invoke side-car
+│   ├── miniaudio.dll                            Audio Platform v2 fixed-width ABI side-car
 │   ├── sol_parser.dll                           P/Invoke side-car
 │   └── cf7-runtime-manifest.tsv                 producer 生成的 v1/v2 文件清单 + SHA256
 ├── tools/dotnet-runtime/
@@ -142,7 +142,7 @@ Program.Run(args)
    │   ├─ 以 `cf7me.cfg` 为租约文件，尝试用户级 / SysWOW64 / System32 三处 trust 目录
    │   └─ 全部失败只记 WARNING；退出统一 `RevokeTrust()`
    ├─ 正常模式额外校验 `flashPlayerPath` / `swfPath`
-   ├─ `AudioEngine.Init` + `MusicCatalog`
+    ├─ `MusicCatalog(real runtime-probe port)` → qualification hook → `AudioEngine.BeginInitialize`
    ├─ `PortAllocator` → `XmlSocketServer.Start` + `HttpApiServer.Start`
    ├─ `ToastOverlay` / `NotchOverlay`（两者均仅 `useNativeHud=false`） / `V8Runtime` / `FrameTask`
    ├─ 再次获取 WebView2 Runtime 版本，构造 `WebOverlayForm` + `InputShieldForm`
@@ -253,13 +253,14 @@ Program.Run(args)
 └─────────────┬─────────────────────┘
               │
 ┌─────────────┴─────────────────────┐
-│  AudioEngine (C# P/Invoke)        │
-│  ┌─────────────────────────────┐  │
-│  │  miniaudio.dll (native C)   │  │
-│  │  WASAPI shared mode         │  │
-│  │  BGM: dual-instance xfade   │  │
-│  │  SFX: preload + 30ms dedup  │  │
-│  └─────────────────────────────┘  │
+│  AudioEngine facade              │
+│  └─ AudioCoordinator 单 owner     │
+│     └─ AudioNativeV2 fixed ABI    │
+│        ┌────────────────────────┐ │
+│        │ miniaudio.dll 多 TU     │ │
+│        │ WASAPI→DS→WinMM, no Null│ │
+│        │ built-in/Xiph/MF codecs │ │
+│        └────────────────────────┘ │
 │  sol_parser.dll (Rust cdylib)     │
 │  AMF0 → JSON, 1-based refs        │
 └───────────────────────────────────┘
@@ -422,8 +423,11 @@ launcher/
 │   │   └── UiFreezeProbe.cs               后台线程看门狗：观测 UI 线程 timer 卡顿 / 前台真空 / IsHungAppWindow（仅观测不改焦点；默认 ON，env CF7_DIAG_FOCUS_PROBE=0 关）
 │   │
 │   ├── Audio/
-│   │   ├── AudioEngine.cs                 miniaudio P/Invoke（play/stop/seek/peak）
-│   │   └── MusicCatalog.cs                BGM 目录：XML 解析 + 文件系统扫描 + 热加载
+│   │   ├── AudioEngine.cs                 进程级兼容 facade；所有 native mutation 转交单 owner
+│   │   ├── AudioCoordinator.cs            唯一 native owner 队列、生命周期与不可变观测快照
+│   │   ├── AudioNativeV2.cs               fixed-width ABI adapter、capability/runtime snapshot
+│   │   ├── AudioWireV2.cs / AudioLifecycleWireV2.cs  strict wire v2 与生命周期 push
+│   │   └── MusicCatalog.cs / Audio*Qualification* / AudioSocketPublisherV2.cs  曲库资格化与原子投影
 │   │
 │   ├── Data/                              【NPC/佣兵数据迁移，Mar 2026】
 │   │   ├── DataCache.cs                   XML 数据热缓存
@@ -433,7 +437,7 @@ launcher/
 │   │   └── DirectoryWatcherService.cs     通用文件监听（500ms 去抖 + 增量回调）
 │   │
 │   ├── Tasks/
-│   │   ├── AudioTask.cs                   BGM JSON handler + SFX 快车道
+│   │   ├── AudioTask.cs                   strict v2 BGM handler + `S2` SFX 快车道
 │   │   ├── FrameTask.cs                   帧数据（F/R 快车道 + JSON 后备 + 搓招 D 前缀）
 │   │   ├── GomokuTask.cs                  五子棋 AI（外部 rapfi 引擎）
 │   │   ├── DataQueryTask.cs               NPC 对话 / 佣兵 spawn bundle / 敌人对话 / 任务 NPC 注册表查询（Data/ 支撑）
@@ -462,9 +466,12 @@ launcher/
 │       └── V8Runtime.cs                   ClearScript V8 运行时（伤害数字 + 搓招 DFA）
 │
 ├── native/
-│   ├── miniaudio.h                        miniaudio 单头文件库（Unlicense）
-│   ├── miniaudio_bridge.c                 C 导出层（BGM crossfade/seek/pause/looping, SFX preload, peak）
-│   ├── build.bat                          MSVC vcvars64 探测 + cl.exe 编译 → miniaudio.dll
+│   ├── audio_bridge_v2.h                  fixed-width、带 ABI/version 前缀的唯一 native 边界
+│   ├── miniaudio.c / miniaudio_bridge.c / audio_bridge_support.c  engine、桥接与支撑 TU
+│   ├── audio_backend_policy.* / audio_decoder_registry.* / audio_mf_decoder.cpp  backend、codec registry 与 MF
+│   ├── extras/decoders/ + third_party/     静态 libvorbis/libopus 及锁定源码
+│   ├── build-audio-v2.ps1                 多 TU/静态 codec 链接为单一 miniaudio.dll
+│   ├── audio-v2-build-inputs.v1.json / decoder-dependencies.lock.v1.json  构建输入与依赖锁
 │   ├── bootstrap/                         【native C++ bootstrap：用户面入口 wrapper】
 │   │   ├── bootstrap.cpp                  Win32-only, 零 STL；runtime 检测 + installer 调用 + ShellExecute Core.exe
 │   │   └── build.bat                      复用 vcvars64 → bin/Release/bootstrap.exe（~259KB，静态链接 CRT）
@@ -792,7 +799,7 @@ net10 FDD 模式 + bootstrap + runtime/ 子目录隐藏：
 | `Svg.Skia.dll` + `Svg.Animation.dll` + `Svg.Custom.dll` + `Svg.Model.dll` + `Svg.SceneGraph.dll` + `ShimSkiaSharp.dll` + `ExCSS.dll` | 生产 lock graph 精确版本 | PlayerInfo 受控静态 SVG managed renderer 闭包；不含 `Svg.Skia.JavaScript` / Jint |
 | `SkiaSharp.dll` + `libSkiaSharp.dll` + `HarfBuzzSharp.dll` + `libHarfBuzzSharp.dll` | 生产 lock graph 精确版本 | Skia/HarfBuzz managed + win-x64 native 依赖；`SkiaSharp` 固定 3.119.4 |
 | `THIRD-PARTY-NOTICES.txt` | ~143KB | PlayerInfo renderer 依赖 attribution、MIT/MS-PL 与 Win32 bundled notice；production contract 要求源码/candidate exact bytes |
-| `miniaudio.dll` | 778KB | 原生音频引擎（WASAPI）；独立 `cl.exe` 编译；与 Core.exe 同目录让 P/Invoke 命中 |
+| `miniaudio.dll` | — | Audio Platform v2 单一 native side-car：多 TU + 静态 libvorbis/libopus，production backend 为 WASAPI → DirectSound → WinMM（无 Null） |
 | `sol_parser.dll` | 225KB | Rust AMF0 → JSON 解析器（Protocol 2 存档决议） |
 
 **projectRoot/tools/dotnet-runtime/**：
@@ -1362,7 +1369,7 @@ WebView2 通过 `chrome.webview.postMessage({cmd, ...})` 发消息。所有 27 �
 | Ui/diag | `logs` | 读取 `logs/launcher.log` 最近 N 行 → `logs_resp` | 任意 |
 | Ui/diag | `open_saves_dir` | 调 `explorer.exe` 打开 `saves/` 文件夹 | 任意 |
 | Ui/diag | `diagnostic` | 打包当前档(`json + sol 二进制原件`) + `logs/` + `config/` + `meta.json` 到 `logs/diagnostic-{slot}-{ts}.zip` → `diagnostic_resp` | 任意 |
-| Ui/diag | `audio_preview` | 直调 `AudioEngine.ma_bridge_*` 应用音量并(SFX 通道)播放硬编码常驻 SFX (Button9.wav) → `audio_preview_resp` | 任意 |
+| Ui/diag | `audio_preview` | 经 `AudioEngine` 兼容 facade → `AudioCoordinator` 应用音量，并在 SFX 通道请求播放常驻 Button9.wav → `audio_preview_resp`；回包不等于物理端点可听证明 | 任意 |
 | Config | `config_set` | UserPrefs 写入 + 持久化（Plan A+ 协议，见下方） | 任意 |
 | Font pack | `fontpack_status` | 拉字体包 manifest 安装状态 → `fontpack_status_resp`（转发 FontPackTask op=status） | 任意 |
 | Font pack | `fontpack_install` | 下载指定 `group` → `fontpack_install_resp` + `fontpack_progress` 推送（FontPackTask op=download_group） | 任意 |
@@ -1529,7 +1536,7 @@ currentValue (Plan A+):
 - `system`（**setGlobalVolume / setBGMVolume**，迁移期临时入口）
 - `danger`（version 等改动后会让档无法识别的字段）
 
-系统卡片每个字段是 **滑杆 + 数字输入框 + 三预设（静音 / 默认 / 最大）+ 试听** 的组合控件；试听走 bootstrap channel `audio_preview` 直调 `AudioEngine.ma_bridge_*`，SFX 通道还会播一个硬编码的常驻 SFX (Button9.wav) 给即时反馈。
+系统卡片每个字段是 **滑杆 + 数字输入框 + 三预设（静音 / 默认 / 最大）+ 试听** 的组合控件；试听走 bootstrap channel `audio_preview`，经 `AudioEngine` 兼容 facade 进入 `AudioCoordinator`，SFX 通道还会请求播放常驻 Button9.wav。该响应只证明请求被处理，不证明物理端点实际可听。
 
 危险字段（schema 中 `danger:true`）默认 disabled，需双击 `danger-lock` 按钮 confirm 后才解锁；解锁状态进 `_dangerUnlocked` set 内存表，unmount 即清空。
 
@@ -1642,29 +1649,47 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 
 **前台看门狗**（`GuardianForm` 400ms 定时器）：兜底层。后台程序抢焦后未归还前台会留下"焦点真空"（`GetForegroundWindow()==NULL`），导致快捷键失灵 + Flash 降帧。看门狗检测到**持续**真空（连续 ≥2 tick 确认，规避前台交接瞬态误判）后，调 `WindowManager.RestoreFlashInputFocus` 把前台回收给 Flash。锁屏 / 安全桌面期间（`SystemEvents.SessionSwitch`）停转，避免空刷日志。
 
-### 原生音频引擎（miniaudio）
-音频播放从 Flash Sound API 完全迁移到 C# launcher 的 native DLL，Flash 侧仅发送播放指令。
+### 原生音频平台 v2（current source，NOT_DEPLOYED）
 
-**架构**：
-- `miniaudio_bridge.c` → `miniaudio.dll`: 单文件 C 库，WASAPI shared mode，支持 play/stop/seek/peak
-- `AudioEngine.cs`: P/Invoke 封装 (bgm_play/stop/seek/get_peak/get_cursor/get_length/is_playing)
-- `AudioTask.cs`: BGM JSON handler (bgm_play/stop/vol/seek) + SFX 快车道批量解析
-- `MusicCatalog.cs`: BGM 曲库管理，合并 bgm_list.xml + 文件系统自动发现 + FileSystemWatcher 热加载
-- `DirectoryWatcherService.cs`: 通用文件监听服务（500ms 去抖，可复用于 mod/皮肤等场景）
+本节只描述 H1 activation commit `c5ca5dfa9718e8a7714038e929a64081b7fd0026` 之后的 current source。当前仍为 **H2 blocked / NOT_DEPLOYED**，未进入 runtime promotion；不能把源码、单元测试或本地 DLL 外推为玩家正式入口已经升级。权威合同见 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)。
 
-**BGM 专辑系统**：`MusicCatalog` 启动时解析 `sounds/bgm_list.xml`（手工注册曲目）并扫描 `sounds/*/` 子目录发现未注册的音频文件（MP3/WAV/OGG/FLAC），按文件夹名归类为专辑。合并后的完整目录在 Flash 业务就绪后推送（`OnClientReady` 事件），热加载增量通过 `catalogUpdate` 推送。玩家只需在 `sounds/` 下新建文件夹投放音频，游戏运行中即可识别。详细说明见 [`../sounds/README.md`](../sounds/README.md)。
+**owner 与 ABI**：
+- `AudioEngine` 只保留进程级兼容 facade；所有 native mutation 都进入 `AudioCoordinator` 的单 owner 队列，只有 `AudioNativeV2` adapter 持有 raw P/Invoke。观察方读取不可变 capability/runtime snapshot，不直接触碰 native handle。
+- `audio_bridge_v2.h` 使用带 ABI/version 前缀的 fixed-width 边界；启动时读取 capability snapshot，运行期读取 session、ready、device generation、backend、meter/counter 等 runtime snapshot，禁止把 C enum、`bool`、`size_t`、`HANDLE`、`HRESULT` 或 miniaudio 类型泄漏到 managed 边界。
+
+**production backend、格式与构建**：
+- production 只按 `WASAPI → DirectSound → WinMM` 尝试输出，**不允许 Null backend**。三者均失败时发布 `audio_unavailable`，音频进入 no-output 降级；这不是 Launcher/游戏进程 fatal，其他业务继续运行。
+- 内建 decoder 为 WAV / MP3 / FLAC；静态链接 libvorbis / libopus；Windows Media Foundation 覆盖 AAC、M4A、MP4、ADTS。WMA 延后处理，当前不宣称支持。
+- `build-audio-v2.ps1` 编译多个 C/C++ TU，并把静态 codec 一并链接进**单一** `miniaudio.dll`；production 不依赖松散 codec DLL，也不以某次临时 DLL 大小作为合同。
+
+**内容资格化与 ready barrier**：
+- `.wav/.mp3/.flac/.ogg/.m4a/.mp4/.aac/.adts/.opus` 只是发现 hint，扩展名本身不构成支持证明。`MusicCatalog` 先做 container/codec content sniff 和 extension mismatch 判定，再对同一输入执行两次 size+mtime 稳定观测（production 间隔 1000ms），最后通过受文件大小、读取量、解码帧数、并发与 wall time 限制的 runtime probe；timeout 映射为 `probing/inconclusive_timeout`，不伪装 `available`。
+- probe VFS 遵守流式 decoder 的短读合同：只要本次交付了字节就返回成功，只有零字节物理 EOF 才返回 `MA_AT_END`，避免 Vorbis/Opus adapter 丢掉末批输入。offline 全文件哈希同一遍扫描还会验证 Ogg 物理页边界；EOF 落在 header/lacing/body 内稳定归类 `truncated`，完整页仍交给 decoder 判定内容是否合法。
+- missing 注册项继续以 `unavailable/missing` 出现在目录；稳定性、capability digest、prefix hash 与 probe outcome 共同决定 exact `available|probing|unavailable` / `reason`。热变化启动一次新的完整资格化并原子替换 snapshot，不能只凭旧字段或旧扩展继续宣称可用。
+- 生命周期顺序固定为 native/SFX 初始化 → catalog qualification → 向同一有效连接发送 full catalog → `audio_ready`；qualification 未完成、digest/epoch 漂移或 full catalog 未交付时不得提前 ready。
+
+**strict wire v2**：
+- 所有 BGM 请求使用 exact `wireRevision=2`、canonical `requestId`、lowercase UUID `audioSessionId` 和 uint64 十进制字符串 `audioReadyGeneration`；生命周期/result 另带同一 session/ready epoch 与 `deviceGeneration`。`connectionGeneration` 只用于 transport fencing，绝不进入 audio wire，也没有裸 `generation` 字段。
+- BGM admission 以 requestId 相关：`accepted_deferred` 只表示已接纳，实际开始另发 `started`；AS2 只接受 latest correlated terminal，较旧意图被 `superseded`，迟到结果不得覆盖最新播放状态。
+- SFX 快车道固定为 `S2|{audioSessionId}|{audioReadyGeneration}|{batchSeq}|{id...}`，并受总长、字段数与 id 上限约束。pre-ready、recovery、旧 session/ready generation 或旧 batch 一律 drop + counter，**不排队、不补播、不 replay**。
+
+**A6 exact-candidate qualification observer**：
+- 观察面只在 verified `isolated_candidate` Core 被显式传入 `--audio-v2-qualification-run-id <32 lowercase hex>` 时建立；无 flag 完全不创建 pipe，formal runtime、trusted unattended、legacy HTTP 或其他标准入口携带该 flag 必须 fail-closed。`automation/start.ps1` 只允许把 `-AudioV2QualificationRunId` 与显式 `-CandidateRoot` 组合使用。
+- pipe 名固定为 `cf7-audio-v2-qualification-{pid}-{runId}`，使用 `PipeOptions.CurrentUserOnly`、单一同时客户端及有界顺序重连。请求是最多 64 KiB 的 compact canonical UTF-8 NDJSON，绑定 exact runId/requestId；响应再次绑定 Core 的 PID/start time、实际模块路径/哈希、build identity 与 payload closure。跨 C#/Node 的 meter 与 BGM request 小数只接受有限非负且 `<1e21`，统一量化到 `1e-6`、零值写 `0`、其余写 `0.######` 非指数 JSON number；事件 hash 与最终响应均保留同一 raw decimal lexeme。客户端仍须用 OS `GetNamedPipeServerProcessId` 独立核对 exact Core PID，不能信任 caller 自报 telemetry。
+- `begin_case` / `end_case` 只给冻结的 14 个 endpoint case 写顺序唯一 marker，`snapshot` 必须携带并匹配当前 active `caseId`，`journal` 返回连续 sequence、逐事件 hash chain 与整表 SHA-256。`bgm_crossfade` marker 内由 Host 以 100ms cadence 运行 single-flight 只读 snapshot sampler，避免逐次启动 PowerShell 客户端破坏时序；它最多取 150 点且最多运行 15 秒，任一先到即停止，case end/dispose 也会取消并 fence late callback。该自动门只绑定 exact 非零 `fadeSeconds` 请求、相关 `started` result、source 替换以及相邻不超过 500 ms 的非零且推进 BGM meter；它只排除该分辨率下的无界静音空洞，不证明双 slot 同时活跃或各 slot 增益包络正确。唯一外部 annotation 是物理蓝牙/HDMI case 的 `routeKind=bluetooth|hdmi`；它不承载设备 telemetry 或 verdict。
+- 该 pipe **不是音频控制面**：它只写 marker、在 coordinator owner 队列读取 snapshot、读取 journal，绝不直接驱动 native。BGM/SFX 动作仍经生产 AS2 → `AudioTask` → facade/coordinator 链；journal 将 AS2 ingress、coordinator completion/recovery 与 qualification snapshot 分源记录。snapshot 只暴露 backend、设备 digest/name、session/ready/device generation、BGM source、BGM/SFX raw meter 和全部 SFX counters，不暴露 raw endpoint ID；engine session sample format（当前 `f32`）也不等同于 endpoint capture 文件格式（例如 `pcm_s16le`）。内部 meter 非零仍不能代签物理端点可听。
+
+**A5 source inventory**：生成器的 shipped-audio 清单共 827 项，精确分为 795 个 `tracked` + 32 个 `ignored_source`；content sniff 确认的 11 个 AAC 资产已从错误的 `.wav` 名称重命名为 `.m4a`。该清单是 source truth，不把“被扫描到”偷换成“已可播放”。详细投放说明见 [`../sounds/README.md`](../sounds/README.md)。
 
 **BGM 优先级**：Flash 侧 `SoundEffectManager` 实现 3 级优先级状态机（stage > jukebox > scene），支持 override 模式（jukebox > stage > scene）。被高优先级抢占的 BGM 意图记录在 `_suppressedScene/_suppressedStage` 中，恢复时精确还原（含 album 模式和 loop 语义）。
 
 **BGM**：双 `ma_sound` 实例 ping-pong crossfade。切换时旧曲淡出与新曲淡入重叠进行，基于 `ma_engine_get_time_in_milliseconds` 全局时钟调度。`stopBGM` 使用 `ma_sound_stop_with_fade_in_milliseconds`，操作两个槽位确保无残留。注意 miniaudio 的 base volume 与 fader 是相乘关系，crossfade 路径中 `ma_sound_set_volume` 必须设为 1.0（由 fader 独立控制 0→1 淡入）。Seek 使用 `ma_sound_seek_to_second()`（基于声源自身采样率换算，不依赖 engine sample rate）。
 
-**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。Native HUD 由 [AudioHudState](src/Guardian/Hud/AudioHudState.cs) 统一维护曲名、visualizer 偏好、播放态和 64 点峰值历史：peak 最快 100ms、播放态 250ms，Notch 把它作为 FPS sparkline 的低透明度背景包络，暂停时冻结并降透明度；右侧不再常驻 jukebox titlebar 或独立轮询。点歌机入口位于刘海展开区“辅助”行；正式展开 UI 仍由 [jukebox/jukebox-panel.js](web/modules/jukebox/jukebox-panel.js) 注册 `Panels.register('jukebox')`，经 `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` → `PanelHostController` 打开，继续承载大波形、进度、专辑、设置与 BGM 暂停/恢复。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 推送，catalog 仍由 `MusicCatalog` 启动期与热加载增量维护。
+**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。Native HUD 由 [AudioHudState](src/Guardian/Hud/AudioHudState.cs) 统一维护曲名、visualizer 偏好、播放态和 64 点峰值历史：peak 最快 100ms、播放态 250ms，Notch 把它作为 FPS sparkline 的低透明度背景包络，暂停时冻结并降透明度；这些 engine-side meter 不是物理端点可听证明。点歌机入口位于刘海展开区“辅助”行；正式展开 UI 仍由 [jukebox/jukebox-panel.js](web/modules/jukebox/jukebox-panel.js) 注册 `Panels.register('jukebox')`，经 `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` → `PanelHostController` 打开，继续承载大波形、进度、专辑、设置与 BGM 暂停/恢复。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 推送，catalog 由资格化后的原子 full snapshot 与后续重建维护。
 
-**SFX**：启动时扫描 `sounds/export/{武器,特效,人物}/` 目录，文件名即 linkageId，覆盖顺序武器→特效→人物（后覆盖前）。Flash 侧帧内累积，帧末由 FrameBroadcaster 合批发送 `S{id1}|{id2}|{id3}` 快车道消息。native 层 30ms 去重（`miniaudio_bridge.c` `DEFAULT_THROTTLE_MS=30`）。
+**SFX**：启动时扫描 `sounds/export/{武器,特效,人物}/` 目录，文件名即 linkageId，覆盖顺序武器→特效→人物（后覆盖前）。`SoundEffectManager` 调用 `AudioBridge.playSound`，由 `AudioBridge` 帧内累积并在帧末合成上述 strict `S2` batch；native 层继续执行 30ms 去重（`miniaudio_bridge.c` `DEFAULT_THROTTLE_MS=30`），但去重不改变 stale/drop/no-replay 语义。
 
-**路径编码**：所有字符串参数使用 `wchar_t*` (UTF-16)，文件操作用 `ma_sound_init_from_file_w()`，支持中文路径。
-
-**音效资产**：由 `tools/export_sfx.py` 调用 FFDec CLI 从 SWF 批量导出并重命名为 linkageId，运行时无需 manifest 文件。
+**路径编码**：native 文件路径使用 Windows UTF-16 路径接口，支持中文路径；它不改变 fixed-width 结构体与 versioned ABI 的边界要求。
 
 ### 性能调度迁移（PerfDecisionEngine）
 原 AS2 端的完整反馈控制回路（Kalman 滤波→PID→迟滞量化→执行器，~1400 行）已迁移到 C# launcher 端。

@@ -118,6 +118,11 @@ layers:
       - "**/*.wav"
       - "**/*.ogg"
       - "**/*.flac"
+      - "**/*.m4a"
+      - "**/*.mp4"
+      - "**/*.aac"
+      - "**/*.adts"
+      - "**/*.opus"
     exclude:
       # XFL 源工程（运行时不需要，音频已通过 export/ 提供）
       - "**/LIBRARY/**"

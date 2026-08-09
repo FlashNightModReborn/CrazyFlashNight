@@ -1,0 +1,2309 @@
+{
+  "materialization": "utf8_without_bom_canonical_lf",
+  "mediaFoundation": {
+    "allowlistedCodecs": [
+      "aac_lc",
+      "he_aac"
+    ],
+    "allowlistedContainers": [
+      "adts",
+      "mpeg4_audio"
+    ],
+    "implementation": "windows_sdk_source_reader_miniaudio_backend",
+    "linkLibraries": [
+      "mfplat.lib",
+      "mfreadwrite.lib",
+      "mfuuid.lib",
+      "ole32.lib",
+      "propsys.lib",
+      "shlwapi.lib"
+    ],
+    "looseSidecars": false,
+    "sdkVersionSource": "config/build/runtime-toolchain.lock.json"
+  },
+  "packages": [
+    {
+      "archiveBytes": 679285,
+      "archiveSha256": "E347B59C29E8F938BB48B2FDA5DA02F2D5D97316C004ABAA76E171CF4A2FBDD7",
+      "buildFlags": [
+        "OGG_STATIC",
+        "_CRT_SECURE_NO_WARNINGS"
+      ],
+      "licensePath": "launcher/native/third_party/libogg-1.3.6/COPYING",
+      "name": "libogg",
+      "sourceFiles": [
+        {
+          "bytes": 1466,
+          "path": "launcher/native/third_party/libogg-1.3.6/COPYING",
+          "sha256": "D2AB5758336489DA61C12CC5BB757DA5339C4AE9001F9BB0562B4370249AF814"
+        },
+        {
+          "bytes": 73,
+          "path": "launcher/native/third_party/libogg-1.3.6/include/Makefile.am",
+          "sha256": "78A0CA4571DBB1776A6E6169E1E640F5E391B7BDF1B695F7F60355A8030C9718"
+        },
+        {
+          "bytes": 18951,
+          "path": "launcher/native/third_party/libogg-1.3.6/include/Makefile.in",
+          "sha256": "34DD284C4C628F3A96E70D203E048B5A2527D39625B0A732B42771460EADE3FA"
+        },
+        {
+          "bytes": 600,
+          "path": "launcher/native/third_party/libogg-1.3.6/include/ogg/config_types.h.in",
+          "sha256": "11523F85A371CFEEF5F6945DF9EABC9A2D845B9434C108E8B2411F868D0C6022"
+        },
+        {
+          "bytes": 175,
+          "path": "launcher/native/third_party/libogg-1.3.6/include/ogg/Makefile.am",
+          "sha256": "FD2D0468F9E6E083702161ED2C0340C23803D6B152ABDC254C4579EBD292D06C"
+        },
+        {
+          "bytes": 18381,
+          "path": "launcher/native/third_party/libogg-1.3.6/include/ogg/Makefile.in",
+          "sha256": "1D914E6494CFD3A8F54D215028DB3D75DBA3189F6C7803E3D4A196B9A6339DDD"
+        },
+        {
+          "bytes": 8373,
+          "path": "launcher/native/third_party/libogg-1.3.6/include/ogg/ogg.h",
+          "sha256": "AAD86109C1FDB377738675A63E0B19859E06ADA25AE5C59C290CA7263D1DC4CA"
+        },
+        {
+          "bytes": 4781,
+          "path": "launcher/native/third_party/libogg-1.3.6/include/ogg/os_types.h",
+          "sha256": "3BBAB6A5D31E3C25C6080252B042AFB87028E3FFFF100E3E0285648B250B70F4"
+        },
+        {
+          "bytes": 30633,
+          "path": "launcher/native/third_party/libogg-1.3.6/src/bitwise.c",
+          "sha256": "753D2ACE9337BCB8C9EF23F42D630186F55F75A0D962EE79B3E7D87A614C147C"
+        },
+        {
+          "bytes": 23902,
+          "path": "launcher/native/third_party/libogg-1.3.6/src/crctable.h",
+          "sha256": "BBEB9F7E2EF15925400943A16EA9E3CE6AAF2F84A1E74B69B33E53A5C4693023"
+        },
+        {
+          "bytes": 66904,
+          "path": "launcher/native/third_party/libogg-1.3.6/src/framing.c",
+          "sha256": "04373C7F155E0F6D8A5F355108B2908002A6FFE3895DA89796619090A3313BDC"
+        },
+        {
+          "bytes": 765,
+          "path": "launcher/native/third_party/libogg-1.3.6/src/Makefile.am",
+          "sha256": "28A77AE3274C14C5D7067B7FBA8EBF4EB7F98A669D15043FD8A41EB252D027E9"
+        },
+        {
+          "bytes": 40830,
+          "path": "launcher/native/third_party/libogg-1.3.6/src/Makefile.in",
+          "sha256": "B591CE501C9B58456BC31C5A4883DD2DC6128BF47464C7A755A63C84B11727B5"
+        }
+      ],
+      "sourceKind": "release_archive",
+      "sourceUrl": "https://downloads.xiph.org/releases/ogg/libogg-1.3.6.zip",
+      "version": "1.3.6"
+    },
+    {
+      "archiveBytes": 1924556,
+      "archiveSha256": "57C8BC92D2741934B8DC939AF49C2639EDC44B8879CBA2EC14AD3189E2814582",
+      "buildFlags": [
+        "_CRT_SECURE_NO_WARNINGS"
+      ],
+      "licensePath": "launcher/native/third_party/libvorbis-1.3.7/COPYING",
+      "name": "libvorbis_libvorbisfile",
+      "sourceFiles": [
+        {
+          "bytes": 1470,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/COPYING",
+          "sha256": "EC1815DB59FCD302846DF949D7424876CB2E2DC5ED1606C5FB0B36787B1CF43A"
+        },
+        {
+          "bytes": 76,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/include/Makefile.am",
+          "sha256": "F52043FECEDF546255B1E7DD20097E2B2D451635D5F8373746B53EECC7386A87"
+        },
+        {
+          "bytes": 19183,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/include/Makefile.in",
+          "sha256": "5C06097E23E13554A95305E9C5FD75D50924F01A6ACDB0BD726F8563CBD49F43"
+        },
+        {
+          "bytes": 8387,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/include/vorbis/codec.h",
+          "sha256": "1D031E3CBAE7DEFE966426E33802450A56388A1323EEC1EC629E6D4095C676C5"
+        },
+        {
+          "bytes": 159,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/include/vorbis/Makefile.am",
+          "sha256": "802B0AFEFCE5E3FCCAD538AA4B4EEEF10EF2E70CBB6FF54C5E700C4797E1D4C4"
+        },
+        {
+          "bytes": 17369,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/include/vorbis/Makefile.in",
+          "sha256": "6F6F0B8AD701FE560EA0FD9FEEC53CC21EEACF2D16D292FFDF418D7D9DE225EB"
+        },
+        {
+          "bytes": 16990,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/include/vorbis/vorbisenc.h",
+          "sha256": "D2ABA0527252DC265FFC40BC9B1955D5AC0DC8D5E16D9376FA366C05FA27DC7F"
+        },
+        {
+          "bytes": 7990,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/include/vorbis/vorbisfile.h",
+          "sha256": "7D98264E57B0190EF0A2701A0BEA5F982E82FC1BEDD93CD9408A2FFF7790F803"
+        },
+        {
+          "bytes": 3088,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/analysis.c",
+          "sha256": "CF75D75C762F27EE9F50E9BE794E47551D86CBDFB00FBCE962BA3280A9516E4D"
+        },
+        {
+          "bytes": 5151,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/backends.h",
+          "sha256": "1253A0CF54A10B46591BF1DAC1717B3BD76ABE89188217CD7FBFAA8F50745DF5"
+        },
+        {
+          "bytes": 2391,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/barkmel.c",
+          "sha256": "75486BFDCB6D4360B606C400A11C5D471DEF82EDB2D204258AFA5666EAFF6AFD"
+        },
+        {
+          "bytes": 8478,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/bitrate.c",
+          "sha256": "FD8940A065820C247E0E115B9A10AF82C09ED419F8C9A6B88EDDAAED221F52B3"
+        },
+        {
+          "bytes": 1963,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/bitrate.h",
+          "sha256": "06BD012D67F97A5DC1DE135371060A0C879A83B01C69D2CCEEE4DDC7CBEF2676"
+        },
+        {
+          "bytes": 30592,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/block.c",
+          "sha256": "7F65C7031C2B94405D2C1B5F0A73CC19EFE9506E95736BA0B38D86BD42170A7E"
+        },
+        {
+          "bytes": 106,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/coupled/Makefile.am",
+          "sha256": "75BEE994A567EC99DE11CECF816C795E1381543670A29951F9E3F758452D82C8"
+        },
+        {
+          "bytes": 12851,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/coupled/Makefile.in",
+          "sha256": "5CB014237D85AF938B15D42F4EA504EE109C47E8CF6EB6D68A7B0332057E4F4B"
+        },
+        {
+          "bytes": 459592,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/coupled/res_books_51.h",
+          "sha256": "9E87F1929F827D6C1987D9056AADEE865475F522598B2D7C1F484B43DB7ABFC2"
+        },
+        {
+          "bytes": 629535,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/coupled/res_books_stereo.h",
+          "sha256": "AF0A24656E4726623836F0B8AF30AA8F77A80853EEE52C5F761FCCD2B151A35B"
+        },
+        {
+          "bytes": 49552,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/floor/floor_books.h",
+          "sha256": "5EE30DD6F4DBAB7A13E0F2975F54994034769E8061D7D8E1D56ECAD6FFCF627B"
+        },
+        {
+          "bytes": 86,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/floor/Makefile.am",
+          "sha256": "6303BA3938102FADF64BC0BBE8A44A0C5674F1B6DF21FC8A82AA47FC49C9472F"
+        },
+        {
+          "bytes": 12825,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/floor/Makefile.in",
+          "sha256": "2F7AA58EA14E51BE127C0B481FAFB2C2B569C0761A66473A34ACEE6D3A652D37"
+        },
+        {
+          "bytes": 93,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/Makefile.am",
+          "sha256": "55F3BCCFA5374D38A249101535AF6AE2F384B75F1F582AA393B7E8B1AD35A148"
+        },
+        {
+          "bytes": 19206,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/Makefile.in",
+          "sha256": "0048992F16B87389C1B8BA36BC61447FA4E8DF64918E69ADC2C903CE0D2CA433"
+        },
+        {
+          "bytes": 94,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/uncoupled/Makefile.am",
+          "sha256": "C9C8238679D45014D93382B9945BFA7DAF5443B37161E1EFC8BF6187C68D1213"
+        },
+        {
+          "bytes": 12845,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/uncoupled/Makefile.in",
+          "sha256": "1D2F3D9D867D3D8011601741BDADE68F4A3957C7C57BE44A4927FB0FF611C2DC"
+        },
+        {
+          "bytes": 241228,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/books/uncoupled/res_books_uncoupled.h",
+          "sha256": "2A162CA24BE180C6988663164E2490D7EEAACFFDE984852622112223BE615E51"
+        },
+        {
+          "bytes": 4580,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/CMakeLists.txt",
+          "sha256": "10DCBD29364DAFB2AACA916C0B2D4A90105D22FE4FC072BA50CEFCDEE45C4B6B"
+        },
+        {
+          "bytes": 13408,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/codebook.c",
+          "sha256": "662728EF6190968FD717AF62B19578006357090814B15B2F03DDC7A98871B345"
+        },
+        {
+          "bytes": 4958,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/codebook.h",
+          "sha256": "1A0BF4EBC17645910080155A83BD39B810C7E73703E97C65C5E7CCFDCB89EC55"
+        },
+        {
+          "bytes": 5392,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/codec_internal.h",
+          "sha256": "3F32AC0E4E94CB0DDE4800B243E1239CDA9E4DF1D277ACF334FB48A648A08F8B"
+        },
+        {
+          "bytes": 10672,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/envelope.c",
+          "sha256": "AE9F845D39776F7B6072543368A18037F778C56385A5CB6377DAC388F44B3B51"
+        },
+        {
+          "bytes": 2116,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/envelope.h",
+          "sha256": "4BC533E8455AD005FCA72274CE10E8C7CFF69251F0641D98A8A71922BE0BA0CE"
+        },
+        {
+          "bytes": 6889,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/floor0.c",
+          "sha256": "20185FA3BFF19F7C162A113F8FB969F3961079454B3FFD2019E9E555B0BBC61C"
+        },
+        {
+          "bytes": 30922,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/floor1.c",
+          "sha256": "FD4F403B56BF5538D1CC33FCF9236BCA230553C143273FE17F5846ED928B6A64"
+        },
+        {
+          "bytes": 1840,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/highlevel.h",
+          "sha256": "22758888E37C71831D2DCA16848F03443ED5B5308247C727A58C83F23294716C"
+        },
+        {
+          "bytes": 19866,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/info.c",
+          "sha256": "03AF6059FE7E50D0B37A0370707139227E6CD4CC74BE56473CD22F0300739FCA"
+        },
+        {
+          "bytes": 10036,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/lookup_data.h",
+          "sha256": "CD14D76EB3380D091BBCDDA5BC361E5F2F31803E71E3A2287AC4D1435ED57BD5"
+        },
+        {
+          "bytes": 3246,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/lookup.c",
+          "sha256": "4B169C62256E13A6575AAF38EB49514D8E7825C0DF2429A669768B5A6D6716FA"
+        },
+        {
+          "bytes": 1249,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/lookup.h",
+          "sha256": "1EFC9BDD275E812A7CCA384E0880DDC85EA94C4C845BCD41A4FE5A557B32AC86"
+        },
+        {
+          "bytes": 3916,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/lookups.pl",
+          "sha256": "D20442461647A8C64C00D2B6CD09D9BBE32238FD54C0903DAD4E3B31CEFBD7FA"
+        },
+        {
+          "bytes": 4486,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/lpc.c",
+          "sha256": "E782BD2780F354FCB0156855260C082CCDEED76DC1152BA7A6AE45B98520DFEB"
+        },
+        {
+          "bytes": 1174,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/lpc.h",
+          "sha256": "90B11956F6FE25980613E1FCE79D13A49E1109AD76E87C1F11891940DF4F78F5"
+        },
+        {
+          "bytes": 12585,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/lsp.c",
+          "sha256": "CF618A3BE06FEB94E39EB7A06AD0DB4FD8462F8EDAC93FAF4765B28516A9F5EF"
+        },
+        {
+          "bytes": 1182,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/lsp.h",
+          "sha256": "588111726561C1CAA8A22278EB63B7B4FA84DFBEEA14D99A1D9D46B77AACDA0C"
+        },
+        {
+          "bytes": 1926,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/Makefile.am",
+          "sha256": "083C60E895D03D701979789E495351B1383EE677334DF6606A04F8748976FC73"
+        },
+        {
+          "bytes": 37527,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/Makefile.in",
+          "sha256": "4B13840535F6791CC7117B5090065898C625DEDA1DBC38F298FB1814C6D2AF67"
+        },
+        {
+          "bytes": 28765,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/mapping0.c",
+          "sha256": "D3F26FA42C4345F36885E93650EE6DA07861B37EA816B131E5FAFB7A7C6D19E2"
+        },
+        {
+          "bytes": 39455,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/masking.h",
+          "sha256": "627FDC3683EDDA9800EDFFE0360807D782C1236BA4AD5D05F013517C104B9147"
+        },
+        {
+          "bytes": 15493,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/mdct.c",
+          "sha256": "E32B379D7A3D9253524ABAE3C41C5AC2486BF166CF65996EFC4E68DB1B164993"
+        },
+        {
+          "bytes": 1955,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/mdct.h",
+          "sha256": "F8AC37E630CD3C0B8790D4DE79134E1015DFF3A9136BEAB7835FF8B2E489FE0F"
+        },
+        {
+          "bytes": 1988,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/misc.h",
+          "sha256": "F83EBD3E0327E6B12CFE11239826691A9FAD3F4870B7F8444D7BA54ACE289E4A"
+        },
+        {
+          "bytes": 7395,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/floor_all.h",
+          "sha256": "EEE5E966BB08C94D03590A9617573EF55FDE625A7F38BBAC3BADCD1DFEA7E7A6"
+        },
+        {
+          "bytes": 320,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/Makefile.am",
+          "sha256": "F8E8AEE0FFEF99684B7A96E68BB826C72E638652C2EF633BA40896B72421DA5E"
+        },
+        {
+          "bytes": 13042,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/Makefile.in",
+          "sha256": "3DCC83A11FFC0EE1C559D8B15D7D798DF107AEC8BCB91D0FDDA649922EF3AD8E"
+        },
+        {
+          "bytes": 2321,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/psych_11.h",
+          "sha256": "F07AFD1F4C7E3EB3BDACAA17EB7FA4F0284B4B7D566F5C4AD6AC6192C4B95C6C"
+        },
+        {
+          "bytes": 6324,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/psych_16.h",
+          "sha256": "7A19A41238B98B3BDE37383028E9DE9814236CB3EA32C762B87A9712A1C17902"
+        },
+        {
+          "bytes": 32424,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/psych_44.h",
+          "sha256": "89B746CC218D5968534781353A68AA79FE600C70E075133CE8DB6A2D1ADFA247"
+        },
+        {
+          "bytes": 4044,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/psych_8.h",
+          "sha256": "038692E77D971E0E9160E7793E00B5720A884A4F814A0FC54F1EA5FB5FEE0191"
+        },
+        {
+          "bytes": 4834,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/residue_16.h",
+          "sha256": "EB845BCD40B90FD9352C0E4368F3D9BE0BF724436D7662F801C700C3DAF78677"
+        },
+        {
+          "bytes": 9913,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/residue_44.h",
+          "sha256": "682493552E7E9AB57A23A7DA6E9A9CC93F0FC1C9FAE14113DA5017B9E4AAB894"
+        },
+        {
+          "bytes": 12081,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/residue_44p51.h",
+          "sha256": "264449B1D7011383F25621900B1265AEE68C3B08363D02C9AC4C871F65A85445"
+        },
+        {
+          "bytes": 9088,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/residue_44u.h",
+          "sha256": "9333818E94293A6C4637900C8C61924046EC3F127F64620A301462448347C705"
+        },
+        {
+          "bytes": 3201,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/residue_8.h",
+          "sha256": "8D9426F1A2E9875AA4415E017EE6DFD89FACB74D8FC11EA2ACE2303914CA1463"
+        },
+        {
+          "bytes": 2749,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_11.h",
+          "sha256": "E0DB00CAA52B067FC00BFB481520E40639B692630E12D4AD7056E63D3C9F8CF1"
+        },
+        {
+          "bytes": 3275,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_16.h",
+          "sha256": "097C0EE4897E83603D82C9502AE2D370B697D32036029B0129A8D0AE7DC5ECB4"
+        },
+        {
+          "bytes": 2785,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_22.h",
+          "sha256": "1390300520D3FD2F8C2C982B42D99C6437A49C790EC7BB103BD4FF12FD61CC43"
+        },
+        {
+          "bytes": 3014,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_32.h",
+          "sha256": "A51D90D39B24DC979EA13E55162B0D3CF9BB02449B40902EC3C13EDC3DB04A97"
+        },
+        {
+          "bytes": 2994,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_44.h",
+          "sha256": "EE4D6FEAE20E853E866D614803F8BD36F373E852F9802C5D9526CE2F102A73C9"
+        },
+        {
+          "bytes": 1956,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_44p51.h",
+          "sha256": "3475D4F02E159ABCAB215A255D9522EF6DF3A8FCD38EAC9384972A71028583B9"
+        },
+        {
+          "bytes": 1967,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_44u.h",
+          "sha256": "105188C75026EFE6F7CDAC5D47065334CCE856F5C5CA1F5A0A3560A4415176AE"
+        },
+        {
+          "bytes": 2862,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_8.h",
+          "sha256": "E90461D17349D6E7E598868EF263F543FDB2974CA120460FDA166FF7D0DFF0D7"
+        },
+        {
+          "bytes": 4197,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/modes/setup_X.h",
+          "sha256": "8E34688933FC073C08590EFF72D838A4AF7C8748DD5C50270A18AF2A67E33E32"
+        },
+        {
+          "bytes": 5176,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/os.h",
+          "sha256": "B9E31C7A0F46D43F6788670FD63F8F3DB1584A8915F696E664EC8CF0C8FE81BE"
+        },
+        {
+          "bytes": 35900,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/psy.c",
+          "sha256": "E8CCEC1FBA7D00961D5C67FEC30B488C912F0AD7842EC7B1AEAB987B97744B6E"
+        },
+        {
+          "bytes": 4628,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/psy.h",
+          "sha256": "99D1F493B63185D702868D8F6616AB69BB546FFB61AFB3F47A0F637C3FF5B391"
+        },
+        {
+          "bytes": 16264,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/psytune.c",
+          "sha256": "DC7A55CABD7EE6431F723F3C5923930A944562CB56AAFBA8A699CD22C420FB9D"
+        },
+        {
+          "bytes": 1772,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/registry.c",
+          "sha256": "4259A70A4DE23AB48A0AF4FF08E0F68102052C6C7D3535C06BD7D7E2FDB82A65"
+        },
+        {
+          "bytes": 1247,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/registry.h",
+          "sha256": "29A25A4E34B3D41458B7A7E1757DA9C63CEA24322C39616B7FE16B3BF51AB55A"
+        },
+        {
+          "bytes": 24915,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/res0.c",
+          "sha256": "0D3DAF9327DBE14460D9B11DF1EA0D9DE709E3326D70B607D65720323D0CAF62"
+        },
+        {
+          "bytes": 2761,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/scales.h",
+          "sha256": "455637C2955912086613C0ACF0451091DD22707BF1560AC9F964B975998FB545"
+        },
+        {
+          "bytes": 17806,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/sharedbook.c",
+          "sha256": "A883767BF16552F5CF8686B58B86E55819DCB63487C5307FEE5D45820B836A40"
+        },
+        {
+          "bytes": 22185,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/smallft.c",
+          "sha256": "21B4CD38BC6D50991F4ABCA4D2619FE1FA27EE74A22BD935804F4CD62B77472A"
+        },
+        {
+          "bytes": 1218,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/smallft.h",
+          "sha256": "6DF874852A7247F181E9A8E7EAD541A40893CC50C0A17F1F3E799DB25C5A9E61"
+        },
+        {
+          "bytes": 5180,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/synthesis.c",
+          "sha256": "D5F92AAED1E7B59F3C01E0405813009CDA29A61A0E6155D60980907D93C1EEB3"
+        },
+        {
+          "bytes": 1007,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/tone.c",
+          "sha256": "07BAF17EF59384C2831ABFA6B46FB37FFE18FE11337CB64A152F5C637E53A842"
+        },
+        {
+          "bytes": 39310,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/vorbisenc.c",
+          "sha256": "0C123E6C1ECF7FD5729B570DB7FF061B2BFEFF46815BD93F96AC49C2DF79A45D"
+        },
+        {
+          "bytes": 76295,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/vorbisfile.c",
+          "sha256": "557752159E4C96E4CA339D28A4454C9D7EDBF6B2BCA6CBE4E8A5F8C44EF9196F"
+        },
+        {
+          "bytes": 128646,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/window.c",
+          "sha256": "BEA202730509AA12BC5F0DA703BE1A04A7E7DD04B2EE7A2B3A6F8B133EDAACBC"
+        },
+        {
+          "bytes": 1086,
+          "path": "launcher/native/third_party/libvorbis-1.3.7/lib/window.h",
+          "sha256": "9BB736D228DEAE67699012CC38F81D379E0B077432F162F2DCD1087F7669DC98"
+        }
+      ],
+      "sourceKind": "release_archive",
+      "sourceUrl": "https://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.zip",
+      "version": "1.3.7"
+    },
+    {
+      "archiveBytes": null,
+      "archiveSha256": null,
+      "buildFlags": [
+        "MA_ENABLE_ONLY_SPECIFIC_BACKENDS",
+        "MA_ENABLE_WASAPI",
+        "MA_ENABLE_DSOUND",
+        "MA_ENABLE_WINMM",
+        "MA_NO_NULL"
+      ],
+      "licensePath": "launcher/native/third_party/miniaudio-0.11.25/LICENSE",
+      "name": "miniaudio_and_official_decoder_adapters",
+      "sourceCommit": "9634bedb5b5a2ca38c1ee7108a9358a4e233f14d",
+      "sourceFiles": [
+        {
+          "bytes": 14906,
+          "path": "launcher/native/extras/decoders/libopus/miniaudio_libopus.c",
+          "sha256": "D58586494C65A4604C7B3D2E0A78851A9ED4EC8A56B68B300AA423A96C9E16AC"
+        },
+        {
+          "bytes": 2135,
+          "path": "launcher/native/extras/decoders/libopus/miniaudio_libopus.h",
+          "sha256": "2D15BC4ACB91A9775BABE25527654F75ECC970ECDB05CDF2382A43D8E3EAED97"
+        },
+        {
+          "bytes": 17960,
+          "path": "launcher/native/extras/decoders/libvorbis/miniaudio_libvorbis.c",
+          "sha256": "06FD2349B8C01E0D41F88DED1125F4C4BCA4CC8EC7FBC9E4E224EE33B4289B78"
+        },
+        {
+          "bytes": 2204,
+          "path": "launcher/native/extras/decoders/libvorbis/miniaudio_libvorbis.h",
+          "sha256": "FFBFDFA05994AA46330C0223F55114C9F3AF88EBEB7A5FA6E18D0623B0B36AEB"
+        },
+        {
+          "bytes": 4108168,
+          "path": "launcher/native/miniaudio.h",
+          "sha256": "AC7AF4DE748B7E26B777F37E01CEE313A308A7296A3EB080E2906B320CC55C89"
+        },
+        {
+          "bytes": 2597,
+          "path": "launcher/native/third_party/miniaudio-0.11.25/LICENSE",
+          "sha256": "457F1B500E0ADF6BC059EDDDFA78A2F62012E7C3BB43476C20E0BD23B25BA0EB"
+        }
+      ],
+      "sourceKind": "git_tag_and_commit",
+      "sourceUrl": "https://github.com/mackron/miniaudio/tree/0.11.25",
+      "version": "0.11.25"
+    },
+    {
+      "archiveBytes": 10472813,
+      "archiveSha256": "6FFCB593207BE92584DF15B32466ED64BBEC99109F007C82205F0194572411A1",
+      "buildFlags": [
+        "HAVE_LRINT",
+        "HAVE_LRINTF",
+        "NDEBUG",
+        "OPUS_BUILD",
+        "USE_ALLOCA",
+        "_CRT_SECURE_NO_WARNINGS"
+      ],
+      "licensePath": "launcher/native/third_party/opus-1.6.1/COPYING",
+      "name": "libopus",
+      "sourceFiles": [
+        {
+          "bytes": 961,
+          "path": "launcher/native/third_party/opus-1.6.1/celt_sources.mk",
+          "sha256": "0ECBEA48A3344B76A83887247AEBBFD04E6D297087A0297B3744F5006DAD2209"
+        },
+        {
+          "bytes": 6212,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/_kiss_fft_guts.h",
+          "sha256": "C61749211E75AB6088EA19CF05E777645B8762AC8917B7EC92DC24F630B0C392"
+        },
+        {
+          "bytes": 12547,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arch.h",
+          "sha256": "6CD5B41BE6D13E9300BB5EAE18BF1AB739882F4DB31E3A3A3D54C415C5B9C797"
+        },
+        {
+          "bytes": 8041,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/arm_celt_map.c",
+          "sha256": "A74B7CA0155BC55B6D1B6D74BB637BF6AA1E2CCAD0BDF905B0ACD6E5C807949B"
+        },
+        {
+          "bytes": 10762,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/arm2gnu.pl",
+          "sha256": "A8CAD929072449F309F40D73252A059D4A5AF0814A21019D661F24184C206A0A"
+        },
+        {
+          "bytes": 9535,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/armcpu.c",
+          "sha256": "18F5B330475DB86F261B1327946417948CDEA16AB4E991322887F8A07612A03F"
+        },
+        {
+          "bytes": 2830,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/armcpu.h",
+          "sha256": "9BFC2DA335B5A37CDE9DBEB16C9666C9678F0D8487466825678F6C2BBC4B520D"
+        },
+        {
+          "bytes": 1715,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/armopts.s.in",
+          "sha256": "71F3374DFBD38081F35E0367DD3727740287C1CF03E12BC5A224A151FD73A02B"
+        },
+        {
+          "bytes": 5703,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/celt_fft_ne10.c",
+          "sha256": "AE0850B3625DA625051AAF8EDEF4C7A546DEDD7ADA123E8066204ACE242B8274"
+        },
+        {
+          "bytes": 8118,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/celt_mdct_ne10.c",
+          "sha256": "65BC6082C1AB50CB24B172BEFDB98B0F5AE3A5CA1EABB039CD297698FEB7FB5A"
+        },
+        {
+          "bytes": 13324,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/celt_neon_intr.c",
+          "sha256": "EA912260479F6B355407AC561D2679EA40073DDCE5A767D5CC8094B724FBF83D"
+        },
+        {
+          "bytes": 20657,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/celt_pitch_xcorr_arm-gnu.S",
+          "sha256": "6AA84098E417A4594521357B0EA0994EA8A62550E81C320413DCE04308FA1F92"
+        },
+        {
+          "bytes": 20117,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/celt_pitch_xcorr_arm.s",
+          "sha256": "39135FBBFC4723F5B2AFAA8DB413B5F5C5C8A44AEC7CF615010A05C54B522389"
+        },
+        {
+          "bytes": 2428,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/fft_arm.h",
+          "sha256": "C23B268A1E646E0A9A3637DF8E2E425AD8D41F7B19AAA184DA3112549B16C41B"
+        },
+        {
+          "bytes": 1484,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/fixed_arm64.h",
+          "sha256": "36B30B4AE61EB54631AFA262ACC85BBD4A5D50C4D7D6A49D698791E4B79B657E"
+        },
+        {
+          "bytes": 2952,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/fixed_armv4.h",
+          "sha256": "2CA28BD5F429C412F2695C70C6DE278CC292F527D3AC6467681E96B6CC7D222E"
+        },
+        {
+          "bytes": 4284,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/fixed_armv5e.h",
+          "sha256": "378844BBE1A5844D0ACDF94932FA2563DFC7B2CB2CE553DB9EF2BC4B793B4115"
+        },
+        {
+          "bytes": 4465,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/kiss_fft_armv4.h",
+          "sha256": "6DD2447644F7F255FC6C4E12174FCF8B06CE5EB838D59CE0F5358941617ED555"
+        },
+        {
+          "bytes": 4101,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/kiss_fft_armv5e.h",
+          "sha256": "F13A165FE38F4DC7EDE8926407EB8B2118889A7674AB65DEA6DB25183C74EAC3"
+        },
+        {
+          "bytes": 3884,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/mathops_arm.h",
+          "sha256": "A9A8361EE8ED4C442BB820126BE1F5B5612386DB4268FB8C0DE93DCEADB9B2DB"
+        },
+        {
+          "bytes": 2621,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/mdct_arm.h",
+          "sha256": "E33DA2E6EF87BF80BB5EA116B35BC8E6F615A541FB6BB88B4D4CA2B484849F64"
+        },
+        {
+          "bytes": 468,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/meson.build",
+          "sha256": "222F5918D41908756F546488E0D9707DE57B1322102D4CEF34E6FCC00D9E30D3"
+        },
+        {
+          "bytes": 6631,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/pitch_arm.h",
+          "sha256": "6C941E3C917E60B6B10DF2CA594BE14AD43C21CF8AD9D0BF78FE6537B308AE09"
+        },
+        {
+          "bytes": 10415,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/arm/pitch_neon_intr.c",
+          "sha256": "3AC262214A575B6A9B147602BE983FF09C3040E7D4A4D5673E754DFE79B9F2A8"
+        },
+        {
+          "bytes": 61074,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/bands.c",
+          "sha256": "FC7DDCC7A46135C2CD89016025E4B96D30E9B514565610115467405D78D63EC6"
+        },
+        {
+          "bytes": 5577,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/bands.h",
+          "sha256": "2167A3FCCA0789942D46CDC2F870D77D66D09EC1840EE1DB8A508AE16126FAD8"
+        },
+        {
+          "bytes": 61451,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/celt_decoder.c",
+          "sha256": "A53393C70AE917D39229F34BCE2C16ADA535807E095CAD00A4580AEE48C9BFDB"
+        },
+        {
+          "bytes": 107002,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/celt_encoder.c",
+          "sha256": "5FA1A138C061CB4939141FF6704C33229E07168DE72D9DCF071F17277829CED7"
+        },
+        {
+          "bytes": 10753,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/celt_lpc.c",
+          "sha256": "8C6EB20B52AA9D52A83453FD3E33372F2FAF1791EA6CFCD8D9D294B005CD0801"
+        },
+        {
+          "bytes": 2240,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/celt_lpc.h",
+          "sha256": "E10B2E2E610B16A2003D00599467DFED45D300726EB28D0934857EBE2DC822CF"
+        },
+        {
+          "bytes": 11029,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/celt.c",
+          "sha256": "D3C1B484C4D895BCEDA7C543534FC607BF4C6E2B1CA4B080DEE8A5B8433A95D9"
+        },
+        {
+          "bytes": 8878,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/celt.h",
+          "sha256": "1C2B136ABE5AF480D3A579742EBF099EA345622645C1852C151CA2817C92EB53"
+        },
+        {
+          "bytes": 2434,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/cpu_support.h",
+          "sha256": "02BF67720C974A87FA96AAD556C4847ACC3370ECD16A95170193724197BC9C0E"
+        },
+        {
+          "bytes": 28394,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/cwrs.c",
+          "sha256": "6579428627C7CBDC5DE0E977BD81559F1E75CC7DD620BCB29EF7B4770AE13E44"
+        },
+        {
+          "bytes": 1885,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/cwrs.h",
+          "sha256": "7705BE67D58E7FBDEA384DDE5F3C404EF814FBB8ECBFCA61F731D11E8201BDC7"
+        },
+        {
+          "bytes": 3679,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/ecintrin.h",
+          "sha256": "C1100F45BDF70D2243740A7891A5DEF54CF483B51D024A35AC915B630639B556"
+        },
+        {
+          "bytes": 5700,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/entcode.c",
+          "sha256": "FB52778FB752126B6DA6366D29D532EE98D66EB366A28E913562EB9520BA9208"
+        },
+        {
+          "bytes": 5423,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/entcode.h",
+          "sha256": "97E7742AE4251B545326AADCC898635E90F22D5DC18FA63471C118B8BD79D1E8"
+        },
+        {
+          "bytes": 8374,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/entdec.c",
+          "sha256": "F2D74695CEEB927210DCF76D653241EBDFD465A1C23128604640D218CDD93C38"
+        },
+        {
+          "bytes": 5348,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/entdec.h",
+          "sha256": "31485453C516AD9BE38A03B50A3C450FD5A9B7C7FAD2D9E6C05357FD07EFE0A9"
+        },
+        {
+          "bytes": 9881,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/entenc.c",
+          "sha256": "56E0843479AE5DB15696125BA6AC3D0A0C26FA8B677D4D6BD457686865408572"
+        },
+        {
+          "bytes": 5905,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/entenc.h",
+          "sha256": "B54D50FA515E4CF2F4B5A5A7A99269B85E24AEFB533DD55D407660D1105B5A01"
+        },
+        {
+          "bytes": 23889,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/fixed_debug.h",
+          "sha256": "DE221ABC89897587EED6E08272A3905C7A1EB5AA10B656051727E9F147A9F80B"
+        },
+        {
+          "bytes": 10413,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/fixed_generic.h",
+          "sha256": "D102D53BB299308B832590760913A95DCD4BEF9684D6E92134852E932587995F"
+        },
+        {
+          "bytes": 5955,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/float_cast.h",
+          "sha256": "043F39A90F0DC86092DFA7A76916CB123D06084B16E984B7A2F6375DEA42FBFC"
+        },
+        {
+          "bytes": 18531,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/kiss_fft.c",
+          "sha256": "0FF3C57CE9DEDEDBF9925338808223EE8E164B5847F2B320DA49B11BAC4024D0"
+        },
+        {
+          "bytes": 6754,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/kiss_fft.h",
+          "sha256": "1F293823406831F90DEA83170C9D8CA0161254AB2F5F932B4110E8C8E96927B7"
+        },
+        {
+          "bytes": 6257,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/laplace.c",
+          "sha256": "6A33BDC5BF3A3350F51F92AAFA281E4163FDFFC88C9E7B0718F6EB770DC595E7"
+        },
+        {
+          "bytes": 2349,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/laplace.h",
+          "sha256": "27102A1E7F24879C6871DF971B7215B119D574BC25A3AF9740C343D3B285AE82"
+        },
+        {
+          "bytes": 11265,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mathops.c",
+          "sha256": "25199450CC613FC9784ADD776204DC81D12478FDE0D00C746FB1AC62BA85C10E"
+        },
+        {
+          "bytes": 22889,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mathops.h",
+          "sha256": "79BF06946BF6AB97E6EB933193BCC654D0A7503132044C22714D7CDCC22BA22F"
+        },
+        {
+          "bytes": 12338,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mdct.c",
+          "sha256": "8A21116BE9B1332926586F8F44AF0E1AFD9BB7E8A65614683F972654A0668DCB"
+        },
+        {
+          "bytes": 4771,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mdct.h",
+          "sha256": "FE4D55DA1AA03159403379A1CF9D6373DA7B27ED0F1DE63F8F726E9D9CFFD41A"
+        },
+        {
+          "bytes": 1818,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/meson.build",
+          "sha256": "91D517360A4A9DC232DB4803778391060A77DE8D1662E03523CA8682D5F420E8"
+        },
+        {
+          "bytes": 2232,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mfrngcod.h",
+          "sha256": "5974C2341889A1C2E9775C2A21B3A55D4CBC1EBEF90FE4412789ACA4F4A19504"
+        },
+        {
+          "bytes": 14377,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mini_kfft.c",
+          "sha256": "E8D317AB8AD7295212819B4B20B24708E2DD62FB8C0592DA2DF1C389C247E5A3"
+        },
+        {
+          "bytes": 5781,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mips/celt_mipsr1.h",
+          "sha256": "83B62F49EB94BDDC26F29E8E945BBF147248C64485CB28F760B5097877605F15"
+        },
+        {
+          "bytes": 4854,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mips/fixed_generic_mipsr1.h",
+          "sha256": "EBBE5110BB581614B905C5682FCC571A2FFE0FAF5621E45B36EB21374E2CEC88"
+        },
+        {
+          "bytes": 8542,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mips/kiss_fft_mipsr1.h",
+          "sha256": "C4B44780228DD53198E396DB5CD0F1E62D24E30377D046856D41AD784BF2947A"
+        },
+        {
+          "bytes": 11932,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mips/mdct_mipsr1.h",
+          "sha256": "9CB8459D5044EA1B36BC8819B93180070CFCE21B90F098F561E784E7E1C9F0F8"
+        },
+        {
+          "bytes": 10276,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/mips/pitch_mipsr1.h",
+          "sha256": "CED0E8B13F68A8A3F28B240E146C28F652ACBF42180BD732587045B7A41686FA"
+        },
+        {
+          "bytes": 16674,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/modes.c",
+          "sha256": "03E61DDF326812E4D0D7C00067319AF74E1CC5653E2C9551E5A322CAD1F73480"
+        },
+        {
+          "bytes": 2665,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/modes.h",
+          "sha256": "F1E503DB4939CEFAAAF9B5C744023223DE0ACDB51D2E33238E60BB0495E81C3F"
+        },
+        {
+          "bytes": 16282,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/opus_custom_demo.c",
+          "sha256": "D7321F41981227CB37D0C577D597B3FB98931E7C370FD3B57A0FC618DC417FB5"
+        },
+        {
+          "bytes": 3291,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/os_support.h",
+          "sha256": "9E0B4572B0C5F366FD6F954D8F70D598D5F2B9D6CD7D123FC0F57CFFF54ABFD6"
+        },
+        {
+          "bytes": 15133,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/pitch.c",
+          "sha256": "AD93368AE01B6FCADD28905E6ED5A55AD165AE5031654540AF77D1FFE55ACFD5"
+        },
+        {
+          "bytes": 6284,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/pitch.h",
+          "sha256": "546220CFC7B32796A1F18B37CE75864E94B0016EA8A5EAACE1F06C70AA8E20E2"
+        },
+        {
+          "bytes": 18965,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/quant_bands.c",
+          "sha256": "BEC6E7AC19FF02B83480C6CA6A01C084566781856A1E3442B7468BF25A4B937B"
+        },
+        {
+          "bytes": 2998,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/quant_bands.h",
+          "sha256": "EA86CDDFD98268902F37662CBE67D168FB8C1D5D23AD6E6A82B8F6F511048874"
+        },
+        {
+          "bytes": 29415,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/rate.c",
+          "sha256": "F288C8B88882E6500EE5FBB9036EEF1EE572E0301D28CD686061C815747A7B9E"
+        },
+        {
+          "bytes": 3606,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/rate.h",
+          "sha256": "7BC335949F2E6E7D4E28C23681C4FC6F3C99733848DEB7D1A24E908431F0D8A6"
+        },
+        {
+          "bytes": 6798,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/stack_alloc.h",
+          "sha256": "791A3ED2F579D0031213DD2E59446B2160F887C2DF158F00B254BB08E66A739F"
+        },
+        {
+          "bytes": 25209,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/static_modes_fixed_arm_ne10.h",
+          "sha256": "9C49D71262DC31EECEF4612291B98F9284BC702B8F1257DD549A2BC7FF6D1503"
+        },
+        {
+          "bytes": 203202,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/static_modes_fixed.h",
+          "sha256": "75A8932D1C3681FAE719B58C4495914E4CDB2826EFDF5809D73F64C4E05D4387"
+        },
+        {
+          "bytes": 28613,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/static_modes_float_arm_ne10.h",
+          "sha256": "F17E57248F303D0FA87F099EBB8BB3D6361497C90B3FD614C17522BE5C20135A"
+        },
+        {
+          "bytes": 149322,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/static_modes_float.h",
+          "sha256": "C3CF8439CDCF9281A5A0A66EEFD5F9D0C82537C6F88E33B53ACE9C9B3880F60C"
+        },
+        {
+          "bytes": 498,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/meson.build",
+          "sha256": "40A6E03CD5FB857759A6413B02F039A60124154B3B130CCC48DE173232E954BF"
+        },
+        {
+          "bytes": 4489,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_cwrs32.c",
+          "sha256": "5A45C9A73823BBA6CFBC36182E68F4360804E711C3A998590F7334C5B441627C"
+        },
+        {
+          "bytes": 4821,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_dft.c",
+          "sha256": "66A649669E54FF36F1E9A8C489AF820B11D508277404369C46EB1E7BC9DB665D"
+        },
+        {
+          "bytes": 11896,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_entropy.c",
+          "sha256": "3C3012064D79FB0826CDA7989D028F037D5B6A5640EDDB1156E00B711C32DDA0"
+        },
+        {
+          "bytes": 2803,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_laplace.c",
+          "sha256": "666DEB7D5F10013C0C677ADADC50EEDE8B449FCCF94FE364956D8467D81E44C0"
+        },
+        {
+          "bytes": 23267,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_mathops.c",
+          "sha256": "1885422DE5DAE7B37292F7D7560E8A71CFABA320F860C16312B57F9015FC5DE6"
+        },
+        {
+          "bytes": 6162,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_mdct.c",
+          "sha256": "99D35A36BB9956870F0A0CDBBBCA028A8017FFB42D3C040F8138D18959CAC150"
+        },
+        {
+          "bytes": 4330,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_mini_kfft.c",
+          "sha256": "89B321A8A110FE3EFE25A9321BDBBA2B87D7B1F97A335ACAA8BDAEF02DD45AF8"
+        },
+        {
+          "bytes": 2613,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_rotation.c",
+          "sha256": "C61A9FA345E6BD87BD204CC1A931EB9AD9BADFF853FC045649A87D1704EAD17E"
+        },
+        {
+          "bytes": 1752,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/tests/test_unit_types.c",
+          "sha256": "8B6AB5963D023A39E9064C0AAA5DDF26F4E5D1DC4C2A3614A86AF08967B7320B"
+        },
+        {
+          "bytes": 25048,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/vq.c",
+          "sha256": "7F488E7CED4080D267E4FF44CB512861A47A49D45891277F4E898FE680DAD0E5"
+        },
+        {
+          "bytes": 3921,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/vq.h",
+          "sha256": "B6C4C1FF9EB7AEB71CEF86FE18D33446C9B9A71B4E82F002840D7F13028195F5"
+        },
+        {
+          "bytes": 2273,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/celt_lpc_sse.h",
+          "sha256": "ED9C69B4F64A234A15374A8A7C0BED584C316B2F9DDC583F06EFC129ECC37E9C"
+        },
+        {
+          "bytes": 3038,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/celt_lpc_sse4_1.c",
+          "sha256": "14029AA815D785B457AE277CC986D310635263C7950AB2FDECA8931170D208A9"
+        },
+        {
+          "bytes": 4507,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/pitch_avx.c",
+          "sha256": "93397AC70D0D4952B9B9DB0F542D4E44C0AE935D5F3104D9397398E957DC2E7B"
+        },
+        {
+          "bytes": 5901,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/pitch_sse.c",
+          "sha256": "95BACC0FFE6DBF11A49F4D892B5485E0748A4E6CCF2F001A42E2EDBC31BE0203"
+        },
+        {
+          "bytes": 7273,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/pitch_sse.h",
+          "sha256": "610C078FF00A4C841DEF50CAC60092D72ADCC6FC88C735F14C87B7ED4DF83DE2"
+        },
+        {
+          "bytes": 3240,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/pitch_sse2.c",
+          "sha256": "4403C0F5982DD4845DCE4B303590FF04437499D57C0A02BC745E1E27520ECCD9"
+        },
+        {
+          "bytes": 7815,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/pitch_sse4_1.c",
+          "sha256": "18B391A66B6D11AE55D92588F87CC9FCF7A19D6188568C107351583C91C9F89C"
+        },
+        {
+          "bytes": 1996,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/vq_sse.h",
+          "sha256": "26EC674E13A6C6C4C87E7FC04D8F3BCEC47276C8022B2D0A03763DB8D6541AE2"
+        },
+        {
+          "bytes": 7736,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/vq_sse2.c",
+          "sha256": "76BF727C4EEC667C8D8D275B9537AA4F133B57E067BD9BA778E00B3BC390BAF2"
+        },
+        {
+          "bytes": 1618,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/x86_arch_macros.h",
+          "sha256": "B6118942870B62FF78731EDC3025E55230C3FADAF28EC2F4024D786210631505"
+        },
+        {
+          "bytes": 5555,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/x86_celt_map.c",
+          "sha256": "8F67562FEF7176E1A318A00745BBF65C148AC02D985C11A79B488A4C36D8B4BC"
+        },
+        {
+          "bytes": 5261,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/x86cpu.c",
+          "sha256": "C3D9E639236391E09BEAFA385BAA16A3D4C94A1337876B88159FB49A3FCBA104"
+        },
+        {
+          "bytes": 4247,
+          "path": "launcher/native/third_party/opus-1.6.1/celt/x86/x86cpu.h",
+          "sha256": "82297F62289E349B30F6D0D01E07A3DCE2B162D1B8C2754C5751BCC459134F52"
+        },
+        {
+          "bytes": 1945,
+          "path": "launcher/native/third_party/opus-1.6.1/COPYING",
+          "sha256": "01E1167D54A096D123CF6DFBBEB19587278845C6481D2D66D545669846079551"
+        },
+        {
+          "bytes": 226,
+          "path": "launcher/native/third_party/opus-1.6.1/include/meson.build",
+          "sha256": "9C14127570DD2598EF506FB7F75E8F1963457BBC93F2F1088EA0045A6D39167A"
+        },
+        {
+          "bytes": 16965,
+          "path": "launcher/native/third_party/opus-1.6.1/include/opus_custom.h",
+          "sha256": "3B67A36B36EAC7D712F712A4E57D602A7FF9DF753D184B0743BBCA8628CCFF4B"
+        },
+        {
+          "bytes": 38558,
+          "path": "launcher/native/third_party/opus-1.6.1/include/opus_defines.h",
+          "sha256": "BBD4D4E3BA99F6982B1C8D8F5541814AD77D8E8BABF3CC788CF23D517B2CA9D6"
+        },
+        {
+          "bytes": 38267,
+          "path": "launcher/native/third_party/opus-1.6.1/include/opus_multistream.h",
+          "sha256": "FD99C4594B4B57E406E9CAB45A777895DD1B4C8DE067088AA54ED7AE100B13F0"
+        },
+        {
+          "bytes": 32998,
+          "path": "launcher/native/third_party/opus-1.6.1/include/opus_projection.h",
+          "sha256": "11B3427E9CA342308A93ADC9A081E2479685E5B7811A3A53540609F1BBC488AD"
+        },
+        {
+          "bytes": 5157,
+          "path": "launcher/native/third_party/opus-1.6.1/include/opus_types.h",
+          "sha256": "19CB301EA1EEDBCBDBB5049363DE061893BF11C20E505A657B69CE6FFA5B11FA"
+        },
+        {
+          "bytes": 59505,
+          "path": "launcher/native/third_party/opus-1.6.1/include/opus.h",
+          "sha256": "036F6A6E83A20E943505743E113E90D6278CBE8240F7D5BB90B3F86261E783E3"
+        },
+        {
+          "bytes": 356,
+          "path": "launcher/native/third_party/opus-1.6.1/opus_sources.mk",
+          "sha256": "43DCED503E1BA8A9D7328615E16B878F6041502E28279D43C1335612E35450F9"
+        },
+        {
+          "bytes": 4259,
+          "path": "launcher/native/third_party/opus-1.6.1/silk_sources.mk",
+          "sha256": "E834190C31FD9B5D2606C14A1C00A180FA2AC0EA33330EEEF0C45D9DC835A90A"
+        },
+        {
+          "bytes": 10759,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/A2NLSF.c",
+          "sha256": "8552687904B2DB168CF9787AA2700369AE9BC76EE0F36DD77FE9B1BF32CCE465"
+        },
+        {
+          "bytes": 3782,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/ana_filt_bank_1.c",
+          "sha256": "23AB2F6EF89E6106F8A8A417F07055B091F7B25C5693F7F2007D5E82EDB4F849"
+        },
+        {
+          "bytes": 8353,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/API.h",
+          "sha256": "00D2A2FF0D5228B2EEAC4E1645531185537A07982CAD2D2231CCE287B8171ACF"
+        },
+        {
+          "bytes": 7911,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/arm_silk_map.c",
+          "sha256": "48A8E2A1F7F30D536D3A9EE0A7E6F6FCCF8556B2D1B03B6FE0E07AA1709DAF7A"
+        },
+        {
+          "bytes": 4430,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/biquad_alt_arm.h",
+          "sha256": "F252B371DF2859167CE6D703CCAD896B1A26F991BF5DB4A20465B801C541F001"
+        },
+        {
+          "bytes": 12350,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/biquad_alt_neon_intr.c",
+          "sha256": "C7125AAC0CC8DD0D2C65020B20E10806B28B84302A1A4E3733654049A49C8262"
+        },
+        {
+          "bytes": 3243,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/LPC_inv_pred_gain_arm.h",
+          "sha256": "8EA077FA01C4D1FFF026C049AEF8B45244283C9E5252D8E2137C335F93EBA5D7"
+        },
+        {
+          "bytes": 13314,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/LPC_inv_pred_gain_neon_intr.c",
+          "sha256": "059E0EA219640DA89A6498402BE12993C2F78DE51DE5A1525D31D028738E098D"
+        },
+        {
+          "bytes": 1878,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/macros_arm64.h",
+          "sha256": "868478B984F4FDAF1C13EEA31C1F04A687537CF31E9837C3E9DDDAFADA6A7F79"
+        },
+        {
+          "bytes": 3835,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/macros_armv4.h",
+          "sha256": "5B66D8F8F0CDD89B7D11EA5B0ED6548122A401A77E188F8294151E9F12914B6E"
+        },
+        {
+          "bytes": 6263,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/macros_armv5e.h",
+          "sha256": "7185F1CAEBD4E429A29FBA2DEC43B7ABBCD5377117FAB3070CD3CF83322D2AF1"
+        },
+        {
+          "bytes": 5450,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/NSQ_del_dec_arm.h",
+          "sha256": "62562CC02DAEE5B58E47B1BD2C3627AC156A916B2979D88F7B6BE744B13BA709"
+        },
+        {
+          "bytes": 65908,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/NSQ_del_dec_neon_intr.c",
+          "sha256": "EBCCEE0F1209F45739C3B9D0CB41A52700B2696FB387E64A281AB2B591172429"
+        },
+        {
+          "bytes": 4800,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/NSQ_neon.c",
+          "sha256": "F6C3E1678BAD77B6A768EEC9E63EBAB7A511D993945188100A0C999A81DC3938"
+        },
+        {
+          "bytes": 4991,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/NSQ_neon.h",
+          "sha256": "7B9A67FE7B93362FEFC6FAC31B06D6104BEB44C3056B159CBA82DA24FFCDBB5C"
+        },
+        {
+          "bytes": 2064,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/SigProc_FIX_armv4.h",
+          "sha256": "13A42BA7BF226DD2325F074F825D8FD69B1AE7E7ACB0A188BC7683B420590AD3"
+        },
+        {
+          "bytes": 2390,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/arm/SigProc_FIX_armv5e.h",
+          "sha256": "49844E22C381CCAC30D6A8A1F0FDFEEEB68D7325F6D741B0E1A0C12033F7F948"
+        },
+        {
+          "bytes": 6886,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/biquad_alt.c",
+          "sha256": "CAB5911F028EB96570859F2608BEC00BDEF8BC2BA338019B414ABF583B12FDF3"
+        },
+        {
+          "bytes": 2574,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/bwexpander_32.c",
+          "sha256": "695726D8E425B68ECD9E2AF47FEF31246066C01303F6D37DFFBA709462584474"
+        },
+        {
+          "bytes": 2760,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/bwexpander.c",
+          "sha256": "F01C2E6752D806974054C5B0AC5B9FBE1FEF88B59873DCAAE87974521F2D0256"
+        },
+        {
+          "bytes": 5029,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/check_control_input.c",
+          "sha256": "739C90C5E6E5BAD607D720DC34F39A4F36147FC63D42BC399CC0A1D739CF18F6"
+        },
+        {
+          "bytes": 9920,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/CNG.c",
+          "sha256": "E3741A6E4F23F941C1DC4589A7254D5D21F12AE01002376EC36270992DAA8B52"
+        },
+        {
+          "bytes": 5554,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/code_signs.c",
+          "sha256": "BECD3134A77E972D70E2845CF10AC4A597233040C37D58338FFE9085859660A2"
+        },
+        {
+          "bytes": 5919,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/control_audio_bandwidth.c",
+          "sha256": "3282B7F2833226E70C1291E4A92F3A63D724DA60323C263DAB822DF6740223E5"
+        },
+        {
+          "bytes": 20591,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/control_codec.c",
+          "sha256": "9C84153924C2033D1C539B97D1BB358D6C63A451883971745C6C9A550DE2053B"
+        },
+        {
+          "bytes": 5447,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/control_SNR.c",
+          "sha256": "4B6B102EBC8ACDC0BD44C5BEAB07032B15B69B20631E933DEF5A3781F7A63808"
+        },
+        {
+          "bytes": 6661,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/control.h",
+          "sha256": "A9FC44C0719B6C3506695B2667D53F0093877FABB251BFAC57EDD2FB5E08A784"
+        },
+        {
+          "bytes": 6941,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/debug.c",
+          "sha256": "1958D5E7580532722C590BAC325AC5873DA69712C13F187F2C5284D2B7EAD48B"
+        },
+        {
+          "bytes": 12924,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/debug.h",
+          "sha256": "6F02588379145C4DDCBD01DFAF8BB55D06B1F477120D7EB24E389EC57004388D"
+        },
+        {
+          "bytes": 22827,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/dec_API.c",
+          "sha256": "0F94C4C985851051D3CDF40A2EBF9B96C616EE1F49B8A2AD4477A6880FF01D1B"
+        },
+        {
+          "bytes": 12216,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/decode_core.c",
+          "sha256": "9BEC65A48D32F0B4843EAAA02CD6B49B0E853186F47695CE3F3C178D4BD3452F"
+        },
+        {
+          "bytes": 7388,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/decode_frame.c",
+          "sha256": "D76755EB49D7E2EE5106945948C4613D6FBACEEEC90D41F5DDC51956E185716D"
+        },
+        {
+          "bytes": 7245,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/decode_indices.c",
+          "sha256": "4D872038C93A2E16C266B1D29F400FFA8F5A4CCF57E50CBDC4CC5FA17623F5F5"
+        },
+        {
+          "bytes": 5527,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/decode_parameters.c",
+          "sha256": "D86E43FD07B72472BAA5036BACB277600312AFC0153D243324B89D8699C8DF1B"
+        },
+        {
+          "bytes": 3717,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/decode_pitch.c",
+          "sha256": "B74B8C46973519C2A1EE535CE2F64AC89A93A3C4C0EC2DE997D56CC5CA9262FA"
+        },
+        {
+          "bytes": 5598,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/decode_pulses.c",
+          "sha256": "58560300A5A4AE0EE2291349A8667CCE5EBB9054C4E5056AEED76E0FE2792F10"
+        },
+        {
+          "bytes": 4967,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/decoder_set_fs.c",
+          "sha256": "8CDD79180CF730D77C6E063B625B960C6199E9F75C98101AE5CD16BE4DC1E008"
+        },
+        {
+          "bytes": 9941,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/define.h",
+          "sha256": "4C580873F3EAA1F9ECEBEB2CF890E3BC6D24937673A0FD3E5DA8EB1EA46843B1"
+        },
+        {
+          "bytes": 32873,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/enc_API.c",
+          "sha256": "3EB171190E2AD0488EF77D00EB7B20EAA1EBC3A2AFDE7274F8A4F7681E9F261D"
+        },
+        {
+          "bytes": 9359,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/encode_indices.c",
+          "sha256": "585E886A5E552B7645E20A9BC4139369F96AEF254C01D4CBF89B757F6542E594"
+        },
+        {
+          "bytes": 8839,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/encode_pulses.c",
+          "sha256": "892EBD497FF473050344FBE5C9E03E3395FD6CBE07F33EE2770887DDD1B3F06F"
+        },
+        {
+          "bytes": 3572,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/errors.h",
+          "sha256": "899A34237A1F21867731382A94CCA0C341DD9DAD1BF964E74ACB3F7BFB542271"
+        },
+        {
+          "bytes": 4921,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/apply_sine_window_FIX.c",
+          "sha256": "D43ACD197F1D9293724F4CFD12CF29F2949548E1DD4EF01E53D280B41FE32E8B"
+        },
+        {
+          "bytes": 4273,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/arm/warped_autocorrelation_FIX_arm.h",
+          "sha256": "EA75F0C732C6EB449F4072F5DD89652CC4D34735B7E1F769E78BFC6B2B096505"
+        },
+        {
+          "bytes": 13544,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/arm/warped_autocorrelation_FIX_neon_intr.c",
+          "sha256": "C3933A0FF61B73E6F7D74AFAEC244E28488E0BEB6FFA3D377F6299A90F92490E"
+        },
+        {
+          "bytes": 2725,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/autocorr_FIX.c",
+          "sha256": "16ACEB2D3D8A896A350E43EBD142CFCC1B4413212C637634B9611998C15DC271"
+        },
+        {
+          "bytes": 16754,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/burg_modified_FIX.c",
+          "sha256": "9D4FDC704D9F7F12E985ED74F804F94DDF4D206B1D4C69710E013711D4DA8B34"
+        },
+        {
+          "bytes": 8334,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/corrMatrix_FIX.c",
+          "sha256": "8CEF6848E3336542C9B358781C02570A3624C35A73FB61631008C195F8C7E3D1"
+        },
+        {
+          "bytes": 24314,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/encode_frame_FIX.c",
+          "sha256": "4F2B91BA2CF8F000108028E796D1EB02D4AAEE075865BB99317F4E73BA64DAED"
+        },
+        {
+          "bytes": 7361,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/find_LPC_FIX.c",
+          "sha256": "9A805CB8CCE47685DA520F1237F8DC6F7040431E38A5C556C53306AC8BFB7A8E"
+        },
+        {
+          "bytes": 5422,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/find_LTP_FIX.c",
+          "sha256": "3D3E6EB738707E0522CAFF41E866F3FBBD0F9827841ACE1A20C4E7733E655C1C"
+        },
+        {
+          "bytes": 7330,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/find_pitch_lags_FIX.c",
+          "sha256": "72089CF92638FFC1371BF7631DC36D974F14258CB0AE1F21AC8C7AB9E6975BD2"
+        },
+        {
+          "bytes": 7655,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/find_pred_coefs_FIX.c",
+          "sha256": "7BD3ECB58C545780C26D841E084D284A8A5B0174E32B637322B5900B852775EB"
+        },
+        {
+          "bytes": 2675,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/k2a_FIX.c",
+          "sha256": "0DBE9B0849BEF47E8F97DAF0984482526538569E25D1E4D9EDC51DA37962578E"
+        },
+        {
+          "bytes": 2622,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/k2a_Q16_FIX.c",
+          "sha256": "22F0DCDE79D700F4ACEE6F44EB8F5B6AB6FE7F519240411B6486DC97E8E17B4D"
+        },
+        {
+          "bytes": 4729,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/LTP_analysis_filter_FIX.c",
+          "sha256": "1AD8D9BB824EFC851FF7B9988241BD69C96A7396D92409AD43693B9F38D0690E"
+        },
+        {
+          "bytes": 3328,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/LTP_scale_ctrl_FIX.c",
+          "sha256": "84B9867A55ECCBEA6964F55E32D1C8F063F822E798CF03E8A62ADCD5E16BCDC8"
+        },
+        {
+          "bytes": 19046,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/main_FIX.h",
+          "sha256": "ECCF1F7527162D410DF79C7D42E6C2D8E62B67959AE533AC053EADF8DA443F88"
+        },
+        {
+          "bytes": 8196,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/mips/warped_autocorrelation_FIX_mipsr1.h",
+          "sha256": "EC8DF04F301778FC4BFAAF6656ED109E329E276A5CD672D587CBD3C39FD773D1"
+        },
+        {
+          "bytes": 20438,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/noise_shape_analysis_FIX.c",
+          "sha256": "A3BA363CD3D3C1225CEDF433B7D304540AEA6ACB8EDA758AAED1ACBDC7CD23FB"
+        },
+        {
+          "bytes": 34345,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/pitch_analysis_core_FIX.c",
+          "sha256": "709CFE2B80127D7544E174631DF8F7D975AF26598D9A64AA65FEA3BC3D570C2F"
+        },
+        {
+          "bytes": 6595,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/process_gains_FIX.c",
+          "sha256": "92A25AF5A23536CAC6EC4216711AE82A680BE46D5B0C3B0515A2A2FEC9E6D495"
+        },
+        {
+          "bytes": 2626,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/regularize_correlations_FIX.c",
+          "sha256": "7028DF79D2FF6DDB0D271AFB53509C8F7186B8DE9296CFEA0EE78353B8CDCF64"
+        },
+        {
+          "bytes": 5389,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/residual_energy_FIX.c",
+          "sha256": "637A8F4489FF09808EC1B614FE0748719A4220F63B42F001E853449107E113F2"
+        },
+        {
+          "bytes": 4837,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/residual_energy16_FIX.c",
+          "sha256": "CA110197F01BC0DB71FDA0B520D710EF95E352C798E2C02210C636DDF13597D9"
+        },
+        {
+          "bytes": 4447,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/schur_FIX.c",
+          "sha256": "ADCAAE65D547DDD52C7CCDDCD82A13DCD25D2903520A8CA684F43C2F2A9D7892"
+        },
+        {
+          "bytes": 3994,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/schur64_FIX.c",
+          "sha256": "B342EABCF7B5E821141BB9F85B22465A14ED8ABDE415F3178CE9F00DBBF40D84"
+        },
+        {
+          "bytes": 5158,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/structs_FIX.h",
+          "sha256": "08C48813C69BF53E433A2081BEEC8A475A3261A396B96693F60093FCF43A5226"
+        },
+        {
+          "bytes": 4767,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/vector_ops_FIX.c",
+          "sha256": "DB8173D0B313BD066BBBEC9AD807F521A874140C69DC883C522D4DE3F23E8CDC"
+        },
+        {
+          "bytes": 4759,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/warped_autocorrelation_FIX.c",
+          "sha256": "FDCCB382D43D0CABCE0FADFAF76BFBF6CAB73B1137FD87282C642A7950F5D671"
+        },
+        {
+          "bytes": 22172,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/x86/burg_modified_FIX_sse4_1.c",
+          "sha256": "195FA6898178F79B232A980840101A943A89E9A921C6EA951B09E4B78F7ADD80"
+        },
+        {
+          "bytes": 3344,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/fixed/x86/vector_ops_FIX_sse4_1.c",
+          "sha256": "4331ECF29E02932477E4B380246D2821AD410774ED38089132E53E3E46B6D4A9"
+        },
+        {
+          "bytes": 3437,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/apply_sine_window_FLP.c",
+          "sha256": "0EEAD745CA4A141BB2A339B2E036BB99A8DA436E6B71759285E28D1F96E1041B"
+        },
+        {
+          "bytes": 2580,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/autocorrelation_FLP.c",
+          "sha256": "1716A571A70C0B2B350BFFD2589BFA517D3C7BF8DD609142BF42AFBDDB9AF3B0"
+        },
+        {
+          "bytes": 7955,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/burg_modified_FLP.c",
+          "sha256": "6A64DE9A833741F42AAE79575254EAD019A6CB53700BA257E08DE80174295617"
+        },
+        {
+          "bytes": 2308,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/bwexpander_FLP.c",
+          "sha256": "38D3892CE5C814D7E48E1E44A4B1844DADF640094A4107F8C5B38C8893471CE5"
+        },
+        {
+          "bytes": 4934,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/corrMatrix_FLP.c",
+          "sha256": "9A2B722B96FC053D6DC2462D439C5F7AE5F3F3803009F207D49E95491190CD39"
+        },
+        {
+          "bytes": 22671,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/encode_frame_FLP.c",
+          "sha256": "ACDE33EDDF0A1AEA34C1E1087A20236882306FD3F76842485E9CA1D5D4BC1C39"
+        },
+        {
+          "bytes": 2431,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/energy_FLP.c",
+          "sha256": "529E4B119D48E6B32F29E8155C08A23F683A706D2F939022B8BCC626E1EBFD99"
+        },
+        {
+          "bytes": 5504,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/find_LPC_FLP.c",
+          "sha256": "478DECEE219E6722E9D6F8BBD5F7D63426005CBABCE98FF37FEA69C4B2659C60"
+        },
+        {
+          "bytes": 3407,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/find_LTP_FLP.c",
+          "sha256": "A0AE23321591D7C44531D98B6D395B5152904A88573FA615C6A51BD039D2E737"
+        },
+        {
+          "bytes": 6486,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/find_pitch_lags_FLP.c",
+          "sha256": "701D3C268A7127E5754BC2CB76ECA7E65D8C2C1FC9EB9E13EE26B2DA421ABD7E"
+        },
+        {
+          "bytes": 6078,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/find_pred_coefs_FLP.c",
+          "sha256": "17B8BD4593264DFE7867072F1194E6078ACBA2D5854E6D7D5C66DB99C4682B3A"
+        },
+        {
+          "bytes": 2451,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/inner_product_FLP.c",
+          "sha256": "8A59ADE632BCA67CE002460C4E1E40E455530026AEB06FA8CEB405D75156EC22"
+        },
+        {
+          "bytes": 2535,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/k2a_FLP.c",
+          "sha256": "3A4D870B0ED0891EC21AD3202CB1430B51B6C5ADFD42EEB2FE2245857EA3CCFC"
+        },
+        {
+          "bytes": 10538,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/LPC_analysis_filter_FLP.c",
+          "sha256": "5974DBEC9C6BBA9675E46200EBE784230E5051CF136CF033F518813FEE9F84CE"
+        },
+        {
+          "bytes": 3289,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/LPC_inv_pred_gain_FLP.c",
+          "sha256": "1A12491579190A3F424E4FAA6B55B8ECFBF308683719DDDBD3A1B42959374E1B"
+        },
+        {
+          "bytes": 3729,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/LTP_analysis_filter_FLP.c",
+          "sha256": "12698A0A18E027134C5B6C393FE0B92F0CB7439ECCC3FB46C703BBC5D264A8D4"
+        },
+        {
+          "bytes": 3184,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/LTP_scale_ctrl_FLP.c",
+          "sha256": "ED03A4BCE5D4E6E0922FCBBC6B6F9C64FB57F3B635C8AC8F191F7FAE355C5F38"
+        },
+        {
+          "bytes": 19456,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/main_FLP.h",
+          "sha256": "127574DA3A364129E6AF44229021EE675655284930E5A663A33CBB299793121E"
+        },
+        {
+          "bytes": 15331,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/noise_shape_analysis_FLP.c",
+          "sha256": "58DB4EE733367AAE2F357140F1EA8ED4CD4DD3BE0F231667FCB3F251F24AFC1A"
+        },
+        {
+          "bytes": 29437,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/pitch_analysis_core_FLP.c",
+          "sha256": "A9DBF4ED03F1A79A13715AB56D9E8135BA7F02CED6C729DAC70642199C9B500E"
+        },
+        {
+          "bytes": 5107,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/process_gains_FLP.c",
+          "sha256": "A25547C792D4654DD0C09E2E6239A50DDB2E5FF10B6B85F759540C4C42FBADE4"
+        },
+        {
+          "bytes": 2437,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/regularize_correlations_FLP.c",
+          "sha256": "EEC0B68F4FC4B2A64739082B937F2A11E9453544553F0C16E302ECA4D02C8745"
+        },
+        {
+          "bytes": 5947,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/residual_energy_FLP.c",
+          "sha256": "689EED8CD9073486D546A67F4521FACAE7E4202138C4536B5BEAF2E348294AE9"
+        },
+        {
+          "bytes": 2413,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/scale_copy_vector_FLP.c",
+          "sha256": "1BEA4131E7F036320950BFEF7BFB69CB0C4A9DE3E1B45AE20905D3C6C7A13DA7"
+        },
+        {
+          "bytes": 2261,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/scale_vector_FLP.c",
+          "sha256": "A88FFC8AABBF32B99B59160079A51344D38FA67EAEB747754A54B0D17DFAF745"
+        },
+        {
+          "bytes": 3065,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/schur_FLP.c",
+          "sha256": "1F7035B3D546CC3CD89FF29B54AC07760BB5734573FFA907807630FD57CB6DE2"
+        },
+        {
+          "bytes": 9755,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/SigProc_FLP.h",
+          "sha256": "7E9BD27176F29A7F8307833597015AC0ED9061A8A5AF9319F80B5EAC3F982F97"
+        },
+        {
+          "bytes": 3684,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/sort_FLP.c",
+          "sha256": "8E4B046F47318B523D4FA2FBEDBF4E7B58544DAB929BEFBE1F11E31D17C43AD2"
+        },
+        {
+          "bytes": 4812,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/structs_FLP.h",
+          "sha256": "E1F4EC45222D3501E89EA19935606779AE18C7F127B3B1FF1857D86886B182B4"
+        },
+        {
+          "bytes": 3660,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/warped_autocorrelation_FLP.c",
+          "sha256": "8AE489F2562B552A3A4A56B7ACA95B8FE3513C03E7BE84184548EAC3B0E3BD0D"
+        },
+        {
+          "bytes": 10535,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/wrappers_FLP.c",
+          "sha256": "04D0ECE91C8149CF09F204A0270855A9C297F52743E1D315A24B5DD359CE3A95"
+        },
+        {
+          "bytes": 3348,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/float/x86/inner_product_FLP_avx2.c",
+          "sha256": "1C13473EF50E0491AA9CAB33BA77FCFF81F7ADE1A676A081D6482B032571821A"
+        },
+        {
+          "bytes": 6928,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/gain_quant.c",
+          "sha256": "070223B7A20976D91C8F557C5552537DB2C452E459483D886F78DAF71C5D17B7"
+        },
+        {
+          "bytes": 3989,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/HP_variable_cutoff.c",
+          "sha256": "E528FCF0EEBC186DCB31E751E27892EA144C94AF1F4FE5749890E7297F986184"
+        },
+        {
+          "bytes": 3057,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/init_decoder.c",
+          "sha256": "67D4DA1FA2A546432BA3CE7F815CAB5F759C24DAFF9C11746217E1ACA4B0FEB0"
+        },
+        {
+          "bytes": 2930,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/init_encoder.c",
+          "sha256": "0C06E1AFC8AEA2828426B599578F9708B0EA00C6BA3D76D5C2E0D4117E21DDF6"
+        },
+        {
+          "bytes": 7244,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/Inlines.h",
+          "sha256": "295558194C3B1778D5CED3B409FFCC011F0E5DF3E25E2BCB8BE28EF649AE9881"
+        },
+        {
+          "bytes": 2451,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/inner_prod_aligned.c",
+          "sha256": "11356406441D6257CE6941E408937EAEB22135849E38B551EA78D7BD624130D3"
+        },
+        {
+          "bytes": 2601,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/interpolate.c",
+          "sha256": "99EB0E43CA938348D5762B3D9C6F0F002933683363AB0E86BFCDCFCCDEB93A86"
+        },
+        {
+          "bytes": 2219,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/lin2log.c",
+          "sha256": "75A642C6D99BFE79E2DDC924E9B96BDF3E0EF7359CFA2E28DF4606AD4F86750F"
+        },
+        {
+          "bytes": 2636,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/log2lin.c",
+          "sha256": "4CE500B6B3AE8F96A6CCE5B93391E85459EC88E640CD8430A32CE7337FED8923"
+        },
+        {
+          "bytes": 6552,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/LP_variable_cutoff.c",
+          "sha256": "E17CEC3098EC1DF1529CEF41DBD9A83EC7D54477FEA7B593B3331171927AF481"
+        },
+        {
+          "bytes": 5015,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/LPC_analysis_filter.c",
+          "sha256": "5CD8EDB8558515D477F7C65C4F597D15C68D65B6D90CC303965D317666821C23"
+        },
+        {
+          "bytes": 4042,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/LPC_fit.c",
+          "sha256": "27E0D8A40024C0D6532705792C7278A3CA280E408DA71993EFEB485FD8F03EA6"
+        },
+        {
+          "bytes": 6161,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/LPC_inv_pred_gain.c",
+          "sha256": "C2CC22922CD31554EAA8920AC31238A901139B9CB7964621F6F5F49BEDD2B720"
+        },
+        {
+          "bytes": 20763,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/MacroCount.h",
+          "sha256": "8D822F074A31B6EDF49C1A9B45F6CAB36D5193393AEF94B73C6FF3C4D64AC4FC"
+        },
+        {
+          "bytes": 33581,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/MacroDebug.h",
+          "sha256": "AEFAB84EA6848A81B1C48BBCF60935F70751DED68853D5C7D0EBB1249BD75773"
+        },
+        {
+          "bytes": 6501,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/macros.h",
+          "sha256": "7FB2CE02A79DF147F9220A4FBC1EFFE531305881092F4B7D003057666223EBFD"
+        },
+        {
+          "bytes": 33034,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/main.h",
+          "sha256": "5EA6800F56E83FC6F15F7B7C8B189C4686A1F81B1CC75E18F580E305D5F455F2"
+        },
+        {
+          "bytes": 1920,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/meson.build",
+          "sha256": "FBE31C9FA2BFDEC9002895E00D6DCBD9D351C4834DD151AB2BF788F86CF6610B"
+        },
+        {
+          "bytes": 3443,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/mips/macros_mipsr1.h",
+          "sha256": "6058C0AAB57EF2BB12C2FD7F62CF34CEEBF4A6682A94367C640B88E5B921D97F"
+        },
+        {
+          "bytes": 5280,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/mips/NSQ_mips.h",
+          "sha256": "407E10D3CF4529BFDE097833F4B39B30B4CBADC4DC83AE264286AAB8E93453A7"
+        },
+        {
+          "bytes": 2212,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/mips/sigproc_fix_mipsr1.h",
+          "sha256": "0002AC0DD96F0983EF1F01613444819B97EB1E24CEFA5E9341327646A400F0F7"
+        },
+        {
+          "bytes": 4766,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NLSF_decode.c",
+          "sha256": "3D723C92896DF39BF399E7758B119D641261048F5E199935E61CAB287CF8B8E1"
+        },
+        {
+          "bytes": 11896,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NLSF_del_dec_quant.c",
+          "sha256": "3D045D2D59317AA7BD7EA277936DDF34770588931065AC34F3400C14234A5509"
+        },
+        {
+          "bytes": 6129,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NLSF_encode.c",
+          "sha256": "E0BB31A1FE04F30FA2F10A06EE31179293198702B2DDF9BB3BDBDE449E119121"
+        },
+        {
+          "bytes": 6347,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NLSF_stabilize.c",
+          "sha256": "14C69720CD90614D8FDF1A0BB05A051598B00783370633323BAFEC8FF310E2AC"
+        },
+        {
+          "bytes": 2948,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NLSF_unpack.c",
+          "sha256": "049555E005FEBE8CEDD19E72886F108835E4883E69013BF95050984DE070FAAC"
+        },
+        {
+          "bytes": 3937,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NLSF_VQ_weights_laroia.c",
+          "sha256": "5B44C124016B70DD95B94DD66BDF70D4CE6DB0FC5DD52420466720C1FCCE8CEC"
+        },
+        {
+          "bytes": 3975,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NLSF_VQ.c",
+          "sha256": "A918199E31254C639EE9F18CE24C4676C7BC9CC3A58FB1296CC416B8EE123E10"
+        },
+        {
+          "bytes": 6361,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NLSF2A.c",
+          "sha256": "CE17793880DB88D7247596F30415F86CEDA690E2EA289A6EFF27F2665BC8633C"
+        },
+        {
+          "bytes": 39492,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NSQ_del_dec.c",
+          "sha256": "5B7CC8F24A00F5D7094F8C632B517D034F39628147918C4F89C72327BC773B63"
+        },
+        {
+          "bytes": 22868,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NSQ.c",
+          "sha256": "BCE8CB89BE691137A0CA9D92E4D5998AAD67FB77F6EEBBEDF67246E8FD12CF8A"
+        },
+        {
+          "bytes": 4343,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/NSQ.h",
+          "sha256": "DB57D49D839862A0DA83585B75E7A436FC80E1E2B25E82AEB66A8AFD9CCAF951"
+        },
+        {
+          "bytes": 4060,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/pitch_est_defines.h",
+          "sha256": "A51197E9131A105CB12547AC520320A5AD9633C9A89DD74848999CA748F18AF4"
+        },
+        {
+          "bytes": 3589,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/pitch_est_tables.c",
+          "sha256": "C0CF34E7D5CED41D7117C345EDDDC4ECEFAF80EF2A55950A3A95582DA7E3E334"
+        },
+        {
+          "bytes": 21986,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/PLC.c",
+          "sha256": "914EB9CE1F7BD3CF68CBE5F8E91F5411C872006A99A6665409E66F307AF01427"
+        },
+        {
+          "bytes": 3339,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/PLC.h",
+          "sha256": "013F9159A95BF705DF435A11CBE0B1EC39D207DB8BAC9A7180585657F130DB32"
+        },
+        {
+          "bytes": 5447,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/process_NLSFs.c",
+          "sha256": "DFD4B5527FD6FF43D6EEC50DACFD51A5819FE5EBCA2A6797D25548D61C5DFB19"
+        },
+        {
+          "bytes": 7346,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/quant_LTP_gains.c",
+          "sha256": "81B85ACAD8242D5E423377999300C15AB4EC789C52615FA3FF7AC59AA1D0C7FD"
+        },
+        {
+          "bytes": 4765,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_down2_3.c",
+          "sha256": "2AB8318BF4BC64DE8491AC0272CDF19C79BF036725B17F21FC870E280B1EBC72"
+        },
+        {
+          "bytes": 3474,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_down2.c",
+          "sha256": "0F988CDC80644B0DC0C25B84765BD0F11A2851B1913204DB47EB064AF6DD4CF1"
+        },
+        {
+          "bytes": 2664,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_private_AR2.c",
+          "sha256": "AE6142C28E724374E0A0F8E988E27EAD22C6D52FB4E0EDE4467CAC3D500B2F2C"
+        },
+        {
+          "bytes": 10897,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_private_down_FIR.c",
+          "sha256": "175B7B6863FECFF32D9E36E497BBC666E7083CEB35DCCA7D40502DE58EB4FABD"
+        },
+        {
+          "bytes": 5231,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_private_IIR_FIR.c",
+          "sha256": "584C7B2AFBCB56BA03016401408D8EECB1393640EEE947D0BAE78FC141F425BE"
+        },
+        {
+          "bytes": 5367,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_private_up2_HQ.c",
+          "sha256": "F06A982B8856E1575371D147DDB9A03033F0569E8D7F969536133E606EF32A36"
+        },
+        {
+          "bytes": 4485,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_private.h",
+          "sha256": "B8985C3E4B2D1A7DB5EF0585D57BBE5106804D5C04648AB7A400C2D89F589E67"
+        },
+        {
+          "bytes": 4747,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_rom.c",
+          "sha256": "EC3BA5C620EE504D0A902290AE54BC8B434754E57E294A501A82757B9C9D6DDD"
+        },
+        {
+          "bytes": 3224,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_rom.h",
+          "sha256": "68BFA7FC24650E0AF574EE853764E40849952EB58E84E26739D0AC2CEDF49942"
+        },
+        {
+          "bytes": 2546,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler_structs.h",
+          "sha256": "0F82B16200CE0D9AFDB81C670B44D7435DC79EFA8E2A37E7B529EFD565F2B84D"
+        },
+        {
+          "bytes": 10146,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/resampler.c",
+          "sha256": "B75329B716A429B50E937BF7975AEDD200543D8A7E4E1C77A4572B2975740BA3"
+        },
+        {
+          "bytes": 7718,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/shell_coder.c",
+          "sha256": "60B5A2786238F669EB48DC9A81C072707A11691BE3A73029CEB643A6DEE5D7DD"
+        },
+        {
+          "bytes": 3163,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/sigm_Q15.c",
+          "sha256": "BFA177D2AB282CE9B36F46E72603784C0ADA059EF43D87D13293B34D205D366F"
+        },
+        {
+          "bytes": 39392,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/SigProc_FIX.h",
+          "sha256": "37942E211D5BA6443A8DA5841F374023F5BBA4899D25134FE2DCA62C4CAC5CF9"
+        },
+        {
+          "bytes": 6265,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/sort.c",
+          "sha256": "ADF6CE2C63BD04E092E43BECE82FB52CD6DC281D2B6BBFDD24F95FD54C27FEF1"
+        },
+        {
+          "bytes": 3417,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/stereo_decode_pred.c",
+          "sha256": "B852FBD96EA37D0387B523E5AEC0526E0AFE5D64457C5DA44E6D6903CCA27E8B"
+        },
+        {
+          "bytes": 2885,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/stereo_encode_pred.c",
+          "sha256": "405B710C9B7CEBCBE49262EE865A75F63FD6375FBA565B30C8AEE488D09B6E22"
+        },
+        {
+          "bytes": 4374,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/stereo_find_predictor.c",
+          "sha256": "B77B33B43AB9F72947D6B853A282B639A633345B30E71E1817F122D487941FA1"
+        },
+        {
+          "bytes": 12481,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/stereo_LR_to_MS.c",
+          "sha256": "36F67D3EFF5C77522733BBC9D2C19C2AE3AE96E5B6EE4B4DA84734EDAFE305E9"
+        },
+        {
+          "bytes": 4899,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/stereo_MS_to_LR.c",
+          "sha256": "55298E28FE9248AC067273533140AE73220B4F220222974B1E79ACCEDEA9A61A"
+        },
+        {
+          "bytes": 3404,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/stereo_quant_pred.c",
+          "sha256": "8D1895DE054A67A8501AF9BF977D20BE91F3A9EFC50D67BD683DD0A09DA69732"
+        },
+        {
+          "bytes": 21801,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/structs.h",
+          "sha256": "255E5BFCE33917A4C5E379A5371F939E7D34B1EB131A398C65A38A438C3AD2D8"
+        },
+        {
+          "bytes": 3789,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/sum_sqr_shift.c",
+          "sha256": "0A9DB7E0B0B5F577FFDC277A03A043DBEAC3D3DC9D05ABCBC798169C3ABFC44F"
+        },
+        {
+          "bytes": 4191,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/table_LSF_cos.c",
+          "sha256": "9CAE32DFDC4AB45E5F288A4FD74CF8BB5DACE19C651EC54B6C064024434D52C2"
+        },
+        {
+          "bytes": 2451,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tables_gain.c",
+          "sha256": "79B3CA1D67FF4DC665A837A9C6F22063FA706486846DF77AE48376F02D1A6914"
+        },
+        {
+          "bytes": 7432,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tables_LTP.c",
+          "sha256": "95B4912701D4DFD46F0364603092885818C00604808C9B7F606E40EEC34FB3F0"
+        },
+        {
+          "bytes": 10785,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tables_NLSF_CB_NB_MB.c",
+          "sha256": "94E49118901F9F9E4F09C9C088F6EEB8936F200686517D791440C26C523463F5"
+        },
+        {
+          "bytes": 14498,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tables_NLSF_CB_WB.c",
+          "sha256": "58511404ED6A4F6A8F5B0051E9328DF1B60A8C6D59928382438BE2CDDABC05D8"
+        },
+        {
+          "bytes": 4714,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tables_other.c",
+          "sha256": "07B309E991ADAB0496FE0A0622195C9B8C11C17290582FD39FE0B357EF7AFA5D"
+        },
+        {
+          "bytes": 3066,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tables_pitch_lag.c",
+          "sha256": "0CB26E4E711A16A728AEB3943BF9C23A488DE6ABD2FE455076F418E325605C4C"
+        },
+        {
+          "bytes": 11423,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tables_pulses_per_block.c",
+          "sha256": "2FB238CD37048303F2DFA033B1E4C4D6DECC427BA81C8ECCACAE5E19DC7B77FD"
+        },
+        {
+          "bytes": 7110,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tables.h",
+          "sha256": "2155BC78731ED37A76106D1F48D5C1125BD9CF579E9DA9EDB73C07C370BB3942"
+        },
+        {
+          "bytes": 280,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tests/meson.build",
+          "sha256": "22082A0769B5156F2C4D2A6D53DD63B9EF152DDEB2D68A1B36319F88E7E771A9"
+        },
+        {
+          "bytes": 4802,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tests/test_unit_LPC_inv_pred_gain.c",
+          "sha256": "5CB19C09B0ABD838345B023AC89E5F5B575697AC8756083DC700B768A54FE10B"
+        },
+        {
+          "bytes": 6122,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/tuning_parameters.h",
+          "sha256": "2823D20D758D468C1B5936914D679E25F42A20EFB8487686AEAF72A3F00048B4"
+        },
+        {
+          "bytes": 3522,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/typedef.h",
+          "sha256": "A25409C0741545A75F28BF8A51CCDC3A7BA2421E783BD02BAAFE379E6D43E5B7"
+        },
+        {
+          "bytes": 15007,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/VAD.c",
+          "sha256": "710CA80DAA272B7A3D2965CAF335AB165BB1CC7C8260EF89D79CCF386C587FF4"
+        },
+        {
+          "bytes": 7139,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/VQ_WMat_EC.c",
+          "sha256": "0CF17B00ECE99000BC536DDB479A619362194B228E2563223B211453359412B4"
+        },
+        {
+          "bytes": 20671,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/x86/main_sse.h",
+          "sha256": "26199BFD27E6E448170428AA898B40DCA9ACF5FC58EA2DAA2A6923D34431D3B8"
+        },
+        {
+          "bytes": 52645,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/x86/NSQ_del_dec_avx2.c",
+          "sha256": "3545A29BEFED0EFEBFD07C0368EA06150DC9273A16523784B7E3608191F36F24"
+        },
+        {
+          "bytes": 48765,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/x86/NSQ_del_dec_sse4_1.c",
+          "sha256": "6946C7DF19162B5D1FC048583E732736D53978A9DE6A34DF8CABF22EC8E20091"
+        },
+        {
+          "bytes": 36013,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/x86/NSQ_sse4_1.c",
+          "sha256": "36A7281D0DC9493FFD1DAB3176B9D4B44BF8B42312FD34DF61DC1E7C2477644F"
+        },
+        {
+          "bytes": 5274,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/x86/SigProc_FIX_sse.h",
+          "sha256": "2534456F00468ED99A32B61D29D94F6AD12976F77B7FA60B160932211C9A4580"
+        },
+        {
+          "bytes": 12012,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/x86/VAD_sse4_1.c",
+          "sha256": "1147C6602371AE0EAAF8FB7C960FC74B8340A12DD06C0A731B439E3CE0E4D60A"
+        },
+        {
+          "bytes": 8236,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/x86/VQ_WMat_EC_sse4_1.c",
+          "sha256": "E3C21CD270F6A9BF6ACE216C77C5C21175E551E6212C3C2B15F5ED8B0C240203"
+        },
+        {
+          "bytes": 10081,
+          "path": "launcher/native/third_party/opus-1.6.1/silk/x86/x86_silk_map.c",
+          "sha256": "2E69446B1C0A30FBC51B8DFEB552BCA5A91778EB2333EB4FE9198FA096AC3767"
+        },
+        {
+          "bytes": 36284,
+          "path": "launcher/native/third_party/opus-1.6.1/src/analysis.c",
+          "sha256": "D2442FC330FC2576D30DF080D68BE4ACA8803DF15EDCFCFA48078C13EBBC3FF8"
+        },
+        {
+          "bytes": 3583,
+          "path": "launcher/native/third_party/opus-1.6.1/src/analysis.h",
+          "sha256": "525530813F8650A82DF8E3BE6F5FE6E2A953D500AF81225FC0294971ECDD4A79"
+        },
+        {
+          "bytes": 23462,
+          "path": "launcher/native/third_party/opus-1.6.1/src/extensions.c",
+          "sha256": "82A896F6067D32CBB489B694F2E90F2DEC8208F0A68CA40E1D123E312A1408B5"
+        },
+        {
+          "bytes": 54289,
+          "path": "launcher/native/third_party/opus-1.6.1/src/mapping_matrix.c",
+          "sha256": "9A3A297F7ECAB73C54F8D63CC3146F2AE9971CE7F8A897C3A3037BDA163A224A"
+        },
+        {
+          "bytes": 4882,
+          "path": "launcher/native/third_party/opus-1.6.1/src/mapping_matrix.h",
+          "sha256": "31152417C02791F49DCFE8B3A96D519A88E1ADE84129E99F6D4AA88707C940E3"
+        },
+        {
+          "bytes": 1211,
+          "path": "launcher/native/third_party/opus-1.6.1/src/meson.build",
+          "sha256": "F102A617DD1E690D0EE0ED31DCAB6F6EB3A41B5A993BB35734ED987299D13F9A"
+        },
+        {
+          "bytes": 24120,
+          "path": "launcher/native/third_party/opus-1.6.1/src/mlp_data.c",
+          "sha256": "662233815B4D6A626259F9ACFFA14DCF65D5A2666C76233FD66B9B3E2F86BBAA"
+        },
+        {
+          "bytes": 4181,
+          "path": "launcher/native/third_party/opus-1.6.1/src/mlp.c",
+          "sha256": "162884422E9B91D368B695AA5F84D74F9585CBF2B13A45E6BBCA65DF880DB06C"
+        },
+        {
+          "bytes": 2096,
+          "path": "launcher/native/third_party/opus-1.6.1/src/mlp.h",
+          "sha256": "BB553CD83E8081E79244682CCE949AD1D6B584232D43EFF30A1A254100DBA07B"
+        },
+        {
+          "bytes": 11264,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_compare.c",
+          "sha256": "387E5486B93899B012065F1C71FE27D96EADE36A7C0BD419F03945D124A110C7"
+        },
+        {
+          "bytes": 49619,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_decoder.c",
+          "sha256": "DDC60846096A83669AA33992481CE088ECA791D6478ECDBF1E445A59D678779A"
+        },
+        {
+          "bytes": 49406,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_demo.c",
+          "sha256": "D4605A1F8214D530F83769BD3339C00B125B6982544F12BB72CDE9F5424C8E97"
+        },
+        {
+          "bytes": 119683,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_encoder.c",
+          "sha256": "C9E0A841E60FB904C9918F9F9A82F744CEFED0B55EA47D9D7027DD6B95AC2A2C"
+        },
+        {
+          "bytes": 15178,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_multistream_decoder.c",
+          "sha256": "833EE4F41937BF9FCBE6C88A90A2B75A9D9FDDBA2981825E202E74E71D6EC581"
+        },
+        {
+          "bytes": 39935,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_multistream_encoder.c",
+          "sha256": "77349F4DB763EB733E3E96328DE1120023F7B1BC0BCB2E8B041B90213DD5E2DA"
+        },
+        {
+          "bytes": 2683,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_multistream.c",
+          "sha256": "8DFA4D943290CBE8161C518FF7ED0440C9645FD38C76D1579BCA72DEEF99340A"
+        },
+        {
+          "bytes": 9225,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_private.h",
+          "sha256": "546EF810679530EC9E1129CA72E6FBA29C4EBA30ED56737B544525CEA58FEEC8"
+        },
+        {
+          "bytes": 8481,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_projection_decoder.c",
+          "sha256": "61BF853457A0AD6AD459668E7DB072E5E098DE93CF99140ED6EA851B134E92A1"
+        },
+        {
+          "bytes": 16886,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus_projection_encoder.c",
+          "sha256": "C2774B136E3FF667CC8C8E3A8B49DBD8E592491F5BCBE7BDBC44B08BC41D01A6"
+        },
+        {
+          "bytes": 11274,
+          "path": "launcher/native/third_party/opus-1.6.1/src/opus.c",
+          "sha256": "1CEE175636295BBD576FF384B77C31663B04FE09619598A452E067229205ADE1"
+        },
+        {
+          "bytes": 15784,
+          "path": "launcher/native/third_party/opus-1.6.1/src/qext_compare.c",
+          "sha256": "B75673C262ACDC0E76EBA276215707888DC98D5CA4BA530283CDBAED525C6DD3"
+        },
+        {
+          "bytes": 7442,
+          "path": "launcher/native/third_party/opus-1.6.1/src/repacketizer_demo.c",
+          "sha256": "D09AE52B1CA8CB8114AA201F8535C734836DE65956CE7E0523849CD7B15B7E5B"
+        },
+        {
+          "bytes": 13751,
+          "path": "launcher/native/third_party/opus-1.6.1/src/repacketizer.c",
+          "sha256": "F05394DE7387CD1264CAD6AB77BFEACBC126EBCE5BAE41EF8A63FD13380A35AF"
+        }
+      ],
+      "sourceKind": "release_archive",
+      "sourceUrl": "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz",
+      "version": "1.6.1"
+    },
+    {
+      "archiveBytes": 497931,
+      "archiveSha256": "7F44575596B78D7787C1865B9653E2A71546FF1AE77D87C53AB16DCC7AF295BA",
+      "buildFlags": [
+        "NDEBUG",
+        "_CRT_SECURE_NO_WARNINGS"
+      ],
+      "licensePath": "launcher/native/third_party/opusfile-0.12/COPYING",
+      "name": "libopusfile",
+      "sourceFiles": [
+        {
+          "bytes": 1487,
+          "path": "launcher/native/third_party/opusfile-0.12/COPYING",
+          "sha256": "0267AE795AB744C4E0F9C45E249440FDF2E75DAC8C804F36066B28649BF74AAF"
+        },
+        {
+          "bytes": 116107,
+          "path": "launcher/native/third_party/opusfile-0.12/include/opusfile.h",
+          "sha256": "FEC33E1EDCF905AF91ED9F7BB8E5860235CC11BA5551FC2E28FC22CA951520D5"
+        },
+        {
+          "bytes": 133659,
+          "path": "launcher/native/third_party/opusfile-0.12/src/http.c",
+          "sha256": "FE8EF1336A30870F2F96F8C7FEC54071C3A825DBE1AA0513C0C5BADA563D3C12"
+        },
+        {
+          "bytes": 25990,
+          "path": "launcher/native/third_party/opusfile-0.12/src/info.c",
+          "sha256": "D6CD9D8FDB7B09B4721992F6517B02ADB8F0E653004406EB2DBF6A11AF2C75CA"
+        },
+        {
+          "bytes": 1411,
+          "path": "launcher/native/third_party/opusfile-0.12/src/internal.c",
+          "sha256": "652A194EE3666A42F879D5835A250AD077C76E0A6C67DF1B8DEEB240F1BF7E66"
+        },
+        {
+          "bytes": 10021,
+          "path": "launcher/native/third_party/opusfile-0.12/src/internal.h",
+          "sha256": "A482E1BE28EA8D70A073ED75E262E9C2B31FF73ABF620838E77676C82FF5CE1A"
+        },
+        {
+          "bytes": 128542,
+          "path": "launcher/native/third_party/opusfile-0.12/src/opusfile.c",
+          "sha256": "B75F36104B255E2D4EBF5173205FEF49C3978DA5DA6D0782657BEB094EEABA8B"
+        },
+        {
+          "bytes": 13744,
+          "path": "launcher/native/third_party/opusfile-0.12/src/stream.c",
+          "sha256": "E0AD2567E53C92A3B68C697F76DDA3EF123654834626FAA45983B8C40161B1D2"
+        },
+        {
+          "bytes": 6359,
+          "path": "launcher/native/third_party/opusfile-0.12/src/wincerts.c",
+          "sha256": "1E68751253553381A39F9F90EEF09760AC8412C1CDBC5249D16982D8381FFDC9"
+        },
+        {
+          "bytes": 3718,
+          "path": "launcher/native/third_party/opusfile-0.12/src/winerrno.h",
+          "sha256": "1AC4CC050C3771B7E235A73DD549F79F78696AB44869F27AB0C43A025A6C48A4"
+        }
+      ],
+      "sourceKind": "release_archive",
+      "sourceUrl": "https://downloads.xiph.org/releases/opus/opusfile-0.12.zip",
+      "version": "0.12"
+    }
+  ],
+  "schema": "cf7.audio-v2.decoder-dependencies.lock.v1"
+}

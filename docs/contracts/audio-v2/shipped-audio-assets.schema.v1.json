@@ -1,0 +1,572 @@
+{
+  "$defs": {
+    "artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "blobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "bytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "blobOid",
+        "bytes",
+        "path",
+        "sha256"
+      ],
+      "type": "object"
+    },
+    "referenceEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "bgm_registration",
+            "byte_identical_active_asset",
+            "music_catalog_discovery_rule",
+            "outside_discovery_policy",
+            "sfx_preload_discovery_rule",
+            "xfl_library_href"
+          ]
+        },
+        "locator": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "sourcePath": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "sourceSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "locator",
+        "sourcePath",
+        "sourceSha256"
+      ],
+      "type": "object"
+    },
+    "sourceEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "blobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "bytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "repositoryState": {
+          "enum": [
+            "ignored_source",
+            "tracked"
+          ]
+        },
+        "role": {
+          "enum": [
+            "bgm_registration",
+            "config_eol_policy",
+            "music_catalog_discovery",
+            "recovery_xfl_library",
+            "sfx_preload_discovery",
+            "sfx_preload_runtime_observation",
+            "tools_eol_policy"
+          ]
+        },
+        "sha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "blobOid",
+        "bytes",
+        "path",
+        "repositoryState",
+        "role",
+        "sha256"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "cf7.audio-v2.shipped-audio-assets.schema.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assetClosureSha256": {
+      "pattern": "^[A-F0-9]{64}$",
+      "type": "string"
+    },
+    "assets": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "blobOid": {
+            "pattern": "^[0-9a-f]{40,64}$",
+            "type": "string"
+          },
+          "bytes": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "codec": {
+            "enum": [
+              "aac_lc_or_he_aac",
+              "flac",
+              "mpeg_audio_layer_iii",
+              "opus",
+              "pcm_s16le",
+              "vorbis",
+              "wma"
+            ]
+          },
+          "container": {
+            "enum": [
+              "adts",
+              "asf",
+              "flac",
+              "iso_bmff",
+              "mpeg_audio",
+              "ogg",
+              "riff_wave"
+            ]
+          },
+          "discoveryClass": {
+            "enum": [
+              "catalog_discovered",
+              "catalog_registered",
+              "outside_both",
+              "sfx_preload"
+            ]
+          },
+          "extension": {
+            "enum": [
+              ".flac",
+              ".m4a",
+              ".mp3",
+              ".mp4",
+              ".ogg",
+              ".opus",
+              ".wav",
+              ".waz"
+            ]
+          },
+          "nextAction": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "outsideClassification": {
+            "enum": [
+              null,
+              "obsolete",
+              "owned_exception",
+              "runtime_reachable",
+              "source_only"
+            ]
+          },
+          "owner": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "path": {
+            "pattern": "^(music|sounds)/",
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "referenceEvidence": {
+            "items": {
+              "$ref": "#/$defs/referenceEvidence"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "repositoryState": {
+            "enum": [
+              "ignored_source",
+              "tracked"
+            ]
+          },
+          "sha256": {
+            "pattern": "^[A-F0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "blobOid",
+          "bytes",
+          "codec",
+          "container",
+          "discoveryClass",
+          "extension",
+          "nextAction",
+          "outsideClassification",
+          "owner",
+          "path",
+          "reason",
+          "referenceEvidence",
+          "repositoryState",
+          "sha256"
+        ],
+        "type": "object"
+      },
+      "maxItems": 827,
+      "minItems": 827,
+      "type": "array"
+    },
+    "inventoryExtensions": {
+      "const": [
+        ".flac",
+        ".m4a",
+        ".mp3",
+        ".mp4",
+        ".ogg",
+        ".opus",
+        ".wav",
+        ".waz"
+      ]
+    },
+    "inventoryRoots": {
+      "const": [
+        "sounds",
+        "music"
+      ]
+    },
+    "missingLatentReferences": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "linkageId": {
+            "const": "apwersound.wav"
+          },
+          "nextAction": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "owner": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "referenceEvidence": {
+            "items": {
+              "$ref": "#/$defs/referenceEvidence"
+            },
+            "minItems": 2,
+            "type": "array"
+          }
+        },
+        "required": [
+          "linkageId",
+          "nextAction",
+          "owner",
+          "reason",
+          "referenceEvidence"
+        ],
+        "type": "object"
+      },
+      "maxItems": 1,
+      "minItems": 1,
+      "type": "array"
+    },
+    "missingRegisteredReferences": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "nextAction": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "owner": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "referenceEvidence": {
+            "items": {
+              "$ref": "#/$defs/referenceEvidence"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "titles": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "nextAction",
+          "owner",
+          "path",
+          "reason",
+          "referenceEvidence",
+          "titles"
+        ],
+        "type": "object"
+      },
+      "maxItems": 1,
+      "minItems": 1,
+      "type": "array"
+    },
+    "producer": {
+      "$ref": "#/$defs/artifact"
+    },
+    "qualificationScope": {
+      "additionalProperties": false,
+      "properties": {
+        "h2CompleteGitInventoryTotal": {
+          "const": 795
+        },
+        "ignoredSourceOnlyExcluded": {
+          "const": 32
+        },
+        "outsideDiscoveryExceptionsAreDecodeOrSignalWaivers": {
+          "const": false
+        },
+        "physicalCorpusTotal": {
+          "const": 827
+        },
+        "rule": {
+          "const": "only_repositoryState_tracked_enters_H2_complete_git_inventory_and_decode_to_EOF"
+        },
+        "trackedShippedAssetClosureSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "h2CompleteGitInventoryTotal",
+        "ignoredSourceOnlyExcluded",
+        "outsideDiscoveryExceptionsAreDecodeOrSignalWaivers",
+        "physicalCorpusTotal",
+        "rule",
+        "trackedShippedAssetClosureSha256"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.shipped-audio-assets.v1"
+    },
+    "sourceEvidence": {
+      "items": {
+        "$ref": "#/$defs/sourceEvidence"
+      },
+      "maxItems": 9,
+      "minItems": 9,
+      "type": "array"
+    },
+    "summary": {
+      "additionalProperties": false,
+      "properties": {
+        "byCodec": {
+          "additionalProperties": false,
+          "properties": {
+            "aac_lc_or_he_aac": {
+              "const": 11
+            },
+            "mpeg_audio_layer_iii": {
+              "const": 756
+            },
+            "pcm_s16le": {
+              "const": 60
+            }
+          },
+          "required": [
+            "aac_lc_or_he_aac",
+            "mpeg_audio_layer_iii",
+            "pcm_s16le"
+          ],
+          "type": "object"
+        },
+        "byContainer": {
+          "additionalProperties": false,
+          "properties": {
+            "iso_bmff": {
+              "const": 11
+            },
+            "mpeg_audio": {
+              "const": 756
+            },
+            "riff_wave": {
+              "const": 60
+            }
+          },
+          "required": [
+            "iso_bmff",
+            "mpeg_audio",
+            "riff_wave"
+          ],
+          "type": "object"
+        },
+        "byExtension": {
+          "additionalProperties": false,
+          "properties": {
+            ".m4a": {
+              "const": 11
+            },
+            ".mp3": {
+              "const": 215
+            },
+            ".wav": {
+              "const": 599
+            },
+            ".waz": {
+              "const": 2
+            }
+          },
+          "required": [
+            ".m4a",
+            ".mp3",
+            ".wav",
+            ".waz"
+          ],
+          "type": "object"
+        },
+        "byRepositoryState": {
+          "additionalProperties": false,
+          "properties": {
+            "ignoredSource": {
+              "const": 32
+            },
+            "tracked": {
+              "const": 795
+            }
+          },
+          "required": [
+            "ignoredSource",
+            "tracked"
+          ],
+          "type": "object"
+        },
+        "catalogDiscovered": {
+          "const": 4
+        },
+        "catalogRegistered": {
+          "const": 86
+        },
+        "missingLatentReferences": {
+          "const": 1
+        },
+        "missingRegisteredReferences": {
+          "const": 1
+        },
+        "outsideBothDiscoveryPaths": {
+          "additionalProperties": false,
+          "properties": {
+            "byClassification": {
+              "additionalProperties": false,
+              "properties": {
+                "obsolete": {
+                  "const": 0
+                },
+                "ownedException": {
+                  "const": 29
+                },
+                "runtimeReachable": {
+                  "const": 0
+                },
+                "sourceOnly": {
+                  "const": 32
+                }
+              },
+              "required": [
+                "obsolete",
+                "ownedException",
+                "runtimeReachable",
+                "sourceOnly"
+              ],
+              "type": "object"
+            },
+            "musicRoot": {
+              "const": 29
+            },
+            "soundsRecoveryLibrary": {
+              "const": 32
+            },
+            "total": {
+              "const": 61
+            }
+          },
+          "required": [
+            "byClassification",
+            "musicRoot",
+            "soundsRecoveryLibrary",
+            "total"
+          ],
+          "type": "object"
+        },
+        "preloadSfx": {
+          "const": 676
+        },
+        "totalPhysicalAudio": {
+          "const": 827
+        }
+      },
+      "required": [
+        "byCodec",
+        "byContainer",
+        "byExtension",
+        "byRepositoryState",
+        "catalogDiscovered",
+        "catalogRegistered",
+        "missingLatentReferences",
+        "missingRegisteredReferences",
+        "outsideBothDiscoveryPaths",
+        "preloadSfx",
+        "totalPhysicalAudio"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "assetClosureSha256",
+    "assets",
+    "inventoryExtensions",
+    "inventoryRoots",
+    "missingLatentReferences",
+    "missingRegisteredReferences",
+    "producer",
+    "qualificationScope",
+    "schema",
+    "sourceEvidence",
+    "summary"
+  ],
+  "type": "object"
+}

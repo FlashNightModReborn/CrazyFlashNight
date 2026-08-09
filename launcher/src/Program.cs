@@ -431,7 +431,14 @@ class Program
         // execute before diagnostics, WinForms, project-root walk-up, native
         // bootstrap probing, or any worktree-controlled startup component.
         if (TrustedUnattendedRunner.IsInvocation(args))
+        {
+            if (CF7Launcher.Audio.AudioQualificationInvocationV1
+                .ContainsFlagLike(args))
+            {
+                return 2;
+            }
             return TrustedUnattendedRunner.Run(args);
+        }
 
         // candidate runtime-only 是显式的人类验收能力，不能让目录 walk-up 隐式触发。
         string explicitProjectRoot = TryGetProjectRootFromArgs(args);
@@ -446,7 +453,28 @@ class Program
             StartupDiagnostics.Exit("runtime_bundle_self_check_failed");
             return 2;
         }
-        return MainAfterStartupDiagnostics(args, earlyProjectRoot, isolatedRuntimeCandidate);
+        string audioQualificationRunId;
+        try
+        {
+            audioQualificationRunId =
+                CF7Launcher.Audio.AudioQualificationInvocationV1.ResolveRunId(
+                    args,
+                    isolatedRuntimeCandidate);
+        }
+        catch (Exception ex)
+        {
+            StartupDiagnostics.Exception(
+                "audio_v2_qualification_invocation_rejected",
+                ex);
+            StartupDiagnostics.Exit(
+                "audio_v2_qualification_invocation_rejected");
+            return 2;
+        }
+        return MainAfterStartupDiagnostics(
+            args,
+            earlyProjectRoot,
+            isolatedRuntimeCandidate,
+            audioQualificationRunId);
     }
 
     // Headless scripts normally probe through the native bootstrap first, but the invariant
@@ -639,7 +667,11 @@ class Program
 
     // 防止 JIT 内联导致 DpiAwarenessBootstrap.Initialize() 的异常栈折叠进 Main，影响 startup diagnostics 定位。
     [MethodImpl(MethodImplOptions.NoInlining)]
-    static int MainAfterStartupDiagnostics(string[] args, string earlyProjectRoot, bool isolatedRuntimeCandidate)
+    static int MainAfterStartupDiagnostics(
+        string[] args,
+        string earlyProjectRoot,
+        bool isolatedRuntimeCandidate,
+        string audioQualificationRunId)
     {
         long processStart = Stopwatch.GetTimestamp();
         PerfTrace.SetProcessStart(processStart);
@@ -675,7 +707,10 @@ class Program
 
         try
         {
-            return Run(args, isolatedRuntimeCandidate);
+            return Run(
+                args,
+                isolatedRuntimeCandidate,
+                audioQualificationRunId);
         }
         catch (Exception ex)
         {
@@ -863,7 +898,10 @@ class Program
         return core ?? bootstrap;
     }
 
-    static int Run(string[] args, bool isolatedRuntimeCandidate)
+    static int Run(
+        string[] args,
+        bool isolatedRuntimeCandidate,
+        string audioQualificationRunId)
     {
         // 定位项目根目录:
         // 1. 优先 bootstrap 传 --project-root <abs>（FDD 产物在 projectRoot/runtime/ 子目录,
@@ -877,6 +915,8 @@ class Program
                              ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
                              ?? Path.GetDirectoryName(Environment.ProcessPath);
         string exePath = Environment.ProcessPath;
+        CF7Launcher.Audio.AudioQualificationDiagnosticsHostV1
+            audioQualificationHost = null;
         StartupDiagnostics.Init(projectRoot);
 
         string unattendedBootstrapRequest =
@@ -1112,43 +1152,70 @@ class Program
             LogManager.Log("[Guardian] SWF: " + config.SwfPath);
         }
 
-        // === 音频引擎（在所有网络服务之前初始化）===
-        using (PerfTrace.Scope("audio.init"))
-        {
-            StartupDiagnostics.Mark("audio.init_start");
-            bool audioOk = CF7Launcher.Audio.AudioEngine.Init(projectRoot);
-            if (audioOk)
-            {
-                StartupDiagnostics.Mark("audio.init_ok");
-            }
-            else
-            {
-                StartupDiagnostics.Warn("audio.init_failed", "continuing without audio");
-                LogManager.Log("[Guardian] WARNING: Audio engine init failed, continuing without audio");
-            }
-        }
-        // P0 perf：SFX preload 异步化。主线程不再为 ~1.2s 文件 I/O 阻塞；
-        // preload 在后台 ThreadPool 跑（与 PerfTrace.Scope 不兼容，自带 audio.sfx_preload_done mark），
-        // socket 线程通过 ResolveSfxHandle 拿 handle，未完成期间返回 -1 = "id 不存在"行为，不会错位播音。
-        // Flash 在 t≈6s 才连接、reveal 在 t≈15s，1.2s 后台加载完全藏在等待窗口内。
-        CF7Launcher.Audio.AudioEngine.PreloadFromDirectoriesAsync(projectRoot);
-        PerfTrace.Mark("audio.sfx_preload_dispatched_async");
-
-        // 默认音量（直接 P/Invoke，不依赖 Flash socket）
-        // Flash 存档加载后会通过 setGlobalVolume/setBGMVolume 覆盖
-        CF7Launcher.Audio.AudioEngine.ma_bridge_set_master_volume(0.5f);  // 50%
-
-        // === 音乐目录（扫描 + 热加载监听）===
+        // === 音乐目录 + 音频引擎（在所有网络服务之前初始化）===
+        // MusicCatalog 必须先绑定真实 Audio Platform v2 probe port；默认的
+        // unavailable port 只供显式降级/测试，不能进入生产启动路径。
         CF7Launcher.Audio.MusicCatalog musicCatalog;
         using (PerfTrace.Scope("music.catalog_init"))
         {
-            musicCatalog = new CF7Launcher.Audio.MusicCatalog(projectRoot);
+            var probePort =
+                new CF7Launcher.Audio.AudioMusicCatalogProbePortV2();
+            musicCatalog = new CF7Launcher.Audio.MusicCatalog(
+                projectRoot,
+                probePort);
         }
+
+        if (audioQualificationRunId != null)
+        {
+            audioQualificationHost =
+                CF7Launcher.Audio.AudioQualificationDiagnosticsHostV1
+                    .StartProduction(audioQualificationRunId);
+            StartupDiagnostics.Mark(
+                "audio_v2.qualification_pipe_ready",
+                "pipe=" + audioQualificationHost.PipeName);
+        }
+
+        using (PerfTrace.Scope("audio.init"))
+        {
+            StartupDiagnostics.Mark("audio.init_start");
+            bool qualificationConfigured =
+                CF7Launcher.Audio.AudioCatalogQualificationBinderV2.Configure(
+                    musicCatalog);
+            bool gainConfigured = qualificationConfigured &&
+                CF7Launcher.Audio.AudioEngine.ConfigureInitialMasterGain(0.5f);
+            bool audioScheduled = gainConfigured &&
+                CF7Launcher.Audio.AudioEngine.BeginInitialize(projectRoot);
+            if (audioScheduled)
+            {
+                StartupDiagnostics.Mark("audio.init_scheduled");
+            }
+            else
+            {
+                StartupDiagnostics.Warn(
+                    "audio.init_schedule_failed",
+                    "continuing without audio");
+                LogManager.Log(
+                    "[Guardian] WARNING: Audio engine initialization could not be scheduled; continuing without audio");
+            }
+        }
+        // BeginInitialize 只代表 owner work 已入队；真实 ready 必须等待同一
+        // capability digest 的 catalog qualification 完成，不能在这里冒充完成。
+        PerfTrace.Mark("audio.init_dispatched");
 
         // === V8 总线（两种模式都启动）===
 
         PortAllocator portAlloc = new PortAllocator();
         MessageRouter router = new MessageRouter();
+
+        // Audio v2 is the one socket route that can become externally usable during
+        // Program composition: an already-authorized early client is replayed by the
+        // lifecycle publisher.  Install both JSON BGM and S2 routes before the socket
+        // starts listening so catalog -> audio_ready can never overtake command ingress.
+        CF7Launcher.Tasks.AudioTask audioTask = new CF7Launcher.Tasks.AudioTask(
+            CF7Launcher.Audio.AudioEngine.CommandFacadeV2,
+            audioQualificationHost);
+        TaskRegistry.RegisterAudioV2(router, audioTask);
+        StartupDiagnostics.Mark("task.audio_v2_routes_registered");
 
         int httpPort = portAlloc.ClaimPort();
 
@@ -1194,6 +1261,8 @@ class Program
                 config.SwfPath,
                 null);
             socketServer.Dispose();
+            try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
+            try { musicCatalog.Dispose(); } catch { }
             return 1;
         }
         StartupDiagnostics.Mark("socket.start_ok", "port=" + socketPort);
@@ -1265,6 +1334,8 @@ class Program
                 null);
             socketServer.Dispose();
             httpServer.Dispose();
+            try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
+            try { musicCatalog.Dispose(); } catch { }
             return 1;
         }
         StartupDiagnostics.Mark("http.start_ok", "port=" + httpPort);
@@ -1274,18 +1345,12 @@ class Program
             httpServer.ResolveConsoleResult(json);
         };
 
-        // 音乐目录推送：Flash 业务就绪后发送完整 catalog
-        socketServer.OnClientReady += delegate {
-            LogManager.Log("[MusicCatalog] Pushing full catalog to Flash");
-            string catalogJson = musicCatalog.GetFullCatalogJson();
-            socketServer.Send(catalogJson + "\0");
-        };
-
-        // 音乐目录热更新推送到 Flash
-        musicCatalog.CatalogChanged += delegate(string updateJson) {
-            if (socketServer.IsClientReady)
-                socketServer.Send(updateJson + "\0");
-        };
+        // Catalog 与 audio lifecycle 共用一个串行 projection：每条消息绑定
+        // connectionGeneration，且同连接必须先收到完整 catalog 才会收到 ready。
+        CF7Launcher.Audio.AudioSocketPublisherV2 audioSocketPublisher =
+            new CF7Launcher.Audio.AudioSocketPublisherV2(
+                socketServer,
+                musicCatalog);
 
         // Toast overlay（GDI+ 独立 ULW，仅 useNativeHud=false 时实例化）。
         // useNativeHud=true 时 ToastWidget 在 NativeHudOverlay 内承载，省一层全屏 layered window。
@@ -1753,7 +1818,6 @@ class Program
             dataCache = new DataCache(projectRoot);
         }
         DataQueryTask dataQueryTask = new DataQueryTask(dataCache);
-        CF7Launcher.Tasks.AudioTask audioTask = new CF7Launcher.Tasks.AudioTask();
         IconBakeTask iconBakeTask;
         using (PerfTrace.Scope("task.icon_bake_init"))
         {
@@ -2152,6 +2216,10 @@ class Program
             HideOverlayForm(toastOverlay);
             HideOverlayForm(backdrop);
 
+            audioSocketPublisher.Dispose();
+            if (audioQualificationHost != null)
+                audioQualificationHost.Dispose();
+            CF7Launcher.Audio.AudioEngine.Shutdown();
             musicCatalog.Dispose();
             frameTask.Stop();
             shopTask.Dispose();
@@ -2211,6 +2279,10 @@ class Program
             try { frameTask.Stop(); } catch { }
             try { socketServer.SetFrameHandler(null); } catch { }
             try { socketServer.SetNotchHandler(null); } catch { }
+            try { audioSocketPublisher.Dispose(); } catch { }
+            try { if (audioQualificationHost != null) audioQualificationHost.Dispose(); } catch { }
+            try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
+            try { musicCatalog.Dispose(); } catch { }
             try { gomokuTask.Dispose(); } catch { }
             try { shopTask.Dispose(); } catch { }
             try { lootTask.Dispose(); } catch { }
@@ -3020,7 +3092,10 @@ class Program
         try { frameTask.Stop(); } catch { }
         try { socketServer.SetFrameHandler(null); } catch { }
         try { socketServer.SetNotchHandler(null); } catch { }
+        try { audioSocketPublisher.Dispose(); } catch { }
+        try { if (audioQualificationHost != null) audioQualificationHost.Dispose(); } catch { }
         try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
+        try { musicCatalog.Dispose(); } catch { }
         try { processManager.Dispose(); } catch { }
         try { gomokuTask.Dispose(); } catch { }
         try { shopTask.Dispose(); } catch { }
@@ -3055,6 +3130,12 @@ class Program
         } // end try
         finally
         {
+            try
+            {
+                if (audioQualificationHost != null)
+                    audioQualificationHost.Dispose();
+            }
+            catch { }
             // 统一出口：无论正常退出还是早退（Flash/SWF 缺失、端口失败等），
             // 都确保清理本次写入的信任条目，不留残留
             if (trustAcquired)

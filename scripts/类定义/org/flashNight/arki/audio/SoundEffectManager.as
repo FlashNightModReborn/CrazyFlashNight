@@ -2,8 +2,8 @@
  * 文件：org/flashNight/arki/audio/SoundEffectManager.as
  * 说明：音效管理器，通过 AudioBridge 将播放指令发送到 launcher 的 native 音频引擎。
  *
- * 归一化规则：所有 Flash 侧原始音量值（0-100+）在此处 /100 转为 0.0-∞ float，
- * AudioBridge 透传，native 层直接设。SoundEffectManager 是唯一归一化点。
+ * 归一化规则：Flash 侧原始音量值在此合成 global × BGM 的 0.0-1.0 gain，
+ * AudioBridge 只接受 H1 冻结范围。SoundEffectManager 是唯一业务归一化点。
  *
  * BGM 优先级状态机（3 级）：
  *   默认:     stage > jukebox > scene
@@ -20,6 +20,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
     private var currentBGMBaseVolume:Number;
     private var currentFadeDuration:Number;
     private var currentBGMUrl:String;
+    private var _pendingBGMUrl:String;
+    private var _pendingBGMRequestId:String;
 
     public var bgmList:Object;
     private var bgmListPath:String = "sounds/bgm_list.xml";
@@ -51,6 +53,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
         currentBGMBaseVolume = 100;
         currentFadeDuration = 20;
         currentBGMUrl = null;
+        _pendingBGMUrl = null;
+        _pendingBGMRequestId = null;
         bgmList = new Object();
 
         _bgmSource = null;
@@ -93,6 +97,11 @@ class org.flashNight.arki.audio.SoundEffectManager {
                     if (bgm.album == undefined || bgm.album == "") {
                         bgm.album = self.deriveAlbumFromUrl(bgm.url);
                     }
+                    // XML remains metadata authority, but playback qualification only
+                    // comes from the Launcher catalog.  Preserve an earlier catalog
+                    // projection or fail closed until the full catalog arrives.
+                    SoundEffectManager.projectCatalogQualification(
+                        bgm, self.bgmList[bgm.title]);
                     self.bgmList[bgm.title] = bgm;
                 }
                 self.rebuildAlbumIndex();
@@ -141,6 +150,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 if ((bgmList[t.title].album == undefined || bgmList[t.title].album == "") && t.album != undefined) {
                     bgmList[t.title].album = t.album;
                 }
+                projectCatalogQualification(bgmList[t.title], t);
                 continue;
             }
             bgmList[t.title] = {
@@ -151,6 +161,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 baseVolume: t.vol || 100,
                 weight: t.weight || 100
             };
+            projectCatalogQualification(bgmList[t.title], t);
             addedCount++;
         }
         rebuildAlbumIndex();
@@ -176,7 +187,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
             for (var a:Number = 0; a < added.length; a++) {
                 var t:Object = added[a];
                 if (t.title == undefined) continue;
-                if (bgmList[t.title] != undefined) continue;
+                if (bgmList[t.title] != undefined) {
+                    projectCatalogQualification(bgmList[t.title], t);
+                    continue;
+                }
                 bgmList[t.title] = {
                     title: t.title,
                     url: t.url,
@@ -185,6 +199,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
                     baseVolume: t.vol || 100,
                     weight: t.weight || 100
                 };
+                projectCatalogQualification(bgmList[t.title], t);
                 addedCount++;
             }
         }
@@ -198,6 +213,39 @@ class org.flashNight.arki.audio.SoundEffectManager {
         var n:Number = 0;
         for (var k:String in obj) n++;
         return n;
+    }
+
+    private static function projectCatalogQualification(
+            target:Object,
+            projection:Object):Void {
+        if (target == null) return;
+        var availability:String = projection != null
+                && typeof projection.availability == "string"
+            ? String(projection.availability)
+            : "unavailable";
+        if (availability != "available"
+                && availability != "probing"
+                && availability != "unavailable") {
+            availability = "unavailable";
+        }
+        target.availability = availability;
+        target.reason = projection != null && typeof projection.reason == "string"
+            ? String(projection.reason)
+            : "catalog_not_qualified";
+    }
+
+    private static function isCatalogTrackAvailable(track:Object):Boolean {
+        return track != null && track.availability === "available";
+    }
+
+    public static function _projectCatalogQualificationForTest(
+            target:Object,
+            projection:Object):Void {
+        projectCatalogQualification(target, projection);
+    }
+
+    public static function _isCatalogTrackAvailableForTest(track:Object):Boolean {
+        return isCatalogTrackAvailable(track);
     }
 
     // ══════════════════════════════════════════════════════════
@@ -217,6 +265,11 @@ class org.flashNight.arki.audio.SoundEffectManager {
             trace("[BGM] source=" + source + " title=" + title + " result=not_found");
             return;
         }
+        if (source == "jukebox" && !isCatalogTrackAvailable(bgm)) {
+            trace("[BGM] source=jukebox title=" + title
+                + " result=reject_by_catalog_qualification");
+            return;
+        }
 
         // ── 优先级检查 ──
         if (source == "stage") {
@@ -225,7 +278,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 _suppressedStage = {title: title, loop: loop};
                 trace("[BGM] source=stage title=" + title + " result=reject_by_jukebox_override");
                 // jukebox 可能被 transition stopBGM 中断, 需要恢复播放
-                if (currentBGMUrl == null) {
+                if (currentBGMUrl == null && _pendingBGMUrl == null) {
                     playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
                 }
                 return;
@@ -241,7 +294,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 _suppressedScene = {type: "single", title: title, loop: loop};
                 trace("[BGM] source=scene title=" + title + " result=reject_by_jukebox");
                 // ★ 自动恢复：刚被 stop 后 jukebox 需要重新开始播放
-                if (currentBGMUrl == null) {
+                if (currentBGMUrl == null && _pendingBGMUrl == null) {
                     playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
                 }
                 return;
@@ -258,15 +311,17 @@ class org.flashNight.arki.audio.SoundEffectManager {
         }
 
         // ── 执行播放 ──
-        var result:Boolean = doPlayBGM(title, loop, volume);
-        if (result) {
+        var requestId:String = doPlayBGM(title, loop, volume, source);
+        if (requestId != null) {
+            // Priority/source fields are the latest intent. Audible/UI playback is not
+            // published until this exact request receives completionState=started.
             _bgmSource = source;
             _currentAlbum = bgm.album;
             _currentLoop = loop;
             // 单曲调用不改变 _sceneIsAlbumMode（由 playAlbumBGM 设置）
             if (source == "scene") _sceneIsAlbumMode = false;
-            trace("[BGM] source=" + source + " title=" + title + " result=play");
-            org.flashNight.arki.render.FrameBroadcaster.pushUiState("jbs:" + source);
+            trace("[BGM] source=" + source + " title=" + title
+                + " result=requested requestId=" + requestId);
         } else if (bgm.url == currentBGMUrl && source != _bgmSource) {
             // 同一首曲目继续播放, 但 source 上下文变更(如跨关卡同 BGM)
             _bgmSource = source;
@@ -286,7 +341,9 @@ class org.flashNight.arki.audio.SoundEffectManager {
      */
     public function playAlbumBGM(album:String, source:String, loop:Boolean, defaultTitle:String):Void {
         // 同区域检查：不换歌
-        if (_currentAlbum == album && currentBGMUrl != null && _bgmSource == source) {
+        if (_currentAlbum == album
+                && (currentBGMUrl != null || _pendingBGMUrl != null)
+                && _bgmSource == source) {
             return;
         }
 
@@ -355,16 +412,23 @@ class org.flashNight.arki.audio.SoundEffectManager {
     // ══════════════════════════════════════════════════════════
 
     public function jukeboxPlay(title:String):Void {
+        var bgmInfo:Object = bgmList[title];
+        if (!isCatalogTrackAvailable(bgmInfo)) {
+            trace("[BGM] source=jukebox title=" + title
+                + " result=reject_by_catalog_qualification");
+            return;
+        }
+
         // 快照当前被压制的意图（使用 _currentLoop 保留原始 loop 语义）
         if (_bgmSource == "scene") {
             if (_sceneIsAlbumMode) {
                 _suppressedScene = {type: "album", album: _currentAlbum, loop: _currentLoop, defaultTitle: null};
             } else {
-                var currentTitle:String = findTitleByUrl(currentBGMUrl);
+                var currentTitle:String = findTitleByUrl(getLatestIntentUrl());
                 _suppressedScene = {type: "single", title: currentTitle, loop: _currentLoop};
             }
         } else if (_bgmSource == "stage") {
-            var stageTitle:String = findTitleByUrl(currentBGMUrl);
+            var stageTitle:String = findTitleByUrl(getLatestIntentUrl());
             _suppressedStage = {title: stageTitle, loop: _currentLoop};
         }
 
@@ -373,7 +437,6 @@ class org.flashNight.arki.audio.SoundEffectManager {
         // 播放模式决定 loop：singleLoop 循环，其余不循环（由 trackEnd 处理续播/恢复）
         _jukeboxLoop = (_playMode == "singleLoop");
         // 记录曲目所属专辑（albumLoop 模式需要）
-        var bgmInfo:Object = bgmList[title];
         _jukeboxAlbum = (bgmInfo != null) ? bgmInfo.album : null;
         playBGMWithSource(title, "jukebox", _jukeboxLoop, null);
     }
@@ -415,7 +478,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
     public function resumeJukeboxIfNeeded():Void {
         // 此方法在场景加载末尾调用，意味着已离开战斗
         _suppressedStage = null;
-        if (_jukeboxActive && currentBGMUrl == null) {
+        if (_jukeboxActive && currentBGMUrl == null && _pendingBGMUrl == null) {
             playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
         }
     }
@@ -425,7 +488,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         _jukeboxOverride = (value == true);
         // 从 false → true 且 jukebox 激活且当前在 stage：立即切换
         if (!wasOverride && _jukeboxOverride && _jukeboxActive && _bgmSource == "stage") {
-            var stageTitle:String = findTitleByUrl(currentBGMUrl);
+            var stageTitle:String = findTitleByUrl(getLatestIntentUrl());
             _suppressedStage = {title: stageTitle, loop: _currentLoop};
             playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
         }
@@ -495,6 +558,11 @@ class org.flashNight.arki.audio.SoundEffectManager {
         return null;
     }
 
+    /** accepted_deferred 窗口内以已相关的最新意图作为快照源。 */
+    private function getLatestIntentUrl():String {
+        return _pendingBGMUrl != null ? _pendingBGMUrl : currentBGMUrl;
+    }
+
     // ══════════════════════════════════════════════════════════
     // ██  原有 API（保持兼容）
     // ══════════════════════════════════════════════════════════
@@ -512,40 +580,129 @@ class org.flashNight.arki.audio.SoundEffectManager {
      * 新代码应使用 playBGMWithSource。
      */
     public function playBGM(title:String, loop:Boolean, volume:Number):Void {
-        doPlayBGM(title, loop, volume);
+        doPlayBGM(title, loop, volume, "scene");
     }
 
     /**
      * 内部播放实现（不含优先级逻辑）。
-     * @return true 如果实际发起了播放
+     * @return 已发送请求的 requestId；未 ready/参数非法/重复意图时返回 null
      */
-    private function doPlayBGM(title:String, loop:Boolean, volume:Number):Boolean {
+    private function doPlayBGM(
+            title:String,
+            loop:Boolean,
+            volume:Number,
+            source:String):String {
         var bgm:Object = bgmList[title];
-        if (bgm == null) return false;
+        if (bgm == null) return null;
         var url:String = bgm.url;
-        if (url == null) return false;
+        if (url == null) return null;
 
         if (url == "stop") {
             stopBGM();
-            return false;
+            return null;
         }
 
-        if (currentBGMUrl == url) return false;
+        if (currentBGMUrl == url || _pendingBGMUrl == url) return null;
 
         if (loop !== true) loop = false;
         if (isNaN(volume) || volume < 0) volume = bgm.baseVolume;
 
-        var finalVolume:Number = volume * bgmVolume / 100;
+        var finalVolume:Number = volume * bgmVolume / 100 * globalVolume / 100;
         var fadeSec:Number = bgm.fadeDuration / 30;
-        // 不跳过音量=0 的情况：native 层自然静音，恢复音量时通过 bgm_vol/master_vol 生效
-        if (!AudioBridge.playBGM(url, loop, finalVolume / 100, fadeSec)) return false;
+        // 不跳过音量=0：v2 set_gain/play volume 会明确表达静音。
+        var self:SoundEffectManager = this;
+        var context:Object = {
+            title: title,
+            url: url,
+            source: source,
+            album: bgm.album,
+            loop: loop,
+            baseVolume: volume,
+            fadeDuration: bgm.fadeDuration
+        };
+        var requestId:String = AudioBridge.playBGM(
+            url,
+            loop,
+            finalVolume / 100,
+            fadeSec,
+            function(result:Object, isLatest:Boolean):Void {
+                self.onBgmPlayResult(result, context, isLatest);
+            });
+        if (requestId == null) return null;
+        context.requestId = requestId;
+        _pendingBGMUrl = url;
+        _pendingBGMRequestId = requestId;
+        return requestId;
+    }
 
-        currentBGMBaseVolume = volume;
-        currentFadeDuration = bgm.fadeDuration;
-        currentBGMUrl = url;
+    /** accepted_deferred 仅确认 admission；只有 latest started 才发布正在播放。 */
+    private function onBgmPlayResult(
+            result:Object,
+            context:Object,
+            isLatest:Boolean):Void {
+        var decision:String = classifyBgmPlayResult(
+            result,
+            isLatest,
+            _pendingBGMRequestId,
+            context.requestId);
+        if (decision == "deferred") {
+            trace("[BGM] requestId=" + result.requestId + " result=accepted_deferred");
+            return;
+        }
+        if (decision == "ignore") {
+            trace("[BGM] requestId=" + result.requestId
+                + " result=" + result.completionState + " ignored=not_latest");
+            return;
+        }
 
-        org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:" + title);
-        return true;
+        _pendingBGMUrl = null;
+        _pendingBGMRequestId = null;
+        if (decision == "started") {
+            currentBGMBaseVolume = context.baseVolume;
+            currentFadeDuration = context.fadeDuration;
+            currentBGMUrl = context.url;
+            _bgmSource = context.source;
+            _currentAlbum = context.album;
+            _currentLoop = context.loop;
+            org.flashNight.arki.render.FrameBroadcaster.pushUiState(
+                "bgm:" + context.title);
+            org.flashNight.arki.render.FrameBroadcaster.pushUiState(
+                "jbs:" + context.source);
+            trace("[BGM] source=" + context.source + " title=" + context.title
+                + " requestId=" + result.requestId + " result=started");
+        } else {
+            trace("[BGM] requestId=" + result.requestId
+                + " result=" + result.completionState
+                + " category=" + result.category);
+        }
+    }
+
+    private static function classifyBgmPlayResult(
+            result:Object,
+            isLatest:Boolean,
+            pendingRequestId:String,
+            contextRequestId:String):String {
+        if (result != null && result.completionState == "accepted_deferred") {
+            return "deferred";
+        }
+        if (result == null || isLatest !== true
+                || pendingRequestId !== result.requestId
+                || contextRequestId !== result.requestId) {
+            return "ignore";
+        }
+        return result.completionState == "started" ? "started" : "terminal";
+    }
+
+    public static function _classifyBgmPlayResultForTest(
+            result:Object,
+            isLatest:Boolean,
+            pendingRequestId:String,
+            contextRequestId:String):String {
+        return classifyBgmPlayResult(
+            result,
+            isLatest,
+            pendingRequestId,
+            contextRequestId);
     }
 
     /** 停止 BGM，淡出时间不低于 1 秒。无优先级检查。 */
@@ -578,13 +735,40 @@ class org.flashNight.arki.audio.SoundEffectManager {
     private function doStopBGM():Void {
         var fadeSec:Number = currentFadeDuration / 30;
         if (fadeSec < 1) fadeSec = 1;
-        AudioBridge.stopBGM(fadeSec);
-        // 状态清理和 UI 推送不依赖 AudioBridge 返回值:
-        // socket 未连接时 native 层本就无 BGM 在播, 但 Flash 侧状态仍需一致
+        var requestId:String = AudioBridge.stopBGM(
+            fadeSec,
+            function(result:Object, isLatest:Boolean):Void {
+                if (!isLatest) return;
+                if (result.completionState == "stopped") {
+                    org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
+                }
+                trace("[BGM] stop requestId=" + result.requestId
+                    + " result=" + result.completionState
+                    + " category=" + result.category);
+            });
+        _pendingBGMUrl = null;
+        _pendingBGMRequestId = requestId;
+        // Intent clears immediately so later priority decisions cannot revive it. The
+        // UI stopped state waits for the correlated stopped result, except fail-closed
+        // unavailable/disconnect reset below.
+        currentBGMUrl = null;
+        _bgmSource = null;
+        _currentAlbum = null;
+        if (requestId == null) {
+            _pendingBGMRequestId = null;
+            org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
+        }
+    }
+
+    /** Audio tuple loss makes prior playback/pending state unprovable and non-replayable. */
+    public function onAudioBridgeReset(reason:String):Void {
+        _pendingBGMUrl = null;
+        _pendingBGMRequestId = null;
         currentBGMUrl = null;
         _bgmSource = null;
         _currentAlbum = null;
         org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
+        trace("[BGM] bridge reset reason=" + reason);
     }
 
     /**
@@ -610,7 +794,9 @@ class org.flashNight.arki.audio.SoundEffectManager {
     public function setGlobalVolume(value:Number):Void {
         if (isNaN(value) || value > 100 || value < 0) return;
         globalVolume = value;
-        AudioBridge.setMasterVolume(value / 100);
+        var finalVolume:Number = currentBGMBaseVolume * bgmVolume / 100
+            * globalVolume / 100;
+        AudioBridge.setBGMVolume(finalVolume / 100);
         org.flashNight.arki.render.FrameBroadcaster.pushUiState("vg:" + Math.round(value));
     }
 
@@ -621,7 +807,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
     public function setBGMVolume(value:Number):Void {
         if (isNaN(value) || value > 100 || value < 0) return;
         bgmVolume = value;
-        var finalVolume:Number = currentBGMBaseVolume * bgmVolume / 100;
+        var finalVolume:Number = currentBGMBaseVolume * bgmVolume / 100
+            * globalVolume / 100;
         AudioBridge.setBGMVolume(finalVolume / 100);
         org.flashNight.arki.render.FrameBroadcaster.pushUiState("vb:" + Math.round(value));
     }

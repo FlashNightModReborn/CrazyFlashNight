@@ -981,6 +981,13 @@ namespace CF7Launcher.Guardian
         // 音乐目录
         private CF7Launcher.Audio.MusicCatalog _musicCatalog;
 
+        private static readonly JsonLoadSettings StrictJukeboxJsonSettings =
+            new JsonLoadSettings
+            {
+                DuplicatePropertyNameHandling =
+                    DuplicatePropertyNameHandling.Error
+            };
+
         // Web 资源热重载：监听 webDir 文件变化，去抖后自动 Reload
         // 仅在 config.toml webOverlayHotReload=true 时启用；玩家版必须 false（IconBakeTask
         // 自身就会往 web/icons/ 写 PNG 引发 self-trigger，外加杀软扫描也会触发 reload）。
@@ -6634,27 +6641,77 @@ namespace CF7Launcher.Guardian
 
         // ── Jukebox 消息处理 ──
 
+        internal static bool TryParseStrictJukeboxMessage(
+            string json,
+            out JObject parsed)
+        {
+            parsed = null;
+            if (string.IsNullOrEmpty(json)) return false;
+            try
+            {
+                parsed = JObject.Parse(json, StrictJukeboxJsonSettings);
+                return HasExactStringValue(parsed["type"], "jukebox") &&
+                    IsNonEmptyString(parsed["cmd"]);
+            }
+            catch
+            {
+                parsed = null;
+                return false;
+            }
+        }
+
+        internal static bool IsQualifiedJukeboxPlayRequest(
+            JObject parsed,
+            Func<string, bool> isTrackAvailable,
+            out string title)
+        {
+            title = null;
+            if (!HasOnlyObjectKeys(parsed, "type", "cmd", "title") ||
+                !HasExactStringValue(parsed["type"], "jukebox") ||
+                !HasExactStringValue(parsed["cmd"], "play") ||
+                !IsNonEmptyString(parsed["title"]) ||
+                isTrackAvailable == null)
+            {
+                return false;
+            }
+
+            string candidate = parsed.Value<string>("title");
+            if (!isTrackAvailable(candidate)) return false;
+            title = candidate;
+            return true;
+        }
+
         private void HandleJukeboxMessage(string json)
         {
-            // 用 JObject 结构化解析，避免曲名 / 设置 value 含 " 或 \ 时 ExtractString 截断错发。
             JObject parsed;
-            try { parsed = JObject.Parse(json); }
-            catch (Exception ex)
+            if (!TryParseStrictJukeboxMessage(json, out parsed))
             {
-                LogManager.Log("[Jukebox] JSON parse failed: " + ex.Message + " json=" + json);
+                LogManager.Log("[Jukebox] Strict JSON/schema rejection");
                 return;
             }
             string cmd = parsed.Value<string>("cmd");
-            if (string.IsNullOrEmpty(cmd)) return;
 
             switch (cmd)
             {
                 case "play":
                     {
-                        string title = parsed.Value<string>("title");
-                        if (!string.IsNullOrEmpty(title))
-                            SendGameCommandWithData("jukeboxPlay",
-                                "\"title\":\"" + EscapeJsonString(title) + "\"");
+                        string title;
+                        if (!IsQualifiedJukeboxPlayRequest(
+                                parsed,
+                                delegate(string candidate)
+                                {
+                                    return _musicCatalog != null &&
+                                        _musicCatalog.IsTrackAvailableForPlayback(
+                                            candidate);
+                                },
+                                out title))
+                        {
+                            LogManager.Log(
+                                "[Jukebox] play rejected by catalog qualification");
+                            return;
+                        }
+                        SendGameCommandWithData("jukeboxPlay",
+                            "\"title\":\"" + EscapeJsonString(title) + "\"");
                     }
                     break;
                 case "override":
