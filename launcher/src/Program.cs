@@ -917,6 +917,8 @@ class Program
         string exePath = Environment.ProcessPath;
         CF7Launcher.Audio.AudioQualificationDiagnosticsHostV1
             audioQualificationHost = null;
+        CF7Launcher.Audio.AudioQualificationStimulusHostV1
+            audioQualificationStimulusHost = null;
         StartupDiagnostics.Init(projectRoot);
 
         string unattendedBootstrapRequest =
@@ -1267,6 +1269,23 @@ class Program
         }
         StartupDiagnostics.Mark("socket.start_ok", "port=" + socketPort);
 
+        // The stimulus surface is candidate-only and remains a separate pipe from
+        // the read-only observer. Subscribe it after diagnostics, but before the
+        // lifecycle publisher, so a recovery snapshot is journaled first, then the
+        // old AS2 tuple is stimulated, and only then is unavailable projected.
+        if (audioQualificationHost != null)
+        {
+            audioQualificationStimulusHost =
+                CF7Launcher.Audio.AudioQualificationStimulusHostV1
+                    .StartProduction(
+                        audioQualificationRunId,
+                        audioQualificationHost,
+                        socketServer);
+            StartupDiagnostics.Mark(
+                "audio_v2.qualification_stimulus_pipe_ready",
+                "pipe=" + audioQualificationStimulusHost.PipeName);
+        }
+
         LegacyHttpAccessPolicy legacyHttpAccess =
             LegacyHttpAccessPolicy.DenyAll();
         if (legacyHttpAutomation)
@@ -1334,6 +1353,12 @@ class Program
                 null);
             socketServer.Dispose();
             httpServer.Dispose();
+            try
+            {
+                if (audioQualificationStimulusHost != null)
+                    audioQualificationStimulusHost.Dispose();
+            }
+            catch { }
             try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
             try { musicCatalog.Dispose(); } catch { }
             return 1;
@@ -2217,6 +2242,8 @@ class Program
             HideOverlayForm(backdrop);
 
             audioSocketPublisher.Dispose();
+            if (audioQualificationStimulusHost != null)
+                audioQualificationStimulusHost.Dispose();
             if (audioQualificationHost != null)
                 audioQualificationHost.Dispose();
             CF7Launcher.Audio.AudioEngine.Shutdown();
@@ -2280,6 +2307,7 @@ class Program
             try { socketServer.SetFrameHandler(null); } catch { }
             try { socketServer.SetNotchHandler(null); } catch { }
             try { audioSocketPublisher.Dispose(); } catch { }
+            try { if (audioQualificationStimulusHost != null) audioQualificationStimulusHost.Dispose(); } catch { }
             try { if (audioQualificationHost != null) audioQualificationHost.Dispose(); } catch { }
             try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
             try { musicCatalog.Dispose(); } catch { }
@@ -3093,6 +3121,7 @@ class Program
         try { socketServer.SetFrameHandler(null); } catch { }
         try { socketServer.SetNotchHandler(null); } catch { }
         try { audioSocketPublisher.Dispose(); } catch { }
+        try { if (audioQualificationStimulusHost != null) audioQualificationStimulusHost.Dispose(); } catch { }
         try { if (audioQualificationHost != null) audioQualificationHost.Dispose(); } catch { }
         try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
         try { musicCatalog.Dispose(); } catch { }
@@ -3132,6 +3161,8 @@ class Program
         {
             try
             {
+                if (audioQualificationStimulusHost != null)
+                    audioQualificationStimulusHost.Dispose();
                 if (audioQualificationHost != null)
                     audioQualificationHost.Dispose();
             }

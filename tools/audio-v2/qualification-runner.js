@@ -26,6 +26,7 @@ const AUDIO_ABI_HEADER_PATH = "launcher/native/audio_bridge_v2.h";
 const AUDIO_NATIVE_SOURCE_PATH = "launcher/native/miniaudio_bridge.c";
 const LIVE_OBSERVATION_ARG = "--bound-live-observation-deflate-base64-v1";
 const TOOLCHAIN_ENV = "CF7_AUDIO_V2_TOOLCHAIN_B64";
+const NODE_EXE_ENV = "CF7_NODE_EXE";
 const MEASUREMENT_UNIT = "cf7.audio-v2.recomputed-observation-sha256.v1";
 const MAX_JSON_BYTES = 16 * 1024 * 1024;
 const MAX_INPUT_BYTES = 512 * 1024 * 1024;
@@ -406,7 +407,10 @@ function validateConfiguration(configuration, reportId) {
     expect(configuration.workingDirectory === "release_source_root", "configuration working directory mismatch");
     expect(Array.isArray(configuration.argv) && configuration.argv.length >= 6 && configuration.argv.length <= 32, "configuration argv invalid");
     configuration.argv.forEach((entry) => expectNonEmptyString(entry, "configuration argv entry", 4096));
-    expect(JSON.stringify(configuration.argv.slice(0, 5)) === JSON.stringify(["node", RUNNER_PATH, "--report-id", reportId, LIVE_OBSERVATION_ARG]), "configuration must bind the exact runner, reportId, and recoverable live observation carrier");
+    expect(path.isAbsolute(configuration.argv[0]), "configuration Node executable must be absolute");
+    const boundNode = configurationEnvironmentValue(configuration, NODE_EXE_ENV, true);
+    expect(path.isAbsolute(boundNode) && sameFilesystemPath(configuration.argv[0], boundNode), "configuration Node executable differs from CF7_NODE_EXE");
+    expect(JSON.stringify(configuration.argv.slice(1, 5)) === JSON.stringify([RUNNER_PATH, "--report-id", reportId, LIVE_OBSERVATION_ARG]), "configuration must bind the exact runner, reportId, and recoverable live observation carrier");
     const decodedCarrier = decodeConfigurationLiveObservation(configuration);
     if (ENDPOINT_REPORTS.has(reportId)) {
         const archived = qualificationObserver.validateJournalCarrier(decodedCarrier);
@@ -740,15 +744,28 @@ function validateToolDescriptor(value, label) {
 
 function validateToolchain(configuration) {
     const value = decodeCanonicalEnvironmentJson(configuration, TOOLCHAIN_ENV, true);
-    exactKeys(value, ["cl", "cmd", "dotnet", "msvcToolsVersion", "powershell", "schema", "vcvars64", "windowsSdkVersion"], "toolchain");
+    exactKeys(value, ["cl", "cmd", "dotnet", "msvcToolsVersion", "node", "nodeVersion", "powershell", "schema", "vcvars64", "windowsSdkVersion"], "toolchain");
     expect(value.schema === "cf7.audio-v2.qualification-toolchain.v1", "toolchain schema mismatch");
     expectNonEmptyString(value.msvcToolsVersion, "toolchain msvcToolsVersion", 64);
+    expect(typeof value.nodeVersion === "string" && /^v(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:[-+][0-9A-Za-z.-]+)?$/.test(value.nodeVersion), "toolchain nodeVersion invalid");
     expectNonEmptyString(value.windowsSdkVersion, "toolchain windowsSdkVersion", 64);
+    const node = validateToolDescriptor(value.node, "toolchain node");
+    const boundNode = configurationEnvironmentValue(configuration, NODE_EXE_ENV, true);
+    expect(path.isAbsolute(boundNode) && sameFilesystemPath(boundNode, node), "toolchain node differs from CF7_NODE_EXE");
+    expect(sameFilesystemPath(process.execPath, node), "qualification runner was not launched by the bound Node executable");
+    expect(process.version === value.nodeVersion, "qualification runner Node version differs from the bound toolchain");
+    const observedVersion = cp.spawnSync(node, ["--version"], {
+        encoding: "utf8", env: {}, maxBuffer: 1024 * 1024, timeout: 15000, windowsHide: true
+    });
+    expect(!observedVersion.error && observedVersion.status === 0, "bound Node executable version probe failed");
+    expect(String(observedVersion.stdout || "").trim() === value.nodeVersion && !String(observedVersion.stderr || "").trim(), "bound Node executable version output drifted");
     return {
         cl: validateToolDescriptor(value.cl, "toolchain cl"),
         cmd: validateToolDescriptor(value.cmd, "toolchain cmd"),
         dotnet: validateToolDescriptor(value.dotnet, "toolchain dotnet"),
         msvcToolsVersion: value.msvcToolsVersion,
+        node,
+        nodeVersion: value.nodeVersion,
         powershell: validateToolDescriptor(value.powershell, "toolchain powershell"),
         vcvars64: validateToolDescriptor(value.vcvars64, "toolchain vcvars64"),
         windowsSdkVersion: value.windowsSdkVersion
@@ -836,6 +853,8 @@ function childEnvironment(context, toolchain) {
     const temp = configurationEnvironmentValue(configuration, "TEMP", true);
     const tmp = configurationEnvironmentValue(configuration, "TMP", true);
     expect(path.isAbsolute(systemRoot) && path.isAbsolute(temp) && path.isAbsolute(tmp), "bound system/temp environment paths must be absolute");
+    const node = configurationEnvironmentValue(configuration, NODE_EXE_ENV, true);
+    expect(path.isAbsolute(node) && sameFilesystemPath(node, toolchain.node), "child Node executable differs from the bound toolchain");
     const env = {
         CF7_CL_EXE: toolchain.cl,
         CF7_MSVC_TOOLS_VERSION: toolchain.msvcToolsVersion,
@@ -847,6 +866,7 @@ function childEnvironment(context, toolchain) {
         DOTNET_MULTILEVEL_LOOKUP: "0",
         DOTNET_NOLOGO: "1",
         DOTNET_ROOT: path.dirname(toolchain.dotnet),
+        [NODE_EXE_ENV]: node,
         LANG: "en_US.UTF-8",
         SystemRoot: systemRoot,
         TEMP: temp,
@@ -2295,6 +2315,7 @@ module.exports = Object.freeze({
     buildProducerVerification,
     canonicalBytes,
     caseEvidenceClosure,
+    childEnvironment,
     decodeConfigurationLiveObservation,
     encodeLiveObservationArguments,
     expectedCaseMeasurement,
@@ -2311,9 +2332,11 @@ module.exports = Object.freeze({
     sha256,
     sortedClone,
     validateCandidateBinary,
+    validateConfiguration,
     validateCaptureConfiguration,
     validateDecoderFixtureInventory,
     validateInvocation,
+    validateToolchain,
     validateEndpointRuntimeSession,
     validateCaptureRuntimeTuple,
     validateStableGenerationTuple,

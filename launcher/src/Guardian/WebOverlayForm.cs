@@ -6681,6 +6681,39 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
+        internal static bool IsQualifiedJukeboxSeekRequest(
+            JObject parsed,
+            out double seconds)
+        {
+            seconds = 0;
+            if (!HasOnlyObjectKeys(parsed, "type", "cmd", "sec") ||
+                !HasExactStringValue(parsed["type"], "jukebox") ||
+                !HasExactStringValue(parsed["cmd"], "seek") ||
+                parsed["sec"] == null ||
+                (parsed["sec"].Type != JTokenType.Integer &&
+                    parsed["sec"].Type != JTokenType.Float))
+            {
+                return false;
+            }
+
+            double candidate;
+            try
+            {
+                candidate = parsed["sec"].Value<double>();
+            }
+            catch
+            {
+                return false;
+            }
+            if (double.IsNaN(candidate) || double.IsInfinity(candidate) ||
+                candidate < 0 || candidate > 86400)
+            {
+                return false;
+            }
+            seconds = candidate;
+            return true;
+        }
+
         private void HandleJukeboxMessage(string json)
         {
             JObject parsed;
@@ -6738,8 +6771,14 @@ namespace CF7Launcher.Guardian
                     break;
                 case "seek":
                     {
-                        float sec = parsed.Value<float?>("sec") ?? 0f;
-                        Audio.AudioEngine.ma_bridge_bgm_seek(sec);
+                        double seconds;
+                        if (!IsQualifiedJukeboxSeekRequest(parsed, out seconds))
+                        {
+                            LogManager.Log("[Jukebox] seek rejected by strict schema");
+                            return;
+                        }
+                        SendGameCommandWithData("jukeboxSeek",
+                            "\"seconds\":" + seconds.ToString("R", CultureInfo.InvariantCulture));
                     }
                     break;
                 case "pause":

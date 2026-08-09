@@ -62,12 +62,61 @@ function Assert-XunitRunnerPolicy {
     }
 }
 
+function Assert-AudioQualificationNodeExecutable {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ExecutablePath
+    )
+
+    if (-not [System.IO.Path]::IsPathRooted($ExecutablePath)) {
+        throw 'CF7_NODE_EXE must be an absolute path.'
+    }
+    $fullPath = [System.IO.Path]::GetFullPath($ExecutablePath)
+    if (-not [string]::Equals(
+            $ExecutablePath,
+            $fullPath,
+            [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw 'CF7_NODE_EXE must use its canonical absolute path.'
+    }
+    if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) {
+        throw "CF7_NODE_EXE does not name a file: $fullPath"
+    }
+    $item = Get-Item -LiteralPath $fullPath -Force
+    if (($item.Attributes -band
+            [System.IO.FileAttributes]::ReparsePoint) -ne 0 -or
+        -not [string]::Equals(
+            $item.Extension,
+            '.exe',
+            [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw 'CF7_NODE_EXE must name a regular non-link executable.'
+    }
+    return $fullPath
+}
+
+# Ordinary source gates may discover Node once, then pass the resolved absolute
+# executable to focused tests.  An explicit binding is authority-bearing: if it
+# is present but invalid, never replace it with a PATH lookup.
+$nodeBinding = [Environment]::GetEnvironmentVariable(
+    'CF7_NODE_EXE',
+    [System.EnvironmentVariableTarget]::Process)
+if ([string]::IsNullOrWhiteSpace($nodeBinding)) {
+    $nodeCommand = Get-Command node.exe -CommandType Application `
+        -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($null -eq $nodeCommand) {
+        throw 'Node.js is required for Launcher Audio v2 qualification tests.'
+    }
+    $nodeBinding = $nodeCommand.Source
+}
+$env:CF7_NODE_EXE = Assert-AudioQualificationNodeExecutable `
+    -ExecutablePath $nodeBinding
+
 # dotnet host 探测：只接受 global.json 的 exact SDK contract，不改机器 PATH。
 . (Join-Path $launcherDir 'resolve-dotnet.ps1')
 
 Write-Host "=== CF7:ME Launcher Tests (net10.0-windows) ===" -ForegroundColor Cyan
 Write-Host "  Launcher Dir: $launcherDir"
 Write-Host "  Tests Dir   : $testsDir"
+Write-Host "  Node        : $env:CF7_NODE_EXE"
 
 Write-Host ""
 Write-Host "[Step 0] exact SDK resolver contract tests..." -ForegroundColor Yellow

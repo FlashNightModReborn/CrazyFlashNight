@@ -1006,7 +1006,8 @@ namespace CF7Launcher.Tests.Audio
                 "tools",
                 "audio-v2",
                 "qualification-observer.js");
-            var startInfo = new ProcessStartInfo("node")
+            var startInfo = new ProcessStartInfo(
+                AudioQualificationNodeExecutable.ResolveFromEnvironment())
             {
                 CreateNoWindow = true,
                 RedirectStandardError = true,
@@ -1046,7 +1047,8 @@ namespace CF7Launcher.Tests.Audio
                 "tools",
                 "audio-v2",
                 "qualification-observer.js");
-            var startInfo = new ProcessStartInfo("node")
+            var startInfo = new ProcessStartInfo(
+                AudioQualificationNodeExecutable.ResolveFromEnvironment())
             {
                 CreateNoWindow = true,
                 RedirectStandardError = true,

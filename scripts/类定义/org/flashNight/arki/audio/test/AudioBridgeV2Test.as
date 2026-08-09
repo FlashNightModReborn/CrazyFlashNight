@@ -3,6 +3,7 @@
  */
 
 import org.flashNight.arki.audio.AudioBridge;
+import org.flashNight.arki.audio.AudioQualificationStimulus;
 import org.flashNight.arki.audio.SoundEffectManager;
 import org.flashNight.neur.Server.ServerManager;
 import FastJSON;
@@ -12,6 +13,8 @@ class org.flashNight.arki.audio.test.AudioBridgeV2Test {
     private static var SESSION_2:String = "fedcba98-7654-4abc-9def-0123456789ab";
     private static var DIGEST:String =
         "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    private static var RUN_ID:String = "0123456789abcdef0123456789abcdef";
+    private static var RUN_ID_2:String = "fedcba9876543210fedcba9876543210";
 
     private static var passed:Number = 0;
     private static var failed:Number = 0;
@@ -25,6 +28,7 @@ class org.flashNight.arki.audio.test.AudioBridgeV2Test {
         testJukeboxQualificationGuard();
         testReadyBgmCorrelationAndLatestWins();
         testSfxDropAndNoReplay();
+        testQualificationStimulusGuardAndProductionBridge();
 
         trace("AudioBridgeV2Test Tests Passed: " + passed);
         trace("AudioBridgeV2Test Tests Failed: " + failed);
@@ -425,6 +429,335 @@ class org.flashNight.arki.audio.test.AudioBridgeV2Test {
             counters.startFailureCount);
         assertEqual("AS2 never fabricates native played events", 0,
             counters.playedCount);
+    }
+
+    private static function testQualificationStimulusGuardAndProductionBridge():Void {
+        var transport:Object = makeTransport();
+        AudioBridge._resetForTests();
+        AudioBridge._setTransportForTests(transport);
+        AudioQualificationStimulus._resetForTests();
+        assertTrue("qualification setup enters production ready bridge",
+            AudioBridge.handleAudioReady(makeReady(SESSION, "42", "9")));
+
+        var playback:Object = makeQualificationPlay(
+            "bgm_playback", "bgm-playback.wav", 0);
+        assertFalse("qualification command fails closed before arm",
+            AudioQualificationStimulus.handle(playback));
+        assertEqual("unarmed qualification sends no production request",
+            0, transport.tasks.length);
+
+        var uppercaseArm:Object = makeQualificationArm(RUN_ID.toUpperCase());
+        assertFalse("qualification arm rejects uppercase runId",
+            AudioQualificationStimulus.handle(uppercaseArm));
+        assertTrue("qualification accepts exact arm",
+            AudioQualificationStimulus.handle(makeQualificationArm(RUN_ID)));
+        assertEqual("qualification snapshots exact armed runId", RUN_ID,
+            AudioQualificationStimulus._snapshotForTests().armedRunId);
+        assertTrue("qualification same-run re-arm is idempotent",
+            AudioQualificationStimulus.handle(makeQualificationArm(RUN_ID)));
+        assertFalse("qualification rejects different-run re-arm",
+            AudioQualificationStimulus.handle(makeQualificationArm(RUN_ID_2)));
+
+        var extraArm:Object = makeQualificationArm(RUN_ID);
+        extraArm.console = "forged";
+        assertFalse("qualification arm rejects extra console field",
+            AudioQualificationStimulus.handle(extraArm));
+        var wrongRun:Object = makeQualificationPlay(
+            "bgm_playback", "wrong-run.wav", 0);
+        wrongRun.runId = RUN_ID_2;
+        assertFalse("qualification command must repeat armed runId",
+            AudioQualificationStimulus.handle(wrongRun));
+
+        var traversal:Object = makeQualificationPlay(
+            "bgm_playback", "../escape.wav", 0);
+        assertFalse("qualification play rejects path traversal",
+            AudioQualificationStimulus.handle(traversal));
+        var absolute:Object = makeQualificationPlay(
+            "bgm_playback", "c:/escape.wav", 0);
+        assertFalse("qualification play rejects absolute path",
+            AudioQualificationStimulus.handle(absolute));
+        var uppercasePath:Object = makeQualificationPlay(
+            "bgm_playback", "Upper.wav", 0);
+        assertFalse("qualification play rejects non-canonical path characters",
+            AudioQualificationStimulus.handle(uppercasePath));
+        var falseLoop:Object = makeQualificationPlay(
+            "bgm_playback", "false-loop.wav", 0);
+        falseLoop.loop = false;
+        assertFalse("qualification play requires exact loop true",
+            AudioQualificationStimulus.handle(falseLoop));
+        var fractionalVolume:Object = makeQualificationPlay(
+            "bgm_playback", "fractional-volume.wav", 0);
+        fractionalVolume.volume = 0.5;
+        assertFalse("qualification play requires exact volume one",
+            AudioQualificationStimulus.handle(fractionalVolume));
+
+        assertTrue("qualification BGM playback enters production AudioBridge",
+            AudioQualificationStimulus.handle(playback));
+        assertEqual("qualification BGM playback uses play operation", "play",
+            transport.tasks[0].operation);
+        assertEqual("qualification BGM playback keeps per-run relative path",
+            "tmp/audio-v2-qualification/" + RUN_ID + "/bgm-playback.wav",
+            transport.tasks[0].path);
+        assertFalse("qualification rejects duplicate one-step BGM case",
+            AudioQualificationStimulus.handle(playback));
+
+        var crossfadeBad:Object = makeQualificationPlay(
+            "bgm_crossfade", "crossfade.wav", 0);
+        assertFalse("qualification crossfade requires positive fade",
+            AudioQualificationStimulus.handle(crossfadeBad));
+        var crossfade:Object = makeQualificationPlay(
+            "bgm_crossfade", "crossfade.wav", 0.25);
+        assertTrue("qualification crossfade enters production AudioBridge",
+            AudioQualificationStimulus.handle(crossfade));
+        var formatBad:Object = makeQualificationPlay(
+            "format_vorbis", "format-vorbis.ogg", 0.25);
+        assertFalse("qualification format play rejects nonzero fade",
+            AudioQualificationStimulus.handle(formatBad));
+        var formatPlay:Object = makeQualificationPlay(
+            "format_vorbis", "format-vorbis.ogg", 0);
+        assertTrue("qualification format play uses zero-fade production request",
+            AudioQualificationStimulus.handle(formatPlay));
+        var earlyMute:Object = makeQualificationPreSfxMute(0);
+        assertFalse("qualification pre-SFX mute waits for Opus format step",
+            AudioQualificationStimulus.handle(earlyMute));
+        var formatOpus:Object = makeQualificationPlay(
+            "format_opus", "format-opus.opus", 0);
+        assertTrue("qualification Opus format enables pre-SFX mute gate",
+            AudioQualificationStimulus.handle(formatOpus));
+        var muteWrongVolume:Object = makeQualificationPreSfxMute(1);
+        assertFalse("qualification pre-SFX mute requires exact zero gain",
+            AudioQualificationStimulus.handle(muteWrongVolume));
+        var muteExtra:Object = makeQualificationPreSfxMute(0);
+        muteExtra.console = "forged";
+        assertFalse("qualification pre-SFX mute rejects extra keys",
+            AudioQualificationStimulus.handle(muteExtra));
+        var muteWrongRun:Object = makeQualificationPreSfxMute(0);
+        muteWrongRun.runId = RUN_ID_2;
+        assertFalse("qualification pre-SFX mute rejects wrong runId",
+            AudioQualificationStimulus.handle(muteWrongRun));
+        var mute:Object = makeQualificationPreSfxMute(0);
+        assertTrue("qualification pre-SFX mute enters production AudioBridge",
+            AudioQualificationStimulus.handle(mute));
+        assertEqual("qualification pre-SFX mute uses set_gain", "set_gain",
+            transport.tasks[4].operation);
+        assertEqual("qualification pre-SFX mute sends exact zero", 0,
+            transport.tasks[4].volume);
+        assertEqual("qualification pre-SFX mute records one step", 1,
+            AudioQualificationStimulus._snapshotForTests().preSfxBgmMuteStep);
+        assertFalse("qualification pre-SFX mute rejects replay",
+            AudioQualificationStimulus.handle(mute));
+        assertFalse("qualification pre-mix restore waits for dense SFX",
+            AudioQualificationStimulus.handle(makeQualificationPreMixRestore(1)));
+
+        var seek:Object = makeQualificationSeek(12.5);
+        var zeroSeek:Object = makeQualificationSeek(0);
+        assertFalse("qualification seek rejects zero target",
+            AudioQualificationStimulus.handle(zeroSeek));
+        assertTrue("qualification seek enters production AudioBridge",
+            AudioQualificationStimulus.handle(seek));
+        assertEqual("qualification seek uses seek operation", "seek",
+            transport.tasks[5].operation);
+        assertFalse("qualification seek is single-step",
+            AudioQualificationStimulus.handle(seek));
+
+        var gainZero:Object = makeQualificationGain(0);
+        var gainOne:Object = makeQualificationGain(1);
+        assertFalse("qualification gain rejects zero before default max",
+            AudioQualificationStimulus.handle(gainZero));
+        assertTrue("qualification gain first step is default max",
+            AudioQualificationStimulus.handle(gainOne));
+        assertFalse("qualification post-gain restore waits for zero step",
+            AudioQualificationStimulus.handle(makeQualificationPostGainRestore(1)));
+        assertTrue("qualification gain second step is zero",
+            AudioQualificationStimulus.handle(gainZero));
+        assertEqual("qualification gain records both steps", 2,
+            AudioQualificationStimulus._snapshotForTests().gainStep);
+        assertFalse("qualification gain rejects a third command",
+            AudioQualificationStimulus.handle(gainZero));
+        assertFalse("qualification post-gain restore requires exact gain one",
+            AudioQualificationStimulus.handle(makeQualificationPostGainRestore(0)));
+        assertTrue("qualification post-gain restore enters production AudioBridge",
+            AudioQualificationStimulus.handle(makeQualificationPostGainRestore(1)));
+        assertEqual("qualification post-gain restore uses set_gain", "set_gain",
+            transport.tasks[8].operation);
+        assertEqual("qualification post-gain restore sends exact gain one", 1,
+            transport.tasks[8].volume);
+        assertEqual("qualification post-gain restore is recorded once", 1,
+            AudioQualificationStimulus._snapshotForTests().postGainRestoreStep);
+        assertEqual("qualification restore does not rewrite case gain steps", 2,
+            AudioQualificationStimulus._snapshotForTests().gainStep);
+        assertFalse("qualification post-gain restore rejects replay",
+            AudioQualificationStimulus.handle(makeQualificationPostGainRestore(1)));
+
+        var invalidSfx:Object = makeQualificationSfx(
+            "sfx_playback", ["bad/path.wav"]);
+        assertFalse("qualification SFX rejects path-like linkage id",
+            AudioQualificationStimulus.handle(invalidSfx));
+        var sfx:Object = makeQualificationSfx("sfx_playback", ["shot.wav"]);
+        assertTrue("qualification SFX sends immediate production batch",
+            AudioQualificationStimulus.handle(sfx));
+        assertEqual("qualification SFX uses exact S2 encoder",
+            "S2|" + SESSION + "|42|1|shot.wav", transport.frames[0]);
+        assertFalse("qualification SFX playback is single-step",
+            AudioQualificationStimulus.handle(sfx));
+
+        var denseShort:Object = makeQualificationSfx(
+            "dense_overlap_throttle", ["shot.wav", "shot.wav", "shot.wav", "shot.wav"]);
+        assertFalse("qualification dense SFX requires exactly six ids",
+            AudioQualificationStimulus.handle(denseShort));
+        var denseDuplicate:Object = makeQualificationSfx(
+            "dense_overlap_throttle",
+            ["shot.wav", "shot.wav", "shot.wav", "shot.wav", "shot.wav", "shot.wav"]);
+        assertFalse("qualification dense SFX requires six unique ids",
+            AudioQualificationStimulus.handle(denseDuplicate));
+        var dense:Object = makeQualificationSfx(
+            "dense_overlap_throttle",
+            ["shot-1.wav", "shot-2.wav", "shot-3.wav", "shot-4.wav",
+                "shot-5.wav", "shot-6.wav"]);
+        assertTrue("qualification dense SFX remains one immediate S2 batch",
+            AudioQualificationStimulus.handle(dense));
+        assertEqual("qualification dense SFX preserves all semantic requests",
+            10, transport.frames[1].split("|").length);
+
+        assertFalse("qualification pre-mix restore requires exact gain one",
+            AudioQualificationStimulus.handle(makeQualificationPreMixRestore(0)));
+        var mixRestore:Object = makeQualificationPreMixRestore(1);
+        assertTrue("qualification pre-mix restore enters production AudioBridge",
+            AudioQualificationStimulus.handle(mixRestore));
+        assertEqual("qualification pre-mix restore uses set_gain", "set_gain",
+            transport.tasks[9].operation);
+        assertEqual("qualification pre-mix restore sends exact gain one", 1,
+            transport.tasks[9].volume);
+        assertEqual("qualification pre-mix restore records one step", 1,
+            AudioQualificationStimulus._snapshotForTests().preMixBgmRestoreStep);
+        assertFalse("qualification pre-mix restore rejects replay",
+            AudioQualificationStimulus.handle(mixRestore));
+        var mixMany:Object = makeQualificationSfx(
+            "bgm_sfx_mix", ["mix-a.wav", "mix-b.wav"]);
+        assertFalse("qualification mix SFX requires exactly one id",
+            AudioQualificationStimulus.handle(mixMany));
+        var mix:Object = makeQualificationSfx(
+            "bgm_sfx_mix", ["mix-a.wav"]);
+        assertTrue("qualification mix SFX sends one immediate production batch",
+            AudioQualificationStimulus.handle(mix));
+        assertEqual("qualification mix SFX follows restored BGM gain",
+            "S2|" + SESSION + "|42|3|mix-a.wav", transport.frames[2]);
+        var staleMany:Object = makeQualificationSfx(
+            "no_stale_sfx_after_recovery", ["stale-a.wav", "stale-b.wav"]);
+        assertFalse("qualification stale SFX requires exactly one id",
+            AudioQualificationStimulus.handle(staleMany));
+        var stale:Object = makeQualificationSfx(
+            "no_stale_sfx_after_recovery", ["stale-a.wav"]);
+        assertTrue("qualification stale command synchronously sends old tuple",
+            AudioQualificationStimulus.handle(stale));
+        assertEqual("qualification stale batch carries old ready tuple",
+            "S2|" + SESSION + "|42|4|stale-a.wav",
+            transport.frames[3]);
+        assertTrue("qualification recovery barrier is accepted after old-tuple send",
+            AudioBridge.handleAudioUnavailable(makeUnavailable(SESSION, "43", "10")));
+        assertFalse("qualification stale recovery case is single-step",
+            AudioQualificationStimulus.handle(stale));
+        AudioQualificationStimulus._resetForTests();
+        assertTrue("qualification recovery admission test re-arms exact run",
+            AudioQualificationStimulus.handle(makeQualificationArm(RUN_ID)));
+        var sfxDuringRecovery:Object = makeQualificationSfx(
+            "sfx_playback", ["shot.wav"]);
+        assertFalse("ordinary qualification SFX cannot bypass recovery admission",
+            AudioQualificationStimulus.handle(sfxDuringRecovery));
+    }
+
+    private static function makeQualificationArm(runId:String):Object {
+        return {
+            action: "audioV2QualificationStimulus",
+            operation: "arm",
+            runId: runId,
+            task: "cmd"
+        };
+    }
+
+    private static function makeQualificationPlay(
+            caseId:String,
+            filename:String,
+            fadeSeconds:Number):Object {
+        return {
+            action: "audioV2QualificationStimulus",
+            caseId: caseId,
+            fadeSeconds: fadeSeconds,
+            loop: true,
+            operation: "play",
+            path: "tmp/audio-v2-qualification/" + RUN_ID + "/" + filename,
+            runId: RUN_ID,
+            task: "cmd",
+            volume: 1
+        };
+    }
+
+    private static function makeQualificationSeek(seconds:Number):Object {
+        return {
+            action: "audioV2QualificationStimulus",
+            caseId: "bgm_seek",
+            operation: "seek",
+            runId: RUN_ID,
+            seekSeconds: seconds,
+            task: "cmd"
+        };
+    }
+
+    private static function makeQualificationGain(volume:Number):Object {
+        return {
+            action: "audioV2QualificationStimulus",
+            caseId: "gain_zero_and_default_max",
+            operation: "set_gain",
+            runId: RUN_ID,
+            task: "cmd",
+            volume: volume
+        };
+    }
+
+    private static function makeQualificationPreSfxMute(volume:Number):Object {
+        return {
+            action: "audioV2QualificationStimulus",
+            caseId: "pre_sfx_bgm_mute",
+            operation: "set_gain",
+            runId: RUN_ID,
+            task: "cmd",
+            volume: volume
+        };
+    }
+
+    private static function makeQualificationPreMixRestore(volume:Number):Object {
+        return {
+            action: "audioV2QualificationStimulus",
+            caseId: "pre_mix_bgm_restore",
+            operation: "set_gain",
+            runId: RUN_ID,
+            task: "cmd",
+            volume: volume
+        };
+    }
+
+    private static function makeQualificationPostGainRestore(volume:Number):Object {
+        return {
+            action: "audioV2QualificationStimulus",
+            caseId: "post_gain_restore",
+            operation: "set_gain",
+            runId: RUN_ID,
+            task: "cmd",
+            volume: volume
+        };
+    }
+
+    private static function makeQualificationSfx(
+            caseId:String,
+            linkageIds:Array):Object {
+        return {
+            action: "audioV2QualificationStimulus",
+            caseId: caseId,
+            linkageIds: linkageIds,
+            operation: "sfx",
+            runId: RUN_ID,
+            task: "cmd"
+        };
     }
 
     private static function makeTransport():Object {

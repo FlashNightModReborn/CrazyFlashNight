@@ -1,3 +1,4 @@
 ﻿trace("FocusedTestRunId audio-v2 Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.audio.AudioQualificationStimulus._resetForTests();
 org.flashNight.arki.audio.test.AudioBridgeV2Test.runAllTests();
 trace("FocusedTestRunId audio-v2 Complete: __FOCUSED_RUN_ID__");

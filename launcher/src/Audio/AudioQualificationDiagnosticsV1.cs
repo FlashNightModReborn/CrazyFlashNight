@@ -573,6 +573,42 @@ namespace CF7Launcher.Audio
         internal string PipeName { get; private set; }
         internal bool UsesCurrentUserOnly { get { return true; } }
 
+        internal bool IsActiveCase(string caseId)
+        {
+            if (caseId == null) return false;
+            lock (_sync)
+            {
+                return Volatile.Read(ref _disposed) == 0 &&
+                    !_journalOverflow &&
+                    string.Equals(
+                        _activeCaseId,
+                        caseId,
+                        StringComparison.Ordinal);
+            }
+        }
+
+        internal bool IsBetweenCases(
+            string previousCaseId,
+            string nextCaseId)
+        {
+            int nextIndex = Array.IndexOf(OrderedCaseIds, nextCaseId);
+            if (nextIndex <= 0 ||
+                !string.Equals(
+                    OrderedCaseIds[nextIndex - 1],
+                    previousCaseId,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+            lock (_sync)
+            {
+                return Volatile.Read(ref _disposed) == 0 &&
+                    !_journalOverflow &&
+                    _activeCaseId == null &&
+                    _nextCaseIndex == nextIndex;
+            }
+        }
+
         internal static AudioQualificationDiagnosticsHostV1 StartProduction(
             string runId)
         {

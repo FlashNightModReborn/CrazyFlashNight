@@ -46,7 +46,10 @@ param(
     [string]$OutputWav,
 
     [Parameter(Mandatory=$true)]
-    [string]$OutputConfiguration
+    [string]$OutputConfiguration,
+
+    [Parameter(Mandatory=$false)]
+    [string]$ReadySignalPath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -262,6 +265,22 @@ $outputConfigurationFull = Resolve-Cf7OutputPath -Path $OutputConfiguration -Ext
 if ($outputWavFull.Equals($outputConfigurationFull, [StringComparison]::OrdinalIgnoreCase)) {
     Fail-Cf7AudioCapture 'WAV and configuration outputs must be distinct'
 }
+$readySignalFull = $null
+if (-not [string]::IsNullOrWhiteSpace($ReadySignalPath)) {
+    if (-not [IO.Path]::IsPathRooted($ReadySignalPath)) {
+        Fail-Cf7AudioCapture 'ReadySignalPath must be an absolute path'
+    }
+    $readySignalInputRoot = [IO.Path]::GetPathRoot($ReadySignalPath)
+    if ($ReadySignalPath.Substring($readySignalInputRoot.Length).Contains(':')) {
+        Fail-Cf7AudioCapture 'ReadySignalPath must not use an alternate data stream'
+    }
+    $readySignalCandidateFull = [IO.Path]::GetFullPath($ReadySignalPath)
+    if ($readySignalCandidateFull.Equals($outputWavFull, [StringComparison]::OrdinalIgnoreCase) -or
+            $readySignalCandidateFull.Equals($outputConfigurationFull, [StringComparison]::OrdinalIgnoreCase)) {
+        Fail-Cf7AudioCapture 'ready signal output must be distinct from gate artifacts'
+    }
+    $readySignalFull = Resolve-Cf7OutputPath -Path $ReadySignalPath -Extension '.ready' -Label 'ReadySignalPath'
+}
 $script:TemporaryWav = Join-Path ([IO.Path]::GetDirectoryName($outputWavFull)) ('.' + [IO.Path]::GetFileName($outputWavFull) + '.' + [Guid]::NewGuid().ToString('N') + '.tmp')
 $script:TemporaryConfiguration = Join-Path ([IO.Path]::GetDirectoryName($outputConfigurationFull)) ('.' + [IO.Path]::GetFileName($outputConfigurationFull) + '.' + [Guid]::NewGuid().ToString('N') + '.tmp')
 
@@ -286,6 +305,56 @@ using System.Threading;
 
 namespace Cf7.AudioV2.EndpointCapture
 {
+    public sealed class ReadySignalFile : IDisposable
+    {
+        public const string Token = "CF7_AUDIO_V2_CAPTURE_READY_V1\n";
+
+        private readonly string path;
+        private bool ownsPath;
+
+        private ReadySignalFile(string path)
+        {
+            this.path = path;
+        }
+
+        public static ReadySignalFile CreateAfterSuccessfulStart(bool audioClientStarted, string path)
+        {
+            if (!audioClientStarted) throw new InvalidOperationException("ready signal requires a successful IAudioClient.Start");
+            if (String.IsNullOrEmpty(path)) return null;
+
+            ReadySignalFile signal = new ReadySignalFile(path);
+            try
+            {
+                byte[] readyBytes = new UTF8Encoding(false).GetBytes(Token);
+                using (FileStream readyStream = new FileStream(
+                    path,
+                    FileMode.CreateNew,
+                    FileAccess.Write,
+                    FileShare.Read,
+                    4096,
+                    FileOptions.WriteThrough))
+                {
+                    signal.ownsPath = true;
+                    readyStream.Write(readyBytes, 0, readyBytes.Length);
+                    readyStream.Flush(true);
+                }
+                return signal;
+            }
+            catch
+            {
+                signal.Dispose();
+                throw;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!ownsPath) return;
+            ownsPath = false;
+            if (File.Exists(path)) File.Delete(path);
+        }
+    }
+
     internal enum EDataFlow { Render = 0, Capture = 1, All = 2 }
     internal enum ERole { Console = 0, Multimedia = 1, Communications = 2 }
 
@@ -462,7 +531,7 @@ namespace Cf7.AudioV2.EndpointCapture
             }
         }
 
-        public static CaptureResult Capture(string endpointId, double requestedDurationSeconds, string outputPath)
+        public static CaptureResult Capture(string endpointId, double requestedDurationSeconds, string outputPath, string readySignalPath)
         {
             if (String.IsNullOrWhiteSpace(endpointId)) throw new ArgumentException("an explicit endpoint ID is required", "endpointId");
             if (requestedDurationSeconds < 1.0 || requestedDurationSeconds > 5.0) throw new ArgumentOutOfRangeException("requestedDurationSeconds");
@@ -475,6 +544,7 @@ namespace Cf7.AudioV2.EndpointCapture
             IMMDevice device = null;
             IAudioClient audioClient = null;
             IAudioCaptureClient captureClient = null;
+            ReadySignalFile readySignal = null;
             IntPtr formatPointer = IntPtr.Zero;
             bool started = false;
             try
@@ -519,6 +589,7 @@ namespace Cf7.AudioV2.EndpointCapture
                 captureClient = (IAudioCaptureClient)service;
                 Check(audioClient.Start(), "IAudioClient.Start");
                 started = true;
+                readySignal = ReadySignalFile.CreateAfterSuccessfulStart(started, readySignalPath);
 
                 int expectedSamples = checked((int)(targetFrames * baseFormat.Channels));
                 List<short> samples = new List<short>(expectedSamples);
@@ -603,6 +674,7 @@ namespace Cf7.AudioV2.EndpointCapture
             }
             finally
             {
+                if (readySignal != null) readySignal.Dispose();
                 if (started && audioClient != null) { try { audioClient.Stop(); } catch { } }
                 if (formatPointer != IntPtr.Zero) Marshal.FreeCoTaskMem(formatPointer);
                 if (captureClient != null) Marshal.FinalReleaseComObject(captureClient);
@@ -621,7 +693,8 @@ try {
     $capture = [Cf7.AudioV2.EndpointCapture.WasapiLoopbackCapture]::Capture(
         $EndpointId,
         $DurationSeconds,
-        $script:TemporaryWav)
+        $script:TemporaryWav,
+        $readySignalFull)
 
     if ($capture.EndpointId -cne $EndpointId) {
         Fail-Cf7AudioCapture 'captured endpoint identity changed during acquisition'

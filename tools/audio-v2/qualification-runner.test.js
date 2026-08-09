@@ -8,11 +8,13 @@ const os = require("os");
 const path = require("path");
 
 const runner = require("./qualification-runner.js");
+const dependencyGenerator = require("./update-qualification-dependencies.js");
 const RUNNER_REL = "tools/audio-v2/qualification-runner.js";
 const OBSERVER_REL = "tools/audio-v2/qualification-observer.js";
 const DEPENDENCY_REL = "config/audio-v2/qualification-runner-dependencies.v1.json";
 const DECODER_FIXTURE_REL = "tools/audio-v2/qualification-decoder-fixtures.v1.json";
 const TOOLCHAIN_ENV = "CF7_AUDIO_V2_TOOLCHAIN_B64";
+const NODE_EXE_ENV = "CF7_NODE_EXE";
 
 const EXPECTED_EXPORTS = [
     "cf7_audio_bridge_v2_initialize", "cf7_audio_bridge_v2_probe_offline_qualification",
@@ -59,7 +61,8 @@ function fakeToolchainValue() {
     const descriptor = { path: path.resolve(process.execPath), sha256: runner.sha256(fs.readFileSync(process.execPath)) };
     return {
         cl: descriptor, cmd: descriptor, dotnet: descriptor,
-        msvcToolsVersion: "14.0-test", powershell: descriptor,
+        msvcToolsVersion: "14.0-test", node: descriptor,
+        nodeVersion: process.version, powershell: descriptor,
         schema: "cf7.audio-v2.qualification-toolchain.v1", vcvars64: descriptor,
         windowsSdkVersion: "10.0-test"
     };
@@ -176,9 +179,20 @@ function makeFixture(mutator) {
 
     const configurationPath = "docs/evidence/audio-v2/config/" + reportId + ".json";
     const toolchainEncoded = runner.canonicalBytes(fakeToolchainValue()).toString("base64");
+    const environmentValues = {
+        [NODE_EXE_ENV]: path.resolve(process.execPath),
+        [TOOLCHAIN_ENV]: toolchainEncoded,
+        NUGET_PACKAGES: path.join(root, "nuget"),
+        SystemRoot: process.env.SystemRoot || path.parse(process.execPath).root,
+        TEMP: os.tmpdir(),
+        TMP: os.tmpdir()
+    };
     const configuration = {
-        argv: ["node", RUNNER_REL, "--report-id", reportId],
-        environment: [{ name: TOOLCHAIN_ENV, valueSha256: runner.sha256(Buffer.from(toolchainEncoded, "utf8")) }],
+        argv: [environmentValues[NODE_EXE_ENV], RUNNER_REL, "--report-id", reportId],
+        environment: Object.keys(environmentValues).sort().map((name) => ({
+            name,
+            valueSha256: runner.sha256(Buffer.from(environmentValues[name], "utf8"))
+        })),
         reportId,
         schema: "cf7.audio-v2.automated-report-configuration.v1",
         workingDirectory: "release_source_root"
@@ -231,7 +245,7 @@ function makeFixture(mutator) {
         schema: "cf7.audio-v2.live-observation.v1",
         session: { executionKind: "recomputed_bound_source_probe", toolchainSha256 }
     };
-    configuration.argv = ["node", RUNNER_REL, "--report-id", reportId].concat(runner.encodeLiveObservationArguments(observation));
+    configuration.argv = [environmentValues[NODE_EXE_ENV], RUNNER_REL, "--report-id", reportId].concat(runner.encodeLiveObservationArguments(observation));
     writeJson(root, configurationPath, configuration);
     const configurationArtifact = artifact(root, configurationPath, "cf7.audio-v2.automated-report-configuration.v1");
     const semanticSnapshot = { candidate: candidateSnapshot, live: { probe: sourceProbe, toolchainSha256 } };
@@ -298,7 +312,7 @@ function makeFixture(mutator) {
         summary: { failed: 0, passed: caseResults.length, total: caseResults.length }
     };
 
-    const state = { candidateRoot, candidateSnapshot, configuration, configurationPath, inputManifest, inputPath, observation, report, reportId, reportPath, root, sourceProbe, toolchainEncoded };
+    const state = { candidateRoot, candidateSnapshot, configuration, configurationPath, environmentValues, inputManifest, inputPath, observation, report, reportId, reportPath, root, sourceProbe, toolchainEncoded };
     if (mutator) mutator(state);
     if (!fs.existsSync(path.join(root, reportPath.split("/").join(path.sep)))) writeJson(root, reportPath, report);
     return state;
@@ -313,12 +327,15 @@ function runFixture(state) {
         "--configuration", path.join(state.root, state.configurationPath.split("/").join(path.sep)),
         "--input-manifest", path.join(state.root, state.inputPath.split("/").join(path.sep)),
         "--candidate-root", state.candidateRoot
-    ], { cwd: state.root, encoding: "utf8", env: { [TOOLCHAIN_ENV]: state.toolchainEncoded }, timeout: 15000 });
+    ], { cwd: state.root, encoding: "utf8", env: state.environmentValues, timeout: 15000 });
 }
 
 function runFixtureDirect(state, overrides) {
-    const previous = process.env[TOOLCHAIN_ENV];
-    process.env[TOOLCHAIN_ENV] = state.toolchainEncoded;
+    const previous = {};
+    Object.keys(state.environmentValues).forEach((name) => {
+        previous[name] = process.env[name];
+        process.env[name] = state.environmentValues[name];
+    });
     try {
         const context = runner.validateInvocation({
             candidateRoot: state.candidateRoot,
@@ -332,11 +349,13 @@ function runFixtureDirect(state, overrides) {
             candidateSnapshot: state.candidateSnapshot,
             observation: state.observation,
             sourceProbe: () => state.sourceProbe,
-            toolchain: { cl: process.execPath, cmd: process.execPath, dotnet: process.execPath, powershell: process.execPath, vcvars64: process.execPath }
+            toolchain: { cl: process.execPath, cmd: process.execPath, dotnet: process.execPath, node: process.execPath, nodeVersion: process.version, powershell: process.execPath, vcvars64: process.execPath }
         }, overrides || {}));
     } finally {
-        if (previous === undefined) delete process.env[TOOLCHAIN_ENV];
-        else process.env[TOOLCHAIN_ENV] = previous;
+        Object.keys(previous).forEach((name) => {
+            if (previous[name] === undefined) delete process.env[name];
+            else process.env[name] = previous[name];
+        });
     }
 }
 
@@ -372,6 +391,63 @@ test("frozen matrix is exactly nine reports and forty-four cases", () => {
 
 test("canonical JSON recursively sorts keys and terminates with one LF", () => {
     assert.strictEqual(runner.canonicalBytes({ z: 1, a: { y: 2, b: 3 } }).toString("utf8"), "{\n  \"a\": {\n    \"b\": 3,\n    \"y\": 2\n  },\n  \"z\": 1\n}\n");
+});
+
+test("qualification toolchain binds exact Node path hash version and PATH-free child environment", () => {
+    withFixture(null, (state) => {
+        const previous = {};
+        Object.keys(state.environmentValues).forEach((name) => {
+            previous[name] = process.env[name];
+            process.env[name] = state.environmentValues[name];
+        });
+        try {
+            assert.doesNotThrow(() => runner.validateConfiguration(state.configuration, state.reportId));
+            const toolchain = runner.validateToolchain(state.configuration);
+            assert.strictEqual(toolchain.node, path.resolve(process.execPath));
+            assert.strictEqual(toolchain.nodeVersion, process.version);
+            const child = runner.childEnvironment({
+                configurationBinding: { value: state.configuration },
+                report: { reportId: state.reportId }
+            }, toolchain);
+            assert.strictEqual(child[NODE_EXE_ENV], path.resolve(process.execPath));
+            assert.ok(!Object.prototype.hasOwnProperty.call(child, "PATH"));
+
+            const bare = JSON.parse(JSON.stringify(state.configuration));
+            bare.argv[0] = "node";
+            assert.throws(() => runner.validateConfiguration(bare, state.reportId), /must be absolute/);
+
+            const relativeEnvironment = JSON.parse(JSON.stringify(state.configuration));
+            relativeEnvironment.argv[0] = "node";
+            relativeEnvironment.environment.find((entry) => entry.name === NODE_EXE_ENV).valueSha256 =
+                runner.sha256(Buffer.from("node", "utf8"));
+            process.env[NODE_EXE_ENV] = "node";
+            assert.throws(() => runner.validateConfiguration(relativeEnvironment, state.reportId), /must be absolute/);
+            process.env[NODE_EXE_ENV] = state.environmentValues[NODE_EXE_ENV];
+
+            const wrongVersion = fakeToolchainValue();
+            wrongVersion.nodeVersion = "v0.0.0";
+            const wrongVersionEncoded = runner.canonicalBytes(wrongVersion).toString("base64");
+            const wrongVersionConfiguration = JSON.parse(JSON.stringify(state.configuration));
+            wrongVersionConfiguration.environment.find((entry) => entry.name === TOOLCHAIN_ENV).valueSha256 =
+                runner.sha256(Buffer.from(wrongVersionEncoded, "utf8"));
+            process.env[TOOLCHAIN_ENV] = wrongVersionEncoded;
+            assert.throws(() => runner.validateToolchain(wrongVersionConfiguration), /Node version differs/);
+
+            const wrongHash = fakeToolchainValue();
+            wrongHash.node = Object.assign({}, wrongHash.node, { sha256: "A".repeat(64) });
+            const wrongHashEncoded = runner.canonicalBytes(wrongHash).toString("base64");
+            const wrongHashConfiguration = JSON.parse(JSON.stringify(state.configuration));
+            wrongHashConfiguration.environment.find((entry) => entry.name === TOOLCHAIN_ENV).valueSha256 =
+                runner.sha256(Buffer.from(wrongHashEncoded, "utf8"));
+            process.env[TOOLCHAIN_ENV] = wrongHashEncoded;
+            assert.throws(() => runner.validateToolchain(wrongHashConfiguration), /SHA mismatch/);
+        } finally {
+            Object.keys(previous).forEach((name) => {
+                if (previous[name] === undefined) delete process.env[name];
+                else process.env[name] = previous[name];
+            });
+        }
+    });
 });
 
 test("checked-in decoder fixtures are canonical, byte-bound, and semantically fixed", () => {
@@ -577,8 +653,11 @@ test("report generation without bound candidate/configuration inputs fails close
 test("generation writes a complete five-case report and deterministic verification", () => {
     withFixture(null, (state) => {
         const oldCwd = process.cwd();
-        const previousToolchain = process.env[TOOLCHAIN_ENV];
-        process.env[TOOLCHAIN_ENV] = state.toolchainEncoded;
+        const previousEnvironment = {};
+        Object.keys(state.environmentValues).forEach((name) => {
+            previousEnvironment[name] = process.env[name];
+            process.env[name] = state.environmentValues[name];
+        });
         process.chdir(state.root);
         try {
             const generated = runner.generateReport({
@@ -591,7 +670,7 @@ test("generation writes a complete five-case report and deterministic verificati
                 candidateSnapshot: state.candidateSnapshot,
                 observation: state.observation,
                 sourceProbe: () => state.sourceProbe,
-                toolchain: { cl: process.execPath, cmd: process.execPath, dotnet: process.execPath, powershell: process.execPath, vcvars64: process.execPath }
+                toolchain: { cl: process.execPath, cmd: process.execPath, dotnet: process.execPath, node: process.execPath, nodeVersion: process.version, powershell: process.execPath, vcvars64: process.execPath }
             });
             const report = JSON.parse(fs.readFileSync(path.join(state.root, generated.reportPath.split("/").join(path.sep)), "utf8"));
             const verificationBytes = fs.readFileSync(path.join(state.root, generated.verificationPath.split("/").join(path.sep)));
@@ -602,7 +681,10 @@ test("generation writes a complete five-case report and deterministic verificati
             assert.ok(verificationBytes.equals(runner.canonicalBytes(verification)));
         } finally {
             process.chdir(oldCwd);
-            if (previousToolchain === undefined) delete process.env[TOOLCHAIN_ENV]; else process.env[TOOLCHAIN_ENV] = previousToolchain;
+            Object.keys(previousEnvironment).forEach((name) => {
+                if (previousEnvironment[name] === undefined) delete process.env[name];
+                else process.env[name] = previousEnvironment[name];
+            });
         }
     });
 });
@@ -616,8 +698,10 @@ test("tracked configuration recovers a report-specific live observation without 
         const swapped = JSON.parse(JSON.stringify(state.configuration));
         const other = JSON.parse(JSON.stringify(state.observation));
         other.reportId = "launcher_affected_regression";
-        swapped.argv = ["node", RUNNER_REL, "--report-id", state.reportId].concat(runner.encodeLiveObservationArguments(other));
+        swapped.argv = [state.environmentValues[NODE_EXE_ENV], RUNNER_REL, "--report-id", state.reportId].concat(runner.encodeLiveObservationArguments(other));
         const oldCwd = process.cwd();
+        const previousNode = process.env[NODE_EXE_ENV];
+        process.env[NODE_EXE_ENV] = state.environmentValues[NODE_EXE_ENV];
         process.chdir(state.root);
         try {
             assert.throws(() => runner.generateReport({
@@ -629,9 +713,13 @@ test("tracked configuration recovers a report-specific live observation without 
             }, {
                 candidateSnapshot: state.candidateSnapshot,
                 sourceProbe: () => state.sourceProbe,
-                toolchain: { cl: process.execPath, cmd: process.execPath, dotnet: process.execPath, powershell: process.execPath, vcvars64: process.execPath }
+                toolchain: { cl: process.execPath, cmd: process.execPath, dotnet: process.execPath, node: process.execPath, nodeVersion: process.version, powershell: process.execPath, vcvars64: process.execPath }
             }), /reportId mismatch/);
-        } finally { process.chdir(oldCwd); }
+        } finally {
+            process.chdir(oldCwd);
+            if (previousNode === undefined) delete process.env[NODE_EXE_ENV];
+            else process.env[NODE_EXE_ENV] = previousNode;
+        }
     });
 });
 
@@ -647,7 +735,7 @@ test("tracked observation carrier rejects dropped swapped and trailing chunks", 
     const value = { payload, schema: "cf7.audio-v2.carrier-mutation-fixture.v1" };
     const carrier = runner.encodeLiveObservationArguments(value);
     assert.ok(carrier.length > 2, "fixture must span multiple tracked argv chunks");
-    const configuration = { argv: ["node", RUNNER_REL, "--report-id", "fixture"].concat(carrier) };
+    const configuration = { argv: [process.execPath, RUNNER_REL, "--report-id", "fixture"].concat(carrier) };
     assert.deepStrictEqual(runner.decodeConfigurationLiveObservation(configuration), value);
 
     const dropped = JSON.parse(JSON.stringify(configuration));
@@ -745,8 +833,15 @@ test("checked-in dependency closure binds the exact runner bytes", () => {
         "scripts/类定义/org/flashNight/arki/audio/test/AudioBridgeV2Test.as"
     ].forEach((relative) => assert.ok(paths.includes(relative), "missing dependency " + relative));
     manifest.dependencies.forEach((entry) => {
-        const bytes = fs.readFileSync(path.resolve(__dirname, "..", "..", entry.path.split("/").join(path.sep)));
-        assert.deepStrictEqual(entry, { blobOid: runner.gitBlobOid(bytes, 40), bytes: bytes.length, path: entry.path, sha256: runner.sha256(bytes) });
+        const binding = dependencyGenerator.gitCleanBlob(
+            path.resolve(__dirname, "..", ".."),
+            entry.path);
+        assert.deepStrictEqual(entry, {
+            blobOid: binding.blobOid,
+            bytes: binding.bytes.length,
+            path: entry.path,
+            sha256: runner.sha256(binding.bytes)
+        });
     });
     const runnerEntry = manifest.dependencies.find((entry) => entry.path === RUNNER_REL);
     assert.deepStrictEqual(runnerEntry, { blobOid: runner.gitBlobOid(runnerBytes, 40), bytes: runnerBytes.length, path: RUNNER_REL, sha256: runner.sha256(runnerBytes) });

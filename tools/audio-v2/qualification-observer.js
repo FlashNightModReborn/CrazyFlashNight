@@ -873,6 +873,8 @@ function deriveCaseFacts(caseId, range, options) {
         const runtime = expectStableRuntimeTuple(snapshots, caseId);
         const request = sfxRequests(range);
         expectSfxTuple(request, runtime, caseId);
+        expect(peakAbsPcm16(snapshots[0].payload.bgmMeter) < 64,
+            "sfx_playback endpoint window is contaminated by audible BGM");
         const before = snapshots[0].payload.counters;
         const after = snapshots[snapshots.length - 1].payload.counters;
         const played = counterDelta(before, after, "playedCount", caseId);
@@ -1262,7 +1264,7 @@ function cliMain(argv) {
         sfxVoiceLimit: parseCliVoiceLimit()
     }, completed);
     const output = parsed.emitConfigurationArgv
-        ? ["node", "tools/audio-v2/qualification-runner.js", "--report-id", parsed.reportId].concat(trackedObservationArguments(derived.carrier))
+        ? [process.execPath, "tools/audio-v2/qualification-runner.js", "--report-id", parsed.reportId].concat(trackedObservationArguments(derived.carrier))
         : derived.carrier;
     process.stdout.write(canonicalBytes(output));
     process.stdout.write("\n");

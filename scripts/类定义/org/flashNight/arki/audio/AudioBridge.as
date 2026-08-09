@@ -230,19 +230,57 @@ class org.flashNight.arki.audio.AudioBridge {
 
     /** 帧末发送一次 S2。send 失败也不重放；下一帧只收新请求。 */
     public static function flush():Void {
-        if (_sfxBuf.length == 0) return;
+        flushReadySfxBuffer();
+    }
+
+    /**
+     * 隔离 candidate 资格验证的窄入口：普通 case 仍逐项走 playSound + 同一
+     * flush encoder；recovery case 在 publisher 撤销 ready 前同步 flush 旧
+     * tuple，若 unavailable barrier 已先到则仅允许一次上一 ready tuple，
+     * 供 native owner 证明 stale batch 被 drop 且绝不重放。
+     * 调用方必须先完成 qualification runId/case grammar；本方法不接受路径或
+     * console 字符串，也不改变生产帧末合批行为。
+     */
+    public static function flushQualificationSfxBatch(
+            ids:Array,
+            allowRecoveryTuple:Boolean):Boolean {
+        if (!(ids instanceof Array)
+                || ids.length == 0
+                || ids.length > MAX_SFX_IDS
+                || _sfxBuf.length != 0
+                || typeof allowRecoveryTuple != "boolean") return false;
+        for (var i:Number = 0; i < ids.length; i++) {
+            if (!isValidLinkageId(ids[i])) return false;
+        }
+
+        if (allowRecoveryTuple === true && !isReady()) {
+            return sendQualificationRecoverySfxBatch(ids);
+        }
+        if (!isReady()) return false;
+        for (var j:Number = 0; j < ids.length; j++) {
+            playSound(ids[j]);
+        }
+        if (_sfxBuf.length != ids.length) {
+            _sfxBuf = [];
+            return false;
+        }
+        return flushReadySfxBuffer();
+    }
+
+    private static function flushReadySfxBuffer():Boolean {
+        if (_sfxBuf.length == 0) return false;
         var ids:Array = _sfxBuf;
         _sfxBuf = [];
 
         if (!isReady()) {
             countUnavailableSfxDrops(ids.length);
-            return;
+            return false;
         }
         var nextSequence:String = incrementDecimal(_sfxBatchSequence);
         if (nextSequence == null) {
             countUnavailableSfxDrops(ids.length);
             resetAvailability("unavailable", true);
-            return;
+            return false;
         }
 
         var message:String = buildSfxMessage(
@@ -253,13 +291,46 @@ class org.flashNight.arki.audio.AudioBridge {
             null);
         if (message == null || utf8Length(message) > MAX_SFX_MESSAGE_BYTES) {
             _sfxThrottledCount += ids.length;
-            return;
+            return false;
         }
 
         _sfxBatchSequence = nextSequence;
         if (_sm.sendSocketMessage(message) !== true) {
             countUnavailableSfxDrops(ids.length);
+            return false;
         }
+        return true;
+    }
+
+    private static function sendQualificationRecoverySfxBatch(ids:Array):Boolean {
+        if (_status != "unavailable"
+                || !_hasEnteredReady
+                || _sm == null
+                || _sm.isSocketConnected !== true
+                || !isCanonicalSessionId(_sequenceSessionId)
+                || !isCanonicalNonZeroDecimal(_sequenceReadyGeneration)
+                || _audioSessionId !== _sequenceSessionId
+                || !isCanonicalNonZeroDecimal(_audioReadyGeneration)
+                || compareDecimalText(
+                    _audioReadyGeneration, _sequenceReadyGeneration) <= 0) return false;
+
+        var nextSequence:String = incrementDecimal(_sfxBatchSequence);
+        if (nextSequence == null) return false;
+        var message:String = buildSfxMessage(
+            _sequenceSessionId,
+            _sequenceReadyGeneration,
+            nextSequence,
+            ids,
+            null);
+        if (message == null || utf8Length(message) > MAX_SFX_MESSAGE_BYTES) {
+            return false;
+        }
+        _sfxBatchSequence = nextSequence;
+        if (_sm.sendSocketMessage(message) !== true) {
+            countUnavailableSfxDrops(ids.length);
+            return false;
+        }
+        return true;
     }
 
     /** 场景切换只清本帧 SFX；不得重置 audio tuple 或 request sequence。 */

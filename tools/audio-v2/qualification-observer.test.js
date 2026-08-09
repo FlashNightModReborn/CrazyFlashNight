@@ -400,7 +400,10 @@ test("dense overlap facts close only over AS2 batch and candidate counters", () 
 });
 
 test("SFX playback requires its own advancing nonzero meter window", () => {
-    const before = snapshot({ sfxMeter: { frameCount: 1000 } });
+    const before = snapshot({
+        bgmMeter: { frameCount: 1000, peakLeft: 0, peakRight: 0, rmsLeft: 0, rmsRight: 0 },
+        sfxMeter: { frameCount: 1000 }
+    });
     const after = snapshot({ counters: { playedCount: 2 }, sfxMeter: { frameCount: 1100 } });
     const range = {
         begin: { caseId: "sfx_playback" },
@@ -420,6 +423,10 @@ test("SFX playback requires its own advancing nonzero meter window", () => {
     after.sfxMeter.peakLeft = 0;
     after.sfxMeter.peakRight = 0;
     assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /meter window has no qualified signal/);
+    after.sfxMeter.peakLeft = 0.25;
+    after.sfxMeter.peakRight = 0.25;
+    before.bgmMeter.peakLeft = 0.25;
+    assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /contaminated by audible BGM/);
 });
 
 test("sleep resume closes recovering to a later owner/qualification ready snapshot", () => {
@@ -735,7 +742,7 @@ test("requestPipe opens a fresh connection and rejects noncanonical stdout", () 
 
 test("collector carrier round-trips through the runner tracked argv decoder", () => {
     const observation = { a: 1, nested: { z: "candidate", b: true } };
-    const argv = ["node", "tools/audio-v2/qualification-runner.js", "--report-id", "fixture"].concat(observer.trackedObservationArguments(observation));
+    const argv = [process.execPath, "tools/audio-v2/qualification-runner.js", "--report-id", "fixture"].concat(observer.trackedObservationArguments(observation));
     assert.deepStrictEqual(runner.decodeConfigurationLiveObservation({ argv }), observation);
     const encoded = argv.slice(5).join("");
     const inflated = zlib.inflateRawSync(Buffer.from(encoded, "base64"));
@@ -759,7 +766,7 @@ test("tracked endpoint carrier archives the exact candidate journal and reconcil
     assert.strictEqual(archived.journal.sha256, journal.sha256);
     assert.strictEqual(archived.observation.reportId, derivationOptions.reportId);
 
-    const argv = ["node", "tools/audio-v2/qualification-runner.js", "--report-id", derivationOptions.reportId]
+    const argv = [process.execPath, "tools/audio-v2/qualification-runner.js", "--report-id", derivationOptions.reportId]
         .concat(observer.trackedObservationArguments(derived.carrier));
     assert.ok(argv.length <= 32, "realistic raw journal carrier exceeds the frozen argv bound");
     const decoded = runner.decodeConfigurationLiveObservation({ argv });
