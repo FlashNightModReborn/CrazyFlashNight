@@ -98,6 +98,50 @@ BATTLE_FEMALE_FALLBACKS = {
 
 DEFAULT_GENDERS = ("男", "女")
 IGNORED_ITEM_XML = {"asset_source_map.xml", "list.xml", "bullets_cases.xml", "missileConfigs.xml"}
+# units.json still contains one historical Arena template whose four armor
+# names are no longer item records, although their exact linkage assets remain
+# registered in asset_source_map.xml. Keep this compatibility surface narrow:
+# unit 235 is male, so only the ten verified male skin keys are projected.
+ARENA_LEGACY_VIRTUAL_ITEMS: dict[str, dict[str, Any]] = {
+    "远古诛神头盔": {
+        "use": "头部装备",
+        "icon": "远古诛神头盔",
+        "dressup": "男变装-远古诛神头盔",
+        "helmet": False,
+        "fieldsByGender": {"男": {"面具": "男变装-远古诛神头盔"}},
+    },
+    "远古诛神胸甲": {
+        "use": "上装装备",
+        "icon": "远古诛神胸甲",
+        "dressup": "变装-远古诛神胸甲",
+        "helmet": False,
+        "fieldsByGender": {"男": {
+            "身体": "男变装-远古诛神胸甲身体",
+            "上臂": "男变装-远古诛神胸甲上臂",
+            "左下臂": "男变装-远古诛神胸甲左下臂",
+            "右下臂": "男变装-远古诛神胸甲右下臂",
+        }},
+    },
+    "远古诛神腿甲": {
+        "use": "下装装备",
+        "icon": "远古诛神腿甲",
+        "dressup": "变装-远古诛神腿甲",
+        "helmet": False,
+        "fieldsByGender": {"男": {
+            "屁股": "男变装-远古诛神腿甲屁股",
+            "左大腿": "男变装-远古诛神腿甲左大腿",
+            "右大腿": "男变装-远古诛神腿甲右大腿",
+            "小腿": "男变装-远古诛神腿甲小腿",
+        }},
+    },
+    "远古诛神战鞋": {
+        "use": "脚部装备",
+        "icon": "远古诛神战鞋",
+        "dressup": "男变装-远古诛神战鞋",
+        "helmet": False,
+        "fieldsByGender": {"男": {"脚": "男变装-远古诛神战鞋"}},
+    },
+}
 DRESSUP_TIMELINE_IDENTITY_KEYS = ("uri", "width", "height", "originX", "originY")
 DRESSUP_FACE_SKINS = ("男变装-基本脸型", "女变装-基本脸型")
 PRESERVED_EXPORT_KEYS = (
@@ -578,6 +622,17 @@ def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, 
                 "fieldsByGender": fields_by_gender,
                 "sourceFile": path.name,
             }
+    for name, virtual_item in ARENA_LEGACY_VIRTUAL_ITEMS.items():
+        if name in items:
+            raise ValueError(f"Arena legacy virtual item collides with canonical item: {name}")
+        item = copy.deepcopy(virtual_item)
+        item["sourceFile"] = "data/units/units.json#235"
+        item["virtual"] = True
+        item["sourceUnitId"] = 235
+        items[name] = item
+        for gender_fields in item["fieldsByGender"].values():
+            for key in gender_fields.values():
+                add_skin(skin_keys, key, item["use"], name, item["sourceFile"])
     add_appearance_skin_keys(project_root, skin_keys)
     return items, skin_keys
 

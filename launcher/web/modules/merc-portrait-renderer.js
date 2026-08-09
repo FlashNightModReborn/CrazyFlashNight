@@ -32,13 +32,27 @@
     var _manifest = null;
     var _manifestPromise = null;
     var _thumbCache = {};
+    var _thumbCacheBytes = 0;
+    var _cacheAccessSeq = 0;
     var _thumbPending = {};
     var _mountSeq = 0;
+    var _pendingSubscriberSeq = 0;
     var _renderQueue = [];
     var _activeRenderCount = 0;
     var _peakActiveRenderCount = 0;
+    var _pumpingRenderQueue = false;
     var _maxConcurrentRenders = Math.max(1, Math.min(8,
         Number(browserWindow.CF7_MERC_PORTRAIT_MAX_CONCURRENCY) || 4));
+    var _maxCacheEntries = boundedPositiveInteger(
+        browserWindow.CF7_MERC_PORTRAIT_CACHE_MAX_ENTRIES, 96, 1024);
+    var _maxCacheBytes = boundedPositiveInteger(
+        browserWindow.CF7_MERC_PORTRAIT_CACHE_MAX_BYTES, 12 * 1024 * 1024, 256 * 1024 * 1024);
+
+    function boundedPositiveInteger(value, fallback, maximum) {
+        value = Number(value);
+        if (!isFinite(value) || value <= 0) value = fallback;
+        return Math.max(1, Math.min(maximum, Math.floor(value)));
+    }
 
     function loadManifest() {
         if (_manifest) return Promise.resolve(_manifest);
@@ -59,8 +73,10 @@
 
     function normalizeGender(merc) {
         var value = merc && merc.gender !== undefined && merc.gender !== null
-            ? String(merc.gender) : '男';
-        return (value === '女' || value === '主角-女' || value === '0') ? '女' : '男';
+            ? String(merc.gender) : '';
+        // Match ArenaPanelService.as: explicit male encodings are male;
+        // missing/unknown legacy Host values fail soft to female.
+        return (value === '男' || value === '主角-男' || value === '1') ? '男' : '女';
     }
 
     function stripEquipName(value) {
@@ -154,13 +170,94 @@
         return state;
     }
 
-    function cacheKey(merc, variant, size) {
-        var parts = [variant, size, normalizeGender(merc), merc && merc.face || '', merc && merc.hair || ''];
+    function normalizedRenderOptions(variant, options) {
+        options = options || {};
+        var defaultZoom = variant === 'decision' ? 1.04 : 1;
+        var zoom = options.zoom == null ? defaultZoom : Number(options.zoom);
+        var margin = options.margin == null ? 6 : Number(options.margin);
+        if (!isFinite(zoom)) zoom = defaultZoom;
+        if (!isFinite(margin)) margin = 6;
+        return {
+            zoom: zoom,
+            margin: margin,
+            vAlign: options.vAlign || 'top'
+        };
+    }
+
+    function cacheKey(manifest, merc, variant, size, renderOptions) {
         var equipment = equipmentFromMerc(merc);
+        var appearance = appearanceFromMerc(manifest, merc, equipment);
+        var parts = [
+            variant,
+            size,
+            normalizeGender(merc),
+            appearance['脸型'] || '',
+            appearance['发型'] || '',
+            renderOptions.zoom,
+            renderOptions.margin,
+            renderOptions.vAlign
+        ];
         Object.keys(equipment).sort().forEach(function(slot) {
-            parts.push(slot + ':' + equipment[slot]);
+            parts.push([slot, equipment[slot]]);
         });
-        return parts.join('|');
+        return JSON.stringify(parts);
+    }
+
+    function estimateCacheBytes(url) {
+        // Data URLs are retained as JS strings. Two bytes per code unit is a
+        // conservative, engine-neutral memory estimate for the cache budget.
+        return String(url || '').length * 2;
+    }
+
+    function cacheGet(key) {
+        var entry = _thumbCache[key];
+        if (!entry) return '';
+        entry.lastUsed = ++_cacheAccessSeq;
+        return entry.url;
+    }
+
+    function removeCacheEntry(key) {
+        var entry = _thumbCache[key];
+        if (!entry) return;
+        _thumbCacheBytes = Math.max(0, _thumbCacheBytes - entry.bytes);
+        delete _thumbCache[key];
+    }
+
+    function evictCacheToLimits() {
+        var keys = Object.keys(_thumbCache);
+        while (keys.length > _maxCacheEntries || _thumbCacheBytes > _maxCacheBytes) {
+            var oldestKey = null;
+            var oldestAccess = Infinity;
+            for (var i = 0; i < keys.length; i++) {
+                var candidate = _thumbCache[keys[i]];
+                if (candidate && candidate.lastUsed < oldestAccess) {
+                    oldestAccess = candidate.lastUsed;
+                    oldestKey = keys[i];
+                }
+            }
+            if (!oldestKey) break;
+            removeCacheEntry(oldestKey);
+            keys = Object.keys(_thumbCache);
+        }
+    }
+
+    function cacheSet(key, url) {
+        if (!key || !url) return;
+        removeCacheEntry(key);
+        var bytes = estimateCacheBytes(url);
+        _thumbCache[key] = {
+            url: url,
+            bytes: bytes,
+            lastUsed: ++_cacheAccessSeq
+        };
+        _thumbCacheBytes += bytes;
+        evictCacheToLimits();
+    }
+
+    function clearCache() {
+        _thumbCache = {};
+        _thumbCacheBytes = 0;
+        _cacheAccessSeq = 0;
     }
 
     function alphaPixels(canvas) {
@@ -172,72 +269,154 @@
     }
 
     function renderSnapshot(manifest, state, size, isAlive) {
-        return new Promise(function(resolve) {
-            var canvas = document.createElement('canvas');
-            var renderer = DressupDollRenderer.create(canvas, {
-                manifest: manifest,
-                width: size,
-                height: size,
-                fps: 24
-            });
+        var control = { promise: null, cancel: function() {} };
+        control.promise = new Promise(function(resolve, reject) {
+            var canvas = null;
+            var renderer = null;
+            var timer = null;
             var attempts = 0;
-            function tick() {
-                if (!isAlive()) {
-                    renderer.destroy();
-                    resolve('');
-                    return;
+            var settled = false;
+
+            function dispose() {
+                if (timer !== null) {
+                    clearTimeout(timer);
+                    timer = null;
                 }
-                var meta = renderer.render(state);
-                var ready = !!(meta && meta.pendingImages === 0 && meta.failedImages === 0);
-                if (ready && alphaPixels(canvas) > 120) {
-                    var url = '';
-                    try { url = canvas.toDataURL('image/png'); } catch (ignore) {}
-                    renderer.destroy();
-                    resolve(url);
-                    return;
+                if (renderer) {
+                    try { renderer.destroy(); } catch (ignore) {}
+                    renderer = null;
                 }
-                if (attempts >= 50) {
-                    renderer.destroy();
-                    resolve('');
-                    return;
-                }
-                attempts++;
-                setTimeout(tick, 80);
             }
-            tick();
+
+            function settle(url, error) {
+                if (settled) return;
+                settled = true;
+                dispose();
+                if (error) reject(error);
+                else resolve(url || '');
+            }
+
+            control.cancel = function() { settle(''); };
+
+            function tick() {
+                if (settled) return;
+                try {
+                    if (!isAlive()) {
+                        settle('');
+                        return;
+                    }
+                    var meta = renderer.render(state);
+                    var ready = !!(meta && meta.pendingImages === 0 && meta.failedImages === 0);
+                    if (ready && alphaPixels(canvas) > 120) {
+                        settle(canvas.toDataURL('image/png'));
+                        return;
+                    }
+                    if (attempts >= 50) {
+                        settle('');
+                        return;
+                    }
+                    attempts++;
+                    timer = setTimeout(tick, 80);
+                } catch (error) {
+                    // setTimeout callbacks execute outside the Promise executor;
+                    // explicitly reject so the render slot cannot stay occupied.
+                    settle('', error);
+                }
+            }
+
+            try {
+                canvas = document.createElement('canvas');
+                renderer = DressupDollRenderer.create(canvas, {
+                    manifest: manifest,
+                    width: size,
+                    height: size,
+                    fps: 24
+                });
+                tick();
+            } catch (error) {
+                settle('', error);
+            }
         });
+        return control;
+    }
+
+    function jobIsAlive(job) {
+        try { return !job.cancelled && job.isAlive(); }
+        catch (ignore) { return false; }
+    }
+
+    function settleRenderJob(job, url, error) {
+        if (!job || job.finished) return;
+        job.finished = true;
+        if (job.started) _activeRenderCount = Math.max(0, _activeRenderCount - 1);
+        if (error) job.reject(error);
+        else job.resolve(url || '');
+        if (!_pumpingRenderQueue) pumpRenderQueue();
     }
 
     function pumpRenderQueue() {
-        while (_activeRenderCount < _maxConcurrentRenders && _renderQueue.length) {
-            var job = _renderQueue.shift();
-            _activeRenderCount++;
-            _peakActiveRenderCount = Math.max(_peakActiveRenderCount, _activeRenderCount);
-            renderSnapshot(job.manifest, job.state, job.size, job.isAlive).then(
-                job.resolve,
-                job.reject
-            ).then(function() {
-                _activeRenderCount--;
-                pumpRenderQueue();
-            }, function() {
-                _activeRenderCount--;
-                pumpRenderQueue();
-            });
+        if (_pumpingRenderQueue) return;
+        _pumpingRenderQueue = true;
+        try {
+            while (_activeRenderCount < _maxConcurrentRenders && _renderQueue.length) {
+                var job = _renderQueue.shift();
+                if (!job || job.finished) continue;
+                if (!jobIsAlive(job)) {
+                    settleRenderJob(job, '');
+                    continue;
+                }
+                job.started = true;
+                _activeRenderCount++;
+                _peakActiveRenderCount = Math.max(_peakActiveRenderCount, _activeRenderCount);
+                try {
+                    job.control = renderSnapshot(job.manifest, job.state, job.size, job.isAlive);
+                    job.control.promise.then(function(completedJob) {
+                        return function(url) { settleRenderJob(completedJob, url); };
+                    }(job), function(completedJob) {
+                        return function(error) { settleRenderJob(completedJob, '', error); };
+                    }(job));
+                } catch (error) {
+                    settleRenderJob(job, '', error);
+                }
+            }
+        } finally {
+            _pumpingRenderQueue = false;
         }
     }
 
     function scheduleSnapshot(manifest, state, size, isAlive) {
-        return new Promise(function(resolve, reject) {
-            _renderQueue.push({
-                manifest: manifest,
-                state: state,
-                size: size,
-                isAlive: isAlive,
-                resolve: resolve,
-                reject: reject
-            });
-            pumpRenderQueue();
+        var job = {
+            manifest: manifest,
+            state: state,
+            size: size,
+            isAlive: isAlive,
+            resolve: null,
+            reject: null,
+            control: null,
+            started: false,
+            finished: false,
+            cancelled: false,
+            promise: null,
+            cancel: null
+        };
+        job.promise = new Promise(function(resolve, reject) {
+            job.resolve = resolve;
+            job.reject = reject;
         });
+        job.cancel = function() {
+            if (job.finished) return;
+            job.cancelled = true;
+            if (job.control) {
+                job.control.cancel();
+                return;
+            }
+            var index = _renderQueue.indexOf(job);
+            if (index >= 0) _renderQueue.splice(index, 1);
+            settleRenderJob(job, '');
+        };
+        _renderQueue.push(job);
+        pumpRenderQueue();
+        return job;
     }
 
     function markFallback(container, img) {
@@ -267,8 +446,112 @@
         container.setAttribute('data-merc-portrait-state', 'ready');
     }
 
+    function detachPendingSubscriber(subscription) {
+        if (!subscription || subscription.released) return;
+        subscription.released = true;
+        delete subscription.entry.subscribers[subscription.id];
+        if (subscription.container
+                && subscription.container._mercPortraitSubscription === subscription) {
+            subscription.container._mercPortraitSubscription = null;
+        }
+    }
+
+    function pendingHasLiveSubscribers(entry) {
+        var keys = Object.keys(entry.subscribers);
+        var live = false;
+        for (var i = 0; i < keys.length; i++) {
+            var subscription = entry.subscribers[keys[i]];
+            var alive = false;
+            try { alive = !subscription.released && subscription.isAlive(); }
+            catch (ignore) { alive = false; }
+            if (alive) live = true;
+            else detachPendingSubscriber(subscription);
+        }
+        return live;
+    }
+
+    function subscribePending(entry, container, isAlive) {
+        var subscription = {
+            id: 'merc_sub_' + (++_pendingSubscriberSeq),
+            entry: entry,
+            container: container,
+            isAlive: isAlive,
+            released: false,
+            cancel: null
+        };
+        subscription.cancel = function() {
+            if (subscription.released) return;
+            detachPendingSubscriber(subscription);
+            if (entry.job && !pendingHasLiveSubscribers(entry)) {
+                // Remove the abandoned key synchronously. A same-turn remount
+                // must create a fresh job instead of subscribing to the old
+                // control whose cancellation settles on the next microtask.
+                cleanupPendingEntry(entry);
+                entry.job.cancel();
+            }
+        };
+        entry.subscribers[subscription.id] = subscription;
+        container._mercPortraitSubscription = subscription;
+        return subscription;
+    }
+
+    function cleanupPendingEntry(entry) {
+        entry.settled = true;
+        if (_thumbPending[entry.key] === entry) delete _thumbPending[entry.key];
+    }
+
+    function startPendingEntry(entry, manifest, state, size) {
+        entry.job = scheduleSnapshot(manifest, state, size, function() {
+            return pendingHasLiveSubscribers(entry);
+        });
+        entry.promise = entry.job.promise.then(function(url) {
+            if (url) cacheSet(entry.key, url);
+            cleanupPendingEntry(entry);
+            return url;
+        }, function(error) {
+            cleanupPendingEntry(entry);
+            throw error;
+        });
+    }
+
+    function consumePending(entry, subscription, source, container, img, key, isAlive) {
+        return entry.promise.then(function(url) {
+            subscription.cancel();
+            if (!url || !isAlive()) {
+                if (isAlive()) markFallback(container, img);
+                return null;
+            }
+            markReady(container, img, url);
+            return { source: source, key: key };
+        }, function(error) {
+            subscription.cancel();
+            throw error;
+        });
+    }
+
+    function invalidateMount(container) {
+        if (!container) return;
+        var subscription = container._mercPortraitSubscription;
+        if (subscription && typeof subscription.cancel === 'function') subscription.cancel();
+        container._mercPortraitSubscription = null;
+        if (typeof container.removeAttribute === 'function') {
+            container.removeAttribute('data-merc-portrait-request');
+        } else {
+            container.setAttribute('data-merc-portrait-request', '');
+        }
+    }
+
+    function clearPortrait(container, img) {
+        if (!img && container && typeof container.querySelector === 'function') {
+            img = container.querySelector('img');
+        }
+        invalidateMount(container);
+        markFallback(container, img);
+    }
+
     function mount(container, img, merc, options) {
         options = options || {};
+        invalidateMount(container);
         if (!container || !img || !merc) {
             markFallback(container, img);
             return Promise.resolve(null);
@@ -292,51 +575,44 @@
 
         return loadManifest().then(function(manifest) {
             if (!isAlive()) return null;
-            var key = cacheKey(merc, variant, size);
-            if (_thumbCache[key]) {
-                markReady(container, img, _thumbCache[key]);
+            var renderOptions = normalizedRenderOptions(variant, options);
+            var key = cacheKey(manifest, merc, variant, size, renderOptions);
+            var cached = cacheGet(key);
+            if (cached) {
+                markReady(container, img, cached);
                 return { source: 'cache', key: key };
             }
-            if (_thumbPending[key]) {
-                return _thumbPending[key].then(function(pendingUrl) {
-                    if (!pendingUrl || !isAlive()) {
-                        if (isAlive()) markFallback(container, img);
-                        return null;
-                    }
-                    markReady(container, img, pendingUrl);
-                    return { source: 'shared-pending', key: key };
+            var entry = _thumbPending[key];
+            var source = entry ? 'shared-pending' : 'dressup';
+            if (!entry) {
+                var state = buildState(merc, {
+                    manifest: manifest,
+                    fitFields: BUST_FIT_FIELDS,
+                    zoom: renderOptions.zoom,
+                    margin: renderOptions.margin,
+                    drawFields: null,
+                    rig: 'battle',
+                    stateLabel: BATTLE_STATE,
+                    vAlign: renderOptions.vAlign
                 });
-            }
-            var state = buildState(merc, {
-                manifest: manifest,
-                fitFields: BUST_FIT_FIELDS,
-                zoom: options.zoom == null ? (variant === 'decision' ? 1.04 : 1) : options.zoom,
-                margin: options.margin == null ? 6 : options.margin,
-                drawFields: null,
-                rig: 'battle',
-                stateLabel: BATTLE_STATE,
-                vAlign: options.vAlign || 'top'
-            });
-            if (!state) {
-                markFallback(container, img);
-                return null;
-            }
-            // 同一批十余张卡常共享装备/外观。按 cacheKey 合并飞行中的快照，避免重复建
-            // renderer 和重复解码图层；每个消费者仍用自己的 token 判断是否可以落 DOM。
-            _thumbPending[key] = scheduleSnapshot(manifest, state, size, function() { return true; });
-            return _thumbPending[key].then(function(url) {
-                delete _thumbPending[key];
-                if (url) _thumbCache[key] = url;
-                if (!url || !isAlive()) {
-                    if (isAlive()) markFallback(container, img);
+                if (!state) {
+                    markFallback(container, img);
                     return null;
                 }
-                markReady(container, img, url);
-                return { source: 'dressup', key: key };
-            }).catch(function(error) {
-                delete _thumbPending[key];
-                throw error;
-            });
+                entry = {
+                    key: key,
+                    subscribers: {},
+                    job: null,
+                    promise: null,
+                    settled: false
+                };
+                _thumbPending[key] = entry;
+            }
+            // Register the consumer before a new job is pumped: a synchronous
+            // first tick must already see at least one live subscriber.
+            var subscription = subscribePending(entry, container, isAlive);
+            if (!entry.promise) startPendingEntry(entry, manifest, state, size);
+            return consumePending(entry, subscription, source, container, img, key, isAlive);
         }).catch(function() {
             if (container.getAttribute('data-merc-portrait-request') === token) markFallback(container, img);
             return null;
@@ -371,13 +647,21 @@
     }
 
     function debugState() {
+        var pendingSubscriberCount = 0;
+        Object.keys(_thumbPending).forEach(function(key) {
+            pendingSubscriberCount += Object.keys(_thumbPending[key].subscribers).length;
+        });
         return {
             maxConcurrentRenders: _maxConcurrentRenders,
             activeRenderCount: _activeRenderCount,
             queuedRenderCount: _renderQueue.length,
             peakActiveRenderCount: _peakActiveRenderCount,
             cachedSnapshotCount: Object.keys(_thumbCache).length,
-            pendingSnapshotCount: Object.keys(_thumbPending).length
+            cachedSnapshotBytes: _thumbCacheBytes,
+            maxCachedSnapshotCount: _maxCacheEntries,
+            maxCachedSnapshotBytes: _maxCacheBytes,
+            pendingSnapshotCount: Object.keys(_thumbPending).length,
+            pendingSubscriberCount: pendingSubscriberCount
         };
     }
 
@@ -388,7 +672,8 @@
         create: create,
         updateHost: updateHost,
         debugState: debugState,
-        clear: markFallback,
+        clear: clearPortrait,
+        clearCache: clearCache,
         BODY_FIT_FIELDS: BODY_FIT_FIELDS.slice(),
         BUST_FIT_FIELDS: BUST_FIT_FIELDS.slice(),
         BATTLE_STATE: BATTLE_STATE

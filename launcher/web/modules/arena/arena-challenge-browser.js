@@ -758,8 +758,16 @@
 
     function isMercPortraitOpponent(opponent) {
         if (!opponent) return false;
-        return opponent.source === 'mercenary'
+        return !!dressupActorForOpponent(opponent)
+            || opponent.source === 'mercenary'
             || opponent.isMonster !== true;
+    }
+
+    function dressupActorForOpponent(opponent) {
+        if (!opponent || opponent.portraitKind !== 'dressup') return null;
+        var portrait = opponent.portrait;
+        return portrait && portrait.kind === 'dressup' && portrait.actor
+            && typeof portrait.actor === 'object' ? portrait.actor : null;
     }
 
     function opponentPortraitRef(opponent) {
@@ -783,7 +791,7 @@
         if (isMercPortraitOpponent(opponent)) {
             host.classList.add('arena-portrait-merc');
             host.classList.remove('arena-portrait-enemy');
-            return MercPortraits.mount(host, img, opponent, {
+            return MercPortraits.mount(host, img, dressupActorForOpponent(opponent) || opponent, {
                 variant: variant || 'arena-detail',
                 size: size || 112,
                 alt: ''

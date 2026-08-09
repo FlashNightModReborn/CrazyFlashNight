@@ -45,6 +45,21 @@ async function main() {
     });
     const dataPath = `/${path.relative(ROOT, reviewPath).replaceAll("\\", "/")}`;
     const pageUrl = `${server.url}launcher/web/modules/portrait-pilot-review/dev/internal-subject.html?data=${encodeURIComponent(dataPath)}`;
+    const invalidPage = await browser.newPage();
+    await invalidPage.goto(
+      `${server.url}launcher/web/modules/portrait-pilot-review/dev/internal-subject.html?data=${encodeURIComponent("/launcher/README.md")}`,
+      { waitUntil: "load" },
+    );
+    await invalidPage.locator('#app[data-ready="error"]').waitFor({ timeout: 30_000 });
+    assert(/review-data 路径非法/.test(await invalidPage.locator("#load-error").textContent()), "越界 review-data 未被拒绝");
+    const encodedTraversal = "/tmp/portrait-pilot/%2e%2e/launcher/README.md";
+    await invalidPage.goto(
+      `${server.url}launcher/web/modules/portrait-pilot-review/dev/internal-subject.html?data=${encodeURIComponent(encodedTraversal)}`,
+      { waitUntil: "load" },
+    );
+    await invalidPage.locator('#app[data-ready="error"]').waitFor({ timeout: 30_000 });
+    assert(/review-data 路径非法/.test(await invalidPage.locator("#load-error").textContent()), "编码 traversal review-data 未被拒绝");
+    await invalidPage.close();
     await page.goto(pageUrl, { waitUntil: "load" });
     await page.locator('#app[data-ready="true"]').waitFor({ timeout: 30_000 });
     assert(await page.locator(".review-card").count() === dataset.items.length, "审核卡片数量不闭合");
@@ -73,6 +88,8 @@ async function main() {
       identities: dataset.items.length,
       candidates: dataset.counts.candidateCount,
       modelPreselectionCount: 0,
+      outOfScopeDataPathRejected: true,
+      encodedTraversalRejected: true,
       persistedAcrossReload: true,
       savePayloadValidated: true,
     })}\n`);

@@ -54,6 +54,23 @@ async function main() {
     const dataPath = `/${path.relative(ROOT, reviewPath).replaceAll("\\", "/")}`;
     const canonicalPath = `/${path.relative(ROOT, decisionsPath).replaceAll("\\", "/")}`;
     const query = new URLSearchParams({ data: dataPath, decisions: canonicalPath, reviewKey });
+    const invalidPage = await browser.newPage();
+    const invalidQuery = new URLSearchParams({ data: "/launcher/README.md", decisions: canonicalPath, reviewKey });
+    await invalidPage.goto(
+      `${server.url}launcher/web/modules/portrait-pilot-review/dev/internal-subject-reconfirm.html?${invalidQuery}`,
+      { waitUntil: "load" },
+    );
+    await invalidPage.locator('#app[data-ready="error"]').waitFor({ timeout: 30_000 });
+    assert(/review-data 路径非法/.test(await invalidPage.locator("#load-error").textContent()), "越界 review-data 未被拒绝");
+    const encodedTraversal = "/tmp/portrait-pilot/%2e%2e/launcher/README.md";
+    const traversalQuery = new URLSearchParams({ data: encodedTraversal, decisions: canonicalPath, reviewKey });
+    await invalidPage.goto(
+      `${server.url}launcher/web/modules/portrait-pilot-review/dev/internal-subject-reconfirm.html?${traversalQuery}`,
+      { waitUntil: "load" },
+    );
+    await invalidPage.locator('#app[data-ready="error"]').waitFor({ timeout: 30_000 });
+    assert(/review-data 路径非法/.test(await invalidPage.locator("#load-error").textContent()), "编码 traversal review-data 未被拒绝");
+    await invalidPage.close();
     await page.goto(`${server.url}launcher/web/modules/portrait-pilot-review/dev/internal-subject-reconfirm.html?${query}`, { waitUntil: "load" });
     await page.locator('#app[data-ready="true"]').waitFor({ timeout: 30_000 });
     assert(await page.locator(".card").count() === 1, "复核页必须只显示一项");
@@ -70,6 +87,8 @@ async function main() {
       status: "internal_subject_reconfirmation_browser_harness_passed",
       reviewKey,
       untouchedDecisionCount: dataset.items.length - 1,
+      outOfScopeDataPathRejected: true,
+      encodedTraversalRejected: true,
       explicitReselectionRequired: true,
       savePayloadValidated: true,
     })}\n`);

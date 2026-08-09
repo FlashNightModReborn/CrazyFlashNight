@@ -9,6 +9,9 @@ const RESULT_SCHEMA = "cf7.portrait-worker-capability-result.v1";
 const DEFAULT_MODEL = "gpt-5.6-luna";
 const DEFAULT_EFFORT = "max";
 const MAX_CAPTURE_BYTES = 4 * 1024 * 1024;
+const HELPER_COMMAND_TIMEOUT_MS = 1_500;
+const TERMINATION_GRACE_MS = 4_000;
+const POST_KILL_WAIT_MS = 1_500;
 
 class WorkerError extends Error {
   constructor(code, phase, message, details = {}) {
@@ -50,6 +53,22 @@ function sleep(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
+function withDeadline(promise, timeoutMs, fallback) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => resolve(fallback()), timeoutMs);
+    Promise.resolve(promise).then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
 function isPidAlive(pid) {
   if (!Number.isInteger(pid) || pid <= 0) {
     return false;
@@ -72,29 +91,39 @@ async function collectCommand(command, args, timeoutMs = 5_000) {
     const stdout = [];
     const stderr = [];
     let settled = false;
-    const timer = setTimeout(() => {
-      if (!settled) {
-        child.kill("SIGKILL");
-      }
-    }, timeoutMs);
-    child.stdout.on("data", (chunk) => stdout.push(chunk));
-    child.stderr.on("data", (chunk) => stderr.push(chunk));
-    child.on("error", (error) => {
-      settled = true;
-      clearTimeout(timer);
-      resolve({ exitCode: null, stdout: "", stderr: "", error });
-    });
-    child.on("close", (exitCode) => {
+    const settle = (result) => {
       if (settled) {
         return;
       }
       settled = true;
       clearTimeout(timer);
-      resolve({
+      resolve(result);
+    };
+    const timer = setTimeout(() => {
+      if (!settled) {
+        try {
+          child.kill("SIGKILL");
+        } catch {
+          // The bounded helper may already have exited.
+        }
+        child.stdout.destroy();
+        child.stderr.destroy();
+        child.unref();
+        settle({ exitCode: null, stdout: "", stderr: "", error: null, timedOut: true });
+      }
+    }, timeoutMs);
+    child.stdout.on("data", (chunk) => stdout.push(chunk));
+    child.stderr.on("data", (chunk) => stderr.push(chunk));
+    child.on("error", (error) => {
+      settle({ exitCode: null, stdout: "", stderr: "", error, timedOut: false });
+    });
+    child.on("close", (exitCode) => {
+      settle({
         exitCode,
         stdout: Buffer.concat(stdout).toString("utf8"),
         stderr: Buffer.concat(stderr).toString("utf8"),
         error: null,
+        timedOut: false,
       });
     });
   });
@@ -112,7 +141,7 @@ async function listDescendantPids(rootPid) {
     const result = await collectCommand(
       "powershell.exe",
       ["-NoProfile", "-NonInteractive", "-Command", script],
-      10_000,
+      HELPER_COMMAND_TIMEOUT_MS,
     );
     if (result.exitCode !== 0 || !result.stdout.trim()) {
       return [];
@@ -123,7 +152,7 @@ async function listDescendantPids(rootPid) {
       parentPid: Number(row.ParentProcessId),
     }));
   } else {
-    const result = await collectCommand("ps", ["-eo", "pid=,ppid="], 5_000);
+    const result = await collectCommand("ps", ["-eo", "pid=,ppid="], HELPER_COMMAND_TIMEOUT_MS);
     if (result.exitCode !== 0) {
       return [];
     }
@@ -155,8 +184,17 @@ async function terminateExactProcessTree(rootPid, knownDescendants = []) {
     await collectCommand(
       "taskkill.exe",
       ["/PID", String(rootPid), "/T", "/F"],
-      10_000,
+      HELPER_COMMAND_TIMEOUT_MS,
     );
+    for (const pid of [...targets].reverse()) {
+      if (isPidAlive(pid)) {
+        try {
+          process.kill(pid, "SIGKILL");
+        } catch {
+          // taskkill or another exact-target signal won the race.
+        }
+      }
+    }
   } else {
     for (const pid of [...targets].reverse()) {
       try {
@@ -177,7 +215,7 @@ async function terminateExactProcessTree(rootPid, knownDescendants = []) {
     }
   }
 
-  const deadline = Date.now() + 3_000;
+  const deadline = Date.now() + POST_KILL_WAIT_MS;
   let survivors = targets.filter(isPidAlive);
   while (survivors.length > 0 && Date.now() < deadline) {
     await sleep(50);
@@ -207,6 +245,29 @@ async function spawnCaptured(options) {
     stdio: ["pipe", "pipe", "pipe"],
   });
   const pid = child.pid || null;
+  let closeSettled = false;
+  let spawnError = null;
+  let hardSettleTimer = null;
+  let settleClosed;
+  const closedPromise = new Promise((resolve) => {
+    settleClosed = (result) => {
+      if (closeSettled) {
+        return;
+      }
+      closeSettled = true;
+      if (hardSettleTimer) {
+        clearTimeout(hardSettleTimer);
+      }
+      resolve(result);
+    };
+  });
+  child.on("error", (error) => {
+    spawnError = error;
+    settleClosed({ exitCode: null, signal: null, spawnError, hardSettled: false });
+  });
+  child.on("close", (exitCode, signal) => {
+    settleClosed({ exitCode, signal, spawnError, hardSettled: false });
+  });
   const stdoutChunks = [];
   const stderrChunks = [];
   let stdoutBytes = 0;
@@ -217,6 +278,29 @@ async function spawnCaptured(options) {
   let terminationPromise = null;
   const knownDescendants = new Set();
   let descendantScanChain = Promise.resolve();
+
+  const armHardSettle = () => {
+    if (hardSettleTimer || closeSettled) {
+      return;
+    }
+    hardSettleTimer = setTimeout(() => {
+      try {
+        child.kill("SIGKILL");
+      } catch {
+        // The exact process may already have exited while its pipes stayed open.
+      }
+      child.stdin.destroy();
+      child.stdout.destroy();
+      child.stderr.destroy();
+      child.unref();
+      settleClosed({
+        exitCode: null,
+        signal: "FORCED_SETTLE",
+        spawnError,
+        hardSettled: true,
+      });
+    }, TERMINATION_GRACE_MS);
+  };
 
   const queueDescendantScan = () => {
     if (!pid) {
@@ -242,6 +326,7 @@ async function spawnCaptured(options) {
       return terminationPromise;
     }
     terminationReason = reason;
+    armHardSettle();
     terminationPromise = (async () => {
       await queueDescendantScan();
       return terminateExactProcessTree(pid, [...knownDescendants]);
@@ -277,20 +362,22 @@ async function spawnCaptured(options) {
     void beginTermination("timeout");
   }, timeoutMs);
 
-  const closed = await new Promise((resolve) => {
-    let spawnError = null;
-    child.on("error", (error) => {
-      spawnError = error;
-    });
-    child.on("close", (exitCode, signal) => resolve({ exitCode, signal, spawnError }));
-  });
+  const closed = await closedPromise;
   clearTimeout(timer);
   for (const scanTimer of descendantScanTimers) {
     clearTimeout(scanTimer);
   }
-  await descendantScanChain;
+  await withDeadline(descendantScanChain, TERMINATION_GRACE_MS, () => undefined);
   let termination = terminationPromise
-    ? await terminationPromise
+    ? await withDeadline(
+        terminationPromise,
+        TERMINATION_GRACE_MS,
+        () => ({
+          targetPids: pid ? [pid, ...knownDescendants] : [...knownDescendants],
+          survivorPids: [pid, ...knownDescendants].filter(isPidAlive),
+          hardDeadlineExceeded: true,
+        }),
+      )
     : { targetPids: [], survivorPids: [] };
   const normalExitOrphans = !terminationPromise
     ? [...knownDescendants].filter(isPidAlive)
@@ -315,6 +402,7 @@ async function spawnCaptured(options) {
     exitCode: closed.exitCode,
     signal: closed.signal,
     spawnError: closed.spawnError,
+    hardSettled: closed.hardSettled,
     timedOut,
     overflowStream,
     terminationReason,

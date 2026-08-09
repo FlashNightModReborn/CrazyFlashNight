@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Atomically promote the final Arena portrait supplement.
+"""Promote the final Arena portrait supplement with the runtime manifest last.
 
 The supplement contains five human-reviewed direct portraits and one explicit
 Simonli generator identity alias.  It starts from the already verified shared
@@ -10,10 +10,12 @@ back to the previous pack if the final shared-manifest verifier fails.
 from __future__ import annotations
 
 import argparse
+import base64
 import copy
 import datetime as dt
 import importlib.util
 import json
+import lzma
 import os
 import shutil
 import subprocess
@@ -39,7 +41,6 @@ P = load_base_controller()
 T = P.T
 PILOT_ROOT = T.PILOT_ROOT
 SCHEMA = P.SUPPLEMENTAL_PROMOTION_SCHEMA
-BASE_MANIFEST_DIGEST = "5FA93F5BAC9093D2EE7F3617479F37A9BB8D41A8882F4318248A9AE81430B4C2"
 DEFAULT_REVIEW_BATCH = PILOT_ROOT / "arena-direct-gap-localization-r215-five-fast3-20260809T211500Z"
 DEFAULT_ORIENTATION_BATCH = PILOT_ROOT / "arena-direct-gap-orientation-r217-r215-home-robot-20260809T162700Z"
 DEFAULT_ALIAS_BATCH = PILOT_ROOT / "arena-alias-r218-simonli-generator-to-simonli-20260809T164500Z"
@@ -216,15 +217,38 @@ def collect_inputs(review_batch: Path, orientation_batch: Path, alias_batch: Pat
     }
 
 
-def preserve_base_evidence(output: Path, evidence_output: Path) -> dict[str, Path]:
+def preserve_base_evidence(output: Path, evidence_output: Path) -> dict[str, Any]:
+    """Freeze the verified base in the final closure, not an ignored tmp path."""
+
     evidence_output.mkdir(parents=True)
-    result = {
-        "baseManifest": evidence_output / "base-manifest.json",
-        "basePromotionReceipt": evidence_output / "base-promotion-receipt.json",
+    sources = {
+        "manifest.json": output / "manifest.json",
+        "promotion-receipt.json": output / "promotion-receipt.json",
     }
-    shutil.copyfile(output / "manifest.json", result["baseManifest"])
-    shutil.copyfile(output / "promotion-receipt.json", result["basePromotionReceipt"])
-    return result
+    blobs = {name: path.read_bytes() for name, path in sources.items()}
+    # Keep human-readable recovery copies as an operational convenience.  They
+    # are deliberately not provenance inputs; the manifest embeds the exact,
+    # hash-bound bytes below and therefore remains verifiable after clean checkout.
+    shutil.copyfile(sources["manifest.json"], evidence_output / "base-manifest.json")
+    shutil.copyfile(sources["promotion-receipt.json"], evidence_output / "base-promotion-receipt.json")
+    archive_bytes = T.stable_bytes({
+        name: base64.b64encode(blob).decode("ascii")
+        for name, blob in sorted(blobs.items())
+    })
+    compressed = lzma.compress(archive_bytes, preset=9)
+    encoded = base64.b64encode(compressed).decode("ascii")
+    return {
+        "schema": "cf7.enemy-portrait-base-evidence-archive.v1",
+        "encoding": "sha256-base64-json+xz+base64",
+        "files": {
+            name: {"bytes": len(blob), "sha256": T.sha256_bytes(blob)}
+            for name, blob in sorted(blobs.items())
+        },
+        "uncompressedBytes": len(archive_bytes),
+        "compressedBytes": len(compressed),
+        "compressedSha256": T.sha256_bytes(compressed),
+        "dataChunks": [encoded[index:index + 32768] for index in range(0, len(encoded), 32768)],
+    }
 
 
 def build_selections(collected: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -270,10 +294,13 @@ def build_staging(
     staging: Path,
     evidence_output: Path,
     collected: dict[str, Any],
+    *,
+    logical_output: Path | None = None,
 ) -> dict[str, Any]:
-    base_manifest = P.check_manifest(output / "manifest.json")
-    if base_manifest.get("manifestDigest") != BASE_MANIFEST_DIGEST or base_manifest.get("counts") != P.EXPECTED_COUNTS:
-        raise SupplementalPromotionError("基础正式包不是 r205 冻结版本")
+    logical_output = output if logical_output is None else logical_output
+    base_manifest = P.check_manifest(output / "manifest.json", logical_output=logical_output)
+    if isinstance(base_manifest.get("supplementalPromotion"), dict) or base_manifest.get("counts") != P.EXPECTED_COUNTS:
+        raise SupplementalPromotionError("基础正式包必须是已验证且尚未增量 promotion 的完整基础包")
     base_evidence = preserve_base_evidence(output, evidence_output)
     shutil.copytree(output, staging)
 
@@ -327,11 +354,7 @@ def build_staging(
         },
     }
 
-    closure_input_paths = {
-        **base_evidence,
-        **collected["paths"],
-        "controller": Path(__file__),
-    }
+    closure_input_paths = {**collected["paths"], "controller": Path(__file__)}
     closure_inputs = {name: T.artifact(path) for name, path in closure_input_paths.items()}
     orientation_actions = {
         key: ("flip_x" if key == P.SUPPLEMENTAL_FLIP_REVIEW_KEY else "keep")
@@ -340,7 +363,8 @@ def build_staging(
     closure: dict[str, Any] = {
         "schema": SCHEMA,
         "status": "arena_supplemental_portraits_promoted",
-        "baseManifestDigest": BASE_MANIFEST_DIGEST,
+        "baseManifestDigest": base_manifest["manifestDigest"],
+        "baseEvidence": base_evidence,
         "directReviewKeys": sorted(P.SUPPLEMENTAL_DIRECT_REVIEW_KEYS),
         "aliasReviewKey": f"{P.SUPPLEMENTAL_ALIAS_REF}::default",
         "orientationActions": orientation_actions,
@@ -370,12 +394,15 @@ def build_staging(
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     old_receipt = load_json(output / "promotion-receipt.json", "基础 promotion receipt")
+    inherited_gates = copy.deepcopy(old_receipt.get("gates", {}))
+    inherited_gates.pop("atomicControllerOwnsSchemaSwitch", None)
+    inherited_gates.pop("supplementalPromotionAtomic", None)
     receipt: dict[str, Any] = {
         "schema": "cf7.enemy-portrait-promotion-receipt.v1",
         "status": "enemy_portrait_pack_promoted",
         "generatedAt": manifest["generatedAt"],
         "manifest": {
-            "path": T.repo_rel(output / "manifest.json"),
+            "path": T.repo_rel(logical_output / "manifest.json"),
             "bytes": manifest_path.stat().st_size,
             "sha256": T.sha256_file(manifest_path),
         },
@@ -389,12 +416,12 @@ def build_staging(
             "counts": copy.deepcopy(closure["counts"]),
         },
         "gates": {
-            **copy.deepcopy(old_receipt.get("gates", {})),
+            **inherited_gates,
             "arenaSupplementalHumanReviewPromoted": True,
             "arenaSupplementalOrientationClosed": True,
             "simonliGeneratorAliasBound": True,
             "arenaCatalogCoverageReady": True,
-            "supplementalPromotionAtomic": True,
+            "supplementalManifestPublishedLast": True,
             "productionWrites": True,
         },
     }
@@ -424,23 +451,11 @@ def promote(args: argparse.Namespace) -> None:
     stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     backup_root = PILOT_ROOT / "enemy-portrait-production-backups"
     backup_root.mkdir(parents=True, exist_ok=True)
-    backup = backup_root / f"enemy-portraits-supplement-base-{BASE_MANIFEST_DIGEST[:16].lower()}-{stamp}"
+    backup = backup_root / f"enemy-portraits-supplement-base-{manifest['supplementalPromotion']['baseManifestDigest'][:16].lower()}-{stamp}"
     if backup.exists():
         raise SupplementalPromotionError(f"rollback backup 已存在：{backup}")
 
-    os.replace(output, backup)
-    try:
-        os.replace(staging, output)
-        checked = P.check_manifest(output / "manifest.json")
-    except Exception:
-        failed_root = PILOT_ROOT / "failed-enemy-promotion-staging"
-        failed_root.mkdir(parents=True, exist_ok=True)
-        failed = failed_root / f"enemy-portraits.arena-supplement-failed-{stamp}-{os.getpid()}"
-        if output.exists():
-            os.replace(output, failed)
-        if backup.exists():
-            os.replace(backup, output)
-        raise
+    checked = P.publish_staged_pack(staging, output, backup)
 
     print(json.dumps({
         "status": "arena_supplemental_portraits_promoted",
@@ -457,10 +472,8 @@ def preflight(args: argparse.Namespace) -> None:
     output = T.resolve_output(Path(args.output))
     manifest_path = output / "manifest.json"
     manifest = P.check_manifest(manifest_path)
-    if manifest.get("manifestDigest") != BASE_MANIFEST_DIGEST:
-        raise SupplementalPromotionError(
-            f"基础正式包摘要漂移：{manifest.get('manifestDigest')} != {BASE_MANIFEST_DIGEST}"
-        )
+    if isinstance(manifest.get("supplementalPromotion"), dict) or manifest.get("counts") != P.EXPECTED_COUNTS:
+        raise SupplementalPromotionError("基础正式包必须是已验证且尚未增量 promotion 的完整基础包")
     evidence_output = ensure_pilot_output(Path(args.evidence_output), allow_existing=False)
     collected = collect_inputs(
         Path(args.review_batch).resolve(),

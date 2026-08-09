@@ -158,7 +158,16 @@
       card.dataset.rejected = String(rejected);
       card.querySelector(".source-code").textContent = candidate.candidateId;
       card.querySelector(".source-status").textContent = rejected ? "枪遮挡头部 · 禁选" : "可选";
-      card.querySelector(".frame-meta").innerHTML = `<span>frame ${candidate.frame}</span><span>PNG ${candidate.width}×${candidate.height}</span><span>SVG ${candidate.vectorCanvasSize[0]}×${candidate.vectorCanvasSize[1]}</span>`;
+      const frameMeta = card.querySelector(".frame-meta");
+      for (const text of [
+        `frame ${candidate.frame}`,
+        `PNG ${candidate.width}×${candidate.height}`,
+        `SVG ${candidate.vectorCanvasSize[0]}×${candidate.vectorCanvasSize[1]}`,
+      ]) {
+        const span = document.createElement("span");
+        span.textContent = text;
+        frameMeta.append(span);
+      }
       const vectorLink = card.querySelector(".frame-vector");
       vectorLink.href = assetUrl(candidate.vectorArtifact);
       vectorLink.querySelector("img").src = assetUrl(candidate.vectorArtifact);

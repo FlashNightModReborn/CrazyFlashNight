@@ -274,12 +274,17 @@ test("timeout terminates the exact child process tree", async () => {
   const harness = makeHarness("timeout");
   try {
     await harness.worker.probe();
+    const startedMs = Date.now();
     await assert.rejects(
       harness.worker.runWithRetry({ ...harness.options, timeoutMs: 400 }),
       (error) =>
         error instanceof WorkerError &&
         error.code === "RUN_RETRIES_EXHAUSTED" &&
         error.details.terminalError.code === "PROCESS_TIMEOUT",
+    );
+    assert.ok(
+      Date.now() - startedMs < 15_000,
+      "400 ms timeout exceeded the bounded 15 s cleanup envelope",
     );
     const childPid = Number(fs.readFileSync(harness.childPidFile, "utf8"));
     assert.equal(isPidAlive(childPid), false, `child PID ${childPid} survived timeout cleanup`);

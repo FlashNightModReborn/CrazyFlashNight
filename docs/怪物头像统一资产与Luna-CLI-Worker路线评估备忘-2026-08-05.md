@@ -49,7 +49,7 @@
 10. 根据维护者实际使用经验，首轮以 **Luna Max** 作为普通提案与独立风格复核的默认配置；Terra 只作对照组，Sol Medium / High 处理异常与争议。
 11. 复用现役装备检视器的本机 Edge 大批量审批模式：稳定 ID、source/review digest、持久进度、筛选、结构化决定、partial/stale fail-closed 和人工导出证据。
 12. Edge 人审结果只作 QA / promotion 输入，不能由页面点击直接改写生产 resolver 或资产目录。
-13. P2/P3、P4 有界 campaign、来源闭包与当前 203 条人类偏好先用于 Team promotion，随后由消费者无关 controller 原子扩展为通用包。当前 222 个 variant 均有冻结人审证据并启用现代资产；2 个待人审、唯一 `不知火舞` 未实装项与 2 个回执别名都不暴露模型未签署主体，不得用模型共识冒充人审。
+13. P2/P3、P4 有界 campaign、来源闭包与当前 203 条人类偏好先用于 Team promotion，随后由消费者无关 controller 以 subjects-first / manifest-last 方式扩展为通用包。当前 222 个 variant 均有冻结人审证据并启用现代资产；2 个待人审、唯一 `不知火舞` 未实装项与 2 个回执别名都不暴露模型未签署主体，不得用模型共识冒充人审。
 14. 明确人工备注若无法靠通用语义规则稳定满足，可按稳定 `reviewKey` 维护归一化 `requiredFeatureRegion / requiredMustIncludeRegion`。模型结构化结果与确定性 renderer 必须分别证明包含关系，profile hash 必须进入 source closure；该机制只约束构图，不能补画、替代人审或处理来源冲突。
 15. 若 adjustment 已明确到 A/B 中的具体帧和移动/缩放，不再启动下一轮 Luna。人工框选页绑定父 receipt、来源角色、candidate hash 与 `sourceHighResolution`，在人类看到的实时 80px 上导出像素正方形；冻结后由确定性 renderer 直接生成最高 4096 母版及派生尺寸。该接受范围仅是所选 frame/crop，仍不授予 production 写入或来源/变体裁决。
 16. 本轮已经证明 Luna CLI 集群可以成为受控高吞吐视觉 worker，但没有证明 Luna 能自主完成艺术签署；可复用结论以 §12 为准。未来“怪物知识库与美术导演管线”只进入设计储备，见 [`怪物知识库与美术导演管线-设计储备与维度讨论-2026-08-08.md`](怪物知识库与美术导演管线-设计储备与维度讨论-2026-08-08.md)，不得从本头像任务直接外推为已实施能力。
@@ -639,7 +639,7 @@ source_resolved
 - **r125 已完成人审并进入分路纠错**：r121 的 12 个首答全部 transport/schema 有效，24/24 锁帧、23/24 方向一致，但 6 个作业只因 feature occupancy 被严格运行拒绝，且 3/12 缺完整进程退出证据；first-answer report `66F03685…606F` 保留两项 false gate，只允许 7 个精确 role-row 进入真人判断。r123 诊断 48 路中 46 路通过全局 MAE≤8，独狼 A/B 为 `8.214529`；r124 以 alpha MAE `1.850344`、核心 IoU `0.985041`、重心差 `0.001401`、双向 edge recall `0.993615/0.992822` 证明精确矢量/栅格对应，evidence `CB533EA5…A17`，不改变全局阈值。r125 fresh renderer 闭合 48/48、5 个 flip、7 行 occupancy human-review recovery 与 2 行独狼近阈值证据，render/review digest `8E531D95…2F46 / 4BC613FF…2832`。真人回执 `106A8816…EAFE` 为 16 pass / 6 adjustment / 2 wrong_pose。6 条 adjustment 的 r127 guidance/receipt 为 `72842662…EC85 / 47042E62…44F6`，r128 有界大帧无模型 render `479AF12F…1580`，最大 MAE `4.161664≤8`；汽车炸弹以更晚人工语义锁定车尾发动机而非车头。ArmsArius 的源 `e19-c01/f1` 已朝右，r121 A/B 却都错误 `flip_x`；r129 在人工框选后再次镜像恢复朝右，report `51AB99AF…A355`、MAE 0，该样本必须计为 `model_flip_false_positive`。黑白无常 r130 `expand_search` 后由精确人类动作指令收敛到 `血腥死 / Symbol 597 / DefineSprite 591 / frame 249 / flip_x`；r133 A/B 几何 IoU `0.966149 / 0.948909`，r134 有界大帧 render `B7BFC006…4CD`，最终 pass receipt `01F0D648…B458`，方向一致性 receipt `38042FCC…535`。迷你黑洞保留 frame 10，r136 从两路 4096px supersample 生成 gamma `0.50/0.75/1.00` 共 6 个 alpha 候选，黑底合成 max error≤1，dataset `3266ABA3…A8FE`；Edge 回归已过，等待真人选择。
 - **尾批并发分层与 168 标签复用已实证**：迷你黑洞最终选择 `independent_review-g075 / gamma 0.75`，r140 将它和黑白无常的两条旧 `wrong_pose` 保留为负例并冻结当前 pass。r143 将 99 条历史框选与 6 条新增框选合并为 105 条；r144 atlas v6 闭合 168 条当前标签（58 pass / 109 adjustment / 1 source）和 3 条 superseded negative，atlas SHA `A93D4846…C29B`；r145 compact v4 将 24,721 patch 降到 9,499。48 identity 扩容目标在可用池尾部被 r142 明确钳制为 13 个唯一 `man`，另有 6 个缺源 identity，历史重叠为 0。selection-only Fast6 的 8/8 首答、exit、orphan/timeout 门通过，墙钟 `504.4s`；但 localization Fast6 出现多轮几何修复、WebSocket timeout→HTTP fallback，最终 7/8 严格闭合并失败，digest `CCCECC32…C3E`。回落 Fast3 且将 structural short-axis floor 明示为 `0.35` 后，r149 以 11 次 attempt 严格闭合 8 个作业，13/13 candidate/orientation 一致，model digest `BEAF4154…D43`。r151 有界 `16384²` render/review digest `23B9A6A1…4B51 / AFE58534…85C4`，13 行 Edge/open preflight 已通过并打开可见页。当前结论是“选帧 Fast6、精确定位 Fast3”，不是全链路 Fast6，更不支持继续提高到 8。
 - override / alias 可能让最终产物数少于身份数；必须以当次 inventory digest 为准，禁止再用 210 代表全量。
-- promotion 原子写正式 manifest / assets，失败保持上一正式版本。
+- promotion 先发布内容寻址 subjects 和 receipt，最后以单文件替换切换 manifest；中断时旧或新 manifest 的运行时引用必须完整，重跑收敛 exact fileset。它不是整目录或多文件事务原子性证明。
 
 ### P5：消费者迁移
 
@@ -650,7 +650,7 @@ source_resolved
 - Arena 全模式消费者试点已接入正式 P4/P5：自定义目录/已选阵容、标准/堕落/爬升卡及右栏对手都按 roster 类型分流到 `EnemyPortraits` 或 `MercPortraits`；隐藏警报卡不挂载头像，避免身份剧透。完整态每排 2 张，并按阵容顺序展示最多 4 个单位小头像（余量以 `+N` 标记）；紧凑态每排 3 张且仅显示同组首项。密度切换只改变可见投影，不重新抽取阵容或请求 Host；两态都保留人数、等级与经济语义。
 - Arena AS2 仅把佣兵 preview 的只读外观投影从 `name/level/equips/skills` 扩为 `id/name/level/gender/height/face/hair/equips/skills`；没有改变 card capability、经济复算、扣款、入场 roster 或战斗权威。定制单位目录 v2 另从静态 `units.json.data` 派生 `主角-*` 的只读 dressup actor，同样不回写游戏数据。通用 production 现已闭合 222 个 human-accepted variant；Arena 消费身份覆盖为 217/217、0 回退锁定图。
 - 本阶段证明全目录与全挑战模式组件接通、已有闭合结果全部 promotion、主角模板正确分流、mock-browser 和结构治理；Arena exact identity 已自动闭合，但 mock 页面仍不等于真实 Launcher WebView2→Flash 或游戏内视觉 E2E。
-- **Arena 五项直接缺口已完成人审、方向修正与增量投产**：r214 单阶段 Fast3 在有效多模态输出后仅因锯片短轴占比门失败关闭；selection-only 恢复报告/锁分别为 `5C6E8AFE…A609 / 288CBDB7…A28F`，5/5 锁帧。r215 重新绑定原生高分辨率 localization view（source/view digest `72EF7D61…90A3 / 0F86957F…C1C`），Fast3 仍因 feature occupancy 严格失败，failure digest `CB907667…F5B7`；版本化 first-answer 恢复器重新核对 manifest、视图、A/B 角色和全部模型产物后生成仅供人审的 report `AA29F63A…2AAA`，明确保留 `strictFeatureOccupancyAccepted=false`、`humanArtAcceptance=false`、`productionWrites=false`。诊断限定 renderer 为 10 张 A/B 预览标出 5 条 occupancy bypass，render digest `389F7ED3…5B36`；5 行 reviewer 的 review digest `9A5E98AC…037A`，154 个绑定产物通过 Edge、原生保存、重复点击抑制和 open preflight。真人回执 `9D9A4385…8D64` 为 4 pass + 1 adjustment；家用机器人备注“翻转后可用”由 v2 方向修正器生成镜像，report `F2BBDAAD…2EE9`，未重新裁框或调用模型。r219 增量 controller 将五项作为 5 个 modern subject 原子写入，且在 shared manifest 复验失败时自动回滚。
+- **Arena 五项直接缺口已完成人审、方向修正与增量投产**：r214 单阶段 Fast3 在有效多模态输出后仅因锯片短轴占比门失败关闭；selection-only 恢复报告/锁分别为 `5C6E8AFE…A609 / 288CBDB7…A28F`，5/5 锁帧。r215 重新绑定原生高分辨率 localization view（source/view digest `72EF7D61…90A3 / 0F86957F…C1C`），Fast3 仍因 feature occupancy 严格失败，failure digest `CB907667…F5B7`；版本化 first-answer 恢复器重新核对 manifest、视图、A/B 角色和全部模型产物后生成仅供人审的 report `AA29F63A…2AAA`，明确保留 `strictFeatureOccupancyAccepted=false`、`humanArtAcceptance=false`、`productionWrites=false`。诊断限定 renderer 为 10 张 A/B 预览标出 5 条 occupancy bypass，render digest `389F7ED3…5B36`；5 行 reviewer 的 review digest `9A5E98AC…037A`，154 个绑定产物通过 Edge、原生保存、重复点击抑制和 open preflight。真人回执 `9D9A4385…8D64` 为 4 pass + 1 adjustment；家用机器人备注“翻转后可用”由 v2 方向修正器生成镜像，report `F2BBDAAD…2EE9`，未重新裁框或调用模型。r219 增量 controller 当时通过 staging 目录切换写入五项，并在进程内 shared manifest 复验失败时尝试回滚；后续复核确认两次目录 rename 之间存在 live root 缺失窗口，现已由 subjects-first / manifest-last publisher 替代，因此该历史批次不得再外推为 crash-atomic。
 - **第六项由人类签署 identity alias 闭合**：`敌人-锡蒙利范围光环发生器` 的 linkage 根只到 57×3、6 个可见黑像素的单帧退化逻辑对象，无法证明独立可见怪物；维护者明确批准复用已有真人接受头像 `敌人-锡蒙利::default`。`freeze-arena-portrait-alias-v1.py` 将单位 ID、源帧退化证据和不可变目标 SVG/PNG 绑定为 receipt `AF29A2B5…9ED`；manifest 只登记 alias，不复制主体。
 
 该工程将跨数据、工具、Web、AS2 / Host 协议、资产与文档，明显超过 [`agentsDoc/agent-harness.md`](../agentsDoc/agent-harness.md) 的普通任务软上限，必须按 phase 拆分并保持每阶段独立可验证。
@@ -683,7 +683,7 @@ source_resolved
 6. **确定性高分辨率渲染**：从精确帧生成有界母版和派生尺寸，校验 alpha、边缘、方向、可见面积、最小真源裁切与 artifact hash；例外必须绑定精确实体和证据，不能抬高全局阈值。
 7. **把人类修正变成数据**：pass、框选、方向、换帧、错主体、来源异常和被取代决定分别保留；当前决定与 superseded negative 不重复计数。
 8. **减少无意义复议**：人工已经选定帧和框时直接无模型重渲染；扩容使用 `下一批身份数 × 预计复议率 ≤ 6`，不是给页面设置六行上限。
-9. **单一 controller promotion**：只有完整 receipt、source/review/render digest 与 required entity closure 通过后才能原子替换生产包；失败保留上一正式版本。
+9. **单一 controller promotion**：只有完整 receipt、source/review/render digest 与 required entity closure 通过后，才能先发布内容寻址 subjects 与 receipt，再以单文件替换切换 manifest 这一唯一运行时权威；任一中断点保持当前 manifest 引用完整并允许重跑收敛，不能称为整包事务原子。
 10. **逐消费者验收**：Team、Arena 和未来图鉴分别验证 fallback、variant、尺寸、剧透门与实际游戏画面；一个消费者的 harness 不外推到另一个消费者。
 
 ### 12.3 已验证的失败模式
@@ -711,7 +711,7 @@ source_resolved
 
 ## 13. 下一会话从哪里开始
 
-P0–P4 的代表集、来源裁决、203 条偏好 / 112 条几何与最终来源排除继续作为 promotion 来源。当前通用生产包 `launcher/web/assets/enemy-portraits/manifest.json` 的 digest 为 `33E1FABF…9961`，闭合 226 identity / 227 variant / 222 human-accepted variant / 2 pending / 1 excluded / 2 aliases，并完整保留 98 identity 的 Team 子集。r219 supplemental closure digest 为 `4B85A8E7…9AA4`。promotion 生成器会剥离 FFDec 自闭合空 filter 并写入兼容变换 provenance；这修复了霜精之王 SVG 在 Chromium 中请求成功却全空的问题，resolver 同时保留透明 SVG 像素为空时转 PNG 的运行时保险。Arena 的 217 个消费身份中怪物 manifest 命中 214/214，主角纸娃娃 3/3，合计 217/217 ready、0 受控回退；直接上一版可从 `tmp/portrait-pilot/enemy-portrait-production-backups/enemy-portraits-supplement-base-5fa93f5bac9093d2-20260809T085831644559Z/` 回滚。
+P0–P4 的代表集、来源裁决、203 条偏好 / 112 条几何与最终来源排除继续作为 promotion 来源。当前通用生产包 `launcher/web/assets/enemy-portraits/manifest.json` 的 digest 为 `EFDBD928…06E5`、receipt digest 为 `17FC0D9B…0EDF`，闭合 226 identity / 227 variant / 222 human-accepted variant / 2 pending / 1 excluded / 2 aliases，并完整保留 98 identity 的 Team 子集。r219 supplemental closure digest 为 `C70B03A8…8AD3`，基础 manifest digest `EED4D8DC…01D0` 及其 receipt 原始字节由 closure 自包含压缩冻结，不再依赖 ignored tmp。随仓 evidence pack 精确闭合 353 条显式 records + 211 条 digest-bound selected-master 派生记录 = 564 条，其中 560 条属于 `tmp/portrait-pilot` 生产证据、4 条是 tracked controller provenance；25 项不可稳定重建的 JSON/PNG 原始字节进入逐 blob 校验 sidecar。subjects exact-set 由 442 个唯一 runtime 引用与 runtime manifest 的 17 条 preserved 声明组成，其中 12 条仅作 orientation source、5 条 SVG reconstruction basis 同时属于最终 runtime；evidence pack 的 `preservedSubjects` 只含前 12 条。去重并集恰为 454，与 disk/tracked 一致且 extra/missing 为 0。设置 `CF7_PORTRAIT_EVIDENCE_ONLY=1` 的两级 checker 已用于 clean-checkout 语义复验；full-build 回归只证明进程内 promotion assembly，显式不启动父进程 audit hook 无法覆盖的四个历史 verifier 子进程，后者由真实 normal supplement promotion 与 standalone checks 覆盖。promotion 生成器会剥离 FFDec 自闭合空 filter 并写入兼容变换 provenance；这修复了霜精之王 SVG 在 Chromium 中请求成功却全空的问题，resolver 同时保留透明 SVG 像素为空时转 PNG 的运行时保险。Arena 的 217 个消费身份中怪物 manifest 命中 214/214，主角纸娃娃 3/3，合计 217/217 ready、0 受控回退；本次基础与增量阶段的精确回滚位置记录在对应 promotion 输出，不把 ignored backup 路径写成 clean-checkout 权威证据。
 
 原 6 个 Arena 回退项曾按消费身份精确分为 5 个 `no_manifest_entry` 和 1 个 `pending_human_review`；r219 以五项真人接受主体和一项签名 alias 全部关闭，覆盖审计现为 217/217。原 `敌人-lady` 消费拼写仍统一到具有人审资产的精确身份 `敌人-Lady`，3 个 `主角-*` 身份仍通过消费者分流闭合。`敌人-Serpent / 敌人-黑无常索命` 两个 production pending 当前不在这 217 个 Arena 消费身份中，仍须独立收口；未来缺口仍必须分别走素材 rescue、消费者分流或签名 alias，不能直接复用近似头像。
 
@@ -721,7 +721,7 @@ Luna Max Fast6 随后以 5 小批 × A/B = 10 个独立进程逐行检查全部�
 
 人工主体页 review digest `109C2FE3…375FE` 当时通过真实 Edge harness/open preflight：17 张身份卡展示全部 113 个候选、A/B 理由与唯一分歧，模型预选数为 0；17/17 人工决定、后续定位/框选以及 C03 复确认现均已闭合。该页的历史 `awaiting_human_subject_selection` 状态已被 v9 反馈闭包和 `41189961…F7B47` 生产 manifest 取代，不能继续作为当前阻断状态。
 
-尾项批 `team-gap-r171→r173→r174` 当时绑定 186 条偏好，以 Lady/方舟爪豪的首帧 depth-3 内部主体与巨臂僵尸的命名 `man` 避开血条/等级。localization report `B85A017B…326D9` 为 3/3 candidate 与 3/3 orientation 一致，有界大帧 render `EE541E37…7CE4D9` 输出 6 路候选；最终 review digest `CCF52F3A…983D7A` 的 3 条决定全部为 pass，人审回执 digest `8BE01410…E58A6CD`，并已原子替换进 Team 包。
+尾项批 `team-gap-r171→r173→r174` 当时绑定 186 条偏好，以 Lady/方舟爪豪的首帧 depth-3 内部主体与巨臂僵尸的命名 `man` 避开血条/等级。localization report `B85A017B…326D9` 为 3/3 candidate 与 3/3 orientation 一致，有界大帧 render `EE541E37…7CE4D9` 输出 6 路候选；最终 review digest `CCF52F3A…983D7A` 的 3 条决定全部为 pass，人审回执 digest `8BE01410…E58A6CD`，并在当时写入 Team 包；该历史记录只说明产物闭合，不证明现行或旧版 publisher 具备整包事务原子性。
 
 promotion 的旧朝向传播缺陷实际分为两层。第一层是直接 pass 模型行的 `orientationAction=flip_x` 曾未稳定传到 SVG；第二层是普通人工 framing report 只保存未翻转源空间 crop、没有方向字段，旧 promotion 因而把“人类重新框选”误当成 `keep`，丢失所选 Luna A/B 行已经给出的 flip。第二层确定性影响 4 项：`凤凰眷属大火精灵`、`凤凰眷属火精灵`、`汽车炸弹`、`王牌霜精`。基础 resolver 先按“显式人工后裁切方向 > 显式 correction > 所选模型行方向继承 > legacy 未评估”闭合，再由全量视觉审计把 217 项升级为模型保持或真人方向证据；SVG 与 512px PNG 回退必须同时服从最终动作，不再由人工 crop 的存在与否隐式决定方向。
 
@@ -731,12 +731,12 @@ promotion 的旧朝向传播缺陷实际分为两层。第一层是直接 pass �
 
 r204 真人方向页 digest `D4555C91…1FA0` 只呈现上述 39 个风险项，左右两栏使用同一 production PNG 的当前/镜像 512px 与 80px 对照，无默认选择。完整导出已由回执 `15828B45…243` 严格闭合为 34 keep / 5 relative `flip_x`；五项为 `ArmsArius`、`忍者BOSS`、`忍者兵`、`汽车炸弹`、`重盾骑士`。这里的 `flip_x` 是“对 r202 生产像素再镜像一次”，不是覆盖基础 `orientationAction`；因此汽车炸弹、重盾骑士和 ArmsArius 从原 flip 回到 keep，忍者兵与忍者 BOSS 从 keep 变为 flip。
 
-最终 r210 `cf7.portrait-orientation-propagation-audit.v1` digest `0D6B0C7F…22C3` 覆盖当时 217/217：0 action mismatch、0 SVG mismatch、0 PNG fallback mismatch、0 legacy visual audit required；178 项由 r202 双路高置信度保持闭合，39 项由 r204 真人裁决闭合。r210 额外绑定空 filter 兼容修复后的当时 promotion controller 与 manifest，生产包同时保留 r202 所需的 434 个素材绑定 / 432 个唯一文件。r219 合法扩展 controller 与 manifest 后，不能继续把 r210 `--current` 当作现态；r220 从原 217 项来源重新计算并追加五项 supplement 人审选择，digest `1A10ECD4…DC2A` 覆盖当前 222/222，三类 mismatch 与 legacy 仍为 0，来源计数为 178 model keep / 39 human audit / 4 direct pass / 1 explicit human flip。由于 r202 原先引用 live manifest 和当时控制器，r207 artifact-supersession receipt `12D8EF1F…865D` 先冻结 7 个引用对应的 4 份原始字节；旧审计复验必须显式传入该回执，缺回执仍按哈希漂移失败，不能静默放宽。
+最终 r210 `cf7.portrait-orientation-propagation-audit.v1` digest `0D6B0C7F…22C3` 覆盖当时 217/217：0 action mismatch、0 SVG mismatch、0 PNG fallback mismatch、0 legacy visual audit required；178 项由 r202 双路高置信度保持闭合，39 项由 r204 真人裁决闭合。r210 额外绑定空 filter 兼容修复后的当时 promotion controller 与 manifest，生产包同时保留 r202 所需的 434 个素材绑定 / 432 个唯一文件。r219 合法扩展 controller 与 manifest 后，r220 digest `1A10ECD4…DC2A` 曾从原 217 项来源追加五项 supplement 人审选择闭合 222/222；随后 evidence/publisher controller 继续演进，r220 也转为历史快照。当前 r221 digest `DDC843A4…0576` 绑定最终 production manifest 与当前三个 promotion controller，覆盖 222/222，三类 mismatch 与 legacy 仍为 0，来源计数为 178 model keep / 39 human audit / 4 direct pass / 1 explicit human flip。由于 r202 原先引用 live manifest 和当时控制器，r207 artifact-supersession receipt `12D8EF1F…865D` 先冻结 7 个引用对应的 4 份原始字节；旧审计复验必须显式传入该回执，缺回执仍按哈希漂移失败，不能静默放宽。
 
 推荐起点：
 
 1. 在真实战队与竞技场标准/堕落/爬升/定制赛执行 WebView2→Flash 手工视觉验收，特别核对 JK 状态切换、佣兵 battle-rig 胸像、基础五个真人相对镜像项、家用机器人 supplement `flip_x`、透明主体、隐藏卡剧透门、完整/紧凑密度、小尺寸识别度和长目录滚动。
-2. 保留 manifest check、Arena 覆盖审计、两套三视口 mock-browser、r220 当前传播审计、r210 历史基线、r202 显式 supersession 复验与人审/来源 digest 闭包作为后续新增怪物的固定 promotion 门，不以模型共识替代人审。
+2. 保留 manifest check、Arena 覆盖审计、两套三视口 mock-browser、r221 当前传播审计、r210/r220 历史基线、r202 显式 supersession 复验与人审/来源 digest 闭包作为后续新增怪物的固定 promotion 门，不以模型共识替代人审。
 3. 下一轮只处理剩余三项生产 pending：`Serpent` 继续服从“无可实例化成品来源”的排除证据，`唐头肌肉男` 与 `黑无常索命` 分别建立独立来源/主体救援；Arena 另外 8 个非 manifest identity 与 1 个大小写债务走消费者分流或签名 alias。禁止把这 17 项已经闭合的内部主体结果外推给不同来源债务。
 
 ---

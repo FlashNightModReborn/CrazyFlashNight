@@ -130,9 +130,31 @@ def run(output: Path) -> dict[str, Any]:
             else:
                 if final_action != current_action:
                     raise PreflightError(f"keep/model-keep 意外改变方向：{review_key}")
-                for kind in ("svg", "pngFallback"):
-                    if variant["subject"][kind]["sha256"] != source_variant["subject"][kind]["sha256"]:
-                        raise PreflightError(f"keep/model-keep 意外改变主体哈希：{review_key}/{kind}")
+                if (
+                    variant["subject"]["pngFallback"]["sha256"]
+                    != source_variant["subject"]["pngFallback"]["sha256"]
+                ):
+                    raise PreflightError(f"keep/model-keep 意外改变 PNG 主体哈希：{review_key}")
+                if variant["subject"]["svg"]["sha256"] != source_variant["subject"]["svg"]["sha256"]:
+                    source_svg = T.verify_artifact_record(
+                        variant["provenance"].get("sourceVectorFrame"),
+                        f"兼容变换源 SVG {review_key}",
+                    )
+                    expected_svg = T.build_cropped_svg(
+                        source_svg,
+                        variant["subject"]["svg"]["viewBox"],
+                        variant["subject"]["svg"].get("flipX") is True,
+                    )
+                    actual_svg = staged_asset(output, variant["subject"]["svg"]).read_bytes()
+                    transforms = variant["subject"]["svg"].get("compatibilityTransforms", [])
+                    if (
+                        actual_svg != expected_svg
+                        or not transforms
+                        or any(row.get("kind") != "strip_empty_ffdec_filters" for row in transforms)
+                        or variant["provenance"].get("svgCompatibilityTransform")
+                        != "strip_empty_ffdec_filters"
+                    ):
+                        raise PreflightError(f"keep/model-keep SVG 改变未被兼容变换精确解释：{review_key}")
                 unchanged += 1
 
     for portrait_ref, entry in source_manifest["entries"].items():
@@ -175,7 +197,13 @@ def run(output: Path) -> dict[str, Any]:
     actual_team_flips = {key for key in final_flip_keys if key.split("::", 1)[0] in team_refs}
     if actual_team_flips != expected_team_flips:
         raise PreflightError("预演 Team 最终方向集合漂移")
-    receipt = T.load_json(output / "promotion-receipt.json", "预演 promotion receipt")
+    receipt_path = output / "promotion-receipt.json"
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise PreflightError(f"预演 promotion receipt 不可读：{error}") from error
+    if not isinstance(receipt, dict):
+        raise PreflightError("预演 promotion receipt 顶层必须是对象")
     clone = copy.deepcopy(receipt)
     receipt_digest = clone.pop("receiptDigest", None)
     if T.sha256_bytes(T.stable_bytes(clone)) != receipt_digest:
@@ -184,7 +212,7 @@ def run(output: Path) -> dict[str, Any]:
         "status": "orientation_promotion_preflight_verified",
         "manifestDigest": manifest["manifestDigest"],
         "accepted": accepted,
-        "unchangedSubjectHashes": unchanged,
+        "orientationUnchangedVariants": unchanged,
         "exactMirroredPngs": mirrored,
         "preservedHistoricalAssetBindings": historical_asset_bindings,
         "preservedHistoricalSubjectFiles": len(historical_asset_files),

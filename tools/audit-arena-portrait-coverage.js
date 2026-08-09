@@ -4,15 +4,37 @@
 const fs = require('fs');
 const path = require('path');
 const {
-    isDressupPortraitRef,
-    projectDressupPortrait
+    DRESSUP_EQUIPMENT_FIELDS,
+    DRESSUP_MANIFEST_PATH,
+    LEGACY_EQUIPMENT_ALIASES,
+    inspectDressupPortrait,
+    isDressupPortraitRef
 } = require('./lib/arena-portrait-routing');
 
 const ROOT = path.resolve(__dirname, '..');
 const UNITS_PATH = path.join(ROOT, 'data', 'units', 'units.json');
 const MANIFEST_PATH = path.join(ROOT, 'launcher', 'web', 'assets', 'enemy-portraits', 'manifest.json');
 const WEB_ROOT = path.join(ROOT, 'launcher', 'web');
-const PILOT_BASELINE = Object.freeze({ total: 217, ready: 210, missing: 7 });
+const EXPECTED_CLOSURE = Object.freeze({
+    total: 217,
+    ready: 217,
+    missing: 0,
+    dressupTotal: 3,
+    dressupReady: 3,
+    dressupMissing: 0,
+    enemyTotal: 214,
+    enemyReady: 214,
+    enemyMissing: 0,
+    humanAcceptedVariantCount: 222,
+    checkedBindingCount: 444,
+    uniqueFileCount: 442,
+    legacyEquipmentAliasDefinitionCount: 4,
+    legacyEquipmentAliasOccurrenceCount: 8,
+    legacyVirtualItemDefinitionCount: 4,
+    legacyVirtualItemOccurrenceCount: 4,
+    legacyVirtualSkinKeyCount: 10,
+    legacyCompatibilityCheckCount: 20
+});
 const SUPPORTED_SCHEMAS = new Set([
     'cf7.team-enemy-portrait-manifest.v1',
     'cf7.enemy-portrait-manifest.v1'
@@ -53,13 +75,22 @@ function localAssetPath(url) {
     return path.join(WEB_ROOT, ...normalized);
 }
 
-function audit() {
+function exact(errors, label, actual, expected) {
+    if (actual !== expected) errors.push(`${label}: ${actual} != ${expected}`);
+}
+
+function audit(options) {
+    options = options || {};
     const errors = [];
-    const units = readJson(UNITS_PATH);
-    const manifest = readJson(MANIFEST_PATH);
+    const units = options.units || readJson(UNITS_PATH);
+    const manifest = options.enemyManifest || readJson(MANIFEST_PATH);
+    const dressupManifest = options.dressupManifest || readJson(DRESSUP_MANIFEST_PATH);
     if (!Array.isArray(units)) errors.push('data/units/units.json must be an array');
     if (!SUPPORTED_SCHEMAS.has(manifest.schema)) errors.push(`unsupported manifest schema: ${manifest.schema || '<blank>'}`);
     if (!manifest.entries || typeof manifest.entries !== 'object') errors.push('manifest entries missing');
+    if (!dressupManifest || dressupManifest.schema !== 'cf7-dressup-manifest-v1') {
+        errors.push(`unsupported dressup manifest schema: ${(dressupManifest && dressupManifest.schema) || '<blank>'}`);
+    }
 
     const refs = [];
     const unique = new Set();
@@ -78,6 +109,9 @@ function audit() {
 
     const dressupReadyRefs = [];
     const dressupMissingRefs = [];
+    const dressupProjectionErrors = [];
+    const dressupAliasApplications = [];
+    const dressupVirtualApplications = [];
     const enemyRefs = [];
     for (const ref of refs) {
         if (!isDressupPortraitRef(ref)) {
@@ -85,11 +119,26 @@ function audit() {
             continue;
         }
         const matchingUnits = unitsByRef.get(ref) || [];
-        if (matchingUnits.length > 0 && matchingUnits.every(unit => projectDressupPortrait(unit))) {
-            dressupReadyRefs.push(ref);
-        } else {
-            dressupMissingRefs.push(ref);
+        let ready = matchingUnits.length > 0;
+        for (const unit of matchingUnits) {
+            const inspected = inspectDressupPortrait(unit, { manifest: dressupManifest });
+            for (const alias of inspected.aliases) {
+                dressupAliasApplications.push(Object.assign({ unitId: unit.id, portraitRef: ref }, alias));
+            }
+            if (!inspected.portrait) {
+                ready = false;
+                dressupProjectionErrors.push({ unitId: unit.id, portraitRef: ref, issues: inspected.issues });
+            }
+            for (const field of DRESSUP_EQUIPMENT_FIELDS) {
+                const raw = String(unit && unit.data && unit.data[field] || '').split('#', 1)[0].trim();
+                const item = raw && dressupManifest.items && dressupManifest.items[raw];
+                if (item && item.virtual === true) {
+                    dressupVirtualApplications.push({ unitId: unit.id, portraitRef: ref, field, item: raw });
+                }
+            }
         }
+        if (ready) dressupReadyRefs.push(ref);
+        else dressupMissingRefs.push(ref);
     }
 
     const readyRefs = dressupReadyRefs.slice();
@@ -118,8 +167,7 @@ function audit() {
                 { kind: 'png', url: variant.subject && variant.subject.pngFallback && variant.subject.pngFallback.url }
             ];
             for (const binding of bindings) {
-                const url = binding.url;
-                const file = localAssetPath(url);
+                const file = localAssetPath(binding.url);
                 if (!file) {
                     errors.push(`accepted asset URL invalid: ${portraitRef}::${variantKey}`);
                     continue;
@@ -170,29 +218,47 @@ function audit() {
         missingByStatus[detail.status] = (missingByStatus[detail.status] || 0) + 1;
     }
 
+    const dressupRoute = {
+        total: dressupReadyRefs.length + dressupMissingRefs.length,
+        ready: dressupReadyRefs.length,
+        missing: dressupMissingRefs.length
+    };
+    const enemyRoute = {
+        total: enemyRefs.length,
+        ready: readyRefs.length - dressupReadyRefs.length,
+        missing: missingRefs.length - dressupMissingRefs.length
+    };
+    const legacyVirtualItems = Object.entries(dressupManifest.items || {})
+        .filter(([, item]) => item && item.virtual === true && Number(item.sourceUnitId) === 235);
+    const legacyVirtualSkinKeys = new Set();
+    for (const [itemName, item] of legacyVirtualItems) {
+        for (const fields of Object.values(item.fieldsByGender || {})) {
+            for (const skinKey of Object.values(fields || {})) {
+                legacyVirtualSkinKeys.add(skinKey);
+                const skin = dressupManifest.skinKeys && dressupManifest.skinKeys[skinKey];
+                if (!skin || skin.covered !== true || !skin.export || !skin.export.uri) {
+                    errors.push(`Arena legacy virtual skin is not runtime-exported: ${itemName} -> ${skinKey}`);
+                }
+            }
+        }
+    }
+    const legacyAliasDefinitionCount = Object.keys(LEGACY_EQUIPMENT_ALIASES).length;
+    const legacyAliasOccurrenceCount = dressupAliasApplications.filter(item => item.kind === 'equipment').length;
+    const legacyCompatibilityCheckCount = legacyAliasDefinitionCount + legacyAliasOccurrenceCount
+        + legacyVirtualItems.length + dressupVirtualApplications.length;
     const summary = {
-        schema: 'cf7.arena-portrait-coverage-audit.v1',
+        schema: 'cf7.arena-portrait-coverage-audit.v2',
         source: {
             units: path.relative(ROOT, UNITS_PATH).replace(/\\/g, '/'),
-            manifest: path.relative(ROOT, MANIFEST_PATH).replace(/\\/g, '/')
+            enemyManifest: path.relative(ROOT, MANIFEST_PATH).replace(/\\/g, '/'),
+            dressupManifest: path.relative(ROOT, DRESSUP_MANIFEST_PATH).replace(/\\/g, '/')
         },
         catalog: {
             rawUnitCount: Array.isArray(units) ? units.length : 0,
             uniquePortraitRefCount: refs.length,
             blankPortraitRefCount: blank,
             caseFoldCollisionGroups: caseFoldCollisions,
-            portraitRoutes: {
-                dressup: {
-                    total: dressupReadyRefs.length + dressupMissingRefs.length,
-                    ready: dressupReadyRefs.length,
-                    missing: dressupMissingRefs.length
-                },
-                enemyManifest: {
-                    total: enemyRefs.length,
-                    ready: readyRefs.length - dressupReadyRefs.length,
-                    missing: missingRefs.length - dressupMissingRefs.length
-                }
-            }
+            portraitRoutes: { dressup: dressupRoute, enemyManifest: enemyRoute }
         },
         coverage: {
             ready: readyRefs.length,
@@ -203,11 +269,18 @@ function audit() {
             missingSample: missingRefs.slice(0, 20),
             missingByStatus,
             missingDetails,
-            routes: {
-                dressupReadyRefs,
-                dressupMissingRefs,
-                enemyRefs
-            }
+            routes: { dressupReadyRefs, dressupMissingRefs, enemyRefs }
+        },
+        dressup: {
+            legacyEquipmentAliasDefinitionCount: legacyAliasDefinitionCount,
+            legacyEquipmentAliasOccurrenceCount: legacyAliasOccurrenceCount,
+            legacyVirtualItemDefinitionCount: legacyVirtualItems.length,
+            legacyVirtualItemOccurrenceCount: dressupVirtualApplications.length,
+            legacyVirtualSkinKeyCount: legacyVirtualSkinKeys.size,
+            legacyCompatibilityCheckCount,
+            aliasApplications: dressupAliasApplications,
+            virtualApplications: dressupVirtualApplications,
+            projectionErrors: dressupProjectionErrors
         },
         assets: {
             manifestIdentityCount: Object.keys(manifest.entries || {}).length,
@@ -216,24 +289,37 @@ function audit() {
             checkedBindingCount: checkedAssetCount,
             uniqueFileCount: checkedAssetFiles.size
         },
-        baseline: PILOT_BASELINE,
+        expected: EXPECTED_CLOSURE,
         errors
     };
 
-    if (refs.length !== PILOT_BASELINE.total) {
-        errors.push(`catalog identity baseline changed: ${refs.length} != ${PILOT_BASELINE.total}`);
-    }
-    if (dressupReadyRefs.length !== 3 || dressupMissingRefs.length !== 0) {
-        errors.push(`dressup portrait route drifted: ready=${dressupReadyRefs.length} missing=${dressupMissingRefs.length}`);
-    }
-    if (readyRefs.length < PILOT_BASELINE.ready) {
-        errors.push(`ready coverage regressed: ${readyRefs.length} < ${PILOT_BASELINE.ready}`);
-    }
-    if (missingRefs.length > PILOT_BASELINE.missing) {
-        errors.push(`fallback debt regressed: ${missingRefs.length} > ${PILOT_BASELINE.missing}`);
-    }
-    if (readyRefs.length + missingRefs.length !== refs.length) {
-        errors.push('coverage partition mismatch');
+    exact(errors, 'catalog identity closure changed', refs.length, EXPECTED_CLOSURE.total);
+    exact(errors, 'ready coverage closure changed', readyRefs.length, EXPECTED_CLOSURE.ready);
+    exact(errors, 'missing coverage closure changed', missingRefs.length, EXPECTED_CLOSURE.missing);
+    exact(errors, 'dressup identity closure changed', dressupRoute.total, EXPECTED_CLOSURE.dressupTotal);
+    exact(errors, 'dressup ready closure changed', dressupRoute.ready, EXPECTED_CLOSURE.dressupReady);
+    exact(errors, 'dressup missing closure changed', dressupRoute.missing, EXPECTED_CLOSURE.dressupMissing);
+    exact(errors, 'enemy identity closure changed', enemyRoute.total, EXPECTED_CLOSURE.enemyTotal);
+    exact(errors, 'enemy ready closure changed', enemyRoute.ready, EXPECTED_CLOSURE.enemyReady);
+    exact(errors, 'enemy missing closure changed', enemyRoute.missing, EXPECTED_CLOSURE.enemyMissing);
+    exact(errors, 'human-accepted variant closure changed', acceptedVariantCount, EXPECTED_CLOSURE.humanAcceptedVariantCount);
+    exact(errors, 'accepted binding closure changed', checkedAssetCount, EXPECTED_CLOSURE.checkedBindingCount);
+    exact(errors, 'unique accepted file closure changed', checkedAssetFiles.size, EXPECTED_CLOSURE.uniqueFileCount);
+    exact(errors, 'legacy equipment alias definition closure changed', summary.dressup.legacyEquipmentAliasDefinitionCount,
+        EXPECTED_CLOSURE.legacyEquipmentAliasDefinitionCount);
+    exact(errors, 'legacy equipment alias occurrence closure changed', summary.dressup.legacyEquipmentAliasOccurrenceCount,
+        EXPECTED_CLOSURE.legacyEquipmentAliasOccurrenceCount);
+    exact(errors, 'legacy virtual item definition closure changed', summary.dressup.legacyVirtualItemDefinitionCount,
+        EXPECTED_CLOSURE.legacyVirtualItemDefinitionCount);
+    exact(errors, 'legacy virtual item occurrence closure changed', summary.dressup.legacyVirtualItemOccurrenceCount,
+        EXPECTED_CLOSURE.legacyVirtualItemOccurrenceCount);
+    exact(errors, 'legacy virtual skin-key closure changed', summary.dressup.legacyVirtualSkinKeyCount,
+        EXPECTED_CLOSURE.legacyVirtualSkinKeyCount);
+    exact(errors, 'legacy compatibility regression closure changed', summary.dressup.legacyCompatibilityCheckCount,
+        EXPECTED_CLOSURE.legacyCompatibilityCheckCount);
+    if (readyRefs.length + missingRefs.length !== refs.length) errors.push('coverage partition mismatch');
+    for (const projectionError of dressupProjectionErrors) {
+        errors.push(`dressup projection rejected unit ${projectionError.unitId} (${projectionError.portraitRef}): ${JSON.stringify(projectionError.issues)}`);
     }
     return summary;
 }
@@ -254,7 +340,7 @@ function main() {
             process.stdout.write(`Case-sensitive identity groups: ${JSON.stringify(result.catalog.caseFoldCollisionGroups)}\n`);
         }
         process.stdout.write(`Fallback debt: ${Object.entries(result.coverage.missingByStatus)
-            .map(([status, count]) => `${status}=${count}`).join(', ')}\n`);
+            .map(([status, count]) => `${status}=${count}`).join(', ') || 'none'}\n`);
         if (result.errors.length) {
             for (const error of result.errors) process.stderr.write(`ERROR: ${error}\n`);
         }
@@ -262,4 +348,9 @@ function main() {
     if (args.has('--check') && result.errors.length) process.exitCode = 1;
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = {
+    EXPECTED_CLOSURE,
+    audit
+};

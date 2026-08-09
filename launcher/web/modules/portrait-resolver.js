@@ -24,8 +24,18 @@
     var LEGACY_ROOT = trailingSlash(browserWindow.CF7_PORTRAIT_LEGACY_ROOT || 'assets/pets/');
     var MANIFEST_URL = PORTRAIT_ROOT + 'manifest.json';
     var LOCKED_URL = browserWindow.CF7_PORTRAIT_LOCKED_URL || (LEGACY_ROOT + 'pet_locked.png');
+    var MANIFEST_RETRY_BASE_MS = Math.max(1,
+        Number(browserWindow.CF7_PORTRAIT_MANIFEST_RETRY_BASE_MS) || 250);
+    var MANIFEST_RETRY_MAX_MS = Math.max(MANIFEST_RETRY_BASE_MS,
+        Number(browserWindow.CF7_PORTRAIT_MANIFEST_RETRY_MAX_MS) || 4000);
+    var PNG_FIRST_MIN_SVG_BYTES = Math.max(1,
+        Number(browserWindow.CF7_PORTRAIT_PNG_FIRST_MIN_SVG_BYTES) || (2 * 1024 * 1024));
+    var PNG_FIRST_SIZE_RATIO = Math.max(1,
+        Number(browserWindow.CF7_PORTRAIT_PNG_FIRST_SIZE_RATIO) || 8);
     var _manifest = null;
     var _manifestPromise = null;
+    var _manifestFailureCount = 0;
+    var _manifestRetryAfter = 0;
     var _mountSeq = 0;
     var _svgVisualCache = {};
 
@@ -69,12 +79,24 @@
     function loadManifest() {
         if (_manifest) return Promise.resolve(_manifest);
         if (_manifestPromise) return _manifestPromise;
+        if (_manifestRetryAfter > Date.now()) return Promise.resolve(null);
         _manifestPromise = loadJson(MANIFEST_URL).then(function(value) {
             _manifest = validateManifest(value);
+            _manifestFailureCount = 0;
+            _manifestRetryAfter = 0;
             return _manifest;
         }).catch(function() {
             // Missing/corrupt modern assets are never allowed to blank a card.
-            // Keep the rejection private and let every mount retain legacy art.
+            // Keep the rejection private and let every mount retain legacy art,
+            // but release the in-flight promise so a later mount can retry. A
+            // short bounded cooldown prevents a broken local server from being
+            // hammered once per visible card.
+            _manifestPromise = null;
+            _manifestFailureCount++;
+            var exponent = Math.min(6, Math.max(0, _manifestFailureCount - 1));
+            var delay = Math.min(MANIFEST_RETRY_MAX_MS,
+                MANIFEST_RETRY_BASE_MS * Math.pow(2, exponent));
+            _manifestRetryAfter = Date.now() + delay;
             return null;
         });
         return _manifestPromise;
@@ -98,11 +120,14 @@
     function resolveAlias(manifest, portraitRef) {
         var seen = {};
         var current = portraitRef;
+        var variantKey = null;
         while (manifest.aliases && manifest.aliases[current] && !seen[current]) {
             seen[current] = true;
-            current = manifest.aliases[current].targetPortraitRef;
+            var alias = manifest.aliases[current];
+            if (!variantKey && alias.variantKey) variantKey = alias.variantKey;
+            current = alias.targetPortraitRef;
         }
-        return current;
+        return { portraitRef: current, variantKey: variantKey };
     }
 
     function jkVariant(context) {
@@ -115,14 +140,40 @@
         return null;
     }
 
-    function selectVariant(entry, portraitRef, context) {
+    function selectVariant(entry, portraitRef, context, aliasVariantKey) {
         // portraitVariant is the stable Host/AS2 projection.  variantKey is
         // retained as a generic caller override; localized schemeStatus is
         // only a compatibility bridge for the current Team snapshot.
         var requested = context && (context.portraitVariant || context.variantKey);
+        if (!requested) requested = aliasVariantKey;
         if (!requested && portraitRef === '敌人-武装JK') requested = jkVariant(context);
         if (requested && entry.variants[requested]) return requested;
         return entry.defaultVariant;
+    }
+
+    function subjectFormatPreference(subject) {
+        subject = subject || {};
+        // preferredFormat is generated from the audited SVG representation
+        // metadata (including embeddedRasterCount/isRasterHeavy) and is the
+        // sole ordering authority when present.
+        var explicit = textOf(subject.preferredFormat).toLowerCase();
+        if (explicit === 'png') return 'png';
+        if (explicit === 'svg') return 'svg';
+        return '';
+    }
+
+    function shouldPreferPng(subject) {
+        subject = subject || {};
+        if (!subject.pngFallback || !subject.pngFallback.url) return false;
+        var preference = subjectFormatPreference(subject);
+        if (preference) return preference === 'png';
+        var svgBytes = Number(subject.svg && subject.svg.bytes);
+        var pngBytes = Number(subject.pngFallback.bytes);
+        // Legacy manifests have no representation metadata. Keep this fallback
+        // deliberately conservative so ordinary, moderately large pure-vector
+        // portraits stay SVG-primary; it only catches extreme raster wrappers.
+        return isFinite(svgBytes) && isFinite(pngBytes) && svgBytes >= PNG_FIRST_MIN_SVG_BYTES
+            && pngBytes > 0 && svgBytes >= pngBytes * PNG_FIRST_SIZE_RATIO;
     }
 
     function inferTheme(portraitRef) {
@@ -139,10 +190,11 @@
         if (!manifest || !context) return null;
         var requestedRef = context.portraitRef || context.identifier;
         if (!requestedRef) return null;
-        var resolvedRef = resolveAlias(manifest, requestedRef);
+        var aliasResolution = resolveAlias(manifest, requestedRef);
+        var resolvedRef = aliasResolution.portraitRef;
         var entry = manifest.entries[resolvedRef];
         if (!entry || !entry.variants) return null;
-        var variantKey = selectVariant(entry, resolvedRef, context);
+        var variantKey = selectVariant(entry, resolvedRef, context, aliasResolution.variantKey);
         var variant = entry.variants[variantKey];
         if (!variant || variant.status !== 'human_accepted' || !variant.subject) {
             return {
@@ -162,6 +214,7 @@
             status: variant.status,
             svgUrl: variant.subject.svg && remapAssetUrl(variant.subject.svg.url),
             pngUrl: variant.subject.pngFallback && remapAssetUrl(variant.subject.pngFallback.url),
+            preferPng: shouldPreferPng(variant.subject),
             legacyUrl: remapAssetUrl(context.legacyUrl || variant.legacyUrl || LOCKED_URL)
         };
     }
@@ -209,8 +262,13 @@
 
     function applyChain(container, img, value, token, context) {
         var chain = [];
-        if (value && value.svgUrl) chain.push({ url: value.svgUrl, source: 'svg' });
-        if (value && value.pngUrl) chain.push({ url: value.pngUrl, source: 'png' });
+        if (value && value.preferPng) {
+            if (value.pngUrl) chain.push({ url: value.pngUrl, source: 'png' });
+            if (value.svgUrl) chain.push({ url: value.svgUrl, source: 'svg' });
+        } else {
+            if (value && value.svgUrl) chain.push({ url: value.svgUrl, source: 'svg' });
+            if (value && value.pngUrl) chain.push({ url: value.pngUrl, source: 'png' });
+        }
         chain.push({ url: value && value.legacyUrl ? value.legacyUrl : LOCKED_URL, source: 'legacy' });
         if (chain[chain.length - 1].url !== LOCKED_URL) chain.push({ url: LOCKED_URL, source: 'locked' });
         var index = 0;
@@ -259,9 +317,16 @@
             // receive the sealed image synchronously and are never upgraded,
             // so the connected-node guard used by the async chain is neither
             // necessary nor correct here.
+            var lockedAttempted = legacy === LOCKED_URL;
             img.onerror = function() {
-                if (this.src !== LOCKED_URL) this.src = LOCKED_URL;
-                else this.onerror = null;
+                // HTMLImageElement.src is absolute even when LOCKED_URL is
+                // relative, so string comparison cannot be the retry fence.
+                // Clear the handler before the one allowed fallback request.
+                this.onerror = null;
+                if (!lockedAttempted) {
+                    lockedAttempted = true;
+                    this.src = LOCKED_URL;
+                }
             };
             img.src = legacy;
             mark(container, { theme: 'legacy' }, 'legacy', context);
@@ -303,7 +368,7 @@
         };
         for (var r = 0; r < refs.length; r++) {
             var requestedRef = refs[r];
-            var resolvedRef = manifest ? resolveAlias(manifest, requestedRef) : requestedRef;
+            var resolvedRef = manifest ? resolveAlias(manifest, requestedRef).portraitRef : requestedRef;
             if (resolvedRef !== requestedRef) result.aliasResolved++;
             var value = manifest ? descriptor(manifest, { portraitRef: requestedRef }) : null;
             if (value && value.status === 'human_accepted') {
@@ -332,10 +397,14 @@
         __setManifestForTests: function(value) {
             _manifest = validateManifest(value);
             _manifestPromise = Promise.resolve(_manifest);
+            _manifestFailureCount = 0;
+            _manifestRetryAfter = 0;
         },
         __resetForTests: function() {
             _manifest = null;
             _manifestPromise = null;
+            _manifestFailureCount = 0;
+            _manifestRetryAfter = 0;
             _mountSeq = 0;
             _svgVisualCache = {};
         }

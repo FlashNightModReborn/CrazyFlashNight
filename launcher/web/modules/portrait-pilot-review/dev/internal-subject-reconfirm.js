@@ -23,6 +23,30 @@
     return node;
   }
 
+  function localPilotPath(value, suffix, label) {
+    if (
+      typeof value !== "string" ||
+      !value.startsWith("/tmp/portrait-pilot/") ||
+      value.includes("..") ||
+      value.includes("\\") ||
+      value.includes("%") ||
+      value.includes("?") ||
+      value.includes("#") ||
+      value.includes("//") ||
+      value.includes("\u0000") ||
+      (suffix && !value.endsWith(suffix))
+    ) {
+      throw new Error(`${label} 路径非法`);
+    }
+    return value;
+  }
+
+  function artifactUrl(record) {
+    const path = record && typeof record.path === "string" ? record.path : "";
+    localPilotPath(`/${path}`, "", "候选 artifact");
+    return `/${path.split("/").map(encodeURIComponent).join("/")}`;
+  }
+
   async function fetchJson(path, label) {
     const response = await fetch(path, { cache: "no-store" });
     if (!response.ok) throw new Error(`${label} 加载失败：HTTP ${response.status}`);
@@ -65,8 +89,8 @@
     const reviewKey = params.get("reviewKey");
     if (!dataPath || !decisionsPath || !reviewKey) throw new Error("URL 缺少 data、decisions 或 reviewKey 参数");
     [dataset, canonical] = await Promise.all([
-      fetchJson(dataPath, "review-data"),
-      fetchJson(decisionsPath, "human decisions"),
+      fetchJson(localPilotPath(dataPath, "/internal-subject-review-data.json", "review-data"), "review-data"),
+      fetchJson(localPilotPath(decisionsPath, "/internal-subject-human-decisions.json", "human decisions"), "human decisions"),
     ]);
     if (dataset.schema !== "cf7.enemy-portrait-internal-subject-rescue-review-data.v1" || !Array.isArray(dataset.items)) {
       throw new Error("review-data schema 不受支持");
@@ -115,7 +139,7 @@
     if (recommended.length) button.append(element("span", "recommend", recommended.length === 2 ? "A+B 建议" : `${recommended[0]} 建议`));
     const visual = element("div", "visual");
     const image = document.createElement("img");
-    image.src = `/${candidate.artifact.path}`;
+    image.src = artifactUrl(candidate.artifact);
     image.alt = `${item.portraitRef} ${candidate.contactSheetLabel}`;
     visual.append(image);
     const meta = element("div", "meta");

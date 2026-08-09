@@ -162,7 +162,16 @@
     const strip = card.querySelector(".preview-strip");
     for (const size of [80, 48, 32]) strip.append(previewFigure(candidate.outputs[`preview${size}`], size, `${item.portraitRef} ${candidate.label} ${size}px`));
     const metrics = card.querySelector(".metrics");
-    metrics.innerHTML = `<span>黑底 MAE ${candidate.metrics.blackCompositeMeanAbsoluteError}</span><span>最大误差 ${candidate.metrics.blackCompositeMaximumAbsoluteError}</span><span>全透明 ${(100 * candidate.metrics.transparentPixelFraction).toFixed(1)}%</span><span>4096px 主档</span>`;
+    for (const text of [
+      `黑底 MAE ${candidate.metrics.blackCompositeMeanAbsoluteError}`,
+      `最大误差 ${candidate.metrics.blackCompositeMaximumAbsoluteError}`,
+      `全透明 ${(100 * candidate.metrics.transparentPixelFraction).toFixed(1)}%`,
+      "4096px 主档",
+    ]) {
+      const span = document.createElement("span");
+      span.textContent = text;
+      metrics.append(span);
+    }
     card.querySelector(".select-matte").addEventListener("click", () => setChoice(item, row, {
       status: "selected",
       candidateId: candidate.candidateId,

@@ -23,6 +23,30 @@
     return node;
   }
 
+  function localPilotPath(value, suffix, label) {
+    if (
+      typeof value !== "string" ||
+      !value.startsWith("/tmp/portrait-pilot/") ||
+      value.includes("..") ||
+      value.includes("\\") ||
+      value.includes("%") ||
+      value.includes("?") ||
+      value.includes("#") ||
+      value.includes("//") ||
+      value.includes("\u0000") ||
+      (suffix && !value.endsWith(suffix))
+    ) {
+      throw new Error(`${label} 路径非法`);
+    }
+    return value;
+  }
+
+  function artifactUrl(record) {
+    const path = record && typeof record.path === "string" ? record.path : "";
+    localPilotPath(`/${path}`, "", "候选 artifact");
+    return `/${path.split("/").map(encodeURIComponent).join("/")}`;
+  }
+
   function showToast(message, error = false) {
     clearTimeout(toastTimer);
     toast.hidden = false;
@@ -35,7 +59,10 @@
   try {
     const dataPath = new URLSearchParams(location.search).get("data");
     if (!dataPath) throw new Error("URL 缺少 data 参数");
-    const response = await fetch(dataPath, { cache: "no-store" });
+    const response = await fetch(
+      localPilotPath(dataPath, "/internal-subject-review-data.json", "review-data"),
+      { cache: "no-store" },
+    );
     if (!response.ok) throw new Error(`review-data 加载失败：HTTP ${response.status}`);
     dataset = await response.json();
     if (
@@ -115,7 +142,7 @@
 
     const visual = element("div", "candidate-visual");
     const image = document.createElement("img");
-    image.src = `/${candidate.artifact.path}`;
+    image.src = artifactUrl(candidate.artifact);
     image.alt = `${item.portraitRef} ${candidate.contactSheetLabel}`;
     image.loading = "lazy";
     visual.append(image);

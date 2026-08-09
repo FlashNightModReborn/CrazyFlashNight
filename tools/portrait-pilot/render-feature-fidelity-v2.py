@@ -29,6 +29,8 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[2]
 PILOT_ROOT = ROOT / "tmp" / "portrait-pilot"
 BASE_RENDERER = ROOT / "tools" / "portrait-pilot" / "prepare_pilot.py"
+MAXIMUM_SUPPORTED_FRAME_DIMENSION = 16_384
+MAXIMUM_SUPPORTED_FRAME_PIXELS = 240_000_000
 EXCEPTION_ROLES = {"proposal", "independent_review"}
 EXCEPTION_CODE = "binary_gif_alpha_cannot_represent_semtransparent_selected_frame"
 EXCEPTION_BINDINGS = {
@@ -96,6 +98,74 @@ def verify_base_renderer_bound(manifest: dict[str, Any]) -> None:
     )
     if expected is None or expected != core.artifact(BASE_RENDERER):
         raise FidelityError("manifest 未绑定当前基础 renderer source")
+
+
+def bounded_pixel_limit(manifest: dict[str, Any]) -> tuple[int, int]:
+    contract = manifest.get("featureContract", {}).get("highResolutionRender")
+    if not isinstance(contract, dict):
+        raise FidelityError("manifest 缺 highResolutionRender contract")
+    maximum_dimension = contract.get("maximumSourceFrameDimension")
+    if (
+        not isinstance(maximum_dimension, int)
+        or isinstance(maximum_dimension, bool)
+        or maximum_dimension < 1
+        or maximum_dimension > MAXIMUM_SUPPORTED_FRAME_DIMENSION
+    ):
+        raise FidelityError(
+            f"maximumSourceFrameDimension 必须在 1–{MAXIMUM_SUPPORTED_FRAME_DIMENSION}：{maximum_dimension}"
+        )
+    return maximum_dimension, min(
+        maximum_dimension * maximum_dimension,
+        MAXIMUM_SUPPORTED_FRAME_PIXELS,
+    )
+
+
+def bounded_image_opener(
+    opener,
+    maximum_dimension: int,
+    maximum_pixels: int,
+    label_prefix: str,
+):
+    """Wrap Pillow's lazy opener so bounds are checked before any convert/load."""
+
+    def open_bounded(path, *args, **kwargs):
+        label = f"{label_prefix} {path}"
+        try:
+            image = opener(path, *args, **kwargs)
+        except Image.DecompressionBombError as error:
+            raise FidelityError(f"{label} 被 Pillow 有界解码门拒绝：{error}") from error
+        pixels = image.width * image.height
+        if (
+            image.width > maximum_dimension
+            or image.height > maximum_dimension
+            or pixels > maximum_pixels
+        ):
+            close = getattr(image, "close", None)
+            if callable(close):
+                close()
+            raise FidelityError(
+                f"{label} 超过有界解码上限 "
+                f"{maximum_dimension}px/{maximum_pixels}px²：{image.width}x{image.height}={pixels}"
+            )
+        return image
+
+    return open_bounded
+
+
+def load_bounded_rgba(
+    path: Path,
+    label: str,
+    maximum_dimension: int,
+    maximum_pixels: int,
+) -> Image.Image:
+    open_bounded = bounded_image_opener(
+        Image.open,
+        maximum_dimension,
+        maximum_pixels,
+        label,
+    )
+    with open_bounded(path) as image:
+        return image.convert("RGBA")
 
 
 def rgba_sha256(image: Image.Image) -> str:
@@ -177,6 +247,8 @@ def recompute_row_fidelity(
     manifest: dict[str, Any],
     row: dict[str, Any],
     original_metric,
+    maximum_dimension: int,
+    maximum_pixels: int,
 ) -> tuple[float, list[float], dict[str, Any]]:
     candidate = candidate_record(manifest, row["reviewKey"], row["candidateId"])
     high_resolution_path = core.verify_artifact_record(
@@ -185,12 +257,19 @@ def recompute_row_fidelity(
     candidate_path = core.verify_artifact_record(
         row["sourceCandidate"], f"bound candidate {row['role']}/{row['reviewKey']}"
     )
-    Image.MAX_IMAGE_PIXELS = None
-    with Image.open(high_resolution_path) as image:
-        selected_frame = image.convert("RGBA")
+    selected_frame = load_bounded_rgba(
+        high_resolution_path,
+        f"selected frame {row['role']}/{row['reviewKey']}",
+        maximum_dimension,
+        maximum_pixels,
+    )
     restored, _scale = core.candidate_from_high_resolution(selected_frame, candidate)
-    with Image.open(candidate_path) as image:
-        bound_candidate = image.convert("RGBA")
+    bound_candidate = load_bounded_rgba(
+        candidate_path,
+        f"bound candidate {row['role']}/{row['reviewKey']}",
+        maximum_dimension,
+        maximum_pixels,
+    )
     mean, channels = original_metric(restored, bound_candidate)
     evidence = alpha_representation_evidence(restored, bound_candidate)
     return float(mean), [float(value) for value in channels], evidence
@@ -211,6 +290,7 @@ def render(args: argparse.Namespace) -> None:
     ):
         raise FidelityError("manifest/model report 摘要不闭合")
     verify_base_renderer_bound(manifest)
+    maximum_dimension, maximum_pixels = bounded_pixel_limit(manifest)
     limit = float(manifest["featureContract"]["highResolutionRender"]["fidelityMeanAbsoluteErrorLimit"])
     original_metric = core.image_mean_absolute_error
     admitted_calls: list[dict[str, Any]] = []
@@ -235,12 +315,25 @@ def render(args: argparse.Namespace) -> None:
     if report_path.exists():
         raise FidelityError("render-report.json 已存在，禁止覆盖")
     core.image_mean_absolute_error = admission_metric
-    Image.MAX_IMAGE_PIXELS = None
+    original_max_pixels = Image.MAX_IMAGE_PIXELS
+    original_image_open = Image.open
     captured = io.StringIO()
     try:
+        Image.MAX_IMAGE_PIXELS = maximum_pixels
+        # prepare_pilot.py calls Image.open(...).convert(...) directly. Patch the
+        # shared Pillow module for that bounded call so an oversized source is
+        # rejected from header dimensions before the base renderer decodes it.
+        Image.open = bounded_image_opener(
+            original_image_open,
+            maximum_dimension,
+            maximum_pixels,
+            "base renderer source",
+        )
         with contextlib.redirect_stdout(captured):
             core.render(argparse.Namespace(manifest=str(manifest_path), model_report=str(model_report_path)))
     finally:
+        Image.open = original_image_open
+        Image.MAX_IMAGE_PIXELS = original_max_pixels
         core.image_mean_absolute_error = original_metric
     if not report_path.is_file():
         raise FidelityError("基础 renderer 未生成 report")
@@ -251,7 +344,18 @@ def render(args: argparse.Namespace) -> None:
     actual_values: list[float] = []
     primary_pass_rows = 0
     for row in report.get("rows", []):
-        mean, channels, evidence = recompute_row_fidelity(manifest, row, original_metric)
+        original_max_pixels = Image.MAX_IMAGE_PIXELS
+        try:
+            Image.MAX_IMAGE_PIXELS = maximum_pixels
+            mean, channels, evidence = recompute_row_fidelity(
+                manifest,
+                row,
+                original_metric,
+                maximum_dimension,
+                maximum_pixels,
+            )
+        finally:
+            Image.MAX_IMAGE_PIXELS = original_max_pixels
         actual_values.append(mean)
         primary_passed = mean <= limit
         if primary_passed:
@@ -330,7 +434,9 @@ def render(args: argparse.Namespace) -> None:
     report["renderer"]["controllerSource"] = core.artifact(Path(__file__).resolve())
     report["renderer"]["baseRendererSource"] = core.artifact(BASE_RENDERER)
     report["renderer"]["numpy"] = np.__version__
-    report["renderer"]["pillowDecompressionBombLimit"] = None
+    report["renderer"]["maximumSourceFrameDimension"] = maximum_dimension
+    report["renderer"]["maximumSourceFramePixels"] = maximum_pixels
+    report["renderer"]["pillowDecompressionBombLimit"] = maximum_pixels
     report["fidelitySummary"] = {
         "comparison": "primary premultiplied RGBA MAE; only the bound binary-alpha GIF mimic frame may use opaque-core geometry correspondence when the exact PNG preserves source semitransparency",
         "meanAbsoluteErrorLimit": limit,
@@ -379,6 +485,7 @@ def verify_report(manifest_path: Path, model_report_path: Path, report_path: Pat
     verify_digest(manifest, "manifestDigest", "manifest")
     verify_digest(model_report, "reportDigest", "model report")
     verify_digest(report, "renderDigest", "render report")
+    maximum_dimension, maximum_pixels = bounded_pixel_limit(manifest)
     if (
         report.get("schema") != "cf7.portrait-pilot-render-report.v4"
         or report.get("status") != "automated_checked"
@@ -392,6 +499,12 @@ def verify_report(manifest_path: Path, model_report_path: Path, report_path: Pat
         raise FidelityError("render report 未绑定当前 v2 controller")
     if report.get("renderer", {}).get("baseRendererSource") != core.artifact(BASE_RENDERER):
         raise FidelityError("render report 未绑定基础 renderer")
+    if (
+        report.get("renderer", {}).get("maximumSourceFrameDimension") != maximum_dimension
+        or report.get("renderer", {}).get("maximumSourceFramePixels") != maximum_pixels
+        or report.get("renderer", {}).get("pillowDecompressionBombLimit") != maximum_pixels
+    ):
+        raise FidelityError("render report 未绑定 manifest 有界解码上限")
     rows = report.get("rows", [])
     if len(rows) != 24 or {row.get("role") for row in rows} != EXCEPTION_ROLES:
         raise FidelityError("render report 行数或角色不闭合")

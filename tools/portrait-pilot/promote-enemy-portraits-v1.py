@@ -3,17 +3,19 @@
 
 This controller deliberately reuses the audited selection/vector machinery from
 ``promote-team-portraits-v1.py``.  The older controller remains the Team subset
-gate; this controller owns the atomic schema switch to the consumer-neutral
-manifest and keeps unresolved identities fail-soft only.
+gate; this controller publishes content-addressed subjects first and the runtime
+manifest last, while keeping unresolved identities fail-soft only.
 """
 
 from __future__ import annotations
 
 import argparse
+import base64
 import copy
 import datetime as dt
 import importlib.util
 import json
+import lzma
 import os
 import shutil
 import sys
@@ -297,7 +299,7 @@ def orientation_manifest_summary(closure: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def preserve_orientation_source_assets(staging: Path, closure: dict[str, Any]) -> None:
+def preserve_orientation_source_assets(staging: Path, closure: dict[str, Any]) -> dict[str, dict[str, Any]]:
     subject_root = staging / "subjects"
     subject_root.mkdir(parents=True, exist_ok=True)
     records: dict[str, dict[str, Any]] = {}
@@ -333,6 +335,56 @@ def preserve_orientation_source_assets(staging: Path, closure: dict[str, Any]) -
                 raise T.PromotionError(f"方向审计源历史资产 staging 碰撞：{name}")
         else:
             shutil.copyfile(source, target)
+    return records
+
+
+def expected_preserved_subjects(runtime_subject_names: set[str]) -> list[dict[str, Any]]:
+    records: dict[str, dict[str, Any]] = {
+        Path(record["url"]).name: copy.deepcopy(record)
+        for record in T.evidence_preserved_subject_records()
+    }
+    for record in T.evidence_svg_basis_subject_records():
+        name = Path(record["url"]).name
+        if name not in runtime_subject_names and name not in records:
+            records[name] = copy.deepcopy(record)
+    return [records[name] for name in sorted(records)]
+
+
+def runtime_subject_names(manifest: dict[str, Any]) -> set[str]:
+    return {
+        Path(record["url"]).name
+        for entry in manifest.get("entries", {}).values()
+        for variant in entry.get("variants", {}).values()
+        if variant.get("status") == "human_accepted"
+        for record in (variant["subject"]["svg"], variant["subject"]["pngFallback"])
+    }
+
+
+def preserve_expected_evidence_assets(
+    staging: Path,
+    expected: list[dict[str, Any]],
+    existing: dict[str, dict[str, Any]],
+) -> None:
+    subject_root = staging / "subjects"
+    for record in expected:
+        name = Path(record["url"]).name
+        source = T.DEFAULT_OUTPUT / "subjects" / name
+        if (
+            not source.is_file()
+            or source.stat().st_size != record.get("bytes")
+            or T.sha256_file(source) != record.get("sha256")
+        ):
+            raise T.PromotionError(f"immutable evidence basis 历史资产缺失或漂移：{source}")
+        target = subject_root / name
+        if target.is_file():
+            if target.stat().st_size != record["bytes"] or T.sha256_file(target) != record["sha256"]:
+                raise T.PromotionError(f"immutable evidence basis staging 碰撞：{name}")
+        else:
+            shutil.copyfile(source, target)
+        previous = existing.get(name)
+        if previous is not None and previous.get("sha256") != record["sha256"]:
+            raise T.PromotionError(f"immutable evidence basis 内容寻址碰撞：{name}")
+        existing[name] = record
 
 
 def selection_for(
@@ -351,7 +403,9 @@ def build_pack(
     closure_path: Path,
     team_gap_batch: Path,
     staging: Path,
+    logical_output: Path | None = None,
 ) -> dict[str, Any]:
+    logical_output = staging if logical_output is None else logical_output
     inventory = T.load_json(inventory_path, "portrait inventory")
     decisions, direct_rows, corrections, calibration_manifests = T.collect_calibration(
         campaign_path,
@@ -368,7 +422,7 @@ def build_pack(
     representatives = T.representative_selections(closure_path, direct_rows)
     aliases = T.alias_manifest_record()
     orientation_closure = load_orientation_closure()
-    preserve_orientation_source_assets(staging, orientation_closure)
+    preserved_source_records = preserve_orientation_source_assets(staging, orientation_closure)
     orientation_applied: set[str] = set()
 
     items = sorted(inventory.get("items", []), key=lambda item: item.get("portraitRef", ""))
@@ -482,19 +536,41 @@ def build_pack(
     if shield.get("status") != "human_accepted" or shield.get("provenance", {}).get("resolution") != "human_guided_adjustment":
         raise T.PromotionError("盾卫骑士已闭合人工框选结果未进入通用包")
 
+    runtime_names = runtime_subject_names({"entries": entries})
+    expected_preserved = expected_preserved_subjects(runtime_names)
+    preserve_expected_evidence_assets(staging, expected_preserved, preserved_source_records)
+    expected_by_name = {Path(record["url"]).name: record for record in expected_preserved}
+    preserved_subjects: list[dict[str, Any]] = []
+    for name, record in sorted(preserved_source_records.items()):
+        if name in runtime_names:
+            continue
+        target = staging / "subjects" / name
+        expected = expected_by_name.get(name)
+        if expected is None:
+            raise T.PromotionError(f"未声明的 preserved subject：{name}")
+        preserved_subjects.append({
+            "url": f"assets/enemy-portraits/subjects/{name}",
+            "bytes": target.stat().st_size,
+            "sha256": T.sha256_file(target),
+            "purpose": expected["purpose"],
+        })
+    if preserved_subjects != expected_preserved:
+        raise T.PromotionError("方向审计 preserved subject evidence 与 immutable evidence pack 漂移")
+
     source_records = [T.artifact(inventory_path), T.artifact(campaign_path), T.artifact(closure_path)]
     source_records.extend(T.artifact(path) for path in calibration_manifests if path != campaign_path.resolve())
     source_records.extend(T.artifact(path) for path in gap_inputs)
     source_records.append(T.artifact(T.ALIAS_RECEIPT))
     source_records.extend(T.artifact(path) for path in orientation_closure["sourceInputs"])
+    source_records.extend((T.artifact(TEAM_CONTROLLER), T.artifact(Path(__file__))))
     manifest: dict[str, Any] = {
         "schema": "cf7.enemy-portrait-manifest.v1",
         "status": "human_accepted_portraits_promoted",
         "generatedAt": T.utc_now(),
         "consumerContract": {
             "identityKey": "portraitRef + variantKey",
-            "primaryFormat": "cropped SVG over exact accepted FFDec vector frame",
-            "fallbackFormat": "orientation-closed 512px transparent PNG derived from the exact human-accepted crop, then caller legacy asset",
+            "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for every SVG containing embedded raster images",
+            "fallbackFormat": "the alternate signed subject format, then caller legacy asset",
             "presentationOwnedBy": "launcher/web/modules/portrait-resolver.js and consumer CSS",
             "unresolvedPolicy": "pending/excluded identities expose no unsigned modern subject",
             "teamCompatible": True,
@@ -502,7 +578,12 @@ def build_pack(
         },
         "counts": counts,
         "sourceEnvelope": {"inputs": source_records},
+        "evidencePack": T.artifact(T.EVIDENCE_PACK),
         "orientationAudit": orientation_manifest_summary(orientation_closure),
+        "preservedEvidence": {
+            "schema": "cf7.enemy-portrait-preserved-evidence.v1",
+            "subjects": preserved_subjects,
+        },
         "aliases": aliases,
         "entries": entries,
     }
@@ -513,7 +594,11 @@ def build_pack(
         "schema": "cf7.enemy-portrait-promotion-receipt.v1",
         "status": "enemy_portrait_pack_promoted",
         "generatedAt": manifest["generatedAt"],
-        "manifest": T.artifact(manifest_path),
+        "manifest": {
+            "path": T.repo_rel(logical_output / "manifest.json"),
+            "bytes": manifest_path.stat().st_size,
+            "sha256": T.sha256_file(manifest_path),
+        },
         "manifestDigest": manifest["manifestDigest"],
         "counts": counts,
         "orientationAudit": copy.deepcopy(manifest["orientationAudit"]),
@@ -523,7 +608,7 @@ def build_pack(
             "unresolvedIdentitiesFailSoftOnly": True,
             "identityAliasReceiptBound": True,
             "shieldKnightHumanGuidancePromoted": True,
-            "atomicControllerOwnsSchemaSwitch": True,
+            "runtimeManifestPublishedLast": True,
             "allPreviouslyAcceptedTeamVariantsPromoted": True,
             "allTeamVariantsWithRuntimeSourcesPromoted": True,
             "jkTwoDistinctVariantsPromoted": True,
@@ -549,7 +634,9 @@ def build_pack(
     return manifest
 
 
-def accepted_subject_files(manifest: dict[str, Any]) -> tuple[int, set[str], set[str], set[str], set[str]]:
+def accepted_subject_files(
+    manifest: dict[str, Any], asset_root: Path
+) -> tuple[int, set[str], set[str], set[str], set[str]]:
     accepted = 0
     accepted_refs: set[str] = set()
     pending: set[str] = set()
@@ -569,13 +656,18 @@ def accepted_subject_files(manifest: dict[str, Any]) -> tuple[int, set[str], set
                     record = subject.get(kind)
                     if not isinstance(record, dict) or not isinstance(record.get("url"), str):
                         raise T.PromotionError(f"通用头像 subject 缺失：{portrait_ref}::{variant_key}/{kind}")
-                    prefix = "assets/enemy-portraits/"
-                    if not record["url"].startswith(prefix):
-                        raise T.PromotionError(f"通用头像 URL 越界：{record['url']}")
-                    path = T.WEB_ROOT / record["url"]
+                    path = T.subject_asset_path(asset_root, record["url"])
                     if path.stat().st_size != record.get("bytes") or T.sha256_file(path) != record.get("sha256"):
                         raise T.PromotionError(f"通用头像产物漂移：{record['url']}")
-                png_path = T.WEB_ROOT / subject["pngFallback"]["url"]
+                png_path = T.subject_asset_path(asset_root, subject["pngFallback"]["url"])
+                svg_path = T.subject_asset_path(asset_root, subject["svg"]["url"])
+                representation = T.svg_representation_evidence(svg_path.read_bytes(), png_path.read_bytes())
+                if (
+                    subject.get("preferredFormat") != representation["preferredFormat"]
+                    or subject["svg"].get("embeddedRasterCount") != representation["embeddedRasterCount"]
+                    or subject["svg"].get("isRasterHeavy") != representation["isRasterHeavy"]
+                ):
+                    raise T.PromotionError(f"通用头像 SVG/PNG representation 证据漂移：{portrait_ref}::{variant_key}")
                 expected_alpha = {key: subject["pngFallback"][key] for key in ("size", "alphaExtrema", "visibleBounds")}
                 if T.png_alpha_evidence(png_path) != expected_alpha:
                     raise T.PromotionError(f"通用头像 alpha 证据漂移：{portrait_ref}::{variant_key}")
@@ -623,7 +715,6 @@ def accepted_subject_files(manifest: dict[str, Any]) -> tuple[int, set[str], set
                     )
                 if orientation_source == "legacy_orientation_unassessed" and flip_x:
                     raise T.PromotionError(f"未审计旧头像不得凭空反转：{review_key}")
-                svg_path = T.WEB_ROOT / subject["svg"]["url"]
                 svg_text = svg_path.read_text(encoding="utf-8")
                 has_flip = 'data-cf7-portrait-flip="x"' in svg_text
                 if has_flip != flip_x:
@@ -687,6 +778,57 @@ def check_aliases(manifest: dict[str, Any], *, supplemental: bool = False) -> No
         T.verify_artifact_record(row.get("provenance"), f"头像 alias provenance：{source_ref}")
 
 
+def load_base_evidence_archive(value: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, bytes]]:
+    if (
+        not isinstance(value, dict)
+        or value.get("schema") != "cf7.enemy-portrait-base-evidence-archive.v1"
+        or value.get("encoding") != "sha256-base64-json+xz+base64"
+    ):
+        raise T.PromotionError("Arena 增量基础 evidence archive schema/encoding 非法")
+    records = value.get("files")
+    expected_names = {"manifest.json", "promotion-receipt.json"}
+    if not isinstance(records, dict) or set(records) != expected_names:
+        raise T.PromotionError("Arena 增量基础 evidence archive files exact-set 漂移")
+    try:
+        compressed = base64.b64decode("".join(value.get("dataChunks", [])), validate=True)
+    except (TypeError, ValueError) as error:
+        raise T.PromotionError("Arena 增量基础 evidence archive base64 非法") from error
+    if (
+        len(compressed) != value.get("compressedBytes")
+        or T.sha256_bytes(compressed) != value.get("compressedSha256")
+    ):
+        raise T.PromotionError("Arena 增量基础 evidence archive 压缩字节漂移")
+    try:
+        archive_bytes = lzma.decompress(compressed)
+        encoded_blobs = json.loads(archive_bytes.decode("utf-8"))
+    except (lzma.LZMAError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise T.PromotionError(f"Arena 增量基础 evidence archive 解压失败：{error}") from error
+    if len(archive_bytes) != value.get("uncompressedBytes") or not isinstance(encoded_blobs, dict):
+        raise T.PromotionError("Arena 增量基础 evidence archive 长度/结构漂移")
+    if set(encoded_blobs) != expected_names:
+        raise T.PromotionError("Arena 增量基础 evidence archive blob exact-set 漂移")
+    blobs: dict[str, bytes] = {}
+    parsed: dict[str, dict[str, Any]] = {}
+    for name in sorted(expected_names):
+        record = records[name]
+        if not isinstance(record, dict) or set(record) != {"bytes", "sha256"}:
+            raise T.PromotionError(f"Arena 增量基础 evidence record 非法：{name}")
+        try:
+            blob = base64.b64decode(encoded_blobs[name], validate=True)
+            document = json.loads(blob.decode("utf-8"))
+        except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise T.PromotionError(f"Arena 增量基础 evidence 文件不可读：{name}") from error
+        if (
+            not isinstance(document, dict)
+            or len(blob) != record.get("bytes")
+            or T.sha256_bytes(blob) != record.get("sha256")
+        ):
+            raise T.PromotionError(f"Arena 增量基础 evidence 文件摘要漂移：{name}")
+        blobs[name] = blob
+        parsed[name] = document
+    return parsed["manifest.json"], parsed["promotion-receipt.json"], blobs
+
+
 def check_supplemental_promotion(manifest: dict[str, Any]) -> dict[str, Any]:
     closure = manifest.get("supplementalPromotion")
     if not isinstance(closure, dict):
@@ -695,7 +837,7 @@ def check_supplemental_promotion(manifest: dict[str, Any]) -> dict[str, Any]:
     if (
         closure.get("schema") != SUPPLEMENTAL_PROMOTION_SCHEMA
         or closure.get("status") != "arena_supplemental_portraits_promoted"
-        or closure.get("baseManifestDigest") != "5FA93F5BAC9093D2EE7F3617479F37A9BB8D41A8882F4318248A9AE81430B4C2"
+        or not isinstance(closure.get("baseManifestDigest"), str)
         or set(closure.get("directReviewKeys", [])) != SUPPLEMENTAL_DIRECT_REVIEW_KEYS
         or closure.get("aliasReviewKey") != f"{SUPPLEMENTAL_ALIAS_REF}::default"
         or closure.get("orientationActions")
@@ -708,8 +850,6 @@ def check_supplemental_promotion(manifest: dict[str, Any]) -> dict[str, Any]:
         raise T.PromotionError("Arena 增量 promotion closure schema/status/rows 漂移")
 
     inputs = closure.get("inputs") if isinstance(closure.get("inputs"), dict) else {}
-    base_manifest_path = T.verify_artifact_record(inputs.get("baseManifest"), "Arena 增量基础 manifest")
-    base_receipt_path = T.verify_artifact_record(inputs.get("basePromotionReceipt"), "Arena 增量基础 promotion receipt")
     human_receipt_path = T.verify_artifact_record(inputs.get("humanReviewReceipt"), "Arena 增量人审回执")
     review_data_path = T.verify_artifact_record(inputs.get("reviewData"), "Arena 增量 review data")
     direct_render_path = T.verify_artifact_record(inputs.get("directRender"), "Arena 增量直接渲染")
@@ -717,18 +857,34 @@ def check_supplemental_promotion(manifest: dict[str, Any]) -> dict[str, Any]:
     alias_receipt_path = T.verify_artifact_record(inputs.get("aliasReceipt"), "Arena 增量 alias 回执")
     T.verify_artifact_record(inputs.get("controller"), "Arena 增量 promotion controller")
 
-    base_manifest = T.load_json(base_manifest_path, "Arena 增量基础 manifest")
+    base_manifest, base_receipt, base_blobs = load_base_evidence_archive(closure.get("baseEvidence"))
     if (
         T.manifest_digest(base_manifest) != closure["baseManifestDigest"]
+        or base_manifest.get("manifestDigest") != closure["baseManifestDigest"]
+        or base_manifest.get("schema") != "cf7.enemy-portrait-manifest.v1"
+        or base_manifest.get("status") != "human_accepted_portraits_promoted"
         or base_manifest.get("counts") != EXPECTED_COUNTS
         or isinstance(base_manifest.get("supplementalPromotion"), dict)
     ):
         raise T.PromotionError("Arena 增量基础 manifest 漂移")
-    base_receipt = T.load_json(base_receipt_path, "Arena 增量基础 promotion receipt")
-    T.verify_object_digest(base_receipt, "receiptDigest", "Arena 增量基础 promotion receipt")
+    expected_base_preserved = expected_preserved_subjects(runtime_subject_names(base_manifest))
     if (
-        base_receipt.get("manifestDigest") != closure["baseManifestDigest"]
+        base_manifest.get("preservedEvidence", {}).get("subjects") != expected_base_preserved
+        or manifest.get("preservedEvidence", {}).get("subjects") != expected_base_preserved
+    ):
+        raise T.PromotionError("Arena 增量基础/最终 preserved evidence exact-set 漂移")
+    T.verify_object_digest(base_receipt, "receiptDigest", "Arena 增量基础 promotion receipt")
+    base_manifest_record = base_receipt.get("manifest")
+    if (
+        base_receipt.get("schema") != "cf7.enemy-portrait-promotion-receipt.v1"
+        or base_receipt.get("status") != "enemy_portrait_pack_promoted"
+        or base_receipt.get("manifestDigest") != closure["baseManifestDigest"]
         or base_receipt.get("counts") != EXPECTED_COUNTS
+        or base_receipt.get("generatedAt") != base_manifest.get("generatedAt")
+        or not isinstance(base_manifest_record, dict)
+        or base_manifest_record.get("path") != T.repo_rel(T.DEFAULT_OUTPUT / "manifest.json")
+        or base_manifest_record.get("bytes") != len(base_blobs["manifest.json"])
+        or base_manifest_record.get("sha256") != T.sha256_bytes(base_blobs["manifest.json"])
     ):
         raise T.PromotionError("Arena 增量基础 promotion receipt 漂移")
 
@@ -866,7 +1022,21 @@ def check_team_subset(manifest: dict[str, Any]) -> None:
         raise T.PromotionError("通用包 JK 双头像像素相同")
 
 
-def check_manifest(manifest_path: Path) -> dict[str, Any]:
+def verify_manifest_artifact_closure(value: Any, location: str = "manifest") -> int:
+    verified = 0
+    if isinstance(value, dict):
+        if {"path", "bytes", "sha256"}.issubset(value):
+            T.verify_artifact_record(value, f"通用敌人头像 provenance {location}")
+            verified += 1
+        for key, child in value.items():
+            verified += verify_manifest_artifact_closure(child, f"{location}/{key}")
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            verified += verify_manifest_artifact_closure(child, f"{location}/{index}")
+    return verified
+
+
+def check_manifest(manifest_path: Path, *, logical_output: Path | None = None) -> dict[str, Any]:
     manifest = T.load_json(manifest_path, "通用敌人头像 manifest")
     if manifest.get("schema") != "cf7.enemy-portrait-manifest.v1":
         raise T.PromotionError("通用敌人头像 manifest schema 非法")
@@ -874,12 +1044,18 @@ def check_manifest(manifest_path: Path) -> dict[str, Any]:
         raise T.PromotionError("通用敌人头像 manifest 尚未 promotion")
     if T.manifest_digest(manifest) != manifest.get("manifestDigest"):
         raise T.PromotionError("通用敌人头像 manifestDigest 漂移")
+    evidence_pack_path = T.verify_artifact_record(manifest.get("evidencePack"), "通用敌人头像 immutable evidence pack")
+    if evidence_pack_path.resolve() != T.EVIDENCE_PACK.resolve():
+        raise T.PromotionError("通用敌人头像 immutable evidence pack 路径漂移")
+    if verify_manifest_artifact_closure(manifest) < 1:
+        raise T.PromotionError("通用敌人头像 provenance artifact closure 为空")
     supplemental = isinstance(manifest.get("supplementalPromotion"), dict)
     expected_counts = SUPPLEMENTAL_EXPECTED_COUNTS if supplemental else EXPECTED_COUNTS
     entries = manifest.get("entries")
     if not isinstance(entries, dict) or len(entries) != expected_counts["identityCount"]:
         raise T.PromotionError("通用敌人头像 identityCount 不闭合")
-    accepted, accepted_refs, pending, excluded, aliased = accepted_subject_files(manifest)
+    asset_root = manifest_path.parent
+    accepted, accepted_refs, pending, excluded, aliased = accepted_subject_files(manifest, asset_root)
     actual_counts = {
         "identityCount": len(entries),
         "variantCount": sum(len(entry["variants"]) for entry in entries.values()),
@@ -903,9 +1079,16 @@ def check_manifest(manifest_path: Path) -> dict[str, Any]:
     if manifest.get("orientationAudit") != expected_orientation_summary:
         raise T.PromotionError("通用敌人头像方向全量闭包摘要漂移")
     envelope_inputs = manifest.get("sourceEnvelope", {}).get("inputs", [])
+    envelope_by_path = {
+        record.get("path"): record for record in envelope_inputs if isinstance(record, dict)
+    }
     envelope_hashes = {
         record.get("sha256") for record in envelope_inputs if isinstance(record, dict)
     }
+    for controller in (TEAM_CONTROLLER, Path(__file__)):
+        expected_controller = T.artifact(controller)
+        if envelope_by_path.get(expected_controller["path"]) != expected_controller:
+            raise T.PromotionError(f"通用敌人头像 sourceEnvelope 未绑定当前 promotion controller：{controller.name}")
     required_orientation_hashes = {
         T.artifact(path).get("sha256") for path in orientation_closure["sourceInputs"]
     }
@@ -916,7 +1099,12 @@ def check_manifest(manifest_path: Path) -> dict[str, Any]:
         raise T.PromotionError("通用敌人头像受控例外集合漂移")
     check_aliases(manifest, supplemental=supplemental)
     supplemental_closure = check_supplemental_promotion(manifest) if supplemental else None
+    if not supplemental and manifest.get("preservedEvidence", {}).get("subjects") != expected_preserved_subjects(
+        runtime_subject_names(manifest)
+    ):
+        raise T.PromotionError("通用敌人头像 preserved evidence exact-set 漂移")
     check_team_subset(manifest)
+    T.verify_exact_subject_fileset(manifest, asset_root)
     shield = entries[SHIELD_REF]["variants"]["default"]
     if shield.get("status") != "human_accepted" or shield.get("provenance", {}).get("resolution") != "human_guided_adjustment":
         raise T.PromotionError("盾卫骑士人工框选 provenance 漂移")
@@ -927,6 +1115,17 @@ def check_manifest(manifest_path: Path) -> dict[str, Any]:
         raise T.PromotionError("通用敌人头像 receipt schema 非法")
     if receipt.get("manifestDigest") != manifest["manifestDigest"] or receipt.get("counts") != expected_counts:
         raise T.PromotionError("通用敌人头像 promotion receipt 漂移")
+    expected_manifest_path = (manifest_path.parent if logical_output is None else logical_output) / "manifest.json"
+    manifest_record = receipt.get("manifest")
+    if (
+        not isinstance(manifest_record, dict)
+        or manifest_record.get("path") != T.repo_rel(expected_manifest_path)
+        or manifest_record.get("bytes") != manifest_path.stat().st_size
+        or manifest_record.get("sha256") != T.sha256_file(manifest_path)
+        or receipt.get("status") != "enemy_portrait_pack_promoted"
+        or receipt.get("generatedAt") != manifest.get("generatedAt")
+    ):
+        raise T.PromotionError("通用敌人头像 promotion receipt manifest/status/generatedAt 漂移")
     if receipt.get("orientationAudit") != expected_orientation_summary:
         raise T.PromotionError("通用敌人头像 promotion receipt 方向摘要漂移")
     required_gates = {
@@ -935,7 +1134,7 @@ def check_manifest(manifest_path: Path) -> dict[str, Any]:
         "unresolvedIdentitiesFailSoftOnly",
         "identityAliasReceiptBound",
         "shieldKnightHumanGuidancePromoted",
-        "atomicControllerOwnsSchemaSwitch",
+        "runtimeManifestPublishedLast",
         "allPreviouslyAcceptedTeamVariantsPromoted",
         "allTeamVariantsWithRuntimeSourcesPromoted",
         "jkTwoDistinctVariantsPromoted",
@@ -961,7 +1160,7 @@ def check_manifest(manifest_path: Path) -> dict[str, Any]:
             "arenaSupplementalOrientationClosed",
             "simonliGeneratorAliasBound",
             "arenaCatalogCoverageReady",
-            "supplementalPromotionAtomic",
+            "supplementalManifestPublishedLast",
         }
         if (
             any(receipt.get("gates", {}).get(key) is not True for key in supplemental_gates)
@@ -980,6 +1179,100 @@ def check_manifest(manifest_path: Path) -> dict[str, Any]:
     return manifest
 
 
+def atomic_copy(source: Path, destination: Path) -> None:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = destination.with_name(f".{destination.name}.publish-{os.getpid()}.tmp")
+    if temporary.exists():
+        raise T.PromotionError(f"发布临时文件已存在：{temporary}")
+    try:
+        with source.open("rb") as reader, temporary.open("xb") as writer:
+            shutil.copyfileobj(reader, writer, length=1024 * 1024)
+            writer.flush()
+            os.fsync(writer.fileno())
+        os.replace(temporary, destination)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+
+
+def publish_staged_pack(
+    staging: Path,
+    output: Path,
+    backup: Path | None,
+    *,
+    fault_hook: Any | None = None,
+) -> dict[str, Any]:
+    def checkpoint(name: str) -> None:
+        if fault_hook is not None:
+            fault_hook(name)
+
+    checked_staging = check_manifest(staging / "manifest.json", logical_output=output)
+    output.mkdir(parents=True, exist_ok=True)
+    output_subjects = output / "subjects"
+    output_subjects.mkdir(parents=True, exist_ok=True)
+    staging_subjects = staging / "subjects"
+    desired = {path.name: path for path in staging_subjects.iterdir() if path.is_file()}
+    existing = {path.name: path for path in output_subjects.iterdir() if path.is_file()}
+    new_names = set(desired) - set(existing)
+    stale_names = set(existing) - set(desired)
+    for name in sorted(set(desired).intersection(existing)):
+        if desired[name].read_bytes() != existing[name].read_bytes():
+            raise T.PromotionError(f"内容寻址 subject 碰撞：{name}")
+
+    old_manifest = output / "manifest.json"
+    old_receipt = output / "promotion-receipt.json"
+    if backup is not None:
+        backup.mkdir(parents=True, exist_ok=True)
+        if old_manifest.is_file() and not (backup / "manifest.json").exists():
+            atomic_copy(old_manifest, backup / "manifest.json")
+        if old_receipt.is_file() and not (backup / "promotion-receipt.json").exists():
+            atomic_copy(old_receipt, backup / "promotion-receipt.json")
+        for name in sorted(stale_names):
+            frozen = backup / "subjects" / name
+            if not frozen.exists():
+                atomic_copy(existing[name], frozen)
+
+    receipt_switched = False
+    manifest_switched = False
+    try:
+        for name in sorted(new_names):
+            atomic_copy(desired[name], output_subjects / name)
+        checkpoint("subjects_published")
+        atomic_copy(staging / "promotion-receipt.json", output / "promotion-receipt.json")
+        receipt_switched = True
+        checkpoint("receipt_published")
+        # This is the sole runtime authority switch. Every referenced subject is
+        # content-addressed and present before this single-file replacement.
+        atomic_copy(staging / "manifest.json", output / "manifest.json")
+        manifest_switched = True
+        checkpoint("manifest_published")
+        for name in sorted(stale_names):
+            (output_subjects / name).unlink()
+        checkpoint("stale_cleanup_completed")
+        checkpoint("before_final_check")
+        checked = check_manifest(output / "manifest.json")
+    except Exception:
+        if backup is not None:
+            for name in sorted(stale_names):
+                frozen = backup / "subjects" / name
+                if frozen.is_file():
+                    atomic_copy(frozen, output_subjects / name)
+            if receipt_switched and (backup / "promotion-receipt.json").is_file():
+                atomic_copy(backup / "promotion-receipt.json", output / "promotion-receipt.json")
+            if manifest_switched and (backup / "manifest.json").is_file():
+                atomic_copy(backup / "manifest.json", output / "manifest.json")
+        if backup is not None or not manifest_switched:
+            for name in sorted(new_names):
+                candidate = output_subjects / name
+                if candidate.is_file():
+                    candidate.unlink()
+        raise
+    if checked.get("manifestDigest") != checked_staging.get("manifestDigest"):
+        raise T.PromotionError("manifest-last 发布后 digest 漂移")
+    shutil.rmtree(staging)
+    return checked
+
+
 def promote(args: argparse.Namespace) -> None:
     output = T.resolve_output(Path(args.output))
     replacing = output.exists()
@@ -995,6 +1288,7 @@ def promote(args: argparse.Namespace) -> None:
         Path(args.representative_closure).resolve(),
         Path(args.team_gap_batch).resolve(),
         staging,
+        output,
     )
     backup: Path | None = None
     if replacing:
@@ -1004,23 +1298,11 @@ def promote(args: argparse.Namespace) -> None:
             raise T.PromotionError("上一版头像 manifest 缺 digest")
         backup_root = T.PILOT_ROOT / "enemy-portrait-production-backups"
         backup_root.mkdir(parents=True, exist_ok=True)
-        backup = backup_root / f"enemy-portraits-{old_digest[:16].lower()}"
+        stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+        backup = backup_root / f"enemy-portraits-{old_digest[:16].lower()}-{stamp}"
         if backup.exists():
             raise T.PromotionError(f"上一版备份已存在，禁止覆盖：{backup}")
-        os.replace(output, backup)
-    try:
-        os.replace(staging, output)
-        checked = check_manifest(output / "manifest.json")
-    except Exception:
-        failed_root = T.PILOT_ROOT / "failed-enemy-promotion-staging"
-        failed_root.mkdir(parents=True, exist_ok=True)
-        stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-        failed = failed_root / f"{output.name}.failed-{stamp}-{os.getpid()}"
-        if output.exists():
-            os.replace(output, failed)
-        if backup is not None and backup.exists():
-            os.replace(backup, output)
-        raise
+    checked = publish_staged_pack(staging, output, backup)
     print(json.dumps({
         "status": "enemy_portrait_pack_promoted",
         "output": T.repo_rel(output),

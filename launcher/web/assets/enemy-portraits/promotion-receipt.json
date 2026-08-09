@@ -1,13 +1,13 @@
 {
   "schema": "cf7.enemy-portrait-promotion-receipt.v1",
   "status": "enemy_portrait_pack_promoted",
-  "generatedAt": "2026-08-09T08:58:31Z",
+  "generatedAt": "2026-08-09T13:44:54Z",
   "manifest": {
     "path": "launcher/web/assets/enemy-portraits/manifest.json",
-    "bytes": 916150,
-    "sha256": "7DA1890277BA2AEA9D72F3D44B2995478A1B1DC52A4B2661EC4C31AE3750BD65"
+    "bytes": 1083652,
+    "sha256": "0CE1194CDA08E1597504FE25F567B9603C2C0389D7FCE676FC97477942DD017A"
   },
-  "manifestDigest": "33E1FABF3E1623C072D552CE8A497022036AAF9FCB3EAAB464944CB7DA2D9961",
+  "manifestDigest": "EFDBD928AD03F892A7A8236C333E8A4BEDF57425879854B5C8113448F7A306E5",
   "counts": {
     "identityCount": 226,
     "variantCount": 227,
@@ -46,8 +46,8 @@
   },
   "supplementalPromotion": {
     "schema": "cf7.arena-portrait-supplemental-promotion.v1",
-    "closureDigest": "4B85A8E7D6A3A874F9D736CD5FC41FC8684DA2CFDEDD5D0D4FB384A9F8569AA4",
-    "baseManifestDigest": "5FA93F5BAC9093D2EE7F3617479F37A9BB8D41A8882F4318248A9AE81430B4C2",
+    "closureDigest": "C70B03A8463DF1948F89B4ED1F7B3039846B67C58C03D80BE39B917C1DEE8AD3",
+    "baseManifestDigest": "EED4D8DC9D3CF5E4A5B30BE39C7D4B72CFF54B604F47ED042C6906EDD2B801D0",
     "counts": {
       "directHumanAccepted": 5,
       "identityAliases": 1,
@@ -60,7 +60,7 @@
     "unresolvedIdentitiesFailSoftOnly": true,
     "identityAliasReceiptBound": true,
     "shieldKnightHumanGuidancePromoted": true,
-    "atomicControllerOwnsSchemaSwitch": true,
+    "runtimeManifestPublishedLast": true,
     "allPreviouslyAcceptedTeamVariantsPromoted": true,
     "allTeamVariantsWithRuntimeSourcesPromoted": true,
     "jkTwoDistinctVariantsPromoted": true,
@@ -81,7 +81,7 @@
     "arenaSupplementalOrientationClosed": true,
     "simonliGeneratorAliasBound": true,
     "arenaCatalogCoverageReady": true,
-    "supplementalPromotionAtomic": true
+    "supplementalManifestPublishedLast": true
   },
-  "receiptDigest": "61BCA4C6551929547CD0CC301FFFEF6C6A9A26A0C0573777EB7D6F91204F4510"
+  "receiptDigest": "17FC0D9B41A85B1F11D6F3A701E81EBC7E6A6D287F25F37DBB5522A417A00EDF"
 }
