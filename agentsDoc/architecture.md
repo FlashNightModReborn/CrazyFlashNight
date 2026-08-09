@@ -108,6 +108,7 @@
 - 注册中心：`launcher/src/Bus/TaskRegistry.cs`
 - 集成测试入口：`--bus-only`
 - 鼠标手型迁移边界：AS2 `_root.鼠标` 是纯脚本兼容代理，只保留状态接口与物品拖拽容器；几何命中统一走 `_root._xmouse/_ymouse` 点命中和 `interactionMouseDown` / `interactionMouseUp` 事件，不再把 `_root.鼠标` 作为 `hitTest` 目标；`cursor_control` 只传低频状态。真实 cursor 视觉坐标由 Launcher 低级鼠标 hook / 坐标泵采样，视觉只由 C# `CursorOverlayForm` 原生 layered window 接管并按 monitor DPI 缩放；Web DOM 只通过 `cursorFeedback` 回传 hover/press 状态变化，不承担 cursor 视觉 fallback；AS2 仅在物品拖拽期间同步图标容器位置，不恢复旧鼠标视觉。
+- **规划态入口（尚未实现）**：单位/子弹 `WorldFrame`、CSharp native world overlay、四帧 `SenseFrame`、逐碰撞帧 `ThreatFrame` 与固定 `n→n+1` 普通 AABB 碰撞迁移，统一见 [单位数据镜像、CSharp 原生绘制与碰撞判定 · 长期迁移路线 ADR](../docs/单位数据镜像-CSharp原生绘制与碰撞判定-长期迁移路线-ADR-2026-08-09.md)。该路线状态为 `PROPOSED / ROUTE_FROZEN / NOT_IMPLEMENTED / P0_EVIDENCE_PENDING`；`ROUTE_FROZEN` 只表示提案冻结供评审，尚非 `ROUTE_ACCEPTED / P0_AUTHORIZED`。最后核对相关源码 commit `fff104b0f29d7c5def80f2ba0b5cc2682124f500`。当前不存在该 ADR 所述 raw lane、worker、World Overlay 或 gameplay authority，现役通信事实仍以上述 XMLSocket/TaskRegistry 说明为准。
 
 ### 外部 Agent / Wings ↔ CF7 Agent Runtime
 
