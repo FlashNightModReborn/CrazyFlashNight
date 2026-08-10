@@ -1697,6 +1697,8 @@ html.perf-low-effects .map-panel-close-btn::before {
     --jb-screen-bg: #070b06;
     --jb-text: rgba(220,235,200,0.92);
     --jb-text-dim: rgba(160,180,140,0.70);
+    --jb-bright-text-rgb: 240,250,210;
+    --jb-ink-rgb: 0,0,0;
     --jb-border: rgba(200,255,76,0.18);
     --jb-cut: 10px;
 
@@ -2405,7 +2407,7 @@ html.perf-low-effects .map-panel-close-btn::before {
 }
 /* 帮助弹窗滚动条：与曲目列表/设置面板同款的 accent 轨道（替换原生浏览器白条） */
 .jbp-help-modal::-webkit-scrollbar { width:7px; }
-.jbp-help-modal::-webkit-scrollbar-track { background:rgba(0,0,0,0.35); }
+.jbp-help-modal::-webkit-scrollbar-track { background:rgba(var(--jb-ink-rgb),0.35); }
 .jbp-help-modal::-webkit-scrollbar-thumb { background:rgba(var(--jb-accent-rgb),0.22); border-radius:2px; }
 .jbp-help-modal::-webkit-scrollbar-thumb:hover { background:rgba(var(--jb-accent-rgb),0.42); }
 .jbp-help-content {
@@ -2442,10 +2444,10 @@ html.perf-low-effects .map-panel-close-btn::before {
     border:1px solid rgba(var(--jb-accent-rgb),0.16);
     padding:1px 4px;
     font:11px/1.3 "Consolas","Courier New",monospace;
-    color:#e8f5cb;
+    color:rgba(var(--jb-bright-text-rgb),0.92);
 }
 .jbp-help-content pre {
-    background:rgba(0,0,0,0.35);
+    background:rgba(var(--jb-ink-rgb),0.35);
     border:1px solid rgba(var(--jb-accent-rgb),0.18);
     padding:6px 8px;
     margin:6px 0;
@@ -2524,7 +2526,7 @@ html.perf-low-effects .map-panel-close-btn::before {
 .jbp-panel .jbp-album-option:focus-visible,
 .jbp-panel .jb-setting-row:focus-visible {
     background:rgba(var(--jb-accent-rgb),0.10);
-    color:#f4ffd6;
+    color:rgba(var(--jb-bright-text-rgb),0.98);
 }
 /* Stage Select Panel - Phase 1 static replica */
 .stage-select-panel {

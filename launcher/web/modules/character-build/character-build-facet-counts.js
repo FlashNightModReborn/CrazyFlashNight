@@ -119,6 +119,7 @@
         badge.className = 'character-build-slot-count';
         badge.setAttribute('data-slot-candidate-count', '');
         badge.setAttribute('data-count-state', state);
+        badge.setAttribute('data-count-zero', count === 0 ? 'true' : 'false');
         badge.setAttribute('aria-hidden', 'true');
         badge.textContent = badgeText(count);
         badge.title = accessibleText(count);

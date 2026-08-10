@@ -9,7 +9,10 @@
         ? require('./character-build-slot-transition.js') : root && root.CharacterBuildSlotTransition;
     var tuning = typeof module !== 'undefined' && module.exports
         ? require('./character-build-tuning.js') : root && root.CharacterBuildTuning;
-    var api = factory(session, projection, transition, tuning);
+    var dropTargets = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-drop-targets.js')
+        : root && root.CharacterBuildDropTargets;
+    var api = factory(session, projection, transition, tuning, dropTargets);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -17,7 +20,7 @@
         root.CharacterBuildCandidateChannel = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(SessionModule, Projection, SlotTransition, TuningModule) {
+function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsModule) {
     'use strict';
     if (!SessionModule || typeof SessionModule.candidateScope !== 'function') {
         throw new Error('CharacterBuildCandidateChannel requires CharacterBuildSession');
@@ -30,6 +33,9 @@ function(SessionModule, Projection, SlotTransition, TuningModule) {
     }
     if (!TuningModule || !TuningModule.CharacterBuildTuning) {
         throw new Error('CharacterBuildCandidateChannel requires CharacterBuildTuning');
+    }
+    if (!DropTargetsModule || typeof DropTargetsModule.isDrugRow !== 'function') {
+        throw new Error('CharacterBuildCandidateChannel requires CharacterBuildDropTargets');
     }
 
     function definitiveCandidateStale(response) {
@@ -190,7 +196,44 @@ function(SessionModule, Projection, SlotTransition, TuningModule) {
             }
             return sendRefused ? false : callId;
         };
-        controller._recoverCandidateSelection = function(selection) {
+        /**
+     * Drop-commit path. The view supplies the exact drop slot; the mutation
+     * itself carries its own target, so the write does not depend on the
+     * pre-drop selection. Only after the write is admitted do we adopt the
+     * drop slot, letting `_applySnapshot` restore selection and candidates
+     * onto it.
+     */
+    controller._equipDroppedCandidate = function(slotKey, candidate) {
+        if (!candidate || this._session.getState() !== 'idle') return false;
+        var parts = String(slotKey || '').split(':');
+        var target = Projection.targetForSelection({
+            key:String(slotKey || ''), kind:parts.shift(), id:parts.join(':')
+        });
+        if (!target) return false;
+        if (candidate.blocked === true) {
+            // blocked 只描述与当前选中槽位的关系；落点提交以该物品的槽位
+            // 白名单（装备）或协议药剂判别（药剂槽）为本地门禁，Host 仍是最终权威。
+            var allowed = target.kind === 'drug'
+                ? DropTargetsModule.isDrugRow(candidate)
+                : (function() {
+                    var eligibility = candidate.raw && candidate.raw.equipmentEligibility;
+                    var slots = eligibility && Array.isArray(eligibility.slots)
+                        ? eligibility.slots : [];
+                    return target.kind === 'equipment'
+                        && slots.indexOf(String(target.slotKey || '')) >= 0
+                        && String(eligibility && eligibility.blockedReason || '') === '';
+                })();
+            if (!allowed) return false;
+            candidate = Object.create(candidate);
+            candidate.blocked = false;
+            candidate.blockedReason = '';
+        }
+        if (!this._mutations.equip(target, candidate)) return false;
+        this._selectedSlotKey = String(slotKey);
+        this._selectedTarget = target;
+        return true;
+    };
+    controller._recoverCandidateSelection = function(selection) {
             if (!this._view || !selection
                     || !this._view.beginCandidateRecovery(selection.requestKey)) return false;
             var self = this;
