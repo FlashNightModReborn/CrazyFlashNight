@@ -13,6 +13,12 @@
  * 美化轮 2026-07-28：CRT 开机动画 / 标题+曲名 marquee / 点曲 pending / active 滚动定位 / SVG 图标 /
  *   LED 状态灯 / 待机屏 / 专辑分组 sticky 头 / 下拉与弹窗过渡 / 专辑 chip / 首屏 stagger /
  *   磷光主题单选（绿磷屏|琥珀磷屏，localStorage 持久化）/ 进度条 scaleX / 列表 content-visibility。
+ *
+ * 交互补齐轮 2026-08-10（借双栏工作台横切契约，但不并入其视觉/治理体系——点歌机无物品写 authority）：
+ *   键盘可达（曲目 Enter/Space 点曲 + 方向键导航，roving tabindex / 滑条与进度条方向键 + Home/End /
+ *   设置项与控制台按钮 Enter/Space / 专辑下拉全键盘操作）/ Esc 逐层只退一级（帮助弹窗 → 专辑下拉 → 面板，
+ *   统一收口于 closeLocally，生产环境 Esc 由 C# panel_esc 桥消息进入，web 侧不另设 DOM Esc 监听以免双通道重复消费）/
+ *   帮助弹窗焦点圈定 + 关闭返还 / focus-visible 焦点环（features.css jukebox 段）/ 关键控件 role + ARIA。
  */
 (function() {
     'use strict';
@@ -34,6 +40,9 @@
     var playing = false;
     var bgmTitle = '';
     var currentDuration = 0;
+    var currentCursor = 0;   // 最近一次音频包的播放进度（秒）：键盘 seek 的基准，音频回包持续校正
+    var _ariaProgSec = -1;   // 进度条 aria-valuenow/max 秒级去抖
+    var _ariaProgMax = -1;
     var oscPhase = 0;      // 示波器弦载波相位
     var _rafId = null;     // requestAnimationFrame 渲染循环句柄
     var displayHistL = new Float32Array(HISTORY); // 平滑插值显示缓冲
@@ -109,8 +118,16 @@
     });
 
     /// <summary>本地立即隐藏 panel + 通知 C# 走 backdrop/HUD-resume 序列。
-    ///         三条入口（× 按钮 / ESC / backdrop click）共用，避免单边漏 Panels.close 让 _active 滞留。</summary>
-    function closeLocally() {
+    ///         三条入口（× 按钮 / ESC / backdrop click）共用，避免单边漏 Panels.close 让 _active 滞留。
+    ///         ESC 先做分层消费（帮助弹窗 → 专辑下拉，每层只退一级），确认无浮层后才真正关面板。</summary>
+    function closeLocally(reason) {
+        if (reason === 'escape') {
+            if (isHelpOpen()) { closeHelpModal(); return; }
+            if (_refs.albumWrap && _refs.albumWrap.classList.contains('open')) {
+                setAlbumDropdownOpen(false);
+                return;
+            }
+        }
         try { Panels.close(); } catch (e) {}
         Bridge.send({type: 'panel', cmd: 'close', panel: 'jukebox'});
     }
@@ -125,10 +142,10 @@
                 '<span class="jbp-album-chip" id="jbp-album-chip" style="display:none"></span>',
                 '<div class="jbp-header-spacer"></div>',
                 '<span class="jbp-led" id="jbp-led" title="播放状态"></span>',
-                '<div class="jbp-pause-btn jb-ctrl-btn jbp-primary" id="jbp-pause-btn" data-icon="pause" title="暂停/继续">' + ICON_PAUSE + '</div>',
-                '<div class="jbp-stop-btn jb-ctrl-btn" id="jbp-stop-btn" data-icon="stop" title="停止(回到默认BGM)">' + ICON_STOP + '</div>',
-                '<div class="jbp-help-btn jb-ctrl-btn" id="jbp-help-btn" data-icon="help" title="帮助">' + ICON_HELP + '</div>',
-                '<button class="jbp-close-btn" id="jbp-close-btn" data-icon="close" type="button" title="关闭">' + ICON_CLOSE + '</button>',
+                '<div class="jbp-pause-btn jb-ctrl-btn jbp-primary" id="jbp-pause-btn" data-icon="pause" title="暂停/继续" role="button" tabindex="0" aria-label="暂停/继续">' + ICON_PAUSE + '</div>',
+                '<div class="jbp-stop-btn jb-ctrl-btn" id="jbp-stop-btn" data-icon="stop" title="停止(回到默认BGM)" role="button" tabindex="0" aria-label="停止(回到默认BGM)">' + ICON_STOP + '</div>',
+                '<div class="jbp-help-btn jb-ctrl-btn" id="jbp-help-btn" data-icon="help" title="帮助" role="button" tabindex="0" aria-label="帮助">' + ICON_HELP + '</div>',
+                '<button class="jbp-close-btn" id="jbp-close-btn" data-icon="close" type="button" title="关闭" aria-label="关闭">' + ICON_CLOSE + '</button>',
             '</div>',
             // 沉浸全屏化 2026-06-12：双栏控制台（左 Now-Playing：波形+进度+设置；右 曲库：专辑下拉+曲目列表）
             '<div class="jbp-body">',
@@ -142,7 +159,7 @@
                     '</div>',
                     '<div class="jbp-progress-row">',
                         '<span class="jbp-prog-time" id="jbp-prog-time-start">00:00</span>',
-                        '<div class="jbp-progress" id="jbp-progress"><div class="jbp-prog-fill" id="jbp-prog-fill"></div></div>',
+                        '<div class="jbp-progress" id="jbp-progress" tabindex="0" role="slider" aria-label="播放进度" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><div class="jbp-prog-fill" id="jbp-prog-fill"></div></div>',
                         '<span class="jbp-prog-time" id="jbp-prog-time-end">00:00</span>',
                     '</div>',
                     '<div class="jbp-settings" id="jbp-settings">',
@@ -159,35 +176,35 @@
                         '</div>',
                         '<div class="jb-setting-divider"></div>',
                         '<div class="jb-setting-group-label">播放源设置</div>',
-                        '<div class="jb-setting-row jb-setting-item" data-key="override">',
+                        '<div class="jb-setting-row jb-setting-item" data-key="override" tabindex="0" role="checkbox" aria-checked="false">',
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">覆盖关卡BGM</span>',
                         '</div>',
-                        '<div class="jb-setting-row jb-setting-item" data-key="trueRandom">',
+                        '<div class="jb-setting-row jb-setting-item" data-key="trueRandom" tabindex="0" role="checkbox" aria-checked="false">',
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">真随机</span>',
                         '</div>',
                         '<div class="jb-setting-divider"></div>',
                         '<div class="jb-setting-group-label">播放模式</div>',
-                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="singleLoop">',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="singleLoop" tabindex="0" role="radio" aria-checked="true">',
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">单曲循环</span>',
                         '</div>',
-                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="albumLoop">',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="albumLoop" tabindex="0" role="radio" aria-checked="false">',
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">专辑循环</span>',
                         '</div>',
-                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="playOnce">',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="playOnce" tabindex="0" role="radio" aria-checked="false">',
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">播完回默认</span>',
                         '</div>',
                         '<div class="jb-setting-divider"></div>',
                         '<div class="jb-setting-group-label">显示</div>',
-                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="phosphor" data-value="green">',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="phosphor" data-value="green" tabindex="0" role="radio" aria-checked="true">',
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">绿磷屏</span>',
                         '</div>',
-                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="phosphor" data-value="amber">',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="phosphor" data-value="amber" tabindex="0" role="radio" aria-checked="false">',
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">琥珀磷屏</span>',
                         '</div>',
@@ -196,17 +213,17 @@
                 '<div class="jbp-library">',
                     '<div class="jbp-browser-row">',
                         '<div class="jbp-album-dropdown" id="jbp-album-dropdown">',
-                            '<div class="jbp-album-trigger" id="jbp-album-trigger">',
+                            '<div class="jbp-album-trigger" id="jbp-album-trigger" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false">',
                                 '<span class="jbp-album-label" id="jbp-album-label">全部</span>',
                                 '<span class="jb-dd-arrow">&#9662;</span>',
                             '</div>',
-                            '<div class="jbp-album-options" id="jbp-album-options"></div>',
+                            '<div class="jbp-album-options" id="jbp-album-options" role="listbox"></div>',
                         '</div>',
                     '</div>',
                     '<div class="jbp-track-list" id="jbp-track-list"></div>',
                 '</div>',
             '</div>',
-            '<div class="jbp-help-modal" id="jbp-help-modal">',
+            '<div class="jbp-help-modal" id="jbp-help-modal" role="dialog" aria-modal="true" aria-label="点歌台帮助">',
                 '<div class="jbp-help-content" id="jbp-help-content"></div>',
                 '<button class="jbp-help-close" id="jbp-help-close" type="button">关闭</button>',
             '</div>'
@@ -238,35 +255,32 @@
         _refs.canvas.height = 64 * dpr;
         _refs.ctx = _refs.canvas.getContext('2d');
 
-        _refs.closeBtn.addEventListener('click', closeLocally);
+        _refs.closeBtn.addEventListener('click', function() { closeLocally('button'); });
         _refs.albumTrig.addEventListener('click', function(e) {
             e.stopPropagation();
-            _refs.albumWrap.classList.toggle('open');
+            setAlbumDropdownOpen(!_refs.albumWrap.classList.contains('open'));
         });
         _refs.albumOpts.addEventListener('click', function(e) {
             var opt = e.target;
             while (opt && !opt.classList.contains('jbp-album-option')) opt = opt.parentElement;
             if (!opt) return;
-            currentAlbumFilter = opt.getAttribute('data-album') || '';
-            _refs.albumWrap.classList.remove('open');
-            renderAlbumSelect();
-            renderTrackList(currentAlbumFilter);
+            selectAlbumOption(opt);
         });
         _refs.pauseBtn.addEventListener('click', onPauseClick);
         _refs.stopBtn.addEventListener('click', onStopClick);
         _refs.helpBtn.addEventListener('click', onHelpClick);
-        _refs.helpClose.addEventListener('click', function() {
-            _refs.helpModal.classList.remove('visible');
-        });
+        _refs.helpClose.addEventListener('click', closeHelpModal);
         _refs.progBar.addEventListener('mousedown', onSeekStart);
         _refs.settings.addEventListener('click', onSettingsClick);
+        // 键盘可达性：面板级单一 keydown 委派（Enter/Space/方向键/Home/End/Tab 圈定）
+        _el.addEventListener('keydown', onPanelKeydown);
         // 滑条
         initSlider('volGlobal', 'volGlobal', 50);
         initSlider('volBgm', 'volBgm', 80);
         // 点击外部关闭专辑下拉
         _onDocClick = function(e) {
             if (_refs.albumWrap && !_refs.albumWrap.contains(e.target)) {
-                _refs.albumWrap.classList.remove('open');
+                setAlbumDropdownOpen(false);
             }
         };
         // CRT 开机动画结束即摘除 class，下次 onOpen 可重新触发
@@ -405,6 +419,7 @@
         // （否则关闭期间 BGM 切空 / 进度推进 / 设置改动后，重开会先闪一帧旧数据）
         bgmTitle = '';
         currentDuration = 0;
+        currentCursor = 0;
         playing = false;
         isPaused = false;
         _pendingTitle = '';
@@ -413,6 +428,13 @@
         if (_refs.albumChip) _refs.albumChip.style.display = 'none';
         setProgress(0);
         setTimeTexts('00:00', '00:00');
+        // 进度条 ARIA 与 JS 状态同步复位：元素常驻，残留旧值会让重开首帧读到过期进度
+        _ariaProgSec = -1;
+        _ariaProgMax = -1;
+        if (_refs.progBar) {
+            _refs.progBar.setAttribute('aria-valuenow', '0');
+            _refs.progBar.setAttribute('aria-valuemax', '0');
+        }
         if (_refs.pauseBtn) {
             _refs.pauseBtn.classList.remove('paused');
             setIcon(_refs.pauseBtn, ICON_PAUSE, 'pause');
@@ -514,6 +536,20 @@
         var cursor = data.c || 0;
         var duration = data.d || 0;
         currentDuration = duration;
+        currentCursor = cursor;
+        // 进度条 slider ARIA：秒级去抖，值变化才写属性（音频数据 ~60ms 一推）
+        if (_refs.progBar) {
+            var secNow = Math.floor(cursor);
+            if (secNow !== _ariaProgSec) {
+                _ariaProgSec = secNow;
+                _refs.progBar.setAttribute('aria-valuenow', String(secNow));
+            }
+            var durNow = Math.floor(duration);
+            if (durNow !== _ariaProgMax) {
+                _ariaProgMax = durNow;
+                _refs.progBar.setAttribute('aria-valuemax', String(durNow));
+            }
+        }
         histL[histIdx] = peakL;
         histR[histIdx] = peakR;
         histIdx = (histIdx + 1) % HISTORY;
@@ -768,26 +804,87 @@
     function renderAlbumSelect() {
         if (!_refs.albumOpts) return;
         _refs.albumOpts.innerHTML = '';
-        var allOpt = document.createElement('div');
-        allOpt.className = 'jbp-album-option' + (currentAlbumFilter === '' ? ' active' : '');
-        allOpt.textContent = '全部';
-        allOpt.setAttribute('data-album', '');
-        _refs.albumOpts.appendChild(allOpt);
+        _refs.albumOpts.appendChild(createAlbumOption('', '全部'));
         var names = [];
         for (var alb in albums) names.push(alb);
         names.sort();
         for (var i = 0; i < names.length; i++) {
-            var opt = document.createElement('div');
-            opt.className = 'jbp-album-option' + (names[i] === currentAlbumFilter ? ' active' : '');
-            opt.textContent = names[i] + ' (' + albums[names[i]].length + ')';
-            opt.setAttribute('data-album', names[i]);
-            _refs.albumOpts.appendChild(opt);
+            _refs.albumOpts.appendChild(
+                createAlbumOption(names[i], names[i] + ' (' + albums[names[i]].length + ')'));
         }
         if (_refs.albumLabel) {
             _refs.albumLabel.textContent = currentAlbumFilter
                 ? currentAlbumFilter + ' (' + (albums[currentAlbumFilter] || []).length + ')'
                 : '全部';
         }
+    }
+
+    // 专辑选项统一构造：class + data-album + listbox 语义（tabindex=-1，键盘导航 focus() 驱动）
+    function createAlbumOption(album, label) {
+        var opt = document.createElement('div');
+        var selected = album === currentAlbumFilter;
+        opt.className = 'jbp-album-option' + (selected ? ' active' : '');
+        opt.textContent = label;
+        opt.setAttribute('data-album', album);
+        opt.setAttribute('role', 'option');
+        opt.setAttribute('tabindex', '-1');
+        opt.setAttribute('aria-selected', selected ? 'true' : 'false');
+        return opt;
+    }
+
+    // 刚脱离 visibility:hidden 的容器，focus() 会被 Blink 判为不可聚焦而静默失败；
+    // 且 visibility 过渡延迟（~150ms）完结前持续不可聚焦。短轮询直到聚焦落地或浮层关闭。
+    // 刚脱离 visibility:hidden 的容器，focus() 会被 Blink 判为不可聚焦而静默失败；
+    // 且 visibility 过渡延迟（~150ms）完结前持续不可聚焦。短轮询直到聚焦落地或浮层关闭。
+    // resolveEl 每次重取节点：catalog 增量/全量刷新会重建选项 DOM，旧节点 detach 不等于放弃。
+    function focusWhenReady(resolveEl, isOpen) {
+        var tries = 0;
+        (function attempt() {
+            if (!isOpen()) return;
+            var el = resolveEl();
+            if (el && document.contains(el)) {
+                el.focus();
+                if (document.activeElement === el) return;
+            }
+            if (++tries > 20) return;   // ~600ms 封顶：聚焦失败不影响功能本身
+            setTimeout(attempt, 30);
+        })();
+    }
+
+    function isAlbumDropdownOpen() {
+        return !!(_refs.albumWrap && _refs.albumWrap.classList.contains('open'));
+    }
+
+    // 当前应聚焦的专辑选项：优先当前筛选（active），退化为首项
+    function resolveAlbumFocusOption() {
+        if (!_refs.albumOpts) return null;
+        return _refs.albumOpts.querySelector('.jbp-album-option.active')
+            || _refs.albumOpts.querySelector('.jbp-album-option');
+    }
+
+    // 专辑下拉开合唯一入口：同步 aria-expanded；键盘打开时焦点落入当前/首选项，关闭时从选项内返还 trigger
+    function setAlbumDropdownOpen(open) {
+        if (!_refs.albumWrap) return;
+        var wasOpen = _refs.albumWrap.classList.contains('open');
+        if (open === wasOpen) return;
+        _refs.albumWrap.classList.toggle('open', open);
+        if (_refs.albumTrig) _refs.albumTrig.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+            if (document.activeElement === _refs.albumTrig) {
+                focusWhenReady(resolveAlbumFocusOption, isAlbumDropdownOpen);
+            }
+        } else if (_refs.albumOpts && _refs.albumOpts.contains(document.activeElement)) {
+            // trigger 始终可见，可同步聚焦
+            if (_refs.albumTrig) _refs.albumTrig.focus();
+        }
+    }
+
+    // 专辑选项激活统一入口：鼠标 click 与键盘 Enter/Space 汇聚同一 intent
+    function selectAlbumOption(opt) {
+        currentAlbumFilter = opt.getAttribute('data-album') || '';
+        setAlbumDropdownOpen(false);
+        renderAlbumSelect();
+        renderTrackList(currentAlbumFilter);
     }
 
     // 首屏 stagger：每次重建列表只给前 12 项加入场动画，避免长列表视觉噪音
@@ -814,8 +911,20 @@
             }
         }
         refreshTrackStates();
+        // roving tabindex 入口：Tab 进列表落在当前曲目（无则首项），其余项 -1 不独立占用 Tab 序
+        var entry = _refs.trackList.querySelector('.jbp-track-item.active') || _refs.trackList.querySelector('.jbp-track-item');
+        if (entry) setTrackEntry(entry);
         // active 项滚动定位：布局落定后执行，仅不在可视区时滚动并居中
         setTimeout(scrollActiveIntoView, 0);
+    }
+
+    // roving tabindex：仅入口项 tabindex=0；方向键导航迁移焦点后同步迁移入口
+    function setTrackEntry(item) {
+        if (!_refs.trackList) return;
+        var items = _refs.trackList.querySelectorAll('.jbp-track-item');
+        for (var i = 0; i < items.length; i++) {
+            items[i].setAttribute('tabindex', items[i] === item ? '0' : '-1');
+        }
     }
 
     function appendTrackItems(source, enterCount) {
@@ -824,6 +933,8 @@
             div.className = 'jbp-track-item';
             div.innerHTML = '<span class="marquee-inner">' + escHtml(source[i].title) + '</span>';
             div.setAttribute('data-title', source[i].title);
+            div.setAttribute('role', 'button');
+            div.setAttribute('tabindex', '-1');   // roving：renderTrackList 收尾时把入口项提为 0
             div._marqueeSpeed = 25;
             if (enterCount < ENTER_STAGGER_MAX) {
                 div.classList.add('jbp-enter');
@@ -855,10 +966,13 @@
         var el = e.target;
         while (el && !el.getAttribute('data-title')) el = el.parentElement;
         var title = el ? el.getAttribute('data-title') : null;
-        if (title) {
-            if (title !== bgmTitle) setPendingTrack(title);
-            Bridge.send({type: 'jukebox', cmd: 'play', title: title});
-        }
+        if (title) playTrack(title);
+    }
+
+    // 点曲统一入口：鼠标 click 与键盘 Enter/Space 汇聚同一 intent
+    function playTrack(title) {
+        if (title !== bgmTitle) setPendingTrack(title);
+        Bridge.send({type: 'jukebox', cmd: 'play', title: title});
     }
 
     // 点曲 pending：点击立即反馈，UiData 'bgm' 回包确认后转 active；3s 无回包兜底清除
@@ -938,6 +1052,13 @@
             cmd: cmd
         };
         sliders[key] = s;
+        // 键盘可达：role=slider + ARIA 值三元组；键盘调量由 onPanelKeydown → keyOnSlider 驱动
+        var labelEl = row.querySelector('.jb-slider-label');
+        s.track.setAttribute('role', 'slider');
+        s.track.setAttribute('tabindex', '0');
+        s.track.setAttribute('aria-label', (labelEl ? labelEl.textContent : key) + '音量');
+        s.track.setAttribute('aria-valuemin', '0');
+        s.track.setAttribute('aria-valuemax', '100');
         updateSliderUI(s);
         s.track.addEventListener('mousedown', function(e) {
             applySliderFromEvent(s, e);
@@ -959,11 +1080,19 @@
         Bridge.send({type: 'jukebox', cmd: s.cmd, value: s.value});
     }
 
+    // 键盘调量统一入口：与鼠标拖拽同一命令通道（±5 步进，Home/End 到两端）
+    function commitSliderValue(s, val) {
+        s.value = Math.max(0, Math.min(100, val));
+        updateSliderUI(s);
+        Bridge.send({type: 'jukebox', cmd: s.cmd, value: s.value});
+    }
+
     function updateSliderUI(s) {
         var pct = s.value + '%';
         if (s.fill) s.fill.style.width = pct;
         if (s.thumb) s.thumb.style.left = pct;
         if (s.valEl) s.valEl.textContent = s.value;
+        if (s.track) s.track.setAttribute('aria-valuenow', String(s.value));
     }
 
     function setSliderValue(key, val) {
@@ -978,6 +1107,11 @@
         var item = e.target;
         while (item && !item.classList.contains('jb-setting-item')) item = item.parentElement;
         if (!item) return;
+        activateSettingItem(item);
+    }
+
+    // 设置项激活统一入口：鼠标 click 与键盘 Enter/Space 汇聚同一 intent
+    function activateSettingItem(item) {
         var key = item.getAttribute('data-key');
         if (!key) return;
         if (item.classList.contains('jb-radio')) {
@@ -995,6 +1129,7 @@
         }
         settingsState[key] = !settingsState[key];
         item.classList.toggle('active', settingsState[key]);
+        item.setAttribute('aria-checked', settingsState[key] ? 'true' : 'false');
         if (key === 'override') {
             Bridge.send({type: 'jukebox', cmd: 'override', value: settingsState.override});
         } else if (key === 'trueRandom') {
@@ -1005,14 +1140,19 @@
     function syncSettingUI(key, active) {
         if (!_refs.settings) return;
         var items = _refs.settings.querySelectorAll('.jb-setting-item[data-key="' + key + '"]');
-        for (var i = 0; i < items.length; i++) items[i].classList.toggle('active', active);
+        for (var i = 0; i < items.length; i++) {
+            items[i].classList.toggle('active', active);
+            items[i].setAttribute('aria-checked', active ? 'true' : 'false');
+        }
     }
 
     function syncRadioUI(key, val) {
         if (!_refs.settings) return;
         var radios = _refs.settings.querySelectorAll('.jb-radio[data-key="' + key + '"]');
         for (var i = 0; i < radios.length; i++) {
-            radios[i].classList.toggle('active', radios[i].getAttribute('data-value') === val);
+            var on = radios[i].getAttribute('data-value') === val;
+            radios[i].classList.toggle('active', on);
+            radios[i].setAttribute('aria-checked', on ? 'true' : 'false');
         }
     }
 
@@ -1066,13 +1206,32 @@
         Bridge.send({type: 'jukebox', cmd: 'seek', sec: pct * currentDuration});
     }
 
-    // ── 帮助 markdown ──
-    function onHelpClick() {
+    // ── 帮助弹窗：焦点圈定 + 关闭返还 ──
+    function isHelpOpen() {
+        return !!(_refs.helpModal && _refs.helpModal.classList.contains('visible'));
+    }
+
+    function openHelpModal() {
         if (!_helpLoaded) {
             _refs.helpContent.textContent = '加载中...';
             Bridge.send({type: 'jukebox', cmd: 'loadHelp'});
         }
-        _refs.helpModal.classList.toggle('visible');
+        _refs.helpModal.classList.add('visible');
+        focusWhenReady(function() { return _refs.helpClose; }, isHelpOpen);
+    }
+
+    function closeHelpModal() {
+        if (!isHelpOpen()) return;
+        _refs.helpModal.classList.remove('visible');
+        // 焦点返还：仅当焦点仍留在弹窗内时拉回帮助按钮，不抢用户已移走的焦点
+        if (_refs.helpBtn && _refs.helpModal.contains(document.activeElement)) {
+            _refs.helpBtn.focus();
+        }
+    }
+
+    function onHelpClick() {
+        if (isHelpOpen()) closeHelpModal();
+        else openHelpModal();
     }
 
     function onHelpText(data) {
@@ -1082,5 +1241,140 @@
         } else {
             _refs.helpContent.textContent = data.text || '';
         }
+    }
+
+    // ── 键盘可达性：面板级单一 keydown 委派 ──
+    // Enter/Space/方向键/Home/End 在此分发。Esc 刻意不在 web 侧监听：生产环境 Esc 由 C# 捕获后
+    // 发 panel_esc 桥消息，统一走 closeLocally 分层，避免 DOM keydown 与桥消息双通道重复消费。
+    function onPanelKeydown(e) {
+        if (e.key === 'Tab') {
+            if (isHelpOpen()) trapHelpFocus(e);
+            return;
+        }
+        var t = e.target;
+        if (!t || t === _el || typeof t.closest !== 'function') return;
+        var handled = false;
+        var el;
+        if ((el = t.closest('.jbp-track-item'))) handled = keyOnTrackItem(e, el);
+        else if ((el = t.closest('.jb-slider-track'))) handled = keyOnSlider(e, el);
+        else if (t.closest('.jbp-progress')) handled = keyOnSeek(e);
+        else if ((el = t.closest('.jb-setting-item'))) handled = keyOnSetting(e, el);
+        else if ((el = t.closest('.jbp-album-option'))) handled = keyOnAlbumOption(e, el);
+        else if ((el = t.closest('.jbp-album-trigger'))) handled = keyOnAlbumTrigger(e, el);
+        else if ((el = t.closest('.jb-ctrl-btn'))) handled = keyOnCtrlBtn(e, el);
+        if (handled) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+
+    // 帮助弹窗焦点圈定：Tab/Shift+Tab 只在弹窗可聚焦元素内循环，永不逃逸到背后面板
+    function trapHelpFocus(e) {
+        var modal = _refs.helpModal;
+        if (!modal) return;
+        var focusables = modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])');
+        e.preventDefault();
+        if (!focusables.length) return;
+        var idx = -1;
+        for (var i = 0; i < focusables.length; i++) {
+            if (focusables[i] === document.activeElement) { idx = i; break; }
+        }
+        if (e.shiftKey) idx = (idx <= 0) ? focusables.length - 1 : idx - 1;
+        else idx = (idx < 0 || idx >= focusables.length - 1) ? 0 : idx + 1;
+        focusables[idx].focus();
+    }
+
+    function keyOnTrackItem(e, item) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            var title = item.getAttribute('data-title');
+            if (title) playTrack(title);
+            return true;
+        }
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
+            var items = _refs.trackList ? _refs.trackList.querySelectorAll('.jbp-track-item') : [];
+            var idx = -1;
+            for (var i = 0; i < items.length; i++) if (items[i] === item) { idx = i; break; }
+            if (idx < 0) return false;
+            if (e.key === 'ArrowDown') idx = Math.min(items.length - 1, idx + 1);
+            else if (e.key === 'ArrowUp') idx = Math.max(0, idx - 1);
+            else if (e.key === 'Home') idx = 0;
+            else idx = items.length - 1;
+            items[idx].focus();
+            setTrackEntry(items[idx]);
+            return true;
+        }
+        return false;
+    }
+
+    function keyOnSlider(e, track) {
+        var row = track.closest('.jb-slider-row');
+        var key = row ? row.getAttribute('data-slider') : null;
+        var s = key ? sliders[key] : null;
+        if (!s) return false;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { commitSliderValue(s, s.value + 5); return true; }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { commitSliderValue(s, s.value - 5); return true; }
+        if (e.key === 'Home') { commitSliderValue(s, 0); return true; }
+        if (e.key === 'End') { commitSliderValue(s, 100); return true; }
+        return false;
+    }
+
+    function keyOnSeek(e) {
+        if (currentDuration <= 0) return false;
+        var target = -1;
+        if (e.key === 'ArrowRight') target = Math.min(currentDuration, currentCursor + 5);
+        else if (e.key === 'ArrowLeft') target = Math.max(0, currentCursor - 5);
+        else if (e.key === 'Home') target = 0;
+        else if (e.key === 'End') target = currentDuration;
+        else return false;
+        currentCursor = target;   // 先行推进保证连续按键以新位置累加；音频回包会校正
+        Bridge.send({type: 'jukebox', cmd: 'seek', sec: target});
+        return true;
+    }
+
+    function keyOnSetting(e, item) {
+        if (e.key !== 'Enter' && e.key !== ' ') return false;
+        activateSettingItem(item);
+        return true;
+    }
+
+    function keyOnAlbumTrigger(e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+            setAlbumDropdownOpen(true);
+            return true;
+        }
+        if (e.key === 'ArrowUp' && _refs.albumWrap && _refs.albumWrap.classList.contains('open')) {
+            setAlbumDropdownOpen(false);
+            return true;
+        }
+        return false;
+    }
+
+    function keyOnAlbumOption(e, opt) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            selectAlbumOption(opt);
+            return true;
+        }
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
+            var opts = _refs.albumOpts ? _refs.albumOpts.querySelectorAll('.jbp-album-option') : [];
+            var idx = -1;
+            for (var i = 0; i < opts.length; i++) if (opts[i] === opt) { idx = i; break; }
+            if (idx < 0) return false;
+            if (e.key === 'ArrowDown') idx = Math.min(opts.length - 1, idx + 1);
+            else if (e.key === 'ArrowUp') idx = Math.max(0, idx - 1);
+            else if (e.key === 'Home') idx = 0;
+            else idx = opts.length - 1;
+            opts[idx].focus();
+            return true;
+        }
+        return false;
+    }
+
+    function keyOnCtrlBtn(e, btn) {
+        if (e.key !== 'Enter' && e.key !== ' ') return false;
+        if (btn === _refs.pauseBtn) onPauseClick();
+        else if (btn === _refs.stopBtn) onStopClick();
+        else if (btn === _refs.helpBtn) onHelpClick();
+        else return false;
+        return true;
     }
 })();
