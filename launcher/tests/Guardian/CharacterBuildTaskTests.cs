@@ -2576,6 +2576,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("incompatible_item")]
         [InlineData("backpack_full")]
         [InlineData("write_failed")]
+        [InlineData("write_busy")]
         public void ProductionMutationDefinitiveFailuresKeepOldAuthority(
             string failure)
         {
@@ -3005,6 +3006,196 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Equal(3, harness.Flash.Count);
                 Assert.Equal("idle", harness.Task.WriteState);
                 Assert.Equal(4, harness.Task.LoadoutRevision);
+            }
+        }
+
+        [Fact]
+        public void ProductionFlushUnknownReconcileSnapshotAcceptsBarrierExtras()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                harness.SendSucceeds = false;
+                const string flushCallId = "prod.flush-extras.unknown";
+                harness.Task.HandleWebRequest(
+                    "flushLive",
+                    WebRequest(
+                        "flushLive",
+                        flushCallId,
+                        ProductionPayload("flushLive")));
+                Assert.Equal("needs_reconcile", harness.Task.WriteState);
+
+                harness.SendSucceeds = true;
+                harness.Web.Clear();
+                harness.Task.HandleWebRequest(
+                    "snapshot",
+                    WebRequest(
+                        "snapshot",
+                        "prod.flush-extras.reconcile",
+                        new JObject
+                        {
+                            ["v"] = 1,
+                            ["sessionGeneration"] = Generation,
+                            ["reconcileAfterCallId"] = flushCallId
+                        }));
+                Assert.Equal(2, harness.Flash.Count);
+                // 与生产 AS2 一致：任何 unknown 种类的 reconcile 快照都携带
+                // barrier 与整包背包证明；Host 校验后只向 Web 转发 payload。
+                JObject response = SuccessResponse(
+                    harness.Flash[1],
+                    "snapshot",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                response["reconcileAfterCallId"] = flushCallId;
+                response["inventorySnapshots"] =
+                    FullBackpackSnapshots("equipEquipment", -1, false);
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.True(web.Value<bool>("success"));
+                Assert.IsType<JObject>(web["payload"]);
+                Assert.Null(web["reconcileAfterCallId"]);
+                Assert.Null(web["inventorySnapshots"]);
+                Assert.Equal("idle", harness.Task.WriteState);
+                Assert.Null(harness.Task.ReconcileAfterCallId);
+            }
+        }
+
+        [Fact]
+        public void ProductionFlushUnknownReconcileSnapshotRejectsMismatchedBarrier()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                harness.SendSucceeds = false;
+                const string flushCallId = "prod.flush-foreign.unknown";
+                harness.Task.HandleWebRequest(
+                    "flushLive",
+                    WebRequest(
+                        "flushLive",
+                        flushCallId,
+                        ProductionPayload("flushLive")));
+                Assert.Equal("needs_reconcile", harness.Task.WriteState);
+
+                harness.SendSucceeds = true;
+                harness.Web.Clear();
+                harness.Task.HandleWebRequest(
+                    "snapshot",
+                    WebRequest(
+                        "snapshot",
+                        "prod.flush-foreign.reconcile",
+                        new JObject
+                        {
+                            ["v"] = 1,
+                            ["sessionGeneration"] = Generation,
+                            ["reconcileAfterCallId"] = flushCallId
+                        }));
+                Assert.Equal(2, harness.Flash.Count);
+                JObject response = SuccessResponse(
+                    harness.Flash[1],
+                    "snapshot",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                response["reconcileAfterCallId"] = "prod.flush-foreign.other";
+                response["inventorySnapshots"] =
+                    FullBackpackSnapshots("equipEquipment", -1, false);
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.Equal(
+                    "malformed_response",
+                    web.Value<string>("error"));
+                Assert.True(web.Value<bool>("requiresReconcile"));
+                Assert.Equal(
+                    flushCallId,
+                    web.Value<string>("reconcileAfterCallId"));
+                Assert.Equal("needs_reconcile", harness.Task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void ProductionStatsUnavailableFailurePassesThrough()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                harness.Task.HandleWebRequest(
+                    "statsSnapshot",
+                    WebRequest(
+                        "statsSnapshot",
+                        "prod.failure.stats_unavailable",
+                        ProductionPayload("statsSnapshot")));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "statsSnapshot",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                response.Remove("payload");
+                response["success"] = false;
+                response["error"] = "stats_unavailable";
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.False(web.Value<bool>("success"));
+                Assert.Equal(
+                    "stats_unavailable",
+                    web.Value<string>("error"));
+                Assert.False(web.Value<bool?>("requiresReconcile") == true);
+            }
+        }
+
+        [Fact]
+        public void ProductionInitialPauseLeaseMissingReleasesUnopenedBarrier()
+        {
+            using (var harness = new ProductionHarness())
+            {
+                harness.Task.HandleWebRequest(
+                    "snapshot",
+                    WebRequest(
+                        "snapshot",
+                        "prod.initial.pause-lease",
+                        new JObject { ["v"] = 1 }));
+                JObject flash = Assert.Single(harness.Flash);
+                var response = new JObject
+                {
+                    ["task"] = "loadout_response",
+                    ["callId"] = flash.Value<int>("callId"),
+                    ["v"] = 1,
+                    ["success"] = false,
+                    ["command"] = "snapshot",
+                    ["requestCallId"] = "prod.initial.pause-lease",
+                    ["panelInstanceId"] = Panel,
+                    ["writeEpoch"] = 0,
+                    ["active"] = false,
+                    ["sessionGeneration"] = 0,
+                    ["loadoutRevision"] = 0,
+                    ["liveRevision"] = 0,
+                    ["liveRefreshDirty"] = false,
+                    ["drugRevision"] = 0,
+                    ["error"] = "pause_lease_missing"
+                };
+
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.False(web.Value<bool>("success"));
+                Assert.Equal(
+                    "pause_lease_missing",
+                    web.Value<string>("error"));
+                Assert.Null(harness.Task.SessionGeneration);
+                Assert.True(harness.Task.CanRebind);
             }
         }
 

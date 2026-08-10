@@ -962,6 +962,29 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
         plan.purchases[purchaseIndex].maxPurchasable = bounds.maxPurchasable;
         plan.purchases[purchaseIndex].limitingReason = bounds.limitingReason;
     }
+    // 与 publicSales 同理：内部 purchase 对象残留 success 等私有键，
+    // 桥层白名单只认契约字段，出站前必须投影，否则含购买的预览会被判为回包不完整。
+    var publicPurchases:Array = [];
+    for (var publicIndex:Number = 0; publicIndex < plan.purchases.length; publicIndex++) {
+        var publicPurchase:Object = plan.purchases[publicIndex];
+        publicPurchases.push({
+            catalogIndex:publicPurchase.catalogIndex,
+            itemName:publicPurchase.itemName,
+            displayName:publicPurchase.displayName,
+            icon:publicPurchase.icon,
+            quantity:publicPurchase.quantity,
+            unitPrice:publicPurchase.unitPrice,
+            total:publicPurchase.total,
+            maxQuantity:publicPurchase.maxQuantity,
+            itemKind:publicPurchase.itemKind,
+            destinationView:publicPurchase.destinationView,
+            purchaseLimit:publicPurchase.purchaseLimit,
+            maxAffordable:publicPurchase.maxAffordable,
+            maxByCapacity:publicPurchase.maxByCapacity,
+            maxPurchasable:publicPurchase.maxPurchasable,
+            limitingReason:publicPurchase.limitingReason
+        });
+    }
     this.tradeSeq++;
     plan.token = "npctrade" + getTimer() + "." + this.tradeSeq;
     this.tradePlan = plan;
@@ -970,7 +993,7 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
         v:1,
         shopId:plan.shopId,
         tradeToken:plan.token,
-        purchaseLines:plan.purchases,
+        purchaseLines:publicPurchases,
         saleLines:plan.publicSales,
         buyTotal:plan.buyTotal,
         sellTotal:plan.sellTotal,

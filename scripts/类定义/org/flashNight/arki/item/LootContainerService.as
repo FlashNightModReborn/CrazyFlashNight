@@ -1834,6 +1834,7 @@ class org.flashNight.arki.item.LootContainerService {
         var bagSnapshot:Object = InventoryPanelService.buildExternalSnapshot(
             "背包", Number(bagWindow.offset), Number(bagWindow.limit));
         if (bagSnapshot == null) return null;
+        stripSnapshotBalanceSummary(bagSnapshot);
         return [buildLootSnapshot(record, Number(lootWindow.offset), Number(lootWindow.limit)), bagSnapshot];
     }
 
@@ -1849,7 +1850,7 @@ class org.flashNight.arki.item.LootContainerService {
                 occupied:item != null,
                 slotLease:issueLootLease(record, slot, item, version)
             };
-            if (item != null) row.item = InventoryPanelService.buildItemProjection(item);
+            if (item != null) row.item = stripBalanceSummary(InventoryPanelService.buildItemProjection(item));
             slots.push(row);
         }
         _snapshotSeq++;
@@ -1872,6 +1873,22 @@ class org.flashNight.arki.item.LootContainerService {
             setFacets:[],
             setFilterItemCount:0
         };
+    }
+
+    // 共享物品投影会为已标定武器条件附加 balanceSummary，但 Loot 域回包契约
+    //（LootTask.ItemKeys 严格 22 键）不含该键；出站前必须剥离，否则整包判 malformed。
+    private static function stripBalanceSummary(projection:Object):Object {
+        if (projection != null) delete projection.balanceSummary;
+        return projection;
+    }
+
+    private static function stripSnapshotBalanceSummary(snapshot:Object):Void {
+        var snapshotSlots:Array = snapshot == null ? null : snapshot.slots;
+        if (!(snapshotSlots instanceof Array)) return;
+        for (var i:Number = 0; i < snapshotSlots.length; i++) {
+            var row:Object = snapshotSlots[i];
+            if (row != null) stripBalanceSummary(row.item);
+        }
     }
 
     private static function issueLootLease(record:Object, slot:Number, item:Object, version:Number):String {
