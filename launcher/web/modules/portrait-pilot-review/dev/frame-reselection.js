@@ -21,6 +21,24 @@
     if (JSON.stringify(actual) !== JSON.stringify(wanted)) throw new Error(`${label} 字段不闭合`);
   }
 
+  function localPilotPath(value, suffix, label) {
+    if (
+      typeof value !== "string" ||
+      !value.startsWith("/tmp/portrait-pilot/") ||
+      value.includes("..") ||
+      value.includes("\\") ||
+      value.includes("%") ||
+      value.includes("?") ||
+      value.includes("#") ||
+      value.includes("//") ||
+      value.includes("\u0000") ||
+      (suffix && !value.endsWith(suffix))
+    ) {
+      throw new Error(`${label} 路径非法`);
+    }
+    return value;
+  }
+
   function assetUrl(record) {
     if (!record || typeof record.path !== "string" || record.path.includes("..")) throw new Error("素材路径非法");
     return `/${record.path.replaceAll("\\", "/")}`;
@@ -242,8 +260,8 @@
 
   async function load() {
     const dataPath = new URLSearchParams(location.search).get("data");
-    if (!dataPath || dataPath.includes("..")) throw new Error("缺少合法 data 参数");
-    const response = await fetch(dataPath, { cache: "no-store" });
+    if (!dataPath) throw new Error("URL 缺少 data 参数");
+    const response = await fetch(localPilotPath(dataPath, "/frame-reselection-data.json", "review-data"), { cache: "no-store" });
     if (!response.ok) throw new Error(`数据加载失败：HTTP ${response.status}`);
     dataset = await response.json();
     if (dataset.schema !== DATA_SCHEMA || dataset.productionReady !== false) throw new Error("重选帧数据 schema 或状态非法");

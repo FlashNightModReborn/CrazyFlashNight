@@ -9,7 +9,8 @@ const RESULT_SCHEMA = "cf7.portrait-worker-capability-result.v1";
 const DEFAULT_MODEL = "gpt-5.6-luna";
 const DEFAULT_EFFORT = "max";
 const MAX_CAPTURE_BYTES = 4 * 1024 * 1024;
-const HELPER_COMMAND_TIMEOUT_MS = 1_500;
+// 辅助命令（PowerShell / ps / taskkill）的有界超时：1500ms 对 PowerShell 冷启动偏紧，放宽到 3000ms。
+const HELPER_COMMAND_TIMEOUT_MS = 3_000;
 const TERMINATION_GRACE_MS = 4_000;
 const POST_KILL_WAIT_MS = 1_500;
 
@@ -129,22 +130,28 @@ async function collectCommand(command, args, timeoutMs = 5_000) {
   });
 }
 
-async function listDescendantPids(rootPid) {
+async function listDescendantPids(rootPid, runCommand = collectCommand) {
   let rows = [];
   if (process.platform === "win32") {
     const script = [
-      "$ErrorActionPreference='Stop'",
+      "$ErrorActionPreference='Stop';",
       "Get-CimInstance Win32_Process |",
       "Select-Object ProcessId,ParentProcessId |",
       "ConvertTo-Json -Compress",
     ].join(" ");
-    const result = await collectCommand(
+    const result = await runCommand(
       "powershell.exe",
       ["-NoProfile", "-NonInteractive", "-Command", script],
       HELPER_COMMAND_TIMEOUT_MS,
     );
     if (result.exitCode !== 0 || !result.stdout.trim()) {
-      return [];
+      // 扫描失败不得静默返回 []：抛出显式错误，由 queueDescendantScan 记录进 run 证据。
+      throw new WorkerError("DESCENDANT_SCAN_FAILED", "transport", "Windows 进程表扫描失败或返回空输出", {
+        exitCode: result.exitCode,
+        timedOut: result.timedOut,
+        spawnError: result.error ? result.error.message : null,
+        stderrSha256: result.stderr ? sha256Bytes(result.stderr) : null,
+      });
     }
     const parsed = JSON.parse(result.stdout);
     rows = (Array.isArray(parsed) ? parsed : [parsed]).map((row) => ({
@@ -152,9 +159,14 @@ async function listDescendantPids(rootPid) {
       parentPid: Number(row.ParentProcessId),
     }));
   } else {
-    const result = await collectCommand("ps", ["-eo", "pid=,ppid="], HELPER_COMMAND_TIMEOUT_MS);
+    const result = await runCommand("ps", ["-eo", "pid=,ppid="], HELPER_COMMAND_TIMEOUT_MS);
     if (result.exitCode !== 0) {
-      return [];
+      throw new WorkerError("DESCENDANT_SCAN_FAILED", "transport", "ps 进程表扫描失败", {
+        exitCode: result.exitCode,
+        timedOut: result.timedOut,
+        spawnError: result.error ? result.error.message : null,
+        stderrSha256: result.stderr ? sha256Bytes(result.stderr) : null,
+      });
     }
     rows = result.stdout
       .split(/\r?\n/u)
@@ -233,6 +245,7 @@ async function spawnCaptured(options) {
     stdin,
     timeoutMs,
     maxCaptureBytes = MAX_CAPTURE_BYTES,
+    listDescendants = listDescendantPids,
   } = options;
 
   const startedAt = new Date().toISOString();
@@ -277,6 +290,7 @@ async function spawnCaptured(options) {
   let terminationReason = null;
   let terminationPromise = null;
   const knownDescendants = new Set();
+  const descendantScanFailures = [];
   let descendantScanChain = Promise.resolve();
 
   const armHardSettle = () => {
@@ -302,23 +316,30 @@ async function spawnCaptured(options) {
     }, TERMINATION_GRACE_MS);
   };
 
-  const queueDescendantScan = () => {
+  const queueDescendantScan = (phase) => {
     if (!pid) {
       return descendantScanChain;
     }
     descendantScanChain = descendantScanChain.then(async () => {
       try {
-        for (const descendantPid of await listDescendantPids(pid)) {
+        for (const descendantPid of await listDescendants(pid)) {
           knownDescendants.add(descendantPid);
         }
-      } catch {
-        // A fresh scan is retried before forced termination.
+      } catch (error) {
+        // 扫描失败不得静默吞掉：显式记录失败阶段与摘要，run 证据与 pilot report 可见；
+        // 扫描链保持存活，后续定时 / 终止前 / close 后扫描仍会重试。
+        descendantScanFailures.push({
+          phase,
+          at: new Date().toISOString(),
+          code: error instanceof WorkerError ? error.code : "DESCENDANT_SCAN_ERROR",
+          message: (error && error.message ? error.message : String(error)).slice(0, 200),
+        });
       }
     });
     return descendantScanChain;
   };
   const descendantScanTimers = [250, 2_000].map((delayMs) =>
-    setTimeout(() => void queueDescendantScan(), delayMs),
+    setTimeout(() => void queueDescendantScan("scheduled"), delayMs),
   );
 
   const beginTermination = (reason) => {
@@ -328,7 +349,7 @@ async function spawnCaptured(options) {
     terminationReason = reason;
     armHardSettle();
     terminationPromise = (async () => {
-      await queueDescendantScan();
+      await queueDescendantScan("termination");
       return terminateExactProcessTree(pid, [...knownDescendants]);
     })();
     return terminationPromise;
@@ -367,7 +388,9 @@ async function spawnCaptured(options) {
   for (const scanTimer of descendantScanTimers) {
     clearTimeout(scanTimer);
   }
-  await withDeadline(descendantScanChain, TERMINATION_GRACE_MS, () => undefined);
+  // close 之后、判定 normalExitOrphans 之前补一次最终子孙扫描：
+  // 250ms/2000ms 定时窗口之后、退出之前 fork 的存活孙进程必须在这里被捕获。
+  await withDeadline(queueDescendantScan("final"), TERMINATION_GRACE_MS, () => undefined);
   let termination = terminationPromise
     ? await withDeadline(
         terminationPromise,
@@ -408,6 +431,8 @@ async function spawnCaptured(options) {
     terminationReason,
     knownDescendantPids: [...knownDescendants],
     normalExitOrphanPids: normalExitOrphans,
+    descendantScanFailed: descendantScanFailures.length > 0,
+    descendantScanFailures,
     termination,
     stdout: Buffer.concat(stdoutChunks).toString("utf8"),
     stderr: Buffer.concat(stderrChunks).toString("utf8"),
@@ -716,6 +741,8 @@ function classifyNonzeroExit(capture) {
   return "PROCESS_EXIT_NONZERO";
 }
 
+// 可重试名单只含瞬态 / 格式类失败。RESULT_SELECTION_INCORRECT 属于语义失败（答错题），
+// 给第二次机会会稀释 capability_verified 的严格性，明确不在名单内。
 const RETRIABLE_CODES = new Set([
   "PROCESS_TIMEOUT",
   "PROCESS_EXIT_NONZERO",
@@ -729,7 +756,6 @@ const RETRIABLE_CODES = new Set([
   "RESULT_CLOSURE_MISMATCH",
   "RESULT_TASK_ID_INVALID",
   "RESULT_CANDIDATE_INVALID",
-  "RESULT_SELECTION_INCORRECT",
   "RESULT_VALUE_INVALID",
 ]);
 
@@ -864,6 +890,8 @@ class CodexCliLunaWorker {
       terminationReason: capture.terminationReason,
       observedDescendantPids: capture.knownDescendantPids,
       normalExitOrphanPids: capture.normalExitOrphanPids,
+      descendantScanFailed: capture.descendantScanFailed,
+      descendantScanFailures: capture.descendantScanFailures,
       terminatedTreePids: capture.termination.targetPids,
       survivorPids: capture.termination.survivorPids,
       modelRequested: this.model,
@@ -1046,6 +1074,7 @@ module.exports = {
   createCapabilityPrompt,
   extractFinalAgentMessage,
   isPidAlive,
+  listDescendantPids,
   parseJsonl,
   publicError,
   requireAbsoluteFile,

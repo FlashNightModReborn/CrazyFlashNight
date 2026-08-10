@@ -94,6 +94,52 @@ function resolveArtifact(record, label) {
   return absolute;
 }
 
+// 已冻结批次的历史记录钉住了当时的控制器/审阅器源码字节。工具源码后续漂移
+// （进程清理修复、审阅页加固等）会使字节闭包永不匹配；超越收条把「哪份历史
+// 记录被哪个当前字节精确替代」逐条钉死并自摘要，验证端只接受收条内的精确
+// 替代，其余漂移依旧 fail-closed。收条由 build-internal-subject-source-
+// supersession-v1.js 生成，历史批次文件本身永不改写。
+const SUPERSESSION_SCHEMA = "cf7.internal-subject-source-supersession.v1";
+const SUPERSESSION_NAME = "internal-subject-source-supersession-v1.json";
+
+function loadSupersession(batchRoot) {
+  const receiptPath = path.join(batchRoot, SUPERSESSION_NAME);
+  if (!fs.existsSync(receiptPath)) return [];
+  const receipt = JSON.parse(fs.readFileSync(receiptPath, "utf8"));
+  if (receipt?.schema !== SUPERSESSION_SCHEMA || receipt.status !== "source_supersession_recorded" || !Array.isArray(receipt.entries)) {
+    throw new ReviewBuildError("源码超越收条 schema/status 不受支持");
+  }
+  const copy = { ...receipt };
+  delete copy.receiptDigest;
+  if (sha256Bytes(stableStringify(copy)) !== receipt.receiptDigest) throw new ReviewBuildError("源码超越收条 receiptDigest 漂移");
+  for (const entry of receipt.entries) {
+    if (
+      (entry.layer !== "controller" && entry.layer !== "reviewer") ||
+      typeof entry.path !== "string" ||
+      typeof entry.supersededSha256 !== "string" || !Number.isInteger(entry.supersededBytes) ||
+      typeof entry.currentSha256 !== "string" || !Number.isInteger(entry.currentBytes) ||
+      typeof entry.reason !== "string" || !entry.reason
+    ) {
+      throw new ReviewBuildError("源码超越收条条目不闭合");
+    }
+  }
+  return receipt.entries;
+}
+
+function resolveArtifactSuperseded(record, label, entries, layer) {
+  try {
+    return resolveArtifact(record, label);
+  } catch (error) {
+    if (!(error instanceof ReviewBuildError) || !record || typeof record.path !== "string") throw error;
+    const entry = (entries || []).find((candidate) => candidate.layer === layer && candidate.path === record.path);
+    if (!entry || entry.supersededSha256 !== record.sha256 || entry.supersededBytes !== record.bytes) throw error;
+    const absolute = path.resolve(ROOT, record.path);
+    if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) throw error;
+    if (fs.statSync(absolute).size !== entry.currentBytes || sha256File(absolute) !== entry.currentSha256) throw error;
+    return absolute;
+  }
+}
+
 function verifyManifest(manifest) {
   if (
     manifest?.schema !== MANIFEST_SCHEMA ||
@@ -122,7 +168,7 @@ function verifyManifest(manifest) {
   }
 }
 
-function verifyReport(report, manifest, manifestPath) {
+function verifyReport(report, manifest, manifestPath, supersession) {
   if (
     report?.schema !== REPORT_SCHEMA ||
     report.status !== "subject_candidates_proposed" ||
@@ -155,7 +201,7 @@ function verifyReport(report, manifest, manifestPath) {
   if (!Array.isArray(report.runs) || report.runs.length !== 2 || report.runs.map((run) => run.role).sort().join(",") !== "independent_review,proposal") {
     throw new ReviewBuildError("模型报告缺 A/B 独立角色");
   }
-  for (const record of report.controller?.files || []) resolveArtifact(record, "model controller source");
+  for (const record of report.controller?.files || []) resolveArtifactSuperseded(record, "model controller source", supersession, "controller");
   for (const record of report.modelArtifacts || []) resolveArtifact(record, "model process artifact");
 }
 
@@ -186,9 +232,10 @@ function loadBatch(batchArgument) {
   }
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+  const supersession = loadSupersession(batchRoot);
   verifyManifest(manifest);
-  verifyReport(report, manifest, manifestPath);
-  return { batchRoot, manifestPath, reportPath, manifest, report };
+  verifyReport(report, manifest, manifestPath, supersession);
+  return { batchRoot, manifestPath, reportPath, manifest, report, supersession };
 }
 
 function buildDataset(loaded) {
@@ -268,7 +315,7 @@ function buildDataset(loaded) {
   return dataset;
 }
 
-function verifyReviewDataset(dataset) {
+function verifyReviewDataset(dataset, options) {
   if (
     dataset?.schema !== REVIEW_SCHEMA ||
     dataset.status !== "awaiting_human_subject_selection" ||
@@ -282,7 +329,10 @@ function verifyReviewDataset(dataset) {
   const copy = { ...dataset };
   delete copy.reviewDigest;
   if (sha256Bytes(stableStringify(copy)) !== dataset.reviewDigest) throw new ReviewBuildError("reviewDigest 漂移");
-  for (const record of dataset.reviewer?.files || []) resolveArtifact(record, "reviewer source");
+  const supersession = options && Array.isArray(options.supersession)
+    ? options.supersession
+    : (options && options.batchRoot ? loadSupersession(options.batchRoot) : []);
+  for (const record of dataset.reviewer?.files || []) resolveArtifactSuperseded(record, "reviewer source", supersession, "reviewer");
   for (const item of dataset.items) {
     for (const candidate of item.candidates) resolveArtifact(candidate.artifact, `review candidate ${candidate.candidateId}`);
   }
@@ -305,7 +355,7 @@ function main() {
   if (options.check) {
     if (!fs.existsSync(reviewPath)) throw new ReviewBuildError("internal-subject-review-data.json 缺失");
     const dataset = JSON.parse(fs.readFileSync(reviewPath, "utf8"));
-    const artifactCount = verifyReviewDataset(dataset);
+    const artifactCount = verifyReviewDataset(dataset, { supersession: loaded.supersession });
     if (
       dataset.sourceDigest !== loaded.manifest.sourceDigest ||
       dataset.manifestDigest !== loaded.manifest.manifestDigest ||
@@ -346,7 +396,9 @@ if (require.main === module) {
 module.exports = {
   buildDataset,
   loadBatch,
+  loadSupersession,
   sha256Bytes,
+  sha256File,
   stableStringify,
   verifyReviewDataset,
 };

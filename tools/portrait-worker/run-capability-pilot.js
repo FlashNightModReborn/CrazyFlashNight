@@ -44,7 +44,7 @@ function usage() {
     "用法：node tools/portrait-worker/run-capability-pilot.js --codex-exe <绝对路径> [选项]",
     "",
     "选项：",
-    "  --codex-exe <path>   显式 Codex CLI 路径；也可用 CF7_PORTRAIT_CODEX_EXE",
+    "  --codex-exe <path>   显式 Codex CLI 绝对路径（相对路径直接拒绝）；也可用 CF7_PORTRAIT_CODEX_EXE",
     "  --output <path>      不可覆盖的 report.json 路径",
     "  --timeout-ms <ms>    每个独立进程的超时，默认 180000",
     "  --probe-only         只验证 CLI 版本、hash 与必需参数",
@@ -86,6 +86,15 @@ function parseArgs(argv) {
     throw new WorkerError("TIMEOUT_INVALID", "arguments", "timeout 必须是 5000–600000 的整数毫秒", {
       timeoutMs: options.timeoutMs,
     });
+  }
+  if (options.codexExe && !path.isAbsolute(options.codexExe)) {
+    // 与 README 边界一致：入口直接拒绝相对路径，不做 path.resolve 兜底。
+    throw new WorkerError(
+      "CLI_PATH_NOT_ABSOLUTE",
+      "arguments",
+      "--codex-exe / CF7_PORTRAIT_CODEX_EXE 必须是显式绝对路径，拒绝相对路径",
+      { codexExe: options.codexExe },
+    );
   }
   return options;
 }
@@ -145,7 +154,7 @@ async function runPilot(options, output) {
       {},
     );
   }
-  const worker = new CodexCliLunaWorker({ executablePath: path.resolve(options.codexExe) });
+  const worker = new CodexCliLunaWorker({ executablePath: options.codexExe });
   const probe = await worker.probe(Math.min(options.timeoutMs, 30_000));
   if (options.probeOnly) {
     return {
@@ -210,6 +219,22 @@ async function runPilot(options, output) {
     throw new WorkerError("RUN_DISAGREEMENT", "closure", "A/B 对固定 fixture 的结果不一致", {});
   }
 
+  // 子孙扫描失败不强制 fail（避免破坏非 Windows 开发机），但必须在 report 中 warning 级可见。
+  const warnings = [];
+  for (const run of [proposal.run, independentReview.run]) {
+    for (const attempt of run.attempts) {
+      if (attempt.descendantScanFailed) {
+        warnings.push({
+          level: "warning",
+          code: "DESCENDANT_SCAN_FAILED",
+          role: run.role,
+          attemptNumber: attempt.attemptNumber,
+          failures: attempt.descendantScanFailures,
+        });
+      }
+    }
+  }
+
   return {
     schema: "cf7.portrait-worker-capability-report.v1",
     status: "capability_verified",
@@ -228,6 +253,7 @@ async function runPilot(options, output) {
       outputSchemaSha256: sha256Bytes(fs.readFileSync(OUTPUT_SCHEMA_PATH)),
     },
     runs: [proposal.run, independentReview.run],
+    warnings,
     gates: {
       separateProcessIds: true,
       distinctRolePromptDigests: true,

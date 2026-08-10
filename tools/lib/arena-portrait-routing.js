@@ -23,6 +23,9 @@ const LEGACY_EQUIPMENT_ALIASES = Object.freeze({
   "褐色圆头皮鞋": "棕色圆头皮鞋",
 });
 
+// Mirror of HAIR_COMPAT_ALIASES in launcher/web/modules/merc-portrait-renderer.js
+// (browser runtime copy). Both copies must stay byte-equal; pinned by
+// tools/test-merc-portrait-renderer-runtime.js.
 const HAIR_COMPAT_ALIASES = Object.freeze({
   "发型-女式-红马尾": "发型-女式-玫红色马尾",
   "发型-女式-白长发": "发型-女式-银色清爽直发",

@@ -4,7 +4,7 @@
 
 **状态**：`P4_CAMPAIGN_AND_SOURCE_CLOSURE_VERIFIED / ORIENTATION_AUDIT_HUMAN_CLOSED / UNIVERSAL_ASSET_PACK_PROMOTED / TEAM_CONSUMER_INTEGRATED / ARENA_ALL_MODE_CONSUMER_INTEGRATED / ARENA_EXACT_IDENTITY_CLOSED / NOT_GAME_E2E_VERIFIED`。当前消费者无关包包含 226 个 identity / 227 个 variant，其中 222 个 variant 具备真人接受证据并生成透明 SVG 主源 + 512px PNG 回退；仅 `Serpent / 黑无常索命` 2 个 identity 仍待真人，`不知火舞` 继续按“不实装”排除，`拟态投影` 与 `锡蒙利范围光环发生器` 分别只走已签别名。原 98 identity Team 子集与 JK `orange / white` 双头像完整保留；透明主体与框体/氛围底色分层。Team 与 Arena 共用 `EnemyPortraits / entity-portrait-art`，两边的佣兵缩略图共用 `MercPortraits` dressup 胸像；Arena 定制赛的 450 条单位记录形成 217 个唯一消费身份，其中怪物 manifest 命中 214/214，`主角-男 / 主角-尾上世莉架 / 主角-文天` 3 个模板按具体单位外观进入纸娃娃路线，合计 217/217 ready、0 显式回退。标准、堕落、爬升卡及右栏对手均已接入头像组，完整态最多显示 4 个实际单位、紧凑态只显示首项；Arena mock-browser 三视口仍须作为固定门。尚未完成真实 Launcher WebView2→Flash 或游戏内视觉 E2E；消费者范围外的 2 个 pending 仍须独立收口。
 
-**最后核对代码基线**：远端正式发布 commit `53773023ea5213ccea8f24e24342e1f9dfc4416a`（2026-08-08）；头像资产包、通用 resolver、Team/Arena 消费者试点与复审工具是该基线上的未提交工作树差量。
+**最后核对代码基线**：commit `885fddeeecf9940e127987d31710f50e6932d8b3`（2026-08-10）；头像资产包、通用 resolver、Team/Arena 消费者与复审工具已随 `fff104b0f2`（2026-08-09）入库并经 `885fddee` 收尾，不再是未提交工作树差量。
 
 **外部能力核对日期**：2026-08-05。Codex 模型目录和 Multi-agent backend 属于可漂移外部能力；每次正式运行仍须重新 probe，本文记录的是当日已验证事实，不是永久产品承诺。
 

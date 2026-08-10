@@ -315,6 +315,8 @@ node tools/portrait-pilot/record-internal-subject-reconfirmation-v1.js `
 
 人审页 digest `109C2FE3…375FE` 展示全部 113 个候选和 A/B 理由，但**不预选** 16 个共识项；每个身份都必须真实点击候选或“没有有效主体”。点击与备注按 review digest 自动暂存在专用浏览器 profile，17/17 完整后才允许保存 canonical 决策与版本归档。浏览器 harness 已验证 17 卡 / 113 候选、0 模型静默预选、重载恢复和非空保存 payload。人工回执前严格状态仍是 `awaiting_human_subject_selection / productionReady=false`；只有主体选择冻结后，才能按精确 sprite/frame 导出矢量并重新进入既有选帧、特征定位与头像人审管线。
 
+**冻结批次的源码漂移超越收条（2026-08-10 起）**：r180 批次的 `controller.files` 与 `reviewer.files` 把产生批次时的控制器/审阅器源码逐字节钉死；工具源码的后续正当漂移（worker 进程清理修复、internal-subject 页 data 路径加固、review builder 收条支持）会让 `loadBatch` / `verifyReviewDataset` 的字节闭包失配。此类漂移**不重写历史批次**，而是由 [build-internal-subject-source-supersession-v1.js](build-internal-subject-source-supersession-v1.js) 在批次内生成 `internal-subject-source-supersession-v1.json`，逐条钉死「哪条历史记录被哪个当前字节精确替代」并自摘要；`build-internal-subject-review-v1.js` 只接受收条内的精确替代，其余漂移依旧 fail-closed。当前收条 4 条目（worker、review builder、decisions verifier 的 main 收条接线、internal-subject.js），两个浏览器 harness 与 archived decisions 复验均已转绿，review-data 与 `109C2FE3…375FE` 保持原值有效。维护规则：漂移源码恢复历史字节时必须 `--drop` 对应条目保持收条最小；新增漂移用 `--add <layer:path> --reason 文本`；纯刷新用无 `--add` 重跑。
+
 ## 状态语义
 
 ```text

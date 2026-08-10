@@ -90,7 +90,7 @@ function main() {
   const reviewPath = path.resolve(ROOT, options.review);
   const decisionsPath = path.resolve(ROOT, options.decisions);
   const dataset = JSON.parse(fs.readFileSync(reviewPath, "utf8"));
-  reviewBuild.verifyReviewDataset(dataset);
+  reviewBuild.verifyReviewDataset(dataset, { batchRoot: path.dirname(reviewPath) });
   const decisions = JSON.parse(fs.readFileSync(decisionsPath, "utf8"));
   validateDecisions(dataset, decisions);
   process.stdout.write(`${JSON.stringify({ status: "human_decisions_verified", rows: decisions.decisions.length, reviewDigest: dataset.reviewDigest })}\n`);

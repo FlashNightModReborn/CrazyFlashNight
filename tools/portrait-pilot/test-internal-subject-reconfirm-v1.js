@@ -34,7 +34,7 @@ async function main() {
   const decisionsPath = path.join(loaded.batchRoot, "internal-subject-human-decisions.json");
   const dataset = JSON.parse(fs.readFileSync(reviewPath, "utf8"));
   const decisions = JSON.parse(fs.readFileSync(decisionsPath, "utf8"));
-  reviewBuild.verifyReviewDataset(dataset);
+  reviewBuild.verifyReviewDataset(dataset, { supersession: loaded.supersession });
   decisionVerifier.validateDecisions(dataset, decisions);
   const item = dataset.items.find((entry) => entry.reviewKey === reviewKey);
   if (!item) throw new Error(`reviewKey 不存在：${reviewKey}`);

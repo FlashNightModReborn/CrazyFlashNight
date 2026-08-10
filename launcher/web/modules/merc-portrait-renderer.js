@@ -22,6 +22,9 @@
         '0': '女变装-基本脸型',
         '1': '男变装-基本脸型'
     };
+    // Mirror of HAIR_COMPAT_ALIASES in tools/lib/arena-portrait-routing.js
+    // (Node build-time copy). Both copies must stay byte-equal; pinned by
+    // tools/test-merc-portrait-renderer-runtime.js.
     var HAIR_COMPAT_ALIASES = {
         '发型-女式-红马尾': '发型-女式-玫红色马尾',
         '发型-女式-白长发': '发型-女式-银色清爽直发',
@@ -496,7 +499,6 @@
     }
 
     function cleanupPendingEntry(entry) {
-        entry.settled = true;
         if (_thumbPending[entry.key] === entry) delete _thumbPending[entry.key];
     }
 
@@ -603,8 +605,7 @@
                     key: key,
                     subscribers: {},
                     job: null,
-                    promise: null,
-                    settled: false
+                    promise: null
                 };
                 _thumbPending[key] = entry;
             }
@@ -676,6 +677,10 @@
         clearCache: clearCache,
         BODY_FIT_FIELDS: BODY_FIT_FIELDS.slice(),
         BUST_FIT_FIELDS: BUST_FIT_FIELDS.slice(),
-        BATTLE_STATE: BATTLE_STATE
+        BATTLE_STATE: BATTLE_STATE,
+        // Test seam: keeps the browser copy pinned equal to the Node copy in
+        // tools/lib/arena-portrait-routing.js (asserted by
+        // tools/test-merc-portrait-renderer-runtime.js).
+        HAIR_COMPAT_ALIASES: Object.assign({}, HAIR_COMPAT_ALIASES)
     };
 })();

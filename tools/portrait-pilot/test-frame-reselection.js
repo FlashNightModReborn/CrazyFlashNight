@@ -49,6 +49,28 @@ async function main() {
     });
     const dataPath = `/${path.relative(ROOT, loaded.dataPath).replaceAll("\\", "/")}`;
     const pageUrl = `${server.url}launcher/web/modules/portrait-pilot-review/dev/frame-reselection.html?data=${encodeURIComponent(dataPath)}`;
+    const batchWebPath = `/${path.relative(ROOT, loaded.batchRoot).replaceAll("\\", "/")}`;
+    const rejectedDataPaths = {
+      outOfScopeDataPathRejected: "/launcher/README.md",
+      dotDotTraversalRejected: `${batchWebPath}/../launcher/README.md`,
+      encodedTraversalRejected: "/tmp/portrait-pilot/%2e%2e/launcher/README.md",
+      backslashDataPathRejected: `${batchWebPath}\\frame-reselection-data.json`,
+      wrongSuffixRejected: `${batchWebPath}/portrait-pilot-frame-reselection.json`,
+      doubleSlashRejected: `${batchWebPath}//frame-reselection-data.json`,
+      nulDataPathRejected: `${batchWebPath}/${String.fromCharCode(0)}frame-reselection-data.json`,
+    };
+    const rejectedDataPathChecks = {};
+    const invalidPage = await browser.newPage();
+    for (const [check, badDataPath] of Object.entries(rejectedDataPaths)) {
+      await invalidPage.goto(
+        `${server.url}launcher/web/modules/portrait-pilot-review/dev/frame-reselection.html?data=${encodeURIComponent(badDataPath)}`,
+        { waitUntil: "load" },
+      );
+      await invalidPage.locator('#app[data-ready="error"]').waitFor({ timeout: 30_000 });
+      assert.match(await invalidPage.locator("#message").textContent(), /页面初始化失败：review-data 路径非法/, `${check}：非法 data 路径未被拒绝`);
+      rejectedDataPathChecks[check] = true;
+    }
+    await invalidPage.close();
     await page.goto(pageUrl, { waitUntil: "load" });
     await page.locator('#app[data-ready="true"]').waitFor({ timeout: 30_000 });
     assert.equal(await page.locator(".source-review-row").count(), loaded.dataset.items.length);
@@ -116,6 +138,7 @@ async function main() {
       localStorageIsolated: true,
       staleImportRejected: true,
       rejectedFrameImportRejected: true,
+      ...rejectedDataPathChecks,
       nativeExportVerified: true,
       repeatedClickSuppressed: true,
       browserDownloadSuppressed: true,

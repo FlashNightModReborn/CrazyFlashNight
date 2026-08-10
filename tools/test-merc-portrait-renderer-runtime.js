@@ -298,6 +298,19 @@ function merc(key, overrides) {
     assert.notStrictEqual(tokenNode.attrs['data-merc-portrait-request'], oldToken);
     cases++;
 
+    // Cross-runtime duplicate guard: the browser alias table must stay
+    // byte-equal to the Node build-time copy in tools/lib/arena-portrait-routing.js.
+    // The renderer copy is created inside the vm sandbox, so compare key-by-key
+    // instead of relying on prototype-sensitive deepStrictEqual.
+    const routing = require(path.join(projectRoot, 'tools', 'lib', 'arena-portrait-routing.js'));
+    const aliasHarness = createHarness({});
+    const browserAliases = aliasHarness.api.HAIR_COMPAT_ALIASES;
+    assert.deepStrictEqual(Object.keys(browserAliases).sort(), Object.keys(routing.HAIR_COMPAT_ALIASES).sort());
+    for (const aliasKey of Object.keys(routing.HAIR_COMPAT_ALIASES)) {
+        assert.strictEqual(browserAliases[aliasKey], routing.HAIR_COMPAT_ALIASES[aliasKey]);
+    }
+    cases++;
+
     process.stdout.write(JSON.stringify({ ok: true, cases }, null, 2) + '\n');
 })().catch(function(error) {
     console.error(error && error.stack || error);

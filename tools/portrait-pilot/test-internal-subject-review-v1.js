@@ -32,7 +32,7 @@ async function main() {
   const loaded = reviewBuild.loadBatch(batchArgument);
   const reviewPath = path.join(loaded.batchRoot, "internal-subject-review-data.json");
   const dataset = JSON.parse(fs.readFileSync(reviewPath, "utf8"));
-  reviewBuild.verifyReviewDataset(dataset);
+  reviewBuild.verifyReviewDataset(dataset, { supersession: loaded.supersession });
   const { chromium } = require(PLAYWRIGHT);
   const server = await startServer(ROOT, 0);
   const browser = await chromium.launch({ executablePath: findEdge(), headless: true });
