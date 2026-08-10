@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：竞技场 P4/P5 与商城旧档兼容正式发布 source commit `bf9be8c43b223b84f487464a7e6aa9eb8211630b`、release tree `44de7f66421a908723f196718e42867dce601f30`（2026-08-08），已由本地 X509 `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows` 完成 v2 双故障域 promotion，并经无 candidate id 的纯 Agent Runtime MCP 标准入口复验，严格达到 `standard_entry_verified`。此前双栏工作台 A1–A6 release `730c6be781ddd22bfd7a59a2e7773acce892f105`、F8 release `6f3d50a52413c747b05b74be88d6ee46650f4597`、F8 implementation candidate `53caabc90941826ddacf626f536b0f473adbf049` 与 F7 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 只保留为历史分层证据。
+**最后核对代码基线**：跨层回包键契约修复（商店购买结算、Loot 快照、装备调制失败包、角色构筑 reconcile/失败码）正式发布 source commit `a87be26f1d6e80c0ea8883bbc10e46c895c35799`、release tree `32e5b9be67de220eb297e6c568c90546b283c471`（2026-08-11），已由本地 X509 `physical-host-a` 与 GitHub OIDC/Sigstore `github-hosted-windows` 完成 v2 双故障域 promotion，正式入口复验 `runtimeMode=formal_runtime`、identity/closure 与 promotion 一致（本轮未跑 Agent Runtime MCP 窄纵切，不声称 `standard_entry_verified` 之外等级）。此前竞技场 P4/P5 与商城旧档兼容 release `bf9be8c43b223b84f487464a7e6aa9eb8211630b`、双栏工作台 A1–A6 release `730c6be781ddd22bfd7a59a2e7773acce892f105`、F8 release `6f3d50a52413c747b05b74be88d6ee46650f4597`、F8 implementation candidate `53caabc90941826ddacf626f536b0f473adbf049` 与 F7 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 只保留为历史分层证据。
 
 ---
 
