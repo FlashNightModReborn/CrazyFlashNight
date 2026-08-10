@@ -56,16 +56,11 @@
         S._catalogRoot.className = 'workbench-view arena-catalog';
         var controls = document.createElement('div');
         controls.className = 'arena-catalog-controls';
-        S._rollOneBtn = document.createElement('button');
-        S._rollOneBtn.type = 'button';
-        S._rollOneBtn.id = 'arena-roll-one';
-        S._rollOneBtn.className = 'arena-detail-roll';
-        S._rollOneBtn.textContent = '↻ 换一批';
-        S._rollOneBtn.title = '重新抽取选中挑战的对手（免费）';
-        S._rollOneBtn.setAttribute('data-audio-cue', 'confirm');
-        S._rollOneBtn.disabled = true;
-        S._rollOneBtn.addEventListener('click', onRollAgain);
-        controls.appendChild(S._rollOneBtn);
+        // 目录级操作只剩「全部重抽」；「换一批」作用对象是右栏选中卡，迁右栏决策头（控件归位）
+        var catalogHint = document.createElement('span');
+        catalogHint.className = 'arena-catalog-hint';
+        catalogHint.textContent = '点击卡片选中挑战，右栏核对阵容后确认';
+        controls.appendChild(catalogHint);
         S._rerollAllBtn = document.createElement('button');
         S._rerollAllBtn.type = 'button';
         S._rerollAllBtn.id = 'arena-reroll-all';
@@ -98,6 +93,17 @@
         S._decisionRoot.appendChild(head);
         S._detailTitleEl = head.querySelector('#arena-detail-title');
         S._detailMetaEl = head.querySelector('#arena-detail-meta');
+        // 「换一批」重抽当前选中卡的对手：作用域在右栏决策面，与预览同处决策头
+        S._rollOneBtn = document.createElement('button');
+        S._rollOneBtn.type = 'button';
+        S._rollOneBtn.id = 'arena-roll-one';
+        S._rollOneBtn.className = 'arena-detail-roll';
+        S._rollOneBtn.textContent = '↻ 换一批';
+        S._rollOneBtn.title = '重新抽取选中挑战的对手（免费）';
+        S._rollOneBtn.setAttribute('data-audio-cue', 'confirm');
+        S._rollOneBtn.disabled = true;
+        S._rollOneBtn.addEventListener('click', onRollAgain);
+        head.appendChild(S._rollOneBtn);
         S._detailOpponentsEl = document.createElement('div');
         S._detailOpponentsEl.className = 'arena-opponents';
         S._detailOpponentsEl.id = 'arena-opponents';
@@ -506,13 +512,14 @@
         var card = S._activeCards[idx];
         if (!card) return;
 
+        // 标题去重：壳 header 已恒定 DEATH MATCH，右栏只留差异化身份（段位/标签/势力）
         S._detailTitleEl.textContent = card.isEscalation
             ? (card.faction + ' · 爬升挑战（无限波 · 奖池押注）')
             : card.isFallen
                 ? (card.faction + ' · ' + ArenaCore.difficultyOf(card).label + ' 挑战')
                 : card.isHiddenChallenge
-                    ? ('DEATH MATCH · ' + card.hiddenLabel)
-                    : ('DEATH MATCH · 段位 ' + card.index + ' · ' + ArenaCore.difficultyOf(card).label);
+                    ? card.hiddenLabel
+                    : ('段位 ' + card.index + ' · ' + ArenaCore.difficultyOf(card).label);
 
         // 隐藏警报卡：配置保密（现状钉版——旧 detail 按钮禁用 = 不可查看阵容）；
         // 经济面公开，commit 可用性照旧由本地混编 cache 决定。
@@ -978,9 +985,8 @@
         } else {
             html += '<span class="arena-meta-chip">对手 ×' + card.opponentCount + '</span>';
         }
-        html += '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>' +
-            '<span class="arena-meta-chip arena-meta-deposit">押金 ' + ArenaCore.formatMoney(card.deposit) + '</span>' +
-            '<span class="arena-meta-chip arena-meta-reward">奖金 ' + ArenaCore.formatMoney(card.reward) + '</span>';
+        // 经济（押金/奖金）唯一归属 CommitBar 状态条：meta 只留阵容/等级语义，消灭一处三显
+        html += '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>';
         S._detailMetaEl.innerHTML = html;
     }
 
@@ -989,12 +995,8 @@
         var card = (S._selectedCardIdx >= 0) ? S._activeCards[S._selectedCardIdx] : null;
         renderDetailMeta(card, opponents);
         var stats = rosterStats(opponents, card);
-        var html = '<div class="arena-opp-roster-brief">';
-        html += '<span>等效 ×' + stats.equivalent + '</span>';
-        html += '<span>实战实体 ×' + stats.actual + '</span>';
-        if (stats.groups > 0) html += '<span>怪物组 ×' + stats.groups + '</span>';
-        if (stats.humanoid > 0) html += '<span>佣兵 ×' + stats.humanoid + '</span>';
-        html += '</div>';
+        // 等效/实体/怪物组统计只由 meta 芯片承载（旧 roster-brief 与芯片逐字重复，已裁）
+        var html = '';
         for (var i = 0; i < opponents.length; i++) {
             var opp = opponents[i];
             var tagText = opp.rosterKind === 'humanoid'
@@ -1027,11 +1029,6 @@
             renderMonsterOpponents(opponents);
             return;
         }
-        var SLOT_LABELS = {
-            6: '头盔', 7: '护身', 8: '护甲', 9: '护腿', 10: '靴子',
-            11: '披风', 12: '主武器', 13: '副武器', 14: '副武器2',
-            15: '近战', 16: '手雷'
-        };
         var html = '';
         for (var i = 0; i < opponents.length; i++) {
             var opp = opponents[i];
@@ -1041,40 +1038,39 @@
             html += '<div class="arena-opp-topline">';
             html += '<span class="arena-opp-name">' + ArenaCore.escapeHtml(opp.name) + '</span>';
             html += '<span class="arena-opp-level">LV. ' + opp.level + '</span>';
+            // 战力速览：实装件数/技能数右对齐弱化呈现，辅助一眼判断威胁（取代数格子）
+            html += '<span class="arena-opp-loadout">装备 ' + opp.equips.length
+                + ((opp.skills && opp.skills.length) ? (' · 技能 ' + opp.skills.length) : '') + '</span>';
             html += '</div>';
             html += '<div class="arena-opp-equips">';
-            // 11 槽固定渲染：有装备显示图标，空槽显示占位
-            var equipBySlot = {};
-            for (var k = 0; k < opp.equips.length; k++) {
-                equipBySlot[opp.equips[k].slot] = opp.equips[k];
+            // 只渲染实装槽（按槽位排序）：空槽折叠——11 槽占位墙是右栏最大噪音源；
+            // 槽位身份由 hover tooltip 承载，概览计数由 topline「装备 N」承载
+            var sortedEquips = opp.equips.slice().sort(function(a, b) { return a.slot - b.slot; });
+            if (!sortedEquips.length) {
+                html += '<span class="arena-equip-none">无装备</span>';
             }
-            for (var slot = 6; slot <= 16; slot++) {
-                var eq = equipBySlot[slot];
-                if (eq) {
-                    // 注意：raw 是完整编码字符串（含 ##tier #mods），用作 tooltip 查询和 cache key
-                    //       icon 是图标资产 key（多装备可共用一张图），displayname 才是用户可见名
-                    var raw = eq.raw || eq.name;
-                    var iconKey = eq.icon || eq.name;
-                    var displayName = eq.displayname || eq.name;
-                    var iconHtml = (typeof Icons !== 'undefined' && Icons.html)
-                        ? Icons.html(iconKey, '', ' onerror="this.style.display=\'none\'"')
-                        : '';
-                    iconHtml = iconHtml
-                        ? iconHtml
-                        : '<span class="arena-equip-fallback">' + ArenaCore.escapeHtml(displayName.charAt(0)) + '</span>';
-                    // 不设 title 属性：避免浏览器原生 tooltip 与 PanelTooltip 富文本重叠显示
-                    html += '<div class="arena-equip-cell"' +
-                            ' data-eq-raw="' + ArenaCore.escapeAttr(raw) + '"' +
-                            ' data-eq-displayname="' + ArenaCore.escapeAttr(displayName) + '"' +
-                            ' data-eq-icon="' + ArenaCore.escapeAttr(iconKey) + '"' +
-                            ' data-eq-level="' + eq.level + '">' +
-                            iconHtml +
-                            '<span class="arena-equip-level">' + eq.level + '</span>' +
-                        '</div>';
-                } else {
-                    // 空槽位保留 title — 没有富文本 tooltip 可覆盖，原生提示就是 fallback
-                    html += '<div class="arena-equip-cell arena-equip-empty" title="' + ArenaCore.escapeAttr(SLOT_LABELS[slot] || '') + '"></div>';
-                }
+            for (var ei = 0; ei < sortedEquips.length; ei++) {
+                var eq = sortedEquips[ei];
+                // 注意：raw 是完整编码字符串（含 ##tier #mods），用作 tooltip 查询和 cache key
+                //       icon 是图标资产 key（多装备可共用一张图），displayname 才是用户可见名
+                var raw = eq.raw || eq.name;
+                var iconKey = eq.icon || eq.name;
+                var displayName = eq.displayname || eq.name;
+                var iconHtml = (typeof Icons !== 'undefined' && Icons.html)
+                    ? Icons.html(iconKey, '', ' onerror="this.style.display=\'none\'"')
+                    : '';
+                iconHtml = iconHtml
+                    ? iconHtml
+                    : '<span class="arena-equip-fallback">' + ArenaCore.escapeHtml(displayName.charAt(0)) + '</span>';
+                // 不设 title 属性：避免浏览器原生 tooltip 与 PanelTooltip 富文本重叠显示
+                html += '<div class="arena-equip-cell"' +
+                        ' data-eq-raw="' + ArenaCore.escapeAttr(raw) + '"' +
+                        ' data-eq-displayname="' + ArenaCore.escapeAttr(displayName) + '"' +
+                        ' data-eq-icon="' + ArenaCore.escapeAttr(iconKey) + '"' +
+                        ' data-eq-level="' + eq.level + '">' +
+                        iconHtml +
+                        '<span class="arena-equip-level">' + eq.level + '</span>' +
+                    '</div>';
             }
             html += '</div>'; // equips
             // 技能行：复用战队-佣兵界面技能成果（烘焙图标 + 占位字 + 等级 + hover tooltip）

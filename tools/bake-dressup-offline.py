@@ -1227,6 +1227,31 @@ def audit_battle_holder_sides(state_label: str, holders: list[dict[str, Any]]) -
         )
     return errors
 
+# 头部三件套的视觉层叠：面具必须在发型之下（发盖面具颅顶）。
+# XFL clipEvent 脚本的 attach 顺序（脸型→发型→面具）只是 attach 次序，
+# 而游戏内实际视觉是面具在下——若按遍历顺序画成「面具压发型」，全颅面具
+#（如 骷髅面具）会把发型整个遮住渲染成光头（竞技场/战队/角色构筑等所有
+# battle rig 消费方同受影响）。
+BATTLE_HEAD_FIELD_DRAW_ORDER = {"脸型": 0, "面具": 1, "发型": 2}
+
+
+def reorder_battle_head_holders_for_draw(holders: list[dict[str, Any]]) -> None:
+    """稳定重排：仅约束 脸型/面具/发型 三个 field 的相对顺序，其余 holder 原位不动。"""
+    head_positions = [
+        index
+        for index, holder in enumerate(holders)
+        if holder.get("field") in BATTLE_HEAD_FIELD_DRAW_ORDER
+    ]
+    if len(head_positions) <= 1:
+        return
+    ordered = sorted(
+        (holders[index] for index in head_positions),
+        key=lambda holder: BATTLE_HEAD_FIELD_DRAW_ORDER[holder["field"]],
+    )
+    for index, holder in zip(head_positions, ordered):
+        holders[index] = holder
+
+
 
 def build_battle_rig(project_root: Path) -> dict[str, Any]:
     library_dir = project_root / "flashswf" / "arts" / "things0" / "LIBRARY"
@@ -1266,6 +1291,7 @@ def build_battle_rig(project_root: Path) -> dict[str, Any]:
                 }
             )
         audit_errors.extend(audit_battle_holder_sides(state_label, holders))
+        reorder_battle_head_holders_for_draw(holders)
         states[state_label] = {
             "frame": frame_index,
             "templateSymbol": "主角-男",

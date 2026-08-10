@@ -12,7 +12,7 @@
  *   - card-count: 确认 10 张公开标准卡 + 2 张死线警报隐藏卡都存在且数据正确
  *   - hidden-mixed-enter: 死线警报隐藏卡本地混编 cache 后入场携带 roster；右栏保持配置保密
  *   - standard-mixed-card: 公开标准卡固定 mixed 分支可抽出佣兵模板 + 怪物组（右栏 preview 断言）
- *   - roll-again: 左栏「换一批」重发选中卡 preview 并刷新右栏渲染
+ *   - roll-again: 右栏决策头「换一批」重发选中卡 preview 并刷新右栏渲染
  *   - preview-switch-race: 换一批飞行中改选他卡，迟到回包不污染新选中卡 preview（三元组隔离）
  *   - equip-tooltip: hover 装备发送 equip_tooltip，回包后 cache，第二次 hover 不再发请求
  *   - grid-batch-preview: panel open 后佣兵公开卡并发 AS2 preview、roster 卡本地 cache，每张卡目录摘要都脱离 loading
@@ -47,7 +47,7 @@
  *   grid-direct-enter 按裁决 2 改写为 keyboard-commit（卡片不再承载直入按钮）；
  *   detail 整页视图退役，fallen/escalation 等 detail 断言改锚右栏 preview
  *   （#arena-detail-title/#arena-detail-meta/#arena-opponents 元素 id 保持）；
- *   「换一批/全部重抽」迁左栏控件条（#arena-roll-one/#arena-reroll-all）；
+ *   「全部重抽」留左栏控件条（#arena-reroll-all）；「换一批」随选中语义迁右栏决策头（#arena-roll-one）；
  *   唯一主 CTA = 右栏 CommitBar（.workbench-commit-primary.arena-detail-confirm）。
  */
 var ArenaHarnessQA = (function() {
@@ -482,8 +482,10 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!compactPortrait && parseFloat(getComputedStyle(compactPortrait).width) <= 50, '紧凑头像应收至 48px CSS 档');
                 api.assert(getComputedStyle(grid.querySelector('.arena-card-stats')).display !== 'none', '紧凑态仍应保留对手数/等级语义');
                 fullButton.click();
-                // 左栏控件条 + 右栏唯一主 CTA（未选中 = disabled）
-                api.assert(!!document.getElementById('arena-roll-one'), '左栏应有「换一批」控件');
+                // 换一批（右栏决策头）/ 全部重抽（左栏控件条）+ 右栏唯一主 CTA（未选中 = disabled）
+                api.assert(!!document.getElementById('arena-roll-one'), '右栏决策头应有「换一批」控件');
+                api.assert(document.getElementById('arena-roll-one').closest('.arena-decision-head') != null,
+                    '「换一批」应挂在右栏决策头');
                 api.assert(!!document.getElementById('arena-reroll-all'), '左栏应有「全部重抽」控件');
                 var primary = commitPrimary();
                 api.assert(!!primary, '右栏应有 CommitBar 主 CTA');
@@ -681,7 +683,7 @@ var ArenaHarnessQA = (function() {
     }
 
     // ── case: roll-again ──
-    // 等 batch → 选中佣兵卡（cache 命中无新 preview）→ 左栏「换一批」（额外 1 条 preview）→
+    // 等 batch → 选中佣兵卡（cache 命中无新 preview）→ 右栏「换一批」（额外 1 条 preview）→
     // 验右栏对手仍渲、CommitBar 恢复可用
     function caseRollAgain(api, host) {
         var cardIdx = 0;
@@ -707,7 +709,7 @@ var ArenaHarnessQA = (function() {
                 return api.waitFor(function() {
                     var btn = document.getElementById('arena-roll-one');
                     return btn && !btn.disabled;
-                }, 2000, '选中后左栏「换一批」可用');
+                }, 2000, '选中后右栏「换一批」可用');
             })
             .then(function() {
                 var before = host.previewMessages.length;
@@ -1022,9 +1024,8 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!detailTarget, '公开 mixed 卡应可选中');
                 return api.waitFor(function() {
                     var meta = document.getElementById('arena-detail-meta');
-                    var brief = document.querySelector('#arena-opponents .arena-opp-roster-brief');
                     return meta && /实体/.test(meta.textContent || '') &&
-                        brief && /实战实体/.test(brief.textContent || '');
+                        document.querySelectorAll('#arena-opponents .arena-opp-row-monster').length > 0;
                 }, 2000, 'mixed 右栏 preview 应显示等效/实体 roster 语义');
             })
             .then(function() { return { pass: true }; })
@@ -2817,10 +2818,11 @@ var ArenaHarnessQA = (function() {
                 api.assert(meta.indexOf('等效 ×5') >= 0, 'meta 应含等效人数');
                 api.assert(meta.indexOf('实体 ×5') >= 0, 'meta 应含实体人数');
                 api.assert(meta.indexOf('等级 44—59') >= 0, 'meta 应含挑战带');
-                api.assert(meta.indexOf('押金 94,000') >= 0, 'meta 应含押金');
-                api.assert(meta.indexOf('奖金 236,000') >= 0, 'meta 应含奖金');
-                var brief = document.querySelector('.arena-opp-roster-brief');
-                api.assert(brief && brief.textContent.indexOf('实战实体 ×5') >= 0, 'roster 摘要条应含实战实体数');
+                // 经济上屏唯一归属 CommitBar 状态条（meta 芯片不再复述押金/奖金）
+                api.assert(meta.indexOf('押金') < 0, 'meta 不再承载押金（唯一归属 CommitBar 状态条）');
+                var commitText = commitStatusText();
+                api.assert(commitText.indexOf('押金 94,000') >= 0, 'CommitBar 状态条应含押金');
+                api.assert(commitText.indexOf('奖金 236,000') >= 0, 'CommitBar 状态条应含奖金');
                 // 对手全部来自波斯军挑战带单位池；方舟妖姬 maxLevel 20 < 带下限 44，按 poolForBand 不入池
                 var bandNames = { '波斯步兵': true, '波斯弓兵': true, '不死亲卫队': true, '不死兽人': true, '斯巴达勇士': true };
                 var rows = document.querySelectorAll('.arena-opp-row-monster');
@@ -2832,7 +2834,7 @@ var ArenaHarnessQA = (function() {
                 }
             })
             .then(function() {
-                // 换一批（左栏控件条）：堕落卡本地重抽，不产生 AS2 preview 往返
+                // 换一批（右栏决策头）：堕落卡本地重抽，不产生 AS2 preview 往返
                 var beforePreviews = host.previewMessages.length;
                 document.getElementById('arena-roll-one').click();
                 return api.waitFor(function() {
@@ -3007,9 +3009,10 @@ var ArenaHarnessQA = (function() {
             })
             .then(function() {
                 api.assertEqual(document.getElementById('arena-detail-title').textContent, '波斯军 · 爬升挑战（无限波 · 奖池押注）', '爬升卡右栏标题');
-                var meta = document.getElementById('arena-detail-meta').textContent;
-                api.assert(meta.indexOf('押金 148,000') >= 0, 'meta 应含押注');
-                api.assert(meta.indexOf('奖金 147,500') >= 0, 'meta 应含波奖励基准');
+                // 经济上屏唯一归属 CommitBar 状态条（meta 芯片不再复述押金/奖金）
+                var commitText = commitStatusText();
+                api.assert(commitText.indexOf('押金 148,000') >= 0, 'CommitBar 状态条应含押注');
+                api.assert(commitText.indexOf('奖金 147,500') >= 0, 'CommitBar 状态条应含波奖励基准');
                 commitPrimary().click();
                 return api.waitFor(function() {
                     return host.enterMessages.length > 0;
