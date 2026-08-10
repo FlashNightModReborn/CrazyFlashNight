@@ -71,6 +71,38 @@ var DressupDollRenderer = (function() {
         });
     }
 
+    // 武器槽位 → 该槽允许贡献的装扮字段（对齐 AS2 DressupInitializer 的逐槽赋值、
+    // 空槽不挂载语义）。烘焙层对手枪类物品固定写 手枪_装扮+手枪2_装扮 双字段
+    // （tools/bake-dressup-offline.py，槽位无关数据）；合并时若不按槽过滤，一把
+    // 手枪会同时污染两个手枪 holder（幻影双枪 / 腿套双枪）。刀 同槽多字段
+    // （刀身/刀鞘/复合部件）属 AS2 dressup/dressup2/dressup3 的合法语义，保留。
+    var WEAPON_SLOT_FIELDS = {
+        '长枪': ['长枪_装扮'],
+        '手枪': ['手枪_装扮'],
+        '手枪2': ['手枪2_装扮'],
+        '刀': ['刀_装扮', '刀1_装扮', '刀2_装扮', '刀3_装扮'],
+        '手雷': ['手雷_装扮']
+    };
+    var ALL_WEAPON_FIELDS = {};
+    Object.keys(WEAPON_SLOT_FIELDS).forEach(function(slotKey) {
+        WEAPON_SLOT_FIELDS[slotKey].forEach(function(field) { ALL_WEAPON_FIELDS[field] = true; });
+    });
+
+    // 武器条目只收当前槽（非标准槽键时按物品 use）允许的武器字段；非武器条目原样合并。
+    function mergeEquipmentFields(target, slot, item, gender) {
+        var fields = item && item.fieldsByGender ? item.fieldsByGender[gender] : null;
+        if (!fields) return;
+        var allowed = WEAPON_SLOT_FIELDS[slot] || WEAPON_SLOT_FIELDS[item.use] || null;
+        if (!allowed) {
+            mergeFields(target, fields);
+            return;
+        }
+        Object.keys(fields).forEach(function(field) {
+            if (ALL_WEAPON_FIELDS[field] === true && allowed.indexOf(field) < 0) return;
+            target[field] = fields[field];
+        });
+    }
+
     function buildStateFromEquipment(manifest, options) {
         options = options || {};
         var gender = options.gender || '男';
@@ -80,7 +112,7 @@ var DressupDollRenderer = (function() {
             var itemName = equipment[slot];
             var item = manifest.items[itemName];
             if (item && item.fieldsByGender) {
-                mergeFields(keyMap, item.fieldsByGender[gender]);
+                mergeEquipmentFields(keyMap, slot, item, gender);
             }
         });
         mergeFields(keyMap, options.appearance);

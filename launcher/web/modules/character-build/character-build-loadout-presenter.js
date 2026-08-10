@@ -189,6 +189,13 @@ function(FacetCountsModule) {
                 key:'loadout:' + this._loadoutTooltipEpoch + ':' + key,
                 item:projection,
                 cache:this._loadoutTooltipCache,
+                // 区域定侧：装备槽注释恒放左侧——左侧纸娃娃是被动预览区，右侧是正在
+                // 操作的候选/调制面板；左侧放不下时由共享定位器回退打分，且同一次
+                // 悬停内侧向锁定，不再随鼠标位置翻面。
+                placement:'left',
+                // 锚点覆盖到整个槽位 grid：注释贴槽位列的左缘放置，同组各槽位置一致，
+                // 且永不盖住相邻槽位（含空槽）——鼠标在槽位间移动不会落进浮层被截获。
+                anchor:function(event, node) { return node.parentNode; },
                 isSuppressed:function() {
                     return self._candidateDragActive || self._interactionState !== 'idle';
                 },

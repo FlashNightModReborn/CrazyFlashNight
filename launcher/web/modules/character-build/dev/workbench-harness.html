@@ -2014,6 +2014,47 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && copy.indexOf('插件 2 / 3') >= 0
                     && copy.indexOf('复合稳定导轨') >= 0;
             }) && commandCount('tooltip') === loadoutTooltipTraffic + 1);
+        // 侧向稳定性回归（"忽左忽右"修复）：装备槽注释区域定侧恒左（纸娃娃一侧），
+        // 且同一次悬停内侧向锁定——光标从槽左缘扫到右缘，data-placement 不得改变。
+        var placementTooltip = document.getElementById('panel-tooltip');
+        var placementSamples = [];
+        var placementFractions = [0.02, 0.25, 0.5, 0.75, 0.98];
+        for (var placementIndex = 0; placementIndex < placementFractions.length; placementIndex++) {
+            currentLongGun.dispatchEvent(new PointerEvent('pointermove', {
+                pointerId:61,
+                pointerType:'mouse',
+                clientX:loadoutTooltipRect.left + Math.max(1, Math.floor(
+                    loadoutTooltipRect.width * placementFractions[placementIndex])),
+                clientY:loadoutTooltipRect.top + loadoutTooltipRect.height / 2
+            }));
+            placementSamples.push(placementTooltip.getAttribute('data-placement'));
+        }
+        check('equipped slot tooltip keeps one placement side while the pointer sweeps the slot',
+            placementSamples.every(function(name) {
+                return !!name && name === placementSamples[0];
+            }),
+            JSON.stringify(placementSamples));
+        var loadoutGridRect = currentLongGun.parentNode.getBoundingClientRect();
+        var settledTooltipRect = placementTooltip.getBoundingClientRect();
+        var paperDollSideFits = loadoutGridRect.left - 10 - 8 >= settledTooltipRect.width;
+        check('equipped slot tooltip prefers the paper-doll side whenever that side fits',
+            !paperDollSideFits || placementSamples[0] === 'left',
+            JSON.stringify({samples:placementSamples, gridLeft:loadoutGridRect.left,
+                tooltipWidth:settledTooltipRect.width}));
+        // 结构回归（手枪2 → 空手枪1 被浮层截获鼠标）：锚定整个槽位 grid 的注释
+        // 不得与该 grid 相交，否则鼠标移向被盖住的相邻槽位时会落进浮层。
+        var tooltipCoversSlotGrid = settledTooltipRect.left < loadoutGridRect.right - 1
+            && settledTooltipRect.right > loadoutGridRect.left + 1
+            && settledTooltipRect.top < loadoutGridRect.bottom - 1
+            && settledTooltipRect.bottom > loadoutGridRect.top + 1;
+        check('equipped slot tooltip never overlaps the slot grid it is anchored beside',
+            !tooltipCoversSlotGrid,
+            JSON.stringify({
+                tipLeft:settledTooltipRect.left, tipRight:settledTooltipRect.right,
+                tipTop:settledTooltipRect.top, tipBottom:settledTooltipRect.bottom,
+                gridLeft:loadoutGridRect.left, gridRight:loadoutGridRect.right,
+                gridTop:loadoutGridRect.top, gridBottom:loadoutGridRect.bottom
+            }));
         var loadoutTooltipRequest = loadoutMessages().filter(function(message) {
             return message.cmd === 'tooltip';
         }).slice(-1)[0];

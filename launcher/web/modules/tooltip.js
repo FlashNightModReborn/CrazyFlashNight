@@ -246,8 +246,8 @@ var PanelTooltip = (function() {
 
     // ── hover 模式 ──
 
-    /** hover 模式：在鼠标位置显示 tooltip，设置内容 */
-    function showAtMouse(html, e, owner) {
+    /** hover 模式：在鼠标位置显示 tooltip，设置内容；opts.placement 可选区域定侧偏好 */
+    function showAtMouse(html, e, owner, opts) {
         if (!_el) return;
         cleanupHandlers();
         clearHoverHide();
@@ -255,6 +255,7 @@ var PanelTooltip = (function() {
         clearInteraction();
         _showGen++;                  // 让上一次 show 注册的延迟 reposition 全部失效
         _owner = owner == null ? null : owner;
+        resetPlacementState(opts && opts.placement);
         _el.innerHTML = html;
         _el.style.display = 'block';
         _el.setAttribute('aria-hidden', 'false');
@@ -268,7 +269,7 @@ var PanelTooltip = (function() {
             _lastEvt = {
                 clientX: e.clientX,
                 clientY: e.clientY,
-                anchor: e.currentTarget || e.target || null
+                anchor: (opts && opts.anchor) || e.currentTarget || e.target || null
             };
             positionAtMouse(_lastEvt);
             // Safety net：覆盖 async 加载源（字体 swap / icon 图加载 / 外部资源）
@@ -419,7 +420,9 @@ var PanelTooltip = (function() {
         _lastEvt = {
             clientX: e.clientX,
             clientY: e.clientY,
-            anchor: e.currentTarget || (_lastEvt && _lastEvt.anchor) || e.target || null
+            // 优先保留 show 时确定的锚点——它可能携带调用方的容器级 anchor 覆盖，
+            // 不能被每次 move 的 currentTarget 冲掉。
+            anchor: (_lastEvt && _lastEvt.anchor) || e.currentTarget || e.target || null
         };
         positionAtMouse(_lastEvt);
     }
@@ -431,6 +434,16 @@ var PanelTooltip = (function() {
     var ANCHOR_GAP = 10;
     var VIEWPORT_INSET = 8;
     var _lastPlacement = null;
+    // 侧向稳定性（2026-08 角色构筑"忽左忽右"修复）：
+    //   _placementHint   — 调用方区域定侧偏好（bindAsync options.placement /
+    //                      showAtMouse/showAnchored opts.placement），仅作首轮候选；
+    //   _lockedPlacement — 本次 show 已锁定的 placement。同一次 show 内，锁定侧在主轴
+    //                      方向仍可行时直接沿用，不再为逐像素的鼠标移动、basic→rich
+    //                      内容替换或字体/图片迟到的尺寸抖动重新打分；仅当原侧已放不下
+    //                      （主轴方向必须夹紧）才解锁并全量重打分。每次 show*/hide 重置。
+    var PLACEMENT_EPS = 0.5;
+    var _placementHint = null;
+    var _lockedPlacement = null;
 
     function clamp(value, minimum, maximum) {
         return Math.max(minimum, Math.min(value, maximum));
@@ -453,6 +466,38 @@ var PanelTooltip = (function() {
         var x = Number(pointer && pointer.clientX) || 0;
         var y = Number(pointer && pointer.clientY) || 0;
         return {left:x, right:x, top:y, bottom:y, width:0, height:0};
+    }
+
+    function normalizePlacement(value) {
+        return (value === 'left' || value === 'right' || value === 'top' || value === 'bottom')
+            ? value : null;
+    }
+
+    function resetPlacementState(hint) {
+        _placementHint = normalizePlacement(hint);
+        _lockedPlacement = null;
+    }
+
+    // 四个候选的公式单一来源：打分、锁定、偏好三条路径共用，避免公式漂移。
+    function placementCandidate(name, anchorRect, tw, th) {
+        switch (name) {
+            case 'left':   return {name:'left',   x:anchorRect.left - tw - ANCHOR_GAP, y:anchorRect.top, width:tw, height:th};
+            case 'right':  return {name:'right',  x:anchorRect.right + ANCHOR_GAP,     y:anchorRect.top, width:tw, height:th};
+            case 'top':    return {name:'top',    x:anchorRect.left, y:anchorRect.top - th - ANCHOR_GAP, width:tw, height:th};
+            case 'bottom': return {name:'bottom', x:anchorRect.left, y:anchorRect.bottom + ANCHOR_GAP,   width:tw, height:th};
+            default: return null;
+        }
+    }
+
+    // 可行性只要求主轴方向不依赖视口夹紧（需要夹紧 = 该侧已放不下，应解锁重选）；
+    // 副轴允许夹紧——垂直/水平微调不改变侧向语义，与打分路径的 clamp 结果一致，
+    // 也避免边界槽位因 1px 抖动每帧解锁重打分。
+    function placementFeasible(candidate, vw, vh) {
+        if (!candidate) return false;
+        if (candidate.name === 'left') return candidate.x >= VIEWPORT_INSET - PLACEMENT_EPS;
+        if (candidate.name === 'right') return candidate.x + candidate.width <= vw - VIEWPORT_INSET + PLACEMENT_EPS;
+        if (candidate.name === 'top') return candidate.y >= VIEWPORT_INSET - PLACEMENT_EPS;
+        return candidate.y + candidate.height <= vh - VIEWPORT_INSET + PLACEMENT_EPS;   // bottom
     }
 
     function candidateScore(candidate, anchorRect, pointerRect, vw, vh, priority) {
@@ -497,20 +542,36 @@ var PanelTooltip = (function() {
             top:pointerY - pointerRadius, bottom:pointerY + pointerRadius
         };
         var candidates = [
-            {name:'left', x:anchorRect.left - tw - ANCHOR_GAP, y:anchorRect.top, width:tw, height:th},
-            {name:'right', x:anchorRect.right + ANCHOR_GAP, y:anchorRect.top, width:tw, height:th},
-            {name:'top', x:anchorRect.left, y:anchorRect.top - th - ANCHOR_GAP, width:tw, height:th},
-            {name:'bottom', x:anchorRect.left, y:anchorRect.bottom + ANCHOR_GAP, width:tw, height:th}
+            placementCandidate('left', anchorRect, tw, th),
+            placementCandidate('right', anchorRect, tw, th),
+            placementCandidate('top', anchorRect, tw, th),
+            placementCandidate('bottom', anchorRect, tw, th)
         ];
         var best = null;
-        for (var i = 0; i < candidates.length; i++) {
-            var candidate = candidates[i];
-            var rawX = candidate.x, rawY = candidate.y;
-            candidate.x = clamp(rawX, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vw - tw - VIEWPORT_INSET));
-            candidate.y = clamp(rawY, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vh - th - VIEWPORT_INSET));
-            candidate.shift = Math.abs(candidate.x - rawX) + Math.abs(candidate.y - rawY);
-            candidate.score = candidateScore(candidate, anchorRect, pointerRect, vw, vh, i);
-            if (!best || candidate.score < best.score) best = candidate;
+        // 1) 锁定侧优先：同一次 show 内主轴方向仍可行就原位保留，不为逐像素的鼠标
+        //    移动或 basic→rich / 字体迟到的尺寸抖动重新打分（"忽左忽右"根因）。
+        var lockedCandidate = placementCandidate(_lockedPlacement, anchorRect, tw, th);
+        if (lockedCandidate && placementFeasible(lockedCandidate, vw, vh)) {
+            best = lockedCandidate;
+        } else {
+            if (lockedCandidate) _lockedPlacement = null;   // 原侧已放不下，解锁重选
+            // 2) 调用方区域定侧偏好（如角色构筑装备槽恒放纸娃娃一侧）：可行即采用。
+            var hintedCandidate = placementCandidate(_placementHint, anchorRect, tw, th);
+            if (hintedCandidate && placementFeasible(hintedCandidate, vw, vh)) {
+                best = hintedCandidate;
+            } else {
+                // 3) 全量打分：仅首轮定位或锁定侧/偏好失效时执行。
+                for (var i = 0; i < candidates.length; i++) {
+                    var candidate = candidates[i];
+                    var rawX = candidate.x, rawY = candidate.y;
+                    candidate.x = clamp(rawX, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vw - tw - VIEWPORT_INSET));
+                    candidate.y = clamp(rawY, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vh - th - VIEWPORT_INSET));
+                    candidate.shift = Math.abs(candidate.x - rawX) + Math.abs(candidate.y - rawY);
+                    candidate.score = candidateScore(candidate, anchorRect, pointerRect, vw, vh, i);
+                    if (!best || candidate.score < best.score) best = candidate;
+                }
+            }
+            _lockedPlacement = best.name;
         }
         var x = clamp(best.x, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vw - tw - VIEWPORT_INSET));
         var y = clamp(best.y, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vh - th - VIEWPORT_INSET));
@@ -547,6 +608,7 @@ var PanelTooltip = (function() {
      * @param {Object} [opts] - 选项
      * @param {number} [opts.autoClose=8000] - 自动关闭延迟 ms，0 禁用
      * @param {boolean} [opts.outsideClick=true] - 点击外部关闭
+     * @param {string} [opts.placement] - 可选区域定侧偏好（left/right/top/bottom），可行时本次 show 恒定该侧
      */
     function showAnchored(html, anchorEl, opts) {
         if (!_el) return;
@@ -561,6 +623,7 @@ var PanelTooltip = (function() {
         clearInteraction();
         _showGen++;                  // anchored 也是新一轮 show，失效上一次的延迟回调
         _owner = owner;
+        resetPlacementState(opts.placement);
         _el.innerHTML = html;
         _el.style.display = 'block';
         _el.setAttribute('aria-hidden', 'false');
@@ -647,6 +710,7 @@ var PanelTooltip = (function() {
         _showGen++;                  // 让所有未 fire 的 reposition 回调失效
         _lastEvt = null;
         _lastAnchor = null;
+        resetPlacementState(null);
         if (_repositionTimer) {
             clearTimeout(_repositionTimer);
             _repositionTimer = null;
@@ -1100,6 +1164,10 @@ var PanelTooltip = (function() {
      *   - renderFailure: function(item, response) -> html 可选，读取失败但仍可重试
      *   - fetch: function(item, callback(response))       发起异步请求，成功后调 callback
      *   - isSuppressed: function(event) -> boolean        可选，拖拽等场景抑制 tooltip
+     *   - placement: 'left'|'right'|'top'|'bottom'        可选，区域定侧偏好；该侧可行时
+     *                                                     本次 show 恒定放该侧，不可行回退打分
+     *   - anchor: Element | function(event, node) -> Element  可选，定位锚点覆盖（如整个
+     *                                                     槽位容器）；事件与所有权仍归属 node
      *   - events: 'pointer' | 'mouse'                     默认 pointer；mouse 兼容旧代码
      */
     function bindAsync(node, options) {
@@ -1136,6 +1204,13 @@ var PanelTooltip = (function() {
         function resolveItem(e) {
             if (typeof options.resolveItem === 'function') return options.resolveItem(e, node);
             return options.item;
+        }
+
+        // 定位锚点覆盖：默认锚到 node 本身；调用方可锚到容器级元素（如整个槽位 grid），
+        // 让注释贴容器边缘放置，既不随格内位置跳动，也不会盖住相邻触发物截获鼠标。
+        function resolveTooltipAnchor(e) {
+            if (typeof options.anchor === 'function') return options.anchor(e, node) || node;
+            return options.anchor || node;
         }
 
         function suppressed(e) {
@@ -1302,8 +1377,9 @@ var PanelTooltip = (function() {
             var html = cache[key] && typeof options.renderRich === 'function'
                 ? options.renderRich(item, cache[key])
                 : (typeof options.renderBasic === 'function' ? options.renderBasic(item) : '');
-            if (pointerSource) showAtMouse(html, lastPointerEvent || event, owner);
-            else showAnchored(html, node, { autoClose: 0, outsideClick: false, owner: owner });
+            var tooltipAnchor = resolveTooltipAnchor(event);
+            if (pointerSource) showAtMouse(html, lastPointerEvent || event, owner, { placement: options.placement, anchor: tooltipAnchor });
+            else showAnchored(html, tooltipAnchor, { autoClose: 0, outsideClick: false, owner: owner, placement: options.placement });
             setInteraction(owner, {enter:onTooltipEnter, leave:onTooltipLeave});
             requestRich(key, item);
             return true;
