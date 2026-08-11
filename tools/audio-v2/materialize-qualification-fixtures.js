@@ -175,7 +175,10 @@ function materializeFixtures(projectRoot, runId) {
         entry.repositoryState === "tracked" && entry.discoveryClass === "sfx_preload");
     const byId = new Map();
     sfxRows.forEach((entry) => {
-        const linkageId = path.posix.basename(entry.path, path.posix.extname(entry.path));
+        // AudioCoordinator.ScanDefaultCatalog uses Path.GetFileName(), so the
+        // production linkage key includes the extension.  Keep this byte-for-
+        // byte contract here instead of deriving an extensionless fixture ID.
+        const linkageId = path.posix.basename(entry.path);
         if (!byId.has(linkageId)) byId.set(linkageId, []);
         byId.get(linkageId).push(entry);
     });

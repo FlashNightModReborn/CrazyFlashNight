@@ -930,12 +930,18 @@ namespace CF7Launcher.Audio
                     break;
                 case "dense_overlap_throttle":
                     RequireSfxCount(request, 6);
-                    if (new HashSet<string>(
-                        request.LinkageIds,
-                        StringComparer.Ordinal).Count != 6)
+                    for (int index = 1;
+                        index < request.LinkageIds.Count;
+                        index++)
                     {
-                        throw new InvalidDataException(
-                            "Dense SFX stimulus ids must be unique.");
+                        if (!string.Equals(
+                            request.LinkageIds[0],
+                            request.LinkageIds[index],
+                            StringComparison.Ordinal))
+                        {
+                            throw new InvalidDataException(
+                                "Dense SFX stimulus ids must be identical.");
+                        }
                     }
                     break;
                 case "gain_zero_and_default_max":

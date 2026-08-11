@@ -172,7 +172,7 @@ class org.flashNight.arki.audio.AudioQualificationStimulus {
             if (!isPrintableLinkageId(params.linkageIds[i])) return false;
         }
         if (params.caseId == "dense_overlap_throttle"
-                && !hasUniqueStrings(params.linkageIds)) return false;
+                && !hasIdenticalStrings(params.linkageIds)) return false;
 
         if (!AudioBridge.flushQualificationSfxBatch(
                 params.linkageIds, allowRecoveryTuple)) return false;
@@ -281,11 +281,10 @@ class org.flashNight.arki.audio.AudioQualificationStimulus {
         return false;
     }
 
-    private static function hasUniqueStrings(values:Array):Boolean {
-        for (var i:Number = 0; i < values.length; i++) {
-            for (var j:Number = i + 1; j < values.length; j++) {
-                if (values[i] === values[j]) return false;
-            }
+    private static function hasIdenticalStrings(values:Array):Boolean {
+        if (values.length == 0) return false;
+        for (var i:Number = 1; i < values.length; i++) {
+            if (values[i] !== values[0]) return false;
         }
         return true;
     }

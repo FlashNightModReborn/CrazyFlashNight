@@ -52,6 +52,15 @@ try {
         const result = subject.materializeFixtures(temporaryRoot, runId);
         assert.strictEqual(result.fixtures.length, 3);
         assert.strictEqual(result.sfx.length, 6);
+        assert.deepStrictEqual(
+            result.sfx.map((entry) => entry.linkageId),
+            ["sfx0.wav", "sfx1.wav", "sfx2.wav", "sfx3.wav", "sfx4.wav", "sfx5.wav"]);
+        result.sfx.forEach((entry) => {
+            assert.strictEqual(entry.linkageId, path.posix.basename(entry.sourcePath));
+            assert.notStrictEqual(entry.linkageId, path.posix.basename(
+                entry.sourcePath,
+                path.posix.extname(entry.sourcePath)));
+        });
         assert.ok(result.bgm.primary.relativePath.startsWith("tmp/audio-v2-qualification/"));
         result.fixtures.forEach((entry) => {
             const absolute = path.join(temporaryRoot, ...entry.relativePath.split("/"));

@@ -547,13 +547,22 @@ namespace CF7Launcher.Tests.Audio
                     diagnostics,
                     transport))
                 {
-                    string[] ids = { "a", "b", "c", "d", "e", "f" };
+                    using (var uniqueIds = new PipeClient(host.PipeName))
+                        Assert.Null(await uniqueIds.ExchangeOrClosedAsync(Request(
+                            runId,
+                            "dispatch",
+                            1,
+                            "dense_overlap_throttle",
+                            "sfx",
+                            linkageIds: new[] { "a", "b", "c", "d", "e", "f" })));
+
+                    string[] ids = { "a", "a", "a", "a", "a", "a" };
                     using (JsonDocument response = await ExchangeOnceAsync(
                         host.PipeName,
                         Request(
                             runId,
                             "dispatch",
-                            1,
+                            2,
                             "dense_overlap_throttle",
                             "sfx",
                             linkageIds: ids)))
@@ -562,7 +571,7 @@ namespace CF7Launcher.Tests.Audio
                             .GetProperty("sent").GetBoolean());
                     }
                     Assert.Contains(
-                        "\"linkageIds\":[\"a\",\"b\",\"c\",\"d\",\"e\",\"f\"]",
+                        "\"linkageIds\":[\"a\",\"a\",\"a\",\"a\",\"a\",\"a\"]",
                         transport.Messages[2].Payload,
                         StringComparison.Ordinal);
 
@@ -570,7 +579,7 @@ namespace CF7Launcher.Tests.Audio
                         Assert.Null(await retry.ExchangeOrClosedAsync(Request(
                             runId,
                             "dispatch",
-                            2,
+                            3,
                             "dense_overlap_throttle",
                             "sfx",
                             linkageIds: ids)));
@@ -830,7 +839,7 @@ namespace CF7Launcher.Tests.Audio
                             8,
                             "dense_overlap_throttle",
                             "sfx",
-                            linkageIds: new[] { "a", "b", "c", "d", "e", "f" })))
+                            linkageIds: new[] { "a", "a", "a", "a", "a", "a" })))
                     {
                     }
                     using (await ExchangeObserverOnceAsync(
@@ -965,7 +974,7 @@ namespace CF7Launcher.Tests.Audio
                             1,
                             "dense_overlap_throttle",
                             "sfx",
-                            linkageIds: new[] { "a", "b", "c", "d", "e", "f" })))
+                            linkageIds: new[] { "a", "a", "a", "a", "a", "a" })))
                     {
                     }
                     using (await ExchangeObserverOnceAsync(
@@ -1338,7 +1347,7 @@ namespace CF7Launcher.Tests.Audio
                             3,
                             "dense_overlap_throttle",
                             "sfx",
-                            linkageIds: new[] { "a", "b", "c", "d", "e", "f" })))
+                            linkageIds: new[] { "a", "a", "a", "a", "a", "a" })))
                     {
                     }
                     using (await ExchangeObserverOnceAsync(

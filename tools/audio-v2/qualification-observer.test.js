@@ -187,7 +187,7 @@ function makeBgmQualificationJournal() {
         } else if (["sfx_playback", "dense_overlap_throttle", "bgm_sfx_mix"].includes(caseId)) {
             appendEvent(events, caseId, "qualification_snapshot", "qualification_observer", snapshot());
             appendEvent(events, caseId, "as2_sfx_batch", "as2_ingress", sfxBatch(1,
-                caseId === "dense_overlap_throttle" ? ["a", "b", "c", "d", "e", "f"] : ["a"]));
+                caseId === "dense_overlap_throttle" ? ["a", "a", "a", "a", "a", "a"] : ["a"]));
         } else if (caseId === "gain_zero_and_default_max") {
             appendEvent(events, caseId, "qualification_snapshot", "qualification_observer", snapshot());
             appendEvent(events, caseId, "as2_bgm_request", "as2_ingress", bgmRequest("set_gain", "gain-default", { volume: 1 }));
@@ -390,13 +390,27 @@ test("dense overlap facts close only over AS2 batch and candidate counters", () 
             { kind: "qualification_snapshot", payload: after, sequence: 4 }
         ]
     };
-    assert.deepStrictEqual(observer.deriveCaseFacts("dense_overlap_throttle", range, { sfxVoiceLimit: 4 }), {
-        captureId: "sfx_playback", configuredVoiceLimit: 4,
+    assert.deepStrictEqual(observer.deriveCaseFacts("dense_overlap_throttle", range, { sfxPerEntryVoiceCap: 4 }), {
+        captureId: "sfx_playback", configuredPerEntryVoiceCap: 4,
         playedAfter: 2, playedBefore: 0, requestedVoices: 6,
         throttledAfter: 4, throttledBefore: 0
     });
     range.events[2].payload.counters.throttledCount = 3;
-    assert.throws(() => observer.deriveCaseFacts("dense_overlap_throttle", range, { sfxVoiceLimit: 4 }), /do not close/);
+    assert.throws(() => observer.deriveCaseFacts("dense_overlap_throttle", range, { sfxPerEntryVoiceCap: 4 }), /do not close/);
+    range.events[2].payload.counters.throttledCount = 4;
+    range.events[1].payload.linkageIds[5] = "b";
+    assert.throws(() => observer.deriveCaseFacts("dense_overlap_throttle", range, { sfxPerEntryVoiceCap: 4 }), /must be identical/);
+    range.events[1].payload.linkageIds[5] = "a";
+    [
+        "preReadyDrops", "recoveryDrops", "staleGenerationDrops",
+        "startFailureCount", "unknownIdCount"
+    ].forEach((key) => {
+        range.events[2].payload.counters[key] = 1;
+        assert.throws(
+            () => observer.deriveCaseFacts("dense_overlap_throttle", range, { sfxPerEntryVoiceCap: 4 }),
+            new RegExp("unexpected outcome counter advanced: " + key));
+        range.events[2].payload.counters[key] = 0;
+    });
 });
 
 test("SFX playback requires its own advancing nonzero meter window", () => {
@@ -759,7 +773,7 @@ test("tracked endpoint carrier archives the exact candidate journal and reconcil
         candidatePayloadClosure: PAYLOAD_CLOSURE,
         releaseSource: { commit: "a".repeat(40), treeOid: "b".repeat(40) },
         reportId: "exact_candidate_bgm_endpoint_e2e",
-        sfxVoiceLimit: 4
+        sfxPerEntryVoiceCap: 4
     };
     const derived = observer.deriveLiveObservation(derivationOptions, { candidate: exactCandidate, journal, ranges });
     const archived = observer.validateJournalCarrier(derived.carrier);

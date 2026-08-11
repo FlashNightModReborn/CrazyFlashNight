@@ -892,15 +892,29 @@ function deriveCaseFacts(caseId, range, options) {
         const runtime = expectStableRuntimeTuple(snapshots, caseId);
         const request = sfxRequests(range);
         expectSfxTuple(request, runtime, caseId);
+        expect(request.events.length === 1 && request.requestedVoices === 6,
+            "dense SFX must contain one exact six-item AS2 batch");
+        const linkageIds = request.events[0].payload.linkageIds;
+        expect(linkageIds.every((entry) => entry === linkageIds[0]),
+            "dense SFX AS2 batch ids must be identical");
         const before = snapshots[0].payload.counters;
         const after = snapshots[snapshots.length - 1].payload.counters;
         const played = counterDelta(before, after, "playedCount", caseId);
         const throttled = counterDelta(before, after, "throttledCount", caseId);
-        expectUint(options.sfxVoiceLimit, "exact source SFX voice limit", 1);
-        expect(request.requestedVoices > options.sfxVoiceLimit && played > 0 && played <= options.sfxVoiceLimit && throttled > 0 && played + throttled === request.requestedVoices, "dense SFX counter deltas do not close over the bounded AS2 batch");
+        [
+            "preReadyDrops", "recoveryDrops", "staleGenerationDrops",
+            "startFailureCount", "unknownIdCount"
+        ].forEach((key) => expect(counterDelta(before, after, key, caseId) === 0,
+            "dense SFX unexpected outcome counter advanced: " + key));
+        expectUint(options.sfxPerEntryVoiceCap, "exact source per-entry SFX voice cap", 1);
+        expect(options.sfxPerEntryVoiceCap === 4 &&
+            request.requestedVoices > options.sfxPerEntryVoiceCap &&
+            played > 0 && played <= options.sfxPerEntryVoiceCap &&
+            throttled > 0 && played + throttled === request.requestedVoices,
+        "dense SFX counter deltas do not close over the per-entry bounded AS2 batch");
         return {
             captureId: "sfx_playback",
-            configuredVoiceLimit: options.sfxVoiceLimit,
+            configuredPerEntryVoiceCap: options.sfxPerEntryVoiceCap,
             playedAfter: after.playedCount,
             playedBefore: before.playedCount,
             requestedVoices: request.requestedVoices,
@@ -1222,10 +1236,11 @@ function inspectCliCandidate(options) {
     };
 }
 
-function parseCliVoiceLimit() {
+function parseCliPerEntryVoiceCap() {
     const source = fs.readFileSync(path.resolve(__dirname, "..", "..", "launcher", "native", "miniaudio_bridge.c"), "utf8");
     const matches = Array.from(source.matchAll(/^#define CF7_SFX_VOICES ([1-9][0-9]*)u$/gm));
-    expect(matches.length === 1 && Number(matches[0][1]) === 4, "exact S CF7_SFX_VOICES must be uniquely bound to 4");
+    expect(matches.length === 1 && Number(matches[0][1]) === 4,
+        "exact S per-entry CF7_SFX_VOICES cap must be uniquely bound to 4");
     return 4;
 }
 
@@ -1261,7 +1276,7 @@ function cliMain(argv) {
         candidatePayloadClosure: parsed.candidatePayloadClosure,
         releaseSource: { commit: parsed.releaseSourceCommit, treeOid: parsed.releaseSourceTree },
         reportId: parsed.reportId,
-        sfxVoiceLimit: parseCliVoiceLimit()
+        sfxPerEntryVoiceCap: parseCliPerEntryVoiceCap()
     }, completed);
     const output = parsed.emitConfigurationArgv
         ? [process.execPath, "tools/audio-v2/qualification-runner.js", "--report-id", parsed.reportId].concat(trackedObservationArguments(derived.carrier))

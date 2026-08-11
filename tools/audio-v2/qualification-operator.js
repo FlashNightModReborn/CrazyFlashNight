@@ -265,7 +265,8 @@ function buildStimulusRequest(runId, caseId, operation, fields, requestId) {
         format_aac_mp4: () => operation === "play" && request.fadeSeconds === 0 && request.loop && request.volume === 1,
         format_opus: () => operation === "play" && request.fadeSeconds === 0 && request.loop && request.volume === 1,
         sfx_playback: () => operation === "sfx" && request.linkageIds.length === 1,
-        dense_overlap_throttle: () => operation === "sfx" && request.linkageIds.length === 6 && new Set(request.linkageIds).size === 6,
+        dense_overlap_throttle: () => operation === "sfx" && request.linkageIds.length === 6 &&
+            request.linkageIds.every((entry) => entry === request.linkageIds[0]),
         bgm_sfx_mix: () => operation === "sfx" && request.linkageIds.length === 1,
         gain_zero_and_default_max: () => operation === "set_gain" && (request.volume === 0 || request.volume === 1),
         no_stale_sfx_after_recovery: () => operation === "sfx" && request.linkageIds.length === 1,
@@ -623,7 +624,9 @@ async function runAutomatedCase(options, plan, caseId) {
         }
         hasPostStimulusSnapshot = true;
     } else if (caseId === "dense_overlap_throttle") {
-        transcript.stimuli.push(dispatch(options, caseId, "sfx", { linkageIds: plan.sfx.map((entry) => entry.linkageId) }));
+        transcript.stimuli.push(dispatch(options, caseId, "sfx", {
+            linkageIds: Array(6).fill(plan.sfx[0].linkageId)
+        }));
         await waitFor(options, options.timing.sfxSampleMs);
     } else if (caseId === "bgm_sfx_mix") {
         transcript.stimuli.push(dispatch(options, caseId, "sfx", { linkageIds: [plan.sfx[1].linkageId] }));

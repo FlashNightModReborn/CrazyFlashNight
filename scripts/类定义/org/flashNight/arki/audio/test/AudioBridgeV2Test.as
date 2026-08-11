@@ -605,19 +605,20 @@ class org.flashNight.arki.audio.test.AudioBridgeV2Test {
             "dense_overlap_throttle", ["shot.wav", "shot.wav", "shot.wav", "shot.wav"]);
         assertFalse("qualification dense SFX requires exactly six ids",
             AudioQualificationStimulus.handle(denseShort));
-        var denseDuplicate:Object = makeQualificationSfx(
-            "dense_overlap_throttle",
-            ["shot.wav", "shot.wav", "shot.wav", "shot.wav", "shot.wav", "shot.wav"]);
-        assertFalse("qualification dense SFX requires six unique ids",
-            AudioQualificationStimulus.handle(denseDuplicate));
-        var dense:Object = makeQualificationSfx(
+        var denseUnique:Object = makeQualificationSfx(
             "dense_overlap_throttle",
             ["shot-1.wav", "shot-2.wav", "shot-3.wav", "shot-4.wav",
                 "shot-5.wav", "shot-6.wav"]);
+        assertFalse("qualification dense SFX rejects non-identical ids",
+            AudioQualificationStimulus.handle(denseUnique));
+        var dense:Object = makeQualificationSfx(
+            "dense_overlap_throttle",
+            ["shot.wav", "shot.wav", "shot.wav", "shot.wav", "shot.wav", "shot.wav"]);
         assertTrue("qualification dense SFX remains one immediate S2 batch",
             AudioQualificationStimulus.handle(dense));
-        assertEqual("qualification dense SFX preserves all semantic requests",
-            10, transport.frames[1].split("|").length);
+        assertEqual("qualification dense SFX preserves six identical semantic requests",
+            "S2|" + SESSION + "|42|2|shot.wav|shot.wav|shot.wav|shot.wav|shot.wav|shot.wav",
+            transport.frames[1]);
 
         assertFalse("qualification pre-mix restore requires exact gain one",
             AudioQualificationStimulus.handle(makeQualificationPreMixRestore(0)));

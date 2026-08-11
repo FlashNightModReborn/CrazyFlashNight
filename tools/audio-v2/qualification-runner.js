@@ -836,14 +836,15 @@ function dependencyFile(context, relative, label) {
     return containedPath(context.replayRoot, relative, label);
 }
 
-function exactSfxVoiceLimit(context) {
-    const sourcePath = dependencyFile(context, AUDIO_NATIVE_SOURCE_PATH, "native SFX voice-limit source");
-    const bytes = readRegularFile(sourcePath, "native SFX voice-limit source", MAX_INPUT_BYTES);
+function exactSfxPerEntryVoiceCap(context) {
+    const sourcePath = dependencyFile(context, AUDIO_NATIVE_SOURCE_PATH, "native per-entry SFX voice-cap source");
+    const bytes = readRegularFile(sourcePath, "native per-entry SFX voice-cap source", MAX_INPUT_BYTES);
     const text = bytes.toString("utf8");
     const matches = Array.from(text.matchAll(/^#define CF7_SFX_VOICES ([1-9][0-9]*)u$/gm));
     expect(matches.length === 1, "exact S must define CF7_SFX_VOICES exactly once");
     const value = Number(matches[0][1]);
-    expect(Number.isSafeInteger(value) && value === 4, "exact S CF7_SFX_VOICES differs from the accepted H1 value 4");
+    expect(Number.isSafeInteger(value) && value === 4,
+        "exact S per-entry CF7_SFX_VOICES cap differs from the accepted H1 value 4");
     return value;
 }
 
@@ -1108,12 +1109,17 @@ function validateEndpointCaseFacts(reportId, caseId, facts, captures) {
         bindCapture(facts.captureId); ["playedAfter", "playedBefore", "requestedVoices"].forEach((key) => requireInteger(facts[key], "SFX " + key, key === "requestedVoices" ? 1 : 0));
         expect(facts.playedAfter - facts.playedBefore === facts.requestedVoices, "SFX played counter delta mismatch");
     } else if (caseId === "dense_overlap_throttle") {
-        exactKeys(facts, ["captureId", "configuredVoiceLimit", "playedAfter", "playedBefore", "requestedVoices", "throttledAfter", "throttledBefore"], "SFX throttle facts");
+        exactKeys(facts, ["captureId", "configuredPerEntryVoiceCap", "playedAfter", "playedBefore", "requestedVoices", "throttledAfter", "throttledBefore"], "SFX throttle facts");
         bindCapture(facts.captureId); Object.keys(facts).filter((key) => key !== "captureId").forEach((key) => requireInteger(facts[key], "SFX throttle " + key, key.includes("Voice") ? 1 : 0));
         const played = facts.playedAfter - facts.playedBefore;
         const throttled = facts.throttledAfter - facts.throttledBefore;
-        expect(facts.configuredVoiceLimit === 4 && facts.requestedVoices > facts.configuredVoiceLimit, "SFX voice-limit source binding drifted");
-        expect(played > 0 && played <= facts.configuredVoiceLimit && throttled > 0 && played + throttled === facts.requestedVoices, "SFX played/throttled counters do not close over the bounded exact AS2 batch");
+        expect(facts.configuredPerEntryVoiceCap === 4 &&
+            facts.requestedVoices === 6 &&
+            facts.requestedVoices > facts.configuredPerEntryVoiceCap,
+        "SFX per-entry voice-cap source binding drifted");
+        expect(played > 0 && played <= facts.configuredPerEntryVoiceCap &&
+            throttled > 0 && played + throttled === facts.requestedVoices,
+        "SFX played/throttled counters do not close over the per-entry bounded exact AS2 batch");
     } else if (caseId === "bgm_sfx_mix") {
         exactKeys(facts, ["bgmFrames", "captureId", "sfxPlayedAfter", "sfxPlayedBefore"], "BGM/SFX mix facts");
         bindCapture(facts.captureId); requireInteger(facts.bgmFrames, "mix BGM frames", 1); requireInteger(facts.sfxPlayedAfter, "mix SFX after", 1); requireInteger(facts.sfxPlayedBefore, "mix SFX before", 0); expect(facts.sfxPlayedAfter > facts.sfxPlayedBefore, "mix has no SFX contribution");
@@ -2015,13 +2021,13 @@ function runLiveVerifier(context, options) {
             runId: observation.runId,
             timeoutMs: Math.max(100, Math.min(30000, context.deadlineEpochMs - Date.now()))
         };
-        const sfxVoiceLimit = exactSfxVoiceLimit(context);
+        const sfxPerEntryVoiceCap = exactSfxPerEntryVoiceCap(context);
         const derivationOptions = {
             candidateBuildIdentity: context.report.candidateBuildIdentity,
             candidatePayloadClosure: context.report.candidatePayloadClosure,
             releaseSource: context.report.releaseSource,
             reportId: context.report.reportId,
-            sfxVoiceLimit
+            sfxPerEntryVoiceCap
         };
         if (archivedCarrier) {
             const archivedDerived = qualificationObserver.deriveLiveObservation(derivationOptions, archivedCarrier);

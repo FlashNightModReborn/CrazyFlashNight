@@ -117,7 +117,7 @@ function realCaptureConfiguration(runtime, captureId) {
         assert.strictEqual(request("pre_mix_bgm_restore", "set_gain", { volume: 1 }, "9").command, "pre_mix_bgm_restore");
     });
 
-    await test("rejects path escape duplicate dense IDs and case grammar drift", async () => {
+    await test("rejects path escape non-identical dense IDs and case grammar drift", async () => {
         const root = "tmp/audio-v2-qualification/" + RUN_ID + "/fixtures/";
         expectThrow(() => request("bgm_playback", "play", {
             fadeSeconds: 0, loop: true, path: root + "Upper.MP3", volume: 1
@@ -126,8 +126,11 @@ function realCaptureConfiguration(runtime, captureId) {
             fadeSeconds: 0, loop: true, path: root + "./bgm-primary.mp3", volume: 1
         }, "2"), /qualification-only run root/);
         expectThrow(() => request("dense_overlap_throttle", "sfx", {
-            linkageIds: ["a", "b", "c", "d", "e", "e"]
+            linkageIds: ["a", "a", "a", "a", "a", "b"]
         }, "3"), /frozen case grammar/);
+        assert.deepStrictEqual(request("dense_overlap_throttle", "sfx", {
+            linkageIds: ["a", "a", "a", "a", "a", "a"]
+        }, "4").linkageIds, ["a", "a", "a", "a", "a", "a"]);
         expectThrow(() => request("sfx_playback", "sfx", {
             linkageIds: ["bad/path"]
         }, "3"), /linkageId invalid/);
@@ -352,6 +355,9 @@ function realCaptureConfiguration(runtime, captureId) {
             "sfx_playback:sfx_playback",
             "bgm_sfx_mix:bgm_sfx_mix"
         ]);
+        assert.deepStrictEqual(
+            stimuli.find((entry) => entry.caseId === "dense_overlap_throttle").linkageIds,
+            ["sfx_0", "sfx_0", "sfx_0", "sfx_0", "sfx_0", "sfx_0"]);
         assert.ok(observations.includes("snapshot:gain_zero_and_default_max"));
         assert.ok(waits.length >= 10);
     });
