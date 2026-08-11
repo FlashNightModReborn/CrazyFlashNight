@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Newtonsoft.Json.Linq;
@@ -579,22 +580,30 @@ namespace Launcher.Tests.Tasks
         [Fact]
         public void TrainerCleanup_LostAckWithQueuedCandidateEscalatesToForceCleanup()
         {
-            var sent = new List<JObject>();
-            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, null, 20))
+            var sent = new ConcurrentQueue<JObject>();
+            // The first timeout and its delayed retry both use this deadline. Leave enough
+            // time to assert that candidate B was queued without immediately dispatching a
+            // force cleanup, even when the full suite briefly deschedules this test thread.
+            using (var task = NewTask(value => { sent.Enqueue(ParseWire(value)); return true; }, null, 500))
             {
                 task.RequestTrainerCleanup("trainer.active.A");
                 task.RequestTrainerCleanup("trainer.candidate.B");
 
                 Assert.Single(sent);
+                JObject first;
+                Assert.True(sent.TryPeek(out first));
+                Assert.Equal("skillPanelClose", (string)first["action"]);
+                Assert.Equal("trainer.active.A", (string)first["trainerSession"]);
                 Assert.Equal(2, task.CleanupBacklogCount);
                 Assert.False(task.CanOpenTrainer);
-                Assert.True(SpinWait.SpinUntil(() => sent.Count >= 2, 2000));
-                Assert.Equal(2, sent.Count);
-                Assert.Equal("skillPanelClose", (string)sent[1]["action"]);
-                Assert.Null(sent[1]["trainerSession"]);
+                Assert.True(SpinWait.SpinUntil(() => sent.Count >= 2, 5000));
+                JObject[] dispatched = sent.ToArray();
+                Assert.Equal(2, dispatched.Length);
+                Assert.Equal("skillPanelClose", (string)dispatched[1]["action"]);
+                Assert.Null(dispatched[1]["trainerSession"]);
                 Assert.False(task.CanOpenTrainer);
 
-                task.HandleFlashResponse(CleanupAck((int)sent[1]["callId"], 12), null);
+                task.HandleFlashResponse(CleanupAck((int)dispatched[1]["callId"], 12), null);
                 Assert.Equal(0, task.CleanupBacklogCount);
                 Assert.True(task.CanOpenTrainer);
             }
