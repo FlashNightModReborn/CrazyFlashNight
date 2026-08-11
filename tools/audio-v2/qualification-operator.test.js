@@ -35,6 +35,36 @@ function candidate() {
     };
 }
 
+function qualifiedSfxPlan() {
+    const sfx = Array.from({ length: 6 }, (_, index) => {
+        const sourceFrameCount = index === 4 ? 146 : 114;
+        const sourceSampleRate = 44100;
+        const sourceTotalSamples = sourceFrameCount * 1152;
+        return {
+            linkageId: "sfx_" + index + ".wav",
+            sourceBytes: index === 4 ? 60882 : 119016 + index,
+            sourceDurationMs: Math.floor(sourceTotalSamples * 1000 / sourceSampleRate),
+            sourceFrameCount,
+            sourceSampleRate,
+            sourceSha256: String(index + 1).repeat(64),
+            sourceTotalSamples
+        };
+    });
+    return {
+        qualifiedLongSfx: {
+            linkageId: sfx[4].linkageId,
+            minimumDurationMs: 3000,
+            sourceBytes: sfx[4].sourceBytes,
+            sourceDurationMs: sfx[4].sourceDurationMs,
+            sourceFrameCount: sfx[4].sourceFrameCount,
+            sourceSampleRate: sfx[4].sourceSampleRate,
+            sourceSha256: sfx[4].sourceSha256,
+            sourceTotalSamples: sfx[4].sourceTotalSamples
+        },
+        sfx
+    };
+}
+
 function responseFor(request) {
     const armed = request.command === "arm_recovery_sfx";
     return {
@@ -92,6 +122,23 @@ function realCaptureConfiguration(runtime, captureId) {
             sha256: SHA_C
         }
     };
+}
+
+function runAutomatedCliArgs(projectRoot, runId, captureOutputRoot) {
+    return [
+        "run-automated",
+        "--project-root", projectRoot,
+        "--run-id", runId,
+        "--candidate-build-identity", SHA_A,
+        "--candidate-payload-closure", SHA_C,
+        "--candidate-pid", "1234",
+        "--candidate-root", projectRoot,
+        "--powershell", process.execPath,
+        "--capture-backend", "wasapi",
+        "--capture-device-digest", SHA_A,
+        "--capture-endpoint-id", "test-endpoint",
+        "--capture-output-root", captureOutputRoot
+    ];
 }
 
 (async () => {
@@ -227,14 +274,13 @@ function realCaptureConfiguration(runtime, captureId) {
         const configurationPath = path.join(temporaryRoot, "bgm_playback.configuration.v1.json");
         const fixtureRoot = "tmp/audio-v2-qualification/" + RUN_ID + "/fixtures/";
         const runtime = readyRuntime();
-        const plan = {
+        const plan = Object.assign({
             bgm: {
                 crossfade: { relativePath: fixtureRoot + "bgm-crossfade.mp3" },
                 primary: { relativePath: fixtureRoot + "bgm-primary.mp3" }
             },
-            fixtures: [],
-            sfx: Array.from({ length: 6 }, (_, index) => ({ linkageId: "sfx_" + index }))
-        };
+            fixtures: []
+        }, qualifiedSfxPlan());
         fs.writeFileSync(
             configurationPath,
             operator.trackedArtifactCanonicalBytes(realCaptureConfiguration(runtime, "bgm_playback")));
@@ -266,7 +312,7 @@ function realCaptureConfiguration(runtime, captureId) {
 
     await test("all ten automated cases use markers snapshots exact stimuli and three captures", async () => {
         const root = "tmp/audio-v2-qualification/" + RUN_ID + "/fixtures/";
-        const plan = {
+        const plan = Object.assign({
             bgm: {
                 crossfade: { relativePath: root + "bgm-crossfade.mp3" },
                 primary: { relativePath: root + "bgm-primary.mp3" }
@@ -275,12 +321,12 @@ function realCaptureConfiguration(runtime, captureId) {
                 { fixtureId: "aac-lc-mp4-tone-48000-mono", relativePath: root + "format-aac.m4a" },
                 { fixtureId: "opus-ogg-tone-48000-mono", relativePath: root + "format-opus.opus" },
                 { fixtureId: "vorbis-ogg-tone-48000-mono", relativePath: root + "format-vorbis.ogg" }
-            ],
-            sfx: Array.from({ length: 6 }, (_, index) => ({ linkageId: "sfx_" + index }))
-        };
+            ]
+        }, qualifiedSfxPlan());
         const observations = [];
         const stimuli = [];
         const captures = [];
+        const timeline = [];
         const waits = [];
         const runtime = {
             audioReadyGeneration: 1,
@@ -307,12 +353,14 @@ function realCaptureConfiguration(runtime, captureId) {
             },
             observe(command, caseId) {
                 observations.push(command + ":" + caseId);
+                timeline.push("observe:" + command + ":" + caseId);
                 return command === "snapshot"
                     ? {
                         command,
                         caseId,
                         snapshot: {
                             bgmMeter: { peakLeft: caseId === "sfx_playback" ? 0 : 0.25, peakRight: caseId === "sfx_playback" ? 0 : 0.25 },
+                            sfxMeter: { peakLeft: 0, peakRight: 0 },
                             runtime: Object.assign({}, runtime)
                         }
                     }
@@ -320,6 +368,7 @@ function realCaptureConfiguration(runtime, captureId) {
             },
             requestStimulus(value) {
                 stimuli.push(value);
+                timeline.push("stimulus:" + value.caseId);
                 return responseFor(value);
             },
             startCapture(caseId, captureId) {
@@ -341,7 +390,11 @@ function realCaptureConfiguration(runtime, captureId) {
                     })
                 };
             },
-            sleep(milliseconds) { waits.push(milliseconds); return Promise.resolve(); }
+            sleep(milliseconds) {
+                waits.push(milliseconds);
+                timeline.push("wait:" + milliseconds);
+                return Promise.resolve();
+            }
         };
         const lane = await operator.runAutomatedLane(options, plan);
         assert.strictEqual(lane.cases.length, operator.AUTOMATED_CASES.length);
@@ -357,18 +410,56 @@ function realCaptureConfiguration(runtime, captureId) {
         ]);
         assert.deepStrictEqual(
             stimuli.find((entry) => entry.caseId === "dense_overlap_throttle").linkageIds,
-            ["sfx_0", "sfx_0", "sfx_0", "sfx_0", "sfx_0", "sfx_0"]);
+            ["sfx_4.wav", "sfx_4.wav", "sfx_4.wav", "sfx_4.wav", "sfx_4.wav", "sfx_4.wav"]);
+        assert.deepStrictEqual(
+            ["sfx_playback", "bgm_sfx_mix"].map((caseId) =>
+                stimuli.find((entry) => entry.caseId === caseId).linkageIds),
+            [["sfx_4.wav"], ["sfx_4.wav"]]);
         assert.ok(observations.includes("snapshot:gain_zero_and_default_max"));
         assert.ok(waits.length >= 10);
+        assert.strictEqual(operator.qualifiedSfxDrainMs(plan), 4063);
+        const restoreIndex = timeline.indexOf("stimulus:pre_mix_bgm_restore");
+        assert.deepStrictEqual(timeline.slice(restoreIndex, restoreIndex + 3), [
+            "stimulus:pre_mix_bgm_restore",
+            "wait:4063",
+            "observe:begin_case:bgm_sfx_mix"
+        ]);
+    });
+
+    await test("mix refuses a residual-SFX baseline before capture or fresh dispatch", async () => {
+        const root = "tmp/audio-v2-qualification/" + RUN_ID + "/fixtures/";
+        const plan = Object.assign({
+            bgm: { crossfade: { relativePath: root + "b.mp3" }, primary: { relativePath: root + "a.mp3" } },
+            fixtures: []
+        }, qualifiedSfxPlan());
+        const runtime = readyRuntime();
+        let dispatched = 0;
+        await assert.rejects(() => operator.runAutomatedCase({
+            runId: RUN_ID,
+            timing: { sfxSampleMs: 0 },
+            observe(command, caseId) {
+                return command === "snapshot" ? {
+                    caseId,
+                    command,
+                    snapshot: {
+                        bgmMeter: { peakLeft: 0.25, peakRight: 0.25 },
+                        runtime,
+                        sfxMeter: { peakLeft: 0.25, peakRight: 0.25 }
+                    }
+                } : { caseId, command };
+            },
+            requestStimulus() { dispatched++; },
+            startCapture() { throw new Error("capture must not start on residual SFX"); }
+        }, plan, "bgm_sfx_mix"), /residual SFX remains audible/);
+        assert.strictEqual(dispatched, 0);
     });
 
     await test("capture cases require readiness and exact runtime tuple binding", async () => {
         const root = "tmp/audio-v2-qualification/" + RUN_ID + "/fixtures/";
-        const plan = {
+        const plan = Object.assign({
             bgm: { crossfade: { relativePath: root + "b.mp3" }, primary: { relativePath: root + "a.mp3" } },
-            fixtures: [],
-            sfx: Array.from({ length: 6 }, (_, index) => ({ linkageId: "sfx_" + index }))
-        };
+            fixtures: []
+        }, qualifiedSfxPlan());
         const runtime = {
             audioReadyGeneration: 1,
             audioSessionId: "123e4567-e89b-42d3-a456-426614174000",
@@ -416,6 +507,76 @@ function realCaptureConfiguration(runtime, captureId) {
                 }
             }), plan, "bgm_playback"),
             /does not bind its ready runtime tuple/);
+    });
+
+    await test("prepare and run-automated bind one exclusive canonical capture directory", async () => {
+        const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-audio-operator-prepare-"));
+        try {
+            const captureDirectory = operator.prepareCaptureDirectory(projectRoot, RUN_ID);
+            assert.strictEqual(captureDirectory, path.join(
+                projectRoot, "tmp", "audio-v2-qualification", RUN_ID, "captures"));
+            assert.deepStrictEqual(fs.readdirSync(captureDirectory), []);
+            const parsed = operator.parseCli(runAutomatedCliArgs(projectRoot, RUN_ID, captureDirectory));
+            assert.strictEqual(parsed.capture.outputRoot, captureDirectory);
+            expectThrow(() => operator.prepareCaptureDirectory(projectRoot, RUN_ID), /run root already exists/);
+
+            const publishedCapture = path.join(captureDirectory, "bgm_playback.wav");
+            fs.writeFileSync(publishedCapture, "do not touch", { encoding: "utf8", flag: "wx" });
+            expectThrow(() => operator.prepareCaptureDirectory(projectRoot, RUN_ID), /run root already exists/);
+            expectThrow(() => operator.parseCli(runAutomatedCliArgs(projectRoot, RUN_ID, captureDirectory)),
+                /must be initially empty/);
+            await assert.rejects(() => operator.runAutomatedLane({
+                capture: { outputRoot: captureDirectory },
+                projectRoot,
+                runId: RUN_ID
+            }, { bgm: {}, fixtures: [], sfx: [] }), /must be initially empty/);
+            assert.strictEqual(operator.validateCaptureDirectory(projectRoot, RUN_ID, captureDirectory, false),
+                captureDirectory);
+            assert.strictEqual(fs.readFileSync(publishedCapture, "utf8"), "do not touch");
+
+            const oldRunId = "2".repeat(32);
+            const oldRunRoot = path.join(projectRoot, "tmp", "audio-v2-qualification", oldRunId);
+            fs.mkdirSync(oldRunRoot);
+            const oldMarker = path.join(oldRunRoot, "marker.txt");
+            fs.writeFileSync(oldMarker, "old", { encoding: "utf8", flag: "wx" });
+            expectThrow(() => operator.prepareCaptureDirectory(projectRoot, oldRunId), /run root already exists/);
+            assert.strictEqual(fs.readFileSync(oldMarker, "utf8"), "old");
+            assert.ok(!fs.existsSync(path.join(oldRunRoot, "captures")));
+            expectThrow(() => operator.parseCli(runAutomatedCliArgs(projectRoot, oldRunId, captureDirectory)),
+                /exact qualification run captures directory/);
+
+            const wrongDirectory = path.join(projectRoot, "wrong-captures");
+            fs.mkdirSync(wrongDirectory);
+            expectThrow(() => operator.parseCli(runAutomatedCliArgs(projectRoot, RUN_ID, wrongDirectory)),
+                /exact qualification run captures directory/);
+
+            const linkedRunId = "3".repeat(32);
+            const linkedRunRoot = path.join(projectRoot, "tmp", "audio-v2-qualification", linkedRunId);
+            const linkTarget = path.join(projectRoot, "capture-link-target");
+            fs.mkdirSync(linkedRunRoot);
+            fs.mkdirSync(linkTarget);
+            const linkedCaptureDirectory = path.join(linkedRunRoot, "captures");
+            fs.symlinkSync(linkTarget, linkedCaptureDirectory, process.platform === "win32" ? "junction" : "dir");
+            expectThrow(() => operator.parseCli(runAutomatedCliArgs(
+                projectRoot, linkedRunId, linkedCaptureDirectory)), /reparse\/symlink|canonical real storage/);
+        } finally {
+            fs.rmSync(projectRoot, { force: true, recursive: true });
+        }
+    });
+
+    await test("qualified long SFX binding rejects plan tamper and all-short fixture sets", async () => {
+        const valid = qualifiedSfxPlan();
+        assert.strictEqual(operator.validateQualifiedLongSfx(valid).linkageId, "sfx_4.wav");
+
+        const tampered = qualifiedSfxPlan();
+        tampered.qualifiedLongSfx.sourceDurationMs++;
+        expectThrow(() => operator.validateQualifiedLongSfx(tampered), /differs from deterministic materializer selection/);
+
+        const short = qualifiedSfxPlan();
+        short.sfx[4].sourceFrameCount = 114;
+        short.sfx[4].sourceTotalSamples = 114 * 1152;
+        short.sfx[4].sourceDurationMs = Math.floor(short.sfx[4].sourceTotalSamples * 1000 / 44100);
+        expectThrow(() => operator.validateQualifiedLongSfx(short), /no qualified long sample/);
     });
 
     await test("CLI keeps preparation separate from candidate execution and human gate", async () => {

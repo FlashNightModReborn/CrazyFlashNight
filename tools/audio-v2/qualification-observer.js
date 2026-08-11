@@ -711,6 +711,17 @@ function expectAnyBusMeterWindow(beforeEvent, afterEvent, minimumFrames, label) 
     expect(advanced && signalled, label + " endpoint meter window did not advance with signal");
 }
 
+function expectStableLoopSource(before, after, label) {
+    expect(before.playing && after.playing && before.requestId && after.requestId === before.requestId,
+        label + " did not retain the same playing BGM request");
+    expect(before.codec === after.codec && before.container === after.container &&
+        before.decoderBackend === after.decoderBackend,
+    label + " changed BGM decoder identity");
+    expect(before.lengthFrames > 0 && after.lengthFrames === before.lengthFrames &&
+        before.cursorFrames < before.lengthFrames && after.cursorFrames < after.lengthFrames,
+    label + " cursor is outside a stable nonempty loop boundary");
+}
+
 function expectBgmTuple(pairs, runtime, label) {
     pairs.forEach((pair) => {
         expect(pair.request.payload.audioSessionId === runtime.audioSessionId &&
@@ -825,16 +836,32 @@ function deriveCaseFacts(caseId, range, options) {
         expect(before.source.playing && after.source.playing, "bgm_crossfade source was not playing at both boundaries");
         expect(before.source.requestId && after.source.requestId === pair.request.payload.requestId && before.source.requestId !== after.source.requestId, "bgm_crossfade did not replace the source through AS2");
         snapshots.forEach((entry) => expect(peakAbsPcm16(entry.payload.bgmMeter) >= 64, "bgm_crossfade sampled a silent endpoint window"));
-        let maximumSpacing = 0;
-        for (let index = 1; index < snapshots.length; index++) {
-            maximumSpacing = Math.max(maximumSpacing, utcDeltaMs(snapshots[index - 1], snapshots[index], "bgm_crossfade sample gap"));
-            expect(snapshots[index].payload.bgmMeter.frameCount > snapshots[index - 1].payload.bgmMeter.frameCount, "bgm_crossfade reused a cached meter snapshot");
-        }
         const maximumAllowed = 500;
-        expect(maximumSpacing <= maximumAllowed, "bgm_crossfade observation cadence cannot bound an audio gap");
+        let distinctFrameSamples = 1;
+        let maximumNoProgressMs = 0;
+        let plateauStart = snapshots[0];
+        for (let index = 1; index < snapshots.length; index++) {
+            const previous = snapshots[index - 1];
+            const current = snapshots[index];
+            utcDeltaMs(previous, current, "bgm_crossfade raw sample order");
+            const previousFrames = previous.payload.bgmMeter.frameCount;
+            const currentFrames = current.payload.bgmMeter.frameCount;
+            expect(currentFrames >= previousFrames, "bgm_crossfade meter frameCount regressed");
+            if (currentFrames > previousFrames) {
+                maximumNoProgressMs = Math.max(maximumNoProgressMs,
+                    utcDeltaMs(plateauStart, current, "bgm_crossfade no-progress window"));
+                distinctFrameSamples++;
+                plateauStart = current;
+            }
+        }
+        maximumNoProgressMs = Math.max(maximumNoProgressMs,
+            utcDeltaMs(plateauStart, snapshots[snapshots.length - 1], "bgm_crossfade trailing no-progress window"));
+        expect(after.bgmMeter.frameCount > before.bgmMeter.frameCount, "bgm_crossfade total meter frame window did not advance");
+        expect(distinctFrameSamples >= 3, "bgm_crossfade requires at least three distinct advancing meter samples");
+        expect(maximumNoProgressMs <= maximumAllowed, "bgm_crossfade no-progress window exceeds 500ms");
         return {
             captureId: "bgm_playback",
-            gapMs: maximumSpacing,
+            gapMs: maximumNoProgressMs,
             maxGapMs: maximumAllowed,
             newSourceFrames: after.source.cursorFrames,
             oldSourceFrames: before.source.cursorFrames
@@ -929,13 +956,16 @@ function deriveCaseFacts(caseId, range, options) {
         expectSfxTuple(request, runtime, caseId);
         const before = snapshots[0].payload;
         const after = snapshots[snapshots.length - 1].payload;
+        expect(peakAbsPcm16(before.sfxMeter) < 64,
+            "bgm_sfx_mix baseline is contaminated by residual SFX");
         const played = counterDelta(before.counters, after.counters, "playedCount", caseId);
         expect(played > 0 && played <= request.requestedVoices, "bgm_sfx_mix has no SFX contribution");
-        expect(after.source.playing && after.source.cursorFrames > before.source.cursorFrames, "bgm_sfx_mix BGM cursor did not advance");
-        expect(peakAbsPcm16(after.bgmMeter) >= 64 && peakAbsPcm16(after.sfxMeter) >= 64, "bgm_sfx_mix bus meters have no qualified signal");
-        expect(after.bgmMeter.frameCount > before.bgmMeter.frameCount && after.sfxMeter.frameCount > before.sfxMeter.frameCount, "bgm_sfx_mix reused a cached meter snapshot");
+        expectStableLoopSource(before.source, after.source, caseId);
+        expectMeterWindow(snapshots[0], snapshots[snapshots.length - 1], "bgmMeter", 1, caseId + " BGM");
+        expectMeterWindow(snapshots[0], snapshots[snapshots.length - 1], "sfxMeter", 1, caseId + " SFX");
+        const bgmFrames = after.bgmMeter.frameCount - before.bgmMeter.frameCount;
         return {
-            bgmFrames: after.source.cursorFrames - before.source.cursorFrames,
+            bgmFrames,
             captureId: "bgm_sfx_mix",
             sfxPlayedAfter: after.counters.playedCount,
             sfxPlayedBefore: before.counters.playedCount

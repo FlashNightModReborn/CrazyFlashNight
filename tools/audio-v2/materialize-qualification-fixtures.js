@@ -13,6 +13,13 @@ const path = require("path");
 const INVENTORY_PATH = "tools/audio-v2/qualification-decoder-fixtures.v1.json";
 const SHIPPED_INVENTORY_PATH = "config/audio-v2/shipped-audio-assets.v1.json";
 const OUTPUT_SCHEMA = "cf7.audio-v2.materialized-qualification-fixtures.v1";
+const QUALIFIED_LONG_SFX_MIN_DURATION_MS = 3000;
+const MPEG1_LAYER3_BITRATES_KBPS = Object.freeze([
+    0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320
+]);
+const MPEG2_LAYER3_BITRATES_KBPS = Object.freeze([
+    0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160
+]);
 const POSITIVE_FIXTURES = Object.freeze({
     "aac-lc-mp4-tone-48000-mono": "format-aac.m4a",
     "opus-ogg-tone-48000-mono": "format-opus.opus",
@@ -91,12 +98,66 @@ function readCanonicalJson(projectRoot, relative, schema) {
     return { bytes, value };
 }
 
-function copyBoundAsset(projectRoot, outputDirectory, row, fileName) {
+function readBoundAsset(projectRoot, row) {
     const source = path.join(projectRoot, ...row.path.split("/"));
     const sourceStat = fs.lstatSync(source);
     if (!sourceStat.isFile() || sourceStat.isSymbolicLink()) fail("stimulus source is not a regular file: " + row.path);
     const bytes = fs.readFileSync(source);
     if (bytes.length !== row.bytes || sha256(bytes) !== row.sha256) fail("stimulus source bytes drifted: " + row.path);
+    return bytes;
+}
+
+function parseStrictMp3Frames(bytes, label) {
+    if (!Buffer.isBuffer(bytes) || bytes.length < 4) fail(label + " is not a nonempty MPEG Layer III stream");
+    let frameCount = 0;
+    let offset = 0;
+    let sampleRate = null;
+    let totalSamples = 0;
+    let versionBits = null;
+    while (offset < bytes.length) {
+        if (bytes.length - offset < 4) fail(label + " has trailing bytes after its final MP3 frame");
+        const header = bytes.readUInt32BE(offset);
+        if ((header >>> 21) !== 0x7ff) fail(label + " has a malformed or non-MP3 frame header");
+        const currentVersionBits = (header >>> 19) & 0x3;
+        const layerBits = (header >>> 17) & 0x3;
+        const bitrateIndex = (header >>> 12) & 0xf;
+        const sampleRateIndex = (header >>> 10) & 0x3;
+        const padding = (header >>> 9) & 0x1;
+        if (currentVersionBits === 1 || layerBits !== 1 || bitrateIndex === 0 || bitrateIndex === 15 || sampleRateIndex === 3) {
+            fail(label + " contains an unsupported or malformed MPEG Layer III frame");
+        }
+        const rates = currentVersionBits === 3
+            ? [44100, 48000, 32000]
+            : (currentVersionBits === 2 ? [22050, 24000, 16000] : [11025, 12000, 8000]);
+        const currentSampleRate = rates[sampleRateIndex];
+        if (sampleRate === null) {
+            sampleRate = currentSampleRate;
+            versionBits = currentVersionBits;
+        } else if (currentSampleRate !== sampleRate || currentVersionBits !== versionBits) {
+            fail(label + " changes MPEG version or sample rate between frames");
+        }
+        const bitrates = currentVersionBits === 3 ? MPEG1_LAYER3_BITRATES_KBPS : MPEG2_LAYER3_BITRATES_KBPS;
+        const bitrate = bitrates[bitrateIndex] * 1000;
+        const samplesPerFrame = currentVersionBits === 3 ? 1152 : 576;
+        const coefficient = currentVersionBits === 3 ? 144 : 72;
+        const frameBytes = Math.floor(coefficient * bitrate / currentSampleRate) + padding;
+        if (frameBytes < 4 || offset + frameBytes > bytes.length) fail(label + " has a truncated MP3 frame");
+        offset += frameBytes;
+        frameCount++;
+        totalSamples += samplesPerFrame;
+        if (!Number.isSafeInteger(totalSamples)) fail(label + " decoded sample count exceeds the safe integer bound");
+    }
+    if (frameCount === 0 || offset !== bytes.length) fail(label + " does not close over exact MP3 frame bytes");
+    return {
+        sourceDurationMs: Math.floor(totalSamples * 1000 / sampleRate),
+        sourceFrameCount: frameCount,
+        sourceSampleRate: sampleRate,
+        sourceTotalSamples: totalSamples
+    };
+}
+
+function copyBoundAsset(projectRoot, outputDirectory, row, fileName) {
+    const bytes = readBoundAsset(projectRoot, row);
     const output = path.join(outputDirectory, fileName);
     if (fs.existsSync(output)) {
         const outputStat = fs.lstatSync(output);
@@ -115,6 +176,24 @@ function copyBoundAsset(projectRoot, outputDirectory, row, fileName) {
         sourceBlobOid: row.blobOid,
         sourcePath: row.path
     };
+}
+
+function selectQualifiedLongSfx(rows) {
+    if (!Array.isArray(rows)) fail("SFX stimulus rows are invalid");
+    const candidates = rows.filter((entry) => entry &&
+        Number.isSafeInteger(entry.sourceBytes) && entry.sourceBytes > 0 &&
+        Number.isSafeInteger(entry.sourceDurationMs) && entry.sourceDurationMs >= QUALIFIED_LONG_SFX_MIN_DURATION_MS &&
+        Number.isSafeInteger(entry.sourceFrameCount) && entry.sourceFrameCount > 0 &&
+        Number.isSafeInteger(entry.sourceSampleRate) && entry.sourceSampleRate > 0 &&
+        Number.isSafeInteger(entry.sourceTotalSamples) && entry.sourceTotalSamples > 0 &&
+        entry.sourceDurationMs === Math.floor(entry.sourceTotalSamples * 1000 / entry.sourceSampleRate) &&
+        typeof entry.linkageId === "string" && entry.linkageId.length > 0 &&
+        /^[A-F0-9]{64}$/.test(entry.sourceSha256 || ""));
+    if (candidates.length === 0) fail("tracked SFX stimulus set has no qualified long sample");
+    return candidates.slice().sort((left, right) =>
+        right.sourceDurationMs - left.sourceDurationMs ||
+        right.sourceBytes - left.sourceBytes ||
+        left.linkageId.localeCompare(right.linkageId, "en"))[0];
 }
 
 function materializeFixtures(projectRoot, runId) {
@@ -186,18 +265,37 @@ function materializeFixtures(projectRoot, runId) {
         .filter((entry) => entry[1].length === 1 && entry[1][0].bytes > 0)
         .sort((left, right) => left[0].localeCompare(right[0], "en"))
         .slice(0, 6)
-        .map((entry) => ({
-            linkageId: entry[0],
-            sourceBlobOid: entry[1][0].blobOid,
-            sourcePath: entry[1][0].path,
-            sourceSha256: entry[1][0].sha256
-        }));
+        .map((entry) => {
+            const source = entry[1][0];
+            if (source.codec !== "mpeg_audio_layer_iii" || source.container !== "mpeg_audio") {
+                fail("tracked SFX stimulus codec/container metadata is invalid: " + source.path);
+            }
+            const parsed = parseStrictMp3Frames(readBoundAsset(root, source), source.path);
+            return Object.assign({
+                linkageId: entry[0],
+                sourceBlobOid: source.blobOid,
+                sourceBytes: source.bytes,
+                sourcePath: source.path,
+                sourceSha256: source.sha256
+            }, parsed);
+        });
     if (sfx.length !== 6) fail("unique tracked SFX stimulus set is incomplete");
+    const longSfx = selectQualifiedLongSfx(sfx);
 
     const result = {
         bgm: { crossfade: crossfadeBgm, primary: primaryBgm },
         fixtures: rows,
         inventorySha256: sha256(inventory.bytes),
+        qualifiedLongSfx: {
+            linkageId: longSfx.linkageId,
+            minimumDurationMs: QUALIFIED_LONG_SFX_MIN_DURATION_MS,
+            sourceBytes: longSfx.sourceBytes,
+            sourceDurationMs: longSfx.sourceDurationMs,
+            sourceFrameCount: longSfx.sourceFrameCount,
+            sourceSampleRate: longSfx.sourceSampleRate,
+            sourceSha256: longSfx.sourceSha256,
+            sourceTotalSamples: longSfx.sourceTotalSamples
+        },
         runId,
         schema: OUTPUT_SCHEMA,
         shippedInventorySha256: sha256(shipped.bytes),
@@ -238,5 +336,8 @@ if (require.main === module) {
 module.exports = Object.freeze({
     canonicalBytes,
     materializeFixtures,
+    parseStrictMp3Frames,
+    QUALIFIED_LONG_SFX_MIN_DURATION_MS,
+    selectQualifiedLongSfx,
     sha256
 });

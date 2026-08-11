@@ -24,6 +24,8 @@ const CAPTURE_TOOL = "tools/audio-v2/capture-endpoint.ps1";
 const MAX_STIMULUS_RESPONSE_BYTES = 1024 * 1024;
 const DEFAULT_TIMEOUT_MS = 5000;
 const CAPTURE_READY_TOKEN = "CF7_AUDIO_V2_CAPTURE_READY_V1\n";
+const SFX_DRAIN_MARGIN_MS = 250;
+const SFX_DRAIN_MINIMUM_MS = 750;
 const AUTOMATED_CASES = Object.freeze([
     "bgm_playback",
     "bgm_seek",
@@ -180,6 +182,85 @@ function qualificationPath(runId, relativePath) {
         !relativePath.split("/").includes(".."),
     "stimulus path is outside the qualification-only run root");
     return relativePath;
+}
+
+function ensureRealDirectory(directory, allowedRoot) {
+    const root = path.resolve(allowedRoot);
+    const target = path.resolve(directory);
+    const relative = path.relative(root, target);
+    expect(!relative.startsWith("..") && !path.isAbsolute(relative), "qualification directory escapes project root");
+
+    const missing = [];
+    let cursor = target;
+    while (!fs.existsSync(cursor)) {
+        missing.push(cursor);
+        const parent = path.dirname(cursor);
+        expect(parent !== cursor, "qualification directory ancestry is invalid");
+        cursor = parent;
+    }
+    for (let current = cursor; ; current = path.dirname(current)) {
+        const stat = fs.lstatSync(current);
+        expect(stat.isDirectory() && !stat.isSymbolicLink(), "qualification directory ancestry contains a reparse/symlink");
+        if (path.resolve(current) === root) break;
+        const parent = path.dirname(current);
+        expect(parent !== current, "qualification directory ancestry does not reach project root");
+    }
+    missing.reverse().forEach((current) => fs.mkdirSync(current));
+}
+
+function prepareCaptureDirectory(projectRoot, runId) {
+    expect(path.isAbsolute(projectRoot), "prepare project root must be absolute");
+    const root = path.resolve(projectRoot);
+    expect(fs.existsSync(root) && fs.lstatSync(root).isDirectory() && !fs.lstatSync(root).isSymbolicLink(),
+        "prepare project root invalid");
+    expectRunId(runId, "prepare runId");
+    const runRoot = path.join(root, "tmp", "audio-v2-qualification", runId);
+    expect(!fs.existsSync(runRoot), "qualification run root already exists; use a fresh runId");
+    ensureRealDirectory(path.dirname(runRoot), root);
+    try { fs.mkdirSync(runRoot); }
+    catch (error) {
+        if (error && error.code === "EEXIST") fail("VALIDATION_FAILED", "qualification run root already exists; use a fresh runId");
+        throw error;
+    }
+    const captureDirectory = path.join(runRoot, "captures");
+    fs.mkdirSync(captureDirectory);
+    validateCaptureDirectory(root, runId, captureDirectory, true);
+    return captureDirectory;
+}
+
+function sameResolvedPath(left, right) {
+    const leftPath = path.resolve(left);
+    const rightPath = path.resolve(right);
+    return process.platform === "win32"
+        ? leftPath.toLowerCase() === rightPath.toLowerCase()
+        : leftPath === rightPath;
+}
+
+function validateCaptureDirectory(projectRoot, runId, captureOutputRoot, requireEmpty) {
+    expect(path.isAbsolute(projectRoot), "capture project root must be absolute");
+    expectRunId(runId, "capture runId");
+    expect(path.isAbsolute(captureOutputRoot), "capture output root must be absolute");
+    expect(typeof requireEmpty === "boolean", "capture empty-directory policy missing");
+    const root = path.resolve(projectRoot);
+    const expected = path.join(root, "tmp", "audio-v2-qualification", runId, "captures");
+    expect(sameResolvedPath(captureOutputRoot, expected),
+        "capture output root must be the exact qualification run captures directory");
+    expect(fs.existsSync(expected), "capture output root is missing");
+
+    for (let current = expected; ; current = path.dirname(current)) {
+        const stat = fs.lstatSync(current);
+        expect(stat.isDirectory() && !stat.isSymbolicLink(),
+            "capture output root ancestry contains a reparse/symlink");
+        if (sameResolvedPath(current, root)) break;
+        const parent = path.dirname(current);
+        expect(parent !== current, "capture output root ancestry does not reach project root");
+    }
+    expect(sameResolvedPath(fs.realpathSync.native(root), root) &&
+        sameResolvedPath(fs.realpathSync.native(expected), expected),
+    "capture output root is not canonical real storage");
+    if (requireEmpty) expect(fs.readdirSync(expected).length === 0,
+        "capture output root must be initially empty");
+    return expected;
 }
 
 function buildStimulusRequest(runId, caseId, operation, fields, requestId) {
@@ -349,6 +430,50 @@ function readPlan(projectRoot, runId) {
     return value;
 }
 
+function validateQualifiedLongSfx(plan) {
+    expect(plan && Array.isArray(plan.sfx) && plan.sfx.length === 6,
+        "stimulus plan must contain the exact six-item SFX set");
+    expect(plan.qualifiedLongSfx && typeof plan.qualifiedLongSfx === "object",
+        "stimulus plan has no qualified long SFX binding");
+    exactKeys(plan.qualifiedLongSfx,
+        [
+            "linkageId", "minimumDurationMs", "sourceBytes", "sourceDurationMs",
+            "sourceFrameCount", "sourceSampleRate", "sourceSha256", "sourceTotalSamples"
+        ],
+        "qualified long SFX binding");
+    const linkageIds = new Set();
+    plan.sfx.forEach((entry) => {
+        expect(entry && typeof entry.linkageId === "string" && entry.linkageId.length > 0 &&
+            !linkageIds.has(entry.linkageId), "stimulus plan SFX linkage IDs must be nonempty and unique");
+        linkageIds.add(entry.linkageId);
+        expect([
+            entry.sourceBytes, entry.sourceDurationMs, entry.sourceFrameCount,
+            entry.sourceSampleRate, entry.sourceTotalSamples
+        ].every((value) => Number.isSafeInteger(value) && value > 0) &&
+            entry.sourceDurationMs === Math.floor(entry.sourceTotalSamples * 1000 / entry.sourceSampleRate) &&
+            /^[A-F0-9]{64}$/.test(entry.sourceSha256 || ""),
+        "stimulus plan SFX byte/hash/duration binding is invalid");
+    });
+    const selected = fixtures.selectQualifiedLongSfx(plan.sfx);
+    const binding = plan.qualifiedLongSfx;
+    expect(binding.minimumDurationMs === fixtures.QUALIFIED_LONG_SFX_MIN_DURATION_MS &&
+        binding.linkageId === selected.linkageId && binding.sourceBytes === selected.sourceBytes &&
+        binding.sourceDurationMs === selected.sourceDurationMs &&
+        binding.sourceFrameCount === selected.sourceFrameCount &&
+        binding.sourceSampleRate === selected.sourceSampleRate &&
+        binding.sourceSha256 === selected.sourceSha256 &&
+        binding.sourceTotalSamples === selected.sourceTotalSamples,
+    "qualified long SFX binding differs from deterministic materializer selection");
+    return selected;
+}
+
+function qualifiedSfxDrainMs(plan) {
+    const selected = validateQualifiedLongSfx(plan);
+    const durationBound = selected.sourceDurationMs + SFX_DRAIN_MARGIN_MS;
+    expect(Number.isSafeInteger(durationBound), "qualified long SFX drain duration exceeds the safe integer bound");
+    return Math.max(SFX_DRAIN_MINIMUM_MS, durationBound);
+}
+
 function observerOptions(options) {
     return {
         clientPath: path.resolve(options.projectRoot, "tools", "audio-v2", "qualification-observer-client.ps1"),
@@ -425,8 +550,8 @@ function startCapture(options, caseId, runtime) {
     if (!captureId) return null;
     if (options.startCapture) return options.startCapture(caseId, captureId, runtime);
     expect(options.capture && typeof options.capture === "object", caseId + " requires endpoint capture options");
-    expect(path.isAbsolute(options.capture.outputRoot), "capture output root must be absolute");
-    expect(fs.existsSync(options.capture.outputRoot) && fs.lstatSync(options.capture.outputRoot).isDirectory(), "capture output root is missing");
+    const captureOutputRoot = validateCaptureDirectory(
+        options.projectRoot, options.runId, options.capture.outputRoot, false);
     expect(["wasapi", "directsound", "winmm"].includes(options.capture.backend), "capture backend invalid");
     expectSha(options.capture.deviceIdDigest, "capture device digest");
     expect(typeof options.capture.endpointId === "string" && options.capture.endpointId.length >= 1 && options.capture.endpointId.length <= 4096,
@@ -435,9 +560,9 @@ function startCapture(options, caseId, runtime) {
         caseId + " requested capture tuple differs from the candidate runtime");
 
     const captureTool = path.resolve(options.projectRoot, ...CAPTURE_TOOL.split("/"));
-    const wav = path.join(options.capture.outputRoot, captureId + ".wav");
-    const config = path.join(options.capture.outputRoot, captureId + ".configuration.v1.json");
-    const readySignal = path.join(options.capture.outputRoot, "." + captureId + "." + options.runId + ".ready");
+    const wav = path.join(captureOutputRoot, captureId + ".wav");
+    const config = path.join(captureOutputRoot, captureId + ".configuration.v1.json");
+    const readySignal = path.join(captureOutputRoot, "." + captureId + "." + options.runId + ".ready");
     expect(!fs.existsSync(readySignal), "endpoint capture ready signal already exists");
     const args = [
         "-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass",
@@ -563,6 +688,8 @@ async function waitFor(options, milliseconds) {
 
 async function runAutomatedCase(options, plan, caseId) {
     expect(AUTOMATED_CASES.includes(caseId), "case is not in the automated qualification lane");
+    const longSfx = ["sfx_playback", "dense_overlap_throttle", "bgm_sfx_mix"].includes(caseId)
+        ? validateQualifiedLongSfx(plan) : null;
     const transcript = { caseId, captures: [], observations: [], stimuli: [] };
     transcript.observations.push(observe(options, "begin_case", caseId));
 
@@ -575,6 +702,10 @@ async function runAutomatedCase(options, plan, caseId) {
         const meter = initialObservation.snapshot.bgmMeter;
         expect(meter && Math.max(Math.abs(meter.peakLeft), Math.abs(meter.peakRight)) * 32767 < 64,
             "sfx_playback cannot start capture while BGM remains audible");
+    } else if (caseId === "bgm_sfx_mix") {
+        const meter = initialObservation.snapshot.sfxMeter;
+        expect(meter && Math.max(Math.abs(meter.peakLeft), Math.abs(meter.peakRight)) * 32767 < 64,
+            "bgm_sfx_mix cannot dispatch while residual SFX remains audible");
     }
     const capture = startCapture(options, caseId, initialRuntime);
     if (capture) {
@@ -617,7 +748,7 @@ async function runAutomatedCase(options, plan, caseId) {
         }));
         await waitFor(options, options.timing.formatObservationMs);
     } else if (caseId === "sfx_playback") {
-        transcript.stimuli.push(dispatch(options, caseId, "sfx", { linkageIds: [plan.sfx[0].linkageId] }));
+        transcript.stimuli.push(dispatch(options, caseId, "sfx", { linkageIds: [longSfx.linkageId] }));
         for (let sample = 0; sample < 2; sample++) {
             await waitFor(options, options.timing.sfxSampleMs);
             transcript.observations.push(observe(options, "snapshot", caseId));
@@ -625,11 +756,11 @@ async function runAutomatedCase(options, plan, caseId) {
         hasPostStimulusSnapshot = true;
     } else if (caseId === "dense_overlap_throttle") {
         transcript.stimuli.push(dispatch(options, caseId, "sfx", {
-            linkageIds: Array(6).fill(plan.sfx[0].linkageId)
+            linkageIds: Array(6).fill(longSfx.linkageId)
         }));
         await waitFor(options, options.timing.sfxSampleMs);
     } else if (caseId === "bgm_sfx_mix") {
-        transcript.stimuli.push(dispatch(options, caseId, "sfx", { linkageIds: [plan.sfx[1].linkageId] }));
+        transcript.stimuli.push(dispatch(options, caseId, "sfx", { linkageIds: [longSfx.linkageId] }));
         for (let sample = 0; sample < 2; sample++) {
             await waitFor(options, options.timing.sfxSampleMs);
             transcript.observations.push(observe(options, "snapshot", caseId));
@@ -660,6 +791,11 @@ async function runAutomatedCase(options, plan, caseId) {
 async function runAutomatedLane(options, plan) {
     expect(plan && plan.bgm && Array.isArray(plan.fixtures) && Array.isArray(plan.sfx),
         "automated lane requires a validated stimulus plan");
+    if (!options.startCapture) {
+        expect(options.capture && typeof options.capture === "object", "automated lane capture options missing");
+        validateCaptureDirectory(options.projectRoot, options.runId, options.capture.outputRoot, true);
+    }
+    const sfxDrainMs = qualifiedSfxDrainMs(plan);
     const transcript = [];
     for (const caseId of AUTOMATED_CASES) {
         transcript.push(await runAutomatedCase(options, plan, caseId));
@@ -668,7 +804,7 @@ async function runAutomatedLane(options, plan) {
             await waitFor(options, options.timing.betweenCaseControlDrainMs);
         } else if (caseId === "dense_overlap_throttle") {
             dispatch(options, "pre_mix_bgm_restore", "set_gain", { volume: 1 });
-            await waitFor(options, options.timing.betweenCaseControlDrainMs);
+            await waitFor(options, sfxDrainMs);
         }
     }
     const postGainRestore = dispatch(
@@ -742,6 +878,7 @@ function parseCli(argv) {
             endpointId: values["--capture-endpoint-id"],
             outputRoot: path.resolve(values["--capture-output-root"])
         };
+        validateCaptureDirectory(result.projectRoot, result.runId, result.capture.outputRoot, true);
     } else if (command === "observe") {
         result.pipeCommand = values["--pipe-command"];
         result.caseId = values["--case-id"];
@@ -778,6 +915,7 @@ function runtimeOptions(parsed) {
 async function main(argv) {
     const parsed = parseCli(argv);
     if (parsed.command === "prepare") {
+        prepareCaptureDirectory(parsed.projectRoot, parsed.runId);
         return fixtures.materializeFixtures(parsed.projectRoot, parsed.runId);
     }
     const options = runtimeOptions(parsed);
@@ -809,12 +947,16 @@ module.exports = Object.freeze({
     canonicalBytes,
     inspectCandidate,
     parseCli,
+    prepareCaptureDirectory,
     qualificationPath,
     readCaptureConfiguration,
     requestStimulus,
+    qualifiedSfxDrainMs,
     runAutomatedCase,
     runAutomatedLane,
     trackedArtifactCanonicalBytes,
     validateCaptureRuntimeBinding,
+    validateCaptureDirectory,
+    validateQualifiedLongSfx,
     validateStimulusResponse
 });

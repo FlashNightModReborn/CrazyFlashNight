@@ -443,6 +443,60 @@ test("SFX playback requires its own advancing nonzero meter window", () => {
     assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /contaminated by audible BGM/);
 });
 
+test("BGM/SFX mix accepts loop wrap or full-loop cursor equality and rejects bad meter/bounds", () => {
+    const before = snapshot({
+        bgmMeter: { frameCount: 1000 },
+        sfxMeter: { frameCount: 1000, peakLeft: 0, peakRight: 0, rmsLeft: 0, rmsRight: 0 },
+        source: { cursorFrames: 18240, lengthFrames: 24000, requestId: "looping-opus" }
+    });
+    const after = snapshot({
+        bgmMeter: { frameCount: 2000 },
+        counters: { playedCount: 1 },
+        sfxMeter: { frameCount: 2000 },
+        source: { cursorFrames: 14880, lengthFrames: 24000, requestId: "looping-opus" }
+    });
+    const range = {
+        begin: { caseId: "bgm_sfx_mix" },
+        events: [
+            { kind: "qualification_snapshot", payload: before, sequence: 2 },
+            {
+                kind: "as2_sfx_batch", sequence: 3, source: "as2_ingress",
+                payload: sfxBatch(1, ["long.wav"])
+            },
+            { kind: "qualification_snapshot", payload: after, sequence: 4 }
+        ]
+    };
+    assert.deepStrictEqual(observer.deriveCaseFacts("bgm_sfx_mix", range, {}), {
+        bgmFrames: 1000,
+        captureId: "bgm_sfx_mix",
+        sfxPlayedAfter: 1,
+        sfxPlayedBefore: 0
+    });
+
+    before.sfxMeter.peakLeft = 0.25;
+    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /contaminated by residual SFX/);
+    before.sfxMeter.peakLeft = 0;
+    after.source.cursorFrames = before.source.cursorFrames;
+    assert.strictEqual(observer.deriveCaseFacts("bgm_sfx_mix", range, {}).bgmFrames, 1000);
+    after.source.cursorFrames = after.source.lengthFrames;
+    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /outside a stable nonempty loop boundary/);
+    after.source.cursorFrames = 14880;
+    after.bgmMeter.frameCount = before.bgmMeter.frameCount;
+    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /BGM meter frame window did not advance/);
+    after.bgmMeter.frameCount = 2000;
+    after.bgmMeter.peakLeft = 0;
+    after.bgmMeter.peakRight = 0;
+    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /BGM meter window has no qualified signal/);
+    after.bgmMeter.peakLeft = 0.25;
+    after.bgmMeter.peakRight = 0.25;
+    after.sfxMeter.frameCount = before.sfxMeter.frameCount;
+    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /SFX meter frame window did not advance/);
+    after.sfxMeter.frameCount = 2000;
+    after.sfxMeter.peakLeft = 0;
+    after.sfxMeter.peakRight = 0;
+    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /SFX meter window has no qualified signal/);
+});
+
 test("sleep resume closes recovering to a later owner/qualification ready snapshot", () => {
     const before = snapshot({ runtime: { deviceGeneration: 1, status: "ready" } });
     const recovering = snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 1, status: "recovering" } });
@@ -479,10 +533,7 @@ test("sleep resume closes recovering to a later owner/qualification ready snapsh
     assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /transition missing|out of order/);
 });
 
-test("crossfade candidate-owned sampling must keep every observed bound within 500ms", () => {
-    const oldSource = snapshot({ bgmMeter: { frameCount: 1000 }, source: { cursorFrames: 200, requestId: "old-request" } });
-    const middleSource = snapshot({ bgmMeter: { frameCount: 1100 }, source: { cursorFrames: 250, requestId: "old-request" } });
-    const newSource = snapshot({ bgmMeter: { frameCount: 1200 }, source: { cursorFrames: 50, requestId: "new-request" } });
+function crossfadeRange(samples) {
     const request = {
         kind: "as2_bgm_request", sequence: 3, source: "as2_ingress",
         payload: {
@@ -506,27 +557,68 @@ test("crossfade candidate-owned sampling must keep every observed bound within 5
             stage: "native_start"
         }
     };
-    const range = {
+    const snapshotEvents = samples.map((sample, index) => ({
+        kind: "qualification_snapshot",
+        observedAtUtc: "2026-08-09T00:00:00." + String(sample.milliseconds).padStart(3, "0") + "Z",
+        payload: snapshot({
+            bgmMeter: { frameCount: sample.frameCount },
+            source: {
+                cursorFrames: sample.requestId === "new-request" ? 50 + index : 200 + index,
+                requestId: sample.requestId
+            }
+        }),
+        sequence: index === 0 ? 2 : index + 4
+    }));
+    return {
         begin: { caseId: "bgm_crossfade" },
-        events: [
-            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:00.000Z", payload: oldSource, sequence: 2 },
-            request,
-            result,
-            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:00.100Z", payload: middleSource, sequence: 5 },
-            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:00.200Z", payload: newSource, sequence: 6 }
-        ]
+        events: [snapshotEvents[0], request, result].concat(snapshotEvents.slice(1))
     };
+}
+
+test("crossfade permits short cached reads while bounding distinct frame progress", () => {
+    const range = crossfadeRange([
+        { frameCount: 1000, milliseconds: 0, requestId: "old-request" },
+        { frameCount: 1000, milliseconds: 3, requestId: "old-request" },
+        { frameCount: 1100, milliseconds: 100, requestId: "old-request" },
+        { frameCount: 1100, milliseconds: 103, requestId: "old-request" },
+        { frameCount: 1200, milliseconds: 200, requestId: "new-request" },
+        { frameCount: 1200, milliseconds: 203, requestId: "new-request" }
+    ]);
     const facts = observer.deriveCaseFacts("bgm_crossfade", range, {});
     assert.strictEqual(facts.gapMs, 100);
     assert.strictEqual(facts.maxGapMs, 500);
-    newSource.runtime.deviceGeneration = 2;
+    const finalSnapshot = range.events[range.events.length - 1].payload;
+    finalSnapshot.runtime.deviceGeneration = 2;
     assert.throws(() => observer.deriveCaseFacts("bgm_crossfade", range, {}), /tuple changed outside recovery/);
-    newSource.runtime.deviceGeneration = 1;
-    newSource.bgmMeter.frameCount = 1100;
-    assert.throws(() => observer.deriveCaseFacts("bgm_crossfade", range, {}), /reused a cached meter snapshot/);
-    newSource.bgmMeter.frameCount = 1200;
-    range.events[4].observedAtUtc = "2026-08-09T00:00:00.700Z";
-    assert.throws(() => observer.deriveCaseFacts("bgm_crossfade", range, {}), /cannot bound an audio gap/);
+    finalSnapshot.runtime.deviceGeneration = 1;
+});
+
+test("crossfade rejects a no-progress plateau longer than 500ms including trailing duplicates", () => {
+    const range = crossfadeRange([
+        { frameCount: 1000, milliseconds: 0, requestId: "old-request" },
+        { frameCount: 1100, milliseconds: 100, requestId: "old-request" },
+        { frameCount: 1200, milliseconds: 200, requestId: "new-request" },
+        { frameCount: 1200, milliseconds: 701, requestId: "new-request" }
+    ]);
+    assert.throws(() => observer.deriveCaseFacts("bgm_crossfade", range, {}), /no-progress window exceeds 500ms/);
+});
+
+test("crossfade rejects frame regression and fewer than three distinct advancing samples", () => {
+    const regression = crossfadeRange([
+        { frameCount: 1000, milliseconds: 0, requestId: "old-request" },
+        { frameCount: 1100, milliseconds: 100, requestId: "old-request" },
+        { frameCount: 1050, milliseconds: 200, requestId: "old-request" },
+        { frameCount: 1200, milliseconds: 300, requestId: "new-request" }
+    ]);
+    assert.throws(() => observer.deriveCaseFacts("bgm_crossfade", regression, {}), /frameCount regressed/);
+
+    const insufficient = crossfadeRange([
+        { frameCount: 1000, milliseconds: 0, requestId: "old-request" },
+        { frameCount: 1000, milliseconds: 100, requestId: "old-request" },
+        { frameCount: 1100, milliseconds: 200, requestId: "new-request" },
+        { frameCount: 1100, milliseconds: 300, requestId: "new-request" }
+    ]);
+    assert.throws(() => observer.deriveCaseFacts("bgm_crossfade", insufficient, {}), /at least three distinct advancing meter samples/);
 });
 
 test("backward seek binds a started seek result to an elapsed cursor and meter window", () => {
