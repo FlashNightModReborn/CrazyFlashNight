@@ -95,6 +95,22 @@ function canonicalBytes(value) {
     return observer.canonicalBytes(value);
 }
 
+function trackedArtifactSortedClone(value) {
+    if (Array.isArray(value)) return value.map(trackedArtifactSortedClone);
+    if (value && typeof value === "object") {
+        const result = {};
+        Object.keys(value).sort().forEach((key) => {
+            result[key] = trackedArtifactSortedClone(value[key]);
+        });
+        return result;
+    }
+    return value;
+}
+
+function trackedArtifactCanonicalBytes(value) {
+    return Buffer.from(JSON.stringify(trackedArtifactSortedClone(value), null, 2) + "\n", "utf8");
+}
+
 function inspectCandidate(options, spawnSync) {
     expect(options && typeof options === "object", "candidate options missing");
     expect(path.isAbsolute(options.candidateRoot) && fs.lstatSync(options.candidateRoot).isDirectory(), "candidate root invalid");
@@ -374,7 +390,8 @@ function readCaptureConfiguration(result) {
     let value;
     try { value = JSON.parse(bytes.toString("utf8")); }
     catch (error) { fail("VALIDATION_FAILED", "endpoint capture configuration is not JSON"); }
-    expect(observer.canonicalBytes(value).equals(bytes), "endpoint capture configuration is not canonical JSON");
+    expect(trackedArtifactCanonicalBytes(value).equals(bytes),
+        "endpoint capture configuration is not canonical sorted JSON with two-space indent and terminal LF");
     return value;
 }
 
@@ -790,8 +807,11 @@ module.exports = Object.freeze({
     inspectCandidate,
     parseCli,
     qualificationPath,
+    readCaptureConfiguration,
     requestStimulus,
     runAutomatedCase,
     runAutomatedLane,
+    trackedArtifactCanonicalBytes,
+    validateCaptureRuntimeBinding,
     validateStimulusResponse
 });

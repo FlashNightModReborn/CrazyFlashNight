@@ -2,6 +2,8 @@
 "use strict";
 
 const assert = require("assert");
+const fs = require("fs");
+const os = require("os");
 const path = require("path");
 
 const operator = require("./qualification-operator.js");
@@ -51,6 +53,45 @@ function responseFor(request) {
 
 function request(caseId, operation, fields, digit) {
     return operator.buildStimulusRequest(RUN_ID, caseId, operation, fields, digit.repeat(32));
+}
+
+function readyRuntime() {
+    return {
+        audioReadyGeneration: 1,
+        audioSessionId: "123e4567-e89b-42d3-a456-426614174000",
+        backend: "wasapi",
+        channels: 2,
+        deviceGeneration: 1,
+        deviceIdDigest: SHA_A,
+        sampleFormat: "f32",
+        sampleRate: 48000,
+        status: "ready"
+    };
+}
+
+function realCaptureConfiguration(runtime, captureId) {
+    return {
+        candidateBuildIdentity: SHA_A,
+        candidatePayloadClosure: SHA_C,
+        captureBytes: 384044,
+        captureId,
+        captureSha256: SHA_B,
+        caseId: captureId,
+        channels: runtime.channels,
+        deviceIdDigest: runtime.deviceIdDigest,
+        durationSeconds: 2,
+        format: "pcm_s16le",
+        recordedAtUtc: "2026-08-11T12:34:56.1234567Z",
+        runId: RUN_ID,
+        sampleRate: runtime.sampleRate,
+        schema: "cf7.audio-v2.endpoint-capture-configuration.v1",
+        selectedBackend: runtime.backend,
+        tool: {
+            blobOid: "a".repeat(40),
+            path: "tools/audio-v2/capture-endpoint.ps1",
+            sha256: SHA_C
+        }
+    };
 }
 
 (async () => {
@@ -133,6 +174,91 @@ function request(caseId, operation, fields, digit) {
             }
         }, built);
         assert.strictEqual(result.result, "ok");
+    });
+
+    await test("capture configuration accepts only tracked pretty artifact canonical bytes", async () => {
+        const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-audio-operator-capture-"));
+        const configurationPath = path.join(temporaryRoot, "bgm_playback.configuration.v1.json");
+        const runtime = readyRuntime();
+        const value = realCaptureConfiguration(runtime, "bgm_playback");
+        const pretty = operator.trackedArtifactCanonicalBytes(value);
+        try {
+            fs.writeFileSync(configurationPath, pretty);
+            assert.deepStrictEqual(
+                operator.readCaptureConfiguration({ configuration: configurationPath }),
+                value);
+            assert.strictEqual(pretty.toString("utf8").endsWith("\n"), true);
+            assert.strictEqual(pretty.toString("utf8").includes("\n  \"candidateBuildIdentity\""), true);
+            assert.strictEqual(operator.canonicalBytes(value).includes(0x0a), false);
+
+            fs.writeFileSync(configurationPath, operator.canonicalBytes(value));
+            expectThrow(
+                () => operator.readCaptureConfiguration({ configuration: configurationPath }),
+                /canonical sorted JSON with two-space indent and terminal LF/);
+
+            fs.writeFileSync(configurationPath, Buffer.from(pretty.toString("utf8").replace(/\n/g, "\r\n"), "utf8"));
+            expectThrow(
+                () => operator.readCaptureConfiguration({ configuration: configurationPath }),
+                /canonical sorted JSON with two-space indent and terminal LF/);
+
+            const reversed = {};
+            Object.keys(value).reverse().forEach((key) => { reversed[key] = value[key]; });
+            fs.writeFileSync(configurationPath, Buffer.from(JSON.stringify(reversed, null, 2) + "\n", "utf8"));
+            expectThrow(
+                () => operator.readCaptureConfiguration({ configuration: configurationPath }),
+                /canonical sorted JSON with two-space indent and terminal LF/);
+
+            const tampered = Object.assign({}, value, { channels: 1 });
+            fs.writeFileSync(configurationPath, operator.trackedArtifactCanonicalBytes(tampered));
+            expectThrow(
+                () => operator.validateCaptureRuntimeBinding(
+                    { configuration: configurationPath }, runtime, "bgm_playback"),
+                /does not bind its ready runtime tuple/);
+        } finally {
+            fs.rmSync(temporaryRoot, { force: true, recursive: true });
+        }
+    });
+
+    await test("automated capture binding consumes the real pretty configuration artifact", async () => {
+        const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-audio-operator-lane-"));
+        const configurationPath = path.join(temporaryRoot, "bgm_playback.configuration.v1.json");
+        const fixtureRoot = "tmp/audio-v2-qualification/" + RUN_ID + "/fixtures/";
+        const runtime = readyRuntime();
+        const plan = {
+            bgm: {
+                crossfade: { relativePath: fixtureRoot + "bgm-crossfade.mp3" },
+                primary: { relativePath: fixtureRoot + "bgm-primary.mp3" }
+            },
+            fixtures: [],
+            sfx: Array.from({ length: 6 }, (_, index) => ({ linkageId: "sfx_" + index }))
+        };
+        fs.writeFileSync(
+            configurationPath,
+            operator.trackedArtifactCanonicalBytes(realCaptureConfiguration(runtime, "bgm_playback")));
+        try {
+            const transcript = await operator.runAutomatedCase({
+                runId: RUN_ID,
+                timing: { playObservationMs: 0 },
+                observe(command, caseId) {
+                    return command === "snapshot"
+                        ? { command, caseId, snapshot: { bgmMeter: { peakLeft: 0.25, peakRight: 0.25 }, runtime } }
+                        : { command, caseId };
+                },
+                requestStimulus: responseFor,
+                sleep() { return Promise.resolve(); },
+                startCapture(caseId, captureId) {
+                    return {
+                        captureId,
+                        ready: Promise.resolve(),
+                        completion: Promise.resolve({ captureId, configuration: configurationPath })
+                    };
+                }
+            }, plan, "bgm_playback");
+            assert.strictEqual(transcript.captures.length, 1);
+            assert.strictEqual(transcript.captures[0].configuration, configurationPath);
+        } finally {
+            fs.rmSync(temporaryRoot, { force: true, recursive: true });
+        }
     });
 
     await test("all ten automated cases use markers snapshots exact stimuli and three captures", async () => {
