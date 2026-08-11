@@ -85,16 +85,21 @@ namespace CF7Launcher.Tests.Audio
                             .GetInt32());
                     }
 
-                    Assert.Equal(2, transport.Messages.Count);
+                    Assert.Equal(3, transport.Messages.Count);
                     Assert.Equal(17, transport.Messages[1].Generation);
+                    Assert.Contains(
+                        "\"operation\":\"arm\"",
+                        transport.Messages[1].Payload,
+                        StringComparison.Ordinal);
+                    Assert.Equal(17, transport.Messages[2].Generation);
                     Assert.Equal(
                         "{\"action\":\"audioV2QualificationStimulus\",\"caseId\":\"bgm_playback\",\"fadeSeconds\":0,\"loop\":true,\"operation\":\"play\",\"path\":\"" +
                             path + "\",\"runId\":\"" + runId +
                             "\",\"task\":\"cmd\",\"volume\":1}\0",
-                        transport.Messages[1].Payload);
+                        transport.Messages[2].Payload);
 
                     Assert.Null(await client.ExchangeOrClosedAsync(request));
-                    Assert.Equal(2, transport.Messages.Count);
+                    Assert.Equal(3, transport.Messages.Count);
                 }
             }
         }
@@ -158,7 +163,7 @@ namespace CF7Launcher.Tests.Audio
                         Assert.True(response.RootElement
                             .GetProperty("sent").GetBoolean());
                     }
-                    Assert.Equal(2, transport.Messages.Count);
+                    Assert.Equal(3, transport.Messages.Count);
                 }
             }
         }
@@ -259,6 +264,218 @@ namespace CF7Launcher.Tests.Audio
         }
 
         [Fact]
+        public async Task Dispatch_RearmsAfterInitialArmWasLostBeforeLateHandler()
+        {
+            const string runId = "90909090909090909090909090909091";
+            using (AudioQualificationDiagnosticsHostV1 diagnostics =
+                Diagnostics(runId))
+            {
+                await ActivateCaseAsync(diagnostics, runId, "bgm_playback");
+                bool handlerReady = false;
+                var received = new List<string>();
+                var transport = new FakeTransport
+                {
+                    ReadyGeneration = 51,
+                    OnSend = delegate(string payload)
+                    {
+                        if (handlerReady) received.Add(FlashOperation(payload));
+                    }
+                };
+                using (AudioQualificationStimulusHostV1 host = Stimulus(
+                    runId,
+                    diagnostics,
+                    transport))
+                {
+                    Assert.Equal(
+                        new[] { "arm" },
+                        transport.Messages.Select(entry =>
+                            FlashOperation(entry.Payload)).ToArray());
+                    Assert.Empty(received);
+
+                    handlerReady = true;
+                    using (JsonDocument response = await ExchangeOnceAsync(
+                        host.PipeName,
+                        Request(
+                            runId,
+                            "dispatch",
+                            1,
+                            "bgm_playback",
+                            "play",
+                            path: QualificationPath(runId, "baseline-a.mp3"),
+                            fadeSeconds: 0,
+                            loop: true,
+                            volume: 1)))
+                    {
+                        Assert.True(response.RootElement
+                            .GetProperty("sent").GetBoolean());
+                    }
+
+                    Assert.Equal(new[] { "arm", "play" }, received.ToArray());
+                    Assert.Equal(
+                        new[] { "arm", "arm", "play" },
+                        transport.Messages.Select(entry =>
+                            FlashOperation(entry.Payload)).ToArray());
+                    Assert.All(
+                        transport.Messages,
+                        entry => Assert.Equal(51, entry.Generation));
+                }
+            }
+        }
+
+        [Fact]
+        public async Task RepeatedDispatches_RearmBeforeEachStimulus()
+        {
+            const string runId = "91919191919191919191919191919192";
+            using (AudioQualificationDiagnosticsHostV1 diagnostics =
+                Diagnostics(runId))
+            {
+                await ActivateCaseAsync(
+                    diagnostics,
+                    runId,
+                    "gain_zero_and_default_max");
+                var transport = new FakeTransport { ReadyGeneration = 52 };
+                using (AudioQualificationStimulusHostV1 host = Stimulus(
+                    runId,
+                    diagnostics,
+                    transport))
+                {
+                    using (await ExchangeOnceAsync(
+                        host.PipeName,
+                        Request(
+                            runId,
+                            "dispatch",
+                            1,
+                            "gain_zero_and_default_max",
+                            "set_gain",
+                            volume: 1)))
+                    {
+                    }
+                    using (await ExchangeOnceAsync(
+                        host.PipeName,
+                        Request(
+                            runId,
+                            "dispatch",
+                            2,
+                            "gain_zero_and_default_max",
+                            "set_gain",
+                            volume: 0)))
+                    {
+                    }
+
+                    Assert.Equal(
+                        new[] { "arm", "arm", "set_gain", "arm", "set_gain" },
+                        transport.Messages.Select(entry =>
+                            FlashOperation(entry.Payload)).ToArray());
+                    Assert.All(
+                        transport.Messages,
+                        entry => Assert.Equal(52, entry.Generation));
+                }
+            }
+        }
+
+        [Fact]
+        public async Task ReconnectedDispatch_RearmsOnTheNewGeneration()
+        {
+            const string runId = "92929292929292929292929292929293";
+            using (AudioQualificationDiagnosticsHostV1 diagnostics =
+                Diagnostics(runId))
+            {
+                await ActivateCaseAsync(diagnostics, runId, "bgm_playback");
+                var transport = new FakeTransport { ReadyGeneration = 53 };
+                using (AudioQualificationStimulusHostV1 host = Stimulus(
+                    runId,
+                    diagnostics,
+                    transport))
+                {
+                    host.NotifyClientDisconnectedForTests(53);
+                    transport.ReadyGeneration = 54;
+                    host.NotifyClientReadyForTests(54);
+
+                    using (JsonDocument response = await ExchangeOnceAsync(
+                        host.PipeName,
+                        Request(
+                            runId,
+                            "dispatch",
+                            1,
+                            "bgm_playback",
+                            "play",
+                            path: QualificationPath(runId, "baseline-a.mp3"),
+                            fadeSeconds: 0,
+                            loop: true,
+                            volume: 1)))
+                    {
+                        Assert.True(response.RootElement
+                            .GetProperty("sent").GetBoolean());
+                    }
+
+                    Assert.Equal(
+                        new[] { "arm", "arm", "arm", "play" },
+                        transport.Messages.Select(entry =>
+                            FlashOperation(entry.Payload)).ToArray());
+                    Assert.Equal(
+                        new[] { 53, 54, 54, 54 },
+                        transport.Messages.Select(entry => entry.Generation)
+                            .ToArray());
+                }
+            }
+        }
+
+        [Fact]
+        public async Task FailedRearm_DoesNotSendOrAdvanceAndCanRetry()
+        {
+            const string runId = "93939393939393939393939393939394";
+            using (AudioQualificationDiagnosticsHostV1 diagnostics =
+                Diagnostics(runId))
+            {
+                await ActivateCaseAsync(diagnostics, runId, "bgm_playback");
+                var transport = new FakeTransport { ReadyGeneration = 55 };
+                using (AudioQualificationStimulusHostV1 host = Stimulus(
+                    runId,
+                    diagnostics,
+                    transport))
+                {
+                    transport.FailNextArmSend = true;
+                    using (var failed = new PipeClient(host.PipeName))
+                        Assert.Null(await failed.ExchangeOrClosedAsync(Request(
+                            runId,
+                            "dispatch",
+                            1,
+                            "bgm_playback",
+                            "play",
+                            path: QualificationPath(runId, "baseline-a.mp3"),
+                            fadeSeconds: 0,
+                            loop: true,
+                            volume: 1)));
+                    Assert.Equal(
+                        new[] { "arm" },
+                        transport.Messages.Select(entry =>
+                            FlashOperation(entry.Payload)).ToArray());
+
+                    using (JsonDocument response = await ExchangeOnceAsync(
+                        host.PipeName,
+                        Request(
+                            runId,
+                            "dispatch",
+                            2,
+                            "bgm_playback",
+                            "play",
+                            path: QualificationPath(runId, "baseline-a.mp3"),
+                            fadeSeconds: 0,
+                            loop: true,
+                            volume: 1)))
+                    {
+                        Assert.True(response.RootElement
+                            .GetProperty("sent").GetBoolean());
+                    }
+                    Assert.Equal(
+                        new[] { "arm", "arm", "play" },
+                        transport.Messages.Select(entry =>
+                            FlashOperation(entry.Payload)).ToArray());
+                }
+            }
+        }
+
+        [Fact]
         public async Task DisconnectedDispatch_DoesNotAdvanceAndCanRetryAfterReadyArm()
         {
             const string runId = "38383838383838383838383838383839";
@@ -308,7 +525,7 @@ namespace CF7Launcher.Tests.Audio
                         Assert.True(response.RootElement
                             .GetProperty("sent").GetBoolean());
                     }
-                    Assert.Equal(2, transport.Messages.Count);
+                    Assert.Equal(3, transport.Messages.Count);
                 }
             }
         }
@@ -346,7 +563,7 @@ namespace CF7Launcher.Tests.Audio
                     }
                     Assert.Contains(
                         "\"linkageIds\":[\"a\",\"b\",\"c\",\"d\",\"e\",\"f\"]",
-                        transport.Messages[1].Payload,
+                        transport.Messages[2].Payload,
                         StringComparison.Ordinal);
 
                     using (var retry = new PipeClient(host.PipeName))
@@ -404,7 +621,7 @@ namespace CF7Launcher.Tests.Audio
                             "gain_zero_and_default_max",
                             "set_gain",
                             volume: 0)));
-                    Assert.Equal(3, transport.Messages.Count);
+                    Assert.Equal(5, transport.Messages.Count);
 
                     using (var earlyRestore = new PipeClient(host.PipeName))
                         Assert.Null(await earlyRestore.ExchangeOrClosedAsync(
@@ -415,7 +632,7 @@ namespace CF7Launcher.Tests.Audio
                                 "post_gain_restore",
                                 "set_gain",
                                 volume: 1)));
-                    Assert.Equal(3, transport.Messages.Count);
+                    Assert.Equal(5, transport.Messages.Count);
 
                     using (await ExchangeObserverOnceAsync(
                         diagnostics.PipeName,
@@ -442,10 +659,10 @@ namespace CF7Launcher.Tests.Audio
                         Assert.True(restored.RootElement
                             .GetProperty("sent").GetBoolean());
                     }
-                    Assert.Equal(4, transport.Messages.Count);
+                    Assert.Equal(7, transport.Messages.Count);
                     Assert.Contains(
                         "\"caseId\":\"post_gain_restore\"",
-                        transport.Messages[3].Payload,
+                        transport.Messages[6].Payload,
                         StringComparison.Ordinal);
                     using (var duplicateRestore = new PipeClient(host.PipeName))
                         Assert.Null(await duplicateRestore.ExchangeOrClosedAsync(
@@ -456,7 +673,7 @@ namespace CF7Launcher.Tests.Audio
                                 "post_gain_restore",
                                 "set_gain",
                                 volume: 1)));
-                    Assert.Equal(4, transport.Messages.Count);
+                    Assert.Equal(7, transport.Messages.Count);
                     using (await ExchangeObserverOnceAsync(
                         diagnostics.PipeName,
                         ObserverRequest(
@@ -556,7 +773,7 @@ namespace CF7Launcher.Tests.Audio
                         "{\"action\":\"audioV2QualificationStimulus\",\"caseId\":\"pre_sfx_bgm_mute\",\"operation\":\"set_gain\",\"runId\":\"" +
                             runId +
                             "\",\"task\":\"cmd\",\"volume\":0}\0",
-                        transport.Messages[2].Payload);
+                        transport.Messages[4].Payload);
 
                     using (var duplicateMute = new PipeClient(host.PipeName))
                         Assert.Null(await duplicateMute.ExchangeOrClosedAsync(
@@ -661,7 +878,7 @@ namespace CF7Launcher.Tests.Audio
                         "{\"action\":\"audioV2QualificationStimulus\",\"caseId\":\"pre_mix_bgm_restore\",\"operation\":\"set_gain\",\"runId\":\"" +
                             runId +
                             "\",\"task\":\"cmd\",\"volume\":1}\0",
-                        transport.Messages[4].Payload);
+                        transport.Messages[8].Payload);
 
                     using (var duplicateRestore = new PipeClient(host.PipeName))
                         Assert.Null(await duplicateRestore.ExchangeOrClosedAsync(
@@ -686,7 +903,7 @@ namespace CF7Launcher.Tests.Audio
                                 "pre_mix_bgm_restore",
                                 "set_gain",
                                 volume: 1)));
-                    Assert.Equal(5, transport.Messages.Count);
+                    Assert.Equal(9, transport.Messages.Count);
                 }
             }
         }
@@ -768,7 +985,7 @@ namespace CF7Launcher.Tests.Audio
                             "pre_mix_bgm_restore",
                             "set_gain",
                             volume: 1)));
-                    Assert.Equal(2, transport.Messages.Count);
+                    Assert.Equal(3, transport.Messages.Count);
                 }
             }
         }
@@ -830,6 +1047,10 @@ namespace CF7Launcher.Tests.Audio
                         new[] { "diagnostics", "stimulus" },
                         order.ToArray());
                     Assert.Equal(2, transport.Messages.Count);
+                    Assert.Equal(
+                        new[] { "arm", "sfx" },
+                        transport.Messages.Select(entry =>
+                            FlashOperation(entry.Payload)).ToArray());
 
                     using (JsonDocument journal = await ExchangeObserverOnceAsync(
                         diagnostics.PipeName,
@@ -1306,6 +1527,15 @@ namespace CF7Launcher.Tests.Audio
             return value.ToString("x32");
         }
 
+        private static string FlashOperation(string payload)
+        {
+            using (JsonDocument document = JsonDocument.Parse(
+                payload.TrimEnd('\0')))
+            {
+                return document.RootElement.GetProperty("operation").GetString();
+            }
+        }
+
         private static async Task<JsonDocument> ExchangeOnceAsync(
             string pipeName,
             byte[] request)
@@ -1400,6 +1630,7 @@ namespace CF7Launcher.Tests.Audio
 
             internal int ReadyGeneration;
             internal Action<string> OnSend;
+            internal bool FailNextArmSend;
             internal IReadOnlyList<SentMessage> Messages
             {
                 get
@@ -1413,6 +1644,14 @@ namespace CF7Launcher.Tests.Audio
                 lock (_sync)
                 {
                     if (generation != ReadyGeneration) return false;
+                    if (FailNextArmSend && string.Equals(
+                            FlashOperation(payload),
+                            "arm",
+                            StringComparison.Ordinal))
+                    {
+                        FailNextArmSend = false;
+                        return false;
+                    }
                     _messages.Add(new SentMessage(payload, generation));
                 }
                 OnSend?.Invoke(payload);

@@ -26,6 +26,8 @@ typedef uint32_t (__cdecl *query_source_proc)(
     cf7_audio_bridge_v2_source_snapshot*, cf7_audio_bridge_v2_result*);
 typedef uint32_t (__cdecl *query_counters_proc)(
     cf7_audio_bridge_v2_sfx_counters*, cf7_audio_bridge_v2_result*);
+typedef uint32_t (__cdecl *submit_bgm_proc)(
+    const cf7_audio_bridge_v2_bgm_command*, cf7_audio_bridge_v2_result*);
 typedef uint32_t (__cdecl *set_gain_proc)(
     const cf7_audio_bridge_v2_gain_command*, cf7_audio_bridge_v2_result*);
 typedef uint32_t (__cdecl *probe_runtime_proc)(
@@ -677,6 +679,7 @@ int wmain(int argc, wchar_t** argv)
     query_meter_proc queryMeter;
     query_source_proc querySource;
     query_counters_proc queryCounters;
+    submit_bgm_proc submitBgm;
     set_gain_proc setGain;
     probe_runtime_proc probeRuntime;
     probe_offline_proc probeOffline;
@@ -688,6 +691,7 @@ int wmain(int argc, wchar_t** argv)
     cf7_audio_bridge_v2_meter_snapshot meter;
     cf7_audio_bridge_v2_source_snapshot source;
     cf7_audio_bridge_v2_sfx_counters counters;
+    cf7_audio_bridge_v2_bgm_command bgmCommand;
     cf7_audio_bridge_v2_gain_command gain;
     cf7_audio_bridge_v2_runtime_probe_command runtimeProbe;
     cf7_audio_bridge_v2_offline_probe_command offlineProbe;
@@ -744,9 +748,13 @@ int wmain(int argc, wchar_t** argv)
     HANDLE probeThread = NULL;
     HANDLE probeEnteredEvent = NULL;
     ULONGLONG shutdownStarted = 0u;
+    ULONGLONG playbackDeadline = 0u;
     uint32_t callResult;
     uint32_t initializeCategory;
+    uint32_t sourceCallResult = CF7_AUDIO_BRIDGE_V2_RESULT_NOT_READY;
+    uint32_t meterCallResult = CF7_AUDIO_BRIDGE_V2_RESULT_NOT_READY;
     uint64_t deviceGeneration;
+    int playbackObserved = 0;
 
     if (argc != 3 && argc != 4) {
         fwprintf(
@@ -770,6 +778,7 @@ int wmain(int argc, wchar_t** argv)
     LOAD_TYPED(queryMeter, module, allExports[3]);
     LOAD_TYPED(querySource, module, allExports[4]);
     LOAD_TYPED(queryCounters, module, allExports[5]);
+    LOAD_TYPED(submitBgm, module, allExports[6]);
     LOAD_TYPED(setGain, module, allExports[9]);
     LOAD_TYPED(probeRuntime, module, allExports[10]);
     LOAD_TYPED(probeOffline, module, allExports[11]);
@@ -962,6 +971,98 @@ int wmain(int argc, wchar_t** argv)
             fixtureDigest);
         CHECK(fixtureCreated);
         if (fixtureCreated) {
+            memset(&bgmCommand, 0, sizeof(bgmCommand));
+            CF7_AUDIO_BRIDGE_V2_INIT_STRUCT(bgmCommand);
+            bgmCommand.wireRevision = CF7_AUDIO_BRIDGE_V2_WIRE_REVISION;
+            bgmCommand.requestId = input_utf8("runtime-contract.bgm.play");
+            bgmCommand.audioSessionId = input_utf8(currentSession);
+            bgmCommand.audioReadyGeneration = 1u;
+            bgmCommand.operation = CF7_AUDIO_BRIDGE_V2_OPERATION_BGM_PLAY;
+            bgmCommand.normalizedPath = input_utf16(fixtureFull);
+            bgmCommand.loop = CF7_AUDIO_BRIDGE_V2_TRUE;
+            bgmCommand.volume = 1.0f;
+            initialize_result(&result, resultSession, resultMessage);
+            callResult = submitBgm(&bgmCommand, &result);
+            CHECK(callResult == CF7_AUDIO_BRIDGE_V2_RESULT_OK);
+            CHECK(result.operation == CF7_AUDIO_BRIDGE_V2_OPERATION_BGM_PLAY);
+            CHECK(result.completionState == CF7_AUDIO_BRIDGE_V2_COMPLETION_STARTED);
+            CHECK(strcmp(resultSession, currentSession) == 0);
+
+            playbackDeadline = GetTickCount64() + 3000u;
+            do {
+                memset(&source, 0, sizeof(source));
+                memset(sourceSession, 0, sizeof(sourceSession));
+                CF7_AUDIO_BRIDGE_V2_INIT_STRUCT(source);
+                source.audioSessionId = output_utf8(
+                    sourceSession,
+                    sizeof(sourceSession));
+                initialize_result(
+                    &source.startResult,
+                    sourceResultSession,
+                    sourceResultMessage);
+                initialize_result(&result, resultSession, resultMessage);
+                sourceCallResult = querySource(&source, &result);
+
+                memset(&meter, 0, sizeof(meter));
+                memset(meterSession, 0, sizeof(meterSession));
+                CF7_AUDIO_BRIDGE_V2_INIT_STRUCT(meter);
+                meter.bus = CF7_AUDIO_BRIDGE_V2_METER_BGM_PRE_MASTER;
+                meter.audioSessionId = output_utf8(
+                    meterSession,
+                    sizeof(meterSession));
+                initialize_result(&result, resultSession, resultMessage);
+                meterCallResult = queryMeter(&meter, &result);
+
+                playbackObserved =
+                    sourceCallResult == CF7_AUDIO_BRIDGE_V2_RESULT_OK &&
+                    meterCallResult == CF7_AUDIO_BRIDGE_V2_RESULT_OK &&
+                    source.playing == CF7_AUDIO_BRIDGE_V2_TRUE &&
+                    source.cursorFrames > 0u &&
+                    source.lengthFrames > 0u &&
+                    source.startResult.category == CF7_AUDIO_BRIDGE_V2_RESULT_OK &&
+                    source.startResult.completionState ==
+                        CF7_AUDIO_BRIDGE_V2_COMPLETION_STARTED &&
+                    meter.frameCount > 0u &&
+                    (meter.peakLeft > 0.0f || meter.peakRight > 0.0f) &&
+                    (meter.rmsLeft > 0.0f || meter.rmsRight > 0.0f);
+                if (!playbackObserved) {
+                    Sleep(10u);
+                }
+            } while (!playbackObserved && GetTickCount64() < playbackDeadline);
+            if (!playbackObserved) {
+                fprintf(
+                    stderr,
+                    "BGM playback diagnostic sourceCategory=%u meterCategory=%u playing=%u cursor=%llu length=%llu frames=%llu peak=(%.6f,%.6f) rms=(%.6f,%.6f)\n",
+                    sourceCallResult,
+                    meterCallResult,
+                    source.playing,
+                    (unsigned long long)source.cursorFrames,
+                    (unsigned long long)source.lengthFrames,
+                    (unsigned long long)meter.frameCount,
+                    meter.peakLeft,
+                    meter.peakRight,
+                    meter.rmsLeft,
+                    meter.rmsRight);
+            }
+            CHECK(playbackObserved);
+            CHECK(strcmp(sourceSession, currentSession) == 0);
+            CHECK(strcmp(meterSession, currentSession) == 0);
+            CHECK(source.audioReadyGeneration == 1u);
+            CHECK(source.deviceGeneration == deviceGeneration);
+            CHECK(meter.audioReadyGeneration == 1u);
+            CHECK(meter.deviceGeneration == deviceGeneration);
+
+            bgmCommand.requestId = input_utf8("runtime-contract.bgm.stop");
+            bgmCommand.operation = CF7_AUDIO_BRIDGE_V2_OPERATION_BGM_STOP;
+            bgmCommand.normalizedPath = input_utf16(L"");
+            bgmCommand.loop = CF7_AUDIO_BRIDGE_V2_FALSE;
+            initialize_result(&result, resultSession, resultMessage);
+            callResult = submitBgm(&bgmCommand, &result);
+            CHECK(callResult == CF7_AUDIO_BRIDGE_V2_RESULT_OK);
+            CHECK(result.operation == CF7_AUDIO_BRIDGE_V2_OPERATION_BGM_STOP);
+            CHECK(result.completionState == CF7_AUDIO_BRIDGE_V2_COMPLETION_STOPPED);
+            CHECK(strcmp(resultSession, currentSession) == 0);
+
             memset(&runtimeProbe, 0, sizeof(runtimeProbe));
             CF7_AUDIO_BRIDGE_V2_INIT_STRUCT(runtimeProbe);
             runtimeProbe.normalizedPath = input_utf16(fixtureFull);

@@ -913,6 +913,15 @@ static ma_result cf7_groups_and_meters_init(void)
     }
     ma_sound_group_set_volume(&g_runtime.bgmGroup, g_runtime.bgmGain);
     ma_sound_group_set_volume(&g_runtime.sfxGroup, g_runtime.sfxGain);
+    result = ma_sound_group_start(&g_runtime.bgmGroup);
+    if (result != MA_SUCCESS) {
+        return result;
+    }
+    result = ma_sound_group_start(&g_runtime.sfxGroup);
+    if (result != MA_SUCCESS) {
+        (void)ma_sound_group_stop(&g_runtime.bgmGroup);
+        return result;
+    }
     return ma_engine_set_volume(&g_runtime.engine, g_runtime.masterGain);
 }
 
@@ -1229,7 +1238,6 @@ static uint32_t cf7_bgm_play_final(
     cf7_audio_bridge_support_sniff sniff;
     char firstHash[CF7_AUDIO_BRIDGE_V2_SHA256_HEX_CAPACITY];
     DWORD windowsError = ERROR_SUCCESS;
-    ma_sound newSound;
     ma_result maResult;
     uint32_t oldSlot = g_runtime.bgmActive;
     uint32_t newSlot = 1u - oldSlot;
@@ -1298,14 +1306,14 @@ static uint32_t cf7_bgm_play_final(
         ma_sound_uninit(&g_runtime.bgm[newSlot]);
         g_runtime.bgmInitialized[newSlot] = 0u;
     }
-    memset(&newSound, 0, sizeof(newSound));
+    memset(&g_runtime.bgm[newSlot], 0, sizeof(g_runtime.bgm[newSlot]));
     maResult = ma_sound_init_from_file_w(
         &g_runtime.engine,
         finalPath,
         MA_SOUND_FLAG_STREAM | MA_SOUND_FLAG_NO_SPATIALIZATION,
         &g_runtime.bgmGroup,
         NULL,
-        &newSound);
+        &g_runtime.bgm[newSlot]);
     if (maResult != MA_SUCCESS) {
         free(intentPath);
         cf7_bgm_start_result_set(
@@ -1325,7 +1333,6 @@ static uint32_t cf7_bgm_play_final(
             CF7_AUDIO_BRIDGE_V2_COMPLETION_FAILED,
             "audio.bgm.source_initialize_failed");
     }
-    g_runtime.bgm[newSlot] = newSound;
     g_runtime.bgmInitialized[newSlot] = 1u;
     if (WaitForSingleObject(g_control.cancelEvent, 0u) == WAIT_OBJECT_0) {
         ma_sound_uninit(&g_runtime.bgm[newSlot]);

@@ -41,6 +41,7 @@ namespace CF7Launcher.Audio
             };
 
         private readonly object _sync = new object();
+        private readonly object _sendSync = new object();
         private readonly string _runId;
         private readonly AudioQualificationCandidateIdentityV1 _candidate;
         private readonly AudioQualificationDiagnosticsHostV1 _diagnostics;
@@ -264,19 +265,22 @@ namespace CF7Launcher.Audio
             }
 
             if (!_diagnostics.IsActiveCase(armed.CaseId)) return;
-            int generation = SafeReadyGeneration();
-            bool maySend;
-            lock (_sync)
+            lock (_sendSync)
             {
-                maySend = generation > 0 &&
-                    generation == _armedGeneration &&
-                    Volatile.Read(ref _disposed) == 0;
-            }
-            if (!maySend) return;
-            if (!SafeSend(armed.FlashPayload, generation)) return;
-            lock (_sync)
-            {
-                AdvanceStepLocked(armed.CaseId, "sfx");
+                int generation = SafeReadyGeneration();
+                bool maySend;
+                lock (_sync)
+                {
+                    maySend = generation > 0 &&
+                        generation == _armedGeneration &&
+                        Volatile.Read(ref _disposed) == 0;
+                }
+                if (!maySend) return;
+                if (!SafeSend(armed.FlashPayload, generation)) return;
+                lock (_sync)
+                {
+                    AdvanceStepLocked(armed.CaseId, "sfx");
+                }
             }
         }
 
@@ -284,7 +288,7 @@ namespace CF7Launcher.Audio
         {
             if (generation <= 0 || Volatile.Read(ref _disposed) != 0)
                 return;
-            TryArmGeneration(generation);
+            TryArmGeneration(generation, false);
         }
 
         private void OnClientDisconnected(int generation)
@@ -302,16 +306,27 @@ namespace CF7Launcher.Audio
         private void TryArmCurrentConnection()
         {
             int generation = SafeReadyGeneration();
-            if (generation > 0) TryArmGeneration(generation);
+            if (generation > 0) TryArmGeneration(generation, false);
         }
 
-        private bool TryArmGeneration(int generation)
+        private bool TryArmGeneration(int generation, bool forceDelivery)
+        {
+            lock (_sendSync)
+            {
+                return TryArmGenerationLocked(generation, forceDelivery);
+            }
+        }
+
+        private bool TryArmGenerationLocked(
+            int generation,
+            bool forceDelivery)
         {
             if (generation <= 0 || Volatile.Read(ref _disposed) != 0)
                 return false;
             lock (_sync)
             {
-                if (_armedGeneration == generation) return true;
+                if (!forceDelivery && _armedGeneration == generation)
+                    return true;
                 if (_armInFlightGeneration != 0) return false;
                 _armInFlightGeneration = generation;
             }
@@ -320,30 +335,36 @@ namespace CF7Launcher.Audio
                 SafeSend(BuildArmPayload(), generation);
             lock (_sync)
             {
-                if (_armInFlightGeneration == generation)
-                {
-                    _armInFlightGeneration = 0;
-                    if (sent) _armedGeneration = generation;
-                }
-                return sent && _armedGeneration == generation;
+                if (_armInFlightGeneration != generation) return false;
+                _armInFlightGeneration = 0;
+                if (sent) _armedGeneration = generation;
+                else if (_armedGeneration == generation)
+                    _armedGeneration = 0;
+                return sent;
             }
         }
 
         private bool TrySendStimulus(byte[] payload)
         {
-            int generation = SafeReadyGeneration();
-            if (generation <= 0 || !TryArmGeneration(generation))
-                return false;
-            lock (_sync)
+            lock (_sendSync)
             {
-                if (_armedGeneration != generation ||
-                    Volatile.Read(ref _disposed) != 0)
+                int generation = SafeReadyGeneration();
+                if (generation <= 0 ||
+                    !TryArmGenerationLocked(generation, true))
                 {
                     return false;
                 }
+                lock (_sync)
+                {
+                    if (_armedGeneration != generation ||
+                        Volatile.Read(ref _disposed) != 0)
+                    {
+                        return false;
+                    }
+                }
+                return SafeReadyGeneration() == generation &&
+                    SafeSend(payload, generation);
             }
-            return SafeReadyGeneration() == generation &&
-                SafeSend(payload, generation);
         }
 
         private int SafeReadyGeneration()
