@@ -1,0 +1,121 @@
+{
+  "schema": "cf7.portrait-worker-capability-input.v1",
+  "batchId": "portrait-worker-capability-v1",
+  "imageProbe": {
+    "imageId": "pet-locked-placeholder",
+    "relativePath": "launcher/web/assets/pets/pet_locked.png",
+    "allowedClassifications": [
+      "locked_placeholder"
+    ]
+  },
+  "tasks": [
+    {
+      "taskId": "cap-01",
+      "signal": "azurite",
+      "candidates": [
+        { "candidateId": "cap-01-a", "token": "ember" },
+        { "candidateId": "cap-01-b", "token": "azurite" },
+        { "candidateId": "cap-01-c", "token": "moss" }
+      ]
+    },
+    {
+      "taskId": "cap-02",
+      "signal": "cobalt",
+      "candidates": [
+        { "candidateId": "cap-02-a", "token": "cobalt" },
+        { "candidateId": "cap-02-b", "token": "amber" },
+        { "candidateId": "cap-02-c", "token": "ivory" }
+      ]
+    },
+    {
+      "taskId": "cap-03",
+      "signal": "fern",
+      "candidates": [
+        { "candidateId": "cap-03-a", "token": "plum" },
+        { "candidateId": "cap-03-b", "token": "slate" },
+        { "candidateId": "cap-03-c", "token": "fern" }
+      ]
+    },
+    {
+      "taskId": "cap-04",
+      "signal": "quartz",
+      "candidates": [
+        { "candidateId": "cap-04-a", "token": "quartz" },
+        { "candidateId": "cap-04-b", "token": "coral" },
+        { "candidateId": "cap-04-c", "token": "indigo" }
+      ]
+    },
+    {
+      "taskId": "cap-05",
+      "signal": "saffron",
+      "candidates": [
+        { "candidateId": "cap-05-a", "token": "pearl" },
+        { "candidateId": "cap-05-b", "token": "saffron" },
+        { "candidateId": "cap-05-c", "token": "charcoal" }
+      ]
+    },
+    {
+      "taskId": "cap-06",
+      "signal": "teal",
+      "candidates": [
+        { "candidateId": "cap-06-a", "token": "rose" },
+        { "candidateId": "cap-06-b", "token": "sand" },
+        { "candidateId": "cap-06-c", "token": "teal" }
+      ]
+    },
+    {
+      "taskId": "cap-07",
+      "signal": "umber",
+      "candidates": [
+        { "candidateId": "cap-07-a", "token": "umber" },
+        { "candidateId": "cap-07-b", "token": "lilac" },
+        { "candidateId": "cap-07-c", "token": "silver" }
+      ]
+    },
+    {
+      "taskId": "cap-08",
+      "signal": "violet",
+      "candidates": [
+        { "candidateId": "cap-08-a", "token": "ochre" },
+        { "candidateId": "cap-08-b", "token": "violet" },
+        { "candidateId": "cap-08-c", "token": "pine" }
+      ]
+    },
+    {
+      "taskId": "cap-09",
+      "signal": "willow",
+      "candidates": [
+        { "candidateId": "cap-09-a", "token": "navy" },
+        { "candidateId": "cap-09-b", "token": "brick" },
+        { "candidateId": "cap-09-c", "token": "willow" }
+      ]
+    },
+    {
+      "taskId": "cap-10",
+      "signal": "xanthic",
+      "candidates": [
+        { "candidateId": "cap-10-a", "token": "xanthic" },
+        { "candidateId": "cap-10-b", "token": "cyan" },
+        { "candidateId": "cap-10-c", "token": "russet" }
+      ]
+    },
+    {
+      "taskId": "cap-11",
+      "signal": "yarrow",
+      "candidates": [
+        { "candidateId": "cap-11-a", "token": "mint" },
+        { "candidateId": "cap-11-b", "token": "yarrow" },
+        { "candidateId": "cap-11-c", "token": "scarlet" }
+      ]
+    },
+    {
+      "taskId": "cap-12",
+      "signal": "zircon",
+      "candidates": [
+        { "candidateId": "cap-12-a", "token": "bronze" },
+        { "candidateId": "cap-12-b", "token": "linen" },
+        { "candidateId": "cap-12-c", "token": "zircon" }
+      ]
+    }
+  ]
+}

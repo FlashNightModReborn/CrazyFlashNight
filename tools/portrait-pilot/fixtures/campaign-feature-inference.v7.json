@@ -1,0 +1,182 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-campaign-feature-v7-six-round-human-calibrated-20260806",
+  "calibration": {
+    "sourceReviewBatchIds": [
+      "portrait-campaign-shard-r2-fast6-20260806T035300Z",
+      "portrait-campaign-shard-r6-calibrated-fast6-20260806T045256Z",
+      "portrait-campaign-shard-r16-visualcal-fast6-20260806T055055Z",
+      "portrait-campaign-shard-r22-v4-feedback-fast6-20260806T080559Z",
+      "portrait-campaign-shard-r29-v5-feedback-fast6-20260806T085057Z",
+      "portrait-campaign-shard-r35-v6-feedback-fast6"
+    ],
+    "humanReviewReceiptDigests": [
+      "14174DB2FA32E11EA75430C4956CD9466C2653DA6F3464CB8BFA61C60EFA240A",
+      "021BA20A67D041FF63150B466DC1BC2A0A54D169EDCCD9076310069E1A4950E4",
+      "A44E72EE0834E0F50052B673D1A21B3B141E2EBDE2BDB3A4DD6DCA269B44E7E1",
+      "F0AF2B5B6D1CD0CFF848BDBB425DB7E0BC0DB54BE23348F56F36295A5C275AB0",
+      "15EE7AF1F4AF30189A9AE4F50690AD91806A1E94193DAB1B2975D914441A8882",
+      "7CA7FF3A1103A88E574BD8C0D42BAD6EE47E3353FC0A81AAF958C212501F23D2"
+    ],
+    "cumulativeFeedbackDigest": "BC4D213E898FA47D3971CF613A29065CF61B88E09D926B18689947CDCDB070B0",
+    "latestGuidanceReceiptDigest": "C6301D7D26C18BB1193826E60C2F2433173F00A09A336E6E7445999B9E82E86D",
+    "latestGuidedRenderReportDigest": "14D48C317660C6A9A9A4D5C5DA316FBEC9C7FE3177A07750F4D0258ABC59807B",
+    "guidedOrientationRenderReportDigests": [
+      "6F2E167EDCEBE262A11A9399E0780D1744DBB41A70D759686EC799E187CF98FE",
+      "323C78BC6D02B2D865E6CF06E3D8510EA48361D628F5176399BA607F1730EB1F",
+      "DBA88CD898BD1B9AB90B12800F583914486B81C663046D63F9BBE7B14FED61AC",
+      "62E0BEB15FA5892421B7EF9A0DC0F14240B3EE01FAB4E62B0C0632C1251F006E",
+      "31E4DEFDE6E308380FC30F56189E6E9934BEF7EC45C455E4966500066ECA8441"
+    ],
+    "verifiedHumanLabels": 72,
+    "verifiedGeometryRows": 58,
+    "medianHumanZoomIn": 1.349859,
+    "observedHumanZoomInRange": [
+      0.637628,
+      4.474963
+    ],
+    "campaignFirstPassRates": [
+      {
+        "batchId": "portrait-campaign-shard-r2-fast6-20260806T035300Z",
+        "passed": 3,
+        "eligible": 12,
+        "rate": 0.25
+      },
+      {
+        "batchId": "portrait-campaign-shard-r6-calibrated-fast6-20260806T045256Z",
+        "passed": 3,
+        "eligible": 12,
+        "rate": 0.25
+      },
+      {
+        "batchId": "portrait-campaign-shard-r16-visualcal-fast6-20260806T055055Z",
+        "passed": 4,
+        "eligible": 12,
+        "rate": 0.333333
+      },
+      {
+        "batchId": "portrait-campaign-shard-r22-v4-feedback-fast6-20260806T080559Z",
+        "passed": 0,
+        "eligible": 12,
+        "rate": 0
+      },
+      {
+        "batchId": "portrait-campaign-shard-r29-v5-feedback-fast6-20260806T085057Z",
+        "passed": 2,
+        "eligible": 12,
+        "rate": 0.166667
+      },
+      {
+        "batchId": "portrait-campaign-shard-r35-v6-feedback-fast6",
+        "passed": 0,
+        "eligible": 12,
+        "rate": 0
+      }
+    ],
+    "identityReuseInstruction": {
+      "reviewKey": "敌人-方舟妖姬::default",
+      "supersededRequirement": "在 frame 13 上重新裁切",
+      "acceptedSelection": {
+        "sourceRole": "proposal",
+        "candidateId": "e10-c03",
+        "frame": 25
+      },
+      "reason": "同一素材的换皮身份应复用已确认的识别构图；不得仅因旧帧备注而抛弃更晚冻结的人工头像选择。"
+    },
+    "policy": "六轮全部 72 条人类标签与 58 个真实框选必须进入视觉上下文。r35 的 12 项全部需要调整，11 项人工裁框比模型更紧，4 项还要求框选后朝右；问题核心是模型仍把全身或普通身体结构当成头像。v7 提高头部与强身份特征的目标占比，并要求在同素材换皮家族中迁移构图语义，但绝不跨行复制候选像素、candidateId 或坐标。方舟妖姬更晚冻结的 frame 25 人工选择明确覆盖旧 frame 13 备注。"
+  },
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框，也不是截取无法识别身份的局部纹理。",
+    "候选像素已经由管线限定为怪物内部命名 man MovieClip；不得把外层血条、等级、名称或其他 UI 当作身份特征。",
+    "每张输入图下方都有 BOUND HUMAN PREFERENCE EXAMPLES，覆盖六轮 72 条真人标签和 58 个真实框选。示例只用于学习构图偏好，绝对不能从示例区选择当前行 candidateId、抄坐标或替换当前角色。",
+    "严格按三阶段推理：先选单一主体且姿态清晰的候选帧；再具体命名真正决定可识别度的头、脸、面罩、感官簇、口器、头冠、驾驶舱、核心或复合结构；最后才画 featureBox 和 mustIncludeBox。不能先画全身大框再泛称为身份特征。",
+    "提交前逐一想象移除腿、尾巴、普通武器、泛化胸腹和特效。移除后仍能认出单位的弱组件不应挤占头像；移除后明显失去身份的标志性结构才可进入 feature_group。",
+    "人形单位默认以完整头部为主特征：脸、头骨或面罩、全部可见头发、耳朵、角、帽子和头饰构成首要轮廓，只保留最少颈肩上下文。r35 的骑士、僵尸和战士全部因头部不够突出被退回，不能再次给出全身像。",
+    "非人单位也要先寻找生物学或机械意义上的头：眼睛或传感器、口器、颌部、头甲、头冠和连接轮廓通常构成首选 closeup。只有头部本身不足以区分身份时，才用 feature_group 纳入确有辨识力的核心、武器结构或身体形态。",
+    "异形、虫类和球形单位不能把整条身体或尾巴当作头。先沿躯干找到眼、口、颌、前端甲壳、感官簇或身体核心；普通尾巴、后部轮廓和透明死区不得抢焦。",
+    "若同一素材的多个身份只是换皮，应迁移已由人类确认的识别特征、相对构图与安全区语义；仍必须在当前行选择当前身份的像素与候选，禁止跨身份复制 candidateId、frame 编号或裁框坐标。更晚冻结的人工头像选择优先于较早的文字帧建议。",
+    "若单个候选出现多个可分离主体，而同一行有清晰单主体帧，必须拒绝多主体帧。多头生物自身不可拆分的全部头部才是 feature_group。",
+    "featureBox 必须包住完整可见身份特征而不是只包脸中心；mustIncludeBox 应保留不可裁掉的轮廓和少量上下文。遗漏帽檐、发梢、耳朵、角、头冠、口器或头顶即失败。",
+    "在想象的 80px 方形预览中，最强识别特征必须位于甜区并成为第一焦点。若仍像全身像，继续缩小 mustIncludeBox；弱肢体、武器末端、尾部或装饰允许受控顶边或侧边裁切。",
+    "主焦点和面朝方向需要安全范围，但不得留下压倒特征的大块空白。四边都要检查：强轮廓不贴顶，右侧不留无意义死区，必要时允许裁框越出候选 PNG 后透明补齐。",
+    "累计 58 个真实框选中位倍率为 1.349859，范围 0.637628 至 4.474963；r35 有 11/12 比模型更紧，最高约 4.13 倍。统计只用于反证模型是否仍给全身像，禁止机械套用固定倍率。",
+    "若人类备注明确偏好 Luna B，则以 B 的候选与构图为强起点，仍须独立检查完整头部、安全边距和空白利用率。",
+    "若人工备注同时要求裁切和翻转，先完成高分辨率特写，再对完成的特写执行方向变换；默认不擅自翻转，没有明确方向依据时保持源方向。",
+    "source 负例中的拟态投影必须选择清晰单人物帧，并只框完整头部与必要头发轮廓；类似多主体候选沿用该原则。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.08,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.88,
+        "featureHeightOccupancy": 0.88,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.82,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.58,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.88,
+        "featureHeightOccupancy": 0.88,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.82,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.56,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.86,
+        "featureHeightOccupancy": 0.84,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.78,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.5,
+        "featureAnchor": [
+          0.5,
+          0.46
+        ]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.82,
+        "featureHeightOccupancy": 0.82,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.72,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.44,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 16384,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "unclassified": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "这是绑定六轮 72 条真人偏好和 58 个真实框选的校准轮。先选单主体清晰帧，再明确命名真正决定可识别度的视觉重点，确认它实际可见后才画框。人形默认完整头部特写，仅保留最少颈肩；非人先找眼、口器、颌、传感器、头甲、头冠或身体核心，普通尾巴和全身轮廓不得抢焦。若头部辨识较弱，才用 feature_group 纳入确有身份意义的武器、核心或身体结构。想象 80px 预览并检查四边：主焦点在甜区，强轮廓有安全范围，右侧无大块死区，弱组件可裁边。r35 的 11/12 人工框选比模型更紧，若结果仍像全身像必须继续收紧。同素材换皮只迁移构图语义，不能跨当前行复制候选或坐标。不得从示例区抄 candidateId。"
+    }
+  },
+  "reviewKeyOverrides": {
+    "敌人-拟态投影::default": {
+      "reasoningHint": "人类已明确拒绝多人重叠帧。C02/f13 与 C05/f48 是单人帧，应在二者中选择清晰单人构图；C01/C03 含多个独立人物，C04/C06 几乎只有特效，均不可选。使用 head_closeup，严格只保留完整头部、长发顶部和耳部轮廓，隔离胸腹与下半身。",
+      "requiredFeatureRegion": [
+        0.405,
+        0.14,
+        0.56,
+        0.405
+      ],
+      "requiredMustIncludeRegion": [
+        0.395,
+        0.13,
+        0.57,
+        0.415
+      ]
+    }
+  }
+}

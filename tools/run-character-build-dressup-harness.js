@@ -349,6 +349,15 @@ async function runBrowserAudit(browser, port) {
             && pistol.evidence.pistol.drawn,
             'pistol-2 pose draws the mapped secondary-pistol holder',
             JSON.stringify(pistol.state));
+        check(pistol.state.keyMap['手枪_装扮'] === undefined,
+            'pistol-2-only loadout leaves the primary pistol layer empty (no cross-slot phantom)',
+            JSON.stringify(pistol.state.keyMap));
+
+        const primaryPistol = await renderScenario(page, 'pistol', '男');
+        check(primaryPistol.state.keyMap['手枪_装扮']
+            && primaryPistol.state.keyMap['手枪2_装扮'] === undefined,
+            'pistol-only loadout leaves the secondary pistol layer empty (no cross-slot phantom)',
+            JSON.stringify(primaryPistol.state.keyMap));
 
         const blade = await renderScenario(page, 'blade', '男');
         check(blade.state.stateLabel === '兵器站立'

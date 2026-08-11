@@ -188,6 +188,52 @@ def assert_no_orphan_skin_pngs(manifest_dir: Path, manifest: dict[str, Any], fai
     return orphaned
 
 
+# 体积审计（AGENTS.md 资产豁免四约束之一）：manifest 引用的 skins/*.png 单文件不得超 512 KiB，
+# 超限必须走下方显式 allowlist。
+SKIN_PNG_MAX_BYTES = 512 * 1024
+# 唯一例外：a8dfe0f8_1.png 是「男变装-远古诛神胸甲身体」的真实全躯干大图导出（1000×1024 RGBA），
+# 登记精确字节数，漂移（膨胀或缩水）即失败，防止静默膨胀；文件下架时必须同步删除此条目。
+SKIN_PNG_SIZE_ALLOWLIST = {
+    "skins/a8dfe0f8_1.png": 2036285,
+}
+# 总量哨兵：2026-08-10 实测 manifest 引用 skins/*.png 共 3300 个、合计 104,894,382 B，
+# 预算写死为实测总量 × 1.5，拦渐进性膨胀；正常扩容超预算时应重新实测后调高并更新本注释。
+SKIN_PNG_TOTAL_BUDGET_BYTES = 157_341_573  # 104_894_382 * 1.5
+
+
+def assert_skin_png_size_budget(manifest_dir: Path, manifest: dict[str, Any], failures: list[str]) -> int:
+    referenced = referenced_skin_pngs(manifest)
+    total_bytes = 0
+    oversized: list[str] = []
+    largest: list[tuple[int, str]] = []
+    for uri in sorted(referenced):
+        file_path = manifest_dir / uri
+        if not file_path.exists():
+            continue  # 缺失文件已由 assert_frame_list 报告
+        size = file_path.stat().st_size
+        total_bytes += size
+        largest.append((size, uri))
+        allowed = SKIN_PNG_SIZE_ALLOWLIST.get(uri)
+        if allowed is not None:
+            if size != allowed:
+                oversized.append(f"{uri} allowlisted size drifted: {size} B != registered {allowed} B")
+        elif size > SKIN_PNG_MAX_BYTES:
+            oversized.append(f"{uri} size {size} B exceeds {SKIN_PNG_MAX_BYTES} B (not in size allowlist)")
+    for message in oversized[:20]:
+        failures.append(message)
+    if len(oversized) > 20:
+        failures.append(f"{len(oversized) - 20} additional oversized skin pngs")
+    for uri in sorted(SKIN_PNG_SIZE_ALLOWLIST):
+        if uri not in referenced:
+            failures.append(f"stale size allowlist entry (no longer referenced): {uri}")
+    if total_bytes > SKIN_PNG_TOTAL_BUDGET_BYTES:
+        top_desc = ", ".join(f"{uri} {size} B" for size, uri in sorted(largest, reverse=True)[:5])
+        failures.append(
+            f"skin png total {total_bytes} B exceeds budget {SKIN_PNG_TOTAL_BUDGET_BYTES} B; largest: {top_desc}"
+        )
+    return total_bytes
+
+
 def assert_frame_list(
     manifest_dir: Path,
     failures: list[str],
@@ -604,6 +650,7 @@ def main() -> None:
     assert_torso_png_not_on_limbs(manifest, failures)
     missing_exportable = assert_export_completeness(manifest, failures)
     orphaned_skin_pngs = assert_no_orphan_skin_pngs(manifest_dir, manifest, failures)
+    skin_png_total_bytes = assert_skin_png_size_budget(manifest_dir, manifest, failures)
 
     layer_count = 0
     compressed_layer_count = 0
@@ -619,6 +666,7 @@ def main() -> None:
         "compressedNestedLayers": compressed_layer_count,
         "exportableMissingExport": len(missing_exportable),
         "orphanSkinPngs": len(orphaned_skin_pngs),
+        "skinPngTotalBytes": skin_png_total_bytes,
         "reportTimelineCompressedFrameRefs": counts.get("timelineCompressedFrameRefs"),
         "failures": failures[:20],
     }

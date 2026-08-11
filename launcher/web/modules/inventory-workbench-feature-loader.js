@@ -37,6 +37,8 @@
         'modules/character-build/character-build-doll-preview.js',
         'modules/character-build/character-build-template.js',
         'modules/character-build/character-build-loadout-presenter.js',
+        'modules/character-build/character-build-drop-targets.js',
+        'modules/character-build/character-build-candidate-drag.js',
         'modules/character-build/character-build-candidate-pane.js',
         'modules/character-build-view.js',
         'modules/character-build/character-build-tuning.js',

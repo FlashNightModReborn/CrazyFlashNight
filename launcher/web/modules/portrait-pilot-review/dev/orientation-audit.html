@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>敌人头像方向全量复核</title>
+  <link rel="stylesheet" href="orientation-audit.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">PRODUCTION PORTRAIT · ORIENTATION AUDIT</p>
+      <h1>敌人头像方向全量复核</h1>
+      <p class="subtitle">只裁决方向：左侧保持当前，右侧使用镜像。构图、选帧与身份均保持不变。</p>
+    </div>
+    <div class="summary" aria-live="polite">
+      <strong id="progress-count">0 / 0</strong>
+      <span id="progress-label">等待数据</span>
+    </div>
+  </header>
+
+  <section class="toolbar" aria-label="审核工具">
+    <div class="filter-group" role="group" aria-label="筛选">
+      <button type="button" class="filter selected" data-filter="all">全部</button>
+      <button type="button" class="filter" data-filter="flip">A/B 建议翻转</button>
+      <button type="button" class="filter" data-filter="disagreed">A/B 分歧或模糊</button>
+      <button type="button" class="filter" data-filter="pending">尚未裁决</button>
+    </div>
+    <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+    <button type="button" id="export" disabled>导出完整方向裁决</button>
+  </section>
+
+  <p id="message" class="message" aria-live="polite">正在载入审计数据…</p>
+  <main id="app" data-ready="false"></main>
+
+  <template id="card-template">
+    <article class="audit-card">
+      <header class="card-header">
+        <div>
+          <span class="review-code"></span>
+          <h2 class="review-title"></h2>
+          <p class="provenance"></p>
+        </div>
+        <span class="risk-badge"></span>
+      </header>
+      <div class="model-evidence">
+        <div class="model-row model-a"><strong>Luna A</strong><span class="model-direction"></span><span class="model-landmark"></span></div>
+        <div class="model-row model-b"><strong>Luna B</strong><span class="model-direction"></span><span class="model-landmark"></span></div>
+      </div>
+      <div class="choice-grid" role="radiogroup" aria-label="选择最终方向">
+        <button type="button" class="orientation-choice keep" data-action="keep" role="radio" aria-checked="false">
+          <span class="choice-label">保持当前</span>
+          <span class="image-stage"><img class="large current" alt="当前方向 512px"></span>
+          <span class="small-check"><img class="small current" alt="当前方向 80px"><span>80px</span></span>
+        </button>
+        <button type="button" class="orientation-choice flip" data-action="flip_x" role="radio" aria-checked="false">
+          <span class="choice-label">使用镜像</span>
+          <span class="image-stage"><img class="large mirrored" alt="镜像方向 512px"></span>
+          <span class="small-check"><img class="small mirrored" alt="镜像方向 80px"><span>80px</span></span>
+        </button>
+      </div>
+      <p class="decision-state">尚未裁决</p>
+    </article>
+  </template>
+
+  <script src="orientation-audit.js"></script>
+</body>
+</html>

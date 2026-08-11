@@ -1144,6 +1144,8 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/character-build/character-build-doll-preview.js"></script>
 <script src="modules/character-build/character-build-template.js"></script>
 <script src="modules/character-build/character-build-loadout-presenter.js"></script>
+<script src="modules/character-build/character-build-drop-targets.js"></script>
+<script src="modules/character-build/character-build-candidate-drag.js"></script>
 <script src="modules/character-build/character-build-candidate-pane.js"></script>
 <script src="modules/character-build-view.js"></script>
 <script src="modules/character-build/character-build-tuning.js"></script>
@@ -1321,8 +1323,8 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
     }
     function candidateActionRow() {
         var toolbar = document.querySelector('.character-build-candidate-actions');
-        var heading = document.querySelector(
-            '.character-build-candidate-pane > .character-build-pane-heading');
+        var contextRow = document.querySelector(
+            '.character-build-candidate-pane > .character-build-candidate-context-row');
         var buttons = Array.prototype.filter.call(toolbar.querySelectorAll('button'),
             function(node) {
                 var style = getComputedStyle(node);
@@ -1330,20 +1332,20 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             });
         var rects = buttons.map(function(node) { return node.getBoundingClientRect(); });
         var toolbarRect = toolbar.getBoundingClientRect();
-        var headingRect = heading.getBoundingClientRect();
+        var contextRowRect = contextRow.getBoundingClientRect();
         return {
-            nested:toolbar.closest('.character-build-pane-heading') === heading,
+            nested:toolbar.closest('.character-build-candidate-context-row') === contextRow,
             count:buttons.length,
             labels:buttons.map(function(node) { return node.textContent.trim(); }),
             aria:buttons.map(function(node) { return node.getAttribute('aria-label'); }),
             sameRow:Math.max.apply(Math, rects.map(function(rect) { return rect.top; }))
                 - Math.min.apply(Math, rects.map(function(rect) { return rect.top; })) <= 1,
-            inside:toolbarRect.left >= headingRect.left - 1
-                && toolbarRect.right <= headingRect.right + 1
-                && toolbarRect.top >= headingRect.top - 1
-                && toolbarRect.bottom <= headingRect.bottom + 1,
+            inside:toolbarRect.left >= contextRowRect.left - 1
+                && toolbarRect.right <= contextRowRect.right + 1
+                && toolbarRect.top >= contextRowRect.top - 1
+                && toolbarRect.bottom <= contextRowRect.bottom + 1,
             overflow:toolbar.scrollWidth > toolbar.clientWidth + 1
-                || heading.scrollWidth > heading.clientWidth + 1,
+                || contextRow.scrollWidth > contextRow.clientWidth + 1,
             clipped:buttons.some(function(node) {
                 return node.scrollWidth > node.clientWidth + 1;
             }),
@@ -1911,7 +1913,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
         var actionRow = candidateActionRow();
         var candidateScrollRect = document.querySelector(
             '.character-build-candidate-scroll').getBoundingClientRect();
-        check('build exposes one density control and embeds actions in candidate PaneChrome',
+        check('build exposes one density control and embeds actions in the candidate context row',
             !!densityToggle
             && !document.querySelector(
                 '.inventory-workbench-mode-actions .item-grid-mode-switch')
@@ -2014,6 +2016,47 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && copy.indexOf('插件 2 / 3') >= 0
                     && copy.indexOf('复合稳定导轨') >= 0;
             }) && commandCount('tooltip') === loadoutTooltipTraffic + 1);
+        // 侧向稳定性回归（"忽左忽右"修复）：装备槽注释区域定侧恒左（纸娃娃一侧），
+        // 且同一次悬停内侧向锁定——光标从槽左缘扫到右缘，data-placement 不得改变。
+        var placementTooltip = document.getElementById('panel-tooltip');
+        var placementSamples = [];
+        var placementFractions = [0.02, 0.25, 0.5, 0.75, 0.98];
+        for (var placementIndex = 0; placementIndex < placementFractions.length; placementIndex++) {
+            currentLongGun.dispatchEvent(new PointerEvent('pointermove', {
+                pointerId:61,
+                pointerType:'mouse',
+                clientX:loadoutTooltipRect.left + Math.max(1, Math.floor(
+                    loadoutTooltipRect.width * placementFractions[placementIndex])),
+                clientY:loadoutTooltipRect.top + loadoutTooltipRect.height / 2
+            }));
+            placementSamples.push(placementTooltip.getAttribute('data-placement'));
+        }
+        check('equipped slot tooltip keeps one placement side while the pointer sweeps the slot',
+            placementSamples.every(function(name) {
+                return !!name && name === placementSamples[0];
+            }),
+            JSON.stringify(placementSamples));
+        var loadoutGridRect = currentLongGun.parentNode.getBoundingClientRect();
+        var settledTooltipRect = placementTooltip.getBoundingClientRect();
+        var paperDollSideFits = loadoutGridRect.left - 10 - 8 >= settledTooltipRect.width;
+        check('equipped slot tooltip prefers the paper-doll side whenever that side fits',
+            !paperDollSideFits || placementSamples[0] === 'left',
+            JSON.stringify({samples:placementSamples, gridLeft:loadoutGridRect.left,
+                tooltipWidth:settledTooltipRect.width}));
+        // 结构回归（手枪2 → 空手枪1 被浮层截获鼠标）：锚定整个槽位 grid 的注释
+        // 不得与该 grid 相交，否则鼠标移向被盖住的相邻槽位时会落进浮层。
+        var tooltipCoversSlotGrid = settledTooltipRect.left < loadoutGridRect.right - 1
+            && settledTooltipRect.right > loadoutGridRect.left + 1
+            && settledTooltipRect.top < loadoutGridRect.bottom - 1
+            && settledTooltipRect.bottom > loadoutGridRect.top + 1;
+        check('equipped slot tooltip never overlaps the slot grid it is anchored beside',
+            !tooltipCoversSlotGrid,
+            JSON.stringify({
+                tipLeft:settledTooltipRect.left, tipRight:settledTooltipRect.right,
+                tipTop:settledTooltipRect.top, tipBottom:settledTooltipRect.bottom,
+                gridLeft:loadoutGridRect.left, gridRight:loadoutGridRect.right,
+                gridTop:loadoutGridRect.top, gridBottom:loadoutGridRect.bottom
+            }));
         var loadoutTooltipRequest = loadoutMessages().filter(function(message) {
             return message.cmd === 'tooltip';
         }).slice(-1)[0];
@@ -2269,7 +2312,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             '.character-build-candidate').getBoundingClientRect();
         check('candidate scope and browse summary share one compact row while the grid owns remaining height',
             candidatePane.children.length === 3
-            && candidateContextRow.children.length === 2
+            && candidateContextRow.children.length === 3
             && candidateContextRow.clientHeight <= 35
             && Math.abs(candidateScrollForLayout.clientHeight - compatibleCandidateHeight) <= 1
             && scrollRect.height > paneRect.height * 0.65
@@ -2405,10 +2448,14 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
         var scopeWrongTarget = document.querySelector(
             '[data-roving-key="armor:上装装备"]');
         beginPointerDrag(backpackCompatible, scopeWrongTarget, 80);
-        check('backpack scope keeps A5b drag pinned to the exact selected slot',
+        check('backpack scope drag marks only the item slot allowlist and rejects other slots',
             InventoryWorkbench.debugState().build.view.candidateDrag.active
-            && scopeWrongTarget.classList.contains('workbench-drop-rejected'));
+            && scopeWrongTarget.classList.contains('workbench-drop-rejected')
+            && currentLongGun.classList.contains('character-build-drop-hint')
+            && !scopeWrongTarget.classList.contains('character-build-drop-hint'));
         endPointerDrag(scopeWrongTarget, 80, 'pointerup');
+        check('rejected drop clears every slot allowlist hint without a mutation',
+            !document.querySelector('.character-build-drop-hint'));
         await wait(90);
         backpackCompatible.click();
         var candidateScroll = document.querySelector('.character-build-candidate-scroll');
@@ -3724,9 +3771,9 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             '.character-build-candidate-pane > .character-build-pane-heading,'
             + '.character-build-candidate-pane > .character-build-candidate-context-row,'
             + '.character-build-candidate-pane > .character-build-candidate-scroll');
-        var candidateHeading = document.querySelector(
-            '.character-build-candidate-pane > .character-build-pane-heading');
-        var candidateActions = candidateHeading.querySelector(
+        var candidateContextRow = document.querySelector(
+            '.character-build-candidate-pane > .character-build-candidate-context-row');
+        var candidateActions = candidateContextRow.querySelector(
             '.character-build-candidate-actions');
         check('embedded tuning has one visible chrome layer and hides the candidate decision face',
             candidateChrome.length === 3
@@ -3734,9 +3781,9 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 return node.hidden && node.hasAttribute('inert')
                     && getComputedStyle(node).display === 'none';
             })
-            && candidateHeading.contains(candidateActions)
+            && candidateContextRow.contains(candidateActions)
             && Array.prototype.every.call(candidateActions.querySelectorAll('button'),
-                function(node) { return node.closest('[inert]') === candidateHeading; })
+                function(node) { return node.closest('[inert]') === candidateContextRow; })
             && getComputedStyle(document.querySelector('.character-build-tuning-shell')).display !== 'none',
             Array.prototype.map.call(candidateChrome, function(node) {
                 return node.className + ':' + getComputedStyle(node).display;
@@ -4955,6 +5002,141 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && !lifecycleTrigger.isConnected
                     && trigger.getAttribute('aria-expanded') === 'false'
                     && menuPointerListeners.length === 0;
+            }));
+        // 背包模式：候选可拖到该物品白名单内的任意槽位直接装备，选择跟随落点。
+        document.querySelector('[data-roving-key="weapon:长枪"]').click();
+        check('cross-slot drop probe selects the long-gun slot first',
+            await until(function() {
+                return candidateProjectionReady(
+                    InventoryWorkbench.debugState().build, 'weapon:长枪', 1);
+            }));
+        document.querySelector(
+            '[data-build-candidate-scope-mount] [data-choice="backpack"]').click();
+        check('cross-slot drop probe switches to the shared backpack authority',
+            await until(function() {
+                return candidateProjectionReady(
+                    InventoryWorkbench.debugState().build, 'weapon:长枪', 6);
+            }));
+        var crossPistolCandidate = Array.prototype.find.call(
+            document.querySelectorAll('.character-build-candidate'), function(node) {
+                return (node.getAttribute('aria-label') || '').indexOf(
+                    CharacterBuildDressupFixture.equipment.pistol) >= 0;
+            });
+        var crossDropBase = commandCount('equipEquipment');
+        var crossPistol2 = document.querySelector('[data-roving-key="weapon:手枪2"]');
+        beginPointerDrag(crossPistolCandidate, crossPistol2, 87);
+        check('blocked-for-selected backpack row still drags and marks its two handgun slots',
+            InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && crossPistol2.classList.contains('workbench-drop-active')
+            && document.querySelector('[data-roving-key="weapon:手枪"]')
+                .classList.contains('character-build-drop-hint')
+            && crossPistol2.classList.contains('character-build-drop-hint')
+            && !document.querySelector('[data-roving-key="weapon:长枪"]')
+                .classList.contains('character-build-drop-hint'));
+        endPointerDrag(crossPistol2, 87, 'pointerup');
+        check('dropping a backpack candidate on its other allowed slot equips and adopts that slot',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var lastEquip = loadoutMessages().filter(function(message) {
+                    return message.cmd === 'equipEquipment';
+                }).slice(-1)[0];
+                return state && state.session.state === 'idle'
+                    && commandCount('equipEquipment') === crossDropBase + 1
+                    && lastEquip && lastEquip.payload.slotKey === '手枪2'
+                    && lastEquip.payload.source.slot === 13
+                    && lastEquip.payload.source.expectedLease === 'lease.candidate.13'
+                    && state.selectedSlotKey === 'weapon:手枪2'
+                    && state.view.selectedSlotKey === 'weapon:手枪2'
+                    && state.view.candidateCount === 6
+                    && document.querySelector('[data-roving-key="weapon:手枪2"]')
+                        .getAttribute('aria-selected') === 'true'
+                    && !document.querySelector('.character-build-drop-hint')
+                    && !document.querySelector('.character-build-drag-ghost');
+            }), JSON.stringify(InventoryWorkbench.debugState().build));
+        var dblclickBase = commandCount('equipEquipment');
+        var dblclickCandidate = Array.prototype.find.call(
+            document.querySelectorAll('.character-build-candidate'), function(node) {
+                return (node.getAttribute('aria-label') || '').indexOf(
+                    CharacterBuildDressupFixture.equipment.pistol) >= 0;
+            });
+        dblclickCandidate.dispatchEvent(new MouseEvent('dblclick', {
+            bubbles:true, cancelable:true
+        }));
+        check('double-clicking a compatible backpack candidate selects and commits in one gesture',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var lastEquip = loadoutMessages().filter(function(message) {
+                    return message.cmd === 'equipEquipment';
+                }).slice(-1)[0];
+                return state && state.session.state === 'idle'
+                    && commandCount('equipEquipment') === dblclickBase + 1
+                    && lastEquip && lastEquip.payload.slotKey === '手枪2'
+                    && lastEquip.payload.source.slot === 13
+                    && state.view.selectedCandidateKey === '';
+            }));
+        check('post-commit candidate list settles before the blocked double-click probe',
+            await until(function() {
+                return candidateProjectionReady(
+                    InventoryWorkbench.debugState().build, 'weapon:手枪2', 6);
+            }));
+        var dblclickBlocked = Array.prototype.find.call(
+            document.querySelectorAll('.character-build-candidate'), function(node) {
+                return (node.getAttribute('aria-label') || '').indexOf(
+                    CharacterBuildDressupFixture.equipment.blade) >= 0;
+            });
+        dblclickBlocked.dispatchEvent(new MouseEvent('dblclick', {
+            bubbles:true, cancelable:true
+        }));
+        await wait(90);
+        check('double-clicking a blocked candidate stays preview-free and mutation-free',
+            commandCount('equipEquipment') === dblclickBase + 1
+            && InventoryWorkbench.debugState().build.view.selectedCandidateKey === '');
+        // 药剂行同样按协议判别放开跨槽：背包范围内的药剂可装入任意药剂槽。
+        var drugDropBase = commandCount('equipDrug');
+        var drugDropCandidate = Array.prototype.find.call(
+            document.querySelectorAll('.character-build-candidate'), function(node) {
+                return (node.getAttribute('aria-label') || '').indexOf('测试药剂') >= 0;
+            });
+        var drugDropTarget = document.querySelector('[data-roving-key="drug:drug3"]');
+        beginPointerDrag(drugDropCandidate, drugDropTarget, 88);
+        check('backpack potion row drags and marks every drug slot',
+            InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && drugDropTarget.classList.contains('workbench-drop-active')
+            && document.querySelectorAll(
+                '.character-build-slot.character-build-drop-hint').length === 4
+            && document.querySelector('[data-roving-key="drug:drug1"]')
+                .classList.contains('character-build-drop-hint')
+            && document.querySelector('[data-roving-key="drug:drug4"]')
+                .classList.contains('character-build-drop-hint')
+            && !document.querySelector('[data-roving-key="weapon:手枪2"]')
+                .classList.contains('character-build-drop-hint'));
+        endPointerDrag(drugDropTarget, 88, 'pointerup');
+        check('dropping a potion on another drug slot loads it and adopts that slot',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var lastEquip = loadoutMessages().filter(function(message) {
+                    return message.cmd === 'equipDrug';
+                }).slice(-1)[0];
+                return state && state.session.state === 'idle'
+                    && commandCount('equipDrug') === drugDropBase + 1
+                    && lastEquip && lastEquip.payload.drugSlot === 2
+                    && lastEquip.payload.source.slot === 11
+                    && lastEquip.payload.source.expectedLease === 'lease.incompatible.11'
+                    && state.selectedSlotKey === 'drug:drug3'
+                    && !document.querySelector('.character-build-drop-hint')
+                    && !document.querySelector('.character-build-drag-ghost');
+            }), JSON.stringify(InventoryWorkbench.debugState().build));
+        check('post-potion-drop candidate list settles on the adopted drug slot',
+            await until(function() {
+                return candidateProjectionReady(
+                    InventoryWorkbench.debugState().build, 'drug:drug3', 2);
+            }));
+        document.querySelector(
+            '[data-build-candidate-scope-mount] [data-choice="compatible"]').click();
+        check('cross-slot drop probe restores the compatible scope for later probes',
+            await until(function() {
+                return candidateProjectionReady(
+                    InventoryWorkbench.debugState().build, 'drug:drug3', 1);
             }));
         document.querySelector('[data-roving-key="weapon:长枪"]').click();
         check('destroy drag probe obtains one fresh filtered candidate',

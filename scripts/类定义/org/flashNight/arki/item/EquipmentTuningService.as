@@ -1082,8 +1082,11 @@ class org.flashNight.arki.item.EquipmentTuningService {
                     String(ref.slotKey),
                     Number(ref.expectedLoadoutRevision));
         if (resolved == null || resolved.success !== true) {
-            return resolved == null
-                ? fail("service_not_ready") : resolved;
+            // CharacterBuildService 的失败对象携带会话状态等内部键，直接上线会越出
+            // 调制域响应白名单（Host 判 malformed_response）；只投影 error 出站。
+            if (resolved == null) return fail("service_not_ready");
+            var sourceError:String = String(resolved.error);
+            return fail(sourceError == "" || sourceError == "undefined" ? "stale_state" : sourceError);
         }
         var valid:Object = validateEquipment(resolved.item);
         if (!valid.success) return valid;

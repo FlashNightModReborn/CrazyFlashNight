@@ -260,8 +260,18 @@
     <script src="../../workbench-components.js"></script>
     <script src="../../tooltip.js"></script>
     <script src="../../asset-timeline.js"></script>
+    <script>window.CF7_DRESSUP_MANIFEST_URL = '../../../assets/dressup/manifest.json';</script>
+    <script src="../../dressup-doll-renderer.js"></script>
+    <script src="../../merc-data.js"></script>
+    <script src="../../merc-portrait-renderer.js"></script>
     <script>window.CF7_ICON_ROOT = '../../../icons/';</script>
     <script src="../../icons.js"></script>
+    <script>
+    window.CF7_PORTRAIT_ROOT = '../../../assets/enemy-portraits/';
+    window.CF7_PORTRAIT_LEGACY_ROOT = '../../../assets/pets/';
+    window.CF7_PORTRAIT_LOCKED_URL = '../../../assets/pets/pet_locked.png';
+    </script>
+    <script src="../../portrait-resolver.js"></script>
     <script src="../../minigames/shared/dev/harness-base.js"></script>
 
     <!-- PanelTooltip 容器（生产环境由 overlay.html 提供） -->
@@ -279,7 +289,7 @@
     <script src="../../arena-custom-polling.js"></script>
     <script src="../../arena-custom-param-editor.js"></script>
     <script src="../../arena-custom-result-view.js"></script>
-    <!-- P4 拆分模块（纯移动；与 panels-lazy-registry arena 注册项同序）：core → shell →
+    <!-- P4 拆分模块（与 panels-lazy-registry arena 注册项同序）：通用怪物/佣兵头像组件 → core → shell →
          challenge-browser → preview-authority → custom-editor → result → 薄 facade -->
     <script src="../../arena/arena-core.js"></script>
     <script src="../../arena/arena-shell.js"></script>
@@ -587,13 +597,18 @@
                             // 名字带 cardIdx 让 QA 能验"摘要文本与回包数据一致"且区分卡片
                             var oppName = (cardIdx !== undefined ? 'C' + cardIdx + '-' : '') + 'Mock-' + (i + 1);
                             opponents.push({
+                                id: 'arena-mock-' + cardIdx + '-' + i,
                                 name: oppName,
                                 level: lvl,
+                                gender: i % 2 ? '女' : '男',
+                                height: i % 2 ? 164 : 178,
+                                face: i % 2 ? '女变装-基本脸型' : '男变装-基本脸型',
+                                hair: i % 2 ? '发型-女式-玫红色马尾' : '发型-男式-黑韩式头',
                                 equips: [
-                                    { slot: 6,  raw: '铁盔',         name: '铁盔', icon: '铁盔', displayname: '铁盔',         level: eLvl },
-                                    { slot: 8,  raw: '铁甲##二阶',    name: '铁甲', icon: '铁甲', displayname: '铁甲 二阶',     level: eLvl },
-                                    { slot: 10, raw: '铁靴',         name: '铁靴', icon: '铁靴', displayname: '铁靴',         level: eLvl },
-                                    { slot: 12, raw: 'M14',          name: 'M14',  icon: 'M14',  displayname: 'M14',          level: eLvl }
+                                    { slot: 6,  raw: '锐刻幻影夜视仪', name: '锐刻幻影夜视仪', icon: '锐刻幻影夜视仪', displayname: '锐刻幻影夜视仪', level: eLvl },
+                                    { slot: 7,  raw: '蓝晶战斗服',     name: '蓝晶战斗服', icon: '蓝晶战斗服', displayname: '蓝晶战斗服', level: eLvl },
+                                    { slot: 8,  raw: '蓝晶手套',       name: '蓝晶手套', icon: '蓝晶手套', displayname: '蓝晶手套', level: eLvl },
+                                    { slot: 12, raw: '战术巴雷特',     name: '战术巴雷特', icon: '战术巴雷特', displayname: '战术巴雷特', level: eLvl }
                                 ],
                                 // 技能 mock（AS2 端由 MercPanelService.buildSkills 回传 {name,level,type,trait,cooldown,cost}）
                                 skills: [

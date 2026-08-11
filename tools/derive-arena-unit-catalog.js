@@ -3,6 +3,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { projectDressupPortrait } = require("./lib/arena-portrait-routing");
 
 const ROOT = path.resolve(__dirname, "..");
 const SOURCE_PATH = path.join(ROOT, "data", "units", "units.json");
@@ -151,6 +152,8 @@ function normalizeUnit(unit, phaseSpawnsBySprite) {
     height: Number(unit.height) > 0 ? Number(unit.height) : 0,
     slots: summarizeSlots(unit.data),
   };
+  const portrait = projectDressupPortrait(unit);
+  if (portrait) normalized.portrait = portrait;
   const phaseSpawns = phaseSpawnsBySprite.get(spritename);
   if (phaseSpawns && phaseSpawns.length > 0) {
     normalized.multiPhase = true;
@@ -172,7 +175,7 @@ function buildModule() {
   const multiPhaseCount = units.filter((unit) => unit.multiPhase === true).length;
 
   const payload = {
-    schema: "arena-unit-catalog.v1",
+    schema: "arena-unit-catalog.v2",
     source: "data/units/units.json",
     phaseSource: "flashswf/arts/**/LIBRARY/*.xml",
     generatedBy: "tools/derive-arena-unit-catalog.js",

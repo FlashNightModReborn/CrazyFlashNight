@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>怪物头像来源裁决</title>
+  <link rel="stylesheet" href="review.css">
+  <link rel="stylesheet" href="source-choice.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CF7 · duplicate / conflict 人工来源门</p>
+      <h1>怪物头像来源裁决</h1>
+      <p class="lede">这里比较的是同一怪物身份的素材来源，不是产品变体。选中后仍只生成 <code>portraitRef + default</code>；页面不会写正式资产。</p>
+    </div>
+    <div class="progress-box" aria-live="polite">
+      <strong id="progress-count">0 / 0</strong>
+      <span id="progress-label">等待数据</span>
+      <div class="progress-track"><span id="progress-bar"></span></div>
+    </div>
+  </header>
+
+  <section class="evidence" aria-label="证据摘要">
+    <span id="source-digest">source —</span>
+    <span id="manifest-digest">manifest —</span>
+    <span id="candidate-count">candidates —</span>
+  </section>
+
+  <section class="controls" aria-label="导入导出">
+    <p>优先看内部 <code>man</code> 的动画帧；标有 root fallback 的来源需要额外留意血条、等级或外层装饰。</p>
+    <div class="control-actions">
+      <button id="import-button" type="button" class="secondary">导入完整决定</button>
+      <input id="import-file" type="file" accept="application/json" hidden>
+      <button id="export-button" type="button" disabled>导出选源决定</button>
+    </div>
+  </section>
+
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <main id="app" class="source-review-list" data-ready="false"></main>
+
+  <template id="row-template">
+    <article class="source-review-row">
+      <header class="card-header">
+        <div>
+          <span class="review-code"></span>
+          <h2 class="review-title"></h2>
+          <p class="review-meta"></p>
+        </div>
+        <div class="badges"></div>
+      </header>
+      <div class="source-grid"></div>
+      <section class="decision-panel">
+        <h3>裁决</h3>
+        <button type="button" class="manual-button secondary">这些来源仍需人工维护</button>
+        <label class="note-field">
+          <span>备注（人工维护时必填）</span>
+          <textarea rows="2" placeholder="说明为什么无法自动选源，或记录选择依据"></textarea>
+        </label>
+        <p class="decision-summary">尚未选择</p>
+      </section>
+    </article>
+  </template>
+
+  <template id="source-template">
+    <section class="source-card">
+      <header>
+        <strong class="source-code"></strong>
+        <span class="source-status"></span>
+      </header>
+      <code class="source-swf"></code>
+      <code class="source-symbol"></code>
+      <p class="source-strategy"></p>
+      <a class="gif-link" target="_blank" rel="noreferrer">打开完整动画 GIF</a>
+      <div class="frame-strip"></div>
+      <p class="unrenderable-message" hidden></p>
+      <button type="button" class="select-source">选用这个来源</button>
+    </section>
+  </template>
+
+  <script src="source-choice.js"></script>
+</body>
+</html>

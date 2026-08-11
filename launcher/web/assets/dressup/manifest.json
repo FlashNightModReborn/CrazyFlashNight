@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-08-01T15:57:38+0800",
+  "generatedAt": "2026-08-09T20:11:02+0800",
   "genders": [
     "男",
     "女"
@@ -20761,6 +20761,68 @@
       "helmet": false,
       "fieldsByGender": {},
       "sourceFile": "防具_颈部装备.xml"
+    },
+    "远古诛神头盔": {
+      "use": "头部装备",
+      "icon": "远古诛神头盔",
+      "dressup": "男变装-远古诛神头盔",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "面具": "男变装-远古诛神头盔"
+        }
+      },
+      "sourceFile": "data/units/units.json#235",
+      "virtual": true,
+      "sourceUnitId": 235
+    },
+    "远古诛神胸甲": {
+      "use": "上装装备",
+      "icon": "远古诛神胸甲",
+      "dressup": "变装-远古诛神胸甲",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "身体": "男变装-远古诛神胸甲身体",
+          "上臂": "男变装-远古诛神胸甲上臂",
+          "左下臂": "男变装-远古诛神胸甲左下臂",
+          "右下臂": "男变装-远古诛神胸甲右下臂"
+        }
+      },
+      "sourceFile": "data/units/units.json#235",
+      "virtual": true,
+      "sourceUnitId": 235
+    },
+    "远古诛神腿甲": {
+      "use": "下装装备",
+      "icon": "远古诛神腿甲",
+      "dressup": "变装-远古诛神腿甲",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "屁股": "男变装-远古诛神腿甲屁股",
+          "左大腿": "男变装-远古诛神腿甲左大腿",
+          "右大腿": "男变装-远古诛神腿甲右大腿",
+          "小腿": "男变装-远古诛神腿甲小腿"
+        }
+      },
+      "sourceFile": "data/units/units.json#235",
+      "virtual": true,
+      "sourceUnitId": 235
+    },
+    "远古诛神战鞋": {
+      "use": "脚部装备",
+      "icon": "远古诛神战鞋",
+      "dressup": "男变装-远古诛神战鞋",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "脚": "男变装-远古诛神战鞋"
+        }
+      },
+      "sourceFile": "data/units/units.json#235",
+      "virtual": true,
+      "sourceUnitId": 235
     }
   },
   "skinKeys": {
@@ -133727,6 +133789,86 @@
         }
       ]
     },
+    "男变装-远古诛神头盔": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神头盔",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "头部装备"
+      ],
+      "items": [
+        "远古诛神头盔"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/dd78e490_1.png",
+        "width": 269,
+        "height": 302,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/dd78e490_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 269,
+          "height": 302,
+          "originX": 109.9,
+          "originY": 204.8
+        }
+      ]
+    },
+    "男变装-远古诛神战鞋": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神战鞋",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "脚部装备"
+      ],
+      "items": [
+        "远古诛神战鞋"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/4fd89007_1.png",
+        "width": 259,
+        "height": 184,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/4fd89007_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 259,
+          "height": 184,
+          "originX": 130.9,
+          "originY": 88.3
+        }
+      ]
+    },
     "男变装-远古诛神手套右手": {
       "covered": true,
       "asset": {
@@ -133804,6 +133946,326 @@
           "height": 160,
           "originX": 92.4,
           "originY": 87.7
+        }
+      ]
+    },
+    "男变装-远古诛神胸甲上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神胸甲上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "远古诛神胸甲"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/fb50bc57_1.png",
+        "width": 225,
+        "height": 319,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/fb50bc57_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 225,
+          "height": 319,
+          "originX": 124.6,
+          "originY": 162.3
+        }
+      ]
+    },
+    "男变装-远古诛神胸甲右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神胸甲右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "远古诛神胸甲"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/e91f3204_1.png",
+        "width": 206,
+        "height": 246,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/e91f3204_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 206,
+          "height": 246,
+          "originX": 168.2,
+          "originY": 126.9
+        }
+      ]
+    },
+    "男变装-远古诛神胸甲左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神胸甲左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "远古诛神胸甲"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/8ad1c9a5_1.png",
+        "width": 123,
+        "height": 253,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/8ad1c9a5_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 123,
+          "height": 253,
+          "originX": 60.2,
+          "originY": 138.1
+        }
+      ]
+    },
+    "男变装-远古诛神胸甲身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神胸甲身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "远古诛神胸甲"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/a8dfe0f8_1.png",
+        "width": 1000,
+        "height": 1024,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/a8dfe0f8_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1000,
+          "height": 1024,
+          "originX": 829.4,
+          "originY": 666.2
+        }
+      ]
+    },
+    "男变装-远古诛神腿甲右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神腿甲右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "远古诛神腿甲"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/8258e8d9_1.png",
+        "width": 214,
+        "height": 375,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/8258e8d9_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 214,
+          "height": 375,
+          "originX": 93.3,
+          "originY": 191.2
+        }
+      ]
+    },
+    "男变装-远古诛神腿甲小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神腿甲小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "远古诛神腿甲"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/57952ba8_1.png",
+        "width": 286,
+        "height": 356,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/57952ba8_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 286,
+          "height": 356,
+          "originX": 142.0,
+          "originY": 184.0
+        }
+      ]
+    },
+    "男变装-远古诛神腿甲屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神腿甲屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "远古诛神腿甲"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/3f64de8f_1.png",
+        "width": 645,
+        "height": 509,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/3f64de8f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 645,
+          "height": 509,
+          "originX": 537.1,
+          "originY": 169.5
+        }
+      ]
+    },
+    "男变装-远古诛神腿甲左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/远古诛神/男变装-远古诛神腿甲左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "远古诛神腿甲"
+      ],
+      "sourceFiles": [
+        "data/units/units.json#235"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/e1961378_1.png",
+        "width": 212,
+        "height": 364,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/e1961378_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 212,
+          "height": 364,
+          "originX": 104.7,
+          "originY": 188.3
         }
       ]
     },
@@ -150402,9 +150864,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "空手站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -150434,9 +150896,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "空手站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -151944,9 +152406,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "长枪站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -151976,9 +152438,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "长枪站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -153298,9 +153760,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "手枪站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -153330,9 +153792,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "手枪站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -154651,9 +155113,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "手枪2站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -154683,9 +155145,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "手枪2站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -156068,9 +156530,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "双枪站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -156100,9 +156562,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "双枪站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -157232,9 +157694,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "兵器站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -157264,9 +157726,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "兵器站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -158712,9 +159174,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "手雷站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -158744,9 +159206,9 @@
                   "gender": "男",
                   "rig": "battle",
                   "stateLabel": "手雷站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -159968,9 +160430,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "空手站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -160000,9 +160462,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "空手站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -161343,9 +161805,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "长枪站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -161375,9 +161837,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "长枪站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -162530,9 +162992,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "手枪站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -162562,9 +163024,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "手枪站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -163716,9 +164178,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "手枪2站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -163748,9 +164210,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "手枪2站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -164966,9 +165428,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "双枪站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -164998,9 +165460,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "双枪站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -165963,9 +166425,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "兵器站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -165995,9 +166457,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "兵器站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -167276,9 +167738,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "手雷站立",
-                  "field": "发型",
-                  "attachName": "装扮2",
-                  "referenceName": "发型_引用",
+                  "field": "面具",
+                  "attachName": "装扮3",
+                  "referenceName": "面具_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
@@ -167308,9 +167770,9 @@
                   "gender": "女",
                   "rig": "battle",
                   "stateLabel": "手雷站立",
-                  "field": "面具",
-                  "attachName": "装扮3",
-                  "referenceName": "面具_引用",
+                  "field": "发型",
+                  "attachName": "装扮2",
+                  "referenceName": "发型_引用",
                   "hostSymbol": "主角肢体素材/头",
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",

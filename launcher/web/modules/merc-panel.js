@@ -26,13 +26,14 @@
     'use strict';
 
     // ── 依赖 fail-fast：缺共享层直接报错，不做半初始化 ──
-    // DressupDollRenderer / AssetTimeline 不在此列：纸娃娃链缺失时优雅降级（无图卡片仍可用）。
+    // MercPortraits 内部仍对 DressupDollRenderer / AssetTimeline 缺失做 fail-soft；这里只守共享入口。
     if (typeof TeamShared === 'undefined'
             || typeof Workbench === 'undefined'
             || typeof WorkbenchComponents === 'undefined'
             || typeof PanelScale === 'undefined'
-            || typeof MercData === 'undefined') {
-        throw new Error('merc-panel.js 需要先加载 team/team-shared.js、workbench 共享层、panel-scale.js 与 merc-data.js');
+            || typeof MercData === 'undefined'
+            || typeof MercPortraits === 'undefined') {
+        throw new Error('merc-panel.js 需要先加载 team/team-shared.js、workbench 共享层、panel-scale.js、merc-data.js 与 merc-portrait-renderer.js');
     }
 
     var DESIGN_W = 1024;
@@ -41,27 +42,9 @@
     var LEVEL_JUMPS = [20, 40, 60, 80];
     var HIRE_SCROLL_TRIGGER = 220;  // 距底部多少 px 触发无缝加载（与现役一致）
 
-    var DRESSUP_MANIFEST_URL = 'assets/dressup/manifest.json';
-    var DRESSUP_BODY_FIT_FIELDS = [
-        '身体', '上臂', '左下臂', '右下臂', '左手', '右手',
-        '屁股', '左大腿', '右大腿', '小腿', '脚',
-        '脸型', '发型', '面具'
-    ];
-    // 战斗形态胸像（反哺自主角对话立绘）：头+躯干定缩放、vAlign top、画战斗 rig 全身（含背后收纳
-    // 武器），对齐 NPC 立绘。战斗 rig 武器 holder 字段同为 _装扮，正好被 equipment→fieldsByGender 命中，
-    // 无需改 AS2。原 head-only（仅脸型/发型/面具）已被胸像取代。
-    var DRESSUP_BUST_FIT_FIELDS = ['脸型', '发型', '面具', '身体', '上臂'];
-    var DRESSUP_BATTLE_STATE = '空手站立'; // 武器收纳背后的站姿，最接近 NPC 立绘
-    var DRESSUP_FACE_BY_ID_FALLBACK = {
-        '0': '女变装-基本脸型',
-        '1': '男变装-基本脸型'
-    };
-    var DRESSUP_HAIR_COMPAT_ALIASES = {
-        '发型-女式-红马尾': '发型-女式-玫红色马尾',
-        '发型-女式-白长发': '发型-女式-银色清爽直发',
-        '发型-男式-黑尖长发': '发型-男式-黑长发',
-        '发型-男式-黑短发': '发型-男式-精武短发'
-    };
+    // 培养页 live canvas 复用共享 MercPortraits 状态构建；卡片/右栏快照也统一走该模块。
+    var DRESSUP_BODY_FIT_FIELDS = MercPortraits.BODY_FIT_FIELDS;
+    var DRESSUP_BATTLE_STATE = MercPortraits.BATTLE_STATE;
 
     // ── 状态 ──
     var _el = null, _scaleEl = null, _scaleHandle = null;
@@ -107,10 +90,8 @@
     var _detailCamera = null;       // 内嵌 inspection 瞬态相机（随 detail canvas 建销）
     var _detailSlot = -1;
 
-    // 纸娃娃渲染链
+    // 培养页保留单个 live renderer；卡片/右栏快照由共享 MercPortraits 缓存与销毁。
     var _dressupManifest = null;
-    var _dressupManifestPromise = null;
-    var _dressupThumbCache = {};
     var _dressupDetailRenderer = null;
     var _dressupDetailCanvas = null;
 
@@ -174,7 +155,7 @@
         _hiredMercs = [];
         _hireData = [];
         _ttCache = {};
-        // _dressupThumbCache 不清：着装在面板关闭期间不会变，重开免全量重跑 alpha 测量（旧版跨会话保留）
+        // MercPortraits 的着装快照缓存跨面板会话复用；节点 token 会阻断迟到渲染。
         _selectedSlot = -1;
         _selectedPoolIdx = -1;
         _detailSlot = -1;
@@ -1913,260 +1894,40 @@
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 纸娃娃预览：卡片/右栏使用一次性缓存图，培养页使用单个 live canvas。
-    // 渲染链整体保留（manifest 缓存 / 性别与外观归一 / cacheKey / alpha 测量），
-    // 只改挂载点与尺寸档位（card 小图 / decision 中图 / detail 大图三档）。
+    // 纸娃娃预览：卡片/右栏使用共享缓存图，培养页使用单个 live canvas。
+    // manifest、性别/外观归一与状态构建统一由 MercPortraits 负责。
     // ═══════════════════════════════════════════════════════════
     function ensureDressupManifest() {
         if (_dressupManifest) return Promise.resolve(_dressupManifest);
-        if (typeof DressupDollRenderer === 'undefined' || !DressupDollRenderer) {
-            return Promise.reject(new Error('DressupDollRenderer is not loaded'));
-        }
-        if (!_dressupManifestPromise) {
-            _dressupManifestPromise = DressupDollRenderer.loadManifest(DRESSUP_MANIFEST_URL)
-                .then(function(manifest) {
-                    _dressupManifest = manifest;
-                    return manifest;
-                })
-                .catch(function(err) {
-                    _dressupManifestPromise = null;
-                    throw err;
-                });
-        }
-        return _dressupManifestPromise;
-    }
-
-    function normalizeMercGender(merc) {
-        var g = (merc && merc.gender !== undefined && merc.gender !== null) ? String(merc.gender) : '男';
-        return (g === '女' || g === '主角-女' || g === '0') ? '女' : '男';
-    }
-
-    function stripEquipName(value) {
-        if (value === undefined || value === null) return '';
-        return String(value).split('#', 1)[0];
-    }
-
-    // 槽号 → dressup rig 槽名：唯一常量源在 merc-data.js（MercData.DRESSUP_SLOT_BY_INDEX）
-    function dressupSlotName(slot) {
-        var map = MercData.DRESSUP_SLOT_BY_INDEX || {};
-        return map[Number(slot)] || slot;
-    }
-
-    function setDressupEquipmentSlot(equipment, slot, value) {
-        var slotName = dressupSlotName(slot);
-        var name = stripEquipName(value);
-        if (slotName && name) equipment[slotName] = name;
-    }
-
-    function dressupEquipmentFromMerc(merc) {
-        var equipment = {};
-        var equips = merc && merc.equips ? merc.equips : [];
-        for (var i = 0; i < equips.length; i++) {
-            var eq = equips[i];
-            setDressupEquipmentSlot(equipment, eq.slot, eq.name || eq.raw || eq.displayname);
-        }
-        var direct = merc && merc.equipment ? merc.equipment : null;
-        if (direct) {
-            Object.keys(direct).forEach(function(slot) {
-                if (!equipment[dressupSlotName(slot)]) {
-                    setDressupEquipmentSlot(equipment, slot, direct[slot]);
-                }
-            });
-        }
-        return equipment;
-    }
-
-    function dressupSkinCovered(key) {
-        return !!(key && _dressupManifest && _dressupManifest.skinKeys && _dressupManifest.skinKeys[key] && _dressupManifest.skinKeys[key].covered);
-    }
-
-    function normalizeAppearanceKey(value, type, gender) {
-        var raw = value === undefined || value === null ? '' : String(value).trim();
-        var appearance = _dressupManifest && _dressupManifest.appearance ? _dressupManifest.appearance : {};
-        if (type === 'face') {
-            if (/^\d+$/.test(raw)) {
-                return (appearance.faceById && appearance.faceById[raw]) ||
-                    DRESSUP_FACE_BY_ID_FALLBACK[raw] ||
-                    (gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型');
-            }
-            if (dressupSkinCovered(raw)) return raw;
-            return gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型';
-        }
-        if (!raw || raw === '光头') return '';
-        if (/^\d+$/.test(raw)) {
-            raw = appearance.hairById && appearance.hairById[raw] ? appearance.hairById[raw] : raw;
-        }
-        if (dressupSkinCovered(raw)) return raw;
-        var alias = DRESSUP_HAIR_COMPAT_ALIASES[raw];
-        if (alias && dressupSkinCovered(alias)) return alias;
-        return '';
-    }
-
-    function dressupAppearanceFromMerc(merc, equipment) {
-        var gender = normalizeMercGender(merc);
-        var appearance = {};
-        var face = normalizeAppearanceKey(merc && merc.face, 'face', gender);
-        var hair = normalizeAppearanceKey(merc && merc.hair, 'hair', gender);
-        var headItem = equipment && equipment.head ? equipment.head : '';
-        var item = headItem && _dressupManifest && _dressupManifest.items ? _dressupManifest.items[headItem] : null;
-        var helmetSuppressesHair = !!(item && item.helmet === true);
-        appearance['脸型'] = face;
-        if (hair && hair !== '光头' && !helmetSuppressesHair) appearance['发型'] = hair;
-        return appearance;
+        return MercPortraits.loadManifest().then(function(manifest) {
+            _dressupManifest = manifest;
+            return manifest;
+        });
     }
 
     function buildMercDressupState(merc, fitFields, zoom, margin, drawFields, rig, stateLabel, vAlign) {
         if (!_dressupManifest) return null;
-        var equipment = dressupEquipmentFromMerc(merc);
-        var st = DressupDollRenderer.buildStateFromEquipment(_dressupManifest, {
-            gender: normalizeMercGender(merc),
-            equipment: equipment,
-            appearance: dressupAppearanceFromMerc(merc, equipment),
+        return MercPortraits.buildState(merc, {
+            manifest: _dressupManifest,
             fitFields: fitFields,
             drawFields: drawFields,
-            rig: rig,             // 'battle' → 走战斗 rig；undefined 走默认 dialogue rig
+            rig: rig,
             stateLabel: stateLabel,
             zoom: zoom,
-            margin: margin
-        });
-        if (st && vAlign) st.vAlign = vAlign; // 'top' = 胸像取景：头齐顶、下身溢出裁切
-        return st;
-    }
-
-    function dressupCacheKey(merc, variant) {
-        var parts = [variant, normalizeMercGender(merc), merc && merc.face || '', merc && merc.hair || ''];
-        var equipment = dressupEquipmentFromMerc(merc);
-        Object.keys(equipment).sort().forEach(function(slot) {
-            parts.push(slot + ':' + equipment[slot]);
-        });
-        return parts.join('|');
-    }
-
-    function canvasAlphaPixels(canvas) {
-        if (!canvas || !canvas.width || !canvas.height) return 0;
-        var data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
-        var count = 0;
-        for (var i = 3; i < data.length; i += 4) {
-            if (data[i] > 8) count++;
-        }
-        return count;
-    }
-
-    // 一次性快照渲染：isAlive() 为假立即销毁 renderer 并停止 tick，
-    // 卡片替换 / 面板关闭后不再占用计时器（重复 open/close 计时器数量不增长）。
-    function renderDressupSnapshot(state, width, height, isAlive, callback) {
-        var canvas = document.createElement('canvas');
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-        var renderer = DressupDollRenderer.create(canvas, {
-            manifest: _dressupManifest,
-            width: width,
-            height: height,
-            fps: 24
-        });
-        var attempts = 0;
-        function tick() {
-            if (!isAlive()) {
-                renderer.destroy();
-                return;
-            }
-            var meta = renderer.render(state);
-            var alpha = canvasAlphaPixels(canvas);
-            var ready = !!(meta && meta.pendingImages === 0 && meta.failedImages === 0);
-            if (ready && alpha > 120) {
-                var url = '';
-                try { url = canvas.toDataURL('image/png'); } catch (ignore) {}
-                renderer.destroy();
-                callback(url, meta);
-                return;
-            }
-            if (attempts >= 50) {
-                renderer.destroy();
-                callback('', meta);
-                return;
-            }
-            attempts++;
-            setTimeout(tick, 80);
-        }
-        tick();
-    }
-
-    function clearDressupPortrait(portrait) {
-        if (!portrait) return;
-        portrait.classList.add('merc-card-portrait-fallback');
-        portrait.classList.remove('merc-dressup-ready');
-        var img = portrait.querySelector('img');
-        if (img) {
-            img.removeAttribute('src');
-            img.hidden = true;
-        }
-    }
-
-    function applyDressupPortrait(portrait, merc, variant) {
-        if (!portrait || !merc) {
-            clearDressupPortrait(portrait);
-            return;
-        }
-        var token = String(Date.now()) + Math.random();
-        portrait._dressupToken = token;
-        clearDressupPortrait(portrait);
-        ensureDressupManifest().then(function() {
-            if (portrait._dressupToken !== token) return;
-            var key = dressupCacheKey(merc, variant);
-            var cached = _dressupThumbCache[key];
-            var img = portrait.querySelector('img');
-            if (cached) {
-                if (img) {
-                    img.hidden = false;
-                    img.src = cached;
-                }
-                portrait.classList.remove('merc-card-portrait-fallback');
-                portrait.classList.add('merc-dressup-ready');
-                return;
-            }
-            var size = variant === 'decision' ? 140 : 112;
-            // 固定比例胸像：战斗 rig 空手站立 + 头+躯干取景 + vAlign top，画全身（含背后武器）。
-            // drawFields=null → 不过滤，画战斗 rig 全部 holder（武器随之入画）。zoom 偏小留出肩后武器。
-            var state = buildMercDressupState(
-                merc,
-                DRESSUP_BUST_FIT_FIELDS,
-                variant === 'decision' ? 1.04 : 1.0,
-                6,
-                null,
-                'battle',
-                DRESSUP_BATTLE_STATE,
-                'top'
-            );
-            if (!state) return;
-            var isAlive = function() {
-                // token 失配（重渲染）或节点已脱离文档（卡片替换/面板关闭）都终止计时器
-                return portrait._dressupToken === token
-                    && !!(document.documentElement && document.documentElement.contains(portrait));
-            };
-            renderDressupSnapshot(state, size, size, isAlive, function(url) {
-                if (portrait._dressupToken !== token || !url) return;
-                _dressupThumbCache[key] = url;
-                if (img) {
-                    img.hidden = false;
-                    img.src = url;
-                }
-                portrait.classList.remove('merc-card-portrait-fallback');
-                portrait.classList.add('merc-dressup-ready');
-            });
-        }).catch(function() {
-            clearDressupPortrait(portrait);
+            margin: margin,
+            vAlign: vAlign
         });
     }
 
     function updatePortraitHost(host, merc, variant) {
         if (!host) return;
-        var portrait = host.querySelector('.merc-card-portrait');
-        if (!portrait) {
-            portrait = createPortrait(null, variant);
-            if (variant === 'decision') portrait.classList.add('merc-decision-portrait');
-            host.appendChild(portrait);
-        }
-        applyDressupPortrait(portrait, merc, variant);
+        MercPortraits.updateHost(host, merc, {
+            variant: variant || 'card',
+            selector: '.merc-card-portrait',
+            className: 'merc-card-portrait merc-dressup-portrait'
+                + (variant === 'decision' ? ' merc-decision-portrait' : ''),
+            alt: '佣兵造型'
+        });
     }
 
     function destroyDetailDressup() {
@@ -2258,19 +2019,12 @@
     }
 
     function createPortrait(merc, variant) {
-        var portrait = document.createElement('div');
-        portrait.className = 'merc-card-portrait merc-card-portrait-fallback merc-dressup-portrait';
-        portrait.innerHTML = '<img alt="佣兵造型" hidden>';
-        var img = portrait.querySelector('img');
-        img.addEventListener('load', function() {
-            if (img.getAttribute('src')) {
-                portrait.classList.remove('merc-card-portrait-fallback');
-                portrait.classList.add('merc-dressup-ready');
-            }
+        return MercPortraits.create(merc, {
+            variant: variant || 'card',
+            className: 'merc-card-portrait merc-dressup-portrait'
+                + (variant === 'decision' ? ' merc-decision-portrait' : ''),
+            alt: '佣兵造型'
         });
-        img.addEventListener('error', function() { clearDressupPortrait(portrait); });
-        if (merc) applyDressupPortrait(portrait, merc, variant || 'card');
-        return portrait;
     }
 
     // 装备图标格 — 11 槽固定渲染 (slot 6-16)，培养页装备调配行内使用

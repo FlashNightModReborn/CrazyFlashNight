@@ -104,6 +104,11 @@ async function main() {
         'modules/arena-custom-polling.js',
         'modules/arena-custom-param-editor.js',
         'modules/arena-custom-result-view.js',
+        'modules/asset-timeline.js',
+        'modules/dressup-doll-renderer.js',
+        'modules/merc-data.js',
+        'modules/merc-portrait-renderer.js',
+        'modules/portrait-resolver.js',
         'modules/arena/arena-core.js',
         'modules/arena/arena-shell.js',
         'modules/arena/arena-challenge-browser.js',
@@ -111,7 +116,7 @@ async function main() {
         'modules/arena/arena-custom-editor.js',
         'modules/arena/arena-result.js',
         'modules/arena-panel.js'
-    ], 'arena lazy closure must prepend the shared workbench layer in team order (no inspection-viewport), then the P4 split modules in core->shell->browser->preview->editor->result->facade order');
+    ], 'arena lazy closure must prepend the shared workbench layer, load shared merc/enemy portrait consumers, then preserve core->shell->browser->preview->editor->result->facade order');
 
     function createArenaSandbox(registrations) {
         const sandbox = {

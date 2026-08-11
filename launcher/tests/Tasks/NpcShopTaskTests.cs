@@ -796,6 +796,7 @@ namespace CF7Launcher.Tests.Tasks
         [Theory]
         [InlineData("purchase_identity")]
         [InlineData("purchase_triple")]
+        [InlineData("purchase_extra_key")]
         [InlineData("purchase_quantity")]
         [InlineData("purchase_total")]
         [InlineData("purchase_bounds")]
@@ -822,6 +823,7 @@ namespace CF7Launcher.Tests.Tasks
                 JObject response = TradePreviewResponse(fid);
                 if (mutation == "shop_selector") response["shopId"] = "伪造商店";
                 else if (mutation == "purchase_identity") response["purchaseLines"][0]["catalogIndex"] = 4;
+                else if (mutation == "purchase_extra_key") response["purchaseLines"][0]["success"] = true;
                 else if (mutation == "purchase_triple")
                 {
                     response["purchaseLines"][0]["displayName"] = "近似但错误的显示名";

@@ -1,0 +1,130 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-pilot-p3-feature-r7-20260806",
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框。",
+    "人形单位默认以头部、脸、发型和头部轮廓作为主特征，并保留可识别的颈肩或上身上下文。",
+    "非人单位必须推理身份最强的特征；不得把几何中心、最长肢体、枪械、尾巴或特效自动当成视觉中心。",
+    "多头单位的全部头部属于一个不可拆分的特征组；载具或飞行器只有在整体轮廓本身就是身份时才使用完整主体构图。",
+    "所有必须保留的特征都要有透明安全边距；允许虚拟裁切框越出候选 PNG，并用透明像素补齐。",
+    "featureBox 必须紧贴身份特征；mustIncludeBox 只包住不可裁掉的最小上下文，不能把武器、下半身或宽泛全身姿态重新带回头像。",
+    "构图只有在最终方形画布中达到对应模式的特征占比下限才有效；文字声称 closeup 但像素仍是半身或全身时必须拒绝。",
+    "人形 head featureBox 的底边必须止于下颌、头发或头饰轮廓，不能把颈、胸、肩或抬起的手臂算进头部；mustIncludeBox 最多补入少量颈肩。",
+    "非人 featureBox 必须紧贴所命名的核心、头组或主躯干；如果方框同时吞入大部分尾巴、长肢、枪械或整个身体，就不再是 feature closeup。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.06,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.86,
+        "featureHeightOccupancy": 0.84,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.78,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.48,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.82,
+        "featureHeightOccupancy": 0.82,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.72,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.4,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.84,
+        "featureHeightOccupancy": 0.8,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.74,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.4,
+        "featureAnchor": [
+          0.5,
+          0.45
+        ]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.84,
+        "featureHeightOccupancy": 0.84,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.74,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.45,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 12288,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "state_variant": {
+      "defaultMode": "head_closeup",
+        "reasoningHint": "锁定脸、发型和状态色；featureBox 底边止于下颌或头发，武器和胸甲不进入头部方框。"
+    },
+    "humanoid_boss": {
+      "defaultMode": "head_closeup",
+        "reasoningHint": "锁定头脸、发型或头部装饰；featureBox 止于下颌，mustIncludeBox 只保留少量颈肩。"
+    },
+    "pet_only_humanoid": {
+      "defaultMode": "head_closeup",
+        "reasoningHint": "锁定头脸与僵尸化表情，featureBox 止于下颌；垂下的手臂、制服胸腹和全身姿态均排除。"
+    },
+    "quadruped": {
+      "defaultMode": "feature_closeup",
+        "reasoningHint": "当前代表项只锁定右侧头、红眼、双耳和口鼻；躯干与四肢不进入 featureBox。"
+    },
+    "multi_head_beast": {
+      "defaultMode": "feature_group",
+      "reasoningHint": "把全部可见头部视为一个不可拆分的特征组，并保留颈部连接关系。"
+    },
+    "flying": {
+      "defaultMode": "full_subject",
+      "reasoningHint": "推理驾驶舱、机首、翼形或整体机体哪一个最能识别；若机体本身就是身份，完整轮廓优先。"
+    },
+    "effect_heavy_boss": {
+      "defaultMode": "head_closeup",
+        "reasoningHint": "优先头脸与发型；featureBox 止于下颌和头发，胸腹、巨臂、火焰和地面特效全部排除。"
+    },
+    "giant_boss": {
+      "defaultMode": "head_closeup",
+        "reasoningHint": "按头像处理头部；featureBox 止于下颌，mustIncludeBox 只带少量颈肩，不因体型巨大而退回半身或全身。"
+    },
+    "mechanical": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "推理核心、传感器或驾驶舱；当前代表项优先中心黄色圆盘，枪械不能抢占重心。"
+    },
+    "non_humanoid": {
+      "defaultMode": "feature_closeup",
+        "reasoningHint": "当前代表项锁定画面右侧的椭圆头胸/腹部主躯干；细长尾巴、左侧空白和大部分长腿必须排除出 featureBox。"
+    },
+    "nested_animation_boss": {
+      "defaultMode": "head_closeup",
+        "reasoningHint": "锁定头盔与红色眼部，featureBox 止于下颌/头盔底边；必须选择头部实际位于该坐标的姿态，长武器和上身不得成为中心。"
+    }
+  },
+  "reviewKeyOverrides": {
+    "敌人-诺亚地狱三头犬::default": {
+      "reasoningHint": "人工维护锚点：三个机械头从左侧红眼头到最右侧绿眼头的完整外轮廓和口鼻都属于不可拆分身份特征；最右侧头不得贴边或被裁断。",
+      "requiredFeatureRegion": [
+        0.38,
+        0.02,
+        1.0,
+        0.48
+      ],
+      "requiredMustIncludeRegion": [
+        0.34,
+        0.01,
+        1.0,
+        0.62
+      ]
+    }
+  }
+}

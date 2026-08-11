@@ -1,7 +1,7 @@
 /**
  * Arena Panel QA Suite
  *
- * 测试覆盖（32 项，P3 定制赛收敛增补后）：
+ * 测试覆盖（34 项，含 no-merc 纸娃娃回退闭包）：
  *   - panel-open: Panel 能正确打开，DualPaneShell（catalog-decision）挂载 + 渲染社群档位卡片 + 死线警报隐藏卡
  *   - snapshot-render: snapshot 到达后金钱显示正确（壳 header metric），卡片状态正确
  *   - enter-success: 选中卡 → 右栏 preview（cache 命中）→ CommitBar 主 CTA 入场（协议带 cardIndex）
@@ -12,7 +12,7 @@
  *   - card-count: 确认 10 张公开标准卡 + 2 张死线警报隐藏卡都存在且数据正确
  *   - hidden-mixed-enter: 死线警报隐藏卡本地混编 cache 后入场携带 roster；右栏保持配置保密
  *   - standard-mixed-card: 公开标准卡固定 mixed 分支可抽出佣兵模板 + 怪物组（右栏 preview 断言）
- *   - roll-again: 左栏「换一批」重发选中卡 preview 并刷新右栏渲染
+ *   - roll-again: 右栏决策头「换一批」重发选中卡 preview 并刷新右栏渲染
  *   - preview-switch-race: 换一批飞行中改选他卡，迟到回包不污染新选中卡 preview（三元组隔离）
  *   - equip-tooltip: hover 装备发送 equip_tooltip，回包后 cache，第二次 hover 不再发请求
  *   - grid-batch-preview: panel open 后佣兵公开卡并发 AS2 preview、roster 卡本地 cache，每张卡目录摘要都脱离 loading
@@ -47,7 +47,7 @@
  *   grid-direct-enter 按裁决 2 改写为 keyboard-commit（卡片不再承载直入按钮）；
  *   detail 整页视图退役，fallen/escalation 等 detail 断言改锚右栏 preview
  *   （#arena-detail-title/#arena-detail-meta/#arena-opponents 元素 id 保持）；
- *   「换一批/全部重抽」迁左栏控件条（#arena-roll-one/#arena-reroll-all）；
+ *   「全部重抽」留左栏控件条（#arena-reroll-all）；「换一批」随选中语义迁右栏决策头（#arena-roll-one）；
  *   唯一主 CTA = 右栏 CommitBar（.workbench-commit-primary.arena-detail-confirm）。
  */
 var ArenaHarnessQA = (function() {
@@ -64,6 +64,8 @@ var ArenaHarnessQA = (function() {
         { id: 'card-count',           title: '卡片数据完整性' },
         { id: 'hidden-mixed-enter',   title: '死线警报隐藏卡混编 roster 入场' },
         { id: 'standard-mixed-card',  title: '公开标准卡固定 mixed' },
+        { id: 'no-merc-meta-dressup', title: '无佣兵时元战队主角纸娃娃回退' },
+        { id: 'no-merc-synthetic-dressup', title: '无佣兵时合成主角纸娃娃回退' },
         { id: 'roll-again',           title: '换一批重发 preview' },
         { id: 'reroll-all',           title: '全部重抽重发公开卡 preview' },
         { id: 'preview-switch-race',  title: '迟到 preview 回包被丢弃' },
@@ -155,6 +157,8 @@ var ArenaHarnessQA = (function() {
             case 'card-count':              return caseCardCount(api, host);
             case 'hidden-mixed-enter':      return caseHiddenMixedEnter(api, host);
             case 'standard-mixed-card':     return caseStandardMixedCard(api, host);
+            case 'no-merc-meta-dressup':    return caseNoMercMetaDressup(api, host);
+            case 'no-merc-synthetic-dressup': return caseNoMercSyntheticDressup(api, host);
             case 'roll-again':              return caseRollAgain(api, host);
             case 'reroll-all':              return caseRerollAll(api, host);
             case 'preview-switch-race':     return casePreviewSwitchRace(api, host);
@@ -190,6 +194,21 @@ var ArenaHarnessQA = (function() {
             var loading = document.querySelectorAll('.arena-card-opponents-loading');
             return cards.length > 0 && loading.length === 0;
         }, 3000, 'batch preview 全部完成（grid 摘要无 loading）');
+    }
+
+    function portraitHasVisiblePixels(host) {
+        var img = host && host.querySelector('img');
+        if (!img || !img.complete || !img.naturalWidth || !img.naturalHeight) return false;
+        try {
+            var canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            var context = canvas.getContext('2d', { willReadFrequently: true });
+            context.drawImage(img, 0, 0, 32, 32);
+            var pixels = context.getImageData(0, 0, 32, 32).data;
+            for (var i = 3; i < pixels.length; i += 4) if (pixels[i] > 4) return true;
+        } catch (ignore) {}
+        return false;
     }
 
     // ── P2 公共辅助：右栏决策面（CommitBar 唯一主 CTA + 状态文本）与选中语义 ──
@@ -281,6 +300,67 @@ var ArenaHarnessQA = (function() {
         assertMixedRoster(api, squad.opponents, label);
         var counts = countMixedRosterKinds(squad.opponents);
         api.assert(counts.merc > 0, label + ' 的人形侧应携带 mercId');
+        var mercs = window.ArenaMetaRosters && window.ArenaMetaRosters.mercenaries || [];
+        for (var i = 0; i < squad.opponents.length; i++) {
+            var opponent = squad.opponents[i];
+            if (opponent.mercId == null) continue;
+            var projected = null;
+            for (var m = 0; m < mercs.length; m++) {
+                if (String(mercs[m].id) === String(opponent.mercId)) { projected = mercs[m]; break; }
+            }
+            api.assert(!!projected, label + ' 的 mercId 必须命中公开佣兵投影');
+            api.assert(projected.portrait && projected.portrait.kind === 'dressup', label + ' 的佣兵投影必须携带 dressup actor');
+            assertDressupActorEqual(api, opponent, projected.portrait.actor,
+                label + ' mercId=' + opponent.mercId + ' 的公开预览必须等于 AS2 按同 mercId 重建的外观 tuple',
+                projected);
+        }
+    }
+
+    function stableEquipment(equipment) {
+        var sorted = {};
+        equipment = equipment && typeof equipment === 'object' ? equipment : {};
+        Object.keys(equipment).sort().forEach(function(slot) { sorted[slot] = String(equipment[slot]); });
+        return JSON.stringify(sorted);
+    }
+
+    function assertDressupActorEqual(api, opponent, expectedActor, label, expectedSourceTuple) {
+        api.assert(opponent && opponent.portraitKind === 'dressup', label + ' 应显式声明 portraitKind=dressup');
+        api.assert(opponent.portrait && opponent.portrait.kind === 'dressup' && opponent.portrait.actor,
+            label + ' 应携带 portrait.actor');
+        var actual = opponent.portrait.actor;
+        api.assertEqual(actual.gender, expectedActor.gender, label + ' gender');
+        api.assertEqual(String(actual.face), String(expectedActor.face), label + ' face');
+        api.assertEqual(String(actual.hair), String(expectedActor.hair), label + ' hair');
+        api.assertEqual(stableEquipment(actual.equipment), stableEquipment(expectedActor.equipment), label + ' equipment');
+        var sourceTuple = expectedSourceTuple || expectedActor;
+        api.assertEqual(opponent.gender, sourceTuple.gender, label + ' 顶层 gender');
+        api.assertEqual(String(opponent.face), String(sourceTuple.face), label + ' 顶层 face');
+        api.assertEqual(String(opponent.hair), String(sourceTuple.hair), label + ' 顶层 hair');
+        api.assertEqual(stableEquipment(opponent.equipment), stableEquipment(sourceTuple.equipment), label + ' 顶层 equipment');
+    }
+
+    function catalogActorForOpponent(opponent) {
+        var units = window.ArenaUnitCatalog && window.ArenaUnitCatalog.units || [];
+        for (var i = 0; i < units.length; i++) {
+            if (String(units[i].type || '') !== String(opponent.type || '')) continue;
+            var portrait = units[i].portrait;
+            return portrait && portrait.kind === 'dressup' ? portrait.actor : null;
+        }
+        return null;
+    }
+
+    function assertCatalogHydratedHumanoids(api, squad, label) {
+        api.assert(squad && squad.opponents && squad.opponents.length, label + ' 应产出 roster');
+        var humanoids = 0;
+        for (var i = 0; i < squad.opponents.length; i++) {
+            var opponent = squad.opponents[i];
+            if (opponent.rosterKind !== 'humanoid') continue;
+            humanoids++;
+            var expectedActor = catalogActorForOpponent(opponent);
+            api.assert(!!expectedActor, label + ' 的主角模板必须命中 ArenaUnitCatalog portrait.actor');
+            assertDressupActorEqual(api, opponent, expectedActor, label + ' type=' + opponent.type);
+        }
+        api.assert(humanoids > 0, label + ' 应至少包含一个主角模板');
     }
 
     function countMixedRosterKinds(opponents) {
@@ -386,8 +466,26 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!header.querySelector('.item-grid-mode-toggle'), '壳 header 应承载目录密度切换');
                 api.assert(!!header.querySelector('.workbench-help-btn'), '壳 header 应承载帮助入口');
                 api.assert(!!header.querySelector('.workbench-close-btn'), '壳 header 应承载关闭按钮');
-                // 左栏控件条 + 右栏唯一主 CTA（未选中 = disabled）
-                api.assert(!!document.getElementById('arena-roll-one'), '左栏应有「换一批」控件');
+                api.assert(!!window.MercPortraits && typeof window.MercPortraits.mount === 'function', '竞技场应加载共享佣兵纸娃娃头像组件');
+                var fullButton = header.querySelector('.item-grid-mode-option[data-layout-mode="full"]');
+                var compactButton = header.querySelector('.item-grid-mode-option[data-layout-mode="compact"]');
+                api.assert(!!fullButton && !!compactButton, '完整/紧凑布局按钮应同时存在');
+                fullButton.click();
+                var fullColumns = getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length;
+                api.assertEqual(fullColumns, 2, '完整模式应为 2 列识别卡，不再塞 4 列');
+                var firstPortrait = grid.querySelector('.arena-card-portrait');
+                api.assert(!!firstPortrait && !!firstPortrait.closest('.arena-card-overview'), '完整卡应以头像为第一视觉锚点');
+                compactButton.click();
+                var compactColumns = getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length;
+                api.assertEqual(compactColumns, 3, '紧凑模式应为 3 列速览卡，不再塞 4 列');
+                var compactPortrait = grid.querySelector('.arena-card-portrait');
+                api.assert(!!compactPortrait && parseFloat(getComputedStyle(compactPortrait).width) <= 50, '紧凑头像应收至 48px CSS 档');
+                api.assert(getComputedStyle(grid.querySelector('.arena-card-stats')).display !== 'none', '紧凑态仍应保留对手数/等级语义');
+                fullButton.click();
+                // 换一批（右栏决策头）/ 全部重抽（左栏控件条）+ 右栏唯一主 CTA（未选中 = disabled）
+                api.assert(!!document.getElementById('arena-roll-one'), '右栏决策头应有「换一批」控件');
+                api.assert(document.getElementById('arena-roll-one').closest('.arena-decision-head') != null,
+                    '「换一批」应挂在右栏决策头');
                 api.assert(!!document.getElementById('arena-reroll-all'), '左栏应有「全部重抽」控件');
                 var primary = commitPrimary();
                 api.assert(!!primary, '右栏应有 CommitBar 主 CTA');
@@ -443,6 +541,11 @@ var ArenaHarnessQA = (function() {
                 return waitBatchPreviewReady(api);
             })
             .then(function() {
+                return api.waitFor(function() {
+                    return document.querySelector('#arena-grid .arena-card-portrait-item[data-portrait-ref]');
+                }, 3000, '标准模式怪物卡面头像挂载');
+            })
+            .then(function() {
                 // 选中前记录 preview 消息计数 — 验证 cache 命中确实跳过新请求
                 var cards = window.ArenaPanel.getCards();
                 cardIdx = findPublicCardIndexByRole(cards, 'merc', 1);
@@ -454,8 +557,15 @@ var ArenaHarnessQA = (function() {
                 });
             })
             .then(function() {
+                return api.waitFor(function() {
+                    var portrait = document.querySelector('.arena-opp-row .arena-opp-portrait');
+                    return portrait && portrait.getAttribute('data-merc-portrait-source') === 'dressup';
+                }, 6000, '竞技场佣兵右栏纸娃娃头像');
+            })
+            .then(function() {
                 var rows = document.querySelectorAll('.arena-opp-row');
                 api.assert(rows.length >= 1, '右栏对手行应被渲染（来自 batch cache）');
+                api.assert(rows[0].querySelector('.arena-opp-portrait').classList.contains('merc-dressup-ready'), '佣兵右栏不应继续使用硬编码剪影');
                 var state = window.ArenaPanel.getState();
                 api.assertEqual(state.selectedCardIdx, cardIdx, '选中态应为被点卡片');
                 commitPrimary().click();
@@ -573,7 +683,7 @@ var ArenaHarnessQA = (function() {
     }
 
     // ── case: roll-again ──
-    // 等 batch → 选中佣兵卡（cache 命中无新 preview）→ 左栏「换一批」（额外 1 条 preview）→
+    // 等 batch → 选中佣兵卡（cache 命中无新 preview）→ 右栏「换一批」（额外 1 条 preview）→
     // 验右栏对手仍渲、CommitBar 恢复可用
     function caseRollAgain(api, host) {
         var cardIdx = 0;
@@ -599,7 +709,7 @@ var ArenaHarnessQA = (function() {
                 return api.waitFor(function() {
                     var btn = document.getElementById('arena-roll-one');
                     return btn && !btn.disabled;
-                }, 2000, '选中后左栏「换一批」可用');
+                }, 2000, '选中后右栏「换一批」可用');
             })
             .then(function() {
                 var before = host.previewMessages.length;
@@ -914,15 +1024,97 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!detailTarget, '公开 mixed 卡应可选中');
                 return api.waitFor(function() {
                     var meta = document.getElementById('arena-detail-meta');
-                    var brief = document.querySelector('#arena-opponents .arena-opp-roster-brief');
                     return meta && /实体/.test(meta.textContent || '') &&
-                        brief && /实战实体/.test(brief.textContent || '');
+                        document.querySelectorAll('#arena-opponents .arena-opp-row-monster').length > 0;
                 }, 2000, 'mixed 右栏 preview 应显示等效/实体 roster 语义');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) {
                 return { pass: false, detail: String(e.message || e) };
             });
+    }
+
+    function caseNoMercMetaDressup(api, host) {
+        var squad = null;
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.setKnownEnemies(window.ArenaQaKnownFixtures.all());
+                host.resetPreviewState();
+                host.open();
+                return waitPanelActive(api);
+            })
+            .then(function() { return waitBatchPreviewReady(api); })
+            .then(function() {
+                var mercs = window.ArenaMetaRosters.mercenaries;
+                try {
+                    window.ArenaMetaRosters.mercenaries = [];
+                    squad = ArenaPreviewAuthority.sampleMixedSquadForTests({
+                        levelMin: 1,
+                        levelMax: 100,
+                        opponentCount: 4,
+                        requiresMixedRoster: true
+                    });
+                } finally {
+                    window.ArenaMetaRosters.mercenaries = mercs;
+                }
+                api.assert(squad && squad.source === 'meta-team',
+                    '无可用佣兵时应进入真实元战队回退，而不是丢失 mixed 卡');
+                assertMixedRoster(api, squad.opponents, '无佣兵元战队回退');
+                assertCatalogHydratedHumanoids(api, squad, '无佣兵元战队回退');
+                ArenaChallengeBrowser.renderOpponents(squad.opponents);
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-opp-portrait.arena-portrait-merc.merc-dressup-ready[data-merc-portrait-source="dressup"]');
+                }, 7000, 'no-merc meta-team humanoid mounts dressup portrait');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
+    }
+
+    function caseNoMercSyntheticDressup(api, host) {
+        var squad = null;
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.setKnownEnemies(window.ArenaQaKnownFixtures.all());
+                host.resetPreviewState();
+                host.open();
+                return waitPanelActive(api);
+            })
+            .then(function() { return waitBatchPreviewReady(api); })
+            .then(function() {
+                squad = ArenaPreviewAuthority.sampleSyntheticMixedSquadForTests({
+                    levelMin: 1,
+                    levelMax: 100,
+                    opponentCount: 4,
+                    isHiddenChallenge: true,
+                    requiresMixedRoster: true
+                });
+                api.assert(squad && squad.source === 'synthetic', '合成回退测试缝应产出 synthetic mixed roster');
+                assertMixedRoster(api, squad.opponents, '无佣兵合成回退');
+                assertCatalogHydratedHumanoids(api, squad, '无佣兵合成回退');
+
+                var missingGender = ArenaPreviewAuthority.weightedMercenarySampleForTests([{
+                    id: '__legacy_missing_gender__',
+                    name: 'legacy missing gender',
+                    level: 1,
+                    face: null,
+                    hair: null,
+                    equipment: {},
+                    weight: 1
+                }], 1)[0];
+                api.assertEqual(missingGender.gender, '女', '缺失 gender 必须对齐 ArenaPanelService legacy 规则回退为女');
+                api.assertEqual(missingGender.spritename, '主角-女', '缺失 gender 的主角模板必须选择女 sprite');
+                api.assertEqual(missingGender.face, '女变装-基本脸型', '缺失 gender/face 必须使用女基本脸型');
+                api.assertEqual(missingGender.portrait.actor.gender, '女', '缺失 gender 的显式 dressup actor 必须为女');
+
+                ArenaChallengeBrowser.renderOpponents(squad.opponents);
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-opp-portrait.arena-portrait-merc.merc-dressup-ready[data-merc-portrait-source="dressup"]');
+                }, 7000, 'no-merc synthetic humanoid mounts dressup portrait');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
     }
 
     // ── case: reroll-all ──
@@ -1020,6 +1212,48 @@ var ArenaHarnessQA = (function() {
                     api.assert(sumEl.textContent.indexOf('抽取中') === -1, '卡片 ' + i + ' 摘要不应含"抽取中"');
                     api.assert(sumEl.textContent.length > 0, '卡片 ' + i + ' 摘要应有文本');
                 }
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-card-portrait-item[data-merc-portrait-source="dressup"]')
+                        && document.querySelector('.arena-card-portrait-item[data-portrait-ref]');
+                }, 6000, '标准卡佣兵/怪物代表头像均完成挂载');
+            })
+            .then(function() {
+                var cards = window.ArenaPanel.getCards();
+                var hosts = document.querySelectorAll('#arena-grid .arena-card-portrait');
+                api.assertEqual(hosts.length, cards.length, '每张标准/隐藏卡都应保留稳定头像槽');
+                for (var i = 0; i < 10; i++) {
+                    api.assert(!hosts[i].classList.contains('arena-card-portrait-loading'), '公开卡 ' + i + ' 头像应脱离 loading');
+                }
+                var hiddenHosts = document.querySelectorAll('#arena-grid .arena-card-portrait-hidden');
+                api.assertEqual(hiddenHosts.length, 2, '两张隐藏挑战应保留保密头像槽');
+                for (var h = 0; h < hiddenHosts.length; h++) {
+                    api.assert(!hiddenHosts[h].hasAttribute('data-portrait-ref')
+                        && !hiddenHosts[h].hasAttribute('data-merc-portrait-source'), '保密卡不得提前泄露阵容头像');
+                }
+                var multiGroup = document.querySelector('#arena-grid .arena-card-portrait[data-arena-portrait-count="2"], '
+                    + '#arena-grid .arena-card-portrait[data-arena-portrait-count="3"], '
+                    + '#arena-grid .arena-card-portrait[data-arena-portrait-count="4"]');
+                api.assert(!!multiGroup, '完整态样本应包含至少一张多单位头像组');
+                var items = multiGroup.querySelectorAll('.arena-card-portrait-item');
+                api.assert(items.length >= 2 && items.length <= 4, '头像组应保留 2—4 个实际单位小图标');
+                var fullButton = document.querySelector('.item-grid-mode-option[data-layout-mode="full"]');
+                var compactButton = document.querySelector('.item-grid-mode-option[data-layout-mode="compact"]');
+                var beforeDensityMessages = host.previewMessages.length;
+                fullButton.click();
+                var fullVisible = 0;
+                for (var f = 0; f < items.length; f++) {
+                    if (getComputedStyle(items[f]).display !== 'none') fullVisible++;
+                }
+                api.assertEqual(fullVisible, items.length, '完整态应批量展示头像组内全部小图标');
+                compactButton.click();
+                var compactVisible = 0;
+                for (var c = 0; c < items.length; c++) {
+                    if (getComputedStyle(items[c]).display !== 'none') compactVisible++;
+                }
+                api.assertEqual(compactVisible, 1, '紧凑态应只显示头像组首项');
+                api.assertEqual(multiGroup.querySelectorAll('.arena-card-portrait-item').length, items.length, '密度切换不得丢弃阵容头像数据');
+                api.assertEqual(host.previewMessages.length, beforeDensityMessages, '密度切换不得重新请求或抽取对手');
+                fullButton.click();
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
@@ -1402,6 +1636,21 @@ var ArenaHarnessQA = (function() {
                 var groups = document.querySelectorAll('.arena-custom-unit-group');
                 api.assert(groups.length > 1, '单位浏览器应按势力分组渲染');
                 api.assertEqual(document.querySelectorAll('.arena-custom-unit-row').length, 0, '单位浏览器默认应折叠势力分组');
+                var unitList = document.getElementById('arena-custom-unit-list');
+                unitList.scrollTop = Math.min(180, unitList.scrollHeight - unitList.clientHeight);
+                var toggleGroup = groups[Math.min(6, groups.length - 1)];
+                var toggleFactionKey = toggleGroup.getAttribute('data-custom-toggle-faction');
+                var scrollBeforeExpand = unitList.scrollTop;
+                api.assert(scrollBeforeExpand > 0, '分类滚动保持回归必须从非零目录位置开始');
+                toggleGroup.click();
+                api.assert(Math.abs(unitList.scrollTop - scrollBeforeExpand) <= 1,
+                    '展开分类标签后应保留滚动位置（before=' + scrollBeforeExpand + ', after=' + unitList.scrollTop + '）');
+                var expandedToggleGroup = document.querySelector('[data-custom-toggle-faction="' + toggleFactionKey + '"]');
+                var scrollBeforeCollapse = unitList.scrollTop;
+                expandedToggleGroup.click();
+                api.assert(Math.abs(unitList.scrollTop - scrollBeforeCollapse) <= 1,
+                    '收起分类标签后应保留滚动位置（before=' + scrollBeforeCollapse + ', after=' + unitList.scrollTop + '）');
+                groups = document.querySelectorAll('.arena-custom-unit-group');
                 var largeGroup = null;
                 for (var g = 0; g < groups.length; g++) {
                     if (Number(groups[g].getAttribute('data-custom-faction-count')) > 80) {
@@ -1414,13 +1663,128 @@ var ArenaHarnessQA = (function() {
                 var firstBatchRows = document.querySelectorAll('.arena-custom-unit-row').length;
                 api.assert(firstBatchRows > 0, '展开势力后应渲染首批单位行');
                 api.assert(firstBatchRows < Number(largeGroup.getAttribute('data-custom-faction-count')), '首批单位行不应一次性渲染完整大分组');
-                var unitList = document.getElementById('arena-custom-unit-list');
                 unitList.scrollTop = unitList.scrollHeight;
                 unitList.dispatchEvent(new Event('scroll'));
                 api.assert(document.querySelectorAll('.arena-custom-unit-row').length > firstBatchRows, '滚动到底应继续追加单位行');
-                api.assert(document.querySelector('.arena-custom-unit-mark'), '单位图标占位符应渲染');
+                api.assert(document.querySelector('.arena-custom-unit-portrait'), '单位目录应渲染通用头像舞台');
+                var scrollBeforeAdd = unitList.scrollTop;
+                var rosterTotalBeforeAdd = rosterTotal((window.ArenaPanel.getState().customEditor || {}).red);
+                api.assert(scrollBeforeAdd > 0, '滚动保持回归必须从非零目录位置开始');
+                document.querySelector('.arena-custom-unit-row').click();
+                var rosterTotalAfterAdd = rosterTotal((window.ArenaPanel.getState().customEditor || {}).red);
+                api.assertEqual(rosterTotalAfterAdd, rosterTotalBeforeAdd + 1, '点击目录单位应加入当前红方');
+                api.assert(Math.abs(unitList.scrollTop - scrollBeforeAdd) <= 1,
+                    '点击目录单位后应保留滚动位置（before=' + scrollBeforeAdd + ', after=' + unitList.scrollTop + '）');
             })
             .then(function() {
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = '武装JK';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                return api.waitFor(function() {
+                    var portrait = document.querySelector('[data-custom-add-unit="285"] .arena-custom-unit-portrait');
+                    var source = portrait && portrait.getAttribute('data-portrait-source');
+                    var coverage = document.getElementById('arena-custom-portrait-coverage');
+                    return portrait && (source === 'svg' || source === 'png')
+                        && coverage && coverage.getAttribute('data-coverage-state') === 'complete';
+                }, 5000, 'accepted JK portrait and complete catalog coverage reach arena unit catalog');
+            })
+            .then(function() {
+                var portrait = document.querySelector('[data-custom-add-unit="285"] .arena-custom-unit-portrait');
+                var coverage = document.getElementById('arena-custom-portrait-coverage');
+                api.assert(window.EnemyPortraits && window.PortraitResolver === window.EnemyPortraits, 'Team 兼容别名与通用头像组件应指向同一实例');
+                var jkOrange = EnemyPortraits.resolve({ portraitRef: '敌人-武装JK', portraitVariant: 'orange' });
+                var jkWhite = EnemyPortraits.resolve({ portraitRef: '敌人-武装JK', portraitVariant: 'white' });
+                var simonli = EnemyPortraits.resolve({ portraitRef: '敌人-锡蒙利' });
+                var simonliGenerator = EnemyPortraits.resolve({ portraitRef: '敌人-锡蒙利范围光环发生器' });
+                api.assert(portrait && portrait.classList.contains('entity-portrait-art'), '竞技场头像应消费通用 entity-portrait-art 样式契约');
+                api.assertEqual(portrait.getAttribute('data-portrait-ref'), '敌人-武装JK', '单位 spritename 应作为稳定 portraitRef');
+                api.assert(portrait.getAttribute('data-portrait-variant') === 'orange'
+                    && jkOrange && jkWhite && jkOrange.svgUrl !== jkWhite.svgUrl,
+                    '竞技场无发色状态时应使用 JK 默认橙发，同时共享清单必须保留橙发/白发两个独立头像');
+                api.assert(coverage && coverage.getAttribute('data-coverage-state') === 'complete', '当前全兵种素材包应明确投影为完整覆盖');
+                api.assertEqual(Number(coverage.getAttribute('data-coverage-total')), 217, '全兵种目录应按 217 个唯一 spritename 统计');
+                api.assertEqual(Number(coverage.getAttribute('data-coverage-ready')), 217, '怪物清单 214 项与主角纸娃娃 3 项应合并为 217 个可用身份');
+                api.assertEqual(Number(coverage.getAttribute('data-coverage-missing')), 0, '全兵种目录不应再有锁定图身份缺口');
+                api.assertEqual(Number(coverage.getAttribute('data-coverage-enemy-ready')), 214, '214 个怪物消费身份应全部命中 manifest 或签名 alias');
+                api.assertEqual(Number(coverage.getAttribute('data-coverage-dressup-ready')), 3, '三个主角模板身份都应进入纸娃娃头像路线');
+                api.assert(simonli && simonliGenerator
+                    && simonliGenerator.requestedPortraitRef === '敌人-锡蒙利范围光环发生器'
+                    && simonliGenerator.portraitRef === '敌人-锡蒙利'
+                    && simonliGenerator.svgUrl === simonli.svgUrl
+                    && simonliGenerator.pngUrl === simonli.pngUrl,
+                    '锡蒙利范围光环发生器应经签名 identity alias 复用锡蒙利主体，不复制新资产');
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = '霜精之王';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                return api.waitFor(function() {
+                    var frost = document.querySelector('[data-custom-add-unit="411"] .arena-custom-unit-portrait');
+                    return frost && frost.getAttribute('data-portrait-source') === 'svg' && portraitHasVisiblePixels(frost);
+                }, 5000, 'Frost King accepted SVG paints visible pixels');
+            })
+            .then(function() {
+                var frost = document.querySelector('[data-custom-add-unit="411"] .arena-custom-unit-portrait');
+                api.assertEqual(frost.getAttribute('data-portrait-ref'), '敌人-霜精之王', '霜精之王应消费已人工通过的稳定身份，不得回退问号');
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = 'Pig';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                return api.waitFor(function() {
+                    var hero = document.querySelector('[data-custom-add-unit="158"] .arena-custom-unit-portrait');
+                    return hero && hero.getAttribute('data-arena-portrait-kind') === 'dressup'
+                        && hero.getAttribute('data-merc-portrait-source') === 'dressup'
+                        && portraitHasVisiblePixels(hero);
+                }, 7000, 'protagonist template renders through dressup portrait route');
+            })
+            .then(function() {
+                var hero = document.querySelector('[data-custom-add-unit="158"] .arena-custom-unit-portrait');
+                api.assert(hero && hero.classList.contains('merc-dressup-ready'), '主角单位应渲染具体纸娃娃外观而不是通用锁定图');
+                var heroImage = hero.querySelector('img');
+                var heroImageStyle = getComputedStyle(heroImage);
+                var heroRect = hero.getBoundingClientRect();
+                var heroImageRect = heroImage.getBoundingClientRect();
+                api.assertEqual(heroImageStyle.objectFit, 'cover', '竞技场纸娃娃应复用佣兵卡的 cover 裁剪规则');
+                api.assert(heroImageRect.width <= heroRect.width + 0.5
+                    && heroImageRect.height <= heroRect.height + 0.5
+                    && Math.abs(heroImage.offsetWidth - hero.clientWidth) <= 1
+                    && Math.abs(heroImage.offsetHeight - hero.clientHeight) <= 1,
+                    '纸娃娃快照应铺满头像内容盒且不越过外框，不得以 112px 原图溢出后只露出武器局部');
+                api.assert(!hero.hasAttribute('title') && !!hero.getAttribute('data-custom-tooltip')
+                    && !!hero.__panelTooltipBinding,
+                    '头像说明应接入 PanelTooltip，禁止回退浏览器原生 title 气泡');
+                var queueState = MercPortraits.debugState();
+                api.assertEqual(queueState.maxConcurrentRenders, 4, '纸娃娃快照队列默认并发上限应为 4');
+                api.assert(queueState.activeRenderCount <= queueState.maxConcurrentRenders
+                    && queueState.peakActiveRenderCount <= queueState.maxConcurrentRenders,
+                    '纸娃娃快照活跃渲染数不得突破共享并发上限');
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = '远古流年';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                return api.waitFor(function() {
+                    var ancient = document.querySelector('[data-custom-add-unit="235"] .arena-custom-unit-portrait');
+                    return ancient && ancient.getAttribute('data-merc-portrait-state') === 'ready'
+                        && ancient.getAttribute('data-merc-portrait-source') === 'dressup'
+                        && ancient.classList.contains('merc-dressup-ready')
+                        && !ancient.classList.contains('merc-portrait-fallback')
+                        && portraitHasVisiblePixels(ancient);
+                }, 10000, 'unit 235 exact ancient armor renders a ready 112px portrait');
+            })
+            .then(function() {
+                var ancient = document.querySelector('[data-custom-add-unit="235"] .arena-custom-unit-portrait');
+                api.assert(ancient && ancient.getAttribute('data-merc-portrait-state') === 'ready',
+                    '远古流年首次渲染必须结束于 ready，不得残留 pending/fallback');
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = '主角-男';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                return api.waitFor(function() {
+                    var portraits = document.querySelectorAll('[data-arena-portrait-kind="dressup"]');
+                    var mounted = document.querySelectorAll('[data-arena-portrait-kind="dressup"][data-arena-portrait-mounted="1"]');
+                    return portraits.length > 40 && mounted.length > 0 && mounted.length < portraits.length;
+                }, 3000, 'dressup portraits mount only near the visible catalog window');
+            })
+            .then(function() {
+                var portraits = document.querySelectorAll('[data-arena-portrait-kind="dressup"]');
+                var mounted = document.querySelectorAll('[data-arena-portrait-kind="dressup"][data-arena-portrait-mounted="1"]');
+                api.assert(mounted.length < portraits.length,
+                    '长目录不得一次打开全部纸娃娃渲染（mounted=' + mounted.length + ', total=' + portraits.length + '）');
                 var search = document.getElementById('arena-custom-unit-search');
                 search.value = 'P90战术版';
                 search.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2348,6 +2712,11 @@ var ArenaHarnessQA = (function() {
                 return waitBatchPreviewReady(api);
             })
             .then(function() {
+                return api.waitFor(function() {
+                    return document.querySelector('#arena-grid .arena-card-portrait-item[data-portrait-ref]');
+                }, 3000, '堕落模式卡面头像挂载');
+            })
+            .then(function() {
                 var cards = window.ArenaPanel.getCards();
                 api.assertEqual(cards.length, EXPECTED.length, '堕落模式应出 18 张势力卡');
                 var expectedByFaction = {};
@@ -2380,6 +2749,9 @@ var ArenaHarnessQA = (function() {
                 // 卡面 DOM：建卡即紫罗兰怪物卡 + 势力名 rank + 麾下阵容 cap + 押金/奖金渲染
                 var el = document.querySelector('.arena-card[data-index="' + persiaIdx + '"]');
                 api.assert(el.classList.contains('arena-card-monster'), '堕落卡应建卡即上 arena-card-monster（紫罗兰）');
+                var portrait = el.querySelector('.arena-card-portrait');
+                var portraitItem = portrait.querySelector('.arena-card-portrait-item');
+                api.assert(portraitItem && portraitItem.classList.contains('entity-portrait-art') && !portrait.classList.contains('arena-card-portrait-loading'), '堕落卡应接入怪物身份头像，而非剪影');
                 api.assertEqual(el.querySelector('.arena-card-rank-faction').textContent, '波斯军', '堕落卡 rank 槽应为势力名');
                 api.assertEqual(el.querySelector('.arena-card-opponents-cap').textContent, '麾下阵容', '堕落卡阵容 cap 应为「麾下阵容」');
                 api.assert(el.querySelector('.arena-prize-value').textContent.indexOf('236,000') >= 0, '卡面应渲染奖金 236,000');
@@ -2429,25 +2801,40 @@ var ArenaHarnessQA = (function() {
                 }, 2000, '波斯军右栏 preview 渲染完成（cache 命中）');
             })
             .then(function() {
+                return api.waitFor(function() {
+                    var rows = document.querySelectorAll('.arena-opp-row-monster');
+                    if (rows.length !== 5) return false;
+                    for (var i = 0; i < rows.length; i++) {
+                        var portrait = rows[i].querySelector('.arena-opp-portrait');
+                        if (!portrait || !portrait.classList.contains('entity-portrait-art')
+                                || !portrait.hasAttribute('data-portrait-source')) return false;
+                    }
+                    return true;
+                }, 5000, '波斯军右栏全部怪物身份头像');
+            })
+            .then(function() {
                 api.assertEqual(document.getElementById('arena-detail-title').textContent, '波斯军 · 禁区噩梦 挑战', '堕落卡右栏标题（levelMax 59 → 禁区噩梦）');
                 var meta = document.getElementById('arena-detail-meta').textContent;
                 api.assert(meta.indexOf('等效 ×5') >= 0, 'meta 应含等效人数');
                 api.assert(meta.indexOf('实体 ×5') >= 0, 'meta 应含实体人数');
                 api.assert(meta.indexOf('等级 44—59') >= 0, 'meta 应含挑战带');
-                api.assert(meta.indexOf('押金 94,000') >= 0, 'meta 应含押金');
-                api.assert(meta.indexOf('奖金 236,000') >= 0, 'meta 应含奖金');
-                var brief = document.querySelector('.arena-opp-roster-brief');
-                api.assert(brief && brief.textContent.indexOf('实战实体 ×5') >= 0, 'roster 摘要条应含实战实体数');
+                // 经济上屏唯一归属 CommitBar 状态条（meta 芯片不再复述押金/奖金）
+                api.assert(meta.indexOf('押金') < 0, 'meta 不再承载押金（唯一归属 CommitBar 状态条）');
+                var commitText = commitStatusText();
+                api.assert(commitText.indexOf('押金 94,000') >= 0, 'CommitBar 状态条应含押金');
+                api.assert(commitText.indexOf('奖金 236,000') >= 0, 'CommitBar 状态条应含奖金');
                 // 对手全部来自波斯军挑战带单位池；方舟妖姬 maxLevel 20 < 带下限 44，按 poolForBand 不入池
                 var bandNames = { '波斯步兵': true, '波斯弓兵': true, '不死亲卫队': true, '不死兽人': true, '斯巴达勇士': true };
                 var rows = document.querySelectorAll('.arena-opp-row-monster');
                 for (var i = 0; i < rows.length; i++) {
                     var name = rows[i].querySelector('.arena-opp-name').textContent;
                     api.assert(bandNames[name] === true, '右栏对手应来自波斯军挑战带单位池（实际: ' + name + '）');
+                    var portrait = rows[i].querySelector('.arena-opp-portrait');
+                    api.assert(portrait.classList.contains('entity-portrait-art') && portrait.hasAttribute('data-portrait-source'), '怪物右栏头像应接入共享身份组件并保留 fail-soft 来源');
                 }
             })
             .then(function() {
-                // 换一批（左栏控件条）：堕落卡本地重抽，不产生 AS2 preview 往返
+                // 换一批（右栏决策头）：堕落卡本地重抽，不产生 AS2 preview 往返
                 var beforePreviews = host.previewMessages.length;
                 document.getElementById('arena-roll-one').click();
                 return api.waitFor(function() {
@@ -2579,6 +2966,11 @@ var ArenaHarnessQA = (function() {
                 return waitBatchPreviewReady(api);
             })
             .then(function() {
+                return api.waitFor(function() {
+                    return document.querySelector('#arena-grid .arena-card-portrait-item[data-portrait-ref]');
+                }, 3000, '爬升模式卡面头像挂载');
+            })
+            .then(function() {
                 var cards = window.ArenaPanel.getCards();
                 api.assertEqual(cards.length, 18, '爬升模式应与堕落同源出 18 张卡');
                 for (var i = 0; i < cards.length; i++) {
@@ -2590,6 +2982,9 @@ var ArenaHarnessQA = (function() {
                 cardIdx = findCardIndexByFaction(cards, '波斯军');
                 api.assert(cardIdx >= 0, '应找到波斯军爬升卡');
                 var c = cards[cardIdx];
+                var cardPortrait = document.querySelector('.arena-card[data-index="' + cardIdx + '"] .arena-card-portrait');
+                var cardPortraitItem = cardPortrait && cardPortrait.querySelector('.arena-card-portrait-item');
+                api.assert(cardPortraitItem && cardPortraitItem.classList.contains('entity-portrait-art') && cardPortraitItem.hasAttribute('data-portrait-source'), '爬升卡应接入怪物身份头像并保留 fail-soft 来源');
                 api.assertEqual(c.maxWaves, 10, '波斯军（large）波数上限');
                 api.assertEqual(c.deposit, 148000, '波斯军押注派生');
                 api.assertEqual(c.reward, 147500, '波斯军波奖励基准');
@@ -2608,10 +3003,16 @@ var ArenaHarnessQA = (function() {
                 }, 2000, '波斯军爬升右栏 preview 渲染完成');
             })
             .then(function() {
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-opp-row-monster .arena-opp-portrait.entity-portrait-art[data-portrait-source]');
+                }, 3000, '爬升模式右栏怪物头像');
+            })
+            .then(function() {
                 api.assertEqual(document.getElementById('arena-detail-title').textContent, '波斯军 · 爬升挑战（无限波 · 奖池押注）', '爬升卡右栏标题');
-                var meta = document.getElementById('arena-detail-meta').textContent;
-                api.assert(meta.indexOf('押金 148,000') >= 0, 'meta 应含押注');
-                api.assert(meta.indexOf('奖金 147,500') >= 0, 'meta 应含波奖励基准');
+                // 经济上屏唯一归属 CommitBar 状态条（meta 芯片不再复述押金/奖金）
+                var commitText = commitStatusText();
+                api.assert(commitText.indexOf('押金 148,000') >= 0, 'CommitBar 状态条应含押注');
+                api.assert(commitText.indexOf('奖金 147,500') >= 0, 'CommitBar 状态条应含波奖励基准');
                 commitPrimary().click();
                 return api.waitFor(function() {
                     return host.enterMessages.length > 0;

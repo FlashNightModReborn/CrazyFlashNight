@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>内部主体救援 · 单项复核</title>
+  <link rel="stylesheet" href="./internal-subject-reconfirm.css">
+</head>
+<body>
+  <div id="app" data-ready="false">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">PORTRAIT PIPELINE · SEMANTIC RECONFIRMATION</p>
+        <h1>只复核一个明显的主体冲突</h1>
+        <p class="lede">旧决定已经完整保留。本页不会改动其余 16 项；请重新点击一个真正能辨认成怪物/单位的内部候选。</p>
+      </div>
+      <div class="guard">复杂度只负责召回<br>模型共识只作证据<br>最终仍由真人裁决</div>
+    </header>
+    <section class="warning" id="warning">当前旧选择被检测为近乎纯色的实心矩形，无法提供身份可识别度。必须重新点击候选后才能保存。</section>
+    <div id="load-error" class="error" hidden></div>
+    <main id="target"></main>
+    <footer class="commit-bar">
+      <div>
+        <strong id="commit-title">等待重新确认</strong>
+        <span id="commit-detail">旧选择只作提示，不会被当成本次确认。</span>
+      </div>
+      <button type="button" id="save" disabled>保存完整 17 项决定</button>
+    </footer>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  </div>
+  <script src="./internal-subject-reconfirm.js"></script>
+</body>
+</html>

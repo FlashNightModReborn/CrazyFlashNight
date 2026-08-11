@@ -76,6 +76,9 @@
         this._onCommit(candidate);
         return true;
     };
+    ActionView.prototype.commitCandidate = function(candidate) {
+        return this._tryCommit(candidate);
+    };
     ActionView.prototype._handleKeyDown = function(event) {
         var candidate = closest(event.target, '[data-candidate-key]', this._candidateList);
         if (!candidate || (event.key !== 'Enter' && event.key !== ' ')) return;

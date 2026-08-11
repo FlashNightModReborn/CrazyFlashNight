@@ -159,8 +159,11 @@ function staticAudit() {
         && !presentation.includes('data-info-action') && !presentation.includes('data-info-panel')
         && !actionView.includes('data-info-action') && !actionView.includes('data-info-panel')
         && presentation.includes('role="toolbar" aria-label="当前槽位与候选操作"')
-        && presentation.includes('<div class="character-build-pane-tools"><div class="character-build-candidate-actions"')
-        && presentation.indexOf('character-build-candidate-actions')
+        && presentation.includes('<div class="character-build-pane-tools"><div data-build-density-mount></div></div>')
+        && presentation.includes('class="character-build-candidate-count" data-candidate-count')
+        && presentation.indexOf('character-build-candidate-focus-summary')
+            < presentation.indexOf('character-build-candidate-actions')
+        && presentation.indexOf('character-build-candidate-scope-row')
             < presentation.indexOf('character-build-candidate-focus-summary')
         && !presentation.includes('character-build-candidate-actions p')
         && actionView.includes("event.key === 'Enter' && !event.repeat && selected")
@@ -169,7 +172,7 @@ function staticAudit() {
         && actionView.includes('this._tryCommit(this._getCandidate())')
         && actionView.includes("this._state === 'mutation_reconcile'")
         && actionView.includes("action === 'unequip'"),
-        'main snapshot invents no vitals or candidate detail/pin surface and embeds one action toolbar in candidate PaneChrome');
+        'main snapshot invents no vitals or candidate detail/pin surface and embeds one action toolbar in the candidate context row');
     check(presentation.includes('class="character-build-loadout-tools"')
         && presentation.includes('data-focus-summary')
         && presentation.includes('data-doll-preview-action-host')
@@ -262,8 +265,8 @@ async function metrics(page) {
         const candidates = Array.from(root.querySelectorAll('.character-build-candidate'));
         const previewAction = root.querySelector('[data-doll-preview-open]').getBoundingClientRect();
         const actionToolbar = root.querySelector('.character-build-candidate-actions');
-        const candidateHeading = root.querySelector(
-            '.character-build-candidate-pane > .character-build-pane-heading');
+        const candidateContextRow = root.querySelector(
+            '.character-build-candidate-pane > .character-build-candidate-context-row');
         const loadoutHeading = root.querySelector(
             '.character-build-composite-pane > .character-build-pane-heading');
         const loadoutTools = loadoutHeading.querySelector('.character-build-loadout-tools');
@@ -277,7 +280,7 @@ async function metrics(page) {
                 && getComputedStyle(node).visibility !== 'hidden');
         const actionRects = visibleActionButtons.map(node => node.getBoundingClientRect());
         const actionToolbarRect = actionToolbar.getBoundingClientRect();
-        const candidateHeadingRect = candidateHeading.getBoundingClientRect();
+        const candidateContextRowRect = candidateContextRow.getBoundingClientRect();
         const candidateScroll = root.querySelector('.character-build-candidate-scroll');
         const body = root.querySelector('.character-build-body');
         const directPanes = Array.from(body.children).filter(node => node.hasAttribute('data-build-pane'));
@@ -378,18 +381,18 @@ async function metrics(page) {
                 || loadoutTools.scrollWidth > loadoutTools.clientWidth + 1,
             actionsAboveCandidates:actionToolbarRect.bottom
                 <= candidateScroll.getBoundingClientRect().top + 1,
-            actionsInHeading:actionToolbar.closest('.character-build-pane-heading')
-                === candidateHeading,
+            actionsInContextRow:actionToolbar.closest('.character-build-candidate-context-row')
+                === candidateContextRow,
             actionLabels:visibleActionButtons.map(node => node.textContent.trim()),
             actionAria:visibleActionButtons.map(node => node.getAttribute('aria-label')),
             actionSameRow:Math.max.apply(Math, actionRects.map(rect => rect.top))
                 - Math.min.apply(Math, actionRects.map(rect => rect.top)) <= 1,
-            actionInsideHeading:actionToolbarRect.left >= candidateHeadingRect.left - 1
-                && actionToolbarRect.right <= candidateHeadingRect.right + 1
-                && actionToolbarRect.top >= candidateHeadingRect.top - 1
-                && actionToolbarRect.bottom <= candidateHeadingRect.bottom + 1,
+            actionInsideContextRow:actionToolbarRect.left >= candidateContextRowRect.left - 1
+                && actionToolbarRect.right <= candidateContextRowRect.right + 1
+                && actionToolbarRect.top >= candidateContextRowRect.top - 1
+                && actionToolbarRect.bottom <= candidateContextRowRect.bottom + 1,
             actionOverflow:actionToolbar.scrollWidth > actionToolbar.clientWidth + 1
-                || candidateHeading.scrollWidth > candidateHeading.clientWidth + 1,
+                || candidateContextRow.scrollWidth > candidateContextRow.clientWidth + 1,
             actionClipped:visibleActionButtons.some(
                 node => node.scrollWidth > node.clientWidth + 1),
             actionWrapped:actionToolbarRect.height
@@ -589,15 +592,15 @@ async function runViewport(browser, port, viewport) {
             label + ' keeps one Canvas and one semantic candidate overlay');
         check(base.minFont >= 9, label + ' keeps compact labels at least 9px', base.minFont);
         check(base.previewActionHeight >= 44 && base.minHitTarget >= 44 && base.minActionWidth >= 44
-            && base.actionsAboveCandidates && base.actionsInHeading && base.actionInsideHeading
+            && base.actionsAboveCandidates && base.actionsInContextRow && base.actionInsideContextRow
             && base.actionSameRow && !base.actionOverflow && !base.actionClipped
             && !base.actionWrapped && base.candidateActionCount <= 3,
-            label + ' keeps targets at least 44px and embeds actions in one unclipped PaneChrome row',
+            label + ' keeps targets at least 44px and embeds actions in one unclipped context row',
             JSON.stringify({
                 previewActionHeight:base.previewActionHeight,
                 candidateActionCount:base.candidateActionCount,
                 actionsAboveCandidates:base.actionsAboveCandidates,
-                actionsInHeading:base.actionsInHeading,
+                actionsInContextRow:base.actionsInContextRow,
                 actionLabels:base.actionLabels,
                 actionAria:base.actionAria,
                 minHitTarget:base.minHitTarget,
@@ -1075,11 +1078,11 @@ async function runViewport(browser, port, viewport) {
             && threeActionRow.actionLabels.join('|') === '装备|调制候选|卸下'
             && threeActionRow.actionAria.join('|') ===
                 '装备所选候选|调制所选候选：烈火吉他|卸下当前物品'
-            && threeActionRow.actionSameRow && threeActionRow.actionInsideHeading
+            && threeActionRow.actionSameRow && threeActionRow.actionInsideContextRow
             && !threeActionRow.actionOverflow && !threeActionRow.actionClipped
             && !threeActionRow.actionWrapped && threeActionRow.minActionWidth >= 44
             && threeActionRow.infoActionCount === 0 && threeActionRow.infoPanelCount === 0,
-            label + ' three candidate actions stay on one title row with full accessible names',
+            label + ' three candidate actions stay on one context row with full accessible names',
             JSON.stringify(threeActionRow));
         check(await page.evaluate(() => CharacterBuildHarness.actionLog.commits.length === 0),
             label + ' first candidate activation never submits');
@@ -1112,14 +1115,19 @@ async function runViewport(browser, port, viewport) {
         await page.keyboard.press('Tab');
         const tabDrug = await page.evaluate(() => document.activeElement.getAttribute('data-slot-kind'));
         await page.keyboard.press('Tab');
+        const tabScope = await page.evaluate(() => document.activeElement.getAttribute('data-choice'));
+        await page.keyboard.press('Tab');
+        const tabScopeAlt = await page.evaluate(() => document.activeElement.getAttribute('data-choice'));
+        await page.keyboard.press('Tab');
         const tabAction = await page.evaluate(() => ({
             action:document.activeElement.getAttribute('data-build-action'),
             label:document.activeElement.getAttribute('aria-label')
         }));
         check(tabWeapon === 'weapon' && tabDrug === 'drug'
+            && tabScope === 'compatible' && tabScopeAlt === 'backpack'
             && tabAction.action === 'commit' && tabAction.label === '装备所选候选',
-            label + ' Tab order follows the visual hierarchy: loadout groups then candidate title actions',
-            JSON.stringify({tabWeapon, tabDrug, tabAction}));
+            label + ' Tab order follows the visual hierarchy: loadout groups then candidate scope and actions',
+            JSON.stringify({tabWeapon, tabDrug, tabScope, tabScopeAlt, tabAction}));
 
         await page.focus('.character-build-candidate[data-roving-key="candidate-1"]');
         await page.keyboard.press('ArrowDown');
@@ -1307,7 +1315,7 @@ async function runViewport(browser, port, viewport) {
         }));
         check(blocked.previewActions === 0 && blocked.blockedCandidates === 12 && blocked.blockedAria
             && blocked.notice === 'blocked' && blocked.focusSummary.indexOf('不可装备') >= 0
-            && blocked.focusTitle === blocked.focusSummary
+            && blocked.focusTitle === ''
             && blocked.selected === 0 && blocked.commitDisabled
             && blocked.commits === blockedBefore && blocked.overlayHidden
             && blocked.candidateState.blockedActivations === 3
@@ -1315,7 +1323,7 @@ async function runViewport(browser, port, viewport) {
             && blocked.reason.indexOf('不兼容') >= 0
             && blocked.reasonOpacity === '1' && blocked.cardOpacity === '1'
             && !!blocked.describedBy,
-            label + ' blocked pointer/Enter/Space explains at body contrast with zero business intent',
+            label + ' blocked pointer/Enter/Space explains once via status notice with zero business intent',
             JSON.stringify(blocked));
         if (shotArg) {
             const directory = path.resolve(shotArg.slice('--shot-dir='.length));

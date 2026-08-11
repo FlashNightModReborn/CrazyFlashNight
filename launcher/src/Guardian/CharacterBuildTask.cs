@@ -2359,10 +2359,28 @@ namespace CF7Launcher.Guardian
                     web["inventorySnapshots"] =
                         message["inventorySnapshots"].DeepClone();
                 }
-                else if (!CharacterBuildProtocol.IsLoadoutProjection(
-                    payload, false))
+                else
                 {
-                    return false;
+                    if (!CharacterBuildProtocol.IsLoadoutProjection(
+                        payload, false))
+                    {
+                        return false;
+                    }
+                    if (entry.IsReconcileSnapshot)
+                    {
+                        // flushLive/finalize unknown 的 reconcile 快照同样携带 barrier
+                        // 与整包背包证明：内容门槛与 mutation 一致，
+                        // 但 Host/Web 都只消费 payload，两键不转发。
+                        if (!string.Equals(
+                                ReadString(message["reconcileAfterCallId"]),
+                                entry.ReconcileAfterCallId,
+                                StringComparison.Ordinal)
+                            || !CharacterBuildProtocol.IsFullBackpackSnapshots(
+                                message["inventorySnapshots"] as JArray))
+                        {
+                            return false;
+                        }
+                    }
                 }
                 web["payload"] = payload.DeepClone();
             }
@@ -2457,8 +2475,9 @@ namespace CF7Launcher.Guardian
             else if (command == "snapshot")
             {
                 allowed.Add("payload");
-                if (entry.IsReconcileSnapshot
-                    && entry.ReconcileTargetKind == UnknownKind.Mutation)
+                // 任何 unknown 种类的 reconcile 快照都允许携带 barrier 与整包背包证明；
+                // 内容门槛在消毒路径按种类分别强制执行。
+                if (entry.IsReconcileSnapshot)
                 {
                     allowed.Add("reconcileAfterCallId");
                     allowed.Add("inventorySnapshots");
@@ -2971,7 +2990,9 @@ namespace CF7Launcher.Guardian
                 case "incompatible_item":
                 case "backpack_full":
                 case "write_failed":
+                case "write_busy":
                 case "stats_failed":
+                case "stats_unavailable":
                 case "internal_error":
                 case "session_active":
                 case "stale_container":
@@ -2980,6 +3001,7 @@ namespace CF7Launcher.Guardian
                 case "stale_session":
                 case "stale_panel_instance":
                 case "stale_state":
+                case "pause_lease_missing":
                     return true;
                 default:
                     return false;
@@ -3005,6 +3027,7 @@ namespace CF7Launcher.Guardian
                 case "incompatible_item":
                 case "backpack_full":
                 case "write_failed":
+                case "write_busy":
                 case "internal_error":
                 case "stale_container":
                 case "stale_drug_revision":

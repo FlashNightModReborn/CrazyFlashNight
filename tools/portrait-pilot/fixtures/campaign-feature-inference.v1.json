@@ -1,0 +1,76 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-campaign-feature-v1-20260806",
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框。",
+    "当前是全量 campaign 的新身份，没有既往逐行裁切决定；必须先从候选像素判断人形或非人，再推理身份特征。",
+    "候选像素已经由管线限定为怪物内部首帧命名 man MovieClip；不得把外层血条、等级、名称或其他 UI 当作身份特征。",
+    "人形单位默认以头部、脸、发型和头部轮廓作为主特征，并保留可识别的颈肩或上身上下文。",
+    "非人单位必须推理身份最强的特征；不得把几何中心、最长肢体、枪械、尾巴或特效自动当成视觉中心。",
+    "多头单位的全部头部属于一个不可拆分的特征组；载具或飞行器只有在整体轮廓本身就是身份时才使用完整主体构图。",
+    "所有必须保留的特征都要有透明安全边距；允许虚拟裁切框越出候选 PNG，并用透明像素补齐。",
+    "featureBox 必须紧贴身份特征；mustIncludeBox 只包住不可裁掉的最小上下文，不能把武器、下半身或宽泛全身姿态重新带回头像。",
+    "构图只有在最终方形画布中达到对应模式的特征占比下限才有效；文字声称 closeup 但像素仍是半身或全身时必须拒绝。",
+    "人形 head featureBox 的底边必须止于下颌、头发或头饰轮廓，不能把颈、胸、肩或抬起的手臂算进头部；mustIncludeBox 最多补入少量颈肩。",
+    "非人 featureBox 必须紧贴所命名的核心、头组或主躯干；如果方框同时吞入大部分尾巴、长肢、枪械或整个身体，就不再是 feature closeup。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.06,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.86,
+        "featureHeightOccupancy": 0.84,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.78,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.48,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.82,
+        "featureHeightOccupancy": 0.82,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.72,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.4,
+        "featureAnchor": [
+          0.5,
+          0.48
+        ]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.84,
+        "featureHeightOccupancy": 0.8,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.74,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.4,
+        "featureAnchor": [
+          0.5,
+          0.45
+        ]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.84,
+        "featureHeightOccupancy": 0.84,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.74,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.45,
+        "featureAnchor": [
+          0.5,
+          0.5
+        ]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 16384,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "unclassified": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "这是全量 campaign 的新身份，没有旧裁切反馈。先从候选像素判断人形或非人：人形必须改用 head_closeup，紧贴头脸、发型或头部轮廓；非人则推理最强身份特征并选择 feature_closeup、feature_group 或确有必要时的 full_subject。文件名、几何中心、最长肢体、武器和特效都不能代替视觉判断。"
+    }
+  },
+  "reviewKeyOverrides": {}
+}

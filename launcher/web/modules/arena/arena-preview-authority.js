@@ -426,6 +426,87 @@
         return { humanoid: 1, monster: Math.max(1, total - 1) };
     }
 
+    function normalizeLegacyMercGender(value) {
+        value = value === undefined || value === null ? '' : String(value);
+        return (value === '男' || value === '主角-男' || value === '1') ? '男' : '女';
+    }
+
+    function cloneEquipment(equipment) {
+        var out = {};
+        equipment = equipment && typeof equipment === 'object' ? equipment : {};
+        Object.keys(equipment).forEach(function(slot) {
+            if (equipment[slot] !== undefined && equipment[slot] !== null && String(equipment[slot]).trim()) {
+                out[slot] = String(equipment[slot]);
+            }
+        });
+        return out;
+    }
+
+    function cloneDressupActor(actor) {
+        if (!actor || typeof actor !== 'object') return null;
+        var gender = normalizeLegacyMercGender(actor.gender);
+        return {
+            gender: gender,
+            face: actor.face === undefined || actor.face === null
+                ? (gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型')
+                : String(actor.face),
+            hair: actor.hair === undefined || actor.hair === null ? '' : String(actor.hair),
+            equipment: cloneEquipment(actor.equipment)
+        };
+    }
+
+    function projectedMercActor(merc) {
+        var projected = merc && merc.portrait && merc.portrait.kind === 'dressup'
+            ? cloneDressupActor(merc.portrait.actor) : null;
+        if (projected) return projected;
+        var gender = normalizeLegacyMercGender(merc && merc.gender);
+        return {
+            gender: gender,
+            face: merc && merc.face !== undefined && merc.face !== null
+                ? String(merc.face)
+                : (gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型'),
+            hair: merc && merc.hair !== undefined && merc.hair !== null ? String(merc.hair) : '',
+            equipment: cloneEquipment(merc && merc.equipment)
+        };
+    }
+
+    function catalogDressupActor(unit) {
+        var catalog = typeof window !== 'undefined' && window.ArenaUnitCatalog
+            ? window.ArenaUnitCatalog.units : null;
+        if (!catalog || !catalog.length || !unit) return null;
+        var type = String(unit.type || '');
+        var id = unit.id;
+        if (id === undefined || id === null || id === '') {
+            var match = /^兵种(\d+)$/.exec(type);
+            if (match) id = Number(match[1]);
+        }
+        for (var i = 0; i < catalog.length; i++) {
+            var candidate = catalog[i];
+            if (!candidate) continue;
+            if (type && String(candidate.type || '') !== type) continue;
+            if (!type && id !== undefined && id !== null && Number(candidate.id) !== Number(id)) continue;
+            var portrait = candidate.portrait;
+            if (portrait && portrait.kind === 'dressup' && portrait.actor) {
+                return cloneDressupActor(portrait.actor);
+            }
+            return null;
+        }
+        return null;
+    }
+
+    function hydrateCatalogDressupOpponent(opponent, sourceUnit) {
+        if (!opponent || opponent.rosterKind !== 'humanoid') return opponent;
+        var actor = catalogDressupActor(sourceUnit || opponent);
+        if (!actor) return opponent;
+        opponent.portraitKind = 'dressup';
+        opponent.portrait = { kind: 'dressup', actor: actor };
+        opponent.gender = actor.gender;
+        opponent.face = actor.face;
+        opponent.hair = actor.hair;
+        opponent.equipment = cloneEquipment(actor.equipment);
+        return opponent;
+    }
+
     function mercenaryPoolForBand(levelMin, levelMax) {
         var mercs = (typeof window !== 'undefined' && window.ArenaMetaRosters && window.ArenaMetaRosters.mercenaries)
             ? window.ArenaMetaRosters.mercenaries : null;
@@ -468,12 +549,28 @@
             }
             if (!pick) break;
             used[pick.id] = true;
+            var actor = projectedMercActor(pick);
+            var gender = actor.gender;
+            var sourceFace = pick.face === undefined || pick.face === null ? actor.face : String(pick.face);
+            var sourceHair = pick.hair === undefined || pick.hair === null ? actor.hair : String(pick.hair);
+            var sourceEquipment = pick.equipment && typeof pick.equipment === 'object'
+                ? cloneEquipment(pick.equipment) : cloneEquipment(actor.equipment);
             opponents.push({
+                id: pick.id,
                 name: pick.name,
                 level: Number(pick.level) || 1,
                 mercId: pick.id,
-                spritename: '主角-男',
-                gender: pick.gender || '',
+                spritename: gender === '女' ? '主角-女' : '主角-男',
+                gender: gender,
+                // Retain the source tuple verbatim so the public local preview
+                // can be compared directly with AS2 rebuilding the same mercId.
+                // The canonical actor below remains the browser render input.
+                face: sourceFace,
+                hair: sourceHair,
+                equipment: sourceEquipment,
+                equips: [],
+                portraitKind: 'dressup',
+                portrait: { kind: 'dressup', actor: actor },
                 isMonster: true,
                 humanoid: true,
                 rosterKind: 'humanoid',
@@ -615,6 +712,7 @@
                     sourceGroupMemberIndex: out.length + 1,
                     sourceGroupMemberTotal: groupTotal
                 };
+                hydrateCatalogDressupOpponent(opponent, member);
                 var parameters = member.Parameters || member.parameters || member['参数'];
                 if (ArenaCustomEditor.customHasParameters(parameters)) opponent.parameters = ArenaCustomEditor.cloneCustomParameters(parameters);
                 out.push(opponent);
@@ -756,6 +854,7 @@
                 isMonster: true,
                 rosterKind: isHumanoidRosterUnit(pick) ? 'humanoid' : 'nonhuman'
             };
+            hydrateCatalogDressupOpponent(opponent, pick);
             var parameters = pick.Parameters || pick.parameters || pick['参数'];
             if (ArenaCustomEditor.customHasParameters(parameters)) opponent.parameters = ArenaCustomEditor.cloneCustomParameters(parameters);
             opponents.push(opponent);
@@ -804,6 +903,11 @@
         teamHasOnlyNonHuman: teamHasOnlyNonHuman,
         setKnownEnemies: setKnownEnemies,
         rosterDisplaySpritename: rosterDisplaySpritename,
-        filterKnownUnits: filterKnownUnits
+        filterKnownUnits: filterKnownUnits,
+        // Deterministic seams used by the Arena browser QA to exercise supported
+        // no-merc fallback and legacy missing-gender compatibility branches.
+        sampleMixedSquadForTests: sampleMixedSquad,
+        sampleSyntheticMixedSquadForTests: sampleSyntheticMixedSquad,
+        weightedMercenarySampleForTests: weightedMercenarySample
     };
 })();

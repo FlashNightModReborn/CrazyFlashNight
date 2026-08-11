@@ -1,13 +1,10 @@
-/** Candidate-pane scope, selection, recovery and pointer-drag interaction. */
+/** Candidate-pane scope, selection, recovery and browse-summary presentation. */
 (function(root, factory) {
     'use strict';
-    var primitives = typeof module !== 'undefined' && module.exports
-        ? require('../workbench-primitives.js')
-        : root && root.WorkbenchPrimitives;
     var facets = typeof module !== 'undefined' && module.exports
         ? require('./character-build-facet-counts.js')
         : root && root.CharacterBuildFacetCounts;
-    var api = factory(primitives, facets);
+    var api = factory(facets);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -15,13 +12,8 @@
         root.CharacterBuildCandidatePane = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(WorkbenchPrimitives, FacetCountsModule) {
+function(FacetCountsModule) {
     'use strict';
-    if (!WorkbenchPrimitives
-            || typeof WorkbenchPrimitives.InteractionBroker !== 'function'
-            || typeof WorkbenchPrimitives.PointerDragController !== 'function') {
-        throw new Error('CharacterBuildCandidatePane requires workbench pointer primitives');
-    }
     if (!FacetCountsModule || typeof FacetCountsModule.syncFocusSummary !== 'function') {
         throw new Error('CharacterBuildCandidatePane requires CharacterBuildFacetCounts');
     }
@@ -34,11 +26,6 @@ function(WorkbenchPrimitives, FacetCountsModule) {
         return value === 'backpack' ? 'backpack'
             : value === 'compatible' ? 'compatible' : '';
     }
-    function escapeHtml(value) {
-        return String(value == null ? '' : value)
-            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
     function closest(target, selector, root) {
         if (!target || typeof target.closest !== 'function') return null;
         var match = target.closest(selector);
@@ -47,130 +34,6 @@ function(WorkbenchPrimitives, FacetCountsModule) {
 
     function install(prototype) {
         if (!prototype) throw new Error('CharacterBuildCandidatePane.install requires a view method target');
-
-        prototype._candidateDropDecision = function(hit) {
-            if (this._interactionState !== 'idle') return {accepted:false, reason:'write_locked'};
-            if (!this._snapshot || this._snapshot.blocked) {
-                return {accepted:false, reason:'build_blocked'};
-            }
-            if (!hit || !hit.slotKey || hit.slotKey !== this._selectedSlotKey) {
-                return {accepted:false, reason:'target_mismatch'};
-            }
-            var node = hit.node;
-            if (!node || node.disabled || node.getAttribute('data-blocked') === 'true') {
-                return {accepted:false, reason:'target_blocked'};
-            }
-            return {accepted:true, operationId:'character-build.equip-candidate',
-                targetRef:{slotKey:this._selectedSlotKey}};
-        };
-
-        prototype._commitDraggedCandidate = function(candidate, intent) {
-            if (!candidate || !intent || intent.operationId !== 'character-build.equip-candidate'
-                    || !intent.targetRef
-                    || intent.targetRef.slotKey !== this._selectedSlotKey
-                    || this._candidateState.debugState().kind !== 'ready') return false;
-            var current = this._candidateByKey(candidate.key);
-            if (!current || current !== candidate || current.blocked === true
-                    || !this._candidateDropDecision({
-                        slotKey:this._selectedSlotKey,
-                        node:this.root.querySelector('[data-roving-key="'
-                            + this._selectedSlotKey.replace(/"/g, '\\"') + '"]')
-                    }).accepted) return false;
-            if (!this._selectCandidate(candidate.key)) return false;
-            return this._onCommitCandidate(current) !== false;
-        };
-
-        prototype._setCandidateDragActive = function(active, source) {
-            this._candidateDragActive = active === true;
-            this.root.classList.toggle('character-build-candidate-dragging', this._candidateDragActive);
-            if (source && source.node) {
-                source.node.classList.toggle('character-build-drag-source', this._candidateDragActive);
-            }
-            if (this._candidateDragActive && this._tooltip
-                    && typeof this._tooltip.hide === 'function') this._tooltip.hide();
-        };
-
-        prototype._installCandidateDrag = function() {
-            var self = this;
-            var sourceView = {
-                instanceKey:'character-build:filtered-candidates',
-                exportOffer:function(candidate) {
-                    if (!candidate || candidate.blocked === true
-                            || self._interactionState !== 'idle'
-                            || !self._snapshot || self._snapshot.blocked
-                            || self._candidateState.debugState().kind !== 'ready') return null;
-                    return {
-                        subjectKind:'character-build-candidate',
-                        sourceRef:{candidateKey:String(candidate.key || ''),
-                            requestKey:self._candidateRequestKey}
-                    };
-                }
-            };
-            var targetView = {
-                instanceKey:'character-build:selected-slot',
-                probeAccept:function(offer, hit) {
-                    if (!offer || offer.subjectKind !== 'character-build-candidate'
-                            || !offer.sourceRef
-                            || offer.sourceRef.requestKey !== self._candidateRequestKey
-                            || !self._candidateByKey(offer.sourceRef.candidateKey)) {
-                        return {accepted:false, reason:'stale_candidate'};
-                    }
-                    return self._candidateDropDecision(hit);
-                }
-            };
-            this._candidateDragBroker = new WorkbenchPrimitives.InteractionBroker({
-                onIntent:function(intent, context) {
-                    self._commitDraggedCandidate(context && context.sourceItem, intent);
-                },
-                onReject:function(result) {
-                    if (!result || result.origin !== 'drag') return;
-                    self._showStatusNotice('blocked', result.reason === 'write_locked'
-                        ? '构筑正在处理写入，当前拖拽已取消。'
-                        : result.reason === 'target_blocked' || result.reason === 'build_blocked'
-                            ? '当前目标不可装备此候选，现有装备保持不变。'
-                            : '筛选候选只可拖到当前已选槽位。');
-                }
-            });
-            var brokerPort = {
-                select:function() { return true; },
-                dispatch:function(source, item, target, hit, origin) {
-                    return self._candidateDragBroker.dispatch(source, item, target, hit, origin);
-                }
-            };
-            this._candidateDrag = new WorkbenchPrimitives.PointerDragController({
-                sourceElement:this._candidateList,
-                broker:brokerPort,
-                getSource:function(target) {
-                    if (self._interactionState !== 'idle' || !self._snapshot
-                            || self._snapshot.blocked
-                            || self._candidateState.debugState().kind !== 'ready') return null;
-                    var node = closest(target, '[data-candidate-key]', self._candidateList);
-                    var candidate = node && self._candidateByKey(
-                        node.getAttribute('data-candidate-key'));
-                    return candidate && candidate.blocked !== true
-                        ? {view:sourceView, item:candidate, node:node} : null;
-                },
-                resolveTarget:function(clientX, clientY) {
-                    var target = self._document.elementFromPoint(clientX, clientY);
-                    var node = closest(target, '.character-build-slot', self.root);
-                    if (!node) return null;
-                    var hit = {slotKey:node.getAttribute('data-roving-key'), node:node};
-                    return {view:targetView, hit:hit, node:node,
-                        accepted:self._candidateDropDecision(hit).accepted};
-                },
-                renderGhost:function(source) {
-                    var item = source.item && source.item.presentation || {};
-                    var ghost = self._document.createElement('div');
-                    ghost.className = 'workbench-drag-ghost inventory-drag-ghost character-build-drag-ghost';
-                    ghost.innerHTML = self._iconHtml(item.icon || '', 'inventory-owned-icon')
-                        + '<span>' + escapeHtml(item.displayName || source.item.name || '装备候选')
-                        + '</span>';
-                    return ghost;
-                },
-                onDragStart:function(source) { self._setCandidateDragActive(true, source); },
-                onDragEnd:function(source) { self._setCandidateDragActive(false, source); }
-            });
-        };
 
         prototype._candidateScopePending = function() {
             return !!this._candidateState
@@ -358,12 +221,14 @@ function(WorkbenchPrimitives, FacetCountsModule) {
             this._activeCandidateKey = String(key);
             var candidate = this._candidateByKey(this._activeCandidateKey);
             this._candidateFocusSummary.textContent = candidate
-                ? '浏览：' + text(candidate.name, '未命名候选') + ' · '
-                    + text(candidate.summary, this._activeCandidateKey === this._selectedCandidateKey
-                        ? '已固定预览；再次点击或按 Space 取消，按 Enter 提交。'
-                        : 'Enter 或 Space 固定预览；再次点击或按 Space 取消。')
-                : '方向键只浏览摘要；Enter 或 Space 固定预览；再次点击或按 Space 取消。';
-            this._candidateFocusSummary.title = this._candidateFocusSummary.textContent;
+                ? candidate.blocked === true
+                    ? '浏览：' + text(candidate.name, '未命名候选')
+                        + ' · 不可装备 · 点击查看原因'
+                    : '浏览：' + text(candidate.name, '未命名候选') + ' · '
+                        + text(candidate.summary, this._activeCandidateKey === this._selectedCandidateKey
+                            ? '已固定预览 · Enter 装备 / Space 取消'
+                            : 'Enter 固定预览 · 双击直接装备')
+                : '单击预览 · 双击直接装备 · 可拖到高亮槽位';
             return true;
         };
         prototype._selectSlot = function(key) {
@@ -443,11 +308,10 @@ function(WorkbenchPrimitives, FacetCountsModule) {
             return this._selectSlot(this._selectedSlotKey);
         };
         prototype._explainBlockedCandidate = function(candidate, context) {
+            // 唯一出口是底部状态栏（aria-live）；摘要行与悬浮说明不再复读同一句。
             var reason = text(context && context.reason || candidate && (
                 candidate.blockedReason || candidate.reason || candidate.summary
             ), '此候选当前不可装备。');
-            this._candidateFocusSummary.textContent = '不可装备：' + reason;
-            this._candidateFocusSummary.title = this._candidateFocusSummary.textContent;
             this._showStatusNotice('blocked', reason + ' 当前装备保持不变。');
             return true;
         };

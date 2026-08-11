@@ -1071,6 +1071,7 @@ namespace CF7Launcher.Tests.Tasks
 
         [Theory]
         [InlineData("item_name_undefined")]
+        [InlineData("item_extra_balance_summary")]
         [InlineData("item_display_blank")]
         [InlineData("item_icon_undefined")]
         [InlineData("mod_slot_display_undefined")]
@@ -1107,6 +1108,15 @@ namespace CF7Launcher.Tests.Tasks
                 case "item_name_undefined":
                     item["name"] = " Undefined ";
                     confirm["name"] = " Undefined ";
+                    break;
+                case "item_extra_balance_summary":
+                    item["balanceSummary"] = new JObject
+                    {
+                        ["state"] = "confirmed",
+                        ["weightLayers"] = 1,
+                        ["formula"] = 1,
+                        ["level"] = 30
+                    };
                     break;
                 case "item_display_blank":
                     item["displayName"] = "   ";

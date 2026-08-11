@@ -1697,6 +1697,8 @@ html.perf-low-effects .map-panel-close-btn::before {
     --jb-screen-bg: #070b06;
     --jb-text: rgba(220,235,200,0.92);
     --jb-text-dim: rgba(160,180,140,0.70);
+    --jb-bright-text-rgb: 240,250,210;
+    --jb-ink-rgb: 0,0,0;
     --jb-border: rgba(200,255,76,0.18);
     --jb-cut: 10px;
 
@@ -2403,13 +2405,90 @@ html.perf-low-effects .map-panel-close-btn::before {
     transform:translate(-50%,-50%) scale(1);
     transition:opacity 150ms ease, transform 150ms ease;
 }
+/* 帮助弹窗滚动条：与曲目列表/设置面板同款的 accent 轨道（替换原生浏览器白条） */
+.jbp-help-modal::-webkit-scrollbar { width:7px; }
+.jbp-help-modal::-webkit-scrollbar-track { background:rgba(var(--jb-ink-rgb),0.35); }
+.jbp-help-modal::-webkit-scrollbar-thumb { background:rgba(var(--jb-accent-rgb),0.22); border-radius:2px; }
+.jbp-help-modal::-webkit-scrollbar-thumb:hover { background:rgba(var(--jb-accent-rgb),0.42); }
 .jbp-help-content {
     color:var(--jb-text); line-height:1.7;
     margin-bottom:14px;
 }
+.jbp-help-content > :first-child { margin-top:0; }
+/* marked 输出统一 CRT 终端风格（accent 变量随绿/琥珀磷光主题切换） */
+.jbp-help-content h1,
+.jbp-help-content h2,
 .jbp-help-content h3,
-.jbp-help-content strong {
+.jbp-help-content h4 {
     color:var(--jb-accent);
+    font-weight:bold;
+    letter-spacing:0.8px;
+    text-shadow:0 0 6px rgba(var(--jb-accent-rgb),0.25);
+    margin:12px 0 5px;
+}
+.jbp-help-content h1 { font-size:15px; }
+.jbp-help-content h2 { font-size:13px; }
+.jbp-help-content h3 { font-size:12px; }
+.jbp-help-content h4 { font-size:11px; }
+.jbp-help-content p { margin:5px 0; }
+.jbp-help-content ul,
+.jbp-help-content ol {
+    padding-left:18px;
+    margin:5px 0;
+}
+.jbp-help-content li { margin:2px 0; }
+.jbp-help-content li::marker { color:rgba(var(--jb-accent-rgb),0.7); }
+.jbp-help-content strong { color:var(--jb-accent); }
+.jbp-help-content code {
+    background:rgba(var(--jb-accent-rgb),0.10);
+    border:1px solid rgba(var(--jb-accent-rgb),0.16);
+    padding:1px 4px;
+    font:11px/1.3 "Consolas","Courier New",monospace;
+    color:rgba(var(--jb-bright-text-rgb),0.92);
+}
+.jbp-help-content pre {
+    background:rgba(var(--jb-ink-rgb),0.35);
+    border:1px solid rgba(var(--jb-accent-rgb),0.18);
+    padding:6px 8px;
+    margin:6px 0;
+    overflow-x:auto;
+}
+.jbp-help-content pre code {
+    background:none;
+    border:none;
+    padding:0;
+}
+.jbp-help-content pre::-webkit-scrollbar { height:7px; }
+.jbp-help-content pre::-webkit-scrollbar-thumb { background:rgba(var(--jb-accent-rgb),0.22); border-radius:2px; }
+.jbp-help-content table {
+    width:100%;
+    border-collapse:collapse;
+    margin:6px 0;
+    font-size:11px;
+}
+.jbp-help-content th,
+.jbp-help-content td {
+    padding:3px 8px;
+    border:1px solid rgba(var(--jb-accent-rgb),0.16);
+    text-align:left;
+}
+.jbp-help-content th {
+    background:rgba(var(--jb-accent-rgb),0.10);
+    color:var(--jb-accent);
+    font-weight:bold;
+}
+.jbp-help-content blockquote {
+    margin:6px 0;
+    padding:2px 10px;
+    border-left:3px solid rgba(var(--jb-accent-rgb),0.35);
+    background:rgba(var(--jb-accent-rgb),0.05);
+    color:var(--jb-text-dim);
+}
+.jbp-help-content a { color:var(--jb-accent); }
+.jbp-help-content hr {
+    border:none;
+    border-top:1px solid rgba(var(--jb-accent-rgb),0.18);
+    margin:10px 0;
 }
 .jbp-help-close {
     background:linear-gradient(180deg, rgba(55,60,48,0.95) 0%, rgba(32,35,26,0.95) 100%);
@@ -2425,6 +2504,29 @@ html.perf-low-effects .map-panel-close-btn::before {
     border-color:rgba(var(--jb-accent-rgb),0.55);
     color:#f4ffd6;
     box-shadow:0 0 8px rgba(var(--jb-accent-rgb),0.18);
+}
+
+/* ── 键盘焦点可见（交互补齐轮 2026-08-10）──
+   accent 内环：outline-offset 取负值收进边框内侧，避免切角元素被自身 clip-path 裁掉焦点环；
+   仅 :focus-visible 命中（键盘导航），鼠标点按不出现焦点环。 */
+.jbp-panel .jb-ctrl-btn:focus-visible,
+.jbp-panel .jbp-track-item:focus-visible,
+.jbp-panel .jb-slider-track:focus-visible,
+.jbp-panel .jbp-progress:focus-visible,
+.jbp-panel .jb-setting-row:focus-visible,
+.jbp-panel .jbp-album-trigger:focus-visible,
+.jbp-panel .jbp-album-option:focus-visible,
+.jbp-panel .jbp-close-btn:focus-visible,
+.jbp-panel .jbp-help-close:focus-visible {
+    outline:2px solid var(--jb-accent);
+    outline-offset:-2px;
+}
+/* 行类控件焦点态与 hover 同色：键盘导航扫过列表时位置可辨 */
+.jbp-panel .jbp-track-item:focus-visible,
+.jbp-panel .jbp-album-option:focus-visible,
+.jbp-panel .jb-setting-row:focus-visible {
+    background:rgba(var(--jb-accent-rgb),0.10);
+    color:rgba(var(--jb-bright-text-rgb),0.98);
 }
 /* Stage Select Panel - Phase 1 static replica */
 .stage-select-panel {

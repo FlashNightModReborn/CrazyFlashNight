@@ -28,6 +28,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+    inspectMercDressupPortrait,
+    normalizeLegacyGender
+} = require('./lib/arena-portrait-routing');
 
 const ROOT = path.resolve(__dirname, '..');
 const STAGES_DIR = path.join(ROOT, 'data', 'stages');
@@ -101,14 +105,31 @@ for (let i = 0; i < units.length; i++) byType['兵种' + units[i].id] = units[i]
 const mercenaries = JSON.parse(fs.readFileSync(MERCS_PATH, 'utf8'));
 const arenaMercenaries = mercenaries
     .filter(m => m && !m.hidden && Number(m.level) > 0 && m.id != null && m.name != null)
-    .map(m => ({
-        id: Number(m.id),
-        name: String(m.name),
-        level: Number(m.level),
-        gender: m.gender != null ? String(m.gender) : '',
-        height: Number(m.height) || 0,
-        weight: 1
-    }))
+    .map(m => {
+        const inspected = inspectMercDressupPortrait(m);
+        if (!inspected.portrait) {
+            throw new Error('佣兵纸娃娃投影无法解析 id=' + m.id + ': ' + JSON.stringify(inspected.issues));
+        }
+        const equipment = {};
+        const rawEquipment = m.equipment && typeof m.equipment === 'object' ? m.equipment : {};
+        for (const slot of Object.keys(rawEquipment).sort()) {
+            if (rawEquipment[slot] != null && String(rawEquipment[slot]).trim()) {
+                equipment[slot] = String(rawEquipment[slot]);
+            }
+        }
+        return {
+            id: Number(m.id),
+            name: String(m.name),
+            level: Number(m.level),
+            gender: normalizeLegacyGender(m.gender),
+            height: Number(m.height) || 0,
+            face: m.face != null ? String(m.face) : '',
+            hair: m.hair != null ? String(m.hair) : '',
+            equipment: equipment,
+            portrait: inspected.portrait,
+            weight: 1
+        };
+    })
     .sort((a, b) => a.level - b.level || a.id - b.id);
 
 // ── 递归收集关卡文件 ──

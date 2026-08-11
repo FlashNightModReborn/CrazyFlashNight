@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "batchId",
+    "sourceDigest",
+    "promptDigest",
+    "runRole",
+    "selections"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "enum": [
+        "cf7.portrait-pilot-selection.v1"
+      ]
+    },
+    "batchId": {
+      "type": "string"
+    },
+    "sourceDigest": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$"
+    },
+    "promptDigest": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$"
+    },
+    "runRole": {
+      "type": "string",
+      "enum": [
+        "proposal",
+        "independent_review"
+      ]
+    },
+    "selections": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviewKey",
+          "candidateId",
+          "focalPoint",
+          "cropBox",
+          "confidence",
+          "flags"
+        ],
+        "properties": {
+          "reviewKey": {
+            "type": "string"
+          },
+          "candidateId": {
+            "type": "string"
+          },
+          "focalPoint": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "cropBox": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "effect_occlusion",
+                "multiple_subjects",
+                "variant_uncertain",
+                "low_resolution",
+                "none"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

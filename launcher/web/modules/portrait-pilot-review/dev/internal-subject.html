@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>内部主体救援 · 人工裁决</title>
+  <link rel="stylesheet" href="./internal-subject.css">
+</head>
+<body>
+  <div id="app" data-ready="false">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">PORTRAIT PIPELINE · INTERNAL SUBJECT RESCUE</p>
+        <h1>确认哪个影片剪辑才是怪物本体</h1>
+        <p class="lede">这些单位不是缺少素材，而是根节点没有统一命名为 <code>man</code>。复杂度只负责找候选；请以肉眼确认连贯主体，排除武器、特效、阴影、矩形与界面。</p>
+      </div>
+      <div class="hero-stats" aria-label="审核统计">
+        <div><strong id="resolved-count">0</strong><span>已裁决</span></div>
+        <div><strong id="total-count">—</strong><span>总单位</span></div>
+        <div class="attention"><strong id="focus-count">—</strong><span>模型分歧</span></div>
+      </div>
+    </header>
+
+    <section class="guardrail" aria-label="流程边界">
+      <span>本页只冻结内部主体</span>
+      <span>不会导出 SVG</span>
+      <span>不会写入正式头像</span>
+      <span>每次点击自动暂存</span>
+    </section>
+
+    <nav class="toolbar" aria-label="审核筛选与导航">
+      <div class="filters" role="group" aria-label="筛选">
+        <button type="button" class="filter is-active" data-filter="all">全部</button>
+        <button type="button" class="filter" data-filter="focus">只看分歧</button>
+        <button type="button" class="filter" data-filter="pending">只看未裁决</button>
+      </div>
+      <button type="button" id="next-pending" class="quiet-action">跳到下一个未裁决</button>
+    </nav>
+
+    <div id="load-error" class="load-error" hidden></div>
+    <main id="review-list" class="review-list" aria-live="polite"></main>
+
+    <footer class="commit-bar">
+      <div>
+        <strong id="commit-title">还需裁决全部单位</strong>
+        <span id="commit-detail">模型建议不会自动成为人工答案。</span>
+      </div>
+      <button type="button" id="save-decisions" disabled>保存并导出 17 项决策</button>
+    </footer>
+
+    <div id="save-toast" class="save-toast" role="status" aria-live="polite" hidden></div>
+  </div>
+  <script src="./internal-subject.js"></script>
+</body>
+</html>

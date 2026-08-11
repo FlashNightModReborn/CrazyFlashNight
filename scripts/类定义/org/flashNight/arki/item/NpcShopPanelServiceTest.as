@@ -495,6 +495,16 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
             && preview.purchaseLines[0].maxByCapacity == 100
             && preview.purchaseLines[0].maxPurchasable == 100,
             "purchase bound search preserves the configured upper limit");
+        var wireKeys:Object = {catalogIndex:true,itemName:true,displayName:true,icon:true,
+            quantity:true,unitPrice:true,total:true,maxQuantity:true,itemKind:true,
+            destinationView:true,purchaseLimit:true,maxAffordable:true,maxByCapacity:true,
+            maxPurchasable:true,limitingReason:true};
+        var leaksInternalKeys:Boolean = false;
+        for (var key:String in preview.purchaseLines[0]) {
+            if (wireKeys[key] != true) leaksInternalKeys = true;
+        }
+        check(!leaksInternalKeys,
+            "tradePreview purchase lines project only contract keys for the bridge whitelist");
     }
 
     private static function testTradeRejectsStaleAndReplay():Void {

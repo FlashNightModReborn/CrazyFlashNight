@@ -144,7 +144,8 @@ class org.flashNight.arki.merc.ArenaPanelService {
 
     /**
      * 抽一批对手并序列化给 Web 显示。
-     * 输出 opponents: [{ name, level, equips: [{slot, name, level}, ...] }, ...]
+     * 输出 opponents: [{ id, name, level, gender, height, face, hair,
+     *                     equips: [{slot, name, level}, ...], skills: [...] }, ...]
      * - slot 是原始数组下标 6..16（11 槽）
      * - 装备 level：若编码字符串自带 level (!=1) 用之，否则用 DressupInitializer 按佣兵 (level, name) 算出来的默认强化度
      */
@@ -203,6 +204,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
     private static function buildOpponentSummary(merc:Array):Object {
         var mercLevel:Number = Number(merc[0]);
         var mercName:String = String(merc[1]);
+        var mercId:String = String(merc[2]);
         var defaultEquipLevel:Number = DressupInitializer.getEquipmentDefaultLevel(mercLevel, mercName);
 
         var equips:Array = [];
@@ -236,7 +238,22 @@ class org.flashNight.arki.merc.ArenaPanelService {
         var personality:Object = MercPanelService.buildPersonality(mercName, mercLevel);
         var skills:Array = MercPanelService.buildSkills(mercName, mercLevel, merc, personality);
 
-        return { name: mercName, level: mercLevel, equips: equips, skills: skills };
+        // 竞技场右栏与战队面板共用 MercPortraits。这里只扩充只读投影，不改变抽签、缓存或入场协议；
+        // 旧 Host 缺字段时 Web 仍会按默认脸型 / 性别 fail-soft，滚动升级期间不会白屏。
+        var g:String = String(merc[17]);
+        var gender:String = (g == "男" || g == "主角-男" || g == "1" || merc[17] == 1) ? "男" : "女";
+
+        return {
+            id: mercId,
+            name: mercName,
+            level: mercLevel,
+            gender: gender,
+            height: Number(merc[3]) || 0,
+            face: String(merc[4] || ""),
+            hair: String(merc[5] || ""),
+            equips: equips,
+            skills: skills
+        };
     }
 
     /**

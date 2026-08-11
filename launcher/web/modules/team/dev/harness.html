@@ -76,9 +76,9 @@ var Bridge = {
 };
 function emit(type, data){ (listeners[type] || []).forEach(function(cb){ cb(data); }); }
 var PET_LIB = [
-  {id:1,rosterType:'partner',promotions:['淬毒']},
-  {id:2,rosterType:'pet',promotions:[]},
-  {id:3,rosterType:'mechanical',promotions:[]}
+  {id:1,identifier:'敌人-李小龙',rosterType:'partner',promotions:['淬毒']},
+  {id:2,identifier:'敌人-武装JK',rosterType:'pet',promotions:[]},
+  {id:3,identifier:'敌人-二足型机器人',rosterType:'mechanical',promotions:[]}
 ];
 function pet(id,name,slot,lv,dep){ return {petId:id,name:name,slotIndex:slot,level:lv,deployed:!!dep,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{},
   combat:{hp:{start:520,cur:3500,max:13000},attack:{start:12,cur:90,max:270},defense:{start:150,cur:550,max:900},speed:{start:8,cur:9,max:10},startLevel:1,maxLevel:100,difficulty:1}}; }
@@ -122,6 +122,8 @@ var MockHost = {
   mercDeploy:{0:true},    // 佣兵出战态（slotIndex → bool）：snapshot 与 deploy 回包共用
   mercDead:{2:true},      // 佣兵阵亡态（佣兵丙初始阵亡）
   mercCoins:2,            // 复活币余额（snapshot.reviveCoins）
+  playerTask:999,         // 领养目录主线防剧透 fixture；用例内降至 100 后重开 snapshot
+  lockSecondStore:false,  // 第二项按需改为主线 130，避免干扰既有余额不足门
   failAdopt:false,        // R：adopt 回 {success:false, reason}（CommitBar error 分支注入）
   failSnapshot:false,     // R：pets snapshot 回 {success:false, error}（roster error 空态注入）
   failMercSnapshot:false, // 外审二轮：mercs snapshot 回 {success:false, error}（merc roster error 空态注入）
@@ -134,7 +136,7 @@ var MockHost = {
       if(this.failSnapshot){ resp.success=false; resp.error='模拟快照故障'; }
       else{
       resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,false),pet(1,'伙伴乙',3,5,true),pet(2,'战宠甲',1,20,false),pet(3,'机械甲',2,10,false)],
-        gold:999999,kpoint:999,currentDeployCount:1,maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:999,
+        gold:999999,kpoint:999,currentDeployCount:1,maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:this.playerTask,
         schemes:{'淬毒':{gold:500,desc:'攻击附带毒素',type:'开关',unlockLevel:1,buttonText:'进阶'}},priceOverrides:{}};
       if(this.dualBadge && resp.snapshot.pets.length>1) resp.snapshot.pets[1].stamina=0;
       }
@@ -145,8 +147,8 @@ var MockHost = {
       resp.categories=[{index:0,name:'基础',count:2},{index:1,name:'空分类',count:0}];
       resp.selectedCategoryIndex=msg.categoryIndex;
       resp.adoptable=(msg.categoryIndex===1)?[]:[
-        {petId:10,name:'测试宠',price:1000,kprice:0,unique:false,unlockLevel:1,unlockTask:0},
-        {petId:11,name:'天价宠',price:99999999,kprice:0,unique:false,unlockLevel:1,unlockTask:0}
+        {petId:10,identifier:'敌人-方舟妖姬',name:'测试宠',price:1000,kprice:0,unique:false,unlockLevel:1,unlockTask:0},
+        {petId:11,identifier:'敌人-Lady',name:'天价宠',price:99999999,kprice:0,unique:true,unlockLevel:1,unlockTask:this.lockSecondStore?130:0}
       ];
     }
     if(msg.panel === 'pets' && msg.cmd === 'deploy'){
@@ -239,7 +241,9 @@ var MockHost = {
 <script src="modules/dressup-doll-renderer.js"></script>
 <script src="modules/workbench-inspection-viewport.js"></script>
 <script src="modules/merc-data.js"></script>
+<script src="modules/merc-portrait-renderer.js"></script>
 <script src="modules/team/team-shared.js"></script>
+<script src="modules/portrait-resolver.js"></script>
 <script src="modules/pet-panel.js"></script>
 <script src="modules/merc-panel.js"></script>
 <script src="modules/team/team-panel.js"></script>
@@ -327,6 +331,44 @@ var MockHost = {
     assert('team-p4b','实体卡含 L 角标框挂载点（.team-card-frame）',
       petCards().length===2 &&
       Array.from(petCards()).every(function(c){ return !!c.querySelector('.team-card-frame'); }));
+    // ── 身份头像：manifest / SVG 主源 / JK 双状态 / 受控旧图回退 ──
+    var portraitManifest=await EnemyPortraits.loadManifest();
+    var modernPortraitReady=await waitFor(function(){
+      var icon=petCards()[0] && petCards()[0].querySelector('.team-entity-icon');
+      return icon && (icon.getAttribute('data-portrait-source')==='svg' || icon.getAttribute('data-portrait-source')==='png');
+    },3000);
+    var teamPortraitEntries=portraitManifest && portraitManifest.entries
+      ? Object.keys(portraitManifest.entries).map(function(key){ return portraitManifest.entries[key]; }).filter(function(entry){
+          return entry && Array.isArray(entry.petIds) && entry.petIds.length>0;
+        })
+      : [];
+    var teamAcceptedVariantCount=teamPortraitEntries.reduce(function(total,entry){
+      return total+Object.keys(entry.variants||{}).filter(function(key){
+        return entry.variants[key] && entry.variants[key].status==='human_accepted';
+      }).length;
+    },0);
+    var teamPendingIdentityCount=teamPortraitEntries.filter(function(entry){
+      return entry.status==='pending_human_review';
+    }).length;
+    assert('team-portrait-1','战队头像 manifest 子集闭包（98 identity / 98 已接受 variant / 0 pending）',
+      portraitManifest && teamPortraitEntries.length===98 &&
+      teamAcceptedVariantCount===98 && teamPendingIdentityCount===0 &&
+      (!portraitManifest.counts.teamIdentityCount || portraitManifest.counts.teamIdentityCount===98));
+    assert('team-portrait-2','已接受 identity 在卡片挂载透明矢量主源与主题舞台',
+      modernPortraitReady && PortraitResolver===EnemyPortraits &&
+      !!petCards()[0].querySelector('.entity-portrait-art.team-portrait-art[data-portrait-theme]'));
+    var jkOrange=PortraitResolver.resolve({portraitRef:'敌人-武装JK',schemeStatus:{'切换发型':{toggleValue:'橙发'}}});
+    var jkWhite=PortraitResolver.resolve({portraitRef:'敌人-武装JK',schemeStatus:{'切换发型':{toggleValue:'白发'}}});
+    var jkProjected=PortraitResolver.resolve({portraitRef:'敌人-武装JK',portraitVariant:'white',schemeStatus:{'切换发型':{toggleValue:'橙发'}}});
+    var directPassFlip=portraitManifest.entries['敌人-黑白无常'].variants.default.subject.svg.flipX;
+    assert('team-portrait-3','JK 权威发色映射两个头像 + 直接通过行的 SVG 方向同步',
+      jkOrange && jkWhite && jkOrange.variantKey==='orange' && jkWhite.variantKey==='white' &&
+      jkOrange.svgUrl!==jkWhite.svgUrl && jkProjected && jkProjected.variantKey==='white' && directPassFlip===true);
+    var lateAcceptedPortrait=PortraitResolver.resolve({portraitRef:'敌人-Lady',legacyUrl:'assets/pets/pet_94.png'});
+    var excludedPortrait=PortraitResolver.resolve({portraitRef:'敌人-不知火舞'});
+    assert('team-portrait-4','尾项人审通过后启用新图，未实装 identity 仍不误启用',
+      lateAcceptedPortrait && lateAcceptedPortrait.status==='human_accepted' && !!lateAcceptedPortrait.svgUrl &&
+      excludedPortrait && excludedPortrait.status==='excluded_unimplemented' && !excludedPortrait.svgUrl);
     // ── metrics 资源 ──
     var goldMetric=wb.querySelector('.workbench-metric[data-metric="gold"] b');
     var kMetric=wb.querySelector('.workbench-metric[data-metric="kpoint"] b');
@@ -377,7 +419,8 @@ var MockHost = {
     document.querySelector('.item-grid-mode-toggle button[data-layout-mode="'+targetMode+'"]').click();
     assert('team-p12','密度切换：网格 class 翻转 + localStorage 持久化',
       grid.classList.contains('team-grid-compact')===!wasCompact &&
-      window.localStorage.getItem('cf7.itemgrid.mode.team-pet')===targetMode,
+      window.localStorage.getItem('cf7.itemgrid.mode.team-pet')===targetMode &&
+      document.querySelector('.team-pet-child .item-grid-mode-label').textContent==='布局',
       'mode='+window.localStorage.getItem('cf7.itemgrid.mode.team-pet'));
     // ── 1024 逻辑画布零横向溢出（roster）──
     assert('team-p13','roster 零横向溢出',wb.scrollWidth<=wb.clientWidth,wb.scrollWidth+'<='+wb.clientWidth);
@@ -554,6 +597,41 @@ var MockHost = {
     assert('team-p21','store 零横向溢出',
       wb.scrollWidth<=wb.clientWidth,wb.scrollWidth+'<='+wb.clientWidth);
     var storeCards=document.querySelectorAll('.team-store-card');
+    var uniqueCard=storeCards[1];
+    var uniqueChip=uniqueCard.querySelector('.team-store-unique-chip');
+    var uniqueIcon=uniqueCard.querySelector('.team-entity-icon');
+    var uniquePrice=uniqueCard.querySelector('.team-store-price');
+    var uniqueChipRect=uniqueChip&&uniqueChip.getBoundingClientRect();
+    var uniqueIconRect=uniqueIcon&&uniqueIcon.getBoundingClientRect();
+    var uniqueOverlapsIcon=uniqueChipRect&&uniqueIconRect &&
+      uniqueChipRect.left<uniqueIconRect.right && uniqueChipRect.right>uniqueIconRect.left &&
+      uniqueChipRect.top<uniqueIconRect.bottom && uniqueChipRect.bottom>uniqueIconRect.top;
+    assert('team-p20c','唯一标记独占身份属性轨，不挤价格且不遮挡 Boss 头像',
+      !!uniqueChip && uniqueChip.parentElement.classList.contains('team-store-flags') &&
+      !!uniquePrice && uniquePrice.parentElement.classList.contains('team-entity-meta') &&
+      uniqueChip.parentElement!==uniquePrice.parentElement &&
+      !uniqueCard.querySelector('.team-entity-badge') && !uniqueOverlapsIcon,
+      'overlap='+uniqueOverlapsIcon+', parent='+(uniqueChip&&uniqueChip.parentElement.className));
+    // store 是晚于 density controller 创建的懒视图：必须继承当前状态，并可在目录内
+    // full → compact → full 往返；compact 与名册同为 48px 头像瓦片，body 信息由右栏承接。
+    var storeFullWidth=storeCards[0].offsetWidth;
+    document.querySelector('.team-pet-child .item-grid-mode-toggle button[data-layout-mode="compact"]').click();
+    var storeCompactCard=document.querySelectorAll('.team-store-card')[0];
+    var storeCompactBody=storeCompactCard.querySelector('.team-entity-body');
+    var storeCompactWidth=storeCompactCard.offsetWidth;
+    var storeCompactHeight=storeCompactCard.offsetHeight;
+    var storeCompactOk=document.querySelector('.team-store-grid').classList.contains('team-grid-compact') &&
+      storeCompactWidth===48 && storeCompactHeight===48 &&
+      getComputedStyle(storeCompactBody).display==='none' &&
+      window.localStorage.getItem('cf7.itemgrid.mode.team-pet')==='compact';
+    document.querySelector('.team-pet-child .item-grid-mode-toggle button[data-layout-mode="full"]').click();
+    var storeFullCard=document.querySelectorAll('.team-store-card')[0];
+    assert('team-p20d','领养目录复用完整/紧凑密度状态（48px 瓦片 + 可逆恢复）',
+      storeCompactOk && !document.querySelector('.team-store-grid').classList.contains('team-grid-compact') &&
+      storeFullCard.offsetWidth===storeFullWidth && storeFullCard.offsetWidth>48 &&
+      getComputedStyle(storeFullCard.querySelector('.team-entity-body')).display!=='none' &&
+      window.localStorage.getItem('cf7.itemgrid.mode.team-pet')==='full',
+      'full='+storeFullWidth+', compact='+storeCompactWidth+'x'+storeCompactHeight);
     storeCards[0].click(); await wait(10);
     var commitBar=document.querySelector('.workbench-commit-bar');
     var commitPrimary=document.querySelector('.workbench-commit-primary');
@@ -582,6 +660,29 @@ var MockHost = {
     document.querySelector('.team-back-roster').click(); await wait(20);
     assert('team-p26','返回名册（roster 视图恢复）',
       !!document.querySelector('.team-goto-store') && petCards().length===2);
+    // 主线未解锁：左卡与右侧预览必须共用问号图，不能因选中加载真实现代头像。
+    MockHost.playerTask=100; MockHost.lockSecondStore=true;
+    Panels.close(); await wait(30);
+    Panels.open('team',{initialTab:'partner'});
+    await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },3000);
+    document.querySelector('.team-goto-store').click();
+    await waitFor(function(){ return document.querySelectorAll('.team-store-card').length===2; },2000);
+    var lockedStoreCard=document.querySelectorAll('.team-store-card')[1];
+    lockedStoreCard.click(); await wait(20);
+    var lockedCardImg=lockedStoreCard.querySelector('.team-entity-icon img');
+    var lockedPreview=document.querySelector('.team-store-preview .team-detail-head');
+    var lockedPreviewImg=lockedPreview&&lockedPreview.querySelector('.team-portrait img');
+    assert('team-p26b','主线未解锁目标选中后右侧仍为防剧透占位图',
+      lockedStoreCard.getAttribute('data-mainline-locked')==='true' &&
+      lockedPreview&&lockedPreview.getAttribute('data-mainline-locked')==='true' &&
+      /assets\/pets\/pet_locked\.png(?:$|[?#])/.test(lockedCardImg.src) &&
+      /assets\/pets\/pet_locked\.png(?:$|[?#])/.test(lockedPreviewImg.src) &&
+      document.querySelector('.workbench-commit-status').textContent.indexOf('需主线 130')>=0,
+      'card='+lockedCardImg.src+', preview='+(lockedPreviewImg&&lockedPreviewImg.src));
+    MockHost.playerTask=999; MockHost.lockSecondStore=false;
+    Panels.close(); await wait(30);
+    Panels.open('team',{initialTab:'partner'});
+    await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },3000);
     // ── rosterType 三态切换 ──
     click('pet'); await wait(50);
     assert('team-p27','战宠 tab：标题 + 单卡 + data-team-roster',

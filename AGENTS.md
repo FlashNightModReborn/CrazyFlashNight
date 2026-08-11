@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：竞技场 P4/P5 与商城旧档兼容正式发布 source commit `bf9be8c43b223b84f487464a7e6aa9eb8211630b`、release tree `44de7f66421a908723f196718e42867dce601f30`（2026-08-08），已由本地 X509 `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows` 完成 v2 双故障域 promotion，并经无 candidate id 的纯 Agent Runtime MCP 标准入口复验，严格达到 `standard_entry_verified`。此前双栏工作台 A1–A6 release `730c6be781ddd22bfd7a59a2e7773acce892f105`、F8 release `6f3d50a52413c747b05b74be88d6ee46650f4597`、F8 implementation candidate `53caabc90941826ddacf626f536b0f473adbf049` 与 F7 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 只保留为历史分层证据。
+**最后核对代码基线**：跨层回包键契约修复（商店购买结算、Loot 快照、装备调制失败包、角色构筑 reconcile/失败码）正式发布 source commit `a87be26f1d6e80c0ea8883bbc10e46c895c35799`、release tree `32e5b9be67de220eb297e6c568c90546b283c471`、request `44A8D5461BE38E0807A7BE1DFEDAD4F5065F7981C590460CAEBAB4153E577A5E`（2026-08-11），已由本地 X509 `physical-host-a` 与 GitHub OIDC/Sigstore `github-hosted-windows` 完成 v2 双故障域 promotion；正式 runtime 绑定 identity `C510ED0C27E78F3FE2552AFA37C3E3B2E673CEC54B8B5AC4E69D516D72BBD8BC`、closure `844B898C7B74633DF7392298286E3A354D24F344B2A02DEF9C6E5545DC1ACF81`，正式入口复验 `runtimeMode=formal_runtime` 且 identity/closure 与 promotion 一致。本轮未跑无 candidate id 的 Agent Runtime MCP 窄纵切，因此不声称该最新列车达到 `standard_entry_verified`；此前竞技场 P4/P5 与商城旧档兼容 release `bf9be8c43b223b84f487464a7e6aa9eb8211630b`、双栏工作台 A1–A6 release `730c6be781ddd22bfd7a59a2e7773acce892f105`、F8 release `6f3d50a52413c747b05b74be88d6ee46650f4597`、F8 implementation candidate `53caabc90941826ddacf626f536b0f473adbf049` 与 F7 C1 `dd84230a1d262c6478591cae2d11051b7a8aa7b1` 只保留为历史分层证据。Audio Platform v2 仍为 **H2 blocked / NOT_DEPLOYED**，不属于该正式 runtime。
 
 ---
 
@@ -23,13 +23,13 @@
 - **Unicode 直写**：代码字符串字面量、注释中直接使用 UTF-8 中文字符；除非目标语境明确要求转义（如协议样例、规范文本或必须 escape 的格式），不要写 `\uXXXX` Unicode 转义
 - **可直接修改**：`data/`、`config/` 下 XML（重启生效）
 - **验证矩阵**：不要在本文件背命令清单；统一看 [testing-guide.md](agentsDoc/testing-guide.md)
-- **不提交**：大型二进制资源、`node_modules`
+- **不提交**：`node_modules`，以及未受版本化生成器、manifest 逐文件引用、完整性验证与体积审计共同约束的大型二进制/临时证据。确属游戏运行时且进入上述可复验闭包的正式素材（例如 dressup、portrait 发布资产）是显式例外；`tmp/` 候选、联系表、模型缓存和可由闭包重建的中间产物仍不得借此入库
 - **文档同步规则**：凡是路径迁移、协议变更、测试入口变更、构建门槛变更、新子栈引入 / 淘汰，同轮同步更新对应 canonical doc，并运行 `node tools/validate-doc-governance.js`
 - **协作元约束**：任务粒度、subagent 边界、prompt 自包含规则统一看 [agent-harness.md](agentsDoc/agent-harness.md);长会话节奏 / 主动行为 / 软停窗口看 [human-care.md](agentsDoc/human-care.md)
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `53773023ea5213ccea8f24e24342e1f9dfc4416a`）
+## Context Packs（按任务最小加载，最后核对 commit `a87be26f1d6e80c0ea8883bbc10e46c895c35799`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 

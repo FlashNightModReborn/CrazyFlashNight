@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "batchId",
+    "sourceDigest",
+    "promptDigest",
+    "runRole",
+    "selections"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "enum": [
+        "cf7.portrait-pilot-feature-selection-orientation.v2"
+      ]
+    },
+    "batchId": {
+      "type": "string"
+    },
+    "sourceDigest": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$"
+    },
+    "promptDigest": {
+      "type": "string",
+      "pattern": "^[A-F0-9]{64}$"
+    },
+    "runRole": {
+      "type": "string",
+      "enum": [
+        "proposal",
+        "independent_review"
+      ]
+    },
+    "selections": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviewKey",
+          "candidateId",
+          "featureLabel",
+          "framingMode",
+          "featureBox",
+          "mustIncludeBox",
+          "orientationAction",
+          "orientationReason",
+          "orientationConfidence",
+          "confidence",
+          "flags"
+        ],
+        "properties": {
+          "reviewKey": {
+            "type": "string"
+          },
+          "candidateId": {
+            "type": "string"
+          },
+          "featureLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "framingMode": {
+            "type": "string",
+            "enum": [
+              "head_closeup",
+              "feature_closeup",
+              "feature_group",
+              "full_subject"
+            ]
+          },
+          "featureBox": {
+            "description": "Tight PNG-normalized box around only the identity-defining feature.",
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "mustIncludeBox": {
+            "description": "Smallest PNG-normalized box containing featureBox plus only inseparable context.",
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "orientationAction": {
+            "description": "Post-crop horizontal orientation action needed to make a directional subject face portrait-right by default.",
+            "type": "string",
+            "enum": [
+              "keep",
+              "flip_x"
+            ]
+          },
+          "orientationReason": {
+            "description": "Concrete visible landmark used to infer the subject direction, or why direction is symmetric/unclear.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "orientationConfidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "flags": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "effect_occlusion",
+                "multiple_subjects",
+                "variant_uncertain",
+                "low_resolution",
+                "feature_uncertain",
+                "safe_margin_risk",
+                "none"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

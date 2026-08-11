@@ -1,0 +1,111 @@
+{
+  "schema": "cf7.portrait-pilot-feature-refinement-profile.v1",
+  "batchId": "portrait-campaign-feature-v11-localization-first-feasible-gates-20260806",
+  "calibration": {
+    "parentProfile": {
+      "path": "tools/portrait-pilot/fixtures/campaign-feature-inference.v10.json",
+      "bytes": 10186,
+      "sha256": "5E312C6A0DA9290FED9A40A965F60AAEE362CDE40AB4F112057111FD9FB31DA6"
+    },
+    "cumulativeFeedbackDigest": "4210F3934B4120604FFB54588D289A9C5A3949903AF162142AFA326BC99E46FC",
+    "latestHumanReviewReceiptDigest": "78A153437558D7C8A6DEDF77421D01CF9BF689E89E4BE7DB5AF0FAD6235CCB97",
+    "latestGuidanceReceiptDigest": "2800BCBCB26ED7A698279A236AFA129847179534BD39A299385BEA0F2DF0615C",
+    "latestGuidedRenderReportDigest": "767F6A20B48FA9AC4587E36B73F2D5FAB0E19794465362DB5F5545AB9A8B197C",
+    "verifiedHumanLabels": 96,
+    "verifiedGeometryRows": 78,
+    "medianHumanZoomIn": 1.349859,
+    "observedHumanZoomInRange": [0.637628, 4.474963],
+    "failedV10SplitInputEvidence": {
+      "manifestDigest": "0A51670BC6D7247D391E2EB6562AE1A28DB532A2A9344B32BBC60C6C3849BA64",
+      "sourceDigest": "4095111793229DF3F6BF5CC744429090B24A6150294456252C1D35CF3947588B",
+      "attempts": 11,
+      "validJobs": 4,
+      "exhaustedJobs": 2,
+      "noTerminalAgentMessage": 2,
+      "featureOccupancyRejections": 5,
+      "artifactFiles": 22,
+      "artifactBytes": 20685,
+      "lastHeadShortAxis": 0.551338855711809,
+      "previousHeadShortAxisFloor": 0.56,
+      "observedFeatureLongAxisRangeInRejectedRepairs": [0.7076923076923076, 0.7466666666666667],
+      "previousFeatureLongAxisFloor": 0.76,
+      "disposition": "Engineering-only negative evidence. No model report or human label was accepted. Keep the split-image layout, lower only the marginal geometry floors, and rerun the same identities."
+    },
+    "visualInputLayout": {
+      "mode": "separate_current_candidates_and_full_human_atlas_v1",
+      "currentCandidatesFirst": true,
+      "completeHumanAtlasSecond": true,
+      "allHumanLabelsStillBound": true
+    },
+    "policy": "Reuse all eight human rounds through the v10 parent profile and the complete 96-label atlas. The r57 failure is not human preference data. Semantic head or primary-feature localization remains authoritative; geometry gates may reject obvious full-body crops but must not repeatedly discard a correctly localized head over a 0.009 short-axis difference."
+  },
+  "globalContract": [
+    "头像首先是角色识别特写，不是把战斗全身像缩进方框，也不是截取无法识别身份的局部纹理。",
+    "候选像素已经由管线限定为怪物内部命名 man MovieClip；不得把外层血条、等级、名称或其他 UI 当作身份特征。",
+    "第一张附件只包含当前最多四行候选，必须先在其中定位当前角色；第二张附件是完整真人偏好图谱，只能学习构图，绝不能从中选择身份、candidateId 或坐标。",
+    "严格按五阶段推理：选单一主体且姿态清晰的帧；扫描整帧定位头部或主身份结构；用 featureLabel 写出当前像素中可见的眼、脸、面罩、口器、头甲、感官簇、驾驶舱、核心或不可拆分复合结构；复核该位置确属当前角色；最后才画方框。",
+    "若声称使用 head_closeup，必须在当前候选像素中指出至少一个可见头部地标；无法指出就换帧或改为有证据的 feature_group，禁止把躯干中心冒充头。",
+    "人形单位默认以完整头部为主特征，只保留最少颈肩；非人单位先沿身体轴线寻找真实前端、眼、口、颌、头甲、触须根或传感器，不得默认使用画面中心、最大躯干、最长尾巴或最高对比特效。",
+    "r52 的 10 个 adjustment 全部涉及头部或主特征未定位、未居中或平移错误；定位正确性优先于几何占比，不能靠扩大错误 featureBox 通过检查。",
+    "featureBox 是紧贴真实身份特征的内框；mustIncludeBox 是包含 featureBox 与不可裁上下文的最小外框。必须满足 mx0 <= fx0 < fx1 <= mx1 且 my0 <= fy0 < fy1 <= my1。",
+    "安全范围围绕主焦点分配：头部上沿和面朝方向一侧优先，后脑侧、弱肩部、普通武器末端、尾部与腿允许更接近边缘或被裁。",
+    "在 80px 方形预览中，最强识别特征必须成为第一焦点。若仍像全身像就收紧；若头部大小合适但不在甜区，优先平移而不是继续缩放。",
+    "累计 78 个真实框选中位倍率为 1.349859，范围 0.637628 至 4.474963；统计只用于反证全身像或错位，禁止机械套用固定倍率。",
+    "若人类备注明确偏好 Luna B，则以 B 的候选与构图为强起点，仍须独立检查完整头部、安全边距和空白利用率。",
+    "同素材换皮只迁移已确认的识别特征、相对构图与安全区语义；拟态投影复用方舟妖姬的决定不得扩展到黑无常索命。",
+    "若单个候选出现多个可分离主体而另有清晰单主体帧，必须拒绝多主体帧；多头生物自身不可拆分的全部头部才是 feature_group。"
+  ],
+  "geometry": {
+    "mustIncludeSafeMargin": 0.1,
+    "modes": {
+      "head_closeup": {
+        "featureWidthOccupancy": 0.8,
+        "featureHeightOccupancy": 0.8,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.76,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.54,
+        "featureAnchor": [0.5, 0.47]
+      },
+      "feature_closeup": {
+        "featureWidthOccupancy": 0.8,
+        "featureHeightOccupancy": 0.8,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.72,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.54,
+        "featureAnchor": [0.5, 0.47]
+      },
+      "feature_group": {
+        "featureWidthOccupancy": 0.78,
+        "featureHeightOccupancy": 0.78,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.74,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.5,
+        "featureAnchor": [0.5, 0.46]
+      },
+      "full_subject": {
+        "featureWidthOccupancy": 0.76,
+        "featureHeightOccupancy": 0.76,
+        "minimumRenderedFeatureLongAxisOccupancy": 0.7,
+        "minimumRenderedFeatureShortAxisOccupancy": 0.44,
+        "featureAnchor": [0.5, 0.5]
+      }
+    }
+  },
+  "highResolutionRender": {
+    "targetSupersampleSize": 4096,
+    "minimumSourceCropSize": 1024,
+    "maximumSourceFrameDimension": 16384,
+    "maximumZoom": 64,
+    "fidelityMeanAbsoluteErrorLimit": 8
+  },
+  "categoryPolicies": {
+    "unclassified": {
+      "defaultMode": "feature_closeup",
+      "reasoningHint": "先只看第一张当前候选图，逐行定位可见头部或非人主身份结构，并用 featureLabel 写出具体像素地标；定位闭合后才参考第二张完整人类偏好图谱决定构图。人形默认完整头部，非人先找眼、口器、颌、传感器、头甲、感官簇或可信前端。头部大小合适但偏离甜区时应平移，不应继续机械放大。featureBox 为内框、mustIncludeBox 为最小外框，头顶和面朝方向保留安全区，弱肩、腿、尾巴和普通武器可裁。"
+    }
+  },
+  "reviewKeyOverrides": {
+    "敌人-拟态投影::default": {
+      "reasoningHint": "人类已拒绝多人重叠帧。C02/f13 与 C05/f48 是单人帧，应选择清晰单人并严格只保留完整头部、长发顶部和耳部轮廓。该身份已确认复用方舟妖姬头像；此 override 只保留为历史负例，不得扩展到黑无常索命。",
+      "requiredFeatureRegion": [0.405, 0.14, 0.56, 0.405],
+      "requiredMustIncludeRegion": [0.395, 0.13, 0.57, 0.415]
+    }
+  }
+}

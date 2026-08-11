@@ -1,0 +1,28 @@
+.source-review-list { display: grid; gap: 1.1rem; padding: 1rem 1.1rem 2rem; }
+.source-review-row { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow: hidden; }
+.source-review-row[data-reviewed="true"] { border-color: var(--accent); }
+.source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: .85rem; padding: 0 1rem 1rem; }
+.source-card { min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: .85rem; background: #0e151d; }
+.source-card[data-selected="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent); }
+.source-card[data-renderable="false"] { border-style: dashed; opacity: .88; }
+.source-card header { display: flex; justify-content: space-between; gap: .7rem; align-items: baseline; }
+.source-status { color: var(--muted); font-size: .85rem; }
+.source-swf, .source-symbol { display: block; overflow-wrap: anywhere; margin-top: .45rem; color: #c9d4df; }
+.source-symbol { color: var(--muted); }
+.source-strategy { margin: .55rem 0; color: #d6dfac; }
+.gif-link { display: inline-block; margin-bottom: .65rem; }
+.frame-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; margin-bottom: .75rem; }
+.frame-strip a { display: grid; place-items: center; min-height: 130px; border-radius: 7px; background: repeating-conic-gradient(#26303a 0 25%, #1b232b 0 50%) 0 / 20px 20px; overflow: hidden; }
+.frame-strip img { width: 100%; height: 180px; object-fit: contain; image-rendering: auto; }
+.select-source { width: 100%; }
+.unrenderable-message { min-height: 8rem; display: grid; place-items: center; padding: 1rem; color: #f0c674; border: 1px dashed #8b7041; border-radius: 7px; }
+.source-card[data-renderable="false"] .select-source, .source-card[data-renderable="false"] .gif-link { display: none; }
+.decision-panel { border-top: 1px solid var(--line); padding: 1rem; }
+.decision-panel h3 { margin-top: 0; }
+.manual-button[aria-pressed="true"] { background: #c77744; color: #111; }
+.decision-summary { margin-bottom: 0; color: var(--muted); }
+.source-review-row[data-reviewed="true"] .decision-summary { color: var(--accent); }
+@media (max-width: 850px) {
+  .source-grid { grid-template-columns: 1fr; }
+  .frame-strip img { height: 145px; }
+}

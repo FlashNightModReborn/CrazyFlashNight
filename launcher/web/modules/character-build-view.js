@@ -31,9 +31,12 @@
     var candidatePane = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-candidate-pane.js')
         : root && root.CharacterBuildCandidatePane;
+    var candidateDrag = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-candidate-drag.js')
+        : root && root.CharacterBuildCandidateDrag;
     var api = factory(
         focus, components, actions, candidateState, facetCounts,
-        stats, preview, template, loadoutPresenter, candidatePane);
+        stats, preview, template, loadoutPresenter, candidatePane, candidateDrag);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -43,7 +46,7 @@
 })(typeof window !== 'undefined' ? window : globalThis,
 function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateModule,
         FacetCountsModule, StatsViewModule, DollPreviewModule, TemplateModule,
-        LoadoutPresenterModule, CandidatePaneModule) {
+        LoadoutPresenterModule, CandidatePaneModule, CandidateDragModule) {
     'use strict';
     if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
         throw new Error('character-build-view.js requires RovingGridFocus');
@@ -76,6 +79,9 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
     }
     if (!CandidatePaneModule || typeof CandidatePaneModule.install !== 'function') {
         throw new Error('character-build-view.js requires CharacterBuildCandidatePane');
+    }
+    if (!CandidateDragModule || typeof CandidateDragModule.install !== 'function') {
+        throw new Error('character-build-view.js requires CharacterBuildCandidateDrag');
     }
 
     var ARMOR_SLOTS = TemplateModule.armorSlots, WEAPON_SLOTS = TemplateModule.weaponSlots,
@@ -114,6 +120,12 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             ? options.onCandidateScopeChange : function() { return true; };
         this._onCommitCandidate = typeof options.onCommitCandidate === 'function'
             ? options.onCommitCandidate : function() {};
+        this._onSlotDropEquip = typeof options.onSlotDropEquip === 'function'
+            ? options.onSlotDropEquip
+            : function(slotKey, candidate) {
+                return slotKey === self._selectedSlotKey
+                    ? self._onCommitCandidate(candidate) : false;
+            };
         if (typeof options.renderOwnedSlot !== 'function') {
             throw new Error('CharacterBuildView requires InventoryUI.renderOwnedSlot');
         }
@@ -142,6 +154,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._candidateDrag = null;
         this._candidateDragBroker = null;
         this._candidateDragActive = false;
+        this._dragCandidate = null;
         this._tooltip = options.tooltip || null;
         this._fetchLoadoutTooltip = typeof options.fetchLoadoutTooltip === 'function'
             ? options.fetchLoadoutTooltip : null;
@@ -313,6 +326,17 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             var key = candidate.getAttribute('data-roving-key');
             if (key === self._selectedCandidateKey) self.clearCandidateSelection();
             else self._selectCandidate(key, 'pointer');
+        });
+        // 双击 = 选中并直接提交。双击前的两次 click 会选中再清预览，
+        // 这里按事件目标强制重选后提交，不依赖当前选择态。
+        listen(this._listeners, this._candidateList, 'dblclick', function(event) {
+            var node = closest(event.target, '[data-candidate-key]', self._candidateList);
+            if (!node || self._interactionState !== 'idle') return;
+            var candidate = self._candidateByKey(node.getAttribute('data-candidate-key'));
+            if (!candidate || candidate.blocked === true) return;
+            if (event.preventDefault) event.preventDefault();
+            if (event.stopPropagation) event.stopPropagation();
+            if (self._selectCandidate(candidate.key)) self._actionView.commitCandidate(candidate);
         });
         listen(this._listeners, this.root, 'focusin', function(event) {
             var node = closest(event.target, '[data-roving-key]', self.root);
@@ -529,6 +553,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         return true;
     };
     LoadoutPresenterModule.install(CharacterBuildView.prototype);
+    CandidateDragModule.install(CharacterBuildView.prototype);
     CandidatePaneModule.install(CharacterBuildView.prototype);
     return {
         CharacterBuildView:CharacterBuildView,

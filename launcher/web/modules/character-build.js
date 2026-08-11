@@ -210,6 +210,9 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             onCommitCandidate:function(candidate) {
                 return self._mutations.equip(self._selectedTarget, candidate);
             },
+            onSlotDropEquip:function(slotKey, candidate) {
+                return self._equipDroppedCandidate(slotKey, candidate);
+            },
             onTune:function() { return self._enterTuning(); },
             onUnequip:function() { return self._mutations.unequip(self._selectedTarget); },
             onReconcile:function() { return self._mutations.reconcile(); },
@@ -441,8 +444,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         return this._ports.openModal ? !!this._ports.openModal({
             kind:'character-build-help',
             title:'角色构筑帮助',
-            message:'方向键在槽位或候选组内移动；Enter 或 Space 首次选择只固定预览，Space 始终不提交；同一候选再次按 Enter、使用主按钮，或将筛选候选拖到当前已选槽位才会提交。',
-            detail:'占用槽位可显式卸下或调制。写入和结果确认期间会锁定槽位、收纳、个人信息与关闭；未知结果只拉取相应领域的权威快照并越过提交水位，绝不重放写入。',
+            message:'方向键在槽位或候选组内移动；Enter 或 Space 首次选择只固定预览，Space 始终不提交；双击候选、同一候选再次按 Enter 或使用主按钮才会提交；也可以把候选直接拖到高亮的兼容槽位完成装备。',
+            detail:'兼容范围只接受当前已选槽位；背包范围接受该物品的所有兼容槽位，拖拽期间高亮提示，药剂候选可装入任一高亮药剂槽。占用槽位可显式卸下或调制。写入和结果确认期间会锁定槽位、收纳、个人信息与关闭；未知结果只拉取相应领域的权威快照并越过提交水位，绝不重放写入。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
         }) : false;
     };
