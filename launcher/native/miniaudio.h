@@ -11309,6 +11309,12 @@ typedef struct
     void* pProcessUserData;                         /* User data that's passed into onProcess. */
     ma_resampler_config resourceManagerResampling;  /* The resampling config to use with the resource manager. */
     ma_resampler_config pitchResampling;            /* The resampling config for the pitch and Doppler effects. You will typically want this to be a fast resampler. For high quality stuff, it's recommended that you pre-resample. */
+#if !defined(MA_NO_DEVICE_IO)
+    struct
+    {
+        ma_bool8 noAutoStreamRouting;                /* Forwards to the engine-owned device. False by default. */
+    } wasapi;
+#endif
 } ma_engine_config;
 
 MA_API ma_engine_config ma_engine_config_init(void);
@@ -22375,6 +22381,28 @@ static HRESULT STDMETHODCALLTYPE ma_IMMNotificationClient_OnDeviceStateChanged(m
 #endif
 
     /*
+    When automatic routing is disabled, report loss of the endpoint selected as
+    the default without mutating the device from this COM callback. The host
+    owns the recovery lifecycle.
+    */
+    if (pDeviceID != NULL &&
+        (dwNewState & MA_MM_DEVICE_STATE_ACTIVE) == 0 &&
+        (((pThis->pDevice->type == ma_device_type_playback ||
+           pThis->pDevice->type == ma_device_type_duplex) &&
+          pThis->pDevice->playback.pID == NULL &&
+          ma_strcmp_WCHAR(pThis->pDevice->playback.id.wasapi, pDeviceID) == 0 &&
+          pThis->pDevice->wasapi.allowPlaybackAutoStreamRouting == MA_FALSE) ||
+         ((pThis->pDevice->type == ma_device_type_capture ||
+           pThis->pDevice->type == ma_device_type_duplex ||
+           pThis->pDevice->type == ma_device_type_loopback) &&
+          pThis->pDevice->capture.pID == NULL &&
+          ma_strcmp_WCHAR(pThis->pDevice->capture.id.wasapi, pDeviceID) == 0 &&
+          pThis->pDevice->wasapi.allowCaptureAutoStreamRouting == MA_FALSE))) {
+        ma_device__on_notification_rerouted(pThis->pDevice);
+        return S_OK;
+    }
+
+    /*
     There have been reports of a hang when a playback device is disconnected. The idea with this code is to explicitly stop the device if we detect
     that the device is disabled or has been unplugged.
     */
@@ -22478,8 +22506,6 @@ static HRESULT STDMETHODCALLTYPE ma_IMMNotificationClient_OnDefaultDeviceChanged
     /*ma_log_postf(ma_device_get_log(pThis->pDevice), MA_LOG_LEVEL_DEBUG, "IMMNotificationClient_OnDefaultDeviceChanged(dataFlow=%d, role=%d, pDefaultDeviceID=%S)\n", dataFlow, role, (pDefaultDeviceID != NULL) ? pDefaultDeviceID : L"(NULL)");*/
 #endif
 
-    (void)role;
-
     /* We only care about devices with the same data flow as the current device. */
     if ((pThis->pDevice->type == ma_device_type_playback && dataFlow != ma_eRender)  ||
         (pThis->pDevice->type == ma_device_type_capture  && dataFlow != ma_eCapture) ||
@@ -22497,6 +22523,16 @@ static HRESULT STDMETHODCALLTYPE ma_IMMNotificationClient_OnDefaultDeviceChanged
     if ((dataFlow == ma_eRender  && pThis->pDevice->wasapi.allowPlaybackAutoStreamRouting == MA_FALSE) ||
         (dataFlow == ma_eCapture && pThis->pDevice->wasapi.allowCaptureAutoStreamRouting  == MA_FALSE)) {
         ma_log_postf(ma_device_get_log(pThis->pDevice), MA_LOG_LEVEL_DEBUG, "[WASAPI] Stream rerouting abandoned because automatic stream routing has been disabled by the device config.\n");
+        /*
+        The host can own recovery without allowing this COM callback to mutate the
+        device. Windows can report one event per role, while miniaudio's default
+        endpoint selection uses eConsole, so surface only that role.
+        */
+        if (role == ma_eConsole &&
+            ((dataFlow == ma_eRender && pThis->pDevice->playback.pID == NULL) ||
+             (dataFlow == ma_eCapture && pThis->pDevice->capture.pID == NULL))) {
+            ma_device__on_notification_rerouted(pThis->pDevice);
+        }
         return S_OK;
     }
 
@@ -77573,6 +77609,7 @@ MA_API ma_result ma_engine_init(const ma_engine_config* pConfig, ma_engine* pEng
             deviceConfig.dataCallback              = (engineConfig.dataCallback != NULL) ? engineConfig.dataCallback : ma_engine_data_callback_internal;
             deviceConfig.pUserData                 = pEngine;
             deviceConfig.notificationCallback      = engineConfig.notificationCallback;
+            deviceConfig.wasapi.noAutoStreamRouting = engineConfig.wasapi.noAutoStreamRouting;
             deviceConfig.periodSizeInFrames        = engineConfig.periodSizeInFrames;
             deviceConfig.periodSizeInMilliseconds  = engineConfig.periodSizeInMilliseconds;
             deviceConfig.noPreSilencedOutputBuffer = MA_TRUE;    /* We'll always be outputting to every frame in the callback so there's no need for a pre-silenced buffer. */

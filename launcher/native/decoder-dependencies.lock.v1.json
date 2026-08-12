@@ -572,6 +572,13 @@
         "MA_NO_NULL"
       ],
       "licensePath": "launcher/native/third_party/miniaudio-0.11.25/LICENSE",
+      "localModifications": [
+        {
+          "description": "Forward engine noAutoStreamRouting and notify the CF7 owner for default or inactive default endpoints without miniaudio callback-thread device mutation.",
+          "id": "cf7-wasapi-single-owner-reroute-v1",
+          "path": "launcher/native/miniaudio.h"
+        }
+      ],
       "name": "miniaudio_and_official_decoder_adapters",
       "sourceCommit": "9634bedb5b5a2ca38c1ee7108a9358a4e233f14d",
       "sourceFiles": [
@@ -596,9 +603,9 @@
           "sha256": "FFBFDFA05994AA46330C0223F55114C9F3AF88EBEB7A5FA6E18D0623B0B36AEB"
         },
         {
-          "bytes": 4108168,
+          "bytes": 4110062,
           "path": "launcher/native/miniaudio.h",
-          "sha256": "AC7AF4DE748B7E26B777F37E01CEE313A308A7296A3EB080E2906B320CC55C89"
+          "sha256": "C06FC6B9B53C0A156B43F8A84195E30E5B119B9C9C0F41588502735F10F8DDB3"
         },
         {
           "bytes": 2597,
@@ -606,7 +613,8 @@
           "sha256": "457F1B500E0ADF6BC059EDDDFA78A2F62012E7C3BB43476C20E0BD23B25BA0EB"
         }
       ],
-      "sourceKind": "git_tag_and_commit",
+      "sourceKind": "git_tag_and_commit_with_local_modifications",
+      "sourceTag": "0.11.25",
       "sourceUrl": "https://github.com/mackron/miniaudio/tree/0.11.25",
       "version": "0.11.25"
     },

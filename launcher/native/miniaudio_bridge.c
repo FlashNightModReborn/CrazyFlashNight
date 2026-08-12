@@ -1076,6 +1076,7 @@ static int32_t cf7_try_backend(
     engineConfig.pResourceManager = &runtime->resourceManager;
     engineConfig.noAutoStart = MA_TRUE;
     engineConfig.notificationCallback = cf7_device_notification;
+    engineConfig.wasapi.noAutoStreamRouting = MA_TRUE;
     result = ma_engine_init(&engineConfig, &runtime->engine);
     if (result != MA_SUCCESS) {
         *failureStage = CF7_AUDIO_BACKEND_POLICY_STAGE_DEVICE;

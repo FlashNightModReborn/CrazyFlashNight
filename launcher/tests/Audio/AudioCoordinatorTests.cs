@@ -94,6 +94,59 @@ namespace CF7Launcher.Tests.Audio
             }
         }
 
+        [Fact]
+        public void Initialize_RetriesTransientDeviceStartWithinOneReadyEpoch()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            native.InitializeFailuresRemaining = 2;
+            using (var coordinator = Coordinator(native, false))
+            {
+                Assert.False(coordinator.Initialize(TestRoot()));
+                Assert.Equal(AudioCoordinatorStatusV2.Recovering,
+                    coordinator.Snapshot.Status);
+                Assert.Equal(1UL,
+                    coordinator.Snapshot.AudioReadyGeneration);
+                Assert.Equal(1, native.InitializeCount);
+
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(2, native.InitializeCount);
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(2, native.InitializeCount);
+                Assert.True(coordinator.PollNativeRuntimeOnce());
+
+                Assert.True(coordinator.Snapshot.IsReady);
+                Assert.Equal(1UL,
+                    coordinator.Snapshot.AudioReadyGeneration);
+                Assert.Equal(3, native.InitializeCount);
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(3, native.InitializeCount);
+            }
+        }
+
+        [Fact]
+        public void Initialize_ExhaustsFiveDeviceStartAttemptsOnce()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            native.InitializeSucceeds = false;
+            using (var coordinator = Coordinator(native, false))
+            {
+                Assert.False(coordinator.Initialize(TestRoot()));
+                for (int tick = 0; tick < 15; tick++)
+                    coordinator.PollNativeRuntimeOnce();
+
+                Assert.Equal(AudioCoordinatorStatusV2.Unavailable,
+                    coordinator.Snapshot.Status);
+                Assert.Equal(AudioNativeV2.ResultDeviceUnavailable,
+                    coordinator.Snapshot.FailureCategory);
+                Assert.Equal(1UL,
+                    coordinator.Snapshot.AudioReadyGeneration);
+                Assert.Equal(5, native.InitializeCount);
+                for (int tick = 0; tick < 20; tick++)
+                    Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(5, native.InitializeCount);
+            }
+        }
+
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
@@ -317,6 +370,18 @@ namespace CF7Launcher.Tests.Audio
                     coordinator, initial, true));
                 AudioCoordinatorSnapshotV2 oldReady = coordinator.Snapshot;
                 Assert.True(oldReady.IsReady);
+                coordinator.DispatchBgm(
+                    Request(
+                        oldReady,
+                        "hot.catalog.prior.bgm",
+                        "sounds/music/prior.mp3"),
+                    delegate(AudioBgmResultV2 result)
+                    {
+                        if (result.CompletionState == "started")
+                            newBgmResponded.Set();
+                    });
+                Assert.True(newBgmResponded.Wait(TimeSpan.FromSeconds(2)));
+                newBgmResponded.Reset();
 
                 Assert.True(coordinator.BeginCatalogRefreshRebuild(
                     oldReady.CapabilityDigest));
@@ -378,7 +443,7 @@ namespace CF7Launcher.Tests.Audio
                 Assert.Equal("stale_generation", staleBgm.Category);
                 Assert.Equal(pending.AudioReadyGeneration,
                     staleBgm.AudioReadyGeneration);
-                Assert.Equal(0, native.SubmitBgmCount);
+                Assert.Equal(1, native.SubmitBgmCount);
                 Assert.Equal(0, native.SubmitSfxCount);
                 Assert.Equal(3UL, coordinator.Snapshot.StaleGenerationDrops);
 
@@ -397,6 +462,7 @@ namespace CF7Launcher.Tests.Audio
                 Assert.Equal(replacement.DeviceGeneration,
                     newReady.DeviceGeneration);
                 Assert.Equal(1, newReady.Loaded);
+                Assert.Equal(3, native.SubmitBgmCount);
 
                 coordinator.DispatchBgm(
                     Request(
@@ -415,7 +481,7 @@ namespace CF7Launcher.Tests.Audio
                     new[] { "shot.wav" }));
                 Assert.True(newBgmResponded.Wait(TimeSpan.FromSeconds(2)));
                 Assert.True(native.SfxSubmitted.Wait(TimeSpan.FromSeconds(2)));
-                Assert.Equal(1, native.SubmitBgmCount);
+                Assert.Equal(4, native.SubmitBgmCount);
                 Assert.Equal(1, native.SubmitSfxCount);
             }
         }
@@ -587,6 +653,8 @@ namespace CF7Launcher.Tests.Audio
                     delegate { coordinator.Initialize(TestRoot()); });
                 Assert.Null(error);
                 Assert.False(coordinator.Initialize(TestRoot()));
+                for (int tick = 0; tick < 15; tick++)
+                    coordinator.PollNativeRuntimeOnce();
                 AudioCoordinatorSnapshotV2 snapshot = coordinator.Snapshot;
                 Assert.Equal(
                     AudioCoordinatorStatusV2.Unavailable,
@@ -595,6 +663,7 @@ namespace CF7Launcher.Tests.Audio
                 Assert.Equal(
                     AudioNativeV2.ResultDeviceUnavailable,
                     snapshot.FailureCategory);
+                Assert.Equal(5, native.InitializeCount);
                 Assert.False(snapshot.IsReady);
             }
         }
@@ -935,7 +1004,7 @@ namespace CF7Launcher.Tests.Audio
         }
 
         [Fact]
-        public void RuntimePoll_RecoversNativeNotificationAndReplaysCursorOnce()
+        public async Task RuntimePoll_RecoversNativeNotificationAndReplaysCursorOnce()
         {
             var native = new FakeAudioNativeV2(new List<string>());
             native.RecoveryCursorSeconds = 3.5f;
@@ -958,8 +1027,21 @@ namespace CF7Launcher.Tests.Audio
                 Assert.True(bgmDone.Wait(TimeSpan.FromSeconds(2)));
                 Assert.Equal(1, native.SubmitBgmCount);
 
-                native.RequestDeviceRecovery();
-                Assert.True(coordinator.PollNativeRuntimeOnce());
+                for (int index = 0; index < 16; index++)
+                    native.RequestDeviceRecovery();
+                Task<bool>[] polls = Enumerable.Range(0, 16)
+                    .Select(delegate(int index)
+                    {
+                        return Task.Run(
+                            delegate
+                            {
+                                return coordinator.PollNativeRuntimeOnce();
+                            });
+                    })
+                    .ToArray();
+                bool[] results = await Task.WhenAll(polls).WaitAsync(
+                    TimeSpan.FromSeconds(10));
+                Assert.Equal(1, results.Count(rebuilt => rebuilt));
 
                 AudioCoordinatorSnapshotV2 recovered = coordinator.Snapshot;
                 Assert.Equal(AudioCoordinatorStatusV2.Ready, recovered.Status);
@@ -994,6 +1076,489 @@ namespace CF7Launcher.Tests.Audio
                     Assert.Equal(
                         AudioCoordinatorStatusV2.Ready,
                         lifecycle.Last());
+                }
+
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(2, native.InitializeCount);
+                Assert.Equal(3, native.SubmitBgmCount);
+                Assert.Same(recovered, coordinator.Snapshot);
+            }
+        }
+
+        [Fact]
+        public void Recovery_RetriesTransientDeviceStartAndReplaysBgmOnce()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            native.RecoveryCursorSeconds = 6.25f;
+            using (var coordinator = Coordinator(native, false))
+            using (var bgmDone = new ManualResetEventSlim(false))
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                AudioCoordinatorSnapshotV2 first = coordinator.Snapshot;
+                coordinator.DispatchBgm(Request(
+                    first,
+                    "recovery.retry.bgm",
+                    "sounds/music/retry.mp3"),
+                    delegate { bgmDone.Set(); });
+                Assert.True(bgmDone.Wait(TimeSpan.FromSeconds(2)));
+                coordinator.DispatchSfx(new AudioSfxBatchV2(
+                    first.AudioSessionId,
+                    first.AudioReadyGeneration,
+                    1UL,
+                    new[] { "shot.wav" }));
+                Assert.True(native.SfxSubmitted.Wait(TimeSpan.FromSeconds(2)));
+
+                native.InitializeFailuresRemaining = 2;
+                Assert.False(coordinator.RecoverDevice());
+                Assert.Equal(AudioCoordinatorStatusV2.Recovering,
+                    coordinator.Snapshot.Status);
+                Assert.Equal("audio.device_unavailable",
+                    coordinator.Snapshot.MessageKey);
+                Assert.Equal(2, native.InitializeCount);
+
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(3, native.InitializeCount);
+                Assert.Equal(AudioCoordinatorStatusV2.Recovering,
+                    coordinator.Snapshot.Status);
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(3, native.InitializeCount);
+                Assert.True(coordinator.PollNativeRuntimeOnce());
+
+                AudioCoordinatorSnapshotV2 ready = coordinator.Snapshot;
+                Assert.True(ready.IsReady);
+                Assert.Equal(first.AudioReadyGeneration + 1UL,
+                    ready.AudioReadyGeneration);
+                Assert.Equal(4, native.InitializeCount);
+                Assert.Equal(3, native.SubmitBgmCount);
+                Assert.Equal(1, native.SubmitSfxCount);
+                Assert.Equal(AudioNativeV2.OperationBgmPlay,
+                    native.BgmCommands[native.BgmCommands.Length - 2].Operation);
+                Assert.Equal(AudioNativeV2.OperationBgmSeek,
+                    native.BgmCommands.Last().Operation);
+                Assert.Equal(6.25f, native.BgmCommands.Last().SeekSeconds);
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(4, native.InitializeCount);
+                Assert.Equal(3, native.SubmitBgmCount);
+            }
+        }
+
+        [Fact]
+        public void BgmDeviceLost_EntersBoundedRecoveryAndReplaysPriorIntent()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            native.RecoveryCursorSeconds = 2.75f;
+            using (var coordinator = Coordinator(native, false))
+            using (var firstDone = new ManualResetEventSlim(false))
+            using (var failedDone = new ManualResetEventSlim(false))
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                AudioCoordinatorSnapshotV2 first = coordinator.Snapshot;
+                coordinator.DispatchBgm(Request(
+                    first,
+                    "bgm.device_lost.prior",
+                    "sounds/music/prior.mp3"),
+                    delegate { firstDone.Set(); });
+                Assert.True(firstDone.Wait(TimeSpan.FromSeconds(2)));
+
+                native.SubmitBgmDeviceLostRemaining = 1;
+                AudioBgmResultV2 failedResult = null;
+                coordinator.DispatchBgm(Request(
+                    first,
+                    "bgm.device_lost.new",
+                    "sounds/music/new.mp3"),
+                    delegate(AudioBgmResultV2 result)
+                    {
+                        failedResult = result;
+                        failedDone.Set();
+                    });
+                Assert.True(failedDone.Wait(TimeSpan.FromSeconds(2)));
+
+                Assert.NotNull(failedResult);
+                Assert.Equal("device_lost", failedResult.Category);
+                AudioCoordinatorSnapshotV2 recovered = coordinator.Snapshot;
+                Assert.True(recovered.IsReady);
+                Assert.Equal(first.AudioReadyGeneration + 1UL,
+                    recovered.AudioReadyGeneration);
+                Assert.Equal(2, native.InitializeCount);
+                Assert.Equal(4, native.SubmitBgmCount);
+                AudioNativeBgmCommandV2 replay =
+                    native.BgmCommands[native.BgmCommands.Length - 2];
+                Assert.Equal(AudioNativeV2.OperationBgmPlay,
+                    replay.Operation);
+                Assert.Equal("prior.mp3",
+                    Path.GetFileName(replay.NormalizedPath));
+                Assert.Equal(AudioNativeV2.OperationBgmSeek,
+                    native.BgmCommands.Last().Operation);
+                Assert.Equal(2.75f,
+                    native.BgmCommands.Last().SeekSeconds);
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(2, native.InitializeCount);
+            }
+        }
+
+        [Fact]
+        public void Recovery_DeviceLostDuringReplayKeepsConsumedAttemptBudget()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            var lifecycle = new List<AudioCoordinatorStatusV2>();
+            using (var coordinator = Coordinator(native, false))
+            using (var bgmDone = new ManualResetEventSlim(false))
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                AudioCoordinatorSnapshotV2 first = coordinator.Snapshot;
+                coordinator.DispatchBgm(Request(
+                    first,
+                    "recovery.replay.device_lost",
+                    "sounds/music/replay-device-lost.mp3"),
+                    delegate { bgmDone.Set(); });
+                Assert.True(bgmDone.Wait(TimeSpan.FromSeconds(2)));
+                coordinator.SnapshotChanged += delegate(
+                    AudioCoordinatorSnapshotV2 snapshot)
+                {
+                    lock (lifecycle) lifecycle.Add(snapshot.Status);
+                };
+
+                native.SubmitBgmDeviceLostRemaining = 5;
+                Assert.False(coordinator.RecoverDevice());
+                Assert.Equal(AudioCoordinatorStatusV2.Recovering,
+                    coordinator.Snapshot.Status);
+                Assert.Equal(2, native.InitializeCount);
+
+                for (int tick = 0; tick < 15; tick++)
+                {
+                    native.RequestDeviceRecovery();
+                    Assert.False(coordinator.RecoverDevice());
+                    coordinator.PollNativeRuntimeOnce();
+                }
+
+                Assert.Equal(AudioCoordinatorStatusV2.Unavailable,
+                    coordinator.Snapshot.Status);
+                Assert.Equal(AudioNativeV2.ResultDeviceLost,
+                    coordinator.Snapshot.FailureCategory);
+                Assert.Equal(6, native.InitializeCount);
+                Assert.Equal(6, native.SubmitBgmCount);
+                lock (lifecycle)
+                    Assert.DoesNotContain(
+                        AudioCoordinatorStatusV2.Ready,
+                        lifecycle);
+                for (int tick = 0; tick < 20; tick++)
+                    Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(6, native.InitializeCount);
+            }
+        }
+
+        [Fact]
+        public void Recovery_NotReadyDuringReplayKeepsConsumedAttemptBudget()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            var lifecycle = new List<AudioCoordinatorStatusV2>();
+            using (var coordinator = Coordinator(native, false))
+            using (var bgmDone = new ManualResetEventSlim(false))
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                AudioCoordinatorSnapshotV2 first = coordinator.Snapshot;
+                coordinator.DispatchBgm(Request(
+                    first,
+                    "recovery.replay.not_ready",
+                    "sounds/music/replay-not-ready.mp3"),
+                    delegate { bgmDone.Set(); });
+                Assert.True(bgmDone.Wait(TimeSpan.FromSeconds(2)));
+                coordinator.SnapshotChanged += delegate(
+                    AudioCoordinatorSnapshotV2 snapshot)
+                {
+                    lock (lifecycle) lifecycle.Add(snapshot.Status);
+                };
+
+                native.SubmitBgmNotReadyRemaining = 5;
+                Assert.False(coordinator.RecoverDevice());
+                Assert.Equal(AudioCoordinatorStatusV2.Recovering,
+                    coordinator.Snapshot.Status);
+                for (int tick = 0; tick < 15; tick++)
+                    coordinator.PollNativeRuntimeOnce();
+
+                Assert.Equal(AudioCoordinatorStatusV2.Unavailable,
+                    coordinator.Snapshot.Status);
+                Assert.Equal(AudioNativeV2.ResultDeviceLost,
+                    coordinator.Snapshot.FailureCategory);
+                Assert.Equal(6, native.InitializeCount);
+                Assert.Equal(6, native.SubmitBgmCount);
+                lock (lifecycle)
+                    Assert.DoesNotContain(
+                        AudioCoordinatorStatusV2.Ready,
+                        lifecycle);
+                for (int tick = 0; tick < 20; tick++)
+                    Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(6, native.InitializeCount);
+            }
+        }
+
+        [Fact]
+        public void Recovery_ShutdownDuringBackoffCancelsRetry()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            var coordinator = Coordinator(native, false);
+            try
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                native.InitializeSucceeds = false;
+                Assert.False(coordinator.RecoverDevice());
+                Assert.Equal(AudioCoordinatorStatusV2.Recovering,
+                    coordinator.Snapshot.Status);
+                Assert.Equal(2, native.InitializeCount);
+
+                coordinator.Shutdown();
+                int initializeCount = native.InitializeCount;
+                int shutdownCount = native.ShutdownCount;
+                native.RequestDeviceRecovery();
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.False(coordinator.RecoverDevice());
+                Assert.Equal(initializeCount, native.InitializeCount);
+                Assert.Equal(shutdownCount, native.ShutdownCount);
+                Assert.Equal(AudioCoordinatorStatusV2.Shutdown,
+                    coordinator.Snapshot.Status);
+            }
+            finally
+            {
+                coordinator.Shutdown();
+            }
+        }
+
+        [Fact]
+        public void Recovery_QualificationPendingSuppressesRetriesAndReplaysOnce()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            var requests = new List<AudioCatalogQualificationRequestV2>();
+            using (var coordinator = Coordinator(native, false))
+            using (var qualificationArrived = new AutoResetEvent(false))
+            using (var bgmDone = new ManualResetEventSlim(false))
+            {
+                Assert.True(coordinator.ConfigureCatalogQualificationHook(
+                    delegate(AudioCatalogQualificationRequestV2 request)
+                    {
+                        lock (requests) requests.Add(request);
+                        qualificationArrived.Set();
+                    }));
+                Assert.False(coordinator.Initialize(TestRoot()));
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 initial;
+                lock (requests) initial = Assert.Single(requests);
+                Assert.True(CompleteQualification(
+                    coordinator, initial, true));
+                AudioCoordinatorSnapshotV2 ready = coordinator.Snapshot;
+                coordinator.DispatchBgm(Request(
+                    ready,
+                    "qualification.retry.bgm",
+                    "sounds/music/qualification-retry.mp3"),
+                    delegate { bgmDone.Set(); });
+                Assert.True(bgmDone.Wait(TimeSpan.FromSeconds(2)));
+
+                Assert.False(coordinator.RecoverDevice());
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 recovery;
+                lock (requests) recovery = requests.Last();
+                Assert.Equal("audio.catalog_qualifying",
+                    coordinator.Snapshot.MessageKey);
+                int initializeCount = native.InitializeCount;
+                for (int tick = 0; tick < 20; tick++)
+                    Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(initializeCount, native.InitializeCount);
+                Assert.Equal(1, native.SubmitBgmCount);
+
+                Assert.True(CompleteQualification(
+                    coordinator, recovery, true));
+                Assert.True(coordinator.Snapshot.IsReady);
+                Assert.Equal(3, native.SubmitBgmCount);
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(initializeCount, native.InitializeCount);
+                Assert.Equal(3, native.SubmitBgmCount);
+            }
+        }
+
+        [Fact]
+        public void Recovery_QualificationCompletionDefersReadyAfterNewNotification()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            var requests = new List<AudioCatalogQualificationRequestV2>();
+            using (var coordinator = Coordinator(native, false))
+            using (var qualificationArrived = new AutoResetEvent(false))
+            using (var bgmDone = new ManualResetEventSlim(false))
+            {
+                Assert.True(coordinator.ConfigureCatalogQualificationHook(
+                    delegate(AudioCatalogQualificationRequestV2 request)
+                    {
+                        lock (requests) requests.Add(request);
+                        qualificationArrived.Set();
+                    }));
+                Assert.False(coordinator.Initialize(TestRoot()));
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 initial;
+                lock (requests) initial = Assert.Single(requests);
+                Assert.True(CompleteQualification(
+                    coordinator, initial, true));
+                AudioCoordinatorSnapshotV2 ready = coordinator.Snapshot;
+                coordinator.DispatchBgm(Request(
+                    ready,
+                    "qualification.notification.bgm",
+                    "sounds/music/qualification-notification.mp3"),
+                    delegate { bgmDone.Set(); });
+                Assert.True(bgmDone.Wait(TimeSpan.FromSeconds(2)));
+
+                Assert.False(coordinator.RecoverDevice());
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 recovery;
+                lock (requests) recovery = requests.Last();
+                native.RequestDeviceRecovery();
+
+                Assert.False(CompleteQualification(
+                    coordinator, recovery, true));
+                Assert.Equal(AudioCoordinatorStatusV2.Recovering,
+                    coordinator.Snapshot.Status);
+                Assert.Equal("audio.device_lost",
+                    coordinator.Snapshot.MessageKey);
+                Assert.Equal(1, native.SubmitBgmCount);
+
+                Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 retried;
+                lock (requests) retried = requests.Last();
+                Assert.NotEqual(recovery.DeviceGeneration,
+                    retried.DeviceGeneration);
+                Assert.True(CompleteQualification(
+                    coordinator, retried, true));
+                Assert.True(coordinator.Snapshot.IsReady);
+                Assert.Equal(3, native.SubmitBgmCount);
+                Assert.Equal(3, native.InitializeCount);
+            }
+        }
+
+        [Theory]
+        [InlineData(
+            "throw",
+            AudioNativeV2.ResultDeviceUnavailable,
+            "audio.runtime_query_failed")]
+        [InlineData(
+            "invalid",
+            AudioNativeV2.ResultAbiMismatch,
+            "audio.runtime_snapshot_invalid")]
+        [InlineData(
+            "tuple",
+            AudioNativeV2.ResultStaleGeneration,
+            "audio.runtime_tuple_drift")]
+        public void Recovery_QualificationRuntimeDefectIsTerminal(
+            string failureMode,
+            uint expectedCategory,
+            string expectedMessageKey)
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            var requests = new List<AudioCatalogQualificationRequestV2>();
+            using (var coordinator = Coordinator(native, false))
+            using (var qualificationArrived = new AutoResetEvent(false))
+            {
+                Assert.True(coordinator.ConfigureCatalogQualificationHook(
+                    delegate(AudioCatalogQualificationRequestV2 request)
+                    {
+                        lock (requests) requests.Add(request);
+                        qualificationArrived.Set();
+                    }));
+                Assert.False(coordinator.Initialize(TestRoot()));
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 initial;
+                lock (requests) initial = Assert.Single(requests);
+                Assert.True(CompleteQualification(
+                    coordinator, initial, true));
+
+                Assert.False(coordinator.RecoverDevice());
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 recovery;
+                lock (requests) recovery = requests.Last();
+                int initializeCount = native.InitializeCount;
+                native.QueryRuntimeFailureMode = failureMode;
+
+                Assert.False(CompleteQualification(
+                    coordinator, recovery, true));
+                Assert.Equal(AudioCoordinatorStatusV2.Unavailable,
+                    coordinator.Snapshot.Status);
+                Assert.Equal(expectedCategory,
+                    coordinator.Snapshot.FailureCategory);
+                Assert.Equal(expectedMessageKey,
+                    coordinator.Snapshot.MessageKey);
+                Assert.Equal(initializeCount, native.InitializeCount);
+                for (int tick = 0; tick < 20; tick++)
+                    Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(initializeCount, native.InitializeCount);
+            }
+        }
+
+        [Fact]
+        public void Recovery_AbiFailureIsTerminalWithoutRetry()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            using (var coordinator = Coordinator(native, false))
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                native.CapabilitySucceeds = false;
+                Assert.False(coordinator.RecoverDevice());
+                Assert.Equal(AudioCoordinatorStatusV2.Unavailable,
+                    coordinator.Snapshot.Status);
+                Assert.Equal(AudioNativeV2.ResultAbiMismatch,
+                    coordinator.Snapshot.FailureCategory);
+                Assert.Equal(1, native.InitializeCount);
+                for (int tick = 0; tick < 20; tick++)
+                    Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(1, native.InitializeCount);
+            }
+        }
+
+        [Fact]
+        public void Shutdown_LateRecoverySignalCannotReopenOrReplay()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            var coordinator = Coordinator(native, false);
+            using (var bgmDone = new ManualResetEventSlim(false))
+            {
+                try
+                {
+                    Assert.True(coordinator.Initialize(TestRoot()));
+                    AudioCoordinatorSnapshotV2 ready = coordinator.Snapshot;
+                    coordinator.DispatchBgm(Request(
+                        ready,
+                        "shutdown.late_recovery",
+                        "sounds/music/shutdown.mp3"),
+                        delegate { bgmDone.Set(); });
+                    Assert.True(bgmDone.Wait(TimeSpan.FromSeconds(2)));
+                    Assert.Equal(1, native.SubmitBgmCount);
+
+                    coordinator.Shutdown();
+                    AudioCoordinatorSnapshotV2 shutdown = coordinator.Snapshot;
+                    int initializeCount = native.InitializeCount;
+                    int submitBgmCount = native.SubmitBgmCount;
+                    int shutdownCount = native.ShutdownCount;
+
+                    native.RequestDeviceRecovery();
+                    Assert.False(coordinator.PollNativeRuntimeOnce());
+                    Assert.False(coordinator.RecoverDevice());
+
+                    Assert.Equal(initializeCount, native.InitializeCount);
+                    Assert.Equal(submitBgmCount, native.SubmitBgmCount);
+                    Assert.Equal(shutdownCount, native.ShutdownCount);
+                    Assert.Equal(1, initializeCount);
+                    Assert.Equal(1, submitBgmCount);
+                    Assert.Equal(1, shutdownCount);
+                    Assert.Same(shutdown, coordinator.Snapshot);
+                    Assert.Equal(
+                        AudioCoordinatorStatusV2.Shutdown,
+                        coordinator.Snapshot.Status);
+                }
+                finally
+                {
+                    coordinator.Shutdown();
                 }
             }
         }
@@ -1132,6 +1697,8 @@ namespace CF7Launcher.Tests.Audio
                 native.RequestDeviceRecovery();
 
                 Assert.True(coordinator.PollNativeRuntimeOnce());
+                for (int tick = 0; tick < 15; tick++)
+                    coordinator.PollNativeRuntimeOnce();
 
                 AudioCoordinatorSnapshotV2 failed = coordinator.Snapshot;
                 Assert.Equal(
@@ -1142,9 +1709,13 @@ namespace CF7Launcher.Tests.Audio
                     first.AudioReadyGeneration + 1uL,
                     failed.AudioReadyGeneration);
                 Assert.Equal(
-                    first.DeviceGeneration + 1uL,
+                    first.DeviceGeneration + 5uL,
                     failed.DeviceGeneration);
-                Assert.Equal(1, native.ShutdownCount);
+                Assert.Equal(5, native.ShutdownCount);
+                Assert.Equal(6, native.InitializeCount);
+                for (int tick = 0; tick < 20; tick++)
+                    Assert.False(coordinator.PollNativeRuntimeOnce());
+                Assert.Equal(6, native.InitializeCount);
             }
         }
 
@@ -1165,6 +1736,9 @@ namespace CF7Launcher.Tests.Audio
 
                 Assert.False(coordinator.RecoverDevice());
 
+                for (int tick = 0; tick < 15; tick++)
+                    coordinator.PollNativeRuntimeOnce();
+
                 AudioCoordinatorSnapshotV2 failed = coordinator.Snapshot;
                 Assert.Equal(AudioCoordinatorStatusV2.Unavailable,
                     failed.Status);
@@ -1173,7 +1747,7 @@ namespace CF7Launcher.Tests.Audio
                     failed.AudioReadyGeneration);
                 Assert.Equal(
                     first.DeviceGeneration +
-                        (failedAttemptAdvancesDeviceGeneration ? 1UL : 0UL),
+                        (failedAttemptAdvancesDeviceGeneration ? 5UL : 0UL),
                     failed.DeviceGeneration);
                 Assert.Equal(AudioNativeV2.ResultDeviceUnavailable,
                     failed.FailureCategory);
@@ -1411,6 +1985,10 @@ namespace CF7Launcher.Tests.Audio
             }
 
             internal bool InitializeSucceeds { get; set; } = true;
+            internal int InitializeFailuresRemaining { get; set; }
+            internal int SubmitBgmDeviceLostRemaining { get; set; }
+            internal int SubmitBgmNotReadyRemaining { get; set; }
+            internal string QueryRuntimeFailureMode { get; set; }
             internal bool FailedInitializeAdvancesDeviceGeneration
                 { get; set; }
             internal bool CapabilitySucceeds { get; set; } = true;
@@ -1560,7 +2138,16 @@ namespace CF7Launcher.Tests.Audio
                     AddEvent("initialize");
                     int count = Interlocked.Increment(ref _initializeCount);
                     ResetNativeSfxCounters();
-                    if (!InitializeSucceeds)
+                    bool initializeSucceeds = InitializeSucceeds;
+                    lock (_lock)
+                    {
+                        if (InitializeFailuresRemaining > 0)
+                        {
+                            InitializeFailuresRemaining--;
+                            initializeSucceeds = false;
+                        }
+                    }
+                    if (!initializeSucceeds)
                     {
                         ulong failedDeviceGeneration =
                             FailedInitializeAdvancesDeviceGeneration
@@ -1615,8 +2202,24 @@ namespace CF7Launcher.Tests.Audio
 
             public AudioNativeRuntimeStateV2 QueryRuntime()
             {
+                if (string.Equals(
+                        QueryRuntimeFailureMode,
+                        "throw",
+                        StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException(
+                        "scripted runtime query failure");
+                }
                 lock (_lock)
                 {
+                    bool valid = !string.Equals(
+                        QueryRuntimeFailureMode,
+                        "invalid",
+                        StringComparison.Ordinal);
+                    bool tupleDrift = string.Equals(
+                        QueryRuntimeFailureMode,
+                        "tuple",
+                        StringComparison.Ordinal);
                     AudioNativeCallResultV2 result = Ok(
                         AudioNativeV2.OperationQueryRuntime,
                         _runtimeSessionId,
@@ -1624,9 +2227,11 @@ namespace CF7Launcher.Tests.Audio
                         _runtimeDeviceGeneration,
                         AudioNativeV2.CompletionNone);
                     return new AudioNativeRuntimeStateV2(
-                        true,
+                        valid,
                         _runtimeStatus,
-                        _runtimeSessionId,
+                        tupleDrift
+                            ? "00000000-0000-0000-0000-000000000001"
+                            : _runtimeSessionId,
                         _runtimeReadyGeneration,
                         _runtimeDeviceGeneration,
                         result);
@@ -1665,6 +2270,35 @@ namespace CF7Launcher.Tests.Audio
                     if (BlockSubmitBgmUntilShutdown)
                     {
                         BgmShutdownRelease.Wait(TimeSpan.FromSeconds(5));
+                    }
+                    lock (_lock)
+                    {
+                        if (SubmitBgmNotReadyRemaining > 0)
+                        {
+                            SubmitBgmNotReadyRemaining--;
+                            _runtimeStatus = AudioNativeV2.AudioRecovering;
+                            return AudioNativeCallResultV2.Failure(
+                                AudioNativeV2.ResultNotReady,
+                                command.Operation,
+                                AudioNativeV2.StageAdmission,
+                                command.AudioSessionId,
+                                command.AudioReadyGeneration,
+                                (ulong)_initializeCount,
+                                "audio.bgm.not_ready");
+                        }
+                        if (SubmitBgmDeviceLostRemaining > 0)
+                        {
+                            SubmitBgmDeviceLostRemaining--;
+                            _runtimeStatus = AudioNativeV2.AudioRecovering;
+                            return AudioNativeCallResultV2.Failure(
+                                AudioNativeV2.ResultDeviceLost,
+                                command.Operation,
+                                AudioNativeV2.StageNativeStart,
+                                command.AudioSessionId,
+                                command.AudioReadyGeneration,
+                                (ulong)_initializeCount,
+                                "audio.device_lost");
+                        }
                     }
                     return Ok(
                         command.Operation,

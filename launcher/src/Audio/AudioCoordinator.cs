@@ -819,6 +819,9 @@ namespace CF7Launcher.Audio
     internal sealed class AudioCoordinator : IAudioCommandFacadeV2, IDisposable
     {
         private const int RuntimePollIntervalMilliseconds = 200;
+        private const int DeviceRecoveryMaximumAttempts = 5;
+        private static readonly int[] DeviceRecoveryBackoffPollTicks =
+            { 1, 2, 4, 8 };
         private static readonly string[] SfxPackOrder =
             { "武器", "特效", "人物" };
 
@@ -841,6 +844,9 @@ namespace CF7Launcher.Audio
         private bool _nativeTouched;
         private int _ownerThreadId;
         private int _runtimePollQueued;
+        private int _deviceRecoveryActive;
+        private int _deviceRecoveryAttempt;
+        private int _deviceRecoveryBackoffTicks;
         private string _audioSessionId;
         private ulong _audioReadyGeneration;
         private ulong _deviceGeneration;
@@ -945,7 +951,11 @@ namespace CF7Launcher.Audio
             string normalizedRoot;
             if (!TryNormalizeRoot(projectRoot, out normalizedRoot)) return false;
             return InvokeOwner(
-                delegate { return RebuildCore(normalizedRoot, false); },
+                delegate
+                {
+                    if (IsDeviceRecoveryActive()) return false;
+                    return RebuildCore(normalizedRoot, false);
+                },
                 false);
         }
 
@@ -953,7 +963,11 @@ namespace CF7Launcher.Audio
         {
             string normalizedRoot;
             if (!TryNormalizeRoot(projectRoot, out normalizedRoot)) return false;
-            return TryPost(delegate { RebuildCore(normalizedRoot, false); });
+            return TryPost(delegate
+            {
+                if (!IsDeviceRecoveryActive())
+                    RebuildCore(normalizedRoot, false);
+            });
         }
 
         internal bool ConfigureInitialMasterGain(float gain)
@@ -984,6 +998,7 @@ namespace CF7Launcher.Audio
             return InvokeOwner(
                 delegate
                 {
+                    if (IsDeviceRecoveryActive()) return false;
                     AudioCoordinatorSnapshotV2 current = Snapshot;
                     bool maySupersedePending =
                         _catalogQualificationPending &&
@@ -1006,7 +1021,8 @@ namespace CF7Launcher.Audio
                     // the native epoch; advancing only the managed generation would
                     // make every command in the new epoch stale at the ABI boundary.
                     ulong previousReadyGeneration = _audioReadyGeneration;
-                    RebuildCore(_normalizedBasePath, true);
+                    CaptureRecoveryCursor();
+                    BeginDeviceRecoverySequenceCore();
                     AudioCoordinatorSnapshotV2 rebuilt = Snapshot;
                     return _catalogQualificationPending &&
                         rebuilt.AudioReadyGeneration != previousReadyGeneration &&
@@ -1058,20 +1074,47 @@ namespace CF7Launcher.Audio
                             "audio.catalog_qualification_failed");
                     }
 
-                    Publish(CreateSnapshot(
-                        AudioCoordinatorStatusV2.Ready,
-                        AudioNativeV2.ResultOk,
-                        "audio.ready",
-                        null));
+                    bool recoveryRequired;
+                    if (!TryInspectNativeRecoveryStateCore(
+                            out recoveryRequired))
+                    {
+                        return false;
+                    }
+                    if (recoveryRequired)
+                    {
+                        // A device notification can arrive while the newly
+                        // initialized catalog is being qualified. Do not publish
+                        // a transient Ready snapshot or replay BGM against a
+                        // native epoch that has already entered Recovering.
+                        if (IsDeviceRecoveryActive())
+                        {
+                            return PublishDeviceRecoveryAttemptFailure(
+                                CreateRuntimeFailure(
+                                    AudioNativeV2.ResultDeviceLost,
+                                    "audio.device_lost"));
+                        }
+                        CaptureRecoveryCursor();
+                        return BeginDeviceRecoverySequenceCore();
+                    }
+
                     if (recoveryIntent != null)
                     {
                         AudioNativeBgmCommandV2 replay = RebindBgmIntent(
                             recoveryIntent,
                             _audioSessionId,
                             _audioReadyGeneration);
-                        ExecuteRecoveryBgmCore(replay, recoveryPaused);
+                        AudioNativeCallResultV2 replayResult =
+                            ExecuteRecoveryBgmCore(replay, recoveryPaused);
+                        if (replayResult == null || !replayResult.IsOk)
+                            return false;
                     }
-                    return Snapshot.IsReady;
+                    Publish(CreateSnapshot(
+                        AudioCoordinatorStatusV2.Ready,
+                        AudioNativeV2.ResultOk,
+                        "audio.ready",
+                        null));
+                    EndDeviceRecoverySequenceCore();
+                    return true;
                 },
                 false);
         }
@@ -1082,20 +1125,29 @@ namespace CF7Launcher.Audio
                 delegate
                 {
                     if (string.IsNullOrEmpty(_normalizedBasePath)) return false;
+                    if (IsDeviceRecoveryActive()) return false;
                     CaptureRecoveryCursor();
-                    return RebuildCore(_normalizedBasePath, true);
+                    return BeginDeviceRecoverySequenceCore();
                 },
                 false);
         }
 
         internal bool PollNativeRuntimeOnce()
         {
-            return InvokeOwner(PollNativeRuntimeCore, false);
+            return InvokeOwner(RuntimePollOwnerTick, false);
         }
 
         private void RuntimePollTick(object state)
         {
-            if (!Snapshot.IsReady ||
+            AudioCoordinatorSnapshotV2 current = Snapshot;
+            bool recoveryTick =
+                current.Status == AudioCoordinatorStatusV2.Recovering &&
+                Volatile.Read(ref _deviceRecoveryActive) != 0 &&
+                !string.Equals(
+                    current.MessageKey,
+                    "audio.catalog_qualifying",
+                    StringComparison.Ordinal);
+            if ((!current.IsReady && !recoveryTick) ||
                 Interlocked.Exchange(ref _runtimePollQueued, 1) != 0)
             {
                 return;
@@ -1105,7 +1157,7 @@ namespace CF7Launcher.Audio
             {
                 try
                 {
-                    PollNativeRuntimeCore();
+                    RuntimePollOwnerTick();
                 }
                 finally
                 {
@@ -1116,6 +1168,13 @@ namespace CF7Launcher.Audio
             {
                 Volatile.Write(ref _runtimePollQueued, 0);
             }
+        }
+
+        private bool RuntimePollOwnerTick()
+        {
+            if (IsDeviceRecoveryActive())
+                return ContinueDeviceRecoverySequenceCore();
+            return PollNativeRuntimeCore();
         }
 
         private bool PollNativeRuntimeCore()
@@ -1180,8 +1239,191 @@ namespace CF7Launcher.Audio
             }
 
             CaptureRecoveryCursor(runtime.DeviceGeneration);
-            RebuildCore(_normalizedBasePath, true);
+            BeginDeviceRecoverySequenceCore();
             return true;
+        }
+
+        private bool TryInspectNativeRecoveryStateCore(
+            out bool recoveryRequired)
+        {
+            recoveryRequired = false;
+            if (!_nativeTouched)
+            {
+                PublishUnavailable(
+                    CreateRuntimeFailure(
+                        AudioNativeV2.ResultDeviceUnavailable,
+                        "audio.runtime_query_failed"),
+                    AudioNativeV2.ResultDeviceUnavailable,
+                    "audio.runtime_query_failed");
+                return false;
+            }
+
+            AudioNativeRuntimeStateV2 runtime;
+            try
+            {
+                runtime = _native.QueryRuntime();
+            }
+            catch
+            {
+                PublishUnavailable(
+                    CreateRuntimeFailure(
+                        AudioNativeV2.ResultDeviceUnavailable,
+                        "audio.runtime_query_failed"),
+                    AudioNativeV2.ResultDeviceUnavailable,
+                    "audio.runtime_query_failed");
+                return false;
+            }
+            if (runtime == null || !runtime.Valid)
+            {
+                PublishUnavailable(
+                    CreateRuntimeFailure(
+                        AudioNativeV2.ResultAbiMismatch,
+                        "audio.runtime_snapshot_invalid"),
+                    AudioNativeV2.ResultAbiMismatch,
+                    "audio.runtime_snapshot_invalid");
+                return false;
+            }
+            if (!string.Equals(
+                    runtime.AudioSessionId,
+                    _audioSessionId,
+                    StringComparison.Ordinal) ||
+                runtime.AudioReadyGeneration != _audioReadyGeneration)
+            {
+                PublishUnavailable(
+                    CreateRuntimeFailure(
+                        AudioNativeV2.ResultStaleGeneration,
+                        "audio.runtime_tuple_drift"),
+                    AudioNativeV2.ResultStaleGeneration,
+                    "audio.runtime_tuple_drift");
+                return false;
+            }
+
+            ulong expectedDeviceGeneration = _deviceGeneration;
+            AdoptRuntimeMetadata(runtime);
+            recoveryRequired =
+                runtime.AudioStatus == AudioNativeV2.AudioRecovering ||
+                (runtime.AudioStatus == AudioNativeV2.AudioReady &&
+                 runtime.DeviceGeneration != expectedDeviceGeneration);
+            if (recoveryRequired) return true;
+            if (runtime.AudioStatus == AudioNativeV2.AudioReady) return true;
+
+            PublishUnavailable(
+                CreateRuntimeFailure(
+                    AudioNativeV2.ResultDeviceUnavailable,
+                    "audio.native_not_ready"),
+                AudioNativeV2.ResultDeviceUnavailable,
+                "audio.native_not_ready");
+            return false;
+        }
+
+        private bool BeginDeviceRecoverySequenceCore()
+        {
+            if (IsDeviceRecoveryActive() ||
+                string.IsNullOrEmpty(_normalizedBasePath) ||
+                _shutdownStarted)
+            {
+                return false;
+            }
+
+            _deviceRecoveryAttempt = 0;
+            _deviceRecoveryBackoffTicks = 0;
+            Volatile.Write(ref _deviceRecoveryActive, 1);
+            return RunDeviceRecoveryAttemptCore();
+        }
+
+        private bool ContinueDeviceRecoverySequenceCore()
+        {
+            if (!IsDeviceRecoveryActive() || _shutdownStarted ||
+                _catalogQualificationPending)
+            {
+                return false;
+            }
+            if (_deviceRecoveryBackoffTicks > 0)
+            {
+                _deviceRecoveryBackoffTicks--;
+                if (_deviceRecoveryBackoffTicks > 0) return false;
+            }
+            return RunDeviceRecoveryAttemptCore();
+        }
+
+        private bool RunDeviceRecoveryAttemptCore()
+        {
+            if (!IsDeviceRecoveryActive() || _shutdownStarted ||
+                _deviceRecoveryAttempt >= DeviceRecoveryMaximumAttempts)
+            {
+                return false;
+            }
+            _deviceRecoveryAttempt++;
+            return RebuildCore(
+                _normalizedBasePath,
+                true,
+                _deviceRecoveryAttempt == 1);
+        }
+
+        private bool PublishDeviceRecoveryAttemptFailure(
+            AudioNativeCallResultV2 failure)
+        {
+            uint category = failure == null
+                ? AudioNativeV2.ResultDeviceUnavailable
+                : failure.Category;
+            if (category == AudioNativeV2.ResultOk)
+                category = AudioNativeV2.ResultDeviceUnavailable;
+            bool retryable = IsRetryableDeviceFailure(failure);
+            if (!retryable || !IsDeviceRecoveryActive() ||
+                _deviceRecoveryAttempt >= DeviceRecoveryMaximumAttempts)
+            {
+                return PublishUnavailable(
+                    failure,
+                    AudioNativeV2.ResultDeviceUnavailable,
+                    "audio.device_unavailable");
+            }
+
+            _catalogQualificationPending = false;
+            _pendingRecoveryIntent = null;
+            _pendingRecoveryPaused = false;
+            if (_nativeTouched) BestEffortNativeShutdown();
+            _deviceRecoveryBackoffTicks =
+                DeviceRecoveryBackoffPollTicks[_deviceRecoveryAttempt - 1];
+            Publish(CreateSnapshot(
+                AudioCoordinatorStatusV2.Recovering,
+                category,
+                SafeMessageKey(failure, "audio.device_unavailable"),
+                null));
+            return false;
+        }
+
+        private AudioNativeCallResultV2 CreateRuntimeFailure(
+            uint category,
+            string messageKey)
+        {
+            return AudioNativeCallResultV2.Failure(
+                category,
+                AudioNativeV2.OperationQueryRuntime,
+                AudioNativeV2.StageAdmission,
+                _audioSessionId,
+                _audioReadyGeneration,
+                _deviceGeneration,
+                messageKey);
+        }
+
+        private static bool IsRetryableDeviceFailure(
+            AudioNativeCallResultV2 failure)
+        {
+            return failure != null &&
+                (failure.Category == AudioNativeV2.ResultDeviceUnavailable ||
+                 failure.Category == AudioNativeV2.ResultDeviceLost);
+        }
+
+        private bool IsDeviceRecoveryActive()
+        {
+            return Volatile.Read(ref _deviceRecoveryActive) != 0;
+        }
+
+        private void EndDeviceRecoverySequenceCore()
+        {
+            _deviceRecoveryAttempt = 0;
+            _deviceRecoveryBackoffTicks = 0;
+            Volatile.Write(ref _deviceRecoveryActive, 0);
         }
 
         private void CaptureRecoveryCursor()
@@ -1709,7 +1951,10 @@ namespace CF7Launcher.Audio
             Shutdown();
         }
 
-        private bool RebuildCore(string normalizedRoot, bool recovery)
+        private bool RebuildCore(
+            string normalizedRoot,
+            bool recovery,
+            bool advanceReadyGeneration = true)
         {
             CancellationToken cancellationToken = _lifetime.Token;
             ulong previousDeviceGeneration = _deviceGeneration;
@@ -1726,6 +1971,7 @@ namespace CF7Launcher.Audio
                 _pendingRecoveryPaused = false;
                 if (!recovery && !string.IsNullOrEmpty(_normalizedBasePath))
                 {
+                    EndDeviceRecoverySequenceCore();
                     BestEffortNativeShutdown();
                     _audioSessionId = NewSessionId();
                     _audioReadyGeneration = 0;
@@ -1735,7 +1981,7 @@ namespace CF7Launcher.Audio
                     recoveryPaused = false;
                 }
 
-                AdvanceReadyGeneration();
+                if (advanceReadyGeneration) AdvanceReadyGeneration();
                 _normalizedBasePath = normalizedRoot;
                 Publish(CreateSnapshot(
                     recovery
@@ -1778,16 +2024,37 @@ namespace CF7Launcher.Audio
                     initialized,
                     recovery,
                     previousDeviceGeneration);
-                if (initialized == null || !initialized.Ready ||
-                    !returnedDeviceEpoch)
+                if (initialized == null || !initialized.Ready)
                 {
                     AudioNativeCallResultV2 failure = initialized == null
                         ? null
                         : initialized.Result;
+                    if (recovery && IsDeviceRecoveryActive())
+                        return PublishDeviceRecoveryAttemptFailure(failure);
+                    if (!recovery && IsRetryableDeviceFailure(failure) &&
+                        !_shutdownStarted)
+                    {
+                        // The first native initialize can race a transiently
+                        // unavailable default endpoint just as a later reroute
+                        // can. Count that call as attempt one and continue the
+                        // same bounded episode without advancing readyGeneration
+                        // again on attempts two through five.
+                        _deviceRecoveryAttempt = 1;
+                        _deviceRecoveryBackoffTicks = 0;
+                        Volatile.Write(ref _deviceRecoveryActive, 1);
+                        return PublishDeviceRecoveryAttemptFailure(failure);
+                    }
                     return PublishUnavailable(
                         failure,
                         AudioNativeV2.ResultDeviceUnavailable,
                         "audio.device_unavailable");
+                }
+                if (!returnedDeviceEpoch)
+                {
+                    return PublishUnavailable(
+                        initialized.Result,
+                        AudioNativeV2.ResultStaleGeneration,
+                        "audio.device_epoch_invalid");
                 }
                 if (_initialMasterGain != 1f)
                 {
@@ -1882,21 +2149,23 @@ namespace CF7Launcher.Audio
                     return false;
                 }
 
-                Publish(CreateSnapshot(
-                    AudioCoordinatorStatusV2.Ready,
-                    AudioNativeV2.ResultOk,
-                    "audio.ready",
-                    null));
-
                 if (recovery && recoveryIntent != null)
                 {
                     AudioNativeBgmCommandV2 replay = RebindBgmIntent(
                         recoveryIntent,
                         _audioSessionId,
                         _audioReadyGeneration);
-                    ExecuteRecoveryBgmCore(replay, recoveryPaused);
-                    if (!Snapshot.IsReady) return false;
+                    AudioNativeCallResultV2 replayResult =
+                        ExecuteRecoveryBgmCore(replay, recoveryPaused);
+                    if (replayResult == null || !replayResult.IsOk)
+                        return false;
                 }
+                Publish(CreateSnapshot(
+                    AudioCoordinatorStatusV2.Ready,
+                    AudioNativeV2.ResultOk,
+                    "audio.ready",
+                    null));
+                if (recovery) EndDeviceRecoverySequenceCore();
                 return true;
             }
             catch (OperationCanceledException)
@@ -2029,7 +2298,14 @@ namespace CF7Launcher.Audio
             bool pauseBeforeGainRestore)
         {
             AudioCoordinatorSnapshotV2 current = Snapshot;
-            if (!current.IsReady ||
+            bool recoveryReplayAdmission =
+                forceMutedPositioning && IsDeviceRecoveryActive() &&
+                current.Status == AudioCoordinatorStatusV2.Recovering &&
+                MatchesTuple(
+                    command.AudioSessionId,
+                    command.AudioReadyGeneration,
+                    current);
+            if ((!current.IsReady && !recoveryReplayAdmission) ||
                 !MatchesTuple(
                     command.AudioSessionId,
                     command.AudioReadyGeneration,
@@ -2091,11 +2367,35 @@ namespace CF7Launcher.Audio
             }
             if (result.Category == AudioNativeV2.ResultDeviceLost)
             {
-                Publish(CreateSnapshot(
-                    AudioCoordinatorStatusV2.Recovering,
-                    result.Category,
-                    SafeMessageKey(result, "audio.device_lost"),
-                    null));
+                if (IsDeviceRecoveryActive())
+                {
+                    // A recovered device can disappear again while the latest
+                    // BGM intent is being restored. Keep the existing bounded
+                    // episode and its consumed attempt budget; resetting the
+                    // episode here would turn repeated device loss into an
+                    // unbounded retry loop.
+                    PublishDeviceRecoveryAttemptFailure(result);
+                }
+                else
+                {
+                    // A command-level device_lost result is itself a recovery
+                    // trigger. Publishing Recovering without arming the episode
+                    // would permanently gate the runtime poll timer.
+                    CaptureRecoveryCursor();
+                    BeginDeviceRecoverySequenceCore();
+                }
+            }
+            else if (result.Category == AudioNativeV2.ResultNotReady &&
+                IsDeviceRecoveryActive())
+            {
+                // With host-owned routing the native notification can win the
+                // race with a recovery replay. A NotReady replay is therefore a
+                // retryable loss of this already-counted attempt, not success and
+                // not a new episode.
+                PublishDeviceRecoveryAttemptFailure(
+                    CreateRuntimeFailure(
+                        AudioNativeV2.ResultDeviceLost,
+                        "audio.device_lost"));
             }
             else if (result.Category == AudioNativeV2.ResultDeviceUnavailable ||
                 result.Category == AudioNativeV2.ResultAbiMismatch)
@@ -2610,6 +2910,7 @@ namespace CF7Launcher.Audio
             uint fallbackCategory,
             string fallbackMessageKey)
         {
+            EndDeviceRecoverySequenceCore();
             _catalogQualificationPending = false;
             _pendingRecoveryIntent = null;
             _pendingRecoveryPaused = false;
@@ -2849,6 +3150,7 @@ namespace CF7Launcher.Audio
         {
             try
             {
+                EndDeviceRecoverySequenceCore();
                 SupersedeBootstrapPending();
                 if (_nativeTouched) BestEffortNativeShutdown();
                 Publish(CreateSnapshot(

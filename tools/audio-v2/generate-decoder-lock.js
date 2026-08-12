@@ -41,9 +41,17 @@ const packages = [
       'MA_NO_NULL'
     ],
     licensePath: 'launcher/native/third_party/miniaudio-0.11.25/LICENSE',
+    localModifications: [
+      {
+        description: 'Forward engine noAutoStreamRouting and notify the CF7 owner for default or inactive default endpoints without miniaudio callback-thread device mutation.',
+        id: 'cf7-wasapi-single-owner-reroute-v1',
+        path: 'launcher/native/miniaudio.h'
+      }
+    ],
     name: 'miniaudio_and_official_decoder_adapters',
     sourceCommit: '9634bedb5b5a2ca38c1ee7108a9358a4e233f14d',
-    sourceKind: 'git_tag_and_commit',
+    sourceKind: 'git_tag_and_commit_with_local_modifications',
+    sourceTag: '0.11.25',
     sourceUrl: 'https://github.com/mackron/miniaudio/tree/0.11.25',
     vendorFiles: [
       'launcher/native/miniaudio.h',

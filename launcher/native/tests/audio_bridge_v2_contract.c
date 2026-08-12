@@ -2,6 +2,8 @@
 #include <string.h>
 
 #include "../audio_bridge_v2.h"
+#include "../audio_miniaudio_config.h"
+#include "../miniaudio.h"
 
 #define CF7_STATIC_ASSERT(name, expression) \
     typedef char name[(expression) ? 1 : -1]
@@ -396,6 +398,14 @@ static void cf7_test_frozen_constants(void)
         CF7_AUDIO_BRIDGE_V2_PROBE_INCOMPATIBLE);
 }
 
+static void cf7_test_engine_wasapi_routing_config(void)
+{
+    ma_engine_config config = ma_engine_config_init();
+    CF7_CHECK(config.wasapi.noAutoStreamRouting == MA_FALSE);
+    config.wasapi.noAutoStreamRouting = MA_TRUE;
+    CF7_CHECK(config.wasapi.noAutoStreamRouting == MA_TRUE);
+}
+
 int main(void)
 {
     cf7_test_abi_prefix();
@@ -403,6 +413,7 @@ int main(void)
     cf7_test_input_capacity();
     cf7_test_array_capacity();
     cf7_test_frozen_constants();
+    cf7_test_engine_wasapi_routing_config();
 
     if (g_failures != 0u) {
         printf("[FAIL] audio_bridge_v2_contract assertions=%lu failures=%lu\n",

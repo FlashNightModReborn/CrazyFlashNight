@@ -8,11 +8,12 @@ distribution inventory, not a legal conclusion or legal advice.
 Package graph
 -------------
 
-The Audio Platform v2 native DLL statically links the following pinned
-upstream source releases. Exact source hashes and build flags are recorded in
+The Audio Platform v2 native DLL statically links source derived from the
+following pinned upstream releases. Exact upstream identities, declared local
+modifications, materialized source hashes, and build flags are recorded in
 launcher/native/decoder-dependencies.lock.v1.json.
 
-* miniaudio 0.11.25
+* miniaudio 0.11.25 (locally modified for CF7 WASAPI host-owned rerouting)
   Copyright 2025 David Reid
   License: Public Domain (Unlicense) or MIT No Attribution; this distribution
   uses the Public Domain alternative
