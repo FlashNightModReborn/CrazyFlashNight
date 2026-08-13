@@ -540,15 +540,20 @@ test("BGM/SFX mix accepts finite SFX signal before a naturally silent final snap
 });
 
 function sleepResumeRange() {
+    const realtekDigest = "D".repeat(64);
     const before = snapshot({ runtime: { deviceGeneration: 1, status: "ready" } });
     const recoveringOne = snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 1, status: "recovering" } });
     const recoveringOneRetry = snapshot({
-        runtime: { audioReadyGeneration: 2, deviceGeneration: 1, deviceIdDigest: "D".repeat(64), status: "recovering" }
+        runtime: { audioReadyGeneration: 2, deviceGeneration: 2, deviceIdDigest: realtekDigest, status: "recovering" }
     });
-    const readyOne = snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 2, status: "ready" } });
-    const recoveringTwo = snapshot({ runtime: { audioReadyGeneration: 3, deviceGeneration: 2, status: "recovering" } });
+    const readyOne = snapshot({
+        runtime: { audioReadyGeneration: 2, deviceGeneration: 2, deviceIdDigest: realtekDigest, status: "ready" }
+    });
+    const recoveringTwo = snapshot({
+        runtime: { audioReadyGeneration: 3, deviceGeneration: 2, deviceIdDigest: realtekDigest, status: "recovering" }
+    });
     const recoveringTwoRetry = snapshot({
-        runtime: { audioReadyGeneration: 3, deviceGeneration: 2, deviceIdDigest: "E".repeat(64), status: "recovering" }
+        runtime: { audioReadyGeneration: 3, deviceGeneration: 3, status: "recovering" }
     });
     const readyTwo = snapshot({ runtime: { audioReadyGeneration: 3, deviceGeneration: 3, status: "ready" } });
     const post = snapshot({
@@ -570,7 +575,7 @@ function sleepResumeRange() {
     };
 }
 
-test("sleep resume validates every recovery episode and binds facts to the final ready tuple", () => {
+test("sleep resume accepts bounded TWS to Realtek to TWS episodes and binds the final pre digest", () => {
     const range = sleepResumeRange();
     assert.deepStrictEqual(observer.deriveCaseFacts("sleep_resume", range, {}), {
         captureId: "device_recovery",
@@ -580,8 +585,23 @@ test("sleep resume validates every recovery episode and binds facts to the final
         recoveryMs: 2500
     });
 
+    const adoptedBeforeOwnerRecovery = sleepResumeRange();
+    adoptedBeforeOwnerRecovery.events[1].payload.runtime.deviceIdDigest = "D".repeat(64);
+    assert.strictEqual(
+        observer.deriveCaseFacts("sleep_resume", adoptedBeforeOwnerRecovery, {}).deviceGenerationAfter,
+        3,
+        "the first Recovering may already expose the new endpoint with the prior device generation");
+
+    const closingReadyIsPost = sleepResumeRange();
+    closingReadyIsPost.events.splice(7, 1);
+    closingReadyIsPost.events[6].payload.bgmMeter.frameCount = 3000;
+    assert.strictEqual(observer.deriveCaseFacts("sleep_resume", closingReadyIsPost, {}).deviceGenerationAfter, 3,
+        "the final qualification snapshot may be both the closing Ready and final post");
+
     const singleEpisode = sleepResumeRange();
     singleEpisode.events.splice(4, 3);
+    singleEpisode.events[2].payload.runtime.deviceIdDigest = DEVICE_DIGEST;
+    singleEpisode.events[3].payload.runtime.deviceIdDigest = DEVICE_DIGEST;
     singleEpisode.events[4].payload.runtime.audioReadyGeneration = 2;
     singleEpisode.events[4].payload.runtime.deviceGeneration = 2;
     assert.deepStrictEqual(observer.deriveCaseFacts("sleep_resume", singleEpisode, {}), {
@@ -615,7 +635,7 @@ test("sleep resume rejects invalid intermediate episodes and a drifting final po
 
     range = sleepResumeRange();
     range.events[3].payload.runtime.deviceIdDigest = "F".repeat(64);
-    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /changed the qualified endpoint digest/);
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /closing ready\/last recovering endpoint tuple mismatch: deviceIdDigest/);
 
     range = sleepResumeRange();
     range.events[2].payload.runtime.audioReadyGeneration = 3;
@@ -626,7 +646,7 @@ test("sleep resume rejects invalid intermediate episodes and a drifting final po
     range.events[5].payload.runtime.audioReadyGeneration = 2;
     range.events[6].payload.runtime.audioReadyGeneration = 2;
     range.events[7].payload.runtime.audioReadyGeneration = 2;
-    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /ready-generation barrier drifted/);
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /ready-generation barrier did not advance exactly once/);
 
     range = sleepResumeRange();
     range.events[6].payload.runtime.deviceGeneration = 2;
@@ -645,12 +665,18 @@ test("sleep resume rejects invalid intermediate episodes and a drifting final po
 
     range = sleepResumeRange();
     range.events[7].sequence = 5;
-    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /post snapshot must follow the final recovery ready boundary/);
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /post snapshot must follow the final recovery ready boundary/);
 
     range = sleepResumeRange();
     range.events.splice(4, 0, {
         kind: "coordinator_snapshot", observedAtUtc: "2026-08-09T00:00:03.000Z",
-        payload: snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 2, status: "ready" } }), sequence: 5
+        payload: snapshot({
+            runtime: {
+                audioReadyGeneration: 2, deviceGeneration: 2,
+                deviceIdDigest: "D".repeat(64), status: "ready"
+            }
+        }), sequence: 5
     });
     assert.strictEqual(observer.deriveCaseFacts("sleep_resume", range, {}).deviceGenerationAfter, 3);
     range.events[4].payload.runtime.sampleRate = 44100;
@@ -664,6 +690,50 @@ test("sleep resume rejects invalid intermediate episodes and a drifting final po
     range = sleepResumeRange();
     range.events[0].payload.runtime.status = "recovering";
     assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /qualification recovering snapshot has no active owner recovery/);
+});
+
+test("sleep resume fails closed on multi-episode endpoint-chain drift", () => {
+    let range = sleepResumeRange();
+    range.events[4].payload.runtime.deviceGeneration = 1;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /first recovering device generation regressed from the current ready baseline/);
+
+    range = sleepResumeRange();
+    range.events[2].payload.runtime.deviceIdDigest = "not-a-digest";
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /device digest must be uppercase SHA-256/);
+
+    range = sleepResumeRange();
+    [4, 5, 6, 7].forEach((index) => {
+        range.events[index].payload.runtime.audioReadyGeneration = 4;
+    });
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /ready-generation barrier did not advance exactly once/);
+
+    range = sleepResumeRange();
+    [5, 6, 7].forEach((index) => {
+        range.events[index].payload.runtime.deviceIdDigest = "D".repeat(64);
+    });
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /final post did not return to the pre-sleep qualified endpoint digest/);
+
+    range = sleepResumeRange();
+    range.events.splice(6, 1);
+    range.events[6].payload.runtime.status = "recovering";
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /recovery episode is unclosed/);
+
+    range = sleepResumeRange();
+    range.events[7].payload.runtime.sampleRate = 44100;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /final ready\/post runtime tuple mismatch: sampleRate/);
+
+    range = sleepResumeRange();
+    range.events[7].payload.bgmMeter.peakLeft = 0;
+    range.events[7].payload.bgmMeter.peakRight = 0;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /endpoint meter window did not advance with signal on the same bus/,
+        "a silent advancing BGM bus and a signalled non-advancing SFX bus must not combine into endpoint PCM proof");
 });
 
 function crossfadeRange(samples) {

@@ -759,10 +759,10 @@ function expectFiniteSfxMeterWindow(range, snapshots, request, label) {
 
 function expectAnyBusMeterWindow(beforeEvent, afterEvent, minimumFrames, label) {
     expect(afterEvent.sequence > beforeEvent.sequence, label + " snapshot window is out of order");
-    const advanced = ["bgmMeter", "sfxMeter"].some((meterName) =>
-        afterEvent.payload[meterName].frameCount - beforeEvent.payload[meterName].frameCount >= minimumFrames);
-    const signalled = ["bgmMeter", "sfxMeter"].some((meterName) => peakAbsPcm16(afterEvent.payload[meterName]) >= 64);
-    expect(advanced && signalled, label + " endpoint meter window did not advance with signal");
+    const advancingSignal = ["bgmMeter", "sfxMeter"].some((meterName) =>
+        afterEvent.payload[meterName].frameCount - beforeEvent.payload[meterName].frameCount >= minimumFrames &&
+        peakAbsPcm16(afterEvent.payload[meterName]) >= 64);
+    expect(advancingSignal, label + " endpoint meter window did not advance with signal on the same bus");
 }
 
 function expectStableLoopSource(before, after, label) {
@@ -1085,6 +1085,9 @@ function deriveCaseFacts(caseId, range, options) {
             "audioReadyGeneration", "audioSessionId", "backend", "channels",
             "deviceGeneration", "deviceIdDigest", "sampleFormat", "sampleRate"
         ];
+        const endpointTupleKeys = [
+            "backend", "channels", "deviceIdDigest", "sampleFormat", "sampleRate"
+        ];
         const expectStableReadyTuple = (actual, expected, label) => {
             stableTupleKeys.forEach((key) =>
                 expect(actual[key] === expected[key], label + " drifted without a recovery boundary: " + key));
@@ -1096,6 +1099,7 @@ function deriveCaseFacts(caseId, range, options) {
             const runtime = entry.payload.runtime;
             const first = activeEpisode.recovering.payload.runtime;
             const previous = activeEpisode.lastRecovering.payload.runtime;
+            expectSha(runtime.deviceIdDigest, label + " device digest");
             expect(runtime.audioSessionId === first.audioSessionId &&
                 runtime.audioReadyGeneration === first.audioReadyGeneration,
             label + " overlap or change generation before ready");
@@ -1110,6 +1114,12 @@ function deriveCaseFacts(caseId, range, options) {
             if (entry.kind === "coordinator_recovery") {
                 expect(runtime.status === "recovering", "sleep_resume recovery marker is not recovering");
                 if (activeEpisode === null) {
+                    const label = "sleep_resume recovery episode " + (episodes.length + 1);
+                    expectSha(runtime.deviceIdDigest, label + " first recovering device digest");
+                    expect(runtime.audioSessionId === currentReady.audioSessionId,
+                        label + " first recovering session drifted from the current ready baseline");
+                    expect(runtime.deviceGeneration >= currentReady.deviceGeneration,
+                        label + " first recovering device generation regressed from the current ready baseline");
                     activeEpisode = {
                         lastRecovering: entry,
                         maximumRecoveringDeviceGeneration: runtime.deviceGeneration,
@@ -1139,16 +1149,17 @@ function deriveCaseFacts(caseId, range, options) {
                 return;
             }
             const recovering = activeEpisode.recovering.payload.runtime;
+            const lastRecovering = activeEpisode.lastRecovering.payload.runtime;
             const label = "sleep_resume recovery episode " + (episodes.length + 1);
             expect(recovering.audioSessionId === before.audioSessionId &&
                 runtime.audioSessionId === before.audioSessionId,
             label + " changed audio session");
-            expect(recovering.deviceIdDigest === before.deviceIdDigest &&
-                runtime.deviceIdDigest === before.deviceIdDigest,
-                label + " changed the qualified endpoint digest");
-            expect(recovering.audioReadyGeneration > currentReady.audioReadyGeneration &&
+            endpointTupleKeys.forEach((key) =>
+                expect(runtime[key] === lastRecovering[key],
+                    label + " closing ready/last recovering endpoint tuple mismatch: " + key));
+            expect(recovering.audioReadyGeneration === currentReady.audioReadyGeneration + 1 &&
                 runtime.audioReadyGeneration === recovering.audioReadyGeneration,
-            label + " ready-generation barrier drifted");
+            label + " ready-generation barrier did not advance exactly once");
             expect(recovering.deviceGeneration >= currentReady.deviceGeneration &&
                 runtime.deviceGeneration > currentReady.deviceGeneration &&
                 runtime.deviceGeneration >= activeEpisode.maximumRecoveringDeviceGeneration,
@@ -1174,9 +1185,10 @@ function deriveCaseFacts(caseId, range, options) {
         expectReadyPhysicalRuntime(before, caseId + " pre");
         expectReadyPhysicalRuntime(post, caseId + " post");
         expect(post.audioSessionId === before.audioSessionId, "sleep_resume changed audio session after recovery");
-        expect(post.deviceIdDigest === before.deviceIdDigest, "sleep_resume changed the qualified endpoint digest");
         stableTupleKeys.forEach((key) =>
             expect(post[key] === currentReady[key], "sleep_resume final ready/post runtime tuple mismatch: " + key));
+        expect(post.deviceIdDigest === before.deviceIdDigest,
+            "sleep_resume final post did not return to the pre-sleep qualified endpoint digest");
         expectAnyBusMeterWindow(snapshots[0], snapshots[snapshots.length - 1], 1, caseId + " post-resume");
         return {
             captureId: "device_recovery",
