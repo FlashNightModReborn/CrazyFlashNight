@@ -497,40 +497,120 @@ test("BGM/SFX mix accepts loop wrap or full-loop cursor equality and rejects bad
     assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /SFX meter window has no qualified signal/);
 });
 
-test("sleep resume closes recovering to a later owner/qualification ready snapshot", () => {
+function sleepResumeRange() {
     const before = snapshot({ runtime: { deviceGeneration: 1, status: "ready" } });
-    const recovering = snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 1, status: "recovering" } });
-    const ready = snapshot({
-        bgmMeter: { frameCount: 2000 },
-        runtime: { audioReadyGeneration: 2, deviceGeneration: 2, status: "ready" }
+    const recoveringOne = snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 1, status: "recovering" } });
+    const recoveringOneRetry = snapshot({
+        runtime: { audioReadyGeneration: 2, deviceGeneration: 1, deviceIdDigest: "D".repeat(64), status: "recovering" }
     });
-    const range = {
+    const readyOne = snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 2, status: "ready" } });
+    const recoveringTwo = snapshot({ runtime: { audioReadyGeneration: 3, deviceGeneration: 2, status: "recovering" } });
+    const recoveringTwoRetry = snapshot({
+        runtime: { audioReadyGeneration: 3, deviceGeneration: 2, deviceIdDigest: "E".repeat(64), status: "recovering" }
+    });
+    const readyTwo = snapshot({ runtime: { audioReadyGeneration: 3, deviceGeneration: 3, status: "ready" } });
+    const post = snapshot({
+        bgmMeter: { frameCount: 3000 },
+        runtime: { audioReadyGeneration: 3, deviceGeneration: 3, status: "ready" }
+    });
+    return {
         begin: { caseId: "sleep_resume" },
         events: [
             { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:00.000Z", payload: before, sequence: 2 },
-            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:01.000Z", payload: recovering, sequence: 3 },
-            { kind: "coordinator_snapshot", observedAtUtc: "2026-08-09T00:00:02.250Z", payload: ready, sequence: 4 },
-            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:02.300Z", payload: ready, sequence: 5 }
+            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:01.000Z", payload: recoveringOne, sequence: 3 },
+            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:01.500Z", payload: recoveringOneRetry, sequence: 4 },
+            { kind: "coordinator_snapshot", observedAtUtc: "2026-08-09T00:00:02.250Z", payload: readyOne, sequence: 5 },
+            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:04.000Z", payload: recoveringTwo, sequence: 6 },
+            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:05.000Z", payload: recoveringTwoRetry, sequence: 7 },
+            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:06.500Z", payload: readyTwo, sequence: 8 },
+            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:07.000Z", payload: post, sequence: 9 }
         ]
     };
+}
+
+test("sleep resume validates every recovery episode and binds facts to the final ready tuple", () => {
+    const range = sleepResumeRange();
     assert.deepStrictEqual(observer.deriveCaseFacts("sleep_resume", range, {}), {
+        captureId: "device_recovery",
+        deviceGenerationAfter: 3,
+        deviceGenerationBefore: 1,
+        maxRecoveryMs: 15000,
+        recoveryMs: 2500
+    });
+
+    const singleEpisode = sleepResumeRange();
+    singleEpisode.events.splice(4, 3);
+    singleEpisode.events[4].payload.runtime.audioReadyGeneration = 2;
+    singleEpisode.events[4].payload.runtime.deviceGeneration = 2;
+    assert.deepStrictEqual(observer.deriveCaseFacts("sleep_resume", singleEpisode, {}), {
         captureId: "device_recovery",
         deviceGenerationAfter: 2,
         deviceGenerationBefore: 1,
         maxRecoveryMs: 15000,
         recoveryMs: 1250
     });
+});
 
-    ready.runtime.audioReadyGeneration = 1;
-    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /ready-generation barrier drifted/);
-    ready.runtime.audioReadyGeneration = 2;
-    ready.runtime.deviceIdDigest = "D".repeat(64);
+test("sleep resume rejects invalid intermediate episodes and a drifting final post", () => {
+    let range = sleepResumeRange();
+    range.events[6].observedAtUtc = "2026-08-09T00:00:20.000Z";
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /exceeded 15000ms/);
+
+    range = sleepResumeRange();
+    range.events[2].payload.runtime.audioSessionId = "fedcba98-7654-4cba-8fed-ba9876543210";
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /overlap or change generation|changed audio session|audio session changed/);
+
+    range = sleepResumeRange();
+    range.events[3].payload.runtime.deviceIdDigest = "F".repeat(64);
     assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /changed the qualified endpoint digest/);
-    ready.runtime.deviceIdDigest = DEVICE_DIGEST;
 
-    range.events.splice(2, 1);
-    range.events[2].payload = recovering;
-    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /transition missing|out of order/);
+    range = sleepResumeRange();
+    range.events[2].payload.runtime.audioReadyGeneration = 3;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /overlap or change generation/);
+
+    range = sleepResumeRange();
+    range.events[4].payload.runtime.audioReadyGeneration = 2;
+    range.events[5].payload.runtime.audioReadyGeneration = 2;
+    range.events[6].payload.runtime.audioReadyGeneration = 2;
+    range.events[7].payload.runtime.audioReadyGeneration = 2;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /ready-generation barrier drifted/);
+
+    range = sleepResumeRange();
+    range.events[6].payload.runtime.deviceGeneration = 2;
+    range.events[7].payload.runtime.deviceGeneration = 2;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /device generation did not advance monotonically/);
+
+    range = sleepResumeRange();
+    range.events[6].kind = "coordinator_recovery";
+    range.events[6].payload.runtime.status = "recovering";
+    range.events[7].payload.runtime.status = "recovering";
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /recovery episode is unclosed/);
+
+    range = sleepResumeRange();
+    range.events[7].payload.runtime.sampleRate = 44100;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /final ready\/post runtime tuple mismatch: sampleRate/);
+
+    range = sleepResumeRange();
+    range.events[7].sequence = 5;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /post snapshot must follow the final recovery ready boundary/);
+
+    range = sleepResumeRange();
+    range.events.splice(4, 0, {
+        kind: "coordinator_snapshot", observedAtUtc: "2026-08-09T00:00:03.000Z",
+        payload: snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 2, status: "ready" } }), sequence: 5
+    });
+    assert.strictEqual(observer.deriveCaseFacts("sleep_resume", range, {}).deviceGenerationAfter, 3);
+    range.events[4].payload.runtime.sampleRate = 44100;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /orphan coordinator ready tuple drifted without a recovery boundary/);
+
+    range = sleepResumeRange();
+    range.events[2].payload.runtime.status = "unavailable";
+    range.events[2].kind = "coordinator_snapshot";
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /non-ready state outside the recovery grammar/);
+
+    range = sleepResumeRange();
+    range.events[0].payload.runtime.status = "recovering";
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /qualification recovering snapshot has no active owner recovery/);
 });
 
 function crossfadeRange(samples) {

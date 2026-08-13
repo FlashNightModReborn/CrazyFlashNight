@@ -1027,27 +1027,107 @@ function deriveCaseFacts(caseId, range, options) {
         expectSameAudioSession(snapshots, caseId);
         const before = snapshots[0].payload.runtime;
         const post = snapshots[snapshots.length - 1].payload.runtime;
-        const recovering = range.events.find((entry) => entry.kind === "coordinator_recovery" && entry.payload.runtime.status === "recovering");
-        const ready = range.events.find((entry) =>
-            recovering && entry.sequence > recovering.sequence &&
-            (entry.kind === "coordinator_snapshot" || entry.kind === "qualification_snapshot") &&
-            entry.payload.runtime.status === "ready");
-        expect(recovering && ready, "sleep_resume recovery transition missing or out of order");
+        const maximumAllowed = 15000;
+        const stableTupleKeys = [
+            "audioReadyGeneration", "audioSessionId", "backend", "channels",
+            "deviceGeneration", "deviceIdDigest", "sampleFormat", "sampleRate"
+        ];
+        const expectStableReadyTuple = (actual, expected, label) => {
+            stableTupleKeys.forEach((key) =>
+                expect(actual[key] === expected[key], label + " drifted without a recovery boundary: " + key));
+        };
+        const episodes = [];
+        let activeEpisode = null;
+        let currentReady = before;
+        const addRecoverySample = (entry, label) => {
+            const runtime = entry.payload.runtime;
+            const first = activeEpisode.recovering.payload.runtime;
+            const previous = activeEpisode.lastRecovering.payload.runtime;
+            expect(runtime.audioSessionId === first.audioSessionId &&
+                runtime.audioReadyGeneration === first.audioReadyGeneration,
+            label + " overlap or change generation before ready");
+            expect(runtime.deviceGeneration >= previous.deviceGeneration,
+                label + " device generation regressed");
+            activeEpisode.lastRecovering = entry;
+            activeEpisode.maximumRecoveringDeviceGeneration = Math.max(
+                activeEpisode.maximumRecoveringDeviceGeneration, runtime.deviceGeneration);
+        };
+        range.events.forEach((entry) => {
+            const runtime = entry.payload && entry.payload.runtime;
+            if (entry.kind === "coordinator_recovery") {
+                expect(runtime.status === "recovering", "sleep_resume recovery marker is not recovering");
+                if (activeEpisode === null) {
+                    activeEpisode = {
+                        lastRecovering: entry,
+                        maximumRecoveringDeviceGeneration: runtime.deviceGeneration,
+                        recovering: entry,
+                        ready: null
+                    };
+                } else {
+                    addRecoverySample(entry, "sleep_resume recovery episodes");
+                }
+                return;
+            }
+            if (!runtime) return;
+            if (runtime.status === "recovering") {
+                expect(entry.kind === "qualification_snapshot" && activeEpisode !== null,
+                    "sleep_resume qualification recovering snapshot has no active owner recovery");
+                addRecoverySample(entry, "sleep_resume qualification recovery sample");
+                return;
+            }
+            expect(runtime.status === "ready",
+                "sleep_resume observed a non-ready state outside the recovery grammar: " + runtime.status);
+            if (activeEpisode === null) {
+                if (entry.kind === "coordinator_snapshot") {
+                    expectStableReadyTuple(runtime, currentReady, "sleep_resume orphan coordinator ready tuple");
+                } else if (entry !== snapshots[0] && entry !== snapshots[snapshots.length - 1]) {
+                    expectStableReadyTuple(runtime, currentReady, "sleep_resume qualification ready tuple");
+                }
+                return;
+            }
+            const recovering = activeEpisode.recovering.payload.runtime;
+            const label = "sleep_resume recovery episode " + (episodes.length + 1);
+            expect(recovering.audioSessionId === before.audioSessionId &&
+                runtime.audioSessionId === before.audioSessionId,
+            label + " changed audio session");
+            expect(recovering.deviceIdDigest === before.deviceIdDigest &&
+                runtime.deviceIdDigest === before.deviceIdDigest,
+                label + " changed the qualified endpoint digest");
+            expect(recovering.audioReadyGeneration > currentReady.audioReadyGeneration &&
+                runtime.audioReadyGeneration === recovering.audioReadyGeneration,
+            label + " ready-generation barrier drifted");
+            expect(recovering.deviceGeneration >= currentReady.deviceGeneration &&
+                runtime.deviceGeneration > currentReady.deviceGeneration &&
+                runtime.deviceGeneration >= activeEpisode.maximumRecoveringDeviceGeneration,
+            label + " device generation did not advance monotonically");
+            expectReadyPhysicalRuntime(runtime, label + " ready");
+            const episodeMs = utcDeltaMs(activeEpisode.recovering, entry, label);
+            expect(episodeMs <= maximumAllowed, label + " recovery exceeded 15000ms");
+            activeEpisode.ready = entry;
+            activeEpisode.recoveryMs = episodeMs;
+            episodes.push(activeEpisode);
+            currentReady = runtime;
+            activeEpisode = null;
+        });
+        expect(activeEpisode === null, "sleep_resume recovery episode is unclosed");
+        expect(episodes.length > 0, "sleep_resume recovery transition missing or out of order");
+        expect(snapshots[0].sequence < episodes[0].recovering.sequence,
+            "sleep_resume pre snapshot must precede the first recovery episode");
+        expect(snapshots[snapshots.length - 1].sequence >= episodes[episodes.length - 1].ready.sequence,
+            "sleep_resume post snapshot must follow the final recovery ready boundary");
         expectReadyPhysicalRuntime(before, caseId + " pre");
         expectReadyPhysicalRuntime(post, caseId + " post");
-        expect(before.status === "ready" && post.status === "ready" && recovering.payload.runtime.audioSessionId === before.audioSessionId && ready.payload.runtime.audioSessionId === before.audioSessionId, "sleep_resume changed audio session during recovery");
-        expect(recovering.payload.runtime.audioReadyGeneration > before.audioReadyGeneration && ready.payload.runtime.audioReadyGeneration === recovering.payload.runtime.audioReadyGeneration && post.audioReadyGeneration === ready.payload.runtime.audioReadyGeneration, "sleep_resume ready-generation barrier drifted");
-        const recoveryMs = utcDeltaMs(recovering, ready, "sleep_resume recovery");
-        const maximumAllowed = 15000;
-        expect(recoveryMs <= maximumAllowed && ready.payload.runtime.deviceGeneration > before.deviceGeneration && post.deviceGeneration === ready.payload.runtime.deviceGeneration, "sleep_resume recovery is unbounded or did not advance device generation");
-        expect(post.deviceIdDigest === before.deviceIdDigest && ready.payload.runtime.deviceIdDigest === before.deviceIdDigest, "sleep_resume changed the qualified endpoint digest");
+        expect(post.audioSessionId === before.audioSessionId, "sleep_resume changed audio session after recovery");
+        expect(post.deviceIdDigest === before.deviceIdDigest, "sleep_resume changed the qualified endpoint digest");
+        stableTupleKeys.forEach((key) =>
+            expect(post[key] === currentReady[key], "sleep_resume final ready/post runtime tuple mismatch: " + key));
         expectAnyBusMeterWindow(snapshots[0], snapshots[snapshots.length - 1], 1, caseId + " post-resume");
         return {
             captureId: "device_recovery",
-            deviceGenerationAfter: ready.payload.runtime.deviceGeneration,
+            deviceGenerationAfter: currentReady.deviceGeneration,
             deviceGenerationBefore: before.deviceGeneration,
             maxRecoveryMs: maximumAllowed,
-            recoveryMs
+            recoveryMs: Math.max.apply(null, episodes.map((episode) => episode.recoveryMs))
         };
     }
     if (caseId === "no_stale_sfx_after_recovery") {
