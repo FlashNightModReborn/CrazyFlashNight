@@ -14,6 +14,9 @@ var MEMO_PATH = "docs/原生音频引擎-资源兼容性与静音故障只读调
 var MANIFEST_PATH = "docs/contracts/audio-v2/h1-decision-manifest.v2.json";
 var MANIFEST_SCHEMA_PATH = "docs/contracts/audio-v2/h1-decision-manifest.schema.v2.json";
 var H1_SCHEMA_PATH = "docs/contracts/audio-v2/h1-implementation-acceptance.schema.v2.json";
+var R3_MANIFEST_PATH = "docs/contracts/audio-v2/h1-decision-manifest.v3.json";
+var R3_MANIFEST_SCHEMA_PATH = "docs/contracts/audio-v2/h1-decision-manifest.schema.v3.json";
+var R3_H1_SCHEMA_PATH = "docs/contracts/audio-v2/h1-implementation-acceptance.schema.v3.json";
 var AUTOMATED_REPORT_SCHEMA_PATH = "docs/contracts/audio-v2/automated-report-envelope.schema.v1.json";
 var AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH = "docs/contracts/audio-v2/automated-report-configuration.schema.v1.json";
 var AUTOMATED_REPORT_INPUT_SCHEMA_PATH = "docs/contracts/audio-v2/automated-report-input-manifest.schema.v1.json";
@@ -30,6 +33,7 @@ var A6_SCHEMA_PATH = "docs/contracts/audio-v2/a6-evidence-manifest.schema.v1.jso
 var LISTENING_SCHEMA_PATH = "docs/contracts/audio-v2/human-listening-matrix.schema.v1.json";
 var H2_SCHEMA_PATH = "docs/contracts/audio-v2/h2-promotion-acceptance.schema.v2.json";
 var H1_RECEIPT_PATH = "docs/evidence/audio-v2/h1-implementation-acceptance.json";
+var R3_H1_RECEIPT_PATH = "docs/evidence/audio-v2/h1-implementation-acceptance-r3.json";
 var H2_RECEIPT_PATH = "docs/evidence/audio-v2/h2-promotion-acceptance.json";
 var VALIDATOR_PATH = "tools/audio-v2/validate-contract.js";
 var TEST_PATH = "tools/audio-v2/contract.test.js";
@@ -37,6 +41,10 @@ var GITATTRIBUTES_PATH = ".gitattributes";
 var TEMP_REVIEW_PATHS = ["docs/codex.md", "docs/kimi.md"];
 var EXPECTED_MANIFEST_SHA256 = "518D1B5EA83960300B79D5C6DFB3CCDDAD3FFF1094C5950537E5C4FA9918469E";
 var FROZEN_CONTRACT_PATHS = [GITATTRIBUTES_PATH, MANIFEST_PATH, MANIFEST_SCHEMA_PATH, H1_SCHEMA_PATH, AUTOMATED_REPORT_SCHEMA_PATH, AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH, AUTOMATED_REPORT_INPUT_SCHEMA_PATH, AUTOMATED_CASE_EVIDENCE_SCHEMA_PATH, ASSET_EOF_RESULTS_SCHEMA_PATH, ASSET_WAIVER_SCHEMA_PATH, CANDIDATE_VERIFICATION_SCHEMA_PATH, ENDPOINT_CAPTURE_CONFIGURATION_SCHEMA_PATH, PRODUCER_VERIFICATION_SCHEMA_PATH, RUNNER_DEPENDENCY_SCHEMA_PATH, A6_SCHEMA_PATH, LISTENING_SCHEMA_PATH, H2_SCHEMA_PATH, VALIDATOR_PATH, TEST_PATH];
+var R3_EXPECTED_MANIFEST_SHA256 = "403E9733B1FD89F64DC49BB6D8CDCEE04C99B2B9D0B2DCC04B10482C27CCEFD0";
+var R3_EXPECTED_MANIFEST_SCHEMA_SHA256 = "8B359BBB6264396E094781FDCBF1A97303517A602FCB6EF0DDF6343C503643B6";
+var R3_EXPECTED_H1_SCHEMA_SHA256 = "6C423C4FC46CE494ACD8388C7A80F3C2D92021028A5657D1DB406E8840E1CBB2";
+var R3_FROZEN_CONTRACT_PATHS = [GITATTRIBUTES_PATH, MANIFEST_PATH, MANIFEST_SCHEMA_PATH, H1_SCHEMA_PATH, R3_MANIFEST_PATH, R3_MANIFEST_SCHEMA_PATH, R3_H1_SCHEMA_PATH, AUTOMATED_REPORT_SCHEMA_PATH, AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH, AUTOMATED_REPORT_INPUT_SCHEMA_PATH, AUTOMATED_CASE_EVIDENCE_SCHEMA_PATH, ASSET_EOF_RESULTS_SCHEMA_PATH, ASSET_WAIVER_SCHEMA_PATH, CANDIDATE_VERIFICATION_SCHEMA_PATH, ENDPOINT_CAPTURE_CONFIGURATION_SCHEMA_PATH, PRODUCER_VERIFICATION_SCHEMA_PATH, RUNNER_DEPENDENCY_SCHEMA_PATH, A6_SCHEMA_PATH, LISTENING_SCHEMA_PATH, H2_SCHEMA_PATH, VALIDATOR_PATH, TEST_PATH];
 var QUALIFICATION_RUNNER_PATH = "tools/audio-v2/qualification-runner.js";
 var ENDPOINT_CAPTURE_TOOL_PATH = "tools/audio-v2/capture-endpoint.ps1";
 var PRODUCER_REPLAY_TIMEOUT_MILLISECONDS = 1800000;
@@ -190,7 +198,46 @@ var REQUIRED_CASE_CHECKS = {
         no_stale_sfx_after_recovery: ["recovery_drop_counter_exact", "stale_sfx_absent_after_recovery"]
     }
 };
+var R3_REQUIRED_CASE_CHECKS = JSON.parse(JSON.stringify(REQUIRED_CASE_CHECKS));
+R3_REQUIRED_CASE_CHECKS.device_recovery_endpoint_e2e.no_stale_sfx_after_recovery = ["stale_generation_drop_counter_exact", "stale_sfx_absent_after_recovery"];
 var ASSET_INVENTORY_EXTENSIONS = [".flac", ".m4a", ".mp3", ".mp4", ".ogg", ".opus", ".wav", ".waz"];
+
+var R2_PROFILE = {
+    h1ReceiptPath: H1_RECEIPT_PATH,
+    h1ReceiptSchema: "cf7.audio-v2.h1-implementation-acceptance.v2",
+    h1SchemaId: "cf7.audio-v2.h1-implementation-acceptance.schema.v2",
+    h1SchemaPath: H1_SCHEMA_PATH,
+    manifestPath: MANIFEST_PATH,
+    manifestSchema: "cf7.audio-v2.h1-decision-manifest.v2",
+    manifestSchemaId: "cf7.audio-v2.h1-decision-manifest.schema.v2",
+    manifestSchemaPath: MANIFEST_SCHEMA_PATH,
+    manifestSha256: EXPECTED_MANIFEST_SHA256,
+    priorReceiptPaths: [],
+    proposalExactPaths: ["AGENTS.md", ADR_PATH, MEMO_PATH, "docs/evidence/audio-v2/research-ready-preload-observation.json"].concat(FROZEN_CONTRACT_PATHS),
+    requiredCaseChecks: REQUIRED_CASE_CHECKS,
+    revision: "R2",
+    scopeRevision: "AUDIO-V2-H1-SWEET-SPOT-R2",
+    frozenContractPaths: FROZEN_CONTRACT_PATHS
+};
+var R3_PROFILE = {
+    h1ReceiptPath: R3_H1_RECEIPT_PATH,
+    h1ReceiptSchema: "cf7.audio-v2.h1-implementation-acceptance.v3",
+    h1SchemaId: "cf7.audio-v2.h1-implementation-acceptance.schema.v3",
+    h1SchemaPath: R3_H1_SCHEMA_PATH,
+    manifestPath: R3_MANIFEST_PATH,
+    manifestSchema: "cf7.audio-v2.h1-decision-manifest.v3",
+    manifestSchemaId: "cf7.audio-v2.h1-decision-manifest.schema.v3",
+    manifestSchemaPath: R3_MANIFEST_SCHEMA_PATH,
+    manifestSha256: R3_EXPECTED_MANIFEST_SHA256,
+    priorReceiptPaths: [H1_RECEIPT_PATH],
+    proposalParentCommit: "45ec64a7e663c717cc5c79a8dc50c834ff5f4832",
+    proposalParentTree: "2cabdc414a6b844b77fd6f27891ebd73bb899cc3",
+    proposalExactPaths: [ADR_PATH, MEMO_PATH, R3_MANIFEST_PATH, R3_MANIFEST_SCHEMA_PATH, R3_H1_SCHEMA_PATH, VALIDATOR_PATH, TEST_PATH],
+    requiredCaseChecks: R3_REQUIRED_CASE_CHECKS,
+    revision: "R3",
+    scopeRevision: "AUDIO-V2-H1-SWEET-SPOT-R3",
+    frozenContractPaths: R3_FROZEN_CONTRACT_PATHS
+};
 
 var ADR_RECOVERY_STATES = {
     proposal: {
@@ -221,6 +268,27 @@ var MEMO_RECOVERY_STATES = {
         state: "READ_ONLY_RESEARCH_COMPLETE / IMPLEMENTATION_AUTHORIZED_A1_A6 / NOT_DEPLOYED"
     }
 };
+
+var R3_ADR_RECOVERY_STATES = {
+    proposal: {
+        markers: ["H1_STATE=pending_exact_human_acceptance", "H2_STATE=not_applicable_before_A6"],
+        state: "PROPOSED / HUMAN_ACCEPTANCE_REQUIRED / IMPLEMENTATION_BLOCKED / NOT_DEPLOYED"
+    },
+    h1: ADR_RECOVERY_STATES.h1,
+    e1: ADR_RECOVERY_STATES.e1,
+    h2: ADR_RECOVERY_STATES.h2
+};
+var R3_MEMO_RECOVERY_STATES = {
+    proposal: {
+        markers: ["H1_STATE=pending_exact_human_acceptance"],
+        state: "READ_ONLY_RESEARCH_COMPLETE / IMPLEMENTATION_BLOCKED / NOT_DEPLOYED"
+    },
+    h1: MEMO_RECOVERY_STATES.h1
+};
+R2_PROFILE.adrStates = ADR_RECOVERY_STATES;
+R2_PROFILE.memoStates = MEMO_RECOVERY_STATES;
+R3_PROFILE.adrStates = R3_ADR_RECOVERY_STATES;
+R3_PROFILE.memoStates = R3_MEMO_RECOVERY_STATES;
 
 function fail(message) {
     throw new Error(message);
@@ -314,7 +382,13 @@ function validateTopRecoveryState(text, expected, label) {
     return true;
 }
 
-function validateManifest(manifest) {
+function profileForManifest(manifest) {
+    if (manifest && manifest.schema === R3_PROFILE.manifestSchema && manifest.scopeRevision === R3_PROFILE.scopeRevision) return R3_PROFILE;
+    return R2_PROFILE;
+}
+
+function validateManifest(manifest, profile) {
+    profile = profile || profileForManifest(manifest);
     exactKeys(manifest, [
         "abi", "assetContract", "authorization", "backend", "bridge",
         "buildAndDependency", "capability", "decisions", "decoderMatrix",
@@ -323,8 +397,8 @@ function validateManifest(manifest) {
         "scopeRevision", "selectedAlternatives"
     ], "manifest");
 
-    expect(manifest.schema === "cf7.audio-v2.h1-decision-manifest.v2", "unexpected manifest schema");
-    expect(manifest.scopeRevision === "AUDIO-V2-H1-SWEET-SPOT-R2", "unexpected scope revision");
+    expect(manifest.schema === profile.manifestSchema, "unexpected manifest schema");
+    expect(manifest.scopeRevision === profile.scopeRevision, "unexpected scope revision");
     exactKeys(manifest.authorization, ["deploymentState", "humanGate", "phases", "promotionAuthorized"], "authorization");
     expect(JSON.stringify(manifest.authorization.phases) === JSON.stringify(["A1", "A2", "A3", "A4", "A5", "A6"]), "H1 phases must be exactly A1-A6");
     expect(manifest.authorization.promotionAuthorized === false, "H1 must not authorize promotion");
@@ -375,7 +449,15 @@ function validateManifest(manifest) {
     expect(manifest.assetContract.proposalBaseline.zeroShippedOggByExtensionAndMagic === true, "baseline zero Ogg fact missing");
     expect(manifest.assetContract.proposalBaseline.zeroShippedFlacByExtensionAndMagic === true, "baseline zero FLAC fact missing");
 
-    expect(manifest.evidenceGates.H1.receiptSchema === H1_SCHEMA_PATH, "H1 receipt schema path drift");
+    expect(manifest.evidenceGates.H1.receiptSchema === profile.h1SchemaPath, "H1 receipt schema path drift");
+    if (profile.revision === "R3") {
+        expect(manifest.evidenceGates.H1.activation === "tracked_r3_receipt_in_direct_single_parent_child_after_exact_human_acceptance", "R3 H1 activation policy drift");
+        expect(manifest.evidenceGates.H1.priorAcceptedReceiptPath === H1_RECEIPT_PATH, "R3 prior accepted receipt path drift");
+        expect(manifest.evidenceGates.H1.receiptPath === R3_H1_RECEIPT_PATH, "R3 H1 receipt path drift");
+    } else {
+        expect(manifest.evidenceGates.H1.activation === "tracked_receipt_in_descendant_commit_after_exact_human_acceptance", "R2 H1 activation policy drift");
+        expect(!Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H1, "priorAcceptedReceiptPath") && !Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H1, "receiptPath"), "R2 H1 receipt surface drift");
+    }
     expect(manifest.evidenceGates.H1.canonicalCheckoutPolicy === "gitattributes_forces_LF_for_audio_v2_contract_JSON_evidence_JSON_and_validator_test_JS_on_all_hosts", "canonical checkout policy drift");
     expect(manifest.evidenceGates.H2.automatedReportSchema === AUTOMATED_REPORT_SCHEMA_PATH, "automated report schema path drift");
     expect(manifest.evidenceGates.H2.automatedCaseEvidenceSchema === AUTOMATED_CASE_EVIDENCE_SCHEMA_PATH, "automated case evidence schema path drift");
@@ -393,7 +475,7 @@ function validateManifest(manifest) {
     expect(JSON.stringify(manifest.evidenceGates.H2.requiredAutomatedReportIds) === JSON.stringify(REQUIRED_AUTOMATED_REPORT_IDS), "required automated report IDs drift");
     expect(JSON.stringify(sortValue(manifest.evidenceGates.H2.requiredAutomatedReportCases)) === JSON.stringify(sortValue(REQUIRED_AUTOMATED_REPORT_CASES)), "required automated report case matrix drift");
     expect(JSON.stringify(sortValue(manifest.evidenceGates.H2.requiredReportInputRoles)) === JSON.stringify(sortValue(REQUIRED_REPORT_INPUT_ROLES)), "required report input role matrix drift");
-    expect(JSON.stringify(sortValue(manifest.evidenceGates.H2.requiredCaseChecks)) === JSON.stringify(sortValue(REQUIRED_CASE_CHECKS)), "required case check matrix drift");
+    expect(JSON.stringify(sortValue(manifest.evidenceGates.H2.requiredCaseChecks)) === JSON.stringify(sortValue(profile.requiredCaseChecks)), "required case check matrix drift");
     expect(JSON.stringify(sortValue(manifest.evidenceGates.H2.requiredCaseCaptureIds)) === JSON.stringify(sortValue(REQUIRED_CASE_CAPTURE_IDS)), "required case capture matrix drift");
     expect(JSON.stringify(sortValue(manifest.evidenceGates.H2.requiredListeningCaptureIds)) === JSON.stringify(sortValue(REQUIRED_LISTENING_CAPTURE_IDS)), "required listening capture matrix drift");
     expect(JSON.stringify(manifest.evidenceGates.H2.assetInventoryExtensions) === JSON.stringify(ASSET_INVENTORY_EXTENSIONS), "asset inventory extensions drift");
@@ -421,15 +503,42 @@ function validateManifest(manifest) {
     expect(manifest.evidenceGates.H2.endpointCaptureMinimumDurationSeconds === 1, "H2 capture minimum duration drift");
     expect(manifest.evidenceGates.H2.endpointCaptureMinPeakAbsPcm16 === 64 && manifest.evidenceGates.H2.endpointCaptureMinNonZeroSampleRatio === 0.001, "H2 capture signal threshold drift");
     expect(manifest.evidenceGates.H2.frozenContractReleaseSourcePolicy === "every_frozen_contract_blob_in_release_source_S_must_equal_proposal_P_even_if_worktree_bytes_are_restored", "release-source frozen contract policy drift");
-    expect(manifest.evidenceGates.H2.receiptTreeImmutabilityPolicy === "H1_receipt_must_match_H_S_E1_and_HEAD_H2_receipt_must_match_E2_and_HEAD", "receipt tree immutability policy drift");
+    if (profile.revision === "R3") {
+        var h2 = manifest.evidenceGates.H2;
+        exactKeys(h2.finiteSfxMeterWindowPolicy, ["anchor", "passRule", "terminalSilenceAllowed"], "R3 finite SFX meter window policy");
+        expect(h2.finiteSfxMeterWindowPolicy.anchor === "current_generation_finite_sfx_stimulus_dispatch_in_sfx_playback_or_bgm_sfx_mix", "R3 finite SFX meter anchor drift");
+        expect(h2.finiteSfxMeterWindowPolicy.passRule === "at_least_one_post_anchor_snapshot_has_sfx_frame_advance_and_peak_abs_at_least_64_and_the_final_snapshot_has_total_sfx_frame_advance", "R3 finite SFX meter pass rule drift");
+        expect(h2.finiteSfxMeterWindowPolicy.terminalSilenceAllowed === true, "R3 finite SFX terminal silence policy drift");
+        exactKeys(h2.sleepResumeRecoveryClockPolicy, ["carrierRevision", "fallbackForbidden", "field", "maximumEpisodeDelta100ns", "sleepAndHibernateExcluded", "source", "unit", "utcRole"], "R3 recovery clock policy");
+        expect(h2.sleepResumeRecoveryClockPolicy.carrierRevision === 2 && h2.sleepResumeRecoveryClockPolicy.field === "workingStateElapsed100ns", "R3 recovery clock carrier/field drift");
+        expect(h2.sleepResumeRecoveryClockPolicy.maximumEpisodeDelta100ns === 150000000 && h2.sleepResumeRecoveryClockPolicy.source === "QueryUnbiasedInterruptTimePrecise", "R3 recovery clock authority/SLA drift");
+        expect(h2.sleepResumeRecoveryClockPolicy.sleepAndHibernateExcluded === true && h2.sleepResumeRecoveryClockPolicy.fallbackForbidden === true, "R3 recovery clock exclusion/fail-closed policy drift");
+        expect(h2.sleepResumeRecoveryClockPolicy.utcRole === "audit_only_not_duration_authority" && h2.sleepResumeRecoveryClockPolicy.unit === "100ns", "R3 recovery clock unit/UTC role drift");
+        var stale = h2.noStaleSfxAfterRecoveryR3;
+        exactKeys(stale, ["armResult", "carrierRevision", "dispatchRule", "exactDeltas", "requiredFacts", "staleBatchSize", "unchangedCounters", "windowRule"], "R3 stale SFX policy");
+        expect(stale.carrierRevision === 2 && stale.staleBatchSize === 1, "R3 stale SFX carrier/batch drift");
+        expect(JSON.stringify(stale.armResult) === JSON.stringify({ result: "armed", sent: false }), "R3 stale SFX arm response drift");
+        expect(stale.dispatchRule === "arm_before_device_change_then_after_first_Recovering_and_before_closing_new_Ready_host_dispatches_one_SFX_batch_with_the_pre_recovery_audioReadyGeneration_in_the_same_audioSessionId", "R3 stale SFX dispatch rule drift");
+        expect(stale.windowRule === "pre_snapshot_is_Ready_on_old_generation_dispatch_is_strictly_after_Recovering_and_before_closing_Ready_post_snapshot_is_Ready_in_same_session_on_new_generation", "R3 stale SFX window rule drift");
+        expect(JSON.stringify(stale.exactDeltas) === JSON.stringify({ staleGenerationDrops: 1 }), "R3 stale-generation exact delta drift");
+        expect(JSON.stringify(stale.unchangedCounters) === JSON.stringify(["playedCount", "preReadyDrops", "recoveryDrops", "unknownIdCount", "throttledCount", "startFailureCount"]), "R3 unchanged stale-SFX counters drift");
+        expect(JSON.stringify(stale.requiredFacts) === JSON.stringify(["captureId", "staleBatchSize", "armResult", "dispatchSequence", "recoveringSequence", "closingReadySequence", "audioReadyGenerationBefore", "audioReadyGenerationAfter", "playedBefore", "playedAfter", "preReadyDropsBefore", "preReadyDropsAfter", "recoveryDropsBefore", "recoveryDropsAfter", "staleGenerationDropsBefore", "staleGenerationDropsAfter", "unknownIdCountBefore", "unknownIdCountAfter", "throttledCountBefore", "throttledCountAfter", "startFailureCountBefore", "startFailureCountAfter"]), "R3 stale-SFX required facts drift");
+        expect(h2.receiptTreeImmutabilityPolicy === "R2_and_R3_H1_receipts_must_remain_byte_identical_from_their_activation_commits_through_S_E1_and_HEAD_H2_receipt_must_match_E2_and_HEAD", "R3 receipt tree immutability policy drift");
+    } else {
+        expect(!Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H2, "finiteSfxMeterWindowPolicy") && !Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H2, "noStaleSfxAfterRecoveryR3") && !Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H2, "sleepResumeRecoveryClockPolicy"), "R2 H2 policy surface drift");
+        expect(manifest.evidenceGates.H2.receiptTreeImmutabilityPolicy === "H1_receipt_must_match_H_S_E1_and_HEAD_H2_receipt_must_match_E2_and_HEAD", "R2 receipt tree immutability policy drift");
+    }
     expect(manifest.release.runtimeRequestSchema === "existing_cf7_runtime_build_request_v2_unchanged", "runtime request schema must remain unchanged");
-    expect(sha256(canonicalBytes(manifest)) === EXPECTED_MANIFEST_SHA256, "manifest semantic bytes differ from the R2 validator constant; raise scope revision and update validator/tests/ADR together");
+    expect(sha256(canonicalBytes(manifest)) === profile.manifestSha256, "manifest semantic bytes differ from the " + profile.revision + " validator constant; raise scope revision and update validator/tests/ADR together");
     return manifest;
 }
 
-function validateSchemaSurfaces(root) {
-    var manifestSchema = readJson(MANIFEST_SCHEMA_PATH, { canonical: true, root: root }).value;
-    var h1Schema = readJson(H1_SCHEMA_PATH, { canonical: true, root: root }).value;
+function validateSchemaSurfaces(root, profile) {
+    profile = profile || R2_PROFILE;
+    var manifestSchemaFile = readJson(profile.manifestSchemaPath, { canonical: true, root: root });
+    var h1SchemaFile = readJson(profile.h1SchemaPath, { canonical: true, root: root });
+    var manifestSchema = manifestSchemaFile.value;
+    var h1Schema = h1SchemaFile.value;
     var automatedReportSchema = readJson(AUTOMATED_REPORT_SCHEMA_PATH, { canonical: true, root: root }).value;
     var automatedReportConfigurationSchema = readJson(AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH, { canonical: true, root: root }).value;
     var automatedReportInputSchema = readJson(AUTOMATED_REPORT_INPUT_SCHEMA_PATH, { canonical: true, root: root }).value;
@@ -445,6 +554,13 @@ function validateSchemaSurfaces(root) {
     var h2Schema = readJson(H2_SCHEMA_PATH, { canonical: true, root: root }).value;
     expect(manifestSchema.additionalProperties === false, "manifest schema must reject extra top-level keys");
     expect(h1Schema.additionalProperties === false, "H1 schema must reject extra top-level keys");
+    expect(manifestSchema.$id === profile.manifestSchemaId && h1Schema.$id === profile.h1SchemaId, "contract schema IDs drift");
+    expect(manifestSchema.properties.schema.const === profile.manifestSchema && manifestSchema.properties.scopeRevision.const === profile.scopeRevision, "manifest schema revision constants drift");
+    expect(h1Schema.properties.schema.const === profile.h1ReceiptSchema && h1Schema.properties.scopeRevision.const === profile.scopeRevision && h1Schema.properties.contract.properties.manifestPath.const === profile.manifestPath, "H1 schema revision/path constants drift");
+    if (profile.revision === "R3") {
+        expect(sha256(manifestSchemaFile.buffer) === R3_EXPECTED_MANIFEST_SCHEMA_SHA256, "R3 manifest schema bytes differ from the validator constant");
+        expect(sha256(h1SchemaFile.buffer) === R3_EXPECTED_H1_SCHEMA_SHA256, "R3 H1 schema bytes differ from the validator constant");
+    }
     expect(automatedReportSchema.additionalProperties === false, "automated report schema must reject extra top-level keys");
     expect(automatedReportConfigurationSchema.additionalProperties === false, "automated report configuration schema must reject extra top-level keys");
     expect(automatedReportInputSchema.additionalProperties === false, "automated report input schema must reject extra top-level keys");
@@ -556,52 +672,68 @@ function validateCandidateSourceDomains(parsedManifest, sourceDomains) {
     return true;
 }
 
-function validateProposalShape(commit, root) {
+function profileForProposalCommit(commit, root) {
+    return gitPathExists(commit, R3_MANIFEST_PATH, root) ? R3_PROFILE : R2_PROFILE;
+}
+
+function validateProposalShape(commit, root, profile) {
+    profile = profile || profileForProposalCommit(commit, root);
     var ancestry = gitParents(commit, root);
     expect(ancestry.parents.length === 1, "proposal P must be a single-parent commit");
-    var exactAllowed = ["AGENTS.md", ADR_PATH, MEMO_PATH, "docs/evidence/audio-v2/research-ready-preload-observation.json"].concat(FROZEN_CONTRACT_PATHS);
+    if (profile.proposalParentCommit) {
+        expect(ancestry.parents[0] === profile.proposalParentCommit, profile.revision + " proposal P parent commit mismatch");
+        expect(git(["rev-parse", ancestry.parents[0] + "^{tree}"], { root: root }).trim() === profile.proposalParentTree, profile.revision + " proposal P parent tree mismatch");
+    }
+    var exactAllowed = profile.proposalExactPaths;
     var changed = gitChangedPaths(commit, root);
     changed.forEach(function (rel) {
-        expect(exactAllowed.indexOf(rel) >= 0, "proposal P contains non-A0 path: " + rel);
+        expect(exactAllowed.indexOf(rel) >= 0, profile.revision + " proposal P contains an unauthorized path: " + rel);
     });
     exactAllowed.forEach(function (rel) {
-        expect(changed.indexOf(rel) >= 0, "proposal P did not introduce/update required A0 path: " + rel);
+        expect(changed.indexOf(rel) >= 0, profile.revision + " proposal P did not introduce/update required path: " + rel);
     });
-    expect(changed.length === exactAllowed.length, "proposal P changed path count differs from exact A0 set");
+    expect(changed.length === exactAllowed.length, profile.revision + " proposal P changed path count differs from its exact set");
     TEMP_REVIEW_PATHS.forEach(function (rel) { expect(!gitPathExists(commit, rel, root), "temporary review exists in proposal tree: " + rel); });
     return { parent: ancestry.parents[0], paths: changed };
 }
 
-function resolveProposal(commit, root) {
+function resolveProposal(commit, root, profileOverride) {
     var fullCommit = git(["rev-parse", commit + "^{commit}"], { root: root }).trim();
     var tree = git(["rev-parse", fullCommit + "^{tree}"], { root: root }).trim();
-    var shape = validateProposalShape(fullCommit, root);
-    var paths = [ADR_PATH].concat(FROZEN_CONTRACT_PATHS);
+    var profile = profileOverride || profileForProposalCommit(fullCommit, root);
+    var shape = validateProposalShape(fullCommit, root, profile);
+    var paths = [ADR_PATH].concat(profile.frozenContractPaths);
     var bindings = {};
     paths.forEach(function (rel) { bindings[rel] = gitObjectBinding(fullCommit, rel, root); });
-    var proposalManifest = parseJsonBuffer(bindings[MANIFEST_PATH].bytes, commit + ":" + MANIFEST_PATH);
-    expect(bindings[MANIFEST_PATH].bytes.equals(canonicalBytes(proposalManifest)), "proposal manifest bytes are not canonical");
-    validateManifest(proposalManifest);
-    expect(shape.parent === proposalManifest.assetContract.proposalBaseline.sourceCommit, "proposal P parent must equal manifest proposalBaseline.sourceCommit");
-    expect(git(["rev-parse", shape.parent + "^{tree}"], { root: root }).trim() === proposalManifest.assetContract.proposalBaseline.sourceTreeOid, "proposal P parent tree must equal manifest proposalBaseline.sourceTreeOid");
-    validateAdrDigest(bindings[ADR_PATH].bytes.toString("utf8"), bindings[MANIFEST_PATH].sha256);
-    return { bindings: bindings, commit: fullCommit, manifest: proposalManifest, parent: shape.parent, tree: tree };
+    var proposalManifest = parseJsonBuffer(bindings[profile.manifestPath].bytes, commit + ":" + profile.manifestPath);
+    expect(bindings[profile.manifestPath].bytes.equals(canonicalBytes(proposalManifest)), "proposal manifest bytes are not canonical");
+    validateManifest(proposalManifest, profile);
+    if (profile.revision === "R2") {
+        expect(shape.parent === proposalManifest.assetContract.proposalBaseline.sourceCommit, "R2 proposal P parent must equal manifest proposalBaseline.sourceCommit");
+        expect(git(["rev-parse", shape.parent + "^{tree}"], { root: root }).trim() === proposalManifest.assetContract.proposalBaseline.sourceTreeOid, "R2 proposal P parent tree must equal manifest proposalBaseline.sourceTreeOid");
+    }
+    validateAdrDigest(bindings[ADR_PATH].bytes.toString("utf8"), bindings[profile.manifestPath].sha256, profile);
+    return { bindings: bindings, commit: fullCommit, manifest: proposalManifest, parent: shape.parent, profile: profile, tree: tree };
 }
 
-function validateAdrDigest(adrText, digest) {
-    var match = adrText.match(/decision manifest SHA-256[^`]*`([A-F0-9]{64})`/);
-    expect(match, "ADR is missing decision manifest SHA-256 marker");
+function validateAdrDigest(adrText, digest, profile) {
+    profile = profile || R2_PROFILE;
+    var marker = profile.revision === "R3" ? "R3 decision manifest SHA-256" : "decision manifest SHA-256";
+    var escapedMarker = marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    var match = adrText.match(new RegExp(escapedMarker + "[^`]*`([A-F0-9]{64})`"));
+    expect(match, "ADR is missing " + marker + " marker");
     expect(match[1] === digest, "ADR decision manifest SHA-256 does not match canonical manifest bytes");
-    expect(adrText.indexOf("AUDIO-V2-H1-SWEET-SPOT-R2") >= 0, "ADR is missing R2 scope revision");
-    expect(adrText.indexOf(MANIFEST_PATH) >= 0, "ADR does not route to canonical decision manifest");
+    expect(adrText.indexOf(profile.scopeRevision) >= 0, "ADR is missing " + profile.revision + " scope revision");
+    expect(adrText.indexOf(profile.manifestPath) >= 0, "ADR does not route to canonical decision manifest");
 }
 
 function validateReceiptBinding(receipt, proposal) {
+    var profile = proposal.profile || profileForManifest(proposal.manifest);
     exactKeys(receipt, ["authorization", "contract", "decision", "recordedAtUtc", "reviewer", "schema", "scopeRevision"], "H1 receipt");
     exactKeys(receipt.authorization, ["deploymentState", "phases", "promotionAuthorized"], "H1 receipt authorization");
     exactKeys(receipt.contract, ["adrBlobOid", "adrPath", "manifestBlobOid", "manifestPath", "manifestSha256", "proposalCommit", "proposalTree", "testBlobOid", "testPath", "validatorBlobOid", "validatorPath"], "H1 receipt contract");
     exactKeys(receipt.reviewer, ["channel", "role", "verbatim"], "H1 receipt reviewer");
-    expect(receipt.schema === "cf7.audio-v2.h1-implementation-acceptance.v2", "unexpected H1 receipt schema");
+    expect(receipt.schema === profile.h1ReceiptSchema, "unexpected H1 receipt schema");
     expect(receipt.scopeRevision === proposal.manifest.scopeRevision, "H1 receipt scope revision mismatch");
     expect(receipt.decision === "accepted", "H1 receipt decision must be accepted");
     expect(receipt.authorization.promotionAuthorized === false, "H1 receipt cannot authorize promotion");
@@ -609,9 +741,9 @@ function validateReceiptBinding(receipt, proposal) {
     expect(JSON.stringify(receipt.authorization.phases) === JSON.stringify(["A1", "A2", "A3", "A4", "A5", "A6"]), "H1 receipt phases mismatch");
     expect(receipt.contract.proposalCommit === proposal.commit, "H1 receipt proposal commit mismatch");
     expect(receipt.contract.proposalTree === proposal.tree, "H1 receipt proposal tree mismatch");
-    expect(receipt.contract.manifestPath === MANIFEST_PATH, "H1 receipt manifest path mismatch");
-    expect(receipt.contract.manifestSha256 === proposal.bindings[MANIFEST_PATH].sha256, "H1 receipt manifest SHA mismatch");
-    expect(receipt.contract.manifestBlobOid === proposal.bindings[MANIFEST_PATH].blobOid, "H1 receipt manifest blob mismatch");
+    expect(receipt.contract.manifestPath === profile.manifestPath, "H1 receipt manifest path mismatch");
+    expect(receipt.contract.manifestSha256 === proposal.bindings[profile.manifestPath].sha256, "H1 receipt manifest SHA mismatch");
+    expect(receipt.contract.manifestBlobOid === proposal.bindings[profile.manifestPath].blobOid, "H1 receipt manifest blob mismatch");
     expect(receipt.contract.adrPath === ADR_PATH && receipt.contract.adrBlobOid === proposal.bindings[ADR_PATH].blobOid, "H1 receipt ADR binding mismatch");
     expect(receipt.contract.validatorPath === VALIDATOR_PATH && receipt.contract.validatorBlobOid === proposal.bindings[VALIDATOR_PATH].blobOid, "H1 receipt validator binding mismatch");
     expect(receipt.contract.testPath === TEST_PATH && receipt.contract.testBlobOid === proposal.bindings[TEST_PATH].blobOid, "H1 receipt test binding mismatch");
@@ -886,13 +1018,14 @@ function validateH2ReceiptBinding(receipt, evidenceContext) {
 }
 
 function formatH1Proposal(proposal) {
+    var profile = proposal.profile || profileForManifest(proposal.manifest);
     return [
         "H1_IMPLEMENTATION_ACCEPTANCE",
         "scopeRevision=" + proposal.manifest.scopeRevision,
         "proposalCommit=" + proposal.commit,
         "proposalTree=" + proposal.tree,
-        "manifestPath=" + MANIFEST_PATH,
-        "manifestSha256=" + proposal.bindings[MANIFEST_PATH].sha256,
+        "manifestPath=" + profile.manifestPath,
+        "manifestSha256=" + proposal.bindings[profile.manifestPath].sha256,
         "promotionAuthorized=false",
         "decision=accepted"
     ].join("\n");
@@ -922,26 +1055,38 @@ function formatH2Proposal(evidenceContext) {
 }
 
 function formatJsonFiles() {
-    [MANIFEST_PATH, MANIFEST_SCHEMA_PATH, H1_SCHEMA_PATH, AUTOMATED_REPORT_SCHEMA_PATH, AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH, AUTOMATED_REPORT_INPUT_SCHEMA_PATH, AUTOMATED_CASE_EVIDENCE_SCHEMA_PATH, ASSET_EOF_RESULTS_SCHEMA_PATH, ASSET_WAIVER_SCHEMA_PATH, CANDIDATE_VERIFICATION_SCHEMA_PATH, ENDPOINT_CAPTURE_CONFIGURATION_SCHEMA_PATH, PRODUCER_VERIFICATION_SCHEMA_PATH, RUNNER_DEPENDENCY_SCHEMA_PATH, A6_SCHEMA_PATH, LISTENING_SCHEMA_PATH, H2_SCHEMA_PATH, "docs/evidence/audio-v2/research-ready-preload-observation.json"].forEach(function (rel) {
+    [MANIFEST_PATH, MANIFEST_SCHEMA_PATH, H1_SCHEMA_PATH, R3_MANIFEST_PATH, R3_MANIFEST_SCHEMA_PATH, R3_H1_SCHEMA_PATH, AUTOMATED_REPORT_SCHEMA_PATH, AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH, AUTOMATED_REPORT_INPUT_SCHEMA_PATH, AUTOMATED_CASE_EVIDENCE_SCHEMA_PATH, ASSET_EOF_RESULTS_SCHEMA_PATH, ASSET_WAIVER_SCHEMA_PATH, CANDIDATE_VERIFICATION_SCHEMA_PATH, ENDPOINT_CAPTURE_CONFIGURATION_SCHEMA_PATH, PRODUCER_VERIFICATION_SCHEMA_PATH, RUNNER_DEPENDENCY_SCHEMA_PATH, A6_SCHEMA_PATH, LISTENING_SCHEMA_PATH, H2_SCHEMA_PATH, "docs/evidence/audio-v2/research-ready-preload-observation.json"].forEach(function (rel) {
+        if (!fs.existsSync(absolute(rel))) return;
         var parsed = readJson(rel).value;
         fs.writeFileSync(absolute(rel), canonicalBytes(parsed));
     });
 }
 
-function validateFrozenWorkingBytes(proposal) {
-    FROZEN_CONTRACT_PATHS.forEach(function (rel) {
-        var current = fs.readFileSync(absolute(rel));
+function validateFrozenWorkingBytes(proposal, root) {
+    var profile = proposal.profile || R2_PROFILE;
+    profile.frozenContractPaths.forEach(function (rel) {
+        var current = fs.readFileSync(absolute(rel, root));
         expect(current.equals(proposal.bindings[rel].bytes), "frozen contract path differs from proposal P; raise revision and obtain a new H1: " + rel);
     });
 }
 
 function validateReleaseSourceFreeze(proposal, releaseCommit, root) {
-    FROZEN_CONTRACT_PATHS.forEach(function (rel) {
+    var profile = proposal.profile || R2_PROFILE;
+    profile.frozenContractPaths.forEach(function (rel) {
         var source = gitObjectBinding(releaseCommit, rel, root);
         var accepted = proposal.bindings[rel];
         expect(source.blobOid === accepted.blobOid && source.sha256 === accepted.sha256 && source.bytes.equals(accepted.bytes), "release source S changed frozen H1 contract bytes; raise revision and obtain a new H1: " + rel);
     });
     return true;
+}
+
+function validateImmutableReceiptPath(rel, head, root) {
+    var activationCommit = introductionCommit(rel, head || "HEAD", root);
+    var activation = gitObjectBinding(activationCommit, rel, root);
+    var current = gitObjectBinding(head || "HEAD", rel, root);
+    expect(current.blobOid === activation.blobOid && current.bytes.equals(activation.bytes), "accepted receipt changed or was replaced after activation: " + rel);
+    if ((!head || head === "HEAD") && fs.existsSync(absolute(rel, root))) expect(fs.readFileSync(absolute(rel, root)).equals(activation.bytes), "working accepted receipt differs from immutable history: " + rel);
+    return { binding: activation, commit: activationCommit };
 }
 
 function trackedHeadText(rel, label, root) {
@@ -982,26 +1127,25 @@ function expectDirectEvidenceCommit(commit, expectedParent, exactPaths, label, r
     expect(JSON.stringify(changed) === JSON.stringify(exactPaths.slice().sort()), label + " changed paths must be exactly: " + exactPaths.join(", ") + "; got: " + changed.join(", "));
 }
 
-function validateH1Activation(proposal, receiptFile) {
-    var activationCommit = introductionCommit(H1_RECEIPT_PATH, "HEAD");
-    expectDirectEvidenceCommit(activationCommit, proposal.commit, [ADR_PATH, MEMO_PATH, H1_RECEIPT_PATH], "H1 activation commit");
-    var receiptAtActivation = gitObjectBinding(activationCommit, H1_RECEIPT_PATH);
+function validateH1Activation(proposal, receiptFile, root) {
+    var profile = proposal.profile || R2_PROFILE;
+    var receiptPath = profile.h1ReceiptPath;
+    var activationCommit = introductionCommit(receiptPath, "HEAD", root);
+    expectDirectEvidenceCommit(activationCommit, proposal.commit, [ADR_PATH, MEMO_PATH, receiptPath], "H1 activation commit", root);
+    var receiptAtActivation = gitObjectBinding(activationCommit, receiptPath, root);
     expect(receiptAtActivation.bytes.equals(receiptFile.buffer), "H1 receipt changed after activation or differs from activation commit");
-    var receiptAtHead = gitObjectBinding("HEAD", H1_RECEIPT_PATH);
+    var receiptAtHead = gitObjectBinding("HEAD", receiptPath, root);
     expect(receiptAtHead.blobOid === receiptAtActivation.blobOid && receiptAtHead.bytes.equals(receiptAtActivation.bytes), "H1 receipt changed after activation in the current HEAD tree");
-    var adrAtActivation = gitObjectBinding(activationCommit, ADR_PATH).bytes.toString("utf8");
-    var memoAtActivation = gitObjectBinding(activationCommit, MEMO_PATH).bytes.toString("utf8");
-    validateTopRecoveryState(adrAtActivation, ADR_RECOVERY_STATES.h1, "H1 activation ADR");
-    validateTopRecoveryState(memoAtActivation, MEMO_RECOVERY_STATES.h1, "H1 activation memo");
-    [
-        "| H1 | accepted |",
-        "| A0 | completed_H1 |",
-        "| A1 | authorized_pending |",
-        "当前 H1 已有效"
-    ].forEach(function (needle) { expect(adrAtActivation.indexOf(needle) >= 0, "H1 activation ADR is missing atomic recovery marker: " + needle); });
-    [
-        "当前 H1 已有效"
-    ].forEach(function (needle) { expect(memoAtActivation.indexOf(needle) >= 0, "H1 activation memo is missing atomic recovery marker: " + needle); });
+    var adrAtActivation = gitObjectBinding(activationCommit, ADR_PATH, root).bytes.toString("utf8");
+    var memoAtActivation = gitObjectBinding(activationCommit, MEMO_PATH, root).bytes.toString("utf8");
+    validateTopRecoveryState(adrAtActivation, profile.adrStates.h1, "H1 activation ADR");
+    validateTopRecoveryState(memoAtActivation, profile.memoStates.h1, "H1 activation memo");
+    var adrActivationMarkers = profile.revision === "R3"
+        ? ["| R3 H1 | accepted |", "| R3 implementation | authorized_A1_A6 |", "当前 R3 H1 已有效"]
+        : ["| H1 | accepted |", "| A0 | completed_H1 |", "| A1 | authorized_pending |", "当前 H1 已有效"];
+    adrActivationMarkers.forEach(function (needle) { expect(adrAtActivation.indexOf(needle) >= 0, "H1 activation ADR is missing atomic recovery marker: " + needle); });
+    var memoActivationMarker = profile.revision === "R3" ? "当前 R3 H1 已有效" : "当前 H1 已有效";
+    expect(memoAtActivation.indexOf(memoActivationMarker) >= 0, "H1 activation memo is missing atomic recovery marker: " + memoActivationMarker);
     return activationCommit;
 }
 
@@ -1301,11 +1445,12 @@ function validateCaseEvidenceCommon(caseEvidence, report, caseResult, configurat
     expectRfc3339Utc(caseEvidence.generatedAtUtc, "case evidence generatedAtUtc");
 }
 
-function validateGenericCaseEvidence(caseEvidence, report, caseResult, configurationBinding, inputManifest, evidence) {
+function validateGenericCaseEvidence(caseEvidence, report, caseResult, configurationBinding, inputManifest, evidence, profile) {
     exactKeys(caseEvidence, ["candidateBuildIdentity", "candidatePayloadClosure", "captureIds", "caseId", "checks", "configurationSha256", "generatedAtUtc", "inputClosureSha256", "producerBlobOid", "producerSha256", "releaseSource", "reportId", "result", "schema"], "automated case evidence " + caseResult.caseId);
     expect(caseEvidence.schema === "cf7.audio-v2.automated-case-evidence.v1", "unexpected automated case evidence schema: " + caseResult.caseId);
     validateCaseEvidenceCommon(caseEvidence, report, caseResult, configurationBinding, inputManifest, evidence);
-    var requiredChecks = REQUIRED_CASE_CHECKS[report.reportId] && REQUIRED_CASE_CHECKS[report.reportId][caseResult.caseId];
+    var requiredCheckPolicy = (profile || R2_PROFILE).requiredCaseChecks;
+    var requiredChecks = requiredCheckPolicy[report.reportId] && requiredCheckPolicy[report.reportId][caseResult.caseId];
     expect(requiredChecks, "required check policy missing for case: " + report.reportId + "/" + caseResult.caseId);
     expect(Array.isArray(caseEvidence.checks) && caseEvidence.checks.length === requiredChecks.length, "case evidence check count mismatch: " + caseResult.caseId);
     var requiredCaptureIds = (REQUIRED_CASE_CAPTURE_IDS[report.reportId] && REQUIRED_CASE_CAPTURE_IDS[report.reportId][caseResult.caseId]) || [];
@@ -1608,7 +1753,8 @@ function resolveCandidateVerification(evidence, evidenceCommit, changedPaths, ro
     return { attestation: attestation, binding: binding, liveVerified: Boolean(liveCandidateRoot), runtimeManifestBinding: manifestBinding };
 }
 
-function resolveEvidence(commit, evidencePath, root, liveCandidateRoot) {
+function resolveEvidence(commit, evidencePath, root, liveCandidateRoot, profile) {
+    profile = profile || R2_PROFILE;
     expectString(evidencePath, "evidence manifest path");
     expect(evidencePath.indexOf("docs/evidence/audio-v2/") === 0 && evidencePath.endsWith(".json"), "A6 evidence manifest must be tracked under docs/evidence/audio-v2 as JSON");
     var fullCommit = git(["rev-parse", commit + "^{commit}"], { root: root }).trim();
@@ -1675,7 +1821,7 @@ function resolveEvidence(commit, evidencePath, root, liveCandidateRoot) {
             if (report.reportId === "asset_offline_eof_qualification" && caseResult.caseId === "shipped_corpus_all_files") {
                 validateAssetEofResults(caseEvidence, reportJson, caseResult, configurationBinding, inputManifest, evidence, root);
             } else {
-                validateGenericCaseEvidence(caseEvidence, reportJson, caseResult, configurationBinding, inputManifest, evidence);
+                validateGenericCaseEvidence(caseEvidence, reportJson, caseResult, configurationBinding, inputManifest, evidence, profile);
             }
         });
         expect(report.verificationArtifact.path.indexOf("docs/evidence/audio-v2/verifications/") === 0 && report.verificationArtifact.path.endsWith(".json"), "producer verification must be tracked under docs/evidence/audio-v2/verifications: " + report.reportId);
@@ -1738,56 +1884,67 @@ function validateH2Activation(evidenceContext, receiptPath, root) {
 }
 
 function validateWorkspace(options) {
+    options = options || {};
     TEMP_REVIEW_PATHS.forEach(function (rel) { expect(!fs.existsSync(absolute(rel)), "temporary review must be deleted: " + rel); });
     validateCanonicalCheckoutPolicy();
-    var manifestFile = readJson(MANIFEST_PATH, { canonical: true });
-    var manifest = validateManifest(manifestFile.value);
-    validateSchemaSurfaces();
+    var profile = options.proposalCommit ? profileForProposalCommit(options.proposalCommit) : (fs.existsSync(absolute(R3_MANIFEST_PATH)) ? R3_PROFILE : R2_PROFILE);
+    var manifestFile = readJson(profile.manifestPath, { canonical: true });
+    var manifest = validateManifest(manifestFile.value, profile);
+    validateSchemaSurfaces(null, profile);
     var digest = sha256(manifestFile.buffer);
     var adrText = fs.readFileSync(absolute(ADR_PATH), "utf8");
-    validateAdrDigest(adrText, digest);
+    validateAdrDigest(adrText, digest, profile);
     var proposal = null;
     var h1ActivationCommit = null;
 
-    if (!options || !options.proposalCommit) {
-        validateTopRecoveryState(adrText, ADR_RECOVERY_STATES.proposal, "proposal ADR");
-        validateTopRecoveryState(fs.readFileSync(absolute(MEMO_PATH), "utf8"), MEMO_RECOVERY_STATES.proposal, "proposal memo");
+    if (!options.proposalCommit) {
+        validateTopRecoveryState(adrText, profile.adrStates.proposal, "proposal ADR");
+        validateTopRecoveryState(fs.readFileSync(absolute(MEMO_PATH), "utf8"), profile.memoStates.proposal, "proposal memo");
     }
 
-    if (options && options.proposalCommit) {
+    if (options.proposalCommit) {
         proposal = resolveProposal(options.proposalCommit);
+        profile = proposal.profile;
         validateFrozenWorkingBytes(proposal);
         var ancestor = cp.spawnSync("git", ["merge-base", "--is-ancestor", proposal.commit, "HEAD"], { cwd: ROOT });
         expect(ancestor.status === 0, "proposal commit is not an ancestor of HEAD");
         adrText = trackedHeadText(ADR_PATH, "current ADR");
         var committedMemoText = trackedHeadText(MEMO_PATH, "current memo");
-        if (fs.existsSync(absolute(H1_RECEIPT_PATH))) {
-            var receiptFile = readJson(H1_RECEIPT_PATH, { canonical: true });
+        profile.priorReceiptPaths.forEach(function (rel) { validateImmutableReceiptPath(rel, "HEAD"); });
+        if (fs.existsSync(absolute(profile.h1ReceiptPath))) {
+            var receiptFile = readJson(profile.h1ReceiptPath, { canonical: true });
             validateReceiptBinding(receiptFile.value, proposal);
             h1ActivationCommit = validateH1Activation(proposal, receiptFile);
-            validateTopRecoveryState(committedMemoText, MEMO_RECOVERY_STATES.h1, "current memo after H1");
-            if (!options.evidenceCommit) validateTopRecoveryState(adrText, ADR_RECOVERY_STATES.h1, "current ADR after H1");
+            validateTopRecoveryState(committedMemoText, profile.memoStates.h1, "current memo after H1");
+            if (!options.evidenceCommit) validateTopRecoveryState(adrText, profile.adrStates.h1, "current ADR after H1");
         } else {
-            expect(introductionCommits(H1_RECEIPT_PATH, "HEAD").length === 0, "H1 receipt was previously introduced but is now missing");
-            validateTopRecoveryState(adrText, ADR_RECOVERY_STATES.proposal, "proposal ADR before H1");
-            validateTopRecoveryState(committedMemoText, MEMO_RECOVERY_STATES.proposal, "proposal memo before H1");
+            expect(introductionCommits(profile.h1ReceiptPath, "HEAD").length === 0, "H1 receipt was previously introduced but is now missing");
+            validateTopRecoveryState(adrText, profile.adrStates.proposal, "proposal ADR before H1");
+            validateTopRecoveryState(committedMemoText, profile.memoStates.proposal, "proposal memo before H1");
         }
         if (options.printH1) process.stdout.write(formatH1Proposal(proposal) + "\n");
     }
     var evidenceContext = null;
     if (options && options.evidenceCommit) {
         expect(proposal, "evidence/H2 mode requires --proposal-commit");
-        expect(fs.existsSync(absolute(H1_RECEIPT_PATH)) && h1ActivationCommit, "evidence/H2 mode requires a valid committed H1 receipt");
+        expect(fs.existsSync(absolute(profile.h1ReceiptPath)) && h1ActivationCommit, "evidence/H2 mode requires a valid committed H1 receipt");
         expect(options.evidenceManifest, "--evidence-manifest is required with --evidence-commit");
-        evidenceContext = resolveEvidence(options.evidenceCommit, options.evidenceManifest, null, options.candidateRoot);
+        evidenceContext = resolveEvidence(options.evidenceCommit, options.evidenceManifest, null, options.candidateRoot, profile);
         var hBeforeSource = cp.spawnSync("git", ["merge-base", "--is-ancestor", h1ActivationCommit, evidenceContext.manifest.releaseSource.commit], { cwd: ROOT });
         expect(hBeforeSource.status === 0, "H1 activation commit must be an ancestor of release source S");
         validateReleaseSourceFreeze(proposal, evidenceContext.manifest.releaseSource.commit);
-        var h1ReceiptAtActivation = gitObjectBinding(h1ActivationCommit, H1_RECEIPT_PATH);
-        var h1ReceiptAtSource = gitObjectBinding(evidenceContext.manifest.releaseSource.commit, H1_RECEIPT_PATH);
+        var h1ReceiptAtActivation = gitObjectBinding(h1ActivationCommit, profile.h1ReceiptPath);
+        var h1ReceiptAtSource = gitObjectBinding(evidenceContext.manifest.releaseSource.commit, profile.h1ReceiptPath);
         expect(h1ReceiptAtSource.blobOid === h1ReceiptAtActivation.blobOid && h1ReceiptAtSource.bytes.equals(h1ReceiptAtActivation.bytes), "release source S changed or removed the accepted H1 receipt");
-        var h1ReceiptAtEvidence = gitObjectBinding(evidenceContext.commit, H1_RECEIPT_PATH);
+        var h1ReceiptAtEvidence = gitObjectBinding(evidenceContext.commit, profile.h1ReceiptPath);
         expect(h1ReceiptAtEvidence.blobOid === h1ReceiptAtActivation.blobOid && h1ReceiptAtEvidence.bytes.equals(h1ReceiptAtActivation.bytes), "E1 changed or removed the accepted H1 receipt");
+        profile.priorReceiptPaths.forEach(function (rel) {
+            var priorAtHead = validateImmutableReceiptPath(rel, "HEAD").binding;
+            [evidenceContext.manifest.releaseSource.commit, evidenceContext.commit].forEach(function (commit) {
+                var bound = gitObjectBinding(commit, rel);
+                expect(bound.blobOid === priorAtHead.blobOid && bound.bytes.equals(priorAtHead.bytes), commit + " changed or removed prior accepted receipt: " + rel);
+            });
+        });
         if (options.printH2) {
             expect(options.candidateRoot && evidenceContext.candidateVerification.liveVerified, "--print-h2 requires --candidate-root and a fresh live candidate rehash");
             process.stdout.write(formatH2Proposal(evidenceContext) + "\n");
@@ -1802,7 +1959,7 @@ function validateWorkspace(options) {
             validateTopRecoveryState(adrText, ADR_RECOVERY_STATES.e1, "current ADR before H2");
         }
     }
-    return { digest: digest, evidenceContext: evidenceContext, manifest: manifest };
+    return { digest: digest, evidenceContext: evidenceContext, manifest: manifest, profile: profile };
 }
 
 function main() {
@@ -1856,7 +2013,17 @@ module.exports = {
     ADR_PATH: ADR_PATH,
     EXPECTED_MANIFEST_SHA256: EXPECTED_MANIFEST_SHA256,
     FROZEN_CONTRACT_PATHS: FROZEN_CONTRACT_PATHS,
+    H1_RECEIPT_PATH: H1_RECEIPT_PATH,
+    MEMO_PATH: MEMO_PATH,
     MANIFEST_PATH: MANIFEST_PATH,
+    R2_PROFILE: R2_PROFILE,
+    R3_EXPECTED_MANIFEST_SHA256: R3_EXPECTED_MANIFEST_SHA256,
+    R3_EXPECTED_MANIFEST_SCHEMA_SHA256: R3_EXPECTED_MANIFEST_SCHEMA_SHA256,
+    R3_EXPECTED_H1_SCHEMA_SHA256: R3_EXPECTED_H1_SCHEMA_SHA256,
+    R3_FROZEN_CONTRACT_PATHS: R3_FROZEN_CONTRACT_PATHS,
+    R3_H1_RECEIPT_PATH: R3_H1_RECEIPT_PATH,
+    R3_MANIFEST_PATH: R3_MANIFEST_PATH,
+    R3_PROFILE: R3_PROFILE,
     REQUIRED_AUTOMATED_REPORT_CASES: REQUIRED_AUTOMATED_REPORT_CASES,
     REQUIRED_CASE_CAPTURE_IDS: REQUIRED_CASE_CAPTURE_IDS,
     REQUIRED_CASE_CHECKS: REQUIRED_CASE_CHECKS,
@@ -1889,8 +2056,11 @@ module.exports = {
     validateH2ReceiptBinding: validateH2ReceiptBinding,
     validateListeningMatrix: validateListeningMatrix,
     validateReceiptBinding: validateReceiptBinding,
+    validateImmutableReceiptPath: validateImmutableReceiptPath,
     validateReleaseSourceFreeze: validateReleaseSourceFreeze,
+    validateProposalShape: validateProposalShape,
     validateReportInputManifest: validateReportInputManifest,
+    validateSchemaSurfaces: validateSchemaSurfaces,
     validateTopRecoveryState: validateTopRecoveryState,
     verifyCandidate: verifyCandidate,
     validateWorkspace: validateWorkspace
