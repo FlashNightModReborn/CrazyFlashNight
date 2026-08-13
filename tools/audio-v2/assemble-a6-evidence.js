@@ -599,7 +599,7 @@ function sourceObservationCommon(reportId, context) {
         releaseSource: context.releaseSource,
         reportId,
         runId: context.runId,
-        schema: "cf7.audio-v2.live-observation.v1",
+        schema: "cf7.audio-v2.live-observation.v2",
         session: {}
     };
 }

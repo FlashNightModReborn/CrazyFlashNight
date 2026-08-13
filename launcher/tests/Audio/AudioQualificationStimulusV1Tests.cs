@@ -1068,12 +1068,27 @@ namespace CF7Launcher.Tests.Audio
                             "journal",
                             100)))
                     {
-                        Assert.Contains(
-                            journal.RootElement.GetProperty("journal")
-                                .GetProperty("events")
-                                .EnumerateArray(),
-                            entry => entry.GetProperty("kind").GetString() ==
-                                "coordinator_recovery");
+                        JsonElement[] events = journal.RootElement
+                            .GetProperty("journal")
+                            .GetProperty("events")
+                            .EnumerateArray()
+                            .ToArray();
+                        JsonElement arm = Assert.Single(events, entry =>
+                            entry.GetProperty("kind").GetString() ==
+                                "recovery_sfx_armed");
+                        Assert.Equal(Id(1), arm.GetProperty("payload")
+                            .GetProperty("requestId").GetString());
+                        Assert.Equal("armed", arm.GetProperty("payload")
+                            .GetProperty("result").GetString());
+                        Assert.False(arm.GetProperty("payload")
+                            .GetProperty("sent").GetBoolean());
+                        long armSequence = arm.GetProperty("sequence")
+                            .GetInt64();
+                        long recoverySequence = Assert.Single(events, entry =>
+                            entry.GetProperty("kind").GetString() ==
+                                "coordinator_recovery")
+                            .GetProperty("sequence").GetInt64();
+                        Assert.True(armSequence < recoverySequence);
                     }
                 }
             }

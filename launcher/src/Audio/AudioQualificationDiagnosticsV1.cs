@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -14,6 +15,23 @@ using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Audio
 {
+    internal static class AudioQualificationWorkingStateClockV2
+    {
+        internal const ulong MaximumJsonSafeInteger = 9007199254740991UL;
+
+        internal static ulong Read100ns()
+        {
+            QueryUnbiasedInterruptTimePrecise(out ulong value);
+            return value;
+        }
+
+        [DllImport(
+            "api-ms-win-core-realtime-l1-1-1.dll",
+            ExactSpelling = true)]
+        private static extern void QueryUnbiasedInterruptTimePrecise(
+            out ulong unbiasedInterruptTimePrecise);
+    }
+
     internal static class AudioQualificationInvocationV1
     {
         internal const string Flag = "--audio-v2-qualification-run-id";
@@ -432,6 +450,7 @@ namespace CF7Launcher.Audio
         internal long Sequence;
         internal string Sha256;
         internal string Source;
+        internal long WorkingStateElapsed100ns;
 
         internal void Write(Utf8JsonWriter writer)
         {
@@ -450,6 +469,9 @@ namespace CF7Launcher.Audio
             writer.WriteNumber("sequence", Sequence);
             writer.WriteString("sha256", Sha256);
             writer.WriteString("source", Source);
+            writer.WriteNumber(
+                "workingStateElapsed100ns",
+                WorkingStateElapsed100ns);
             writer.WriteEndObject();
         }
     }
@@ -458,9 +480,9 @@ namespace CF7Launcher.Audio
         : IAudioTaskQualificationObserverV2, IDisposable
     {
         internal const string Protocol =
-            "cf7.audio-v2.qualification-pipe.v1";
+            "cf7.audio-v2.qualification-pipe.v2";
         internal const string ResponseSchema =
-            "cf7.audio-v2.qualification-response.v1";
+            "cf7.audio-v2.qualification-response.v2";
         internal const int MaxRequestBytes = 65536;
         internal const int MaxRequestsPerClient = 512;
         internal const int MaxConnections = 1024;
@@ -508,6 +530,8 @@ namespace CF7Launcher.Audio
         private readonly string _runId;
         private readonly AudioQualificationCandidateIdentityV1 _candidate;
         private readonly Func<AudioCoordinatorSnapshotV2> _snapshotProvider;
+        private readonly Func<ulong> _workingStateClock;
+        private readonly ulong _workingStateOrigin100ns;
         private readonly int _crossfadeSampleIntervalMilliseconds;
         private readonly int _crossfadeSamplerWindowMilliseconds;
         private readonly int _maxCrossfadeAutomaticSamples;
@@ -525,8 +549,11 @@ namespace CF7Launcher.Audio
         private string _activeCaseId;
         private int _nextCaseIndex;
         private long _lastMonotonicTicks;
+        private ulong _lastWorkingStateElapsed100ns;
+        private bool _hasWorkingStateEvent;
         private string _lastSha256 = ZeroSha256;
         private bool _journalOverflow;
+        private bool _journalClockFault;
         private long _journalByteBudget;
         private int _totalRequests;
         private int _disposed;
@@ -540,7 +567,8 @@ namespace CF7Launcher.Audio
             int crossfadeSampleIntervalMilliseconds =
                 CrossfadeSampleIntervalMilliseconds,
             int crossfadeSamplerWindowMilliseconds =
-                CrossfadeSamplerWindowMilliseconds)
+                CrossfadeSamplerWindowMilliseconds,
+            Func<ulong> workingStateClock = null)
         {
             if (!AudioQualificationInvocationV1.IsLowercaseHex32(runId))
                 throw new ArgumentException("runId");
@@ -561,6 +589,9 @@ namespace CF7Launcher.Audio
             _candidate = candidate ?? throw new ArgumentNullException("candidate");
             _snapshotProvider = snapshotProvider ??
                 throw new ArgumentNullException("snapshotProvider");
+            _workingStateClock = workingStateClock ??
+                throw new ArgumentNullException("workingStateClock");
+            _workingStateOrigin100ns = _workingStateClock();
             _maxCrossfadeAutomaticSamples =
                 maxCrossfadeAutomaticSamples;
             _crossfadeSampleIntervalMilliseconds =
@@ -580,6 +611,7 @@ namespace CF7Launcher.Audio
             {
                 return Volatile.Read(ref _disposed) == 0 &&
                     !_journalOverflow &&
+                    !_journalClockFault &&
                     string.Equals(
                         _activeCaseId,
                         caseId,
@@ -604,6 +636,7 @@ namespace CF7Launcher.Audio
             {
                 return Volatile.Read(ref _disposed) == 0 &&
                     !_journalOverflow &&
+                    !_journalClockFault &&
                     _activeCaseId == null &&
                     _nextCaseIndex == nextIndex;
             }
@@ -615,7 +648,9 @@ namespace CF7Launcher.Audio
             var host = new AudioQualificationDiagnosticsHostV1(
                 runId,
                 AudioQualificationCandidateIdentityV1.LoadCurrent(),
-                AudioEngine.CaptureQualificationSnapshot);
+                AudioEngine.CaptureQualificationSnapshot,
+                workingStateClock:
+                    AudioQualificationWorkingStateClockV2.Read100ns);
             Action<AudioCoordinatorSnapshotV2> handler =
                 host.RecordCoordinatorSnapshot;
             AudioEngine.SnapshotChanged += handler;
@@ -644,7 +679,8 @@ namespace CF7Launcher.Audio
             int crossfadeSampleIntervalMilliseconds =
                 CrossfadeSampleIntervalMilliseconds,
             int crossfadeSamplerWindowMilliseconds =
-                CrossfadeSamplerWindowMilliseconds)
+                CrossfadeSamplerWindowMilliseconds,
+            Func<ulong> workingStateClock = null)
         {
             var host = new AudioQualificationDiagnosticsHostV1(
                 runId,
@@ -652,7 +688,9 @@ namespace CF7Launcher.Audio
                 snapshotProvider,
                 maxCrossfadeAutomaticSamples,
                 crossfadeSampleIntervalMilliseconds,
-                crossfadeSamplerWindowMilliseconds);
+                crossfadeSamplerWindowMilliseconds,
+                workingStateClock ??
+                    AudioQualificationWorkingStateClockV2.Read100ns);
             host.StartPipe();
             return host;
         }
@@ -787,6 +825,37 @@ namespace CF7Launcher.Audio
                     writer.WriteNumber("wireRevision", batch.WireRevision);
                     writer.WriteEndObject();
                 }));
+        }
+
+        internal void RecordRecoverySfxArm(
+            string requestId,
+            string result,
+            bool sent)
+        {
+            if (!CanRecordActiveEvent())
+                throw new InvalidDataException(
+                    "Recovery SFX arm is outside an active qualification case.");
+            if (string.IsNullOrWhiteSpace(requestId) ||
+                !string.Equals(result, "armed", StringComparison.Ordinal) ||
+                sent)
+            {
+                throw new InvalidDataException(
+                    "Recovery SFX arm result is invalid.");
+            }
+            AudioQualificationEventV1 value = AppendActiveEvent(
+                "recovery_sfx_armed",
+                "qualification_stimulus",
+                WriteJson(delegate(Utf8JsonWriter writer)
+                {
+                    writer.WriteStartObject();
+                    writer.WriteString("requestId", requestId);
+                    writer.WriteString("result", result);
+                    writer.WriteBoolean("sent", sent);
+                    writer.WriteEndObject();
+                }));
+            if (value == null)
+                throw new InvalidDataException(
+                    "Qualification journal rejected the recovery SFX arm result.");
         }
 
         internal void RecordCoordinatorSnapshot(
@@ -930,9 +999,9 @@ namespace CF7Launcher.Audio
         {
             lock (_sync)
             {
-                if (_journalOverflow)
+                if (_journalOverflow || _journalClockFault)
                     throw new InvalidDataException(
-                        "Qualification journal overflowed.");
+                        "Qualification journal is invalid.");
                 if (!_requestIds.Add(request.RequestId))
                     throw new InvalidDataException(
                         "Qualification request id was replayed.");
@@ -1248,7 +1317,8 @@ namespace CF7Launcher.Audio
             {
                 return Volatile.Read(ref _disposed) == 0 &&
                     _activeCaseId != null &&
-                    !_journalOverflow;
+                    !_journalOverflow &&
+                    !_journalClockFault;
             }
         }
 
@@ -1257,7 +1327,8 @@ namespace CF7Launcher.Audio
             string source,
             byte[] payload)
         {
-            if (_journalOverflow || Volatile.Read(ref _disposed) != 0)
+            if (_journalOverflow || _journalClockFault ||
+                Volatile.Read(ref _disposed) != 0)
                 return null;
             byte[] safePayload = payload ?? EmptyObject();
             long eventByteBudget = checked((long)safePayload.Length + 2048L);
@@ -1272,7 +1343,33 @@ namespace CF7Launcher.Audio
             long monotonic = Stopwatch.GetTimestamp();
             if (monotonic <= _lastMonotonicTicks)
                 monotonic = checked(_lastMonotonicTicks + 1L);
+            ulong workingStateElapsed100ns;
+            try
+            {
+                ulong workingStateNow100ns = _workingStateClock();
+                if (workingStateNow100ns < _workingStateOrigin100ns)
+                    throw new InvalidOperationException(
+                        "Qualification working-state clock regressed before its origin.");
+                workingStateElapsed100ns =
+                    workingStateNow100ns - _workingStateOrigin100ns;
+                if (workingStateElapsed100ns >
+                        AudioQualificationWorkingStateClockV2.MaximumJsonSafeInteger ||
+                    (_hasWorkingStateEvent &&
+                     workingStateElapsed100ns <
+                        _lastWorkingStateElapsed100ns))
+                {
+                    throw new InvalidOperationException(
+                        "Qualification working-state clock is invalid or regressed.");
+                }
+            }
+            catch
+            {
+                _journalClockFault = true;
+                return null;
+            }
             _lastMonotonicTicks = monotonic;
+            _lastWorkingStateElapsed100ns = workingStateElapsed100ns;
+            _hasWorkingStateEvent = true;
             var value = new AudioQualificationEventV1
             {
                 CaseId = _activeCaseId,
@@ -1284,7 +1381,9 @@ namespace CF7Launcher.Audio
                 PreviousSha256 = _lastSha256,
                 RunId = _runId,
                 Sequence = _events.Count + 1L,
-                Source = source
+                Source = source,
+                WorkingStateElapsed100ns = checked(
+                    (long)workingStateElapsed100ns)
             };
             value.Sha256 = HashEvent(value);
             _lastSha256 = value.Sha256;
@@ -1313,6 +1412,9 @@ namespace CF7Launcher.Audio
                 writer.WriteString("runId", value.RunId);
                 writer.WriteNumber("sequence", value.Sequence);
                 writer.WriteString("source", value.Source);
+                writer.WriteNumber(
+                    "workingStateElapsed100ns",
+                    value.WorkingStateElapsed100ns);
                 writer.WriteEndObject();
             });
             using (SHA256 sha256 = SHA256.Create())
@@ -1371,9 +1473,9 @@ namespace CF7Launcher.Audio
             string sha256;
             lock (_sync)
             {
-                if (_journalOverflow)
+                if (_journalOverflow || _journalClockFault)
                     throw new InvalidDataException(
-                        "Qualification journal overflowed.");
+                        "Qualification journal is invalid.");
                 if (_events.Count > MaxJournalEvents ||
                     _journalByteBudget > MaxJournalByteBudget ||
                     _journalByteBudget + 4096L > MaxResponseBytes)

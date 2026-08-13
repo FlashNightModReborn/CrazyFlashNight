@@ -212,7 +212,7 @@ function sourceFixture() {
                 releaseSource,
                 reportId,
                 runId,
-                schema: "cf7.audio-v2.live-observation.v1",
+                schema: "cf7.audio-v2.live-observation.v2",
                 session: {
                     audioReadyGeneration: 3,
                     audioSessionId: "assembler-test-session",
@@ -224,7 +224,7 @@ function sourceFixture() {
                     sampleRate: 48000
                 }
             },
-            schema: "cf7.audio-v2.candidate-journal-carrier.v1"
+            schema: "cf7.audio-v2.candidate-journal-carrier.v2"
         };
     }
     function loadEndpointArgv(reportId, _file, _candidate, _source, boundNodeExe) {
@@ -335,7 +335,7 @@ test("prepare atomically creates nine source/candidate-bound configurations and 
             assert.deepEqual(input.inputs.map((entry) => entry.role).sort(), runner.REPORT_INPUT_ROLES[reportId].slice().sort());
             const decoded = runner.decodeConfigurationLiveObservation(configuration);
             if (assembler.ENDPOINT_REPORT_IDS.includes(reportId)) {
-                assert.equal(decoded.schema, "cf7.audio-v2.candidate-journal-carrier.v1");
+                assert.equal(decoded.schema, "cf7.audio-v2.candidate-journal-carrier.v2");
                 assert.deepEqual(decoded.journal, fixture.endpointCarrier(reportId).journal);
             } else {
                 assert.equal(decoded.reportId, reportId);

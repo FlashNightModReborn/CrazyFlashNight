@@ -242,7 +242,7 @@ function makeFixture(mutator) {
         releaseSource,
         reportId,
         runId: "unit-source-probe-001",
-        schema: "cf7.audio-v2.live-observation.v1",
+        schema: "cf7.audio-v2.live-observation.v2",
         session: { executionKind: "recomputed_bound_source_probe", toolchainSha256 }
     };
     configuration.argv = [environmentValues[NODE_EXE_ENV], RUNNER_REL, "--report-id", reportId].concat(runner.encodeLiveObservationArguments(observation));
@@ -808,6 +808,40 @@ test("endpoint runtime format stays f32 while capture serialization remains PCM1
         () => runner.validateStableGenerationTuple(hiddenRecoveryOnSameEndpoint, runtimeSession, "physical route"),
         /undeclared recovery\/generation transition/
     );
+});
+
+test("stale recovery facts require exact arm, ordering, generation drop and unchanged counters", () => {
+    const facts = {
+        armResult: { result: "armed", sent: false },
+        audioReadyGenerationAfter: 2, audioReadyGenerationBefore: 1,
+        captureId: "device_recovery", closingReadySequence: 6, dispatchSequence: 5,
+        playedAfter: 0, playedBefore: 0, preReadyDropsAfter: 0, preReadyDropsBefore: 0,
+        recoveringSequence: 4, recoveryDropsAfter: 0, recoveryDropsBefore: 0,
+        staleBatchSize: 1, staleGenerationDropsAfter: 1, staleGenerationDropsBefore: 0,
+        startFailureCountAfter: 0, startFailureCountBefore: 0,
+        throttledCountAfter: 0, throttledCountBefore: 0,
+        unknownIdCountAfter: 0, unknownIdCountBefore: 0
+    };
+    const captures = { device_recovery: {} };
+    const validate = (value) => runner.validateEndpointCaseFacts(
+        "device_recovery_endpoint_e2e", "no_stale_sfx_after_recovery", value, captures);
+    assert.doesNotThrow(() => validate(facts));
+    assert.deepStrictEqual(
+        runner.CASE_CHECKS.device_recovery_endpoint_e2e.no_stale_sfx_after_recovery,
+        ["stale_generation_drop_counter_exact", "stale_sfx_absent_after_recovery"]);
+
+    const wrongArm = JSON.parse(JSON.stringify(facts));
+    wrongArm.armResult.sent = true;
+    assert.throws(() => validate(wrongArm), /arm result is not exact/);
+    const wrongOrder = JSON.parse(JSON.stringify(facts));
+    wrongOrder.dispatchSequence = wrongOrder.recoveringSequence;
+    assert.throws(() => validate(wrongOrder), /order drifted/);
+    const wrongGenerationCounter = JSON.parse(JSON.stringify(facts));
+    wrongGenerationCounter.staleGenerationDropsAfter = 0;
+    assert.throws(() => validate(wrongGenerationCounter), /generation-drop counter delta drifted/);
+    const wrongUnchangedCounter = JSON.parse(JSON.stringify(facts));
+    wrongUnchangedCounter.recoveryDropsAfter = 1;
+    assert.throws(() => validate(wrongUnchangedCounter), /unchanged counter advanced: recoveryDrops/);
 });
 
 test("checked-in dependency closure binds the exact runner bytes", () => {

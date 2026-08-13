@@ -208,7 +208,7 @@ const CASE_CHECKS = Object.freeze({
         default_device_switch: ["new_device_identity_published", "post_switch_endpoint_pcm"],
         physical_route_bluetooth_or_hdmi: ["physical_route_identity_recorded", "routed_endpoint_pcm"],
         sleep_resume: ["post_resume_endpoint_pcm", "recovery_bounded"],
-        no_stale_sfx_after_recovery: ["recovery_drop_counter_exact", "stale_sfx_absent_after_recovery"]
+        no_stale_sfx_after_recovery: ["stale_generation_drop_counter_exact", "stale_sfx_absent_after_recovery"]
     }
 });
 
@@ -781,7 +781,7 @@ function validateLiveObservation(context) {
         "candidateBuildIdentity", "candidatePayloadClosure", "caseFacts", "candidateProcess",
         "generatedAtUtc", "releaseSource", "reportId", "runId", "schema", "session"
     ], "live observation");
-    expect(value.schema === "cf7.audio-v2.live-observation.v1", "live observation schema mismatch");
+    expect(value.schema === "cf7.audio-v2.live-observation.v2", "live observation schema mismatch");
     expect(value.reportId === context.report.reportId, "live observation reportId mismatch");
     expect(value.candidateBuildIdentity === context.report.candidateBuildIdentity && value.candidatePayloadClosure === context.report.candidatePayloadClosure, "live observation candidate mismatch");
     expect(JSON.stringify(value.releaseSource) === JSON.stringify(context.report.releaseSource), "live observation release source mismatch");
@@ -1135,7 +1135,34 @@ function validateEndpointCaseFacts(reportId, caseId, facts, captures) {
     } else if (caseId === "sleep_resume") {
         exactKeys(facts, ["captureId", "deviceGenerationAfter", "deviceGenerationBefore", "maxRecoveryMs", "recoveryMs"], "sleep/resume facts"); bindCapture(facts.captureId); ["deviceGenerationAfter", "deviceGenerationBefore", "maxRecoveryMs", "recoveryMs"].forEach((key) => requireInteger(facts[key], "sleep/resume " + key, 1)); expect(facts.deviceGenerationAfter > facts.deviceGenerationBefore && facts.recoveryMs <= facts.maxRecoveryMs, "sleep/resume recovery was not bounded");
     } else if (caseId === "no_stale_sfx_after_recovery") {
-        exactKeys(facts, ["captureId", "playedAfter", "playedBefore", "recoveryDropsAfter", "recoveryDropsBefore", "staleBatchSize"], "stale SFX recovery facts"); bindCapture(facts.captureId); Object.keys(facts).filter((key) => key !== "captureId").forEach((key) => requireInteger(facts[key], "stale SFX " + key, key === "staleBatchSize" ? 1 : 0)); expect(facts.recoveryDropsAfter - facts.recoveryDropsBefore === facts.staleBatchSize && facts.playedAfter === facts.playedBefore, "stale SFX were replayed or drop counter drifted");
+        exactKeys(facts, [
+            "armResult", "audioReadyGenerationAfter", "audioReadyGenerationBefore", "captureId",
+            "closingReadySequence", "dispatchSequence", "playedAfter", "playedBefore",
+            "preReadyDropsAfter", "preReadyDropsBefore", "recoveringSequence",
+            "recoveryDropsAfter", "recoveryDropsBefore", "staleBatchSize",
+            "staleGenerationDropsAfter", "staleGenerationDropsBefore",
+            "startFailureCountAfter", "startFailureCountBefore", "throttledCountAfter",
+            "throttledCountBefore", "unknownIdCountAfter", "unknownIdCountBefore"
+        ], "stale SFX recovery facts");
+        bindCapture(facts.captureId);
+        exactKeys(facts.armResult, ["result", "sent"], "stale SFX arm result");
+        expect(facts.armResult.result === "armed" && facts.armResult.sent === false,
+            "stale SFX arm result is not exact armed/not-sent");
+        Object.keys(facts).filter((key) => key !== "captureId" && key !== "armResult")
+            .forEach((key) => requireInteger(facts[key], "stale SFX " + key,
+                key === "staleBatchSize" || key.endsWith("Sequence") || key.startsWith("audioReadyGeneration") ? 1 : 0));
+        expect(facts.staleBatchSize === 1,
+            "stale SFX batch size differs from the frozen one-item stimulus");
+        expect(facts.recoveringSequence < facts.dispatchSequence &&
+            facts.dispatchSequence < facts.closingReadySequence,
+        "stale SFX recovery/dispatch/ready order drifted");
+        expect(facts.audioReadyGenerationAfter > facts.audioReadyGenerationBefore,
+            "stale SFX ready generation did not advance");
+        expect(facts.staleGenerationDropsAfter - facts.staleGenerationDropsBefore === facts.staleBatchSize,
+            "stale SFX generation-drop counter delta drifted");
+        ["played", "preReadyDrops", "recoveryDrops", "unknownIdCount", "throttledCount", "startFailureCount"]
+            .forEach((stem) => expect(facts[stem + "After"] === facts[stem + "Before"],
+                "stale SFX unchanged counter advanced: " + stem));
     } else {
         fail("VALIDATION_FAILED", "unimplemented endpoint semantic case " + caseId);
     }
@@ -2341,6 +2368,7 @@ module.exports = Object.freeze({
     validateConfiguration,
     validateCaptureConfiguration,
     validateDecoderFixtureInventory,
+    validateEndpointCaseFacts,
     validateInvocation,
     validateToolchain,
     validateEndpointRuntimeSession,

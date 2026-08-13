@@ -13,9 +13,10 @@ const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
 
-const PROTOCOL = "cf7.audio-v2.qualification-pipe.v1";
-const RESPONSE_SCHEMA = "cf7.audio-v2.qualification-response.v1";
-const JOURNAL_CARRIER_SCHEMA = "cf7.audio-v2.candidate-journal-carrier.v1";
+const PROTOCOL = "cf7.audio-v2.qualification-pipe.v2";
+const RESPONSE_SCHEMA = "cf7.audio-v2.qualification-response.v2";
+const JOURNAL_CARRIER_SCHEMA = "cf7.audio-v2.candidate-journal-carrier.v2";
+const LIVE_OBSERVATION_SCHEMA = "cf7.audio-v2.live-observation.v2";
 const CLIENT_PATH = "tools/audio-v2/qualification-observer-client.ps1";
 const MAX_REQUEST_BYTES = 65536;
 const MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
@@ -60,10 +61,11 @@ const CASE_INGRESS_GRAMMAR = Object.freeze({
 const EVENT_KINDS = new Set([
     "case_begin", "case_end", "as2_bgm_request", "as2_bgm_result",
     "as2_sfx_batch", "coordinator_snapshot", "coordinator_recovery",
-    "qualification_snapshot"
+    "qualification_snapshot", "recovery_sfx_armed"
 ]);
 const EVENT_SOURCES = new Set([
-    "as2_ingress", "audio_coordinator", "qualification_observer"
+    "as2_ingress", "audio_coordinator", "qualification_observer",
+    "qualification_stimulus"
 ]);
 const RESULT_CATEGORIES = new Set([
     "ok", "missing", "unsupported_container", "unsupported_codec",
@@ -305,10 +307,19 @@ function validateSfxBatchPayload(value, label) {
     expect(value.wireRevision === 2, label + ".wireRevision must be 2");
 }
 
+function validateRecoverySfxArmPayload(value, label) {
+    exactKeys(value, ["requestId", "result", "sent"], label);
+    expect(typeof value.requestId === "string" && /^[a-f0-9]{32}$/.test(value.requestId),
+        label + ".requestId must be 32 lowercase hex");
+    expect(value.result === "armed" && value.sent === false,
+        label + " must be the exact armed/not-sent response");
+}
+
 function validateEvent(value, expectedRunId, label) {
     exactKeys(value, [
         "caseId", "kind", "monotonicTicks", "observedAtUtc", "payload",
-        "previousSha256", "runId", "sequence", "sha256", "source"
+        "previousSha256", "runId", "sequence", "sha256", "source",
+        "workingStateElapsed100ns"
     ], label);
     expect(ENDPOINT_CASE_SET.has(value.caseId), label + ".caseId invalid");
     expect(EVENT_KINDS.has(value.kind), label + ".kind invalid");
@@ -319,6 +330,8 @@ function validateEvent(value, expectedRunId, label) {
     expectUint(value.sequence, label + ".sequence", 1);
     expectSha(value.sha256, label + ".sha256");
     expect(EVENT_SOURCES.has(value.source), label + ".source invalid");
+    expectUint(value.workingStateElapsed100ns,
+        label + ".workingStateElapsed100ns");
 
     if (value.kind === "case_begin" || value.kind === "case_end") {
         expect(value.source === "qualification_observer", label + " marker source mismatch");
@@ -335,6 +348,12 @@ function validateEvent(value, expectedRunId, label) {
     } else if (value.kind === "as2_sfx_batch") {
         expect(value.source === "as2_ingress", label + " SFX batch did not enter through AS2");
         validateSfxBatchPayload(value.payload, label + ".payload");
+    } else if (value.kind === "recovery_sfx_armed") {
+        expect(value.caseId === "no_stale_sfx_after_recovery",
+            label + " recovery SFX arm event is outside the stale-generation case");
+        expect(value.source === "qualification_stimulus",
+            label + " recovery SFX arm event source mismatch");
+        validateRecoverySfxArmPayload(value.payload, label + ".payload");
     } else {
         const expectedSource = value.kind === "qualification_snapshot"
             ? "qualification_observer" : "audio_coordinator";
@@ -426,7 +445,8 @@ function validateJournal(value, runId) {
         expect(entry.previousSha256 === (index === 0 ? ZERO_SHA256 : value.events[index - 1].sha256), "qualification journal hash-chain drift at event " + index);
         if (index > 0) {
             expect(entry.monotonicTicks > value.events[index - 1].monotonicTicks, "qualification journal monotonic order drift at event " + index);
-            expect(Date.parse(entry.observedAtUtc) >= Date.parse(value.events[index - 1].observedAtUtc), "qualification journal UTC order drift at event " + index);
+            expect(entry.workingStateElapsed100ns >= value.events[index - 1].workingStateElapsed100ns,
+                "qualification journal working-state clock regressed at event " + index);
         }
     });
     expect(sha256(canonicalBytes(value.events)) === value.sha256, "qualification journal aggregate SHA-256 mismatch");
@@ -484,7 +504,7 @@ function validateJournalCarrier(value, expectedCandidate) {
         "candidateBuildIdentity", "candidatePayloadClosure", "caseFacts", "candidateProcess",
         "generatedAtUtc", "releaseSource", "reportId", "runId", "schema", "session"
     ], "candidate journal carrier observation");
-    expect(observation.schema === "cf7.audio-v2.live-observation.v1", "candidate journal carrier observation schema mismatch");
+    expect(observation.schema === LIVE_OBSERVATION_SCHEMA, "candidate journal carrier observation schema mismatch");
     expect(ENDPOINT_REPORT_CASES[observation.reportId], "candidate journal carrier report is not an endpoint report");
     expectRunId(observation.runId, "candidate journal carrier runId");
     expectRfc3339Utc(observation.generatedAtUtc, "candidate journal carrier generatedAtUtc");
@@ -617,6 +637,14 @@ function utcDeltaMs(before, after, label) {
     return result;
 }
 
+function workingStateDelta100ns(before, after, label) {
+    const result = after.workingStateElapsed100ns -
+        before.workingStateElapsed100ns;
+    expect(Number.isSafeInteger(result) && result >= 0,
+        label + " working-state duration invalid");
+    return result;
+}
+
 function bgmPairs(range, operation, expectedCount) {
     const requests = range.events.filter((entry) => entry.kind === "as2_bgm_request" && entry.payload.operation === operation);
     expect(requests.length === expectedCount, range.begin.caseId + " AS2 " + operation + " request count mismatch");
@@ -701,6 +729,32 @@ function expectMeterWindow(beforeEvent, afterEvent, meterName, minimumFrames, la
     const after = afterEvent.payload[meterName];
     expect(after.frameCount - before.frameCount >= minimumFrames, label + " meter frame window did not advance");
     expect(peakAbsPcm16(after) >= 64, label + " meter window has no qualified signal");
+}
+
+function expectFiniteSfxMeterWindow(range, snapshots, request, label) {
+    expect(request.events.length === 1, label + " finite SFX window requires one dispatch anchor");
+    const anchor = request.events[0];
+    const beforeCandidates = snapshots.filter((entry) => entry.sequence < anchor.sequence);
+    const postAnchor = snapshots.filter((entry) => entry.sequence > anchor.sequence);
+    expect(beforeCandidates.length > 0 && postAnchor.length > 0,
+        label + " finite SFX window is not bracketed around its dispatch anchor");
+    const before = beforeCandidates[beforeCandidates.length - 1];
+    expect(peakAbsPcm16(before.payload.sfxMeter) < 64,
+        label + " baseline is contaminated by residual SFX");
+    const beforeFrames = before.payload.sfxMeter.frameCount;
+    let previousFrames = beforeFrames;
+    let signal = null;
+    postAnchor.forEach((entry) => {
+        const frames = entry.payload.sfxMeter.frameCount;
+        expect(frames >= previousFrames, label + " SFX meter frameCount regressed after dispatch");
+        if (!signal && frames > beforeFrames && peakAbsPcm16(entry.payload.sfxMeter) >= 64) signal = entry;
+        previousFrames = frames;
+    });
+    const final = postAnchor[postAnchor.length - 1];
+    expect(final.payload.sfxMeter.frameCount > beforeFrames,
+        label + " final SFX meter frameCount did not advance after dispatch");
+    expect(signal, label + " has no post-dispatch advancing SFX snapshot with qualified signal");
+    return { before, final, signal };
 }
 
 function expectAnyBusMeterWindow(beforeEvent, afterEvent, minimumFrames, label) {
@@ -906,7 +960,7 @@ function deriveCaseFacts(caseId, range, options) {
         const after = snapshots[snapshots.length - 1].payload.counters;
         const played = counterDelta(before, after, "playedCount", caseId);
         expect(played === request.requestedVoices, "sfx_playback played counter differs from AS2 requests");
-        expectMeterWindow(snapshots[0], snapshots[snapshots.length - 1], "sfxMeter", 1, caseId);
+        expectFiniteSfxMeterWindow(range, snapshots, request, caseId);
         return {
             captureId: "sfx_playback",
             playedAfter: after.playedCount,
@@ -956,13 +1010,11 @@ function deriveCaseFacts(caseId, range, options) {
         expectSfxTuple(request, runtime, caseId);
         const before = snapshots[0].payload;
         const after = snapshots[snapshots.length - 1].payload;
-        expect(peakAbsPcm16(before.sfxMeter) < 64,
-            "bgm_sfx_mix baseline is contaminated by residual SFX");
         const played = counterDelta(before.counters, after.counters, "playedCount", caseId);
         expect(played > 0 && played <= request.requestedVoices, "bgm_sfx_mix has no SFX contribution");
         expectStableLoopSource(before.source, after.source, caseId);
         expectMeterWindow(snapshots[0], snapshots[snapshots.length - 1], "bgmMeter", 1, caseId + " BGM");
-        expectMeterWindow(snapshots[0], snapshots[snapshots.length - 1], "sfxMeter", 1, caseId + " SFX");
+        expectFiniteSfxMeterWindow(range, snapshots, request, caseId);
         const bgmFrames = after.bgmMeter.frameCount - before.bgmMeter.frameCount;
         return {
             bgmFrames,
@@ -1027,7 +1079,8 @@ function deriveCaseFacts(caseId, range, options) {
         expectSameAudioSession(snapshots, caseId);
         const before = snapshots[0].payload.runtime;
         const post = snapshots[snapshots.length - 1].payload.runtime;
-        const maximumAllowed = 15000;
+        const maximumAllowed100ns = 150000000;
+        const maximumAllowedMs = 15000;
         const stableTupleKeys = [
             "audioReadyGeneration", "audioSessionId", "backend", "channels",
             "deviceGeneration", "deviceIdDigest", "sampleFormat", "sampleRate"
@@ -1101,10 +1154,13 @@ function deriveCaseFacts(caseId, range, options) {
                 runtime.deviceGeneration >= activeEpisode.maximumRecoveringDeviceGeneration,
             label + " device generation did not advance monotonically");
             expectReadyPhysicalRuntime(runtime, label + " ready");
-            const episodeMs = utcDeltaMs(activeEpisode.recovering, entry, label);
-            expect(episodeMs <= maximumAllowed, label + " recovery exceeded 15000ms");
+            const episodeElapsed100ns = workingStateDelta100ns(
+                activeEpisode.recovering, entry, label);
+            expect(episodeElapsed100ns <= maximumAllowed100ns,
+                label + " recovery exceeded 150000000 working-state 100ns units");
             activeEpisode.ready = entry;
-            activeEpisode.recoveryMs = episodeMs;
+            activeEpisode.recoveryMs = Math.ceil(
+                episodeElapsed100ns / 10000);
             episodes.push(activeEpisode);
             currentReady = runtime;
             activeEpisode = null;
@@ -1126,44 +1182,89 @@ function deriveCaseFacts(caseId, range, options) {
             captureId: "device_recovery",
             deviceGenerationAfter: currentReady.deviceGeneration,
             deviceGenerationBefore: before.deviceGeneration,
-            maxRecoveryMs: maximumAllowed,
+            maxRecoveryMs: maximumAllowedMs,
             recoveryMs: Math.max.apply(null, episodes.map((episode) => episode.recoveryMs))
         };
     }
     if (caseId === "no_stale_sfx_after_recovery") {
         const snapshots = eventSnapshots(range, 2);
         expectSameAudioSession(snapshots, caseId);
-        const pre = snapshots[0].payload.runtime;
-        const post = snapshots[snapshots.length - 1].payload.runtime;
+        const preEvent = snapshots[0];
+        const postEvent = snapshots[snapshots.length - 1];
+        const pre = preEvent.payload.runtime;
+        const post = postEvent.payload.runtime;
         const request = sfxRequests(range);
-        const beforeEvent = range.events.find((entry) => entry.kind === "coordinator_recovery" && entry.payload.runtime.status === "recovering");
-        const afterEvent = range.events.find((entry) =>
-            beforeEvent && entry.sequence > beforeEvent.sequence &&
+        expect(request.events.length === 1 && request.requestedVoices === 1,
+            "stale SFX case must dispatch one exact one-item batch");
+        const armEvents = range.events.filter((entry) => entry.kind === "recovery_sfx_armed");
+        expect(armEvents.length === 1, "stale SFX case requires one exact arm result event");
+        const armEvent = armEvents[0];
+        const recoveringEvent = range.events.find((entry) =>
+            entry.kind === "coordinator_recovery" && entry.payload.runtime.status === "recovering");
+        const dispatchEvent = request.events[0];
+        const closingReadyEvent = range.events.find((entry) =>
+            recoveringEvent && entry.sequence > recoveringEvent.sequence &&
             (entry.kind === "coordinator_snapshot" || entry.kind === "qualification_snapshot") &&
-            entry.payload.runtime.status === "ready" && entry.sequence < snapshots[snapshots.length - 1].sequence);
-        expect(beforeEvent && afterEvent, "stale SFX recovery boundary snapshots missing or out of order");
-        expect(pre.status === "ready" && post.status === "ready" && beforeEvent.payload.runtime.audioSessionId === pre.audioSessionId && afterEvent.payload.runtime.audioSessionId === pre.audioSessionId, "stale SFX recovery changed audio session");
-        expect(beforeEvent.payload.runtime.audioReadyGeneration > pre.audioReadyGeneration && afterEvent.payload.runtime.audioReadyGeneration === beforeEvent.payload.runtime.audioReadyGeneration && post.audioReadyGeneration === afterEvent.payload.runtime.audioReadyGeneration, "stale SFX ready-generation barrier drifted");
-        expect(afterEvent.payload.runtime.deviceGeneration > pre.deviceGeneration && post.deviceGeneration === afterEvent.payload.runtime.deviceGeneration, "stale SFX device generation did not advance");
+            entry.payload.runtime.status === "ready" && entry.sequence < postEvent.sequence);
+        expect(recoveringEvent && closingReadyEvent,
+            "stale SFX recovery boundary snapshots missing or out of order");
+        expect(preEvent.sequence < armEvent.sequence && armEvent.sequence < recoveringEvent.sequence &&
+            recoveringEvent.sequence < dispatchEvent.sequence && dispatchEvent.sequence < closingReadyEvent.sequence &&
+            closingReadyEvent.sequence < postEvent.sequence,
+        "stale SFX arm/recovering/dispatch/closing-ready order drifted");
+        expect(pre.status === "ready" && post.status === "ready" &&
+            recoveringEvent.payload.runtime.audioSessionId === pre.audioSessionId &&
+            closingReadyEvent.payload.runtime.audioSessionId === pre.audioSessionId,
+        "stale SFX recovery changed audio session");
+        expect(recoveringEvent.payload.runtime.audioReadyGeneration > pre.audioReadyGeneration &&
+            closingReadyEvent.payload.runtime.audioReadyGeneration === recoveringEvent.payload.runtime.audioReadyGeneration &&
+            post.audioReadyGeneration === closingReadyEvent.payload.runtime.audioReadyGeneration,
+        "stale SFX ready-generation barrier drifted");
+        expect(closingReadyEvent.payload.runtime.deviceGeneration > pre.deviceGeneration &&
+            post.deviceGeneration === closingReadyEvent.payload.runtime.deviceGeneration,
+        "stale SFX device generation did not advance");
         request.events.forEach((entry) => expect(entry.payload.audioSessionId === pre.audioSessionId && entry.payload.audioReadyGeneration === pre.audioReadyGeneration, "stale SFX batch did not carry the pre-recovery tuple"));
-        request.events.forEach((entry) => expect(entry.sequence > beforeEvent.sequence && entry.sequence < afterEvent.sequence, "stale SFX batch was not sent during recovery"));
-        const before = beforeEvent.payload.counters;
-        const readyCounters = afterEvent.payload.counters;
-        const after = snapshots[snapshots.length - 1].payload.counters;
-        expect(counterDelta(before, readyCounters, "recoveryDrops", caseId) === request.requestedVoices, "stale SFX recovery drop delta mismatch");
-        Object.keys(readyCounters).forEach((key) => {
-            if (key === "recoveryDrops") return;
-            expect(readyCounters[key] === before[key], "stale SFX counters changed before ready: " + key);
-        });
+        const before = preEvent.payload.counters;
+        const recoveringCounters = recoveringEvent.payload.counters;
+        const readyCounters = closingReadyEvent.payload.counters;
+        const after = postEvent.payload.counters;
+        Object.keys(recoveringCounters).forEach((key) =>
+            expect(recoveringCounters[key] === before[key], "stale SFX counters changed before dispatch: " + key));
+        expect(counterDelta(before, readyCounters, "staleGenerationDrops", caseId) === request.requestedVoices,
+            "stale SFX generation-drop delta mismatch");
+        [
+            "playedCount", "preReadyDrops", "recoveryDrops", "unknownIdCount",
+            "throttledCount", "startFailureCount"
+        ].forEach((key) => expect(readyCounters[key] === before[key],
+            "stale SFX unchanged counter advanced: " + key));
         Object.keys(after).forEach((key) => expect(after[key] === readyCounters[key], "stale SFX counters changed after ready: " + key));
-        expectAnyBusMeterWindow(afterEvent, snapshots[snapshots.length - 1], 1, caseId + " post-ready");
+        expectAnyBusMeterWindow(closingReadyEvent, postEvent, 1, caseId + " post-ready");
         return {
+            armResult: {
+                result: armEvent.payload.result,
+                sent: armEvent.payload.sent
+            },
+            audioReadyGenerationAfter: post.audioReadyGeneration,
+            audioReadyGenerationBefore: pre.audioReadyGeneration,
             captureId: "device_recovery",
+            closingReadySequence: closingReadyEvent.sequence,
+            dispatchSequence: dispatchEvent.sequence,
             playedAfter: after.playedCount,
             playedBefore: before.playedCount,
+            preReadyDropsAfter: after.preReadyDrops,
+            preReadyDropsBefore: before.preReadyDrops,
+            recoveringSequence: recoveringEvent.sequence,
             recoveryDropsAfter: after.recoveryDrops,
             recoveryDropsBefore: before.recoveryDrops,
-            staleBatchSize: request.requestedVoices
+            staleBatchSize: request.requestedVoices,
+            staleGenerationDropsAfter: after.staleGenerationDrops,
+            staleGenerationDropsBefore: before.staleGenerationDrops,
+            startFailureCountAfter: after.startFailureCount,
+            startFailureCountBefore: before.startFailureCount,
+            throttledCountAfter: after.throttledCount,
+            throttledCountBefore: before.throttledCount,
+            unknownIdCountAfter: after.unknownIdCount,
+            unknownIdCountBefore: before.unknownIdCount
         };
     }
     fail("VALIDATION_FAILED", "endpoint case derivation is not implemented: " + caseId);
@@ -1226,7 +1327,7 @@ function deriveLiveObservation(options, collected) {
         releaseSource: options.releaseSource,
         reportId: options.reportId,
         runId: collected.journal.events[0].runId,
-        schema: "cf7.audio-v2.live-observation.v1",
+        schema: LIVE_OBSERVATION_SCHEMA,
         session: runtimeSession(captureRuntime)
     };
     const carrier = {

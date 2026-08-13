@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -109,6 +111,7 @@ namespace CF7Launcher.Tests.Audio
         public async Task PipeRoundTrip_BindsCandidateSnapshotAndHashJournal()
         {
             int snapshotCalls = 0;
+            ulong workingState100ns = 1000000UL;
             using (AudioQualificationDiagnosticsHostV1 host =
                 AudioQualificationDiagnosticsHostV1.StartForTests(
                     RunId,
@@ -117,6 +120,11 @@ namespace CF7Launcher.Tests.Audio
                     {
                         Interlocked.Increment(ref snapshotCalls);
                         return Snapshot();
+                    },
+                    workingStateClock: delegate
+                    {
+                        workingState100ns += 25UL;
+                        return workingState100ns;
                     }))
             using (var client = new PipeClient(host.PipeName))
             {
@@ -167,6 +175,10 @@ namespace CF7Launcher.Tests.Audio
                 Assert.Equal(2L, events[1].GetProperty("sequence").GetInt64());
                 Assert.Equal(events[0].GetProperty("sha256").GetString(),
                     events[1].GetProperty("previousSha256").GetString());
+                Assert.Equal(25L, events[0]
+                    .GetProperty("workingStateElapsed100ns").GetInt64());
+                Assert.Equal(50L, events[1]
+                    .GetProperty("workingStateElapsed100ns").GetInt64());
                 Assert.Equal(Hash(Encoding.UTF8.GetBytes(events.GetRawText())),
                     journal.GetProperty("sha256").GetString());
                 for (int index = 0; index < events.GetArrayLength(); index++)
@@ -178,6 +190,174 @@ namespace CF7Launcher.Tests.Audio
                         events[index].GetProperty("caseId").GetString());
                 }
                 journalResponse.Dispose();
+            }
+        }
+
+        [Fact]
+        public void WorkingStateClock_UsesExactVoidWindowsApi()
+        {
+            MethodInfo method = typeof(AudioQualificationWorkingStateClockV2)
+                .GetMethod(
+                    "QueryUnbiasedInterruptTimePrecise",
+                    BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.NotNull(method);
+            Assert.Equal(typeof(void), method.ReturnType);
+            ParameterInfo parameter = Assert.Single(method.GetParameters());
+            Assert.True(parameter.IsOut);
+            Assert.Equal(typeof(ulong).MakeByRefType(), parameter.ParameterType);
+            DllImportAttribute import = method.GetCustomAttribute<
+                DllImportAttribute>();
+            Assert.NotNull(import);
+            Assert.Equal(
+                "api-ms-win-core-realtime-l1-1-1.dll",
+                import.Value);
+            Assert.True(import.ExactSpelling);
+            Assert.True(AudioQualificationWorkingStateClockV2.Read100ns() > 0);
+        }
+
+        [Fact]
+        public async Task WorkingStateClock_FaultLatchesWithoutEscapingAudioCallback()
+        {
+            foreach (ulong invalidValue in new[]
+            {
+                999UL,
+                AudioQualificationWorkingStateClockV2.MaximumJsonSafeInteger +
+                    1001UL
+            })
+            {
+                int calls = 0;
+                using (AudioQualificationDiagnosticsHostV1 host =
+                    AudioQualificationDiagnosticsHostV1.StartForTests(
+                        RunId,
+                        Candidate(),
+                        Snapshot,
+                        workingStateClock: delegate
+                        {
+                            return Interlocked.Increment(ref calls) == 1
+                                ? 1000UL
+                                : invalidValue;
+                        }))
+                using (var client = new PipeClient(host.PipeName))
+                {
+                    Assert.Null(await client.ExchangeOrClosedAsync(
+                        Request("begin_case", calls + 100, "bgm_playback")));
+                    Assert.False(host.IsActiveCase("bgm_playback"));
+                    host.RecordCoordinatorSnapshot(Snapshot());
+                    using (var rejected = new PipeClient(host.PipeName))
+                        Assert.Null(await rejected.ExchangeOrClosedAsync(
+                            Request("journal", calls + 200)));
+                }
+            }
+
+            Assert.Throws<InvalidOperationException>(() =>
+                AudioQualificationDiagnosticsHostV1.StartForTests(
+                    RunId,
+                    Candidate(),
+                    Snapshot,
+                    workingStateClock: delegate
+                    {
+                        throw new InvalidOperationException("clock unavailable");
+                    }));
+        }
+
+        [Fact]
+        public async Task WorkingStateClock_CallbackFaultDoesNotEscapeAndRejectsJournal()
+        {
+            const string runId = "acacacacacacacacacacacacacacacac";
+            int calls = 0;
+            using (AudioQualificationDiagnosticsHostV1 host =
+                AudioQualificationDiagnosticsHostV1.StartForTests(
+                    runId,
+                    Candidate(),
+                    Snapshot,
+                    workingStateClock: delegate
+                    {
+                        int call = Interlocked.Increment(ref calls);
+                        if (call == 3)
+                            throw new InvalidOperationException(
+                                "callback clock failure");
+                        return 1000UL + (ulong)call;
+                    }))
+            {
+                using (await ExchangeOnceAsync(
+                    host.PipeName,
+                    RequestFor(runId, "begin_case", 401, "bgm_playback")))
+                {
+                }
+                Exception callbackError = Record.Exception(() =>
+                    host.RecordCoordinatorSnapshot(Snapshot()));
+                Assert.Null(callbackError);
+                Assert.False(host.IsActiveCase("bgm_playback"));
+                using (var rejected = new PipeClient(host.PipeName))
+                {
+                    Assert.Null(await rejected.ExchangeOrClosedAsync(
+                        RequestFor(runId, "journal", 402, null)));
+                }
+            }
+        }
+
+        [Fact]
+        public async Task RecoverySfxArm_IsHashBoundAndRejectsInvalidValues()
+        {
+            const string runId = "edededededededededededededededed";
+            using (AudioQualificationDiagnosticsHostV1 host = Host(runId))
+            {
+                int request = 1;
+                foreach (string caseId in new[]
+                {
+                    "bgm_playback", "bgm_seek", "bgm_crossfade",
+                    "format_vorbis", "format_aac_mp4", "format_opus",
+                    "sfx_playback", "dense_overlap_throttle", "bgm_sfx_mix",
+                    "gain_zero_and_default_max", "default_device_switch",
+                    "physical_route_bluetooth_or_hdmi", "sleep_resume"
+                })
+                {
+                    request = await CompleteCaseAsync(
+                        host.PipeName, runId, caseId, request);
+                }
+                using (await ExchangeOnceAsync(
+                    host.PipeName,
+                    RequestFor(
+                        runId,
+                        "begin_case",
+                        request++,
+                        "no_stale_sfx_after_recovery")))
+                {
+                }
+
+                Assert.Throws<InvalidDataException>(() =>
+                    host.RecordRecoverySfxArm(Id(700), "ok", false));
+                Assert.Throws<InvalidDataException>(() =>
+                    host.RecordRecoverySfxArm(Id(701), "armed", true));
+                host.RecordRecoverySfxArm(Id(702), "armed", false);
+
+                using (JsonDocument response = await ExchangeOnceAsync(
+                    host.PipeName,
+                    RequestFor(runId, "journal", request++, null)))
+                {
+                    JsonElement arm = Assert.Single(response.RootElement
+                        .GetProperty("journal")
+                        .GetProperty("events")
+                        .EnumerateArray()
+                        .Where(value => value.GetProperty("kind").GetString() ==
+                            "recovery_sfx_armed"));
+                    Assert.Equal(Id(702), arm.GetProperty("payload")
+                        .GetProperty("requestId").GetString());
+                    Assert.Equal("armed", arm.GetProperty("payload")
+                        .GetProperty("result").GetString());
+                    Assert.False(arm.GetProperty("payload")
+                        .GetProperty("sent").GetBoolean());
+                    Assert.Equal(
+                        HashEventWithoutSha(arm),
+                        arm.GetProperty("sha256").GetString());
+                }
+            }
+
+            using (AudioQualificationDiagnosticsHostV1 host = Host(
+                "fefefefefefefefefefefefefefefefe"))
+            {
+                Assert.Throws<InvalidDataException>(() =>
+                    host.RecordRecoverySfxArm(Id(703), "armed", false));
             }
         }
 
@@ -915,13 +1095,22 @@ namespace CF7Launcher.Tests.Audio
             string caseId,
             int requestId)
         {
-            using (await ExchangeOnceAsync(
-                pipeName,
-                RequestFor(
+            byte[] beginRequest = string.Equals(
+                caseId,
+                "physical_route_bluetooth_or_hdmi",
+                StringComparison.Ordinal)
+                ? AudioQualificationDiagnosticsHostV1.CanonicalRequestForTests(
+                    "begin_case",
+                    Id(requestId++),
+                    runId,
+                    caseId,
+                    "bluetooth")
+                : RequestFor(
                     runId,
                     "begin_case",
                     requestId++,
-                    caseId)))
+                    caseId);
+            using (await ExchangeOnceAsync(pipeName, beginRequest))
             {
             }
             using (await ExchangeOnceAsync(

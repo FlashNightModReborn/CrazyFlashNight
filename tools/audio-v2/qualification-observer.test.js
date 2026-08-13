@@ -60,7 +60,8 @@ function appendEvent(events, caseId, kind, source, payload) {
         previousSha256: sequence === 1 ? "0".repeat(64) : events[events.length - 1].sha256,
         runId: RUN_ID,
         sequence,
-        source
+        source,
+        workingStateElapsed100ns: sequence * 1000000
     };
     value.sha256 = observer.sha256(observer.canonicalBytes(value));
     events.push(value);
@@ -214,6 +215,7 @@ function rehashJournal(journal) {
     journal.events.forEach((entry, index) => {
         entry.sequence = index + 1;
         entry.monotonicTicks = index + 1;
+        entry.workingStateElapsed100ns = (index + 1) * 1000000;
         entry.previousSha256 = index === 0 ? "0".repeat(64) : journal.events[index - 1].sha256;
         const unhashed = Object.assign({}, entry);
         delete unhashed.sha256;
@@ -279,6 +281,13 @@ test("event hash sequence and aggregate journal drift fail closed", () => {
     const aggregateDrift = makeJournal();
     aggregateDrift.sha256 = "F".repeat(64);
     assert.throws(() => observer.validateJournal(aggregateDrift, RUN_ID), /aggregate SHA-256 mismatch/);
+});
+
+test("UTC is audit metadata while hash-bound monotonic clocks own event order", () => {
+    const journal = makeJournal();
+    journal.events[5].observedAtUtc = "2026-08-08T23:59:59.000Z";
+    rehashJournal(journal);
+    assert.strictEqual(observer.validateJournal(journal, RUN_ID), journal);
 });
 
 test("all fourteen cases are bound to one audio session", () => {
@@ -413,12 +422,16 @@ test("dense overlap facts close only over AS2 batch and candidate counters", () 
     });
 });
 
-test("SFX playback requires its own advancing nonzero meter window", () => {
+test("SFX playback accepts post-dispatch signal with naturally silent final snapshot", () => {
     const before = snapshot({
         bgmMeter: { frameCount: 1000, peakLeft: 0, peakRight: 0, rmsLeft: 0, rmsRight: 0 },
-        sfxMeter: { frameCount: 1000 }
+        sfxMeter: { frameCount: 1000, peakLeft: 0, peakRight: 0, rmsLeft: 0, rmsRight: 0 }
     });
-    const after = snapshot({ counters: { playedCount: 2 }, sfxMeter: { frameCount: 1100 } });
+    const signal = snapshot({ counters: { playedCount: 2 }, sfxMeter: { frameCount: 1050 } });
+    const after = snapshot({
+        counters: { playedCount: 2 },
+        sfxMeter: { frameCount: 1100, peakLeft: 0, peakRight: 0, rmsLeft: 0, rmsRight: 0 }
+    });
     const range = {
         begin: { caseId: "sfx_playback" },
         events: [
@@ -427,32 +440,47 @@ test("SFX playback requires its own advancing nonzero meter window", () => {
                 kind: "as2_sfx_batch", sequence: 3, source: "as2_ingress",
                 payload: { audioReadyGeneration: 1, audioSessionId: AUDIO_SESSION_ID, batchSequence: 1, linkageIds: ["a", "b"] }
             },
-            { kind: "qualification_snapshot", payload: after, sequence: 4 }
+            { kind: "qualification_snapshot", payload: signal, sequence: 4 },
+            { kind: "qualification_snapshot", payload: after, sequence: 5 }
         ]
     };
     assert.strictEqual(observer.deriveCaseFacts("sfx_playback", range, {}).requestedVoices, 2);
     after.sfxMeter.frameCount = 1000;
-    assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /meter frame window did not advance/);
+    signal.sfxMeter.frameCount = 1000;
+    assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /final SFX meter frameCount did not advance/);
+    signal.sfxMeter.frameCount = 1050;
     after.sfxMeter.frameCount = 1100;
-    after.sfxMeter.peakLeft = 0;
-    after.sfxMeter.peakRight = 0;
-    assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /meter window has no qualified signal/);
-    after.sfxMeter.peakLeft = 0.25;
-    after.sfxMeter.peakRight = 0.25;
+    signal.sfxMeter.peakLeft = 0;
+    signal.sfxMeter.peakRight = 0;
+    assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /no post-dispatch advancing SFX snapshot with qualified signal/);
+    signal.sfxMeter.peakLeft = 0.25;
+    signal.sfxMeter.peakRight = 0.25;
+    range.events[1].sequence = 1;
+    assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /not bracketed around its dispatch anchor/);
+    range.events[1].sequence = 3;
+    before.sfxMeter.peakLeft = 0.25;
+    assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /baseline is contaminated by residual SFX/);
+    before.sfxMeter.peakLeft = 0;
     before.bgmMeter.peakLeft = 0.25;
     assert.throws(() => observer.deriveCaseFacts("sfx_playback", range, {}), /contaminated by audible BGM/);
 });
 
-test("BGM/SFX mix accepts loop wrap or full-loop cursor equality and rejects bad meter/bounds", () => {
+test("BGM/SFX mix accepts finite SFX signal before a naturally silent final snapshot", () => {
     const before = snapshot({
         bgmMeter: { frameCount: 1000 },
         sfxMeter: { frameCount: 1000, peakLeft: 0, peakRight: 0, rmsLeft: 0, rmsRight: 0 },
         source: { cursorFrames: 18240, lengthFrames: 24000, requestId: "looping-opus" }
     });
+    const signal = snapshot({
+        bgmMeter: { frameCount: 1500 },
+        counters: { playedCount: 1 },
+        sfxMeter: { frameCount: 1500 },
+        source: { cursorFrames: 21000, lengthFrames: 24000, requestId: "looping-opus" }
+    });
     const after = snapshot({
         bgmMeter: { frameCount: 2000 },
         counters: { playedCount: 1 },
-        sfxMeter: { frameCount: 2000 },
+        sfxMeter: { frameCount: 2000, peakLeft: 0, peakRight: 0, rmsLeft: 0, rmsRight: 0 },
         source: { cursorFrames: 14880, lengthFrames: 24000, requestId: "looping-opus" }
     });
     const range = {
@@ -463,7 +491,8 @@ test("BGM/SFX mix accepts loop wrap or full-loop cursor equality and rejects bad
                 kind: "as2_sfx_batch", sequence: 3, source: "as2_ingress",
                 payload: sfxBatch(1, ["long.wav"])
             },
-            { kind: "qualification_snapshot", payload: after, sequence: 4 }
+            { kind: "qualification_snapshot", payload: signal, sequence: 4 },
+            { kind: "qualification_snapshot", payload: after, sequence: 5 }
         ]
     };
     assert.deepStrictEqual(observer.deriveCaseFacts("bgm_sfx_mix", range, {}), {
@@ -473,9 +502,20 @@ test("BGM/SFX mix accepts loop wrap or full-loop cursor equality and rejects bad
         sfxPlayedBefore: 0
     });
 
-    before.sfxMeter.peakLeft = 0.25;
+    const residual = {
+        kind: "qualification_snapshot",
+        payload: snapshot({
+            bgmMeter: { frameCount: 1100 },
+            sfxMeter: { frameCount: 1000, peakLeft: 0.25 },
+            source: { cursorFrames: 18340, lengthFrames: 24000, requestId: "looping-opus" }
+        }),
+        sequence: 3
+    };
+    range.events.splice(1, 0, residual);
+    range.events.slice(2).forEach((entry) => { entry.sequence++; });
     assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /contaminated by residual SFX/);
-    before.sfxMeter.peakLeft = 0;
+    range.events.splice(1, 1);
+    range.events.slice(1).forEach((entry) => { entry.sequence--; });
     after.source.cursorFrames = before.source.cursorFrames;
     assert.strictEqual(observer.deriveCaseFacts("bgm_sfx_mix", range, {}).bgmFrames, 1000);
     after.source.cursorFrames = after.source.lengthFrames;
@@ -490,11 +530,13 @@ test("BGM/SFX mix accepts loop wrap or full-loop cursor equality and rejects bad
     after.bgmMeter.peakLeft = 0.25;
     after.bgmMeter.peakRight = 0.25;
     after.sfxMeter.frameCount = before.sfxMeter.frameCount;
-    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /SFX meter frame window did not advance/);
+    signal.sfxMeter.frameCount = before.sfxMeter.frameCount;
+    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /final SFX meter frameCount did not advance/);
+    signal.sfxMeter.frameCount = 1500;
     after.sfxMeter.frameCount = 2000;
-    after.sfxMeter.peakLeft = 0;
-    after.sfxMeter.peakRight = 0;
-    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /SFX meter window has no qualified signal/);
+    signal.sfxMeter.peakLeft = 0;
+    signal.sfxMeter.peakRight = 0;
+    assert.throws(() => observer.deriveCaseFacts("bgm_sfx_mix", range, {}), /no post-dispatch advancing SFX snapshot with qualified signal/);
 });
 
 function sleepResumeRange() {
@@ -516,14 +558,14 @@ function sleepResumeRange() {
     return {
         begin: { caseId: "sleep_resume" },
         events: [
-            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:00.000Z", payload: before, sequence: 2 },
-            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:01.000Z", payload: recoveringOne, sequence: 3 },
-            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:01.500Z", payload: recoveringOneRetry, sequence: 4 },
-            { kind: "coordinator_snapshot", observedAtUtc: "2026-08-09T00:00:02.250Z", payload: readyOne, sequence: 5 },
-            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:04.000Z", payload: recoveringTwo, sequence: 6 },
-            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:05.000Z", payload: recoveringTwoRetry, sequence: 7 },
-            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:06.500Z", payload: readyTwo, sequence: 8 },
-            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:07.000Z", payload: post, sequence: 9 }
+            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:00.000Z", payload: before, sequence: 2, workingStateElapsed100ns: 0 },
+            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:01.000Z", payload: recoveringOne, sequence: 3, workingStateElapsed100ns: 10000000 },
+            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:01.500Z", payload: recoveringOneRetry, sequence: 4, workingStateElapsed100ns: 15000000 },
+            { kind: "coordinator_snapshot", observedAtUtc: "2026-08-09T00:00:02.250Z", payload: readyOne, sequence: 5, workingStateElapsed100ns: 22500000 },
+            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:04.000Z", payload: recoveringTwo, sequence: 6, workingStateElapsed100ns: 40000000 },
+            { kind: "coordinator_recovery", observedAtUtc: "2026-08-09T00:00:05.000Z", payload: recoveringTwoRetry, sequence: 7, workingStateElapsed100ns: 50000000 },
+            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:06.500Z", payload: readyTwo, sequence: 8, workingStateElapsed100ns: 65000000 },
+            { kind: "qualification_snapshot", observedAtUtc: "2026-08-09T00:00:07.000Z", payload: post, sequence: 9, workingStateElapsed100ns: 70000000 }
         ]
     };
 }
@@ -553,8 +595,19 @@ test("sleep resume validates every recovery episode and binds facts to the final
 
 test("sleep resume rejects invalid intermediate episodes and a drifting final post", () => {
     let range = sleepResumeRange();
-    range.events[6].observedAtUtc = "2026-08-09T00:00:20.000Z";
-    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /exceeded 15000ms/);
+    range.events[6].observedAtUtc = "2026-08-09T00:01:20.000Z";
+    assert.strictEqual(observer.deriveCaseFacts("sleep_resume", range, {}).recoveryMs, 2500,
+        "UTC sleep/hibernate duration must not control the recovery SLA");
+
+    range = sleepResumeRange();
+    range.events[6].workingStateElapsed100ns = 190000001;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /exceeded 150000000 working-state 100ns units/);
+
+    range = sleepResumeRange();
+    delete range.events[6].workingStateElapsed100ns;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /working-state duration invalid/);
 
     range = sleepResumeRange();
     range.events[2].payload.runtime.audioSessionId = "fedcba98-7654-4cba-8fed-ba9876543210";
@@ -810,51 +863,72 @@ test("format playback requires a started result and an advancing nonzero source 
     assert.throws(() => observer.deriveCaseFacts("format_vorbis", range, {}), /meter frame window did not advance/);
 });
 
-test("stale SFX facts use automatic recovery owner boundaries", () => {
+test("stale SFX facts bind exact arm, recovery order, generation drop and unchanged counters", () => {
     const pre = snapshot({ runtime: { audioReadyGeneration: 1, deviceGeneration: 1, status: "ready" } });
     const recovering = snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 1, status: "recovering" } });
     const ready = snapshot({
-        counters: { recoveryDrops: 2 },
+        counters: { staleGenerationDrops: 1 },
         runtime: { audioReadyGeneration: 2, deviceGeneration: 2, status: "ready" }
     });
     const post = snapshot({
         bgmMeter: { frameCount: 1200 },
-        counters: { recoveryDrops: 2 },
+        counters: { staleGenerationDrops: 1 },
         runtime: { audioReadyGeneration: 2, deviceGeneration: 2, status: "ready" }
     });
+    const arm = {
+        kind: "recovery_sfx_armed", sequence: 3, source: "qualification_stimulus",
+        payload: { requestId: "a".repeat(32), result: "armed", sent: false }
+    };
     const batch = {
-        kind: "as2_sfx_batch", sequence: 4, source: "as2_ingress",
+        kind: "as2_sfx_batch", sequence: 5, source: "as2_ingress",
         payload: {
             audioReadyGeneration: 1,
             audioSessionId: AUDIO_SESSION_ID,
             batchSequence: 9,
-            linkageIds: ["stale-a", "stale-b"]
+            linkageIds: ["stale-a"]
         }
     };
     const range = {
         begin: { caseId: "no_stale_sfx_after_recovery" },
         events: [
             { kind: "qualification_snapshot", payload: pre, sequence: 2 },
-            { kind: "coordinator_recovery", payload: recovering, sequence: 3 },
+            arm,
+            { kind: "coordinator_recovery", payload: recovering, sequence: 4 },
             batch,
-            { kind: "coordinator_snapshot", payload: ready, sequence: 5 },
-            { kind: "qualification_snapshot", payload: post, sequence: 6 }
+            { kind: "coordinator_snapshot", payload: ready, sequence: 6 },
+            { kind: "qualification_snapshot", payload: post, sequence: 7 }
         ]
     };
     assert.deepStrictEqual(observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), {
+        armResult: { result: "armed", sent: false },
+        audioReadyGenerationAfter: 2,
+        audioReadyGenerationBefore: 1,
         captureId: "device_recovery",
+        closingReadySequence: 6,
+        dispatchSequence: 5,
         playedAfter: 0,
         playedBefore: 0,
-        recoveryDropsAfter: 2,
+        preReadyDropsAfter: 0,
+        preReadyDropsBefore: 0,
+        recoveringSequence: 4,
+        recoveryDropsAfter: 0,
         recoveryDropsBefore: 0,
-        staleBatchSize: 2
+        staleBatchSize: 1,
+        staleGenerationDropsAfter: 1,
+        staleGenerationDropsBefore: 0,
+        startFailureCountAfter: 0,
+        startFailureCountBefore: 0,
+        throttledCountAfter: 0,
+        throttledCountBefore: 0,
+        unknownIdCountAfter: 0,
+        unknownIdCountBefore: 0
     });
     batch.payload.audioReadyGeneration = 2;
     assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /pre-recovery tuple/);
     batch.payload.audioReadyGeneration = 1;
     ready.counters.throttledCount = 1;
     post.counters.throttledCount = 1;
-    assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /counters changed before ready/);
+    assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /unchanged counter advanced: throttledCount/);
     ready.counters.throttledCount = 0;
     post.counters.throttledCount = 0;
     post.counters.playedCount = 1;
@@ -863,8 +937,26 @@ test("stale SFX facts use automatic recovery owner boundaries", () => {
     post.bgmMeter.frameCount = ready.bgmMeter.frameCount;
     assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /endpoint meter window did not advance/);
     post.bgmMeter.frameCount = 1200;
-    batch.sequence = 2;
-    assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /not sent during recovery/);
+    batch.sequence = 3;
+    assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /order drifted/);
+    batch.sequence = 5;
+    ready.counters.staleGenerationDrops = 0;
+    post.counters.staleGenerationDrops = 0;
+    assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /generation-drop delta mismatch/);
+    ready.counters.staleGenerationDrops = 1;
+    post.counters.staleGenerationDrops = 1;
+    const prematureReady = {
+        kind: "coordinator_snapshot",
+        payload: snapshot({ runtime: { audioReadyGeneration: 2, deviceGeneration: 2, status: "ready" } }),
+        sequence: 5
+    };
+    range.events.splice(3, 0, prematureReady);
+    range.events.slice(4).forEach((entry) => { entry.sequence++; });
+    assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /order drifted/);
+    range.events.splice(3, 1);
+    range.events.slice(3).forEach((entry) => { entry.sequence--; });
+    range.events.splice(1, 1);
+    assert.throws(() => observer.deriveCaseFacts("no_stale_sfx_after_recovery", range, {}), /one exact arm result/);
 });
 
 test("physical route annotation observes the already-switched captured endpoint", () => {
@@ -902,7 +994,7 @@ test("requestPipe opens a fresh connection and rejects noncanonical stdout", () 
             requestId: request.requestId,
             result: "ok",
             runId: RUN_ID,
-            schema: "cf7.audio-v2.qualification-response.v1"
+            schema: "cf7.audio-v2.qualification-response.v2"
         };
         return { status: 0, stderr: Buffer.alloc(0), stdout: observer.canonicalBytes(response) };
     }
@@ -920,7 +1012,7 @@ test("requestPipe opens a fresh connection and rejects noncanonical stdout", () 
 
     options.spawnSync = function (_executable, args, spawnOptions) {
         const request = JSON.parse(spawnOptions.input.toString("utf8"));
-        const response = { candidate: expectedCandidate, command: "journal", journal: makeJournal(), protocol: observer.PROTOCOL, requestId: request.requestId, result: "ok", runId: RUN_ID, schema: "cf7.audio-v2.qualification-response.v1" };
+        const response = { candidate: expectedCandidate, command: "journal", journal: makeJournal(), protocol: observer.PROTOCOL, requestId: request.requestId, result: "ok", runId: RUN_ID, schema: "cf7.audio-v2.qualification-response.v2" };
         return { status: 0, stderr: Buffer.alloc(0), stdout: Buffer.from(JSON.stringify(response, null, 2), "utf8") };
     };
     assert.throws(() => observer.requestPipe(options, "journal"), /one JSON record|canonical/);

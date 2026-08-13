@@ -607,6 +607,10 @@ namespace CF7Launcher.Audio
                     if (_recoveryArm != null)
                         throw new InvalidDataException(
                             "Recovery SFX stimulus is already armed.");
+                    _diagnostics.RecordRecoverySfxArm(
+                        request.RequestId,
+                        "armed",
+                        false);
                     _recoveryArm = new RecoveryArm
                     {
                         CaseId = request.CaseId,
