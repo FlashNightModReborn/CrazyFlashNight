@@ -35,7 +35,7 @@
         },
         {
           "path": "launcher/native",
-          "includeExtensions": [".c", ".cpp", ".h", ".rc"],
+          "includeExtensions": [".am", ".build", ".c", ".cpp", ".h", ".in", ".mk", ".pl", ".rc", ".s", ".txt"],
           "excludePaths": [],
           "excludePrefixes": ["launcher/native/tests/"]
         },

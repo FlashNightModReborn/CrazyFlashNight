@@ -73,7 +73,7 @@ Windows EOL materialization 另留一项非阻断 tooling debt：系统 `core.au
 
 ## v2 四域身份
 
-`config/build/runtime-inputs.v2.json` 是输入域清单。四域互斥，发现同一路径同时属于两个域会失败。
+`config/build/runtime-inputs.v2.json` 是输入域清单。四域互斥，发现同一路径同时属于两个域会失败。`launcher/native/audio-v2-build-inputs.v1.json.materializedInputs` 中每一项还必须进入这四域的并集；`tools/test-runtime-build-v2.ps1` 对该包含关系 fail-close，防止本地完整工作树可构建、正式 sparse request 却漏掉第三方生成输入。
 
 | 身份 | 内容 | 变化后的动作 |
 |------|------|--------------|

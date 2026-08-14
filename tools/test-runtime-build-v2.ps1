@@ -74,6 +74,17 @@ try {
     $repositoryProducerFiles = @($repositoryConfig.domains.producerRecipe.fixedFiles)
     $repositoryPolicyFiles = @($repositoryConfig.domains.policy.fixedFiles)
     $repositoryPolicyTrees = @($repositoryConfig.domains.policy.trees)
+    $repositoryRuntimeInputSet = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
+        foreach ($relativePath in @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $ProjectRoot -Domain $domain -Mode Worktree)) {
+            [void]$repositoryRuntimeInputSet.Add(([string]$relativePath).Replace('\', '/'))
+        }
+    }
+    $audioNativeBuildInputs = Get-Content -LiteralPath (Join-Path $ProjectRoot 'launcher\native\audio-v2-build-inputs.v1.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    $missingAudioMaterializedInputs = @($audioNativeBuildInputs.materializedInputs | Where-Object {
+        -not $repositoryRuntimeInputSet.Contains(('launcher/native/' + ([string]$_).Replace('\', '/')))
+    })
+    Assert-Equal 'every Audio v2 materialized native input enters the immutable runtime request bundle' 0 $missingAudioMaterializedInputs.Count
     $unicodePolicyFile = [string](@($repositoryPolicyFiles | Where-Object {
         [string]$_ -notmatch '^[\x00-\x7F]+$'
     }) | Select-Object -First 1)
