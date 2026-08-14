@@ -102,6 +102,23 @@ function artifact(root, relative, schema) {
     };
 }
 
+function addFixtureDependency(state, relative, bytes) {
+    writeBytes(state.root, relative, bytes);
+    const dependencyPath = path.join(state.root, DEPENDENCY_REL.split("/").join(path.sep));
+    const manifest = JSON.parse(fs.readFileSync(dependencyPath, "utf8"));
+    manifest.dependencies.push({
+        blobOid: runner.gitBlobOid(bytes, 40),
+        bytes: bytes.length,
+        path: relative,
+        sha256: runner.sha256(bytes)
+    });
+    manifest.dependencies.sort((left, right) => left.path < right.path ? -1 : (left.path > right.path ? 1 : 0));
+    manifest.closureSha256 = runner.sha256(runner.canonicalBytes(manifest.dependencies));
+    writeJson(state.root, DEPENDENCY_REL, manifest);
+    state.report.provenance.producerDependencyManifestArtifact = artifact(
+        state.root, DEPENDENCY_REL, "cf7.audio-v2.qualification-runner-dependencies.v1");
+}
+
 function trackedInput(root, relative, role) {
     const bytes = fs.readFileSync(path.join(root, relative.split("/").join(path.sep)));
     return {
@@ -391,6 +408,18 @@ test("frozen matrix is exactly nine reports and forty-four cases", () => {
 
 test("canonical JSON recursively sorts keys and terminates with one LF", () => {
     assert.strictEqual(runner.canonicalBytes({ z: 1, a: { y: 2, b: 3 } }).toString("utf8"), "{\n  \"a\": {\n    \"b\": 3,\n    \"y\": 2\n  },\n  \"z\": 1\n}\n");
+});
+
+test("dependency replay accepts exact root global.json", () => {
+    withFixture((state) => addFixtureDependency(
+        state, "global.json", Buffer.from("{\"sdk\":{\"version\":\"10.0.300\"}}\n", "utf8")),
+    (state) => assert.doesNotThrow(() => runFixtureDirect(state)));
+});
+
+test("dependency replay rejects every other root file", () => {
+    withFixture((state) => addFixtureDependency(
+        state, "package.json", Buffer.from("{\"private\":true}\n", "utf8")),
+    (state) => assert.throws(() => runFixtureDirect(state), /dependency path prefix invalid/));
 });
 
 test("runtime payload closure matches the independent .NET ordinal oracle", () => {
@@ -918,6 +947,10 @@ test("checked-in dependency closure binds the exact runner bytes", () => {
     assert.ok(manifest.dependencies.length >= 500);
     const paths = manifest.dependencies.map((entry) => entry.path);
     assert.deepStrictEqual(paths, paths.slice().sort());
+    assert.ok(paths.includes("global.json"));
+    paths.forEach((relative) => assert.ok(
+        runner.isAllowedQualificationDependencyPath(relative),
+        "real manifest dependency fails the replay prefix gate: " + relative));
     [
         RUNNER_REL,
         OBSERVER_REL,

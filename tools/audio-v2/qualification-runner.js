@@ -1665,6 +1665,10 @@ function validateProductionObservation(context, observation, sourceProbe, toolch
     return { device: deviceRuntime, probe: sourceProbe, toolchainSha256: observation.session.toolchainSha256 };
 }
 
+function isAllowedQualificationDependencyPath(relative) {
+    return relative === "global.json" || /^(tools|launcher|automation|scripts)\//.test(relative);
+}
+
 function validateDependencyManifest(descriptor, replayRoot, producerBytes) {
     const bytes = verifyTrackedArtifact(descriptor, "cf7.audio-v2.qualification-runner-dependencies.v1", replayRoot, "dependency manifest artifact");
     const parsed = JSON.parse(bytes.toString("utf8"));
@@ -1678,7 +1682,7 @@ function validateDependencyManifest(descriptor, replayRoot, producerBytes) {
     parsed.dependencies.forEach((entry, index) => {
         exactKeys(entry, ["blobOid", "bytes", "path", "sha256"], "dependency " + index);
         safeRepoPath(entry.path, "dependency path");
-        expect(/^(tools|launcher|automation|scripts)\//.test(entry.path), "dependency path prefix invalid");
+        expect(isAllowedQualificationDependencyPath(entry.path), "dependency path prefix invalid");
         expect(!paths.includes(entry.path), "duplicate dependency path");
         paths.push(entry.path);
         expectBlobOid(entry.blobOid, "dependency blobOid");
@@ -2372,6 +2376,7 @@ module.exports = Object.freeze({
     generateReport,
     gitBlobOid,
     inspectWindowsProcess,
+    isAllowedQualificationDependencyPath,
     parsePcm16Wave,
     parsePeExports,
     recomputeAs2AudioProbe,
