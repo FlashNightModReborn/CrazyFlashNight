@@ -1,0 +1,36 @@
+{
+  "authorization": {
+    "deploymentState": "NOT_DEPLOYED",
+    "phases": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6"
+    ],
+    "promotionAuthorized": false
+  },
+  "contract": {
+    "adrBlobOid": "45d909a415fdb54d710df6c83a975916a1292b9e",
+    "adrPath": "docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md",
+    "manifestBlobOid": "e1538705ce46c53c584301b4d2bd8682b0c96cc4",
+    "manifestPath": "docs/contracts/audio-v2/h1-decision-manifest.v4.json",
+    "manifestSha256": "9D0F358FE93D5A2BF3824C6DFD4A98A64FC731819174FCDD2C09324C96604DB7",
+    "proposalCommit": "755c88eef2f0fb92f247d3a381dc91638cdf8e77",
+    "proposalTree": "4eed3f2e1238f5df63e7c64354df469f77392398",
+    "testBlobOid": "9b4954ae4593c2489fd621fe366fa3e609dc5072",
+    "testPath": "tools/audio-v2/contract.test.js",
+    "validatorBlobOid": "93428f13ee703890fd513b4b394a272fc65b8434",
+    "validatorPath": "tools/audio-v2/validate-contract.js"
+  },
+  "decision": "accepted",
+  "recordedAtUtc": "2026-08-14T08:12:01.658Z",
+  "reviewer": {
+    "channel": "codex-conversation",
+    "role": "human-maintainer",
+    "verbatim": "H1_IMPLEMENTATION_ACCEPTANCE\nscopeRevision=AUDIO-V2-H1-SWEET-SPOT-R4\nproposalCommit=755c88eef2f0fb92f247d3a381dc91638cdf8e77\nproposalTree=4eed3f2e1238f5df63e7c64354df469f77392398\nmanifestPath=docs/contracts/audio-v2/h1-decision-manifest.v4.json\nmanifestSha256=9D0F358FE93D5A2BF3824C6DFD4A98A64FC731819174FCDD2C09324C96604DB7\npromotionAuthorized=false\ndecision=accepted"
+  },
+  "schema": "cf7.audio-v2.h1-implementation-acceptance.v4",
+  "scopeRevision": "AUDIO-V2-H1-SWEET-SPOT-R4"
+}
