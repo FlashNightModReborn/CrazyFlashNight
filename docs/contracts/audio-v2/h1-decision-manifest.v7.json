@@ -1,0 +1,1364 @@
+{
+  "abi": {
+    "breakingChangeRule": "increment_major",
+    "callerOwnership": "caller_allocates_all_cross_boundary_buffers",
+    "handshake": "csharp_validates_abi_and_capability_before_audio_ready",
+    "layout": "fixed_width_types_no_native_enum_or_miniaudio_struct_exposure",
+    "pathContract": "wide_path_caller_owned_normalized_contained_no_fixed_truncation",
+    "structPrefix": [
+      "structSize",
+      "abiMajor",
+      "abiMinor"
+    ],
+    "version": {
+      "major": 2,
+      "minor": 0
+    }
+  },
+  "assetContract": {
+    "legacySfxNames": "do_not_bulk_rename_linkage_ids",
+    "mismatchPolicy": "shipped_bgm_mismatch_fails_qualification_unless_explicit_owned_exception",
+    "missingPolicy": "no_silent_placeholder_for_missing_or_latent_references",
+    "outsideDiscoveryClassification": [
+      "runtime_reachable",
+      "source_only",
+      "obsolete",
+      "owned_exception"
+    ],
+    "proposalBaseline": {
+      "catalogPhysicalBgm": 90,
+      "inventoryRoots": [
+        "sounds",
+        "music"
+      ],
+      "observedAtDate": "2026-08-09",
+      "outsideBothDiscoveryPaths": {
+        "musicRoot": 29,
+        "soundsRecoveryLibrary": 32,
+        "total": 61
+      },
+      "preloadSfx": {
+        "definition": "all_direct_files_in_sounds_export_weapon_effect_character",
+        "mp3": 108,
+        "roots": [
+          "sounds/export/武器",
+          "sounds/export/特效",
+          "sounds/export/人物"
+        ],
+        "total": 676,
+        "wav": 566,
+        "waz": 2
+      },
+      "sourceCommit": "53773023ea5213ccea8f24e24342e1f9dfc4416a",
+      "sourceTreeOid": "dd271f996b3264be7cdb4a428d41bc172315a310",
+      "totalMeaning": "native_audio_corpus_under_inventory_roots_not_entire_repository",
+      "totalPhysicalAudio": 827,
+      "zeroShippedFlacByExtensionAndMagic": true,
+      "zeroShippedOggByExtensionAndMagic": true
+    }
+  },
+  "authorization": {
+    "deploymentState": "NOT_DEPLOYED",
+    "humanGate": "H1_IMPLEMENTATION_ACCEPTANCE",
+    "phases": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6"
+    ],
+    "promotionAuthorized": false
+  },
+  "backend": {
+    "audioReadyOnNoOutput": false,
+    "compiledProductionBackends": [
+      "wasapi",
+      "directsound",
+      "winmm"
+    ],
+    "fallbackSuccessBoundary": "context_and_playback_device_both_started",
+    "noOutputPolicy": "launcher_continues_with_audio_unavailable_and_disabled_controls",
+    "nullBackend": "forbidden_in_production",
+    "productionMacros": [
+      "MA_ENABLE_ONLY_SPECIFIC_BACKENDS",
+      "MA_ENABLE_WASAPI",
+      "MA_ENABLE_DSOUND",
+      "MA_ENABLE_WINMM",
+      "MA_NO_NULL"
+    ],
+    "qualificationException": "null_or_offline_sink_only_in_unmistakable_test_identity",
+    "selectionOrder": [
+      "wasapi",
+      "directsound",
+      "winmm",
+      "explicit_failed_no_output"
+    ]
+  },
+  "bridge": {
+    "bgm": {
+      "completionStates": [
+        "accepted_deferred",
+        "started",
+        "stopped",
+        "superseded",
+        "failed"
+      ],
+      "intentPolicy": "latest_wins",
+      "requestFields": [
+        "wireRevision",
+        "requestId",
+        "audioSessionId",
+        "audioReadyGeneration",
+        "operation"
+      ],
+      "startedBoundary": "decoder_source_initialized_and_native_start_success"
+    },
+    "migration": "final_release_has_no_permanent_wire_v1_fallback",
+    "resultCategories": [
+      "ok",
+      "missing",
+      "unsupported_container",
+      "unsupported_codec",
+      "malformed",
+      "truncated",
+      "io_error",
+      "abi_mismatch",
+      "not_ready",
+      "stale_generation",
+      "unknown_id",
+      "throttled",
+      "start_failed",
+      "seek_failed",
+      "device_unavailable",
+      "device_lost",
+      "superseded",
+      "internal_error"
+    ],
+    "sfx": {
+      "batchFields": [
+        "wireRevision",
+        "audioSessionId",
+        "audioReadyGeneration",
+        "batchSequence",
+        "linkageIds"
+      ],
+      "counters": [
+        "preReadyDrops",
+        "recoveryDrops",
+        "staleGenerationDrops",
+        "unknownIdCount",
+        "throttledCount",
+        "startFailureCount",
+        "playedCount"
+      ],
+      "replayPolicy": "drop_and_count_never_replay_old_sfx",
+      "roundTripPolicy": "batched_fast_lane_no_per_shot_ack"
+    },
+    "wireRevision": 2
+  },
+  "buildAndDependency": {
+    "artifactShape": "single_miniaudio_dll_no_loose_codec_sidecar",
+    "closureRequirements": [
+      "exact_upstream_tag_or_commit",
+      "source_sha256",
+      "build_flags",
+      "license",
+      "third_party_notice",
+      "artifact_and_policy_domain_binding"
+    ],
+    "implementationForm": "miniaudio_c_and_h_with_multiple_translation_units",
+    "mediaFoundation": "windows_sdk_link_inputs_are_explicit",
+    "pinTiming": "A3_before_candidate_build",
+    "reproducibility": "two_clean_unsigned_diagnostic_producer_runs_before_A6"
+  },
+  "capability": {
+    "buildFields": [
+      "abiVersion",
+      "bridgeBuildId",
+      "miniaudioVersion",
+      "decoderBackends",
+      "containers",
+      "codecs",
+      "extensions",
+      "compiledBackendMask",
+      "supportsRuntimeCompatibilityProbe",
+      "supportsOfflineQualificationProbe",
+      "supportsSeek",
+      "supportsLoop",
+      "supportsDeviceRecovery",
+      "supportsBgmMeter",
+      "supportsSfxMeter",
+      "testOnlyNullEnabled"
+    ],
+    "runtimeFields": [
+      "audioStatus",
+      "audioSessionId",
+      "audioReadyGeneration",
+      "deviceGeneration",
+      "selectedBackend",
+      "selectedDeviceIdDigest",
+      "selectedDeviceName",
+      "sampleRate",
+      "channels",
+      "sampleFormat",
+      "lastStructuredFailure"
+    ],
+    "runtimeStates": [
+      "initializing",
+      "ready",
+      "recovering",
+      "failed_no_output",
+      "shutdown"
+    ],
+    "separationRule": "build_codec_support_never_implies_runtime_device_ready"
+  },
+  "decisions": [
+    {
+      "id": "AUDIO-V2-001",
+      "rule": "production_real_backends_only_and_fallback_requires_context_plus_device_success"
+    },
+    {
+      "id": "AUDIO-V2-002",
+      "rule": "versioned_caller_owned_native_abi_with_fail_closed_capability_handshake"
+    },
+    {
+      "id": "AUDIO-V2-003",
+      "rule": "catalog_uses_content_capability_and_bounded_runtime_probe_not_extension_claims"
+    },
+    {
+      "id": "AUDIO-V2-004",
+      "rule": "public_baseline_is_wav_mp3_flac_vorbis_and_aac_in_mpeg4_or_adts"
+    },
+    {
+      "id": "AUDIO-V2-005",
+      "rule": "opus_is_included_and_wma_public_promise_is_deferred"
+    },
+    {
+      "id": "AUDIO-V2-006",
+      "rule": "all_decoder_dependencies_are_pinned_hashed_noticed_and_statically_closed"
+    },
+    {
+      "id": "AUDIO-V2-007",
+      "rule": "bgm_has_correlated_results_and_sfx_has_snapshot_epoch_plus_aggregate_counters"
+    },
+    {
+      "id": "AUDIO-V2-008",
+      "rule": "old_sfx_is_never_replayed_and_bgm_intent_is_latest_wins"
+    },
+    {
+      "id": "AUDIO-V2-009",
+      "rule": "stable_result_categories_preserve_raw_ma_result_or_hresult"
+    },
+    {
+      "id": "AUDIO-V2-010",
+      "rule": "bgm_and_sfx_buses_are_observed_with_generation_scoped_frames_and_internal_pcm_is_not_endpoint_proof"
+    },
+    {
+      "id": "AUDIO-V2-011",
+      "rule": "device_loss_uses_15s_target_and_30s_working_state_hard_cap_epoch_recovery_and_never_falls_back_to_null"
+    },
+    {
+      "id": "AUDIO-V2-012",
+      "rule": "qualification_combines_offline_eof_negative_corpus_real_endpoint_and_listening"
+    },
+    {
+      "id": "AUDIO-V2-013",
+      "rule": "no_general_media_stack_network_stream_video_drm_or_advanced_dsp"
+    },
+    {
+      "id": "AUDIO-V2-014",
+      "rule": "implementation_uses_isolated_candidates_and_one_final_promotion"
+    },
+    {
+      "id": "AUDIO-V2-015",
+      "rule": "H1_unlocks_A1_through_A6_only_and_exact_evidence_bound_H2_plus_machine_verified_E3_unlock_promotion"
+    },
+    {
+      "id": "AUDIO-V2-016",
+      "rule": "native_mutation_has_one_owner_and_jobs_are_cancellable_joined_and_epoch_checked"
+    },
+    {
+      "id": "AUDIO-V2-017",
+      "rule": "H1_binds_the_complete_canonical_manifest_in_a_reachable_proposal_commit"
+    },
+    {
+      "id": "AUDIO-V2-018",
+      "rule": "no_real_output_is_audio_fail_closed_but_not_launcher_process_fatal"
+    },
+    {
+      "id": "AUDIO-V2-019",
+      "rule": "audio_session_device_and_ready_epochs_have_non_ambiguous_state_and_stale_rules"
+    },
+    {
+      "id": "AUDIO-V2-020",
+      "rule": "runtime_compatibility_probe_is_bounded_and_offline_qualification_decodes_to_eof"
+    },
+    {
+      "id": "AUDIO-V2-021",
+      "rule": "contract_validator_and_mutation_tests_reject_drift_noncanonical_bytes_and_bad_git_provenance"
+    },
+    {
+      "id": "AUDIO-V2-022",
+      "rule": "H2_binds_recoverable_source_bound_evidence_and_explicitly_reviewed_runner_and_capture_tool_trust_roots"
+    },
+    {
+      "id": "AUDIO-V2-023",
+      "rule": "runtime_payload_paths_use_explicit_UTF16_code_unit_ordinal_order_matching_System_StringComparer_Ordinal_and_never_locale_collation"
+    },
+    {
+      "id": "AUDIO-V2-024",
+      "rule": "byte_identical_live_A6_may_continue_only_by_fresh_journal_recollection_fresh_reports_and_fresh_E1_H2_under_the_R5_accelerated_evidence_policy"
+    },
+    {
+      "id": "AUDIO-V2-025",
+      "rule": "qualification_runner_dependency_paths_allow_exact_root_global_json_and_descendants_of_the_existing_tools_launcher_automation_scripts_subtrees_only_all_other_root_files_fail_closed"
+    },
+    {
+      "id": "AUDIO-V2-026",
+      "rule": "qualification_runner_content_sniff_matches_shipped_manifest_canonical_codec_semantics_for_bounded_RIFF_WAVE_fmt_and_ISO_BMFF_ftyp_mp4a_instead_of_using_container_only_labels"
+    }
+  ],
+  "decoderMatrix": [
+    {
+      "backend": "miniaudio_builtin",
+      "codec": "pcm_or_ieee_float",
+      "containers": [
+        "riff_wave"
+      ],
+      "extensions": [
+        ".wav"
+      ],
+      "public": true,
+      "status": "include"
+    },
+    {
+      "backend": "miniaudio_builtin",
+      "codec": "mpeg_audio_layer_iii",
+      "containers": [
+        "mpeg_audio"
+      ],
+      "extensions": [
+        ".mp3"
+      ],
+      "public": true,
+      "status": "include"
+    },
+    {
+      "backend": "miniaudio_builtin",
+      "codec": "flac",
+      "containers": [
+        "native_flac"
+      ],
+      "extensions": [
+        ".flac"
+      ],
+      "public": true,
+      "status": "include"
+    },
+    {
+      "backend": "miniaudio_official_libvorbis_adapter_with_libogg_libvorbis_libvorbisfile",
+      "codec": "vorbis",
+      "containers": [
+        "ogg"
+      ],
+      "extensions": [
+        ".ogg"
+      ],
+      "public": true,
+      "status": "include"
+    },
+    {
+      "backend": "windows_media_foundation_allowlisted_adapter",
+      "codec": "aac_lc_or_he_aac",
+      "containers": [
+        "mpeg4",
+        "adts"
+      ],
+      "extensions": [
+        ".m4a",
+        ".mp4",
+        ".aac",
+        ".adts"
+      ],
+      "public": true,
+      "status": "include"
+    },
+    {
+      "backend": "miniaudio_official_libopus_adapter_with_libopus_libopusfile",
+      "codec": "opus",
+      "containers": [
+        "ogg"
+      ],
+      "extensions": [
+        ".opus"
+      ],
+      "public": true,
+      "status": "include"
+    },
+    {
+      "backend": "windows_media_foundation",
+      "codec": "wma",
+      "containers": [
+        "asf"
+      ],
+      "extensions": [],
+      "public": false,
+      "status": "defer"
+    }
+  ],
+  "evidenceGates": {
+    "H1": {
+      "activation": "tracked_r7_receipt_in_direct_single_parent_child_after_exact_human_acceptance",
+      "canonicalCheckoutPolicy": "gitattributes_forces_LF_for_audio_v2_contract_JSON_evidence_JSON_and_validator_test_JS_on_all_hosts",
+      "humanMessageBinds": [
+        "scopeRevision",
+        "proposalCommit",
+        "proposalTree",
+        "manifestPath",
+        "manifestSha256",
+        "promotionAuthorized=false",
+        "decision=accepted"
+      ],
+      "priorAcceptedReceiptPaths": [
+        "docs/evidence/audio-v2/h1-implementation-acceptance.json",
+        "docs/evidence/audio-v2/h1-implementation-acceptance-r3.json",
+        "docs/evidence/audio-v2/h1-implementation-acceptance-r4.json",
+        "docs/evidence/audio-v2/h1-implementation-acceptance-r5.json",
+        "docs/evidence/audio-v2/h1-implementation-acceptance-r6.json"
+      ],
+      "receiptPath": "docs/evidence/audio-v2/h1-implementation-acceptance-r7.json",
+      "receiptSchema": "docs/contracts/audio-v2/h1-implementation-acceptance.schema.v7.json"
+    },
+    "H2": {
+      "acceleratedEvidenceContinuationPolicy": {
+        "allowedSourceDeltaClasses": [
+          "R5_validator_ordinal_fix",
+          "R5_runner_ordinal_fix",
+          "focused_contract_and_runner_tests",
+          "qualification_runner_dependency_manifest",
+          "canonical_audio_v2_contract_docs_and_H1_receipt",
+          "R6_runner_exact_root_global_json_dependency_allowlist_fix",
+          "R7_validator_content_sniff_manifest_semantic_alignment_fix",
+          "R7_runner_content_sniff_manifest_semantic_alignment_fix"
+        ],
+        "byteIdentityRequirements": [
+          "artifactSource_inputs_and_hash",
+          "producerRecipe_inputs_and_hash",
+          "toolchainLock_inputs_and_hash",
+          "candidate_full_payload_bytes",
+          "candidate_buildIdentity_and_payloadClosure",
+          "endpoint_capture_tool_bytes",
+          "qualification_observer_bytes",
+          "same_live_completed_14_case_runtime_journal_hash_chain_and_event_bytes"
+        ],
+        "captureRetentionRule": "the_existing_four_WAV_and_their_exact_canonical_capture_configuration_bytes_may_be_retained_only_after_full_revalidation_against_unchanged_capture_tool_candidate_runId_device_and_WAV_bytes_without_relabeling_or_mutation_E1_Git_blobs_provenance_and_closure_must_be_fresh",
+        "cleanReproductionRule": "new_S_requires_two_fresh_clean_producers_with_identical_buildIdentity_payloadClosure_manifest_and_per_file_payload_rows_before_any_continuation",
+        "freshEvidenceRule": "all_nine_reports_their_configuration_input_case_evidence_and_producer_verification_blobs_isolated_replay_E1_and_H2_must_be_fresh_for_new_S",
+        "journalContinuationRule": "only_the_current_still_live_candidate_with_an_already_completed_exact_14_case_journal_may_be_freshly_recollected_against_new_S_and_the_new_response_must_reproduce_the_exact_existing_journal_hash_chain_and_event_bytes_after_all_byte_identity_requirements_pass",
+        "reuseProhibition": "prior_configuration_input_case_evidence_report_producer_verification_or_other_carrier_bytes_must_not_be_relabelled_copied_or_reused"
+      },
+      "assetEofResultsSchema": "docs/contracts/audio-v2/asset-eof-results.schema.v1.json",
+      "assetExceptionPolicy": "only_exact_path_exceptionId_owner_reason_signalClass_entries_in_S_tracked_waiver_registry_are_allowed",
+      "assetInventoryExtensions": [
+        ".flac",
+        ".m4a",
+        ".mp3",
+        ".mp4",
+        ".ogg",
+        ".opus",
+        ".wav",
+        ".waz"
+      ],
+      "assetQualificationWaiverPath": "config/audio-v2/asset-qualification-waivers.v1.json",
+      "assetQualificationWaiverSchema": "docs/contracts/audio-v2/asset-qualification-waivers.schema.v1.json",
+      "assetSignalPolicy": "validator_recomputes_pcm_s16le_frames_peak_and_nonzero_ratio_compressed_formats_require_live_frozen_producer_decode_to_EOF",
+      "automatedCaseEvidenceSchema": "docs/contracts/audio-v2/automated-case-evidence.schema.v1.json",
+      "automatedReportConfigurationSchema": "docs/contracts/audio-v2/automated-report-configuration.schema.v1.json",
+      "automatedReportInputManifestSchema": "docs/contracts/audio-v2/automated-report-input-manifest.schema.v1.json",
+      "automatedReportProvenance": "release_source_tracked_runner_and_dependency_closure_plus_E1_tracked_configuration_input_case_evidence_and_producer_verification_closures",
+      "automatedReportSchema": "docs/contracts/audio-v2/automated-report-envelope.schema.v1.json",
+      "candidateArtifactVerification": "print_H2_requires_live_full_payload_file_set_identity_closure_and_release_source_domain_recomputation_then_E1_tracked_attestation_and_runtime_manifest_snapshot_support_root_independent_recovery",
+      "candidateVerificationSchema": "docs/contracts/audio-v2/candidate-verification.schema.v1.json",
+      "caseEvidencePolicy": "fixed_case_check_and_capture_binding_matrix_with_typed_measurements_distinct_tracked_case_blobs_and_isolated_producer_replay",
+      "endpointCaptureCaseRule": "exactly_four_tracked_wavs_with_distinct_path_blob_and_sha_one_unique_required_case_per_item",
+      "endpointCaptureConfigurationSchema": "docs/contracts/audio-v2/endpoint-capture-configuration.schema.v1.json",
+      "endpointCaptureMinNonZeroSampleRatio": 0.001,
+      "endpointCaptureMinPeakAbsPcm16": 64,
+      "endpointCaptureMinimumDurationSeconds": 1,
+      "endpointCaptureStorage": "all_H2_gate_captures_are_tracked_blobs_max_1MiB_each_4MiB_total_external_long_recordings_are_non_gate_diagnostics",
+      "endpointCaptureToolPath": "tools/audio-v2/capture-endpoint.ps1",
+      "endpointCaptureTrustBoundary": "validator_proves_exact_S_tool_E1_configuration_candidate_device_capture_bytes_signal_and_case_links_but_H2_human_must_review_tool_semantics_and_listen_to_bound_captures",
+      "endpointClosureAlgorithm": "sha256_of_canonical_json_array_sorted_by_captureId_with_capture_artifact_configuration_artifact_tool_artifact_case_and_media_fields",
+      "evidenceManifestSchema": "docs/contracts/audio-v2/a6-evidence-manifest.schema.v1.json",
+      "finiteSfxMeterWindowPolicy": {
+        "anchor": "current_generation_finite_sfx_stimulus_dispatch_in_sfx_playback_or_bgm_sfx_mix",
+        "passRule": "at_least_one_post_anchor_snapshot_has_sfx_frame_advance_and_peak_abs_at_least_64_and_the_final_snapshot_has_total_sfx_frame_advance",
+        "terminalSilenceAllowed": true
+      },
+      "frozenContractReleaseSourcePolicy": "every_frozen_contract_blob_in_release_source_S_must_equal_proposal_P_even_if_worktree_bytes_are_restored",
+      "humanMessageBinds": [
+        "releaseSourceCommit",
+        "releaseSourceTree",
+        "buildIdentity",
+        "payloadClosure",
+        "evidenceCommit",
+        "evidenceTree",
+        "evidenceManifestPath",
+        "evidenceManifestSha256",
+        "candidateVerificationSha256",
+        "endpointCaptureToolSha256",
+        "endpointClosureSha256",
+        "listeningMatrixSha256",
+        "qualificationRunnerSha256",
+        "audioDeviceQualified=true",
+        "promotionAuthorized=true",
+        "decision=accepted"
+      ],
+      "listeningMatrixSchema": "docs/contracts/audio-v2/human-listening-matrix.schema.v1.json",
+      "noStaleSfxAfterRecoveryR3": {
+        "armResult": {
+          "result": "armed",
+          "sent": false
+        },
+        "carrierRevision": 2,
+        "dispatchRule": "arm_before_device_change_then_after_first_Recovering_and_before_closing_new_Ready_host_dispatches_one_SFX_batch_with_the_pre_recovery_audioReadyGeneration_in_the_same_audioSessionId",
+        "exactDeltas": {
+          "staleGenerationDrops": 1
+        },
+        "requiredFacts": [
+          "captureId",
+          "staleBatchSize",
+          "armResult",
+          "dispatchSequence",
+          "recoveringSequence",
+          "closingReadySequence",
+          "audioReadyGenerationBefore",
+          "audioReadyGenerationAfter",
+          "playedBefore",
+          "playedAfter",
+          "preReadyDropsBefore",
+          "preReadyDropsAfter",
+          "recoveryDropsBefore",
+          "recoveryDropsAfter",
+          "staleGenerationDropsBefore",
+          "staleGenerationDropsAfter",
+          "unknownIdCountBefore",
+          "unknownIdCountAfter",
+          "throttledCountBefore",
+          "throttledCountAfter",
+          "startFailureCountBefore",
+          "startFailureCountAfter"
+        ],
+        "staleBatchSize": 1,
+        "unchangedCounters": [
+          "playedCount",
+          "preReadyDrops",
+          "recoveryDrops",
+          "unknownIdCount",
+          "throttledCount",
+          "startFailureCount"
+        ],
+        "windowRule": "pre_snapshot_is_Ready_on_old_generation_dispatch_is_strictly_after_Recovering_and_before_closing_Ready_post_snapshot_is_Ready_in_same_session_on_new_generation"
+      },
+      "postRecoveryMeterPolicy": {
+        "busSelectionRule": "select_one_of_bgmMeter_or_sfxMeter_and_use_the_same_bus_for_both_final_observations",
+        "crossGenerationFrameRule": "frameCount_may_reset_when_audioReadyGeneration_changes_and_cross_generation_frame_deltas_are_forbidden",
+        "finalObservationCount": 2,
+        "finalObservationRule": "two_ordered_qualification_snapshots_at_or_after_the_final_closing_Ready_in_the_same_audioSessionId_audioReadyGeneration_and_physical_runtime_tuple",
+        "frameProgressRule": "second_observation_frameCount_must_be_greater_than_first_observation_frameCount_on_the_selected_bus",
+        "signalRule": "second_observation_peakAbsPcm16_must_be_at_least_64_on_the_selected_bus"
+      },
+      "producerReplayPolicy": "first_print_H2_materializes_exact_S_dependencies_and_E1_inputs_in_isolation_reruns_all_nine_reports_on_live_candidate_and_requires_canonical_stdout_equal_E1_verification_blob",
+      "producerReplayTimeoutMilliseconds": 1800000,
+      "producerVerificationSchema": "docs/contracts/audio-v2/producer-verification.schema.v1.json",
+      "qualificationRunnerContentSniffManifestAlignmentPolicy": {
+        "implementationAuthorization": "only_after_exact_R7_H1_activation_runner_may_replace_container_only_RIFF_WAVE_and_ISO_BMFF_codec_labels_with_the_exact_bounded_content_sniff_policy_and_refresh_focused_tests_dependency_closure_and_canonical_docs",
+        "implementationPaths": [
+          "agentsDoc/testing-guide.md",
+          "config/audio-v2/qualification-runner-dependencies.v1.json",
+          "docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md",
+          "docs/原生音频引擎-资源兼容性与静音故障只读调研备忘-2026-08-09.md",
+          "tools/audio-v2/qualification-runner.js",
+          "tools/audio-v2/qualification-runner.test.js"
+        ],
+        "isoBmffRule": "ftyp_at_offset_4_establishes_only_iso_bmff_container_canonical_aac_lc_or_he_aac_requires_a_valid_bounded_big_endian_box_path_moov_trak_mdia_minf_stbl_to_stsd_with_exact_entryCount_and_an_mp4a_sample_entry_bare_mp4a_markers_truncated_or_out_of_bounds_boxes_and_stsd_trailing_bytes_fail_closed_as_unknown_and_bytes_indexOf_is_forbidden",
+        "repositoryObservation": {
+          "isoBmff": {
+            "manifestCodec": "aac_lc_or_he_aac",
+            "physicalFtypMp4aEntries": 11
+          },
+          "riffWave": {
+            "manifestCodec": "pcm_s16le",
+            "physicalBitsPerSample": 16,
+            "physicalFormatTag": 1,
+            "trackedQualificationEntries": 28
+          },
+          "trackedAudioDenominator": 795
+        },
+        "riffWaveContainerRule": "RIFF_and_WAVE_identifiers_establish_only_the_riff_wave_container_and_never_by_themselves_establish_the_codec",
+        "riffWaveFailClosedConditions": [
+          "missing_fmt_chunk",
+          "duplicate_fmt_chunk",
+          "fmt_chunk_smaller_than_16_bytes",
+          "truncated_or_out_of_bounds_chunk",
+          "chunk_size_or_word_padding_overflow"
+        ],
+        "riffWaveFmtChunkRule": "walk_little_endian_RIFF_chunks_with_word_padding_within_the_declared_and_available_container_bounds_then_require_exactly_one_valid_fmt_chunk_before_codec_classification",
+        "supportedMappings": [
+          {
+            "audioFormatTag": 1,
+            "bitsPerSample": 16,
+            "codec": "pcm_s16le",
+            "container": "riff_wave"
+          },
+          {
+            "codec": "aac_lc_or_he_aac",
+            "container": "iso_bmff",
+            "detection": "ftyp_at_offset_4_plus_valid_bounded_big_endian_box_path_moov_trak_mdia_minf_stbl_to_stsd_exact_entryCount_containing_mp4a_sample_entry"
+          }
+        ],
+        "unsupportedRiffWavePolicy": "all_other_RIFF_WAVE_fmt_tag_and_bits_per_sample_combinations_fail_closed_as_unknown_without_relabeling"
+      },
+      "qualificationRunnerDependencyManifestPath": "config/audio-v2/qualification-runner-dependencies.v1.json",
+      "qualificationRunnerDependencyManifestSchema": "docs/contracts/audio-v2/qualification-runner-dependencies.schema.v1.json",
+      "qualificationRunnerDependencyPathPolicy": {
+        "allowedRootFilePaths": [
+          "global.json"
+        ],
+        "allowedSubtreePrefixes": [
+          "tools/",
+          "launcher/",
+          "automation/",
+          "scripts/"
+        ],
+        "implementationAuthorization": "only_after_exact_R6_H1_activation_runner_may_accept_global_json_as_the_only_root_file_dependency_and_refresh_its_tracked_dependency_closure",
+        "implementationPaths": [
+          "agentsDoc/testing-guide.md",
+          "config/audio-v2/qualification-runner-dependencies.v1.json",
+          "docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md",
+          "docs/原生音频引擎-资源兼容性与静音故障只读调研备忘-2026-08-09.md",
+          "tools/audio-v2/qualification-runner.js",
+          "tools/audio-v2/qualification-runner.test.js"
+        ],
+        "normalizedPathRule": "safe_relative_path_then_exact_global_json_or_one_of_the_four_existing_subtree_prefixes",
+        "otherRootFiles": "fail_closed",
+        "subtreeSetRule": "tools_launcher_automation_scripts_remain_the_only_allowed_subtree_prefixes"
+      },
+      "qualificationRunnerPath": "tools/audio-v2/qualification-runner.js",
+      "qualificationRunnerTrustBoundary": "replay_proves_exact_reviewed_runner_bytes_and_bound_inputs_executed_but_cannot_mechanically_prove_runner_semantics_H2_human_source_review_and_SHA_binding_are_mandatory",
+      "receiptSchema": "docs/contracts/audio-v2/h2-promotion-acceptance.schema.v2.json",
+      "receiptTreeImmutabilityPolicy": "R2_R3_R4_R5_R6_and_R7_H1_receipts_must_remain_byte_identical_from_their_activation_commits_through_S_E1_and_HEAD_H2_receipt_must_match_E2_and_HEAD",
+      "requiredAutomatedReportCases": {
+        "as2_wire_publish": [
+          "strict_v2_parse",
+          "request_result_correlation",
+          "stale_generation_handling",
+          "bgm_and_sfx_commands",
+          "asloader_publish_smoke"
+        ],
+        "asset_offline_eof_qualification": [
+          "shipped_corpus_all_files",
+          "vorbis_fixture",
+          "aac_mp4_fixture",
+          "opus_fixture",
+          "malformed_and_silent_fixtures"
+        ],
+        "csharp_capability_catalog_bridge": [
+          "abi_negotiation",
+          "capability_snapshot",
+          "catalog_completeness",
+          "preload_readiness",
+          "generation_stale_zero_side_effect"
+        ],
+        "device_recovery_endpoint_e2e": [
+          "default_device_switch",
+          "physical_route_bluetooth_or_hdmi",
+          "sleep_resume",
+          "no_stale_sfx_after_recovery"
+        ],
+        "exact_candidate_bgm_endpoint_e2e": [
+          "bgm_playback",
+          "bgm_seek",
+          "bgm_crossfade",
+          "format_vorbis",
+          "format_aac_mp4",
+          "format_opus"
+        ],
+        "exact_candidate_sfx_endpoint_e2e": [
+          "sfx_playback",
+          "dense_overlap_throttle",
+          "bgm_sfx_mix",
+          "gain_zero_and_default_max"
+        ],
+        "launcher_affected_regression": [
+          "launcher_dotnet_tests",
+          "jukebox_harness",
+          "audio_hud_state",
+          "shutdown_smoke"
+        ],
+        "native_abi_decoder_lifecycle": [
+          "abi_version_and_struct_size",
+          "decoder_registration_and_capabilities",
+          "runtime_bounded_probe",
+          "offline_eof_probe",
+          "start_seek_stop_result_propagation",
+          "shutdown_and_concurrency"
+        ],
+        "production_backend_device_fault_injection": [
+          "null_backend_excluded",
+          "wasapi_device_started",
+          "fallback_after_device_init_failure",
+          "no_output_degraded_policy",
+          "default_device_recovery"
+        ]
+      },
+      "requiredAutomatedReportIds": [
+        "asset_offline_eof_qualification",
+        "native_abi_decoder_lifecycle",
+        "production_backend_device_fault_injection",
+        "csharp_capability_catalog_bridge",
+        "as2_wire_publish",
+        "launcher_affected_regression",
+        "exact_candidate_bgm_endpoint_e2e",
+        "exact_candidate_sfx_endpoint_e2e",
+        "device_recovery_endpoint_e2e"
+      ],
+      "requiredCaseCaptureIds": {
+        "device_recovery_endpoint_e2e": {
+          "default_device_switch": [
+            "device_recovery"
+          ],
+          "no_stale_sfx_after_recovery": [
+            "device_recovery"
+          ],
+          "physical_route_bluetooth_or_hdmi": [
+            "device_recovery"
+          ],
+          "sleep_resume": [
+            "device_recovery"
+          ]
+        },
+        "exact_candidate_bgm_endpoint_e2e": {
+          "bgm_crossfade": [
+            "bgm_playback"
+          ],
+          "bgm_playback": [
+            "bgm_playback"
+          ],
+          "bgm_seek": [
+            "bgm_playback"
+          ],
+          "format_aac_mp4": [
+            "bgm_playback"
+          ],
+          "format_opus": [
+            "bgm_playback"
+          ],
+          "format_vorbis": [
+            "bgm_playback"
+          ]
+        },
+        "exact_candidate_sfx_endpoint_e2e": {
+          "bgm_sfx_mix": [
+            "bgm_sfx_mix"
+          ],
+          "dense_overlap_throttle": [
+            "sfx_playback"
+          ],
+          "gain_zero_and_default_max": [
+            "sfx_playback"
+          ],
+          "sfx_playback": [
+            "sfx_playback"
+          ]
+        }
+      },
+      "requiredCaseChecks": {
+        "as2_wire_publish": {
+          "asloader_publish_smoke": [
+            "fresh_trace_present",
+            "published_swf_identity_recorded"
+          ],
+          "bgm_and_sfx_commands": [
+            "bgm_operations_round_trip",
+            "sfx_batch_round_trip"
+          ],
+          "request_result_correlation": [
+            "request_id_round_trip",
+            "result_category_exact"
+          ],
+          "stale_generation_handling": [
+            "stale_bgm_not_started",
+            "stale_sfx_dropped_not_replayed"
+          ],
+          "strict_v2_parse": [
+            "extra_or_missing_fields_rejected",
+            "wire_revision_v2_required"
+          ]
+        },
+        "asset_offline_eof_qualification": {
+          "aac_mp4_fixture": [
+            "content_sniff_correct",
+            "decoded_frames_positive",
+            "decoded_to_eof",
+            "nonzero_pcm"
+          ],
+          "malformed_and_silent_fixtures": [
+            "malformed_category_exact",
+            "silent_pcm_detected",
+            "truncated_category_exact"
+          ],
+          "opus_fixture": [
+            "content_sniff_correct",
+            "decoded_frames_positive",
+            "decoded_to_eof",
+            "nonzero_pcm"
+          ],
+          "shipped_corpus_all_files": [
+            "complete_git_inventory",
+            "content_sniffed",
+            "decoded_to_eof",
+            "signal_classified"
+          ],
+          "vorbis_fixture": [
+            "content_sniff_correct",
+            "decoded_frames_positive",
+            "decoded_to_eof",
+            "nonzero_pcm"
+          ]
+        },
+        "csharp_capability_catalog_bridge": {
+          "abi_negotiation": [
+            "abi_mismatch_fails_closed",
+            "abi_v2_accepted"
+          ],
+          "capability_snapshot": [
+            "build_and_runtime_fields_complete",
+            "snapshot_single_epoch"
+          ],
+          "catalog_completeness": [
+            "bgm_and_sfx_catalog_complete",
+            "unknown_id_explicit"
+          ],
+          "generation_stale_zero_side_effect": [
+            "current_epoch_returned",
+            "stale_request_zero_side_effect"
+          ],
+          "preload_readiness": [
+            "preload_in_ready_barrier",
+            "ready_after_complete_snapshot"
+          ]
+        },
+        "device_recovery_endpoint_e2e": {
+          "default_device_switch": [
+            "new_device_identity_published",
+            "post_switch_endpoint_pcm"
+          ],
+          "no_stale_sfx_after_recovery": [
+            "stale_generation_drop_counter_exact",
+            "stale_sfx_absent_after_recovery"
+          ],
+          "physical_route_bluetooth_or_hdmi": [
+            "physical_route_identity_recorded",
+            "routed_endpoint_pcm"
+          ],
+          "sleep_resume": [
+            "post_resume_endpoint_pcm_generation_scoped",
+            "recovery_target_15s_hard_cap_30s"
+          ]
+        },
+        "exact_candidate_bgm_endpoint_e2e": {
+          "bgm_crossfade": [
+            "crossfade_no_unbounded_gap",
+            "endpoint_mix_observed"
+          ],
+          "bgm_playback": [
+            "endpoint_nonzero_pcm",
+            "request_started_on_exact_candidate"
+          ],
+          "bgm_seek": [
+            "post_seek_endpoint_pcm",
+            "seek_result_ok"
+          ],
+          "format_aac_mp4": [
+            "aac_decoder_reported",
+            "exact_candidate_aac_endpoint_pcm"
+          ],
+          "format_opus": [
+            "exact_candidate_opus_endpoint_pcm",
+            "opus_decoder_reported"
+          ],
+          "format_vorbis": [
+            "exact_candidate_vorbis_endpoint_pcm",
+            "vorbis_decoder_reported"
+          ]
+        },
+        "exact_candidate_sfx_endpoint_e2e": {
+          "bgm_sfx_mix": [
+            "both_sources_present",
+            "endpoint_mix_nonzero"
+          ],
+          "dense_overlap_throttle": [
+            "bounded_voice_count",
+            "throttle_counter_exact"
+          ],
+          "gain_zero_and_default_max": [
+            "default_gain_audible",
+            "zero_gain_silent_by_command"
+          ],
+          "sfx_playback": [
+            "endpoint_nonzero_pcm",
+            "played_counter_advanced"
+          ]
+        },
+        "launcher_affected_regression": {
+          "audio_hud_state": [
+            "audio_unavailable_state_passed",
+            "meter_not_used_as_audibility_proof"
+          ],
+          "jukebox_harness": [
+            "control_and_stopped_state_passed",
+            "real_host_boundary_not_overclaimed"
+          ],
+          "launcher_dotnet_tests": [
+            "affected_test_suite_passed",
+            "no_unexpected_skips"
+          ],
+          "shutdown_smoke": [
+            "native_shutdown_complete",
+            "process_exit_clean"
+          ]
+        },
+        "native_abi_decoder_lifecycle": {
+          "abi_version_and_struct_size": [
+            "abi_major_exact",
+            "struct_prefix_and_size_valid"
+          ],
+          "decoder_registration_and_capabilities": [
+            "capability_rows_match_registered_decoders",
+            "decoder_registration_success"
+          ],
+          "offline_eof_probe": [
+            "decode_to_eof_enforced",
+            "qualification_timeout_fails"
+          ],
+          "runtime_bounded_probe": [
+            "bounded_read_enforced",
+            "timeout_is_inconclusive"
+          ],
+          "shutdown_and_concurrency": [
+            "owner_queue_serialized",
+            "shutdown_drains_and_rejects_new_work"
+          ],
+          "start_seek_stop_result_propagation": [
+            "seek_failure_propagated",
+            "start_failure_propagated",
+            "stop_result_propagated"
+          ]
+        },
+        "production_backend_device_fault_injection": {
+          "default_device_recovery": [
+            "device_generation_advanced",
+            "new_real_device_started"
+          ],
+          "fallback_after_device_init_failure": [
+            "fallback_reaches_real_started_device",
+            "failed_backend_recorded"
+          ],
+          "no_output_degraded_policy": [
+            "audio_ready_false",
+            "launcher_continues_controls_disabled"
+          ],
+          "null_backend_excluded": [
+            "production_binary_has_no_null_backend",
+            "unknown_backend_fails_qualification"
+          ],
+          "wasapi_device_started": [
+            "device_started",
+            "selected_backend_wasapi"
+          ]
+        }
+      },
+      "requiredEndpointCaseIds": [
+        "bgm_playback",
+        "sfx_playback",
+        "bgm_sfx_mix",
+        "device_recovery"
+      ],
+      "requiredListeningCaptureIds": {
+        "bgm_sfx_simultaneous": [
+          "bgm_sfx_mix"
+        ],
+        "bgm_transport_and_crossfade": [
+          "bgm_playback"
+        ],
+        "default_device_switch": [
+          "device_recovery"
+        ],
+        "dense_sfx_overlap_and_throttle": [
+          "sfx_playback"
+        ],
+        "formats_shipped_and_new": [
+          "bgm_playback"
+        ],
+        "gain_zero_default_max": [
+          "bgm_playback",
+          "sfx_playback"
+        ],
+        "no_stale_sfx_after_recovery": [
+          "device_recovery"
+        ],
+        "physical_route_bluetooth_or_hdmi": [
+          "device_recovery"
+        ],
+        "quality_pop_latency_channel_loudness": [
+          "bgm_playback",
+          "bgm_sfx_mix",
+          "device_recovery",
+          "sfx_playback"
+        ],
+        "sleep_resume": [
+          "device_recovery"
+        ]
+      },
+      "requiredReportInputRoles": {
+        "as2_wire_publish": [
+          "as2_audio_source_closure",
+          "as2_publish_plan",
+          "candidate_core",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest",
+          "wire_protocol_contract"
+        ],
+        "asset_offline_eof_qualification": [
+          "candidate_core",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest",
+          "decoder_fixture_inventory",
+          "decoder_lock_or_capability_manifest",
+          "shipped_audio_corpus_inventory"
+        ],
+        "csharp_capability_catalog_bridge": [
+          "bridge_protocol_contract",
+          "candidate_core",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest",
+          "catalog_contract",
+          "csharp_audio_source_closure"
+        ],
+        "device_recovery_endpoint_e2e": [
+          "candidate_core",
+          "candidate_execution_contract",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest",
+          "device_recovery_run_plan",
+          "device_route_contract"
+        ],
+        "exact_candidate_bgm_endpoint_e2e": [
+          "bgm_endpoint_run_plan",
+          "bgm_fixture_inventory",
+          "candidate_core",
+          "candidate_execution_contract",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest"
+        ],
+        "exact_candidate_sfx_endpoint_e2e": [
+          "candidate_core",
+          "candidate_execution_contract",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest",
+          "sfx_endpoint_run_plan",
+          "sfx_fixture_inventory"
+        ],
+        "launcher_affected_regression": [
+          "candidate_core",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest",
+          "jukebox_harness_source",
+          "launcher_test_manifest",
+          "shutdown_test_plan"
+        ],
+        "native_abi_decoder_lifecycle": [
+          "candidate_core",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest",
+          "decoder_dependency_lock",
+          "native_abi_contract",
+          "native_lifecycle_test_plan"
+        ],
+        "production_backend_device_fault_injection": [
+          "backend_policy_source",
+          "candidate_core",
+          "candidate_miniaudio",
+          "candidate_runtime_manifest",
+          "device_fault_injection_plan",
+          "no_output_product_policy"
+        ]
+      },
+      "runtimePayloadOrderingPolicy": {
+        "comparison": "UTF16_code_unit_ordinal_equivalent_to_System_StringComparer_Ordinal",
+        "forbiddenComparers": [
+          "String.prototype.localeCompare",
+          "Intl.Collator"
+        ],
+        "manifestRowRule": "runtime_manifest_file_rows_must_already_be_in_the_same_ordinal_order_and_locale_collated_rows_fail_closed",
+        "regressionPaths": [
+          "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+          "runtime/ClearScript.Core.dll",
+          "runtime/ExCSS.dll",
+          "runtime/WebView2Loader.dll",
+          "runtime/libHarfBuzzSharp.dll"
+        ],
+        "runnerImplementationAuthorization": "only_after_exact_R5_H1_activation_runner_uses_the_same_explicit_ordinal_comparator_and_refreshes_its_tracked_dependency_closure",
+        "validatorImplementation": "P5_frozen_validator_uses_an_explicit_non_locale_ordinal_comparator_for_payload_closure_and_manifest_file_order"
+      },
+      "sleepResumeRecoveryClockPolicy": {
+        "carrierRevision": 2,
+        "fallbackForbidden": true,
+        "field": "workingStateElapsed100ns",
+        "hardMaximumEpisodeDelta100ns": 300000000,
+        "hardPassRule": "every_episode_at_or_below_hard_maximum_is_recovery_bounded_and_any_episode_above_hard_maximum_fails",
+        "sleepAndHibernateExcluded": true,
+        "source": "QueryUnbiasedInterruptTimePrecise",
+        "structuredTimingResult": {
+          "observedField": "recoveryMs",
+          "requiredFields": [
+            "targetMiss",
+            "targetRecoveryMs",
+            "recoveryMs",
+            "maxRecoveryMs"
+          ],
+          "rule": "targetRecoveryMs_must_equal_15000_maxRecoveryMs_must_equal_30000_and_targetMiss_must_equal_recoveryMs_greater_than_15000",
+          "targetField": "targetRecoveryMs",
+          "targetMissField": "targetMiss"
+        },
+        "targetEpisodeDelta100ns": 150000000,
+        "unit": "100ns",
+        "utcRole": "audit_only_not_duration_authority"
+      }
+    }
+  },
+  "generation": {
+    "audioReadyGeneration": {
+      "advance": "increment_before_each_initialization_recovery_capability_or_preload_snapshot_rebuild",
+      "initial": "0",
+      "publish": "same_epoch_is_published_as_ready_or_unavailable_after_rebuild_finishes",
+      "readyCondition": "abi_capability_real_device_and_complete_catalog_are_one_consistent_snapshot",
+      "scope": "csharp_admission_epoch",
+      "wireType": "uint64_decimal_string"
+    },
+    "audioSessionId": {
+      "format": "uuid_v4_lowercase",
+      "reset": "new_process_or_full_audio_coordinator_native_ownership_reinitialization",
+      "scope": "process_audio_lifetime",
+      "uniqueness": "never_reuse"
+    },
+    "connectionGeneration": {
+      "ownership": "xmlsocket_transport_only",
+      "rule": "never_alias_or_serialize_as_audio_generation"
+    },
+    "deviceGeneration": {
+      "advance": "increment_before_each_real_device_initialization_or_recovery_attempt_sequence",
+      "initial": "0",
+      "scope": "native_device_lifetime_epoch",
+      "wireType": "uint64_decimal_string"
+    },
+    "jobRule": "async_completion_must_match_captured_session_ready_and_relevant_device_epoch_before_publish",
+    "overflowRule": "start_new_audio_session_and_reset_counters_or_fail_closed_if_wire_cannot_publish_reset",
+    "staleRule": "mismatched_session_or_audio_ready_epoch_returns_stale_generation_with_current_tuple_and_zero_side_effect",
+    "terminologyRule": "bare_generation_is_forbidden"
+  },
+  "lifecycle": {
+    "deviceRecovery": "bounded_observable_interruptible_then_failed_no_output",
+    "mutationOwnership": "single_native_owner_queue",
+    "shutdownOrder": [
+      "stop_admission",
+      "cancel_and_join_jobs",
+      "stop_sounds_and_device",
+      "uninit_engine_resource_manager_and_context",
+      "balance_media_foundation_and_com"
+    ],
+    "snapshotReads": "immutable_or_atomic_no_uninit_race"
+  },
+  "nonGoals": [
+    "ffmpeg",
+    "libvlc",
+    "gstreamer",
+    "system_codec_pack",
+    "network_streaming",
+    "video_demux",
+    "drm",
+    "hrtf",
+    "spatial_audio",
+    "convolution_reverb",
+    "midi",
+    "tracker_formats",
+    "replaygain_rewrite",
+    "automatic_loudness_rewrite"
+  ],
+  "observability": {
+    "buses": [
+      "bgm_pre_master_peak_rms_clip",
+      "sfx_pre_master_peak_rms_clip"
+    ],
+    "device": [
+      "selected_backend",
+      "selected_device_id_digest",
+      "selected_device_name",
+      "state",
+      "device_generation",
+      "underrun"
+    ],
+    "evidenceLadder": [
+      "referenced",
+      "identified",
+      "decoded_to_eof",
+      "content_nonzero",
+      "graph_signal",
+      "device_active",
+      "endpoint_nonzero",
+      "human_audible",
+      "human_accepted"
+    ],
+    "runtimeLoopback": "only_explicit_qualification_or_diagnostic_mode",
+    "source": [
+      "decoder",
+      "container",
+      "codec",
+      "cursor",
+      "length",
+      "playing",
+      "start_result",
+      "source_group_master_gain"
+    ]
+  },
+  "probePolicies": {
+    "offlineQualificationProbe": {
+      "cacheKey": [
+        "normalized_path",
+        "full_sha256",
+        "capability_digest",
+        "probe_contract_revision"
+      ],
+      "decode": "stream_to_eof",
+      "maxWallMsPerFile": 120000,
+      "outputs": [
+        "frames",
+        "duration",
+        "peak",
+        "rms",
+        "leading_silence",
+        "trailing_silence",
+        "non_finite_count",
+        "eof_state"
+      ],
+      "timeoutResult": "qualification_failed_timeout"
+    },
+    "runtimeCompatibilityProbe": {
+      "allZeroWindowResult": "compatible_signal_unknown",
+      "cacheKey": [
+        "normalized_path",
+        "size",
+        "mtime",
+        "first_64k_sha256",
+        "capability_digest",
+        "probe_contract_revision"
+      ],
+      "eofRequired": false,
+      "maxDecodedFrames": 96000,
+      "maxFileBytes": 536870912,
+      "maxInputBytes": 8388608,
+      "maxWallMs": 2000,
+      "stableInput": {
+        "intervalMs": 1000,
+        "observations": 2,
+        "properties": [
+          "size",
+          "mtime"
+        ]
+      },
+      "timeoutResult": "inconclusive_timeout_not_unsupported"
+    }
+  },
+  "release": {
+    "H1MaximumState": "e2e_verified_isolated_candidate_NOT_DEPLOYED",
+    "H2RequiredFor": [
+      "source_tag",
+      "runtime_build_request",
+      "registered_builder_or_signer",
+      "production_proof_quorum_receipt",
+      "promotion"
+    ],
+    "evidenceOnlyDescendantsNeverBecomeReleaseSource": true,
+    "globalLifecycle": [
+      "compiled",
+      "candidate_built",
+      "candidate_executed",
+      "e2e_verified",
+      "promoted",
+      "standard_entry_verified"
+    ],
+    "h2RequestLinkPolicy": {
+      "artifactPath": "docs/evidence/audio-v2/h2-request-link.json",
+      "canonicalization": "utf8_no_bom_lf_recursive_sorted_keys_two_space_indent_single_final_lf",
+      "commitPolicy": "E3_is_the_direct_single_parent_evidence_only_child_of_E2_and_changes_exactly_only_the_h2_request_link",
+      "failClosedOn": [
+        "missing_link",
+        "noncanonical_json",
+        "non_direct_E2_child",
+        "non_evidence_only_diff",
+        "request_id_recomputation_mismatch",
+        "request_bytes_or_five_domain_mismatch",
+        "source_tag_commit_or_tree_mismatch",
+        "E1_manifest_blob_or_sha_mismatch",
+        "E2_receipt_blob_or_sha_mismatch",
+        "accepted_receipt_mutation"
+      ],
+      "gateRule": "E2_allows_request_and_two_formal_builders_E3_is_created_immediately_after_request_and_promote_runtime_bundle_including_final_preflight_must_validate_E3_before_any_formal_promotion_or_deployment_write",
+      "requestSchemaPolicy": "cf7_runtime_build_request_v2_remains_unchanged",
+      "requiredBindings": [
+        "schema",
+        "requestId",
+        "requestSha256",
+        "artifactSourceHash",
+        "producerRecipeHash",
+        "toolchainLockHash",
+        "policyHash",
+        "buildIdentityHash",
+        "sourceTag",
+        "releaseSourceCommit",
+        "releaseSourceTree",
+        "evidenceCommit",
+        "evidenceManifestPath",
+        "evidenceManifestBlobOid",
+        "evidenceManifestSha256",
+        "h2ReceiptCommit",
+        "h2ReceiptPath",
+        "h2ReceiptBlobOid",
+        "h2ReceiptSha256"
+      ],
+      "verificationRule": "offline_validator_recomputes_requestId_from_releaseTreeOid_and_policyHash_rehashes_request_bytes_verifies_all_five_request_domains_peels_source_tag_to_S_and_rebinds_E1_manifest_and_E2_receipt_git_objects"
+    },
+    "promotionCount": "one_final_promotion",
+    "runtimeRequestSchema": "existing_cf7_runtime_build_request_v2_unchanged",
+    "sourceRule": "exact_H2_bound_release_source_commit_and_tree"
+  },
+  "schema": "cf7.audio-v2.h1-decision-manifest.v7",
+  "scopeRevision": "AUDIO-V2-H1-SWEET-SPOT-R7",
+  "selectedAlternatives": {
+    "vorbis": {
+      "rejected": {
+        "implementation": "external_stb_vorbis_c_via_miniaudio_optional_wrapper",
+        "reasons": [
+          "codec_source_is_not_currently_vendored",
+          "resource_manager_push_mode_reports_length_zero",
+          "backward_seek_reinitializes_and_decodes_forward",
+          "does_not_meet_complete_duration_seek_eof_contract"
+        ]
+      },
+      "selected": "miniaudio_official_libvorbis_adapter_with_libogg_libvorbis_libvorbisfile",
+      "selectionReason": "streaming_bgm_requires_qualified_duration_seek_eof_and_resource_manager_semantics"
+    }
+  }
+}

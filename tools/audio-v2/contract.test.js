@@ -20,6 +20,8 @@ var r5ManifestBytes = fs.readFileSync(path.join(ROOT, validator.R5_MANIFEST_PATH
 var r5Manifest = validator.parseJsonBuffer(r5ManifestBytes, "R5 manifest fixture");
 var r6ManifestBytes = fs.readFileSync(path.join(ROOT, validator.R6_MANIFEST_PATH));
 var r6Manifest = validator.parseJsonBuffer(r6ManifestBytes, "R6 manifest fixture");
+var r7ManifestBytes = fs.readFileSync(path.join(ROOT, validator.R7_MANIFEST_PATH));
+var r7Manifest = validator.parseJsonBuffer(r7ManifestBytes, "R7 manifest fixture");
 
 function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -263,6 +265,60 @@ function testR6AllLeafMutationsFailClosed() {
     expectThrows(function () { validator.validateReceiptBinding(oldSchema, mockProposal); }, /unexpected H1 receipt schema/);
 }
 
+function testR7AllLeafMutationsFailClosed() {
+    assert.deepStrictEqual(r7ManifestBytes, validator.canonicalBytes(r7Manifest));
+    assert.strictEqual(validator.sha256(r7ManifestBytes), validator.R7_EXPECTED_MANIFEST_SHA256);
+    validator.validateManifest(r7Manifest, validator.R7_PROFILE);
+    var paths = leaves(r7Manifest);
+    assert(paths.length > leaves(r6Manifest).length, "R7 manifest must add governed leaves");
+    paths.forEach(function (leafPath) {
+        var changed = clone(r7Manifest);
+        setAt(changed, leafPath, mutate(getAt(changed, leafPath)));
+        expectThrows(function () { validator.validateManifest(changed, validator.R7_PROFILE); });
+    });
+    var mockProposal = {
+        bindings: {}, commit: "4".repeat(40), manifest: r7Manifest,
+        profile: validator.R7_PROFILE, tree: "5".repeat(40)
+    };
+    mockProposal.bindings[validator.R7_MANIFEST_PATH] = { blobOid: "6".repeat(40), sha256: validator.R7_EXPECTED_MANIFEST_SHA256 };
+    mockProposal.bindings[validator.ADR_PATH] = { blobOid: "7".repeat(40) };
+    mockProposal.bindings["tools/audio-v2/validate-contract.js"] = { blobOid: "8".repeat(40) };
+    mockProposal.bindings["tools/audio-v2/contract.test.js"] = { blobOid: "9".repeat(40) };
+    var receipt = makeH1Receipt(mockProposal, validator.R7_PROFILE);
+    validator.validateReceiptBinding(receipt, mockProposal);
+    var oldSchema = clone(receipt);
+    oldSchema.schema = "cf7.audio-v2.h1-implementation-acceptance.v6";
+    expectThrows(function () { validator.validateReceiptBinding(oldSchema, mockProposal); }, /unexpected H1 receipt schema/);
+}
+
+function makeIsoBmffAudio(hasMp4a) {
+    function box(type, payload) {
+        var result = Buffer.alloc(8 + payload.length);
+        result.writeUInt32BE(result.length, 0);
+        result.write(type, 4, "ascii");
+        payload.copy(result, 8);
+        return result;
+    }
+    var ftyp = box("ftyp", Buffer.from("isom\u0000\u0000\u0002\u0000isom", "binary"));
+    var entry = box(hasMp4a ? "mp4a" : "avc1", Buffer.alloc(8));
+    var stsdHeader = Buffer.alloc(8);
+    stsdHeader.writeUInt32BE(1, 4);
+    var stsd = box("stsd", Buffer.concat([stsdHeader, entry]));
+    return Buffer.concat([ftyp, box("moov", box("trak", box("mdia", box("minf", box("stbl", stsd)))))]);
+}
+
+function testR7ContentSniffCanonicalMappings() {
+
+    var pcm = makePcmWave(8000, 1, 1, true);
+    assert.deepStrictEqual(validator.sniffAudioContent(pcm), { codec: "pcm_s16le", container: "riff_wave" });
+    var floatWave = Buffer.from(pcm);
+    floatWave.writeUInt16LE(3, 20);
+    assert.deepStrictEqual(validator.sniffAudioContent(floatWave), { codec: "unknown_riff_wave_codec", container: "riff_wave" });
+    assert.deepStrictEqual(validator.sniffAudioContent(pcm.subarray(0, 32)), { codec: "unknown_riff_wave_codec", container: "riff_wave" });
+    assert.deepStrictEqual(validator.sniffAudioContent(makeIsoBmffAudio(true)), { codec: "aac_lc_or_he_aac", container: "iso_bmff" });
+    assert.deepStrictEqual(validator.sniffAudioContent(makeIsoBmffAudio(false)), { codec: "unknown_iso_bmff_codec", container: "iso_bmff" });
+}
+
 function testRuntimePayloadOrdinalOracle() {
     var rows = [
         { bytes: 55, path: "runtime/libHarfBuzzSharp.dll", sha256: "E".repeat(64) },
@@ -345,6 +401,7 @@ function testRevisionSchemaSurfaceBindings() {
     validator.validateSchemaSurfaces(ROOT, validator.R4_PROFILE);
     validator.validateSchemaSurfaces(ROOT, validator.R5_PROFILE);
     validator.validateSchemaSurfaces(ROOT, validator.R6_PROFILE);
+    validator.validateSchemaSurfaces(ROOT, validator.R7_PROFILE);
     expectThrows(function () {
         validator.validateSchemaSurfaces(ROOT, Object.assign({}, validator.R3_PROFILE, { manifestSchemaId: "cf7.audio-v2.h1-decision-manifest.schema.r3" }));
     }, /contract schema IDs drift/);
@@ -690,6 +747,61 @@ function testR6ProposalAndActivationGitChain() {
         validator.validateReceiptBinding(JSON.parse(receiptBytes.toString("utf8")), proposal);
         validator.validateH1Activation(proposal, { buffer: receiptBytes, value: JSON.parse(receiptBytes.toString("utf8")) }, temp);
         validator.R6_PROFILE.priorReceiptPaths.forEach(function (rel) { validator.validateImmutableReceiptPath(rel, "HEAD", temp); });
+    } finally {
+        fs.rmSync(temp, { recursive: true, force: true });
+    }
+}
+
+function testR7ProposalAndActivationGitChain() {
+    var temp = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-audio-v2-r7-chain-"));
+    try {
+        runGit(temp, ["init", "-q"]);
+        runGit(temp, ["config", "user.email", "audio-contract@example.invalid"]);
+        runGit(temp, ["config", "user.name", "Audio Contract Test"]);
+        validator.R7_FROZEN_CONTRACT_PATHS.forEach(function (rel) {
+            if ([validator.R7_MANIFEST_PATH, validator.R7_PROFILE.manifestSchemaPath, validator.R7_PROFILE.h1SchemaPath].indexOf(rel) >= 0) return;
+            var sourcePath = path.join(ROOT, rel.replace(/\//g, path.sep));
+            if (fs.existsSync(sourcePath)) writeFile(temp, rel, fs.readFileSync(sourcePath));
+            else writeFile(temp, rel, Buffer.from("base fixture: " + rel + "\n", "utf8"));
+        });
+        writeFile(temp, validator.ADR_PATH, Buffer.from("# accepted R6 ADR\n", "utf8"));
+        writeFile(temp, validator.MEMO_PATH, Buffer.from("# accepted R6 memo\n", "utf8"));
+        writeJson(temp, validator.H1_RECEIPT_PATH, { accepted: true, schema: "historical-r2-fixture" });
+        writeJson(temp, validator.R3_H1_RECEIPT_PATH, { accepted: true, schema: "historical-r3-fixture" });
+        writeJson(temp, validator.R4_H1_RECEIPT_PATH, { accepted: true, schema: "historical-r4-fixture" });
+        writeJson(temp, validator.R5_H1_RECEIPT_PATH, { accepted: true, schema: "historical-r5-fixture" });
+        writeJson(temp, validator.R6_H1_RECEIPT_PATH, { accepted: true, schema: "historical-r6-fixture" });
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "S4 accepted R6 state"]);
+        var source = runGit(temp, ["rev-parse", "HEAD"]);
+        var sourceTree = runGit(temp, ["rev-parse", "HEAD^{tree}"]);
+        var testProfile = Object.assign({}, validator.R7_PROFILE, { proposalParentCommit: source, proposalParentTree: sourceTree });
+
+        writeFile(temp, validator.R7_MANIFEST_PATH, r7ManifestBytes);
+        writeFile(temp, validator.R7_PROFILE.manifestSchemaPath, fs.readFileSync(path.join(ROOT, validator.R7_PROFILE.manifestSchemaPath.replace(/\//g, path.sep))));
+        writeFile(temp, validator.R7_PROFILE.h1SchemaPath, fs.readFileSync(path.join(ROOT, validator.R7_PROFILE.h1SchemaPath.replace(/\//g, path.sep))));
+        writeFile(temp, validator.ADR_PATH, proposalAdr(testProfile));
+        writeFile(temp, validator.MEMO_PATH, proposalMemo(testProfile));
+        writeFile(temp, "tools/audio-v2/validate-contract.js", Buffer.from("// R7 validator fixture\n", "utf8"));
+        writeFile(temp, "tools/audio-v2/contract.test.js", Buffer.from("// R7 tests fixture\n", "utf8"));
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "P7 exact seven paths"]);
+        var p7 = runGit(temp, ["rev-parse", "HEAD"]);
+        var proposal = validator.resolveProposal(p7, temp, testProfile);
+        assert.strictEqual(proposal.profile.revision, "R7");
+        assert.deepStrictEqual(validator.validateProposalShape(p7, temp, testProfile).paths.slice().sort(), testProfile.proposalExactPaths.slice().sort());
+        validator.R7_PROFILE.priorReceiptPaths.forEach(function (rel) { validator.validateImmutableReceiptPath(rel, "HEAD", temp); });
+
+        writeJson(temp, validator.R7_H1_RECEIPT_PATH, makeH1Receipt(proposal, validator.R7_PROFILE));
+        writeFile(temp, validator.ADR_PATH, acceptedAdr(validator.R7_PROFILE));
+        writeFile(temp, validator.MEMO_PATH, acceptedMemo(validator.R7_PROFILE));
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "H7 exact acceptance"]);
+        var receiptPath = path.join(temp, validator.R7_H1_RECEIPT_PATH.replace(/\//g, path.sep));
+        var receiptBytes = fs.readFileSync(receiptPath);
+        validator.validateReceiptBinding(JSON.parse(receiptBytes.toString("utf8")), proposal);
+        validator.validateH1Activation(proposal, { buffer: receiptBytes, value: JSON.parse(receiptBytes.toString("utf8")) }, temp);
+        validator.R7_PROFILE.priorReceiptPaths.forEach(function (rel) { validator.validateImmutableReceiptPath(rel, "HEAD", temp); });
     } finally {
         fs.rmSync(temp, { recursive: true, force: true });
     }
@@ -1261,7 +1373,7 @@ function testH2GitEvidenceChain() {
                     caseSchema = "cf7.audio-v2.asset-eof-results.v1";
                     writeJson(temp, casePath, Object.assign({}, common, {
                         entries: [
-                            { blobOid: audioBinding.blobOid, bytes: audioBinding.bytes.length, codec: "pcm_or_ieee_float", container: "riff_wave", decodeToEof: true, decodedFrames: 8000, exceptionId: null, path: "sounds/test.wav", qualificationResult: "passed", sha256: audioBinding.sha256, signalClass: "nonzero_pcm" },
+                            { blobOid: audioBinding.blobOid, bytes: audioBinding.bytes.length, codec: "pcm_s16le", container: "riff_wave", decodeToEof: true, decodedFrames: 8000, exceptionId: null, path: "sounds/test.wav", qualificationResult: "passed", sha256: audioBinding.sha256, signalClass: "nonzero_pcm" },
                             { blobOid: zeroBinding.blobOid, bytes: zeroBinding.bytes.length, codec: "pcm_or_ieee_float", container: "riff_wave", decodeToEof: true, decodedFrames: 8000, exceptionId: "TEST-SILENCE-001", path: "sounds/zero.wav", qualificationResult: "owned_exception", sha256: zeroBinding.sha256, signalClass: "intentional_silence" }
                         ],
                         inventoryExtensions: [".flac", ".m4a", ".mp3", ".mp4", ".ogg", ".opus", ".wav", ".waz"],
@@ -1411,6 +1523,8 @@ function main() {
     testR4AllLeafMutationsFailClosed();
     testR5AllLeafMutationsFailClosed();
     testR6AllLeafMutationsFailClosed();
+    testR7AllLeafMutationsFailClosed();
+    testR7ContentSniffCanonicalMappings();
     testRuntimePayloadOrdinalOracle();
     testCanonicalEncodingGuards();
     testStructuralDriftGuards();
@@ -1420,6 +1534,7 @@ function main() {
     testR4ProposalAndActivationGitChain();
     testR5ProposalAndActivationGitChain();
     testR6ProposalAndActivationGitChain();
+    testR7ProposalAndActivationGitChain();
     testGitProvenanceGuards();
     testReleaseSourceFreezeGuards();
     testH2EvidenceBinding();
