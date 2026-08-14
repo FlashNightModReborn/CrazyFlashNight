@@ -684,6 +684,46 @@
 }
 .npcshop-catalog-card:hover { border-color:#626a74; background:#171b20; }
 .npcshop-catalog-card.selected,.npcshop-owned-card.selected { border-color:#e5a64d; background:rgba(229,166,77,.11); box-shadow:inset 0 0 0 1px rgba(229,166,77,.2); }
+.npcshop-catalog-card.npcshop-navigation-focus {
+    border-color:var(--wb-role-focus);
+    box-shadow:0 0 0 2px color-mix(in srgb,var(--wb-role-focus) 24%,transparent),
+        inset 0 0 0 1px color-mix(in srgb,var(--wb-role-focus) 22%,transparent);
+}
+.npcshop-navigation-focus-hint {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+}
+.npcshop-navigation-banner {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:0 0 6px;
+    padding:7px 9px;
+    color:color-mix(in srgb,var(--wb-text) 84%,var(--wb-muted));
+    border:1px solid var(--wb-line);
+    background:var(--wb-surface-2);
+    font-size:10px;
+    line-height:1.45;
+}
+.npcshop-navigation-banner[hidden] { display:none; }
+.npcshop-navigation-banner[data-navigation-state="not-found"],
+.npcshop-navigation-banner[data-navigation-state="snapshot-error"] {
+    color:color-mix(in srgb,var(--wb-role-pending) 72%,var(--wb-text));
+    border-color:color-mix(in srgb,var(--wb-role-pending) 52%,var(--wb-line));
+    background:color-mix(in srgb,var(--wb-role-pending) 9%,var(--wb-surface));
+}
+.npcshop-navigation-banner p { flex:1 1 auto; margin:0; }
+.npcshop-navigation-retry { flex:0 0 auto; }
+.npcshop-material-return-group { display:flex; align-items:center; gap:6px; }
+.npcshop-material-return-status { max-width:180px; color:var(--wb-role-pending); font-size:10px; line-height:1.25; }
+.npcshop-material-return-status[data-navigation-state="error"] { color:var(--wb-role-reject); }
 .npcshop-catalog-card.locked { opacity:.55; cursor:not-allowed; }
 .npcshop-card-icon { display:grid; place-items:center; width:46px; height:46px; border:1px solid #292e35; background:#080a0d; }
 .npcshop-card-icon .kshop-icon,.npcshop-card-icon .cfn-layered-icon { width:42px; height:42px; object-fit:contain; }

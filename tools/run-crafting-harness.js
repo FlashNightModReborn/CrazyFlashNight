@@ -6,6 +6,9 @@ const BrowserChildResourceClosure=require('./workbench-live-e2e/lib/browser-chil
 const ROOT=path.resolve(__dirname,'..'),WEB=path.join(ROOT,'launcher','web');
 const PLAYWRIGHT=path.join(ROOT,'launcher','perf','node_modules','playwright');
 const IDENTITY_ONLY=process.argv.includes('--identity-only');
+const MATERIAL_SHOP_ONLY=process.argv.includes('--material-shop-only');
+const MATERIAL_RECIPE_ONLY=process.argv.includes('--material-recipe-only');
+const MATERIAL_INFRASTRUCTURE_ONLY=process.argv.includes('--material-infrastructure-only');
 const INVENTORY_WORKBENCH_MODULES=[
   'inventory-workbench-config.js','inventory-workbench-preparation-menu.js',
   'inventory-workbench-navigation.js','inventory-workbench-header.js',
@@ -16,6 +19,7 @@ const INVENTORY_WORKBENCH_MODULES=[
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','crafting.js'),'utf8');
   const materials=fs.readFileSync(path.join(WEB,'modules','crafting-materials.js'),'utf8');
+  const workbenchComponents=fs.readFileSync(path.join(WEB,'modules','workbench-components.js'),'utf8');
   const detailPresenter=fs.readFileSync(path.join(WEB,'modules','crafting-detail-presenter.js'),'utf8');
   const harness=fs.readFileSync(path.join(WEB,'modules','crafting','dev','harness.html'),'utf8');
   const equipmentInspector=fs.readFileSync(path.join(WEB,'modules','equipment-inspector.js'),'utf8');
@@ -44,6 +48,142 @@ function audit(){
       ||!harness.includes('material archive exposes the shared full/compact switch and defaults to compact')
       ||!harness.includes('material archive uses the standard workbench help entry')) {
     throw new Error('material density or standard-help contract missing');
+  }
+  if(!materials.includes('ItemFilter.buildMany')||!materials.includes('ItemFilter.matchesAnyPath')
+      ||!materials.includes("data-material-compat', 'legacy_limited'")
+      ||!materials.includes('left.sourceOrder - right.sourceOrder')
+      ||!materials.includes('data-occurrence-index')
+      ||!runtime.includes('validV2Materials')||!runtime.includes('validV2MaterialDetail')
+      ||!panel.includes('_materialSnapshotIntentGeneration')
+      ||!panel.includes('requestedVersion = _materialSessionVersion || 2')
+      ||!harness.includes("__craftingHarnessScenario==='pg-materials-v1'")
+      ||!harness.includes("__craftingHarnessScenario==='pg-materials-session-lock'")) {
+    throw new Error('materials v2 taxonomy, occurrence renderer, or persistent legacy gate missing');
+  }
+  if(!materials.includes('new WorkbenchComponents.Dropdown')
+      ||!materials.includes("new Intl.Collator('zh-CN', {numeric:true, sensitivity:'base'})")
+      ||!materials.includes("{value:'archive', label:'档案顺序'}")
+      ||!materials.includes("{value:'owned', label:'持有数'}")
+      ||!materials.includes("{value:'name', label:'名称'}")
+      ||!materials.includes("{value:'purpose', label:'用途数'}")
+      ||!materials.includes("appendSection('档案摘要'")
+      ||!materials.includes('setCatalogError:setCatalogError')
+      ||!materials.includes('setDetailError:setDetailError')
+      ||!materials.includes("appendCatalogEmptyAction('清除筛选'")
+      ||!materials.includes('crafting-material-detail-retry')
+      ||!materials.includes("resultStatus.setAttribute('aria-live', 'polite')")
+      ||!panel.includes("_shell.setMetric('ownedKinds', '持有种类', value)")
+      ||!panel.includes("'持有种类，正在同步'")
+      ||!panel.includes("'持有种类，暂不可用'")
+      ||!workbenchComponents.includes('function Dropdown(options)')
+      ||!workbenchComponents.includes("this.trigger.setAttribute('aria-haspopup', 'listbox')")
+      ||!css.includes('.crafting-material-catalog-empty')
+      ||!css.includes('.crafting-material-result-status')
+      ||!harness.includes('0.5 PanelScale equivalent')) {
+    throw new Error('material A3 sorting, metric, summary, empty-state, or error-boundary contract missing');
+  }
+  if(!materials.includes("card.setAttribute('data-material-tooltip', 'catalog')")
+      ||!materials.includes('options.bindTooltip(card, item)')
+      ||!panel.includes("key:'craft:' + item.name")
+      ||!panel.includes("PanelTooltip.createScope('crafting')")
+      ||!harness.includes('production catalog cards use the scoped async tooltip cache after one rich fetch')) {
+    throw new Error('material production tooltip binding/cache evidence missing');
+  }
+  if(!materials.includes("source.kind === 'enemy' && typeof EnemyPortraits !== 'undefined'")
+      ||!materials.includes("consumer:'crafting'")
+      ||!materials.includes('portraitRef:source.enemyType')
+      ||!materials.includes('legacyUrl:EnemyPortraits.fallbackUrl()')
+      ||!materials.includes("source.kind === 'shop' && typeof ShopPortraits !== 'undefined'")
+      ||!materials.includes('ShopPortraits.mount(container, img, source.shopId)')
+      ||!materials.includes('detailRenderEpoch === renderEpoch')
+      ||!materials.includes('invalidateSourcePortraits(detailBody)')
+      ||!css.includes('.crafting-material-source-portrait')
+      ||!css.includes('grid-template-columns:48px minmax(0,1fr)')
+      ||!css.includes('object-fit:contain')
+      ||!harness.includes('never per occurrence')
+      ||!harness.includes('cannot cross a material selection epoch')
+      ||!harness.includes('owner destroy invalidates every late portrait completion')) {
+    throw new Error('material structured-source portrait or stale-completion contract missing');
+  }
+  const materialRecipeRoute=panel.slice(panel.indexOf('function requestMaterialUseSnapshot'),
+    panel.indexOf('function reconcile'));
+  if(!materials.includes("data-material-use-action', kind")
+      ||!materials.includes("appendUseAction(actions, use, 'recipe')")
+      ||!materials.includes("appendUseAction(actions, use, 'inspect')")
+      ||!materials.includes("source.kind === 'craft'")
+      ||!materials.includes("recipeOrigin:'craft_source'")
+      ||!materials.includes('isCurrentRecipeTarget')
+      ||!materials.includes('可从上方合成来源前往制作')
+      ||materials.includes("title.textContent = '所需材料'")
+      ||!materials.includes("row.appendChild(header);\n                        appendIngredientPreview(row, use);\n                        row.appendChild(actions);")
+      ||!materials.includes('options.staticIconUrl(ingredient.icon)')
+      ||!materials.includes("image.setAttribute('data-static-icon-name', ingredient.icon)")
+      ||materials.includes("image.setAttribute('data-icon-name', ingredient.icon)")
+      ||!panel.includes('staticIconUrl:staticIconUrl')
+      ||!materials.includes('options.bindTooltip(item, ingredient)')
+      ||!materials.includes("copy.setAttribute('data-material-use-tooltip', '1')")
+      ||!materials.includes("return equipment ? '查看装备' : '前往合成'")
+      ||!materials.includes("parts.push('掉落率仅供参考')")
+      ||!materials.includes('state.protocolVersion === 2')
+      ||!panel.includes('snapshotPayload.materialSnapshotId = intent.materialSnapshotId')
+      ||!panel.includes("request('snapshot', snapshotPayload")
+      ||!materials.includes("return '需摩托车'")
+      ||!materials.includes('state.navigationAccess.crafting === true')
+      ||!panel.includes('function exactRecipeFromSnapshot')
+      ||!panel.includes("String(matches[0].output.name || '') !== intent.use.productName")
+      ||!panel.includes('function focusExactRecipeCard')
+      ||!panel.includes('function returnToMaterials')
+      ||!panel.includes('materialName:String(intent.selectedName || \'\')')
+      ||!panel.includes('refreshMaterialsSnapshot(preferredName)')
+      ||!panel.includes('intent.materialSnapshotId !== _materialSnapshotId')
+      ||!panel.includes('intent.panelInstanceId !== _panelInstanceId')
+      ||!runtime.includes('RequestMux.prototype.cancel = function(callId)')
+      ||!panelRuntime.includes('PanelRequestMux.prototype.cancel = function(callId)')
+      ||!css.includes('.crafting-material-use-action-status')
+      ||!css.includes('.crafting-material-ingredient-tile')
+      ||!css.includes('.crafting-material-ingredient-tile .crafting-material-card-owned')
+      ||!harness.includes("__craftingHarnessScenario==='pg-material-recipe-jump'")
+      ||!materialRecipeRoute ||materialRecipeRoute.includes("Panels.open(")
+      ||materialRecipeRoute.includes('onOpen(')||materialRecipeRoute.includes('onRebind(')
+      ||materialRecipeRoute.includes('refreshSnapshot(')) {
+    throw new Error('material A4a exact recipe/Inspector preflight or same-owner route contract missing');
+  }
+  if(!harness.includes("__craftingHarnessScenario==='pg-material-shop-navigation'")
+      ||!panel.includes('createMaterialShopNavigationMessage')
+      ||!panel.includes('validateMaterialShopNavigationFailure')
+      ||!panel.includes('CraftingRuntime.NAVIGATION_WATCHDOG_MS')
+      ||!materials.includes("source.shopAccessMode === 'full'")
+      ||!materials.includes("source.shopAccessReason === 'indexed_live_match'")
+      ||!materials.includes("button.textContent = accessLocked ? '需自行车'")
+      ||!materials.includes('state.navigationAccess.shop === true')
+      ||!materials.includes("button.setAttribute('aria-describedby'")
+      ||!materials.includes("status.setAttribute('aria-live', 'polite')")
+      ||!runtime.includes('SHOP_CATALOG_INDEX_MAX = 10000')
+      ||!runtime.includes('createMaterialShopNavigationMessage')
+      ||!runtime.includes('validateMaterialShopNavigationFailure')) {
+    throw new Error('material A4b exact shop navigation or accessible failure contract missing');
+  }
+  if(!materials.includes("purpose.id === 'system:infrastructure_upgrade'")
+      ||!materials.includes('validInfrastructureUses(response')
+      ||!materials.includes('appendInfrastructureUses(useSection, material, infrastructureUses)')
+      ||!materials.includes("purposeMeta.textContent = infrastructurePurpose")
+      ||materials.includes('前往基建')
+      ||materials.includes('crafting-material-infrastructure-counts')
+      ||!css.includes('.crafting-material-infrastructure-card')
+      ||!css.includes('.crafting-material-infrastructure-level[data-infrastructure-status="current"]')
+      ||!harness.includes("__craftingHarnessScenario==='pg-material-infrastructure'")
+      ||!harness.includes('conditional infrastructureUses wire')
+      ||!harness.includes("group.textContent.indexOf('持有')<0")) {
+    throw new Error('material read-only infrastructure projection contract missing');
+  }
+  const ordinaryClose=panel.slice(panel.indexOf('function requestClose(reason)'),
+    panel.indexOf('function requestCharacterBuild()'));
+  if(!ordinaryClose.includes("Bridge.send({type:'panel', cmd:'close', panel:'crafting'")
+      ||ordinaryClose.includes('Panels.close()')
+      ||!harness.includes('Host busy, stale, or admission failure')
+      ||!harness.includes('only after the Host panel_cmd commit')
+      ||!harness.includes('late exact close commit for a retired instance')) {
+    throw new Error('crafting deferred exact Host close contract missing');
   }
   if(!panel.includes("request('preview'")||!panel.includes("request('commit'")||!panel.includes('expectedCraftToken'))throw new Error('preview/token/commit flow missing');
   if(/price\s*\*|smithLevel\s*\*/.test(panel))throw new Error('Web must not reproduce authoritative crafting formulas');
@@ -153,12 +293,14 @@ function audit(){
       ||!css.includes('grid-template-rows:minmax(0,1fr)')
       ||!css.includes('grid-auto-rows:minmax(58px,auto)')
       ||!css.includes('.crafting-panel .crafting-material-card')
-      ||!harness.includes('for(var i=3;i<=223;i++)')
+      ||!harness.includes('for(var i=3;i<=224;i++)')
       ||!harness.includes("firstCardRect.height>=58")) {
-    throw new Error('material 44:56 geometry, readable-row, or 223-entry reachability coverage missing');
+    throw new Error('material 44:56 geometry, readable-row, or 224-entry reachability coverage missing');
   }
   if(!css.includes('#panel-container[data-panel="crafting"] #panel-content')||!css.includes('#panel-container[data-panel="crafting"] #panel-backdrop'))throw new Error('crafting full-screen anchor contract missing');
-  if(!panel.includes('CraftingInspector.open')||!panel.includes('gender: _snapshot && _snapshot.gender')||!panel.includes('PanelTooltip.hide()'))throw new Error('crafting inspector entry or gender contract missing');
+  if(!panel.includes('CraftingInspector.open')
+      ||!panel.includes("gender: typeof gender === 'string' ? gender : _snapshot && _snapshot.gender")
+      ||!panel.includes('PanelTooltip.hide()'))throw new Error('crafting inspector entry or gender contract missing');
   const harnessViewportIndex=harness.indexOf('workbench-inspection-viewport.js');
   const harnessInspectorIndex=harness.indexOf('equipment-inspector.js');
   if(harnessViewportIndex<0||harnessInspectorIndex<=harnessViewportIndex)throw new Error('crafting harness must load the shared inspection viewport before EquipmentInspector');
@@ -170,7 +312,7 @@ function audit(){
       ||!harness.includes("message.cmd==='materials'")
       ||!harness.includes("message.cmd==='materialDetail'"))throw new Error('crafting material harness coverage or dependency order missing');
   const craftingRegistry=registry.slice(registry.indexOf("registerLazy('crafting'"),registry.indexOf("registerLazy('skills'"));
-  const orderedInspectorDeps=['modules/asset-timeline.js','modules/dressup-doll-renderer.js','modules/workbench-inspection-viewport.js','modules/equipment-inspector.js','modules/crafting-inspector.js','modules/crafting-materials.js','modules/crafting-detail-presenter.js','modules/crafting-runtime.js','modules/crafting.js'];
+  const orderedInspectorDeps=['modules/portrait-resolver.js','modules/shop-portrait-resolver.js','modules/asset-timeline.js','modules/dressup-doll-renderer.js','modules/workbench-inspection-viewport.js','modules/equipment-inspector.js','modules/crafting-inspector.js','modules/crafting-materials.js','modules/crafting-detail-presenter.js','modules/crafting-runtime.js','modules/crafting.js'];
   let previousDependencyIndex=-1;
   orderedInspectorDeps.forEach(dependency=>{
     const dependencyIndex=craftingRegistry.indexOf("'"+dependency+"'");
@@ -204,7 +346,7 @@ async function runViewport(browser,serverInstance,viewport,query){
   try{
     await page.goto('http://127.0.0.1:'+serverInstance.address().port+'/modules/crafting/dev/harness.html'+(query||''),{waitUntil:'load'});
     const doneWait={timeout:25000};
-    // The legacy 120-check baseline observes the runner's RAF poll as its
+    // The baseline observes the runner's RAF poll as its
     // ambient animation-frame baseline.  The dedicated cleanup scenario must
     // instead see only product frames so it can require a strict zero.
     if(query)doneWait.polling=50;
@@ -230,7 +372,37 @@ async function run(){
   const viewports=[{width:1024,height:576},{width:1366,height:768},{width:1920,height:1080}];
   let output;
   try{
-    if(IDENTITY_ONLY){
+    if(MATERIAL_INFRASTRUCTURE_ONLY){
+      const infrastructure=[];
+      for(const viewport of viewports){
+        const result=await runViewport(browser,serverInstance,viewport,'?scenario=pg-material-infrastructure');
+        if(result.total!==9)throw new Error('PG-MATERIAL-INFRASTRUCTURE must contain exactly 9 checks, got '+result.total);
+        infrastructure.push(result);
+      }
+      output={mode:'material-infrastructure-only',executablePath,viewports,infrastructure,
+        summary:'PG-MATERIAL-INFRASTRUCTURE '+infrastructure[0].passed+'/'+infrastructure[0].total
+          +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
+    }else if(MATERIAL_RECIPE_ONLY){
+      const recipeJump=[];
+      for(const viewport of viewports){
+        const result=await runViewport(browser,serverInstance,viewport,'?scenario=pg-material-recipe-jump');
+        if(result.total!==26)throw new Error('PG-MATERIAL-RECIPE-JUMP must contain exactly 26 checks, got '+result.total);
+        recipeJump.push(result);
+      }
+      output={mode:'material-recipe-only',executablePath,viewports,recipeJump,
+        summary:'PG-MATERIAL-RECIPE-JUMP '+recipeJump[0].passed+'/'+recipeJump[0].total
+          +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
+    }else if(MATERIAL_SHOP_ONLY){
+      const materialShop=[];
+      for(const viewport of viewports){
+        const result=await runViewport(browser,serverInstance,viewport,'?scenario=pg-material-shop-navigation');
+        if(result.total!==12)throw new Error('PG-MATERIAL-SHOP-NAVIGATION must contain exactly 12 checks, got '+result.total);
+        materialShop.push(result);
+      }
+      output={mode:'material-shop-only',executablePath,viewports,materialShop,
+        summary:'PG-MATERIAL-SHOP-NAVIGATION '+materialShop[0].passed+'/'+materialShop[0].total
+          +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
+    }else if(IDENTITY_ONLY){
       const identity=[];
       for(const viewport of viewports){
         const result=await runViewport(browser,serverInstance,viewport,'?scenario=pg-crafting-identity');
@@ -241,10 +413,10 @@ async function run(){
         summary:'PG-CRAFTING-IDENTITY '+identity[0].passed+'/'+identity[0].total
           +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
     }else{
-      const baseline=[],coverage=[],fault=[],identity=[];
+      const baseline=[],coverage=[],fault=[],identity=[],legacy=[],sessionLock=[],recipeJump=[],materialShop=[],infrastructure=[];
       for(const viewport of viewports){
         const result=await runViewport(browser,serverInstance,viewport);
-        if(result.total!==120)throw new Error('baseline crafting harness must preserve all 120 checks, got '+result.total);
+        if(result.total!==150)throw new Error('baseline crafting harness must preserve all 150 checks, got '+result.total);
         baseline.push(result);
         const coverageResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-craft-current-coverage');
         if(coverageResult.total!==15)throw new Error('PG-CRAFT-CURRENT-COVERAGE must contain exactly 15 checks, got '+coverageResult.total);
@@ -255,12 +427,32 @@ async function run(){
         const identityResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-crafting-identity');
         if(identityResult.total!==10)throw new Error('PG-CRAFTING-IDENTITY must contain exactly 10 checks, got '+identityResult.total);
         identity.push(identityResult);
+        const legacyResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-materials-v1');
+        if(legacyResult.total!==6)throw new Error('PG-MATERIALS-V1 must contain exactly 6 checks, got '+legacyResult.total);
+        legacy.push(legacyResult);
+        const lockResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-materials-session-lock');
+        if(lockResult.total!==9)throw new Error('PG-MATERIALS-SESSION-LOCK must contain exactly 9 checks, got '+lockResult.total);
+        sessionLock.push(lockResult);
+        const recipeJumpResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-material-recipe-jump');
+        if(recipeJumpResult.total!==26)throw new Error('PG-MATERIAL-RECIPE-JUMP must contain exactly 26 checks, got '+recipeJumpResult.total);
+        recipeJump.push(recipeJumpResult);
+        const materialShopResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-material-shop-navigation');
+        if(materialShopResult.total!==12)throw new Error('PG-MATERIAL-SHOP-NAVIGATION must contain exactly 12 checks, got '+materialShopResult.total);
+        materialShop.push(materialShopResult);
+        const infrastructureResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-material-infrastructure');
+        if(infrastructureResult.total!==9)throw new Error('PG-MATERIAL-INFRASTRUCTURE must contain exactly 9 checks, got '+infrastructureResult.total);
+        infrastructure.push(infrastructureResult);
       }
-      output={mode:'full',executablePath,viewports,baseline,coverage,fault,identity,
+      output={mode:'full',executablePath,viewports,baseline,coverage,fault,identity,legacy,sessionLock,recipeJump,materialShop,infrastructure,
         summary:'Crafting harness baseline '+baseline[0].passed+'/'+baseline[0].total
           +' + PG-CRAFT-CURRENT-COVERAGE '+coverage[0].passed+'/'+coverage[0].total
           +' + PG-INVENTORY-FAULT owner journey '+fault[0].passed+'/'+fault[0].total
           +' + PG-CRAFTING-IDENTITY '+identity[0].passed+'/'+identity[0].total
+          +' + PG-MATERIALS-V1 '+legacy[0].passed+'/'+legacy[0].total
+          +' + PG-MATERIALS-SESSION-LOCK '+sessionLock[0].passed+'/'+sessionLock[0].total
+           +' + PG-MATERIAL-RECIPE-JUMP '+recipeJump[0].passed+'/'+recipeJump[0].total
+           +' + PG-MATERIAL-SHOP-NAVIGATION '+materialShop[0].passed+'/'+materialShop[0].total
+          +' + PG-MATERIAL-INFRASTRUCTURE '+infrastructure[0].passed+'/'+infrastructure[0].total
           +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
     }
   }finally{

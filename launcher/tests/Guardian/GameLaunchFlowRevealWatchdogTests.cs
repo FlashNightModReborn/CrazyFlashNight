@@ -40,6 +40,9 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.False(WaitingForFlash(harness.Flow));
             Assert.True(RevealPerformed(harness.Flow));
+            Assert.True(
+                harness.Flow.HasAcceptedTitleReceipt(
+                    "attempt-title-first"));
             Assert.Null(Watchdog(harness.Flow));
         }
 
@@ -61,6 +64,9 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.False(WaitingForFlash(harness.Flow));
             Assert.True(RevealPerformed(harness.Flow));
+            Assert.True(
+                harness.Flow.HasAcceptedTitleReceipt(
+                    "attempt-watchdog-first"));
             Assert.Null(Watchdog(harness.Flow));
         }
 
@@ -75,6 +81,9 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.True(WaitingForFlash(harness.Flow));
             Assert.False(RevealPerformed(harness.Flow));
+            Assert.False(
+                harness.Flow.HasAcceptedTitleReceipt(
+                    "attempt-current"));
             Assert.Same(armed, Watchdog(harness.Flow));
 
             harness.SendRevealReady("attempt-current");
@@ -82,6 +91,36 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(WaitingForFlash(harness.Flow));
             Assert.True(RevealPerformed(harness.Flow));
             Assert.Null(Watchdog(harness.Flow));
+        }
+
+        [Fact]
+        public void TrustedEntry_SendRequiresExactA5ReadyTitleAttempt()
+        {
+            using var harness = new Harness(60000);
+            const string attemptId = "attempt-trusted-entry";
+            harness.ArmReady(attemptId);
+
+            Assert.False(
+                harness.Flow.TrySendTrustedResolvedSaveEntry(
+                    "cf7_agent_a5_material_shop_run",
+                    attemptId));
+
+            harness.SendRevealReady(attemptId);
+
+            Assert.False(
+                harness.Flow.TrySendTrustedResolvedSaveEntry(
+                    "cf7_agent_a5_material_shop_run_near",
+                    attemptId));
+            Assert.False(
+                harness.Flow.TrySendTrustedResolvedSaveEntry(
+                    "cf7_agent_a5_material_shop_run",
+                    "attempt-stale"));
+            // The fixture has no business-ready socket client, so the exact
+            // request remains fail-closed before any send.
+            Assert.False(
+                harness.Flow.TrySendTrustedResolvedSaveEntry(
+                    "cf7_agent_a5_material_shop_run",
+                    attemptId));
         }
 
         [Fact]
@@ -95,6 +134,8 @@ namespace CF7Launcher.Tests.Guardian
             harness.Flow.Reset(null, "reveal_watchdog_test");
 
             Assert.False(WaitingForFlash(harness.Flow));
+            Assert.False(
+                harness.Flow.HasAcceptedTitleReceipt(attemptId));
             Assert.Null(Watchdog(harness.Flow));
 
             InvokePrivate(

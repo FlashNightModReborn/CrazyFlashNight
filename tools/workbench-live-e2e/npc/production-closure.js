@@ -46,20 +46,21 @@ const INVENTORY_SURFACE_CONSUMER_ANCHORS = Object.freeze([
   Object.freeze({ id: "npc_retry_status", source:
     "elseif(needsInventoryRetry)_shell.setStatus('库存需要重新同步','error');" }),
   Object.freeze({ id: "npc_open_settlement_write_fence", source:
-    "if(!selectionCount()||_busy||_owner.needsReconcile||inventoryWriteUnavailable())return;" }),
+    "if(_materialNavigation.isReturning()||!selectionCount()||_busy"
+      + "||_owner.needsReconcile||inventoryWriteUnavailable())return;" }),
   Object.freeze({ id: "npc_preview_write_fence", source:
-    "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
       + "||!_settlementPresenter||!_settlementPresenter.isActive())return;" }),
   Object.freeze({ id: "npc_commit_write_fence", source:
-    "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
       + "||!_settlement||!_settlement.canCommit||_previewBusy)return;" }),
   Object.freeze({ id: "npc_write_dispatch_fence", source:
-    "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()){"
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||inventoryWriteUnavailable()){"
       + "toast(_owner.needsReconcile||_inventoryState.refreshRequired||!_inventoryState.ready"
       + "?'请先重新同步商店状态。':'正在处理上一项交易。');returnfalse;}" }),
   Object.freeze({ id: "npc_checkout_write_fence", source:
     "if(_checkoutButton){_checkoutButton.textContent=count?'结算 ('+count+')':'结算';"
-      + "_checkoutButton.disabled=!count||_busy||_owner.needsReconcile"
+      + "_checkoutButton.disabled=returning||!count||_busy||_owner.needsReconcile"
       + "||inventoryWriteUnavailable();}" }),
 ]);
 const INVENTORY_SURFACE_ADAPTER_ANCHORS = Object.freeze([
@@ -317,12 +318,12 @@ const INVENTORY_SURFACE_REQUIRED_DEPTHS = Object.freeze({
   "provider:projection_same_version": 2,
 });
 const INVENTORY_SURFACE_ACTIVE_PREFIX_SHA256 = Object.freeze({
-  "consumer:npc_retry_listener": "9d77c894a951f1af61760a1454baaefc9ae423b103ed7b5f60bc47587cdc2015",
-  "consumer:npc_open_settlement_write_fence": "f1c36f231c26e23194227feeb4bd37ecb53022687dc4a8e1ee4916183d91cda5",
-  "consumer:npc_preview_write_fence": "218e92858f0d888ffdc1241c5dc09d1287183d492d247e1885410a0787fc31be",
-  "consumer:npc_commit_write_fence": "ec7d78ca12302679b949a4af7bc19ed3c8d2e0c5a8bae8172a01606e54ac2a30",
-  "consumer:npc_write_dispatch_fence": "3b6ffec98a09bd48b174fa1242996663462ba9806765b280423717b6f4118bf8",
-  "consumer:npc_checkout_write_fence": "fce99c73e3c3513b248899b18a15d389860d374ec31f8fd2c15efaddbf32bac5",
+  "consumer:npc_retry_listener": "405972e0a36a33f39d43462624c74f3bd80ac3fb33c75483ac4eacfa054f084f",
+  "consumer:npc_open_settlement_write_fence": "e5d1a0c959bafb40d2a62355e1e62f5dd1a2986ba7faf3f6e84ad59ebaf76658",
+  "consumer:npc_preview_write_fence": "7e118abcfaf69d7e73589655a615097dea2c517bcf0e4debc0794fae969c0017",
+  "consumer:npc_commit_write_fence": "082eafd4f7d79b4f18ff27e975da0ac6cc74e0cd4a479b82cf34b92c0cc8b03b",
+  "consumer:npc_write_dispatch_fence": "646712b899859ee15cc01d62db9d642970b7e90c40b1dbde38d7277e80070ce1",
+  "consumer:npc_checkout_write_fence": "7694071d6ec2c7013d441a808b96f775de7e9eba4b11451807e0d69f1250b93c",
   "adapter:adapter_reset_closed_only": "462dbe3169b94457c015f1482b94e56cfdef4f4c270c2980d6cbd26341040b24",
   "provider:projection_same_version": "ba7e628b5d10ac37e2abd2ebcc067aeb0848de165914cca88301a64470244ea9",
 });
@@ -332,8 +333,8 @@ const INVENTORY_SURFACE_ACTIVE_PREFIX_SHA256 = Object.freeze({
 // of the three audited production sources requires an explicit review and pin
 // refresh in the same current tree.
 const INVENTORY_SURFACE_EXACT_SOURCE_SHA256 = Object.freeze({
-  consumer: "aac86d778cd3773dc7b3fbe63d37d5464397e9b88ecb053d2c5f9e7537bdeec0",
-  adapter: "2abc6d198607eb45185111ebf5269e946fb81dc5d0286a9ac0d465efdf9e9267",
+  consumer: "44bb9282250ac95c2172c5deb6ffdfb17bf0b362708cc147c47bf8970870c418",
+  adapter: "4b4126bf03939e1d259c81b4325a979a1c0caa97f778ba1f7ddc93cc1da5fe79",
   provider: "b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
 });
 const INVENTORY_SURFACE_ORDER_GROUPS = Object.freeze([
@@ -363,7 +364,7 @@ const INVENTORY_SURFACE_ORDER_GROUPS = Object.freeze([
   ]) }),
 ]);
 const EXPECTED_RUNTIME_DOMAIN_COUNTS = Object.freeze({
-  artifactSource: 298,
+  artifactSource: 302,
   producerRecipe: 9,
   toolchainLock: 3,
 });

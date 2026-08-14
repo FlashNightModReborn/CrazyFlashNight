@@ -171,10 +171,64 @@ namespace CF7Launcher.Tests.Guardian
             Assert.DoesNotContain(secret, line);
         }
 
+        [Fact]
+        public void MaterialShopAuthorityLogs_RetainOnlyExactRoutingMetadata()
+        {
+            const string material = "战术握把";
+            const string shop = "迷之盔甲君";
+            const string snapshot = "materials.snapshot.42";
+            var command = new JObject
+            {
+                ["task"] = "cmd",
+                ["action"] = "craftingMaterialShopAuthorize",
+                ["callId"] = 41,
+                ["v"] = 1,
+                ["materialSnapshotId"] = snapshot,
+                ["materialName"] = material,
+                ["shopId"] = shop,
+                ["catalogIndex"] = 57
+            };
+            string response = new JObject
+            {
+                ["task"] = "material_shop_access_response",
+                ["callId"] = 41,
+                ["success"] = true,
+                ["v"] = 1,
+                ["decision"] = "allow",
+                ["reason"] = "indexed_live_match",
+                ["materialSnapshotId"] = snapshot,
+                ["materialName"] = material,
+                ["shopId"] = shop,
+                ["catalogIndex"] = 57,
+                ["itemName"] = material
+            }.ToString(Newtonsoft.Json.Formatting.None);
+
+            string commandLine = Capture(() =>
+                AuthorityLogFormatter.FormatFlashCommand(
+                    "MaterialShopAccessTask",
+                    command));
+            string responseLine = Capture(() =>
+                XmlSocketServer.FormatJsonMessageLog(response));
+
+            Assert.Contains("[MaterialShopAccessTask] -> Flash:", commandLine);
+            Assert.Contains("cmd=craftingMaterialShopAuthorize", commandLine);
+            Assert.Contains("callId=41", commandLine);
+            Assert.Contains("task=material_shop_access_response", responseLine);
+            Assert.Contains("callId=41", responseLine);
+            Assert.Contains("success=true", responseLine);
+            Assert.Contains("payload=redacted", responseLine);
+            foreach (string privateValue in new[] { material, shop, snapshot })
+            {
+                Assert.DoesNotContain(privateValue, commandLine);
+                Assert.DoesNotContain(privateValue, responseLine);
+            }
+        }
+
         [Theory]
         [InlineData("shop_response_v2")]
         [InlineData("CRAFTING_RESPONSE")]
         [InlineData("npcshop_respons")]
+        [InlineData("material_shop_access_response_v2")]
         public void XmlSocketNearMatchResponseFamiliesFailClosed(string task)
         {
             const string secret = "near.response.secret";

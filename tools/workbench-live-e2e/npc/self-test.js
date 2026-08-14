@@ -19,8 +19,9 @@ const { PURCHASE_SLOT, buildValidFixture, fixturePng, pngChunk }
   = require("./fixtures/valid-bundle");
 const ProductionClosure = require("./production-closure");
 const Protocol = require("./protocol");
-const { createScriptContextLedger } = require("./passive-recorder");
-const { loadSharedAdapter } = require("./shared-adapter");
+const { createScriptContextLedger, remoteValue } = require("./passive-recorder");
+const { loadSharedAdapter, createLifecycleOwnership, startLifecycle,
+  completePrecommitCleanup } = require("./shared-adapter");
 const { controlRequestOutputRecord, parseArgs, selectPurchaseTarget, selectSaleTarget,
   validateArgs } = require("./run-live-journey");
 const { assertInventoryPhaseAccessConsistency, assertStableRevisionLeases,
@@ -29,9 +30,10 @@ const InventoryRuntime = require("../../../launcher/web/modules/inventory-runtim
 
 const tests = [];
 let browserGateReceipt = null;
+const SELF_TEST_TEMP_ROOT = fs.realpathSync.native(os.tmpdir());
 function test(name, body) { tests.push({ name, body }); }
 function withFixture(options, body) {
-  const runDir = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-npc-v2-"));
+  const runDir = fs.mkdtempSync(path.join(SELF_TEST_TEMP_ROOT, "cf7-npc-v2-"));
   try { return body(buildValidFixture(runDir, options || {})); }
   finally { fs.rmSync(runDir, { recursive: true, force: true }); }
 }
@@ -665,11 +667,153 @@ test("shared adapter is a frozen callable surface", () => {
   assert(source.includes("async awaitExactClose("));
   assert.strictEqual(source.includes("readTerminalLogSnapshot(4000)"), false);
 });
+test("shared adapter retains exact ownership when readiness fails after spawn", async () => {
+  const owner = createLifecycleOwnership("first");
+  const calls = [];
+  const identity = { pid: 32048 };
+  const http = { evidence: { pid: identity.pid, httpPort: 1192 },
+    verifyRuntimeIdentity() { calls.push("identity"); return identity; },
+    async readTerminalLogSnapshot() { calls.push("boundary"); return { records: [] }; },
+    async agentControl(action) { calls.push(action); return { ok: true }; } };
+  let thrown = null;
+  try {
+    await startLifecycle("C:\\repo", "C:\\candidate", "cf7_agent_test", {},
+      { readyTimeoutMs: 10, pollMs: 1 }, owner, {
+        async allocateLoopbackCdpPort() { calls.push("cdp"); return { port: 52151 }; },
+        startLauncherCandidate() { calls.push("spawn"); return { startedAt: "now" }; },
+        async waitForAuthenticatedLegacyHttp() { calls.push("http"); return http; },
+        queryLauncherCoreProcesses() { return [{ pid: identity.pid }]; },
+        assertExclusiveLauncherProcess(_processes, pid) { assert.strictEqual(pid, identity.pid); },
+        attestAuthenticatedLauncherProcess() { return { pid: identity.pid, exact: true }; },
+        createTerminalLogBoundary() { return { boundary: true }; },
+        async waitForAgentControl() { calls.push("agent-ready"); },
+        assertResponseSucceeded(response) { assert.strictEqual(response.ok, true); },
+        async waitForRuntimeReady() {
+          calls.push("ready-failed");
+          const error = new Error("reveal watchdog fired before title-frame receipt");
+          error.code = "runtime_title_frame_missing";
+          throw error;
+        },
+      });
+  } catch (error) { thrown = error; }
+  assert(thrown);
+  assert.strictEqual(thrown.code, "runtime_title_frame_missing");
+  assert.deepStrictEqual({ launchAttempted: owner.launchAttempted,
+    launchAccepted: owner.launchAccepted, runtimeReady: owner.runtimeReady,
+    phase: owner.phase, pid: owner.identity.pid, cdpPid: owner.cdpBinding.runtimePid },
+  { launchAttempted: true, launchAccepted: true, runtimeReady: false,
+    phase: "waiting_runtime_ready", pid: 32048, cdpPid: 32048 });
+  assert.deepStrictEqual(calls.slice(0, 4), ["cdp", "spawn", "http", "identity"]);
+});
+test("partial-start cleanup shuts down, proves residue, then releases clone", async () => {
+  const calls = [];
+  const identity = { pid: 32048 };
+  const lifecycle = Object.assign(createLifecycleOwnership("first"), {
+    launchAttempted: true, launchAccepted: true, identity,
+    processContract: { pid: identity.pid }, cdpBinding: { port: 52151, runtimePid: identity.pid },
+    http: { evidence: { pid: identity.pid }, async agentControl(action) {
+      calls.push(action); return { success: true };
+    } },
+  });
+  const result = await completePrecommitCleanup({ root: "C:\\repo", lifecycle,
+    runtimeOptions: { timeoutMs: 10, pollMs: 1 },
+    lifecycleDependencies: {
+      assertResponseSucceeded(response) { calls.push("shutdown-accepted");
+        assert.strictEqual(response.success, true); },
+      async waitForCleanResidue(options) { calls.push("residue");
+        assert.strictEqual(options.runtimeIdentity.pid, identity.pid);
+        return { observedAt: "now", stableSamples: 3 }; },
+    },
+    inspectClone() { throw new Error("successful cleanup must not inspect preservation"); },
+    releaseClone() { calls.push("clone-release"); return { releasedAt: "now" }; },
+  });
+  assert.deepStrictEqual(calls,
+    ["shutdown", "shutdown-accepted", "residue", "clone-release"]);
+  assert.strictEqual(result.runtimeCleanupVerified, true);
+  assert.strictEqual(result.shutdownSucceeded, true);
+  assert.strictEqual(result.releasedBeforeCommit, true);
+  assert.strictEqual(result.cloneAlreadyReleased, true);
+});
+test("partial-start shutdown failure preserves clone and blocks release", async () => {
+  let releases = 0;
+  const identity = { pid: 32048 };
+  const lifecycle = Object.assign(createLifecycleOwnership("first"), {
+    launchAttempted: true, launchAccepted: true, identity,
+    processContract: { pid: identity.pid }, cdpBinding: { port: 52151, runtimePid: identity.pid },
+    http: { evidence: { pid: identity.pid }, async agentControl() {
+      const error = new Error("shutdown unavailable"); error.code = "shutdown_unavailable";
+      throw error;
+    } },
+  });
+  const result = await completePrecommitCleanup({ root: "C:\\repo", lifecycle,
+    runtimeOptions: { timeoutMs: 10, pollMs: 1 },
+    lifecycleDependencies: { async waitForCleanResidue() {
+      throw new Error("residue must not run after failed shutdown");
+    } },
+    inspectClone() { return { lockPresent: true, recoveryPresent: true }; },
+    releaseClone() { releases += 1; },
+  });
+  assert.strictEqual(releases, 0);
+  assert.strictEqual(result.reason, "authenticated_shutdown_failed");
+  assert.strictEqual(result.preservedForManualRecovery, true);
+  assert.strictEqual(result.releasedBeforeCommit, undefined);
+});
+test("partial-start residue failure preserves clone after accepted shutdown", async () => {
+  let releases = 0;
+  const identity = { pid: 32048 };
+  const lifecycle = Object.assign(createLifecycleOwnership("first"), {
+    launchAttempted: true, launchAccepted: true, identity,
+    processContract: { pid: identity.pid }, cdpBinding: { port: 52151, runtimePid: identity.pid },
+    http: { evidence: { pid: identity.pid }, async agentControl() { return { ok: true }; } },
+  });
+  const result = await completePrecommitCleanup({ root: "C:\\repo", lifecycle,
+    runtimeOptions: { timeoutMs: 10, pollMs: 1 },
+    lifecycleDependencies: {
+      assertResponseSucceeded(response) { assert.strictEqual(response.ok, true); },
+      async waitForCleanResidue() {
+        const error = new Error("candidate residue remains"); error.code = "runtime_residue_timeout";
+        throw error;
+      },
+    },
+    inspectClone() { return { lockPresent: true, recoveryPresent: true }; },
+    releaseClone() { releases += 1; },
+  });
+  assert.strictEqual(releases, 0);
+  assert.strictEqual(result.shutdownSucceeded, true);
+  assert.strictEqual(result.reason, "runtime_residue_unverified");
+  assert.strictEqual(result.preservedForManualRecovery, true);
+});
+test("unbound partial start cannot release clone", async () => {
+  let releases = 0;
+  const lifecycle = Object.assign(createLifecycleOwnership("first"), {
+    launchAttempted: true, launchAccepted: true,
+  });
+  const result = await completePrecommitCleanup({ root: "C:\\repo", lifecycle,
+    runtimeOptions: { timeoutMs: 10, pollMs: 1 },
+    inspectClone() { return { lockPresent: true, recoveryPresent: true }; },
+    releaseClone() { releases += 1; },
+  });
+  assert.strictEqual(releases, 0);
+  assert.strictEqual(result.reason, "partial_start_identity_unavailable");
+  assert.strictEqual(result.preservedForManualRecovery, true);
+});
 test("passive observer uses mature ws and no business action", () => {
   const source = fs.readFileSync(path.join(__dirname, "passive-recorder.js"), "utf8");
-  assert(source.includes('playwright-core/lib/utilsBundle.js").ws'));
+  const runner = fs.readFileSync(path.join(__dirname, "run-live-journey.js"), "utf8");
+  assert.strictEqual(source.includes("node_modules/playwright-core"), false);
+  assert(source.includes("options.webSocketImplementation"));
+  assert(runner.includes('playwright-core/lib/utilsBundle.js").ws'));
+  assert.strictEqual((runner.match(/webSocketImplementation: WebSocketImplementation/g) || []).length, 2);
   ["page.click(", "Bridge.send(", "Panels.open(", "mouse.click(", "keyboard.press("].forEach((needle) =>
     assert.strictEqual(source.includes(needle), false));
+});
+test("passive observer unwraps the real CDP Runtime.evaluate result shape", () => {
+  const value = { ok: true, url: "https://overlay.local/overlay.html",
+    bridgeWrapped: true, webviewObserved: true };
+  assert.deepStrictEqual(remoteValue({ result: { type: "object", value } },
+    "observer_install"), value);
+  assert.throws(() => remoteValue({ exceptionDetails: { text: "boom" } },
+    "observer_install"), (error) => error && error.code === "cdp_evaluate_failed");
 });
 test("v12 production Inventory facade, adapter, provider, and executable bindings remain jointly closed", () => {
   const root = path.resolve(__dirname, "../../..");
@@ -750,24 +894,27 @@ test("v12 production Inventory facade, adapter, provider, and executable binding
     "_retryButton.addEventListener('click',function(){});",
     "missing", "consumer:npc_retry_listener");
   rejected("settlement entry must remain inventory-fenced", "consumer",
-    "if(!selectionCount()||_busy||_owner.needsReconcile||inventoryWriteUnavailable())return;",
-    "if(!selectionCount()||_busy||_owner.needsReconcile)return;",
+    "if(_materialNavigation.isReturning()||!selectionCount()||_busy"
+      + "||_owner.needsReconcile||inventoryWriteUnavailable())return;",
+    "if(_materialNavigation.isReturning()||!selectionCount()||_busy"
+      + "||_owner.needsReconcile)return;",
     "missing", "consumer:npc_open_settlement_write_fence");
   rejected("preview dispatch must remain inventory-fenced", "consumer",
-    "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
       + "||!_settlementPresenter||!_settlementPresenter.isActive())return;",
-    "if(_busy||_owner.needsReconcile||!_settlementPresenter"
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||!_settlementPresenter"
       + "||!_settlementPresenter.isActive())return;",
     "missing", "consumer:npc_preview_write_fence");
   rejected("commit dispatch must remain inventory-fenced", "consumer",
-    "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
       + "||!_settlement||!_settlement.canCommit||_previewBusy)return;",
-    "if(_busy||_owner.needsReconcile||!_settlement"
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||!_settlement"
       + "||!_settlement.canCommit||_previewBusy)return;",
     "missing", "consumer:npc_commit_write_fence");
   rejected("generic write dispatch must remain inventory-fenced", "consumer",
-    "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()){",
-    "if(_busy||_owner.needsReconcile){",
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile"
+      + "||inventoryWriteUnavailable()){",
+    "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile){",
     "missing", "consumer:npc_write_dispatch_fence");
   rejected("adapter must bind the exact NPC owner", "adapter",
     "expectedPanel:'npcshop'", "expectedPanel:'kshop'",
@@ -970,7 +1117,7 @@ test("v12 production Inventory facade, adapter, provider, and executable binding
     + "||snapshot.snapshotSeq<=maximumSurfaceSequence)returnfalse;";
   const checkoutBlock = "if(_checkoutButton){"
     + "_checkoutButton.textContent=count?'结算 ('+count+')':'结算';"
-    + "_checkoutButton.disabled=!count||_busy||_owner.needsReconcile"
+    + "_checkoutButton.disabled=returning||!count||_busy||_owner.needsReconcile"
     + "||inventoryWriteUnavailable();}";
   [
     ["retry listener", "consumer", retryBlock, "if(false){" + retryBlock + "}",
@@ -981,27 +1128,33 @@ test("v12 production Inventory facade, adapter, provider, and executable binding
     ["revision coherence", "provider", versionBlock, "if(false){" + versionBlock + "}",
       "provider:projection_same_version"],
     ["settlement entry fence", "consumer",
-      "if(!selectionCount()||_busy||_owner.needsReconcile||inventoryWriteUnavailable())return;",
-      "if(false){if(!selectionCount()||_busy||_owner.needsReconcile"
+      "if(_materialNavigation.isReturning()||!selectionCount()||_busy"
+        + "||_owner.needsReconcile||inventoryWriteUnavailable())return;",
+      "if(false){if(_materialNavigation.isReturning()||!selectionCount()||_busy"
+        + "||_owner.needsReconcile"
         + "||inventoryWriteUnavailable())return;}",
       "consumer:npc_open_settlement_write_fence"],
     ["preview fence", "consumer",
-      "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
+      "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
         + "||!_settlementPresenter||!_settlementPresenter.isActive())return;",
-      "if(false){if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
+      "if(false){if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile"
+        + "||inventoryWriteUnavailable()"
         + "||!_settlementPresenter||!_settlementPresenter.isActive())return;}",
       "consumer:npc_preview_write_fence"],
     ["commit fence", "consumer",
-      "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
+      "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
         + "||!_settlement||!_settlement.canCommit||_previewBusy)return;",
-      "if(false){if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()"
+      "if(false){if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile"
+        + "||inventoryWriteUnavailable()"
         + "||!_settlement||!_settlement.canCommit||_previewBusy)return;}",
       "consumer:npc_commit_write_fence"],
     ["write dispatch fence", "consumer",
-      "if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()){"
+      "if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile"
+        + "||inventoryWriteUnavailable()){"
         + "toast(_owner.needsReconcile||_inventoryState.refreshRequired||!_inventoryState.ready"
         + "?'请先重新同步商店状态。':'正在处理上一项交易。');returnfalse;}",
-      "if(false){if(_busy||_owner.needsReconcile||inventoryWriteUnavailable()){"
+      "if(false){if(_materialNavigation.isReturning()||_busy||_owner.needsReconcile"
+        + "||inventoryWriteUnavailable()){"
         + "toast(_owner.needsReconcile||_inventoryState.refreshRequired||!_inventoryState.ready"
         + "?'请先重新同步商店状态。':'正在处理上一项交易。');returnfalse;}}",
       "consumer:npc_write_dispatch_fence"],
@@ -1187,9 +1340,11 @@ test("v12 production Inventory facade, adapter, provider, and executable binding
       + "PhysicalInventoryAdapter.prototype.resetSession=function(){");
   rejected("nested callable with the canonical marker cannot restore settlement fencing", "consumer",
     "functionopenSettlement(){"
-      + "if(!selectionCount()||_busy||_owner.needsReconcile||inventoryWriteUnavailable())return;",
+      + "if(_materialNavigation.isReturning()||!selectionCount()||_busy"
+      + "||_owner.needsReconcile||inventoryWriteUnavailable())return;",
     "functionremovedOpenSettlement(){functionopenSettlement(){"
-      + "if(!selectionCount()||_busy||_owner.needsReconcile||inventoryWriteUnavailable())return;}}",
+      + "if(_materialNavigation.isReturning()||!selectionCount()||_busy"
+      + "||_owner.needsReconcile||inventoryWriteUnavailable())return;}}",
     "missing", "consumer:npc_open_settlement_write_fence");
 });
 test("NPC browser journeys execute under an independently verified child module journal", () => {
@@ -1221,10 +1376,12 @@ test("NPC browser journeys execute under an independently verified child module 
     "browser-resource-inventory.v1.json"), "utf8"));
   assert.strictEqual(resourceInventory.schema,
     "workbench-live-e2e.browser-resource-inventory.v1");
-  assert.strictEqual(resourceInventory.files.length, 37);
+  assert.strictEqual(resourceInventory.files.length, 39);
   assert(resourceInventory.files.includes("modules/npcshop/dev/harness.html"));
   assert(resourceInventory.files.includes("modules/npcshop.js"));
   assert(resourceInventory.files.includes("modules/npcshop-runtime.js"));
+  assert(resourceInventory.files.includes("modules/npcshop-material-navigation.js"));
+  assert(resourceInventory.files.includes("css/workbench/portraits.css"));
   assert.deepStrictEqual(resourceInventory.files, resourceInventory.files.slice().sort());
   const result = childProcess.spawnSync(process.execPath,
     [bootstrapPath], {
@@ -1243,11 +1400,14 @@ test("NPC browser journeys execute under an independently verified child module 
   assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
   assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
   assert.strictEqual(receipt.journalVerification, "VERIFIED");
-  assert.strictEqual(receipt.moduleEntryCount, 324);
+  assert.strictEqual(receipt.moduleEntryCount, 326);
   assert.deepStrictEqual({passed:receipt.result.passed, total:receipt.result.total,
+    materialNavigationPassed:receipt.result.materialNavigationPassed,
+    materialNavigationTotal:receipt.result.materialNavigationTotal,
     reducedPassed:receipt.result.reducedPassed, reducedTotal:receipt.result.reducedTotal,
     contractQuantity:receipt.result.contractQuantity},
-  {passed:128, total:128, reducedPassed:2, reducedTotal:2, contractQuantity:4549});
+  {passed:129, total:129, materialNavigationPassed:21, materialNavigationTotal:21,
+    reducedPassed:2, reducedTotal:2, contractQuantity:4549});
   assert.strictEqual(receipt.result.checkNamesSha256,
     moduleInventory.expectedCheckNamesSha256);
   assert(/^[a-f0-9]{64}$/.test(receipt.result.resultSha256));
@@ -1264,8 +1424,8 @@ test("NPC browser journeys execute under an independently verified child module 
   ]);
   assert.strictEqual(receipt.servedResourceClosure.schema,
     "workbench-live-e2e.browser-resource-closure-receipt.v1");
-  assert.strictEqual(receipt.servedResourceClosure.resourceCount, 37);
-  assert(receipt.servedResourceClosure.occurrenceCount >= 37);
+  assert.strictEqual(receipt.servedResourceClosure.resourceCount, 39);
+  assert(receipt.servedResourceClosure.occurrenceCount >= 39);
   assert.strictEqual(receipt.servedResourceClosure.failureCount, 1);
   ["inventorySha256", "resourcesSha256", "occurrencesSha256", "failuresSha256",
     "evidenceSha256"].forEach((field) =>
@@ -1372,12 +1532,13 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
     "root:launcher/src/Bus/XmlSocketServer.cs",
     "root:scripts/asLoader.swf",
     "root:launcher/web/modules/npcshop.js",
+    "root:launcher/web/modules/npcshop-material-navigation.js",
     "root:launcher/web/modules/npcshop-runtime.js",
     "root:launcher/web/css/panels.css",
     "root:launcher/web/css/workbench/core.css"].forEach((locator) => assert(locators.has(locator), locator));
   assert.strictEqual(bundle.productionClosure.declarations.bootWeb.length, 23);
-  assert.strictEqual(bundle.productionClosure.declarations.npcLazyWeb.length, 13);
-  assert.strictEqual(bundle.productionClosure.declarations.styleWeb.length, 29);
+  assert.strictEqual(bundle.productionClosure.declarations.npcLazyWeb.length, 14);
+  assert.strictEqual(bundle.productionClosure.declarations.styleWeb.length, 30);
   const physicalSurface = bundle.productionClosure.semanticContracts.inventoryPhysicalSurface;
   assert.strictEqual(physicalSurface.schema,
     "workbench-live-e2e.npc.production-inventory-surface.v10");
@@ -1422,13 +1583,13 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
   assert.deepStrictEqual(physicalSurface.sourceContract.closedSourceBytes, {
     policy:"exact_utf8_bytes_governance_pin",
     expected:{
-      consumer:"aac86d778cd3773dc7b3fbe63d37d5464397e9b88ecb053d2c5f9e7537bdeec0",
-      adapter:"2abc6d198607eb45185111ebf5269e946fb81dc5d0286a9ac0d465efdf9e9267",
+      consumer:"44bb9282250ac95c2172c5deb6ffdfb17bf0b362708cc147c47bf8970870c418",
+      adapter:"4b4126bf03939e1d259c81b4325a979a1c0caa97f778ba1f7ddc93cc1da5fe79",
       provider:"b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
     },
     actual:{
-      consumer:"aac86d778cd3773dc7b3fbe63d37d5464397e9b88ecb053d2c5f9e7537bdeec0",
-      adapter:"2abc6d198607eb45185111ebf5269e946fb81dc5d0286a9ac0d465efdf9e9267",
+      consumer:"44bb9282250ac95c2172c5deb6ffdfb17bf0b362708cc147c47bf8970870c418",
+      adapter:"4b4126bf03939e1d259c81b4325a979a1c0caa97f778ba1f7ddc93cc1da5fe79",
       provider:"b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
     },
   });
@@ -2015,7 +2176,7 @@ test("ack helper executes and emits a pure provider reference", () => {
   assert.strictEqual(writeAckSource.includes("copyFileSync"), false);
   assert.strictEqual(writeAckSource.includes("renameSync"), false);
   assert.strictEqual(writeAckSource.includes("captureArtifact"), false);
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-npc-ack-root-"));
+  const root = fs.mkdtempSync(path.join(SELF_TEST_TEMP_ROOT, "cf7-npc-ack-root-"));
   const runDir = path.join(root, "tmp", "workbench-live-e2e", "npc", "ack-helper");
   fs.mkdirSync(runDir, { recursive: true });
   try {

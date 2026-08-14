@@ -2388,5 +2388,63 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False(WebOverlayForm.IsValidLootInventoryEnvelope(
                 request, "loot", "panel.loot.exact.1"));
         }
+
+        [Fact]
+        public void MaterialShopLease_FencesRequestsBeforeTransportAndTracksOwnerGeneration()
+        {
+            var sent = new List<JObject>();
+            string web = null;
+            using (var task = new InventoryTask(
+                () => true,
+                payload =>
+                {
+                    sent.Add(ParseSent(payload));
+                    return true;
+                }))
+            {
+                task.SetPostToWeb(value => web = value);
+                task.BindMaterialShopNavigationOwner(
+                    "crafting", "panel.crafting.materials");
+                Assert.True(task.TryAcquireMaterialShopNavigationLease(
+                    "crafting",
+                    "panel.crafting.materials",
+                    "lease.inventory.material-shop",
+                    out MaterialShopSettlementWitness witness));
+
+                JObject request = Request("snapshot", "lease.inventory.blocked");
+                request["panel"] = "crafting";
+                request["panelInstanceId"] = "panel.crafting.materials";
+                task.HandleWebRequest("snapshot", request);
+
+                Assert.Empty(sent);
+                Assert.Equal("busy", JObject.Parse(web).Value<string>("error"));
+                Assert.True(task.IsMaterialShopNavigationLeaseCurrent(witness));
+
+                JObject rejectedBeforeParsing = Request(
+                    "snapshot",
+                    "lease.inventory.rejected.not-recorded");
+                rejectedBeforeParsing["panel"] = "crafting";
+                rejectedBeforeParsing["panelInstanceId"] =
+                    "panel.crafting.materials";
+                rejectedBeforeParsing["domain"] = "wrong-domain";
+                task.HandleWebRequest("snapshot", rejectedBeforeParsing);
+                Assert.Equal("busy", JObject.Parse(web).Value<string>("error"));
+                Assert.True(task.ReleaseMaterialShopNavigationLease(witness));
+                rejectedBeforeParsing["domain"] = "inventory";
+                task.HandleWebRequest("snapshot", rejectedBeforeParsing);
+                Assert.Single(sent);
+                task.ClearPending();
+
+                task.BindMaterialShopNavigationOwner(
+                    "npcshop", "panel.npc.replacement");
+                Assert.False(task.IsMaterialShopNavigationLeaseCurrent(witness));
+                Assert.False(task.ReleaseMaterialShopNavigationLease(witness));
+                Assert.True(task.TryAcquireMaterialShopNavigationLease(
+                    "npcshop",
+                    "panel.npc.replacement",
+                    "lease.inventory.after-drift",
+                    out _));
+            }
+        }
     }
 }

@@ -3,7 +3,6 @@
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
-const WebSocket = require("../../../launcher/perf/node_modules/playwright-core/lib/utilsBundle.js").ws;
 const ProductionClosure = require("./production-closure");
 const Protocol = require("./protocol");
 const {
@@ -125,8 +124,9 @@ async function findExactEndpoint(binding, timeoutMs, pollMs) {
 }
 
 class NarrowCdp {
-  constructor(url) {
+  constructor(url, WebSocketImplementation) {
     this.url = url;
+    this.WebSocket = WebSocketImplementation;
     this.socket = null;
     this.nextId = 0;
     this.pending = new Map();
@@ -135,7 +135,7 @@ class NarrowCdp {
 
   async connect(timeoutMs) {
     await new Promise((resolve, reject) => {
-      const socket = new WebSocket(this.url);
+      const socket = new this.WebSocket(this.url);
       this.socket = socket;
       const timer = setTimeout(() => reject(new Error("CDP WebSocket timeout")), timeoutMs);
       socket.once("open", () => { clearTimeout(timer); resolve(); });
@@ -163,7 +163,7 @@ class NarrowCdp {
 
   send(method, params, timeoutMs) {
     return new Promise((resolve, reject) => {
-      if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+      if (!this.socket || this.socket.readyState !== this.WebSocket.OPEN) {
         return reject(new Error("CDP is closed"));
       }
       const id = ++this.nextId;
@@ -184,13 +184,12 @@ class NarrowCdp {
 }
 
 function remoteValue(result, phase) {
-  const response = result && result.result;
-  if (!response || response.exceptionDetails) {
+  if (!result || result.exceptionDetails || !result.result) {
     fail("cdp_evaluate_failed", phase, "narrow CDP Runtime evaluation failed", {
-      exceptionDetails: response && response.exceptionDetails,
+      exceptionDetails: result && result.exceptionDetails,
     });
   }
-  return response.result && response.result.value;
+  return result.result.value;
 }
 
 function injectionSource() {
@@ -229,13 +228,14 @@ function injectionSource() {
         "input",
         "[data-workbench-key]",
         "[data-trade-commit]",
+        "[data-navigation-focus]",
         ".workbench-quantity-number",
         ".workbench-quantity-range",
         "[data-filter-path]",
       ].join(",")) || target : target;
       const attributes = {};
       ["id", "class", "aria-label", "aria-disabled", "disabled", "data-workbench-key",
-        "data-trade-commit", "data-filter-path", "min", "max", "value", "type"]
+        "data-trade-commit", "data-navigation-focus", "data-filter-path", "min", "max", "value", "type"]
         .forEach(function(name) {
           if (element.hasAttribute && element.hasAttribute(name)) {
             attributes[name] = text(element.getAttribute(name), 320);
@@ -341,7 +341,7 @@ function injectionSource() {
       };
       bind(window.chrome.webview, "message", handler, false);
     }
-    ["click", "keydown", "input", "change"].forEach(function(type) {
+    ["click", "keydown", "input", "change", "focusin"].forEach(function(type) {
       bind(document, type, function(event) {
         emit({
           kind: "dom_input",
@@ -436,13 +436,19 @@ async function attachPassiveRecorder(options) {
   const writer = options.writer || new TranscriptWriter(options.runDir);
   const binding = options.cdpBinding;
   const identity = options.runtimeIdentity;
+  const WebSocketImplementation = options.webSocketImplementation;
+  if (typeof WebSocketImplementation !== "function"
+      || WebSocketImplementation.OPEN !== 1) {
+    fail("cdp_websocket_dependency_invalid", "observer",
+      "passive recorder requires one explicitly admitted WebSocket implementation");
+  }
   if (!isPlainObject(identity) || identity.pid !== binding.runtimePid) {
     fail("cdp_runtime_binding_mismatch", "observer", "CDP endpoint is not bound to authenticated candidate PID");
   }
   const timeoutMs = Number(options.timeoutMs || 30000);
   const pollMs = Number(options.pollMs || 250);
   const target = await findExactEndpoint(binding, timeoutMs, pollMs);
-  const client = new NarrowCdp(target.webSocketDebuggerUrl);
+  const client = new NarrowCdp(target.webSocketDebuggerUrl, WebSocketImplementation);
   await client.connect(timeoutMs);
   const scriptContextLedger = createScriptContextLedger();
   const parsedScripts = scriptContextLedger.parsedScripts;
@@ -832,4 +838,5 @@ module.exports = {
   attachPassiveRecorder,
   createScriptContextLedger,
   injectionSource,
+  remoteValue,
 };

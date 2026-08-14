@@ -17,6 +17,7 @@
 import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
 import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
 import org.flashNight.gesh.json.LoadJson.CraftingListLoader;
+import org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoader;
 
 class org.flashNight.boot.BootSequencer {
     static var S_INIT:Number = 0;
@@ -233,9 +234,7 @@ class org.flashNight.boot.BootSequencer {
         }
         _root.改装清单 = data;
         _root.改装清单对象 = craftingDict;
-
-        var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
-        obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
+        _root.改装分类顺序 = CraftingListLoader.getInstance().getCategoryOrder();
     }
 
     function stepCrafting():Void {
@@ -248,9 +247,94 @@ class org.flashNight.boot.BootSequencer {
                     self.bslog("合成表数据加载完毕");   // S9 完成事件 → trace-diff CRAFTING_OK。旧 f75 仅 trace()（SA 剔除）→ gate 对 S9 盲；此处补 [BootstrapAS] 可见事件。
                     self.b.craftReady = true;
                 },
-                function():Void {});
+                function():Void {
+                    self.host.打印加载内容("合成表加载失败");
+                    self.halt("crafting_catalog_failed");
+                });
+            MaterialCatalogLoader.getInstance().loadMaterialCatalog(
+                function(data:Object):Void {
+                    _root.材料档案目录 = data;
+                    self.bslog("材料档案目录加载完毕");
+                    self.b.materialCatalogReady = true;
+                },
+                function():Void {
+                    self.host.打印加载内容("材料档案目录加载失败");
+                    self.halt("material_catalog_failed");
+                });
         }
-        if (this.b.craftReady == true) this.state = S_HANDOFF;
+        if (this.b.itemDataLoaded == true && this.b.equipmentConfigSettled == true
+                && this.b.itemDataReady != true && this.b.itemDataFailed != true) {
+            org.flashNight.arki.item.ItemUtil.loadItemData(this.b.itemDataPayload);
+            delete this.b.itemDataPayload;
+            if (org.flashNight.arki.item.ItemUtil.itemDataDict == undefined
+                    || org.flashNight.arki.item.ItemUtil.materialDict == undefined) {
+                this.b.itemDataFailed = true;
+            } else {
+                this.b.itemDataReady = true;
+            }
+        }
+        if (this.b.itemDataFailed == true) {
+            this.host.打印加载内容("物品数据加载失败");
+            this.halt("item_data_failed");
+            return;
+        }
+        if (this.b.enemyPropertiesFailed == true) {
+            this.host.打印加载内容("敌人属性数据加载失败");
+            this.halt("enemy_properties_failed");
+            return;
+        }
+        if (this.b.legacyMaterialDictionaryFailed == true) {
+            this.host.打印加载内容("材料大全数据加载失败");
+            this.halt("material_dictionary_failed");
+            return;
+        }
+        if (this.b.equipmentModFailed == true) {
+            this.host.打印加载内容("插件数据加载失败");
+            this.halt("equipment_mod_data_failed");
+            return;
+        }
+        if (this.b.shopCatalogFailed == true) {
+            this.host.打印加载内容("金币商店目录加载失败");
+            this.halt("shop_catalog_failed");
+            return;
+        }
+        if (this.b.kshopCatalogFailed == true) {
+            this.host.打印加载内容("K点商城目录加载失败");
+            this.halt("kshop_catalog_failed");
+            return;
+        }
+        if (this.b.craftReady == true && this.b.materialCatalogReady == true
+                && this.b.itemDataReady == true
+                && this.b.enemyPropertiesReady == true
+                && this.b.legacyMaterialDictionaryReady == true
+                && this.b.equipmentModReady == true
+                && this.b.shopCatalogReady == true
+                && this.b.kshopCatalogReady == true) {
+            var shopCatalogCount:Number = 0;
+            if (_root.shops != undefined && typeof _root.shops == "object"
+                    && !(_root.shops instanceof Array)) {
+                for (var shopId:String in _root.shops) {
+                    shopCatalogCount++;
+                }
+            }
+            if (shopCatalogCount < 1) {
+                this.host.打印加载内容("金币商店目录加载失败");
+                this.halt("shop_catalog_failed");
+                return;
+            }
+            if (!(_root.kshop_list instanceof Array) || _root.kshop_list.length < 1) {
+                this.host.打印加载内容("K点商城目录加载失败");
+                this.halt("kshop_catalog_failed");
+                return;
+            }
+            if (this.b.materialSourceIndexReady != true) {
+                var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
+                obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
+                obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig();
+                this.b.materialSourceIndexReady = true;
+            }
+            this.state = S_HANDOFF;
+        }
     }
 
     // === S6 系统初始化（移植 f9/f10/f18/f26/f32 + _root.loaders 逐 tick 抽干队列） ===

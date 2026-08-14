@@ -8,6 +8,9 @@ class org.flashNight.gesh.json.LoadJson.CraftingListLoader extends BaseXMLLoader
     private static var instance:CraftingListLoader = null;
     private static var path:String = "data/crafting/";
     private var combinedData:Object = null;
+    // list.xml 物理顺序是材料 taxonomy 与 sourceOrder 的 authored authority。
+    // keyedMerge 会把 category 放进 Object 并丢失该顺序，因此必须在 merge 前冻结。
+    private var categoryOrder:Array = null;
 
     /**
      * 获取单例实例。
@@ -54,6 +57,7 @@ class org.flashNight.gesh.json.LoadJson.CraftingListLoader extends BaseXMLLoader
                 return;
             }
             var entries:Array = ListLoader.normalizeToArray(data.list);
+            self.categoryOrder = entries.slice(0);
 
             ListLoader.loadChildren({
                 entries:      entries,
@@ -87,6 +91,11 @@ class org.flashNight.gesh.json.LoadJson.CraftingListLoader extends BaseXMLLoader
         return this.combinedData;
     }
 
+    /** 返回 list.xml authored category 顺序的防御性副本。 */
+    public function getCategoryOrder():Array {
+        return this.categoryOrder == null ? [] : this.categoryOrder.slice(0);
+    }
+
     /**
      * 覆盖基类的 reload 方法，实现合成表的重新加载逻辑。
      * @param onLoadHandler 加载成功后的回调函数。
@@ -95,6 +104,7 @@ class org.flashNight.gesh.json.LoadJson.CraftingListLoader extends BaseXMLLoader
     public function reload(onLoadHandler:Function, onErrorHandler:Function):Void {
         // 清空现有数据
         this.combinedData = null;
+        this.categoryOrder = null;
         super.reload(onLoadHandler, onErrorHandler);
     }
 

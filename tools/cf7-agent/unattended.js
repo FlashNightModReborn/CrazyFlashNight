@@ -10,7 +10,10 @@ const ALLOWED_SLOTS = new Set([
   'cf7_agent_arena_calibration',
   'cf7_agent_character_build',
   'cf7_agent_loot_target_full_v1',
+  'cf7_agent_a5_material_shop_run',
 ]);
+const A5_SLOT = 'cf7_agent_a5_material_shop_run';
+const A5_CANDIDATE_ID = 'a5';
 const CANDIDATE_ID =
   /^c-[0-9a-f]{12}-[0-9a-f]{10}-[a-z0-9][a-z0-9-]{0,31}$/u;
 
@@ -60,13 +63,20 @@ function parseUnattendedArguments(argv) {
       '--slot must be one frozen unattended slot.',
     );
   }
+  const a5Slot = slot === A5_SLOT;
   if (
-    candidateId !== undefined
-    && !CANDIDATE_ID.test(candidateId)
+    (a5Slot
+      && candidateId !== undefined
+      && candidateId !== A5_CANDIDATE_ID)
+    || (!a5Slot
+      && candidateId !== undefined
+      && !CANDIDATE_ID.test(candidateId))
   ) {
     throw new UnattendedArgumentError(
       'candidate_invalid',
-      '--candidate-id must be one immutable v2 candidate leaf.',
+      a5Slot
+        ? '--candidate-id must be omitted for formal runtime or exactly a5 for the A5 material-shop slot.'
+        : '--candidate-id must be one immutable c-* v2 candidate leaf.',
     );
   }
   return Object.freeze({
@@ -91,6 +101,17 @@ function failDuplicate(option) {
   throw new UnattendedArgumentError(
     'argument_invalid',
     `${option} may be supplied only once.`,
+  );
+}
+
+function candidateRoot(projectRoot, candidateId) {
+  if (candidateId === undefined) return undefined;
+  return path.join(
+    projectRoot,
+    'tmp',
+    'runtime-candidates',
+    'v2',
+    candidateId,
   );
 }
 
@@ -149,13 +170,7 @@ function main() {
     if (parsed.candidateId !== undefined) {
       args.push(
         '-CandidateRoot',
-        path.join(
-          projectRoot,
-          'tmp',
-          'runtime-candidates',
-          'v2',
-          parsed.candidateId,
-        ),
+        candidateRoot(projectRoot, parsed.candidateId),
       );
     }
     const result = childProcess.spawnSync(
@@ -184,5 +199,6 @@ if (require.main === module)
   main();
 
 module.exports = {
+  candidateRoot,
   parseUnattendedArguments,
 };

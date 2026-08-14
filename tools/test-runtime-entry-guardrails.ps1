@@ -117,8 +117,20 @@ Assert-Cf7Contains $start '$runnerStart.Arguments =' `
     'unattended start must support Windows PowerShell 5.1 ProcessStartInfo'
 Assert-Cf7Contains $start '--agent-unattended-runner --adapter $UnattendedAdapter --slot $UnattendedSlot' `
     'unattended start must expose only the closed trusted Core runner arguments'
+Assert-Cf7Contains $start "'cf7_agent_a5_material_shop_run'" `
+    'unattended start must admit the exact A5 material-shop slot'
+Assert-Cf7Contains $start '$a5UnattendedSlot -and $null -ne $candidateLeaf' `
+    'A5 material-shop slot must allow the no-candidate formal runtime path'
+Assert-Cf7Contains $start "`$candidateLeaf -cne 'a5'" `
+    'A5 material-shop candidate path must require the exact a5 leaf'
+Assert-Cf7Contains $start "`$candidateLeaf -cnotmatch '^c-" `
+    'non-A5 unattended slots must retain the immutable c-* candidate leaf contract'
 Assert-Cf7Contains $start '$setDotnetRootCommand -Quiet' `
     'unattended start must not contaminate protocol stdout with runtime detection diagnostics'
+Assert-Cf7Contains $start 'exit $trustedRunnerExitCode' `
+    'unattended start must preserve the trusted Core runner failure exit code without stderr pollution'
+Assert-Cf7DoesNotContain $start 'throw "Trusted unattended Core runner failed (exitCode=' `
+    'unattended start must not duplicate trusted Core diagnostics as a PowerShell ErrorRecord'
 Assert-Cf7Guardrail `
     -Condition ($start.IndexOf('$bundleVerifier =', [StringComparison]::Ordinal) -lt
         $start.IndexOf('$runnerStart =', [StringComparison]::Ordinal)) `
@@ -160,4 +172,53 @@ Assert-Cf7StartRejectsCandidateRoot -CandidateRoot 'tmp\runtime-candidates\v2\re
 $missingCandidate = Join-Path $ProjectRoot ('tmp\runtime-candidates\v2\guardrail-missing-' + [Guid]::NewGuid().ToString('N'))
 Assert-Cf7StartRejectsCandidateRoot -CandidateRoot $missingCandidate -ExpectedText 'does not exist'
 
-Write-Host '[RuntimeEntryGuardrails] PASS scripts=3 unsafeCandidateCases=3' -ForegroundColor Green
+function Assert-Cf7StartRejectsUnattendedBinding {
+    param(
+        [Parameter(Mandatory=$true)][string]$Slot,
+        [string]$CandidateRoot,
+        [Parameter(Mandatory=$true)][string]$ExpectedText
+    )
+    $arguments = @(
+        '-NoProfile',
+        '-ExecutionPolicy',
+        'Bypass',
+        '-File',
+        $startPath,
+        '-UnattendedSlot',
+        $Slot
+    )
+    if (-not [string]::IsNullOrWhiteSpace($CandidateRoot)) {
+        $arguments += @('-CandidateRoot', $CandidateRoot)
+    }
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $output = @(& $powershell @arguments 2>&1)
+        $exitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousPreference
+    }
+    Assert-Cf7Guardrail -Condition ($exitCode -ne 0) `
+        -Message "unsafe unattended binding unexpectedly succeeded: $Slot / $CandidateRoot"
+    Assert-Cf7Guardrail `
+        -Condition (($output -join "`n").IndexOf(
+            $ExpectedText,
+            [StringComparison]::OrdinalIgnoreCase) -ge 0) `
+        -Message "unattended binding rejection lacked '$ExpectedText': $($output -join ' | ')"
+}
+
+Assert-Cf7StartRejectsUnattendedBinding `
+    -Slot 'cf7_agent_a5_material_shop_run' `
+    -CandidateRoot (Join-Path $ProjectRoot 'tmp\runtime-candidates\v2\a4') `
+    -ExpectedText 'requires exact CandidateRoot leaf a5'
+Assert-Cf7StartRejectsUnattendedBinding `
+    -Slot 'cf7_agent_a5_material_shop_run' `
+    -CandidateRoot (Join-Path $ProjectRoot `
+        'tmp\runtime-candidates\v2\c-32ed30866355-5d18a14d6c-20260730t154609961z-39b299d9') `
+    -ExpectedText 'requires exact CandidateRoot leaf a5'
+Assert-Cf7StartRejectsUnattendedBinding `
+    -Slot 'cf7_agent_equipment_tuning' `
+    -CandidateRoot (Join-Path $ProjectRoot 'tmp\runtime-candidates\v2\a5') `
+    -ExpectedText 'require an immutable c-* candidate leaf'
+
+Write-Host '[RuntimeEntryGuardrails] PASS scripts=3 unsafeCandidateCases=3 unattendedBindingCases=3' -ForegroundColor Green

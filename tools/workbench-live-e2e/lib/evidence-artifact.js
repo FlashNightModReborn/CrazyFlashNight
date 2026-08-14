@@ -129,6 +129,7 @@ function readExactRegularFile(filePath, options) {
   const settings = options || {};
   const phase = settings.phase || "artifact";
   const maximumBytes = Number(settings.maximumBytes || 64 * 1024 * 1024);
+  const minimumBytes = settings.allowEmpty === true ? 0 : 1;
   if (!Number.isSafeInteger(maximumBytes) || maximumBytes < 1) {
     contractFail("exact_file_limit_invalid", phase, "artifact byte limit is invalid");
   }
@@ -143,7 +144,7 @@ function readExactRegularFile(filePath, options) {
   }
   if (!initialPathStat.isFile() || initialPathStat.isSymbolicLink()
       || !samePath(initialReal, resolved)
-      || initialPathStat.size < 1 || initialPathStat.size > maximumBytes) {
+      || initialPathStat.size < minimumBytes || initialPathStat.size > maximumBytes) {
     contractFail("exact_file_invalid", phase, "artifact must be an exact bounded regular file", {
       filePath: resolved,
       bytes: initialPathStat && initialPathStat.size,
@@ -177,7 +178,8 @@ function readExactRegularFile(filePath, options) {
       || finalPathStat.isSymbolicLink() || !samePath(finalReal, resolved)
       || !sameIdentity || before.size !== after.size || after.size !== finalPathStat.size
       || bytes.length !== after.size || before.mtimeMs !== after.mtimeMs
-      || before.ctimeMs !== after.ctimeMs || bytes.length < 1 || bytes.length > maximumBytes) {
+      || before.ctimeMs !== after.ctimeMs || bytes.length < minimumBytes
+      || bytes.length > maximumBytes) {
     contractFail("exact_file_changed_during_read", phase,
       "artifact identity or bytes changed while it was being captured", { filePath: resolved });
   }

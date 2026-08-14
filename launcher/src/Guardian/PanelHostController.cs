@@ -74,6 +74,15 @@ namespace CF7Launcher.Guardian
             HostUnavailable
         }
 
+        public enum ExactReplaceOutcome
+        {
+            TargetCommitted,
+            SourceMismatch,
+            PreExecutionRejected,
+            PostNotDelivered,
+            HostUnavailable
+        }
+
         private sealed class VisualRetireWaiter
         {
             public bool RetiredExact;
@@ -91,13 +100,21 @@ namespace CF7Launcher.Guardian
             public bool IsTrackedClose;
             public bool IsExactClose;
             public bool IsVisualRetire;
+            public bool IsExactReplace;
             public bool DismissReturnStackOnExactClose;
             public string ReservedPanelInstanceId;
             public Func<bool> TrackedExecutionGate;
             public Action<TrackedOpenOutcome> TrackedOpenCompleted;
             public Action<bool> TrackedCloseCompleted;
             public Action<bool> ExactCloseCompleted;
+            public Func<bool> ExactCloseExecutionGate;
+            public Action ExactCloseCommitNoFail;
             public Action<VisualRetireOutcome> VisualRetireCompleted;
+            public string ExpectedSourcePanel;
+            public string ExpectedSourceInstanceId;
+            public PreparedPanelReplace PreparedReplace;
+            public Func<bool> ExactReplaceExecutionGate;
+            public Action<ExactReplaceOutcome> ExactReplaceCompleted;
             public PanelCommand(PanelCommandKind kind, string name, string initDataJson)
                 : this(kind, name, initDataJson, null, null)
             {
@@ -114,13 +131,21 @@ namespace CF7Launcher.Guardian
                 IsTrackedClose = false;
                 IsExactClose = false;
                 IsVisualRetire = false;
+                IsExactReplace = false;
                 DismissReturnStackOnExactClose = false;
                 ReservedPanelInstanceId = null;
                 TrackedExecutionGate = null;
                 TrackedOpenCompleted = null;
                 TrackedCloseCompleted = null;
                 ExactCloseCompleted = null;
+                ExactCloseExecutionGate = null;
+                ExactCloseCommitNoFail = null;
                 VisualRetireCompleted = null;
+                ExpectedSourcePanel = null;
+                ExpectedSourceInstanceId = null;
+                PreparedReplace = null;
+                ExactReplaceExecutionGate = null;
+                ExactReplaceCompleted = null;
             }
         }
 
@@ -179,11 +204,13 @@ namespace CF7Launcher.Guardian
         private volatile string _activePanel; // null = closed
         private volatile string _activePanelInstanceId;
         private bool _trackedOpenReserved;
+        private bool _exactReplaceReserved;
         private volatile string _trackedLeasePanelName;
         private volatile string _trackedLeaseInstanceId;
         private string _idleFenceToken;
         private readonly Action<Action> _testPumpDispatcher;
         private readonly Action<Action> _testClosedEventDispatcher;
+        private Func<string, bool> _testExactReplacePoster;
         public bool IsPanelOpen { get { return _activePanel != null; } }
         public string ActivePanelName { get { return _activePanel; } }
         public string ActivePanelInstanceId { get { return _activePanelInstanceId; } }
@@ -293,9 +320,14 @@ namespace CF7Launcher.Guardian
         private void OnBackdropClickOutsidePanel()
         {
             if (_disposed) return;
-            // panels.js 的 panel_esc 等价于按 ESC：触发各 panel 的 onRequestClose
+            // Native backdrop 与物理 Escape 共用 panel_esc transport，但 reason 必须
+            // 保持可区分；材料档案只允许物理 Escape 消费本地搜索/树层级。
             // 不发 cmd:"request_close" —— panels.js 的 panel_cmd 仅 handle open/close/force_close
-            try { _web.PostToWeb("{\"type\":\"panel_esc\"}"); }
+            try
+            {
+                _web.PostToWeb(
+                    "{\"type\":\"panel_esc\",\"reason\":\"backdrop\"}");
+            }
             catch (Exception ex) { LogManager.Log("[PanelHost] backdrop esc post failed: " + ex.Message); }
         }
 
@@ -462,6 +494,78 @@ namespace CF7Launcher.Guardian
             command.ReservedPanelInstanceId = panelInstanceId;
             command.ExactCloseCompleted = completed;
             return EnqueueAndPump(command);
+        }
+
+        /// <summary>
+        /// Narrow exact-close settlement primitive. The execution gate runs on the UI thread before
+        /// any close side effect; after it grants an irrevocable commit permit, the no-fail commit
+        /// callback consumes the caller's private capability before PanelChanged retires the owner.
+        /// </summary>
+        internal bool TryClosePanelExact(
+            string panelName,
+            string panelInstanceId,
+            bool dismissReturnStack,
+            Func<bool> executionGate,
+            Action commitNoFail,
+            Action<bool> completed)
+        {
+            if (_disposed || string.IsNullOrEmpty(panelName)
+                || string.IsNullOrEmpty(panelInstanceId)
+                || executionGate == null
+                || commitNoFail == null) return false;
+            PanelCommand command =
+                new PanelCommand(PanelCommandKind.Close, panelName, null);
+            command.IsExactClose = true;
+            command.DismissReturnStackOnExactClose =
+                dismissReturnStack;
+            command.ReservedPanelInstanceId = panelInstanceId;
+            command.ExactCloseExecutionGate = executionGate;
+            command.ExactCloseCommitNoFail = commitNoFail;
+            command.ExactCloseCompleted = completed;
+            return EnqueueAndPump(command);
+        }
+
+        /// <summary>
+        /// Atomically replaces one exact active panel without closing/reopening the native panel
+        /// surface.  The prepared plan is the sole source of target tuple, immutable initData and
+        /// capability ownership.
+        /// </summary>
+        public bool TryReplacePanelExact(
+            string expectedSourcePanel,
+            string expectedSourceInstance,
+            PreparedPanelReplace plan,
+            Func<bool> executionGate,
+            Action<ExactReplaceOutcome> completed)
+        {
+            if (_disposed
+                || string.IsNullOrEmpty(expectedSourcePanel)
+                || string.IsNullOrEmpty(expectedSourceInstance)
+                || plan == null
+                || executionGate == null)
+            {
+                if (plan != null) plan.AbortPrepared();
+                return false;
+            }
+            PanelCommand command =
+                new PanelCommand(
+                    PanelCommandKind.Open,
+                    plan.TargetPanel,
+                    plan.ImmutableInitDataJson);
+            command.IsExactReplace = true;
+            command.ExpectedSourcePanel = expectedSourcePanel;
+            command.ExpectedSourceInstanceId = expectedSourceInstance;
+            command.PreparedReplace = plan;
+            command.ExactReplaceExecutionGate = executionGate;
+            command.ExactReplaceCompleted = completed;
+            bool admitted = EnqueueAndPump(command);
+            if (!admitted) plan.AbortPrepared();
+            return admitted;
+        }
+
+        internal void SetExactReplacePosterForTests(
+            Func<string, bool> poster)
+        {
+            _testExactReplacePoster = poster;
         }
 
         /// <summary>
@@ -666,6 +770,7 @@ namespace CF7Launcher.Guardian
                 && _queue.Count == 0
                 && !_processing
                 && !_trackedOpenReserved
+                && !_exactReplaceReserved
                 && _trackedLeaseInstanceId == null
                 && _idleFenceToken == null
                 && !_deferredRebind.HasValue
@@ -722,7 +827,17 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
                 if (_idleFenceToken != null) return false;
-                if (cmd.IsTrackedOpen)
+                if (cmd.IsExactReplace)
+                {
+                    if (!IsStableOpenAdmissionLocked(
+                            cmd.ExpectedSourcePanel,
+                            cmd.ExpectedSourceInstanceId))
+                    {
+                        return false;
+                    }
+                    _exactReplaceReserved = true;
+                }
+                else if (cmd.IsTrackedOpen)
                 {
                     if (!IsStableOpenAdmissionLocked(
                             null,
@@ -740,6 +855,7 @@ namespace CF7Launcher.Guardian
                 }
                 else if (!cmd.IsVisualRetire
                     && (_trackedOpenReserved
+                        || _exactReplaceReserved
                         || _trackedLeaseInstanceId != null))
                 {
                     return false;
@@ -821,12 +937,29 @@ namespace CF7Launcher.Guardian
                 while (_queue.Count != 0) failed.Add(_queue.Dequeue());
                 _processing = false;
                 _trackedOpenReserved = false;
+                _exactReplaceReserved = false;
             }
             for (int i = 0; i < failed.Count; i++)
             {
                 PanelCommand command = failed[i];
                 if (skipFirstCallback && i == 0
-                    && !command.IsVisualRetire) continue;
+                    && !command.IsVisualRetire
+                    && !command.IsExactReplace) continue;
+                if (command.IsExactReplace)
+                {
+                    if (command.PreparedReplace != null)
+                        command.PreparedReplace.AbortPrepared();
+                    if (command.ExactReplaceCompleted != null)
+                    {
+                        try
+                        {
+                            command.ExactReplaceCompleted(
+                                ExactReplaceOutcome.HostUnavailable);
+                        }
+                        catch { }
+                    }
+                    continue;
+                }
                 if (command.IsTrackedOpen && command.TrackedOpenCompleted != null)
                 {
                     try { command.TrackedOpenCompleted(TrackedOpenOutcome.PreExecutionRejected); }
@@ -859,10 +992,28 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed)
             {
+                List<PanelCommand> abandoned = new List<PanelCommand>();
                 lock (_queueLock)
                 {
-                    _queue.Clear();
+                    while (_queue.Count != 0)
+                        abandoned.Add(_queue.Dequeue());
                     _processing = false;
+                    _exactReplaceReserved = false;
+                }
+                foreach (PanelCommand command in abandoned)
+                {
+                    if (!command.IsExactReplace) continue;
+                    if (command.PreparedReplace != null)
+                        command.PreparedReplace.AbortPrepared();
+                    if (command.ExactReplaceCompleted != null)
+                    {
+                        try
+                        {
+                            command.ExactReplaceCompleted(
+                                ExactReplaceOutcome.HostUnavailable);
+                        }
+                        catch { }
+                    }
                 }
                 return;
             }
@@ -902,6 +1053,11 @@ namespace CF7Launcher.Guardian
 
         private void ExecuteCommand(PanelCommand cmd)
         {
+            if (cmd.IsExactReplace)
+            {
+                ExecuteExactReplace(cmd);
+                return;
+            }
             if (cmd.IsVisualRetire)
             {
                 ExecuteVisualRetire(cmd);
@@ -1056,6 +1212,125 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void ExecuteExactReplace(PanelCommand command)
+        {
+            ExactReplaceOutcome outcome = ExactReplaceOutcome.HostUnavailable;
+            bool committed = false;
+            try
+            {
+                PreparedPanelReplace plan = command.PreparedReplace;
+                if (plan == null)
+                {
+                    outcome = ExactReplaceOutcome.HostUnavailable;
+                    return;
+                }
+                if (!string.Equals(
+                        _activePanel,
+                        command.ExpectedSourcePanel,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _activePanelInstanceId,
+                        command.ExpectedSourceInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    outcome = ExactReplaceOutcome.SourceMismatch;
+                    return;
+                }
+                bool gateAccepted;
+                try
+                {
+                    gateAccepted = command.ExactReplaceExecutionGate != null
+                        && command.ExactReplaceExecutionGate();
+                }
+                catch (Exception ex)
+                {
+                    gateAccepted = false;
+                    LogManager.Log(
+                        "[PanelHost] exact replace execution gate threw: "
+                        + ex.GetType().Name);
+                }
+                if (!gateAccepted)
+                {
+                    outcome = ExactReplaceOutcome.PreExecutionRejected;
+                    return;
+                }
+
+                string payload = BuildPanelOpenPayload(
+                    plan.TargetPanel,
+                    plan.ImmutableInitDataJson,
+                    plan.TargetInstanceId);
+                bool delivered;
+                try
+                {
+                    if (_testExactReplacePoster != null)
+                        delivered = _testExactReplacePoster(payload);
+                    else if (_testPumpDispatcher != null)
+                        delivered = true;
+                    else if (_web != null)
+                        delivered = _web.TryPostToWeb(payload);
+                    else
+                    {
+                        outcome = ExactReplaceOutcome.HostUnavailable;
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    delivered = false;
+                    LogManager.Log(
+                        "[PanelHost] exact replace post threw: "
+                        + ex.GetType().Name);
+                }
+                if (!delivered)
+                {
+                    outcome = ExactReplaceOutcome.PostNotDelivered;
+                    return;
+                }
+
+                if (!plan.CommitCapabilitiesNoFail())
+                {
+                    outcome = ExactReplaceOutcome.PreExecutionRejected;
+                    return;
+                }
+                _activePanel = plan.TargetPanel;
+                _activePanelInstanceId = plan.TargetInstanceId;
+                plan.NotifyTargetCommittedNoFail();
+                PublishPanelChanged(
+                    plan.TargetPanel,
+                    plan.TargetInstanceId);
+                committed = true;
+                outcome = ExactReplaceOutcome.TargetCommitted;
+                _consecutiveFailures = 0;
+                LogManager.Log(
+                    "[PanelHost] exact replace committed: "
+                    + command.ExpectedSourcePanel + " -> "
+                    + plan.TargetPanel + " instance="
+                    + plan.TargetInstanceId);
+            }
+            finally
+            {
+                lock (_queueLock)
+                {
+                    _exactReplaceReserved = false;
+                    _openAdmissionEpoch++;
+                }
+                if (!committed && command.PreparedReplace != null)
+                    command.PreparedReplace.AbortPrepared();
+                Action<ExactReplaceOutcome> completed =
+                    command.ExactReplaceCompleted;
+                if (completed != null)
+                {
+                    try { completed(outcome); }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log(
+                            "[PanelHost] exact replace completion threw: "
+                            + ex.GetType().Name);
+                    }
+                }
+            }
+        }
+
         private void ExecuteTrackedClose(PanelCommand cmd)
         {
             bool closed = false;
@@ -1106,6 +1381,35 @@ namespace CF7Launcher.Guardian
                         + (cmd.Name ?? "<null>") + " instance="
                         + (cmd.ReservedPanelInstanceId ?? "<null>"));
                     return;
+                }
+                if (cmd.ExactCloseExecutionGate != null)
+                {
+                    bool gateAccepted;
+                    try
+                    {
+                        gateAccepted =
+                            cmd.ExactCloseExecutionGate();
+                    }
+                    catch (Exception ex)
+                    {
+                        gateAccepted = false;
+                        LogManager.Log(
+                            "[PanelHost] exact close execution gate threw: "
+                            + ex.GetType().Name);
+                    }
+                    if (!gateAccepted) return;
+                }
+                if (cmd.ExactCloseCommitNoFail != null)
+                {
+                    try { cmd.ExactCloseCommitNoFail(); }
+                    catch (Exception ex)
+                    {
+                        // The callback contract is no-fail. Once the gate granted a commit permit,
+                        // a caller bug cannot authorize rollback or resurrection of the source.
+                        LogManager.Log(
+                            "[PanelHost] exact close commit callback threw: "
+                            + ex.GetType().Name);
+                    }
                 }
                 lock (_queueLock)
                 {
@@ -1906,29 +2210,53 @@ namespace CF7Launcher.Guardian
             }
             // Step 0: 取消 owner 跟随订阅（先于 SuspendAfterPanel，防止 SW_HIDE 触发的 LocationChanged 误触发 reposition）
             UnsubscribeOwnerLayout();
-            // Step 1: WebOverlay 收尾（Phase 1 stub：SW_HIDE）
+            // Step 1: 先让 Web 精确卸载当前 owner，再隐藏 WebOverlay。
+            // crafting 等 Host-owned panel 的 requestClose 只提交 intent，不会自行 Panels.close；
+            // 若直接 SW_HIDE，最后一次全屏 interactiveRect 会留在 InputShield 中。
+            string closePayload = BuildPanelClosePayload(
+                closingName,
+                closingInstance);
+            if (closePayload != null)
+            {
+                try
+                {
+                    if (!_web.TryPostToWeb(closePayload))
+                    {
+                        LogManager.Log(
+                            "[PanelHost] exact web close post not delivered: "
+                            + closingName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[PanelHost] exact web close post failed: "
+                        + ex.Message);
+                }
+            }
+            // Step 2: WebOverlay 收尾（Phase 1 stub：SW_HIDE）
             // closingName 传给 SuspendAfterPanel 用于 [FocusRestore] 日志归因——
             // WebOverlay._activePanel 此时可能已被 HandlePanelMessage 置 null。
             try { _web.SuspendAfterPanel(closingName); }
             catch (Exception ex) { LogManager.Log("[PanelHost] SuspendAfterPanel failed: " + ex.Message); }
-            // Step 2: Shield 退 telemetry
+            // Step 3: Shield 退 telemetry
             if (_shield != null)
             {
                 try { _shield.ExitTelemetryMode(); }
                 catch (Exception ex) { LogManager.Log("[PanelHost] ExitTelemetryMode failed: " + ex.Message); }
             }
-            // Step 3: backdrop 隐藏
+            // Step 4: backdrop 隐藏
             try { _backdrop.Hide(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] backdrop.Hide failed: " + ex.Message); }
-            // Step 4: HUD 复活（NativeHud + Phase 3 NotchOverlay/ToastOverlay 一并复显）
+            // Step 5: HUD 复活（NativeHud + Phase 3 NotchOverlay/ToastOverlay 一并复显）
             try { _hud.Resume(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] hud.Resume failed: " + ex.Message); }
             ResumeHudCompanion();
             if (_notchOverlay != null) try { _notchOverlay.SetReady(); } catch (Exception ex) { LogManager.Log("[PanelHost] notch.SetReady failed: " + ex.Message); }
             if (_toastOverlay != null) try { _toastOverlay.SetReady(); } catch (Exception ex) { LogManager.Log("[PanelHost] toast.SetReady failed: " + ex.Message); }
-            // Step 5: ESC 禁用
+            // Step 6: ESC 禁用
             if (_escSource != null) _escSource.SetPanelEscapeEnabled(false);
-            // Step 6: cursor 重新顶置 + 强制刷一次位置（Notch/Toast 的 SetReady HWND_TOP 会把 cursor 压下；
+            // Step 7: cursor 重新顶置 + 强制刷一次位置（Notch/Toast 的 SetReady HWND_TOP 会把 cursor 压下；
             //   且 cursor 上次坐标可能在 panel 矩形内，关闭后该区域无 mouse hook 触发更新——直到玩家动鼠标
             //   才刷新 → 视觉上 cursor "消失，移动后突然出现"。这里主动 ReTop + 用当前真实鼠标位置刷一次）
             ReTopOverlay(_cursor as Form);
@@ -1941,6 +2269,11 @@ namespace CF7Launcher.Guardian
                 null,
                 null);
             PostPanelClosed(closingName, closingInstance);
+            // SuspendAfterPanel 中的首次归还早于 HUD/Notch/Toast/cursor 收尾。
+            // 在所有 overlay 稳定后再确认一次 Flash 焦点，避免玩家看到
+            // 面板已关闭却无法与游戏 UI 交互。
+            try { _web.RestoreFlashInputFocusAfterPanelClose(closingName); }
+            catch (Exception ex) { LogManager.Log("[PanelHost] settled focus restore failed: " + ex.Message); }
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
             PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
             PerfTrace.FlushCounters("panel_close:" + (closingName ?? "<null>"));
@@ -1961,6 +2294,8 @@ namespace CF7Launcher.Guardian
             }
             catch { }
             List<VisualRetireWaiter> failedRetires;
+            List<PanelCommand> failedReplaces =
+                new List<PanelCommand>();
             lock (_queueLock)
             {
                 failedRetires =
@@ -1968,6 +2303,8 @@ namespace CF7Launcher.Guardian
                         _visualRetireWaiters);
                 foreach (PanelCommand queued in _queue)
                 {
+                    if (queued.IsExactReplace)
+                        failedReplaces.Add(queued);
                     if (queued.IsVisualRetire
                         && queued.VisualRetireCompleted
                             != null)
@@ -1986,10 +2323,25 @@ namespace CF7Launcher.Guardian
                 _deferredRebind = null;
                 _deferredBarrierOpen = null;
                 _trackedOpenReserved = false;
+                _exactReplaceReserved = false;
                 _trackedLeasePanelName = null;
                 _trackedLeaseInstanceId = null;
                 _idleFenceToken = null;
                 _visualRetireWaiters.Clear();
+            }
+            foreach (PanelCommand failedReplace in failedReplaces)
+            {
+                if (failedReplace.PreparedReplace != null)
+                    failedReplace.PreparedReplace.AbortPrepared();
+                if (failedReplace.ExactReplaceCompleted != null)
+                {
+                    try
+                    {
+                        failedReplace.ExactReplaceCompleted(
+                            ExactReplaceOutcome.HostUnavailable);
+                    }
+                    catch { }
+                }
             }
             foreach (VisualRetireWaiter waiter in failedRetires)
             {
@@ -2185,6 +2537,21 @@ namespace CF7Launcher.Guardian
                 ["initData"] = initData
             };
             return payload.ToString(Formatting.None);
+        }
+
+        internal static string BuildPanelClosePayload(
+            string name,
+            string panelInstanceId)
+        {
+            if (string.IsNullOrEmpty(name)
+                || string.IsNullOrEmpty(panelInstanceId)) return null;
+            return new JObject
+            {
+                ["type"] = "panel_cmd",
+                ["cmd"] = "close",
+                ["panel"] = name,
+                ["panelInstanceId"] = panelInstanceId
+            }.ToString(Formatting.None);
         }
 
         private static string NextPanelInstanceId()

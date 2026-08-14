@@ -146,6 +146,7 @@
     height:100%; min-height:210px; display:grid; place-items:center;
     color:#68747e; font:12px/1.5 "Microsoft YaHei",sans-serif; text-align:center;
 }
+.crafting-material-detail-retry { align-self:center; margin-top:10px; }
 .crafting-output-card {
     display:grid; grid-template-columns:68px minmax(0,1fr); gap:12px; padding:10px;
     border:1px solid #28515b; border-left:3px solid var(--dls-crystal);
@@ -194,12 +195,30 @@
     overflow:hidden;
 }
 .crafting-material-toolbar {
-    display:grid;
-    grid-template-columns:minmax(120px,1fr) auto;
-    align-items:center;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
     gap:6px;
     width:100%;
 }
+.crafting-material-search-row {
+    display:grid;
+    grid-template-columns:minmax(90px,1fr) auto auto;
+    align-items:center;
+    gap:6px;
+    min-width:0;
+}
+.crafting-material-sort { align-self:stretch; }
+.crafting-material-sort .workbench-dropdown-trigger {
+    min-width:96px;
+    height:27px;
+    min-height:27px;
+    padding-left:7px;
+    font-size:10px;
+}
+.crafting-material-navigator { min-width:0; }
+.crafting-material-navigator[hidden] { display:none; }
+.crafting-material-navigator .item-filter-navigator { width:100%; min-width:0; }
 .crafting-material-search {
     min-width:0;
     height:27px;
@@ -221,6 +240,16 @@
     padding:0 6px;
     font-size:11px;
 }
+.crafting-material-legacy-warning {
+    flex:0 0 auto;
+    margin:0;
+    padding:5px 8px;
+    color:color-mix(in srgb,var(--wb-warning) 75%,var(--wb-text));
+    background:color-mix(in srgb,var(--wb-warning) 12%,transparent);
+    border-bottom:1px solid color-mix(in srgb,var(--wb-warning) 28%,transparent);
+    font:10px/1.4 "Microsoft YaHei",sans-serif;
+}
+.crafting-material-legacy-warning[hidden] { display:none; }
 .crafting-material-grid {
     flex:1 1 auto;
     display:grid;
@@ -236,7 +265,43 @@
     scrollbar-width:thin;
     scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
 }
-.crafting-panel .crafting-material-card {
+.crafting-material-grid[hidden] { display:none; }
+.crafting-material-catalog-empty {
+    flex:1 1 auto;
+    display:grid;
+    place-content:center;
+    justify-items:center;
+    min-height:0;
+    padding:18px;
+    box-sizing:border-box;
+    color:var(--wb-muted);
+    text-align:center;
+}
+.crafting-material-catalog-empty[hidden] { display:none; }
+.crafting-material-empty-statement {
+    margin:0;
+    color:var(--wb-text);
+    font:700 12px/1.45 "Microsoft YaHei",sans-serif;
+}
+.crafting-material-empty-next {
+    margin:5px 0 0;
+    color:var(--wb-muted);
+    font:10px/1.5 "Microsoft YaHei",sans-serif;
+}
+.crafting-material-empty-action { margin-top:10px; }
+.crafting-material-result-status {
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+}
+.crafting-panel .crafting-material-tile {
     display:grid;
     grid-template-columns:42px minmax(0,1fr);
     align-items:center;
@@ -345,8 +410,10 @@
 .crafting-material-hero h2 { margin:0; color:#f1fbfd; font:700 17px/1.2 "Microsoft YaHei",sans-serif; }
 .crafting-material-hero strong { display:block; margin-top:4px; color:#8fe6f5; font:700 11px/1 Consolas,"Microsoft YaHei",sans-serif; }
 .crafting-material-hero p { margin:7px 0 0; color:#aebbc0; font:10px/1.55 "Microsoft YaHei",sans-serif; }
+.crafting-material-summary,
 .crafting-material-sources,
 .crafting-material-uses { margin-top:8px; }
+.crafting-material-summary > h3,
 .crafting-material-sources > h3,
 .crafting-material-uses > h3 {
     margin:0 0 5px;
@@ -366,7 +433,8 @@
 .crafting-material-source-list,
 .crafting-material-uses { display:grid; gap:4px; }
 .crafting-material-source-list article,
-.crafting-material-use-row {
+.crafting-material-use-row,
+.crafting-material-direct-purpose-row {
     display:grid;
     min-width:0;
     padding:6px 7px;
@@ -374,23 +442,327 @@
     border:1px solid rgba(var(--dls-crystal-rgb),.14);
 }
 .crafting-material-source-list article { grid-template-columns:minmax(0,1fr); gap:2px; }
-.crafting-material-source-list b,
-.crafting-material-use-row b { color:var(--wb-text); font:700 11px/1.25 "Microsoft YaHei",sans-serif; }
+.crafting-material-source-list article.has-source-portrait {
+    grid-template-columns:48px minmax(0,1fr);
+    align-items:start;
+    gap:8px;
+}
+.crafting-material-source-portrait {
+    display:block;
+    width:48px;
+    height:48px;
+    min-width:48px;
+    min-height:48px;
+    overflow:hidden;
+    border:1px solid rgba(var(--dls-crystal-rgb),.24);
+    background:linear-gradient(145deg,rgba(var(--dls-crystal-rgb),.09),var(--wb-bg));
+    box-sizing:border-box;
+    pointer-events:none;
+}
+.crafting-material-source-portrait img {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+.crafting-material-source-content {
+    display:grid;
+    min-width:0;
+    gap:2px;
+    overflow-wrap:anywhere;
+}
+.crafting-material-source-list h4,
+.crafting-material-use-row b,
+.crafting-material-direct-purpose-row b {
+    margin:0;
+    color:var(--wb-text);
+    font:700 11px/1.25 "Microsoft YaHei",sans-serif;
+}
 .crafting-material-source-list small,
-.crafting-material-use-row small { color:var(--wb-muted); font:10px/1.4 "Microsoft YaHei",sans-serif; }
-.crafting-material-use-row {
-    grid-template-columns:34px minmax(0,1fr);
+.crafting-material-use-row small,
+.crafting-material-direct-purpose-row small { color:var(--wb-muted); font:10px/1.4 "Microsoft YaHei",sans-serif; }
+.crafting-material-source-variants {
+    display:grid;
+    gap:2px;
+    margin:2px 0 0;
+    padding-left:18px;
+    color:color-mix(in srgb,var(--wb-text) 78%,var(--wb-muted));
+    font:10px/1.45 "Microsoft YaHei",sans-serif;
+}
+.crafting-material-source-guide {
+    margin:0 0 5px;
+    color:var(--wb-muted);
+    font:10px/1.4 "Microsoft YaHei",sans-serif;
+}
+
+.crafting-material-shop-navigation,
+.crafting-material-craft-navigation {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:5px 8px;
+    margin-top:5px;
+}
+
+.crafting-material-shop-action {
+    min-height:26px;
+    color:var(--wb-text);
+    border-color:color-mix(in srgb,var(--wb-semantic-info) 55%,var(--wb-line));
+    background:color-mix(in srgb,var(--wb-semantic-info) 12%,var(--wb-surface));
+}
+
+.crafting-material-craft-navigation .crafting-material-craft-action {
+    flex:0 0 auto;
+    width:auto;
+    min-height:26px;
+    color:var(--wb-text);
+    border-color:color-mix(in srgb,var(--wb-semantic-info) 55%,var(--wb-line));
+    background:color-mix(in srgb,var(--wb-semantic-info) 12%,var(--wb-surface));
+}
+
+.crafting-material-shop-action:hover:not(:disabled),
+.crafting-material-shop-action:focus-visible,
+.crafting-material-craft-action:hover:not(:disabled),
+.crafting-material-craft-action:focus-visible {
+    color:var(--wb-bg);
+    border-color:var(--wb-role-focus);
+    background:var(--wb-role-focus);
+}
+
+.crafting-material-shop-unavailable {
+    color:var(--wb-role-disabled);
+    font-size:10px;
+}
+
+.crafting-material-shop-navigation-status {
+    flex:1 1 150px;
+    color:var(--wb-role-pending);
+    line-height:1.35;
+}
+
+.crafting-material-craft-navigation .crafting-material-use-action-status {
+    flex:1 1 150px;
+}
+
+.crafting-material-shop-navigation-status[data-navigation-state="error"] {
+    color:var(--wb-role-reject);
+}
+.crafting-material-direct-purpose-row { gap:2px; }
+.crafting-material-infrastructure {
+    display:grid;
+    min-width:0;
+    gap:4px;
+}
+.crafting-material-infrastructure-guide {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:2px 7px;
+    margin:0;
+    padding:5px 7px;
+    color:var(--wb-muted);
+    background:color-mix(in srgb,var(--wb-semantic-info) 5%,#080c0e);
+    border-left:2px solid color-mix(in srgb,var(--wb-semantic-info) 62%,var(--wb-line));
+    font:10px/1.4 "Microsoft YaHei",sans-serif;
+}
+.crafting-material-infrastructure-guide b {
+    color:var(--wb-text);
+    font-size:11px;
+}
+.crafting-material-infrastructure-list {
+    display:grid;
+    min-width:0;
+    gap:4px;
+}
+.crafting-material-infrastructure-card {
+    min-width:0;
+    padding:0 7px 5px;
+    background:#0a0e10;
+    border:1px solid rgba(var(--dls-crystal-rgb),.16);
+}
+.crafting-material-infrastructure-card > header {
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:8px;
+    min-width:0;
+    padding:6px 0 5px;
+    border-bottom:1px solid rgba(var(--dls-crystal-rgb),.15);
+}
+.crafting-material-infrastructure-card h4 {
+    min-width:0;
+    margin:0;
+    color:var(--wb-text);
+    overflow-wrap:anywhere;
+    font:700 11px/1.25 "Microsoft YaHei",sans-serif;
+}
+.crafting-material-infrastructure-card header small {
+    flex:0 0 auto;
+    color:var(--wb-muted);
+    font:10px/1.25 Consolas,"Microsoft YaHei",sans-serif;
+}
+.crafting-material-infrastructure-levels {
+    display:grid;
+    min-width:0;
+    gap:3px;
+    margin:5px 0 0;
+    padding:0;
+    list-style:none;
+}
+.crafting-material-infrastructure-level {
+    display:grid;
+    grid-template-columns:72px minmax(0,1fr) minmax(72px,auto);
     align-items:center;
     gap:7px;
+    min-width:0;
+    min-height:31px;
+    padding:3px 5px;
+    box-sizing:border-box;
+    background:#080c0e;
+    border-left:2px solid rgba(var(--dls-crystal-rgb),.2);
 }
-.crafting-material-use-row > span:first-child {
+.crafting-material-infrastructure-level[data-infrastructure-status="current"] {
+    border-left-color:var(--wb-semantic-info);
+    background:color-mix(in srgb,var(--wb-semantic-info) 7%,#080c0e);
+}
+.crafting-material-infrastructure-level[data-infrastructure-status="completed"] {
+    color:var(--wb-muted);
+    border-left-color:color-mix(in srgb,var(--wb-semantic-success) 42%,var(--wb-line));
+}
+.crafting-material-infrastructure-level-name {
+    color:#c9d7da;
+    white-space:nowrap;
+    font:700 10px/1.2 Consolas,"Microsoft YaHei",sans-serif;
+}
+.crafting-material-infrastructure-requirement {
+    display:flex;
+    align-items:center;
+    min-width:0;
+    gap:6px;
+}
+.crafting-material-infrastructure-requirement ul {
+    flex:0 0 auto;
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+.crafting-material-infrastructure-status {
+    justify-self:end;
+    color:var(--wb-semantic-success);
+    text-align:right;
+    white-space:nowrap;
+    font:700 10px/1.2 "Microsoft YaHei",sans-serif;
+}
+.crafting-material-infrastructure-level[data-material-gap="missing"]
+    .crafting-material-infrastructure-status { color:var(--wb-semantic-danger); }
+.crafting-material-infrastructure-level[data-material-gap="completed"]
+    .crafting-material-infrastructure-status { color:var(--wb-muted); }
+.crafting-material-use-row {
     display:grid;
-    place-items:center;
-    width:32px;
-    height:32px;
+    grid-template-columns:minmax(150px,.8fr) minmax(0,1.35fr) 84px;
+    align-items:center;
+    gap:8px;
+    min-height:62px;
+    padding:5px 8px;
 }
-.crafting-material-use-row img { width:30px; height:30px; object-fit:contain; }
-.crafting-material-use-row > span:last-child { display:flex; flex-direction:column; min-width:0; gap:2px; }
+.crafting-material-use-product {
+    display:grid;
+    grid-template-columns:42px minmax(0,1fr) auto;
+    align-items:center;
+    gap:8px;
+    min-width:0;
+}
+.crafting-material-use-icon { width:42px; height:42px; }
+.crafting-material-use-icon img { width:38px; height:38px; object-fit:contain; }
+.crafting-material-use-copy { display:flex; flex-direction:column; min-width:0; gap:2px; }
+.crafting-material-use-ingredients {
+    display:flex;
+    align-items:center;
+    min-width:0;
+}
+.crafting-material-use-ingredients ul {
+    display:flex;
+    flex-wrap:wrap;
+    align-content:center;
+    gap:3px;
+    margin:0;
+    padding:0 2px 0 0;
+    box-sizing:border-box;
+    list-style:none;
+}
+.crafting-panel .crafting-material-ingredient-tile {
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:21px;
+    place-items:center;
+    width:23px;
+    min-width:23px;
+    min-height:23px;
+    height:23px;
+    padding:1px;
+    color:color-mix(in srgb,var(--wb-text) 78%,var(--wb-muted));
+    background:#0a0e11;
+    font:9px/1.25 "Microsoft YaHei",sans-serif;
+    cursor:help;
+}
+.crafting-material-ingredient-tile .crafting-material-card-icon {
+    width:21px;
+    height:21px;
+}
+.crafting-material-ingredient-tile .crafting-material-card-icon img {
+    width:19px;
+    height:19px;
+    object-fit:contain;
+}
+.crafting-material-ingredient-tile .crafting-material-card-owned {
+    position:absolute;
+    right:0;
+    bottom:0;
+    display:block;
+    min-width:11px;
+    height:10px;
+    padding:0 1px;
+    box-sizing:border-box;
+    color:#eafbff;
+    background:rgba(4,9,11,.9);
+    border:1px solid rgba(var(--dls-crystal-rgb),.48);
+    font:700 8px/8px Consolas,"Microsoft YaHei",sans-serif;
+}
+.crafting-material-ingredient-tile.is-current {
+    color:var(--wb-role-focus);
+    border-color:var(--wb-role-focus);
+    background:color-mix(in srgb,var(--wb-role-focus) 9%,transparent);
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.22);
+}
+.crafting-material-use-actions {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:stretch;
+    gap:4px;
+    min-width:0;
+    padding-left:8px;
+    border-left:1px solid rgba(var(--dls-crystal-rgb),.18);
+}
+.crafting-material-use-action {
+    width:100%;
+    min-height:24px;
+    padding:3px 7px;
+    font-size:10px;
+    line-height:1.2;
+}
+.crafting-material-use-action[aria-busy="true"] { cursor:progress; }
+.crafting-material-use-action-status {
+    grid-column:1 / -1;
+    min-width:0;
+    color:var(--wb-semantic-danger);
+    overflow-wrap:anywhere;
+}
+.crafting-material-use-row.is-legacy-use .crafting-material-use-product { grid-column:1 / -1; }
+.crafting-material-use-action-status[data-action-state="pending"] {
+    color:var(--wb-muted);
+}
 .crafting-material-empty-copy { margin:0; color:#75848a; font:10px/1.5 "Microsoft YaHei",sans-serif; }
 .crafting-detail-view [data-title] { position:relative; }
 .crafting-detail-view [data-title]:hover::after,

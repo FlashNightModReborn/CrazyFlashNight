@@ -6,4 +6,5 @@ _root.loaders = _root.loaders || [];
 #include "逻辑系统分区/商店系统_兼容.as"
 
 org.flashNight.arki.item.CraftingPanelServiceTest.runAllTests();
+org.flashNight.gesh.tooltip.test.SynthesisIndexTest.runAllTests();
 trace("FocusedTestRunId item-panels-crafting Complete: __FOCUSED_RUN_ID__");

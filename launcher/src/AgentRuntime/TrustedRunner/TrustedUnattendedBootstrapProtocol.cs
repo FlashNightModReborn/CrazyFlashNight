@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading;
 using CF7Launcher.AgentRuntime.Contracts;
 using CF7Launcher.AgentRuntime.Transport;
@@ -22,6 +23,12 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
 
     internal sealed class TrustedUnattendedRunnerOptions
     {
+        private const string A5MaterialShopSlot =
+            "cf7_agent_a5_material_shop_run";
+        private static readonly Regex CandidateLeafPattern =
+            new Regex(
+                "^c-[0-9a-f]{12}-[0-9a-f]{10}-[a-z0-9][a-z0-9-]{0,31}$",
+                RegexOptions.CultureInvariant);
         private static readonly HashSet<string> AllowedSlots =
             new HashSet<string>(
                 new[]
@@ -29,7 +36,8 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                     "cf7_agent_equipment_tuning",
                     "cf7_agent_arena_calibration",
                     "cf7_agent_character_build",
-                    "cf7_agent_loot_target_full_v1"
+                    "cf7_agent_loot_target_full_v1",
+                    "cf7_agent_a5_material_shop_run"
                 },
                 StringComparer.Ordinal);
 
@@ -95,6 +103,56 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                 adapter,
                 args[4]);
         }
+
+        internal static void ValidateRuntimeBinding(
+            string slot,
+            string runtimeMode,
+            string deploymentRoot)
+        {
+            bool a5Slot = string.Equals(
+                slot,
+                A5MaterialShopSlot,
+                StringComparison.Ordinal);
+            string candidateLeaf =
+                string.IsNullOrWhiteSpace(deploymentRoot)
+                    ? string.Empty
+                    : new DirectoryInfo(
+                        Path.GetFullPath(deploymentRoot))
+                        .Name;
+            bool isolatedCandidate = string.Equals(
+                runtimeMode,
+                "isolated_candidate",
+                StringComparison.Ordinal);
+            bool formalRuntime = string.Equals(
+                runtimeMode,
+                "formal_runtime",
+                StringComparison.Ordinal);
+            bool reservedA5Candidate = isolatedCandidate
+                && string.Equals(
+                    candidateLeaf,
+                    "a5",
+                    StringComparison.OrdinalIgnoreCase);
+            bool canonicalA5Candidate =
+                reservedA5Candidate
+                && string.Equals(
+                    candidateLeaf,
+                    "a5",
+                    StringComparison.Ordinal);
+            bool immutableCandidate = isolatedCandidate
+                && CandidateLeafPattern.IsMatch(
+                    candidateLeaf);
+            bool valid = a5Slot
+                ? formalRuntime
+                    || canonicalA5Candidate
+                : formalRuntime
+                    || (immutableCandidate
+                        && !reservedA5Candidate);
+            if (!valid)
+            {
+                throw new InvalidDataException(
+                    "trusted_runner_candidate_binding_invalid");
+            }
+        }
     }
 
     internal sealed class TrustedUnattendedBootstrapLease
@@ -110,9 +168,12 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
             64 * 1024;
         private static readonly TimeSpan MaximumLifetime =
             TimeSpan.FromMinutes(10);
-        internal static readonly TimeSpan
-            CredentialAcquisitionPolicyMaximum =
+        private static readonly TimeSpan
+            DefaultCredentialAcquisitionPolicyMaximum =
                 TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan
+            A5CredentialAcquisitionPolicyMaximum =
+                TimeSpan.FromSeconds(60);
         private static readonly UTF8Encoding StrictUtf8 =
             new UTF8Encoding(false, true);
         private static readonly JsonSerializerOptions JsonOptions =
@@ -206,6 +267,21 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
         public string RequestPath { get; }
         public string CredentialPath { get; }
 
+        internal TimeSpan CredentialAcquisitionPolicyMaximum =>
+            CredentialAcquisitionPolicyMaximumForSlot(Slot);
+
+        internal static TimeSpan
+            CredentialAcquisitionPolicyMaximumForSlot(
+                string slot)
+        {
+            return string.Equals(
+                    slot,
+                    "cf7_agent_a5_material_shop_run",
+                    StringComparison.Ordinal)
+                ? A5CredentialAcquisitionPolicyMaximum
+                : DefaultCredentialAcquisitionPolicyMaximum;
+        }
+
         public static TrustedUnattendedBootstrapLease Create(
             TrustedUnattendedRuntimeBundle bundle,
             string slot,
@@ -224,6 +300,11 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                     "--slot",
                     slot
                 });
+            TrustedUnattendedRunnerOptions
+                .ValidateRuntimeBinding(
+                    slot,
+                    bundle.RuntimeMode,
+                    bundle.DeploymentRoot);
 
             DateTimeOffset issuedUtc =
                 (nowOverride ?? DateTimeOffset.UtcNow)

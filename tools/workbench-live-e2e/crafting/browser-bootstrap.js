@@ -141,7 +141,7 @@ async function run() {
   const launchedBrowserBinary = BrowserChildResourceClosure.browserExecutableReceipt({
     expectedPath:browserBinary, launchedPath:result && result.executablePath,
   });
-  const scenarioCounts = { baseline:120, coverage:15, fault:8, identity:10 };
+  const scenarioCounts = { baseline:150, coverage:15, fault:8, identity:10 };
   const scenarioNames = {};
   let scenarioInvalid = false;
   Object.keys(scenarioCounts).forEach((name) => {
@@ -157,6 +157,13 @@ async function run() {
       return names;
     });
   });
+  const materialShop = result && result.materialShop;
+  if (!Array.isArray(materialShop) || materialShop.length !== 3
+      || materialShop.some((run) => !run || run.total !== 11 || run.passed !== 11
+        || !Array.isArray(run.checks) || run.checks.length !== 11
+        || run.checks.some((entry) => entry.ok !== true))) {
+    scenarioInvalid = true;
+  }
   if (!result || result.mode !== "full" || scenarioInvalid
       || canonicalJson(result.viewports) !== canonicalJson([
         {width:1024,height:576}, {width:1366,height:768}, {width:1920,height:1080},
@@ -220,6 +227,9 @@ async function run() {
     browserBinary:launchedBrowserBinary,
     servedResourceClosure:servedResourceReceipt,
     result:{ viewports:result.viewports, scenarioCounts,
+      materialShopScenarioCount:11,
+      materialShopScenarioNamesSha256:result.materialShop.map((run) =>
+        sha256Text(canonicalJson(run.checks.map((entry) => entry.name)))),
       scenarioNamesSha256,
       faultChecks:result.fault[0].checks.map((entry) => ({
         name:entry.name, ok:entry.ok, detail:entry.detail,

@@ -392,6 +392,11 @@ namespace CF7Launcher.AgentRuntime.NativeInput
             NativeInputTargetSnapshot target,
             out string reasonCode);
 
+        /// <summary>
+        /// Revalidates the exact registered target HWND or a real child whose
+        /// GA_ROOT is that exact registered HWND. Owned/sibling windows are
+        /// not registration authority.
+        /// </summary>
         bool IsRegisteredInputWindow(
             NativeInputTargetSnapshot target,
             IntPtr candidateHwnd);

@@ -55,6 +55,12 @@ namespace CF7Launcher.Tasks
         private Action<Action> _invokeOnUI;
         private string _writeState = "idle";
         private int _reconcileEpoch;
+        private string _navigationOwnerPanel;
+        private string _navigationOwnerPanelInstanceId;
+        private string _navigationLeaseToken;
+        private bool _navigationLeaseTransferred;
+        private long _navigationGeneration;
+        private bool _disposed;
         public NpcShopTask(XmlSocketServer socket)
             : this(delegate { return socket != null && socket.IsClientReady; },
                    delegate(string payload) { return socket != null && socket.TrySend(payload); }, DefaultTimeoutMs) { }
@@ -76,11 +82,230 @@ namespace CF7Launcher.Tasks
         {
             lock (_lock)
             {
+                if (_disposed) return;
+                _disposed = true;
+                _navigationGeneration++;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = null;
+                _navigationOwnerPanelInstanceId = null;
                 _catalogAuthorities.Clear();
                 _batchAuthorities.Clear();
                 _tradeAuthorities.Clear();
                 _pendingCalls.Dispose();
             }
+        }
+
+        internal void BindMaterialShopNavigationOwner(
+            string panelName,
+            string panelInstanceId)
+        {
+            lock (_lock)
+            {
+                if (_disposed) return;
+                if (string.Equals(_navigationOwnerPanel, panelName, StringComparison.Ordinal)
+                    && string.Equals(
+                        _navigationOwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return;
+                }
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = panelName;
+                _navigationOwnerPanelInstanceId = panelInstanceId;
+                _navigationGeneration++;
+            }
+        }
+
+        internal bool TryAcquireMaterialShopNavigationLease(
+            string panelName,
+            string panelInstanceId,
+            string leaseToken,
+            string shopId,
+            out MaterialShopSettlementWitness witness)
+        {
+            witness = null;
+            lock (_lock)
+            {
+                CatalogAuthority catalog;
+                if (_disposed
+                    || string.IsNullOrEmpty(leaseToken)
+                    || _navigationLeaseToken != null
+                    || !string.Equals(panelName, "npcshop", StringComparison.Ordinal)
+                    || !string.Equals(_navigationOwnerPanel, panelName, StringComparison.Ordinal)
+                    || !string.Equals(
+                        _navigationOwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || _pendingCalls.PendingCount != 0
+                    || !string.Equals(_writeState, "idle", StringComparison.Ordinal)
+                    || !_catalogAuthorities.TryGetValue(panelInstanceId, out catalog)
+                    || catalog == null
+                    || !string.Equals(catalog.ShopId, shopId, StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                _navigationLeaseToken = leaseToken;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                witness = new MaterialShopSettlementWitness
+                {
+                    TaskName = "npcshop",
+                    LeaseToken = leaseToken,
+                    OwnerPanel = panelName,
+                    OwnerPanelInstanceId = panelInstanceId,
+                    Generation = _navigationGeneration,
+                    ShopId = shopId,
+                    RequiresCatalogAuthority = true
+                };
+                return true;
+            }
+        }
+
+        internal bool TryAcquireMaterialShopCloseLease(
+            string panelName,
+            string panelInstanceId,
+            string leaseToken,
+            out MaterialShopSettlementWitness witness)
+        {
+            witness = null;
+            lock (_lock)
+            {
+                if (_disposed
+                    || string.IsNullOrEmpty(leaseToken)
+                    || _navigationLeaseToken != null
+                    || !string.Equals(panelName, "npcshop", StringComparison.Ordinal)
+                    || !string.Equals(
+                        _navigationOwnerPanel,
+                        panelName,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _navigationOwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || _pendingCalls.PendingCount != 0
+                    || !string.Equals(_writeState, "idle", StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                _navigationLeaseToken = leaseToken;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                witness = new MaterialShopSettlementWitness
+                {
+                    TaskName = "npcshop",
+                    LeaseToken = leaseToken,
+                    OwnerPanel = panelName,
+                    OwnerPanelInstanceId = panelInstanceId,
+                    Generation = _navigationGeneration,
+                    RequiresCatalogAuthority = false
+                };
+                return true;
+            }
+        }
+
+        internal bool IsMaterialShopNavigationLeaseCurrent(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                CatalogAuthority catalog;
+                return witness != null
+                    && witness.RequiresCatalogAuthority
+                    && !_disposed
+                    && !_navigationLeaseTransferred
+                    && string.Equals(witness.TaskName, "npcshop", StringComparison.Ordinal)
+                    && string.Equals(
+                        witness.LeaseToken,
+                        _navigationLeaseToken,
+                        StringComparison.Ordinal)
+                    && witness.Generation == _navigationGeneration
+                    && string.Equals(
+                        witness.OwnerPanel,
+                        _navigationOwnerPanel,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        witness.OwnerPanelInstanceId,
+                        _navigationOwnerPanelInstanceId,
+                        StringComparison.Ordinal)
+                    && _pendingCalls.PendingCount == 0
+                    && string.Equals(_writeState, "idle", StringComparison.Ordinal)
+                    && _catalogAuthorities.TryGetValue(
+                        witness.OwnerPanelInstanceId,
+                        out catalog)
+                    && catalog != null
+                    && string.Equals(catalog.ShopId, witness.ShopId, StringComparison.Ordinal);
+            }
+        }
+
+        internal bool IsMaterialShopCloseLeaseCurrent(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                return witness != null
+                    && !witness.RequiresCatalogAuthority
+                    && !_disposed
+                    && !_navigationLeaseTransferred
+                    && string.Equals(
+                        witness.TaskName,
+                        "npcshop",
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        witness.LeaseToken,
+                        _navigationLeaseToken,
+                        StringComparison.Ordinal)
+                    && witness.Generation == _navigationGeneration
+                    && string.Equals(
+                        witness.OwnerPanel,
+                        _navigationOwnerPanel,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        witness.OwnerPanelInstanceId,
+                        _navigationOwnerPanelInstanceId,
+                        StringComparison.Ordinal)
+                    && _pendingCalls.PendingCount == 0
+                    && string.Equals(_writeState, "idle", StringComparison.Ordinal);
+            }
+        }
+
+        internal bool ReleaseMaterialShopNavigationLease(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                if (!MatchesMaterialShopNavigationLeaseLocked(witness)) return false;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                return true;
+            }
+        }
+
+        internal bool TransferMaterialShopNavigationLease(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                if (!MatchesMaterialShopNavigationLeaseLocked(witness)
+                    || _navigationLeaseTransferred) return false;
+                _navigationLeaseTransferred = true;
+                return true;
+            }
+        }
+
+        private bool MatchesMaterialShopNavigationLeaseLocked(
+            MaterialShopSettlementWitness witness)
+        {
+            return witness != null
+                && string.Equals(witness.TaskName, "npcshop", StringComparison.Ordinal)
+                && string.Equals(
+                    witness.LeaseToken,
+                    _navigationLeaseToken,
+                    StringComparison.Ordinal)
+                && witness.Generation == _navigationGeneration;
         }
 
         public void HandleWebRequest(string cmd, JObject parsed)
@@ -139,6 +364,11 @@ namespace CF7Launcher.Tasks
             lock (_lock)
             {
                 if (_pendingCalls.IsKnownWebCallId(callId)) return;
+                if (_navigationLeaseToken != null)
+                {
+                    RespondError(callId, cmd, ownerPanel, ownerPanelInstanceId, "busy");
+                    return;
+                }
                 if (isWrite && _writeState != "idle")
                 {
                     if (!_pendingCalls.TryRememberRejected(callId)) return;
@@ -200,6 +430,7 @@ namespace CF7Launcher.Tasks
                         TradeAuthority = tradeAuthority
                     },
                     out fid)) return;
+                _navigationGeneration++;
                 if (batchAuthority != null)
                     ConsumePreviewAuthorityLocked(
                         _batchAuthorities,
@@ -238,6 +469,7 @@ namespace CF7Launcher.Tasks
                     if (respond != null) respond(null);
                     return;
                 }
+                _navigationGeneration++;
                 entry = pendingCall.Context;
                 malformed = !TrySanitizeResponse(msg, entry, out sanitized);
                 definitiveWrite = entry.IsWrite && !malformed && IsDefinitiveWriteResponse(msg, entry.WebCmd);
@@ -294,6 +526,11 @@ namespace CF7Launcher.Tasks
         {
             lock (_lock)
             {
+                _navigationGeneration++;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = null;
+                _navigationOwnerPanelInstanceId = null;
                 _catalogAuthorities.Clear();
                 _batchAuthorities.Clear();
                 _tradeAuthorities.Clear();
@@ -1308,6 +1545,7 @@ namespace CF7Launcher.Tasks
             PendingRequest entry = pendingCall.Context;
             lock (_lock)
             {
+                _navigationGeneration++;
                 if (entry.IsWrite)
                 {
                     _catalogAuthorities.Remove(entry.OwnerPanelInstanceId);
@@ -1334,8 +1572,20 @@ namespace CF7Launcher.Tasks
         private void RejectAndRemember(string callId, string cmd,
             string ownerPanel, string ownerPanelInstanceId, string error)
         {
-            if (!_pendingCalls.TryRememberRejected(callId)) return;
-            RespondError(callId, cmd, ownerPanel, ownerPanelInstanceId, error);
+            string responseError = error;
+            lock (_lock)
+            {
+                if (_navigationLeaseToken != null)
+                    responseError = "busy";
+                else if (!_pendingCalls.TryRememberRejected(callId))
+                    return;
+            }
+            RespondError(
+                callId,
+                cmd,
+                ownerPanel,
+                ownerPanelInstanceId,
+                responseError);
         }
 
         private void RespondError(string callId, string cmd,

@@ -548,11 +548,24 @@ namespace CF7Launcher.AgentRuntime.Sessions
             IntPtr candidateHwnd)
         {
             if (target == null
-                || candidateHwnd == IntPtr.Zero
-                || candidateHwnd != target.TargetHwnd)
+                || candidateHwnd == IntPtr.Zero)
             {
                 return false;
             }
+            bool registeredOrChild;
+            try
+            {
+                registeredOrChild =
+                    candidateHwnd == target.TargetHwnd
+                    || _topLevelWindows.ResolveTopLevel(
+                        candidateHwnd) == target.TargetHwnd;
+            }
+            catch
+            {
+                return false;
+            }
+            if (!registeredOrChild)
+                return false;
 
             if (target.HasBoundedProcessIdentitySignal
                 && !TryValidateDispatchIdentity(
@@ -566,7 +579,7 @@ namespace CF7Launcher.AgentRuntime.Sessions
                     target.TargetId,
                     out NativeInputTargetSnapshot current,
                     out _)
-                && current.TargetHwnd == candidateHwnd
+                && current.TargetHwnd == target.TargetHwnd
                 && current.TopLevelHwnd
                     == target.TopLevelHwnd
                 && NativeInputEpochComparer.ExactEquals(

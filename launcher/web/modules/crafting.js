@@ -3,6 +3,8 @@ var CraftingPanel = (function() {
     'use strict';
     var _shellEl, _shell, _catalogView, _detailView, _catalogRenderer, _detailPresenter;
     var _mode = 'recipes', _materials = null, _materialRequestSeq = 0;
+    var _materialSnapshotIntentGeneration = 0, _materialSessionVersion = 0,
+        _materialSnapshotId = '';
     var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
     var _busy = false, _previewBusy = false, _organizerBusy = false, _organizerMounted = false;
     var _needsReconcile = false, _needsRefresh = false, _reconcileEpoch = 0, _generation = 0;
@@ -11,9 +13,14 @@ var CraftingPanel = (function() {
     var _inspector = null, _tooltipScope = null;
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
     var _craftableOnly = false;
-    var _densityController = null, _helpAction = null;
+    var _densityController = null, _helpAction = null, _materialsDensityToggle = null;
     var _returnCharacterBuildButton = null, _returnNavigationTimer = null;
+    var _returnMaterialsButton = null, _materialRecipeReturn = null;
     var _panelInstanceId = '', _canReturnCharacterBuild = false;
+    var _recipeSnapshotGeneration = 0, _recipeSnapshotCallId = '',
+        _recipeSnapshotIntent = null;
+    var _materialShopNavigation = null, _materialShopNavigationTimer = null,
+        _materialShopNavigationGeneration = 0, _materialShopNavigationSequence = 0;
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
     var ORGANIZER_DEPS = [
         'modules/inventory-runtime.js',
@@ -29,6 +36,7 @@ var CraftingPanel = (function() {
         timeoutMs:_config.requestTimeoutMs,
         sessionNonce:_config.sessionNonce
     });
+    Bridge.on('panel_resp', handleMaterialShopNavigationFailure);
 
     Panels.register('crafting', {
         create:createDOM,
@@ -67,6 +75,7 @@ var CraftingPanel = (function() {
         root.setAttribute('data-workbench-skin', 'crafting');
         root.setAttribute('data-crafting-view', _mode);
         _shellEl.appendChild(root);
+        if (_mode === 'materials') setMaterialsMetric('loading');
 
         _retryButton = document.createElement('button');
         _retryButton.type = 'button'; _retryButton.className = 'workbench-mode-btn warning';
@@ -81,15 +90,29 @@ var CraftingPanel = (function() {
             _organizerButton.addEventListener('click', openOrganizer);
             _shell.addHeaderAction(_organizerButton);
         }
+        _returnMaterialsButton = null;
+        if (_mode === 'recipes' && _materialRecipeReturn) {
+            _returnMaterialsButton = document.createElement('button');
+            _returnMaterialsButton.type = 'button';
+            _returnMaterialsButton.className =
+                'workbench-mode-btn crafting-return-materials-btn';
+            _returnMaterialsButton.textContent = '← 返回材料';
+            _returnMaterialsButton.setAttribute(
+                'aria-label', '返回材料档案并重新选中来源材料');
+            _returnMaterialsButton.addEventListener('click', returnToMaterials);
+            _shell.addHeaderAction(_returnMaterialsButton);
+        }
+        _materialsDensityToggle = null;
         if (_mode === 'materials') {
             _densityController = new Workbench.GridDensityController({
                 panelId:'crafting-materials',
                 defaultMode:'compact'
             });
             root.setAttribute('data-layout-mode', _densityController.mode);
-            _shell.addHeaderAction(_densityController.createToggle(function(mode) {
+            _materialsDensityToggle = _densityController.createToggle(function(mode) {
                 root.setAttribute('data-layout-mode', mode);
-            }));
+            });
+            _shell.addHeaderAction(_materialsDensityToggle);
         }
         _returnCharacterBuildButton = null;
         if (_canReturnCharacterBuild) {
@@ -110,8 +133,8 @@ var CraftingPanel = (function() {
             kind:'crafting-materials-help',
             ariaLabel:'查看材料档案帮助',
             title:'材料档案帮助',
-            message:'浏览与筛选\n• 搜索框可按材料名称过滤；“已持有”和“有用途”只改变本地视图。\n• 紧凑模式以图标为主，适合快速扫视；完整模式同时显示持有量、来源数和用途数。',
-            detail:'查看来源与用途\n• 选择左侧材料后，右侧会列出掉落敌人、关卡、任务或商店来源。\n• “会用在哪里”列出引用该材料的合成项目及每份需求。\n• 方向键在当前网格移动，Home / End 可直达首尾；Enter 打开当前材料。',
+            message:'浏览与筛选\n• 完整档案可沿“类型”或“用途”树逐层浏览；一种材料可能出现在多条路径，但结果只显示一张卡。\n• 搜索框、“已持有”和“有用途”会与当前树路径组合筛选；排序可切换档案顺序、持有数、名称或用途数，新开档案恢复档案顺序。\n• “持有种类”统计整个可信目录，不随搜索、筛选或排序变化；旧版兼容视图会持续提示并停用分类树与排序。\n• 紧凑模式以图标为主，完整模式同时显示持有量、来源数和用途数。',
+            detail:'查看来源与用途\n• 右侧把 authored“档案摘要”和随存档变化的“已发现来源”分开显示；尚未发现不等于没有来源。\n• 选择左侧材料后，结构化来源按档案顺序列出掉落敌人、关卡、任务或商店；同一敌人或关卡的每条掉落配置都会单独显示。\n• 敌人显示名义概率，关卡显示默认分支基准概率，两者都不是本次实际概率。\n• “会用在哪里”列出引用该材料的合成项目及每份需求。方向键在网格移动；Esc 会先关闭排序菜单、清空已聚焦的搜索，再在分类树内返回一级。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
         } : {
             kind:'crafting-help',
@@ -132,8 +155,20 @@ var CraftingPanel = (function() {
             _craftableToggle = null;
             _materials = CraftingMaterials.create({
                 iconHtml:iconHtml,
+                staticIconUrl:staticIconUrl,
                 bindTooltip:bindTooltip,
                 onSelect:requestMaterialDetail,
+                onSelectionChange:function() { invalidateMaterialUseIntent(true); },
+                onOpenRecipe:function(use, opener) {
+                    return requestMaterialUseSnapshot('recipe', use, opener);
+                },
+                onInspectUse:function(use, opener) {
+                    return requestMaterialUseSnapshot('inspect', use, opener);
+                },
+                onOpenShop:function(source, opener) {
+                    return requestMaterialShopNavigation(source, opener);
+                },
+                onRetry:function() { refreshMaterialsSnapshot(); },
                 densityController:_densityController
             });
             _catalogView = _materials.catalogView;
@@ -452,15 +487,22 @@ var CraftingPanel = (function() {
         });
     }
 
-    function openInspector(output) {
+    function openInspector(output, gender, returnFocusTarget) {
         if (!_shell || typeof CraftingInspector === 'undefined' || !CraftingInspector.open) return false;
         if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
         _inspector = CraftingInspector.open({
             shell: _shell,
             output: output,
-            gender: _snapshot && _snapshot.gender,
+            gender: typeof gender === 'string' ? gender : _snapshot && _snapshot.gender,
             manifestUrl: _config.inspectorManifestUrl,
-            onClose: function() { _inspector = null; }
+            onClose: function() {
+                _inspector = null;
+                if (returnFocusTarget && returnFocusTarget.isConnected !== false
+                        && document.documentElement.contains(returnFocusTarget)
+                        && typeof returnFocusTarget.focus === 'function') {
+                    returnFocusTarget.focus();
+                }
+            }
         });
         return !!_inspector;
     }
@@ -626,45 +668,511 @@ var CraftingPanel = (function() {
     }
 
     function refreshMaterialsSnapshot(preferredName) {
+        if (_materialShopNavigation) return false;
+        invalidateMaterialUseIntent(true);
         _shell.setStatus('同步中', 'loading');
+        setMaterialsMetric('loading');
+        if (_materials && typeof _materials.setCatalogLoading === 'function') {
+            _materials.setCatalogLoading();
+        }
         if (_retryButton) _retryButton.disabled = true;
         _previewBusy = true;
         var generation = _generation;
-        return !!request('materials', {}, function(response) {
-            if (generation !== _generation || _mode !== 'materials') return;
+        var snapshotIntent = ++_materialSnapshotIntentGeneration;
+        ++_materialRequestSeq;
+        var requestedVersion = _materialSessionVersion || 2;
+        return !!request('materials', {v:requestedVersion}, function(response) {
+            if (generation !== _generation || snapshotIntent !== _materialSnapshotIntentGeneration
+                    || _mode !== 'materials') return;
             _previewBusy = false;
             if (!response.success) {
                 _needsRefresh = true;
-                if (_materials) _materials.setError(errorMessage(response.error));
+                setMaterialsMetric('error');
+                if (_materials) _materials.setCatalogError(errorMessage(response.error));
                 toast(errorMessage(response.error));
                 refreshControls();
                 return;
             }
+            var responseVersion = Number(response.v);
+            if ((responseVersion !== 1 && responseVersion !== 2)
+                    || _materialSessionVersion && responseVersion !== _materialSessionVersion) {
+                _needsRefresh = true;
+                setMaterialsMetric('error');
+                if (_materials) _materials.setCatalogError('材料协议版本发生变化，请关闭后重试。');
+                toast('材料协议版本发生变化，请关闭后重试。');
+                refreshControls();
+                return;
+            }
+            if (!_materialSessionVersion) _materialSessionVersion = responseVersion;
+            _materialSnapshotId = responseVersion === 2 ? String(response.snapshotId || '') : '';
             _snapshot = response;
             _needsRefresh = false;
             if (_materials) _materials.setSnapshot(response, preferredName);
+            setMaterialsMetric('ready', response.materials);
             refreshControls();
         });
     }
 
     function requestMaterialDetail(itemName) {
-        if (_mode !== 'materials' || !itemName) return false;
+        if (_materialShopNavigation || _mode !== 'materials'
+                || !itemName || !_materialSessionVersion) return false;
+        invalidateMaterialUseIntent(true);
         var generation = _generation;
+        var snapshotIntent = _materialSnapshotIntentGeneration;
+        var snapshotId = _materialSnapshotId;
         var requestSeq = ++_materialRequestSeq;
         _previewBusy = true;
         refreshControls();
-        return !!request('materialDetail', {itemName:String(itemName)}, function(response) {
+        var payload = {v:_materialSessionVersion, itemName:String(itemName)};
+        if (_materialSessionVersion === 2) payload.snapshotId = snapshotId;
+        return !!request('materialDetail', payload, function(response) {
             if (generation !== _generation || requestSeq !== _materialRequestSeq
-                    || _mode !== 'materials') return;
+                    || snapshotIntent !== _materialSnapshotIntentGeneration
+                    || snapshotId !== _materialSnapshotId || _mode !== 'materials') return;
             _previewBusy = false;
+            if (!_materials || _materials.getSelectedName() !== String(itemName)) {
+                refreshControls();
+                return;
+            }
             if (!response.success) {
-                if (_materials) _materials.setError(errorMessage(response.error));
+                var requiresCatalogRefresh = response.error === 'stale_snapshot';
+                if (requiresCatalogRefresh) _needsRefresh = true;
+                if (_materials) _materials.setDetailError(
+                    errorMessage(response.error), !requiresCatalogRefresh);
                 toast(errorMessage(response.error));
             } else if (_materials) {
-                _materials.setDetail(response);
+                if (!_materials.setDetail(response)) {
+                    _needsRefresh = true;
+                    _materials.setDetailError('材料详情与目录快照不一致，请重新同步。', false);
+                    toast('材料详情与目录快照不一致，请重新同步。');
+                }
             }
             refreshControls();
         });
+    }
+
+    function materialUseTuple(use) {
+        return {
+            category:String(use && use.category || ''),
+            recipeIndex:Number(use && use.recipeIndex),
+            productName:String(use && use.productName || ''),
+            displayName:String(use && use.displayName || ''),
+            itemKind:String(use && use.itemKind || ''),
+            recipeOrigin:use && use.recipeOrigin === 'craft_source' ? 'craft_source' : 'use',
+            sourceKey:use && use.recipeOrigin === 'craft_source' ? String(use.sourceKey || '') : ''
+        };
+    }
+
+    function materialUseTargetIsCurrent(kind, tuple) {
+        if (!_materials || !tuple) return false;
+        if (kind === 'inspect') {
+            return _materials.isCurrentUse(tuple.category, tuple.recipeIndex, tuple.productName);
+        }
+        return typeof _materials.isCurrentRecipeTarget === 'function'
+            && _materials.isCurrentRecipeTarget(tuple.category, tuple.recipeIndex,
+                tuple.productName, tuple.recipeOrigin, tuple.sourceKey);
+    }
+
+    function invalidateMaterialUseIntent(clearViewState) {
+        _recipeSnapshotGeneration++;
+        if (_recipeSnapshotCallId && _mux && typeof _mux.cancel === 'function') {
+            _mux.cancel(_recipeSnapshotCallId);
+        }
+        _recipeSnapshotCallId = '';
+        _recipeSnapshotIntent = null;
+        if (clearViewState !== false && _materials
+                && typeof _materials.clearUseAction === 'function') {
+            _materials.clearUseAction();
+        }
+        refreshControls();
+    }
+
+    function requestMaterialUseSnapshot(kind, use, opener) {
+        kind = kind === 'inspect' ? 'inspect' : 'recipe';
+        var tuple = materialUseTuple(use);
+        if (_materialShopNavigation || _mode !== 'materials'
+                || _materialSessionVersion !== 2 || !_materials
+                || !_panelInstanceId || !tuple.category || tuple.recipeIndex < 0
+                || Math.floor(tuple.recipeIndex) !== tuple.recipeIndex || !tuple.productName
+                || kind === 'inspect' && tuple.itemKind !== 'equipment'
+                || kind === 'recipe' && (!_materials.canOpenCrafting
+                    || !_materials.canOpenCrafting())
+                || !materialUseTargetIsCurrent(kind, tuple)) {
+            return false;
+        }
+        invalidateMaterialUseIntent(true);
+        var intent = {
+            generation:++_recipeSnapshotGeneration,
+            lifecycleGeneration:_generation,
+            panelInstanceId:_panelInstanceId,
+            materialSnapshotId:_materialSnapshotId,
+            materialSnapshotIntentGeneration:_materialSnapshotIntentGeneration,
+            selectedName:_materials.getSelectedName(),
+            kind:kind,
+            use:tuple,
+            opener:opener,
+            callId:''
+        };
+        _recipeSnapshotIntent = intent;
+        if (!_materials.setUseActionPending(tuple, kind)) {
+            _recipeSnapshotIntent = null;
+            return false;
+        }
+        refreshControls();
+        var snapshotPayload = {category:tuple.category};
+        if (kind === 'recipe') snapshotPayload.materialSnapshotId = intent.materialSnapshotId;
+        var callId = request('snapshot', snapshotPayload, function(response, entry) {
+            completeMaterialUseSnapshot(intent, response, entry && entry.callId);
+        });
+        if (_recipeSnapshotIntent === intent) {
+            intent.callId = String(callId || '');
+            _recipeSnapshotCallId = intent.callId;
+            if (!callId) {
+                failMaterialUseIntent(intent, '最新配方请求未发送；请重试。');
+            }
+        }
+        return !!callId;
+    }
+
+    function materialShopNavigationError(error) {
+        var messages = {
+            invalid_payload:'商店入口数据无效；请重新同步材料档案。',
+            stale_source:'材料来源已经变化；请重新同步后再试。',
+            navigation_unavailable:'商店导航暂不可用；请重试。',
+            access_denied:'需要自行车、摩托车或越野车，才能从材料档案前往商店。',
+            source_not_settled:'材料档案仍在同步；请稍后重试。',
+            admission_failed:'商店暂时无法打开；请重试。',
+            timeout:'打开商店超时；请重试。',
+            busy:'另一项面板导航正在进行；请稍后重试。'
+        };
+        return messages[String(error || '')] || '暂时无法前往商店；请重试。';
+    }
+
+    function requestMaterialShopNavigation(source, opener) {
+        source = source || {};
+        var selectedName = _materials && _materials.getSelectedName
+            ? _materials.getSelectedName() : '';
+        var restoreOpenerFocus = document.activeElement === opener;
+        if (_materialShopNavigation || _mode !== 'materials'
+                || _materialSessionVersion !== 2 || !_materials || !_panelInstanceId
+                || _previewBusy || _busy || _organizerBusy || _needsRefresh
+                || !_materials.canOpenShop || !_materials.canOpenShop()
+                || _recipeSnapshotIntent || source.kind !== 'shop'
+                || source.shopAccessMode !== 'full'
+                || source.shopAccessReason !== 'indexed_live_match'
+                || String(source.itemName || '') !== String(selectedName || '')
+                || !_materialSnapshotId || !source.sourceKey
+                || !_materials.isShopNavigationTrigger(opener, source.sourceKey)
+                || !_materials.setShopNavigationPending(source.sourceKey)) return false;
+        var callId = 'craft-material-shop-' + (++_materialShopNavigationSequence);
+        var message = CraftingRuntime.createMaterialShopNavigationMessage({
+            callId:callId,
+            panelInstanceId:_panelInstanceId,
+            materialSnapshotId:_materialSnapshotId,
+            materialName:selectedName,
+            shopId:source.shopId,
+            catalogIndex:source.catalogIndex
+        });
+        if (!message) {
+            _materials.setShopNavigationError(source.sourceKey,
+                materialShopNavigationError('invalid_payload'));
+            refreshControls();
+            return false;
+        }
+        var intent = {
+            generation:++_materialShopNavigationGeneration,
+            lifecycleGeneration:_generation,
+            panelInstanceId:_panelInstanceId,
+            materialSnapshotId:_materialSnapshotId,
+            materialName:selectedName,
+            sourceKey:String(source.sourceKey),
+            shopId:String(source.shopId),
+            catalogIndex:Number(source.catalogIndex),
+            callId:callId,
+            opener:opener,
+            restoreOpenerFocus:restoreOpenerFocus,
+            startedAt:Date.now()
+        };
+        _materialShopNavigation = intent;
+        refreshControls();
+        var sent = false;
+        try { sent = Bridge.send(message) !== false; }
+        catch (_) { sent = false; }
+        if (!sent) {
+            failMaterialShopNavigation(intent, 'navigation_unavailable');
+            return false;
+        }
+        if (_materialShopNavigation === intent) {
+            var elapsed = Math.max(0, Date.now() - intent.startedAt);
+            _materialShopNavigationTimer = setTimeout(function() {
+                if (_materialShopNavigation === intent) {
+                    failMaterialShopNavigation(intent, 'timeout');
+                }
+            }, Math.max(0, CraftingRuntime.NAVIGATION_WATCHDOG_MS - elapsed));
+        }
+        return true;
+    }
+
+    function materialShopNavigationIsCurrent(intent) {
+        return !!intent && _materialShopNavigation === intent
+            && intent.generation === _materialShopNavigationGeneration
+            && intent.lifecycleGeneration === _generation
+            && intent.panelInstanceId === _panelInstanceId
+            && intent.materialSnapshotId === _materialSnapshotId
+            && _mode === 'materials'
+            && _materials && _materials.getSelectedName() === intent.materialName
+            && (!Panels.getActive || Panels.getActive() === 'crafting');
+    }
+
+    function handleMaterialShopNavigationFailure(data) {
+        var intent = _materialShopNavigation;
+        if (!materialShopNavigationIsCurrent(intent)
+                || !CraftingRuntime.validateMaterialShopNavigationFailure(data, {
+                    callId:intent.callId,
+                    panelInstanceId:intent.panelInstanceId
+                })) return false;
+        return failMaterialShopNavigation(intent, data.error);
+    }
+
+    function failMaterialShopNavigation(intent, error) {
+        if (!materialShopNavigationIsCurrent(intent)) return false;
+        var activeBeforeFailure = document.activeElement;
+        if (_materialShopNavigationTimer !== null) {
+            clearTimeout(_materialShopNavigationTimer);
+            _materialShopNavigationTimer = null;
+        }
+        _materialShopNavigation = null;
+        if (_materials) _materials.setShopNavigationError(
+            intent.sourceKey, materialShopNavigationError(error));
+        refreshControls();
+        if (intent.restoreOpenerFocus && intent.opener && intent.opener.isConnected
+                && _materials && _materials.isShopNavigationTrigger(
+                    intent.opener, intent.sourceKey)
+                && (activeBeforeFailure === intent.opener
+                    || activeBeforeFailure === document.body
+                    || activeBeforeFailure === document.documentElement)) {
+            try { intent.opener.focus({preventScroll:true}); }
+            catch (_) { intent.opener.focus(); }
+        }
+        return false;
+    }
+
+    function retireMaterialShopNavigation(clearViewState) {
+        _materialShopNavigationGeneration++;
+        if (_materialShopNavigationTimer !== null) {
+            clearTimeout(_materialShopNavigationTimer);
+            _materialShopNavigationTimer = null;
+        }
+        _materialShopNavigation = null;
+        if (clearViewState !== false && _materials
+                && typeof _materials.clearShopNavigation === 'function') {
+            _materials.clearShopNavigation();
+        }
+    }
+
+    function materialUseIntentIsCurrent(intent, responseCallId) {
+        if (!intent || _recipeSnapshotIntent !== intent
+                || intent.generation !== _recipeSnapshotGeneration
+                || intent.lifecycleGeneration !== _generation
+                || intent.panelInstanceId !== _panelInstanceId
+                || intent.materialSnapshotId !== _materialSnapshotId
+                || intent.materialSnapshotIntentGeneration !== _materialSnapshotIntentGeneration
+                || _mode !== 'materials' || _materialSessionVersion !== 2 || !_materials
+                || _materials.getSelectedName() !== intent.selectedName
+                || !materialUseTargetIsCurrent(intent.kind, intent.use)
+                || !_materials.isUseActionTrigger(intent.opener, intent.use, intent.kind)) return false;
+        if (intent.callId && responseCallId && intent.callId !== responseCallId) return false;
+        return !Panels.getActive || Panels.getActive() === 'crafting';
+    }
+
+    function exactRecipeFromSnapshot(response, intent) {
+        if (!response || response.success !== true || Number(response.v) !== 1
+                || String(response.category || '') !== intent.use.category
+                || !Array.isArray(response.recipes)) return null;
+        var matches = response.recipes.filter(function(recipe) {
+            return recipe && Number(recipe.recipeIndex) === intent.use.recipeIndex;
+        });
+        if (matches.length !== 1 || !matches[0].output
+                || String(matches[0].output.name || '') !== intent.use.productName) return null;
+        return matches[0];
+    }
+
+    function completeMaterialUseSnapshot(intent, response, responseCallId) {
+        if (!materialUseIntentIsCurrent(intent, responseCallId)) return;
+        if (!intent.callId && responseCallId) intent.callId = responseCallId;
+        _recipeSnapshotCallId = '';
+        if (!response || response.success !== true) {
+            if (response && response.error === 'access_denied') {
+                failMaterialUseIntent(intent,
+                    '需要摩托车或越野车，才能从材料档案前往合成。');
+                return;
+            }
+            if (response && response.error === 'stale_snapshot') {
+                failMaterialUseIntent(intent, '材料档案已变化；请返回材料后重试。');
+                return;
+            }
+            failMaterialUseIntent(intent, '最新配方读取失败：'
+                + errorMessage(response && response.error) + ' 请重试。');
+            return;
+        }
+        var recipe = exactRecipeFromSnapshot(response, intent);
+        if (!recipe) {
+            failMaterialUseIntent(intent, '配方已变化，未执行跳转；请重试。');
+            return;
+        }
+        if (intent.kind === 'inspect') {
+            completeMaterialUseInspector(intent, response, recipe);
+            return;
+        }
+        if (_shell && _shell.hasModal && _shell.hasModal()) {
+            failMaterialUseIntent(intent, '请先关闭当前弹窗，再前往合成。');
+            return;
+        }
+        commitMaterialRecipeRoute(intent, response);
+    }
+
+    function failMaterialUseIntent(intent, message) {
+        if (!intent || _recipeSnapshotIntent !== intent) return false;
+        _recipeSnapshotGeneration++;
+        _recipeSnapshotCallId = '';
+        _recipeSnapshotIntent = null;
+        if (_materials && _mode === 'materials') {
+            _materials.setUseActionError(intent.use, intent.kind, message);
+        }
+        refreshControls();
+        return false;
+    }
+
+    function completeMaterialUseInspector(intent, response, recipe) {
+        if (intent.use.itemKind !== 'equipment' || recipe.output.itemKind !== 'equipment'
+                || !_materials.isUseActionTrigger(intent.opener, intent.use, 'inspect')) {
+            failMaterialUseIntent(intent, '装备入口已变化，未打开检视；请重试。');
+            return false;
+        }
+        if (_shell && _shell.hasModal && _shell.hasModal()) {
+            failMaterialUseIntent(intent, '请先关闭当前弹窗，再查看装备。');
+            return false;
+        }
+        if (typeof intent.opener.focus === 'function') intent.opener.focus();
+        var opened = false;
+        try { opened = openInspector(recipe.output, response.gender, intent.opener); }
+        catch (_) { opened = false; }
+        if (!opened) {
+            failMaterialUseIntent(intent, '装备检视暂不可用；请重试。');
+            return false;
+        }
+        _recipeSnapshotGeneration++;
+        _recipeSnapshotCallId = '';
+        _recipeSnapshotIntent = null;
+        _materials.completeUseAction(intent.use, 'inspect');
+        refreshControls();
+        return true;
+    }
+
+    function commitMaterialRecipeRoute(intent, response) {
+        // This is a same-owner view transition. Deliberately preserve the
+        // existing panelInstanceId and CharacterBuild return capability.
+        _materialRecipeReturn = {
+            materialName:String(intent.selectedName || '')
+        };
+        _recipeSnapshotGeneration++;
+        _recipeSnapshotCallId = '';
+        _recipeSnapshotIntent = null;
+        _materialRequestSeq++;
+        _materialSnapshotIntentGeneration++;
+        _materialSessionVersion = 0;
+        _materialSnapshotId = '';
+        _mode = 'recipes';
+        _category = intent.use.category;
+        _snapshot = response;
+        _selectedIndex = intent.use.recipeIndex;
+        _craftCount = 1;
+        _preview = null;
+        _previewFlight = null;
+        _previewQueued = null;
+        clearPreviewCheckpoint();
+        _busy = false;
+        _previewBusy = false;
+        _organizerBusy = false;
+        _organizerMounted = false;
+        _needsReconcile = false;
+        _needsRefresh = false;
+        _reconcileEpoch = 0;
+        _filterPath = [];
+        _craftableOnly = false;
+        _tooltipCache = {};
+        buildDOM();
+        rebuildFilterTree();
+        applyBalance(response.balance);
+        renderCatalog({preserveScroll:false});
+        renderDetail({preserveScroll:false});
+        if (!focusExactRecipeCard(intent.use.recipeIndex)) {
+            _needsRefresh = true;
+            refreshControls();
+            return false;
+        }
+        requestPreview();
+        return true;
+    }
+
+    function returnToMaterials() {
+        if (_mode !== 'recipes' || !_materialRecipeReturn
+                || !_materialRecipeReturn.materialName) return false;
+        if (_busy || _previewBusy || _organizerBusy || _organizerMounted
+                || _needsReconcile || _needsRefresh) {
+            toast('合成状态正在确认，请稍候返回材料。');
+            return false;
+        }
+        var preferredName = _materialRecipeReturn.materialName;
+        _materialRecipeReturn = null;
+        _generation++;
+        _recipeSnapshotGeneration++;
+        _recipeSnapshotCallId = '';
+        _recipeSnapshotIntent = null;
+        _materialRequestSeq++;
+        _materialSnapshotIntentGeneration++;
+        _materialSessionVersion = 0;
+        _materialSnapshotId = '';
+        _mode = 'materials';
+        _category = '';
+        _snapshot = null;
+        _preview = null;
+        _selectedIndex = -1;
+        _craftCount = 1;
+        _previewFlight = null;
+        _previewQueued = null;
+        clearPreviewCheckpoint();
+        _busy = false;
+        _previewBusy = false;
+        _organizerBusy = false;
+        _organizerMounted = false;
+        _needsReconcile = false;
+        _needsRefresh = false;
+        _reconcileEpoch = 0;
+        _filterPath = [];
+        _craftableOnly = false;
+        _tooltipCache = {};
+        buildDOM();
+        refreshMaterialsSnapshot(preferredName);
+        return true;
+    }
+
+    function focusExactRecipeCard(recipeIndex) {
+        if (!_catalogRenderer || !_catalogRenderer.root) return false;
+        var cards = _catalogRenderer.root.querySelectorAll('[data-workbench-key]');
+        var target = null;
+        for (var index = 0; index < cards.length; index++) {
+            if (Number(cards[index].getAttribute('data-workbench-key')) === Number(recipeIndex)) {
+                target = cards[index];
+                break;
+            }
+        }
+        if (!target) return false;
+        if (typeof target.scrollIntoView === 'function') {
+            target.scrollIntoView({block:'nearest', inline:'nearest'});
+        }
+        if (typeof target.focus === 'function') target.focus();
+        return document.activeElement === target;
     }
 
     function reconcile() {
@@ -804,17 +1312,56 @@ var CraftingPanel = (function() {
         _shell.setMetric('kpoints', 'K 点', formatNumber(balance.kpoints));
     }
 
+    function setMaterialsMetric(kind, materials) {
+        if (!_shell || _mode !== 'materials') return;
+        var value = '— / —', ariaLabel = kind === 'loading'
+            ? '持有种类，正在同步' : '持有种类，暂不可用';
+        if (kind === 'ready') {
+            var seen = Object.create(null), ownedKinds = 0;
+            (materials || []).forEach(function(material) {
+                var name = material && String(material.name || '');
+                if (!name || seen[name]) return;
+                seen[name] = true;
+                if (Number(material.owned || 0) > 0) ownedKinds++;
+            });
+            var total = Object.keys(seen).length;
+            value = ownedKinds + ' / ' + total;
+            ariaLabel = '持有种类，' + ownedKinds + ' / ' + total;
+        }
+        var valueNode = _shell.setMetric('ownedKinds', '持有种类', value);
+        var metric = valueNode && valueNode.parentNode;
+        if (metric) {
+            metric.setAttribute('aria-label', ariaLabel);
+            metric.setAttribute('data-metric-state', kind === 'ready' ? 'ready'
+                : kind === 'loading' ? 'loading' : 'error');
+        }
+    }
+
     function refreshControls() {
         if (!_shell) return;
         if (_mode === 'materials') {
-            if (_needsRefresh) _shell.setStatus('需要重新同步', 'error');
+            if (_materialShopNavigation) _shell.setStatus('正在打开 NPC 商店', 'loading');
+            else if (_needsRefresh) _shell.setStatus('需要重新同步', 'error');
             else if (_previewBusy) _shell.setStatus('正在读取材料档案', 'loading');
             else if (_snapshot) _shell.setStatus('材料索引已同步', 'idle');
             else _shell.setStatus('同步中', 'loading');
             if (_retryButton) {
                 _retryButton.textContent = '重新同步';
                 _retryButton.style.display = _needsRefresh ? '' : 'none';
-                _retryButton.disabled = _previewBusy;
+                _retryButton.disabled = _previewBusy || !!_materialShopNavigation;
+            }
+            if (_returnCharacterBuildButton && _returnNavigationTimer === null) {
+                _returnCharacterBuildButton.disabled = !!_recipeSnapshotIntent
+                    || !!_materialShopNavigation;
+            }
+            if (_helpAction && _helpAction.button) {
+                _helpAction.button.disabled = !!_materialShopNavigation;
+            }
+            if (_materialsDensityToggle) {
+                var densityButtons = _materialsDensityToggle.querySelectorAll('button');
+                for (var densityIndex = 0; densityIndex < densityButtons.length; densityIndex++) {
+                    densityButtons[densityIndex].disabled = !!_materialShopNavigation;
+                }
             }
             return;
         }
@@ -830,17 +1377,30 @@ var CraftingPanel = (function() {
             _retryButton.disabled = _previewBusy;
         }
         if (_organizerButton) _organizerButton.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh;
+        if (_returnMaterialsButton) {
+            _returnMaterialsButton.disabled = _busy || _previewBusy
+                || _organizerBusy || _organizerMounted
+                || _needsReconcile || _needsRefresh;
+        }
         if (_filterNavigator) _filterNavigator.setDisabled(_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh);
         if (_craftableToggle) _craftableToggle.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh;
     }
 
     function onOpen(el, initData) {
         _generation++;
+        retireMaterialShopNavigation(false);
+        _recipeSnapshotGeneration++;
+        _recipeSnapshotCallId = '';
+        _recipeSnapshotIntent = null;
         _materialRequestSeq++;
+        _materialSnapshotIntentGeneration++;
+        _materialSessionVersion = 0;
+        _materialSnapshotId = '';
         if (_tooltipScope) _tooltipScope.dispose();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('crafting') : null;
         initData = initData || {};
+        _materialRecipeReturn = null;
         _mode = initData.view === 'materials' ? 'materials' : 'recipes';
         _panelInstanceId = typeof initData.panelInstanceId === 'string'
             ? initData.panelInstanceId : '';
@@ -877,7 +1437,10 @@ var CraftingPanel = (function() {
     }
 
     function cleanup() {
-        _generation++; _materialRequestSeq++; _mux.closeSession();
+        _generation++; _materialRequestSeq++; _materialSnapshotIntentGeneration++;
+        retireMaterialShopNavigation(false);
+        invalidateMaterialUseIntent(true);
+        _materialSessionVersion = 0; _materialSnapshotId = ''; _mux.closeSession();
         if (_returnNavigationTimer !== null) {
             clearTimeout(_returnNavigationTimer);
             _returnNavigationTimer = null;
@@ -899,6 +1462,9 @@ var CraftingPanel = (function() {
         if (_detailPresenter) { _detailPresenter.destroy(); _detailPresenter = null; }
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         _returnCharacterBuildButton = null;
+        _returnMaterialsButton = null;
+        _materialRecipeReturn = null;
+        _materialsDensityToggle = null;
         _panelInstanceId = '';
         _canReturnCharacterBuild = false;
     }
@@ -915,20 +1481,26 @@ var CraftingPanel = (function() {
         if (_shell && _shell.hasModal()) {
             return _shell.closeModal(typeof reason === 'string' ? reason : 'close');
         }
+        if (reason === 'escape' && _mode === 'materials' && _materials
+                && typeof _materials.consumeEscape === 'function'
+                && _materials.consumeEscape(document.activeElement)) return true;
         if (_busy || _organizerBusy) { toast('工作台状态正在确认，请稍候。'); return; }
         if (Bridge.send({type:'panel', cmd:'close', panel:'crafting',
                 panelInstanceId:_panelInstanceId}) === false) {
             toast('启动器连接不可用，工作台保持打开。');
             return false;
         }
-        Panels.close();
+        // Bridge acceptance only means the close intent reached Host.  Host still owns
+        // exact-instance admission and commit, and will retire this owner with panel_cmd close.
+        // Keeping the source mounted here preserves retry/focus when admission loses a race.
         return true;
     }
 
     function requestCharacterBuild() {
         if (!_canReturnCharacterBuild || !_panelInstanceId
                 || !_returnCharacterBuildButton) return false;
-        if (_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh) {
+        if (_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh
+                || _recipeSnapshotIntent || _materialShopNavigation) {
             toast('材料档案正在确认状态，请稍候。');
             return false;
         }
@@ -956,7 +1528,11 @@ var CraftingPanel = (function() {
         return true;
     }
 
-    function request(cmd, payload, callback) { payload = payload || {}; payload.v = 1; return _mux.request(cmd, payload, callback); }
+    function request(cmd, payload, callback) {
+        payload = payload || {};
+        if (!Object.prototype.hasOwnProperty.call(payload, 'v')) payload.v = 1;
+        return _mux.request(cmd, payload, callback);
+    }
 
     function bindTooltip(node, item) {
         if (!node || !item || !item.name || typeof PanelTooltip === 'undefined') return;
@@ -1056,6 +1632,11 @@ var CraftingPanel = (function() {
             ? Icons.html(iconName, cls || 'kshop-icon', ' onerror="this.style.display=\'none\'"') : '';
         return html || '<span class="kshop-icon-placeholder"></span>';
     }
+    function staticIconUrl(iconName) {
+        return typeof iconName === 'string' && iconName
+            && typeof Icons !== 'undefined' && Icons.resolveStatic
+            ? (Icons.resolveStatic(iconName) || '') : '';
+    }
     function formatNumber(value) { var number = Number(value || 0); return isNaN(number) ? '0' : number.toLocaleString(); }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
@@ -1065,6 +1646,7 @@ var CraftingPanel = (function() {
             insufficient_kpoint:'K 点不足。', inventory_full:'背包空间不足。', stale_state:'物品状态已变化，请重新核对。',
             batch_not_supported:'该配方包含装备产物或装备素材，只能逐份合成。',
             busy:'Flash 正在处理另一项合成。', reconcile_required:'上次提交结果需要重新核对。',
+            stale_snapshot:'材料目录已更新，请重新同步。',
             malformed_response:'Flash 回包不完整。', timeout:'合成响应超时。', client_timeout:'合成响应超时。', disconnected:'连接已断开。'};
         return messages[error] || (_mode === 'materials' ? '材料档案读取失败，请重试。' : '合成操作失败，请重试。');
     }
@@ -1087,6 +1669,32 @@ var CraftingPanel = (function() {
         inspector:_inspector && _inspector.debugState ? _inspector.debugState() : null,
         materials:_materials && _materials.debugState ? _materials.debugState() : null,
         detail:_detailPresenter && _detailPresenter.debugState ? _detailPresenter.debugState() : null,
+        materialSessionVersion:_materialSessionVersion,
+        materialSnapshotId:_materialSnapshotId,
+        materialSnapshotIntentGeneration:_materialSnapshotIntentGeneration,
+        recipeSnapshot:_recipeSnapshotIntent ? {
+            generation:_recipeSnapshotIntent.generation,
+            callId:_recipeSnapshotIntent.callId,
+            kind:_recipeSnapshotIntent.kind,
+            category:_recipeSnapshotIntent.use.category,
+            recipeIndex:_recipeSnapshotIntent.use.recipeIndex,
+            productName:_recipeSnapshotIntent.use.productName,
+            recipeOrigin:_recipeSnapshotIntent.use.recipeOrigin,
+            sourceKey:_recipeSnapshotIntent.use.sourceKey,
+            selectedName:_recipeSnapshotIntent.selectedName
+        } : null,
+        materialShopNavigation:_materialShopNavigation ? {
+            generation:_materialShopNavigation.generation,
+            callId:_materialShopNavigation.callId,
+            materialSnapshotId:_materialShopNavigation.materialSnapshotId,
+            materialName:_materialShopNavigation.materialName,
+            shopId:_materialShopNavigation.shopId,
+            catalogIndex:_materialShopNavigation.catalogIndex,
+            sourceKey:_materialShopNavigation.sourceKey
+        } : null,
+        materialRecipeReturn:_materialRecipeReturn ? {
+            materialName:_materialRecipeReturn.materialName
+        } : null,
         canReturnCharacterBuild:_canReturnCharacterBuild,
         panelInstanceId:_panelInstanceId,
         mux:_mux.debugState()}; }};

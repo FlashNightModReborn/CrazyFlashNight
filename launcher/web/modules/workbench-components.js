@@ -49,6 +49,7 @@
     var FocusScope = WorkbenchFocus.FocusScope;
     var secondaryOpenSequence = 0;
     var quantityControlSequence = 0;
+    var dropdownSequence = 0;
 
     function resolveDocument(options, node) {
         return options.document || (node && node.ownerDocument)
@@ -625,6 +626,251 @@
         this._choiceLifetime.dispose();
         if (this._ownsRoot || this._options.removeOnDestroy) removeNode(this.root);
         this._host = null; return true;
+    };
+
+    /**
+     * Neutral single-value menu used by workbench toolbars.  It deliberately
+     * owns only listbox presentation and keyboard lifecycle; domain sorting or
+     * filtering stays with the consumer.
+     */
+    function Dropdown(options) {
+        options = options || {};
+        this._options = options;
+        this._document = resolveDocument(options, options.root);
+        if (!this._document) throw new Error('Dropdown requires a document or root');
+        this.root = options.root || this._document.createElement('div');
+        this._ownsRoot = !options.root;
+        this._host = null;
+        this._destroyed = false;
+        this._disabled = !!options.disabled;
+        this._open = false;
+        this._value = options.value == null ? '' : String(options.value);
+        this._choices = [];
+        this._optionNodes = [];
+        this._choiceLifetime = new DisposableStack();
+        this._lifetime = new DisposableStack();
+        this._id = 'workbench-dropdown-' + (++dropdownSequence);
+        this.root.className = options.className || 'workbench-dropdown';
+        if (this.root.classList) this.root.classList.add('workbench-dropdown');
+
+        this.trigger = this._document.createElement('button');
+        this.trigger.type = 'button';
+        this.trigger.className = options.triggerClassName
+            || 'workbench-mode-btn workbench-dropdown-trigger';
+        this.trigger.setAttribute('aria-haspopup', 'listbox');
+        this.trigger.setAttribute('aria-expanded', 'false');
+        this.trigger.setAttribute('aria-controls', this._id + '-listbox');
+        this.menu = this._document.createElement('div');
+        this.menu.className = options.menuClassName || 'workbench-dropdown-menu';
+        this.menu.id = this._id + '-listbox';
+        this.menu.setAttribute('role', 'listbox');
+        this.menu.hidden = true;
+        var ariaLabel = options.ariaLabel || '选择选项';
+        this.trigger.setAttribute('aria-label', ariaLabel);
+        this.menu.setAttribute('aria-label', ariaLabel);
+        this.root.appendChild(this.trigger);
+        this.root.appendChild(this.menu);
+
+        var self = this;
+        this._lifetime.defer(listen(this.trigger, 'click', function() {
+            if (self._disabled) return;
+            if (self._open) self.close({restoreFocus:true});
+            else self.open(0);
+        }));
+        this._lifetime.defer(listen(this.trigger, 'keydown', function(event) {
+            var key = event && event.key;
+            if (key === 'Enter' || key === ' ') {
+                if (event.preventDefault) event.preventDefault();
+                if (self._open) self.close({restoreFocus:true});
+                else self.open(0);
+            } else if (key === 'ArrowDown' || key === 'ArrowUp') {
+                if (event.preventDefault) event.preventDefault();
+                self.open(key === 'ArrowUp' ? -1 : 1);
+            } else if (key === 'Escape' && self._open) {
+                if (event.preventDefault) event.preventDefault();
+                if (event.stopPropagation) event.stopPropagation();
+                self.close({restoreFocus:true});
+            } else if (key === 'Tab' && self._open) {
+                self.close({restoreFocus:false});
+            }
+        }));
+        this._lifetime.defer(listen(this._document, 'pointerdown', function(event) {
+            if (self._open && (!event || !self.root.contains(event.target))) {
+                self.close({restoreFocus:false});
+            }
+        }));
+        this.setChoices(options.choices || []);
+    }
+
+    Dropdown.prototype._choiceValue = function(choice) {
+        if (!choice) return '';
+        return String(choice.value == null ? choice.id : choice.value);
+    };
+    Dropdown.prototype._selectedIndex = function() {
+        for (var i = 0; i < this._choices.length; i++) {
+            if (this._choiceValue(this._choices[i]) === this._value) return i;
+        }
+        return -1;
+    };
+    Dropdown.prototype._focusIndex = function(index) {
+        if (!this._optionNodes.length) return false;
+        index = Math.max(0, Math.min(this._optionNodes.length - 1, Number(index) || 0));
+        var option = this._optionNodes[index];
+        if (option && typeof option.focus === 'function') option.focus();
+        return !!option;
+    };
+    Dropdown.prototype._render = function() {
+        var selectedLabel = '';
+        for (var i = 0; i < this._choices.length; i++) {
+            var selected = this._choiceValue(this._choices[i]) === this._value;
+            var node = this._optionNodes[i];
+            if (node) {
+                node.setAttribute('aria-selected', selected ? 'true' : 'false');
+                setClass(node, 'active', selected);
+                node.disabled = this._disabled || !!this._choices[i].disabled;
+            }
+            if (selected) selectedLabel = this._choices[i].label == null
+                ? this._value : String(this._choices[i].label);
+        }
+        var prefix = this._options.labelPrefix == null ? '' : String(this._options.labelPrefix);
+        this.trigger.textContent = prefix + selectedLabel;
+        this.trigger.disabled = this._disabled;
+        this.root.setAttribute('aria-disabled', this._disabled ? 'true' : 'false');
+    };
+    Dropdown.prototype.setChoices = function(choices) {
+        if (this._destroyed) return false;
+        this.close({restoreFocus:false});
+        this._choiceLifetime.dispose();
+        this._choiceLifetime = new DisposableStack();
+        while (this.menu.firstChild) this.menu.removeChild(this.menu.firstChild);
+        this._choices = choices && choices.slice ? choices.slice() : [];
+        this._optionNodes = [];
+        var self = this;
+        this._choices.forEach(function(choice, index) {
+            var value = self._choiceValue(choice);
+            var option = self._document.createElement('button');
+            option.type = 'button';
+            option.className = choice.className || 'workbench-dropdown-option';
+            if (option.classList) option.classList.add('workbench-dropdown-option');
+            option.textContent = choice.label == null ? value : String(choice.label);
+            option.setAttribute('role', 'option');
+            option.setAttribute('data-dropdown-value', value);
+            self._choiceLifetime.defer(listen(option, 'click', function(event) {
+                if (option.disabled) return;
+                self.setValue(value, {event:event, choice:choice});
+                self.close({restoreFocus:true});
+            }));
+            self._choiceLifetime.defer(listen(option, 'keydown', function(event) {
+                var key = event && event.key;
+                if (key === 'Enter' || key === ' ') {
+                    if (event.preventDefault) event.preventDefault();
+                    if (!option.disabled) {
+                        self.setValue(value, {event:event, choice:choice});
+                        self.close({restoreFocus:true});
+                    }
+                } else if (key === 'ArrowDown' || key === 'ArrowUp') {
+                    if (event.preventDefault) event.preventDefault();
+                    var offset = key === 'ArrowDown' ? 1 : -1;
+                    self._focusIndex((index + offset + self._optionNodes.length)
+                        % self._optionNodes.length);
+                } else if (key === 'Home' || key === 'End') {
+                    if (event.preventDefault) event.preventDefault();
+                    self._focusIndex(key === 'Home' ? 0 : self._optionNodes.length - 1);
+                } else if (key === 'Escape') {
+                    if (event.preventDefault) event.preventDefault();
+                    if (event.stopPropagation) event.stopPropagation();
+                    self.close({restoreFocus:true});
+                } else if (key === 'Tab') {
+                    self.close({restoreFocus:false});
+                }
+            }));
+            self._optionNodes.push(option);
+            self.menu.appendChild(option);
+        });
+        if (this._selectedIndex() < 0 && this._choices.length) {
+            this._value = this._choiceValue(this._choices[0]);
+        }
+        this._render();
+        return true;
+    };
+    Dropdown.prototype.open = function(direction) {
+        if (this._destroyed || this._disabled || !this._optionNodes.length) return false;
+        this._open = true;
+        this.menu.hidden = false;
+        this.trigger.setAttribute('aria-expanded', 'true');
+        setClass(this.root, 'is-open', true);
+        var selected = this._selectedIndex();
+        this._focusIndex(selected >= 0 ? selected : direction < 0
+            ? this._optionNodes.length - 1 : 0);
+        return true;
+    };
+    Dropdown.prototype.close = function(meta) {
+        if (!this._open) return false;
+        this._open = false;
+        this.menu.hidden = true;
+        this.trigger.setAttribute('aria-expanded', 'false');
+        setClass(this.root, 'is-open', false);
+        if (meta && meta.restoreFocus && typeof this.trigger.focus === 'function') this.trigger.focus();
+        return true;
+    };
+    Dropdown.prototype.consumeEscape = function() {
+        if (!this._open) return false;
+        this.close({restoreFocus:true});
+        return true;
+    };
+    Dropdown.prototype.setValue = function(value, meta) {
+        if (this._destroyed) return false;
+        value = String(value);
+        var index = -1;
+        for (var i = 0; i < this._choices.length; i++) {
+            if (this._choiceValue(this._choices[i]) === value) { index = i; break; }
+        }
+        if (index < 0 || this._disabled || this._choices[index].disabled) return false;
+        var previous = this._value;
+        var changed = value !== previous;
+        this._value = value;
+        this._render();
+        if (changed && !(meta && meta.silent) && typeof this._options.onChange === 'function') {
+            var accepted;
+            try { accepted = this._options.onChange(value, this._choices[index], meta && meta.event); }
+            catch (error) { this._value = previous; this._render(); throw error; }
+            if (accepted === false) { this._value = previous; this._render(); return false; }
+        }
+        return true;
+    };
+    Dropdown.prototype.update = function(state) {
+        if (this._destroyed) return false;
+        state = state || {};
+        if (state.choices) this.setChoices(state.choices);
+        if (state.disabled != null) this._disabled = !!state.disabled;
+        if (state.value != null) this._value = String(state.value);
+        if (this._disabled) this.close({restoreFocus:false});
+        this._render();
+        return true;
+    };
+    Dropdown.prototype.mount = function(host) {
+        if (this._destroyed || !host) return false;
+        if (this._host === host && this.root.parentNode === host) return true;
+        removeNode(this.root); host.appendChild(this.root); this._host = host; return true;
+    };
+    Dropdown.prototype.getValue = function() { return this._value; };
+    Dropdown.prototype.isOpen = function() { return this._open; };
+    Dropdown.prototype.getOption = function(value) {
+        value = String(value);
+        for (var i = 0; i < this._choices.length; i++) {
+            if (this._choiceValue(this._choices[i]) === value) return this._optionNodes[i] || null;
+        }
+        return null;
+    };
+    Dropdown.prototype.destroy = function() {
+        if (this._destroyed) return false;
+        this.close({restoreFocus:false});
+        this._destroyed = true;
+        this._choiceLifetime.dispose();
+        this._lifetime.dispose();
+        if (this._ownsRoot || this._options.removeOnDestroy) removeNode(this.root);
+        this._host = null;
+        return true;
     };
 
     function CommitBar(options) {
@@ -1426,6 +1672,7 @@
     return {
         SecondaryPage: SecondaryPage,
         ChoiceGroup: ChoiceGroup,
+        Dropdown: Dropdown,
         CommitBar: CommitBar,
         HelpAction: HelpAction,
         OwnedInventoryPane: OwnedInventoryPane,

@@ -235,6 +235,49 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        internal bool IsExactRuntimeReady(
+            string expectedSlot,
+            string expectedAttemptId)
+        {
+            if (string.IsNullOrEmpty(expectedSlot)
+                || string.IsNullOrEmpty(expectedAttemptId))
+            {
+                return false;
+            }
+
+            JObject status = BuildStatus(true, null);
+            if (!(status.Value<bool?>("readyForRuntimeAutomation")
+                    ?? false))
+            {
+                return false;
+            }
+
+            JObject save = status.Value<JObject>("save");
+            JObject runtime = status.Value<JObject>("saveRuntime");
+            return save != null
+                && runtime != null
+                && string.Equals(
+                    save.Value<string>("slot"),
+                    expectedSlot,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    save.Value<string>("attemptId"),
+                    expectedAttemptId,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    runtime.Value<string>("savePath"),
+                    expectedSlot,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    runtime.Value<string>("attemptId"),
+                    expectedAttemptId,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    status.Value<string>("gameEnteredAttemptId"),
+                    expectedAttemptId,
+                    StringComparison.Ordinal);
+        }
+
         private JObject Start(JObject msg)
         {
             string slot = msg.Value<string>("slot");

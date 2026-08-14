@@ -36,11 +36,19 @@ var Panels = (function() {
         return typeof value === 'string' && value ? value : '';
     }
 
+    function isNpcShopOuterCloseReason(reason) {
+        return reason === 'button' || reason === 'escape'
+            || reason === 'backdrop' || reason === 'toggle';
+    }
+
     function panelCloseMessage(id, initData, reason) {
         var closeMessage = {type:'panel', cmd:'close', panel:id};
         if (id === 'skills' || id === 'crafting' || id === 'kshop'
                 || id === 'npcshop') {
             closeMessage.panelInstanceId = readPanelInstanceId(initData);
+            if (id === 'npcshop' && isNpcShopOuterCloseReason(reason)) {
+                closeMessage.reason = reason;
+            }
             return closeMessage;
         }
         if (id === 'loot' || id === 'workbench') {
@@ -160,6 +168,20 @@ var Panels = (function() {
                 pending.id, pending.initData, reason,
                 'pending open cancel for ' + pending.id);
         }
+        return pending;
+    }
+
+    function failCommittedPendingOpen(reason, expectedPending) {
+        var pending = cancelPendingOpen(false, reason, expectedPending);
+        if (!pending) return null;
+        // panel_cmd open is Host authority, not a speculative Web transition.  Once B has
+        // displaced A, a B dependency/registration failure may close B but must never reveal
+        // or retain A as a zombie rollback.  Retire the displaced document before notifying
+        // Host so even a synchronous exact-B close response cannot act on A.
+        if (_active) close(true);
+        sendPanelCloseNotification(
+            pending.id, pending.initData, reason,
+            'committed pending open failure for ' + pending.id);
         return pending;
     }
 
@@ -339,14 +361,14 @@ var Panels = (function() {
                         panel._registerFn();
                     } catch (e) {
                         console.error('[Panels] lazy registerFn threw for ' + id + ':', e);
-                        cancelPendingOpen(true, 'lazy_register_failed', pending);
+                        failCommittedPendingOpen('lazy_register_failed', pending);
                         return;
                     }
                     // registerFn 应当已调用 Panels.register(id, {...})，覆盖了 _registry[id]
                     var resolved = _registry[id];
                     if (!resolved || resolved._lazy) {
                         console.error('[Panels] lazy registerFn did not register panel: ' + id);
-                        cancelPendingOpen(true, 'lazy_register_missing', pending);
+                        failCommittedPendingOpen('lazy_register_missing', pending);
                         return;
                     }
                     // 检查 pending：可能在加载期间被 close 或切到别的 panel
@@ -362,11 +384,11 @@ var Panels = (function() {
                 }
                 lazyChain.catch(function(err) {
                     console.error('[Panels] lazy load failed for ' + id + ':', err);
-                    cancelPendingOpen(true, 'lazy_load_failed', pending);
+                    failCommittedPendingOpen('lazy_load_failed', pending);
                 });
             } catch (err) {
                 console.error('[Panels] lazy load failed for ' + id + ':', err);
-                cancelPendingOpen(true, 'lazy_load_failed', pending);
+                failCommittedPendingOpen('lazy_load_failed', pending);
             }
             return;
         }
@@ -447,7 +469,8 @@ var Panels = (function() {
             }
             // 其他通用面板保留既有加载期取消行为。
             console.log('[Panels] cancel pending lazy open: ' + _pendingOpen.id);
-            cancelPendingOpen(true, 'lazy_user_cancel');
+            cancelPendingOpen(true, _pendingOpen.id === 'npcshop'
+                && isNpcShopOuterCloseReason(reason) ? reason : 'lazy_user_cancel');
         }
     }
 
@@ -528,6 +551,36 @@ var Panels = (function() {
         }
     }
 
+    function handleHostClose(data) {
+        var targetPanel = data && typeof data.panel === 'string'
+            ? data.panel : '';
+        if (targetPanel && hostOwnsPanelMount(targetPanel)) {
+            var targetInstance = data && typeof data.panelInstanceId === 'string'
+                ? data.panelInstanceId : '';
+            if (!targetInstance) return false;
+            var pending = _pendingOpen;
+            var pendingExact = !!pending && pending.id === targetPanel
+                && readPanelInstanceId(pending.initData) === targetInstance;
+            var activeExact = _active === targetPanel
+                && _activePanelInstanceId === targetInstance;
+            // A delayed commit for A must never retire a re-bound B or an unrelated
+            // active owner.  Host-owned close is therefore exact in both directions.
+            if (!pendingExact && !activeExact) return false;
+            if (pendingExact) cancelPendingOpen(false, 'host_exact_close', pending);
+            if (activeExact) close(true);
+            return true;
+        }
+        // A malformed generic close cannot retire a Host-owned capability surface.
+        if ((!targetPanel && _active && hostOwnsPanelMount(_active))
+                || (!targetPanel && _pendingOpen
+                    && hostOwnsPanelMount(_pendingOpen.id, _pendingOpen.initData))) {
+            return false;
+        }
+        if (targetPanel && _active && targetPanel !== _active) return false;
+        close();
+        return true;
+    }
+
     function isLootOpenLog(data) {
         return !!(data && data.cmd === 'open' && data.panel === 'loot' && data.initData);
     }
@@ -558,7 +611,7 @@ var Panels = (function() {
     Bridge.on('panel_cmd', function(data) {
         console.log('[Panels] panel_cmd received:', safePanelCommandLog(data));
         if (data.cmd === 'open') open(data.panel, data.initData);
-        else if (data.cmd === 'close') close();
+        else if (data.cmd === 'close') handleHostClose(data);
         else if (data.cmd === 'force_close') handleForceClose(data);
     });
     Bridge.on('panel_viewport_set', function(data) {
@@ -571,7 +624,11 @@ var Panels = (function() {
             if (OverlayViewportMetrics.schedule) OverlayViewportMetrics.schedule('panel_viewport_set');
         }
     });
-    Bridge.on('panel_esc', function() { triggerRequestClose('escape'); });
+    Bridge.on('panel_esc', function(data) {
+        var reason = data && (data.reason === 'backdrop' || data.reason === 'toggle')
+            ? data.reason : 'escape';
+        triggerRequestClose(reason);
+    });
 
     return {
         register: register,

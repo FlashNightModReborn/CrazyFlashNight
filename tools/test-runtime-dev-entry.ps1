@@ -54,6 +54,15 @@ Assert-Cf7DevContains $devSource '[switch]$ForceBuild' 'dev entry must support -
 Assert-Cf7DevContains $devSource '[switch]$BuildOnly' 'dev entry must support -BuildOnly'
 Assert-Cf7DevContains $devSource '[switch]$ReuseOnly' 'dev entry must support -ReuseOnly'
 Assert-Cf7DevContains $devSource '[switch]$Status' 'dev entry must support -Status'
+Assert-Cf7DevContains $devSource '[string]$CandidateLeaf' 'dev entry must support a controlled short candidate leaf'
+Assert-Cf7DevContains $devSource "'^[a-z0-9][a-z0-9-]{0,31}$'" `
+    'candidate leaf must be one lowercase ASCII alnum/hyphen segment'
+Assert-Cf7DevContains $devSource '-CandidateLeaf is allowed only with the exact -ForceBuild -BuildOnly workflow.' `
+    'candidate leaf must be restricted to the exact force-build BuildOnly workflow'
+Assert-Cf7DevContains $devSource 'Get-Cf7DevCandidateRelativePath -CandidateRoot $requestedCandidateRoot' `
+    'candidate leaf must resolve through the existing exact direct-child fence'
+Assert-Cf7DevContains $devSource 'candidateBudgetProbe.Length -ge 260' `
+    'candidate leaf must fail before build when the bootstrap path budget is exceeded'
 Assert-Cf7DevContains $devSource 'Get-Cf7RuntimeBuildIdentityV2' 'reuse must bind to current Worktree identity'
 Assert-Cf7DevContains $devSource 'cf7-local-dev-runtime-selection.v1' 'active pointer must have a versioned schema'
 Assert-Cf7DevContains $devSource 'candidateRelativePath' 'active pointer must store a repository-relative candidate path'
@@ -63,9 +72,15 @@ Assert-Cf7DevContains $devSource 'active.v1.backup-' `
     'Windows PowerShell pointer replacement must use a real same-directory backup path'
 Assert-Cf7DevContains $devSource '[IO.File]::Replace($temporaryPointer, $activePointerPath, $backupPointer, $true)' `
     'pointer replacement must use the Windows PowerShell-compatible atomic overload'
-Assert-Cf7DevContains $devSource '-SkipPrepare' 'cache miss build must skip release prepare'
-Assert-Cf7DevContains $devSource '-SkipPolicy' 'cache miss build must skip production policy'
-Assert-Cf7DevContains $devSource "-BuilderId 'local-dev'" 'cache miss build must use the local development label'
+Assert-Cf7DevContains $devSource 'SkipPrepare = $true' 'cache miss build must skip release prepare'
+Assert-Cf7DevContains $devSource 'SkipPolicy = $true' 'cache miss build must skip production policy'
+Assert-Cf7DevContains $devSource "BuilderId = 'local-dev'" 'cache miss build must use the local development label'
+Assert-Cf7DevContains $devSource '$buildArguments.CandidateRoot = $requestedCandidateRoot' `
+    'controlled candidate leaf must forward only its exact direct-child absolute root'
+Assert-Cf7DevContains $devSource '$returnedCandidateRoot.Equals(' `
+    'controlled candidate leaf must reject a producer result from any other root'
+Assert-Cf7DevContains $devSource 'outside the exact CandidateLeaf contract' `
+    'producer result drift must fail before candidate selection or pointer activation'
 Assert-Cf7DevContains $devSource "[string]`$buildRecord.deploymentStatus -cne 'NOT_DEPLOYED'" `
     'dev entry must validate candidate-only build status'
 Assert-Cf7DevContains $devSource "[string]`$buildRecord.runtimeMode -cne 'isolated_candidate'" `
@@ -208,5 +223,39 @@ try {
     $invalidCombinationRejected = $_.Exception.Message -like '*-Status cannot be combined*'
 }
 Assert-Cf7DevEntry -Condition $invalidCombinationRejected -Message 'invalid status/build option combination must fail'
+
+$candidateLeafCombinationCases = @(
+    [pscustomobject]@{ name = '-CandidateLeaf a5'; invoke = { & $devPath -CandidateLeaf a5 } },
+    [pscustomobject]@{ name = '-ForceBuild -CandidateLeaf a5'; invoke = {
+        & $devPath -ForceBuild -CandidateLeaf a5 } },
+    [pscustomobject]@{ name = '-BuildOnly -CandidateLeaf a5'; invoke = {
+        & $devPath -BuildOnly -CandidateLeaf a5 } },
+    [pscustomobject]@{ name = '-Status -CandidateLeaf a5'; invoke = {
+        & $devPath -Status -CandidateLeaf a5 } },
+    [pscustomobject]@{ name = '-ReuseOnly -ForceBuild -BuildOnly -CandidateLeaf a5'; invoke = {
+        & $devPath -ReuseOnly -ForceBuild -BuildOnly -CandidateLeaf a5 } }
+)
+foreach ($candidateLeafCase in $candidateLeafCombinationCases) {
+    $candidateLeafCombinationRejected = $false
+    try {
+        & $candidateLeafCase.invoke
+    } catch {
+        $candidateLeafCombinationRejected = $_.Exception.Message -like '*CandidateLeaf*' -or
+            $_.Exception.Message -like '*mutually exclusive*'
+    }
+    Assert-Cf7DevEntry -Condition $candidateLeafCombinationRejected `
+        -Message "CandidateLeaf invalid option combination must fail before build: $($candidateLeafCase.name)"
+}
+
+foreach ($invalidCandidateLeaf in @('a.', 'a..', 'a_b', '../a', 'A5', ('a' * 33))) {
+    $invalidCandidateLeafRejected = $false
+    try {
+        & $devPath -ForceBuild -BuildOnly -CandidateLeaf $invalidCandidateLeaf
+    } catch {
+        $invalidCandidateLeafRejected = $_.Exception.Message -like '*lowercase ASCII*'
+    }
+    Assert-Cf7DevEntry -Condition $invalidCandidateLeafRejected `
+        -Message "unsafe CandidateLeaf must fail before build: $invalidCandidateLeaf"
+}
 
 Write-Host "[RuntimeDevEntry] PASS checks=$script:checkCount" -ForegroundColor Green

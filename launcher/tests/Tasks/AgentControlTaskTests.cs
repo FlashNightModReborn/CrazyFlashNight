@@ -76,6 +76,56 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void ExactRuntimeReady_RequiresMatchingSlotAndAttempt()
+        {
+            AgentControlTask task = CreateRuntimeReadyTask(
+                "cf7_agent_a5_material_shop_run",
+                "attempt-materials");
+
+            Assert.True(
+                task.IsExactRuntimeReady(
+                    "cf7_agent_a5_material_shop_run",
+                    "attempt-materials"));
+            Assert.False(
+                task.IsExactRuntimeReady(
+                    "cf7_agent_a5_material_shop_run",
+                    "attempt-stale"));
+            Assert.False(
+                task.IsExactRuntimeReady(
+                    "cf7_agent_equipment_tuning",
+                    "attempt-materials"));
+        }
+
+        [Fact]
+        public void ExactRuntimeReady_RejectsMissingGameEntryOrRuntimeAck()
+        {
+            AgentControlTask missingEntry = CreateTask(
+                "Ready",
+                true,
+                true,
+                "cf7_agent_a5_material_shop_run",
+                "attempt-materials",
+                true);
+            Assert.False(
+                missingEntry.IsExactRuntimeReady(
+                    "cf7_agent_a5_material_shop_run",
+                    "attempt-materials"));
+
+            AgentControlTask missingRuntime = CreateTask(
+                "Ready",
+                true,
+                true,
+                "cf7_agent_a5_material_shop_run",
+                "attempt-materials",
+                false);
+            ObserveGameEntered(missingRuntime);
+            Assert.False(
+                missingRuntime.IsExactRuntimeReady(
+                    "cf7_agent_a5_material_shop_run",
+                    "attempt-materials"));
+        }
+
+        [Fact]
         public void Status_ReportsReadOnlyActivePanelObservation()
         {
             AgentControlTask task = CreateRuntimeReadyTask(

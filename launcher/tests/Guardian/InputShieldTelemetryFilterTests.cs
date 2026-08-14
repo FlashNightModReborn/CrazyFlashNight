@@ -61,5 +61,15 @@ namespace CF7Launcher.Tests.Guardian
                 new Point(Anchor.Right, Anchor.Top + 10), PanelInside, Anchor, true);
             Assert.Equal(-1, kind);
         }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void InteractiveRects_AreSuppressedWhileTelemetryOwnsNoInput(
+            bool telemetryActive, bool expected)
+        {
+            Assert.Equal(expected,
+                InputShieldForm.ShouldApplyInteractiveRects(telemetryActive));
+        }
     }
 }

@@ -1069,9 +1069,13 @@ namespace CF7Launcher.AgentRuntime.Gateway
         {
             return modifier switch
             {
-                "ctrl" => 0x11,
-                "alt" => 0x12,
-                "shift" => 0x10,
+                // SendInput accepts the generic modifier VKs, but the
+                // low-level keyboard hook reports their deterministic left
+                // variants. Emit those variants directly so the guarded
+                // packet ledger remains exact instead of weakening matching.
+                "ctrl" => 0xA2,
+                "alt" => 0xA4,
+                "shift" => 0xA0,
                 _ => throw new InvalidOperationException(
                     "arguments_invalid")
             };

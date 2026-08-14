@@ -148,7 +148,9 @@ F5 binds authorization to the data and target authority a method actually consum
   lease must resolve exactly one current `RuntimeOwned` Launcher target, contain
   only capability/operation `panel.open`, have TTL at most 30 seconds and
   `maximumActions:1`, and omit renewal. Production accepts only the closed panel
-  allow-list `help`, `map`, `tasks`, `team`, and `jukebox`. It binds no
+  allow-list `help`, `map`, `tasks`, `team`, `jukebox`, and `materials`. The
+  `materials` name reuses the fixed `nativehud_materials` Host-to-AS2
+  `openMaterialUI` nonce/tuple route; it does not directly open a Web panel. It binds no
   `NativeInputGuard` lease and emits no mouse or keyboard packet. The terminal
   `input_dispatched / broker_dispatch` receipt proves broker dispatch only; a
   fresh exact WebOverlay WGC observation is required to establish visibility.

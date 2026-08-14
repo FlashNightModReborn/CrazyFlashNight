@@ -758,12 +758,14 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                 : hookEvent.ControlId;
 
             long externalInputSequence;
+            ActiveBatch activeBatch;
             lock (_sync)
             {
                 _lastExternalObservedMonotonic =
                     _win32.MonotonicMilliseconds;
                 externalInputSequence =
                     ++_externalInputSequence;
+                activeBatch = _activeBatch;
                 if (hookEvent.IsInjected)
                 {
                     _lastOtherInjectedInputSequence =
@@ -779,6 +781,11 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                 {
                     _externalControlsDown.Remove(control);
                 }
+            }
+
+            if (activeBatch != null)
+            {
+                activeBatch.RecordExternalPreemption(hookEvent);
             }
 
             InputPreemption preemption = _safety.RecordExternalInput(
@@ -1190,12 +1197,17 @@ namespace CF7Launcher.AgentRuntime.NativeInput
 
         private static ulong CreateRuntimeInjectionTag()
         {
-            Span<byte> bytes = stackalloc byte[sizeof(ulong)];
-            ulong value;
+            // SendInput/WH_*_LL can round-trip only the low DWORD of
+            // dwExtraInfo on supported Windows installations even though
+            // the public structures expose ULONG_PTR. Generate inside that
+            // mechanically observed domain so our own packets retain exact
+            // equality; injected packets with any other value still preempt.
+            Span<byte> bytes = stackalloc byte[sizeof(uint)];
+            uint value;
             do
             {
                 RandomNumberGenerator.Fill(bytes);
-                value = BitConverter.ToUInt64(bytes);
+                value = BitConverter.ToUInt32(bytes);
             }
             while (value == 0);
             return value;
@@ -1357,6 +1369,12 @@ namespace CF7Launcher.AgentRuntime.NativeInput
             private int _observed;
             private bool _blocked;
             private string _blockReason;
+            private bool _externalDiagnosticPresent;
+            private bool _externalInjected;
+            private bool _externalExtraInfoPresent;
+            private NativeHookDevice _externalDevice;
+            private NativeControlTransition _externalTransition;
+            private uint _externalNativeMessage;
 
             internal ActiveBatch(
                 NativeInputPacket[] packets,
@@ -1394,6 +1412,41 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                 }
             }
 
+            internal int ObservedCount
+            {
+                get
+                {
+                    lock (_sync)
+                    {
+                        return _observed;
+                    }
+                }
+            }
+
+            internal int PacketCount => _packets.Length;
+
+            internal string ExternalDiagnostic
+            {
+                get
+                {
+                    lock (_sync)
+                    {
+                        if (!_externalDiagnosticPresent)
+                        {
+                            return string.Empty;
+                        }
+                        return " externalInjected=" + _externalInjected
+                            + " externalExtraInfo="
+                            + (_externalExtraInfoPresent
+                                ? "nonzero" : "zero")
+                            + " externalDevice=" + _externalDevice
+                            + " externalTransition=" + _externalTransition
+                            + " externalMessage="
+                            + _externalNativeMessage.ToString("X");
+                    }
+                }
+            }
+
             internal string BlockReason
             {
                 get
@@ -1418,6 +1471,26 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                     {
                         _completed.Set();
                     }
+                }
+            }
+
+            internal void RecordExternalPreemption(
+                NativeLowLevelHookEvent hookEvent)
+            {
+                lock (_sync)
+                {
+                    if (_externalDiagnosticPresent)
+                    {
+                        return;
+                    }
+                    _externalDiagnosticPresent = true;
+                    _externalInjected = hookEvent.IsInjected;
+                    _externalExtraInfoPresent =
+                        hookEvent.ExtraInfo != 0;
+                    _externalDevice = hookEvent.Device;
+                    _externalTransition = hookEvent.Transition;
+                    _externalNativeMessage =
+                        hookEvent.NativeMessage;
                 }
             }
 

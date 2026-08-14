@@ -173,6 +173,28 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
                         TimeSpan.FromMilliseconds(10),
                         TimeSpan.FromSeconds(31),
                         CancellationToken.None));
+                TrustedUnattendedRuntimeBundle a5Bundle =
+                    CreateBundle(
+                        root,
+                        processPath,
+                        executable.Length,
+                        "a5");
+                using TrustedUnattendedBootstrapLease a5Lease =
+                    TrustedUnattendedBootstrapLease.Create(
+                        a5Bundle,
+                        "cf7_agent_a5_material_shop_run",
+                        DateTimeOffset.UtcNow,
+                        Path.Combine(root, "a5-local-app-data"),
+                        new RecordingProtection());
+                Assert.Equal(
+                    TimeSpan.FromSeconds(60),
+                    a5Lease.CredentialAcquisitionPolicyMaximum);
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    () => a5Lease.WaitForCredential(
+                        guardian,
+                        TimeSpan.FromMilliseconds(10),
+                        TimeSpan.FromSeconds(61),
+                        CancellationToken.None));
                 using var cancelled =
                     new CancellationTokenSource();
                 cancelled.Cancel();
@@ -199,8 +221,16 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
             CreateBundle(
                 string projectRoot,
                 string corePath,
-                long coreSize)
+                long coreSize,
+                string candidateLeaf =
+                    "c-000000000000-0000000000-test")
         {
+            string deploymentRoot = Path.Combine(
+                projectRoot,
+                "tmp",
+                "runtime-candidates",
+                "v2",
+                candidateLeaf);
             ConstructorInfo constructor =
                 typeof(TrustedUnattendedRuntimeBundle)
                     .GetConstructor(
@@ -227,7 +257,7 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
                         new object[]
                         {
                             projectRoot,
-                            projectRoot,
+                            deploymentRoot,
                             corePath,
                             "isolated_candidate",
                             new string('A', 64),

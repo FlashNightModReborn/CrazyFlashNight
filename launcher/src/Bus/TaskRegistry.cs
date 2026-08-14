@@ -456,6 +456,7 @@ namespace CF7Launcher.Bus
             LootPanelCoordinator lootPanelCoordinator,
             NpcShopTask npcShopTask,
             CraftingTask craftingTask,
+            MaterialShopAccessTask materialShopAccessTask,
             HairdresserTask hairdresserTask,
             EquipmentTuningTask equipmentTuningTask,
             CharacterBuildTask characterBuildTask,
@@ -508,6 +509,13 @@ namespace CF7Launcher.Bus
             // 合成工作台 domain 回包路由
             if (craftingTask != null)
                 router.RegisterAsync("crafting_response", craftingTask.HandleFlashResponse);
+
+            // 材料档案 -> NPCShop 的 Host-only authority correlation。Web ingress 不注册
+            // 通用 task；只有 dedicated AS2 response 能进入此 handler。
+            if (materialShopAccessTask != null)
+                router.RegisterAsync(
+                    "material_shop_access_response",
+                    materialShopAccessTask.HandleFlashResponse);
 
             // 基地理发店 domain 回包路由
             if (hairdresserTask != null)
@@ -755,6 +763,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "loot_response",     "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "npcshop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "crafting_response", "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "material_shop_access_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "hairdresser_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "loadout_response", "json_async","AS2<->C#",false, first);

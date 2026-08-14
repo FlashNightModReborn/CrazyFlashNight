@@ -39,6 +39,12 @@ class org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader extends BaseXMLLo
     public function loadMaterialDictionary(onLoadHandler:Function, onErrorHandler:Function):Void {
         // 调用基类的 load 方法
         super.load(function(data:Object):Void {
+            if (data == null || typeof data != "object"
+                    || !(data.Material instanceof Array)) {
+                trace("MaterialDictionaryLoader: 文件结构非法！");
+                if (onErrorHandler != null) onErrorHandler();
+                return;
+            }
             trace("MaterialDictionaryLoader: 文件加载成功！");
 
             if (onLoadHandler != null) onLoadHandler(data);

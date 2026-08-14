@@ -84,6 +84,11 @@ namespace CF7Launcher.Tasks
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> _reconcileContainers =
             new HashSet<string>(StringComparer.Ordinal);
+        private string _navigationOwnerPanel;
+        private string _navigationOwnerPanelInstanceId;
+        private string _navigationLeaseToken;
+        private bool _navigationLeaseTransferred;
+        private long _navigationGeneration;
         private volatile bool _disposed;
 
         public InventoryTask(XmlSocketServer socket)
@@ -125,6 +130,130 @@ namespace CF7Launcher.Tasks
         {
             _disposed = true;
             ClearPending();
+        }
+
+        internal void BindMaterialShopNavigationOwner(
+            string panelName,
+            string panelInstanceId)
+        {
+            lock (_lock)
+            {
+                if (_disposed) return;
+                if (string.Equals(_navigationOwnerPanel, panelName, StringComparison.Ordinal)
+                    && string.Equals(
+                        _navigationOwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return;
+                }
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = panelName;
+                _navigationOwnerPanelInstanceId = panelInstanceId;
+                _navigationGeneration++;
+            }
+        }
+
+        internal bool TryAcquireMaterialShopNavigationLease(
+            string panelName,
+            string panelInstanceId,
+            string leaseToken,
+            out MaterialShopSettlementWitness witness)
+        {
+            witness = null;
+            lock (_lock)
+            {
+                if (_disposed
+                    || string.IsNullOrEmpty(leaseToken)
+                    || _navigationLeaseToken != null
+                    || !string.Equals(_navigationOwnerPanel, panelName, StringComparison.Ordinal)
+                    || !string.Equals(
+                        _navigationOwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || _pending.Count != 0
+                    || _writeGate != WriteGateState.Idle)
+                {
+                    return false;
+                }
+                _navigationLeaseToken = leaseToken;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                witness = new MaterialShopSettlementWitness
+                {
+                    TaskName = "inventory",
+                    LeaseToken = leaseToken,
+                    OwnerPanel = panelName,
+                    OwnerPanelInstanceId = panelInstanceId,
+                    Generation = _navigationGeneration
+                };
+                return true;
+            }
+        }
+
+        internal bool IsMaterialShopNavigationLeaseCurrent(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                return witness != null
+                    && !_disposed
+                    && !_navigationLeaseTransferred
+                    && string.Equals(witness.TaskName, "inventory", StringComparison.Ordinal)
+                    && string.Equals(
+                        witness.LeaseToken,
+                        _navigationLeaseToken,
+                        StringComparison.Ordinal)
+                    && witness.Generation == _navigationGeneration
+                    && string.Equals(
+                        witness.OwnerPanel,
+                        _navigationOwnerPanel,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        witness.OwnerPanelInstanceId,
+                        _navigationOwnerPanelInstanceId,
+                        StringComparison.Ordinal)
+                    && _pending.Count == 0
+                    && _writeGate == WriteGateState.Idle;
+            }
+        }
+
+        internal bool ReleaseMaterialShopNavigationLease(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                if (!MatchesMaterialShopNavigationLeaseLocked(witness)) return false;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                return true;
+            }
+        }
+
+        internal bool TransferMaterialShopNavigationLease(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                if (!MatchesMaterialShopNavigationLeaseLocked(witness)
+                    || _navigationLeaseTransferred) return false;
+                _navigationLeaseTransferred = true;
+                return true;
+            }
+        }
+
+        private bool MatchesMaterialShopNavigationLeaseLocked(
+            MaterialShopSettlementWitness witness)
+        {
+            return witness != null
+                && string.Equals(witness.TaskName, "inventory", StringComparison.Ordinal)
+                && string.Equals(
+                    witness.LeaseToken,
+                    _navigationLeaseToken,
+                    StringComparison.Ordinal)
+                && witness.Generation == _navigationGeneration;
         }
 
         public void HandleWebRequest(string cmd, JObject parsed)
@@ -218,7 +347,11 @@ namespace CF7Launcher.Tasks
                     LogManager.Log("[InventoryTask] duplicate/replayed callId ignored: " + webCallId);
                     return;
                 }
-                if (isWrite && _writeGate == WriteGateState.WritePending)
+                if (_navigationLeaseToken != null)
+                {
+                    localError = "busy";
+                }
+                else if (isWrite && _writeGate == WriteGateState.WritePending)
                 {
                     RememberRecentLocked(webCallId);
                     localError = "busy";
@@ -251,6 +384,7 @@ namespace CF7Launcher.Tasks
                         AffectedContainers = affectedContainers
                     };
                     _activeWebCallIds.Add(webCallId);
+                    _navigationGeneration++;
                     if (isWrite)
                     {
                         _writeGate = WriteGateState.WritePending;
@@ -388,6 +522,11 @@ namespace CF7Launcher.Tasks
         {
             lock (_lock)
             {
+                _navigationGeneration++;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = null;
+                _navigationOwnerPanelInstanceId = null;
                 if (_writeGate == WriteGateState.WritePending)
                     EnterNeedsReconcileLocked(_writeAffectedContainers);
                 foreach (PendingRequest entry in _pending.Values)
@@ -1865,6 +2004,7 @@ namespace CF7Launcher.Tasks
 
         private void CompletePendingLocked(int fid, PendingRequest entry)
         {
+            _navigationGeneration++;
             _pending.Remove(fid);
             Timer timer;
             if (_timers.TryGetValue(fid, out timer))
@@ -1898,12 +2038,24 @@ namespace CF7Launcher.Tasks
         private void RejectAndRemember(string webCallId, string cmd, string error,
             string webPanel, string webPanelInstanceId)
         {
+            string responseError = error;
             lock (_lock)
             {
-                if (_activeWebCallIds.Contains(webCallId) || _recentWebCallIds.Contains(webCallId)) return;
-                RememberRecentLocked(webCallId);
+                if (_navigationLeaseToken != null)
+                    responseError = "busy";
+                else
+                {
+                    if (_activeWebCallIds.Contains(webCallId)
+                        || _recentWebCallIds.Contains(webCallId)) return;
+                    RememberRecentLocked(webCallId);
+                }
             }
-            RespondError(webCallId, cmd, error, webPanel, webPanelInstanceId);
+            RespondError(
+                webCallId,
+                cmd,
+                responseError,
+                webPanel,
+                webPanelInstanceId);
         }
 
         private void RememberRecentLocked(string webCallId)

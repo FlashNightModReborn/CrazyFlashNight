@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId boot-sequencer Start: __FOCUSED_RUN_ID__");
+org.flashNight.boot.BootSequencerTest.runAllTests();
+org.flashNight.neur.Server.test.BootstrapHandshakeTest.runAllTests();
+trace("FocusedTestRunId boot-sequencer Complete: __FOCUSED_RUN_ID__");

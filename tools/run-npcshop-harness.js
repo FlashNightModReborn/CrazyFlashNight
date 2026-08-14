@@ -5,6 +5,7 @@ const {readCssBundle}=require('./lib/read-css-bundle.js');
 const BrowserChildResourceClosure=require('./workbench-live-e2e/lib/browser-child-resource-closure.js');
 const ROOT=path.resolve(__dirname,'..'),WEB=path.join(ROOT,'launcher','web');
 const PLAYWRIGHT=path.join(ROOT,'launcher','perf','node_modules','playwright');
+const MATERIAL_NAVIGATION_ONLY=process.argv.includes('--material-navigation-only');
 const WORKBENCH_SOURCE=path.join(WEB,'modules','workbench.js');
 const WORKBENCH_PRIMITIVES_SOURCE=path.join(WEB,'modules','workbench-primitives.js');
 const INVENTORY_WORKBENCH_SOURCE=path.join(WEB,'modules','inventory-workbench.js');
@@ -14,6 +15,7 @@ const ITEM_FILTER_SOURCE=path.join(WEB,'modules','item-filter.js');
 const WORKBENCH_COMPONENTS_SOURCE=path.join(WEB,'modules','workbench-components.js');
 const NPCSHOP_SECONDARY_SOURCE=path.join(WEB,'modules','npcshop-secondary-pages.js');
 const NPCSHOP_RUNTIME_SOURCE=path.join(WEB,'modules','npcshop-runtime.js');
+const NPCSHOP_MATERIAL_NAVIGATION_SOURCE=path.join(WEB,'modules','npcshop-material-navigation.js');
 const PANEL_CONTRACT_SOURCE=path.join(ROOT,'launcher','contracts','panel-contracts.v2.json');
 const KSHOP_MODULE_SOURCES=['kshop-cart-controller.js','kshop-catalog-presenter.js','kshop-owned-inventory-presenter.js','kshop-tooltip-presenter.js'];
 const INVENTORY_WORKBENCH_MODULE_SOURCES=['inventory-workbench-config.js','inventory-workbench-preparation-menu.js','inventory-workbench-navigation.js','inventory-workbench-header.js','inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js','inventory-tuning-scope.js','inventory-storage-workbench.js'];
@@ -22,8 +24,9 @@ function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','npcshop.js'),'utf8');
   const runtime=fs.readFileSync(NPCSHOP_RUNTIME_SOURCE,'utf8');
   const secondary=fs.readFileSync(NPCSHOP_SECONDARY_SOURCE,'utf8');
+  const materialNavigation=fs.readFileSync(NPCSHOP_MATERIAL_NAVIGATION_SOURCE,'utf8');
   const harness=fs.readFileSync(path.join(WEB,'modules','npcshop','dev','harness.html'),'utf8');
-  const panelUi=panel+'\n'+secondary;
+  const panelUi=panel+'\n'+secondary+'\n'+materialNavigation;
   const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
   if(!['bag','material','intelligence'].every(v=>panel.includes("viewId:'"+v+"'")))throw new Error('right-view sibling contract missing');
   if(!runtime.includes("muxOptions('inventory', 'npc-inv')")
@@ -31,7 +34,7 @@ function audit(){
   if(!panel.includes('NpcShopRuntime.createOwnerChannels(')
       ||!panel.includes('NpcShopRuntime.createPhysicalInventoryAdapter(')
       ||!panel.includes('_owner.open(initData.panelInstanceId)')
-      ||!panel.includes('_owner.closeMessage()')
+      ||!panel.includes('_owner.closeMessage(reason)')
       ||!runtime.includes('function OwnerLifecycle(options)')
       ||!runtime.includes('OwnerLifecycle.prototype.captureSnapshot')
       ||!runtime.includes('OwnerLifecycle.prototype.enterNeedsReconcile')
@@ -42,7 +45,7 @@ function audit(){
       ||!harness.includes('NPC Inventory mux ignores foreign owner and retired instance responses')
       ||!harness.includes('NPC same-name rebind retires old domain and Inventory callbacks')
       ||!harness.includes('NPC owner lifecycle centralizes exact dual-mux admission')
-      ||!harness.includes("Object.keys(exactNpcClose).sort().join(',')==='cmd,panel,panelInstanceId,type'")) {
+      ||!harness.includes("Object.keys(exactNpcClose).sort().join(',')==='cmd,panel,panelInstanceId,reason,type'")) {
     throw new Error('npcshop exact owner instance contract or stale-response journey missing');
   }
   if(!runtime.includes('session.ownerPanel === panel')
@@ -108,15 +111,30 @@ function audit(){
   const kshop=[fs.readFileSync(KSHOP_SOURCE,'utf8')].concat(KSHOP_MODULE_SOURCES.map(name=>fs.readFileSync(path.join(WEB,'modules',name),'utf8'))).join('\n');
   if(!primitives.includes('function EntityTile(')||!primitives.includes('function ItemCard(')||!workbench.includes('function ItemGrid(')||!workbench.includes('function GridDensityController('))throw new Error('Workbench item/density primitives missing');
   if(!inventoryUi.includes('function OwnedInventoryViewShell(')
-      ||![panel,kshop].every(source=>source.includes('new InventoryUI.OwnedInventoryViewShell('))
+      ||!panelUi.includes('new inventoryUI.OwnedInventoryViewShell(')
+      ||!kshop.includes('new InventoryUI.OwnedInventoryViewShell(')
       ||!inventoryWorkbench.includes('.OwnedInventoryViewShell(')
       ||[panel,kshop,inventoryWorkbench].some(source=>source.includes('new Workbench.ItemGrid(')))throw new Error('owned inventory shell boundary missing');
-  if(!panel.includes('Workbench.ItemCard.renderCatalog'))throw new Error('NPC shop must render catalog cards via Workbench.ItemCard');
+  if(!panelUi.includes('workbench.ItemCard.renderCatalog'))throw new Error('NPC shop must render catalog cards via Workbench.ItemCard');
   const tooltip=fs.readFileSync(path.join(WEB,'modules','tooltip.js'),'utf8');
   if(!panel.includes('.bindAsyncHover(node,')||!panel.includes("PanelTooltip.createScope('npcshop')")
       ||!tooltip.includes('function createScope(')||!tooltip.includes('function releaseTree(')
       ||!inventoryWorkbench.includes('PanelTooltip.bindAsyncHover'))throw new Error('Panel async tooltip ownership scope is not shared');
   if(!css.includes('.item-grid-compact'))throw new Error('Compact item-grid modifier styles missing');
+  if(!harness.includes("__npcshopHarnessScenario==='pg-material-navigation'")
+      ||!runtime.includes('SHOP_CATALOG_INDEX_MAX = 10000')
+      ||!runtime.includes('function parseInitData(value)')
+      ||!runtime.includes('createReturnCraftingMaterialsMessage')
+      ||!runtime.includes('validateReturnCraftingMaterialsFailure')
+      ||!materialNavigation.includes('Controller.prototype._preferredCategory')
+      ||!materialNavigation.includes("target.setAttribute('data-navigation-focus', 'true')")
+      ||!materialNavigation.includes("this._banner.setAttribute('tabindex', '-1')")
+      ||!materialNavigation.includes('this._runtime.NAVIGATION_WATCHDOG_MS')
+      ||!panel.includes("requestClose('button')")
+      ||!css.includes('.npcshop-navigation-focus')
+      ||!css.includes('.npcshop-material-return-group')) {
+    throw new Error('NPCShop A4b preferred navigation, explicit return, or close contract missing');
+  }
 }
 function contractQuantityProbe(){
   const contract=JSON.parse(fs.readFileSync(PANEL_CONTRACT_SOURCE,'utf8'));
@@ -192,7 +210,8 @@ async function run(){
     page.on('pageerror',e=>errors.push(e.message));
     page.on('requestfailed',r=>failed.push(r.url()));
     const origin='http://127.0.0.1:'+s.address().port;
-    await page.goto(origin+'/modules/npcshop/dev/harness.html?contractQuantity='
+    const initialQuery=MATERIAL_NAVIGATION_ONLY?'?scenario=pg-material-navigation&contractQuantity=':'?contractQuantity=';
+    await page.goto(origin+'/modules/npcshop/dev/harness.html'+initialQuery
       +encodeURIComponent(contractQuantity),{waitUntil:'load'});
     try{await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:20000})}
     catch(waitError){
@@ -211,6 +230,27 @@ async function run(){
       const bad=result.result?result.result.checks.filter(c=>!c.ok):[];
       throw new Error('harness failed: '+JSON.stringify(bad));
     }
+    if(MATERIAL_NAVIGATION_ONLY){
+      if(result.result.total!==21)throw new Error('PG-MATERIAL-NAVIGATION must contain exactly 21 checks, got '+result.result.total);
+      if(errors.length)throw new Error('page errors: '+errors.join(' | '));
+      if(failed.length)throw new Error('failed requests: '+failed.join(' | '));
+      output={passed:result.result.passed,total:result.result.total,contractQuantity:contractQuantity,
+        checks:result.result.checks,executablePath:executablePath,
+        summary:'PG-MATERIAL-NAVIGATION '+result.result.passed+'/'+result.result.total+' passed'};
+    }else{
+    await page.goto(origin+'/modules/npcshop/dev/harness.html?scenario=pg-material-navigation&contractQuantity='
+      +encodeURIComponent(contractQuantity),{waitUntil:'load'});
+    await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:20000});
+    const materialNavigation=await page.evaluate(()=>({result:window.__qaResult,error:window.__qaError,
+      debug:window.NpcShop&&NpcShop.debugState?NpcShop.debugState():null,
+      sent:(window.__sent||[]).slice(-12),toasts:(window.__toasts||[]).slice(-8)}));
+    if(materialNavigation.error)throw new Error(materialNavigation.error+'\npartial='
+      +JSON.stringify(materialNavigation));
+    if(!materialNavigation.result||materialNavigation.result.passed!==materialNavigation.result.total){
+      const bad=materialNavigation.result?materialNavigation.result.checks.filter(c=>!c.ok):[];
+      throw new Error('material navigation harness failed: '+JSON.stringify(bad));
+    }
+    if(materialNavigation.result.total!==21)throw new Error('PG-MATERIAL-NAVIGATION must contain exactly 21 checks, got '+materialNavigation.result.total);
     const reducedMotion=await probeReducedSecondaryPages(page,origin,contractQuantity);
     if(reducedMotion.some(result=>!result.pass)){
       throw new Error('reduced-motion secondary-page probe failed: '+JSON.stringify(reducedMotion));
@@ -218,12 +258,16 @@ async function run(){
     if(errors.length)throw new Error('page errors: '+errors.join(' | '));
     if(failed.length)throw new Error('failed requests: '+failed.join(' | '));
     output={passed:result.result.passed,total:result.result.total,
+      materialNavigationPassed:materialNavigation.result.passed,
+      materialNavigationTotal:materialNavigation.result.total,
       reducedPassed:reducedMotion.length,reducedTotal:reducedMotion.length,
       contractQuantity:contractQuantity,checks:result.result.checks,
       reducedMotion:reducedMotion,executablePath:executablePath,
       summary:'NPC shop harness '+result.result.passed+'/'+result.result.total
+        +' passed; PG-MATERIAL-NAVIGATION '+materialNavigation.result.passed+'/'+materialNavigation.result.total
         +' passed; reduced SecondaryPage '+reducedMotion.length+'/'+reducedMotion.length
         +' passed (contract quantity '+contractQuantity+')'};
+    }
   }finally{
     await browser.close();
     await new Promise(r=>s.close(r));

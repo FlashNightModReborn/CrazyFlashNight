@@ -366,7 +366,7 @@ test('pending exact close retries after a false send and cancelled lazy work can
     assert.strictEqual(fixture.Panels.isOpen(), false);
 });
 
-test('active panel receives distinct escape and backdrop close reasons', () => {
+test('active panel receives exact host escape/backdrop/toggle close reasons', () => {
     const fixture = createPanelsFixture();
     const reasons = [];
     fixture.Panels.register('help', {
@@ -374,9 +374,28 @@ test('active panel receives distinct escape and backdrop close reasons', () => {
         onRequestClose(reason) { reasons.push(reason); }
     });
     fixture.handlers.panel_cmd({cmd:'open', panel:'help', initData:{}});
-    fixture.handlers.panel_esc({});
+    fixture.handlers.panel_esc({reason:'escape'});
+    fixture.handlers.panel_esc({reason:'backdrop'});
+    fixture.handlers.panel_esc({reason:'toggle'});
+    fixture.handlers.panel_esc({reason:'unknown'});
     fixture.elements['panel-backdrop'].listeners.click({});
-    assert.deepStrictEqual(reasons, ['escape', 'backdrop']);
+    assert.deepStrictEqual(
+        reasons, ['escape', 'backdrop', 'toggle', 'escape', 'backdrop']);
+});
+
+test('pending NPCShop lazy owner preserves exact escape, backdrop, and toggle reasons', () => {
+    for (const reason of ['escape', 'backdrop', 'toggle']) {
+        const fixture = createPanelsFixture(pendingLazyLoader());
+        fixture.Panels.registerLazy('npcshop', ['npcshop.js'], () => {});
+        const panelInstanceId = 'panel.npcshop.pending-' + reason;
+        fixture.handlers.panel_cmd({cmd:'open',panel:'npcshop',initData:{panelInstanceId}});
+        if (reason === 'backdrop') fixture.elements['panel-backdrop'].listeners.click({});
+        else fixture.handlers.panel_esc({reason});
+        assert.deepStrictEqual(JSON.parse(JSON.stringify(fixture.sent)), [{
+            type:'panel',cmd:'close',panel:'npcshop',panelInstanceId,reason
+        }]);
+        assert.strictEqual(fixture.Panels.getActive(), null);
+    }
 });
 
 test('workbench mount rejection tears down and returns exact mount_failed close', () => {
@@ -690,11 +709,13 @@ test('mount failure close retries the same exact tuple after a false send', () =
 
 ['crafting', 'kshop', 'npcshop'].forEach(panelId => {
     test(panelId + ' top-level owner rejects registry/lazy failures and loading cancel exactly once', () => {
-        function expectedClose(instance) {
-            return {
+        function expectedClose(instance, reason) {
+            const message = {
                 type:'panel', panel:panelId, cmd:'close',
                 panelInstanceId:instance
             };
+            if (reason) message.reason = reason;
+            return message;
         }
 
         const missing = createPanelsFixture();
@@ -748,7 +769,7 @@ test('mount failure close retries the same exact tuple after a false send', () =
         cancelled.handlers.panel_esc({});
         assert.deepStrictEqual(
             JSON.parse(JSON.stringify(cancelled.sent)),
-            [expectedClose(currentInstance)]);
+            [expectedClose(currentInstance, panelId === 'npcshop' ? 'escape' : '')]);
         cancelled.handlers.panel_esc({});
         loader.resolveAll();
         assert.strictEqual(cancelled.sent.length, 1);
@@ -891,6 +912,106 @@ test('all Host-owned surfaces reject generic, missing, and stale close after exa
         assert.strictEqual(fixture.Panels.isOpen(), false);
         assert.strictEqual(closes, 1);
         assert.strictEqual(forceCloses, 1);
+    });
+});
+
+test('committed crafting to NPCShop replacement failure retires displaced source before exact target close', () => {
+    const cases = [
+        {
+            reason:'lazy_load_failed',
+            loader:{load() { throw new Error('fixture lazy load failure'); }},
+            register() {}
+        },
+        {
+            reason:'lazy_register_failed',
+            loader:resolvedLazyLoader(),
+            register() { throw new Error('fixture lazy register failure'); }
+        },
+        {
+            reason:'lazy_register_missing',
+            loader:resolvedLazyLoader(),
+            register() {}
+        }
+    ];
+    cases.forEach(row => {
+        const fixture = createPanelsFixture(row.loader);
+        let sourceCloses = 0;
+        fixture.Panels.register('crafting', {
+            create() { return {style:{}}; },
+            onClose() { sourceCloses += 1; }
+        });
+        fixture.Panels.registerLazy('npcshop', ['npcshop.js'], row.register);
+        fixture.handlers.panel_cmd({
+            cmd:'open', panel:'crafting',
+            initData:{panelInstanceId:'panel.crafting.displaced.' + row.reason}
+        });
+        fixture.handlers.panel_cmd({
+            cmd:'open', panel:'npcshop',
+            initData:{panelInstanceId:'panel.npcshop.failed.' + row.reason}
+        });
+        assert.strictEqual(fixture.Panels.getActive(), null);
+        assert.strictEqual(fixture.Panels.isOpen(), false);
+        assert.strictEqual(sourceCloses, 1);
+        assert.deepStrictEqual(JSON.parse(JSON.stringify(fixture.sent)), [{
+            type:'panel', cmd:'close', panel:'npcshop',
+            panelInstanceId:'panel.npcshop.failed.' + row.reason
+        }]);
+        fixture.handlers.panel_cmd({
+            cmd:'close', panel:'npcshop',
+            panelInstanceId:'panel.npcshop.failed.' + row.reason
+        });
+        assert.strictEqual(fixture.Panels.getActive(), null);
+        assert.strictEqual(sourceCloses, 1);
+    });
+});
+
+test('ordinary Host close commits only the exact active instance and ignores late predecessor delivery', () => {
+    ['workbench', 'loot', 'skills', 'crafting', 'kshop', 'npcshop'].forEach(panelId => {
+        const fixture = createPanelsFixture();
+        let closes = 0;
+        fixture.Panels.register(panelId, {
+            create() { return {style:{}}; },
+            onRebind() {},
+            onClose() { closes += 1; }
+        });
+        fixture.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:'panel.' + panelId + '.old-close'}
+        });
+        fixture.handlers.panel_cmd({
+            cmd:'open', panel:panelId,
+            initData:{panelInstanceId:'panel.' + panelId + '.current-close'}
+        });
+        fixture.handlers.panel_cmd({cmd:'close'});
+        fixture.handlers.panel_cmd({cmd:'close', panel:panelId});
+        fixture.handlers.panel_cmd({
+            cmd:'close', panel:panelId,
+            panelInstanceId:'panel.' + panelId + '.old-close'
+        });
+        assert.strictEqual(fixture.Panels.getActive(), panelId);
+        assert.strictEqual(closes, 0);
+        fixture.handlers.panel_cmd({
+            cmd:'close', panel:panelId,
+            panelInstanceId:'panel.' + panelId + '.current-close'
+        });
+        assert.strictEqual(fixture.Panels.isOpen(), false);
+        assert.strictEqual(closes, 1);
+    });
+});
+
+test('ordinary non-capability panels retain generic and matching-target close compatibility', () => {
+    ['generic', 'targeted'].forEach(mode => {
+        const fixture = createPanelsFixture();
+        let closes = 0;
+        fixture.Panels.register('help', {
+            create() { return {style:{}}; },
+            onClose() { closes += 1; }
+        });
+        fixture.handlers.panel_cmd({cmd:'open', panel:'help', initData:{}});
+        fixture.handlers.panel_cmd(mode === 'generic'
+            ? {cmd:'close'} : {cmd:'close', panel:'help'});
+        assert.strictEqual(fixture.Panels.isOpen(), false);
+        assert.strictEqual(closes, 1);
     });
 });
 

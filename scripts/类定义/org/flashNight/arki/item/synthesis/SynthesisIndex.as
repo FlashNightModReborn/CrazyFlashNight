@@ -1,7 +1,7 @@
 ﻿/**
  * SynthesisIndex - 合成配方索引（domain 层）
  *
- * 唯一访问 _root.改装清单对象 的入口；正反双向都在这里。
+ * 合成索引的 domain 入口；legacy product map 与 exact category arrays 分层消费。
  *
  * 数据约定：
  *   - _root.改装清单对象 是一张 product → recipe 字典（key 为合成键，
@@ -12,6 +12,7 @@
  * 接口：
  *   - getRecipe(synthesisKey) → recipe Object | null   （正向：产物 → 配方）
  *   - getRecipesUsing(inputName) → String[]            （反向：材料 → 产物名列表，字典序）
+ *   - getRecipeUses(inputName) → Object[]               （exact：材料 → recipe occurrence）
  *   - reset() → Void                                   （测试钩子，重建反向索引）
  *
  * 反向索引由懒加载构建，O(配方数 × 平均材料数)。CF7:ME 不支持运行时
@@ -24,6 +25,7 @@
 class org.flashNight.arki.item.synthesis.SynthesisIndex {
 
     private static var _craftToIndex:Object = null;
+    private static var _recipeUseIndex:Object = null;
 
     /**
      * 正向：根据合成键取配方对象。
@@ -46,9 +48,21 @@ class org.flashNight.arki.item.synthesis.SynthesisIndex {
         return arr ? arr : [];
     }
 
+    /**
+     * 逐 _root.改装清单[category][recipeIndex] occurrence 反查用途。
+     * 同名产物不会互相覆盖；同一 recipe 内重复写同材料仍只是一条用途。
+     * A1 不冻结 category 的跨类别顺序，A2 由 authored category registry 排序。
+     */
+    public static function getRecipeUses(inputName:String):Array {
+        ensureRecipeUseIndex();
+        var arr:Array = _recipeUseIndex[inputName];
+        return arr ? arr : [];
+    }
+
     /** 测试钩子：清空反向索引，下次 getRecipesUsing 触发懒加载重建。 */
     public static function reset():Void {
         _craftToIndex = null;
+        _recipeUseIndex = null;
     }
 
     /**
@@ -78,6 +92,34 @@ class org.flashNight.arki.item.synthesis.SynthesisIndex {
         }
         for (var key:String in _craftToIndex) {
             _craftToIndex[key].sort();
+        }
+    }
+
+    /** 构建 input → [{category,recipeIndex,productName}] exact occurrence 索引。 */
+    private static function ensureRecipeUseIndex():Void {
+        if (_recipeUseIndex != null) return;
+        _recipeUseIndex = {};
+        if (!_root.改装清单) return;
+        for (var category:String in _root.改装清单) {
+            var recipes:Array = _root.改装清单[category];
+            if (!(recipes instanceof Array)) continue;
+            for (var recipeIndex:Number = 0; recipeIndex < recipes.length; recipeIndex++) {
+                var recipe:Object = recipes[recipeIndex];
+                if (!recipe || !recipe.name || !(recipe.materials instanceof Array)) continue;
+                var seen:Object = {};
+                for (var materialIndex:Number = 0;
+                        materialIndex < recipe.materials.length; materialIndex++) {
+                    var input:String = String(recipe.materials[materialIndex]).split("#")[0];
+                    if (input == "" || seen[input]) continue;
+                    seen[input] = true;
+                    if (!_recipeUseIndex[input]) _recipeUseIndex[input] = [];
+                    _recipeUseIndex[input].push({
+                        category: category,
+                        recipeIndex: recipeIndex,
+                        productName: String(recipe.name)
+                    });
+                }
+            }
         }
     }
 }

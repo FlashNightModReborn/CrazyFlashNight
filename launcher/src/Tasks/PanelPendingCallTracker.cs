@@ -75,6 +75,15 @@ namespace CF7Launcher.Tasks
             return _isReady();
         }
 
+        public int PendingCount
+        {
+            get
+            {
+                lock (_gate)
+                    return _pending.Count;
+            }
+        }
+
         public bool IsKnownWebCallId(string webCallId)
         {
             if (string.IsNullOrEmpty(webCallId)) return false;

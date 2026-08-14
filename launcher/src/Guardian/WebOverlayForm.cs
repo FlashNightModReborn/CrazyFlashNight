@@ -631,6 +631,11 @@ namespace CF7Launcher.Guardian
                 || reason == "lazy_load_failed"
                 || reason == "lazy_register_failed"
                 || reason == "lazy_register_missing"
+                || (activePanel == "npcshop"
+                    && (reason == "button"
+                        || reason == "escape"
+                        || reason == "backdrop"
+                        || reason == "toggle"))
                 || (activePanel == "crafting"
                     && reason == "navigate_character_build");
         }
@@ -907,6 +912,8 @@ namespace CF7Launcher.Guardian
         private LootPanelCoordinator _lootPanelCoordinator;
         private NpcShopTask _npcShopTask;
         private CraftingTask _craftingTask;
+        private MaterialShopNavigationCoordinator
+            _materialShopNavigationCoordinator;
         private HairdresserTask _hairdresserTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private CharacterBuildTask _characterBuildTask;
@@ -1332,6 +1339,11 @@ namespace CF7Launcher.Guardian
                         _commandRouter
                             .CancelAllPanelNavigationIntents(
                                 "web_navigation");
+                    }
+                    if (_materialShopNavigationCoordinator != null)
+                    {
+                        _materialShopNavigationCoordinator
+                            .CancelAll("web_navigation");
                     }
                     BeginInventoryOwnerWebNavigationRecovery();
                     BeginSkillWebNavigationRecovery();
@@ -3543,6 +3555,11 @@ namespace CF7Launcher.Guardian
 
             if (disposing)
             {
+                if (_materialShopNavigationCoordinator != null)
+                {
+                    _materialShopNavigationCoordinator
+                        .CancelAll("web_overlay_dispose");
+                }
                 if (_commandRouter != null)
                 {
                     _commandRouter.PanelChanged -=
@@ -3626,6 +3643,12 @@ namespace CF7Launcher.Guardian
             string panelName,
             string panelInstanceId)
         {
+            MaterialShopNavigationCoordinator materialCoordinator =
+                _materialShopNavigationCoordinator;
+            if (materialCoordinator != null)
+                materialCoordinator.OnPanelChanged(
+                    panelName,
+                    panelInstanceId);
             string retiredPanel;
             string retiredInstance;
             if (_panelRequestOwnerLifecycle.Advance(
@@ -3636,6 +3659,9 @@ namespace CF7Launcher.Guardian
             {
                 RetirePanelRequestOwner(retiredPanel);
             }
+            BindMaterialShopNavigationOwners(
+                panelName,
+                panelInstanceId);
         }
 
         private void RetirePanelRequestOwner(string panelName)
@@ -3662,6 +3688,41 @@ namespace CF7Launcher.Guardian
             RetirePanelRequestOwner(panelName);
         }
 
+        private void BindMaterialShopNavigationOwners(
+            string panelName,
+            string panelInstanceId)
+        {
+            if (_inventoryTask != null)
+                _inventoryTask.BindMaterialShopNavigationOwner(
+                    panelName,
+                    panelInstanceId);
+            if (_craftingTask != null)
+                _craftingTask.BindMaterialShopNavigationOwner(
+                    panelName,
+                    panelInstanceId);
+            if (_npcShopTask != null)
+                _npcShopTask.BindMaterialShopNavigationOwner(
+                    panelName,
+                    panelInstanceId);
+        }
+
+        private void BindCurrentMaterialShopNavigationOwners()
+        {
+            string panelName = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : (_commandRouter != null
+                    ? _commandRouter.ActiveFallbackPanelName
+                    : null);
+            string panelInstanceId = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : (_commandRouter != null
+                    ? _commandRouter.ActiveFallbackPanelInstanceId
+                    : null);
+            BindMaterialShopNavigationOwners(
+                panelName,
+                panelInstanceId);
+        }
+
         private void RetireAllInventoryOwnerRequests()
         {
             if (_inventoryTask != null) _inventoryTask.ClearPending();
@@ -3684,6 +3745,7 @@ namespace CF7Launcher.Guardian
             _inventoryTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            BindCurrentMaterialShopNavigationOwners();
         }
 
         public void SetLootTask(LootTask task)
@@ -3712,6 +3774,7 @@ namespace CF7Launcher.Guardian
             _npcShopTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            BindCurrentMaterialShopNavigationOwners();
         }
 
         public void SetCraftingTask(CraftingTask task)
@@ -3719,6 +3782,27 @@ namespace CF7Launcher.Guardian
             _craftingTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            BindCurrentMaterialShopNavigationOwners();
+        }
+
+        internal void SetMaterialShopNavigationCoordinator(
+            MaterialShopNavigationCoordinator coordinator)
+        {
+            _materialShopNavigationCoordinator = coordinator;
+            if (coordinator != null)
+            {
+                coordinator.OnPanelChanged(
+                    _panelHost != null
+                        ? _panelHost.ActivePanelName
+                        : (_commandRouter != null
+                            ? _commandRouter.ActiveFallbackPanelName
+                            : null),
+                    _panelHost != null
+                        ? _panelHost.ActivePanelInstanceId
+                        : (_commandRouter != null
+                            ? _commandRouter.ActiveFallbackPanelInstanceId
+                            : null));
+            }
         }
 
         public void SetHairdresserTask(HairdresserTask task)
@@ -4203,6 +4287,35 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// PanelHost 完成 shield、HUD、toast 与 cursor 收尾后的最终焦点归还。
+        /// SuspendAfterPanel 中的早期归还仍作为异常/独立路径兜底；此方法
+        /// 只在已回到 idle 且生产前台接管开启时再次确认 Flash 输入焦点。
+        /// </summary>
+        internal bool RestoreFlashInputFocusAfterPanelClose(
+            string closingPanelName = null)
+        {
+            if (_disposed || _panelMode || !_panelTakeForeground
+                || _flashFocusRestorer == null)
+                return false;
+            string panelTag = closingPanelName ?? _activePanel ?? "?";
+            try
+            {
+                PerfTrace.Mark(
+                    "webOverlay.idle.settled.restore_focus.start",
+                    panelTag);
+                return _flashFocusRestorer(
+                    "panel_close:settled:" + panelTag);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[Panel] settled restore-flash-foreground throw: "
+                    + ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// 异常恢复路径专用：不查 _panelMode，强制把窗口拨回 idle 不变量。
         /// 即便是从未 ResumeForPanel 的中间状态也走完整序列，确保 ResetToClosedState 生效。
         /// </summary>
@@ -4626,7 +4739,11 @@ namespace CF7Launcher.Guardian
             string messagePanel = parsed.Value<string>("panel");
             string messagePanelInstanceId =
                 parsed.Value<string>("panelInstanceId");
+            bool materialShopFlatNavigation =
+                cmd == "open_npc_shop"
+                || cmd == "return_crafting_materials";
             if (cmd != "close"
+                && !materialShopFlatNavigation
                 && IsInventoryOwnerPanel(messagePanel)
                 && !_panelRequestOwnerLifecycle.IsAdmittedExact(
                     messagePanel,
@@ -4675,7 +4792,81 @@ namespace CF7Launcher.Guardian
                     + characterBuildRecoveryBarrier);
                 return;
             }
+            if (cmd == "close"
+                && string.Equals(
+                    messagePanel,
+                    "npcshop",
+                    StringComparison.Ordinal))
+            {
+                bool validOuterClose = MaterialShopNavigationCoordinator
+                    .IsValidNpcShopOuterCloseEnvelope(parsed);
+                bool validSystemFailureClose =
+                    MaterialShopNavigationCoordinator
+                        .IsValidNpcShopSystemFailureCloseEnvelope(parsed);
+                if (!validOuterClose && !validSystemFailureClose)
+                {
+                    LogManager.Log(
+                        "[NpcShopTask] rejected malformed close envelope");
+                    return;
+                }
+                if (_materialShopNavigationCoordinator != null
+                    && _materialShopNavigationCoordinator
+                        .TryHandleMaterialRouteOuterClose(
+                            parsed,
+                            delegate
+                            {
+                                CommitAcceptedPanelCloseEffects(
+                                    "npcshop",
+                                    false,
+                                    false);
+                            }))
+                {
+                    return;
+                }
+            }
             LogManager.Log(FormatPanelEnvelopeLog(cmd, json));
+            if (cmd == "open_npc_shop")
+            {
+                if (_materialShopNavigationCoordinator != null)
+                {
+                    _materialShopNavigationCoordinator
+                        .HandleForward(parsed);
+                }
+                else if (HasExactActivePanelOwnerBinding(
+                    parsed, "crafting")
+                    && MaterialShopNavigationCoordinator
+                        .HasValidFailureCorrelation(parsed))
+                {
+                    RespondMaterialShopNavigationError(
+                        parsed,
+                        MaterialShopNavigationCoordinator
+                            .IsValidForwardEnvelope(parsed)
+                                ? "navigation_unavailable"
+                                : "invalid_payload");
+                }
+                return;
+            }
+            if (cmd == "return_crafting_materials")
+            {
+                if (_materialShopNavigationCoordinator != null)
+                {
+                    _materialShopNavigationCoordinator
+                        .HandleReverse(parsed);
+                }
+                else if (HasExactActivePanelOwnerBinding(
+                    parsed, "npcshop")
+                    && MaterialShopNavigationCoordinator
+                        .HasValidFailureCorrelation(parsed))
+                {
+                    RespondMaterialShopNavigationError(
+                        parsed,
+                        MaterialShopNavigationCoordinator
+                            .IsValidReverseEnvelope(parsed)
+                                ? "navigation_unavailable"
+                                : "invalid_payload");
+                }
+                return;
+            }
             if (cmd == "switch_manage" || cmd == "switch_trainer")
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
@@ -4991,6 +5182,44 @@ namespace CF7Launcher.Guardian
                             {
                                 LogManager.Log(
                                     "[InventoryTask] rejected stale/malformed owner close envelope");
+                                return;
+                            }
+                            if (panel == "crafting"
+                                && _panelHost != null
+                                && _materialShopNavigationCoordinator != null
+                                && _materialShopNavigationCoordinator
+                                    .TryHandlePreCommitCraftingSourceClose(
+                                        panel,
+                                        activeInstance,
+                                        delegate
+                                        {
+                                            bool closeQueued =
+                                                _panelHost.TryClosePanelExact(
+                                                    panel,
+                                                    activeInstance,
+                                                    false,
+                                                    delegate(bool closed)
+                                                    {
+                                                        if (!closed)
+                                                        {
+                                                            LogManager.Log(
+                                                                "[InventoryTask] deferred material source close lost exact owner");
+                                                            return;
+                                                        }
+                                                        CommitAcceptedPanelCloseEffects(
+                                                            panel,
+                                                            false,
+                                                            false);
+                                                    });
+                                            if (closeQueued)
+                                            {
+                                                SealPanelRequestOwner(
+                                                    panel,
+                                                    activeInstance);
+                                            }
+                                            return closeQueued;
+                                        }))
+                            {
                                 return;
                             }
                         }
@@ -5778,6 +6007,23 @@ namespace CF7Launcher.Guardian
             PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
         }
 
+        private void RespondMaterialShopNavigationError(
+            JObject request,
+            string error)
+        {
+            var response = new JObject
+            {
+                ["type"] = "panel_resp",
+                ["panel"] = request.Value<string>("panel"),
+                ["cmd"] = request.Value<string>("cmd"),
+                ["callId"] = request.Value<string>("callId"),
+                ["panelInstanceId"] = request.Value<string>("panelInstanceId"),
+                ["success"] = false,
+                ["error"] = error
+            };
+            PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
+        }
+
         internal static JObject BuildPanelDomainErrorResponse(
             JObject request, string error)
         {
@@ -6296,6 +6542,11 @@ namespace CF7Launcher.Guardian
             }
             if (closedGeneration <= _lastSocketDisconnectGeneration) return;
             _lastSocketDisconnectGeneration = closedGeneration;
+            if (_materialShopNavigationCoordinator != null)
+            {
+                _materialShopNavigationCoordinator
+                    .CancelAll("socket_disconnected");
+            }
             if (_commandRouter != null)
             {
                 _commandRouter

@@ -1638,5 +1638,60 @@ namespace CF7Launcher.Tests.Tasks
                 + AuthorityLogFormatter.CreateReference(secret), flashLog);
             Assert.All(logs, value => Assert.DoesNotContain(secret, value));
         }
+
+        [Fact]
+        public void MaterialShopLease_RequiresLiveCatalogAndFencesAllDomainRequests()
+        {
+            var sent = new List<JObject>();
+            string web = null;
+            using (var task = new NpcShopTask(
+                () => true,
+                value =>
+                {
+                    sent.Add(ParseSent(value));
+                    return true;
+                }))
+            {
+                task.SetPostToWeb(value => web = value);
+                PrimeCatalog(task, () => sent[sent.Count - 1]);
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerA);
+
+                Assert.False(task.TryAcquireMaterialShopNavigationLease(
+                    "npcshop", OwnerA, "lease.wrong-shop", "漂移商店", out _));
+                Assert.True(task.TryAcquireMaterialShopNavigationLease(
+                    "npcshop", OwnerA, "lease.npcshop.material-shop", "前治安官",
+                    out MaterialShopSettlementWitness witness));
+                int sends = sent.Count;
+
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "lease.npcshop.blocked"));
+
+                Assert.Equal(sends, sent.Count);
+                Assert.Equal("busy", JObject.Parse(web).Value<string>("error"));
+                Assert.True(task.IsMaterialShopNavigationLeaseCurrent(witness));
+
+                JObject rejectedBeforeParsing = Request(
+                    "snapshot",
+                    "lease.npcshop.rejected.not-recorded");
+                rejectedBeforeParsing["domain"] = "wrong-domain";
+                task.HandleWebRequest("snapshot", rejectedBeforeParsing);
+                Assert.Equal("busy", JObject.Parse(web).Value<string>("error"));
+                Assert.True(task.ReleaseMaterialShopNavigationLease(witness));
+                rejectedBeforeParsing["domain"] = "npcshop";
+                task.HandleWebRequest("snapshot", rejectedBeforeParsing);
+                Assert.Equal(sends + 1, sent.Count);
+                task.HandleFlashResponse(
+                    StateResponse(sent[sent.Count - 1].Value<int>("callId")),
+                    null);
+
+                task.BindMaterialShopNavigationOwner("crafting", "panel.crafting.return");
+                Assert.False(task.IsMaterialShopNavigationLeaseCurrent(witness));
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerA);
+                Assert.True(task.TryAcquireMaterialShopNavigationLease(
+                    "npcshop", OwnerA, "lease.npcshop.after-drift", "前治安官",
+                    out _));
+            }
+        }
     }
 }

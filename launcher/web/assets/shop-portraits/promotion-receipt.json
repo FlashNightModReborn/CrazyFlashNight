@@ -1,0 +1,16 @@
+{
+  "schema": "cf7-shop-portrait-promotion-receipt-v1",
+  "promotionOrder": [
+    "subjects",
+    "provenance.json",
+    "promotion-receipt.json",
+    "manifest.json"
+  ],
+  "subjectsFirst": true,
+  "manifestLast": true,
+  "shopCount": 34,
+  "subjectFileCount": 34,
+  "subjectClosureSha256": "fb31d98512f64f9e9629d85cf4739b08bfa3504d314aa973bf39804fd4cd47b4",
+  "provenanceSha256": "93dc9446fbfbcd93c4f69c0ea13aa102f55c1bf261d7b39543463837fa49e650",
+  "manifestSha256": "d6be61dce107ceafee0d1a907f7b4e70e62697a4a2d970c49a24b677f95bb8ae"
+}

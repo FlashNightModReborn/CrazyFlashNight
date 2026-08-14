@@ -269,6 +269,32 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/收集品_材料_插件.xml` 与 `收集品_材料.xml` 只维护库存、经济、图标和说明，不复制档级/用途/定位。构建门 `node tools/validate-equipment-mod-ui.js` 固定校验 105 个 mod、四档、六种 scope、全部现役 `tag`/角色/符号，并要求每个 mod 名称在 `data/items/list.xml` 引用的物品文件中恰好出现一次；其中插件材料文件的 101 个条目必须全部映射到 mod。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
 
+### 材料档案 authored catalog 与 legacy 字典
+
+`data/dictionaries/material_catalog.xml` 是全量材料档案顺序、base type、受控直接用途、旧 UI 可见性与编辑摘要的 authored SOT。根节点 schemaVersion 固定为 `1`，并直接包含重复的 `<DirectPurpose>` 与 `<Material>`；加载方必须把 XMLParser 可能产生的 scalar/Array 两种形状统一归一为数组。
+
+- `<DirectPurpose>` exact 子键为 `id/label/order/consumerEvidence`。当前受控 registry 包含 `system:equipment_tuning / 装备改装 / 0 / EquipmentTuningService` 与 `system:infrastructure_upgrade / 基建升级 / 1 / InfrastructureUpgradeUI`。未知 ID、重复 ID/order、非连续物理顺序或 consumer evidence 漂移均失败关闭。
+- `<Material>` exact 子键以 `Name/typeId/legacyVisible` 开头；`typeId` 只允许 `equipment_mod|food|general`。只有 `legacyVisible=true` 才必须带 `legacyInformation`，反之必须省略；`authoredDirectPurposeId` 可重复且必须命中同文件 registry。字段缺失必须保持省略，禁止序列化为字符串 `undefined`。
+- `<Material>` 物理位置就是 `archiveOrder`，不在 authored XML 重复保存第二个 order 字段。初始迁移严格保持旧字典 58 项原序，再追加 `data/items/list.xml` 中尚未出现的 166 项材料载入序；当前闭包为 `224/224`、连续 `0..223`。新增、删除或重排都必须先显式修改 catalog，不能由 Web、对象枚举或本地化名称自动决定。
+- `equipment_mod` 当前精确等于 `data/items/equipment_mods/list.xml` 的 105 个 mod identity；食材来自 `消耗品_材料_食材.xml` 的 45 项，其余 74 项为 `general`。105 项装备改装用途由 runtime mod metadata 机器派生，不在 catalog 重复 authored；只有 `强化石 / 二阶复合防御组件 / 三阶复合防御组件 / 四阶复合防御组件 / 墨冰战术涂料 / 狱火战术涂料` 六个经现役 consumer 证明的非 mod-metadata 例外 authored 同一个 `system:equipment_tuning`，且不得因此伪造 mod facets 或 `equipment_mod` type。
+- `system:infrastructure_upgrade` 的材料集合只以 `data/infrastructure/infrastructure.xml` 中各级 `<Material><Name>` 为真源；当前为 67 个需求 occurrence、21 个 unique material identity。catalog 中这 21 项的 `authoredDirectPurposeId` 只是由 generator exact-check 约束的分类投影：集合必须与 XML 去重结果完全相等，所有 identity 必须命中材料 exact-set；连同装备改装六例外，当前 authored direct-purpose refs 总数为 27、registry 总数为 2。`flashswf/UI/平板电脑界面/LIBRARY/基建内容整体.xml` 只作为 `InfrastructureUpgradeUI` consumer evidence。sidecar 当前 schema 为 `cf7.material-dictionary-generated.v2`、producer 为 `material-catalog-producer.v2`；其顶层 `infrastructure` exact 为 `{path,consumerEvidencePath,materialOccurrenceCount,materialCount}`，并把两个输入的 digest 纳入闭包。
+- 含该 direct purpose 的 v2 `materialDetail` 条件增加 `infrastructureUses[]`；其他材料及历史不含该 registry 的 v2 response 必须省略此键。项目 exact 为 `{infrastructureName,projectOrder,currentLevel,maximumLevel,levels}`，等级 exact 为 `{levelIndex,targetLevel,required,owned,missing,status}`，其中 `status` 只允许 `completed|current|future`。配置与物理顺序在 catalog snapshot 时从已就绪的 `_root.基建系统.nameList/dict` 冻结，缺失或不闭合时局部失败关闭；`levelIndex/targetLevel=levelIndex+1` 只认 `Level[]` 数组位置，不信任历史 XML `id`。详情读取 live `infrastructure[name]`，只投影已有自有键的已发现项目；未发现项目不得泄露名称。`owned` 沿用材料 snapshot，完成级 `missing=0`，当前/后续级为 `max(required-owned,0)`。Web 用这些数据替换重复的泛化“基建升级”行，显示逐项目、逐等级需求与缺口；仍为纯只读信息，不提供“前往基建”。
+- 配方 category 的 authored order 仍只来自 `data/crafting/list.xml` 的物理 `<list>` 顺序，catalog 不复制第二真源。生成 sidecar 会绑定并列出该顺序，运行时 loader 必须在 keyed merge 前保存它。
+
+`material_dictionary.xml` 现在是只投影 `legacyVisible=true` 的 `{Name,Information}` generated compatibility artifact；当前 58 条摘要、顺序和历史末尾无换行字节保持不变。`material_dictionary.generated.json` 是 manifest-last 审计 sidecar，绑定 generator 版本/哈希、全部逻辑输入、source digest、catalog/type/purpose/category 计数与 legacy 输出 SHA-256。
+
+```powershell
+# 只有维护者明确接受 generated diff 时才写；依次原子替换 dictionary、sidecar。
+python tools/derive-material-catalog.py derive
+
+# 发布、CI 与日常验证只执行纯读 exact-byte 检查，stale 时非零失败。
+python tools/derive-material-catalog.py --check
+python tools/test-material-catalog.py
+powershell -ExecutionPolicy Bypass -File tools/test-material-catalog-release-policy.ps1
+```
+
+producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、缺 legacy summary、legacy 58 前缀/摘要字节、mod/食材分类、六例外、基建 `67 occurrence / 21 unique` exact membership、category order、双次确定性与 tracked stale 输出全部 fail closed；focused test 另把初迁移的 `58+166` 具体顺序钉死，并证明后续非 legacy 条目的显式 authored 重排会按 catalog 物理序保留而不被 manifest/名称悄悄重排。任何接受的重排都必须同时审阅 catalog diff、更新迁移 ratchet 并显式 `derive`。producer 不解析自由文本生成用途，也不把动态来源回写摘要；发布流程不得先运行 `derive` 来掩盖 stale authored/generated diff。
+
 ### 长枪副武器 `<subweapon>`
 
 长枪下挂 / 内置副武器使用根层 `<subweapon>`，与普通 `<skill>` 共享长枪特殊槽，不能并存。`EquipmentCalculator` 会把配件根层 `subweapon` 写入宿主 `itemData.subweapon`；`DressupInitializer` 装载长枪时读取 `subweapon` 并交给 `LongGunSubWeaponCore`，不会装入普通主动战技。

@@ -1,24 +1,55 @@
 ﻿_root.preloaders.push(function()
 {
+    if (_root.__boot == undefined) _root.__boot = {};
+    _root.__boot.shopCatalogReady = false;
+    _root.__boot.shopCatalogFailed = false;
     this.shops_jsons_list = new XML();
     this.shops_jsons_list.ignoreWhite = true;
     this.shops_strarrs = [];
+    this.shops_list_loaded = false;
+    this.shops_expected_file_count = 0;
     this.shops_jsons_list.onLoad = function(success)
     {
-        var files = [];
-        _root.XmlNodeToDict(this.lastChild,null,function(name, value)
+        // 失败粘滞：S6 的 150 帧兜底可能先执行 loader；此后的迟到 XML success
+        // 不得重新发起二级加载、更不得把失败目录提升为 ready。
+        if (_root.__boot.shopCatalogFailed == true) return;
+        if (success != true || this.lastChild == null)
         {
-            if(name == "shops")
+            _root.__boot.shopCatalogReady = false;
+            _root.__boot.shopCatalogFailed = true;
+            return;
+        }
+        var files = [];
+        var validList:Boolean = true;
+        try
+        {
+            _root.XmlNodeToDict(this.lastChild,null,function(name, value)
             {
-                files.push(value);
-            }
-            return null;
-        });
+                if(name == "shops")
+                {
+                    if (typeof value != "string" || value.length == 0) validList = false;
+                    else files.push(value);
+                }
+                return null;
+            });
+        }
+        catch (error)
+        {
+            validList = false;
+        }
+        if (!validList || files.length < 1)
+        {
+            _root.__boot.shopCatalogReady = false;
+            _root.__boot.shopCatalogFailed = true;
+            return;
+        }
+        _root.preloaders.shops_expected_file_count = files.length;
         for (var i = 0; i < files.length; i++)
         {
             _root.preloaders.shops_strarrs.push([]);
             _root.GetFileByPath("data/shops/" + files[i], _root.preloaders.shops_strarrs[i]);
         }
+        _root.preloaders.shops_list_loaded = true;
     };
 
     this.shops_jsons_list.load("data/shops/list.xml");
@@ -26,40 +57,140 @@
 
 _root.loaders.push(function ()
 {
+    if (_root.__boot.shopCatalogFailed == true
+            || _root.preloaders.shops_list_loaded != true)
+    {
+        _root.__boot.shopCatalogReady = false;
+        _root.__boot.shopCatalogFailed = true;
+        return;
+    }
+
     this.shops_srcs = [];
     this.shops = {};
     this.shopLayouts = {};
+    this.shopIdsSeen = {};
     this.json_parser = new LiteJSON();
 
+    var expectedCount:Number = Number(_root.preloaders.shops_expected_file_count);
+    if (isNaN(expectedCount) || expectedCount < 1 || Math.floor(expectedCount) != expectedCount
+            || _root.preloaders.shops_strarrs.length != expectedCount)
+    {
+        _root.__boot.shopCatalogReady = false;
+        _root.__boot.shopCatalogFailed = true;
+        return;
+    }
     for (var i = 0; i < _root.preloaders.shops_strarrs.length; i++)
     {
-        this.shops_srcs.push(_root.preloaders.shops_strarrs[i].join(""));
+        var chunks:Array = _root.preloaders.shops_strarrs[i];
+        if (!(chunks instanceof Array) || chunks.length != 1
+                || typeof chunks[0] != "string" || chunks[0].length == 0)
+        {
+            _root.__boot.shopCatalogReady = false;
+            _root.__boot.shopCatalogFailed = true;
+            return;
+        }
+        this.shops_srcs.push(chunks[0]);
     }
 
     for (var i = 0; i < this.shops_srcs.length; i++)
     {
-        this.parsedshop = this.json_parser.parse(this.shops_srcs[i]);
-        if (this.parsedshop.schema == "npc-shop.v2" && this.parsedshop.shopId != undefined)
+        try
         {
-            var shopId:String = String(this.parsedshop.shopId);
-            this.shops[shopId] = this.parsedshop.catalog || {};
+            this.parsedshop = this.json_parser.parse(this.shops_srcs[i]);
+        }
+        catch (error)
+        {
+            _root.__boot.shopCatalogReady = false;
+            _root.__boot.shopCatalogFailed = true;
+            return;
+        }
+        if (this.parsedshop == null || typeof this.parsedshop != "object"
+                || this.parsedshop instanceof Array)
+        {
+            _root.__boot.shopCatalogReady = false;
+            _root.__boot.shopCatalogFailed = true;
+            return;
+        }
+        var parsedShopEntryCount:Number = 0;
+        // 只允许完全没有 schema 的历史对象进入 legacy 分支。任何显式 schema
+        // 都必须是完整 npc-shop.v2；缺 shopId、非对象 catalog 或重复 identity 一律
+        // fail closed，不能把 schema/title/catalog 元数据误当成三个旧商店。
+        if (this.parsedshop.schema !== undefined)
+        {
+            if (typeof this.parsedshop.schema != "string"
+                    || this.parsedshop.schema !== "npc-shop.v2"
+                    || typeof this.parsedshop.shopId != "string"
+                    || this.parsedshop.shopId.length < 1)
+            {
+                _root.__boot.shopCatalogReady = false;
+                _root.__boot.shopCatalogFailed = true;
+                return;
+            }
+            var shopId:String = this.parsedshop.shopId;
+            var shopCatalog:Object = this.parsedshop.catalog;
+            if (shopCatalog == null || typeof shopCatalog != "object"
+                    || shopCatalog instanceof Array)
+            {
+                _root.__boot.shopCatalogReady = false;
+                _root.__boot.shopCatalogFailed = true;
+                return;
+            }
+            var shopIdentityKey:String = "$" + shopId;
+            // 显式 v2 单店允许 catalog:{}：这是保留 NPC identity、停用其交易目录的
+            // authored 状态。unknown/missing schema、非对象 catalog 与重复 identity 仍在
+            // 上下分支 fail closed；S9 另行要求全局 shops identity 集合非空。
+            if (this.shopIdsSeen[shopIdentityKey] === true)
+            {
+                _root.__boot.shopCatalogReady = false;
+                _root.__boot.shopCatalogFailed = true;
+                return;
+            }
+            this.shopIdsSeen[shopIdentityKey] = true;
+            this.shops[shopId] = shopCatalog;
             this.shopLayouts[shopId] = {
                 title:this.parsedshop.title == undefined ? shopId : String(this.parsedshop.title),
                 defaultSection:this.parsedshop.defaultSection == undefined ? "" : String(this.parsedshop.defaultSection),
                 sections:this.parsedshop.sections instanceof Array ? this.parsedshop.sections : []
             };
+            parsedShopEntryCount = 1;
         }
         else
         {
             for (var key in this.parsedshop)
             {
-                this.shops[key] = this.parsedshop[key];
+                var legacyShopId:String = String(key);
+                var legacyCatalog:Object = this.parsedshop[key];
+                var legacyIdentityKey:String = "$" + legacyShopId;
+                var legacyCatalogEntryCount:Number = 0;
+                if (legacyCatalog != null && typeof legacyCatalog == "object"
+                        && !(legacyCatalog instanceof Array))
+                {
+                    for (var legacyCatalogKey in legacyCatalog) legacyCatalogEntryCount++;
+                }
+                if (legacyShopId.length < 1 || legacyCatalogEntryCount < 1
+                        || this.shopIdsSeen[legacyIdentityKey] === true)
+                {
+                    _root.__boot.shopCatalogReady = false;
+                    _root.__boot.shopCatalogFailed = true;
+                    return;
+                }
+                this.shopIdsSeen[legacyIdentityKey] = true;
+                this.shops[legacyShopId] = legacyCatalog;
+                parsedShopEntryCount++;
             }
+        }
+        if (parsedShopEntryCount < 1)
+        {
+            _root.__boot.shopCatalogReady = false;
+            _root.__boot.shopCatalogFailed = true;
+            return;
         }
     }
 
+    if (_root.__boot.shopCatalogFailed == true) return;
     _root.shops = this.shops;
     _root.shopLayouts = this.shopLayouts;
+    _root.__boot.shopCatalogReady = true;
 });
 
 // ============================================================
@@ -1094,6 +1225,9 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
     }
     _root.soundEffectManager.playSound("收银机.mp3");
     _root.存档系统.dirtyMark = true;
+    // 结算已同时提交购买、出售与余额；与 KShop checkout 一致，必须立即把
+    // 完整 mydata 作为一个存档事务落盘，不能只等场景切换或面板关闭兜底。
+    _root.强制存盘();
     var state:Object = this.buildState(shopId);
     if (!state.success) return state;
     state.operation = "tradeCommit";

@@ -143,6 +143,31 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        internal enum MaterialShopCharacterCapsulePhase
+        {
+            PreparedForward,
+            ForwardCommitting,
+            SuspendedInShop,
+            PreparedReverse,
+            ReverseCommitting,
+            ReturnedToMaterials,
+            Consumed
+        }
+
+        /// <summary>
+        /// Fixed CharacterBuild -> materials -> NPCShop -> materials capability. It is not a
+        /// generic return stack and never contains an arbitrary destination or initData payload.
+        /// </summary>
+        internal sealed class MaterialShopCharacterCapsule
+        {
+            internal int LifecycleEpoch;
+            internal int PreparationChildGeneration;
+            internal string SourceCraftingInstance;
+            internal string NpcShopInstance;
+            internal string ReturnCraftingInstance;
+            internal MaterialShopCharacterCapsulePhase Phase;
+        }
+
         private readonly Bus.XmlSocketServer _socketServer;
         private readonly Action<Keys> _onSendKey;
         private readonly Action _onToggleFullscreen;
@@ -188,6 +213,7 @@ namespace CF7Launcher.Guardian
         private readonly PreparationChildReturnCapability
             _preparationChildReturn =
                 new PreparationChildReturnCapability();
+        private MaterialShopCharacterCapsule _materialShopCharacterCapsule;
         private readonly FixedPanelOpenWait
             _nativeEquipmentBuildOpen =
                 new FixedPanelOpenWait();
@@ -197,6 +223,8 @@ namespace CF7Launcher.Guardian
         private readonly FixedPanelOpenWait
             _materialOpen =
                 new FixedPanelOpenWait();
+        private int _lastAdmittedMaterialOpenGeneration;
+        private string _lastAdmittedMaterialOpenRequestId;
         private string _lastSuccessfulNativeEquipmentTuningOpenRequestId;
         internal int SkillOpenTimeoutMs { get; set; } = 1800;
         internal int MaterialPanelOpenTimeoutMs { get; set; } = 1800;
@@ -301,6 +329,8 @@ namespace CF7Launcher.Guardian
                 case "team":
                 case "jukebox":
                     return OpenPanel(panelName, null);
+                case "materials":
+                    return RouteMaterialUi();
                 default:
                     return false;
             }
@@ -557,6 +587,369 @@ namespace CF7Launcher.Guardian
             return _preparationChildReturn.Clear();
         }
 
+        internal bool TryPrepareMaterialShopCharacterForward(
+            string sourceCraftingInstance,
+            string targetNpcShopInstance,
+            out MaterialShopCharacterCapsule capsule)
+        {
+            capsule = null;
+            if (string.IsNullOrEmpty(sourceCraftingInstance)
+                || string.IsNullOrEmpty(targetNpcShopInstance))
+            {
+                return false;
+            }
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (_materialShopCharacterCapsule != null)
+                    return false;
+                if (_preparationChildReturn.Phase
+                        != PreparationChildReturnPhase.Active)
+                {
+                    return true;
+                }
+                if (_preparationChildReturn.LifecycleEpoch
+                        != _panelNavigationLifecycleEpoch
+                    || !string.Equals(
+                        _preparationChildReturn.PanelName,
+                        "crafting",
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _preparationChildReturn.PanelInstanceId,
+                        sourceCraftingInstance,
+                        StringComparison.Ordinal))
+                {
+                    return false;
+                }
+                capsule = new MaterialShopCharacterCapsule
+                {
+                    LifecycleEpoch = _panelNavigationLifecycleEpoch,
+                    PreparationChildGeneration = _preparationChildReturn.Generation,
+                    SourceCraftingInstance = sourceCraftingInstance,
+                    NpcShopInstance = targetNpcShopInstance,
+                    Phase = MaterialShopCharacterCapsulePhase.PreparedForward
+                };
+                return true;
+            }
+        }
+
+        internal bool IsMaterialShopCharacterForwardCurrent(
+            MaterialShopCharacterCapsule capsule,
+            string sourceCraftingInstance,
+            string targetNpcShopInstance)
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (capsule == null)
+                {
+                    return _materialShopCharacterCapsule == null
+                        && !(_preparationChildReturn.Phase
+                                == PreparationChildReturnPhase.Active
+                            && string.Equals(
+                                _preparationChildReturn.PanelName,
+                                "crafting",
+                                StringComparison.Ordinal)
+                            && string.Equals(
+                                _preparationChildReturn.PanelInstanceId,
+                                sourceCraftingInstance,
+                                StringComparison.Ordinal));
+                }
+                return _materialShopCharacterCapsule == null
+                    && capsule.Phase
+                        == MaterialShopCharacterCapsulePhase.PreparedForward
+                    && capsule.LifecycleEpoch == _panelNavigationLifecycleEpoch
+                    && capsule.PreparationChildGeneration
+                        == _preparationChildReturn.Generation
+                    && _preparationChildReturn.Phase
+                        == PreparationChildReturnPhase.Active
+                    && string.Equals(
+                        capsule.SourceCraftingInstance,
+                        sourceCraftingInstance,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        capsule.NpcShopInstance,
+                        targetNpcShopInstance,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _preparationChildReturn.PanelName,
+                        "crafting",
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _preparationChildReturn.PanelInstanceId,
+                        sourceCraftingInstance,
+                        StringComparison.Ordinal);
+            }
+        }
+
+        internal void CommitMaterialShopCharacterForwardNoFail(
+            MaterialShopCharacterCapsule capsule)
+        {
+            if (capsule == null) return;
+            System.Threading.Timer timer = null;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!ReferenceEquals(_materialShopCharacterCapsule, capsule)
+                    || capsule.Phase
+                        != MaterialShopCharacterCapsulePhase.ForwardCommitting)
+                {
+                    return;
+                }
+                timer = ClearPreparationChildReturnLocked();
+                capsule.LifecycleEpoch = _panelNavigationLifecycleEpoch;
+                capsule.Phase = MaterialShopCharacterCapsulePhase.SuspendedInShop;
+            }
+            if (timer != null)
+            {
+                try { timer.Dispose(); }
+                catch { }
+            }
+        }
+
+        internal bool TrySealMaterialShopCharacterForwardCommit(
+            MaterialShopCharacterCapsule capsule,
+            string sourceCraftingInstance,
+            string targetNpcShopInstance)
+        {
+            if (capsule == null)
+            {
+                return IsMaterialShopCharacterForwardCurrent(
+                    null,
+                    sourceCraftingInstance,
+                    targetNpcShopInstance);
+            }
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!IsMaterialShopCharacterForwardCurrentLocked(capsule)
+                    || !string.Equals(
+                        capsule.SourceCraftingInstance,
+                        sourceCraftingInstance,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        capsule.NpcShopInstance,
+                        targetNpcShopInstance,
+                        StringComparison.Ordinal)) return false;
+                capsule.Phase =
+                    MaterialShopCharacterCapsulePhase.ForwardCommitting;
+                _materialShopCharacterCapsule = capsule;
+                return true;
+            }
+        }
+
+        internal void AbortMaterialShopCharacterForwardNoFail(
+            MaterialShopCharacterCapsule capsule,
+            string sourceCraftingInstance,
+            string targetNpcShopInstance)
+        {
+            if (capsule == null) return;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!ReferenceEquals(_materialShopCharacterCapsule, capsule)
+                    || capsule.Phase
+                        != MaterialShopCharacterCapsulePhase.ForwardCommitting
+                    || !string.Equals(
+                        capsule.SourceCraftingInstance,
+                        sourceCraftingInstance,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        capsule.NpcShopInstance,
+                        targetNpcShopInstance,
+                        StringComparison.Ordinal)) return;
+                _materialShopCharacterCapsule = null;
+                _preparationChildReturn.Generation++;
+                _preparationChildReturn.PanelName = "crafting";
+                _preparationChildReturn.PanelInstanceId = sourceCraftingInstance;
+                _preparationChildReturn.Phase =
+                    PreparationChildReturnPhase.Active;
+                _preparationChildReturn.LifecycleEpoch =
+                    _panelNavigationLifecycleEpoch;
+                _preparationChildReturn.Timer = null;
+                capsule.LifecycleEpoch = _panelNavigationLifecycleEpoch;
+                capsule.PreparationChildGeneration =
+                    _preparationChildReturn.Generation;
+                capsule.Phase =
+                    MaterialShopCharacterCapsulePhase.PreparedForward;
+            }
+        }
+
+        internal bool TryPrepareMaterialShopCharacterReverse(
+            MaterialShopCharacterCapsule capsule,
+            string sourceNpcShopInstance,
+            string targetCraftingInstance)
+        {
+            if (capsule == null) return true;
+            if (string.IsNullOrEmpty(sourceNpcShopInstance)
+                || string.IsNullOrEmpty(targetCraftingInstance)) return false;
+            lock (_panelNavigationLifecycleLock)
+            {
+                bool current = ReferenceEquals(_materialShopCharacterCapsule, capsule)
+                    && capsule.Phase
+                        == MaterialShopCharacterCapsulePhase.SuspendedInShop
+                    && capsule.LifecycleEpoch == _panelNavigationLifecycleEpoch
+                    && string.Equals(
+                        capsule.NpcShopInstance,
+                        sourceNpcShopInstance,
+                        StringComparison.Ordinal);
+                if (!current) return false;
+                capsule.ReturnCraftingInstance = targetCraftingInstance;
+                capsule.Phase = MaterialShopCharacterCapsulePhase.PreparedReverse;
+                return true;
+            }
+        }
+
+        internal bool IsMaterialShopCharacterReverseCurrent(
+            MaterialShopCharacterCapsule capsule,
+            string sourceNpcShopInstance,
+            string targetCraftingInstance)
+        {
+            if (capsule == null) return true;
+            lock (_panelNavigationLifecycleLock)
+            {
+                return ReferenceEquals(_materialShopCharacterCapsule, capsule)
+                    && capsule.Phase
+                        == MaterialShopCharacterCapsulePhase.PreparedReverse
+                    && capsule.LifecycleEpoch == _panelNavigationLifecycleEpoch
+                    && string.Equals(
+                        capsule.NpcShopInstance,
+                        sourceNpcShopInstance,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        capsule.ReturnCraftingInstance,
+                        targetCraftingInstance,
+                        StringComparison.Ordinal);
+            }
+        }
+
+        internal bool TrySealMaterialShopCharacterReverseCommit(
+            MaterialShopCharacterCapsule capsule,
+            string sourceNpcShopInstance,
+            string targetCraftingInstance)
+        {
+            if (capsule == null) return true;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!ReferenceEquals(_materialShopCharacterCapsule, capsule)
+                    || capsule.Phase
+                        != MaterialShopCharacterCapsulePhase.PreparedReverse
+                    || !string.Equals(
+                        capsule.NpcShopInstance,
+                        sourceNpcShopInstance,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        capsule.ReturnCraftingInstance,
+                        targetCraftingInstance,
+                        StringComparison.Ordinal)) return false;
+                capsule.Phase =
+                    MaterialShopCharacterCapsulePhase.ReverseCommitting;
+                return true;
+            }
+        }
+
+        internal void AbortMaterialShopCharacterReverseNoFail(
+            MaterialShopCharacterCapsule capsule,
+            string sourceNpcShopInstance,
+            string targetCraftingInstance)
+        {
+            if (capsule == null) return;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!ReferenceEquals(_materialShopCharacterCapsule, capsule)
+                    || (capsule.Phase
+                            != MaterialShopCharacterCapsulePhase.PreparedReverse
+                        && capsule.Phase
+                            != MaterialShopCharacterCapsulePhase.ReverseCommitting)
+                    || !string.Equals(
+                        capsule.NpcShopInstance,
+                        sourceNpcShopInstance,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        capsule.ReturnCraftingInstance,
+                        targetCraftingInstance,
+                        StringComparison.Ordinal))
+                {
+                    return;
+                }
+                capsule.ReturnCraftingInstance = null;
+                capsule.LifecycleEpoch = _panelNavigationLifecycleEpoch;
+                capsule.Phase = MaterialShopCharacterCapsulePhase.SuspendedInShop;
+            }
+        }
+
+        internal void CommitMaterialShopCharacterReverseNoFail(
+            MaterialShopCharacterCapsule capsule,
+            string targetCraftingInstance)
+        {
+            if (capsule == null) return;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!ReferenceEquals(_materialShopCharacterCapsule, capsule)
+                    || capsule.Phase
+                        != MaterialShopCharacterCapsulePhase.ReverseCommitting)
+                {
+                    return;
+                }
+                _materialShopCharacterCapsule = null;
+                capsule.ReturnCraftingInstance = targetCraftingInstance;
+                capsule.Phase = MaterialShopCharacterCapsulePhase.ReturnedToMaterials;
+                _preparationChildReturn.Generation++;
+                _preparationChildReturn.PanelName = "crafting";
+                _preparationChildReturn.PanelInstanceId = targetCraftingInstance;
+                _preparationChildReturn.Phase = PreparationChildReturnPhase.Active;
+                _preparationChildReturn.LifecycleEpoch = _panelNavigationLifecycleEpoch;
+                _preparationChildReturn.Timer = null;
+            }
+        }
+
+        internal void ConsumeMaterialShopCharacterOnNpcShopCloseNoFail(
+            MaterialShopCharacterCapsule capsule,
+            string npcShopInstance)
+        {
+            if (capsule == null) return;
+            lock (_panelNavigationLifecycleLock)
+            {
+                if (!ReferenceEquals(_materialShopCharacterCapsule, capsule)
+                    || !string.Equals(
+                        capsule.NpcShopInstance,
+                        npcShopInstance,
+                        StringComparison.Ordinal))
+                {
+                    return;
+                }
+                _materialShopCharacterCapsule = null;
+                capsule.Phase = MaterialShopCharacterCapsulePhase.Consumed;
+            }
+        }
+
+        private bool IsMaterialShopCharacterForwardCurrentLocked(
+            MaterialShopCharacterCapsule capsule)
+        {
+            return capsule != null
+                && _materialShopCharacterCapsule == null
+                && capsule.Phase
+                    == MaterialShopCharacterCapsulePhase.PreparedForward
+                && capsule.LifecycleEpoch == _panelNavigationLifecycleEpoch
+                && capsule.PreparationChildGeneration
+                    == _preparationChildReturn.Generation
+                && _preparationChildReturn.Phase
+                    == PreparationChildReturnPhase.Active
+                && string.Equals(
+                    _preparationChildReturn.PanelName,
+                    "crafting",
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    _preparationChildReturn.PanelInstanceId,
+                    capsule.SourceCraftingInstance,
+                    StringComparison.Ordinal);
+        }
+
+        private static bool IsMaterialShopCharacterCommitPermittedLocked(
+            MaterialShopCharacterCapsule capsule)
+        {
+            return capsule != null
+                && (capsule.Phase
+                        == MaterialShopCharacterCapsulePhase.ForwardCommitting
+                    || capsule.Phase
+                        == MaterialShopCharacterCapsulePhase.ReverseCommitting);
+        }
+
         private void CancelUnboundPreparationChildReturnForOrdinaryOpen(
             string panelName)
         {
@@ -605,6 +998,15 @@ namespace CF7Launcher.Guardian
                     {
                         competingTimer =
                             ClearPreparationChildReturnLocked();
+                    }
+                    if (_materialShopCharacterCapsule != null
+                        && !IsMaterialShopCharacterCommitPermittedLocked(
+                            _materialShopCharacterCapsule))
+                    {
+                        _materialShopCharacterCapsule.Phase =
+                            MaterialShopCharacterCapsulePhase.Consumed;
+                        _materialShopCharacterCapsule =
+                            null;
                     }
                 }
                 if (competingTimer != null)
@@ -2638,18 +3040,9 @@ namespace CF7Launcher.Guardian
                     {
                         string returnFocusAction;
                         if (!TryNormalizeCharacterBuildReturnFocusAction(
-                                string.Equals(
-                                    openOrigin,
-                                    "materials_return",
-                                    StringComparison.Ordinal)
-                                || string.Equals(
-                                    openOrigin,
-                                    "intelligence_return",
-                                    StringComparison.Ordinal)
+                                _preparationNavigationV1
                                     ? "preparation-menu"
-                                    : _preparationNavigationV1
-                                        ? "preparation-menu"
-                                        : "skills",
+                                    : "skills",
                                 out returnFocusAction))
                         {
                             return false;
@@ -2718,8 +3111,22 @@ namespace CF7Launcher.Guardian
             try
             {
                 JObject extras = JObject.Parse(initDataExtrasJson);
+                if (extras.Count != 1
+                    || extras.Property("shopId") == null
+                    || extras["shopId"].Type != JTokenType.String)
+                {
+                    LogManager.Log(
+                        "[Router] OpenNpcShopPanel rejected non-whitelisted extras");
+                    return;
+                }
                 string shopId = extras.Value<string>("shopId");
-                if (string.IsNullOrEmpty(shopId) || shopId.Length > 80) return;
+                if (string.IsNullOrEmpty(shopId)
+                    || shopId.Length > 80
+                    || string.IsNullOrWhiteSpace(shopId)
+                    || string.Equals(
+                        shopId.Trim(),
+                        "undefined",
+                        StringComparison.OrdinalIgnoreCase)) return;
                 for (int i = 0; i < shopId.Length; i++) if (char.IsControl(shopId[i])) return;
                 var initData = new JObject
                 {
@@ -3762,10 +4169,10 @@ namespace CF7Launcher.Guardian
             return false;
         }
 
-        private void RouteMaterialUi()
+        private bool RouteMaterialUi()
         {
             if (!CanAdmitPanel("materials"))
-                return;
+                return false;
             bool characterRecovery =
                 _characterBuildTask != null
                 && _characterBuildTask.RequiresDetachRecovery;
@@ -3781,7 +4188,7 @@ namespace CF7Launcher.Guardian
                         : ""));
                 PostToWeb(
                     "{\"type\":\"toast\",\"text\":\"请先完成当前装备面板操作\"}");
-                return;
+                return false;
             }
 
             bool hostVisualActiveOrPending =
@@ -3804,7 +4211,7 @@ namespace CF7Launcher.Guardian
                     + (active ?? "<unknown>"));
                 PostToWeb(
                     "{\"type\":\"toast\",\"text\":\"请先关闭当前面板\"}");
-                return;
+                return false;
             }
 
             int generation;
@@ -3819,7 +4226,7 @@ namespace CF7Launcher.Guardian
                     "[Router] MATERIALS rejected: material preflight admission failed");
                 PostToWeb(
                     "{\"type\":\"toast\",\"text\":\"材料面板暂时不可用\"}");
-                return;
+                return false;
             }
 
             bool delivered = false;
@@ -3838,24 +4245,25 @@ namespace CF7Launcher.Guardian
                     "[Router] MATERIALS openMaterialUI send threw: "
                     + ex.Message);
             }
-            if (delivered) return;
-            if (!intentCurrent)
-                return;
+            if (delivered
+                || WasMaterialOpenAdmitted(
+                    generation,
+                    openRequestId))
+                return true;
 
             int lifecycleEpoch;
             if (!CancelMaterialOpenWait(
                     generation,
                     out lifecycleEpoch))
             {
-                // A synchronous exact panel_request may consume the wait before the sender
-                // returns. A late false/throw result must not contradict that accepted edge.
-                return;
+                return false;
             }
 
             LogManager.Log(
                 "[Router] MATERIALS openMaterialUI was not delivered");
             PostToWeb(
                 "{\"type\":\"toast\",\"text\":\"材料面板暂时不可用\"}");
+            return false;
         }
 
         private void RouteEquipmentUi()
@@ -3888,7 +4296,7 @@ namespace CF7Launcher.Guardian
                 // finalize/unknown barrier remains the sole authority that may later
                 // acknowledge and retire this exact Host visual.
                 PostToWeb(
-                    "{\"type\":\"panel_esc\"}");
+                    "{\"type\":\"panel_esc\",\"reason\":\"toggle\"}");
                 return;
             }
 
@@ -4812,6 +5220,8 @@ namespace CF7Launcher.Guardian
                 null;
             string preparationChildInstance =
                 null;
+            MaterialShopCharacterCapsule materialShopCapsule =
+                null;
             lock (_panelNavigationLifecycleLock)
             {
                 // This increment is the linearization barrier: any delayed transition carrying an
@@ -4869,6 +5279,21 @@ namespace CF7Launcher.Guardian
                         _preparationChildReturn.PanelInstanceId;
                     preparationChildTimer =
                         ClearPreparationChildReturnLocked();
+                }
+                materialShopCapsule =
+                    _materialShopCharacterCapsule;
+                if (IsMaterialShopCharacterCommitPermittedLocked(
+                        materialShopCapsule))
+                {
+                    materialShopCapsule = null;
+                }
+                else
+                {
+                    _materialShopCharacterCapsule =
+                        null;
+                    if (materialShopCapsule != null)
+                        materialShopCapsule.Phase =
+                            MaterialShopCharacterCapsulePhase.Consumed;
                 }
             }
             if (skillTimer != null) skillTimer.Dispose();
@@ -4929,6 +5354,12 @@ namespace CF7Launcher.Guardian
                     + " panel_instance="
                     + (preparationChildInstance ?? "unbound")
                     + " reason=" + (reason ?? "unknown"));
+            }
+            if (materialShopCapsule != null)
+            {
+                LogManager.Log(
+                    "event=material_shop_character_capsule_cancelled reason="
+                    + (reason ?? "unknown"));
             }
         }
 
@@ -5090,6 +5521,10 @@ namespace CF7Launcher.Guardian
 
                 generation =
                     ++_materialOpen.Generation;
+                _lastAdmittedMaterialOpenGeneration =
+                    0;
+                _lastAdmittedMaterialOpenRequestId =
+                    null;
                 openRequestId =
                     "material.open."
                     + generation.ToString("x")
@@ -5266,6 +5701,10 @@ namespace CF7Launcher.Guardian
                                 null;
                             admitted =
                                 true;
+                            _lastAdmittedMaterialOpenGeneration =
+                                _materialOpen.Generation;
+                            _lastAdmittedMaterialOpenRequestId =
+                                _materialOpen.RequestId;
                             hasHostAdmission =
                                 _materialOpen.HasHostAdmission;
                             hostAdmission =
@@ -5279,6 +5718,22 @@ namespace CF7Launcher.Guardian
             if (timer != null)
                 timer.Dispose();
             return admitted;
+        }
+
+        private bool WasMaterialOpenAdmitted(
+            int generation,
+            string openRequestId)
+        {
+            lock (_panelNavigationLifecycleLock)
+            {
+                return generation != 0
+                    && generation
+                        == _lastAdmittedMaterialOpenGeneration
+                    && string.Equals(
+                        openRequestId,
+                        _lastAdmittedMaterialOpenRequestId,
+                        StringComparison.Ordinal);
+            }
         }
 
         private bool HasArmedMaterialIntentOrOpenWait()

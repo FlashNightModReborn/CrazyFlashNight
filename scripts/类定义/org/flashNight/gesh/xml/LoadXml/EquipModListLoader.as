@@ -145,20 +145,31 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
         var scopes:Array = ListLoader.normalizeToArray(raw.scope);
         var roles:Array = ListLoader.normalizeToArray(raw.role);
         var defaults:Array = ListLoader.normalizeToArray(raw.tagDefault);
+        var expectedGrades:Array = ["low","medium","high","special"];
+        var expectedScopes:Array = ["armor","firearm","blade","fist","universal","underbarrel"];
+        var expectedRoles:Array = ["firepower","precision","stability","sustain","utility","mechanism"];
+        if (grades.length != expectedGrades.length || scopes.length != expectedScopes.length
+                || roles.length != expectedRoles.length) {
+            throw new Error("插件展示词典 axis exact-set 不完整");
+        }
         var i:Number;
 
         for (i = 0; i < grades.length; i++) {
             var gradeId:String = String(grades[i].id);
             var gradeColor:String = String(grades[i].color);
-            if (!isValidGrade(gradeId) || !isValidColor(gradeColor)) {
+            var gradeLabel:String = String(grades[i].label || "");
+            if (gradeId != expectedGrades[i] || gradeDict[gradeId] != undefined
+                    || !isValidIdentityText(gradeLabel, 512)
+                    || !isValidColor(gradeColor)) {
                 throw new Error("非法插件档级展示配置: " + gradeId + "/" + gradeColor);
             }
-            gradeDict[gradeId] = {id: gradeId, label: String(grades[i].label), color: gradeColor};
+            gradeDict[gradeId] = {id: gradeId, label: gradeLabel, color: gradeColor};
         }
         for (i = 0; i < scopes.length; i++) {
             var scopeId:String = String(scopes[i].id);
             var scopeLabel:String = String(scopes[i].label);
-            if (!isValidScope(scopeId) || scopeLabel.length == 0) {
+            if (scopeId != expectedScopes[i] || scopeDict[scopeId] != undefined
+                    || !isValidIdentityText(scopeLabel, 512)) {
                 throw new Error("非法插件目录用途展示配置: " + scopeId + "/" + scopeLabel);
             }
             scopeDict[scopeId] = {id: scopeId, label: scopeLabel};
@@ -166,15 +177,18 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
         for (i = 0; i < roles.length; i++) {
             var roleId:String = String(roles[i].id);
             var symbol:String = String(roles[i].symbol);
-            if (roleId.length == 0 || !isValidSymbol(symbol)) {
+            var roleLabel:String = String(roles[i].label || "");
+            if (roleId != expectedRoles[i] || roleDict[roleId] != undefined
+                    || !isValidIdentityText(roleLabel, 512) || !isValidSymbol(symbol)) {
                 throw new Error("非法插件角色展示配置: " + roleId + "/" + symbol);
             }
-            roleDict[roleId] = {id: roleId, label: String(roles[i].label), symbol: symbol};
+            roleDict[roleId] = {id: roleId, label: roleLabel, symbol: symbol};
         }
         for (i = 0; i < defaults.length; i++) {
             var tag:String = String(defaults[i].tag);
             var defaultRole:String = String(defaults[i].role);
-            if (tag.length == 0 || roleDict[defaultRole] == undefined) {
+            if (!isValidIdentityText(tag, 128) || tagRoleDict[tag] != undefined
+                    || roleDict[defaultRole] == undefined) {
                 throw new Error("非法插件 tag 默认角色: " + tag + "/" + defaultRole);
             }
             tagRoleDict[tag] = defaultRole;
@@ -220,14 +234,23 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
 
     private static function isValidSymbol(symbol:String):Boolean {
         return symbol == "triangle-solid" || symbol == "triangle-outline"
-            || symbol == "square-solid" || symbol == "square-outline"
-            || symbol == "circle-solid" || symbol == "circle-outline"
-            || symbol == "diamond-solid" || symbol == "diamond-outline"
-            || symbol == "star-solid" || symbol == "star-outline";
+            || symbol == "square-outline" || symbol == "circle-outline"
+            || symbol == "diamond-outline" || symbol == "star-solid";
     }
 
     private static function isValidColor(color:String):Boolean {
         return color == "#006600" || color == "#996600" || color == "#0099FF" || color == "#FFFF00";
+    }
+
+    private static function isValidIdentityText(value:String, max:Number):Boolean {
+        if (value == null || value.length < 1 || value.length > max) return false;
+        var trimmed:String = org.flashNight.gesh.string.StringUtils.trim(value);
+        if (trimmed.length < 1 || trimmed.toLowerCase() == "undefined") return false;
+        for (var i:Number = 0; i < value.length; i++) {
+            var code:Number = value.charCodeAt(i);
+            if (code < 32 || (code >= 127 && code <= 159)) return false;
+        }
+        return true;
     }
 }
 

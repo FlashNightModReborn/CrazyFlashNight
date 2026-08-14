@@ -19,6 +19,10 @@ class org.flashNight.boot.BootSequencerTest {
         this._fail = 0;
     }
 
+    public static function runAllTests():Void {
+        new BootSequencerTest().runTests();
+    }
+
     public function runTests():Void {
         trace("=== BootSequencerTest start ===");
         this.test_s0_initializesGlobals();
@@ -30,6 +34,9 @@ class org.flashNight.boot.BootSequencerTest {
         this.test_s5_parsesTaskAndStartsGuide();
         this.test_s7_preservesOrder();
         this.test_crafting_emitsEvent();
+        this.test_crafting_dependencyFailureHalts();
+        this.test_crafting_catalogLoaderFailureHalts();
+        this.test_itemDataWaitsForEquipmentConfigSettlement();
         this.test_handoff_emitsEvent();
         this.test_run_idempotent();
         this.test_s6_waitGateThenDrain();
@@ -261,7 +268,7 @@ class org.flashNight.boot.BootSequencerTest {
         this.assert(inst.state == BootSequencer.S_FANOUT, "(S7) 完成后进入 S_FANOUT");
     }
 
-    // ====== Finding 1：S9 成功发 CRAFTING_OK ======
+    // ====== Finding 1：S9 合成表 + 材料档案目录双门成功 ======
     private function test_crafting_emitsEvent():Void {
         var host = this.freshEnv();
         var inst:BootSequencer = new BootSequencer(host);
@@ -269,50 +276,267 @@ class org.flashNight.boot.BootSequencerTest {
 
         var recipe:Object = {name:"测试配方"};
         var crafting:Object = {testCategory:[recipe]};
-        var shops:Object = {shop:true};
-        var kshop:Object = {kshop:true};
+        var materialCatalog:Object = {schemaVersion:1, DirectPurpose:[], Material:[]};
+        // 两个目录允许 authored 空集合，但必须等兼容 loader 的成功完成信号，不能凭形状猜 ready。
+        var shops:Object = {};
+        var kshop:Array = [];
         var oldCrafting = _root.改装清单;
         var oldCraftingDict = _root.改装清单对象;
+        var oldCraftingOrder = _root.改装分类顺序;
+        var oldMaterialCatalog = _root.材料档案目录;
         var oldShops = _root.shops;
         var oldKshop = _root.kshop_list;
         _root.shops = shops;
         _root.kshop_list = kshop;
 
-        // 把两个真单例换成同步成功/记录桩；用后还原，避免 _isBuilt 等状态污染后续 suite。
+        // 把三个真单例换成可控成功/记录桩；用后还原，避免单例状态污染后续 suite。
         var loader:Object = org.flashNight.gesh.json.LoadJson.CraftingListLoader.getInstance();
+        var catalogLoader:Object = org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoader.getInstance();
         var obtainIndex:Object = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
         var originalLoad:Function = loader.loadCraftingList;
+        var originalGetCategoryOrder:Function = loader.getCategoryOrder;
+        var originalCatalogLoad:Function = catalogLoader.loadMaterialCatalog;
         var originalBuildIndex:Function = obtainIndex.buildIndex;
+        var originalRehydrate:Function = obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig;
         var t:BootSequencerTest = this;
-        loader.loadCraftingList = function(ok:Function, fail:Function):Void { ok(crafting); };
+        var craftOk:Function;
+        var catalogOk:Function;
+        loader.loadCraftingList = function(ok:Function, fail:Function):Void {
+            craftOk = ok;
+            t._calls.craftStarted = true;
+        };
+        loader.getCategoryOrder = function():Array { return ["testCategory"]; };
+        catalogLoader.loadMaterialCatalog = function(ok:Function, fail:Function):Void {
+            catalogOk = ok;
+            t._calls.catalogStarted = true;
+        };
         obtainIndex.buildIndex = function(craftingArg:Object, shopsArg:Object, kshopArg:Object):Void {
             t._calls.indexCrafting = craftingArg;
             t._calls.indexShops = shopsArg;
             t._calls.indexKshop = kshopArg;
         };
+        obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig = function():Void {
+            t._calls.rehydrate = t.inc(t._calls.rehydrate);
+        };
 
         var installedCrafting;
         var installedDict;
+        var installedOrder;
+        var installedMaterialCatalog;
         try {
+            inst.step();
+            this.assert(this._calls.craftStarted == true && this._calls.catalogStarted == true &&
+                inst.state == BootSequencer.S_CRAFTING,
+                "(S9) 同 tick 发起合成表/材料目录两个加载，未就绪不 handoff");
+            catalogOk(materialCatalog);
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_CRAFTING,
+                "(S9) catalog-first 反序仅 material catalog ready 不得 handoff");
+            craftOk(crafting);
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_CRAFTING
+                    && this._calls.indexCrafting == undefined,
+                "(S9) catalog 双门就绪但 S8 权威依赖未齐，不得提前建索引或 handoff");
+            _root.__boot.itemDataReady = true;
+            _root.__boot.enemyPropertiesReady = true;
+            _root.__boot.legacyMaterialDictionaryReady = true;
+            _root.__boot.equipmentModReady = true;
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_CRAFTING
+                    && this._calls.indexCrafting == undefined,
+                "(S9) shop/kshop 即使已有对象形状，未收到成功完成信号也只能等待");
+            // 显式 npc-shop.v2 停用店会归一成一个存在的 identity + 空 catalog。
+            // S9 只要求全局 identity 集合非空，不得把该 authored 空目录误判为全局空商店表。
+            shops["测试停用商店"] = {};
+            kshop.push({id:"测试商品"});
+            _root.__boot.shopCatalogReady = true;
+            _root.__boot.kshopCatalogReady = true;
             inst.step();
             installedCrafting = _root.改装清单;
             installedDict = _root.改装清单对象;
+            installedOrder = _root.改装分类顺序;
+            installedMaterialCatalog = _root.材料档案目录;
         } finally {
             loader.loadCraftingList = originalLoad;
+            loader.getCategoryOrder = originalGetCategoryOrder;
+            catalogLoader.loadMaterialCatalog = originalCatalogLoad;
             obtainIndex.buildIndex = originalBuildIndex;
+            obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig = originalRehydrate;
             _root.改装清单 = oldCrafting;
             _root.改装清单对象 = oldCraftingDict;
+            _root.改装分类顺序 = oldCraftingOrder;
+            _root.材料档案目录 = oldMaterialCatalog;
             _root.shops = oldShops;
             _root.kshop_list = oldKshop;
         }
         this.assert(installedCrafting == crafting && installedDict != undefined &&
             installedDict["测试配方"] == recipe,
             "(S9) 合成表与 name→recipe 字典按原引用落地");
+        this.assert(installedOrder.join("|") == "testCategory" && installedMaterialCatalog == materialCatalog,
+            "(S9) list.xml 分类顺序与 authored 材料档案目录落地");
         this.assert(recipe.value == 1, "(S9) 缺省 recipe.value 保持旧语义补为 1");
         this.assert(this._calls.indexCrafting == crafting && this._calls.indexShops == shops &&
             this._calls.indexKshop == kshop, "(S9) ItemObtainIndex 收到 crafting/shop/kshop 原引用");
-        this.assert(this.msgHas("合成表数据加载完毕"), "(S9) 成功 cb 发 CRAFTING_OK（合成表数据加载完毕）");
-        this.assert(inst.state == BootSequencer.S_HANDOFF, "(S9) craftReady → S_HANDOFF");
+        this.assert(this._calls.rehydrate == 1,
+            "(S9) 静态索引完成后只幂等恢复一次 enemy/base/challenge 已发现来源");
+        this.assert(this.msgHas("合成表数据加载完毕") && this.msgHas("材料档案目录加载完毕"),
+            "(S9) 两个成功回调均发可观测事件");
+        this.assert(inst.state == BootSequencer.S_HANDOFF,
+            "(S9) 显式 v2 停用店空 catalog 仍提供 identity；其余依赖 ready 后进入 S_HANDOFF");
+    }
+
+    private function test_crafting_dependencyFailureHalts():Void {
+        var cases:Array = [
+            {flag:"itemDataFailed", ready:"itemDataReady", reason:"item_data_failed"},
+            {flag:"enemyPropertiesFailed", ready:"enemyPropertiesReady", reason:"enemy_properties_failed"},
+            {flag:"legacyMaterialDictionaryFailed", ready:"legacyMaterialDictionaryReady", reason:"material_dictionary_failed"},
+            {flag:"equipmentModFailed", ready:"equipmentModReady", reason:"equipment_mod_data_failed"},
+            {flag:"shopCatalogFailed", ready:"shopCatalogReady", reason:"shop_catalog_failed"},
+            {flag:"kshopCatalogFailed", ready:"kshopCatalogReady", reason:"kshop_catalog_failed"}
+        ];
+        for (var i:Number = 0; i < cases.length; i++) {
+            var host = this.freshEnv();
+            var inst:BootSequencer = new BootSequencer(host);
+            inst.state = BootSequencer.S_CRAFTING;
+            _root.__boot.craftFired = true;
+            _root.__boot[cases[i].flag] = true;
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_HALT
+                    && _root.__boot.bootFailed == cases[i].reason,
+                "(S9) provider " + cases[i].flag + " exact fail-closed");
+            _root.__boot[cases[i].ready] = true;
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_HALT,
+                "(S9) " + cases[i].flag + " halt 后迟到 success 不得 handoff");
+        }
+
+        var validShops:Object = {};
+        validShops["测试商店"] = [];
+        var malformed:Array = [
+            {shops:[], kshop:[{id:"测试商品"}], reason:"shop_catalog_failed"},
+            {shops:{}, kshop:[{id:"测试商品"}], reason:"shop_catalog_failed"},
+            {shops:validShops, kshop:{}, reason:"kshop_catalog_failed"},
+            {shops:validShops, kshop:[], reason:"kshop_catalog_failed"}
+        ];
+        for (var j:Number = 0; j < malformed.length; j++) {
+            var host2 = this.freshEnv();
+            var inst2:BootSequencer = new BootSequencer(host2);
+            inst2.state = BootSequencer.S_CRAFTING;
+            _root.__boot.craftFired = true;
+            _root.__boot.craftReady = true;
+            _root.__boot.materialCatalogReady = true;
+            _root.__boot.itemDataReady = true;
+            _root.__boot.enemyPropertiesReady = true;
+            _root.__boot.legacyMaterialDictionaryReady = true;
+            _root.__boot.equipmentModReady = true;
+            _root.__boot.shopCatalogReady = true;
+            _root.__boot.kshopCatalogReady = true;
+            var oldShops = _root.shops;
+            var oldKshop = _root.kshop_list;
+            _root.shops = malformed[j].shops;
+            _root.kshop_list = malformed[j].kshop;
+            inst2.step();
+            _root.shops = oldShops;
+            _root.kshop_list = oldKshop;
+            this.assert(inst2.state == BootSequencer.S_HALT
+                    && _root.__boot.bootFailed == malformed[j].reason,
+                "(S9) ready 信号后的畸形目录仍以对应 exact reason fail-closed");
+        }
+    }
+
+    private function test_crafting_catalogLoaderFailureHalts():Void {
+        var modes:Array = ["craft", "catalog"];
+        for (var i:Number = 0; i < modes.length; i++) {
+            var host = this.freshEnv();
+            var inst:BootSequencer = new BootSequencer(host);
+            inst.state = BootSequencer.S_CRAFTING;
+            var loader:Object = org.flashNight.gesh.json.LoadJson.CraftingListLoader.getInstance();
+            var catalogLoader:Object = org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoader.getInstance();
+            var originalLoad:Function = loader.loadCraftingList;
+            var originalCatalogLoad:Function = catalogLoader.loadMaterialCatalog;
+            var craftOk:Function;
+            var craftFail:Function;
+            var catalogOk:Function;
+            var catalogFail:Function;
+            loader.loadCraftingList = function(ok:Function, fail:Function):Void {
+                craftOk = ok; craftFail = fail;
+            };
+            catalogLoader.loadMaterialCatalog = function(ok:Function, fail:Function):Void {
+                catalogOk = ok; catalogFail = fail;
+            };
+            try {
+                inst.step();
+                if (modes[i] == "craft") {
+                    craftFail();
+                    catalogOk({schemaVersion:1, DirectPurpose:[], Material:[]});
+                } else {
+                    catalogFail();
+                    craftOk({testCategory:[]});
+                }
+                inst.step();
+            } finally {
+                loader.loadCraftingList = originalLoad;
+                catalogLoader.loadMaterialCatalog = originalCatalogLoad;
+            }
+            var expected:String = modes[i] == "craft"
+                ? "crafting_catalog_failed" : "material_catalog_failed";
+            this.assert(inst.state == BootSequencer.S_HALT
+                    && _root.__boot.bootFailed == expected,
+                "(S9) " + modes[i] + " loader failure + peer late success remains halted");
+        }
+    }
+
+    private function test_itemDataWaitsForEquipmentConfigSettlement():Void {
+        var itemUtil:Object = org.flashNight.arki.item.ItemUtil;
+        var originalLoad:Function = itemUtil.loadItemData;
+        var originalItemDict:Object = itemUtil.itemDataDict;
+        var originalMaterialDict:Object = itemUtil.materialDict;
+        var t:BootSequencerTest = this;
+        itemUtil.loadItemData = function(payload:Object):Void {
+            t._calls.itemApply = t.inc(t._calls.itemApply);
+            t._calls.itemPayload = payload;
+            itemUtil.itemDataDict = {};
+            itemUtil.materialDict = {};
+        };
+        try {
+            var host = this.freshEnv();
+            var inst:BootSequencer = new BootSequencer(host);
+            var payload:Object = [{name:"raw-first"}];
+            inst.state = BootSequencer.S_CRAFTING;
+            _root.__boot.craftFired = true;
+            _root.__boot.itemDataLoaded = true;
+            _root.__boot.itemDataPayload = payload;
+            inst.step();
+            this.assert(this._calls.itemApply == undefined
+                    && _root.__boot.itemDataReady != true,
+                "(S8→S9) item raw first 必须等待 equipment config settled");
+            _root.__boot.equipmentConfigSettled = true;
+            inst.step();
+            inst.step();
+            this.assert(this._calls.itemApply == 1 && this._calls.itemPayload == payload
+                    && _root.__boot.itemDataReady == true,
+                "(S8→S9) config settled 后只 apply item payload 一次并置 ready");
+
+            host = this.freshEnv();
+            inst = new BootSequencer(host);
+            payload = [{name:"config-first"}];
+            inst.state = BootSequencer.S_CRAFTING;
+            _root.__boot.craftFired = true;
+            _root.__boot.equipmentConfigSettled = true;
+            inst.step();
+            this.assert(this._calls.itemApply == undefined,
+                "(S8→S9) config first 但 item raw 未到时不得空 apply");
+            _root.__boot.itemDataLoaded = true;
+            _root.__boot.itemDataPayload = payload;
+            inst.step();
+            this.assert(this._calls.itemApply == 1 && this._calls.itemPayload == payload
+                    && _root.__boot.itemDataReady == true,
+                "(S8→S9) config-first 反序在 raw 到达后恰一次 apply");
+        } finally {
+            itemUtil.loadItemData = originalLoad;
+            itemUtil.itemDataDict = originalItemDict;
+            itemUtil.materialDict = originalMaterialDict;
+        }
     }
 
     // ====== Finding 1：S10 handoff 发 HANDOFF_PLAY ======

@@ -1,0 +1,388 @@
+{
+  "catalog": {
+    "archiveOrderFirst": 0,
+    "archiveOrderLast": 223,
+    "authoredDirectPurposeReferenceCount": 27,
+    "directPurposeCount": 2,
+    "entryCount": 224,
+    "equipmentTuningDistinctCount": 111,
+    "machineDerivedEquipmentTuningCount": 105,
+    "path": "data/dictionaries/material_catalog.xml",
+    "schemaVersion": 1,
+    "typeCounts": {
+      "equipment_mod": 105,
+      "food": 45,
+      "general": 74
+    }
+  },
+  "crafting": {
+    "categoryCount": 12,
+    "categoryOrder": [
+      "铁枪会",
+      "属性武器",
+      "烹饪",
+      "化学生产",
+      "武器合成",
+      "饰品合成",
+      "进阶防具",
+      "基础防具",
+      "公社防具",
+      "黑白契约",
+      "插件合成",
+      "大学装备"
+    ],
+    "manifestPath": "data/crafting/list.xml"
+  },
+  "generator": {
+    "path": "tools/derive-material-catalog.py",
+    "sha256": "E65A43644DA1C03633BC072E213BF5AE45DBC2CC97D4A6F4B611A62FE8ADC4A4",
+    "version": "material-catalog-producer.v2"
+  },
+  "infrastructure": {
+    "consumerEvidencePath": "flashswf/UI/平板电脑界面/LIBRARY/基建内容整体.xml",
+    "materialCount": 21,
+    "materialOccurrenceCount": 67,
+    "path": "data/infrastructure/infrastructure.xml"
+  },
+  "inputs": [
+    {
+      "path": "data/dictionaries/material_catalog.xml",
+      "sha256": "A3F3C7B0A509024DB23392D9432451D08443E0F3B9349A7ECE98FAA4BF380E69"
+    },
+    {
+      "path": "data/items/list.xml",
+      "sha256": "40C52640A43CD35C4FBA49954C01E7D360F681E097017DE83C30F3AF7DBC2AF1"
+    },
+    {
+      "path": "data/items/消耗品_货币.xml",
+      "sha256": "6C42EF823FFC2DB4F2279303C0DAF753CF309A05697007BF4FAC147AC16148C5"
+    },
+    {
+      "path": "data/items/消耗品_弹夹.xml",
+      "sha256": "DA71B09AF2A99051A971022284A61889260203619980AD11E8B0F2A02639F121"
+    },
+    {
+      "path": "data/items/消耗品_药剂.xml",
+      "sha256": "99A1DF99779835CA36BCAB88DAF4FD569C81088BA3B6181641B92B5C3796ECFD"
+    },
+    {
+      "path": "data/items/消耗品_药剂_食品.xml",
+      "sha256": "44CA5A39442A0F092CFB6D75303E18BF855E6927EAB65245497135020DBA3F83"
+    },
+    {
+      "path": "data/items/收集品_材料.xml",
+      "sha256": "1EC3633479C0F2F85A21360328F76FB1BEB2E7AEC1719D3070B7EE3C870FCE9C"
+    },
+    {
+      "path": "data/items/收集品_材料_插件.xml",
+      "sha256": "1FDCB475F5067D7605382D50DD3D32AADF62F17AFC0CAE0804671DEC21B19B88"
+    },
+    {
+      "path": "data/items/消耗品_手雷.xml",
+      "sha256": "4003235F30212236A2AD6CFC1EA219934EBF8DD2C3F6F0446CE237585ADFBA6A"
+    },
+    {
+      "path": "data/items/消耗品_材料_食材.xml",
+      "sha256": "7A13216D27AF179C81EF896DBE26DD18106BEBB08AA4C5C68D1CFAFAB9975ADF"
+    },
+    {
+      "path": "data/items/收集品_情报.xml",
+      "sha256": "FD2D5327F95B7577ABF9AD3A447ADC6750A995D4218AB77F1D63C3F4FA32A795"
+    },
+    {
+      "path": "data/items/防具_颈部装备.xml",
+      "sha256": "AA1A31D35270189BDAAE94173346B9ADF816BA4D59E75571D9D66055276B4FCD"
+    },
+    {
+      "path": "data/items/防具_0-19级.xml",
+      "sha256": "1F3C5481D49A2ECC3CE4F4EC019A6282CB52641399B7342C9E06E35B84F6D541"
+    },
+    {
+      "path": "data/items/防具_20-39级.xml",
+      "sha256": "386D91027C1EB728F736A1574CF5FE4E227AFDF60E182F6AC8F345F8F6B28FAE"
+    },
+    {
+      "path": "data/items/防具_40+级.xml",
+      "sha256": "4E2A7FA9EBD5D7058CBBA5B0B2791A5C82BBD970DA9C6D270466E053C856DE51"
+    },
+    {
+      "path": "data/items/武器_刀_默认.xml",
+      "sha256": "08C3102DC943AA210B037E7604D9A988B0B05A427F6220225CCC1DB2D2DE5BE8"
+    },
+    {
+      "path": "data/items/武器_刀_直剑.xml",
+      "sha256": "200D2288A76EDE6A99786BAEBBDC5BCA97D9D11D45375830BC1D19B93A0E111A"
+    },
+    {
+      "path": "data/items/武器_刀_长刀.xml",
+      "sha256": "DA6B1E21221D4563BB91F36207B7B2335AB92FAC0C8D9D765AF81DD4A21B55A6"
+    },
+    {
+      "path": "data/items/武器_刀_刀剑.xml",
+      "sha256": "D264C027E57FCAB1B43015E1BE081CCF6DEB6DC1AA0571D5023FF12ED70A1434"
+    },
+    {
+      "path": "data/items/武器_刀_重斩.xml",
+      "sha256": "CA9051668D01C7B6B47867E996E391A816630D1868DFF4FF64D3216E7A492656"
+    },
+    {
+      "path": "data/items/武器_刀_狂野.xml",
+      "sha256": "5964C29D5F13E3162E6D7FF141881D63FD9FB893C98AB97967BC98436D6DA25E"
+    },
+    {
+      "path": "data/items/武器_刀_短兵.xml",
+      "sha256": "DCA8EB5523D14B4D72EE2DD8BB67CB07F3053205D7982BA1A460A77FC089A93C"
+    },
+    {
+      "path": "data/items/武器_刀_短柄.xml",
+      "sha256": "FA5FB8BDAC7EEB363CF54CE0592684E120ABF699046CD9BDD303C69D60E9340D"
+    },
+    {
+      "path": "data/items/武器_刀_镰刀.xml",
+      "sha256": "7D9D2246AEE5CD6E1A0B7DE4F7B11C2B2DCE1B8B65B3D40942A89E3B2EF6E0A3"
+    },
+    {
+      "path": "data/items/武器_刀_长枪.xml",
+      "sha256": "3FAF7B976DD632BD72CC0506C9435346D9E3521074F5EEBD40BA120C65DE4C7E"
+    },
+    {
+      "path": "data/items/武器_刀_长柄.xml",
+      "sha256": "8F81D9994F3B801FF153C6EE0E18359897B3E7E2609A0BA9687A384CE047623D"
+    },
+    {
+      "path": "data/items/武器_刀_长棍.xml",
+      "sha256": "4935BBBA769456CA3DCF0E4076B3909D4AB5E1D1DAEB5F3CC89E68C0C1B4340E"
+    },
+    {
+      "path": "data/items/武器_刀_双刀.xml",
+      "sha256": "D063A14141DB9CBEF340C02402D1FB5D6A745D97DA341D34A013DA93B9B7AFD0"
+    },
+    {
+      "path": "data/items/武器_刀_迅捷.xml",
+      "sha256": "F9D23743326F4544B84123CF09B2DD4135E64C97032DAF15E66E3B785A6999B2"
+    },
+    {
+      "path": "data/items/武器_刀_棍棒.xml",
+      "sha256": "21A7FD419972D8D45C5E61B00012F42C0E2E7F825A96D7CA43F474A7EFE24405"
+    },
+    {
+      "path": "data/items/武器_刀_疾影.xml",
+      "sha256": "51148B25F8CB8434547F6DF278546EAFDA9D74330A6A88782102418E6D2BFC8D"
+    },
+    {
+      "path": "data/items/武器_手枪_冲锋枪.xml",
+      "sha256": "F6A88F8AFB31069775AC726F2508A300F1FD41C765F1B1F431135A205BAF2769"
+    },
+    {
+      "path": "data/items/武器_手枪_压制冲锋枪.xml",
+      "sha256": "1E5D71E6BFFADB656BC29014D2CB308434E06CA594F5D22B632342ABAD88B0A3"
+    },
+    {
+      "path": "data/items/武器_手枪_压制机枪.xml",
+      "sha256": "50F5615F4CB0AEFDB7369C9EFCEBF59165F42B5F4F78D95202DE0D0B3A11062C"
+    },
+    {
+      "path": "data/items/武器_手枪_反器材武器.xml",
+      "sha256": "23787957FDCEA033E841A0113B10435EC60E87DD0F572A0911D9F82884871400"
+    },
+    {
+      "path": "data/items/武器_手枪_发射器.xml",
+      "sha256": "EC716B838FE258242A1ADF5C31E484787E9670C31B5F986669E43FACE1102A20"
+    },
+    {
+      "path": "data/items/武器_手枪_大威力手枪.xml",
+      "sha256": "D927C5CDF71E776A1383A9A9E202B90BE23C23ED9F5536B6BD81CF3833E1D050"
+    },
+    {
+      "path": "data/items/武器_手枪_手枪.xml",
+      "sha256": "36E1C338D9657F00866CBEDE50079F3CF5FD1FE925E0F9FF850346F421AC1E01"
+    },
+    {
+      "path": "data/items/武器_手枪_特殊.xml",
+      "sha256": "20AC159F939A00185CC7CD375C4A3E70245C3273E9E457801754C48207564FAF"
+    },
+    {
+      "path": "data/items/武器_手枪_突击步枪.xml",
+      "sha256": "7AB25C7CC232E772F7DD7312C96C4168FBA1C0B178B80F679C123F828F075DE1"
+    },
+    {
+      "path": "data/items/武器_手枪_霰弹枪.xml",
+      "sha256": "F9D61D3538C5FC27041C4036F0846689447BC47D72A2F530265CFBDDB64B7F6D"
+    },
+    {
+      "path": "data/items/武器_长枪_冲锋枪.xml",
+      "sha256": "350A22AA731102DFEEC21057E6D7B504287B3FD4C69AF44C87AEC261ACBF48AB"
+    },
+    {
+      "path": "data/items/武器_长枪_压制机枪.xml",
+      "sha256": "860C4427EB2505B7A388B479AF7EFEB67D916A6E620660A50AE410E5FC641BD3"
+    },
+    {
+      "path": "data/items/武器_长枪_压制近战.xml",
+      "sha256": "3C2EEE290AADDEF21A5816CF8FF1046096292BFC23633943B6A906F5E615C3BA"
+    },
+    {
+      "path": "data/items/武器_长枪_反器材武器.xml",
+      "sha256": "BB3A8361775C4689ADE99843A508DFA12507D2EBD41C535495471BB4F8A30153"
+    },
+    {
+      "path": "data/items/武器_长枪_发射器.xml",
+      "sha256": "A361EF172B5A079EC9E123D426290AFCC11DD5B59808F44112D51B922A9A1FE4"
+    },
+    {
+      "path": "data/items/武器_长枪_弓弩.xml",
+      "sha256": "2BFE46F509CFA3927DE0FFBC11958EB528E5E961C80FC9534444FD9496F3C065"
+    },
+    {
+      "path": "data/items/武器_长枪_战斗步枪.xml",
+      "sha256": "E4FC55616571030428F2DD11DEFE88B29129701964BD42185304B5F8512329ED"
+    },
+    {
+      "path": "data/items/武器_长枪_机枪.xml",
+      "sha256": "2CD11D92DF290813936EEC605E60033264F3430E3D784A402C5FEF9A005D6B80"
+    },
+    {
+      "path": "data/items/武器_长枪_特殊.xml",
+      "sha256": "2B1E198329133B5B2404F228C7F311F0EDB7F100EF858EF82D9179DB6656C9C4"
+    },
+    {
+      "path": "data/items/武器_长枪_狙击步枪.xml",
+      "sha256": "8F251F82A90BC12A82CFBC1EDEAE4C1866FD9EFA2ECEB4F0995578EB797896CE"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "E47A08AF5406546BC268D395B973DEA4FC9F7378295AF9DDDA8657C530FB13B8"
+    },
+    {
+      "path": "data/items/武器_长枪_近战.xml",
+      "sha256": "37EA9CB8A8B51EC6403DF66C1C1F41E156C6067969DE1C53CB612FD96B0463D5"
+    },
+    {
+      "path": "data/items/武器_长枪_霰弹枪.xml",
+      "sha256": "9949609A7F8CA5306D99F3023E5C9D0E85BCDC2998698CD835B74EC3F7AE2F9C"
+    },
+    {
+      "path": "data/items/equipment_mods/list.xml",
+      "sha256": "9CC0879A81E2A252A576D9D6191237C730DABAC0FE2067E083B2713622C49DD5"
+    },
+    {
+      "path": "data/items/equipment_mods/ui_presentation.xml",
+      "sha256": "773ACA5354EF30BF74DD9C317C9412DCBFCB1EE1EE8EC1320EBAB46DFC1792C8"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_防具专用.xml",
+      "sha256": "89C7DF98C831F4BA57F7097A831ED379418DA7A98B7295DA7DA6B65FE581668B"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_枪械专用.xml",
+      "sha256": "B5CBE3DCB737D68B74B7C440EB27A17A1E14A0CDEDF2BB1D25861D6FA88C01FD"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_刀专用.xml",
+      "sha256": "C25113AEFF899D0B526A1B312E398A390659D0471A688A1E7B4DAD2807D932D2"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_拳专用.xml",
+      "sha256": "53A16CD65EF1EAA7AC12E6DE41A751C0DEE8893F01552D785BEEA90870FEAAF3"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_通用.xml",
+      "sha256": "C1F0613C68EB96D40E15866B54A9E1FF541CAACBEE2F2E1717DAA68E0BF16F56"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_下挂武器.xml",
+      "sha256": "6F148C03EEAEE4A51492ECAB1D0DF2F6FA6445D6FF598AF7F662BA4BE9174E5F"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_防具专用.xml",
+      "sha256": "00AEB36C0798C14ED0B411C64EA05B4861C3B8733345C96FEA6A15E5FEB94AEC"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_枪械专用.xml",
+      "sha256": "3CC1F30F904A5C9209890D445EAFF03CD8E511BA98402DF67755A07588C30BDA"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_刀专用.xml",
+      "sha256": "1C8E4FACEFE274C9B2D4A71479DB9F8574D3E3D5ED5914D8C274C68BF85A927F"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_拳专用.xml",
+      "sha256": "4686DEA4FCCF9548D375CD60BB73CF2FEA4B28059EEA007B39E29C35B2391262"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_通用.xml",
+      "sha256": "DEFAF808843CD67166C24D79C627475E62EEC434CAA80C4129202ED1DF6AC9A9"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_下挂武器.xml",
+      "sha256": "E8806DFBE5730F1A90277EF155511682B5F59CD97DFFEA8EBC5C6FF7E0AECC43"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_防具专用.xml",
+      "sha256": "0EF31BC8EEB62C03AEF951E1B4207BBBDAED5EA2B942EFC2332EEE2DFF1B04DE"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_枪械专用.xml",
+      "sha256": "02CAA3100A1A107849F1CB73F62D45021572699FD0F8916B09B75CCE033E3287"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_刀专用.xml",
+      "sha256": "71EE9865CFF197B6E9273DB1F061EF9A7CFCCB4913F8F3DB88F48AB5A27488F1"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_拳专用.xml",
+      "sha256": "877167D4ECFDCE53D618C4D1104D562CCC774ECDFC627E0A3B670F35255587F8"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_通用.xml",
+      "sha256": "CB642E57C9A6BA5B895CC55BFC8FCBC763C09C40C772257BA1B3A69C6152E6B9"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_下挂武器.xml",
+      "sha256": "1EA2D5AACF21FBE6B5ADAA15ABA30D66139FFD4B85F2752D9A217960CB441C94"
+    },
+    {
+      "path": "data/items/equipment_mods/特殊材料_防具专用.xml",
+      "sha256": "6F1D4F4C9137D8B04315B7FDA3BFD390B724E84CABF0B0F587D12CC015599D4E"
+    },
+    {
+      "path": "data/items/equipment_mods/特殊材料_通用.xml",
+      "sha256": "CAA7B85F1D50C7C94975DCAE8F0291A454A5D5135230871613563D5254108F09"
+    },
+    {
+      "path": "data/items/equipment_mods/特殊材料_下挂武器.xml",
+      "sha256": "D3B7A3989ECB51DF9395EC1CA1E01741108A8E225F66C4F99FFF1003A25181FF"
+    },
+    {
+      "path": "data/items/equipment_mods/特殊材料_刀专用.xml",
+      "sha256": "78E4E49EBD9EE00A8E9A34617038857518D5A5C5C8E76E1057268D947124C5AD"
+    },
+    {
+      "path": "data/equipment/equipment_config.xml",
+      "sha256": "EAE1CE5ED628A11BF1E527472B9EC169B0C31314B572AC068D32985F56CC5764"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/EquipmentTuningService.as",
+      "sha256": "AD41C7ACD7C68FD5F73DF963A8232B4A25D2C7708384B56725BBA43CE736FC0C"
+    },
+    {
+      "path": "data/infrastructure/infrastructure.xml",
+      "sha256": "37DF6E2EF9F787783E11B112D5A9A29CA44B897CB3E8286CD0FCC5419A47305B"
+    },
+    {
+      "path": "flashswf/UI/平板电脑界面/LIBRARY/基建内容整体.xml",
+      "sha256": "49F5C2135C7AF3C2C39A7398A4353D7261906C5EE7DDE80AEFF94471FCE769A3"
+    },
+    {
+      "path": "data/crafting/list.xml",
+      "sha256": "7A5F1F627D0B11133A3EA998684189B2CEDB24F4BBFD88C5650130A2AD4D2A96"
+    }
+  ],
+  "legacyProjection": {
+    "entryCount": 58,
+    "path": "data/dictionaries/material_dictionary.xml",
+    "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
+  },
+  "schema": "cf7.material-dictionary-generated.v2",
+  "sourceDigest": "6287634EB79AD6D18F4870D1BB2C9AE30312101423C768A0D89FC517EA45A6E8"
+}

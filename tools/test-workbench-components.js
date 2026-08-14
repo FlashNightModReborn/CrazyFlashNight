@@ -91,11 +91,17 @@ class FakeDocument {
         const index = list.indexOf(handler);
         if (index >= 0) list.splice(index, 1);
     }
+    dispatch(type, init) {
+        const event = Object.assign({type, target:this}, init || {});
+        (this.listeners[type] || []).slice().forEach(handler => handler(event));
+        return event;
+    }
+    listenerCount(type) { return (this.listeners[type] || []).length; }
 }
 
-test('exports the six shared primitives', () => {
+test('exports the seven shared primitives', () => {
     assert.deepStrictEqual(Object.keys(Components).sort(), [
-        'ChoiceGroup', 'CommitBar', 'HelpAction', 'OwnedInventoryPane', 'QuantityControl', 'SecondaryPage'
+        'ChoiceGroup', 'CommitBar', 'Dropdown', 'HelpAction', 'OwnedInventoryPane', 'QuantityControl', 'SecondaryPage'
     ]);
 });
 
@@ -258,6 +264,61 @@ test('ChoiceGroup rolls presentation back when onChange rejects or throws', () =
     assert.strictEqual(group.setValue('fast'), true);
     assert.strictEqual(group.getValue(), 'fast');
     group.destroy();
+});
+
+test('Dropdown owns listbox keyboard, outside-close, and listener teardown', () => {
+    const document = new FakeDocument();
+    const host = document.createElement('header');
+    const outside = document.createElement('button');
+    const changes = [];
+    const dropdown = new Components.Dropdown({
+        document,
+        value:'archive',
+        labelPrefix:'排序：',
+        ariaLabel:'材料排序',
+        choices:[
+            {value:'archive', label:'档案顺序'},
+            {value:'owned', label:'持有数'},
+            {value:'name', label:'名称'}
+        ],
+        onChange:value => changes.push(value)
+    });
+    dropdown.mount(host);
+    assert.strictEqual(dropdown.trigger.getAttribute('aria-haspopup'), 'listbox');
+    assert.strictEqual(dropdown.trigger.getAttribute('aria-expanded'), 'false');
+    assert.strictEqual(dropdown.trigger.textContent, '排序：档案顺序');
+    assert.strictEqual(document.listenerCount('pointerdown'), 1);
+
+    let event = dropdown.trigger.dispatch('keydown', {key:'ArrowDown'});
+    assert.strictEqual(event.defaultPrevented, true);
+    assert.strictEqual(dropdown.isOpen(), true);
+    assert.strictEqual(dropdown.trigger.getAttribute('aria-expanded'), 'true');
+    assert.strictEqual(document.activeElement, dropdown.getOption('archive'));
+    dropdown.getOption('owned').dispatch('keydown', {key:'Enter'});
+    assert.strictEqual(dropdown.getValue(), 'owned');
+    assert.strictEqual(dropdown.isOpen(), false);
+    assert.strictEqual(document.activeElement, dropdown.trigger);
+    assert.deepStrictEqual(changes, ['owned']);
+
+    dropdown.trigger.dispatch('keydown', {key:'ArrowUp'});
+    assert.strictEqual(document.activeElement, dropdown.getOption('owned'));
+    dropdown.getOption('owned').dispatch('keydown', {key:'Escape'});
+    assert.strictEqual(dropdown.isOpen(), false);
+    assert.strictEqual(document.activeElement, dropdown.trigger);
+
+    dropdown.open();
+    const option = dropdown.getOption('owned');
+    option.focus();
+    option.dispatch('keydown', {key:'Tab'});
+    assert.strictEqual(dropdown.isOpen(), false);
+    assert.strictEqual(document.activeElement, option, 'Tab close must not steal focus');
+    dropdown.open();
+    document.dispatch('pointerdown', {target:outside});
+    assert.strictEqual(dropdown.isOpen(), false);
+
+    assert.strictEqual(dropdown.destroy(), true);
+    assert.strictEqual(document.listenerCount('pointerdown'), 0);
+    assert.strictEqual(host.children.length, 0);
 });
 
 test('CommitBar centralizes status, gate state, and commit listener teardown', () => {

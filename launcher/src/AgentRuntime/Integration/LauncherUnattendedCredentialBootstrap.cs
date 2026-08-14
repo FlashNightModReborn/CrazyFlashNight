@@ -950,6 +950,17 @@ namespace CF7Launcher.AgentRuntime.Integration
             AgentConnectionAuthenticator authenticator,
             out string reasonCode)
         {
+            return TryPublishObservedCredential(
+                authenticator,
+                null,
+                out reasonCode);
+        }
+
+        internal bool TryPublishObservedCredential(
+            AgentConnectionAuthenticator authenticator,
+            Func<bool> beforeCredentialCommit,
+            out string reasonCode)
+        {
             if (authenticator == null)
                 throw new ArgumentNullException(
                     nameof(authenticator));
@@ -992,6 +1003,12 @@ namespace CF7Launcher.AgentRuntime.Integration
                         proof,
                         evidence,
                         receipt);
+                    if (beforeCredentialCommit != null
+                        && !beforeCredentialCommit())
+                    {
+                        throw new InvalidOperationException(
+                            "unattended_credential_precommit_failed");
+                    }
                     WriteCredential(
                         evidence,
                         receipt,

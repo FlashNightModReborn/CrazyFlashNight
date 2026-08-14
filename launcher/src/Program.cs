@@ -1865,6 +1865,18 @@ class Program
             panelHost.PanelClosed += lootPanelCoordinator.OnPanelHostClosed;
         NpcShopTask npcShopTask = new NpcShopTask(socketServer);
         CraftingTask craftingTask = new CraftingTask(socketServer);
+        MaterialShopAccessTask materialShopAccessTask =
+            new MaterialShopAccessTask(socketServer);
+        MaterialShopNavigationCoordinator
+            materialShopNavigationCoordinator =
+                new MaterialShopNavigationCoordinator(
+                    panelHost,
+                    materialShopAccessTask,
+                    craftingTask,
+                    inventoryTask,
+                    npcShopTask,
+                    commandRouter,
+                    webOverlay.TryPostToWeb);
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         EquipmentTuningTask equipmentTuningTask = new EquipmentTuningTask(socketServer);
         commandRouter.SetEquipmentTuningTask(equipmentTuningTask);
@@ -2102,7 +2114,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2116,6 +2128,8 @@ class Program
         webOverlay.SetLootPanelCoordinator(lootPanelCoordinator);
         webOverlay.SetNpcShopTask(npcShopTask);
         webOverlay.SetCraftingTask(craftingTask);
+        webOverlay.SetMaterialShopNavigationCoordinator(
+            materialShopNavigationCoordinator);
         webOverlay.SetHairdresserTask(hairdresserTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
         webOverlay.SetCharacterBuildTask(characterBuildTask);
@@ -2251,6 +2265,8 @@ class Program
             frameTask.Stop();
             shopTask.Dispose();
             lootTask.Dispose();
+            materialShopNavigationCoordinator.Dispose();
+            materialShopAccessTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
             hairdresserTask.Dispose();
@@ -2314,6 +2330,8 @@ class Program
             try { gomokuTask.Dispose(); } catch { }
             try { shopTask.Dispose(); } catch { }
             try { lootTask.Dispose(); } catch { }
+            try { materialShopNavigationCoordinator.Dispose(); } catch { }
+            try { materialShopAccessTask.Dispose(); } catch { }
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
             try { hairdresserTask.Dispose(); } catch { }
@@ -2726,6 +2744,48 @@ class Program
             // to create its Handle.
             synchronizeAgentRuntime();
 
+            var trustedGameEntryGate =
+                new TrustedUnattendedGameEntryGate(
+                    delegate
+                    {
+                        GameLaunchFlow.AgentRuntimeLaunchSnapshot
+                            snapshot =
+                                launchFlow
+                                    .CaptureAgentRuntimeLaunchSnapshot();
+                        string attemptId =
+                            snapshot?.AttemptId;
+                        return snapshot == null
+                            ? null
+                            : new TrustedUnattendedGameEntrySnapshot(
+                                snapshot.LaunchState.ToString(),
+                                snapshot.Slot,
+                                attemptId,
+                                launchFlow
+                                    .HasAcceptedTitleReceipt(attemptId)
+                                        ? attemptId
+                                        : null);
+                    },
+                    delegate(string slot, string attemptId)
+                    {
+                        return agentControlTask
+                            .IsExactRuntimeReady(
+                                slot,
+                                attemptId);
+                    },
+                    delegate(string attemptId)
+                    {
+                        return launchFlow
+                            .TrySendTrustedResolvedSaveEntry(
+                                TrustedUnattendedGameEntryGate
+                                    .ExactA5Slot,
+                                attemptId,
+                                delegate
+                                {
+                                    return form
+                                        .IsShutdownAdmissionClosed;
+                                });
+                    });
+
             hostCandidate =
                 LauncherAgentRuntimeHost.CreateProduction(
                     new LauncherAgentRuntimeHostOptions
@@ -2736,6 +2796,18 @@ class Program
                             isolatedRuntimeCandidate,
                         UnattendedBootstrapRequestPath =
                             unattendedBootstrapRequest,
+                        CanPublishUnattendedCredential =
+                            delegate(string slot)
+                            {
+                                GameLaunchFlow.AgentRuntimeLaunchSnapshot
+                                    snapshot =
+                                        launchFlow
+                                            .CaptureAgentRuntimeLaunchSnapshot();
+                                return trustedGameEntryGate
+                                    .TryAllowCredential(
+                                        slot,
+                                        snapshot?.AttemptId);
+                            },
                         HairdresserTask = hairdresserTask,
                         SurfaceSource = delegate(
                             LauncherAgentRuntimeTargetIds targets)
@@ -2800,7 +2872,26 @@ class Program
             agentLaunchStateChanged =
                 delegate(string state, string message, bool silent)
                 {
-                    synchronizeAgentRuntime();
+                    // GameLaunchFlow emits this callback while its state lock
+                    // may still be held.  Always queue the Agent Runtime sync
+                    // so the callback cannot invert that lock against the
+                    // periodic unattended-binding refresh on a worker thread.
+                    // The queued sync captures the fresh full snapshot again.
+                    try
+                    {
+                        if (!form.IsDisposed
+                            && form.IsHandleCreated)
+                        {
+                            form.BeginInvoke(
+                                synchronizeAgentRuntime);
+                        }
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
                 };
             agentDocumentAdvanced =
                 delegate
@@ -3129,6 +3220,8 @@ class Program
         try { gomokuTask.Dispose(); } catch { }
         try { shopTask.Dispose(); } catch { }
         try { lootTask.Dispose(); } catch { }
+        try { materialShopNavigationCoordinator.Dispose(); } catch { }
+        try { materialShopAccessTask.Dispose(); } catch { }
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
         try { hairdresserTask.Dispose(); } catch { }

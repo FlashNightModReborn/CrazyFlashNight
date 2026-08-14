@@ -1,0 +1,1145 @@
+{
+  "schema": "cf7-shop-portrait-provenance-v1",
+  "generatorVersion": "1.0.0",
+  "geometry": {
+    "width": 256,
+    "height": 256,
+    "padding": 16,
+    "fit": "alpha-bounds-contain-center"
+  },
+  "toolchain": {
+    "generator": {
+      "path": "tools/bake-shop-portraits.py",
+      "sha256": "646bf7e86e960e86f14cdc5d96dd01b90f001540aa17ebd6a3dbd03b99415590",
+      "bytes": 34505
+    },
+    "dialogueBaker": {
+      "path": "tools/bake-dialogue-portraits.py",
+      "sha256": "6a97a12a78ef7e4588246a3a7ac2fe4a4882869d413d4aa0f284038172b3a352",
+      "bytes": 20103
+    },
+    "python": "3.13.7",
+    "pillow": "11.3.0",
+    "ffdecVersion": "21.1.1",
+    "ffdecCli": {
+      "path": "tools/ffdec/ffdec-cli.exe",
+      "sha256": "c03ad5d22008246b9f2523a70830502ed0d01610f4054912b43ae70f58dddd86",
+      "bytes": 35854
+    },
+    "ffdecJar": {
+      "path": "tools/ffdec/ffdec.jar",
+      "sha256": "7f75b47152d955be5ccc853eb259a1a7910ea9a0bd2b41cf9b9085bcfb003952",
+      "bytes": 3542569
+    },
+    "ffdecMetadata": {
+      "path": "tools/ffdec/com.jpexs.decompiler.flash.metainfo.xml",
+      "sha256": "b3c9a87ca4cc3d6d00d239e6cb2dc8bab1085c38857432796d367d3255444f6a",
+      "bytes": 90387
+    }
+  },
+  "activeShopSource": {
+    "list": {
+      "path": "data/shops/list.xml",
+      "sha256": "8bebc01fde51bdf6052a884dc0b314ca26f57d3ee5812a515697ed9b98420de3",
+      "bytes": 1360
+    },
+    "listedCount": 35,
+    "activeCount": 34,
+    "excludedShopIds": [
+      "幸存老兵-暂时停用"
+    ],
+    "shopDocuments": [
+      {
+        "path": "data/shops/npcs/Andy Law.json",
+        "sha256": "7465cb7c30882e99b3bf5f25e211f7a5688b8c041d54411b368e23ef9a75e8ce",
+        "bytes": 2061
+      },
+      {
+        "path": "data/shops/npcs/小F.json",
+        "sha256": "ab53c5d7b474a23d0c0c6720cc6657d8fa3816e0060f22087b403e5fe4a6e782",
+        "bytes": 257
+      },
+      {
+        "path": "data/shops/npcs/Boy.json",
+        "sha256": "8385c2accb18a11705bca0c8afa365790aabd16cc999b270f05dc78b5eb4c3e5",
+        "bytes": 1643
+      },
+      {
+        "path": "data/shops/npcs/Pig.json",
+        "sha256": "5df4787c96a16bd1485b528ad58ce4cac9a015705e142219f7c545f67722a50d",
+        "bytes": 1074
+      },
+      {
+        "path": "data/shops/npcs/King.json",
+        "sha256": "41a03467d1281a77b8a4c3270bcb19c7f64329c7391d6c320c5e31ff35db375d",
+        "bytes": 1569
+      },
+      {
+        "path": "data/shops/npcs/冷兵器商人.json",
+        "sha256": "247b22f681df61c9d716add78d92bebf50fd26e38db2bf4305ab76af3cffc127",
+        "bytes": 1524
+      },
+      {
+        "path": "data/shops/npcs/Shop Girl.json",
+        "sha256": "3b0c4873bccdd3bf3779c2ff00ca538b40619b414c4862add89129cf1a88bb80",
+        "bytes": 2115
+      },
+      {
+        "path": "data/shops/npcs/The Girl.json",
+        "sha256": "4cd20e19ba0b8fa1e158e8285fcebab4a296e83e17130c9da02006263d25a46f",
+        "bytes": 1541
+      },
+      {
+        "path": "data/shops/npcs/舞女.json",
+        "sha256": "64d5d1424ae0afba428985d9e5f3f68a7ea2a2d27da0f70050b44b0321ed97a2",
+        "bytes": 430
+      },
+      {
+        "path": "data/shops/npcs/酒保.json",
+        "sha256": "4cd831fef9b4b0d018d4c6f737027251963f4ddf1317389b7d86e4ac5ae5f09e",
+        "bytes": 290
+      },
+      {
+        "path": "data/shops/npcs/宝石线人.json",
+        "sha256": "cb72aa5568e19d99c952ab8f7a36de0738cfc0e2cf0a788f56e7e594c2310ffd",
+        "bytes": 629
+      },
+      {
+        "path": "data/shops/npcs/爱国青年.json",
+        "sha256": "527f0b127a46284a0387587b87a6a8f9c23390eb58aa532b4101834eb697e77b",
+        "bytes": 712
+      },
+      {
+        "path": "data/shops/npcs/前治安官.json",
+        "sha256": "fa97c9cdd112ff560270bf2d54d69377a925fd10f299bf854c50851997f06848",
+        "bytes": 1058
+      },
+      {
+        "path": "data/shops/npcs/学生妹.json",
+        "sha256": "54eee8c6249d820a322c59098a1e19e3b01e92935b590f69a4ff6a3a580a80b8",
+        "bytes": 724
+      },
+      {
+        "path": "data/shops/npcs/迷之盔甲君.json",
+        "sha256": "3787374e8413b941dadc6906d35fad08d20027912df274cf9945fed03fd27eec",
+        "bytes": 1214
+      },
+      {
+        "path": "data/shops/npcs/诺艾尔.json",
+        "sha256": "bda7eba31c5d976c834fcb7eabc00d9c0c2f7826aa1db6cccc705492e9bd54c8",
+        "bytes": 157
+      },
+      {
+        "path": "data/shops/npcs/Singer.json",
+        "sha256": "ab083bfa3b328099166af3ee0d05b62127b991e200a88f5ec4ce08e1792931bb",
+        "bytes": 234
+      },
+      {
+        "path": "data/shops/npcs/Keyboard.json",
+        "sha256": "f612d98b5cd46f33c906be1815bb14c0648b0f10cdd4412656f5071a07d1da3f",
+        "bytes": 245
+      },
+      {
+        "path": "data/shops/npcs/Guitar.json",
+        "sha256": "75f080919dc7cfac65434acfa8566cce93571a53472d97c3611b6672386def91",
+        "bytes": 237
+      },
+      {
+        "path": "data/shops/npcs/general.json",
+        "sha256": "d22cefdfee6be9d7480950eddb4331b5ef0bf00a80302408599fa9f26863866c",
+        "bytes": 614
+      },
+      {
+        "path": "data/shops/npcs/幸存老兵-暂时停用.json",
+        "sha256": "ea1d1a3a03032dc04be98d650b438969fa1b7d2966a96321232f897fa51b16bf",
+        "bytes": 134
+      },
+      {
+        "path": "data/shops/npcs/黑仔.json",
+        "sha256": "de8edeea2de0d71c3108321bb194b23e3d2ec2d377b24fdff3e7f8d99d0000ab",
+        "bytes": 378
+      },
+      {
+        "path": "data/shops/npcs/黑铁会外交部长.json",
+        "sha256": "f9886f0b693338b56ffb47b4d1792c4b5526dd89e5d98a4ea81d92d978a57640",
+        "bytes": 504
+      },
+      {
+        "path": "data/shops/npcs/heeho君.json",
+        "sha256": "a76b35e333a3ddc1334c65c20766d4f74813a3f3caf2ae3dd78c795edfb3dab6",
+        "bytes": 1656
+      },
+      {
+        "path": "data/shops/npcs/格格巫.json",
+        "sha256": "ca108e15cbbda00680fd045344e456940f5f097b01fde2909694f82a10b6b86f",
+        "bytes": 463
+      },
+      {
+        "path": "data/shops/npcs/丽丽丝.json",
+        "sha256": "7d96c02f8be64418f80cd32f8175c0550ab9c535c43c47de893f5ec92f099c30",
+        "bytes": 276
+      },
+      {
+        "path": "data/shops/npcs/厨师.json",
+        "sha256": "3a7da45cdfea70e439ccfa60949158b4fb44403134dcd73f18c20d43615bcdcf",
+        "bytes": 1205
+      },
+      {
+        "path": "data/shops/npcs/soldier.json",
+        "sha256": "c3d02994ce30b02603dbb0d508ad8d523cfb7e8e27a8208c0c463ef4ccb5e4f3",
+        "bytes": 1082
+      },
+      {
+        "path": "data/shops/npcs/武器订购系统.json",
+        "sha256": "e5bf7d4f0a9f7a09dfd9547be474588000654a69dfeb52b1bfcbb3a258ec3678",
+        "bytes": 787
+      },
+      {
+        "path": "data/shops/npcs/Vanshuther.json",
+        "sha256": "6e6c7e6e7b1069739a6f0bac4a8bf3bff5121b440389f6d1bf158012aab13bce",
+        "bytes": 882
+      },
+      {
+        "path": "data/shops/npcs/翅虎.json",
+        "sha256": "ce6aec272c3e78c28997543f3ceccca4dff6bfc64be21cae4e93599207e92253",
+        "bytes": 209
+      },
+      {
+        "path": "data/shops/npcs/黑龙.json",
+        "sha256": "17f482d96c1ba9357f48bdfbdbec798e8a012cc0ac53133fb616f14cbaeee627",
+        "bytes": 616
+      },
+      {
+        "path": "data/shops/npcs/体育老师.json",
+        "sha256": "17465c06110f4152cd644c6320ace66c458405ea7326d96d90511b25ac008cb6",
+        "bytes": 511
+      },
+      {
+        "path": "data/shops/npcs/吸特乐.json",
+        "sha256": "497f5890280a3859ab9d85c29da8be5c8da8b890ae5bc67295d53e9e23f7610b",
+        "bytes": 231
+      },
+      {
+        "path": "data/shops/npcs/武器大师.json",
+        "sha256": "7fb8b9590021734c93f9b5f5893fbf54d28078807dccab06f3f2c60f6677c405",
+        "bytes": 131
+      }
+    ]
+  },
+  "dialogueManifest": {
+    "path": "launcher/web/assets/dialogue-portraits/manifest.json",
+    "sha256": "d706f1571af509e255c2276b40e36ad317fe75a5f81b89b8d3eefcc1ed9be244",
+    "bytes": 66312
+  },
+  "sourcePartition": {
+    "externalDialogue": 25,
+    "internalDialogue": 8,
+    "exactXflSwfPilot": 1
+  },
+  "sources": {
+    "Andy Law": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/Andy Law.swf",
+        "sha256": "3b3e188f4ff09b344aa13ed6848c0b1be202079ddec7fdecb50c292673ebbdba",
+        "bytes": 1611455
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "1b8b15bb2f958b744507db0f53752dd08c57e03be76ef1b3c06d01bc21caedd9",
+      "output": {
+        "uri": "subjects/dd5b787a0a1a5f84cc71eef1006e2393a84dd06b823b39cfe9464537e003db16.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 44,
+          "width": 224,
+          "height": 167
+        },
+        "sha256": "dd5b787a0a1a5f84cc71eef1006e2393a84dd06b823b39cfe9464537e003db16"
+      }
+    },
+    "小F": {
+      "kind": "dialogue-ui-linkage",
+      "sourceSwf": {
+        "path": "flashswf/UI/对话框界面.swf",
+        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
+        "bytes": 1071988
+      },
+      "sourceXfl": {
+        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
+        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
+        "bytes": 480732
+      },
+      "linkage": "对话框肖像",
+      "characterId": 981,
+      "declaredFrameCount": 262,
+      "xflFrameIndex": 65,
+      "frame1Based": 66,
+      "duration": 5,
+      "extractedPngSha256": "abd9afee7a9b93c620235d9aaccdc8e033c205d1a17b9fd84463d99b4ec7a35f",
+      "output": {
+        "uri": "subjects/fb9d3016a480c80a67e1a201c310916e0816f48e0fceeb67d822980c763ea41d.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 50,
+          "y": 16,
+          "width": 156,
+          "height": 224
+        },
+        "sha256": "fb9d3016a480c80a67e1a201c310916e0816f48e0fceeb67d822980c763ea41d"
+      }
+    },
+    "Boy": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/Boy.swf",
+        "sha256": "4ca3194a0cd1a8335424d57b9e6408d0a02d435ca12b64f42186d02b8cd836b3",
+        "bytes": 159677
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "fc469ce1645206acb422c18017f35a4e0ac46d87286927445c3923a7d3267a95",
+      "output": {
+        "uri": "subjects/882688de434a0be5312f5c09fccb9537d2e94065993f266b723fa8edbe9f606e.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 39,
+          "y": 16,
+          "width": 178,
+          "height": 224
+        },
+        "sha256": "882688de434a0be5312f5c09fccb9537d2e94065993f266b723fa8edbe9f606e"
+      }
+    },
+    "Pig": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/Pig.swf",
+        "sha256": "7b2fae3d80a3510cdbcb331a6df1fe30f97af29f13c0f0771497b756d8e64f1f",
+        "bytes": 194595
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "2b5a25fc94f9d40071e14f1892281620473ab243b90ac0b19c043307e89d0358",
+      "output": {
+        "uri": "subjects/e3db2e722c3b229f952be6e5a82e1884ea8c73fecd8b7b07220f083abf1ffbc7.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 22,
+          "y": 16,
+          "width": 212,
+          "height": 224
+        },
+        "sha256": "e3db2e722c3b229f952be6e5a82e1884ea8c73fecd8b7b07220f083abf1ffbc7"
+      }
+    },
+    "King": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/King.swf",
+        "sha256": "60aff023f84af5f0922f4c6727df8e50587456dd652b780fd2ca33de2d060573",
+        "bytes": 301991
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "a1e27d538b1e14d3bdf9ec66c256008b4cbad9f22b05641a5fc5f404d4f9c82c",
+      "output": {
+        "uri": "subjects/4b53f04be7eb861f8eb711d3243d7a07255601695510ebed274b0287898d8a55.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 37,
+          "y": 16,
+          "width": 181,
+          "height": 224
+        },
+        "sha256": "4b53f04be7eb861f8eb711d3243d7a07255601695510ebed274b0287898d8a55"
+      }
+    },
+    "冷兵器商人": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/冷兵器商人.swf",
+        "sha256": "aff86bef882729da3b2962ec6f528ef8cf8fec551a6c2ba66c7113dff96247b2",
+        "bytes": 15591
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "c0b5db668bc043de5be0645deb665f271aafdee9bffadbd0efdb8b66af44e427",
+      "output": {
+        "uri": "subjects/6544cfd94eee4f398c800a29a35dbd0a866ecc97deecbc6b9798e1a84afa6c01.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 47,
+          "y": 16,
+          "width": 162,
+          "height": 224
+        },
+        "sha256": "6544cfd94eee4f398c800a29a35dbd0a866ecc97deecbc6b9798e1a84afa6c01"
+      }
+    },
+    "Shop Girl": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/Shop Girl.swf",
+        "sha256": "0b6b2366604e9df8745b11b27431bcf5576988633e2d71cc8b10ef2089baedae",
+        "bytes": 2742025
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "7115744208650af3b10674ef17c4e1668503a28c4514af38b471493b2a825bd0",
+      "output": {
+        "uri": "subjects/8b5a49a1d53655959ee4be9ef26b293a7972cac60753d87c5ee08278d565dacd.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 53,
+          "width": 224,
+          "height": 150
+        },
+        "sha256": "8b5a49a1d53655959ee4be9ef26b293a7972cac60753d87c5ee08278d565dacd"
+      }
+    },
+    "The Girl": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/The Girl.swf",
+        "sha256": "fd32dbc31dea7487c75beb50c2cd825e34f2fdda901a80b095a540b5f58c7a24",
+        "bytes": 3380630
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "1dca25c17573e1364183a42f188f87514bad2f0708b393062d83a128b5a8f98b",
+      "output": {
+        "uri": "subjects/84471eb7b9185f72439366e79675a869ccc4e6de919156b942d6dd8ca22b072d.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 31,
+          "y": 16,
+          "width": 194,
+          "height": 224
+        },
+        "sha256": "84471eb7b9185f72439366e79675a869ccc4e6de919156b942d6dd8ca22b072d"
+      }
+    },
+    "舞女": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/舞女.swf",
+        "sha256": "3c2e52549059516c3e5e6770067a341f4b9370a754b7b01b46490fdf6f227ff3",
+        "bytes": 45676
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "a0eb3746fe874ecbe41fad7ac2b79a2e6c737250532a1154a79d12bc820c3a0a",
+      "output": {
+        "uri": "subjects/fe2b32d0a4fb010678765b077c21ce947206e10defa23bdc968a5041bffbccf0.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 33,
+          "y": 16,
+          "width": 190,
+          "height": 224
+        },
+        "sha256": "fe2b32d0a4fb010678765b077c21ce947206e10defa23bdc968a5041bffbccf0"
+      }
+    },
+    "酒保": {
+      "kind": "dialogue-ui-linkage",
+      "sourceSwf": {
+        "path": "flashswf/UI/对话框界面.swf",
+        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
+        "bytes": 1071988
+      },
+      "sourceXfl": {
+        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
+        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
+        "bytes": 480732
+      },
+      "linkage": "对话框肖像",
+      "characterId": 981,
+      "declaredFrameCount": 262,
+      "xflFrameIndex": 70,
+      "frame1Based": 71,
+      "duration": 7,
+      "extractedPngSha256": "800924c632ec254c90235f5fac60ad59f7bfc83e7893b76d375ed866ccc461d7",
+      "output": {
+        "uri": "subjects/9d24cad1e170a61b62ac1c1bbc5f81691609b2c7935a0642fdb15cec46c7095d.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 52,
+          "y": 16,
+          "width": 152,
+          "height": 224
+        },
+        "sha256": "9d24cad1e170a61b62ac1c1bbc5f81691609b2c7935a0642fdb15cec46c7095d"
+      }
+    },
+    "宝石线人": {
+      "kind": "dialogue-ui-linkage",
+      "sourceSwf": {
+        "path": "flashswf/UI/对话框界面.swf",
+        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
+        "bytes": 1071988
+      },
+      "sourceXfl": {
+        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
+        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
+        "bytes": 480732
+      },
+      "linkage": "对话框肖像",
+      "characterId": 981,
+      "declaredFrameCount": 262,
+      "xflFrameIndex": 100,
+      "frame1Based": 101,
+      "duration": 8,
+      "extractedPngSha256": "b9630ffce73e39be26af959eb6ff995e5b72cdfd3bf99c744602d54905f47fc3",
+      "output": {
+        "uri": "subjects/d2f6fbc08097c0ebb8d7037bb1a749b1b5690524bd3f4d25d450fcec331c614a.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 54,
+          "y": 16,
+          "width": 148,
+          "height": 224
+        },
+        "sha256": "d2f6fbc08097c0ebb8d7037bb1a749b1b5690524bd3f4d25d450fcec331c614a"
+      }
+    },
+    "爱国青年": {
+      "kind": "dialogue-ui-linkage",
+      "sourceSwf": {
+        "path": "flashswf/UI/对话框界面.swf",
+        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
+        "bytes": 1071988
+      },
+      "sourceXfl": {
+        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
+        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
+        "bytes": 480732
+      },
+      "linkage": "对话框肖像",
+      "characterId": 981,
+      "declaredFrameCount": 262,
+      "xflFrameIndex": 108,
+      "frame1Based": 109,
+      "duration": 5,
+      "extractedPngSha256": "06c2be703122aebcf60d3856981e2fde7f97d6956559ade7ede5762394aac87e",
+      "output": {
+        "uri": "subjects/433dc5d339fceeccb63aed8a0466cb964760db3f3ca5ed725a1f8c1e3cbe7078.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 41,
+          "width": 224,
+          "height": 174
+        },
+        "sha256": "433dc5d339fceeccb63aed8a0466cb964760db3f3ca5ed725a1f8c1e3cbe7078"
+      }
+    },
+    "前治安官": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/前治安官.swf",
+        "sha256": "2b929fdd4a6717cf7e97204fa8ddd05cf31b657dfccac2ffa1c6caab9cd89984",
+        "bytes": 84227
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "619606bf8e85c55f67eea5cfb8c26b1af31b11d546df60b4932eeb4f07fe09de",
+      "output": {
+        "uri": "subjects/83c32f6b70340da020d4611dc678fed1cdee4c10fd218ebb1fd73543ccc82486.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 22,
+          "width": 224,
+          "height": 211
+        },
+        "sha256": "83c32f6b70340da020d4611dc678fed1cdee4c10fd218ebb1fd73543ccc82486"
+      }
+    },
+    "学生妹": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/学生妹.swf",
+        "sha256": "65be15fc8ad6e7d0d3b9821b38d50d8bd6026613316774a4a1ab80ac815ca146",
+        "bytes": 51056
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "c366e5e6ad1053d05ae017bf912bed9f3481893250ad5eb730d49cedfe75d7c5",
+      "output": {
+        "uri": "subjects/e74f7fcfe0c983660cc831f78d2520ca606ff2b37fbee32292ca125c0065d104.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 37,
+          "y": 16,
+          "width": 182,
+          "height": 224
+        },
+        "sha256": "e74f7fcfe0c983660cc831f78d2520ca606ff2b37fbee32292ca125c0065d104"
+      }
+    },
+    "迷之盔甲君": {
+      "kind": "dialogue-ui-linkage",
+      "sourceSwf": {
+        "path": "flashswf/UI/对话框界面.swf",
+        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
+        "bytes": 1071988
+      },
+      "sourceXfl": {
+        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
+        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
+        "bytes": 480732
+      },
+      "linkage": "对话框肖像",
+      "characterId": 981,
+      "declaredFrameCount": 262,
+      "xflFrameIndex": 113,
+      "frame1Based": 114,
+      "duration": 7,
+      "extractedPngSha256": "0a3693a5b75343b73a80cc1a803d5eb4794025da6c226448c284c6e2fc5eef2b",
+      "output": {
+        "uri": "subjects/dbb23e8dcf2ddc63dcf976a1afbfe5c96239c17942bfdf45a5ce66f5d0cafee1.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 56,
+          "width": 224,
+          "height": 144
+        },
+        "sha256": "dbb23e8dcf2ddc63dcf976a1afbfe5c96239c17942bfdf45a5ce66f5d0cafee1"
+      }
+    },
+    "诺艾尔": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/诺艾尔.swf",
+        "sha256": "0d1933ef3ff9912709fa11a0f7e21d4ec83cf62e1a79914cf309a33ce1f5e4cf",
+        "bytes": 7178
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "80e9b63811d6719e17a532563dc0085d95f803f2a52eb3a3931ef0a109961f2a",
+      "output": {
+        "uri": "subjects/032890173c007c87c9e4c366e3255c6a4feb8dc0860bc62f70833b5df8fe4659.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 68,
+          "y": 16,
+          "width": 119,
+          "height": 224
+        },
+        "sha256": "032890173c007c87c9e4c366e3255c6a4feb8dc0860bc62f70833b5df8fe4659"
+      }
+    },
+    "Singer": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/Singer.swf",
+        "sha256": "e8a93a086af6f0781bd711b2cd01eeabbf73c089295efc00cdce8588f1b52d06",
+        "bytes": 56334
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "e273b8fbe74148de1e1872d662aad4b01a8d98c232417425e61106caae18bd0e",
+      "output": {
+        "uri": "subjects/fc1b703a1cb57b108a93dd9515c84abfe085a78093850c9e3a6b5f77482917fa.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 21,
+          "y": 16,
+          "width": 213,
+          "height": 224
+        },
+        "sha256": "fc1b703a1cb57b108a93dd9515c84abfe085a78093850c9e3a6b5f77482917fa"
+      }
+    },
+    "Keyboard": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/Keyboard.swf",
+        "sha256": "92814455c7fbe139996447eeaaedebab78f3de559c42cb1fce5397144a9ccb6b",
+        "bytes": 54109
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "4ba9d398a11b8587840ede00fc4f1ec0f5da7b4ebea7bfa192bdaf6c1d8c5147",
+      "output": {
+        "uri": "subjects/2d7a414ca37f77987821a5f29c1150d1b1fb9f0f5ae08dfa823b634ab6da1e13.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 20,
+          "width": 224,
+          "height": 215
+        },
+        "sha256": "2d7a414ca37f77987821a5f29c1150d1b1fb9f0f5ae08dfa823b634ab6da1e13"
+      }
+    },
+    "Guitar": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/Guitar.swf",
+        "sha256": "515617a6305fbfea93abce82acb023f2d16a1ceb4f4aa4323074afdcbb8d8de3",
+        "bytes": 81796
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "181999769d22ef93df058eb76ca9d0ac7416a8c6446b2f23f7216e8be59073ab",
+      "output": {
+        "uri": "subjects/e76440d0bad845ff926033206de9d722d74e6d5da665a7a8e67825f189fb4ffa.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 39,
+          "width": 224,
+          "height": 178
+        },
+        "sha256": "e76440d0bad845ff926033206de9d722d74e6d5da665a7a8e67825f189fb4ffa"
+      }
+    },
+    "general": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/general.swf",
+        "sha256": "313bc3a8e6cdcd844f34560b1ce6b9fe31c191550066f40faa65921b1ee1697d",
+        "bytes": 126141
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "65bea6b76a3d8e46ab8ffde5919ec29ef4b79a6c95cf5d02f033570f6bb5b419",
+      "output": {
+        "uri": "subjects/8c20a60cdc1f76c55cf276d38fedfb5e3260639a8924370b72433e939922e16e.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 47,
+          "width": 224,
+          "height": 161
+        },
+        "sha256": "8c20a60cdc1f76c55cf276d38fedfb5e3260639a8924370b72433e939922e16e"
+      }
+    },
+    "黑仔": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/黑仔.swf",
+        "sha256": "ee96a7f498e495f2acb44eb895539f240c0ba7788e358e80226c3696ab0c942c",
+        "bytes": 10723
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "858074ea5777702353bc30f112f33ba31b4b444dd8dfab5f9b0d5acab0f0f159",
+      "output": {
+        "uri": "subjects/ecc37f564f51a5b087a82e23bc482600ff14acd8e48928a572568d043142c373.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 40,
+          "y": 16,
+          "width": 176,
+          "height": 224
+        },
+        "sha256": "ecc37f564f51a5b087a82e23bc482600ff14acd8e48928a572568d043142c373"
+      }
+    },
+    "黑铁会外交部长": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/黑铁会外交部长.swf",
+        "sha256": "dd983d0a3ad7c79674a343744173a4f7eade2d02d1b3a9d70952a9fc2a7278ab",
+        "bytes": 13788
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "16b1026433e7315aa2fc738b8a9036b6f61fa255ac90d741d487c84d4724c071",
+      "output": {
+        "uri": "subjects/2a73a79fdb143d9111c6c93637ba378ece56a708544785c9ee7a3fb095ecf389.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 66,
+          "y": 16,
+          "width": 123,
+          "height": 224
+        },
+        "sha256": "2a73a79fdb143d9111c6c93637ba378ece56a708544785c9ee7a3fb095ecf389"
+      }
+    },
+    "heeho君": {
+      "kind": "exact-xfl-swf-pilot",
+      "sourceSwf": {
+        "path": "flashswf/levels/地图-彩蛋地图.swf",
+        "sha256": "d535a4a8ca3e12cf99194cb22f93a43de66fdcb80c3b1f47441ccc172657b1c8",
+        "bytes": 4806009
+      },
+      "sourceXfl": [
+        {
+          "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/地图-彩蛋地图.xml",
+          "sha256": "cb37b182628c3c45223410c8447060e0bceb5074d3482002435f35dbe8e637ff",
+          "bytes": 10653
+        },
+        {
+          "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/NPC-heeho君.xml",
+          "sha256": "6e2ea12b9c14febc036414b63bb49bf8c96985bf64ca526485d91c9441794efe",
+          "bytes": 5543
+        },
+        {
+          "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/霜精.xml",
+          "sha256": "acaf3e5c8c519b7b77dcb48bb8b943dd8a8059034f8a56506bf3061dad471fae",
+          "bytes": 40802
+        },
+        {
+          "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/补间 1.xml",
+          "sha256": "655f4f201b5e0011c5feab2e0c3b718665f44f0a61e5574d548175d015a4ffcd",
+          "bytes": 1582
+        },
+        {
+          "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/补间 2.xml",
+          "sha256": "8d4e9dd091871fa6affc1f31761a52654240ca16361dc06217048a282b5f07fe",
+          "bytes": 1582
+        },
+        {
+          "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/补间 3.xml",
+          "sha256": "c75068e5589baa352e2bdef4abe7fd971869a513bb9c36c03924ae61d7c884af",
+          "bytes": 1582
+        },
+        {
+          "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/补间 4.xml",
+          "sha256": "430739fe537b6e0d2fac333f571a45aa7995080a9d43584bfc9a892791408605",
+          "bytes": 1582
+        }
+      ],
+      "mapLinkage": "地图-彩蛋地图",
+      "mapCharacterId": 381,
+      "outerLibraryItem": "NPC/NPC-heeho君/NPC-heeho君",
+      "outerCharacterId": 270,
+      "outerDeclaredFrameCount": 10,
+      "bodyLibraryItem": "NPC/NPC-heeho君/霜精",
+      "characterId": 268,
+      "declaredFrameCount": 37,
+      "xflNeutralFrameIndex": 0,
+      "frame1Based": 1,
+      "identityAccessories": [
+        "NPC/NPC-heeho君/零件/带帽霜精头",
+        "NPC/NPC-heeho君/零件/墨镜"
+      ],
+      "ordinaryJackAlias": false,
+      "extractedPngSha256": "a06f5007d96271b908b3716d6488b2b6699ff526e4ed5762072e4b4073365c52",
+      "output": {
+        "uri": "subjects/62526c675caed9179fc230876c58161ce2e3bbe401a3d5aa3570d76c4003436a.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 57,
+          "y": 16,
+          "width": 141,
+          "height": 224
+        },
+        "sha256": "62526c675caed9179fc230876c58161ce2e3bbe401a3d5aa3570d76c4003436a"
+      }
+    },
+    "格格巫": {
+      "kind": "dialogue-ui-linkage",
+      "sourceSwf": {
+        "path": "flashswf/UI/对话框界面.swf",
+        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
+        "bytes": 1071988
+      },
+      "sourceXfl": {
+        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
+        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
+        "bytes": 480732
+      },
+      "linkage": "对话框肖像",
+      "characterId": 981,
+      "declaredFrameCount": 262,
+      "xflFrameIndex": 77,
+      "frame1Based": 78,
+      "duration": 7,
+      "extractedPngSha256": "e9fb12f77d6606084ab15310ffe03f2d9ff3be1368b4382491b831f2d9bcdc83",
+      "output": {
+        "uri": "subjects/374890c80b2fcdfedd09766b031665d83d4466262b83a93e1d599fc7eda0cb80.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 25,
+          "y": 16,
+          "width": 206,
+          "height": 224
+        },
+        "sha256": "374890c80b2fcdfedd09766b031665d83d4466262b83a93e1d599fc7eda0cb80"
+      }
+    },
+    "丽丽丝": {
+      "kind": "dialogue-ui-linkage",
+      "sourceSwf": {
+        "path": "flashswf/UI/对话框界面.swf",
+        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
+        "bytes": 1071988
+      },
+      "sourceXfl": {
+        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
+        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
+        "bytes": 480732
+      },
+      "linkage": "对话框肖像",
+      "characterId": 981,
+      "declaredFrameCount": 262,
+      "xflFrameIndex": 84,
+      "frame1Based": 85,
+      "duration": 7,
+      "extractedPngSha256": "8b6dc069e968b54035af98a8a4677c1c046657c328191d59a3bf54819907f327",
+      "output": {
+        "uri": "subjects/dd2f82ea425b37c0770ab48d026183fbdcc39fd3af77ccac29d79a19d4dde028.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 21,
+          "y": 16,
+          "width": 213,
+          "height": 224
+        },
+        "sha256": "dd2f82ea425b37c0770ab48d026183fbdcc39fd3af77ccac29d79a19d4dde028"
+      }
+    },
+    "厨师": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/厨师.swf",
+        "sha256": "6e81d0db8d42c5864d7fafa7943687ce7ef64c31f83acc36e93ecfec936bf7a1",
+        "bytes": 105821
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "c13fc46b99efdd13017f1d889850e2bae71f2f7dd559957d1c6223c41c3d73c1",
+      "output": {
+        "uri": "subjects/758a1c3f25d13df09c3a267e15ea5d39b47490dc739862d64cbd8e8bba11a821.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 51,
+          "width": 224,
+          "height": 153
+        },
+        "sha256": "758a1c3f25d13df09c3a267e15ea5d39b47490dc739862d64cbd8e8bba11a821"
+      }
+    },
+    "soldier": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/soldier.swf",
+        "sha256": "e0721904f3737a218bff6297595200f9a8487cd27c379d04d9aea524d4a9c25e",
+        "bytes": 47926
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "a755802909b8116c0b67e74ae5ae7ef6b6fb2b38bab5869140e2ecb7cd40aa3f",
+      "output": {
+        "uri": "subjects/669c73ec0cb933319f27de4e985ee7652402c32022ed3c3544a97facbf444138.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 23,
+          "width": 224,
+          "height": 210
+        },
+        "sha256": "669c73ec0cb933319f27de4e985ee7652402c32022ed3c3544a97facbf444138"
+      }
+    },
+    "武器订购系统": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/武器订购系统.swf",
+        "sha256": "5b32b884752a790fa09f39a1ebcc035dbea7842d260e882430b96e594e3f7bb4",
+        "bytes": 10058
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "f7feea40b8a9fd415b2ba323327cb64ad2b7786a9b200a23a7803d6d0db0bf5b",
+      "output": {
+        "uri": "subjects/4f50f5effa4d03310c6d4d0ba4a919143f6ddb585c23c3451ef52ee1cab73f5e.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 29,
+          "y": 16,
+          "width": 198,
+          "height": 224
+        },
+        "sha256": "4f50f5effa4d03310c6d4d0ba4a919143f6ddb585c23c3451ef52ee1cab73f5e"
+      }
+    },
+    "Vanshuther": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/Vanshuther.swf",
+        "sha256": "efa79ee0442365a74b1e8f7bd0aa46946f78178ddbcf9e8ad95aad1e56a549c6",
+        "bytes": 11984
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "517db57ccbec9db6e83fec4d8681455ff17978ed4d021b70861b4b89802dd6e7",
+      "output": {
+        "uri": "subjects/1380b38cb4ff2b2e196e35ed5f6f0f8f4c982d734a614cc1ce2ca97df9e54ef6.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 71,
+          "y": 16,
+          "width": 114,
+          "height": 224
+        },
+        "sha256": "1380b38cb4ff2b2e196e35ed5f6f0f8f4c982d734a614cc1ce2ca97df9e54ef6"
+      }
+    },
+    "翅虎": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/翅虎.swf",
+        "sha256": "c3f4b50a7ee4e192f2fd1f5b8ac8384bd3da4236617c3b8963e1c57ba380ab34",
+        "bytes": 1785379
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "d956319f67d36e679853fa47965b7f5de9aa50df757592ac41acd2628e401c2c",
+      "output": {
+        "uri": "subjects/c275bc3c1c9b7af3fb14c3319e02c9935484ba109430a67cac457fec144e5e00.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 55,
+          "width": 224,
+          "height": 146
+        },
+        "sha256": "c275bc3c1c9b7af3fb14c3319e02c9935484ba109430a67cac457fec144e5e00"
+      }
+    },
+    "黑龙": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/黑龙.swf",
+        "sha256": "69dc9beb7f6a746909252f22292f9b2a4bf84e90d2e7f3d2bb58718dbe3011aa",
+        "bytes": 3943021
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "08da40a589b2bfec8935468af6b861f4488954b501964c1db06862774d87c711",
+      "output": {
+        "uri": "subjects/59ae7567d60186ffb503d424a425f6a4cfa2443a4092e2e66a95f7f5456fce2a.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 73,
+          "width": 224,
+          "height": 109
+        },
+        "sha256": "59ae7567d60186ffb503d424a425f6a4cfa2443a4092e2e66a95f7f5456fce2a"
+      }
+    },
+    "体育老师": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/体育老师.swf",
+        "sha256": "71c15c24bb42f88bc6f9bd91b8e1432f358c326477bf2d3e257299d99c41826c",
+        "bytes": 23654
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "a6da1cd522fd24a2d8b7d65ed3a043d323cebc1fdd9a89e54a5ca8d81991849e",
+      "output": {
+        "uri": "subjects/c468ea60264a219aa2f44978a6b9a5ae0a06858b431240dda5933cbd636375a2.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 64,
+          "y": 16,
+          "width": 127,
+          "height": 224
+        },
+        "sha256": "c468ea60264a219aa2f44978a6b9a5ae0a06858b431240dda5933cbd636375a2"
+      }
+    },
+    "吸特乐": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/吸特乐.swf",
+        "sha256": "398dc2057b8ba71978d5b7e2b5411f61776bfbaf86462bf3b2f2215b5cec18f8",
+        "bytes": 5252
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "88229fdb208ed657ad187c60029a3e821abae90252f13b0e9bbe5c293a18a25b",
+      "output": {
+        "uri": "subjects/830290364c49ac93f5391b46df06430b10b114b041f8805b7d3ec503ecad3eed.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 45,
+          "y": 16,
+          "width": 166,
+          "height": 224
+        },
+        "sha256": "830290364c49ac93f5391b46df06430b10b114b041f8805b7d3ec503ecad3eed"
+      }
+    },
+    "武器大师": {
+      "kind": "dialogue-ui-linkage",
+      "sourceSwf": {
+        "path": "flashswf/UI/对话框界面.swf",
+        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
+        "bytes": 1071988
+      },
+      "sourceXfl": {
+        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
+        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
+        "bytes": 480732
+      },
+      "linkage": "对话框肖像",
+      "characterId": 981,
+      "declaredFrameCount": 262,
+      "xflFrameIndex": 256,
+      "frame1Based": 257,
+      "duration": 6,
+      "extractedPngSha256": "64fd985bed4038fade81b031fbdc4593059cf12b6dec9967370645c6c3c84f2c",
+      "output": {
+        "uri": "subjects/f53b2855c1b6cea3c15dfbc8f0b3d7cf5e724c6787563ec4efaaf2c0c6c334ab.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 26,
+          "width": 224,
+          "height": 204
+        },
+        "sha256": "f53b2855c1b6cea3c15dfbc8f0b3d7cf5e724c6787563ec4efaaf2c0c6c334ab"
+      }
+    }
+  }
+}

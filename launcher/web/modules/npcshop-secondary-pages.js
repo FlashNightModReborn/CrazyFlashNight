@@ -726,6 +726,164 @@
         return true;
     };
 
+    function createOwnedView(options) {
+        options = options || {};
+        var documentRef = options.document;
+        var inventoryUI = options.inventoryUI;
+        var workbench = options.workbench;
+        var components = options.components;
+        var viewId = String(options.viewId || '');
+        var title = String(options.title || '');
+        var canSell = !!options.canSell;
+        var getView = requirePort(options, 'getView');
+        var getSaleIntents = requirePort(options, 'getSaleIntents');
+        var iconHtml = requirePort(options, 'iconHtml');
+        var saleIdentity = requirePort(options, 'saleIdentity');
+        var bindOwnedTooltip = requirePort(options, 'bindOwnedTooltip');
+        var interaction = requirePort(options, 'interaction');
+        var toast = requirePort(options, 'toast');
+        var toggleSale = requirePort(options, 'toggleSale');
+        var ownedShell = new inventoryUI.OwnedInventoryViewShell({
+            containerId:viewId,
+            instanceKey:'npcshop:' + viewId,
+            itemModel:'owned',
+            getItems:function() {
+                var view = getView(viewId);
+                return view && view.slots ? view.slots : [];
+            },
+            keyOf:function(slot) {
+                return viewId === 'bag' ? slot.physicalSlot : slot.collectionKey;
+            },
+            renderItem:function(slot) {
+                var node = inventoryUI.renderOwnedSlot(viewId === 'bag' ? '背包' : title,
+                    slot, {iconHtml:iconHtml, allowDiscard:false});
+                if (!slot.occupied) return node;
+                node.classList.add('npcshop-owned-card');
+                if (canSell) {
+                    var intents = getSaleIntents();
+                    var identity = saleIdentity(viewId, slot);
+                    var selected = !!intents[identity];
+                    node.classList.toggle('selected', selected);
+                    node.classList.toggle('item-card-selected', selected);
+                    node.setAttribute('aria-pressed', selected ? 'true' : 'false');
+                    var marker = documentRef.createElement('span');
+                    marker.className = 'item-card-auxiliary item-card-selection-marker npcshop-selection-marker';
+                    marker.textContent = selected ? '待售 ×' + intents[identity].quantity
+                        : '点击加入待售';
+                    node.appendChild(marker);
+                } else {
+                    node.classList.add('read-only');
+                    node.setAttribute('aria-readonly', 'true');
+                }
+                return node;
+            },
+            bindItem:function(node, slot) {
+                if (slot && slot.occupied) bindOwnedTooltip(node, viewId, slot);
+                var item = slot && slot.item || {};
+                var itemName = String(item.displayName || '未知物品');
+                var reasonNode = ensureReasonNode(node);
+                workbench.EntityTile.bindActivation(node, {
+                    itemName:itemName,
+                    label:node.getAttribute('aria-label') || itemName,
+                    selected:slot && slot.occupied && canSell
+                        && !!getSaleIntents()[saleIdentity(viewId, slot)],
+                    inspectable:!!slot && slot.occupied,
+                    actionable:function() {
+                        return !!slot && slot.occupied && interaction(viewId).actionable;
+                    },
+                    reason:function() {
+                        return slot && slot.occupied ? interaction(viewId).reason : '';
+                    },
+                    reasonNode:reasonNode,
+                    onBlocked:function() { toast(interaction(viewId).reason); },
+                    onActivate:canSell && slot && slot.occupied
+                        ? function() { toggleSale(viewId, slot); } : null
+                });
+                node.__npcOwnedInteractionRefresh = function() {
+                    var projection = interaction(viewId);
+                    if (!slot || !slot.occupied) {
+                        projection = {inspectable:false, actionable:false, reason:''};
+                    }
+                    projectNode(workbench, node, projection, reasonNode);
+                    node.classList.toggle('write-locked', !projection.actionable);
+                };
+                node.__npcOwnedInteractionRefresh();
+            },
+            title:title,
+            meta:'同步中',
+            emptyText:'暂无' + title,
+            className:'npcshop-owned-view npcshop-' + viewId + '-view',
+            gridClassName:'npcshop-owned-grid',
+            allowedSlots:['R'],
+            layoutMode:options.layoutMode || 'full',
+            densityController:options.densityController
+        });
+        ownedShell.view.viewId = viewId;
+        var pane = new components.OwnedInventoryPane({
+            view:ownedShell.view,
+            shell:ownedShell,
+            getSnapshot:function() { return getView(viewId); },
+            keyOf:function(slot) { return slot ? saleIdentity(viewId, slot) : ''; },
+            interaction:interaction(viewId),
+            onInteractionChange:function() {
+                var nodes = ownedShell.view.root.querySelectorAll('.inventory-slot-card');
+                for (var index = 0; index < nodes.length; index++) {
+                    if (nodes[index].__npcOwnedInteractionRefresh) {
+                        nodes[index].__npcOwnedInteractionRefresh();
+                    }
+                }
+            }
+        });
+        return {view:pane.view, pane:pane};
+    }
+
+    function renderCatalogCard(options, item) {
+        var intents = options.getPurchaseIntents();
+        var selected = !!intents[String(item.catalogIndex)];
+        var atLimit = isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0;
+        var markerText = item.locked ? '未解锁' : (atLimit ? '已达持有上限'
+            : (selected ? '待购 ×' + intents[String(item.catalogIndex)].quantity : '点击加入待购'));
+        var lockTitle = atLimit ? '已达持有上限'
+            : (item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁');
+        return options.workbench.ItemCard.renderCatalog({
+            skin:'npcshop', item:item, id:item.catalogIndex,
+            iconHtml:options.iconHtml(item.icon, 'kshop-icon'),
+            name:item.displayName,
+            meta:options.itemFilter.catalogPath(item).map(function(part) {
+                return part.label;
+            }).join(' · '),
+            priceText:'$ ' + Number(item.unitPrice || 0).toLocaleString(),
+            locked:item.locked || atLimit,
+            lockTitle:lockTitle,
+            selected:selected,
+            balanceSummary:item.balanceSummary,
+            markerText:markerText
+        });
+    }
+
+    function syncCatalogIntentCard(options, item, targetNode) {
+        var renderer = options.getCatalogRenderer();
+        if (!renderer || !item) return;
+        var intents = options.getPurchaseIntents();
+        var key = String(item.catalogIndex);
+        var nodes = targetNode ? [targetNode]
+            : renderer.root.querySelectorAll('[data-workbench-key]');
+        for (var index = 0; index < nodes.length; index++) {
+            if (nodes[index].getAttribute('data-workbench-key') !== key) continue;
+            var selected = !!intents[key];
+            nodes[index].classList.toggle('selected', selected);
+            nodes[index].classList.toggle('item-card-selected', selected);
+            nodes[index].setAttribute('aria-pressed', selected ? 'true' : 'false');
+            options.workbench.EntityTile.setSelected(nodes[index], selected);
+            var marker = nodes[index].querySelector('.npcshop-selection-marker');
+            var atLimit = isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0;
+            if (marker) marker.textContent = item.locked ? '未解锁'
+                : (atLimit ? '已达持有上限'
+                    : (selected ? '待购 ×' + intents[key].quantity : '点击加入待购'));
+            return;
+        }
+    }
+
     return {
         SettlementPresenter:SettlementPresenter,
         HelpPresenter:HelpPresenter,
@@ -735,6 +893,9 @@
         spaceStatus:spaceStatus,
         ownedInteraction:ownedInteraction,
         bindCatalogActivation:bindCatalogActivation,
+        createOwnedView:createOwnedView,
+        renderCatalogCard:renderCatalogCard,
+        syncCatalogIntentCard:syncCatalogIntentCard,
         ensureReasonNode:ensureReasonNode,
         projectNode:projectNode,
         bindOwnedTooltip:bindOwnedTooltip,

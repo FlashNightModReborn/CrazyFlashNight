@@ -681,7 +681,7 @@ function runSelfTests() {
       "browser-resource-inventory.v1.json"), "utf8"));
     assert.strictEqual(resourceInventory.schema,
       "workbench-live-e2e.browser-resource-inventory.v1");
-    assert.strictEqual(resourceInventory.files.length, 56);
+    assert.strictEqual(resourceInventory.files.length, 57);
     assert.strictEqual(resourceInventory.optionalFiles.length, 30);
     assert(resourceInventory.files.includes("modules/crafting/dev/harness.html"));
     assert(resourceInventory.files.includes("modules/crafting.js"));
@@ -705,12 +705,15 @@ function runSelfTests() {
     assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
     assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
     assert.strictEqual(receipt.journalVerification, "VERIFIED");
-    assert.strictEqual(receipt.moduleEntryCount, 373);
+    assert.strictEqual(receipt.moduleEntryCount, 374);
     assert.deepStrictEqual(receipt.result.viewports, [
       {width:1024,height:576}, {width:1366,height:768}, {width:1920,height:1080},
     ]);
     assert.deepStrictEqual(receipt.result.scenarioCounts,
-      {baseline:120,coverage:15,fault:8,identity:10});
+      {baseline:150,coverage:15,fault:8,identity:10});
+    assert.strictEqual(receipt.result.materialShopScenarioCount, 11);
+    assert.strictEqual(receipt.result.materialShopScenarioNamesSha256.length, 3);
+    assert.strictEqual(new Set(receipt.result.materialShopScenarioNamesSha256).size, 1);
     assert.strictEqual(receipt.result.faultChecks.length, 8);
     assert(receipt.result.faultChecks.every((entry) => entry.ok === true));
     Object.values(receipt.result.scenarioNamesSha256).forEach((digest) =>
@@ -718,10 +721,10 @@ function runSelfTests() {
     assert.deepStrictEqual(receipt.result.scenarioNamesSha256,
       moduleInventory.expectedScenarioNamesSha256);
     assert(/^[a-f0-9]{64}$/.test(receipt.result.resultSha256));
-    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 56);
-    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 86);
-    assert(receipt.servedResourceClosure.resourceCount >= 56
-      && receipt.servedResourceClosure.resourceCount <= 86);
+    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 57);
+    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 87);
+    assert(receipt.servedResourceClosure.resourceCount >= 57
+      && receipt.servedResourceClosure.resourceCount <= 87);
     assert.strictEqual(receipt.servedResourceClosure.failureCount, 4);
     assert(receipt.browserBinary && receipt.browserBinary.locator.startsWith("external:")
       && /^[a-f0-9]{64}$/.test(receipt.browserBinary.sha256)
@@ -771,11 +774,11 @@ function runSelfTests() {
       result[entry.role] = (result[entry.role] || 0) + 1;
       return result;
     }, {});
-    assert.strictEqual(fingerprint.files.length, 240);
+    assert.strictEqual(fingerprint.files.length, 243);
     assert.deepStrictEqual(roles, { page: 1, overlay_startup_web: 21,
       overlay_startup_crafting_web: 1, lazy_registry: 1,
-      crafting_lazy_web: 17, organizer_lazy_web: 6,
-      overlay_stylesheet: 7, panels_import_stylesheet: 22,
+      crafting_lazy_web: 19, organizer_lazy_web: 6,
+      overlay_stylesheet: 7, panels_import_stylesheet: 23,
       idle_prewarm_image: 15, css_conditional_asset: 6,
       font_pack_manifest: 1, icon_manifest: 1,
       host_source: 13, runtime_artifact_source: 1, runtime_input_descriptor: 1,

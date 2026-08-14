@@ -56,12 +56,14 @@ $suiteConfigs = @{
             'scripts\类定义\org\flashNight\arki\item\NpcShopPanelServiceTest.as'
             'scripts\类定义\org\flashNight\arki\item\InventoryPanelServiceTest.as'
             'scripts\类定义\org\flashNight\arki\item\CraftingPanelServiceTest.as'
+            'scripts\类定义\org\flashNight\gesh\tooltip\test\SynthesisIndexTest.as'
         )
         Fqns = @(
             'org.flashNight.arki.item.itemCollection.EquipmentInventoryTest'
             'org.flashNight.arki.item.NpcShopPanelServiceTest'
             'org.flashNight.arki.item.InventoryPanelServiceTest'
             'org.flashNight.arki.item.CraftingPanelServiceTest'
+            'org.flashNight.gesh.tooltip.test.SynthesisIndexTest'
         )
         Additional = @('scripts\逻辑系统分区\商店系统_兼容.as')
         Patterns = @(
@@ -69,12 +71,13 @@ $suiteConfigs = @{
             '(?m)^EquipmentInventoryTest Tests Failed: 0\r?$'
             '(?m)^InventoryPanelServiceTest Tests Passed: 147\r?$'
             '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
-            '(?m)^CraftingPanelServiceTest Tests Passed: 49\r?$'
+            '(?m)^CraftingPanelServiceTest Tests Passed: 130\r?$'
             '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
+            '(?m)^--- SynthesisIndexTest: 13/13 passed, 0 failed ---\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Passed: 48\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'EquipmentInventory 28/28, Inventory 147/147, Crafting 49/49, NPC 48/48'
+        Summary = 'EquipmentInventory 28/28, Inventory 147/147, Crafting 130/130, Synthesis 13/13, NPC 48/48'
     }
     Shared = @{
         DomainId = 'item-panels-shared'
@@ -99,14 +102,21 @@ $suiteConfigs = @{
     Crafting = @{
         DomainId = 'item-panels-crafting'
         Template = 'scripts\test-runners\item-panels\TestLoader.crafting.as.template'
-        Paths = @('scripts\类定义\org\flashNight\arki\item\CraftingPanelServiceTest.as')
-        Fqns = @('org.flashNight.arki.item.CraftingPanelServiceTest')
+        Paths = @(
+            'scripts\类定义\org\flashNight\arki\item\CraftingPanelServiceTest.as'
+            'scripts\类定义\org\flashNight\gesh\tooltip\test\SynthesisIndexTest.as'
+        )
+        Fqns = @(
+            'org.flashNight.arki.item.CraftingPanelServiceTest'
+            'org.flashNight.gesh.tooltip.test.SynthesisIndexTest'
+        )
         Additional = @('scripts\逻辑系统分区\商店系统_兼容.as')
         Patterns = @(
-            '(?m)^CraftingPanelServiceTest Tests Passed: 49\r?$'
+            '(?m)^CraftingPanelServiceTest Tests Passed: 130\r?$'
             '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
+            '(?m)^--- SynthesisIndexTest: 13/13 passed, 0 failed ---\r?$'
         )
-        Summary = 'Crafting 49/49'
+        Summary = 'Crafting 130/130, Synthesis 13/13'
     }
     Npc = @{
         DomainId = 'item-panels-npc'

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using CF7Launcher.Guardian;
 using CF7Launcher.AgentRuntime.Input;
 
 namespace CF7Launcher.AgentRuntime.NativeInput
@@ -136,6 +137,10 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                     _guard.FailAndPreempt(
                         "input_not_inserted",
                         batch.Batch);
+                    LogManager.Log(
+                        "[AgentRuntimeNativeInput] insertion_unknown stage=send_input"
+                        + " requested=" + requestedCount
+                        + " inserted=" + inserted);
                     return NativeInputDispatchResult
                         .InsertionUnknown(
                             requestedCount,
@@ -153,6 +158,18 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                     _guard.FailAndPreempt(
                         containmentReason,
                         batch.Batch);
+                    string externalDiagnostic =
+                        batch.Batch.ExternalDiagnostic;
+                    LogManager.Log(
+                        "[AgentRuntimeNativeInput] insertion_unknown stage=hook_observation"
+                        + " requested=" + requestedCount
+                        + " inserted=" + inserted
+                        + " completed=" + hookCompleted
+                        + " blocked=" + batch.Batch.Blocked
+                        + " observed=" + batch.Batch.ObservedCount
+                        + "/" + batch.Batch.PacketCount
+                        + " reason=" + containmentReason
+                        + externalDiagnostic);
                     return NativeInputDispatchResult
                         .InsertionUnknown(
                             requestedCount,
@@ -395,7 +412,7 @@ namespace CF7Launcher.AgentRuntime.NativeInput
                 hit = _win32.WindowFromPoint(point);
                 related = hit != IntPtr.Zero
                     && _win32.IsSameChildOrOwnedWindow(
-                        target.TopLevelHwnd,
+                        target.TargetHwnd,
                         hit);
             }
             catch

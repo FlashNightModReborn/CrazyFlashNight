@@ -176,7 +176,110 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void AgentPanelOpen_PreservesUnifiedAdmissionGate()
+        public void AgentPanelOpen_MaterialsUsesAuthoritativeMaterialRoute()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router = MakeRouter(c);
+            var commands = new List<string>();
+            router.SetGameCommandSenderForTests(
+                value =>
+                {
+                    commands.Add(value);
+                    return true;
+                });
+
+            Assert.True(router.TryOpenAgentPanel("materials"));
+
+            JObject command = JObject.Parse(
+                Assert.Single(commands).TrimEnd('\0'));
+            Assert.Equal("cmd", (string)command["task"]);
+            Assert.Equal("openMaterialUI", (string)command["action"]);
+            Assert.Equal(
+                command.Value<string>("openRequestId"),
+                router.PendingMaterialOpenRequestId);
+            Assert.Equal(
+                "nativehud_materials",
+                router.PendingMaterialOpenOrigin);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Fact]
+        public void AgentPanelOpen_MaterialsReturnsFalseWhenAuthoritySendFails()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router = MakeRouter(c);
+            router.SetGameCommandSenderForTests(_ => false);
+
+            Assert.False(router.TryOpenAgentPanel("materials"));
+            Assert.Null(router.PendingMaterialOpenRequestId);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AgentPanelOpen_MaterialsAcceptsOnlyExactSynchronousAdmission(
+            bool senderThrows)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router = MakeRouter(c);
+            bool echoed = false;
+            router.SetGameCommandSenderForTests(
+                payload =>
+                {
+                    JObject command = JObject.Parse(
+                        payload.TrimEnd('\0'));
+                    if (!echoed
+                        && command.Value<string>("action")
+                            == "openMaterialUI")
+                    {
+                        echoed = true;
+                        RequestNativeMaterials(
+                            router,
+                            "crafting",
+                            "nativehud_materials",
+                            "{\"view\":\"materials\"}",
+                            command.Value<string>("openRequestId"));
+                    }
+                    if (senderThrows)
+                        throw new InvalidOperationException(
+                            "late sender failure");
+                    return false;
+                });
+
+            Assert.True(router.TryOpenAgentPanel("materials"));
+            Assert.Null(router.PendingMaterialOpenRequestId);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AgentPanelOpen_MaterialsDoesNotTreatCancellationAsDispatch(
+            bool senderThrows)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router = MakeRouter(c);
+            router.SetGameCommandSenderForTests(
+                _ =>
+                {
+                    Assert.True(router.CancelPendingMaterialOpenIntent(
+                        "concurrent_cancel"));
+                    if (senderThrows)
+                        throw new InvalidOperationException(
+                            "cancelled sender failure");
+                    return false;
+                });
+
+            Assert.False(router.TryOpenAgentPanel("materials"));
+            Assert.Null(router.PendingMaterialOpenRequestId);
+            Assert.Empty(c.ActivePanels);
+        }
+
+        [Theory]
+        [InlineData("help")]
+        [InlineData("materials")]
+        public void AgentPanelOpen_PreservesUnifiedAdmissionGate(
+            string panelName)
         {
             Capture c = new Capture();
             LauncherCommandRouter router =
@@ -185,7 +288,7 @@ namespace CF7Launcher.Tests.Guardian
                 () => false);
 
             Assert.False(
-                router.TryOpenAgentPanel("help"));
+                router.TryOpenAgentPanel(panelName));
             Assert.Empty(c.Posts);
         }
 
@@ -2505,7 +2608,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.Dispatch("EQUIP_UI");
 
                 Assert.Equal(
-                    "{\"type\":\"panel_esc\"}",
+                    "{\"type\":\"panel_esc\",\"reason\":\"toggle\"}",
                     Assert.Single(capture.Posts));
                 Assert.Empty(commands);
                 Assert.Equal(
@@ -2615,7 +2718,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.Dispatch("EQUIP_UI");
 
                 Assert.Equal(
-                    "{\"type\":\"panel_esc\"}",
+                    "{\"type\":\"panel_esc\",\"reason\":\"toggle\"}",
                     Assert.Single(capture.Posts));
                 Assert.Empty(commands);
                 Assert.Equal(
@@ -2684,7 +2787,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.Dispatch("EQUIP_UI");
 
                 Assert.Equal(
-                    "{\"type\":\"panel_esc\"}",
+                    "{\"type\":\"panel_esc\",\"reason\":\"toggle\"}",
                     Assert.Single(capture.Posts));
                 Assert.Empty(commands);
                 Assert.Equal(
@@ -3952,6 +4055,117 @@ namespace CF7Launcher.Tests.Guardian
                     returnedBuild["initData"]
                         .Value<string>(
                             "view"));
+            }
+        }
+
+        [Fact]
+        public void MaterialShopCharacterCapsule_CommitPermitSurvivesLifecycleCancelAndRebindsExactReturn()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router = MakeRouter(capture);
+            var flash = new List<string>();
+            var commands = new List<JObject>();
+            using (var task = new CharacterBuildTask(
+                delegate(string payload)
+                {
+                    flash.Add(payload.TrimEnd('\0'));
+                    return true;
+                }))
+            {
+                router.SetCharacterBuildTask(task);
+                router.SetGameCommandSenderForTests(
+                    delegate(string payload)
+                    {
+                        commands.Add(ParseWire(payload));
+                        return true;
+                    });
+                string requestId = BeginCharacterBuildMaterialHandoff(
+                    router,
+                    task,
+                    capture,
+                    flash,
+                    commands);
+                RequestNativeMaterials(
+                    router,
+                    "crafting",
+                    "nativehud_materials",
+                    "{\"view\":\"materials\"}",
+                    requestId);
+                string sourceCrafting = router.ActiveFallbackPanelInstanceId;
+                const string npcInstance = "panel.npcshop.material";
+                const string returnCrafting = "panel.crafting.material.return";
+
+                Assert.True(router.TryPrepareMaterialShopCharacterForward(
+                    sourceCrafting,
+                    npcInstance,
+                    out LauncherCommandRouter.MaterialShopCharacterCapsule capsule));
+                Assert.NotNull(capsule);
+                Assert.True(router.TrySealMaterialShopCharacterForwardCommit(
+                    capsule,
+                    sourceCrafting,
+                    npcInstance));
+                router.AbortMaterialShopCharacterForwardNoFail(
+                    capsule,
+                    sourceCrafting,
+                    npcInstance);
+                Assert.Equal(
+                    LauncherCommandRouter.MaterialShopCharacterCapsulePhase.PreparedForward,
+                    capsule.Phase);
+                Assert.True(router.IsMaterialShopCharacterForwardCurrent(
+                    capsule,
+                    sourceCrafting,
+                    npcInstance));
+
+                Assert.True(router.TrySealMaterialShopCharacterForwardCommit(
+                    capsule,
+                    sourceCrafting,
+                    npcInstance));
+                router.CancelAllPanelNavigationIntents("commit_permit_race");
+                Assert.Equal(
+                    LauncherCommandRouter.MaterialShopCharacterCapsulePhase.ForwardCommitting,
+                    capsule.Phase);
+                router.CommitMaterialShopCharacterForwardNoFail(capsule);
+                Assert.Equal(
+                    LauncherCommandRouter.MaterialShopCharacterCapsulePhase.SuspendedInShop,
+                    capsule.Phase);
+
+                Assert.True(router.TryPrepareMaterialShopCharacterReverse(
+                    capsule,
+                    npcInstance,
+                    returnCrafting));
+                Assert.True(router.TrySealMaterialShopCharacterReverseCommit(
+                    capsule,
+                    npcInstance,
+                    returnCrafting));
+                router.AbortMaterialShopCharacterReverseNoFail(
+                    capsule,
+                    npcInstance,
+                    returnCrafting);
+                Assert.Equal(
+                    LauncherCommandRouter.MaterialShopCharacterCapsulePhase.SuspendedInShop,
+                    capsule.Phase);
+
+                Assert.True(router.TryPrepareMaterialShopCharacterReverse(
+                    capsule,
+                    npcInstance,
+                    returnCrafting));
+                Assert.True(router.TrySealMaterialShopCharacterReverseCommit(
+                    capsule,
+                    npcInstance,
+                    returnCrafting));
+                router.CancelAllPanelNavigationIntents("reverse_commit_permit_race");
+                Assert.Equal(
+                    LauncherCommandRouter.MaterialShopCharacterCapsulePhase.ReverseCommitting,
+                    capsule.Phase);
+                router.CommitMaterialShopCharacterReverseNoFail(
+                    capsule,
+                    returnCrafting);
+
+                Assert.Equal(
+                    LauncherCommandRouter.MaterialShopCharacterCapsulePhase.ReturnedToMaterials,
+                    capsule.Phase);
+                Assert.Equal("crafting", router.PendingPreparationChildReturnPanelName);
+                Assert.Equal(returnCrafting, router.PendingPreparationChildReturnInstance);
             }
         }
 

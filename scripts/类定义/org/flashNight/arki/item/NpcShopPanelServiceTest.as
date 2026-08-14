@@ -104,6 +104,8 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.主角被动技能 = {};
         _root.主角被动技能.口才 = {启用:false,等级:0};
         _root.存档系统 = {dirtyMark:false};
+        _root.testNpcShopSaveCount = 0;
+        _root.强制存盘 = function():Void { _root.testNpcShopSaveCount++; };
         _root.soundEffectManager = {};
         _root.soundEffectManager.playSound = function():Void {};
         _root.Web物品注释HTML = function(name:String):Object { return {displayname:name,descHTML:"desc",introHTML:"intro"}; };
@@ -128,6 +130,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.收集品栏.情报.setItems({});
         _root.金钱 = 5000;
         _root.存档系统.dirtyMark = false;
+        _root.testNpcShopSaveCount = 0;
     }
 
     private static function testSnapshotAndGate():Void {
@@ -373,8 +376,9 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
             && preview.projectedBalance == 4800,"trade preview derives both sides and projected balance");
         var commit:Object = service().execute("tradeCommit",{shopId:"测试商店",expectedTradeToken:preview.tradeToken});
         check(commit.success && commit.operation == "tradeCommit" && _root.金钱 == 4800
-            && _root.物品栏.背包.getItem(0).value == 2 && _root.收集品栏.材料.getValue("强化石") == 4,
-            "trade commit applies purchase and sales as one state transition");
+            && _root.物品栏.背包.getItem(0).value == 2 && _root.收集品栏.材料.getValue("强化石") == 4
+            && _root.testNpcShopSaveCount == 1,
+            "trade commit applies one state transition and flushes the complete save exactly once");
     }
 
     private static function testTradeUsesSaleProceeds():Void {
@@ -521,7 +525,8 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(!stale.success && stale.error == "stale_state" && _root.物品栏.背包.getItem(0).value == 5 && _root.金钱 == 5000,
             "trade commit rejects changed source without partial write");
         var replay:Object = service().execute("tradeCommit",{shopId:"测试商店",expectedTradeToken:preview.tradeToken});
-        check(!replay.success && replay.error == "stale_state","trade token is consumed after one commit attempt");
+        check(!replay.success && replay.error == "stale_state" && _root.testNpcShopSaveCount == 0,
+            "stale and replayed trade tokens never flush a save");
     }
 
     private static function service():Object { return _root.UI系统.NPC商店WebView; }

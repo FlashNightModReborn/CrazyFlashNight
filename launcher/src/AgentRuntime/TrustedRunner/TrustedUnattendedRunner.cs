@@ -79,8 +79,7 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                     lease.WaitForCredential(
                         guardian,
                         CredentialPoll,
-                        TrustedUnattendedBootstrapLease
-                            .CredentialAcquisitionPolicyMaximum,
+                        lease.CredentialAcquisitionPolicyMaximum,
                         cancellationToken);
                 await using (
                     TrustedUnattendedAgentClient client =

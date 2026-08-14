@@ -101,6 +101,7 @@
          'modules/inventory-runtime.js',
          'modules/inventory-ui.js',
          'modules/npcshop-runtime.js',
+         'modules/npcshop-material-navigation.js',
          'modules/npcshop-secondary-pages.js',
          'modules/npcshop.js'],
         noop);
@@ -115,6 +116,8 @@
          'modules/workbench.js',
          'modules/workbench-components.js',
          'modules/item-filter.js',
+         'modules/portrait-resolver.js',
+         'modules/shop-portrait-resolver.js',
          'modules/asset-timeline.js',
          'modules/dressup-doll-renderer.js',
          'modules/workbench-inspection-viewport.js',

@@ -32,6 +32,7 @@ class org.flashNight.gesh.tooltip.test.SynthesisIndexTest {
         test_getRecipesUsing_nonExistent();
         test_getRecipesUsing_emptyData();
         test_getRecipesUsing_sortedAndDedup();
+        test_getRecipeUses_exactOccurrences();
 
         trace("--- SynthesisIndexTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -111,6 +112,34 @@ class org.flashNight.gesh.tooltip.test.SynthesisIndexTest {
         assert(arr[0] == "A" && arr[1] == "B" && arr[2] == "C" && arr[3] == "D",
                "sort+dedup: alphabetical order ABCD - actual=" + arr.join(","));
         _root.改装清单对象 = saved;
+        SynthesisIndex.reset();
+    }
+
+    /** exact reverse-use 必须绕过 product→single recipe 的后写覆盖。 */
+    private static function test_getRecipeUses_exactOccurrences():Void {
+        var savedList = _root.改装清单;
+        var savedMap = _root.改装清单对象;
+        _root.改装清单 = {};
+        _root.改装清单["基础防具"] = [
+            {name:"Andy套装碎片", materials:["国庆纪念币#1", "国庆纪念币#2"]},
+            {name:"Andy套装碎片", materials:["月之碎片#1"]},
+            {name:"Andy套装碎片", materials:["剑圣碎片#1"]}
+        ];
+        _root.改装清单对象 = {};
+        _root.改装清单对象["Andy套装碎片"] = _root.改装清单["基础防具"][2];
+        SynthesisIndex.reset();
+        var first:Array = SynthesisIndex.getRecipeUses("国庆纪念币");
+        var second:Array = SynthesisIndex.getRecipeUses("月之碎片");
+        var third:Array = SynthesisIndex.getRecipeUses("剑圣碎片");
+        assert(first.length == 1 && first[0].category == "基础防具"
+                && first[0].recipeIndex == 0
+                && first[0].productName == "Andy套装碎片",
+            "getRecipeUses keeps first same-product occurrence and de-dupes one recipe");
+        assert(second.length == 1 && second[0].recipeIndex == 1
+                && third.length == 1 && third[0].recipeIndex == 2,
+            "getRecipeUses keeps all three Andy occurrence identities");
+        _root.改装清单 = savedList;
+        _root.改装清单对象 = savedMap;
         SynthesisIndex.reset();
     }
 }

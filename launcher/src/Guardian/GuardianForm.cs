@@ -446,7 +446,8 @@ namespace CF7Launcher.Guardian
                 if (_kbHook.PanelEscEnabled)
                 {
                     try { this.BeginInvoke(new Action(delegate {
-                        if (_webOverlay != null) _webOverlay.PostToWeb("{\"type\":\"panel_esc\"}");
+                        if (_webOverlay != null) _webOverlay.PostToWeb(
+                            "{\"type\":\"panel_esc\",\"reason\":\"escape\"}");
                     })); } catch {}
                 }
                 else

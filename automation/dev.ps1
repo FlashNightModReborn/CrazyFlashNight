@@ -3,16 +3,25 @@ param(
     [switch]$ForceBuild,
     [switch]$BuildOnly,
     [switch]$ReuseOnly,
-    [switch]$Status
+    [switch]$Status,
+    [string]$CandidateLeaf
 )
 
 $ErrorActionPreference = 'Stop'
+$candidateLeafSpecified = $PSBoundParameters.ContainsKey('CandidateLeaf')
 
-if ($Status -and ($ForceBuild -or $BuildOnly -or $ReuseOnly)) {
-    throw '-Status cannot be combined with -ForceBuild, -BuildOnly, or -ReuseOnly.'
+if ($Status -and ($ForceBuild -or $BuildOnly -or $ReuseOnly -or $candidateLeafSpecified)) {
+    throw '-Status cannot be combined with -ForceBuild, -BuildOnly, -ReuseOnly, or -CandidateLeaf.'
 }
 if ($ForceBuild -and $ReuseOnly) {
     throw '-ForceBuild and -ReuseOnly are mutually exclusive.'
+}
+if ($candidateLeafSpecified -and (-not $ForceBuild -or -not $BuildOnly -or $ReuseOnly -or $Status)) {
+    throw '-CandidateLeaf is allowed only with the exact -ForceBuild -BuildOnly workflow.'
+}
+if ($candidateLeafSpecified -and ([string]::IsNullOrWhiteSpace($CandidateLeaf) -or
+        $CandidateLeaf -cnotmatch '^[a-z0-9][a-z0-9-]{0,31}$')) {
+    throw '-CandidateLeaf must be one 1-32 character lowercase ASCII letter/digit/hyphen path segment.'
 }
 
 $scriptDirectory = if ($PSScriptRoot) {
@@ -84,6 +93,23 @@ function Resolve-Cf7DevCandidateRelativePath {
     $candidatePath = [IO.Path]::GetFullPath((Join-Path $projectRoot ($RelativePath.Replace('/', '\')))).TrimEnd('\')
     [void](Get-Cf7DevCandidateRelativePath -CandidateRoot $candidatePath)
     return $candidatePath
+}
+
+$requestedCandidateRoot = $null
+if ($candidateLeafSpecified) {
+    Assert-Cf7DevCandidateBase
+    $requestedCandidateRoot = [IO.Path]::GetFullPath((Join-Path $candidateBase $CandidateLeaf)).TrimEnd('\')
+    [void](Get-Cf7DevCandidateRelativePath -CandidateRoot $requestedCandidateRoot)
+    $candidateBudgetProbe = Join-Path $requestedCandidateRoot `
+        'runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json'
+    if ($candidateBudgetProbe.Length -ge 260) {
+        throw "-CandidateLeaf exceeds the bootstrap MAX_PATH budget (projected=$($candidateBudgetProbe.Length), maximum=259)."
+    }
+    if (Test-Path -LiteralPath $requestedCandidateRoot) {
+        Assert-Cf7DevPlainPath -Path $requestedCandidateRoot `
+            -Description 'Requested local development candidate root'
+        throw "Requested CandidateLeaf already exists; immutable candidates are never overwritten: $requestedCandidateRoot"
+    }
 }
 
 function Get-Cf7DevCandidateInfo {
@@ -369,11 +395,16 @@ try {
         Write-Host '=== CF7 Local Development Candidate Build ===' -ForegroundColor Cyan
         Write-Host '  Network/cloud policy : skipped; using installed local toolchain and dependency caches.'
         Write-Host '  Formal deployment    : not selected and must remain unchanged.' -ForegroundColor Yellow
-        $buildOutput = @(& $buildPath `
-            -ProjectRoot $projectRoot `
-            -BuilderId 'local-dev' `
-            -SkipPrepare `
-            -SkipPolicy)
+        $buildArguments = @{
+            ProjectRoot = $projectRoot
+            BuilderId = 'local-dev'
+            SkipPrepare = $true
+            SkipPolicy = $true
+        }
+        if ($null -ne $requestedCandidateRoot) {
+            $buildArguments.CandidateRoot = $requestedCandidateRoot
+        }
+        $buildOutput = @(& $buildPath @buildArguments)
         $buildRecords = @($buildOutput | Where-Object {
             $null -ne $_ -and [string]$_.schema -ceq 'cf7-runtime-release-candidate.v2'
         })
@@ -381,6 +412,14 @@ try {
             throw "Local candidate build returned $($buildRecords.Count) structured candidate records; expected exactly one."
         }
         $buildRecord = $buildRecords[0]
+        if ($null -ne $requestedCandidateRoot) {
+            $returnedCandidateRoot = [IO.Path]::GetFullPath(
+                [string]$buildRecord.candidateRoot).TrimEnd('\')
+            if (-not $returnedCandidateRoot.Equals(
+                    $requestedCandidateRoot, [StringComparison]::OrdinalIgnoreCase)) {
+                throw "Local candidate build returned a root outside the exact CandidateLeaf contract. requested=$requestedCandidateRoot returned=$returnedCandidateRoot"
+            }
+        }
         if ([string]$buildRecord.deploymentStatus -cne 'NOT_DEPLOYED' -or
                 [string]$buildRecord.runtimeMode -cne 'isolated_candidate' -or
                 [bool]$buildRecord.formalDeploymentModified) {

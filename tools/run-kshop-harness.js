@@ -31,6 +31,7 @@ const KSHOP_MODULE_SOURCES = [
     'kshop-owned-inventory-presenter.js', 'kshop-tooltip-presenter.js'
 ].map(name => path.join(WEB_ROOT, 'modules', name));
 const NPCSHOP_SECONDARY_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop-secondary-pages.js');
+const NPCSHOP_MATERIAL_NAVIGATION_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop-material-navigation.js');
 const INVENTORY_WORKBENCH_MODULE_SOURCES = [
     'inventory-workbench-config.js', 'inventory-workbench-preparation-menu.js',
     'inventory-workbench-navigation.js', 'inventory-workbench-header.js',
@@ -101,7 +102,9 @@ function auditArchitectureBoundaries() {
     }
     const npcshopSource = fs.readFileSync(NPCSHOP_SOURCE, 'utf8');
     const kshopUiSource = [kshopSource].concat(KSHOP_MODULE_SOURCES.map(file => fs.readFileSync(file, 'utf8'))).join('\n');
-    const npcshopUiSource = npcshopSource + '\n' + fs.readFileSync(NPCSHOP_SECONDARY_SOURCE, 'utf8');
+    const npcshopUiSource = [npcshopSource,
+        fs.readFileSync(NPCSHOP_SECONDARY_SOURCE, 'utf8'),
+        fs.readFileSync(NPCSHOP_MATERIAL_NAVIGATION_SOURCE, 'utf8')].join('\n');
     const kshopViewsSource = fs.readFileSync(KSHOP_VIEWS_SOURCE, 'utf8');
     const workbenchComponentsSource = fs.readFileSync(WORKBENCH_COMPONENTS_SOURCE, 'utf8');
     const inventoryUiSource = fs.readFileSync(INVENTORY_UI_SOURCE, 'utf8');
@@ -188,7 +191,7 @@ function auditArchitectureBoundaries() {
     }
     const ownedCompositions = [kshopUiSource, npcshopUiSource, inventoryWorkbenchUiSource];
     if (!kshopUiSource.includes('new InventoryUI.OwnedInventoryViewShell(')
-            || !npcshopUiSource.includes('new InventoryUI.OwnedInventoryViewShell(')
+            || !npcshopUiSource.includes('new inventoryUI.OwnedInventoryViewShell(')
             || !inventoryWorkbenchUiSource.includes('.OwnedInventoryViewShell(')
             || ownedCompositions.some(text => text.includes('new Workbench.ItemGrid('))) {
         throw new Error('Owned inventory composition bypasses OwnedInventoryViewShell');
@@ -293,7 +296,8 @@ function auditArchitectureBoundaries() {
             || !panelsCssSource.includes('transition:none;')) {
         throw new Error('KShop subtype drilldown or stable category rail contract is incomplete');
     }
-    if (!kshopUiSource.includes('Workbench.ItemCard.renderCatalog') || !npcshopUiSource.includes('Workbench.ItemCard.renderCatalog')) {
+    if (!kshopUiSource.includes('Workbench.ItemCard.renderCatalog')
+            || !npcshopUiSource.includes('workbench.ItemCard.renderCatalog')) {
         throw new Error('KShop/NpcShop must render catalog cards via Workbench.ItemCard');
     }
     if (!kshopUiSource.includes('PanelTooltip.bindAsyncHover') || !npcshopUiSource.includes('.bindAsyncHover(node,')

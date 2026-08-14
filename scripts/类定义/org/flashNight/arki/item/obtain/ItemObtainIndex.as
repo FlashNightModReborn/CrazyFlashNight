@@ -47,10 +47,11 @@
  *   dropType: String,       // [drop] "stage" | "enemy"
  *   stageName: String,      // [drop:stage] 关卡名称
  *   enemyType: String,      // [drop:enemy] 敌人兵种
- *   probability: Number,    // [drop] 掉落概率
- *   quantityMax: Number,    // [drop:stage] 最大数量
- *   minLevel: Number,       // [drop:enemy] 最小逆向等级
- *   maxLevel: Number,       // [drop:enemy] 最大逆向等级
+ *   probability: Number,    // [drop] v1 兼容 scalar，镜像首个 variant
+ *   quantityMax: Number,    // [drop:stage] v1 兼容 scalar
+ *   minLevel: Number,       // [drop:enemy] v1 兼容 scalar（无下界时 0）
+ *   maxLevel: Number,       // [drop:enemy] v1 兼容 scalar（无上界时 999）
+ *   variants: Array,        // [drop] 同一逻辑来源的 XML occurrence，有序且不折叠
  *   questId: String,        // [quest] 任务ID
  *   questTitle: String,     // [quest] 任务标题
  *   quantity: Number        // [quest] 奖励数量
@@ -66,8 +67,8 @@
  * ```
  *
  * 注意：
- * - getObtainRecords() 返回的是内部数组的引用，调用方请勿修改
- * - 如需安全拷贝，请使用 getObtainRecordsCopy()
+ * - getObtainRecords() 返回 v1 兼容视图；A2 producer 才使用 exact occurrence API
+ * - 如需内部 exact occurrence，请使用 getExactObtainRecords() 且不得修改
  * - 动态来源需要调用 updateStageDrops/updateEnemyDrops/updateQuestRewards 更新
  */
 class org.flashNight.arki.item.obtain.ItemObtainIndex {
@@ -188,7 +189,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * 支持部分数据缺失，任一数据源为null时仍构建其他索引
      *
      * @param craftingData   合成数据 (_root.改装清单)，结构为 {分类名: [{name, title, price, kprice, materials}, ...]}
-     * @param shopData       商店数据 (_root.shops)，结构为 {NPC名: {序号: 物品名或{name:物品名, requiredInfo_disabled:...}}}
+     * @param shopData       商店数据 (_root.shops)，结构为 {NPC名: {序号: 物品名或{name:物品名, requiredInfo:...}}}
      * @param kshopData      K点商店数据 (_root.kshop_list)，结构为 [{id, item, type, price}, ...]
      */
     public function buildIndex(craftingData:Object, shopData:Object, kshopData:Array):Void {
@@ -237,25 +238,17 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                     this.obtainIndex[itemName] = [];
                 }
 
-                // 检查是否已存在相同类别的 craft 记录（去重）
                 var existingArr:Array = this.obtainIndex[itemName];
-                var found:Boolean = false;
-                for (var j:Number = 0; j < existingArr.length; j++) {
-                    if (existingArr[j].kind === KIND_CRAFT && existingArr[j].category === category) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    existingArr.push({
-                        kind: KIND_CRAFT,
-                        category: category,
-                        price: isNaN(Number(recipe.price)) ? 0 : Number(recipe.price),
-                        kprice: isNaN(Number(recipe.kprice)) ? 0 : Number(recipe.kprice)
-                    });
-                    count++;
-                }
+                // recipe occurrence 才是 identity；同 category 的同名产物不能去重。
+                existingArr.push({
+                    kind: KIND_CRAFT,
+                    category: category,
+                    recipeIndex: i,
+                    productName: itemName,
+                    price: isNaN(Number(recipe.price)) ? 0 : Number(recipe.price),
+                    kprice: isNaN(Number(recipe.kprice)) ? 0 : Number(recipe.kprice)
+                });
+                count++;
             }
         }
 
@@ -280,10 +273,21 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             var shopItems:Object = data[npcName];
             if (!shopItems) continue;
 
+            var slots:Array = [];
             for (var slot:String in shopItems) {
                 if (ObjectUtil.isInternalKey(slot)) continue;
+                var slotIndex:Number = Number(slot);
+                if (isNaN(slotIndex) || Math.floor(slotIndex) != slotIndex
+                        || slotIndex < 0) continue;
+                slots.push(slotIndex);
+            }
+            slots.sort(Array.NUMERIC);
 
-                var itemEntry = shopItems[slot];
+            for (var slotOffset:Number = 0; slotOffset < slots.length; slotOffset++) {
+                var catalogIndex:Number = Number(slots[slotOffset]);
+
+                var itemEntry = shopItems[String(catalogIndex)];
+                if (itemEntry == undefined) itemEntry = shopItems[catalogIndex];
                 var itemName:String;
                 var requiredInfo:String = null;
 
@@ -293,8 +297,8 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                 } else if (itemEntry && itemEntry.name) {
                     itemName = itemEntry.name;
                     // 保留解锁条件信息
-                    if (itemEntry.requiredInfo_disabled) {
-                        requiredInfo = itemEntry.requiredInfo_disabled;
+                    if (itemEntry.requiredInfo != undefined) {
+                        requiredInfo = String(itemEntry.requiredInfo);
                     }
                 } else {
                     continue;
@@ -305,28 +309,21 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                     this.obtainIndex[itemName] = [];
                 }
 
-                // 检查是否已存在相同NPC的 shop 记录（去重）
                 var existingArr:Array = this.obtainIndex[itemName];
-                var npcFound:Boolean = false;
-                for (var k:Number = 0; k < existingArr.length; k++) {
-                    if (existingArr[k].kind === KIND_SHOP && existingArr[k].npc === npcName) {
-                        npcFound = true;
-                        break;
-                    }
+                var record:Object = {
+                    kind: KIND_SHOP,
+                    // npc 保留给 v1 projector；shopId 是 A1 occurrence identity。
+                    npc: npcName,
+                    shopId: npcName,
+                    itemName: itemName,
+                    catalogIndex: catalogIndex
+                };
+                // 只在有值时添加 requiredInfo
+                if (requiredInfo) {
+                    record.requiredInfo = requiredInfo;
                 }
-
-                if (!npcFound) {
-                    var record:Object = {
-                        kind: KIND_SHOP,
-                        npc: npcName
-                    };
-                    // 只在有值时添加 requiredInfo
-                    if (requiredInfo) {
-                        record.requiredInfo = requiredInfo;
-                    }
-                    existingArr.push(record);
-                    count++;
-                }
+                existingArr.push(record);
+                count++;
             }
         }
 
@@ -358,9 +355,11 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             // K点商店支持同物品多条记录（可能type不同）
             this.obtainIndex[itemName].push({
                 kind: KIND_KSHOP,
+                catalogIndex: i,
                 type: entry.type || "",
                 priceK: isNaN(Number(entry.price)) ? 0 : Number(entry.price),
-                id: entry.id || ""
+                id: entry.id || "",
+                entryId: entry.id || ""
             });
             count++;
         }
@@ -371,11 +370,39 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
     // ===== 查询方法 =====
 
     /**
-     * 查询物品的所有获取方式（返回内部引用，请勿修改）
+     * 查询物品的 v1 兼容获取方式。
+     * craft/shop/quest 保持旧 consumer 的逻辑来源去重，避免 A1 将新增 identity
+     * 作为半套 wire 泄漏给现役 Crafting/tooltip；drop 已在内部按来源分组。
      * @param itemName 物品名称
      * @return Array<ObtainRecord>，若无记录返回空数组
      */
     public function getObtainRecords(itemName:String):Array {
+        var exact:Array = this.obtainIndex[itemName];
+        if (!exact) return [];
+        var result:Array = [];
+        for (var i:Number = 0; i < exact.length; i++) {
+            var record:Object = exact[i];
+            var duplicate:Boolean = false;
+            for (var j:Number = 0; j < result.length; j++) {
+                var existing:Object = result[j];
+                if (record.kind === KIND_CRAFT && existing.kind === KIND_CRAFT
+                        && record.category === existing.category) duplicate = true;
+                else if (record.kind === KIND_SHOP && existing.kind === KIND_SHOP
+                        && record.npc === existing.npc) duplicate = true;
+                else if (record.kind === KIND_QUEST && existing.kind === KIND_QUEST
+                        && record.questId === existing.questId) duplicate = true;
+                if (duplicate) break;
+            }
+            if (!duplicate) result.push(record);
+        }
+        return result;
+    }
+
+    /**
+     * A1 internal exact occurrence view；仅供后续 v2 producer 与 focused tests。
+     * 返回内部引用，调用方不得修改。
+     */
+    public function getExactObtainRecords(itemName:String):Array {
         return this.obtainIndex[itemName] || [];
     }
 
@@ -386,9 +413,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * @return Array<ObtainRecord> 的浅拷贝
      */
     public function getObtainRecordsCopy(itemName:String):Array {
-        var original:Array = this.obtainIndex[itemName];
-        if (!original) return [];
-        return original.slice(0);
+        return this.getObtainRecords(itemName).slice(0);
     }
 
     /**
@@ -398,8 +423,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * @return Array<ObtainRecord> 筛选后的记录
      */
     public function getObtainRecordsByKind(itemName:String, kind:String):Array {
-        var all:Array = this.obtainIndex[itemName];
-        if (!all) return [];
+        var all:Array = this.getObtainRecords(itemName);
 
         var result:Array = [];
         for (var i:Number = 0; i < all.length; i++) {
@@ -509,6 +533,10 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         this.clearStageRecordsFromIndex(stageName);
 
         var dropList:Array = [];
+        // exact projection 必须以“关卡 + 物品”整个逻辑来源为失败关闭单元。
+        // 先收集并验证全部 occurrence，避免一个坏档被跳过后仍投影半条来源，
+        // 让 A2 strict producer 无法知道 XML occurrence 已经丢失。
+        var pendingSources:Array = [];
         for (var i:Number = 0; i < rewards.length; i++) {
             var reward = rewards[i];
             var itemName:String;
@@ -530,13 +558,49 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
 
             if (!itemName) continue;
 
+            var pending:Object = null;
+            for (var pendingIndex:Number = 0;
+                    pendingIndex < pendingSources.length; pendingIndex++) {
+                if (pendingSources[pendingIndex].itemName === itemName) {
+                    pending = pendingSources[pendingIndex];
+                    break;
+                }
+            }
+            if (pending == null) {
+                pending = {itemName:itemName, valid:true, variants:[]};
+                pendingSources.push(pending);
+            }
+
+            // cache 完全保留现役输入/default；grouped projection 另走严格规范化。
+            var legacyDivisor:Number = isNaN(prob) ? 1 : prob;
+            var legacyQty:Number = isNaN(qty) ? 1 : qty;
             dropList.push({
                 name: itemName,
-                prob: isNaN(prob) ? 1 : prob,
-                qty: isNaN(qty) ? 1 : qty
+                prob: legacyDivisor,
+                qty: legacyQty
             });
 
-            this.addDropRecord(itemName, DROP_TYPE_STAGE, stageName, prob, qty, NaN, NaN);
+            var normalizedDivisor = normalizeStageDivisor(prob);
+            var normalizedQty = normalizeStageQuantity(qty);
+            if (normalizedDivisor == null || normalizedQty == null) {
+                pending.valid = false;
+                trace("[ItemObtainIndex] 非法关卡掉落 occurrence，逻辑来源失败关闭: "
+                    + stageName + " / " + itemName + " / index=" + i);
+            } else {
+                pending.variants.push({divisor:normalizedDivisor, qty:normalizedQty});
+            }
+        }
+
+        for (var sourceIndex:Number = 0;
+                sourceIndex < pendingSources.length; sourceIndex++) {
+            var source:Object = pendingSources[sourceIndex];
+            if (!source.valid || source.variants.length == 0) continue;
+            for (var variantIndex:Number = 0;
+                    variantIndex < source.variants.length; variantIndex++) {
+                var variant:Object = source.variants[variantIndex];
+                this.addStageDropRecord(source.itemName, stageName,
+                    variant.divisor, variant.qty);
+            }
         }
 
         if (dropList.length > 0) {
@@ -575,6 +639,11 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      */
     public function updateEnemyDrops(enemyType:String, drops:Array):Boolean {
         if (!enemyType || !drops || drops.length == 0) return false;
+        // enemyType 必须是敌人属性表中的 exact identity；展示名、剥前缀短名与
+        // portrait alias 都不能反向创建已发现来源。
+        var enemyTable:Object = _root.敌人属性表;
+        if (enemyTable == null || typeof enemyTable.hasOwnProperty != "function"
+                || !enemyTable.hasOwnProperty(enemyType)) return false;
 
         // 性能优化：如果已发现且已有缓存，跳过重建
         // 这样避免每只敌人初始化时都触发全索引扫描
@@ -604,23 +673,73 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         this.clearEnemyRecordsFromIndex(enemyType);
 
         var dropList:Array = [];
+        // exact projection 以“敌人 + 物品”整个逻辑来源为失败关闭单元；
+        // 任一 occurrence 非法时，不允许留下只含合法 siblings 的部分来源。
+        var pendingSources:Array = [];
         for (var i:Number = 0; i < drops.length; i++) {
             var drop = drops[i];
             if (!drop || !drop.名字) continue;
 
             var itemName:String = drop.名字;
+            var pending:Object = null;
+            for (var pendingIndex:Number = 0;
+                    pendingIndex < pendingSources.length; pendingIndex++) {
+                if (pendingSources[pendingIndex].itemName === itemName) {
+                    pending = pendingSources[pendingIndex];
+                    break;
+                }
+            }
+            if (pending == null) {
+                pending = {itemName:itemName, valid:true, variants:[]};
+                pendingSources.push(pending);
+            }
             var prob:Number = Number(drop.概率);
             var minLv:Number = Number(drop.最小逆向等级);
             var maxLv:Number = Number(drop.最大逆向等级);
+            var quantity:Object = normalizeEnemyQuantity(drop);
+            var hasChance:Boolean = typeof drop.hasOwnProperty == "function"
+                && drop.hasOwnProperty("概率");
+            var chance:Object = normalizeEnemyChance(hasChance, prob);
+            var minBound:Object = normalizeReverseLevel(minLv);
+            var maxBound:Object = normalizeReverseLevel(maxLv);
 
             dropList.push({
                 名字: itemName,
+                // enemyDropCache 保持现役 v1 shape/默认值；A1 的 100% 缺省
+                // 语义只进入 grouped obtain variant，不借正确性修复改变旧 cache。
                 概率: isNaN(prob) ? 1 : prob,
                 最小逆向等级: isNaN(minLv) ? 0 : minLv,
                 最大逆向等级: isNaN(maxLv) ? 999 : maxLv
             });
 
-            this.addDropRecord(itemName, DROP_TYPE_ENEMY, enemyType, prob, NaN, minLv, maxLv);
+            var validBounds:Boolean = minBound.valid && maxBound.valid
+                && (minBound.value == null || maxBound.value == null
+                    || Number(minBound.value) <= Number(maxBound.value));
+            if (chance == null || quantity == null || !validBounds) {
+                pending.valid = false;
+                trace("[ItemObtainIndex] 非法敌人掉落 occurrence，逻辑来源失败关闭: "
+                    + enemyType + " / " + itemName + " / index=" + i);
+            } else {
+                pending.variants.push({
+                    chance:chance,
+                    minReverseLevel:minBound.value,
+                    maxReverseLevel:maxBound.value,
+                    quantity:quantity
+                });
+            }
+        }
+
+        for (var sourceIndex:Number = 0;
+                sourceIndex < pendingSources.length; sourceIndex++) {
+            var source:Object = pendingSources[sourceIndex];
+            if (!source.valid || source.variants.length == 0) continue;
+            for (var variantIndex:Number = 0;
+                    variantIndex < source.variants.length; variantIndex++) {
+                var variant:Object = source.variants[variantIndex];
+                this.addEnemyDropRecord(source.itemName, enemyType,
+                    variant.chance, variant.minReverseLevel,
+                    variant.maxReverseLevel, variant.quantity);
+            }
         }
 
         if (dropList.length > 0) {
@@ -679,15 +798,30 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * @private
      */
     private function rebuildQuestCacheFromData(questId:String, questTitle, rewards:Array):Void {
-        // 先清理该任务的旧记录
-        this.clearQuestRecordsFromIndex(questId);
+        var existing:Object = this.questRewardCache[questId];
+        var challengeRewards:Array = existing != null
+                && existing.challengeRewards instanceof Array
+            ? existing.challengeRewards : [];
+        this.questRewardCache[questId] = {
+            // 保留“是否真的有展示标题”的来源信息；展示回填只允许在
+            // CraftingPanelService 的 authority projection 边界发生。
+            title: questTitle == undefined && existing != null
+                ? existing.title : questTitle,
+            baseRewards: this.parseQuestRewards(rewards, "base"),
+            challengeRewards: challengeRewards,
+            rewards: []
+        };
+        this.rebuildQuestRecordsFromCache(questId);
+    }
 
-        var rewardList:Array = [];
+    /** 解析一个 authored reward set；authoredIndex 永远使用原数组下标。 */
+    private function parseQuestRewards(rewards:Array, rewardSet:String):Array {
+        var result:Array = [];
+        if (!(rewards instanceof Array)) return result;
         for (var i:Number = 0; i < rewards.length; i++) {
             var reward = rewards[i];
             var itemName:String;
             var qty:Number;
-
             if (typeof reward === "string") {
                 var parts:Array = reward.split("#");
                 itemName = parts[0];
@@ -698,25 +832,56 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             } else {
                 continue;
             }
-
             if (!itemName) continue;
-
-            rewardList.push({
-                item: itemName,
-                qty: isNaN(qty) ? 1 : qty
-            });
-
-            this.addQuestRecord(itemName, questId, questTitle, qty);
+            var normalizedQty = normalizeQuestQuantity(qty);
+            if (normalizedQty == null) {
+                trace("[ItemObtainIndex] 忽略非法任务奖励 occurrence: "
+                    + rewardSet + " / " + itemName + " / index=" + i);
+                continue;
+            }
+            result.push({item:itemName, qty:normalizedQty,
+                rewardSet:rewardSet, authoredIndex:i});
         }
+        return result;
+    }
 
-        if (rewardList.length > 0) {
-            this.questRewardCache[questId] = {
-                // 保留“是否真的有展示标题”的来源信息；展示回填只允许在
-                // CraftingPanelService 的 authority projection 边界发生。
-                title: questTitle,
-                rewards: rewardList
-            };
+    private function normalizeQuestQuantity(value:Number) {
+        if (isNaN(value)) return 1;
+        if ((value - value) != 0 || value <= 0 || Math.floor(value) != value) return null;
+        return value;
+    }
+
+    /** base 始终先于 challenge 投影；只替换指定 set 时不会吞掉另一个 set。 */
+    private function rebuildQuestRecordsFromCache(questId:String):Void {
+        var cache:Object = this.questRewardCache[questId];
+        if (cache == null) return;
+        this.clearQuestRecordsFromIndex(questId);
+        var combined:Array = [];
+        var sets:Array = [cache.baseRewards || [], cache.challengeRewards || []];
+        for (var setIndex:Number = 0; setIndex < sets.length; setIndex++) {
+            var rewards:Array = sets[setIndex];
+            for (var i:Number = 0; i < rewards.length; i++) {
+                var reward:Object = rewards[i];
+                combined.push(reward);
+                this.addQuestRecord(String(reward.item), questId, cache.title,
+                    Number(reward.qty), String(reward.rewardSet),
+                    Number(reward.authoredIndex));
+            }
         }
+        cache.rewards = combined;
+    }
+
+    private function sameQuestRewardSet(left:Array, right:Array):Boolean {
+        if (left.length != right.length) return false;
+        for (var i:Number = 0; i < left.length; i++) {
+            if (left[i].item !== right[i].item
+                    || Number(left[i].qty) != Number(right[i].qty)
+                    || left[i].rewardSet !== right[i].rewardSet
+                    || Number(left[i].authoredIndex) != Number(right[i].authoredIndex)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -736,12 +901,12 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                 }
             }
         }
-        delete this.questRewardCache[questId];
     }
 
     /**
      * 追加任务奖励到已有记录（用于挑战奖励等后续发现的奖励）
-     * 如果任务不存在则先创建，如果奖励已存在则跳过
+     * 如果任务不存在则建立仅含 challenge 的 cache；按 authored occurrence
+     * identity 幂等追加，不再按 itemName 吞掉重复奖励。
      *
      * @param questId 任务ID
      * @param questTitle 任务标题
@@ -757,113 +922,181 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             this.completedChallengeQuests[questId] = true;
         }
 
-        // 如果该任务不存在，调用 updateQuestRewards 创建
+        this.discoveredQuests[questId] = true;
+
+        // challenge 可能在 base cache 不可用时恢复；不能把它误标成 base。
         if (!this.questRewardCache[questId]) {
-            return this.updateQuestRewards(questId, questTitle, additionalRewards);
+            this.questRewardCache[questId] = {
+                title:questTitle, baseRewards:[], challengeRewards:[], rewards:[]};
         }
 
-        // 获取已有的奖励列表
         var existingCache:Object = this.questRewardCache[questId];
-        var existingRewards:Array = existingCache.rewards;
-
-        // 构建已存在物品的快速查找表
-        var existingItems:Object = {};
-        for (var e:Number = 0; e < existingRewards.length; e++) {
-            existingItems[existingRewards[e].item] = true;
+        var parsed:Array = this.parseQuestRewards(additionalRewards, "challenge");
+        var changed:Boolean = !this.sameQuestRewardSet(
+            existingCache.challengeRewards || [], parsed);
+        var titleChanged:Boolean = questTitle != undefined
+            && questTitle !== existingCache.title;
+        existingCache.challengeRewards = parsed;
+        if (questTitle != undefined) existingCache.title = questTitle;
+        if (changed || titleChanged) this.rebuildQuestRecordsFromCache(questId);
+        if (changed) {
+            trace("[ItemObtainIndex] 挑战奖励 occurrence 已同步: "
+                + questId + ", " + parsed.length + " 项");
         }
-
-        var newCount:Number = 0;
-        for (var i:Number = 0; i < additionalRewards.length; i++) {
-            var reward = additionalRewards[i];
-            var itemName:String;
-            var qty:Number;
-
-            if (typeof reward === "string") {
-                var parts:Array = reward.split("#");
-                itemName = parts[0];
-                qty = parts.length > 1 ? Number(parts[1]) : 1;
-            } else if (reward && reward.item) {
-                itemName = reward.item;
-                qty = Number(reward.qty);
-            } else {
-                continue;
-            }
-
-            if (!itemName) continue;
-
-            // 检查是否已存在该物品
-            if (existingItems[itemName]) continue;
-
-            // 添加到缓存
-            existingRewards.push({
-                item: itemName,
-                qty: isNaN(qty) ? 1 : qty
-            });
-            existingItems[itemName] = true;
-
-            // 同时更新运行时索引
-            this.addQuestRecord(itemName, questId, questTitle || existingCache.title, qty);
-            newCount++;
-        }
-
-        if (newCount > 0) {
-            trace("[ItemObtainIndex] 任务奖励追加: " + questId + ", 新增 " + newCount + " 项");
-            return true;
-        }
-        return false;
+        return changed;
     }
 
-    /**
-     * 添加掉落记录到运行时索引
-     * @private
-     */
-    private function addDropRecord(itemName:String, dropType:String, sourceName:String,
-                                   prob:Number, qty:Number, minLv:Number, maxLv:Number):Void {
+    /** 查找同一逻辑掉落来源；不同 occurrence 进入同一记录的 variants。 */
+    private function findDropRecord(arr:Array, dropType:String, sourceName:String):Object {
+        for (var i:Number = 0; i < arr.length; i++) {
+            var rec:Object = arr[i];
+            if (rec.kind !== KIND_DROP || rec.dropType !== dropType) continue;
+            if (dropType === DROP_TYPE_STAGE && rec.stageName === sourceName) return rec;
+            if (dropType === DROP_TYPE_ENEMY && rec.enemyType === sourceName) return rec;
+        }
+        return null;
+    }
+
+    /** 添加一个关卡掉落 occurrence；v1 scalar 永远镜像首档。 */
+    private function addStageDropRecord(itemName:String, stageName:String,
+                                        divisor:Number, qty:Number):Void {
         if (!this.obtainIndex[itemName]) {
             this.obtainIndex[itemName] = [];
         }
 
-        // 检查是否已存在相同来源的记录
         var arr:Array = this.obtainIndex[itemName];
-        for (var i:Number = 0; i < arr.length; i++) {
-            var rec = arr[i];
-            if (rec.kind === KIND_DROP && rec.dropType === dropType) {
-                if (dropType === DROP_TYPE_STAGE && rec.stageName === sourceName) return;
-                if (dropType === DROP_TYPE_ENEMY && rec.enemyType === sourceName) return;
-            }
+        var record:Object = findDropRecord(arr, DROP_TYPE_STAGE, stageName);
+        if (record == null) {
+            record = {
+                kind: KIND_DROP,
+                dropType: DROP_TYPE_STAGE,
+                stageName: stageName,
+                chanceModel: "stage_roll_divisor_with_legacy_domain_branch",
+                legacyConditionId: "andylaw_domain_bonus",
+                probability: divisor,
+                quantityMax: qty,
+                variants: []
+            };
+            arr.push(record);
+        }
+        var occurrenceIndex:Number = record.variants.length;
+        record.variants.push({
+            occurrenceIndex: occurrenceIndex,
+            rollDivisor: divisor,
+            defaultBranchChancePercent: round6(100 / divisor),
+            quantityMin: 1,
+            quantityMax: qty
+        });
+    }
+
+    /** 添加一个敌人掉落 occurrence；保留概率输入状态与 nullable 逆向边界。 */
+    private function addEnemyDropRecord(itemName:String, enemyType:String,
+                                        chance:Object, minReverseLevel, maxReverseLevel,
+                                        quantity:Object):Void {
+        if (!this.obtainIndex[itemName]) {
+            this.obtainIndex[itemName] = [];
         }
 
-        var record:Object = {
-            kind: KIND_DROP,
-            dropType: dropType,
-            probability: isNaN(prob) ? 1 : prob
-        };
-
-        if (dropType === DROP_TYPE_STAGE) {
-            record.stageName = sourceName;
-            record.quantityMax = isNaN(qty) ? 1 : qty;
-        } else {
-            record.enemyType = sourceName;
-            record.minLevel = isNaN(minLv) ? 0 : minLv;
-            record.maxLevel = isNaN(maxLv) ? 999 : maxLv;
+        var arr:Array = this.obtainIndex[itemName];
+        var record:Object = findDropRecord(arr, DROP_TYPE_ENEMY, enemyType);
+        if (record == null) {
+            record = {
+                kind: KIND_DROP,
+                dropType: DROP_TYPE_ENEMY,
+                enemyType: enemyType,
+                chanceModel: "enemy_prd_with_reverse_bonus",
+                probability: chance.nominalChancePercent,
+                minLevel: minReverseLevel == null ? 0 : minReverseLevel,
+                maxLevel: maxReverseLevel == null ? 999 : maxReverseLevel,
+                quantityMin: quantity.min,
+                quantityMax: quantity.max,
+                variants: []
+            };
+            arr.push(record);
         }
+        var occurrenceIndex:Number = record.variants.length;
+        record.variants.push({
+            occurrenceIndex: occurrenceIndex,
+            chanceRaw: chance.chanceRaw,
+            chanceInputState: chance.chanceInputState,
+            nominalChancePercent: chance.nominalChancePercent,
+            minReverseLevel: minReverseLevel,
+            maxReverseLevel: maxReverseLevel,
+            quantityMin: quantity.min,
+            quantityMax: quantity.max
+        });
+    }
 
-        arr.push(record);
+    /** 关卡奖励概率是 random(N)==0 的正整数分母；非法值不进入 exact projection。 */
+    private function normalizeStageDivisor(value:Number) {
+        if (isNaN(value) || (value - value) != 0
+                || value <= 0 || Math.floor(value) != value) return null;
+        return value;
+    }
+
+    /** 关卡配置仅给最大数量；缺省按 1，非法 finite 值 fail closed。 */
+    private function normalizeStageQuantity(value:Number) {
+        if (isNaN(value)) return 1;
+        if ((value - value) != 0 || value <= 0 || Math.floor(value) != value) return null;
+        return value;
+    }
+
+    private function round6(value:Number):Number {
+        return Math.round(value * 1000000) / 1000000;
+    }
+
+    /** 敌人概率按 DropLuckRoller：缺失/NaN 按 100% 默认；Infinity/越界失败关闭。 */
+    private function normalizeEnemyChance(hasChance:Boolean, value:Number):Object {
+        if (!hasChance) {
+            return {chanceRaw:null, chanceInputState:"absent_defaulted",
+                nominalChancePercent:100};
+        }
+        if (isNaN(value)) {
+            return {chanceRaw:null, chanceInputState:"invalid_defaulted",
+                nominalChancePercent:100};
+        }
+        if ((value - value) != 0 || value < 0 || value > 100) return null;
+        return {chanceRaw:value, chanceInputState:"explicit",
+            nominalChancePercent:value};
+    }
+
+    /** 未配置逆向边界表示无界；非法 finite 值不能伪装为 null。 */
+    private function normalizeReverseLevel(value:Number):Object {
+        if (isNaN(value)) return {valid:true, value:null};
+        if ((value - value) != 0 || value < 0 || Math.floor(value) != value) {
+            return {valid:false, value:null};
+        }
+        return {valid:true, value:value};
+    }
+
+    /** 与现役敌人掉落一致：任一数量端不可数时，整对回落 1/1。 */
+    private function normalizeEnemyQuantity(drop:Object):Object {
+        var minQty:Number = Number(drop.最小数量);
+        var maxQty:Number = Number(drop.最大数量);
+        if (isNaN(minQty) || isNaN(maxQty)) return {min:1, max:1};
+        if ((minQty - minQty) != 0 || (maxQty - maxQty) != 0
+                || minQty <= 0 || maxQty <= 0
+                || Math.floor(minQty) != minQty || Math.floor(maxQty) != maxQty
+                || minQty > maxQty) return null;
+        return {min:minQty, max:maxQty};
     }
 
     /**
      * 添加任务奖励记录到运行时索引
      * @private
      */
-    private function addQuestRecord(itemName:String, questId:String, questTitle, qty:Number):Void {
+    private function addQuestRecord(itemName:String, questId:String, questTitle, qty:Number,
+                                    rewardSet:String, authoredIndex:Number):Void {
         if (!this.obtainIndex[itemName]) {
             this.obtainIndex[itemName] = [];
         }
 
-        // 检查是否已存在相同任务的记录
+        // 相同任务中 base/challenge 各自按 authoredIndex 保留 occurrence。
         var arr:Array = this.obtainIndex[itemName];
         for (var i:Number = 0; i < arr.length; i++) {
-            if (arr[i].kind === KIND_QUEST && arr[i].questId === questId) return;
+            if (arr[i].kind === KIND_QUEST && arr[i].questId === questId
+                    && arr[i].rewardSet === rewardSet
+                    && Number(arr[i].authoredIndex) == authoredIndex) return;
         }
 
         arr.push({
@@ -872,7 +1105,9 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             // 不在索引层把内部 ID 伪装成展示标题，否则 projection 无法
             // 区分“合法显式同值”与“缺失后猜测内部 ID”。
             questTitle: questTitle,
-            quantity: isNaN(qty) ? 1 : qty
+            quantity: isNaN(qty) ? 1 : qty,
+            rewardSet: rewardSet,
+            authoredIndex: authoredIndex
         });
     }
 
@@ -979,6 +1214,20 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
     }
 
     /**
+     * 在 boot 的任务表与敌人配置均已就绪后，按当前配置幂等恢复发现制来源。
+     * 存档恢复早于这些异步 provider 时，loadFromSave() 会保留发现集合但跳过
+     * 记录重建；S9 handoff 前必须补跑本方法。关卡继续维持进入关卡时延迟重建。
+     */
+    public function rehydrateDiscoveredRecordsFromCurrentConfig():Void {
+        var enemyCount:Number = this.rebuildEnemyDropsFromConfig();
+        var questCount:Number = this.rebuildQuestRewardsFromConfig();
+        var challengeCount:Number = this.rebuildChallengeRewardsFromSavedSet();
+        trace("[ItemObtainIndex] 当前配置发现来源恢复完成: "
+            + enemyCount + " 敌人, " + questCount + " 任务, "
+            + challengeCount + " 挑战奖励; 关卡保持延迟重建");
+    }
+
+    /**
      * 从v1格式迁移到v2格式
      * v1存储完整的掉落/奖励明细，v2只存发现集合
      * @private
@@ -1070,7 +1319,14 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             if (!enemyProps || !enemyProps.掉落物 || enemyProps.掉落物 == "null") continue;
 
             // 解析掉落物配置
-            var dropsArr:Array = _root.配置数据为数组(enemyProps.掉落物);
+            var dropsArr:Array;
+            if (enemyProps.掉落物 instanceof Array) {
+                dropsArr = enemyProps.掉落物;
+            } else if (typeof _root.配置数据为数组 == "function") {
+                dropsArr = _root.配置数据为数组(enemyProps.掉落物);
+            } else {
+                dropsArr = [enemyProps.掉落物];
+            }
             if (!dropsArr || dropsArr.length == 0) continue;
 
             // 重建缓存（使用内部方法，不重复标记发现）
@@ -1283,7 +1539,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * @deprecated 建议直接使用 getObtainRecords() 或 getObtainRecordsByKind()
      */
     public function getObtainMethods(itemName:String):Object {
-        var all:Array = this.obtainIndex[itemName] || [];
+        var all:Array = this.getObtainRecords(itemName);
         var crafting:Array = [];
         var shops:Array = [];
         var kshop:Array = [];

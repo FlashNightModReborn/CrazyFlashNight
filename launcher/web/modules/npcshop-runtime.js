@@ -15,6 +15,27 @@
         buy:true, batchSell:true, tradeCommit:true
     };
     var PANEL_INSTANCE_PATTERN = /^[A-Za-z0-9._~-]{1,128}$/;
+    var NAVIGATION_CALL_ID_PATTERN = /^[A-Za-z0-9._-]{1,96}$/;
+    var SHOP_CATALOG_INDEX_MAX = 10000;
+    var NAVIGATION_WATCHDOG_MS = 6500;
+    var CLOSE_REASONS = {button:true, escape:true, backdrop:true, toggle:true};
+    var RETURN_FAILURE_ERRORS = {
+        invalid_payload:true, stale_source:true, navigation_unavailable:true,
+        access_denied:true, source_not_settled:true, admission_failed:true,
+        timeout:true, busy:true, return_unavailable:true
+    };
+
+    function own(value, key) {
+        return Object.prototype.hasOwnProperty.call(value || {}, key);
+    }
+
+    function exactKeys(value, keys) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+        var actual = Object.keys(value).sort(), expected = keys.slice().sort();
+        return actual.length === expected.length && actual.every(function(key, index) {
+            return key === expected[index];
+        });
+    }
 
     function strictText(value) {
         return typeof value === 'string' && value.length > 0 && value.length <= 256
@@ -24,6 +45,33 @@
     function identityText(value) {
         return strictText(value) && value.trim().length > 0
             && value.trim().toLowerCase() !== 'undefined';
+    }
+
+    function boundedIdentity(value, maxLength) {
+        return identityText(value) && value.length <= maxLength;
+    }
+
+    function shopCatalogIndex(value) {
+        return Number.isInteger(value) && value >= 0 && value <= SHOP_CATALOG_INDEX_MAX;
+    }
+
+    function parseInitData(value) {
+        var ordinaryKeys = ['mode', 'source', 'debug', 'shopId', 'panelInstanceId'];
+        var materialKeys = ordinaryKeys.concat(['preferredItemName',
+            'preferredCatalogIndex', 'canReturnCraftingMaterials', 'navigationOrigin']);
+        var ordinary = exactKeys(value, ordinaryKeys);
+        var material = exactKeys(value, materialKeys);
+        if ((!ordinary && !material) || value.mode !== 'runtime'
+                || value.debug !== false || !boundedIdentity(value.source, 128)
+                || !boundedIdentity(value.shopId, 80)
+                || !PANEL_INSTANCE_PATTERN.test(String(value.panelInstanceId || ''))) return null;
+        if (ordinary && value.source === 'crafting_materials') return null;
+        if (material && (value.source !== 'crafting_materials'
+                || !boundedIdentity(value.preferredItemName, 128)
+                || !shopCatalogIndex(value.preferredCatalogIndex)
+                || value.canReturnCraftingMaterials !== true
+                || value.navigationOrigin !== 'crafting_materials')) return null;
+        return {kind:material ? 'crafting_materials' : 'ordinary', data:value};
     }
 
     function identityTriple(value, internalField) {
@@ -143,9 +191,11 @@
         this.needsReconcile = false;
     };
 
-    OwnerLifecycle.prototype.closeMessage = function() {
+    OwnerLifecycle.prototype.closeMessage = function(reason) {
+        reason = String(reason || '');
+        if (!CLOSE_REASONS[reason] || !this.panelInstanceId) return null;
         return {type:'panel', cmd:'close', panel:this._panel,
-            panelInstanceId:this.panelInstanceId};
+            panelInstanceId:this.panelInstanceId, reason:reason};
     };
 
     function RequestMux(options) {
@@ -289,11 +339,46 @@
         return new PhysicalInventoryAdapter(options);
     }
 
+    function createReturnCraftingMaterialsMessage(input) {
+        input = input || {};
+        if (!NAVIGATION_CALL_ID_PATTERN.test(String(input.callId || ''))
+                || !PANEL_INSTANCE_PATTERN.test(String(input.panelInstanceId || ''))) return null;
+        return {type:'panel', panel:'npcshop', cmd:'return_crafting_materials',
+            callId:String(input.callId), panelInstanceId:String(input.panelInstanceId)};
+    }
+
+    function validateReturnCraftingMaterialsFailure(data, expected) {
+        expected = expected || {};
+        return exactKeys(data, ['type', 'panel', 'cmd', 'callId',
+                'panelInstanceId', 'success', 'error'])
+            && data.type === 'panel_resp'
+            && data.panel === 'npcshop'
+            && data.cmd === 'return_crafting_materials'
+            && data.success === false
+            && NAVIGATION_CALL_ID_PATTERN.test(String(data.callId || ''))
+            && PANEL_INSTANCE_PATTERN.test(String(data.panelInstanceId || ''))
+            && !!RETURN_FAILURE_ERRORS[String(data.error || '')]
+            && (!expected.callId || data.callId === expected.callId)
+            && (!expected.panelInstanceId
+                || data.panelInstanceId === expected.panelInstanceId);
+    }
+
     return {RequestMux:RequestMux, OwnerLifecycle:OwnerLifecycle,
         createOwnerChannels:createOwnerChannels,
         createPhysicalInventoryAdapter:createPhysicalInventoryAdapter,
         validateBusinessResponse:validateBusinessResponse,
         identityTriple:identityTriple,
+        SHOP_CATALOG_INDEX_MAX:SHOP_CATALOG_INDEX_MAX,
+        NAVIGATION_WATCHDOG_MS:NAVIGATION_WATCHDOG_MS,
+        parseInitData:parseInitData,
+        validateInitData:function(value) { return !!parseInitData(value); },
+        isShopCatalogIndex:shopCatalogIndex,
+        isNavigationCallId:function(value) {
+            return typeof value === 'string' && NAVIGATION_CALL_ID_PATTERN.test(value);
+        },
+        createReturnCraftingMaterialsMessage:createReturnCraftingMaterialsMessage,
+        validateReturnCraftingMaterialsFailure:validateReturnCraftingMaterialsFailure,
+        isCloseReason:function(value) { return !!CLOSE_REASONS[String(value || '')]; },
         isPanelInstanceId:function(value) {
             return typeof value === 'string' && PANEL_INSTANCE_PATTERN.test(value);
         },

@@ -200,6 +200,7 @@ namespace CF7Launcher.Guardian
                 _telemetryAnchorRect = anchorScreenRect;
                 _telemetryGuardianHwnd = guardianHwnd;
                 _telemetryWebOverlayHwnd = webOverlayHwnd;
+                ClearInteractiveRects();
                 LogManager.Log("[InputShield] telemetry refresh panel=" + panelRect.Width + "x" + panelRect.Height);
                 return;
             }
@@ -212,9 +213,10 @@ namespace CF7Launcher.Guardian
             _sessionTotalClicks = 0;
             _filteredExternalClicks = 0;
 
-            // 清 hit rects 让 mask 全 0：所有原 click 路径自动 HTTRANSPARENT 给 Flash
-            _hitRects.Clear();
-            RebuildMask();
+            // Telemetry 只观测，不参与 panel 输入。先释放旧 capture，再把 mask 归零；
+            // 后续 Web 上报的 panel interactiveRect 也必须在 UpdateHitRects 中被忽略。
+            ResetInputState();
+            ClearInteractiveRects();
 
             // 安装 WH_MOUSE_LL 全局钩子（仅观测，不修改事件）
             try
@@ -236,7 +238,7 @@ namespace CF7Launcher.Guardian
 
         public void ExitTelemetryMode()
         {
-            if (!_telemetryActive) return;
+            bool wasActive = _telemetryActive;
             _telemetryActive = false;
             if (_telemetryHookHandle != IntPtr.Zero)
             {
@@ -244,6 +246,13 @@ namespace CF7Launcher.Guardian
                 _telemetryHookHandle = IntPtr.Zero;
             }
             _telemetryHookProc = null;
+
+            // Close 的输入不变量必须幂等：即便调用时 telemetry 已结束，也不能让最后一次
+            // full-panel interactiveRect 或未配对 capture 留在常驻透明 shield 上吞掉 Flash 点击。
+            ResetInputState();
+            ClearInteractiveRects();
+
+            if (!wasActive) return;
 
             LogManager.Log("[InputShield] ExitTelemetryMode session_total=" + _sessionTotalClicks
                 + " clicks_outside_panel=" + _clicksOutsidePanel
@@ -310,6 +319,15 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void UpdateHitRects(List<Rectangle> rects)
         {
+            if (!ShouldApplyInteractiveRects(_telemetryActive))
+            {
+                // Panel 模式由 WebOverlay 直接收输入；telemetry shield 必须保持全透明。
+                // Panels.getHitRects 会把全屏 panel 上报到这里，若写入 mask，关闭后便可能
+                // 留下一张不可见的全屏鼠标拦截层。
+                ClearInteractiveRects();
+                return;
+            }
+
             // mask 未初始化时暂存，等 OnPositionChanged 填充 _maskW/_maskH 后重新应用
             if (_maskW <= 0 || _maskH <= 0)
             {
@@ -341,6 +359,20 @@ namespace CF7Launcher.Guardian
             // 但 capture 期间不做 cleanup——down/up 配对由 SetCapture 保证
             if (_mouseInside && !_captured)
                 CleanupIfMouseOutside();
+        }
+
+        internal static bool ShouldApplyInteractiveRects(bool telemetryActive)
+        {
+            return !telemetryActive;
+        }
+
+        private void ClearInteractiveRects()
+        {
+            _pendingRawRects = null;
+            _hitRects.Clear();
+            _lastHitWidth = 0;
+            _collapseTick = 0;
+            RebuildMask();
         }
 
         /// <summary>

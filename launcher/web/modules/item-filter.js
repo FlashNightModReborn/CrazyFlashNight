@@ -115,6 +115,72 @@
         return root;
     }
 
+    /**
+     * Builds one taxonomy from zero or more paths per logical item.
+     *
+     * `keyOf` defines logical identity.  A repeated identity contributes at
+     * most once to every node even when its classifier returns duplicate or
+     * overlapping paths.  This is intentionally separate from `build()` so
+     * existing single-path consumers keep their historical counting model.
+     */
+    function buildMany(items, classifier, keyOf) {
+        items = Array.isArray(items) ? items : [];
+        classifier = typeof classifier === 'function'
+            ? classifier : function(item) { return [catalogPath(item)]; };
+        keyOf = typeof keyOf === 'function' ? keyOf : function(item, index) {
+            var name = item && item.name != null ? text(item.name) : '';
+            return name || '@index:' + index;
+        };
+        var root = createRoot(0);
+        var groups = Object.create(null), orderedGroups = [];
+        for (var itemIndex = 0; itemIndex < items.length; itemIndex++) {
+            var rawKey = keyOf(items[itemIndex], itemIndex);
+            var keyText = text(rawKey);
+            var groupKey = typeof rawKey + ':' + keyText.length + ':' + keyText;
+            var group = groups[groupKey];
+            if (!group) {
+                group = {item:items[itemIndex], paths:[]};
+                groups[groupKey] = group;
+                orderedGroups.push(group);
+            }
+            var classified = classifier(items[itemIndex], itemIndex);
+            if (!Array.isArray(classified)) continue;
+            // A single raw path is still accepted for defensive compatibility.
+            if (classified.length && !Array.isArray(classified[0])) classified = [classified];
+            for (var pathIndex = 0; pathIndex < classified.length; pathIndex++) {
+                if (Array.isArray(classified[pathIndex])) group.paths.push(classified[pathIndex]);
+            }
+        }
+        root.count = orderedGroups.length;
+        for (var groupIndex = 0; groupIndex < orderedGroups.length; groupIndex++) {
+            var visited = [];
+            var paths = orderedGroups[groupIndex].paths;
+            for (var pathIndex = 0; pathIndex < paths.length; pathIndex++) {
+                var rawPath = paths[pathIndex] || [], node = root;
+                for (var depth = 0; depth < rawPath.length; depth++) {
+                    var raw = rawPath[depth];
+                    var part = segment(raw && raw.id != null ? raw.id : raw,
+                        raw && raw.label != null ? raw.label : raw,
+                        raw && raw.order != null ? raw.order : 0);
+                    if (!part.id) continue;
+                    var child = findChild(node, part.id);
+                    if (!child) {
+                        child = {id:part.id, label:part.label, order:part.order,
+                            path:node.path.concat([part.id]), count:0, children:[]};
+                        node.children.push(child);
+                    }
+                    if (visited.indexOf(child) < 0) {
+                        child.count++;
+                        visited.push(child);
+                    }
+                    node = child;
+                }
+            }
+        }
+        sortTree(root);
+        return root;
+    }
+
     function fromFacets(facets, total) {
         var root = createRoot(total);
         facets = Array.isArray(facets) ? facets : [];
@@ -281,6 +347,23 @@
         return true;
     }
 
+    function matchesAnyPath(item, path, classifier) {
+        path = clonePath(path);
+        if (!path.length) return true;
+        var paths = (typeof classifier === 'function' ? classifier(item) : [catalogPath(item)]);
+        if (!Array.isArray(paths)) return false;
+        if (paths.length && !Array.isArray(paths[0])) paths = [paths];
+        for (var pathIndex = 0; pathIndex < paths.length; pathIndex++) {
+            var itemPath = clonePath(paths[pathIndex]);
+            var matched = true;
+            for (var depth = 0; depth < path.length; depth++) {
+                if (itemPath[depth] !== path[depth]) { matched = false; break; }
+            }
+            if (matched) return true;
+        }
+        return false;
+    }
+
     function FilterNavigator(options) {
         options = options || {};
         this.root = document.createElement('div');
@@ -417,7 +500,10 @@
             if (index === crumbs.length - 1) button.setAttribute('aria-current', 'page');
             button.disabled = this.disabled;
             (function(path) {
-                button.addEventListener('click', function() { self.setPath(path, false); });
+                button.addEventListener('click', function() {
+                    self.setPath(path, false);
+                    self.focusPath(path);
+                });
             })(crumb.path.slice());
             segmentNode.appendChild(button);
             root.appendChild(segmentNode);
@@ -429,16 +515,55 @@
     };
 
     FilterNavigator.prototype.setModel = function(tree, path) {
+        var active = this.root.ownerDocument && this.root.ownerDocument.activeElement;
+        var restoreFocus = !!active && (this.root.contains(active)
+            || this.breadcrumbRoot && this.breadcrumbRoot.contains(active));
         this.tree = tree || createRoot(0);
         this.path = validPath(this.tree, path == null ? this.path : path);
         this.render();
+        if (restoreFocus) this.focusPath(this.path);
     };
 
     FilterNavigator.prototype.setPath = function(path, silent) {
+        var active = this.root.ownerDocument && this.root.ownerDocument.activeElement;
+        var restoreFocus = !!active && (this.root.contains(active)
+            || this.breadcrumbRoot && this.breadcrumbRoot.contains(active));
         var next = validPath(this.tree, path);
         this.path = next;
         this.render();
         if (!silent) this.onChange(next.slice(), nodeAt(this.tree, next));
+        if (restoreFocus) this.focusPath(next);
+    };
+
+    FilterNavigator.prototype.focusPath = function(path) {
+        var expected = clonePath(path == null ? this.path : path).join('/');
+        var roots = [this.root, this.breadcrumbRoot], fallback = null;
+        for (var rootIndex = 0; rootIndex < roots.length; rootIndex++) {
+            var scope = roots[rootIndex];
+            if (!scope) continue;
+            var buttons = scope.querySelectorAll('button:not(:disabled)');
+            for (var buttonIndex = 0; buttonIndex < buttons.length; buttonIndex++) {
+                var button = buttons[buttonIndex];
+                var value = button.getAttribute('data-filter-path');
+                if (value == null) value = button.getAttribute('data-filter-breadcrumb-path');
+                if (value === expected) {
+                    button.focus();
+                    return true;
+                }
+                if (!fallback && button.getAttribute('aria-pressed') === 'true') fallback = button;
+            }
+        }
+        if (fallback) { fallback.focus(); return true; }
+        return false;
+    };
+
+    /** Moves exactly one level up without auto-descending back into it. */
+    FilterNavigator.prototype.back = function() {
+        if (!this.path.length) return false;
+        var next = this.path.slice(0, -1);
+        this.setPath(next, false);
+        this.focusPath(next);
+        return true;
     };
 
     FilterNavigator.prototype.select = function(path) {
@@ -476,6 +601,7 @@
         button.addEventListener('click', function() {
             if (exactPath) self.setPath(path, false);
             else self.select(path);
+            self.focusPath(self.path);
         });
         return button;
     };
@@ -554,7 +680,8 @@
     FilterNavigator.prototype._onKeyDown = function(event) {
         if (event.key === 'Escape' && this.path.length) {
             event.preventDefault();
-            this.select(this.path.slice(0, -1));
+            event.stopPropagation();
+            this.back();
             return;
         }
         if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Home' && event.key !== 'End') return;
@@ -580,6 +707,7 @@
         setPath:setPath,
         buildSetTree:buildSetTree,
         build:build,
+        buildMany:buildMany,
         fromFacets:fromFacets,
         manualSections:manualSections,
         branchTree:branchTree,
@@ -588,6 +716,7 @@
         validPath:validPath,
         expandSingleChildren:expandSingleChildren,
         matchesPath:matchesPath,
+        matchesAnyPath:matchesAnyPath,
         FilterNavigator:FilterNavigator
     };
 });

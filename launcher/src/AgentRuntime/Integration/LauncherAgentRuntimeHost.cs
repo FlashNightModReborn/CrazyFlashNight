@@ -125,6 +125,8 @@ namespace CF7Launcher.AgentRuntime.Integration
             get;
             init;
         }
+        public Func<string, bool>
+            CanPublishUnattendedCredential { get; init; }
     }
 
     /// <summary>
@@ -233,6 +235,8 @@ namespace CF7Launcher.AgentRuntime.Integration
         private readonly AgentConnectionAuthenticator _authenticator;
         private readonly LauncherUnattendedCredentialBootstrap
             _unattendedBootstrap;
+        private readonly Func<string, bool>
+            _canPublishUnattendedCredential;
         private readonly AgentRuntimeRevocationCoordinator _revocations;
         private readonly NativeInputGuard _nativeGuard;
         private readonly ObservationCaptureBroker _captures;
@@ -285,6 +289,8 @@ namespace CF7Launcher.AgentRuntime.Integration
             AgentConnectionAuthenticator authenticator,
             LauncherUnattendedCredentialBootstrap
                 unattendedBootstrap,
+            Func<string, bool>
+                canPublishUnattendedCredential,
             AgentRuntimeRevocationCoordinator revocations,
             NativeInputGuard nativeGuard,
             ObservationCaptureBroker captures,
@@ -330,6 +336,8 @@ namespace CF7Launcher.AgentRuntime.Integration
             _authenticator = authenticator;
             _unattendedBootstrap =
                 unattendedBootstrap;
+            _canPublishUnattendedCredential =
+                canPublishUnattendedCredential;
             _revocations = revocations;
             _nativeGuard = nativeGuard;
             _captures = captures;
@@ -921,6 +929,7 @@ namespace CF7Launcher.AgentRuntime.Integration
                     wingsVirtualConnectionFactory,
                     authenticator,
                     unattendedBootstrap,
+                    options.CanPublishUnattendedCredential,
                     revocations,
                     nativeGuard,
                     captures,
@@ -1516,11 +1525,35 @@ namespace CF7Launcher.AgentRuntime.Integration
             {
                 if (IsStopping())
                     return;
-                SynchronizeUnattendedBindingCore(
-                    _unattendedBootstrap,
-                    _authenticator,
-                    _revocations,
-                    allowPublish);
+                bool publishPermitted = false;
+                try
+                {
+                    publishPermitted = allowPublish;
+                    if (publishPermitted
+                        && _unattendedBootstrap != null
+                        && _canPublishUnattendedCredential != null)
+                    {
+                        publishPermitted =
+                            _canPublishUnattendedCredential(
+                                _unattendedBootstrap.Slot);
+                    }
+                }
+                catch
+                {
+                    publishPermitted = false;
+                }
+                finally
+                {
+                    // Even if the A5 entry gate rejects or throws, current
+                    // binding enforcement still runs and can revoke a stale
+                    // credential.  The gate only suppresses publication.
+                    SynchronizeUnattendedBindingCore(
+                        _unattendedBootstrap,
+                        _authenticator,
+                        _revocations,
+                        _rendezvous,
+                        publishPermitted);
+                }
             }
         }
 
@@ -1529,6 +1562,7 @@ namespace CF7Launcher.AgentRuntime.Integration
                 unattendedBootstrap,
             AgentConnectionAuthenticator authenticator,
             AgentRuntimeRevocationCoordinator revocations,
+            AgentRendezvousStore rendezvous,
             bool allowPublish)
         {
             if (unattendedBootstrap == null
@@ -1541,9 +1575,25 @@ namespace CF7Launcher.AgentRuntime.Integration
             {
                 if (allowPublish)
                 {
+                    Func<bool> beforeCredentialCommit = null;
+                    if (string.Equals(
+                            unattendedBootstrap.Slot,
+                            TrustedUnattendedGameEntryGate
+                                .ExactA5Slot,
+                            StringComparison.Ordinal))
+                    {
+                        beforeCredentialCommit = () =>
+                            rendezvous != null
+                            && rendezvous.TryRotateOwnedTicket(
+                                AgentRendezvousStore
+                                    .MaximumTicketTtl,
+                                out _,
+                                out _);
+                    }
                     unattendedBootstrap
                         .TryPublishObservedCredential(
                             authenticator,
+                            beforeCredentialCommit,
                             out _);
                 }
                 unattendedBootstrap

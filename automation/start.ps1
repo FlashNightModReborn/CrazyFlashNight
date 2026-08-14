@@ -43,13 +43,27 @@ if ($unattendedRequested) {
         'cf7_agent_equipment_tuning',
         'cf7_agent_arena_calibration',
         'cf7_agent_character_build',
-        'cf7_agent_loot_target_full_v1'
+        'cf7_agent_loot_target_full_v1',
+        'cf7_agent_a5_material_shop_run'
     )
     if ($UnattendedSlot -cnotin $allowedUnattendedSlots) {
         throw '-UnattendedSlot is not in the frozen unattended slot allowlist.'
     }
     if ($EnableLegacyHttpAutomation) {
         throw 'Unattended Agent Runtime cannot enable legacy HTTP automation.'
+    }
+    $a5UnattendedSlot = $UnattendedSlot -ceq 'cf7_agent_a5_material_shop_run'
+    $candidateLeaf = if ([string]::IsNullOrWhiteSpace($CandidateRoot)) {
+        $null
+    } else {
+        Split-Path -Leaf ([IO.Path]::GetFullPath($CandidateRoot).TrimEnd('\'))
+    }
+    if ($a5UnattendedSlot -and $null -ne $candidateLeaf -and $candidateLeaf -cne 'a5') {
+        throw 'The A5 material-shop unattended slot allows formal runtime or requires exact CandidateRoot leaf a5.'
+    }
+    if (-not $a5UnattendedSlot -and $null -ne $candidateLeaf -and
+            $candidateLeaf -cnotmatch '^c-[0-9a-f]{12}-[0-9a-f]{10}-[a-z0-9][a-z0-9-]{0,31}$') {
+        throw 'Non-A5 unattended slots require an immutable c-* candidate leaf.'
     }
 }
 if (-not [string]::IsNullOrWhiteSpace($UnattendedClientInstanceId)) {
@@ -318,7 +332,10 @@ if ($unattendedRequested) {
     $trustedRunnerExitCode = $trustedRunner.ExitCode
     $trustedRunner.Dispose()
     if ($trustedRunnerExitCode -ne 0) {
-        throw "Trusted unattended Core runner failed (exitCode=$trustedRunnerExitCode)."
+        # Core already emitted the bounded trusted-runner diagnostic. Preserve
+        # its exact exit status without adding a PowerShell ErrorRecord to the
+        # JSONL stderr evidence stream.
+        exit $trustedRunnerExitCode
     }
     return
 }

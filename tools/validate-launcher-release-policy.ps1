@@ -165,6 +165,7 @@ function Get-Cf7ProductionChecks {
     $powershell = Resolve-Cf7Executable -Names @('powershell.exe', 'powershell')
     $node = Resolve-Cf7Executable -Names @('node.exe', 'node')
     $npm = Resolve-Cf7Executable -Names @('npm.cmd', 'npm')
+    $python = Resolve-Cf7Executable -Names @('python.exe', 'python3.exe', 'python')
     $checks = @()
 
     $checks += New-Cf7CommandCheck -Name 'pet-roster-types' -FilePath $powershell `
@@ -180,6 +181,18 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\audit-web-icon-render-entrypoints.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'equipment-mod-ui' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-equipment-mod-ui.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'material-catalog-current' -FilePath $python `
+        -Arguments @((Join-Path $ProjectRoot 'tools\derive-material-catalog.py'), '--check') -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'material-enemy-portrait-coverage' -FilePath $python `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-material-enemy-portrait-coverage.py')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'shop-portrait-assets' -FilePath $python `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-shop-portrait-assets.py')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'enemy-portrait-resolver-runtime' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-portrait-resolver-runtime.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'shop-portrait-resolver-runtime' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-shop-portrait-resolver-runtime.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'workbench-lazy-portrait-closure' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-inventory-workbench-lazy-closure.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'npc-shop-catalogs' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-npc-shops.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'item-set-metadata' -FilePath $node `
@@ -262,7 +275,8 @@ function Get-Cf7ProductionChecks {
         'modules\equipment-tuning-confirmation.js', 'modules\inventory-workbench-navigation.js',
         'modules\inventory-workbench-header.js', 'modules\inventory-workbench-quick-transfer.js',
         'modules\inventory-workbench-owned-view.js', 'modules\npcshop-runtime.js',
-        'modules\npcshop-secondary-pages.js', 'modules\npcshop.js', 'modules\crafting-runtime.js',
+        'modules\npcshop-material-navigation.js', 'modules\npcshop-secondary-pages.js',
+        'modules\npcshop.js', 'modules\crafting-runtime.js',
         'modules\crafting-detail-presenter.js', 'modules\crafting.js',
         'modules\hairdresser-runtime.js', 'modules\hairdresser.js',
         'modules\skills-runtime.js', 'modules\skills-library.js',
@@ -300,6 +314,8 @@ function Get-Cf7ProductionChecks {
         'modules\minigames\gobang\gobang-audio.js', 'modules\minigames\gobang\core\index.js',
         'modules\asset-timeline.js', 'modules\dressup-doll-renderer.js',
         'modules\dressup\dressup-panel.js', 'assets\dressup\manifest.json',
+        'modules\portrait-resolver.js', 'assets\enemy-portraits\manifest.json',
+        'modules\shop-portrait-resolver.js', 'assets\shop-portraits\manifest.json',
         'modules\dialogue\dialogue-view.js', 'assets\dialogue-portraits\manifest.json'
     )
     $checks += New-Cf7RequiredPathsCheck -Name 'required-web-runtime-assets' `

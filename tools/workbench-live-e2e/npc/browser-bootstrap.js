@@ -133,9 +133,11 @@ async function run() {
   const checkNames = checks.map((entry) => entry && entry.name);
   const criticalChecks = CRITICAL_CHECK_NAMES.map((name) =>
     checks.filter((entry) => entry && entry.name === name));
-  if (!result || result.passed !== result.total || result.total !== 128
+  if (!result || result.passed !== result.total || result.total !== 129
+      || result.materialNavigationPassed !== result.materialNavigationTotal
+      || result.materialNavigationTotal !== 21
       || result.reducedPassed !== result.reducedTotal || result.reducedTotal !== 2
-      || result.contractQuantity !== 4549 || checks.length !== 128
+      || result.contractQuantity !== 4549 || checks.length !== 129
       || checkNames.some((name) => typeof name !== "string" || !name)
       || new Set(checkNames).size !== checkNames.length
       || checks.some((entry) => entry.ok !== true)
@@ -198,6 +200,8 @@ async function run() {
     browserBinary:launchedBrowserBinary,
     servedResourceClosure:servedResourceReceipt,
     result:{ passed:result.passed, total:result.total,
+      materialNavigationPassed:result.materialNavigationPassed,
+      materialNavigationTotal:result.materialNavigationTotal,
       reducedPassed:result.reducedPassed, reducedTotal:result.reducedTotal,
       contractQuantity:result.contractQuantity,
       checkNamesSha256,

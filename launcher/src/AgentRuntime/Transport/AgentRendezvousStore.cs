@@ -384,6 +384,53 @@ namespace CF7Launcher.AgentRuntime.Transport
             }
         }
 
+        public bool TryRotateOwnedTicket(
+            TimeSpan ticketTtl,
+            out AgentRendezvousDocument rotatedDocument,
+            out string reasonCode)
+        {
+            ValidateTicketTtl(ticketTtl);
+            rotatedDocument = null;
+            lock (_gate)
+            {
+                ThrowIfDisposed();
+                if (_ownedRegistration == null)
+                {
+                    reasonCode = "owned_registration_missing";
+                    return false;
+                }
+                if (!_processProbe.IsExactProcessAlive(
+                        _ownedRegistration.LauncherProcessId,
+                        _ownedRegistration.LauncherStartTimeUtc))
+                {
+                    reasonCode = "owned_process_stale";
+                    return false;
+                }
+                if (!TryReadDocument(
+                        out AgentRendezvousDocument current,
+                        out _)
+                    || !SameOwnedRegistration(
+                        _ownedRegistration,
+                        current)
+                    || current.TicketExpiresUtc - _clock.UtcNow
+                        > MaximumTicketTtl)
+                {
+                    reasonCode = "owned_rendezvous_mismatch";
+                    return false;
+                }
+
+                // An expired ticket is never accepted or consumed.  The
+                // still-live exact owner replaces it with a fresh random
+                // one before an A5 credential becomes observable.
+                rotatedDocument = CreateDocument(
+                    _ownedRegistration,
+                    ticketTtl);
+                WriteAtomically(rotatedDocument);
+                reasonCode = "refreshed";
+                return true;
+            }
+        }
+
         public void Dispose()
         {
             lock (_gate)
@@ -713,6 +760,21 @@ namespace CF7Launcher.AgentRuntime.Transport
                 && string.Equals(
                     owner.LifecycleId,
                     document.LifecycleId,
+                    StringComparison.Ordinal);
+        }
+
+        private static bool SameOwnedRegistration(
+            AgentRendezvousOwner owner,
+            AgentRendezvousDocument document)
+        {
+            return SameOwner(owner, document)
+                && string.Equals(
+                    owner.PipeId,
+                    document.PipeId,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    owner.RuntimeQualificationState,
+                    document.RuntimeQualificationState,
                     StringComparison.Ordinal);
         }
 

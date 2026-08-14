@@ -21,9 +21,11 @@ var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getIn
 		_root.发布消息("材料数据加载完毕");
 		if(!_root.图鉴信息) _root.图鉴信息 = new Object();
 		_root.图鉴信息.材料大全 = data.Material;
+		_root.__boot.legacyMaterialDictionaryReady = true;
     },
     function():Void {
         trace("主程序：材料大全数据加载失败！");
+		_root.__boot.legacyMaterialDictionaryFailed = true;
     }
 );
 

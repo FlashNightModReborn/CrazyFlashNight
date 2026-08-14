@@ -47,6 +47,45 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
         }
 
         [Fact]
+        public void RegisteredWebSurfaceDescendantIsAcceptedButSiblingIsRejected()
+        {
+            Fixture fixture = new Fixture();
+            var resolver = new MappingTopLevelResolver();
+            resolver.Bind(new IntPtr(1001), new IntPtr(9001));
+            resolver.Bind(new IntPtr(1101), new IntPtr(1001));
+            resolver.Bind(new IntPtr(1201), new IntPtr(9001));
+            var authority =
+                new SessionNativeInputAuthority(
+                    fixture.Registry,
+                    resolver);
+
+            Assert.True(
+                authority.TryResolve(
+                    SessionId,
+                    TargetId,
+                    out var target,
+                    out var reason),
+                reason);
+            Assert.True(
+                authority.IsRegisteredInputWindow(
+                    target,
+                    new IntPtr(1101)));
+            Assert.False(
+                authority.IsRegisteredInputWindow(
+                    target,
+                    new IntPtr(1201)));
+
+            fixture.Registry.SetFocus(
+                fixture.Owner,
+                fixture.ExpectSession(),
+                null);
+            Assert.False(
+                authority.IsRegisteredInputWindow(
+                    target,
+                    new IntPtr(1101)));
+        }
+
+        [Fact]
         public void StaleOrUnfocusedRegistrationFailsClosed()
         {
             Fixture fixture = new Fixture();
@@ -469,6 +508,27 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
                 return registeredHwnd == IntPtr.Zero
                     ? IntPtr.Zero
                     : _topLevel;
+            }
+        }
+
+        private sealed class MappingTopLevelResolver
+            : ISessionTopLevelWindowResolver
+        {
+            private readonly Dictionary<IntPtr, IntPtr> _roots =
+                new Dictionary<IntPtr, IntPtr>();
+
+            internal void Bind(IntPtr hwnd, IntPtr root)
+            {
+                _roots[hwnd] = root;
+            }
+
+            public IntPtr ResolveTopLevel(IntPtr registeredHwnd)
+            {
+                return _roots.TryGetValue(
+                    registeredHwnd,
+                    out IntPtr root)
+                    ? root
+                    : IntPtr.Zero;
             }
         }
 

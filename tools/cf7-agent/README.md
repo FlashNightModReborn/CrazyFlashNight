@@ -232,8 +232,11 @@ intended WebOverlay cannot be selected exactly from its authorized scope. A
 fresh WebOverlay observation may support visual reconciliation; it does not
 turn the earlier broker-dispatch receipt into domain or causal proof.
 
-Production accepts only panel names `help`, `map`, `tasks`, `team`, and
-`jukebox`. Every production panel-instance producer, including PanelHost, the
+Production accepts only panel names `help`, `map`, `tasks`, `team`, `jukebox`,
+and `materials`. `materials` reuses the fixed Host-to-AS2 `openMaterialUI`
+handshake with the `nativehud_materials` origin; it is not a direct Web-panel
+open. Its dispatch receipt must be followed by a fresh WebOverlay observation
+of the exact crafting/materials result. Every production panel-instance producer, including PanelHost, the
 Loot coordinator, and Router fallback, generates an opaque ID with at least
 144 bits of CSPRNG entropy. Prefixes such as `panel`, `panelloot`, or `fallback`
 are diagnostic only and must never be interpreted as authority, ordering, or
@@ -365,6 +368,12 @@ wrapper or PowerShell:
 node tools/cf7-agent/unattended.js `
   --adapter jsonl `
   --slot cf7_agent_equipment_tuning
+
+# A5 materialized resources root only: exact short candidate leaf is mandatory
+node tools/cf7-agent/unattended.js `
+  --adapter mcp `
+  --slot cf7_agent_a5_material_shop_run `
+  --candidate-id a5
 ```
 
 `unattended.js` accepts only `--adapter jsonl|mcp`, one frozen slot, and an optional
@@ -380,6 +389,14 @@ The slot allow-list is:
 - `cf7_agent_arena_calibration`
 - `cf7_agent_character_build`
 - `cf7_agent_loot_target_full_v1`
+- `cf7_agent_a5_material_shop_run` — requires exactly `--candidate-id a5`; it
+  rejects formal runtime, ordinary `c-*` candidates, and every other short leaf.
+
+All other slots retain the existing boundary: no candidate ID selects formal
+runtime, while an explicit candidate ID must match the immutable `c-*` leaf
+contract. When the A5 command is run from the materialized `resources` root, the
+fixed wrapper therefore resolves exactly
+`resources/tmp/runtime-candidates/v2/a5` as `CandidateRoot`.
 
 The Core runner owns the Guardian lifecycle. Normal stdin completion requests its
 exact-one current `RuntimeOwned` Launcher observation (scope cardinality, not a

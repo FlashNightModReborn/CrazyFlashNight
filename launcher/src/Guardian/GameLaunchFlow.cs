@@ -93,6 +93,11 @@ namespace CF7Launcher.Guardian
         private readonly object _stateLock = new object();
         private State _state = State.Idle;
         private string _currentAttemptId;
+        // A watchdog may reveal the Flash host, but it is not a title-frame
+        // receipt.  Agent Runtime automation may only cross the save-entry
+        // gate after this exact-attempt latch is set by the real
+        // bootstrap_reveal_ready message.
+        private string _acceptedTitleAttemptId;
         private string _pendingSlot;
         private Process _currentFlashProcess;
         private int _timerGen;
@@ -203,6 +208,72 @@ namespace CF7Launcher.Guardian
                     _currentFlashProcess,
                     _agentRuntimeSaveSignature);
             }
+        }
+
+        internal bool HasAcceptedTitleReceipt(string attemptId)
+        {
+            if (string.IsNullOrEmpty(attemptId))
+                return false;
+            lock (_stateLock)
+            {
+                return string.Equals(
+                    _acceptedTitleAttemptId,
+                    attemptId,
+                    StringComparison.Ordinal);
+            }
+        }
+
+        internal bool TrySendTrustedResolvedSaveEntry(
+            string expectedSlot,
+            string expectedAttemptId,
+            Func<bool> isShutdownAdmissionClosed = null)
+        {
+            const string exactA5Slot =
+                "cf7_agent_a5_material_shop_run";
+            const string fixedPayload =
+                "{\"task\":\"console\",\"command\":"
+                + "\"#func:_root.agentEnterResolvedSave()\"}\0";
+
+            // Match every other lifecycle-sensitive socket transition in
+            // this class: connection-transition -> launch-state -> client.
+            // This prevents a reconnect from slipping between the title/
+            // attempt proof and the exact-generation write.
+            if (_socketServer == null)
+                return false;
+            return _socketServer.RunWithConnectionTransitionFence(
+                delegate
+            {
+                lock (_stateLock)
+                {
+                    if (!string.Equals(
+                            expectedSlot,
+                            exactA5Slot,
+                            StringComparison.Ordinal)
+                        || !string.Equals(
+                            _pendingSlot,
+                            expectedSlot,
+                            StringComparison.Ordinal)
+                        || !string.Equals(
+                            _currentAttemptId,
+                            expectedAttemptId,
+                            StringComparison.Ordinal)
+                        || !string.Equals(
+                            _acceptedTitleAttemptId,
+                            expectedAttemptId,
+                            StringComparison.Ordinal)
+                        || _state != State.Ready
+                        || (isShutdownAdmissionClosed != null
+                            && isShutdownAdmissionClosed())
+                        || !_socketServer.TryGetReadyGeneration(
+                            out int generation))
+                    {
+                        return false;
+                    }
+                    return _socketServer.TrySendIfGen(
+                        fixedPayload,
+                        generation);
+                }
+            });
         }
 
         internal static string ComputeAgentRuntimeSaveSignature(
@@ -506,6 +577,7 @@ namespace CF7Launcher.Guardian
                     {
                         _pendingSlot = slot;
                         _currentAttemptId = Guid.NewGuid().ToString("N");
+                        _acceptedTitleAttemptId = null;
                         _resolvedSave = resolved;
                         _agentRuntimeSaveSignature =
                             resolvedSaveSignature;
@@ -659,6 +731,7 @@ namespace CF7Launcher.Guardian
                 _prewarmTriggered = true;
                 _prewarmAborting = false;
                 _currentAttemptId = Guid.NewGuid().ToString("N");
+                _acceptedTitleAttemptId = null;
                 _pendingSlot = null;       // 明确标记 prewarm 模式
                 _resolvedSave = null;
                 _agentRuntimeSaveSignature = null;
@@ -849,11 +922,16 @@ namespace CF7Launcher.Guardian
             lock (_stateLock)
             {
                 if (onIdle != null) _pendingIdleCallbacks.Add(onIdle);
+                // Close Agent Runtime title admission synchronously with the
+                // reset request; an in-flight credential refresh must not
+                // reuse a receipt from the attempt being torn down.
+                _acceptedTitleAttemptId = null;
 
                 if (_state == State.Idle && !_resetInFlight)
                 {
                     // 快路径: 已是 Idle 且无 worker, snapshot+clear 队列 flush outside lock
                     _currentAttemptId = null;
+                    _acceptedTitleAttemptId = null;
                     _pendingSlot = null;
                     _currentFlashProcess = null;
                     _resolvedSave = null;
@@ -1248,6 +1326,10 @@ namespace CF7Launcher.Guardian
                         + (attemptId ?? "null") + " expected=" + _currentAttemptId);
                     return null;
                 }
+                // Record the genuine title receipt even if the reveal
+                // watchdog already made the host visible.  The watchdog
+                // never writes this latch.
+                _acceptedTitleAttemptId = attemptId;
                 if (!_revealWaitingFlash)
                 {
                     LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: not waiting, ignored");

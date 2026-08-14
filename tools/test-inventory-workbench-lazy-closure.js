@@ -44,6 +44,25 @@ async function main() {
     ].forEach(name => assert(workbenchDeps.includes(name),
         'storage boot closure is missing ' + name));
 
+    const npcshopDeps = section(
+        registry,
+        "Panels.registerLazy('npcshop'",
+        "Panels.registerLazy('crafting'");
+    const npcshopOrder = [
+        'modules/npcshop-runtime.js',
+        'modules/npcshop-material-navigation.js',
+        'modules/npcshop-secondary-pages.js',
+        'modules/npcshop.js'
+    ].map(name => npcshopDeps.indexOf("'" + name + "'"));
+    assert(npcshopOrder.every(index => index >= 0),
+        'NPCShop lazy closure is missing its material navigation controller');
+    assert(npcshopOrder.every((index, ordinal) => !ordinal || index > npcshopOrder[ordinal - 1]),
+        'NPCShop runtime/navigation/presenter/facade load order drifted');
+    const releasePolicy = fs.readFileSync(
+        path.join(ROOT, 'tools', 'validate-launcher-release-policy.ps1'), 'utf8');
+    assert(releasePolicy.includes("'modules\\npcshop-material-navigation.js'"),
+        'Launcher release-policy required-assets gate omits NPCShop material navigation');
+
     const calls = [];
     global.LazyLoader = {
         load(deps) {
@@ -170,6 +189,42 @@ async function main() {
         /workbench\.js requires workbench-primitives\.js to load first/,
         'shared layer must fail fast with a readable error when closure order is violated');
 
+    const craftingSection = section(
+        registry,
+        "Panels.registerLazy('crafting'",
+        "Panels.registerLazy('hairdresser'");
+    const craftingDeps = (craftingSection.match(/'modules\/[^']+'/g) || [])
+        .map(token => token.slice(1, -1));
+    assert.deepStrictEqual(craftingDeps, [
+        'modules/panel-runtime.js',
+        'modules/workbench-lifecycle.js',
+        'modules/workbench-focus.js',
+        'modules/workbench-primitives.js',
+        'modules/workbench-profile.js',
+        'modules/workbench.js',
+        'modules/workbench-components.js',
+        'modules/item-filter.js',
+        'modules/portrait-resolver.js',
+        'modules/shop-portrait-resolver.js',
+        'modules/asset-timeline.js',
+        'modules/dressup-doll-renderer.js',
+        'modules/workbench-inspection-viewport.js',
+        'modules/equipment-inspector.js',
+        'modules/crafting-inspector.js',
+        'modules/crafting-materials.js',
+        'modules/crafting-detail-presenter.js',
+        'modules/inventory-runtime.js',
+        'modules/crafting-runtime.js',
+        'modules/crafting.js'
+    ], 'crafting lazy closure must load exact enemy/shop portrait resolvers before its material consumer');
+    assert(!craftingSection.includes('dialogue/dialogue-view.js')
+        && !craftingSection.includes('map-panel.js')
+        && !craftingSection.includes('map-panel-data.js'),
+    'crafting portraits must not pull DialogueView or MapPanel runtime internals');
+    assert(fs.existsSync(path.join(MODULES, 'portrait-resolver.js'))
+        && fs.existsSync(path.join(MODULES, 'shop-portrait-resolver.js')),
+    'crafting portrait resolver declarations must resolve to tracked runtime modules');
+
     const crafting = read('crafting.js');
     const organizer = read('crafting-inventory-organizer.js');
     const panels = read('panels.js');
@@ -192,7 +247,7 @@ async function main() {
         'EquipmentInspector',
         'CharacterBuild'
     ].forEach(name => { delete global[name]; });
-    process.stdout.write('Inventory workbench + arena lazy closure: 24/24 passed\n');
+    process.stdout.write('Inventory workbench + arena/crafting/NPCShop lazy closure: 28/28 passed\n');
 }
 
 main().catch(error => {

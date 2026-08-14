@@ -1,10 +1,14 @@
 ﻿import org.flashNight.arki.item.CraftingPanelService;
+import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.MaterialArchiveProjector;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
+import org.flashNight.arki.task.TaskUtil;
+import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
 
 /** CraftingPanelService C0-C3 回归测试。 */
 class org.flashNight.arki.item.CraftingPanelServiceTest {
@@ -16,6 +20,11 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         setup();
         testOpenRequestWire();
         testMaterialsProjection();
+        testMaterialsV2SnapshotProjection();
+        testMaterialBoundaryProbe();
+        testDropOccurrenceProjection();
+        testStaticSourceOccurrenceIdentity();
+        testExactRecipeUseOccurrences();
         testLegacyIdentityWhitespaceFallback();
         testInformationOverflowPolicy();
         testSnapshotProjection();
@@ -175,25 +184,25 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             "material detail exposes annotation, structured sources and recipe uses");
         var previousEnemyTable:Object = _root.敌人属性表;
         _root.敌人属性表 = {};
-        _root.敌人属性表["enemy.internal.visible"] = {displayname:"敌人展示名"};
-        _root.敌人属性表["enemy.internal.equal"] = {displayname:"enemy.internal.equal"};
-        _root.敌人属性表["enemy.internal.missing"] = {};
-        _root.敌人属性表["enemy.internal.sentinel"] = {displayname:" Undefined "};
-        _root.敌人属性表["enemy.internal.wrong"] = {displayname:{legacy:"bad"}};
+        _root.敌人属性表["敌人-enemy.internal.visible"] = {displayname:"敌人展示名"};
+        _root.敌人属性表["敌人-enemy.internal.equal"] = {displayname:"敌人-enemy.internal.equal"};
+        _root.敌人属性表["敌人-enemy.internal.missing"] = {};
+        _root.敌人属性表["敌人-enemy.internal.sentinel"] = {displayname:" Undefined "};
+        _root.敌人属性表["敌人-enemy.internal.wrong"] = {displayname:{legacy:"bad"}};
         var obtainIndex:ItemObtainIndex = ItemObtainIndex.getInstance();
-        obtainIndex.updateEnemyDrops("enemy.internal.visible", [
+        obtainIndex.updateEnemyDrops("敌人-enemy.internal.visible", [
             {名字:"测试矿石", 概率:0.25, 最小逆向等级:1, 最大逆向等级:9}
         ]);
-        obtainIndex.updateEnemyDrops("enemy.internal.equal", [
+        obtainIndex.updateEnemyDrops("敌人-enemy.internal.equal", [
             {名字:"测试矿石", 概率:0.2, 最小逆向等级:0, 最大逆向等级:0}
         ]);
-        obtainIndex.updateEnemyDrops("enemy.internal.missing", [
+        obtainIndex.updateEnemyDrops("敌人-enemy.internal.missing", [
             {名字:"测试矿石", 概率:0.15, 最小逆向等级:0, 最大逆向等级:0}
         ]);
-        obtainIndex.updateEnemyDrops("enemy.internal.sentinel", [
+        obtainIndex.updateEnemyDrops("敌人-enemy.internal.sentinel", [
             {名字:"测试矿石", 概率:0.1, 最小逆向等级:0, 最大逆向等级:0}
         ]);
-        obtainIndex.updateEnemyDrops("enemy.internal.wrong", [
+        obtainIndex.updateEnemyDrops("敌人-enemy.internal.wrong", [
             {名字:"测试矿石", 概率:0.05, 最小逆向等级:0, 最大逆向等级:0}
         ]);
         obtainIndex.updateQuestRewards("quest.internal.visible", "任务展示名", ["测试矿石#1"]);
@@ -215,11 +224,11 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         var wrongQuest:Object = null;
         for (var sourceIndex:Number = 0; sourceIndex < labelled.sources.length; sourceIndex++) {
             var source:Object = labelled.sources[sourceIndex];
-            if (source.enemyType == "enemy.internal.visible") visibleEnemy = source;
-            else if (source.enemyType == "enemy.internal.equal") equalEnemy = source;
-            else if (source.enemyType == "enemy.internal.missing") missingEnemy = source;
-            else if (source.enemyType == "enemy.internal.sentinel") sentinelEnemy = source;
-            else if (source.enemyType == "enemy.internal.wrong") wrongEnemy = source;
+            if (source.enemyType == "敌人-enemy.internal.visible") visibleEnemy = source;
+            else if (source.enemyType == "敌人-enemy.internal.equal") equalEnemy = source;
+            else if (source.enemyType == "敌人-enemy.internal.missing") missingEnemy = source;
+            else if (source.enemyType == "敌人-enemy.internal.sentinel") sentinelEnemy = source;
+            else if (source.enemyType == "敌人-enemy.internal.wrong") wrongEnemy = source;
             else if (source.questId == "quest.internal.visible") visibleQuest = source;
             else if (source.questId == "quest.internal.equal") equalQuest = source;
             else if (source.questId == "quest.internal.missing") missingQuest = source;
@@ -246,6 +255,1405 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         var missing:Object = CraftingPanelService.execute("materialDetail", {itemName:"未知材料"});
         check(!missing.success && missing.error == "item_not_found",
             "material detail rejects unknown names");
+    }
+
+    /** A2：catalog/detail v2 使用同一 frozen snapshot，来源与用途 exact 投影。 */
+    private static function testMaterialsV2SnapshotProjection():Void {
+        resetOwned();
+        var previousCatalog:Object = _root.材料档案目录;
+        var previousOrder:Object = _root.改装分类顺序;
+        var previousEnemyTable:Object = _root.敌人属性表;
+        var previousUi:Object = _root.UI系统;
+        var previousShops:Object = _root.shops;
+        var previousBoot:Object = _root.__boot;
+        var previousNpcService:Object = previousUi == undefined
+            ? undefined : previousUi.NPC商店WebView;
+        var previousModDict:Object = EquipmentUtil.modDict;
+        var previousModList:Array = EquipmentUtil.modList;
+        var previousInfrastructureSystem:Object = _root.基建系统;
+        var previousInfrastructure:Object = previousInfrastructureSystem == undefined
+            ? undefined : previousInfrastructureSystem.infrastructure;
+
+        EquipmentUtil.modDict = {};
+        EquipmentUtil.modList = [];
+        if (_root.基建系统 == undefined) _root.基建系统 = {};
+        _root.基建系统.infrastructure = {自行车:0, 摩托车:0, 越野车:0};
+        var taxonomyMods:Array = materialTaxonomyModFixtures();
+        var catalogMaterials:Array = [
+            {Name:"测试矿石", typeId:"general", legacyVisible:true,
+                legacyInformation:"【档案摘要】测试矿石",
+                authoredDirectPurposeId:"system:equipment_tuning"}
+        ];
+        for (var taxonomyIndex:Number = 0; taxonomyIndex < taxonomyMods.length;
+                taxonomyIndex++) {
+            var taxonomyMod:Object = taxonomyMods[taxonomyIndex];
+            var taxonomyName:String = String(taxonomyMod.name);
+            ItemUtil.itemDataDict[taxonomyName] = itemData(
+                taxonomyName, "收集品", "材料", 0);
+            ItemUtil.materialDict[taxonomyName] = true;
+            EquipmentUtil.modDict[taxonomyName] = taxonomyMod;
+            EquipmentUtil.modList.push(taxonomyName);
+            catalogMaterials.push({Name:taxonomyName, typeId:"equipment_mod",
+                legacyVisible:false});
+        }
+        _root.改装分类顺序 = ["武器合成"];
+        _root.材料档案目录 = {
+            schemaVersion:1,
+            DirectPurpose:{id:"system:equipment_tuning", label:"装备改装",
+                order:0, consumerEvidence:"EquipmentTuningService"},
+            Material:catalogMaterials
+        };
+        _root.敌人属性表 = {};
+        _root.敌人属性表["敌人-测试两档"] = {displayname:"测试两档"};
+        _root.敌人属性表["敌人-键:|𠀀"] = {displayname:"特殊键敌人"};
+
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        index.updateEnemyDrops("敌人-测试两档", [
+            {名字:"测试矿石", 概率:3, 最大逆向等级:2, 最小数量:1, 最大数量:1},
+            {名字:"测试矿石", 概率:5, 最小逆向等级:3, 最小数量:2, 最大数量:4}
+        ]);
+        index.updateEnemyDrops("敌人-键:|𠀀", [
+            {名字:"测试矿石", 概率:7}
+        ]);
+        index.updateStageDrops("测试关卡多档", [
+            ["测试矿石", 8, 1], ["测试矿石", 50, 2]
+        ]);
+
+        if (_root.UI系统 == undefined) _root.UI系统 = {};
+        _root.__boot = {shopCatalogReady:true};
+        _root.shops = {};
+        _root.shops["测试商人"] = {};
+        _root.shops["测试商人"]["0"] = "测试矿石";
+        var shopProjector:Object = {price:120, locked:true, maxQuantity:0,
+            catalogMode:"exact"};
+        shopProjector.buildCatalog = function(shopId:String):Array {
+            if (this.catalogMode == "empty") return [];
+            if (this.catalogMode == "non_array") return null;
+            if (this.catalogMode == "throw") throw "shop_catalog_fixture_throw";
+            if (this.catalogMode == "wrong_index") {
+                return [{catalogIndex:1, itemName:"测试矿石"}];
+            }
+            if (this.catalogMode == "wrong_name") {
+                return [{catalogIndex:0, itemName:"测试药剂"}];
+            }
+            if (this.catalogMode == "duplicate") {
+                return [{catalogIndex:0, itemName:"测试矿石"},
+                    {catalogIndex:0, itemName:"测试矿石"}];
+            }
+            return [{catalogIndex:0, itemName:"测试矿石",
+                basePrice:this.price, unitPrice:this.price - 10,
+                requiredInfo:"测试图纸", locked:this.locked,
+                maxQuantity:this.maxQuantity}];
+        };
+        _root.UI系统.NPC商店WebView = shopProjector;
+
+        var catalog:Object = CraftingPanelService.execute("materials", {v:2});
+        var snapshotId:String = String(catalog.snapshotId || "");
+        var mineral:Object = catalog.success ? catalog.materials[0] : null;
+        var mod:Object = catalog.success ? catalog.materials[1] : null;
+        check(catalog.success && catalog.v == 2 && catalog.view == "materials"
+                && snapshotId.indexOf("materials.snapshot.") == 0
+                && catalog.navigationAccess.shop === false
+                && catalog.navigationAccess.crafting === false
+                && catalog.taxonomy.recipePurposes.length == 1
+                && catalog.taxonomy.recipePurposes[0].id == "recipe:武器合成"
+                && catalog.taxonomy.directPurposes[0].id
+                    == "system:equipment_tuning"
+                && catalog.materials.length == 7
+                && mineral.name == "测试矿石" && mineral.archiveOrder == 0
+                && mod.name == "测试插件" && mod.archiveOrder == 1,
+            "v2 catalog freezes authored order and projects versioned taxonomy");
+        check(mineral.typeId == "general" && mineral.modFacetIds == undefined
+                && mod.typeId == "equipment_mod"
+                && mod.modFacetIds.grade == "high"
+                && mod.modFacetIds.scope == "firearm"
+                && mod.modFacetIds.role == "mechanism"
+                && mineral.recipePurposeIds.length == 1
+                && mineral.directPurposeIds.length == 1
+                && mineral.useCount == 2
+                && mineral.structuredPurposeCount == 3
+                && mineral.sourceCount == 4
+                && mineral.dropVariantCount == 5,
+            "v2 catalog separates mod facets, recipe occurrences, purposes and source counts");
+
+        // Caller mutation and later owned mutation cannot alter the frozen detail snapshot.
+        catalog.materials[0].owned = 999;
+        _root.收集品栏.材料.addValue("测试矿石", 10);
+        // BootSequencer hands off by deleting the transient __boot object.
+        // Runtime shop authority must therefore come only from the persistent
+        // index, raw shop table and live NPC catalog service below.
+        delete _root.__boot;
+        var detail:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:snapshotId, itemName:"测试矿石"
+        });
+        var shop:Object = findProjectedSource(detail.sources, "shop", "shopId", "测试商人");
+        var stage:Object = findProjectedSource(detail.sources, "stage", "stageName", "测试关卡多档");
+        var enemy:Object = findProjectedSource(detail.sources, "enemy", "enemyType", "敌人-测试两档");
+        var escaped:Object = findProjectedSource(detail.sources, "enemy", "enemyType", "敌人-键:|𠀀");
+        check(detail.success && detail.snapshotId == snapshotId
+                && detail.material.name == "测试矿石"
+                && detail.material.owned == 5
+                && detail.material.sourceSummary == "【档案摘要】测试矿石"
+                && detail.sourceCount == 4 && detail.dropVariantCount == 5
+                && detail.useCount == 2 && detail.structuredPurposeCount == 3,
+            "v2 detail reuses immutable catalog state while preserving authored summary");
+        check(shop != null && shop.sourceOrder == 0
+                && shop.basePrice == 120 && shop.unitPriceAtSnapshot == 110
+                && shop.requiredInfo == "测试图纸" && shop.locked
+                && shop.shopAccessMode == "full"
+                && shop.shopAccessReason == "indexed_live_match"
+                && stage != null && stage.sourceOrder == 1
+                && stage.variants.length == 2
+                && stage.variants[0].defaultBranchChancePercent == 12.5
+                && enemy != null && enemy.variants.length == 2
+                && enemy.variants[0].chanceInputState == "explicit"
+                && enemy.variants[1].quantityMin == 2
+                && escaped != null
+                && escaped.sourceKey == "lp1|5:enemy|8:敌人-键:|𠀀",
+            "v2 post-handoff sources retain full exact shop authority without transient boot state");
+        check(detail.uses.length == 2
+                && detail.uses[0].category == "武器合成"
+                && detail.uses[0].recipeIndex == 0
+                && detail.uses[0].productName == "光棱射线弹-强化"
+                && detail.uses[0].itemKind == "equipment"
+                && detail.uses[0].required == 2
+                && detail.uses[0].ingredients.length == 3
+                && detail.uses[0].ingredients[0].isQuantity === true
+                && detail.uses[0].ingredients[1].isQuantity === false
+                && detail.uses[0].ingredients[2].name == "测试矿石"
+                && detail.uses[0].ingredients[2].icon == "测试矿石图标"
+                && detail.uses[0].ingredients[2].required == 2
+                && detail.uses[0].ingredients[2].isQuantity === true
+                && detail.uses[1].recipeIndex == 1
+                && detail.uses[1].required == 9
+                && detail.directPurposes.length == 1
+                && detail.infrastructureUses == undefined,
+            "v2 uses preserve exact recipe occurrences and preview every required ingredient");
+
+        var ordinarySnapshot:Object = CraftingPanelService.execute(
+            "snapshot", {category:"武器合成"});
+        var lockedShopAccess:Object = MaterialArchiveProjector.authorizeShopAccess(
+            materialShopAccessRequest(snapshotId, 42));
+        _root.基建系统.infrastructure.自行车 = 1;
+        var bicycleCrafting:Object = CraftingPanelService.execute(
+            "snapshot", {category:"武器合成", materialSnapshotId:snapshotId});
+        _root.基建系统.infrastructure.摩托车 = 1;
+        var motorcycleCrafting:Object = CraftingPanelService.execute(
+            "snapshot", {category:"武器合成", materialSnapshotId:snapshotId});
+        _root.基建系统.infrastructure.摩托车 = 0;
+        _root.基建系统.infrastructure.越野车 = 1;
+        var offroadCrafting:Object = CraftingPanelService.execute(
+            "snapshot", {category:"武器合成", materialSnapshotId:snapshotId});
+        _root.基建系统.infrastructure.越野车 = 0;
+        var staleCrafting:Object = CraftingPanelService.execute(
+            "snapshot", {category:"武器合成",
+                materialSnapshotId:"materials.snapshot.stale"});
+        var malformedCrafting:Object = CraftingPanelService.execute(
+            "snapshot", {category:"武器合成", materialSnapshotId:7});
+        check(ordinarySnapshot.success
+                && exactShopAccessFailure(
+                    lockedShopAccess, 42, "deny", "access_denied")
+                && exactFailure(bicycleCrafting, "access_denied")
+                && motorcycleCrafting.success && offroadCrafting.success
+                && exactFailure(staleCrafting, "stale_snapshot")
+                && exactFailure(malformedCrafting, "invalid_payload"),
+            "material recipe navigation rechecks motorcycle/offroad live while ordinary crafting stays available");
+
+        testMaterialShopAccessAuthorization(
+            index, snapshotId, shopProjector);
+
+        // Only shop dynamic fields may refresh inside one frozen material snapshot.
+        shopProjector.price = 220;
+        var repriced:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:snapshotId, itemName:"测试矿石"
+        });
+        var repricedShop:Object = findProjectedSource(
+            repriced.sources, "shop", "shopId", "测试商人");
+        check(repriced.success && repriced.material.owned == 5
+                && repricedShop.basePrice == 220
+                && repricedShop.unitPriceAtSnapshot == 210,
+            "v2 detail refreshes only live NPC shop price and lock projection");
+
+        delete shopProjector.locked;
+        var missingLocked:Object = CraftingPanelService.execute(
+            "materialDetail", {v:2, snapshotId:snapshotId, itemName:"测试矿石"});
+        shopProjector.locked = "false";
+        var stringLocked:Object = CraftingPanelService.execute(
+            "materialDetail", {v:2, snapshotId:snapshotId, itemName:"测试矿石"});
+        shopProjector.locked = true;
+        var restoredLocked:Object = CraftingPanelService.execute(
+            "materialDetail", {v:2, snapshotId:snapshotId, itemName:"测试矿石"});
+        check(!missingLocked.success && missingLocked.error == "shop_snapshot_mismatch"
+                && !stringLocked.success && stringLocked.error == "shop_snapshot_mismatch"
+                && restoredLocked.success,
+            "v2 shop join requires an exact boolean locked field without coercion");
+
+        var stale:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:"materials.snapshot.stale", itemName:"测试矿石"
+        });
+        var refreshed:Object = CraftingPanelService.execute("materials", {v:2});
+        var retired:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:snapshotId, itemName:"测试矿石"
+        });
+        var unsupportedCatalog:Object = CraftingPanelService.execute("materials", {v:3});
+        var unsupportedDetail:Object = CraftingPanelService.execute("materialDetail", {
+            v:3, itemName:"测试矿石"
+        });
+        var stringVersion:Object = CraftingPanelService.execute("materials", {v:"2"});
+        var booleanVersion:Object = CraftingPanelService.execute("materials", {v:true});
+        var nullVersion:Object = CraftingPanelService.execute("materials", {v:null});
+        check(!stale.success && stale.error == "stale_snapshot"
+                && refreshed.success && refreshed.snapshotId != snapshotId
+                && refreshed.navigationAccess.shop === true
+                && refreshed.navigationAccess.crafting === false
+                && !retired.success && retired.error == "stale_snapshot"
+                && !unsupportedCatalog.success
+                && unsupportedCatalog.error == "unsupported_version"
+                && !unsupportedDetail.success
+                && unsupportedDetail.error == "unsupported_version"
+                && !stringVersion.success && stringVersion.error == "unsupported_version"
+                && !booleanVersion.success && booleanVersion.error == "unsupported_version"
+                && !nullVersion.success && nullVersion.error == "unsupported_version",
+            "v2 rejects stale snapshots and non-integer material protocol versions without coercion");
+
+        _root.基建系统.infrastructure.自行车 = 0;
+        _root.基建系统.infrastructure.摩托车 = 1;
+        var motorcycleCatalog:Object = CraftingPanelService.execute("materials", {v:2});
+        _root.基建系统.infrastructure.摩托车 = 0;
+        _root.基建系统.infrastructure.越野车 = 1;
+        var offroadCatalog:Object = CraftingPanelService.execute("materials", {v:2});
+        _root.基建系统.infrastructure.越野车 = 0;
+        var lockedCatalog:Object = CraftingPanelService.execute("materials", {v:2});
+        check(motorcycleCatalog.success && motorcycleCatalog.navigationAccess.shop
+                && motorcycleCatalog.navigationAccess.crafting
+                && offroadCatalog.success && offroadCatalog.navigationAccess.shop
+                && offroadCatalog.navigationAccess.crafting
+                && lockedCatalog.success && !lockedCatalog.navigationAccess.shop
+                && !lockedCatalog.navigationAccess.crafting,
+            "material navigation projection follows the existing vehicle fallback hierarchy");
+
+        var legacy:Object = CraftingPanelService.execute("materials", {});
+        var retiredByLegacy:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:String(refreshed.snapshotId), itemName:"测试矿石"
+        });
+        check(legacy.success && legacy.v == 1 && legacy.snapshotId == undefined
+                && !retiredByLegacy.success
+                && retiredByLegacy.error == "stale_snapshot",
+            "legacy materials stays exact v1 and retires any prior v2 snapshot");
+
+        // Identity trim-empty must match Host/Python for every non-ASCII
+        // whitespace scalar in their shared contract; C0/C1 remain forbidden.
+        var purpose:Object = _root.材料档案目录.DirectPurpose;
+        var originalPurposeLabel:String = String(purpose.label);
+        var whitespaceCodes:Array = [160,5760,8192,8193,8194,8195,8196,
+            8197,8198,8199,8200,8201,8202,8232,8233,8239,8287,12288];
+        var unicodeWhitespace:String = "";
+        var allWhitespaceRejected:Boolean = true;
+        for (var whitespaceIndex:Number = 0;
+                whitespaceIndex < whitespaceCodes.length; whitespaceIndex++) {
+            var whitespace:String = String.fromCharCode(
+                Number(whitespaceCodes[whitespaceIndex]));
+            unicodeWhitespace += whitespace;
+            purpose.label = whitespace;
+            var whitespaceFailure:Object = CraftingPanelService.execute(
+                "materials", {v:2});
+            if (whitespaceFailure.success
+                    || whitespaceFailure.error != "invalid_purpose_registry") {
+                allWhitespaceRejected = false;
+            }
+        }
+        purpose.label = unicodeWhitespace + "UnDeFiNeD" + unicodeWhitespace;
+        var wrappedUndefined:Object = CraftingPanelService.execute(
+            "materials", {v:2});
+        purpose.label = "C0" + String.fromCharCode(31);
+        var c0Identity:Object = CraftingPanelService.execute("materials", {v:2});
+        purpose.label = "C1" + String.fromCharCode(133);
+        var c1Identity:Object = CraftingPanelService.execute("materials", {v:2});
+        purpose.label = originalPurposeLabel;
+        check(allWhitespaceRejected
+                && !wrappedUndefined.success
+                && wrappedUndefined.error == "invalid_purpose_registry"
+                && !c0Identity.success && c0Identity.error == "invalid_purpose_registry"
+                && !c1Identity.success && c1Identity.error == "invalid_purpose_registry",
+            "v2 identities reject each Unicode trim-empty scalar, wrapped undefined and C0/C1 controls");
+
+        // ordered list, dictionary own keys, material membership and catalog
+        // equipment_mod rows are one exact set in both directions.
+        EquipmentUtil.modDict["测试额外插件"] = taxonomyMods[0];
+        var extraMod:Object = CraftingPanelService.execute("materials", {v:2});
+        delete EquipmentUtil.modDict["测试额外插件"];
+        EquipmentUtil.modList.push(EquipmentUtil.modList[0]);
+        var duplicateMod:Object = CraftingPanelService.execute("materials", {v:2});
+        EquipmentUtil.modList.pop();
+        var missingModName:String = String(EquipmentUtil.modList.pop());
+        var missingMod:Object = CraftingPanelService.execute("materials", {v:2});
+        EquipmentUtil.modList.push(missingModName);
+        var originalModType:String = String(catalogMaterials[1].typeId);
+        catalogMaterials[1].typeId = "general";
+        var misclassifiedMod:Object = CraftingPanelService.execute(
+            "materials", {v:2});
+        catalogMaterials[1].typeId = originalModType;
+        delete ItemUtil.materialDict["测试插件"];
+        var nonMaterialMod:Object = CraftingPanelService.execute("materials", {v:2});
+        ItemUtil.materialDict["测试插件"] = true;
+        check(!extraMod.success && extraMod.error == "invalid_mod_catalog_closure"
+                && !duplicateMod.success
+                && duplicateMod.error == "invalid_mod_catalog_closure"
+                && !missingMod.success
+                && missingMod.error == "invalid_mod_catalog_closure"
+                && !misclassifiedMod.success
+                && misclassifiedMod.error == "invalid_mod_catalog_closure"
+                && !nonMaterialMod.success
+                && nonMaterialMod.error == "invalid_catalog_item",
+            "v2 rejects extra, duplicate, missing, misclassified and non-material mod registry members");
+
+        testInfrastructureUsesProjection(catalogMaterials);
+        testMaterialCollectionCapProductionPaths(catalogMaterials, index);
+
+        var beforeFailedRefresh:Object = CraftingPanelService.execute(
+            "materials", {v:2});
+        purpose.label = String.fromCharCode(160);
+        var failedRefresh:Object = CraftingPanelService.execute("materials", {v:2});
+        purpose.label = originalPurposeLabel;
+        var retiredAfterFailure:Object = CraftingPanelService.execute(
+            "materialDetail", {v:2,
+                snapshotId:String(beforeFailedRefresh.snapshotId),
+                itemName:"测试矿石"});
+        check(beforeFailedRefresh.success
+                && exactFailure(failedRefresh, "invalid_purpose_registry")
+                && exactFailure(retiredAfterFailure, "stale_snapshot"),
+            "failed v2 catalog refresh is versionless and retires the prior snapshot");
+
+        for (var cleanupModIndex:Number = 0;
+                cleanupModIndex < taxonomyMods.length; cleanupModIndex++) {
+            var cleanupModName:String = String(taxonomyMods[cleanupModIndex].name);
+            delete ItemUtil.itemDataDict[cleanupModName];
+            delete ItemUtil.materialDict[cleanupModName];
+        }
+        EquipmentUtil.modDict = previousModDict;
+        EquipmentUtil.modList = previousModList;
+        if (previousInfrastructureSystem == undefined) {
+            delete _root.基建系统;
+        } else {
+            _root.基建系统 = previousInfrastructureSystem;
+            _root.基建系统.infrastructure = previousInfrastructure;
+        }
+        _root.材料档案目录 = previousCatalog;
+        _root.改装分类顺序 = previousOrder;
+        _root.敌人属性表 = previousEnemyTable;
+        _root.shops = previousShops;
+        _root.__boot = previousBoot;
+        if (previousUi == undefined) {
+            delete _root.UI系统;
+        } else {
+            _root.UI系统 = previousUi;
+            _root.UI系统.NPC商店WebView = previousNpcService;
+        }
+        resetOwned();
+    }
+
+    /** A4b：Host-only 商店导航必须在点击时重新证明三层 authority。 */
+    private static function testMaterialShopAccessAuthorization(
+            index:ItemObtainIndex, snapshotId:String,
+            shopProjector:Object):Void {
+        var previousServer:Object = _root.server;
+        _root.server = {sent:null, sendCount:0};
+        _root.server.sendSocketMessage = function(message:String):Boolean {
+            this.sent = message;
+            this.sendCount++;
+            return true;
+        };
+
+        var request:Object = materialShopAccessRequest(snapshotId, 1);
+        var allowed:Object = invokeMaterialShopAccess(request);
+        check(exactShopAccessAllow(allowed, request)
+                && shopProjector.locked === true
+                && Number(shopProjector.maxQuantity) == 0
+                && allowed.error == undefined,
+            "A4b exact source allows navigation even when locked and maxed");
+
+        request = materialShopAccessRequest(snapshotId, 2147483647);
+        var maxFid:Object = invokeMaterialShopAccess(request);
+        check(exactShopAccessAllow(maxFid, request),
+            "A4b fid maximum remains correlatable and emits the exact allow wire");
+
+        var sendsBeforeInvalidFid:Number = Number(_root.server.sendCount);
+        var badFids:Array = [0,-1,2147483648,1.5,"1",null,Number.NaN];
+        var invalidFidsDropped:Boolean = true;
+        for (var fidIndex:Number = 0; fidIndex < badFids.length; fidIndex++) {
+            request = materialShopAccessRequest(snapshotId, 7);
+            request.callId = badFids[fidIndex];
+            if (invokeMaterialShopAccess(request) != null) invalidFidsDropped = false;
+        }
+        if (invokeMaterialShopAccess(null) != null) invalidFidsDropped = false;
+        check(invalidFidsDropped
+                && Number(_root.server.sendCount) == sendsBeforeInvalidFid,
+            "A4b uncorrelatable fid/type/null requests produce zero response sends");
+
+        var malformed:Array = [];
+        request = materialShopAccessRequest(snapshotId, 11);
+        request.extra = true; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 12);
+        request.task = "CMD"; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 13);
+        request.action = "craftingMaterials"; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 14);
+        request.v = "1"; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 15);
+        request.materialSnapshotId = null; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 16);
+        request.materialName = 7; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 17);
+        request.shopId = ""; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 18);
+        request.catalogIndex = "0"; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 19);
+        request.catalogIndex = -1; malformed.push(request);
+        request = materialShopAccessRequest(snapshotId, 20);
+        delete request.shopId; malformed.push(request);
+        var allMalformedDenied:Boolean = true;
+        for (var malformedIndex:Number = 0;
+                malformedIndex < malformed.length; malformedIndex++) {
+            var malformedResult:Object = invokeMaterialShopAccess(
+                malformed[malformedIndex]);
+            if (!exactShopAccessFailure(malformedResult,
+                    Number(malformed[malformedIndex].callId), "deny",
+                    "invalid_payload")) allMalformedDenied = false;
+        }
+        check(allMalformedDenied,
+            "A4b strict request rejects extra/missing/constants/type/null/version without coercion");
+
+        request = materialShopAccessRequest(snapshotId, 21);
+        request.catalogIndex = 10000;
+        var upperCap:Object = invokeMaterialShopAccess(request);
+        request = materialShopAccessRequest(snapshotId, 22);
+        request.catalogIndex = 10001;
+        var overCap:Object = invokeMaterialShopAccess(request);
+        check(exactShopAccessFailure(upperCap, 21,
+                    "stale", "source_not_current")
+                && exactShopAccessFailure(overCap, 22,
+                    "deny", "invalid_payload")
+                && MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "ShopCatalogIndex", 10000)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "ShopCatalogIndex", 10001)
+                && MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "NNI", 10001),
+            "ShopCatalogIndex caps only shop paths at 10000 while KShop NNI stays wider");
+
+        request = materialShopAccessRequest("materials.snapshot.stale", 23);
+        check(exactShopAccessFailure(invokeMaterialShopAccess(request), 23,
+                "stale", "stale_snapshot"),
+            "A4b stale snapshot has its exact stale classification");
+
+        var records:Array = index.getExactObtainRecords("测试矿石");
+        var shopRecordIndex:Number = findCurrentShopRecordIndex(records,
+            "测试商人", 0);
+        var shopRecord:Object = records[shopRecordIndex];
+        request = materialShopAccessRequest(snapshotId, 24);
+        request.shopId = "其他商人";
+        var frozenMissing:Object = invokeMaterialShopAccess(request);
+        records.push({kind:ItemObtainIndex.KIND_SHOP, npc:"测试商人",
+            shopId:"测试商人", itemName:"测试矿石", catalogIndex:0});
+        var duplicateSource:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 25));
+        records.pop();
+        records.splice(shopRecordIndex, 1);
+        var removedSource:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 26));
+        records.splice(shopRecordIndex, 0, shopRecord);
+        shopRecord.itemName = "测试药剂";
+        var nameDriftSource:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 27));
+        shopRecord.itemName = "测试矿石";
+        check(shopRecordIndex >= 0
+                && exactShopAccessFailure(frozenMissing, 24, "stale",
+                    "source_not_current")
+                && exactShopAccessFailure(duplicateSource, 25, "stale",
+                    "source_not_current")
+                && exactShopAccessFailure(removedSource, 26, "stale",
+                    "source_not_current")
+                && exactShopAccessFailure(nameDriftSource, 27, "stale",
+                    "source_not_current"),
+            "A4b frozen/current missing, duplicate, removal and name drift stay source_not_current");
+
+        var liveShop:Object = _root.shops["测试商人"];
+        delete _root.shops["测试商人"];
+        var removedShop:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 28));
+        _root.shops["测试商人"] = {};
+        var emptyShop:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 29));
+        var movedShop:Object = {};
+        movedShop["1"] = "测试矿石";
+        _root.shops["测试商人"] = movedShop;
+        var movedSameName:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 30));
+        var driftedShop:Object = {};
+        driftedShop["0"] = "测试药剂";
+        _root.shops["测试商人"] = driftedShop;
+        var rawNameDrift:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 31));
+        _root.shops["测试商人"] = liveShop;
+        check(exactShopAccessFailure(removedShop, 28, "stale",
+                    "catalog_not_current")
+                && exactShopAccessFailure(emptyShop, 29, "stale",
+                    "catalog_not_current")
+                && exactShopAccessFailure(movedSameName, 30, "stale",
+                    "catalog_not_current")
+                && exactShopAccessFailure(rawNameDrift, 31, "stale",
+                    "catalog_not_current"),
+            "A4b removed/empty/drifted raw shop slots never fall through to same-name slots");
+
+        shopProjector.catalogMode = "empty";
+        var emptyCatalog:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 32));
+        shopProjector.catalogMode = "wrong_index";
+        var wrongIndex:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 33));
+        shopProjector.catalogMode = "wrong_name";
+        var wrongName:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 34));
+        shopProjector.catalogMode = "duplicate";
+        var duplicateCatalog:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 35));
+        shopProjector.catalogMode = "exact";
+        check(exactShopAccessFailure(emptyCatalog, 32, "stale",
+                    "catalog_not_current")
+                && exactShopAccessFailure(wrongIndex, 33, "stale",
+                    "catalog_not_current")
+                && exactShopAccessFailure(wrongName, 34, "stale",
+                    "catalog_not_current")
+                && exactShopAccessFailure(duplicateCatalog, 35, "stale",
+                    "catalog_not_current"),
+            "A4b live empty/index/name/duplicate catalog drift is catalog_not_current");
+
+        var savedNpcService:Object = _root.UI系统.NPC商店WebView;
+        delete _root.UI系统.NPC商店WebView;
+        var serviceNotReady:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 37));
+        _root.UI系统.NPC商店WebView = savedNpcService;
+        var savedBuildCatalog:Function = shopProjector.buildCatalog;
+        delete shopProjector.buildCatalog;
+        var methodNotReady:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 38));
+        shopProjector.buildCatalog = savedBuildCatalog;
+        shopProjector.catalogMode = "non_array";
+        var invalidProjector:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 39));
+        shopProjector.catalogMode = "exact";
+        check(exactShopAccessFailure(serviceNotReady, 37, "deny",
+                    "authority_unavailable")
+                && exactShopAccessFailure(methodNotReady, 38, "deny",
+                    "authority_unavailable")
+                && exactShopAccessFailure(invalidProjector, 39, "deny",
+                    "authority_unavailable"),
+            "A4b persistent service/method/non-array projector readiness fails unavailable");
+
+        shopProjector.catalogMode = "throw";
+        var projectorThrow:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 40));
+        shopProjector.catalogMode = "exact";
+        check(exactShopAccessFailure(projectorThrow, 40, "deny",
+                "authority_unavailable"),
+            "A4b dedicated handler normalizes projector throws without crafting_response");
+
+        index.reset(false);
+        var indexNotReady:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 41));
+        index.buildIndex(_root.改装清单, _root.shops, []);
+        check(exactShopAccessFailure(indexNotReady, 41, "deny",
+                "authority_unavailable"),
+            "A4b unbuilt ItemObtainIndex fails unavailable before live catalog authority");
+
+        var savedShops:Object = _root.shops;
+        delete _root.shops;
+        var degradedDetail:Object = CraftingPanelService.execute(
+            "materialDetail", {v:2, snapshotId:snapshotId,
+                itemName:"测试矿石"});
+        _root.shops = savedShops;
+        var degradedShop:Object = findProjectedSource(
+            degradedDetail.sources, "shop", "shopId", "测试商人");
+        check(degradedDetail.success && degradedShop != null
+                && degradedShop.shopAccessMode == "unavailable"
+                && degradedShop.shopAccessReason
+                    == "no_authoritative_remote_access_capability",
+            "A4b v2 detail uses only the two frozen access pairs and degrades fail closed");
+
+        _root.server = previousServer;
+    }
+
+    private static function materialTaxonomyModFixtures():Array {
+        return [
+            {name:"测试插件", modGrade:"high", catalogScope:"firearm",
+                uiRole:"mechanism", uiGradeLabel:"高等",
+                uiGradeColor:"#0099FF", uiScopeLabel:"枪械",
+                uiRoleLabel:"特殊机制", uiSymbol:"star-solid"},
+            {name:"测试展示插件-低级防具", modGrade:"low",
+                catalogScope:"armor", uiRole:"firepower",
+                uiGradeLabel:"低级", uiGradeColor:"#006600", uiScopeLabel:"防具",
+                uiRoleLabel:"火力", uiSymbol:"triangle-solid"},
+            {name:"测试展示插件-中等刀具", modGrade:"medium",
+                catalogScope:"blade", uiRole:"precision",
+                uiGradeLabel:"中等", uiGradeColor:"#996600", uiScopeLabel:"刀具",
+                uiRoleLabel:"精准与操控", uiSymbol:"triangle-outline"},
+            {name:"测试展示插件-特殊拳套", modGrade:"special",
+                catalogScope:"fist", uiRole:"sustain",
+                uiGradeLabel:"特殊", uiGradeColor:"#FFFF00", uiScopeLabel:"拳套",
+                uiRoleLabel:"续航", uiSymbol:"circle-outline"},
+            {name:"测试展示插件-低级通用", modGrade:"low",
+                catalogScope:"universal", uiRole:"utility",
+                uiGradeLabel:"低级", uiGradeColor:"#006600", uiScopeLabel:"通用",
+                uiRoleLabel:"结构与功能", uiSymbol:"diamond-outline"},
+            {name:"测试展示插件-中等下挂", modGrade:"medium",
+                catalogScope:"underbarrel", uiRole:"stability",
+                uiGradeLabel:"中等", uiGradeColor:"#996600", uiScopeLabel:"下挂武器",
+                uiRoleLabel:"稳定与防护", uiSymbol:"square-outline"}
+        ];
+    }
+
+    /** A2：producer 与 ADR 共用的 scalar/count boundary±1 表。 */
+    private static function testMaterialBoundaryProbe():Void {
+        var stringAliases:Array = [
+            {alias:"Name", maximum:128},
+            {alias:"ShopId", maximum:80},
+            {alias:"Id", maximum:256},
+            {alias:"Display", maximum:256},
+            {alias:"Label", maximum:512},
+            {alias:"ShortText", maximum:512},
+            {alias:"Description", maximum:12000},
+            {alias:"Summary", maximum:20000},
+            {alias:"Identity768", maximum:768}
+        ];
+        var stringsExact:Boolean = true;
+        for (var stringIndex:Number = 0;
+                stringIndex < stringAliases.length; stringIndex++) {
+            var stringBoundary:Object = stringAliases[stringIndex];
+            var maximum:Number = Number(stringBoundary.maximum);
+            if (!MaterialArchiveProjector.testOnlyValidateBoundary(
+                    String(stringBoundary.alias), repeatText("x", maximum))
+                    || MaterialArchiveProjector.testOnlyValidateBoundary(
+                    String(stringBoundary.alias), repeatText("x", maximum + 1))) {
+                stringsExact = false;
+            }
+        }
+        check(stringsExact,
+            "v2 producer accepts max and rejects max+1 for every ADR string alias");
+
+        var safeInteger:Number = 9007199254740991;
+        var infinity:Number = 1 / 0;
+        var negativeInfinity:Number = -1 / 0;
+        var notANumber:Number = Number("not-a-number");
+        check(MaterialArchiveProjector.testOnlyValidateBoundary("NNI", 0)
+                && MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "NNI", safeInteger)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "NNI", safeInteger + 1)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("NNI", infinity)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "NNI", negativeInfinity)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("NNI", notANumber)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("NNI", 0.5)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("NNI", -1)
+                && MaterialArchiveProjector.testOnlyValidateBoundary("PI", 1)
+                && MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "PI", safeInteger)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("PI", 0)
+                && MaterialArchiveProjector.testOnlyValidateBoundary("NN", 0.5)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("NN", infinity)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "NN", negativeInfinity)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("NN", notANumber)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("NN", -1),
+            "v2 numeric aliases reject unsafe, infinite, NaN, fractional and negative values exactly");
+        check(MaterialArchiveProjector.testOnlyValidateBoundary("RecipeIndex", 999)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "RecipeIndex", 1000)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "RecipeIndex", 0.5)
+                && MaterialArchiveProjector.testOnlyValidateBoundary("Bool", true)
+                && MaterialArchiveProjector.testOnlyValidateBoundary("Bool", false)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("Bool", "false")
+                && MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "Color", "#a0B1c2")
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "Color", "#GG0000"),
+            "v2 RecipeIndex, Bool and color aliases remain exact and non-coercing");
+        var allowedMultiline:String = "首行\t字段\r\n次行";
+        var forbiddenControl:String = "正文" + String.fromCharCode(1);
+        check(MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "Description", allowedMultiline)
+                && MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "Summary", allowedMultiline)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "Description", forbiddenControl)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "Summary", forbiddenControl)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary(
+                    "ShortText", allowedMultiline),
+            "v2 multiline aliases allow only CR/LF/TAB while single-line text rejects them");
+
+        var countAliases:Array = [
+            {alias:"MaterialsCount", maximum:4096},
+            {alias:"SourcesCount", maximum:512},
+            {alias:"VariantsCount", maximum:128},
+            {alias:"DirectPurposesCount", maximum:128},
+            {alias:"UsesCount", maximum:1024},
+            {alias:"TaxonomyEntriesCount", maximum:1024},
+            {alias:"InfrastructureProjectsCount", maximum:256},
+            {alias:"InfrastructureLevelsCount", maximum:128}
+        ];
+        var countsExact:Boolean = true;
+        for (var countIndex:Number = 0;
+                countIndex < countAliases.length; countIndex++) {
+            var countBoundary:Object = countAliases[countIndex];
+            var cap:Number = Number(countBoundary.maximum);
+            if (!MaterialArchiveProjector.testOnlyValidateBoundary(
+                    String(countBoundary.alias), cap)
+                    || MaterialArchiveProjector.testOnlyValidateBoundary(
+                    String(countBoundary.alias), cap + 1)) {
+                countsExact = false;
+            }
+        }
+        check(countsExact,
+            "v2 producer accepts each collection cap and rejects its cap+1 boundary");
+        check(!MaterialArchiveProjector.testOnlyValidateBoundary("unknown", 0)
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("NNI", "1")
+                && !MaterialArchiveProjector.testOnlyValidateBoundary("Name", 1),
+            "test-only boundary probe rejects unknown aliases and wrong scalar types");
+    }
+
+    /** 基建用途冻结静态需求，但读取 live 发现态/等级与 snapshot owned。 */
+    private static function testInfrastructureUsesProjection(
+            catalogMaterials:Array):Void {
+        var catalog:Object = _root.材料档案目录;
+        var system:Object = _root.基建系统;
+        var previousDirectPurpose = catalog.DirectPurpose;
+        var previousAuthoredPurpose = catalogMaterials[0].authoredDirectPurposeId;
+        var previousNameList = system.nameList;
+        var previousDict = system.dict;
+        var previousInfrastructure = system.infrastructure;
+
+        var projectA:Object = {Name:"测试基建甲", Level:[
+            {Material:[{Name:"测试矿石", Value:7}]},
+            {Material:[{Name:"测试矿石", Value:9}]},
+            {Material:[{Name:"测试矿石", Value:4}]},
+            {}
+        ]};
+        var projectB:Object = {Name:"测试基建乙", Level:[
+            {Material:[{Name:"测试矿石", Value:6}]}, {}
+        ]};
+        var projectC:Object = {Name:"测试基建丙", Level:[
+            {Material:[{Name:"测试矿石", Value:20}]},
+            {},
+            {Material:[{Name:"测试矿石", Value:8}]},
+            {}
+        ]};
+        system.nameList = [projectA, projectB, projectC];
+        system.dict = {};
+        system.dict["测试基建甲"] = projectA;
+        system.dict["测试基建乙"] = projectB;
+        system.dict["测试基建丙"] = projectC;
+        system.infrastructure = {};
+        system.infrastructure["测试基建甲"] = 0;
+        system.infrastructure["测试基建丙"] = 2;
+        catalog.DirectPurpose = [previousDirectPurpose,
+            {id:"system:infrastructure_upgrade", label:"基建升级", order:1,
+                consumerEvidence:"MaterialArchiveProjector"}];
+        catalogMaterials[0].authoredDirectPurposeId = [
+            "system:equipment_tuning", "system:infrastructure_upgrade"];
+        resetOwned();
+
+        var projectedCatalog:Object = CraftingPanelService.execute("materials", {v:2});
+        var snapshotId:String = String(projectedCatalog.snapshotId || "");
+        // Requirements are frozen here; only discovery/currentLevel stays live.
+        projectA.Level[1].Material[0].Value = 99;
+        system.infrastructure.测试基建甲 = 1;
+        _root.收集品栏.材料.addValue("测试矿石", 10);
+        var detail:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:snapshotId, itemName:"测试矿石"
+        });
+        var uses:Array = detail.infrastructureUses;
+        check(projectedCatalog.success && detail.success
+                && detail.directPurposes.length == 2
+                && uses.length == 2
+                && uses[0].infrastructureName == "测试基建甲"
+                && uses[0].projectOrder == 0
+                && uses[0].currentLevel == 1
+                && uses[0].maximumLevel == 3
+                && uses[0].levels.length == 3
+                && uses[0].levels[0].status == "completed"
+                && uses[0].levels[0].missing == 0
+                && uses[0].levels[1].targetLevel == 2
+                && uses[0].levels[1].required == 9
+                && uses[0].levels[1].owned == 5
+                && uses[0].levels[1].missing == 4
+                && uses[0].levels[1].status == "current"
+                && uses[0].levels[2].status == "future"
+                && uses[1].infrastructureName == "测试基建丙"
+                && uses[1].projectOrder == 2
+                && uses[1].currentLevel == 2
+                && uses[1].levels[1].levelIndex == 2
+                && uses[1].levels[1].targetLevel == 3
+                && uses[1].levels[1].missing == 3
+                && uses[1].levels[1].status == "current",
+            "v2 infrastructure cards freeze level requirements and owned while reading live levels");
+
+        delete system.infrastructure.测试基建甲;
+        delete system.infrastructure.测试基建丙;
+        var undiscovered:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:snapshotId, itemName:"测试矿石"
+        });
+        var inheritedPrototype:Object = {};
+        inheritedPrototype["测试基建甲"] = 1;
+        var inheritedInfrastructure:Object = {};
+        inheritedInfrastructure.__proto__ = inheritedPrototype;
+        system.infrastructure = inheritedInfrastructure;
+        var inheritedDiscovery:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:snapshotId, itemName:"测试矿石"
+        });
+        system.infrastructure["测试基建甲"] = 4;
+        var invalidState:Object = CraftingPanelService.execute("materialDetail", {
+            v:2, snapshotId:snapshotId, itemName:"测试矿石"
+        });
+        check(undiscovered.success && undiscovered.infrastructureUses.length == 0
+                && inheritedDiscovery.success
+                && inheritedDiscovery.infrastructureUses.length == 0
+                && exactFailure(invalidState, "invalid_infrastructure_state"),
+            "v2 infrastructure cards require own discovery keys and reject invalid live levels");
+
+        var authoritativeDict:Object = system.dict;
+        var inheritedDict:Object = {};
+        inheritedDict.__proto__ = authoritativeDict;
+        system.dict = inheritedDict;
+        var inheritedDictFailure:Object = CraftingPanelService.execute("materials", {v:2});
+        system.dict = authoritativeDict;
+        catalogMaterials[0].authoredDirectPurposeId = "system:equipment_tuning";
+        var closureFailure:Object = CraftingPanelService.execute("materials", {v:2});
+        check(exactFailure(inheritedDictFailure, "invalid_infrastructure_catalog")
+                && exactFailure(closureFailure,
+                    "invalid_infrastructure_catalog_closure"),
+            "v2 infrastructure authority requires own dictionary keys and exact material purposes");
+
+        catalog.DirectPurpose = previousDirectPurpose;
+        catalogMaterials[0].authoredDirectPurposeId = previousAuthoredPurpose;
+        if (previousNameList == undefined) delete system.nameList;
+        else system.nameList = previousNameList;
+        if (previousDict == undefined) delete system.dict;
+        else system.dict = previousDict;
+        system.infrastructure = previousInfrastructure;
+        resetOwned();
+    }
+
+    /** 每个 collection cap 至少一条真实 producer max+1 路径。 */
+    private static function testMaterialCollectionCapProductionPaths(
+            catalogMaterials:Array, index:ItemObtainIndex):Void {
+        var catalog:Object = _root.材料档案目录;
+
+        var overMaterials:Array = [];
+        for (var materialIndex:Number = 0; materialIndex < 4097; materialIndex++) {
+            overMaterials.push(catalogMaterials[0]);
+        }
+        catalog.Material = overMaterials;
+        var materialsCap:Object = CraftingPanelService.execute("materials", {v:2});
+        catalog.Material = catalogMaterials;
+        check(exactFailure(materialsCap, "invalid_catalog"),
+            "v2 producer rejects the real materials[4097] path");
+
+        var originalPurposeIds = catalogMaterials[0].authoredDirectPurposeId;
+        var overDirectPurposes:Array = [];
+        for (var directIndex:Number = 0; directIndex < 129; directIndex++) {
+            overDirectPurposes.push("system:equipment_tuning");
+        }
+        catalogMaterials[0].authoredDirectPurposeId = overDirectPurposes;
+        var directCap:Object = CraftingPanelService.execute("materials", {v:2});
+        catalogMaterials[0].authoredDirectPurposeId = originalPurposeIds;
+        check(exactFailure(directCap, "too_many_direct_purposes"),
+            "v2 producer rejects the real directPurposes[129] path");
+
+        var originalRecipes:Array = _root.改装清单["武器合成"];
+        var overUses:Array = [];
+        for (var useIndex:Number = 0; useIndex < 1025; useIndex++) {
+            overUses.push({name:"测试药剂", materials:["测试矿石#1"]});
+        }
+        _root.改装清单["武器合成"] = overUses;
+        SynthesisIndex.reset();
+        var usesCap:Object = CraftingPanelService.execute("materials", {v:2});
+        _root.改装清单["武器合成"] = originalRecipes;
+        SynthesisIndex.reset();
+        check(exactFailure(usesCap, "too_many_uses"),
+            "v2 producer rejects the real indexed uses[1025] path");
+
+        index.reset(true);
+        index.buildIndex(_root.改装清单, {}, []);
+        for (var sourceIndex:Number = 0; sourceIndex < 513; sourceIndex++) {
+            index.updateQuestRewards("cap.quest." + sourceIndex,
+                "上限任务" + sourceIndex, ["测试矿石#1"]);
+        }
+        var sourcesCap:Object = CraftingPanelService.execute("materials", {v:2});
+        restoreV2FixtureObtainIndex(index);
+        check(exactFailure(sourcesCap, "too_many_sources"),
+            "v2 producer rejects the real indexed sources[513] path");
+
+        index.reset(true);
+        index.buildIndex(_root.改装清单, {}, []);
+        var overVariants:Array = [];
+        for (var variantIndex:Number = 0; variantIndex < 129; variantIndex++) {
+            overVariants.push(["测试矿石", 8, 1]);
+        }
+        index.updateStageDrops("测试档位上限", overVariants);
+        var variantsCap:Object = CraftingPanelService.execute("materials", {v:2});
+        restoreV2FixtureObtainIndex(index);
+        check(exactFailure(variantsCap, "invalid_stage_source"),
+            "v2 producer rejects the real grouped variants[129] path");
+
+        var originalOrder:Array = _root.改装分类顺序;
+        var originalCrafting:Object = _root.改装清单;
+        var overTaxonomyOrder:Array = [];
+        var overTaxonomyCrafting:Object = {};
+        for (var categoryIndex:Number = 0; categoryIndex < 999; categoryIndex++) {
+            var categoryName:String = "测试上限分类" + categoryIndex;
+            overTaxonomyOrder.push(categoryName);
+            overTaxonomyCrafting[categoryName] = [];
+        }
+        _root.改装分类顺序 = overTaxonomyOrder;
+        _root.改装清单 = overTaxonomyCrafting;
+        var taxonomyCap:Object = CraftingPanelService.execute("materials", {v:2});
+        _root.改装分类顺序 = originalOrder;
+        _root.改装清单 = originalCrafting;
+        SynthesisIndex.reset();
+        check(exactFailure(taxonomyCap, "too_many_taxonomy_entries"),
+            "v2 producer rejects the real taxonomy total 1025 path");
+    }
+
+    private static function restoreV2FixtureObtainIndex(index:ItemObtainIndex):Void {
+        var shops:Object = {};
+        shops["测试商人"] = {};
+        shops["测试商人"]["0"] = "测试矿石";
+        index.reset(true);
+        index.buildIndex(_root.改装清单, shops, []);
+        index.updateEnemyDrops("敌人-测试两档", [
+            {名字:"测试矿石", 概率:3, 最大逆向等级:2, 最小数量:1, 最大数量:1},
+            {名字:"测试矿石", 概率:5, 最小逆向等级:3, 最小数量:2, 最大数量:4}
+        ]);
+        index.updateEnemyDrops("敌人-键:|𠀀", [
+            {名字:"测试矿石", 概率:7}
+        ]);
+        index.updateStageDrops("测试关卡多档", [
+            ["测试矿石", 8, 1], ["测试矿石", 50, 2]
+        ]);
+    }
+
+    /** A1a：掉落 cache 保留 occurrence，exact grouped projection 一来源一卡多档。 */
+    private static function testDropOccurrenceProjection():Void {
+        resetOwned();
+        var previousEnemyTable:Object = _root.敌人属性表;
+        var enemyFour:Array = [
+            {名字:"测试矿石", 概率:0},
+            {名字:"测试矿石", 概率:1, 最小逆向等级:0, 最大逆向等级:0,
+                最小数量:2, 最大数量:4},
+            {名字:"测试矿石", 概率:100, 最小逆向等级:3, 最大逆向等级:7},
+            {名字:"测试矿石"}
+        ];
+        var enemyThree:Array = [
+            {名字:"测试矿石", 概率:""},
+            {名字:"测试矿石", 概率:"   "},
+            {名字:"测试矿石", 概率:"not-a-number"}
+        ];
+        var enemyTwo:Array = [
+            {名字:"测试矿石", 概率:3, 最小逆向等级:1, 最大逆向等级:3,
+                最小数量:1, 最大数量:2},
+            {名字:"测试矿石", 概率:5, 最小逆向等级:4, 最大逆向等级:9,
+                最小数量:3, 最大数量:6}
+        ];
+        var invalidEnemy:Array = [
+            {名字:"测试矿石", 概率:101},
+            {名字:"测试矿石", 概率:1 / 0},
+            {名字:"测试矿石", 概率:5, 最小数量:0, 最大数量:1},
+            {名字:"测试矿石", 概率:5, 最小逆向等级:8, 最大逆向等级:2}
+        ];
+        var mixedInvalidEnemy:Array = [
+            {名字:"测试矿石", 概率:3},
+            {名字:"测试矿石", 概率:-1}
+        ];
+        var infiniteEnemy:Array = [
+            {名字:"测试矿石", 概率:3},
+            {名字:"测试矿石", 概率:1 / 0}
+        ];
+        var negativeInfiniteEnemy:Array = [
+            {名字:"测试矿石", 概率:3},
+            {名字:"测试矿石", 概率:-1 / 0}
+        ];
+        _root.敌人属性表 = {};
+        _root.敌人属性表["敌人-测试四档"] = {displayname:"测试四档", 掉落物:enemyFour};
+        _root.敌人属性表["敌人-测试三档"] = {displayname:"测试三档", 掉落物:enemyThree};
+        _root.敌人属性表["敌人-测试两档"] = {displayname:"测试两档", 掉落物:enemyTwo};
+        _root.敌人属性表["敌人-测试非法"] = {displayname:"测试非法", 掉落物:invalidEnemy};
+        _root.敌人属性表["敌人-测试混合非法"] = {
+            displayname:"测试混合非法", 掉落物:mixedInvalidEnemy};
+        _root.敌人属性表["敌人-测试正无穷"] = {
+            displayname:"测试正无穷", 掉落物:infiniteEnemy};
+        _root.敌人属性表["敌人-测试负无穷"] = {
+            displayname:"测试负无穷", 掉落物:negativeInfiniteEnemy};
+
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        check(!index.updateEnemyDrops("测试四档", enemyFour)
+                && !index.isEnemyDiscovered("测试四档"),
+            "enemy discovery rejects stripped-prefix/display alias and requires exact table identity");
+        index.updateEnemyDrops("敌人-测试四档", enemyFour);
+        index.updateEnemyDrops("敌人-测试三档", enemyThree);
+        index.updateEnemyDrops("敌人-测试两档", enemyTwo);
+        index.updateEnemyDrops("敌人-测试非法", invalidEnemy);
+        index.updateEnemyDrops("敌人-测试混合非法", mixedInvalidEnemy);
+        index.updateEnemyDrops("敌人-测试正无穷", infiniteEnemy);
+        index.updateEnemyDrops("敌人-测试负无穷", negativeInfiniteEnemy);
+
+        var exact:Array = index.getExactObtainRecords("测试矿石");
+        var four:Object = findExactDrop(exact, ItemObtainIndex.DROP_TYPE_ENEMY,
+            "敌人-测试四档");
+        var three:Object = findExactDrop(exact, ItemObtainIndex.DROP_TYPE_ENEMY,
+            "敌人-测试三档");
+        var two:Object = findExactDrop(exact, ItemObtainIndex.DROP_TYPE_ENEMY,
+            "敌人-测试两档");
+        check(four != null && four.enemyType == "敌人-测试四档"
+                && four.chanceModel == "enemy_prd_with_reverse_bonus"
+                && four.variants.length == 4,
+            "enemy exact identity groups four XML occurrences into one source");
+        check(four != null && four.variants[0].occurrenceIndex == 0
+                && four.variants[0].chanceInputState == "explicit"
+                && four.variants[0].chanceRaw == 0
+                && four.variants[1].chanceRaw == 1
+                && four.variants[2].chanceRaw == 100,
+            "enemy explicit 0/1/100 remain nominal percent in XML order");
+        check(four != null && four.variants[0].minReverseLevel == null
+                && four.variants[0].maxReverseLevel == null
+                && four.variants[0].quantityMin == 1
+                && four.variants[0].quantityMax == 1
+                && four.variants[1].minReverseLevel == 0
+                && four.variants[1].maxReverseLevel == 0
+                && four.variants[1].quantityMin == 2
+                && four.variants[1].quantityMax == 4,
+            "enemy nullable reverse bounds and default/explicit quantities stay distinct");
+        check(four != null && four.variants[3].occurrenceIndex == 3
+                && four.variants[3].chanceInputState == "absent_defaulted"
+                && four.variants[3].chanceRaw == null
+                && four.variants[3].nominalChancePercent == 100,
+            "missing enemy chance projects absent_defaulted nominal 100");
+        check(three != null && three.variants.length == 3
+                && three.variants[0].chanceInputState == "invalid_defaulted"
+                && three.variants[1].chanceInputState == "invalid_defaulted"
+                && three.variants[2].chanceInputState == "invalid_defaulted"
+                && three.variants[0].chanceRaw == null
+                && three.variants[1].nominalChancePercent == 100,
+            "empty, whitespace and invalid enemy chance use AVM1 NaN default semantics");
+        check(two != null && two.variants.length == 2
+                && two.variants[0].minReverseLevel == 1
+                && two.variants[1].minReverseLevel == 4
+                && two.variants[1].quantityMin == 3
+                && two.variants[1].quantityMax == 6,
+            "two enemy grade occurrences preserve reverse and quantity ranges");
+        check(findExactDrop(exact, ItemObtainIndex.DROP_TYPE_ENEMY,
+                "敌人-测试非法") == null,
+            "out-of-range chance, invalid quantity and inverted reverse bounds fail closed");
+        check(findExactDrop(exact, ItemObtainIndex.DROP_TYPE_ENEMY,
+                    "敌人-测试混合非法") == null
+                && findExactDrop(exact, ItemObtainIndex.DROP_TYPE_ENEMY,
+                    "敌人-测试正无穷") == null
+                && findExactDrop(exact, ItemObtainIndex.DROP_TYPE_ENEMY,
+                    "敌人-测试负无穷") == null,
+            "mixed valid/invalid and signed infinite enemy chances fail the whole logical source closed");
+
+        var stageRewards:Array = [
+            ["测试矿石", 1, 1],
+            ["测试矿石", 2, 2],
+            ["测试矿石", 8, 3],
+            ["测试矿石", 50, 4],
+            ["测试矿石", 50, 4]
+        ];
+        index.updateStageDrops("测试关卡多档", stageRewards);
+        var stage:Object = findExactDrop(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.DROP_TYPE_STAGE, "测试关卡多档");
+        check(stage != null && stage.chanceModel == "stage_roll_divisor_with_legacy_domain_branch"
+                && stage.legacyConditionId == "andylaw_domain_bonus"
+                && stage.variants.length == 5
+                && stage.variants[0].defaultBranchChancePercent == 100
+                && stage.variants[1].defaultBranchChancePercent == 50
+                && stage.variants[2].defaultBranchChancePercent == 12.5
+                && stage.variants[3].defaultBranchChancePercent == 2,
+            "stage divisors 1/2/8/50 project ordered default-branch percentages with contextual model");
+        var legacyDomainReachable:Boolean = typeof _root.是否是某网站 == "function"
+            && _root.是否是某网站(["andylaw.net", "www.andylaw.net",
+                "game.andylaw.net", "crazyparkour.andylaw.net"]) == true;
+        trace("[A1_STAGE_CHANCE] entry=TestLoader url=" + String(_root._url)
+            + " andylawDomainReachable=" + legacyDomainReachable
+            + " model=stage_roll_divisor_with_legacy_domain_branch");
+        check(!legacyDomainReachable,
+            "fresh standalone TestLoader does not enter AndyLaw branch; producer still retains contextual model");
+        check(stage != null && stage.variants[3].rollDivisor == stage.variants[4].rollDivisor
+                && stage.variants[3].quantityMax == stage.variants[4].quantityMax
+                && stage.variants[3].occurrenceIndex == 3
+                && stage.variants[4].occurrenceIndex == 4,
+            "identical stage reward occurrences remain two distinct ordered variants");
+        index.updateStageDrops("测试关卡多档", stageRewards);
+        stage = findExactDrop(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.DROP_TYPE_STAGE, "测试关卡多档");
+        check(stage != null && stage.variants.length == 5
+                && stage.variants[4].occurrenceIndex == 4,
+            "rebuilding the same stage replaces rather than multiplies variants");
+        index.updateStageDrops("测试关卡非法", [
+            ["测试矿石", 0, 1], ["测试矿石", 2, 0]
+        ]);
+        index.updateStageDrops("测试关卡混合非法", [
+            ["测试矿石", 2, 1], ["测试矿石", 0, 1]
+        ]);
+        check(findExactDrop(index.getExactObtainRecords("测试矿石"),
+                ItemObtainIndex.DROP_TYPE_STAGE, "测试关卡非法") == null,
+            "invalid stage divisor or quantity fails closed without a partial source");
+        check(findExactDrop(index.getExactObtainRecords("测试矿石"),
+                ItemObtainIndex.DROP_TYPE_STAGE, "测试关卡混合非法") == null,
+            "one invalid stage occurrence rejects its whole logical source");
+
+        var legacyDetail:Object = CraftingPanelService.execute(
+            "materialDetail", {itemName:"测试矿石"});
+        var legacyEnemy:Object = findProjectedSource(
+            legacyDetail.sources, "enemy", "enemyType", "敌人-测试四档");
+        check(legacyEnemy != null && legacyEnemy.probability == 0
+                && legacyEnemy.minLevel == 0 && legacyEnemy.maxLevel == 999
+                && legacyEnemy.variants == undefined
+                && legacyEnemy.chanceModel == undefined,
+            "v1 material detail keeps first-scalar compatibility and exposes no half-v2 keys");
+
+        var save:Object = index.exportToSave();
+        index.loadFromSave(save);
+        var rebuiltFour:Object = findExactDrop(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.DROP_TYPE_ENEMY, "敌人-测试四档");
+        check(rebuiltFour != null && rebuiltFour.variants.length == 4
+                && rebuiltFour.variants[3].chanceInputState == "absent_defaulted",
+            "save reload reconstructs exact enemy variants from current config");
+        check(index.isStageDiscovered("测试关卡多档")
+                && findExactDrop(index.getExactObtainRecords("测试矿石"),
+                    ItemObtainIndex.DROP_TYPE_STAGE, "测试关卡多档") == null,
+            "save reload preserves stage discovery but characterizes current delayed stage rebuild gap");
+        index.loadFromSave(save);
+        rebuiltFour = findExactDrop(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.DROP_TYPE_ENEMY, "敌人-测试四档");
+        check(rebuiltFour != null && rebuiltFour.variants.length == 4
+                && rebuiltFour.variants[0].occurrenceIndex == 0
+                && rebuiltFour.variants[3].occurrenceIndex == 3,
+            "repeated save reload keeps enemy occurrence identity and order without growth");
+        var delayedEnemyTable:Object = _root.敌人属性表;
+        _root.敌人属性表 = null;
+        index.loadFromSave(save);
+        rebuiltFour = findExactDrop(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.DROP_TYPE_ENEMY, "敌人-测试四档");
+        check(rebuiltFour == null && index.isEnemyDiscovered("敌人-测试四档"),
+            "save discovery remains hidden while the enemy provider is not ready");
+        _root.敌人属性表 = delayedEnemyTable;
+        index.rehydrateDiscoveredRecordsFromCurrentConfig();
+        rebuiltFour = findExactDrop(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.DROP_TYPE_ENEMY, "敌人-测试四档");
+        check(rebuiltFour != null && rebuiltFour.variants.length == 4
+                && rebuiltFour.variants[3].occurrenceIndex == 3,
+            "late enemy provider rehydrates saved grouped occurrences without widening discovery");
+        index.rehydrateDiscoveredRecordsFromCurrentConfig();
+        rebuiltFour = findExactDrop(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.DROP_TYPE_ENEMY, "敌人-测试四档");
+        check(rebuiltFour != null && rebuiltFour.variants.length == 4,
+            "late-provider rehydrate is idempotent and does not multiply enemy variants");
+        index.updateStageDrops("测试关卡多档", stageRewards);
+        var restoredStage:Object = findExactDrop(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.DROP_TYPE_STAGE, "测试关卡多档");
+        check(restoredStage != null && restoredStage.variants.length == 5,
+            "re-entering a discovered stage restores its exact grouped source");
+        var obtainTooltip:String = ObtainMethodsBuilder.build("测试矿石").join("");
+        check(obtainTooltip.indexOf("测试关卡多档") >= 0
+                && obtainTooltip.indexOf("测试四档") >= 0,
+            "legacy ObtainMethodsBuilder consumes grouped first-scalar sources without shape regression");
+
+        _root.敌人属性表 = previousEnemyTable;
+        resetOwned();
+    }
+
+    /** A1b/c：内部保留 occurrence，现役 v1 getter/projector 仍给 legacy view。 */
+    private static function testStaticSourceOccurrenceIdentity():Void {
+        resetOwned();
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        index.reset(true);
+        var crafting:Object = {};
+        crafting["重复合成"] = [
+            {name:"测试矿石", price:1, kprice:2, materials:[]},
+            {name:"测试矿石", price:3, kprice:4, materials:[]}
+        ];
+        var shopItems:Object = {};
+        shopItems[0] = {name:"测试矿石", requiredInfo:"情报甲"};
+        shopItems[1] = {name:"测试矿石", requiredInfo:"情报乙"};
+        var shops:Object = {};
+        shops["测试重复商人"] = shopItems;
+        var kshop:Array = [
+            {id:"k-a", item:"测试矿石", type:"材料", price:5},
+            {id:"k-b", item:"测试矿石", type:"材料", price:6}
+        ];
+        index.buildIndex(crafting, shops, kshop);
+
+        var exact:Array = index.getExactObtainRecords("测试矿石");
+        var crafts:Array = filterExactKind(exact, ItemObtainIndex.KIND_CRAFT);
+        var shopSources:Array = filterExactKind(exact, ItemObtainIndex.KIND_SHOP);
+        var kshopSources:Array = filterExactKind(exact, ItemObtainIndex.KIND_KSHOP);
+        check(crafts.length == 2 && crafts[0].recipeIndex == 0
+                && crafts[1].recipeIndex == 1
+                && crafts[0].productName == "测试矿石",
+            "same-category same-product craft occurrences keep exact recipeIndex identities");
+        check(shopSources.length == 2 && shopSources[0].shopId == "测试重复商人"
+                && shopSources[0].catalogIndex == 0
+                && shopSources[1].catalogIndex == 1
+                && shopSources[0].requiredInfo == "情报甲"
+                && shopSources[1].requiredInfo == "情报乙",
+            "same-NPC duplicate items keep catalogIndex and current requiredInfo fields");
+        check(kshopSources.length == 2 && kshopSources[0].catalogIndex == 0
+                && kshopSources[1].catalogIndex == 1
+                && kshopSources[1].entryId == "k-b",
+            "KShop occurrences expose stable catalogIndex while retaining entry id");
+        check(index.getObtainRecords("测试矿石").length == 4,
+            "legacy getter collapses craft/shop identities but preserves historical KShop occurrences");
+
+        index.updateQuestRewards("任务-重复奖励", "重复奖励任务",
+            ["测试矿石#1", "测试矿石#2"]);
+        var firstAppend:Boolean = index.appendQuestRewards("任务-重复奖励", "重复奖励任务",
+            ["测试矿石#3", "测试矿石#4"]);
+        var secondAppend:Boolean = index.appendQuestRewards("任务-重复奖励", "重复奖励任务",
+            ["测试矿石#3", "测试矿石#4"]);
+        var quests:Array = filterExactKind(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.KIND_QUEST);
+        check(firstAppend && !secondAppend && quests.length == 4,
+            "quest base/challenge duplicate items preserve four occurrences and append idempotently");
+        check(quests[0].rewardSet == "base" && quests[0].authoredIndex == 0
+                && quests[1].rewardSet == "base" && quests[1].authoredIndex == 1
+                && quests[2].rewardSet == "challenge" && quests[2].authoredIndex == 0
+                && quests[3].rewardSet == "challenge" && quests[3].authoredIndex == 1,
+            "quest identity keeps base before challenge with independent authored indexes");
+        index.updateQuestRewards("任务-重复奖励", "重复奖励任务",
+            ["测试矿石#1", "测试矿石#2"]);
+        quests = filterExactKind(index.getExactObtainRecords("测试矿石"),
+            ItemObtainIndex.KIND_QUEST);
+        check(quests.length == 4 && quests[2].rewardSet == "challenge"
+                && quests[3].authoredIndex == 1,
+            "refreshing base rewards preserves the completed challenge occurrence set");
+        check(index.getObtainRecords("测试矿石").length == 5,
+            "legacy getter keeps one quest source and does not leak exact occurrences into v1");
+        var detail:Object = CraftingPanelService.execute(
+            "materialDetail", {itemName:"测试矿石"});
+        var projectedShop:Object = findProjectedSource(
+            detail.sources, "shop", "npc", "测试重复商人");
+        check(detail.sources.length == 5 && projectedShop != null
+                && projectedShop.requirement == "情报甲"
+                && projectedShop.catalogIndex == undefined
+                && projectedShop.shopId == undefined,
+            "v1 service retains legacy source count/shape while exact index carries new identities");
+        index.appendQuestRewards("任务-先挑战", "先挑战任务", ["测试矿石#7"]);
+        index.updateQuestRewards("任务-先挑战", "先挑战任务", ["测试矿石#8"]);
+        var challengeFirst:Array = filterExactKind(
+            index.getExactObtainRecords("测试矿石"), ItemObtainIndex.KIND_QUEST);
+        check(challengeFirst.length == 6
+                && challengeFirst[4].questId == "任务-先挑战"
+                && challengeFirst[4].rewardSet == "base"
+                && challengeFirst[5].rewardSet == "challenge",
+            "challenge-first discovery is reprojected base-before-challenge after base arrives");
+
+        var previousTasks:Object = TaskUtil.tasks;
+        var previousTaskTexts:Object = TaskUtil.task_texts;
+        TaskUtil.tasks = [];
+        TaskUtil.task_texts = {};
+        TaskUtil.tasks[7] = {
+            title:"存档重建任务",
+            rewards:["测试矿石#1", "测试矿石#2"],
+            challenge:{rewards:["测试矿石#3", "测试矿石#4"]}
+        };
+        index.updateQuestRewards("7", "存档重建任务", TaskUtil.tasks[7].rewards);
+        index.appendQuestRewards("7", "存档重建任务",
+            TaskUtil.tasks[7].challenge.rewards);
+        var questSave:Object = index.exportToSave();
+        index.loadFromSave(questSave);
+        var rebuiltQuests:Array = filterExactKind(
+            index.getExactObtainRecords("测试矿石"), ItemObtainIndex.KIND_QUEST);
+        check(rebuiltQuests.length == 4
+                && rebuiltQuests[0].questId == "7"
+                && rebuiltQuests[0].rewardSet == "base"
+                && rebuiltQuests[0].authoredIndex == 0
+                && rebuiltQuests[1].rewardSet == "base"
+                && rebuiltQuests[1].authoredIndex == 1
+                && rebuiltQuests[2].rewardSet == "challenge"
+                && rebuiltQuests[2].authoredIndex == 0
+                && rebuiltQuests[3].rewardSet == "challenge"
+                && rebuiltQuests[3].authoredIndex == 1
+                && index.getObtainRecords("测试矿石").length == 5,
+            "save reload rebuilds exact base-before-challenge quest tuples while v1 keeps one quest source");
+        index.loadFromSave(questSave);
+        rebuiltQuests = filterExactKind(
+            index.getExactObtainRecords("测试矿石"), ItemObtainIndex.KIND_QUEST);
+        check(rebuiltQuests.length == 4
+                && rebuiltQuests[0].rewardSet == "base"
+                && rebuiltQuests[1].authoredIndex == 1
+                && rebuiltQuests[2].rewardSet == "challenge"
+                && rebuiltQuests[3].authoredIndex == 1,
+            "repeated quest save reload is idempotent and preserves occurrence order");
+
+        var delayedTask:Object = TaskUtil.tasks[7];
+        TaskUtil.tasks = [];
+        index.loadFromSave(questSave);
+        rebuiltQuests = filterExactKind(
+            index.getExactObtainRecords("测试矿石"), ItemObtainIndex.KIND_QUEST);
+        check(rebuiltQuests.length == 0,
+            "save discovery remains fail-closed while task providers are not ready");
+        TaskUtil.tasks = [];
+        TaskUtil.tasks[7] = delayedTask;
+        index.rehydrateDiscoveredRecordsFromCurrentConfig();
+        rebuiltQuests = filterExactKind(
+            index.getExactObtainRecords("测试矿石"), ItemObtainIndex.KIND_QUEST);
+        check(rebuiltQuests.length == 4
+                && rebuiltQuests[0].rewardSet == "base"
+                && rebuiltQuests[1].authoredIndex == 1
+                && rebuiltQuests[2].rewardSet == "challenge"
+                && rebuiltQuests[3].authoredIndex == 1,
+            "late task provider rehydrates saved base and challenge occurrences in authored order");
+        index.rehydrateDiscoveredRecordsFromCurrentConfig();
+        rebuiltQuests = filterExactKind(
+            index.getExactObtainRecords("测试矿石"), ItemObtainIndex.KIND_QUEST);
+        check(rebuiltQuests.length == 4,
+            "late-provider rehydrate is idempotent and does not multiply quest occurrences");
+        TaskUtil.tasks = previousTasks;
+        TaskUtil.task_texts = previousTaskTexts;
+        resetOwned();
+    }
+
+    /** A1b：用途反查来自 category arrays，不再被同名产物 map 后写覆盖。 */
+    private static function testExactRecipeUseOccurrences():Void {
+        var previousList:Object = _root.改装清单;
+        var previousMap:Object = _root.改装清单对象;
+        _root.改装清单 = {};
+        _root.改装清单["基础防具"] = [
+            {name:"Andy套装碎片", materials:["国庆纪念币#1", "国庆纪念币#2"]},
+            {name:"Andy套装碎片", materials:["国庆纪念币#3", "月之碎片#1"]},
+            {name:"Andy套装碎片", materials:["剑圣碎片#1"]}
+        ];
+        _root.改装清单对象 = {};
+        _root.改装清单对象["Andy套装碎片"] = _root.改装清单["基础防具"][2];
+        SynthesisIndex.reset();
+        var national:Array = SynthesisIndex.getRecipeUses("国庆纪念币");
+        var moon:Array = SynthesisIndex.getRecipeUses("月之碎片");
+        var sword:Array = SynthesisIndex.getRecipeUses("剑圣碎片");
+        check(national.length == 2 && national[0].category == "基础防具"
+                && national[0].recipeIndex == 0
+                && national[0].productName == "Andy套装碎片"
+                && national[1].recipeIndex == 1,
+            "exact reverse-use de-dupes within one recipe but never by productName across recipes");
+        check(moon.length == 1 && moon[0].recipeIndex == 1
+                && sword.length == 1 && sword[0].recipeIndex == 2,
+            "all three same-product Andy recipe occurrences remain addressable by exact indexes");
+        check(SynthesisIndex.getRecipesUsing("国庆纪念币").length == 0,
+            "legacy product map remains isolated and cannot masquerade as exact reverse-use");
+        _root.改装清单 = previousList;
+        _root.改装清单对象 = previousMap;
+        SynthesisIndex.reset();
     }
 
     private static function testLegacyIdentityWhitespaceFallback():Void {
@@ -615,6 +2023,122 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         check(response.task == "crafting_response" && response.callId == 17
             && response.success && response.gender == "男" && response.recipes.length == 2,
             "snapshot handler emits parseable domain response wire");
+    }
+
+    private static function materialShopAccessRequest(snapshotId:String,
+                                                      callId:Number):Object {
+        return {task:"cmd", action:"craftingMaterialShopAuthorize",
+            callId:callId, v:1, materialSnapshotId:snapshotId,
+            materialName:"测试矿石", shopId:"测试商人", catalogIndex:0};
+    }
+
+    private static function invokeMaterialShopAccess(params:Object):Object {
+        _root.server.sent = null;
+        _root.gameCommands["craftingMaterialShopAuthorize"](params);
+        if (_root.server.sent == null) return null;
+        return new LiteJSON().parse(String(_root.server.sent));
+    }
+
+    private static function exactShopAccessAllow(response:Object,
+                                                 request:Object):Boolean {
+        return response != null && response.task == "material_shop_access_response"
+            && response.callId === request.callId && response.success === true
+            && response.v === 1 && response.decision == "allow"
+            && response.reason == "indexed_live_match"
+            && response.materialSnapshotId == request.materialSnapshotId
+            && response.materialName == request.materialName
+            && response.shopId == request.shopId
+            && response.catalogIndex === request.catalogIndex
+            && response.itemName == request.materialName
+            && hasExactKeys(response, {task:true,callId:true,success:true,v:true,
+                decision:true,reason:true,materialSnapshotId:true,
+                materialName:true,shopId:true,catalogIndex:true,itemName:true}, 11);
+    }
+
+    private static function exactShopAccessFailure(response:Object,
+            expectedCallId:Number, decision:String, errorCode:String):Boolean {
+        return response != null && response.task == "material_shop_access_response"
+            && response.callId === expectedCallId && response.success === false
+            && response.v === 1 && response.decision == decision
+            && response.error == errorCode
+            && hasExactKeys(response, {task:true,callId:true,success:true,v:true,
+                decision:true,error:true}, 6);
+    }
+
+    private static function hasExactKeys(value:Object, allowed:Object,
+                                         expectedCount:Number):Boolean {
+        if (value == null || typeof value != "object") return false;
+        var count:Number = 0;
+        for (var key:String in value) {
+            if (typeof value.hasOwnProperty == "function"
+                    && !value.hasOwnProperty(key)) continue;
+            if (allowed[key] !== true) return false;
+            count++;
+        }
+        return count == expectedCount;
+    }
+
+    private static function findCurrentShopRecordIndex(records:Array,
+            shopId:String, catalogIndex:Number):Number {
+        for (var i:Number = 0; i < records.length; i++) {
+            var record:Object = records[i];
+            if (record.kind == ItemObtainIndex.KIND_SHOP
+                    && record.shopId == shopId
+                    && Number(record.catalogIndex) == catalogIndex) return i;
+        }
+        return -1;
+    }
+
+    private static function findExactDrop(records:Array, dropType:String,
+                                          identity:String):Object {
+        for (var i:Number = 0; i < records.length; i++) {
+            var record:Object = records[i];
+            if (record.kind != ItemObtainIndex.KIND_DROP
+                    || record.dropType != dropType) continue;
+            if (dropType == ItemObtainIndex.DROP_TYPE_STAGE
+                    && record.stageName == identity) return record;
+            if (dropType == ItemObtainIndex.DROP_TYPE_ENEMY
+                    && record.enemyType == identity) return record;
+        }
+        return null;
+    }
+
+    private static function filterExactKind(records:Array, kind:String):Array {
+        var result:Array = [];
+        for (var i:Number = 0; i < records.length; i++) {
+            if (records[i].kind == kind) result.push(records[i]);
+        }
+        return result;
+    }
+
+    private static function findProjectedSource(sources:Array, kind:String,
+                                                identityField:String,
+                                                identity:String):Object {
+        for (var i:Number = 0; i < sources.length; i++) {
+            if (sources[i].kind == kind && sources[i][identityField] == identity) {
+                return sources[i];
+            }
+        }
+        return null;
+    }
+
+    private static function repeatText(value:String, count:Number):String {
+        var result:String = "";
+        for (var i:Number = 0; i < count; i++) result += value;
+        return result;
+    }
+
+    private static function exactFailure(result:Object, errorCode:String):Boolean {
+        if (result == null || result.success !== false
+                || String(result.error) != errorCode) return false;
+        var keyCount:Number = 0;
+        for (var key:String in result) {
+            if (typeof result.hasOwnProperty == "function"
+                    && !result.hasOwnProperty(key)) continue;
+            keyCount++;
+            if (key != "success" && key != "error") return false;
+        }
+        return keyCount == 2;
     }
 
     private static function check(ok:Boolean, label:String):Void {

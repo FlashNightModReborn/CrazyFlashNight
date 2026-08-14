@@ -126,12 +126,12 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             Assert.Equal(
                 new[]
                 {
-                    "Key:17",
-                    "Key:16",
+                    "Key:162",
+                    "Key:160",
                     "Key:65",
                     "Key:65",
-                    "Key:16",
-                    "Key:17"
+                    "Key:160",
+                    "Key:162"
                 },
                 fixture.Win32.SentBatches.Single()
                     .Select(packet => packet.ControlId));

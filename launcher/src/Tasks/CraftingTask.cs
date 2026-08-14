@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,7 +22,51 @@ namespace CF7Launcher.Tasks
             public bool IsReconcileProbe;
             public int ReconcileEpoch;
             public int PreviewEpoch;
+            public int MaterialsRequestEpoch;
             public PreviewAuthority ExpectedPreview;
+        }
+
+        private sealed class MaterialsSession
+        {
+            public string OwnerPanelInstanceId;
+            public int Version;
+            public string SnapshotId;
+            public Dictionary<string, CatalogMaterialProof> Materials;
+            public Dictionary<string, RegistryEntryProof> RecipePurposes;
+            public Dictionary<string, RegistryEntryProof> DirectPurposes;
+            public Dictionary<string, int> RecipePurposeOrder;
+            public Dictionary<string, int> DirectPurposeOrder;
+        }
+
+        private sealed class CatalogMaterialProof
+        {
+            public string Name;
+            public string DisplayName;
+            public string Icon;
+            public long Owned;
+            public long SourceCount;
+            public long DropVariantCount;
+            public long UseCount;
+            public long StructuredPurposeCount;
+            public bool HasSourceSummary;
+            public string[] RecipePurposeIds;
+            public string[] DirectPurposeIds;
+        }
+
+        private sealed class RegistryEntryProof
+        {
+            public string Id;
+            public string Label;
+            public long Order;
+        }
+
+        private sealed class SourceOrderProof
+        {
+            public int KindOrder;
+            public int CategoryOrder;
+            public string PrimaryText;
+            public int RewardSetOrder;
+            public long NumericOrder;
         }
 
         private sealed class PreviewAuthority
@@ -36,12 +81,30 @@ namespace CF7Launcher.Tasks
         }
 
         private const int DefaultTimeoutMs = 10000;
+        private const long MaxSafeInteger = 9007199254740991L;
+        private const int MaxMaterials = 4096;
+        private const int MaxSources = 512;
+        private const int MaxVariants = 128;
+        private const int MaxUses = 1024;
+        private const int MaxRecipeIngredients = 64;
+        // Per catalog material/detail references. The taxonomy registry itself is
+        // bounded by MaxTaxonomyEntries so future controlled entries remain data-driven.
+        private const int MaxDirectPurposes = 128;
+        private const int MaxTaxonomyEntries = 1024;
+        private const int MaxInfrastructureProjects = 256;
+        private const int MaxInfrastructureLevels = 128;
+        private const string InfrastructurePurposeId = "system:infrastructure_upgrade";
         private static readonly Regex ValidCallId = new Regex("^[A-Za-z0-9._-]{1,96}$", RegexOptions.Compiled);
         private static readonly Regex ValidPanelInstanceId = new Regex(
             "^[A-Za-z0-9._~-]{1,128}$",
             RegexOptions.CultureInvariant | RegexOptions.Compiled);
         private static readonly Regex ValidToken = new Regex("^[A-Za-z0-9._-]{1,160}$", RegexOptions.Compiled);
         private static readonly HashSet<string> Categories = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "铁枪会", "属性武器", "烹饪", "化学生产", "武器合成", "饰品合成",
+            "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备"
+        };
+        private static readonly string[] CategoryOrder =
         {
             "铁枪会", "属性武器", "烹饪", "化学生产", "武器合成", "饰品合成",
             "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备"
@@ -64,7 +127,15 @@ namespace CF7Launcher.Tasks
         private string _writeState = "idle";
         private int _reconcileEpoch;
         private int _previewEpoch;
+        private int _materialsRequestEpoch;
         private PreviewAuthority _previewAuthority;
+        private MaterialsSession _materialsSession;
+        private string _navigationOwnerPanel;
+        private string _navigationOwnerPanelInstanceId;
+        private string _navigationLeaseToken;
+        private bool _navigationLeaseTransferred;
+        private long _navigationGeneration;
+        private bool _disposed;
         public CraftingTask(XmlSocketServer socket)
             : this(delegate { return socket != null && socket.IsClientReady; },
                    delegate(string payload) { return socket != null && socket.TrySend(payload); }, DefaultTimeoutMs) { }
@@ -83,7 +154,167 @@ namespace CF7Launcher.Tasks
         internal string WriteState { get { lock (_lock) return _writeState; } }
         public void Dispose()
         {
-            lock (_lock) { _pendingCalls.Dispose(); }
+            lock (_lock)
+            {
+                if (_disposed) return;
+                _disposed = true;
+                _navigationGeneration++;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = null;
+                _navigationOwnerPanelInstanceId = null;
+                _pendingCalls.Dispose();
+            }
+        }
+
+        internal void BindMaterialShopNavigationOwner(
+            string panelName,
+            string panelInstanceId)
+        {
+            lock (_lock)
+            {
+                if (_disposed) return;
+                if (string.Equals(_navigationOwnerPanel, panelName, StringComparison.Ordinal)
+                    && string.Equals(
+                        _navigationOwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    return;
+                }
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = panelName;
+                _navigationOwnerPanelInstanceId = panelInstanceId;
+                _navigationGeneration++;
+            }
+        }
+
+        internal bool TryAcquireMaterialShopNavigationLease(
+            string panelName,
+            string panelInstanceId,
+            string leaseToken,
+            string materialSnapshotId,
+            string materialName,
+            out MaterialShopSettlementWitness witness)
+        {
+            witness = null;
+            lock (_lock)
+            {
+                CatalogMaterialProof proof;
+                if (_disposed
+                    || string.IsNullOrEmpty(leaseToken)
+                    || _navigationLeaseToken != null
+                    || !string.Equals(panelName, "crafting", StringComparison.Ordinal)
+                    || !string.Equals(_navigationOwnerPanel, panelName, StringComparison.Ordinal)
+                    || !string.Equals(
+                        _navigationOwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || _pendingCalls.PendingCount != 0
+                    || !string.Equals(_writeState, "idle", StringComparison.Ordinal)
+                    || _materialsSession == null
+                    || _materialsSession.Version != 2
+                    || !string.Equals(
+                        _materialsSession.OwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _materialsSession.SnapshotId,
+                        materialSnapshotId,
+                        StringComparison.Ordinal)
+                    || _materialsSession.Materials == null
+                    || !_materialsSession.Materials.TryGetValue(materialName, out proof))
+                {
+                    return false;
+                }
+                _navigationLeaseToken = leaseToken;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                witness = new MaterialShopSettlementWitness
+                {
+                    TaskName = "crafting",
+                    LeaseToken = leaseToken,
+                    OwnerPanel = panelName,
+                    OwnerPanelInstanceId = panelInstanceId,
+                    Generation = _navigationGeneration,
+                    MaterialSnapshotId = materialSnapshotId,
+                    MaterialName = materialName
+                };
+                return true;
+            }
+        }
+
+        internal bool IsMaterialShopNavigationLeaseCurrent(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                return witness != null
+                    && !_disposed
+                    && !_navigationLeaseTransferred
+                    && string.Equals(witness.TaskName, "crafting", StringComparison.Ordinal)
+                    && string.Equals(
+                        witness.LeaseToken,
+                        _navigationLeaseToken,
+                        StringComparison.Ordinal)
+                    && witness.Generation == _navigationGeneration
+                    && string.Equals(
+                        witness.OwnerPanel,
+                        _navigationOwnerPanel,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        witness.OwnerPanelInstanceId,
+                        _navigationOwnerPanelInstanceId,
+                        StringComparison.Ordinal)
+                    && _pendingCalls.PendingCount == 0
+                    && string.Equals(_writeState, "idle", StringComparison.Ordinal)
+                    && _materialsSession != null
+                    && _materialsSession.Version == 2
+                    && string.Equals(
+                        witness.MaterialSnapshotId,
+                        _materialsSession.SnapshotId,
+                        StringComparison.Ordinal)
+                    && _materialsSession.Materials != null
+                    && _materialsSession.Materials.ContainsKey(witness.MaterialName);
+            }
+        }
+
+        internal bool ReleaseMaterialShopNavigationLease(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                if (!MatchesMaterialShopNavigationLeaseLocked(witness)) return false;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                return true;
+            }
+        }
+
+        internal bool TransferMaterialShopNavigationLease(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                if (!MatchesMaterialShopNavigationLeaseLocked(witness)
+                    || _navigationLeaseTransferred) return false;
+                _navigationLeaseTransferred = true;
+                return true;
+            }
+        }
+
+        private bool MatchesMaterialShopNavigationLeaseLocked(
+            MaterialShopSettlementWitness witness)
+        {
+            return witness != null
+                && string.Equals(witness.TaskName, "crafting", StringComparison.Ordinal)
+                && string.Equals(
+                    witness.LeaseToken,
+                    _navigationLeaseToken,
+                    StringComparison.Ordinal)
+                && witness.Generation == _navigationGeneration;
         }
 
         public void HandleWebRequest(string cmd, JObject parsed)
@@ -116,7 +347,7 @@ namespace CF7Launcher.Tasks
             }
             JObject payload = parsed["payload"] as JObject;
             JObject normalized;
-            if (payload == null || !HasProtocolVersion(payload) || !TryNormalizePayload(cmd, payload, out normalized))
+            if (payload == null || !TryNormalizePayload(cmd, payload, out normalized))
             {
                 RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, "invalid_payload");
                 return;
@@ -131,6 +362,20 @@ namespace CF7Launcher.Tasks
             lock (_lock)
             {
                 if (_pendingCalls.IsKnownWebCallId(callId)) return;
+                if (_navigationLeaseToken != null)
+                {
+                    RespondError(callId, cmd, ownerPanel, ownerPanelInstanceId, "busy");
+                    return;
+                }
+                string materialsSessionError;
+                if (!IsMaterialsSessionRequestAllowedLocked(
+                        cmd, ownerPanelInstanceId, normalized, out materialsSessionError))
+                {
+                    if (!_pendingCalls.TryRememberRejected(callId)) return;
+                    RespondError(callId, cmd, ownerPanel, ownerPanelInstanceId,
+                        materialsSessionError);
+                    return;
+                }
                 if (isWrite && _writeState != "idle")
                 {
                     if (!_pendingCalls.TryRememberRejected(callId)) return;
@@ -154,6 +399,12 @@ namespace CF7Launcher.Tasks
                     _previewEpoch++;
                     _previewAuthority = null;
                 }
+                int materialsRequestEpoch = 0;
+                if (cmd == "materials")
+                {
+                    _materialsRequestEpoch++;
+                    materialsRequestEpoch = _materialsRequestEpoch;
+                }
                 if (!_pendingCalls.TryBegin(
                     callId,
                     new PendingRequest
@@ -167,9 +418,11 @@ namespace CF7Launcher.Tasks
                             && _writeState == "needs_reconcile",
                         ReconcileEpoch = _reconcileEpoch,
                         PreviewEpoch = _previewEpoch,
+                        MaterialsRequestEpoch = materialsRequestEpoch,
                         ExpectedPreview = expectedPreview
                     },
                     out fid)) return;
+                _navigationGeneration++;
                 if (isWrite) _writeState = "write_pending";
             }
 
@@ -196,6 +449,7 @@ namespace CF7Launcher.Tasks
             bool valid;
             bool definitiveWrite;
             JObject authority;
+            MaterialsSession selectedMaterialsSession;
             lock (_lock)
             {
                 if (!_pendingCalls.TryComplete(fid, out pendingCall))
@@ -203,8 +457,13 @@ namespace CF7Launcher.Tasks
                     if (respond != null) respond(null);
                     return;
                 }
+                _navigationGeneration++;
                 entry = pendingCall.Context;
-                valid = TrySanitizeResponse(msg, entry, out authority);
+                valid = TrySanitizeResponse(
+                    msg, entry, _materialsSession, out authority, out selectedMaterialsSession);
+                if (valid && selectedMaterialsSession != null
+                    && entry.MaterialsRequestEpoch == _materialsRequestEpoch)
+                    _materialsSession = selectedMaterialsSession;
                 if (entry.WebCmd == "preview" && entry.PreviewEpoch == _previewEpoch)
                     UpdatePreviewAuthorityLocked(msg, entry, valid);
                 definitiveWrite = entry.IsWrite && valid && IsDefinitiveWriteResponse(msg);
@@ -236,8 +495,15 @@ namespace CF7Launcher.Tasks
         {
             lock (_lock)
             {
+                _navigationGeneration++;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = null;
+                _navigationOwnerPanelInstanceId = null;
                 _previewEpoch++;
                 _previewAuthority = null;
+                _materialsRequestEpoch++;
+                _materialsSession = null;
                 _pendingCalls.Clear();
             }
         }
@@ -259,9 +525,32 @@ namespace CF7Launcher.Tasks
 
         private static bool TryNormalizePayload(string cmd, JObject payload, out JObject normalized)
         {
-            normalized = new JObject { ["v"] = 1 };
-            if (cmd == "materials") return HasExactKeys(payload, "v");
-            if (cmd == "tooltip" || cmd == "materialDetail")
+            normalized = null;
+            int version;
+            if (!TryReadProtocolVersion(payload != null ? payload["v"] : null, out version))
+                return false;
+            normalized = new JObject { ["v"] = version };
+            if (cmd == "materials")
+                return (version == 1 || version == 2) && HasExactKeys(payload, "v");
+            if (cmd == "materialDetail")
+            {
+                bool exact = version == 1
+                    ? HasExactKeys(payload, "v", "itemName")
+                    : version == 2 && HasExactKeys(payload, "v", "itemName", "snapshotId");
+                if (!exact) return false;
+                string itemName = ReadExactString(payload["itemName"]);
+                if (!IsIdentityText(itemName, 128)) return false;
+                normalized["itemName"] = itemName;
+                if (version == 2)
+                {
+                    string snapshotId = ReadExactString(payload["snapshotId"]);
+                    if (!IsIdentityText(snapshotId, 256)) return false;
+                    normalized["snapshotId"] = snapshotId;
+                }
+                return true;
+            }
+            if (version != 1) return false;
+            if (cmd == "tooltip")
             {
                 if (!HasExactKeys(payload, "v", "itemName")) return false;
                 string itemName = ReadExactString(payload["itemName"]);
@@ -269,7 +558,11 @@ namespace CF7Launcher.Tasks
                 normalized["itemName"] = itemName;
                 return true;
             }
-            if (cmd == "snapshot" && !HasExactKeys(payload, "v", "category")) return false;
+            bool materialNavigationSnapshot = cmd == "snapshot"
+                && HasExactKeys(payload, "v", "category", "materialSnapshotId");
+            if (cmd == "snapshot"
+                && !materialNavigationSnapshot
+                && !HasExactKeys(payload, "v", "category")) return false;
             if (cmd == "preview" && !HasExactKeys(
                     payload, "v", "category", "recipeIndex", "craftCount")) return false;
             if (cmd == "commit" && !HasExactKeys(
@@ -277,7 +570,16 @@ namespace CF7Launcher.Tasks
             string category = ReadExactString(payload["category"]);
             if (!Categories.Contains(category)) return false;
             normalized["category"] = category;
-            if (cmd == "snapshot") return true;
+            if (cmd == "snapshot")
+            {
+                if (materialNavigationSnapshot)
+                {
+                    string materialSnapshotId = ReadExactString(payload["materialSnapshotId"]);
+                    if (!IsIdentityText(materialSnapshotId, 256)) return false;
+                    normalized["materialSnapshotId"] = materialSnapshotId;
+                }
+                return true;
+            }
             if (cmd == "preview")
             {
                 int recipeIndex;
@@ -331,6 +633,81 @@ namespace CF7Launcher.Tasks
                 && !string.Equals(value.Trim(), "undefined", StringComparison.OrdinalIgnoreCase);
         }
 
+        private bool IsMaterialsSessionRequestAllowedLocked(
+            string cmd,
+            string ownerPanelInstanceId,
+            JObject normalized,
+            out string error)
+        {
+            error = "invalid_payload";
+            bool materialNavigationSnapshot = cmd == "snapshot"
+                && normalized != null
+                && normalized["materialSnapshotId"] != null;
+            if (cmd != "materials" && cmd != "materialDetail"
+                && !materialNavigationSnapshot) return true;
+            int version;
+            if (!TryReadProtocolVersion(normalized != null ? normalized["v"] : null, out version))
+                return false;
+            if (_materialsSession != null
+                && !string.Equals(_materialsSession.OwnerPanelInstanceId,
+                    ownerPanelInstanceId, StringComparison.Ordinal))
+                _materialsSession = null;
+            if (cmd == "materials")
+                return _materialsSession == null || _materialsSession.Version == version;
+
+            if (materialNavigationSnapshot)
+            {
+                if (_materialsSession == null || _materialsSession.Version != 2
+                    || !string.Equals(
+                        ReadExactString(normalized["materialSnapshotId"]),
+                        _materialsSession.SnapshotId,
+                        StringComparison.Ordinal))
+                {
+                    error = "stale_snapshot";
+                    return false;
+                }
+                return true;
+            }
+
+            // The pre-v2 Web did not expose an explicit catalog-session token. Keep
+            // an unbound v1 detail request legal for that exact legacy wire only.
+            if (version == 1 && _materialsSession == null) return true;
+            if (_materialsSession == null)
+            {
+                error = "stale_snapshot";
+                return false;
+            }
+            if (_materialsSession.Version != version) return false;
+            if (version == 2
+                && !string.Equals(ReadExactString(normalized["snapshotId"]),
+                    _materialsSession.SnapshotId, StringComparison.Ordinal))
+            {
+                error = "stale_snapshot";
+                return false;
+            }
+            return true;
+        }
+
+        private static bool IsV2MaterialDetail(PendingRequest entry)
+        {
+            int version;
+            return entry != null
+                && entry.WebCmd == "materialDetail"
+                && TryReadProtocolVersion(
+                    entry.NormalizedPayload != null ? entry.NormalizedPayload["v"] : null,
+                    out version)
+                && version == 2;
+        }
+
+        private static bool IsMaterialNavigationSnapshot(PendingRequest entry)
+        {
+            return entry != null
+                && string.Equals(entry.WebCmd, "snapshot", StringComparison.Ordinal)
+                && entry.NormalizedPayload != null
+                && IsIdentityText(
+                    ReadExactString(entry.NormalizedPayload["materialSnapshotId"]), 256);
+        }
+
         private bool TryConsumePreviewAuthorityLocked(
             string ownerPanelInstanceId, JObject normalized, out PreviewAuthority authority)
         {
@@ -371,9 +748,14 @@ namespace CF7Launcher.Tasks
         }
 
         private static bool TrySanitizeResponse(
-            JObject msg, PendingRequest entry, out JObject sanitized)
+            JObject msg,
+            PendingRequest entry,
+            MaterialsSession materialsSession,
+            out JObject sanitized,
+            out MaterialsSession selectedMaterialsSession)
         {
             sanitized = null;
+            selectedMaterialsSession = null;
             if (msg == null
                 || !string.Equals(ReadExactString(msg["task"]), "crafting_response", StringComparison.Ordinal)
                 || msg["callId"] == null || msg["callId"].Type != JTokenType.Integer
@@ -382,7 +764,10 @@ namespace CF7Launcher.Tasks
             {
                 string error = ReadExactString(msg["error"]);
                 if (!HasExactKeys(msg, "task", "callId", "success", "error")
-                    || !IsSafeText(error, 128)) return false;
+                    || !IsSafeText(error, 128)
+                    || (string.Equals(error, "stale_snapshot", StringComparison.Ordinal)
+                        && !IsV2MaterialDetail(entry)
+                        && !IsMaterialNavigationSnapshot(entry))) return false;
                 sanitized = new JObject { ["success"] = false, ["error"] = error };
                 return true;
             }
@@ -391,8 +776,13 @@ namespace CF7Launcher.Tasks
             switch (entry.WebCmd)
             {
                 case "snapshot": authoritative = IsAuthoritativeSnapshot(msg, entry); break;
-                case "materials": authoritative = IsAuthoritativeMaterials(msg); break;
-                case "materialDetail": authoritative = IsAuthoritativeMaterialDetail(msg, entry); break;
+                case "materials":
+                    authoritative = IsAuthoritativeMaterials(
+                        msg, entry, materialsSession, out selectedMaterialsSession);
+                    break;
+                case "materialDetail":
+                    authoritative = IsAuthoritativeMaterialDetail(msg, entry, materialsSession);
+                    break;
                 case "preview": authoritative = IsAuthoritativePreview(msg, entry); break;
                 case "tooltip": authoritative = IsAuthoritativeTooltip(msg, entry); break;
                 case "commit": authoritative = IsAuthoritativeCommit(msg, entry); break;
@@ -452,7 +842,43 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool IsAuthoritativeMaterials(JObject msg)
+        private static bool IsAuthoritativeMaterials(
+            JObject msg,
+            PendingRequest entry,
+            MaterialsSession currentSession,
+            out MaterialsSession selectedSession)
+        {
+            selectedSession = null;
+            int requestVersion;
+            int responseVersion;
+            if (entry == null
+                || !TryReadProtocolVersion(entry.NormalizedPayload["v"], out requestVersion)
+                || !TryReadProtocolVersion(msg != null ? msg["v"] : null, out responseVersion))
+                return false;
+            if (currentSession != null)
+            {
+                if (!string.Equals(currentSession.OwnerPanelInstanceId,
+                        entry.OwnerPanelInstanceId, StringComparison.Ordinal)
+                    || requestVersion != currentSession.Version
+                    || responseVersion != currentSession.Version) return false;
+            }
+            else if (responseVersion != requestVersion
+                && !(requestVersion == 2 && responseVersion == 1)) return false;
+
+            if (responseVersion == 1)
+            {
+                if (!IsAuthoritativeMaterialsV1(msg)) return false;
+                selectedSession = new MaterialsSession
+                {
+                    OwnerPanelInstanceId = entry.OwnerPanelInstanceId,
+                    Version = 1
+                };
+                return true;
+            }
+            return TryBuildMaterialsSessionV2(msg, entry.OwnerPanelInstanceId, out selectedSession);
+        }
+
+        private static bool IsAuthoritativeMaterialsV1(JObject msg)
         {
             var materials = msg["materials"] as JArray;
             if (!HasExactResponseKeys(msg, "v", "view", "materials")
@@ -479,7 +905,24 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool IsAuthoritativeMaterialDetail(JObject msg, PendingRequest entry)
+        private static bool IsAuthoritativeMaterialDetail(
+            JObject msg, PendingRequest entry, MaterialsSession session)
+        {
+            int requestVersion;
+            int responseVersion;
+            if (entry == null
+                || !TryReadProtocolVersion(entry.NormalizedPayload["v"], out requestVersion)
+                || !TryReadProtocolVersion(msg != null ? msg["v"] : null, out responseVersion)
+                || requestVersion != responseVersion) return false;
+            if (session != null
+                && (!string.Equals(session.OwnerPanelInstanceId,
+                        entry.OwnerPanelInstanceId, StringComparison.Ordinal)
+                    || session.Version != responseVersion)) return false;
+            if (responseVersion == 1) return IsAuthoritativeMaterialDetailV1(msg, entry);
+            return session != null && IsAuthoritativeMaterialDetailV2(msg, entry, session);
+        }
+
+        private static bool IsAuthoritativeMaterialDetailV1(JObject msg, PendingRequest entry)
         {
             var material = msg["material"] as JObject;
             var sources = msg["sources"] as JArray;
@@ -512,6 +955,857 @@ namespace CF7Launcher.Tasks
                     || !IsSafeOptionalText(ReadExactString(use["category"]), 128)
                     || !IsNonNegativeNumber(use["required"])) return false;
             }
+            return true;
+        }
+
+        private static bool TryBuildMaterialsSessionV2(
+            JObject msg,
+            string ownerPanelInstanceId,
+            out MaterialsSession session)
+        {
+            session = null;
+            var taxonomy = msg != null ? msg["taxonomy"] as JObject : null;
+            var navigationAccess = msg != null ? msg["navigationAccess"] as JObject : null;
+            var materials = msg != null ? msg["materials"] as JArray : null;
+            string snapshotId = msg != null ? ReadExactString(msg["snapshotId"]) : null;
+            Dictionary<string, RegistryEntryProof> recipePurposes;
+            Dictionary<string, RegistryEntryProof> directPurposes;
+            Dictionary<string, int> recipePurposeOrder;
+            Dictionary<string, int> directPurposeOrder;
+            if (!HasExactResponseKeys(msg, "v", "view", "snapshotId",
+                    "navigationAccess", "taxonomy", "materials")
+                || !HasProtocolVersion(msg, 2)
+                || !string.Equals(ReadExactString(msg["view"]), "materials", StringComparison.Ordinal)
+                || !IsIdentityText(snapshotId, 256)
+                || navigationAccess == null
+                || !HasExactKeys(navigationAccess, "shop", "crafting")
+                || navigationAccess["shop"] == null
+                || navigationAccess["shop"].Type != JTokenType.Boolean
+                || navigationAccess["crafting"] == null
+                || navigationAccess["crafting"].Type != JTokenType.Boolean
+                || materials == null || materials.Count > MaxMaterials
+                || !TryValidateTaxonomy(taxonomy,
+                    out recipePurposes, out directPurposes,
+                    out recipePurposeOrder, out directPurposeOrder)) return false;
+
+            var materialProofs = new Dictionary<string, CatalogMaterialProof>(StringComparer.Ordinal);
+            for (int index = 0; index < materials.Count; index++)
+            {
+                var material = materials[index] as JObject;
+                string typeId = material != null ? ReadExactString(material["typeId"]) : null;
+                bool equipmentMod = string.Equals(typeId, "equipment_mod", StringComparison.Ordinal);
+                string[] expectedKeys = equipmentMod
+                    ? new[] { "name", "displayName", "icon", "owned", "archiveOrder", "typeId",
+                        "modFacetIds", "recipePurposeIds", "directPurposeIds",
+                        "structuredPurposeCount", "sourceCount", "dropVariantCount", "useCount",
+                        "hasSourceSummary" }
+                    : new[] { "name", "displayName", "icon", "owned", "archiveOrder", "typeId",
+                        "recipePurposeIds", "directPurposeIds", "structuredPurposeCount",
+                        "sourceCount", "dropVariantCount", "useCount", "hasSourceSummary" };
+                long owned;
+                long archiveOrder;
+                long structuredPurposeCount;
+                long sourceCount;
+                long dropVariantCount;
+                long useCount;
+                string[] recipePurposeIds;
+                string[] directPurposeIds;
+                string name = material != null ? ReadExactString(material["name"]) : null;
+                if (material == null || !HasExactKeys(material, expectedKeys)
+                    || !IsIdentityTriple(material) || materialProofs.ContainsKey(name)
+                    || (typeId != "equipment_mod" && typeId != "food" && typeId != "general")
+                    || !TryReadNni(material["owned"], out owned)
+                    || !TryReadNni(material["archiveOrder"], out archiveOrder)
+                    || archiveOrder != index
+                    || !TryReadNni(material["structuredPurposeCount"], out structuredPurposeCount)
+                    || !TryReadNni(material["sourceCount"], out sourceCount)
+                    || !TryReadNni(material["dropVariantCount"], out dropVariantCount)
+                    || !TryReadNni(material["useCount"], out useCount)
+                    || material["hasSourceSummary"] == null
+                    || material["hasSourceSummary"].Type != JTokenType.Boolean
+                    || !TryValidatePurposeIds(material["recipePurposeIds"],
+                        recipePurposes, recipePurposeOrder, MaxTaxonomyEntries, out recipePurposeIds)
+                    || !TryValidatePurposeIds(material["directPurposeIds"],
+                        directPurposes, directPurposeOrder, MaxDirectPurposes, out directPurposeIds)
+                    || structuredPurposeCount != useCount + directPurposeIds.Length
+                    || (equipmentMod && !IsCanonicalModFacetIds(material["modFacetIds"] as JObject)))
+                    return false;
+                materialProofs.Add(name, new CatalogMaterialProof
+                {
+                    Name = name,
+                    DisplayName = ReadExactString(material["displayName"]),
+                    Icon = ReadExactString(material["icon"]),
+                    Owned = owned,
+                    SourceCount = sourceCount,
+                    DropVariantCount = dropVariantCount,
+                    UseCount = useCount,
+                    StructuredPurposeCount = structuredPurposeCount,
+                    HasSourceSummary = material.Value<bool>("hasSourceSummary"),
+                    RecipePurposeIds = recipePurposeIds,
+                    DirectPurposeIds = directPurposeIds
+                });
+            }
+            session = new MaterialsSession
+            {
+                OwnerPanelInstanceId = ownerPanelInstanceId,
+                Version = 2,
+                SnapshotId = snapshotId,
+                Materials = materialProofs,
+                RecipePurposes = recipePurposes,
+                DirectPurposes = directPurposes,
+                RecipePurposeOrder = recipePurposeOrder,
+                DirectPurposeOrder = directPurposeOrder
+            };
+            return true;
+        }
+
+        private static bool TryValidateTaxonomy(
+            JObject taxonomy,
+            out Dictionary<string, RegistryEntryProof> recipePurposes,
+            out Dictionary<string, RegistryEntryProof> directPurposes,
+            out Dictionary<string, int> recipePurposeOrder,
+            out Dictionary<string, int> directPurposeOrder)
+        {
+            recipePurposes = null;
+            directPurposes = null;
+            recipePurposeOrder = null;
+            directPurposeOrder = null;
+            if (taxonomy == null
+                || !HasExactKeys(taxonomy, "version", "roots", "types", "modAxes",
+                    "recipePurposes", "directPurposes", "fallback")
+                || !IsExactInteger(taxonomy["version"], 1)) return false;
+            var roots = taxonomy["roots"] as JArray;
+            var types = taxonomy["types"] as JArray;
+            var axes = taxonomy["modAxes"] as JArray;
+            var recipes = taxonomy["recipePurposes"] as JArray;
+            var directs = taxonomy["directPurposes"] as JArray;
+            var fallback = taxonomy["fallback"] as JObject;
+            if (!IsExactRegistry(roots, new[]
+                {
+                    new[] { "type", "类型" }, new[] { "purpose", "用途" }
+                })
+                || !IsExactRegistry(types, new[]
+                {
+                    new[] { "equipment_mod", "改装材料" },
+                    new[] { "food", "食材" }, new[] { "general", "通用材料" }
+                })
+                || !IsCanonicalModAxes(axes)
+                || recipes == null || recipes.Count != CategoryOrder.Length
+                || directs == null || directs.Count == 0
+                || fallback == null
+                || !HasExactKeys(fallback, "id", "label", "order")
+                || ReadExactString(fallback["id"]) != "unstructured"
+                || ReadExactString(fallback["label"]) != "尚未结构化用途"
+                || !IsExactInteger(fallback["order"], 2147483647)) return false;
+
+            recipePurposes = new Dictionary<string, RegistryEntryProof>(StringComparer.Ordinal);
+            recipePurposeOrder = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int index = 0; index < recipes.Count; index++)
+            {
+                var entry = recipes[index] as JObject;
+                string id = "recipe:" + CategoryOrder[index];
+                if (!IsExactRegistryEntry(entry, id, CategoryOrder[index], index)) return false;
+                recipePurposes.Add(id, ToRegistryProof(entry));
+                recipePurposeOrder.Add(id, index);
+            }
+            directPurposes = new Dictionary<string, RegistryEntryProof>(StringComparer.Ordinal);
+            directPurposeOrder = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int index = 0; index < directs.Count; index++)
+            {
+                var direct = directs[index] as JObject;
+                string id = direct != null ? ReadExactString(direct["id"]) : null;
+                string label = direct != null ? ReadExactString(direct["label"]) : null;
+                if (direct == null || !HasExactKeys(direct, "id", "label", "order")
+                    || !IsIdentityText(id, 256) || !IsIdentityText(label, 512)
+                    || !IsExactInteger(direct["order"], index)
+                    || directPurposes.ContainsKey(id)) return false;
+                if (index == 0 && (id != "system:equipment_tuning" || label != "装备改装"))
+                    return false;
+                directPurposes.Add(id, ToRegistryProof(direct));
+                directPurposeOrder.Add(id, index);
+            }
+            int taxonomyEntryCount = roots.Count + types.Count + axes.Count
+                + recipes.Count + directs.Count + 1;
+            foreach (JToken axisToken in axes)
+                taxonomyEntryCount += ((JArray)axisToken["values"]).Count;
+            return taxonomyEntryCount <= MaxTaxonomyEntries;
+        }
+
+        private static bool IsCanonicalModAxes(JArray axes)
+        {
+            if (axes == null || axes.Count != 3) return false;
+            var grade = axes[0] as JObject;
+            var scope = axes[1] as JObject;
+            var role = axes[2] as JObject;
+            return IsCanonicalAxisHeader(grade, "grade", "档级", 0)
+                && IsExactGradeValues(grade["values"] as JArray)
+                && IsCanonicalAxisHeader(scope, "scope", "适用范围", 1)
+                && IsExactRegistry(scope["values"] as JArray, new[]
+                {
+                    new[] { "armor", "防具" }, new[] { "firearm", "枪械" },
+                    new[] { "blade", "刀具" }, new[] { "fist", "拳套" },
+                    new[] { "universal", "通用" }, new[] { "underbarrel", "下挂武器" }
+                })
+                && IsCanonicalAxisHeader(role, "role", "定位", 2)
+                && IsExactRoleValues(role["values"] as JArray);
+        }
+
+        private static bool IsCanonicalAxisHeader(
+            JObject axis, string id, string label, int order)
+        {
+            return axis != null && HasExactKeys(axis, "id", "label", "order", "values")
+                && ReadExactString(axis["id"]) == id
+                && ReadExactString(axis["label"]) == label
+                && IsExactInteger(axis["order"], order)
+                && axis["values"] is JArray;
+        }
+
+        private static bool IsExactGradeValues(JArray values)
+        {
+            string[][] expected =
+            {
+                new[] { "low", "低级", "#006600" },
+                new[] { "medium", "中等", "#996600" },
+                new[] { "high", "高等", "#0099FF" },
+                new[] { "special", "特殊", "#FFFF00" }
+            };
+            if (values == null || values.Count != expected.Length) return false;
+            for (int index = 0; index < expected.Length; index++)
+            {
+                var value = values[index] as JObject;
+                if (value == null || !HasExactKeys(value, "id", "label", "order", "color")
+                    || ReadExactString(value["id"]) != expected[index][0]
+                    || ReadExactString(value["label"]) != expected[index][1]
+                    || !IsExactInteger(value["order"], index)
+                    || ReadExactString(value["color"]) != expected[index][2]) return false;
+            }
+            return true;
+        }
+
+        private static bool IsExactRoleValues(JArray values)
+        {
+            string[][] expected =
+            {
+                new[] { "firepower", "火力", "triangle-solid" },
+                new[] { "precision", "精准与操控", "triangle-outline" },
+                new[] { "stability", "稳定与防护", "square-outline" },
+                new[] { "sustain", "续航", "circle-outline" },
+                new[] { "utility", "结构与功能", "diamond-outline" },
+                new[] { "mechanism", "特殊机制", "star-solid" }
+            };
+            if (values == null || values.Count != expected.Length) return false;
+            for (int index = 0; index < expected.Length; index++)
+            {
+                var value = values[index] as JObject;
+                if (value == null || !HasExactKeys(value, "id", "label", "order", "symbol")
+                    || ReadExactString(value["id"]) != expected[index][0]
+                    || ReadExactString(value["label"]) != expected[index][1]
+                    || !IsExactInteger(value["order"], index)
+                    || ReadExactString(value["symbol"]) != expected[index][2]) return false;
+            }
+            return true;
+        }
+
+        private static bool IsExactRegistry(JArray entries, string[][] expected)
+        {
+            if (entries == null || entries.Count != expected.Length || entries.Count == 0)
+                return false;
+            for (int index = 0; index < expected.Length; index++)
+                if (!IsExactRegistryEntry(
+                        entries[index] as JObject, expected[index][0], expected[index][1], index))
+                    return false;
+            return true;
+        }
+
+        private static bool IsExactRegistryEntry(
+            JObject entry, string id, string label, int order)
+        {
+            return entry != null && HasExactKeys(entry, "id", "label", "order")
+                && IsIdentityText(ReadExactString(entry["id"]), 256)
+                && IsIdentityText(ReadExactString(entry["label"]), 512)
+                && ReadExactString(entry["id"]) == id
+                && ReadExactString(entry["label"]) == label
+                && IsExactInteger(entry["order"], order);
+        }
+
+        private static RegistryEntryProof ToRegistryProof(JObject entry)
+        {
+            return new RegistryEntryProof
+            {
+                Id = ReadExactString(entry["id"]),
+                Label = ReadExactString(entry["label"]),
+                Order = entry.Value<long>("order")
+            };
+        }
+
+        private static bool IsCanonicalModFacetIds(JObject facets)
+        {
+            if (facets == null || !HasExactKeys(facets, "grade", "scope", "role"))
+                return false;
+            string grade = ReadExactString(facets["grade"]);
+            string scope = ReadExactString(facets["scope"]);
+            string role = ReadExactString(facets["role"]);
+            return (grade == "low" || grade == "medium" || grade == "high" || grade == "special")
+                && (scope == "armor" || scope == "firearm" || scope == "blade"
+                    || scope == "fist" || scope == "universal" || scope == "underbarrel")
+                && (role == "firepower" || role == "precision" || role == "stability"
+                    || role == "sustain" || role == "utility" || role == "mechanism");
+        }
+
+        private static bool TryValidatePurposeIds(
+            JToken token,
+            Dictionary<string, RegistryEntryProof> registry,
+            Dictionary<string, int> registryOrder,
+            int maximum,
+            out string[] ids)
+        {
+            ids = null;
+            var values = token as JArray;
+            if (values == null || values.Count > maximum) return false;
+            ids = new string[values.Count];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            int previousOrder = -1;
+            for (int index = 0; index < values.Count; index++)
+            {
+                string id = ReadExactString(values[index]);
+                int order;
+                if (!IsIdentityText(id, 256) || !seen.Add(id)
+                    || registry == null || !registry.ContainsKey(id)
+                    || registryOrder == null || !registryOrder.TryGetValue(id, out order)
+                    || order <= previousOrder) return false;
+                previousOrder = order;
+                ids[index] = id;
+            }
+            return true;
+        }
+
+        private static bool IsAuthoritativeMaterialDetailV2(
+            JObject msg, PendingRequest entry, MaterialsSession session)
+        {
+            if (msg == null || entry == null || entry.NormalizedPayload == null
+                || session == null || session.Materials == null) return false;
+            var material = msg != null ? msg["material"] as JObject : null;
+            var sources = msg != null ? msg["sources"] as JArray : null;
+            var directPurposes = msg != null ? msg["directPurposes"] as JArray : null;
+            var uses = msg != null ? msg["uses"] as JArray : null;
+            long sourceCount;
+            long dropVariantCount;
+            long useCount;
+            long structuredPurposeCount;
+            string requestItemName = ReadExactString(entry.NormalizedPayload["itemName"]);
+            string requestSnapshotId = ReadExactString(entry.NormalizedPayload["snapshotId"]);
+            CatalogMaterialProof catalog;
+            if (!session.Materials.TryGetValue(requestItemName, out catalog)) return false;
+            bool expectsInfrastructureUses = Array.IndexOf(
+                catalog.DirectPurposeIds, InfrastructurePurposeId) >= 0;
+            string[] responseKeys = expectsInfrastructureUses
+                ? new[] { "v", "view", "snapshotId", "material", "sourceCount",
+                    "dropVariantCount", "useCount", "structuredPurposeCount", "sources",
+                    "directPurposes", "uses", "infrastructureUses" }
+                : new[] { "v", "view", "snapshotId", "material", "sourceCount",
+                    "dropVariantCount", "useCount", "structuredPurposeCount", "sources",
+                    "directPurposes", "uses" };
+            var infrastructureUses = expectsInfrastructureUses
+                ? msg["infrastructureUses"] as JArray : null;
+            if (!HasExactResponseKeys(msg, responseKeys)
+                || !HasProtocolVersion(msg, 2)
+                || ReadExactString(msg["view"]) != "materials"
+                || !string.Equals(ReadExactString(msg["snapshotId"]),
+                    requestSnapshotId, StringComparison.Ordinal)
+                || !string.Equals(requestSnapshotId, session.SnapshotId, StringComparison.Ordinal)
+                || material == null || sources == null || sources.Count > MaxSources
+                || directPurposes == null || directPurposes.Count > MaxDirectPurposes
+                || uses == null || uses.Count > MaxUses
+                || !TryReadNni(msg["sourceCount"], out sourceCount)
+                || !TryReadNni(msg["dropVariantCount"], out dropVariantCount)
+                || !TryReadNni(msg["useCount"], out useCount)
+                || !TryReadNni(msg["structuredPurposeCount"], out structuredPurposeCount)
+                || expectsInfrastructureUses && infrastructureUses == null
+                || !HasExactKeys(material, "name", "displayName", "icon", "description",
+                    "owned", "sourceSummary")
+                || !IsIdentityTriple(material)
+                || !string.Equals(ReadExactString(material["name"]), requestItemName,
+                    StringComparison.Ordinal)
+                || !string.Equals(ReadExactString(material["displayName"]), catalog.DisplayName,
+                    StringComparison.Ordinal)
+                || !string.Equals(ReadExactString(material["icon"]), catalog.Icon,
+                    StringComparison.Ordinal)
+                || !IsSafeMultilineText(ReadExactString(material["description"]), 12000)
+                || !IsSafeMultilineText(ReadExactString(material["sourceSummary"]), 20000))
+                return false;
+            long owned;
+            if (!TryReadNni(material["owned"], out owned)
+                || owned != catalog.Owned
+                || sourceCount != catalog.SourceCount
+                || dropVariantCount != catalog.DropVariantCount
+                || useCount != catalog.UseCount
+                || structuredPurposeCount != catalog.StructuredPurposeCount
+                || catalog.HasSourceSummary
+                    != (ReadExactString(material["sourceSummary"]).Length > 0)
+                || sourceCount != sources.Count
+                || useCount != uses.Count
+                || structuredPurposeCount != useCount + directPurposes.Count
+                || expectsInfrastructureUses
+                    && !TryValidateInfrastructureUses(infrastructureUses, catalog.Owned)) return false;
+
+            var sourceKeys = new HashSet<string>(StringComparer.Ordinal);
+            SourceOrderProof previousSource = null;
+            long countedDropVariants = 0;
+            for (int index = 0; index < sources.Count; index++)
+            {
+                var source = sources[index] as JObject;
+                long sourceOrder;
+                int variants;
+                SourceOrderProof orderProof;
+                string sourceKey = source != null ? ReadExactString(source["sourceKey"]) : null;
+                if (source == null || !TryReadNni(source["sourceOrder"], out sourceOrder)
+                    || sourceOrder != index || !IsIdentityText(sourceKey, 768)
+                    || !sourceKeys.Add(sourceKey)
+                    || !TryValidateMaterialSourceV2(
+                        source, requestItemName, out variants, out orderProof)
+                    || (previousSource != null && CompareSourceOrder(previousSource, orderProof) >= 0))
+                    return false;
+                previousSource = orderProof;
+                countedDropVariants += variants;
+            }
+            if (countedDropVariants != dropVariantCount) return false;
+
+            string[] detailDirectIds;
+            if (!TryValidateDirectPurposes(
+                    directPurposes, session, out detailDirectIds)
+                || !StringArraysEqual(detailDirectIds, catalog.DirectPurposeIds)) return false;
+            string[] detailRecipePurposeIds;
+            if (!TryValidateRecipeUses(
+                    uses, session, requestItemName, out detailRecipePurposeIds)
+                || !StringArraysEqual(detailRecipePurposeIds, catalog.RecipePurposeIds)) return false;
+            return true;
+        }
+
+        private static bool TryValidateDirectPurposes(
+            JArray values, MaterialsSession session, out string[] ids)
+        {
+            ids = null;
+            if (values == null || session == null || values.Count > MaxDirectPurposes)
+                return false;
+            ids = new string[values.Count];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            long previousOrder = -1;
+            for (int index = 0; index < values.Count; index++)
+            {
+                var value = values[index] as JObject;
+                string id = value != null ? ReadExactString(value["id"]) : null;
+                RegistryEntryProof expected;
+                long order;
+                if (value == null || !HasExactKeys(value, "id", "label", "order")
+                    || !IsIdentityText(id, 256) || !seen.Add(id)
+                    || !session.DirectPurposes.TryGetValue(id, out expected)
+                    || ReadExactString(value["label"]) != expected.Label
+                    || !TryReadNni(value["order"], out order)
+                    || order != expected.Order || order <= previousOrder) return false;
+                previousOrder = order;
+                ids[index] = id;
+            }
+            return true;
+        }
+
+        private static bool TryValidateInfrastructureUses(JArray projects, long catalogOwned)
+        {
+            if (projects == null || projects.Count > MaxInfrastructureProjects) return false;
+            var names = new HashSet<string>(StringComparer.Ordinal);
+            int previousProjectOrder = -1;
+            foreach (JToken token in projects)
+            {
+                var project = token as JObject;
+                var levels = project != null ? project["levels"] as JArray : null;
+                string infrastructureName = project != null
+                    ? ReadExactString(project["infrastructureName"]) : null;
+                int projectOrder;
+                int currentLevel;
+                int maximumLevel;
+                if (project == null
+                    || !HasExactKeys(project, "infrastructureName", "projectOrder",
+                        "currentLevel", "maximumLevel", "levels")
+                    || !IsIdentityText(infrastructureName, 128) || !names.Add(infrastructureName)
+                    || !TryReadInteger(project["projectOrder"], 0,
+                        MaxInfrastructureProjects - 1, out projectOrder)
+                    || projectOrder <= previousProjectOrder
+                    || !TryReadInteger(project["maximumLevel"], 1,
+                        MaxInfrastructureLevels, out maximumLevel)
+                    || !TryReadInteger(project["currentLevel"], 0,
+                        maximumLevel, out currentLevel)
+                    || levels == null || levels.Count < 1
+                    || levels.Count > MaxInfrastructureLevels) return false;
+
+                previousProjectOrder = projectOrder;
+                int previousLevelIndex = -1;
+                foreach (JToken levelToken in levels)
+                {
+                    var level = levelToken as JObject;
+                    int levelIndex;
+                    int targetLevel;
+                    long required;
+                    long owned;
+                    long missing;
+                    string status = level != null ? ReadExactString(level["status"]) : null;
+                    if (level == null
+                        || !HasExactKeys(level, "levelIndex", "targetLevel", "required",
+                            "owned", "missing", "status")
+                        || !TryReadInteger(level["levelIndex"], 0,
+                            maximumLevel - 1, out levelIndex)
+                        || levelIndex <= previousLevelIndex
+                        || !TryReadInteger(level["targetLevel"], 1,
+                            maximumLevel, out targetLevel)
+                        || targetLevel != levelIndex + 1
+                        || !TryReadPi(level["required"], out required)
+                        || !TryReadNni(level["owned"], out owned) || owned != catalogOwned
+                        || !TryReadNni(level["missing"], out missing)) return false;
+
+                    string expectedStatus = currentLevel > levelIndex
+                        ? "completed" : currentLevel == levelIndex ? "current" : "future";
+                    long expectedMissing = expectedStatus == "completed"
+                        ? 0 : required > owned ? required - owned : 0;
+                    if (!string.Equals(status, expectedStatus, StringComparison.Ordinal)
+                        || missing != expectedMissing) return false;
+                    previousLevelIndex = levelIndex;
+                }
+            }
+            return true;
+        }
+
+        private static bool TryValidateRecipeUses(
+            JArray uses, MaterialsSession session, string materialName,
+            out string[] recipePurposeIds)
+        {
+            recipePurposeIds = null;
+            if (uses == null || session == null || uses.Count > MaxUses) return false;
+            var seenUses = new HashSet<string>(StringComparer.Ordinal);
+            var seenPurposeIds = new HashSet<string>(StringComparer.Ordinal);
+            var orderedPurposes = new List<string>();
+            for (int index = 0; index < uses.Count; index++)
+            {
+                var use = uses[index] as JObject;
+                var ingredients = use != null ? use["ingredients"] as JArray : null;
+                string category = use != null ? ReadExactString(use["category"]) : null;
+                int recipeIndex;
+                long required;
+                string purposeId = "recipe:" + category;
+                string identity;
+                bool legacyUseShape = use != null && HasExactKeys(use,
+                    "category", "recipeIndex", "productName", "displayName",
+                    "icon", "itemKind", "required");
+                bool ingredientUseShape = use != null && HasExactKeys(use,
+                    "category", "recipeIndex", "productName", "displayName",
+                    "icon", "itemKind", "required", "ingredients");
+                if (use == null || (!legacyUseShape && !ingredientUseShape)
+                    || !IsIdentityText(category, 256)
+                    || !session.RecipePurposes.ContainsKey(purposeId)
+                    || !TryReadInteger(use["recipeIndex"], 0, 999, out recipeIndex)
+                    || !IsIdentityText(ReadExactString(use["productName"]), 128)
+                    || !IsIdentityText(ReadExactString(use["displayName"]), 256)
+                    || !IsIdentityText(ReadExactString(use["icon"]), 256)
+                    || !IsItemKind(ReadExactString(use["itemKind"]))
+                    || !TryReadPi(use["required"], out required)
+                    || ingredientUseShape
+                        && !TryValidateRecipeIngredients(
+                            ingredients, materialName, required)) return false;
+                identity = category + "\u0000" + recipeIndex.ToString(CultureInfo.InvariantCulture);
+                if (!seenUses.Add(identity)) return false;
+                if (seenPurposeIds.Add(purposeId)) orderedPurposes.Add(purposeId);
+            }
+            orderedPurposes.Sort(delegate(string left, string right)
+            {
+                return session.RecipePurposeOrder[left].CompareTo(
+                    session.RecipePurposeOrder[right]);
+            });
+            recipePurposeIds = orderedPurposes.ToArray();
+            return true;
+        }
+
+        private static bool TryValidateRecipeIngredients(
+            JArray ingredients, string materialName, long expectedRequired)
+        {
+            if (ingredients == null || ingredients.Count < 1
+                || ingredients.Count > MaxRecipeIngredients) return false;
+            long selectedRequired = 0;
+            foreach (JToken token in ingredients)
+            {
+                var ingredient = token as JObject;
+                long required;
+                if (ingredient == null
+                    || !HasExactKeys(ingredient,
+                        "name", "displayName", "icon", "required", "isQuantity")
+                    || !IsIdentityText(ReadExactString(ingredient["name"]), 128)
+                    || !IsIdentityText(ReadExactString(ingredient["displayName"]), 256)
+                    || !IsIdentityText(ReadExactString(ingredient["icon"]), 256)
+                    || !TryReadPi(ingredient["required"], out required)
+                    || ingredient["isQuantity"] == null
+                    || ingredient["isQuantity"].Type != JTokenType.Boolean) return false;
+                if (string.Equals(ReadExactString(ingredient["name"]),
+                        materialName, StringComparison.Ordinal))
+                {
+                    if (selectedRequired > MaxSafeInteger - required) return false;
+                    selectedRequired += required;
+                }
+            }
+            return selectedRequired == expectedRequired;
+        }
+
+        private static bool TryValidateMaterialSourceV2(
+            JObject source,
+            string materialName,
+            out int variantCount,
+            out SourceOrderProof orderProof)
+        {
+            variantCount = 0;
+            orderProof = null;
+            string kind = ReadExactString(source != null ? source["kind"] : null);
+            string sourceKey = ReadExactString(source != null ? source["sourceKey"] : null);
+            if (source == null || string.IsNullOrEmpty(kind)) return false;
+            long numeric;
+            string expectedKey;
+            switch (kind)
+            {
+                case "craft":
+                {
+                    string category = ReadExactString(source["category"]);
+                    int recipeIndex;
+                    int categoryIndex = IndexOfCategory(category);
+                    if (!HasExactKeys(source, "kind", "sourceKey", "sourceOrder", "category",
+                            "recipeIndex", "productName", "price", "kpoints")
+                        || categoryIndex < 0
+                        || !TryReadInteger(source["recipeIndex"], 0, 999, out recipeIndex)
+                        || !string.Equals(ReadExactString(source["productName"]),
+                            materialName, StringComparison.Ordinal)
+                        || !IsNonNegativeNumber(source["price"])
+                        || !IsNonNegativeNumber(source["kpoints"])) return false;
+                    expectedKey = BuildSourceKey(kind, category,
+                        recipeIndex.ToString(CultureInfo.InvariantCulture));
+                    orderProof = new SourceOrderProof
+                    {
+                        KindOrder = 0, CategoryOrder = categoryIndex,
+                        PrimaryText = string.Empty, NumericOrder = recipeIndex
+                    };
+                    break;
+                }
+                case "shop":
+                {
+                    string shopId = ReadExactString(source["shopId"]);
+                    if (!HasExactKeys(source, "kind", "sourceKey", "sourceOrder", "shopId",
+                            "itemName", "catalogIndex", "basePrice", "unitPriceAtSnapshot",
+                            "requiredInfo", "locked", "shopAccessMode", "shopAccessReason")
+                        || !IsIdentityText(shopId, 80)
+                        || ReadExactString(source["itemName"]) != materialName
+                        || !TryReadLongInteger(source["catalogIndex"], 0, 10000, out numeric)
+                        || !IsNonNegativeNumber(source["basePrice"])
+                        || !IsNonNegativeNumber(source["unitPriceAtSnapshot"])
+                        || !IsSafeOptionalText(ReadExactString(source["requiredInfo"]), 512)
+                        || source["locked"] == null || source["locked"].Type != JTokenType.Boolean
+                        || !IsValidShopAccessPair(
+                            ReadExactString(source["shopAccessMode"]),
+                            ReadExactString(source["shopAccessReason"]))) return false;
+                    expectedKey = BuildSourceKey(kind, shopId,
+                        numeric.ToString(CultureInfo.InvariantCulture));
+                    orderProof = new SourceOrderProof
+                    {
+                        KindOrder = 1, PrimaryText = shopId, NumericOrder = numeric
+                    };
+                    break;
+                }
+                case "kshop":
+                {
+                    if (!HasExactKeys(source, "kind", "sourceKey", "sourceOrder", "catalogIndex",
+                            "entryId", "category", "priceK")
+                        || !TryReadNni(source["catalogIndex"], out numeric)
+                        || !IsIdentityText(ReadExactString(source["entryId"]), 256)
+                        || !IsSafeOptionalText(ReadExactString(source["category"]), 512)
+                        || !IsNonNegativeNumber(source["priceK"])) return false;
+                    expectedKey = BuildSourceKey(kind,
+                        numeric.ToString(CultureInfo.InvariantCulture));
+                    orderProof = new SourceOrderProof { KindOrder = 2, NumericOrder = numeric };
+                    break;
+                }
+                case "quest":
+                {
+                    string questId = ReadExactString(source["questId"]);
+                    string rewardSet = ReadExactString(source["rewardSet"]);
+                    long quantity;
+                    if (!HasExactKeys(source, "kind", "sourceKey", "sourceOrder", "questId",
+                            "rewardSet", "authoredIndex", "title", "quantity")
+                        || !IsIdentityText(questId, 256)
+                        || (rewardSet != "base" && rewardSet != "challenge")
+                        || !TryReadNni(source["authoredIndex"], out numeric)
+                        || !IsIdentityText(ReadExactString(source["title"]), 512)
+                        || !TryReadPi(source["quantity"], out quantity)) return false;
+                    expectedKey = BuildSourceKey(kind, questId, rewardSet,
+                        numeric.ToString(CultureInfo.InvariantCulture));
+                    orderProof = new SourceOrderProof
+                    {
+                        KindOrder = 3, PrimaryText = questId,
+                        RewardSetOrder = rewardSet == "base" ? 0 : 1,
+                        NumericOrder = numeric
+                    };
+                    break;
+                }
+                case "stage":
+                {
+                    string stageName = ReadExactString(source["stageName"]);
+                    var variants = source["variants"] as JArray;
+                    if (!HasExactKeys(source, "kind", "sourceKey", "sourceOrder", "stageName",
+                            "chanceModel", "legacyConditionId", "variants")
+                        || !IsIdentityText(stageName, 256)
+                        || ReadExactString(source["chanceModel"])
+                            != "stage_roll_divisor_with_legacy_domain_branch"
+                        || ReadExactString(source["legacyConditionId"]) != "andylaw_domain_bonus"
+                        || !TryValidateStageVariants(variants)) return false;
+                    variantCount = variants.Count;
+                    expectedKey = BuildSourceKey(kind, stageName);
+                    orderProof = new SourceOrderProof { KindOrder = 4, PrimaryText = stageName };
+                    break;
+                }
+                case "enemy":
+                {
+                    string enemyType = ReadExactString(source["enemyType"]);
+                    var variants = source["variants"] as JArray;
+                    if (!HasExactKeys(source, "kind", "sourceKey", "sourceOrder", "enemyType",
+                            "displayName", "chanceModel", "variants")
+                        || !IsIdentityText(enemyType, 256)
+                        || !enemyType.StartsWith("敌人-", StringComparison.Ordinal)
+                        || !IsIdentityText(ReadExactString(source["displayName"]), 512)
+                        || ReadExactString(source["chanceModel"]) != "enemy_prd_with_reverse_bonus"
+                        || !TryValidateEnemyVariants(variants)) return false;
+                    variantCount = variants.Count;
+                    expectedKey = BuildSourceKey(kind, enemyType);
+                    orderProof = new SourceOrderProof { KindOrder = 5, PrimaryText = enemyType };
+                    break;
+                }
+                default:
+                    return false;
+            }
+            return string.Equals(sourceKey, expectedKey, StringComparison.Ordinal);
+        }
+
+        private static bool TryValidateEnemyVariants(JArray variants)
+        {
+            if (variants == null || variants.Count == 0 || variants.Count > MaxVariants) return false;
+            for (int index = 0; index < variants.Count; index++)
+            {
+                var variant = variants[index] as JObject;
+                string state = variant != null ? ReadExactString(variant["chanceInputState"]) : null;
+                long occurrenceIndex;
+                long quantityMin;
+                long quantityMax;
+                bool minNull = variant != null && variant["minReverseLevel"] != null
+                    && variant["minReverseLevel"].Type == JTokenType.Null;
+                bool maxNull = variant != null && variant["maxReverseLevel"] != null
+                    && variant["maxReverseLevel"].Type == JTokenType.Null;
+                long minLevel = 0;
+                long maxLevel = 0;
+                if (variant == null
+                    || !HasExactKeys(variant, "occurrenceIndex", "chanceRaw", "chanceInputState",
+                        "nominalChancePercent", "minReverseLevel", "maxReverseLevel",
+                        "quantityMin", "quantityMax")
+                    || !TryReadNni(variant["occurrenceIndex"], out occurrenceIndex)
+                    || occurrenceIndex != index
+                    || (!minNull && !TryReadNni(variant["minReverseLevel"], out minLevel))
+                    || (!maxNull && !TryReadNni(variant["maxReverseLevel"], out maxLevel))
+                    || (!minNull && !maxNull && minLevel > maxLevel)
+                    || !TryReadPi(variant["quantityMin"], out quantityMin)
+                    || !TryReadPi(variant["quantityMax"], out quantityMax)
+                    || quantityMin > quantityMax
+                    || !IsFiniteNumberInRange(variant["nominalChancePercent"], 0, 100)) return false;
+                double nominal = variant["nominalChancePercent"].Value<double>();
+                if (state == "explicit")
+                {
+                    if (!IsFiniteNumberInRange(variant["chanceRaw"], 0, 100)
+                        || variant["chanceRaw"].Value<double>() != nominal) return false;
+                }
+                else if (state == "absent_defaulted" || state == "invalid_defaulted")
+                {
+                    if (variant["chanceRaw"] == null
+                        || variant["chanceRaw"].Type != JTokenType.Null || nominal != 100) return false;
+                }
+                else return false;
+            }
+            return true;
+        }
+
+        private static bool TryValidateStageVariants(JArray variants)
+        {
+            if (variants == null || variants.Count == 0 || variants.Count > MaxVariants) return false;
+            for (int index = 0; index < variants.Count; index++)
+            {
+                var variant = variants[index] as JObject;
+                long occurrenceIndex;
+                long divisor;
+                long quantityMin;
+                long quantityMax;
+                if (variant == null
+                    || !HasExactKeys(variant, "occurrenceIndex", "rollDivisor",
+                        "defaultBranchChancePercent", "quantityMin", "quantityMax")
+                    || !TryReadNni(variant["occurrenceIndex"], out occurrenceIndex)
+                    || occurrenceIndex != index
+                    || !TryReadPi(variant["rollDivisor"], out divisor)
+                    || !IsFiniteNumberInRange(variant["defaultBranchChancePercent"], 0, 100)
+                    || !TryReadPi(variant["quantityMin"], out quantityMin)
+                    || !TryReadPi(variant["quantityMax"], out quantityMax)
+                    || quantityMin > quantityMax) return false;
+                double expected = Math.Round(
+                    (100.0 / divisor) * 1000000.0, MidpointRounding.AwayFromZero) / 1000000.0;
+                double actual = variant["defaultBranchChancePercent"].Value<double>();
+                if (Math.Abs(expected - actual) > 0.0000005) return false;
+            }
+            return true;
+        }
+
+        private static int CompareSourceOrder(SourceOrderProof left, SourceOrderProof right)
+        {
+            int result = left.KindOrder.CompareTo(right.KindOrder);
+            if (result != 0) return result;
+            if (left.KindOrder == 0)
+            {
+                result = left.CategoryOrder.CompareTo(right.CategoryOrder);
+                return result != 0 ? result : left.NumericOrder.CompareTo(right.NumericOrder);
+            }
+            if (left.KindOrder == 1)
+            {
+                result = StringComparer.Ordinal.Compare(left.PrimaryText, right.PrimaryText);
+                return result != 0 ? result : left.NumericOrder.CompareTo(right.NumericOrder);
+            }
+            if (left.KindOrder == 2) return left.NumericOrder.CompareTo(right.NumericOrder);
+            if (left.KindOrder == 3)
+            {
+                result = StringComparer.Ordinal.Compare(left.PrimaryText, right.PrimaryText);
+                if (result != 0) return result;
+                result = left.RewardSetOrder.CompareTo(right.RewardSetOrder);
+                return result != 0 ? result : left.NumericOrder.CompareTo(right.NumericOrder);
+            }
+            return StringComparer.Ordinal.Compare(left.PrimaryText, right.PrimaryText);
+        }
+
+        private static string BuildSourceKey(params string[] segments)
+        {
+            string value = "lp1";
+            for (int index = 0; index < segments.Length; index++)
+            {
+                string segment = segments[index] ?? string.Empty;
+                value += "|" + segment.Length.ToString(CultureInfo.InvariantCulture)
+                    + ":" + segment;
+            }
+            return value;
+        }
+
+        private static int IndexOfCategory(string category)
+        {
+            for (int index = 0; index < CategoryOrder.Length; index++)
+                if (string.Equals(CategoryOrder[index], category, StringComparison.Ordinal)) return index;
+            return -1;
+        }
+
+        private static bool StringArraysEqual(string[] left, string[] right)
+        {
+            if (left == null || right == null || left.Length != right.Length) return false;
+            for (int index = 0; index < left.Length; index++)
+                if (!string.Equals(left[index], right[index], StringComparison.Ordinal)) return false;
             return true;
         }
 
@@ -939,8 +2233,55 @@ namespace CF7Launcher.Tasks
 
         private static bool HasProtocolVersion(JObject value)
         {
-            return value != null && value["v"] != null && value["v"].Type == JTokenType.Integer
-                && value.Value<int>("v") == 1;
+            return HasProtocolVersion(value, 1);
+        }
+
+        private static bool IsValidShopAccessPair(string mode, string reason)
+        {
+            return (mode == "full" && reason == "indexed_live_match")
+                || (mode == "unavailable"
+                    && reason == "no_authoritative_remote_access_capability");
+        }
+
+        private static bool HasProtocolVersion(JObject value, int expected)
+        {
+            int actual;
+            return value != null && TryReadProtocolVersion(value["v"], out actual)
+                && actual == expected;
+        }
+
+        private static bool TryReadProtocolVersion(JToken token, out int version)
+        {
+            version = 0;
+            if (token == null || token.Type != JTokenType.Integer) return false;
+            long candidate;
+            try { candidate = token.Value<long>(); }
+            catch { return false; }
+            if (candidate != 1 && candidate != 2) return false;
+            version = (int)candidate;
+            return true;
+        }
+
+        private static bool TryReadNni(JToken token, out long value)
+        {
+            return TryReadLongInteger(token, 0, MaxSafeInteger, out value);
+        }
+
+        private static bool TryReadPi(JToken token, out long value)
+        {
+            return TryReadLongInteger(token, 1, MaxSafeInteger, out value);
+        }
+
+        private static bool IsExactInteger(JToken token, long expected)
+        {
+            long value;
+            return TryReadLongInteger(token, expected, expected, out value);
+        }
+
+        private static bool IsFiniteNumberInRange(JToken token, double minimum, double maximum)
+        {
+            return IsNumber(token) && token.Value<double>() >= minimum
+                && token.Value<double>() <= maximum;
         }
 
         private static bool IsNumber(JToken value)
@@ -973,6 +2314,7 @@ namespace CF7Launcher.Tasks
             PendingRequest entry = pendingCall.Context;
             lock (_lock)
             {
+                _navigationGeneration++;
                 if (entry.IsWrite) EnterNeedsReconcileLocked();
             }
             if (reason == PanelPendingCallEndReason.Cleared) return;
@@ -994,8 +2336,21 @@ namespace CF7Launcher.Tasks
         private void RejectAndRemember(string callId, string cmd,
             string ownerPanel, string ownerPanelInstanceId, string error)
         {
-            if (!_pendingCalls.TryRememberRejected(callId)) return;
-            RespondError(callId, cmd, ownerPanel, ownerPanelInstanceId, error, false);
+            string responseError = error;
+            lock (_lock)
+            {
+                if (_navigationLeaseToken != null)
+                    responseError = "busy";
+                else if (!_pendingCalls.TryRememberRejected(callId))
+                    return;
+            }
+            RespondError(
+                callId,
+                cmd,
+                ownerPanel,
+                ownerPanelInstanceId,
+                responseError,
+                false);
         }
 
         private void RespondError(string callId, string cmd,

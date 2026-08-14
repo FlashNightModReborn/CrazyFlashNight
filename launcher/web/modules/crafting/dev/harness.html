@@ -35,8 +35,34 @@
 window.__CRAFTING_CONFIG__={requestTimeoutMs:250,sessionNonce:'harness',inspectorManifestUrl:'../../../assets/dressup/manifest.json'};
 window.__INVENTORY_WORKBENCH_CONFIG__={requestTimeoutMs:250,sessionNonce:'crafting-inventory-harness',dragTimeoutMs:120};
 window.__craftingHarnessScenario=new URLSearchParams(location.search).get('scenario')||'';
+window.__portraitHarness=(function(){
+  var state={mode:'cold',enemyCalls:[],shopCalls:[],pending:[],writes:0,coldSettles:0,sequence:0};
+  state.resolvePending=function(){var pending=state.pending.splice(0);pending.forEach(function(resolve){resolve()})};
+  return state
+})();
+window.EnemyPortraits={fallbackUrl:function(){return'assets/pets/pet_locked.png'},mount:function(container,img,context){
+  return __portraitHarnessMount('enemy',container,img,context.portraitRef,context)}};
+window.ShopPortraits={mount:function(container,img,shopId){return __portraitHarnessMount('shop',container,img,shopId,null)}};
+window.__portraitHarnessMount=function(kind,container,img,identity,context){
+  var state=window.__portraitHarness,attribute=kind==='enemy'?'data-portrait-request':'data-shop-portrait-request';
+  var token='crafting_portrait_harness_'+(++state.sequence);container.setAttribute(attribute,token);
+  container.setAttribute('data-'+kind+'-portrait-source','placeholder');img.alt='';img.setAttribute('aria-hidden','true');
+  var call={container:container,img:img,identity:identity,context:context,token:token,attribute:attribute};
+  (kind==='enemy'?state.enemyCalls:state.shopCalls).push(call);
+  function settle(){if(!container.isConnected||container.getAttribute(attribute)!==token)return null;
+    img.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    container.setAttribute('data-'+kind+'-portrait-source','manifest');state.writes++;return identity}
+  if(state.mode==='fail')return Promise.reject(new Error('expected portrait fail-soft'));
+  if(state.mode==='late')return new Promise(function(resolve){state.pending.push(function(){resolve(settle())})});
+  return new Promise(function(resolve){setTimeout(function(){state.coldSettles++;resolve(settle())},8)})
+};
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__ambiguous=false;window.__previewDelay=0;window.__bridgeFaults=[];
 window.__craftingCloseWitnesses=[];window.__inventoryWriteCommands=[];window.__droppedCraftingMessages=[];
+window.__materialShopAccessMode='unavailable';window.__materialShopLocked=false;
+window.__materialNavigationAccess={shop:true,crafting:true};
+window.__nextMaterialShopNavigationFailure='';window.__dropNextMaterialShopNavigation=false;
+window.__mockMaterialShopNavigationCommit=false;
+window.__nextCraftingCloseDisposition='';
 window.__queueCraftingFault=function(fault){window.__bridgeFaults.push(fault)};
 function takeCraftingFault(cmd){for(var i=0;i<__bridgeFaults.length;i++){if(!__bridgeFaults[i].cmd||__bridgeFaults[i].cmd===cmd)return __bridgeFaults.splice(i,1)[0]}return null}
 window.Bridge={
@@ -49,19 +75,45 @@ window.Bridge={
          lifecycle:window.Panels&&Panels.getLifecycle?Panels.getLifecycle():null
        });
      }
+     if(message&&message.type==='panel'&&message.cmd==='open_npc_shop'
+         &&message.panel==='crafting'&&!message.domain){
+       var navigationFailure=String(window.__nextMaterialShopNavigationFailure||'');
+       window.__nextMaterialShopNavigationFailure='';
+       if(window.__dropNextMaterialShopNavigation){window.__dropNextMaterialShopNavigation=false;return true}
+       if(navigationFailure){setTimeout(function(){emit({type:'panel_resp',panel:'crafting',
+         cmd:'open_npc_shop',callId:message.callId,panelInstanceId:message.panelInstanceId,
+         success:false,error:navigationFailure})},8);return true}
+       if(window.__mockMaterialShopNavigationCommit){
+         window.__mockMaterialShopNavigationCommit=false;
+         // Explicit harness-only stand-in for the Host exact owner replacement commit.
+         setTimeout(function(){var lifecycle=Panels.getLifecycle();if(lifecycle
+           &&lifecycle.panelInstanceId===message.panelInstanceId)Panels.close()},8)
+       }
+       return true
+     }
      var fault=takeCraftingFault(message.cmd);
     if(fault){
       if(fault.mode==='send_false')return false;
       if(fault.mode==='throw')throw new Error('harness transport disconnected');
       if(fault.mode==='drop'){__droppedCraftingMessages.push(JSON.parse(JSON.stringify(message)));return true}
       if(fault.mode==='error'){
-        setTimeout(function(){emit({type:'panel_resp',domain:'crafting',panel:message.panel,
+        setTimeout(function(){var failure={type:'panel_resp',domain:'crafting',panel:message.panel,
           panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId,
-          success:false,error:fault.error,requiresReconcile:!!fault.requiresReconcile})},Number(fault.delayMs)||0);return true
+          success:false,error:fault.error};if(fault.requiresReconcile)failure.requiresReconcile=true;emit(failure)},Number(fault.delayMs)||0);return true
       }
       if(fault.mode==='delay'){setTimeout(function(){respond(message)},Number(fault.delayMs)||0);return true}
     }
-    if(message.cmd!=='close')setTimeout(function(){respond(message)},message.cmd==='preview'?__previewDelay:0);
+    if(message.cmd==='close'&&message.panel==='crafting'&&!message.domain){
+      var closeDisposition=String(window.__nextCraftingCloseDisposition||'commit');
+      window.__nextCraftingCloseDisposition='';
+      if(message.reason)return true;
+      // No panel_resp is invented for Host admission loss.  Only a committed exact
+      // Host close comes back through the production panel_cmd surface.
+      if(closeDisposition==='commit')setTimeout(function(){emitType('panel_cmd',{
+        cmd:'close',panel:'crafting',panelInstanceId:message.panelInstanceId})},8);
+      return true
+    }
+    setTimeout(function(){respond(message)},message.cmd==='preview'?__previewDelay:0);
     return true
   }
 };
@@ -71,14 +123,39 @@ window.__iconStats={html:0,static:0};window.Icons={
   enhance:function(){},isAnimated:function(name){return name==='测试药剂'},
   resolveStatic:function(name){__iconStats.static++;return name==='灰蛊裂隙弹'?null:'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='}
 };
-window.PanelTooltip={
-  _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},
-  isVisible:function(){return this._visible},updateContent:function(){},dynamicIconHtml:function(){return ''},
-  staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},buildItemRichHtml:function(){return '<div>rich</div>'},
-  bindAsyncHover:function(node,options){node.addEventListener('pointerenter',function(e){
-    var item=options.item;options.renderBasic(item);options.fetch(item,function(response){if(response&&response.success)options.renderRich(item,response)});
-  })}
-};
+window.__tooltipStats={bindings:0,destroyed:0,fetches:0,cacheHits:0,richRenders:0};
+window.PanelTooltip=(function(){
+  function bind(node,options,scope){
+    var cache=options.cache||{},key=String(options.key||''),item=options.item,destroyed=false;
+    function enter(e){
+      if(cache[key]){__tooltipStats.cacheHits++;__tooltipStats.richRenders++;options.renderRich(item,cache[key]);return}
+      options.renderBasic(item);__tooltipStats.fetches++;options.fetch(item,function(response){
+        if(destroyed||scope&&scope.disposed)return;
+        if(response&&response.success){cache[key]=response;__tooltipStats.richRenders++;options.renderRich(item,response)}
+      })
+    }
+    node.addEventListener('pointerenter',enter);__tooltipStats.bindings++;
+    var binding={scope:scope,destroy:function(){if(destroyed)return false;destroyed=true;
+      node.removeEventListener('pointerenter',enter);if(node.__panelTooltipBinding===binding)node.__panelTooltipBinding=null;
+      __tooltipStats.destroyed++;return true}};
+    node.__panelTooltipBinding=binding;if(scope)scope.bindings.push(binding);return binding
+  }
+  function releaseTree(root,scope){
+    if(!root)return 0;var count=0,nodes=[root].concat(Array.prototype.slice.call(root.querySelectorAll('*')));
+    nodes.forEach(function(node){var binding=node.__panelTooltipBinding;if(binding&&(!scope||binding.scope===scope)&&binding.destroy())count++});return count
+  }
+  var api={
+    _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},
+    isVisible:function(){return this._visible},updateContent:function(){},dynamicIconHtml:function(){return ''},
+    staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},buildItemRichHtml:function(){return '<div>rich</div>'},
+    bindAsyncHover:function(node,options){return bind(node,options,null)},releaseTree:releaseTree,
+    createScope:function(label){var scope={label:label,disposed:false,bindings:[],
+      bindAsyncHover:function(node,options){return scope.disposed?null:bind(node,options,scope)},
+      releaseTree:function(root){return releaseTree(root,scope)},
+      dispose:function(){if(scope.disposed)return false;scope.disposed=true;scope.bindings.slice().forEach(function(binding){binding.destroy()});scope.bindings=[];return true}};
+      return scope}
+  };return api
+})();
 window.Panels=(function(){var specs={},active=null,activeEl=null,lastOpen=null,activeLifecycle=null,lastClosedLifecycle=null,lifecycleSeq=0;
 function copy(value){return value?JSON.parse(JSON.stringify(value)):null}
 function close(){
@@ -116,8 +193,18 @@ return{
   getActive:function(){return active},lastOpen:function(){return lastOpen},
   getLifecycle:function(){return copy(activeLifecycle)},getLastClosedLifecycle:function(){return copy(lastClosedLifecycle)},_specs:specs
 }})();
-Bridge.on('panel_esc',function(){Panels.requestClose('escape')});
-Bridge.on('panel_cmd',function(data){if(data&&data.cmd==='force_close')Panels.forceClose(data);else if(data&&data.cmd==='close')Panels.close()});
+Bridge.on('panel_esc',function(data){
+  var reason=data&&(data.reason==='backdrop'||data.reason==='toggle')?data.reason:'escape';
+  Panels.requestClose(reason)
+});
+Bridge.on('panel_cmd',function(data){
+  if(data&&data.cmd==='force_close'){Panels.forceClose(data);return}
+  if(!data||data.cmd!=='close')return;
+  var lifecycle=Panels.getLifecycle();
+  if(!lifecycle||data.panel!==lifecycle.owner
+      ||data.panelInstanceId!==lifecycle.panelInstanceId)return;
+  Panels.close()
+});
 document.getElementById('panel-backdrop').addEventListener('click',function(){Panels.requestClose('backdrop')});
 Panels.register('workbench',{create:function(){var node=document.createElement('div');node.className='workbench-route-stub';return node},onOpen:function(){},onClose:function(){}});
 window.__organizerMount=null;window.__organizerDeps=[];window.__organizerLoadedDeps=[];
@@ -154,6 +241,13 @@ if(window.__craftingHarnessScenario==='pg-craft-current-coverage'
 }
   var money=1000,materials=2,commitCount=0,lastAcceptedPlan=null;window.__specialWeaponMode='';
   var identityMode=window.__craftingHarnessScenario==='pg-crafting-identity';
+  var legacyMaterialsMode=window.__craftingHarnessScenario==='pg-materials-v1';
+  var materialRecipeScenario=window.__craftingHarnessScenario==='pg-material-recipe-jump';
+  var materialInfrastructureScenario=window.__craftingHarnessScenario==='pg-material-infrastructure';
+  var forceLegacyMaterialsOnce=false;
+  var emptyMaterialCatalogOnce=false;
+  var materialDetailDrift='';
+  window.__materialRecipeSnapshotMode='';
   var identityMalformed=false;
   var identityTriples=[
     {name:'光棱射线弹-强化',displayName:'棱镜折射阵列',icon:'全光谱棱镜阵列'},
@@ -253,11 +347,27 @@ function availability(index){
     receipt.confirmProjection.lastUpdate=Date.now();
     return receipt
   }
-  function snapshot(){return{success:true,v:1,category:'武器合成',gender:'女',note:'铁匠效果：减少货币消耗',
+function snapshot(){return{success:true,v:1,category:'武器合成',gender:'女',note:'铁匠效果：减少货币消耗',
     balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},recipes:[
     recipe(0,{recipeIndex:0,title:'新测试枪图纸',batchEligible:false,output:weaponOutput(false),baseCost:{money:100,kpoints:0},materialCount:2}),
     recipe(1,{recipeIndex:1,title:'测试药剂图纸',batchEligible:true,output:stackOutput(1),baseCost:{money:0,kpoints:0},materialCount:1})
   ]}}
+function materialRecipeSnapshot(){
+  var value=snapshot(),mode=String(window.__materialRecipeSnapshotMode||'');
+  window.__materialRecipeSnapshotMode='';
+  if(mode==='filtered_first')value.recipes=[value.recipes[1],value.recipes[0]];
+  else if(mode==='category_mismatch')value.category='烹饪';
+  else if(mode==='product_mismatch')value.recipes[0].output.name='另一产物';
+  else if(mode==='stale_index')value.recipes[0].recipeIndex=7;
+  else if(mode==='duplicate_index')value.recipes.push(JSON.parse(JSON.stringify(value.recipes[0])));
+  else if(mode==='version_mismatch')value.v=2;
+  else if(mode==='kind_mismatch')value.recipes[0].output.itemKind='stack';
+  else if(mode==='craft_source_product'){
+    value.recipes[0].output.name='测试矿石';
+    value.recipes[0].output.displayName='测试矿石';
+  }
+  return value
+}
 function preview(index,count){
   count=Number(count)||1;
   var batch=index===1,max=batch?Math.min(99,materials):1;
@@ -287,7 +397,7 @@ function preview(index,count){
   }else lastAcceptedPlan=null;
   return result
 }
-function materialCatalog(){
+function legacyMaterialCatalog(){
   var identity=identityTriples[0];
   var first={name:identityMode?identity.name:'测试矿石',owned:7,sourceCount:20,useCount:24,hasSourceSummary:true};
   if(!identityMalformed){
@@ -305,17 +415,19 @@ function materialCatalog(){
   }
   return result;
 }
-function indexedSources(){
+function legacyIndexedSources(){
   var result=[
     {kind:'enemy',enemyType:'test',displayName:'测试敌人',probability:.25,minLevel:2,maxLevel:8},
     {kind:'stage',stageName:'测试关卡',probability:1,quantityMax:2},
     {kind:'quest',questId:'quest_test',title:'测试任务',quantity:3}
   ];
-  for(var i=4;i<=20;i++)result.push({kind:i%2?'enemy':'stage',enemyType:'enemy_'+i,
-    displayName:'索引敌人 '+i,stageName:'索引关卡 '+i,probability:.01*i,quantityMax:1+(i%3)});
+  for(var i=4;i<=19;i++)result.push(i%2
+    ?{kind:'enemy',enemyType:'enemy_'+i,displayName:'索引敌人 '+i,probability:.01*i,minLevel:0,maxLevel:0}
+    :{kind:'stage',stageName:'索引关卡 '+i,probability:.01*i,quantityMax:1+(i%3)});
+  result.push({kind:'kshop',category:'',priceK:12});
   return result;
 }
-function indexedUses(){
+function legacyIndexedUses(){
   var result=[
     {name:'新测试枪',displayName:'新测试枪',icon:'异形女王毒刺',itemKind:'equipment',category:'武器合成',required:2},
     {name:'测试药剂',displayName:'测试药剂',icon:'测试药剂',itemKind:'stack',category:'消耗品合成',required:1}
@@ -323,6 +435,158 @@ function indexedUses(){
   for(var i=3;i<=24;i++)result.push({name:'索引用途'+i,displayName:'索引用途 '+i,icon:'测试药剂',
     itemKind:i%2?'equipment':'stack',category:i%2?'武器合成':'消耗品合成',required:1+(i%5)});
   return result;
+}
+function materialTaxonomy(){
+  var directPurposes=[{id:'system:equipment_tuning',label:'装备改装',order:0}];
+  if(materialInfrastructureScenario)directPurposes.push(
+    {id:'system:infrastructure_upgrade',label:'基建升级',order:1});
+  return{version:1,
+    roots:[{id:'type',label:'类型',order:0},{id:'purpose',label:'用途',order:1}],
+    types:[{id:'equipment_mod',label:'改装材料',order:0},{id:'food',label:'食材',order:1},{id:'general',label:'通用材料',order:2}],
+    modAxes:[
+      {id:'grade',label:'档级',order:0,values:[
+        {id:'low',label:'低级',order:0,color:'#006600'},{id:'medium',label:'中等',order:1,color:'#996600'},
+        {id:'high',label:'高等',order:2,color:'#0099FF'},{id:'special',label:'特殊',order:3,color:'#FFFF00'}]},
+      {id:'scope',label:'适用范围',order:1,values:[
+        {id:'armor',label:'防具',order:0},{id:'firearm',label:'枪械',order:1},{id:'blade',label:'刀具',order:2},
+        {id:'fist',label:'拳套',order:3},{id:'universal',label:'通用',order:4},{id:'underbarrel',label:'下挂武器',order:5}]},
+      {id:'role',label:'定位',order:2,values:[
+        {id:'firepower',label:'火力',order:0,symbol:'triangle-solid'},
+        {id:'precision',label:'精准与操控',order:1,symbol:'triangle-outline'},
+        {id:'stability',label:'稳定与防护',order:2,symbol:'square-outline'},
+        {id:'sustain',label:'续航',order:3,symbol:'circle-outline'},
+        {id:'utility',label:'结构与功能',order:4,symbol:'diamond-outline'},
+        {id:'mechanism',label:'特殊机制',order:5,symbol:'star-solid'}]}
+    ],
+    recipePurposes:['铁枪会','属性武器','烹饪','化学生产','武器合成','饰品合成','进阶防具','基础防具','公社防具','黑白契约','插件合成','大学装备']
+      .map(function(label,order){return{id:'recipe:'+label,label:label,order:order}}),
+    directPurposes:directPurposes,
+    fallback:{id:'unstructured',label:'尚未结构化用途',order:2147483647}}
+}
+function materialCatalogV2(){
+  var identity=identityTriples[0],normalUseCount=identityMode?1:24;
+  var firstDirectPurposeIds=['system:equipment_tuning'];
+  if(materialInfrastructureScenario)firstDirectPurposeIds.push('system:infrastructure_upgrade');
+  var first={name:identityMode?identity.name:'测试矿石',owned:7,archiveOrder:0,typeId:'equipment_mod',
+    modFacetIds:{grade:'high',scope:'firearm',role:'mechanism'},
+    recipePurposeIds:identityMode?['recipe:武器合成']:['recipe:烹饪','recipe:武器合成'],
+    directPurposeIds:firstDirectPurposeIds,structuredPurposeCount:normalUseCount+firstDirectPurposeIds.length,
+    sourceCount:materialRecipeScenario?5:4,dropVariantCount:6,useCount:normalUseCount,hasSourceSummary:true};
+  if(!identityMalformed){first.displayName=identityMode?identity.displayName:'测试矿石';first.icon=identityMode?identity.icon:'测试矿石'}
+  var emptyDirectPurposeIds=materialInfrastructureScenario?['system:infrastructure_upgrade']:[];
+  var result=[first,{name:'空用途材料',displayName:'空用途材料',icon:'空用途材料',owned:0,
+    archiveOrder:1,typeId:'general',recipePurposeIds:[],directPurposeIds:emptyDirectPurposeIds,
+    structuredPurposeCount:emptyDirectPurposeIds.length,
+    sourceCount:materialRecipeScenario?1:0,dropVariantCount:0,useCount:0,
+    hasSourceSummary:materialRecipeScenario}];
+  for(var i=3;i<=224;i++){
+    var suffix=('000'+i).slice(-3),last=i===224,useCount=last?1:i%6;
+    var entry={name:'索引材料'+suffix,displayName:'索引材料 '+suffix,icon:'测试矿石',owned:0,
+      archiveOrder:i-1,typeId:'general',recipePurposeIds:useCount?['recipe:武器合成']:[],directPurposeIds:[],
+      structuredPurposeCount:useCount,sourceCount:last?1:i%4,dropVariantCount:last?1:i%4,useCount:useCount,
+      hasSourceSummary:last||i%4>0};
+    var sortSamples={
+      218:{name:'排序样本-中文-10',displayName:'样本 10',useCount:2},
+      219:{name:'排序样本-中文-2',displayName:'样本 2',useCount:2},
+      220:{name:'sort-sample-alpha-10',displayName:'Alpha 10',useCount:3},
+      221:{name:'sort-sample-alpha-2',displayName:'Alpha 2',owned:99,useCount:3},
+      222:{name:'sort-sample-same-first',displayName:'同名',useCount:4},
+      223:{name:'sort-sample-same-second',displayName:'同名',useCount:4}
+    };
+    var sample=sortSamples[i];if(sample){entry.name=sample.name;entry.displayName=sample.displayName;
+      entry.owned=sample.owned||0;entry.useCount=sample.useCount;entry.structuredPurposeCount=sample.useCount;
+      entry.recipePurposeIds=['recipe:武器合成']}
+    result.push(entry)
+  }
+  return result
+}
+function enemyVariant(index,chance,min,max){return{occurrenceIndex:index,chanceRaw:chance,
+  chanceInputState:'explicit',nominalChancePercent:chance,minReverseLevel:min,maxReverseLevel:max,
+  quantityMin:1,quantityMax:1}}
+function v2IndexedSources(materialName){var sources=[
+  {kind:'shop',sourceKey:'lp1|4:shop|5:迷之盔甲君|2:57',sourceOrder:0,shopId:'迷之盔甲君',catalogIndex:57,
+    itemName:materialName,basePrice:50000,unitPriceAtSnapshot:50000,requiredInfo:'',
+    shopAccessMode:window.__materialShopAccessMode,
+    shopAccessReason:window.__materialShopAccessMode==='full'?'indexed_live_match':'no_authoritative_remote_access_capability',
+    locked:!!window.__materialShopLocked},
+  {kind:'stage',sourceKey:'lp1|5:stage|4:测试关卡',sourceOrder:1,stageName:'测试关卡',
+    chanceModel:'stage_roll_divisor_with_legacy_domain_branch',legacyConditionId:'andylaw_domain_bonus',variants:[
+      {occurrenceIndex:0,rollDivisor:2,defaultBranchChancePercent:50,quantityMin:1,quantityMax:2},
+      {occurrenceIndex:1,rollDivisor:2,defaultBranchChancePercent:50,quantityMin:1,quantityMax:2}]},
+  {kind:'enemy',sourceKey:'lp1|5:enemy|8:敌人-测试甲',sourceOrder:2,enemyType:'敌人-测试甲',displayName:'测试敌人甲',
+    chanceModel:'enemy_prd_with_reverse_bonus',variants:[enemyVariant(0,3,null,2),enemyVariant(1,5,3,null)]},
+  {kind:'enemy',sourceKey:'lp1|5:enemy|8:敌人-测试乙',sourceOrder:3,enemyType:'敌人-测试乙',displayName:'测试敌人乙',
+    chanceModel:'enemy_prd_with_reverse_bonus',variants:[enemyVariant(0,3,1,3),enemyVariant(1,5,4,null)]}
+];
+  if(materialRecipeScenario)sources.push({kind:'craft',sourceKey:'lp1|5:craft|4:武器合成|1:0',
+    sourceOrder:4,category:'武器合成',recipeIndex:0,productName:materialName,price:90,kpoints:0});
+  return sources
+}
+function v2IndexedUses(materialName){
+  var result=[],count=identityMode?1:24;
+  for(var i=1;i<=count;i++){
+    var identity=i===1?(identityMode?identityTriples[1]:{name:'异形女王毒刺',displayName:'新测试枪',icon:'异形女王毒刺'})
+      :{name:'索引用途'+i,displayName:'索引用途 '+i,icon:'测试药剂'};
+    var required=1+(i%5),materialDisplay=identityMode&&materialName===identityTriples[0].name
+      ?identityTriples[0].displayName:materialName;
+    result.push({category:i%2?'武器合成':'烹饪',recipeIndex:i-1,productName:identity.name,
+      displayName:identity.displayName,icon:identity.icon,itemKind:i%2?'equipment':'stack',required:required,
+      ingredients:[{name:materialName,displayName:materialDisplay,icon:identityMode?identityTriples[0].icon:'测试矿石',required:required,isQuantity:true},
+        {name:'辅助材料'+i,displayName:'辅助材料 '+i,icon:'测试药剂',required:1,isQuantity:true}]})
+  }
+  if(!identityMode){for(var extra=2;extra<9;extra++)result[0].ingredients.push({
+    name:'附加材料'+extra,displayName:'附加材料 '+extra,icon:'测试药剂',required:extra,isQuantity:true})}
+  result[0].required=2;result[0].ingredients[0].required=2;return result
+}
+function materialInfrastructureUses(){return[
+  {infrastructureName:'前线调度板',projectOrder:0,currentLevel:1,maximumLevel:4,levels:[
+    {levelIndex:0,targetLevel:1,required:2,owned:7,missing:0,status:'completed'},
+    {levelIndex:1,targetLevel:2,required:10,owned:7,missing:3,status:'current'},
+    {levelIndex:3,targetLevel:4,required:12,owned:7,missing:5,status:'future'}]},
+  {infrastructureName:'烹饪用具',projectOrder:5,currentLevel:2,maximumLevel:6,levels:[
+    {levelIndex:0,targetLevel:1,required:4,owned:7,missing:0,status:'completed'},
+    {levelIndex:2,targetLevel:3,required:7,owned:7,missing:0,status:'current'},
+    {levelIndex:5,targetLevel:6,required:9,owned:7,missing:2,status:'future'}]},
+  {infrastructureName:'统合标准化学处理器',projectOrder:7,currentLevel:0,maximumLevel:3,levels:[
+    {levelIndex:0,targetLevel:1,required:7,owned:7,missing:0,status:'current'},
+    {levelIndex:2,targetLevel:3,required:17,owned:7,missing:10,status:'future'}]}
+]}
+function materialDetailV2(materialName){
+  var identityMaterial=identityTriples[0],isTestOre=materialName===(identityMode?identityMaterial.name:'测试矿石');
+  if(isTestOre){var uses=v2IndexedUses(materialName),sources=v2IndexedSources(materialName);
+    var directPurposes=[{id:'system:equipment_tuning',label:'装备改装',order:0}];
+    if(materialInfrastructureScenario)directPurposes.push(
+      {id:'system:infrastructure_upgrade',label:'基建升级',order:1});
+    var detail={success:true,v:2,view:'materials',snapshotId:'materials.harness.1',
+    material:{name:materialName,displayName:identityMode?identityMaterial.displayName:materialName,
+      icon:identityMode?identityMaterial.icon:materialName,description:'用于测试材料来源与合成用途。',owned:7,
+      sourceSummary:'敌人与关卡均可掉落。'},sourceCount:sources.length,dropVariantCount:6,useCount:uses.length,
+    structuredPurposeCount:uses.length+directPurposes.length,sources:sources,
+    directPurposes:directPurposes,uses:uses};
+    if(materialInfrastructureScenario)detail.infrastructureUses=materialInfrastructureUses();
+    return detail}
+  if(materialName==='空用途材料'){var emptySources=materialRecipeScenario?[{kind:'craft',
+    sourceKey:'lp1|5:craft|4:插件合成|1:5',sourceOrder:0,category:'插件合成',recipeIndex:5,
+    productName:materialName,price:90,kpoints:0}]:[];
+    var emptyDirectPurposes=materialInfrastructureScenario
+      ?[{id:'system:infrastructure_upgrade',label:'基建升级',order:1}]:[];
+    var emptyDetail={success:true,v:2,view:'materials',snapshotId:'materials.harness.1',
+    material:{name:materialName,displayName:materialName,icon:materialName,description:'尚未建立索引。',owned:0,
+      sourceSummary:materialRecipeScenario?'可通过合成获得。':''},
+    sourceCount:emptySources.length,dropVariantCount:0,useCount:0,
+    structuredPurposeCount:emptyDirectPurposes.length,
+    sources:emptySources,directPurposes:emptyDirectPurposes,uses:[]};
+    if(materialInfrastructureScenario)emptyDetail.infrastructureUses=[];
+    return emptyDetail}
+  return{success:true,v:2,view:'materials',snapshotId:'materials.harness.1',
+    material:{name:materialName,displayName:materialName.replace('索引材料','索引材料 '),icon:'测试矿石',
+      description:'尚未建立索引。',owned:0,sourceSummary:'末页来源摘要。'},sourceCount:1,dropVariantCount:1,
+    useCount:1,structuredPurposeCount:1,sources:[{kind:'stage',sourceKey:'lp1|5:stage|6:末页关卡',sourceOrder:0,
+      stageName:'末页可达关卡',chanceModel:'stage_roll_divisor_with_legacy_domain_branch',legacyConditionId:'andylaw_domain_bonus',
+      variants:[{occurrenceIndex:0,rollDivisor:1,defaultBranchChancePercent:100,quantityMin:1,quantityMax:1}]}],
+    directPurposes:[],uses:[{category:'武器合成',recipeIndex:0,productName:'末页可达用途',displayName:'末页可达用途',
+      icon:'测试药剂',itemKind:'stack',required:1,
+      ingredients:[{name:materialName,displayName:materialName.replace('索引材料','索引材料 '),icon:'测试矿石',required:1,isQuantity:true}]}]}
 }
 function respond(message){
   if(message.domain==='inventory'){
@@ -344,18 +608,31 @@ function respond(message){
   }
   var result={type:'panel_resp',domain:'crafting',panel:message.panel,
     panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId};
-  if(message.cmd==='snapshot')Object.assign(result,snapshot());
+  if(message.cmd==='snapshot')Object.assign(result,materialRecipeSnapshot());
   else if(message.cmd==='preview')Object.assign(result,preview(message.payload.recipeIndex,message.payload.craftCount));
   else if(message.cmd==='tooltip')Object.assign(result,{success:true,v:1,itemName:message.payload.itemName,displayName:message.payload.itemName,descHTML:'说明',introHTML:'简介'});
-  else if(message.cmd==='materials')Object.assign(result,{success:true,v:1,view:'materials',materials:materialCatalog()});
+  else if(message.cmd==='materials'){
+    if(emptyMaterialCatalogOnce){emptyMaterialCatalogOnce=false;
+      Object.assign(result,{success:true,v:2,view:'materials',snapshotId:'materials.harness.1',
+        navigationAccess:{shop:window.__materialNavigationAccess.shop===true,
+          crafting:window.__materialNavigationAccess.crafting===true},taxonomy:materialTaxonomy(),materials:[]});}
+    else if(legacyMaterialsMode||forceLegacyMaterialsOnce){forceLegacyMaterialsOnce=false;
+      Object.assign(result,{success:true,v:1,view:'materials',materials:legacyMaterialCatalog()});}
+    else Object.assign(result,{success:true,v:2,view:'materials',snapshotId:'materials.harness.1',
+      navigationAccess:{shop:window.__materialNavigationAccess.shop===true,
+        crafting:window.__materialNavigationAccess.crafting===true},taxonomy:materialTaxonomy(),materials:materialCatalogV2()})
+  }
   else if(message.cmd==='materialDetail'){
     var materialName=message.payload.itemName,identityMaterial=identityTriples[0];
     var isTestOre=materialName===(identityMode?identityMaterial.name:'测试矿石');
+    if(!legacyMaterialsMode){var v2Detail=materialDetailV2(materialName);
+      if(materialDetailDrift){v2Detail.material[materialDetailDrift]+=' 漂移';materialDetailDrift=''}
+      Object.assign(result,v2Detail);emit(result);return}
     Object.assign(result,{success:true,v:1,view:'materials',
       material:{name:materialName,displayName:identityMode?identityMaterial.displayName:materialName,
         icon:identityMode?identityMaterial.icon:materialName,description:isTestOre?'用于测试材料来源与合成用途。':'尚未建立索引。',owned:isTestOre?7:0,sourceSummary:isTestOre?'敌人与关卡均可掉落。':''},
-      sources:isTestOre?indexedSources():[{kind:'stage',stageName:'末页可达关卡',probability:1,quantityMax:1}],
-      uses:isTestOre?(identityMode?[Object.assign({itemKind:'equipment',category:'武器合成',required:2},identityTriples[1])]:indexedUses()):[{name:'末页可达用途',displayName:'末页可达用途',icon:'测试药剂',itemKind:'stack',category:'测试合成',required:1}]
+      sources:isTestOre?legacyIndexedSources():[{kind:'stage',stageName:'末页可达关卡',probability:1,quantityMax:1}],
+      uses:isTestOre?(identityMode?[Object.assign({itemKind:'equipment',category:'武器合成',required:2},identityTriples[1])]:legacyIndexedUses()):[{name:'末页可达用途',displayName:'末页可达用途',icon:'测试药剂',itemKind:'stack',category:'测试合成',required:1}]
     });
   }
   else if(message.cmd==='commit'){
@@ -395,15 +672,19 @@ function respond(message){
 (async function(){var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(){return new Promise(function(r){setTimeout(r,35)})}async function waitFor(test,timeout){var deadline=Date.now()+(timeout||1000);while(Date.now()<deadline){if(test())return true;await wait()}return false}
  function quantityButton(label){return document.querySelector('.crafting-quantity-inputs button[aria-label^="'+label+'"]')}
 var harnessVisualMode=new URLSearchParams(location.search).get('visual');
-if(harnessVisualMode==='materials'||harnessVisualMode==='materials-full'||harnessVisualMode==='materials-help'){
+if(harnessVisualMode==='materials'||harnessVisualMode==='materials-full'
+    ||harnessVisualMode==='materials-help'||harnessVisualMode==='materials-uses'){
   Panels.open('crafting',{view:'materials',source:'visual-harness'});
-  await waitFor(function(){return document.querySelectorAll('.crafting-material-card').length===223
+  await waitFor(function(){return document.querySelectorAll('.crafting-material-card').length===224
     &&document.querySelectorAll('.crafting-material-use-row').length===24},1600);
   if(harnessVisualMode==='materials-full'){
     document.querySelector('.item-grid-mode-option[data-layout-mode="full"]').click();
   }
   if(harnessVisualMode==='materials-help'){
     document.querySelector('.workbench-help-btn').click();
+  }
+  if(harnessVisualMode==='materials-uses'){
+    document.querySelector('.crafting-material-uses').scrollIntoView({block:'start'});
   }
   window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
 }
@@ -523,7 +804,7 @@ async function runPgCraftCurrentCoverage(){
   var mixedCraftingPendingBefore=CraftingPanel.debugState().mux.pendingCount;
   if(reboundMaterials)emit({type:'panel_resp',domain:'crafting',panel:'crafting',
     panelInstanceId:'crafting.pg.rebind-old',cmd:'materials',callId:reboundMaterials.callId,
-    success:true,v:1,view:'materials',materials:materialCatalog()});
+    success:true,v:1,view:'materials',materials:legacyMaterialCatalog()});
   var mixedCraftingOwnerRejected=CraftingPanel.debugState().mux.pendingCount
     ===mixedCraftingPendingBefore;
   await waitFor(function(){var state=CraftingPanel.debugState();return state.mode==='materials'
@@ -811,8 +1092,9 @@ async function runPgCraftingIdentity(){
     hero.textContent.indexOf(triple.displayName)>=0&&hero.textContent.indexOf(triple.name)<0
       &&hero.querySelector('[data-icon="'+triple.icon+'"]'));
   var use=identityTriples[1],useRow=document.querySelector('.crafting-material-use-row');
+  var useTooltip=useRow.querySelector('[data-material-use-tooltip]');
   var tooltipBefore=__sent.filter(function(x){return x.cmd==='tooltip'}).length;
-  useRow.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));await wait();
+  useTooltip.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));await wait();
   var tooltipRequest=__sent.filter(function(x){return x.cmd==='tooltip'}).slice(-1)[0];
   ok('PG identity use row renders display/icon while tooltip lookup sends internal name',
     useRow.textContent.indexOf(use.displayName)>=0&&useRow.textContent.indexOf(use.name)<0
@@ -827,11 +1109,802 @@ async function runPgCraftingIdentity(){
     document.querySelectorAll('.crafting-material-card').length===0
       &&CraftingPanel.debugState().materials.count===0);
   var malformedText=document.querySelector('.crafting-detail-empty');
+  var malformedCatalog=document.querySelector('.crafting-material-catalog-empty[data-empty-kind="error"]');
   ok('PG identity rejection exposes no internal-name or icon fallback',
-    malformedText&&malformedText.textContent==='合成响应超时。'
+    malformedText&&malformedText.textContent.indexOf('材料目录暂不可用')>=0
+      &&malformedCatalog&&malformedCatalog.textContent.indexOf('合成响应超时')>=0
       &&malformedText.textContent.indexOf(triple.name)<0
       &&CraftingPanel.debugState().mux.pendingCount===0);
   Panels.close();await wait();
+}
+async function runPgMaterialsV1(){
+  Panels.open('crafting',{view:'materials',source:'legacy-negotiation'});
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.materialSessionVersion===1
+    &&document.querySelectorAll('.crafting-material-card').length===223
+    &&document.querySelector('.crafting-material-source-list')},1200);
+  var state=CraftingPanel.debugState(),warning=document.querySelector('[data-material-compat="legacy_limited"]');
+  var materialRequest=__sent.filter(function(message){return message.cmd==='materials'}).slice(-1)[0];
+  var detailRequest=__sent.filter(function(message){return message.cmd==='materialDetail'}).slice(-1)[0];
+  ok('PG materials v1 negotiates by a v2 offer then locks the actual legacy session',
+    materialRequest&&materialRequest.payload.v===2&&state.materialSessionVersion===1
+      &&state.materialSnapshotId===''&&state.materials.legacyLimited);
+  ok('PG materials v1 sends the exact legacy detail payload without a snapshot id',
+    detailRequest&&Object.keys(detailRequest.payload).sort().join(',')==='itemName,v'
+      &&detailRequest.payload.v===1&&detailRequest.payload.itemName==='测试矿石');
+  ok('PG materials v1 keeps a persistent legacy_limited warning and disables taxonomy navigation',
+    warning&&!warning.hidden&&warning.textContent.indexOf('旧版兼容视图')>=0
+      &&document.querySelector('.crafting-material-navigator').hidden
+      &&getComputedStyle(document.querySelector('.crafting-material-navigator')).display==='none'
+      &&document.querySelector('.crafting-material-catalog-view .workbench-view-breadcrumb-host').hidden
+      &&document.querySelector('.crafting-material-sort').hidden
+      &&getComputedStyle(document.querySelector('.crafting-material-sort')).display==='none'
+      &&document.querySelector('.crafting-material-sort .workbench-dropdown-trigger').disabled
+      &&document.querySelector('.crafting-material-catalog-view').getAttribute('data-material-session')==='legacy_limited');
+  var sourceText=document.querySelector('.crafting-material-sources').textContent;
+  ok('PG materials v1 never turns scalar drop values into guessed probability labels',
+    sourceText.indexOf('%')<0&&sourceText.indexOf('概率与档位不可核验')>=0
+      &&sourceText.indexOf('K 点商城 · 商品')>=0
+      &&document.querySelectorAll('.crafting-material-source-variants').length===0);
+  document.querySelector('[data-material-filter="owned"]').click();await wait();
+  ok('PG materials v1 warning survives local browsing and exposes no v2-only source action',
+    !warning.hidden&&!document.querySelector('.crafting-material-source-list button')
+      &&CraftingPanel.debugState().materials.protocolVersion===1);
+  var legacySnapshotActions=__sent.filter(function(message){return message.cmd==='snapshot'}).length;
+  ok('PG materials v1 use rows stay tooltip-only with no recipe or Inspector navigation',
+    !document.querySelector('.crafting-material-use-action')
+      &&document.querySelector('.crafting-material-use-row[tabindex="0"]')
+      &&__sent.filter(function(message){return message.cmd==='snapshot'}).length===legacySnapshotActions);
+  Panels.close();await wait();
+}
+async function runPgMaterialsSessionLock(){
+  Panels.open('crafting',{view:'materials',source:'v2-session-lock'});
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.materialSessionVersion===2
+    &&state.materials&&!state.materials.detailLoading},1200);
+  var empty=document.querySelector('[data-material-name="空用途材料"]');
+  __queueCraftingFault({cmd:'materialDetail',mode:'delay',delayMs:180});empty.click();
+  var first=document.querySelector('[data-material-name="测试矿石"]');first.click();
+  await waitFor(function(){var hero=document.querySelector('.crafting-material-hero h2');return hero&&hero.textContent==='测试矿石'},500);
+  await wait(220);
+  ok('PG materials v2 rejects a delayed detail after a newer selection intent',
+    CraftingPanel.debugState().materials.selectedName==='测试矿石'
+      &&document.querySelector('.crafting-material-hero h2').textContent==='测试矿石');
+  __queueCraftingFault({cmd:'materialDetail',mode:'error',error:'detail_unavailable'});empty.click();
+  await waitFor(function(){return !!document.querySelector('.crafting-material-detail-retry')},500);
+  var detailRetry=document.querySelector('.crafting-material-detail-retry');
+  ok('PG materials ordinary detail error preserves the catalog and exposes an exact retry action',
+    !CraftingPanel.debugState().needsRefresh
+      &&CraftingPanel.debugState().materials.selectedName==='空用途材料'
+      &&document.querySelectorAll('.crafting-material-card').length===224
+      &&detailRetry.getAttribute('data-material-detail-retry')==='空用途材料'
+      &&detailRetry.getAttribute('aria-label').indexOf('空用途材料')>=0);
+  var detailRetryRequests=__sent.filter(function(message){return message.cmd==='materialDetail'}).length;
+  __queueCraftingFault({cmd:'materialDetail',mode:'error',error:'detail_unavailable'});
+  detailRetry.focus();detailRetry.click();detailRetry.click();
+  await waitFor(function(){var button=document.querySelector('.crafting-material-detail-retry');
+    return button&&document.activeElement===button},500);
+  var failedRetryFocused=document.activeElement===document.querySelector('.crafting-material-detail-retry');
+  var failedRetrySingleFlight=__sent.filter(function(message){return message.cmd==='materialDetail'}).length
+    ===detailRetryRequests+1;
+  document.querySelector('.crafting-material-detail-retry').click();
+  await waitFor(function(){var hero=document.querySelector('.crafting-material-hero h2');
+    return hero&&hero.textContent==='空用途材料'},500);
+  ok('PG materials detail retry suppresses repeats, restores focus after failure, and recovers the exact selection',
+    failedRetryFocused&&failedRetrySingleFlight
+      &&__sent.filter(function(message){return message.cmd==='materialDetail'}).length===detailRetryRequests+2
+      &&CraftingPanel.debugState().materials.selectedName==='空用途材料'
+      &&!document.querySelector('.crafting-material-detail-retry'));
+  __queueCraftingFault({cmd:'materialDetail',mode:'error',error:'stale_snapshot'});empty.click();
+  await waitFor(function(){return CraftingPanel.debugState().needsRefresh},500);
+  var retry=document.querySelector('.workbench-mode-btn.warning');
+  ok('PG materials v2 exposes stale_snapshot as an explicit catalog refresh state',
+    retry&&retry.style.display!== 'none'&&!retry.disabled
+      &&document.querySelector('.crafting-detail-empty').textContent.indexOf('重新同步')>=0
+      &&!document.querySelector('.crafting-material-detail-retry')
+      &&document.querySelectorAll('.crafting-material-card').length===224
+      &&document.querySelector('.workbench-metric[data-metric="ownedKinds"] b').textContent==='2 / 224');
+  forceLegacyMaterialsOnce=true;retry.click();
+  await waitFor(function(){return __toasts.indexOf('材料协议版本发生变化，请关闭后重试。')>=0},500);
+  var locked=CraftingPanel.debugState();
+  ok('PG materials v2 rejects a later v1 success without replacing the locked snapshot',
+    locked.materialSessionVersion===2&&locked.materialSnapshotId==='materials.harness.1'
+      &&locked.needsRefresh&&locked.materials.count===0&&locked.materials.protocolVersion===2
+      &&locked.materials.catalogError.indexOf('协议版本发生变化')>=0
+      &&document.querySelector('.workbench-metric[data-metric="ownedKinds"] b').textContent==='— / —'
+      &&document.querySelector('.workbench-metric[data-metric="ownedKinds"]').getAttribute('aria-label')==='持有种类，暂不可用');
+  retry=document.querySelector('.workbench-mode-btn.warning');retry.click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.needsRefresh
+    &&state.materialSessionVersion===2&&state.materials&&!state.materials.detailLoading},900);
+  ok('PG materials v2 recovers only with another complete v2 snapshot',
+    CraftingPanel.debugState().materialSnapshotId==='materials.harness.1'
+      &&CraftingPanel.debugState().materials.selectedName==='空用途材料'
+      &&document.querySelectorAll('.crafting-material-card').length===224);
+
+  async function rejectCatalogIdentityDrift(field){
+    materialDetailDrift=field;
+    document.querySelector('[data-material-name="空用途材料"]').click();
+    await waitFor(function(){var detail=document.querySelector('.crafting-detail-empty');
+      return CraftingPanel.debugState().needsRefresh&&detail
+        &&detail.textContent.indexOf('目录快照不一致')>=0},500);
+    var rejected=CraftingPanel.debugState().materials.selectedName==='空用途材料'
+      &&!document.querySelector('.crafting-material-detail-retry');
+    document.querySelector('.workbench-mode-btn.warning').click();
+    await waitFor(function(){var current=CraftingPanel.debugState();return !current.needsRefresh
+      &&current.materials&&current.materials.selectedName==='空用途材料'
+      &&!current.materials.detailLoading},900);
+    return rejected;
+  }
+  var displayDriftRejected=await rejectCatalogIdentityDrift('displayName');
+  var iconDriftRejected=await rejectCatalogIdentityDrift('icon');
+  ok('PG materials v2 rejects detail displayName and icon drift against the selected catalog row',
+    displayDriftRejected&&iconDriftRejected
+      &&document.querySelector('.crafting-material-hero h2').textContent==='空用途材料');
+
+  __queueCraftingFault({cmd:'materialDetail',mode:'error',error:'stale_snapshot'});
+  document.querySelector('[data-material-name="空用途材料"]').click();
+  await waitFor(function(){return CraftingPanel.debugState().needsRefresh},500);
+  var search=document.querySelector('.crafting-material-search');search.value='测试矿石';
+  search.dispatchEvent(new Event('input',{bubbles:true}));await wait();
+  __queueCraftingFault({cmd:'materials',mode:'delay',delayMs:180});
+  retry=document.querySelector('.workbench-mode-btn.warning');retry.click();
+  var loadingMetric=document.querySelector('.workbench-metric[data-metric="ownedKinds"]');
+  ok('PG materials catalog refresh clears stale metric digits while loading',
+    loadingMetric.querySelector('b').textContent==='— / —'
+      &&loadingMetric.getAttribute('aria-label')==='持有种类，正在同步'
+      &&loadingMetric.getAttribute('data-metric-state')==='loading'
+      &&document.querySelector('.crafting-material-catalog-empty[data-empty-kind="loading"]'));
+  await waitFor(function(){var current=CraftingPanel.debugState();return !current.needsRefresh
+    &&current.materials&&!current.materials.detailLoading},900);
+  var hiddenRefreshState=CraftingPanel.debugState();
+  search.value='';search.dispatchEvent(new Event('input',{bubbles:true}));await wait();
+  ok('PG materials refresh does not auto-select when the previous selection is no longer visible',
+    hiddenRefreshState.materials.selectedName===''&&hiddenRefreshState.materials.query==='测试矿石'
+      &&document.querySelectorAll('.crafting-material-card').length===224
+      &&CraftingPanel.debugState().materials.selectedName===''
+      &&document.querySelector('.crafting-material-detail-view .workbench-view-meta').textContent==='请选择材料');
+  Panels.close();await wait();
+}
+async function runPgMaterialInfrastructure(){
+  if(Panels.getActive())Panels.close();
+  await wait();
+  Panels.open('crafting',{view:'materials',source:'infrastructure-harness',
+    panelInstanceId:'crafting.material-infrastructure'});
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.mode==='materials'
+    &&state.materials&&!state.materials.detailLoading
+    &&document.querySelectorAll('.crafting-material-infrastructure-card').length===3},1400);
+
+  var usesSection=document.querySelector('.crafting-material-uses');
+  var group=usesSection&&usesSection.querySelector('.crafting-material-infrastructure');
+  var cards=group?Array.prototype.slice.call(
+    group.querySelectorAll('.crafting-material-infrastructure-card')):[];
+  if(!usesSection||!group||cards.length!==3){
+    ok('PG material infrastructure mounts the focused card fixture',false,
+      JSON.stringify({state:CraftingPanel.debugState(),body:document.body.textContent}));
+    Panels.close();await wait();return
+  }
+  var projectNames=cards.map(function(card){return card.querySelector('h4').textContent});
+  var projectOrders=cards.map(function(card){return card.getAttribute('data-project-order')});
+  ok('PG material infrastructure replaces only the generic infrastructure row with ordered grouped cards',
+    cards.length===3&&projectOrders.join(',')==='0,5,7'
+      &&projectNames.join('|')==='前线调度板|烹饪用具|统合标准化学处理器'
+      &&usesSection.querySelectorAll('.crafting-material-direct-purpose-row').length===1
+      &&usesSection.querySelector('.crafting-material-direct-purpose-row b').textContent==='装备改装'
+      &&cards.every(function(card){var name=card.querySelector('h4').textContent;
+        return card.textContent.split(name).length-1===1}),
+    JSON.stringify({orders:projectOrders,names:projectNames,direct:usesSection.textContent}));
+
+  var cooking=cards[1],cookingRows=Array.prototype.slice.call(
+    cooking.querySelectorAll('.crafting-material-infrastructure-level'));
+  ok('PG material infrastructure uses level-array positions and keeps sparse levels ordered',
+    cookingRows.map(function(row){return row.getAttribute('data-level-index')}).join(',')==='0,2,5'
+      &&cookingRows[2].getAttribute('data-target-level')==='6'
+      &&cookingRows[2].querySelector('.crafting-material-infrastructure-level-name').textContent==='Lv.5 → Lv.6'
+      &&cooking.textContent.indexOf('当前 Lv.2 / 6')>=0,
+    cooking&&cooking.textContent);
+
+  var completed=group.querySelector('[data-project-order="0"] [data-level-index="0"]');
+  var currentMissing=group.querySelector('[data-project-order="0"] [data-level-index="1"]');
+  var futureReady=group.querySelector('[data-project-order="5"] [data-level-index="2"]');
+  var futureMissing=group.querySelector('[data-project-order="7"] [data-level-index="2"]');
+  ok('PG material infrastructure shows concise completed, current, and future material gaps',
+    completed.getAttribute('data-material-gap')==='completed'
+      &&completed.textContent.indexOf('已完成')>=0&&completed.textContent.indexOf('缺 ')<0
+      &&currentMissing.getAttribute('data-infrastructure-status')==='current'
+      &&currentMissing.textContent.indexOf('需 10')<0
+      &&currentMissing.textContent.indexOf('缺 3')>=0
+      &&futureReady.getAttribute('data-material-gap')==='ready'
+      &&futureReady.textContent.indexOf('材料已足')>=0
+      &&futureMissing.getAttribute('data-infrastructure-status')==='future'
+      &&futureMissing.textContent.indexOf('缺 10')>=0
+      &&group.textContent.indexOf('持有')<0);
+
+  var levelRows=Array.prototype.slice.call(
+    group.querySelectorAll('.crafting-material-infrastructure-level'));
+  var tiles=Array.prototype.slice.call(
+    group.querySelectorAll('.crafting-material-infrastructure-tile'));
+  ok('PG material infrastructure reuses static material tiles without turning read-only rows into controls',
+    levelRows.length===8&&tiles.length===8
+      &&tiles.every(function(tile){return tile.classList.contains('is-current')
+        &&tile.getAttribute('aria-current')==='true'
+        &&tile.querySelector('[data-static-icon-name="测试矿石"]')
+        &&tile.__panelTooltipBinding})
+      &&group.querySelectorAll('button,[role="button"],[tabindex]').length===0
+      &&group.textContent.indexOf('前往基建')<0);
+
+  ok('PG material infrastructure exposes native grouped semantics and text-complete accessible labels',
+    group.getAttribute('aria-label')==='基建升级逐级需求'
+      &&cards.every(function(card){return card.tagName==='ARTICLE'&&card.getAttribute('aria-label')})
+      &&cards.every(function(card){return card.querySelector(':scope > ol')})
+      &&levelRows.every(function(row){return row.tagName==='LI'
+        &&row.getAttribute('aria-label').indexOf('需要 ')>=0
+        &&(/已完成|还缺|材料已足够/.test(row.getAttribute('aria-label')))})
+      &&currentMissing.getAttribute('aria-label').indexOf('当前升级')>=0
+      &&currentMissing.getAttribute('aria-label').indexOf('当前持有 7')>=0
+      &&futureMissing.getAttribute('aria-label').indexOf('后续升级')>=0
+      &&group.querySelector('.crafting-material-infrastructure-guide').textContent
+        .indexOf('各级缺口按当前库存独立计算')>=0);
+
+  var groupRect=group.getBoundingClientRect();
+  var geometryContained=group.scrollWidth<=group.clientWidth+1
+    &&usesSection.scrollWidth<=usesSection.clientWidth+1
+    &&cards.every(function(card){return card.scrollWidth<=card.clientWidth+1})
+    &&levelRows.every(function(row){var rowRect=row.getBoundingClientRect();
+      var statusRect=row.querySelector('.crafting-material-infrastructure-status').getBoundingClientRect();
+      return row.scrollWidth<=row.clientWidth+1&&statusRect.left>=rowRect.left-1
+        &&statusRect.right<=rowRect.right+1&&statusRect.top>=rowRect.top-1
+        &&statusRect.bottom<=rowRect.bottom+1})
+    &&cards.every(function(card){var rows=Array.prototype.slice.call(
+      card.querySelectorAll('.crafting-material-infrastructure-level'));
+      return rows.every(function(row,index){return !index
+        ||rows[index-1].getBoundingClientRect().bottom<=row.getBoundingClientRect().top+1})});
+  ok('PG material infrastructure stays contained with non-overlapping rows',
+    geometryContained&&groupRect.width>0,
+    JSON.stringify({client:[group.clientWidth,usesSection.clientWidth],scroll:[group.scrollWidth,usesSection.scrollWidth]}));
+
+  var detailBody=document.querySelector('.crafting-material-detail-body'),lastCard=cards[cards.length-1];
+  lastCard.scrollIntoView({block:'end'});await wait();
+  var detailRect=detailBody.getBoundingClientRect(),lastRect=lastCard.getBoundingClientRect();
+  ok('PG material infrastructure remains reachable through the single detail-pane scroller',
+    getComputedStyle(detailBody).overflowY==='auto'
+      &&getComputedStyle(group).overflowY==='visible'
+      &&lastRect.top>=detailRect.top-1&&lastRect.bottom<=detailRect.bottom+1,
+    JSON.stringify({detail:[detailRect.top,detailRect.bottom],last:[lastRect.top,lastRect.bottom]}));
+
+  document.querySelector('[data-material-name="空用途材料"]').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.materials
+    &&state.materials.selectedName==='空用途材料'&&!state.materials.detailLoading},700);
+  var emptyUses=document.querySelector('.crafting-material-uses');
+  ok('PG material infrastructure keeps one generic purpose row when no related project is discovered',
+    !emptyUses.querySelector('.crafting-material-infrastructure')
+      &&emptyUses.querySelectorAll('.crafting-material-direct-purpose-row').length===1
+      &&emptyUses.querySelector('.crafting-material-direct-purpose-row b').textContent==='基建升级'
+      &&emptyUses.querySelector('.crafting-material-direct-purpose-row small').textContent==='尚未发现相关项目'
+      &&emptyUses.textContent.indexOf('当前合成目录中暂无配方用途')<0
+      &&emptyUses.textContent.indexOf('前往基建')<0);
+
+  var infrastructureDetail=materialDetailV2('测试矿石');
+  var ordinaryDetail=materialDetailV2('索引材料003');
+  ok('PG material infrastructure fixture preserves the conditional infrastructureUses wire',
+    Object.prototype.hasOwnProperty.call(infrastructureDetail,'infrastructureUses')
+      &&infrastructureDetail.infrastructureUses.length===3
+      &&Object.prototype.hasOwnProperty.call(materialDetailV2('空用途材料'),'infrastructureUses')
+      &&materialDetailV2('空用途材料').infrastructureUses.length===0
+      &&!Object.prototype.hasOwnProperty.call(ordinaryDetail,'infrastructureUses'));
+  Panels.close();await wait();
+}
+async function runPgMaterialRecipeJump(){
+  async function openMaterials(suffix,canReturn){
+    if(Panels.getActive())Panels.close();
+    await wait();
+    Panels.open('crafting',{view:'materials',source:'a4a-harness',
+      panelInstanceId:'crafting.a4a.'+suffix,
+      canReturnCharacterBuild:canReturn===true,
+      navigationOrigin:canReturn===true?'character_build':''});
+    await waitFor(function(){var state=CraftingPanel.debugState();return state.mode==='materials'
+      &&state.materials&&!state.materials.detailLoading
+      &&document.querySelectorAll('.crafting-material-use-action').length===37},1400);
+    return Panels.getLifecycle()
+  }
+  function firstRecipeAction(){return document.querySelector('.crafting-material-use-row [data-material-use-action="recipe"]')}
+  function firstInspectAction(){return document.querySelector('.crafting-material-use-row [data-material-use-action="inspect"]')}
+  function craftingMessages(cmd){return __sent.filter(function(message){return message.domain==='crafting'&&message.cmd===cmd})}
+  async function waitForActionError(){return waitFor(function(){var state=CraftingPanel.debugState();
+    return state.mode==='materials'&&state.materials&&state.materials.useAction
+      &&state.materials.useAction.status==='error'&&!state.recipeSnapshot},900)}
+  async function exerciseMismatch(mode,label){
+    await openMaterials('mismatch-'+mode,false);
+    var previewsBefore=craftingMessages('preview').length;
+    window.__materialRecipeSnapshotMode=mode;
+    firstRecipeAction().click();
+    await waitForActionError();
+    var state=CraftingPanel.debugState(),retry=firstRecipeAction();
+    ok('PG material recipe jump '+label+' fails closed without choosing another recipe',
+      state.mode==='materials'&&state.materials.selectedName==='测试矿石'
+        &&state.materials.useAction&&state.materials.useAction.status==='error'
+        &&retry&&retry.textContent==='重试前往合成'&&!retry.disabled
+        &&!document.querySelector('.crafting-recipe-card')
+        &&craftingMessages('preview').length===previewsBefore,
+      JSON.stringify(state));
+    return retry
+  }
+
+  window.__materialNavigationAccess={shop:false,crafting:false};
+  await openMaterials('vehicle-lock',false);
+  var lockedRecipe=firstRecipeAction(),lockedInspect=firstInspectAction();
+  var lockedCraftSource=document.querySelector(
+    '[data-material-source-kind="craft"] [data-material-use-action="recipe"]');
+  var lockedSnapshotCount=craftingMessages('snapshot').length;
+  if(lockedRecipe)lockedRecipe.click();
+  ok('PG material recipe navigation keeps the action visible but motorcycle-gated',
+    lockedRecipe&&lockedRecipe.disabled&&lockedRecipe.textContent==='需摩托车'
+      &&lockedCraftSource&&lockedCraftSource.disabled&&lockedCraftSource.textContent==='需摩托车'
+      &&lockedRecipe.title.indexOf('越野车')>=0&&lockedInspect&&!lockedInspect.disabled
+      &&craftingMessages('snapshot').length===lockedSnapshotCount,
+    JSON.stringify(CraftingPanel.debugState().materials));
+  window.__materialNavigationAccess={shop:true,crafting:true};
+
+  await openMaterials('semantics',false);
+  var useRows=Array.prototype.slice.call(document.querySelectorAll('.crafting-material-use-row'));
+  var equipmentRow=useRows[0],stackRow=useRows[1];
+  var equipmentHeader=equipmentRow.querySelector('.crafting-material-use-product');
+  var equipmentActions=equipmentRow.querySelector('.crafting-material-use-actions');
+  var equipmentIngredients=equipmentRow.querySelector('.crafting-material-use-ingredients');
+  var ingredientList=equipmentIngredients.querySelector('ul');
+  var ingredientTiles=Array.prototype.slice.call(ingredientList.querySelectorAll('.crafting-material-ingredient-tile'));
+  var headerRect=equipmentHeader.getBoundingClientRect(),actionsRect=equipmentActions.getBoundingClientRect();
+  var ingredientsRect=equipmentIngredients.getBoundingClientRect(),listRect=ingredientList.getBoundingClientRect();
+  var useRowRects=useRows.map(function(node){return node.getBoundingClientRect()});
+  var materialLayoutContained=ingredientsRect.left>=headerRect.right-1
+    &&actionsRect.left>=ingredientsRect.right-1
+    &&actionsRect.top>=equipmentRow.getBoundingClientRect().top-1
+    &&actionsRect.bottom<=equipmentRow.getBoundingClientRect().bottom+1
+    &&equipmentRow.scrollWidth<=equipmentRow.clientWidth+1
+    &&ingredientList.scrollWidth<=ingredientList.clientWidth+1
+    &&ingredientTiles.every(function(tile){
+      var tileRect=tile.getBoundingClientRect(),style=getComputedStyle(tile);
+      return Math.abs(parseFloat(style.width)-23)<=1&&Math.abs(parseFloat(style.height)-23)<=1
+        &&tileRect.left>=listRect.left-1&&tileRect.right<=listRect.right+1;
+    })
+    &&ingredientTiles.length===9
+    &&ingredientTiles.every(function(tile){return Math.abs(tile.getBoundingClientRect().top-ingredientTiles[0].getBoundingClientRect().top)<=1})
+    &&useRowRects.every(function(rect,index){return index===0||useRowRects[index-1].bottom<=rect.top+1})
+    &&useRows.every(function(row){
+      var rowRect=row.getBoundingClientRect();
+      return Array.prototype.every.call(row.querySelectorAll('.crafting-material-use-action'),function(button){
+        var rect=button.getBoundingClientRect(),centerX=(rect.left+rect.right)/2,centerY=(rect.top+rect.bottom)/2;
+        return centerX>=rowRect.left&&centerX<=rowRect.right&&centerY>=rowRect.top&&centerY<=rowRect.bottom;
+      });
+    });
+  ok('PG material recipe jump v2 uses true actions while the article remains non-actionable',
+    useRows.length===24&&document.querySelectorAll('.crafting-material-use-action').length===37
+      &&!equipmentRow.hasAttribute('tabindex')&&!equipmentRow.hasAttribute('role')
+      &&equipmentRow.querySelectorAll('button[type="button"]').length===2
+      &&stackRow.querySelectorAll('button[type="button"]').length===1
+      &&equipmentRow.querySelector('[data-material-use-action="recipe"]').textContent==='前往合成'
+      &&equipmentRow.querySelector('[data-material-use-action="inspect"]').textContent==='查看装备'
+      &&document.querySelectorAll('.crafting-material-use-ingredients').length===24
+      &&document.querySelectorAll('.crafting-material-ingredient-tile').length===55
+      &&document.querySelectorAll('.crafting-material-ingredient-tile [data-static-icon-name]').length===55
+      &&equipmentRow.querySelector('.crafting-material-ingredient-tile.is-current[aria-label="当前材料，测试矿石 ×2"]')
+      &&equipmentRow.querySelector('.crafting-material-ingredient-tile').__panelTooltipBinding
+      &&materialLayoutContained,
+    JSON.stringify({header:{top:headerRect.top,bottom:headerRect.bottom},
+      actions:{top:actionsRect.top,bottom:actionsRect.bottom},
+      ingredients:{top:ingredientsRect.top,bottom:ingredientsRect.bottom},
+      rowClient:equipmentRow.clientWidth,rowScroll:equipmentRow.scrollWidth,
+      listClient:ingredientList.clientWidth,listScroll:ingredientList.scrollWidth,
+      tiles:ingredientTiles.map(function(tile){var rect=tile.getBoundingClientRect();return [rect.left,rect.top,rect.width,rect.height]})}));
+
+  var craftSourceCard=document.querySelector('[data-material-source-kind="craft"]');
+  var craftSourceAction=craftSourceCard&&craftSourceCard.querySelector(
+    '.crafting-material-craft-navigation [data-material-use-action="recipe"]');
+  var craftSourceRect=craftSourceCard&&craftSourceCard.getBoundingClientRect();
+  var craftActionRect=craftSourceAction&&craftSourceAction.getBoundingClientRect();
+  ok('PG material craft source exposes one card-owned motorcycle-gated recipe action',
+    craftSourceCard&&craftSourceAction&&craftSourceAction.textContent==='前往合成'
+      &&craftSourceAction.__materialUseKey.indexOf('craft_source\u0000')===0
+      &&craftSourceCard.textContent.indexOf('合成 · 武器合成')>=0
+      &&craftSourceCard.textContent.indexOf('90 金币')>=0
+      &&craftSourceCard.contains(craftSourceAction)
+      &&craftActionRect.width<craftSourceRect.width*.5
+      &&getComputedStyle(craftSourceAction).flexGrow==='0');
+
+  document.querySelector('[data-material-name="空用途材料"]').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.materials
+    &&state.materials.selectedName==='空用途材料'&&!state.materials.detailLoading},700);
+  var sourceOnlyCard=document.querySelector('[data-material-source-kind="craft"]');
+  ok('PG material craft source remains actionable when the product has no downstream recipe uses',
+    sourceOnlyCard&&sourceOnlyCard.querySelector('[data-material-use-action="recipe"]')
+      &&document.querySelectorAll('.crafting-material-use-row').length===0
+      &&document.querySelector('.crafting-material-uses').textContent
+        .indexOf('没有配方将它作为材料；可从上方合成来源前往制作。')>=0,
+    JSON.stringify({source:sourceOnlyCard&&sourceOnlyCard.textContent,
+      action:!!(sourceOnlyCard&&sourceOnlyCard.querySelector('[data-material-use-action="recipe"]')),
+      rows:document.querySelectorAll('.crafting-material-use-row').length,
+      uses:document.querySelector('.crafting-material-uses')&&document.querySelector('.crafting-material-uses').textContent,
+      state:CraftingPanel.debugState()}));
+
+  var exactLifecycle=await openMaterials('exact',true),exactSnapshots=craftingMessages('snapshot').length;
+  var exactButton=firstRecipeAction();
+  window.__materialRecipeSnapshotMode='filtered_first';
+  exactButton.click();exactButton.click();
+  var pendingState=CraftingPanel.debugState();
+  var exactSnapshotMessage=craftingMessages('snapshot').slice(-1)[0];
+  ok('PG material recipe jump double activation issues one frozen exact snapshot intent and locks all use actions',
+    craftingMessages('snapshot').length===exactSnapshots+1
+      &&exactSnapshotMessage&&exactSnapshotMessage.payload.materialSnapshotId==='materials.harness.1'
+      &&pendingState.recipeSnapshot&&pendingState.recipeSnapshot.callId
+      &&pendingState.recipeSnapshot.category==='武器合成'
+      &&pendingState.recipeSnapshot.recipeIndex===0
+      &&pendingState.recipeSnapshot.productName==='异形女王毒刺'
+      &&pendingState.recipeSnapshot.selectedName==='测试矿石'
+      &&document.querySelector('.crafting-return-character-btn').disabled
+      &&Array.prototype.every.call(document.querySelectorAll('.crafting-material-use-action'),function(button){return button.disabled}),
+    JSON.stringify(pendingState.recipeSnapshot));
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.mode==='recipes'
+    &&state.previewCheckpoint&&!state.previewBusy},1400);
+  var exactState=CraftingPanel.debugState(),recipeCards=document.querySelectorAll('.crafting-recipe-card');
+  ok('PG material recipe jump commits the exact filtered-second recipe, focuses it, then previews only that tuple',
+    exactState.mode==='recipes'&&exactState.category==='武器合成'&&exactState.selectedIndex===0
+      &&recipeCards.length===2&&recipeCards[0].getAttribute('data-workbench-key')==='1'
+      &&document.activeElement&&document.activeElement.getAttribute('data-workbench-key')==='0'
+      &&craftingMessages('preview').slice(-1)[0].payload.recipeIndex===0
+      &&!exactState.needsRefresh&&!exactState.needsReconcile,
+    JSON.stringify({state:exactState,active:document.activeElement&&document.activeElement.getAttribute('data-workbench-key')}));
+  var lastOpen=Panels.lastOpen();
+  ok('PG material recipe jump preserves the exact owner and CharacterBuild return capability without reopening the panel',
+    Panels.getActive()==='crafting'&&Panels.getLifecycle().panelInstanceId===exactLifecycle.panelInstanceId
+      &&lastOpen&&lastOpen.init.view==='materials'
+      &&exactState.panelInstanceId===exactLifecycle.panelInstanceId&&exactState.canReturnCharacterBuild
+      &&document.querySelector('.crafting-return-character-btn')
+      &&document.querySelector('.crafting-panel').getAttribute('data-crafting-view')==='recipes');
+
+  var exactCommitCount=commitCount,exactOpen=Panels.lastOpen();
+  document.querySelector('.crafting-commit-btn').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return commitCount===exactCommitCount+1
+    &&state.mode==='recipes'&&state.previewCheckpoint&&!state.busy&&!state.previewBusy},1400);
+  var returnMaterials=document.querySelector('.crafting-return-materials-btn');
+  var returnWasReady=!!returnMaterials&&!returnMaterials.disabled
+    &&CraftingPanel.debugState().materialRecipeReturn.materialName==='测试矿石';
+  if(returnMaterials)returnMaterials.click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.mode==='materials'
+    &&state.materials&&state.materials.selectedName==='测试矿石'
+    &&!state.materials.detailLoading&&!state.materialRecipeReturn},1400);
+  var returnedState=CraftingPanel.debugState();
+  ok('PG material recipe jump can craft once then return to the exact material in the same owner',
+    returnWasReady&&Panels.getActive()==='crafting'
+      &&Panels.getLifecycle().panelInstanceId===exactLifecycle.panelInstanceId
+      &&Panels.lastOpen()===exactOpen&&returnedState.mode==='materials'
+      &&returnedState.materials.selectedName==='测试矿石'
+      &&returnedState.panelInstanceId===exactLifecycle.panelInstanceId
+      &&returnedState.canReturnCharacterBuild
+      &&document.querySelector('.crafting-return-character-btn')
+      &&!document.querySelector('.crafting-return-materials-btn'),
+    JSON.stringify(returnedState));
+
+  await openMaterials('craft-source',false);
+  var sourceAction=document.querySelector(
+    '[data-material-source-kind="craft"] [data-material-use-action="recipe"]');
+  var sourceSnapshots=craftingMessages('snapshot').length;
+  window.__materialRecipeSnapshotMode='craft_source_product';
+  __queueCraftingFault({cmd:'snapshot',mode:'delay',delayMs:100});
+  sourceAction.click();sourceAction.click();
+  var sourceIntent=CraftingPanel.debugState().recipeSnapshot;
+  var sourceSnapshotMessage=craftingMessages('snapshot').slice(-1)[0];
+  var sourceIntentBound=sourceIntent&&sourceIntent.recipeOrigin==='craft_source'
+    &&sourceIntent.sourceKey==='lp1|5:craft|4:武器合成|1:0'
+    &&sourceIntent.category==='武器合成'&&sourceIntent.recipeIndex===0
+    &&sourceIntent.productName==='测试矿石'
+    &&sourceSnapshotMessage&&sourceSnapshotMessage.payload.materialSnapshotId==='materials.harness.1';
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.mode==='recipes'
+    &&state.previewCheckpoint&&!state.previewBusy},1400);
+  ok('PG material craft source reuses the exact snapshot route and opens only its producing recipe',
+    craftingMessages('snapshot').length===sourceSnapshots+1&&sourceIntentBound
+      &&CraftingPanel.debugState().category==='武器合成'
+      &&CraftingPanel.debugState().selectedIndex===0
+      &&document.activeElement&&document.activeElement.getAttribute('data-workbench-key')==='0');
+
+  await exerciseMismatch('category_mismatch','category mismatch');
+  await exerciseMismatch('product_mismatch','product mismatch');
+  await exerciseMismatch('stale_index','stale recipe index');
+  await exerciseMismatch('duplicate_index','duplicate exact index');
+  var retry=await exerciseMismatch('version_mismatch','snapshot version mismatch');
+  retry.click();
+  await waitFor(function(){return CraftingPanel.debugState().mode==='recipes'
+    &&CraftingPanel.debugState().previewCheckpoint},1200);
+  ok('PG material recipe jump inline failure action retries the same tuple successfully',
+    CraftingPanel.debugState().selectedIndex===0
+      &&craftingMessages('preview').slice(-1)[0].payload.recipeIndex===0);
+
+  await openMaterials('send-false',false);
+  var sendStarted=performance.now(),sendSnapshots=craftingMessages('snapshot').length;
+  __queueCraftingFault({cmd:'snapshot',mode:'send_false'});firstRecipeAction().click();
+  await waitForActionError();
+  ok('PG material recipe jump send failure settles inline before timeout with no pending mux entry',
+    performance.now()-sendStarted<__CRAFTING_CONFIG__.requestTimeoutMs
+      &&craftingMessages('snapshot').length===sendSnapshots+1
+      &&CraftingPanel.debugState().mux.pendingCount===0
+      &&CraftingPanel.debugState().mode==='materials');
+
+  await openMaterials('timeout',false);
+  var timeoutSnapshots=craftingMessages('snapshot').length;
+  __queueCraftingFault({cmd:'snapshot',mode:'drop'});firstRecipeAction().click();
+  await waitForActionError();
+  var timedOutMessage=craftingMessages('snapshot')[timeoutSnapshots];
+  ok('PG material recipe jump lost snapshot times out to an inline retry without route mutation',
+    timedOutMessage&&__droppedCraftingMessages.some(function(message){return message.callId===timedOutMessage.callId})
+      &&CraftingPanel.debugState().mode==='materials'
+      &&CraftingPanel.debugState().mux.pendingCount===0
+      &&firstRecipeAction().textContent==='重试前往合成');
+
+  await openMaterials('modal',false);
+  var modalPreviews=craftingMessages('preview').length;
+  __queueCraftingFault({cmd:'snapshot',mode:'delay',delayMs:100});firstRecipeAction().click();
+  document.querySelector('.workbench-help-btn').click();
+  await waitForActionError();
+  ok('PG material recipe jump never destroys an intervening Help modal on a late success',
+    CraftingPanel.debugState().mode==='materials'
+      &&document.querySelector('.workbench-modal[data-modal-kind="crafting-materials-help"]')
+      &&CraftingPanel.debugState().materials.useAction.status==='error'
+      &&craftingMessages('preview').length===modalPreviews);
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();
+
+  await openMaterials('selection-late',false);
+  var selectionPreviews=craftingMessages('preview').length;
+  __queueCraftingFault({cmd:'snapshot',mode:'delay',delayMs:160});firstRecipeAction().click();
+  document.querySelector('[data-material-name="空用途材料"]').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.materials
+    &&state.materials.selectedName==='空用途材料'&&!state.materials.detailLoading},500);
+  await wait(190);
+  ok('PG material recipe jump selection change cancels the call and rejects its late success silently',
+    CraftingPanel.debugState().mode==='materials'&&!CraftingPanel.debugState().recipeSnapshot
+      &&CraftingPanel.debugState().materials.selectedName==='空用途材料'
+      &&craftingMessages('preview').length===selectionPreviews&&!document.querySelector('.crafting-recipe-card'));
+
+  await openMaterials('refresh-late',false);
+  var refreshPreviews=craftingMessages('preview').length;
+  __queueCraftingFault({cmd:'snapshot',mode:'delay',delayMs:180});firstRecipeAction().click();
+  __queueCraftingFault({cmd:'materialDetail',mode:'error',error:'stale_snapshot'});
+  document.querySelector('[data-material-name="测试矿石"]').click();
+  await waitFor(function(){return CraftingPanel.debugState().needsRefresh},500);
+  document.querySelector('.workbench-mode-btn.warning').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.needsRefresh
+    &&state.materials&&!state.materials.detailLoading},900);
+  await wait(200);
+  ok('PG material recipe jump catalog refresh cancels the preflight and cannot adopt its late success',
+    CraftingPanel.debugState().mode==='materials'&&!CraftingPanel.debugState().recipeSnapshot
+      &&craftingMessages('preview').length===refreshPreviews&&!document.querySelector('.crafting-recipe-card'));
+
+  await openMaterials('rebind-old',true);
+  var rebindPreviews=craftingMessages('preview').length;
+  __queueCraftingFault({cmd:'snapshot',mode:'delay',delayMs:160});firstRecipeAction().click();
+  Panels.open('crafting',{view:'materials',source:'a4a-rebind',panelInstanceId:'crafting.a4a.rebind-new'});
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.panelInstanceId==='crafting.a4a.rebind-new'
+    &&state.materials&&!state.materials.detailLoading},900);
+  await wait(190);
+  ok('PG material recipe jump same-name rebind retires the old owner intent and response',
+    CraftingPanel.debugState().mode==='materials'
+      &&CraftingPanel.debugState().panelInstanceId==='crafting.a4a.rebind-new'
+      &&!CraftingPanel.debugState().recipeSnapshot&&!CraftingPanel.debugState().canReturnCharacterBuild
+      &&craftingMessages('preview').length===rebindPreviews);
+
+  await openMaterials('close-late',false);
+  __queueCraftingFault({cmd:'snapshot',mode:'delay',delayMs:160});firstRecipeAction().click();
+  Panels.close();await wait(190);
+  ok('PG material recipe jump close cancels the exact call and late response cannot remount UI',
+    Panels.getActive()===null&&CraftingPanel.debugState().mux.pendingCount===0
+      &&!CraftingPanel.debugState().recipeSnapshot&&!document.querySelector('.workbench-modal'));
+
+  await openMaterials('inspector',false);
+  var inspectorPreviews=craftingMessages('preview').length,inspectorSnapshots=craftingMessages('snapshot').length;
+  var inspectorOpener=firstInspectAction();inspectorOpener.focus();inspectorOpener.click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.inspector
+    &&document.querySelector('.workbench-modal[data-modal-kind="crafting-inspector"]')},900);
+  await waitFor(function(){var inspector=CraftingPanel.debugState().inspector;
+    return inspector&&inspector.source==='weapon'},2600);
+  var inspectorState=CraftingPanel.debugState();
+  ok('PG material recipe jump equipment action uses a fresh snapshot but stays in materials and opens only Inspector',
+    inspectorState.mode==='materials'&&inspectorState.materials.selectedName==='测试矿石'
+      &&inspectorState.inspector&&inspectorState.inspector.source==='weapon'
+      &&inspectorState.inspector.gender==='女'&&!inspectorState.recipeSnapshot
+      &&craftingMessages('snapshot').length===inspectorSnapshots+1
+      &&craftingMessages('preview').length===inspectorPreviews
+      &&document.querySelector('.workbench-modal-title').textContent==='新测试枪');
+  document.querySelector('.workbench-modal-action[data-action="close"]').click();await wait();
+  ok('PG material recipe jump Inspector restores focus only to its still-connected independent trigger',
+    document.activeElement===inspectorOpener&&inspectorOpener.isConnected&&!inspectorOpener.disabled
+      &&inspectorOpener.textContent==='查看装备'&&!CraftingPanel.debugState().materials.useAction,
+    JSON.stringify({same:document.activeElement===inspectorOpener,
+      active:document.activeElement&&document.activeElement.className,
+      opener:inspectorOpener.className,connected:inspectorOpener.isConnected,
+      disabled:inspectorOpener.disabled,text:inspectorOpener.textContent,
+      action:CraftingPanel.debugState().materials.useAction}));
+
+  await openMaterials('detached-inspector',false);
+  var detachedOpener=firstInspectAction(),search=document.querySelector('.crafting-material-search');
+  __queueCraftingFault({cmd:'snapshot',mode:'delay',delayMs:100});detachedOpener.click();
+  detachedOpener.remove();search.focus();
+  await waitForActionError();
+  ok('PG material recipe jump detached Inspector opener cannot open a modal or steal replacement focus',
+    CraftingPanel.debugState().mode==='materials'&&!CraftingPanel.debugState().inspector
+      &&!document.querySelector('.workbench-modal')&&document.activeElement===search);
+
+  await openMaterials('inspector-throw',false);
+  var realInspectorOpen=CraftingInspector.open;
+  CraftingInspector.open=function(){throw new Error('expected inspector open failure')};
+  firstInspectAction().click();await waitForActionError();CraftingInspector.open=realInspectorOpen;
+  ok('PG material recipe jump Inspector exception remains an inline retryable materials failure',
+    CraftingPanel.debugState().mode==='materials'&&!CraftingPanel.debugState().inspector
+      &&!document.querySelector('.workbench-modal')
+      &&document.querySelector('[data-material-use-action="inspect"]').textContent==='重试查看装备');
+  Panels.close();await wait();
+}
+function materialShopNavigationMessages(){return __sent.filter(function(message){return message
+  &&message.type==='panel'&&message.panel==='crafting'&&message.cmd==='open_npc_shop'})}
+function emitMaterialShopFailure(message,error,extra){
+  var failure={type:'panel_resp',panel:'crafting',cmd:'open_npc_shop',callId:message.callId,
+    panelInstanceId:message.panelInstanceId,success:false,error:error};
+  if(extra)failure.extra=extra;emit(failure)
+}
+async function openMaterialShopHarness(suffix){
+  if(Panels.getActive())Panels.close();await wait();
+  window.__materialShopAccessMode='full';
+  Panels.open('crafting',{view:'materials',source:'a4b-harness',
+    panelInstanceId:'crafting.a4b.'+suffix});
+  return waitFor(function(){return document.querySelectorAll('.crafting-material-card').length===224
+    &&document.querySelector('[data-material-shop-action]')
+    &&!CraftingPanel.debugState().materials.detailLoading},1600)
+}
+async function runPgMaterialShopNavigation(){
+  window.__materialShopLocked=true;
+  window.__materialNavigationAccess={shop:false,crafting:true};
+  var lockedOpened=await openMaterialShopHarness('vehicle-lock');
+  var lockedShopButton=document.querySelector('[data-material-shop-action]');
+  var lockedShopMessages=materialShopNavigationMessages().length;
+  if(lockedShopButton)lockedShopButton.click();
+  ok('PG material shop navigation keeps the action visible but bicycle-gated',
+    lockedOpened&&lockedShopButton&&lockedShopButton.disabled
+      &&lockedShopButton.textContent==='需自行车'
+      &&lockedShopButton.title.indexOf('越野车')>=0
+      &&materialShopNavigationMessages().length===lockedShopMessages);
+  window.__materialNavigationAccess={shop:true,crafting:true};
+  var opened=await openMaterialShopHarness('failure');
+  var opener=document.querySelector('[data-material-shop-action]');
+  var describedIds=opener?String(opener.getAttribute('aria-describedby')||'').split(/\s+/):[];
+  var describedText=describedIds.map(function(id){var node=document.getElementById(id);return node?node.textContent:''}).join(' ');
+  ok('PG material shop full pair exposes one locked-safe true CTA with shared concise source guidance',
+    opened&&opener&&opener.tagName==='BUTTON'
+      &&opener.getAttribute('aria-label')==='前往商店：迷之盔甲君，定位‘测试矿石’'
+      &&describedIds.length===2&&describedText.indexOf('50,000')>=0
+      &&describedText.indexOf('价格和库存以商店内为准')>=0
+      &&document.querySelectorAll('[data-material-shop-action]').length===1,
+    JSON.stringify({label:opener&&opener.getAttribute('aria-label'),described:describedText}));
+
+  var before=materialShopNavigationMessages().length,selected='测试矿石';
+  opener.focus();window.__dropNextMaterialShopNavigation=true;opener.click();opener.click();
+  var sent=materialShopNavigationMessages().slice(-1)[0],pending=CraftingPanel.debugState();
+  var selectionProbe=document.querySelector('[data-material-name="索引材料001"]');
+  if(selectionProbe)selectionProbe.click();
+  var useActions=document.querySelectorAll('[data-material-use-action]');
+  ok('PG material shop pending is single-flight and freezes the material owner without rebuilding detail or focus',
+    materialShopNavigationMessages().length===before+1&&sent
+      &&Object.keys(sent).sort().join(',')==='callId,catalogIndex,cmd,materialName,materialSnapshotId,panel,panelInstanceId,shopId,source,type'
+      &&sent.source==='crafting_materials'&&sent.materialSnapshotId==='materials.harness.1'
+      &&sent.materialName===selected&&sent.shopId==='迷之盔甲君'&&sent.catalogIndex===57
+      &&pending.materialShopNavigation&&pending.materials.selectedName===selected
+      &&opener.isConnected&&opener.disabled&&opener.getAttribute('aria-busy')==='true'
+      &&document.querySelector('.crafting-material-search').disabled
+      &&!document.querySelector('[data-material-filter]:not(:disabled)')
+      &&!document.querySelector('.crafting-material-card:not(:disabled)')
+      &&document.querySelector('.crafting-material-sort .workbench-dropdown-trigger').disabled
+      &&document.querySelector('.crafting-panel .workbench-help-btn').disabled
+      &&!document.querySelector('.crafting-panel .item-grid-mode-option:not(:disabled)')
+      &&Array.prototype.every.call(useActions,function(button){return button.disabled})
+      &&document.querySelector('.crafting-material-catalog-view').getAttribute('aria-busy')==='true'
+      &&document.querySelector('.crafting-material-detail-view').getAttribute('aria-busy')==='true'
+      &&document.querySelector('.crafting-material-hero h2').textContent===selected,
+    JSON.stringify({sent:sent,state:pending,focus:document.activeElement&&document.activeElement.className}));
+
+  emitMaterialShopFailure(Object.assign({},sent,{callId:'craft-material-shop-foreign'}),'stale_source');
+  emitMaterialShopFailure(sent,'stale_source','forbidden');await wait();
+  ok('PG material shop ignores foreign and extra-key failures while the exact intent remains pending',
+    !!CraftingPanel.debugState().materialShopNavigation&&opener.disabled
+      &&materialShopNavigationMessages().length===before+1);
+  emitMaterialShopFailure(sent,'stale_source');
+  await waitFor(function(){return !CraftingPanel.debugState().materialShopNavigation},500);
+  var failed=CraftingPanel.debugState(),status=document.querySelector('.crafting-material-shop-navigation-status');
+  ok('PG material shop exact failure preserves source owner, selection, detail and opener focus for retry',
+    Panels.getActive()==='crafting'&&failed.materials.selectedName===selected
+      &&failed.materials.shopNavigation&&failed.materials.shopNavigation.status==='error'
+      &&document.activeElement===opener&&!opener.disabled&&opener.textContent==='重试前往商店'
+      &&status&&!status.hidden&&status.getAttribute('aria-live')==='polite'
+      &&status.textContent.indexOf('来源已经变化')>=0
+      &&!document.querySelector('.crafting-material-search').disabled
+      &&document.querySelector('.crafting-material-hero h2').textContent===selected,
+    JSON.stringify({state:failed,status:status&&status.textContent}));
+
+  window.__mockMaterialShopNavigationCommit=true;opener.click();
+  var committed=materialShopNavigationMessages().slice(-1)[0];
+  await waitFor(function(){return Panels.getActive()===null},500);
+  emitMaterialShopFailure(committed,'timeout');await wait();
+  ok('PG material shop Host commit retires the source and a late public failure cannot roll it back',
+    Panels.getActive()===null&&!CraftingPanel.debugState().materialShopNavigation
+      &&CraftingPanel.debugState().panelInstanceId==='');
+
+  window.__materialShopLocked=false;
+  await openMaterialShopHarness('timeout');
+  var timeoutOpener=document.querySelector('[data-material-shop-action]');
+  var productionWatchdog=CraftingRuntime.NAVIGATION_WATCHDOG_MS;
+  CraftingRuntime.NAVIGATION_WATCHDOG_MS=80;
+  timeoutOpener.focus();window.__dropNextMaterialShopNavigation=true;timeoutOpener.click();
+  await waitFor(function(){var state=CraftingPanel.debugState().materials;
+    return state.shopNavigation&&state.shopNavigation.status==='error'},500);
+  CraftingRuntime.NAVIGATION_WATCHDOG_MS=productionWatchdog;
+  var timeoutStatus=document.querySelector('.crafting-material-shop-navigation-status');
+  ok('PG material shop UI-only watchdog restores retry without sending cancellation or stealing focus',
+    productionWatchdog===6500&&Panels.getActive()==='crafting'
+      &&!CraftingPanel.debugState().materialShopNavigation
+      &&document.activeElement===timeoutOpener&&!timeoutOpener.disabled
+      &&timeoutOpener.textContent==='重试前往商店'
+      &&timeoutStatus.textContent.indexOf('打开商店超时')>=0
+      &&!__sent.some(function(message){return message.cmd==='cancel_open_npc_shop'}));
+
+  window.__dropNextMaterialShopNavigation=true;timeoutOpener.click();
+  var retired=materialShopNavigationMessages().slice(-1)[0];
+  Panels.open('crafting',{view:'materials',source:'a4b-rebind',
+    panelInstanceId:'crafting.a4b.rebind'});
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.panelInstanceId==='crafting.a4b.rebind'
+    &&state.materials&&!state.materials.detailLoading&&document.querySelector('[data-material-shop-action]')},1600);
+  emitMaterialShopFailure(retired,'stale_source');await wait();
+  ok('PG material shop rebind clears old navigation state and ignores its late response',
+    CraftingPanel.debugState().panelInstanceId==='crafting.a4b.rebind'
+      &&!CraftingPanel.debugState().materialShopNavigation
+      &&!CraftingPanel.debugState().materials.shopNavigation
+      &&document.querySelector('[data-material-shop-action]').textContent==='前往商店');
+
+  await openMaterialShopHarness('ordinary-close-authority');
+  var closeTuple=Panels.getLifecycle(),closeButton=document.querySelector('.workbench-close-btn');
+  var closeBefore=__craftingCloseWitnesses.length,closeStayedMounted=true;
+  ['busy','stale','admission_fail'].forEach(function(disposition){
+    window.__nextCraftingCloseDisposition=disposition;
+    closeButton.focus();closeButton.click();
+    closeStayedMounted=closeStayedMounted&&Panels.getActive()==='crafting'
+      &&Panels.getLifecycle().panelInstanceId===closeTuple.panelInstanceId
+      &&document.activeElement===closeButton&&closeButton.isConnected
+  });
+  ok('PG crafting close transport acceptance never retires the source on Host busy, stale, or admission failure',
+    closeStayedMounted&&__craftingCloseWitnesses.length===closeBefore+3
+      &&__craftingCloseWitnesses.slice(closeBefore).every(function(witness){
+        return exactOrdinaryClose(witness,closeTuple)})
+      &&CraftingPanel.debugState().panelInstanceId===closeTuple.panelInstanceId,
+    JSON.stringify({active:Panels.getLifecycle(),attempts:__craftingCloseWitnesses.slice(closeBefore)}));
+
+  closeButton.click();
+  var mountedBeforeCommit=Panels.getActive()==='crafting'
+    &&Panels.getLifecycle().panelInstanceId===closeTuple.panelInstanceId;
+  await waitFor(function(){return Panels.getActive()===null},500);
+  ok('PG crafting close retires the exact owner only after the Host panel_cmd commit',
+    mountedBeforeCommit&&Panels.getActive()===null
+      &&sameLifecycle(Panels.getLastClosedLifecycle(),closeTuple)
+      &&__craftingCloseWitnesses.length===closeBefore+4);
+
+  await openMaterialShopHarness('ordinary-close-late-old');
+  var retiredCloseTuple=Panels.getLifecycle(),retiredCloseButton=document.querySelector('.workbench-close-btn');
+  window.__nextCraftingCloseDisposition='admission_fail';retiredCloseButton.click();
+  Panels.open('crafting',{view:'materials',source:'a4b-close-rebind',
+    panelInstanceId:'crafting.a4b.ordinary-close-replacement'});
+  await waitFor(function(){return CraftingPanel.debugState().panelInstanceId
+    ==='crafting.a4b.ordinary-close-replacement'},1200);
+  var replacementTuple=Panels.getLifecycle();
+  emitType('panel_cmd',{cmd:'close',panel:'crafting',
+    panelInstanceId:retiredCloseTuple.panelInstanceId});await wait();
+  ok('PG crafting ignores a late exact close commit for a retired instance after same-panel rebind',
+    Panels.getActive()==='crafting'&&sameLifecycle(Panels.getLifecycle(),replacementTuple)
+      &&CraftingPanel.debugState().panelInstanceId===replacementTuple.panelInstanceId);
+  emitType('panel_cmd',{cmd:'close',panel:'crafting',
+    panelInstanceId:replacementTuple.panelInstanceId});await wait();
+  ok('PG crafting accepts the current exact Host close commit after rejecting the late predecessor',
+    Panels.getActive()===null&&sameLifecycle(Panels.getLastClosedLifecycle(),replacementTuple));
+  window.__materialShopAccessMode='unavailable'
 }
 try{
   if(window.__craftingHarnessScenario==='pg-craft-current-coverage'){
@@ -848,6 +1921,31 @@ try{
     await runPgCraftingIdentity();
     var identityResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
     window.__qaResult=identityResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(identityResult,null,2);return
+  }
+  if(window.__craftingHarnessScenario==='pg-materials-v1'){
+    await runPgMaterialsV1();
+    var legacyResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=legacyResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(legacyResult,null,2);return
+  }
+  if(window.__craftingHarnessScenario==='pg-materials-session-lock'){
+    await runPgMaterialsSessionLock();
+    var lockResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=lockResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(lockResult,null,2);return
+  }
+  if(window.__craftingHarnessScenario==='pg-material-recipe-jump'){
+    await runPgMaterialRecipeJump();
+    var recipeJumpResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=recipeJumpResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(recipeJumpResult,null,2);return
+  }
+  if(window.__craftingHarnessScenario==='pg-material-infrastructure'){
+    await runPgMaterialInfrastructure();
+    var infrastructureResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=infrastructureResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(infrastructureResult,null,2);return
+  }
+  if(window.__craftingHarnessScenario==='pg-material-shop-navigation'){
+    await runPgMaterialShopNavigation();
+    var materialShopResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=materialShopResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(materialShopResult,null,2);return
   }
   Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelector('.crafting-output-card')});
   var recipeProfileShell=document.querySelector('.crafting-panel');
@@ -1186,7 +2284,7 @@ try{
       &&__toasts.length===closeToastCount+1);
   var materialRequestsBefore=__sent.length;
   Panels.open('crafting',{view:'materials',source:'harness'});
-  await waitFor(function(){return document.querySelectorAll('.crafting-material-card').length===223&&document.querySelectorAll('.crafting-material-use-row').length===24});
+  await waitFor(function(){return document.querySelectorAll('.crafting-material-card').length===224&&document.querySelectorAll('.crafting-material-use-row').length===24});
   var materialState=CraftingPanel.debugState(),materialPanel=document.querySelector('.crafting-panel[data-crafting-view="materials"]');
   ok('material route mounts read-only catalog and detail panes',
     materialState.mode==='materials'&&materialPanel
@@ -1200,9 +2298,164 @@ try{
       &&!document.querySelector('.crafting-commit-btn'),
     JSON.stringify(materialState));
   ok('material catalog selects the first indexed material',
-    document.querySelectorAll('.crafting-material-card').length===223
+    document.querySelectorAll('.crafting-material-card').length===224
       &&document.querySelector('.crafting-material-card[aria-selected="true"][data-material-name="测试矿石"]')
-      &&materialState.materials.selectedName==='测试矿石');
+      &&document.activeElement===document.querySelector('[data-filter-path=""]')
+      &&materialState.materials.selectedName==='测试矿石'
+       &&materialState.materialSessionVersion===2
+       &&materialState.materialSnapshotId==='materials.harness.1');
+  function renderedMaterialNames(){return Array.prototype.map.call(
+    document.querySelectorAll('.crafting-material-card'),function(card){return card.getAttribute('data-material-name')})}
+  var authoredNames=materialCatalogV2().sort(function(a,b){return a.archiveOrder-b.archiveOrder})
+    .map(function(item){return item.name});
+  var materialSort=document.querySelector('.crafting-material-sort');
+  var materialSortTrigger=materialSort.querySelector('.workbench-dropdown-trigger');
+  var ownedMetric=document.querySelector('.workbench-metric[data-metric="ownedKinds"]');
+  ok('material archive starts in exact authored order with an independent owned-kind metric',
+    JSON.stringify(renderedMaterialNames())===JSON.stringify(authoredNames)
+      &&materialSortTrigger.textContent.indexOf('档案顺序')>=0
+      &&materialSortTrigger.getAttribute('aria-haspopup')==='listbox'
+      &&ownedMetric.querySelector('b').textContent==='2 / 224'
+      &&ownedMetric.getAttribute('aria-label')==='持有种类，2 / 224',
+    JSON.stringify({sort:materialSortTrigger.textContent,metric:ownedMetric.textContent,
+      aria:ownedMetric.getAttribute('aria-label')}));
+  document.querySelector('[data-filter-path="type"]').click();await wait();
+  document.querySelector('[data-filter-path="type/equipment_mod"]').click();await wait();
+  var materialShell=document.querySelector('.crafting-scale-shell');
+  var materialScaleBefore=materialShell.style.getPropertyValue('--panel-scale');
+  materialShell.style.setProperty('--panel-scale','0.5000');await wait();
+  var halfShellRect=materialShell.getBoundingClientRect();
+  var materialHeader=document.querySelector('.crafting-panel .workbench-header');
+  var materialHeaderActions=document.querySelector('.crafting-panel .workbench-header-actions');
+  var materialBreadcrumb=document.querySelector(
+    '.crafting-material-catalog-view .workbench-view-breadcrumb-host:not([hidden])');
+  var materialToolbar=document.querySelector('.crafting-material-toolbar');
+  var materialSearchRow=document.querySelector('.crafting-material-search-row');
+  var geometryNodes=[materialHeader,materialHeaderActions,materialBreadcrumb,materialToolbar,
+    materialSearchRow,document.querySelector('.crafting-material-search'),
+    document.querySelector('.crafting-material-filters'),materialSort];
+  function insideHalfShell(node,halo){
+    if(!node)return false;var rect=node.getBoundingClientRect(),margin=Number(halo)||0;
+    return rect.width>0&&rect.height>0&&rect.left-margin>=halfShellRect.left-1
+      &&rect.top-margin>=halfShellRect.top-1&&rect.right+margin<=halfShellRect.right+1
+      &&rect.bottom+margin<=halfShellRect.bottom+1
+  }
+  document.body.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));
+  materialSortTrigger.focus();
+  var materialFocusStyle=getComputedStyle(materialSortTrigger),focusHalo=4*.5;
+  var materialNoOverflow=[materialPanel,document.querySelector('.crafting-material-catalog-view'),
+    materialHeader,materialToolbar,materialSearchRow].every(function(node){
+      return node&&node.scrollWidth<=node.clientWidth+1
+    });
+  var halfScaleGeometryOk=geometryNodes.every(function(node){return insideHalfShell(node,0)})
+    &&insideHalfShell(materialSortTrigger,focusHalo)
+    &&materialFocusStyle.outlineStyle==='solid'
+    &&parseFloat(materialFocusStyle.outlineWidth)>=2
+    &&materialNoOverflow;
+  materialShell.style.setProperty('--panel-scale',materialScaleBefore);await wait();
+  document.querySelector('[data-filter-breadcrumb-path=""]').click();await wait();
+  ok('material toolbar remains reachable without overflow or clipped focus at the 0.5 PanelScale equivalent',
+    halfScaleGeometryOk,
+    JSON.stringify({viewport:[innerWidth,innerHeight],shell:[halfShellRect.width,halfShellRect.height],
+      scale:materialScaleBefore,outline:[materialFocusStyle.outlineStyle,materialFocusStyle.outlineWidth],
+      noOverflow:materialNoOverflow,nodes:geometryNodes.map(function(node){var rect=node.getBoundingClientRect();
+        return [node.className,rect.left,rect.top,rect.right,rect.bottom]})}));
+  materialSortTrigger.click();document.querySelector('[data-dropdown-value="owned"]').click();await wait();
+  var ownedNames=renderedMaterialNames();
+  ok('owned sorting is descending and falls back to authored order',
+    ownedNames[0]==='sort-sample-alpha-2'&&ownedNames[1]==='测试矿石'
+      &&CraftingPanel.debugState().materials.selectedName==='测试矿石');
+  materialSortTrigger.click();document.querySelector('[data-dropdown-value="name"]').click();await wait();
+  var nameNames=renderedMaterialNames();
+  ok('localized name sorting covers ASCII, Chinese numerics, and authored equal-name ties',
+    nameNames.indexOf('sort-sample-alpha-2')<nameNames.indexOf('sort-sample-alpha-10')
+      &&nameNames.indexOf('排序样本-中文-2')<nameNames.indexOf('排序样本-中文-10')
+      &&nameNames.indexOf('sort-sample-same-first')<nameNames.indexOf('sort-sample-same-second'));
+  materialSortTrigger.click();document.querySelector('[data-dropdown-value="purpose"]').click();await wait();
+  var purposeNames=renderedMaterialNames();
+  ok('purpose sorting uses structured purpose count with authored tie breaks',
+    purposeNames.indexOf('sort-sample-same-first')<purposeNames.indexOf('sort-sample-same-second'));
+  materialSortTrigger.click();document.querySelector('[data-dropdown-value="archive"]').click();
+  await new Promise(function(resolve){setTimeout(resolve,220)});
+  ok('restoring archive order reproduces the authored exact set without reloading detail',
+    JSON.stringify(renderedMaterialNames())===JSON.stringify(authoredNames)
+      &&CraftingPanel.debugState().materials.selectedName==='测试矿石'
+      &&document.querySelector('.crafting-material-hero h2').textContent==='测试矿石'
+      &&document.querySelector('.crafting-material-result-status').textContent
+        ==='显示 224 种材料，共 224 种。');
+  materialSortTrigger.focus();materialSortTrigger.dispatchEvent(
+    new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true,cancelable:true}));
+  var activeSortOption=document.querySelector('[data-dropdown-value="archive"]');
+  activeSortOption.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+  ok('material sort listbox supports Arrow open and Escape focus restore',
+    materialSortTrigger.getAttribute('aria-expanded')==='false'&&document.activeElement===materialSortTrigger);
+  materialSortTrigger.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true,cancelable:true}));
+  activeSortOption=document.querySelector('[data-dropdown-value="archive"]');
+  activeSortOption.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));
+  ok('material sort Tab closes without stealing the current option focus',
+    materialSortTrigger.getAttribute('aria-expanded')==='false'&&document.activeElement===activeSortOption);
+  materialSortTrigger.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true,cancelable:true}));
+  var sortCloseBefore=__sent.filter(function(message){return message.cmd==='close'}).length;
+  emitType('panel_esc',{reason:'escape'});await wait();
+  ok('physical Escape closes the open sort menu before any panel or filter state',
+    materialSortTrigger.getAttribute('aria-expanded')==='false'
+      &&__sent.filter(function(message){return message.cmd==='close'}).length===sortCloseBefore
+      &&CraftingPanel.debugState().materials.filterPath.length===0);
+  var materialTypeRoot=document.querySelector('[data-filter-path="type"]');
+  var materialPurposeRoot=document.querySelector('[data-filter-path="purpose"]');
+  ok('v2 material taxonomy exposes ordered distinct root counts without duplicate cards',
+    materialTypeRoot&&materialPurposeRoot
+      &&materialTypeRoot.querySelector('small').textContent==='224'
+      &&materialPurposeRoot.querySelector('small').textContent==='224'
+      &&document.querySelectorAll('.crafting-material-card[data-material-name="测试矿石"]').length===1);
+  materialPurposeRoot.click();await wait();
+  var materialDirect=document.querySelector('[data-filter-path="purpose/direct"]');
+  materialDirect.click();await wait();
+  ok('multi-path material filtering intersects the current path and renders each identity once',
+    CraftingPanel.debugState().materials.filterPath.join('/')==='purpose/direct'
+      &&document.querySelectorAll('.crafting-material-card').length===1
+      &&document.querySelector('.crafting-material-card').getAttribute('data-material-name')==='测试矿石');
+  materialDirect=document.querySelector('[data-filter-path="purpose/direct"]');
+  materialDirect.focus();
+  materialDirect.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+  await wait();
+  var purposeContext=document.querySelector('[data-filter-path="purpose"]');
+  ok('navigator Escape backs exactly one level and restores focus inside the rebuilt tree',
+    CraftingPanel.debugState().materials.filterPath.join('/')==='purpose'
+      &&document.activeElement===purposeContext);
+  materialDirect=document.querySelector('[data-filter-path="purpose/direct"]');
+  materialDirect.click();await wait();
+  materialDirect=document.querySelector('[data-filter-path="purpose/direct"]');
+  materialDirect.focus();
+  var materialHostEscCloseBefore=__sent.filter(function(x){return x.cmd==='close'}).length;
+  emitType('panel_esc',{reason:'escape'});await wait();
+  purposeContext=document.querySelector('[data-filter-path="purpose"]');
+  ok('physical panel_esc consumes exactly one navigator level before panel close',
+    CraftingPanel.debugState().materials.filterPath.join('/')==='purpose'
+      &&document.activeElement===purposeContext
+      &&__sent.filter(function(x){return x.cmd==='close'}).length===materialHostEscCloseBefore);
+  document.querySelector('[data-filter-path=""]').click();await wait();
+  var materialSearch=document.querySelector('.crafting-material-search');
+  materialSearch.value='测试';
+  materialSearch.dispatchEvent(new Event('input',{bubbles:true}));
+  materialSearch.focus();
+  emitType('panel_esc',{reason:'escape'});await wait();
+  ok('physical panel_esc clears a focused non-empty material search before closing',
+    CraftingPanel.debugState().materials.query===''
+      &&document.activeElement===materialSearch
+      &&__sent.filter(function(x){return x.cmd==='close'}).length===materialHostEscCloseBefore);
+  materialSearch.value='测试';
+  materialSearch.dispatchEvent(new Event('input',{bubbles:true}));
+  materialSearch.focus();
+  __queueCraftingFault({cmd:'close',mode:'send_false'});
+  emitType('panel_esc',{reason:'backdrop'});await wait();
+  ok('native backdrop remains an outer close intent and never consumes material search state',
+    Panels.getActive()==='crafting'
+      &&CraftingPanel.debugState().materials.query==='测试'
+      &&__sent.filter(function(x){return x.cmd==='close'}).length===materialHostEscCloseBefore+1);
+  materialSearch.value='';
+  materialSearch.dispatchEvent(new Event('input',{bubbles:true}));
+  await wait();
   var materialDensityToggle=document.querySelector('.crafting-panel .item-grid-mode-toggle');
   var materialFullOption=materialDensityToggle&&materialDensityToggle.querySelector('[data-layout-mode="full"]');
   var materialCompactOption=materialDensityToggle&&materialDensityToggle.querySelector('[data-layout-mode="compact"]');
@@ -1245,7 +2498,7 @@ try{
   var materialOptions=document.querySelectorAll('.crafting-material-card[role="option"]');
   ok('material listbox uses one roving option in the Tab order',
     materialGrid.getAttribute('role')==='listbox'
-      &&materialOptions.length===223
+      &&materialOptions.length===224
       &&document.querySelectorAll('.crafting-material-card[tabindex="0"]').length===1,
     JSON.stringify({role:materialGrid.getAttribute('role'),options:materialOptions.length,
       tabStops:document.querySelectorAll('.crafting-material-card[tabindex="0"]').length}));
@@ -1299,15 +2552,84 @@ try{
       &&localStorage.getItem('cf7.itemgrid.mode.crafting-materials')==='compact');
   var sourceText=document.querySelector('.crafting-material-sources').textContent;
   var useText=document.querySelector('.crafting-material-uses').textContent;
-  ok('material detail renders enemy and stage acquisition indexes',
-    sourceText.indexOf('测试敌人')>=0&&sourceText.indexOf('测试关卡')>=0&&sourceText.indexOf('概率 25%')>=0
-      &&sourceText.indexOf('逆向等级 2–8')>=0&&sourceText.indexOf('测试任务')>=0
-      &&sourceText.indexOf('奖励 3 个')>=0,
+  var enemyCards=document.querySelectorAll('[data-material-source-kind="enemy"]');
+  var sourceCards=document.querySelectorAll('.crafting-material-source-list article');
+  var sourceOrders=Array.prototype.map.call(sourceCards,function(card){return card.getAttribute('data-source-order')}).join(',');
+  ok('v2 material detail renders every ordered enemy and stage occurrence with kind-specific labels',
+    enemyCards.length===2
+      &&document.querySelectorAll('[data-material-source-kind="enemy"] .crafting-material-source-variants li').length===4
+      &&document.querySelectorAll('[data-material-source-kind="stage"] .crafting-material-source-variants li').length===2
+      &&sourceOrders==='0,1,2,3'
+      &&sourceText.indexOf('基础掉落 3%')>=0
+      &&sourceText.indexOf('关卡基准 50%')>=0
+      &&document.querySelectorAll('.crafting-material-source-guide').length===1
+      &&sourceText.indexOf('掉落率仅供参考')>=0
+      &&sourceText.indexOf('价格和库存以商店内为准')>=0,
     sourceText);
-  ok('material detail renders recipe uses and required quantities',
+  ok('identical stage occurrences remain separate and unavailable shops expose no action',
+    document.querySelectorAll('[data-material-source-kind="stage"] [data-occurrence-index]').length===2
+      &&!document.querySelector('.crafting-material-source-list button'));
+  var archiveSummary=document.querySelector('.crafting-material-summary');
+  ok('archive summary and discovered sources are independent labelled regions',
+    archiveSummary&&archiveSummary.querySelector('h3').textContent==='档案摘要'
+      &&archiveSummary.textContent.indexOf('敌人与关卡均可掉落')>=0
+      &&document.querySelector('.crafting-material-sources > h3').textContent==='已发现来源'
+      &&document.querySelectorAll('.crafting-material-source-card[data-material-source-key]').length===4);
+  await waitFor(function(){return __portraitHarness.coldSettles===3},500);
+  var sourcePortraits=document.querySelectorAll('.crafting-material-source-portrait');
+  var sourcePortraitImages=document.querySelectorAll('.crafting-material-source-portrait img');
+  ok('structured v2 sources mount one exact portrait per enemy or shop card, never per occurrence',
+    __portraitHarness.enemyCalls.length===2&&__portraitHarness.shopCalls.length===1
+      &&sourcePortraits.length===3
+      &&document.querySelectorAll('[data-material-source-kind="enemy"] .crafting-material-source-portrait').length===2
+      &&document.querySelectorAll('[data-material-source-kind="shop"] .crafting-material-source-portrait').length===1
+      &&__portraitHarness.enemyCalls[0].identity==='敌人-测试甲'
+      &&__portraitHarness.enemyCalls[1].identity==='敌人-测试乙'
+      &&__portraitHarness.enemyCalls.every(function(call){return call.context.consumer==='crafting'
+        &&call.context.legacyUrl==='assets/pets/pet_locked.png'})
+      &&__portraitHarness.shopCalls[0].identity==='迷之盔甲君',
+    JSON.stringify({enemy:__portraitHarness.enemyCalls.map(function(call){return call.identity}),
+      shop:__portraitHarness.shopCalls.map(function(call){return call.identity}),portraits:sourcePortraits.length}));
+  var portraitRects=Array.prototype.map.call(sourcePortraits,function(node){var rect=node.getBoundingClientRect();
+    return{width:rect.width,height:rect.height}});
+  ok('source portraits are decorative fixed geometry and preserve source-card semantics',
+    Array.prototype.every.call(sourcePortraits,function(node){return node.getAttribute('aria-hidden')==='true'
+      &&getComputedStyle(node).width==='48px'&&getComputedStyle(node).height==='48px'})
+      &&Array.prototype.every.call(sourcePortraitImages,function(img){return img.alt===''&&img.getAttribute('aria-hidden')==='true'
+        &&getComputedStyle(img).objectFit==='contain'})
+      &&Array.prototype.every.call(sourceCards,function(card){return card.tagName==='ARTICLE'&&!!card.querySelector('h4')})
+      &&sourceCards[sourceCards.length-1].scrollWidth<=sourceCards[sourceCards.length-1].clientWidth+1,
+    JSON.stringify(portraitRects));
+  ok('summary prose and undisclosed data never trigger portrait discovery or resource hints',
+    archiveSummary.textContent.indexOf('敌人与关卡均可掉落')>=0
+      &&__portraitHarness.enemyCalls.length===2&&__portraitHarness.shopCalls.length===1
+      &&document.querySelectorAll('link[rel="prefetch"],link[rel="preload"][as="image"]').length===0
+      &&performance.getEntriesByType('resource').filter(function(entry){return /enemy-portraits\/manifest|shop-portraits\/manifest/.test(entry.name)}).length===0);
+  ok('material detail renders recipe uses with one compact complete ingredient preview',
     document.querySelectorAll('.crafting-material-use-row').length===24
-      &&useText.indexOf('新测试枪')>=0&&useText.indexOf('每份需要 2')>=0,
+      &&document.querySelectorAll('.crafting-material-direct-purpose-row').length===1
+      &&useText.indexOf('装备改装')>=0
+      &&useText.indexOf('新测试枪')>=0
+      &&document.querySelectorAll('.crafting-material-use-ingredients').length===24
+      &&document.querySelectorAll('.crafting-material-ingredient-tile').length===55
+      &&document.querySelector('.crafting-material-ingredient-tile.is-current').getAttribute('aria-label')==='当前材料，测试矿石 ×2',
     useText);
+  var catalogTooltipBefore=__sent.filter(function(message){return message.cmd==='tooltip'
+    &&message.payload.itemName==='测试矿石'}).length;
+  var tooltipFetchBefore=__tooltipStats.fetches,tooltipCacheBefore=__tooltipStats.cacheHits,
+    tooltipRichBefore=__tooltipStats.richRenders;
+  firstMaterial.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));
+  await waitFor(function(){return __sent.filter(function(message){return message.cmd==='tooltip'
+    &&message.payload.itemName==='测试矿石'}).length===catalogTooltipBefore+1
+      &&__tooltipStats.richRenders===tooltipRichBefore+1});
+  firstMaterial.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));await wait();
+  ok('production catalog cards use the scoped async tooltip cache after one rich fetch',
+    firstMaterial.getAttribute('data-material-tooltip')==='catalog'
+      &&__sent.filter(function(message){return message.cmd==='tooltip'
+        &&message.payload.itemName==='测试矿石'}).length===catalogTooltipBefore+1
+      &&__tooltipStats.fetches===tooltipFetchBefore+1
+      &&__tooltipStats.cacheHits===tooltipCacheBefore+1,
+    JSON.stringify(__tooltipStats));
   var detailScroll=document.querySelector('.crafting-material-detail-body');
   detailScroll.scrollTop=detailScroll.scrollHeight;await wait();
   var lastUse=document.querySelector('.crafting-material-use-row:last-child');
@@ -1321,7 +2643,7 @@ try{
   firstMaterial.focus();
   firstMaterial.dispatchEvent(new KeyboardEvent('keydown',{key:'End',bubbles:true,cancelable:true}));
   await wait();
-  var lastMaterial=document.querySelector('[data-material-name="索引材料223"]');
+  var lastMaterial=document.querySelector('[data-material-name="索引材料224"]');
   var gridRect=materialGrid.getBoundingClientRect(),lastMaterialRect=lastMaterial.getBoundingClientRect();
   ok('End reaches the final material without selecting it or adding Tab stops',
     document.activeElement===lastMaterial
@@ -1330,33 +2652,137 @@ try{
       &&document.querySelectorAll('.crafting-material-card[tabindex="0"]').length===1,
     JSON.stringify({gridTop:gridRect.top,gridBottom:gridRect.bottom,lastTop:lastMaterialRect.top,lastBottom:lastMaterialRect.bottom}));
   lastMaterial.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
-  await waitFor(function(){return CraftingPanel.debugState().materials.selectedName==='索引材料223'
+  await waitFor(function(){return CraftingPanel.debugState().materials.selectedName==='索引材料224'
     &&document.querySelector('.crafting-material-use-row')
     &&document.querySelector('.crafting-material-use-row').textContent.indexOf('末页可达用途')>=0});
   ok('the final material opens its indexed detail',
-    CraftingPanel.debugState().materials.selectedName==='索引材料223'
+    CraftingPanel.debugState().materials.selectedName==='索引材料224'
       &&document.activeElement===lastMaterial
       &&document.querySelector('.crafting-material-use-row').textContent.indexOf('末页可达用途')>=0);
   document.querySelector('[data-material-filter="owned"]').click();await wait();
   ok('material ownership filter clears an invisible master and stale detail',
-    document.querySelectorAll('.crafting-material-card').length===1
+    document.querySelectorAll('.crafting-material-card').length===2
       &&CraftingPanel.debugState().materials.filter==='owned'
       &&CraftingPanel.debugState().materials.selectedName===''
       &&document.querySelector('.crafting-material-detail-view .workbench-view-title').textContent==='材料档案'
-      &&document.querySelector('.crafting-material-detail-view .workbench-view-meta').textContent==='请选择材料');
+      &&document.querySelector('.crafting-material-detail-view .workbench-view-meta').textContent==='请选择材料'
+      &&ownedMetric.querySelector('b').textContent==='2 / 224');
   document.querySelector('[data-material-filter="all"]').click();
-  var materialSearch=document.querySelector('.crafting-material-search');materialSearch.value='空用途';materialSearch.dispatchEvent(new Event('input',{bubbles:true}));await wait();
-  ok('material search narrows the catalog locally',document.querySelectorAll('.crafting-material-card').length===1&&document.querySelector('.crafting-material-card').getAttribute('data-material-name')==='空用途材料');
+  var materialSearch=document.querySelector('.crafting-material-search');materialSearch.value='空用途';materialSearch.dispatchEvent(new Event('input',{bubbles:true}));
+  await new Promise(function(resolve){setTimeout(resolve,220)});
+  ok('material search narrows the catalog and announces its debounced result count',
+    document.querySelectorAll('.crafting-material-card').length===1
+      &&document.querySelector('.crafting-material-card').getAttribute('data-material-name')==='空用途材料'
+      &&document.querySelector('.crafting-material-result-status').textContent==='显示 1 种材料，共 224 种。',
+    JSON.stringify({cards:document.querySelectorAll('.crafting-material-card').length,
+      first:document.querySelector('.crafting-material-card')&&document.querySelector('.crafting-material-card').getAttribute('data-material-name'),
+      status:document.querySelector('.crafting-material-result-status').textContent}));
+  materialSearch.value='绝不存在的材料';materialSearch.dispatchEvent(new Event('input',{bubbles:true}));
+  await new Promise(function(resolve){setTimeout(resolve,220)});
+  var filteredEmpty=document.querySelector('.crafting-material-catalog-empty[data-empty-kind="filtered-empty"]');
+  ok('filtered-empty is distinct and keeps the archive-wide metric stable',
+    filteredEmpty&&filteredEmpty.querySelector('.crafting-material-empty-action').textContent==='清除筛选'
+      &&ownedMetric.querySelector('b').textContent==='2 / 224'
+      &&document.querySelector('.crafting-material-result-status').textContent==='显示 0 种材料，共 224 种。',
+    JSON.stringify({empty:!!filteredEmpty,metric:ownedMetric.querySelector('b').textContent,
+      status:document.querySelector('.crafting-material-result-status').textContent}));
+  filteredEmpty.querySelector('.crafting-material-empty-action').click();await wait();
+  ok('clear filters resets query, quick filter and tree while preserving sort and density without auto-selection',
+    document.querySelectorAll('.crafting-material-card').length===224
+      &&CraftingPanel.debugState().materials.query===''
+      &&CraftingPanel.debugState().materials.filter==='all'
+      &&CraftingPanel.debugState().materials.filterPath.length===0
+      &&CraftingPanel.debugState().materials.sort==='archive'
+      &&CraftingPanel.debugState().materials.layoutMode==='compact'
+      &&CraftingPanel.debugState().materials.selectedName===''
+      &&document.activeElement===document.querySelector('.crafting-material-card'));
   var materialMessages=__sent.slice(materialRequestsBefore);
   ok('material route requests catalog and selected detail through crafting domain',
-    materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materials'})
-      &&materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materialDetail'&&x.payload.itemName==='测试矿石'})
-      &&materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materialDetail'&&x.payload.itemName==='索引材料223'}));
+    materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materials'&&x.payload.v===2})
+      &&materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materialDetail'
+        &&x.payload.v===2&&x.payload.snapshotId==='materials.harness.1'&&x.payload.itemName==='测试矿石'})
+      &&materialMessages.some(function(x){return x.domain==='crafting'&&x.cmd==='materialDetail'
+        &&x.payload.v===2&&x.payload.snapshotId==='materials.harness.1'&&x.payload.itemName==='索引材料224'}));
+  __portraitHarness.mode='fail';
+  var failEnemyBefore=__portraitHarness.enemyCalls.length,failShopBefore=__portraitHarness.shopCalls.length;
+  document.querySelector('[data-material-name="测试矿石"]').click();
+  await waitFor(function(){return document.querySelectorAll('.crafting-material-source-portrait').length===3
+    &&!CraftingPanel.debugState().materials.detailLoading});await wait();
+  var failedPortraits=document.querySelectorAll('.crafting-material-source-portrait');
+  ok('portrait resolver rejection fails soft without changing text, disclosure, card height, or live regions',
+    __portraitHarness.enemyCalls.length===failEnemyBefore+2
+      &&__portraitHarness.shopCalls.length===failShopBefore+1
+      &&Array.prototype.every.call(failedPortraits,function(node){return getComputedStyle(node).width==='48px'
+        &&getComputedStyle(node).height==='48px'
+        &&!node.querySelector('img').getAttribute('src')})
+      &&document.querySelector('.crafting-material-sources').textContent.indexOf('基础掉落 3%')>=0
+      &&!document.querySelector('.crafting-material-sources [aria-live]')
+      &&!document.querySelector('.crafting-material-source-list button'));
+
+  __portraitHarness.mode='late';
+  var lateWritesBefore=__portraitHarness.writes,latePendingBefore=__portraitHarness.pending.length;
+  document.querySelector('[data-material-name="测试矿石"]').click();
+  await waitFor(function(){return __portraitHarness.pending.length===latePendingBefore+3
+    &&!CraftingPanel.debugState().materials.detailLoading});
+  var lateSwitchPortraits=Array.prototype.slice.call(document.querySelectorAll('.crafting-material-source-portrait'));
+  var enemyCallsBeforeUndiscovered=__portraitHarness.enemyCalls.length;
+  var shopCallsBeforeUndiscovered=__portraitHarness.shopCalls.length;
+  document.querySelector('[data-material-name="空用途材料"]').click();
+  await waitFor(function(){return CraftingPanel.debugState().materials.selectedName==='空用途材料'
+    &&!CraftingPanel.debugState().materials.detailLoading});
+  __portraitHarness.resolvePending();await wait();
+  ok('late cold-manifest completion cannot cross a material selection epoch',
+    document.querySelectorAll('.crafting-material-source-portrait').length===0
+      &&document.querySelectorAll('.crafting-material-source-card').length===0
+      &&__portraitHarness.writes===lateWritesBefore
+      &&lateSwitchPortraits.every(function(node){return !node.isConnected
+        &&!node.hasAttribute('data-portrait-request')&&!node.hasAttribute('data-shop-portrait-request')
+        &&!node.querySelector('img').getAttribute('src')}));
+  ok('an undiscovered material creates no hidden source DOM, portrait mount, or resource hint',
+    __portraitHarness.enemyCalls.length===enemyCallsBeforeUndiscovered
+      &&__portraitHarness.shopCalls.length===shopCallsBeforeUndiscovered
+      &&document.querySelector('.crafting-material-sources').textContent.indexOf('尚未发现可核验的结构化来源')>=0
+      &&!document.querySelector('.crafting-material-sources article')
+      &&document.querySelectorAll('link[rel="prefetch"],link[rel="preload"][as="image"]').length===0);
+
+  var destroyPendingBefore=__portraitHarness.pending.length,destroyWritesBefore=__portraitHarness.writes;
+  document.querySelector('[data-material-name="测试矿石"]').click();
+  await waitFor(function(){return __portraitHarness.pending.length===destroyPendingBefore+3
+    &&!CraftingPanel.debugState().materials.detailLoading});
+  var lateDestroyPortraits=Array.prototype.slice.call(document.querySelectorAll('.crafting-material-source-portrait'));
+  Panels.close();__portraitHarness.resolvePending();await wait();
+  ok('material owner destroy invalidates every late portrait completion',
+    Panels.getActive()===null&&__portraitHarness.writes===destroyWritesBefore
+      &&lateDestroyPortraits.every(function(node){return !node.isConnected
+        &&!node.hasAttribute('data-portrait-request')&&!node.hasAttribute('data-shop-portrait-request')
+        &&!node.querySelector('img').getAttribute('src')}));
+  __portraitHarness.mode='cold';
+  emptyMaterialCatalogOnce=true;
+  Panels.open('crafting',{view:'materials',source:'empty-catalog'});
+  await waitFor(function(){return document.querySelector('.crafting-material-catalog-empty[data-empty-kind="empty"]')});
+  var trueEmpty=document.querySelector('.crafting-material-catalog-empty[data-empty-kind="empty"]');
+  var emptyMetric=document.querySelector('.workbench-metric[data-metric="ownedKinds"]');
+  ok('a successful true-empty catalog is not presented as a filtered result or failure',
+    trueEmpty.querySelector('.crafting-material-empty-statement').textContent.indexOf('没有有效材料数据')>=0
+      &&trueEmpty.querySelector('.crafting-material-empty-action').textContent==='重新同步'
+      &&emptyMetric.querySelector('b').textContent==='0 / 0'
+      &&emptyMetric.getAttribute('data-metric-state')==='ready');
+  trueEmpty.querySelector('.crafting-material-empty-action').click();
+  await waitFor(function(){return document.querySelectorAll('.crafting-material-card').length===224});
+  ok('true-empty retry recovers the catalog without inventing a selection',
+    CraftingPanel.debugState().materials.selectedName===''
+      &&document.querySelector('.workbench-metric[data-metric="ownedKinds"] b').textContent==='2 / 224');
+  var preReopenSort=document.querySelector('.crafting-material-sort .workbench-dropdown-trigger');
+  preReopenSort.click();document.querySelector('[data-dropdown-value="owned"]').click();await wait();
   Panels.open('crafting',{view:'materials',source:'runtime',panelInstanceId:'crafting.materials.return.1',
     navigationOrigin:'character_build',canReturnCharacterBuild:true});
   await waitFor(function(){var state=CraftingPanel.debugState();return document.querySelector('.crafting-return-character-btn')
-    &&document.querySelectorAll('.crafting-material-card').length===223
+    &&document.querySelectorAll('.crafting-material-card').length===224
     &&state.materials&&!state.materials.detailLoading});
+  ok('a fresh material open resets local sorting to authored archive order',
+    CraftingPanel.debugState().materials.sort==='archive'
+      &&document.querySelector('.crafting-material-sort .workbench-dropdown-trigger').textContent.indexOf('档案顺序')>=0
+      &&document.querySelector('.crafting-material-card').getAttribute('data-material-name')==='测试矿石');
   var materialReturnButton=document.querySelector('.crafting-return-character-btn'),materialReturnToasts=__toasts.length;
   __queueCraftingFault({cmd:'close',mode:'send_false'});materialReturnButton.click();await wait();
   ok('failed materials return remains mounted and retryable',

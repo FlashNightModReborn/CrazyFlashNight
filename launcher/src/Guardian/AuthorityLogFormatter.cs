@@ -32,6 +32,7 @@ namespace CF7Launcher.Guardian
                 "shop_response",
                 "crafting_response",
                 "npcshop_response",
+                "material_shop_access_response",
                 "skill_response",
                 "inventory_response",
                 "loadout_response"
@@ -44,6 +45,7 @@ namespace CF7Launcher.Guardian
             "shop_",
             "crafting_",
             "npcshop_",
+            "material_shop_access_",
             "skill_",
             "inventory_",
             "loadout_"
@@ -68,6 +70,7 @@ namespace CF7Launcher.Guardian
                 "close", "snapshot", "candidates", "preview", "commit", "tooltip", "detach",
                 "bulkQuery", "saveCart", "checkoutPreview", "checkoutCommit",
                 "checkout", "claim", "materials", "materialDetail",
+                "open_npc_shop",
                 "batchPreview", "tradePreview", "buy", "batchSell", "tradeCommit",
                 "discard", "move", "merge", "swap", "autoTransfer", "sortAndMerge",
                 "learnPreview", "learnCommit", "equip", "unequip", "moveSlot",
@@ -79,6 +82,7 @@ namespace CF7Launcher.Guardian
                 "shopCheckoutPreview", "shopCheckoutCommit", "shopCheckout", "shopClaim",
                 "craftingSnapshot", "craftingMaterials", "craftingMaterialDetail",
                 "craftingPreview", "craftingTooltip", "craftingCommit",
+                "craftingMaterialShopAuthorize",
                 "npcShopSnapshot", "npcShopTooltip", "npcShopBatchPreview",
                 "npcShopTradePreview", "npcShopBuy", "npcShopBatchSell",
                 "npcShopTradeCommit",
@@ -249,6 +253,28 @@ namespace CF7Launcher.Guardian
                 value.Append(" viewSessionId=").Append(
                     FormatDispatchOpaqueId(viewSessionId));
             }
+            return value.ToString();
+        }
+
+        internal static string FormatMaterialShopAuthorityFlashCallBound(
+            string webCallId,
+            int flashCallId,
+            string sourcePanelInstanceId)
+        {
+            var value = new StringBuilder();
+            value.Append("event=authority_flash_call_bound");
+            value.Append(" domain=material_shop_access");
+            value.Append(" webCallIdRef=").Append(
+                FormatDispatchReference(webCallId, 96, false));
+            value.Append(" flashCallId=").Append(flashCallId > 0
+                ? flashCallId.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture)
+                : "other");
+            value.Append(" panel=crafting");
+            value.Append(" panelInstanceIdRef=").Append(
+                FormatDispatchReference(sourcePanelInstanceId, 128, true));
+            value.Append(" cmd=open_npc_shop");
+            value.Append(" action=craftingMaterialShopAuthorize");
             return value.ToString();
         }
 
@@ -501,6 +527,16 @@ namespace CF7Launcher.Guardian
         private static string FormatDispatchOpaqueId(string value)
         {
             return IsSafeDispatchIdentifier(value, 160, true) ? value : "other";
+        }
+
+        private static string FormatDispatchReference(
+            string value,
+            int maxLength,
+            bool allowTilde)
+        {
+            return IsSafeDispatchIdentifier(value, maxLength, allowTilde)
+                ? CreateReference(value)
+                : "other";
         }
 
         private static bool IsSafeDispatchIdentifier(
@@ -792,6 +828,7 @@ namespace CF7Launcher.Guardian
                 case "InventoryTask":
                 case "SkillTask":
                 case "EquipmentTuningTask":
+                case "MaterialShopAccessTask":
                     return component;
                 default:
                     return "AuthorityTask";

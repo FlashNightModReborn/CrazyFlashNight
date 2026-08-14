@@ -410,12 +410,21 @@ _root.__boot.f62 = function() {
     // 加载物品数据
     ItemDataLoader.loadItemData(
         function(combinedData:Object):Void {
+            if (!(combinedData instanceof Array)) {
+                _root.__boot.itemDataFailed = true;
+                return;
+            }
             trace("主程序：物品数据加载成功！");
             _root.发布消息("物品数据加载完毕");
-            org.flashNight.arki.item.ItemUtil.loadItemData(combinedData);
+            // equipment-config 与 item-data 同属 S8 并发。先保存 raw payload，
+            // 由 BootSequencer 在 config settled 后唯一调用 ItemUtil.loadItemData，
+            // 避免 multiTierDict 固化旧 tierDataList。
+            _root.__boot.itemDataPayload = combinedData;
+            _root.__boot.itemDataLoaded = true;
         },
         function():Void {
             trace("主程序：物品数据加载失败！");
+            _root.__boot.itemDataFailed = true;
         }
     );
 };
@@ -428,14 +437,20 @@ _root.__boot.f63 = function() {
     // 加载敌人属性数据
     enemyPropertiesLoader.loadEnemyProperties(
         function(combinedData:Object):Void {
+            if (combinedData == null || typeof combinedData != "object") {
+                _root.__boot.enemyPropertiesFailed = true;
+                return;
+            }
             trace("主程序：敌人属性数据加载成功！");
             _root.发布消息("敌人属性数据加载完毕");
             //trace("合并后的数据: " + ObjectUtil.toString(combinedData));
             // 在此处处理合并后的敌人属性数据
             _root.敌人属性表 = combinedData;
+            _root.__boot.enemyPropertiesReady = true;
         },
         function():Void {
             trace("主程序：敌人属性数据加载失败！");
+            _root.__boot.enemyPropertiesFailed = true;
         }
     );
 };
@@ -459,9 +474,11 @@ _root.__boot.f64 = function() {
             _root.发布消息("材料数据加载完毕");
             if(!_root.图鉴信息) _root.图鉴信息 = new Object();
             _root.图鉴信息.材料大全 = data.Material;
+            _root.__boot.legacyMaterialDictionaryReady = true;
         },
         function():Void {
             trace("主程序：材料大全数据加载失败！");
+            _root.__boot.legacyMaterialDictionaryFailed = true;
         }
     );
 
@@ -652,26 +669,45 @@ _root.__boot.f69 = function() {
 _root.__boot.f70 = function() {
     var equipconfig_loader = org.flashNight.gesh.xml.LoadXml.EquipmentConfigLoader.getInstance();
 
-    equipconfig_loader.loadEquipmentConfig(
-        function(data:Object):Void {
+        equipconfig_loader.loadEquipmentConfig(
+            function(data:Object):Void {
+            if (data == null || typeof data != "object") {
+                _root.__boot.equipmentConfigSettled = true;
+                return;
+            }
             trace("主程序：装备配置数据加载成功！");
             org.flashNight.arki.item.EquipmentUtil.loadEquipmentConfig(data);
+            _root.__boot.equipmentConfigSettled = true;
         },
         function():Void {
             trace("主程序：装备配置数据加载失败，使用默认值！");
+            // 保持现役 fallback：失败不阻断 boot，但 item projection 必须等到
+            // 已明确落入默认配置分支后再执行。
+            _root.__boot.equipmentConfigSettled = true;
         }
     );
 
     // 插件数据
     var moddata_loader = org.flashNight.gesh.xml.LoadXml.EquipModListLoader.getInstance();
 
-    moddata_loader.loadModData(
-        function(data:Object):Void {
-            org.flashNight.arki.item.EquipmentUtil.loadModData(data.mod);
-        },
-        function():Void {
-        }
-    );
+        moddata_loader.loadModData(
+            function(data:Object):Void {
+                if (data == null || !(data.mod instanceof Array)) {
+                    _root.__boot.equipmentModFailed = true;
+                    return;
+                }
+                org.flashNight.arki.item.EquipmentUtil.loadModData(data.mod);
+                if (org.flashNight.arki.item.EquipmentUtil.modDict == undefined
+                        || !(org.flashNight.arki.item.EquipmentUtil.modList instanceof Array)) {
+                    _root.__boot.equipmentModFailed = true;
+                    return;
+                }
+                _root.__boot.equipmentModReady = true;
+            },
+            function():Void {
+                _root.__boot.equipmentModFailed = true;
+            }
+        );
 };
 _root.__boot.f74 = function() {
     var npcskillloader = org.flashNight.gesh.json.LoadJson.NPCSkillLoader.getInstance();

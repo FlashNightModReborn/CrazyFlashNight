@@ -138,6 +138,7 @@ var REQUIRED_FILES = [
     'launcher/web/modules/kshop-catalog-presenter.js',
     'launcher/web/modules/kshop-owned-inventory-presenter.js',
     'launcher/web/modules/kshop-tooltip-presenter.js',
+    'launcher/web/modules/npcshop-material-navigation.js',
     'launcher/web/modules/npcshop-secondary-pages.js',
     'launcher/web/modules/crafting-detail-presenter.js',
     'launcher/web/modules/skills-library.js',
@@ -1181,9 +1182,10 @@ if (exists(registryRel)) {
         'WB141', 'standalone inventory workbench retains a crafting-owner fallback or return-target alias',
         'launcher/web/modules/inventory-workbench.js');
     expectOrdered(lazyBlock('npcshop'), [
+        'modules/npcshop-material-navigation.js',
         'modules/npcshop-secondary-pages.js',
         'modules/npcshop.js'
-    ], 'WB024', 'NPC secondary-page presenters must load before the facade', registryRel);
+    ], 'WB024', 'NPC material navigation and secondary presenters must load before the facade', registryRel);
     expectOrdered(lazyBlock('skills'), [
         'modules/item-filter.js',
         'modules/skills-runtime.js',

@@ -2,6 +2,7 @@
 
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
+import org.flashNight.arki.item.MaterialArchiveProjector;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -46,6 +47,9 @@ class org.flashNight.arki.item.CraftingPanelService {
         };
         _root.gameCommands["craftingMaterialDetail"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("materialDetail", params);
+        };
+        _root.gameCommands["craftingMaterialShopAuthorize"] = function(params) {
+            org.flashNight.arki.item.CraftingPanelService.handleMaterialShopAuthorize(params);
         };
         _root.gameCommands["craftingPreview"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("preview", params);
@@ -125,11 +129,42 @@ class org.flashNight.arki.item.CraftingPanelService {
         sendResponse(response);
     }
 
+    /**
+     * A4b Host-only authority wire. It has its own response task and deliberately
+     * bypasses CraftingTask/crafting_response/_busy. An uncorrelatable fid is
+     * dropped; every correlatable malformed request receives exact invalid_payload.
+     */
+    public static function handleMaterialShopAuthorize(params:Object):Void {
+        if (!validMaterialShopAccessCallId(params)) return;
+        var response:Object;
+        // D7 requires an unexpected projector/catalog exception to fail closed as
+        // authority_unavailable. Keep this catch on the low-frequency click path.
+        try {
+            response = MaterialArchiveProjector.authorizeShopAccess(params);
+        } catch (error) {
+            trace("[CraftingPanelService] material shop authority unavailable: "
+                + String(error));
+            response = {task:"material_shop_access_response",
+                callId:Number(params.callId), success:false, v:1,
+                decision:"deny", error:"authority_unavailable"};
+        }
+        sendResponse(response);
+    }
+
+    private static function validMaterialShopAccessCallId(params:Object):Boolean {
+        if (params == null || typeof params != "object"
+                || typeof params.callId != "number") return false;
+        var callId:Number = Number(params.callId);
+        return !isNaN(callId) && (callId - callId) == 0
+            && Math.floor(callId) == callId
+            && callId >= 1 && callId <= 2147483647;
+    }
+
     public static function execute(commandName:String, params:Object):Object {
         if (_busy && commandName != "snapshot" && commandName != "materials"
                 && commandName != "materialDetail" && commandName != "tooltip") return fail("busy");
         if (commandName == "snapshot") return executeSnapshot(params);
-        if (commandName == "materials") return executeMaterials();
+        if (commandName == "materials") return executeMaterials(params);
         if (commandName == "materialDetail") return executeMaterialDetail(params);
         if (commandName == "preview") return executePreview(params);
         if (commandName == "tooltip") return executeTooltip(params);
@@ -141,6 +176,11 @@ class org.flashNight.arki.item.CraftingPanelService {
     }
 
     private static function executeSnapshot(params:Object):Object {
+        if (params != null && params.materialSnapshotId != undefined) {
+            var navigationError:String = MaterialArchiveProjector.authorizeCraftingAccess(
+                params.materialSnapshotId);
+            if (navigationError != "") return fail(navigationError);
+        }
         var category:String = String(params.category || "");
         var recipes:Array = getRecipes(category);
         if (recipes == null) return fail("category_not_found");
@@ -154,7 +194,11 @@ class org.flashNight.arki.item.CraftingPanelService {
             balance:buildBalance(), skills:buildSkills(), note:categoryNote(category)};
     }
 
-    private static function executeMaterials():Object {
+    private static function executeMaterials(params:Object):Object {
+        var version:Number = materialRequestVersion(params);
+        if (version == 2) return MaterialArchiveProjector.executeMaterials();
+        if (version != 1) return fail("unsupported_version");
+        MaterialArchiveProjector.reset();
         var informationByName:Object = buildMaterialInformationIndex();
         var names:Array = [];
         var seen:Object = {};
@@ -193,6 +237,9 @@ class org.flashNight.arki.item.CraftingPanelService {
     }
 
     private static function executeMaterialDetail(params:Object):Object {
+        var version:Number = materialRequestVersion(params);
+        if (version == 2) return MaterialArchiveProjector.executeMaterialDetail(params);
+        if (version != 1) return fail("unsupported_version");
         var name:String = String(params.itemName || "");
         if (!ItemUtil.isMaterial(name)) return fail("item_not_found");
         var data:Object = ItemUtil.getRawItemData(name);
@@ -241,6 +288,15 @@ class org.flashNight.arki.item.CraftingPanelService {
             result[name] = String(row.Information || "");
         }
         return result;
+    }
+
+    /** 旧 Host/直接 AS2 caller 未携 v 时维持 v1；显式版本必须是整数。 */
+    private static function materialRequestVersion(params:Object):Number {
+        if (params == null || params.v === undefined) return 1;
+        if (typeof params.v != "number") return -1;
+        var version:Number = Number(params.v);
+        return isNaN(version) || (version - version) != 0
+            || Math.floor(version) != version ? -1 : version;
     }
 
     private static function projectObtainRecord(record:Object):Object {
@@ -944,6 +1000,7 @@ class org.flashNight.arki.item.CraftingPanelService {
     public static function testOnlyReset():Void {
         _busy = false; _plan = null; _planSeq = 0;
         _availabilityPlanCount = 0; _maximumProbeCount = 0;
+        MaterialArchiveProjector.reset();
     }
 
     public static function testOnlyStats():Object {

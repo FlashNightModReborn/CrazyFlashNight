@@ -316,8 +316,11 @@ namespace CF7Launcher.Tests.Guardian
                 StringComparison.Ordinal);
             Assert.True(exactOwner >= 0);
             Assert.True(retireRequestOwner > exactOwner);
-            Assert.True(exactHostClose > retireRequestOwner);
-            Assert.True(commitEffects > retireRequestOwner);
+            Assert.True(exactHostClose > exactOwner);
+            Assert.True(commitEffects > exactOwner);
+            Assert.Contains(
+                "TryHandlePreCommitCraftingSourceClose(",
+                close);
             Assert.Contains(
                 "deferInventoryOwnerCloseCommit",
                 close);

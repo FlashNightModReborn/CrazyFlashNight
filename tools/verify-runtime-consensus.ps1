@@ -7,6 +7,10 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$windowsPowerShell = Join-Path $PSHOME 'powershell.exe'
+if (-not (Test-Path -LiteralPath $windowsPowerShell -PathType Leaf)) {
+    throw 'Cannot resolve the current absolute Windows PowerShell host.'
+}
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
 $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
 $DeploymentRoot = if ($DeploymentRoot) { (Resolve-Path -LiteralPath $DeploymentRoot).Path.TrimEnd('\') } else { $ProjectRoot }
@@ -137,9 +141,9 @@ if ($expectedRequestId -ne ([string]$record.requestId).ToUpperInvariant()) {
 
 $bundleVerifier = Join-Path $ProjectRoot 'tools\verify-runtime-bundle-v2.ps1'
 if ($Staged) {
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $bundleVerifier -ProjectRoot $ProjectRoot -Staged
+    & $windowsPowerShell -NoProfile -ExecutionPolicy Bypass -File $bundleVerifier -ProjectRoot $ProjectRoot -Staged
 } else {
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $bundleVerifier `
+    & $windowsPowerShell -NoProfile -ExecutionPolicy Bypass -File $bundleVerifier `
         -ProjectRoot $ProjectRoot -DeploymentRoot $DeploymentRoot
 }
 if ($LASTEXITCODE -ne 0) { throw 'Release consensus deployment failed runtime bundle v2 verification.' }

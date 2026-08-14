@@ -95,6 +95,12 @@ $hairdresserRequiredWebPaths = @(
 $jukeboxRequiredWebPaths = @(
     'modules\jukebox\jukebox-panel.js'
 )
+$portraitRequiredWebPaths = @(
+    'modules\portrait-resolver.js',
+    'assets\enemy-portraits\manifest.json',
+    'modules\shop-portrait-resolver.js',
+    'assets\shop-portraits\manifest.json'
+)
 $requiredWebPathsMatch = [regex]::Match(
     $validatorSource,
     '(?s)\$requiredWebPaths\s*=\s*@\((?<body>.*?)\)\s*\r?\n\s*\$checks\s*\+=\s*New-Cf7RequiredPathsCheck\s+-Name\s+''required-web-runtime-assets''')
@@ -111,6 +117,10 @@ foreach ($relativePath in $hairdresserRequiredWebPaths) {
 foreach ($relativePath in $jukeboxRequiredWebPaths) {
     Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
         "production required-Web-assets must include the jukebox panel asset: $relativePath"
+}
+foreach ($relativePath in $portraitRequiredWebPaths) {
+    Assert-Cf7Test $requiredWebPathsMatch.Groups['body'].Value.Contains("'$relativePath'") `
+        "production required-Web-assets must include the portrait runtime asset: $relativePath"
 }
 Assert-Cf7Test (-not $requiredWebPathsMatch.Groups['body'].Value.Contains("'modules\jukebox.js'")) `
     'production required-Web-assets must not resurrect retired modules\jukebox.js'

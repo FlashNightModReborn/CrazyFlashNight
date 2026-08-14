@@ -14,6 +14,17 @@ namespace CF7Launcher.Tests.AgentRuntime.NativeInput
     public sealed class NativeInputExecutorTests
     {
         [Fact]
+        public void RuntimeInjectionTag_IsNonZeroAndRoundTripsAsDword()
+        {
+            using var fixture = new Fixture();
+
+            Assert.InRange(
+                fixture.Guard.RuntimeInjectionTag,
+                1UL,
+                uint.MaxValue);
+        }
+
+        [Fact]
         public void ExactTaggedBatch_FullHookObservation_IsDispatched()
         {
             using var fixture = new Fixture();
@@ -108,6 +119,46 @@ namespace CF7Launcher.Tests.AgentRuntime.NativeInput
             using var fixture = new Fixture();
             fixture.Win32.HitHwnd = new IntPtr(808);
             fixture.Win32.RelatedHit = false;
+
+            NativeInputDispatchResult result =
+                fixture.Executor.Execute(
+                    fixture.LeftClick());
+
+            Assert.Equal(
+                ActionOutcome.Rejected,
+                result.Outcome);
+            Assert.Equal(
+                "hit_test_mismatch",
+                result.ReasonCode);
+            Assert.Empty(fixture.Win32.SentBatches);
+        }
+
+        [Fact]
+        public void PointerInsideRegisteredTargetChild_IsDispatched()
+        {
+            using var fixture = new Fixture();
+            fixture.Win32.HitHwnd = new IntPtr(808);
+            fixture.Win32.RelatedHit = true;
+            fixture.Targets.RegisteredHitHwnd =
+                new IntPtr(808);
+
+            NativeInputDispatchResult result =
+                fixture.Executor.Execute(
+                    fixture.LeftClick());
+
+            Assert.Equal(
+                ActionOutcome.InputDispatched,
+                result.Outcome);
+            Assert.Equal("none", result.ReasonCode);
+            Assert.Single(fixture.Win32.SentBatches);
+        }
+
+        [Fact]
+        public void RelatedButUnregisteredOwnedWindow_IsRejected()
+        {
+            using var fixture = new Fixture();
+            fixture.Win32.HitHwnd = new IntPtr(808);
+            fixture.Win32.RelatedHit = true;
 
             NativeInputDispatchResult result =
                 fixture.Executor.Execute(
@@ -666,6 +717,8 @@ namespace CF7Launcher.Tests.AgentRuntime.NativeInput
             }
 
             internal NativeInputTargetSnapshot Snapshot { get; set; }
+            internal IntPtr RegisteredHitHwnd { get; set; } =
+                new IntPtr(100);
             internal bool DispatchIdentityCurrent { get; set; } =
                 true;
             internal int ResolveCount { get; private set; }
@@ -747,7 +800,7 @@ namespace CF7Launcher.Tests.AgentRuntime.NativeInput
                 NativeInputTargetSnapshot target,
                 IntPtr candidateHwnd)
             {
-                return candidateHwnd == target.TopLevelHwnd;
+                return candidateHwnd == RegisteredHitHwnd;
             }
         }
 

@@ -195,6 +195,89 @@ namespace CF7Launcher.Tests.AgentRuntime.Transport
         }
 
         [Fact]
+        public void ExactOwnerCanReplaceExpiredTicketWithoutAcceptingIt()
+        {
+            using AgentRendezvousStore store = CreateStore();
+            AgentRendezvousOwner owner = CreateOwner("refresh");
+            AgentRendezvousDocument expired = store.Publish(
+                owner,
+                TimeSpan.FromSeconds(1));
+            _clock.UtcNow = _clock.UtcNow.AddSeconds(1);
+
+            Assert.True(
+                store.TryRotateOwnedTicket(
+                    TimeSpan.FromSeconds(30),
+                    out AgentRendezvousDocument refreshed,
+                    out string refreshReason));
+            Assert.Equal("refreshed", refreshReason);
+            Assert.NotEqual(
+                expired.ConnectionTicket,
+                refreshed.ConnectionTicket);
+            Assert.Equal(
+                _clock.UtcNow.AddSeconds(30),
+                refreshed.TicketExpiresUtc);
+
+            Assert.False(
+                store.TryConsumeAndRotate(
+                    expired.ConnectionTicket,
+                    owner.LifecycleId,
+                    out _,
+                    out string expiredReason));
+            Assert.Equal("ticket_mismatch", expiredReason);
+            Assert.True(
+                store.TryConsumeAndRotate(
+                    refreshed.ConnectionTicket,
+                    owner.LifecycleId,
+                    out _,
+                    out string acceptedReason));
+            Assert.Equal("accepted", acceptedReason);
+        }
+
+        [Fact]
+        public void OwnedTicketRefreshRejectsForeignOrStaleState()
+        {
+            using AgentRendezvousStore store = CreateStore();
+            AgentRendezvousOwner owner = CreateOwner("refresh-guard");
+            store.Publish(owner, TimeSpan.FromSeconds(30));
+
+            string original = File.ReadAllText(store.Path);
+            using JsonDocument parsed = JsonDocument.Parse(original);
+            var fields = parsed.RootElement
+                .EnumerateObject()
+                .ToDictionary(
+                    property => property.Name,
+                    property => property.Value.Clone(),
+                    StringComparer.Ordinal);
+            fields["pipeId"] = JsonDocument.Parse(
+                "\"" + AgentRendezvousStore.GenerateOpaqueId() + "\"")
+                .RootElement.Clone();
+            File.WriteAllText(
+                store.Path,
+                JsonSerializer.Serialize(fields));
+
+            Assert.False(
+                store.TryRotateOwnedTicket(
+                    TimeSpan.FromSeconds(30),
+                    out _,
+                    out string mismatchReason));
+            Assert.Equal(
+                "owned_rendezvous_mismatch",
+                mismatchReason);
+            Assert.Equal(
+                File.ReadAllText(store.Path),
+                JsonSerializer.Serialize(fields));
+
+            File.WriteAllText(store.Path, original);
+            _processProbe.Alive = false;
+            Assert.False(
+                store.TryRotateOwnedTicket(
+                    TimeSpan.FromSeconds(30),
+                    out _,
+                    out string staleReason));
+            Assert.Equal("owned_process_stale", staleReason);
+        }
+
+        [Fact]
         public void PidStartTimeAndLifecycleStaleness_FailClosed()
         {
             using AgentRendezvousStore store = CreateStore();
@@ -252,6 +335,11 @@ namespace CF7Launcher.Tests.AgentRuntime.Transport
                 () => store.Publish(
                     CreateOwner("g"),
                     TimeSpan.Zero));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => store.TryRotateOwnedTicket(
+                    TimeSpan.FromSeconds(30.001),
+                    out _,
+                    out _));
         }
 
         [Fact]

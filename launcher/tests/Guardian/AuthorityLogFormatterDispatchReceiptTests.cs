@@ -103,6 +103,33 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void MaterialShopBindingReceipt_HashesWebAndSourceIdentifiers()
+        {
+            const string webCallId = "material.open-1";
+            const string sourceInstance = "panel.crafting~1";
+            string line = AuthorityLogFormatter
+                .FormatMaterialShopAuthorityFlashCallBound(
+                    webCallId,
+                    42,
+                    sourceInstance);
+
+            Assert.Equal(
+                "event=authority_flash_call_bound"
+                + " domain=material_shop_access"
+                + " webCallIdRef="
+                + AuthorityLogFormatter.CreateReference(webCallId)
+                + " flashCallId=42"
+                + " panel=crafting"
+                + " panelInstanceIdRef="
+                + AuthorityLogFormatter.CreateReference(sourceInstance)
+                + " cmd=open_npc_shop"
+                + " action=craftingMaterialShopAuthorize",
+                line);
+            Assert.DoesNotContain(webCallId, line);
+            Assert.DoesNotContain(sourceInstance, line);
+        }
+
+        [Fact]
         public void CrossDomainActionAndUnreachableInventoryPanel_FailClosed()
         {
             string mismatch = AuthorityLogFormatter.FormatAuthorityFlashCallBound(

@@ -61,6 +61,73 @@
         border-color:var(--wb-focus);
     }
 
+    .workbench-dropdown {
+        position:relative;
+        display:inline-flex;
+        min-width:0;
+    }
+    .workbench-dropdown[hidden] { display:none; }
+    .workbench-dropdown-trigger {
+        min-width:96px;
+        min-height:28px;
+        padding:0 22px 0 8px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+    .workbench-dropdown-trigger::after {
+        content:"";
+        position:absolute;
+        top:50%;
+        right:8px;
+        width:0;
+        height:0;
+        border:4px solid transparent;
+        border-top-color:currentColor;
+        transform:translateY(-1px);
+    }
+    .workbench-dropdown.is-open .workbench-dropdown-trigger::after {
+        border-top-color:transparent;
+        border-bottom-color:currentColor;
+        transform:translateY(-5px);
+    }
+    .workbench-dropdown-menu {
+        position:absolute;
+        z-index:35;
+        top:calc(100% + 3px);
+        right:0;
+        display:grid;
+        min-width:max(100%,128px);
+        padding:3px;
+        box-sizing:border-box;
+        color:var(--wb-text);
+        background:var(--wb-bg);
+        border:1px solid var(--wb-line);
+        box-shadow:0 8px 20px color-mix(in srgb,var(--wb-bg) 72%,transparent);
+    }
+    .workbench-dropdown-menu[hidden] { display:none; }
+    .workbench-dropdown-option {
+        min-height:28px;
+        padding:0 8px;
+        color:var(--wb-muted);
+        text-align:left;
+        background:transparent;
+        border:1px solid transparent;
+        font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+        white-space:nowrap;
+    }
+    .workbench-dropdown-option:hover:not(:disabled),
+    .workbench-dropdown-option:focus-visible {
+        color:var(--wb-text);
+        background:var(--wb-surface);
+        border-color:var(--wb-line);
+    }
+    .workbench-dropdown-option[aria-selected="true"] {
+        color:var(--wb-bg);
+        background:var(--wb-accent);
+        border-color:var(--wb-focus);
+    }
+
     .workbench-help-btn {
         width:30px;
         min-width:30px;

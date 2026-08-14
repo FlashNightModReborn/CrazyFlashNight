@@ -23,6 +23,8 @@ const {
 } = require("./common");
 const { ControlChannel } = require("./control-channel");
 const { TranscriptWriter, attachPassiveRecorder } = require("./passive-recorder");
+const WebSocketImplementation = require(
+  "../../../launcher/perf/node_modules/playwright-core/lib/utilsBundle.js").ws;
 const ProductionClosure = require("./production-closure");
 const {
   assertInventorySnapshotSurface,
@@ -529,6 +531,7 @@ async function execute(args, adapterOverride, lifecycle) {
     const first = await session.start("first", { readyTimeoutMs: args.readyTimeoutMs, pollMs: args.pollMs });
     state.observer = await attachPassiveRecorder({ root: ROOT, runDir, writer,
       cdpBinding: first.cdpBinding, runtimeIdentity: first.identity,
+      webSocketImplementation: WebSocketImplementation,
       timeoutMs: args.readyTimeoutMs, pollMs: args.pollMs });
 
     const capability = await controlStep(state, "capability_probe", {
@@ -648,6 +651,7 @@ async function execute(args, adapterOverride, lifecycle) {
     const restart = await session.start("restart", { readyTimeoutMs: args.readyTimeoutMs, pollMs: args.pollMs });
     state.observer = await attachPassiveRecorder({ root: ROOT, runDir, writer,
       cdpBinding: restart.cdpBinding, runtimeIdentity: restart.identity,
+      webSocketImplementation: WebSocketImplementation,
       timeoutMs: args.readyTimeoutMs, pollMs: args.pollMs });
     const restartOpen = await openPanel(state, "open_restart_readback", excluded,
       "在 fresh PID 上通过真实 NPC 入口打开同一商店，只读核对最终持久化状态。禁止内部 opener。");

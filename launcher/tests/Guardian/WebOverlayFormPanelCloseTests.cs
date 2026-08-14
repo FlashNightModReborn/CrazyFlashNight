@@ -148,6 +148,151 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void CraftingCloseDefersBehindMaterialReplaceBeforeOwnerRetirement()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string handler = Slice(
+                source,
+                "private void HandlePanelMessage(string json)",
+                "private void RespondPanelDomainError(");
+            int defer = handler.IndexOf(
+                ".TryHandlePreCommitCraftingSourceClose(",
+                StringComparison.Ordinal);
+            int exactClose = handler.IndexOf(
+                "_panelHost.TryClosePanelExact(",
+                defer,
+                StringComparison.Ordinal);
+            int seal = handler.IndexOf(
+                "SealPanelRequestOwner(",
+                defer,
+                StringComparison.Ordinal);
+
+            Assert.True(defer >= 0);
+            Assert.True(exactClose > defer);
+            Assert.True(seal > exactClose);
+        }
+
+        [Fact]
+        public void PanelCloseRestoresFlashFocusAfterOverlaySettlement()
+        {
+            string panelHost = File.ReadAllText(
+                FindRepositoryFile(
+                    "launcher", "src", "Guardian",
+                    "PanelHostController.cs"));
+            string close = Slice(
+                panelHost,
+                "private void DoClose()",
+                "public void Dispose()");
+            int webClose = close.IndexOf(
+                "_web.TryPostToWeb(closePayload)",
+                StringComparison.Ordinal);
+            int suspend = close.IndexOf(
+                "_web.SuspendAfterPanel(closingName)",
+                StringComparison.Ordinal);
+            int shield = close.IndexOf(
+                "_shield.ExitTelemetryMode()",
+                StringComparison.Ordinal);
+            int hud = close.IndexOf(
+                "_hud.Resume()",
+                StringComparison.Ordinal);
+            int toast = close.IndexOf(
+                "_toastOverlay.SetReady()",
+                StringComparison.Ordinal);
+            int escape = close.IndexOf(
+                "_escSource.SetPanelEscapeEnabled(false)",
+                StringComparison.Ordinal);
+            int cursor = close.IndexOf(
+                "_web.UpdateCursorFromScreenPoint",
+                StringComparison.Ordinal);
+            int closed = close.IndexOf(
+                "PostPanelClosed(closingName, closingInstance)",
+                StringComparison.Ordinal);
+            int settledRestore = close.IndexOf(
+                "_web.RestoreFlashInputFocusAfterPanelClose(closingName)",
+                StringComparison.Ordinal);
+
+            Assert.True(webClose >= 0);
+            Assert.True(suspend > webClose);
+            Assert.True(shield > suspend);
+            Assert.True(hud > shield);
+            Assert.True(toast > hud);
+            Assert.True(escape > toast);
+            Assert.True(cursor > escape);
+            Assert.True(closed > cursor);
+            Assert.True(settledRestore > closed);
+
+            string overlay = File.ReadAllText(FindWebOverlaySource());
+            string restore = Slice(
+                overlay,
+                "internal bool RestoreFlashInputFocusAfterPanelClose(",
+                "private void ScheduleNativeHudIdleSuspend(");
+            Assert.Contains("_disposed || _panelMode", restore);
+            Assert.Contains("!_panelTakeForeground", restore);
+            Assert.Contains("panel_close:settled:", restore);
+            Assert.Contains("_flashFocusRestorer(", restore);
+        }
+
+        [Fact]
+        public void PanelHostClosePayloadRetiresOnlyTheExactWebOwner()
+        {
+            JObject payload = JObject.Parse(
+                PanelHostController.BuildPanelClosePayload(
+                    "crafting",
+                    "panel.crafting.exact"));
+
+            Assert.Equal("panel_cmd", payload.Value<string>("type"));
+            Assert.Equal("close", payload.Value<string>("cmd"));
+            Assert.Equal("crafting", payload.Value<string>("panel"));
+            Assert.Equal(
+                "panel.crafting.exact",
+                payload.Value<string>("panelInstanceId"));
+            Assert.Equal(4, payload.Count);
+            Assert.Null(
+                PanelHostController.BuildPanelClosePayload(
+                    "crafting",
+                    null));
+        }
+
+        [Fact]
+        public void NpcShopUserAndSystemCloseContractsRemainStrictAndRoutable()
+        {
+            const string instance = "panel.npcshop.material";
+            foreach (string reason in new[]
+            {
+                "button", "escape", "backdrop", "toggle"
+            })
+            {
+                var outer = new JObject
+                {
+                    ["type"] = "panel",
+                    ["panel"] = "npcshop",
+                    ["cmd"] = "close",
+                    ["panelInstanceId"] = instance,
+                    ["reason"] = reason
+                };
+                Assert.True(MaterialShopNavigationCoordinator
+                    .IsValidNpcShopOuterCloseEnvelope(outer));
+                Assert.True(WebOverlayForm.IsValidInventoryOwnerCloseEnvelope(
+                    outer, "npcshop", instance));
+            }
+
+            var systemFailure = new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "npcshop",
+                ["cmd"] = "close",
+                ["panelInstanceId"] = instance
+            };
+            Assert.True(MaterialShopNavigationCoordinator
+                .IsValidNpcShopSystemFailureCloseEnvelope(systemFailure));
+            Assert.True(WebOverlayForm.IsValidInventoryOwnerCloseEnvelope(
+                systemFailure, "npcshop", instance));
+            systemFailure["extra"] = true;
+            Assert.False(MaterialShopNavigationCoordinator
+                .IsValidNpcShopSystemFailureCloseEnvelope(systemFailure));
+        }
+
+        [Fact]
         public void WorkbenchMountFailureEmitterMatchesExactHostCloseContract()
         {
             string panelsSource = File.ReadAllText(

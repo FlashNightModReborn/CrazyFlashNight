@@ -59,9 +59,11 @@ cd "<项目根目录>"
 .\automation\dev.ps1 -ReuseOnly
 .\automation\dev.ps1 -ForceBuild
 .\automation\dev.ps1 -BuildOnly
+# 长路径隔离 Worktree 的受控 BuildOnly 叶节点（只能与上述两个开关同时使用）
+.\automation\dev.ps1 -ForceBuild -BuildOnly -CandidateLeaf a5
 ```
 
-`-Status` 只读报告当前身份、精确匹配和同身份闭包分叉；`-ReuseOnly` 禁止缓存未命中时构建；`-ForceBuild` 强制新建 candidate，但新旧同身份闭包不一致仍 fail-closed；`-BuildOnly` 只选择/构建并验证 candidate，不启动进程。忽略路径 `tmp/runtime-dev/active.v1.json` 只是便于精确复用的索引，每次执行前都会重算 Worktree 身份并重验 candidate，不是信任或部署证据。
+`-Status` 只读报告当前身份、精确匹配和同身份闭包分叉；`-ReuseOnly` 禁止缓存未命中时构建；`-ForceBuild` 强制新建 candidate，但新旧同身份闭包不一致仍 fail-closed；`-BuildOnly` 只选择/构建并验证 candidate，不启动进程。`-CandidateLeaf` 只允许与 exact `-ForceBuild -BuildOnly` 组合使用，值必须是 1–32 个小写 ASCII 字母、数字或连字符组成的单一路径段；入口在 `tmp/runtime-candidates/v2` 下构造 direct child、复用既有 canonical/reparse 护栏并预检 bootstrap `<260` 路径预算，再把绝对 `CandidateRoot` 交给 producer。已存在的叶节点一律按 immutable candidate 拒绝，绝不启用 `ForceReplace`。该参数用于长路径隔离 Worktree，不改变 build identity、payload closure 或正式发布协议。忽略路径 `tmp/runtime-dev/active.v1.json` 只是便于精确复用的索引，每次执行前都会重算 Worktree 身份并重验 candidate，不是信任或部署证据。
 
 完整游戏 E2E 还受 Flash 既有资源定位约束：当前项目根的 canonical 路径必须保留 `...\resources` 这一层级语义。任意名的普通 Worktree 即使能生成并启动 candidate，也可能因 `PathManager` 无法建立资源基址而停在任务数据加载。需要隔离实机验证时，应把独立 Worktree 建成 `<隔离目录>\resources`，再从该根运行 `automation/dev.ps1`；不要为满足路径约束覆盖、复制或清理正在使用的 Steam `resources` 工作区。仅构建、静态门和 Host/Web 单测不需要这一完整游戏路径形态。
 
@@ -85,6 +87,9 @@ node tools/cf7-agent/unattended.js --adapter jsonl --slot cf7_agent_equipment_tu
 # trusted Core unattended：显式 candidate ID
 node tools/cf7-agent/unattended.js --adapter mcp --slot cf7_agent_character_build --candidate-id "<candidateId>"
 
+# A5 隔离候选专用：物化 resources 根 + 此 slot + 此短叶
+node tools/cf7-agent/unattended.js --adapter mcp --slot cf7_agent_a5_material_shop_run --candidate-id a5
+
 # 仅供尚未迁移的旧 HTTP runner；该进程不创建 Agent Runtime/Wings
 .\automation\start.ps1 -EnableLegacyHttpAutomation
 ```
@@ -95,7 +100,7 @@ node tools/cf7-agent/unattended.js --adapter mcp --slot cf7_agent_character_buil
 
 Audio Platform v2 R4 不改变 start/operator 命令面。`sleep_resume` 收尾需在末 closing `Ready` 后取得两份显式 snapshot，由 observer 在同一 final generation/physical tuple 的同一路 bus 上证明 frame 前进与非静音。有效 E2/H2 后才可创建 source tag/request 与正式 builders；request 后立即形成 evidence-only E3 `h2-request-link.json`。promotion 脚本会在 VerifyOnly/transaction 前再次验证该 link，缺失或任一绑定漂移均在部署写前失败。
 
-`-UnattendedSlot` 与 `-UnattendedAdapter jsonl|mcp` 选择 trusted Core runner；固定 allow-list 为 `cf7_agent_equipment_tuning`、`cf7_agent_arena_calibration`、`cf7_agent_character_build`、`cf7_agent_loot_target_full_v1`，不能由 caller 提交 principal、capability、路径或 legacy flag。formal/candidate 均先校验完整 v2 manifest inventory、Core row/hash/size、build identity、payload closure 与无 reparse 的固定目录；随后执行所选 payload 自身的 `Core.exe --agent-unattended-runner`。
+`-UnattendedSlot` 与 `-UnattendedAdapter jsonl|mcp` 选择 trusted Core runner；固定 allow-list 为 `cf7_agent_equipment_tuning`、`cf7_agent_arena_calibration`、`cf7_agent_character_build`、`cf7_agent_loot_target_full_v1`、`cf7_agent_a5_material_shop_run`，不能由 caller 提交 principal、capability、路径或 legacy flag。A5 专用槽只接受两种 exact runtime binding：物化 `resources` 根必须携 `--candidate-id a5` 并解析到 `resources/tmp/runtime-candidates/v2/a5`；canonical 根必须不携 `CandidateRoot` / candidate selector 并进入 `formal_runtime`。普通 `c-*`、其他短叶与 unqualified runtime 一律拒绝，旧槽仍只接受 formal 或原有 immutable `c-*` candidate。formal/candidate 均先校验完整 v2 manifest inventory、Core row/hash/size、build identity、payload closure 与无 reparse 的固定目录；随后执行所选 payload 自身的 `Core.exe --agent-unattended-runner`。这里的 formal 形状只是底层资格门；A5 仍没有可执行的 formal admission/runner，禁止绕过材料适用性、一次性授权与同旅程证据链直接调用它。
 
 启动链负责：
 
@@ -128,11 +133,11 @@ native 审计边界、正式 release 双生产者共识、三条零 Actions rule
 
 该平面的安全身份是选定 runtime payload 内的 C# Core，不是 `tools/cf7-agent/unattended.js`、`automation/start.ps1`、父进程命令行或可修改的 Node/PowerShell 依赖。标准 `start.ps1` 在首次执行所选 Core 前先以仓库 verifier + 所选 native bootstrap 校验完整 inventory/native payload；Core 启动后的最早 `Main` 分支再对 selected on-disk process path/hash/size 与 manifest/payload closure 做纵深复验，它不是“二进制执行前自证”。随后 Core 生成 runner nonce/challenge、固定 client identity 和受限 bootstrap evidence；Host 只接受同一已验证 runner PID/start/path、nonce、slot、build identity 与 closure。JSONL/MCP 仅转换 stdio，不扩 capability。
 
-runner 创建并拥有一个新的 standard-normal Guardian，会话不与现有 Launcher 复用；四个固定专用槽以外全部拒绝，legacy HTTP 与 trusted Agent unattended 不能同时启用。正常 stdin 结束后 runner 必须请求 `allowValidatedFlashKeyframeFallback=false`、exact scope 中恰含当前一个 `RuntimeOwned` Launcher target 的 observation；该 cardinality 只约束本次 scope，不表示整个 session 全局只有一个 Launcher surface。只接受 exact target 的 `SourceLayer.Launcher` frame；Flash source 或 fallback frame 都不是退出 authority。shutdown lease 必须逐字段严格匹配 active `UnattendedTest`、purpose `Shutdown`、省略 `renewAfter`、exact owner/principal/session/attempt/target、singleton capability/operation、one action 与 issuer receipt。runner 发送 supported `session.shutdown` 后，terminal receipt 必须绑定同 action/target/before observation，并精确为 `terminal=true`、`outcome=input_dispatched`、`evidenceKind=broker_dispatch`、`reasonCode=shutdown_requested`、`reconcileKind=none`、`retryable=false`、`focusVerified=false`、`leaseState=consumed`；完整严格 receipt 后还必须观察同一 exact owned child 以 exit code 0 正常退出。
+runner 创建并拥有一个新的 standard-normal Guardian，会话不与现有 Launcher 复用；五个固定专用槽以外全部拒绝，legacy HTTP 与 trusted Agent unattended 不能同时启用。正常 stdin 结束后 runner 必须请求 `allowValidatedFlashKeyframeFallback=false`、exact scope 中恰含当前一个 `RuntimeOwned` Launcher target 的 observation；该 cardinality 只约束本次 scope，不表示整个 session 全局只有一个 Launcher surface。只接受 exact target 的 `SourceLayer.Launcher` frame；Flash source 或 fallback frame 都不是退出 authority。shutdown lease 必须逐字段严格匹配 active `UnattendedTest`、purpose `Shutdown`、省略 `renewAfter`、exact owner/principal/session/attempt/target、singleton capability/operation、one action 与 issuer receipt。runner 发送 supported `session.shutdown` 后，terminal receipt 必须绑定同 action/target/before observation，并精确为 `terminal=true`、`outcome=input_dispatched`、`evidenceKind=broker_dispatch`、`reasonCode=shutdown_requested`、`reconcileKind=none`、`retryable=false`、`focusVerified=false`、`leaseState=consumed`；完整严格 receipt 后还必须观察同一 exact owned child 以 exit code 0 正常退出。
 
 Host 侧 `LeaseDescriptor.purpose` 必填、`renewAfter` 可选，shutdown descriptor 必须省略 `renewAfter`；shutdown 只允许 `DeveloperInteractive` / `UnattendedTest`，且请求的 exact scope 恰含当前一个 `RuntimeOwned` Launcher target，唯一 operation 为 `session.shutdown`、TTL≤30 秒、one action、no renew。只有语法有效、已认证、完全授权且到达 issuance policy 的 PlayerAssist acquire 返回 `consent_required`；畸形、越权或直接 action 可更早失败。lease live table 只保留 active 或仍在执行/交付的记录；terminal tombstone 是 FIFO 256，committed-shutdown session latch 是 64，后者溢出即全局 fail-closed，eviction 永不重新开放写入。renew/release 失败后的 cleanup 只属于 exact active owner，attacker、consumed 或 pending lease 不能借此释放资源。
 
-F8 production surface contract 将嵌入式 Flash 固定为 metadata-only：descriptor 的 `observationModes=[]`、`inputModes=[]` 必须同时为空，对它申请 pixel capture 精确返回 `unsupported_for_surface`。production session 不发布 `window.activate`，activator map 为空；WGC 只适用于 Launcher、WebOverlay、NativeHud 三类 surface。类型级 capability 不能替代实际授权，调用还必须同时满足 session grant 与 surface mode。`panel.open` 只面向 production allow-list `help|map|tasks|team|jukebox`，其 scope 精确包含当前一个 `RuntimeOwned` Launcher target，并使用 one-shot lease；成功 receipt 只证明 broker dispatch，不把 prefix 或 panel 文本升级为授权。所有 production panel producer 的 instance ID 均来自至少 144-bit CSPRNG，prefix 只作诊断、没有安全语义。
+F8 production surface contract 将嵌入式 Flash 固定为 metadata-only：descriptor 的 `observationModes=[]`、`inputModes=[]` 必须同时为空，对它申请 pixel capture 精确返回 `unsupported_for_surface`。production session 不发布 `window.activate`，activator map 为空；WGC 只适用于 Launcher、WebOverlay、NativeHud 三类 surface。类型级 capability 不能替代实际授权，调用还必须同时满足 session grant 与 surface mode。`panel.open` 只面向 production allow-list `help|map|tasks|team|jukebox|materials`，其 scope 精确包含当前一个 `RuntimeOwned` Launcher target，并使用 one-shot lease；`materials` 复用 `nativehud_materials` 的 Host→AS2 `openMaterialUI` exact nonce/tuple 路由，不直开 Web panel。成功 receipt 只证明命令交付或同步 exact admission，可见性仍必须 fresh WebOverlay WGC 独立验证。所有 production panel producer 的 instance ID 均来自至少 144-bit CSPRNG，prefix 只作诊断、没有安全语义。
 
 每个 action 的唯一绝对 deadline 从完整 request frame 收到时开始，覆盖 parse、admission、scheduler、performer、response writer lock 与全部 frame `WriteAsync`，不得分阶段重置。成功 consume 的 owner 独占 session execution reservation 到全部 response frames 完成或显式 abort；失败 consume 从未拥有 reservation。abort callback 返回 false 或抛异常时 reservation 保持并标记 continuity lost；完整 frames 已写出后 commit callback 返回 false 或抛异常时字节不可回滚，只能标记 continuity lost，且 SafeExit continue 不再有保证。
 
