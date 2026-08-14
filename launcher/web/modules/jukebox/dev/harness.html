@@ -126,18 +126,18 @@
     }
 
     var FIXTURE_TRACKS = [
-        { title: 'Tetrriture', album: 'Rammstein', weight: 10, availability: 'available', reason: '' },
-        { title: 'where am i', album: 'Rammstein', weight: 10, availability: 'available', reason: '' },
-        { title: 'Für Elise', album: 'PB', weight: 10, availability: 'available', reason: '' },
-        { title: 'Bring Your Own Doggg', album: 'PB', weight: 10, availability: 'available', reason: '' },
-        { title: 'The Incident', album: 'EAW', weight: 10, availability: 'available', reason: '' },
-        { title: 'The Prime Prime of Your Prime', album: 'EAW', weight: 10, availability: 'available', reason: '' },
-        { title: 'By Peace Or By Power', album: 'Kevin_Macleod', weight: 10, availability: 'available', reason: '' },
-        { title: 'Darkess', album: 'Kevin_Macleod', weight: 10, availability: 'available', reason: '' },
-        { title: 'Bedtime Story', album: 'BONUS', weight: 10, availability: 'available', reason: '' },
-        { title: 'Bulletproof', album: 'BONUS', weight: 10, availability: 'available', reason: '' },
-        { title: 'Mother Mary', album: 'Chrono_Ark', weight: 10, availability: 'available', reason: '' },
-        { title: 'To Victory', album: 'Chrono_Ark', weight: 10, availability: 'available', reason: '' }
+        { title: 'Tetrriture', album: 'Rammstein', weight: 10 },
+        { title: 'where am i', album: 'Rammstein', weight: 10 },
+        { title: 'Für Elise', album: 'PB', weight: 10 },
+        { title: 'Bring Your Own Doggg', album: 'PB', weight: 10 },
+        { title: 'The Incident', album: 'EAW', weight: 10 },
+        { title: 'The Prime Prime of Your Prime', album: 'EAW', weight: 10 },
+        { title: 'By Peace Or By Power', album: 'Kevin_Macleod', weight: 10 },
+        { title: 'Darkess', album: 'Kevin_Macleod', weight: 10 },
+        { title: 'Bedtime Story', album: 'BONUS', weight: 10 },
+        { title: 'Bulletproof', album: 'BONUS', weight: 10 },
+        { title: 'Mother Mary', album: 'Chrono_Ark', weight: 10 },
+        { title: 'To Victory', album: 'Chrono_Ark', weight: 10 }
     ];
 
     var DEFAULT_STATE = {
@@ -222,14 +222,6 @@
             window.chrome.webview.__dispatch({
                 type: 'catalog',
                 tracks: Array.isArray(tracks) ? tracks : FIXTURE_TRACKS
-            });
-        },
-
-        dispatchCatalogUpdate: function(added, removed) {
-            window.chrome.webview.__dispatch({
-                type: 'catalogUpdate',
-                added: Array.isArray(added) ? added : [],
-                removed: Array.isArray(removed) ? removed : []
             });
         },
 

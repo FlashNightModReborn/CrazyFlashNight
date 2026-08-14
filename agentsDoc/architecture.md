@@ -1,5 +1,7 @@
 # 项目技术架构总览
 
+**2026-08-14 Audio 紧急兼容当前态**：本次兼容提交把 `scripts/asLoader.swf` 及配套 AS2 源、点歌机 Web、`sounds/bgm_list.xml` 与 11 项音频文件名恢复到 formal promotion `7f17783e17ee3b44b0fb2f0b8e20ba8a358f6baf` / source `a87be26f1d6e80c0ea8883bbc10e46c895c35799` 可配套的外部运行时字节；`runtime/**` 保持该正式发布不变，没有构建、替换或 promotion 新 DLL。Audio Platform v2 S11 的实现与验证记录只保留为历史证据；当前 `main` 已不是 coherent、可直接构建或发布的 release source，必须先重新形成配套 source closure 再进入构建链。严格状态仍为 **H2 blocked / NOT_DEPLOYED**。11 项文件只是把相同 AAC 内容恢复为历史 `.wav` 名称，不构成格式支持、解码到 EOF 或物理可听证明。
+
 **文档角色**：系统拓扑 canonical doc。  
 **最后核对代码基线**：跨层回包键契约修复正式发布 source commit `a87be26f1d6e80c0ea8883bbc10e46c895c35799`、release tree `32e5b9be67de220eb297e6c568c90546b283c471`、request `44A8D5461BE38E0807A7BE1DFEDAD4F5065F7981C590460CAEBAB4153E577A5E`（2026-08-11），已由本地 X509 `physical-host-a` 与 GitHub OIDC/Sigstore `github-hosted-windows` 双故障域共识完成 v2 promotion；正式 runtime 绑定 identity `C510ED0C27E78F3FE2552AFA37C3E3B2E673CEC54B8B5AC4E69D516D72BBD8BC`、closure `844B898C7B74633DF7392298286E3A354D24F344B2A02DEF9C6E5545DC1ACF81`，正式入口复验 `runtimeMode=formal_runtime` 且 identity/closure 与 promotion 一致。本轮未跑无 candidate id 的 Agent Runtime MCP 窄纵切，因此不声称该最新列车达到 `standard_entry_verified`。P4/P5 的 pure-MCP run `20260808T083940Z` 与其商城旧档、竞技场 P5 业务 E2E 只保留为历史 release 证据，不得代证当前列车；此前 F8 与 A1–A6 release 同样保留为历史。Audio Platform v2 current source 以 H1 activation commit `c5ca5dfa9718e8a7714038e929a64081b7fd0026` 为合同底座；当前仍 **H2 blocked / NOT_DEPLOYED**，不属于上述正式 runtime。
 

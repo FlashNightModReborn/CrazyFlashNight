@@ -199,34 +199,6 @@ _root.gameCommands["openJukebox"] = function() {
 _root.gameCommands["jukeboxPlay"] = function(params) {
     _root.soundEffectManager.jukeboxPlay(params.title);
 };
-_root.gameCommands["jukeboxSeek"] = function(params) {
-    if (params == null || typeof params != "object") return;
-    var expected:Array = ["task", "action", "seconds"];
-    var count:Number = 0;
-    for (var key:String in params) {
-        if (!Object.prototype.hasOwnProperty.call(params, key)) continue;
-        var known:Boolean = false;
-        for (var i:Number = 0; i < expected.length; i++) {
-            if (expected[i] === key) {
-                known = true;
-                break;
-            }
-        }
-        if (!known) return;
-        count++;
-    }
-    if (count != expected.length
-            || !Object.prototype.hasOwnProperty.call(params, "task")
-            || !Object.prototype.hasOwnProperty.call(params, "action")
-            || !Object.prototype.hasOwnProperty.call(params, "seconds")
-            || params.task !== "cmd"
-            || params.action !== "jukeboxSeek"
-            || typeof params.seconds != "number"
-            || (params.seconds - params.seconds) != 0
-            || params.seconds < 0
-            || params.seconds > 86400) return;
-    org.flashNight.arki.audio.AudioBridge.seekBGM(params.seconds, null);
-};
 _root.gameCommands["jukeboxStop"] = function() {
     _root.soundEffectManager.jukeboxStop();
 };
@@ -247,9 +219,6 @@ _root.gameCommands["setGlobalVolume"] = function(params) {
 };
 _root.gameCommands["setBGMVolume"] = function(params) {
     if (!isNaN(params.value)) _root.soundEffectManager.setBGMVolume(Number(params.value));
-};
-_root.gameCommands["audioV2QualificationStimulus"] = function(params) {
-    org.flashNight.arki.audio.AudioQualificationStimulus.handle(params);
 };
 _root.gameCommands["bakeIcons"] = function(params) {
     var maxCount:Number = Number(params.maxCount);

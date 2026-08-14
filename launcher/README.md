@@ -1,5 +1,7 @@
 # CF7:ME Guardian Launcher
 
+> **2026-08-14 Audio 紧急兼容当前态**：本次兼容提交将 `scripts/asLoader.swf` 及配套 AS2 源、点歌机 Web、`sounds/bgm_list.xml` 与 11 项音频文件名恢复到 formal promotion `7f17783e17ee3b44b0fb2f0b8e20ba8a358f6baf` / source `a87be26f1d6e80c0ea8883bbc10e46c895c35799` 可配套的外部运行时版本；现役 `runtime/**` 字节没有重建或替换。S11 只保留历史实现与验证记录，当前 `main` 不是 coherent、可直接构建或发布的 release source；Audio Platform v2 仍为 **H2 blocked / NOT_DEPLOYED**。11 项文件只是把相同 AAC 内容恢复为历史 `.wav` 名称，不证明旧 Core 能解码、播放到 EOF 或在物理端点可听。
+
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
