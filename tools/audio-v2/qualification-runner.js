@@ -1825,10 +1825,99 @@ function validateCaseCommon(caseEvidence, report, caseResult, configurationSha, 
     expectRfc3339Utc(caseEvidence.generatedAtUtc, "case generatedAtUtc");
 }
 
+function sniffRiffWaveCodec(bytes) {
+    const declaredEnd = bytes.readUInt32LE(4) + 8;
+    if (declaredEnd < 12 || declaredEnd > bytes.length) return "unknown_riff_wave_codec";
+    let offset = 12;
+    let format = null;
+    while (offset + 8 <= declaredEnd) {
+        const id = bytes.toString("ascii", offset, offset + 4);
+        const size = bytes.readUInt32LE(offset + 4);
+        const start = offset + 8;
+        const end = start + size;
+        const paddedEnd = end + (size & 1);
+        if (end > declaredEnd || paddedEnd > declaredEnd) return "unknown_riff_wave_codec";
+        if (id === "fmt ") {
+            if (format !== null || size < 16) return "unknown_riff_wave_codec";
+            format = {
+                bitsPerSample: bytes.readUInt16LE(start + 14),
+                formatTag: bytes.readUInt16LE(start)
+            };
+        }
+        offset = paddedEnd;
+    }
+    if (offset !== declaredEnd || format === null) return "unknown_riff_wave_codec";
+    return format.formatTag === 1 && format.bitsPerSample === 16
+        ? "pcm_s16le"
+        : "unknown_riff_wave_codec";
+}
+
+function readIsoBmffBox(bytes, offset, limit) {
+    if (offset + 8 > limit) return null;
+    let size = bytes.readUInt32BE(offset);
+    let headerSize = 8;
+    if (size === 1) {
+        if (offset + 16 > limit) return null;
+        const extendedSize = bytes.readBigUInt64BE(offset + 8);
+        if (extendedSize > BigInt(Number.MAX_SAFE_INTEGER)) return null;
+        size = Number(extendedSize);
+        headerSize = 16;
+    } else if (size === 0) {
+        size = limit - offset;
+    }
+    const end = offset + size;
+    if (size < headerSize || !Number.isSafeInteger(end) || end > limit) return null;
+    return {
+        end,
+        payloadOffset: offset + headerSize,
+        type: bytes.toString("ascii", offset + 4, offset + 8)
+    };
+}
+
+const ISO_BMFF_AUDIO_BOX_PATH = ["moov", "trak", "mdia", "minf", "stbl"];
+
+function scanIsoBmffBoxes(bytes, start, limit, pathDepth) {
+    if (pathDepth > ISO_BMFF_AUDIO_BOX_PATH.length) return null;
+    let hasMp4a = false;
+    let offset = start;
+    while (offset < limit) {
+        const box = readIsoBmffBox(bytes, offset, limit);
+        if (box === null) return null;
+        if (pathDepth < ISO_BMFF_AUDIO_BOX_PATH.length && box.type === ISO_BMFF_AUDIO_BOX_PATH[pathDepth]) {
+            const nested = scanIsoBmffBoxes(bytes, box.payloadOffset, box.end, pathDepth + 1);
+            if (nested === null) return null;
+            hasMp4a = hasMp4a || nested.hasMp4a;
+        } else if (pathDepth === ISO_BMFF_AUDIO_BOX_PATH.length && box.type === "stsd") {
+            if (box.payloadOffset + 8 > box.end) return null;
+            const entryCount = bytes.readUInt32BE(box.payloadOffset + 4);
+            let entryOffset = box.payloadOffset + 8;
+            if (entryCount > Math.floor((box.end - entryOffset) / 8)) return null;
+            for (let index = 0; index < entryCount; index++) {
+                const entry = readIsoBmffBox(bytes, entryOffset, box.end);
+                if (entry === null) return null;
+                hasMp4a = hasMp4a || entry.type === "mp4a";
+                entryOffset = entry.end;
+            }
+            if (entryOffset !== box.end) return null;
+        }
+        offset = box.end;
+    }
+    return offset === limit ? { hasMp4a } : null;
+}
+
+function sniffIsoBmffCodec(bytes) {
+    const first = readIsoBmffBox(bytes, 0, bytes.length);
+    if (first === null || first.type !== "ftyp") return "unknown_iso_bmff_codec";
+    const scanned = scanIsoBmffBoxes(bytes, 0, bytes.length, 0);
+    return scanned !== null && scanned.hasMp4a
+        ? "aac_lc_or_he_aac"
+        : "unknown_iso_bmff_codec";
+}
+
 function sniffAudio(bytes) {
-    if (bytes.length >= 12 && bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WAVE") return { codec: "pcm_or_ieee_float", container: "riff_wave" };
+    if (bytes.length >= 12 && bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WAVE") return { codec: sniffRiffWaveCodec(bytes), container: "riff_wave" };
     if (bytes.length >= 4 && bytes.toString("ascii", 0, 4) === "fLaC") return { codec: "flac", container: "flac" };
-    if (bytes.length >= 12 && bytes.toString("ascii", 4, 8) === "ftyp") return { codec: "aac", container: "iso_bmff" };
+    if (bytes.length >= 12 && bytes.toString("ascii", 4, 8) === "ftyp") return { codec: sniffIsoBmffCodec(bytes), container: "iso_bmff" };
     if (bytes.length >= 4 && bytes.toString("ascii", 0, 4) === "OggS") {
         const header = bytes.toString("latin1", 0, Math.min(bytes.length, 256));
         if (header.includes("OpusHead")) return { codec: "opus", container: "ogg" };
@@ -2385,6 +2474,7 @@ module.exports = Object.freeze({
     runtimeBuildIdentityHash,
     runtimePayloadClosureHash,
     sha256,
+    sniffAudio,
     sortedClone,
     validateCandidateBinary,
     validateConfiguration,

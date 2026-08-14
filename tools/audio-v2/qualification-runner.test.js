@@ -679,6 +679,92 @@ test("silent PCM is measurable as zero and cannot satisfy the endpoint threshold
     assert.ok(!(pcm.peakAbs >= 64 && pcm.nonZeroSampleRatio >= 0.001));
 });
 
+test("RIFF/WAVE content sniff derives the exact shipped PCM16 codec from fmt", () => {
+    const pcm16 = Buffer.from(
+        "524946462600000057415645666D74201000000001000100401F0000803E00000200100064617461020000000100",
+        "hex");
+    assert.strictEqual(pcm16.length, 46);
+    assert.strictEqual(runner.sha256(pcm16), "A488871A54ADAC2B93D8575538BD79F94C2B99ED58CC874A7FB054BFFB9A3C5E");
+    assert.deepStrictEqual(runner.sniffAudio(pcm16), {
+        codec: "pcm_s16le",
+        container: "riff_wave"
+    });
+
+    const float32 = Buffer.from(pcm16);
+    float32.writeUInt16LE(3, 20);
+    float32.writeUInt16LE(32, 34);
+    assert.deepStrictEqual(runner.sniffAudio(float32), {
+        codec: "unknown_riff_wave_codec",
+        container: "riff_wave"
+    });
+
+    const truncatedFmt = pcm16.subarray(0, 24);
+    assert.deepStrictEqual(runner.sniffAudio(truncatedFmt), {
+        codec: "unknown_riff_wave_codec",
+        container: "riff_wave"
+    });
+
+    const duplicateFmt = Buffer.concat([
+        pcm16.subarray(0, 36),
+        pcm16.subarray(12, 36),
+        pcm16.subarray(36)
+    ]);
+    duplicateFmt.writeUInt32LE(duplicateFmt.length - 8, 4);
+    assert.deepStrictEqual(runner.sniffAudio(duplicateFmt), {
+        codec: "unknown_riff_wave_codec",
+        container: "riff_wave"
+    });
+
+    const shortDeclaredRiff = Buffer.from(pcm16);
+    shortDeclaredRiff.writeUInt32LE(12, 4);
+    assert.deepStrictEqual(runner.sniffAudio(shortDeclaredRiff), {
+        codec: "unknown_riff_wave_codec",
+        container: "riff_wave"
+    });
+});
+
+test("ISO BMFF content sniff requires a bounded mp4a sample entry", () => {
+    const aac = Buffer.from(
+        "000000106674797069736f6d00000000000000406d6f6f76000000387472616b000000306d646961000000286d696e66000000207374626c00000018737473640000000000000001000000086d703461",
+        "hex");
+    assert.strictEqual(aac.length, 80);
+    assert.strictEqual(runner.sha256(aac), "14790867C11845D38415866ECC805FF3BFDCC983C6C2AAF3488AEC2A96645F8C");
+    assert.deepStrictEqual(runner.sniffAudio(aac), {
+        codec: "aac_lc_or_he_aac",
+        container: "iso_bmff"
+    });
+
+    const nonFtyp = Buffer.from(aac);
+    nonFtyp.write("free", 4, "ascii");
+    assert.deepStrictEqual(runner.sniffAudio(nonFtyp), {
+        codec: "unknown",
+        container: "unknown"
+    });
+
+    const noMp4a = Buffer.from(aac);
+    noMp4a.write("enca", noMp4a.length - 4, "ascii");
+    assert.deepStrictEqual(runner.sniffAudio(noMp4a), {
+        codec: "unknown_iso_bmff_codec",
+        container: "iso_bmff"
+    });
+
+    const topLevelStsd = Buffer.from(
+        "000000106674797069736f6d0000000000000018737473640000000000000001000000086d703461",
+        "hex");
+    assert.strictEqual(topLevelStsd.length, 40);
+    assert.strictEqual(runner.sha256(topLevelStsd), "956413BCA52F6701F5153B2F5C403DC34966E4F5763D4DB58D012C2637FB4A78");
+    assert.deepStrictEqual(runner.sniffAudio(topLevelStsd), {
+        codec: "unknown_iso_bmff_codec",
+        container: "iso_bmff"
+    });
+
+    const truncated = aac.subarray(0, aac.length - 1);
+    assert.deepStrictEqual(runner.sniffAudio(truncated), {
+        codec: "unknown_iso_bmff_codec",
+        container: "iso_bmff"
+    });
+});
+
 test("missing real endpoint process fails closed", () => {
     withFixture(null, (state) => {
         const powershell = path.join(process.env.SystemRoot, "System32", "WindowsPowerShell", "v1.0", "powershell.exe");
