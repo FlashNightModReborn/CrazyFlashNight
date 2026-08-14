@@ -14,6 +14,7 @@ const RUNNER_PATH = "tools/audio-v2/qualification-runner.js";
 const ASSEMBLER_PATH = "tools/audio-v2/assemble-a6-evidence.js";
 const ENDPOINT_ENUMERATOR_PATH = "tools/audio-v2/list-playback-endpoints.ps1";
 const SUITE_PATH = "scripts/类定义/org/flashNight/arki/audio/test/AudioBridgeV2Test.as";
+const ASSEMBLER_ORDINAL_PAYLOAD_CLOSURE = "FD6C7D5731679B6C41A436E0CECD7D40F35EB8DB41002E98F902473D5CD415C2";
 
 function execute(file, args, cwd) {
     const value = cp.spawnSync(file, args, { cwd, encoding: "utf8", maxBuffer: 16 * 1024 * 1024, windowsHide: true });
@@ -130,13 +131,22 @@ function sourceFixture() {
 
     const runtimeRoot = path.join(candidateRoot, "runtime");
     fs.mkdirSync(runtimeRoot);
+    write(candidateRoot, "CRAZYFLASHER7MercenaryEmpire.exe", Buffer.from("fixture bootstrap", "utf8"));
     write(candidateRoot, "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll", Buffer.from("fixture Core DLL", "utf8"));
+    write(candidateRoot, "runtime/ClearScript.Core.dll", Buffer.from("fixture ClearScript DLL", "utf8"));
+    write(candidateRoot, "runtime/THIRD-PARTY-NOTICES.txt", Buffer.from("fixture notices\n", "utf8"));
+    write(candidateRoot, "runtime/libHarfBuzzSharp.dll", Buffer.from("fixture HarfBuzz DLL", "utf8"));
     write(candidateRoot, "runtime/miniaudio.dll", Buffer.from("fixture miniaudio DLL", "utf8"));
     const payloadFiles = [
+        descriptor(candidateRoot, "CRAZYFLASHER7MercenaryEmpire.exe"),
         descriptor(candidateRoot, "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll"),
+        descriptor(candidateRoot, "runtime/ClearScript.Core.dll"),
+        descriptor(candidateRoot, "runtime/THIRD-PARTY-NOTICES.txt"),
+        descriptor(candidateRoot, "runtime/libHarfBuzzSharp.dll"),
         descriptor(candidateRoot, "runtime/miniaudio.dll")
     ].map(({ bytes, path: relative, sha256 }) => ({ bytes, path: relative, sha256 }));
-    const payloadClosure = runner.runtimePayloadClosureHash(payloadFiles);
+    const payloadClosure = ASSEMBLER_ORDINAL_PAYLOAD_CLOSURE;
+    assert.equal(runner.runtimePayloadClosureHash(payloadFiles), payloadClosure);
     const buildIdentity = runner.runtimeBuildIdentityHash(sourceDomains.artifactSourceHash, sourceDomains.producerRecipeHash, sourceDomains.toolchainLockHash);
     const manifestLines = [
         "cf7-runtime-manifest-v2",
@@ -285,6 +295,24 @@ test("CLI is explicit, fail-closed, and separates prepare-only inputs", () => {
     assert.throws(() => assembler.parseCli(["validate", "--source-commit", "a".repeat(40), "--source-tree", "b".repeat(40), "--candidate-root", path.resolve("candidate"), "--output-root", path.resolve("source"), "--toolchain-json", path.resolve("toolchain"), "--run-id", "0".repeat(32)]), /prepare-only flags/);
     assert.doesNotThrow(() => assembler.validateRoleMatrix());
     assembler.ENDPOINT_REPORT_IDS.forEach((reportId) => assert.equal(assembler.ROLE_PATHS[reportId][reportId === "exact_candidate_bgm_endpoint_e2e" ? "bgm_endpoint_run_plan" : reportId === "exact_candidate_sfx_endpoint_e2e" ? "sfx_endpoint_run_plan" : "device_recovery_run_plan"], "tools/audio-v2/qualification-operator.js"));
+});
+
+test("assembler accepts the hard-coded .NET ordinal closure and rejects locale-ordered manifest rows", () => {
+    const fixture = sourceFixture();
+    try {
+        assert.equal(fixture.candidate.payloadClosure, ASSEMBLER_ORDINAL_PAYLOAD_CLOSURE);
+        const manifestPath = path.join(fixture.options.candidateRoot, "runtime", "cf7-runtime-manifest.tsv");
+        const lines = fs.readFileSync(manifestPath, "utf8").trimEnd().split("\n");
+        const metadataLines = lines.filter((line) => !line.startsWith("file\t"));
+        const fileLines = lines.filter((line) => line.startsWith("file\t"));
+        const localeLines = fileLines.slice().sort((left, right) => left.split("\t")[1].localeCompare(right.split("\t")[1], "zh-CN"));
+        assert.notDeepEqual(localeLines, fileLines);
+        fs.writeFileSync(manifestPath, Buffer.from(metadataLines.concat(localeLines).join("\n") + "\n", "utf8"));
+        const sourceDomains = assembler.runtimeSourceDomainHashes(fixture.sourceRoot, fixture.releaseSource.commit);
+        assert.throws(() => assembler.inspectCandidate(fixture.options.candidateRoot, sourceDomains), /candidate file rows not sorted/);
+    } finally {
+        removeFixture(fixture);
+    }
 });
 
 test("toolchain requires exact Node path hash and version", () => {

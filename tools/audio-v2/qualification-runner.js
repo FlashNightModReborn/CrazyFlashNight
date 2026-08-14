@@ -532,10 +532,18 @@ function runtimeBuildIdentityHash(artifactSourceHash, producerRecipeHash, toolch
     ));
 }
 
+// ECMAScript relational string comparison is lexicographic UTF-16 code-unit
+// order, matching the production PowerShell StringComparer.Ordinal contract.
+// Locale collation is intentionally forbidden for runtime payload identity.
+function compareUtf16Ordinal(left, right) {
+    if (left === right) return 0;
+    return left < right ? -1 : 1;
+}
+
 function runtimePayloadClosureHash(files) {
     expect(Array.isArray(files) && files.length > 0, "candidate payload file set must not be empty");
     const lowerPaths = [];
-    const canonical = files.slice().sort((left, right) => left.path.localeCompare(right.path)).map((row) => {
+    const canonical = files.slice().sort((left, right) => compareUtf16Ordinal(left.path, right.path)).map((row) => {
         safeRepoPath(row.path, "candidate payload path");
         expect(!/[\t\r\n:*?"<>|]/.test(row.path), "candidate payload path contains a forbidden character");
         expect(Number.isSafeInteger(row.bytes) && row.bytes >= 0, "candidate payload byte count invalid");
@@ -591,7 +599,7 @@ function validateCandidateManifest(candidateRoot, identity, closure) {
     expect(runtimePayloadClosureHash(files) === fields.payloadClosureHash, "candidate payload closure is not recomputable");
     expect(fields.buildIdentityHash === identity && fields.payloadClosureHash === closure, "candidate manifest identity/closure differs from report");
     const sortedPaths = files.map((entry) => entry.path);
-    expect(JSON.stringify(sortedPaths) === JSON.stringify(sortedPaths.slice().sort()), "candidate runtime manifest file rows are not sorted");
+    expect(JSON.stringify(sortedPaths) === JSON.stringify(sortedPaths.slice().sort(compareUtf16Ordinal)), "candidate runtime manifest file rows are not in canonical ordinal order");
 
     const excluded = new Set([
         "runtime/cf7-runtime-manifest.tsv",
@@ -617,7 +625,7 @@ function validateCandidateManifest(candidateRoot, identity, closure) {
         });
     }
     walk(runtimeRoot, "");
-    const actualFiles = actualPaths.sort().map((relative) => {
+    const actualFiles = actualPaths.sort(compareUtf16Ordinal).map((relative) => {
         const bytes = readCandidateFile(candidateRoot, relative, "candidate payload " + relative, MAX_INPUT_BYTES);
         return { bytes: bytes.length, path: relative, sha256: sha256(bytes) };
     });

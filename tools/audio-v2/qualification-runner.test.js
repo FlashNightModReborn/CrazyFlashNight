@@ -146,7 +146,7 @@ function makeFixture(mutator) {
         ["runtime/miniaudio.dll", makeExportPe(EXPECTED_EXPORTS)]
     ];
     payload.forEach(([relative, bytes]) => writeBytes(candidateRoot, relative, bytes));
-    const payloadRows = payload.map(([relative, bytes]) => ({ bytes: bytes.length, path: relative, sha256: runner.sha256(bytes) })).sort((left, right) => left.path.localeCompare(right.path));
+    const payloadRows = payload.map(([relative, bytes]) => ({ bytes: bytes.length, path: relative, sha256: runner.sha256(bytes) })).sort((left, right) => left.path < right.path ? -1 : (left.path > right.path ? 1 : 0));
     const closure = runner.runtimePayloadClosureHash(payloadRows);
     const manifestText = [
         "cf7-runtime-manifest-v2", "publishMode\tframework-dependent",
@@ -391,6 +391,41 @@ test("frozen matrix is exactly nine reports and forty-four cases", () => {
 
 test("canonical JSON recursively sorts keys and terminates with one LF", () => {
     assert.strictEqual(runner.canonicalBytes({ z: 1, a: { y: 2, b: 3 } }).toString("utf8"), "{\n  \"a\": {\n    \"b\": 3,\n    \"y\": 2\n  },\n  \"z\": 1\n}\n");
+});
+
+test("runtime payload closure matches the independent .NET ordinal oracle", () => {
+    const rows = [
+        { bytes: 55, path: "runtime/libHarfBuzzSharp.dll", sha256: "E".repeat(64) },
+        { bytes: 33, path: "runtime/ClearScript.Core.dll", sha256: "C".repeat(64) },
+        { bytes: 11, path: "CRAZYFLASHER7MercenaryEmpire.exe", sha256: "A".repeat(64) },
+        { bytes: 66, path: "runtime/miniaudio.dll", sha256: "F".repeat(64) },
+        { bytes: 44, path: "runtime/THIRD-PARTY-NOTICES.txt", sha256: "D".repeat(64) },
+        { bytes: 22, path: "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll", sha256: "B".repeat(64) }
+    ];
+    const expectedOrdinalPaths = [
+        "CRAZYFLASHER7MercenaryEmpire.exe",
+        "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "runtime/ClearScript.Core.dll",
+        "runtime/THIRD-PARTY-NOTICES.txt",
+        "runtime/libHarfBuzzSharp.dll",
+        "runtime/miniaudio.dll"
+    ];
+    const ordinalClosure = "E6E6F5527FF8175EDEF69D1F942B37CB0FA1665A4E7399B487D1B83AAC981202";
+    const zhCnLocaleClosure = "11C334EB971A61FD1403C6F8639EE31C9EB31CCF15A45BD715BAFA2B20B7BE9B";
+    const byPath = new Map(rows.map((row) => [row.path, row]));
+    const ordinalCanonical = expectedOrdinalPaths.map((relative) => {
+        const row = byPath.get(relative);
+        return row.path + "\t" + row.bytes + "\t" + row.sha256;
+    }).join("\n") + "\n";
+    assert.strictEqual(runner.sha256(Buffer.from(ordinalCanonical, "utf8")), ordinalClosure);
+    assert.strictEqual(runner.runtimePayloadClosureHash(rows), ordinalClosure);
+    assert.strictEqual(runner.runtimePayloadClosureHash(rows.slice().reverse()), ordinalClosure);
+
+    const localeRows = rows.slice().sort((left, right) => left.path.localeCompare(right.path, "zh-CN"));
+    assert.notDeepStrictEqual(localeRows.map((row) => row.path), expectedOrdinalPaths);
+    const localeCanonical = localeRows.map((row) => row.path + "\t" + row.bytes + "\t" + row.sha256).join("\n") + "\n";
+    assert.strictEqual(runner.sha256(Buffer.from(localeCanonical, "utf8")), zhCnLocaleClosure);
+    assert.notStrictEqual(ordinalClosure, zhCnLocaleClosure);
 });
 
 test("qualification toolchain binds exact Node path hash version and PATH-free child environment", () => {
