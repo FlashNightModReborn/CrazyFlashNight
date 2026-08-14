@@ -7,10 +7,18 @@ param(
     [string]$CandidateRoot,
     [string[]]$ExternalAttestationPath = @(),
     [switch]$VerifyOnly,
-    [string]$ReportPath
+    [string]$ReportPath,
+    [string]$AudioV2EmergencyOwnerAuthorizationPath,
+    [switch]$AcknowledgeAudioV2NonH2Compliant
 )
 
 $ErrorActionPreference = 'Stop'
+$hasAudioV2EmergencyOwnerAuthorizationPath = -not [string]::IsNullOrWhiteSpace($AudioV2EmergencyOwnerAuthorizationPath)
+$hasAudioV2EmergencyAcknowledgement = $AcknowledgeAudioV2NonH2Compliant.IsPresent
+if ($hasAudioV2EmergencyOwnerAuthorizationPath -ne $hasAudioV2EmergencyAcknowledgement) {
+    throw 'AudioV2EmergencyOwnerAuthorizationPath and AcknowledgeAudioV2NonH2Compliant must be supplied together.'
+}
+$audioV2EmergencyOwnerRequested = $hasAudioV2EmergencyOwnerAuthorizationPath -and $hasAudioV2EmergencyAcknowledgement
 if ($VerifyOnly -and [string]::IsNullOrWhiteSpace($ReportPath)) {
     throw 'VerifyOnly requires ReportPath.'
 }
@@ -402,6 +410,75 @@ function Assert-Cf7AudioV2H2RequestLink {
     if ($LASTEXITCODE -ne 0) { throw 'Audio v2 R4 H2 request-link validation failed closed.' }
 }
 
+function Assert-Cf7AudioV2EmergencyOwnerAuthorization {
+    param(
+        [Parameter(Mandatory=$true)][bool]$Required,
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [string]$AuthorizationPath,
+        [string]$AuthorizationSha256,
+        [Parameter(Mandatory=$true)][string]$RequestPath,
+        [Parameter(Mandatory=$true)][string]$RequestId,
+        [Parameter(Mandatory=$true)][string]$RequestSha256,
+        [Parameter(Mandatory=$true)][string]$PayloadClosureHash,
+        [Parameter(Mandatory=$true)][string]$ReleaseTreeOid
+    )
+    if (-not $Required) { return }
+    if ([string]::IsNullOrWhiteSpace($AuthorizationPath) -or
+            [string]::IsNullOrWhiteSpace($AuthorizationSha256)) {
+        throw 'Audio v2 emergency promotion lacks its frozen owner authorization.'
+    }
+    $validatorPath = Join-Path $ProjectRoot 'tools\audio-v2\validate-emergency-owner-authorization.js'
+    if (-not (Test-Path -LiteralPath $validatorPath -PathType Leaf)) {
+        throw 'Audio v2 emergency promotion requires the owner authorization validator.'
+    }
+    $validatorBlobRows = @(& git -C $ProjectRoot rev-parse --verify `
+        ($ReleaseTreeOid + ':tools/audio-v2/validate-emergency-owner-authorization.js'))
+    if ($LASTEXITCODE -ne 0 -or $validatorBlobRows.Count -ne 1 -or
+            [string]$validatorBlobRows[0] -notmatch '^[0-9a-f]{40,64}$') {
+        throw 'Audio v2 emergency owner authorization validator is not bound to the immutable release tree.'
+    }
+    $validatorBlobType = @(& git -C $ProjectRoot cat-file -t ([string]$validatorBlobRows[0]))
+    if ($LASTEXITCODE -ne 0 -or $validatorBlobType.Count -ne 1 -or [string]$validatorBlobType[0] -cne 'blob') {
+        throw 'Audio v2 emergency owner authorization validator is not one immutable Git blob.'
+    }
+    & git -C $ProjectRoot diff --quiet --no-ext-diff $ReleaseTreeOid --
+    if ($LASTEXITCODE -eq 1) { throw 'Tracked worktree bytes changed before emergency owner authorization validation.' }
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot recheck the emergency worktree before owner authorization validation.' }
+    $authorizationSha256Before = (Get-FileHash -Algorithm SHA256 -LiteralPath $AuthorizationPath).Hash.ToUpperInvariant()
+    if ($authorizationSha256Before -ne $AuthorizationSha256.ToUpperInvariant()) {
+        throw 'Audio v2 emergency owner authorization changed after its initial snapshot.'
+    }
+    $node = Get-Command node.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($null -eq $node) { throw 'Audio v2 emergency promotion requires node.exe for the owner authorization validator.' }
+    & $node.Source $validatorPath --verify --authorization-file $AuthorizationPath `
+        --request-file $RequestPath --request-id $RequestId.ToUpperInvariant() `
+        --request-sha256 $RequestSha256.ToUpperInvariant() --payload-closure $PayloadClosureHash.ToUpperInvariant()
+    if ($LASTEXITCODE -ne 0) { throw 'Audio v2 emergency owner authorization validation failed closed.' }
+    $authorizationSha256After = (Get-FileHash -Algorithm SHA256 -LiteralPath $AuthorizationPath).Hash.ToUpperInvariant()
+    if ($authorizationSha256After -ne $authorizationSha256Before -or
+            $authorizationSha256After -ne $AuthorizationSha256.ToUpperInvariant()) {
+        throw 'Audio v2 emergency owner authorization changed during validation.'
+    }
+    & git -C $ProjectRoot diff --quiet --no-ext-diff $ReleaseTreeOid --
+    if ($LASTEXITCODE -eq 1) { throw 'Tracked worktree bytes changed during emergency owner authorization validation.' }
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot recheck the emergency worktree after owner authorization validation.' }
+}
+
+$audioV2EmergencyOwnerAuthorizationResolvedPath = $null
+$audioV2EmergencyOwnerAuthorizationSha256 = $null
+if ($audioV2EmergencyOwnerRequested) {
+    $authorizationItem = Get-Item -LiteralPath $AudioV2EmergencyOwnerAuthorizationPath -Force
+    if (-not $authorizationItem.PSIsContainer -and
+            ($authorizationItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -eq 0 -and
+            $authorizationItem.Length -gt 0 -and $authorizationItem.Length -le (64 * 1024)) {
+        $audioV2EmergencyOwnerAuthorizationResolvedPath = [IO.Path]::GetFullPath($authorizationItem.FullName)
+    } else {
+        throw 'Audio v2 emergency owner authorization must be one bounded regular non-reparse file.'
+    }
+    $audioV2EmergencyOwnerAuthorizationSha256 = (Get-FileHash -Algorithm SHA256 `
+        -LiteralPath $audioV2EmergencyOwnerAuthorizationResolvedPath).Hash.ToUpperInvariant()
+}
+
 $QueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot -QueueRoot $QueueRoot
 $requestDirectory = Get-Cf7RuntimeRequestDirectory -QueueRoot $QueueRoot -RequestId $RequestId
 $requestPath = Join-Path $requestDirectory 'request.json'
@@ -423,15 +500,26 @@ foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHas
     }
 }
 
-$audioV2H2RequestLinkRequired = Test-Cf7AudioV2H2RequestLinkRequired `
+$audioV2H2RequestLinkDetected = Test-Cf7AudioV2H2RequestLinkRequired `
     -ProjectRoot $ProjectRoot -SourceCommitOid ([string]$request.sourceCommitOid)
+$audioV2H2RequestLinkRequired = $audioV2H2RequestLinkDetected -and -not $audioV2EmergencyOwnerRequested
+if ($audioV2EmergencyOwnerRequested -and -not $audioV2H2RequestLinkDetected) {
+    throw 'Audio v2 emergency owner authorization is valid only for an Audio v2 H2-gated release.'
+}
 $audioV2H2RequestLinkSnapshot = Get-Cf7AudioV2H2RequestLinkSnapshot `
     -Required $audioV2H2RequestLinkRequired -ProjectRoot $ProjectRoot
 # audio-v2-h2-link: early
 Assert-Cf7AudioV2H2RequestLink -Required $audioV2H2RequestLinkRequired `
     -ProjectRoot $ProjectRoot -RequestPath $requestPath -RequestId ([string]$request.requestId) `
     -RequestSha256 $requestSha256
-if ($audioV2H2RequestLinkRequired) {
+if ($audioV2EmergencyOwnerRequested) {
+    & git -C $ProjectRoot diff --quiet --no-ext-diff ([string]$request.releaseTreeOid) --
+    if ($LASTEXITCODE -eq 1) {
+        throw 'Tracked emergency worktree bytes no longer materialize the immutable request tree.'
+    }
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot compare the emergency worktree with the immutable request tree.' }
+    $promotionWorktreeTreeish = [string]$request.releaseTreeOid
+} elseif ($audioV2H2RequestLinkRequired) {
     Assert-Cf7AudioV2H2RequestLinkWindowStable -Required $true `
         -ProjectRoot $ProjectRoot -Snapshot $audioV2H2RequestLinkSnapshot
     $promotionWorktreeTreeish = [string]$audioV2H2RequestLinkSnapshot.headCommit
@@ -572,6 +660,9 @@ if ($VerifyOnly) {
         $protectedReportRoots.Add((Join-Path $ProjectRoot (([string]$treeRoot) -replace '/','\')))
     }
     $protectedReportPaths.Add((Join-Path $ProjectRoot 'config\build\runtime-release-consensus.json'))
+    if ($audioV2EmergencyOwnerRequested) {
+        $protectedReportPaths.Add($audioV2EmergencyOwnerAuthorizationResolvedPath)
+    }
     $resolvedReportPath = Resolve-Cf7PromotionPreflightReportPath -Path $ReportPath -ProjectRoot $ProjectRoot `
         -ProtectedRoots $protectedReportRoots.ToArray() `
         -ProtectedPaths $protectedReportPaths.ToArray()
@@ -642,6 +733,13 @@ if ($candidatePayloadHash -ne ([string]$consensus.payloadClosureHash).ToUpperInv
     throw 'Candidate payload does not match the independent builder consensus.'
 }
 $attestations = @($verifiedEntries | ForEach-Object { $_.proof })
+
+# audio-v2-emergency-owner: early
+Assert-Cf7AudioV2EmergencyOwnerAuthorization -Required $audioV2EmergencyOwnerRequested `
+    -ProjectRoot $ProjectRoot -AuthorizationPath $audioV2EmergencyOwnerAuthorizationResolvedPath `
+    -AuthorizationSha256 $audioV2EmergencyOwnerAuthorizationSha256 `
+    -RequestPath $requestPath -RequestId ([string]$request.requestId) -RequestSha256 $requestSha256 `
+    -PayloadClosureHash $candidatePayloadHash -ReleaseTreeOid ([string]$request.releaseTreeOid)
 
 $deploymentChanges = @(& git -C $ProjectRoot status --porcelain -- `
     'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime' 'config/build/runtime-release-consensus.json')
@@ -748,6 +846,22 @@ if ($VerifyOnly) {
             'Formal promotion must rerun every validation and execute its transaction checks.'
         )
     }
+    if ($audioV2EmergencyOwnerRequested) {
+        $preflightReport | Add-Member -NotePropertyName audioV2Emergency -NotePropertyValue ([pscustomobject][ordered]@{
+            nonH2Compliant = $true
+            authorizationSha256 = $audioV2EmergencyOwnerAuthorizationSha256
+            bypass = @('E1','H2','E3')
+            retainedControls = @(
+                'immutable_request',
+                'dual_signer',
+                'dual_fault_domain',
+                'production_policy',
+                'strict_v2_verifier',
+                'atomic_promotion',
+                'rollback'
+            )
+        })
+    }
     $forbiddenReportText = New-Object 'System.Collections.Generic.List[string]'
     foreach ($value in @(
         $ProjectRoot,
@@ -756,7 +870,7 @@ if ($VerifyOnly) {
         $PolicyReceiptPath,
         [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile),
         $env:USERPROFILE
-    ) + @($proofInputSnapshots | ForEach-Object { [string]$_.path })) {
+    ) + @($proofInputSnapshots | ForEach-Object { [string]$_.path }) + @($audioV2EmergencyOwnerAuthorizationResolvedPath)) {
         if (-not [string]::IsNullOrWhiteSpace([string]$value)) {
             $forbiddenReportText.Add([string]$value)
         }
@@ -773,6 +887,12 @@ if ($VerifyOnly) {
         -RequestSha256 $requestSha256
     Assert-Cf7AudioV2H2RequestLinkWindowStable -Required $audioV2H2RequestLinkRequired `
         -ProjectRoot $ProjectRoot -Snapshot $audioV2H2RequestLinkSnapshot
+    # audio-v2-emergency-owner: verify-only-final
+    Assert-Cf7AudioV2EmergencyOwnerAuthorization -Required $audioV2EmergencyOwnerRequested `
+        -ProjectRoot $ProjectRoot -AuthorizationPath $audioV2EmergencyOwnerAuthorizationResolvedPath `
+        -AuthorizationSha256 $audioV2EmergencyOwnerAuthorizationSha256 `
+        -RequestPath $requestPath -RequestId ([string]$request.requestId) -RequestSha256 $requestSha256 `
+        -PayloadClosureHash $candidatePayloadHash -ReleaseTreeOid ([string]$request.releaseTreeOid)
     Write-Cf7PromotionPreflightReport -Path $resolvedReportPath -Value $preflightReport `
         -ForbiddenText $forbiddenReportText.ToArray()
     try {
@@ -793,6 +913,15 @@ Assert-Cf7AudioV2H2RequestLink -Required $audioV2H2RequestLinkRequired `
     -RequestSha256 $requestSha256
 Assert-Cf7AudioV2H2RequestLinkWindowStable -Required $audioV2H2RequestLinkRequired `
     -ProjectRoot $ProjectRoot -Snapshot $audioV2H2RequestLinkSnapshot
+if ($audioV2EmergencyOwnerRequested) {
+    Write-Host "[AudioV2Emergency] NON_H2_COMPLIANT ownerAuthorization=$audioV2EmergencyOwnerAuthorizationSha256" -ForegroundColor Yellow
+}
+# audio-v2-emergency-owner: promotion-final
+Assert-Cf7AudioV2EmergencyOwnerAuthorization -Required $audioV2EmergencyOwnerRequested `
+    -ProjectRoot $ProjectRoot -AuthorizationPath $audioV2EmergencyOwnerAuthorizationResolvedPath `
+    -AuthorizationSha256 $audioV2EmergencyOwnerAuthorizationSha256 `
+    -RequestPath $requestPath -RequestId ([string]$request.requestId) -RequestSha256 $requestSha256 `
+    -PayloadClosureHash $candidatePayloadHash -ReleaseTreeOid ([string]$request.releaseTreeOid)
 $transactionBase = [IO.Path]::GetFullPath((Join-Path $ProjectRoot 'tmp\runtime-promotions')).TrimEnd('\')
 New-Item -ItemType Directory -Path $transactionBase -Force | Out-Null
 $transactionRoot = Join-Path $transactionBase ([DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ') + '-' + [Guid]::NewGuid().ToString('N'))

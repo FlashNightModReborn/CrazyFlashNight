@@ -286,6 +286,69 @@ try {
     Assert-Equal 'Audio v2 final node recheck and frozen-window check are the transaction write boundary' $true `
         ($audioLinkPromotionFinal -ge 0 -and $audioLinkPromotionNode -gt $audioLinkPromotionFinal -and
             $audioLinkPromotionStable -gt $audioLinkPromotionNode -and $transactionBoundary -gt $audioLinkPromotionStable)
+    Assert-Equal 'Audio v2 emergency owner override requires its path and explicit non-H2 acknowledgement together' $true `
+        ($promotionScript.Contains('[string]$AudioV2EmergencyOwnerAuthorizationPath') -and
+            $promotionScript.Contains('[switch]$AcknowledgeAudioV2NonH2Compliant') -and
+            $promotionScript.Contains('$hasAudioV2EmergencyOwnerAuthorizationPath -ne $hasAudioV2EmergencyAcknowledgement') -and
+            $promotionScript.Contains('must be supplied together'))
+    Assert-Equal 'Audio v2 emergency owner override uses the independent exact binding validator CLI' $true `
+        ($promotionScript.Contains('tools\audio-v2\validate-emergency-owner-authorization.js') -and
+            $promotionScript.Contains('--verify --authorization-file $AuthorizationPath') -and
+            $promotionScript.Contains('--request-file $RequestPath --request-id $RequestId.ToUpperInvariant()') -and
+            $promotionScript.Contains('--request-sha256 $RequestSha256.ToUpperInvariant() --payload-closure $PayloadClosureHash.ToUpperInvariant()'))
+    $emergencyFunctions = @($promotionFunctions | Where-Object {
+        $_.Name -eq 'Assert-Cf7AudioV2EmergencyOwnerAuthorization'
+    })
+    Assert-Equal 'promotion exports one Audio v2 emergency owner binding helper' 1 $emergencyFunctions.Count
+    $emergencyFunctionText = $emergencyFunctions[0].Extent.Text
+    Assert-Equal 'each emergency binding check brackets the validator with frozen authorization hashes' $true `
+        ($emergencyFunctionText.Contains('$authorizationSha256Before = (Get-FileHash') -and
+            $emergencyFunctionText.Contains('& $node.Source $validatorPath --verify') -and
+            $emergencyFunctionText.Contains('$authorizationSha256After = (Get-FileHash') -and
+            $emergencyFunctionText.Contains('$authorizationSha256After -ne $authorizationSha256Before'))
+    Assert-Equal 'each emergency binding check keeps the validator and dependencies on the immutable request tree' $true `
+        ($emergencyFunctionText.Contains("`$ReleaseTreeOid + ':tools/audio-v2/validate-emergency-owner-authorization.js'") -and
+            $emergencyFunctionText.Contains('validator is not one immutable Git blob') -and
+            [regex]::Matches($emergencyFunctionText,
+                [regex]::Escape('& git -C $ProjectRoot diff --quiet --no-ext-diff $ReleaseTreeOid --')).Count -eq 2)
+    $emergencyEarly = $promotionScript.IndexOf('# audio-v2-emergency-owner: early', [StringComparison]::Ordinal)
+    $emergencyVerifyOnlyFinal = $promotionScript.IndexOf('# audio-v2-emergency-owner: verify-only-final', [StringComparison]::Ordinal)
+    $emergencyPromotionFinal = $promotionScript.IndexOf('# audio-v2-emergency-owner: promotion-final', [StringComparison]::Ordinal)
+    Assert-Equal 'Audio v2 emergency owner override has exactly three distinct validation markers' $true `
+        ($emergencyEarly -ge 0 -and $emergencyVerifyOnlyFinal -gt $emergencyEarly -and
+            $emergencyPromotionFinal -gt $emergencyVerifyOnlyFinal -and
+            [regex]::Matches($promotionScript, '# audio-v2-emergency-owner: early').Count -eq 1 -and
+            [regex]::Matches($promotionScript, '# audio-v2-emergency-owner: verify-only-final').Count -eq 1 -and
+            [regex]::Matches($promotionScript, '# audio-v2-emergency-owner: promotion-final').Count -eq 1)
+    Assert-Equal 'Audio v2 emergency owner binding is revalidated at exactly three call sites' 3 `
+        ([regex]::Matches($promotionScript, 'Assert-Cf7AudioV2EmergencyOwnerAuthorization -Required').Count)
+    $candidateConsensusBoundary = $promotionScript.IndexOf('$attestations = @($verifiedEntries', [StringComparison]::Ordinal)
+    $emergencyEarlyNode = $promotionScript.IndexOf(
+        'Assert-Cf7AudioV2EmergencyOwnerAuthorization -Required', $emergencyEarly, [StringComparison]::Ordinal)
+    Assert-Equal 'Audio v2 emergency early binding waits for the consensus payload closure' $true `
+        ($candidateConsensusBoundary -ge 0 -and $emergencyEarly -gt $candidateConsensusBoundary -and
+            $emergencyEarlyNode -gt $emergencyEarly)
+    $emergencyVerifyOnlyNode = $promotionScript.IndexOf(
+        'Assert-Cf7AudioV2EmergencyOwnerAuthorization -Required', $emergencyVerifyOnlyFinal, [StringComparison]::Ordinal)
+    Assert-Equal 'Audio v2 emergency VerifyOnly binding is the final check before the first report write' $true `
+        ($emergencyVerifyOnlyFinal -gt $audioLinkVerifyOnlyStable -and
+            $emergencyVerifyOnlyNode -gt $emergencyVerifyOnlyFinal -and
+            $verifyOnlyReportWrite -gt $emergencyVerifyOnlyNode)
+    $emergencyPromotionNode = $promotionScript.IndexOf(
+        'Assert-Cf7AudioV2EmergencyOwnerAuthorization -Required', $emergencyPromotionFinal, [StringComparison]::Ordinal)
+    Assert-Equal 'Audio v2 emergency promotion binding is the final check before the transaction write boundary' $true `
+        ($emergencyPromotionFinal -gt $audioLinkPromotionStable -and
+            $emergencyPromotionNode -gt $emergencyPromotionFinal -and
+            $transactionBoundary -gt $emergencyPromotionNode)
+    Assert-Equal 'Audio v2 emergency uses the immutable request tree while normal H2 retains frozen E3 HEAD' $true `
+        ($promotionScript.Contains('if ($audioV2EmergencyOwnerRequested) {') -and
+            $promotionScript.Contains('} elseif ($audioV2H2RequestLinkRequired) {') -and
+            $promotionScript.Contains('$promotionWorktreeTreeish = [string]$request.releaseTreeOid') -and
+            $promotionScript.Contains('$promotionWorktreeTreeish = [string]$audioV2H2RequestLinkSnapshot.headCommit'))
+    Assert-Equal 'Audio v2 emergency preflight is explicitly non-H2 without changing the consensus schema' $true `
+        ($promotionScript.Contains('-NotePropertyName audioV2Emergency') -and
+            $promotionScript.Contains('nonH2Compliant = $true') -and
+            [regex]::Matches($promotionScript, "schema = 'cf7-runtime-release-consensus.v2'").Count -eq 1)
     Assert-Equal 'bootstrap keeps runtime-only and full-install preflights separate' $true `
         ($bootstrapSource.Contains('static bool PreflightRuntimeFiles') -and $bootstrapSource.Contains('static bool PreflightCriticalFiles'))
     Assert-Equal 'bootstrap rejects ambiguous verification modes' $true `
