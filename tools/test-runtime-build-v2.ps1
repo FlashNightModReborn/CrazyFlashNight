@@ -130,6 +130,20 @@ try {
     $materializerScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\materialize-runtime-build-inputs.ps1'))
     $bootstrapSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\native\bootstrap\bootstrap.cpp'))
     $programSource = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\src\Program.cs'))
+    $promotionTokens = $null
+    $promotionParseErrors = $null
+    $promotionAst = [Management.Automation.Language.Parser]::ParseInput(
+        $promotionScript, [ref]$promotionTokens, [ref]$promotionParseErrors)
+    Assert-Equal 'promotion script parses with the Audio v2 request-link gate' 0 @($promotionParseErrors).Count
+    $promotionFunctions = @($promotionAst.FindAll({
+        param($node)
+        $node -is [Management.Automation.Language.FunctionDefinitionAst]
+    }, $true))
+    $verificationWindowFunctions = @($promotionFunctions | Where-Object {
+        $_.Name -eq 'Assert-Cf7PromotionVerificationWindowStable'
+    })
+    Assert-Equal 'promotion exports one verification-window stability helper' 1 $verificationWindowFunctions.Count
+    $verificationWindowFunctionText = $verificationWindowFunctions[0].Extent.Text
     $producerTokens = $null
     $producerParseErrors = $null
     $producerAst = [Management.Automation.Language.Parser]::ParseInput(
@@ -233,6 +247,45 @@ try {
     Assert-Equal 'promotion waits for deployed GUI bootstrap exit code' $true `
         ($promotionScript.Contains('$verifyProcess.WaitForExit(120000)') -and $promotionScript.Contains('$verifyProcess.ExitCode') -and
             $promotionScript.Contains('$verifyProcess.Kill()'))
+    $audioLinkEarly = $promotionScript.IndexOf('# audio-v2-h2-link: early', [StringComparison]::Ordinal)
+    $audioLinkVerifyOnlyFinal = $promotionScript.IndexOf('# audio-v2-h2-link: verify-only-final', [StringComparison]::Ordinal)
+    $audioLinkPromotionFinal = $promotionScript.IndexOf('# audio-v2-h2-link: promotion-final', [StringComparison]::Ordinal)
+    Assert-Equal 'Audio v2 gate uses the frozen request-link verifier CLI' $true `
+        ($promotionScript.Contains('tools\audio-v2\validate-h2-request-link.js') -and
+            $promotionScript.Contains('--verify-link --request-file $RequestPath') -and
+            $promotionScript.Contains('--request-id $RequestId.ToUpperInvariant() --request-sha256 $RequestSha256.ToUpperInvariant()'))
+    Assert-Equal 'Audio v2 gate has exactly three promotion call sites' 3 `
+        ([regex]::Matches($promotionScript, 'Assert-Cf7AudioV2H2RequestLink -Required').Count)
+    Assert-Equal 'Audio v2 early gate precedes policy receipt processing' $true `
+        ($audioLinkEarly -ge 0 -and $audioLinkEarly -lt $promotionScript.IndexOf('$PolicyReceiptPath =', [StringComparison]::Ordinal))
+    Assert-Equal 'Audio v2 freezes E3 HEAD and validator blob while legacy keeps exact request-tree materialization' $true `
+        ($promotionScript.Contains('Get-Cf7AudioV2H2RequestLinkSnapshot') -and
+            $promotionScript.Contains('validatorBlobOid = $validatorBlobOid') -and
+            $promotionScript.Contains('$promotionWorktreeTreeish = [string]$audioV2H2RequestLinkSnapshot.headCommit') -and
+            $promotionScript.Contains('& git -C $ProjectRoot diff --quiet --no-ext-diff HEAD --') -and
+            $promotionScript.Contains('& git -C $ProjectRoot diff --quiet --no-ext-diff ([string]$request.releaseTreeOid) --'))
+    Assert-Equal 'verification window uses the selected E3 or legacy treeish' $true `
+        ($verificationWindowFunctionText.Contains('[string]$WorktreeTreeish') -and
+            $verificationWindowFunctionText.Contains('diff --quiet --no-ext-diff $WorktreeTreeish --') -and
+            -not $verificationWindowFunctionText.Contains('[string]$ReleaseTreeOid') -and
+            $promotionScript.Contains('WorktreeTreeish = $promotionWorktreeTreeish'))
+    $audioLinkVerifyOnlyNode = $promotionScript.IndexOf(
+        'Assert-Cf7AudioV2H2RequestLink -Required', $audioLinkVerifyOnlyFinal, [StringComparison]::Ordinal)
+    $audioLinkVerifyOnlyStable = $promotionScript.IndexOf(
+        'Assert-Cf7AudioV2H2RequestLinkWindowStable -Required', $audioLinkVerifyOnlyNode, [StringComparison]::Ordinal)
+    $verifyOnlyReportWrite = $promotionScript.IndexOf(
+        'Write-Cf7PromotionPreflightReport -Path', $audioLinkVerifyOnlyStable, [StringComparison]::Ordinal)
+    Assert-Equal 'Audio v2 VerifyOnly final node recheck and frozen-window check precede its first report write' $true `
+        ($audioLinkVerifyOnlyFinal -ge 0 -and $audioLinkVerifyOnlyNode -gt $audioLinkVerifyOnlyFinal -and
+            $audioLinkVerifyOnlyStable -gt $audioLinkVerifyOnlyNode -and $verifyOnlyReportWrite -gt $audioLinkVerifyOnlyStable)
+    $audioLinkPromotionNode = $promotionScript.IndexOf(
+        'Assert-Cf7AudioV2H2RequestLink -Required', $audioLinkPromotionFinal, [StringComparison]::Ordinal)
+    $audioLinkPromotionStable = $promotionScript.IndexOf(
+        'Assert-Cf7AudioV2H2RequestLinkWindowStable -Required', $audioLinkPromotionNode, [StringComparison]::Ordinal)
+    $transactionBoundary = $promotionScript.IndexOf('$transactionBase =', $audioLinkPromotionStable, [StringComparison]::Ordinal)
+    Assert-Equal 'Audio v2 final node recheck and frozen-window check are the transaction write boundary' $true `
+        ($audioLinkPromotionFinal -ge 0 -and $audioLinkPromotionNode -gt $audioLinkPromotionFinal -and
+            $audioLinkPromotionStable -gt $audioLinkPromotionNode -and $transactionBoundary -gt $audioLinkPromotionStable)
     Assert-Equal 'bootstrap keeps runtime-only and full-install preflights separate' $true `
         ($bootstrapSource.Contains('static bool PreflightRuntimeFiles') -and $bootstrapSource.Contains('static bool PreflightCriticalFiles'))
     Assert-Equal 'bootstrap rejects ambiguous verification modes' $true `

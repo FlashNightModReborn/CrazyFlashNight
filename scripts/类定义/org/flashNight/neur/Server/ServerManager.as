@@ -2,6 +2,7 @@
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.path.PathManager;
 import org.flashNight.arki.item.LootContainerService;
+import org.flashNight.arki.audio.AudioBridge;
 import FastJSON;
 
 /**
@@ -79,6 +80,26 @@ class org.flashNight.neur.Server.ServerManager {
     private var _callIdCounter:Number;
     private var _pendingCallbacks:Object;
     private static var CALLBACK_TIMEOUT_FRAMES:Number = 600; // 20s @30fps
+
+    // Audio Platform v2 exact envelopes. BGM result intentionally has no task field.
+    private static var AUDIO_BGM_RESULT_KEYS:Array = [
+        "wireRevision", "requestId", "audioSessionId",
+        "audioReadyGeneration", "deviceGeneration", "operation",
+        "completionState", "category", "stage", "nativeCode", "hresult",
+        "decoderBackend", "messageKey"
+    ];
+    private static var AUDIO_READY_KEYS:Array = [
+        "task", "wireRevision", "audioSessionId", "audioReadyGeneration",
+        "deviceGeneration", "loaded", "failed", "overrides",
+        "capabilityDigest"
+    ];
+    private static var AUDIO_UNAVAILABLE_KEYS:Array = [
+        "task", "wireRevision", "audioSessionId", "audioReadyGeneration",
+        "deviceGeneration", "category", "messageKey"
+    ];
+    private static var JUKEBOX_PLAY_COMMAND_KEYS:Array = [
+        "task", "action", "title"
+    ];
 
     // ==================== 状态名称（调试用）====================
     private static var STATE_NAMES:Array = [
@@ -466,6 +487,9 @@ class org.flashNight.neur.Server.ServerManager {
             trace("XMLSocket connected to server on port: " + socketPort);
             _retryCount = 0;
             transitionTo(S_CONNECTED);
+            // Transport ready is not audio ready. Clear any prior tuple and wait for
+            // an exact audio_ready from this live socket.
+            AudioBridge.onTransportConnected();
         } else {
             trace("Failed to connect XMLSocket to server on port: " + socketPort);
             _retryCount++;
@@ -510,6 +534,38 @@ class org.flashNight.neur.Server.ServerManager {
             response = jsonParser.parse(data);
         } catch (e) {
             trace("[ServerManager] Bad packet: " + e.message + " | data=" + data.substring(0, 80));
+            return;
+        }
+
+        // Audio v2 lifecycle push has an explicit task and an exact key set.
+        // Near-matches are consumed as malformed audio packets and never fall through
+        // to generic task/callback routing.
+        if (response.task === "audio_ready") {
+            if (!isExactAudioReadyEnvelope(response)
+                    || !AudioBridge.handleAudioReady(response)) {
+                trace("[ServerManager] Rejected malformed audio_ready");
+            }
+            return;
+        }
+        if (response.task === "audio_unavailable") {
+            if (!isExactAudioUnavailableEnvelope(response)
+                    || !AudioBridge.handleAudioUnavailable(response)) {
+                trace("[ServerManager] Rejected malformed audio_unavailable");
+            }
+            return;
+        }
+
+        // Correlated BGM results deliberately have no task/callId. Identify them only
+        // by the strict 13-key v2 schema; connectionGeneration is therefore rejected.
+        var audioResultLike:Boolean = response.wireRevision === 2
+            && (response.completionState !== undefined
+                || (response.requestId !== undefined
+                    && response.audioSessionId !== undefined));
+        if (audioResultLike) {
+            if (!isExactAudioBgmResultEnvelope(response)
+                    || !AudioBridge.handleBgmResult(response)) {
+                trace("[ServerManager] Rejected malformed or uncorrelated audio result");
+            }
             return;
         }
 
@@ -623,6 +679,10 @@ class org.flashNight.neur.Server.ServerManager {
             trace("[GameCmd] Missing action");
             return;
         }
+        if (action == "jukeboxPlay" && !isExactJukeboxPlayCommand(params)) {
+            trace("[GameCmd] Rejected malformed jukeboxPlay command");
+            return;
+        }
         var handler:Function = _root.gameCommands[action];
         if (typeof handler == "function") {
             handler(params);
@@ -640,6 +700,7 @@ class org.flashNight.neur.Server.ServerManager {
         // 先 retire 当前 source；旧 XMLSocket 排队的 onData/onClose 即使在新连接建立后
         // 才抵达，也会被 initXMLSocket closure 的对象身份门拒绝。
         xmlSocket = null;
+        AudioBridge.onTransportDisconnected();
 
         // loot 奖励只存在本地内存；Host 断线时直接让服务续跑 exact journal/effects，
         // 并把同一 authority 收敛到 Web-only SUSPENDED 或终态。不存在 Flash UI 回退。
@@ -770,12 +831,8 @@ class org.flashNight.neur.Server.ServerManager {
     // ==================== Task 发送 ====================
 
     public function sendTaskToNode(taskType:String, payload:Object, extra:Object):Boolean {
-        var message:Object = new Object();
-        message.task = taskType;
-        message.payload = payload;
-        if (extra != null) {
-            message.extra = extra;
-        }
+        var message:Object = buildTaskEnvelope(taskType, payload, extra);
+        if (message == null) return false;
 
         var messageString:String = jsonParser.stringify(message);
         if (messageString == null) {
@@ -784,6 +841,135 @@ class org.flashNight.neur.Server.ServerManager {
         }
 
         return sendSocketMessage(messageString);
+    }
+
+    /**
+     * All existing tasks retain {task,payload,extra}. Audio v2 alone is a frozen flat
+     * exact-key wire, so its payload own fields are copied beside task before the same
+     * FastJSON serializer runs. Audio extra/task injection fails closed.
+     */
+    private static function buildTaskEnvelope(
+            taskType:String,
+            payload:Object,
+            extra:Object):Object {
+        if (typeof taskType != "string" || taskType.length == 0) return null;
+        var message:Object = new Object();
+        message.task = taskType;
+
+        if (taskType == "audio") {
+            if (payload == null || typeof payload != "object" || extra != null) return null;
+            for (var key:String in payload) {
+                if (!owns(payload, key)) continue;
+                if (key == "task") return null;
+                message[key] = payload[key];
+            }
+            return message;
+        }
+
+        message.payload = payload;
+        if (extra != null) message.extra = extra;
+        return message;
+    }
+
+    private static function isExactAudioBgmResultEnvelope(value:Object):Boolean {
+        return hasExactOwnKeys(value, AUDIO_BGM_RESULT_KEYS)
+            && value.wireRevision === 2
+            && typeof value.requestId == "string"
+            && typeof value.audioSessionId == "string"
+            && typeof value.audioReadyGeneration == "string"
+            && typeof value.deviceGeneration == "string"
+            && typeof value.operation == "string"
+            && typeof value.completionState == "string"
+            && typeof value.category == "string"
+            && typeof value.stage == "string"
+            && typeof value.nativeCode == "number"
+            && typeof value.hresult == "number"
+            && typeof value.decoderBackend == "string"
+            && typeof value.messageKey == "string";
+    }
+
+    private static function isExactAudioReadyEnvelope(value:Object):Boolean {
+        return hasExactOwnKeys(value, AUDIO_READY_KEYS)
+            && value.task === "audio_ready"
+            && value.wireRevision === 2
+            && typeof value.audioSessionId == "string"
+            && typeof value.audioReadyGeneration == "string"
+            && typeof value.deviceGeneration == "string"
+            && typeof value.loaded == "number"
+            && typeof value.failed == "number"
+            && typeof value.overrides == "number"
+            && typeof value.capabilityDigest == "string";
+    }
+
+    private static function isExactAudioUnavailableEnvelope(value:Object):Boolean {
+        return hasExactOwnKeys(value, AUDIO_UNAVAILABLE_KEYS)
+            && value.task === "audio_unavailable"
+            && value.wireRevision === 2
+            && typeof value.audioSessionId == "string"
+            && typeof value.audioReadyGeneration == "string"
+            && typeof value.deviceGeneration == "string"
+            && typeof value.category == "string"
+            && typeof value.messageKey == "string";
+    }
+
+    private static function isExactJukeboxPlayCommand(value:Object):Boolean {
+        return hasExactOwnKeys(value, JUKEBOX_PLAY_COMMAND_KEYS)
+            && value.task === "cmd"
+            && value.action === "jukeboxPlay"
+            && typeof value.title == "string"
+            && value.title.length > 0;
+    }
+
+    private static function hasExactOwnKeys(value:Object, expected:Array):Boolean {
+        if (value == null || typeof value != "object") return false;
+        var count:Number = 0;
+        for (var key:String in value) {
+            if (!owns(value, key)) continue;
+            if (!arrayContainsExact(expected, key)) return false;
+            count++;
+        }
+        if (count != expected.length) return false;
+        for (var i:Number = 0; i < expected.length; i++) {
+            if (!owns(value, expected[i])) return false;
+        }
+        return true;
+    }
+
+    private static function owns(value:Object, key:String):Boolean {
+        return value != null
+            && Object.prototype.hasOwnProperty.call(value, key);
+    }
+
+    private static function arrayContainsExact(values:Array, value):Boolean {
+        for (var i:Number = 0; i < values.length; i++) {
+            if (values[i] === value) return true;
+        }
+        return false;
+    }
+
+    // Focused TestLoader hooks exercise the exact production helpers without opening
+    // ports or constructing the ServerManager singleton.
+    public static function _buildTaskEnvelopeForTest(
+            taskType:String,
+            payload:Object,
+            extra:Object):Object {
+        return buildTaskEnvelope(taskType, payload, extra);
+    }
+
+    public static function _isExactAudioBgmResultEnvelopeForTest(value:Object):Boolean {
+        return isExactAudioBgmResultEnvelope(value);
+    }
+
+    public static function _isExactAudioReadyEnvelopeForTest(value:Object):Boolean {
+        return isExactAudioReadyEnvelope(value);
+    }
+
+    public static function _isExactAudioUnavailableEnvelopeForTest(value:Object):Boolean {
+        return isExactAudioUnavailableEnvelope(value);
+    }
+
+    public static function _isExactJukeboxPlayCommandForTest(value:Object):Boolean {
+        return isExactJukeboxPlayCommand(value);
     }
 
     public function sendTaskWithCallback(taskType:String, payload:Object, extra:Object,

@@ -207,7 +207,7 @@ const CASE_CHECKS = Object.freeze({
     device_recovery_endpoint_e2e: {
         default_device_switch: ["new_device_identity_published", "post_switch_endpoint_pcm"],
         physical_route_bluetooth_or_hdmi: ["physical_route_identity_recorded", "routed_endpoint_pcm"],
-        sleep_resume: ["post_resume_endpoint_pcm", "recovery_bounded"],
+        sleep_resume: ["post_resume_endpoint_pcm_generation_scoped", "recovery_target_15s_hard_cap_30s"],
         no_stale_sfx_after_recovery: ["stale_generation_drop_counter_exact", "stale_sfx_absent_after_recovery"]
     }
 });
@@ -1133,7 +1133,16 @@ function validateEndpointCaseFacts(reportId, caseId, facts, captures) {
     } else if (caseId === "physical_route_bluetooth_or_hdmi") {
         exactKeys(facts, ["captureId", "deviceIdDigest", "routeKind"], "physical route facts"); bindCapture(facts.captureId); expectSha(facts.deviceIdDigest, "physical route device digest"); expect(["bluetooth", "hdmi"].includes(facts.routeKind), "physical route is neither Bluetooth nor HDMI"); expect(facts.deviceIdDigest === captures[facts.captureId].deviceIdDigest, "physical route digest differs from the shared device-recovery capture");
     } else if (caseId === "sleep_resume") {
-        exactKeys(facts, ["captureId", "deviceGenerationAfter", "deviceGenerationBefore", "maxRecoveryMs", "recoveryMs"], "sleep/resume facts"); bindCapture(facts.captureId); ["deviceGenerationAfter", "deviceGenerationBefore", "maxRecoveryMs", "recoveryMs"].forEach((key) => requireInteger(facts[key], "sleep/resume " + key, 1)); expect(facts.deviceGenerationAfter > facts.deviceGenerationBefore && facts.recoveryMs <= facts.maxRecoveryMs, "sleep/resume recovery was not bounded");
+        exactKeys(facts, ["captureId", "deviceGenerationAfter", "deviceGenerationBefore", "maxRecoveryMs", "recoveryMs", "targetMiss", "targetRecoveryMs"], "sleep/resume facts");
+        bindCapture(facts.captureId);
+        ["deviceGenerationAfter", "deviceGenerationBefore", "maxRecoveryMs", "recoveryMs", "targetRecoveryMs"]
+            .forEach((key) => requireInteger(facts[key], "sleep/resume " + key, 1));
+        expect(typeof facts.targetMiss === "boolean", "sleep/resume targetMiss must be boolean");
+        expect(facts.deviceGenerationAfter > facts.deviceGenerationBefore &&
+            facts.targetRecoveryMs === 15000 && facts.maxRecoveryMs === 30000 &&
+            facts.recoveryMs <= facts.maxRecoveryMs &&
+            facts.targetMiss === (facts.recoveryMs > facts.targetRecoveryMs),
+        "sleep/resume target/hard-cap facts did not recompute exactly");
     } else if (caseId === "no_stale_sfx_after_recovery") {
         exactKeys(facts, [
             "armResult", "audioReadyGenerationAfter", "audioReadyGenerationBefore", "captureId",

@@ -52,6 +52,17 @@
     var allTracks = [];
     var currentAlbumFilter = '';
 
+    // 曲目可用性是 Host 探测结果，不允许由 DOM 样式或旧目录字段推断。
+    // 缺失/未知状态统一降为 unavailable，避免旧目录在新协议下继续误播。
+    var TRACK_AVAILABILITY = {
+        available: true,
+        probing: true,
+        unavailable: true
+    };
+    var INVALID_AVAILABILITY_REASON = '目录未提供有效 availability，已禁止播放';
+    var PROBING_REASON_FALLBACK = '正在检测音频可播放性';
+    var UNAVAILABLE_REASON_FALLBACK = '音频当前不可播放';
+
     var settingsState = {
         override: false,
         trueRandom: false,
@@ -753,15 +764,57 @@
         ctx.globalAlpha = 1;
     }
 
+    function normalizeTrack(raw) {
+        if (!raw || typeof raw !== 'object'
+            || typeof raw.title !== 'string' || !raw.title) return null;
+
+        var track = {};
+        for (var key in raw) {
+            if (Object.prototype.hasOwnProperty.call(raw, key)) track[key] = raw[key];
+        }
+        track.album = (typeof raw.album === 'string' && raw.album) ? raw.album : '未分类';
+
+        var availability = typeof raw.availability === 'string' ? raw.availability : '';
+        var reason = typeof raw.reason === 'string'
+            ? raw.reason.replace(/^\s+|\s+$/g, '') : '';
+        if (!Object.prototype.hasOwnProperty.call(TRACK_AVAILABILITY, availability)) {
+            track.availability = 'unavailable';
+            track.reason = INVALID_AVAILABILITY_REASON;
+        } else {
+            track.availability = availability;
+            track.reason = reason;
+            if (availability === 'probing' && !track.reason) {
+                track.reason = PROBING_REASON_FALLBACK;
+            } else if (availability === 'unavailable' && !track.reason) {
+                track.reason = UNAVAILABLE_REASON_FALLBACK;
+            }
+        }
+        return track;
+    }
+
+    function findTrackByTitle(title) {
+        for (var i = 0; i < allTracks.length; i++) {
+            if (allTracks[i].title === title) return allTracks[i];
+        }
+        return null;
+    }
+
+    function addOrReplaceTrack(raw) {
+        var track = normalizeTrack(raw);
+        if (!track) return;
+        // catalogUpdate 可用 added 传递同 title 的探测状态变化；按 title 原位语义替换，禁止累积重复行。
+        removeTrackByTitle(track.title);
+        if (!albums[track.album]) albums[track.album] = [];
+        albums[track.album].push(track);
+        allTracks.push(track);
+    }
+
     function onCatalog(data) {
         albums = {}; allTracks = [];
-        var tracks = data.tracks || [];
-        for (var i = 0; i < tracks.length; i++) {
-            var t = tracks[i];
-            if (!albums[t.album]) albums[t.album] = [];
-            albums[t.album].push(t);
-            allTracks.push(t);
-        }
+        _pendingTitle = '';
+        clearTimeout(_pendingTimer);
+        var tracks = data && Array.isArray(data.tracks) ? data.tracks : [];
+        for (var i = 0; i < tracks.length; i++) addOrReplaceTrack(tracks[i]);
         renderAlbumSelect();
         renderTrackList(currentAlbumFilter);
         // 首次打开时 UiData 的 bgm seed 早于 catalog 回包；目录到达后补做专辑归属对账。
@@ -769,15 +822,10 @@
     }
 
     function onCatalogUpdate(data) {
-        var added = data.added || [];
-        var removed = data.removed || [];
+        var added = data && Array.isArray(data.added) ? data.added : [];
+        var removed = data && Array.isArray(data.removed) ? data.removed : [];
         for (var r = 0; r < removed.length; r++) removeTrackByTitle(removed[r]);
-        for (var a = 0; a < added.length; a++) {
-            var t = added[a];
-            if (!albums[t.album]) albums[t.album] = [];
-            albums[t.album].push(t);
-            allTracks.push(t);
-        }
+        for (var a = 0; a < added.length; a++) addOrReplaceTrack(added[a]);
         renderAlbumSelect();
         renderTrackList(currentAlbumFilter);
         // 当前曲目可能随增量目录获得、失去或改变专辑归属。
@@ -794,6 +842,10 @@
         }
         for (var j = allTracks.length - 1; j >= 0; j--) {
             if (allTracks[j].title === title) allTracks.splice(j, 1);
+        }
+        if (_pendingTitle === title) {
+            _pendingTitle = '';
+            clearTimeout(_pendingTimer);
         }
     }
 
@@ -890,6 +942,18 @@
     // 首屏 stagger：每次重建列表只给前 12 项加入场动画，避免长列表视觉噪音
     var ENTER_STAGGER_MAX = 12;
 
+    function availableTrackItems() {
+        if (!_refs.trackList) return [];
+        var items = _refs.trackList.querySelectorAll('.jbp-track-item');
+        var available = [];
+        for (var i = 0; i < items.length; i++) {
+            if (items[i]._jukeboxTrack && items[i]._jukeboxTrack.availability === 'available') {
+                available.push(items[i]);
+            }
+        }
+        return available;
+    }
+
     function renderTrackList(albumFilter) {
         if (!_refs.trackList) return;
         _refs.trackList.innerHTML = '';
@@ -912,10 +976,44 @@
         }
         refreshTrackStates();
         // roving tabindex 入口：Tab 进列表落在当前曲目（无则首项），其余项 -1 不独立占用 Tab 序
-        var entry = _refs.trackList.querySelector('.jbp-track-item.active') || _refs.trackList.querySelector('.jbp-track-item');
+        var available = availableTrackItems();
+        var entry = null;
+        for (var j = 0; j < available.length; j++) {
+            if (available[j].classList.contains('active')) { entry = available[j]; break; }
+        }
+        if (!entry && available.length) entry = available[0];
         if (entry) setTrackEntry(entry);
         // active 项滚动定位：布局落定后执行，仅不在可视区时滚动并居中
         setTimeout(scrollActiveIntoView, 0);
+    }
+
+    function renderTrackAvailability(div, track) {
+        var available = track.availability === 'available';
+        div.setAttribute('data-availability', track.availability);
+        div.setAttribute('aria-disabled', available ? 'false' : 'true');
+        div.setAttribute('role', 'button');
+        div.tabIndex = available ? 0 : -1;
+        if (available) return;
+
+        div.classList.add('is-disabled', 'is-' + track.availability);
+        div.style.cursor = 'not-allowed';
+        div.style.opacity = track.availability === 'probing' ? '0.72' : '0.5';
+        div.style.whiteSpace = 'normal';
+
+        var reason = document.createElement('span');
+        reason.className = 'jbp-track-reason';
+        reason.textContent = (track.availability === 'probing' ? '检测中：' : '不可用：') + track.reason;
+        reason.style.display = 'block';
+        reason.style.marginTop = '2px';
+        reason.style.fontSize = '9px';
+        reason.style.lineHeight = '1.25';
+        reason.style.letterSpacing = '0';
+        reason.style.whiteSpace = 'normal';
+        reason.style.overflowWrap = 'anywhere';
+        reason.style.pointerEvents = 'none';
+        div.appendChild(reason);
+        div.setAttribute('data-reason', track.reason);
+        div.setAttribute('title', reason.textContent);
     }
 
     // roving tabindex：仅入口项 tabindex=0；方向键导航迁移焦点后同步迁移入口
@@ -923,7 +1021,9 @@
         if (!_refs.trackList) return;
         var items = _refs.trackList.querySelectorAll('.jbp-track-item');
         for (var i = 0; i < items.length; i++) {
-            items[i].setAttribute('tabindex', items[i] === item ? '0' : '-1');
+            var isAvailable = items[i]._jukeboxTrack
+                && items[i]._jukeboxTrack.availability === 'available';
+            items[i].setAttribute('tabindex', isAvailable && items[i] === item ? '0' : '-1');
         }
     }
 
@@ -931,10 +1031,14 @@
         for (var i = 0; i < source.length; i++) {
             var div = document.createElement('div');
             div.className = 'jbp-track-item';
-            div.innerHTML = '<span class="marquee-inner">' + escHtml(source[i].title) + '</span>';
+            var title = document.createElement('span');
+            title.className = 'marquee-inner';
+            title.textContent = source[i].title;
+            div.appendChild(title);
             div.setAttribute('data-title', source[i].title);
-            div.setAttribute('role', 'button');
-            div.setAttribute('tabindex', '-1');   // roving：renderTrackList 收尾时把入口项提为 0
+            // expando 绑定本次 canonical catalog 对象；发送前会再次与 allTracks 对账，DOM 属性篡改不能提权。
+            div._jukeboxTrack = source[i];
+            renderTrackAvailability(div, source[i]);
             div._marqueeSpeed = 25;
             if (enterCount < ENTER_STAGGER_MAX) {
                 div.classList.add('jbp-enter');
@@ -962,17 +1066,20 @@
         }
     }
 
-    function onTrackClick(e) {
-        var el = e.target;
-        while (el && !el.getAttribute('data-title')) el = el.parentElement;
-        var title = el ? el.getAttribute('data-title') : null;
-        if (title) playTrack(title);
-    }
-
-    // 点曲统一入口：鼠标 click 与键盘 Enter/Space 汇聚同一 intent
-    function playTrack(title) {
+    function tryPlayTrack(el) {
+        if (!el || !_refs.trackList || !_refs.trackList.contains(el)) return false;
+        var title = el.getAttribute('data-title');
+        var track = el._jukeboxTrack;
+        // 二次校验只信当前 catalog 对象，不信可被伪造的 class/data/aria 状态。
+        if (!track || track !== findTrackByTitle(title)
+            || track.availability !== 'available') return false;
         if (title !== bgmTitle) setPendingTrack(title);
         Bridge.send({type: 'jukebox', cmd: 'play', title: title});
+        return true;
+    }
+
+    function onTrackClick(e) {
+        tryPlayTrack(e.currentTarget);
     }
 
     // 点曲 pending：点击立即反馈，UiData 'bgm' 回包确认后转 active；3s 无回包兜底清除
@@ -995,7 +1102,8 @@
             var t = items[i].getAttribute('data-title');
             if (!t) continue;   // 专辑分组头无 data-title
             items[i].classList.toggle('active', t === bgmTitle);
-            items[i].classList.toggle('pending', t === _pendingTitle && t !== bgmTitle);
+            items[i].classList.toggle('pending', items[i].getAttribute('data-availability') === 'available'
+                && t === _pendingTitle && t !== bgmTitle);
         }
     }
 
@@ -1286,12 +1394,11 @@
 
     function keyOnTrackItem(e, item) {
         if (e.key === 'Enter' || e.key === ' ') {
-            var title = item.getAttribute('data-title');
-            if (title) playTrack(title);
+            tryPlayTrack(item);
             return true;
         }
         if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
-            var items = _refs.trackList ? _refs.trackList.querySelectorAll('.jbp-track-item') : [];
+            var items = availableTrackItems();
             var idx = -1;
             for (var i = 0; i < items.length; i++) if (items[i] === item) { idx = i; break; }
             if (idx < 0) return false;

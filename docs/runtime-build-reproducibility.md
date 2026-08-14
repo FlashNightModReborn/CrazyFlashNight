@@ -148,6 +148,8 @@ $requestId = $request.requestId
 
 request 内含完整 frozen `releaseTreeOid`、四域 hash、build identity、source/request commit，以及只覆盖四个 v2 identity domain 精确 Git blob 子树的 `source.bundle`、`bundleTreeOid` 与 bundle SHA；大型无关 tracked asset 仍由 `releaseTreeOid` 绑定，但不会塞进 worker bundle。冻结 stage-0 条目时固定 `core.quotepath=false`，路径字段必须按仓库中的 UTF-8 字面值比对，不能让机器级 Git 配置把中文路径转成 C 风格转义文本。worker clone 后复核 `bundleTreeOid`，相同 tree+policy 幂等复用；tree 已过时就创建新 request 并用 `-SupersedeRequestId <old-id>` 标记旧列车，不删除历史。
 
+Audio Platform v2 R4 的 request schema 仍是现役 `cf7-runtime-build-request.v2`，不得注入 H1/H2 字段。只有有效 E2/H2 才可为 exact Source S 创建 source tag 与 request；request 创建后立即以 E2 的 direct single-parent、exact-one-path evidence-only child E3 写 `docs/evidence/audio-v2/h2-request-link.json`。link 以 canonical JSON 旁路绑定 request raw SHA/requestId/五个 request domain、source tag→S commit/tree、E1 manifest blob/SHA 与 E2 H2 receipt blob/SHA。正式 builders 可在 E2/request 后启动，不等待第三道人类 gate；E3 只作为 proof/quorum、VerifyOnly、promotion 与 deployment write 的机器前置。
+
 每台已 enrollment 的本地机器运行：
 
 ```powershell
@@ -230,7 +232,7 @@ New-Item -ItemType Directory -Path $reportDir -Force | Out-Null
 
 `ReportPath` 必须是项目根内、父目录已存在、目标尚不存在的绝对 long path；其祖先不得是 reparse point/8.3 alias，并且不得落入 `.git`、`config/build`、queue、candidate、live deployment、任一四域输入树或 payload 输入。脚本声明的唯一仓内输出是以 CreateNew 写一份 canonical UTF-8/LF 的 `cf7-runtime-promotion-preflight.v2`：`status=preflight-passed`、`reportCreated=true`，同时明确 `runtimeMutationPerformed=false`、`releaseStateMutationPerformed=false`、`promotionPerformed=false`、`deploymentPerformed=false`、`reusableAsPromotionInput=false`；这不对 Git/gh 自身在仓外的实现缓存作无范围断言。报告绑定 request 五域、candidate manifest/逐文件 payload closure、policy receipt hash、去重后的 signer/faultDomain/proof 摘要；不含时间戳、本机绝对路径、用户名或机器名。写前和写后都会重验 request/bundle、registry、receipt、proof、worktree/tree、candidate closure/manifest 与 live deployment cleanliness；窗口漂移会删除本轮新报告并失败。该报告只能作验收证据，正式 promotion 必须不带 `-VerifyOnly/-ReportPath` 重新执行全链和事务检查。
 
-promotion 重新验证 request/worktree/receipt/candidate/所有证明，要求至少两个不同 signer identity + faultDomain 且五项共同产物字段（前三域、build identity、payload closure）全等；随后在 `tmp/runtime-promotions/` 组装 next/previous，事务替换正式 runtime、bootstrap 与 `config/build/runtime-release-consensus.json`。v2 consensus 内嵌 policy receipt 与全部签名/Provenance proof；正式安装完成后同步、有界等待 full-install bootstrap `--verify-only` 并检查真实 exit code，两个 verify 模式同时出现会按 CLI 误用拒绝。任何失败或 120 秒超时都进入自动回滚，previous 保留供人工恢复。
+promotion 重新验证 request/worktree/receipt/candidate/所有证明，要求至少两个不同 signer identity + faultDomain 且五项共同产物字段（前三域、build identity、payload closure）全等；对 source commit 含 R4 manifest 的 Audio v2 request，还必须先由独立 `validate-h2-request-link.js` 验证 E3 canonical bytes、祖先与 exact-one-path diff、request/tag/S/E1/E2/receipt 全绑定，并在 `-VerifyOnly` 报告写入前或正式 `$transactionBase` 创建前再次验证以关闭 TOCTOU。缺失或漂移必须在任何 promotion/deployment write 前失败；非 R4 release 不启用该专属 Gate。随后脚本才可在 `tmp/runtime-promotions/` 组装 next/previous，事务替换正式 runtime、bootstrap 与 `config/build/runtime-release-consensus.json`。v2 consensus 内嵌 policy receipt 与全部签名/Provenance proof；正式安装完成后同步、有界等待 full-install bootstrap `--verify-only` 并检查真实 exit code，两个 verify 模式同时出现会按 CLI 误用拒绝。任何失败或 120 秒超时都进入自动回滚，previous 保留供人工恢复。
 
 ## CI 事后 Audit 状态机
 

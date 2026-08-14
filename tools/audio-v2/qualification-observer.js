@@ -1079,8 +1079,9 @@ function deriveCaseFacts(caseId, range, options) {
         expectSameAudioSession(snapshots, caseId);
         const before = snapshots[0].payload.runtime;
         const post = snapshots[snapshots.length - 1].payload.runtime;
-        const maximumAllowed100ns = 150000000;
-        const maximumAllowedMs = 15000;
+        const targetRecoveryMs = 15000;
+        const maximumAllowed100ns = 300000000;
+        const maximumAllowedMs = 30000;
         const stableTupleKeys = [
             "audioReadyGeneration", "audioSessionId", "backend", "channels",
             "deviceGeneration", "deviceIdDigest", "sampleFormat", "sampleRate"
@@ -1168,7 +1169,7 @@ function deriveCaseFacts(caseId, range, options) {
             const episodeElapsed100ns = workingStateDelta100ns(
                 activeEpisode.recovering, entry, label);
             expect(episodeElapsed100ns <= maximumAllowed100ns,
-                label + " recovery exceeded 150000000 working-state 100ns units");
+                label + " recovery exceeded 300000000 working-state 100ns units hard maximum");
             activeEpisode.ready = entry;
             activeEpisode.recoveryMs = Math.ceil(
                 episodeElapsed100ns / 10000);
@@ -1180,8 +1181,21 @@ function deriveCaseFacts(caseId, range, options) {
         expect(episodes.length > 0, "sleep_resume recovery transition missing or out of order");
         expect(snapshots[0].sequence < episodes[0].recovering.sequence,
             "sleep_resume pre snapshot must precede the first recovery episode");
-        expect(snapshots[snapshots.length - 1].sequence >= episodes[episodes.length - 1].ready.sequence,
-            "sleep_resume post snapshot must follow the final recovery ready boundary");
+        const lastClosingReady = episodes[episodes.length - 1].ready;
+        const finalSnapshots = snapshots.slice(-2);
+        expect(finalSnapshots.length === 2 &&
+            finalSnapshots[0].sequence >= lastClosingReady.sequence &&
+            finalSnapshots[1].sequence > finalSnapshots[0].sequence,
+        "sleep_resume final PCM proof requires two ordered explicit qualification snapshots at or after the final closing Ready");
+        finalSnapshots.forEach((entry) =>
+            expectStableReadyTuple(entry.payload.runtime, currentReady,
+                "sleep_resume final qualification snapshot"));
+        const finalMeterBus = ["bgmMeter", "sfxMeter"].find((meterName) =>
+            finalSnapshots[1].payload[meterName].frameCount >
+                finalSnapshots[0].payload[meterName].frameCount &&
+            peakAbsPcm16(finalSnapshots[1].payload[meterName]) >= 64);
+        expect(finalMeterBus,
+            "sleep_resume final same-generation meter proof did not advance with qualified signal on one bus");
         expectReadyPhysicalRuntime(before, caseId + " pre");
         expectReadyPhysicalRuntime(post, caseId + " post");
         expect(post.audioSessionId === before.audioSessionId, "sleep_resume changed audio session after recovery");
@@ -1189,13 +1203,16 @@ function deriveCaseFacts(caseId, range, options) {
             expect(post[key] === currentReady[key], "sleep_resume final ready/post runtime tuple mismatch: " + key));
         expect(post.deviceIdDigest === before.deviceIdDigest,
             "sleep_resume final post did not return to the pre-sleep qualified endpoint digest");
-        expectAnyBusMeterWindow(snapshots[0], snapshots[snapshots.length - 1], 1, caseId + " post-resume");
+        const recoveryMs = Math.max.apply(null,
+            episodes.map((episode) => episode.recoveryMs));
         return {
             captureId: "device_recovery",
             deviceGenerationAfter: currentReady.deviceGeneration,
             deviceGenerationBefore: before.deviceGeneration,
             maxRecoveryMs: maximumAllowedMs,
-            recoveryMs: Math.max.apply(null, episodes.map((episode) => episode.recoveryMs))
+            recoveryMs,
+            targetMiss: recoveryMs > targetRecoveryMs,
+            targetRecoveryMs
         };
     }
     if (caseId === "no_stale_sfx_after_recovery") {

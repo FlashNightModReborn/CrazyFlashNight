@@ -192,7 +192,7 @@ function Assert-Cf7PromotionVerificationWindowStable {
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
         [Parameter(Mandatory=$true)][string]$QueueRoot,
         [Parameter(Mandatory=$true)][string]$RequestId,
-        [Parameter(Mandatory=$true)][string]$ReleaseTreeOid,
+        [Parameter(Mandatory=$true)][string]$WorktreeTreeish,
         [Parameter(Mandatory=$true)][object]$ExpectedIdentity,
         [Parameter(Mandatory=$true)][string]$RequestPath,
         [Parameter(Mandatory=$true)][string]$RequestSha256,
@@ -206,6 +206,7 @@ function Assert-Cf7PromotionVerificationWindowStable {
         [Parameter(Mandatory=$true)][object]$ExpectedCandidateClosure,
         [Parameter(Mandatory=$true)][string]$CandidateManifestPath,
         [Parameter(Mandatory=$true)][string]$CandidateManifestSha256,
+        [object]$AudioV2H2RequestLinkSnapshot,
         [object[]]$ProofInputs = @()
     )
     [void](Read-Cf7RuntimeBuildRequest -QueueRoot $QueueRoot -RequestId $RequestId)
@@ -227,12 +228,12 @@ function Assert-Cf7PromotionVerificationWindowStable {
             throw "Current worktree changed during promotion verification: $field"
         }
     }
-    & git -C $ProjectRoot diff --quiet --no-ext-diff $ReleaseTreeOid --
+    & git -C $ProjectRoot diff --quiet --no-ext-diff $WorktreeTreeish --
     if ($LASTEXITCODE -eq 1) {
         throw 'Tracked worktree bytes changed during promotion verification.'
     }
     if ($LASTEXITCODE -ne 0) {
-        throw 'Cannot recheck the immutable request tree during promotion verification.'
+        throw 'Cannot recheck the frozen promotion worktree treeish during promotion verification.'
     }
     $deploymentChanges = @(& git -C $ProjectRoot status --porcelain -- `
         'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime' 'config/build/runtime-release-consensus.json')
@@ -247,6 +248,10 @@ function Assert-Cf7PromotionVerificationWindowStable {
     $currentManifestHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $CandidateManifestPath).Hash.ToUpperInvariant()
     if ($currentManifestHash -ne $CandidateManifestSha256.ToUpperInvariant()) {
         throw 'Runtime candidate manifest changed during promotion verification.'
+    }
+    if ($null -ne $AudioV2H2RequestLinkSnapshot) {
+        Assert-Cf7AudioV2H2RequestLinkWindowStable -Required $true `
+            -ProjectRoot $ProjectRoot -Snapshot $AudioV2H2RequestLinkSnapshot
     }
 }
 
@@ -316,6 +321,87 @@ function Select-Cf7PromotionUniqueEntries {
     foreach ($row in $rows) { Write-Output $row.entry }
 }
 
+function Test-Cf7AudioV2H2RequestLinkRequired {
+    param(
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [Parameter(Mandatory=$true)][string]$SourceCommitOid
+    )
+    $manifestPath = 'docs/contracts/audio-v2/h1-decision-manifest.v4.json'
+    $rows = @(& git -C $ProjectRoot -c core.quotepath=false ls-tree $SourceCommitOid -- $manifestPath)
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect the immutable request source for the Audio v2 R4 marker.' }
+    if ($rows.Count -eq 0) { return $false }
+    if ($rows.Count -ne 1 -or [string]$rows[0] -notmatch '^100644 blob [0-9a-f]{40,64}\tdocs/contracts/audio-v2/h1-decision-manifest\.v4\.json$') {
+        throw 'The Audio v2 R4 marker is not one exact regular Git blob.'
+    }
+    return $true
+}
+
+function Get-Cf7AudioV2H2RequestLinkSnapshot {
+    param(
+        [Parameter(Mandatory=$true)][bool]$Required,
+        [Parameter(Mandatory=$true)][string]$ProjectRoot
+    )
+    if (-not $Required) { return $null }
+    $headRows = @(& git -C $ProjectRoot rev-parse --verify 'HEAD^{commit}')
+    if ($LASTEXITCODE -ne 0 -or $headRows.Count -ne 1 -or [string]$headRows[0] -notmatch '^[0-9a-f]{40,64}$') {
+        throw 'Cannot freeze the Audio v2 E3 HEAD commit.'
+    }
+    $headCommit = ([string]$headRows[0]).ToLowerInvariant()
+    $validatorRows = @(& git -C $ProjectRoot rev-parse --verify "${headCommit}:tools/audio-v2/validate-h2-request-link.js")
+    if ($LASTEXITCODE -ne 0 -or $validatorRows.Count -ne 1 -or [string]$validatorRows[0] -notmatch '^[0-9a-f]{40,64}$') {
+        throw 'Cannot freeze the Audio v2 E3 validator blob.'
+    }
+    $validatorBlobOid = ([string]$validatorRows[0]).ToLowerInvariant()
+    $validatorType = @(& git -C $ProjectRoot cat-file -t $validatorBlobOid)
+    if ($LASTEXITCODE -ne 0 -or $validatorType.Count -ne 1 -or [string]$validatorType[0] -cne 'blob') {
+        throw 'The Audio v2 E3 validator trust root is not one Git blob.'
+    }
+    return [pscustomobject]@{
+        headCommit = $headCommit
+        validatorBlobOid = $validatorBlobOid
+    }
+}
+
+function Assert-Cf7AudioV2H2RequestLinkWindowStable {
+    param(
+        [Parameter(Mandatory=$true)][bool]$Required,
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [object]$Snapshot
+    )
+    if (-not $Required) { return }
+    if ($null -eq $Snapshot) { throw 'Audio v2 R4 promotion lacks its early E3 trust-root snapshot.' }
+    $current = Get-Cf7AudioV2H2RequestLinkSnapshot -Required $true -ProjectRoot $ProjectRoot
+    if ([string]$current.headCommit -cne [string]$Snapshot.headCommit) {
+        throw 'Audio v2 E3 HEAD changed after the early promotion gate.'
+    }
+    if ([string]$current.validatorBlobOid -cne [string]$Snapshot.validatorBlobOid) {
+        throw 'Audio v2 E3 validator blob changed after the early promotion gate.'
+    }
+    & git -C $ProjectRoot diff --quiet --no-ext-diff HEAD --
+    if ($LASTEXITCODE -eq 1) { throw 'Tracked worktree bytes changed after the Audio v2 E3 validation.' }
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot recheck the tracked worktree against the frozen Audio v2 E3 commit.' }
+}
+
+function Assert-Cf7AudioV2H2RequestLink {
+    param(
+        [Parameter(Mandatory=$true)][bool]$Required,
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [Parameter(Mandatory=$true)][string]$RequestPath,
+        [Parameter(Mandatory=$true)][string]$RequestId,
+        [Parameter(Mandatory=$true)][string]$RequestSha256
+    )
+    if (-not $Required) { return }
+    $validatorPath = Join-Path $ProjectRoot 'tools\audio-v2\validate-h2-request-link.js'
+    if (-not (Test-Path -LiteralPath $validatorPath -PathType Leaf)) {
+        throw 'Audio v2 R4 promotion requires the H2 request-link validator.'
+    }
+    $node = Get-Command node.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($null -eq $node) { throw 'Audio v2 R4 promotion requires node.exe for the H2 request-link validator.' }
+    & $node.Source $validatorPath --verify-link --request-file $RequestPath `
+        --request-id $RequestId.ToUpperInvariant() --request-sha256 $RequestSha256.ToUpperInvariant()
+    if ($LASTEXITCODE -ne 0) { throw 'Audio v2 R4 H2 request-link validation failed closed.' }
+}
+
 $QueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot -QueueRoot $QueueRoot
 $requestDirectory = Get-Cf7RuntimeRequestDirectory -QueueRoot $QueueRoot -RequestId $RequestId
 $requestPath = Join-Path $requestDirectory 'request.json'
@@ -337,11 +423,26 @@ foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHas
     }
 }
 
-& git -C $ProjectRoot diff --quiet --no-ext-diff ([string]$request.releaseTreeOid) --
-if ($LASTEXITCODE -eq 1) {
-    throw 'Tracked worktree bytes no longer materialize the immutable request tree.'
+$audioV2H2RequestLinkRequired = Test-Cf7AudioV2H2RequestLinkRequired `
+    -ProjectRoot $ProjectRoot -SourceCommitOid ([string]$request.sourceCommitOid)
+$audioV2H2RequestLinkSnapshot = Get-Cf7AudioV2H2RequestLinkSnapshot `
+    -Required $audioV2H2RequestLinkRequired -ProjectRoot $ProjectRoot
+# audio-v2-h2-link: early
+Assert-Cf7AudioV2H2RequestLink -Required $audioV2H2RequestLinkRequired `
+    -ProjectRoot $ProjectRoot -RequestPath $requestPath -RequestId ([string]$request.requestId) `
+    -RequestSha256 $requestSha256
+if ($audioV2H2RequestLinkRequired) {
+    Assert-Cf7AudioV2H2RequestLinkWindowStable -Required $true `
+        -ProjectRoot $ProjectRoot -Snapshot $audioV2H2RequestLinkSnapshot
+    $promotionWorktreeTreeish = [string]$audioV2H2RequestLinkSnapshot.headCommit
+} else {
+    & git -C $ProjectRoot diff --quiet --no-ext-diff ([string]$request.releaseTreeOid) --
+    if ($LASTEXITCODE -eq 1) {
+        throw 'Tracked worktree bytes no longer materialize the immutable request tree.'
+    }
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot compare the worktree with the immutable request tree.' }
+    $promotionWorktreeTreeish = [string]$request.releaseTreeOid
 }
-if ($LASTEXITCODE -ne 0) { throw 'Cannot compare the worktree with the immutable request tree.' }
 
 $PolicyReceiptPath = (Resolve-Path -LiteralPath $PolicyReceiptPath).Path
 $receiptBytes = [IO.File]::ReadAllBytes($PolicyReceiptPath)
@@ -554,7 +655,7 @@ if ($VerifyOnly) {
         ProjectRoot = $ProjectRoot
         QueueRoot = $QueueRoot
         RequestId = $RequestId
-        ReleaseTreeOid = [string]$request.releaseTreeOid
+        WorktreeTreeish = $promotionWorktreeTreeish
         ExpectedIdentity = $identity
         RequestPath = $requestPath
         RequestSha256 = $requestSha256
@@ -568,6 +669,7 @@ if ($VerifyOnly) {
         ExpectedCandidateClosure = $candidateClosure
         CandidateManifestPath = $candidateManifestPath
         CandidateManifestSha256 = $candidateManifestSha256
+        AudioV2H2RequestLinkSnapshot = $audioV2H2RequestLinkSnapshot
         ProofInputs = $proofInputSnapshots.ToArray()
     }
     Assert-Cf7PromotionVerificationWindowStable @verificationWindow
@@ -665,6 +767,12 @@ if ($VerifyOnly) {
             $forbiddenReportText.Add([string]$toolCommand.Source)
         }
     }
+    # audio-v2-h2-link: verify-only-final
+    Assert-Cf7AudioV2H2RequestLink -Required $audioV2H2RequestLinkRequired `
+        -ProjectRoot $ProjectRoot -RequestPath $requestPath -RequestId ([string]$request.requestId) `
+        -RequestSha256 $requestSha256
+    Assert-Cf7AudioV2H2RequestLinkWindowStable -Required $audioV2H2RequestLinkRequired `
+        -ProjectRoot $ProjectRoot -Snapshot $audioV2H2RequestLinkSnapshot
     Write-Cf7PromotionPreflightReport -Path $resolvedReportPath -Value $preflightReport `
         -ForbiddenText $forbiddenReportText.ToArray()
     try {
@@ -679,6 +787,12 @@ if ($VerifyOnly) {
     return
 }
 
+# audio-v2-h2-link: promotion-final
+Assert-Cf7AudioV2H2RequestLink -Required $audioV2H2RequestLinkRequired `
+    -ProjectRoot $ProjectRoot -RequestPath $requestPath -RequestId ([string]$request.requestId) `
+    -RequestSha256 $requestSha256
+Assert-Cf7AudioV2H2RequestLinkWindowStable -Required $audioV2H2RequestLinkRequired `
+    -ProjectRoot $ProjectRoot -Snapshot $audioV2H2RequestLinkSnapshot
 $transactionBase = [IO.Path]::GetFullPath((Join-Path $ProjectRoot 'tmp\runtime-promotions')).TrimEnd('\')
 New-Item -ItemType Directory -Path $transactionBase -Force | Out-Null
 $transactionRoot = Join-Path $transactionBase ([DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ') + '-' + [Guid]::NewGuid().ToString('N'))

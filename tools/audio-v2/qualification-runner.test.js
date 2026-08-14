@@ -810,6 +810,35 @@ test("endpoint runtime format stays f32 while capture serialization remains PCM1
     );
 });
 
+test("sleep resume facts bind the 15-second target, 30-second hard cap and R4 checks", () => {
+    const captures = { device_recovery: {} };
+    const validate = (value) => runner.validateEndpointCaseFacts(
+        "device_recovery_endpoint_e2e", "sleep_resume", value, captures);
+    const facts = {
+        captureId: "device_recovery",
+        deviceGenerationAfter: 3,
+        deviceGenerationBefore: 1,
+        maxRecoveryMs: 30000,
+        recoveryMs: 15000,
+        targetMiss: false,
+        targetRecoveryMs: 15000
+    };
+    assert.doesNotThrow(() => validate(facts));
+    assert.deepStrictEqual(
+        runner.CASE_CHECKS.device_recovery_endpoint_e2e.sleep_resume,
+        ["post_resume_endpoint_pcm_generation_scoped", "recovery_target_15s_hard_cap_30s"]);
+
+    const targetMiss = Object.assign({}, facts, { recoveryMs: 15001, targetMiss: true });
+    assert.doesNotThrow(() => validate(targetMiss));
+    const hardBoundary = Object.assign({}, facts, { recoveryMs: 30000, targetMiss: true });
+    assert.doesNotThrow(() => validate(hardBoundary));
+
+    assert.throws(() => validate(Object.assign({}, facts, { recoveryMs: 30001, targetMiss: true })),
+        /target\/hard-cap facts did not recompute exactly/);
+    assert.throws(() => validate(Object.assign({}, targetMiss, { targetMiss: false })),
+        /target\/hard-cap facts did not recompute exactly/);
+});
+
 test("stale recovery facts require exact arm, ordering, generation drop and unchanged counters", () => {
     const facts = {
         armResult: { result: "armed", sent: false },

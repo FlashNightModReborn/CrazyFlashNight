@@ -581,8 +581,10 @@ test("sleep resume accepts bounded TWS to Realtek to TWS episodes and binds the 
         captureId: "device_recovery",
         deviceGenerationAfter: 3,
         deviceGenerationBefore: 1,
-        maxRecoveryMs: 15000,
-        recoveryMs: 2500
+        maxRecoveryMs: 30000,
+        recoveryMs: 2500,
+        targetMiss: false,
+        targetRecoveryMs: 15000
     });
 
     const adoptedBeforeOwnerRecovery = sleepResumeRange();
@@ -595,21 +597,25 @@ test("sleep resume accepts bounded TWS to Realtek to TWS episodes and binds the 
     const closingReadyIsPost = sleepResumeRange();
     closingReadyIsPost.events.splice(7, 1);
     closingReadyIsPost.events[6].payload.bgmMeter.frameCount = 3000;
-    assert.strictEqual(observer.deriveCaseFacts("sleep_resume", closingReadyIsPost, {}).deviceGenerationAfter, 3,
-        "the final qualification snapshot may be both the closing Ready and final post");
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", closingReadyIsPost, {}),
+        /requires two ordered explicit qualification snapshots/,
+        "one closing Ready snapshot cannot prove a same-generation post-recovery meter window");
 
     const singleEpisode = sleepResumeRange();
     singleEpisode.events.splice(4, 3);
     singleEpisode.events[2].payload.runtime.deviceIdDigest = DEVICE_DIGEST;
     singleEpisode.events[3].payload.runtime.deviceIdDigest = DEVICE_DIGEST;
+    singleEpisode.events[3].kind = "qualification_snapshot";
     singleEpisode.events[4].payload.runtime.audioReadyGeneration = 2;
     singleEpisode.events[4].payload.runtime.deviceGeneration = 2;
     assert.deepStrictEqual(observer.deriveCaseFacts("sleep_resume", singleEpisode, {}), {
         captureId: "device_recovery",
         deviceGenerationAfter: 2,
         deviceGenerationBefore: 1,
-        maxRecoveryMs: 15000,
-        recoveryMs: 1250
+        maxRecoveryMs: 30000,
+        recoveryMs: 1250,
+        targetMiss: false,
+        targetRecoveryMs: 15000
     });
 });
 
@@ -620,9 +626,30 @@ test("sleep resume rejects invalid intermediate episodes and a drifting final po
         "UTC sleep/hibernate duration must not control the recovery SLA");
 
     range = sleepResumeRange();
+    range.events[6].workingStateElapsed100ns = 190000000;
+    let recoveryFacts = observer.deriveCaseFacts("sleep_resume", range, {});
+    assert.deepStrictEqual(
+        { recoveryMs: recoveryFacts.recoveryMs, targetMiss: recoveryFacts.targetMiss },
+        { recoveryMs: 15000, targetMiss: false },
+        "the exact 15-second target boundary is met");
+
+    range = sleepResumeRange();
     range.events[6].workingStateElapsed100ns = 190000001;
+    recoveryFacts = observer.deriveCaseFacts("sleep_resume", range, {});
+    assert.deepStrictEqual(
+        { recoveryMs: recoveryFacts.recoveryMs, targetMiss: recoveryFacts.targetMiss },
+        { recoveryMs: 15001, targetMiss: true },
+        "a target miss remains valid below the hard recovery cap");
+
+    range = sleepResumeRange();
+    range.events[6].workingStateElapsed100ns = 340000000;
+    assert.strictEqual(observer.deriveCaseFacts("sleep_resume", range, {}).recoveryMs, 30000,
+        "the exact 30-second hard boundary remains accepted");
+
+    range = sleepResumeRange();
+    range.events[6].workingStateElapsed100ns = 340000001;
     assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
-        /exceeded 150000000 working-state 100ns units/);
+        /exceeded 300000000 working-state 100ns units hard maximum/);
 
     range = sleepResumeRange();
     delete range.events[6].workingStateElapsed100ns;
@@ -661,12 +688,12 @@ test("sleep resume rejects invalid intermediate episodes and a drifting final po
 
     range = sleepResumeRange();
     range.events[7].payload.runtime.sampleRate = 44100;
-    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /final ready\/post runtime tuple mismatch: sampleRate/);
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}), /final qualification snapshot drifted without a recovery boundary: sampleRate/);
 
     range = sleepResumeRange();
     range.events[7].sequence = 5;
     assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
-        /post snapshot must follow the final recovery ready boundary/);
+        /requires two ordered explicit qualification snapshots/);
 
     range = sleepResumeRange();
     range.events.splice(4, 0, {
@@ -726,14 +753,20 @@ test("sleep resume fails closed on multi-episode endpoint-chain drift", () => {
     range = sleepResumeRange();
     range.events[7].payload.runtime.sampleRate = 44100;
     assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
-        /final ready\/post runtime tuple mismatch: sampleRate/);
+        /final qualification snapshot drifted without a recovery boundary: sampleRate/);
 
     range = sleepResumeRange();
     range.events[7].payload.bgmMeter.peakLeft = 0;
     range.events[7].payload.bgmMeter.peakRight = 0;
     assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
-        /endpoint meter window did not advance with signal on the same bus/,
+        /final same-generation meter proof did not advance with qualified signal on one bus/,
         "a silent advancing BGM bus and a signalled non-advancing SFX bus must not combine into endpoint PCM proof");
+
+    range = sleepResumeRange();
+    range.events[7].payload.runtime.audioReadyGeneration++;
+    assert.throws(() => observer.deriveCaseFacts("sleep_resume", range, {}),
+        /final qualification snapshot drifted without a recovery boundary: audioReadyGeneration/,
+        "pre/final snapshots from different ready generations cannot be subtracted as PCM proof");
 });
 
 function crossfadeRange(samples) {

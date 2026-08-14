@@ -93,6 +93,8 @@ node tools/cf7-agent/unattended.js --adapter mcp --slot cf7_agent_character_buil
 
 `-AudioV2QualificationRunId` 是 A6 exact-candidate 的 qualification-only 开关，只接受 32 位 lowercase hex，并且必须同时显式提供 `-CandidateRoot`。它不能与 formal runtime、`-UnattendedAdapter/-UnattendedSlot`、`-EnableLegacyHttpAutomation` 等入口混用；不传该参数时不创建 qualification surface。开启后 Core 分别创建只读 observer pipe 与 strict stimulus pipe：observer 只允许 `begin_case/end_case` marker、`snapshot/journal`，stimulus 只向 Flash 投递冻结命令；实际 BGM/SFX 仍必须经过生产 `AS2 → XMLSocket → AudioTask → AudioCoordinator/native`，pipe 返回 `sent=true` 仅证明 socket delivery。operator 只能自动跑前 10 case，后 4 个默认设备/物理路由/睡眠恢复/stale-SFX case 及 10 项听感必须由人类完成；此入口永远不授权 promotion。
 
+Audio Platform v2 R4 不改变 start/operator 命令面。`sleep_resume` 收尾需在末 closing `Ready` 后取得两份显式 snapshot，由 observer 在同一 final generation/physical tuple 的同一路 bus 上证明 frame 前进与非静音。有效 E2/H2 后才可创建 source tag/request 与正式 builders；request 后立即形成 evidence-only E3 `h2-request-link.json`。promotion 脚本会在 VerifyOnly/transaction 前再次验证该 link，缺失或任一绑定漂移均在部署写前失败。
+
 `-UnattendedSlot` 与 `-UnattendedAdapter jsonl|mcp` 选择 trusted Core runner；固定 allow-list 为 `cf7_agent_equipment_tuning`、`cf7_agent_arena_calibration`、`cf7_agent_character_build`、`cf7_agent_loot_target_full_v1`，不能由 caller 提交 principal、capability、路径或 legacy flag。formal/candidate 均先校验完整 v2 manifest inventory、Core row/hash/size、build identity、payload closure 与无 reparse 的固定目录；随后执行所选 payload 自身的 `Core.exe --agent-unattended-runner`。
 
 启动链负责：
