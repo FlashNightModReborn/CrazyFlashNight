@@ -18,6 +18,8 @@ var r4ManifestBytes = fs.readFileSync(path.join(ROOT, validator.R4_MANIFEST_PATH
 var r4Manifest = validator.parseJsonBuffer(r4ManifestBytes, "R4 manifest fixture");
 var r5ManifestBytes = fs.readFileSync(path.join(ROOT, validator.R5_MANIFEST_PATH));
 var r5Manifest = validator.parseJsonBuffer(r5ManifestBytes, "R5 manifest fixture");
+var r6ManifestBytes = fs.readFileSync(path.join(ROOT, validator.R6_MANIFEST_PATH));
+var r6Manifest = validator.parseJsonBuffer(r6ManifestBytes, "R6 manifest fixture");
 
 function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -235,6 +237,32 @@ function testR5AllLeafMutationsFailClosed() {
     expectThrows(function () { validator.validateReceiptBinding(oldSchema, mockProposal); }, /unexpected H1 receipt schema/);
 }
 
+function testR6AllLeafMutationsFailClosed() {
+    assert.deepStrictEqual(r6ManifestBytes, validator.canonicalBytes(r6Manifest));
+    assert.strictEqual(validator.sha256(r6ManifestBytes), validator.R6_EXPECTED_MANIFEST_SHA256);
+    validator.validateManifest(r6Manifest, validator.R6_PROFILE);
+    var paths = leaves(r6Manifest);
+    assert(paths.length > leaves(r5Manifest).length, "R6 manifest must add governed leaves");
+    paths.forEach(function (leafPath) {
+        var changed = clone(r6Manifest);
+        setAt(changed, leafPath, mutate(getAt(changed, leafPath)));
+        expectThrows(function () { validator.validateManifest(changed, validator.R6_PROFILE); });
+    });
+    var mockProposal = {
+        bindings: {}, commit: "d".repeat(40), manifest: r6Manifest,
+        profile: validator.R6_PROFILE, tree: "e".repeat(40)
+    };
+    mockProposal.bindings[validator.R6_MANIFEST_PATH] = { blobOid: "f".repeat(40), sha256: validator.R6_EXPECTED_MANIFEST_SHA256 };
+    mockProposal.bindings[validator.ADR_PATH] = { blobOid: "1".repeat(40) };
+    mockProposal.bindings["tools/audio-v2/validate-contract.js"] = { blobOid: "2".repeat(40) };
+    mockProposal.bindings["tools/audio-v2/contract.test.js"] = { blobOid: "3".repeat(40) };
+    var receipt = makeH1Receipt(mockProposal, validator.R6_PROFILE);
+    validator.validateReceiptBinding(receipt, mockProposal);
+    var oldSchema = clone(receipt);
+    oldSchema.schema = "cf7.audio-v2.h1-implementation-acceptance.v5";
+    expectThrows(function () { validator.validateReceiptBinding(oldSchema, mockProposal); }, /unexpected H1 receipt schema/);
+}
+
 function testRuntimePayloadOrdinalOracle() {
     var rows = [
         { bytes: 55, path: "runtime/libHarfBuzzSharp.dll", sha256: "E".repeat(64) },
@@ -316,6 +344,7 @@ function testRevisionSchemaSurfaceBindings() {
     validator.validateSchemaSurfaces(ROOT, validator.R3_PROFILE);
     validator.validateSchemaSurfaces(ROOT, validator.R4_PROFILE);
     validator.validateSchemaSurfaces(ROOT, validator.R5_PROFILE);
+    validator.validateSchemaSurfaces(ROOT, validator.R6_PROFILE);
     expectThrows(function () {
         validator.validateSchemaSurfaces(ROOT, Object.assign({}, validator.R3_PROFILE, { manifestSchemaId: "cf7.audio-v2.h1-decision-manifest.schema.r3" }));
     }, /contract schema IDs drift/);
@@ -607,6 +636,60 @@ function testR5ProposalAndActivationGitChain() {
         validator.validateReceiptBinding(JSON.parse(receiptBytes.toString("utf8")), proposal);
         validator.validateH1Activation(proposal, { buffer: receiptBytes, value: JSON.parse(receiptBytes.toString("utf8")) }, temp);
         validator.R5_PROFILE.priorReceiptPaths.forEach(function (rel) { validator.validateImmutableReceiptPath(rel, "HEAD", temp); });
+    } finally {
+        fs.rmSync(temp, { recursive: true, force: true });
+    }
+}
+
+function testR6ProposalAndActivationGitChain() {
+    var temp = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-audio-v2-r6-chain-"));
+    try {
+        runGit(temp, ["init", "-q"]);
+        runGit(temp, ["config", "user.email", "audio-contract@example.invalid"]);
+        runGit(temp, ["config", "user.name", "Audio Contract Test"]);
+        validator.R6_FROZEN_CONTRACT_PATHS.forEach(function (rel) {
+            if ([validator.R6_MANIFEST_PATH, validator.R6_PROFILE.manifestSchemaPath, validator.R6_PROFILE.h1SchemaPath].indexOf(rel) >= 0) return;
+            var sourcePath = path.join(ROOT, rel.replace(/\//g, path.sep));
+            if (fs.existsSync(sourcePath)) writeFile(temp, rel, fs.readFileSync(sourcePath));
+            else writeFile(temp, rel, Buffer.from("base fixture: " + rel + "\n", "utf8"));
+        });
+        writeFile(temp, validator.ADR_PATH, Buffer.from("# accepted R5 ADR\n", "utf8"));
+        writeFile(temp, validator.MEMO_PATH, Buffer.from("# accepted R5 memo\n", "utf8"));
+        writeJson(temp, validator.H1_RECEIPT_PATH, { accepted: true, schema: "historical-r2-fixture" });
+        writeJson(temp, validator.R3_H1_RECEIPT_PATH, { accepted: true, schema: "historical-r3-fixture" });
+        writeJson(temp, validator.R4_H1_RECEIPT_PATH, { accepted: true, schema: "historical-r4-fixture" });
+        writeJson(temp, validator.R5_H1_RECEIPT_PATH, { accepted: true, schema: "historical-r5-fixture" });
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "S2 accepted R5 state"]);
+        var source = runGit(temp, ["rev-parse", "HEAD"]);
+        var sourceTree = runGit(temp, ["rev-parse", "HEAD^{tree}"]);
+        var testProfile = Object.assign({}, validator.R6_PROFILE, { proposalParentCommit: source, proposalParentTree: sourceTree });
+
+        writeFile(temp, validator.R6_MANIFEST_PATH, r6ManifestBytes);
+        writeFile(temp, validator.R6_PROFILE.manifestSchemaPath, fs.readFileSync(path.join(ROOT, validator.R6_PROFILE.manifestSchemaPath.replace(/\//g, path.sep))));
+        writeFile(temp, validator.R6_PROFILE.h1SchemaPath, fs.readFileSync(path.join(ROOT, validator.R6_PROFILE.h1SchemaPath.replace(/\//g, path.sep))));
+        writeFile(temp, validator.ADR_PATH, proposalAdr(testProfile));
+        writeFile(temp, validator.MEMO_PATH, proposalMemo(testProfile));
+        writeFile(temp, "tools/audio-v2/validate-contract.js", Buffer.from("// R6 validator fixture\n", "utf8"));
+        writeFile(temp, "tools/audio-v2/contract.test.js", Buffer.from("// R6 tests fixture\n", "utf8"));
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "P6 exact seven paths"]);
+        var p6 = runGit(temp, ["rev-parse", "HEAD"]);
+        var proposal = validator.resolveProposal(p6, temp, testProfile);
+        assert.strictEqual(proposal.profile.revision, "R6");
+        assert.deepStrictEqual(validator.validateProposalShape(p6, temp, testProfile).paths.slice().sort(), testProfile.proposalExactPaths.slice().sort());
+        validator.R6_PROFILE.priorReceiptPaths.forEach(function (rel) { validator.validateImmutableReceiptPath(rel, "HEAD", temp); });
+
+        writeJson(temp, validator.R6_H1_RECEIPT_PATH, makeH1Receipt(proposal, validator.R6_PROFILE));
+        writeFile(temp, validator.ADR_PATH, acceptedAdr(validator.R6_PROFILE));
+        writeFile(temp, validator.MEMO_PATH, acceptedMemo(validator.R6_PROFILE));
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "H6 exact acceptance"]);
+        var receiptPath = path.join(temp, validator.R6_H1_RECEIPT_PATH.replace(/\//g, path.sep));
+        var receiptBytes = fs.readFileSync(receiptPath);
+        validator.validateReceiptBinding(JSON.parse(receiptBytes.toString("utf8")), proposal);
+        validator.validateH1Activation(proposal, { buffer: receiptBytes, value: JSON.parse(receiptBytes.toString("utf8")) }, temp);
+        validator.R6_PROFILE.priorReceiptPaths.forEach(function (rel) { validator.validateImmutableReceiptPath(rel, "HEAD", temp); });
     } finally {
         fs.rmSync(temp, { recursive: true, force: true });
     }
@@ -1327,6 +1410,7 @@ function main() {
     testR3AllLeafMutationsFailClosed();
     testR4AllLeafMutationsFailClosed();
     testR5AllLeafMutationsFailClosed();
+    testR6AllLeafMutationsFailClosed();
     testRuntimePayloadOrdinalOracle();
     testCanonicalEncodingGuards();
     testStructuralDriftGuards();
@@ -1335,6 +1419,7 @@ function main() {
     testR3ProposalAndActivationGitChain();
     testR4ProposalAndActivationGitChain();
     testR5ProposalAndActivationGitChain();
+    testR6ProposalAndActivationGitChain();
     testGitProvenanceGuards();
     testReleaseSourceFreezeGuards();
     testH2EvidenceBinding();

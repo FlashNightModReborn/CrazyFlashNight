@@ -1,0 +1,105 @@
+{
+  "$id": "cf7.audio-v2.h1-decision-manifest.schema.v6",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "abi": {
+      "type": "object"
+    },
+    "assetContract": {
+      "type": "object"
+    },
+    "authorization": {
+      "type": "object"
+    },
+    "backend": {
+      "type": "object"
+    },
+    "bridge": {
+      "type": "object"
+    },
+    "buildAndDependency": {
+      "type": "object"
+    },
+    "capability": {
+      "type": "object"
+    },
+    "decisions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^AUDIO-V2-[0-9]{3}$",
+            "type": "string"
+          },
+          "rule": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "rule"
+        ],
+        "type": "object"
+      },
+      "minItems": 25,
+      "type": "array"
+    },
+    "decoderMatrix": {
+      "type": "array"
+    },
+    "evidenceGates": {
+      "type": "object"
+    },
+    "generation": {
+      "type": "object"
+    },
+    "lifecycle": {
+      "type": "object"
+    },
+    "nonGoals": {
+      "type": "array"
+    },
+    "observability": {
+      "type": "object"
+    },
+    "probePolicies": {
+      "type": "object"
+    },
+    "release": {
+      "type": "object"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.h1-decision-manifest.v6"
+    },
+    "scopeRevision": {
+      "const": "AUDIO-V2-H1-SWEET-SPOT-R6"
+    },
+    "selectedAlternatives": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "abi",
+    "assetContract",
+    "authorization",
+    "backend",
+    "bridge",
+    "buildAndDependency",
+    "capability",
+    "decisions",
+    "decoderMatrix",
+    "evidenceGates",
+    "generation",
+    "lifecycle",
+    "nonGoals",
+    "observability",
+    "probePolicies",
+    "release",
+    "schema",
+    "scopeRevision",
+    "selectedAlternatives"
+  ],
+  "type": "object"
+}

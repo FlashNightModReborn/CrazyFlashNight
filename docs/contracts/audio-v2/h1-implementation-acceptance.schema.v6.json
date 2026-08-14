@@ -1,0 +1,138 @@
+{
+  "$id": "cf7.audio-v2.h1-implementation-acceptance.schema.v6",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authorization": {
+      "additionalProperties": false,
+      "properties": {
+        "deploymentState": {
+          "const": "NOT_DEPLOYED"
+        },
+        "phases": {
+          "const": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5",
+            "A6"
+          ]
+        },
+        "promotionAuthorized": {
+          "const": false
+        }
+      },
+      "required": [
+        "deploymentState",
+        "phases",
+        "promotionAuthorized"
+      ],
+      "type": "object"
+    },
+    "contract": {
+      "additionalProperties": false,
+      "properties": {
+        "adrBlobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "adrPath": {
+          "const": "docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md"
+        },
+        "manifestBlobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "manifestPath": {
+          "const": "docs/contracts/audio-v2/h1-decision-manifest.v6.json"
+        },
+        "manifestSha256": {
+          "pattern": "^[A-F0-9]{64}$",
+          "type": "string"
+        },
+        "proposalCommit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "proposalTree": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "testBlobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "testPath": {
+          "const": "tools/audio-v2/contract.test.js"
+        },
+        "validatorBlobOid": {
+          "pattern": "^[0-9a-f]{40,64}$",
+          "type": "string"
+        },
+        "validatorPath": {
+          "const": "tools/audio-v2/validate-contract.js"
+        }
+      },
+      "required": [
+        "adrBlobOid",
+        "adrPath",
+        "manifestBlobOid",
+        "manifestPath",
+        "manifestSha256",
+        "proposalCommit",
+        "proposalTree",
+        "testBlobOid",
+        "testPath",
+        "validatorBlobOid",
+        "validatorPath"
+      ],
+      "type": "object"
+    },
+    "decision": {
+      "const": "accepted"
+    },
+    "recordedAtUtc": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "reviewer": {
+      "additionalProperties": false,
+      "properties": {
+        "channel": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "role": {
+          "const": "human-maintainer"
+        },
+        "verbatim": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "channel",
+        "role",
+        "verbatim"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "cf7.audio-v2.h1-implementation-acceptance.v6"
+    },
+    "scopeRevision": {
+      "const": "AUDIO-V2-H1-SWEET-SPOT-R6"
+    }
+  },
+  "required": [
+    "authorization",
+    "contract",
+    "decision",
+    "recordedAtUtc",
+    "reviewer",
+    "schema",
+    "scopeRevision"
+  ],
+  "type": "object"
+}
