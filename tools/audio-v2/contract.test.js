@@ -14,6 +14,8 @@ var manifestBytes = fs.readFileSync(path.join(ROOT, validator.MANIFEST_PATH));
 var manifest = validator.parseJsonBuffer(manifestBytes, "manifest fixture");
 var r3ManifestBytes = fs.readFileSync(path.join(ROOT, validator.R3_MANIFEST_PATH));
 var r3Manifest = validator.parseJsonBuffer(r3ManifestBytes, "R3 manifest fixture");
+var r4ManifestBytes = fs.readFileSync(path.join(ROOT, validator.R4_MANIFEST_PATH));
+var r4Manifest = validator.parseJsonBuffer(r4ManifestBytes, "R4 manifest fixture");
 
 function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -179,6 +181,32 @@ function testR3AllLeafMutationsFailClosed() {
     expectThrows(function () { validator.validateReceiptBinding(wrapped, mockProposal); }, /must equal/);
 }
 
+function testR4AllLeafMutationsFailClosed() {
+    assert.deepStrictEqual(r4ManifestBytes, validator.canonicalBytes(r4Manifest));
+    assert.strictEqual(validator.sha256(r4ManifestBytes), validator.R4_EXPECTED_MANIFEST_SHA256);
+    validator.validateManifest(r4Manifest, validator.R4_PROFILE);
+    var paths = leaves(r4Manifest);
+    assert(paths.length > leaves(r3Manifest).length, "R4 manifest must add governed leaves");
+    paths.forEach(function (leafPath) {
+        var changed = clone(r4Manifest);
+        setAt(changed, leafPath, mutate(getAt(changed, leafPath)));
+        expectThrows(function () { validator.validateManifest(changed, validator.R4_PROFILE); });
+    });
+    var mockProposal = {
+        bindings: {}, commit: "1".repeat(40), manifest: r4Manifest,
+        profile: validator.R4_PROFILE, tree: "2".repeat(40)
+    };
+    mockProposal.bindings[validator.R4_MANIFEST_PATH] = { blobOid: "3".repeat(40), sha256: validator.R4_EXPECTED_MANIFEST_SHA256 };
+    mockProposal.bindings[validator.ADR_PATH] = { blobOid: "4".repeat(40) };
+    mockProposal.bindings["tools/audio-v2/validate-contract.js"] = { blobOid: "5".repeat(40) };
+    mockProposal.bindings["tools/audio-v2/contract.test.js"] = { blobOid: "6".repeat(40) };
+    var receipt = makeH1Receipt(mockProposal, validator.R4_PROFILE);
+    validator.validateReceiptBinding(receipt, mockProposal);
+    var oldSchema = clone(receipt);
+    oldSchema.schema = "cf7.audio-v2.h1-implementation-acceptance.v3";
+    expectThrows(function () { validator.validateReceiptBinding(oldSchema, mockProposal); }, /unexpected H1 receipt schema/);
+}
+
 function testCanonicalEncodingGuards() {
     assert.deepStrictEqual(manifestBytes, validator.canonicalBytes(manifest));
     expectThrows(function () { validator.parseJsonBuffer(Buffer.concat([Buffer.from([0xEF, 0xBB, 0xBF]), manifestBytes]), "BOM"); }, /BOM/);
@@ -203,6 +231,7 @@ function testStructuralDriftGuards() {
 function testRevisionSchemaSurfaceBindings() {
     validator.validateSchemaSurfaces(ROOT, validator.R2_PROFILE);
     validator.validateSchemaSurfaces(ROOT, validator.R3_PROFILE);
+    validator.validateSchemaSurfaces(ROOT, validator.R4_PROFILE);
     expectThrows(function () {
         validator.validateSchemaSurfaces(ROOT, Object.assign({}, validator.R3_PROFILE, { manifestSchemaId: "cf7.audio-v2.h1-decision-manifest.schema.r3" }));
     }, /contract schema IDs drift/);
@@ -243,29 +272,32 @@ function writeJson(root, rel, value) {
 
 function proposalAdr(profile) {
     return Buffer.from([
-        "# R3 proposal fixture", "",
+        "# " + profile.revision + " proposal fixture", "",
         "**状态**：`PROPOSED / HUMAN_ACCEPTANCE_REQUIRED / IMPLEMENTATION_BLOCKED / NOT_DEPLOYED`。", "",
         "**机器恢复标记**：`H1_STATE=pending_exact_human_acceptance`；`H2_STATE=not_applicable_before_A6`。", "",
         profile.scopeRevision, profile.manifestPath,
-        "R3 decision manifest SHA-256：`" + profile.manifestSha256 + "`", ""
+        profile.revision + " decision manifest SHA-256：`" + profile.manifestSha256 + "`", ""
     ].join("\n"), "utf8");
 }
 
-function acceptedAdr() {
+function acceptedAdr(profile) {
+    profile = profile || validator.R3_PROFILE;
     return Buffer.from([
-        "# R3 accepted fixture", "",
+        "# " + profile.revision + " accepted fixture", "",
         "**状态**：`ACCEPTED / IMPLEMENTATION_AUTHORIZED_A1_A6 / PROMOTION_BLOCKED / NOT_DEPLOYED`。", "",
         "**机器恢复标记**：`H1_STATE=accepted`；`H2_STATE=not_applicable_before_A6`。", "",
-        "| R3 H1 | accepted |", "| R3 implementation | authorized_A1_A6 |", "当前 R3 H1 已有效", ""
+        "| " + profile.revision + " H1 | accepted |", "| " + profile.revision + " implementation | authorized_A1_A6 |", "当前 " + profile.revision + " H1 已有效", ""
     ].join("\n"), "utf8");
 }
 
-function proposalMemo() {
-    return Buffer.from("# R3 memo fixture\n\n**状态**：`READ_ONLY_RESEARCH_COMPLETE / IMPLEMENTATION_BLOCKED / NOT_DEPLOYED`。\n\n**机器恢复标记**：`H1_STATE=pending_exact_human_acceptance`。\n", "utf8");
+function proposalMemo(profile) {
+    profile = profile || validator.R3_PROFILE;
+    return Buffer.from("# " + profile.revision + " memo fixture\n\n**状态**：`READ_ONLY_RESEARCH_COMPLETE / IMPLEMENTATION_BLOCKED / NOT_DEPLOYED`。\n\n**机器恢复标记**：`H1_STATE=pending_exact_human_acceptance`。\n", "utf8");
 }
 
-function acceptedMemo() {
-    return Buffer.from("# R3 memo fixture\n\n**状态**：`READ_ONLY_RESEARCH_COMPLETE / IMPLEMENTATION_AUTHORIZED_A1_A6 / NOT_DEPLOYED`。\n\n**机器恢复标记**：`H1_STATE=accepted`。\n\n当前 R3 H1 已有效\n", "utf8");
+function acceptedMemo(profile) {
+    profile = profile || validator.R3_PROFILE;
+    return Buffer.from("# " + profile.revision + " memo fixture\n\n**状态**：`READ_ONLY_RESEARCH_COMPLETE / IMPLEMENTATION_AUTHORIZED_A1_A6 / NOT_DEPLOYED`。\n\n**机器恢复标记**：`H1_STATE=accepted`。\n\n当前 " + profile.revision + " H1 已有效\n", "utf8");
 }
 
 function testR3ProposalAndActivationGitChain() {
@@ -379,6 +411,65 @@ function testR3ProposalAndActivationGitChain() {
         runGit(temp, ["commit", "-q", "-m", "non-direct H3"]);
         var nonDirectBytes = fs.readFileSync(path.join(temp, validator.R3_H1_RECEIPT_PATH.replace(/\//g, path.sep)));
         expectThrows(function () { validator.validateH1Activation(proposal, { buffer: nonDirectBytes, value: JSON.parse(nonDirectBytes.toString("utf8")) }, temp); }, /direct single-parent child/);
+    } finally {
+        fs.rmSync(temp, { recursive: true, force: true });
+    }
+}
+
+function testR4ProposalAndActivationGitChain() {
+    var temp = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-audio-v2-r4-chain-"));
+    try {
+        runGit(temp, ["init", "-q"]);
+        runGit(temp, ["config", "user.email", "audio-contract@example.invalid"]);
+        runGit(temp, ["config", "user.name", "Audio Contract Test"]);
+        validator.R4_FROZEN_CONTRACT_PATHS.forEach(function (rel) {
+            if ([validator.R4_MANIFEST_PATH, validator.R4_PROFILE.manifestSchemaPath, validator.R4_PROFILE.h1SchemaPath].indexOf(rel) >= 0) return;
+            var source = path.join(ROOT, rel.replace(/\//g, path.sep));
+            if (fs.existsSync(source)) writeFile(temp, rel, fs.readFileSync(source));
+            else writeFile(temp, rel, Buffer.from("base fixture: " + rel + "\n", "utf8"));
+        });
+        writeFile(temp, validator.ADR_PATH, Buffer.from("# accepted R3 ADR\n", "utf8"));
+        writeFile(temp, validator.MEMO_PATH, Buffer.from("# accepted R3 memo\n", "utf8"));
+        writeJson(temp, validator.H1_RECEIPT_PATH, { accepted: true, schema: "historical-r2-fixture" });
+        writeJson(temp, validator.R3_H1_RECEIPT_PATH, { accepted: true, schema: "historical-r3-fixture" });
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "S11 accepted R3 state"]);
+        var s11 = runGit(temp, ["rev-parse", "HEAD"]);
+        var s11Tree = runGit(temp, ["rev-parse", "HEAD^{tree}"]);
+        var testProfile = Object.assign({}, validator.R4_PROFILE, { proposalParentCommit: s11, proposalParentTree: s11Tree });
+
+        writeFile(temp, validator.R4_MANIFEST_PATH, r4ManifestBytes);
+        writeFile(temp, validator.R4_PROFILE.manifestSchemaPath, fs.readFileSync(path.join(ROOT, validator.R4_PROFILE.manifestSchemaPath.replace(/\//g, path.sep))));
+        writeFile(temp, validator.R4_PROFILE.h1SchemaPath, fs.readFileSync(path.join(ROOT, validator.R4_PROFILE.h1SchemaPath.replace(/\//g, path.sep))));
+        writeFile(temp, validator.ADR_PATH, proposalAdr(testProfile));
+        writeFile(temp, validator.MEMO_PATH, proposalMemo(testProfile));
+        writeFile(temp, "tools/audio-v2/validate-contract.js", Buffer.from("// R4 validator fixture\n", "utf8"));
+        writeFile(temp, "tools/audio-v2/contract.test.js", Buffer.from("// R4 tests fixture\n", "utf8"));
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "P4 exact seven paths"]);
+        var p4 = runGit(temp, ["rev-parse", "HEAD"]);
+        var proposal = validator.resolveProposal(p4, temp, testProfile);
+        assert.strictEqual(proposal.profile.revision, "R4");
+        assert.deepStrictEqual(validator.validateProposalShape(p4, temp, testProfile).paths.slice().sort(), testProfile.proposalExactPaths.slice().sort());
+        validator.validateImmutableReceiptPath(validator.H1_RECEIPT_PATH, "HEAD", temp);
+        validator.validateImmutableReceiptPath(validator.R3_H1_RECEIPT_PATH, "HEAD", temp);
+
+        writeJson(temp, validator.R4_H1_RECEIPT_PATH, makeH1Receipt(proposal, validator.R4_PROFILE));
+        writeFile(temp, validator.ADR_PATH, acceptedAdr(validator.R4_PROFILE));
+        writeFile(temp, validator.MEMO_PATH, acceptedMemo(validator.R4_PROFILE));
+        runGit(temp, ["add", "-A"]);
+        runGit(temp, ["commit", "-q", "-m", "H4 exact acceptance"]);
+        var receiptPath = path.join(temp, validator.R4_H1_RECEIPT_PATH.replace(/\//g, path.sep));
+        var receiptBytes = fs.readFileSync(receiptPath);
+        validator.validateReceiptBinding(JSON.parse(receiptBytes.toString("utf8")), proposal);
+        validator.validateH1Activation(proposal, { buffer: receiptBytes, value: JSON.parse(receiptBytes.toString("utf8")) }, temp);
+        validator.validateImmutableReceiptPath(validator.H1_RECEIPT_PATH, "HEAD", temp);
+        validator.validateImmutableReceiptPath(validator.R3_H1_RECEIPT_PATH, "HEAD", temp);
+
+        writeJson(temp, validator.R3_H1_RECEIPT_PATH, { accepted: false, schema: "mutated-r3" });
+        runGit(temp, ["add", validator.R3_H1_RECEIPT_PATH]);
+        runGit(temp, ["commit", "-q", "-m", "mutate R3 receipt"]);
+        expectThrows(function () { validator.validateImmutableReceiptPath(validator.R3_H1_RECEIPT_PATH, "HEAD", temp); }, /changed or was replaced/);
     } finally {
         fs.rmSync(temp, { recursive: true, force: true });
     }
@@ -1097,11 +1188,13 @@ function testH2GitEvidenceChain() {
 function main() {
     testAllLeafMutationsInvalidateDigest();
     testR3AllLeafMutationsFailClosed();
+    testR4AllLeafMutationsFailClosed();
     testCanonicalEncodingGuards();
     testStructuralDriftGuards();
     testRevisionSchemaSurfaceBindings();
     testRecoveryStateGuards();
     testR3ProposalAndActivationGitChain();
+    testR4ProposalAndActivationGitChain();
     testGitProvenanceGuards();
     testReleaseSourceFreezeGuards();
     testH2EvidenceBinding();

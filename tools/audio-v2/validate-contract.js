@@ -17,6 +17,9 @@ var H1_SCHEMA_PATH = "docs/contracts/audio-v2/h1-implementation-acceptance.schem
 var R3_MANIFEST_PATH = "docs/contracts/audio-v2/h1-decision-manifest.v3.json";
 var R3_MANIFEST_SCHEMA_PATH = "docs/contracts/audio-v2/h1-decision-manifest.schema.v3.json";
 var R3_H1_SCHEMA_PATH = "docs/contracts/audio-v2/h1-implementation-acceptance.schema.v3.json";
+var R4_MANIFEST_PATH = "docs/contracts/audio-v2/h1-decision-manifest.v4.json";
+var R4_MANIFEST_SCHEMA_PATH = "docs/contracts/audio-v2/h1-decision-manifest.schema.v4.json";
+var R4_H1_SCHEMA_PATH = "docs/contracts/audio-v2/h1-implementation-acceptance.schema.v4.json";
 var AUTOMATED_REPORT_SCHEMA_PATH = "docs/contracts/audio-v2/automated-report-envelope.schema.v1.json";
 var AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH = "docs/contracts/audio-v2/automated-report-configuration.schema.v1.json";
 var AUTOMATED_REPORT_INPUT_SCHEMA_PATH = "docs/contracts/audio-v2/automated-report-input-manifest.schema.v1.json";
@@ -34,6 +37,7 @@ var LISTENING_SCHEMA_PATH = "docs/contracts/audio-v2/human-listening-matrix.sche
 var H2_SCHEMA_PATH = "docs/contracts/audio-v2/h2-promotion-acceptance.schema.v2.json";
 var H1_RECEIPT_PATH = "docs/evidence/audio-v2/h1-implementation-acceptance.json";
 var R3_H1_RECEIPT_PATH = "docs/evidence/audio-v2/h1-implementation-acceptance-r3.json";
+var R4_H1_RECEIPT_PATH = "docs/evidence/audio-v2/h1-implementation-acceptance-r4.json";
 var H2_RECEIPT_PATH = "docs/evidence/audio-v2/h2-promotion-acceptance.json";
 var VALIDATOR_PATH = "tools/audio-v2/validate-contract.js";
 var TEST_PATH = "tools/audio-v2/contract.test.js";
@@ -45,6 +49,10 @@ var R3_EXPECTED_MANIFEST_SHA256 = "403E9733B1FD89F64DC49BB6D8CDCEE04C99B2B9D0B2D
 var R3_EXPECTED_MANIFEST_SCHEMA_SHA256 = "8B359BBB6264396E094781FDCBF1A97303517A602FCB6EF0DDF6343C503643B6";
 var R3_EXPECTED_H1_SCHEMA_SHA256 = "6C423C4FC46CE494ACD8388C7A80F3C2D92021028A5657D1DB406E8840E1CBB2";
 var R3_FROZEN_CONTRACT_PATHS = [GITATTRIBUTES_PATH, MANIFEST_PATH, MANIFEST_SCHEMA_PATH, H1_SCHEMA_PATH, R3_MANIFEST_PATH, R3_MANIFEST_SCHEMA_PATH, R3_H1_SCHEMA_PATH, AUTOMATED_REPORT_SCHEMA_PATH, AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH, AUTOMATED_REPORT_INPUT_SCHEMA_PATH, AUTOMATED_CASE_EVIDENCE_SCHEMA_PATH, ASSET_EOF_RESULTS_SCHEMA_PATH, ASSET_WAIVER_SCHEMA_PATH, CANDIDATE_VERIFICATION_SCHEMA_PATH, ENDPOINT_CAPTURE_CONFIGURATION_SCHEMA_PATH, PRODUCER_VERIFICATION_SCHEMA_PATH, RUNNER_DEPENDENCY_SCHEMA_PATH, A6_SCHEMA_PATH, LISTENING_SCHEMA_PATH, H2_SCHEMA_PATH, VALIDATOR_PATH, TEST_PATH];
+var R4_EXPECTED_MANIFEST_SHA256 = "9D0F358FE93D5A2BF3824C6DFD4A98A64FC731819174FCDD2C09324C96604DB7";
+var R4_EXPECTED_MANIFEST_SCHEMA_SHA256 = "71C7FE04AA512D50FD23965FD94440C1B80B237E6F22B65FC2370714FD9AA2D9";
+var R4_EXPECTED_H1_SCHEMA_SHA256 = "1428E2E20584B0C8C80F080C4BC16D02CC26EB43E4764DBAFFED7496F5C664D4";
+var R4_FROZEN_CONTRACT_PATHS = R3_FROZEN_CONTRACT_PATHS.concat([R4_MANIFEST_PATH, R4_MANIFEST_SCHEMA_PATH, R4_H1_SCHEMA_PATH]);
 var QUALIFICATION_RUNNER_PATH = "tools/audio-v2/qualification-runner.js";
 var ENDPOINT_CAPTURE_TOOL_PATH = "tools/audio-v2/capture-endpoint.ps1";
 var PRODUCER_REPLAY_TIMEOUT_MILLISECONDS = 1800000;
@@ -200,6 +208,8 @@ var REQUIRED_CASE_CHECKS = {
 };
 var R3_REQUIRED_CASE_CHECKS = JSON.parse(JSON.stringify(REQUIRED_CASE_CHECKS));
 R3_REQUIRED_CASE_CHECKS.device_recovery_endpoint_e2e.no_stale_sfx_after_recovery = ["stale_generation_drop_counter_exact", "stale_sfx_absent_after_recovery"];
+var R4_REQUIRED_CASE_CHECKS = JSON.parse(JSON.stringify(R3_REQUIRED_CASE_CHECKS));
+R4_REQUIRED_CASE_CHECKS.device_recovery_endpoint_e2e.sleep_resume = ["post_resume_endpoint_pcm_generation_scoped", "recovery_target_15s_hard_cap_30s"];
 var ASSET_INVENTORY_EXTENSIONS = [".flac", ".m4a", ".mp3", ".mp4", ".ogg", ".opus", ".wav", ".waz"];
 
 var R2_PROFILE = {
@@ -237,6 +247,25 @@ var R3_PROFILE = {
     revision: "R3",
     scopeRevision: "AUDIO-V2-H1-SWEET-SPOT-R3",
     frozenContractPaths: R3_FROZEN_CONTRACT_PATHS
+};
+var R4_PROFILE = {
+    h1ReceiptPath: R4_H1_RECEIPT_PATH,
+    h1ReceiptSchema: "cf7.audio-v2.h1-implementation-acceptance.v4",
+    h1SchemaId: "cf7.audio-v2.h1-implementation-acceptance.schema.v4",
+    h1SchemaPath: R4_H1_SCHEMA_PATH,
+    manifestPath: R4_MANIFEST_PATH,
+    manifestSchema: "cf7.audio-v2.h1-decision-manifest.v4",
+    manifestSchemaId: "cf7.audio-v2.h1-decision-manifest.schema.v4",
+    manifestSchemaPath: R4_MANIFEST_SCHEMA_PATH,
+    manifestSha256: R4_EXPECTED_MANIFEST_SHA256,
+    priorReceiptPaths: [H1_RECEIPT_PATH, R3_H1_RECEIPT_PATH],
+    proposalParentCommit: "ed2f2f4daefa63e205851ad54a41fafa7a48ebec",
+    proposalParentTree: "53bbd9960603f6c7bc4ac1239b577185f49cb91c",
+    proposalExactPaths: [ADR_PATH, MEMO_PATH, R4_MANIFEST_PATH, R4_MANIFEST_SCHEMA_PATH, R4_H1_SCHEMA_PATH, VALIDATOR_PATH, TEST_PATH],
+    requiredCaseChecks: R4_REQUIRED_CASE_CHECKS,
+    revision: "R4",
+    scopeRevision: "AUDIO-V2-H1-SWEET-SPOT-R4",
+    frozenContractPaths: R4_FROZEN_CONTRACT_PATHS
 };
 
 var ADR_RECOVERY_STATES = {
@@ -289,6 +318,8 @@ R2_PROFILE.adrStates = ADR_RECOVERY_STATES;
 R2_PROFILE.memoStates = MEMO_RECOVERY_STATES;
 R3_PROFILE.adrStates = R3_ADR_RECOVERY_STATES;
 R3_PROFILE.memoStates = R3_MEMO_RECOVERY_STATES;
+R4_PROFILE.adrStates = R3_ADR_RECOVERY_STATES;
+R4_PROFILE.memoStates = R3_MEMO_RECOVERY_STATES;
 
 function fail(message) {
     throw new Error(message);
@@ -383,6 +414,7 @@ function validateTopRecoveryState(text, expected, label) {
 }
 
 function profileForManifest(manifest) {
+    if (manifest && manifest.schema === R4_PROFILE.manifestSchema && manifest.scopeRevision === R4_PROFILE.scopeRevision) return R4_PROFILE;
     if (manifest && manifest.schema === R3_PROFILE.manifestSchema && manifest.scopeRevision === R3_PROFILE.scopeRevision) return R3_PROFILE;
     return R2_PROFILE;
 }
@@ -450,7 +482,12 @@ function validateManifest(manifest, profile) {
     expect(manifest.assetContract.proposalBaseline.zeroShippedFlacByExtensionAndMagic === true, "baseline zero FLAC fact missing");
 
     expect(manifest.evidenceGates.H1.receiptSchema === profile.h1SchemaPath, "H1 receipt schema path drift");
-    if (profile.revision === "R3") {
+    if (profile.revision === "R4") {
+        expect(manifest.evidenceGates.H1.activation === "tracked_r4_receipt_in_direct_single_parent_child_after_exact_human_acceptance", "R4 H1 activation policy drift");
+        expect(JSON.stringify(manifest.evidenceGates.H1.priorAcceptedReceiptPaths) === JSON.stringify([H1_RECEIPT_PATH, R3_H1_RECEIPT_PATH]), "R4 prior accepted receipt paths drift");
+        expect(manifest.evidenceGates.H1.receiptPath === R4_H1_RECEIPT_PATH, "R4 H1 receipt path drift");
+        expect(!Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H1, "priorAcceptedReceiptPath"), "R4 singular prior receipt surface must stay retired");
+    } else if (profile.revision === "R3") {
         expect(manifest.evidenceGates.H1.activation === "tracked_r3_receipt_in_direct_single_parent_child_after_exact_human_acceptance", "R3 H1 activation policy drift");
         expect(manifest.evidenceGates.H1.priorAcceptedReceiptPath === H1_RECEIPT_PATH, "R3 prior accepted receipt path drift");
         expect(manifest.evidenceGates.H1.receiptPath === R3_H1_RECEIPT_PATH, "R3 H1 receipt path drift");
@@ -503,17 +540,36 @@ function validateManifest(manifest, profile) {
     expect(manifest.evidenceGates.H2.endpointCaptureMinimumDurationSeconds === 1, "H2 capture minimum duration drift");
     expect(manifest.evidenceGates.H2.endpointCaptureMinPeakAbsPcm16 === 64 && manifest.evidenceGates.H2.endpointCaptureMinNonZeroSampleRatio === 0.001, "H2 capture signal threshold drift");
     expect(manifest.evidenceGates.H2.frozenContractReleaseSourcePolicy === "every_frozen_contract_blob_in_release_source_S_must_equal_proposal_P_even_if_worktree_bytes_are_restored", "release-source frozen contract policy drift");
-    if (profile.revision === "R3") {
+    if (profile.revision === "R3" || profile.revision === "R4") {
         var h2 = manifest.evidenceGates.H2;
-        exactKeys(h2.finiteSfxMeterWindowPolicy, ["anchor", "passRule", "terminalSilenceAllowed"], "R3 finite SFX meter window policy");
-        expect(h2.finiteSfxMeterWindowPolicy.anchor === "current_generation_finite_sfx_stimulus_dispatch_in_sfx_playback_or_bgm_sfx_mix", "R3 finite SFX meter anchor drift");
-        expect(h2.finiteSfxMeterWindowPolicy.passRule === "at_least_one_post_anchor_snapshot_has_sfx_frame_advance_and_peak_abs_at_least_64_and_the_final_snapshot_has_total_sfx_frame_advance", "R3 finite SFX meter pass rule drift");
-        expect(h2.finiteSfxMeterWindowPolicy.terminalSilenceAllowed === true, "R3 finite SFX terminal silence policy drift");
-        exactKeys(h2.sleepResumeRecoveryClockPolicy, ["carrierRevision", "fallbackForbidden", "field", "maximumEpisodeDelta100ns", "sleepAndHibernateExcluded", "source", "unit", "utcRole"], "R3 recovery clock policy");
-        expect(h2.sleepResumeRecoveryClockPolicy.carrierRevision === 2 && h2.sleepResumeRecoveryClockPolicy.field === "workingStateElapsed100ns", "R3 recovery clock carrier/field drift");
-        expect(h2.sleepResumeRecoveryClockPolicy.maximumEpisodeDelta100ns === 150000000 && h2.sleepResumeRecoveryClockPolicy.source === "QueryUnbiasedInterruptTimePrecise", "R3 recovery clock authority/SLA drift");
-        expect(h2.sleepResumeRecoveryClockPolicy.sleepAndHibernateExcluded === true && h2.sleepResumeRecoveryClockPolicy.fallbackForbidden === true, "R3 recovery clock exclusion/fail-closed policy drift");
-        expect(h2.sleepResumeRecoveryClockPolicy.utcRole === "audit_only_not_duration_authority" && h2.sleepResumeRecoveryClockPolicy.unit === "100ns", "R3 recovery clock unit/UTC role drift");
+        exactKeys(h2.finiteSfxMeterWindowPolicy, ["anchor", "passRule", "terminalSilenceAllowed"], profile.revision + " finite SFX meter window policy");
+        expect(h2.finiteSfxMeterWindowPolicy.anchor === "current_generation_finite_sfx_stimulus_dispatch_in_sfx_playback_or_bgm_sfx_mix", profile.revision + " finite SFX meter anchor drift");
+        expect(h2.finiteSfxMeterWindowPolicy.passRule === "at_least_one_post_anchor_snapshot_has_sfx_frame_advance_and_peak_abs_at_least_64_and_the_final_snapshot_has_total_sfx_frame_advance", profile.revision + " finite SFX meter pass rule drift");
+        expect(h2.finiteSfxMeterWindowPolicy.terminalSilenceAllowed === true, profile.revision + " finite SFX terminal silence policy drift");
+        if (profile.revision === "R4") {
+            var clock = h2.sleepResumeRecoveryClockPolicy;
+            exactKeys(clock, ["carrierRevision", "fallbackForbidden", "field", "hardMaximumEpisodeDelta100ns", "hardPassRule", "sleepAndHibernateExcluded", "source", "structuredTimingResult", "targetEpisodeDelta100ns", "unit", "utcRole"], "R4 recovery clock policy");
+            expect(clock.carrierRevision === 2 && clock.field === "workingStateElapsed100ns" && clock.source === "QueryUnbiasedInterruptTimePrecise", "R4 recovery clock carrier/authority drift");
+            expect(clock.targetEpisodeDelta100ns === 150000000 && clock.hardMaximumEpisodeDelta100ns === 300000000, "R4 recovery target/hard cap drift");
+            expect(clock.hardPassRule === "every_episode_at_or_below_hard_maximum_is_recovery_bounded_and_any_episode_above_hard_maximum_fails", "R4 recovery hard-pass rule drift");
+            expect(clock.sleepAndHibernateExcluded === true && clock.fallbackForbidden === true && clock.utcRole === "audit_only_not_duration_authority" && clock.unit === "100ns", "R4 recovery clock exclusion/unit drift");
+            exactKeys(clock.structuredTimingResult, ["observedField", "requiredFields", "rule", "targetField", "targetMissField"], "R4 structured timing result");
+            expect(JSON.stringify(clock.structuredTimingResult.requiredFields) === JSON.stringify(["targetMiss", "targetRecoveryMs", "recoveryMs", "maxRecoveryMs"]), "R4 structured timing fields drift");
+            expect(clock.structuredTimingResult.observedField === "recoveryMs" && clock.structuredTimingResult.targetField === "targetRecoveryMs" && clock.structuredTimingResult.targetMissField === "targetMiss", "R4 structured timing field names drift");
+            expect(clock.structuredTimingResult.rule === "targetRecoveryMs_must_equal_15000_maxRecoveryMs_must_equal_30000_and_targetMiss_must_equal_recoveryMs_greater_than_15000", "R4 structured timing rule drift");
+            var meter = h2.postRecoveryMeterPolicy;
+            exactKeys(meter, ["busSelectionRule", "crossGenerationFrameRule", "finalObservationCount", "finalObservationRule", "frameProgressRule", "signalRule"], "R4 post-recovery meter policy");
+            expect(meter.crossGenerationFrameRule === "frameCount_may_reset_when_audioReadyGeneration_changes_and_cross_generation_frame_deltas_are_forbidden", "R4 cross-generation frame rule drift");
+            expect(meter.finalObservationCount === 2 && meter.finalObservationRule === "two_ordered_qualification_snapshots_at_or_after_the_final_closing_Ready_in_the_same_audioSessionId_audioReadyGeneration_and_physical_runtime_tuple", "R4 final observation rule drift");
+            expect(meter.busSelectionRule === "select_one_of_bgmMeter_or_sfxMeter_and_use_the_same_bus_for_both_final_observations", "R4 meter bus selection drift");
+            expect(meter.frameProgressRule === "second_observation_frameCount_must_be_greater_than_first_observation_frameCount_on_the_selected_bus" && meter.signalRule === "second_observation_peakAbsPcm16_must_be_at_least_64_on_the_selected_bus", "R4 same-generation meter proof drift");
+        } else {
+            exactKeys(h2.sleepResumeRecoveryClockPolicy, ["carrierRevision", "fallbackForbidden", "field", "maximumEpisodeDelta100ns", "sleepAndHibernateExcluded", "source", "unit", "utcRole"], "R3 recovery clock policy");
+            expect(h2.sleepResumeRecoveryClockPolicy.carrierRevision === 2 && h2.sleepResumeRecoveryClockPolicy.field === "workingStateElapsed100ns", "R3 recovery clock carrier/field drift");
+            expect(h2.sleepResumeRecoveryClockPolicy.maximumEpisodeDelta100ns === 150000000 && h2.sleepResumeRecoveryClockPolicy.source === "QueryUnbiasedInterruptTimePrecise", "R3 recovery clock authority/SLA drift");
+            expect(h2.sleepResumeRecoveryClockPolicy.sleepAndHibernateExcluded === true && h2.sleepResumeRecoveryClockPolicy.fallbackForbidden === true, "R3 recovery clock exclusion/fail-closed policy drift");
+            expect(h2.sleepResumeRecoveryClockPolicy.utcRole === "audit_only_not_duration_authority" && h2.sleepResumeRecoveryClockPolicy.unit === "100ns", "R3 recovery clock unit/UTC role drift");
+        }
         var stale = h2.noStaleSfxAfterRecoveryR3;
         exactKeys(stale, ["armResult", "carrierRevision", "dispatchRule", "exactDeltas", "requiredFacts", "staleBatchSize", "unchangedCounters", "windowRule"], "R3 stale SFX policy");
         expect(stale.carrierRevision === 2 && stale.staleBatchSize === 1, "R3 stale SFX carrier/batch drift");
@@ -523,7 +579,21 @@ function validateManifest(manifest, profile) {
         expect(JSON.stringify(stale.exactDeltas) === JSON.stringify({ staleGenerationDrops: 1 }), "R3 stale-generation exact delta drift");
         expect(JSON.stringify(stale.unchangedCounters) === JSON.stringify(["playedCount", "preReadyDrops", "recoveryDrops", "unknownIdCount", "throttledCount", "startFailureCount"]), "R3 unchanged stale-SFX counters drift");
         expect(JSON.stringify(stale.requiredFacts) === JSON.stringify(["captureId", "staleBatchSize", "armResult", "dispatchSequence", "recoveringSequence", "closingReadySequence", "audioReadyGenerationBefore", "audioReadyGenerationAfter", "playedBefore", "playedAfter", "preReadyDropsBefore", "preReadyDropsAfter", "recoveryDropsBefore", "recoveryDropsAfter", "staleGenerationDropsBefore", "staleGenerationDropsAfter", "unknownIdCountBefore", "unknownIdCountAfter", "throttledCountBefore", "throttledCountAfter", "startFailureCountBefore", "startFailureCountAfter"]), "R3 stale-SFX required facts drift");
-        expect(h2.receiptTreeImmutabilityPolicy === "R2_and_R3_H1_receipts_must_remain_byte_identical_from_their_activation_commits_through_S_E1_and_HEAD_H2_receipt_must_match_E2_and_HEAD", "R3 receipt tree immutability policy drift");
+        if (profile.revision === "R4") {
+            expect(h2.receiptTreeImmutabilityPolicy === "R2_R3_and_R4_H1_receipts_must_remain_byte_identical_from_their_activation_commits_through_S_E1_and_HEAD_H2_receipt_must_match_E2_and_HEAD", "R4 receipt tree immutability policy drift");
+            var link = manifest.release.h2RequestLinkPolicy;
+            exactKeys(link, ["artifactPath", "canonicalization", "commitPolicy", "failClosedOn", "gateRule", "requestSchemaPolicy", "requiredBindings", "verificationRule"], "R4 H2 request link policy");
+            expect(link.artifactPath === "docs/evidence/audio-v2/h2-request-link.json" && link.canonicalization === "utf8_no_bom_lf_recursive_sorted_keys_two_space_indent_single_final_lf", "R4 H2 request link artifact/canonicalization drift");
+            expect(link.commitPolicy === "E3_is_the_direct_single_parent_evidence_only_child_of_E2_and_changes_exactly_only_the_h2_request_link", "R4 E3 ancestry/diff policy drift");
+            expect(JSON.stringify(link.failClosedOn) === JSON.stringify(["missing_link", "noncanonical_json", "non_direct_E2_child", "non_evidence_only_diff", "request_id_recomputation_mismatch", "request_bytes_or_five_domain_mismatch", "source_tag_commit_or_tree_mismatch", "E1_manifest_blob_or_sha_mismatch", "E2_receipt_blob_or_sha_mismatch", "accepted_receipt_mutation"]), "R4 E3 fail-closed cases drift");
+            expect(link.gateRule === "E2_allows_request_and_two_formal_builders_E3_is_created_immediately_after_request_and_promote_runtime_bundle_including_final_preflight_must_validate_E3_before_any_formal_promotion_or_deployment_write", "R4 E3 promotion gate drift");
+            expect(link.requestSchemaPolicy === "cf7_runtime_build_request_v2_remains_unchanged", "R4 E3 request schema policy drift");
+            expect(JSON.stringify(link.requiredBindings) === JSON.stringify(["schema", "requestId", "requestSha256", "artifactSourceHash", "producerRecipeHash", "toolchainLockHash", "policyHash", "buildIdentityHash", "sourceTag", "releaseSourceCommit", "releaseSourceTree", "evidenceCommit", "evidenceManifestPath", "evidenceManifestBlobOid", "evidenceManifestSha256", "h2ReceiptCommit", "h2ReceiptPath", "h2ReceiptBlobOid", "h2ReceiptSha256"]), "R4 E3 required bindings drift");
+            expect(link.verificationRule === "offline_validator_recomputes_requestId_from_releaseTreeOid_and_policyHash_rehashes_request_bytes_verifies_all_five_request_domains_peels_source_tag_to_S_and_rebinds_E1_manifest_and_E2_receipt_git_objects", "R4 E3 verification rule drift");
+        } else {
+            expect(h2.receiptTreeImmutabilityPolicy === "R2_and_R3_H1_receipts_must_remain_byte_identical_from_their_activation_commits_through_S_E1_and_HEAD_H2_receipt_must_match_E2_and_HEAD", "R3 receipt tree immutability policy drift");
+            expect(!Object.prototype.hasOwnProperty.call(h2, "postRecoveryMeterPolicy") && !Object.prototype.hasOwnProperty.call(manifest.release, "h2RequestLinkPolicy"), "R3 must not absorb R4 policy surface");
+        }
     } else {
         expect(!Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H2, "finiteSfxMeterWindowPolicy") && !Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H2, "noStaleSfxAfterRecoveryR3") && !Object.prototype.hasOwnProperty.call(manifest.evidenceGates.H2, "sleepResumeRecoveryClockPolicy"), "R2 H2 policy surface drift");
         expect(manifest.evidenceGates.H2.receiptTreeImmutabilityPolicy === "H1_receipt_must_match_H_S_E1_and_HEAD_H2_receipt_must_match_E2_and_HEAD", "R2 receipt tree immutability policy drift");
@@ -557,7 +627,10 @@ function validateSchemaSurfaces(root, profile) {
     expect(manifestSchema.$id === profile.manifestSchemaId && h1Schema.$id === profile.h1SchemaId, "contract schema IDs drift");
     expect(manifestSchema.properties.schema.const === profile.manifestSchema && manifestSchema.properties.scopeRevision.const === profile.scopeRevision, "manifest schema revision constants drift");
     expect(h1Schema.properties.schema.const === profile.h1ReceiptSchema && h1Schema.properties.scopeRevision.const === profile.scopeRevision && h1Schema.properties.contract.properties.manifestPath.const === profile.manifestPath, "H1 schema revision/path constants drift");
-    if (profile.revision === "R3") {
+    if (profile.revision === "R4") {
+        expect(sha256(manifestSchemaFile.buffer) === R4_EXPECTED_MANIFEST_SCHEMA_SHA256, "R4 manifest schema bytes differ from the validator constant");
+        expect(sha256(h1SchemaFile.buffer) === R4_EXPECTED_H1_SCHEMA_SHA256, "R4 H1 schema bytes differ from the validator constant");
+    } else if (profile.revision === "R3") {
         expect(sha256(manifestSchemaFile.buffer) === R3_EXPECTED_MANIFEST_SCHEMA_SHA256, "R3 manifest schema bytes differ from the validator constant");
         expect(sha256(h1SchemaFile.buffer) === R3_EXPECTED_H1_SCHEMA_SHA256, "R3 H1 schema bytes differ from the validator constant");
     }
@@ -673,6 +746,7 @@ function validateCandidateSourceDomains(parsedManifest, sourceDomains) {
 }
 
 function profileForProposalCommit(commit, root) {
+    if (gitPathExists(commit, R4_MANIFEST_PATH, root)) return R4_PROFILE;
     return gitPathExists(commit, R3_MANIFEST_PATH, root) ? R3_PROFILE : R2_PROFILE;
 }
 
@@ -718,7 +792,7 @@ function resolveProposal(commit, root, profileOverride) {
 
 function validateAdrDigest(adrText, digest, profile) {
     profile = profile || R2_PROFILE;
-    var marker = profile.revision === "R3" ? "R3 decision manifest SHA-256" : "decision manifest SHA-256";
+    var marker = profile.revision === "R4" ? "R4 decision manifest SHA-256" : (profile.revision === "R3" ? "R3 decision manifest SHA-256" : "decision manifest SHA-256");
     var escapedMarker = marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     var match = adrText.match(new RegExp(escapedMarker + "[^`]*`([A-F0-9]{64})`"));
     expect(match, "ADR is missing " + marker + " marker");
@@ -1055,7 +1129,7 @@ function formatH2Proposal(evidenceContext) {
 }
 
 function formatJsonFiles() {
-    [MANIFEST_PATH, MANIFEST_SCHEMA_PATH, H1_SCHEMA_PATH, R3_MANIFEST_PATH, R3_MANIFEST_SCHEMA_PATH, R3_H1_SCHEMA_PATH, AUTOMATED_REPORT_SCHEMA_PATH, AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH, AUTOMATED_REPORT_INPUT_SCHEMA_PATH, AUTOMATED_CASE_EVIDENCE_SCHEMA_PATH, ASSET_EOF_RESULTS_SCHEMA_PATH, ASSET_WAIVER_SCHEMA_PATH, CANDIDATE_VERIFICATION_SCHEMA_PATH, ENDPOINT_CAPTURE_CONFIGURATION_SCHEMA_PATH, PRODUCER_VERIFICATION_SCHEMA_PATH, RUNNER_DEPENDENCY_SCHEMA_PATH, A6_SCHEMA_PATH, LISTENING_SCHEMA_PATH, H2_SCHEMA_PATH, "docs/evidence/audio-v2/research-ready-preload-observation.json"].forEach(function (rel) {
+    [MANIFEST_PATH, MANIFEST_SCHEMA_PATH, H1_SCHEMA_PATH, R3_MANIFEST_PATH, R3_MANIFEST_SCHEMA_PATH, R3_H1_SCHEMA_PATH, R4_MANIFEST_PATH, R4_MANIFEST_SCHEMA_PATH, R4_H1_SCHEMA_PATH, AUTOMATED_REPORT_SCHEMA_PATH, AUTOMATED_REPORT_CONFIGURATION_SCHEMA_PATH, AUTOMATED_REPORT_INPUT_SCHEMA_PATH, AUTOMATED_CASE_EVIDENCE_SCHEMA_PATH, ASSET_EOF_RESULTS_SCHEMA_PATH, ASSET_WAIVER_SCHEMA_PATH, CANDIDATE_VERIFICATION_SCHEMA_PATH, ENDPOINT_CAPTURE_CONFIGURATION_SCHEMA_PATH, PRODUCER_VERIFICATION_SCHEMA_PATH, RUNNER_DEPENDENCY_SCHEMA_PATH, A6_SCHEMA_PATH, LISTENING_SCHEMA_PATH, H2_SCHEMA_PATH, "docs/evidence/audio-v2/research-ready-preload-observation.json"].forEach(function (rel) {
         if (!fs.existsSync(absolute(rel))) return;
         var parsed = readJson(rel).value;
         fs.writeFileSync(absolute(rel), canonicalBytes(parsed));
@@ -1140,11 +1214,13 @@ function validateH1Activation(proposal, receiptFile, root) {
     var memoAtActivation = gitObjectBinding(activationCommit, MEMO_PATH, root).bytes.toString("utf8");
     validateTopRecoveryState(adrAtActivation, profile.adrStates.h1, "H1 activation ADR");
     validateTopRecoveryState(memoAtActivation, profile.memoStates.h1, "H1 activation memo");
-    var adrActivationMarkers = profile.revision === "R3"
-        ? ["| R3 H1 | accepted |", "| R3 implementation | authorized_A1_A6 |", "当前 R3 H1 已有效"]
-        : ["| H1 | accepted |", "| A0 | completed_H1 |", "| A1 | authorized_pending |", "当前 H1 已有效"];
+    var adrActivationMarkers = profile.revision === "R4"
+        ? ["| R4 H1 | accepted |", "| R4 implementation | authorized_A1_A6 |", "当前 R4 H1 已有效"]
+        : (profile.revision === "R3"
+            ? ["| R3 H1 | accepted |", "| R3 implementation | authorized_A1_A6 |", "当前 R3 H1 已有效"]
+            : ["| H1 | accepted |", "| A0 | completed_H1 |", "| A1 | authorized_pending |", "当前 H1 已有效"]);
     adrActivationMarkers.forEach(function (needle) { expect(adrAtActivation.indexOf(needle) >= 0, "H1 activation ADR is missing atomic recovery marker: " + needle); });
-    var memoActivationMarker = profile.revision === "R3" ? "当前 R3 H1 已有效" : "当前 H1 已有效";
+    var memoActivationMarker = profile.revision === "R4" ? "当前 R4 H1 已有效" : (profile.revision === "R3" ? "当前 R3 H1 已有效" : "当前 H1 已有效");
     expect(memoAtActivation.indexOf(memoActivationMarker) >= 0, "H1 activation memo is missing atomic recovery marker: " + memoActivationMarker);
     return activationCommit;
 }
@@ -1887,7 +1963,7 @@ function validateWorkspace(options) {
     options = options || {};
     TEMP_REVIEW_PATHS.forEach(function (rel) { expect(!fs.existsSync(absolute(rel)), "temporary review must be deleted: " + rel); });
     validateCanonicalCheckoutPolicy();
-    var profile = options.proposalCommit ? profileForProposalCommit(options.proposalCommit) : (fs.existsSync(absolute(R3_MANIFEST_PATH)) ? R3_PROFILE : R2_PROFILE);
+    var profile = options.proposalCommit ? profileForProposalCommit(options.proposalCommit) : (fs.existsSync(absolute(R4_MANIFEST_PATH)) ? R4_PROFILE : (fs.existsSync(absolute(R3_MANIFEST_PATH)) ? R3_PROFILE : R2_PROFILE));
     var manifestFile = readJson(profile.manifestPath, { canonical: true });
     var manifest = validateManifest(manifestFile.value, profile);
     validateSchemaSurfaces(null, profile);
@@ -2024,6 +2100,13 @@ module.exports = {
     R3_H1_RECEIPT_PATH: R3_H1_RECEIPT_PATH,
     R3_MANIFEST_PATH: R3_MANIFEST_PATH,
     R3_PROFILE: R3_PROFILE,
+    R4_EXPECTED_MANIFEST_SHA256: R4_EXPECTED_MANIFEST_SHA256,
+    R4_EXPECTED_MANIFEST_SCHEMA_SHA256: R4_EXPECTED_MANIFEST_SCHEMA_SHA256,
+    R4_EXPECTED_H1_SCHEMA_SHA256: R4_EXPECTED_H1_SCHEMA_SHA256,
+    R4_FROZEN_CONTRACT_PATHS: R4_FROZEN_CONTRACT_PATHS,
+    R4_H1_RECEIPT_PATH: R4_H1_RECEIPT_PATH,
+    R4_MANIFEST_PATH: R4_MANIFEST_PATH,
+    R4_PROFILE: R4_PROFILE,
     REQUIRED_AUTOMATED_REPORT_CASES: REQUIRED_AUTOMATED_REPORT_CASES,
     REQUIRED_CASE_CAPTURE_IDS: REQUIRED_CASE_CAPTURE_IDS,
     REQUIRED_CASE_CHECKS: REQUIRED_CASE_CHECKS,
