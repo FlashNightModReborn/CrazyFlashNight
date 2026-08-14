@@ -1,0 +1,68 @@
+{
+  "authorizationMode": "owner_emergency_non_h2",
+  "authorizationSha256": "A5B8435E7EDA65A3859D6543799B5E520B47F42A8A0E7137780CCEBC6A10C44B",
+  "build": {
+    "buildIdentityHash": "50538C0BA1516E1BA09AE86BB94B2C885A02C106C5EB6FBAA806C47AFFB5CB4A",
+    "github": {
+      "faultDomain": "github-hosted-windows",
+      "runId": 31818159299,
+      "runUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/31818159299",
+      "signerIdentity": "CF8EF580B8E5C731C18B0FAF454F45CC5631203E1B78DF0C25DDE1428F4A088A"
+    },
+    "local": {
+      "certificateThumbprint": "141A0B12F18A1C25C2BF4A32B3C279F81C44D007",
+      "faultDomain": "physical-host-b",
+      "signerKeyId": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5"
+    },
+    "manifestSha256": "D650F7C4F20BA5616A23DBCD597420D68E845F8F5A793BD4E8422AE348B91615",
+    "payloadClosureHash": "FE874BA9CAC43B4ED944A1B5606DFDD03176C02A89F510338CEC251B2C768793"
+  },
+  "deployment": {
+    "consensusSha256": "05B7E7DEDD9874499900F2966FF021CF888F9232DA8AD5F9888E1F06659C9994",
+    "corePath": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+    "coreSha256": "088478D191EA98D83318A2CF330A490BD8A7EFDCBA71A2F51EF5AFFE3AE9460A",
+    "finalState": "promoted"
+  },
+  "formalEntrySmoke": {
+    "candidateRootUsed": false,
+    "coreSha256": "088478D191EA98D83318A2CF330A490BD8A7EFDCBA71A2F51EF5AFFE3AE9460A",
+    "deploymentMode": "FORMAL_RUNTIME",
+    "guardianBusReady": true,
+    "result": "passed",
+    "runtimeMode": "formal_runtime",
+    "shutdown": "graceful",
+    "shutdownMarkers": [
+      "Flash Player exited, code=0",
+      "guardian.shutdown_complete",
+      "core.main_exit"
+    ]
+  },
+  "h2Bypassed": true,
+  "h2Satisfied": false,
+  "humanVisualAcceptance": false,
+  "ownerAuthorizationSha256": "8BA43822D185E84C712B152663AC7E11160B3DFC392970FECDF67E3AE3727528",
+  "ownerAuthorizationVerbatim": [
+    "后续能不能直接推进到完成云端共识与部署推送，我已经要睡觉了，另外从今天的路程上目前流程上已经占据了绝大部分的流程与配额开销，有害的可能就是这个过度设计的流程",
+    "继续需要做流程的原因是什么，这不是开公司需要流程合规",
+    "拆/降级机制和继续跑目前管线哪个更快，我希望的就是一觉起来后能至少看到完成了构建，让dll部署推送上去"
+  ],
+  "policyReceiptSha256": "2B037A0BDB7795461281332CD19C242451111AD3C9236578AA2689DAB2C0BB9B",
+  "promotedAtUtc": "2026-08-14T16:41:38.8602528Z",
+  "promotionAuthorized": true,
+  "recordedAtUtc": "2026-08-14T16:53:39.3138062Z",
+  "releaseTreeOid": "effd7c33f4623dd2dbae596d58cc9b8a08b6a072",
+  "requestId": "00D6B5445138406C643BF62FD1270BB9F15938D4D8B37F6D1F5360FC6BEC9405",
+  "retainedControls": [
+    "immutable_request",
+    "dual_signer",
+    "dual_fault_domain",
+    "production_policy",
+    "strict_v2_verifier",
+    "atomic_promotion",
+    "rollback"
+  ],
+  "schema": "cf7.audio-v2.emergency-owner-promotion.v1",
+  "sourceCommitOid": "48c312234ab189b16f9edd2f5f7b0b2e78fc1407",
+  "sourceTag": "runtime-build-v2/20260814-audio-v2-materialized-closure-v1",
+  "standardEntryVerified": false
+}
