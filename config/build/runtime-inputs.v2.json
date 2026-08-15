@@ -79,7 +79,6 @@
         ".github/workflows/runtime-cloud-builder.yml",
         "automation/dev.ps1",
         "automation/start.ps1",
-        "config/audio-v2/.gitattributes",
         "config/build/contribution-lanes.v1.json",
         "config/build/main-branch-admission.v2.json",
         "config/build/native-change-gate.v1.json",
@@ -93,7 +92,6 @@
         "launcher/contracts/panel-contracts.v2.json",
         "launcher/src/AgentRuntime/Contracts/README.md",
         "tools/assert-optimized.cs",
-        "tools/audio-v2/.gitattributes",
         "tools/audit-map-scale-experience.js",
         "tools/audit-map-webp-assets.js",
         "tools/audit-main-branch-admission.ps1",
@@ -179,18 +177,6 @@
       ],
       "trees": [
         {
-          "path": "config/audio-v2",
-          "includeExtensions": [".json"],
-          "excludePaths": [],
-          "excludePrefixes": []
-        },
-        {
-          "path": "docs/contracts/audio-v2",
-          "includeExtensions": [".json"],
-          "excludePaths": [],
-          "excludePrefixes": []
-        },
-        {
           "path": "launcher/native/tests",
           "includeExtensions": [".c", ".cpp", ".ps1"],
           "excludePaths": [],
@@ -199,12 +185,6 @@
         {
           "path": "tools/arena-calibration",
           "includeExtensions": [".js", ".json"],
-          "excludePaths": [],
-          "excludePrefixes": []
-        },
-        {
-          "path": "tools/audio-v2",
-          "includeExtensions": [".c", ".js", ".json", ".ps1", ".py"],
           "excludePaths": [],
           "excludePrefixes": []
         },

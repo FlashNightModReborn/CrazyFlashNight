@@ -1664,11 +1664,11 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 
 **前台看门狗**（`GuardianForm` 400ms 定时器）：兜底层。后台程序抢焦后未归还前台会留下"焦点真空"（`GetForegroundWindow()==NULL`），导致快捷键失灵 + Flash 降帧。看门狗检测到**持续**真空（连续 ≥2 tick 确认，规避前台交接瞬态误判）后，调 `WindowManager.RestoreFlashInputFocus` 把前台回收给 Flash。锁屏 / 安全桌面期间（`SystemEvents.SessionSwitch`）停转，避免空刷日志。
 
-### 原生音频平台 v2（owner-emergency 已发布；H2 合规路径仍开放）
+### 原生音频平台 v2（runtime 已发布；H2 产品验收仍开放）
 
-R4 已接受合同继续约束正常 H2 合规路径：`sleep_resume` 的 `<=15s` 是质量目标，`>15s && <=30s` 结构化记录 `targetMiss=true` 但仍 bounded，`>30s` 才 fail-closed；恢复后 PCM 只比较最终同 generation、同 physical tuple 的两份显式 snapshot。正常路径仍须 E2/H2、request 后 E3 与双 builder 闭合。2026-08-15 current formal runtime 则由 owner-emergency 明示 bypass E1/H2/E3 后发布；它仍保留 immutable request、双 signer / 双 faultDomain、production policy、strict verifier、原子替换与 rollback，但不是 H2 合规证明，也没有完成 Audio 专项 `standard_entry_verified`。
+R4 已接受合同继续约束 H2 产品验收：`sleep_resume` 的 `<=15s` 是质量目标，`>15s && <=30s` 结构化记录 `targetMiss=true` 但仍 bounded，`>30s` 才 fail-closed；恢复后 PCM 只比较最终同 generation、同 physical tuple 的两份显式 snapshot。E2/H2 与 request 后 E3 只用于 Audio 专项验收闭包，不再进入通用 runtime promotion。通用发布仍保留 immutable request、双 signer / 双 faultDomain、production policy、strict verifier、原子替换与 rollback；H2 未完成时 Audio 验收保持 `pending`，不能据总体 runtime 已部署声称 Audio 专项 `standard_entry_verified`。
 
-S10/S11 的双 clean repro、candidate 与十个失败/诊断 run 只保留为历史，不能代签 R4 Source、A6 或 E1/H2；owner-emergency promotion 也不能反向补签这些门。权威合同见 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)。
+S10/S11 的双 clean repro、candidate 与十个失败/诊断 run 只保留为历史，不能代签 R4 Source、A6 或 E1/H2；任何通用 promotion 也不能反向补签这些产品验收证据。历史 emergency validator/receipt 继续只作审计，不再是现役发布参数。权威合同见 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)。
 
 **owner 与 ABI**：
 - `AudioEngine` 只保留进程级兼容 facade；所有 native mutation 都进入 `AudioCoordinator` 的单 owner 队列，只有 `AudioNativeV2` adapter 持有 raw P/Invoke。观察方读取不可变 capability/runtime snapshot，不直接触碰 native handle。

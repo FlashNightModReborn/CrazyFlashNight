@@ -180,7 +180,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
         var frameLabel:String = String(_root.Web选关当前帧值 || _root.关卡地图帧值 || "基地门口");
         var returnFrameLabel:String = String(_root.Web选关返回帧值 || _root.关卡地图帧值 || frameLabel);
-        return _root.server.sendSocketMessage(_json.stringify({
+        return _root.server.sendSocketMessage(_json.stringifySafe({
             task: "panel_request",
             panel: "arena",
             source: "stage_select_arena_redirect",
@@ -324,7 +324,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         _root.Web选关返回帧值 = returnFrame;
         _root.关卡地图帧值 = returnFrame;
 
-        return _root.server.sendSocketMessage(_json.stringify({
+        return _root.server.sendSocketMessage(_json.stringifySafe({
             task: "panel_request",
             panel: "stage-select",
             source: source,
@@ -566,6 +566,6 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
     }
 
     private static function sendResponse(resp:Object):Void {
-        _root.server.sendSocketMessage(_json.stringify(resp));
+        _root.server.sendSocketMessage(_json.stringifySafe(resp));
     }
 }

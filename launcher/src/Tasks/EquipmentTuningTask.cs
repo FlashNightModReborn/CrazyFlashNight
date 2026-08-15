@@ -444,6 +444,7 @@ namespace CF7Launcher.Tasks
                     else if (!string.Equals(_activeViewSessionId, viewSessionId, StringComparison.Ordinal))
                         reject = "view_session_expired";
                     else if (_writeState == "write_pending") reject = "busy";
+                    else if (!TryBindTooltipAuthorityLocked(entry)) reject = "invalid_payload";
                     else
                     {
                         entry.WriteEpoch = _writeEpoch;
@@ -1019,6 +1020,36 @@ namespace CF7Launcher.Tasks
                         out entry.ReplaceCandidateAuthority);
             }
             return true;
+        }
+
+        private bool TryBindTooltipAuthorityLocked(
+            PendingRequest entry)
+        {
+            if (entry == null) return false;
+            // Legacy tooltip requests have no source and remain read-only compatible.
+            if (entry.Source == null) return true;
+
+            SnapshotAuthority authority = _snapshotAuthority;
+            return authority != null
+                && string.Equals(
+                    authority.PanelInstanceId,
+                    entry.PanelInstanceId,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    authority.ViewSessionId,
+                    entry.ViewSessionId,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    authority.SourceKey,
+                    PreviewSourceKey(entry.Source),
+                    StringComparison.Ordinal)
+                && JToken.DeepEquals(
+                    authority.Source,
+                    entry.Source)
+                && ((authority.TierCandidates != null
+                        && authority.TierCandidates.ContainsKey(entry.CandidateKey))
+                    || (authority.ModCandidates != null
+                        && authority.ModCandidates.ContainsKey(entry.CandidateKey)));
         }
 
         private static bool TryFreezeCandidateAuthority(

@@ -123,16 +123,7 @@ class org.flashNight.arki.item.CraftingPanelService {
 
     public static function handle(commandName:String, params:Object):Void {
         var callId:Number = params == undefined ? 0 : Number(params.callId);
-        var response:Object;
-        // 与 handleMaterialShopAuthorize 同一 fail-closed 约定：投影/目录的意外异常
-        // 必须收敛为可诊断的 internal_error 响应，不能让 Web 端永远等不到回包。
-        try {
-            response = execute(commandName, params || {});
-        } catch (error) {
-            trace("[CraftingPanelService] " + commandName + " failed closed: "
-                + String(error));
-            response = fail("internal_error");
-        }
+        var response:Object = execute(commandName, params || {});
         response.task = "crafting_response";
         response.callId = callId;
         sendResponse(response);
@@ -145,18 +136,7 @@ class org.flashNight.arki.item.CraftingPanelService {
      */
     public static function handleMaterialShopAuthorize(params:Object):Void {
         if (!validMaterialShopAccessCallId(params)) return;
-        var response:Object;
-        // D7 requires an unexpected projector/catalog exception to fail closed as
-        // authority_unavailable. Keep this catch on the low-frequency click path.
-        try {
-            response = MaterialArchiveProjector.authorizeShopAccess(params);
-        } catch (error) {
-            trace("[CraftingPanelService] material shop authority unavailable: "
-                + String(error));
-            response = {task:"material_shop_access_response",
-                callId:Number(params.callId), success:false, v:1,
-                decision:"deny", error:"authority_unavailable"};
-        }
+        var response:Object = MaterialArchiveProjector.authorizeShopAccess(params);
         sendResponse(response);
     }
 
