@@ -26,3 +26,10 @@ launcher/THIRD-PARTY-NOTICES.txt text eol=lf whitespace=-blank-at-eol
 /docs/evidence/audio-v2/*.json text eol=lf
 /docs/evidence/audio-v2/**/*.json text eol=lf
 /tools/audio-v2/*.js text eol=lf
+
+# Material-catalog producer and its byte-exact manifest must survive Windows checkout unchanged.
+/tools/derive-material-catalog.py text eol=lf
+/data/dictionaries/material_dictionary.generated.json text eol=lf
+/tools/bake-shop-portraits.py text eol=lf
+/launcher/web/assets/shop-portraits/provenance.json text eol=lf
+/launcher/web/assets/shop-portraits/manifest.json text eol=lf

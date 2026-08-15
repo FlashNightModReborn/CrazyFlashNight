@@ -18,7 +18,7 @@ const INVENTORY_WORKBENCH_MODULES=[
 ];
 function audit(){
   const panel=fs.readFileSync(path.join(WEB,'modules','crafting.js'),'utf8');
-  const materials=fs.readFileSync(path.join(WEB,'modules','crafting-materials.js'),'utf8');
+  const materials=fs.readFileSync(path.join(WEB,'modules','crafting-materials.js'),'utf8').replace(/\r\n/g,'\n');
   const workbenchComponents=fs.readFileSync(path.join(WEB,'modules','workbench-components.js'),'utf8');
   const detailPresenter=fs.readFileSync(path.join(WEB,'modules','crafting-detail-presenter.js'),'utf8');
   const harness=fs.readFileSync(path.join(WEB,'modules','crafting','dev','harness.html'),'utf8');

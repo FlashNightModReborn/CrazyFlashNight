@@ -23,10 +23,6 @@ node tools/workbench-live-e2e/material-shop/test-visible-review-contract.js
 node tools/workbench-live-e2e/material-shop/test-materialized-path-budget.js
 node tools/workbench-live-e2e/material-shop/test-agent-runtime-portrait-evidence.js
 node tools/workbench-live-e2e/material-shop/test-agent-runtime-keyboard-recipe-evidence.js
-node --test tools/workbench-live-e2e/material-shop/formal-run-protocol.test.js
-node --test tools/workbench-live-e2e/material-shop/formal-preparer.test.js
-node --test tools/workbench-live-e2e/material-shop/formal-consensus-admission.test.js
-node --test tools/workbench-live-e2e/material-shop/formal-execution-lease.test.js
 node tools/workbench-live-e2e/material-shop/self-test.js
 node tools/workbench-live-e2e/material-shop/verify-run.js --check
 ```
@@ -244,13 +240,7 @@ node tools/workbench-live-e2e/material-shop/accept-run.js --accept --preparation
 node tools/workbench-live-e2e/material-shop/accept-run.js --verify-acceptance --preparation <run-dir>/preparation.json --build <run-dir>/candidate-build.json --raw <run-dir>/raw-candidate-journey.json --evidence <run-dir>/journey-evidence.json --release <run-dir>/release.json --static-gate <run-dir>/static-gate.json --review-request <run-dir>/review-request.json --review-receipt <independent-review-receipt.json> --acceptance <run-dir>/acceptance.json
 ```
 
-Formal-entry follow-up now has one projection-only command, but still has no admitted runner. Only after step 8 has produced a resolved `worktree-release.json`, `prepare-formal-run.js --project` may read the small post-removal preparation/build/plan/acceptance/review/removal envelopes and create exactly one `formal-runs/<fresh-run-id>/formal-preflight.json`. It does not read raw evidence or the deleted materialized tree, invoke the consensus verifier, create purchase authority/formal plan, or launch a process; `consensusVerified`, `admitted`, `runtimeLaunched`, `purchasePerformed`, and `standardEntryVerified` all remain `false`.
-
-```powershell
-node tools/workbench-live-e2e/material-shop/prepare-formal-run.js --project --run-id <fresh-formal-run-id> --candidate-run-dir <accepted-candidate-run-dir> --candidate-review-receipt <independent-review-receipt.json> --authorize-quantity-one-purchase
-```
-
-`formal-run-protocol.js` separately seals the fail-closed future plan shape: the exact accepted current v4 control plan and normalized 24-step semantics, a promoted identity/closure projection, fresh canonical-root applicability for `厨师 / 24 / 食用油`, a caller-supplied quantity-one authorization projection, and a canonical no-candidate launch shape. `formal-consensus-admission.js` and `formal-execution-lease.js` are both `DESIGN_ONLY / INTEGRATION_AVAILABLE=false`: they expose bounded structural shapes only, grant no authority, perform no Git/PowerShell/process execution, and provide no token mint, filesystem write, admission, acquire, release, stale recovery, runtime probe, or quiescence callback. The verifier-program list and fixed paths are design inputs, not evidence that any verifier or formal runtime ran. A future trusted implementation must still pin the external Git/GitHub/PowerShell executable trust chain, capture fresh formal applicability, validate the complete authorization chain, durably consume one execution attempt, run the same 24-step journey, and produce formal evidence/acceptance. None of these offline projections is purchase authority, formal execution, or `PG-MAT-RELEASE-01` completion.
+No material-specific formal runner is shipped in this source batch. Runtime promotion and a generic formal-entry smoke may verify the deployed Launcher identity, but neither may be used to claim the material-shop 24-step journey or close `PG-MAT-RELEASE-01`.
 
 8. After acceptance and evidence retention, explicitly release the isolated dirty worktree. This is the only destructive adapter command; it replays the full preparation/build/raw/semantic/static/review/acceptance closure, requires both clean trusted-runner completions plus exact target/restart bytes and archive/restart full-save semantic equality, re-verifies the detached materialization and mechanically discovered shared-producer closure, and replays the schema-bound ignored-output inventory (v3 exact A5 runtime outputs; historical v2 remains verifiable). It refuses recovery blockers, clone locks/recovery records, any foreign ignored path, active Launcher processes, or a pre-existing canonical output. Before removal it durably writes `worktree-removal-intent.json`; only then does it run `git worktree remove --force <exact-owned-resources>`, never global `git worktree prune`. Receipt writing and intent archival are idempotent; successful finalization leaves `worktree-release.json` plus `worktree-removal-resolved-<hash>.json`.
 

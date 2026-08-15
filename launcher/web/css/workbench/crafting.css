@@ -561,7 +561,7 @@
     margin:0;
     padding:5px 7px;
     color:var(--wb-muted);
-    background:color-mix(in srgb,var(--wb-semantic-info) 5%,#080c0e);
+    background:color-mix(in srgb,var(--wb-semantic-info) 5%,var(--wb-bg));
     border-left:2px solid color-mix(in srgb,var(--wb-semantic-info) 62%,var(--wb-line));
     font:10px/1.4 "Microsoft YaHei",sans-serif;
 }
@@ -577,7 +577,7 @@
 .crafting-material-infrastructure-card {
     min-width:0;
     padding:0 7px 5px;
-    background:#0a0e10;
+    background:color-mix(in srgb,var(--wb-panel) 55%,var(--wb-bg));
     border:1px solid rgba(var(--dls-crystal-rgb),.16);
 }
 .crafting-material-infrastructure-card > header {
@@ -618,19 +618,19 @@
     min-height:31px;
     padding:3px 5px;
     box-sizing:border-box;
-    background:#080c0e;
+    background:color-mix(in srgb,var(--wb-bg) 82%,var(--wb-panel));
     border-left:2px solid rgba(var(--dls-crystal-rgb),.2);
 }
 .crafting-material-infrastructure-level[data-infrastructure-status="current"] {
     border-left-color:var(--wb-semantic-info);
-    background:color-mix(in srgb,var(--wb-semantic-info) 7%,#080c0e);
+    background:color-mix(in srgb,var(--wb-semantic-info) 7%,var(--wb-bg));
 }
 .crafting-material-infrastructure-level[data-infrastructure-status="completed"] {
     color:var(--wb-muted);
     border-left-color:color-mix(in srgb,var(--wb-semantic-success) 42%,var(--wb-line));
 }
 .crafting-material-infrastructure-level-name {
-    color:#c9d7da;
+    color:color-mix(in srgb,var(--wb-text) 84%,var(--wb-muted));
     white-space:nowrap;
     font:700 10px/1.2 Consolas,"Microsoft YaHei",sans-serif;
 }
@@ -702,8 +702,8 @@
     height:23px;
     padding:1px;
     color:color-mix(in srgb,var(--wb-text) 78%,var(--wb-muted));
-    background:#0a0e11;
-    font:9px/1.25 "Microsoft YaHei",sans-serif;
+    background:color-mix(in srgb,var(--wb-panel) 52%,var(--wb-bg));
+    font:10px/1.25 "Microsoft YaHei",sans-serif;
     cursor:help;
 }
 .crafting-material-ingredient-tile .crafting-material-card-icon {
@@ -721,13 +721,13 @@
     bottom:0;
     display:block;
     min-width:11px;
-    height:10px;
+    height:11px;
     padding:0 1px;
     box-sizing:border-box;
-    color:#eafbff;
-    background:rgba(4,9,11,.9);
+    color:var(--wb-text);
+    background:color-mix(in srgb,var(--wb-bg) 90%,transparent);
     border:1px solid rgba(var(--dls-crystal-rgb),.48);
-    font:700 8px/8px Consolas,"Microsoft YaHei",sans-serif;
+    font:700 10px/10px Consolas,"Microsoft YaHei",sans-serif;
 }
 .crafting-material-ingredient-tile.is-current {
     color:var(--wb-role-focus);
