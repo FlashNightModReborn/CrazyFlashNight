@@ -111,8 +111,8 @@ _root.注释 = function(宽度, 内容, 框体) {
  *
  * - 与 物品图标注释 共用同一条 TooltipComposer 调用链，仅区别在不调 renderItemTooltipSmart，
  *   返回 desc/intro 字符串供 Web/JSON 通道下发。
- * - LiteJSON 不转义双引号；XML 内嵌的 <font color="#xxx"> 会破坏 JSON 结构，
- *   因此输出前把 " 替换为 '（AS2 TextField 两者等效）。
+ * - wire 出口统一由消费方 sendResponse 的 LiteJSON.stringifySafe 做标准转义；
+ *   这里保留 TooltipComposer 原始 htmlText（含双引号属性），不再做引号替换。
  * - 各 panel 的 *_WebView.as 只需做：参数解析 → 调用本函数 → 按自身 task 名包成 response → sendResponse。
  *
  * @param name:String 物品名（缺省时返回 null）
@@ -129,8 +129,8 @@ _root.Web物品注释HTML = function(name:String):Object {
     var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, value);
 
     return {
-        descHTML: descHTML.split('"').join("'"),
-        introHTML: introHTML.split('"').join("'"),
+        descHTML: descHTML,
+        introHTML: introHTML,
         displayname: String(itemData.displayname || name),
         itemData: itemData
     };

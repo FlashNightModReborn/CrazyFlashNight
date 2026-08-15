@@ -40,6 +40,7 @@ class org.flashNight.gesh.json.JSONTest {
         this.testStringifyBasics();
         this.testStringifyFiltering();
         this.testStringifyEscapes();
+        this.testStringifySafe();
         this.testRoundTrip();
         this.testReferenceSemantics();
         this.testMalformedNumberBehavior();
@@ -571,6 +572,51 @@ class org.flashNight.gesh.json.JSONTest {
         // LiteJSON 不转义控制字符，原样输出
         this.assert(this.liteParser.stringify(control).indexOf("\\u0001") < 0, "LiteJSON stringify 不转义控制字符");
         this.assertContains("FastJSON stringify 控制字符转 \\u", this.fastParser.stringify(control), "\\u0001");
+    }
+
+    /**
+     * stringifySafe：面向 Host/Web wire 的标准转义序列化。
+     * 结构语义与 stringify 对齐；字符串/键的引号、反斜杠与控制字符按 RFC 8259 转义，
+     * 输出只能交给支持标准转义的解析端（本测试用完整 JSON 解析器回读）。
+     */
+    private function testStringifySafe():Void {
+        trace("\n--- stringifySafe: wire 转义 ---");
+        // 无特殊字符时与 stringify 字节一致（for..in 键序同源）
+        var plain:Object = {a:1, b:"hello", c:[1, true, null], d:{x:"y"}};
+        this.assertEqual("stringifySafe 纯文本与 stringify 字节一致",
+            this.liteParser.stringify(plain), this.liteParser.stringifySafe(plain));
+        // 引号/反斜杠/控制字符/多字节文本均可由标准解析端精确回读
+        var tricky:Object = {
+            description:"黑市切口：\"要点蜂蜜饼干吗？\"",
+            path:"C:\\Users\\test",
+            multiline:"a\nb\tc\rd",
+            control:String.fromCharCode(1),
+            中文键:"它被\"吸走\"",
+            nested:[{say:"He said \"hi\""}]
+        };
+        var wire:String = this.liteParser.stringifySafe(tricky);
+        var back = this.jsonParser.parse(wire);
+        this.assertEqual("stringifySafe 引号描述回读", tricky.description, back.description);
+        this.assertEqual("stringifySafe 反斜杠回读", tricky.path, back.path);
+        this.assertEqual("stringifySafe 控制字符回读", tricky.multiline, back.multiline);
+        this.assertEqual("stringifySafe \\x01 回读", tricky.control, back.control);
+        this.assertEqual("stringifySafe 中文键回读", tricky.中文键, back["中文键"]);
+        this.assertEqual("stringifySafe 嵌套引号回读", tricky.nested[0].say, back.nested[0].say);
+        this.assertContains("stringifySafe 引号转义形态", wire, "\\\"");
+        this.assertContains("stringifySafe 控制字符转 \\u", wire, "\\u0001");
+        // 语义对齐：undefined/function 跳过、非有限数字归 null（与 stringify 同序同源，直接字节对比）
+        var semantics:Object = {keep:1};
+        semantics.skipU = undefined;
+        semantics.skipF = function():Void {};
+        semantics.nanV = NaN;
+        this.assertEqual("stringifySafe 语义对齐 stringify",
+            this.liteParser.stringify(semantics), this.liteParser.stringifySafe(semantics));
+        this.assert(this.liteParser.parse(this.liteParser.stringifySafe(semantics)).nanV == null
+            && this.jsonParser.parse(this.liteParser.stringifySafe(semantics)).nanV === null,
+            "stringifySafe NaN 归 null 可回读");
+        // 边界契约：stringifySafe 的输出不允许用 LiteJSON.parse 本地回读
+        this.assert(this.liteParser.parse(wire) == undefined,
+            "stringifySafe 输出与 LiteJSON.parse 纯扫描不兼容（边界契约）");
     }
 
     private function testRoundTrip():Void {

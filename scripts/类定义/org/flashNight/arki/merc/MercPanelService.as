@@ -501,8 +501,9 @@ class org.flashNight.arki.merc.MercPanelService {
             success: true,
             itemName: String(item.name),
             displayname: String(itemData.displayname || item.name),
-            descHTML: descHTML.split('"').join("&quot;"),
-            introHTML: introHTML.split('"').join("&quot;")
+            // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
+            descHTML: descHTML,
+            introHTML: introHTML
         });
     }
 
@@ -943,6 +944,7 @@ class org.flashNight.arki.merc.MercPanelService {
     // sendResponse — 发送 JSON 回包到 C#
     // ═══════════════════════════════════════════════════════════
     private static function sendResponse(resp:Object):Void {
-        _root.server.sendSocketMessage(_json.stringify(resp));
+        // 响应可含用户可编辑自由文本：统一走 stringifySafe 标准转义出口。
+        _root.server.sendSocketMessage(_json.stringifySafe(resp));
     }
 }

@@ -255,10 +255,10 @@ class org.flashNight.arki.item.InventoryPanelService {
             displayname: String(projection.displayName),
             iconName: String(projection.icon),
             itemType: itemType,
-            // LiteJSON 不转义字符串中的双引号；改用 HTML 等价的单引号属性，
-            // 避免 &quot; 被浏览器解析为属性值本身的一对引号而丢失字体样式。
-            descHTML: descHTML.split('"').join("'"),
-            introHTML: introHTML.split('"').join("'")
+            // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性，
+            // Web 端 convertAS2Html 的 DOMParser 两种引号风格都正确解析。
+            descHTML: descHTML,
+            introHTML: introHTML
         };
     }
 
@@ -1771,7 +1771,8 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function sendResponse(response:Object):Void {
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
-        _root.server.sendSocketMessage(_json.stringify(response));
+        // 响应可含用户可编辑自由文本：统一走 stringifySafe 标准转义出口。
+        _root.server.sendSocketMessage(_json.stringifySafe(response));
     }
 
     /** TestLoader 专用：下一次指定槽的提交返回 false，用于证明失败回滚无部分写。 */

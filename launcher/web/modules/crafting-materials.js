@@ -32,6 +32,7 @@ var CraftingMaterials = (function() {
             ? new Intl.Collator('zh-CN', {numeric:true, sensitivity:'base'}) : null;
         var resultAnnouncementTimer = null;
         var detailRenderEpoch = 0;
+        var typeLabels = null;
 
         var catalogRoot = document.createElement('div');
         catalogRoot.className = 'workbench-view crafting-material-catalog-view item-filter-catalog';
@@ -80,6 +81,9 @@ var CraftingMaterials = (function() {
             button.type = 'button';
             button.className = 'item-filter-option';
             button.textContent = filter.label;
+            var countNode = document.createElement('small');
+            countNode.hidden = true;
+            button.appendChild(countNode);
             button.setAttribute('data-material-filter', filter.id);
             button.addEventListener('click', function() {
                 if (shopNavigationPending()) return;
@@ -130,6 +134,12 @@ var CraftingMaterials = (function() {
             densityUnsubscribe = options.densityController.subscribe(function(mode) {
                 state.layoutMode = mode;
                 syncRovingFocus();
+                var anchorName = state.selectedName || state.focusedName;
+                if (!anchorName) return;
+                var anchor = renderer.root.querySelector('[data-material-name="'
+                    + (typeof CSS !== 'undefined' && CSS.escape
+                        ? CSS.escape(anchorName) : anchorName.replace(/["\\]/g, '')) + '"]');
+                if (anchor) anchor.scrollIntoView({block:'nearest', inline:'nearest'});
             });
         }
         var catalogEmpty = document.createElement('div');
@@ -157,6 +167,11 @@ var CraftingMaterials = (function() {
         var detailChrome = new Workbench.ViewChrome({
             title:'材料档案', kicker:'来源与用途', meta:'请选择材料'
         });
+        var anchorNav = document.createElement('nav');
+        anchorNav.className = 'crafting-material-anchor-nav';
+        anchorNav.setAttribute('aria-label', '详情小节导航');
+        anchorNav.hidden = true;
+        detailChrome.setToolbar(anchorNav);
         var detailBody = document.createElement('div');
         detailBody.className = 'crafting-material-detail-body';
         detailRoot.appendChild(detailChrome.root);
@@ -298,11 +313,25 @@ var CraftingMaterials = (function() {
         function renderFilters() {
             var navigationBusy = shopNavigationPending();
             var buttons = filters.querySelectorAll('[data-material-filter]');
+            var counts = {all:state.items.length, owned:0, used:0};
+            for (var index = 0; index < state.items.length; index++) {
+                if (Number(state.items[index].owned || 0) > 0) counts.owned++;
+                if (purposeCount(state.items[index]) > 0) counts.used++;
+            }
+            var hideCounts = state.loading || !!state.catalogError;
             for (var i = 0; i < buttons.length; i++) {
                 var active = buttons[i].getAttribute('data-material-filter') === state.filter;
                 buttons[i].classList.toggle('active', active);
                 buttons[i].setAttribute('aria-pressed', active ? 'true' : 'false');
                 buttons[i].disabled = state.loading || !!state.catalogError || navigationBusy;
+                var countNode = buttons[i].querySelector('small');
+                if (countNode) {
+                    countNode.hidden = hideCounts;
+                    if (!hideCounts) {
+                        countNode.textContent = numberLabel(
+                            counts[buttons[i].getAttribute('data-material-filter')] || 0);
+                    }
+                }
             }
             search.disabled = state.loading || !!state.catalogError || navigationBusy;
             filterNavigator.setDisabled(state.loading || !!state.catalogError || navigationBusy);
@@ -318,9 +347,10 @@ var CraftingMaterials = (function() {
             card.setAttribute('tabindex', '-1');
             card.setAttribute('data-material-name', item.name);
             card.setAttribute('aria-label', (item.displayName || '未命名材料')
-                + '，持有 ' + Number(item.owned || 0)
-                + '，来源 ' + Number(item.sourceCount || 0)
-                + '，用途 ' + purposeCount(item));
+                + '，持有 ' + numberLabel(item.owned || 0)
+                + '，来源 ' + numberLabel(item.sourceCount || 0)
+                + '，用途 ' + numberLabel(purposeCount(item)));
+            if (Number(item.owned || 0) <= 0) card.classList.add('is-unowned');
             var icon = document.createElement('span');
             icon.className = 'crafting-material-card-icon';
             icon.innerHTML = options.iconHtml(item.icon, 'kshop-icon');
@@ -329,14 +359,18 @@ var CraftingMaterials = (function() {
             var name = document.createElement('b');
             name.textContent = item.displayName || '未命名材料';
             var owned = document.createElement('small');
-            owned.textContent = '持有 ' + Number(item.owned || 0);
+            owned.textContent = '持有 ' + numberLabel(item.owned || 0);
             var meta = document.createElement('span');
             meta.className = 'crafting-material-card-meta';
-            meta.textContent = '来源 ' + Number(item.sourceCount || 0)
-                + ' · 用途 ' + purposeCount(item);
+            var metaParts = [];
+            var typeEntry = typeLabels && typeLabels[item.typeId];
+            if (typeEntry && typeEntry.label) metaParts.push(typeEntry.label);
+            metaParts.push('来源 ' + numberLabel(item.sourceCount || 0));
+            metaParts.push('用途 ' + numberLabel(purposeCount(item)));
+            meta.textContent = metaParts.join(' · ');
             var badge = document.createElement('span');
             badge.className = 'crafting-material-card-owned';
-            badge.textContent = Number(item.owned || 0) > 0 ? String(Number(item.owned)) : '';
+            badge.textContent = Number(item.owned || 0) > 0 ? numberLabel(Number(item.owned)) : '';
             badge.hidden = Number(item.owned || 0) <= 0;
             copy.appendChild(name);
             copy.appendChild(owned);
@@ -524,7 +558,39 @@ var CraftingMaterials = (function() {
             scheduleResultAnnouncement();
         }
 
+        function syncAnchorNav() {
+            Workbench.clearElement(anchorNav);
+            var entries = [];
+            [detailBody.querySelector('.crafting-material-sources'),
+                detailBody.querySelector('.crafting-material-uses')].forEach(function(host) {
+                if (!host) return;
+                var heading = host.querySelector('h3');
+                if (!heading) return;
+                entries.push({host:host, label:heading.textContent,
+                    count:heading.getAttribute('data-count')});
+            });
+            anchorNav.hidden = entries.length === 0;
+            entries.forEach(function(entry) {
+                var chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = 'crafting-material-anchor';
+                chip.setAttribute('aria-label', '跳到' + entry.label);
+                chip.textContent = entry.label;
+                if (entry.count) {
+                    var countNode = document.createElement('small');
+                    countNode.textContent = entry.count;
+                    chip.appendChild(countNode);
+                }
+                chip.addEventListener('click', function() {
+                    entry.host.scrollIntoView({block:'start'});
+                });
+                anchorNav.appendChild(chip);
+            });
+        }
+
         function appendEmpty(text) {
+            anchorNav.hidden = true;
+            Workbench.clearElement(anchorNav);
             var empty = document.createElement('div');
             empty.className = 'crafting-detail-empty';
             empty.textContent = text;
@@ -785,6 +851,17 @@ var CraftingMaterials = (function() {
 
         function numberLabel(value) {
             return Number(value).toLocaleString('zh-CN', {maximumFractionDigits:6});
+        }
+
+        function heroStatsText() {
+            var item = selectedCatalogItem();
+            if (!item) return '';
+            var parts = [];
+            var typeEntry = typeLabels && typeLabels[item.typeId];
+            if (typeEntry && typeEntry.label) parts.push(typeEntry.label);
+            parts.push('来源 ' + numberLabel(item.sourceCount || 0));
+            parts.push('用途 ' + numberLabel(purposeCount(item)));
+            return parts.join(' · ');
         }
 
         function quantityLabel(variant) {
@@ -1303,10 +1380,15 @@ var CraftingMaterials = (function() {
                 appendEmpty(state.loading ? '正在同步材料目录…' : '从左侧选择一种材料');
                 return;
             }
-            if (state.detailLoading || !state.detail) { appendEmpty('正在读取来源与用途…'); return; }
+            if (state.detailLoading || !state.detail) {
+                detailChrome.setTitle('材料档案', '来源与用途');
+                detailChrome.setMeta('正在读取…');
+                appendEmpty('正在读取来源与用途…');
+                return;
+            }
             var material = state.detail.material || {};
-            detailChrome.setTitle(material.displayName || '材料档案', '来源与用途');
-            detailChrome.setMeta('当前持有 ' + Number(material.owned || 0));
+            detailChrome.setTitle('材料档案', '来源与用途');
+            detailChrome.setMeta('当前持有 ' + numberLabel(material.owned || 0));
 
             var hero = document.createElement('section');
             hero.className = 'crafting-material-hero';
@@ -1316,13 +1398,24 @@ var CraftingMaterials = (function() {
             var copy = document.createElement('div');
             var title = document.createElement('h2');
             title.textContent = material.displayName || '未命名材料';
-            var owned = document.createElement('strong');
-            owned.textContent = '持有 ' + Number(material.owned || 0);
             copy.appendChild(title);
-            copy.appendChild(owned);
+            var ownedText = state.protocolVersion === 2
+                ? heroStatsText() : '持有 ' + numberLabel(material.owned || 0);
+            if (ownedText) {
+                var owned = document.createElement('strong');
+                owned.textContent = ownedText;
+                copy.appendChild(owned);
+            }
             if (material.description) {
                 var description = document.createElement('p');
-                description.textContent = material.description;
+                // 描述是 AS2 htmlText（可含 <font color> 等标记）：与 tooltip 同走
+                // convertAS2Html 白名单清洗，不能用 textContent 原样输出标签。
+                if (typeof PanelTooltip !== 'undefined'
+                        && typeof PanelTooltip.convertAS2Html === 'function') {
+                    description.innerHTML = PanelTooltip.convertAS2Html(material.description);
+                } else {
+                    description.textContent = material.description;
+                }
                 copy.appendChild(description);
             }
             hero.appendChild(icon);
@@ -1348,6 +1441,7 @@ var CraftingMaterials = (function() {
                 return left.sourceOrder - right.sourceOrder;
             });
             if (sources.length) {
+                sourceSection.querySelector('h3').setAttribute('data-count', numberLabel(sources.length));
                 var sourceGuide = state.protocolVersion === 2 ? sourceGuideText(sources) : '';
                 var sourceGuideId = '';
                 if (sourceGuide) {
@@ -1397,6 +1491,11 @@ var CraftingMaterials = (function() {
                 });
             }
             var uses = state.detail.uses || [];
+            var useRowCount = uses.length
+                + (state.protocolVersion === 2 ? directPurposes.length : 0);
+            if (useRowCount) {
+                useSection.querySelector('h3').setAttribute('data-count', numberLabel(useRowCount));
+            }
             if (!uses.length) {
                 var noUse = document.createElement('p');
                 noUse.className = 'crafting-material-empty-copy';
@@ -1468,6 +1567,7 @@ var CraftingMaterials = (function() {
                 syncUseActionControls();
             }
             syncShopNavigationControls();
+            syncAnchorNav();
         }
 
         function select(name) {
@@ -1564,6 +1664,7 @@ var CraftingMaterials = (function() {
             state.items = response && Array.isArray(response.materials) ? response.materials.slice() : [];
             if (state.protocolVersion === 2) {
                 state.items.sort(function(left, right) { return left.archiveOrder - right.archiveOrder; });
+                typeLabels = entryMap(state.taxonomy.types);
                 var tree = ItemFilter.buildMany(state.items, taxonomyPaths, function(item) {
                     return item.name;
                 });
@@ -1577,6 +1678,7 @@ var CraftingMaterials = (function() {
                 catalogRoot.setAttribute('data-material-session', 'v2');
             } else {
                 state.filterPath = [];
+                typeLabels = null;
                 filterNavigator.setModel(ItemFilter.buildMany([]), []);
                 filterNavigator.root.hidden = true;
                 navigatorHost.hidden = true;
@@ -1642,6 +1744,7 @@ var CraftingMaterials = (function() {
             state.useAction = null;
             state.shopNavigation = null;
             state.focusedName = '';
+            typeLabels = null;
             navigatorHost.hidden = true;
             filterNavigator.root.hidden = true;
             if (catalogChrome.breadcrumbHost) catalogChrome.breadcrumbHost.hidden = true;
@@ -1662,6 +1765,7 @@ var CraftingMaterials = (function() {
             state.catalogError = String(message || '材料目录读取失败。');
             state.detailError = '';
             state.items = [];
+            typeLabels = null;
             state.detail = null;
             state.detailRetryAvailable = false;
             state.detailRetryFocusName = '';

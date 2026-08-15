@@ -625,7 +625,8 @@ class org.flashNight.arki.task.TaskPanelService {
     // sendResponse — 统一回包
     // ═══════════════════════════════════════════════════════════
     private static function sendResponse(resp:Object):Void {
-        _root.server.sendSocketMessage(_json.stringify(resp));
+        // 响应可含任务文本与物品注释等自由文本：统一走 stringifySafe 标准转义出口。
+        _root.server.sendSocketMessage(_json.stringifySafe(resp));
     }
 
     // ═══════════════════════════════════════════════════════════

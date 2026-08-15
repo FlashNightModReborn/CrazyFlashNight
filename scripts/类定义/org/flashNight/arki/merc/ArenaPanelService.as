@@ -298,13 +298,11 @@ class org.flashNight.arki.merc.ArenaPanelService {
             success: true,
             itemName: String(item.name),
             displayname: String(itemData.displayname || item.name),
-            // LiteJSON 不转义双引号；TooltipComposer 的 <FONT COLOR='...'> 都用单引号，
-            // 因此当前数据里 " 出现概率为 0，下面替换实际是 no-op。
-            // 仍保留：未来若内容含字面 "，转 &quot; 比换 ' 更稳——
-            //   - 转 '：内容里若已有 '（罕见但可能），会被当作属性闭合提前结束
-            //   - 转 &quot;：HTML 渲染时变回字面 "，JSON 中是无害 ASCII，不影响任何边界
-            descHTML: descHTML.split('"').join("&quot;"),
-            introHTML: introHTML.split('"').join("&quot;")
+            // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText。
+            // 真实数据里存在双引号属性（如 <font color="#ff00ff">）：旧 &quot; 替换会让
+            // convertAS2Html 的白名单校验丢样式，' 替换会破坏 wire JSON；两者都已废弃。
+            descHTML: descHTML,
+            introHTML: introHTML
         });
     }
 
@@ -609,6 +607,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
     }
 
     private static function sendResponse(resp:Object):Void {
-        _root.server.sendSocketMessage(_json.stringify(resp));
+        // 响应可含用户可编辑自由文本：统一走 stringifySafe 标准转义出口。
+        _root.server.sendSocketMessage(_json.stringifySafe(resp));
     }
 }

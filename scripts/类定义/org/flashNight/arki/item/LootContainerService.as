@@ -1936,8 +1936,9 @@ class org.flashNight.arki.item.LootContainerService {
             displayname:String(projection.displayName),
             iconName:String(projection.icon),
             itemType:itemType,
-            descHTML:descHTML.split('"').join("'"),
-            introHTML:introHTML.split('"').join("'")
+            // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
+            descHTML:descHTML,
+            introHTML:introHTML
         };
     }
 
@@ -2429,7 +2430,8 @@ class org.flashNight.arki.item.LootContainerService {
     private static function sendResponse(response:Object):Void {
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
         if (_json == undefined) _json = new LiteJSON();
-        _root.server.sendSocketMessage(_json.stringify(response));
+        // 响应可含用户可编辑自由文本：统一走 stringifySafe 标准转义出口。
+        _root.server.sendSocketMessage(_json.stringifySafe(response));
     }
 
     /** TestLoader 专用：隔离静态 authority、lease、tombstone 与 recovery。 */

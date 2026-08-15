@@ -81,6 +81,95 @@
     }
 
     /**
+     * 带 RFC 8259 字符串转义的序列化。结构语义与 stringify 完全一致
+     * （for..in 键序、undefined/function 跳过、非有限数字归 null），
+     * 仅把字符串与键中的 "、\ 与控制字符（<0x20）转为标准转义序列。
+     *
+     * 边界：凡把用户可编辑文本（描述、摘要等自由文本）放上对 Host/Web 的
+     * wire，必须用本方法；含 " 的文本在 stringify 下会产出畸形信封并被
+     * 对端静默丢弃（材料详情曾因此整单无响应）。
+     *
+     * 注意：LiteJSON.parse 保持纯 indexOf('"') 扫描契约，不解析转义；
+     * 本方法的输出只能交给支持标准转义的解析端（Host Newtonsoft / JSON /
+     * FastJSON），不要用 LiteJSON.parse 做本地回读。
+     */
+    public function stringifySafe(arg):String {
+        var tv:String = typeof arg;
+        if (tv === "string") {
+            return "\"" + escapeJsonString(String(arg)) + "\"";
+        }
+        if (tv === "number") {
+            return isFinite(Number(arg)) ? String(arg) : "null";
+        }
+        if (tv === "boolean") {
+            return arg ? "true" : "false";
+        }
+        if (tv !== "object" || arg == null) {
+            return "null";
+        }
+        var r:String;
+        var i:Number;
+        if (arg instanceof Array) {
+            i = arg.length;
+            if (i === 0) return "[]";
+            r = "[" + this.stringifySafe(arg[0]);
+            i = 1;
+            while (i < arg.length) {
+                r += "," + this.stringifySafe(arg[i]);
+                i++;
+            }
+            return r + "]";
+        }
+        var key:String;
+        var first:Boolean = true;
+        r = "{";
+        for (key in arg) {
+            tv = typeof arg[key];
+            if (tv !== "undefined" && tv !== "function") {
+                if (first) {
+                    first = false;
+                } else {
+                    r += ",";
+                }
+                r += "\"" + escapeJsonString(key) + "\":" + this.stringifySafe(arg[key]);
+            }
+        }
+        return r + "}";
+    }
+
+    private function escapeJsonString(value:String):String {
+        var out:String = "";
+        var len:Number = value.length;
+        for (var i:Number = 0; i < len; i++) {
+            var code:Number = value.charCodeAt(i);
+            if (code == 34) {
+                out += "\\\"";
+            } else if (code == 92) {
+                out += "\\\\";
+            } else if (code >= 32) {
+                out += value.charAt(i);
+            } else if (code == 9) {
+                out += "\\t";
+            } else if (code == 10) {
+                out += "\\n";
+            } else if (code == 13) {
+                out += "\\r";
+            } else if (code == 8) {
+                out += "\\b";
+            } else if (code == 12) {
+                out += "\\f";
+            } else {
+                var hex:String = code.toString(16);
+                while (hex.length < 4) {
+                    hex = "0" + hex;
+                }
+                out += "\\u" + hex;
+            }
+        }
+        return out;
+    }
+
+    /**
      * 解析 LiteJSON 文本
      * @param inputText 要解析的 LiteJSON 字符串
      * @return 解析后的 AS2 对象

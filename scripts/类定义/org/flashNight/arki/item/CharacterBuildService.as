@@ -2608,7 +2608,8 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (r.server == undefined
                 || typeof r.server.sendSocketMessage != "function") return;
         if (_json == undefined) _json = new LiteJSON();
-        r.server.sendSocketMessage(_json.stringify(response));
+        // 响应可含 tooltip 投影等自由文本：统一走 stringifySafe 标准转义出口。
+        r.server.sendSocketMessage(_json.stringifySafe(response));
     }
 
     private static function resolveContainers():Object {

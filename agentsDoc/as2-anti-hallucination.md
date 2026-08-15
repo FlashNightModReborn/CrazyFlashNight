@@ -117,6 +117,7 @@
 - `null == undefined` 为 true（与 JS 一致），`if (x != null)` 可同时排除 null 和 undefined
 - 无原生 `Array.forEach`/`map`/`filter`/`reduce`（需手写循环）。`gesh.array.ArrayUtil` 提供类似方法，**仅限测试套件使用**
 - 无原生 `JSON.parse`/`JSON.stringify`。本项目三套实现（`scripts/类定义/` 下）：`JSON.as`（通用）、`FastJSON.as`（带缓存）、**`LiteJSON.as`**（当前使用，最精简）、`IJSON.as`（接口）
+- **`LiteJSON.stringify` 不做任何转义**：字符串值含 `"` 会产出畸形 JSON 并被 Host 端静默丢弃（材料详情曾因描述含引号整单无响应）。凡把自由文本放上对 Host/Web 的 wire，必须在发送收口处用 `LiteJSON.stringifySafe()`（标准转义）；其输出不能用 `LiteJSON.parse` 本地回读（parse 保持纯 `indexOf('"')` 扫描契约）。2026-08-15 起各域旧的 `split('"').join("'")` / `join("&quot;")` 变通已全部移除并统一到该出口，新增变通写法视为回归
 - 无原生 `Promise`/`async`/`await`。`aven.Promise.Promise` 尚未完工，暂勿使用
 - `try...catch...finally` 存在但**生产代码禁用**（性能损耗大）。测试中允许
 - 无模板字符串，只能用 `+` 拼接（**不要用 `Array.join()`**，远慢于 `+`）

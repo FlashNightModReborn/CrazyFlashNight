@@ -123,7 +123,16 @@ class org.flashNight.arki.item.CraftingPanelService {
 
     public static function handle(commandName:String, params:Object):Void {
         var callId:Number = params == undefined ? 0 : Number(params.callId);
-        var response:Object = execute(commandName, params || {});
+        var response:Object;
+        // 与 handleMaterialShopAuthorize 同一 fail-closed 约定：投影/目录的意外异常
+        // 必须收敛为可诊断的 internal_error 响应，不能让 Web 端永远等不到回包。
+        try {
+            response = execute(commandName, params || {});
+        } catch (error) {
+            trace("[CraftingPanelService] " + commandName + " failed closed: "
+                + String(error));
+            response = fail("internal_error");
+        }
         response.task = "crafting_response";
         response.callId = callId;
         sendResponse(response);
@@ -397,10 +406,12 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (!ItemUtil.isItem(itemName)) return fail("item_not_found");
         var tooltip:Object = _root.Web物品注释HTML(itemName);
         if (tooltip == null) return fail("tooltip_failed");
+        // wire 由 sendResponse 的 stringifySafe 统一转义；这里保留原始双引号属性，
+        // Web 端 convertAS2Html 的 DOMParser 两种引号风格都正确解析。
         return {success:true, v:1, itemName:itemName,
             displayname:String(tooltip.displayname || itemName),
-            descHTML:String(tooltip.descHTML || "").split('"').join("'"),
-            introHTML:String(tooltip.introHTML || "").split('"').join("'")};
+            descHTML:String(tooltip.descHTML || ""),
+            introHTML:String(tooltip.introHTML || "")};
     }
 
     private static function executeCommit(params:Object):Object {
@@ -994,7 +1005,9 @@ class org.flashNight.arki.item.CraftingPanelService {
     private static function sendResponse(response:Object):Void {
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
         if (_json == undefined) _json = new LiteJSON();
-        _root.server.sendSocketMessage(_json.stringify(response));
+        // 响应含用户可编辑自由文本（材料描述/档案摘要等），必须标准转义；
+        // LiteJSON.stringify 不转义，含引号文本会产生畸形 JSON 并被 Host 静默丢弃。
+        _root.server.sendSocketMessage(_json.stringifySafe(response));
     }
 
     public static function testOnlyReset():Void {

@@ -541,7 +541,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
             }
             var serializer:LiteJSON =
                 _json == null ? new LiteJSON() : _json;
-            serializer.stringify(response);
+            serializer.stringifySafe(response);
             return true;
         } catch (serializationError) {
             return false;
@@ -560,11 +560,10 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, {level:1});
         var displayName:String = String(
             itemPresentation(String(candidate.itemName)).displayName);
-        var safeIntroHTML:String = introHTML.split('"').join("'");
-        var safeDescHTML:String = descHTML.split('"').join("'");
+        // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
         return {success:true, candidateKey:candidateKey,
             // 分段字段是 Web 富注释自动分栏的唯一权威输入。
-            introHTML:safeIntroHTML, descHTML:safeDescHTML,
+            introHTML:introHTML, descHTML:descHTML,
             itemType:String(itemData.type), itemUse:String(itemData.use),
             text:displayName};
     }
@@ -1476,7 +1475,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
 
     private static function sendResponse(response:Object):Void {
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
-        _root.server.sendSocketMessage(_json.stringify(response));
+        // 响应可含用户可编辑自由文本：统一走 stringifySafe 标准转义出口。
+        _root.server.sendSocketMessage(_json.stringifySafe(response));
     }
 
     public static function testOnlyFailNextCommit():Void {

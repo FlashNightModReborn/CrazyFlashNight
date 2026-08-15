@@ -872,7 +872,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         assertTrue(tooltip.success && tooltip.itemName == name
             && tooltip.introHTML != undefined && tooltip.descHTML != undefined
             && tooltip.descHTML.indexOf("&quot;") < 0
-            && tooltip.descHTML.indexOf("COLOR='#FF00FF'") >= 0,
+            && tooltip.descHTML.indexOf("COLOR=\"#FF00FF\"") >= 0,
             "tooltip 按 lease 读取真实库存实例并返回 Web 可解析的富文本");
 
         _root.物品栏.背包.remove(0);

@@ -168,8 +168,9 @@ _root.UI系统.商城WebView.buildPurchasedView = function():Array {
 };
 
 // sendResponse 是所有 Web panel 共用的 socket 出口（命名沿袭历史；语义上是 "WebView 通用响应"，不仅商城）
+// 响应可含用户可编辑自由文本（如 tooltip 描述），统一走 stringifySafe 标准转义出口。
 _root.UI系统.商城WebView.sendResponse = function(resp:Object):Void {
-    _root.server.sendSocketMessage(_root.UI系统.商城WebView.json.stringify(resp));
+    _root.server.sendSocketMessage(_root.UI系统.商城WebView.json.stringifySafe(resp));
 };
 
 _root.UI系统.商城WebView.log("loaded, gameCommands=" + typeof(_root.gameCommands) + " server=" + typeof(_root.server) + " shopJson=" + typeof(_root.UI系统.商城WebView.json));
@@ -254,7 +255,7 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
         purchasedView: purchasedSnapshot.purchasedView,
         purchasedToken: _root.UI系统.商城WebView.purchasedToken
     };
-    var respStr = _root.UI系统.商城WebView.json.stringify(resp);
+    var respStr = _root.UI系统.商城WebView.json.stringifySafe(resp);
     _root.UI系统.商城WebView.log("bulkQuery resp type=" + typeof(respStr) + " len=" + respStr.length + " catalog=" + catalog.length);
     _root.server.sendSocketMessage(respStr);
 };

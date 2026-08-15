@@ -40,6 +40,8 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testAtomicCommitAndReplay();
         testBlockedPreviewHasNoToken();
         testResponseWire();
+        testResponseWireEscaping();
+        testHandleFailClosed();
         trace("CraftingPanelServiceTest Tests Passed: " + passed);
         trace("CraftingPanelServiceTest Tests Failed: " + failed);
     }
@@ -2023,6 +2025,65 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         check(response.task == "crafting_response" && response.callId == 17
             && response.success && response.gender == "男" && response.recipes.length == 2,
             "snapshot handler emits parseable domain response wire");
+    }
+
+    private static function testResponseWireEscaping():Void {
+        resetOwned();
+        _root.server = {sent:null};
+        _root.server.sendSocketMessage = function(message:String):Boolean { this.sent = message; return true; };
+        // 真实数据里材料描述含 ASCII 引号（如 冰魄矿石/复合防御组件），
+        // LiteJSON.stringify 不转义会产生畸形信封并被 Host 静默丢弃；wire 必须逐字保真。
+        var previousDescription = ItemUtil.itemDataDict["测试矿石"].description;
+        var quoted:String = "黑市切口：\"要点蜂蜜饼干吗？\" 路径 C:\\测试\\ 换行\n结束";
+        ItemUtil.itemDataDict["测试矿石"].description = quoted;
+        _root.gameCommands["craftingMaterialDetail"]({itemName:"测试矿石", callId:23});
+        ItemUtil.itemDataDict["测试矿石"].description = previousDescription;
+        var wire:String = String(_root.server.sent);
+        var parsed:Object = new JSON(false).parse(wire);
+        check(parsed != undefined && parsed.task == "crafting_response" && parsed.callId == 23
+            && parsed.success && String(parsed.material.description) == quoted,
+            "material detail wire escapes quotes, backslashes and control characters losslessly");
+        check(new LiteJSON().parse(wire) == undefined,
+            "quoted detail wire stays outside LiteJSON.parse's plain-scan contract");
+
+        // tooltip 链路同样逐字保真（旧 split/join 变通已随 stringifySafe 出口移除）
+        var previousTooltip:Object = _root.Web物品注释HTML;
+        _root.Web物品注释HTML = function(name:String):Object {
+            return {displayname:name,
+                descHTML:"合成<font color=\"#ff00ff\">兽王套装</font>必备\"材料\"",
+                introHTML:"intro"};
+        };
+        _root.gameCommands["craftingTooltip"]({itemName:"测试矿石", callId:31});
+        _root.Web物品注释HTML = previousTooltip;
+        var tipWire:String = String(_root.server.sent);
+        var tipParsed:Object = new JSON(false).parse(tipWire);
+        check(tipParsed != undefined && tipParsed.success && tipParsed.callId == 31
+            && String(tipParsed.descHTML)
+                == "合成<font color=\"#ff00ff\">兽王套装</font>必备\"材料\"",
+            "tooltip wire keeps original double-quoted htmlText losslessly");
+    }
+
+    private static function testHandleFailClosed():Void {
+        resetOwned();
+        _root.server = {sent:null};
+        _root.server.sendSocketMessage = function(message:String):Boolean { this.sent = message; return true; };
+        var original = MaterialArchiveProjector.executeMaterialDetail;
+        MaterialArchiveProjector.executeMaterialDetail = function(params:Object):Object {
+            throw new Error("simulated projector fault");
+            return null;
+        };
+        var threw:Boolean = false;
+        try {
+            _root.gameCommands["craftingMaterialDetail"](
+                {v:2, snapshotId:"materials.snapshot.test.1", itemName:"测试矿石", callId:29});
+        } catch (error) {
+            threw = true;
+        }
+        MaterialArchiveProjector.executeMaterialDetail = original;
+        var parsed:Object = new JSON(false).parse(String(_root.server.sent));
+        check(!threw && parsed != undefined && parsed.task == "crafting_response"
+            && parsed.callId == 29 && parsed.success == false && parsed.error == "internal_error",
+            "projector exception fails closed as an internal_error response instead of dropping the call");
     }
 
     private static function materialShopAccessRequest(snapshotId:String,

@@ -239,8 +239,8 @@ _root.UI系统.NPC商店WebView.sendResponse = function(response:Object):Boolean
     // 运行时序列化实例。初始化顺序异常时才回退本服务自有实例。
     var serializer:Object = _root.UI系统.商城WebView == undefined
         ? this.json : _root.UI系统.商城WebView.json;
-    if (serializer == undefined || serializer.stringify == undefined) return false;
-    var payload:String = serializer.stringify(response);
+    if (serializer == undefined || serializer.stringifySafe == undefined) return false;
+    var payload:String = serializer.stringifySafe(response);
     if (payload == undefined || payload == "") {
         if (_root.server.sendServerMessage != undefined) {
             _root.server.sendServerMessage("[NpcShopWV] response stringify failed");
@@ -534,8 +534,9 @@ _root.UI系统.NPC商店WebView.executeTooltip = function(params:Object):Object 
         v:1,
         itemName:itemName,
         displayname:this.projectLegacyIdentityField(tt.displayname, itemName),
-        descHTML:String(tt.descHTML || "").split('"').join("'"),
-        introHTML:String(tt.introHTML || "").split('"').join("'")
+        // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
+        descHTML:String(tt.descHTML || ""),
+        introHTML:String(tt.introHTML || "")
     };
 };
 

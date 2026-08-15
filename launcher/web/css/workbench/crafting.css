@@ -314,6 +314,7 @@
     background:#0a0e11;
     border:1px solid rgba(var(--dls-crystal-rgb),.18);
     border-radius:0;
+    transition:border-color var(--wb-motion-micro) var(--wb-ease-standard),background-color var(--wb-motion-micro) var(--wb-ease-standard),box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .crafting-panel .crafting-material-card:hover,
 .crafting-panel .crafting-material-card:focus-visible,
@@ -321,6 +322,10 @@
 .crafting-panel .crafting-material-card[aria-selected="true"] {
     border-color:rgba(var(--dls-crystal-rgb),.7);
     background:#0d181d;
+}
+.crafting-panel .crafting-material-card.workbench-source-selected,
+.crafting-panel .crafting-material-card[aria-selected="true"] {
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.55),0 0 9px var(--dls-glow);
 }
 .crafting-material-card-icon,
 .crafting-material-hero-icon {
@@ -346,7 +351,7 @@
     text-overflow:ellipsis;
     white-space:nowrap;
 }
-.crafting-material-card-copy small { color:var(--wb-muted); font:10px/1.25 "Microsoft YaHei",sans-serif; }
+.crafting-material-card-copy small { color:color-mix(in srgb,var(--wb-text) 58%,var(--wb-muted)); font:10px/1.25 "Microsoft YaHei",sans-serif; }
 .crafting-material-card-meta { color:var(--wb-muted); font:10px/1.25 "Microsoft YaHei",sans-serif; }
 .crafting-material-card-owned { display:none; }
 .crafting-material-grid.item-grid-compact {
@@ -382,7 +387,7 @@
     color:#eafbff;
     text-align:center;
     background:rgba(4,9,11,.9);
-    border:1px solid rgba(var(--dls-crystal-rgb),.48);
+    border:1px solid color-mix(in srgb,var(--wb-text) 20%,transparent);
     font:700 9px/12px Consolas,"Microsoft YaHei",sans-serif;
 }
 .crafting-material-grid.item-grid-compact .crafting-material-card-owned[hidden] { display:none; }
@@ -409,7 +414,7 @@
 .crafting-material-hero-icon img { width:48px; height:48px; }
 .crafting-material-hero h2 { margin:0; color:#f1fbfd; font:700 17px/1.2 "Microsoft YaHei",sans-serif; }
 .crafting-material-hero strong { display:block; margin-top:4px; color:#8fe6f5; font:700 11px/1 Consolas,"Microsoft YaHei",sans-serif; }
-.crafting-material-hero p { margin:7px 0 0; color:#aebbc0; font:10px/1.55 "Microsoft YaHei",sans-serif; }
+.crafting-material-hero p { margin:7px 0 0; color:color-mix(in srgb,var(--wb-text) 58%,var(--wb-muted)); font:10px/1.55 "Microsoft YaHei",sans-serif; white-space:pre-line; }
 .crafting-material-summary,
 .crafting-material-sources,
 .crafting-material-uses { margin-top:8px; }
@@ -417,9 +422,11 @@
 .crafting-material-sources > h3,
 .crafting-material-uses > h3 {
     margin:0 0 5px;
+    padding:4px 0 5px;
     color:#c8d8dc;
+    border-bottom:1px solid rgba(var(--dls-crystal-rgb),.14);
     font:700 10px/1.2 "Microsoft YaHei",sans-serif;
-    letter-spacing:.08em;
+    letter-spacing:.04em;
 }
 .crafting-material-source-summary {
     margin:0 0 6px;
@@ -773,7 +780,7 @@
     box-shadow:0 0 8px var(--dls-glow);
 }
 .crafting-material-list { margin-top:10px; }
-.crafting-material-list h3 { margin:0 0 6px; color:#9ba6ac; font:700 10px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.12em; }
+.crafting-material-list h3 { margin:0 0 6px; color:color-mix(in srgb,var(--wb-text) 32%,var(--wb-muted)); font:700 10px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.05em; }
 .crafting-material-row {
     min-height:44px; margin-bottom:5px; padding:4px 7px;
     border:1px solid #233a42; background:#0a1114;
@@ -832,3 +839,57 @@
 }
 .crafting-output-icon { border-color:rgba(var(--dls-crystal-rgb),.22); background:#070b0e; }
 .crafting-material-icon { border-color:rgba(var(--dls-crystal-rgb),.18); background:#070b0e; }
+
+/* ── 材料档案体验精修（2026-08-15）：选中强化、未持有降饱和、次级控件降金、CJK 字距；全部消费既有 token，不新增硬编码 DLS 色。 ── */
+.crafting-panel .workbench-view-kicker { letter-spacing:.06em; }
+.crafting-panel .workbench-metric span { letter-spacing:.03em; }
+.crafting-material-card-icon img { transition:opacity var(--wb-motion-micro) var(--wb-ease-standard),filter var(--wb-motion-micro) var(--wb-ease-standard); }
+.crafting-panel .crafting-material-card.is-unowned .crafting-material-card-icon img { opacity:.5; filter:grayscale(.55); }
+.crafting-panel .crafting-material-card.is-unowned:hover .crafting-material-card-icon img,
+.crafting-panel .crafting-material-card.is-unowned:focus-visible .crafting-material-card-icon img,
+.crafting-panel .crafting-material-card.is-unowned.workbench-source-selected .crafting-material-card-icon img,
+.crafting-panel .crafting-material-card.is-unowned[aria-selected="true"] .crafting-material-card-icon img { opacity:1; filter:none; }
+.crafting-panel .crafting-material-filters .item-filter-option.active {
+    color:var(--wb-accent);
+    border-color:color-mix(in srgb,var(--wb-accent) 62%,var(--wb-line));
+    background:var(--wb-accent-soft);
+}
+.crafting-panel .crafting-material-filters .item-filter-option.active small {
+    color:color-mix(in srgb,var(--wb-accent) 74%,var(--wb-text));
+}
+.crafting-material-sources > h3[data-count]::after,
+.crafting-material-uses > h3[data-count]::after {
+    content:' · ' attr(data-count);
+    color:var(--wb-muted);
+    font-weight:400;
+    letter-spacing:0;
+}
+
+/* 详情小节锚点：挂在不滚动的 chrome 工具行，替代 sticky 吸顶（吸顶会在滚屏时遮挡卡片）。 */
+.crafting-material-anchor-nav {
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+}
+.crafting-material-anchor-nav[hidden] { display:none; }
+.crafting-material-anchor {
+    min-height:22px;
+    padding:1px 8px;
+    color:var(--wb-muted);
+    background:transparent;
+    border:1px solid transparent;
+    border-radius:0;
+    font:10px/1.3 "Microsoft YaHei",sans-serif;
+    cursor:pointer;
+    transition:color var(--wb-motion-micro) var(--wb-ease-standard),border-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.crafting-material-anchor:hover,
+.crafting-material-anchor:focus-visible {
+    color:var(--wb-role-focus);
+    border-color:rgba(var(--dls-crystal-rgb),.35);
+}
+.crafting-material-anchor small {
+    margin-left:3px;
+    color:var(--wb-muted);
+    font:10px/1 Consolas,monospace;
+}
