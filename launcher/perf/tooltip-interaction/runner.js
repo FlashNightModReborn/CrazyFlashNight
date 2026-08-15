@@ -43,7 +43,13 @@ function staticAudit() {
         [css.includes('.flash-tt-desc::-webkit-scrollbar'), 'dense description scrollbar skin missing'],
         [css.includes('.panel-tooltip-inspector-body::-webkit-scrollbar'), 'pinned inspector scrollbar skin missing'],
         [css.includes('::-webkit-scrollbar-button'), 'native scrollbar buttons are not suppressed'],
-        [css.includes('--tt-scroll-thumb-inspect'), 'inspection scrollbar state token missing']
+        [css.includes('--tt-scroll-thumb-inspect'), 'inspection scrollbar state token missing'],
+        [source.includes("_profile === PROFILE_PINNED) return"), 'applyDescWidth must skip the pinned inspector'],
+        [source.includes("key === 'Escape' && _visible && _profile === PROFILE_DENSE"), 'pointer-path Escape exit from dense inspection missing'],
+        [css.includes('.flash-tt-suffix'), 'suffix strip skin missing'],
+        [css.includes('panel-tooltip-inspection-collapse'), 'inspect status collapse animation missing'],
+        [css.includes('.panel-tooltip-inspector-keycap'), 'pinned inspector Esc keycap missing'],
+        [css.includes('--tt-shell-bg'), 'pinned inspector shell theme token missing']
     ];
     for (const [ok, message] of requirements) assert(ok, message);
     return {passed:requirements.length,total:requirements.length};
@@ -162,6 +168,16 @@ async function runBrowserAudit(page) {
         'wheel leaked to host at tooltip scroll boundary', {boundaryBefore,boundaryAfter});
     record('wheel-ownership-and-boundary', {beforeWheel,state,boundaryBefore,boundaryAfter});
 
+    // 指针路径的 Esc 只退出检视回到 scan：浮层继续跟随指针，且不得冒泡给面板层
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(30);
+    state = await snapshot(page);
+    assert(state.state.inspectionState === 'scan' && state.ownerStates[0] === '',
+        'pointer Escape did not exit dense inspection back to scan', state);
+    assert(state.tooltipRect && state.tooltipRect.width > 0 && state.text.includes('tile-0'),
+        'pointer Escape dismissed the hover tooltip instead of just the inspection', state);
+    record('pointer-escape-exits-inspection', state.state);
+
     await reset(page, {inspectionDelay:180,longContent:false});
     await moveToTile(page, 0, {wait:260});
     state = await snapshot(page);
@@ -230,6 +246,23 @@ async function runBrowserAudit(page) {
             && pinned.inspectorScrollbar.gutterWidth === 7,
         'pinned inspector scrollbar is not an interactive 7px skin', pinned.inspectorScrollbar);
     record('pinned-scrollbar-skin', pinned.inspectorScrollbar);
+    const pinnedChrome = await page.evaluate(() => {
+        const title = document.querySelector('.panel-tooltip-inspector-title');
+        const hint = document.querySelector('.panel-tooltip-inspector-keycap');
+        const body = document.querySelector('.panel-tooltip-inspector-body');
+        const desc = document.querySelector('#panel-tooltip .flash-tt-desc, #panel-tooltip .kshop-tt-desc');
+        return {
+            title:title ? title.textContent : null,
+            hint:hint ? hint.textContent : null,
+            bodyWidth:body ? body.clientWidth : 0,
+            descWidth:desc ? desc.getBoundingClientRect().width : 0
+        };
+    });
+    assert(pinnedChrome.title === '物品检视', 'pinned inspector default title missing', pinnedChrome);
+    assert(pinnedChrome.hint === 'Esc', 'pinned inspector Esc hint chip missing', pinnedChrome);
+    assert(pinnedChrome.descWidth >= pinnedChrome.bodyWidth - 12,
+        'pinned description no longer fills the inspector shell', pinnedChrome);
+    record('pinned-chrome-and-layout', pinnedChrome);
     const pinnedText = pinned.text;
     await moveToTile(page, 2, {wait:80});
     const afterHover = await snapshot(page);

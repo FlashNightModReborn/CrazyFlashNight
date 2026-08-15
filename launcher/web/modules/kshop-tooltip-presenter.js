@@ -204,7 +204,9 @@
             railAnchor || anchorElement, {
                 owner:this._inspectorOwner,
                 placement:'right',
-                outsideClick:true
+                outsideClick:true,
+                // header 常驻展示商品名——滚进长 desc 后仍能看到自己在检视什么
+                title:String(item.displayname || '')
             });
         if (!cached) {
             this._intent.requestShop('tooltip', {idx:idx}, function(resp) {

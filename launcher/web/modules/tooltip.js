@@ -31,6 +31,8 @@ var PanelTooltip = (function() {
     var _profile = PROFILE_SIMPLE;
     var _inspectionState = 'idle';
     var _pinned = false;
+    // pinned 检视器 header 展示的实体名（showPinned opts.title）；非 pinned show 清空
+    var _pinnedTitle = '';
 
     // anchored 模式的生命周期句柄
     var _outsideListener = null;
@@ -200,7 +202,7 @@ var PanelTooltip = (function() {
 
     function inspectionLabel(state) {
         if (state === 'pending') return '继续停留，展开完整说明';
-        if (state === 'inspect') return '已进入检视 · 滚轮阅读 · Esc 返回';
+        if (state === 'inspect') return '已进入检视 · 滚轮阅读 · Esc 退出';
         return '';
     }
 
@@ -245,6 +247,7 @@ var PanelTooltip = (function() {
     function configureProfile(profile, state) {
         _profile = normalizeProfile(profile);
         _pinned = _profile === PROFILE_PINNED;
+        if (!_pinned) _pinnedTitle = '';
         if (!_el) return;
         _el.setAttribute('data-tooltip-profile', _profile);
         if (_pinned) {
@@ -277,11 +280,17 @@ var PanelTooltip = (function() {
             header.className = 'panel-tooltip-inspector-header';
             var title = document.createElement('span');
             title.className = 'panel-tooltip-inspector-title';
-            title.textContent = '已进入检视 · Esc 退出';
+            // header 是滚进长文后唯一常驻的位置，展示实体名而非静态状态文案；
+            // Esc 提示降级为独立 chip，不挤占标题宽度。
+            title.textContent = _pinnedTitle || '物品检视';
+            var hint = document.createElement('span');
+            hint.className = 'panel-tooltip-inspector-keycap';
+            hint.textContent = 'Esc';
+            hint.setAttribute('aria-hidden', 'true');
             var close = document.createElement('button');
             close.type = 'button';
             close.className = 'panel-tooltip-inspector-close';
-            close.setAttribute('aria-label', '退出物品检视');
+            close.setAttribute('aria-label', '退出物品检视（Esc）');
             close.textContent = '×';
             close.addEventListener('click', function(event) {
                 event.preventDefault();
@@ -289,6 +298,7 @@ var PanelTooltip = (function() {
                 hide(_owner);
             });
             header.appendChild(title);
+            header.appendChild(hint);
             header.appendChild(close);
             body = document.createElement('div');
             body.className = 'panel-tooltip-inspector-body';
@@ -548,6 +558,9 @@ var PanelTooltip = (function() {
     function applyDescWidth() {
         var rich = _el.querySelector('.flash-tt-rich');
         if (!rich || rich.classList.contains('flash-tt-rich--merge')) return;
+        // pinned-inspector 的 desc 由 CSS 锁 width:100%（壳内整宽阅读面）；内容估算
+        // 写出的 inline width 会打穿它，让右缘悬空并随物品逐个跳动。
+        if (_profile === PROFILE_PINNED) return;
         var descPanel = rich.querySelector('.flash-tt-desc');
         if (!descPanel) return;
         var scores = htmlScoresBoth(descPanel.innerHTML);
@@ -768,6 +781,9 @@ var PanelTooltip = (function() {
         _owner = owner;
         configureProfile(requestedProfile,
             requestedProfile === PROFILE_DENSE ? 'scan' : 'idle');
+        if (requestedProfile === PROFILE_PINNED) {
+            _pinnedTitle = typeof opts.title === 'string' ? opts.title : '';
+        }
         resetPlacementState(opts.placement);
         replaceTooltipContent(html);
         _el.style.display = 'block';
@@ -807,7 +823,10 @@ var PanelTooltip = (function() {
         return true;
     }
 
-    /** 显式固定检视器：稳定锚点、无自动关闭、可滚动，Esc / 关闭按钮 / 外部点击退出。 */
+    /**
+     * 显式固定检视器：稳定锚点、无自动关闭、可滚动，Esc / 关闭按钮 / 外部点击退出。
+     * opts.title 可选：header 常驻展示的实体名（调用方传 displayName），缺省“物品检视”。
+     */
     function showPinned(html, anchorEl, opts) {
         opts = opts || {};
         var pinnedOptions = {};
@@ -1124,7 +1143,9 @@ var PanelTooltip = (function() {
             introPanel +
             (doSplit && desc ? '<div class="flash-tt-desc kshop-tt-desc">' + desc + '</div>' : '') +
         '</div>';
-        if (opts.suffix) html += opts.suffix;
+        // 后缀统一包一层底条：rich 模式下外层 #panel-tooltip 透明，裸 suffix 会
+        // 直接浮在背后面板内容上（如 K商城锁定 banner）。视觉由 .flash-tt-suffix 承担。
+        if (opts.suffix) html += '<div class="flash-tt-suffix kshop-tt-suffix">' + opts.suffix + '</div>';
         return html;
     }
 
@@ -1313,6 +1334,19 @@ var PanelTooltip = (function() {
                 event.preventDefault();
                 event.stopPropagation();
             }
+        } else if (key === 'Escape' && _visible && _profile === PROFILE_DENSE
+                && _inspectionState === 'inspect'
+                && _pointerAsyncBinding
+                && typeof _pointerAsyncBinding.canRestorePointer === 'function'
+                && _pointerAsyncBinding.canRestorePointer()) {
+            // 指针驱动的 dense 检视：Esc 只退出检视回到 scan（浮层继续跟随指针），
+            // 并在 capture 阶段就地消费——否则冒泡到面板层会变成“读说明时 Esc
+            // 关掉整个面板”。键盘 focus 路径不经过这里：owner 节点自己的 keydown
+            // 全权处理（直接关闭 tooltip），canRestorePointer 保证只在指针仍停留
+            // 在 owner 上时本分支才接管。
+            notifyInteractionDismissed();
+            event.preventDefault();
+            event.stopPropagation();
         }
     }
 

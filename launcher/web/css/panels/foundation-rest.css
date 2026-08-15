@@ -60,6 +60,11 @@
     --tt-scroll-thumb-hover: color-mix(in srgb,var(--tt-text) 64%,var(--tt-grad-bot));
     --tt-scroll-thumb-pending: color-mix(in srgb,var(--wb-role-pending) 78%,var(--tt-grad-bot));
     --tt-scroll-thumb-inspect: color-mix(in srgb,var(--wb-role-accept) 84%,var(--tt-grad-bot));
+    /* pinned-inspector 外壳底色：Symbol 274 灰族渐变叠在既有深色面 token 上——
+       提高不透明度（长文阅读需要稳定底色），同时不新增 raw color 债务。 */
+    --tt-shell-bg: linear-gradient(to bottom,
+        color-mix(in srgb, var(--tt-grad-top) 22%, var(--wb-scrollbar-track)),
+        color-mix(in srgb, var(--tt-grad-bot) 40%, var(--wb-scrollbar-track)));
 
     /* 基础命中策略服务 simple-tooltip 的复合 hover 与 pinned-inspector 的独立操作；
        dense-inspect 在下方按 profile 覆盖为 pointer-events:none。 */
@@ -95,6 +100,7 @@
     --tt-scroll-thumb: var(--wb-scrollbar-thumb);
     --tt-scroll-thumb-border: var(--wb-scrollbar-thumb-border);
     --tt-scroll-thumb-hover: var(--wb-scrollbar-thumb-hover);
+    --tt-shell-bg: var(--cp-bg);
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
 }
 [data-tooltip-theme="cyberpunk"] .flash-tt-intro-panel,
@@ -627,6 +633,25 @@
 .kshop-tt-lock-banner, .flash-tt-lock-banner { margin-top:6px; padding:4px 8px; color:var(--tt-warn); font-size:11px;
                                                 border-top:1px solid var(--tt-divider); letter-spacing:1px; }
 
+/* 后缀底条（buildItemRichHtml opts.suffix 的统一容器）：rich 模式下外层 #panel-tooltip
+   透明，后缀必须自带底色，否则裸文字直接浮在背后面板内容上。横跨双面板总宽、
+   向右渐隐，与检视状态条同族视觉。 */
+.flash-tt-suffix, .kshop-tt-suffix {
+    margin:6px 0 0;
+    padding:4px 7px;
+    box-sizing:border-box;
+    color:color-mix(in srgb,var(--tt-text) 88%,transparent);
+    background:linear-gradient(90deg,
+        color-mix(in srgb,var(--tt-text) 8%,var(--tt-status-bg)) 0%,
+        color-mix(in srgb,var(--tt-text) 3%,var(--tt-status-bg)) 72%,
+        transparent 100%);
+    font-size:11px;
+    line-height:1.3;
+}
+/* 条内 banner 不再自带分隔边距/上边框——底条本身已经是分隔与底色。 */
+.flash-tt-suffix .flash-tt-lock-banner,
+.kshop-tt-suffix .kshop-tt-lock-banner { margin-top:0; padding:0; border-top:0; }
+
 /* Flash HTML 继承样式：AS2 <FONT COLOR> 已转为 <span style="color:"> */
 #panel-tooltip span[style] { font-size:inherit; }
 #panel-tooltip b { font-weight:bold; }
@@ -644,10 +669,14 @@
     display:flex;
     align-items:center;
     gap:7px;
-    width:100%;
+    /* 宽度跟随文案而不是撑满双面板总宽（最宽 850px），短文案不再拖一条空渐变 */
+    width:fit-content;
     min-width:0;
-    max-width:none;
+    max-width:100%;
     min-height:23px;
+    /* max-height + overflow 是 inspect 折叠动画（2px 细条）的裁剪边界 */
+    max-height:23px;
+    overflow:hidden;
     margin:0 0 7px;
     padding:4px 7px;
     box-sizing:border-box;
@@ -694,6 +723,19 @@
         color-mix(in srgb,var(--wb-role-accept) 5%,var(--tt-status-bg)) 72%,
         transparent 100%);
     border-left-color:color-mix(in srgb,var(--wb-role-accept) 88%,transparent);
+    /* 进入检视后状态条只在最初 1.2s 完整展示，随后折叠为 2px accent 细条，
+       把纵向空间还给正文；owner 绿框与滚动条绿 thumb 仍持续表达检视态。 */
+    animation:panel-tooltip-inspection-collapse var(--wb-motion-structural) var(--wb-ease-standard) calc(var(--wb-motion-busy) * 1.2) forwards;
+}
+#panel-tooltip[data-inspection-state="inspect"] .panel-tooltip-inspection-status::before,
+#panel-tooltip[data-inspection-state="inspect"] .panel-tooltip-inspection-copy {
+    animation:panel-tooltip-inspection-status-fade var(--wb-motion-structural) var(--wb-ease-standard) calc(var(--wb-motion-busy) * 1.2) forwards;
+}
+@keyframes panel-tooltip-inspection-collapse {
+    to { min-height:2px; max-height:2px; padding-top:0; padding-bottom:0; border-bottom-color:transparent; }
+}
+@keyframes panel-tooltip-inspection-status-fade {
+    to { opacity:0; }
 }
 .panel-tooltip-inspection-copy {
     display:block;
@@ -705,8 +747,9 @@
 }
 .panel-tooltip-inspection-meter {
     position:relative;
-    flex:1 1 56px;
-    max-width:108px;
+    /* 状态条改 fit-content 后没有可 grow 的剩余空间，进度条用固定长度 */
+    flex:0 0 72px;
+    max-width:72px;
     height:2px;
     background:color-mix(in srgb,var(--wb-role-pending) 82%,transparent);
     transform:scaleX(1);
@@ -753,12 +796,15 @@
 }
 .panel-tooltip-inspector-shell {
     width:100%;
-    max-height:calc(100vh - 16px);
+    /* #panel-tooltip 整体带 transform:scale(--cf7-overlay-scale)，物理高度 = 布局高度
+       × scale；cap 必须按 scale 折算，否则 scale>1（如 1080p=1.25）时物理像素溢出视口。 */
+    max-height:calc((100vh - 16px) / var(--cf7-overlay-scale, 1));
     display:flex;
     flex-direction:column;
     overflow:hidden;
     color:var(--tt-text);
-    background:var(--cp-bg);
+    /* 外壳跟默认主题同族（Symbol 274 灰族，不透明度提升），不再混用 cyberpunk 储备色 */
+    background:var(--tt-shell-bg);
     border:1px solid color-mix(in srgb,var(--tt-text) 32%,transparent);
     box-shadow:0 10px 28px color-mix(in srgb,var(--wb-scrollbar-track) 48%,transparent);
     box-sizing:border-box;
@@ -775,11 +821,27 @@
     border-bottom:1px solid color-mix(in srgb,var(--tt-text) 22%,transparent);
 }
 .panel-tooltip-inspector-title {
-    flex:1;
+    flex:1 1 auto;
     min-width:0;
-    color:var(--tt-price);
-    font-size:10px;
-    letter-spacing:0.7px;
+    /* header 常驻展示实体名（showPinned opts.title），长名省略 */
+    color:var(--tt-strong);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+/* Esc 键位提示：keycap 角色（WB124 豁免 9px badge/keycap 类），不挤占标题宽度 */
+.panel-tooltip-inspector-keycap {
+    flex:0 0 auto;
+    padding:1px 5px;
+    border:1px solid color-mix(in srgb,var(--tt-text) 26%,transparent);
+    border-radius:2px;
+    color:var(--tt-dim);
+    font-size:9px;
+    letter-spacing:0.8px;
+    line-height:1.4;
 }
 .panel-tooltip-inspector-close {
     width:24px;
@@ -795,7 +857,11 @@
 .panel-tooltip-inspector-close:focus-visible {
     border-color:var(--tt-price);
     color:var(--tt-price);
+    background:color-mix(in srgb,var(--tt-price) 16%,transparent);
     outline:none;
+}
+.panel-tooltip-inspector-close:active {
+    transform:translateY(1px);
 }
 .panel-tooltip-inspector-body {
     flex:1 1 auto;
@@ -834,6 +900,10 @@
     --tt-intro-w:100%;
     --tt-intro-min-h:0px;
     --tt-icon-size:96px;
+    /* pinned 是纯 web 阅读面，不参与 AS2 逐像素复刻：行距与内边距按长文阅读松绑 */
+    --tt-panel-pad:8px;
+    --tt-intro-line-height:1.4;
+    --tt-desc-line-height:1.45;
     width:100%;
     flex-direction:column;
     align-items:stretch;
@@ -860,7 +930,11 @@
 @media (prefers-reduced-motion: reduce) {
     [data-tooltip-inspection="pending"],
     [data-tooltip-inspection="inspect"],
-    #panel-tooltip[data-inspection-state="pending"] .panel-tooltip-inspection-meter {
+    #panel-tooltip[data-inspection-state="pending"] .panel-tooltip-inspection-meter,
+    /* reduced 下状态条不折叠，保持完整静态条 */
+    #panel-tooltip[data-inspection-state="inspect"] .panel-tooltip-inspection-status,
+    #panel-tooltip[data-inspection-state="inspect"] .panel-tooltip-inspection-status::before,
+    #panel-tooltip[data-inspection-state="inspect"] .panel-tooltip-inspection-copy {
         animation:none;
     }
 }
