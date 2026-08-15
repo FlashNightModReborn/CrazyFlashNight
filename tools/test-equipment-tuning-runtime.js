@@ -169,6 +169,45 @@ assert.strictEqual(malformedMaterialPreviewAdopted,null);
 assert.strictEqual(mux.handleResponse(previewResponse(
   malformedMaterialPreviewCall,'token.malformed.material.preview')),true);
 
+let statsPreviewAdopted=null;
+const statsPreviewCall=mux.request('preview',{operation:'install_mod'},value=>{ statsPreviewAdopted=value; });
+const statsPreview=previewResponse(statsPreviewCall,'token.stats.preview');
+const statsRows=[
+  {key:'damage',label:'伤害加成',value:10},
+  {key:'vampirism',label:'吸血',value:3}];
+statsPreview.before.source.equipment.stats=statsRows.slice(0,1);
+statsPreview.after.source.equipment.stats=statsRows;
+assert.strictEqual(mux.handleResponse(statsPreview),true);
+assert.deepStrictEqual(statsPreviewAdopted.after.source.equipment.stats,statsRows);
+
+let malformedStatsPreviewAdopted=null;
+const malformedStatsPreviewCall=mux.request('preview',{operation:'install_mod'},
+  value=>{ malformedStatsPreviewAdopted=value; });
+const malformedStatsPreview=previewResponse(
+  malformedStatsPreviewCall,'token.malformed.stats.preview');
+malformedStatsPreview.after.source.equipment.stats=[{key:'damage',label:'伤害加成',value:'10'}];
+assert.strictEqual(mux.handleResponse(malformedStatsPreview),false);
+assert.strictEqual(malformedStatsPreviewAdopted,null);
+assert.strictEqual(mux.handleResponse(previewResponse(
+  malformedStatsPreviewCall,'token.malformed.stats.preview')),true);
+
+let statsTooltipAdopted=null;
+const statsTooltipCall=mux.request('tooltip',{candidateKey:'opaque.stats'},value=>{ statsTooltipAdopted=value; });
+const statsTooltip=tooltipResponse(statsTooltipCall,'带试算候选','opaque.stats');
+statsTooltip.statsBefore=[{key:'damage',label:'伤害加成',value:10}];
+statsTooltip.statsAfter=[{key:'damage',label:'伤害加成',value:12}];
+assert.strictEqual(mux.handleResponse(statsTooltip),true);
+assert.deepStrictEqual(statsTooltipAdopted.statsAfter,[{key:'damage',label:'伤害加成',value:12}]);
+
+let unpairedTooltipAdopted=null;
+const unpairedTooltipCall=mux.request('tooltip',{candidateKey:'opaque.unpaired'},value=>{ unpairedTooltipAdopted=value; });
+const unpairedTooltip=tooltipResponse(unpairedTooltipCall,'单边试算','opaque.unpaired');
+unpairedTooltip.statsBefore=[{key:'damage',label:'伤害加成',value:10}];
+assert.strictEqual(mux.handleResponse(unpairedTooltip),false);
+assert.strictEqual(unpairedTooltipAdopted,null);
+assert.strictEqual(mux.handleResponse(tooltipResponse(
+  unpairedTooltipCall,'无试算','opaque.unpaired')),true);
+
 let malformedCommitAdopted=null;
 const malformedCommitCall=mux.request('commit',{expectedTuningToken:'token.commit'},value=>{ malformedCommitAdopted=value; });
 const malformedCommit=commitResponse(malformedCommitCall);

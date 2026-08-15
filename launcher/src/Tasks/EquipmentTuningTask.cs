@@ -128,6 +128,8 @@ namespace CF7Launcher.Tasks
             "modCandidates", "materials", "materialRevision", "inventoryRevision");
         private static readonly HashSet<string> EnhanceProjectionKeys = Set(
             "currentLevel", "maxLevel", "availableMaxLevel", "hardMaxLevel");
+        private static readonly HashSet<string> StatRowKeys = Set(
+            "key", "label", "value");
 
         private readonly Func<bool> _isClientReady;
         private readonly Func<string, bool> _trySend;
@@ -1215,12 +1217,29 @@ namespace CF7Launcher.Tasks
             var result = new JObject { ["v"] = 1 };
             if (cmd == "tooltip")
             {
-                if (!IsExactObject(payload, Set("v", "viewSessionId", "candidateKey"))) return false;
+                bool tooltipHasSource = payload["source"] != null;
+                var tooltipKeys = tooltipHasSource
+                    ? Set("v", "viewSessionId", "candidateKey", "source")
+                    : Set("v", "viewSessionId", "candidateKey");
+                if (!IsExactObject(payload, tooltipKeys)) return false;
                 viewSessionId = ReadString(payload["viewSessionId"]);
                 candidateKey = ReadString(payload["candidateKey"]);
                 if (!IsOpaque(viewSessionId) || !IsSafeText(candidateKey, 1, 128)) return false;
                 result["viewSessionId"] = viewSessionId;
                 result["candidateKey"] = candidateKey;
+                if (tooltipHasSource)
+                {
+                    // 可选 source 让 AS2 能试算候选装上当前装备的属性 diff；
+                    // tooltip 零写，复用与 snapshot 相同的 lease 规范化
+                    JObject tooltipSource;
+                    if (!TryNormalizeSourceRef(
+                            payload["source"] as JObject,
+                            out tooltipSource))
+                    {
+                        return false;
+                    }
+                    result["source"] = tooltipSource;
+                }
                 normalized = result;
                 return true;
             }
@@ -1455,7 +1474,18 @@ namespace CF7Launcher.Tasks
                 && msg["descHTML"] != null && msg["descHTML"].Type == JTokenType.String
                 && msg["itemType"] != null && msg["itemType"].Type == JTokenType.String
                 && msg["itemUse"] != null && msg["itemUse"].Type == JTokenType.String
-                && IsIdentityTextToken(msg["text"], 256);
+                && IsIdentityTextToken(msg["text"], 256)
+                && TooltipStatPairsValid(msg);
+        }
+
+        // 候选试算 diff 是可选的成对字段；要么齐全且逐行合法，要么完全缺席
+        private static bool TooltipStatPairsValid(JObject msg)
+        {
+            if (msg["statsBefore"] == null && msg["statsAfter"] == null) return true;
+            JArray statsBefore;
+            JArray statsAfter;
+            return TrySanitizeStatRows(msg["statsBefore"] as JArray, out statsBefore)
+                && TrySanitizeStatRows(msg["statsAfter"] as JArray, out statsAfter);
         }
 
         private static bool HasOnlyResponseKeys(JObject msg, string cmd, bool success)
@@ -1482,6 +1512,7 @@ namespace CF7Launcher.Tasks
                 {
                     keys.Add("candidateKey"); keys.Add("introHTML"); keys.Add("descHTML");
                     keys.Add("itemType"); keys.Add("itemUse"); keys.Add("text");
+                    keys.Add("statsBefore"); keys.Add("statsAfter");
                 }
             }
             foreach (JProperty property in msg.Properties())
@@ -1928,12 +1959,16 @@ namespace CF7Launcher.Tasks
             bool hasModSlotCapacity = input != null
                 && input["modSlotCapacity"] != null;
             if (hasModSlotCapacity) keys.Add("modSlotCapacity");
+            bool hasStats = input != null
+                && input["stats"] != null;
+            if (hasStats) keys.Add("stats");
             int level;
             int maxLevel;
             int hardMaxLevel;
             int modSlotCapacity = 0;
             double lastUpdate;
             JArray mods;
+            JArray stats = null;
             string type = ReadString(input != null ? input["type"] : null);
             if (!IsExactObject(input, keys)
                 || !IsIdentityTextToken(input["name"], 256)
@@ -1967,12 +2002,66 @@ namespace CF7Launcher.Tasks
                 || !TrySanitizeStringArray(
                     input["mods"] as JArray,
                     64,
-                    out mods))
+                    out mods)
+                || (hasStats
+                    && !TrySanitizeStatRows(
+                        input["stats"] as JArray,
+                        out stats)))
             {
                 return false;
             }
             sanitized = (JObject)input.DeepClone();
             sanitized["mods"] = mods;
+            if (hasStats) sanitized["stats"] = stats;
+            return true;
+        }
+
+        private static JObject StripStatRows(JObject equipment)
+        {
+            if (equipment == null || equipment["stats"] == null)
+            {
+                return equipment;
+            }
+            JObject clone = (JObject)equipment.DeepClone();
+            clone.Remove("stats");
+            return clone;
+        }
+
+        private static bool TrySanitizeStatRows(
+            JArray input,
+            out JArray sanitized)
+        {
+            sanitized = null;
+            if (input == null || input.Count > 64) return false;
+            var result = new JArray();
+            var keys = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in input)
+            {
+                JObject row = token as JObject;
+                string key = ReadString(row != null ? row["key"] : null);
+                double value;
+                if (!IsExactObject(row, StatRowKeys)
+                    || !IsTextToken(row["key"], 1, 64)
+                    || !keys.Add(key)
+                    || !IsTextToken(row["label"], 1, 128)
+                    || !TryReadFiniteNumber(
+                        row["value"],
+                        -1e9d,
+                        1e9d,
+                        out value))
+                {
+                    return false;
+                }
+                // 保留原始数值 token 类型（Integer/Float）：preview binding 以原文深克隆存储，
+                // commit 经 sanitize 后与 binding 做 DeepEquals，统一成 double 会造成类型漂移
+                result.Add(new JObject
+                {
+                    ["key"] = key,
+                    ["label"] = ReadString(row["label"]),
+                    ["value"] = row["value"].DeepClone()
+                });
+            }
+            sanitized = result;
             return true;
         }
 
@@ -2075,9 +2164,11 @@ namespace CF7Launcher.Tasks
                 || entry.SnapshotEquipment == null
                 || entry.SnapshotMaterials == null
                 || beforeEquipment == null
+                // stats 是 preview 投影新增的派生展示数据，snapshot 不携带；
+                // 比对前剥离，身份字段仍保持 DeepEquals 级权威绑定
                 || !JToken.DeepEquals(
-                    entry.SnapshotEquipment,
-                    beforeEquipment)
+                    StripStatRows(entry.SnapshotEquipment),
+                    StripStatRows(beforeEquipment))
                 || !PreviewMaterialsMatchSnapshot(
                     materials,
                     entry.SnapshotMaterials))
@@ -2578,6 +2669,10 @@ namespace CF7Launcher.Tasks
                 (JObject)actualEquipment.DeepClone();
             expectedBusiness.Remove("lastUpdate");
             actualBusiness.Remove("lastUpdate");
+            // stats 是 preview 阶段 before/after 的派生展示投影，commit after 由
+            // 提交后权威状态重建、不携带 stats；比对业务身份时剥离，语义不变
+            expectedBusiness.Remove("stats");
+            actualBusiness.Remove("stats");
             double beforeLastUpdate =
                 expectedEquipment.Value<double>("lastUpdate");
             double afterLastUpdate =

@@ -196,6 +196,46 @@ equal(Model.equipmentDiff(
 equal(Model.commitLabel({operation:'enhance',after:{source:{equipment:{level:8}}},
     materials:[{itemName:'强化石',delta:-3}]}), '强化至 +8 · 3 强化石', 'enhancement commit label');
 equal(Model.commitLabel({operation:'detach_all_mods'}), '卸下全部配件', 'non-enhance commit label');
+
+const statsDeltaChanged = Model.statsDeltaRows(
+    [{key:'damage',label:'伤害加成',value:10},{key:'hp',label:'HP',value:50}],
+    [{key:'damage',label:'伤害加成',value:10.4},{key:'hp',label:'HP',value:50}]);
+equal(statsDeltaChanged.length, 1, 'stats delta filters unchanged rows');
+equal(statsDeltaChanged[0].key, 'damage', 'stats delta row key');
+equal(statsDeltaChanged[0].direction, 'better', 'higher damage reads as better');
+equal(Math.abs(statsDeltaChanged[0].delta - 0.4) < 1e-9, true, 'stats delta numeric delta');
+equal(Model.statsDeltaRows(
+    [{key:'weight',label:'重量',value:5}],
+    [{key:'weight',label:'重量',value:3}])[0].direction, 'better',
+    'lower-is-better stat dropping reads as better');
+equal(Model.statsDeltaRows(
+    [{key:'weight',label:'重量',value:3}],
+    [{key:'weight',label:'重量',value:5}])[0].direction, 'worse',
+    'lower-is-better stat rising reads as worse');
+equal(Model.statsDeltaRows(
+    [{key:'level',label:'等级限制',value:1}],
+    [{key:'level',label:'等级限制',value:12}])[0].direction, 'neutral',
+    'level requirement change stays neutral');
+const statsDeltaAdded = Model.statsDeltaRows(
+    [],
+    [{key:'vampirism',label:'吸血',value:3}]);
+equal(statsDeltaAdded.length === 1
+    && statsDeltaAdded[0].before === null && statsDeltaAdded[0].after === 3
+    && statsDeltaAdded[0].direction === 'better', true,
+    'added stat row reports null before with better direction');
+const statsDeltaRemoved = Model.statsDeltaRows(
+    [{key:'vampirism',label:'吸血',value:3}],
+    []);
+equal(statsDeltaRemoved.length === 1
+    && statsDeltaRemoved[0].before === 3 && statsDeltaRemoved[0].after === null
+    && statsDeltaRemoved[0].direction === 'worse', true,
+    'removed stat row reports null after with worse direction');
+equal(Model.statsDeltaRows(null, undefined), [], 'stats delta tolerates missing inputs');
+equal(Model.statsDeltaRows(
+    [{key:'hp',label:'HP',value:50}],
+    [{key:'damage',label:'伤害加成',value:10},{key:'hp',label:'HP',value:60}]).map(r => r.key),
+    ['damage','hp'], 'stats delta keeps after-row order with removed rows trailing');
+
 equal(Model.modStatus({available:false,reason:'material_missing'}).id, 'material_missing',
     'authoritative unavailable reason maps to filter state');
 const tree = Model.buildModFilterTree([
@@ -289,6 +329,22 @@ equal(
     ),
     true,
     'AS2 tuning snapshot emits capacity only from a known valid authority value'
+);
+equal(
+    /if \(includeStats\)[\s\S]*?projection\.stats = EquipmentStatProjector\.project/.test(
+        equipmentProjectionSource
+    )
+        && /buildEquipmentProjection\(source\.item, afterSource, source\.item\.lastUpdate, true\)/.test(
+            tuningServiceSource
+        ),
+    true,
+    'AS2 tuning preview projects structured stats rows for before/after comparison'
+);
+equal(
+    /buildCandidateStatPreview\(candidate, params\)/.test(tuningServiceSource)
+        && /response\.statsBefore = statPreview\.before/.test(tuningServiceSource),
+    true,
+    'AS2 tuning tooltip attaches candidate stat preview rows when source is present'
 );
 
 const tuningServiceTestBytes = fs.readFileSync(path.join(

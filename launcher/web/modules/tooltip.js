@@ -1078,6 +1078,10 @@ var PanelTooltip = (function() {
         } else if (opts.iconPlaceholder) {
             iconBlock = '<div class="flash-tt-icon kshop-tt-icon">' + opts.iconPlaceholder + '</div>';
         }
+        // 图标栏底部扩展槽（如装备调制的候选试算 diff）；调用方提供已转义的 HTML
+        if (opts.iconFootHTML) {
+            iconBlock += '<div class="flash-tt-icon-foot">' + opts.iconFootHTML + '</div>';
+        }
         var meta  = opts.metaHTML || '';
         var rootClass = opts.rootClass ? ' ' + opts.rootClass : '';
 

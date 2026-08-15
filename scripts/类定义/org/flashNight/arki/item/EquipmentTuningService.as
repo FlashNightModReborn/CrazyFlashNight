@@ -12,6 +12,7 @@ import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
+import org.flashNight.arki.item.equipment.EquipmentStatProjector;
 
 /** 装备调制唯一权威写服务；Web 只提交不可信意图。 */
 class org.flashNight.arki.item.EquipmentTuningService {
@@ -561,11 +562,47 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var displayName:String = String(
             itemPresentation(String(candidate.itemName)).displayName);
         // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
-        return {success:true, candidateKey:candidateKey,
+        var response:Object = {success:true, candidateKey:candidateKey,
             // 分段字段是 Web 富注释自动分栏的唯一权威输入。
             introHTML:introHTML, descHTML:descHTML,
             itemType:String(itemData.type), itemUse:String(itemData.use),
             text:displayName};
+        // 候选试算：规则允许装上当前装备时附 before/after 属性投影，
+        // 供 Web 在注释图片栏渲染属性 diff；材料缺失不阻挡试算（便于规划），
+        // 零写且任何输入异常都回落为无 stats 的旧形态
+        var statPreview:Object = buildCandidateStatPreview(candidate, params);
+        if (statPreview != null) {
+            response.statsBefore = statPreview.before;
+            response.statsAfter = statPreview.after;
+        }
+        return response;
+    }
+
+    private static function buildCandidateStatPreview(candidate:Object, params:Object):Object {
+        if (params == null || params.source == undefined) return null;
+        var resolved:Object = resolveWebSlot(params.source);
+        if (!resolved.success) return null;
+        var item:BaseItem = BaseItem(resolved.item);
+        var itemData:Object = item.getData();
+        var value:Object = item.value;
+        var afterValue:Object = ObjectUtil.clone(value);
+        if (candidate.kind == "mod") {
+            var modName:String = String(candidate.itemName);
+            if (indexOfString(value.mods, modName) >= 0) return null;
+            if (Number(EquipmentUtil.isModMaterialAvailable(item, itemData, modName)) != 1) return null;
+            afterValue.mods = cloneArray(value.mods);
+            afterValue.mods.push(modName);
+        } else if (candidate.kind == "tier") {
+            var tierMaterial:String = String(candidate.itemName);
+            if (!isTierTransitionAllowed(item, tierMaterial)) return null;
+            var tierName:String = String(EquipmentUtil.tierMaterialToNameDict[tierMaterial]);
+            if (tierName == "" || tierName == "undefined") return null;
+            afterValue.tier = tierName;
+        } else return null;
+        return {
+            before:EquipmentStatProjector.project(String(item.name), value),
+            after:EquipmentStatProjector.project(String(item.name), afterValue)
+        };
     }
 
     /**
@@ -699,12 +736,12 @@ class org.flashNight.arki.item.EquipmentTuningService {
             changes.push({slot:source, afterValue:afterSource});
             if (afterTarget != null) changes.push({slot:target, afterValue:afterTarget});
         }
-        var before:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, sourceValue, source.item.lastUpdate)}};
-        var after:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, afterSource, source.item.lastUpdate)}};
+        var before:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, sourceValue, source.item.lastUpdate, true)}};
+        var after:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, afterSource, source.item.lastUpdate, true)}};
         var affectedSlots:Array = noOp ? [] : [source.slot];
         if (target != null) {
-            before.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, target.item.value, target.item.lastUpdate)};
-            after.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, afterTarget, target.item.lastUpdate)};
+            before.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, target.item.value, target.item.lastUpdate, true)};
+            after.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, afterTarget, target.item.lastUpdate, true)};
             if (!noOp) affectedSlots.push(target.slot);
         }
         return {
@@ -928,7 +965,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         return String(_root.性别) == "女" ? "女" : "男";
     }
 
-    private static function buildEquipmentProjection(item:Object, value:Object, lastUpdate:Number):Object {
+    private static function buildEquipmentProjection(item:Object, value:Object, lastUpdate:Number, includeStats:Boolean):Object {
         var raw:Object = ItemUtil.getRawItemData(item.name);
         var data:Object = typeof item.getData == "function"
             ? item.getData() : raw;
@@ -964,6 +1001,11 @@ class org.flashNight.arki.item.EquipmentTuningService {
         };
         if (modSlotCapacityKnown) {
             projection.modSlotCapacity = modSlotCapacity;
+        }
+        // preview 的 before/after 附带结构化属性投影，供 Web 端做前后对比；
+        // snapshot 不传 includeStats，保持载荷最小
+        if (includeStats) {
+            projection.stats = EquipmentStatProjector.project(String(item.name), value);
         }
         return projection;
     }

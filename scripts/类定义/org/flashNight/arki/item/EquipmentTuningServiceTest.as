@@ -48,6 +48,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testWornCommitAndLiveDirtyBoundary();
         testWornAllowedOperationMatrix();
         testWornRollbackAndUnknownReconcile();
+        testPreviewStatRows();
         trace("EquipmentTuningServiceTest Tests Passed: " + _passed);
         trace("EquipmentTuningServiceTest Tests Failed: " + _failed);
         trace("=== EquipmentTuningServiceTest end ===");
@@ -77,7 +78,8 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             {name:"光谱射线弹",use:"手枪",detachPolicy:"single"},
             {name:"光谱射线弹-强化",use:"手枪",detachPolicy:"single"},
             {name:"遗留握柄",use:"长枪",detachPolicy:"single"},
-            {name:"级联核心",use:"手枪",detachPolicy:"cascade"}
+            {name:"级联核心",use:"手枪",detachPolicy:"cascade"},
+            {name:"测试增幅插件",use:"手枪",detachPolicy:"single",stats:{flat:{vampirism:3}}}
         ]);
         ItemUtil.loadItemData([
             {name:"测试手枪A",displayname:"测试手枪A",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:4,damage:10}},
@@ -89,7 +91,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             {name:"测试NaN槽手枪",displayname:"测试NaN槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:Number("not-a-number"),damage:10}},
             {name:"测试正无穷槽手枪",displayname:"测试正无穷槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:Number.POSITIVE_INFINITY,damage:10}},
             {name:"测试负无穷槽手枪",displayname:"测试负无穷槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:Number.NEGATIVE_INFINITY,damage:10}},
-            {name:"测试头盔",displayname:"测试头盔",icon:"测试",type:"防具",use:"头部装备",data:{level:1,modslot:4,defence:10}},
+            {name:"测试头盔",displayname:"测试头盔",icon:"测试",type:"防具",use:"头部装备",data:{level:1,modslot:4,defence:10,hp:50,magicdefence:{热:10,基础:5}}},
             // 调制材料与生产 XML 一致归入“收集品 / 材料”；富注释分栏依赖这组权威类型。
             {name:"强化石",displayname:"强化石",icon:"测试",type:"收集品",use:"材料",data:{}},
             {name:"二阶复合防御组件",displayname:"二阶组件",icon:"测试",type:"收集品",use:"材料",data:{}},
@@ -102,7 +104,8 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             {name:"光谱射线弹",displayname:"色散射线弹",icon:"棱栅射线弹",type:"收集品",use:"材料",data:{}},
             {name:"光谱射线弹-强化",displayname:"全谱色散引擎",icon:"环式棱栅折射阵列",type:"收集品",use:"材料",data:{}},
             {name:"遗留握柄",displayname:"旧式握柄展示",icon:"旧式握柄图标",type:"收集品",use:"材料",data:{}},
-            {name:"级联核心",displayname:"级联核心",icon:"测试",type:"收集品",use:"材料",data:{}}
+            {name:"级联核心",displayname:"级联核心",icon:"测试",type:"收集品",use:"材料",data:{}},
+            {name:"测试增幅插件",displayname:"测试增幅插件",icon:"测试",type:"收集品",use:"材料",data:{}}
         ]);
         _root.物品栏 = {
             背包:new ArrayInventory(null, 50),
@@ -647,6 +650,118 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             "tier 严格按二阶→三阶→四阶推进并逐次消费材料");
         assertTrue(_root._saveExt.成就.cnt["装备进阶次数"] == 3,
             "成功进阶只记录装备进阶次数");
+    }
+
+    private static function statRow(stats, key:String):Object {
+        if (!(stats instanceof Array)) return null;
+        for (var i:Number = 0; i < stats.length; i++) {
+            if (String(stats[i].key) == key) return stats[i];
+        }
+        return null;
+    }
+
+    private static function testPreviewStatRows():Void {
+        resetFixture();
+        var item:BaseItem = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.add("强化石", 100);
+        var enhance:Object = webCommit("stats-enhance", "enhance", 0, -1, "", 3, "");
+        var beforeStats:Array = enhance.preview.success
+            ? enhance.preview.before.source.equipment.stats : null;
+        var afterStats:Array = enhance.preview.success
+            ? enhance.preview.after.source.equipment.stats : null;
+        var beforeDamage:Object = statRow(beforeStats, "damage");
+        var afterDamage:Object = statRow(afterStats, "damage");
+        assertTrue(enhance.preview.success && enhance.commit.success
+                && beforeStats instanceof Array && afterStats instanceof Array
+                && beforeStats.length == afterStats.length
+                && beforeDamage != null && afterDamage != null
+                && Math.abs(Number(beforeDamage.value) - 10) < 0.0001
+                && Math.abs(Number(afterDamage.value) - 11) < 0.0001
+                && String(beforeDamage.label) == "伤害加成",
+            "强化 preview 投影结构化属性并按倍率试算（伤害加成 10 × 1.06 四舍五入为 11）");
+        assertTrue(enhance.snapshot.success
+                && !enhance.snapshot.snapshot.equipment.hasOwnProperty("stats"),
+            "snapshot 装备投影不携带 stats 字段（载荷最小化）");
+
+        resetFixture();
+        var helm:BaseItem = equipment("测试头盔", 1, []);
+        _root.物品栏.背包.add(0, helm);
+        _root.收集品栏.材料.add("二阶复合防御组件", 1);
+        var tier:Object = webCommit(
+            "stats-tier", "install_tier", 0, -1, "二阶复合防御组件", undefined);
+        var tierBefore:Array = tier.preview.success
+            ? tier.preview.before.source.equipment.stats : null;
+        var tierAfter:Array = tier.preview.success
+            ? tier.preview.after.source.equipment.stats : null;
+        var tierAfterClean:Boolean = true;
+        if (tierAfter instanceof Array) {
+            for (var li:Number = 0; li < tierAfter.length; li++) {
+                if (String(tierAfter[li].label).indexOf("<") >= 0) {
+                    tierAfterClean = false;
+                }
+            }
+        }
+        var mdHeat:Object = statRow(tierBefore, "magicdefence.热");
+        var mdBase:Object = statRow(tierBefore, "magicdefence.基础");
+        assertTrue(tier.preview.success && tier.commit.success
+                && Math.abs(Number(statRow(tierBefore, "defence").value) - 10) < 0.0001
+                && Math.abs(Number(statRow(tierAfter, "defence").value) - 80) < 0.0001
+                && Math.abs(Number(statRow(tierAfter, "level").value) - 12) < 0.0001
+                && String(statRow(tierAfter, "hp").label) == "HP"
+                && tierAfterClean
+                && mdHeat != null && String(mdHeat.label) == "魔法抗性·热"
+                && Math.abs(Number(mdHeat.value) - 10) < 0.0001
+                && mdBase != null && String(mdBase.label) == "魔法抗性·能量"
+                && Math.abs(Number(mdBase.value) - 5) < 0.0001,
+            "进阶 preview 覆盖 defence/等级限制、剥离 label 标签并拍平魔法抗性");
+
+        resetFixture();
+        var modded:BaseItem = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, modded);
+        _root.收集品栏.材料.add("测试增幅插件", 1);
+        var install:Object = webCommit(
+            "stats-mod", "install_mod", 0, -1, "测试增幅插件", undefined);
+        assertTrue(install.preview.success && install.commit.success
+                && statRow(install.preview.before.source.equipment.stats, "vampirism") == null
+                && Math.abs(Number(statRow(
+                    install.preview.after.source.equipment.stats,
+                    "vampirism").value) - 3) < 0.0001,
+            "插件 preview 在安装后新增对应属性行");
+        var detach:Object = webCommit(
+            "stats-detach", "detach_mod", 0, -1, "测试增幅插件", undefined);
+        assertTrue(detach.preview.success && detach.commit.success
+                && statRow(detach.preview.before.source.equipment.stats, "vampirism") != null
+                && statRow(detach.preview.after.source.equipment.stats, "vampirism") == null,
+            "插件 preview 在卸下后移除对应属性行");
+
+        // —— 候选 tooltip 试算 diff（注释图片栏数据源）——
+        var tipLease:Object = sourceRef(inventorySnapshot(), 0);
+        var tipSnapshotParams:Object = params("stats-tip");
+        tipSnapshotParams.source = tipLease;
+        var tipSnap:Object = EquipmentTuningService.execute("snapshot", tipSnapshotParams);
+        var tipKey:String = "";
+        for (var ti:Number = 0; ti < tipSnap.snapshot.modCandidates.length; ti++) {
+            if (String(tipSnap.snapshot.modCandidates[ti].itemName) == "测试增幅插件") {
+                tipKey = String(tipSnap.snapshot.modCandidates[ti].candidateKey);
+                break;
+            }
+        }
+        var tipParams:Object = params("stats-tip");
+        tipParams.candidateKey = tipKey;
+        tipParams.source = tipLease;
+        var tip:Object = EquipmentTuningService.execute("tooltip", tipParams);
+        assertTrue(tipSnap.success && tip.success
+                && tip.statsBefore instanceof Array && tip.statsAfter instanceof Array
+                && statRow(tip.statsBefore, "vampirism") == null
+                && Math.abs(Number(statRow(tip.statsAfter, "vampirism").value) - 3) < 0.0001,
+            "候选 tooltip 携带安装前后属性投影（材料缺失不阻挡试算）");
+        var legacyTipParams:Object = params("stats-tip");
+        legacyTipParams.candidateKey = tipKey;
+        var legacyTip:Object = EquipmentTuningService.execute("tooltip", legacyTipParams);
+        assertTrue(legacyTip.success && legacyTip.statsBefore == undefined
+                && legacyTip.statsAfter == undefined,
+            "无 source 的旧形态 tooltip 不携带属性投影");
     }
 
     private static function testCandidateAvailabilityRequiresOwnedMaterial():Void {

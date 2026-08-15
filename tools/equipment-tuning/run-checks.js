@@ -90,8 +90,8 @@ function checkSyntaxAndSelfCheck() {
   if (commitJourney.ok !== true
       || commitJourney.gate !== "PG-TUNE-E2E"
       || commitJourney.scope !== "offline_contract_only_no_save_or_runtime_access"
-      || commitJourney.positive !== 7
-      || commitJourney.negative !== 71) {
+      || commitJourney.positive !== 8
+      || commitJourney.negative !== 78) {
     throw new Error("commit journey verifier self-check returned an unexpected contract");
   }
 }

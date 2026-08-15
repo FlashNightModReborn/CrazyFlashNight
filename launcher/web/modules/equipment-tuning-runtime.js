@@ -124,11 +124,25 @@
         return true;
     }
 
+    function statRows(value) {
+        if (!(value instanceof Array) || value.length > 64) return false;
+        var seen = Object.create(null);
+        for (var index = 0; index < value.length; index++) {
+            var row = value[index];
+            if (!hasExactKeys(row, ['key', 'label', 'value'])) return false;
+            if (!identityText(row.key, 64) || seen[row.key]) return false;
+            seen[row.key] = true;
+            if (!identityText(row.label, 128)) return false;
+            if (!finiteNumber(row.value, -1e9, 1e9)) return false;
+        }
+        return true;
+    }
+
     function equipment(value) {
         if (!hasExactKeys(value,
                 ['name', 'displayName', 'icon', 'type', 'use', 'level', 'tier',
                     'mods', 'lastUpdate', 'maxLevel', 'hardMaxLevel'],
-                ['modSlotCapacity'])) return false;
+                ['modSlotCapacity', 'stats'])) return false;
         if (!identityText(value.name, 256)
                 || !identityText(value.displayName, 256)
                 || !identityText(value.icon, 256)
@@ -142,8 +156,9 @@
                 || value.level > value.hardMaxLevel
                 || !finiteNumber(value.lastUpdate, 0, 9007199254740991)
                 || !identityArray(value.mods, 64)) return false;
-        return !own.call(value, 'modSlotCapacity')
-            || integer(value.modSlotCapacity, 0, 64);
+        if (own.call(value, 'modSlotCapacity')
+                && !integer(value.modSlotCapacity, 0, 64)) return false;
+        return !own.call(value, 'stats') || statRows(value.stats);
     }
 
     function enhanceProjection(value, current) {
@@ -361,7 +376,10 @@
                 && text(data.descHTML, 262144, true)
                 && text(data.itemType, 256, true)
                 && text(data.itemUse, 256, true)
-                && identityText(data.text, 256);
+                && identityText(data.text, 256)
+                && (!own.call(data, 'statsBefore') || statRows(data.statsBefore))
+                && (!own.call(data, 'statsAfter') || statRows(data.statsAfter))
+                && own.call(data, 'statsBefore') === own.call(data, 'statsAfter');
         }
         return cmd === 'detach';
     }

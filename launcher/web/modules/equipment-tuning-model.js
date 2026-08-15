@@ -383,6 +383,51 @@
         return parts.join(' · ');
     }
 
+    var STATS_LOWER_IS_BETTER = {weight:true, interval:true, diffusion:true, reloadPenalty:true};
+    var STATS_NEUTRAL = {level:true};
+
+    // preview before/after 装备投影的 stats 行（{key,label,value}）按 key 联结为 diff 行；
+    // 只输出发生变化的行，单端缺失记 null（渲染为 —），极性区分增益/劣化/中性
+    function statsDeltaRows(beforeStats, afterStats) {
+        beforeStats = beforeStats instanceof Array ? beforeStats : [];
+        afterStats = afterStats instanceof Array ? afterStats : [];
+        var beforeMap = Object.create(null);
+        var index;
+        for (index = 0; index < beforeStats.length; index++) {
+            beforeMap[String(beforeStats[index].key)] = beforeStats[index];
+        }
+        var rows = [];
+        var emitted = Object.create(null);
+        for (index = 0; index < afterStats.length; index++) {
+            var afterRow = afterStats[index];
+            var key = String(afterRow.key);
+            emitted[key] = true;
+            var beforeRow = beforeMap[key];
+            var beforeValue = beforeRow ? Number(beforeRow.value) : null;
+            var afterValue = Number(afterRow.value);
+            if (beforeValue !== null && beforeValue === afterValue) continue;
+            rows.push(buildStatDeltaRow(key, afterRow.label, beforeValue, afterValue));
+        }
+        for (index = 0; index < beforeStats.length; index++) {
+            var removedKey = String(beforeStats[index].key);
+            if (emitted[removedKey]) continue;
+            rows.push(buildStatDeltaRow(removedKey, beforeStats[index].label,
+                Number(beforeStats[index].value), null));
+        }
+        return rows;
+    }
+
+    function buildStatDeltaRow(key, label, beforeValue, afterValue) {
+        var delta = (afterValue == null ? 0 : afterValue) - (beforeValue == null ? 0 : beforeValue);
+        var direction = 'neutral';
+        if (delta !== 0 && !STATS_NEUTRAL[key]) {
+            var higherBetter = !STATS_LOWER_IS_BETTER[key];
+            direction = ((delta > 0) === higherBetter) ? 'better' : 'worse';
+        }
+        return {key:key, label:String(label || key),
+            before:beforeValue, after:afterValue, delta:delta, direction:direction};
+    }
+
     return {
         wireRef:wireRef,
         sameRef:sameRef,
@@ -422,6 +467,7 @@
         commitLabel:commitLabel,
         UNKNOWN_MOD_DISPLAY:UNKNOWN_MOD_DISPLAY,
         modPresentationForItem:modPresentationForItem,
-        equipmentDiff:equipmentDiff
+        equipmentDiff:equipmentDiff,
+        statsDeltaRows:statsDeltaRows
     };
 });

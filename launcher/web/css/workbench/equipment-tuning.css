@@ -645,6 +645,28 @@
 .equipment-tuning-equipment-delta b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#d9e0e3; }
 .equipment-tuning-equipment-delta span { overflow-wrap:anywhere; }
 .equipment-tuning-equipment-delta i { color:var(--tuning-delta); font-style:normal; }
+.equipment-tuning-stats-deltas { margin-top:8px; display:grid; gap:8px; }
+.equipment-tuning-stats-delta-name { color:var(--dls-crystal-bright); font:700 10px/1.4 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-stats-delta-rows { margin-top:2px; display:grid; gap:1px; }
+.equipment-tuning-stats-row { display:grid; grid-template-columns:minmax(64px,.8fr) minmax(0,1.2fr) minmax(40px,auto); gap:8px; color:var(--wb-muted); font:10px/1.5 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-stats-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.equipment-tuning-stats-change { overflow-wrap:anywhere; }
+.equipment-tuning-stats-delta-value { text-align:right; color:var(--tuning-delta); font-family:Consolas,"Microsoft YaHei",sans-serif; }
+.equipment-tuning-stats-row.is-better .equipment-tuning-stats-delta-value { color:var(--wb-role-accept); }
+.equipment-tuning-stats-row.is-worse .equipment-tuning-stats-delta-value { color:var(--wb-role-reject); }
+.equipment-tuning-stats-row.is-neutral .equipment-tuning-stats-delta-value { color:var(--wb-muted); }
+/* 候选 tooltip 图片栏的试算 diff（注入 .flash-tt-icon-foot 槽位） */
+.equipment-tuning-tt-diff { margin-top:6px; padding-top:4px; border-top:1px solid var(--dls-crystal-dim); display:grid; gap:1px; }
+.equipment-tuning-tt-diff-title { color:var(--dls-crystal-bright); font:700 10px/1.4 "Microsoft YaHei",sans-serif; }
+.equipment-tuning-tt-diff-row { display:flex; flex-wrap:nowrap; align-items:baseline; justify-content:space-between; gap:6px; color:var(--wb-muted); font:10px/1.4 "Microsoft YaHei",sans-serif; white-space:nowrap; }
+.equipment-tuning-tt-diff-row span { min-width:0; overflow:hidden; text-overflow:ellipsis; }
+.equipment-tuning-tt-diff-row em { flex:0 0 auto; font-style:normal; font-family:Consolas,"Microsoft YaHei",sans-serif; color:inherit; }
+.equipment-tuning-tt-diff-row b { flex:0 0 auto; margin-left:2px; font-family:Consolas,"Microsoft YaHei",sans-serif; }
+.equipment-tuning-tt-diff-row.is-better b { color:var(--wb-role-accept); }
+.equipment-tuning-tt-diff-row.is-worse b { color:var(--wb-role-reject); }
+.equipment-tuning-tt-diff-row.is-neutral b { color:var(--wb-muted); }
+/* blocked 候选的不可用原因行（同槽位，置于 diff 之前） */
+.equipment-tuning-tt-reason { margin-top:6px; color:var(--wb-role-pending); font:10px/1.4 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-material-deltas { margin-top:6px; display:grid; gap:3px; }
 .equipment-tuning-material-delta { min-height:24px; display:flex; align-items:center; justify-content:space-between; gap:8px; color:var(--wb-muted); font:10px/1.35 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-material-delta b { color:var(--tuning-delta); font-family:Consolas,"Microsoft YaHei",sans-serif; }

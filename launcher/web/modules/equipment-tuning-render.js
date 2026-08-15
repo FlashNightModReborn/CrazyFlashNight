@@ -26,6 +26,7 @@ var EquipmentTuningRender = (function() {
         var commitLabel = Model.commitLabel;
         var modPresentationForItem = Model.modPresentationForItem;
         var equipmentDiff = Model.equipmentDiff;
+        var statsDeltaRows = Model.statsDeltaRows;
         var errorMessage = Model.errorMessage;
         var tuningSourceKey = Model.tuningSourceKey;
         var tuningSourceSupports = Model.tuningSourceSupports;
@@ -90,6 +91,7 @@ var EquipmentTuningRender = (function() {
             this._refreshPreviewSurface(renderOptions);
             return;
         }
+        this._detailScrollAnchor = null;
         var preserveScroll = renderOptions.preserveScroll !== false;
         var activeKey = preserveScroll ? activeFocusKey(this._root) : '';
         var activeElement = this._root.ownerDocument && this._root.ownerDocument.activeElement;
@@ -227,7 +229,7 @@ var EquipmentTuningRender = (function() {
         detail.scrollLeft = detailScroll.left;
         preview.scrollTop = previewScroll.top;
         preview.scrollLeft = previewScroll.left;
-        if (!this._readPending) this._detailScrollAnchor = null;
+        if (!this._readPending && !this._enhancePreviewTimer) this._detailScrollAnchor = null;
         if (options && options.focusNext) this._focusCommitAfterPreview();
         return true;
     };
@@ -905,6 +907,12 @@ var EquipmentTuningRender = (function() {
         this._previewFocusIntent = null;
         this._targetLevel = level;
         this._preview = null;
+        // stats 预览使 preview 段落高度随显隐变化；在去抖 render 前锁定 detail 滚动锚点，
+        // 待新 preview 把内容长回来后由 _refreshPreviewSurface 统一恢复
+        var detail = this._root && this._root.querySelector('.equipment-tuning-detail');
+        if (detail && !this._detailScrollAnchor) {
+            this._detailScrollAnchor = {top:detail.scrollTop, left:detail.scrollLeft};
+        }
         var scheduled = this.scheduleEnhancementPreview(level, 160);
         this.render({previewOnly:true});
         return scheduled;
@@ -1086,12 +1094,27 @@ var EquipmentTuningRender = (function() {
                     layoutType:PanelTooltip.inferLayoutType
                         ? PanelTooltip.inferLayoutType(rich && (rich.itemType || rich.itemUse) || 'material') : ''
                 };
+                // 候选试算 diff 与不可用原因注入图片栏：双栏注释的图标区下方空间
+                var footParts = [];
+                if (value && value.available === false) {
+                    var denialText = blockedReasonText(value.reason);
+                    if (denialText) {
+                        footParts.push('<div class="equipment-tuning-tt-reason">不可用：'
+                            + escapeHtml(denialText) + '</div>');
+                    }
+                }
+                var statsFootHtml = buildCandidateStatsHtml(value, rich);
+                if (statsFootHtml) footParts.push(statsFootHtml);
+                if (footParts.length) options.iconFootHTML = footParts.join('');
                 if (introHtml) options.introHTML = introHtml;
                 else options.introWebHTML = textHtml;
                 return PanelTooltip.buildItemRichHtml(options);
             },
             fetch:function(value, callback) {
-                self._mux.request('tooltip', {candidateKey:String(value.candidateKey)}, function(response, entry) {
+                self._mux.request('tooltip', {
+                    candidateKey:String(value.candidateKey),
+                    source:self._source || undefined
+                }, function(response, entry) {
                     callback(response, entry);
                     var previewDiagnostic = self._previewDiagnostic;
                     if (self._preview && self._preview.tuningToken && previewDiagnostic
@@ -1335,8 +1358,10 @@ var EquipmentTuningRender = (function() {
                     : '选择操作后在此确认材料与结果。')));
             return section;
         }
-        var compactEnhance = this._preview.operation === 'enhance';
-        if (compactEnhance) {
+        // enhance 无 stats（旧 runtime）时保持隐藏；有 stats 时只补属性对比，
+        // 等级差与强化石消耗已由 reactor 与 commit bar 呈现，不再重复渲染
+        var enhanceOperation = this._preview.operation === 'enhance';
+        if (enhanceOperation && !hasStatsPreview(this._preview)) {
             section.classList.add('enhance-compact');
             section.hidden = true;
         } else {
@@ -1344,12 +1369,16 @@ var EquipmentTuningRender = (function() {
             heading.innerHTML = '<b>' + operationLabel(this._preview.operation) + '</b><span>'
                 + (this._preview.noOp ? '无需变更' : (this._preview.tuningToken ? '材料与结果已确认' : '条件不满足')) + '</span>';
             section.appendChild(heading);
-            var equipmentDelta = renderEquipmentDelta(
-                this._preview.before,
-                this._preview.after,
-                this._snapshot && this._snapshot.modCandidates);
-            if (equipmentDelta) section.appendChild(equipmentDelta);
-            var materials = this._preview.materials || [];
+            if (!enhanceOperation) {
+                var equipmentDelta = renderEquipmentDelta(
+                    this._preview.before,
+                    this._preview.after,
+                    this._snapshot && this._snapshot.modCandidates);
+                if (equipmentDelta) section.appendChild(equipmentDelta);
+            }
+            var statsDelta = renderStatsDelta(this._preview);
+            if (statsDelta) section.appendChild(statsDelta);
+            var materials = enhanceOperation ? [] : (this._preview.materials || []);
             if (materials.length) {
                 var list = element('div', 'equipment-tuning-material-deltas');
                 materials.forEach(function(material) {
@@ -1492,6 +1521,85 @@ var EquipmentTuningRender = (function() {
             list.appendChild(row); count++;
         }
         return count ? list : null;
+    }
+
+    // preview 是否携带结构化属性投影（旧 runtime 无 stats 时整段回落，保持兼容）
+    function hasStatsPreview(preview) {
+        return !!(preview && preview.after && preview.after.source
+            && preview.after.source.equipment
+            && preview.after.source.equipment.stats instanceof Array);
+    }
+
+    function formatStatValue(value) {
+        if (value == null || isNaN(Number(value))) return '—';
+        return String(Math.round(Number(value) * 100) / 100);
+    }
+
+    // 属性前后对比块：source 必有，convert 时 target 一并对比；无变化行的装备不出块
+    function renderStatsDelta(preview) {
+        if (!hasStatsPreview(preview)) return null;
+        var keys = ['source', 'target'];
+        var container = null;
+        for (var i = 0; i < keys.length; i++) {
+            var beforeEquipment = preview.before && preview.before[keys[i]]
+                && preview.before[keys[i]].equipment;
+            var afterEquipment = preview.after && preview.after[keys[i]]
+                && preview.after[keys[i]].equipment;
+            if (!beforeEquipment || !afterEquipment) continue;
+            var rows = statsDeltaRows(beforeEquipment.stats, afterEquipment.stats);
+            if (!rows.length) continue;
+            if (!container) container = element('div', 'equipment-tuning-stats-deltas');
+            var block = element('div', 'equipment-tuning-stats-delta');
+            var heading = element('div', 'equipment-tuning-stats-delta-name');
+            heading.textContent = afterEquipment.displayName || beforeEquipment.displayName
+                || (keys[i] === 'source' ? '主装备' : '目标装备');
+            block.appendChild(heading);
+            var table = element('div', 'equipment-tuning-stats-delta-rows');
+            rows.forEach(function(row) {
+                var line = element('div', 'equipment-tuning-stats-row is-' + row.direction);
+                var label = element('span', 'equipment-tuning-stats-label');
+                label.textContent = row.label;
+                var change = element('span', 'equipment-tuning-stats-change');
+                change.textContent = formatStatValue(row.before) + ' → ' + formatStatValue(row.after);
+                var delta = element('b', 'equipment-tuning-stats-delta-value');
+                delta.textContent = (row.delta > 0 ? '+' : '') + formatStatValue(row.delta);
+                line.appendChild(label);
+                line.appendChild(change);
+                line.appendChild(delta);
+                table.appendChild(line);
+            });
+            block.appendChild(table);
+            container.appendChild(block);
+        }
+        return container;
+    }
+
+    // 候选 tooltip 图片栏的试算 diff 块：仅当 AS2 附带 before/after 且存在变化行时输出
+    function buildCandidateStatsHtml(candidate, rich) {
+        if (!rich || !(rich.statsBefore instanceof Array) || !(rich.statsAfter instanceof Array)) return '';
+        var rows = statsDeltaRows(rich.statsBefore, rich.statsAfter);
+        if (!rows.length) return '';
+        var title = candidate && candidate.tierName ? '进阶后属性变化' : '安装后属性变化';
+        var html = '<div class="equipment-tuning-tt-diff"><div class="equipment-tuning-tt-diff-title">'
+            + title + '</div>';
+        rows.forEach(function(row) {
+            html += '<div class="equipment-tuning-tt-diff-row is-' + row.direction + '"><span>'
+                + escapeHtml(row.label) + '</span><em>'
+                + escapeHtml(formatStatValue(row.before) + '→' + formatStatValue(row.after))
+                + '</em><b>'
+                + escapeHtml((row.delta > 0 ? '+' : '') + formatStatValue(row.delta)) + '</b></div>';
+        });
+        return html + '</div>';
+    }
+
+    // blocked 候选的原因文案：错误码映射为中文，AS2 中文原因原文直通
+    function blockedReasonText(reason) {
+        var text = String(reason || '');
+        if (!text) return '';
+        if (text === 'material_missing') return '材料不足';
+        if (text === 'tier_transition_rejected') return '进阶顺序尚未满足';
+        if (text === 'already_installed') return '已安装';
+        return text;
     }
 
         return TuningView;

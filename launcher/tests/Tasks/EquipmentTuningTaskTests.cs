@@ -204,6 +204,286 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Fact]
+        public void PreviewStatRows_AreSanitizedAndForwardedToWeb()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                task.HandleWebRequest("snapshot", Request("snapshot", "tune.stats.snapshot"));
+                task.HandleFlashResponse(SnapshotResponse(Assert.Single(sent)), null);
+                sent.Clear();
+                web.Clear();
+
+                task.HandleWebRequest(
+                    "preview",
+                    Request("preview", "tune.stats.preview", "enhance"));
+                JObject response = PreviewResponse(Assert.Single(sent), "enhance");
+                var beforeStats = new JArray(
+                    new JObject
+                    {
+                        ["key"] = "power",
+                        ["label"] = "子弹威力",
+                        ["value"] = 100
+                    },
+                    new JObject
+                    {
+                        ["key"] = "magicdefence.热",
+                        ["label"] = "魔法抗性·热",
+                        ["value"] = 10.5
+                    });
+                var afterStats = new JArray(
+                    new JObject
+                    {
+                        ["key"] = "power",
+                        ["label"] = "子弹威力",
+                        ["value"] = 108
+                    },
+                    new JObject
+                    {
+                        ["key"] = "magicdefence.热",
+                        ["label"] = "魔法抗性·热",
+                        ["value"] = 10.5
+                    });
+                response["before"]["source"]["equipment"]["stats"] =
+                    beforeStats;
+                response["after"]["source"]["equipment"]["stats"] =
+                    afterStats;
+                task.HandleFlashResponse(response, null);
+
+                JObject accepted = Assert.Single(web);
+                Assert.True((bool)accepted["success"], accepted.ToString());
+                JArray forwarded =
+                    (JArray)accepted["after"]["source"]["equipment"]["stats"];
+                Assert.Equal(2, forwarded.Count);
+                Assert.Equal("power", (string)forwarded[0]["key"]);
+                Assert.Equal("子弹威力", (string)forwarded[0]["label"]);
+                Assert.Equal(108, (double)forwarded[0]["value"]);
+                Assert.Equal(
+                    "magicdefence.热",
+                    (string)forwarded[1]["key"]);
+                Assert.Equal(10.5, (double)forwarded[1]["value"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("extra_key")]
+        [InlineData("string_value")]
+        [InlineData("duplicate_key")]
+        [InlineData("oversized")]
+        [InlineData("empty_label")]
+        [InlineData("out_of_range")]
+        public void PreviewStatRows_MalformedRowsFailClosed(string mutation)
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "tune.stats.bad.snapshot." + mutation));
+                task.HandleFlashResponse(SnapshotResponse(Assert.Single(sent)), null);
+                sent.Clear();
+                web.Clear();
+
+                task.HandleWebRequest(
+                    "preview",
+                    Request(
+                        "preview",
+                        "tune.stats.bad.preview." + mutation,
+                        "enhance"));
+                JObject response = PreviewResponse(Assert.Single(sent), "enhance");
+                JArray stats;
+                switch (mutation)
+                {
+                    case "extra_key":
+                        stats = new JArray(new JObject
+                        {
+                            ["key"] = "power",
+                            ["label"] = "子弹威力",
+                            ["value"] = 100,
+                            ["html"] = "<b>x</b>"
+                        });
+                        break;
+                    case "string_value":
+                        stats = new JArray(new JObject
+                        {
+                            ["key"] = "power",
+                            ["label"] = "子弹威力",
+                            ["value"] = "100"
+                        });
+                        break;
+                    case "duplicate_key":
+                        stats = new JArray(
+                            new JObject
+                            {
+                                ["key"] = "power",
+                                ["label"] = "子弹威力",
+                                ["value"] = 100
+                            },
+                            new JObject
+                            {
+                                ["key"] = "power",
+                                ["label"] = "子弹威力",
+                                ["value"] = 108
+                            });
+                        break;
+                    case "oversized":
+                        stats = new JArray();
+                        for (int i = 0; i < 65; i++)
+                        {
+                            stats.Add(new JObject
+                            {
+                                ["key"] = "k" + i,
+                                ["label"] = "属性" + i,
+                                ["value"] = i
+                            });
+                        }
+                        break;
+                    case "empty_label":
+                        stats = new JArray(new JObject
+                        {
+                            ["key"] = "power",
+                            ["label"] = "",
+                            ["value"] = 100
+                        });
+                        break;
+                    default:
+                        stats = new JArray(new JObject
+                        {
+                            ["key"] = "power",
+                            ["label"] = "子弹威力",
+                            ["value"] = 1e10
+                        });
+                        break;
+                }
+                response["after"]["source"]["equipment"]["stats"] = stats;
+
+                task.HandleFlashResponse(response, null);
+
+                Assert.Equal(
+                    "malformed_response",
+                    (string)Assert.Single(web)["error"]);
+            }
+        }
+
+        [Fact]
+        public void CommitWithStatRows_MatchesPreviewBindingAndReachesWeb()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "tune.stats.commit.snapshot"));
+                task.HandleFlashResponse(SnapshotResponse(Assert.Single(sent)), null);
+                sent.Clear();
+                web.Clear();
+
+                var beforeStats = new JArray(
+                    new JObject
+                    {
+                        ["key"] = "power",
+                        ["label"] = "子弹威力",
+                        ["value"] = 100
+                    });
+                var afterStats = new JArray(
+                    new JObject
+                    {
+                        ["key"] = "power",
+                        ["label"] = "子弹威力",
+                        ["value"] = 108
+                    });
+
+                task.HandleWebRequest(
+                    "preview",
+                    Request("preview", "tune.stats.commit.preview", "enhance"));
+                JObject preview = PreviewResponse(Assert.Single(sent), "enhance");
+                preview["before"]["source"]["equipment"]["stats"] =
+                    beforeStats.DeepClone();
+                preview["after"]["source"]["equipment"]["stats"] =
+                    afterStats.DeepClone();
+                task.HandleFlashResponse(preview, null);
+                Assert.True((bool)Assert.Single(web)["success"]);
+                sent.Clear();
+                web.Clear();
+
+                task.HandleWebRequest("commit", Request("commit", "tune.stats.commit"));
+                JObject commit = CommitResponse(Assert.Single(sent));
+                // 生产语义：commit 的 before 回显 preview 计划（含 stats），
+                // after 由提交后权威状态重建、不含 stats；两者都须被接受
+                commit["before"]["source"]["equipment"]["stats"] =
+                    beforeStats.DeepClone();
+                task.HandleFlashResponse(commit, null);
+
+                JObject accepted = Assert.Single(web);
+                Assert.True((bool)accepted["success"], accepted.ToString());
+            }
+        }
+
+        [Fact]
+        public void TooltipStatPreview_ForwardsRowsAndRejectsMalformed()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "tune.stats.tip.snapshot"));
+                task.HandleFlashResponse(SnapshotResponse(Assert.Single(sent)), null);
+                sent.Clear();
+                web.Clear();
+
+                // 携带 source 的 tooltip 请求：Host 重建并下发 lease 规范化后的 source
+                JObject tipRequest = Request("tooltip", "tune.stats.tip");
+                tipRequest["payload"]["source"] = Source(7, "lease.source.7");
+                task.HandleWebRequest("tooltip", tipRequest);
+                JObject command = Assert.Single(sent);
+                Assert.Equal("equipmentTuningTooltip", (string)command["action"]);
+                Assert.Equal("背包", (string)command["source"]["containerId"]);
+
+                JObject okResponse = TooltipResponse(command);
+                okResponse["statsBefore"] = new JArray(new JObject
+                {
+                    ["key"] = "damage", ["label"] = "伤害加成", ["value"] = 10
+                });
+                okResponse["statsAfter"] = new JArray(new JObject
+                {
+                    ["key"] = "damage", ["label"] = "伤害加成", ["value"] = 12
+                });
+                task.HandleFlashResponse(okResponse, null);
+                JObject accepted = Assert.Single(web);
+                Assert.True((bool)accepted["success"]);
+                Assert.Equal(
+                    12,
+                    (double)((JArray)accepted["statsAfter"])[0]["value"]);
+
+                // 只有单边 stats 视为畸形，fail closed
+                sent.Clear();
+                web.Clear();
+                task.HandleWebRequest("tooltip", Request("tooltip", "tune.stats.tip.bad"));
+                JObject badResponse = TooltipResponse(Assert.Single(sent));
+                badResponse["statsBefore"] = new JArray(new JObject
+                {
+                    ["key"] = "damage", ["label"] = "伤害加成", ["value"] = 10
+                });
+                task.HandleFlashResponse(badResponse, null);
+                Assert.Equal(
+                    "malformed_response",
+                    (string)Assert.Single(web)["error"]);
+
+                // 无 source 的旧形态 tooltip 请求保持兼容
+                sent.Clear();
+                web.Clear();
+                task.HandleWebRequest("tooltip", Request("tooltip", "tune.stats.tip.legacy"));
+                task.HandleFlashResponse(TooltipResponse(Assert.Single(sent)), null);
+                Assert.True((bool)Assert.Single(web)["success"]);
+            }
+        }
+
         [Theory]
         [InlineData("enhance")]
         [InlineData("convert")]
