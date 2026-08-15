@@ -274,12 +274,22 @@ window.Icons={
     ok('panel ESC consumes expanded search and clears its local query before panel close',
       Panels.getActive()==='skills'&&SkillsPanel.debugState().searchExpanded===false
       &&SkillsPanel.debugState().searchQuery===''&&sent('close').length===layeredCloseCount);
-    document.querySelector('[data-skill-filter="form"] [data-filter-path="equippable"]').click();
-    document.querySelector('[data-skill-filter="school"] [data-filter-path="武术"]').click();
+    var formFilterButton=document.querySelector('[data-skill-filter="form"] [data-filter-path="equippable"]');
+    formFilterButton.focus();formFilterButton.click();
+    document.querySelector('[data-skill-filter="school"] .skills-filter-label').click();
+    var schoolFilterButton=document.querySelector('[data-skill-filter="school"] [data-filter-path="武术"]');
+    schoolFilterButton.focus();schoolFilterButton.click();
+    document.querySelector('[data-skill-filter="school"] [data-filter-path="武术"]').focus();
+    var beforeFilterEsc={filterPaths:JSON.parse(JSON.stringify(SkillsPanel.debugState().filterPaths)),
+      activeGroup:document.activeElement&&document.activeElement.closest('.skills-filter-group')
+        &&document.activeElement.closest('.skills-filter-group').getAttribute('data-skill-filter')};
     (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(5);
     ok('panel ESC pops only the current filter path before panel close',Panels.getActive()==='skills'
       &&SkillsPanel.debugState().filterPaths.form[0]==='equippable'
-      &&SkillsPanel.debugState().filterPaths.school.length===0&&sent('close').length===layeredCloseCount);
+      &&SkillsPanel.debugState().filterPaths.school.length===0&&sent('close').length===layeredCloseCount,
+      JSON.stringify({before:beforeFilterEsc,active:Panels.getActive(),filterPaths:SkillsPanel.debugState().filterPaths,
+        activeElement:document.activeElement&&document.activeElement.outerHTML,
+        closeCount:sent('close').length,expectedCloseCount:layeredCloseCount}));
     (__handlers.panel_esc||[]).forEach(function(fn){fn({type:'panel_esc'})});await wait(5);
     ok('a second panel ESC pops the remaining filter path without closing',
       Panels.getActive()==='skills'&&SkillsPanel.debugState().filterPaths.form.length===0

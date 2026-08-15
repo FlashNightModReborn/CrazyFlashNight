@@ -1061,7 +1061,7 @@ test('organizer tooltip scope releases replaced trees and is disposed with the p
     const source = fs.readFileSync(path.join(__dirname, '..', 'loot-organizer.js'), 'utf8');
     assert(source.includes('this._tooltip.releaseTree(grid);'));
     assert(source.includes('this._tooltip.dispose(); this._tooltip = null;'));
-    assert(source.includes("options.tooltip.createScope('loot-organizer')"));
+    assert(source.includes("options.tooltip.createScope('loot-organizer', {profile:'simple-tooltip'})"));
 });
 
 console.log('loot state ' + checks.length + '/' + checks.length + ' passed');

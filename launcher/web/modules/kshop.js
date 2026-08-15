@@ -673,7 +673,7 @@ var KShop = (function() {
         _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
         if (_tooltipScope) _tooltipScope.dispose();
         _tooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope)
-            ? PanelTooltip.createScope('kshop') : null;
+            ? PanelTooltip.createScope('kshop', {profile:'dense-inspect'}) : null;
         _closing = false;
         _shopReady = false;
         _loading = true;

@@ -85,7 +85,7 @@ function audit(){
   if(!materials.includes("card.setAttribute('data-material-tooltip', 'catalog')")
       ||!materials.includes('options.bindTooltip(card, item)')
       ||!panel.includes("key:'craft:' + item.name")
-      ||!panel.includes("PanelTooltip.createScope('crafting')")
+      ||!panel.includes("PanelTooltip.createScope('crafting', {profile:'dense-inspect'})")
       ||!harness.includes('production catalog cards use the scoped async tooltip cache after one rich fetch')) {
     throw new Error('material production tooltip binding/cache evidence missing');
   }

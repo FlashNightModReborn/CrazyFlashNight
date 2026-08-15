@@ -43,6 +43,7 @@
     --tt-grad-top:   rgba(153, 153, 153, 0.8);   /* #999 + alphaMultiplier 0.8 */
     --tt-grad-bot:   rgba(51, 51, 51, 0.8);      /* #333 + alphaMultiplier 0.8 */
     --tt-bg:         linear-gradient(to bottom, var(--tt-grad-top), var(--tt-grad-bot));
+    --tt-status-bg:  var(--tt-grad-bot);
     --tt-border:     0 solid transparent;        /* Symbol 274 无 strokes，整体不画 border */
     --tt-text:       #ffffff;                    /* DOMTextAttrs fillColor=#FFFFFF */
     --tt-shadow:     none;                       /* XFL 不画阴影 */
@@ -53,9 +54,15 @@
     --tt-price:      #fcee09;                    /* 高亮黄，跟 AS2 端 K商城金额视觉一致 */
     --tt-warn:       #ff8080;                    /* 锁定红，沿用 launcher 风格 */
     --tt-icon-blend: overlay;                    /* 对齐 AS2 物品图标定位 blendMode="overlay" */
+    --tt-scroll-track: color-mix(in srgb,var(--tt-grad-bot) 74%,transparent);
+    --tt-scroll-thumb: color-mix(in srgb,var(--tt-text) 44%,var(--tt-grad-bot));
+    --tt-scroll-thumb-border: color-mix(in srgb,var(--tt-text) 16%,var(--tt-grad-bot));
+    --tt-scroll-thumb-hover: color-mix(in srgb,var(--tt-text) 64%,var(--tt-grad-bot));
+    --tt-scroll-thumb-pending: color-mix(in srgb,var(--wb-role-pending) 78%,var(--tt-grad-bot));
+    --tt-scroll-thumb-inspect: color-mix(in srgb,var(--wb-role-accept) 84%,var(--tt-grad-bot));
 
-    /* 注释仍是非聚焦说明层，但必须允许指针移入，以满足长内容滚轮读取与 hover
-       附加内容的可悬停契约；JS 几何层继续避免初始位置覆盖热点或触发元素。 */
+    /* 基础命中策略服务 simple-tooltip 的复合 hover 与 pinned-inspector 的独立操作；
+       dense-inspect 在下方按 profile 覆盖为 pointer-events:none。 */
     position:fixed; z-index:1100; pointer-events:auto; display:none;
     background:var(--tt-bg); border:var(--tt-border); color:var(--tt-text);
     padding:10px 14px; font-size:12px; max-width:480px; letter-spacing:0.3px;
@@ -73,6 +80,7 @@
    通过 <html data-tooltip-theme="cyberpunk"> 启用，恢复原 launcher 黑底 cyan 边斜切角风格。 */
 [data-tooltip-theme="cyberpunk"] #panel-tooltip {
     --tt-bg:         var(--cp-bg);
+    --tt-status-bg:  var(--cp-bg);
     --tt-border:     1px solid var(--cp-cyan);
     --tt-text:       var(--cp-text);
     --tt-shadow:     var(--cp-glow);
@@ -83,6 +91,10 @@
     --tt-price:      var(--cp-yellow);
     --tt-warn:       var(--cp-red);
     --tt-icon-blend: normal;
+    --tt-scroll-track: var(--wb-scrollbar-track);
+    --tt-scroll-thumb: var(--wb-scrollbar-thumb);
+    --tt-scroll-thumb-border: var(--wb-scrollbar-thumb-border);
+    --tt-scroll-thumb-hover: var(--wb-scrollbar-thumb-hover);
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
 }
 [data-tooltip-theme="cyberpunk"] .flash-tt-intro-panel,
@@ -532,8 +544,8 @@
 }
 
 /* Desc 右面板（对齐 AS2 mainBg 的视觉，不继承其可遮挡鼠标的舞台定位）。
-   超长内容限制在视口内；共享 tooltip 生命周期把触发物与浮层视为一个复合 hover
-   区域，鼠标滚轮直接滚动 desc，焦点仍留在触发物并用 PageUp/PageDown 访问。 */
+   超长内容限制在视口内：dense 检视由原 owner 转发 wheel/PageUp/PageDown，浮层不命中；
+   pinned 由固定检视器 body 独立滚动；simple 不承载必须滚完的正文。 */
 .flash-tt-desc,
 .kshop-tt-desc {
     flex: 0 0 auto;
@@ -552,6 +564,43 @@
     /* desc 内部目前没用 mix-blend-mode，但保留 isolation 让 future 子元素如有 blend 需求
        有独立合成空间。也跟 intro-panel 对称，避免哪天加 desc icon 时漏配置。 */
     isolation: isolate;
+}
+
+/* WebView2 / Edge 保留原生 scrollTop、wheel 与键盘语义，只替换系统白色滚动条皮肤。
+   dense 浮层不参与 hit-test，故这里没有 thumb hover：它是阅读位置指示器而非可拖控件。 */
+.flash-tt-desc::-webkit-scrollbar,
+.kshop-tt-desc::-webkit-scrollbar {
+    width:6px;
+    height:6px;
+}
+.flash-tt-desc::-webkit-scrollbar-track,
+.kshop-tt-desc::-webkit-scrollbar-track {
+    background:var(--tt-scroll-track);
+}
+.flash-tt-desc::-webkit-scrollbar-thumb,
+.kshop-tt-desc::-webkit-scrollbar-thumb {
+    min-height:28px;
+    background:var(--tt-scroll-thumb);
+    border:1px solid var(--tt-scroll-thumb-border);
+    border-radius:1px;
+}
+#panel-tooltip[data-tooltip-profile="dense-inspect"][data-inspection-state="pending"]
+    .flash-tt-desc--scrollable::-webkit-scrollbar-thumb {
+    background:var(--tt-scroll-thumb-pending);
+}
+#panel-tooltip[data-tooltip-profile="dense-inspect"][data-inspection-state="inspect"]
+    .flash-tt-desc--scrollable::-webkit-scrollbar-thumb {
+    background:var(--tt-scroll-thumb-inspect);
+}
+.flash-tt-desc::-webkit-scrollbar-button,
+.kshop-tt-desc::-webkit-scrollbar-button {
+    display:none;
+    width:0;
+    height:0;
+}
+.flash-tt-desc::-webkit-scrollbar-corner,
+.kshop-tt-desc::-webkit-scrollbar-corner {
+    background:var(--tt-scroll-track);
 }
 
 /* ── 向后兼容：旧结构（icon | intro | desc 三栏）不包 intro-panel 时退化 ──
@@ -581,6 +630,240 @@
 /* Flash HTML 继承样式：AS2 <FONT COLOR> 已转为 <span style="color:"> */
 #panel-tooltip span[style] { font-size:inherit; }
 #panel-tooltip b { font-weight:bold; }
+
+/* ── Tooltip interaction profiles ──
+   dense-inspect 的浮层永远不参与 hit-test：密集格中的 owner 切换由原网格完成，
+   停留 1s 且 desc 确实溢出后，滚轮也由原 owner 转发，不要求鼠标穿过其他格子追浮层。
+   pinned-inspector 只由显式激活打开，作为可独立滚动/关闭的非模态固定检视面。 */
+#panel-tooltip[data-tooltip-profile="dense-inspect"] {
+    pointer-events:none;
+}
+.panel-tooltip-inspection-status {
+    position:relative;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    width:100%;
+    min-width:0;
+    max-width:none;
+    min-height:23px;
+    margin:0 0 7px;
+    padding:4px 7px;
+    box-sizing:border-box;
+    color:color-mix(in srgb,var(--tt-text) 88%,transparent);
+    background:linear-gradient(90deg,
+        color-mix(in srgb,var(--tt-text) 8%,var(--tt-status-bg)) 0%,
+        color-mix(in srgb,var(--tt-text) 3%,var(--tt-status-bg)) 72%,
+        transparent 100%);
+    border:0;
+    border-left:2px solid color-mix(in srgb,var(--tt-text) 38%,transparent);
+    border-bottom:1px solid color-mix(in srgb,var(--tt-text) 14%,transparent);
+    font-size:11px;
+    font-weight:600;
+    line-height:1.3;
+    letter-spacing:0.2px;
+    pointer-events:none;
+}
+.panel-tooltip-inspection-status::before {
+    content:"";
+    width:6px;
+    height:6px;
+    flex:0 0 6px;
+    border-radius:50%;
+    background:color-mix(in srgb,var(--tt-text) 38%,transparent);
+}
+#panel-tooltip[data-inspection-state="pending"] .panel-tooltip-inspection-status::before {
+    background:color-mix(in srgb,var(--wb-role-pending) 86%,transparent);
+    box-shadow:0 0 7px color-mix(in srgb,var(--wb-role-pending) 42%,transparent);
+}
+#panel-tooltip[data-inspection-state="inspect"] .panel-tooltip-inspection-status::before {
+    background:color-mix(in srgb,var(--wb-role-accept) 92%,transparent);
+    box-shadow:0 0 8px color-mix(in srgb,var(--wb-role-accept) 48%,transparent);
+}
+#panel-tooltip[data-inspection-state="pending"] .panel-tooltip-inspection-status {
+    background:linear-gradient(90deg,
+        color-mix(in srgb,var(--wb-role-pending) 17%,var(--tt-status-bg)) 0%,
+        color-mix(in srgb,var(--wb-role-pending) 4%,var(--tt-status-bg)) 72%,
+        transparent 100%);
+    border-left-color:color-mix(in srgb,var(--wb-role-pending) 82%,transparent);
+}
+#panel-tooltip[data-inspection-state="inspect"] .panel-tooltip-inspection-status {
+    background:linear-gradient(90deg,
+        color-mix(in srgb,var(--wb-role-accept) 19%,var(--tt-status-bg)) 0%,
+        color-mix(in srgb,var(--wb-role-accept) 5%,var(--tt-status-bg)) 72%,
+        transparent 100%);
+    border-left-color:color-mix(in srgb,var(--wb-role-accept) 88%,transparent);
+}
+.panel-tooltip-inspection-copy {
+    display:block;
+    min-width:0;
+    flex:0 1 auto;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.panel-tooltip-inspection-meter {
+    position:relative;
+    flex:1 1 56px;
+    max-width:108px;
+    height:2px;
+    background:color-mix(in srgb,var(--wb-role-pending) 82%,transparent);
+    transform:scaleX(1);
+    transform-origin:left center;
+}
+#panel-tooltip[data-inspection-state="pending"] .panel-tooltip-inspection-meter {
+    animation:panel-tooltip-inspection-progress var(--panel-tooltip-inspection-remaining, var(--wb-motion-busy)) var(--wb-ease-linear) forwards;
+}
+#panel-tooltip[data-inspection-state="inspect"] .panel-tooltip-inspection-meter {
+    display:none;
+}
+@keyframes panel-tooltip-inspection-progress {
+    from { transform:scaleX(0); }
+    to { transform:scaleX(1); }
+}
+.panel-tooltip-inspection-owner.panel-tooltip-inspection-pending[data-tooltip-inspection="pending"] {
+    outline:1px solid color-mix(in srgb,var(--wb-role-pending) 82%,transparent);
+    outline-offset:-1px;
+    animation:panel-tooltip-owner-pending var(--wb-motion-busy) var(--wb-ease-standard) infinite alternate;
+}
+.panel-tooltip-inspection-owner.panel-tooltip-inspection-active[data-tooltip-inspection="inspect"] {
+    outline:2px solid color-mix(in srgb,var(--wb-role-accept) 94%,transparent);
+    outline-offset:2px;
+    animation:panel-tooltip-owner-inspect-enter calc(var(--wb-motion-structural) * 2) var(--wb-ease-emphasized) 1;
+}
+@keyframes panel-tooltip-owner-pending {
+    from { outline-offset:-1px; }
+    to { outline-offset:3px; }
+}
+@keyframes panel-tooltip-owner-inspect-enter {
+    0% { outline-offset:-1px; }
+    55% { outline-offset:7px; }
+    100% { outline-offset:2px; }
+}
+
+#panel-tooltip[data-tooltip-profile="pinned-inspector"] {
+    width:min(360px, calc(100vw - 16px));
+    max-width:min(360px, calc(100vw - 16px));
+    padding:0;
+    border:0;
+    box-sizing:border-box;
+    background:transparent;
+    pointer-events:auto;
+}
+.panel-tooltip-inspector-shell {
+    width:100%;
+    max-height:calc(100vh - 16px);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    color:var(--tt-text);
+    background:var(--cp-bg);
+    border:1px solid color-mix(in srgb,var(--tt-text) 32%,transparent);
+    box-shadow:0 10px 28px color-mix(in srgb,var(--wb-scrollbar-track) 48%,transparent);
+    box-sizing:border-box;
+}
+.panel-tooltip-inspector-header {
+    flex:0 0 auto;
+    min-height:30px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:4px 5px 4px 9px;
+    box-sizing:border-box;
+    background:color-mix(in srgb,var(--wb-scrollbar-track) 38%,transparent);
+    border-bottom:1px solid color-mix(in srgb,var(--tt-text) 22%,transparent);
+}
+.panel-tooltip-inspector-title {
+    flex:1;
+    min-width:0;
+    color:var(--tt-price);
+    font-size:10px;
+    letter-spacing:0.7px;
+}
+.panel-tooltip-inspector-close {
+    width:24px;
+    height:22px;
+    padding:0;
+    border:1px solid color-mix(in srgb,var(--tt-text) 28%,transparent);
+    background:color-mix(in srgb,var(--tt-text) 6%,transparent);
+    color:var(--tt-text);
+    font:16px/18px inherit;
+    cursor:pointer;
+}
+.panel-tooltip-inspector-close:hover,
+.panel-tooltip-inspector-close:focus-visible {
+    border-color:var(--tt-price);
+    color:var(--tt-price);
+    outline:none;
+}
+.panel-tooltip-inspector-body {
+    flex:1 1 auto;
+    min-height:0;
+    overflow:auto;
+    overscroll-behavior:contain;
+    scrollbar-gutter:stable;
+}
+.panel-tooltip-inspector-body::-webkit-scrollbar {
+    width:7px;
+    height:7px;
+}
+.panel-tooltip-inspector-body::-webkit-scrollbar-track {
+    background:var(--tt-scroll-track);
+}
+.panel-tooltip-inspector-body::-webkit-scrollbar-thumb {
+    min-height:28px;
+    background:var(--tt-scroll-thumb);
+    border:1px solid var(--tt-scroll-thumb-border);
+    border-radius:1px;
+}
+.panel-tooltip-inspector-body::-webkit-scrollbar-thumb:hover,
+.panel-tooltip-inspector-body::-webkit-scrollbar-thumb:active {
+    background:var(--tt-scroll-thumb-hover);
+}
+.panel-tooltip-inspector-body::-webkit-scrollbar-button {
+    display:none;
+    width:0;
+    height:0;
+}
+.panel-tooltip-inspector-body::-webkit-scrollbar-corner {
+    background:var(--tt-scroll-track);
+}
+#panel-tooltip[data-tooltip-profile="pinned-inspector"] .flash-tt-rich,
+#panel-tooltip[data-tooltip-profile="pinned-inspector"] .kshop-tt-rich {
+    --tt-intro-w:100%;
+    --tt-intro-min-h:0px;
+    --tt-icon-size:96px;
+    width:100%;
+    flex-direction:column;
+    align-items:stretch;
+}
+#panel-tooltip[data-tooltip-profile="pinned-inspector"] .flash-tt-intro-panel,
+#panel-tooltip[data-tooltip-profile="pinned-inspector"] .kshop-tt-intro-panel {
+    width:100%;
+    min-height:0;
+    display:grid;
+    grid-template-columns:104px minmax(0, 1fr);
+    align-items:start;
+    gap:8px;
+    box-sizing:border-box;
+}
+#panel-tooltip[data-tooltip-profile="pinned-inspector"] .flash-tt-desc,
+#panel-tooltip[data-tooltip-profile="pinned-inspector"] .kshop-tt-desc {
+    width:100%;
+    min-width:0;
+    max-width:none;
+    max-height:none;
+    overflow:visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-tooltip-inspection="pending"],
+    [data-tooltip-inspection="inspect"],
+    #panel-tooltip[data-inspection-state="pending"] .panel-tooltip-inspection-meter {
+        animation:none;
+    }
+}
 
 /* ── 变体示例：loading / basic 态 icon 缩小（演示"变体走 token 不动结构"） ── */
 .intel-tt-basic, .arena-tt-basic, .merc-tt-basic {

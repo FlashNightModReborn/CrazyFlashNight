@@ -149,7 +149,9 @@ function(PanelRuntime, global) {
         this._disposeScope();
         if (this._tooltip && this._tooltip.createScope) {
             this._scope = this._tooltip.createScope(
-                'character-build-candidates-' + this._epoch);
+                'character-build-candidates-' + this._epoch, {
+                    profile:'dense-inspect'
+                });
         }
     };
     CandidateTooltip.prototype.reset = function(panelInstanceId, sessionGeneration) {

@@ -117,9 +117,10 @@ function audit(){
       ||[panel,kshop,inventoryWorkbench].some(source=>source.includes('new Workbench.ItemGrid(')))throw new Error('owned inventory shell boundary missing');
   if(!panelUi.includes('workbench.ItemCard.renderCatalog'))throw new Error('NPC shop must render catalog cards via Workbench.ItemCard');
   const tooltip=fs.readFileSync(path.join(WEB,'modules','tooltip.js'),'utf8');
-  if(!panel.includes('.bindAsyncHover(node,')||!panel.includes("PanelTooltip.createScope('npcshop')")
+  if(!panel.includes('.bindAsyncHover(node,')||!panel.includes("PanelTooltip.createScope('npcshop', {profile:'dense-inspect'})")
       ||!tooltip.includes('function createScope(')||!tooltip.includes('function releaseTree(')
-      ||!inventoryWorkbench.includes('PanelTooltip.bindAsyncHover'))throw new Error('Panel async tooltip ownership scope is not shared');
+      ||!inventoryWorkbench.includes("PanelTooltip.createScope('inventory-storage', {profile:'dense-inspect'})")
+      ||!inventoryWorkbench.includes('(_tooltipScope || PanelTooltip).bindAsyncHover(node,'))throw new Error('Panel async tooltip ownership scope is not shared');
   if(!css.includes('.item-grid-compact'))throw new Error('Compact item-grid modifier styles missing');
   if(!harness.includes("__npcshopHarnessScenario==='pg-material-navigation'")
       ||!runtime.includes('SHOP_CATALOG_INDEX_MAX = 10000')

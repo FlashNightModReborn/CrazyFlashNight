@@ -2982,9 +2982,6 @@ var ArenaHarnessQA = (function() {
                 cardIdx = findCardIndexByFaction(cards, '波斯军');
                 api.assert(cardIdx >= 0, '应找到波斯军爬升卡');
                 var c = cards[cardIdx];
-                var cardPortrait = document.querySelector('.arena-card[data-index="' + cardIdx + '"] .arena-card-portrait');
-                var cardPortraitItem = cardPortrait && cardPortrait.querySelector('.arena-card-portrait-item');
-                api.assert(cardPortraitItem && cardPortraitItem.classList.contains('entity-portrait-art') && cardPortraitItem.hasAttribute('data-portrait-source'), '爬升卡应接入怪物身份头像并保留 fail-soft 来源');
                 api.assertEqual(c.maxWaves, 10, '波斯军（large）波数上限');
                 api.assertEqual(c.deposit, 148000, '波斯军押注派生');
                 api.assertEqual(c.reward, 147500, '波斯军波奖励基准');
@@ -2994,6 +2991,10 @@ var ArenaHarnessQA = (function() {
                 api.assertEqual(cards[findCardIndexByFaction(cards, '不死军团')].maxWaves, 5, '不死军团（small）波数上限应为 5');
                 api.assertEqual(cards[findCardIndexByFaction(cards, '天网')].maxWaves, 15, '天网（coalition）波数上限应为 15');
                 api.assertEqual(host.previewMessages.length, 0, '爬升卡预览同为本地采样，零 AS2 preview');
+                // 卡片头像逐个异步挂载；等待任意一张就绪不能证明当前断言目标（波斯军）已完成。
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-card[data-index="' + cardIdx + '"] .arena-card-portrait-item.entity-portrait-art[data-portrait-source]');
+                }, 3000, '波斯军爬升卡接入怪物身份头像并保留 fail-soft 来源');
             })
             .then(function() {
                 clickCard(cardIdx);

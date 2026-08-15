@@ -173,7 +173,7 @@
             iconHtml:requirePort(options,'iconHtml'),
             toast:requirePort(options,'toast')
         };
-        this._tooltip = options.tooltip.createScope('loot-organizer');
+        this._tooltip = options.tooltip.createScope('loot-organizer', {profile:'simple-tooltip'});
         this._state = {};
         this._interaction = interactionForState(this._state);
         this.root = this._document.createElement('section');

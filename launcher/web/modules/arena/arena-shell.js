@@ -280,7 +280,6 @@
         S._previewOpponents = null;
         S._catalogScroll = {};   // 新 session = 新窗口：目录滚动显式归顶
         S._ttCache = {};
-        S._ttHoverKey = null;
         // batch preview 缓存清空：每次 panel reopen = 新 session，旧 lineup 与当前 _root.可雇佣兵 pool 可能不一致
         ArenaChallengeBrowser.resetCardRuntimeState();
         if (S._shell) S._shell.setStatus('读取中', Workbench.WorkbenchState.LOADING);
@@ -384,6 +383,7 @@
     }
 
     function onClose() {
+        if (ArenaChallengeBrowser.disposeTooltips) ArenaChallengeBrowser.disposeTooltips();
         if (S._scaleHandle) { S._scaleHandle.detach(); S._scaleHandle = null; }
         // P3：先退焦点栈/二级页（document 级 listener 随 deactivate 移除，幂等），再清状态
         if (S._customParamPage) {
@@ -403,7 +403,6 @@
         S._previewOpponents = null;
         S._catalogScroll = {};
         S._ttCache = {};
-        S._ttHoverKey = null;
         S._previewCache = {};
         S._previewPending = {};
         S._previewGen = {};

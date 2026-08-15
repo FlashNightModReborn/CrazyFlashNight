@@ -1,10 +1,13 @@
-# Tooltip Regression — Web vs AS2 像素 diff harness
+# Tooltip Regression — 历史 Web vs AS2 像素 diff harness
 
-把 AS2 端 `TooltipGroundTruthDump` 跑出的真值 JSON 喂进 Playwright + Chromium，
-在加载真实 `launcher/web/css/panels.css` 的环境里复刻 mock tooltip DOM，
-测面板 `offsetHeight/offsetWidth`，对比 AS2 真值，输出 diff 报告。
+本目录保留迁移期 `TooltipGroundTruthDump` 的像素差校准工具：把旧 AS2 几何真值喂进 Playwright + Chromium，在真实 `launcher/web/css/panels.css` 中复刻 tooltip DOM，并比较 `offsetHeight/offsetWidth`。它只回答“Web 与旧 Flash 几何差多少”，不是当前文本容量、密集命中或检视状态的权威门。
 
-参数调优的"客观尺子"：每改一个 CSS 常量，跑一次 fixture，看 diff 直方图变化方向。
+当前验证入口分工：
+
+- `scripts/run-tooltip-corpus-audit.ps1` + `tools/parse-tooltip-corpus.js`：事务化采集正式 AS2 composer 的完整输入语料；
+- `launcher/perf/tooltip-audit/runner.js`：全语料、真实 CSS/JS、三视口/两密度/四后缀的排版与 hit-test；
+- `launcher/perf/tooltip-interaction/runner.js`：真实鼠标、滚轮和键盘的三 profile 状态机；
+- 本目录 runner：只有确实需要回看旧 Flash 像素偏差时才运行。
 
 ## 真值文件（dev-only，不进 git）
 
@@ -12,12 +15,7 @@
 属于"web 跟 AS2 对齐"迁移期的中间产物——长期权威翻转到 web 后会退役。
 所以放在 perf/ 目录、不进 runtime 包、`.gitignore` 排除。
 
-**克隆仓库后首次跑 harness：** 先重生成 truth.json
-1. 编辑 [`scripts/TestLoader.as`](../../../scripts/TestLoader.as) 切到 `TooltipGroundTruthDump.runWithRealData()`
-2. `bash scripts/compile_test.sh`，等 ≥20s（async 链跑完）
-3. `cp "$APPDATA/Macromedia/Flash Player/Logs/flashlog.txt" scripts/flashlog.txt`
-4. `python launcher/perf/tooltip-regression/parse-gt.py` → 输出 `tooltip-truth.json`
-5. 跑完记得 TestLoader.as 切回 TooltipTestSuite
+`tooltip-truth.json` 不在仓库时，本历史 runner 不具备可复验输入，应跳过并运行上方现役门；不要为日常验证手工改写 `scripts/TestLoader.as`。若未来必须重采精确 AS2 几何真值，应先增加与 `run-tooltip-corpus-audit.ps1` 同级的 scratch transaction、随机 runId 与异步闭包校验，再使用新鲜真值，不能恢复下方已退役的手工切入口流程。
 
 ## 一次跑通
 
@@ -91,20 +89,6 @@ icon container 在过宽 panel 内居中 → 用户实测发现 icon 左右各 ~
   已在 `TooltipGroundTruthDump.as:182` 修复：`var introW:Number = TooltipConstants.BASE_NUM;`。
   **下次重采 truth.json 后该 diff 应收敛到 ~0**（web 200 vs dump 200）。
 
-## 重采 truth.json
+## 真值重采状态
 
-```bash
-# 1. 切 TestLoader 到 dump 入口：把 `TooltipTestSuite.runAllTests(...)` 包进 /* */ 注释，
-#    再去掉 dump 段（`import ... TooltipGroundTruthDump; TooltipGroundTruthDump.runWithRealData();`）
-#    外层的 /* */ 包裹
-# 2. 编译并等异步链跑完
-bash scripts/compile_test.sh
-sleep 20
-cp "$APPDATA/Macromedia/Flash Player/Logs/flashlog.txt" scripts/flashlog.txt
-# 3. 解析回 JSON
-python launcher/perf/tooltip-regression/parse-gt.py
-# 4. 切 TestLoader 回 TooltipTestSuite
-```
-
-详细 trace 行协议见 `scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipGroundTruthDump.as`
-顶部注释。
+旧手工重采步骤已退役。原行协议仍可在 `scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipGroundTruthDump.as` 顶部查阅，但在事务化 runner 落地前不得把手工切换 TestLoader 得到的文件当正式证据。

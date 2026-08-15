@@ -128,7 +128,7 @@
 
         teardownView(false);
         _tooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.createScope)
-            ? PanelTooltip.createScope('team-pet') : null;
+            ? PanelTooltip.createScope('team-pet', {profile:'simple-tooltip'}) : null;
         buildShell(initData);
         buildRosterViews();
         _shell.mountInitial(_rosterL, _rosterR);

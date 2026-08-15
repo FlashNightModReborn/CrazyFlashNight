@@ -101,7 +101,7 @@ var SkillsPanel = (function() {
     function beginOpen(initData) {
         cleanupView(false);
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
-            ? PanelTooltip.createScope('skills') : null;
+            ? PanelTooltip.createScope('skills', {profile:'dense-inspect'}) : null;
         _initData = initData || {};
         _view = _initData.view === 'trainer' ? 'trainer' : 'manage';
         _snapshot = null;

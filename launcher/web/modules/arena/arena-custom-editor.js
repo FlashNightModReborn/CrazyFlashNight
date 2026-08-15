@@ -1571,7 +1571,7 @@
     function getCustomTooltipScope() {
         if (_customTooltipScope && !_customTooltipScope.disposed) return _customTooltipScope;
         _customTooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.createScope)
-            ? PanelTooltip.createScope('arena-custom-editor') : null;
+            ? PanelTooltip.createScope('arena-custom-editor', {profile:'simple-tooltip'}) : null;
         return _customTooltipScope;
     }
 

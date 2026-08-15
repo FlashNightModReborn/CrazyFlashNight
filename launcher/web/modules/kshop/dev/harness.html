@@ -64,7 +64,7 @@ window.BootstrapAudio = {
 if (new URLSearchParams(location.search).get('visual') !== 'battlebox-real-icons') window.PanelTooltip = {
     visible:false,
     lastRichOptions:null,
-    showAtMouse:function(){ this.visible=true; }, showAnchored:function(){ this.visible=true; }, followMouse:function(){}, hide:function(){ this.visible=false; }, hideHover:function(){ this.visible=false; },
+    showAtMouse:function(){ this.visible=true; }, showAnchored:function(){ this.visible=true; }, showPinned:function(){ this.visible=true; }, followMouse:function(){}, hide:function(){ this.visible=false; }, hideHover:function(){ this.visible=false; },
     isVisible:function(){ return this.visible; }, updateContent:function(){}, inferLayoutType:function(){ return 'narrow'; },
     dynamicIconHtml:function(name){ return Icons.html(name,'tooltip-rich-icon'); },
     staticIconUrl:function(){ return null; },

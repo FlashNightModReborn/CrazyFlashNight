@@ -60,7 +60,6 @@
     state._previewOpponents = null; // 当前选中卡右栏显示的对手数据
     state._catalogScroll = {};      // 模式内滚动记忆：mode → scrollTop（切回恢复；新 session 归顶）
     state._ttCache = {};            // (name|level) → {descHTML, introHTML, displayname}
-    state._ttHoverKey = null;       // 当前 hover 的 cache key
     state._toastTimer = null;
     state._initDifficulty = '';     // initData.difficulty（来自 stage-select 重定向）→ enter 时回传 AS2
     // batch preview 缓存：panel open 时并发抽当前卡片集，结果按 cardIdx 落 cache。

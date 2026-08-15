@@ -47,6 +47,7 @@
     --wb-motion-ambient: 1800ms;
     --wb-ease-standard: cubic-bezier(.2,.8,.25,1);
     --wb-ease-emphasized: cubic-bezier(.2,.9,.3,1.15);
+    --wb-ease-linear: linear;
 
     /* 共享滚动条 */
     --wb-scrollbar-track: #0b1115;

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PanelTooltip interaction fixture</title>
+<link rel="stylesheet" href="/web/css/panels.css">
+<style>
+html,body { margin:0; min-height:100%; background:#10151b; color:#e8edf4; font-family:"Microsoft YaHei",sans-serif; }
+body { padding:24px; box-sizing:border-box; }
+.fixture-layout { display:grid; grid-template-columns:440px 180px; gap:28px; align-items:start; }
+#scroll-host { width:420px; height:250px; overflow:auto; border:1px solid #405266; padding:8px; box-sizing:border-box; }
+#tile-grid { display:grid; grid-template-columns:repeat(5,64px); grid-auto-rows:64px; gap:10px; width:max-content; padding-bottom:420px; }
+.fixture-tile { border:1px solid #5a6d82; background:#1c2631; color:#e8edf4; font:12px/1 "Microsoft YaHei",sans-serif; }
+.fixture-tile:hover,.fixture-tile:focus { border-color:#ffcc00; outline:none; }
+#fixed-rail-anchor { width:170px; height:250px; border:1px dashed #60758c; display:grid; place-items:center; color:#8fa3b8; }
+#panel-tooltip .flash-tt-desc,#panel-tooltip .kshop-tt-desc { max-height:120px; }
+</style>
+</head>
+<body>
+<main class="fixture-layout">
+  <section id="scroll-host" aria-label="密集物品滚动区"><div id="tile-grid"></div></section>
+  <aside id="fixed-rail-anchor">固定检视锚点</aside>
+</main>
+<div id="panel-tooltip" style="display:none" aria-hidden="true"></div>
+<script src="/web/modules/tooltip.js"></script>
+<script>
+(function() {
+    'use strict';
+    var grid = document.getElementById('tile-grid');
+    var scrollHost = document.getElementById('scroll-host');
+    var rail = document.getElementById('fixed-rail-anchor');
+    var scope = null;
+    var bindings = [];
+    var fetchGeneration = 0;
+    var pinnedOwner = {};
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function responseFor(id, longContent) {
+        var lines = [];
+        var count = longContent ? 42 : 1;
+        for (var i = 0; i < count; i++) {
+            lines.push('第 ' + (i + 1) + ' 行：属性、插件与改装说明 ' + id);
+        }
+        return {
+            success:true,
+            introHTML:'<B>' + id + '</B><BR>武器 / 检视样本',
+            descHTML:lines.join('<BR>')
+        };
+    }
+
+    function richHtml(id, response) {
+        return PanelTooltip.buildItemRichHtml({
+            iconHtml:'<div style="width:72px;height:72px;background:#26394d"></div>',
+            introHTML:response.introHTML,
+            descHTML:response.descHTML,
+            suffix:'<div data-fixture-suffix="' + escapeHtml(id) + '">Web 后缀</div>',
+            rootClass:'fixture-rich-tooltip',
+            layoutType:'wide'
+        });
+    }
+
+    function basicHtml(id) {
+        return '<div class="kshop-tt-header"><b>' + escapeHtml(id)
+            + '</b></div><div class="kshop-tt-loading">加载中…</div>';
+    }
+
+    function reset(options) {
+        options = options || {};
+        fetchGeneration++;
+        PanelTooltip.hide();
+        if (scope) scope.dispose();
+        scope = PanelTooltip.createScope('tooltip-interaction-fixture', {
+            profile:options.profile || 'dense-inspect'
+        });
+        bindings = [];
+        grid.innerHTML = '';
+        scrollHost.scrollTop = 0;
+        scrollHost.scrollLeft = 0;
+        var count = Number(options.count) || 25;
+        var longContent = options.longContent !== false;
+        var richDelay = options.richDelay == null ? -1 : Number(options.richDelay);
+        var inspectionDelay = options.inspectionDelay;
+        var generation = fetchGeneration;
+        for (var i = 0; i < count; i++) {
+            (function(index) {
+                var id = 'tile-' + index;
+                var node = document.createElement('button');
+                node.type = 'button';
+                node.className = 'fixture-tile';
+                node.textContent = String(index);
+                node.setAttribute('data-tile-index', String(index));
+                grid.appendChild(node);
+                var cache = {};
+                if (richDelay < 0) cache[id] = responseFor(id, longContent);
+                var bindingOptions = {
+                    key:id,
+                    item:{id:id},
+                    cache:cache,
+                    renderBasic:function() { return basicHtml(id); },
+                    renderRich:function(_, response) { return richHtml(id, response); }
+                };
+                if (inspectionDelay != null) bindingOptions.inspectionDelay = Number(inspectionDelay);
+                if (richDelay >= 0) {
+                    bindingOptions.fetch = function(_, callback) {
+                        setTimeout(function() {
+                            if (generation !== fetchGeneration) return;
+                            callback(responseFor(id, longContent));
+                        }, richDelay);
+                    };
+                }
+                bindings.push(scope.bindAsync(node, bindingOptions));
+            })(i);
+        }
+        return snapshot();
+    }
+
+    function rectOf(node) {
+        if (!node) return null;
+        var rect = node.getBoundingClientRect();
+        return {x:rect.x,y:rect.y,left:rect.left,top:rect.top,right:rect.right,
+            bottom:rect.bottom,width:rect.width,height:rect.height};
+    }
+
+    function scrollbarStyle(node) {
+        if (!node) return null;
+        var bar = getComputedStyle(node, '::-webkit-scrollbar');
+        var thumb = getComputedStyle(node, '::-webkit-scrollbar-thumb');
+        var button = getComputedStyle(node, '::-webkit-scrollbar-button');
+        return {
+            width:bar.width,
+            thumbBackground:thumb.backgroundColor,
+            buttonDisplay:button.display,
+            buttonWidth:button.width,
+            gutterWidth:node.offsetWidth - node.clientWidth
+        };
+    }
+
+    function tileCenter(index) {
+        var node = grid.querySelector('[data-tile-index="' + Number(index) + '"]');
+        var rect = node && node.getBoundingClientRect();
+        return rect ? {x:rect.left + rect.width / 2,y:rect.top + rect.height / 2} : null;
+    }
+
+    function snapshot() {
+        var tooltip = PanelTooltip.getElement();
+        var desc = tooltip && tooltip.querySelector('.flash-tt-desc,.kshop-tt-desc');
+        var inspectorBody = tooltip && tooltip.querySelector('.panel-tooltip-inspector-body');
+        var inspectionStatus = tooltip && tooltip.querySelector('.panel-tooltip-inspection-status');
+        var tooltipContent = tooltip && tooltip.querySelector('.flash-tt-rich,.kshop-tt-rich');
+        return {
+            state:PanelTooltip.debugState(),
+            text:tooltip ? tooltip.textContent.replace(/\s+/g, ' ').trim() : '',
+            tooltipRect:rectOf(tooltip),
+            contentRect:rectOf(tooltipContent),
+            inspectionStatusRect:rectOf(inspectionStatus),
+            inspectionStatusPosition:inspectionStatus ? getComputedStyle(inspectionStatus).position : '',
+            inspectionStatusBackground:inspectionStatus ? getComputedStyle(inspectionStatus).backgroundColor : '',
+            inspectionStatusBackgroundImage:inspectionStatus ? getComputedStyle(inspectionStatus).backgroundImage : '',
+            tooltipPointerEvents:tooltip ? getComputedStyle(tooltip).pointerEvents : '',
+            descScrollTop:desc ? desc.scrollTop : 0,
+            descScrollHeight:desc ? desc.scrollHeight : 0,
+            descClientHeight:desc ? desc.clientHeight : 0,
+            descScrollbar:scrollbarStyle(desc),
+            inspectorBodyScrollTop:inspectorBody ? inspectorBody.scrollTop : 0,
+            inspectorScrollbar:scrollbarStyle(inspectorBody),
+            hostScrollTop:scrollHost.scrollTop,
+            ownerStates:Array.prototype.map.call(grid.querySelectorAll('.fixture-tile'), function(node) {
+                return node.getAttribute('data-tooltip-inspection') || '';
+            })
+        };
+    }
+
+    function openPinned(index) {
+        var id = 'pinned-' + Number(index);
+        var response = responseFor(id, true);
+        PanelTooltip.showPinned(richHtml(id, response), rail, {
+            owner:pinnedOwner,
+            placement:'right',
+            outsideClick:true
+        });
+        return snapshot();
+    }
+
+    function showSimple() {
+        PanelTooltip.showAtMouse('<b>simple fixture</b>', {
+            clientX:24, clientY:24, target:grid, currentTarget:grid
+        });
+        return snapshot();
+    }
+
+    function disposeScope() {
+        if (!scope) return false;
+        var result = scope.dispose();
+        scope = null;
+        return result;
+    }
+
+    window.__tooltipHarness = {
+        reset:reset,
+        snapshot:snapshot,
+        tileCenter:tileCenter,
+        openPinned:openPinned,
+        showSimple:showSimple,
+        disposeScope:disposeScope,
+        railRect:function() { return rectOf(rail); }
+    };
+    reset({inspectionDelay:1000});
+    window.__tooltipHarnessReady = true;
+})();
+</script>
+</body>
+</html>

@@ -301,13 +301,19 @@ function auditArchitectureBoundaries() {
         throw new Error('KShop/NpcShop must render catalog cards via Workbench.ItemCard');
     }
     if (!kshopUiSource.includes('PanelTooltip.bindAsyncHover') || !npcshopUiSource.includes('.bindAsyncHover(node,')
-            || !inventoryWorkbenchUiSource.includes('PanelTooltip.bindAsyncHover')) {
+            || !inventoryWorkbenchUiSource.includes("PanelTooltip.createScope('inventory-storage', {profile:'dense-inspect'})")
+            || !inventoryWorkbenchUiSource.includes('(_tooltipScope || PanelTooltip).bindAsyncHover(node,')) {
         throw new Error('Panel async tooltip binding is not shared across shop and workbench panels');
     }
-    if (!kshopSource.includes("PanelTooltip.createScope('kshop')")
+    if (!kshopSource.includes("PanelTooltip.createScope('kshop', {profile:'dense-inspect'})")
             || !kshopSource.includes('_tooltipScope.dispose()')
             || !kshopUiSource.includes('this._intent.bindAsyncHover(node, options)')) {
         throw new Error('KShop tooltip bindings are not owned by the panel session scope');
+    }
+    if (!kshopUiSource.includes('PanelTooltip.showPinned(')
+            || !kshopUiSource.includes("placement:'right'")
+            || !kshopUiSource.includes('PanelTooltip.updateContent(')) {
+        throw new Error('KShop explicit inspection is not pinned to the stable decision rail');
     }
     if (!panelsCssSource.includes('.item-grid-compact')) {
         throw new Error('Compact item-grid modifier styles missing');

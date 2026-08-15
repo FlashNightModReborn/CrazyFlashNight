@@ -162,7 +162,9 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._loadoutTooltipEpoch = 0;
         this._loadoutTooltipScope = this._tooltip
                 && typeof this._tooltip.createScope === 'function'
-            ? this._tooltip.createScope('character-build-loadout-' + viewSequence) : null;
+            ? this._tooltip.createScope('character-build-loadout-' + viewSequence, {
+                profile:'dense-inspect'
+            }) : null;
         this._stats = null;
         this._facetCounts = FacetCountsModule.normalize(null);
         this._interactionState = 'opening';

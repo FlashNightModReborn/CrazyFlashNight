@@ -351,7 +351,7 @@ var EquipmentTuningView = (function() {
         this._diagnosticEvents = [];
         this._diagnosticSequence = 0;
         this._tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
-            ? PanelTooltip.createScope('equipment-tuning') : null;
+            ? PanelTooltip.createScope('equipment-tuning', {profile:'dense-inspect'}) : null;
         panelInstanceId = EquipmentTuningRuntime.safeToken(panelInstanceId);
         if (!panelInstanceId) {
             this._status = 'Host 面板实例无效';

@@ -797,7 +797,7 @@ var NpcShop = (function() {
         disposeSharedComponents();
         if (_tooltipScope) _tooltipScope.dispose();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
-            ? PanelTooltip.createScope('npcshop') : null;
+            ? PanelTooltip.createScope('npcshop', {profile:'dense-inspect'}) : null;
         _shopId = typeof initData.shopId === 'string' ? initData.shopId : '';
         _state = null; _busy = false; _purchaseIntents = {}; _saleIntents = {}; _settlement = null; _settlementCheckpoint = '';
         _spaceBusy = false; _spaceMutated = false; _helpButton = null;

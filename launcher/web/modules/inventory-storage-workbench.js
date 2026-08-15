@@ -10,11 +10,9 @@ var InventoryStorageWorkbench = (function() {
     var _backpackSortControls, _rightSortControls;
     var _quickBarView, _quickDepositButton, _quickWithdrawButton, _quickCommitButton, _quickCancelButton, _quickStatusNode;
     var _broker, _dragControllers = [], _equipmentInspector = null, _tuningScope = null, _state = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
-    var _tooltipCache = {}, _tooltipSuppressed = false, _lastBackpackFocus = null;
-    var _layoutMode = 'full', _densityController = null, _openGeneration = 0;
-    var _profile = 'battlebox';
-    var _viewMode = 'storage', _ownerPanel = '', _panelInstanceId = '', _tuningOrigin = false;
-    var _rightContainerId = '战备箱';
+    var _tooltipCache = {}, _tooltipScope = null, _tooltipSuppressed = false, _lastBackpackFocus = null;
+    var _layoutMode = 'full', _densityController = null, _openGeneration = 0, _profile = 'battlebox';
+    var _viewMode = 'storage', _ownerPanel = '', _panelInstanceId = '', _tuningOrigin = false, _rightContainerId = '战备箱';
     var _rightLimit = 40, _renderedWindows = {};
     var _ports = {};
     var _runtimeConfig = (typeof window !== 'undefined' && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
@@ -619,7 +617,7 @@ var InventoryStorageWorkbench = (function() {
     function renderView(view) {
         var snapshot = _coordinator.getWindow(view.containerId);
         if (_renderedWindows[view.containerId] === snapshot) return false;
-        _renderedWindows[view.containerId] = snapshot;
+        _renderedWindows[view.containerId] = snapshot; if (_tooltipScope && _tooltipScope.releaseTree) _tooltipScope.releaseTree(view.root);
         if (view.ownedInventoryPane) view.ownedInventoryPane.update(
             snapshot, InventoryWorkbenchOwnedView.presentationFor(view.containerId, snapshot));
         return true;
@@ -710,7 +708,8 @@ var InventoryStorageWorkbench = (function() {
     function bindSlotTooltip(node, containerId, slot) {
         var key = containerId + ':' + slot.physicalSlot + ':' + String(slot.slotLease || '');
         var item = slot.item || {};
-        PanelTooltip.bindAsyncHover(node, {
+        (_tooltipScope || PanelTooltip).bindAsyncHover(node, {
+            profile:'dense-inspect',
             cache: _tooltipCache,
             key: key,
             item: item,
@@ -744,6 +743,7 @@ var InventoryStorageWorkbench = (function() {
         }
         // battlebox 就是玩家正常装备调制入口，不接受 Host/debug capability 制造无调制分支。
         _tuningOrigin = profileConfig.profile === 'battlebox';
+        if (_tooltipScope) _tooltipScope.dispose(); _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope ? PanelTooltip.createScope('inventory-storage', {profile:'dense-inspect'}) : null;
         buildProfileDOM(profileConfig, requestedView, context);
         _quickTransfer.reset();
         _tooltipCache = {};
@@ -781,6 +781,7 @@ var InventoryStorageWorkbench = (function() {
         for (var i = 0; i < _dragControllers.length; i++) _dragControllers[i].cancel();
         clearSelection();
         hideTooltip();
+        if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         closeEquipmentInspector();
         _quickTransfer.reset();
         _coordinator.close();
@@ -896,7 +897,6 @@ var InventoryStorageWorkbench = (function() {
         return InventoryWorkbenchOwnedView.iconHtml(iconName, cls, typeof Icons === 'undefined' ? null : Icons);
     }
     function errorMessage(error) { return InventoryWorkbenchOwnedView.errorMessage(error); }
-
     return {
         activate:activate,
         deactivate:cleanup,

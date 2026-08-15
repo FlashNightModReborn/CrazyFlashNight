@@ -3,6 +3,8 @@
 **文档角色**：双栏工作台范围的布局、交互、美学与前端工程 canonical doc。跨 AS2 / Host 的协议与权威闭环仍以 [as2-web-panel-migration.md](as2-web-panel-migration.md) 为准，验证入口以 [testing-guide.md](testing-guide.md) 为准。
 **当前正式发布（2026-08-08）**：runtime 绑定 commit `bf9be8c43b223b84f487464a7e6aa9eb8211630b`、tag `runtime-build-v2/20260808-p4-p5-source-complete-v1`、release tree `44de7f66421a908723f196718e42867dce601f30` 与 request `424D9CC1975CF099A705C828E354215EF3F568B7198B6B19C13DB019CB25163C`；identity `D6AC04EB7EBE290819B41E2FE17DA7583F154FCB4D46BA258D17EF9866B74350`、closure `91C8AC7469EBF2788C9BDAF8AB13D8F3C02B59588D6B770F0DA6CAD1604DDF5B`、Core DLL `D5EDBA1277BB65D6741E9446415F2555D3D94BFD78723852E621F7366FB8616D`。P4 canonical atlas 固定为 48 个 shared synthetic + 18 个 Arena 生产闭包两阶段场景；P5 同身份另以真实 WebView2→AS2 旅程证明竞技场 session-card 权威链。无 candidate id 的正式入口已达 `standard_entry_verified`，但该 smoke 只验证 Launcher 与 allow-listed Help WebOverlay WGC、可信退出、测试存档不变和无新增残留进程；商城/竞技场业务结论由各自同身份 E2E 持有，不外推为所有业务写、物理设备输入、玩家目视签收、剩余旧 CSS / G6+ 或整体整治均完成专项实机验收。
 **上一正式发布（历史）**：下行 `730c6be781…` / A1–A6 口径只保留为历史分层证据。
+
+**当前工作树增量（未发布）**：共享 `PanelTooltip` 已按本节收敛为 `simple-tooltip / dense-inspect / pinned-inspector` 三种宿主 profile，并新增真实 AS2 语料、DOM 排版矩阵与轨迹交互门。该状态只表示源码和自动门已闭合，不外推为 Launcher runtime promotion、标准入口或玩家目视签收。
 **最后核对代码基线**：commit `bf9be8c43b223b84f487464a7e6aa9eb8211630b`（2026-08-08）。**上一 A1–A6 正式发布（历史明细）**：正式 runtime 绑定 commit `730c6be781ddd22bfd7a59a2e7773acce892f105`、tag `runtime-build-v2/20260806-workbench-authority-a1-a6-v2`、release tree `1434e71d44fe41ad0fa426bc857085f1aff940dd` 与 request `D45D0DEF50E159B8A875DCA922D856BEC69D64A6B779B6B7B7082D68AC6B92CF`；生产 consumer/count 的历史 7-set 已由该 source 的 9 个直接构造 exact-set 覆盖。正式 runtime identity 为 `E203E4F06F6701F8B583768145AE64F93D2599238C290DD71FD50A9FBAA7B422`，closure 为 `F606DF4D2B11579121C7122ECB80734053B0BDF39948921C65B0FDC6CB66800F`，Core DLL 为 `75F35C025BDE29D4D713671763511B425D1AFA5758DD154931AC0FC5C59C4977`。无 candidate id 的正式入口已达 `standard_entry_verified`，但只验证 Launcher 与 allow-listed Help WebOverlay WGC、可信退出、测试存档不变和无新增残留进程；A1–A6 的业务正确性由 current-tree Gate、isolated candidate 与独立审阅承担，不表示所有业务写、物理拖拽、玩家目视签收、剩余旧 CSS / G6+ 或整体整治都完成专项实机验收。
 
 本文适用于 `kshop`、`npcshop`、`crafting`、`loot`、独立 `workbench`、角色构筑、嵌入式装备调制、`skills` 以及 Team 战宠/佣兵中采用双栏工作台语言的视图。它约束玩家态 UI，不把 dev harness、诊断面板或协议调试页误当成生产视觉标准。
@@ -141,7 +143,7 @@ Character Build 候选区以独立 `ChoiceGroup` 提供“兼容 / 背包”范�
 - capability adapter：声明 select、transfer、inspect、discard、buy 等意图；
 - tooltip adapter：提供 pointer 与由键盘导航取得的 focus 共用内容和生命周期。
 
-现役 tooltip 交互只分三种原型，不扩成领域可配置工作流：KShop、NPC、Crafting、Skills、Equipment Tuning、Inventory Workbench、Character Build 候选与已装备/药剂槽、Loot 的实体/动作卡统一走 `bindAsync` 被动说明；非聚焦材料行等只读节点只消费其中的 pointer 分支；购物车点击检视等明确要求持续展示的详情独立走 `showAnchored`。实体格内 nested button 仍属于外层实体说明，但鼠标/笔点击子按钮形成的 focus 不升级为 keyboard owner。selection、busy、drag 只决定当前 owner 是否 eligible，不成为新的核心状态维度；验证锁定输入来源转换与 owner 交接旅程，不把领域状态做笛卡尔积。
+现役 tooltip 交互只分三种宿主 profile，不扩成领域可配置工作流：KShop、NPC、Crafting、Skills、Equipment Tuning、Inventory Workbench、Character Build 候选与已装备/药剂槽、Loot 的密集实体格统一走 `bindAsync + dense-inspect`；有界短提示显式使用 `simple-tooltip`；点击检视等明确要求持续展示的长详情走 `showPinned`，不再把可滚动正文寄托在普通 `showAnchored` hover。实体格内 nested button 仍属于外层实体说明，但鼠标/笔点击子按钮形成的 focus 不升级为 keyboard owner。selection、busy、drag 只决定当前 owner 是否 eligible，不成为新的核心状态维度；验证锁定输入来源转换与 owner 交接旅程，不把领域状态做笛卡尔积。
 
 ### 3.1 武器加权徽标
 
@@ -291,11 +293,19 @@ KShop 只保留一处精确数量编辑入口：目录的单击或 `+` 每次加
 
 `Panels` 的生产挂载必须 fail-closed：初始/懒注册缺失、`create()` 抛错或返回非 `Element`、append 失败、`onOpen/onRebind` 返回 `false` 或抛错，都清掉半挂载 DOM/active 状态，并向 Host 对 incoming initData 的 exact `panelInstanceId` 最多发送一次 close；不能误关旧 owner，也不能留下可被迟到 callback 复活的 pending intent。same-active 新 rebind 先退休旧 required-assets/lazy pending，再以新 initData 为唯一意图；lazy loader 同步抛错、返回非 thenable 或异步拒绝均走同一失败关闭。普通 close 先归零 visual/owner，再隔离 `onClose` 异常；force-close 额外隔离 `onForceClose`，`Bridge.send` 异常同样不得破坏清理。create/append/rebind 失败后的节点、active owner、pending open、focus 与领域状态都必须归零，且由 `test-panel-runtime.js` 覆盖精确 owner 与“恰好一次”语义。
 
-共享异步 tooltip 的核心状态固定为一个 pointer owner 和一个 keyboard owner，pointer 展示优先。共享层以 document capture 的 `pointerdown` / `keydown` 判定输入模态；focus 只有由键盘导航取得时才登记 keyboard owner，鼠标/笔点击造成的 DOM focus 必须撤权。pointer 离开后最多恢复仍连接、仍匹配真实 `document.activeElement` 且未被 suppression 的当前 keyboard owner；不保存 owner 历史栈，也不接受领域 `restoreOn…`、`focusMode` 等恢复策略开关。无 owner 的 `hide()` 是确定性 dismiss，显式点击详情继续独立使用 `showAnchored`，不得混入这两个被动说明 owner。
+共享异步 tooltip 的核心状态固定为一个 pointer owner 和一个 keyboard owner，pointer 展示优先。共享层以 document capture 的 `pointerdown` / `keydown` 判定输入模态；focus 只有由键盘导航取得时才登记 keyboard owner，鼠标/笔点击造成的 DOM focus 必须撤权。pointer 离开后最多恢复仍连接、仍匹配真实 `document.activeElement` 且未被 suppression 的当前 keyboard owner；不保存 owner 历史栈，也不接受领域 `restoreOn…`、`focusMode` 等恢复策略开关。无 owner 的 `hide()` 是确定性 dismiss；固定检视器另有独立 owner，普通 hover 不得覆盖它。
 
 每个 panel/view 实例必须持有一个 tooltip scope；关闭、rebind 或整树替换时由 scope/disposable 一次性销毁域内 binding，`clearElement/releaseTree` 必须在节点脱离 DOM 前执行。恢复前还要复核 scope 活性、节点 `isConnected` 与真实 `document.activeElement`，不能依赖浏览器一定派发 `pointerleave/focusout`。迟到回包不得复活 detached owner，`debugState` 的 detached binding 在稳定关闭后必须为 0。
 
-tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc 双栏，但几何契约归 Web 浮层系统：被动注释浮层本身可悬停（触发物与浮层组成复合 hover 区，支持滚轮读取长说明），初始位置在存在可行候选时不得覆盖当前鼠标热点或触发元素；按 left/right/top/bottom 做视口碰撞选择并保留至少 `10px` anchor gap，最后夹紧 `8px` viewport inset。同一次展示内已选定的 placement 保持侧向锁定：pointermove、占位→富内容替换、字体或图片迟到都只按原侧重新测量坐标，仅当原侧在主轴方向已放不下（必须夹紧主轴）才解锁并重新执行同一碰撞选择；调用方可传 `placement` 区域定侧偏好（如角色构筑已装备槽恒放纸娃娃一侧），偏好侧可行时直接采用、不参与打分；也可传 `anchor` 把定位锚点从触发物覆盖为容器级元素（角色构筑已装备槽锚定整个槽位 grid，注释贴槽位列边缘放置，同组各槽位置一致，且不遮盖相邻触发物、不截获移向相邻槽位的鼠标）。并排双栏超出视口时转为纵向，不能以“复刻 AS2 舞台坐标”为理由允许注释压住鼠标。anchored 内容从占位更新为富内容、字体或图片迟到时，必须以 transform 后的物理尺寸重新测量并再次执行同一契约。
+tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc 双栏，但交互宿主必须从下列三种 profile 中显式选择；定位方式 `showAtMouse/showAnchored` 不再暗含长文本交互能力：
+
+- `simple-tooltip`：只用于有界短提示。触发物与浮层可保留复合 hover，但领域不得把必须滚完才能理解或需要按钮/链接的正文塞进该 profile；若内容增长为长文，应迁到 dense 或固定检视器。
+- `dense-inspect`：用于物品格、装备栏、技能格等密集相邻目标。基础内容立即出现、异步 rich 回包在同一 owner 内连续替换；浮层始终 `pointer-events:none`，允许视觉覆盖相邻格，却不得改变底层 hit-test 或迫使鼠标寻找空地。只有正文实际溢出时才启动稳定停留门：默认 1000ms，明显快速移动会重置进度；owner 和浮层同步播报 pending/inspect 状态，浮层状态位于内容流顶部的预留模式条，禁止绝对定位压住正文；进入 inspect 时 owner 以一次外扩确认和稳定外轮廓提供就近反馈，轮廓不得被领域 hover 样式吞掉。进入 inspect 后仍由原 owner 接收滚轮并滚动正文，同一 wheel gesture 即使到达边界也不泄漏给宿主滚动区；键盘 focus 可用 `PageUp/PageDown` 或 `Alt+↑/↓` 立即进入。正文滚动条保留 WebView2 原生滚动语义但使用 6px 无箭头皮肤，pending/inspect 分别以琥珀/绿色滑块表达状态；由于浮层不命中，它只表示阅读位置，不提供 hover 或可拖拽暗示。离开 owner、切到新 owner、拖拽/选择抑制、Esc、整树替换、rebind 或 close 都退出；玩家不需要、也不应尝试把鼠标移入浮层。
+- `pinned-inspector`：只由显式激活打开，作为稳定侧栏独立滚动；普通 hover 不得覆盖。它的独立滚动 body 使用 7px 无箭头滑块，并提供 hover/active 反馈，明确区别于 dense 的只读位置指示器。它以关闭按钮、Esc、配置允许的 outside click 或下一次显式检视退出，若加入操作控件则按 popover/dialog 的焦点合同设计。KShop 商品激活使用右侧固定检视栏；Character 已装备区与候选区继续使用区域级锚点的 dense rail，因此“把装备区视作整体”是正式空间分区策略，不是失败避让的临时补丁。
+
+几何仍由 Web 浮层系统负责：按 left/right/top/bottom 做视口碰撞选择并保留至少 `10px` anchor gap，最后夹紧 `8px` viewport inset；同一次展示侧向锁定，basic→rich、字体或图片迟到只按原侧重测，原侧主轴确实放不下才重选。区域级 `anchor/placement` 用于稳定一组目标的阅读位置，而不是追着鼠标左右闪烁。并排双栏超出视口时转为纵向；覆盖相邻格对 dense profile 是允许的视觉结果，视口越界、源格命中丢失、profile 漂移才是失败。
+
+真实输入约束由自动语料而非手写样例决定。`scripts/run-tooltip-corpus-audit.ps1` 事务化加载正式 `EquipmentConfig`、`ItemData`、105 个插件定义与 `TooltipComposer`；当前工作树得到 3652 条变体（1600 base、574 tier、1098 单插件宿主形态、279 三插件形态、101 条补充安装路径），105/105 个插件均至少有一条实际合法安装语料且 compose failure=0，正文字符 p50/p90/p99/max 为 102/208/369/692。这里不声称穷举插件排列的笛卡尔积：全部作者文本由基础物品覆盖，全部插件另有合法安装态，所有装备再有 1/3 插件堆叠形态；布局安全不依赖命中某个最长排列。`node launcher/perf/tooltip-audit/runner.js` 再以 3 视口 × 2 密度 × 4 个生产后缀测 87648 个 dense 物品实例和 396 个技能实例；当前越界、热点失守与 hit-test/profile 错误均为 0，106 个实例需要滚动，78286 次相邻格视觉覆盖由 dense 的非命中合同吸收。同一入口另以 3 个视口测 10956 个全语料 pinned 实例，195 次需要检视器自身滚动，越界与交互 profile 错误均为 0。交互门 `node launcher/perf/tooltip-interaction/runner.js` 固定覆盖 1 秒分界、快速移动重置、快速/慢速横纵斜轨迹、异步替换连续性、owner 抢占、滚轮边界、键盘、固定检视器和 scope 销毁。
 
 ## 9. 组件边界
 

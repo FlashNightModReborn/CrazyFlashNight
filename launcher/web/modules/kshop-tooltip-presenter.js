@@ -58,14 +58,22 @@
         this._intent = options.intent || {};
         this._catalogCache = {};
         this._ownedCache = {};
+        this._inspectorOwner = {};
+        this._inspectorRequest = 0;
     }
 
     TooltipPresenter.prototype.reset = function() {
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip.hide) {
+            PanelTooltip.hide(this._inspectorOwner);
+        }
+        this._inspectorOwner = {};
+        this._inspectorRequest++;
         this._catalogCache = {};
         this._ownedCache = {};
     };
 
     TooltipPresenter.prototype.hide = function() {
+        this._inspectorRequest++;
         if (typeof PanelTooltip !== 'undefined' && PanelTooltip.hide) PanelTooltip.hide();
     };
 
@@ -137,6 +145,7 @@
     TooltipPresenter.prototype.bindCatalog = function(card, item) {
         var self = this;
         this._bindAsyncHover(card, {
+            profile:'dense-inspect',
             cache:this._catalogCache,
             key:item.idx,
             item:item,
@@ -157,6 +166,7 @@
         var self = this;
         var item = slot.item || {};
         this._bindAsyncHover(node, {
+            profile:'dense-inspect',
             cache:this._ownedCache,
             key:ownedTooltipKey(containerId, slot),
             item:item,
@@ -184,12 +194,31 @@
         var item = this._state.findCatalogItem && this._state.findCatalogItem(idx);
         if (!item) return;
         var cached = this._catalogCache[idx];
-        PanelTooltip.showAnchored(cached ? this._catalogRichHtml(item, cached) : this._catalogBasicHtml(item), anchorElement);
+        var root = anchorElement && anchorElement.closest
+            ? anchorElement.closest('.kshop-workbench') : null;
+        var railAnchor = root && root.querySelector
+            ? root.querySelector('.workbench-slot[data-slot="L"]') : null;
+        var inspectorRequest = ++this._inspectorRequest;
+        PanelTooltip.showPinned(
+            cached ? this._catalogRichHtml(item, cached) : this._catalogBasicHtml(item),
+            railAnchor || anchorElement, {
+                owner:this._inspectorOwner,
+                placement:'right',
+                outsideClick:true
+            });
         if (!cached) {
             this._intent.requestShop('tooltip', {idx:idx}, function(resp) {
                 if (self._state.isOpen && !self._state.isOpen()) return;
                 if (resp && resp.success) {
-                    self._catalogCache[idx] = {descHTML:resp.descHTML || '', introHTML:resp.introHTML || ''};
+                    var rich = {
+                        descHTML:resp.descHTML || '',
+                        introHTML:resp.introHTML || ''
+                    };
+                    self._catalogCache[idx] = rich;
+                    if (self._inspectorRequest === inspectorRequest
+                            && PanelTooltip.isVisible(self._inspectorOwner)) {
+                        PanelTooltip.updateContent(self._catalogRichHtml(item, rich), self._inspectorOwner);
+                    }
                 }
             });
         }

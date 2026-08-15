@@ -16,6 +16,24 @@
 
     var S = ArenaCore.state; // 共享状态（原顶层 var _x）
 
+    function browseTooltipScope() {
+        if (S._browseTooltipScope && !S._browseTooltipScope.disposed) return S._browseTooltipScope;
+        S._browseTooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.createScope)
+            ? PanelTooltip.createScope('arena-challenge-browser', {profile:'dense-inspect'}) : null;
+        return S._browseTooltipScope;
+    }
+
+    function releaseBrowseTooltips(root) {
+        var scope = S._browseTooltipScope && !S._browseTooltipScope.disposed
+            ? S._browseTooltipScope : null;
+        if (scope && scope.releaseTree && root) scope.releaseTree(root);
+    }
+
+    function disposeTooltips() {
+        if (S._browseTooltipScope) S._browseTooltipScope.dispose();
+        S._browseTooltipScope = null;
+    }
+
 
     // ════════════════════════════════════════════════════════════════════════════
     // P5：标准/隐藏/势力卡都来自 C# snapshot.arenaAuthority。
@@ -497,6 +515,7 @@
         if (S._detailTitleEl) S._detailTitleEl.textContent = '选择挑战';
         if (S._detailMetaEl) S._detailMetaEl.innerHTML = '';
         if (S._detailOpponentsEl) {
+            releaseBrowseTooltips(S._detailOpponentsEl);
             S._detailOpponentsEl.innerHTML =
                 '<div class="arena-decision-empty">' +
                     '<div class="arena-decision-empty-statement">从左侧目录选择一场挑战</div>' +
@@ -526,6 +545,7 @@
         if (card.isHiddenChallenge) {
             renderDetailMeta(card, null);
             S._previewOpponents = null;
+            releaseBrowseTooltips(S._detailOpponentsEl);
             S._detailOpponentsEl.innerHTML =
                 '<div class="arena-opponents-loading">隐藏警报配置保密；对手已抽取，确认后直接迎战</div>';
             updateCommitBar();
@@ -544,10 +564,12 @@
         if (S._previewError[idx]) {
             // 失败态只投影原因、不自动重发：选中是高频浏览动作，自动重试会让失败态一闪而过；
             // 显式重试走目录摘要 ↻ 或左栏「换一批」（行为合同见 grid-single-fail-retry 用例）
+            releaseBrowseTooltips(S._detailOpponentsEl);
             S._detailOpponentsEl.innerHTML = '<div class="arena-opponents-error">' + ArenaCore.escapeHtml(S._previewError[idx]) + '</div>';
             updateCommitBar();
             return;
         }
+        releaseBrowseTooltips(S._detailOpponentsEl);
         S._detailOpponentsEl.innerHTML = '<div class="arena-opponents-loading">正在抽取对手…</div>';
         updateCommitBar();
         ArenaPreviewAuthority.requestPreviewForCard(idx); // dedup 内部处理：pending 中则不重发，等回包 fan out 到右栏
@@ -649,6 +671,7 @@
         delete S._monsterSquad[idx];
         S._previewGen[idx] = (S._previewGen[idx] || 0) + 1;
         S._previewOpponents = null;
+        releaseBrowseTooltips(S._detailOpponentsEl);
         S._detailOpponentsEl.innerHTML = '<div class="arena-opponents-loading">正在重新抽取…</div>';
         updateCommitBar();
         ArenaPreviewAuthority.requestPreviewForCard(idx);
@@ -932,6 +955,7 @@
         delete S._monsterSquad[idx];
         S._previewGen[idx] = (S._previewGen[idx] || 0) + 1; // 三元组 generation 递增，旧回包隔离
         if (S._selectedCardIdx === idx) {
+            releaseBrowseTooltips(S._detailOpponentsEl);
             S._detailOpponentsEl.innerHTML = '<div class="arena-opponents-loading">正在抽取对手…</div>';
             updateCommitBar();
         }
@@ -1017,6 +1041,7 @@
             html += '<div class="arena-opp-monster-note">' + ArenaCore.escapeHtml(noteText) + '</div>';
             html += '</div></div>';
         }
+        releaseBrowseTooltips(S._detailOpponentsEl);
         S._detailOpponentsEl.innerHTML = html;
         mountDetailPortraits(opponents);
     }
@@ -1078,22 +1103,20 @@
             html += '</div>'; // arena-opp-main
             html += '</div>'; // arena-opp-row
         }
+        releaseBrowseTooltips(S._detailOpponentsEl);
         S._detailOpponentsEl.innerHTML = html;
         mountDetailPortraits(opponents);
 
-        // 装备 hover → tooltip
+        var tooltipScope = browseTooltipScope();
+        // 装备密集格 → dense-inspect；回包、滚轮和 owner 切换都由共享绑定管理。
         var cells = S._detailOpponentsEl.querySelectorAll('.arena-equip-cell[data-eq-raw]');
         for (var c = 0; c < cells.length; c++) {
-            cells[c].addEventListener('mouseenter', onEquipHover);
-            cells[c].addEventListener('mouseleave', onEquipLeave);
-            cells[c].addEventListener('mousemove', onEquipMove);
+            bindEquipmentTooltip(tooltipScope, cells[c]);
         }
-        // 技能 hover → tooltip + 烘焙图加载失败回退占位字
+        // 技能只有单行摘要，显式保留 simple-tooltip；烘焙图加载失败仍回退占位字。
         var skillCells = S._detailOpponentsEl.querySelectorAll('.arena-skill-cell[data-skill-name]');
         for (var sc = 0; sc < skillCells.length; sc++) {
-            skillCells[sc].addEventListener('mouseenter', onSkillHover);
-            skillCells[sc].addEventListener('mouseleave', onSkillLeave);
-            skillCells[sc].addEventListener('mousemove', onEquipMove);
+            bindSkillTooltip(tooltipScope, skillCells[sc]);
         }
         var skillImgs = S._detailOpponentsEl.querySelectorAll('.arena-skill-cell-baked .arena-skill-icon');
         for (var si = 0; si < skillImgs.length; si++) {
@@ -1141,21 +1164,31 @@
             '</div>';
     }
 
-    function onSkillHover(e) {
-        var c = e.currentTarget;
-        var type = c.getAttribute('data-skill-type') || '';
-        var trait = c.getAttribute('data-skill-trait') || '';
-        var html = '<div class="kshop-tt-rich"><div class="kshop-tt-desc">' +
-                '<div class="kshop-tt-header"><b>' + ArenaCore.escapeHtml(c.getAttribute('data-skill-name') || '') + '</b>' +
-                    ' <span class="kshop-tt-dim">Lv.' + (c.getAttribute('data-skill-level') || '1') + '</span></div>' +
-                '<div class="kshop-tt-dim">' + ArenaCore.escapeHtml(type + (trait ? ' · ' + trait : '')) + '</div>' +
-                '<div class="kshop-tt-dim">冷却 ' + (c.getAttribute('data-skill-cd') || '0') + 's · 消耗 ' + (c.getAttribute('data-skill-cost') || '0') + ' MP</div>' +
-            '</div></div>';
-        PanelTooltip.showAtMouse(html, e);
-    }
-
-    function onSkillLeave() {
-        PanelTooltip.hideHover();
+    function bindSkillTooltip(scope, cell) {
+        if (!scope || !scope.bindAsync || !cell) return;
+        var model = {
+            name:cell.getAttribute('data-skill-name') || '',
+            level:cell.getAttribute('data-skill-level') || '1',
+            type:cell.getAttribute('data-skill-type') || '',
+            trait:cell.getAttribute('data-skill-trait') || '',
+            cooldown:cell.getAttribute('data-skill-cd') || '0',
+            cost:cell.getAttribute('data-skill-cost') || '0'
+        };
+        scope.bindAsync(cell, {
+            key:'arena-skill:' + model.name + '|' + model.level,
+            item:model,
+            profile:'simple-tooltip',
+            events:'mouse',
+            renderBasic:function(value) {
+                return '<div class="kshop-tt-rich"><div class="kshop-tt-desc">' +
+                    '<div class="kshop-tt-header"><b>' + ArenaCore.escapeHtml(value.name) + '</b>' +
+                        ' <span class="kshop-tt-dim">Lv.' + ArenaCore.escapeHtml(value.level) + '</span></div>' +
+                    '<div class="kshop-tt-dim">' + ArenaCore.escapeHtml(value.type + (value.trait ? ' · ' + value.trait : '')) + '</div>' +
+                    '<div class="kshop-tt-dim">冷却 ' + ArenaCore.escapeHtml(value.cooldown) + 's · 消耗 ' +
+                        ArenaCore.escapeHtml(value.cost) + ' MP</div>' +
+                '</div></div>';
+            }
+        });
     }
 
     // 烘焙图加载失败：移除 img + 去 baked 类（露出占位字 + 还原虚线样式），与 merc 一致
@@ -1169,31 +1202,34 @@
     // ════════════════════════════════════════════════════════════════════════════
     // 装备 Tooltip — kshop 范式：immediate basic html + async rich fetch + cache
     // ════════════════════════════════════════════════════════════════════════════
-    function onEquipHover(e) {
-        var cell = e.currentTarget;
+    function bindEquipmentTooltip(scope, cell) {
+        if (!scope || !scope.bindAsync || !cell) return;
         var raw = cell.getAttribute('data-eq-raw');
         var displayName = cell.getAttribute('data-eq-displayname') || raw;
         var iconKey = cell.getAttribute('data-eq-icon') || '';
         var level = Number(cell.getAttribute('data-eq-level'));
         if (!raw) return;
         var key = raw + '|' + level;
-        S._ttHoverKey = key;
-
-        var cached = S._ttCache[key];
-        var html = cached
-            ? buildRichTooltipHtml(cached, iconKey)
-            : buildBasicTooltipHtml(displayName, level, iconKey);
-        PanelTooltip.showAtMouse(html, e);
-        if (!cached) requestEquipTooltip(raw, level, key, iconKey);
-    }
-
-    function onEquipLeave() {
-        S._ttHoverKey = null;
-        PanelTooltip.hideHover();
-    }
-
-    function onEquipMove(e) {
-        PanelTooltip.followMouse(e);
+        var model = {raw:raw,displayName:displayName,iconKey:iconKey,level:level,key:key};
+        scope.bindAsync(cell, {
+            key:key,
+            item:model,
+            cache:S._ttCache,
+            profile:'dense-inspect',
+            events:'mouse',
+            renderBasic:function(value) {
+                return buildBasicTooltipHtml(value.displayName, value.level, value.iconKey);
+            },
+            renderRich:function(value, response) {
+                return buildRichTooltipHtml(response, value.iconKey);
+            },
+            renderFailure:function(value) {
+                return buildBasicTooltipHtml(value.displayName, value.level, value.iconKey);
+            },
+            fetch:function(value, callback) {
+                requestEquipTooltip(value.raw, value.level, value.key, callback);
+            }
+        });
     }
 
     // 基础态（loading）：仅 hover 即时显示，等 Flash 富文本回包后被 buildRichTooltipHtml 覆盖
@@ -1226,20 +1262,22 @@
         });
     }
 
-    function requestEquipTooltip(raw, level, key, iconKey) {
+    function requestEquipTooltip(raw, level, key, callback) {
         var reqId = 'arena_tt_' + (++S._reqSeq) + '_' + S._session;
         S._pendingReq[reqId] = function(resp) {
-            if (!resp.success) return;
-            S._ttCache[key] = {
+            if (!resp || !resp.success) {
+                callback(resp || {success:false,error:'tooltip_failed'});
+                return;
+            }
+            var result = {
+                success:true,
                 descHTML: resp.descHTML || '',
                 introHTML: resp.introHTML || '',
                 displayname: resp.displayname || '',
                 itemName: resp.itemName || raw
             };
-            // 仍 hover 在同一 cell 才更新
-            if (S._ttHoverKey === key && PanelTooltip.isVisible() && Panels.isOpen()) {
-                PanelTooltip.updateContent(buildRichTooltipHtml(S._ttCache[key], iconKey));
-            }
+            S._ttCache[key] = result;
+            callback(result);
         };
         Bridge.send({
             type: 'panel',
@@ -1301,6 +1339,7 @@
         renderCardSummary: renderCardSummary,
         renderDetailMeta: renderDetailMeta,
         renderOpponents: renderOpponents,
+        disposeTooltips: disposeTooltips,
         updateMoneyDisplay: updateMoneyDisplay,
         updateCardStates: updateCardStates
     };

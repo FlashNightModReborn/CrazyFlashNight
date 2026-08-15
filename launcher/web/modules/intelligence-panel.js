@@ -24,7 +24,7 @@ var IntelligencePanel = (function() {
     var _drawerCollapsed = false;
     var _pagePopupOpen = false;
     var _tooltipCache = {};
-    var _hoverTooltipName = '';
+    var _tooltipScope = null;
     var _resizeObserver = null;
     var _keyHandler = null;
     var _outsideClickHandler = null;
@@ -235,7 +235,9 @@ var IntelligencePanel = (function() {
         _debugMode = initData.debug === true || initData.mode === 'dev';
         _runtimeMode = initData.mode === 'prod' || (initData.source === 'runtime' && !_debugMode);
         _tooltipCache = {};
-        _hoverTooltipName = '';
+        if (_tooltipScope) _tooltipScope.dispose();
+        _tooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.createScope)
+            ? PanelTooltip.createScope('intelligence-catalog', {profile:'dense-inspect'}) : null;
         setCatalogTab('items');
         // T3：尽早挂共享 PanelScale（必须在任何 showLoading/scheduleScaleUpdate 调用之前），
         // 否则早期 scheduleScaleUpdate 会走兑底 updateFitScale 给 _el 写死内联宽高，冻结面板几何。
@@ -296,12 +298,12 @@ var IntelligencePanel = (function() {
             _returnNavigationTimer = null;
         }
         if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hide();
+        if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         unbindScaleWatcher();
         unbindKeyboardAndOutsideClick();
         _pagePopupOpen = false;
         _pending = {};
-        _hoverTooltipName = '';
         _panelInstanceId = '';
         _canReturnCharacterBuild = false;
         if (typeof FontPackBanner !== 'undefined' && FontPackBanner && FontPackBanner.dispose) {
@@ -663,6 +665,7 @@ var IntelligencePanel = (function() {
 
     function renderCatalogPanel() {
         if (!_refs || !_refs.catalogList) return;
+        if (_tooltipScope && _tooltipScope.releaseTree) _tooltipScope.releaseTree(_refs.catalogList);
         _refs.catalogList.innerHTML = '';
         _refs.catalogCount.textContent = _catalog.length + ' 件';
         for (var i = 0; i < _catalog.length; i++) {
@@ -737,14 +740,24 @@ var IntelligencePanel = (function() {
             if (!_runtimeMode && _bundleByName[_currentItemName]) applyCurrentItemFromBundle();
             else requestSnapshot();
         });
-        btn.addEventListener('mouseenter', function(e) { showCatalogTooltip(name, e); });
-        btn.addEventListener('mousemove', function(e) {
-            if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.followMouse(e);
-        });
-        btn.addEventListener('mouseleave', function() {
-            _hoverTooltipName = '';
-            if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hideHover();
-        });
+        var tooltipBinder = _tooltipScope || (typeof PanelTooltip !== 'undefined' ? PanelTooltip : null);
+        if (tooltipBinder && tooltipBinder.bindAsyncHover) {
+            tooltipBinder.bindAsyncHover(btn, {
+                key:'intelligence:' + name,
+                item:item,
+                cache:_tooltipCache,
+                profile:'dense-inspect',
+                events:'mouse',
+                anchor:_refs.catalogPanel,
+                placement:'left',
+                renderBasic:function(value) { return buildBasicTooltip(value, false); },
+                renderRich:function(value, response) { return buildRichTooltip(value, response); },
+                renderFailure:function(value) { return buildBasicTooltip(value, true); },
+                fetch:function(value, callback) {
+                    sendRequest('tooltip', {itemName:value.name}, callback);
+                }
+            });
+        }
         return btn;
     }
 
@@ -769,39 +782,6 @@ var IntelligencePanel = (function() {
     function getPageCountForItem(item) {
         if (item && item.pageCount != null) return Number(item.pageCount) || 0;
         return item && item.pages ? item.pages.length : 0;
-    }
-
-    function showCatalogTooltip(name, e) {
-        if (typeof PanelTooltip === 'undefined' || !PanelTooltip) return;
-        var item = _catalogByName[name] || _bundleByName[name] || { name: name };
-        _hoverTooltipName = name;
-        PanelTooltip.showAtMouse(buildBasicTooltip(item, false), e);
-
-        var cached = _tooltipCache[name];
-        if (cached && cached.success) {
-            PanelTooltip.updateContent(buildRichTooltip(item, cached));
-            return;
-        }
-        if (cached && cached.loading) return;
-        if (cached && cached.failed && (Date.now() - (cached.failedAt || 0)) < 8000) {
-            PanelTooltip.updateContent(buildBasicTooltip(item, true));
-            return;
-        }
-
-        _tooltipCache[name] = { loading: true };
-        sendRequest('tooltip', { itemName: name }, function(resp) {
-            if (!resp.success) {
-                _tooltipCache[name] = { failed: true, failedAt: Date.now(), error: resp.error || 'unknown' };
-                if (_hoverTooltipName === name && PanelTooltip.isVisible()) {
-                    PanelTooltip.updateContent(buildBasicTooltip(item, true));
-                }
-                return;
-            }
-            _tooltipCache[name] = resp;
-            if (_hoverTooltipName === name && PanelTooltip.isVisible()) {
-                PanelTooltip.updateContent(buildRichTooltip(item, resp));
-            }
-        });
     }
 
     function buildBasicTooltip(item, failed) {

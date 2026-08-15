@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tooltip corpus layout audit</title>
+<link rel="stylesheet" href="/launcher/web/css/panels.css">
+<style>
+html,body { margin:0; min-height:100%; overflow:hidden; background:#0d1218; color:#dce7f3; font-family:"Microsoft YaHei",sans-serif; }
+#audit-grid { position:fixed; left:18px; top:18px; width:min(64vw,820px); height:calc(100vh - 36px); display:grid; align-content:start; overflow:hidden; }
+#audit-grid[data-density="full"] { grid-template-columns:repeat(auto-fill,72px); grid-auto-rows:72px; gap:10px; }
+#audit-grid[data-density="compact"] { grid-template-columns:repeat(auto-fill,50px); grid-auto-rows:50px; gap:6px; }
+.audit-anchor { box-sizing:border-box; border:1px solid #385067; background:#17222d; color:#90a9bf; }
+#audit-rail { position:fixed; right:18px; top:18px; width:240px; height:calc(100vh - 36px); border:1px dashed #31485e; }
+</style>
+</head>
+<body>
+<section id="audit-grid" data-density="full" aria-label="注释排版审计锚点"></section>
+<aside id="audit-rail"></aside>
+<div id="panel-tooltip" style="display:none" aria-hidden="true"></div>
+<script>
+window.Icons = {
+    html:function(key, className) {
+        return '<span class="' + String(className || '')
+            + '" data-audit-icon="' + String(key || '') + '"></span>';
+    },
+    resolve:function() { return ''; }
+};
+</script>
+<script src="/launcher/web/modules/tooltip.js"></script>
+<script src="/launcher/web/modules/skills-trainer.js"></script>
+<script src="/launcher/web/modules/skills-render.js"></script>
+<script src="/launcher/perf/tooltip-audit/suffix-registry.js"></script>
+<script>
+(function() {
+    'use strict';
+    var grid = document.getElementById('audit-grid');
+    var rail = document.getElementById('audit-rail');
+    var anchors = [];
+    var skillEntries = [];
+    var skillRenderer = SkillsRender.create({
+        getState:function() { return {}; },
+        safeNumber:function(value) { var n=Number(value); return isFinite(n) ? String(n) : '—'; },
+        cooldownText:function(value) { var n=Number(value); return isFinite(n) ? (n / 1000) + 's' : '—'; },
+        escapeHtml:function(value) {
+            return String(value == null ? '' : value).replace(/&/g,'&amp;')
+                .replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        },
+        healthLabel:function() { return '可装备'; },
+        normalizeAS2Description:function(value) {
+            return String(value == null ? '' : value).replace(/\r\n|\r|\n/g, '<br>');
+        }
+    });
+
+    function childText(node, name) {
+        var child = node.getElementsByTagName(name)[0];
+        return child ? String(child.textContent || '').trim() : '';
+    }
+
+    function loadSkills() {
+        return fetch('/data/skills/skills.xml', {cache:'no-store'}).then(function(response) {
+            if (!response.ok) throw new Error('skills.xml HTTP ' + response.status);
+            return response.text();
+        }).then(function(text) {
+            var xml = new DOMParser().parseFromString(text, 'application/xml');
+            var parserError = xml.querySelector('parsererror');
+            if (parserError) throw new Error('skills.xml parse failed');
+            var nodes = xml.getElementsByTagName('Skill');
+            skillEntries = [];
+            for (var i = 0; i < nodes.length; i++) {
+                var name = childText(nodes[i], 'Name');
+                if (!name) continue;
+                skillEntries.push({
+                    skillKey:name,
+                    iconKey:name,
+                    type:childText(nodes[i], 'Type'),
+                    description:childText(nodes[i], 'Description'),
+                    level:1,
+                    currentLevel:1,
+                    maxLevel:Number(childText(nodes[i], 'MaxLevel')) || 1,
+                    mp:Number(childText(nodes[i], 'MP')) || 0,
+                    cooldownMs:Number(childText(nodes[i], 'CD')) || 0,
+                    stateHealth:'ok',
+                    writeBlocked:false,
+                    passive:childText(nodes[i], 'Type').indexOf('被动') >= 0,
+                    equippable:childText(nodes[i], 'Type') !== '被动'
+                });
+            }
+            return skillEntries.length;
+        });
+    }
+
+    function rebuildAnchors(density) {
+        grid.setAttribute('data-density', density === 'compact' ? 'compact' : 'full');
+        grid.innerHTML = '';
+        anchors = [];
+        for (var i = 0; i < 60; i++) {
+            var node = document.createElement('button');
+            node.type = 'button';
+            node.className = 'audit-anchor';
+            node.textContent = String(i + 1);
+            node.setAttribute('data-audit-anchor', String(i));
+            grid.appendChild(node);
+            anchors.push(node);
+        }
+        document.documentElement.style.setProperty('--cf7-overlay-scale',
+            String(Math.max(.25, window.innerHeight / 864)));
+    }
+
+    function rect(node) {
+        if (!node) return null;
+        var value = node.getBoundingClientRect();
+        return {left:value.left,top:value.top,right:value.right,bottom:value.bottom,
+            width:value.width,height:value.height};
+    }
+
+    function overlapArea(a, b) {
+        if (!a || !b) return 0;
+        return Math.max(0, Math.min(a.right,b.right)-Math.max(a.left,b.left))
+            * Math.max(0, Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+    }
+
+    function suffixById(id) {
+        for (var i = 0; i < TooltipAuditSuffixRegistry.length; i++) {
+            if (TooltipAuditSuffixRegistry[i].id === id) return TooltipAuditSuffixRegistry[i];
+        }
+        return TooltipAuditSuffixRegistry[0];
+    }
+
+    function anchorFor(sequence) {
+        var visible = anchors.filter(function(node) {
+            var value = node.getBoundingClientRect();
+            return value.top >= 0 && value.left >= 0
+                && value.bottom <= innerHeight && value.right <= innerWidth;
+        });
+        if (!visible.length) return anchors[0];
+        var probes = [0, Math.max(0, Math.floor(visible.length / 2) - 1),
+            Math.floor(visible.length / 2), visible.length - 1];
+        return visible[probes[Math.abs(Number(sequence) || 0) % probes.length]];
+    }
+
+    function measureHtml(identity, html, sequence) {
+        var owner = {};
+        var anchor = anchorFor(sequence);
+        var anchorRect = rect(anchor);
+        var clientX = anchorRect.left + anchorRect.width / 2;
+        var clientY = anchorRect.top + anchorRect.height / 2;
+        var shown = PanelTooltip.showAtMouse(html, {
+            clientX:clientX,clientY:clientY,target:anchor,currentTarget:anchor
+        }, owner, {profile:'dense-inspect',anchor:anchor});
+        if (!shown) throw new Error('tooltip show rejected for ' + identity);
+        var tooltip = PanelTooltip.getElement();
+        var rich = tooltip.querySelector('.flash-tt-rich,.kshop-tt-rich');
+        var desc = tooltip.querySelector('.flash-tt-desc,.kshop-tt-desc');
+        var tooltipRect = rect(tooltip);
+        var overlapTiles = 0;
+        var overlapPixels = 0;
+        for (var i = 0; i < anchors.length; i++) {
+            var area = overlapArea(tooltipRect, rect(anchors[i]));
+            if (area > .5) { overlapTiles++; overlapPixels += area; }
+        }
+        var hit = document.elementFromPoint(clientX, clientY);
+        var debug = PanelTooltip.debugState();
+        var result = {
+            identity:identity,
+            width:tooltipRect.width,
+            height:tooltipRect.height,
+            insideViewport:tooltipRect.left >= 7 && tooltipRect.top >= 7
+                && tooltipRect.right <= innerWidth - 7 && tooltipRect.bottom <= innerHeight - 7,
+            stacked:!!(rich && rich.classList.contains('flash-tt-rich--stacked')),
+            split:!!desc,
+            scrollable:!!(desc && desc.scrollHeight > desc.clientHeight + 1),
+            descScrollHeight:desc ? desc.scrollHeight : 0,
+            descClientHeight:desc ? desc.clientHeight : 0,
+            overlapTiles:overlapTiles,
+            overlapPixels:overlapPixels,
+            anchorOverlap:overlapArea(tooltipRect, anchorRect),
+            pointerHitsAnchor:hit === anchor || anchor.contains(hit),
+            pointerEvents:getComputedStyle(tooltip).pointerEvents,
+            placement:debug.lastPlacement && debug.lastPlacement.placement || '',
+            profile:debug.profile
+        };
+        PanelTooltip.hide(owner);
+        return result;
+    }
+
+    function itemHtml(record, suffixId) {
+        var suffix = suffixById(suffixId);
+        return PanelTooltip.buildItemRichHtml({
+            iconHtml:'<span data-audit-item-icon="' + String(record.icon || '') + '"></span>',
+            introHTML:record.introHTML || '',
+            descHTML:record.descHTML || '',
+            metaHTML:suffix.metaHTML,
+            suffix:suffix.suffix,
+            rootClass:'tooltip-audit-item',
+            layoutType:PanelTooltip.inferLayoutType(record.type === '消耗品' ? record.use : record.type)
+        });
+    }
+
+    function measureItems(records, suffixId) {
+        var results = [];
+        for (var i = 0; i < records.length; i++) {
+            var record = records[i];
+            results.push(Object.assign({
+                id:record.id,name:record.name,variant:record.variant,
+                type:record.type,use:record.use,suffix:suffixId
+            }, measureHtml('item:' + record.id + ':' + suffixId,
+                itemHtml(record, suffixId), record.id)));
+        }
+        return results;
+    }
+
+    function measurePinnedItems(records, suffixId) {
+        var results = [];
+        for (var i = 0; i < records.length; i++) {
+            var record = records[i];
+            var owner = {};
+            var identity = 'pinned:' + record.id + ':' + suffixId;
+            var shown = PanelTooltip.showPinned(itemHtml(record, suffixId), rail, {
+                owner:owner,placement:'left',outsideClick:false
+            });
+            if (!shown) throw new Error('pinned tooltip show rejected for ' + identity);
+            var tooltip = PanelTooltip.getElement();
+            var body = tooltip.querySelector('.panel-tooltip-inspector-body');
+            var tooltipRect = rect(tooltip);
+            var debug = PanelTooltip.debugState();
+            results.push({
+                identity:identity,
+                id:record.id,
+                name:record.name,
+                variant:record.variant,
+                type:record.type,
+                use:record.use,
+                suffix:suffixId,
+                width:tooltipRect.width,
+                height:tooltipRect.height,
+                insideViewport:tooltipRect.left >= 7 && tooltipRect.top >= 7
+                    && tooltipRect.right <= innerWidth - 7 && tooltipRect.bottom <= innerHeight - 7,
+                bodyScrollable:!!(body && body.scrollHeight > body.clientHeight + 1),
+                bodyScrollHeight:body ? body.scrollHeight : 0,
+                bodyClientHeight:body ? body.clientHeight : 0,
+                pointerEvents:getComputedStyle(tooltip).pointerEvents,
+                profile:debug.profile,
+                placement:debug.lastPlacement && debug.lastPlacement.placement || ''
+            });
+            PanelTooltip.hide(owner);
+        }
+        return results;
+    }
+
+    function measureSkills(entries) {
+        var source = entries || skillEntries;
+        var results = [];
+        for (var i = 0; i < source.length; i++) {
+            var entry = source[i];
+            results.push(Object.assign({
+                id:i + 1,name:entry.skillKey,variant:'skill',type:entry.type,use:'',suffix:'none'
+            }, measureHtml('skill:' + entry.skillKey,
+                skillRenderer.buildSkillTooltipHtml(entry), i + 1)));
+        }
+        return results;
+    }
+
+    window.__tooltipAudit = {
+        configure:function(density) { rebuildAnchors(density); return anchors.length; },
+        measureItems:measureItems,
+        measurePinnedItems:measurePinnedItems,
+        measureSkills:measureSkills,
+        skills:function() { return skillEntries.slice(); },
+        suffixes:function() { return TooltipAuditSuffixRegistry.map(function(entry) { return entry.id; }); },
+        railRect:function() { return rect(rail); }
+    };
+    rebuildAnchors('full');
+    loadSkills().then(function() {
+        window.__tooltipAuditReady = true;
+    }).catch(function(error) {
+        window.__tooltipAuditError = String(error && error.stack || error);
+    });
+})();
+</script>
+</body>
+</html>

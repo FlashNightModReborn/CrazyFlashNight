@@ -523,7 +523,7 @@
                 var item = document.querySelector('.task-item[data-item-name]');
                 if (item) {
                     var r = item.getBoundingClientRect();
-                    var ev = new MouseEvent('mouseover', { bubbles: true, clientX: r.left + 6, clientY: r.top + 6 });
+                    var ev = new MouseEvent('mouseenter', { bubbles: false, clientX: r.left + 6, clientY: r.top + 6 });
                     item.dispatchEvent(ev);
                 }
             }
@@ -616,7 +616,7 @@
                 var item = document.querySelector('.task-item[data-item-name="金币"]') || document.querySelector('.task-item[data-item-name]');
                 var name = item.getAttribute('data-item-name');
                 var r = item.getBoundingClientRect();
-                item.dispatchEvent(new MouseEvent('mouseover', { bubbles: true, clientX: r.left + 6, clientY: r.top + 6 }));
+                item.dispatchEvent(new MouseEvent('mouseenter', { bubbles: false, clientX: r.left + 6, clientY: r.top + 6 }));
                 // 先确认基础 tip 弹出
                 await waitFor(function() {
                     var tip = document.getElementById('panel-tooltip');

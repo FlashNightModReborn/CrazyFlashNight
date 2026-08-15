@@ -1,9 +1,11 @@
 /**
  * PanelTooltip — 通用面板内 tooltip 模块
  *
- * 提供两种展示模式:
- *   1. hover 模式: showAtMouse / followMouse / hideHover — 跟随鼠标，触发物与浮层组成复合 hover 区
- *   2. anchored 模式: showAnchored — 锚定到指定元素，支持 outside-click 关闭 + 自动超时
+ * 提供三种交互 profile:
+ *   1. simple-tooltip — 短提示，可使用传统复合 hover
+ *   2. dense-inspect — 密集格检视；浮层不命中，稳定停留后由 owner 接管滚轮
+ *   3. pinned-inspector — 显式打开的固定检视器，可独立滚动、关闭
+ * showAtMouse / showAnchored 是定位入口，showPinned 是固定检视入口；profile 决定交互合同。
  *
  * 内容由调用方负责生成 HTML 字符串，本模块只管 DOM、定位和生命周期。
  * 包含 AS2 TextField HTML → 浏览器 HTML 转换工具函数 convertAS2Html()。
@@ -11,11 +13,24 @@
 var PanelTooltip = (function() {
     'use strict';
 
+    // 宿主交互 profile。simple 保留传统复合 hover；dense 把浮层从命中链移除，
+    // 长内容在稳定停留后由原 owner 接管滚轮；pinned 是显式打开、可独立滚动和关闭的
+    // 非模态检视器。profile 是交互合同，不是视觉皮肤。
+    var PROFILE_SIMPLE = 'simple-tooltip';
+    var PROFILE_DENSE = 'dense-inspect';
+    var PROFILE_PINNED = 'pinned-inspector';
+    var DEFAULT_INSPECTION_DELAY = 1000;
+    var DEFAULT_INSPECTION_MOVE_TOLERANCE = 8;
+    var DEFAULT_INSPECTION_SPEED = 0.45;
+
     var _el = null;
     var _visible = false;
     // Optional ownership token used by async/focus bindings. It prevents a
     // stale callback from one tile from replacing another tile's tooltip.
     var _owner = null;
+    var _profile = PROFILE_SIMPLE;
+    var _inspectionState = 'idle';
+    var _pinned = false;
 
     // anchored 模式的生命周期句柄
     var _outsideListener = null;
@@ -35,17 +50,17 @@ var PanelTooltip = (function() {
     var _showGen = 0;
     // 显式追踪 80ms 兜底定时器，hide() 时主动清掉避免空转
     var _repositionTimer = null;
-    // tooltip 本身必须可悬停，长说明才能用滚轮读取。当前展示 owner 通过这一条全局
-    // interaction bridge 接收 enter/leave，避免给每个物品格都向同一 tooltip DOM 挂监听器。
+    // simple/pinned profile 可让 tooltip 自身参与交互。当前展示 owner 通过这一条全局
+    // interaction bridge 接收 enter/leave；dense profile 的 handler 明确拒绝接管。
     var _interactionOwner = null;
     var _interactionHandlers = null;
-    // 兼容仍手工调用 showAtMouse() 的旧面板：mouseleave 不能立即 hide，否则鼠标永远
-    // 进不了可滚动浮层。hideHover() 提供短暂过桥时间，进入 tooltip 后暂停，离开再收起。
+    // 兼容仍手工调用 showAtMouse() 的 simple 旧面板：hideHover() 提供短暂过桥时间，
+    // 进入 tooltip 后暂停，离开再收起；dense 消费者不使用这条手工编排路径。
     var _hoverHideTimer = null;
     var _hoverHidePending = false;
     var _hoverHideOwner = null;
     var _tooltipHovered = false;
-    // mouseenter 不足以证明用户主动进入浮层：tooltip 因异步内容重排、缩放或换 owner
+    // 对允许复合 hover 的 profile，mouseenter 不足以证明用户主动进入浮层：tooltip 因异步内容重排、缩放或换 owner
     // 移到静止指针下时，Chromium 也可能迟到派发 enter。只有真实 move 的命中目标是
     // 当前 tooltip，才授予复合 hover 资格；延迟关闭时再用 elementFromPoint 复核。
     var _lastHoverPointer = null;
@@ -149,13 +164,26 @@ var PanelTooltip = (function() {
         }, 140);
     }
 
+    function normalizeProfile(value) {
+        return value === PROFILE_DENSE || value === PROFILE_PINNED
+            ? value : PROFILE_SIMPLE;
+    }
+
+    function notifyInteractionDismissed() {
+        var handlers = activeInteraction();
+        if (handlers && handlers.dismiss) handlers.dismiss();
+    }
+
     function setInteraction(owner, handlers) {
+        if (_interactionOwner != null && (_interactionOwner !== owner
+                || _interactionHandlers !== handlers)) notifyInteractionDismissed();
         _interactionOwner = owner;
         _interactionHandlers = handlers || null;
     }
 
     function clearInteraction(owner) {
         if (owner != null && _interactionOwner !== owner) return;
+        notifyInteractionDismissed();
         _interactionOwner = null;
         _interactionHandlers = null;
     }
@@ -168,6 +196,115 @@ var PanelTooltip = (function() {
         if (!_el) return null;
         var desc = _el.querySelector('.flash-tt-desc, .kshop-tt-desc');
         return desc && desc.scrollHeight > desc.clientHeight + 1 ? desc : null;
+    }
+
+    function inspectionLabel(state) {
+        if (state === 'pending') return '继续停留，展开完整说明';
+        if (state === 'inspect') return '已进入检视 · 滚轮阅读 · Esc 返回';
+        return '';
+    }
+
+    function ensureInspectionStatus() {
+        if (!_el || _profile !== PROFILE_DENSE || _inspectionState === 'scan'
+                || _inspectionState === 'idle') return null;
+        var status = _el.querySelector('.panel-tooltip-inspection-status');
+        if (!status) {
+            status = document.createElement('div');
+            status.className = 'panel-tooltip-inspection-status';
+            status.setAttribute('aria-live', 'polite');
+            status.innerHTML = '<span class="panel-tooltip-inspection-copy"></span>'
+                + '<span class="panel-tooltip-inspection-meter" aria-hidden="true"></span>';
+            _el.insertBefore(status, _el.firstChild);
+        }
+        var copy = status.querySelector('.panel-tooltip-inspection-copy');
+        if (copy) copy.textContent = inspectionLabel(_inspectionState);
+        return status;
+    }
+
+    function setInspectionState(state, remainingMs) {
+        _inspectionState = state || 'idle';
+        if (!_el) return false;
+        _el.setAttribute('data-inspection-state', _inspectionState);
+        if (remainingMs != null && isFinite(Number(remainingMs))) {
+            _el.style.setProperty('--panel-tooltip-inspection-remaining',
+                Math.max(1, Number(remainingMs)) + 'ms');
+        } else {
+            _el.style.removeProperty('--panel-tooltip-inspection-remaining');
+        }
+        var oldStatus = _el.querySelector('.panel-tooltip-inspection-status');
+        var hadStatus = !!oldStatus;
+        if ((_inspectionState === 'scan' || _inspectionState === 'idle') && oldStatus) {
+            oldStatus.parentNode.removeChild(oldStatus);
+            oldStatus = null;
+        } else {
+            oldStatus = ensureInspectionStatus();
+        }
+        return hadStatus !== !!oldStatus;
+    }
+
+    function configureProfile(profile, state) {
+        _profile = normalizeProfile(profile);
+        _pinned = _profile === PROFILE_PINNED;
+        if (!_el) return;
+        _el.setAttribute('data-tooltip-profile', _profile);
+        if (_pinned) {
+            _el.setAttribute('role', 'dialog');
+            _el.setAttribute('aria-modal', 'false');
+            _el.setAttribute('aria-label', '物品检视器');
+            setInspectionState('pinned');
+        } else {
+            _el.setAttribute('role', 'tooltip');
+            _el.removeAttribute('aria-modal');
+            _el.removeAttribute('aria-label');
+            setInspectionState(state || (_profile === PROFILE_DENSE ? 'scan' : 'idle'));
+        }
+    }
+
+    function replaceTooltipContent(html) {
+        if (!_el) return;
+        if (_profile !== PROFILE_PINNED) {
+            _el.innerHTML = html;
+            ensureInspectionStatus();
+            return;
+        }
+        var shell = _el.querySelector('.panel-tooltip-inspector-shell');
+        var body = shell && shell.querySelector('.panel-tooltip-inspector-body');
+        if (!body) {
+            _el.innerHTML = '';
+            shell = document.createElement('section');
+            shell.className = 'panel-tooltip-inspector-shell';
+            var header = document.createElement('header');
+            header.className = 'panel-tooltip-inspector-header';
+            var title = document.createElement('span');
+            title.className = 'panel-tooltip-inspector-title';
+            title.textContent = '已进入检视 · Esc 退出';
+            var close = document.createElement('button');
+            close.type = 'button';
+            close.className = 'panel-tooltip-inspector-close';
+            close.setAttribute('aria-label', '退出物品检视');
+            close.textContent = '×';
+            close.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                hide(_owner);
+            });
+            header.appendChild(title);
+            header.appendChild(close);
+            body = document.createElement('div');
+            body.className = 'panel-tooltip-inspector-body';
+            shell.appendChild(header);
+            shell.appendChild(body);
+            _el.appendChild(shell);
+        }
+        body.innerHTML = html;
+    }
+
+    function scrollDescriptionBy(delta, consumeAtBoundary) {
+        var desc = scrollableDescription();
+        if (!desc || !isFinite(Number(delta)) || Number(delta) === 0) return false;
+        var before = desc.scrollTop;
+        desc.scrollTop += Number(delta);
+        return consumeAtBoundary || desc.scrollTop !== before;
     }
 
     function refreshScrollableState() {
@@ -204,11 +341,7 @@ var PanelTooltip = (function() {
                 scheduleHoverHide();
             });
             _el.addEventListener('wheel', function(event) {
-                var desc = scrollableDescription();
-                if (!desc || !isFinite(Number(event.deltaY)) || Number(event.deltaY) === 0) return;
-                var before = desc.scrollTop;
-                desc.scrollTop += Number(event.deltaY);
-                if (desc.scrollTop !== before) {
+                if (scrollDescriptionBy(event.deltaY, _profile === PROFILE_PINNED)) {
                     event.preventDefault();
                     event.stopPropagation();
                 }
@@ -248,15 +381,22 @@ var PanelTooltip = (function() {
 
     /** hover 模式：在鼠标位置显示 tooltip，设置内容；opts.placement 可选区域定侧偏好 */
     function showAtMouse(html, e, owner, opts) {
-        if (!_el) return;
+        if (!_el) return false;
+        opts = opts || {};
+        var requestedProfile = normalizeProfile(opts.profile);
+        // 固定检视器只由显式 close / outside-click / 下一次 showPinned 替换。普通 hover
+        // 即使来自另一个 binding，也不能在用户阅读时偷偷改写检视内容。
+        if (_pinned && requestedProfile !== PROFILE_PINNED) return false;
         cleanupHandlers();
         clearHoverHide();
         resetTooltipHover(true);
         clearInteraction();
         _showGen++;                  // 让上一次 show 注册的延迟 reposition 全部失效
         _owner = owner == null ? null : owner;
-        resetPlacementState(opts && opts.placement);
-        _el.innerHTML = html;
+        configureProfile(requestedProfile,
+            requestedProfile === PROFILE_DENSE ? 'scan' : 'idle');
+        resetPlacementState(opts.placement);
+        replaceTooltipContent(html);
         _el.style.display = 'block';
         _el.setAttribute('aria-hidden', 'false');
         _visible = true;
@@ -269,13 +409,14 @@ var PanelTooltip = (function() {
             _lastEvt = {
                 clientX: e.clientX,
                 clientY: e.clientY,
-                anchor: (opts && opts.anchor) || e.currentTarget || e.target || null
+                anchor: opts.anchor || e.currentTarget || e.target || null
             };
             positionAtMouse(_lastEvt);
             // Safety net：覆盖 async 加载源（字体 swap / icon 图加载 / 外部资源）
             var pointerPosition = _lastEvt;
             scheduleReposition(function() { positionAtMouse(pointerPosition); }, _showGen);
         }
+        return true;
     }
 
     // 多 tier 重新定位：每层覆盖不同 async 源。
@@ -611,11 +752,13 @@ var PanelTooltip = (function() {
      * @param {string} [opts.placement] - 可选区域定侧偏好（left/right/top/bottom），可行时本次 show 恒定该侧
      */
     function showAnchored(html, anchorEl, opts) {
-        if (!_el) return;
+        if (!_el) return false;
         opts = opts || {};
         var autoClose = opts.autoClose !== undefined ? opts.autoClose : 8000;
         var outsideClick = opts.outsideClick !== false;
         var owner = opts.owner == null ? null : opts.owner;
+        var requestedProfile = normalizeProfile(opts.profile);
+        if (_pinned && requestedProfile !== PROFILE_PINNED) return false;
 
         cleanupHandlers();
         clearHoverHide();
@@ -623,8 +766,10 @@ var PanelTooltip = (function() {
         clearInteraction();
         _showGen++;                  // anchored 也是新一轮 show，失效上一次的延迟回调
         _owner = owner;
+        configureProfile(requestedProfile,
+            requestedProfile === PROFILE_DENSE ? 'scan' : 'idle');
         resetPlacementState(opts.placement);
-        _el.innerHTML = html;
+        replaceTooltipContent(html);
         _el.style.display = 'block';
         _el.setAttribute('aria-hidden', 'false');
         _visible = true;
@@ -659,6 +804,22 @@ var PanelTooltip = (function() {
         if (autoClose > 0) {
             _autoTimer = setTimeout(function() { hide(owner); }, autoClose);
         }
+        return true;
+    }
+
+    /** 显式固定检视器：稳定锚点、无自动关闭、可滚动，Esc / 关闭按钮 / 外部点击退出。 */
+    function showPinned(html, anchorEl, opts) {
+        opts = opts || {};
+        var pinnedOptions = {};
+        for (var key in opts) {
+            if (Object.prototype.hasOwnProperty.call(opts, key)) pinnedOptions[key] = opts[key];
+        }
+        pinnedOptions.profile = PROFILE_PINNED;
+        pinnedOptions.autoClose = 0;
+        if (!Object.prototype.hasOwnProperty.call(pinnedOptions, 'outsideClick')) {
+            pinnedOptions.outsideClick = true;
+        }
+        return showAnchored(html, anchorEl, pinnedOptions);
     }
 
     /**
@@ -674,9 +835,11 @@ var PanelTooltip = (function() {
      */
     function updateContent(html, owner) {
         if (!_el || !_visible || (owner != null && _owner !== owner)) return false;
-        _el.innerHTML = html;
+        replaceTooltipContent(html);
         applyDescWidth();
         refreshScrollableState();
+        var interaction = activeInteraction();
+        if (interaction && interaction.contentChanged) interaction.contentChanged();
         if (_lastEvt) {
             // 沿用当前 _showGen——updateContent 是同一次 show 的内容刷新，不是新 show。
             // 旧 scheduleReposition 注册的延迟回调依然 alive，新 schedule 添加针对新
@@ -707,10 +870,12 @@ var PanelTooltip = (function() {
         clearInteraction(owner);
         _visible = false;
         _owner = null;
+        _pinned = false;
         _showGen++;                  // 让所有未 fire 的 reposition 回调失效
         _lastEvt = null;
         _lastAnchor = null;
         resetPlacementState(null);
+        configureProfile(PROFILE_SIMPLE, 'idle');
         if (_repositionTimer) {
             clearTimeout(_repositionTimer);
             _repositionTimer = null;
@@ -1003,10 +1168,12 @@ var PanelTooltip = (function() {
      * Panel 级 tooltip 所有权域。面板关闭时只需 dispose 一次，域内所有 tile 的
      * listener、异步回包和可恢复状态都会同时失效，避免调用方手工逐节点清理。
      */
-    function createScope(label) {
+    function createScope(label, options) {
+        options = options || {};
         var scope = {
             id: 'tooltip-scope-' + (++_scopeSequence),
             label: String(label || 'panel'),
+            profile: normalizeProfile(options.profile),
             disposed: false,
             bindings: [],
             isActive: function() { return !scope.disposed; },
@@ -1016,6 +1183,9 @@ var PanelTooltip = (function() {
                 options = options || {};
                 for (var key in options) {
                     if (Object.prototype.hasOwnProperty.call(options, key)) scopedOptions[key] = options[key];
+                }
+                if (!Object.prototype.hasOwnProperty.call(scopedOptions, 'profile')) {
+                    scopedOptions.profile = scope.profile;
                 }
                 scopedOptions.scope = scope;
                 return bindAsync(node, scopedOptions);
@@ -1075,11 +1245,19 @@ var PanelTooltip = (function() {
             bindingCount: _allAsyncBindings.length,
             detachedBindingCount: detached,
             activeScopeCount: _tooltipScopes.length,
-            lastPlacement: _lastPlacement
+            lastPlacement: _lastPlacement,
+            profile: _profile,
+            inspectionState: _inspectionState,
+            pinned: _pinned,
+            scrollable: !!scrollableDescription()
         };
     }
 
     function claimPointerBinding(binding) {
+        var previous = _pointerAsyncBinding;
+        if (previous && previous !== binding && previous.onPointerSuperseded) {
+            previous.onPointerSuperseded();
+        }
         _pointerAsyncBinding = binding || null;
     }
 
@@ -1125,6 +1303,13 @@ var PanelTooltip = (function() {
         if (key === 'Shift' || key === 'Control' || key === 'Alt' || key === 'Meta'
                 || key === 'CapsLock' || key === 'NumLock' || key === 'ScrollLock') return;
         _inputModality = 'keyboard';
+        if (key === 'Escape' && _pinned && _visible) {
+            var pinnedOwner = _owner;
+            if (hide(pinnedOwner)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }
     }
 
     function notePointerInput() {
@@ -1168,6 +1353,11 @@ var PanelTooltip = (function() {
      *                                                     本次 show 恒定放该侧，不可行回退打分
      *   - anchor: Element | function(event, node) -> Element  可选，定位锚点覆盖（如整个
      *                                                     槽位容器）；事件与所有权仍归属 node
+     *   - profile: 'simple-tooltip'|'dense-inspect'|'pinned-inspector'
+     *                                                     默认 simple；密集格使用 dense
+     *   - inspectionDelay: number                          dense 稳定停留门槛，默认 1000ms
+     *   - inspectionMoveTolerance: number                  重新计时的位移阈值，默认 8px
+     *   - inspectionSpeed: number                          重新计时的速度阈值，默认 0.45px/ms
      *   - events: 'pointer' | 'mouse'                     默认 pointer；mouse 兼容旧代码
      */
     function bindAsync(node, options) {
@@ -1190,6 +1380,22 @@ var PanelTooltip = (function() {
         var lastPointerEvent = null;
         var pending = {};
         var requestSequence = 0;
+        var profile = normalizeProfile(options.profile);
+        var inspectionDelay = Number(options.inspectionDelay);
+        if (!isFinite(inspectionDelay) || inspectionDelay < 0) {
+            inspectionDelay = DEFAULT_INSPECTION_DELAY;
+        }
+        var inspectionMoveTolerance = Number(options.inspectionMoveTolerance);
+        if (!isFinite(inspectionMoveTolerance) || inspectionMoveTolerance <= 0) {
+            inspectionMoveTolerance = DEFAULT_INSPECTION_MOVE_TOLERANCE;
+        }
+        var inspectionSpeed = Number(options.inspectionSpeed);
+        if (!isFinite(inspectionSpeed) || inspectionSpeed <= 0) {
+            inspectionSpeed = DEFAULT_INSPECTION_SPEED;
+        }
+        var inspectionTimer = null;
+        var inspectionStartedAt = 0;
+        var inspecting = false;
         var tooltipElement = getElement();
         var tooltipId = tooltipElement && tooltipElement.id ? tooltipElement.id : 'panel-tooltip';
         var describedByAtBind = node.getAttribute('aria-describedby');
@@ -1245,8 +1451,127 @@ var PanelTooltip = (function() {
                 pointerId: e && typeof e.pointerId === 'number' ? e.pointerId : undefined,
                 pointerType: e && e.pointerType || 'mouse',
                 target: e && e.target || node,
-                currentTarget: node
+                currentTarget: node,
+                capturedAt: Date.now()
             };
+        }
+
+        function clearInspectionTimer() {
+            if (inspectionTimer) clearTimeout(inspectionTimer);
+            inspectionTimer = null;
+        }
+
+        function projectOwnerInspection(state) {
+            if (!node || !node.setAttribute) return;
+            if (node.classList) {
+                node.classList.remove('panel-tooltip-inspection-owner',
+                    'panel-tooltip-inspection-pending', 'panel-tooltip-inspection-active');
+            }
+            if (state === 'pending' || state === 'inspect') {
+                node.setAttribute('data-tooltip-inspection', state);
+                if (node.classList) {
+                    node.classList.add('panel-tooltip-inspection-owner',
+                        state === 'pending'
+                            ? 'panel-tooltip-inspection-pending'
+                            : 'panel-tooltip-inspection-active');
+                }
+            } else {
+                node.removeAttribute('data-tooltip-inspection');
+            }
+        }
+
+        function projectTooltipInspection(state, remainingMs) {
+            var geometryChanged = setInspectionState(state, remainingMs);
+            if (!geometryChanged || !isVisible(owner)) return;
+            if (_lastEvt) positionAtMouse(_lastEvt);
+            else if (_lastAnchor) positionAnchored(_lastAnchor);
+        }
+
+        function resetInspectionProjection() {
+            clearInspectionTimer();
+            inspecting = false;
+            projectOwnerInspection('scan');
+            if (isVisible(owner) && profile === PROFILE_DENSE) projectTooltipInspection('scan');
+        }
+
+        function activateInspection(force) {
+            if (profile !== PROFILE_DENSE || !isVisible(owner)
+                    || (!force && !canOwnPointer(lastPointerEvent, true))) return false;
+            if (!scrollableDescription()) {
+                resetInspectionProjection();
+                return false;
+            }
+            clearInspectionTimer();
+            inspecting = true;
+            projectOwnerInspection('inspect');
+            projectTooltipInspection('inspect');
+            return true;
+        }
+
+        function refreshInspectionDwell() {
+            clearInspectionTimer();
+            if (profile !== PROFILE_DENSE || inspecting || !isVisible(owner)
+                    || !canOwnPointer(lastPointerEvent, true)) return;
+            // basic 态尚未溢出时不播空进度；rich 回包替换 DOM 后 contentChanged 会按
+            // 原始进入时刻补算剩余时间，已经停够 1s 则直接进入检视。
+            if (!scrollableDescription()) {
+                projectOwnerInspection('scan');
+                projectTooltipInspection('scan');
+                return;
+            }
+            var elapsed = Math.max(0, Date.now() - inspectionStartedAt);
+            var remaining = Math.max(0, inspectionDelay - elapsed);
+            if (remaining <= 0) {
+                activateInspection(false);
+                return;
+            }
+            projectOwnerInspection('pending');
+            projectTooltipInspection('pending', remaining);
+            inspectionTimer = setTimeout(function() {
+                inspectionTimer = null;
+                activateInspection(false);
+            }, remaining);
+        }
+
+        function beginInspectionDwell() {
+            if (profile !== PROFILE_DENSE) return;
+            inspectionStartedAt = Date.now();
+            inspecting = false;
+            refreshInspectionDwell();
+        }
+
+        function noteInspectionMotion(previous, current) {
+            if (profile !== PROFILE_DENSE || !previous || !current || inspecting) return;
+            var dx = Number(current.clientX) - Number(previous.clientX);
+            var dy = Number(current.clientY) - Number(previous.clientY);
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            var elapsed = Math.max(1, Number(current.capturedAt) - Number(previous.capturedAt));
+            if (distance >= inspectionMoveTolerance
+                    && (distance / elapsed >= inspectionSpeed
+                        || distance >= inspectionMoveTolerance * 3)) {
+                inspectionStartedAt = Date.now();
+                refreshInspectionDwell();
+            }
+        }
+
+        function onInspectionContentChanged() {
+            if (profile !== PROFILE_DENSE || !isVisible(owner)) return;
+            if (inspecting && !scrollableDescription()) resetInspectionProjection();
+            else refreshInspectionDwell();
+        }
+
+        function onOwnerWheel(event) {
+            if (profile !== PROFILE_DENSE || !inspecting || !isVisible(owner)
+                    || _pointerAsyncBinding !== binding) return;
+            var delta = Number(event.deltaY);
+            if (event.deltaMode === 1) delta *= 24;
+            else if (event.deltaMode === 2) delta *= Math.max(40, window.innerHeight * 0.8);
+            // 检视态把整段 wheel gesture 明确归给说明文本；即使已经到边界也不把
+            // 同一手势漏给宿主滚动区，避免一个滚轮动作同时滚两层。
+            if (scrollDescriptionBy(delta, true)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
         }
 
         function hasActivePointer() {
@@ -1378,10 +1703,35 @@ var PanelTooltip = (function() {
                 ? options.renderRich(item, cache[key])
                 : (typeof options.renderBasic === 'function' ? options.renderBasic(item) : '');
             var tooltipAnchor = resolveTooltipAnchor(event);
-            if (pointerSource) showAtMouse(html, lastPointerEvent || event, owner, { placement: options.placement, anchor: tooltipAnchor });
-            else showAnchored(html, tooltipAnchor, { autoClose: 0, outsideClick: false, owner: owner, placement: options.placement });
-            setInteraction(owner, {enter:onTooltipEnter, leave:onTooltipLeave});
+            var shown;
+            if (pointerSource) shown = showAtMouse(html, lastPointerEvent || event, owner, {
+                placement: options.placement, anchor: tooltipAnchor, profile: profile
+            });
+            else shown = showAnchored(html, tooltipAnchor, {
+                autoClose: 0, outsideClick: false, owner: owner,
+                placement: options.placement, profile: profile
+            });
+            if (!shown) {
+                // pinned inspector 打开时普通 hover/focus 会被 show* 拒绝；输入 owner 也必须
+                // 同步撤销，不能留下一个等待 140ms leave grace 的隐形 binding。
+                if (pointerSource) releasePointerBinding(binding);
+                else {
+                    releaseKeyboardBinding(binding);
+                    removeTooltipDescription();
+                }
+                return false;
+            }
+            setInteraction(owner, {
+                enter:onTooltipEnter,
+                leave:onTooltipLeave,
+                contentChanged:onInspectionContentChanged,
+                dismiss:resetInspectionProjection
+            });
             requestRich(key, item);
+            if (profile === PROFILE_DENSE) {
+                if (pointerSource) beginInspectionDwell();
+                else activateInspection(true);
+            }
             return true;
         }
 
@@ -1392,6 +1742,7 @@ var PanelTooltip = (function() {
 
         function clearPointerState() {
             clearLeaveTimer();
+            resetInspectionProjection();
             activePointers = {};
             tooltipHovered = false;
             lastPointerEvent = null;
@@ -1432,6 +1783,7 @@ var PanelTooltip = (function() {
         }
 
         function onTooltipEnter() {
+            if (profile === PROFILE_DENSE) return false;
             if (disposed || !isVisible(owner) || _pointerAsyncBinding !== binding
                     || !isLive()) return false;
             clearLeaveTimer();
@@ -1467,6 +1819,7 @@ var PanelTooltip = (function() {
             if (nestedBindingOwns(e)) return;   // 冒泡自嵌套绑定后代：不抢 owner
             var pointerId = pointerIdOf(e);
             if (!activePointers[pointerId]) return;
+            var previousPointerEvent = lastPointerEvent;
             lastPointerEvent = pointerSnapshot(e);
             if (suppressed(e)) {
                 clearPointerState();
@@ -1475,7 +1828,10 @@ var PanelTooltip = (function() {
             }
             claimPointerBinding(binding);
             if (!isVisible(owner)) showCurrent(e, 'pointer');
-            else followMouse(e, owner);
+            else {
+                noteInspectionMotion(previousPointerEvent, lastPointerEvent);
+                followMouse(e, owner);
+            }
         }
 
         function onLeave(e) {
@@ -1483,6 +1839,7 @@ var PanelTooltip = (function() {
             if (!activePointers[pointerId]) return;
             delete activePointers[pointerId];
             if (hasActivePointer()) return;
+            resetInspectionProjection();
             schedulePointerLeave();
         }
 
@@ -1524,6 +1881,7 @@ var PanelTooltip = (function() {
         function onFocusOut(e) {
             if (e.relatedTarget && node.contains(e.relatedTarget)) return;
             keyboardDismissed = false;
+            resetInspectionProjection();
             releaseKeyboardBinding(binding);
             removeTooltipDescription();
             if (canOwnPointer(lastPointerEvent, false)) {
@@ -1571,6 +1929,7 @@ var PanelTooltip = (function() {
             if (!isVisible(owner)) return;
             var desc = scrollableDescription();
             if (!desc) return;
+            if (profile === PROFILE_DENSE) activateInspection(true);
             var handled = true;
             var page = Math.max(40, Math.floor(desc.clientHeight * 0.8));
             if (e.key === 'PageDown') desc.scrollTop += page;
@@ -1597,9 +1956,14 @@ var PanelTooltip = (function() {
         node.addEventListener('focusin', onFocusIn);
         node.addEventListener('focusout', onFocusOut);
         node.addEventListener('keydown', onKeyDown);
+        node.addEventListener('wheel', onOwnerWheel, {passive:false});
 
         binding = {
             scope: scope,
+            profile: profile,
+            onPointerSuperseded: function() {
+                resetInspectionProjection();
+            },
             canRestorePointer: function() {
                 return !!lastPointerEvent && canOwnPointer(lastPointerEvent, false);
             },
@@ -1634,6 +1998,7 @@ var PanelTooltip = (function() {
                 requestSequence++;
                 pending = {};
                 clearLeaveTimer();
+                resetInspectionProjection();
                 tooltipHovered = false;
                 clearInteraction(owner);
                 node.removeEventListener(enterEvent, onEnter);
@@ -1643,6 +2008,7 @@ var PanelTooltip = (function() {
                 node.removeEventListener('focusin', onFocusIn);
                 node.removeEventListener('focusout', onFocusOut);
                 node.removeEventListener('keydown', onKeyDown);
+                node.removeEventListener('wheel', onOwnerWheel, {passive:false});
                 activePointers = {};
                 releasePointerBinding(binding);
                 releaseKeyboardBinding(binding);
@@ -1715,6 +2081,7 @@ var PanelTooltip = (function() {
         showAtMouse: showAtMouse,
         followMouse: followMouse,
         showAnchored: showAnchored,
+        showPinned: showPinned,
         updateContent: updateContent,
         hide: hide,
         hideHover: hideHover,
@@ -1730,6 +2097,11 @@ var PanelTooltip = (function() {
         // 决策辅助（暴露给调用方在请求 AS2 注释前/后预判 split/merge / layout）
         htmlTextScore: htmlTextScore,
         shouldSplitWeb: shouldSplitWeb,
-        inferLayoutType: inferLayoutType
+        inferLayoutType: inferLayoutType,
+        profiles: {
+            simple: PROFILE_SIMPLE,
+            dense: PROFILE_DENSE,
+            pinned: PROFILE_PINNED
+        }
     };
 })();

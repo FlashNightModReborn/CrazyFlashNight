@@ -39,9 +39,9 @@
     var _cssLink = null;
     var _resizeObserver = null;
     var _detailCache = Object.create(null);      // taskId → taskData
-    var _tooltipCache = Object.create(null);     // itemName → {introHTML,descHTML,type} | {loading:true} | {failed:true,at}（null 原型，防 __proto__ 污染）
-    var _hoverItemKey = null;
-    var _hoverItemIcon = null;
+    var _tooltipCache = Object.create(null);     // itemName → 成功的 {success,introHTML,descHTML,type,icon}
+    var _tooltipScope = null;
+    var _tooltipObserver = null;
     var _pendingAbandonId = null;                // 放弃确认弹窗待删 taskId
 
     // ── 事件日志/任务树（WS6）──
@@ -87,7 +87,6 @@
     var DESIGN_W = 1024;
     var DESIGN_H = 576;
     var TOOLTIP_TIMEOUT_MS = 8000;
-    var TOOLTIP_RETRY_MS = 8000;
 
     // 产品级分类归并（链名 chain[0] → 五类）。口径：用户 2026-06-08 拍板。
     var CATEGORY_MAP = {
@@ -317,11 +316,6 @@
         // 视图切换
         _viewBtn.addEventListener('click', toggleView);
 
-        // 物品 tooltip 委托（hover）
-        _el.addEventListener('mouseover', onTipOver);
-        _el.addEventListener('mousemove', onTipMove);
-        _el.addEventListener('mouseout', onTipOut);
-
         // 键盘导航（上下键在左列表切换）
         _leftEl.addEventListener('keydown', onListKeydown);
 
@@ -365,8 +359,7 @@
         _pendingReq = {};
         _detailCache = Object.create(null);
         _tooltipCache = Object.create(null);
-        _hoverItemKey = null;
-        _hoverItemIcon = null;
+        startTaskTooltipBindings();
         _busy = false;
         _iconsReady = false;
         _treeState = null;          // 进度叠加每次开面板重取（存档态可变）；_catalog 不重置（不可变）
@@ -447,6 +440,7 @@
         _isDispatchContext = false;
         _session++;
         hideTip();
+        stopTaskTooltipBindings();
         closeAbandonConfirm();
         if (_containerEl) _containerEl.classList.remove('task-busy');
         if (_containerEl) _containerEl.setAttribute('data-context', 'tasks');
@@ -2005,80 +1999,85 @@
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 物品 tooltip（hover 委托 + 缓存退避，后端 tasksTooltip 未就绪时优雅降级）
+    // 物品 tooltip（dense owner + 动态 DOM 绑定；后端 tasksTooltip 未就绪时优雅降级）
     // ═══════════════════════════════════════════════════════════
-    function onTipOver(e) {
-        var cell = closestItem(e.target);
-        if (!cell) return;
+    function bindTaskItemTooltip(cell) {
+        if (!cell || cell.__panelTooltipBinding || !_tooltipScope || !_tooltipScope.bindAsyncHover) return;
         var name = cell.getAttribute('data-item-name');
         if (!name) return;
         var icon = cell.getAttribute('data-item-icon') || name;
-        _hoverItemKey = name;
-        _hoverItemIcon = icon;
-        if (typeof PanelTooltip === 'undefined' || !PanelTooltip) return;
+        var item = {name:name,icon:icon};
+        _tooltipScope.bindAsyncHover(cell, {
+            key:'tasks:' + name,
+            item:item,
+            cache:_tooltipCache,
+            profile:'dense-inspect',
+            events:'mouse',
+            renderBasic:function(value) { return buildBasicTip(value.name, value.icon); },
+            renderRich:function(value, response) { return buildRichTip(value.name, response, value.icon); },
+            renderFailure:function(value) { return buildUnavailableTip(value.name, value.icon); },
+            fetch:function(value, callback) { requestTooltip(value.name, value.icon, callback); }
+        });
+    }
 
-        var cached = _tooltipCache[name];
-        if (cached && cached.introHTML !== undefined) {
-            PanelTooltip.showAtMouse(buildRichTip(name, cached, icon), e);
-            return;
-        }
-        // 先显示基础信息
-        PanelTooltip.showAtMouse(buildBasicTip(name, icon), e);
-        if (cached && cached.loading) return;
-        if (cached && cached.failed && (Date.now() - cached.at) < TOOLTIP_RETRY_MS) {
-            PanelTooltip.showAtMouse(buildUnavailableTip(name, icon), e);
-            return;
-        }
-        requestTooltip(name, icon);
+    function bindTaskItemTree(root) {
+        if (!root || !_tooltipScope) return;
+        if (root.matches && root.matches('.task-item[data-item-name]')) bindTaskItemTooltip(root);
+        var nodes = root.querySelectorAll ? root.querySelectorAll('.task-item[data-item-name]') : [];
+        for (var i = 0; i < nodes.length; i++) bindTaskItemTooltip(nodes[i]);
     }
-    function onTipMove(e) {
-        if (!_hoverItemKey || typeof PanelTooltip === 'undefined') return;
-        if (!closestItem(e.target)) return;
-        PanelTooltip.followMouse(e);
+
+    function startTaskTooltipBindings() {
+        stopTaskTooltipBindings();
+        _tooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.createScope)
+            ? PanelTooltip.createScope('tasks-items', {profile:'dense-inspect'}) : null;
+        if (!_tooltipScope || !_el) return;
+        bindTaskItemTree(_el);
+        if (typeof MutationObserver === 'undefined') return;
+        var observedScope = _tooltipScope;
+        _tooltipObserver = new MutationObserver(function(records) {
+            // disconnect() 之前已入队的回调仍可能迟到；不能让旧 session 释放或绑定新 scope。
+            if (_tooltipScope !== observedScope || observedScope.disposed) return;
+            for (var i = 0; i < records.length; i++) {
+                for (var r = 0; r < records[i].removedNodes.length; r++) {
+                    observedScope.releaseTree(records[i].removedNodes[r]);
+                }
+                for (var a = 0; a < records[i].addedNodes.length; a++) {
+                    bindTaskItemTree(records[i].addedNodes[a]);
+                }
+            }
+        });
+        _tooltipObserver.observe(_el, {childList:true,subtree:true});
     }
-    function onTipOut(e) {
-        var cell = closestItem(e.target);
-        if (!cell) return;
-        // 移到子元素内不算离开
-        if (e.relatedTarget && cell.contains(e.relatedTarget)) return;
-        _hoverItemKey = null;
-        _hoverItemIcon = null;
-        if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.hideHover) PanelTooltip.hideHover();
-    }
-    function closestItem(node) {
-        while (node && node !== _el) {
-            if (node.classList && node.classList.contains('task-item') && node.getAttribute('data-item-name')) return node;
-            node = node.parentNode;
-        }
-        return null;
+
+    function stopTaskTooltipBindings() {
+        if (_tooltipObserver) _tooltipObserver.disconnect();
+        _tooltipObserver = null;
+        if (_tooltipScope) _tooltipScope.dispose();
+        _tooltipScope = null;
     }
     function hideTip() {
         if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.hide) PanelTooltip.hide();
     }
 
-    function requestTooltip(name, icon) {
-        _tooltipCache[name] = { loading: true };
+    function requestTooltip(name, icon, callback) {
         var reqSession = _session;
         var callId = sendPanelMsg('tooltip', { itemName: name }, function(data) {
             if (reqSession !== _session) return;
             clearTimeout(timer);
             if (data && data.success && (data.introHTML !== undefined || data.descHTML !== undefined)) {
                 // 注：物品类型用 itemType（不能用 type——会与 panel_resp 信封的 type 字段冲突）
-                _tooltipCache[name] = { introHTML: data.introHTML || '', descHTML: data.descHTML || '', type: data.itemType || '', icon: data.iconName || data.icon || icon || name };
-                if (_hoverItemKey === name && PanelTooltip.isVisible()) PanelTooltip.updateContent(buildRichTip(name, _tooltipCache[name], _hoverItemIcon));
+                callback({success:true,introHTML:data.introHTML || '',descHTML:data.descHTML || '',
+                    type:data.itemType || '',icon:data.iconName || data.icon || icon || name});
             } else {
-                _tooltipCache[name] = { failed: true, at: Date.now() };
-                if (_hoverItemKey === name && PanelTooltip.isVisible()) PanelTooltip.updateContent(buildUnavailableTip(name, _hoverItemIcon));
+                callback({success:false,error:data && data.error || 'tooltip_unavailable'});
             }
         });
         // 兜底超时（后端 tooltip cmd 未接线时 callId 不会回，避免永久 loading）
         var timer = setTimeout(function() {
             if (_pendingReq[callId]) {
                 delete _pendingReq[callId];
-                _tooltipCache[name] = { failed: true, at: Date.now() };
-                if (reqSession === _session && _hoverItemKey === name && PanelTooltip.isVisible()) {
-                    PanelTooltip.updateContent(buildUnavailableTip(name, _hoverItemIcon));
-                }
+                if (reqSession === _session) callback({success:false,error:'tooltip_timeout'});
             }
         }, TOOLTIP_TIMEOUT_MS);
     }

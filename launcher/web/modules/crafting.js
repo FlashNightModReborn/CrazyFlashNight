@@ -1256,7 +1256,7 @@ var CraftingPanel = (function() {
         _preview = null;
         clearPreviewCheckpoint();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
-            ? PanelTooltip.createScope('crafting') : null;
+            ? PanelTooltip.createScope('crafting', {profile:'dense-inspect'}) : null;
         buildDOM();
         refreshSnapshot(_selectedIndex, _craftCount);
         return true;
@@ -1266,7 +1266,7 @@ var CraftingPanel = (function() {
         if (!Panels.getActive || Panels.getActive() !== 'crafting') return false;
         if (!_shell) {
             _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
-                ? PanelTooltip.createScope('crafting') : null;
+                ? PanelTooltip.createScope('crafting', {profile:'dense-inspect'}) : null;
             buildDOM();
             refreshSnapshot(_selectedIndex, _craftCount);
         } else {
@@ -1398,7 +1398,7 @@ var CraftingPanel = (function() {
         _materialSnapshotId = '';
         if (_tooltipScope) _tooltipScope.dispose();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
-            ? PanelTooltip.createScope('crafting') : null;
+            ? PanelTooltip.createScope('crafting', {profile:'dense-inspect'}) : null;
         initData = initData || {};
         _materialRecipeReturn = null;
         _mode = initData.view === 'materials' ? 'materials' : 'recipes';

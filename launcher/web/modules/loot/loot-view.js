@@ -94,6 +94,7 @@ var LootView = (function() {
         this.focusScope = null;
         this.scaleHandle = null;
         this.tooltipCache = {};
+        this.tooltipScope = null;
         this.tooltipSuppressed = false;
         this.interaction = interactionForState({}, false, false);
         this.destroyed = false;
@@ -255,6 +256,14 @@ var LootView = (function() {
 
     View.prototype.activate = function(session) {
         var self = this;
+        if (this.tooltipScope) this.tooltipScope.dispose();
+        this.tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+            ? PanelTooltip.createScope('loot-workbench', {profile:'dense-inspect'}) : null;
+        var activeTooltipScope = this.tooltipScope;
+        session.defer(function() {
+            if (activeTooltipScope) activeTooltipScope.dispose();
+            if (self.tooltipScope === activeTooltipScope) self.tooltipScope = null;
+        });
         this.scaleHandle = typeof PanelScale !== 'undefined'
             ? PanelScale.attach(this.options.hostElement,1024,576) : null;
         session.defer(function() {
@@ -331,6 +340,7 @@ var LootView = (function() {
         if (this.destroyed) return;
         this.destroyed = true;
         this.deactivate();
+        if (this.tooltipScope) { this.tooltipScope.dispose(); this.tooltipScope = null; }
         this.shell = null;
         this.leftGrid = null;
         this.rightGrid = null;
@@ -404,7 +414,9 @@ var LootView = (function() {
     View.prototype._bindTooltip = function(node,slot) {
         if (typeof PanelTooltip === 'undefined' || !PanelTooltip.bindAsyncHover) return;
         var self=this,item=slot.item || {},key='loot:' + slot.physicalSlot + ':' + slot.slotLease;
-        PanelTooltip.bindAsyncHover(node,{
+        var tooltipBinder=this.tooltipScope || PanelTooltip;
+        tooltipBinder.bindAsyncHover(node,{
+            profile:'dense-inspect',
             cache:this.tooltipCache,
             key:key,
             item:item,
@@ -427,6 +439,10 @@ var LootView = (function() {
         if (this.backpackPane) this.backpackPane.setInteraction(this.interaction);
         if (this.lootPane) this.lootPane.setInteraction(this.interaction);
         if (this.broker) this.broker.clearSelection();
+        if (this.tooltipScope && this.tooltipScope.releaseTree) {
+            if (this.leftGrid) this.tooltipScope.releaseTree(this.leftGrid.root);
+            if (this.rightGrid) this.tooltipScope.releaseTree(this.rightGrid.root);
+        }
         if (this.backpackPane) this.backpackPane.update(projection && projection.backpack || null,{});
         if (this.lootPane) this.lootPane.update(projection && projection.loot || null,{});
         if (this.leftGrid) this.leftGrid.chrome.setMeta(projection && projection.backpack

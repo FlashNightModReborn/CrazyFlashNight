@@ -133,7 +133,7 @@
 
         teardownView(false);
         _tooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.createScope)
-            ? PanelTooltip.createScope('team-merc') : null;
+            ? PanelTooltip.createScope('team-merc', {profile:'simple-tooltip'}) : null;
         buildShell(initData);
         buildRosterViews();
         _shell.mountInitial(_rosterL, _rosterR);
@@ -1836,6 +1836,7 @@
             displayname: eq.displayname || eq.name
         };
         _tooltipScope.bindAsync(cell, {
+            profile:'dense-inspect',
             key: item.raw + '|' + item.level,
             item: item,
             cache: _ttCache,
