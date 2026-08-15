@@ -167,6 +167,7 @@ try {
         ((@($rendererQualificationTrees[0].excludePrefixes | ForEach-Object { [string]$_ }) | Sort-Object) -join ',')
     $buildScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build.ps1'))
     $prepareScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\prepare-launcher-release-assets.ps1'))
+    $policyScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\validate-launcher-release-policy.ps1'))
     $producerScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build-runtime-candidate.ps1'))
     $startScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'automation\start.ps1'))
     $promotionScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\promote-runtime-bundle.ps1'))
@@ -296,6 +297,11 @@ try {
             $prepareScript.Contains('if (-not $ProjectRoot) {') -and
             $prepareScript.Contains('Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)') -and
             -not $prepareScript.Contains('[string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot)'))
+    Assert-Equal 'release policy resolves its default project root after parameter binding' $true `
+        ($policyScript.Contains('[string]$ProjectRoot,') -and
+            $policyScript.Contains('if (-not $ProjectRoot) {') -and
+            $policyScript.Contains('Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)') -and
+            -not $policyScript.Contains('[string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot)'))
     Assert-Equal 'generic promotion has no Audio product-acceptance gate or emergency bypass' $true `
         (-not $promotionScript.Contains('AudioV2') -and
             -not $promotionScript.Contains('Audio v2') -and
