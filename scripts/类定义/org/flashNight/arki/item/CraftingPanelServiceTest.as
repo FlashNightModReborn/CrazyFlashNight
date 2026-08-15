@@ -41,7 +41,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testBlockedPreviewHasNoToken();
         testResponseWire();
         testResponseWireEscaping();
-        testHandleFailClosed();
+        testHandleDirectDispatch();
         trace("CraftingPanelServiceTest Tests Passed: " + passed);
         trace("CraftingPanelServiceTest Tests Failed: " + failed);
     }
@@ -853,12 +853,15 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             "A4b persistent service/method/non-array projector readiness fails unavailable");
 
         shopProjector.catalogMode = "throw";
-        var projectorThrow:Object = invokeMaterialShopAccess(
-            materialShopAccessRequest(snapshotId, 40));
+        var projectorThrew:Boolean = false;
+        try {
+            invokeMaterialShopAccess(materialShopAccessRequest(snapshotId, 40));
+        } catch (error) {
+            projectorThrew = true;
+        }
         shopProjector.catalogMode = "exact";
-        check(exactShopAccessFailure(projectorThrow, 40, "deny",
-                "authority_unavailable"),
-            "A4b dedicated handler normalizes projector throws without crafting_response");
+        check(projectorThrew && _root.server.sent == null,
+            "A4b dedicated handler preserves projector exceptions instead of masking them");
 
         index.reset(false);
         var indexNotReady:Object = invokeMaterialShopAccess(
@@ -2063,27 +2066,15 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             "tooltip wire keeps original double-quoted htmlText losslessly");
     }
 
-    private static function testHandleFailClosed():Void {
+    private static function testHandleDirectDispatch():Void {
         resetOwned();
         _root.server = {sent:null};
         _root.server.sendSocketMessage = function(message:String):Boolean { this.sent = message; return true; };
-        var original = MaterialArchiveProjector.executeMaterialDetail;
-        MaterialArchiveProjector.executeMaterialDetail = function(params:Object):Object {
-            throw new Error("simulated projector fault");
-            return null;
-        };
-        var threw:Boolean = false;
-        try {
-            _root.gameCommands["craftingMaterialDetail"](
-                {v:2, snapshotId:"materials.snapshot.test.1", itemName:"测试矿石", callId:29});
-        } catch (error) {
-            threw = true;
-        }
-        MaterialArchiveProjector.executeMaterialDetail = original;
+        _root.gameCommands["craftingSnapshot"]({category:"武器合成", callId:29});
         var parsed:Object = new JSON(false).parse(String(_root.server.sent));
-        check(!threw && parsed != undefined && parsed.task == "crafting_response"
-            && parsed.callId == 29 && parsed.success == false && parsed.error == "internal_error",
-            "projector exception fails closed as an internal_error response instead of dropping the call");
+        check(parsed != undefined && parsed.task == "crafting_response"
+            && parsed.callId == 29 && parsed.success == true && parsed.recipes.length == 2,
+            "registered command directly dispatches a successful snapshot response");
     }
 
     private static function materialShopAccessRequest(snapshotId:String,

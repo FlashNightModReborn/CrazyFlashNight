@@ -374,6 +374,6 @@ class org.flashNight.arki.achievement.AchievementService {
     // sendResponse — 统一回包（与 TaskPanelService 同口径）
     // ═══════════════════════════════════════════════════════════
     private static function sendResponse(resp:Object):Void {
-        _root.server.sendSocketMessage(_json.stringify(resp));
+        _root.server.sendSocketMessage(_json.stringifySafe(resp));
     }
 }

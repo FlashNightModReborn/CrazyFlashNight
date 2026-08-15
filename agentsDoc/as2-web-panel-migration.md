@@ -62,6 +62,10 @@ Skill 页切换把 `Bridge.send` 严格定义为本地 transport 投递结果：
 | `dispatchBoardBriefing` | `dispatchBoardBriefing` | `handleDispatchBoardBriefing` | `task_response` | `panel_resp panel=tasks cmd=dispatchBoardBriefing` | `DialogueView` / `DispatchBoardView` | 读 |
 | `dispatchBoardEnter` | `dispatchBoardEnter` | `handleDispatchBoardEnter` | `task_response` | `panel_resp panel=tasks cmd=dispatchBoardEnter` | `DispatchBoardView` callback | 进入关卡（不直接改存档） |
 
+### AS2 → Host/Web JSON 出口
+
+使用 `LiteJSON` 的 AS2 服务只要响应或 `panel_request` 可能携带展示名、说明、HTML、错误详情、帧标签等自由文本，就必须在最终 socket 出口调用 `stringifySafe()`；普通 `stringify()` 不转义引号、反斜杠与控制字符，会让 Host 在业务路由前丢弃整封消息。`stringifySafe()` 的输出只交给 Host Newtonsoft、Web `JSON.parse` 或完整 `JSON`/`FastJSON` 解析端，禁止再用 `LiteJSON.parse()` 本地回读。只有字段集合封闭且值域严格限于枚举、数字和 opaque token 的结构性请求，才可在 validator 明确守住该事实时保留 `stringify()`；不得用替换引号、HTML entity 或删字符规避标准转义。
+
 共享 inventory domain 同时服务 Host-owned `workbench / kshop / npcshop / crafting` 四种生产实例；KShop/NPCShop 的 owned view 与 crafting organizer 都保留各自顶层 owner，不伪装成第二个 workbench。商城库存态固定为背包—战备箱，独立 `workbench` 只接受严格枚举 profile：`battlebox`（背包—战备箱，Native HUD 默认）或 `warehouse`（背包—真实仓库，仅宿舍场景入口）。所有入口组合共同的 `InventoryTask / InventoryRuntime` 协议与适用的 shared presentation components，不得复制业务规则：
 
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |

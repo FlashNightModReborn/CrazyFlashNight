@@ -69,6 +69,24 @@ function run() {
     });
     assert(kshop && kshop.hostPayloadMode === "normalized-domainless-owner-rebuilt",
       "KShop must normalize each command, keep its AS2 wire domain-less, and rebuild owner metadata");
+    const crafting = read("scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as");
+    assert(!/\btry\s*\{|\bcatch\s*\(/.test(crafting),
+      "CraftingPanelService production dispatch must not catch exceptions");
+
+    [
+      "scripts/类定义/org/flashNight/arki/achievement/AchievementService.as",
+      "scripts/类定义/org/flashNight/arki/map/MapPanelService.as",
+      "scripts/类定义/org/flashNight/arki/ui/HairdresserPanelService.as",
+      "scripts/类定义/org/flashNight/arki/stageSelect/StageSelectPanelService.as",
+      "scripts/类定义/org/flashNight/arki/merc/ArenaCalibrationService.as",
+      "scripts/类定义/org/flashNight/arki/merc/PetPanelService.as"
+    ].forEach(function (file) {
+      const source = read(file);
+      assert(!/sendSocketMessage\(\s*_json\.stringify\(/.test(source),
+        file + " must use stringifySafe for Host/Web wires that may contain free text");
+      assert(/_json\.stringifySafe\(/.test(source),
+        file + " must retain an explicit safe serialization exit");
+    });
   });
 
   test("NPC ordinary sell remains fully retired while trade commit stays governed", function () {

@@ -1673,6 +1673,6 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     }
 
     private static function sendResponse(resp:Object):Void {
-        _root.server.sendSocketMessage(_json.stringify(resp));
+        _root.server.sendSocketMessage(_json.stringifySafe(resp));
     }
 }

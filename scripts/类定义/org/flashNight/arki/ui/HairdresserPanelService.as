@@ -147,6 +147,6 @@ class org.flashNight.arki.ui.HairdresserPanelService {
     private static function sendResponse(response:Object):Void {
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
         if (_json == undefined) _json = new LiteJSON();
-        _root.server.sendSocketMessage(_json.stringify(response));
+        _root.server.sendSocketMessage(_json.stringifySafe(response));
     }
 }

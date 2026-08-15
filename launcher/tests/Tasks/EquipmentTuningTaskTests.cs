@@ -437,6 +437,16 @@ namespace Launcher.Tests.Tasks
                 sent.Clear();
                 web.Clear();
 
+                // 携带 source 的 tooltip 必须绑定当前 snapshot authority，不能跨 lease 试算。
+                JObject foreignTipRequest = Request("tooltip", "tune.stats.tip.foreign");
+                foreignTipRequest["payload"]["source"] = Source(8, "lease.other.8");
+                task.HandleWebRequest("tooltip", foreignTipRequest);
+                Assert.Empty(sent);
+                Assert.Equal("invalid_payload", (string)Assert.Single(web)["error"]);
+
+                sent.Clear();
+                web.Clear();
+
                 // 携带 source 的 tooltip 请求：Host 重建并下发 lease 规范化后的 source
                 JObject tipRequest = Request("tooltip", "tune.stats.tip");
                 tipRequest["payload"]["source"] = Source(7, "lease.source.7");

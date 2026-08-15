@@ -223,13 +223,16 @@ function finishBucket(bucket) {
     return result;
 }
 
-async function measureItemMatrix(page, corpus, suffixId, bucket) {
+async function measureItemMatrix(page, corpus, suffixId, bucket, globalBucket) {
     for (let offset = 0; offset < corpus.records.length; offset += BATCH_SIZE) {
         const batch = corpus.records.slice(offset, offset + BATCH_SIZE);
         const rows = await page.evaluate(({records,suffix}) => window.__tooltipAudit.measureItems(records, suffix), {
             records:batch,suffix:suffixId
         });
-        for (const row of rows) absorb(bucket, row);
+        for (const row of rows) {
+            absorb(bucket, row);
+            absorb(globalBucket, row);
+        }
     }
 }
 
@@ -281,27 +284,13 @@ async function measurePinnedMatrix(page, corpus, suffixId, bucket, globalBucket)
     }
 }
 
-async function measureSkillMatrix(page, bucket) {
+async function measureSkillMatrix(page, bucket, globalBucket) {
     const rows = await page.evaluate(() => window.__tooltipAudit.measureSkills());
-    for (const row of rows) absorb(bucket, row);
-    return rows.length;
-}
-
-function aggregateMatrices(matrices) {
-    const total = createBucket({kind:'all',viewport:'all',density:'all',suffix:'all'});
-    for (const matrix of matrices) {
-        total.count += matrix.count;
-        for (const key of ['insideViewportFailures','pointerHitFailures','pointerEventFailures','profileFailures',
-            'scrollable','stacked','split','overlapCases','anchorOverlapCases']) total[key] += matrix[key];
-        total.widths.push(matrix.width.p50, matrix.width.p90, matrix.width.p99, matrix.width.max);
-        total.heights.push(matrix.height.p50, matrix.height.p90, matrix.height.p99, matrix.height.max);
-        total.descHeights.push(matrix.descScrollHeight.p50, matrix.descScrollHeight.p90,
-            matrix.descScrollHeight.p99, matrix.descScrollHeight.max);
-        for (const row of matrix.worstHeight) pushWorst(total.worstHeight, row, 'height', 16);
-        for (const row of matrix.worstOverlap) pushWorst(total.worstOverlap, row, 'overlapPixels', 16);
-        total.failureExamples.push(...matrix.failureExamples.slice(0, Math.max(0, 24 - total.failureExamples.length)));
+    for (const row of rows) {
+        absorb(bucket, row);
+        absorb(globalBucket, row);
     }
-    return finishBucket(total);
+    return rows.length;
 }
 
 function markdown(report) {
@@ -356,6 +345,7 @@ async function run() {
     const server = await startServer(ROOT);
     const browser = await chromium.launch({executablePath,headless:true});
     const matrices = [];
+    const globalBucket = createBucket({kind:'all',viewport:'all',density:'all',suffix:'all'});
     const pinnedMatrices = [];
     const pinnedGlobalBucket = createPinnedBucket({kind:'pinned',viewport:'all',suffix:PINNED_SUFFIX});
     const pageErrors = [];
@@ -381,12 +371,12 @@ async function run() {
                 await page.evaluate(value => window.__tooltipAudit.configure(value), density);
                 for (const suffix of suffixes) {
                     const bucket = createBucket({kind:'item',viewport:viewport.id,density,suffix:suffix.id});
-                    await measureItemMatrix(page, corpus, suffix.id, bucket);
+                    await measureItemMatrix(page, corpus, suffix.id, bucket, globalBucket);
                     assert(bucket.count === corpus.records.length, 'Item matrix coverage mismatch', bucket);
                     matrices.push(finishBucket(bucket));
                 }
                 const skillBucket = createBucket({kind:'skill',viewport:viewport.id,density,suffix:'none'});
-                const measuredSkills = await measureSkillMatrix(page, skillBucket);
+                const measuredSkills = await measureSkillMatrix(page, skillBucket, globalBucket);
                 assert(measuredSkills === skillSourceCount, 'Skill matrix coverage mismatch', skillBucket);
                 matrices.push(finishBucket(skillBucket));
             }
@@ -414,7 +404,7 @@ async function run() {
             measuredItems,expectedItems,measuredSkills,expectedSkills,
             measuredPinnedItems,expectedPinnedItems
         });
-    const global = aggregateMatrices(matrices);
+    const global = finishBucket(globalBucket);
     const pinned = finishPinnedBucket(pinnedGlobalBucket);
     const report = {
         schema:'cf7.tooltip-layout-audit.v1',generatedAt:new Date().toISOString(),browser:'edge',

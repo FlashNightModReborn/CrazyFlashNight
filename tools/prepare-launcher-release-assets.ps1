@@ -4,12 +4,15 @@
 
 [CmdletBinding()]
 param(
-    [string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot),
+    [string]$ProjectRoot,
     [string]$ReleaseTreeOid = 'HEAD',
     [string]$SaveSchemaSource
 )
 
 $ErrorActionPreference = 'Stop'
+if (-not $ProjectRoot) {
+    $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+}
 $ProjectRoot = [IO.Path]::GetFullPath($ProjectRoot).TrimEnd('\')
 
 function Invoke-Cf7PrepareCommand {

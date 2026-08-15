@@ -4,7 +4,7 @@
 
 [CmdletBinding()]
 param(
-    [string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot),
+    [string]$ProjectRoot,
     [string]$ReleaseTreeOid,
     [ValidateSet('Worktree','Index')][string]$IdentityMode = 'Worktree',
     [string]$CandidateRoot,
@@ -14,6 +14,9 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+if (-not $ProjectRoot) {
+    $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+}
 $ProjectRoot = [IO.Path]::GetFullPath($ProjectRoot).TrimEnd('\')
 
 function Get-Cf7Sha256Text {
