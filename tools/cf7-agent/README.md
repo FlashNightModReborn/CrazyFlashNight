@@ -369,7 +369,7 @@ node tools/cf7-agent/unattended.js `
   --adapter jsonl `
   --slot cf7_agent_equipment_tuning
 
-# A5 materialized resources root only: exact short candidate leaf is mandatory
+# A5 isolated-candidate example; formal binding omits --candidate-id but is not a material acceptance runner
 node tools/cf7-agent/unattended.js `
   --adapter mcp `
   --slot cf7_agent_a5_material_shop_run `
@@ -389,14 +389,17 @@ The slot allow-list is:
 - `cf7_agent_arena_calibration`
 - `cf7_agent_character_build`
 - `cf7_agent_loot_target_full_v1`
-- `cf7_agent_a5_material_shop_run` — requires exactly `--candidate-id a5`; it
-  rejects formal runtime, ordinary `c-*` candidates, and every other short leaf.
+- `cf7_agent_a5_material_shop_run` — accepts exactly two runtime bindings:
+  `--candidate-id a5` resolves the materialized
+  `resources/tmp/runtime-candidates/v2/a5` candidate, while no candidate
+  selector binds the verified canonical `formal_runtime`. It rejects ordinary
+  `c-*` candidates and every other short leaf.
 
-All other slots retain the existing boundary: no candidate ID selects formal
-runtime, while an explicit candidate ID must match the immutable `c-*` leaf
-contract. When the A5 command is run from the materialized `resources` root, the
-fixed wrapper therefore resolves exactly
-`resources/tmp/runtime-candidates/v2/a5` as `CandidateRoot`.
+The historical slots retain the existing boundary: no candidate ID selects
+formal runtime, while an explicit candidate ID must match the immutable `c-*`
+leaf contract. A5's formal binding only admits the verified runtime shape; there
+is no material-specific formal admission/runner, so a bare/direct invocation
+cannot prove or close the material 24-step journey or `PG-MAT-RELEASE-01`.
 
 The Core runner owns the Guardian lifecycle. Normal stdin completion requests its
 exact-one current `RuntimeOwned` Launcher observation (scope cardinality, not a
