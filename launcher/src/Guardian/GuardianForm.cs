@@ -628,6 +628,15 @@ namespace CF7Launcher.Guardian
                         || previousSizeCode == SIZE_MAXIMIZED
                         || windowStateReportedMaximized)
                         ScheduleViewportRefresh("guardian_wm_size_restored");
+                    else if (previousSizeCode == SIZE_MINIMIZED)
+                    {
+                        // minimize→restore 同样穿越 DWM 窗口状态切换，Flash 与 WebOverlay
+                        // 需要在落定后重测——此前只覆盖 maximize→restore，minimize 恢复
+                        // 零补偿，叠加 owned overlay 被 OS 隐藏/重显，WebView2 合成链可能
+                        // 停在 wedge（panel 黑屏但 JS 正常）。ResumeForPanel 的 compositor
+                        // kick 负责下一次 panel 打开的强制重合成。
+                        ScheduleViewportRefresh("guardian_wm_size_restored_from_minimized");
+                    }
                     _runtimeViewportWasMaximized = false;
                 }
                 else if (sizeCode != SIZE_MINIMIZED)

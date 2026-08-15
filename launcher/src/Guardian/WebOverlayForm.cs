@@ -1808,6 +1808,36 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        /// <summary>
+        /// 强制产生一次真实的 controller bounds 变化，踢醒 WebView2 合成链。
+        /// SW_HIDE / OS 级隐藏（owned 窗口随 owner 最小化被一并隐藏）之后，WebView2 的
+        /// DirectComposition 帧产出可能停在 wedge 状态：JS 正常、bounds 数值正常，
+        /// 但用户只看到 panel 态的 DefaultBackgroundColor=Black 黑底。常规恢复序列
+        /// （SetBoundsAndZoomFactor / MoveWindow / IsVisible=true）全是值幂等的，
+        /// 同值时 SDK 内部合并，不会产生新的 composition commit。这里先把高度拨小 1px
+        /// （视觉不可感知），由紧随其后的正常 bounds sync 设回目标值，保证至少一次真实跳变。
+        /// </summary>
+        private void KickWebViewCompositor(string reason)
+        {
+            CoreWebView2Controller controller = TryGetWebViewController();
+            if (controller == null)
+                return;
+            try
+            {
+                Rectangle bounds = controller.Bounds;
+                if (bounds.Width <= 0 || bounds.Height <= 2)
+                    return;   // 尚未有有效 bounds（首次打开）：无需 kick
+                controller.SetBoundsAndZoomFactor(
+                    new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height - 1),
+                    controller.ZoomFactor);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] compositor kick failed: reason=" + reason
+                    + " error=" + ex.Message);
+            }
+        }
+
         private void SyncWebViewViewportBounds(int width, int height, double zoom, string reason, bool forceLog)
         {
             if (_webView == null)
@@ -4052,6 +4082,10 @@ namespace CF7Launcher.Guardian
             {
                 if (_webView != null && _webView.IsHandleCreated)
                 {
+                    // 窗口已 show：先踢一次合成器（上一次的 bounds 值可能与目标相同，
+                    // 同值 sync 会被 SDK 合并成 no-op，wedge 的合成链不会被唤醒），
+                    // 再由正常 sync 设回正确几何。
+                    KickWebViewCompositor("panel_resume_post_show");
                     SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
                         1.0, "panel_resume_post_show", true);
                     SetWindowPos(_webView.Handle, HWND_TOP, 0, 0,
