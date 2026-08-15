@@ -95,7 +95,7 @@ node tools/validate-doc-governance.js
 | 验证矩阵与测试入口 | [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md) |
 | 编码规范与多栈边界 | [agentsDoc/coding-standards.md](agentsDoc/coding-standards.md) |
 | Agent 协作粒度与 harness 实践 | [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md) |
-| 长会话节奏与会话健康 | [agentsDoc/human-care.md](agentsDoc/human-care.md) |
+| 人类注意力与工程效率宪法 | [agentsDoc/human-care.md](agentsDoc/human-care.md) |
 | 文档治理规则 | [agentsDoc/documentation-governance.md](agentsDoc/documentation-governance.md) |
 | 协作者直推与 native 账号隔离 | [docs/contribution-workflow.md](docs/contribution-workflow.md) |
 | Launcher 深文档 | [launcher/README.md](launcher/README.md) |

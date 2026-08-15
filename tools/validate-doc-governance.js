@@ -237,8 +237,9 @@ expectContains("CLAUDE.md", /agentsDoc\/human-care\.md/, "CLAUDE missing human-c
 expectContains("agentsDoc/agent-harness.md", /任务粒度/, "agent-harness missing task granularity");
 expectContains("agentsDoc/agent-harness.md", /Subagent/, "agent-harness missing subagent");
 expectContains("agentsDoc/agent-harness.md", /Flash smoke/, "agent-harness missing project-specific Flash smoke note");
-expectContains("agentsDoc/human-care.md", /主动行为/, "human-care missing active-behavior section");
-expectContains("agentsDoc/human-care.md", /软停/, "human-care missing soft-stop section");
+expectContains("agentsDoc/human-care.md", /第一性目标/, "human-care missing first-principles objective");
+expectContains("agentsDoc/human-care.md", /无人值守默认/, "human-care missing unattended-by-default section");
+expectContains("agentsDoc/human-care.md", /明令禁止的腐化形式/, "human-care missing anti-corruption section");
 expectContains("agentsDoc/as2-web-panel-migration.md", /迁移闭环表/, "as2-web-panel-migration missing closure table section");
 expectContains("agentsDoc/as2-web-panel-migration.md", /Web cmd.*C# action.*AS2 handler/, "as2-web-panel-migration missing protocol closure columns");
 expectContains("agentsDoc/as2-web-panel-migration.md", /ResolvePanelCloseGameCommand/, "as2-web-panel-migration missing close lifecycle guard");

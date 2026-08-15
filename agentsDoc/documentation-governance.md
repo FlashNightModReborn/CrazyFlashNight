@@ -1,7 +1,7 @@
 # 文档治理规则
 
 **文档角色**：文档治理 canonical doc。  
-**最后核对代码基线**：commit `3343c1ef2244e0c6253fc95f5b6334095f049f57`（2026-07-18）。
+**最后核对代码基线**：commit `539fa306181da40d092c03508afdbddef18eff8d`（2026-08-15）。
 
 ## 1. 文档分层
 
@@ -20,6 +20,10 @@
 - `agentsDoc/*` 不负责顶层路由
 - 子系统 README 不负责项目级总览
 - 同一事实只能有一个 canonical doc；其他文档只做链接和摘要
+- `human-care.md` 只写约束 Agent / 流程的宪法与负面权利；不得扩展成状态、schema、receipt、acceptance 或发布门
+- 事故时间线与量化反例放入 `docs/*` 独立复盘，不把案例堆回高频 canonical doc
+- 新增流程必须说明它消除的决策不确定性、为何不能自动化，以及相对人工打断和关键路径的净收益；不能证明就不新增
+- 流程时长、revision 数和 token 代理指标只用于触发删减，不得成为需要人类确认的合规对象
 
 ## 3. 高变动文档基线规则
 
@@ -91,7 +95,7 @@
 | `README.md` | 人类总览 | ≤ 120 | 教程 / 历史 / 营销话术全部下沉 |
 | `agentsDoc/testing-guide.md` | 验证矩阵 | ≤ 114 | 命令表格化;细节下沉到子系统 README |
 | `agentsDoc/agent-harness.md` | 协作 / harness | ≤ 90 | 只写项目特定;模型通识(prompt 写法、subagent 概念)不进 |
-| `agentsDoc/human-care.md` | 人类节奏 | ≤ 90 | 节奏 / 信号 / 主动行为表格化;不重复 self-optimization |
+| `agentsDoc/human-care.md` | 注意力 / 效率宪法 | ≤ 90 | 只写负面约束与无人值守默认；案例下沉复盘 |
 | `agentsDoc/documentation-governance.md` | 文档治理 | ≤ 130 | 案例下沉到 shared-notes |
 | `agentsDoc/self-optimization.md` | 自优化 | ≤ 130 | — |
 

@@ -11,6 +11,7 @@
 
 ## 硬约束（最高优先级）
 
+- **人类注意力与工程效率宪法**：在授权、安全与真实性不退让的前提下，以减少人类同步负担、缩短真实交付关键路径为第一原则；已授权、范围内且可恢复的机器工作默认无人值守继续。只有新权限、不可逆外部动作、实质产品取舍或不可替代的人类感知才可打断；不得把 human-care 变成状态机、receipt、逐字 acceptance 或发布门。完整边界见 [human-care.md](agentsDoc/human-care.md)
 - **编译限制**：AS2 的实际编译仍只能由 Flash CS6 GUI 完成；在已运行 `scripts/setup_compile_env.bat`、已打开 TestLoader 的前提下，可通过 `scripts/compile_test.ps1` / `scripts/compile_test.sh` 做**有限自动化 smoke 验证**并读取 trace / Output Panel 副本。**当前链路仍在迭代期**，不要把 `publish_done.marker` 单独当作成功依据；没有新鲜 trace、输出日志或 IDE 复核时，不要笼统声称“已编译通过”
 - **Flash 目标归属**：不要把“改了 `.as`”或“改了 Flash 资产 XML”直接等价为编主文件。默认频率 / 优先级是 `asLoader`（业务逻辑注入，最高频）→ `TestLoader`（闭环调试 / 测试）→ `main`（只代表 `CRAZYFLASHER7MercenaryEmpire` 主 XFL）。独立 UI / 关卡 / 素材库 XFL（如 `flashswf/UI/*/*.xfl`）必须直接 `-Target <xfl> -PublishOnly -VerifySwf <对应.swf>`；选择 `-Target main` 必须能说明触及主文件层
 - **`.as` 编码**：必须 **UTF-8 with BOM**；新增 / 重建用“复制现有 `.as` → 改名”保留 BOM（见 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) §0）
@@ -25,7 +26,7 @@
 - **验证矩阵**：不要在本文件背命令清单；统一看 [testing-guide.md](agentsDoc/testing-guide.md)
 - **不提交**：`node_modules`，以及未受版本化生成器、manifest 逐文件引用、完整性验证与体积审计共同约束的大型二进制/临时证据。确属游戏运行时且进入上述可复验闭包的正式素材（例如 dressup、portrait 发布资产）是显式例外；`tmp/` 候选、联系表、模型缓存和可由闭包重建的中间产物仍不得借此入库
 - **文档同步规则**：凡是路径迁移、协议变更、测试入口变更、构建门槛变更、新子栈引入 / 淘汰，同轮同步更新对应 canonical doc，并运行 `node tools/validate-doc-governance.js`
-- **协作元约束**：任务粒度、subagent 边界、prompt 自包含规则统一看 [agent-harness.md](agentsDoc/agent-harness.md);长会话节奏 / 主动行为 / 软停窗口看 [human-care.md](agentsDoc/human-care.md)
+- **协作元约束**：任务粒度、subagent 边界、无人值守执行与验证成本统一看 [agent-harness.md](agentsDoc/agent-harness.md)；人类注意力、同步打断与流程防腐统一看 [human-care.md](agentsDoc/human-care.md)
 
 ---
 
@@ -52,7 +53,7 @@
 - [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md)：验证矩阵 canonical doc
 - [agentsDoc/as2-web-panel-migration.md](agentsDoc/as2-web-panel-migration.md)：AS2 UI → Web Panel 迁移护栏 canonical doc
 - [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md)：Agent 协作与任务粒度 canonical doc
-- [agentsDoc/human-care.md](agentsDoc/human-care.md)：人类节奏与会话健康 canonical doc
+- [agentsDoc/human-care.md](agentsDoc/human-care.md)：人类注意力与工程效率宪法 canonical doc
 - [launcher/README.md](launcher/README.md)：Launcher 子系统 source of truth
 - [docs/tech-stack-rationalization.md](docs/tech-stack-rationalization.md)：技术栈保留 / 收敛决策
 
