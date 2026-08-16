@@ -5,24 +5,54 @@
    设计分辨率 1024×576，固定画布 + 整体 scale。
    设计语言对齐 Flash 原版「军事/作战简报」风格：
      主文本 #CCCCCC · 思源宋体重黑 · NPC 橙系 · 灰底框 · 难度四色发光
-   动效统一缓动 --task-ease（cubic-bezier 近似原版 acceleration=-100 强缓出）。
+   动效缓动双轨：--task-ease-slide（位移入场，近似原版 acceleration=-100 强缓出）/ --task-ease（弹窗与装饰）。
    ═══════════════════════════════════════════════════════════════ */
+
+/* 思源宋体 Heavy：原版任务栏内嵌 SourceHanSerifSC-Heavy 的 web 等价（font-pack-manifest: expressive-archive-heavy，
+   经 cfn-fonts.local 按需下载提供；未下载/未安装时沿 --task-serif 链回落系统字体，不阻断渲染） */
+@font-face {
+    font-family: 'Source Han Serif CN Heavy';
+    src: url('https://cfn-fonts.local/source-han-serif-cn-heavy.otf') format('opentype');
+    font-weight: 400 900;
+    font-display: swap;
+}
 
 /* ── 设计 token ── */
 .task-panel-scale-shell {
     --task-text: #cccccc;
     --task-text-dim: #9a9a9a;
-    --task-ink: #2a1c0c;
-    /* 功能层一律黑白灰：accent 用浅灰高亮。焦点橙只留给提交NPC卡(--task-npc-grad)，
-       难度色见 .difficulty-*（均为 Flash 原版语义真值，不计入功能层配色） */
+    --task-ink: #2a1c0c;              /* 深褐墨色：暖橙填充按钮上的文字色 */
+    /* 功能层一律黑白灰：accent 用浅灰高亮。暖橙（--task-action-warm 族）只承载
+       提交NPC卡 / 可领取 / 挑战 等「行动焦点」语义；
+       难度色见 [data-difficulty]（均为 Flash 原版语义真值，不计入功能层配色） */
     --task-accent: #d6d6d6;
     --task-accent-soft: rgba(255, 255, 255, 0.42);
     --task-accent-faint: rgba(255, 255, 255, 0.10);
     --task-card-grad: linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
     --task-card-dots: radial-gradient(circle, rgba(0,0,0,0.2) 0 0.7px, transparent 1px) 0 0 / 5px 5px;
-    --task-npc-grad: linear-gradient(to bottom, #ffb547 30%, #f60 70%);
-    --task-serif: "思源宋体 CN Heavy", "Source Han Serif CN", "Source Han Serif SC", "Songti SC", serif;
+    /* 暖橙族：全部暖色强调的唯一来源（原版提交NPC卡橙 / 成就可领取 / 副本挑战共用语义统一） */
+    --task-action-warm: #ef9442;
+    --task-action-warm-rgb: 239, 148, 66;
+    --task-action-warm-bright: #f7b267;
+    --task-action-warm-deep: #f60;
+    --task-action-warm-grad: linear-gradient(to bottom, #ffb547 30%, #f60 70%);
+    /* 警示红族：错误/警戒语义的唯一来源（徽点用主色，长文本错误用柔和浅红） */
+    --task-danger: #d8533a;
+    --task-danger-rgb: 216, 83, 58;
+    --task-danger-text: #dd9484;
+    --task-npc-grad: var(--task-action-warm-grad);
+    /* 圆角三档：micro=小方块/角标 · control=按钮/控件 · card=大卡面 */
+    --task-radius-micro: 2px;
+    --task-radius-control: 3px;
+    --task-radius-card: 8px;
+    /* 滚动条统一规格（全面板一种） */
+    --task-scroll-track: rgba(217, 217, 217, 0.03);
+    --task-scroll-thumb: rgba(217, 217, 217, 0.22);
+    --task-scroll-thumb-hover: rgba(217, 217, 217, 0.45);
+    --task-serif: "思源宋体 CN Heavy", "Source Han Serif CN Heavy", "Source Han Serif CN", "Source Han Serif SC", "Songti SC", serif;
+    /* 缓动双轨：--task-ease（Quint，弹窗/装饰）；--task-ease-slide（Quad ≈ Flash acceleration=-100 最大缓出，位移入场专用） */
     --task-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --task-ease-slide: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --task-shadow: 3px 3px 5px rgba(0, 0, 0, 0.35);
 
     width: 1024px;
@@ -119,7 +149,7 @@
     -webkit-mask: none;
     mask: none;
     border: 2px solid var(--task-accent);
-    border-radius: 1px;
+    border-radius: var(--task-radius-micro);
     box-sizing: border-box;
 }
 .task-tab-emblem.log::after {
@@ -130,8 +160,15 @@
     background: var(--task-accent);
     box-shadow: 0 4px 0 var(--task-accent);
 }
-
-@keyframes task-emblem-spin { to { transform: rotate(360deg); } }
+/* 副本任务：旗帜徽标（横幅剪影 + 下缘三角缺口，区别于 mine 兵团徽 / log 方形记录 / ach 菱形勋章） */
+.task-tab-emblem.dungeon {
+    width: 16px;
+    height: 19px;
+    background: var(--task-accent);
+    -webkit-mask: none;
+    mask: none;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);
+}
 
 /* 关闭按钮：圆角描边 + hover 扫光 + 旋转 X */
 .task-panel-close {
@@ -142,7 +179,7 @@
     overflow: hidden;
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     color: var(--task-text);
     cursor: pointer;
     display: flex;
@@ -204,7 +241,7 @@
     padding: 4px 13px;
     background: rgba(0, 0, 0, 0.22);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     color: var(--task-text-dim);
     font-family: var(--task-serif);
     font-size: 14px;
@@ -213,7 +250,7 @@
     cursor: pointer;
     user-select: none;
     transition: color 0.18s, background 0.18s, border-color 0.18s;
-    animation: task-chip-in 0.4s var(--task-ease) both;
+    animation: task-chip-in 0.4s var(--task-ease-slide) both;
 }
 .task-chip:hover { color: var(--task-text); border-color: var(--task-accent-soft); }
 .task-chip.active {
@@ -255,7 +292,7 @@
     padding: 4px 10px;
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    border-radius: var(--task-radius-control);
     color: var(--task-text);
     font-family: var(--task-serif);
     font-size: 13px;
@@ -272,7 +309,7 @@
     min-width: 120px;
     background: rgba(18, 14, 8, 0.97);
     border: 1px solid var(--task-accent-soft);
-    border-radius: 5px;
+    border-radius: var(--task-radius-control);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
     padding: 4px;
     z-index: 30;
@@ -287,7 +324,7 @@
     padding: 6px 10px;
     background: transparent;
     border: none;
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     color: var(--task-text-dim);
     font-family: var(--task-serif);
     font-size: 13px;
@@ -303,7 +340,7 @@
     height: 28px;
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    border-radius: var(--task-radius-control);
     color: var(--task-text);
     font-size: 15px;
     cursor: pointer;
@@ -322,6 +359,44 @@
     min-height: 0;
     display: flex;
     flex-direction: row;
+    position: relative;
+}
+/* 右下氛围 MG：同心菱形环 32s 慢转扫描 + 实心 ◆ 核呼吸（呼应原版菱形翻页箭头语言），
+   低透明度、pointer-events 穿透，操作按钮区用 z-index 抬到其上方。 */
+.task-panel-body::before {
+    content: '';
+    position: absolute;
+    right: 48px;
+    bottom: 26px;
+    width: 108px;
+    height: 108px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    box-shadow: 0 0 0 22px rgba(255, 255, 255, 0.028), 0 0 0 44px rgba(255, 255, 255, 0.016);
+    transform: rotate(45deg);
+    animation: task-watermark-scan 32s linear infinite;
+    pointer-events: none;
+}
+.task-panel-body::after {
+    content: '◆';
+    position: absolute;
+    right: 74px;
+    bottom: 52px;
+    font-size: 56px;
+    line-height: 1;
+    font-family: var(--task-serif);
+    color: rgba(255, 255, 255, 0.07);
+    animation: task-watermark-breathe 5.2s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+@keyframes task-watermark-scan {
+    from { transform: rotate(45deg); }
+    to   { transform: rotate(135deg); }
+}
+@keyframes task-watermark-breathe {
+    from { opacity: 0.55; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1.04); }
 }
 
 .task-panel-left {
@@ -335,10 +410,10 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
-.task-panel-left::-webkit-scrollbar { width: 10px; }
-.task-panel-left::-webkit-scrollbar-track { background: rgba(217,217,217,0.03); }
-.task-panel-left::-webkit-scrollbar-thumb { background: rgba(217,217,217,0.22); border-radius: 4px; }
-.task-panel-left::-webkit-scrollbar-thumb:hover { background: rgba(217,217,217,0.45); }
+.task-panel-left::-webkit-scrollbar { width: 8px; }
+.task-panel-left::-webkit-scrollbar-track { background: var(--task-scroll-track); }
+.task-panel-left::-webkit-scrollbar-thumb { background: var(--task-scroll-thumb); border-radius: 4px; }
+.task-panel-left::-webkit-scrollbar-thumb:hover { background: var(--task-scroll-thumb-hover); }
 
 .task-panel-right {
     width: 73%;
@@ -350,7 +425,9 @@
     overflow-y: auto;
 }
 .task-panel-right::-webkit-scrollbar { width: 8px; }
-.task-panel-right::-webkit-scrollbar-thumb { background: rgba(217,217,217,0.18); border-radius: 4px; }
+.task-panel-right::-webkit-scrollbar-track { background: var(--task-scroll-track); }
+.task-panel-right::-webkit-scrollbar-thumb { background: var(--task-scroll-thumb); border-radius: 4px; }
+.task-panel-right::-webkit-scrollbar-thumb:hover { background: var(--task-scroll-thumb-hover); }
 
 /* ── 左侧任务卡（卡片模式，默认）── */
 .task-icon {
@@ -374,7 +451,8 @@
     border: none;
     cursor: pointer;
     flex-shrink: 0;
-    animation: task-card-slidein 0.55s var(--task-ease) both;
+    animation: task-card-slidein 0.55s var(--task-ease-slide) both;
+    transition: filter 0.16s var(--task-ease-slide);
 }
 
 /* 卡片选中：左竖条(inset，盖在卡背景图左缘)+提亮发光，黑白灰——与列表「左竖条」选中语言统一，
@@ -393,6 +471,8 @@
     outline: 2px solid rgba(255, 255, 255, 0.85);
     outline-offset: -2px;
 }
+/* hover 微提亮（原版 rollover 有过渡帧，web 侧补 160ms 缓和） */
+.task-icon:hover { filter: brightness(1.07); }
 
 /* 分类角标 */
 .task-icon-cat {
@@ -401,7 +481,7 @@
     left: 4px;
     z-index: 3;
     padding: 1px 6px;
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     font-size: 11px;
     line-height: 1.5;
     font-weight: 600;
@@ -449,7 +529,7 @@
     height: 96px;
     background: transparent;
     border: none;
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -501,7 +581,7 @@
     background-image: none;
     background: linear-gradient(to right, rgba(0,0,0,0.32), rgba(0,0,0,0.14));
     border-left: 3px solid rgba(255, 255, 255, 0.28);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     max-width: none;
     height: 40px;
     padding: 0 8px 0 10px;
@@ -529,7 +609,7 @@
     flex-shrink: 0;
     width: 14px;
     height: 14px;
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     border: 1px solid rgba(255,255,255,0.25);
 }
 .task-panel-left.view-list .task-icon[data-satisfied="1"] .task-icon-flag {
@@ -549,7 +629,7 @@
 
 /* ── 骨架屏 ── */
 .task-skel {
-    border-radius: 6px;
+    border-radius: var(--task-radius-card);
     background: linear-gradient(100deg, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 70%);
     background-size: 200% 100%;
     animation: task-skel 1.1s ease-in-out infinite;
@@ -592,15 +672,15 @@
     inset: 0;
     background: var(--task-text);
     transform-origin: left center;
-    animation: task-shrink-reveal 0.8s var(--task-ease) forwards;
+    animation: task-shrink-reveal 0.8s var(--task-ease-slide) forwards;
 }
 @keyframes task-shrink-reveal {
     0%   { transform: scaleX(1); }
     50%  { transform: scaleX(0.005); }
     100% { transform: scaleX(0.015); }
 }
-.task-title-line1 { display: block; font-size: 18px; animation: task-text-slide-in 0.6s var(--task-ease) 0.1s both; }
-.task-title-line2 { display: block; font-size: 24px; animation: task-text-slide-in 0.6s var(--task-ease) 0.3s both; }
+.task-title-line1 { display: block; font-size: 18px; animation: task-text-slide-in 0.6s var(--task-ease-slide) 0.1s both; }
+.task-title-line2 { display: block; font-size: 24px; animation: task-text-slide-in 0.6s var(--task-ease-slide) 0.3s both; }
 @keyframes task-text-slide-in {
     0%   { transform: translateX(-100%); opacity: 0; }
     100% { transform: translateX(0); opacity: 1; }
@@ -709,26 +789,35 @@
 .task-item-requirement,
 .task-npc {
     position: relative;
-    border-radius: 8px;
+    border-radius: var(--task-radius-card);
     flex-shrink: 0;
     margin-right: 16px;
     overflow: hidden;
-    animation: task-req-rise 0.55s var(--task-ease) both;
+    animation: task-req-slide-in 0.65s var(--task-ease-slide) both;
 }
 .task-requirement   { width: 175px; height: 100px; background: var(--task-card-dots), var(--task-card-grad); display: flex; align-items: flex-start; justify-content: center; }
-.task-item-requirement { width: 175px; min-height: 100px; background: var(--task-card-dots), var(--task-card-grad); display: flex; align-items: flex-start; justify-content: center; }
+.task-item-requirement { width: 175px; min-height: 100px; background: none; display: flex; align-items: flex-start; justify-content: center; }  /* 灰底在 ::before（见垫图托盘区块），元素自身不留底 */
 .task-npc { width: 270px; height: 100px; background: var(--task-card-dots), var(--task-npc-grad); display: flex; flex-direction: row; align-items: flex-start; padding: 5px; box-sizing: border-box; }
-.task-requirement[data-i="1"], .task-item-requirement[data-i="1"], .task-npc[data-i="1"] { animation-delay: 0.08s; }
-.task-requirement[data-i="2"], .task-item-requirement[data-i="2"], .task-npc[data-i="2"] { animation-delay: 0.16s; }
-.task-requirement[data-i="3"], .task-item-requirement[data-i="3"], .task-npc[data-i="3"] { animation-delay: 0.24s; }
-@keyframes task-req-rise {
-    from { opacity: 0; transform: translateY(14px); filter: drop-shadow(0 0 0 transparent); }
-    to   { opacity: 1; transform: translateY(0); filter: drop-shadow(6px 8px 6px rgba(0,0,0,0.28)); }
+.task-requirement[data-i="1"], .task-item-requirement[data-i="1"], .task-npc[data-i="1"] { animation-delay: 0.10s; }
+.task-requirement[data-i="2"], .task-item-requirement[data-i="2"], .task-npc[data-i="2"] { animation-delay: 0.20s; }
+.task-requirement[data-i="3"], .task-item-requirement[data-i="3"], .task-npc[data-i="3"] { animation-delay: 0.30s; }
+@keyframes task-req-slide-in {
+    from { opacity: 0; transform: translateX(-18px); filter: drop-shadow(0 0 0 transparent); }
+    to   { opacity: 1; transform: translateX(0); filter: drop-shadow(6px 8px 6px rgba(0,0,0,0.28)); }
+}
+/* 提交NPC卡两段式滑入（对齐原版 提交NPC-动效：-59.5→-13.5 快段 → 0 慢段的刹车编舞） */
+.task-npc {
+    animation-name: task-npc-slide;
+    animation-duration: 0.8s;
+}
+@keyframes task-npc-slide {
+    0%   { opacity: 0; transform: translateX(-60px); filter: drop-shadow(0 0 0 transparent); }
+    45%  { opacity: 1; transform: translateX(-14px); }
+    100% { transform: translateX(0); filter: drop-shadow(6px 8px 6px rgba(0,0,0,0.28)); }
 }
 
 /* 常驻循环扫光（金属反光） */
 .task-requirement::before,
-.task-item-requirement::before,
 .task-npc::before,
 .task-reward-box::before {
     content: '';
@@ -737,14 +826,13 @@
     left: 0;
     width: 40%;
     height: 100%;
-    background: linear-gradient(105deg, transparent, rgba(255,255,255,0.45), transparent);
+    background: linear-gradient(105deg, transparent, rgba(255,255,255,0.30), transparent);
     /* 用 transform 平移（GPU 合成层），不动 left——避免逐帧重排/重绘，低功耗平板友好 */
     transform: translateX(-160%) skewX(-18deg);
-    animation: task-sweep-loop 3.4s ease-in-out infinite;
+    animation: task-sweep-loop 5.0s ease-in-out infinite;
     pointer-events: none;
     z-index: 1;
 }
-.task-item-requirement::before { animation-delay: 0.8s; }
 .task-npc::before { animation-delay: 1.6s; }
 @keyframes task-sweep-loop {
     0%   { transform: translateX(-160%) skewX(-18deg); }
@@ -752,13 +840,98 @@
     100% { transform: translateX(350%) skewX(-18deg); }
 }
 
+/* ── 提交物品卡：原版「方向栏」垫图托盘 + 顶部粗警戒带（对齐 LIBRARY/8、提交物品/提交物品-动效） ──
+   层次设计：卡体灰底下沉到 ::before（z-index:0），托盘 ::after 置 z-index:-1——托盘左段被灰底真切遮挡，
+   滑入时从卡后“长”出来（对齐原版 tx 0→+44 的卡后滑出语义），而不是浮在卡前的贴片。
+   本体 overflow:visible 放行托盘；常驻扫光移至 inner（自带圆角裁切），视觉不变。 */
+.task-item-requirement { overflow: visible; }
+.task-item-requirement::before {
+    /* 卡体底（遮挡托盘左段的关键层，原元素 background 移此）。
+       注意须逐属性压掉共享扫光规则（.task-requirement::before 组）的 width/40%、transform、animation、z-index，
+       否则灰底会被扫光平移带走、托盘从透明处透出。 */
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    border-radius: var(--task-radius-card);
+    background: var(--task-card-dots), var(--task-card-grad);
+    transform: none;
+    animation: none;
+    z-index: 0;
+}
+.task-item-requirement-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.30), transparent);
+    transform: translateX(-160%) skewX(-18deg);
+    animation: task-sweep-loop 5.0s ease-in-out 0.8s infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+.task-item-requirement::after {
+    content: '»';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -16px;
+    width: 48px;                     /* 32px 藏卡底 ::before 之下，16px 探出 */
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--task-radius-card);
+    /* 三层：纵向流光带（循环）/ 顶端橙条 / 托盘体渐变 #666→#333（对齐原版 方向栏 叠色真值） */
+    background:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.30) 50%, rgba(255, 255, 255, 0) 100%) no-repeat,
+        linear-gradient(to bottom, var(--task-action-warm-deep), var(--task-action-warm-deep)) no-repeat top,
+        linear-gradient(to bottom, #666666, #333333);
+    background-size: 100% 45%, 100% 3px, 100% 100%;
+    background-position: 0 -60%, 0 0, 0 0;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 15px;
+    line-height: 1;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 2px;
+    pointer-events: none;
+    z-index: -1;
+    /* 入场纯位移卡后滑出（原版 tx 0→+44）；常驻纵向流光（原版 方向栏-光效 89f@24fps≈3.7s 循环，峰值 alpha 0.3） */
+    animation:
+        task-tray-peek 0.5s var(--task-ease-slide) 0.42s both,
+        task-tray-sheen 3.7s ease-in-out 1.4s infinite;
+}
+/* 纯位移滑出（无淡入，对齐 Flash 原版手法）：起始帧托盘整体藏于卡底灰底之下、不可见 */
+@keyframes task-tray-peek {
+    from { transform: translateX(-30px); }
+    to   { transform: translateX(0); }
+}
+@keyframes task-tray-sheen {
+    0%   { background-position: 0 -60%, 0 0, 0 0; }
+    60%  { background-position: 0 175%, 0 0, 0 0; }
+    100% { background-position: 0 175%, 0 0, 0 0; }
+}
+/* 顶部粗警戒带：复用 DOM 既有 .scroll-track 条，换原版黑斜纹 + 顺流动画（其余卡维持 5px 细纹条） */
+.task-item-requirement .scroll-track {
+    width: 100%;
+    height: 10px;
+    background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.85) 0 6px, rgba(216, 216, 216, 0.9) 6px 12px);
+    background-size: 17px 100%;
+    animation: task-hazard-flow 1.2s linear infinite;
+}
+@keyframes task-hazard-flow { from { background-position: 0 0; } to { background-position: 17px 0; } }
+
 .task-requirement-inner,
 .task-item-requirement-inner {
     position: relative;
     z-index: 2;
     width: 165px;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: var(--task-radius-card);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -772,7 +945,7 @@
     width: 160px;
     height: 90px;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: var(--task-radius-card);
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -785,7 +958,7 @@
     height: 90px;
     background: transparent;
     border: none;
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     margin-left: 8px;
     overflow: hidden;
 }
@@ -825,10 +998,10 @@
     pointer-events: none;
     font-family: var(--task-serif);
 }
-.difficulty-简单 { color: #00ccff; text-shadow: 0 0 6px rgba(0,204,255,0.7), 1px 1px 1px rgba(0,0,0,0.4); }
-.difficulty-冒险 { color: #00ff00; text-shadow: 0 0 6px rgba(0,255,0,0.6), 1px 1px 1px rgba(0,0,0,0.4); }
-.difficulty-修罗 { color: #ff9900; text-shadow: 0 0 6px rgba(255,153,0,0.7), 1px 1px 1px rgba(0,0,0,0.4); }
-.difficulty-地狱 { color: #ff0000; text-shadow: 0 0 7px rgba(255,0,0,0.8), 1px 1px 1px rgba(0,0,0,0.4); }
+.task-difficulty-label[data-difficulty="简单"] { color: #00ccff; text-shadow: 0 0 6px rgba(0,204,255,0.7), 1px 1px 1px rgba(0,0,0,0.4); }
+.task-difficulty-label[data-difficulty="冒险"] { color: #00ff00; text-shadow: 0 0 6px rgba(0,255,0,0.6), 1px 1px 1px rgba(0,0,0,0.4); }
+.task-difficulty-label[data-difficulty="修罗"] { color: #ff9900; text-shadow: 0 0 6px rgba(255,153,0,0.7), 1px 1px 1px rgba(0,0,0,0.4); }
+.task-difficulty-label[data-difficulty="地狱"] { color: #ff0000; text-shadow: 0 0 7px rgba(255,0,0,0.8), 1px 1px 1px rgba(0,0,0,0.4); }
 
 .task-npc-title {
     width: 160px;
@@ -848,7 +1021,7 @@
     color: #333;
     font-size: 18px;
 }
-.task-npc-name span { display: block; animation: task-text-slide-in 0.6s var(--task-ease) both; }
+.task-npc-name span { display: block; animation: task-text-slide-in 0.6s var(--task-ease-slide) both; }
 .task-npc-name::after {
     content: '';
     position: absolute;
@@ -903,16 +1076,21 @@
     position: absolute;
     inset: 0;
     background: var(--task-card-dots), var(--task-card-grad);
-    transform-origin: right center;
-    animation: task-reward-reveal 0.5s var(--task-ease) forwards;
+    transform-origin: left center;
+    animation: task-reward-reveal 0.5s var(--task-ease-slide) 0.22s both;
 }
 .task-reward-box span {
     position: relative;
     z-index: 2;
     display: block;
-    animation: task-text-slide-in 0.6s var(--task-ease) both;
+    animation: task-text-slide-in-r 0.55s var(--task-ease-slide) both;
 }
-@keyframes task-reward-reveal { 0% { left: 90%; } 100% { left: 0; } }
+/* 编舞对齐原版 任务奖励：标题先从右滑入，灰底纹在标题 ~40% 处从左扫入 */
+@keyframes task-reward-reveal { 0% { left: 0; right: 100%; } 100% { left: 0; right: 0; } }
+@keyframes task-text-slide-in-r {
+    0%   { transform: translateX(60px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
 
 .task-reward-items, .task-requirement-items {
     display: flex;
@@ -928,14 +1106,14 @@
     height: 32px;
     background: rgba(0, 0, 0, 0.4) url('/modules/tasks/assets/item_bg.png') center/cover no-repeat;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 1px;
+    border-radius: var(--task-radius-micro);
     overflow: hidden;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: help;
-    animation: task-item-pop 0.4s var(--task-ease) both;
+    animation: task-item-pop 0.4s var(--task-ease-slide) both;
 }
 .task-item[data-item-name]:hover {
     border-color: var(--task-accent-soft);
@@ -946,6 +1124,12 @@
 .task-item[data-i="3"] { animation-delay: 0.15s; }
 .task-item[data-i="4"] { animation-delay: 0.20s; }
 .task-item[data-i="5"] { animation-delay: 0.25s; }
+/* 奖励物品收尾错峰：标题(0s)→灰底纹(0.22s)→物品(0.5s 起)，对齐原版 任务奖励 三向汇聚编舞 */
+.task-reward-items .task-item[data-i="1"] { animation-delay: 0.50s; }
+.task-reward-items .task-item[data-i="2"] { animation-delay: 0.57s; }
+.task-reward-items .task-item[data-i="3"] { animation-delay: 0.64s; }
+.task-reward-items .task-item[data-i="4"] { animation-delay: 0.71s; }
+.task-reward-items .task-item[data-i="5"] { animation-delay: 0.78s; }
 .task-item img { width: 28px; height: 28px; object-fit: contain; display: block; pointer-events: none; }
 .task-item .cfn-layered-icon {
     width: 28px;
@@ -960,7 +1144,7 @@
     color: #fff;
     background: rgba(0, 0, 0, 0.7);
     padding: 0 3px;
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     line-height: 1.4;
     pointer-events: none;
 }
@@ -1004,7 +1188,7 @@
 .tlv-logbar { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; flex: 0 0 auto; }
 .tlv-chart-ctrls { display: flex; gap: 10px; align-items: center; }
 .tlv-chart-ctrls[hidden] { display: none; }
-.tlv-seg { display: inline-flex; border: 1px solid var(--task-accent-faint); border-radius: 3px; overflow: hidden; }
+.tlv-seg { display: inline-flex; border: 1px solid var(--task-accent-faint); border-radius: var(--task-radius-control); overflow: hidden; }
 .tlv-seg-btn {
     padding: 4px 11px;
     background: rgba(0, 0, 0, 0.25);
@@ -1026,7 +1210,7 @@
     overflow: auto;
     position: relative;
     border: 1px solid var(--task-accent-faint);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     background:
         repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px),
         repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 40px),
@@ -1098,13 +1282,34 @@
     background: #f2f2f2;
     z-index: -2;
 }
-/* 滚动条复用「我的任务」列表的样式（与 .task-panel-left 一致，消除视觉割裂） */
-.task-panel-logview .tlv-tree::-webkit-scrollbar { width: 10px; }
-.task-panel-logview .tlv-tree::-webkit-scrollbar-track { background: rgba(217, 217, 217, 0.03); }
-.task-panel-logview .tlv-tree::-webkit-scrollbar-thumb { background: rgba(217, 217, 217, 0.22); border-radius: 4px; }
-.task-panel-logview .tlv-tree::-webkit-scrollbar-thumb:hover { background: rgba(217, 217, 217, 0.45); }
+/* 图表入场：节点依次弹入（fill 取 backwards——结束交还 transform，不压 .selected 的 scale(1.18)），
+   连线随后淡入（虚线 cross 边不做描画动画，统一淡入避免 dash 图案变成行军蚁） */
+.tlv-hex { animation: tlv-hex-in 0.38s cubic-bezier(0.34, 1.3, 0.64, 1) backwards; }
+.tlv-hex:nth-of-type(2) { animation-delay: 0.05s; }
+.tlv-hex:nth-of-type(3) { animation-delay: 0.10s; }
+.tlv-hex:nth-of-type(4) { animation-delay: 0.15s; }
+.tlv-hex:nth-of-type(5) { animation-delay: 0.20s; }
+.tlv-hex:nth-of-type(6) { animation-delay: 0.25s; }
+.tlv-hex:nth-of-type(7) { animation-delay: 0.30s; }
+.tlv-hex:nth-of-type(8) { animation-delay: 0.35s; }
+.tlv-hex:nth-of-type(9) { animation-delay: 0.40s; }
+.tlv-hex:nth-of-type(10) { animation-delay: 0.45s; }
+.tlv-hex:nth-of-type(n+11) { animation-delay: 0.50s; }
+@keyframes tlv-hex-in {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.tlv-edge { animation: tlv-edge-in 0.5s ease-out 0.25s both; }
+@keyframes tlv-edge-in { from { opacity: 0; } to { opacity: 1; } }
+/* 滚动条复用全局统一规格（--task-scroll-*，与左右栏一致，消除视觉割裂） */
+.task-panel-logview .tlv-tree::-webkit-scrollbar { width: 8px; }
+.task-panel-logview .tlv-tree::-webkit-scrollbar-track { background: var(--task-scroll-track); }
+.task-panel-logview .tlv-tree::-webkit-scrollbar-thumb { background: var(--task-scroll-thumb); border-radius: 4px; }
+.task-panel-logview .tlv-tree::-webkit-scrollbar-thumb:hover { background: var(--task-scroll-thumb-hover); }
 .task-panel-logview .tlv-detail::-webkit-scrollbar { width: 8px; }
-.task-panel-logview .tlv-detail::-webkit-scrollbar-thumb { background: rgba(217, 217, 217, 0.18); border-radius: 4px; }
+.task-panel-logview .tlv-detail::-webkit-scrollbar-track { background: var(--task-scroll-track); }
+.task-panel-logview .tlv-detail::-webkit-scrollbar-thumb { background: var(--task-scroll-thumb); border-radius: 4px; }
+.task-panel-logview .tlv-detail::-webkit-scrollbar-thumb:hover { background: var(--task-scroll-thumb-hover); }
 .task-panel-logview .tlv-detail {
     flex: 1;
     min-width: 0;
@@ -1119,7 +1324,7 @@
     color: var(--task-text-dim);
     font-size: 15px;
 }
-.tlv-loading.tlv-error { color: #e07a7a; }
+.tlv-loading.tlv-error { color: var(--task-danger-text); }
 
 /* 链分段 */
 .tlv-chain { margin-bottom: 16px; }
@@ -1142,7 +1347,7 @@
     color: var(--task-text-dim);
     background: rgba(255, 255, 255, 0.06);
     padding: 1px 7px;
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
 }
 
 /* 节点 */
@@ -1159,7 +1364,7 @@
     background: linear-gradient(to right, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0.14));
     border: none;
     border-left: 3px solid rgba(255, 255, 255, 0.28);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     color: var(--task-text);
     font-size: 15px;
     cursor: pointer;
@@ -1167,17 +1372,38 @@
 }
 .tlv-node:hover { background: linear-gradient(to right, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.14)); }
 /* 状态标记复用列表 satisfied-flag 的方块语言：进行中=白色发光方块，已完成=暗描边方块 */
-.tlv-node-state { width: 14px; height: 14px; flex: 0 0 14px; border-radius: 2px; border: 1px solid rgba(255, 255, 255, 0.25); }
+.tlv-node-state { width: 14px; height: 14px; flex: 0 0 14px; border-radius: var(--task-radius-micro); border: 1px solid rgba(255, 255, 255, 0.25); }
 .tlv-node-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tlv-node.done .tlv-node-state { border-color: rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.12); }
 .tlv-node.active .tlv-node-state { border-color: #e8e8e8; background: radial-gradient(circle, #ffffff 0%, #bdbdbd 70%); box-shadow: 0 0 6px rgba(255, 255, 255, 0.55); }
 .tlv-node.selected { border-left-color: var(--task-accent); background: linear-gradient(to right, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0.14)); }
 
+/* ── 事件日志入场编舞（对齐原版 事件日志.xml：整体左滑缓出 tx-20→0 / acc=-100 + 到位后光效） ── */
+/* 工具栏随版面色左滑入 */
+.task-panel-logview .tlv-logbar { animation: tlv-bar-in 0.4s var(--task-ease-slide) both; }
+@keyframes tlv-bar-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+/* 链分组：左滑 + 逐链错峰（≈65% 规则：0.5s 动画 → 0.09s 间隔） */
+.tlv-chain { animation: tlv-chain-in 0.5s var(--task-ease-slide) both; }
+.tlv-chain:nth-child(2) { animation-delay: 0.09s; }
+.tlv-chain:nth-child(3) { animation-delay: 0.18s; }
+.tlv-chain:nth-child(4) { animation-delay: 0.27s; }
+.tlv-chain:nth-child(5) { animation-delay: 0.36s; }
+.tlv-chain:nth-child(6) { animation-delay: 0.45s; }
+.tlv-chain:nth-child(n+7) { animation-delay: 0.54s; }
+@keyframes tlv-chain-in { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+/* 链内节点：只淡入微错峰（不加位移，避免与链滑动叠加出晃动） */
+.tlv-nodes .tlv-node { animation: tlv-node-in 0.3s ease-out both; }
+.tlv-nodes .tlv-node:nth-child(2) { animation-delay: 0.05s; }
+.tlv-nodes .tlv-node:nth-child(3) { animation-delay: 0.10s; }
+.tlv-nodes .tlv-node:nth-child(4) { animation-delay: 0.15s; }
+.tlv-nodes .tlv-node:nth-child(n+5) { animation-delay: 0.20s; }
+@keyframes tlv-node-in { from { opacity: 0; } to { opacity: 1; } }
+
 /* 详情·状态徽章（替代 mine 详情的「可交付」位置） */
 .tlv-detail-badge {
     font-size: 12px;
     padding: 3px 10px;
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     border: 1px solid var(--task-accent-faint);
     color: var(--task-text-dim);
     white-space: nowrap;
@@ -1192,7 +1418,7 @@
     padding: 9px 12px;
     background: transparent;
     border: 1px solid var(--task-accent-soft);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     color: var(--task-text);
     font-size: 14px;
     cursor: pointer;
@@ -1212,14 +1438,14 @@
     padding: 6px 10px;
     background: linear-gradient(to right, rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.12));
     border-left: 3px solid rgba(255, 255, 255, 0.28);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     font-size: 13px;
     color: var(--task-text-dim);
 }
 .task-cond-row.done { border-left-color: #f2f2f2; color: var(--task-text); }
 .task-cond-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .task-cond-count { flex-shrink: 0; font-family: var(--task-serif); }
-.task-cond-bar { flex: 0 0 90px; height: 5px; background: rgba(255, 255, 255, 0.10); border-radius: 2px; overflow: hidden; }
+.task-cond-bar { flex: 0 0 90px; height: 5px; background: rgba(255, 255, 255, 0.10); border-radius: var(--task-radius-micro); overflow: hidden; }
 .task-cond-fill { display: block; height: 100%; background: linear-gradient(to right, #9a9a9a, #e8e8e8); transition: width 0.25s var(--task-ease); }
 .task-cond-row.done .task-cond-fill { background: #ffffff; box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
 
@@ -1242,8 +1468,8 @@
     gap: 8px;
 }
 @keyframes cf-dialogue-line-in {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateX(-12px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 .cf-dialogue-line-staged {
     animation: cf-dialogue-line-in 0.18s var(--task-ease) both;
@@ -1339,7 +1565,7 @@
     color: var(--task-text-dim);
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     cursor: pointer;
     transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
@@ -1378,6 +1604,8 @@
     gap: 10px;
     margin-top: auto;          /* 推到详情区底部 */
     padding: 10px 4px 6px;
+    position: relative;        /* 抬到右下水印 MG 之上 */
+    z-index: 1;
 }
 .task-act-btn {
     position: relative;
@@ -1386,7 +1614,7 @@
     min-width: 110px;
     height: 38px;
     padding: 0 22px;
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     font-family: var(--task-serif);
     font-size: 18px;
     letter-spacing: 1px;
@@ -1484,7 +1712,7 @@
     padding: 22px 26px 18px;
     background: linear-gradient(to bottom, #2a2a2a, #1b1b1b);
     border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     color: var(--task-text);
     font-family: var(--task-serif);
@@ -1514,7 +1742,7 @@
     min-width: 92px;
     height: 36px;
     padding: 0 18px;
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     font-family: var(--task-serif);
     font-size: 16px;
     cursor: pointer;
@@ -1545,7 +1773,7 @@
     -webkit-mask: none;
     mask: none;
     border: 2px solid var(--task-accent);
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     box-sizing: border-box;
     transform: rotate(45deg) scale(0.86);
 }
@@ -1586,8 +1814,12 @@
 .ach-sum-claimable strong { color: var(--task-accent); }
 
 .ach-list { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 4px 12px; }
+.ach-list::-webkit-scrollbar { width: 8px; }
+.ach-list::-webkit-scrollbar-track { background: var(--task-scroll-track); }
+.ach-list::-webkit-scrollbar-thumb { background: var(--task-scroll-thumb); border-radius: 4px; }
+.ach-list::-webkit-scrollbar-thumb:hover { background: var(--task-scroll-thumb-hover); }
 .ach-hint { color: var(--task-text-dim); font-size: 14px; padding: 28px 8px; text-align: center; }
-.ach-error { color: #c97a6a; }
+.ach-error { color: var(--task-danger-text); }
 
 .ach-section { margin-bottom: 16px; }
 .ach-section-title {
@@ -1608,12 +1840,12 @@
     padding: 8px 12px;
     margin-bottom: 6px;
     border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     background: rgba(255, 255, 255, 0.03);
     animation: ach-row-in 0.25s ease both;
 }
-@keyframes ach-row-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-.ach-row.state-unlocked { border-color: rgba(239, 148, 66, 0.45); background: rgba(239, 148, 66, 0.06); }
+@keyframes ach-row-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+.ach-row.state-unlocked { border-color: rgba(var(--task-action-warm-rgb), 0.45); background: rgba(var(--task-action-warm-rgb), 0.06); }
 .ach-row.state-claimed { opacity: 0.62; }
 
 .ach-medal {
@@ -1625,7 +1857,7 @@
     font-size: 14px;
     color: var(--task-text-dim);
 }
-.ach-row.state-unlocked .ach-medal { color: var(--task-accent); border-color: var(--task-accent); text-shadow: 0 0 6px rgba(239, 148, 66, 0.6); }
+.ach-row.state-unlocked .ach-medal { color: var(--task-accent); border-color: var(--task-accent); text-shadow: 0 0 6px rgba(var(--task-action-warm-rgb), 0.6); }
 .ach-row.state-claimed .ach-medal { color: #8fae8f; border-color: rgba(143, 174, 143, 0.5); }
 .ach-row.state-locked .ach-medal { opacity: 0.5; }
 
@@ -1640,7 +1872,7 @@
     font-size: 10px;
     color: var(--task-text-dim);
     border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     padding: 0 4px;
     letter-spacing: 1px;
 }
@@ -1656,12 +1888,12 @@
     max-width: 340px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
     overflow: hidden;
 }
 .ach-progress-fill {
     position: absolute; left: 0; top: 0; bottom: 0;
-    background: linear-gradient(to right, rgba(239, 148, 66, 0.35), rgba(239, 148, 66, 0.75));
+    background: linear-gradient(to right, rgba(var(--task-action-warm-rgb), 0.35), rgba(var(--task-action-warm-rgb), 0.75));
     transition: width 0.3s ease;
 }
 .ach-row.state-claimed .ach-progress-fill { background: rgba(143, 174, 143, 0.5); }
@@ -1679,7 +1911,7 @@
 .ach-claim-btn {
     position: relative;
     min-width: 84px; height: 32px; padding: 0 14px;
-    border-radius: 3px;
+    border-radius: var(--task-radius-control);
     cursor: pointer;
     font-family: var(--task-serif);
     font-size: 15px;
@@ -1691,14 +1923,14 @@
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
     transition: transform 0.12s, box-shadow 0.18s;
 }
-.ach-claim-btn:hover { box-shadow: 0 0 8px rgba(239, 148, 66, 0.45); }
+.ach-claim-btn:hover { box-shadow: 0 0 8px rgba(var(--task-action-warm-rgb), 0.45); }
 .ach-claim-btn:active { transform: translateY(1px); }
 .ach-claim-btn.task-btn-pending { pointer-events: none; opacity: 0.6; }
 .ach-claim-dot {
     position: absolute; top: -4px; right: -4px;
     width: 8px; height: 8px; border-radius: 50%;
-    background: #d8533a;
-    box-shadow: 0 0 5px rgba(216, 83, 58, 0.8);
+    background: var(--task-danger);
+    box-shadow: 0 0 5px rgba(var(--task-danger-rgb), 0.8);
 }
 .ach-claimed-mark { font-size: 12px; color: #8fae8f; letter-spacing: 1px; }
 
@@ -1714,8 +1946,8 @@
 .ach-toast {
     display: flex; align-items: center; gap: 8px;
     background: rgba(20, 16, 12, 0.95);
-    border: 1px solid rgba(239, 148, 66, 0.55);
-    border-radius: 3px;
+    border: 1px solid rgba(var(--task-action-warm-rgb), 0.55);
+    border-radius: var(--task-radius-control);
     color: #f1d9b8;
     font-size: 13px;
     padding: 8px 16px;
@@ -1736,7 +1968,7 @@
     }
     /* 纯装饰的常驻循环扫光直接移除（无静态价值） */
     .task-requirement::before,
-    .task-item-requirement::before,
+    .task-item-requirement-inner::before,
     .task-npc::before,
     .task-reward-box::before { display: none !important; }
     /* 循环动画停转，但保留静态视觉（不 display:none，避免丢图标/骨架） */
@@ -1771,11 +2003,11 @@
 .dgn-shell { flex: 1; min-height: 0; display: flex; gap: 14px; }
 .dgn-left { flex: 0 0 230px; display: flex; flex-direction: column; gap: 10px; min-height: 0; position: relative; overflow: hidden; }
 .dgn-left > :not(.dgn-left-poster-bg) { position: relative; z-index: 1; }
-.dgn-right { flex: 1; min-width: 0; display: block; overflow-y: auto; padding-right: 4px; scrollbar-color: rgba(217, 217, 217, 0.18) rgba(217, 217, 217, 0.03); }
+.dgn-right { flex: 1; min-width: 0; display: block; overflow-y: auto; padding-right: 4px; scrollbar-color: var(--task-scroll-thumb) var(--task-scroll-track); }
 .dgn-right::-webkit-scrollbar { width: 8px; }
-.dgn-right::-webkit-scrollbar-track { background: rgba(217, 217, 217, 0.03); }
-.dgn-right::-webkit-scrollbar-thumb { background: rgba(217, 217, 217, 0.18); border-radius: 4px; }
-.dgn-right::-webkit-scrollbar-thumb:hover { background: rgba(217, 217, 217, 0.35); }
+.dgn-right::-webkit-scrollbar-track { background: var(--task-scroll-track); }
+.dgn-right::-webkit-scrollbar-thumb { background: var(--task-scroll-thumb); border-radius: 4px; }
+.dgn-right::-webkit-scrollbar-thumb:hover { background: var(--task-scroll-thumb-hover); }
 
 /* 左：难度选择 */
 .dgn-left-title { font-size: 13px; color: var(--task-text-dim); letter-spacing: 2px; padding-left: 2px; }
@@ -1783,34 +2015,34 @@
 .dgn-mode {
     text-align: left; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.14);
     background: rgba(255, 255, 255, 0.04); color: var(--task-text);
-    padding: 10px 12px; border-radius: 3px; display: flex; flex-direction: column; gap: 3px;
+    padding: 10px 12px; border-radius: var(--task-radius-control); display: flex; flex-direction: column; gap: 3px;
     font-family: var(--task-serif); transition: all 0.15s var(--task-ease);
 }
 .dgn-mode:hover { background: rgba(255, 255, 255, 0.09); border-color: rgba(255, 255, 255, 0.3); }
 .dgn-mode.active { border-color: var(--task-accent); background: rgba(255, 255, 255, 0.13); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
-.dgn-mode-challenge.active { border-color: #e0884a; box-shadow: inset 0 0 0 1px rgba(224, 136, 74, 0.5); }
+.dgn-mode-challenge.active { border-color: var(--task-action-warm); box-shadow: inset 0 0 0 1px rgba(var(--task-action-warm-rgb), 0.5); }
 .dgn-mode-name { font-size: 15px; letter-spacing: 1px; }
-.dgn-mode-challenge .dgn-mode-name { color: #f0a85f; }
+.dgn-mode-challenge .dgn-mode-name { color: var(--task-action-warm-bright); }
 .dgn-mode-diff { font-size: 12px; color: var(--task-text-dim); }
 
 .dgn-cost-row { display: flex; gap: 8px; flex-wrap: wrap; padding-left: 2px; }
-.dgn-cost { font-size: 12px; color: var(--task-text-dim); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 2px; padding: 2px 7px; }
-.dgn-cost.bad { color: #d8533a; border-color: rgba(216, 83, 58, 0.5); }
+.dgn-cost { font-size: 12px; color: var(--task-text-dim); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--task-radius-micro); padding: 2px 7px; }
+.dgn-cost.bad { color: var(--task-danger); border-color: rgba(var(--task-danger-rgb), 0.5); }
 
 .dgn-actions { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
 .dgn-enter-btn {
     cursor: pointer; font-family: var(--task-serif); font-size: 16px; letter-spacing: 2px;
-    color: #2a1c0c; background: var(--task-npc-grad); border: none; border-radius: 3px; padding: 11px 0;
+    color: var(--task-ink); background: var(--task-npc-grad); border: none; border-radius: var(--task-radius-control); padding: 11px 0;
     box-shadow: var(--task-shadow); transition: filter 0.15s var(--task-ease);
 }
 .dgn-enter-btn:hover:not(:disabled) { filter: brightness(1.1); }
 .dgn-enter-btn:disabled { cursor: not-allowed; filter: grayscale(0.8) brightness(0.65); }
 .dgn-cancel-btn {
     cursor: pointer; font-family: var(--task-serif); font-size: 13px; color: var(--task-text-dim);
-    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 3px; padding: 7px 0;
+    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--task-radius-control); padding: 7px 0;
 }
 .dgn-cancel-btn:hover { color: var(--task-text); background: rgba(255, 255, 255, 0.08); }
-.dgn-block-reason { font-size: 12px; color: #d8533a; text-align: center; }
+.dgn-block-reason { font-size: 12px; color: var(--task-danger); text-align: center; }
 .dgn-active-note { font-size: 12px; color: #8fae8f; text-align: center; }
 
 /* 左：通缉令作为委托氛围背景，不参与信息布局 */
@@ -1842,7 +2074,7 @@
 .dgn-summary { min-width: 0; }
 .dgn-name { font-size: 19px; color: var(--task-text); letter-spacing: 1px; }
 .dgn-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--task-text-dim); }
-.dgn-npc { color: #f0a85f; }
+.dgn-npc { color: var(--task-action-warm-bright); }
 .dgn-desc { font-size: 13px; line-height: 1.6; color: var(--task-text); opacity: 0.9; padding: 4px 0; }
 .dgn-section-title { font-size: 13px; color: var(--task-text); letter-spacing: 2px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 6px 0 4px; margin-top: 4px; }
 .dgn-dialogue-title { display: flex; align-items: center; gap: 10px; }
@@ -1862,7 +2094,7 @@
     padding: 4px 9px;
     background: rgba(255, 255, 255, 0.055);
     border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
 }
 .dgn-nolimit { font-size: 13px; color: var(--task-text-dim); padding: 3px 0; }
 .dgn-rewards {
@@ -1883,7 +2115,7 @@
     color: var(--task-text);
     background: rgba(255, 255, 255, 0.045);
     border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 2px;
+    border-radius: var(--task-radius-micro);
 }
 .dgn-reward .task-item { animation: none; }
 .dgn-reward-x { color: var(--task-text-dim); }
@@ -1917,7 +2149,6 @@
 .task-panel-container.task-busy .task-panel-dispatchview { pointer-events: none; }
 
 .dispatch-shell {
-    --dispatch-olive: #7f8d68;
     --dispatch-paper: #d4d0bc;
     --dispatch-ink: #20231d;
     --dispatch-hazard: #e0b83e;
@@ -1952,7 +2183,7 @@
 .dispatch-close {
     width: 42px; height: 42px; flex: 0 0 42px; cursor: pointer;
     color: #dadbd3; background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 2px; font-size: 20px;
+    border-radius: var(--task-radius-micro); font-size: 20px;
 }
 .dispatch-close:hover { color: #fff; border-color: rgba(224,184,62,0.75); background: rgba(224,184,62,0.09); }
 
@@ -1963,12 +2194,16 @@
     background: rgba(12, 15, 12, 0.72);
 }
 .dispatch-index-head { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 10px; color: #a9aea4; font-size: 12px; letter-spacing: 1px; }
-.dispatch-index-head b { min-width: 24px; text-align: center; color: #1b1e18; background: var(--dispatch-hazard); padding: 2px 6px; border-radius: 2px; }
-.dispatch-entry-list { min-height: 0; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 2px 5px 10px 2px; }
+.dispatch-index-head b { min-width: 24px; text-align: center; color: #1b1e18; background: var(--dispatch-hazard); padding: 2px 6px; border-radius: var(--task-radius-micro); }
+.dispatch-entry-list { min-height: 0; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 2px 5px 10px 2px; scrollbar-color: rgba(224,184,62,0.38) rgba(255,255,255,0.03); }
+.dispatch-entry-list::-webkit-scrollbar { width: 8px; }
+.dispatch-entry-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+.dispatch-entry-list::-webkit-scrollbar-thumb { background: rgba(224,184,62,0.38); border-radius: 4px; }
+.dispatch-entry-list::-webkit-scrollbar-thumb:hover { background: rgba(224,184,62,0.55); }
 .dispatch-entry {
     position: relative; width: 100%; min-height: 108px; padding: 22px 16px 14px; cursor: pointer; overflow: hidden;
     display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 5px;
-    color: var(--dispatch-ink); background: var(--dispatch-paper); border: 1px solid rgba(255,255,255,0.28); border-radius: 2px;
+    color: var(--dispatch-ink); background: var(--dispatch-paper); border: 1px solid rgba(255,255,255,0.28); border-radius: var(--task-radius-micro);
     box-shadow: 0 3px 10px rgba(0,0,0,0.42); transform: rotate(-0.35deg);
 }
 .dispatch-entry:nth-child(even) { transform: rotate(0.3deg); }
@@ -1989,8 +2224,12 @@
 .dispatch-detail { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: 18px 24px 16px; background: rgba(13,15,14,0.64); }
 .dispatch-detail-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: rgba(230,231,223,0.48); font-size: 13px; }
 .dispatch-detail-empty strong { color: #c9ccbf; font-size: 20px; letter-spacing: 1px; }
-.dispatch-detail-empty.is-error { color: #d77869; }
+.dispatch-detail-empty.is-error { color: var(--task-danger-text); }
 .dispatch-brief-scroll { flex: 1; min-height: 0; overflow-y: auto; padding-right: 8px; scrollbar-color: rgba(224,184,62,0.38) rgba(255,255,255,0.03); }
+.dispatch-brief-scroll::-webkit-scrollbar { width: 8px; }
+.dispatch-brief-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+.dispatch-brief-scroll::-webkit-scrollbar-thumb { background: rgba(224,184,62,0.38); border-radius: 4px; }
+.dispatch-brief-scroll::-webkit-scrollbar-thumb:hover { background: rgba(224,184,62,0.55); }
 .dispatch-detail .mission-brief-info { gap: 7px; }
 .dispatch-detail .dgn-name { font-size: 24px; color: #f2f2e9; }
 .dispatch-detail .dgn-limits,
@@ -2000,7 +2239,7 @@
 .dispatch-action-note { flex: 1; min-width: 0; color: rgba(230,231,223,0.52); font-size: 11px; line-height: 1.45; }
 .dispatch-enter {
     min-width: 210px; height: 42px; cursor: pointer; color: #17190f; background: var(--dispatch-hazard);
-    border: 1px solid #f1d36e; border-radius: 2px; box-shadow: 0 3px 10px rgba(0,0,0,0.42);
+    border: 1px solid #f1d36e; border-radius: var(--task-radius-micro); box-shadow: 0 3px 10px rgba(0,0,0,0.42);
     font: 700 15px/1 var(--task-serif); letter-spacing: 1px;
 }
 .dispatch-enter:hover:not(:disabled) { filter: brightness(1.08); }

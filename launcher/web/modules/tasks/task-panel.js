@@ -977,7 +977,7 @@
                     '<div class="task-icon-type">' + escHtml(task.type || '') + '</div>' +
                     '<div class="task-icon-name">' + escHtml(task.title || '') + '</div>' +
                 '</div>' +
-                '<div class="task-icon-avatar"><img src="' + avatarUrl(task.npcName) + '" onerror="this.onerror=null;this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div>' +
+                '<div class="task-icon-avatar"><img src="' + avatarUrl(task.npcName) + '" onerror="this.onerror=function(){this.onerror=null;this.style.visibility=\'hidden\'};this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div>' +
                 '<span class="task-icon-flag" aria-hidden="true"></span>' +
                 (task.satisfied ? '<img class="task-finished-overlay" src="/modules/tasks/assets/task_finished_icon.png" alt="已完成">' : '');
             btn.addEventListener('click', (function(originalIdx) {
@@ -1062,7 +1062,7 @@
             html += '<div class="task-requirement-stage-name">' + escHtml(task.stageReq.name || '') + '</div>';
             html += '</div>';
             if (task.stageReq.difficulty) {
-                html += '<span class="task-difficulty-label difficulty-' + escAttr(task.stageReq.difficulty) + '">' + escHtml(task.stageReq.difficulty) + '</span>';
+                html += '<span class="task-difficulty-label" data-difficulty="' + escAttr(task.stageReq.difficulty) + '">' + escHtml(task.stageReq.difficulty) + '</span>';
             }
             html += '</div>';
             reqI++;
@@ -1090,7 +1090,7 @@
             html += '<div class="task-npc-title"></div>';
             html += '<div class="task-npc-name"><span>' + escHtml(task.npcName) + '</span></div>';
             html += '</div>';
-            html += '<div class="task-npc-avatar"><img src="' + avatarUrl(task.npcName) + '" onerror="this.onerror=null;this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div>';
+            html += '<div class="task-npc-avatar"><img src="' + avatarUrl(task.npcName) + '" onerror="this.onerror=function(){this.onerror=null;this.style.visibility=\'hidden\'};this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div>';
             html += '</div>';
             reqI++;
         }
@@ -1347,7 +1347,7 @@
             html += '<div class="task-requirement" data-i="' + reqI + '"><div class="task-requirement-inner">' +
                 '<div class="scroll-track"></div><div class="task-requirement-title stage"></div>' +
                 '<div class="task-requirement-stage-name">' + escHtml(t.stageReq.name || '') + '</div></div>';
-            if (t.stageReq.difficulty) html += '<span class="task-difficulty-label difficulty-' + escAttr(t.stageReq.difficulty) + '">' + escHtml(t.stageReq.difficulty) + '</span>';
+            if (t.stageReq.difficulty) html += '<span class="task-difficulty-label" data-difficulty="' + escAttr(t.stageReq.difficulty) + '">' + escHtml(t.stageReq.difficulty) + '</span>';
             html += '</div>'; reqI++;
         }
         if (t.itemReqs && t.itemReqs.length) {
@@ -1360,7 +1360,7 @@
         if (t.npcName) {
             html += '<div class="task-npc" data-i="' + reqI + '"><div class="task-npc-left"><div class="scroll-track"></div>' +
                 '<div class="task-npc-title"></div><div class="task-npc-name"><span>' + escHtml(t.npcName) + '</span></div></div>' +
-                '<div class="task-npc-avatar"><img src="' + avatarUrl(t.npcName) + '" onerror="this.onerror=null;this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div></div>';
+                '<div class="task-npc-avatar"><img src="' + avatarUrl(t.npcName) + '" onerror="this.onerror=function(){this.onerror=null;this.style.visibility=\'hidden\'};this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div></div>';
             reqI++;
         }
         html += '</div>';

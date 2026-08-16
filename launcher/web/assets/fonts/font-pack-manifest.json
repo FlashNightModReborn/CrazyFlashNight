@@ -183,6 +183,25 @@
                     "shippedFallback": false
                 }
             ]
+        },
+        "expressive-archive-heavy": {
+            "label": "思源宋体 Heavy（任务面板标题字重）",
+            "description": "Source Han Serif CN Heavy。任务面板标题/卡面衬线重黑——对齐 Flash 原版任务栏界面内嵌 SourceHanSerifSC-Heavy 的标题重量感；独立 group 不影响 Native HUD 读取的 expressive-archive(Regular)。",
+            "totalBytes": 0,
+            "files": [
+                {
+                    "name": "source-han-serif-cn-heavy.otf",
+                    "label": "Source Han Serif CN Heavy（思源宋体重黑 / 任务面板标题）",
+                    "license": "SIL-OFL-1.1",
+                    "bytes": 11862952,
+                    "sha256": "053e911fdb1a55d4d8512a1f11203f1fb9a7291e34bc260474b8c80358c69fa6",
+                    "urls": [
+                        "https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-serif@release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf",
+                        "https://github.com/adobe-fonts/source-han-serif/raw/release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf"
+                    ],
+                    "shippedFallback": false
+                }
+            ]
         }
     }
 }

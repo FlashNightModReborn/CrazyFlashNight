@@ -21,8 +21,9 @@
 | `jason-handwriting-2.ttf` | 清松手写体 2 号 不规则 | NPC 笔迹差异化 / handwritten voice="plain" / 浑浑噩噩小市民 / `--intel-font-character-plain` | 5.1 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `jason-handwriting-9.ttf` | 清松手写体 9 号 | NPC 笔迹差异化 / handwritten voice="weary" / 流民/逃难者疲惫笔迹 / `--intel-font-character-weary` | 8.0 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `source-han-serif-cn-regular.otf` | Source Han Serif CN Regular（思源宋体） | dossier / 官方资料集 / Native HUD 常用中文 / `--intel-font-archive` | 11.1 MB | SIL OFL 1.1 | `expressive-archive` |
+| `source-han-serif-cn-heavy.otf` | Source Han Serif CN Heavy（思源宋体重黑） | 任务面板标题字重（对齐 Flash 原版任务栏内嵌 Heavy）；`@font-face` 在 `css/task_panel.css`（面板自包含，不进 panels.css） | 11.9 MB | SIL OFL 1.1 | `expressive-archive-heavy` |
 
-**Group 总量**：essential 92 KB（shipped）+ expressive 24.5 MB + expressive-handwriting 53.6 MB（猫啃 6.1 + 清松1 8.5 + 清松7 8.8 + 清松8 7.7 + 4 旧字 22.5）+ expressive-archive 11.1 MB ≈ **89 MB 全矩阵**
+**Group 总量**：essential 92 KB（shipped）+ expressive 24.5 MB + expressive-handwriting 53.6 MB（猫啃 6.1 + 清松1 8.5 + 清松7 8.8 + 清松8 7.7 + 4 旧字 22.5）+ expressive-archive 11.1 MB + expressive-archive-heavy 11.9 MB ≈ **101 MB 全矩阵**
 
 ## CSS 角色绑定
 
