@@ -2,6 +2,7 @@ import { describe, it, expect, afterEach } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import { execFileSync } from "node:child_process";
 import { pack, validateOutputDir } from "../src/packer.js";
 import { OutputDirNotOwnedError } from "../src/types.js";
 import type { FilterResult, PackConfig, FileEntry, LayerSummary } from "../src/types.js";
@@ -25,6 +26,31 @@ function makeFilterResult(filePaths: string[]): FilterResult {
   const included: FileEntry[] = filePaths.map((p) => ({ path: p, layer: "test" }));
   const layers: LayerSummary[] = [{ name: "test", includedCount: filePaths.length, excludedCount: 0 }];
   return { included, excluded: [], layers, unmatchedCount: 0 };
+}
+
+function writeMinifyFixtures(repoRoot: string): Buffer {
+  const preserved = Buffer.from('{\r\n  "runtime": true,\r\n  "note": "keep bytes"\r\n}\r\n', "utf8");
+  fs.mkdirSync(path.join(repoRoot, "runtime"), { recursive: true });
+  fs.mkdirSync(path.join(repoRoot, "data"), { recursive: true });
+  fs.writeFileSync(path.join(repoRoot, "runtime", "metadata.json"), preserved);
+  fs.writeFileSync(path.join(repoRoot, "data", "items.json"), '{\n  "data": true,\n  "items": [1, 2]\n}\n', "utf8");
+  return preserved;
+}
+
+function makeMinifyConfig(source: PackConfig["source"]): PackConfig {
+  return {
+    ...makeConfig(),
+    source,
+    output: {
+      dir: "./out",
+      clean: true,
+      minify: {
+        enabled: true,
+        extensions: [".json"],
+        exclude: ["runtime/**"]
+      }
+    }
+  };
 }
 
 describe("packer", () => {
@@ -80,6 +106,50 @@ describe("packer", () => {
     // 验证文件已复制
     expect(fs.existsSync(path.join(outputDir, "package.json"))).toBe(true);
     expect(fs.existsSync(path.join(outputDir, "vitest.config.ts"))).toBe(true);
+  });
+
+  it("worktree mode: preserves excluded JSON bytes while minifying ordinary JSON", async () => {
+    const repoRoot = path.join(getTempDir(), "repo");
+    const preserved = writeMinifyFixtures(repoRoot);
+    const outputDir = path.join(getTempDir(), "output");
+    const filterResult = makeFilterResult(["runtime/metadata.json", "data/items.json"]);
+
+    const result = await pack(
+      filterResult,
+      makeMinifyConfig({ mode: "worktree", repoRoot }),
+      { dryRun: false, outputDir, clean: true }
+    );
+
+    expect(result.errors).toEqual([]);
+    expect(fs.readFileSync(path.join(outputDir, "runtime", "metadata.json"))).toEqual(preserved);
+    expect(fs.readFileSync(path.join(outputDir, "data", "items.json"), "utf8"))
+      .toBe('{"data":true,"items":[1,2]}');
+  });
+
+  it("git-tag mode: applies the same byte-preservation policy", async () => {
+    const repoRoot = path.join(getTempDir(), "repo");
+    fs.mkdirSync(repoRoot, { recursive: true });
+    const preserved = writeMinifyFixtures(repoRoot);
+    execFileSync("git", ["init"], { cwd: repoRoot, stdio: "pipe" });
+    execFileSync("git", ["config", "core.autocrlf", "false"], { cwd: repoRoot, stdio: "pipe" });
+    execFileSync("git", ["config", "user.email", "cf7-packer@example.invalid"], { cwd: repoRoot, stdio: "pipe" });
+    execFileSync("git", ["config", "user.name", "CF7 Packer Test"], { cwd: repoRoot, stdio: "pipe" });
+    execFileSync("git", ["add", "."], { cwd: repoRoot, stdio: "pipe" });
+    execFileSync("git", ["commit", "-m", "fixture"], { cwd: repoRoot, stdio: "pipe" });
+    execFileSync("git", ["tag", "fixture"], { cwd: repoRoot, stdio: "pipe" });
+
+    const outputDir = path.join(getTempDir(), "output");
+    const filterResult = makeFilterResult(["runtime/metadata.json", "data/items.json"]);
+    const result = await pack(
+      filterResult,
+      makeMinifyConfig({ mode: "git-tag", repoRoot, tag: "fixture" }),
+      { dryRun: false, outputDir, clean: true }
+    );
+
+    expect(result.errors).toEqual([]);
+    expect(fs.readFileSync(path.join(outputDir, "runtime", "metadata.json"))).toEqual(preserved);
+    expect(fs.readFileSync(path.join(outputDir, "data", "items.json"), "utf8"))
+      .toBe('{"data":true,"items":[1,2]}');
   });
 
   it("execute mode: clean option removes existing owned output", async () => {

@@ -23,6 +23,31 @@ describe("packConfigSchema", () => {
     expect(result.layers[0]!.exclude).toEqual([]);
   });
 
+  it("defaults and accepts path-level minify exclusions", () => {
+    const withDefaults = packConfigSchema.parse({
+      ...minimal,
+      output: { dir: "./out", minify: { enabled: true } }
+    });
+    expect(withDefaults.output.minify).toEqual({
+      enabled: true,
+      extensions: [".json", ".xml"],
+      exclude: []
+    });
+
+    const withExclusions = packConfigSchema.parse({
+      ...minimal,
+      output: {
+        dir: "./out",
+        minify: {
+          enabled: true,
+          extensions: [".json"],
+          exclude: ["runtime/**"]
+        }
+      }
+    });
+    expect(withExclusions.output.minify?.exclude).toEqual(["runtime/**"]);
+  });
+
   it("rejects missing meta.name", () => {
     const result = packConfigSchema.safeParse({
       ...minimal,

@@ -22,6 +22,11 @@ output:
   minify:
     enabled: true
     extensions: [ ".json", ".xml" ]
+    # 匹配项仍会进入包，但保持仓库中的原始字节；路径相对于 repoRoot。
+    # runtime manifest 校验的是发布字节，正式部署共识也不允许被打包期重写。
+    exclude:
+      - "runtime/**"
+      - "config/build/runtime-release-consensus.json"
 
 layers:
   - name: data

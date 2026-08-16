@@ -1,5 +1,30 @@
 import { describe, it, expect } from "vitest";
-import { minifyJson, minifyXml, minifyByExtension } from "../src/minify.js";
+import { createMinifyPathMatcher, minifyJson, minifyXml, minifyByExtension } from "../src/minify.js";
+
+describe("createMinifyPathMatcher", () => {
+  it("minifies configured extensions except repo-relative preserve globs", () => {
+    const shouldMinify = createMinifyPathMatcher({
+      enabled: true,
+      extensions: [".json", ".xml"],
+      exclude: ["runtime/**", "config/build/runtime-release-consensus.json"]
+    });
+
+    expect(shouldMinify("data/items.json")).toBe(true);
+    expect(shouldMinify("data/items.txt")).toBe(false);
+    expect(shouldMinify("runtime/Core.deps.json")).toBe(false);
+    expect(shouldMinify("runtime\\Core.runtimeconfig.json")).toBe(false);
+    expect(shouldMinify("config/build/runtime-release-consensus.json")).toBe(false);
+  });
+
+  it("does not transform any path when minification is disabled", () => {
+    const shouldMinify = createMinifyPathMatcher({
+      enabled: false,
+      extensions: [".json"],
+      exclude: []
+    });
+    expect(shouldMinify("data/items.json")).toBe(false);
+  });
+});
 
 describe("minifyJson", () => {
   it("removes indentation from formatted JSON", () => {

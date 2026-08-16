@@ -32,6 +32,10 @@ source:
 output:
   dir: "./out"
   clean: true
+  minify:
+    enabled: true
+    extensions: [".json", ".xml"]
+    exclude: ["runtime/**"]
 layers:
   - name: data
     source: "data/"
@@ -46,6 +50,11 @@ globalExclude: []
     expect(config.source.repoRoot).toBe(path.resolve(dir, "."));
     expect(config.layers).toHaveLength(1);
     expect(config.layers[0]!.name).toBe("data");
+    expect(config.output.minify).toEqual({
+      enabled: true,
+      extensions: [".json", ".xml"],
+      exclude: ["runtime/**"]
+    });
   });
 
   it("resolves repoRoot relative to config file directory", () => {

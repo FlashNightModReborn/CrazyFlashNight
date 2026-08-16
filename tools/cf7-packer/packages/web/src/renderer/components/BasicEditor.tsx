@@ -16,6 +16,9 @@ interface ConfigView {
   tag: string;
   repoRoot: string;
   outputDir: string;
+  minifyEnabled: boolean;
+  minifyExtensions: string[];
+  minifyExclude: string[];
   globalExclude: string[];
   layers: Array<{
     name: string;
@@ -35,6 +38,7 @@ interface ConfigView {
 function parseConfigView(rawYaml: string): ConfigView {
   const empty: ConfigView = {
     name: "", mode: "", tag: "", repoRoot: "", outputDir: "",
+    minifyEnabled: false, minifyExtensions: [], minifyExclude: [],
     globalExclude: [], layers: [], parseError: null
   };
   if (!rawYaml.trim()) return { ...empty, parseError: "配置为空" };
@@ -48,6 +52,7 @@ function parseConfigView(rawYaml: string): ConfigView {
     const meta = (json.meta ?? {}) as Record<string, unknown>;
     const source = (json.source ?? {}) as Record<string, unknown>;
     const output = (json.output ?? {}) as Record<string, unknown>;
+    const minify = (output.minify ?? {}) as Record<string, unknown>;
 
     const toStrArr = (v: unknown): string[] =>
       Array.isArray(v) ? v.map(String) : [];
@@ -67,6 +72,9 @@ function parseConfigView(rawYaml: string): ConfigView {
       tag: String(source.tag ?? ""),
       repoRoot: String(source.repoRoot ?? ""),
       outputDir: String(output.dir ?? ""),
+      minifyEnabled: minify.enabled === true,
+      minifyExtensions: toStrArr(minify.extensions),
+      minifyExclude: toStrArr(minify.exclude),
       globalExclude: toStrArr(json.globalExclude),
       layers,
       parseError: null
@@ -168,6 +176,27 @@ export default function BasicEditor({ rawYaml, onChange, disabled }: BasicEditor
     }));
   }, [rawYaml, onChange]);
 
+  const handleMinifyExcludeAdd = useCallback((pattern: string) => {
+    onChange(mutateYaml(rawYaml, (doc) => {
+      const path = ["output", "minify", "exclude"];
+      const seq = doc.getIn(path) as YAMLSeq | undefined;
+      if (!seq || !isSeq(seq)) {
+        doc.setIn(path, [pattern]);
+      } else {
+        seq.add(pattern);
+      }
+    }));
+  }, [rawYaml, onChange]);
+
+  const handleMinifyExcludeRemove = useCallback((index: number) => {
+    onChange(mutateYaml(rawYaml, (doc) => {
+      const seq = doc.getIn(["output", "minify", "exclude"]) as YAMLSeq | undefined;
+      if (seq && isSeq(seq)) {
+        seq.delete(index);
+      }
+    }));
+  }, [rawYaml, onChange]);
+
   const handleLayerAdd = useCallback((layerIndex: number, field: "include" | "exclude", pattern: string) => {
     onChange(mutateYaml(rawYaml, (doc) => {
       const path = ["layers", layerIndex, field];
@@ -233,6 +262,26 @@ export default function BasicEditor({ rawYaml, onChange, disabled }: BasicEditor
           />
           <span className="basic-field-hint">打包结果保存到这个目录</span>
         </div>
+      </div>
+
+      {/* Minify byte-preservation rules */}
+      <div className="basic-section">
+        <h3 className="basic-section-title">致密化字节保真</h3>
+        <p className="basic-section-desc">
+          {view.minifyEnabled
+            ? `已对 ${view.minifyExtensions.join(", ") || "未指定后缀"} 启用致密化。下列 repoRoot 相对路径仍会进入包，但不会改写原始字节。`
+            : "致密化未启用；这些保真规则当前不会触发。"}
+        </p>
+        <PatternListEditor
+          patterns={view.minifyExclude}
+          onAdd={handleMinifyExcludeAdd}
+          onRemove={handleMinifyExcludeRemove}
+          disabled={disabled || !view.minifyEnabled}
+          placeholder="输入需保持原始字节的规则，例: runtime/**"
+        />
+        {view.minifyExclude.length === 0 && (
+          <span className="basic-empty-hint">无字节保真规则</span>
+        )}
       </div>
 
       {/* Global exclude */}

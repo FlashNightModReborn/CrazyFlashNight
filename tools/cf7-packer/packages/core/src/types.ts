@@ -16,6 +16,8 @@ export interface MinifyConfig {
   enabled: boolean;
   /** 要致密化的文件后缀（默认 [".json", ".xml"]） */
   extensions: string[];
+  /** 保持原始字节的 repoRoot 相对 glob；匹配项仍会被打包 */
+  exclude: string[];
 }
 
 /** 打包配置（对应 pack.config.yaml） */

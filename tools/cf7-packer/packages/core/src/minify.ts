@@ -1,7 +1,31 @@
+import path from "node:path";
+import picomatch from "picomatch";
+import type { MinifyConfig } from "./types.js";
+
 /**
  * 文件致密化：去除 JSON/XML 中的非必要空白。
  * 只处理文本内容，不引入额外依赖。
  */
+
+/**
+ * 编译路径级致密化策略。
+ * exclude 使用 repoRoot 相对 glob；命中的文件仍会进入包，只跳过内容变换。
+ */
+export function createMinifyPathMatcher(config?: MinifyConfig): (repoRelativePath: string) => boolean {
+  if (!config?.enabled) return () => false;
+
+  const extensions = new Set(config.extensions.map((extension) => extension.toLowerCase()));
+  const excludes = config.exclude ?? [];
+  const excludeMatcher = excludes.length > 0
+    ? picomatch(excludes, { dot: true })
+    : null;
+
+  return (repoRelativePath: string): boolean => {
+    const normalizedPath = repoRelativePath.replace(/\\/g, "/");
+    const extension = path.posix.extname(normalizedPath).toLowerCase();
+    return extensions.has(extension) && !(excludeMatcher?.(normalizedPath) ?? false);
+  };
+}
 
 /** 致密化 JSON：parse + stringify 无缩进 */
 export function minifyJson(content: string): string {

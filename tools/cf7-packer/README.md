@@ -30,6 +30,7 @@ GUI 功能：
 - 文件树浏览 + 搜索过滤
 - 右键菜单：打开文件 / 在资源管理器中显示 / **排除文件** / **删除并排除**
 - 排除操作会自动写入 `pack.config.yaml` 对应层级的 `exclude` 规则
+- 基础编辑器可维护致密化的字节保真规则，避免完整性文件被打包期改写
 - 层级统计会显示估算大小，方便做空间审视
 - 差异对比：对比任意两个 git tag 的打包结果差异（含内容变更检测）
 - 打包后可一键构建 SFX 安装包（需要 7-Zip，有 7z.sfx 时生成单文件自解压包）
@@ -82,6 +83,22 @@ npm run list-tags
 |------|---------|---------|
 | worktree | 文件系统递归扫描 | 日常打包（包含未提交的新文件） |
 | git-tag | `git ls-tree` | 精确还原历史版本 |
+
+### 致密化与字节保真
+
+`output.minify.extensions` 决定哪些文本后缀会被致密化；`output.minify.exclude` 是基于 `repoRoot` 的完整相对路径 glob。命中 `exclude` 的文件**仍会进入包**，只是按原始字节复制，它不同于层级 `exclude` 或 `globalExclude` 的“不打包”。worktree 与 git-tag 共用同一判定规则。
+
+```yaml
+output:
+  minify:
+    enabled: true
+    extensions: [ ".json", ".xml" ]
+    exclude:
+      - "runtime/**"
+      - "config/build/runtime-release-consensus.json"
+```
+
+`runtime/**` 由 runtime manifest 按大小和 SHA-256 校验，正式部署共识也属于发布原始记录，因此必须保持 promotion 落盘时的字节。新增同类完整性或签名产物时，应先把稳定的路径范围加入该列表；不得通过改写 manifest 或共识哈希来迁就打包期致密化。
 
 ### 层级概览
 

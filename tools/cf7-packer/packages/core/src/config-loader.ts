@@ -30,7 +30,8 @@ function buildConfig(parsed: ReturnType<typeof packConfigSchema.parse>, resolved
       clean: parsed.output.clean,
       minify: parsed.output.minify ? {
         enabled: parsed.output.minify.enabled,
-        extensions: parsed.output.minify.extensions
+        extensions: parsed.output.minify.extensions,
+        exclude: parsed.output.minify.exclude
       } : undefined
     },
     layers: parsed.layers.map(buildLayerRule),

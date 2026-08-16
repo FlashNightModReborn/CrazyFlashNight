@@ -7,7 +7,7 @@ import { OutputDirNotOwnedError } from "./types.js";
 import { isPathInsideRoot } from "./path-utils.js";
 import { getTagBlobInfo } from "./content-hash.js";
 import { validateGitRef, validateGitPath } from "./git-utils.js";
-import { minifyByExtension } from "./minify.js";
+import { createMinifyPathMatcher, minifyByExtension } from "./minify.js";
 import { applyEstimatedSizes } from "./summary.js";
 import { estimateEtaMs } from "./format.js";
 
@@ -89,8 +89,7 @@ export async function pack(
   const tag = config.source.tag;
 
   const resolvedOutputDir = path.resolve(outputDir);
-  const minify = config.output.minify;
-  const minifyExts = new Set(minify?.enabled ? minify.extensions : []);
+  const shouldMinifyPath = createMinifyPathMatcher(config.output.minify);
 
   // 安全校验（无论 dryRun/forceClean 均执行）
   validateOutputDir(resolvedOutputDir, repoRoot);
@@ -174,7 +173,7 @@ export async function pack(
           break;
         }
         const ext = path.extname(entry.path).toLowerCase();
-        if (minifyExts.has(ext)) {
+        if (shouldMinifyPath(entry.path)) {
           const minified = minifyByExtension(content.toString("utf8"), ext);
           if (minified !== null) content = Buffer.from(minified, "utf8");
         }
@@ -185,7 +184,7 @@ export async function pack(
         const srcPath = path.join(repoRoot, entry.path);
         const ext = path.extname(entry.path).toLowerCase();
         const srcStat = fs.statSync(srcPath);
-        if (minifyExts.has(ext)) {
+        if (shouldMinifyPath(entry.path)) {
           const raw = fs.readFileSync(srcPath, "utf8");
           const minified = minifyByExtension(raw, ext);
           if (minified !== null) {

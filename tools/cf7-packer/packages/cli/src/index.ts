@@ -134,6 +134,12 @@ function runValidateConfig(): void {
     console.log(`  模式: ${config.source.mode}`);
     console.log(`  层级: ${config.layers.map((l) => l.name).join(", ")}`);
     console.log(`  全局排除: ${config.globalExclude.length} 条`);
+    if (config.output.minify?.enabled) {
+      console.log(`  致密化后缀: ${config.output.minify.extensions.join(", ")}`);
+      console.log(`  字节保真规则: ${config.output.minify.exclude.length} 条`);
+    } else {
+      console.log("  致密化: 未启用");
+    }
   } catch (err) {
     console.error(`配置无效: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
