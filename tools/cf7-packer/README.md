@@ -90,13 +90,15 @@ npm run list-tags
 | data | XML / JSON 配置 + 情报文本；排除 RAG 草稿、intelligenceMD 设计稿、unused/、`task/*_old.json` 孤立备份、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk` |
 | scripts | 仅 `asLoader.swf`（运行时加载器，源码不打包） |
 | flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml` + `_ruffle/**` Ruffle 运行时；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、Ruffle 自带文档 `_ruffle/README.md` / `_ruffle/LICENSE_*` / `_ruffle/package.json`、`**/AI草稿/**` 设计稿、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
-| sounds | `export/` SFX + `bgm_list.xml` + 各专辑 BGM 音频（`**/*.{mp3,wav,ogg,flac}`，含玩家自定义，由 MusicCatalog 运行时扫描）；`export/` 下文件名即运行时 SFX id，legacy `.waz` 只要仍被 `data/items/*.xml` 引用就必须保留；XFL 残余 exclude 为防御性 |
-| config | 全量复制（仅排除 `*.md` 开发文档） |
+| sounds | `export/` SFX + `bgm_list.xml` + 各专辑 BGM 音频（`**/*.{mp3,wav,ogg,flac,m4a,mp4,aac,adts,opus}`，含玩家自定义，由 MusicCatalog 运行时扫描）；`export/` 下文件名即运行时 SFX id，legacy `.waz` 只要仍被 `data/items/*.xml` 引用就必须保留；XFL 残余 exclude 为防御性 |
+| runtime-release-consensus | 精确收编 `config/build/runtime-release-consensus.json`；这是 v2 promotion 原子落盘的正式部署共识记录，其余构建治理文件不进入玩家包 |
+| config | 游戏运行时配置；排除 `*.md`、`audio-v2/**` 资格验证输入和 `build/**` 构建治理文件 |
 | root-files | 根目录运行时文件：native bootstrap `CRAZYFLASHER7MercenaryEmpire.exe`、`hotkey_guard.exe`、Flash Player、SWF、`crossdomain.xml`、`config.xml` / `config.toml` |
 | launcher-runtime | FDD Core 运行时：Core apphost / metadata、`cf7-runtime-manifest.tsv`、`THIRD-PARTY-NOTICES.txt`，以及 ClearScript、WebView2、Vortice 和 NativeHud SVG（ExCSS / SkiaSharp / HarfBuzzSharp / Svg.Skia）managed/native 闭包；DLL 均使用逐文件白名单 |
 | runtime-installer | 缺运行时时由 bootstrap 拉起的 Windows Desktop Runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe` |
 | launcher-web | WebView2 overlay 前端：bootstrap/overlay/config/css/assets/data/lib/modules/help + `icons/**`（WebP 化后整目录收，含 .webp）；排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README、`assets/**/_copy_bg.py` 开发脚本、`assets/**/report.json` 烘焙审计报告 |
 | launcher-data | Launcher 运行时数据：`map_hud_data.json`（MapHud catalog）/ `save_repair_dict.json`（SaveAutoRepairService 字典）/ `save_schema.json`（存档编辑器 diff 基线） |
+| launcher-agent-assets | 精确收编 Wings 运行时直接读取的 `launcher/agent-assets/lore/public-companion.v1.json`；schema 与 fixtures 仍留在开发/测试链 |
 | launcher-scripts | V8 运行时 bundle（`launcher/scripts/dist/hit-number-bundle.js`，含伤害数字渲染 + 搓招 DFA） |
 | rapfi | 五子棋引擎与权重文件：5 个 Windows CPU 变体 + `*.bin` / `*.bin.lz4` 权重 + `config.toml` + `AUTHORS`（`tools/rapfi/`） |
 | root-dirs | 字体（`闪7重置版字体/`）、教程（`0.说明文件与教程/`）、Flash fscommand 桥（`fscommand/**`，含 RAG dev 桥 + 后续 DLC 预留的外部启动通道） |

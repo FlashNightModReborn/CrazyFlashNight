@@ -1,8 +1,9 @@
 # CF7-Packer 打包配置
-# 基线：2026-07-03 按 e011c1c630..HEAD 提交重扫（竞技场自定义赛 / 玩家对怪物 /
-#   斗兽测试场运行桥 / 铁矛任务与多 NPC 地图头像 / 启动诊断 / 图标与副本海报资产）。
-#   运行时产物由 data / flashswf / root-files / runtime / launcher-web 等层承接；
-#   arena-calibration、derive-*、harness、bake/audit 工具仍归开发链，不进入每日包。
+# 基线：2026-08-16 按 c75099a6f56..cd088afd0ca 的 442 个提交重扫。
+#   已吸收 NativeHud SVG 闭包、Audio Platform v2 格式、双栏工作台、头像与选关预览等运行时变化；
+#   Agent Runtime / Wings 的 public companion catalog 现由独立层承接。
+#   config/audio-v2 与 config/build 中除正式 promotion consensus 外仍归资格验证/构建治理链；
+#   arena-calibration、derive-*、harness、bake/audit、schema 与 fixture 不进入每日包。
 
 version: 1
 meta:
@@ -133,13 +134,24 @@ layers:
       - "**/MobileSettings.xml"
       - "**/*.swf"
 
+  - name: runtime-release-consensus
+    description: "Launcher v2 正式部署共识记录（promotion 原子落盘）"
+    source: "config/build/"
+    include:
+      - "runtime-release-consensus.json"
+    exclude: []
+
   - name: config
-    description: "运行时配置"
+    description: "游戏运行时配置（排除构建治理与 Audio v2 资格验证输入）"
     source: "config/"
     include: [ "**/*" ]
     exclude:
       # 开发文档，不随发行包分发
       - "**/*.md"
+      # Audio Platform v2 资格验证输入，不由正式玩家入口读取
+      - "audio-v2/**"
+      # 构建者、工具链、准入与 migration 配置属于发布治理；正式 consensus 已由上一层精确收编
+      - "build/**"
 
   - name: root-files
     description: "根目录文件 — 用户面入口 + 游戏本体资产（极简，Core/managed DLL 全部归到 launcher-runtime 层）"
@@ -267,6 +279,15 @@ layers:
       - "save_repair_dict.json"
       # 存档编辑器 diff 视图基线，缺失 → "已修改" tab 退化为 schema 默认值
       - "save_schema.json"
+    exclude: []
+
+  - name: launcher-agent-assets
+    description: "CF7 Agent Runtime / Wings 运行时只读 lore catalog"
+    source: "launcher/agent-assets/"
+    include:
+      # LauncherAgentRuntimeHost.CreateHostMinimalLoreView() 从项目根按此路径直接读取。
+      # schema 与 fixtures 仅供契约/测试，不进入玩家包。
+      - "lore/public-companion.v1.json"
     exclude: []
 
   - name: launcher-scripts
