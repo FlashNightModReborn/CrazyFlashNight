@@ -77,6 +77,63 @@ function parseViewport(v) {
     return { width: m ? Number(m[1]) : 1280, height: m ? Number(m[2]) : 720 };
 }
 
+async function probeReducedMotion(page) {
+    await page.evaluate(() => {
+        const fixture = document.createElement('div');
+        fixture.id = 'task-reduced-motion-probe';
+        fixture.className = 'task-panel-scale-shell';
+        fixture.style.cssText = 'position:fixed;left:-10000px;top:0;width:640px;height:360px;';
+        fixture.innerHTML = '<div class="task-panel-body"><div class="task-item-requirement"></div></div>';
+        document.body.appendChild(fixture);
+    });
+
+    async function snapshot(reducedMotion) {
+        await page.emulateMedia({ reducedMotion });
+        return page.evaluate(() => {
+            function animation(node, pseudo) {
+                const style = getComputedStyle(node, pseudo);
+                return {
+                    name: style.animationName,
+                    duration: style.animationDuration,
+                    iterations: style.animationIterationCount
+                };
+            }
+            const fixture = document.getElementById('task-reduced-motion-probe');
+            const body = fixture.querySelector('.task-panel-body');
+            const item = fixture.querySelector('.task-item-requirement');
+            return {
+                reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
+                bodyBefore: animation(body, '::before'),
+                bodyAfter: animation(body, '::after'),
+                itemAfter: animation(item, '::after')
+            };
+        });
+    }
+
+    const normal = await snapshot('no-preference');
+    const reduced = await snapshot('reduce');
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.evaluate(() => document.getElementById('task-reduced-motion-probe').remove());
+
+    const normalActive = normal.reduced === false
+        && normal.bodyBefore.name === 'task-watermark-scan'
+        && normal.bodyBefore.iterations === 'infinite'
+        && normal.bodyAfter.name === 'task-watermark-breathe'
+        && normal.bodyAfter.iterations === 'infinite'
+        && normal.itemAfter.name.split(', ').includes('task-tray-sheen')
+        && normal.itemAfter.iterations.split(', ').includes('infinite');
+    const reducedStatic = reduced.reduced === true
+        && [reduced.bodyBefore, reduced.bodyAfter, reduced.itemAfter].every((state) =>
+            state.name === 'none' && state.duration === '0s');
+
+    return {
+        pass: normalActive && reducedStatic,
+        detail: normalActive && reducedStatic
+            ? 'normal=3 active; reduce=none/none/none'
+            : JSON.stringify({ normal, reduced })
+    };
+}
+
 async function main() {
     const opts = parseArgs();
     const server = await startServer(WEB_ROOT);
@@ -113,6 +170,16 @@ async function main() {
                 { timeout: opts.timeout, polling: 200 }
             );
             const bundle = await handle.jsonValue();
+            const reducedMotion = await probeReducedMotion(page);
+            bundle.results.push({
+                id: 'task-ui50',
+                title: '减少动态效果：背景水印、呼吸光晕与物品托盘伪元素全部停转',
+                pass: reducedMotion.pass,
+                detail: reducedMotion.detail
+            });
+            bundle.total += 1;
+            if (reducedMotion.pass) bundle.passed += 1;
+            else bundle.failed += 1;
             console.log('\n[tasks-harness] ' + bundle.passed + '/' + bundle.total + ' passed (failed=' + bundle.failed + ')');
             for (const item of bundle.results) {
                 console.log('  ' + (item.pass ? 'PASS' : 'FAIL') + ' ' + item.id + ' ' + item.title + (item.detail ? ' :: ' + item.detail : ''));

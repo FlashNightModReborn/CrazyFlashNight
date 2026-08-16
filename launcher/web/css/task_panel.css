@@ -1975,7 +1975,10 @@
     .task-tab.active .task-tab-emblem,
     .scroll-track,
     .task-skel { animation: none !important; }
-    /* 通配符 * 不命中伪元素：写请求 spinner 挂在 ::after 上，须显式停转（低功耗机保护） */
+    /* 通配符 * 不命中伪元素：所有保留静态视觉的伪元素须显式停转（低功耗机保护） */
+    .task-panel-body::before,
+    .task-panel-body::after,
+    .task-item-requirement::after,
     .task-btn-pending::after { animation: none !important; }
 }
 
