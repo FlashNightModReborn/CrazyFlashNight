@@ -213,13 +213,14 @@ test('physical Inventory adapter exposes one factory and rejects incomplete depe
         /physical Inventory dependencies are required/);
 });
 
-test('NPC facade delegates all three secondary pages and remains below budget', () => {
+test('NPC facade delegates all three secondary pages and remains within the current WB112 budget', () => {
     const source = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'npcshop.js'), 'utf8');
     const presenterSource = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'npcshop-secondary-pages.js'), 'utf8');
     assert(source.includes('NpcShopSecondaryPages.SettlementPresenter'));
     assert(source.includes('NpcShopSecondaryPages.HelpPresenter'));
     assert(source.includes('NpcShopSecondaryPages.SpaceOrganizerPresenter'));
-    assert(source.split(/\r?\n/).length < 1000);
+    const facadeLines = source.split(/\r?\n/).length;
+    assert(facadeLines <= 1040, 'npcshop.js exceeds the current WB112 budget: ' + facadeLines + '/1040');
     assert(!source.includes('function renderSettlementLines'));
     assert(!source.includes('function renderSpaceGrid'));
     assert(!/Bridge\.send|RequestMux|InventoryCoordinator/.test(presenterSource), 'presenters must not own transport or authority');

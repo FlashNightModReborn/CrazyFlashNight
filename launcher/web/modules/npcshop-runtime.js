@@ -114,6 +114,29 @@
             generation:generation, error:error};
     }
 
+    function createSnapshotDiagnostic(event, response, entry, panelInstanceId) {
+        return {domain:'npcshop', event:event, cmd:'snapshot',
+            callId:entry && entry.callId, generation:entry && entry.generation,
+            panelInstanceId:entry && entry.session
+                ? entry.session.panelInstanceId : panelInstanceId,
+            error:response && response.success === false
+                ? String(response.error || 'other') : ''};
+    }
+
+    function createDiagnosticEmitter(options) {
+        options = options || {};
+        var local = typeof options.local === 'function' ? options.local : null;
+        var send = typeof options.send === 'function' ? options.send : null;
+        return function(record) {
+            if (local) { try { local(record); } catch (_) {} }
+            if (!record || record.domain !== 'npcshop') return;
+            if ((record.event === 'request_issued' || record.event === 'response_accepted')
+                    && record.cmd !== 'snapshot') return;
+            var message = createDiagnosticMessage(record);
+            if (message && send) { try { send(message); } catch (_) {} }
+        };
+    }
+
     function parseInitData(value) {
         var ordinaryKeys = ['mode', 'source', 'debug', 'shopId', 'panelInstanceId'];
         var materialKeys = ordinaryKeys.concat(['preferredItemName',
@@ -437,6 +460,8 @@
         createPhysicalInventoryAdapter:createPhysicalInventoryAdapter,
         validateBusinessResponse:validateBusinessResponse,
         createDiagnosticMessage:createDiagnosticMessage,
+        createSnapshotDiagnostic:createSnapshotDiagnostic,
+        createDiagnosticEmitter:createDiagnosticEmitter,
         identityTriple:identityTriple,
         SHOP_CATALOG_INDEX_MAX:SHOP_CATALOG_INDEX_MAX,
         NAVIGATION_WATCHDOG_MS:NAVIGATION_WATCHDOG_MS,

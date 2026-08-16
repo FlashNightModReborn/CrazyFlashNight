@@ -91,6 +91,36 @@ test('NPCShop diagnostics normalize into a closed redacted envelope', () => {
         Object.assign({},input,{error:'secret-material-name'})).error,'other');
 });
 
+test('NPCShop snapshot diagnostics retain correlation without business payloads', () => {
+    const entry = {callId:'npc.diagnostic.2',generation:9,
+        session:{panelInstanceId:'npcshop.test~entry'}};
+    assert.deepStrictEqual(Runtime.createSnapshotDiagnostic(
+        'snapshot_rejected',{success:false,error:'malformed_response'},entry,
+        'npcshop.test~fallback'),{
+        domain:'npcshop',event:'snapshot_rejected',cmd:'snapshot',
+        callId:'npc.diagnostic.2',generation:9,
+        panelInstanceId:'npcshop.test~entry',error:'malformed_response'
+    });
+    assert.strictEqual(Runtime.createSnapshotDiagnostic(
+        'snapshot_adopted',{success:true},{callId:'npc.diagnostic.3',generation:10},
+        'npcshop.test~fallback').panelInstanceId,'npcshop.test~fallback');
+});
+
+test('NPCShop diagnostic emitter mirrors locally and sends only bounded Host records', () => {
+    const local = [], sent = [];
+    const emit = Runtime.createDiagnosticEmitter({
+        local:record => local.push(record), send:message => sent.push(message)});
+    const snapshot = {domain:'npcshop',event:'snapshot_adopted',cmd:'snapshot',
+        callId:'npc.diagnostic.4',panelInstanceId:'npcshop.test~emitter',
+        generation:11,error:''};
+    emit(snapshot);
+    emit(Object.assign({},snapshot,{event:'request_issued',cmd:'tradePreview'}));
+    emit({domain:'inventory',event:'request_issued',cmd:'snapshot'});
+    assert.strictEqual(local.length,3);
+    assert.strictEqual(sent.length,1);
+    assert.deepStrictEqual(sent[0],Runtime.createDiagnosticMessage(snapshot));
+});
+
 test('NPCShop request mux forwards correlated issued and accepted diagnostics', () => {
     const diagnostics = [];
     const mux = new Runtime.RequestMux({domain:'npcshop',panel:'npcshop',
