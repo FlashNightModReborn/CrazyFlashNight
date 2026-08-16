@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -31,6 +32,13 @@ namespace CF7Launcher.Tasks
             public double Balance;
             public double BuyMultiplier;
             public JArray Catalog;
+        }
+
+        private sealed class ResponseValidationFailure
+        {
+            public string Stage;
+            public string FieldPath;
+            public string Expected;
         }
 
         private const int DefaultTimeoutMs = 10000;
@@ -508,6 +516,8 @@ namespace CF7Launcher.Tasks
                     && _writeState == "needs_reconcile")
                     _writeState = "idle";
             }
+            TryLogResponseValidation(
+                msg, entry, pendingCall.WebCallId, fid, malformed);
             JObject web = malformed
                 ? new JObject { ["success"] = false, ["error"] = "malformed_response" }
                 : sanitized;
@@ -520,6 +530,60 @@ namespace CF7Launcher.Tasks
             if (entry.IsWrite && !definitiveWrite) web["requiresReconcile"] = true;
             PostToWeb(web.ToString(Formatting.None));
             if (respond != null) respond(null);
+        }
+
+        private static void TryLogResponseValidation(
+            JObject msg,
+            PendingRequest entry,
+            string webCallId,
+            int flashCallId,
+            bool malformed)
+        {
+            if (entry == null || (entry.WebCmd != "snapshot" && !malformed)) return;
+            try
+            {
+                ResponseValidationFailure failure = malformed
+                    ? DiagnoseSanitizationFailure(msg, entry) : null;
+                bool rawSuccess = msg != null
+                    && msg.Value<bool?>("success") == true;
+                string outcome = malformed
+                    ? "rejected"
+                    : (rawSuccess ? "accepted" : "host_error");
+                string error = malformed
+                    ? "malformed_response"
+                    : (rawSuccess ? "" : msg != null
+                        ? msg.Value<string>("error") : "other");
+                LogManager.Log(AuthorityLogFormatter.FormatNpcShopResponseValidation(
+                    outcome,
+                    webCallId,
+                    flashCallId,
+                    entry.OwnerPanelInstanceId,
+                    entry.WebCmd,
+                    error,
+                    failure != null ? failure.Stage : "complete",
+                    failure != null ? failure.FieldPath : "none",
+                    failure != null ? failure.Expected : "none",
+                    BuildResponseShapeSignature(msg)));
+            }
+            catch
+            {
+                // 诊断是旁路观测：镜像、格式化或日志 sink 异常均不得改变已完成的业务裁决。
+                try
+                {
+                    LogManager.Log(AuthorityLogFormatter.FormatNpcShopResponseValidation(
+                        malformed ? "rejected" : "other",
+                        webCallId,
+                        flashCallId,
+                        entry.OwnerPanelInstanceId,
+                        entry.WebCmd,
+                        malformed ? "malformed_response" : "other",
+                        "diagnostic_error",
+                        "none",
+                        "none",
+                        "diagnostic_error"));
+                }
+                catch { }
+            }
         }
 
         public void ClearPending()
@@ -805,6 +869,368 @@ namespace CF7Launcher.Tasks
                 sanitized = CopyResponseKeys(msg, "success", "v", "shopId", "balance",
                     "buyMultiplier", "catalog", "layout", "views", "operation", "trade");
             return true;
+        }
+
+        private static ResponseValidationFailure DiagnoseSanitizationFailure(
+            JObject msg,
+            PendingRequest entry)
+        {
+            if (msg == null)
+                return ValidationFailure("envelope", "$", "object");
+            if (entry == null)
+                return ValidationFailure("pending", "$", "pending_context");
+            if (msg["success"] == null || msg["success"].Type != JTokenType.Boolean)
+                return ValidationFailure("envelope", "$.success", "boolean");
+            if (!msg.Value<bool>("success"))
+                return ValidationFailure("failure", "$.error", "known_error_code");
+
+            switch (entry.WebCmd)
+            {
+                case "snapshot":
+                    return DiagnoseStateResponse(msg, entry.NormalizedPayload, null);
+                case "buy":
+                case "batchSell":
+                case "tradeCommit":
+                    return DiagnoseStateResponse(msg, entry.NormalizedPayload, entry.WebCmd);
+                case "tradePreview":
+                    return ValidationFailure(
+                        "trade_preview", "$", "authoritative_trade_preview");
+                case "batchPreview":
+                    return ValidationFailure(
+                        "batch_preview", "$", "authoritative_batch_preview");
+                case "tooltip":
+                    return ValidationFailure(
+                        "tooltip", "$", "authoritative_tooltip");
+                default:
+                    return ValidationFailure(
+                        "command", "$", "supported_response_command");
+            }
+        }
+
+        private static ResponseValidationFailure DiagnoseStateResponse(
+            JObject msg,
+            JObject request,
+            string expectedOperation)
+        {
+            string requestedShopId = request != null
+                ? request.Value<string>("shopId") : null;
+            if (msg.Value<int?>("v") != 1)
+                return ValidationFailure("state", "$.v", "wire_revision_1");
+            if (!IsSafeString(msg["shopId"], 80, false))
+                return ValidationFailure("state", "$.shopId", "safe_identity");
+            if (string.IsNullOrEmpty(requestedShopId)
+                || msg.Value<string>("shopId") != requestedShopId)
+                return ValidationFailure("state", "$.shopId", "requested_shop_identity");
+            if (!IsNumber(msg["balance"]))
+                return ValidationFailure("state", "$.balance", "finite_number");
+            if (!IsNonNegativeNumber(msg["buyMultiplier"]))
+                return ValidationFailure("state", "$.buyMultiplier", "finite_nonnegative_number");
+
+            ResponseValidationFailure nested = DiagnoseCatalog(
+                msg["catalog"] as JArray,
+                msg.Value<double>("buyMultiplier"));
+            if (nested != null) return nested;
+            nested = DiagnoseLayout(msg["layout"] as JObject);
+            if (nested != null) return nested;
+
+            JObject views = msg["views"] as JObject;
+            if (!HasOnlyKeys(views, "material", "intelligence"))
+                return ValidationFailure("state", "$.views", "material_intelligence_only");
+            nested = DiagnoseCollectionView(
+                views != null ? views["material"] as JObject : null,
+                "material");
+            if (nested != null) return nested;
+            nested = DiagnoseCollectionView(
+                views != null ? views["intelligence"] as JObject : null,
+                "intelligence");
+            if (nested != null) return nested;
+            if (expectedOperation == null)
+                return ValidationFailure("state", "$", "authoritative_snapshot");
+            if (msg.Value<string>("operation") != expectedOperation)
+                return ValidationFailure("state", "$.operation", "requested_operation");
+            return ValidationFailure(
+                "state_postcondition", "$", "authoritative_write_postcondition");
+        }
+
+        private static ResponseValidationFailure DiagnoseCatalog(
+            JArray catalog,
+            double buyMultiplier)
+        {
+            if (catalog == null)
+                return ValidationFailure("catalog", "$.catalog", "array");
+            if (catalog.Count > 10001)
+                return ValidationFailure("catalog", "$.catalog", "at_most_10001_entries");
+            var indexes = new HashSet<int>();
+            for (int i = 0; i < catalog.Count; i++)
+            {
+                JObject line = catalog[i] as JObject;
+                string path = "$.catalog[" + i + "]";
+                if (!HasOnlyKeys(line, "catalogIndex", "itemName", "displayName", "icon",
+                        "majorType", "use", "actionType", "weaponType", "setId", "setName",
+                        "setOrder", "basePrice", "unitPrice", "maxQuantity", "requiredInfo",
+                        "locked", "balanceSummary"))
+                    return ValidationFailure("catalog", path, "closed_catalog_entry");
+                int integer;
+                if (!TryReadInteger(line["catalogIndex"], 0, 10000, out integer))
+                    return ValidationFailure("catalog", path + ".catalogIndex", "catalog_index");
+                if (!indexes.Add(integer))
+                    return ValidationFailure("catalog", path + ".catalogIndex", "unique_catalog_index");
+                if (!IsIdentityString(line["itemName"], 128))
+                    return ValidationFailure("catalog", path + ".itemName", "safe_identity");
+                if (!IsIdentityString(line["displayName"], 256))
+                    return ValidationFailure("catalog", path + ".displayName", "safe_identity");
+                if (!IsIdentityString(line["icon"], 256))
+                    return ValidationFailure("catalog", path + ".icon", "safe_identity");
+                if (!IsSafeString(line["majorType"], 128, true))
+                    return ValidationFailure("catalog", path + ".majorType", "safe_optional_text");
+                if (!IsSafeString(line["use"], 128, true))
+                    return ValidationFailure("catalog", path + ".use", "safe_optional_text");
+                if (!IsSafeString(line["actionType"], 128, true))
+                    return ValidationFailure("catalog", path + ".actionType", "safe_optional_text");
+                if (!IsSafeString(line["weaponType"], 128, true))
+                    return ValidationFailure("catalog", path + ".weaponType", "safe_optional_text");
+                if (!IsSafeString(line["setId"], 256, true))
+                    return ValidationFailure("catalog", path + ".setId", "safe_optional_text");
+                if (!IsSafeString(line["setName"], 256, true))
+                    return ValidationFailure("catalog", path + ".setName", "safe_optional_text");
+                if (!TryReadInteger(line["setOrder"], 0, int.MaxValue, out integer))
+                    return ValidationFailure("catalog", path + ".setOrder", "nonnegative_integer");
+                if (!IsNonNegativeNumber(line["basePrice"]))
+                    return ValidationFailure("catalog", path + ".basePrice", "finite_nonnegative_number");
+                if (!IsNonNegativeNumber(line["unitPrice"]))
+                    return ValidationFailure("catalog", path + ".unitPrice", "finite_nonnegative_number");
+                if (line.Value<double>("unitPrice")
+                    != Math.Floor(line.Value<double>("basePrice") * buyMultiplier))
+                    return ValidationFailure("catalog", path + ".unitPrice", "derived_floor_price");
+                if (!TryReadInteger(line["maxQuantity"], 0, MaxPurchaseQuantity, out integer))
+                    return ValidationFailure("catalog", path + ".maxQuantity", "purchase_quantity_bound");
+                if (!IsSafeString(line["requiredInfo"], 256, true))
+                    return ValidationFailure("catalog", path + ".requiredInfo", "safe_optional_text");
+                if (line["locked"] == null || line["locked"].Type != JTokenType.Boolean)
+                    return ValidationFailure("catalog", path + ".locked", "boolean");
+                if (line.Property("balanceSummary") != null
+                    && !IsSafeJsonTree(line["balanceSummary"], 0))
+                    return ValidationFailure("catalog", path + ".balanceSummary", "safe_json_tree");
+            }
+            return null;
+        }
+
+        private static ResponseValidationFailure DiagnoseLayout(JObject layout)
+        {
+            if (!HasOnlyKeys(layout, "title", "defaultSection", "sections"))
+                return ValidationFailure("layout", "$.layout", "closed_layout");
+            if (!IsSafeString(layout["title"], 256, false))
+                return ValidationFailure("layout", "$.layout.title", "safe_text");
+            if (!IsSafeString(layout["defaultSection"], 128, true))
+                return ValidationFailure("layout", "$.layout.defaultSection", "safe_optional_text");
+            JArray sections = layout["sections"] as JArray;
+            if (sections == null || sections.Count > 128)
+                return ValidationFailure("layout", "$.layout.sections", "at_most_128_entries");
+            for (int i = 0; i < sections.Count; i++)
+            {
+                JObject section = sections[i] as JObject;
+                string path = "$.layout.sections[" + i + "]";
+                if (!HasOnlyKeys(section, "id", "label", "kind", "entries"))
+                    return ValidationFailure("layout", path, "closed_layout_section");
+                if (!IsSafeString(section["id"], 128, true))
+                    return ValidationFailure("layout", path + ".id", "safe_optional_text");
+                if (!IsSafeString(section["label"], 256, true))
+                    return ValidationFailure("layout", path + ".label", "safe_optional_text");
+                if (!IsSafeString(section["kind"], 128, true))
+                    return ValidationFailure("layout", path + ".kind", "safe_optional_text");
+                JArray entries = section["entries"] as JArray;
+                if (entries == null || entries.Count > 10001)
+                    return ValidationFailure("layout", path + ".entries", "catalog_index_array");
+                var seen = new HashSet<int>();
+                for (int j = 0; j < entries.Count; j++)
+                {
+                    int index;
+                    if (!TryReadInteger(entries[j], 0, 10000, out index))
+                        return ValidationFailure("layout", path + ".entries[" + j + "]", "catalog_index");
+                    if (!seen.Add(index))
+                        return ValidationFailure("layout", path + ".entries[" + j + "]", "unique_catalog_index");
+                }
+            }
+            return null;
+        }
+
+        private static ResponseValidationFailure DiagnoseCollectionView(
+            JObject view,
+            string viewId)
+        {
+            string root = "$.views." + viewId;
+            if (!HasOnlyKeys(view, "containerId", "capacity", "accessibleCapacity",
+                    "viewCapacity", "offset", "limit", "filterKey", "slots"))
+                return ValidationFailure("collection", root, "closed_collection_view");
+            string expectedContainer = viewId == "material" ? "材料" : "情报";
+            if (view.Value<string>("containerId") != expectedContainer)
+                return ValidationFailure("collection", root + ".containerId", "expected_container");
+            if (!IsSafeString(view["filterKey"], 128, false))
+                return ValidationFailure("collection", root + ".filterKey", "safe_text");
+            JArray slots = view["slots"] as JArray;
+            if (slots == null)
+                return ValidationFailure("collection", root + ".slots", "array");
+            int capacity;
+            int accessible;
+            int viewCapacity;
+            int offset;
+            int limit;
+            if (!TryReadInteger(view["capacity"], 0, 100000, out capacity))
+                return ValidationFailure("collection", root + ".capacity", "bounded_nonnegative_integer");
+            if (!TryReadInteger(view["accessibleCapacity"], 0, 100000, out accessible))
+                return ValidationFailure("collection", root + ".accessibleCapacity", "bounded_nonnegative_integer");
+            if (!TryReadInteger(view["viewCapacity"], 0, 100000, out viewCapacity))
+                return ValidationFailure("collection", root + ".viewCapacity", "bounded_nonnegative_integer");
+            if (!TryReadInteger(view["offset"], 0, 100000, out offset))
+                return ValidationFailure("collection", root + ".offset", "zero");
+            if (!TryReadInteger(view["limit"], 0, 100000, out limit))
+                return ValidationFailure("collection", root + ".limit", "view_capacity");
+            if (accessible > capacity)
+                return ValidationFailure("collection", root + ".accessibleCapacity", "not_above_capacity");
+            if (viewCapacity > accessible)
+                return ValidationFailure("collection", root + ".viewCapacity", "not_above_accessible_capacity");
+            if (offset != 0)
+                return ValidationFailure("collection", root + ".offset", "zero");
+            if (limit != viewCapacity)
+                return ValidationFailure("collection", root + ".limit", "view_capacity");
+            if (slots.Count != viewCapacity)
+                return ValidationFailure("collection", root + ".slots", "view_capacity_count");
+
+            var physicalSlots = new HashSet<int>();
+            var keys = new HashSet<string>(StringComparer.Ordinal);
+            for (int i = 0; i < slots.Count; i++)
+            {
+                JObject slot = slots[i] as JObject;
+                string path = root + ".slots[" + i + "]";
+                if (!HasOnlyKeys(slot, "physicalSlot", "collectionKey", "occupied", "slotLease", "item"))
+                    return ValidationFailure("collection", path, "closed_collection_slot");
+                int physicalSlot;
+                if (!TryReadInteger(slot["physicalSlot"], 0, 100000, out physicalSlot))
+                    return ValidationFailure("collection", path + ".physicalSlot", "bounded_nonnegative_integer");
+                if (!physicalSlots.Add(physicalSlot))
+                    return ValidationFailure("collection", path + ".physicalSlot", "unique_physical_slot");
+                string collectionKey = slot.Value<string>("collectionKey");
+                if (!IsSafeString(slot["collectionKey"], 128, false))
+                    return ValidationFailure("collection", path + ".collectionKey", "safe_identity");
+                if (!keys.Add(collectionKey))
+                    return ValidationFailure("collection", path + ".collectionKey", "unique_collection_key");
+                if (slot.Value<bool?>("occupied") != true)
+                    return ValidationFailure("collection", path + ".occupied", "true");
+                if (!IsSafeString(slot["slotLease"], 160, false)
+                    || !ValidLease.IsMatch(slot.Value<string>("slotLease")))
+                    return ValidationFailure("collection", path + ".slotLease", "valid_opaque_lease");
+                JObject item = slot["item"] as JObject;
+                if (!HasOnlyKeys(item, "itemKind", "name", "displayName", "icon",
+                        "majorType", "use", "quantity", "enhancementLevel", "rarity"))
+                    return ValidationFailure("collection", path + ".item", "closed_stack_item");
+                if (item.Value<string>("itemKind") != "stack")
+                    return ValidationFailure("collection", path + ".item.itemKind", "stack");
+                if (!IsIdentityString(item["name"], 128)
+                    || item.Value<string>("name") != collectionKey)
+                    return ValidationFailure("collection", path + ".item.name", "collection_key_identity");
+                if (!IsIdentityString(item["displayName"], 256))
+                    return ValidationFailure("collection", path + ".item.displayName", "safe_identity");
+                if (!IsIdentityString(item["icon"], 256))
+                    return ValidationFailure("collection", path + ".item.icon", "safe_identity");
+                if (!IsSafeString(item["majorType"], 128, true))
+                    return ValidationFailure("collection", path + ".item.majorType", "safe_optional_text");
+                if (!IsSafeString(item["use"], 128, true))
+                    return ValidationFailure("collection", path + ".item.use", "safe_optional_text");
+                long quantity;
+                if (!TryReadPositiveInteger(item["quantity"], out quantity))
+                    return ValidationFailure("collection", path + ".item.quantity", "positive_safe_integer");
+                if (item.Value<int?>("enhancementLevel") != 0)
+                    return ValidationFailure("collection", path + ".item.enhancementLevel", "zero");
+                if (!IsSafeString(item["rarity"], 128, true))
+                    return ValidationFailure("collection", path + ".item.rarity", "safe_optional_text");
+            }
+            return null;
+        }
+
+        private static ResponseValidationFailure ValidationFailure(
+            string stage,
+            string fieldPath,
+            string expected)
+        {
+            return new ResponseValidationFailure
+            {
+                Stage = stage,
+                FieldPath = fieldPath,
+                Expected = expected
+            };
+        }
+
+        private static string BuildResponseShapeSignature(JToken token)
+        {
+            var value = new StringBuilder(4096);
+            AppendResponseShape(value, token, 0);
+            return value.ToString();
+        }
+
+        private static void AppendResponseShape(
+            StringBuilder value,
+            JToken token,
+            int depth)
+        {
+            if (value.Length >= 32768)
+            {
+                value.Append("#limit");
+                return;
+            }
+            if (token == null)
+            {
+                value.Append("missing");
+                return;
+            }
+            if (depth > 12)
+            {
+                value.Append("depth");
+                return;
+            }
+            JObject obj = token as JObject;
+            if (obj != null)
+            {
+                var properties = new List<JProperty>(obj.Properties());
+                properties.Sort(delegate(JProperty left, JProperty right)
+                {
+                    return string.CompareOrdinal(left.Name, right.Name);
+                });
+                value.Append("O").Append(properties.Count).Append('{');
+                int count = Math.Min(properties.Count, 256);
+                for (int i = 0; i < count; i++)
+                {
+                    JProperty property = properties[i];
+                    value.Append(property.Name.Length).Append(':')
+                        .Append(property.Name).Append('=');
+                    AppendResponseShape(value, property.Value, depth + 1);
+                    value.Append(';');
+                }
+                if (properties.Count > count) value.Append("more");
+                value.Append('}');
+                return;
+            }
+            JArray array = token as JArray;
+            if (array != null)
+            {
+                value.Append("A").Append(array.Count).Append('[');
+                int count = Math.Min(array.Count, 1024);
+                for (int i = 0; i < count; i++)
+                    AppendResponseShape(value, array[i], depth + 1);
+                if (array.Count > count) value.Append("more");
+                value.Append(']');
+                return;
+            }
+            switch (token.Type)
+            {
+                case JTokenType.String:
+                    value.Append('S').Append(Math.Min(token.Value<string>().Length, 1024));
+                    break;
+                case JTokenType.Integer: value.Append('I'); break;
+                case JTokenType.Float: value.Append('F'); break;
+                case JTokenType.Boolean: value.Append('B'); break;
+                case JTokenType.Null: value.Append('N'); break;
+                default: value.Append('T').Append((int)token.Type); break;
+            }
         }
 
         private static JObject CopyResponseKeys(JObject source, params string[] keys)

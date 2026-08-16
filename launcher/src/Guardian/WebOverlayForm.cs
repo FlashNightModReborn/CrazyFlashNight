@@ -3101,6 +3101,12 @@ namespace CF7Launcher.Guardian
         private void HandleDebugMessage(string json)
         {
             string redacted;
+            if (AuthorityLogFormatter.TryFormatNpcShopDebug(
+                    json, out redacted))
+            {
+                LogManager.Log(redacted);
+                return;
+            }
             if (AuthorityLogFormatter.TryFormatEquipmentTuningDebug(
                     json, out redacted))
             {

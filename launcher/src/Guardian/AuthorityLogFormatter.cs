@@ -296,6 +296,37 @@ namespace CF7Launcher.Guardian
             return value.ToString();
         }
 
+        internal static string FormatNpcShopResponseValidation(
+            string outcome,
+            string webCallId,
+            int flashCallId,
+            string panelInstanceId,
+            string cmd,
+            string error,
+            string stage,
+            string fieldPath,
+            string expected,
+            string shapeSignature)
+        {
+            var value = new StringBuilder();
+            value.Append("event=npcshop_response_validation");
+            value.Append(" outcome=").Append(FormatNpcShopValidationOutcome(outcome));
+            value.Append(" webCallId=").Append(FormatDispatchCallId(webCallId));
+            value.Append(" flashCallId=").Append(flashCallId > 0
+                ? flashCallId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                : "other");
+            value.Append(" panelInstanceIdRef=").Append(
+                FormatDispatchReference(panelInstanceId, 128, true));
+            value.Append(" cmd=").Append(FormatOperation(cmd));
+            value.Append(" error=").Append(FormatNpcShopDebugError(error));
+            value.Append(" stage=").Append(FormatDiagnosticAtom(stage, 64, false));
+            value.Append(" field=").Append(FormatDiagnosticAtom(fieldPath, 160, true));
+            value.Append(" expected=").Append(FormatDiagnosticAtom(expected, 96, false));
+            value.Append(" shapeRef=").Append(
+                CreateReference(shapeSignature) ?? "other");
+            return value.ToString();
+        }
+
         internal static bool TryFormatTransportEnvelope(
             string message,
             out string line)
@@ -853,6 +884,54 @@ namespace CF7Launcher.Guardian
             return SanitizeAuthorityToken(envelope) as JObject ?? new JObject();
         }
 
+        internal static bool TryFormatNpcShopDebug(
+            string json,
+            out string line)
+        {
+            line = null;
+            JObject envelope;
+            if (!TryParseStrict(json, out envelope))
+            {
+                if (ContainsLexicalJsonValue(json, "scope", "npcshop"))
+                {
+                    line = "[WebDebug] scope=npcshop"
+                        + " envelope=malformed payload=redacted len="
+                        + SafeLength(json);
+                    return true;
+                }
+                return false;
+            }
+
+            string scope = ReadString(envelope["scope"]);
+            bool exact = string.Equals(scope, "npcshop", StringComparison.Ordinal);
+            bool near = !exact && scope != null
+                && scope.StartsWith("npcshop", StringComparison.OrdinalIgnoreCase);
+            if (!exact && !near) return false;
+
+            var value = new StringBuilder();
+            value.Append("[WebDebug] scope=")
+                .Append(exact ? "npcshop" : "authority_family");
+            value.Append(" event=").Append(FormatNpcShopDebugEvent(
+                ReadString(envelope["event"])));
+            value.Append(" outcome=").Append(FormatNpcShopDebugOutcome(
+                ReadString(envelope["outcome"])));
+            value.Append(" cmd=").Append(FormatOperation(
+                ReadString(envelope["cmd"])));
+            value.Append(" callId=").Append(FormatWebCallId(
+                envelope["webCallId"]));
+            value.Append(" panelInstanceIdRef=").Append(
+                FormatDispatchReference(
+                    ReadString(envelope["panelInstanceId"]), 128, true));
+            value.Append(" generation=").Append(FormatNonNegativeInt32(
+                envelope["generation"]));
+            value.Append(" error=").Append(FormatNpcShopDebugError(
+                ReadString(envelope["error"])));
+            if (near) value.Append(" envelope=near_match");
+            value.Append(" payload=redacted len=").Append(SafeLength(json));
+            line = value.ToString();
+            return true;
+        }
+
         internal static bool TryFormatEquipmentTuningDebug(
             string json,
             out string line)
@@ -988,6 +1067,124 @@ namespace CF7Launcher.Guardian
                 default:
                     return "other";
             }
+        }
+
+        private static string FormatNpcShopDebugEvent(string value)
+        {
+            switch (value)
+            {
+                case "request_issued":
+                case "client_timeout":
+                case "send_failed":
+                case "response_shape_mismatch":
+                case "response_transform_failed":
+                case "response_accepted":
+                case "snapshot_adopted":
+                case "snapshot_rejected":
+                case "snapshot_stale":
+                    return value;
+                default:
+                    return "other";
+            }
+        }
+
+        private static string FormatNpcShopDebugOutcome(string value)
+        {
+            switch (value)
+            {
+                case "issued":
+                case "accepted":
+                case "adopted":
+                case "host_error":
+                case "shape_mismatch":
+                case "transform_failed":
+                case "client_timeout":
+                case "send_failed":
+                case "stale":
+                    return value;
+                default:
+                    return "other";
+            }
+        }
+
+        private static string FormatNpcShopValidationOutcome(string value)
+        {
+            switch (value)
+            {
+                case "accepted":
+                case "host_error":
+                case "rejected":
+                    return value;
+                default:
+                    return "other";
+            }
+        }
+
+        private static string FormatNpcShopDebugError(string value)
+        {
+            switch (value)
+            {
+                case null:
+                case "": return "none";
+                case "other":
+                case "malformed_response":
+                case "timeout":
+                case "client_timeout":
+                case "disconnected":
+                case "not_sent":
+                case "invalid_payload":
+                case "panel_instance_expired":
+                case "npcshop_unavailable":
+                case "stale_state":
+                case "shop_not_found":
+                case "item_not_found":
+                case "locked":
+                case "invalid_price":
+                case "invalid_quantity":
+                case "insufficient_quantity":
+                case "insufficient_money":
+                case "inventory_full":
+                case "destination_full":
+                case "nothing_to_sell":
+                case "sell_forbidden":
+                case "busy":
+                case "reconcile_required":
+                case "unsupported_cmd":
+                    return value;
+                default:
+                    return "other";
+            }
+        }
+
+        private static string FormatNonNegativeInt32(JToken token)
+        {
+            if (token == null || token.Type != JTokenType.Integer) return "other";
+            long value;
+            try { value = token.Value<long>(); }
+            catch { return "other"; }
+            return value >= 0 && value <= int.MaxValue
+                ? value.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                : "other";
+        }
+
+        private static string FormatDiagnosticAtom(
+            string value,
+            int maxLength,
+            bool allowPathPunctuation)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length > maxLength) return "other";
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
+                bool asciiLetter = (c >= 'A' && c <= 'Z')
+                    || (c >= 'a' && c <= 'z');
+                bool asciiDigit = c >= '0' && c <= '9';
+                bool common = asciiLetter || asciiDigit || c == '_' || c == '-' || c == '.';
+                bool path = allowPathPunctuation
+                    && (c == '$' || c == '[' || c == ']');
+                if (!common && !path) return "other";
+            }
+            return value;
         }
 
         private static void AppendStringReference(

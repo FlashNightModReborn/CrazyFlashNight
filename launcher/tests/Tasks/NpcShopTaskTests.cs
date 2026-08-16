@@ -72,6 +72,38 @@ namespace CF7Launcher.Tests.Tasks
             };
         }
 
+        private static JObject CollectionView(
+            string containerId,
+            string collectionKey,
+            JToken quantity)
+        {
+            return new JObject
+            {
+                ["containerId"] = containerId, ["capacity"] = 1,
+                ["accessibleCapacity"] = 1, ["viewCapacity"] = 1,
+                ["offset"] = 0, ["limit"] = 1, ["filterKey"] = "all",
+                ["slots"] = new JArray(new JObject
+                {
+                    ["physicalSlot"] = 0,
+                    ["collectionKey"] = collectionKey,
+                    ["occupied"] = true,
+                    ["slotLease"] = "npc1.collection.1",
+                    ["item"] = new JObject
+                    {
+                        ["itemKind"] = "stack",
+                        ["name"] = collectionKey,
+                        ["displayName"] = collectionKey,
+                        ["icon"] = collectionKey,
+                        ["majorType"] = "收集品",
+                        ["use"] = containerId,
+                        ["quantity"] = quantity,
+                        ["enhancementLevel"] = 0,
+                        ["rarity"] = ""
+                    }
+                })
+            };
+        }
+
         private static JObject TradePreviewResponse(int fid)
         {
             return new JObject
@@ -1444,6 +1476,98 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Null(web["views"]["bag"]);
             Assert.NotNull(web["views"]["material"]);
             Assert.NotNull(web["views"]["intelligence"]);
+        }
+
+        [Fact]
+        public void SnapshotWithNonEmptyCollectionViews_IsAuthoritative()
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(
+                () => true,
+                json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "npc.snapshot.nonempty.1"));
+                int fid = (int)ParseSent(sent)["callId"];
+                JObject response = StateResponse(fid);
+                response["views"]["material"] = CollectionView(
+                    "材料", "强化石", new JValue(3));
+                response["views"]["intelligence"] = CollectionView(
+                    "情报", "解锁情报", new JValue(1));
+
+                LogManager.SetSink(_ => throw new InvalidOperationException(
+                    "diagnostic sink failure"));
+                try
+                {
+                    task.HandleFlashResponse(response, null);
+                }
+                finally
+                {
+                    LogManager.ResetSink();
+                }
+
+                JObject web = JObject.Parse(posted);
+                Assert.True((bool)web["success"]);
+                Assert.Equal(3L,
+                    (long)web["views"]["material"]["slots"][0]["item"]["quantity"]);
+                Assert.Equal(1L,
+                    (long)web["views"]["intelligence"]["slots"][0]["item"]["quantity"]);
+            }
+        }
+
+        [Fact]
+        public void FractionalMaterialQuantity_IsRejectedWithRedactedPathDiagnostic()
+        {
+            const string secretMaterialName = "仅用于确认日志不泄漏的材料";
+            string sent = null;
+            string posted = null;
+            var logs = new List<string>();
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                using (var task = new NpcShopTask(
+                    () => true,
+                    json => { sent = json; return true; }))
+                {
+                    task.SetPostToWeb(json => posted = json);
+                    task.HandleWebRequest(
+                        "snapshot",
+                        Request("snapshot", "npc.snapshot.fractional.1"));
+                    int fid = (int)ParseSent(sent)["callId"];
+                    JObject response = StateResponse(fid);
+                    response["views"]["material"] = CollectionView(
+                        "材料", secretMaterialName, new JValue(1.5));
+
+                    task.HandleFlashResponse(response, null);
+
+                    JObject web = JObject.Parse(posted);
+                    Assert.False((bool)web["success"]);
+                    Assert.Equal("malformed_response", (string)web["error"]);
+                }
+            }
+            finally
+            {
+                LogManager.ResetSink();
+            }
+
+            string validation = Assert.Single(logs, value => value.StartsWith(
+                "event=npcshop_response_validation ",
+                StringComparison.Ordinal));
+            Assert.Contains("outcome=rejected", validation);
+            Assert.Contains("stage=collection", validation);
+            Assert.Contains(
+                "field=$.views.material.slots[0].item.quantity",
+                validation);
+            Assert.Contains("expected=positive_safe_integer", validation);
+            Assert.Contains("shapeRef=sha256_", validation);
+            Assert.All(logs, value =>
+            {
+                Assert.DoesNotContain(secretMaterialName, value);
+                Assert.DoesNotContain("1.5", value);
+            });
         }
 
         [Fact]

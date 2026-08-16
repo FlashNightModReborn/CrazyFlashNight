@@ -14,6 +14,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
     public static function runAllTests():Void {
         setup();
         testSnapshotAndGate();
+        testMaterialQuantityInvariantAndQuarantine();
         testLegacyIdentityFallbackBoundary();
         testBagTooltip();
         testLegacyCatalogResolution();
@@ -169,6 +170,48 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         check(snapshot.layout.title == "测试商人" && snapshot.layout.sections[0].entries.length == 5,"developer curated layout projected");
         var denied:Object = service().execute("buy",{shopId:"测试商店",catalogIndex:3,quantity:1});
         check(!denied.success && denied.error == "locked" && _root.金钱 == 5000,"locked buy has no write");
+    }
+
+    private static function testMaterialQuantityInvariantAndQuarantine():Void {
+        resetOwned();
+        var legacyItems:Object = {};
+        legacyItems["强化石"] = 1.5;
+        _root.收集品栏.材料 = new DictCollection(legacyItems);
+        var materials:DictCollection = _root.收集品栏.材料;
+        var preserved:Object = materials.toObject();
+        check(materials.getValue("强化石") == 0
+                && materials.getQuarantinedEntryCount() == 1
+                && preserved["强化石"] == 1.5,
+            "fractional legacy material is quarantined from runtime but preserved for save projection");
+
+        var invalidAcquire:Boolean = ItemUtil.acquire([{name:"强化石",value:0.5}]);
+        check(!invalidAcquire && materials.getValue("强化石") == 0
+                && materials.getQuarantinedEntryCount() == 1,
+            "fractional material reward fails before mutation and does not destroy quarantine");
+
+        var repaired:Boolean = ItemUtil.acquire([
+            {name:"强化石",value:2}, {name:"强化石",value:3}
+        ]);
+        check(repaired && materials.getValue("强化石") == 5
+                && materials.getQuarantinedEntryCount() == 0
+                && materials.toObject()["强化石"] == 5,
+            "duplicate integer rewards aggregate and explicitly repair the quarantined key");
+
+        var before:Number = materials.getValue("强化石");
+        materials.addValue("强化石", 0.5);
+        materials.addValue("强化石", 9007199254740991);
+        check(materials.getValue("强化石") == before,
+            "fractional and overflowing material deltas are rejected without partial mutation");
+
+        materials.getItems()["测试插件"] = Infinity;
+        var snapshot:Object = service().execute("snapshot",{shopId:"测试商店"});
+        var leaked:Boolean = false;
+        for (var i:Number = 0; i < snapshot.views.material.slots.length; i++) {
+            if (snapshot.views.material.slots[i].collectionKey == "测试插件") leaked = true;
+        }
+        check(!leaked && materials.toObject()["测试插件"] == Infinity
+                && service().getCollectionQuarantineCount(materials) == 1,
+            "collection projection independently filters non-finite direct pollution without deleting it");
     }
 
     private static function testLegacyIdentityFallbackBoundary():Void {

@@ -227,15 +227,21 @@ test('completed calls suppress duplicate responses', () => {
 test('timeout and send failure are synthetic and deterministic', () => {
     const timers = createTimers();
     const responses = [];
+    const diagnostics = [];
     const mux = new Runtime.PanelRequestMux({
         callPrefix:'test', sessionNonce:'nonce', send:() => true,
-        setTimer:timers.setTimer, clearTimer:timers.clearTimer
+        setTimer:timers.setTimer, clearTimer:timers.clearTimer,
+        onDiagnostic:(record, entry) => diagnostics.push({record, entry})
     });
     mux.openSession({});
     const timedOutCallId = mux.request('write', {}, {write:true}, response => responses.push(response));
     timers.timers[0].callback();
     assert.strictEqual(responses[0].error, 'client_timeout');
     assert.strictEqual(responses[0].requiresReconcile, true);
+    assert.deepStrictEqual(diagnostics.map(value => value.record.event),
+        ['request_issued', 'client_timeout']);
+    assert.strictEqual(diagnostics[1].record.callId, timedOutCallId);
+    assert.strictEqual(diagnostics[1].entry.callId, timedOutCallId);
     assert.strictEqual(mux.pendingCount(), 0);
     assert.strictEqual(mux.handleResponse({
         type:'panel_resp', cmd:'write', callId:timedOutCallId, success:true
@@ -243,7 +249,11 @@ test('timeout and send failure are synthetic and deterministic', () => {
     assert.strictEqual(responses.length, 1);
     mux.closeSession();
 
-    const failed = new Runtime.PanelRequestMux({callPrefix:'test', sessionNonce:'nonce', send:() => false});
+    const failedDiagnostics = [];
+    const failed = new Runtime.PanelRequestMux({
+        callPrefix:'test', sessionNonce:'nonce', send:() => false,
+        onDiagnostic:(record, entry) => failedDiagnostics.push({record, entry})
+    });
     failed.openSession({});
     let requestReturned = false;
     let failedEntry = null;
@@ -258,6 +268,9 @@ test('timeout and send failure are synthetic and deterministic', () => {
     assert.strictEqual(responses[1].callId, failedCallId);
     assert.strictEqual(failedEntry.callId, failedCallId);
     assert.strictEqual(failed.pendingCount(), 0);
+    assert.deepStrictEqual(failedDiagnostics.map(value => value.record.event),
+        ['request_issued', 'send_failed']);
+    assert.strictEqual(failedDiagnostics[1].record.error, 'not_sent');
 });
 
 test('domain response transform can normalize a malformed success envelope', () => {
@@ -274,6 +287,37 @@ test('domain response transform can normalize a malformed success envelope', () 
     const callId = mux.request('snapshot', {}, value => { response = value; });
     assert.strictEqual(mux.handleResponse({type:'panel_resp', callId}), true);
     assert.strictEqual(response.error, 'malformed_response');
+});
+
+test('response diagnostics distinguish shape, transform and accepted outcomes', () => {
+    const diagnostics = [];
+    const mux = new Runtime.PanelRequestMux({
+        callPrefix:'test', sessionNonce:'diagnostic', send:() => true,
+        validateResponse:data => data.valid === true,
+        transformResponse:data => data.transformFail ? null : data,
+        onDiagnostic:record => diagnostics.push(record)
+    });
+    mux.openSession({panelInstanceId:'panel.test'});
+    let response = null;
+    const callId = mux.request('snapshot', {}, value => { response = value; });
+    assert.strictEqual(mux.handleResponse({
+        type:'panel_resp', callId, cmd:'snapshot', valid:false
+    }), false);
+    assert.strictEqual(mux.handleResponse({
+        type:'panel_resp', callId, cmd:'snapshot', valid:true, transformFail:true
+    }), false);
+    assert.strictEqual(mux.handleResponse({
+        type:'panel_resp', callId, cmd:'snapshot', valid:true,
+        success:true, marker:'accepted'
+    }), true);
+    assert.strictEqual(response.marker, 'accepted');
+    assert.deepStrictEqual(diagnostics.map(value => value.event), [
+        'request_issued', 'response_shape_mismatch',
+        'response_transform_failed', 'response_accepted'
+    ]);
+    assert.strictEqual(diagnostics[1].error, 'malformed_response');
+    assert.strictEqual(diagnostics[2].error, 'malformed_response');
+    assert.strictEqual(diagnostics[3].error, '');
 });
 
 test('pending workbench lazy cancel reports the latest exact Host instance', () => {

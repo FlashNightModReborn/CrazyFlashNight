@@ -35,6 +35,9 @@ window.Bridge={
   on:function(type,fn){(__handlers[type]||(__handlers[type]=[])).push(fn)},
   send:function(message){
     __sent.push(JSON.parse(JSON.stringify(message)));
+    // Production Host consumes type=debug as a log-only envelope.  The harness
+    // must not turn it into a synthetic panel_resp or consume fault injection.
+    if(message.type==='debug')return true;
     if(message.cmd==='close'&&message.panel==='npcshop'&&!message.domain){
       if(window.__mockHostAutoCommitClose)setTimeout(function(){
         if(Panels.getActive()==='npcshop'
@@ -375,9 +378,19 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
       panelInstanceId:'panel.harness.npcshop.a4b.ordinary'});
     await waitForCondition(function(){return NpcShop.debugState().inventory.ready
       &&document.querySelector('.npcshop-catalog-card')},'ordinary strict init',2200);
+    var ordinaryDiagnostics=__sent.filter(function(message){return message.type==='debug'
+      &&message.scope==='npcshop'&&message.panelInstanceId==='panel.harness.npcshop.a4b.ordinary'});
+    var ordinaryDiagnosticEvents=ordinaryDiagnostics.map(function(message){return message.event});
+    var ordinaryDiagnosticContract=ordinaryDiagnostics.length===3
+      &&JSON.stringify(ordinaryDiagnosticEvents)===JSON.stringify([
+        'request_issued','response_accepted','snapshot_adopted'])
+      &&ordinaryDiagnostics.every(function(message){return message.cmd==='snapshot'
+        &&Object.keys(message).sort().join(',')
+          ==='cmd,error,event,generation,outcome,panelInstanceId,scope,type,webCallId'});
     ok('PG NPCShop ordinary strict init exposes neither material return nor preferred navigation state',
       !document.querySelector('.npcshop-material-return-btn')&&!document.querySelector('[data-navigation-focus]')
-        &&NpcShop.debugState().catalogNavigation===null);
+        &&NpcShop.debugState().catalogNavigation===null&&ordinaryDiagnosticContract,
+      JSON.stringify({diagnostics:ordinaryDiagnostics}));
 
     window.__navigationLayoutOverride=null;window.__navigationScrollCalls=[];window.__navigationFocusCalls=[];
     await openMaterialOrigin(1,'强化石','auto');
@@ -403,17 +416,23 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
 
     var closeFocus=document.querySelector('.workbench-close-btn'),snapshotBefore=__sent.filter(function(message){return message.domain==='npcshop'&&message.cmd==='snapshot'}).length;
     var scrollBefore=__navigationScrollCalls.length,focusBefore=__navigationFocusCalls.length;
-    closeFocus.focus();document.querySelector('.npcshop-retry-btn').click();
-    await waitForCondition(function(){return __sent.filter(function(message){return message.domain==='npcshop'&&message.cmd==='snapshot'}).length===snapshotBefore+1
-      &&NpcShop.debugState().inventory.ready},'navigation highlight refresh',2200);await wait();
+    var productionBridgeSend=Bridge.send,diagnosticSendThrows=0;
+    Bridge.send=function(message){if(message.type==='debug'){diagnosticSendThrows++;throw new Error('diagnostic sink failure')}
+      return productionBridgeSend(message)};
+    try{
+      closeFocus.focus();document.querySelector('.npcshop-retry-btn').click();
+      await waitForCondition(function(){return __sent.filter(function(message){return message.domain==='npcshop'&&message.cmd==='snapshot'}).length===snapshotBefore+1
+        &&NpcShop.debugState().inventory.ready},'navigation highlight refresh',2200);await wait();
+    }finally{Bridge.send=productionBridgeSend}
     autoTarget=document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]');
     ok('PG NPCShop fresh refresh preserves one navigation highlight without scrolling, refocusing, or duplicating description',
       autoTarget&&autoTarget.getAttribute('data-navigation-focus')==='true'
         &&autoTarget.querySelectorAll('.npcshop-navigation-focus-hint').length===1
         &&__navigationScrollCalls.length===scrollBefore&&__navigationFocusCalls.length===focusBefore
-        &&document.activeElement===closeFocus,
+        &&document.activeElement===closeFocus&&diagnosticSendThrows===3,
       JSON.stringify({scroll:__navigationScrollCalls,focus:__navigationFocusCalls,
-        active:document.activeElement&&document.activeElement.className}));
+        active:document.activeElement&&document.activeElement.className,
+        diagnosticSendThrows:diagnosticSendThrows}));
     var manualRoot=document.querySelector('.npcshop-category-tabs [data-filter-path=""]');manualRoot.click();await wait();
     ok('PG NPCShop first manual classification clears only navigation presentation',
       NpcShop.debugState().catalogNavigation.manualCleared

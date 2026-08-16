@@ -135,6 +135,8 @@ KShop 目录的普通单击或 `+` 直接把商品加购 1 件；拖到“拖拽
 
 NPC 金币商店使用独立 `npcshop` domain 与 `NpcShopTask`，不复用 K 点商城 `ShopTask`，也不把买卖硬塞进通用 `InventoryTask`。左栏固定 NPC 目录；右栏在 Web 组合层仍呈现背包与收集品两个并列 owned View，收集品内部再切材料/情报，其中情报只读。权威 wire 按数据所有权拆分：背包只来自 `domain=inventory` 的 `InventoryCoordinator`，`npcshop` snapshot 只返回 `views.material/intelligence`；Host 的 NPC 成功回包校验不得再要求或合成 `views.bag`。
 
+**2026-08-16 NPC snapshot 数量与诊断闭环**：`DictCollection` 的材料/情报活跃投影只接受 `1..9007199254740991` 的整数。旧档里的正小数、非有限数或越过安全整数上限的条目进入隔离区：业务读取和 snapshot 看不到它们，存档 `toObject()` 仍原样保留；同名合法整数获得才视为显式修复，不在加载时猜测取整、截断或删除。NPC 的 `buildCollectionView` 必须在 wire 前独立复核同一不变量，并仅输出加载隔离及运行期边界过滤条目计数日志，不得输出名称/数值。Web 诊断 envelope 固定为 `{type:"debug",scope:"npcshop",event,outcome,cmd,webCallId,panelInstanceId,generation,error}` 的 exact 闭集，且为 best-effort；诊断发送异常不得改变 snapshot 采用。Host 只接受闭集事件/结果/错误码并对 panel instance 做引用哈希，同时记录 `npcshop_response_validation` 的 `stage/field/expected/shapeRef`，禁止记录原始 payload、物品名或数量值。该闭环用于区分 AS2 隔离、Host 拒绝、Web stale/采用和 client timeout/send failure；当前只证明并封闭非法 collection 数量污染族，不能据此唯一归因已经丢失存档的间歇事故。
+
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
 |---------|-----------|-------------|-------------------|---------------|------------|--------|
 | `snapshot` | `npcShopSnapshot` | `NPC商店WebView.executeSnapshot` | `npcshop_response` | `panel_resp domain=npcshop cmd=snapshot` | `NpcShopRequestMux` callback | 读 |

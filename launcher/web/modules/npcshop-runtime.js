@@ -18,6 +18,28 @@
     var NAVIGATION_CALL_ID_PATTERN = /^[A-Za-z0-9._-]{1,96}$/;
     var SHOP_CATALOG_INDEX_MAX = 10000;
     var NAVIGATION_WATCHDOG_MS = 6500;
+    var DIAGNOSTIC_EVENTS = {
+        request_issued:true, client_timeout:true, send_failed:true,
+        response_shape_mismatch:true, response_transform_failed:true,
+        response_accepted:true, snapshot_adopted:true,
+        snapshot_rejected:true, snapshot_stale:true
+    };
+    var DIAGNOSTIC_OUTCOMES = {
+        issued:true, accepted:true, adopted:true, host_error:true,
+        shape_mismatch:true, transform_failed:true, client_timeout:true,
+        send_failed:true, stale:true
+    };
+    var DIAGNOSTIC_ERRORS = {
+        '':true, other:true, malformed_response:true, timeout:true,
+        client_timeout:true, disconnected:true, not_sent:true,
+        invalid_payload:true, panel_instance_expired:true,
+        npcshop_unavailable:true, stale_state:true, shop_not_found:true,
+        item_not_found:true, locked:true, invalid_price:true,
+        invalid_quantity:true, insufficient_quantity:true,
+        insufficient_money:true, inventory_full:true, destination_full:true,
+        nothing_to_sell:true, sell_forbidden:true, busy:true,
+        reconcile_required:true, unsupported_cmd:true
+    };
     var CLOSE_REASONS = {button:true, escape:true, backdrop:true, toggle:true};
     var RETURN_FAILURE_ERRORS = {
         invalid_payload:true, stale_source:true, navigation_unavailable:true,
@@ -53,6 +75,43 @@
 
     function shopCatalogIndex(value) {
         return Number.isInteger(value) && value >= 0 && value <= SHOP_CATALOG_INDEX_MAX;
+    }
+
+    function diagnosticOutcome(event, error) {
+        if (event === 'request_issued') return 'issued';
+        if (event === 'client_timeout') return 'client_timeout';
+        if (event === 'send_failed') return 'send_failed';
+        if (event === 'response_shape_mismatch') return 'shape_mismatch';
+        if (event === 'response_transform_failed') return 'transform_failed';
+        if (event === 'snapshot_adopted') return 'adopted';
+        if (event === 'snapshot_stale') return 'stale';
+        if (event === 'snapshot_rejected') {
+            if (error === 'client_timeout' || error === 'timeout') return 'client_timeout';
+            if (error === 'disconnected' || error === 'not_sent') return 'send_failed';
+            return 'host_error';
+        }
+        return error ? 'host_error' : 'accepted';
+    }
+
+    function createDiagnosticMessage(record) {
+        record = record || {};
+        var event = String(record.event || '');
+        var cmd = String(record.cmd || '');
+        var callId = String(record.callId || '');
+        var panelInstanceId = String(record.panelInstanceId || '');
+        var generation = Number(record.generation);
+        var error = String(record.error || '');
+        if (!DIAGNOSTIC_EVENTS[event] || !NPC_COMMANDS[cmd]
+                || !NAVIGATION_CALL_ID_PATTERN.test(callId)
+                || !PANEL_INSTANCE_PATTERN.test(panelInstanceId)
+                || !Number.isInteger(generation) || generation < 0
+                || generation > 2147483647) return null;
+        if (!DIAGNOSTIC_ERRORS[error]) error = 'other';
+        var outcome = diagnosticOutcome(event, error);
+        if (!DIAGNOSTIC_OUTCOMES[outcome]) return null;
+        return {type:'debug', scope:'npcshop', event:event, outcome:outcome,
+            cmd:cmd, webCallId:callId, panelInstanceId:panelInstanceId,
+            generation:generation, error:error};
     }
 
     function parseInitData(value) {
@@ -203,6 +262,8 @@
         var domain = String(options.domain || 'npcshop');
         var panel = String(options.panel || 'npcshop');
         var prefix = String(options.callPrefix || (domain === 'npcshop' ? 'npc' : 'npc-' + domain));
+        var diagnostic = typeof options.diagnostic === 'function'
+            ? options.diagnostic : function() {};
         this._domain = domain;
         this._mux = new PanelRuntime.PanelRequestMux({
             send:options.send,
@@ -233,6 +294,13 @@
                     panelInstanceId:context.session.panelInstanceId,
                     callId:context.entry.callId, success:false, error:context.error,
                     clientSynthetic:true};
+            },
+            onDiagnostic:function(record, entry) {
+                diagnostic({domain:domain, event:record.event, cmd:record.cmd,
+                    callId:record.callId, generation:record.generation,
+                    panelInstanceId:entry && entry.session
+                        ? entry.session.panelInstanceId : '',
+                    error:record.error});
             }
         });
     }
@@ -267,7 +335,8 @@
                 timeoutMs:options.timeoutMs == null ? options.requestTimeoutMs : options.timeoutMs,
                 sessionNonce:options.sessionNonce, setTimer:options.setTimer,
                 clearTimer:options.clearTimer, router:options.router,
-                domain:domain, panel:'npcshop', callPrefix:callPrefix};
+                domain:domain, panel:'npcshop', callPrefix:callPrefix,
+                diagnostic:options.diagnostic};
         }
         var business = new RequestMux(muxOptions('npcshop', 'npc'));
         var inventory = new RequestMux(muxOptions('inventory', 'npc-inv'));
@@ -367,6 +436,7 @@
         createOwnerChannels:createOwnerChannels,
         createPhysicalInventoryAdapter:createPhysicalInventoryAdapter,
         validateBusinessResponse:validateBusinessResponse,
+        createDiagnosticMessage:createDiagnosticMessage,
         identityTriple:identityTriple,
         SHOP_CATALOG_INDEX_MAX:SHOP_CATALOG_INDEX_MAX,
         NAVIGATION_WATCHDOG_MS:NAVIGATION_WATCHDOG_MS,

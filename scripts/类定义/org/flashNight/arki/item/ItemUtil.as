@@ -48,6 +48,7 @@ import org.flashNight.naki.Sort.QuickSort;
  */
 
 class org.flashNight.arki.item.ItemUtil{
+    private static var MAX_SAFE_COLLECTION_QUANTITY:Number = 9007199254740991;
     
     public static var itemDataDict:Object;
     public static var balanceDataDict:Object; // balance 审计投影独立存放，避免常规物品克隆携带
@@ -570,7 +571,17 @@ class org.flashNight.arki.item.ItemUtil{
                 continue;
             }
             if(isMaterial(name)){
-                list.材料[name] = value;
+                if(isNaN(value) || !isFinite(value) || value <= 0
+                        || Math.floor(value) != value
+                        || value > MAX_SAFE_COLLECTION_QUANTITY) return null;
+                var materialTotal:Number = Number(list.材料[name] || 0) + value;
+                var materialCurrent:Number = Number(_root.收集品栏.材料.getValue(name));
+                if(isNaN(materialTotal) || !isFinite(materialTotal)
+                        || Math.floor(materialTotal) != materialTotal
+                        || materialTotal > MAX_SAFE_COLLECTION_QUANTITY
+                        || isNaN(materialCurrent) || materialCurrent < 0
+                        || materialCurrent + materialTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
+                list.材料[name] = materialTotal;
             } else if(isInformation(name)){
                 var informationTotal:Number = Number(list.情报[name] || 0) + value;
                 if(isNaN(informationTotal) || informationTotal <= 0

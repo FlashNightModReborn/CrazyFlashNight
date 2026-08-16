@@ -12,8 +12,15 @@ var NpcShop = (function() {
     var _spacePresenter = null, _spaceBusy = false, _spaceMutated = false;
     var _helpPresenter = null, _bagFilterControl = null;
     var _config = (typeof window !== 'undefined' && window.__NPCSHOP_CONFIG__) || {};
+    var _runtimeConfig = {};
+    for (var _configKey in _config) {
+        if (Object.prototype.hasOwnProperty.call(_config, _configKey)) {
+            _runtimeConfig[_configKey] = _config[_configKey];
+        }
+    }
+    _runtimeConfig.diagnostic = emitDiagnostic;
     var _ownerChannels = NpcShopRuntime.createOwnerChannels(
-        function(message) { return Bridge.send(message); }, _config);
+        function(message) { return Bridge.send(message); }, _runtimeConfig);
     var _mux = _ownerChannels.business, _inventoryMux = _ownerChannels.inventory;
     var _owner = _ownerChannels.owner;
     var _inventoryState = {opened:false, ready:false, busyOwner:null, refreshRequired:false};
@@ -827,13 +834,18 @@ var NpcShop = (function() {
         _materialNavigation.beginSnapshot();
         refreshInventory();
         _shell.setStatus('同步中', 'loading'); var snapshotIntent = _owner.captureSnapshot();
-        return !!request('snapshot', {shopId:_shopId}, function(response) {
-            if (!_owner.isCurrentSnapshot(snapshotIntent)) return;
+        return !!request('snapshot', {shopId:_shopId}, function(response, entry) {
+            if (!_owner.isCurrentSnapshot(snapshotIntent)) {
+                emitDiagnostic(snapshotDiagnostic('snapshot_stale', response, entry));
+                return;
+            }
             if (response.success) {
                 _owner.acceptAuthorityState(); _purchaseIntents = {}; _saleIntents = {};
                 closeSettlement(); applyState(response);
+                emitDiagnostic(snapshotDiagnostic('snapshot_adopted', response, entry));
             }
             else {
+                emitDiagnostic(snapshotDiagnostic('snapshot_rejected', response, entry));
                 _owner.enterNeedsReconcile();
                 _materialNavigation.rejectSnapshot();
                 handleError(response); refreshControls();
@@ -993,6 +1005,26 @@ var NpcShop = (function() {
     }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
+    function snapshotDiagnostic(event, response, entry) {
+        return {domain:'npcshop', event:event, cmd:'snapshot',
+            callId:entry && entry.callId, generation:entry && entry.generation,
+            panelInstanceId:entry && entry.session
+                ? entry.session.panelInstanceId : _owner.panelInstanceId,
+            error:response && response.success === false
+                ? String(response.error || 'other') : ''};
+    }
+    function emitDiagnostic(record) {
+        if (typeof _config.diagnostic === 'function') {
+            try { _config.diagnostic(record); } catch (_) {}
+        }
+        if (!record || record.domain !== 'npcshop') return;
+        if ((record.event === 'request_issued' || record.event === 'response_accepted')
+                && record.cmd !== 'snapshot') return;
+        var message = NpcShopRuntime.createDiagnosticMessage(record);
+        if (message) {
+            try { Bridge.send(message); } catch (_) {}
+        }
+    }
     // 语义音效命令式入口（契约 §8）：仅本地可拒绝 / 权威结果路径使用，静态元素走 data-audio-cue
     function cue(name) {
         var A = window.BootstrapAudio;

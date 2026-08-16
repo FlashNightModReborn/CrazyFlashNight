@@ -211,6 +211,7 @@ _root.UI系统.NPC商店WebView.batchPlan = null;
 _root.UI系统.NPC商店WebView.tradeSeq = 0;
 _root.UI系统.NPC商店WebView.tradePlan = null;
 _root.UI系统.NPC商店WebView.activeShopId = "";
+_root.UI系统.NPC商店WebView.collectionQuarantineSignature = "0:0";
 
 // 兼容仍只持有目录对象的旧 Flash 入口。地图 NPC 初始化会把
 // _root.shops[shopId] 的对象引用直接挂到 NPC.物品栏，因此可以用引用反查，
@@ -439,7 +440,12 @@ _root.UI系统.NPC商店WebView.buildCollectionView = function(viewId:String, co
     var values:Object = collection == undefined ? {} : collection.getItems();
     var names:Array = [];
     for (var name in values) {
-        if (Number(values[name]) > 0) names.push(String(name));
+        var rawQuantity = values[name];
+        var projectedQuantity:Number = Number(rawQuantity);
+        if (typeof rawQuantity == "number" && !isNaN(projectedQuantity)
+                && isFinite(projectedQuantity) && projectedQuantity > 0
+                && Math.floor(projectedQuantity) == projectedQuantity
+                && projectedQuantity <= 9007199254740991) names.push(String(name));
     }
     names.sort();
     for (var i:Number = 0; i < names.length; i++) {
@@ -479,9 +485,38 @@ _root.UI系统.NPC商店WebView.buildCollectionView = function(viewId:String, co
     };
 };
 
+_root.UI系统.NPC商店WebView.getCollectionQuarantineCount = function(collection:Object):Number {
+    if (collection == undefined) return 0;
+    var count:Number = collection.getQuarantinedEntryCount == undefined
+        ? 0 : Number(collection.getQuarantinedEntryCount());
+    if (isNaN(count) || !isFinite(count) || count < 0 || Math.floor(count) != count) count = 0;
+    // getItems() 正常只含合法活跃值；仍扫描一次，统计绕过 collection API 的直接污染。
+    // 只输出总数，绝不输出键名或原值。
+    var values:Object = collection.getItems == undefined ? {} : collection.getItems();
+    for (var key in values) {
+        var rawValue = values[key];
+        var value:Number = Number(rawValue);
+        if (Number(rawValue) > 0 && (typeof rawValue != "number"
+                || isNaN(value) || !isFinite(value) || Math.floor(value) != value
+                || value > 9007199254740991)) count++;
+    }
+    return count;
+};
+
+_root.UI系统.NPC商店WebView.logCollectionQuarantineState = function():Void {
+    var materialCount:Number = this.getCollectionQuarantineCount(_root.收集品栏.材料);
+    var intelligenceCount:Number = this.getCollectionQuarantineCount(_root.收集品栏.情报);
+    var signature:String = materialCount + ":" + intelligenceCount;
+    if (signature == this.collectionQuarantineSignature) return;
+    this.collectionQuarantineSignature = signature;
+    this.log("diagnostic event=collection_quarantine_state materialCount="
+        + materialCount + " intelligenceCount=" + intelligenceCount);
+};
+
 _root.UI系统.NPC商店WebView.buildState = function(shopId:String):Object {
     // 背包只由 inventory-domain 投影；NPC 域不再嵌套第二份背包快照与 lease 生命周期。
     this.beginCollectionSnapshot(shopId);
+    this.logCollectionQuarantineState();
     var catalog:Array = this.buildCatalog(shopId);
     var materialView:Object = this.buildCollectionView("material", _root.收集品栏.材料);
     var intelligenceView:Object = this.buildCollectionView("intelligence", _root.收集品栏.情报);

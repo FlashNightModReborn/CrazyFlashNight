@@ -152,6 +152,8 @@
             ? options.validateSession : function() { return true; };
         this._onProtocolError = typeof options.onProtocolError === 'function'
             ? options.onProtocolError : defaultProtocolError;
+        this._onDiagnostic = typeof options.onDiagnostic === 'function'
+            ? options.onDiagnostic : function() {};
         this._generation = 0;
         this._sequence = 0;
         this._issueOrdinal = 0;
@@ -162,6 +164,18 @@
         this._disconnectRouter = null;
         if (options.router) this.connectRouter(options.router);
     }
+
+    PanelRequestMux.prototype._emitDiagnostic = function(event, entry, error) {
+        try {
+            this._onDiagnostic({
+                event:String(event || ''),
+                cmd:entry ? entry.cmd : '',
+                callId:entry ? entry.callId : '',
+                generation:entry ? entry.generation : this._generation,
+                error:String(error || '')
+            }, entry || null);
+        } catch (_) {}
+    };
 
     PanelRequestMux.prototype.connectRouter = function(router) {
         if (!router || typeof router.register !== 'function') return false;
@@ -239,16 +253,20 @@
         entry.timer = this._setTimer(function() {
             if (self._pending[callId] !== entry) return;
             self._dropEntry(entry);
+            self._emitDiagnostic('client_timeout', entry, 'client_timeout');
             entry.callback(self._createSynthetic({entry:entry, session:entry.session,
                 error:'client_timeout', options:options}), entry);
         }, this._timeoutMs);
         this._pending[callId] = entry;
         this._pendingByKind[kind] = callId;
         if (typeof options.onIssued === 'function') options.onIssued(entry, message);
+        this._emitDiagnostic('request_issued', entry, '');
         try {
             if (this._send(message) === false) throw new Error('send returned false');
         } catch (error) {
             this._dropEntry(entry);
+            this._emitDiagnostic('send_failed', entry,
+                String(options.sendError || 'not_sent'));
             entry.callback(this._createSynthetic({entry:entry, session:entry.session,
                 error:String(options.sendError || 'not_sent'), cause:error, options:options}), entry);
         }
@@ -260,15 +278,19 @@
         var entry = this._pending[data.callId];
         if (!entry || !this._active || entry.generation !== this._generation) return false;
         if (this._validateResponse(data, entry, entry.session) !== true) {
+            this._emitDiagnostic('response_shape_mismatch', entry, 'malformed_response');
             this._onProtocolError('[PanelRequestMux] response shape mismatch for ' + data.callId);
             return false;
         }
         var response = this._transformResponse(data, entry, entry.session);
         if (!response || typeof response !== 'object') {
+            this._emitDiagnostic('response_transform_failed', entry, 'malformed_response');
             this._onProtocolError('[PanelRequestMux] response transform failed for ' + data.callId);
             return false;
         }
         this._dropEntry(entry);
+        this._emitDiagnostic('response_accepted', entry,
+            response.success === false ? String(response.error || '') : '');
         entry.callback(response, entry);
         return true;
     };

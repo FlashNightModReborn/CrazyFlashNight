@@ -67,6 +67,57 @@ test('NPCShop explicit material return emits the exact five-key envelope', () =>
     assert.strictEqual(Runtime.NAVIGATION_WATCHDOG_MS,6500);
 });
 
+test('NPCShop diagnostics normalize into a closed redacted envelope', () => {
+    const input = {event:'snapshot_rejected',cmd:'snapshot',
+        callId:'npc.diagnostic.1',panelInstanceId:'npcshop.test~diagnostic',
+        generation:7,error:'malformed_response'};
+    assert.deepStrictEqual(Runtime.createDiagnosticMessage(input),{
+        type:'debug',scope:'npcshop',event:'snapshot_rejected',outcome:'host_error',
+        cmd:'snapshot',webCallId:'npc.diagnostic.1',
+        panelInstanceId:'npcshop.test~diagnostic',generation:7,
+        error:'malformed_response'
+    });
+    assert.strictEqual(Runtime.createDiagnosticMessage(
+        Object.assign({},input,{event:'unexpected'})),null);
+    assert.strictEqual(Runtime.createDiagnosticMessage(
+        Object.assign({},input,{cmd:'sell'})),null);
+    assert.strictEqual(Runtime.createDiagnosticMessage(
+        Object.assign({},input,{callId:'bad call'})),null);
+    assert.strictEqual(Runtime.createDiagnosticMessage(
+        Object.assign({},input,{panelInstanceId:'bad instance'})),null);
+    assert.strictEqual(Runtime.createDiagnosticMessage(
+        Object.assign({},input,{generation:1.5})),null);
+    assert.strictEqual(Runtime.createDiagnosticMessage(
+        Object.assign({},input,{error:'secret-material-name'})).error,'other');
+});
+
+test('NPCShop request mux forwards correlated issued and accepted diagnostics', () => {
+    const diagnostics = [];
+    const mux = new Runtime.RequestMux({domain:'npcshop',panel:'npcshop',
+        sessionNonce:'diagnostic',send:() => true,
+        diagnostic:record => diagnostics.push(record)});
+    const panelInstanceId = 'npcshop.test~mux-diagnostic';
+    assert.strictEqual(mux.openSession({ownerPanel:'npcshop',panelInstanceId}),true);
+    let adopted = null;
+    const callId = mux.request('snapshot',{shopId:'迷之盔甲君'},
+        response => { adopted = response; });
+    assert.strictEqual(mux.handleResponse({
+        type:'panel_resp',domain:'npcshop',panel:'npcshop',panelInstanceId,
+        callId,cmd:'snapshot',success:true,shopId:'迷之盔甲君',catalog:[],
+        views:{material:{slots:[]},intelligence:{slots:[]}}
+    }),true);
+    assert.strictEqual(adopted.success,true);
+    assert.deepStrictEqual(diagnostics.map(value => value.event),
+        ['request_issued','response_accepted']);
+    for (const record of diagnostics) {
+        assert.strictEqual(record.domain,'npcshop');
+        assert.strictEqual(record.callId,callId);
+        assert.strictEqual(record.panelInstanceId,panelInstanceId);
+        assert.strictEqual(record.generation,1);
+        assert.ok(Runtime.createDiagnosticMessage(record));
+    }
+});
+
 test('NPCShop return public failure is exact, enumerated and correlated', () => {
     const expected = {callId:'material-return.test-1',panelInstanceId:'npcshop.test~material'};
     const failure = {type:'panel_resp',panel:'npcshop',cmd:'return_crafting_materials',

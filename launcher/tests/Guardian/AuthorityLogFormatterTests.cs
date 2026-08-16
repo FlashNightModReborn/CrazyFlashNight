@@ -366,6 +366,76 @@ namespace CF7Launcher.Tests.Guardian
             Assert.DoesNotContain("duplicate.debug.secret", line);
         }
 
+        [Fact]
+        public void NpcShopDebug_ProjectsOnlyClosedLifecycleMetadata()
+        {
+            const string panelInstanceId = "npcshop.panel.private~instance";
+            string json = new JObject
+            {
+                ["type"] = "debug",
+                ["scope"] = "npcshop",
+                ["event"] = "snapshot_rejected",
+                ["outcome"] = "host_error",
+                ["cmd"] = "snapshot",
+                ["webCallId"] = "npc.debug.1",
+                ["panelInstanceId"] = panelInstanceId,
+                ["generation"] = 3,
+                ["error"] = "malformed_response",
+                ["unexpectedSecret"] = "material-name-must-not-leak"
+            }.ToString(Newtonsoft.Json.Formatting.None);
+
+            string line;
+            Assert.True(AuthorityLogFormatter.TryFormatNpcShopDebug(
+                json, out line));
+            Assert.Contains("scope=npcshop", line);
+            Assert.Contains("event=snapshot_rejected", line);
+            Assert.Contains("outcome=host_error", line);
+            Assert.Contains("callId=npc.debug.1", line);
+            Assert.Contains("panelInstanceIdRef="
+                + AuthorityLogFormatter.CreateReference(panelInstanceId), line);
+            Assert.Contains("generation=3", line);
+            Assert.Contains("error=malformed_response", line);
+            Assert.Contains("payload=redacted", line);
+            Assert.DoesNotContain(panelInstanceId, line);
+            Assert.DoesNotContain("material-name-must-not-leak", line);
+        }
+
+        [Theory]
+        [InlineData("{\"scope\":\"npcshop\",\"panelInstanceId\":\"malformed.secret\"")]
+        [InlineData("{\"scope\":\"npcshop\",\"scope\":\"other\",\"panelInstanceId\":\"duplicate.secret\"}")]
+        public void NpcShopDebug_MalformedOrDuplicateEnvelopeFailsClosed(string json)
+        {
+            string line;
+            Assert.True(AuthorityLogFormatter.TryFormatNpcShopDebug(
+                json, out line));
+            Assert.Contains("envelope=malformed", line);
+            Assert.Contains("payload=redacted", line);
+            Assert.DoesNotContain("malformed.secret", line);
+            Assert.DoesNotContain("duplicate.secret", line);
+        }
+
+        [Fact]
+        public void NpcShopHostValidation_LogsPathAndShapeReferenceWithoutPayloadValues()
+        {
+            const string panelInstanceId = "npcshop.validation.private";
+            const string shape = "O2{quantity=F;name=S8;}";
+            string line = AuthorityLogFormatter.FormatNpcShopResponseValidation(
+                "rejected", "npc.validation.1", 17, panelInstanceId,
+                "snapshot", "malformed_response", "collection",
+                "$.views.material.slots[0].item.quantity",
+                "positive_safe_integer", shape);
+
+            Assert.Contains("outcome=rejected", line);
+            Assert.Contains("field=$.views.material.slots[0].item.quantity", line);
+            Assert.Contains("expected=positive_safe_integer", line);
+            Assert.Contains("shapeRef="
+                + AuthorityLogFormatter.CreateReference(shape), line);
+            Assert.Contains("panelInstanceIdRef="
+                + AuthorityLogFormatter.CreateReference(panelInstanceId), line);
+            Assert.DoesNotContain(panelInstanceId, line);
+            Assert.DoesNotContain(shape, line);
+        }
+
         private static string Capture(Func<string> buildLine)
         {
             var lines = new List<string>();

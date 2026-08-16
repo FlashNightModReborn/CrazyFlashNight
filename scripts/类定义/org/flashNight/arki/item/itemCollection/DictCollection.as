@@ -8,18 +8,27 @@
 class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollection{
 
     public var isDict:Boolean = true;
+    private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
     private var mutationRevision:Number;
+    // 旧档中无法作为运行时数量使用、但仍代表正数持有量的原始值放在这里。
+    // 它们不进入 getValue()/getItems() 的业务投影，却会由 toObject() 原样写回，
+    // 避免加载时用截断、取整或删除猜测性破坏存档。
+    private var quarantinedItems:Object;
+    private var quarantinedEntryCount:Number;
 
     public function DictCollection(_items:Object) {
         super(_items);
+        if (quarantinedItems == undefined) quarantinedItems = {};
+        if (isNaN(quarantinedEntryCount)) quarantinedEntryCount = 0;
         mutationRevision = 1;
     }
 
     //添加键值对
     public function add(key:String,value:Number):Boolean{
-        if(isNaN(value)) return false;
+        if(!isPositiveSafeInteger(value)) return false;
         if(isEmpty(key) && isAddable(key,value)){
             items[key] = value;
+            clearQuarantinedKey(key);
             bumpMutationRevision();
             if(this.hasDispatcher()) dispatcher.publish("ItemAdded", this, key); // 发布ItemAdded事件
             return true;
@@ -30,24 +39,32 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     //获取对应键的值
     public function getValue(key:String):Number{
         var value = items[key];
-        if(value <= 0) return 0;
-        return value;
+        if(!isPositiveSafeInteger(value)) return 0;
+        return Number(value);
+    }
+
+    // 隔离值在业务上视为空，因此后续一次合法获得可以显式修复同名键。
+    public function isEmpty(key:String):Boolean{
+        return !isPositiveSafeInteger(items[key]);
     }
 
     //改变键值对的值
     public function addValue(key:String,value:Number):Void{
-        if(isNaN(value)) return;
+        if(!isSafeInteger(value)) return;
         var before:Number = getValue(key);
         var after:Number = before + value;
+        if(!isSafeInteger(after) || after > MAX_SAFE_INTEGER) return;
         if (after == before) return;
         if(after <= 0) {
             if (before <= 0) return;
             delete items[key];
+            clearQuarantinedKey(key);
             bumpMutationRevision();
             if(this.hasDispatcher()) dispatcher.publish("ItemRemoved", this, key);
             return;
         }
         items[key] = after;
+        clearQuarantinedKey(key);
         bumpMutationRevision();
         if(this.hasDispatcher()) {
             dispatcher.publish(before <= 0 ? "ItemAdded" : "ItemValueChanged", this, key);
@@ -73,9 +90,12 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
             if (key == "") return false;
             var delta:Number = Number(deltas[key]);
             var before:Number = getValue(key);
-            if (isNaN(delta) || Math.floor(delta) != delta) return false;
-            if (isNaN(before) || Math.floor(before) != before || before < 0) return false;
-            if (before + delta < 0) return false;
+            var after:Number = before + delta;
+            if (hasQuarantinedKey(key)
+                    || (items[key] != null && !isPositiveSafeInteger(items[key]))) return false;
+            if (!isSafeInteger(delta)) return false;
+            if (!isSafeInteger(before) || before < 0) return false;
+            if (!isSafeInteger(after) || after < 0 || after > MAX_SAFE_INTEGER) return false;
         }
         return true;
     }
@@ -100,6 +120,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
                 var change:Object = changes[i];
                 if (Number(change.after) <= 0) delete items[String(change.key)];
                 else items[String(change.key)] = Number(change.after);
+                clearQuarantinedKey(String(change.key));
             }
             if (changes.length > 0) bumpMutationRevision();
         } catch (writeError) {
@@ -177,19 +198,64 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     // 重写设置物品集合功能
     public function setItems(_items:Object):Void{
         var newItems = {};
+        var newQuarantinedItems:Object = {};
+        var newQuarantinedEntryCount:Number = 0;
         for(var key in _items){
-            if(_items[key] > 0) newItems[key] = _items[key];
+            var rawValue = _items[key];
+            if(isPositiveSafeInteger(rawValue)) {
+                newItems[key] = Number(rawValue);
+            } else if(Number(rawValue) > 0) {
+                newQuarantinedItems[key] = rawValue;
+                newQuarantinedEntryCount++;
+            }
         }
         this.items = newItems;
+        this.quarantinedItems = newQuarantinedItems;
+        this.quarantinedEntryCount = newQuarantinedEntryCount;
         if (mutationRevision != undefined) bumpMutationRevision();
     }
 
     // 重写深度拷贝功能
     public function toObject():Object{
         var obj = {};
+        for(var quarantinedKey in quarantinedItems){
+            obj[quarantinedKey] = quarantinedItems[quarantinedKey];
+        }
         for(var key in items){
-            obj[key] = items[key];
+            var value = items[key];
+            if(isPositiveSafeInteger(value) || Number(value) > 0) obj[key] = value;
         }
         return obj;
+    }
+
+    /** 返回被隔离、未进入业务投影的旧档条目数；不暴露键名或原值。 */
+    public function getQuarantinedEntryCount():Number {
+        var count:Number = Number(quarantinedEntryCount);
+        if (!isSafeInteger(count) || count < 0) return 0;
+        return count;
+    }
+
+    private function hasQuarantinedKey(key:String):Boolean {
+        return quarantinedItems != undefined && quarantinedItems[key] != undefined;
+    }
+
+    private function clearQuarantinedKey(key:String):Void {
+        if (!hasQuarantinedKey(key)) return;
+        delete quarantinedItems[key];
+        quarantinedEntryCount--;
+        if (isNaN(quarantinedEntryCount) || quarantinedEntryCount < 0) {
+            quarantinedEntryCount = 0;
+        }
+    }
+
+    private function isPositiveSafeInteger(value):Boolean {
+        return isSafeInteger(value) && Number(value) > 0;
+    }
+
+    private function isSafeInteger(value):Boolean {
+        return typeof value == "number" && !isNaN(value) && isFinite(value)
+            && Math.floor(Number(value)) == Number(value)
+            && Number(value) >= -MAX_SAFE_INTEGER
+            && Number(value) <= MAX_SAFE_INTEGER;
     }
 }
