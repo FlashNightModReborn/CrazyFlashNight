@@ -60,6 +60,90 @@ function listFiles(relDir, predicate) {
     return out;
 }
 
+function uniqueSorted(values) {
+    var seen = {};
+    var out = [];
+    for (var i = 0; i < values.length; i++) {
+        var value = values[i];
+        if (seen[value]) continue;
+        seen[value] = true;
+        out.push(value);
+    }
+    return out.sort();
+}
+
+function expectExactSet(label, actual, expected) {
+    var a = uniqueSorted(actual);
+    var e = uniqueSorted(expected);
+    var missing = [];
+    var unexpected = [];
+    for (var i = 0; i < e.length; i++) if (a.indexOf(e[i]) === -1) missing.push(e[i]);
+    for (var j = 0; j < a.length; j++) if (e.indexOf(a[j]) === -1) unexpected.push(a[j]);
+    expect(
+        missing.length === 0 && unexpected.length === 0,
+        label + " exact-set mismatch; missing=[" + missing.join(", ") + "] unexpected=[" + unexpected.join(", ") + "]");
+}
+
+function markedBlock(rel, markerName) {
+    var text = read(rel);
+    var startMarker = "<!-- " + markerName + ":start -->";
+    var endMarker = "<!-- " + markerName + ":end -->";
+    var start = text.indexOf(startMarker);
+    var end = text.indexOf(endMarker);
+    expect(start !== -1, "missing registry start marker " + markerName + " [" + rel + "]");
+    expect(end !== -1 && end > start, "missing registry end marker " + markerName + " [" + rel + "]");
+    expect(start === text.lastIndexOf(startMarker), "duplicate registry start marker " + markerName + " [" + rel + "]");
+    expect(end === text.lastIndexOf(endMarker), "duplicate registry end marker " + markerName + " [" + rel + "]");
+    if (start === -1 || end === -1 || end <= start) return "";
+    return text.slice(start + startMarker.length, end);
+}
+
+function markdownTableRows(block) {
+    var rows = [];
+    var lines = block.split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+        if (!/^\|\s*`/.test(lines[i])) continue;
+        var cells = lines[i].split("|").slice(1, -1);
+        for (var c = 0; c < cells.length; c++) cells[c] = cells[c].trim();
+        var key = cells[0].replace(/^`|`$/g, "");
+        rows.push({ key: key, cells: cells, line: lines[i] });
+    }
+    return rows;
+}
+
+function sectionText(rel, heading) {
+    var lines = read(rel).split(/\r?\n/);
+    var start = -1;
+    var end = lines.length;
+    for (var i = 0; i < lines.length; i++) {
+        if (lines[i] === "## " + heading) {
+            start = i;
+            continue;
+        }
+        if (start !== -1 && i > start && /^##\s+/.test(lines[i])) {
+            end = i;
+            break;
+        }
+    }
+    expect(start !== -1, "missing section ## " + heading + " [" + rel + "]");
+    return start === -1 ? "" : lines.slice(start, end).join("\n");
+}
+
+function validateLocalMarkdownLinks(rel) {
+    var text = read(rel);
+    var re = /\[[^\]]*\]\(([^)]+)\)/g;
+    var match;
+    while ((match = re.exec(text)) !== null) {
+        var target = match[1].trim().replace(/^<|>$/g, "");
+        if (/^(?:https?:|mailto:|#)/i.test(target)) continue;
+        target = target.split("#")[0].split("?")[0];
+        if (!target) continue;
+        try { target = decodeURIComponent(target); } catch (e) { /* existence check reports it */ }
+        var resolved = path.resolve(path.dirname(abs(rel)), target);
+        expect(fs.existsSync(resolved), "broken local markdown link: " + match[1] + " [" + rel + "]");
+    }
+}
+
 var REQUIRED_FILES = [
     "AGENTS.md",
     "CLAUDE.md",
@@ -75,6 +159,7 @@ var REQUIRED_FILES = [
     "agentsDoc/human-care.md",
     "automation/README.md",
     "launcher/README.md",
+    "docs/launcher-save-editor-audio-migration-incident-2026-04-28.md",
     "docs/tech-stack-rationalization.md",
     "scripts/FlashCS6自动化编译.md",
     "tools/validate-doc-governance.js"
@@ -120,6 +205,8 @@ var BASELINE_DOCS = [
     "agentsDoc/self-optimization.md",
     "agentsDoc/agent-harness.md",
     "agentsDoc/human-care.md",
+    "launcher/README.md",
+    "docs/launcher-save-editor-audio-migration-incident-2026-04-28.md",
     "docs/tech-stack-rationalization.md",
     "scripts/FlashCS6自动化编译.md",
     "docs/asLoader-README.md",
@@ -181,11 +268,12 @@ var SIZE_BUDGET = {
     "AGENTS.md": 80,
     "CLAUDE.md": 20,
     "README.md": 120,
+    "launcher/README.md": 430,
     "agentsDoc/testing-guide.md": 114,
     "agentsDoc/agent-harness.md": 90,
     "agentsDoc/human-care.md": 90,
-    "agentsDoc/documentation-governance.md": 130,
-    "agentsDoc/self-optimization.md": 130
+    "agentsDoc/documentation-governance.md": 150,
+    "agentsDoc/self-optimization.md": 135
 };
 
 function lineCount(rel) {
@@ -202,6 +290,166 @@ for (var f in SIZE_BUDGET) {
     var lc = lineCount(f);
     expect(lc <= SIZE_BUDGET[f], "size budget exceeded: " + f + " has " + lc + " lines, budget " + SIZE_BUDGET[f]);
 }
+
+var launcherReadmeLines = read("launcher/README.md").split(/\r?\n/);
+for (var lr = 0; lr < launcherReadmeLines.length; lr++) {
+    expect(
+        launcherReadmeLines[lr].length <= 320,
+        "launcher README line exceeds 320 characters [launcher/README.md:" + (lr + 1) + "]");
+}
+
+// ---- Launcher README machine-derived governance ----
+
+validateLocalMarkdownLinks("launcher/README.md");
+validateLocalMarkdownLinks("docs/launcher-save-editor-audio-migration-incident-2026-04-28.md");
+expectNotContains("launcher/README.md", /\[[^\]]*:\d+(?:-\d+)?\]\(/, "launcher README must not use drifting source-line labels");
+expectNotContains("launcher/README.md", /plans\/cursor-overlay-decoupling\.md/, "stale cursor plan path leaked into launcher README");
+expectNotContains("launcher/README.md", /(?:cloud build|cloud run|post-promotion audit run|deployment commit)/i, "release receipt leaked into launcher README");
+expectNotContains("launcher/README.md", /\b(?:request|identity|closure)\s+`[A-F0-9]{40,64}`/i, "release identity value leaked into launcher README");
+expectNotContains("launcher/README.md", /\b\d+\s*(?:passed|pass)\s*\+\s*\d+/i, "dynamic test totals leaked into launcher README");
+expectNotContains("launcher/README.md", /\b\d{1,6}\/\d{1,6}\b/, "dynamic pass/count fraction leaked into launcher README");
+expectNotContains("launcher/README.md", /(?:bootstrap|Core|manifest|runtime).{0,80}\b\d+(?:\.\d+)?\s*(?:KB|MB|MiB)\b/i, "runtime artifact size leaked into launcher README");
+expectNotContains("launcher/README.md", /启动 Core 后立即退出/, "stale bootstrap immediate-exit narrative leaked into launcher README");
+
+var launcherBaselineSections = [
+    "源码职责地图",
+    "构建、候选与发布",
+    "测试入口与证据边界",
+    "Panel 与 minigame 注册表"
+];
+for (var lbs = 0; lbs < launcherBaselineSections.length; lbs++) {
+    expect(
+        /最后核对代码基线.*commit `[\da-f]{7,40}`/.test(sectionText("launcher/README.md", launcherBaselineSections[lbs])),
+        "launcher high-change section missing code baseline: " + launcherBaselineSections[lbs]);
+}
+
+var currentRuntimeSection = sectionText("launcher/README.md", "当前真值与阅读顺序");
+expect(currentRuntimeSection.indexOf("runtime-release-consensus.json") !== -1, "launcher current truth missing runtime consensus link");
+expect(currentRuntimeSection.indexOf("cf7-runtime-manifest.tsv") !== -1, "launcher current truth missing runtime manifest link");
+expect(currentRuntimeSection.indexOf("runtime-build-reproducibility.md") !== -1, "launcher current truth missing release canonical link");
+expect(!/[A-F0-9]{64}/i.test(currentRuntimeSection), "launcher current truth must link machine identity instead of copying 64-hex receipts");
+
+var consensus = JSON.parse(read("config/build/runtime-release-consensus.json"));
+var manifestLines = read("runtime/cf7-runtime-manifest.tsv").split(/\r?\n/);
+var manifestMeta = {};
+for (var ml = 0; ml < manifestLines.length; ml++) {
+    var manifestCols = manifestLines[ml].split("\t");
+    if (manifestCols.length === 2) manifestMeta[manifestCols[0]] = manifestCols[1];
+}
+expect(manifestLines[0] === "cf7-runtime-manifest-v2", "formal runtime manifest is not v2");
+expect(consensus.schema === "cf7-runtime-release-consensus.v2", "formal runtime consensus is not v2");
+expect(consensus.buildIdentityHash === manifestMeta.buildIdentityHash, "runtime consensus/manifest build identity mismatch");
+expect(consensus.payloadClosureHash === manifestMeta.payloadClosureHash, "runtime consensus/manifest payload closure mismatch");
+
+var bootstrapSource = read("launcher/native/bootstrap/bootstrap.cpp");
+var graceMatch = /CORE_EARLY_EXIT_GRACE_MS\s*=\s*(\d+)/.exec(bootstrapSource);
+expect(!!graceMatch, "bootstrap early-exit grace constant missing");
+if (graceMatch) {
+    var graceMs = parseInt(graceMatch[1], 10);
+    expect(graceMs % 1000 === 0, "bootstrap early-exit grace is not whole seconds");
+    expect(
+        read("launcher/README.md").indexOf((graceMs / 1000) + " 秒早退观察窗") !== -1,
+        "launcher README bootstrap observation window does not match native constant");
+}
+
+var configRows = markdownTableRows(markedBlock("launcher/README.md", "launcher-config-registry"));
+var configDocKeys = configRows.map(function (row) { return row.key; });
+var appConfigSource = read("launcher/src/Config/AppConfig.cs");
+var configSourceKeys = [];
+var configKeyRe = /string\.Equals\(key,\s*"([^"]+)"/g;
+var configMatch;
+while ((configMatch = configKeyRe.exec(appConfigSource)) !== null) configSourceKeys.push(configMatch[1]);
+expectExactSet("launcher config registry", configDocKeys, configSourceKeys);
+var envRe = /GetEnvironmentVariable\("([^"]+)"\)/g;
+while ((configMatch = envRe.exec(appConfigSource)) !== null) {
+    expect(markedBlock("launcher/README.md", "launcher-config-registry").indexOf("`" + configMatch[1] + "`") !== -1,
+        "launcher config registry missing environment override " + configMatch[1]);
+}
+var shippedConfigKeys = [];
+var shippedConfigLines = read("config.toml").split(/\r?\n/);
+for (var scl = 0; scl < shippedConfigLines.length; scl++) {
+    var shippedMatch = /^\s*([A-Za-z][A-Za-z0-9]*)\s*=/.exec(shippedConfigLines[scl]);
+    if (shippedMatch) shippedConfigKeys.push(shippedMatch[1]);
+}
+for (var sck = 0; sck < shippedConfigKeys.length; sck++) {
+    expect(configSourceKeys.indexOf(shippedConfigKeys[sck]) !== -1,
+        "config.toml contains an unrecognized AppConfig key: " + shippedConfigKeys[sck]);
+}
+
+var prefsBlock = markedBlock("launcher/README.md", "launcher-user-prefs-registry");
+var prefsDocKeys = [];
+var prefsDocRe = /`([A-Za-z][A-Za-z0-9]*)`/g;
+var prefsMatch;
+while ((prefsMatch = prefsDocRe.exec(prefsBlock)) !== null) prefsDocKeys.push(prefsMatch[1]);
+var userPrefsSource = read("launcher/src/Config/UserPrefs.cs");
+var prefsSourceKeys = [];
+var prefsReadRe = /obj\.Value<[^>]+>\("([A-Za-z][A-Za-z0-9]*)"\)/g;
+var prefsWriteRe = /obj\["([A-Za-z][A-Za-z0-9]*)"\]/g;
+while ((prefsMatch = prefsReadRe.exec(userPrefsSource)) !== null) prefsSourceKeys.push(prefsMatch[1]);
+while ((prefsMatch = prefsWriteRe.exec(userPrefsSource)) !== null) prefsSourceKeys.push(prefsMatch[1]);
+expectExactSet("launcher user prefs registry", prefsDocKeys, prefsSourceKeys);
+
+var cliRows = markdownTableRows(markedBlock("launcher/README.md", "launcher-cli-registry"));
+var cliDocFlags = cliRows.map(function (row) { return row.key.split(/\s+/)[0]; });
+var cliSource = read("launcher/src/Program.cs") + "\n" + read("launcher/src/Audio/AudioQualificationDiagnosticsV1.cs");
+var cliSourceFlags = [];
+var cliRe = /"(--[a-z0-9][a-z0-9-]*)"/g;
+var cliMatch;
+while ((cliMatch = cliRe.exec(cliSource)) !== null) cliSourceFlags.push(cliMatch[1]);
+expectExactSet("launcher Core/bootstrap CLI registry", cliDocFlags, cliSourceFlags);
+
+var commandRows = markdownTableRows(markedBlock("launcher/README.md", "launcher-bootstrap-command-registry"));
+var commandDocIds = commandRows.map(function (row) { return row.key; });
+var bootstrapHandlerSource = read("launcher/src/Guardian/BootstrapMessageHandler.cs");
+var commandSourceIds = [];
+var commandRe = /case\s+"([^"]+)"/g;
+var commandMatch;
+while ((commandMatch = commandRe.exec(bootstrapHandlerSource)) !== null) commandSourceIds.push(commandMatch[1]);
+expectExactSet("launcher Bootstrap cmd registry", commandDocIds, commandSourceIds);
+
+var testRows = markdownTableRows(markedBlock("launcher/README.md", "launcher-test-taxonomy"));
+var testDocDirs = testRows.map(function (row) { return row.key.replace(/\/$/, ""); });
+var testSourceDirs = ["<root>"];
+var testEntries = fs.readdirSync(abs("launcher/tests"));
+for (var td = 0; td < testEntries.length; td++) {
+    if (testEntries[td] === "bin" || testEntries[td] === "obj") continue;
+    if (fs.statSync(abs("launcher/tests/" + testEntries[td])).isDirectory()) testSourceDirs.push(testEntries[td]);
+}
+expectExactSet("launcher test taxonomy", testDocDirs, testSourceDirs);
+
+var panelRows = markdownTableRows(markedBlock("launcher/README.md", "launcher-panel-registry"));
+var panelDocIds = panelRows.map(function (row) { return row.key; });
+var panelDocModules = {};
+var panelDocMinigames = [];
+for (var pr = 0; pr < panelRows.length; pr++) {
+    panelDocModules[panelRows[pr].key] = panelRows[pr].cells[2].replace(/^`|`$/g, "");
+    if (panelRows[pr].cells[1] === "minigame") panelDocMinigames.push(panelRows[pr].key);
+}
+var panelRegistrySource = read("launcher/web/modules/panels-lazy-registry.js");
+var panelSourceIds = [];
+var panelRe = /Panels\.registerLazy\(\s*'([^']+)'\s*,\s*\[([\s\S]*?)\]\s*,\s*noop\s*\)/g;
+var panelMatch;
+while ((panelMatch = panelRe.exec(panelRegistrySource)) !== null) {
+    var deps = [];
+    var depRe = /'([^']+)'/g;
+    var depMatch;
+    while ((depMatch = depRe.exec(panelMatch[2])) !== null) deps.push(depMatch[1]);
+    panelSourceIds.push(panelMatch[1]);
+    expect(deps.length > 0, "lazy panel has empty dependency closure: " + panelMatch[1]);
+    if (deps.length > 0) {
+        expect(panelDocModules[panelMatch[1]] === deps[deps.length - 1],
+            "launcher panel final module mismatch for " + panelMatch[1] + ": doc=" + panelDocModules[panelMatch[1]] + " source=" + deps[deps.length - 1]);
+    }
+}
+expectExactSet("launcher panel registry", panelDocIds, panelSourceIds);
+
+var minigameDirs = [];
+var minigameEntries = fs.readdirSync(abs("launcher/web/modules/minigames"));
+for (var mg = 0; mg < minigameEntries.length; mg++) {
+    var minigameReadme = "launcher/web/modules/minigames/" + minigameEntries[mg] + "/README.md";
+    if (exists(minigameReadme)) minigameDirs.push(minigameEntries[mg]);
+}
+expectExactSet("launcher minigame registry", panelDocMinigames, minigameDirs);
 
 // ---- Tech stack matrix shape ----
 

@@ -1,7 +1,7 @@
 # 自优化工作流
 
 **文档角色**：会话归档 / 自优化 canonical doc。  
-**最后核对代码基线**：commit `539fa306181da40d092c03508afdbddef18eff8d`（2026-08-15）。
+**最后核对代码基线**：commit `04718fa57afb64836e95893f0c4ff821d25ca043`（2026-08-16）。
 
 ## 1. 授权前提与评估时机
 
@@ -57,7 +57,8 @@
 2. 是否更新了高变动文档 / 章节的 commit 基线
 3. 是否清理了已知过时叙述，而不是把新叙述和旧叙述并存
 4. 是否补上了新的维护触发器、测试入口或路径变更
-5. 是否运行了：
+5. Launcher 文档是否仍与 runtime consensus/manifest、配置、用户偏好、CLI、测试分区、Bootstrap cmd 和 Panel registry exact-set 一致
+6. 是否运行了：
 
 ```powershell
 chcp.com 65001 | Out-Null

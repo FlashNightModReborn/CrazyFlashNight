@@ -65,7 +65,7 @@ namespace CF7Launcher.Config
         ///      + scale 跟 GuardianForm.ClientSize（窗口级）。
         /// OFF = 旧 CursorOverlayForm：OverlayBase 子类 + anchor-bound + scale 跟 FlashHostPanel-based
         ///      viewport（内容级，letterbox 黑边不计入）。仅作回滚兜底。
-        /// 见 plans/cursor-overlay-decoupling.md。env: CF7_DESKTOP_CURSOR=0 一键回滚。
+        /// 架构背景见 docs/launcher-渲染架构-长期决策-2026-05-21.md。env: CF7_DESKTOP_CURSOR=0 一键回滚。
         /// </summary>
         public bool UseDesktopCursorOverlay { get; private set; }
 

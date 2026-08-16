@@ -1829,8 +1829,8 @@ class Program
             ? (INotchSink)nativeHud
             : webOverlay;
         ToastTask toastTask = new ToastTask(toastSink);
-        // 音量 sanity toast（迁移期临时兜底）：master_vol==0 / bgm_vol<0.02 时进程级首次提示。
-        // 设置入口在 Flash 侧迁移完成前，存档编辑器简易模式系统卡片为唯一恢复路径。
+        // 兼容调用点：AudioTask 不再拥有 gain policy，SetToastSink 当前为 no-op，不能据此
+        // 声称会发音量 warning。迁移期恢复入口与退出条件见 docs 中的存档编辑器事件记录。
         CF7Launcher.Tasks.AudioTask.SetToastSink(toastSink);
 
         // 快车道注入：F/R 前缀消息由 XmlSocketServer 直接分发到 FrameTask，绕过 MessageRouter

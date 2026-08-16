@@ -59,8 +59,8 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>
-        /// Retained until Program is moved to the coordinator-owned volume warning sink.
-        /// AudioTask no longer owns gain state and therefore cannot emit that warning.
+        /// Retained only for source-call-site compatibility while Program still invokes it.
+        /// AudioTask no longer owns gain state; this hook is a no-op and emits no warning.
         /// </summary>
         public static void SetToastSink(IToastSink sink)
         {
