@@ -597,6 +597,7 @@ var IntelligencePanel = (function() {
                 _currentViewMode = 'glossary';
                 _currentGlossaryTerm = termName;
                 _selectedPage = 0;  // 名词无分页
+                if (window.BootstrapAudio) window.BootstrapAudio.cue('select');  // 语义音效：名词选中
                 requestGlossarySnapshot(termName);
                 renderGlossaryList();  // 更新 active 状态
             });
@@ -724,6 +725,7 @@ var IntelligencePanel = (function() {
             var returningFromGlossary = (_currentViewMode === 'glossary');
             var previousItemName = _currentItemName;
             if (nextName === _currentItemName && !returningFromGlossary) return;
+            if (window.BootstrapAudio) window.BootstrapAudio.cue('select');  // 语义音效：目录条目选中
             _currentViewMode = 'intel';
             _currentItemName = nextName;
             var nextItem = _catalogByName[_currentItemName];
@@ -868,6 +870,7 @@ var IntelligencePanel = (function() {
                 closePageStrip();
                 renderPageList();
                 renderPage();
+                if (window.BootstrapAudio) window.BootstrapAudio.cue('navigate');  // 语义音效：跳页
             });
             _refs.pageList.appendChild(btn);
         }
@@ -966,6 +969,7 @@ var IntelligencePanel = (function() {
         closePageStrip();
         renderPageList();
         renderPage();
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('navigate');  // 语义音效：翻页
     }
 
     function jumpPage(targetIndex) {
@@ -978,6 +982,7 @@ var IntelligencePanel = (function() {
         closePageStrip();
         renderPageList();
         renderPage();
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('navigate');  // 语义音效：跳页
     }
 
     function getPages() {
@@ -1000,6 +1005,7 @@ var IntelligencePanel = (function() {
     }
 
     function showError(text) {
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('rejected');  // 语义音效：读取/加载失败（bundle/state/snapshot/glossary 全走此口）
         _refs.status.textContent = text;
         _refs.content.innerHTML = '';
         var block = emptyBlock(text);
@@ -1083,6 +1089,7 @@ var IntelligencePanel = (function() {
     }
 
     function doClose() {
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
         Panels.close();
         Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence' });
     }
@@ -1092,7 +1099,7 @@ var IntelligencePanel = (function() {
                 || !_refs || !_refs.returnCharacterBtn) return false;
         if (hasReturnBlockingRequest()) {
             if (typeof Toast !== 'undefined') {
-                Toast.add('情报档案正在读取，请稍候。');
+                Toast.add('情报档案正在读取，请稍候。', 'error');
             }
             return false;
         }
@@ -1108,16 +1115,17 @@ var IntelligencePanel = (function() {
             _refs.returnCharacterBtn.disabled = false;
             _refs.returnCharacterBtn.textContent = '← 返回装备';
             if (typeof Toast !== 'undefined') {
-                Toast.add('启动器连接不可用，暂时无法返回装备。');
+                Toast.add('启动器连接不可用，暂时无法返回装备。', 'error');
             }
             return false;
         }
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：返回装备（发送已被接受）
         _returnNavigationTimer = setTimeout(function() {
             _returnNavigationTimer = null;
             if (!_refs || !_refs.returnCharacterBtn) return;
             _refs.returnCharacterBtn.disabled = false;
             _refs.returnCharacterBtn.textContent = '← 返回装备';
-            if (typeof Toast !== 'undefined') Toast.add('返回装备未完成，请重试。');
+            if (typeof Toast !== 'undefined') Toast.add('返回装备未完成，请重试。', 'error');
         }, 4000);
         return true;
     }

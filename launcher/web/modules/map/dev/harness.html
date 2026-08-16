@@ -121,11 +121,24 @@ window.BootstrapAudio = (function() {
         isSfxEnabled: function() { return true; },
         isAmbientEnabled: function() { return false; },
         startAmbient: function() {},
-        stopAmbient: function() {}
+        stopAmbient: function() {},
+        setPanelProfile: function() {},
+        _enterPanel: function() {},
+        _exitPanel: function() {}
     };
-    ['Hover','Click','Select','Confirm','Cancel','Error','Ready','Transition','ModalOpen','Success'].forEach(function(n) {
+    ['Hover','Click','Select','Confirm','Cancel','Error','Ready','Transition','ModalOpen','Success','Destructive','Rejected','Unknown'].forEach(function(n) {
         api['play' + n] = function() { counts[n] = (counts[n] || 0) + 1; };
     });
+    // cue 语义层镜像: 与 modules/audio.js 的别名归一 + 分派一致; profile 在 harness 恒 standard 全放行
+    var CUE_ALIASES = { confirm:'activate', cancel:'back', transition:'navigate', modalOpen:'open', error:'illegal', click:'toggle' };
+    var CUE_PLAYERS = { hover:'Hover', select:'Select', navigate:'Transition', open:'ModalOpen', back:'Cancel', activate:'Confirm', toggle:'Click', destructive:'Destructive', illegal:'Error', success:'Success', rejected:'Rejected', unknown:'Unknown', ready:'Ready' };
+    api.cue = function(name) {
+        if (!name) return false;
+        var legacy = CUE_PLAYERS[CUE_ALIASES[name] || name];
+        if (!legacy) return false;
+        api['play' + legacy]();
+        return true;
+    };
     return api;
 })();
 </script>

@@ -432,9 +432,15 @@
                 button.type = 'button';
                 button.textContent = action.label || action.id;
                 button.setAttribute('data-action', action.id || 'action');
-                if (action.audioCue) button.setAttribute('data-audio-cue', action.audioCue);
                 button.disabled = !!action.disabled;
                 button.addEventListener('click', function() {
+                    // 动作音效走 BootstrapAudio.cue() 语义层 (契约 v1 §8): 旧名别名归一与
+                    // profile 抑制都在 cue() 内完成; 不再挂声明式 data-audio-cue。
+                    if (action.audioCue && !button.disabled
+                            && typeof BootstrapAudio !== 'undefined' && BootstrapAudio
+                            && typeof BootstrapAudio.cue === 'function') {
+                        BootstrapAudio.cue(action.audioCue);
+                    }
                     if (action.close !== false) self.closeModal('action:' + (action.id || 'action'));
                     if (typeof action.onSelect === 'function') action.onSelect();
                 });

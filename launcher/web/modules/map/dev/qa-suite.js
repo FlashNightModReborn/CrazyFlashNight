@@ -879,14 +879,14 @@ var MapPanelHarnessQA = (function() {
                         api.assert(tab && tab.getAttribute('data-audio-cue') === 'select', 'page tab missing select cue');
 
                         var closeBtn = document.querySelector('.map-panel-close-btn');
-                        api.assert(closeBtn && closeBtn.getAttribute('data-audio-cue') === 'cancel', 'close btn missing cancel cue');
+                        api.assert(closeBtn && closeBtn.getAttribute('data-audio-cue') === 'back', 'close btn missing back cue');
 
                         var filter = document.querySelector('.map-filter-hotspot');
-                        api.assert(filter && (filter.getAttribute('data-audio-cue') === 'select' || filter.getAttribute('data-audio-cue') === 'error'), 'filter btn missing cue');
+                        api.assert(filter && (filter.getAttribute('data-audio-cue') === 'select' || filter.getAttribute('data-audio-cue') === 'illegal'), 'filter btn missing cue');
 
                         return bootMap(api, host, { defaultPageId: 'base', disabledIds: ['base_lobby'] }).then(function() {
                             var enabledHs = document.querySelector('.map-hotspot[data-hotspot-id="base_entrance"]');
-                            api.assert(enabledHs && enabledHs.getAttribute('data-audio-cue') === 'transition', 'enabled hotspot should route transition');
+                            api.assert(enabledHs && enabledHs.getAttribute('data-audio-cue') === 'navigate', 'enabled hotspot should route navigate');
 
                             // 剧透防护: 禁用 hotspot 整体不渲染, 不可点 (#1)
                             var disabledHs = document.querySelector('.map-hotspot[data-hotspot-id="base_lobby"]');
@@ -1052,7 +1052,7 @@ var MapPanelHarnessQA = (function() {
                             var firstItem = list.querySelector('.map-rail-scene-item[data-hotspot-id="warlord_base"]');
                             api.assert(!!firstItem, 'warlord_base sub-item must exist');
                             api.assert(firstItem.textContent.indexOf('军阀基地') >= 0, 'warlord_base label should be "军阀基地"');
-                            api.assertEqual(firstItem.getAttribute('data-audio-cue'), 'transition', 'enabled sub-item cue = transition');
+                            api.assertEqual(firstItem.getAttribute('data-audio-cue'), 'navigate', 'enabled sub-item cue = navigate');
 
                             // 点击 sub-item = 触发 navigate (复用 requestNavigate 路径) 且 busy 时物理 disabled
                             host.setState({ failNavigate: true });
@@ -1110,7 +1110,7 @@ var MapPanelHarnessQA = (function() {
                             var disabledItem = document.querySelector('.map-rail-scene-item[data-hotspot-id="armory"]');
                             api.assert(!!disabledItem, 'armory sub-item must exist');
                             api.assert(disabledItem.classList.contains('is-disabled'), 'armory sub-item should render disabled');
-                            api.assertEqual(disabledItem.getAttribute('data-audio-cue'), 'error', 'disabled sub-item cue = error');
+                            api.assertEqual(disabledItem.getAttribute('data-audio-cue'), 'illegal', 'disabled sub-item cue = illegal');
 
                             var toastBefore = (window.Toast && window.Toast.messages || []).length;
                             var beforeNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;

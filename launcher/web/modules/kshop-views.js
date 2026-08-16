@@ -84,7 +84,7 @@
         var dropTarget = document.createElement('button');
         dropTarget.type = 'button';
         dropTarget.className = 'kshop-cart-drop-target';
-        dropTarget.setAttribute('data-audio-cue', 'select');
+        // 不挂声明式 cue: 单击加购可被本地拒绝, 由 handler 按结果播 activate/illegal (契约 §5.2)
         dropTarget.innerHTML = '<span class="kshop-drop-glyph">＋</span>'
             + '<span class="kshop-drop-copy"><b>拖拽加购</b><small>可选操作</small></span>';
         dropTarget.setAttribute('aria-label', '可将商品拖入购物车；单击商品也可直接加购');
@@ -94,7 +94,7 @@
         var footer = document.createElement('div');
         footer.className = 'kshop-cart-footer workbench-commit-bar';
         footer.innerHTML = '<span class="workbench-commit-summary">预计结算 <b id="kshop-cart-total">0</b> K</span>'
-            + '<button class="kshop-checkout-btn" id="kshop-checkout" data-audio-cue="confirm">核对并结账</button>';
+            + '<button class="kshop-checkout-btn" id="kshop-checkout" data-audio-cue="activate">核对并结账</button>';
         var cartTotal = footer.querySelector('#kshop-cart-total');
         var checkoutButton = footer.querySelector('#kshop-checkout');
         checkoutButton.addEventListener('click', options.onCheckout);
@@ -162,9 +162,9 @@
         this.root.className = 'kshop-settlement-page';
         this.root.innerHTML = '<header class="kshop-settlement-header">'
             + '<div class="workbench-secondary-actions">'
-            + '<button type="button" data-kshop-settlement-back data-audio-cue="cancel">← 返回商城</button>'
+            + '<button type="button" data-kshop-settlement-back data-audio-cue="back">← 返回商城</button>'
             + '<button type="button" data-kshop-settlement-help data-audio-cue="select" aria-label="查看商城帮助">?</button>'
-            + '<button type="button" data-kshop-settlement-close data-audio-cue="cancel" aria-label="关闭 K 点商城">×</button>'
+            + '<button type="button" data-kshop-settlement-close data-audio-cue="back" aria-label="关闭 K 点商城">×</button>'
             + '</div>'
             + '<div><h2>结算核对</h2><p>价格、余额与交付容量由游戏实时核算；确认后整单扣款并直接交付。</p></div>'
             + '</header><div class="kshop-settlement-body">'
@@ -172,7 +172,7 @@
             + '<aside class="kshop-settlement-ledger"><h3>结算摘要</h3><div data-kshop-settlement-ledger></div>'
             + '<p class="kshop-settlement-authority">容量不足时整单不扣 K 点。历史存档的待领取商品仍可在商城主页面继续领取。</p></aside>'
             + '</div><footer class="kshop-settlement-summary"><span data-kshop-settlement-status></span>'
-            + '<button type="button" data-kshop-settlement-commit data-audio-cue="confirm">确认结账</button></footer>';
+            + '<button type="button" data-kshop-settlement-commit data-audio-cue="activate">确认结账</button></footer>';
         this._list = this.root.querySelector('.kshop-settlement-list');
         this._count = this.root.querySelector('[data-kshop-settlement-count]');
         this._ledger = this.root.querySelector('[data-kshop-settlement-ledger]');

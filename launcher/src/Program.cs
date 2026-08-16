@@ -1,4 +1,4 @@
-﻿// CF7:ME Guardian Process — 入口
+// CF7:ME Guardian Process — 入口
 // C# 5 语法
 
 using System;
@@ -1520,6 +1520,13 @@ class Program
 
             // 音乐目录注入
             webOverlay.SetMusicCatalog(musicCatalog);
+
+            // P0 音频偏好同步 (Host → overlay): 注入权威 UserPrefs;
+            // 初始值由 WebOverlayForm 在 _webReady 置真后自行 PushAudioPrefs,
+            // 这里订阅 config_set 成功落盘后的变更广播。
+            webOverlay.SetUserPrefs(userPrefs);
+            CF7Launcher.Guardian.Handlers.ConfigCommandHandler.AudioPrefsSaved +=
+                delegate { webOverlay.PushAudioPrefs(); };
 
             // U 前缀快车道：UI 数据透传到 WebView2，并把同一解析包交给 agent 实收门。
             Action<string> fallbackUiDataTee = delegate(string raw)

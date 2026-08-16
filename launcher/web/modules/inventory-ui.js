@@ -258,7 +258,7 @@
             + (isEquipment ? renderEquipmentSlotCompactRail(item) : '') + '</span>'
             + '<span class="item-card-body inventory-slot-copy"><b>' + escapeHtml(item.displayName || '未知物品') + '</b>'
             + (isEquipment ? renderEquipmentSlotRail(item) : '') + '</span>'
-            + (options.allowDiscard ? '<button class="inventory-discard-btn" type="button" aria-label="丢弃整槽" data-audio-cue="cancel">×</button>' : '');
+            + (options.allowDiscard ? '<button class="inventory-discard-btn" type="button" aria-label="丢弃整槽" data-audio-cue="destructive">×</button>' : '');
         if (balanceBadge) {
             var iconFrame = node.querySelector('.inventory-slot-icon-frame');
             if (iconFrame) iconFrame.appendChild(balanceBadge);

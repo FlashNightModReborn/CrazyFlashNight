@@ -9,8 +9,8 @@ var MapHotspotHitcapture = (function() {
     //   .map-hotspot button 同时存在 (z=3) 但 pointer-events:none, 仅服务键盘 Tab / aria。
     //
     //   命中流程:
-    //     pointermove(rAF 节流) → query 命中变化时切换 cursor + 调 onHover + 显式 playHover()
-    //     pointerdown 命中+enabled+非busy → 临时设 data-audio-cue=transition + 记 pendingNavigateId
+    //     pointermove(rAF 节流) → query 命中变化时切换 cursor + 调 onHover + 显式 cue('hover')
+    //     pointerdown 命中+enabled+非busy → 临时设 data-audio-cue=navigate + 记 pendingNavigateId
     //     pointerup → 重新 query release 坐标, 与 pointerdown 不匹配则 removeAttribute + 清 pendingNavigateId
     //     click → 若 pendingNavigateId 仍在则 onClick(id); 总是清理 attr / pending
     //     pointercancel / contextmenu / pointerleave → 全清理
@@ -26,12 +26,12 @@ var MapHotspotHitcapture = (function() {
     //     否则触摸 tap 尾序 pointerout→pointerleave 会吞掉首点)。窗口内 hover 光标显 progress。
     //
     //   音效路径 (v4 决策):
-    //     - hover cue: 由本模块在 hit null→非null 时显式 BootstrapAudio.playHover() 调用,
+    //     - hover cue: 由本模块在 hit null→非null 时显式 BootstrapAudio.cue('hover') 调用,
     //       不依赖 overlay-audio-bindings.js 的 mouseover 代理 (那个代理要求 [data-audio-cue]
     //       属性常驻, 而本模块只在 pointerdown 命中期临时设属性)
     //     - click cue: 走 overlay-audio-bindings.js 的 click capture 代理 (透明转发 [data-audio-cue]),
     //       因 capture 比本模块 click bubble 早, 所以 pointerup 已经决定 attr 在不在
-    //     - 重放 cue: 重放无真实 click 事件, click 代理捕获不到 → flushDeferred 显式 playTransition()
+    //     - 重放 cue: 重放无真实 click 事件, click 代理捕获不到 → flushDeferred 显式 cue('navigate')
     //       补一次 (与即时点击各播一次, 不重不漏)
     //
     //   坐标契约:
@@ -112,14 +112,14 @@ var MapHotspotHitcapture = (function() {
 
     function playHoverCue() {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
-        if (A && typeof A.playHover === 'function') A.playHover();
+        if (A && typeof A.cue === 'function') A.cue('hover');
     }
 
-    // 重放导航的 transition 音效: 重放无真实 click 事件, overlay-audio-bindings 的 click 代理
-    // 捕获不到 → 这里显式补一次 (与即时点击经 data-audio-cue='transition' 播放的语义一致, 各一次)。
-    function playTransitionCue() {
+    // 重放导航的 navigate 音效: 重放无真实 click 事件, overlay-audio-bindings 的 click 代理
+    // 捕获不到 → 这里显式补一次 (与即时点击经 data-audio-cue='navigate' 播放的语义一致, 各一次)。
+    function playNavigateCue() {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
-        if (A && typeof A.playTransition === 'function') A.playTransition();
+        if (A && typeof A.cue === 'function') A.cue('navigate');
     }
 
     function setHover(hit) {
@@ -148,7 +148,7 @@ var MapHotspotHitcapture = (function() {
     // 构建就绪后重放窗口内的暂存点击。仅当"按下+释放"都齐 (一次完整点击) 才重放 —— 若 hitmap
     // 在 pointerup 之前就绪, 此处 _deferredUp 尚空 → 直接返回 (不在按住期间误触), 待 pointerup 触发。
     // 用就绪图按 page 坐标重判 (布局无关): 命中、释放判定与按下一致 (防拖拽)、非 busy → 走与即时
-    // 点击相同的 onClick 导航路径, 并显式补一次 transition 音效。
+    // 点击相同的 onClick 导航路径, 并显式补一次 navigate 音效。
     function flushDeferred() {
         if (!_deferredDown || !_deferredUp) return;
         var down = _deferredDown;
@@ -159,7 +159,7 @@ var MapHotspotHitcapture = (function() {
         if (resolveHotspotAtPage(up.px, up.py) !== downHit) return;  // 拖拽到别处释放 → 不导航
         var busy = _callbacks && _callbacks.getBusyLookup ? _callbacks.getBusyLookup() : null;
         if (busy && busy[downHit]) return;
-        playTransitionCue();
+        playNavigateCue();
         // 重放无事件对象; panel onClick(id) 只取 id, 故不传第二参 (保持调用整洁)。
         if (_callbacks && _callbacks.onClick) _callbacks.onClick(downHit);
     }
@@ -183,7 +183,7 @@ var MapHotspotHitcapture = (function() {
         var hit = queryHotspot(e.clientX, e.clientY);
         var busy = _callbacks && _callbacks.getBusyLookup ? _callbacks.getBusyLookup() : null;
         if (hit && (!busy || !busy[hit])) {
-            _el.setAttribute('data-audio-cue', 'transition');
+            _el.setAttribute('data-audio-cue', 'navigate');
             _pendingNavigateId = hit;
             clearDeferred();
         } else if (!hit && !currentMapReady()) {

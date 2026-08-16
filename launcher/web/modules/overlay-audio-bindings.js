@@ -5,7 +5,11 @@
 //   - 只对显式带 data-audio-cue="xxx" 的元素播 cue; 这样每个子面板 (map-panel 先行) 自己决定语义.
 //   - 首次 pointerdown/keydown 时 resume AudioContext (浏览器 autoplay policy).
 //
-// cue 名字直接对应 BootstrapAudio.playXxx —— hover/click/select/transition/confirm/cancel/error/modalOpen/ready/success.
+// cue 解析走 BootstrapAudio.cue 语义层 (2026-08-15 契约 v1): 旧名别名归一 + 当前面板 profile 抑制.
+// 统一抑制条件 (满足任一即静默, 优先于 profile):
+//   - el.disabled 或 aria-disabled="true";
+//   - 元素或祖先带 data-busy="true" (closest 判定).
+// Host 偏好同步: Bridge.on('audioPrefs') → setSfxEnabled/setAmbientEnabled (P0).
 
 (function () {
     'use strict';
@@ -15,10 +19,17 @@
     var A = window.BootstrapAudio;
     var _resumed = false;
 
-    function cueFn(name) {
-        if (!name) return null;
-        var fn = A['play' + name.charAt(0).toUpperCase() + name.slice(1)];
-        return typeof fn === 'function' ? fn : null;
+    // 语义层分派: 别名归一 + profile 抑制都在 cue() 内完成
+    function playCue(name) {
+        if (!name || typeof A.cue !== 'function') return;
+        A.cue(name);
+    }
+
+    // 统一抑制: disabled / aria-disabled / data-busy (元素或祖先)
+    function isSuppressed(el) {
+        if (el.disabled) return true;
+        if (el.getAttribute('aria-disabled') === 'true') return true;
+        return !!el.closest('[data-busy="true"]');
     }
 
     function resumeOnce() {
@@ -35,21 +46,32 @@
         var t = e.target;
         if (!t || !t.closest) return;
         var el = t.closest('[data-audio-cue]');
-        if (!el || el.disabled) return;
+        if (!el || isSuppressed(el)) return;
         // hover cue: 元素指定 data-audio-hover (覆写) 或默认 'hover'
         var hoverName = el.getAttribute('data-audio-hover');
-        var fn = cueFn(hoverName || 'hover');
-        if (fn) fn();
+        playCue(hoverName || 'hover');
     });
 
     // click cue 走 capture: 某些按钮会在自身 click handler 里立刻切 busy/disabled，
-    // 若等到 bubble 再判断 disabled，会把本该响的一次 cue 吞掉。
+    // 若等到 bubble 再判断抑制，会把本该响的一次 cue 吞掉。
     document.addEventListener('click', function (e) {
         var t = e.target;
         if (!t || !t.closest) return;
         var el = t.closest('[data-audio-cue]');
-        if (!el || el.disabled) return;
-        var fn = cueFn(el.getAttribute('data-audio-cue'));
-        if (fn) fn();
+        if (!el || isSuppressed(el)) return;
+        playCue(el.getAttribute('data-audio-cue'));
     }, true);
+
+    // Host → overlay 音频偏好下发 (初始 + config_set 变更广播)
+    if (typeof Bridge !== 'undefined' && Bridge && typeof Bridge.on === 'function') {
+        Bridge.on('audioPrefs', function (msg) {
+            if (!msg) return;
+            if (typeof msg.sfxEnabled === 'boolean' && typeof A.setSfxEnabled === 'function') {
+                A.setSfxEnabled(msg.sfxEnabled);
+            }
+            if (typeof msg.ambientEnabled === 'boolean' && typeof A.setAmbientEnabled === 'function') {
+                A.setAmbientEnabled(msg.ambientEnabled);
+            }
+        });
+    }
 })();

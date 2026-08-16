@@ -2,6 +2,10 @@
  * Toast module - replaces GDI+ ToastOverlay
  * Flash HTML subset only: <font color="..."> and <BR>
  * All other tags/attributes are stripped for safety.
+ *
+ * add(rawHtml, severity?)：severity 为 'success' / 'error' 时分别播
+ * BootstrapAudio.cue('success') / cue('rejected')；缺省静默（契约 §6）。
+ * 已有显式结果音的路径不要传 severity，避免双响。
  */
 var Toast = (function() {
     'use strict';
@@ -54,7 +58,7 @@ var Toast = (function() {
         container = document.getElementById('toast-container');
     }
 
-    function add(rawHtml) {
+    function add(rawHtml, severity) {
         if (!container) init();
         var div = document.createElement('div');
         div.className = 'toast-line';
@@ -70,6 +74,14 @@ var Toast = (function() {
         div.addEventListener('animationend', function() {
             if (div.parentNode) div.parentNode.removeChild(div);
         });
+
+        // severity 结果音挂钩：'success'/'error' → success/rejected；其他/缺省静默
+        if (severity === 'success' || severity === 'error') {
+            var A = window.BootstrapAudio;
+            if (A && typeof A.cue === 'function') {
+                A.cue(severity === 'success' ? 'success' : 'rejected');
+            }
+        }
     }
 
     return { add: add };

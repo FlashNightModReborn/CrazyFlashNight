@@ -16,6 +16,23 @@
 
     var S = ArenaCore.state; // 共享状态（原顶层 var _x）
 
+    // 语义音效命令式入口（契约 §8）：结算页出现的权威结果音，页内按钮仍走 data-audio-cue
+    function cue(name) {
+        var A = window.BootstrapAudio;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
+
+    // 结算页出现 = 定制赛委托的权威结果落地（契约 §2）：
+    // 委托失败 → rejected；已中止 / 无结果数据（战果不可知）→ unknown；
+    // 正常产生结算 → success（观赛委托无玩家胜负面，平局 / 超时 / 无胜者同属已完成结算）。
+    function cueCustomResultOutcome() {
+        var state = (S._customRun && S._customRun.state) || (S._customResult && S._customResult.state) || '';
+        var result = (S._customRun && S._customRun.lastResult) || (S._customResult && S._customResult.lastResult) || null;
+        if (state === 'failed') { cue('rejected'); return; }
+        if (!result || state === 'aborted' || state === 'abort_requested') { cue('unknown'); return; }
+        cue('success');
+    }
+
 
     function customRunActive() {
         return !!(S._customRun && (
@@ -117,6 +134,7 @@
             escapeHtml: ArenaCore.escapeHtml,
             summarizeCustomRoster: ArenaCustomEditor.summarizeCustomRoster
         });
+        cueCustomResultOutcome();
     }
 
     function onCustomResultClick(e) {

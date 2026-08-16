@@ -131,13 +131,13 @@ var LootView = (function() {
         this.closeButton.className = 'workbench-close-btn loot-close-btn';
         this.closeButton.textContent = '×';
         this.closeButton.setAttribute('aria-label','返回游戏并保留未领取的战利品');
-        this.closeButton.setAttribute('data-audio-cue','cancel');
+        this.closeButton.setAttribute('data-audio-cue','back');
         this.abandonButton = document.createElement('button');
         this.abandonButton.type = 'button';
         this.abandonButton.className = 'workbench-mode-btn loot-abandon-btn';
         this.abandonButton.textContent = '放弃剩余';
         this.abandonButton.setAttribute('aria-label','永久放弃箱内剩余战利品');
-        this.abandonButton.setAttribute('data-audio-cue','error');
+        this.abandonButton.setAttribute('data-audio-cue','destructive');
         this.abandonButton.hidden = true;
         this.reconcileButton = document.createElement('button');
         this.reconcileButton.type = 'button';
@@ -501,8 +501,8 @@ var LootView = (function() {
             detail:'普通关闭只返回游戏并保留箱子；此操作无法撤销。',
             closeOnBackdrop:true,
             actions:[
-                {id:'cancel',label:'继续领取',primary:true,audioCue:'cancel'},
-                {id:'abandon',label:'永久放弃',danger:true,audioCue:'error',onSelect:onAbandon}
+                {id:'cancel',label:'继续领取',primary:true,audioCue:'back'},
+                {id:'abandon',label:'永久放弃',danger:true,audioCue:'destructive',onSelect:onAbandon}
             ]
         });
         return true;
@@ -516,8 +516,8 @@ var LootView = (function() {
             message:'将丢弃整组，共 '+Number(projection.quantity||1)+' 件。',
             detail:'丢弃后无法找回。',
             actions:[
-                {id:'cancel',label:'取消',audioCue:'cancel'},
-                {id:'discard',label:'确认丢弃',danger:true,audioCue:'error',onSelect:onDiscard}
+                {id:'cancel',label:'取消',audioCue:'back'},
+                {id:'discard',label:'确认丢弃',danger:true,audioCue:'destructive',onSelect:onDiscard}
             ]
         });
         return true;

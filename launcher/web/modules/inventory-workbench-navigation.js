@@ -437,6 +437,9 @@
                     }
                 },
                 onPending:function() {
+                    // 切换进行中再次请求属于本地拦截, 命令式播 illegal; 无音频层时静默。
+                    if (typeof BootstrapAudio !== 'undefined' && BootstrapAudio
+                            && typeof BootstrapAudio.cue === 'function') BootstrapAudio.cue('illegal');
                     if (options.toast) options.toast('正在切换视图，请稍候。');
                 },
                 onTimeout:function() {

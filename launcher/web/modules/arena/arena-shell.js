@@ -125,7 +125,7 @@
         S._closeButton.className = 'workbench-close-btn';
         S._closeButton.textContent = '×';
         S._closeButton.setAttribute('aria-label', '关闭竞技场面板');
-        S._closeButton.setAttribute('data-audio-cue', 'cancel');
+        S._closeButton.setAttribute('data-audio-cue', 'back');
         S._closeButton.addEventListener('click', onArenaRequestClose);
         S._shell.addHeaderAction(S._closeButton);
 
@@ -207,7 +207,7 @@
                 + '「↻ 全部重抽」重抽当前模式全部卡片并清空选择。'
                 + '方向键在目录中上下移动选择。堕落/爬升按势力出卡，对手为本地采样的真实兵种阵容。',
             actions: [
-                { id: 'close', label: '知道了', primary: true, audioCue: 'confirm' }
+                { id: 'close', label: '知道了', primary: true, audioCue: 'back' }
             ]
         };
     }
@@ -248,7 +248,7 @@
             if (!modeAvailable(m)) continue;
             var active = (m.id === S._activeMode) ? ' arena-mode-tab-active' : '';
             html += '<button class="arena-mode-tab' + active + '" type="button"' +
-                    ' data-mode="' + ArenaCore.escapeAttr(m.id) + '" data-audio-cue="confirm">' +
+                    ' data-mode="' + ArenaCore.escapeAttr(m.id) + '" data-audio-cue="select">' +
                     ArenaCore.escapeHtml(m.label) + '</button>';
         }
         return html;

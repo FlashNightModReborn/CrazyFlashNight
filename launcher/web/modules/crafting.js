@@ -99,6 +99,7 @@ var CraftingPanel = (function() {
             _returnMaterialsButton.textContent = '← 返回材料';
             _returnMaterialsButton.setAttribute(
                 'aria-label', '返回材料档案并重新选中来源材料');
+            _returnMaterialsButton.setAttribute('data-audio-cue', 'back');
             _returnMaterialsButton.addEventListener('click', returnToMaterials);
             _shell.addHeaderAction(_returnMaterialsButton);
         }
@@ -123,6 +124,7 @@ var CraftingPanel = (function() {
             _returnCharacterBuildButton.textContent = '← 返回装备';
             _returnCharacterBuildButton.setAttribute(
                 'aria-label', '返回角色构筑装备并重新读取当前装备');
+            _returnCharacterBuildButton.setAttribute('data-audio-cue', 'back');
             _returnCharacterBuildButton.addEventListener(
                 'click', requestCharacterBuild);
             _shell.addHeaderAction(_returnCharacterBuildButton);
@@ -135,18 +137,19 @@ var CraftingPanel = (function() {
             title:'材料档案帮助',
             message:'浏览与筛选\n• 完整档案可沿“类型”或“用途”树逐层浏览；一种材料可能出现在多条路径，但结果只显示一张卡。\n• 搜索框、“已持有”和“有用途”会与当前树路径组合筛选；排序可切换档案顺序、持有数、名称或用途数，新开档案恢复档案顺序。\n• “持有种类”统计整个可信目录，不随搜索、筛选或排序变化；旧版兼容视图会持续提示并停用分类树与排序。\n• 紧凑模式以图标为主，完整模式同时显示类型、持有量、来源数和用途数。',
             detail:'查看来源与用途\n• 右侧把 authored“档案摘要”和随存档变化的“已发现来源”分开显示；尚未发现不等于没有来源。\n• 选择左侧材料后，结构化来源按档案顺序列出掉落敌人、关卡、任务或商店；同一敌人或关卡的每条掉落配置都会单独显示。\n• 敌人显示名义概率，关卡显示默认分支基准概率，两者都不是本次实际概率。\n• “会用在哪里”列出引用该材料的合成项目及每份需求。方向键在网格移动；Esc 会先关闭排序菜单、清空已聚焦的搜索，再在分类树内返回一级。',
-            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'back'}]
         } : {
             kind:'crafting-help',
             ariaLabel:'查看合成工作台帮助',
             title:'合成工作台帮助',
             message:'选择配方后，右侧会显示权威材料、费用、容量与产物预览。批量配方可用 − / +、+5、“最大”、数字输入或滑杆选择 1–99 份；核算期间仍可继续调整，提交会等最新份数核算完成。',
             detail:'数字输入按 Enter 确认、按 Esc 撤回未确认文字。滑杆可用方向键逐份调整，Shift + 方向键每次 5 份，Page Up / Page Down 跨数量级，Home / End 到两端。“只看可合成”只筛选当前目录；“背包 / 战备箱”返回后会重新核算原配方。',
-            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'back'}]
         }});
         var close = document.createElement('button');
         close.type = 'button'; close.className = 'workbench-close-btn'; close.textContent = '×';
         close.setAttribute('aria-label', _mode === 'materials' ? '关闭材料档案' : '关闭合成工作台');
+        close.setAttribute('data-audio-cue', 'back');
         close.addEventListener('click', function() { requestClose('header'); });
         _shell.addHeaderAction(close);
 
@@ -300,12 +303,14 @@ var CraftingPanel = (function() {
     function onFilterChange(path) {
         if (_busy || _previewBusy || _organizerBusy) return;
         _filterPath = path.slice();
+        cue('select');
         applyCatalogFilter();
     }
 
     function toggleCraftableOnly() {
         if (_busy || _previewBusy || _organizerBusy) return;
         _craftableOnly = !_craftableOnly;
+        cue('toggle');
         applyCatalogFilter();
     }
 
@@ -325,6 +330,7 @@ var CraftingPanel = (function() {
         if (_busy || recipeIndex < 0) return;
         _selectedIndex = recipeIndex; _craftCount = 1; _preview = null; clearPreviewCheckpoint();
         if (_catalogRenderer) _catalogRenderer.setSelectedKey(String(recipeIndex));
+        cue('select');
         renderDetail({preserveScroll:false}); requestPreview();
     }
 
@@ -612,23 +618,27 @@ var CraftingPanel = (function() {
         var callId = request('commit', {category:_category, expectedCraftToken:_preview.craftToken}, function(response) {
             var dispatched = !issuing;
             _busy = false;
+            // 权威结果音在响应回调播放，附带的 toast 保持静默（契约 §5.3/§6）
             if (response.success) {
                 if (!sameJson(response.acceptedPlan, expectedAcceptedPlan)) {
                     enterNeedsReconcile();
                     toast('提交回包与权威预览不一致，正在向 Flash 对账。');
+                    cue('unknown');
                     requestPreview(); return;
                 }
                 toast('已合成 ' + response.crafted.displayName);
+                cue('success');
                 _preview = null; clearPreviewCheckpoint(); refreshSnapshot(preferred, preferredCount); return;
             }
             if (isWriteAmbiguous(response, dispatched)) {
                 enterNeedsReconcile(); toast('提交结果不明确，正在向 Flash 对账。');
+                cue('unknown');
                 requestPreview();
             } else if (requiresAuthorityRefresh(response)) {
-                toast(errorMessage(response.error)); _preview = null; clearPreviewCheckpoint();
+                toast(errorMessage(response.error)); cue('rejected'); _preview = null; clearPreviewCheckpoint();
                 _needsRefresh = true; refreshSnapshot(preferred, preferredCount); return;
             } else {
-                toast(errorMessage(response.error));
+                toast(errorMessage(response.error)); cue('rejected');
             }
             renderDetail(); refreshControls();
         });
@@ -1640,6 +1650,11 @@ var CraftingPanel = (function() {
     function formatNumber(value) { var number = Number(value || 0); return isNaN(number) ? '0' : number.toLocaleString(); }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
+    // 语义音效命令式入口（契约 §8）：仅本地校验 / 权威结果路径使用，静态元素走 data-audio-cue
+    function cue(name) {
+        var A = window.BootstrapAudio;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
     function errorMessage(error) {
         var messages = {category_not_found:'未找到该合成分类。', recipe_not_found:'配方已变化。', item_not_found:'未找到该材料或配方物品。',
             level_locked:'角色等级与逆向等级不足。', material_missing:'所需材料不足。', insufficient_money:'金币不足。',

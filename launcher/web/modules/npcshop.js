@@ -87,6 +87,7 @@ var NpcShop = (function() {
         _materialNavigation.createReturnAction(_shell);
         _checkoutButton = document.createElement('button');
         _checkoutButton.type = 'button'; _checkoutButton.className = 'workbench-mode-btn npcshop-checkout-btn';
+        _checkoutButton.setAttribute('data-audio-cue', 'activate');
         _checkoutButton.addEventListener('click', openSettlement);
         _shell.addHeaderAction(_checkoutButton);
         _retryButton = document.createElement('button');
@@ -94,6 +95,7 @@ var NpcShop = (function() {
         _retryButton.addEventListener('click', refreshSnapshot); _shell.addHeaderAction(_retryButton);
         var close = document.createElement('button');
         close.type = 'button'; close.className = 'workbench-close-btn'; close.textContent = '×'; close.setAttribute('aria-label', '关闭 NPC 商店');
+        close.setAttribute('data-audio-cue', 'back');
         close.addEventListener('click', function() { requestClose('button'); });
         _shell.addHeaderAction(close);
         _catalogView = createCatalogView();
@@ -280,12 +282,14 @@ var NpcShop = (function() {
         if (_materialNavigation.isReturning() || _busy || _owner.needsReconcile
                 || !item || item.locked) return;
         var maximum = Number(item.maxQuantity);
-        if (isFinite(maximum) && maximum <= 0) { toast('该情报已达持有上限。'); return; }
+        // 本地可拒绝：不挂声明式 cue，按结果播 illegal/activate（契约 §5.2）
+        if (isFinite(maximum) && maximum <= 0) { toast('该情报已达持有上限。'); cue('illegal'); return; }
         var key = String(item.catalogIndex);
         if (_purchaseIntents[key]) delete _purchaseIntents[key];
         else _purchaseIntents[key] = {catalogIndex:Number(item.catalogIndex), quantity:1,
             maxQuantity:isFinite(maximum) && maximum >= 1 ? Math.floor(maximum) : 1, item:item};
         syncCatalogIntentCard(item); refreshControls();
+        cue('activate');
     }
 
     function saleIdentity(viewId, slot) {
@@ -313,6 +317,7 @@ var NpcShop = (function() {
             if (_ownedPanes[viewId]) _ownedPanes[viewId].setSelected(slot, true);
         }
         syncOwnedIntentCard(viewId, slot); refreshControls();
+        cue('activate');
     }
 
     function renderCategoryToolbar() {
@@ -361,6 +366,7 @@ var NpcShop = (function() {
             }
             var legacyPath = mode === 'auto' ? labels : path;
             buttons[i].setAttribute('data-category', mode + ':' + (legacyPath.length ? legacyPath.join(':') : 'all'));
+            buttons[i].setAttribute('data-audio-cue', 'select');
         }
     }
 
@@ -728,6 +734,7 @@ var NpcShop = (function() {
         if (_materialNavigation.isReturning() || _busy || _previewBusy || _owner.needsReconcile) return;
         var map = kind === 'purchase' ? _purchaseIntents : _saleIntents; delete map[identity];
         syncAllIntentCards();
+        cue('back');
         if (!selectionCount()) closeSettlement(); else requestTradePreview();
     }
 
@@ -736,10 +743,12 @@ var NpcShop = (function() {
                 || inventoryWriteUnavailable() || !_settlement
                 || !_settlement.canCommit || _previewBusy) return;
         write('tradeCommit', {shopId:_shopId, expectedTradeToken:String(_settlement.tradeToken)}, function(response) {
-            if (!response.success) { handleWriteError(response); return; }
+            // 权威结果音在响应回调播放，附带的 toast 保持静默（契约 §5.3/§6）
+            if (!response.success) { handleWriteError(response); cue('rejected'); return; }
             var trade = response.trade || {}; _purchaseIntents = {}; _saleIntents = {}; closeSettlement();
             applyState(response); refreshInventory();
             toast('交易完成：购买 $' + Number(trade.buyTotal || 0).toLocaleString() + '，出售 $' + Number(trade.sellTotal || 0).toLocaleString());
+            cue('success');
         });
     }
 
@@ -778,7 +787,10 @@ var NpcShop = (function() {
 
     function switchRightGroup(groupId) { switchRightView(groupId === 'collection' ? _activeCollection : 'bag'); }
     function switchRightView(viewId) {
-        if (!_rightViews[viewId]) viewId = 'bag'; _activeRight = viewId;
+        if (!_rightViews[viewId]) viewId = 'bag';
+        // 视图/页签切换：仅真实切换时播音（初始化与重复点击当前页签静默）
+        if (viewId !== _activeRight) cue('select');
+        _activeRight = viewId;
         if (viewId === 'material' || viewId === 'intelligence') _activeCollection = viewId;
         _shell.moveView('R', _rightViews[viewId]);
         var labels = {bag:'背包',material:'材料',intelligence:'情报'}; var groupId = viewId === 'bag' ? 'bag' : 'collection';
@@ -981,6 +993,11 @@ var NpcShop = (function() {
     }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
+    // 语义音效命令式入口（契约 §8）：仅本地可拒绝 / 权威结果路径使用，静态元素走 data-audio-cue
+    function cue(name) {
+        var A = window.BootstrapAudio;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
     function errorMessage(error) { return NpcShopSecondaryPages.errorMessage(error); }
     return {debugState:function() {
         var navigation = _materialNavigation.debugState();

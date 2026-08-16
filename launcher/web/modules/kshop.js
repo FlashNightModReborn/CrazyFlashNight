@@ -134,7 +134,6 @@ var KShop = (function() {
             consumeDragClick:function() { return !!(_dragController && _dragController.consumeClick()); },
             bindTooltip:function(node, item) { _tooltipPresenter.bindCatalog(node, item); },
             iconHtml:iconHtml,
-            playCue:playCue,
             renderComplete:function() { refreshWriteControls(_writeState || _writeCoordinator.debugState()); },
             iconsReady:function() { _cartController.render(); renderClaimed(); }
         }
@@ -175,7 +174,6 @@ var KShop = (function() {
             markDirty:markCartDirty,
             refreshControls:function() { refreshWriteControls(_writeState || _writeCoordinator.debugState()); },
             toast:toast,
-            playCue:playCue,
             iconHtml:iconHtml,
             escapeHtml:escHtml,
             inspect:function(idx, anchor) { _tooltipPresenter.showItemDetail(idx, anchor); },
@@ -218,8 +216,7 @@ var KShop = (function() {
             setDragSuppressed:function(value) { _dragTooltipSuppressed = !!value; },
             iconHtml:iconHtml,
             escapeHtml:escHtml,
-            toast:toast,
-            playCue:playCue
+            toast:toast
         }
     });
 
@@ -247,10 +244,9 @@ var KShop = (function() {
             : '<div class="' + (cls||'kshop-icon') + ' kshop-icon-placeholder"></div>';
     }
     function toast(msg) { if (typeof Toast !== 'undefined') Toast.add(msg); }
-    function playCue(name) {
-        if (typeof BootstrapAudio === 'undefined' || !BootstrapAudio || !name) return;
-        var method = 'play' + name.charAt(0).toUpperCase() + name.slice(1);
-        if (typeof BootstrapAudio[method] === 'function') BootstrapAudio[method]();
+    // 契约 §2 unknown: 超时/对账必需/断线 = 权威结果不可知, 与明确失败 (rejected) 区分
+    function isUncertainResult(error) {
+        return error === 'timeout' || error === 'client_timeout' || error === 'reconcile_required' || error === 'disconnected';
     }
     function buildCartPayload() {
         return _cartController.buildPayload();
@@ -492,7 +488,7 @@ var KShop = (function() {
         _closeButton.type = 'button';
         _closeButton.textContent = '×';
         _closeButton.setAttribute('data-header-action', 'close');
-        _closeButton.setAttribute('data-audio-cue', 'cancel');
+        _closeButton.setAttribute('data-audio-cue', 'back');
         _closeButton.addEventListener('click', function() { requestClose(); });
         _workbenchShell.addHeaderAction(_closeButton);
 
@@ -585,14 +581,14 @@ var KShop = (function() {
             title:'物品管理帮助',
             message:'背包与战备箱\n• 先选择一侧物品，再选择另一侧目标格；也可以直接拖拽到目标位置。\n• 按住 Ctrl 单击物品可快速转移，系统会优先合并同名堆叠，再寻找空格。',
             detail:'浏览与返回\n• “完整 / 紧凑”只改变物品格密度，不改变库存内容或操作能力。\n• 切回商城不会提交购物车；关闭按钮会关闭整个商城与物品管理面板。',
-            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'activate'}]
         } : {
             kind:'kshop-help',
             ariaLabel:'查看 K 点商城帮助',
             title:'K 点商城帮助',
             message:'选购与结算\n• 单击商品或右上角“+”每次加购 1 件；拖入购物车仍可作为可选操作。\n• 购物车只负责查看与移除整行。需要精确数量时，点击“核对并结账”进入结算页统一调整。',
             detail:'数量与交付\n• 结算页支持数字输入、− / + / +5、“可用”和滑条；大数量会使用对数滑条，输入值仍是实际件数。\n• “可用”表示当前可直接结算数量，最终价格、容量与上限以每次游戏核算结果为准。\n• 新购商品会直接进入背包；“历史待领取”只处理旧存档遗留商品。\n\n浏览与库存\n• “完整 / 紧凑”控制物品格密度；分类、套装和专柜可逐层筛选。\n• 顶部“战备箱”切换到库存整理，不会提交商城订单。',
-            actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'activate'}]
         });
         if (restoreModeFocus) {
             (inventory ? _inventoryModeButton : _shopModeButton).focus();
@@ -787,13 +783,16 @@ var KShop = (function() {
                 _ownedPresenter.render();
                 if (resp.success && refreshResult.success) {
                     toast('购买成功，商品已直接交付！');
-                    playCue('success');
+                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                    if (A && typeof A.cue === 'function') A.cue('success');
                 } else if (resp.success) {
                     toast('购买已成功，但背包刷新失败；请点击“重试库存同步”。');
-                    playCue('error');
+                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                    if (A && typeof A.cue === 'function') A.cue('success');
                 } else {
                     toast(messageForError('checkout', resp.error));
-                    playCue('error');
+                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                    if (A && typeof A.cue === 'function') A.cue(isUncertainResult(resp.error) ? 'unknown' : 'rejected');
                     if (_cartController.getSettlement().isActive()) _cartController.requestPreview();
                 }
             })) return;
@@ -840,7 +839,7 @@ var KShop = (function() {
         row.innerHTML =
             '<span class="kshop-cart-thumb">' + iconHtml(iconName, 'kshop-row-icon') + '</span>' +
             '<span class="kshop-claim-copy"><b class="kshop-claim-name">' + escHtml(displayName) + '</b><small>待领取 × ' + qty + '</small></span>' +
-            '<button class="kshop-claim-btn" data-pidx="' + purchasedIndex + '" data-audio-cue="confirm">领取</button>';
+            '<button class="kshop-claim-btn" data-pidx="' + purchasedIndex + '" data-audio-cue="activate">领取</button>';
         return row;
     }
 
@@ -886,13 +885,16 @@ var KShop = (function() {
                 _ownedPresenter.render();
                 if (resp.success && refreshResult.success) {
                     toast('领取成功，背包已刷新！');
-                    playCue('success');
+                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                    if (A && typeof A.cue === 'function') A.cue('success');
                 } else if (resp.success) {
                     toast('领取已成功，但背包刷新失败；请点击“重试库存同步”。');
-                    playCue('error');
+                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                    if (A && typeof A.cue === 'function') A.cue('success');
                 } else {
                     toast(messageForError('claim', resp.error));
-                    playCue('error');
+                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                    if (A && typeof A.cue === 'function') A.cue(isUncertainResult(resp.error) ? 'unknown' : 'rejected');
                 }
             })) return;
         })) {
@@ -981,7 +983,8 @@ var KShop = (function() {
     }
 
     function showSaveFailedDialog(msg, timeoutMode) {
-        playCue('modalOpen');
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue('open');
         var actions = [
             {
                 id: 'retry', label: '重新对账', primary: true, audioCue: 'select',
@@ -989,9 +992,9 @@ var KShop = (function() {
             }
         ];
         if (!timeoutMode) {
-            actions.push({ id: 'cancel', label: '继续购物', audioCue: 'cancel', onSelect: function() { _closing = false; } });
+            actions.push({ id: 'cancel', label: '继续购物', audioCue: 'back', onSelect: function() { _closing = false; } });
         }
-        actions.push({ id: 'force', label: '强制关闭', danger: true, audioCue: 'error', onSelect: doClose });
+        actions.push({ id: 'force', label: '强制关闭', danger: true, audioCue: 'destructive', onSelect: doClose });
         _workbenchShell.openModal({
             kind: 'reconcile',
             kicker: '',

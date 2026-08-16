@@ -31,6 +31,11 @@ namespace CF7Launcher.Guardian.Handlers
 {
     internal static class ConfigCommandHandler
     {
+        /// <summary>config_set 成功落盘且 key 为 sfxEnabled/ambientEnabled 时触发 (参数 = key)。
+        /// Program.cs 订阅后转发 WebOverlayForm.PushAudioPrefs() 广播给 overlay。
+        /// 失败 / 回滚路径不触发。</summary>
+        internal static event Action<string> AudioPrefsSaved;
+
         internal static void HandleConfigSet(JObject msg, BootstrapPanel bootForm, UserPrefs userPrefs)
         {
             string key = msg.Value<string>("key");
@@ -108,6 +113,20 @@ namespace CF7Launcher.Guardian.Handlers
                 }
                 // 成功: currentValue = 新写入的值 (和 desired 一致, 前端 apply 是幂等 no-op)
                 PostConfigSetResp(bootForm, key, requestId, true, null, GetCurrentJValue(userPrefs, key));
+                // P0: 音频偏好变更广播 (仅成功落盘后; 回滚/失败路径不广播).
+                // 独立 try/catch: 订阅方异常绝不能落进下面的总 catch 触发误回滚 —— 磁盘已是新值.
+                if (key == "sfxEnabled" || key == "ambientEnabled")
+                {
+                    try
+                    {
+                        var handler = AudioPrefsSaved;
+                        if (handler != null) handler(key);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log("[BMH] audioPrefs broadcast error key=" + key + " ex=" + ex.Message);
+                    }
+                }
             }
             catch (Exception ex)
             {

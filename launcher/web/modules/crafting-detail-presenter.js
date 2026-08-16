@@ -92,6 +92,8 @@ var CraftingDetailPresenter = (function() {
         this.commitBar.statusNode.classList.add('crafting-commit-status');
         this.commitBar.primaryButton.classList.add('crafting-commit-btn');
         this.commitBar.primaryButton.setAttribute('data-title', '确认合成');
+        // 合成提交意图音：CommitBar 的 disabled 与 commitCraft 本地拦截条件一致，抑制由绑定层兜底
+        this.commitBar.primaryButton.setAttribute('data-audio-cue', 'activate');
 
         this.root.appendChild(this.chrome.root);
         this.root.appendChild(this.scroller);

@@ -9,6 +9,15 @@
 
     function noop() {}
 
+    // 锁定/禁用点击的即时反馈只能命令式播 cue('illegal'): 声明式 cue 会被
+    // aria-disabled 统一抑制, 替换 data-audio-cue 是契约 §5.2 反模式; 无音频层时静默。
+    function playBlockedCue() {
+        if (typeof BootstrapAudio !== 'undefined' && BootstrapAudio
+                && typeof BootstrapAudio.cue === 'function') {
+            BootstrapAudio.cue('illegal');
+        }
+    }
+
     function action(visible, label, disabled, reason, pressed) {
         return {
             visible:!!visible,
@@ -33,6 +42,7 @@
                 if (event && typeof event.preventDefault === 'function') {
                     event.preventDefault();
                 }
+                playBlockedCue();
                 explainBlocked(reason);
                 return;
             }
@@ -77,7 +87,7 @@
         var close = createActionButton(document, 'close', '×', handler, onBlocked);
         close.className = 'workbench-close-btn';
         close.setAttribute('aria-label', '关闭工作台');
-        close.setAttribute('data-audio-cue', 'cancel');
+        close.setAttribute('data-audio-cue', 'back');
         shell.addHeaderAction(close);
         return close;
     }
@@ -349,32 +359,6 @@
         node.removeAttribute('data-header-base-aria-label');
     }
 
-    function projectBlockedAudioCue(node, blocked) {
-        if (blocked) {
-            if (!node.hasAttribute('data-header-base-audio-cue')) {
-                var hadCue = node.hasAttribute('data-audio-cue');
-                node.setAttribute(
-                    'data-header-base-audio-cue',
-                    hadCue ? node.getAttribute('data-audio-cue') : '');
-                node.setAttribute(
-                    'data-header-base-audio-cue-present',
-                    hadCue ? 'true' : 'false');
-            }
-            node.setAttribute('data-audio-cue', 'error');
-            return;
-        }
-        if (!node.hasAttribute('data-header-base-audio-cue')) return;
-        if (node.getAttribute('data-header-base-audio-cue-present') === 'true') {
-            node.setAttribute(
-                'data-audio-cue',
-                node.getAttribute('data-header-base-audio-cue'));
-        } else {
-            node.removeAttribute('data-audio-cue');
-        }
-        node.removeAttribute('data-header-base-audio-cue');
-        node.removeAttribute('data-header-base-audio-cue-present');
-    }
-
     function applyProjection(buttons, projection) {
         buttons = buttons || {};
         projection = projection || {};
@@ -388,7 +372,6 @@
             }
             var explainable = state.disabled && !!state.reason;
             node.disabled = state.disabled && !explainable;
-            projectBlockedAudioCue(node, explainable);
             if (state.disabled) {
                 node.setAttribute('aria-disabled', 'true');
                 if (!node.hasAttribute('data-header-base-aria-label')) {
@@ -448,8 +431,10 @@
         button.type = 'button';
         button.className = 'workbench-mode-btn equipment-tuning-view-switch';
         button.setAttribute('data-workbench-key', 'tuning-switch');
+        button.setAttribute('data-audio-cue', 'select');
         this._listen(button, 'click', function(event) {
             if (self._disabled) {
+                playBlockedCue();
                 self._onBlocked(self._disabledReason || '当前状态不能切换收纳与调制。');
                 return;
             }

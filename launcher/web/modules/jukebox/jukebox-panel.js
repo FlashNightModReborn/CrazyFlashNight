@@ -139,6 +139,7 @@
                 return;
             }
         }
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：真正关面板才响（浮层消解提前 return）
         try { Panels.close(); } catch (e) {}
         Bridge.send({type: 'panel', cmd: 'close', panel: 'jukebox'});
     }
@@ -392,7 +393,9 @@
             });
         }
         // 请求最新 catalog（C# 在初始化时主动 push 一次；保险二次请求）
-        Bridge.send({type: 'jukebox', cmd: 'requestCatalog'});
+        // 发送失败 = 曲库加载失败：media profile 下仅有的失败音（桥断时本就没有音乐，不污染试听）
+        if (Bridge.send({type: 'jukebox', cmd: 'requestCatalog'}) === false
+                && window.BootstrapAudio) window.BootstrapAudio.cue('rejected');
         // 启动独立高帧率渲染循环（数据仍按 60ms 推送，但波形以显示器刷新率绘制）
         startRenderLoop();
     }

@@ -116,6 +116,7 @@ var HelpPanel = (function() {
     }
 
     function doClose() {
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
         Panels.close();
         Bridge.send({type:'panel', cmd:'close', panel:'help'});
     }

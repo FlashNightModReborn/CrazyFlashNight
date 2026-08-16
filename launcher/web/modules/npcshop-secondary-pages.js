@@ -13,6 +13,12 @@
         return options[name];
     }
 
+    // 语义音效命令式入口（契约 §8）：仅本地拦截反馈使用，静态按钮走 data-audio-cue
+    function cue(name) {
+        var A = (typeof window !== 'undefined') ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
+
     function settlementViewModel(settlement, ui, errorMessage) {
         settlement = settlement || {};
         ui = ui || {};
@@ -111,16 +117,16 @@
         this.root = this._document.createElement('section');
         this.root.className = 'workbench-secondary-page npcshop-settlement-page';
         this.root.innerHTML = '<header class="npcshop-settlement-header"><div class="workbench-secondary-actions">'
-            + '<button type="button" data-trade-back>← 返回选购</button>'
+            + '<button type="button" data-trade-back data-audio-cue="back">← 返回选购</button>'
             + '<button type="button" data-trade-help aria-label="商店操作帮助">？</button>'
-            + '<button type="button" data-trade-close aria-label="关闭 NPC 商店">×</button></div>'
+            + '<button type="button" data-trade-close data-audio-cue="back" aria-label="关闭 NPC 商店">×</button></div>'
             + '<div><h2>交易结算</h2><p data-trade-context>价格与容量由游戏实时核算；确认后整单一次生效。</p></div>'
             + '</header>'
             + '<div class="npcshop-settlement-columns"><section><h3>待购</h3><div class="npcshop-settlement-list" data-purchase-lines></div></section>'
             + '<section><h3>待售</h3><div class="npcshop-settlement-list" data-sale-lines></div></section></div>'
             + '<footer class="npcshop-settlement-summary"><div data-trade-economy></div><span data-trade-error></span>'
             + '<button type="button" data-space-organize hidden>整理空间</button>'
-            + '<button type="button" data-trade-commit>确认交易</button></footer>';
+            + '<button type="button" data-trade-commit data-audio-cue="activate">确认交易</button></footer>';
         this.secondary = new this._components.SecondaryPage({
             root:this.root, role:'dialog', ariaLabel:'NPC 商店交易结算'
         });
@@ -427,8 +433,8 @@
         this.root = options.document.createElement('section');
         this.root.className = 'workbench-secondary-page npcshop-help-page';
         this.root.innerHTML = '<header class="npcshop-help-header"><div class="workbench-secondary-actions">'
-            + '<button type="button" data-help-back>← 返回商店</button>'
-            + '<button type="button" data-help-close aria-label="关闭 NPC 商店">×</button></div>'
+            + '<button type="button" data-help-back data-audio-cue="back">← 返回商店</button>'
+            + '<button type="button" data-help-close data-audio-cue="back" aria-label="关闭 NPC 商店">×</button></div>'
             + '<div><h2>商店操作帮助</h2><p>所有选择都可以在确认交易前调整或取消。</p></div></header>'
             + '<div class="npcshop-help-grid">'
             + helpCard('01','选择商品','左侧点击商品加入待购；右侧点击背包或材料加入待售。','此时不会扣钱，也不会移除物品。','待购','待售')
@@ -479,7 +485,7 @@
             actionable:!item.locked && !atLimit,
             reason:reason,
             reasonNode:options.node.querySelector('.item-card-interaction-reason'),
-            onBlocked:function() { options.toast(reason); },
+            onBlocked:function() { options.toast(reason); cue('illegal'); },
             onActivate:options.onActivate
         });
     }
@@ -586,7 +592,7 @@
         this._interaction = ownedInteraction(this._state);
         this.root = this._document.createElement('section');
         this.root.className = 'npcshop-space-page';
-        this.root.innerHTML = '<header class="npcshop-space-header"><button type="button" data-space-back>← 返回结算</button>'
+        this.root.innerHTML = '<header class="npcshop-space-header"><button type="button" data-space-back data-audio-cue="back">← 返回结算</button>'
             + '<div><h2>整理购买空间</h2><p>点击物品即可在背包与战备箱之间快速转移；返回后交易会重新核算。</p></div>'
             + '<span data-space-status>同步中</span></header>'
             + '<div class="npcshop-space-columns"><section><h3>背包 <small data-space-meta="背包"></small></h3><div class="npcshop-space-grid" data-space-grid="背包"></div></section>'
@@ -795,7 +801,7 @@
                         return slot && slot.occupied ? interaction(viewId).reason : '';
                     },
                     reasonNode:reasonNode,
-                    onBlocked:function() { toast(interaction(viewId).reason); },
+                    onBlocked:function() { toast(interaction(viewId).reason); cue('illegal'); },
                     onActivate:canSell && slot && slot.occupied
                         ? function() { toggleSale(viewId, slot); } : null
                 });

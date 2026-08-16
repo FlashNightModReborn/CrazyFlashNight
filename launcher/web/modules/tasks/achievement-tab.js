@@ -294,6 +294,8 @@
             if (data && data.success === true) {
                 applyStateResponse(data);
                 renderAll();
+                // 权威结果音：领取成功（奖励 toast 是本模块自绘节点，不经 Toast.add，需显式 cue）
+                if (window.BootstrapAudio) window.BootstrapAudio.cue('success');
                 showRewardToast(data.rewards || []);
                 return;
             }
@@ -309,20 +311,20 @@
                 return;
             }
             if (err === 'achievement_not_found') {
-                _ctx.toast('成就数据已更新，正在刷新');
+                _ctx.toast('成就数据已更新，正在刷新', 'error');
                 requestState();   // web/catalog 版本错位征兆 → 强制刷新 state
                 return;
             }
             if (err === 'not_unlocked') {
-                _ctx.toast('该成就尚未达成');
+                _ctx.toast('该成就尚未达成', 'error');
                 if (hadOverlay) { applyStateResponse(withSuccess(data)); renderAll(); }
                 return;
             }
             if (err === 'inventory_full') {
-                _ctx.toast('背包已满，无法领取，请清理背包后重试');
+                _ctx.toast('背包已满，无法领取，请清理背包后重试', 'error');
                 return;   // 保持 unlocked 可重试（服务端未置 claimed）
             }
-            _ctx.toast(err === 'timeout' ? '领取超时，请重试' : (err === 'disconnected' ? '游戏连接已断开' : '领取失败' + (err ? '：' + err : '')));
+            _ctx.toast(err === 'timeout' ? '领取超时，请重试' : (err === 'disconnected' ? '游戏连接已断开' : '领取失败' + (err ? '：' + err : '')), 'error');
         });
     }
 

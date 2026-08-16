@@ -186,8 +186,9 @@
         var stackable = isStackable(item);
         var actionHtml = '';
         if (!nosale && !locked && !atLimit) {
+            // 不挂声明式 cue: 加购可被本地拒绝, 由 handler 按结果播 activate/illegal (契约 §5.2)
             actionHtml = '<button class="kshop-add-btn' + (stackable ? '' : ' kshop-add-single')
-                + '" data-idx="' + item.idx + '" data-audio-cue="select" aria-label="加入购物车">'
+                + '" data-idx="' + item.idx + '" aria-label="加入购物车">'
                 + (stackable ? '+' : '加入') + '</button>';
         }
         return Workbench.ItemCard.renderCatalog({

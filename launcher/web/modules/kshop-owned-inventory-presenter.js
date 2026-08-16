@@ -207,11 +207,14 @@
                 if (result && result.success) {
                     var label = result.operation === 'merge' ? '物品已合并。'
                         : result.operation === 'swap' ? '物品已交换。' : '物品已移动。';
-                    self._intent.toast(label); self._intent.playCue('success');
+                    self._intent.toast(label);
+                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                    if (A && typeof A.cue === 'function') A.cue('success');
                 } else {
                     if (typeof console !== 'undefined' && console.warn) console.warn('[KShop inventory transfer]', result && result.error || 'unknown');
                     self._intent.toast(result && result.reconciled ? '移动失败，库存已刷新。' : '移动失败，请重试。');
-                    self._intent.playCue('error');
+                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                    if (A && typeof A.cue === 'function') A.cue('rejected');
                 }
             }
         });
@@ -306,8 +309,8 @@
             detail:battlebox ? '未解锁的存档保留区不会被读取或移动。'
                 : '原有摆放顺序会改变，完成后仍停留在当前页。',
             actions:[
-                {id:'cancel', label:'取消', audioCue:'cancel'},
-                {id:'sort', label:'整理并合并', primary:true, audioCue:'confirm', onSelect:function() {
+                {id:'cancel', label:'取消', audioCue:'back'},
+                {id:'sort', label:'整理并合并', primary:true, audioCue:'activate', onSelect:function() {
                     self._clearSelection();
                     if (!self._intent.sortAndMerge(containerId, methodName, function(result) {
                         self.render();
@@ -332,8 +335,8 @@
             message:'将丢弃整组，共 ' + Number(projection.quantity || 1) + ' 件。',
             detail:'丢弃后无法找回。',
             actions:[
-                {id:'cancel', label:'取消', audioCue:'cancel'},
-                {id:'discard', label:'确认丢弃', danger:true, audioCue:'error', onSelect:function() {
+                {id:'cancel', label:'取消', audioCue:'back'},
+                {id:'discard', label:'确认丢弃', danger:true, audioCue:'destructive', onSelect:function() {
                     var current = interactionForStatus(self._state.getStatus());
                     if (!current.actionable) { self._intent.toast(current.reason); return; }
                     if (!self._intent.discard(ownedSlotRef(containerId, slot), function(result) {

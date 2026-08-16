@@ -16,6 +16,12 @@
 
     var S = ArenaCore.state; // 共享状态（原顶层 var _x）
 
+    // 语义音效命令式入口（契约 §8）：仅本地可拒绝 / 权威结果路径使用，静态元素走 data-audio-cue
+    function cue(name) {
+        var A = window.BootstrapAudio;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
+
 
     var CUSTOM_MATCH_FALLBACK_CODE =
         'CF7ARENA:v1;mode=mvm;seed=90210;blue=u44@30x2,u48@30x1;red=u164@60x1,u11@30x1';
@@ -49,23 +55,23 @@
 
     function buildCustomEditorViewHtml() {
         return '<div class="arena-custom-editor-header">' +
-                '<button class="arena-custom-btn" type="button" data-custom-editor-action="back" data-audio-cue="cancel">返回配置</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-editor-action="back" data-audio-cue="back">返回配置</button>' +
                 '<div class="arena-custom-editor-title-block">' +
                     '<div class="arena-custom-editor-kicker">定制赛阵容</div>' +
                     '<div class="arena-custom-editor-title">配置赛程与阵容</div>' +
                     '<div class="arena-custom-editor-meta">配置总览管理赛程与双方阵容，单方编辑页提供完整单位目录空间</div>' +
                 '</div>' +
                     '<div class="arena-custom-editor-actions">' +
-                        '<button class="arena-custom-btn" type="button" id="arena-custom-undo" data-custom-editor-action="undo" data-audio-cue="cancel" disabled>撤销</button>' +
-                        '<button class="arena-card-btn-enter" type="button" data-custom-editor-action="done" data-audio-cue="confirm">完成</button>' +
+                        '<button class="arena-custom-btn" type="button" id="arena-custom-undo" data-custom-editor-action="undo" data-audio-cue="back" disabled>撤销</button>' +
+                        '<button class="arena-card-btn-enter" type="button" data-custom-editor-action="done" data-audio-cue="activate">完成</button>' +
                     '</div>' +
             '</div>' +
             '<div class="arena-custom-editor-page arena-custom-config-page" data-custom-editor-page="config">' +
                 '<div class="arena-custom-config-panel">' +
                     '<div class="arena-custom-config-code">' +
                         '<div class="arena-custom-mode-switch" aria-label="定制赛模式">' +
-                            '<button class="arena-custom-btn" type="button" data-custom-mode="mvm" data-audio-cue="confirm">怪物 vs 怪物</button>' +
-                            '<button class="arena-custom-btn" type="button" data-custom-mode="pve" data-audio-cue="confirm">玩家 vs 怪物</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-mode="mvm" data-audio-cue="select">怪物 vs 怪物</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-mode="pve" data-audio-cue="select">玩家 vs 怪物</button>' +
                         '</div>' +
                         '<label class="arena-custom-code-label" for="arena-custom-code-input">赛程代码（实时解析）</label>' +
                         '<textarea id="arena-custom-code-input" class="arena-custom-code-input" rows="2" spellcheck="false"></textarea>' +
@@ -75,20 +81,21 @@
                         '<label class="arena-custom-code-label" for="arena-custom-preset-select">整局待标定组合</label>' +
                         '<select id="arena-custom-preset-select" class="arena-custom-preset-select" aria-label="待标定组合">' + buildCustomPresetOptions() + '</select>' +
                         '<div class="arena-custom-actions arena-custom-editor-code-actions">' +
-                            '<button class="arena-custom-btn" type="button" data-custom-action="preset" data-audio-cue="confirm">载入整局</button>' +
-                            '<button class="arena-custom-btn" type="button" data-custom-action="random" data-audio-cue="confirm">随机整局</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="preset" data-audio-cue="activate">载入整局</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="random" data-audio-cue="toggle">随机整局</button>' +
                         '</div>' +
                         '<div class="arena-custom-actions arena-custom-editor-code-actions" id="arena-custom-swap-actions">' +
-                            '<button class="arena-custom-btn" type="button" data-custom-action="import" data-audio-cue="confirm">校验代码</button>' +
-                            '<button class="arena-custom-btn" type="button" data-custom-action="copy" data-audio-cue="confirm">复制代码</button>' +
-                            '<button class="arena-custom-btn" type="button" data-custom-action="swap-sides" data-audio-cue="confirm">交换红蓝</button>' +
+                            // 校验代码 = 本地可拒绝动作（契约 §5.2）：不挂声明式 cue，由 handleCustomAction 按解析结果播 activate/illegal
+                            '<button class="arena-custom-btn" type="button" data-custom-action="import">校验代码</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="copy" data-audio-cue="activate">复制代码</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="swap-sides" data-audio-cue="toggle">交换红蓝</button>' +
                         '</div>' +
                     '</div>' +
                 '</div>' +
                 '<div class="arena-custom-battle-summary" id="arena-custom-battle-summary">' +
                     '<div class="arena-custom-battle-summary-head">' +
                         '<div class="arena-custom-section-title">战场参数</div>' +
-                        '<button class="arena-custom-btn" type="button" id="arena-custom-battle-edit" data-custom-editor-action="to-battle" data-audio-cue="confirm">编辑战场</button>' +
+                        '<button class="arena-custom-btn" type="button" id="arena-custom-battle-edit" data-custom-editor-action="to-battle" data-audio-cue="navigate">编辑战场</button>' +
                     '</div>' +
                     '<div class="arena-custom-battle-summary-grid">' +
                         '<span><em>开局距离</em><b id="arena-custom-battle-summary-distance">--</b></span>' +
@@ -110,8 +117,8 @@
                         '<div class="arena-custom-editor-meta" id="arena-custom-battle-editor-meta">--</div>' +
                     '</div>' +
                     '<div class="arena-custom-battle-editor-actions">' +
-                        '<button class="arena-custom-btn" type="button" data-custom-editor-action="to-config" data-audio-cue="cancel">返回总览</button>' +
-                        '<button class="arena-card-btn-enter" type="button" data-custom-editor-action="done" data-audio-cue="confirm">完成</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-editor-action="to-config" data-audio-cue="back">返回总览</button>' +
+                        '<button class="arena-card-btn-enter" type="button" data-custom-editor-action="done" data-audio-cue="activate">完成</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="arena-custom-battle-params arena-custom-battle-params-editor" id="arena-custom-battle-params">' +
@@ -158,16 +165,16 @@
                     '</div>' +
                     '<div class="arena-custom-side-editor-actions">' +
                         '<select class="arena-custom-preset-select" data-custom-saved-select="active" aria-label="已保存配置"></select>' +
-                        '<button class="arena-custom-btn" type="button" data-custom-side-action="load" data-side="active" data-audio-cue="confirm">读取</button>' +
-                        '<button class="arena-custom-btn" type="button" data-custom-side-action="save" data-side="active" data-audio-cue="confirm">保存</button>' +
-                        '<button class="arena-custom-btn" type="button" data-custom-side-action="random" data-side="active" data-audio-cue="confirm">随机组合</button>' +
-                        '<button class="arena-custom-btn" type="button" data-custom-side-action="clear" data-side="active" data-audio-cue="cancel">清空</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="load" data-side="active" data-audio-cue="activate">读取</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="save" data-side="active" data-audio-cue="activate">保存</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="random" data-side="active" data-audio-cue="toggle">随机组合</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="clear" data-side="active" data-audio-cue="destructive">清空</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="arena-custom-side-panel">' +
                     '<div class="arena-custom-roster-panel arena-custom-roster-active" id="arena-custom-active-roster-panel" data-side="blue">' +
                         '<div class="arena-custom-roster-head">' +
-                            '<button class="arena-custom-roster-tab" type="button" data-custom-editor-action="to-config" data-audio-cue="cancel">返回总览</button>' +
+                            '<button class="arena-custom-roster-tab" type="button" data-custom-editor-action="to-config" data-audio-cue="back">返回总览</button>' +
                             '<span class="arena-custom-roster-head-count" id="arena-custom-active-roster-count">--</span>' +
                         '</div>' +
                         '<div class="arena-custom-roster-list" id="arena-custom-active-roster"></div>' +
@@ -175,17 +182,17 @@
                     '<div class="arena-custom-browser">' +
                     '<div class="arena-custom-browser-toolbar">' +
                         '<div class="arena-custom-side-switch" aria-label="添加目标">' +
-                            '<button type="button" data-custom-side="blue" data-audio-cue="confirm">加到蓝方</button>' +
-                            '<button type="button" data-custom-side="red" data-audio-cue="confirm">加到红方</button>' +
+                            '<button type="button" data-custom-side="blue" data-audio-cue="select">加到蓝方</button>' +
+                            '<button type="button" data-custom-side="red" data-audio-cue="select">加到红方</button>' +
                         '</div>' +
                         '<input id="arena-custom-unit-search" class="arena-custom-unit-search" type="search" placeholder="搜索 ID / 名称 / 素材" spellcheck="false">' +
                         '<span class="arena-custom-unit-count" id="arena-custom-unit-count">--</span>' +
                         '<span class="arena-custom-portrait-coverage" id="arena-custom-portrait-coverage" aria-live="polite" data-custom-tooltip="头像覆盖核对中">头像 --/--</span>' +
                     '</div>' +
                     '<div class="arena-custom-unit-filters">' +
-                        '<button type="button" data-custom-unit-filter="all" data-audio-cue="confirm">全部</button>' +
-                        '<button type="button" data-custom-unit-filter="hostile" data-audio-cue="confirm">敌对</button>' +
-                        '<button type="button" data-custom-unit-filter="nonhostile" data-audio-cue="confirm">非敌对</button>' +
+                        '<button type="button" data-custom-unit-filter="all" data-audio-cue="select">全部</button>' +
+                        '<button type="button" data-custom-unit-filter="hostile" data-audio-cue="select">敌对</button>' +
+                        '<button type="button" data-custom-unit-filter="nonhostile" data-audio-cue="select">非敌对</button>' +
                     '</div>' +
                     '<div class="arena-custom-unit-list" id="arena-custom-unit-list"></div>' +
                     '</div>' +
@@ -199,9 +206,9 @@
                         '<div class="arena-custom-editor-meta" id="arena-custom-param-editor-meta">--</div>' +
                     '</div>' +
                     '<div class="arena-custom-param-editor-actions">' +
-                        '<button class="arena-custom-btn" type="button" data-custom-param-action="back" data-audio-cue="cancel">返回阵容</button>' +
-                        '<button class="arena-custom-btn" type="button" data-custom-param-action="apply" data-audio-cue="confirm">应用</button>' +
-                        '<button class="arena-card-btn-enter" type="button" data-custom-param-action="save-back" data-audio-cue="confirm">保存返回</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-param-action="back" data-audio-cue="back">返回阵容</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-param-action="apply" data-audio-cue="activate">应用</button>' +
+                        '<button class="arena-card-btn-enter" type="button" data-custom-param-action="save-back" data-audio-cue="activate">保存返回</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="arena-custom-param-editor-body" id="arena-custom-param-editor-body"></div>' +
@@ -654,7 +661,7 @@
         var html = '';
         for (var i = 0; i < presets.length; i++) {
             var active = Number(presets[i].value) === Number(currentValue);
-            html += '<button class="arena-custom-preset-chip' + (active ? ' arena-custom-preset-chip-active' : '') + '" type="button" data-custom-battle-preset="' + field + '" data-custom-battle-value="' + presets[i].value + '" data-audio-cue="confirm">' + ArenaCore.escapeHtml(presets[i].label) + '</button>';
+            html += '<button class="arena-custom-preset-chip' + (active ? ' arena-custom-preset-chip-active' : '') + '" type="button" data-custom-battle-preset="' + field + '" data-custom-battle-value="' + presets[i].value + '" data-audio-cue="toggle">' + ArenaCore.escapeHtml(presets[i].label) + '</button>';
         }
         el.innerHTML = html;
     }
@@ -665,7 +672,7 @@
         var html = '';
         for (var i = 0; i < CUSTOM_FORMATION_OPTIONS.length; i++) {
             var option = CUSTOM_FORMATION_OPTIONS[i];
-            html += '<button class="arena-custom-formation-option' + (option.id === current ? ' arena-custom-formation-option-active' : '') + '" type="button" data-custom-formation-side="' + side + '" data-custom-formation-value="' + option.id + '" data-audio-cue="confirm">' + ArenaCore.escapeHtml(option.label) + '</button>';
+            html += '<button class="arena-custom-formation-option' + (option.id === current ? ' arena-custom-formation-option-active' : '') + '" type="button" data-custom-formation-side="' + side + '" data-custom-formation-value="' + option.id + '" data-audio-cue="select">' + ArenaCore.escapeHtml(option.label) + '</button>';
         }
         el.innerHTML = html;
     }
@@ -1016,7 +1023,7 @@
                         '<span class="arena-custom-side-count">' + enemyCount + ' 单位</span>' +
                     '</div>' +
                     '<span class="arena-custom-side-roster">' + ArenaCore.escapeHtml(summarizeCustomRoster(parsed.enemyRoster)) + '</span>' +
-                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="confirm">调整怪物</button>' +
+                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="navigate">调整怪物</button>' +
                 '</div>';
             caseEl.textContent =
                 'seed=' + parsed.seed +
@@ -1034,7 +1041,7 @@
                         '<span class="arena-custom-side-count">' + blueCount + ' 单位</span>' +
                     '</div>' +
                     '<span class="arena-custom-side-roster">' + ArenaCore.escapeHtml(summarizeCustomRoster(parsed.blueRoster)) + '</span>' +
-                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="blue" data-audio-cue="confirm">调整蓝方</button>' +
+                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="blue" data-audio-cue="navigate">调整蓝方</button>' +
                 '</div>' +
                 '<div class="arena-custom-vs-mark">VS</div>' +
                 '<div class="arena-custom-side arena-custom-side-red">' +
@@ -1043,7 +1050,7 @@
                         '<span class="arena-custom-side-count">' + redCount + ' 单位</span>' +
                     '</div>' +
                     '<span class="arena-custom-side-roster">' + ArenaCore.escapeHtml(summarizeCustomRoster(parsed.redRoster)) + '</span>' +
-                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="confirm">调整红方</button>' +
+                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="navigate">调整红方</button>' +
                 '</div>';
             caseEl.textContent =
                 'seed=' + parsed.seed +
@@ -1179,17 +1186,17 @@
                     '<div class="arena-custom-side-title">' + sideLabel + '</div>' +
                     '<div class="arena-custom-side-count">' + total + ' 单位</div>' +
                 '</div>' +
-                '<button class="arena-custom-btn" type="button" data-custom-side-action="edit" data-side="' + side + '" data-audio-cue="confirm">编辑阵容</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="edit" data-side="' + side + '" data-audio-cue="navigate">编辑阵容</button>' +
             '</div>' +
             '<div class="arena-custom-side-config-roster">' + ArenaCore.escapeHtml(rosterText) + '</div>' +
             '<div class="arena-custom-side-config-load">' +
                 '<select class="arena-custom-preset-select" data-custom-saved-select="' + side + '" aria-label="' + sideLabel + '已保存配置">' + buildCustomSavedRosterOptions() + '</select>' +
-                '<button class="arena-custom-btn" type="button" data-custom-side-action="load" data-side="' + side + '" data-audio-cue="confirm">读取</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="load" data-side="' + side + '" data-audio-cue="activate">读取</button>' +
             '</div>' +
             '<div class="arena-custom-side-config-actions">' +
-                '<button class="arena-custom-btn" type="button" data-custom-side-action="random" data-side="' + side + '" data-audio-cue="confirm">随机组合</button>' +
-                '<button class="arena-custom-btn" type="button" data-custom-side-action="save" data-side="' + side + '" data-audio-cue="confirm">保存配置</button>' +
-                '<button class="arena-custom-btn" type="button" data-custom-side-action="clear" data-side="' + side + '" data-audio-cue="cancel">清空</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="random" data-side="' + side + '" data-audio-cue="toggle">随机组合</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="save" data-side="' + side + '" data-audio-cue="activate">保存配置</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="clear" data-side="' + side + '" data-audio-cue="destructive">清空</button>' +
             '</div>';
     }
 
@@ -1394,15 +1401,15 @@
                 '</div>' +
                 '<label>Lv.<input class="arena-custom-mini-input" type="number" min="1" max="999" value="' + entry.level + '" data-custom-roster-input="level" data-side="' + side + '" data-index="' + i + '"></label>' +
                 '<div class="arena-custom-count-stepper">' +
-                    '<button type="button" data-custom-adjust-count="-1" data-side="' + side + '" data-index="' + i + '" data-audio-cue="cancel">−</button>' +
+                    '<button type="button" data-custom-adjust-count="-1" data-side="' + side + '" data-index="' + i + '" data-audio-cue="toggle">−</button>' +
                     '<input class="arena-custom-mini-input" type="number" min="1" max="20" value="' + entry.count + '" data-custom-roster-input="count" data-side="' + side + '" data-index="' + i + '">' +
-                    '<button type="button" data-custom-adjust-count="1" data-side="' + side + '" data-index="' + i + '" data-audio-cue="confirm">+</button>' +
+                    '<button type="button" data-custom-adjust-count="1" data-side="' + side + '" data-index="' + i + '" data-audio-cue="toggle">+</button>' +
                 '</div>' +
-                '<button class="arena-custom-param-pill' + paramClass + '" type="button" data-custom-edit-params data-side="' + side + '" data-index="' + i + '" data-custom-tooltip="' + ArenaCore.escapeAttr(paramSummary || '编辑单位参数') + '" data-audio-cue="confirm">' +
+                '<button class="arena-custom-param-pill' + paramClass + '" type="button" data-custom-edit-params data-side="' + side + '" data-index="' + i + '" data-custom-tooltip="' + ArenaCore.escapeAttr(paramSummary || '编辑单位参数') + '" data-audio-cue="navigate">' +
                     '<span>' + ArenaCore.escapeHtml(paramLabel) + '</span>' +
                     '<b>参数</b>' +
                 '</button>' +
-                '<button class="arena-custom-icon-btn" type="button" data-custom-tooltip="移除" data-custom-remove data-side="' + side + '" data-index="' + i + '" data-audio-cue="cancel">×</button>' +
+                '<button class="arena-custom-icon-btn" type="button" data-custom-tooltip="移除" data-custom-remove data-side="' + side + '" data-index="' + i + '" data-audio-cue="toggle">×</button>' +
             '</div>';
         }
         return html;
@@ -1524,7 +1531,7 @@
         var cls = 'arena-custom-unit-group' +
             (expanded ? ' arena-custom-unit-group-expanded' : '') +
             (queryActive ? ' arena-custom-unit-group-search' : '');
-        return '<button class="' + cls + '" type="button" data-custom-toggle-faction="' + ArenaCore.escapeAttr(group.key) + '" data-custom-faction-count="' + group.units.length + '" data-audio-cue="confirm">' +
+        return '<button class="' + cls + '" type="button" data-custom-toggle-faction="' + ArenaCore.escapeAttr(group.key) + '" data-custom-faction-count="' + group.units.length + '" data-audio-cue="toggle">' +
             '<span class="arena-custom-unit-group-arrow">' + (expanded ? '▾' : '▸') + '</span>' +
             '<span class="arena-custom-unit-group-name">' + ArenaCore.escapeHtml(group.label) + '</span>' +
             '<span class="arena-custom-unit-group-count">' + group.units.length + '</span>' +
@@ -1542,7 +1549,7 @@
         var rowClass = 'arena-custom-unit-row' +
             (preset ? ' arena-custom-unit-row-preset' : '') +
             (unit.isHostile === false ? ' arena-custom-unit-row-nonhostile' : '');
-        return '<button class="' + rowClass + '" type="button" data-custom-add-unit="' + unit.id + '"' + presetAttr + ' data-custom-faction="' + ArenaCore.escapeAttr(faction || '') + '" data-audio-cue="confirm">' +
+        return '<button class="' + rowClass + '" type="button" data-custom-add-unit="' + unit.id + '"' + presetAttr + ' data-custom-faction="' + ArenaCore.escapeAttr(faction || '') + '" data-audio-cue="toggle">' +
             buildCustomUnitPortraitHtml(unit) +
             '<span class="arena-custom-unit-main">' +
                 '<b>' + ArenaCore.escapeHtml(unit.name || ('兵种' + unit.id)) + '</b>' +
@@ -1933,6 +1940,8 @@
         } else {
             parseCustomMatchCode();
             refreshCustomMatchCard();
+            // 校验代码（import）：本地校验结果 —— 通过 = 动作成立播 activate，无效 = 本地拦截播 illegal（契约 §5.2）
+            cue(S._customMatch.parsed ? 'activate' : 'illegal');
             ArenaCore.showToast(S._customMatch.parsed ? '赛程代码已导入' : '赛程代码无效');
         }
         return true;
@@ -2502,9 +2511,11 @@
         parseCustomMatchCode();
         refreshCustomMatchCard();
         if (!S._customMatch.parsed) {
+            cue('illegal'); // 本地拦截：赛程代码无效，确认条不打开（契约 §5.2 按结果播音）
             ArenaCore.showToast('赛程代码无效');
             return;
         }
+        cue('activate'); // 校验通过：动作成立并打开确认条
         S._customConfirmOpen = true;
         refreshCustomMatchCard();
     }
@@ -2536,10 +2547,12 @@
             S._busy = false;
             ArenaResult.applyCustomRunStatus(data);
             if (data.success === false) {
+                cue('rejected'); // 权威回包明确失败（契约 §2 结果音）
                 ArenaCore.showToast(data.message || data.error || '委托启动失败');
                 setCustomConfirmError(data.message || data.error || '委托启动失败');
                 return;
             }
+            cue('success'); // 权威回包接受：定制赛委托已启动
             ArenaCore.showToast('定制赛委托已开始');
             if (data.closePanel) {
                 ArenaShell.requestClose({ dismissReturnStack: true });
@@ -2563,10 +2576,12 @@
             S._busy = false;
             refreshCustomMatchCard();
             if (!data.success) {
+                cue('rejected'); // 权威回包明确失败（契约 §2 结果音）
                 ArenaCore.showToast(data.error || '挑战发起失败');
                 setCustomConfirmError(data.error || '挑战发起失败');
                 return;
             }
+            cue('success'); // 权威回包接受：玩家对怪物挑战已开始
             ArenaCore.showToast('玩家对怪物挑战已开始');
             if (data.closePanel) ArenaShell.requestClose({ dismissReturnStack: true });
         };
@@ -2593,6 +2608,7 @@
         }, function(data) {
             S._busy = false;
             ArenaResult.applyCustomRunStatus(data);
+            cue(data.success === false ? 'rejected' : 'success'); // 中止请求的权威回包（契约 §2 结果音）
             ArenaCore.showToast(data.success === false ? (data.message || data.error || '中止失败') : '已请求中止');
             if (ArenaResult.customRunActive()) ArenaResult.scheduleCustomStatusPoll();
         });

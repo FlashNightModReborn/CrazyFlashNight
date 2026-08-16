@@ -129,7 +129,7 @@
                         '<h2 class="arena-custom-result-title ' + outcome.className + '">' + escapeHtml(outcome.label) + '</h2>' +
                         '<div class="arena-custom-result-meta">' + escapeHtml(meta || '无战斗摘要') + '</div>' +
                     '</div>' +
-                    '<button class="arena-custom-result-close" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回基地</button>' +
+                    '<button class="arena-custom-result-close" type="button" data-custom-result-action="back" data-audio-cue="back">返回基地</button>' +
                 '</div>' +
                 '<div class="arena-custom-result-sides">' +
                     buildSideHtml('blue', '蓝方', result ? result.blue : null, parsed, escapeHtml, summarizeCustomRoster) +
@@ -149,9 +149,9 @@
                 '</div>' +
                 (error ? '<div class="arena-custom-result-error">' + escapeHtml(error) + '</div>' : '') +
                 '<div class="arena-custom-result-actions">' +
-                    '<button class="arena-custom-btn" type="button" data-custom-result-action="copy" data-audio-cue="confirm">复制代码</button>' +
-                    '<button class="arena-custom-btn" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回基地</button>' +
-                    '<button class="arena-card-btn-enter arena-custom-result-reopen" type="button" data-custom-result-action="reopen" data-audio-cue="confirm">再赛一场</button>' +
+                    '<button class="arena-custom-btn" type="button" data-custom-result-action="copy" data-audio-cue="activate">复制代码</button>' +
+                    '<button class="arena-custom-btn" type="button" data-custom-result-action="back" data-audio-cue="back">返回基地</button>' +
+                    '<button class="arena-card-btn-enter arena-custom-result-reopen" type="button" data-custom-result-action="reopen" data-audio-cue="activate">再赛一场</button>' +
                 '</div>' +
             '</div>';
     }

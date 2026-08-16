@@ -206,6 +206,8 @@
             _cfg.endOp();
             if (requestSession !== _session) return;
             if (data && data.success && data.entered) {
+                // 权威结果音：出击成功（随后关面板进图，不再播 back，一动作一声）
+                if (window.BootstrapAudio) window.BootstrapAudio.cue('success');
                 _cfg.closeForEnter();
                 return;
             }
@@ -216,7 +218,7 @@
                 board_mismatch: '该任务不属于当前调度板',
                 disconnected: '连接已断开'
             }[error] || ('出击失败（' + error + '）');
-            _cfg.toast(message);
+            _cfg.toast(message, 'error');
         });
     }
 

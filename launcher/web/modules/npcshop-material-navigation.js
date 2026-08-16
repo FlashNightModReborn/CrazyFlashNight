@@ -73,6 +73,7 @@
         button.className = 'workbench-mode-btn npcshop-material-return-btn';
         button.textContent = '← 返回材料档案';
         button.setAttribute('aria-label', '返回材料档案');
+        button.setAttribute('data-audio-cue', 'back');
         var self = this;
         button.addEventListener('click', function(event) { self.requestReturn(event); });
         var status = document.createElement('small');

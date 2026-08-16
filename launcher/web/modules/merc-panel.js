@@ -46,6 +46,12 @@
     var DRESSUP_BODY_FIT_FIELDS = MercPortraits.BODY_FIT_FIELDS;
     var DRESSUP_BATTLE_STATE = MercPortraits.BATTLE_STATE;
 
+    // 语义音效命令式入口（契约 §8）：仅本地拦截 / 权威结果不可知路径使用，其余走 data-audio-cue 与 Toast severity
+    function cue(name) {
+        var A = window.BootstrapAudio;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
+
     // ── 状态 ──
     var _el = null, _scaleEl = null, _scaleHandle = null;
     var _shell = null, _helpAction = null, _density = null, _densityToggle = null;
@@ -235,7 +241,7 @@
 
         _closeButton = button('×', 'workbench-close-btn', requestClose);
         _closeButton.setAttribute('aria-label', '关闭战队面板');
-        _closeButton.setAttribute('data-audio-cue', 'cancel');
+        _closeButton.setAttribute('data-audio-cue', 'back');
         _shell.addHeaderAction(_closeButton);
     }
 
@@ -281,7 +287,7 @@
         var hireEntry = button('＋ 雇佣佣兵', 'team-pane-btn team-goto-hire', enterHire);
         hireEntry.setAttribute('data-tone', 'primary');
         hireEntry.setAttribute('aria-label', '打开雇佣市场');
-        hireEntry.setAttribute('data-audio-cue', 'confirm');
+        hireEntry.setAttribute('data-audio-cue', 'activate');
         tools.appendChild(hireEntry);
         paneHeader.appendChild(tools);
         _rosterLeftRoot.appendChild(paneHeader);
@@ -318,7 +324,7 @@
         paneHeader.className = 'team-pane-header';
         var backBtn = button('‹ 返回名册', 'team-pane-btn team-back-roster', backToRoster);
         backBtn.setAttribute('aria-label', '返回佣兵名册');
-        backBtn.setAttribute('data-audio-cue', 'cancel');
+        backBtn.setAttribute('data-audio-cue', 'back');
         paneHeader.appendChild(backBtn);
 
         // 等级快速定位：池按等级升序，chip 跳到对应区间起点（保持无缝下滑）
@@ -416,7 +422,7 @@
             if (!data.success) {
                 _loadError = '获取佣兵数据失败：' + (data.error || '未知错误');
                 if (_shell) _shell.setStatus('读取失败', Workbench.WorkbenchState.ERROR);
-                TeamShared.toast(_loadError);
+                TeamShared.toast(_loadError, 'error');
                 renderRosterGrid();
                 return;
             }
@@ -979,7 +985,7 @@
             openDetail(merc.slotIndex);
         });
         trainBtn.setAttribute('data-tone', 'primary');
-        trainBtn.setAttribute('data-audio-cue', 'confirm');
+        trainBtn.setAttribute('data-audio-cue', 'activate');
         trainBtn.setAttribute('aria-label', '培养 ' + merc.name);
         trainBtn.title = '造型预览 / 性格特质 / 技能详情 / 装备调配';
         actions.appendChild(trainBtn);
@@ -1126,7 +1132,7 @@
                 } else if (_shell) {
                     _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
                 }
-                TeamShared.toast('加载失败：' + (data.error || '未知错误'));
+                TeamShared.toast('加载失败：' + (data.error || '未知错误'), 'error');
                 return;
             }
             var hl = data.hireList;
@@ -1354,19 +1360,21 @@
                 }
                 // 雇佣会 splice 佣兵池导致后续 poolIndex 整体位移，已加载分页全部失效；
                 // 成功流程回名册 + 重拉 snapshot，下次进市场由 resetHireList 从第一页重拉
-                TeamShared.toast('成功雇佣 ' + data.mercName + '！');
+                TeamShared.toast('成功雇佣 ' + data.mercName + '！', 'success');
                 _selectedPoolIdx = -1;
                 if (_commitBar) _commitBar.update({ busy: false, status: '已雇佣', state: 'ready' });
                 backToRoster();
                 requestSnapshot();
                 if (_shell) _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
             } else if (data.error === 'pool_changed') {
+                // 结果不可知（契约 §2 unknown）：权威池已变、本次雇佣未成交，列表刷新后需重新确认
+                cue('unknown');
                 TeamShared.toast('佣兵列表已变化，已为你刷新');
                 if (_commitBar) _commitBar.update({ busy: false, state: 'error', status: '佣兵列表已变化 · 数据已重新同步' });
                 resetHireList();
             } else {
                 var msg = '雇佣失败：' + (data.error || '未知错误');
-                TeamShared.toast(msg);
+                TeamShared.toast(msg, 'error');
                 if (_commitBar) _commitBar.update({ busy: false, state: 'error', status: msg + ' · 数据已重新同步，请重新确认' });
                 requestSnapshot();   // 对账重拉
                 if (_shell) _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
@@ -1407,7 +1415,7 @@
         header.className = 'team-advance-header';
         var back = button('‹ 返回', 'team-pane-btn team-merc-detail-back', null);
         back.setAttribute('aria-label', '返回名册');
-        back.setAttribute('data-audio-cue', 'cancel');
+        back.setAttribute('data-audio-cue', 'back');
         _detailPage.bindBack(back);
         header.appendChild(back);
         _detailTitleEl = document.createElement('div');
@@ -1496,7 +1504,7 @@
             var coins = _snapshot ? (_snapshot.reviveCoins || 0) : 0;
             var reviveBtn = button('复活 · 复活币×1', 'team-action-btn team-merc-act-revive', null);
             reviveBtn.setAttribute('data-tone', 'restore');
-            reviveBtn.setAttribute('data-audio-cue', 'confirm');
+            reviveBtn.setAttribute('data-audio-cue', 'activate');
             reviveBtn.setAttribute('aria-label', '复活 ' + merc.name + '（消耗 1 枚复活币）');
             setActionBlocked(reviveBtn, coins <= 0 ? '复活币不足（商城/战利品可获得）' : '');
             if (coins > 0) reviveBtn.title = '消耗 1 枚复活币（持有 ' + coins + '）';
@@ -1508,7 +1516,7 @@
         } else {
             var deployBtn = button(merc.deployed ? '休息' : '出战', 'team-action-btn team-merc-act-deploy', null);
             deployBtn.setAttribute('data-tone', 'deploy');
-            deployBtn.setAttribute('data-audio-cue', 'confirm');
+            deployBtn.setAttribute('data-audio-cue', 'activate');
             deployBtn.setAttribute('aria-label', (merc.deployed ? '休息 ' : '出战 ') + merc.name);
             deployBtn.addEventListener('click', function() {
                 if (guardBlocked(this)) return;
@@ -1702,8 +1710,8 @@
             message: '确定要解雇 ' + merc.name + '（Lv.' + merc.level + '）吗？',
             detail: '解雇后将回到雇佣市场。',
             actions: [
-                { id: 'cancel', label: '取消', audioCue: 'cancel' },
-                { id: 'confirm', label: '确认解雇', primary: true, danger: true, audioCue: 'confirm',
+                { id: 'cancel', label: '取消', audioCue: 'back' },
+                { id: 'confirm', label: '确认解雇', primary: true, danger: true, audioCue: 'destructive',
                     onSelect: function() { doDismiss(merc.slotIndex); } }
             ]
         });
@@ -1717,10 +1725,10 @@
             if (data.success) {
                 if (_detailPage && _detailPage.isActive()) _detailPage.close('dismissed');
                 _selectedSlot = -1;
-                TeamShared.toast('已解雇 ' + data.mercName);
+                TeamShared.toast('已解雇 ' + data.mercName, 'success');
                 requestSnapshot();
             } else {
-                TeamShared.toast('解雇失败：' + (data.error || '未知错误'));
+                TeamShared.toast('解雇失败：' + (data.error || '未知错误'), 'error');
             }
         });
     }
@@ -1741,9 +1749,9 @@
                 refreshCard(slotIndex);
                 if (_selectedSlot === slotIndex) renderDetail();
                 renderDetailPage();
-                TeamShared.toast(merc.deployed ? '已出战' : '已休息');
+                TeamShared.toast(merc.deployed ? '已出战' : '已休息', 'success');
             } else {
-                TeamShared.toast('操作失败：' + (data.error || '未知错误'));
+                TeamShared.toast('操作失败：' + (data.error || '未知错误'), 'error');
             }
         });
     }
@@ -1758,7 +1766,7 @@
             endOp(btn);
             if (typeof data.reviveCoins === 'number' && _snapshot) _snapshot.reviveCoins = data.reviveCoins;
             if (!data.success) {
-                TeamShared.toast('复活失败：' + (data.error === 'no_revive_coin' ? '复活币不足' : (data.error || '未知错误')));
+                TeamShared.toast('复活失败：' + (data.error === 'no_revive_coin' ? '复活币不足' : (data.error || '未知错误')), 'error');
                 updateHeaderMetrics();
                 if (_selectedSlot === slotIndex) renderDetail();
                 renderDetailPage();
@@ -1770,7 +1778,7 @@
             refreshCard(slotIndex);
             if (_selectedSlot === slotIndex) renderDetail();
             renderDetailPage();
-            TeamShared.toast('已复活 ' + data.mercName + '（剩余复活币 ' + (_snapshot ? (_snapshot.reviveCoins || 0) : 0) + '）');
+            TeamShared.toast('已复活 ' + data.mercName + '（剩余复活币 ' + (_snapshot ? (_snapshot.reviveCoins || 0) : 0) + '）', 'success');
         });
     }
 
@@ -1792,7 +1800,7 @@
                 level_gap: '低等级时无法雇佣等级过高的佣兵',
                 npc_gone: 'NPC 已离开，雇佣取消',
                 disconnected: '连接已断开'
-            })[err] || ('雇佣失败：' + err));
+            })[err] || ('雇佣失败：' + err), 'error');
         });
     }
 
@@ -2109,7 +2117,8 @@
     }
     function guardBlocked(btn) {
         var reason = btn.getAttribute('data-blocked-reason');
-        if (reason) { TeamShared.toast(reason); return true; }
+        // 锁定/禁用拦截（契约 §2 illegal）：aria-disabled 已抑制声明式 cue，这里命令式补拦截音
+        if (reason) { cue('illegal'); TeamShared.toast(reason); return true; }
         return false;
     }
 

@@ -31,6 +31,12 @@
     var RESTORE_COST = 1000;        // 恢复体力展示花费（权威扣费在 AS2）
     var CANDIDATE_SLOT = -2;        // 世界内招募候选的选中哨兵（真实 slotIndex ≥ 0，-1 为未选中）
 
+    // 语义音效命令式入口（契约 §8）：仅本地拦截路径使用，其余走 data-audio-cue 与 Toast severity
+    function cue(name) {
+        var A = window.BootstrapAudio;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
+
     var ROSTER_META = {
         partner:    { noun: '伙伴', measure: '位' },
         pet:        { noun: '战宠', measure: '只' },
@@ -221,7 +227,7 @@
 
         _closeButton = button('×', 'workbench-close-btn', requestClose);
         _closeButton.setAttribute('aria-label', '关闭战队面板');
-        _closeButton.setAttribute('data-audio-cue', 'cancel');
+        _closeButton.setAttribute('data-audio-cue', 'back');
         _shell.addHeaderAction(_closeButton);
     }
 
@@ -415,7 +421,7 @@
             if (!data.success) {
                 _loadError = '获取' + meta().noun + '数据失败：' + (data.error || '未知错误');
                 if (_shell) _shell.setStatus('读取失败', Workbench.WorkbenchState.ERROR);
-                TeamShared.toast(_loadError);
+                TeamShared.toast(_loadError, 'error');
                 renderRosterGrid();
                 return;
             }
@@ -465,7 +471,7 @@
             if (reqSession !== _session) return;
             if (reqAdoptSeq !== _adoptListSeq) return;   // 已有更新的请求 / 缓存命中接管
             if (!data.success) {
-                TeamShared.toast('获取领养列表失败：' + (data.error || '超时'));
+                TeamShared.toast('获取领养列表失败：' + (data.error || '超时'), 'error');
                 if (cb) cb(false);
                 return;
             }
@@ -1313,7 +1319,7 @@
             if (data.success) {
                 if (_snapshot) { _snapshot.gold = data.gold; _snapshot.kpoint = data.kpoint; }
                 _storeCache = {};   // 领养改变拥有态 / 价格，失效缓存
-                TeamShared.toast('领养成功！');
+                TeamShared.toast('领养成功！', 'success');
                 _adoptPetId = null;
                 if (_commitBar) _commitBar.update({ busy: false, status: '已领养', state: 'ready' });
                 backToRoster();
@@ -1321,7 +1327,7 @@
             } else {
                 var msg = '领养失败：' + (data.reason || data.error || '未知错误');
                 _commitError = msg;   // error 投影保留到用户改选 / 重新提交
-                TeamShared.toast(msg);
+                TeamShared.toast(msg, 'error');
                 // 先只呈现失败原因；「数据已重新同步」后缀由对账 snapshot 回包后再补，文案不抢跑
                 if (_commitBar) _commitBar.update({ busy: false, state: 'error', status: msg });
                 requestSnapshot();   // 对账重拉
@@ -1719,9 +1725,9 @@
                 // 选中候选卡时右栏招募门控也随操作后数据重算（卡内直操不影响选中态）
                 if (_selectedSlot === slotIndex || _selectedSlot === CANDIDATE_SLOT) renderDetail();
                 renderAdvance();
-                TeamShared.toast(pet.deployed ? '已出战' : '已休息');
+                TeamShared.toast(pet.deployed ? '已出战' : '已休息', 'success');
             } else {
-                TeamShared.toast('操作失败：' + (data.error || '未知错误'));
+                TeamShared.toast('操作失败：' + (data.error || '未知错误'), 'error');
             }
         });
     }
@@ -1742,13 +1748,13 @@
                 // 卡内直操扣金币后，选中候选卡时右栏招募门控的余额判断需重算
                 if (_selectedSlot === slotIndex || _selectedSlot === CANDIDATE_SLOT) renderDetail();
                 renderAdvance();
-                TeamShared.toast('体力已恢复至 ' + data.stamina);
+                TeamShared.toast('体力已恢复至 ' + data.stamina, 'success');
             } else {
                 var msg = '恢复失败';
                 if (data.error === 'insufficient_gold') msg = '金币不足，需要1000金币';
                 else if (data.error === 'stamina_full') msg = '体力已满';
                 else if (data.error) msg = data.error;
-                TeamShared.toast(msg);
+                TeamShared.toast(msg, 'error');
             }
         });
     }
@@ -1762,13 +1768,13 @@
             endOp(btn);
             if (data.success) {
                 requestSnapshot();   // 等级变化牵动门槛，需重拉
-                TeamShared.toast(meta().noun + '升级！战宠灵石 -' + data.stoneCost);
+                TeamShared.toast(meta().noun + '升级！战宠灵石 -' + data.stoneCost, 'success');
             } else {
                 var msg = '升级失败';
                 if (data.error === 'level_maxed') msg = '已达等级上限';
                 else if (data.error === 'insufficient_stones') msg = '战宠灵石不足，需要' + (data.cost || '?') + '个';
                 else if (data.error) msg = data.error;
-                TeamShared.toast(msg);
+                TeamShared.toast(msg, 'error');
             }
         });
     }
@@ -1786,8 +1792,8 @@
             message: '确认永久删除 ' + pet.name + '（Lv.' + pet.level + '）吗？此操作不可撤销。',
             detail: '返还战宠灵石：' + refund + ' 个',
             actions: [
-                { id: 'cancel', label: '取消', audioCue: 'cancel' },
-                { id: 'confirm', label: '确认删除', primary: true, danger: true, audioCue: 'confirm',
+                { id: 'cancel', label: '取消', audioCue: 'back' },
+                { id: 'confirm', label: '确认删除', primary: true, danger: true, audioCue: 'destructive',
                     onSelect: function() { doDelete(pet.slotIndex); } }
             ]
         });
@@ -1802,10 +1808,10 @@
                 var refundText = data.stoneRefund > 0 ? '，返还战宠灵石 ' + data.stoneRefund + ' 个' : '';
                 if (_advancePage && _advancePage.isActive()) _advancePage.close('deleted');
                 _selectedSlot = -1;
-                TeamShared.toast('已删除' + meta().noun + refundText);
+                TeamShared.toast('已删除' + meta().noun + refundText, 'success');
                 requestSnapshot();
             } else {
-                TeamShared.toast('删除失败：' + (data.error || '未知错误'));
+                TeamShared.toast('删除失败：' + (data.error || '未知错误'), 'error');
             }
         });
     }
@@ -1823,9 +1829,9 @@
                 if (_snapshot) { _snapshot.gold = data.gold; _snapshot.kpoint = data.kpoint; }
                 updateHeaderMetrics();
                 requestSnapshot();
-                TeamShared.toast(okMsg || '进阶成功！');
+                TeamShared.toast(okMsg || '进阶成功！', 'success');
             } else {
-                TeamShared.toast('进阶失败：' + (data.reason || data.error || '未知错误'));
+                TeamShared.toast('进阶失败：' + (data.reason || data.error || '未知错误'), 'error');
             }
         });
     }
@@ -1847,7 +1853,7 @@
                 slots_full: '战宠栏位已满，请先删除部分战宠',
                 npc_gone: 'NPC 已离开，招募取消',
                 disconnected: '连接已断开'
-            })[err] || ('招募失败：' + err));
+            })[err] || ('招募失败：' + err), 'error');
         });
     }
 
@@ -1861,13 +1867,13 @@
                 updateHeaderMetrics();
                 renderRosterGrid();
                 renderDetail();   // 扩容解除「栏位已满」blocked：右栏（含候选招募门控）同步重渲
-                TeamShared.toast(meta().noun + '栏已扩充至 ' + data.maxSlots);
+                TeamShared.toast(meta().noun + '栏已扩充至 ' + data.maxSlots, 'success');
             } else {
                 var msg = '扩充失败';
                 if (data.error === 'max_slots_reached') msg = '已达最大格子数（' + (data.maxSlots || '') + '）';
                 else if (data.error === 'insufficient_gold' || data.error === '金币不足') msg = '金币不足，无法开格子';
                 else if (data.error) msg = '扩充失败：' + data.error;
-                TeamShared.toast(msg);
+                TeamShared.toast(msg, 'error');
             }
         });
     }
@@ -2078,7 +2084,8 @@
     }
     function guardBlocked(btn) {
         var reason = btn.getAttribute('data-blocked-reason');
-        if (reason) { TeamShared.toast(reason); return true; }
+        // 锁定/禁用拦截（契约 §2 illegal）：aria-disabled 已抑制声明式 cue，这里命令式补拦截音
+        if (reason) { cue('illegal'); TeamShared.toast(reason); return true; }
         return false;
     }
 

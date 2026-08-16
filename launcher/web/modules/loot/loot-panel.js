@@ -198,11 +198,11 @@ var LootPanel = (function() {
             onClose:function() { requestOrganizerReturn(true); return false; },
             onRetry:retryOrganizerInventory,
             onPageResult:function(result) {
-                if (!result || !result.success) toast('战备箱翻页失败。');
+                if (!result || !result.success) toast('战备箱翻页失败。','error');
             },
             onTransferResult:function(result) {
-                if (result && result.success) toast('物品已转移。');
-                else toast(inventoryErrorMessage(result));
+                if (result && result.success) toast('物品已转移。','success');
+                else toast(inventoryErrorMessage(result),'error');
             },
             iconHtml:iconHtml,
             toast:toast
@@ -237,8 +237,8 @@ var LootPanel = (function() {
         var retainedReason=_claimAllBlockedReason,retainedSlots=_claimAllBlockedSlots;
         resetClaimAllOutcome();
         var accepted=_model.claim(slot,function(success,response){
-            if (!success && !quiet) toast(writeFailureMessage(response));
-            else if (success && !quiet) toast('战利品已由游戏确认领取。');
+            if (!success && !quiet) toast(writeFailureMessage(response),'error');
+            else if (success && !quiet) toast('战利品已由游戏确认领取。','success');
         });
         if (!accepted) {
             _claimAllBlockedReason=retainedReason;
@@ -352,8 +352,8 @@ var LootPanel = (function() {
             if (state.remainingCount===0) commitClose(false);
             else if (completedWithBlocks)
                 toast('已收取所有可放入物品；仍有 '
-                +state.remainingCount+' 个物品因背包或容量限制保留。');
-            else toast('箱内仍有未遍历物品，已停止全部收取，请人工核对。');
+                +state.remainingCount+' 个物品因背包或容量限制保留。','success');
+            else toast('箱内仍有未遍历物品，已停止全部收取，请人工核对。','error');
             return;
         }
         var checkpoint={
@@ -374,8 +374,8 @@ var LootPanel = (function() {
                 }
                 stopClaimAll();
                 if (/^(target_full|inventory_full|capacity_reached|cap_reached)$/.test(String(error)))
-                    toast('容量拒绝未满足零写证明，已停止全部收取，请人工核对。');
-                else toast(writeFailureMessage(response));
+                    toast('容量拒绝未满足零写证明，已停止全部收取，请人工核对。','error');
+                else toast(writeFailureMessage(response),'error');
                 return;
             }
             // A syntactically valid success is insufficient for a batch loop. Require exact
@@ -383,7 +383,7 @@ var LootPanel = (function() {
             // another write; otherwise a future protocol drift could replay claims forever.
             if (!claimAllAdvanced(checkpoint)) {
                 stopClaimAll();
-                toast('领取结果没有变化，已停止全部收取，请人工核对。');
+                toast('领取结果没有变化，已停止全部收取，请人工核对。','error');
                 return;
             }
             scheduleClaimAllDrain();
@@ -424,7 +424,7 @@ var LootPanel = (function() {
             if (!_organizerActive) return;
             renderOrganizer();
             if (!result || !result.success)
-                toast('库存同步失败；请重试后再返回战利品。');
+                toast('库存同步失败；请重试后再返回战利品。','error');
         });
         return true;
     }
@@ -434,7 +434,7 @@ var LootPanel = (function() {
                 ||!_inventoryState.refreshRequired||_organizerReturning) return false;
         return _inventoryCoordinator.retryRefresh(function(result) {
             if (!_organizerActive) return;
-            if (!result || !result.success) toast('库存同步仍未完成，请重试。');
+            if (!result || !result.success) toast('库存同步仍未完成，请重试。','error');
         });
     }
 
@@ -467,7 +467,7 @@ var LootPanel = (function() {
                 render();
                 var state=_model&&_model.debugState();
                 if (state&&state.phase==='active')
-                    toast('当前箱子重新同步失败；仍停留在整理页，不会再次提交领取。');
+                    toast('当前箱子重新同步失败；仍停留在整理页，不会再次提交领取。','error');
                 return;
             }
             _claimAllBlockedSlots={};
@@ -478,14 +478,14 @@ var LootPanel = (function() {
             _organizerReturning=false;
             _inventoryCoordinator.close();
             render();
-            toast('库存与当前箱子已重新同步，可以继续领取。');
+            toast('库存与当前箱子已重新同步，可以继续领取。','success');
             if (closePanel) requestClose();
         });
         if (!accepted) {
             _organizerReturning=false;
             renderOrganizer();
             render();
-            toast('当前箱子暂时无法重新同步；仍停留在整理页。');
+            toast('当前箱子暂时无法重新同步；仍停留在整理页。','error');
             return false;
         }
         return true;
@@ -506,8 +506,8 @@ var LootPanel = (function() {
             if (!_inventoryCoordinator.discard(source,function(result) {
                 if (!_organizerActive) return;
                 renderOrganizer();
-                if (result&&result.success) toast('物品已丢弃。');
-                else toast(inventoryErrorMessage(result));
+                if (result&&result.success) toast('物品已丢弃。','success');
+                else toast(inventoryErrorMessage(result),'error');
             })) toast('库存正在处理另一项操作。');
         });
     }
@@ -560,7 +560,7 @@ var LootPanel = (function() {
 
     function commitClose(abandon) {
         if (!_model||!_model.close(abandon,function(success,response){
-            if (!success) toast(writeFailureMessage(response));
+            if (!success) toast(writeFailureMessage(response),'error');
         })) toast('当前无法结束箱子会话，请先完成结果核对。');
     }
     function writeFailureMessage(response) {
@@ -575,8 +575,8 @@ var LootPanel = (function() {
             return;
         }
         if (!_model||!_model.query(function(success,response){
-            if (!success) toast(LootView.errorMessage(response&&response.error||'stale_reconcile'));
-            else toast('已取得包含上一次操作的最新状态。');
+            if (!success) toast(LootView.errorMessage(response&&response.error||'stale_reconcile'),'error');
+            else toast('已取得包含上一次操作的最新状态。','success');
         })) toast('当前没有可执行的结果查询，或查询仍在进行。');
     }
     function render() {
@@ -667,8 +667,8 @@ var LootPanel = (function() {
     function isOpen() {
         return Panels.getActive ? Panels.getActive()==='loot' : Panels.isOpen();
     }
-    function toast(message) {
-        if (typeof Toast!=='undefined'&&Toast.add) Toast.add(message);
+    function toast(message,severity) {
+        if (typeof Toast!=='undefined'&&Toast.add) Toast.add(message,severity);
     }
     function iconHtml(name,cls) {
         return typeof Icons!=='undefined'&&Icons.html ? Icons.html(name,cls||'') : '';

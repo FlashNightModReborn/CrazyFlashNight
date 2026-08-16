@@ -188,6 +188,7 @@ var SkillsPanel = (function() {
         _shell.addHeaderAction(_diagnosticButton);
         _closeButton = button('×', 'workbench-close-btn', function() { requestClose('header'); });
         _closeButton.setAttribute('aria-label', '关闭技能面板');
+        _closeButton.setAttribute('data-audio-cue', 'back');
         _shell.addHeaderAction(_closeButton);
 
         var leftView = createLeftView();
@@ -255,6 +256,7 @@ var SkillsPanel = (function() {
                 visualStyle:'catalog', autoDescendSingle:false,
                 onChange:function(path) {
                     filterPathsForView()[definition.id] = path.slice();
+                    cue('select');
                     refreshFilterReset(); refreshFilterValue(definition.id); renderList({preserveScroll:false});
                 }
             });
@@ -427,6 +429,7 @@ var SkillsPanel = (function() {
             _desiredLevel = Trainer.initialDesiredLevel(entry, trainerSkillPoints());
         }
         syncSelectedSkillRows();
+        cue('select');
         if (_view === 'trainer' && entry) scheduleLearnPreview(entry, false);
         else renderDetail();
     }
@@ -445,7 +448,7 @@ var SkillsPanel = (function() {
     function reorderTo(entry, target) {
         if (!target) return;
         var reason = reorderBlockReason(entry, 'source') || reorderBlockReason(target, 'target');
-        if (reason) { toast(dragRejectMessage(reason)); return; }
+        if (reason) { toast(dragRejectMessage(reason)); cue('illegal'); return; }
         writeCommand('reorder', {skillKey:entry.skillKey, targetIndex:Number(target.orderIndex),
             expectedRevision:Number(_snapshot.revision)});
     }
@@ -569,8 +572,8 @@ var SkillsPanel = (function() {
         _shell.openModal({kind:'skills-learn-confirm', kicker:'教师研习', title:'确认学习 ' + entry.skillKey,
             message:'Lv.' + safeNumber(_preview.currentLevel) + ' → Lv.' + safeNumber(_preview.desiredLevel),
             detail:'将消耗 ' + safeNumber(_preview.cost) + ' 技能点。', actions:[
-                {id:'cancel', label:'取消'},
-                {id:'confirm', label:'确认研习', primary:true, onSelect:function() {
+                {id:'cancel', label:'取消', audioCue:'back'},
+                {id:'confirm', label:'确认研习', primary:true, audioCue:'activate', onSelect:function() {
                     if (!hasFreshPreviewToken(entry)) {
                         scheduleLearnPreview(entry, true, function(preview) {
                             var current = selectedEntry();
@@ -619,14 +622,15 @@ var SkillsPanel = (function() {
         });
         if (!plan.allowed) return;
         if (plan.direct) {
+            cue('activate');
             writeCommand('equip', plan.payload);
             return;
         }
         var replacing = plan.replacingSkill ? '将替换「' + slot.skillKey + '」。' : '该槽当前为空。';
         _shell.openModal({kind:'skills-equip-confirm', kicker:'快捷栏配置', title:'装备到槽位 ' + slot.slot,
             message:'装备「' + entry.skillKey + '」', detail:replacing, actions:[
-                {id:'cancel', label:'取消'},
-                {id:'confirm', label:'确认装备', primary:true, onSelect:function() {
+                {id:'cancel', label:'取消', audioCue:'back'},
+                {id:'confirm', label:'确认装备', primary:true, audioCue:'activate', onSelect:function() {
                     writeCommand('equip', plan.payload);
                 }}
             ]});
@@ -639,14 +643,15 @@ var SkillsPanel = (function() {
         });
         if (!plan.allowed) return;
         if (plan.direct) {
+            cue('activate');
             writeCommand('unequip', plan.payload);
             return;
         }
         _shell.openModal({kind:'skills-unequip-confirm', kicker:'快捷栏配置', title:'卸载槽位 ' + slot.slot,
             message:'移除「' + slot.skillKey + '」', detail:slot.stateHealth === 'unknown'
                 ? '该槽中的技能数据已失效，可以直接移除。' : '不会重置或缩短该槽的冷却。', actions:[
-                {id:'cancel', label:'取消'},
-                {id:'confirm', label:'确认卸载', primary:true, onSelect:function() {
+                {id:'cancel', label:'取消', audioCue:'back'},
+                {id:'confirm', label:'确认卸载', primary:true, audioCue:'activate', onSelect:function() {
                     writeCommand('unequip', plan.payload);
                 }}
             ]});
@@ -710,12 +715,14 @@ var SkillsPanel = (function() {
         _preview = null;
         var callId = _coordinator.write(cmd, payload, function(response) {
             if (response.error === 'trainer_session_expired') return;
+            // 权威结果音在响应回调播放，附带的 toast 保持静默（契约 §5.3/§6）
             if (response.success !== true) {
-                toast(errorMessage(response.error));
+                toast(errorMessage(response.error)); cue('rejected');
                 if (response.error === 'stale_state' || response.error === 'not_learned' || response.error === 'skill_not_found') requestSnapshot();
-            } else toast(response.changed === false ? '状态未变化。' : successMessage(cmd));
+            } else { toast(response.changed === false ? '状态未变化。' : successMessage(cmd)); cue('success'); }
             renderAll();
         });
+        // 本地拦截（协调器忙）保持静默 toast：调用方已播意图音（activate/toggle），避免同手势双响（契约 §5.2）
         if (!callId) toast('当前暂时不能修改技能，请稍后重试。');
         renderAll();
         return callId;
@@ -892,7 +899,9 @@ var SkillsPanel = (function() {
                 if (slot) proposeEquip(context.sourceItem, slot);
             },
             onReject:function(result) {
-                if (result && result.reason && result.reason !== 'invalid_skill') toast(dragRejectMessage(result.reason));
+                if (result && result.reason && result.reason !== 'invalid_skill') {
+                    toast(dragRejectMessage(result.reason)); cue('illegal');
+                }
             }
         });
         _drag = new Workbench.PointerDragController({
@@ -966,7 +975,7 @@ var SkillsPanel = (function() {
         return Library.entryByKey(_snapshot, _view, skillKey);
     }
     function loadoutSlot(number) { return Loadout.slotByNumber(_snapshot, number); }
-    function requestManageView() { requestNavigation('manage'); }
+    function requestManageView() { if (requestNavigation('manage')) cue('select'); }
     function skillHelpSpec() {
         var trainer = _view === 'trainer';
         var title = trainer ? '技能研习帮助' : '技能管理帮助';
@@ -979,11 +988,11 @@ var SkillsPanel = (function() {
         return {
             kind:'skills-help', title:title, message:message, detail:detail,
             ariaLabel:title,
-            actions:[{id:'close', label:'知道了', primary:true}]
+            actions:[{id:'close', label:'知道了', primary:true, audioCue:'back'}]
         };
     }
-    function requestTrainerView() { requestNavigation('trainer'); }
-    function requestCharacterBuild() { requestNavigation('character_build'); }
+    function requestTrainerView() { if (requestNavigation('trainer')) cue('select'); }
+    function requestCharacterBuild() { if (requestNavigation('character_build')) cue('back'); }
     function requestNavigation(target) {
         return Interactions.requestNavigation({
             target:target, view:_view, initData:_initData,
@@ -1174,6 +1183,11 @@ var SkillsPanel = (function() {
         return messages[error] || '技能操作失败。';
     }
     function toast(message) { if (typeof Toast !== 'undefined' && Toast.add) Toast.add(message); }
+    // 语义音效命令式入口（契约 §8）：仅本地拦截 / 权威结果路径使用，静态元素走 data-audio-cue
+    function cue(name) {
+        var A = (typeof window !== 'undefined') ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
 
     return {
         debugState: function() {

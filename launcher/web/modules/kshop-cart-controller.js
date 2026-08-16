@@ -215,12 +215,17 @@
     };
 
     CartController.prototype.onCartSinkClick = function() {
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
         if (!this._state.canEdit()) {
             this._intent.toast('商城正在处理写入，请稍后再加购。');
+            if (A && typeof A.cue === 'function') A.cue('illegal');
             return;
         }
         var result = this._intent.activateSelected();
-        if (!result.accepted && result.reason === 'nothing_selected') this._intent.toast('请先从左栏选择商品。');
+        if (!result.accepted && result.reason === 'nothing_selected') {
+            this._intent.toast('请先从左栏选择商品。');
+            if (A && typeof A.cue === 'function') A.cue('illegal');
+        }
     };
 
     CartController.prototype.setDropSelection = function(item) {
@@ -240,12 +245,14 @@
             if (result.error === 'duplicate_single') this._intent.toast('该装备已在购物车中');
             else if (result.error === 'sold_out') this._intent.toast('该商品当前已达持有上限。');
             else if (result.error === 'limit_reached') this._intent.toast('已达到当前可购买上限 ' + maximum + '。');
-            this._intent.playCue('error');
+            var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+            if (A && typeof A.cue === 'function') A.cue('illegal');
             return false;
         }
         this._commitCart(result.cart);
         if (result.error === 'limit_reached') this._intent.toast('数量已调整为当前可购买上限 ' + maximum + '。');
-        this._intent.playCue('confirm');
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue('activate');
         return true;
     };
 
@@ -253,6 +260,8 @@
         event.stopPropagation();
         if (!this._state.canEdit()) {
             this._intent.toast('商城正在处理写入，请稍后再编辑购物车。');
+            var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+            if (A && typeof A.cue === 'function') A.cue('illegal');
             return;
         }
         var idx = Number(event.target.getAttribute('data-idx'));
@@ -260,7 +269,8 @@
         if (!item) return;
         if (this._state.isLocked(item)) {
             this._intent.toast('等级不足，无法购买！');
-            this._intent.playCue('error');
+            var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+            if (A && typeof A.cue === 'function') A.cue('illegal');
             return;
         }
         this.addCatalogIntent(idx, 1);
@@ -319,7 +329,7 @@
             + '<span class="kshop-cart-copy"><b class="kshop-cart-name">' + this._intent.escapeHtml(item.displayname) + '</b><small>K ' + item.price + ' / 件</small></span>'
             + '<span class="kshop-cart-qty"><b>×' + cartItem.qty + '</b></span>'
             + '<span class="kshop-cart-sub">' + subtotal + '</span>'
-            + '<button class="kshop-cart-remove-btn" type="button" data-audio-cue="cancel">×</button>';
+            + '<button class="kshop-cart-remove-btn" type="button" data-audio-cue="back">×</button>';
         return row;
     };
 
@@ -342,14 +352,14 @@
             remove.addEventListener('click', function(event) {
                 event.stopPropagation();
                 self.adjust(Number(row.getAttribute('data-idx')), 0, true);
-                self._intent.playCue('cancel');
             });
         }
     };
 
     CartController.prototype.openSettlement = function() {
         if (!this._settlement || !this._cart().length || !this._state.canStartWrite()) return;
-        this._intent.playCue('modalOpen');
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue('open');
         this._settlement.show();
         this.requestPreview();
     };

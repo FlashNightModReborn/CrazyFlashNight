@@ -160,11 +160,22 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     window.BootstrapAudio = {
         init:function() {},
         resume:function() {},
+        setPanelProfile:function() {},
+        _enterPanel:function() {},
+        _exitPanel:function() {},
         playCancel:function() {
             window.__routeHarness.audio.cues.push('cancel');
         },
         playError:function() {
             window.__routeHarness.audio.cues.push('error');
+        },
+        // 语义层镜像: cancel→back→playCancel, error→illegal→playError (与 modules/audio.js 一致)
+        cue:function(name) {
+            var canonical = ({confirm:'activate', cancel:'back', transition:'navigate',
+                modalOpen:'open', error:'illegal', click:'toggle'})[name] || name;
+            if (canonical === 'back') { this.playCancel(); return true; }
+            if (canonical === 'illegal') { this.playError(); return true; }
+            return false;
         }
     };
     window.__routeHarness.setPortraitGender = function(gender) {
@@ -3642,7 +3653,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && document.querySelector('[data-header-action="close"]')
                         .getAttribute('aria-label') === '关闭工作台'
                     && document.querySelector('[data-header-action="close"]')
-                        .getAttribute('data-audio-cue') === 'cancel'
+                        .getAttribute('data-audio-cue') === 'back'
                     && !document.querySelector('[data-header-action="stats"]')
                         .hasAttribute('data-audio-cue')
                     && window.__routeHarness.storage.externalCompletes === 3

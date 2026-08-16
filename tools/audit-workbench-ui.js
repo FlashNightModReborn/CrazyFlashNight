@@ -848,7 +848,7 @@ layoutProfiles.forEach(function (profile) {
 
 var moduleThresholds = {
     'launcher/web/modules/kshop.js':1200,
-    'launcher/web/modules/skills.js':1200,
+    'launcher/web/modules/skills.js':1240, // 2026-08-16 Web UI 语义音效工程合法增长（data-audio-cue/cue() 迁移），1208 行基线显式上调
     'launcher/web/modules/equipment-tuning-view.js':1200,
     'launcher/web/modules/equipment-tuning-write-lifecycle.js':360,
     'launcher/web/modules/equipment-tuning-loadout-lifecycle.js':300,
@@ -876,12 +876,12 @@ var moduleThresholds = {
     'launcher/web/modules/character-build-view.js':760,
     'launcher/web/modules/character-build.js':550,
     'launcher/web/modules/inventory-tuning-scope.js':200,
-    'launcher/web/modules/inventory-storage-workbench.js':950,
+    'launcher/web/modules/inventory-storage-workbench.js':960,
     'launcher/web/modules/inventory-workbench-preparation-menu.js':440,
     'launcher/web/modules/crafting-inventory-organizer.js':200,
     'launcher/web/modules/inventory-workbench-feature-loader.js':180,
     'launcher/web/modules/inventory-workbench.js':550,
-    'launcher/web/modules/npcshop.js':1000,
+    'launcher/web/modules/npcshop.js':1040, // 2026-08-16 Web UI 语义音效工程合法增长（声明式 cue 绑定迁移），1016 行基线显式上调
     'launcher/web/modules/workbench.js':1000
 };
 metrics.moduleLines = {};

@@ -1,6 +1,8 @@
 // Web Audio 合成的 UI 音效 + 环境 hum. 无外部音源 — 全部 Oscillator / BufferSource(noise) + ADSR envelope.
 // 设计约束: 节制 / 短促 / 低音量; 三条 bus (master → sfx / ambient).
 // 自动播放策略: AudioContext 首次 new 可能处于 suspended; 首次用户交互后 BootstrapApp 会调 resume().
+// 语义层 (2026-08-15 契约 v1): cue(name) 是面板代码统一入口 — 旧 cue 名别名归一后,
+// 先按当前面板 profile 抑制, 再分派到对应 playXxx. playXxx 直调不受 profile 抑制 (既有消费方零改动).
 
 (function () {
   'use strict';
@@ -230,6 +232,36 @@
     noisePulse(0.002, 0.05, 0.03, 'bandpass', 3200, 2600, 2.4);
   }
 
+  // 破坏性动作确认: 低频重击 + 下行扫频, 警告感
+  function playDestructive() {
+    if (!_sfxEnabled || !initCtx()) return;
+    resumeIfSuspended();
+    tonePulse(140, 'sine', 0.006, 0.3, 0.16, 55);
+    noisePulse(0.004, 0.18, 0.07, 'lowpass', 500, 120, 0.8);
+    setTimeout(function () {
+      if (!_sfxEnabled || !ctx) return;
+      tonePulse(320, 'sawtooth', 0.01, 0.22, 0.05, 90);
+    }, 60);
+  }
+
+  // 权威拒绝: 下行双音, 单次 utterance
+  function playRejected() {
+    if (!_sfxEnabled || !initCtx()) return;
+    resumeIfSuspended();
+    tonePulse(330, 'triangle', 0.008, 0.16, 0.09);
+    setTimeout(function () {
+      if (!_sfxEnabled || !ctx) return;
+      tonePulse(220, 'triangle', 0.008, 0.24, 0.08);
+    }, 110);
+  }
+
+  // 结果不可知 (超时 / reconcile-required): 中性单 ping, 无正负色彩
+  function playUnknown() {
+    if (!_sfxEnabled || !initCtx()) return;
+    resumeIfSuspended();
+    tonePulse(440, 'sine', 0.006, 0.3, 0.06);
+  }
+
   // ── 环境 hum ──
   // 55Hz 基频 + 82.5Hz 五度 + 低通白噪声地板, 加 0.3Hz LFO 做呼吸感.
   // fade in 1.5s, fade out 0.8s; setAmbientEnabled 反复切换不串流.
@@ -303,6 +335,107 @@
     else stopAmbient();
   }
 
+  // ── 语义 cue 层 (契约 §2/§3) ──
+
+  // 旧 cue 名 → 新语义名 (永久兼容; 新代码禁用旧名)
+  var CUE_ALIASES = {
+    confirm: 'activate',
+    cancel: 'back',
+    transition: 'navigate',
+    modalOpen: 'open',
+    error: 'illegal',
+    click: 'toggle'
+  };
+
+  // 语义事件 → 合成实现
+  var CUE_PLAYERS = {
+    hover: playHover,
+    select: playSelect,
+    navigate: playTransition,
+    open: playModalOpen,
+    back: playCancel,
+    activate: playConfirm,
+    toggle: playClick,
+    destructive: playDestructive,
+    illegal: playError,
+    success: playSuccess,
+    rejected: playRejected,
+    unknown: playUnknown,
+    ready: playReady
+  };
+
+  // profile → 允许的事件 allowlist
+  var PROFILE_ALLOWLISTS = {
+    standard: { hover: 1, select: 1, navigate: 1, open: 1, back: 1, activate: 1,
+      toggle: 1, destructive: 1, illegal: 1, success: 1, rejected: 1, unknown: 1, ready: 1 },
+    quiet: { select: 1, navigate: 1, back: 1, destructive: 1, illegal: 1,
+      success: 1, rejected: 1, unknown: 1, ready: 1 },
+    media: { back: 1, illegal: 1, rejected: 1, unknown: 1 },
+    custom: {}
+  };
+
+  // 面板 → profile 归属表 (契约 §3, 集中维护于此; 未登记面板默认 standard)
+  var PANEL_PROFILES = {
+    'map': 'standard',
+    'kshop': 'standard',
+    'arena': 'standard',
+    'workbench': 'standard',
+    'loot': 'standard',
+    'npcshop': 'standard',
+    'crafting': 'standard',
+    'skills': 'standard',
+    'team': 'standard',
+    'stage-select': 'standard',
+    'hairdresser': 'standard',
+    'cutscene-test': 'standard',
+    'help': 'quiet',
+    'intelligence': 'quiet',
+    'tasks': 'quiet',
+    'dressup': 'quiet',
+    'jukebox': 'media',
+    'lockbox': 'custom',
+    'pinalign': 'custom',
+    'gobang': 'custom'
+  };
+
+  var _currentPanelId = null;
+  var _currentProfile = 'standard';
+
+  // 直接指定 profile (未知名回落 standard); 一般走 _enterPanel/_exitPanel
+  function setPanelProfile(name) {
+    if (!PROFILE_ALLOWLISTS[name]) name = 'standard';
+    _currentProfile = name;
+  }
+
+  // Panels 生命周期 hook: open 成功后进入面板语义域
+  function _enterPanel(id) {
+    _currentPanelId = id || null;
+    _currentProfile = PANEL_PROFILES[_currentPanelId] || 'standard';
+  }
+
+  // Panels 生命周期 hook: close 后恢复 standard 语义; 非当前面板的迟到 exit 忽略
+  function _exitPanel(id) {
+    if (id && _currentPanelId && id !== _currentPanelId) return;
+    _currentPanelId = null;
+    _currentProfile = 'standard';
+  }
+
+  function isCueAllowed(canonical) {
+    var allow = PROFILE_ALLOWLISTS[_currentProfile] || PROFILE_ALLOWLISTS.standard;
+    return !!allow[canonical];
+  }
+
+  // 语义入口: 别名归一 → profile 抑制 → 分派 playXxx. 返回是否实际播音.
+  function cue(name) {
+    if (!name) return false;
+    var canonical = CUE_ALIASES[name] || name;
+    var fn = CUE_PLAYERS[canonical];
+    if (!fn) return false;
+    if (!isCueAllowed(canonical)) return false;
+    fn();
+    return true;
+  }
+
   window.BootstrapAudio = {
     init: initCtx,
     resume: resumeIfSuspended,
@@ -316,6 +449,14 @@
     playTransition: playTransition,
     playModalOpen: playModalOpen,
     playSuccess: playSuccess,
+    playDestructive: playDestructive,
+    playRejected: playRejected,
+    playUnknown: playUnknown,
+    cue: cue,
+    setPanelProfile: setPanelProfile,
+    _enterPanel: _enterPanel,
+    _exitPanel: _exitPanel,
+    PANEL_PROFILES: PANEL_PROFILES,
     startAmbient: startAmbient,
     stopAmbient: stopAmbient,
     setSfxEnabled: setSfxEnabled,

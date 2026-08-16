@@ -147,10 +147,10 @@
                 '<div class="arena-custom-param-main">' +
                     '<div class="arena-custom-param-toolbar">' +
                         '<div class="arena-custom-mode-switch" aria-label="参数编辑模式">' +
-                            '<button class="arena-custom-btn' + (mode === 'json' ? ' arena-custom-mode-active' : '') + '" type="button" data-custom-param-mode="json" data-audio-cue="confirm">JSON</button>' +
-                            '<button class="arena-custom-btn' + (mode === 'xml' ? ' arena-custom-mode-active' : '') + '" type="button" data-custom-param-mode="xml" data-audio-cue="confirm">XML</button>' +
+                            '<button class="arena-custom-btn' + (mode === 'json' ? ' arena-custom-mode-active' : '') + '" type="button" data-custom-param-mode="json" data-audio-cue="select">JSON</button>' +
+                            '<button class="arena-custom-btn' + (mode === 'xml' ? ' arena-custom-mode-active' : '') + '" type="button" data-custom-param-mode="xml" data-audio-cue="select">XML</button>' +
                         '</div>' +
-                        '<button class="arena-custom-btn" type="button" data-custom-param-action="clear" data-audio-cue="cancel">清空参数</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-param-action="clear" data-audio-cue="destructive">清空参数</button>' +
                     '</div>' +
                     '<textarea class="arena-custom-param-editor-input' + invalidClass + '" spellcheck="false" data-custom-param-editor-input>' + escapeHtml(draft) + '</textarea>' +
                     dirtyHtml +

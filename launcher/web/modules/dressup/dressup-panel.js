@@ -99,6 +99,12 @@ var DressupPanel = (function() {
             selects: {}
         };
 
+        // 语义音效：换装切换（部位下拉/性别/预设/重置统一收口）→ select
+        function onUserChange() {
+            if (window.BootstrapAudio) window.BootstrapAudio.cue('select');
+            renderFromControls();
+        }
+
         CONTROL_ORDER.forEach(function(key) {
             var label = document.createElement('label');
             label.className = 'dressup-field';
@@ -109,17 +115,17 @@ var DressupPanel = (function() {
             label.appendChild(select);
             _refs.equipmentGrid.appendChild(label);
             _refs.selects[key] = select;
-            select.addEventListener('change', renderFromControls);
+            select.addEventListener('change', onUserChange);
         });
 
-        _refs.gender.addEventListener('change', renderFromControls);
+        _refs.gender.addEventListener('change', onUserChange);
         _refs.animatedBtn.addEventListener('click', function() {
             selectByValue(_refs.selects.blade, '异形女王毒刺') || selectByValue(_refs.selects.blade, '异形毒刺');
-            renderFromControls();
+            onUserChange();
         });
         _refs.resetBtn.addEventListener('click', function() {
             applyDefaultSelections();
-            renderFromControls();
+            onUserChange();
         });
         _refs.closeBtn.addEventListener('click', requestClose);
 
@@ -164,6 +170,7 @@ var DressupPanel = (function() {
     }
 
     function requestClose() {
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
         Panels.close();
         if (typeof Bridge !== 'undefined' && Bridge && Bridge.send) {
             Bridge.send({ type: 'panel', cmd: 'close', panel: 'dressup' });

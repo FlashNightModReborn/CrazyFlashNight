@@ -693,7 +693,7 @@ test('header projection keeps reasoned disabled actions explainable without invo
     });
     buttons.legacy = new FakeNode('button');
     buttons.close.setAttribute('aria-label', '关闭工作台');
-    buttons.close.setAttribute('data-audio-cue', 'cancel');
+    buttons.close.setAttribute('data-audio-cue', 'back');
     const locked = Header.InventoryWorkbenchHeaderProjection({
         view:'build', busy:true, reason:'等待权威结果'
     });
@@ -710,16 +710,21 @@ test('header projection keeps reasoned disabled actions explainable without invo
     assert.strictEqual(
         buttons.close.getAttribute('aria-label'),
         '关闭工作台，不可用：等待权威结果；完成后才能关闭工作台。');
-    assert.strictEqual(buttons.close.getAttribute('data-audio-cue'), 'error');
+    // 契约 §5.2: 锁定投影不再改写声明式 cue, 也不留 base 快照
+    assert.strictEqual(buttons.close.getAttribute('data-audio-cue'), 'back');
     assert.strictEqual(
         buttons.close.getAttribute('data-header-base-audio-cue'),
-        'cancel');
-    assert.strictEqual(buttons.stats.getAttribute('data-audio-cue'), 'error');
+        null);
+    assert.strictEqual(buttons.stats.getAttribute('data-audio-cue'), null);
     assert.strictEqual(buttons.help.disabled, false);
     assert.strictEqual(buttons['return-build'].hidden, true);
     assert.strictEqual(buttons.legacy.hidden, true);
     assert.strictEqual(buttons.legacy.disabled, true);
+    const blockedCues = [];
+    globalThis.BootstrapAudio = {cue:name => blockedCues.push(name)};
     ['storage', 'stats', 'skills', 'close'].forEach(id => buttons[id].click());
+    delete globalThis.BootstrapAudio;
+    assert.deepStrictEqual(blockedCues, ['illegal', 'illegal', 'illegal', 'illegal']);
     assert.deepStrictEqual(activations, []);
     assert.deepStrictEqual(blocked, [
         'storage:等待权威结果',
@@ -739,14 +744,14 @@ test('header projection keeps reasoned disabled actions explainable without invo
     assert.strictEqual(buttons.close.disabled, true);
     assert.strictEqual(buttons.close.getAttribute('title'), null);
     assert.strictEqual(buttons.close.getAttribute('aria-label'), '关闭工作台，不可用');
-    assert.strictEqual(buttons.close.getAttribute('data-audio-cue'), 'cancel');
+    assert.strictEqual(buttons.close.getAttribute('data-audio-cue'), 'back');
     Header.applyProjection(buttons, Header.InventoryWorkbenchHeaderProjection({view:'build'}));
     assert.strictEqual(buttons.storage.getAttribute('aria-disabled'), 'false');
     assert.strictEqual(
         buttons.storage.getAttribute('data-header-disabled-reason'),
         null);
     assert.strictEqual(buttons.close.getAttribute('aria-label'), '关闭工作台');
-    assert.strictEqual(buttons.close.getAttribute('data-audio-cue'), 'cancel');
+    assert.strictEqual(buttons.close.getAttribute('data-audio-cue'), 'back');
     assert.strictEqual(
         buttons.close.getAttribute('data-header-base-audio-cue'),
         null);
@@ -1132,7 +1137,7 @@ test('facade owns registration and delegates to the bounded storage controller',
     // Readable parent orchestration is budgeted explicitly; do not line-compress the facade merely
     // to satisfy the old pre-extraction threshold. audit-workbench-ui.js carries the same ceiling.
     assert(facade.split(/\r?\n/).length <= 550);
-    assert(source.split(/\r?\n/).length <= 950);
+    assert(source.split(/\r?\n/).length <= 960);
 });
 
 test('inventory writers bind every request response and close to the exact active owner instance', () => {

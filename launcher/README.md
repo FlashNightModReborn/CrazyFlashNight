@@ -532,11 +532,11 @@ launcher/
 │   ├── data/
 │   │   └── lockbox-variants.json          开锁小游戏数据
 │   └── modules/
-│       ├── audio.js                       Web Audio 合成的 UI 音效（BootstrapAudio：hover/click/confirm/error + ambient hum）
+│       ├── audio.js                       Web Audio 合成 UI 音效（BootstrapAudio：13 语义事件 cue() 入口 + 旧名别名 + 面板 profile 抑制 + ambient hum；契约 docs/Web-UI音效-语义语言与接入契约-2026-08-15.md）
 │       ├── bg-gl/                         PM19 质数幻方电子战背景层（web 侧首个 ESM：main.mjs 事件驱动相位机 + renderer.mjs WebGL2 / canvas-renderer.mjs 回退 + dihedral.mjs 二面体变轨 + pm19/ vendored 引擎；真源 tools/pm19-prime-magic）
 │       ├── boot-tooltip.js                启动页 tooltip 层（BootTooltip：bind/bindDelegate/unbind/hide，元素锚定 300ms 延迟 160ms 淡入）
 │       ├── asset-timeline.js              烘焙素材共享时间线选择器（timelineFrames / durationFrames / nested layer 独立周期）
-│       ├── overlay-audio-bindings.js      运行态 overlay 交互音效绑定（panel/notch 等接到 BootstrapAudio）
+│       ├── overlay-audio-bindings.js      运行态 overlay 声明式音效绑定（data-audio-cue 定向分派 + disabled/aria-disabled/data-busy 统一抑制 + Bridge.on('audioPrefs') 静音偏好同步）
 │       ├── perf-frame-limiter.js          overlay rAF 限帧器（webOverlayFrameRateLimit 落地点）
 │       ├── about.js                       "其他" 弹窗 + AUDIO 复选框（走 config_set 协议）
 │       ├── display.js                     DISPLAY 字号预设模态（顶栏入口；config_set 持久化 uiFontScale）
@@ -1268,13 +1268,13 @@ node tools\audit-web-overlay-complexity.js
 |------|------|------|------|
 | `lastPlayedSlot` | string &#124; null | null | 欢迎页默认高亮的槽位 |
 | `introEnabled`   | bool   | false | 「加载片头动画」复选框 |
-| `sfxEnabled`     | bool   | true  | UI 音效（hover/click/confirm/error） |
+| `sfxEnabled`     | bool   | true  | UI 音效（BootstrapAudio 语义 cue 全局开关） |
 | `ambientEnabled` | bool   | false | Idle 态环境 hum（θ-FLOOD 背景低频） |
 | `uiFontScale`    | number | 1.35  | 引导页 `:root --fs-scale` 倍率，clamp 到 [0.7, 1.9] |
 | `mapDisplayPreference` | string | `auto` | Native HUD 地图预览偏好：`auto/off/compact/expanded`；非法值归一化为 `auto` |
 | `suppressedHighDpiWarningRaw` | string &#124; null | null | 内部字段：用户选择不再提示的高 DPI 兼容性 raw value |
 
-前端（[web/modules/display.js](web/modules/display.js), [web/modules/about.js](web/modules/about.js), [web/bootstrap-main.js](web/bootstrap-main.js)）通过 **`config_set` 协议**读写公开字段（见 Bootstrap 前端与协议节）。`mapDisplayPreference` 当前由 C# Native HUD 的刘海地图开关（显示/关闭）和地图卡片尺寸控件（compact/expanded）写入，不进入 Bootstrap `config_set` 白名单；`suppressedHighDpiWarningRaw` 只由 C# 兼容性提示对话框读写，不下发给 Web。`list_resp` 每次都会附带 `introEnabled` / `sfxEnabled` / `ambientEnabled` / `uiFontScale`，而 `lastPlayedSlot` 只在非空时下发；前端缺失该字段时按 `null` 处理。
+前端（[web/modules/display.js](web/modules/display.js), [web/modules/about.js](web/modules/about.js), [web/bootstrap-main.js](web/bootstrap-main.js)）通过 **`config_set` 协议**读写公开字段（见 Bootstrap 前端与协议节）。`mapDisplayPreference` 当前由 C# Native HUD 的刘海地图开关（显示/关闭）和地图卡片尺寸控件（compact/expanded）写入，不进入 Bootstrap `config_set` 白名单；`suppressedHighDpiWarningRaw` 只由 C# 兼容性提示对话框读写，不下发给 Web。`list_resp` 每次都会附带 `introEnabled` / `sfxEnabled` / `ambientEnabled` / `uiFontScale`，而 `lastPlayedSlot` 只在非空时下发；前端缺失该字段时按 `null` 处理。运行态 overlay 窗口不经 `list_resp`：`sfxEnabled` / `ambientEnabled` 的权威在 Host，由 Host→Overlay 推送 `{type:'audioPrefs', sfxEnabled, ambientEnabled}` 同步（时机：overlay WebView ready 初始下发 + `config_set` 成功变更广播，详见下文 `config_set` 协议节）。
 
 ### 命令行参数
 
@@ -1511,6 +1511,21 @@ currentValue (Plan A+):
 2. **前端权威对齐**：`bootstrap-main.js` 收到 `config_set_resp` **无条件** `applyFn(currentValue)` 对齐 UI + BootstrapAudio + 本地状态，不再依赖 optimistic prior 快照
 3. **相关 id**：`requestId` 解决连点/乱序场景下 apply 对错请求的问题；监听 map 是 `Map<requestId, applyFn>`，响应按 id 查 apply，用完即删
 4. **list 回退**：仅三种异常路径才退到 `list` 刷新（applyFn throw / 没带 requestId / `!ok && currentValue` 缺失）
+
+### Host → Overlay 音频偏好推送（audioPrefs）
+
+`sfxEnabled` / `ambientEnabled` 持久化于 Host `UserPrefs`，权威在 Host；运行态 overlay 窗口（WebOverlayForm）不经 `config_set_resp`，由独立推送同步：
+
+```json
+{ "type": "audioPrefs", "sfxEnabled": true, "ambientEnabled": false }
+```
+
+下发时机二选一：
+
+1. **初始下发**：`Program.cs` 装配时 `WebOverlayForm.SetUserPrefs(userPrefs)` 注入偏好，`WebOverlayForm` 在 `_webReady` 置真后自行 `PushAudioPrefs()`（热重载 / 恢复就绪后同样重发）
+2. **变更广播**：`config_set` 成功保存 `sfxEnabled` / `ambientEnabled` 后，`ConfigCommandHandler` 触发静态事件 `AudioPrefsSaved`，由 `Program.cs` 订阅转发 `WebOverlayForm.PushAudioPrefs()`
+
+overlay 接收点为 [web/modules/overlay-audio-bindings.js](web/modules/overlay-audio-bindings.js) 的 `Bridge.on('audioPrefs')` → `BootstrapAudio.setSfxEnabled/setAmbientEnabled`。13 事件语义词典、面板 profile（standard/quiet/media/custom）、声明式 `data-audio-cue` 绑定、统一抑制与防双响规则的权威契约见 [Web UI 音效·语义语言与接入契约（2026-08-15）](../docs/Web-UI音效-语义语言与接入契约-2026-08-15.md)。
 
 ### C# → bootstrap 推送
 

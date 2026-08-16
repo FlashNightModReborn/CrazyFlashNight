@@ -75,6 +75,7 @@ var InventoryStorageWorkbench = (function() {
                 no_mode:'请先选择批量存入或批量取出。',
                 nothing_selected:'请先选择至少一件物品。'
             };
+            blockedCue();
             toast(messages[reason] || '库存正在处理另一项操作。');
         },
         onError:function(result) {
@@ -483,7 +484,7 @@ var InventoryStorageWorkbench = (function() {
             discardButton.addEventListener('click', function(event) {
                 event.stopPropagation();
                 var interaction = InventoryWorkbenchOwnedView.authorityInteraction(_state, false);
-                if (!interaction.actionable) { toast(interaction.reason); return; }
+                if (!interaction.actionable) { blockedCue(); toast(interaction.reason); return; }
                 confirmDiscard(containerId, slot);
             });
         }
@@ -669,8 +670,8 @@ var InventoryStorageWorkbench = (function() {
             message:'将丢弃整组，共 ' + Number(projection.quantity || 1) + ' 件。',
             detail:'丢弃后无法找回。',
             actions:[
-                {id:'cancel', label:'取消', audioCue:'cancel'},
-                {id:'discard', label:'确认丢弃', danger:true, audioCue:'error', onSelect:function() {
+                {id:'cancel', label:'取消', audioCue:'back'},
+                {id:'discard', label:'确认丢弃', danger:true, audioCue:'destructive', onSelect:function() {
                     var current = InventoryWorkbenchOwnedView.authorityInteraction(_state, false);
                     if (!current.actionable) { toast(current.reason); return; }
                     if (!_coordinator.discard(slotRef(containerId, slot), function(result) {
@@ -694,12 +695,13 @@ var InventoryStorageWorkbench = (function() {
             detail:containerId === '战备箱'
                 ? '未解锁的存档保留区不会被读取或移动。' : '原有摆放顺序会改变。',
             actions:[
-                {id:'cancel', label:'取消', audioCue:'cancel'},
-                {id:'sort', label:'整理并合并', primary:true, audioCue:'confirm', onSelect:function() {
+                {id:'cancel', label:'取消', audioCue:'back'},
+                {id:'sort', label:'整理并合并', primary:true, audioCue:'activate', onSelect:function() {
                     clearSelection();
                     if (!_coordinator.sortAndMerge(containerId, methodName, function(result) {
                         renderInventories();
-                        toast(result.success ? containerId + '整理完成。' : containerId + '整理失败，请重试。');
+                        toast(result.success ? containerId + '整理完成。' : containerId + '整理失败，请重试。',
+                            result.success ? 'success' : 'error');
                     })) toast('库存正在处理另一项操作。');
                 }}
             ]
@@ -891,7 +893,12 @@ var InventoryStorageWorkbench = (function() {
     function clearSelection() { if (_broker) _broker.clearSelection(); }
     function hideTooltip() { if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide(); }
     function isOpen() { return _ports.isPanelActive ? _ports.isPanelActive() : false; }
-    function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
+    function toast(message, severity) { if (typeof Toast !== 'undefined') Toast.add(message, severity); }
+    // 本地拦截(阻断)的即时反馈: 命令式 cue('illegal'); 无音频层时静默。
+    function blockedCue() {
+        if (typeof BootstrapAudio !== 'undefined' && BootstrapAudio
+                && typeof BootstrapAudio.cue === 'function') BootstrapAudio.cue('illegal');
+    }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function iconHtml(iconName, cls) {
         return InventoryWorkbenchOwnedView.iconHtml(iconName, cls, typeof Icons === 'undefined' ? null : Icons);

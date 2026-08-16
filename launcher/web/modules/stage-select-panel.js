@@ -33,6 +33,12 @@ var StageSelectPanel = (function() {
     var _layoutObserver = null;
     var _resizeHandler = null;
 
+    // 语义音效命令式入口（契约 §8）：仅本地可拒绝 / 核心提交动作使用，静态元素走 data-audio-cue
+    function cue(name) {
+        var A = window.BootstrapAudio;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
+
     Panels.register('stage-select', {
         create: createDOM,
         onOpen: onOpen,
@@ -47,7 +53,7 @@ var StageSelectPanel = (function() {
             '<div class="stage-select-header">' +
                 '<div class="stage-select-heading">' +
                     '<span class="stage-select-title">选关测试</span>' +
-                    '<button class="stage-select-frame-toggle" id="stage-select-frame-toggle" type="button" aria-expanded="false" aria-haspopup="listbox" title="切换区域" data-audio-cue="confirm">' +
+                    '<button class="stage-select-frame-toggle" id="stage-select-frame-toggle" type="button" aria-expanded="false" aria-haspopup="listbox" title="切换区域" data-audio-cue="navigate">' +
                         '<span class="stage-select-frame-toggle-label" id="stage-select-frame-toggle-label"></span>' +
                         '<span class="stage-select-frame-toggle-counter" id="stage-select-frame-toggle-counter" aria-hidden="true"></span>' +
                         '<span class="stage-select-frame-toggle-task-badge" id="stage-select-frame-toggle-task-badge" aria-hidden="true"></span>' +
@@ -64,7 +70,7 @@ var StageSelectPanel = (function() {
                         '<option value="challenge">challenge</option>' +
                     '</select>' +
                     '<span class="stage-select-badge" id="stage-select-badge">DEV</span>' +
-                    '<button class="stage-select-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
+                    '<button class="stage-select-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="back">✕</button>' +
                 '</div>' +
             '</div>' +
             '<div class="stage-select-body">' +
@@ -709,6 +715,7 @@ var StageSelectPanel = (function() {
                 entryKind: entryKind,
                 blocked: 'locked'
             };
+            cue('illegal'); // 本地拦截：锁定关卡的进入请求（契约 §2 illegal）
             showError('locked');
             logDev((entryKind === 'difficulty' ? 'difficulty' : entryKind) + ' blocked: ' + stageName + ' / locked');
             return;
@@ -723,6 +730,7 @@ var StageSelectPanel = (function() {
             entryKind: entryKind
         };
         logDev((entryKind === 'difficulty' ? 'difficulty' : entryKind) + ' enter request: ' + stageName + (difficulty ? ' / ' + difficulty : ''));
+        cue('activate'); // 进入关卡 = 核心提交动作：本地校验已过，播意图音（契约 §2 activate；权威回包不再补结果音）
         if (pressedTarget && pressedTarget.classList && pressedTarget.classList.contains('stage-select-difficulty')) {
             pressedTarget.classList.add('is-pressed');
             setTimeout(function() {

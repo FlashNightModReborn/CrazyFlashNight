@@ -2,6 +2,12 @@
 var CraftingMaterials = (function() {
     'use strict';
 
+    // 语义音效命令式入口（契约 §8）：选中类手势在 bindCard 内播音，避免快照自动选中误响
+    function cue(name) {
+        var A = (typeof window !== 'undefined') ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
+
     function create(options) {
         options = options || {};
         var state = {
@@ -387,6 +393,7 @@ var CraftingMaterials = (function() {
                 state.focusedName = item.name;
                 syncRovingFocus(item.name);
                 select(item.name);
+                cue('select');
             });
             card.addEventListener('keydown', function(event) {
                 if (shopNavigationPending()) return;
@@ -395,6 +402,7 @@ var CraftingMaterials = (function() {
                     event.preventDefault();
                     state.focusedName = item.name;
                     select(item.name);
+                    cue('select');
                     return;
                 }
                 var nodes = Array.prototype.slice.call(

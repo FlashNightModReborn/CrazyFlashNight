@@ -472,6 +472,7 @@ var HairdresserPanel = (function() {
 
     function selectCatalogIndex(index, focus) {
         if (!_snapshot || index < 0 || index >= _snapshot.catalog.length) return;
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('select');  // audio: hairstyle/option picked (click + arrow keys share this funnel)
         _selectedIndex = index;
         _reconcileOutcome = '';
         _errorText = '';
@@ -639,6 +640,7 @@ var HairdresserPanel = (function() {
             || row.identifier === _snapshot.currentHair) {
             return;
         }
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('activate');  // audio: commit intent（过了本地门才响）
         // The frozen v1 write identity is the identifier string. Duplicate
         // catalog rows stay visible and ordered, but share the same saved value.
         var expected = row.identifier;
@@ -665,10 +667,11 @@ var HairdresserPanel = (function() {
                 _snapshot.currentHair = response.currentHair;
                 _errorText = '';
                 setStatus('发型已更换并标记存档。', 'ready');
+                if (window.BootstrapAudio) window.BootstrapAudio.cue('success');  // audio: authoritative commit ok
                 // A definitive authoritative write completes this short flow.
                 // Reuse the normal close lifecycle so Host pending cleanup,
                 // focus restoration and the close envelope keep one owner.
-                requestClose();
+                requestClose(true);   // 已播 success，关闭不再播 back（一动作一声）
                 return;
             }
             if (response && response.success === true) {
@@ -679,6 +682,7 @@ var HairdresserPanel = (function() {
                 };
             }
             if (isWriteAmbiguous(response, dispatched)) {
+                if (window.BootstrapAudio) window.BootstrapAudio.cue('unknown');  // audio: 超时/reconcile-required，结果不可知
                 _needsReconcile = true;
                 _reconcileExpected = expected;
                 _errorText = '';
@@ -691,6 +695,7 @@ var HairdresserPanel = (function() {
             _errorText = errorMessage(error);
             _needsRefresh = error === 'hair_not_found' || error === 'stale_state'
                 || error === 'catalog_invalid' || error === 'pricing_unsupported';
+            if (window.BootstrapAudio) window.BootstrapAudio.cue('rejected');  // audio: 权威明确失败
             setStatus('更换未提交，可检查后手动重试。', 'error');
             refreshControls();
         });
@@ -698,6 +703,7 @@ var HairdresserPanel = (function() {
         if (!callId && !callbackRan) {
             _busy = false;
             _errorText = '理发店会话尚未就绪。';
+            if (window.BootstrapAudio) window.BootstrapAudio.cue('illegal');  // audio: 本地未能发出（会话未就绪）
             setStatus('更换未提交，可重新尝试。', 'error');
             refreshControls();
         }
@@ -725,11 +731,13 @@ var HairdresserPanel = (function() {
         refreshSnapshot(_needsReconcile && !!_reconcileExpected);
     }
 
-    function requestClose() {
+    function requestClose(silent) {
         if (_busy) {
             toast('发型更换结果正在确认，请稍候。');
             return false;
         }
+        // audio: 关闭/取消；commit 成功路径传 silent（已播 success，一动作一声）
+        if (!silent && window.BootstrapAudio) window.BootstrapAudio.cue('back');
         Panels.close();
         Bridge.send({type: 'panel', cmd: 'close', panel: 'hairdresser'});
         return true;

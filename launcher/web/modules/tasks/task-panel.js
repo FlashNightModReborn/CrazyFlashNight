@@ -423,6 +423,7 @@
         if (_busy) return;
         // 放弃确认弹窗打开时，ESC/全局遮罩关闭应先消解弹窗（modal 栈语义），不直接拆整个面板
         if (_pendingAbandonId != null) { closeAbandonConfirm(); return; }
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭（dispatch 关闭钮/ESC 同走此口）
         hideTip();
         Panels.close();
         Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
@@ -457,6 +458,7 @@
         if (tab === _tab) return;
         if (_busy) return; // 写操作进行中不切 tab
         if (tab === 'dungeon' && _dungeonTaskId == null) return; // 无上下文时禁止切入副本 tab
+        if (window.BootstrapAudio) window.BootstrapAudio.cue('select');  // 语义音效：页签切换
         _tab = tab;
         hideTip();
         closeSortMenu();
@@ -532,7 +534,7 @@
             if (snapSession !== _session) return;
             if (!data.success) {
                 _leftEl.innerHTML = '<div class="task-empty-hint">获取任务数据失败</div>';
-                toast('获取任务数据失败');
+                toast('获取任务数据失败', 'error');
                 return;
             }
             _tasks = data.tasks || [];
@@ -562,7 +564,7 @@
             if (_activeIndex !== index) return; // 已切走
             if (!data.success) {
                 _rightEl.innerHTML = '<div class="task-empty-hint">加载任务详情失败: ' + escHtml(data.error || '未知错误') + '</div>';
-                toast('加载任务详情失败');
+                toast('加载任务详情失败', 'error');
                 return;
             }
             if (data.taskData) _detailCache[task.taskId] = data.taskData;
@@ -692,6 +694,8 @@
             endOp(btn);
             if (reqSession !== _session) return;
             if (data && data.success) {
+                // 权威结果音：远程交付（领取）成功；随后关面板露出游戏层奖励弹窗，不再播 back（一动作一声）
+                if (window.BootstrapAudio) window.BootstrapAudio.cue('success');
                 // 远程交付成功后必须关面板：AS2 FinishTask 会 SetDialogue(完成对话) + 弹奖励提示界面 +
                 // 可能自动接取链中下一任务再弹接取对话，这些原版 UI 都在游戏层，会被独占 web 覆盖层挡住
                 // （玩家看不到也无法消解奖励弹窗）。关面板把它们露出来（closePanel 语义同前往交付 / 地图 navigate）。
@@ -699,7 +703,7 @@
                 Panels.close();
                 Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
             } else {
-                toast(writeErrorMsg('交付失败', data));
+                toast(writeErrorMsg('交付失败', data), 'error');
                 // 失败也消费刷新后的 tasks：任务未 splice 时 applyWriteSnapshot 按 taskId 原位保留选中，
                 // 顺带把过期的 satisfied/可交付徽章/计数纠正回服务端真值（如交物型任务物品已被消耗）
                 if (data && data.tasks) applyWriteSnapshot(data);
@@ -728,7 +732,7 @@
                 var msg = '无法前往交付NPC';
                 if (data && data.error === 'not_navigable') msg = '该区域尚未解锁，无法一键前往';
                 else if (data && data.error === 'npc_not_on_map') msg = '该任务NPC不在可跳转地图上';
-                toast(msg);
+                toast(msg, 'error');
             }
         });
     }
@@ -764,10 +768,10 @@
             closeAbandonConfirm();
             if (reqSession !== _session) return;
             if (data && data.success) {
-                toast('已放弃任务');
+                toast('已放弃任务', 'success');
                 applyWriteSnapshot(data);
             } else {
-                toast(writeErrorMsg('放弃失败', data));
+                toast(writeErrorMsg('放弃失败', data), 'error');
                 if (data && data.tasks) applyWriteSnapshot(data); // 放弃失败多为状态漂移，重同步保险
             }
         });
@@ -1654,6 +1658,8 @@
             endOp();
             if (reqSession !== _session) return;
             if (data && data.success && data.entered) {
+                // 权威结果音：副本接受并进图成功（AS2 已扣费+AddTask）；关面板交还 Flash，不再播 back
+                if (window.BootstrapAudio) window.BootstrapAudio.cue('success');
                 // 进图成功：AS2 已扣费+AddTask+触发场景淡出跳转，关面板交还 Flash
                 Panels.close();
                 Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
@@ -1669,7 +1675,7 @@
                 not_dungeon_task: '非副本任务',
                 disconnected: '连接已断开'
             })[err] || ('进入失败（' + err + '）');
-            toast(msg);
+            toast(msg, 'error');
         });
     }
 
@@ -2165,8 +2171,9 @@
             '<span class="task-item-count">' + escHtml(itemCount == null ? '' : String(itemCount)) + '</span></div>';
     }
 
-    function toast(msg) {
-        try { if (typeof Toast !== 'undefined' && Toast && Toast.add) Toast.add(escHtml(msg)); } catch (e) {}
+    // severity 透传 Toast.add（契约 §6）：'success'/'error' 播对应结果音，缺省静默
+    function toast(msg, severity) {
+        try { if (typeof Toast !== 'undefined' && Toast && Toast.add) Toast.add(escHtml(msg), severity); } catch (e) {}
     }
 
     var ASSETS_BASE = 'https://cfn-assets.local/portraits/profiles/';

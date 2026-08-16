@@ -280,6 +280,7 @@
                 label + '（' + direction + '）；选中多件后点击执行转移',
                 function() { options.onMode(mode); });
             node.setAttribute('data-quick-mode', mode);
+            node.setAttribute('data-audio-cue', 'toggle');
             node.setAttribute('aria-pressed', 'false');
             modeGroup.appendChild(node);
             return node;
@@ -291,8 +292,10 @@
         actions.className = 'inventory-quick-transfer-actions';
         var cancelButton = button('inventory-quick-transfer-cancel', '退出批量',
             '取消当前批量选择并退出批量模式', options.onCancel);
+        cancelButton.setAttribute('data-audio-cue', 'back');
         var commitButton = button('inventory-quick-transfer-commit', '执行转移',
             '一次执行当前选中的批量转移', options.onCommit);
+        commitButton.setAttribute('data-audio-cue', 'activate');
         actions.appendChild(cancelButton);
         actions.appendChild(commitButton);
         root.appendChild(actions);

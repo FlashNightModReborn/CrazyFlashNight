@@ -209,7 +209,7 @@
                     ports.writeCommand('setPassive', {skillKey:entry.skillKey, enabled:!entry.enabled,
                         expectedRevision:Number(current.snapshot.revision)});
                 });
-                passive.disabled = ports.writesDisabled(entry);
+                passive.disabled = ports.writesDisabled(entry); passive.setAttribute('data-audio-cue', 'toggle');
                 passive.setAttribute('data-focus-key', 'action:passive'); actions.appendChild(passive);
             } else {
                 var actionHint = document.createElement('div'); actionHint.className = 'skills-action-hint';
@@ -360,7 +360,7 @@
             var commit = ports.button(commitText, 'skills-action-btn primary skills-trainer-commit', function() {
                 ports.prepareLearnConfirmation(entry);
             });
-            commit.disabled = !commitEnabled; commit.setAttribute('data-focus-key', 'trainer:commit');
+            commit.disabled = !commitEnabled; commit.setAttribute('data-focus-key', 'trainer:commit'); commit.setAttribute('data-audio-cue', 'activate');
             footer.appendChild(commit); section.appendChild(footer);
             return section;
         }

@@ -127,6 +127,18 @@ var Panels = (function() {
         }
     }
 
+    // 音频 profile 钩子（契约 §3）：open 成功进入面板语义域，close 恢复 standard。
+    // BootstrapAudio 可能不存在（独立 harness / bootstrap 窗口不加载 panels.js），全部防御式调用。
+    function audioEnterPanel(id) {
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A._enterPanel === 'function') A._enterPanel(id);
+    }
+
+    function audioExitPanel(id) {
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A._exitPanel === 'function') A._exitPanel(id);
+    }
+
     function sendMountFailureClose(id, initData, reason) {
         if (!hostOwnsPanelMount(id, initData)) return;
         sendExactCloseNotification(
@@ -293,6 +305,7 @@ var Panels = (function() {
         }
         _active = id;
         _activePanelInstanceId = readPanelInstanceId(initData);
+        audioEnterPanel(id);
         setTimeout(function() {
             if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
         }, 50);
@@ -312,6 +325,8 @@ var Panels = (function() {
             _container.removeAttribute('data-panel');
         }
         if (_content) _content.removeAttribute('data-panel');
+        // rebind/mount 被拒且当前仍挂着该面板时, 视同关闭: 退出其音频语义域
+        if (_active === id) audioExitPanel(id);
         _active = null;
         _activePanelInstanceId = null;
         safeCleanupCallback(panel, 'onClose', 'rejected mount for ' + id);
@@ -436,6 +451,7 @@ var Panels = (function() {
         // 若 lazy panel 仍在加载，取消挂起的打开
         if (_pendingOpen && !preservePendingOpen) cancelPendingOpen(false, 'panel_close');
         if (!_active) return;
+        var closedId = _active;
         var panel = _registry[_active];
         if (panel && panel._el) panel._el.style.display = 'none';
         _container.style.display = 'none';
@@ -443,6 +459,7 @@ var Panels = (function() {
         _content.removeAttribute('data-panel');
         _active = null;
         _activePanelInstanceId = null;
+        audioExitPanel(closedId);
         // onClose：任何关闭路径（C# close / finishClose / 切换面板）都要触发，
         // 用于 observer/listener/rAF 清理。onForceClose 仍在 force_close 分支额外触发，
         // 语义窄化为"C# 强关时的状态复位"。

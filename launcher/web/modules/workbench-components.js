@@ -132,7 +132,7 @@
         for (var key in current) modalSpec[key] = current[key];
         if (!modalSpec.kind) modalSpec.kind = 'workbench-help';
         if (!modalSpec.actions) modalSpec.actions = [
-            {id:'close', label:'知道了', primary:true, audioCue:'confirm'}
+            {id:'close', label:'知道了', primary:true, audioCue:'activate'}
         ];
         var modal = this.shell.openModal(modalSpec);
         if (modal && modal.dialog && modalSpec.ariaLabel) {
@@ -539,6 +539,7 @@
             button.className = choice.className || self._options.buttonClassName || 'workbench-mode-btn';
             if (button.classList) button.classList.add('workbench-choice-option');
             button.setAttribute('data-choice', value);
+            button.setAttribute('data-audio-cue', 'select');
             if (choice.dataAttribute) button.setAttribute(choice.dataAttribute, value);
             if (choice.title) button.title = String(choice.title);
             if (choice.ariaLabel) button.setAttribute('aria-label', String(choice.ariaLabel));
@@ -755,6 +756,7 @@
             option.textContent = choice.label == null ? value : String(choice.label);
             option.setAttribute('role', 'option');
             option.setAttribute('data-dropdown-value', value);
+            option.setAttribute('data-audio-cue', 'select');
             self._choiceLifetime.defer(listen(option, 'click', function(event) {
                 if (option.disabled) return;
                 self.setValue(value, {event:event, choice:choice});
@@ -1360,6 +1362,7 @@
         button.type = 'button';
         button.textContent = label;
         button.setAttribute('aria-label', ariaLabel);
+        button.setAttribute('data-audio-cue', 'toggle');
         return button;
     };
     QuantityControl.prototype._clamp = function(value) {

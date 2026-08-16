@@ -58,7 +58,7 @@
         _tabsEl.setAttribute('aria-label', '战队分类');
         var html = '';
         for (var i = 0; i < TABS.length; i++) {
-            html += '<button class="team-tab" type="button" data-tab="' + TABS[i].id + '">' + TABS[i].label + '</button>';
+            html += '<button class="team-tab" type="button" data-tab="' + TABS[i].id + '" data-audio-cue="select">' + TABS[i].label + '</button>';
         }
         _tabsEl.innerHTML = html;
         var tabs = _tabsEl.querySelectorAll('.team-tab');

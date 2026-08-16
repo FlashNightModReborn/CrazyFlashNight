@@ -76,19 +76,16 @@ var MapPanel = (function() {
         ? window.matchMedia('(prefers-reduced-motion: reduce)')
         : null;
 
-    function playCue(name) {
-        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
-        if (!A) return;
-        var fn = A['play' + name.charAt(0).toUpperCase() + name.slice(1)];
-        if (typeof fn === 'function') fn();
-    }
-
     Panels.register('map', {
         create: createDOM,
         onOpen: onOpen,
         // Esc / backdrop 来自 Panels 框架，不经过 DOM click，所以 overlay 的 click 代理不会触发
-        // cancel cue — 这里显式补一次；DOM click 路径（close btn）由代理负责，避免双响。
-        onRequestClose: function() { playCue('cancel'); requestClose(); },
+        // back cue — 这里显式补一次；DOM click 路径（close btn）由代理负责，避免双响。
+        onRequestClose: function() {
+            var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+            if (A && typeof A.cue === 'function') A.cue('back');
+            requestClose();
+        },
         onClose: handleClose,
         onForceClose: onForceClose
     });
@@ -101,7 +98,7 @@ var MapPanel = (function() {
                 '<div class="map-page-tabs" id="map-page-tabs"></div>' +
                 '<div class="map-coordinate-readout" id="map-coordinate-readout" aria-label="地图坐标"></div>' +
                 '<div class="map-page-summary" id="map-page-summary"></div>' +
-                '<button class="map-panel-close-btn" type="button" title="关闭" data-audio-cue="cancel">X</button>' +
+                '<button class="map-panel-close-btn" type="button" title="关闭" data-audio-cue="back">X</button>' +
             '</div>' +
             '<div class="map-panel-body">' +
                 '<div class="map-stage-shell" id="map-stage-shell">' +
@@ -139,7 +136,7 @@ var MapPanel = (function() {
                             '<div class="map-stage-error-text" id="map-stage-error-text"></div>' +
                             '<div class="map-stage-error-actions">' +
                                 '<button class="map-error-retry" type="button" data-audio-cue="select">重试</button>' +
-                                '<button class="map-error-close" type="button" data-audio-cue="cancel">关闭</button>' +
+                                '<button class="map-error-close" type="button" data-audio-cue="back">关闭</button>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
@@ -309,7 +306,8 @@ var MapPanel = (function() {
         applyPage(requestedPageId || 'base');
         requestSnapshot('snapshot');
         scheduleSettledLayoutSync();
-        playCue('modalOpen');
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue('open');
     }
 
     function onForceClose() {
@@ -936,7 +934,8 @@ var MapPanel = (function() {
             applySnapshot(resp.snapshot || {});
             if (!_snapshotAnnounced) {
                 _snapshotAnnounced = true;
-                playCue('ready');
+                var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                if (A && typeof A.cue === 'function') A.cue('ready');
             }
         };
 
@@ -970,7 +969,7 @@ var MapPanel = (function() {
         if (!_activePage || _closing) return;
 
         if (!_enabledLookup[hotspot.id]) {
-            // hotspot 按钮本身带 data-audio-cue='error'，overlay click 代理已播一次 cue，此处只补 toast
+            // hotspot 按钮本身带 data-audio-cue='illegal'，overlay click 代理已播一次 cue，此处只补 toast
             pushLockedReason(hotspot.id);
             return;
         }
@@ -978,7 +977,7 @@ var MapPanel = (function() {
         if (_busyLookup[hotspot.id]) return;
 
         spawnNavStrike(hotspot);
-        // hotspot 按钮本身带 data-audio-cue='transition'，overlay click 代理已播一次 cue
+        // hotspot 按钮本身带 data-audio-cue='navigate'，overlay click 代理已播一次 cue
         var reqId = 'map-nav-' + (++_reqSeq);
         var currentSession = _session;
         _pendingReq[reqId] = function(resp) {
@@ -1190,7 +1189,7 @@ var MapPanel = (function() {
             btn.className = 'map-hotspot' + (_currentHotspotId === hotspot.id ? ' is-current' : '');
             btn.type = 'button';
             btn.setAttribute('data-hotspot-id', hotspot.id);
-            btn.setAttribute('data-audio-cue', 'transition');
+            btn.setAttribute('data-audio-cue', 'navigate');
             btn.style.left = toPercent(rect.x, _activePage.width);
             btn.style.top = toPercent(rect.y, _activePage.height);
             btn.style.width = toPercent(rect.w, _activePage.width);
@@ -1249,7 +1248,7 @@ var MapPanel = (function() {
             btn.className = 'map-filter-hotspot';
             btn.type = 'button';
             btn.setAttribute('data-filter-id', filter.id);
-            btn.setAttribute('data-audio-cue', isLocked ? 'error' : 'select');
+            btn.setAttribute('data-audio-cue', isLocked ? 'illegal' : 'select');
             btn.setAttribute('aria-label', buildFilterTitle(filter, enabledCount, filterMeta, isLocked));
             btn.style.setProperty('--stagger', String(Math.min(i, 6)));
             btn.classList.toggle('is-active', !!activeFilter && activeFilter.id === filter.id);
@@ -1364,7 +1363,7 @@ var MapPanel = (function() {
             item.className = 'map-rail-scene-item';
             item.type = 'button';
             item.setAttribute('data-hotspot-id', hotspotId);
-            item.setAttribute('data-audio-cue', enabled ? 'transition' : 'error');
+            item.setAttribute('data-audio-cue', enabled ? 'navigate' : 'illegal');
             item.classList.toggle('is-current', isCurrent);
             item.classList.toggle('is-disabled', !enabled);
             if (!enabled && state.lockedReason) {
@@ -1422,7 +1421,7 @@ var MapPanel = (function() {
             var filterMeta = getFilterMeta(_activePage.id, filterId);
             var isLocked = !!(filterMeta && !_unlockFlags[filterMeta.unlockGroup]);
             if (isLocked) {
-                // 锁定 filter 只显示原因, 不切换状态; cue 已由 overlay click 代理按 data-audio-cue='error' 播过
+                // 锁定 filter 只显示原因, 不切换状态; cue 已由 overlay click 代理按 data-audio-cue='illegal' 播过
                 if (filterMeta && filterMeta.lockedReason && typeof Toast !== 'undefined' && Toast && typeof Toast.add === 'function') {
                     Toast.add(filterMeta.lockedReason);
                 }
@@ -2905,7 +2904,8 @@ var MapPanel = (function() {
         setLoading(false);
         _errorTextEl.textContent = normalizeError(errorText);
         _errorEl.style.display = 'flex';
-        playCue('error');
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue('illegal');
     }
 
     function hideError() {

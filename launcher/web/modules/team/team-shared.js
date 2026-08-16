@@ -46,8 +46,10 @@
     }
 
     // ── Toast（共享 Toast.add 包装，同 skills.js 模式）──
-    function toast(msg) {
-        if (typeof Toast !== 'undefined' && Toast.add) Toast.add(msg);
+    // severity 透传契约 §6 结果音挂钩：'success'/'error' 分别播 success/rejected；缺省静默。
+    // 只在无任何显式结果音的静默路径上传 severity（防双响 §5.3）。
+    function toast(msg, severity) {
+        if (typeof Toast !== 'undefined' && Toast.add) Toast.add(msg, severity);
     }
 
     // ── 按钮 pending 投影 ──

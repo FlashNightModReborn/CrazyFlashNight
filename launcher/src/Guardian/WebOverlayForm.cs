@@ -988,6 +988,9 @@ namespace CF7Launcher.Guardian
         // 音乐目录
         private CF7Launcher.Audio.MusicCatalog _musicCatalog;
 
+        // P0 音频偏好同步：Host 侧 UserPrefs 是 sfxEnabled/ambientEnabled 的权威源
+        private CF7Launcher.Config.UserPrefs _userPrefs;
+
         private static readonly JsonLoadSettings StrictJukeboxJsonSettings =
             new JsonLoadSettings
             {
@@ -1369,6 +1372,7 @@ namespace CF7Launcher.Guardian
                         {
                             _webReady = true;
                             FlushDeferredPanelDelivery();
+                            PushAudioPrefs();   // P0: 恢复就绪后重发音频偏好
                         }
                     }
                 };
@@ -2103,6 +2107,7 @@ namespace CF7Launcher.Guardian
                     _webReady = true;
                     _webFailed = false; // 热重载恢复时清除降级标记
                     FlushDeferredPanelDelivery();
+                    PushAudioPrefs();   // P0: 初始下发音频偏好（热重载后同样重发）
                     ApplyWebPerfMode("ready");
 
                     // 取消热重载超时 Timer
@@ -3156,6 +3161,27 @@ namespace CF7Launcher.Guardian
             catalog.CatalogChanged += delegate(string updateJson) {
                 if (_webReady && (!_useNativeHud || _panelMode)) PostToWeb(updateJson);
             };
+        }
+
+        /// <summary>注入用户偏好（P0：Host 是 sfxEnabled/ambientEnabled 的权威源）。</summary>
+        public void SetUserPrefs(CF7Launcher.Config.UserPrefs prefs)
+        {
+            _userPrefs = prefs;
+        }
+
+        /// <summary>
+        /// 把当前音频偏好推送给 overlay：{type:'audioPrefs', sfxEnabled, ambientEnabled}。
+        /// 时机：_webReady 置真后（初始下发）与 config_set 成功落盘后的变更广播。
+        /// 未注入 UserPrefs 时静默跳过；web 未就绪由 PostToWeb 自带门槛拦截。
+        /// </summary>
+        public void PushAudioPrefs()
+        {
+            var prefs = _userPrefs;
+            if (prefs == null) return;
+            PostToWeb("{\"type\":\"audioPrefs\",\"sfxEnabled\":"
+                + (prefs.SfxEnabled ? "true" : "false")
+                + ",\"ambientEnabled\":"
+                + (prefs.AmbientEnabled ? "true" : "false") + "}");
         }
 
         /// <summary>

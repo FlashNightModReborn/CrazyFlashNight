@@ -16,6 +16,12 @@
 
     var S = ArenaCore.state; // 共享状态（原顶层 var _x）
 
+    // 语义音效命令式入口（契约 §8）：仅本地拦截 / 权威结果路径使用，静态元素走 data-audio-cue
+    function cue(name) {
+        var A = window.BootstrapAudio;
+        if (A && typeof A.cue === 'function') A.cue(name);
+    }
+
     function browseTooltipScope() {
         if (S._browseTooltipScope && !S._browseTooltipScope.disposed) return S._browseTooltipScope;
         S._browseTooltipScope = (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.createScope)
@@ -85,7 +91,7 @@
         S._rerollAllBtn.className = 'arena-reroll-all';
         S._rerollAllBtn.textContent = '↻ 全部重抽';
         S._rerollAllBtn.title = '重新抽取当前模式全部卡片与对手';
-        S._rerollAllBtn.setAttribute('data-audio-cue', 'confirm');
+        S._rerollAllBtn.setAttribute('data-audio-cue', 'toggle');
         S._rerollAllBtn.addEventListener('click', onRerollAll);
         controls.appendChild(S._rerollAllBtn);
         S._catalogRoot.appendChild(controls);
@@ -118,7 +124,7 @@
         S._rollOneBtn.className = 'arena-detail-roll';
         S._rollOneBtn.textContent = '↻ 换一批';
         S._rollOneBtn.title = '重新抽取选中挑战的对手（免费）';
-        S._rollOneBtn.setAttribute('data-audio-cue', 'confirm');
+        S._rollOneBtn.setAttribute('data-audio-cue', 'toggle');
         S._rollOneBtn.disabled = true;
         S._rollOneBtn.addEventListener('click', onRollAgain);
         head.appendChild(S._rollOneBtn);
@@ -137,7 +143,7 @@
         });
         // 复用原 detail 确认键的战术橙 CTA 视觉（arena.css 同各类名规则）
         S._commitBar.primaryButton.classList.add('arena-detail-confirm');
-        S._commitBar.primaryButton.setAttribute('data-audio-cue', 'confirm');
+        S._commitBar.primaryButton.setAttribute('data-audio-cue', 'activate');
         S._commitBar.mount(S._decisionRoot);
 
         S._browseL = simpleView('arena:catalog', 'catalog', ['L'], S._catalogRoot, function() {});
@@ -282,9 +288,10 @@
                     '<span class="arena-prize-label">估算场地费</span>' +
                     '<span class="arena-prize-value" id="arena-custom-fee">--</span>' +
                 '</div>' +
-                '<button class="arena-custom-btn arena-custom-abort" type="button" data-audio-cue="cancel">中止</button>' +
-                '<button class="arena-custom-btn arena-custom-edit" type="button" data-custom-action="edit" data-audio-cue="confirm">编辑配置</button>' +
-                '<button class="arena-card-btn-enter arena-custom-generate" type="button" data-audio-cue="confirm">检查并确认</button>' +
+                '<button class="arena-custom-btn arena-custom-abort" type="button" data-audio-cue="back">中止</button>' +
+                '<button class="arena-custom-btn arena-custom-edit" type="button" data-custom-action="edit" data-audio-cue="navigate">编辑配置</button>' +
+                // 检查并确认 = 本地可拒绝动作（契约 §5.2）：不挂声明式 cue，由 onCustomGenerate 按结果播 activate/illegal
+                '<button class="arena-card-btn-enter arena-custom-generate" type="button">检查并确认</button>' +
             '</div>';
 
         // 卡片随 buildCards 重建：先销毁上一张卡的 CommitBar（listener 生命周期对齐卡片）
@@ -296,7 +303,7 @@
             confirmCancelBtn.type = 'button';
             confirmCancelBtn.textContent = '返回编辑';
             confirmCancelBtn.setAttribute('data-custom-confirm-action', 'cancel');
-            confirmCancelBtn.setAttribute('data-audio-cue', 'cancel');
+            confirmCancelBtn.setAttribute('data-audio-cue', 'back');
             confirmActionsEl.appendChild(confirmCancelBtn);
             S._customConfirmBar = new WorkbenchComponents.CommitBar({
                 label: '确认委托',
@@ -307,7 +314,7 @@
             // 战术橙实心 CTA 视觉沿用 .arena-card-btn-enter 配方（与右栏决策 CommitBar 同款消费）
             S._customConfirmBar.primaryButton.classList.add('arena-card-btn-enter');
             S._customConfirmBar.primaryButton.setAttribute('data-custom-confirm-action', 'start');
-            S._customConfirmBar.primaryButton.setAttribute('data-audio-cue', 'confirm');
+            S._customConfirmBar.primaryButton.setAttribute('data-audio-cue', 'activate');
             S._customConfirmBar.mount(confirmActionsEl);
         }
 
@@ -714,6 +721,7 @@
     function enterChallenge(cardIdx, card, opponents) {
         if (S._busy || cardIdx < 0 || !card || !opponents || opponents.length === 0) return;
         if (S._snapshot && S._snapshot.money != null && S._snapshot.money < card.deposit) {
+            cue('illegal'); // 本地拦截：金钱不足的越界提交（键盘路径可达，右栏 CTA 已禁用）
             ArenaCore.showToast('金钱不足！');
             return;
         }
@@ -728,9 +736,11 @@
             updateCardStates();
             if (S._shell) S._shell.setStatus('待命', Workbench.WorkbenchState.IDLE);
             if (!data.success) {
+                cue('rejected'); // 权威回包明确失败（契约 §2 结果音）
                 ArenaCore.showToast(data.error || '挑战发起失败');
                 return;
             }
+            cue('success'); // 权威回包接受：挑战发起成功（AS2 接管跳关）
             // closePanel:true → 必须走 requestClose 而不是裸 Panels.close()，
             // 因为后者只关 web 端 UI，不通知 C# 收 PanelHost；不收的话 WebOverlay
             // 还停在 opaque/panelRect 模式遮盖 Flash → AS2 已转场但视觉黑屏。
