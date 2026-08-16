@@ -79,7 +79,7 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 .view[hidden]{display:none}
 
 /* ── 视图进出场 (welcome ↔ slots) ──
-   抄游戏内 Boot 面板范式 (features.css @keyframes mapPanelBoot / stageSelectBoot):
+   抄游戏内 Boot 面板范式 (features.css @keyframes mapPanelBoot / panels/stage-select.css @keyframes stageSelectBoot):
    滑入 + 淡入 + 轻微位移, structural/standard 档 (210/160ms), ease-emphasized.
    class 由 bootstrap-main.js 的 switchView 添加, leave 结束 (animationend / 300ms 兜底) 才置 hidden;
    离场 view 临时 fixed 脱离文档流, 避免双 view 同屏时把页面撑出滚动条. */

@@ -1,0 +1,1764 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   Stage Select Panel（选关界面）— P1-B 拆出（原 panels/features.css 中段 +
+   panels/foundation-rest.css anchor 规则）；P2 交互升级（键盘路径 + pinned 决策检查器）；
+   打磨批（检查器卡族皮肤 + 检查器内键盘难度导航 + 选中光环同族化）
+   ────────────────────────────────────────────────────────────────────────────
+   P2（2026-08-16，依据 docs/选关界面-双栏工作台栈对齐评估与升级方向-2026-08-16.md §3 P2，
+   进关提交形态经用户裁决为双模：hover 卡一点即进的鼠标路径不动，检查器承接选中态与键盘路径）：
+   ① hover 卡整体迁出 role=button 节点到 .stage-select-card-anchor 同位锚点层，消除嵌套
+      button 语义；可见性由面板 JS 以 .is-card-open 驱动（原 :hover/:focus CSS 联动下线），
+      几何 / 视觉 / 自适应宽高规则原样保留（选择器祖先换为锚点，状态类与卡片变量双向镜像）。
+   ② 新增 pinned 决策检查器（.stage-select-inspector）：舞台壳内底部浮层，复用 hover 卡
+      数据链；键盘路径难度按钮命中区补足至 ≥40px；hover 卡内按钮保持原版 37×20 鼠标快捷
+      路径不放大（放大必破坏原版 160px 卡宽四键排布，登记为已知命中区例外）。
+   ③ 选中态（.is-selected）= 常驻金色命中区圆环 + 名称染色；选中节点的标记/名称不再随
+      hover/focus 隐藏（信息展示已由检查器承接）。
+   ④ focus 治理：4 处 :focus-visible{outline:none} 逐一换装 --ss-focus-rgb 自有焦点环
+      （D1 裁决本面板为非壳消费者，css/workbench/states.css 的壳内焦点环不可达，故不消费
+      共享层）；关卡节点本体保持 outline:none，焦点环落在 44px 圆形命中区上。
+   打磨批（2026-08-16，真实试玩反馈三点全解；只换皮不换骨，布局/信息架构/协议不变）：
+   ⑤ 检查器键盘难度导航：←/→ 在检查器同排难度按钮间循环移焦（handleInspectorKey，
+      与区域菜单取模循环同语义），焦点即选中高亮——高亮用各按钮自身色系（is-easy/
+      is-adventure/is-shura/is-hell 各自 grad-top 通道的 outline+外发光+brightness），
+      不套通用蓝环；↑/↓ 无操作；检查器打开期间节点方向键导航被截停并回引焦点进检查器。
+   ⑥ 检查器视觉同族化：复用 hover 卡底色渐变（去半透明改不透明）/ 卡片阴影栈 /
+      红色切角（.stage-select-inspector-corner 对位 .stage-select-card-corner）/ 名称与
+      正文字重字号及黑色 text-shadow 栈；难度按钮 56×40 与卡内 37×20 同共享类渲染
+      （同色阶/同高光/同描边基因）。蓝色 accent 描边退役。
+   ⑦ 选中光效同族化：.is-selected 硬 box-shadow 单线圆环退役，改 .stage-select-selected-ring
+      独立元素——与 .stage-select-task-pulse 同构造族（圆形 border + 分层柔和 box-shadow
+      外发光 + inset 内发光），缓慢呼吸脉冲 stageSelectSelectedBreath，并纳入既有
+      prefers-reduced-motion 关闭块；名称金色染色保留。
+   打磨批二轮（2026-08-16，实机反馈：选中节点上残留 hover 卡与蓝色焦点环交叠打架）：
+   ⑧ 节点焦点环改自有键盘模态类 .is-kb-focus 驱动，命中区 :focus-visible 启发式退役——
+      WebView2 宿主的嵌入焦点链（MoveFocus(Programmatic) 等）会让鼠标点击也命中
+      :focus-visible；模态位由 renderer capture 阶段 keydown→true / pointerdown→false
+      维护。选中节点（.is-selected，金环已承指示）与卡开节点（.has-open-card，卡本体即
+      指示器）不画蓝环；锁定/直达等无卡节点的键盘环保留。检查器内控件焦点环不受影响。
+   ⑨ 选中节点 hover 卡硬抑制：.is-selected 镜像到卡锚点（renderer.applySelectionClasses），
+      本文件 .stage-select-card-anchor.is-selected .stage-select-card{display:none} 兜底，
+      即便事件乱序残留 .is-card-open 也不可能画出卡片；取消选中镜像摘除、行为复原。
+   ⑩ 层级收尾：环永不画在卡上（⑧的 .has-open-card 守卫）；节点 :hover/:focus 的 z-20 为
+      命中测试承重（卡几何覆盖节点命中区，无此前提选中点击会被自家卡拦截），不动。
+   P1-B（2026-08-16，裁决 = 同上 D2）：
+   ① 机械拆出，零视觉 / 零布局 / 零交互 / 零协议变化；逐值等价由 tmp/p1b-verify-final-css-v2.js
+      做颜色语义归一化（#rrggbb ≡ rgb(r,g,b)）+ var() 反向还原比对证明：token 通道值 = 拆前字面量
+      原通道，alpha / 字号 / 时长 / 缓动关键字原样保留在消费点。
+   ② 硬编码颜色 / 字号 / 时长 / 缓动全部收敛为下方 --ss-* token：色值一律 rgb 通道单源
+      （对齐 tokens.css --dls-crystal-rgb 与 arena.css P1c 惯例；新文件对 ratchet baseline 全行
+      touched，裸 #hex/rgba 字面量与 ease 关键字都会成为 WB122/126 债务 finding，故通道化）。
+      作用域 = 面板根 .stage-select-panel[data-workbench-skin="stage-select"]；anchor 两条规则在
+      面板根之外，故 token 块同值双挂 #panel-container[data-panel="stage-select"]。
+      与 --wb-* / --dls-* 共享 token 已全量比对，无逐值相等项（最近的 --wb-scrollbar-track
+      #0b1115 ≠ #0b1118，--wb-motion-micro 100ms ≠ 120ms），故本批零共享 token 消费。
+   ③ 面板根 data-workbench-skin="stage-select" 由 stage-select/stage-select-renderer.js createDOM 写入。
+   ④ 不迁 DualPaneShell / 不进 css/workbench/（D1 非壳消费者；css/workbench/ 全域在 G5
+      focus outline ratchet 扫描面内，本批保留 :focus-visible{outline:none} 原样，focus 治理属 P2）。
+   ⑤ 本地 reduced-motion 关闭块原样保留：motion.css 根级关闭块只覆盖 .workbench-shell /
+      .arena-xshell，stage-select 不在其辖域，删除会改变行为。
+   ⑥ chip 块（任务红点 badge：.stage-select-frame-toggle-task-badge / .stage-select-tab-task-badge
+      的视觉规则与其 reduced-motion 项）有意留在 features.css「共用 chip 视觉」单一来源块——
+      该块被 map page tab / map filter 跨面板复用；曾试拆同值副本入本文件，重复的
+      cubic-bezier(0.34,1.56,0.64,1) 触发 ratchet rawEasing 单调上限违例（WB130，上限不可上调），
+      按"规则被其他面板复用则局部回退"原则回退。本文件仅保留 stage-select 专属的 :empty 隐藏规则。
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.stage-select-panel[data-workbench-skin="stage-select"],
+#panel-container[data-panel="stage-select"] {
+    --ss-text-rgb: 237,245,255;
+    --ss-bg-deep-rgb: 11,17,24;
+    --ss-panel-grad-top-rgb: 17,25,35;
+    --ss-panel-grad-bottom-rgb: 8,12,18;
+    --ss-line-rgb: 148,163,184;
+    --ss-black-rgb: 0,0,0;
+    --ss-white-rgb: 255,255,255;
+    --ss-header-rgb: 8,13,20;
+    --ss-surface-rgb: 15,23,42;
+    --ss-accent-rgb: 96,165,250;
+    --ss-active-rgb: 30,64,175;
+    --ss-toggle-text-rgb: 224,242,254;
+    --ss-counter-text-rgb: 203,213,245;
+    --ss-gold-rgb: 250,204,21;
+    --ss-region-text-rgb: 147,197,253;
+    --ss-tab-text-rgb: 219,234,254;
+    --ss-tab-task-bg-rgb: 80,19,24;
+    --ss-task-rgb: 255,74,58;
+    --ss-task-edge-rgb: 255,94,74;
+    --ss-task-hot-rgb: 255,146,98;
+    --ss-badge-rgb: 125,211,252;
+    --ss-tab-focus-bg-rgb: 15,118,110;
+    --ss-close-text-rgb: 226,232,240;
+    --ss-danger-rgb: 248,113,113;
+    --ss-close-hover-bg-rgb: 153,27,27;
+    --ss-stage-bg-rgb: 2,6,23;
+    --ss-name-scrim-rgb: 2,6,18;
+    --ss-marker-rgb: 153,0,0;
+    --ss-marker-locked-rgb: 102,0,0;
+    --ss-marker-map-rgb: 0,153,0;
+    --ss-task-entry-text-rgb: 255,232,210;
+    --ss-task-entry-bg-rgb: 75,14,18;
+    --ss-task-entry-hover-bg-rgb: 104,24,20;
+    --ss-lock-body-rgb: 102,102,102;
+    --ss-edge-ink-rgb: 5,5,5;
+    --ss-red-rgb: 255,0,0;
+    --ss-pulse-glow-rgb: 255,255,0;
+    --ss-pulse-glow-warm-rgb: 255,230,0;
+    --ss-card-grad-top-rgb: 49,50,44;
+    --ss-card-grad-bottom-rgb: 17,17,17;
+    --ss-preview-bg-rgb: 11,15,15;
+    --ss-card-name-text-rgb: 248,250,252;
+    --ss-easy-grad-top-rgb: 0,204,255;
+    --ss-easy-grad-bottom-rgb: 0,51,153;
+    --ss-adventure-grad-top-rgb: 153,255,0;
+    --ss-adventure-grad-bottom-rgb: 102,153,0;
+    --ss-shura-grad-top-rgb: 255,204,0;
+    --ss-shura-grad-bottom-rgb: 255,102,0;
+    --ss-difficulty-pressed-rgb: 180,83,9;
+    --ss-nav-grad-top-rgb: 49,49,44;
+    --ss-nav-grad-bottom-rgb: 26,26,25;
+    --ss-nav-text-rgb: 204,204,204;
+    --ss-nav-inset-rgb: 153,153,153;
+    --ss-nav-yellow-grad-top-rgb: 255,214,51;
+    --ss-nav-yellow-grad-bottom-rgb: 184,120,0;
+    --ss-nav-red-grad-top-rgb: 240,24,24;
+    --ss-nav-red-grad-bottom-rgb: 159,8,8;
+    --ss-entry-yellow-grad-bottom-rgb: 153,102,0;
+    --ss-entry-red-grad-top-rgb: 228,0,0;
+    --ss-entry-red-grad-bottom-rgb: 143,0,0;
+    --ss-scene-ring-rgb: 0,160,0;
+    --ss-scene-ring-bg-rgb: 0,120,0;
+    --ss-nav-hover-text-rgb: 254,243,199;
+    --ss-side-title-text-rgb: 191,219,254;
+    --ss-side-text-rgb: 203,213,225;
+    --ss-error-text-rgb: 254,202,202;
+    --ss-error-bg-rgb: 127,29,29;
+    --ss-font-xs: 11px;
+    --ss-font-sm: 12px;
+    --ss-font-base: 13px;
+    --ss-font-md: 14px;
+    --ss-font-side-title: 15px;
+    --ss-font-close: 16px;
+    --ss-font-title: 21px;
+    --ss-motion-fast: 120ms;
+    --ss-motion-icon: 140ms;
+    --ss-motion-boot: 180ms;
+    --ss-motion-task-flash: 980ms;
+    --ss-motion-hint: 1960ms;
+    /* 打磨批：选中光环呼吸周期（语义独立于 hint；与 task-flash 同族但更缓慢） */
+    --ss-motion-selected-breath: 2200ms;
+    --ss-ease-default: ease;
+    --ss-ease-out: ease-out;
+    --ss-ease-linear: linear;
+    /* 打磨批：选中光环呼吸缓动（对称往返） */
+    --ss-ease-in-out: ease-in-out;
+    /* P2 焦点环 / 选中态：值分别复用 badge（青蓝）与 gold（金黄）通道，暗色舞台高对比；
+       语义独立成 token，后续换肤不必回追消费点。 */
+    --ss-focus-rgb: 125,211,252;
+    --ss-selected-rgb: 250,204,21;
+}
+
+/* ── 全屏 anchor / 去 backdrop 暗屏（原 foundation-rest.css，仅服务 stage-select）── */
+#panel-container[data-panel="stage-select"] #panel-content {
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 沉浸全屏化 2026-06-11：兜底深底，去 backdrop 暗屏（runtime 舞台已铺满，仅防亚像素边缝）*/
+#panel-container[data-panel="stage-select"] #panel-backdrop {
+    background: rgb(var(--ss-bg-deep-rgb));
+}
+
+/* Stage Select Panel - Phase 1 static replica */
+.stage-select-panel {
+    position: relative;
+    width: min(96vw, 1500px);
+    height: min(94vh, 900px);
+    min-width: 960px;
+    min-height: 560px;
+    color: rgb(var(--ss-text-rgb));
+    background:
+        linear-gradient(180deg, rgba(var(--ss-panel-grad-top-rgb),0.96), rgba(var(--ss-panel-grad-bottom-rgb),0.98)),
+        rgb(var(--ss-bg-deep-rgb));
+    border: 1px solid rgba(var(--ss-line-rgb),0.34);
+    box-shadow: 0 24px 80px rgba(var(--ss-black-rgb),0.55);
+    overflow: hidden;
+    font-family: "Microsoft YaHei", "SimHei", Arial, sans-serif;
+}
+
+.stage-select-panel.is-entered {
+    animation: stageSelectBoot var(--ss-motion-boot) var(--ss-ease-out);
+}
+
+.stage-select-header {
+    height: 92px;
+    display: grid;
+    grid-template-columns: minmax(180px, 240px) 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(var(--ss-header-rgb),0.92);
+    border-bottom: 1px solid rgba(var(--ss-line-rgb),0.22);
+}
+
+.stage-select-heading {
+    display: grid;
+    gap: 5px;
+}
+
+.stage-select-title {
+    font-size: var(--ss-font-title);
+    font-weight: 700;
+}
+
+.stage-select-frame-toggle {
+    display: none;
+    position: relative;
+    align-items: center;
+    gap: 8px;
+    min-width: 150px;
+    max-width: 280px;
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid rgba(var(--ss-line-rgb),0.38);
+    background: rgba(var(--ss-surface-rgb),0.88);
+    color: rgb(var(--ss-toggle-text-rgb));
+    font-family: "Microsoft YaHei", "SimHei", Arial, sans-serif;
+    font-size: var(--ss-font-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color var(--ss-motion-fast) var(--ss-ease-default), background-color var(--ss-motion-fast) var(--ss-ease-default), color var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-frame-toggle:hover,
+.stage-select-frame-toggle:focus-visible,
+.stage-select-panel.is-frame-menu-open .stage-select-frame-toggle {
+    border-color: rgba(var(--ss-accent-rgb),0.9);
+    background: rgba(var(--ss-active-rgb),0.78);
+    color: rgb(var(--ss-white-rgb));
+}
+
+/* P2 focus 治理 ①/④：共享 .workbench-shell 焦点环只管壳内（D1 裁决 stage-select 为非壳消费者），
+   4 处 :focus-visible{outline:none} 逐一换装 --ss-focus-rgb 自有焦点环。 */
+.stage-select-frame-toggle:focus-visible {
+    outline: 2px solid rgb(var(--ss-focus-rgb));
+    outline-offset: 1px;
+}
+
+.stage-select-frame-toggle-label {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.stage-select-frame-toggle-counter {
+    flex: 0 0 auto;
+    padding: 1px 6px;
+    color: rgb(var(--ss-counter-text-rgb));
+    font-size: var(--ss-font-xs);
+    font-weight: 600;
+    line-height: 14px;
+    background: rgba(var(--ss-line-rgb),0.18);
+    border: 1px solid rgba(var(--ss-line-rgb),0.32);
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+
+/* 视觉规范已上提到统一 chip 块（见 panels.css 任务红点章节），
+ * 这里仅保留"空 badge 自动隐藏"，避免 stage-select 头部出现空 14px 占位。 */
+.stage-select-frame-toggle-task-badge:empty,
+.stage-select-tab-task-badge:empty {
+    display: none;
+}
+
+.stage-select-frame-toggle:hover .stage-select-frame-toggle-counter,
+.stage-select-frame-toggle:focus-visible .stage-select-frame-toggle-counter,
+.stage-select-panel.is-frame-menu-open .stage-select-frame-toggle-counter {
+    color: rgb(var(--ss-white-rgb));
+    background: rgba(var(--ss-accent-rgb),0.28);
+    border-color: rgba(var(--ss-accent-rgb),0.55);
+}
+
+.stage-select-frame-toggle-icon {
+    flex: 0 0 auto;
+    color: rgb(var(--ss-gold-rgb));
+    font-size: var(--ss-font-xs);
+    transition: transform var(--ss-motion-icon) var(--ss-ease-default);
+}
+
+.stage-select-panel.is-frame-menu-open .stage-select-frame-toggle-icon {
+    transform: rotate(180deg);
+}
+
+.stage-select-region {
+    font-size: var(--ss-font-base);
+    color: rgb(var(--ss-region-text-rgb));
+}
+
+.stage-select-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-content: center;
+    max-height: 72px;
+    overflow: hidden;
+}
+
+.stage-select-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid rgba(var(--ss-line-rgb),0.3);
+    background: rgba(var(--ss-surface-rgb),0.78);
+    color: rgb(var(--ss-tab-text-rgb));
+    height: 22px;
+    padding: 0 8px;
+    font-size: var(--ss-font-sm);
+    cursor: pointer;
+}
+
+.stage-select-tab-label {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.stage-select-tab.has-task {
+    border-color: rgba(var(--ss-task-rgb),0.58);
+    box-shadow: inset 3px 0 0 rgba(var(--ss-task-rgb),0.36);
+}
+
+.stage-select-tab:hover,
+.stage-select-tab.is-active {
+    border-color: rgba(var(--ss-accent-rgb),0.9);
+    background: rgba(var(--ss-active-rgb),0.72);
+    color: rgb(var(--ss-white-rgb));
+}
+
+.stage-select-tools {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.stage-select-fixture-label {
+    font-size: var(--ss-font-xs);
+    color: rgb(var(--ss-line-rgb));
+}
+
+#stage-select-fixture {
+    height: 24px;
+    border: 1px solid rgba(var(--ss-line-rgb),0.38);
+    background: rgb(var(--ss-surface-rgb));
+    color: rgb(var(--ss-tab-text-rgb));
+    font-size: var(--ss-font-sm);
+}
+
+.stage-select-badge {
+    min-width: 42px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(var(--ss-badge-rgb),0.55);
+    color: rgb(var(--ss-badge-rgb));
+    font-size: var(--ss-font-xs);
+}
+
+.stage-select-panel.is-runtime .stage-select-fixture-label,
+.stage-select-panel.is-runtime #stage-select-fixture,
+.stage-select-panel.is-runtime .stage-select-badge {
+    display: none;
+}
+
+.stage-select-panel.is-runtime {
+    /* 沉浸全屏化 2026-06-11：去 max-width:1560/max-height:920 卡片上限 + 去 960/560 min，
+       铺满全 anchor 16:9（小窗口同比缩小不溢出）*/
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    flex: 0 1 auto;
+}
+
+/* runtime header 改为浮于舞台之上的覆盖 HUD（区域切换/关闭），让舞台吃满全 16:9 高度；
+   背景改顶部 scrim 渐变保证控件可读又不挡舞台，去实线分隔。*/
+.stage-select-panel.is-runtime .stage-select-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 42px;
+    grid-template-columns: minmax(160px, max-content) 1fr auto;
+    gap: 8px;
+    padding: 5px 10px;
+    overflow: visible;
+    z-index: 80;
+    background: linear-gradient(180deg, rgba(var(--ss-header-rgb),0.82) 0%, rgba(var(--ss-header-rgb),0.34) 64%, transparent 100%);
+    border-bottom: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-heading {
+    min-width: 0;
+}
+
+.stage-select-panel.is-runtime .stage-select-title,
+.stage-select-panel.is-runtime .stage-select-region {
+    display: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle {
+    display: inline-flex;
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle.has-task {
+    border-color: rgba(var(--ss-task-rgb),0.55);
+    box-shadow: inset 3px 0 0 rgba(var(--ss-task-rgb),0.34);
+}
+
+.stage-select-panel.is-runtime .stage-select-tabs {
+    position: absolute;
+    left: 10px;
+    top: 40px;
+    z-index: 90;
+    display: none;
+    grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+    align-content: start;
+    width: min(650px, calc(100% - 72px));
+    max-height: min(330px, calc(100vh - 118px));
+    padding: 8px;
+    overflow: auto;
+    background: rgba(var(--ss-header-rgb),0.98);
+    border: 1px solid rgba(var(--ss-accent-rgb),0.46);
+    box-shadow: 0 18px 48px rgba(var(--ss-black-rgb),0.62);
+}
+
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-tabs {
+    display: grid;
+}
+
+.stage-select-panel.is-runtime .stage-select-tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    height: 30px;
+    padding: 0 9px 0 14px;
+    overflow: hidden;
+    font-size: var(--ss-font-sm);
+    line-height: 28px;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: background-color var(--ss-motion-fast) var(--ss-ease-default), border-color var(--ss-motion-fast) var(--ss-ease-default), color var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.has-task {
+    border-color: rgba(var(--ss-task-rgb),0.58);
+    background: rgba(var(--ss-tab-task-bg-rgb),0.58);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.has-task::before {
+    background: linear-gradient(180deg, rgb(var(--ss-task-rgb)) 0%, rgb(var(--ss-task-hot-rgb)) 100%);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+    transition: background-color var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.is-active {
+    color: rgb(var(--ss-white-rgb));
+    background: rgba(var(--ss-active-rgb),0.85);
+    border-color: rgba(var(--ss-accent-rgb),0.95);
+    font-weight: 700;
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.is-active::before {
+    background: rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-panel.is-runtime .stage-select-tab:focus-visible {
+    /* P2 focus 治理 ②/④：原 outline:none 换装自有焦点环，其余焦点态视觉保持。 */
+    outline: 2px solid rgb(var(--ss-focus-rgb));
+    outline-offset: 1px;
+    border-color: rgba(var(--ss-badge-rgb),0.95);
+    background: rgba(var(--ss-tab-focus-bg-rgb),0.55);
+    color: rgb(var(--ss-white-rgb));
+}
+
+.stage-select-panel.is-runtime .stage-select-tools {
+    justify-self: end;
+}
+
+.stage-select-close-btn {
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(var(--ss-line-rgb),0.55);
+    background: rgba(var(--ss-surface-rgb),0.78);
+    color: rgb(var(--ss-close-text-rgb));
+    cursor: pointer;
+    font-size: var(--ss-font-close);
+    font-weight: 600;
+    line-height: 28px;
+    text-align: center;
+    transition: border-color var(--ss-motion-fast) var(--ss-ease-default), background-color var(--ss-motion-fast) var(--ss-ease-default), color var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-close-btn:hover,
+.stage-select-close-btn:focus-visible {
+    border-color: rgba(var(--ss-danger-rgb),0.92);
+    background: rgba(var(--ss-close-hover-bg-rgb),0.82);
+    color: rgb(var(--ss-white-rgb));
+}
+
+/* P2 focus 治理 ③/④ */
+.stage-select-close-btn:focus-visible {
+    outline: 2px solid rgb(var(--ss-focus-rgb));
+    outline-offset: 1px;
+}
+
+.stage-select-body {
+    height: calc(100% - 92px);
+    display: grid;
+    grid-template-columns: 1fr 210px;
+    gap: 12px;
+    padding: 12px;
+}
+
+.stage-select-panel.is-runtime .stage-select-body {
+    /* header 转覆盖 HUD 后 body 吃满全高、去内边距，舞台 edge-to-edge 铺满 16:9 */
+    height: 100%;
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0;
+}
+
+.stage-select-stage-shell {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    background: rgb(var(--ss-stage-bg-rgb));
+    border: 1px solid rgba(var(--ss-line-rgb),0.2);
+    overflow: hidden;
+}
+
+.stage-select-panel.is-runtime .stage-select-stage-shell {
+    border-color: transparent;
+}
+
+.stage-select-stage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: center center;
+    overflow: hidden;
+    background: rgb(var(--ss-stage-bg-rgb));
+}
+
+.stage-select-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1024px;
+    height: 576px;
+    object-fit: fill;
+}
+
+.stage-select-bg[data-mode="derived"] {
+    filter: saturate(0.96) brightness(0.98);
+}
+
+.stage-select-button-layer,
+.stage-select-nav-layer {
+    position: absolute;
+    inset: 0;
+}
+
+.stage-select-stage-button {
+    position: absolute;
+    width: 141px;
+    min-height: 38px;
+    transform: translate(-70.5px, 133.7px);
+    z-index: 2;
+    cursor: pointer;
+    outline: none;
+}
+
+.stage-select-decoration {
+    position: absolute;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.stage-select-decoration-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    mix-blend-mode: screen;
+    opacity: 0.96;
+}
+
+.stage-select-decoration.is-magic-sigil.is-red .stage-select-decoration-img {
+    filter: sepia(1) saturate(7) hue-rotate(310deg) brightness(0.96) contrast(1.22);
+}
+
+.stage-select-decoration.is-magic-sigil.is-blue .stage-select-decoration-img {
+    filter: saturate(1.28) brightness(1.04) contrast(1.08);
+}
+
+.stage-select-marker {
+    position: absolute;
+    left: 55.9px;
+    top: -28.3px;
+    width: 29.25px;
+    height: 29.25px;
+    z-index: 1;
+    filter: drop-shadow(0 1px 2px rgba(var(--ss-black-rgb),0.9));
+    pointer-events: none;
+}
+
+.stage-select-marker-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.stage-select-marker-fill {
+    fill: rgb(var(--ss-marker-rgb));
+}
+
+.stage-select-stage-button.is-locked .stage-select-marker-fill {
+    fill: rgb(var(--ss-marker-locked-rgb));
+}
+
+.stage-select-stage-button:hover,
+.stage-select-stage-button:focus {
+    z-index: 20;
+}
+
+.stage-select-hit-zone {
+    position: absolute;
+    left: 48.5px;
+    top: -35.7px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: transparent;
+    z-index: 4;
+    cursor: pointer;
+}
+
+/* P2：选中节点的标记/锁/任务脉冲不再随 hover/focus 隐藏（hover 卡已由 pinned 检查器承接），
+   未选中节点保持原行为。 */
+.stage-select-stage-button:not(.is-locked):not(.is-selected):hover > .stage-select-marker,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):focus > .stage-select-marker,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):hover > .stage-select-lock,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):focus > .stage-select-lock,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):hover > .stage-select-task-pulse,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):focus > .stage-select-task-pulse {
+    display: none;
+}
+
+/* P2：键盘焦点环落在 44px 圆形命中区上（节点本体保持 outline:none，避免 141px 隐形框出方框）；
+   任务节点命中区为矩形故呈矩形环。打磨批起选中态不再画在命中区上，改 .stage-select-selected-ring
+   独立元素（见 task-pulse 段后）。
+   打磨批二轮：:focus-visible 启发式退役，改 .is-kb-focus 键盘模态类（WebView2 宿主嵌入焦点链
+   会让鼠标点击也命中 :focus-visible）；选中节点（金环承指示）与卡开节点（卡承指示）不画蓝环。 */
+.stage-select-stage-button.is-kb-focus:not(.is-selected):not(.has-open-card) > .stage-select-hit-zone {
+    outline: 2px solid rgb(var(--ss-focus-rgb));
+    outline-offset: 2px;
+}
+
+.stage-select-stage-name {
+    display: block;
+    width: 137px;
+    min-height: 34.3px;
+    padding: 0 2px;
+    box-sizing: border-box;
+    color: rgb(var(--ss-white-rgb));
+    font-family: "Microsoft YaHei", "Microsoft JhengHei", Arial, sans-serif;
+    font-size: var(--ss-font-base);
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    background: transparent;
+    border: 0;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb)),
+        -1px 1px 0 rgb(var(--ss-black-rgb)),
+        1px -1px 0 rgb(var(--ss-black-rgb)),
+        -1px -1px 0 rgb(var(--ss-black-rgb));
+    box-shadow: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-stage-name {
+    background: radial-gradient(ellipse 60% 78% at 50% 55%, rgba(var(--ss-name-scrim-rgb),0.78) 0%, rgba(var(--ss-name-scrim-rgb),0.45) 55%, rgba(var(--ss-name-scrim-rgb),0) 92%);
+}
+
+/* P2：选中节点名称不随 hover/focus 隐藏（检查器承接信息展示，原地保留可辨识名称）。 */
+.stage-select-stage-button:not(.is-locked):not(.is-selected):hover .stage-select-stage-name,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):focus .stage-select-stage-name {
+    visibility: hidden;
+}
+
+/* 选中态名称染色；置于锁定规则之前，锁定+选中时锁定灰名优先。 */
+.stage-select-stage-button.is-selected .stage-select-stage-name {
+    color: rgb(var(--ss-selected-rgb));
+}
+
+.stage-select-stage-button.is-locked .stage-select-stage-name {
+    color: rgb(var(--ss-line-rgb));
+}
+
+.stage-select-stage-button.is-map-entry .stage-select-marker-fill {
+    fill: rgb(var(--ss-marker-map-rgb));
+}
+
+.stage-select-stage-button.is-map-entry {
+    width: 0;
+    min-height: 0;
+    transform: none;
+}
+
+.stage-select-stage-button.is-map-entry.is-locked {
+    display: none;
+}
+
+.stage-select-stage-button.is-map-entry .stage-select-marker {
+    left: calc(var(--stage-map-marker-x, 0px) - 14.625px);
+    top: calc(var(--stage-map-marker-y, 120px) - 14.625px);
+}
+
+.stage-select-stage-button.is-map-entry .stage-select-hit-zone {
+    left: calc(var(--stage-map-marker-x, 0px) - 22px);
+    top: calc(var(--stage-map-marker-y, 120px) - 22px);
+}
+
+.stage-select-stage-button.is-map-entry .stage-select-stage-name {
+    position: absolute;
+    left: var(--stage-map-text-x, -68.5px);
+    top: var(--stage-map-text-y, 135.7px);
+    width: var(--stage-map-text-width, 137px);
+    min-height: var(--stage-map-text-height, 34.3px);
+    background: transparent;
+}
+
+.stage-select-panel.is-runtime .stage-select-stage-button.is-map-entry .stage-select-stage-name {
+    background: transparent;
+}
+
+.stage-select-stage-button.is-map-entry:not(.is-locked):hover > .stage-select-marker,
+.stage-select-stage-button.is-map-entry:not(.is-locked):focus > .stage-select-marker {
+    display: block;
+}
+
+.stage-select-stage-button.is-map-entry:not(.is-locked):hover .stage-select-stage-name,
+.stage-select-stage-button.is-map-entry:not(.is-locked):focus .stage-select-stage-name {
+    visibility: visible;
+}
+
+.stage-select-stage-button.is-task-entry {
+    width: var(--stage-direct-width, 91px);
+    min-height: var(--stage-direct-height, 21px);
+    transform: none;
+}
+
+.stage-select-stage-button.is-task-entry .stage-select-marker,
+.stage-select-stage-button.is-task-entry .stage-select-task-pulse {
+    display: none;
+}
+
+.stage-select-stage-button.is-task-entry .stage-select-hit-zone {
+    left: 0;
+    top: 0;
+    width: var(--stage-direct-width, 91px);
+    height: var(--stage-direct-height, 21px);
+    border-radius: 0;
+    clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+
+.stage-select-stage-button.is-task-entry .stage-select-stage-name {
+    width: var(--stage-direct-width, 91px);
+    height: var(--stage-direct-height, 21px);
+    min-height: var(--stage-direct-height, 21px);
+    padding: 0 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    font-family: NSimSun, SimSun, "Microsoft YaHei", Arial, sans-serif;
+    font-size: var(--ss-font-base);
+    font-weight: 400;
+    line-height: calc(var(--stage-direct-height, 21px) - 2px);
+    color: rgb(var(--ss-task-entry-text-rgb));
+    background:
+        linear-gradient(90deg, rgba(var(--ss-task-rgb),0.32) 0, rgba(var(--ss-task-rgb),0.32) 4px, transparent 4px),
+        rgba(var(--ss-task-entry-bg-rgb),0.94);
+    border: 1px solid rgba(var(--ss-task-edge-rgb),0.72);
+    border-radius: 0;
+    box-shadow: none;
+    clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+
+.stage-select-stage-button.is-task-entry:not(.is-locked):hover .stage-select-stage-name,
+.stage-select-stage-button.is-task-entry:not(.is-locked):focus .stage-select-stage-name {
+    visibility: visible;
+    background:
+        linear-gradient(90deg, rgba(var(--ss-task-hot-rgb),0.44) 0, rgba(var(--ss-task-hot-rgb),0.44) 4px, transparent 4px),
+        rgba(var(--ss-task-entry-hover-bg-rgb),0.98);
+    border-color: rgba(var(--ss-task-hot-rgb),0.88);
+}
+
+.stage-select-stage-button.is-task-entry .stage-select-lock {
+    left: calc(var(--stage-direct-width, 91px) - 20px);
+    top: -8px;
+}
+
+.stage-select-stage-button.is-busy {
+    cursor: wait;
+    filter: brightness(1.15);
+}
+
+.stage-select-lock {
+    display: none;
+    position: absolute;
+    left: 61.6px;
+    top: -27.6px;
+    width: 17.8px;
+    height: 26.8px;
+    z-index: 2;
+    filter: drop-shadow(0 1px 1px rgba(var(--ss-black-rgb),0.85));
+    pointer-events: none;
+}
+
+.stage-select-stage-button.is-locked .stage-select-lock {
+    display: block;
+}
+
+.stage-select-lock-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.stage-select-lock-body {
+    fill: rgb(var(--ss-lock-body-rgb));
+    stroke: rgb(var(--ss-edge-ink-rgb));
+    stroke-width: 18;
+}
+
+.stage-select-lock-hole {
+    fill: rgb(var(--ss-edge-ink-rgb));
+}
+
+.stage-select-task-pulse {
+    display: none;
+    position: absolute;
+    left: 48.5px;
+    top: -35.7px;
+    width: 44px;
+    height: 44px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 3px solid rgba(var(--ss-red-rgb),0.98);
+    background: transparent;
+    box-shadow:
+        0 0 8px rgba(var(--ss-pulse-glow-rgb),0.95),
+        0 0 18px rgba(var(--ss-pulse-glow-warm-rgb),0.62),
+        inset 0 0 6px rgba(var(--ss-pulse-glow-rgb),0.62);
+    pointer-events: none;
+}
+
+.stage-select-stage-button.is-task .stage-select-task-pulse {
+    display: block;
+    animation: stageSelectTaskFlash var(--ss-motion-task-flash) var(--ss-ease-linear) infinite;
+}
+
+/* 打磨批：选中光环（.is-selected）——与 .stage-select-task-pulse 同构造族的游戏标记环语言：
+   圆形 border + 分层柔和 box-shadow 外发光 + inset 内发光（非旧版硬 0 0 0 单线圆环）；
+   48px 比 44px task-pulse 大一圈，选中+任务叠加时呈同心族（金环在外、红黄闪光在内）。 */
+.stage-select-selected-ring {
+    display: none;
+    position: absolute;
+    left: 46.5px;
+    top: -37.7px;
+    width: 48px;
+    height: 48px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 3px solid rgba(var(--ss-selected-rgb),0.88);
+    background: transparent;
+    box-shadow:
+        0 0 7px rgba(var(--ss-selected-rgb),0.9),
+        0 0 18px rgba(var(--ss-selected-rgb),0.55),
+        0 0 32px rgba(var(--ss-selected-rgb),0.3),
+        inset 0 0 6px rgba(var(--ss-selected-rgb),0.5);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.stage-select-stage-button.is-selected .stage-select-selected-ring {
+    display: block;
+    animation: stageSelectSelectedBreath var(--ss-motion-selected-breath) var(--ss-ease-in-out) infinite;
+}
+
+/* P2：hover 卡锚点层——卡片整体迁出 role=button 节点（消除嵌套 button 语义）。
+   锚点与节点同位同 transform，自身不接收指针（pointer-events:none 不挡节点点击），
+   仅打开的卡片恢复交互；可见性由面板 JS 以 .is-card-open 驱动（原 :hover/:focus CSS 联动）。 */
+.stage-select-card-anchor {
+    position: absolute;
+    width: 141px;
+    min-height: 38px;
+    transform: translate(-70.5px, 133.7px);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.stage-select-card-anchor .stage-select-card {
+    pointer-events: auto;
+}
+
+.stage-select-card {
+    position: absolute;
+    left: -12px;
+    top: -190px;
+    width: 167px;
+    height: var(--stage-card-height, 232px);
+    display: none;
+    padding: 0;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, rgb(var(--ss-card-grad-top-rgb)) 0%, rgb(var(--ss-card-grad-bottom-rgb)) 100%);
+    border: 0;
+    box-shadow:
+        3px 3px 8px rgba(var(--ss-black-rgb),0.68),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.08);
+}
+
+.stage-select-card-anchor.is-edge-top .stage-select-card {
+    top: -132px;
+}
+
+.stage-select-card-anchor.is-edge-left .stage-select-card {
+    left: -2px;
+}
+
+.stage-select-card-anchor.is-edge-right .stage-select-card {
+    left: -38px;
+}
+
+.stage-select-panel.is-runtime .stage-select-card {
+    width: var(--stage-card-width, 167px);
+    left: calc((141px - var(--stage-card-width, 167px)) / 2);
+}
+
+.stage-select-panel.is-runtime .stage-select-card-anchor.is-edge-left .stage-select-card {
+    left: -2px;
+}
+
+.stage-select-panel.is-runtime .stage-select-card-anchor.is-edge-right .stage-select-card {
+    left: calc(141px - var(--stage-card-width, 167px) + 2px);
+}
+
+.stage-select-panel.is-runtime .stage-select-card-name {
+    width: calc(var(--stage-card-width, 167px) - 25px);
+    height: auto;
+    max-height: 36px;
+    line-height: 18px;
+    white-space: normal;
+    text-overflow: clip;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.stage-select-panel.is-runtime .stage-select-card-anchor[data-card-name-lines="1"] .stage-select-card-name {
+    height: 16px;
+    max-height: 16px;
+    line-height: 16px;
+    -webkit-line-clamp: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.stage-select-panel.is-runtime .stage-select-preview-wrap {
+    width: calc(var(--stage-card-width, 167px) - 6px);
+}
+
+.stage-select-panel.is-runtime .stage-select-card-anchor[data-card-name-lines="2"] .stage-select-preview-wrap {
+    top: 46px;
+    height: 80px;
+}
+
+.stage-select-panel.is-runtime .stage-select-difficulties {
+    width: calc(var(--stage-card-width, 167px) - 7px);
+}
+
+.stage-select-panel.is-runtime .stage-select-stage-button[data-card-name-lines="2"] .stage-select-difficulties {
+    top: 131px;
+}
+
+.stage-select-panel.is-runtime .stage-select-card-detail {
+    width: calc(var(--stage-card-width, 167px) - 17px);
+    line-height: 19px;
+}
+
+.stage-select-panel.is-runtime .stage-select-card-anchor[data-card-name-lines="2"] .stage-select-card-detail {
+    top: 161px;
+    height: calc(var(--stage-card-height, 232px) - 167px);
+}
+
+/* P2：卡片可见性改由 JS 驱动（.is-card-open），替代原节点 :hover/:focus 联动；
+   锁定锚点防御性保持隐藏（JS 已不为锁定节点开卡）。 */
+.stage-select-card-anchor.is-card-open .stage-select-card {
+    display: block;
+}
+
+.stage-select-card-anchor.is-locked .stage-select-card {
+    display: none;
+}
+
+/* 打磨批二轮⑨：选中节点 hover 卡硬抑制（JS 裁决 computeOpenCardId 过滤之外的 DOM 级保险）；
+   与上两条同权重，依赖源序置后生效。 */
+.stage-select-card-anchor.is-selected .stage-select-card {
+    display: none;
+}
+
+.stage-select-preview-wrap {
+    position: absolute;
+    left: 2px;
+    top: 24px;
+    display: block;
+    width: 161px;
+    height: 69px;
+    overflow: hidden;
+    background: rgb(var(--ss-preview-bg-rgb));
+    border: 0;
+}
+
+.stage-select-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+}
+
+.stage-select-card-corner {
+    position: absolute;
+    left: 13px;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    background: rgb(var(--ss-red-rgb));
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    filter: drop-shadow(0 1px 0 rgb(var(--ss-black-rgb)));
+}
+
+.stage-select-card-name {
+    position: absolute;
+    left: 21px;
+    top: 5px;
+    display: block;
+    width: 142px;
+    height: 16px;
+    overflow: hidden;
+    color: rgb(var(--ss-card-name-text-rgb));
+    font-weight: 700;
+    font-size: var(--ss-font-md);
+    line-height: 16px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb)),
+        -1px 1px 0 rgb(var(--ss-black-rgb));
+}
+
+.stage-select-card-detail {
+    position: absolute;
+    left: 9px;
+    top: 118px;
+    display: block;
+    width: 150px;
+    height: calc(var(--stage-card-height, 232px) - 124px);
+    overflow: hidden;
+    color: rgb(var(--ss-white-rgb));
+    font-size: var(--ss-font-md);
+    line-height: 20px;
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb)),
+        -1px 1px 0 rgb(var(--ss-black-rgb));
+}
+
+.stage-select-difficulties {
+    position: absolute;
+    left: 4px;
+    top: 88px;
+    width: 160px;
+    height: 20px;
+    display: flex;
+    gap: 3px;
+}
+
+.stage-select-difficulties:has(.stage-select-difficulty:only-child) {
+    justify-content: flex-end;
+}
+
+.stage-select-difficulty {
+    position: relative;
+    width: 37px;
+    height: 20px;
+    padding: 0;
+    border: 1px solid rgb(var(--ss-edge-ink-rgb));
+    color: rgb(var(--ss-white-rgb));
+    font-family: "Microsoft YaHei", "Microsoft JhengHei", Arial, sans-serif;
+    font-size: var(--ss-font-base);
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb));
+    box-shadow: inset 1px 1px 0 rgba(var(--ss-white-rgb),0.2);
+    cursor: pointer;
+    overflow: visible;
+}
+
+.stage-select-difficulty.is-easy {
+    background: linear-gradient(180deg, rgb(var(--ss-easy-grad-top-rgb)) 0%, rgb(var(--ss-easy-grad-bottom-rgb)) 100%);
+}
+
+.stage-select-difficulty.is-adventure {
+    background: linear-gradient(180deg, rgb(var(--ss-adventure-grad-top-rgb)) 0%, rgb(var(--ss-adventure-grad-bottom-rgb)) 100%);
+}
+
+.stage-select-difficulty.is-shura {
+    background: linear-gradient(180deg, rgb(var(--ss-shura-grad-top-rgb)) 0%, rgb(var(--ss-shura-grad-bottom-rgb)) 100%);
+}
+
+.stage-select-difficulty.is-hell {
+    background: linear-gradient(180deg, rgb(var(--ss-red-rgb)) 0%, rgb(var(--ss-marker-rgb)) 100%);
+}
+
+.stage-select-difficulty:hover {
+    filter: brightness(1.22);
+    box-shadow:
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.24);
+}
+
+.stage-select-difficulty.is-recommended {
+    z-index: 2;
+}
+
+.stage-select-difficulty.is-recommended::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 42px;
+    height: 24px;
+    box-sizing: border-box;
+    border: 1px solid rgb(var(--ss-pulse-glow-rgb));
+    background: transparent;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    box-shadow:
+        0 0 8px rgba(var(--ss-pulse-glow-rgb),0.95),
+        0 0 18px rgba(var(--ss-pulse-glow-rgb),0.55);
+    animation: stageSelectDifficultyHint var(--ss-motion-hint) var(--ss-ease-linear) infinite;
+}
+
+.stage-select-difficulty.is-pressed {
+    background: rgba(var(--ss-difficulty-pressed-rgb),0.88);
+}
+
+/* busy 期间禁点难度：hover 卡锚点与 pinned 检查器两处（节点内已不含难度按钮）。 */
+.stage-select-card-anchor.is-busy .stage-select-difficulty,
+.stage-select-inspector.is-busy .stage-select-difficulty {
+    pointer-events: none;
+}
+
+/* ── P2 pinned 决策检查器：舞台壳内底部浮层（1024×576 不压缩地图），runtime/dev 同构 ──
+   打磨批换肤：底色/阴影/描边全部对齐 hover 卡语言（不透明卡片渐变 + 卡片阴影栈 + 细暗描边），
+   蓝色 accent 描边与大面积柔光退役。 */
+.stage-select-inspector {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    z-index: 60;
+    display: flex;
+    gap: 10px;
+    width: min(560px, calc(100% - 24px));
+    padding: 10px 12px;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, rgb(var(--ss-card-grad-top-rgb)) 0%, rgb(var(--ss-card-grad-bottom-rgb)) 100%);
+    border: 1px solid rgb(var(--ss-edge-ink-rgb));
+    box-shadow:
+        3px 3px 8px rgba(var(--ss-black-rgb),0.68),
+        0 10px 28px rgba(var(--ss-black-rgb),0.5),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.08);
+    font-size: var(--ss-font-sm);
+}
+
+.stage-select-inspector[hidden] {
+    display: none;
+}
+
+/* 选中节点位于下半屏时检查器改靠顶停靠，避免浮层盖住选中节点本体 */
+.stage-select-inspector.is-dock-top {
+    bottom: auto;
+    top: 10px;
+}
+
+.stage-select-panel.is-runtime .stage-select-inspector.is-dock-top {
+    top: 48px;
+}
+
+.stage-select-inspector-preview {
+    flex: 0 0 auto;
+    width: 120px;
+    height: 68px;
+    overflow: hidden;
+    background: rgb(var(--ss-preview-bg-rgb));
+    border: 0;
+}
+
+.stage-select-inspector-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+}
+
+.stage-select-inspector-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stage-select-inspector-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 打磨批：红色切角装饰，对位 hover 卡 .stage-select-card-corner（同尺寸/同剪裁/同投影）；
+   在标题行内作 flex 项居中，名字右侧让位由 gap 承担。 */
+.stage-select-inspector-corner {
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    background: rgb(var(--ss-red-rgb));
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    filter: drop-shadow(0 1px 0 rgb(var(--ss-black-rgb)));
+}
+
+.stage-select-inspector-name {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: rgb(var(--ss-card-name-text-rgb));
+    font-size: var(--ss-font-md);
+    font-weight: 700;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb)),
+        -1px 1px 0 rgb(var(--ss-black-rgb));
+}
+
+.stage-select-inspector-type {
+    flex: 0 0 auto;
+    color: rgb(var(--ss-line-rgb));
+    font-size: var(--ss-font-xs);
+}
+
+.stage-select-inspector-close {
+    flex: 0 0 auto;
+    margin-left: auto;
+    width: 26px;
+    height: 26px;
+    border: 1px solid rgb(var(--ss-edge-ink-rgb));
+    background: rgb(var(--ss-card-grad-bottom-rgb));
+    box-shadow: inset 1px 1px 0 rgba(var(--ss-white-rgb),0.08);
+    color: rgb(var(--ss-close-text-rgb));
+    cursor: pointer;
+    font-size: var(--ss-font-md);
+    font-weight: 600;
+    line-height: 24px;
+    text-align: center;
+}
+
+.stage-select-inspector-close:hover {
+    border-color: rgba(var(--ss-danger-rgb),0.92);
+    background: rgba(var(--ss-close-hover-bg-rgb),0.82);
+    color: rgb(var(--ss-white-rgb));
+}
+
+.stage-select-inspector-lock {
+    padding: 4px 8px;
+    color: rgb(var(--ss-error-text-rgb));
+    background: rgba(var(--ss-error-bg-rgb),0.55);
+    border: 1px solid rgba(var(--ss-danger-rgb),0.5);
+    line-height: 18px;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb));
+}
+
+.stage-select-inspector-task {
+    color: rgb(var(--ss-gold-rgb));
+    line-height: 18px;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb));
+}
+
+/* 打磨批：正文对齐 hover 卡语言（白色 14px / 19px 行高 / 黑色 text-shadow 栈），57px ≈ 3 行。 */
+.stage-select-inspector-detail {
+    max-height: 57px;
+    overflow: auto;
+    color: rgb(var(--ss-white-rgb));
+    font-size: var(--ss-font-md);
+    line-height: 19px;
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb)),
+        -1px 1px 0 rgb(var(--ss-black-rgb));
+}
+
+.stage-select-inspector-difficulties {
+    display: flex;
+    gap: 8px;
+}
+
+/* author display:flex 会压过 UA [hidden]，锁定态隐藏需显式规则 */
+.stage-select-inspector-difficulties[hidden] {
+    display: none;
+}
+
+/* 键盘路径命中区补足：检查器内难度按钮 ≥40px（hover 卡内保持原版 37×20 鼠标快捷路径，见 P2 登记）。 */
+.stage-select-inspector .stage-select-difficulty {
+    width: auto;
+    min-width: 56px;
+    height: 40px;
+    padding: 0 12px;
+    font-size: var(--ss-font-md);
+    line-height: 38px;
+}
+
+.stage-select-inspector .stage-select-difficulty.is-recommended::before {
+    width: calc(100% + 5px);
+    height: 46px;
+}
+
+/* 打磨批：检查器难度焦点 = 选中高亮（←/→ 循环移焦的落点反馈）——不套通用蓝环，
+   用各按钮自身色阶的 grad-top 通道做 outline + 双层外发光 + 亮度提升；
+   与 hover 的 brightness(1.22) 叠加时仍清晰可辨。 */
+.stage-select-inspector .stage-select-difficulty:focus {
+    filter: brightness(1.28);
+    outline-offset: 1px;
+    z-index: 2;
+}
+
+.stage-select-inspector .stage-select-difficulty.is-easy:focus {
+    outline: 2px solid rgba(var(--ss-easy-grad-top-rgb),0.95);
+    box-shadow:
+        0 0 10px rgba(var(--ss-easy-grad-top-rgb),0.85),
+        0 0 22px rgba(var(--ss-easy-grad-top-rgb),0.45),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.28);
+}
+
+.stage-select-inspector .stage-select-difficulty.is-adventure:focus {
+    outline: 2px solid rgba(var(--ss-adventure-grad-top-rgb),0.95);
+    box-shadow:
+        0 0 10px rgba(var(--ss-adventure-grad-top-rgb),0.85),
+        0 0 22px rgba(var(--ss-adventure-grad-top-rgb),0.45),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.28);
+}
+
+.stage-select-inspector .stage-select-difficulty.is-shura:focus {
+    outline: 2px solid rgba(var(--ss-shura-grad-top-rgb),0.95);
+    box-shadow:
+        0 0 10px rgba(var(--ss-shura-grad-top-rgb),0.85),
+        0 0 22px rgba(var(--ss-shura-grad-top-rgb),0.45),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.28);
+}
+
+.stage-select-inspector .stage-select-difficulty.is-hell:focus {
+    outline: 2px solid rgba(var(--ss-red-rgb),0.95);
+    box-shadow:
+        0 0 10px rgba(var(--ss-red-rgb),0.85),
+        0 0 22px rgba(var(--ss-red-rgb),0.45),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.28);
+}
+
+.stage-select-inspector-close:focus-visible {
+    outline: 2px solid rgb(var(--ss-focus-rgb));
+    outline-offset: 1px;
+}
+
+
+.stage-select-nav-button {
+    position: absolute;
+    transform: translate(-39px, -12px);
+    min-width: 78px;
+    height: 24px;
+    box-sizing: border-box;
+    border: 1px solid rgb(var(--ss-edge-ink-rgb));
+    background: linear-gradient(180deg, rgb(var(--ss-nav-grad-top-rgb)) 0%, rgb(var(--ss-nav-grad-bottom-rgb)) 100%);
+    color: rgb(var(--ss-nav-text-rgb));
+    font-family: "Microsoft YaHei", "Microsoft JhengHei", Arial, sans-serif;
+    font-size: var(--ss-font-sm);
+    line-height: 22px;
+    text-align: center;
+    text-shadow: 0 1px 1px rgb(var(--ss-black-rgb));
+    box-shadow:
+        2px 2px 4px rgba(var(--ss-black-rgb),0.65),
+        inset 1px 1px 0 rgba(var(--ss-nav-inset-rgb),0.22);
+    cursor: pointer;
+    z-index: 1;
+}
+
+.stage-select-nav-button.is-return,
+.stage-select-nav-button.is-return-garage {
+    padding-left: 18px;
+}
+
+.stage-select-nav-button.is-return::before,
+.stage-select-nav-button.is-return-garage::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 7px;
+    width: 11px;
+    height: 11px;
+    background: rgb(var(--ss-shura-grad-top-rgb));
+    clip-path: polygon(100% 0, 100% 64%, 36% 64%, 36% 100%, 0 50%, 36% 0);
+    filter: drop-shadow(0 1px 0 rgb(var(--ss-black-rgb)));
+}
+
+.stage-select-nav-button.is-return-garage {
+    transform: translate(-47px, -12px);
+    min-width: 94px;
+}
+
+.stage-select-nav-button.is-entry-yellow,
+.stage-select-nav-button.is-entry-red {
+    transform: translate(-51px, -16px);
+    width: 102px;
+    height: 32px;
+    padding: 0;
+    border: 2px solid rgb(var(--ss-edge-ink-rgb));
+    color: rgb(var(--ss-white-rgb));
+    font-size: var(--ss-font-md);
+    font-weight: 700;
+    line-height: 28px;
+    text-align: center;
+    white-space: nowrap;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb)),
+        -1px 1px 0 rgb(var(--ss-black-rgb));
+    box-shadow:
+        2px 2px 4px rgba(var(--ss-black-rgb),0.72),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.22);
+}
+
+.stage-select-nav-button.is-entry-yellow {
+    background: linear-gradient(180deg, rgb(var(--ss-shura-grad-top-rgb)) 0%, rgb(var(--ss-entry-yellow-grad-bottom-rgb)) 100%);
+}
+
+.stage-select-nav-button.is-entry-red {
+    background: linear-gradient(180deg, rgb(var(--ss-entry-red-grad-top-rgb)) 0%, rgb(var(--ss-entry-red-grad-bottom-rgb)) 100%);
+}
+
+.stage-select-nav-button.is-scene-entry {
+    transform: translate(-42px, -42px);
+    min-width: 84px;
+    height: 84px;
+    padding-top: 62px;
+    border: 0;
+    background: transparent;
+    color: rgb(var(--ss-white-rgb));
+    font-size: var(--ss-font-sm);
+    line-height: 14px;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb)),
+        -1px 1px 0 rgb(var(--ss-black-rgb));
+    box-shadow: none;
+}
+
+.stage-select-nav-button.is-scene-entry::before {
+    content: "";
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 5px solid rgb(var(--ss-scene-ring-rgb));
+    background: rgba(var(--ss-scene-ring-bg-rgb),0.15);
+    box-shadow:
+        0 0 0 2px rgba(var(--ss-black-rgb),0.82),
+        inset 0 0 0 8px rgba(var(--ss-black-rgb),0.18);
+}
+
+.stage-select-nav-button.is-generic {
+    transform: translate(-45px, -13px);
+    min-width: 90px;
+    height: 25px;
+}
+
+.stage-select-nav-button:hover {
+    filter: brightness(1.12);
+    color: rgb(var(--ss-nav-hover-text-rgb));
+}
+
+/* Runtime: give rectangular nav buttons breathing room,
+   softer corners + better hover feedback. Dev/FFDec geometry preserved. */
+.stage-select-panel.is-runtime .stage-select-nav-button {
+    transform: translate(-50%, -50%);
+    border-radius: 3px;
+    transition: filter var(--ss-motion-fast) var(--ss-ease-default), box-shadow var(--ss-motion-fast) var(--ss-ease-default), transform var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-yellow,
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-red {
+    width: auto;
+    min-width: 116px;
+    height: 36px;
+    padding: 0 16px;
+    line-height: 32px;
+    letter-spacing: 1px;
+    border-width: 1px;
+    box-shadow:
+        0 3px 7px rgba(var(--ss-black-rgb),0.6),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.32),
+        inset 0 -1px 0 rgba(var(--ss-black-rgb),0.45);
+}
+
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-yellow {
+    background: linear-gradient(180deg, rgb(var(--ss-nav-yellow-grad-top-rgb)) 0%, rgb(var(--ss-nav-yellow-grad-bottom-rgb)) 100%);
+}
+
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-red {
+    background: linear-gradient(180deg, rgb(var(--ss-nav-red-grad-top-rgb)) 0%, rgb(var(--ss-nav-red-grad-bottom-rgb)) 100%);
+}
+
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-yellow:hover,
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-red:hover,
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-yellow:focus-visible,
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-red:focus-visible {
+    transform: translate(-50%, calc(-50% - 1px));
+    box-shadow:
+        0 5px 11px rgba(var(--ss-black-rgb),0.7),
+        inset 1px 1px 0 rgba(var(--ss-white-rgb),0.4),
+        inset 0 -1px 0 rgba(var(--ss-black-rgb),0.45);
+}
+
+/* P2 focus 治理 ④/④ */
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-yellow:focus-visible,
+.stage-select-panel.is-runtime .stage-select-nav-button.is-entry-red:focus-visible {
+    outline: 2px solid rgb(var(--ss-focus-rgb));
+    outline-offset: 1px;
+}
+
+.stage-select-panel.is-runtime .stage-select-nav-button.is-return,
+.stage-select-panel.is-runtime .stage-select-nav-button.is-return-garage {
+    width: auto;
+    min-width: 88px;
+    height: 28px;
+    padding: 0 12px 0 24px;
+    line-height: 26px;
+    letter-spacing: 0.5px;
+}
+
+.stage-select-panel.is-runtime .stage-select-nav-button.is-generic {
+    width: auto;
+    min-width: 100px;
+    height: 28px;
+    padding: 0 14px;
+    line-height: 26px;
+}
+
+.stage-select-panel.is-runtime .stage-select-nav-button.is-scene-entry {
+    /* 保留原版圆形 + 标签布局，仅扩展点击命中区 */
+    transform: translate(-42px, -42px);
+    padding-bottom: 4px;
+}
+
+.stage-select-side {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(var(--ss-header-rgb),0.74);
+    border: 1px solid rgba(var(--ss-line-rgb),0.2);
+}
+
+.stage-select-panel.is-runtime .stage-select-side {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    z-index: 85;
+    display: block;
+    width: min(360px, calc(100% - 24px));
+    padding: 0;
+    background: transparent;
+    border: 0;
+    pointer-events: none;
+}
+
+.stage-select-side-title {
+    color: rgb(var(--ss-side-title-text-rgb));
+    font-size: var(--ss-font-side-title);
+    font-weight: 700;
+}
+
+.stage-select-summary,
+.stage-select-dev-log {
+    color: rgb(var(--ss-side-text-rgb));
+    font-size: var(--ss-font-sm);
+    line-height: 1.55;
+}
+
+.stage-select-dev-log {
+    align-self: end;
+    min-height: 54px;
+    padding: 8px;
+    background: rgba(var(--ss-surface-rgb),0.82);
+    border: 1px solid rgba(var(--ss-line-rgb),0.2);
+}
+
+.stage-select-dev-log.is-error,
+.stage-select-error-line {
+    color: rgb(var(--ss-error-text-rgb));
+}
+
+.stage-select-panel.is-runtime .stage-select-side-title,
+.stage-select-panel.is-runtime .stage-select-summary,
+.stage-select-panel.is-runtime .stage-select-dev-log {
+    display: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-dev-log.is-error {
+    display: block;
+    min-height: 0;
+    padding: 8px 10px;
+    background: rgba(var(--ss-error-bg-rgb),0.92);
+    border: 1px solid rgba(var(--ss-danger-rgb),0.6);
+    box-shadow: 0 12px 32px rgba(var(--ss-black-rgb),0.5);
+    pointer-events: auto;
+}
+
+@keyframes stageSelectBoot {
+    from { opacity: 0.55; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stageSelectTaskFlash {
+    0% { transform: scale(0.76); opacity: 1; }
+    31% { transform: scale(1.36); opacity: 0; }
+    100% { transform: scale(1.36); opacity: 0; }
+}
+
+@keyframes stageSelectDifficultyHint {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    15% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    40% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    66% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.7);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.7);
+    }
+}
+
+/* 打磨批：选中光环缓慢呼吸（对称往返，比 task-flash 的单次外扩更安静） */
+@keyframes stageSelectSelectedBreath {
+    0% {
+        opacity: 0.85;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.06);
+    }
+    100% {
+        opacity: 0.85;
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 1200px) {
+    .stage-select-panel {
+        width: 98vw;
+        height: 96vh;
+        min-width: 0;
+    }
+    .stage-select-header {
+        grid-template-columns: 170px 1fr auto;
+    }
+    .stage-select-body {
+        grid-template-columns: 1fr 170px;
+    }
+}
+
+/* 打磨批修正：task-pulse / selected-ring 的动画设定选择器为 (0,3,0)，media 块内必须用
+   同级选择器才能真正降级（旧写法 (0,1,0) 被压过，task-pulse 的 reduced-motion 长期未生效，
+   本批一并修复）；is-entered / ::before 两条本就同权后至胜出，保持原样。 */
+@media (prefers-reduced-motion: reduce) {
+    .stage-select-panel.is-entered,
+    .stage-select-stage-button.is-task .stage-select-task-pulse,
+    .stage-select-difficulty.is-recommended::before,
+    .stage-select-stage-button.is-selected .stage-select-selected-ring {
+        animation: none;
+    }
+}

@@ -66,7 +66,8 @@ var StageSelectHarnessQA = (function() {
                         currentFrameLabel: StageSelectPanel._debugGetState().frameLabel
                     });
                     var state = StageSelectPanel._debugGetState();
-                    var difficulties = document.querySelectorAll('.stage-select-stage-button:not(.is-direct-entry) .stage-select-difficulty');
+                    // P2：卡片迁至 .stage-select-card-anchor 层（消除嵌套 button），断言同步改按锚点查询
+                    var difficulties = document.querySelectorAll('.stage-select-card-anchor .stage-select-difficulty');
                     api.assert(state.challenge, 'challenge flag set');
                     api.assert(difficulties.length > 0, 'challenge difficulties rendered');
                     api.assert([].every.call(difficulties, function(btn) {
@@ -81,8 +82,12 @@ var StageSelectHarnessQA = (function() {
                     var button = document.querySelector('.stage-select-stage-button');
                     api.assert(!!button, 'stage button exists');
                     button.focus();
-                    var preview = button.querySelector('.stage-select-preview');
-                    var difficulties = button.querySelectorAll('.stage-select-difficulty');
+                    // P2：hover 卡在锚点层；focus 驱动 .is-card-open，DOM 恒存在
+                    var anchor = findCardAnchor(button.getAttribute('data-stage-id'));
+                    api.assert(!!anchor, 'card anchor exists for stage');
+                    api.assert(anchor.classList.contains('is-card-open'), 'focus opens hover card');
+                    var preview = anchor.querySelector('.stage-select-preview');
+                    var difficulties = anchor.querySelectorAll('.stage-select-difficulty');
                     api.assert(!!preview && !!preview.getAttribute('src'), 'preview image src exists');
                     api.assert(difficulties.length >= 1, 'difficulty buttons exist');
                     return 'preview card ok';
@@ -352,7 +357,9 @@ var StageSelectHarnessQA = (function() {
                     var declaredHeight = parseFloat(btn.style.getPropertyValue('--stage-card-height')) || 0;
                     api.assert(declaredHeight > 232, 'long text raised height past min (got ' + declaredHeight + ')');
                     btn.focus();
-                    var detail = btn.querySelector('.stage-select-card-detail');
+                    // P2：卡片在锚点层，按 stage id 反查
+                    var anchor = findCardAnchor(btn.getAttribute('data-stage-id'));
+                    var detail = anchor.querySelector('.stage-select-card-detail');
                     var detailScroll = detail.scrollHeight;
                     var detailCssHeight = parseFloat(getComputedStyle(detail).height) || (detail.getBoundingClientRect().height / getStageScale());
                     // declared height = baseline + measured detail. detail rendered height should fit inside card box.
@@ -439,9 +446,10 @@ var StageSelectHarnessQA = (function() {
                     var btn = document.querySelector('.stage-select-stage-button[data-stage-name="' + found.name + '"]');
                     api.assert(!!btn, 'long stage button rendered');
                     btn.focus();
-                    var card = btn.querySelector('.stage-select-card');
-                    var name = btn.querySelector('.stage-select-card-name');
-                    var detail = btn.querySelector('.stage-select-card-detail');
+                    // P2：卡片在锚点层，按 stage id 反查
+                    var anchor = findCardAnchor(btn.getAttribute('data-stage-id'));
+                    var name = anchor.querySelector('.stage-select-card-name');
+                    var detail = anchor.querySelector('.stage-select-card-detail');
                     var cardW = parseFloat(btn.style.getPropertyValue('--stage-card-width')) || 0;
                     api.assert(cardW >= 215, 'runtime card width >= 215px (got ' + cardW + ')');
                     api.assertEqual(getComputedStyle(name).whiteSpace, 'normal', 'card name allows wrap in runtime');
@@ -559,6 +567,9 @@ var StageSelectHarnessQA = (function() {
                     lockedButton.focus();
                     api.assert(getComputedStyle(lockedButton.querySelector('.stage-select-marker')).display !== 'none', 'locked marker remains visible on focus');
                     api.assert(getComputedStyle(lockedButton.querySelector('.stage-select-stage-name')).visibility !== 'hidden', 'locked label remains visible on focus');
+                    // P2：锁定卡永不打开但 DOM 仍在锚点层，合成 click 走同一条 blocked 路径
+                    var lockedAnchor = findCardAnchor(lockedButton.getAttribute('data-stage-id'));
+                    difficulty = lockedAnchor && lockedAnchor.querySelector('.stage-select-difficulty');
                     api.assert(!!difficulty, 'difficulty button exists');
                     difficulty.click();
                     var state = StageSelectPanel._debugGetState();
@@ -574,7 +585,8 @@ var StageSelectHarnessQA = (function() {
                 return waitRuntime(api).then(function() {
                     api.events.length = 0;
                     host.enterMessages.length = 0;
-                    var difficulty = document.querySelector('.stage-select-stage-button:not(.is-direct-entry) .stage-select-difficulty');
+                    // P2：hover 卡难度按钮在锚点层
+                    var difficulty = document.querySelector('.stage-select-card-anchor .stage-select-difficulty');
                     api.assert(!!difficulty, 'difficulty button exists');
                     difficulty.click();
                     return api.waitFor(function() {
@@ -591,7 +603,8 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function() {
                     host.nextEnterError = 'invalid_stage';
-                    var difficulty = document.querySelector('.stage-select-stage-button:not(.is-direct-entry) .stage-select-difficulty');
+                    // P2：hover 卡难度按钮在锚点层
+                    var difficulty = document.querySelector('.stage-select-card-anchor .stage-select-difficulty');
                     api.assert(!!difficulty, 'difficulty button exists');
                     difficulty.click();
                     return api.waitFor(function() {
@@ -609,7 +622,8 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function(state) {
                     api.assert(state.challenge, 'challenge flag set from snapshot');
-                    var difficulties = document.querySelectorAll('.stage-select-stage-button:not(.is-direct-entry) .stage-select-difficulty');
+                    // P2：hover 卡难度按钮在锚点层
+                    var difficulties = document.querySelectorAll('.stage-select-card-anchor .stage-select-difficulty');
                     api.assert(difficulties.length > 0, 'challenge difficulty exists');
                     api.assert([].every.call(difficulties, function(btn) {
                         return btn.getAttribute('data-difficulty') === '地狱';
@@ -714,7 +728,7 @@ var StageSelectHarnessQA = (function() {
                             checked += 1;
                         });
                     });
-                    api.assertEqual(checked, 9, 'checked diplomacy map entries');
+                    api.assertEqual(checked, StageSelectGolden.expected.mapStageButtonInstances, 'checked diplomacy map entries (golden)');
                     return 'diplomacy map layout ok';
                 });
             }],
@@ -792,6 +806,693 @@ var StageSelectHarnessQA = (function() {
                     api.assert(checked >= 1, 'at least one visible stage button hit-tested');
                     return checked + ' stage buttons hit-tested';
                 });
+            }],
+            ['keyboard-enter-opens-inspector', 'Enter on stage node selects and pins inspector with focus inside', function() {
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                host.open();
+                return waitReady(api).then(function() {
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    api.assert(!!node, 'unlocked difficulty node exists');
+                    var stageId = node.getAttribute('data-stage-id');
+                    node.focus();
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    var state = StageSelectPanel._debugGetState();
+                    api.assertEqual(state.selectedStageId, stageId, 'node selected via Enter');
+                    api.assert(state.inspectorOpen, 'inspector open');
+                    api.assert(node.classList.contains('is-selected'), 'node has is-selected');
+                    api.assertEqual(node.getAttribute('aria-expanded'), 'true', 'node aria-expanded true');
+                    api.assert(getComputedStyle(document.getElementById('stage-select-inspector')).display !== 'none', 'inspector visible');
+                    api.assert(document.getElementById('stage-select-inspector-name').textContent.length > 0, 'inspector name filled');
+                    api.assert(!!(document.activeElement && document.activeElement.classList.contains('stage-select-difficulty')), 'focus moved into inspector difficulty');
+                    var anchor = findCardAnchor(stageId);
+                    api.assert(!!anchor && !anchor.classList.contains('is-card-open'), 'selected node suppresses hover card');
+                    var difficulties = document.querySelectorAll('#stage-select-inspector-difficulties .stage-select-difficulty');
+                    api.assertEqual(difficulties.length, 4, 'inspector renders 4 difficulties');
+                    return 'keyboard enter opens inspector';
+                });
+            }],
+            ['inspector-difficulty-enter', 'inspector difficulty button keeps enter payload unchanged', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                host.open();
+                return waitRuntime(api).then(function() {
+                    host.enterMessages.length = 0;
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var stageName = node.getAttribute('data-stage-name');
+                    node.focus();
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    var focused = document.activeElement;
+                    api.assert(!!(focused && focused.classList.contains('stage-select-difficulty')), 'focus on inspector difficulty');
+                    var expectedDifficulty = focused.getAttribute('data-difficulty');
+                    api.assert(focused.tabIndex !== -1, 'inspector difficulty is tabbable');
+                    api.assert(parseFloat(getComputedStyle(focused).height) >= 40, 'inspector difficulty hit height >= 40 (got ' + getComputedStyle(focused).height + ')');
+                    focused.click(); // 与 hover 卡鼠标点击共用 handleDifficultyClick 委派
+                    return api.waitFor(function() {
+                        return Panels.getActive && Panels.getActive() === null && host.enterMessages.length ? true : null;
+                    }, 2000, 'inspector enter close').then(function() {
+                        var msg = host.enterMessages[0];
+                        api.assertEqual(msg.cmd, 'enter', 'enter cmd');
+                        api.assertEqual(msg.stageName, stageName, 'enter stageName unchanged');
+                        api.assertEqual(msg.difficulty, expectedDifficulty, 'enter difficulty unchanged');
+                        api.assertEqual(msg.entryKind, 'difficulty', 'enter entryKind difficulty');
+                        return 'inspector enter payload ok: ' + stageName + ' / ' + expectedDifficulty;
+                    });
+                });
+            }],
+            ['inspector-difficulty-arrow-nav', 'inspector arrows cycle difficulties with own-color focus glow; node arrows reclaimed; Enter submits focused', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var stageId = node.getAttribute('data-stage-id');
+                    node.focus();
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector open');
+                    var activeDiff = function() {
+                        return document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('stage-select-difficulty')
+                            ? document.activeElement.getAttribute('data-difficulty') : '';
+                    };
+                    var key = function(k) {
+                        document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+                    };
+                    api.assertEqual(activeDiff(), '简单', 'initial focus on first difficulty (no task in allUnlocked)');
+                    key('ArrowRight');
+                    api.assertEqual(activeDiff(), '冒险', 'ArrowRight moves to next difficulty');
+                    key('ArrowRight');
+                    key('ArrowRight');
+                    api.assertEqual(activeDiff(), '地狱', 'ArrowRight walks to hell');
+                    key('ArrowRight');
+                    api.assertEqual(activeDiff(), '简单', 'ArrowRight wraps to first (cycle, same as frame menu)');
+                    key('ArrowLeft');
+                    api.assertEqual(activeDiff(), '地狱', 'ArrowLeft wraps to last (cycle)');
+                    // 焦点即选中高亮：各按钮自身色系 outline + 外发光（不套通用蓝环）
+                    var glow = getComputedStyle(document.activeElement);
+                    api.assert(glow.outlineStyle === 'solid' && cssNumber(glow.outlineWidth) >= 2, 'focused difficulty has solid own-color outline');
+                    api.assert(glow.boxShadow.indexOf('rgb') >= 0, 'focused difficulty has glow box-shadow');
+                    // ↑/↓ 定义为无操作
+                    key('ArrowUp');
+                    api.assertEqual(activeDiff(), '地狱', 'ArrowUp is no-op inside inspector');
+                    key('ArrowDown');
+                    api.assertEqual(activeDiff(), '地狱', 'ArrowDown is no-op inside inspector');
+                    // 检查器打开期间节点方向键不再走地图几何导航：截停并回引焦点进检查器
+                    node.focus();
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+                    api.assert(!!(document.activeElement && document.activeElement.classList.contains('stage-select-difficulty')), 'node arrow reclaimed into inspector difficulty row');
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector survives node arrow reclaim');
+                    // 鼠标 hover 卡路径不受影响：悬停其他节点仍开卡，检查器保持 pinned
+                    var other = null;
+                    var nodes = document.querySelectorAll('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    for (var i = 0; i < nodes.length; i += 1) {
+                        if (nodes[i].getAttribute('data-stage-id') !== stageId) { other = nodes[i]; break; }
+                    }
+                    api.assert(!!other, 'another unlocked node exists');
+                    other.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    var otherAnchor = findCardAnchor(other.getAttribute('data-stage-id'));
+                    api.assert(!!otherAnchor && otherAnchor.classList.contains('is-card-open'), 'hover card still opens for other node');
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector stays pinned while hover card open');
+                    other.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+                    // Esc 关检查器并归还焦点到触发节点
+                    key('Escape');
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'Esc closes inspector after arrow nav');
+                    api.assert(document.activeElement === node, 'Esc returns focus to trigger node');
+                    // 重开后 Enter 提交当前焦点难度（走 handleDifficultyClick 委派，payload 不变）
+                    host.enterMessages.length = 0;
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    key('ArrowRight');
+                    api.assertEqual(activeDiff(), '冒险', 'reopened and moved to adventure');
+                    key('Enter');
+                    return api.waitFor(function() {
+                        return Panels.getActive && Panels.getActive() === null && host.enterMessages.length ? true : null;
+                    }, 2000, 'arrow-nav enter close').then(function() {
+                        var msg = host.enterMessages[0];
+                        api.assertEqual(msg.cmd, 'enter', 'enter cmd');
+                        api.assertEqual(msg.difficulty, '冒险', 'Enter submits focused difficulty');
+                        api.assertEqual(msg.entryKind, 'difficulty', 'entryKind unchanged');
+                        return 'arrow nav cycle + enter submit ok';
+                    });
+                });
+            }],
+            ['inspector-arrow-challenge-single', 'challenge mode arrow keys stay on single hell difficulty and Enter submits it', function() {
+                document.getElementById('stage-fixture-select').value = 'challenge';
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    host.enterMessages.length = 0;
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var stageName = node.getAttribute('data-stage-name');
+                    node.focus();
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'challenge inspector open');
+                    var difficulties = document.querySelectorAll('#stage-select-inspector-difficulties .stage-select-difficulty');
+                    api.assertEqual(difficulties.length, 1, 'challenge single difficulty');
+                    api.assert(document.activeElement === difficulties[0], 'focus on hell button');
+                    document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+                    api.assert(document.activeElement === difficulties[0], 'ArrowRight stays on single hell');
+                    document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true }));
+                    api.assert(document.activeElement === difficulties[0], 'ArrowLeft stays on single hell');
+                    document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    return api.waitFor(function() {
+                        return host.enterMessages.length ? host.enterMessages[0] : null;
+                    }, 2000, 'challenge arrow enter').then(function(msg) {
+                        api.assertEqual(msg.difficulty, '地狱', 'challenge submits hell');
+                        api.assertEqual(msg.stageName, stageName, 'stageName unchanged');
+                        return 'challenge single-key arrow nav ok';
+                    });
+                });
+            }],
+            ['inspector-arrow-locked-noop', 'locked inspector arrow keys do not steal focus from close button', function() {
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var lockedNode = null;
+                    var manifest = StageSelectData.getManifest();
+                    manifest.frameOrder.some(function(label) {
+                        StageSelectPanel._debugSetFrame(label, 'qa-locked-arrow');
+                        lockedNode = document.querySelector('.stage-select-stage-button.is-locked:not(.is-direct-entry)');
+                        return !!lockedNode;
+                    });
+                    api.assert(!!lockedNode, 'locked node exists');
+                    lockedNode.focus();
+                    lockedNode.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'locked inspector open');
+                    var closeEl = document.getElementById('stage-select-inspector-close');
+                    api.assert(document.activeElement === closeEl, 'focus on close button for locked');
+                    ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].forEach(function(k) {
+                        document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+                        api.assert(document.activeElement === closeEl, k + ' keeps focus on close (no difficulty buttons)');
+                    });
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'locked inspector survives arrows');
+                    document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'Esc closes locked inspector');
+                    api.assert(document.activeElement === lockedNode, 'focus returned to locked node');
+                    return 'locked arrow noop ok';
+                });
+            }],
+            ['esc-layering', 'Escape consumes frame menu > inspector > panel in order on both paths', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    node.focus();
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector open');
+                    var toggle = document.getElementById('stage-select-frame-toggle');
+                    toggle.click();
+                    api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, true, 'frame menu open above inspector');
+                    // 页内 Esc 第一层：区域菜单已消费（defaultPrevented），检查器不落穿
+                    toggle.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+                    api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, false, 'Esc closes frame menu first');
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector survives menu Esc');
+                    // 页内 Esc 第二层：关检查器并把焦点还给触发节点
+                    document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'Esc closes inspector');
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, '', 'selection cleared');
+                    api.assert(document.activeElement === node, 'focus returned to trigger node');
+                    api.assertEqual(Panels.getActive(), 'stage-select', 'panel still open after inspector Esc');
+                    // 面板级 panel_esc（C# 物理 Esc 路径）同序分层
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector reopened');
+                    window.chrome.webview.__dispatch({ type: 'panel_esc', reason: 'escape' });
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'panel_esc closes inspector');
+                    api.assertEqual(Panels.getActive(), 'stage-select', 'panel survives inspector-level panel_esc');
+                    toggle.click();
+                    api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, true, 'frame menu reopened');
+                    window.chrome.webview.__dispatch({ type: 'panel_esc', reason: 'escape' });
+                    api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, false, 'panel_esc closes menu first');
+                    api.assertEqual(Panels.getActive(), 'stage-select', 'panel survives menu-level panel_esc');
+                    window.chrome.webview.__dispatch({ type: 'panel_esc', reason: 'escape' });
+                    api.assertEqual(Panels.getActive(), null, 'final panel_esc closes panel');
+                    return 'esc layering ok';
+                });
+            }],
+            ['arrow-navigation', 'arrow keys move focus to geometric nearest node with roving tabindex', function() {
+                host.open();
+                return waitReady(api).then(function() {
+                    var frame = StageSelectData.getFrame(StageSelectPanel._debugGetState().frameLabel);
+                    var buttons = frame.stageButtons || [];
+                    api.assert(buttons.length >= 2, 'frame has multiple stage buttons');
+                    var found = null;
+                    var keys = ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'];
+                    for (var i = 0; i < buttons.length && !found; i += 1) {
+                        for (var j = 0; j < keys.length; j += 1) {
+                            var target = qaNearest(buttons, buttons[i], keys[j]);
+                            if (target) {
+                                found = { origin: buttons[i], key: keys[j], target: target };
+                                break;
+                            }
+                        }
+                    }
+                    api.assert(!!found, 'a navigable origin/direction pair exists');
+                    var originNode = document.querySelector('.stage-select-stage-button[data-stage-id="' + found.origin.id + '"]');
+                    api.assert(!!originNode, 'origin node exists');
+                    originNode.focus();
+                    api.assertEqual(originNode.tabIndex, 0, 'focused node is the tab stop');
+                    originNode.dispatchEvent(new KeyboardEvent('keydown', { key: found.key, bubbles: true, cancelable: true }));
+                    var targetNode = document.querySelector('.stage-select-stage-button[data-stage-id="' + found.target.id + '"]');
+                    api.assert(!!targetNode, 'target node exists');
+                    api.assert(document.activeElement === targetNode, found.key + ' focused geometric nearest node');
+                    api.assertEqual(targetNode.tabIndex, 0, 'roving tabindex moved to target');
+                    api.assertEqual(originNode.tabIndex, -1, 'origin roved out of tab order');
+                    return found.origin.stageName + ' -> ' + found.key + ' -> ' + found.target.stageName;
+                });
+            }],
+            ['locked-node-inspector', 'locked node is focusable, readable, and inspector shows lock reason', function() {
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                host.open();
+                return waitRuntime(api).then(function() {
+                    host.sentMessages.length = 0;
+                    var lockedNode = null;
+                    var manifest = StageSelectData.getManifest();
+                    manifest.frameOrder.some(function(label) {
+                        StageSelectPanel._debugSetFrame(label, 'qa-locked-inspector');
+                        lockedNode = document.querySelector('.stage-select-stage-button.is-locked:not(.is-direct-entry)');
+                        return !!lockedNode;
+                    });
+                    api.assert(!!lockedNode, 'locked node exists');
+                    lockedNode.focus();
+                    api.assertEqual(lockedNode.getAttribute('aria-disabled'), 'true', 'locked node aria-disabled');
+                    api.assert((lockedNode.getAttribute('aria-label') || '').indexOf('未解锁') >= 0, 'locked node has readable label');
+                    api.assertEqual(lockedNode.tabIndex, 0, 'locked node stays in roving tab order');
+                    lockedNode.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector opens for locked node');
+                    var lockEl = document.getElementById('stage-select-inspector-lock');
+                    api.assert(!lockEl.hidden && lockEl.textContent.indexOf('未解锁') >= 0, 'lock reason text shown');
+                    // 逐关锁定原因专项：harness mock 对锁定关卡下发具体 lockReason，检查器应原样展示
+                    api.assert(lockEl.textContent.indexOf('主线任务进度达到 75 解锁（当前 42）') >= 0, 'inspector shows snapshot-provided lockReason');
+                    var difficulties = document.querySelectorAll('#stage-select-inspector-difficulties .stage-select-difficulty');
+                    api.assertEqual(difficulties.length, 0, 'locked inspector renders no difficulty buttons');
+                    api.assert(document.activeElement === document.getElementById('stage-select-inspector-close'), 'focus lands on inspector close for locked');
+                    api.assertEqual(host.sentMessages.filter(function(msg) { return msg && msg.cmd === 'enter'; }).length, 0, 'no enter sent for locked');
+                    document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'Esc closes locked inspector');
+                    api.assert(document.activeElement === lockedNode, 'focus returned to locked node');
+                    return 'locked inspector ok';
+                });
+            }],
+            ['locked-inspector-fallback', 'locked inspector falls back to generic reason when snapshot omits lockReason', function() {
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                host.open();
+                return waitRuntime(api).then(function() {
+                    var lockedNode = null;
+                    var manifest = StageSelectData.getManifest();
+                    manifest.frameOrder.some(function(label) {
+                        StageSelectPanel._debugSetFrame(label, 'qa-locked-fallback');
+                        lockedNode = document.querySelector('.stage-select-stage-button.is-locked:not(.is-direct-entry)');
+                        return !!lockedNode;
+                    });
+                    api.assert(!!lockedNode, 'locked node exists');
+                    var stageName = lockedNode.getAttribute('data-stage-name');
+                    var stageId = lockedNode.getAttribute('data-stage-id');
+                    // 旧形状快照（stageDetails 无 lockReason 字段）：检查器应回退通用文案
+                    var snapshot = {
+                        unlockedStages: {},
+                        stageDetails: {},
+                        isChallengeMode: false,
+                        currentFrameLabel: StageSelectPanel._debugGetState().frameLabel
+                    };
+                    snapshot.unlockedStages[stageName] = false;
+                    snapshot.stageDetails[stageName] = {
+                        exists: true,
+                        stageType: '无限过图',
+                        detail: 'live detail: ' + stageName,
+                        materialDetail: '',
+                        limitations: [],
+                        limitLevel: '',
+                        task: false,
+                        highestDifficulty: '简单'
+                    };
+                    StageSelectPanel._debugApplySnapshot(snapshot);
+                    var rebuilt = document.querySelector('.stage-select-stage-button[data-stage-id="' + stageId + '"]');
+                    api.assert(!!rebuilt && rebuilt.classList.contains('is-locked'), 'node stays locked after snapshot');
+                    rebuilt.focus();
+                    rebuilt.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector opens for locked node');
+                    var lockEl = document.getElementById('stage-select-inspector-lock');
+                    api.assert(!lockEl.hidden, 'lock line visible');
+                    api.assert(lockEl.textContent.indexOf('未解锁：该关卡尚未开放') >= 0, 'generic fallback reason shown');
+                    return 'locked inspector fallback ok';
+                });
+            }],
+            ['selection-persists-rebuild', 'selection and inspector survive snapshot merge and same-frame re-render', function() {
+                host.open();
+                return waitReady(api).then(function() {
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var stageId = node.getAttribute('data-stage-id');
+                    var stageName = node.getAttribute('data-stage-name');
+                    node.click();
+                    var state = StageSelectPanel._debugGetState();
+                    api.assertEqual(state.selectedStageId, stageId, 'click selects node');
+                    api.assert(state.inspectorOpen, 'inspector pinned by click');
+                    var snapshot = { unlockedStages: {}, stageDetails: {}, isChallengeMode: false, currentFrameLabel: state.frameLabel };
+                    snapshot.unlockedStages[stageName] = true;
+                    StageSelectPanel._debugApplySnapshot(snapshot);
+                    var rebuilt = document.querySelector('.stage-select-stage-button[data-stage-id="' + stageId + '"]');
+                    api.assert(!!rebuilt && rebuilt !== node, 'nodes rebuilt by snapshot');
+                    api.assert(rebuilt.classList.contains('is-selected'), 'selection restored by stage id');
+                    api.assertEqual(rebuilt.getAttribute('aria-expanded'), 'true', 'aria-expanded restored');
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector survives snapshot');
+                    api.assert(document.getElementById('stage-select-inspector-name').textContent.length > 0, 'inspector content re-rendered');
+                    StageSelectPanel._debugSetFrame(state.frameLabel, 'qa-reselect');
+                    var rebuilt2 = document.querySelector('.stage-select-stage-button[data-stage-id="' + stageId + '"]');
+                    api.assert(rebuilt2.classList.contains('is-selected'), 'selection survives same-frame setFrame');
+                    rebuilt2.focus();
+                    StageSelectPanel._debugApplySnapshot(snapshot);
+                    var rebuilt3 = document.querySelector('.stage-select-stage-button[data-stage-id="' + stageId + '"]');
+                    api.assert(document.activeElement === rebuilt3, 'focus restored to rebuilt node');
+                    rebuilt3.click();
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, '', 're-click same node deselects');
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'inspector closed after deselect');
+                    return 'selection persists across rebuilds';
+                });
+            }],
+            ['direct-entry-no-inspector', 'direct entries keep one-step enter and never open inspector', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                document.getElementById('stage-frame-select').value = '地下2层';
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    StageSelectPanel._debugSetFrame('地下2层', 'qa-direct-no-inspector');
+                    var mapEntry = document.querySelector('.stage-select-stage-button.is-map-entry[data-stage-name="幸存者营地"]');
+                    api.assert(!!mapEntry, 'map entry rendered');
+                    host.enterMessages.length = 0;
+                    mapEntry.focus();
+                    mapEntry.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'no inspector for map entry');
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, '', 'no selection for map entry');
+                    return api.waitFor(function() {
+                        return host.enterMessages.length ? host.enterMessages[0] : null;
+                    }, 2000, 'direct map enter via keyboard').then(function(msg) {
+                        api.assertEqual(msg.entryKind, 'map', 'map entryKind sent');
+                        api.assertEqual(msg.difficulty, '', 'map difficulty empty');
+                    });
+                }).then(function() {
+                    document.getElementById('stage-frame-select').value = '地下2层';
+                    host.open({ mode: 'runtime', debug: false });
+                    return waitRuntime(api).then(function() {
+                        StageSelectPanel._debugSetFrame('地下2层', 'qa-direct-no-inspector-task');
+                        var taskEntry = document.querySelector('.stage-select-stage-button.is-task-entry[data-stage-name="菲尼克斯Lv10"]');
+                        api.assert(!!taskEntry, 'task entry rendered');
+                        host.enterMessages.length = 0;
+                        taskEntry.focus();
+                        taskEntry.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true }));
+                        api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'no inspector for task entry');
+                        return api.waitFor(function() {
+                            return host.enterMessages.length ? host.enterMessages[0] : null;
+                        }, 2000, 'direct task enter via keyboard').then(function(msg) {
+                            api.assertEqual(msg.entryKind, 'task', 'task entryKind sent');
+                            api.assertEqual(msg.difficulty, '', 'task difficulty empty');
+                            return 'direct entries bypass inspector';
+                        });
+                    });
+                });
+            }],
+            ['challenge-inspector-hell-only', 'challenge mode inspector renders only hell difficulty', function() {
+                document.getElementById('stage-fixture-select').value = 'challenge';
+                host.open();
+                return waitRuntime(api).then(function(state) {
+                    api.assert(state.challenge, 'challenge flag set');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    api.assert(!!node, 'challenge node exists');
+                    node.focus();
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'challenge inspector open');
+                    var difficulties = document.querySelectorAll('#stage-select-inspector-difficulties .stage-select-difficulty');
+                    api.assertEqual(difficulties.length, 1, 'challenge inspector single difficulty');
+                    api.assertEqual(difficulties[0].getAttribute('data-difficulty'), '地狱', 'challenge inspector renders hell only');
+                    return 'challenge inspector hell only';
+                });
+            }],
+            ['blank-click-clears-selection', 'clicking stage blank area clears selection and inspector', function() {
+                host.open();
+                return waitReady(api).then(function() {
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    node.click();
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector open after click');
+                    document.getElementById('stage-select-bg').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, '', 'blank click clears selection');
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'inspector hidden after blank click');
+                    return 'blank click clears';
+                });
+            }],
+            // ── P3 会话守卫用例（协议加固；mock 回显对位 C# 代封）──────────────────
+            ['session-request-envelope', 'requests carry panelInstanceId + sessionGeneration + catalogVersion', function() {
+                host.open({ panelInstanceId: 'qa-instance-1' });
+                return waitRuntime(api).then(function(state) {
+                    api.assertEqual(state.panelInstanceId, 'qa-instance-1', 'bound instance id from initData');
+                    var manifest = StageSelectData.getManifest();
+                    var snapshotMsg = null;
+                    for (var i = host.sentMessages.length - 1; i >= 0; i -= 1) {
+                        if (host.sentMessages[i].cmd === 'snapshot') { snapshotMsg = host.sentMessages[i]; break; }
+                    }
+                    api.assert(!!snapshotMsg, 'snapshot request sent');
+                    api.assertEqual(snapshotMsg.panelInstanceId, 'qa-instance-1', 'snapshot carries instance id');
+                    api.assertEqual(snapshotMsg.sessionGeneration, state.sessionGeneration, 'snapshot carries session generation');
+                    api.assertEqual(snapshotMsg.catalogVersion, manifest.version, 'snapshot carries catalog version');
+                    api.assertEqual(snapshotMsg.catalogSchema, manifest.schema, 'snapshot carries catalog schema');
+                    api.assert(snapshotMsg.stageNames.length > 0, 'stageNames still full set');
+                    return 'envelope ok, session=' + state.sessionGeneration;
+                });
+            }],
+            ['session-cross-instance-rejected', 'response with foreign panelInstanceId is rejected, legit retry still applies', function() {
+                host.open({ panelInstanceId: 'qa-instance-A' });
+                return waitReady(api).then(function() {
+                    var snapshotMsg = null;
+                    for (var i = host.sentMessages.length - 1; i >= 0; i -= 1) {
+                        if (host.sentMessages[i].cmd === 'snapshot') { snapshotMsg = host.sentMessages[i]; break; }
+                    }
+                    var before = StageSelectPanel._debugGetState().droppedRespCount;
+                    // 跨实例回包：callId 在途但 instance 不符 → 拒绝并消费 pending。
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp', panel: 'stage-select', cmd: 'snapshot',
+                        callId: snapshotMsg.callId, panelInstanceId: 'qa-instance-B',
+                        sessionGeneration: snapshotMsg.sessionGeneration,
+                        success: true,
+                        snapshot: { unlockedStages: {}, stageDetails: {}, currentFrameLabel: '联合大学' }
+                    });
+                    var state = StageSelectPanel._debugGetState();
+                    api.assertEqual(state.droppedRespCount, before + 1, 'foreign instance response dropped');
+                    api.assertEqual(state.pendingCount, 0, 'pending consumed by rejection');
+                    api.assert(!state.runtimeSnapshot, 'foreign snapshot not applied');
+                    // mock 的迟到正当回包（同 callId）也已无处可投；重新拉快照验证面板仍可自愈。
+                    StageSelectPanel._debugRequestSnapshot();
+                    return waitRuntime(api).then(function(s2) {
+                        api.assert(!!s2.runtimeSnapshot, 'panel recovers with fresh snapshot');
+                        return 'cross-instance rejected, recovery ok';
+                    });
+                });
+            }],
+            ['session-stale-revision-dropped', 'snapshot with non-monotonic stateRevision does not overwrite newer state', function() {
+                host.open();
+                return waitRuntime(api).then(function(state) {
+                    var appliedRevision = state.lastAppliedStateRevision;
+                    api.assert(appliedRevision >= 1, 'initial snapshot revision applied');
+                    var before = state.droppedRespCount;
+                    StageSelectPanel._debugRequestSnapshot();
+                    var snapshotMsg = host.sentMessages[host.sentMessages.length - 1];
+                    api.assertEqual(snapshotMsg.cmd, 'snapshot', 'last message is the new snapshot request');
+                    // 同步注入乱序回包（revision 不前进），赶在 mock 15ms 正当回包之前。
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp', panel: 'stage-select', cmd: 'snapshot',
+                        callId: snapshotMsg.callId,
+                        panelInstanceId: snapshotMsg.panelInstanceId,
+                        sessionGeneration: snapshotMsg.sessionGeneration,
+                        catalogVersion: snapshotMsg.catalogVersion,
+                        stateRevision: appliedRevision,
+                        success: true,
+                        snapshot: { unlockedStages: {}, stageDetails: {}, currentFrameLabel: '联合大学' }
+                    });
+                    var mid = StageSelectPanel._debugGetState();
+                    api.assertEqual(mid.droppedRespCount, before + 1, 'stale revision dropped');
+                    api.assertEqual(mid.lastAppliedStateRevision, appliedRevision, 'revision watermark unchanged');
+                    api.assertEqual(mid.frameLabel, state.frameLabel, 'stale snapshot did not move frame');
+                    // 注入回包已消费该 pending（mock 的迟到正当回包将无处可投）；
+                    // 再拉一次快照，mock 自增 revision 的正当回包应正常应用。
+                    StageSelectPanel._debugRequestSnapshot();
+                    return api.waitFor(function() {
+                        var s = StageSelectPanel._debugGetState();
+                        return s.lastAppliedStateRevision > appliedRevision ? s : null;
+                    }, 2000, 'legit revision applied').then(function(s2) {
+                        api.assert(s2.lastAppliedStateRevision > appliedRevision, 'legit revision applied after stale drop');
+                        return 'stale revision dropped, legit applied rev=' + s2.lastAppliedStateRevision;
+                    });
+                });
+            }],
+            ['session-late-response-after-reopen', 'response from a closed session is dropped after close/reopen', function() {
+                host.open({ panelInstanceId: 'qa-instance-old' });
+                return waitRuntime(api).then(function(state) {
+                    var oldCallId = null;
+                    for (var i = host.sentMessages.length - 1; i >= 0; i -= 1) {
+                        if (host.sentMessages[i].cmd === 'snapshot') { oldCallId = host.sentMessages[i].callId; break; }
+                    }
+                    var oldSession = state.sessionGeneration;
+                    host.close();
+                    host.open({ panelInstanceId: 'qa-instance-new' });
+                    return waitRuntime(api).then(function(state2) {
+                        api.assert(state2.sessionGeneration > oldSession, 'session rotates on reopen');
+                        api.assertEqual(state2.panelInstanceId, 'qa-instance-new', 'instance rotates on reopen');
+                        var before = state2.droppedRespCount;
+                        // 旧会话回包迟到：pending 已随关闭清空 → 拒绝并记 dev log。
+                        window.chrome.webview.__dispatch({
+                            type: 'panel_resp', panel: 'stage-select', cmd: 'snapshot',
+                            callId: oldCallId, panelInstanceId: 'qa-instance-old',
+                            sessionGeneration: oldSession, success: true,
+                            snapshot: { unlockedStages: {}, stageDetails: {} }
+                        });
+                        var after = StageSelectPanel._debugGetState();
+                        api.assertEqual(after.droppedRespCount, before + 1, 'late response dropped');
+                        api.assertEqual(after.panelInstanceId, 'qa-instance-new', 'new session unaffected');
+                        return 'late response dropped across reopen';
+                    });
+                });
+            }],
+            ['session-rebind-refreshes-instance', 'same-name Host reopen rebinds session without DOM rebuild', function() {
+                host.open({ panelInstanceId: 'qa-instance-1' });
+                return waitRuntime(api).then(function(state) {
+                    var el = document.querySelector('.stage-select-panel');
+                    Panels.open('stage-select', {
+                        mode: 'dev', fixture: 'mixed',
+                        frameLabel: '基地门口', returnFrameLabel: '基地门口',
+                        panelInstanceId: 'qa-instance-2', debug: true
+                    });
+                    // rebind 是同步路径（panels.js _doOpen → onRebind）：轮换断言立即生效。
+                    var mid = StageSelectPanel._debugGetState();
+                    api.assert(document.querySelector('.stage-select-panel') === el, 'rebind reuses DOM');
+                    api.assertEqual(mid.panelInstanceId, 'qa-instance-2', 'instance rebound');
+                    api.assert(mid.sessionGeneration > state.sessionGeneration, 'session rotates on rebind');
+                    var last = host.sentMessages[host.sentMessages.length - 1];
+                    api.assertEqual(last.cmd, 'snapshot', 'rebind refreshes snapshot');
+                    api.assertEqual(last.panelInstanceId, 'qa-instance-2', 'refresh carries new instance');
+                    // 等 refresh 回包落地（pending 归零），不能用 waitRuntime——runtimeSnapshot 已被旧态置位。
+                    return api.waitFor(function() {
+                        var s = StageSelectPanel._debugGetState();
+                        return s.pendingCount === 0 && s.panelInstanceId === 'qa-instance-2' ? s : null;
+                    }, 2000, 'rebind snapshot settled').then(function() {
+                        return 'rebind ok';
+                    });
+                });
+            }],
+            ['session-arena-return-chain', 'arena redirect keeps panel open; returnTo reopen rotates session; late responses dropped', function() {
+                // 对位 StageSelectPanelService.as 的角斗场重定向（closePanel:false + redirected:'arena'）
+                // 与 PanelHostController 的 returnTo 栈（arena 关闭后以 returnToInitData 重开 stage-select）。
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                document.getElementById('stage-frame-select').value = '基地门口';
+                host.open({ panelInstanceId: 'qa-chain-1' });
+                return waitRuntime(api).then(function(state) {
+                    var oldSnapshotCallId = null;
+                    for (var i = host.sentMessages.length - 1; i >= 0; i -= 1) {
+                        if (host.sentMessages[i].cmd === 'snapshot') { oldSnapshotCallId = host.sentMessages[i].callId; break; }
+                    }
+                    var difficulty = document.querySelector('.stage-select-card-anchor .stage-select-difficulty');
+                    api.assert(!!difficulty, 'difficulty button exists');
+                    difficulty.click();
+                    var enterMsg = host.enterMessages[host.enterMessages.length - 1];
+                    api.assert(!!enterMsg, 'enter request sent');
+                    api.assertEqual(enterMsg.panelInstanceId, 'qa-chain-1', 'enter carries instance');
+                    // 抢在 mock 默认回包前同步注入重定向回包（closePanel:false：Host 接管切换，面板不自杀）。
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp', panel: 'stage-select', cmd: 'enter',
+                        callId: enterMsg.callId, panelInstanceId: enterMsg.panelInstanceId,
+                        sessionGeneration: enterMsg.sessionGeneration,
+                        success: true, closePanel: false, redirected: 'arena',
+                        stageName: enterMsg.stageName, difficulty: enterMsg.difficulty
+                    });
+                    var mid = StageSelectPanel._debugGetState();
+                    api.assert(mid.isOpen, 'panel stays open on arena redirect (closePanel:false)');
+                    api.assertEqual(mid.busyStageName, '', 'busy cleared by redirect response');
+                    // arena 阶段：Host 关 stage-select（panel_cmd close 等价物）→ 关 arena 后以
+                    // returnToInitData 重开 stage-select（新 instance + returnFrameLabel）。
+                    Panels.close();
+                    host.open({ panelInstanceId: 'qa-chain-2', returnFrameLabel: '基地门口' });
+                    return waitRuntime(api).then(function(state2) {
+                        api.assertEqual(state2.panelInstanceId, 'qa-chain-2', 'returnTo reopen binds new instance');
+                        api.assert(state2.sessionGeneration > state.sessionGeneration, 'session rotates across arena chain');
+                        api.assertEqual(state2.returnFrameLabel, '基地门口', 'returnTo frame restored');
+                        var before = state2.droppedRespCount;
+                        window.chrome.webview.__dispatch({
+                            type: 'panel_resp', panel: 'stage-select', cmd: 'snapshot',
+                            callId: oldSnapshotCallId, panelInstanceId: 'qa-chain-1',
+                            sessionGeneration: state.sessionGeneration, success: true,
+                            snapshot: { unlockedStages: {}, stageDetails: {} }
+                        });
+                        api.assertEqual(StageSelectPanel._debugGetState().droppedRespCount, before + 1,
+                            'pre-arena response dropped after chain reopen');
+                        return 'arena chain ok';
+                    });
+                });
+            }],
+            ['mouse-select-clean', 'mouse-path select shows no focus ring and no card; anchor mirror hard-hides stale card', function() {
+                // 打磨批二轮⑧⑨⑩：实机「选中后蓝环压残留卡」治理——合成鼠标全路径
+                // （pointerenter 开卡 → pointerdown 转指针模态 → focus 持焦 → click 选中）。
+                host.open();
+                return waitReady(api).then(function() {
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    api.assert(!!node, 'unlocked difficulty node exists');
+                    var stageId = node.getAttribute('data-stage-id');
+                    var anchor = findCardAnchor(stageId);
+                    node.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    api.assert(anchor.classList.contains('is-card-open'), 'hover opens card before select');
+                    node.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+                    node.focus();
+                    node.click();
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, stageId, 'node selected via mouse path');
+                    api.assert(!anchor.classList.contains('is-card-open'), 'card closes on select');
+                    api.assert(anchor.classList.contains('is-selected'), 'selection mirrored to card anchor');
+                    api.assert(!node.classList.contains('is-kb-focus'), 'mouse path does not latch keyboard ring');
+                    var hitZone = node.querySelector('.stage-select-hit-zone');
+                    api.assertEqual(getComputedStyle(hitZone).outlineStyle, 'none', 'no focus ring after mouse select');
+                    // DOM 级保险实证：即便事件乱序残留 is-card-open，选中锚点的卡也画不出来
+                    anchor.classList.add('is-card-open');
+                    api.assertEqual(getComputedStyle(anchor.querySelector('.stage-select-card')).display, 'none',
+                        'selected anchor hard-hides card even with stale is-card-open');
+                    anchor.classList.remove('is-card-open');
+                    // 指针留在节点上（leave→enter 回悬）不再开卡
+                    node.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+                    node.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    api.assert(!anchor.classList.contains('is-card-open'), 're-hover selected node keeps card closed');
+                    return 'mouse select clean';
+                });
+            }],
+            ['deselect-restores-hover-card', 'Esc deselect restores baseline: hover card reopens and keyboard ring yields to open card', function() {
+                // 打磨批二轮⑧⑩：取消选中回未选中基线；Esc（键盘模态）归还焦点挂 .is-kb-focus，
+                // 但卡恢复打开后 has-open-card 守卫令蓝环让位（卡本体即指示器）。
+                host.open();
+                return waitReady(api).then(function() {
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var stageId = node.getAttribute('data-stage-id');
+                    var anchor = findCardAnchor(stageId);
+                    node.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    node.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+                    node.focus();
+                    node.click();
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, stageId, 'node selected');
+                    node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, '', 'Esc deselects');
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'inspector closed');
+                    api.assert(document.activeElement === node, 'focus restored to trigger node');
+                    api.assert(node.classList.contains('is-kb-focus'), 'Esc (keyboard) latches kb-focus class');
+                    api.assert(anchor.classList.contains('is-card-open'), 'hover card reopens after deselect');
+                    api.assert(node.classList.contains('has-open-card'), 'open card mirrored to node');
+                    var hitZone = node.querySelector('.stage-select-hit-zone');
+                    api.assertEqual(getComputedStyle(hitZone).outlineStyle, 'none', 'ring yields while card open');
+                    return 'deselect restores hover baseline';
+                });
+            }],
+            ['keyboard-focus-ring-semantics', 'keyboard modality shows ring on card-less locked node; pointerdown strips ring without refocus', function() {
+                // 打磨批二轮⑧：键盘可达性不退役——锁定节点永不开卡，键盘环必须可见；
+                // 「点击已持焦节点、focusin 不重燃」路径由 pointerdown capture 直接剥环。
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                host.open();
+                return waitReady(api).then(function() {
+                    StageSelectPanel._debugSetFrame('基地车库', 'qa-kb-ring'); // 摇滚公园/摇滚内战 在 mixed 下锁定
+                    var locked = document.querySelector('.stage-select-stage-button.is-locked:not(.is-direct-entry)');
+                    api.assert(!!locked, 'locked node exists');
+                    locked.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
+                    locked.focus();
+                    api.assert(locked.classList.contains('is-kb-focus'), 'keyboard modality latches kb-focus class');
+                    var hitZone = locked.querySelector('.stage-select-hit-zone');
+                    api.assertEqual(getComputedStyle(hitZone).outlineStyle, 'solid', 'locked node shows ring under keyboard modality');
+                    api.assertEqual(getComputedStyle(hitZone).outlineWidth, '2px', 'ring width 2px');
+                    locked.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+                    api.assert(!locked.classList.contains('is-kb-focus'), 'pointerdown strips ring without refocus');
+                    api.assertEqual(getComputedStyle(hitZone).outlineStyle, 'none', 'ring gone under pointer modality');
+                    return 'keyboard ring semantics ok';
+                });
             }]
         ];
 
@@ -810,6 +1511,48 @@ var StageSelectHarnessQA = (function() {
         return chain.then(function(results) {
             return MinigameHarness.normalizeBundle(results);
         });
+    }
+
+    // P2：hover 卡已迁至 .stage-select-card-anchor 同位锚点层，统一按 stage id 反查。
+    function findCardAnchor(stageId) {
+        return document.querySelector('.stage-select-card-anchor[data-stage-id="' + stageId + '"]');
+    }
+
+    // 方向键导航 qa 侧独立实现（与面板同款打分）：方向半平面主轴距离 + 2×垂直轴偏差。
+    function qaNavPoint(button) {
+        var x = Number(button.x) || 0;
+        var y = Number(button.y) || 0;
+        if (button.entryKind === 'map') {
+            var marker = button.directLayout && button.directLayout.marker || {};
+            var mx = Number(marker.x); var my = Number(marker.y);
+            return { x: x + (isFinite(mx) ? mx : 0), y: y + (isFinite(my) ? my : 120) };
+        }
+        if (button.entryKind === 'task') {
+            return { x: x + 45.5, y: y + 10.5 };
+        }
+        return { x: x, y: y + 120 };
+    }
+
+    function qaNearest(buttons, origin, key) {
+        var originPoint = qaNavPoint(origin);
+        var best = null;
+        var bestScore = Infinity;
+        buttons.forEach(function(candidate) {
+            if (candidate.id === origin.id) return;
+            var point = qaNavPoint(candidate);
+            var dx = point.x - originPoint.x;
+            var dy = point.y - originPoint.y;
+            var primary;
+            var cross;
+            if (key === 'ArrowRight') { primary = dx; cross = dy; }
+            else if (key === 'ArrowLeft') { primary = -dx; cross = dy; }
+            else if (key === 'ArrowDown') { primary = dy; cross = dx; }
+            else { primary = -dy; cross = dx; }
+            if (primary <= 1) return;
+            var score = primary + 2 * Math.abs(cross);
+            if (score < bestScore) { bestScore = score; best = candidate; }
+        });
+        return best;
     }
 
     function findFirstSceneEntryNav(api) {

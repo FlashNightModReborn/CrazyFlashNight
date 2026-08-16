@@ -7,6 +7,8 @@ const vm = require('vm');
 
 const projectRoot = path.resolve(__dirname, '..');
 const dataFile = path.join(projectRoot, 'launcher', 'web', 'modules', 'stage-select-data.js');
+// 计数基线单一真值；新增 / 删除 / 重分类条目时改 golden 文件，不要在本文件手改数字。
+const goldenFile = path.join(projectRoot, 'launcher', 'web', 'modules', 'stage-select', 'dev', 'stage-select-golden.js');
 
 function parseArgs(argv) {
     return {
@@ -14,15 +16,23 @@ function parseArgs(argv) {
     };
 }
 
-function loadData() {
-    const source = fs.readFileSync(dataFile, 'utf8');
+function runModule(file, globalName) {
+    const source = fs.readFileSync(file, 'utf8');
     const sandbox = { console };
     vm.createContext(sandbox);
-    vm.runInContext(source, sandbox, { filename: dataFile });
-    if (!sandbox.StageSelectData) {
-        throw new Error('StageSelectData not found in ' + dataFile);
+    vm.runInContext(source, sandbox, { filename: file });
+    if (!sandbox[globalName]) {
+        throw new Error(globalName + ' not found in ' + file);
     }
-    return sandbox.StageSelectData.exportManifest();
+    return sandbox[globalName];
+}
+
+function loadData() {
+    return runModule(dataFile, 'StageSelectData').exportManifest();
+}
+
+function loadGolden() {
+    return runModule(goldenFile, 'StageSelectGolden');
 }
 
 function assetExists(assetUrl) {
@@ -30,12 +40,13 @@ function assetExists(assetUrl) {
     return fs.existsSync(path.join(projectRoot, 'launcher', 'web', assetUrl.replace(/\//g, path.sep)));
 }
 
-function audit(manifest) {
+function audit(manifest, golden) {
     const frames = manifest.frames || [];
     const stageButtons = [];
     const navButtons = [];
     const directButtons = [];
     const mapButtons = [];
+    const taskButtons = [];
     const decorations = [];
     const missingBackgroundAssets = [];
     const missingPreviewAssets = [];
@@ -46,6 +57,13 @@ function audit(manifest) {
     // 故审计在此自检 stageButton.id 全局唯一（catch 手改/复制条目漏改 id 的类错误）。
     const stageButtonIdCounts = {};
     const duplicateStageButtonIds = [];
+
+    // stageNames 是 inventory 声明（运行时 snapshot 由面板按按钮动态收集，不读本数组），
+    // 但它必须覆盖全部按钮 stageName，否则 inventory 计数与真实条目静默漂移。
+    const declaredStageNames = {};
+    (manifest.stageNames || []).forEach(function(name) { declaredStageNames[name] = true; });
+    const stageNamesMissingFromManifest = [];
+    const missingLookup = {};
 
     frames.forEach(function(frame) {
         if (!frame.background || !assetExists(frame.background.assetUrl)) {
@@ -59,6 +77,11 @@ function audit(manifest) {
             }
             if (button.entryKind && button.entryKind !== 'difficulty') directButtons.push(button);
             if (button.entryKind === 'map') mapButtons.push(button);
+            if (button.entryKind === 'task') taskButtons.push(button);
+            if (button.stageName && !declaredStageNames[button.stageName] && !missingLookup[button.stageName]) {
+                missingLookup[button.stageName] = true;
+                stageNamesMissingFromManifest.push(button.stageName);
+            }
             if (!assetExists(button.previewUrl)) missingPreviewAssets.push(button.stageName);
             if (button.x < -320 || button.x > 1024 || button.y < -90 || button.y > 576) {
                 outOfBoundsButtons.push(button.id);
@@ -81,6 +104,7 @@ function audit(manifest) {
         sourceStageButtonInstances: manifest.assetReport && manifest.assetReport.sourceStageButtonInstances,
         directStageButtonInstances: directButtons.length,
         mapStageButtonInstances: mapButtons.length,
+        taskStageButtonInstances: taskButtons.length,
         mapDirectLayoutMissing: mapButtons.filter(function(button) {
             return !button.directLayout || !button.directLayout.marker || !button.directLayout.text;
         }).map(function(button) { return button.stageName; }),
@@ -89,6 +113,7 @@ function audit(manifest) {
         ignoredStageButtonInstances: manifest.assetReport && manifest.assetReport.ignoredStageButtonInstances || [],
         navButtons: navButtons.length,
         uniqueStageNames: (manifest.stageNames || []).length,
+        stageNamesMissingFromManifest: stageNamesMissingFromManifest,
         backgroundMissing: (manifest.assetReport && manifest.assetReport.backgroundMissing || []).length,
         backgroundAssetMissing: missingBackgroundAssets,
         decorationAssetMissing: missingDecorationAssets,
@@ -102,16 +127,8 @@ function audit(manifest) {
 
     const failures = [];
     if (result.duplicateStageButtonIds.length) failures.push('duplicate stage button ids: ' + result.duplicateStageButtonIds.join(', '));
-    if (result.labels !== 16) failures.push('expected 16 labels, got ' + result.labels);
-    // sourceStageButtonInstances 来自冻结 .fla（已退役）→ 永远 182。
-    // 以下 rendered 计数 = .fla 渲染基线 + web 手写新增条目；.fla 退役后随手改增长，
-    // 新增条目时同步上调本基线（当前: +1 外交-隧道据点 subway，164/13/9 → 165/14/10）。
-    if (result.sourceStageButtonInstances !== 182) failures.push('expected 182 source stage button instances, got ' + result.sourceStageButtonInstances);
-    if (result.stageButtonInstances !== 165) failures.push('expected 165 active rendered stage button instances, got ' + result.stageButtonInstances);
-    if (result.directStageButtonInstances !== 14) failures.push('expected 14 direct rendered stage buttons, got ' + result.directStageButtonInstances);
-    if (result.mapStageButtonInstances !== 10) failures.push('expected 10 rendered diplomacy map buttons, got ' + result.mapStageButtonInstances);
+    if (result.stageNamesMissingFromManifest.length) failures.push('stageNames inventory missing button entries: ' + result.stageNamesMissingFromManifest.join(', '));
     if (result.mapDirectLayoutMissing.length) failures.push('missing direct map layout: ' + result.mapDirectLayoutMissing.join(', '));
-    if (result.decorationInstances !== 2) failures.push('expected 2 decoration instances, got ' + result.decorationInstances);
     if (result.unmappedStageLikeInstances.length) failures.push('unmapped source stage-like instances: ' + result.unmappedStageLikeInstances.map(function(item) {
         return item.frameLabel + ':' + item.libraryItemName + '@' + item.x + ',' + item.y;
     }).join(', '));
@@ -120,6 +137,19 @@ function audit(manifest) {
     if (result.decorationAssetMissing.length) failures.push('missing decoration assets: ' + result.decorationAssetMissing.join(', '));
     if (result.previewAssetMissing.length) failures.push('missing preview assets: ' + result.previewAssetMissing.join(', '));
     if (result.outOfBoundsButtons.length) failures.push('button anchors outside expected guard band: ' + result.outOfBoundsButtons.join(', '));
+
+    // 计数基线全部来自 golden 单一真值；golden 中的键必须在 result 有同名指标且数值相等。
+    const exp = (golden && golden.expected) || {};
+    Object.keys(exp).forEach(function(key) {
+        if (typeof exp[key] !== 'number') return;
+        if (typeof result[key] !== 'number') {
+            failures.push('golden expected key "' + key + '" has no matching audit metric');
+            return;
+        }
+        if (result[key] !== exp[key]) {
+            failures.push('expected ' + exp[key] + ' ' + key + ', got ' + result[key]);
+        }
+    });
     result.failures = failures;
     result.ok = failures.length === 0;
     return result;
@@ -127,7 +157,7 @@ function audit(manifest) {
 
 function main() {
     const args = parseArgs(process.argv.slice(2));
-    const result = audit(loadData());
+    const result = audit(loadData(), loadGolden());
     if (args.json) {
         process.stdout.write(JSON.stringify(result, null, 2) + '\n');
     } else {

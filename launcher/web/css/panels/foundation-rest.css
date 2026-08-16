@@ -140,16 +140,7 @@
         rgba(3, 7, 10, 0.86);
 }
 
-#panel-container[data-panel="stage-select"] #panel-content {
-    inset: 0;
-    align-items: center;
-    justify-content: center;
-}
-
-/* 沉浸全屏化 2026-06-11：兜底深底，去 backdrop 暗屏（runtime 舞台已铺满，仅防亚像素边缝）*/
-#panel-container[data-panel="stage-select"] #panel-backdrop {
-    background: #0b1118;
-}
+/* stage-select 全屏 anchor / 去 backdrop 暗屏规则已随 P1-B 迁往 css/panels/stage-select.css */
 
 #panel-container[data-panel="tasks"] #panel-content {
     inset: 0;

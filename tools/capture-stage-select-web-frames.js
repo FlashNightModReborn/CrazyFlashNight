@@ -243,12 +243,15 @@ async function captureFrame(page, frame, args, outDir) {
             })),
             hoverCard: (() => {
                 const hovered = document.querySelector('.stage-select-stage-button:hover');
-                const card = hovered && hovered.querySelector('.stage-select-card');
+                if (!hovered) return null;
+                // P2：hover 卡已迁至 .stage-select-card-anchor 同位锚点层，按 stage id 反查。
+                const anchor = document.querySelector('.stage-select-card-anchor[data-stage-id="' + (hovered.getAttribute('data-stage-id') || '') + '"]');
+                const card = anchor && anchor.querySelector('.stage-select-card');
                 if (!card) return null;
                 return {
                     stageName: hovered.getAttribute('data-stage-name') || '',
                     rect: relRect(card),
-                    previewSource: hovered.querySelector('.stage-select-preview') && hovered.querySelector('.stage-select-preview').getAttribute('data-preview-source') || ''
+                    previewSource: anchor.querySelector('.stage-select-preview') && anchor.querySelector('.stage-select-preview').getAttribute('data-preview-source') || ''
                 };
             })()
         };
@@ -284,6 +287,13 @@ async function main() {
         const failure = request.failure();
         failedRequests.push(request.url() + ' :: ' + (failure && failure.errorText || 'failed'));
     });
+    // 字体虚拟主机在 headless 环境不可达；与 run-stage-select-harness.js 同款 204 mock，
+    // 字体回退渲染对 before/after 对照双方一致，不影响零变化判定。
+    await page.route('https://cfn-fonts.local/**', route => route.fulfill({
+        status: 204,
+        headers: { 'access-control-allow-origin': '*' },
+        body: ''
+    }));
 
     const captures = [];
     try {

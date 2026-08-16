@@ -649,7 +649,11 @@ function auditCssDebt(options) {
         }
     });
 
-    var diff = git(root, ['diff', '--no-ext-diff', '--no-color', '--unified=0', commit, '--'].concat(files));
+    // --minimal：强制精确 Myers。默认 xdl 在编辑代价超预算时退化启发式，
+    // 对「巨型中段删块」（如 stage-select 1255 行拆出 features.css）会产生数百碎片 hunk，
+    // 让 hunk 新侧范围错位覆盖到未改动的相邻段落，造成 touched-line 误报（2026-08-16 P1-B 实证：
+    // 同内容 diff 默认 350 hunks / --minimal 12 hunks）。
+    var diff = git(root, ['diff', '--no-ext-diff', '--no-color', '--unified=0', '--minimal', commit, '--'].concat(files));
     var touched = parseUnifiedZeroDiff(diff);
     Object.keys(baselineMissing).forEach(function(rel) {
         var lineCount = fs.readFileSync(path.join(root, rel), 'utf8').split(/\r?\n/).length;

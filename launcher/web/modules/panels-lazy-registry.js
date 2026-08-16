@@ -203,8 +203,25 @@
         noop);
 
     // ── stage-select ──
+    // panel-scale.js 虽由 overlay.html boot 加载，仍按竞技场教训在 lazy 闭包内显式声明
+    // （panel 之前），防 boot 顺序变化时生产冷打开缺依赖；重复加载为幂等 IIFE 重赋值。
+    // stage-select-fixtures.js（P1-B 自 data 拆出）紧随 data：非纯 dev，runtime bridge 失败时
+    // 面板 snapshot 合并兜底走 StageSelectData.getFixture → StageSelectFixtures，必须在 panel 之前。
+    // P4-a 工程拆分：原 stage-select-panel.js 单文件 IIFE 拆为 modules/stage-select/ 五模块
+    // （纯移动）——core（状态容器+跨模块工具，首载）→ view-model（纯数据层，无 DOM，
+    // P5 三维 renderer 插座）→ renderer（空间 DOM 舞台+生命周期编排）→ inspector
+    // （pinned 决策检查器+难度提交 intent）→ bridge（请求信封+回包守卫）→
+    // stage-select-panel.js 薄 facade（Panels.register 装配 + _debug* QA 接口，守五模块全集）。
+    // 中间模块只守 core（+vm/renderer），跨模块调用解析于调用时（arena P4 同款纪律）。
     Panels.registerLazy('stage-select',
         ['modules/stage-select-data.js',
+         'modules/stage-select-fixtures.js',
+         'modules/panel-scale.js',
+         'modules/stage-select/stage-select-core.js',
+         'modules/stage-select/stage-select-view-model.js',
+         'modules/stage-select/stage-select-renderer.js',
+         'modules/stage-select/stage-select-inspector.js',
+         'modules/stage-select/stage-select-bridge.js',
          'modules/stage-select-panel.js'],
         noop);
 

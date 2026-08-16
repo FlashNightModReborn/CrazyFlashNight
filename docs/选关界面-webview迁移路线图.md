@@ -31,8 +31,8 @@ Stage 2 在此基础上完成 live bridge 与正式入口替换：
 
 Stage 2 明确不做：
 
-- 不迁移委托任务界面
-- 不迁移外交地图场景本体 / 委托任务详情界面
+- 不迁移委托任务界面（历史范围注记；2026-08 起副本任务入口已改为重定向 Web `tasks` 面板副本 tab，旧 Flash `委托任务界面` 已退役——现行表述见 `launcher/README.md` stage-select 节）
+- 不迁移外交地图场景本体（场景本体至今未迁移；原「/ 委托任务详情界面」半句已随上条注记失效）
 - 不处理战斗结束回流与角斗场返回路径
 - 不手动编辑 SWF
 
@@ -43,6 +43,7 @@ Stage 2 明确不做：
 | 历史布局（冻结参照，已退役） | `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关界面 1024&#042576.xml` |
 | 按钮行为参考（冻结参照） | `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关按钮.xml` |
 | **权威运行时 SOT（手写）** | `launcher/web/modules/stage-select-data.js` |
+| **计数基线单一真值（golden inventory）** | `launcher/web/modules/stage-select/dev/stage-select-golden.js` |
 | Live bridge | `StageSelectTask` + `StageSelectPanelService` |
 | Web 素材 | `launcher/web/assets/stage-select/` |
 | 导出工具（冻结，默认拒绝覆盖） | `tools/export-stage-select-manifest.js` |
@@ -55,20 +56,21 @@ Stage 2 明确不做：
 
 ## 3. 当前资产状态
 
-导出器已确认：
+导出器已确认（冻结 .fla 源统计恒定；运行时真值以 golden 为准）：
 
 - labels：16
 - 源 XML 选关按钮实例：182
 - 源 XML 选关按钮实例（冻结 .fla）：182
-- Web 运行时去重渲染实例：165（.fla 基线 164 + web 手写 1：外交-隧道据点 subway）
-- 直达外交 / 委托入口实例：14（含 subway）
+- Web 运行时去重渲染实例：166（.fla 基线 164 + web 手写 2：外交-隧道据点 subway、据点M）
+- 直达入口实例：14（`entryKind=map` 10 + `entryKind=task` 4）
 - 渲染外交地图按钮：10（含 subway）
-- 唯一关卡名（冻结 assetReport）：162
+- 唯一关卡名（冻结 assetReport）：162；`stageNames` inventory 当前 164（冻结 162 + web 手写 2）
 - 页内导航按钮：28
 - 背景 missing：0
 
 > 注：subway「外交-隧道据点」是 .fla 退役后首个纯 web 手写据点（无 .fla 源），id `stage_0_15`。
-> 后续在 web 直接新增据点同此模式，记得 id 唯一 + 同步上调上面 165/14/10 三项审计基线。
+> 「据点M」（id `stage_10_18`，基地车库页，UnlockCondition 75）来自 commit `9f7584b3cb` 情报支线半成品，新增时未补登 `stageNames` 与审计基线（审计红、harness 外交计数断言过期），2026-08-16 P0 已补登闭环。
+> 后续新增条目同此模式：id 唯一 + 补登 `stageNames` + 更新 golden 的 `expected` / `provenance`（不再手改审计工具内的数字）。
 
 当前有 6 个页面使用 FFDec 派生背景，因为对应背景来自 SWF 内嵌 bitmap/shape；导出器会优先使用 Adobe Animate 2024 / Flash CS6 自带 JRE 运行 `ffdec.jar`：
 
@@ -79,7 +81,7 @@ Stage 2 明确不做：
 - 异界战场
 - 坠毁战舰
 
-预览图只有少量原始 PNG，但原版 `选关按钮.xml` 会在外部 PNG 加载失败时跳到 `Symbol 3274` 的内部命名帧，再失败才停在默认预览帧。Stage 1 导出器按同一优先级生成 Web 资源：外部 PNG 12 张、内部命名帧、默认帧；审计中 `previewMissing` 必须为 0，`previewFallbacks` 记录内部/默认回退数量。
+预览图只有少量原始 PNG，但原版 `选关按钮.xml` 会在外部 PNG 加载失败时跳到 `Symbol 3274` 的内部命名帧，再失败才停在默认预览帧。Stage 1 导出器按同一优先级生成 Web 资源：外部 PNG 12 张、内部命名帧、默认帧；审计中 `previewMissing` 必须为 0，`previewFallbacks` 记录内部/默认回退数量。P4-b 新增第四级派生预览：`tools/derive-stage-select-previews.js` 对仍停在默认帧的关卡按「StageInfo → 单关 XML 首个 Background SWF → FFDec frame 1 主视觉帧 → 异常图像拒收 → 细节滑窗裁缩 161×69 JPEG」产出 `previewSource=derived` 资产（当前 previewSources = external 12 / internal 76 / derived 65 / default 11 / missing 0，报告与 stage→background 索引在 `tmp/stage-select-preview-derive/`）。
 
 ## 4. 后续阶段
 
@@ -91,7 +93,7 @@ Stage 2 bridge 当前状态：
   - C# `TaskRegistry` / `LauncherCommandRouter` 支持 `panel_request stage-select` 与 `frameLabel/returnFrameLabel` 初始化，正式入口 `mode` 固化为 `runtime`，未知 panel 仍只记 unsupported
   - Web runtime 模式隐藏 fixture/dev 控件与测试标题，右侧空信息栏不占布局；16 个 frame tab 收进可展开区域菜单；`localFrame` 先切 Web 页面再发 `jump_frame`，C# 转为 AS2 `stageSelectJumpFrame`，只记录 `Web选关当前帧值`
   - `return` / `return-garage` 在 runtime 下发送 `return_frame`，C# 转为 AS2 `stageSelectReturnFrame`，使用入口保存的 `returnFrameLabel` 淡出回 `_root.关卡地图帧值` 对应基地帧；同场景返回仅关闭 Web panel，不做重复淡出；C# 关闭时通知 AS2 `stageSelectPanelClose` 清理门入口防重复打开状态
-  - 外交地图入口按原版绿色点直达，委托入口继续打开旧 Flash 委托详情；Web 地图面板可通过 `open_stage_select` 二级动作直接打开对应选关页签
+  - 外交地图入口按原版绿色点直达；副本 / 委托入口已改为 `entryKind:"task"` → `openWebDungeon` 重定向 Web `tasks` 面板副本 tab（旧 Flash 委托详情已退役，本条取代此前「继续打开旧 Flash 委托详情」表述）；Web 地图面板可通过 `open_stage_select` 二级动作直接打开对应选关页签
   - 已替换 `基地门口`、车库、地下 2 层、停机坪、联合大学左右出口
   - 保留旧 Flash `关卡地图MC` 与 `切换场景("", "关卡地图", ...)` fallback
 - 后续：战斗结束回流与角斗场返回路径仍按旧 Flash 承载
@@ -199,6 +201,7 @@ hero slice 必须同时满足以下 gate，才允许扩大生产：
 node tools/export-stage-select-manifest.js --summary
 node tools/audit-stage-select-layout.js --json
 node tools/audit-diplomacy-stage-select-links.js --json
+node tools/derive-stage-select-previews.js --report tmp/stage-select-preview-derive/report.json   # 重派生 derived 预览资产+报告；--write 才回写 manifest（改前自动备份 tmp/）
 node tools/run-stage-select-harness.js --browser edge
 npm --prefix launcher/perf ci --ignore-scripts
 node tools/capture-stage-select-web-frames.js --browser edge --fixture mixed --frame 基地门口 --hover-stage 新手练习场

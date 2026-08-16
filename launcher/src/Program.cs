@@ -1902,6 +1902,8 @@ class Program
             });
         SkillTask skillTask = new SkillTask(socketServer);
         commandRouter.SetSkillTask(skillTask);
+        // stageSelectTask 提前到 panelHost 接线块之前声明：关闭观察器 lambda 需要捕获它。
+        StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
         if (panelHost != null)
         {
             panelHost.SetOpenGate(delegate(string panelName)
@@ -1936,6 +1938,7 @@ class Program
             panelHost.SetPanelCloseObserver(delegate(string panelName, string panelInstanceId)
             {
                 if (panelName == "skills") skillTask.HandleAuthoritativePanelClosed(panelInstanceId);
+                if (panelName == "stage-select") stageSelectTask.HandleAuthoritativePanelClosed(panelInstanceId);
                 if (panelName == "workbench" && equipmentTuningTask.HasBoundPanel)
                     equipmentTuningTask.HandlePanelClosed(panelInstanceId);
                 if (panelName == "hairdresser") hairdresserTask.ClearPending();
@@ -2005,7 +2008,6 @@ class Program
             }
         });
         MapTask mapTask = new MapTask(socketServer);
-        StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
         ArenaTask arenaTask = new ArenaTask(socketServer, projectRoot);
         ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);

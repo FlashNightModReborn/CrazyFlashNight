@@ -177,7 +177,7 @@ $IndexPath = Join-Path $AuditRoot "visual-audit-index.json"
 New-Item -ItemType Directory -Force -Path $AuditRoot, $FfdecDir, $WebDir, $SheetDir | Out-Null
 
 $manifestRel = $ManifestPath.Substring($RepoRoot.Length + 1)
-& node tools\export-stage-select-manifest.js --write-module --output $manifestRel
+& node tools\export-stage-select-manifest.js --output $manifestRel
 Assert-ExitCode "stage-select manifest export"
 $manifest = Get-Content -LiteralPath $ManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $sourceSwfRel = ($manifest.sourceRefs.xflDir + ".swf").Replace("/", "\")

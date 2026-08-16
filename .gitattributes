@@ -12,8 +12,9 @@ CRAZYFLASHER7MercenaryEmpire.exe -text
 runtime/** -text
 runtime/cf7-runtime-manifest.tsv text eol=lf
 
-# Generated artifacts — exclude from PR diff noise and language stats.
-launcher/web/modules/stage-select-data.js linguist-generated=true
+# Generated artifacts — canonical LF.
+# 注：launcher/web/modules/stage-select-data.js 曾是生成物，.fla 退役后已是手写权威 SOT，
+# 不得再标 linguist-generated（否则手改在 PR 中被默认折叠、逃过 review）。
 scripts/asLoaderManifest/_collapsed_frame.as text eol=lf
 
 # PlayerInfo runtime assets participate in byte-for-byte build identity.

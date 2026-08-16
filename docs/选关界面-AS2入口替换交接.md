@@ -5,6 +5,8 @@
 
 **边界提醒**：本文只规划正式入口替换，不扩大到委托任务界面迁移，也不做 Stage 3 现代化视觉改造。
 
+**2026-08-16 勘误（P0 真值闭环）**：本文「委托任务入口仍打开原 Flash 委托详情」「不要迁移委托任务界面」等表述均为历史计划；现役代码中 `entryKind:"task"` 已由 `StageSelectPanelService.handleEnter` 改发 `openWebDungeon` 重定向 Web `tasks` 面板副本 tab，旧 Flash `委托任务界面` 已退役删除（现行表述见 `launcher/README.md` stage-select 节）。计数基线以 `launcher/web/modules/stage-select/dev/stage-select-golden.js` 为单一真值（2026-08-16：166 渲染实例 / 14 直达入口 / 10 外交地图 / `stageNames` 164）。
+
 ## 0. 本轮落地摘要
 
 - AS2 已新增 `openWebStageSelect`、`stageSelectJumpFrame`、`stageSelectReturnFrame`、`stageSelectPanelClose` 命令；正式打开 payload 为 `panel_request` + `panel:"stage-select"` + `source` + `frameLabel` + `returnFrameLabel`

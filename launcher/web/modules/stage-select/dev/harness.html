@@ -110,7 +110,15 @@
 <script src="../../bridge.js"></script>
 <script src="../../panels.js"></script>
 <script src="../../minigames/shared/dev/harness-base.js"></script>
+<script src="../../panel-scale.js"></script>
 <script src="../../stage-select-data.js"></script>
+<script src="../../stage-select-fixtures.js"></script>
+<script src="./stage-select-golden.js"></script>
+<script src="../stage-select-core.js"></script>
+<script src="../stage-select-view-model.js"></script>
+<script src="../stage-select-renderer.js"></script>
+<script src="../stage-select-inspector.js"></script>
+<script src="../stage-select-bridge.js"></script>
 <script src="../../stage-select-panel.js"></script>
 <script src="./qa-suite.js"></script>
 <script>
@@ -142,6 +150,8 @@
         jumpMessages: [],
         returnMessages: [],
         nextEnterError: '',
+        openCounter: 0,      // P3：合成 Host 实例序号（对齐 BuildPanelOpenPayload 的 panelInstanceId 注入）
+        stateRevision: 0,    // P3：C# 侧 snapshot 回包单调序号的 mock 等价物
         setViewport: function(value) {
             var parts = String(value || '1366x768').split('x');
             var width = Math.max(800, parseInt(parts[0] || '1366', 10) || 1366);
@@ -158,6 +168,7 @@
                 fixture: fixtureSelect.value,
                 frameLabel: frameSelect.value,
                 returnFrameLabel: options.returnFrameLabel || frameSelect.value,
+                panelInstanceId: options.panelInstanceId || ('harness-panel-' + (++host.openCounter)),
                 debug: options.debug !== false
             });
             statusEl.textContent = 'Opened ' + frameSelect.value + ' / ' + fixtureSelect.value;
@@ -168,14 +179,25 @@
         },
         handleMessage: function(message) {
             if (!message || message.panel !== 'stage-select') return;
+            // P3：mock 回显会话守卫字段（对位 C# StageSelectTask 的代封回显；AS2 不回显请求字段）。
+            var sessionEcho = {
+                panelInstanceId: message.panelInstanceId,
+                sessionGeneration: message.sessionGeneration
+            };
             if (message.cmd === 'snapshot') {
                 var snapshot = buildSnapshot(fixtureSelect.value, message.stageNames || []);
+                var revision = ++host.stateRevision;
+                var catalogVersion = message.catalogVersion;
                 setTimeout(function() {
                     window.chrome.webview.__dispatch({
                         type: 'panel_resp',
                         panel: 'stage-select',
                         cmd: 'snapshot',
                         callId: message.callId,
+                        panelInstanceId: sessionEcho.panelInstanceId,
+                        sessionGeneration: sessionEcho.sessionGeneration,
+                        catalogVersion: catalogVersion,
+                        stateRevision: revision,
                         success: true,
                         snapshot: snapshot
                     });
@@ -192,6 +214,8 @@
                         panel: 'stage-select',
                         cmd: 'enter',
                         callId: message.callId,
+                        panelInstanceId: sessionEcho.panelInstanceId,
+                        sessionGeneration: sessionEcho.sessionGeneration,
                         success: !error && unlocked,
                         error: error || (unlocked ? '' : 'locked'),
                         closePanel: !error && unlocked
@@ -206,6 +230,8 @@
                         panel: 'stage-select',
                         cmd: 'jump_frame',
                         callId: message.callId,
+                        panelInstanceId: sessionEcho.panelInstanceId,
+                        sessionGeneration: sessionEcho.sessionGeneration,
                         success: true,
                         frameLabel: message.frameLabel || ''
                     });
@@ -218,6 +244,8 @@
                         panel: 'stage-select',
                         cmd: 'return_frame',
                         callId: message.callId,
+                        panelInstanceId: sessionEcho.panelInstanceId,
+                        sessionGeneration: sessionEcho.sessionGeneration,
                         success: true,
                         closePanel: true,
                         returnFrameLabel: message.returnFrameLabel || message.frameLabel || ''
@@ -246,7 +274,9 @@
                 limitations: state.task ? ['DisableCompanion'] : [],   // 新形状：AS2 回原始键名，web 自算 limitDetail
                 limitLevel: '',
                 task: !!state.task,
-                highestDifficulty: state.highestDifficulty || '简单'
+                highestDifficulty: state.highestDifficulty || '简单',
+                // 逐关锁定原因 mock（对位 AS2 buildLockReason 文案规格）：锁定给具体原因，解锁恒空串
+                lockReason: unlocked[name] ? '' : '主线任务进度达到 75 解锁（当前 42）'
             };
         });
         return {

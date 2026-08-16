@@ -460,6 +460,11 @@ namespace CF7Launcher.Guardian
             return activePanel == "skills" && !string.IsNullOrEmpty(activePanelInstanceId);
         }
 
+        internal static bool IsActiveStageSelectPanel(string activePanel, string activePanelInstanceId)
+        {
+            return activePanel == "stage-select" && !string.IsNullOrEmpty(activePanelInstanceId);
+        }
+
         internal static bool IsActiveEquipmentTuningPanel(string activePanel,
             string activePanelInstanceId, JObject request)
         {
@@ -5998,7 +6003,33 @@ namespace CF7Launcher.Guardian
                         if (panel == "stage-select")
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to StageSelectTask, _stageSelectTask=" + (_stageSelectTask != null ? "ok" : "NULL"));
-                            if (_stageSelectTask != null) _stageSelectTask.HandleWebRequest(cmd, parsed);
+                            if (_stageSelectTask != null)
+                            {
+                                // P3 exact-instance 守卫（skills/equipmentTuning 同模式）：
+                                // 请求必须来自当前活跃的 stage-select 实例，且携带同一 panelInstanceId。
+                                string stageSelectActiveName = _panelHost != null
+                                    ? _panelHost.ActivePanelName
+                                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                                string stageSelectInstanceId = _panelHost != null
+                                    ? _panelHost.ActivePanelInstanceId
+                                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                                if (!IsActiveStageSelectPanel(stageSelectActiveName, stageSelectInstanceId))
+                                {
+                                    LogManager.Log("[StageSelectTask] rejected request outside active stage-select panel: cmd=" + cmd);
+                                    RespondPanelDomainError(parsed, "panel_not_active");
+                                }
+                                else if (!string.Equals(parsed.Value<string>("panelInstanceId"),
+                                        stageSelectInstanceId, StringComparison.Ordinal))
+                                {
+                                    LogManager.Log("[StageSelectTask] rejected stale/foreign instance request: cmd=" + cmd);
+                                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                                }
+                                else
+                                {
+                                    _stageSelectTask.BindPanelInstance(stageSelectInstanceId);
+                                    _stageSelectTask.HandleWebRequest(cmd, parsed);
+                                }
+                            }
                         }
                         else if (panel == "map" && cmd == "open_stage_select")
                         {
@@ -6249,6 +6280,20 @@ namespace CF7Launcher.Guardian
             // Host accepts the close, so a close/reopen cannot replay a card from the old DOM.
             if (panel == "arena" && _arenaTask != null)
                 _arenaTask.ClearPending();
+            // stage-select 同位（P3）：close 接受即按精确实例清在途请求，不等 Host 泵执行；
+            // Host 路径下观察器随后以同实例幂等重放，fallback 路径则靠这里兜底。
+            if (panel == "stage-select" && _stageSelectTask != null)
+            {
+                string stageSelectClosingInstance =
+                    _panelHost != null && _panelHost.ActivePanelName == "stage-select"
+                        ? _panelHost.ActivePanelInstanceId
+                        : (_panelHost == null && _commandRouter != null
+                            && _commandRouter.ActiveFallbackPanelName == "stage-select"
+                            ? _commandRouter.ActiveFallbackPanelInstanceId
+                            : null);
+                if (stageSelectClosingInstance != null)
+                    _stageSelectTask.HandleAuthoritativePanelClosed(stageSelectClosingInstance);
+            }
             string closeAction = ResolvePanelCloseGameCommand(panel);
             if (closeAction == "shopPanelClose")
             {

@@ -440,7 +440,8 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                 limitations: [],
                 limitLevel: "",
                 task: taskInfo.task,
-                highestDifficulty: taskInfo.highestDifficulty
+                highestDifficulty: taskInfo.highestDifficulty,
+                lockReason: buildLockReason(stageName, undefined)
             };
         }
 
@@ -453,8 +454,37 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             limitations: parseLimitations(stageInfo),
             limitLevel: String(stageInfo.LimitLevel || ""),
             task: taskInfo.task,
-            highestDifficulty: taskInfo.highestDifficulty
+            highestDifficulty: taskInfo.highestDifficulty,
+            lockReason: buildLockReason(stageName, stageInfo)
         };
+    }
+
+    // 逐关锁定原因（2026-08-16 专项）：仅锁定时非空，解锁恒 ""，字段恒在保持协议形状稳定。
+    // 判定与 _root.isStageUnlocked（通信_鸡蛋_XML与JSON解析.as:91-112）同序同语义：
+    // 主路径 Number(UnlockCondition) <= Number(_root.主线任务进度)；替代路径 AltUnlockCondition
+    // 可单条或多条（OR），命中条件 _root.task_chains_progress[chain] >= Number(min)。
+    private static function buildLockReason(stageName:String, info:Object):String {
+        if (info == undefined) return "关卡资料缺失，暂不可进入";
+        if (Number(info.UnlockCondition) <= Number(_root.主线任务进度)) return "";
+        var mainCurrent:Number = Number(_root.主线任务进度);
+        var reason:String = "主线任务进度达到 " + String(info.UnlockCondition) + " 解锁（当前 "
+            + (isNaN(mainCurrent) ? "0" : String(mainCurrent)) + "）";
+        var alt:Object = info.AltUnlockCondition;
+        if (alt == undefined) return reason;
+        var list = (alt instanceof Array) ? alt : [alt];
+        var progress:Object = _root.task_chains_progress;
+        for (var i:Number = 0; i < list.length; i++) {
+            var rule:Object = list[i];
+            if (rule == undefined || rule == null) continue;
+            var chainName:String = String(rule.chain);
+            if (chainName == "" || chainName == "undefined") continue;
+            var current:Number = (progress != undefined && progress[chainName] != undefined) ? Number(progress[chainName]) : 0;
+            if (isNaN(current)) current = 0;
+            // 替代路径任一命中即解锁（OR），复判与 isStageUnlocked 同序，命中时不应有锁定原因
+            if (current >= Number(rule.min)) return "";
+            reason += "或「" + chainName + "」进度达到 " + String(rule.min) + "（当前 " + String(current) + "）";
+        }
+        return reason;
     }
 
     // 限制词条键名数组（原始 Limitation 键）。web 端用 LimitationDesc 自算 limitDetail，

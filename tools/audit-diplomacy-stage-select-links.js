@@ -15,6 +15,7 @@ const exportRoot = path.join(projectRoot, 'tmp', 'diplomacy-stage-select-link-au
 const sceneTransitionScript = path.join(projectRoot, 'scripts', '逻辑', '关卡系统', '关卡系统_lsy_场景转换.as');
 const stageSelectServiceScript = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'stageSelect', 'StageSelectPanelService.as');
 const stageSelectPanelScript = path.join(projectRoot, 'launcher', 'web', 'modules', 'stage-select-panel.js');
+const stageSelectModulesDir = path.join(projectRoot, 'launcher', 'web', 'modules', 'stage-select');
 const stageSelectDataScript = path.join(projectRoot, 'launcher', 'web', 'modules', 'stage-select-data.js');
 
 const args = process.argv.slice(2);
@@ -129,6 +130,20 @@ function collectDiplomacyMaps() {
     return entries;
 }
 
+// P4-a（2026-08-16）工程拆分后，面板实现分布于薄 facade（stage-select-panel.js）+
+// modules/stage-select/ 领域模块（core / view-model / renderer / inspector / bridge）。
+// 文本探针对二者的并集生效；目录内按文件名排序拼接，保证可复现。
+function collectStageSelectPanelText() {
+    const files = [];
+    if (fs.existsSync(stageSelectPanelScript)) files.push(stageSelectPanelScript);
+    if (fs.existsSync(stageSelectModulesDir)) {
+        for (const entry of fs.readdirSync(stageSelectModulesDir).sort()) {
+            if (/^stage-select-.*\.js$/u.test(entry)) files.push(path.join(stageSelectModulesDir, entry));
+        }
+    }
+    return files.map(readText).join('\n');
+}
+
 function collectStageSelectMapButtons() {
     if (!fs.existsSync(stageSelectDataScript)) return [];
     const context = {};
@@ -234,7 +249,7 @@ function audit() {
 
     const sceneText = fs.existsSync(sceneTransitionScript) ? readText(sceneTransitionScript) : '';
     const serviceText = fs.existsSync(stageSelectServiceScript) ? readText(stageSelectServiceScript) : '';
-    const panelText = fs.existsSync(stageSelectPanelScript) ? readText(stageSelectPanelScript) : '';
+    const panelText = collectStageSelectPanelText();
     const hasLegacyTrap = sceneText.indexOf('请求打开Web选关') >= 0
         && sceneText.indexOf('目标场景帧 == "关卡地图"') >= 0
         && sceneText.indexOf('openWebStageSelect') >= 0;
@@ -245,9 +260,11 @@ function audit() {
         && serviceText.indexOf('handleReturnFrame') >= 0
         && panelText.indexOf("cmd: 'return_frame'") >= 0
         && panelText.indexOf('requestReturnFrame') >= 0;
+    // P4-a 拆分后状态字段经共享容器 S 访问（stage-select/stage-select-view-model.js 的
+    // resolveReturnFrameLabel）；探针随拆分同步改写，语义不变。
     const hasReturnFrameIsolation = serviceText.indexOf('Web选关返回帧值') >= 0
         && serviceText.indexOf('_root.Web选关当前帧值 = frameLabel') >= 0
-        && panelText.indexOf('return _returnFrameLabel || _currentFrameLabel') >= 0;
+        && panelText.indexOf('return S._returnFrameLabel || S._currentFrameLabel') >= 0;
     const hasSameSceneReturnFilter = serviceText.indexOf('isAlreadyAtReturnFrame') >= 0
         && serviceText.indexOf('skippedTransition') >= 0
         && serviceText.indexOf('if (!skipTransition)') >= 0;

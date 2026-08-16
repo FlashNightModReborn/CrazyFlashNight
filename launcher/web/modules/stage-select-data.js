@@ -1,9 +1,12 @@
 // 选关界面运行时 manifest。
+// 分层（P1-B 2026-08-16）：本文件 = manifest（frames/buttons/stageNames/assetReport，audit 经 exportManifest 消费）；
+//   fixtures 三段已拆至 stage-select-fixtures.js（StageSelectFixtures 全局），getFixture 委托之。
 // 历史来源: flashswf/UI/选关界面/ 由 tools/export-stage-select-manifest.js 导出。
 // ⚠ .fla 已退役（地图/选关界面已完全迁移至 web）：本文件现为**唯一权威 SOT**，允许直接手改。
 //   - 新增条目（如外交地图据点）直接在此编辑，不再回写 .fla、不再重跑导出器全量覆盖。
-//   - 硬约束：每个 stageButton.id 必须全局唯一；改后跑 `node tools/audit-stage-select-layout.js` 守门
-//     （审计现含重复 id 检测 + 渲染按钮计数基线）。
+//   - 硬约束：每个 stageButton.id 必须全局唯一；新增/删除条目必须同批补登下方 stageNames
+//     inventory 并更新计数基线单一真值 dev/stage-select-golden.js，改后跑
+//     `node tools/audit-stage-select-layout.js` 守门（含重复 id、计数基线与 stageNames 覆盖检测）。
 //   - 导出器仅作冻结参照保留：`--write-module` 默认拒绝覆盖本文件（会丢弃手写条目），详见该脚本顶部退役说明。
 var StageSelectData = (function() {
     'use strict';
@@ -497,14 +500,14 @@ var StageSelectData = (function() {
                         "stageArea": "基地门口",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-359f5dbb.jpg",
+                        "previewAssetName": "derived/stage-derived-359f5dbb.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk11_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1151,14 +1154,14 @@ var StageSelectData = (function() {
                         "stageArea": "基地车库",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-be8e2219.jpg",
+                        "previewAssetName": "derived/stage-derived-be8e2219.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/堕落城保卫战1.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1181,14 +1184,14 @@ var StageSelectData = (function() {
                         "stageArea": "基地车库",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-b2c956cf.jpg",
+                        "previewAssetName": "derived/stage-derived-b2c956cf.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/据点M-街道.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1819,14 +1822,14 @@ var StageSelectData = (function() {
                         "stageArea": "地下2层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-b276c644.jpg",
+                        "previewAssetName": "derived/stage-derived-b276c644.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk20_3_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1849,14 +1852,14 @@ var StageSelectData = (function() {
                         "stageArea": "副本任务",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/凤凰16",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-e87d7dc4.jpg",
+                        "previewAssetName": "derived/stage-derived-e87d7dc4.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/ciyuanta_魔神图专用.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1879,14 +1882,14 @@ var StageSelectData = (function() {
                         "stageArea": "副本任务",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/桶16",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-5e23549b.jpg",
+                        "previewAssetName": "derived/stage-derived-5e23549b.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/ciyuanta_魔神图专用.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1909,14 +1912,14 @@ var StageSelectData = (function() {
                         "stageArea": "副本任务",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/凤凰10",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-e67d7a9e.jpg",
+                        "previewAssetName": "derived/stage-derived-e67d7a9e.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/ciyuanta_魔神图专用.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1939,14 +1942,14 @@ var StageSelectData = (function() {
                         "stageArea": "副本任务",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/桶10",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-64235e0d.jpg",
+                        "previewAssetName": "derived/stage-derived-64235e0d.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/ciyuanta_魔神图专用.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1969,14 +1972,14 @@ var StageSelectData = (function() {
                         "stageArea": "地下2层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-7d451f9a.jpg",
+                        "previewAssetName": "derived/stage-derived-7d451f9a.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyqxjdbgc_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -1999,14 +2002,14 @@ var StageSelectData = (function() {
                         "stageArea": "地下2层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-d9e8aa8f.jpg",
+                        "previewAssetName": "derived/stage-derived-d9e8aa8f.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2117,14 +2120,14 @@ var StageSelectData = (function() {
                         "stageArea": "地下2层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-1217f67d.jpg",
+                        "previewAssetName": "derived/stage-derived-1217f67d.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/核电站通路1.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2429,14 +2432,14 @@ var StageSelectData = (function() {
                         "stageArea": "基地房顶",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-a1387b7e.jpg",
+                        "previewAssetName": "derived/stage-derived-a1387b7e.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2459,14 +2462,14 @@ var StageSelectData = (function() {
                         "stageArea": "基地房顶",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-040aa61f.jpg",
+                        "previewAssetName": "derived/stage-derived-040aa61f.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_2_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2599,14 +2602,14 @@ var StageSelectData = (function() {
                         "stageArea": "沙漠虫洞",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-c1b22248.jpg",
+                        "previewAssetName": "derived/stage-derived-c1b22248.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_3_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2629,14 +2632,14 @@ var StageSelectData = (function() {
                         "stageArea": "沙漠虫洞",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-bc05ec49.jpg",
+                        "previewAssetName": "derived/stage-derived-bc05ec49.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2659,14 +2662,14 @@ var StageSelectData = (function() {
                         "stageArea": "沙漠虫洞",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-930f7ffb.jpg",
+                        "previewAssetName": "derived/stage-derived-930f7ffb.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_4_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2689,14 +2692,14 @@ var StageSelectData = (function() {
                         "stageArea": "沙漠虫洞",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-ae51fae5.jpg",
+                        "previewAssetName": "derived/stage-derived-ae51fae5.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_2_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2719,14 +2722,14 @@ var StageSelectData = (function() {
                         "stageArea": "沙漠虫洞",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-1cb4783d.jpg",
+                        "previewAssetName": "derived/stage-derived-1cb4783d.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -2749,14 +2752,14 @@ var StageSelectData = (function() {
                         "stageArea": "沙漠虫洞",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-c3181917.jpg",
+                        "previewAssetName": "derived/stage-derived-c3181917.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -3384,14 +3387,14 @@ var StageSelectData = (function() {
                         "stageArea": "诺亚前线基地深处第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-af97393c.jpg",
+                        "previewAssetName": "derived/stage-derived-af97393c.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyqxjdfqck_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -3414,14 +3417,14 @@ var StageSelectData = (function() {
                         "stageArea": "诺亚前线基地深处第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-fa3baa4c.jpg",
+                        "previewAssetName": "derived/stage-derived-fa3baa4c.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyqxjdfydd_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -3444,14 +3447,14 @@ var StageSelectData = (function() {
                         "stageArea": "诺亚前线基地深处第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-1b997693.jpg",
+                        "previewAssetName": "derived/stage-derived-1b997693.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyqxjdfqck_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -3474,14 +3477,14 @@ var StageSelectData = (function() {
                         "stageArea": "诺亚前线基地深处第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-e61dba81.jpg",
+                        "previewAssetName": "derived/stage-derived-e61dba81.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyqxjdyjy_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -3504,14 +3507,14 @@ var StageSelectData = (function() {
                         "stageArea": "诺亚前线基地深处第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-16cec54d.jpg",
+                        "previewAssetName": "derived/stage-derived-16cec54d.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyqxjdzhbdt_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -3534,14 +3537,14 @@ var StageSelectData = (function() {
                         "stageArea": "诺亚前线基地深处第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-16cec54d.jpg",
+                        "previewAssetName": "derived/stage-derived-16cec54d.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyqxjdzhbdt_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4036,14 +4039,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-55b046ab.jpg",
+                        "previewAssetName": "derived/stage-derived-55b046ab.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/xdpy_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4066,14 +4069,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-55b046ab.jpg",
+                        "previewAssetName": "derived/stage-derived-55b046ab.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/xdpy_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4096,14 +4099,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-afd51525.jpg",
+                        "previewAssetName": "derived/stage-derived-afd51525.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyxssj_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4126,14 +4129,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-a947a063.jpg",
+                        "previewAssetName": "derived/stage-derived-a947a063.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyxsjybd_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4156,14 +4159,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-53f8b951.jpg",
+                        "previewAssetName": "derived/stage-derived-53f8b951.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/nyxssd_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4669,14 +4672,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山内部第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-b845146e.jpg",
+                        "previewAssetName": "derived/stage-derived-b845146e.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/rysd_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4699,14 +4702,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山内部第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-f905baba.jpg",
+                        "previewAssetName": "derived/stage-derived-f905baba.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/mmtd_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4729,14 +4732,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山内部第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-9abdd411.jpg",
+                        "previewAssetName": "derived/stage-derived-9abdd411.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/rygc_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4759,14 +4762,14 @@ var StageSelectData = (function() {
                         "stageArea": "雪山内部第二层",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-356b376e.jpg",
+                        "previewAssetName": "derived/stage-derived-356b376e.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/ryjd_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4829,14 +4832,14 @@ var StageSelectData = (function() {
                         "stageArea": "亡灵沙漠",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-18399d2e.jpg",
+                        "previewAssetName": "derived/stage-derived-18399d2e.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/TY_BG_10.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4859,14 +4862,14 @@ var StageSelectData = (function() {
                         "stageArea": "亡灵沙漠",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-5d6d6693.jpg",
+                        "previewAssetName": "derived/stage-derived-5d6d6693.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_5_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4889,14 +4892,14 @@ var StageSelectData = (function() {
                         "stageArea": "亡灵沙漠",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-b94a5b03.jpg",
+                        "previewAssetName": "derived/stage-derived-b94a5b03.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_3_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4919,14 +4922,14 @@ var StageSelectData = (function() {
                         "stageArea": "亡灵沙漠",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-5dc46d27.jpg",
+                        "previewAssetName": "derived/stage-derived-5dc46d27.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_4_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4949,14 +4952,14 @@ var StageSelectData = (function() {
                         "stageArea": "亡灵沙漠",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-db64f7aa.jpg",
+                        "previewAssetName": "derived/stage-derived-db64f7aa.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -4979,14 +4982,14 @@ var StageSelectData = (function() {
                         "stageArea": "亡灵沙漠",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-de7b760e.jpg",
+                        "previewAssetName": "derived/stage-derived-de7b760e.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk19_3_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5009,14 +5012,14 @@ var StageSelectData = (function() {
                         "stageArea": "亡灵沙漠",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-426af1b1.jpg",
+                        "previewAssetName": "derived/stage-derived-426af1b1.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk17_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5039,14 +5042,14 @@ var StageSelectData = (function() {
                         "stageArea": "亡灵沙漠",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-5d0e2eec.jpg",
+                        "previewAssetName": "derived/stage-derived-5d0e2eec.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/gk17_3_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5109,14 +5112,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-ca709c3c.jpg",
+                        "previewAssetName": "derived/stage-derived-ca709c3c.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_8_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5139,14 +5142,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-dc0053d0.jpg",
+                        "previewAssetName": "derived/stage-derived-dc0053d0.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_9_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5169,14 +5172,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-3b543fdc.jpg",
+                        "previewAssetName": "derived/stage-derived-3b543fdc.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_9_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5199,14 +5202,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-17ac6f2b.jpg",
+                        "previewAssetName": "derived/stage-derived-17ac6f2b.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_11_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5229,14 +5232,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-ee3fe462.jpg",
+                        "previewAssetName": "derived/stage-derived-ee3fe462.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_12_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5259,14 +5262,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-51502615.jpg",
+                        "previewAssetName": "derived/stage-derived-51502615.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_9_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5289,14 +5292,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-9b3d6500.jpg",
+                        "previewAssetName": "derived/stage-derived-9b3d6500.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_13_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5319,14 +5322,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-c5d91477.jpg",
+                        "previewAssetName": "derived/stage-derived-c5d91477.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_10_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5349,14 +5352,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-eab4b776.jpg",
+                        "previewAssetName": "derived/stage-derived-eab4b776.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_1_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5379,14 +5382,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-9a77fc81.jpg",
+                        "previewAssetName": "derived/stage-derived-9a77fc81.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_4_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5409,14 +5412,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-2c9c1c59.jpg",
+                        "previewAssetName": "derived/stage-derived-2c9c1c59.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_2_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5439,14 +5442,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-0d1a379a.jpg",
+                        "previewAssetName": "derived/stage-derived-0d1a379a.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_7_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5469,14 +5472,14 @@ var StageSelectData = (function() {
                         "stageArea": "异界战场",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-37012b0b.jpg",
+                        "previewAssetName": "derived/stage-derived-37012b0b.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/TY_BG_8.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5525,14 +5528,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-ebd26c82.jpg",
+                        "previewAssetName": "derived/stage-derived-ebd26c82.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_9_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5555,14 +5558,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-302b34da.jpg",
+                        "previewAssetName": "derived/stage-derived-302b34da.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_12_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5585,14 +5588,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-724b96d5.jpg",
+                        "previewAssetName": "derived/stage-derived-724b96d5.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_9_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5615,14 +5618,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-30628a21.jpg",
+                        "previewAssetName": "derived/stage-derived-30628a21.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_13_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5645,14 +5648,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-a3409b7d.jpg",
+                        "previewAssetName": "derived/stage-derived-a3409b7d.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_7_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5675,14 +5678,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-a043b207.jpg",
+                        "previewAssetName": "derived/stage-derived-a043b207.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_8_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5705,14 +5708,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-2a1c2a31.jpg",
+                        "previewAssetName": "derived/stage-derived-2a1c2a31.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_9_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5735,14 +5738,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-d80701f8.jpg",
+                        "previewAssetName": "derived/stage-derived-d80701f8.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_11_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5765,14 +5768,14 @@ var StageSelectData = (function() {
                         "stageArea": "坠毁战舰",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-bd712e9f.jpg",
+                        "previewAssetName": "derived/stage-derived-bd712e9f.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/avp1_3_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5838,14 +5841,14 @@ var StageSelectData = (function() {
                         "stageArea": "试炼场深处",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-e3e2c4c7.jpg",
+                        "previewAssetName": "derived/stage-derived-e3e2c4c7.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/Survival_mode_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5868,14 +5871,14 @@ var StageSelectData = (function() {
                         "stageArea": "试炼场深处",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-1a2cc1fb.jpg",
+                        "previewAssetName": "derived/stage-derived-1a2cc1fb.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/Survival_mode_BG.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5898,14 +5901,14 @@ var StageSelectData = (function() {
                         "stageArea": "试炼场深处",
                         "rootFadeTransitionFrame": "",
                         "libraryItemName": "选关界面UI/选关按钮",
-                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
-                        "previewAssetName": "stage-default.jpg",
-                        "previewSource": "default",
-                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-12dd9a10.jpg",
+                        "previewAssetName": "derived/stage-derived-12dd9a10.jpg",
+                        "previewSource": "derived",
+                        "previewSourcePath": "flashswf/backgrounds/92副本内部.swf",
                         "previewSourceFrameIndex": 1,
                         "previewCrop": {
-                            "x": 65,
-                            "y": 10,
+                            "x": 0,
+                            "y": 0,
                             "w": 161,
                             "h": 69
                         },
@@ -5995,6 +5998,7 @@ var StageSelectData = (function() {
             "解救A兵团士兵",
             "禁区边缘",
             "锯刺陷阱",
+            "据点M",
             "决战之地",
             "军队据点",
             "军阀据点",
@@ -6041,6 +6045,7 @@ var StageSelectData = (function() {
             "外交-黑铁会修炼场",
             "外交-军阀",
             "外交-联合大学",
+            "外交-隧道据点",
             "外交-摇滚公园",
             "温泉关口",
             "武器仓库",
@@ -6155,2947 +6160,13 @@ var StageSelectData = (function() {
             "previewSources": {
                 "external": 12,
                 "internal": 76,
-                "default": 74,
+                "default": 11,
+                "derived": 65,
                 "missing": 0
             },
-            "previewFallbacks": 150
-        },
-        "fixtures": {
-            "allUnlocked": {
-                "name": "allUnlocked",
-                "challenge": false,
-                "stages": {
-                    "被摧毁的武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "被攻击的黑铁会": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "被清扫的虫洞": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "被偷袭的基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "被炸毁的防御地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "被终结者占领的诺亚前线基地兵工厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "冰雪之心": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "补给仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "残垣断壁": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "超市废墟": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "虫洞": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "虫洞洞口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "虫洞内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "虫洞入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "虫洞外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "初心者": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "大学城周边": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "地铁站": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "地铁站隧道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "第三集结点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "第一防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "电子战接入设备间": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "堕落城保卫战": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "堕落城区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "堕落城深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "堕落城下水道入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "二级防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "防御地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船储备舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船繁殖舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船监视点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船控制舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船燃料舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船推进舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船武器舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船休息舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "菲尼克斯Lv10": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "菲尼克斯Lv16": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "废城环线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "废墟武器店": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "革命军哨所": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "关口小道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "核电站": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会翅虎堂内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会翅虎堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会黑龙堂内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会黑龙堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会火凤堂内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会火凤堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会总部边缘": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会总堂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会总堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "基地禁区边缘地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "集结点A": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "集结点B": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "集结点C": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "僵尸卫队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "交战热点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "郊区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "解救A兵团士兵": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "禁区边缘": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "锯刺陷阱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "决战之地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "军队据点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "军阀据点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "军阀临时补给点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "军阀秘密基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "军阀前线基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "军团驻地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "绿洲深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "绿洲外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "秘密通道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "难民营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "闹市区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚精英部队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚前线基地兵工厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚前线基地哨岗": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚雪山": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚雪山部队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚雪山山顶": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚雪山山脊": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚雪山山脚": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "盆地入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "贫民窟": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "熔岩广场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "熔岩基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "熔岩基地外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "熔岩秘洞": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "熔岩隧道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "熔岩营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "三级防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "山洞入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "商业区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "哨兵据点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "深入禁区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "尸母巢穴": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "试炼场深处入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "试验场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "隧道入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "铁血临时营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "铁血营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "同盟卸货站": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-第一防线防区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-堕落城酒吧": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-堕落城商业街": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-黑铁会修炼场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-军阀": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-联合大学": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-摇滚公园": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "温泉关口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "锡蒙利Lv10": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "锡蒙利Lv16": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "袭杀与圈套": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "新手练习场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "幸存者营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪地平原": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪山入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪原防御带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪原基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪原坡地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪原深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "训练场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "压制摇滚公园": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "研究院": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "摇滚公园": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "摇滚内战": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "一级防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "医院": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "游寇基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "指挥部大厅": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "指挥部外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "指挥营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的被摧毁的武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的防御地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的秘密通道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚精英部队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚雪山山顶": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚雪山山脚": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩广场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩隧道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的雪地平原": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的雪山入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的研究院": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的指挥部大厅": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船储备舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船控制舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船燃料舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船推进舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船武器舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船休息舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "自来水厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "A兵团试炼场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "DEATH MATCH角斗场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "DEATH MATCH入门赛": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    }
-                }
-            },
-            "mixed": {
-                "name": "mixed",
-                "challenge": false,
-                "stages": {
-                    "被摧毁的武器仓库": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "被攻击的黑铁会": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "被清扫的虫洞": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "被偷袭的基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "被炸毁的防御地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "被终结者占领的诺亚前线基地兵工厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "冰雪之心": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "补给仓库": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "残垣断壁": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "超市废墟": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "虫洞": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "虫洞洞口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "虫洞内部": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "虫洞入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "虫洞外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "初心者": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "大学城周边": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "地铁站": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "地铁站隧道": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "第三集结点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "第一防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "电子战接入设备间": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "堕落城保卫战": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "堕落城区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "堕落城深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "堕落城下水道入口": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "二级防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "防御地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "飞船储备舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船繁殖舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "飞船监视点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船控制舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船燃料舱": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "飞船入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "飞船推进舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "飞船武器舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "飞船休息舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "菲尼克斯Lv10": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "菲尼克斯Lv16": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "废城环线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "废墟武器店": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "革命军哨所": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "关口小道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "核电站": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "黑铁会": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会翅虎堂内部": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会翅虎堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "黑铁会黑龙堂内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会黑龙堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "黑铁会火凤堂内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "黑铁会火凤堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "黑铁会总部边缘": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "黑铁会总堂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "黑铁会总堂外围": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "基地禁区边缘地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "集结点A": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "集结点B": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "集结点C": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "僵尸卫队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "交战热点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "郊区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "解救A兵团士兵": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "禁区边缘": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "锯刺陷阱": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "决战之地": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "军队据点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "军阀据点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "军阀临时补给点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "军阀秘密基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "军阀前线基地": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "军团驻地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "绿洲深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "绿洲外围": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "秘密通道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "难民营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "闹市区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚精英部队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "诺亚前线基地兵工厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚前线基地哨岗": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "诺亚雪山": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "诺亚雪山部队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "诺亚雪山山顶": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚雪山山脊": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "诺亚雪山山脚": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "盆地入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "贫民窟": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "熔岩广场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "熔岩基地": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "熔岩基地外围": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "熔岩秘洞": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "熔岩隧道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "熔岩营地": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "三级防线": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "山洞入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "商业区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "哨兵据点": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "深入禁区": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "尸母巢穴": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "试炼场深处入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "试验场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "隧道入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "铁血临时营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "铁血营地": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "同盟卸货站": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-第一防线防区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "外交-堕落城酒吧": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-堕落城商业街": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-黑铁会修炼场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-军阀": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-联合大学": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "外交-摇滚公园": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "温泉关口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "武器仓库": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "锡蒙利Lv10": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "锡蒙利Lv16": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "袭杀与圈套": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "新手练习场": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "幸存者营地": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "雪地平原": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪山入口": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪原防御带": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "雪原基地": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "雪原坡地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "雪原深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "训练场": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "压制摇滚公园": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "研究院": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "摇滚公园": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "摇滚内战": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "一级防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "医院": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "游寇基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "指挥部大厅": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "指挥部外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "指挥营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的被摧毁的武器仓库": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的防御地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的秘密通道": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚精英部队": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚雪山山顶": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚雪山山脚": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩广场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩隧道": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "终结者占领的武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "终结者占领的雪地平原": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的雪山入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "终结者占领的研究院": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "终结者占领的指挥部大厅": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船储备舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船控制舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "坠毁的飞船燃料舱": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "坠毁的飞船入口": {
-                        "unlocked": false,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船推进舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "坠毁的飞船外围": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "修罗",
-                        "detail": ""
-                    },
-                    "坠毁的飞船武器舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "冒险",
-                        "detail": ""
-                    },
-                    "坠毁的飞船休息舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "自来水厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "A兵团试炼场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "DEATH MATCH角斗场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "简单",
-                        "detail": ""
-                    },
-                    "DEATH MATCH入门赛": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    }
-                }
-            },
-            "challenge": {
-                "name": "challenge",
-                "challenge": true,
-                "stages": {
-                    "被摧毁的武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "被攻击的黑铁会": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "被清扫的虫洞": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "被偷袭的基地": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "被炸毁的防御地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "被终结者占领的诺亚前线基地兵工厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "冰雪之心": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "补给仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "残垣断壁": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "超市废墟": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "虫洞": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "虫洞洞口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "虫洞内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "虫洞入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "虫洞外围": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "初心者": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "大学城周边": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "地铁站": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "地铁站隧道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "第三集结点": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "第一防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "电子战接入设备间": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "堕落城保卫战": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "堕落城区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "堕落城深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "堕落城下水道入口": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "二级防线": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "防御地带": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船储备舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船繁殖舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船监视点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船控制舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船燃料舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船推进舱": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船武器舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "飞船休息舱": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "菲尼克斯Lv10": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "菲尼克斯Lv16": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "废城环线": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "废墟武器店": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "革命军哨所": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "关口小道": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "核电站": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会翅虎堂内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会翅虎堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会黑龙堂内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会黑龙堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会火凤堂内部": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会火凤堂外围": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会总部边缘": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会总堂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "黑铁会总堂外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "基地禁区边缘地带": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "集结点A": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "集结点B": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "集结点C": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "僵尸卫队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "交战热点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "郊区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "解救A兵团士兵": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "禁区边缘": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "锯刺陷阱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "决战之地": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "军队据点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "军阀据点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "军阀临时补给点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "军阀秘密基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "军阀前线基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "军团驻地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "绿洲深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "绿洲外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "秘密通道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "难民营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "闹市区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚精英部队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚前线基地兵工厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚前线基地哨岗": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚雪山": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚雪山部队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚雪山山顶": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚雪山山脊": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "诺亚雪山山脚": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "盆地入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "贫民窟": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "熔岩广场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "熔岩基地": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "熔岩基地外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "熔岩秘洞": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "熔岩隧道": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "熔岩营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "三级防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "山洞入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "商业区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "哨兵据点": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "深入禁区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "尸母巢穴": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "试炼场深处入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "试验场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "隧道入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "铁血临时营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "铁血营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "同盟卸货站": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-第一防线防区": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-堕落城酒吧": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-堕落城商业街": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-黑铁会修炼场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-军阀": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-联合大学": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "外交-摇滚公园": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "温泉关口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "锡蒙利Lv10": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "锡蒙利Lv16": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "袭杀与圈套": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "新手练习场": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "幸存者营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "雪地平原": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "雪山入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "雪原防御带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "雪原基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "雪原坡地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "雪原深处": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "训练场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "压制摇滚公园": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "研究院": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "摇滚公园": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "摇滚内战": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "一级防线": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "医院": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "游寇基地": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "指挥部大厅": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "指挥部外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "指挥营地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的被摧毁的武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的防御地带": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的秘密通道": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚精英部队": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚雪山山顶": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的诺亚雪山山脚": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩广场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩基地": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的熔岩隧道": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的武器仓库": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的雪地平原": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的雪山入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的研究院": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "终结者占领的指挥部大厅": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船储备舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船控制舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船燃料舱": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船入口": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船推进舱": {
-                        "unlocked": true,
-                        "task": true,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船外围": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船武器舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "坠毁的飞船休息舱": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "自来水厂": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "A兵团试炼场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "DEATH MATCH角斗场": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    },
-                    "DEATH MATCH入门赛": {
-                        "unlocked": true,
-                        "task": false,
-                        "highestDifficulty": "地狱",
-                        "detail": ""
-                    }
-                }
-            }
+            "previewFallbacks": 87
         }
+
     };
 
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
@@ -9107,7 +6178,10 @@ var StageSelectData = (function() {
         return frames.length ? frames[0] : null;
     }
     function getFixture(name) {
-        var fixtures = manifest.fixtures || {};
+        // P1-B：fixtures 已拆至 stage-select-fixtures.js（全局 StageSelectFixtures）。
+        // typeof 守卫：audit 沙箱 / map 闭包只载 data 不载 fixtures（均不调 getFixture），
+        // 缺载时回退空 stages 对象，语义与拆前"无名 fixture"分支一致。
+        var fixtures = (typeof StageSelectFixtures !== 'undefined' && StageSelectFixtures) || {};
         return clone(fixtures[name] || fixtures.mixed || fixtures.allUnlocked || { name: name || '', challenge: false, stages: {} });
     }
     function exportManifest() { return clone(manifest); }
