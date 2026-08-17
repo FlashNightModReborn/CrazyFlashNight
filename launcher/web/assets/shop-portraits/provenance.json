@@ -10,16 +10,16 @@
   "toolchain": {
     "generator": {
       "path": "tools/bake-shop-portraits.py",
-      "sha256": "646bf7e86e960e86f14cdc5d96dd01b90f001540aa17ebd6a3dbd03b99415590",
-      "bytes": 34505
+      "sha256": "9dcc2c97d0579f24484d59f46fd8d51dcb88bc2cfe34644e854506f70ed2579f",
+      "bytes": 35044
     },
     "dialogueBaker": {
       "path": "tools/bake-dialogue-portraits.py",
-      "sha256": "6a97a12a78ef7e4588246a3a7ac2fe4a4882869d413d4aa0f284038172b3a352",
-      "bytes": 20103
+      "sha256": "241131574122f8c5879d75a1066b432927e72d64c60e65dd27db3f60b940bd01",
+      "bytes": 36318
     },
     "python": "3.13.7",
-    "pillow": "11.3.0",
+    "pillow": "12.1.0",
     "ffdecVersion": "21.1.1",
     "ffdecCli": {
       "path": "tools/ffdec/ffdec-cli.exe",
@@ -228,12 +228,12 @@
   },
   "dialogueManifest": {
     "path": "launcher/web/assets/dialogue-portraits/manifest.json",
-    "sha256": "d706f1571af509e255c2276b40e36ad317fe75a5f81b89b8d3eefcc1ed9be244",
-    "bytes": 66312
+    "sha256": "44b9a3d41165c7e67c6d78c111df8b8ce6e0484dba363e6612da9f1c626a2008",
+    "bytes": 67306
   },
   "sourcePartition": {
-    "externalDialogue": 25,
-    "internalDialogue": 8,
+    "externalDialogue": 31,
+    "internalDialogue": 2,
     "exactXflSwfPilot": 1
   },
   "sources": {
@@ -261,35 +261,26 @@
       }
     },
     "小F": {
-      "kind": "dialogue-ui-linkage",
+      "kind": "external-dialogue-swf",
       "sourceSwf": {
-        "path": "flashswf/UI/对话框界面.swf",
-        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
-        "bytes": 1071988
+        "path": "flashswf/portraits/小F.swf",
+        "sha256": "fbfa0ae44edfcbd51afe7ce481b80c864e7867ef9ff6bf02a20f8365653969e7",
+        "bytes": 8416
       },
-      "sourceXfl": {
-        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
-        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
-        "bytes": 480732
-      },
-      "linkage": "对话框肖像",
-      "characterId": 981,
-      "declaredFrameCount": 262,
-      "xflFrameIndex": 65,
-      "frame1Based": 66,
-      "duration": 5,
-      "extractedPngSha256": "abd9afee7a9b93c620235d9aaccdc8e033c205d1a17b9fd84463d99b4ec7a35f",
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "f7d4b1440982510a8078aeffc9373473bc91c596646ba40c4b0dd10090c5b4be",
       "output": {
-        "uri": "subjects/fb9d3016a480c80a67e1a201c310916e0816f48e0fceeb67d822980c763ea41d.png",
+        "uri": "subjects/523c3e79f1d3dbc8cfa0a031635fdc03ceda6c1ac4b90cecb38096e3f4a0f4b0.png",
         "width": 256,
         "height": 256,
         "bounds": {
-          "x": 50,
+          "x": 82,
           "y": 16,
-          "width": 156,
+          "width": 91,
           "height": 224
         },
-        "sha256": "fb9d3016a480c80a67e1a201c310916e0816f48e0fceeb67d822980c763ea41d"
+        "sha256": "523c3e79f1d3dbc8cfa0a031635fdc03ceda6c1ac4b90cecb38096e3f4a0f4b0"
       }
     },
     "Boy": {
@@ -454,67 +445,49 @@
       }
     },
     "酒保": {
-      "kind": "dialogue-ui-linkage",
+      "kind": "external-dialogue-swf",
       "sourceSwf": {
-        "path": "flashswf/UI/对话框界面.swf",
-        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
-        "bytes": 1071988
+        "path": "flashswf/portraits/酒保.swf",
+        "sha256": "789dbc472e592cd5c92cbdcaaa8f983e566184a771f83de1644019055110e83a",
+        "bytes": 15791
       },
-      "sourceXfl": {
-        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
-        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
-        "bytes": 480732
-      },
-      "linkage": "对话框肖像",
-      "characterId": 981,
-      "declaredFrameCount": 262,
-      "xflFrameIndex": 70,
-      "frame1Based": 71,
-      "duration": 7,
-      "extractedPngSha256": "800924c632ec254c90235f5fac60ad59f7bfc83e7893b76d375ed866ccc461d7",
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "01810579811d42e12f46d09866461407fed1ea61f155fbc97ad776886a3b4ffd",
       "output": {
-        "uri": "subjects/9d24cad1e170a61b62ac1c1bbc5f81691609b2c7935a0642fdb15cec46c7095d.png",
+        "uri": "subjects/a17774b349ec8ffceed0de5b3b081163d0c441ec6aca5f7bb55d5e146edacba8.png",
         "width": 256,
         "height": 256,
         "bounds": {
-          "x": 52,
+          "x": 69,
           "y": 16,
-          "width": 152,
+          "width": 118,
           "height": 224
         },
-        "sha256": "9d24cad1e170a61b62ac1c1bbc5f81691609b2c7935a0642fdb15cec46c7095d"
+        "sha256": "a17774b349ec8ffceed0de5b3b081163d0c441ec6aca5f7bb55d5e146edacba8"
       }
     },
     "宝石线人": {
-      "kind": "dialogue-ui-linkage",
+      "kind": "external-dialogue-swf",
       "sourceSwf": {
-        "path": "flashswf/UI/对话框界面.swf",
-        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
-        "bytes": 1071988
+        "path": "flashswf/portraits/宝石线人.swf",
+        "sha256": "7b86c5104e756b433dde46199d986bf929ba6cabf130883d75a90165ad3c8be1",
+        "bytes": 1847158
       },
-      "sourceXfl": {
-        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
-        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
-        "bytes": 480732
-      },
-      "linkage": "对话框肖像",
-      "characterId": 981,
-      "declaredFrameCount": 262,
-      "xflFrameIndex": 100,
-      "frame1Based": 101,
-      "duration": 8,
-      "extractedPngSha256": "b9630ffce73e39be26af959eb6ff995e5b72cdfd3bf99c744602d54905f47fc3",
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "c84a0c72c8de3fba49740bd48aeb22bac640e17e6e83bfc46fef01085b9a684c",
       "output": {
-        "uri": "subjects/d2f6fbc08097c0ebb8d7037bb1a749b1b5690524bd3f4d25d450fcec331c614a.png",
+        "uri": "subjects/a4fe779b0a48796b39c9803b02ccb74115e2c377b51f1f1cc2ca2db961bbb3c8.png",
         "width": 256,
         "height": 256,
         "bounds": {
-          "x": 54,
+          "x": 35,
           "y": 16,
-          "width": 148,
+          "width": 186,
           "height": 224
         },
-        "sha256": "d2f6fbc08097c0ebb8d7037bb1a749b1b5690524bd3f4d25d450fcec331c614a"
+        "sha256": "a4fe779b0a48796b39c9803b02ccb74115e2c377b51f1f1cc2ca2db961bbb3c8"
       }
     },
     "爱国青年": {
@@ -596,35 +569,26 @@
       }
     },
     "迷之盔甲君": {
-      "kind": "dialogue-ui-linkage",
+      "kind": "external-dialogue-swf",
       "sourceSwf": {
-        "path": "flashswf/UI/对话框界面.swf",
-        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
-        "bytes": 1071988
+        "path": "flashswf/portraits/迷之盔甲君.swf",
+        "sha256": "a90d8affea9a86e5dd3d627e4a9529be05f357596ccb8a03961f5337b78183db",
+        "bytes": 8264
       },
-      "sourceXfl": {
-        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
-        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
-        "bytes": 480732
-      },
-      "linkage": "对话框肖像",
-      "characterId": 981,
-      "declaredFrameCount": 262,
-      "xflFrameIndex": 113,
-      "frame1Based": 114,
-      "duration": 7,
-      "extractedPngSha256": "0a3693a5b75343b73a80cc1a803d5eb4794025da6c226448c284c6e2fc5eef2b",
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
       "output": {
-        "uri": "subjects/dbb23e8dcf2ddc63dcf976a1afbfe5c96239c17942bfdf45a5ce66f5d0cafee1.png",
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
         "width": 256,
         "height": 256,
         "bounds": {
           "x": 16,
-          "y": 56,
+          "y": 35,
           "width": 224,
-          "height": 144
+          "height": 185
         },
-        "sha256": "dbb23e8dcf2ddc63dcf976a1afbfe5c96239c17942bfdf45a5ce66f5d0cafee1"
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
       }
     },
     "诺艾尔": {
@@ -862,67 +826,49 @@
       }
     },
     "格格巫": {
-      "kind": "dialogue-ui-linkage",
+      "kind": "external-dialogue-swf",
       "sourceSwf": {
-        "path": "flashswf/UI/对话框界面.swf",
-        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
-        "bytes": 1071988
+        "path": "flashswf/portraits/格格巫.swf",
+        "sha256": "74c9cf66e8740a959ed4a4ebca1707027367daa76f5d64e879332b02e1a597a6",
+        "bytes": 598901
       },
-      "sourceXfl": {
-        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
-        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
-        "bytes": 480732
-      },
-      "linkage": "对话框肖像",
-      "characterId": 981,
-      "declaredFrameCount": 262,
-      "xflFrameIndex": 77,
-      "frame1Based": 78,
-      "duration": 7,
-      "extractedPngSha256": "e9fb12f77d6606084ab15310ffe03f2d9ff3be1368b4382491b831f2d9bcdc83",
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "0b3fdbb33b555950f645fc334ad48faf37aee2fc031850dee998f079b35f48f4",
       "output": {
-        "uri": "subjects/374890c80b2fcdfedd09766b031665d83d4466262b83a93e1d599fc7eda0cb80.png",
+        "uri": "subjects/c5b3072e9dbe665993e1a2ca01fa825353665ad96d8210346fd1ca8138184e05.png",
         "width": 256,
         "height": 256,
         "bounds": {
-          "x": 25,
+          "x": 28,
           "y": 16,
-          "width": 206,
+          "width": 199,
           "height": 224
         },
-        "sha256": "374890c80b2fcdfedd09766b031665d83d4466262b83a93e1d599fc7eda0cb80"
+        "sha256": "c5b3072e9dbe665993e1a2ca01fa825353665ad96d8210346fd1ca8138184e05"
       }
     },
     "丽丽丝": {
-      "kind": "dialogue-ui-linkage",
+      "kind": "external-dialogue-swf",
       "sourceSwf": {
-        "path": "flashswf/UI/对话框界面.swf",
-        "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7",
-        "bytes": 1071988
+        "path": "flashswf/portraits/丽丽丝.swf",
+        "sha256": "f6d1013e52f54cb3e2c4064e34592d8376fc6ada8f026a0707cae9dc9016b7d2",
+        "bytes": 132571
       },
-      "sourceXfl": {
-        "path": "flashswf/UI/对话框界面/LIBRARY/对话框肖像.xml",
-        "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59",
-        "bytes": 480732
-      },
-      "linkage": "对话框肖像",
-      "characterId": 981,
-      "declaredFrameCount": 262,
-      "xflFrameIndex": 84,
-      "frame1Based": 85,
-      "duration": 7,
-      "extractedPngSha256": "8b6dc069e968b54035af98a8a4677c1c046657c328191d59a3bf54819907f327",
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "6ec4c9bc312289aa3bede886a695aa65a5eaa9be1f979c4d2e9f524a28ff50bc",
       "output": {
-        "uri": "subjects/dd2f82ea425b37c0770ab48d026183fbdcc39fd3af77ccac29d79a19d4dde028.png",
+        "uri": "subjects/1ab532e0430ad8cbc9110bf828c823d79b6728ef798ea0aea0ce7034e6f92d50.png",
         "width": 256,
         "height": 256,
         "bounds": {
-          "x": 21,
+          "x": 27,
           "y": 16,
-          "width": 213,
+          "width": 201,
           "height": 224
         },
-        "sha256": "dd2f82ea425b37c0770ab48d026183fbdcc39fd3af77ccac29d79a19d4dde028"
+        "sha256": "1ab532e0430ad8cbc9110bf828c823d79b6728ef798ea0aea0ce7034e6f92d50"
       }
     },
     "厨师": {

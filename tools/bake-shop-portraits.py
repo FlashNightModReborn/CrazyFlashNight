@@ -636,9 +636,21 @@ def build_stage(root: Path, ffdec: Path, stage: Path, work: Path, timeout_second
             continue
         entry = dialogue_entries.get(shop_id)
         if shop_id == WEAPON_MASTER:
-            if entry is not None:
-                raise BakeError("Weapon Master must be refreshed from current dialogue source, not stale manifest")
-            source_choices[shop_id] = {"kind": "internal"}
+            expression = (
+                entry.get("expressions", {}).get(entry.get("defaultExpression"))
+                if isinstance(entry, dict)
+                else None
+            )
+            if (
+                not isinstance(entry, dict)
+                or entry.get("key") != WEAPON_MASTER
+                or entry.get("source") != "dialogue-ui-sprite"
+                or entry.get("sourcePath") != "flashswf/UI/对话框界面.swf"
+                or not isinstance(expression, dict)
+                or expression.get("frame") != 257
+            ):
+                raise BakeError("Weapon Master dialogue manifest entry is not the current internal source")
+            source_choices[shop_id] = {"kind": "internal", "entry": entry}
             internal_ids.append(shop_id)
             continue
         if not isinstance(entry, dict) or entry.get("key") != shop_id:
@@ -653,7 +665,7 @@ def build_stage(root: Path, ffdec: Path, stage: Path, work: Path, timeout_second
             external_ids.append(shop_id)
         else:
             raise BakeError(f"Unsupported dialogue source for shop {shop_id}: {kind!r}")
-    if len(internal_ids) != 8 or len(external_ids) != 25:
+    if len(internal_ids) != 2 or len(external_ids) != 31:
         raise BakeError(f"Shop source partition drift: internal={len(internal_ids)} external={len(external_ids)}")
 
     internal_images, internal_evidence = build_internal_sources(
@@ -730,7 +742,7 @@ def build_stage(root: Path, ffdec: Path, stage: Path, work: Path, timeout_second
         },
         "activeShopSource": active_source,
         "dialogueManifest": artifact(dialogue_manifest_path, root),
-        "sourcePartition": {"externalDialogue": 25, "internalDialogue": 8, "exactXflSwfPilot": 1},
+        "sourcePartition": {"externalDialogue": 31, "internalDialogue": 2, "exactXflSwfPilot": 1},
         "sources": provenance_sources,
     }
     provenance_bytes = canonical_json(provenance)

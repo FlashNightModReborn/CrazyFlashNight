@@ -230,7 +230,7 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
     require(provenance.get("schema") == PROVENANCE_SCHEMA, "Provenance schema drift")
     require(provenance.get("generatorVersion") == "1.0.0", "Generator version drift")
     require(provenance.get("geometry") == {**GEOMETRY, "padding": 16, "fit": "alpha-bounds-contain-center"}, "Provenance geometry drift")
-    require(provenance.get("sourcePartition") == {"externalDialogue": 25, "internalDialogue": 8, "exactXflSwfPilot": 1}, "Source partition drift")
+    require(provenance.get("sourcePartition") == {"externalDialogue": 31, "internalDialogue": 2, "exactXflSwfPilot": 1}, "Source partition drift")
     require(provenance.get("dialogueManifest", {}).get("path") == "launcher/web/assets/dialogue-portraits/manifest.json", "Dialogue manifest provenance drift")
 
     toolchain = provenance.get("toolchain")
@@ -256,7 +256,7 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
         kinds[kind] += 1
         require(SHA256_RE.fullmatch(source.get("extractedPngSha256") or "") is not None, f"Invalid extracted PNG SHA: {shop_id}")
         require(source.get("output") == entries[shop_id], f"Provenance/output mismatch: {shop_id}")
-    require(kinds == {"external-dialogue-swf": 25, "dialogue-ui-linkage": 8, "exact-xfl-swf-pilot": 1}, f"Source-kind count drift: {kinds}")
+    require(kinds == {"external-dialogue-swf": 31, "dialogue-ui-linkage": 2, "exact-xfl-swf-pilot": 1}, f"Source-kind count drift: {kinds}")
 
     weapon = sources.get("武器大师", {})
     require(

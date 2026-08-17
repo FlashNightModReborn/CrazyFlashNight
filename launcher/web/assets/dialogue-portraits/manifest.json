@@ -1,16 +1,30 @@
 {
   "schema": "cf7-dialogue-portraits-v2",
-  "generatedAt": "2026-06-20T12:51:22+0800",
+  "generatedAt": "2026-08-17T11:03:09+0800",
   "zoom": 1,
   "baseSize": {
     "width": 1024,
     "height": 576
+  },
+  "portraitWindow": {
+    "external-swf": {
+      "x": 30,
+      "y": 30,
+      "width": 880,
+      "height": 375
+    }
   },
   "heroKeys": [
     "$PC_CHAR",
     "主角模板",
     "玩家"
   ],
+  "sourceAuthority": {
+    "schema": "cf7.dialogue-portrait-source-authority-policy.v1",
+    "policyPath": "tools/dialogue-portrait-source-review/authority-policy.json",
+    "policySha256": "a34ce4776a4412448771d5746aab046b54ae43d2ab913ecec59da76764b46009",
+    "collisionPolicy": "explicit-human-authority"
+  },
   "entries": {
     "Andy Law": {
       "key": "Andy Law",
@@ -800,20 +814,20 @@
     "宝石线人": {
       "key": "宝石线人",
       "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/宝石线人.swf",
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "internal/p_d6a92ad00be8/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 101,
+          "uri": "external/p_d6a92ad00be8/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
           "bounds": {
-            "x": 388,
-            "y": 293,
-            "width": 123,
-            "height": 186
+            "x": 173,
+            "y": 54,
+            "width": 292,
+            "height": 351
           }
         }
       }
@@ -821,20 +835,20 @@
     "丽丽丝": {
       "key": "丽丽丝",
       "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/丽丽丝.swf",
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "internal/p_f3c00d063a27/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 85,
+          "uri": "external/p_f3c00d063a27/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
           "bounds": {
-            "x": 375,
-            "y": 274,
-            "width": 195,
-            "height": 205
+            "x": 122,
+            "y": 78,
+            "width": 294,
+            "height": 328
           }
         }
       }
@@ -842,20 +856,20 @@
     "格格巫": {
       "key": "格格巫",
       "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/格格巫.swf",
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "internal/p_b5e7b14bc845/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 78,
+          "uri": "external/p_b5e7b14bc845/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
           "bounds": {
-            "x": 380,
-            "y": 287,
-            "width": 177,
-            "height": 192
+            "x": 140,
+            "y": 57,
+            "width": 310,
+            "height": 349
           }
         }
       }
@@ -1935,20 +1949,20 @@
     "迷之盔甲君": {
       "key": "迷之盔甲君",
       "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/迷之盔甲君.swf",
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "internal/p_53d675d81650/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 114,
+          "uri": "external/p_53d675d81650/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
           "bounds": {
-            "x": 371,
-            "y": 307,
-            "width": 268,
-            "height": 172
+            "x": 130,
+            "y": 233,
+            "width": 338,
+            "height": 279
           }
         }
       }
@@ -1956,41 +1970,43 @@
     "酒保": {
       "key": "酒保",
       "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/酒保.swf",
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "internal/p_a10ec4d29b12/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 71,
+          "uri": "external/p_a10ec4d29b12/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
           "bounds": {
-            "x": 393,
-            "y": 288,
-            "width": 130,
-            "height": 191
+            "x": 111,
+            "y": 216,
+            "width": 189,
+            "height": 360
           }
         }
       }
     },
     "小F": {
       "key": "小F",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "aliases": [
+        "小f"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/小F.swf",
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "internal/p_e022273fd223/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 66,
+          "uri": "external/p_e022273fd223/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
           "bounds": {
-            "x": 376,
-            "y": 268,
+            "x": 129,
+            "y": 193,
             "width": 147,
-            "height": 211
+            "height": 360
           }
         }
       }
@@ -2518,6 +2534,27 @@
             "y": 145,
             "width": 237,
             "height": 334
+          }
+        }
+      }
+    },
+    "武器大师": {
+      "key": "武器大师",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_2bc606d5f82a/e_7cda072d452b.png",
+          "width": 851,
+          "height": 1000,
+          "frame": 257,
+          "bounds": {
+            "x": 313,
+            "y": 125,
+            "width": 388,
+            "height": 354
           }
         }
       }

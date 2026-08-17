@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="cf7-review-source-digest" content="__CF7_SOURCE_DIGEST__">
+  <title>CF7 对话立绘 · 同名双源裁决</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1017;
+      --panel: #121923;
+      --panel-2: #182230;
+      --line: #2a3849;
+      --text: #eef5fc;
+      --muted: #9aabba;
+      --cyan: #55d5ff;
+      --amber: #ffc766;
+      --green: #69dda4;
+      --shadow: 0 18px 45px rgb(0 0 0 / .28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 10% 0, rgb(53 138 170 / .17), transparent 32rem),
+        radial-gradient(circle at 90% 12%, rgb(255 183 74 / .11), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font: 15px/1.55 "Microsoft YaHei UI", "Noto Sans SC", system-ui, sans-serif;
+    }
+    button, input, textarea, select { font: inherit; }
+    button, .button-link {
+      border: 1px solid #3b5269;
+      border-radius: 8px;
+      background: #223247;
+      color: var(--text);
+      padding: .58rem .9rem;
+      cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+    }
+    button:hover, .button-link:hover { border-color: var(--cyan); background: #28415a; }
+    button:active { transform: translateY(1px); }
+    button[disabled] { cursor: not-allowed; opacity: .5; }
+    code { font-family: Consolas, "SFMono-Regular", monospace; }
+    .shell { width: min(1560px, 100%); margin: 0 auto; padding: 24px; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      padding: 26px 28px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgb(21 34 47 / .97), rgb(12 18 26 / .95));
+      box-shadow: var(--shadow);
+    }
+    .eyebrow { margin: 0 0 .25rem; color: var(--cyan); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.6rem); line-height: 1.2; }
+    .lede { max-width: 74rem; margin: .8rem 0 0; color: #c5d1dc; }
+    .safety-note { color: var(--amber); }
+    .progress { min-width: 220px; text-align: right; }
+    .progress strong { display: block; font-size: 1.55rem; }
+    .progress span { color: var(--muted); }
+    .track { height: 7px; margin-top: .55rem; overflow: hidden; border-radius: 999px; background: #263240; }
+    .track > i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--green)); transition: width .2s ease; }
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .fact { padding: 14px 16px; border: 1px solid var(--line); border-radius: 11px; background: rgb(18 25 35 / .9); }
+    .fact strong { display: block; font-size: 1.35rem; }
+    .fact span { color: var(--muted); }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgb(11 16 23 / .94);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 24px rgb(0 0 0 / .2);
+    }
+    .toolbar label { display: flex; gap: 8px; align-items: center; color: var(--muted); }
+    .toolbar input, .toolbar select {
+      min-height: 38px;
+      border: 1px solid #35465a;
+      border-radius: 7px;
+      background: #111a24;
+      color: var(--text);
+      padding: .45rem .65rem;
+    }
+    #search { width: min(250px, 48vw); }
+    .toolbar-spacer { flex: 1; }
+    .digest { width: 100%; margin: 0; color: #76899b; font-size: .78rem; overflow-wrap: anywhere; }
+    .review-list { display: grid; gap: 18px; }
+    .review-item {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgb(17 24 34 / .96);
+      box-shadow: 0 10px 30px rgb(0 0 0 / .18);
+    }
+    .review-item[data-complete="true"] { border-color: color-mix(in srgb, var(--green) 65%, var(--line)); }
+    .item-header { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; padding: 18px 20px 13px; }
+    .item-index { color: var(--cyan); font: 700 .8rem/1 Consolas, monospace; }
+    h2 { margin: .22rem 0 0; font-size: 1.55rem; }
+    .badges { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+    .badge { border: 1px solid #415267; border-radius: 999px; padding: .27rem .58rem; color: #c4d0dc; font-size: .78rem; }
+    .badge.flash { border-color: #2d819b; color: #8fe4ff; }
+    .badge.web { border-color: #8f6a2e; color: #ffd285; }
+    .badge.diverged { border-color: #984c4c; color: #ff9b9b; }
+    .source-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 0 14px 14px; }
+    .source-card { min-width: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-2); overflow: hidden; }
+    .source-card[data-selected="true"] { border-color: var(--green); box-shadow: inset 0 0 0 1px var(--green); }
+    .source-head { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; padding: 13px 14px 9px; }
+    .source-title { font-size: 1.05rem; }
+    .source-role { display: block; margin-top: .15rem; color: var(--muted); font-size: .8rem; }
+    .source-flags { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 5px; }
+    .source-flags span { border-radius: 5px; padding: .18rem .42rem; background: #263747; color: #c7d9e8; font-size: .72rem; }
+    .source-flags .runtime { background: #124a5b; color: #a4edff; }
+    .source-flags .current-web { background: #5b4217; color: #ffe1a4; }
+    .source-flags .policy { background: #285038; color: #9bf0ba; }
+    .preview-stage {
+      display: grid;
+      place-items: center;
+      min-height: 340px;
+      margin: 0 12px;
+      border: 1px solid #344456;
+      border-radius: 9px;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+    .preview-stage.checker {
+      background-color: #19232e;
+      background-image: linear-gradient(45deg, #273440 25%, transparent 25%), linear-gradient(-45deg, #273440 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #273440 75%), linear-gradient(-45deg, transparent 75%, #273440 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+    }
+    .preview-stage.dark { background: #07090c; }
+    .preview-stage.light { background: #e5e7ea; }
+    canvas { display: block; width: 100%; height: auto; }
+    .source-meta { display: grid; gap: .22rem; padding: 10px 13px 4px; color: var(--muted); font-size: .78rem; }
+    .source-meta code { overflow-wrap: anywhere; color: #b8c7d4; }
+    .card-actions { display: flex; gap: 8px; padding: 10px 12px 13px; }
+    .select-source { flex: 1; background: #1f4250; }
+    .source-card[data-selected="true"] .select-source { background: #226345; border-color: var(--green); }
+    .button-link { display: inline-grid; place-items: center; text-decoration: none; font-size: .84rem; }
+    .decision { display: grid; grid-template-columns: auto minmax(220px, 1fr) auto; gap: 12px; align-items: end; padding: 14px 18px 18px; border-top: 1px solid var(--line); background: #0e151e; }
+    .decision button[aria-pressed="true"] { border-color: var(--amber); background: #5b4217; }
+    .note-field { display: grid; gap: 5px; color: var(--muted); font-size: .82rem; }
+    .note-field textarea { width: 100%; min-height: 68px; resize: vertical; border: 1px solid #35465a; border-radius: 8px; background: #111a24; color: var(--text); padding: .55rem .65rem; }
+    .decision-status { min-width: 145px; margin: 0; color: var(--muted); text-align: right; }
+    .review-item[data-complete="true"] .decision-status { color: var(--green); }
+    .empty { padding: 40px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); text-align: center; }
+    .message { min-height: 1.5em; margin: 10px 2px; color: var(--green); }
+    dialog { width: min(1180px, calc(100vw - 30px)); border: 1px solid #40556b; border-radius: 14px; background: #0d141d; color: var(--text); box-shadow: var(--shadow); }
+    dialog::backdrop { background: rgb(0 0 0 / .78); backdrop-filter: blur(5px); }
+    .dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .dialog-head h3 { margin: 0; }
+    .dialog-stage { min-height: 65vh; }
+    @media (max-width: 900px) {
+      .shell { padding: 12px; }
+      .hero { grid-template-columns: 1fr; padding: 20px; }
+      .progress { text-align: left; }
+      .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .source-grid { grid-template-columns: 1fr; }
+      .decision { grid-template-columns: 1fr; align-items: stretch; }
+      .decision-status { text-align: left; }
+    }
+    @media (max-width: 520px) {
+      .facts { grid-template-columns: 1fr; }
+      .toolbar label { width: 100%; justify-content: space-between; }
+      .toolbar input, .toolbar select { flex: 1; }
+      .item-header { display: block; }
+      .badges { justify-content: flex-start; margin-top: 10px; }
+      .preview-stage { min-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">CF7 · Dialogue portrait source audit</p>
+        <h1>对话立绘同名双源裁决</h1>
+        <p class="lede">逐项比较外部肖像 SWF 与「对话框肖像」内嵌时间轴。标签只陈述当前链路事实，不替你预选权威源。<span class="safety-note">本页只导出决策 JSON，不会改生产 manifest、SWF 或 PNG。</span></p>
+      </div>
+      <div class="progress" aria-live="polite">
+        <strong id="progress-count">0 / 0</strong>
+        <span id="progress-label">正在载入</span>
+        <div class="track"><i id="progress-bar"></i></div>
+      </div>
+    </header>
+
+    <section class="facts" aria-label="当前双源统计">
+      <div class="fact"><strong id="external-count">—</strong><span>外部清单名称</span></div>
+      <div class="fact"><strong id="internal-count">—</strong><span>内嵌有效标签</span></div>
+      <div class="fact"><strong id="collision-count">—</strong><span>精确同名双源</span></div>
+      <div class="fact"><strong id="divergence-count">—</strong><span>当前 Web / Flash 分歧</span></div>
+    </section>
+
+    <section class="toolbar" aria-label="复核控制">
+      <label>搜索 <input id="search" type="search" placeholder="输入角色名"></label>
+      <label>状态
+        <select id="status-filter">
+          <option value="all">全部</option>
+          <option value="pending">未完成</option>
+          <option value="complete">已完成</option>
+          <option value="diverged">Web / Flash 分歧</option>
+        </select>
+      </label>
+      <label>视图
+        <select id="view-mode">
+          <option value="subject">主体裁切</option>
+          <option value="full">完整画布</option>
+        </select>
+      </label>
+      <label>底色
+        <select id="matte">
+          <option value="checker">棋盘格</option>
+          <option value="dark">深色</option>
+          <option value="light">浅色</option>
+        </select>
+      </label>
+      <span class="toolbar-spacer"></span>
+      <button id="import-button" type="button">导入决策</button>
+      <input id="import-file" type="file" accept="application/json" hidden>
+      <button id="export-button" type="button" disabled>导出决策 JSON</button>
+      <p class="digest" id="digest"></p>
+    </section>
+
+    <p class="message" id="message" role="status" aria-live="polite"></p>
+    <main id="review-list" class="review-list" data-ready="false"></main>
+  </div>
+
+  <dialog id="preview-dialog">
+    <div class="dialog-head"><h3 id="dialog-title">立绘预览</h3><button id="dialog-close" type="button">关闭</button></div>
+    <div id="dialog-stage" class="preview-stage dialog-stage checker"><canvas id="dialog-canvas" width="1200" height="760"></canvas></div>
+  </dialog>
+
+  <script id="review-data" type="application/json">__CF7_REVIEW_DATA__</script>
+  <script>
+    (() => {
+      "use strict";
+      const dataset = JSON.parse(document.querySelector("#review-data").textContent);
+      const storageKey = `cf7-dialogue-portrait-authority:${dataset.sourceDigest}`;
+      const state = { decisions: {}, notes: {}, viewMode: "subject", matte: "checker", query: "", filter: "all" };
+      const imageCache = new Map();
+      const boundsCache = new Map();
+      const list = document.querySelector("#review-list");
+      const message = document.querySelector("#message");
+      const exportButton = document.querySelector("#export-button");
+      const previewDialog = document.querySelector("#preview-dialog");
+      let dialogSource = null;
+
+      function sourceLabel(id) {
+        if (id === "external-swf") return "外部肖像 SWF";
+        if (id === "dialogue-ui-sprite") return "对话框内嵌时间轴";
+        return id;
+      }
+
+      function loadStored() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+          if (saved?.schema === "cf7.dialogue-portrait-source-authority-local.v1" && saved.sourceDigest === dataset.sourceDigest) {
+            Object.assign(state.decisions, saved.decisions || {});
+            Object.assign(state.notes, saved.notes || {});
+          }
+        } catch {
+          localStorage.removeItem(storageKey);
+        }
+      }
+
+      function persist() {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify({
+            schema: "cf7.dialogue-portrait-source-authority-local.v1",
+            sourceDigest: dataset.sourceDigest,
+            decisions: state.decisions,
+            notes: state.notes,
+          }));
+        } catch {
+          message.textContent = "浏览器未允许本地保存；本次选择仍可导出，请不要关闭页面。";
+        }
+      }
+
+      function isComplete(item) {
+        const decision = state.decisions[item.reviewKey];
+        if (!decision) return false;
+        if (item.sources.some((source) => source.id === decision.authority)) return true;
+        return decision.authority === "defer" && Boolean((state.notes[item.reviewKey] || "").trim());
+      }
+
+      function loadImage(source) {
+        if (!imageCache.has(source.image.assetSha256)) {
+          imageCache.set(source.image.assetSha256, new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error(`无法载入 ${source.image.assetPath}`));
+            image.src = source.image.dataUri;
+          }));
+        }
+        return imageCache.get(source.image.assetSha256);
+      }
+
+      function alphaBounds(image, key) {
+        if (boundsCache.has(key)) return boundsCache.get(key);
+        const scratch = document.createElement("canvas");
+        scratch.width = image.naturalWidth;
+        scratch.height = image.naturalHeight;
+        const context = scratch.getContext("2d", { willReadFrequently: true });
+        context.drawImage(image, 0, 0);
+        const pixels = context.getImageData(0, 0, scratch.width, scratch.height).data;
+        let left = scratch.width;
+        let top = scratch.height;
+        let right = -1;
+        let bottom = -1;
+        for (let y = 0; y < scratch.height; y += 1) {
+          for (let x = 0; x < scratch.width; x += 1) {
+            if (pixels[(y * scratch.width + x) * 4 + 3] === 0) continue;
+            if (x < left) left = x;
+            if (x > right) right = x;
+            if (y < top) top = y;
+            if (y > bottom) bottom = y;
+          }
+        }
+        const result = right < left
+          ? { x: 0, y: 0, width: scratch.width, height: scratch.height }
+          : { x: left, y: top, width: right - left + 1, height: bottom - top + 1 };
+        boundsCache.set(key, result);
+        return result;
+      }
+
+      async function drawSource(source, canvas, mode = state.viewMode) {
+        const image = await loadImage(source);
+        const context = canvas.getContext("2d");
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        let crop = { x: 0, y: 0, width: image.naturalWidth, height: image.naturalHeight };
+        if (mode === "subject") {
+          crop = { ...alphaBounds(image, source.image.assetSha256) };
+          const padding = Math.max(crop.width, crop.height) * .08;
+          const x1 = Math.max(0, crop.x - padding);
+          const y1 = Math.max(0, crop.y - padding);
+          const x2 = Math.min(image.naturalWidth, crop.x + crop.width + padding);
+          const y2 = Math.min(image.naturalHeight, crop.y + crop.height + padding);
+          crop = { x: x1, y: y1, width: x2 - x1, height: y2 - y1 };
+        }
+        const scale = Math.min(canvas.width / crop.width, canvas.height / crop.height);
+        const width = crop.width * scale;
+        const height = crop.height * scale;
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+        context.drawImage(image, crop.x, crop.y, crop.width, crop.height, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+      }
+
+      function addText(parent, tag, className, text) {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        node.textContent = text;
+        parent.append(node);
+        return node;
+      }
+
+      function makeBadge(parent, text, className = "") {
+        return addText(parent, "span", `badge ${className}`.trim(), text);
+      }
+
+      function buildSourceCard(item, source) {
+        const card = document.createElement("section");
+        card.className = "source-card";
+        card.dataset.source = source.id;
+        card.dataset.selected = String(state.decisions[item.reviewKey]?.authority === source.id);
+        const header = document.createElement("header");
+        header.className = "source-head";
+        const titleBox = document.createElement("div");
+        addText(titleBox, "strong", "source-title", source.label);
+        addText(titleBox, "span", "source-role", source.role);
+        const flags = document.createElement("div");
+        flags.className = "source-flags";
+        if (item.flashCurrentSource === source.id) addText(flags, "span", "runtime", "Flash 当前");
+        if (item.webCurrentSource === source.id) addText(flags, "span", "current-web", "Web 当前");
+        if (item.policyCurrentSource === source.id) addText(flags, "span", "policy", "权威策略");
+        header.append(titleBox, flags);
+        const stage = document.createElement("div");
+        stage.className = `preview-stage ${state.matte}`;
+        stage.title = "点击放大预览";
+        stage.tabIndex = 0;
+        const canvas = document.createElement("canvas");
+        canvas.width = 720;
+        canvas.height = 430;
+        canvas.setAttribute("aria-label", `${item.name} ${source.label} 预览`);
+        stage.append(canvas);
+        const openPreview = () => {
+          dialogSource = { item, source };
+          document.querySelector("#dialog-title").textContent = `${item.name} · ${source.label}`;
+          document.querySelector("#dialog-stage").className = `preview-stage dialog-stage ${state.matte}`;
+          drawSource(source, document.querySelector("#dialog-canvas"));
+          previewDialog.showModal();
+        };
+        stage.addEventListener("click", openPreview);
+        stage.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openPreview(); }
+        });
+        const meta = document.createElement("div");
+        meta.className = "source-meta";
+        addText(meta, "code", "", source.sourcePath);
+        addText(meta, "code", "", `PNG ${source.image.width}×${source.image.height} · ${source.image.assetSha256.slice(0, 12)}…`);
+        if (source.frame !== null) addText(meta, "span", "", `内嵌发布帧 ${source.frame} · 标签跨度 ${source.duration} 帧`);
+        else addText(meta, "span", "", `外部时间轴表达：${source.expression}`);
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+        const choose = document.createElement("button");
+        choose.type = "button";
+        choose.className = "select-source";
+        choose.textContent = state.decisions[item.reviewKey]?.authority === source.id ? "已选为权威源" : "选为权威源";
+        choose.addEventListener("click", () => selectAuthority(item, source.id));
+        const original = document.createElement("a");
+        original.className = "button-link";
+        original.href = source.image.dataUri;
+        original.target = "_blank";
+        original.rel = "noreferrer";
+        original.textContent = "原始 PNG";
+        actions.append(choose, original);
+        card.append(header, stage, meta, actions);
+        drawSource(source, canvas).catch((error) => { message.textContent = error.message; });
+        return card;
+      }
+
+      function decisionText(item) {
+        const decision = state.decisions[item.reviewKey];
+        if (!decision) return "尚未选择";
+        if (decision.authority === "defer") return isComplete(item) ? "已暂缓并记录原因" : "暂缓需填写原因";
+        return `权威源：${sourceLabel(decision.authority)}`;
+      }
+
+      function buildItem(item) {
+        const article = document.createElement("article");
+        article.className = "review-item";
+        article.dataset.key = item.reviewKey;
+        article.dataset.complete = String(isComplete(item));
+        article.dataset.diverged = String(item.diverged);
+        const header = document.createElement("header");
+        header.className = "item-header";
+        const titleBox = document.createElement("div");
+        addText(titleBox, "span", "item-index", `${String(item.order).padStart(2, "0")} / ${String(dataset.items.length).padStart(2, "0")}`);
+        addText(titleBox, "h2", "", item.name);
+        const badges = document.createElement("div");
+        badges.className = "badges";
+        makeBadge(badges, `Flash：${sourceLabel(item.flashCurrentSource)}`, "flash");
+        makeBadge(badges, `Web：${sourceLabel(item.webCurrentSource)}`, "web");
+        makeBadge(badges, `策略：${sourceLabel(item.policyCurrentSource)}`);
+        if (item.diverged) makeBadge(badges, "当前来源分歧", "diverged");
+        header.append(titleBox, badges);
+        const grid = document.createElement("div");
+        grid.className = "source-grid";
+        for (const source of item.sources) grid.append(buildSourceCard(item, source));
+        const decision = document.createElement("section");
+        decision.className = "decision";
+        const defer = document.createElement("button");
+        defer.type = "button";
+        defer.className = "defer-button";
+        defer.setAttribute("aria-pressed", String(state.decisions[item.reviewKey]?.authority === "defer"));
+        defer.textContent = "暂缓判定";
+        defer.addEventListener("click", () => selectAuthority(item, "defer"));
+        const label = document.createElement("label");
+        label.className = "note-field";
+        addText(label, "span", "", "备注（暂缓判定时必填）");
+        const textarea = document.createElement("textarea");
+        textarea.maxLength = 1000;
+        textarea.placeholder = "记录造型、时代版本、构图或需回查的依据";
+        textarea.value = state.notes[item.reviewKey] || "";
+        textarea.addEventListener("input", () => {
+          state.notes[item.reviewKey] = textarea.value;
+          const current = state.decisions[item.reviewKey];
+          if (current) current.note = textarea.value;
+          persist();
+          updateProgress();
+          updateItemState(item);
+        });
+        label.append(textarea);
+        addText(decision, "p", "decision-status", decisionText(item));
+        decision.prepend(defer, label);
+        article.append(header, grid, decision);
+        return article;
+      }
+
+      function selectAuthority(item, authority) {
+        state.decisions[item.reviewKey] = {
+          name: item.name,
+          authority,
+          note: state.notes[item.reviewKey] || "",
+          decidedAt: new Date().toISOString(),
+        };
+        persist();
+        render();
+        document.querySelector(`[data-key="${item.reviewKey}"]`)?.scrollIntoView({ block: "nearest" });
+      }
+
+      function updateItemState(item) {
+        const row = document.querySelector(`[data-key="${item.reviewKey}"]`);
+        if (!row) return;
+        row.dataset.complete = String(isComplete(item));
+        row.querySelector(".decision-status").textContent = decisionText(item);
+      }
+
+      function visible(item) {
+        const matchesText = item.name.toLocaleLowerCase().includes(state.query.toLocaleLowerCase());
+        if (!matchesText) return false;
+        if (state.filter === "pending") return !isComplete(item);
+        if (state.filter === "complete") return isComplete(item);
+        if (state.filter === "diverged") return item.diverged;
+        return true;
+      }
+
+      function render() {
+        list.replaceChildren();
+        const items = dataset.items.filter(visible);
+        for (const item of items) list.append(buildItem(item));
+        if (items.length === 0) addText(list, "p", "empty", "没有符合当前筛选条件的同名项。");
+        list.dataset.ready = "true";
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const complete = dataset.items.filter(isComplete).length;
+        const chosen = dataset.items.filter((item) => Boolean(state.decisions[item.reviewKey])).length;
+        document.querySelector("#progress-count").textContent = `${complete} / ${dataset.items.length}`;
+        document.querySelector("#progress-label").textContent = complete === dataset.items.length
+          ? "全部可交付"
+          : chosen > complete ? `${complete} 项可导出 · ${chosen - complete} 项待补备注` : `${complete} 项已有选择`;
+        document.querySelector("#progress-bar").style.width = `${dataset.items.length ? complete / dataset.items.length * 100 : 0}%`;
+        exportButton.disabled = complete === 0;
+        exportButton.textContent = complete === dataset.items.length ? "导出完整决策 JSON" : `导出当前决策（${complete}/${dataset.items.length}）`;
+      }
+
+      function buildExport() {
+        const decisions = dataset.items
+          .filter(isComplete)
+          .map((item) => ({
+            reviewKey: item.reviewKey,
+            name: item.name,
+            authority: state.decisions[item.reviewKey].authority,
+            note: state.notes[item.reviewKey] || "",
+            decidedAt: state.decisions[item.reviewKey].decidedAt,
+          }));
+        return {
+          schema: dataset.decisionSchema,
+          batchId: dataset.batchId,
+          sourceDigest: dataset.sourceDigest,
+          manifestDigest: dataset.manifestDigest,
+          complete: dataset.items.every(isComplete),
+          exportedAt: new Date().toISOString(),
+          productionWrites: false,
+          counts: { decided: decisions.length, total: dataset.items.length },
+          decisions,
+        };
+      }
+
+      function validateImport(value) {
+        if (!value || value.schema !== dataset.decisionSchema || value.batchId !== dataset.batchId || value.sourceDigest !== dataset.sourceDigest || value.manifestDigest !== dataset.manifestDigest) {
+          throw new Error("决策文件不属于当前双源闭包，请重新生成复核页或导入匹配批次");
+        }
+        if (value.productionWrites !== false || !Array.isArray(value.decisions)) throw new Error("决策文件结构或安全标志无效");
+        const seen = new Set();
+        for (const decision of value.decisions) {
+          const item = dataset.items.find((candidate) => candidate.reviewKey === decision.reviewKey && candidate.name === decision.name);
+          if (!item || seen.has(decision.reviewKey)) throw new Error(`决策项身份无效或重复：${decision.reviewKey || "(缺失)"}`);
+          seen.add(decision.reviewKey);
+          const allowed = item.sources.some((source) => source.id === decision.authority) || decision.authority === "defer";
+          if (!allowed || typeof decision.note !== "string" || decision.note.length > 1000 || Number.isNaN(Date.parse(decision.decidedAt))) {
+            throw new Error(`决策项字段无效：${item.name}`);
+          }
+          if (decision.authority === "defer" && !decision.note.trim()) throw new Error(`暂缓项必须填写原因：${item.name}`);
+        }
+        const actuallyComplete = dataset.items.every((item) => {
+          const decision = value.decisions.find((candidate) => candidate.reviewKey === item.reviewKey);
+          return Boolean(decision && (decision.authority !== "defer" || decision.note.trim()));
+        });
+        if (value.complete !== actuallyComplete) throw new Error("决策文件 complete 标志与逐项内容不一致");
+        return value;
+      }
+
+      function exportDecisions() {
+        const value = buildExport();
+        validateImport(value);
+        const blob = new Blob([`${JSON.stringify(value, null, 2)}\n`], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `dialogue-portrait-authority-${dataset.sourceDigest.slice(0, 12)}.json`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 0);
+        message.textContent = value.complete
+          ? "完整决策已交给浏览器下载；生产配置尚未发生变化。"
+          : `已导出 ${value.counts.decided}/${value.counts.total} 项阶段性决策；生产配置尚未发生变化。`;
+      }
+
+      async function importDecisions(file) {
+        const value = validateImport(JSON.parse(await file.text()));
+        for (const key of Object.keys(state.decisions)) delete state.decisions[key];
+        for (const key of Object.keys(state.notes)) delete state.notes[key];
+        for (const decision of value.decisions) {
+          state.decisions[decision.reviewKey] = { ...decision };
+          state.notes[decision.reviewKey] = decision.note;
+        }
+        persist();
+        render();
+        message.textContent = `已导入 ${value.decisions.length}/${dataset.items.length} 项当前批次决策。`;
+      }
+
+      function redraw() {
+        for (const item of dataset.items) {
+          for (const source of item.sources) {
+            const card = document.querySelector(`[data-key="${item.reviewKey}"] [data-source="${source.id}"]`);
+            if (!card) continue;
+            card.querySelector(".preview-stage").className = `preview-stage ${state.matte}`;
+            drawSource(source, card.querySelector("canvas")).catch((error) => { message.textContent = error.message; });
+          }
+        }
+        if (previewDialog.open && dialogSource) {
+          document.querySelector("#dialog-stage").className = `preview-stage dialog-stage ${state.matte}`;
+          drawSource(dialogSource.source, document.querySelector("#dialog-canvas"));
+        }
+      }
+
+      document.querySelector("#external-count").textContent = dataset.counts.externalListEntries;
+      document.querySelector("#internal-count").textContent = dataset.counts.internalNamedFrames;
+      document.querySelector("#collision-count").textContent = dataset.counts.exactNameCollisions;
+      document.querySelector("#divergence-count").textContent = dataset.counts.currentWebDivergences;
+      document.querySelector("#digest").textContent = `闭包 ${dataset.sourceDigest} · manifest ${dataset.manifestDigest.slice(0, 16)}… · 生成于 ${new Date(dataset.generatedAt).toLocaleString("zh-CN")}`;
+      document.querySelector("#search").addEventListener("input", (event) => { state.query = event.target.value.trim(); render(); });
+      document.querySelector("#status-filter").addEventListener("change", (event) => { state.filter = event.target.value; render(); });
+      document.querySelector("#view-mode").addEventListener("change", (event) => { state.viewMode = event.target.value; redraw(); });
+      document.querySelector("#matte").addEventListener("change", (event) => { state.matte = event.target.value; redraw(); });
+      document.querySelector("#export-button").addEventListener("click", exportDecisions);
+      document.querySelector("#import-button").addEventListener("click", () => document.querySelector("#import-file").click());
+      document.querySelector("#import-file").addEventListener("change", async (event) => {
+        if (!event.target.files?.[0]) return;
+        try { await importDecisions(event.target.files[0]); }
+        catch (error) { message.textContent = `导入失败：${error.message}`; }
+        finally { event.target.value = ""; }
+      });
+      document.querySelector("#dialog-close").addEventListener("click", () => previewDialog.close());
+      previewDialog.addEventListener("click", (event) => { if (event.target === previewDialog) previewDialog.close(); });
+      loadStored();
+      render();
+      window.__dialoguePortraitAuthorityReview = { dataset, state, storageKey, isComplete, buildExport, validateImport, selectAuthority, redraw };
+    })();
+  </script>
+</body>
+</html>
