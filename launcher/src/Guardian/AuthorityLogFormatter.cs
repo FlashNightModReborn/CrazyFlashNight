@@ -69,8 +69,9 @@ namespace CF7Launcher.Guardian
             {
                 "close", "snapshot", "candidates", "preview", "commit", "tooltip", "detach",
                 "bulkQuery", "saveCart", "checkoutPreview", "checkoutCommit",
-                "checkout", "claim", "materials", "materialDetail",
-                "open_npc_shop",
+                "checkout", "claim", "materials", "materialDetail", "setPlan",
+                "open_npc_shop", "open_procurement_shop", "open_procurement_kshop",
+                "return_crafting_recipe",
                 "batchPreview", "tradePreview", "buy", "batchSell", "tradeCommit",
                 "discard", "move", "merge", "swap", "autoTransfer", "sortAndMerge",
                 "learnPreview", "learnCommit", "equip", "unequip", "moveSlot",
@@ -81,8 +82,9 @@ namespace CF7Launcher.Guardian
                 "shopBulkQuery", "shopTooltip", "shopSaveCart",
                 "shopCheckoutPreview", "shopCheckoutCommit", "shopCheckout", "shopClaim",
                 "craftingSnapshot", "craftingMaterials", "craftingMaterialDetail",
-                "craftingPreview", "craftingTooltip", "craftingCommit",
-                "craftingMaterialShopAuthorize",
+                "craftingPreview", "craftingTooltip", "craftingPlanSet", "craftingCommit",
+                "craftingMaterialShopAuthorize", "craftingProcurementShopAuthorize",
+                "craftingProcurementKShopAuthorize",
                 "npcShopSnapshot", "npcShopTooltip", "npcShopBatchPreview",
                 "npcShopTradePreview", "npcShopBuy", "npcShopBatchSell",
                 "npcShopTradeCommit",
@@ -259,7 +261,9 @@ namespace CF7Launcher.Guardian
         internal static string FormatMaterialShopAuthorityFlashCallBound(
             string webCallId,
             int flashCallId,
-            string sourcePanelInstanceId)
+            string sourcePanelInstanceId,
+            bool isProcurement = false,
+            bool isKShop = false)
         {
             var value = new StringBuilder();
             value.Append("event=authority_flash_call_bound");
@@ -273,8 +277,14 @@ namespace CF7Launcher.Guardian
             value.Append(" panel=crafting");
             value.Append(" panelInstanceIdRef=").Append(
                 FormatDispatchReference(sourcePanelInstanceId, 128, true));
-            value.Append(" cmd=open_npc_shop");
-            value.Append(" action=craftingMaterialShopAuthorize");
+            value.Append(isKShop
+                ? " cmd=open_procurement_kshop"
+                : isProcurement ? " cmd=open_procurement_shop"
+                : " cmd=open_npc_shop");
+            value.Append(isKShop
+                ? " action=craftingProcurementKShopAuthorize"
+                : isProcurement ? " action=craftingProcurementShopAuthorize"
+                : " action=craftingMaterialShopAuthorize");
             return value.ToString();
         }
 
@@ -504,6 +514,7 @@ namespace CF7Launcher.Guardian
                         case "materialDetail": return "craftingMaterialDetail";
                         case "preview": return "craftingPreview";
                         case "tooltip": return "craftingTooltip";
+                        case "setPlan": return "craftingPlanSet";
                         case "commit": return "craftingCommit";
                         default: return null;
                     }

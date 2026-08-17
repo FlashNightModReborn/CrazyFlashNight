@@ -724,6 +724,33 @@
 .npcshop-material-return-group { display:flex; align-items:center; gap:6px; }
 .npcshop-material-return-status { max-width:180px; color:var(--wb-role-pending); font-size:10px; line-height:1.25; }
 .npcshop-material-return-status[data-navigation-state="error"] { color:var(--wb-role-reject); }
+
+.kshop-procurement-return-group { display:flex; align-items:center; gap:6px; }
+.kshop-procurement-return-status {
+    max-width:190px;
+    color:var(--wb-role-pending);
+    font-size:10px;
+    line-height:1.25;
+}
+.kshop-procurement-return-status[data-navigation-state="error"] {
+    color:var(--wb-role-reject);
+}
+.kshop-procurement-focus {
+    border-color:var(--dls-energetic);
+    box-shadow:0 0 0 2px color-mix(in srgb,var(--dls-energetic) 34%,transparent),
+        0 0 18px color-mix(in srgb,var(--dls-energetic) 20%,transparent);
+}
+.kshop-procurement-focus-hint {
+    position:absolute;
+    left:7px;
+    bottom:6px;
+    padding:2px 5px;
+    color:var(--wb-bg);
+    background:var(--dls-energetic);
+    font-size:10px;
+    font-weight:700;
+    pointer-events:none;
+}
 .npcshop-catalog-card.locked { opacity:.55; cursor:not-allowed; }
 .npcshop-card-icon { display:grid; place-items:center; width:46px; height:46px; border:1px solid #292e35; background:#080a0d; }
 .npcshop-card-icon .kshop-icon,.npcshop-card-icon .cfn-layered-icon { width:42px; height:42px; object-fit:contain; }

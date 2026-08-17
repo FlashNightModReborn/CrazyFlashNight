@@ -55,7 +55,7 @@ var CraftingDetailPresenter = (function() {
             rangeAriaLabel:'拖动选择合成份数',
             maxLabel:'最大',
             maxAriaLabel:'设为当前权威可合成上限',
-            showPlusFive:true,
+            showPlusFive:false,
             showMax:true,
             showRange:true,
             onChange:function(value, reason, event) {
@@ -101,7 +101,13 @@ var CraftingDetailPresenter = (function() {
         this.render({});
     }
 
+    Presenter.prototype._releaseTooltips = function(root) {
+        if (!root || typeof this._options.releaseTooltips !== 'function') return 0;
+        return Number(this._options.releaseTooltips(root)) || 0;
+    };
+
     Presenter.prototype._renderHero = function(model) {
+        this._releaseTooltips(this.heroHost);
         clear(this.heroHost);
         var output = model.output || {};
         var hero = this._document.createElement('section');
@@ -122,13 +128,91 @@ var CraftingDetailPresenter = (function() {
         var copy = this._document.createElement('div');
         copy.className = 'crafting-output-copy';
         copy.appendChild(textNode(this._document, 'h2', '', output.displayName || '产物'));
-        copy.appendChild(textNode(this._document, 'p', '', model.outputSummary || ''));
+        var outputMeta = this._document.createElement('p');
+        outputMeta.className = 'crafting-output-meta';
+        var outputSegments = model.outputMeta || [];
+        var outputMetaLabels = [];
+        for (var i = 0; i < outputSegments.length; i++) {
+            if (i > 0) {
+                var separator = textNode(this._document, 'span',
+                    'crafting-output-meta-separator', '·');
+                separator.setAttribute('aria-hidden', 'true');
+                outputMeta.appendChild(separator);
+            }
+            outputMeta.appendChild(textNode(this._document, 'span',
+                'crafting-output-meta-' + String(outputSegments[i].kind || 'plain'),
+                outputSegments[i].text || ''));
+            outputMetaLabels.push(String(outputSegments[i].text || ''));
+        }
+        outputMeta.setAttribute('aria-label', outputMetaLabels.join('；'));
+        copy.appendChild(outputMeta);
+        var plannedCrafts = Math.max(0, Math.min(99,
+            Math.floor(Number(model.plannedCrafts) || 0)));
+        var planControl = this._document.createElement('div');
+        planControl.className = 'crafting-plan-control';
+        planControl.setAttribute('role', 'group');
+        planControl.setAttribute('aria-label', '待合成标记数量');
+        planControl.hidden = !model.recipeId;
+        var planDecrement = this._document.createElement('button');
+        planDecrement.type = 'button';
+        planDecrement.className = 'workbench-mode-btn crafting-plan-step';
+        planDecrement.textContent = '−';
+        planDecrement.setAttribute('data-plan-action', 'decrement');
+        planDecrement.setAttribute('aria-label', model.planDecrementAriaLabel
+            || '减少一件待合成标记');
+        planDecrement.setAttribute('data-audio-cue', 'activate');
+        planDecrement.disabled = !!model.planDisabled || plannedCrafts <= 0;
+        planDecrement.addEventListener('click', function(event) {
+            if (typeof self._options.onPlanAdjust === 'function') {
+                self._options.onPlanAdjust(-1, event);
+            }
+        });
+        planControl.appendChild(planDecrement);
+        var planButton = this._document.createElement('button');
+        planButton.type = 'button';
+        planButton.className = 'workbench-mode-btn crafting-plan-btn';
+        planButton.textContent = model.planLabel || '标记待合成';
+        planButton.setAttribute('data-plan-action', 'toggle');
+        planButton.setAttribute('aria-pressed', model.planPressed ? 'true' : 'false');
+        planButton.setAttribute('aria-label', model.planAriaLabel || planButton.textContent);
+        planButton.setAttribute('data-audio-cue', 'toggle');
+        planButton.disabled = !!model.planDisabled;
+        planButton.addEventListener('click', function(event) {
+            if (typeof self._options.onPlanToggle === 'function') {
+                self._options.onPlanToggle(event);
+            }
+        });
+        planControl.appendChild(planButton);
+        var planIncrement = this._document.createElement('button');
+        planIncrement.type = 'button';
+        planIncrement.className = 'workbench-mode-btn crafting-plan-step';
+        planIncrement.textContent = '+';
+        planIncrement.setAttribute('data-plan-action', 'increment');
+        planIncrement.setAttribute('aria-label', model.planIncrementAriaLabel
+            || '增加一件待合成标记');
+        planIncrement.setAttribute('data-audio-cue', 'activate');
+        planIncrement.disabled = !!model.planDisabled || plannedCrafts >= 99;
+        planIncrement.addEventListener('click', function(event) {
+            if (typeof self._options.onPlanAdjust === 'function') {
+                self._options.onPlanAdjust(1, event);
+            }
+        });
+        planControl.appendChild(planIncrement);
+        copy.appendChild(planControl);
+        var planStatus = textNode(this._document, 'small',
+            'crafting-plan-status', model.planStatus || '');
+        planStatus.hidden = !model.planStatus;
+        planStatus.setAttribute('role', 'status');
+        planStatus.setAttribute('aria-live', 'polite');
+        planStatus.setAttribute('data-state', model.planStatusKind || 'idle');
+        copy.appendChild(planStatus);
         hero.appendChild(icon);
         hero.appendChild(copy);
         this.heroHost.appendChild(hero);
     };
 
     Presenter.prototype._renderMaterials = function(model) {
+        this._releaseTooltips(this.materialHost);
         clear(this.materialHost);
         var list = this._document.createElement('section');
         list.className = 'crafting-material-list';
@@ -188,17 +272,18 @@ var CraftingDetailPresenter = (function() {
         }
 
         this.quantityPanel.hidden = !batchEligible;
-        this.quantityHint.textContent = Number(model.presetMax) > 0
-            ? '当前最多 ' + Number(model.presetMax) + ' 份'
-            : model.pending ? '正在核算当前上限' : '当前资源不足 1 份';
+        var presetMax = Math.max(0, Math.min(99,
+            Math.floor(Number(model.presetMax) || 0)));
+        this.quantityHint.textContent = model.pending ? '核算中'
+            : presetMax >= 99 ? '单次最多 99' : '可合成 ' + presetMax;
         this.quantity.update({
             min:1,
             max:99,
-            presetMax:Math.max(0, Math.min(99, Math.floor(Number(model.presetMax) || 0))),
+            presetMax:presetMax,
             sliderMax:99,
             value:Math.max(1, Math.min(99, Math.floor(Number(model.craftCount) || 1))),
             disabled:!!model.quantityDisabled || !batchEligible,
-            showPlusFive:true,
+            showPlusFive:false,
             showMax:true,
             showRange:true
         });
@@ -251,6 +336,7 @@ var CraftingDetailPresenter = (function() {
     Presenter.prototype.destroy = function() {
         if (this._destroyed) return false;
         this._destroyed = true;
+        this._releaseTooltips(this.root);
         this.quantity.destroy();
         this.commitBar.destroy();
         return true;

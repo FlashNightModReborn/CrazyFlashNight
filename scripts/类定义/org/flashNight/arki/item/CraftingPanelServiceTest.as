@@ -1,10 +1,12 @@
 ﻿import org.flashNight.arki.item.CraftingPanelService;
 import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.ProcurementPlanService;
 import org.flashNight.arki.item.MaterialArchiveProjector;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.arki.item.itemCollection.EquipmentInventory;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.arki.task.TaskUtil;
@@ -30,6 +32,10 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testSnapshotProjection();
         testSnapshotGenderNormalization();
         testSnapshotAvailabilityRefresh();
+        testNestedCraftingSourceProjection();
+        testProcurementOwnedScope();
+        testProcurementPlanAndTaskDemand();
+        testProcurementMutationAndConsumption();
         testPreviewAuthority();
         testStoragePlanProjection();
         testMergeReceiptAuthority();
@@ -87,7 +93,9 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
     private static function resetOwned():Void {
         _root.物品栏 = {
             背包:new ArrayInventory(null, 5),
-            药剂栏:new ArrayInventory(null, 4)
+            药剂栏:new ArrayInventory(null, 4),
+            装备栏:new EquipmentInventory(null),
+            战备箱:new ArrayInventory(null, 80)
         };
         _root.收集品栏 = {
             材料:new DictCollection(null),
@@ -105,11 +113,19 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             铁匠:{启用:true, 等级:2}
         };
         _root.存档系统 = {dirtyMark:false};
+        _root._saveExt = {};
+        _root.tasks_to_do = [];
+        TaskUtil.tasks = [];
+        TaskUtil.task_texts = {};
+        _root.主线任务进度 = 14;
+        _root.task_chains_progress = {};
+        _root.基建系统 = {infrastructure:{}};
         _root.改装清单 = {};
+        _root.改装分类顺序 = ["武器合成"];
         _root.改装清单["武器合成"] = [
-            {title:"棱镜折射阵列图纸", name:"光棱射线弹-强化", price:101, kprice:21,
+            {recipeId:"craft.weapon.001", title:"棱镜折射阵列图纸", name:"光棱射线弹-强化", price:101, kprice:21,
                 materials:["测试图纸#1", "旧测试枪#3", "测试矿石#2"]},
-            {title:"测试药剂图纸", name:"测试药剂", value:3, price:0, kprice:0,
+            {recipeId:"craft.weapon.002", title:"测试药剂图纸", name:"测试药剂", value:3, price:0, kprice:0,
                 materials:["测试矿石#9"]}
         ];
         _root.改装清单对象 = {};
@@ -123,9 +139,34 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         var shop:Object = {};
         shop["测试商人"] = {};
         shop["测试商人"]["0"] = "测试矿石";
+        shop["测试商人"]["1"] = "旧测试枪";
+        _root.shops = shop;
+        _root.kshop_list = [{id:"mat-1", item:"测试矿石", type:"材料", price:1}];
         var obtainIndex:ItemObtainIndex = ItemObtainIndex.getInstance();
         obtainIndex.reset(true);
-        obtainIndex.buildIndex(_root.改装清单, shop, []);
+        obtainIndex.buildIndex(_root.改装清单, shop, _root.kshop_list);
+        SynthesisIndex.reset();
+        CraftingPanelService.testOnlyReset();
+    }
+
+    private static function testNestedCraftingSourceProjection():Void {
+        resetOwned();
+        var materials:Array = _root.改装清单["武器合成"][0].materials;
+        materials.push("测试药剂#1");
+        SynthesisIndex.reset();
+        var result:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1
+        });
+        var nested:Object = result.materials[result.materials.length - 1];
+        var sources:Array = nested.craftingSources;
+        check(result.success && nested.name == "测试药剂"
+                && sources.length == 1
+                && sources[0].category == "武器合成"
+                && sources[0].recipeIndex == 1
+                && sources[0].recipeId == "craft.weapon.002"
+                && sources[0].title == "测试药剂图纸",
+            "preview projects exact nested crafting source identity without Web inference");
+        materials.pop();
         SynthesisIndex.reset();
         CraftingPanelService.testOnlyReset();
     }
@@ -175,13 +216,14 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         var catalog:Object = CraftingPanelService.execute("materials", {});
         check(catalog.success && catalog.v == 1 && catalog.view == "materials"
             && catalog.materials.length == 1 && catalog.materials[0].name == "测试矿石"
-            && catalog.materials[0].owned == 5 && catalog.materials[0].sourceCount == 1
+            && catalog.materials[0].owned == 5 && catalog.materials[0].sourceCount == 2
             && catalog.materials[0].useCount == 2 && catalog.materials[0].hasSourceSummary,
             "material catalog projects owned count and existing source/use indexes");
         var detail:Object = CraftingPanelService.execute("materialDetail", {itemName:"测试矿石"});
         check(detail.success && detail.material.name == "测试矿石"
             && detail.material.sourceSummary.indexOf("测试关卡") >= 0
-            && detail.sources.length == 1 && detail.sources[0].kind == "shop"
+            && detail.sources.length == 2 && detail.sources[0].kind == "shop"
+            && detail.sources[1].kind == "kshop"
             && detail.uses.length == 2 && detail.uses[0].required > 0,
             "material detail exposes annotation, structured sources and recipe uses");
         var previousEnemyTable:Object = _root.敌人属性表;
@@ -326,6 +368,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         _root.shops = {};
         _root.shops["测试商人"] = {};
         _root.shops["测试商人"]["0"] = "测试矿石";
+        _root.shops["测试商人"]["1"] = "旧测试枪";
         var shopProjector:Object = {price:120, locked:true, maxQuantity:0,
             catalogMode:"exact"};
         shopProjector.buildCatalog = function(shopId:String):Array {
@@ -343,9 +386,12 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                     {catalogIndex:0, itemName:"测试矿石"}];
             }
             return [{catalogIndex:0, itemName:"测试矿石",
-                basePrice:this.price, unitPrice:this.price - 10,
-                requiredInfo:"测试图纸", locked:this.locked,
-                maxQuantity:this.maxQuantity}];
+                    basePrice:this.price, unitPrice:this.price - 10,
+                    requiredInfo:"测试图纸", locked:this.locked,
+                    maxQuantity:this.maxQuantity},
+                {catalogIndex:1, itemName:"旧测试枪",
+                    basePrice:900, unitPrice:900, requiredInfo:"",
+                    locked:false, maxQuantity:0}];
         };
         _root.UI系统.NPC商店WebView = shopProjector;
 
@@ -374,7 +420,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && mineral.directPurposeIds.length == 1
                 && mineral.useCount == 2
                 && mineral.structuredPurposeCount == 3
-                && mineral.sourceCount == 4
+                && mineral.sourceCount == 5
                 && mineral.dropVariantCount == 5,
             "v2 catalog separates mod facets, recipe occurrences, purposes and source counts");
 
@@ -389,6 +435,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             v:2, snapshotId:snapshotId, itemName:"测试矿石"
         });
         var shop:Object = findProjectedSource(detail.sources, "shop", "shopId", "测试商人");
+        var kshop:Object = findProjectedSource(detail.sources, "kshop", "entryId", "mat-1");
         var stage:Object = findProjectedSource(detail.sources, "stage", "stageName", "测试关卡多档");
         var enemy:Object = findProjectedSource(detail.sources, "enemy", "enemyType", "敌人-测试两档");
         var escaped:Object = findProjectedSource(detail.sources, "enemy", "enemyType", "敌人-键:|𠀀");
@@ -396,7 +443,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && detail.material.name == "测试矿石"
                 && detail.material.owned == 5
                 && detail.material.sourceSummary == "【档案摘要】测试矿石"
-                && detail.sourceCount == 4 && detail.dropVariantCount == 5
+                && detail.sourceCount == 5 && detail.dropVariantCount == 5
                 && detail.useCount == 2 && detail.structuredPurposeCount == 3,
             "v2 detail reuses immutable catalog state while preserving authored summary");
         check(shop != null && shop.sourceOrder == 0
@@ -404,7 +451,10 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && shop.requiredInfo == "测试图纸" && shop.locked
                 && shop.shopAccessMode == "full"
                 && shop.shopAccessReason == "indexed_live_match"
-                && stage != null && stage.sourceOrder == 1
+                && kshop != null && kshop.sourceOrder == 1
+                && kshop.catalogIndex == 0 && kshop.entryId == "mat-1"
+                && kshop.category == "材料" && kshop.priceK == 1
+                && stage != null && stage.sourceOrder == 2
                 && stage.variants.length == 2
                 && stage.variants[0].defaultBranchChancePercent == 12.5
                 && enemy != null && enemy.variants.length == 2
@@ -463,6 +513,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
 
         testMaterialShopAccessAuthorization(
             index, snapshotId, shopProjector);
+        testProcurementShopAccessAuthorization(snapshotId);
 
         // Only shop dynamic fields may refresh inside one frozen material snapshot.
         shopProjector.price = 220;
@@ -866,7 +917,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         index.reset(false);
         var indexNotReady:Object = invokeMaterialShopAccess(
             materialShopAccessRequest(snapshotId, 41));
-        index.buildIndex(_root.改装清单, _root.shops, []);
+        index.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
         check(exactShopAccessFailure(indexNotReady, 41, "deny",
                 "authority_unavailable"),
             "A4b unbuilt ItemObtainIndex fails unavailable before live catalog authority");
@@ -884,6 +935,80 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && degradedShop.shopAccessReason
                     == "no_authoritative_remote_access_capability",
             "A4b v2 detail uses only the two frozen access pairs and degrades fail closed");
+
+        _root.server = previousServer;
+    }
+
+    /** P3：合成条目直达金币商店必须额外复证基建与稳定配方身份。 */
+    private static function testProcurementShopAccessAuthorization(
+            snapshotId:String):Void {
+        var previousServer:Object = _root.server;
+        var infrastructure:Object = _root.基建系统.infrastructure;
+        _root.server = {sent:null};
+        _root.server.sendSocketMessage = function(message:String):Boolean {
+            this.sent = message;
+            return true;
+        };
+
+        infrastructure.自行车 = 1;
+        infrastructure.摩托车 = 0;
+        infrastructure.越野车 = 0;
+        var request:Object = procurementShopAccessRequest(snapshotId, 43);
+        var bicycleDenied:Object = invokeProcurementShopAccess(request);
+
+        infrastructure.摩托车 = 1;
+        var motorcycleAllowed:Object = invokeProcurementShopAccess(request);
+        var equipmentRequest:Object = procurementShopAccessRequest(snapshotId, 51);
+        equipmentRequest.materialName = "旧测试枪";
+        equipmentRequest.catalogIndex = 1;
+        var equipmentAllowed:Object = invokeProcurementShopAccess(equipmentRequest);
+        infrastructure.摩托车 = 0;
+        infrastructure.越野车 = 1;
+        request = procurementShopAccessRequest(snapshotId, 44);
+        var offroadAllowed:Object = invokeProcurementShopAccess(request);
+        infrastructure.越野车 = 0;
+
+        infrastructure.摩托车 = 1;
+        request = procurementShopAccessRequest(snapshotId, 45);
+        request.recipeId = "craft.weapon.002";
+        var wrongRecipe:Object = invokeProcurementShopAccess(request);
+        request = procurementShopAccessRequest(snapshotId, 46);
+        request.category = "防具合成";
+        var wrongCategory:Object = invokeProcurementShopAccess(request);
+        request = procurementShopAccessRequest(snapshotId, 47);
+        request.recipeIndex = 1;
+        var wrongIndex:Object = invokeProcurementShopAccess(request);
+        request = procurementShopAccessRequest(snapshotId, 48);
+        request.materialName = "测试药剂";
+        var wrongMaterial:Object = invokeProcurementShopAccess(request);
+        request = procurementKShopAccessRequest(snapshotId, 49);
+        var kshopAllowed:Object = invokeProcurementKShopAccess(request);
+        _root.kshop_list[0].id = "changed-entry";
+        request = procurementKShopAccessRequest(snapshotId, 50);
+        var staleKShop:Object = invokeProcurementKShopAccess(request);
+        _root.kshop_list[0].id = "mat-1";
+        _root.shops["测试商人"]["1"] = "测试药剂";
+        var staleEquipment:Object = invokeProcurementShopAccess(equipmentRequest);
+        _root.shops["测试商人"]["1"] = "旧测试枪";
+        infrastructure.摩托车 = 0;
+
+        check(exactShopAccessFailure(bicycleDenied, 43, "deny", "access_denied")
+                && exactProcurementShopAccessAllow(motorcycleAllowed,
+                    procurementShopAccessRequest(snapshotId, 43))
+                && exactProcurementShopAccessAllow(
+                    equipmentAllowed, equipmentRequest)
+                && exactProcurementShopAccessAllow(offroadAllowed,
+                    procurementShopAccessRequest(snapshotId, 44))
+                && exactProcurementKShopAccessAllow(kshopAllowed,
+                    procurementKShopAccessRequest(snapshotId, 49)),
+            "procurement navigation rejects bicycle-only infrastructure and allows motorcycle/offroad exact routes");
+        check(exactShopAccessFailure(wrongRecipe, 45, "stale", "source_not_current")
+                && exactShopAccessFailure(wrongCategory, 46, "stale", "source_not_current")
+                && exactShopAccessFailure(wrongIndex, 47, "stale", "source_not_current")
+                && exactShopAccessFailure(wrongMaterial, 48, "stale", "source_not_current")
+                && exactShopAccessFailure(staleKShop, 50, "stale", "catalog_not_current")
+                && exactShopAccessFailure(staleEquipment, 51, "stale", "catalog_not_current"),
+            "procurement navigation supports equipment prerequisites and fails closed on identity or catalog drift");
 
         _root.server = previousServer;
     }
@@ -1031,6 +1156,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
     /** 基建用途冻结静态需求，但读取 live 发现态/等级与 snapshot owned。 */
     private static function testInfrastructureUsesProjection(
             catalogMaterials:Array):Void {
+        resetOwned();
         var catalog:Object = _root.材料档案目录;
         var system:Object = _root.基建系统;
         var previousDirectPurpose = catalog.DirectPurpose;
@@ -1067,8 +1193,6 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 consumerEvidence:"MaterialArchiveProjector"}];
         catalogMaterials[0].authoredDirectPurposeId = [
             "system:equipment_tuning", "system:infrastructure_upgrade"];
-        resetOwned();
-
         var projectedCatalog:Object = CraftingPanelService.execute("materials", {v:2});
         var snapshotId:String = String(projectedCatalog.snapshotId || "");
         // Requirements are frozen here; only discovery/currentLevel stays live.
@@ -1761,8 +1885,11 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         resetOwned();
         var first:Object = CraftingPanelService.execute("snapshot", {category:"武器合成"});
         var firstStats:Object = CraftingPanelService.testOnlyStats();
-        check(firstStats.availabilityPlans == first.recipes.length && firstStats.maximumProbes == 0,
-            "snapshot evaluates one bounded availability plan per recipe without batch maximum probes");
+        check(firstStats.availabilityPlans == first.recipes.length
+                && firstStats.maximumProbes == 0
+                && firstStats.purchaseSourceIndexes == 1
+                && firstStats.ownedIndexes == 1,
+            "snapshot evaluates one bounded availability plan per recipe with one shared source and owned index");
         check(first.recipes[0].availability == "ready" && first.recipes[1].availability == "material_missing",
             "snapshot distinguishes ready and blocked recipes");
 
@@ -1776,8 +1903,154 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             && balanceRefresh.recipes[0].availability == "insufficient_money"
             && balanceRefresh.recipes[1].canCraftOne
             && refreshedStats.availabilityPlans == first.recipes.length * 3
-            && refreshedStats.maximumProbes == 0,
-            "snapshot availability refreshes after material and balance mutations without maximum scans");
+            && refreshedStats.maximumProbes == 0
+            && refreshedStats.purchaseSourceIndexes == 3
+            && refreshedStats.ownedIndexes == 3,
+            "snapshot availability refreshes after mutations with exactly one source and owned scan per snapshot");
+    }
+
+    private static function testProcurementOwnedScope():Void {
+        resetOwned();
+        _root.物品栏.背包.add(1, BaseItem.create("光棱射线弹-强化", 4));
+        _root.物品栏.装备栏.setItems({
+            手枪:BaseItem.create("光棱射线弹-强化", 6)
+        });
+        _root.物品栏.战备箱.add(0, BaseItem.create("光棱射线弹-强化", 8));
+        _root.物品栏.战备箱.add(40, BaseItem.create("光棱射线弹-强化", 13));
+        _root.物品栏.背包.add(2, BaseItem.create("测试药剂", 2));
+        _root.物品栏.药剂栏.add(0, BaseItem.create("测试药剂", 3));
+        _root.物品栏.战备箱.add(1, BaseItem.create("测试药剂", 4));
+        _root.物品栏.战备箱.add(41, BaseItem.create("测试药剂", 5));
+
+        var equipment:Object = ProcurementPlanService.buildOwnedSummary(
+            "光棱射线弹-强化");
+        var stack:Object = ProcurementPlanService.buildOwnedSummary("测试药剂");
+        var material:Object = ProcurementPlanService.buildOwnedSummary("测试矿石");
+        var ownedIndex:Object = ProcurementPlanService.buildOwnedIndex();
+        var indexedEquipment:Object = ProcurementPlanService.buildOwnedSummary(
+            "光棱射线弹-强化", ownedIndex);
+        var indexedStack:Object = ProcurementPlanService.buildOwnedSummary(
+            "测试药剂", ownedIndex);
+        var indexedMaterial:Object = ProcurementPlanService.buildOwnedSummary(
+            "测试矿石", ownedIndex);
+        var relocation:Object = ProcurementPlanService.buildImmediateDemand(
+            "光棱射线弹-强化", 8, false, {}, ownedIndex);
+        check(equipment.bag == 1 && equipment.equipped == 1
+                && equipment.battleBox == 1 && equipment.usable == 1
+                && equipment.total == 3 && equipment.usableMaxEnhancement == 4
+                && equipment.totalMaxEnhancement == 8
+                && relocation.equippedOwned == 1
+                && relocation.battleBoxOwned == 1
+                && relocation.equippedMaxEnhancement == 6
+                && relocation.battleBoxMaxEnhancement == 8
+                && relocation.relocateMissing == 1,
+            "owned projection counts bag, equipped and unlocked BattleBox prefix and exposes exact relocation sources while excluding locked tail");
+        check(stack.bag == 2 && stack.drug == 3 && stack.battleBox == 4
+                && stack.usable == 5 && stack.total == 9,
+            "stack owned projection includes drug quickslots and separates relocatable BattleBox stock");
+        check(material.material == 5 && material.usable == 5 && material.total == 5,
+            "collection material count remains its authoritative collection value");
+        check(indexedEquipment.total == equipment.total
+                && indexedEquipment.usableMaxEnhancement
+                    == equipment.usableMaxEnhancement
+                && indexedEquipment.totalMaxEnhancement
+                    == equipment.totalMaxEnhancement
+                && indexedStack.usable == stack.usable
+                && indexedStack.total == stack.total
+                && indexedMaterial.material == material.material,
+            "single-pass owned index preserves direct cross-container projection semantics");
+        check(!ProcurementPlanService.buildPlanSummary().directShopNavigation,
+            "direct procurement navigation is unavailable without motorcycle infrastructure");
+        _root.基建系统.infrastructure.摩托车 = 1;
+        check(ProcurementPlanService.buildPlanSummary().directShopNavigation,
+            "motorcycle infrastructure unlocks direct procurement navigation");
+    }
+
+    private static function testProcurementPlanAndTaskDemand():Void {
+        resetOwned();
+        var marked:Object = CraftingPanelService.execute("setPlan", {
+            v:1, recipeId:"craft.weapon.001", plannedCrafts:2, expectedRevision:0
+        });
+        TaskUtil.tasks[7] = {
+            title:"补给测试任务",
+            finish_submit_items:["测试矿石#3"],
+            finish_contain_items:["测试图纸#2"]
+        };
+        _root.tasks_to_do = [{id:7}];
+        var index:Object = ProcurementPlanService.buildDemandIndex();
+        var ore:Object = index.byItem["测试矿石"];
+        var blueprint:Object = index.byItem["测试图纸"];
+        var gun:Object = index.byItem["旧测试枪"];
+        check(marked.success && marked.revision == 1
+                && ore.required == 7 && ore.craftRequired == 4
+                && ore.taskRequired == 3 && ore.usableOwned == 5
+                && ore.obtainMissing == 2 && ore.relocateMissing == 0
+                && ore.plannedRecipeCount == 1 && ore.activeTaskCount == 1
+                && ore.reasons.length == 2 && ore.sources.length == 2,
+            "marked recipes and active submit tasks aggregate exact shopping shortage and shop sources");
+        check(blueprint.required == 2 && blueprint.craftRequired == 1
+                && blueprint.taskRequired == 2 && blueprint.obtainMissing == 1
+                && blueprint.reasons.length == 2,
+            "retained information requirements use the maximum concurrent need instead of multiplying reuse");
+        check(gun.required == 2 && gun.requiredEnhancement == 3
+                && gun.craftRequired == 2 && gun.totalOwned == 1
+                && gun.obtainMissing == 1 && !gun.needsEnhancement,
+            "repeated equipment plans count copies independently while preserving the authored enhancement floor");
+    }
+
+    private static function testProcurementMutationAndConsumption():Void {
+        resetOwned();
+        var malformed:Object = ProcurementPlanService.setPlan({
+            v:"1", recipeId:"craft.weapon.001", plannedCrafts:"1", expectedRevision:"0"
+        });
+        var extra:Object = ProcurementPlanService.setPlan({
+            v:1, recipeId:"craft.weapon.001", plannedCrafts:1,
+            expectedRevision:0, displayName:"伪字段"
+        });
+        var previousServer:Object = _root.server;
+        _root.server = {sent:null};
+        _root.server.sendSocketMessage = function(message:String):Boolean {
+            this.sent = message;
+            return true;
+        };
+        _root.gameCommands["craftingPlanSet"]({
+            task:"cmd", action:"craftingPlanSet", callId:61, v:1,
+            recipeId:"craft.weapon.001", plannedCrafts:1, expectedRevision:0
+        });
+        var marked:Object = new LiteJSON().parse(String(_root.server.sent));
+        _root.gameCommands["craftingPlanSet"]({
+            task:"cmd", action:"craftingPlanSet", callId:62, v:1,
+            recipeId:"craft.weapon.001", plannedCrafts:2, expectedRevision:1,
+            displayName:"伪字段"
+        });
+        var wireExtra:Object = new LiteJSON().parse(String(_root.server.sent));
+        _root.server = previousServer;
+        var stale:Object = CraftingPanelService.execute("setPlan", {
+            v:1, recipeId:"craft.weapon.001", plannedCrafts:2, expectedRevision:0
+        });
+        var snapshot:Object = CraftingPanelService.execute("snapshot", {category:"武器合成"});
+        var preview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1
+        });
+        var committed:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:preview.craftToken
+        });
+        check(!malformed.success && malformed.error == "invalid_payload"
+                && !extra.success && extra.error == "invalid_payload"
+                && marked.task == "crafting_response" && marked.callId == 61
+                && marked.success && marked.revision == 1
+                && !wireExtra.success && wireExtra.callId == 62
+                && wireExtra.error == "invalid_payload"
+                && !stale.success && stale.error == "stale_state"
+                && snapshot.procurement.revision == 1
+                && snapshot.recipes[0].recipeId == "craft.weapon.001"
+                && snapshot.recipes[0].plannedCrafts == 1,
+            "real plan wire is exact, transport fields are separated, and OCC uses stable recipe identity");
+        check(committed.success && committed.procurement.changed
+                && committed.procurement.revision == 2
+                && committed.procurement.plannedCrafts == 0
+                && ProcurementPlanService.getPlannedCrafts("craft.weapon.001") == 0,
+            "successful crafting consumes the exact saved plan and removes its zero remainder");
     }
 
     private static function testPreviewAuthority():Void {
@@ -2091,6 +2364,37 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         return new LiteJSON().parse(String(_root.server.sent));
     }
 
+    private static function procurementShopAccessRequest(snapshotId:String,
+                                                          callId:Number):Object {
+        return {task:"cmd", action:"craftingProcurementShopAuthorize",
+            callId:callId, v:1, materialName:"测试矿石",
+            shopId:"测试商人", catalogIndex:0,
+            recipeId:"craft.weapon.001", category:"武器合成", recipeIndex:0};
+    }
+
+    private static function invokeProcurementShopAccess(params:Object):Object {
+        _root.server.sent = null;
+        _root.gameCommands["craftingProcurementShopAuthorize"](params);
+        if (_root.server.sent == null) return null;
+        return new LiteJSON().parse(String(_root.server.sent));
+    }
+
+    private static function procurementKShopAccessRequest(snapshotId:String,
+                                                           callId:Number):Object {
+        return {task:"cmd", action:"craftingProcurementKShopAuthorize",
+            callId:callId, v:1, materialName:"测试矿石",
+            catalogIndex:0, entryId:"mat-1",
+            kshopCategory:"材料", recipeId:"craft.weapon.001",
+            recipeCategory:"武器合成", recipeIndex:0};
+    }
+
+    private static function invokeProcurementKShopAccess(params:Object):Object {
+        _root.server.sent = null;
+        _root.gameCommands["craftingProcurementKShopAuthorize"](params);
+        if (_root.server.sent == null) return null;
+        return new LiteJSON().parse(String(_root.server.sent));
+    }
+
     private static function exactShopAccessAllow(response:Object,
                                                  request:Object):Boolean {
         return response != null && response.task == "material_shop_access_response"
@@ -2105,6 +2409,45 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             && hasExactKeys(response, {task:true,callId:true,success:true,v:true,
                 decision:true,reason:true,materialSnapshotId:true,
                 materialName:true,shopId:true,catalogIndex:true,itemName:true}, 11);
+    }
+
+    private static function exactProcurementShopAccessAllow(response:Object,
+                                                             request:Object):Boolean {
+        return response != null && response.task == "material_shop_access_response"
+            && response.callId === request.callId && response.success === true
+            && response.v === 1 && response.decision == "allow"
+            && response.reason == "procurement_indexed_live_match"
+            && response.materialName == request.materialName
+            && response.shopId == request.shopId
+            && response.catalogIndex === request.catalogIndex
+            && response.itemName == request.materialName
+            && response.recipeId == request.recipeId
+            && response.category == request.category
+            && response.recipeIndex === request.recipeIndex
+            && hasExactKeys(response, {task:true,callId:true,success:true,v:true,
+                decision:true,reason:true,
+                materialName:true,shopId:true,catalogIndex:true,itemName:true,
+                recipeId:true,category:true,recipeIndex:true}, 13);
+    }
+
+    private static function exactProcurementKShopAccessAllow(response:Object,
+                                                              request:Object):Boolean {
+        return response != null && response.task == "material_shop_access_response"
+            && response.callId === request.callId && response.success === true
+            && response.v === 1 && response.decision == "allow"
+            && response.reason == "procurement_kshop_indexed_live_match"
+            && response.materialName == request.materialName
+            && response.catalogIndex === request.catalogIndex
+            && response.entryId == request.entryId
+            && response.category == request.kshopCategory
+            && response.itemName == request.materialName
+            && response.recipeId == request.recipeId
+            && response.recipeCategory == request.recipeCategory
+            && response.recipeIndex === request.recipeIndex
+            && hasExactKeys(response, {task:true,callId:true,success:true,v:true,
+                decision:true,reason:true,materialName:true,
+                catalogIndex:true,entryId:true,category:true,itemName:true,
+                recipeId:true,recipeCategory:true,recipeIndex:true}, 14);
     }
 
     private static function exactShopAccessFailure(response:Object,

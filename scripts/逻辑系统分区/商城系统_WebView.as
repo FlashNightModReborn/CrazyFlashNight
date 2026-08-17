@@ -46,6 +46,7 @@ _root.UI系统.商城WebView.getPurchaseLimit = function(itemName:String):Number
 
 _root.UI系统.商城WebView.buildCatalog = function():Array {
     var catalog:Array = [];
+    var procurementIndex:Object = org.flashNight.arki.item.ProcurementPlanService.buildDemandIndex();
     for (var i:Number = 0; i < _root.kshop_list.length; i++) {
         var entry:Object = _root.kshop_list[i];
         var itemData:Object = org.flashNight.arki.item.ItemUtil.getItemData(entry.item);
@@ -78,6 +79,8 @@ _root.UI系统.商城WebView.buildCatalog = function():Array {
                 "data"
             );
             if (balanceSummary != null) catalogItem.balanceSummary = balanceSummary;
+            var procurement:Object = procurementIndex.byItem[String(entry.item)];
+            if (procurement != undefined) catalogItem.procurement = procurement;
             catalog.push(catalogItem);
         } else {
             this.log("WARNING: skipped [" + i + "] item=" + entry.item);

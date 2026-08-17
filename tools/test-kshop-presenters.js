@@ -10,6 +10,7 @@ const Cart = require('../launcher/web/modules/kshop-cart-controller.js');
 const Tooltip = require('../launcher/web/modules/kshop-tooltip-presenter.js');
 const Owned = require('../launcher/web/modules/kshop-owned-inventory-presenter.js');
 const Runtime = require('../launcher/web/modules/kshop-runtime.js');
+const ProcurementNavigation = require('../launcher/web/modules/kshop-procurement-navigation.js');
 
 let passed = 0;
 function test(name, fn) {
@@ -329,6 +330,46 @@ test('KShop protocol binds refreshed checkout catalog to delivered identity and 
     }
 });
 
+test('procurement navigation init binds the exact KShop catalog identity', () => {
+    const target = Runtime.KShopProtocol.parseProcurementNavigationInit({
+        navigationOrigin:'crafting_recipe', canReturnCraftingRecipe:true,
+        panelInstanceId:'kshop-owner-1', preferredItemName:'兽王碎片',
+        preferredCatalogIndex:12, preferredEntryId:'beast.fragment',
+        preferredKShopCategory:'材料', returnRecipeCategory:'进阶防具',
+        returnRecipeIndex:8
+    });
+    assert.deepStrictEqual(target, {
+        panelInstanceId:'kshop-owner-1', preferredItemName:'兽王碎片',
+        preferredCatalogIndex:12, preferredEntryId:'beast.fragment',
+        preferredKShopCategory:'材料', returnRecipeCategory:'进阶防具',
+        returnRecipeIndex:8
+    });
+    assert.strictEqual(Runtime.KShopProtocol.parseProcurementNavigationInit({
+        navigationOrigin:'crafting_recipe', canReturnCraftingRecipe:true,
+        panelInstanceId:'kshop-owner-1', preferredItemName:'兽王碎片',
+        preferredCatalogIndex:12, preferredEntryId:'beast.fragment',
+        preferredKShopCategory:'', returnRecipeCategory:'进阶防具',
+        returnRecipeIndex:8
+    }), null);
+});
+
+test('procurement return message and failure receipt are exact', () => {
+    const message = Runtime.KShopProtocol.createReturnCraftingRecipeMessage({
+        callId:'kshop-recipe-return-1', panelInstanceId:'kshop-owner-1'
+    });
+    assert.deepStrictEqual(message, {type:'panel', panel:'kshop',
+        cmd:'return_crafting_recipe', callId:'kshop-recipe-return-1',
+        panelInstanceId:'kshop-owner-1'});
+    const failure = Object.assign({}, message, {
+        type:'panel_resp', success:false, error:'stale_source'
+    });
+    assert.strictEqual(Runtime.KShopProtocol.validateReturnCraftingRecipeFailure(
+        failure, {callId:message.callId,panelInstanceId:message.panelInstanceId}), true);
+    assert.strictEqual(Runtime.KShopProtocol.validateReturnCraftingRecipeFailure(
+        Object.assign({extra:true}, failure), {
+            callId:message.callId,panelInstanceId:message.panelInstanceId}), false);
+});
+
 test('presenter modules contain no mux, bridge or authority coordinator', () => {
     const moduleNames = [
         'kshop-catalog-presenter.js', 'kshop-cart-controller.js',
@@ -351,6 +392,8 @@ test('facade initializes after the documented module load order', () => {
         KShopCartController:Cart,
         KShopTooltipPresenter:Tooltip,
         KShopOwnedInventoryPresenter:Owned,
+        KShopProcurementNavigation:ProcurementNavigation,
+        Bridge:{on:() => {}, send:() => true},
         Panels:{register:(id, contract) => { registration = {id, contract}; }}
     });
     const facadePath = require.resolve('../launcher/web/modules/kshop.js');
@@ -361,7 +404,8 @@ test('facade initializes after the documented module load order', () => {
     assert.strictEqual(typeof registration.contract.onOpen, 'function');
     for (const key of ['KShopRequestMux', 'KShopWriteCoordinator', 'InventoryRuntime',
         'KShopCatalogPresenter', 'KShopCartController', 'KShopTooltipPresenter',
-        'KShopOwnedInventoryPresenter', 'Panels']) delete global[key];
+        'KShopOwnedInventoryPresenter', 'KShopProcurementNavigation',
+        'Bridge', 'Panels']) delete global[key];
 });
 
 test('KShop facade stays below the physical slimming gate', () => {

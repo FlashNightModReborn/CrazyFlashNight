@@ -3,6 +3,7 @@
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.MaterialArchiveProjector;
+import org.flashNight.arki.item.ProcurementPlanService;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -51,11 +52,20 @@ class org.flashNight.arki.item.CraftingPanelService {
         _root.gameCommands["craftingMaterialShopAuthorize"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handleMaterialShopAuthorize(params);
         };
+        _root.gameCommands["craftingProcurementShopAuthorize"] = function(params) {
+            org.flashNight.arki.item.CraftingPanelService.handleProcurementShopAuthorize(params);
+        };
+        _root.gameCommands["craftingProcurementKShopAuthorize"] = function(params) {
+            org.flashNight.arki.item.CraftingPanelService.handleProcurementKShopAuthorize(params);
+        };
         _root.gameCommands["craftingPreview"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("preview", params);
         };
         _root.gameCommands["craftingTooltip"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("tooltip", params);
+        };
+        _root.gameCommands["craftingPlanSet"] = function(params) {
+            org.flashNight.arki.item.CraftingPanelService.handle("setPlan", params);
         };
         _root.gameCommands["craftingCommit"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("commit", params);
@@ -123,7 +133,15 @@ class org.flashNight.arki.item.CraftingPanelService {
 
     public static function handle(commandName:String, params:Object):Void {
         var callId:Number = params == undefined ? 0 : Number(params.callId);
-        var response:Object = execute(commandName, params || {});
+        var response:Object;
+        if (commandName == "setPlan") {
+            if (_busy) response = fail("busy");
+            else {
+                _busy = true;
+                response = ProcurementPlanService.setPlanFromWire(params || {});
+                _busy = false;
+            }
+        } else response = execute(commandName, params || {});
         response.task = "crafting_response";
         response.callId = callId;
         sendResponse(response);
@@ -137,6 +155,18 @@ class org.flashNight.arki.item.CraftingPanelService {
     public static function handleMaterialShopAuthorize(params:Object):Void {
         if (!validMaterialShopAccessCallId(params)) return;
         var response:Object = MaterialArchiveProjector.authorizeShopAccess(params);
+        sendResponse(response);
+    }
+
+    public static function handleProcurementShopAuthorize(params:Object):Void {
+        if (!validMaterialShopAccessCallId(params)) return;
+        var response:Object = ProcurementPlanService.authorizeShopAccess(params);
+        sendResponse(response);
+    }
+
+    public static function handleProcurementKShopAuthorize(params:Object):Void {
+        if (!validMaterialShopAccessCallId(params)) return;
+        var response:Object = ProcurementPlanService.authorizeKShopAccess(params);
         sendResponse(response);
     }
 
@@ -157,6 +187,12 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (commandName == "materialDetail") return executeMaterialDetail(params);
         if (commandName == "preview") return executePreview(params);
         if (commandName == "tooltip") return executeTooltip(params);
+        if (commandName == "setPlan") {
+            _busy = true;
+            var planResult:Object = ProcurementPlanService.setPlan(params);
+            _busy = false;
+            return planResult;
+        }
         if (commandName != "commit") return fail("unsupported_cmd");
         _busy = true;
         var result:Object = executeCommit(params);
@@ -175,12 +211,17 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (recipes == null) return fail("category_not_found");
         _plan = null;
         var catalog:Array = [];
+        var procurementSources:Object = ProcurementPlanService.buildPurchaseSourceIndex();
+        var ownedIndex:Object = ProcurementPlanService.buildOwnedIndex();
         for (var i:Number = 0; i < recipes.length; i++) {
-            var projected:Object = projectRecipe(category, recipes[i], i);
+            var projected:Object = projectRecipe(
+                category, recipes[i], i, procurementSources, ownedIndex);
             if (projected != null) catalog.push(projected);
         }
         return {success:true, v:1, category:category, gender:buildGender(), recipes:catalog,
-            balance:buildBalance(), skills:buildSkills(), note:categoryNote(category)};
+            balance:buildBalance(), skills:buildSkills(),
+            procurement:ProcurementPlanService.buildPlanSummary(),
+            note:categoryNote(category)};
     }
 
     private static function executeMaterials(params:Object):Object {
@@ -456,10 +497,12 @@ class org.flashNight.arki.item.CraftingPanelService {
         _root.虚拟币 = Number(backup.kpoints) - Number(current.cost.kpoints);
         if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
         if (_root.soundEffectManager != undefined) _root.soundEffectManager.playSound("收银机.mp3");
+        var procurement:Object = ProcurementPlanService.consumeCompleted(
+            String(resolved.recipe.recipeId || ""), Number(current.craftCount));
         return {success:true, v:1, operation:"commit", category:category,
             recipeIndex:Number(current.recipeIndex), craftCount:Number(current.craftCount),
             crafted:current.output, acceptedPlan:plan.acceptedPlan,
-            outputReceipt:outputReceipt, balance:buildBalance()};
+            outputReceipt:outputReceipt, balance:buildBalance(), procurement:procurement};
     }
 
     private static function restoreState(backup:Object):Void {
@@ -473,7 +516,8 @@ class org.flashNight.arki.item.CraftingPanelService {
     }
 
     private static function buildPlan(category:String, recipeIndex:Number, recipe:Object,
-            craftCount:Number, calculateMaximum:Boolean):Object {
+            craftCount:Number, calculateMaximum:Boolean,
+            procurementSources:Object, ownedIndex:Object):Object {
         var baseRequirements:Array = ItemUtil.getRequirementFromTask(recipe.materials || []);
         var batchEligible:Boolean = isBatchEligible(recipe, baseRequirements);
         if (!batchEligible && craftCount != 1) return fail("batch_not_supported");
@@ -481,12 +525,17 @@ class org.flashNight.arki.item.CraftingPanelService {
         // contain() is the canonical deduction planner used by submit().  Project its
         // concrete storage route instead of making the Web layer infer one from names.
         var containmentPlan:Object = ItemUtil.contain(requirements);
+        if (procurementSources == null) {
+            procurementSources = ProcurementPlanService.buildPurchaseSourceIndex();
+        }
+        if (ownedIndex == null) ownedIndex = ProcurementPlanService.buildOwnedIndex();
         var materialRows:Array = [];
         var allMaterials:Boolean = containmentPlan != null;
         var inheritedLevel:Number = 1;
         var stateParts:Array = [];
         for (var i:Number = 0; i < requirements.length; i++) {
-            var projection:Object = projectRequirement(requirements[i], containmentPlan);
+            var projection:Object = projectRequirement(requirements[i], containmentPlan,
+                procurementSources, ownedIndex);
             if (projection == null) return fail("item_not_found");
             materialRows.push(projection);
             if (projection.itemKind == "equipment") {
@@ -646,7 +695,8 @@ class org.flashNight.arki.item.CraftingPanelService {
         return Math.floor(cost * multiplier);
     }
 
-    private static function projectRequirement(req:Object, containmentPlan:Object):Object {
+    private static function projectRequirement(req:Object, containmentPlan:Object,
+            procurementSources:Object, ownedIndex:Object):Object {
         var name:String = String(req.name || "");
         var data:Object = ItemUtil.getRawItemData(name);
         if (data == null) return null;
@@ -656,22 +706,14 @@ class org.flashNight.arki.item.CraftingPanelService {
         var maxEnhancement:Number = 0;
         var kind:String = ItemUtil.isEquipment(name) ? "equipment" : "stack";
         var consumed:Boolean = !ItemUtil.isInformation(name);
-        if (ItemUtil.isMaterial(name)) {
-            owned = Number(_root.收集品栏.材料.getValue(name) || 0);
-        } else if (ItemUtil.isInformation(name)) {
-            owned = Number(_root.收集品栏.情报.getValue(name) || 0);
-        } else if (kind == "equipment") {
-            var bag:Object = _root.物品栏.背包;
-            var indexes:Array = bag.getIndexes();
-            for (var i:Number = 0; i < indexes.length; i++) {
-                var item:Object = bag.getItem(indexes[i]);
-                if (item == null || String(item.name) != name) continue;
-                owned++;
-                maxEnhancement = Math.max(maxEnhancement, Number(item.value.level || 0));
+        var ownedSummary:Object = ProcurementPlanService.buildOwnedSummary(name, ownedIndex);
+        if (ItemUtil.isMaterial(name)) owned = Number(ownedSummary.material);
+        else if (ItemUtil.isInformation(name)) owned = Number(ownedSummary.information);
+        else {
+            owned = Number(ownedSummary.usable);
+            if (kind == "equipment") {
+                maxEnhancement = Number(ownedSummary.usableMaxEnhancement);
             }
-        } else {
-            owned = Number(_root.物品栏.背包.getTotal(name) || 0)
-                + Number(_root.物品栏.药剂栏.getTotal(name) || 0);
         }
         var enough:Boolean = kind == "equipment" && !req.isQuantity
             ? maxEnhancement >= required : owned >= required;
@@ -680,7 +722,11 @@ class org.flashNight.arki.item.CraftingPanelService {
             itemKind:kind, required:required, owned:owned, maxEnhancement:maxEnhancement,
             isQuantity:req.isQuantity === true, tier:req.tier == undefined ? "" : String(req.tier),
             consumed:consumed, enough:enough,
-            storageKind:projectRequirementStorage(name, containmentPlan)};
+            storageKind:projectRequirementStorage(name, containmentPlan),
+            craftingSources:SynthesisIndex.getRecipesProducing(name),
+            procurement:ProcurementPlanService.buildImmediateDemand(
+                name, required, req.isQuantity === true,
+                procurementSources, ownedIndex)};
     }
 
     private static function projectRequirementStorage(name:String, containmentPlan:Object):String {
@@ -863,15 +909,23 @@ class org.flashNight.arki.item.CraftingPanelService {
         return _json.stringify(value);
     }
 
-    private static function projectRecipe(category:String, recipe:Object, recipeIndex:Number):Object {
+    private static function projectRecipe(category:String, recipe:Object, recipeIndex:Number,
+            procurementSources:Object, ownedIndex:Object):Object {
         if (recipe == null || !ItemUtil.isItem(String(recipe.name))) return null;
         _availabilityPlanCount++;
-        var availabilityPlan:Object = buildPlan(category, recipeIndex, recipe, 1, false);
+        var availabilityPlan:Object = buildPlan(
+            category, recipeIndex, recipe, 1, false, procurementSources, ownedIndex);
         if (!availabilityPlan.success) return null;
         var value:Number = Number(recipe.value);
         if (isNaN(value) || value <= 0) value = 1;
-        return {recipeIndex:recipeIndex, title:String(recipe.title || recipe.name),
+        var recipeId:String = String(recipe.recipeId || "");
+        if (recipeId == "") return null;
+        return {recipeId:recipeId, recipeIndex:recipeIndex,
+            title:String(recipe.title || recipe.name),
             output:projectItem(String(recipe.name), value),
+            owned:ProcurementPlanService.buildOwnedSummary(
+                String(recipe.name), ownedIndex),
+            plannedCrafts:ProcurementPlanService.getPlannedCrafts(recipeId),
             baseCost:{money:Number(recipe.price || 0), kpoints:Number(recipe.kprice || 0)},
             materialCount:recipe.materials instanceof Array ? recipe.materials.length : 0,
             batchEligible:availabilityPlan.batchEligible,
@@ -993,10 +1047,15 @@ class org.flashNight.arki.item.CraftingPanelService {
     public static function testOnlyReset():Void {
         _busy = false; _plan = null; _planSeq = 0;
         _availabilityPlanCount = 0; _maximumProbeCount = 0;
+        ProcurementPlanService.testOnlyResetStats();
         MaterialArchiveProjector.reset();
     }
 
     public static function testOnlyStats():Object {
-        return {availabilityPlans:_availabilityPlanCount, maximumProbes:_maximumProbeCount};
+        var procurementStats:Object = ProcurementPlanService.testOnlyStats();
+        return {availabilityPlans:_availabilityPlanCount,
+            maximumProbes:_maximumProbeCount,
+            purchaseSourceIndexes:Number(procurementStats.purchaseSourceIndexes),
+            ownedIndexes:Number(procurementStats.ownedIndexes)};
     }
 }

@@ -44,7 +44,8 @@ if (!inventory || inventory.schema !== INVENTORY_SCHEMA || inventory.nodeVersion
 const expectedScenarioNamesSha256 = inventory.expectedScenarioNamesSha256;
 if (!expectedScenarioNamesSha256
     || canonicalJson(Object.keys(expectedScenarioNamesSha256))
-      !== canonicalJson(["baseline", "coverage", "fault", "identity"])
+      !== canonicalJson(["baseline", "coverage", "fault", "identity", "legacy",
+        "sessionLock", "recipeJump", "materialShop", "infrastructure", "procurement"])
     || Object.values(expectedScenarioNamesSha256).some((digest) =>
       !/^[a-f0-9]{64}$/.test(String(digest || "")))) {
   fail("browser_module_inventory_invalid", { reason:"expected_scenario_names" });
@@ -141,7 +142,9 @@ async function run() {
   const launchedBrowserBinary = BrowserChildResourceClosure.browserExecutableReceipt({
     expectedPath:browserBinary, launchedPath:result && result.executablePath,
   });
-  const scenarioCounts = { baseline:150, coverage:15, fault:8, identity:10 };
+  const scenarioCounts = { baseline:150, coverage:15, fault:8, identity:10,
+    legacy:6, sessionLock:9, recipeJump:26, materialShop:12,
+    infrastructure:9, procurement:17 };
   const scenarioNames = {};
   let scenarioInvalid = false;
   Object.keys(scenarioCounts).forEach((name) => {
@@ -157,13 +160,6 @@ async function run() {
       return names;
     });
   });
-  const materialShop = result && result.materialShop;
-  if (!Array.isArray(materialShop) || materialShop.length !== 3
-      || materialShop.some((run) => !run || run.total !== 11 || run.passed !== 11
-        || !Array.isArray(run.checks) || run.checks.length !== 11
-        || run.checks.some((entry) => entry.ok !== true))) {
-    scenarioInvalid = true;
-  }
   if (!result || result.mode !== "full" || scenarioInvalid
       || canonicalJson(result.viewports) !== canonicalJson([
         {width:1024,height:576}, {width:1366,height:768}, {width:1920,height:1080},
@@ -227,11 +223,11 @@ async function run() {
     browserBinary:launchedBrowserBinary,
     servedResourceClosure:servedResourceReceipt,
     result:{ viewports:result.viewports, scenarioCounts,
-      materialShopScenarioCount:11,
-      materialShopScenarioNamesSha256:result.materialShop.map((run) =>
-        sha256Text(canonicalJson(run.checks.map((entry) => entry.name)))),
       scenarioNamesSha256,
       faultChecks:result.fault[0].checks.map((entry) => ({
+        name:entry.name, ok:entry.ok, detail:entry.detail,
+      })),
+      procurementChecks:result.procurement[0].checks.map((entry) => ({
         name:entry.name, ok:entry.ok, detail:entry.detail,
       })),
       resultSha256:sha256Text(canonicalJson(result)) },

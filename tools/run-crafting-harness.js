@@ -9,6 +9,7 @@ const IDENTITY_ONLY=process.argv.includes('--identity-only');
 const MATERIAL_SHOP_ONLY=process.argv.includes('--material-shop-only');
 const MATERIAL_RECIPE_ONLY=process.argv.includes('--material-recipe-only');
 const MATERIAL_INFRASTRUCTURE_ONLY=process.argv.includes('--material-infrastructure-only');
+const PROCUREMENT_ONLY=process.argv.includes('--procurement-only');
 const INVENTORY_WORKBENCH_MODULES=[
   'inventory-workbench-config.js','inventory-workbench-preparation-menu.js',
   'inventory-workbench-navigation.js','inventory-workbench-header.js',
@@ -41,7 +42,9 @@ function audit(){
   if(!panel.includes("initData.view === 'materials'")||!panel.includes("request('materials'")||!panel.includes("request('materialDetail'")
       ||!panel.includes('CraftingMaterials.create')||!materials.includes("title:'材料目录'")
       ||!materials.includes("'从哪里获得'")||!materials.includes("'会用在哪里'"))throw new Error('material catalog/detail contract missing');
-  if(!panel.includes("panelId:'crafting-materials'")||!panel.includes('new WorkbenchComponents.HelpAction(')
+  if(!panel.includes("panelId:_mode === 'materials' ? 'crafting-materials' : 'crafting-recipes'")
+      ||!panel.includes("defaultMode:_mode === 'materials' ? 'compact' : 'full'")
+      ||!panel.includes('new WorkbenchComponents.HelpAction(')
       ||!materials.includes("layoutMode:options.densityController")
       ||!materials.includes("state.layoutMode === 'compact' ? 7 : 2")
       ||!css.includes('.crafting-material-grid.item-grid-compact')
@@ -289,6 +292,31 @@ function audit(){
       ||!harness.includes('embedded organizer destroys the recipe detail presenter and its detached quantity listeners')) {
     throw new Error('fixed crafting CTA, keyboard tooltip, or A4 lifecycle coverage missing');
   }
+  if(!detailPresenter.includes('this._releaseTooltips(this.heroHost)')
+      ||!detailPresenter.includes('this._releaseTooltips(this.materialHost)')
+      ||!panel.includes('releaseTooltips:releaseTooltipTree')
+      ||!harness.includes('outstandingTooltipBindings===liveTooltipBindings')
+      ||!panel.includes("note.textContent = '缺少装备'")
+      ||!panel.includes("'crafting-material-enhancement-value'")
+      ||!panel.includes("if (material.enough) {")
+      ||panel.includes("mark.textContent = material.enough ? '✓' : '不足'")
+      ||!panel.includes("icon.classList.add('crafting-material-icon')")
+      ||panel.includes('shopButton.title =')||panel.includes('kshopButton.title =')
+      ||!panel.includes('function requestNestedRecipeNavigation')
+      ||!panel.includes('function completeSameCategoryNestedRecipe')
+      ||!panel.includes('function exactNestedRecipe')
+      ||!panel.includes("craftingButton.textContent = '🔧︎'")
+      ||!runtime.includes("'craftingSources', 'procurement'")
+      ||!css.includes('.crafting-material-shop-btn img')
+      ||!css.includes('.crafting-material-crafting-btn')
+      ||!css.includes('grid-template-columns:28px minmax(0,1fr) fit-content(122px)')
+      ||!css.includes('.crafting-material-row > .crafting-material-icon')
+      ||!harness.includes('directButton.offsetWidth===materialIcons[0].offsetWidth')
+      ||!harness.includes('same-category nested route')
+      ||!harness.includes('cross-category nested route')
+      ||css.includes('.crafting-material-shop-portrait {')) {
+    throw new Error('material status, nested crafting route, single-layer shop portrait, project tooltip, or redraw cleanup contract missing');
+  }
   if(!css.includes('grid-template-columns:minmax(0,44fr) 28px minmax(360px,56fr)')
       ||!css.includes('grid-template-rows:minmax(0,1fr)')
       ||!css.includes('grid-auto-rows:minmax(58px,auto)')
@@ -345,7 +373,7 @@ async function runViewport(browser,serverInstance,viewport,query){
   page.on('requestfailed',request=>failed.push(request.url()));
   try{
     await page.goto('http://127.0.0.1:'+serverInstance.address().port+'/modules/crafting/dev/harness.html'+(query||''),{waitUntil:'load'});
-    const doneWait={timeout:25000};
+    const doneWait={timeout:60000};
     // The baseline observes the runner's RAF poll as its
     // ambient animation-frame baseline.  The dedicated cleanup scenario must
     // instead see only product frames so it can require a strict zero.
@@ -372,7 +400,17 @@ async function run(){
   const viewports=[{width:1024,height:576},{width:1366,height:768},{width:1920,height:1080}];
   let output;
   try{
-    if(MATERIAL_INFRASTRUCTURE_ONLY){
+    if(PROCUREMENT_ONLY){
+      const procurement=[];
+      for(const viewport of viewports){
+        const result=await runViewport(browser,serverInstance,viewport,'?scenario=pg-crafting-procurement');
+        if(result.total!==17)throw new Error('PG-CRAFTING-PROCUREMENT must contain exactly 17 checks, got '+result.total);
+        procurement.push(result);
+      }
+      output={mode:'procurement-only',executablePath,viewports,procurement,
+        summary:'PG-CRAFTING-PROCUREMENT '+procurement[0].passed+'/'+procurement[0].total
+          +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
+    }else if(MATERIAL_INFRASTRUCTURE_ONLY){
       const infrastructure=[];
       for(const viewport of viewports){
         const result=await runViewport(browser,serverInstance,viewport,'?scenario=pg-material-infrastructure');
@@ -413,7 +451,7 @@ async function run(){
         summary:'PG-CRAFTING-IDENTITY '+identity[0].passed+'/'+identity[0].total
           +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
     }else{
-      const baseline=[],coverage=[],fault=[],identity=[],legacy=[],sessionLock=[],recipeJump=[],materialShop=[],infrastructure=[];
+      const baseline=[],coverage=[],fault=[],identity=[],legacy=[],sessionLock=[],recipeJump=[],materialShop=[],infrastructure=[],procurement=[];
       for(const viewport of viewports){
         const result=await runViewport(browser,serverInstance,viewport);
         if(result.total!==150)throw new Error('baseline crafting harness must preserve all 150 checks, got '+result.total);
@@ -442,8 +480,11 @@ async function run(){
         const infrastructureResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-material-infrastructure');
         if(infrastructureResult.total!==9)throw new Error('PG-MATERIAL-INFRASTRUCTURE must contain exactly 9 checks, got '+infrastructureResult.total);
         infrastructure.push(infrastructureResult);
+        const procurementResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-crafting-procurement');
+        if(procurementResult.total!==17)throw new Error('PG-CRAFTING-PROCUREMENT must contain exactly 17 checks, got '+procurementResult.total);
+        procurement.push(procurementResult);
       }
-      output={mode:'full',executablePath,viewports,baseline,coverage,fault,identity,legacy,sessionLock,recipeJump,materialShop,infrastructure,
+      output={mode:'full',executablePath,viewports,baseline,coverage,fault,identity,legacy,sessionLock,recipeJump,materialShop,infrastructure,procurement,
         summary:'Crafting harness baseline '+baseline[0].passed+'/'+baseline[0].total
           +' + PG-CRAFT-CURRENT-COVERAGE '+coverage[0].passed+'/'+coverage[0].total
           +' + PG-INVENTORY-FAULT owner journey '+fault[0].passed+'/'+fault[0].total
@@ -453,6 +494,7 @@ async function run(){
            +' + PG-MATERIAL-RECIPE-JUMP '+recipeJump[0].passed+'/'+recipeJump[0].total
            +' + PG-MATERIAL-SHOP-NAVIGATION '+materialShop[0].passed+'/'+materialShop[0].total
           +' + PG-MATERIAL-INFRASTRUCTURE '+infrastructure[0].passed+'/'+infrastructure[0].total
+          +' + PG-CRAFTING-PROCUREMENT '+procurement[0].passed+'/'+procurement[0].total
           +' passed at '+viewports.map(viewport=>viewport.width+'x'+viewport.height).join(', ')};
     }
   }finally{

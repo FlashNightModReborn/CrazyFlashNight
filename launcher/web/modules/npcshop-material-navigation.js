@@ -48,7 +48,9 @@
         this._returnStatus = null;
         this._banner = null;
         this._snapshotError = '';
-        this._target = parsedInit && parsedInit.kind === 'crafting_materials' ? {
+        this._target = parsedInit && (parsedInit.kind === 'crafting_materials'
+                || parsedInit.kind === 'crafting_recipe') ? {
+            kind:parsedInit.kind,
             preferredCatalogIndex:Number(initData.preferredCatalogIndex),
             preferredItemName:String(initData.preferredItemName),
             highlightIndex:null,
@@ -71,8 +73,9 @@
         var button = document.createElement('button');
         button.type = 'button';
         button.className = 'workbench-mode-btn npcshop-material-return-btn';
-        button.textContent = '← 返回材料档案';
-        button.setAttribute('aria-label', '返回材料档案');
+        var recipeTarget = this._target.kind === 'crafting_recipe';
+        button.textContent = recipeTarget ? '← 返回合成配方' : '← 返回材料档案';
+        button.setAttribute('aria-label', recipeTarget ? '返回原合成配方' : '返回材料档案');
         button.setAttribute('data-audio-cue', 'back');
         var self = this;
         button.addEventListener('click', function(event) { self.requestReturn(event); });
@@ -271,7 +274,8 @@
         var hintId = 'npcshop-navigation-focus-hint';
         hint.id = hintId;
         hint.className = 'npcshop-navigation-focus-hint';
-        hint.textContent = '从材料档案定位';
+        hint.textContent = this._target.kind === 'crafting_recipe'
+            ? '从合成缺口定位' : '从材料档案定位';
         target.appendChild(hint);
         target.setAttribute('data-navigation-description-id', hintId);
         var described = String(target.getAttribute('aria-describedby') || '')
@@ -329,12 +333,17 @@
         }
         if (this._returnButton) {
             this._returnButton.disabled = returning || this._isReturnBlocked();
+            var recipeTarget = this._target && this._target.kind === 'crafting_recipe';
             this._returnButton.textContent = returning ? '返回中…'
-                : this._returnError ? '重试返回材料档案' : '← 返回材料档案';
+                : this._returnError
+                    ? (recipeTarget ? '重试返回合成配方' : '重试返回材料档案')
+                    : (recipeTarget ? '← 返回合成配方' : '← 返回材料档案');
             this._returnButton.setAttribute('aria-busy', returning ? 'true' : 'false');
         }
         if (this._returnStatus) {
-            this._returnStatus.textContent = returning ? '正在返回材料档案…'
+            var returnRecipe = this._target && this._target.kind === 'crafting_recipe';
+            this._returnStatus.textContent = returning
+                ? (returnRecipe ? '正在返回原合成配方…' : '正在返回材料档案…')
                 : this._returnError;
             this._returnStatus.hidden = !returning && !this._returnError;
             this._returnStatus.setAttribute('data-navigation-state', returning
@@ -363,9 +372,14 @@
                 || this._isReturnBlocked()) return false;
         var owner = this._getOwner();
         var restoreButtonFocus = document.activeElement === this._returnButton;
-        var callId = 'npcshop-material-return-' + (++this._returnSequence);
-        var message = this._runtime.createReturnCraftingMaterialsMessage({
+        var recipeTarget = this._target.kind === 'crafting_recipe';
+        var callId = (recipeTarget ? 'npcshop-recipe-return-'
+            : 'npcshop-material-return-') + (++this._returnSequence);
+        var message = (recipeTarget
+            ? this._runtime.createReturnCraftingRecipeMessage
+            : this._runtime.createReturnCraftingMaterialsMessage)({
             callId:callId,
+            recipeTarget:recipeTarget,
             panelInstanceId:owner.panelInstanceId
         });
         if (!message) {
@@ -413,8 +427,11 @@
 
     Controller.prototype._handleReturnFailure = function(data) {
         var intent = this._returnIntent;
+        var validate = intent && intent.recipeTarget
+            ? this._runtime.validateReturnCraftingRecipeFailure
+            : this._runtime.validateReturnCraftingMaterialsFailure;
         if (!this._isCurrent(intent)
-                || !this._runtime.validateReturnCraftingMaterialsFailure(data, {
+                || !validate(data, {
                     callId:intent.callId,
                     panelInstanceId:intent.panelInstanceId
                 })) return false;
@@ -467,6 +484,7 @@
         var intent = this._returnIntent;
         return {
             catalogNavigation:target ? {
+                kind:target.kind,
                 preferredCatalogIndex:target.preferredCatalogIndex,
                 preferredItemName:target.preferredItemName,
                 highlightIndex:target.highlightIndex,

@@ -60,6 +60,7 @@ const REQUIRED_KSHOP_LAZY_WEB = Object.freeze([
   "launcher/web/modules/kshop-catalog-presenter.js",
   "launcher/web/modules/kshop-owned-inventory-presenter.js",
   "launcher/web/modules/kshop-tooltip-presenter.js",
+  "launcher/web/modules/kshop-procurement-navigation.js",
   "launcher/web/modules/kshop.js",
 ]);
 

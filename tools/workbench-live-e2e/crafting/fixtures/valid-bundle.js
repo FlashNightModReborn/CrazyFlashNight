@@ -31,7 +31,8 @@ const { REQUIRED_CONTROL_STEPS, domInputEvidence, expectedControlIntent,
 const Protocol = require("../protocol");
 const SourceContract = require("../source-contract");
 
-const ROOT = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-crafting-e2e-fixture-"));
+const TEMP_ROOT = fs.realpathSync.native(os.tmpdir());
+const ROOT = fs.mkdtempSync(path.join(TEMP_ROOT, "cf7-crafting-e2e-fixture-"));
 const PROJECT_ROOT = path.resolve(__dirname, "..", "..", "..", "..");
 const PROJECT_SOURCE_FINGERPRINT = SourceContract.captureSourceFingerprint(PROJECT_ROOT);
 const RUN_DIR = path.join(ROOT, "tmp", "workbench-live-e2e", "crafting", "fixture");
@@ -95,7 +96,7 @@ const CAPTURES = REQUIRED_CONTROL_STEPS.map((step, index) => {
 });
 process.once("exit", () => {
   try {
-    if (path.dirname(ROOT) === path.resolve(os.tmpdir())
+    if (path.dirname(ROOT) === TEMP_ROOT
         && path.basename(ROOT).startsWith("cf7-crafting-e2e-fixture-")) {
       fs.rmSync(ROOT, { recursive: true, force: true });
     }
@@ -103,6 +104,7 @@ process.once("exit", () => {
 });
 
 const CATEGORY = "武器合成";
+const RECIPE_ID = "craft.fixture.recipe";
 const RECIPE_INDEX = 7;
 const CRAFT_COUNT = 1;
 const SEED_SLOT = "cf7_agent_crafting_seed_fixture";
@@ -168,7 +170,10 @@ function request(owner, callId, cmd, payload) {
     panelInstanceId: owner, cmd, callId, payload };
 }
 function recipe() {
-  return { recipeIndex: RECIPE_INDEX, title: "验证配方", output: recipeOutput(),
+  return { recipeId: RECIPE_ID, recipeIndex: RECIPE_INDEX, title: "验证配方",
+    output: recipeOutput(), owned: { bag: 2, drug: 0, equipped: 0, battleBox: 0,
+      material: 0, information: 0, usable: 2, total: 2,
+      usableMaxEnhancement: 0, totalMaxEnhancement: 0 }, plannedCrafts: 0,
     baseCost: { money: 10, kpoints: 0 }, materialCount: 1,
     batchEligible: true, canCraftOne: true, availability: "ready" };
 }
@@ -178,11 +183,23 @@ function snapshot(owner, callId, balance) {
     category: CATEGORY, gender: "男", recipes: [recipe()],
     balance: clone(balance), skills: {
       reverseLevel: 0, smithEnabled: false, smithLevel: 0,
-    }, note: "fixture" };
+    }, procurement: { revision: 0, directShopNavigation: false }, note: "fixture" };
+}
+function procurementDemand(owned) {
+  return { itemName: MATERIAL.name, required: MATERIAL.required, requiredEnhancement: 0,
+    usableOwned: owned, equippedOwned: 0, battleBoxOwned: 0, totalOwned: owned,
+    usableMaxEnhancement: 0, equippedMaxEnhancement: 0,
+    battleBoxMaxEnhancement: 0, totalMaxEnhancement: 0,
+    obtainMissing: Math.max(0, MATERIAL.required - owned),
+    relocateMissing: 0, needsEnhancement: false, craftRequired: MATERIAL.required,
+    taskRequired: 0, plannedRecipeCount: 0, activeTaskCount: 0,
+    reasons: [{ kind: "craft", sourceId: RECIPE_ID, label: "验证配方",
+      required: MATERIAL.required, mode: "consume" }], sources: [] };
 }
 function material(owned) {
   return Object.assign({}, clone(MATERIAL), { owned, maxEnhancement: 0,
-    tier: "", enough: owned >= MATERIAL.required, storageKind: "bag" });
+    tier: "", enough: owned >= MATERIAL.required, storageKind: "bag",
+    craftingSources: [], procurement: procurementDemand(owned) });
 }
 function outputDelivery() {
   return { available: true, storageKind: "bag", mode: "merge",
@@ -228,7 +245,8 @@ function commit(owner, callId) {
     operation: "commit", category: CATEGORY, recipeIndex: RECIPE_INDEX,
     craftCount: CRAFT_COUNT, crafted: clone(OUTPUT),
     acceptedPlan: acceptedPlan(5), outputReceipt: outputReceipt(),
-    balance: { money: 90, kpoints: 5 } };
+    balance: { money: 90, kpoints: 5 },
+    procurement: { revision: 0, plannedCrafts: 0, changed: false } };
 }
 function input(target) {
   const rect = { left: 100, top: 100, right: 220, bottom: 140,

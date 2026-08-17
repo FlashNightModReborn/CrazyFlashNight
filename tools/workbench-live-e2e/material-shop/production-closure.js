@@ -39,7 +39,7 @@ const SOURCE_ASSERTIONS = Object.freeze([
   {
     relativePath: "launcher/src/Tasks/MaterialShopAccessTask.cs",
     anchors: [
-      ["access_authority_action", /\["action"\]\s*=\s*"craftingMaterialShopAuthorize"/],
+      ["access_authority_action", /\?\s*"craftingProcurementShopAuthorize"\s*:\s*"craftingMaterialShopAuthorize"/],
       ["access_indexed_live_match", /"indexed_live_match"/],
     ],
   },

@@ -144,6 +144,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/kshop-catalog-presenter.js"></script>
 <script src="modules/kshop-owned-inventory-presenter.js"></script>
 <script src="modules/kshop-tooltip-presenter.js"></script>
+<script src="modules/kshop-procurement-navigation.js"></script>
 <script src="modules/kshop.js"></script>
 <script src="modules/inventory-workbench-navigation.js"></script>
 <script src="modules/inventory-workbench-header.js"></script>
@@ -172,6 +173,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             if (item.balanceSummary && item.balanceSummary.state === 'confirmed') {
                 clean.balanceSummary = clone(item.balanceSummary);
             }
+            if (item.procurement) clean.procurement = clone(item.procurement);
             return clean;
         });
     }
@@ -382,8 +384,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
     var BASE_CATALOG = [
         {idx:0,id:'w0',item:'rule.alpha',type:'训练军备',price:30,displayname:'测试手枪',majorType:'武器',use:'手枪',weaponType:'手枪',subType:'手枪',setId:'training_weapon',setName:'训练武器套装',level:1,icon:'图标-测试手枪',maxQuantity:1,balanceSummary:{state:'confirmed',weightLayers:2,formula:1,level:1}},
-        {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂',maxQuantity:999999,dynamicCapacity:true,balanceSummary:{state:'review',weightLayers:8,formula:1,level:1}},
-        {idx:2,id:'l2',item:'锁定装备',type:'封存装备',price:99,displayname:'锁定装备',majorType:'武器',subType:'防具',setId:'training_weapon',setName:'训练武器套装',level:99,icon:'图标-锁定装备',maxQuantity:1},
+        {idx:1,id:'c1',item:'测试药剂',type:'医疗补给',price:5,displayname:'测试药剂',majorType:'消耗品',subType:'药剂',level:1,icon:'图标-测试药剂',maxQuantity:999999,dynamicCapacity:true,balanceSummary:{state:'review',weightLayers:8,formula:1,level:1},procurement:{itemName:'测试药剂',required:5,requiredEnhancement:0,usableOwned:1,equippedOwned:0,battleBoxOwned:0,totalOwned:1,usableMaxEnhancement:0,equippedMaxEnhancement:0,battleBoxMaxEnhancement:0,totalMaxEnhancement:0,obtainMissing:4,relocateMissing:0,needsEnhancement:false,craftRequired:2,taskRequired:3,plannedRecipeCount:1,activeTaskCount:1,reasons:[{kind:'craft',sourceId:'craft.weapon.001',label:'测试双枪',required:2,mode:'consume'},{kind:'task',sourceId:'task.7',label:'前线补给',required:3,mode:'submit'}],sources:[{kind:'kshop',catalogIndex:1,entryId:'c1',category:'医疗补给',label:'医疗补给'}]}},
+        {idx:2,id:'l2',item:'锁定装备',type:'封存装备',price:99,displayname:'锁定装备',majorType:'武器',subType:'防具',setId:'training_weapon',setName:'训练武器套装',level:99,icon:'图标-锁定装备',maxQuantity:1,procurement:{itemName:'锁定装备',required:1,requiredEnhancement:0,usableOwned:0,equippedOwned:0,battleBoxOwned:0,totalOwned:0,usableMaxEnhancement:0,equippedMaxEnhancement:0,battleBoxMaxEnhancement:0,totalMaxEnhancement:0,obtainMissing:1,relocateMissing:0,needsEnhancement:false,craftRequired:0,taskRequired:1,plannedRecipeCount:0,activeTaskCount:1,reasons:[{kind:'task',sourceId:'task.8',label:'封存调查',required:1,mode:'contain'}],sources:[{kind:'kshop',catalogIndex:2,entryId:'l2',category:'封存装备',label:'封存装备'}]}},
         {idx:3,id:'k3',item:'测试刀剑',type:'训练军备',price:40,displayname:'测试刀剑',majorType:'武器',subType:'刀',actionType:'刀剑',level:1,icon:'图标-测试刀剑',maxQuantity:1},
         {idx:4,id:'k4',item:'测试长刀',type:'武术联盟',price:45,displayname:'测试长刀',majorType:'武器',subType:'刀',actionType:'长刀',level:1,icon:'图标-测试长刀',maxQuantity:1}
     ];
@@ -1220,6 +1222,25 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var confirmedBalanceCard = document.querySelector('.kshop-card[data-idx="0"]');
         var confirmedBalanceBadge = confirmedBalanceCard && confirmedBalanceCard.querySelector('.balance-weight-badge');
         var unresolvedBalanceCard = document.querySelector('.kshop-card[data-idx="1"]');
+        var procurementCard = document.querySelector('.kshop-card[data-idx="1"]');
+        var procurementBadge = procurementCard && procurementCard.querySelector('.procurement-highlight-badge');
+        var lockedProcurementCard = document.querySelector('.kshop-card[data-idx="2"]');
+        var lockedProcurementBadge = lockedProcurementCard
+            && lockedProcurementCard.querySelector('.procurement-highlight-badge');
+        assert('kshop-procurement-highlight','K 点商城按 exact itemName 高亮合成标记与进行中任务，锁定条目也保留需求提示',
+            procurementCard&&procurementCard.classList.contains('procurement-needed')
+                &&procurementCard.getAttribute('data-procurement-quantity')==='4'
+                &&procurementBadge&&procurementBadge.textContent==='需购 ×4 · 合成标记与任务'
+                &&procurementBadge.title.indexOf('测试双枪')>=0
+                &&procurementBadge.title.indexOf('前线补给')>=0
+                &&procurementCard.getAttribute('aria-label').indexOf('仍需购买 4')>=0
+                &&lockedProcurementCard&&lockedProcurementCard.classList.contains('item-card-locked')
+                &&lockedProcurementCard.classList.contains('procurement-needed')
+                &&lockedProcurementBadge&&lockedProcurementBadge.textContent==='需购 ×1 · 进行中任务',
+            JSON.stringify({quantity:procurementCard&&procurementCard.getAttribute('data-procurement-quantity'),
+                badge:procurementBadge&&procurementBadge.textContent,
+                aria:procurementCard&&procurementCard.getAttribute('aria-label'),
+                lockedBadge:lockedProcurementBadge&&lockedProcurementBadge.textContent}));
         assert('kshop-balance1','商城图标层只显示已确认加权，零依赖颜色仍有菱形与有符号数字',
             confirmedBalanceBadge && confirmedBalanceBadge.textContent.indexOf('Lv1') >= 0
                 && confirmedBalanceBadge.textContent.indexOf('◆+2') >= 0

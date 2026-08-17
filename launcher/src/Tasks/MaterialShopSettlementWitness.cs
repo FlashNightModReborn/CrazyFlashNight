@@ -16,5 +16,12 @@ namespace CF7Launcher.Tasks
         internal string MaterialName;
         internal string ShopId;
         internal bool RequiresCatalogAuthority;
+        internal bool IsRecipeProcurement;
+        internal string RecipeCategory;
+        internal int RecipeIndex;
+        internal int CatalogIndex;
+        internal bool IsKShop;
+        internal string EntryId;
+        internal string KShopCategory;
     }
 }

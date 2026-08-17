@@ -360,3 +360,35 @@
     background:#211315;
 }
 }
+.procurement-needed,
+.procurement-relocate {
+    position:relative;
+}
+.procurement-needed {
+    border-color:color-mix(in srgb,var(--dls-energetic) 78%,transparent);
+    box-shadow:inset 3px 0 0 var(--dls-energetic),
+        0 0 9px color-mix(in srgb,var(--dls-energetic) 12%,transparent);
+}
+.procurement-relocate {
+    border-color:color-mix(in srgb,var(--dls-crystal) 58%,transparent);
+    box-shadow:inset 3px 0 0 var(--dls-crystal-deep);
+}
+.procurement-highlight-badge {
+    display:block;
+    width:max-content;
+    max-width:calc(100% - 8px);
+    margin:4px 4px 3px;
+    padding:2px 5px;
+    overflow:hidden;
+    color:color-mix(in srgb,var(--dls-energetic) 58%,var(--wb-text));
+    background:color-mix(in srgb,var(--dls-energetic) 14%,var(--wb-bg));
+    border:1px solid color-mix(in srgb,var(--dls-energetic) 52%,transparent);
+    font:700 10px/1.3 "Microsoft YaHei",sans-serif;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.procurement-relocate .procurement-highlight-badge {
+    color:color-mix(in srgb,var(--dls-crystal) 42%,var(--wb-text));
+    background:color-mix(in srgb,var(--dls-crystal) 12%,var(--wb-bg));
+    border-color:color-mix(in srgb,var(--dls-crystal) 42%,transparent);
+}

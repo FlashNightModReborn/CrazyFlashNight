@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 namespace CF7Launcher.Guardian
 {
     /// <summary>
-    /// Host-owned, fixed-route coordinator for crafting materials &lt;-&gt; NPCShop.  It owns the
+    /// Host-owned fixed-route coordinator for crafting &lt;-&gt; exact NPCShop/KShop procurement. It owns the
     /// only transition deadline and the private one-shot return capability.  It is deliberately
     /// not a generic panel history/return stack.
     /// </summary>
@@ -47,6 +47,7 @@ namespace CF7Launcher.Guardian
             internal string Token;
             internal string CallId;
             internal string Signature;
+            internal string ResponseCommand;
             internal string SourcePanel;
             internal string SourceInstance;
             internal string TargetPanel;
@@ -58,10 +59,20 @@ namespace CF7Launcher.Guardian
             internal string MaterialName;
             internal string ShopId;
             internal int CatalogIndex;
+            internal bool IsProcurement;
+            internal string RecipeId;
+            internal string RecipeCategory;
+            internal int RecipeIndex;
+            internal bool IsKShop;
+            internal string EntryId;
+            internal string KShopCategory;
             internal MaterialShopSettlementWitness CraftingWitness;
             internal MaterialShopSettlementWitness NpcShopWitness;
+            internal MaterialShopSettlementWitness ShopWitness;
             internal MaterialShopSettlementWitness InventoryWitness;
             internal LauncherCommandRouter.MaterialShopCharacterCapsule CharacterCapsule;
+            internal bool KShopPauseOpened;
+            internal bool KShopPauseTransferred;
             internal bool LeasesTerminal;
             internal bool ReverseDispatchReturned;
             internal bool ReplacePreparationStarted;
@@ -76,10 +87,17 @@ namespace CF7Launcher.Guardian
 
         private sealed class MaterialReturnRoute
         {
-            internal string NpcShopInstance;
+            internal string ShopPanel;
+            internal string ShopInstance;
             internal string MaterialName;
             internal string ShopId;
             internal int CatalogIndex;
+            internal bool IsProcurement;
+            internal string RecipeId;
+            internal string RecipeCategory;
+            internal int RecipeIndex;
+            internal string EntryId;
+            internal string KShopCategory;
             internal LauncherCommandRouter.MaterialShopCharacterCapsule CharacterCapsule;
         }
 
@@ -102,6 +120,9 @@ namespace CF7Launcher.Guardian
         private readonly Func<string> _nextPanelInstanceId;
         private Transition _active;
         private MaterialReturnRoute _returnRoute;
+        private ShopTask _shopTask;
+        private Func<bool> _tryOpenKShop;
+        private Action _closeKShopNoFail;
         private bool _disposed;
 
         internal MaterialShopNavigationCoordinator(
@@ -151,6 +172,20 @@ namespace CF7Launcher.Guardian
                 ?? delegate { return OpaqueIdGenerator.Create("panel"); };
         }
 
+        internal void ConfigureKShopNavigation(
+            ShopTask shopTask,
+            Func<bool> tryOpenKShop,
+            Action closeKShopNoFail)
+        {
+            lock (_lock)
+            {
+                if (_disposed) return;
+                _shopTask = shopTask;
+                _tryOpenKShop = tryOpenKShop;
+                _closeKShopNoFail = closeKShopNoFail;
+            }
+        }
+
         internal TransitionPhase? ActivePhaseForTests
         {
             get
@@ -168,9 +203,23 @@ namespace CF7Launcher.Guardian
             {
                 return !_disposed
                     && _returnRoute != null
+                    && string.Equals(_returnRoute.ShopPanel, "npcshop",
+                        StringComparison.Ordinal)
                     && string.Equals(
-                        _returnRoute.NpcShopInstance,
+                        _returnRoute.ShopInstance,
                         npcShopInstance,
+                        StringComparison.Ordinal);
+            }
+        }
+
+        internal bool HasKShopReturnRoute(string kshopInstance)
+        {
+            lock (_lock)
+            {
+                return !_disposed && _returnRoute != null
+                    && string.Equals(_returnRoute.ShopPanel, "kshop",
+                        StringComparison.Ordinal)
+                    && string.Equals(_returnRoute.ShopInstance, kshopInstance,
                         StringComparison.Ordinal);
             }
         }
@@ -179,12 +228,22 @@ namespace CF7Launcher.Guardian
         {
             string callId = ReadString(request, "callId");
             string sourceInstance = ReadString(request, "panelInstanceId");
-            if (!IsValidForwardEnvelope(request))
+            bool isKShop = IsValidProcurementKShopForwardEnvelope(request);
+            bool isProcurement = isKShop || IsValidProcurementForwardEnvelope(request);
+            string responseCommand = isKShop
+                ? "open_procurement_kshop"
+                : isProcurement ? "open_procurement_shop" : "open_npc_shop";
+            if (!isProcurement && !IsValidForwardEnvelope(request))
             {
+                string requestedCommand = ReadString(request, "cmd");
                 RespondMalformedIfOwned(
                     request,
                     "crafting",
-                    "open_npc_shop");
+                    requestedCommand == "open_procurement_kshop"
+                        ? "open_procurement_kshop"
+                        : requestedCommand == "open_procurement_shop"
+                            ? "open_procurement_shop"
+                            : "open_npc_shop");
                 return;
             }
             if (!IsExactActive("crafting", sourceInstance))
@@ -194,32 +253,58 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
-            string snapshotId = request.Value<string>("materialSnapshotId");
+            string snapshotId = isProcurement
+                ? null
+                : request.Value<string>("materialSnapshotId");
             string materialName = request.Value<string>("materialName");
-            string shopId = request.Value<string>("shopId");
+            string shopId = isKShop ? null : request.Value<string>("shopId");
             int catalogIndex = request.Value<int>("catalogIndex");
+            string recipeId = isProcurement ? request.Value<string>("recipeId") : null;
+            string recipeCategory = isKShop
+                ? request.Value<string>("recipeCategory")
+                : isProcurement ? request.Value<string>("category") : null;
+            int recipeIndex = isProcurement ? request.Value<int>("recipeIndex") : -1;
+            string entryId = isKShop ? request.Value<string>("entryId") : null;
+            string kshopCategory = isKShop
+                ? request.Value<string>("kshopCategory") : null;
             string signature = BuildForwardSignature(
                 sourceInstance,
                 snapshotId,
                 materialName,
                 shopId,
-                catalogIndex);
+                catalogIndex,
+                recipeId,
+                recipeCategory,
+                recipeIndex,
+                isKShop,
+                entryId,
+                kshopCategory);
             Transition transition = BeginTransition(
                 TransitionKind.Forward,
                 callId,
                 signature,
                 "crafting",
                 sourceInstance,
+                responseCommand,
                 true);
             if (transition == null) return;
             transition.MaterialSnapshotId = snapshotId;
             transition.MaterialName = materialName;
             transition.ShopId = shopId;
             transition.CatalogIndex = catalogIndex;
+            transition.IsProcurement = isProcurement;
+            transition.RecipeId = recipeId;
+            transition.RecipeCategory = recipeCategory;
+            transition.RecipeIndex = recipeIndex;
+            transition.IsKShop = isKShop;
+            transition.EntryId = entryId;
+            transition.KShopCategory = kshopCategory;
 
             if (_panelHost == null || _accessTask == null
                 || _craftingTask == null || _inventoryTask == null
-                || _npcShopTask == null || _commandRouter == null)
+                || !isKShop && (_npcShopTask == null || _commandRouter == null)
+                || isKShop && (_shopTask == null || _tryOpenKShop == null
+                    || _closeKShopNoFail == null))
             {
                 FailTransition(transition, "navigation_unavailable", false);
                 return;
@@ -251,7 +336,14 @@ namespace CF7Launcher.Guardian
                     MaterialSnapshotId = snapshotId,
                     MaterialName = materialName,
                     ShopId = shopId,
-                    CatalogIndex = catalogIndex
+                    CatalogIndex = catalogIndex,
+                    IsProcurement = isProcurement,
+                    RecipeId = recipeId,
+                    Category = recipeCategory,
+                    RecipeIndex = recipeIndex,
+                    IsKShop = isKShop,
+                    EntryId = entryId,
+                    KShopCategory = kshopCategory
                 },
                 delegate { return IsAuthorityFenceCurrent(transition); },
                 delegate(MaterialShopAccessTask.Result result)
@@ -266,7 +358,9 @@ namespace CF7Launcher.Guardian
                             .FormatMaterialShopAuthorityFlashCallBound(
                             callId,
                             allocatedFid,
-                            sourceInstance));
+                            sourceInstance,
+                            isProcurement,
+                            isKShop));
                 },
                 out fid);
             transition.AuthorityFid = fid;
@@ -277,15 +371,24 @@ namespace CF7Launcher.Guardian
         internal void HandleReverse(JObject request)
         {
             string sourceInstance = ReadString(request, "panelInstanceId");
-            if (!IsValidReverseEnvelope(request))
+            bool kshopReturn = IsValidKShopRecipeReverseEnvelope(request);
+            bool recipeReturn = kshopReturn || IsValidRecipeReverseEnvelope(request);
+            string sourcePanel = kshopReturn ? "kshop" : "npcshop";
+            string responseCommand = recipeReturn
+                ? "return_crafting_recipe"
+                : "return_crafting_materials";
+            if (!recipeReturn && !IsValidReverseEnvelope(request))
             {
+                string requestedPanel = ReadString(request, "panel");
                 RespondMalformedIfOwned(
                     request,
-                    "npcshop",
-                    "return_crafting_materials");
+                    requestedPanel == "kshop" ? "kshop" : "npcshop",
+                    ReadString(request, "cmd") == "return_crafting_recipe"
+                        ? "return_crafting_recipe"
+                        : "return_crafting_materials");
                 return;
             }
-            if (!IsExactActive("npcshop", sourceInstance))
+            if (!IsExactActive(sourcePanel, sourceInstance))
             {
                 LogManager.Log(
                     "event=material_shop_navigation_rejected direction=reverse reason=stale_owner");
@@ -293,12 +396,12 @@ namespace CF7Launcher.Guardian
             }
 
             string callId = request.Value<string>("callId");
-            MaterialReturnRoute route = GetExactRoute(sourceInstance);
-            if (route == null)
+            MaterialReturnRoute route = GetExactRoute(sourcePanel, sourceInstance);
+            if (route == null || route.IsProcurement != recipeReturn)
             {
                 PostFailure(
-                    "npcshop",
-                    "return_crafting_materials",
+                    sourcePanel,
+                    responseCommand,
                     callId,
                     sourceInstance,
                     "return_unavailable");
@@ -307,9 +410,10 @@ namespace CF7Launcher.Guardian
             Transition transition = BeginTransition(
                 TransitionKind.Reverse,
                 callId,
-                BuildReverseSignature(sourceInstance),
-                "npcshop",
+                BuildReverseSignature(sourceInstance, responseCommand),
+                sourcePanel,
                 sourceInstance,
+                responseCommand,
                 true);
             if (transition == null) return;
             try
@@ -317,11 +421,22 @@ namespace CF7Launcher.Guardian
                 transition.MaterialName = route.MaterialName;
                 transition.ShopId = route.ShopId;
                 transition.CatalogIndex = route.CatalogIndex;
+                transition.IsProcurement = route.IsProcurement;
+                transition.RecipeId = route.RecipeId;
+                transition.RecipeCategory = route.RecipeCategory;
+                transition.RecipeIndex = route.RecipeIndex;
                 transition.CharacterCapsule = route.CharacterCapsule;
+                transition.IsKShop = string.Equals(route.ShopPanel, "kshop",
+                    StringComparison.Ordinal);
+                transition.EntryId = route.EntryId;
+                transition.KShopCategory = route.KShopCategory;
 
-                if (_panelHost == null || _npcShopTask == null
-                    || _inventoryTask == null || _craftingTask == null
-                    || _commandRouter == null)
+                if (_panelHost == null || _inventoryTask == null
+                    || _craftingTask == null
+                    || transition.IsKShop && (_shopTask == null
+                        || _closeKShopNoFail == null)
+                    || !transition.IsKShop && (_npcShopTask == null
+                        || _commandRouter == null))
                 {
                     FailTransition(transition, "navigation_unavailable", false);
                     return;
@@ -363,7 +478,7 @@ namespace CF7Launcher.Guardian
                     "event=material_shop_close_rejected reason=invalid_or_stale_envelope");
                 return true;
             }
-            MaterialReturnRoute route = GetExactRoute(sourceInstance);
+            MaterialReturnRoute route = GetExactRoute("npcshop", sourceInstance);
             if (route == null) return true;
             Transition supersededReverse =
                 CancelPreCommitReverseForOuterClose(
@@ -377,11 +492,16 @@ namespace CF7Launcher.Guardian
                 "close\u001f" + sourceInstance,
                 "npcshop",
                 sourceInstance,
+                null,
                 false);
             if (transition == null) return true;
             transition.MaterialName = route.MaterialName;
             transition.ShopId = route.ShopId;
             transition.CatalogIndex = route.CatalogIndex;
+            transition.IsProcurement = route.IsProcurement;
+            transition.RecipeId = route.RecipeId;
+            transition.RecipeCategory = route.RecipeCategory;
+            transition.RecipeIndex = route.RecipeIndex;
             transition.CharacterCapsule = route.CharacterCapsule;
             transition.CloseCompleted = onClosed;
             if (_panelHost == null || _npcShopTask == null
@@ -413,13 +533,11 @@ namespace CF7Launcher.Guardian
             {
                 transition = _active;
                 if (_returnRoute != null
-                    && (!string.Equals(
-                            panelName,
-                            "npcshop",
+                    && (!string.Equals(panelName, _returnRoute.ShopPanel,
                             StringComparison.Ordinal)
                         || !string.Equals(
                             panelInstanceId,
-                            _returnRoute.NpcShopInstance,
+                            _returnRoute.ShopInstance,
                             StringComparison.Ordinal)))
                 {
                     abandoned = _returnRoute;
@@ -440,12 +558,15 @@ namespace CF7Launcher.Guardian
             {
                 CancelTransition(transition, "source_changed");
             }
-            if (abandoned != null && abandoned.CharacterCapsule != null
+            if (abandoned != null
+                && string.Equals(abandoned.ShopPanel, "npcshop",
+                    StringComparison.Ordinal)
+                && abandoned.CharacterCapsule != null
                 && _commandRouter != null)
             {
                 _commandRouter.ConsumeMaterialShopCharacterOnNpcShopCloseNoFail(
                     abandoned.CharacterCapsule,
-                    abandoned.NpcShopInstance);
+                    abandoned.ShopInstance);
             }
         }
 
@@ -706,7 +827,7 @@ namespace CF7Launcher.Guardian
             {
                 _commandRouter.ConsumeMaterialShopCharacterOnNpcShopCloseNoFail(
                     route.CharacterCapsule,
-                    route.NpcShopInstance);
+                    route.ShopInstance);
             }
             if (_accessTask != null) _accessTask.ClearPending();
         }
@@ -739,6 +860,49 @@ namespace CF7Launcher.Guardian
                 && IsIntegerInRange(request["catalogIndex"], 0, 10000);
         }
 
+        internal static bool IsValidProcurementForwardEnvelope(JObject request)
+        {
+            return HasExactKeys(
+                    request,
+                    "type", "panel", "cmd", "callId", "panelInstanceId", "source",
+                    "materialName", "shopId", "catalogIndex",
+                    "recipeId", "category", "recipeIndex")
+                && HasString(request["type"], "panel")
+                && HasString(request["panel"], "crafting")
+                && HasString(request["cmd"], "open_procurement_shop")
+                && HasString(request["source"], "crafting_recipe")
+                && IsValidCallId(request["callId"])
+                && IsValidPanelInstance(request["panelInstanceId"])
+                && IsIdentity(request["materialName"], 128)
+                && IsIdentity(request["shopId"], 80)
+                && IsIntegerInRange(request["catalogIndex"], 0, 10000)
+                && ProcurementProjectionValidator.IsRecipeId(request["recipeId"])
+                && IsIdentity(request["category"], 256)
+                && IsIntegerInRange(request["recipeIndex"], 0, 999);
+        }
+
+        internal static bool IsValidProcurementKShopForwardEnvelope(JObject request)
+        {
+            return HasExactKeys(
+                    request,
+                    "type", "panel", "cmd", "callId", "panelInstanceId", "source",
+                    "materialName", "catalogIndex", "entryId",
+                    "kshopCategory", "recipeId", "recipeCategory", "recipeIndex")
+                && HasString(request["type"], "panel")
+                && HasString(request["panel"], "crafting")
+                && HasString(request["cmd"], "open_procurement_kshop")
+                && HasString(request["source"], "crafting_recipe")
+                && IsValidCallId(request["callId"])
+                && IsValidPanelInstance(request["panelInstanceId"])
+                && IsIdentity(request["materialName"], 128)
+                && IsIntegerInRange(request["catalogIndex"], 0, 10000)
+                && IsIdentity(request["entryId"], 256)
+                && IsIdentity(request["kshopCategory"], 512)
+                && ProcurementProjectionValidator.IsRecipeId(request["recipeId"])
+                && IsIdentity(request["recipeCategory"], 256)
+                && IsIntegerInRange(request["recipeIndex"], 0, 999);
+        }
+
         internal static bool IsValidReverseEnvelope(JObject request)
         {
             return HasExactKeys(
@@ -747,6 +911,30 @@ namespace CF7Launcher.Guardian
                 && HasString(request["type"], "panel")
                 && HasString(request["panel"], "npcshop")
                 && HasString(request["cmd"], "return_crafting_materials")
+                && IsValidCallId(request["callId"])
+                && IsValidPanelInstance(request["panelInstanceId"]);
+        }
+
+        internal static bool IsValidRecipeReverseEnvelope(JObject request)
+        {
+            return HasExactKeys(
+                    request,
+                    "type", "panel", "cmd", "callId", "panelInstanceId")
+                && HasString(request["type"], "panel")
+                && HasString(request["panel"], "npcshop")
+                && HasString(request["cmd"], "return_crafting_recipe")
+                && IsValidCallId(request["callId"])
+                && IsValidPanelInstance(request["panelInstanceId"]);
+        }
+
+        internal static bool IsValidKShopRecipeReverseEnvelope(JObject request)
+        {
+            return HasExactKeys(
+                    request,
+                    "type", "panel", "cmd", "callId", "panelInstanceId")
+                && HasString(request["type"], "panel")
+                && HasString(request["panel"], "kshop")
+                && HasString(request["cmd"], "return_crafting_recipe")
                 && IsValidCallId(request["callId"])
                 && IsValidPanelInstance(request["panelInstanceId"]);
         }
@@ -839,30 +1027,54 @@ namespace CF7Launcher.Guardian
                 FailTransition(transition, "navigation_unavailable", false);
                 return;
             }
-            LauncherCommandRouter.MaterialShopCharacterCapsule capsule;
-            if (!_commandRouter.TryPrepareMaterialShopCharacterForward(
-                    transition.SourceInstance,
-                    targetInstance,
-                    out capsule))
+            LauncherCommandRouter.MaterialShopCharacterCapsule capsule = null;
+            if (transition.IsKShop)
+            {
+                bool opened;
+                try { opened = _tryOpenKShop != null && _tryOpenKShop(); }
+                catch { opened = false; }
+                if (!opened)
+                {
+                    FailTransition(transition, "admission_failed", false);
+                    return;
+                }
+                transition.KShopPauseOpened = true;
+            }
+            else if (!_commandRouter.TryPrepareMaterialShopCharacterForward(
+                    transition.SourceInstance, targetInstance, out capsule))
             {
                 FailTransition(transition, "admission_failed", false);
                 return;
             }
-            transition.TargetPanel = "npcshop";
+            transition.TargetPanel = transition.IsKShop ? "kshop" : "npcshop";
             transition.TargetInstance = targetInstance;
             transition.CharacterCapsule = capsule;
             var init = new JObject
             {
                 ["mode"] = "runtime",
-                ["source"] = "crafting_materials",
+                ["source"] = transition.IsKShop ? "crafting_procurement"
+                    : transition.IsProcurement ? "crafting_procurement" : "crafting_materials",
                 ["debug"] = false,
-                ["shopId"] = transition.ShopId,
                 ["preferredItemName"] = authoritativeItemName,
                 ["preferredCatalogIndex"] = transition.CatalogIndex,
-                ["canReturnCraftingMaterials"] = true,
-                ["navigationOrigin"] = "crafting_materials",
+                ["navigationOrigin"] = transition.IsProcurement
+                    ? "crafting_recipe"
+                    : "crafting_materials",
                 ["panelInstanceId"] = targetInstance
             };
+            if (transition.IsKShop)
+            {
+                init["preferredEntryId"] = transition.EntryId;
+                init["preferredKShopCategory"] = transition.KShopCategory;
+            }
+            else init["shopId"] = transition.ShopId;
+            if (transition.IsProcurement)
+            {
+                init["canReturnCraftingRecipe"] = true;
+                init["returnRecipeCategory"] = transition.RecipeCategory;
+                init["returnRecipeIndex"] = transition.RecipeIndex;
+            }
+            else init["canReturnCraftingMaterials"] = true;
             if (!AdvancePhase(
                     transition,
                     TransitionPhase.AuthorityPending,
@@ -872,16 +1084,13 @@ namespace CF7Launcher.Guardian
                 return;
             }
             var plan = new PreparedPanelReplace(
-                "npcshop",
+                transition.TargetPanel,
                 targetInstance,
                 init.ToString(Formatting.None),
                 delegate { CommitForwardNoFail(transition); },
                 delegate
                 {
-                    _commandRouter.AbortMaterialShopCharacterForwardNoFail(
-                        transition.CharacterCapsule,
-                        transition.SourceInstance,
-                        transition.TargetInstance);
+                    AbortTransitionCapsule(transition);
                     ReleaseLeasesOnce(transition);
                 },
                 delegate { MarkTargetCommitted(transition); });
@@ -905,10 +1114,11 @@ namespace CF7Launcher.Guardian
             try { targetInstance = _nextPanelInstanceId(); }
             catch { targetInstance = null; }
             if (!ValidPanelInstanceId.IsMatch(targetInstance ?? "")
-                || !_commandRouter.TryPrepareMaterialShopCharacterReverse(
-                    transition.CharacterCapsule,
-                    transition.SourceInstance,
-                    targetInstance))
+                || !transition.IsKShop
+                    && !_commandRouter.TryPrepareMaterialShopCharacterReverse(
+                        transition.CharacterCapsule,
+                        transition.SourceInstance,
+                        targetInstance))
             {
                 FailTransition(transition, "admission_failed", false);
                 return;
@@ -918,13 +1128,23 @@ namespace CF7Launcher.Guardian
             var init = new JObject
             {
                 ["mode"] = "runtime",
-                ["view"] = "materials",
-                ["source"] = "npcshop_return",
+                ["source"] = transition.IsKShop ? "kshop_return" : "npcshop_return",
                 ["debug"] = false,
-                ["panelInstanceId"] = targetInstance,
-                ["preferredMaterialName"] = transition.MaterialName
+                ["panelInstanceId"] = targetInstance
             };
-            if (transition.CharacterCapsule != null)
+            if (transition.IsProcurement)
+            {
+                init["view"] = "recipes";
+                init["category"] = transition.RecipeCategory;
+                init["preferredRecipeIndex"] = transition.RecipeIndex;
+                init["preferredCraftCount"] = 1;
+            }
+            else
+            {
+                init["view"] = "materials";
+                init["preferredMaterialName"] = transition.MaterialName;
+            }
+            if (!transition.IsProcurement && transition.CharacterCapsule != null)
             {
                 init["canReturnCharacterBuild"] = true;
                 init["navigationOrigin"] = "character_build";
@@ -945,12 +1165,12 @@ namespace CF7Launcher.Guardian
                 delegate { CommitReverseNoFail(transition); },
                 delegate
                 {
-                    AbortReverseCapsule(transition);
+                    AbortTransitionCapsule(transition);
                     ReleaseLeasesOnce(transition);
                 },
                 delegate { MarkTargetCommitted(transition); });
             bool queued = _panelHost.TryReplacePanelExact(
-                "npcshop",
+                transition.SourcePanel,
                 transition.SourceInstance,
                 plan,
                 delegate { return TryAcquireReplaceCommitPermit(transition); },
@@ -999,6 +1219,7 @@ namespace CF7Launcher.Guardian
             string signature,
             string sourcePanel,
             string sourceInstance,
+            string responseCommand,
             bool respondBusy)
         {
             Transition transition;
@@ -1038,6 +1259,7 @@ namespace CF7Launcher.Guardian
                         Token = OpaqueIdGenerator.Create("materialshop"),
                         CallId = callId,
                         Signature = signature,
+                        ResponseCommand = responseCommand,
                         SourcePanel = sourcePanel,
                         SourceInstance = sourceInstance,
                         DeadlineAtMs = now + MaterialShopNavigationTimeoutMs
@@ -1074,9 +1296,7 @@ namespace CF7Launcher.Guardian
             {
                 PostFailure(
                     sourcePanel,
-                    kind == TransitionKind.Forward
-                        ? "open_npc_shop"
-                        : "return_crafting_materials",
+                    responseCommand,
                     callId,
                     sourceInstance,
                     "busy");
@@ -1085,9 +1305,7 @@ namespace CF7Launcher.Guardian
             {
                 PostFailure(
                     sourcePanel,
-                    kind == TransitionKind.Forward
-                        ? "open_npc_shop"
-                        : "return_crafting_materials",
+                    responseCommand,
                     callId,
                     sourceInstance,
                     "navigation_unavailable");
@@ -1117,13 +1335,28 @@ namespace CF7Launcher.Guardian
                 if (!ReferenceEquals(_active, transition)
                     || transition.Phase != TransitionPhase.TokenCreated
                     || IsDeadlineExpiredLocked(transition)) return false;
-                if (!_craftingTask.TryAcquireMaterialShopNavigationLease(
+                bool craftingAcquired = transition.IsProcurement
+                    ? _craftingTask.TryAcquireRecipeShopNavigationLease(
+                        "crafting",
+                        transition.SourceInstance,
+                        transition.Token,
+                        transition.RecipeCategory,
+                        transition.RecipeIndex,
+                        transition.MaterialName,
+                        transition.ShopId,
+                        transition.CatalogIndex,
+                        transition.IsKShop,
+                        transition.EntryId,
+                        transition.KShopCategory,
+                        out transition.CraftingWitness)
+                    : _craftingTask.TryAcquireMaterialShopNavigationLease(
                         "crafting",
                         transition.SourceInstance,
                         transition.Token,
                         transition.MaterialSnapshotId,
                         transition.MaterialName,
-                        out transition.CraftingWitness)) return false;
+                        out transition.CraftingWitness);
+                if (!craftingAcquired) return false;
                 if (!_inventoryTask.TryAcquireMaterialShopNavigationLease(
                         "crafting",
                         transition.SourceInstance,
@@ -1142,14 +1375,17 @@ namespace CF7Launcher.Guardian
                 if (!ReferenceEquals(_active, transition)
                     || transition.Phase != TransitionPhase.TokenCreated
                     || IsDeadlineExpiredLocked(transition)) return false;
-                if (!_npcShopTask.TryAcquireMaterialShopNavigationLease(
-                        "npcshop",
-                        transition.SourceInstance,
-                        transition.Token,
-                        transition.ShopId,
-                        out transition.NpcShopWitness)) return false;
+                if (transition.IsKShop)
+                {
+                    if (!_shopTask.TryAcquireMaterialShopNavigationLease(
+                            "kshop", transition.SourceInstance, transition.Token,
+                            out transition.ShopWitness)) return false;
+                }
+                else if (!_npcShopTask.TryAcquireMaterialShopNavigationLease(
+                        "npcshop", transition.SourceInstance, transition.Token,
+                        transition.ShopId, out transition.NpcShopWitness)) return false;
                 if (!_inventoryTask.TryAcquireMaterialShopNavigationLease(
-                        "npcshop",
+                        transition.SourcePanel,
                         transition.SourceInstance,
                         transition.Token,
                         out transition.InventoryWitness)) return false;
@@ -1195,28 +1431,30 @@ namespace CF7Launcher.Guardian
                         transition.SourceInstance)) return false;
                 if (transition.Kind == TransitionKind.Forward)
                 {
-                    if (!AreForwardWitnessesCurrent(transition)
-                        || !_commandRouter.IsMaterialShopCharacterForwardCurrent(
-                            transition.CharacterCapsule,
-                            transition.SourceInstance,
-                            transition.TargetInstance)
-                        || !_commandRouter.TrySealMaterialShopCharacterForwardCommit(
-                            transition.CharacterCapsule,
-                            transition.SourceInstance,
-                            transition.TargetInstance)) return false;
+                    if (!AreForwardWitnessesCurrent(transition)) return false;
+                    if (!transition.IsKShop
+                        && (!_commandRouter.IsMaterialShopCharacterForwardCurrent(
+                                transition.CharacterCapsule,
+                                transition.SourceInstance,
+                                transition.TargetInstance)
+                            || !_commandRouter.TrySealMaterialShopCharacterForwardCommit(
+                                transition.CharacterCapsule,
+                                transition.SourceInstance,
+                                transition.TargetInstance))) return false;
                 }
                 else
                 {
                     if (!AreReverseWitnessesCurrent(transition)
-                        || !IsExactRouteCurrent(transition)
-                        || !_commandRouter.IsMaterialShopCharacterReverseCurrent(
-                            transition.CharacterCapsule,
-                            transition.SourceInstance,
-                            transition.TargetInstance)
-                        || !_commandRouter.TrySealMaterialShopCharacterReverseCommit(
-                            transition.CharacterCapsule,
-                            transition.SourceInstance,
-                            transition.TargetInstance)) return false;
+                        || !IsExactRouteCurrent(transition)) return false;
+                    if (!transition.IsKShop
+                        && (!_commandRouter.IsMaterialShopCharacterReverseCurrent(
+                                transition.CharacterCapsule,
+                                transition.SourceInstance,
+                                transition.TargetInstance)
+                            || !_commandRouter.TrySealMaterialShopCharacterReverseCommit(
+                                transition.CharacterCapsule,
+                                transition.SourceInstance,
+                                transition.TargetInstance))) return false;
                 }
                 transition.Phase = TransitionPhase.Committing;
                 return true;
@@ -1245,16 +1483,24 @@ namespace CF7Launcher.Guardian
                 transition.CraftingWitness);
             _inventoryTask.TransferMaterialShopNavigationLease(
                 transition.InventoryWitness);
-            _commandRouter.CommitMaterialShopCharacterForwardNoFail(
-                transition.CharacterCapsule);
+            if (transition.IsKShop) transition.KShopPauseTransferred = true;
+            else _commandRouter.CommitMaterialShopCharacterForwardNoFail(
+                    transition.CharacterCapsule);
             lock (_lock)
             {
                 _returnRoute = new MaterialReturnRoute
                 {
-                    NpcShopInstance = transition.TargetInstance,
+                    ShopPanel = transition.TargetPanel,
+                    ShopInstance = transition.TargetInstance,
                     MaterialName = transition.MaterialName,
                     ShopId = transition.ShopId,
                     CatalogIndex = transition.CatalogIndex,
+                    IsProcurement = transition.IsProcurement,
+                    RecipeId = transition.RecipeId,
+                    RecipeCategory = transition.RecipeCategory,
+                    RecipeIndex = transition.RecipeIndex,
+                    EntryId = transition.EntryId,
+                    KShopCategory = transition.KShopCategory,
                     CharacterCapsule = transition.CharacterCapsule
                 };
                 transition.LeasesTerminal = true;
@@ -1263,18 +1509,24 @@ namespace CF7Launcher.Guardian
 
         private void CommitReverseNoFail(Transition transition)
         {
-            _npcShopTask.TransferMaterialShopNavigationLease(
-                transition.NpcShopWitness);
+            if (transition.IsKShop)
+                _shopTask.TransferMaterialShopNavigationLease(transition.ShopWitness);
+            else _npcShopTask.TransferMaterialShopNavigationLease(
+                    transition.NpcShopWitness);
             _inventoryTask.TransferMaterialShopNavigationLease(
                 transition.InventoryWitness);
-            _commandRouter.CommitMaterialShopCharacterReverseNoFail(
-                transition.CharacterCapsule,
-                transition.TargetInstance);
+            if (transition.IsKShop)
+            {
+                try { _closeKShopNoFail(); }
+                catch { }
+            }
+            else _commandRouter.CommitMaterialShopCharacterReverseNoFail(
+                    transition.CharacterCapsule, transition.TargetInstance);
             lock (_lock)
             {
                 if (_returnRoute != null
                     && string.Equals(
-                        _returnRoute.NpcShopInstance,
+                        _returnRoute.ShopInstance,
                         transition.SourceInstance,
                         StringComparison.Ordinal))
                 {
@@ -1298,7 +1550,7 @@ namespace CF7Launcher.Guardian
             {
                 if (_returnRoute != null
                     && string.Equals(
-                        _returnRoute.NpcShopInstance,
+                        _returnRoute.ShopInstance,
                         transition.SourceInstance,
                         StringComparison.Ordinal))
                 {
@@ -1339,7 +1591,20 @@ namespace CF7Launcher.Guardian
 
         private void AbortTransitionCapsule(Transition transition)
         {
-            if (_commandRouter == null || transition == null) return;
+            if (transition == null) return;
+            if (transition.IsKShop)
+            {
+                if (transition.Kind == TransitionKind.Forward
+                    && transition.KShopPauseOpened
+                    && !transition.KShopPauseTransferred)
+                {
+                    transition.KShopPauseOpened = false;
+                    try { _closeKShopNoFail?.Invoke(); }
+                    catch { }
+                }
+                return;
+            }
+            if (_commandRouter == null) return;
             if (transition.Kind == TransitionKind.Forward)
             {
                 _commandRouter.AbortMaterialShopCharacterForwardNoFail(
@@ -1399,9 +1664,7 @@ namespace CF7Launcher.Guardian
             {
                 PostFailure(
                     transition.SourcePanel,
-                    transition.Kind == TransitionKind.Forward
-                        ? "open_npc_shop"
-                        : "return_crafting_materials",
+                    transition.ResponseCommand,
                     transition.CallId,
                     transition.SourceInstance,
                     error);
@@ -1453,6 +1716,12 @@ namespace CF7Launcher.Guardian
                     _craftingTask.ReleaseMaterialShopNavigationLease(
                         transition.CraftingWitness);
             }
+            else if (transition.IsKShop
+                && transition.ShopWitness != null && _shopTask != null)
+            {
+                _shopTask.ReleaseMaterialShopNavigationLease(
+                    transition.ShopWitness);
+            }
             else if (transition.NpcShopWitness != null && _npcShopTask != null)
             {
                 _npcShopTask.ReleaseMaterialShopNavigationLease(
@@ -1472,10 +1741,14 @@ namespace CF7Launcher.Guardian
 
         private bool AreReverseWitnessesCurrent(Transition transition)
         {
-            return _npcShopTask != null
-                && _inventoryTask != null
-                && _npcShopTask.IsMaterialShopNavigationLeaseCurrent(
-                    transition.NpcShopWitness)
+            bool shopCurrent = transition.IsKShop
+                ? _shopTask != null
+                    && _shopTask.IsMaterialShopNavigationLeaseCurrent(
+                        transition.ShopWitness)
+                : _npcShopTask != null
+                    && _npcShopTask.IsMaterialShopNavigationLeaseCurrent(
+                        transition.NpcShopWitness);
+            return shopCurrent && _inventoryTask != null
                 && _inventoryTask.IsMaterialShopNavigationLeaseCurrent(
                     transition.InventoryWitness);
         }
@@ -1505,8 +1778,10 @@ namespace CF7Launcher.Guardian
             lock (_lock)
             {
                 return _returnRoute != null
+                    && string.Equals(_returnRoute.ShopPanel, transition.SourcePanel,
+                        StringComparison.Ordinal)
                     && string.Equals(
-                        _returnRoute.NpcShopInstance,
+                        _returnRoute.ShopInstance,
                         transition.SourceInstance,
                         StringComparison.Ordinal)
                     && string.Equals(
@@ -1518,20 +1793,34 @@ namespace CF7Launcher.Guardian
                         transition.ShopId,
                         StringComparison.Ordinal)
                     && _returnRoute.CatalogIndex == transition.CatalogIndex
+                    && _returnRoute.IsProcurement == transition.IsProcurement
+                    && string.Equals(_returnRoute.RecipeId, transition.RecipeId,
+                        StringComparison.Ordinal)
+                    && string.Equals(_returnRoute.RecipeCategory,
+                        transition.RecipeCategory, StringComparison.Ordinal)
+                    && _returnRoute.RecipeIndex == transition.RecipeIndex
+                    && string.Equals(_returnRoute.EntryId, transition.EntryId,
+                        StringComparison.Ordinal)
+                    && string.Equals(_returnRoute.KShopCategory,
+                        transition.KShopCategory, StringComparison.Ordinal)
                     && ReferenceEquals(
                         _returnRoute.CharacterCapsule,
                         transition.CharacterCapsule);
             }
         }
 
-        private MaterialReturnRoute GetExactRoute(string npcShopInstance)
+        private MaterialReturnRoute GetExactRoute(
+            string shopPanel,
+            string shopInstance)
         {
             lock (_lock)
             {
                 if (_returnRoute == null
+                    || !string.Equals(_returnRoute.ShopPanel, shopPanel,
+                        StringComparison.Ordinal)
                     || !string.Equals(
-                        _returnRoute.NpcShopInstance,
-                        npcShopInstance,
+                        _returnRoute.ShopInstance,
+                        shopInstance,
                         StringComparison.Ordinal)) return null;
                 return _returnRoute;
             }
@@ -1651,15 +1940,24 @@ namespace CF7Launcher.Guardian
             string snapshot,
             string material,
             string shop,
-            int index)
+            int index,
+            string recipeId,
+            string recipeCategory,
+            int recipeIndex,
+            bool isKShop,
+            string entryId,
+            string kshopCategory)
         {
             return "forward\u001f" + instance + "\u001f" + snapshot
-                + "\u001f" + material + "\u001f" + shop + "\u001f" + index;
+                + "\u001f" + material + "\u001f" + shop + "\u001f" + index
+                + "\u001f" + (recipeId ?? "") + "\u001f" + (recipeCategory ?? "")
+                + "\u001f" + recipeIndex + "\u001f" + isKShop
+                + "\u001f" + (entryId ?? "") + "\u001f" + (kshopCategory ?? "");
         }
 
-        private static string BuildReverseSignature(string instance)
+        private static string BuildReverseSignature(string instance, string command)
         {
-            return "reverse\u001f" + instance;
+            return "reverse\u001f" + instance + "\u001f" + command;
         }
 
         private static bool HasExactKeys(JObject value, params string[] keys)

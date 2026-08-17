@@ -116,7 +116,8 @@
       "hostPayloadMode": "normalized",
       "flashCommandHandler": "org.flashNight.arki.item.CraftingPanelService",
       "flashSources": [
-        "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as"
+        "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+        "scripts/类定义/org/flashNight/arki/item/ProcurementPlanService.as"
       ],
       "commands": [
         { "cmd": "snapshot", "action": "craftingSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
@@ -124,6 +125,7 @@
         { "cmd": "materialDetail", "action": "craftingMaterialDetail", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "preview", "action": "craftingPreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "tooltip", "action": "craftingTooltip", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "setPlan", "action": "craftingPlanSet", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
         { "cmd": "commit", "action": "craftingCommit", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
       ],
       "numericFields": [

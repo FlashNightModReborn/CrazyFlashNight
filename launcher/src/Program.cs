@@ -1884,6 +1884,10 @@ class Program
                     npcShopTask,
                     commandRouter,
                     webOverlay.TryPostToWeb);
+        materialShopNavigationCoordinator.ConfigureKShopNavigation(
+            shopTask,
+            webOverlay.TryOpenKShopForMaterialNavigation,
+            webOverlay.CloseKShopForMaterialNavigationNoFail);
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         EquipmentTuningTask equipmentTuningTask = new EquipmentTuningTask(socketServer);
         commandRouter.SetEquipmentTuningTask(equipmentTuningTask);

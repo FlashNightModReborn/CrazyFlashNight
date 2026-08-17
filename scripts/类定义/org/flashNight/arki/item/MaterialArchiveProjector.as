@@ -164,6 +164,143 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         };
     }
 
+    /** KShop 等价点击时门：frozen source、current index 与 live slot 必须完全一致。 */
+    public static function authorizeKShopAccess(params:Object):Object {
+        var callId:Number = params != null && typeof params.callId == "number"
+            ? Number(params.callId) : 0;
+        if (!validKShopAccessRequest(params)) {
+            return shopAccessFailure(callId, "deny", "invalid_payload");
+        }
+        var snapshotId:String = String(params.materialSnapshotId);
+        var materialName:String = String(params.materialName);
+        var catalogIndex:Number = Number(params.catalogIndex);
+        var entryId:String = String(params.entryId);
+        var category:String = String(params.category);
+        if (_snapshot == null || snapshotId != String(_snapshot.snapshotId)) {
+            return shopAccessFailure(callId, "stale", "stale_snapshot");
+        }
+        if (!currentNavigationAccess().shop) {
+            return shopAccessFailure(callId, "deny", "access_denied");
+        }
+        var frozen:Object = _snapshot.byName[materialName];
+        if (frozen == null || countFrozenKShopSources(
+                frozen.sources, catalogIndex, entryId, category) != 1) {
+            return shopAccessFailure(callId, "stale", "source_not_current");
+        }
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        if (index == null || index.isIndexBuilt() !== true) {
+            return shopAccessFailure(callId, "deny", "authority_unavailable");
+        }
+        var currentRecords = index.getExactObtainRecords(materialName);
+        if (!(currentRecords instanceof Array)) {
+            return shopAccessFailure(callId, "deny", "authority_unavailable");
+        }
+        if (countCurrentKShopSources(currentRecords, catalogIndex, entryId, category) != 1) {
+            return shopAccessFailure(callId, "stale", "source_not_current");
+        }
+        var catalog:Array = _root.kshop_list instanceof Array ? _root.kshop_list : null;
+        var live:Object = catalog == null ? null : catalog[catalogIndex];
+        if (live == null || String(live.item || "") != materialName
+                || String(live.id || "") != entryId
+                || String(live.type || "") != category) {
+            return shopAccessFailure(callId, "stale", "catalog_not_current");
+        }
+        return {task:"material_shop_access_response", callId:callId,
+            success:true, v:1, decision:"allow", reason:"kshop_indexed_live_match",
+            materialSnapshotId:snapshotId, materialName:materialName,
+            catalogIndex:catalogIndex, entryId:entryId, category:category,
+            itemName:materialName};
+    }
+
+    /**
+     * 配方采购不要求物品属于材料档案；它只复证当前 obtain index、原始目录、
+     * live NPC catalog 与摩托车/越野车能力。稳定配方身份由调用层另行复证。
+     */
+    public static function authorizeRecipeShopAccess(callId:Number,
+            itemName:String, shopId:String, catalogIndex:Number):Object {
+        if (!validIntegerRange(callId, 1, 2147483647)
+                || !validIdentity(itemName, 128)
+                || !validIdentity(shopId, 80)
+                || !validShopCatalogIndex(catalogIndex)) {
+            return shopAccessFailure(callId, "deny", "invalid_payload");
+        }
+        if (!currentNavigationAccess().crafting) {
+            return shopAccessFailure(callId, "deny", "access_denied");
+        }
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        if (index == null || index.isIndexBuilt() !== true) {
+            return shopAccessFailure(callId, "deny", "authority_unavailable");
+        }
+        var records = index.getExactObtainRecords(itemName);
+        if (!(records instanceof Array)) {
+            return shopAccessFailure(callId, "deny", "authority_unavailable");
+        }
+        if (countCurrentShopSources(records, itemName, shopId, catalogIndex) != 1) {
+            return shopAccessFailure(callId, "stale", "source_not_current");
+        }
+        if (_root.UI系统 == undefined
+                || _root.UI系统.NPC商店WebView == undefined
+                || typeof _root.UI系统.NPC商店WebView.buildCatalog != "function"
+                || _root.shops == undefined || _root.shops == null) {
+            return shopAccessFailure(callId, "deny", "authority_unavailable");
+        }
+        var rawShop:Object = _root.shops[shopId];
+        if (rawShop == undefined || rawShop == null
+                || rawShopItemName(rawShop, catalogIndex) != itemName) {
+            return shopAccessFailure(callId, "stale", "catalog_not_current");
+        }
+        var catalog = _root.UI系统.NPC商店WebView.buildCatalog(shopId);
+        if (!(catalog instanceof Array)) {
+            return shopAccessFailure(callId, "deny", "authority_unavailable");
+        }
+        var live:Object = exactLiveCatalogEntry(catalog, catalogIndex);
+        if (live == null || String(live.itemName) != itemName) {
+            return shopAccessFailure(callId, "stale", "catalog_not_current");
+        }
+        return {task:"material_shop_access_response", callId:callId,
+            success:true, v:1, decision:"allow", reason:"indexed_live_match",
+            materialName:itemName, shopId:shopId, catalogIndex:catalogIndex,
+            itemName:itemName};
+    }
+
+    /** KShop 的配方采购等价门；同样不依赖材料档案 snapshot。 */
+    public static function authorizeRecipeKShopAccess(callId:Number,
+            itemName:String, catalogIndex:Number, entryId:String,
+            category:String):Object {
+        if (!validIntegerRange(callId, 1, 2147483647)
+                || !validIdentity(itemName, 128)
+                || !validShopCatalogIndex(catalogIndex)
+                || !validIdentity(entryId, 256)
+                || !validIdentity(category, 512)) {
+            return shopAccessFailure(callId, "deny", "invalid_payload");
+        }
+        if (!currentNavigationAccess().crafting) {
+            return shopAccessFailure(callId, "deny", "access_denied");
+        }
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        if (index == null || index.isIndexBuilt() !== true) {
+            return shopAccessFailure(callId, "deny", "authority_unavailable");
+        }
+        var records = index.getExactObtainRecords(itemName);
+        if (!(records instanceof Array)) {
+            return shopAccessFailure(callId, "deny", "authority_unavailable");
+        }
+        if (countCurrentKShopSources(records, catalogIndex, entryId, category) != 1) {
+            return shopAccessFailure(callId, "stale", "source_not_current");
+        }
+        var catalog:Array = _root.kshop_list instanceof Array ? _root.kshop_list : null;
+        var live:Object = catalog == null ? null : catalog[catalogIndex];
+        if (live == null || String(live.item || "") != itemName
+                || String(live.id || "") != entryId
+                || String(live.type || "") != category) {
+            return shopAccessFailure(callId, "stale", "catalog_not_current");
+        }
+        return {task:"material_shop_access_response", callId:callId,
+            success:true, v:1, decision:"allow", reason:"kshop_indexed_live_match",
+            materialName:itemName, catalogIndex:catalogIndex, entryId:entryId,
+            category:category, itemName:itemName};
+    }
+
     /**
      * 材料档案“前往合成”的点击时权威门。普通世界合成 snapshot
      * 不携 materialSnapshotId，因此不受这个远程导航门影响。
@@ -1071,6 +1208,34 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             && validShopCatalogIndex(Number(params.catalogIndex));
     }
 
+    private static function validKShopAccessRequest(params:Object):Boolean {
+        if (params == null || typeof params != "object"
+                || !hasOnlyKeys(params, {task:true,action:true,callId:true,v:true,
+                    materialSnapshotId:true,materialName:true,catalogIndex:true,
+                    entryId:true,category:true})
+                || !owns(params, "task") || !owns(params, "action")
+                || !owns(params, "callId") || !owns(params, "v")
+                || !owns(params, "materialSnapshotId") || !owns(params, "materialName")
+                || !owns(params, "catalogIndex") || !owns(params, "entryId")
+                || !owns(params, "category")) return false;
+        return typeof params.task == "string" && params.task === "cmd"
+            && typeof params.action == "string"
+            && params.action === "craftingMaterialKShopAuthorize"
+            && typeof params.callId == "number"
+            && validIntegerRange(Number(params.callId), 1, 2147483647)
+            && typeof params.v == "number" && params.v === 1
+            && typeof params.materialSnapshotId == "string"
+            && validIdentity(String(params.materialSnapshotId), 256)
+            && typeof params.materialName == "string"
+            && validIdentity(String(params.materialName), 128)
+            && typeof params.catalogIndex == "number"
+            && validShopCatalogIndex(Number(params.catalogIndex))
+            && typeof params.entryId == "string"
+            && validIdentity(String(params.entryId), 256)
+            && typeof params.category == "string"
+            && validIdentity(String(params.category), 512);
+    }
+
     private static function countFrozenShopSources(sources:Array,
             materialName:String, shopId:String, catalogIndex:Number):Number {
         if (!(sources instanceof Array)) return 0;
@@ -1096,6 +1261,35 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
                     && typeof record.catalogIndex == "number"
                     && Number(record.catalogIndex) === catalogIndex
                     && String(record.itemName) == materialName) count++;
+        }
+        return count;
+    }
+
+    private static function countFrozenKShopSources(sources:Array,
+            catalogIndex:Number, entryId:String, category:String):Number {
+        if (!(sources instanceof Array)) return 0;
+        var count:Number = 0;
+        for (var i:Number = 0; i < sources.length; i++) {
+            var source:Object = sources[i];
+            if (source != null && String(source.kind) == "kshop"
+                    && typeof source.catalogIndex == "number"
+                    && Number(source.catalogIndex) === catalogIndex
+                    && String(source.entryId) == entryId
+                    && String(source.category) == category) count++;
+        }
+        return count;
+    }
+
+    private static function countCurrentKShopSources(records:Array,
+            catalogIndex:Number, entryId:String, category:String):Number {
+        var count:Number = 0;
+        for (var i:Number = 0; i < records.length; i++) {
+            var record:Object = records[i];
+            if (record != null && normalizedKind(record) == "kshop"
+                    && typeof record.catalogIndex == "number"
+                    && Number(record.catalogIndex) === catalogIndex
+                    && String(record.entryId || "") == entryId
+                    && String(record.type || "") == category) count++;
         }
         return count;
     }

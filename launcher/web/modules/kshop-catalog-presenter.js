@@ -191,7 +191,7 @@
                 + '" data-idx="' + item.idx + '" aria-label="加入购物车">'
                 + (stackable ? '+' : '加入') + '</button>';
         }
-        return Workbench.ItemCard.renderCatalog({
+        var card = Workbench.ItemCard.renderCatalog({
             skin:'kshop', item:item, id:item.idx,
             iconHtml:this._intent.iconHtml ? this._intent.iconHtml(item.icon) : '',
             name:item.displayname, meta:item.subType || item.majorType || item.type,
@@ -201,6 +201,12 @@
             balanceSummary:item.balanceSummary,
             extraHtml:actionHtml
         });
+        if (typeof WorkbenchComponents !== 'undefined'
+                && WorkbenchComponents.ProcurementHighlight) {
+            WorkbenchComponents.ProcurementHighlight.decorateCard(
+                card, item.procurement, document);
+        }
+        return card;
     };
 
     CatalogPresenter.prototype.bindCard = function(card) {

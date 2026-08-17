@@ -33,6 +33,7 @@ class org.flashNight.gesh.tooltip.test.SynthesisIndexTest {
         test_getRecipesUsing_emptyData();
         test_getRecipesUsing_sortedAndDedup();
         test_getRecipeUses_exactOccurrences();
+        test_getRecipesProducing_exactAuthoredOrder();
 
         trace("--- SynthesisIndexTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -140,6 +141,39 @@ class org.flashNight.gesh.tooltip.test.SynthesisIndexTest {
             "getRecipeUses keeps all three Andy occurrence identities");
         _root.改装清单 = savedList;
         _root.改装清单对象 = savedMap;
+        SynthesisIndex.reset();
+    }
+
+    /** output reverse index keeps duplicate outputs and authored category order. */
+    private static function test_getRecipesProducing_exactAuthoredOrder():Void {
+        var savedList = _root.改装清单;
+        var savedOrder = _root.改装分类顺序;
+        _root.改装分类顺序 = ["武器合成", "基础防具"];
+        _root.改装清单 = {};
+        _root.改装清单["武器合成"] = [
+            {recipeId:"craft.weapon.001", title:"武器图纸", name:"嵌套产物", materials:[]}
+        ];
+        _root.改装清单["基础防具"] = [
+            {recipeId:"craft.armor.001", title:"防具图纸一", name:"嵌套产物", materials:[]},
+            {recipeId:"craft.armor.002", title:"防具图纸二", name:"嵌套产物", materials:[]}
+        ];
+        SynthesisIndex.reset();
+        var sources:Array = SynthesisIndex.getRecipesProducing("嵌套产物");
+        assert(sources.length == 3, "getRecipesProducing keeps all output occurrences");
+        assert(sources[0].category == "武器合成" && sources[0].recipeIndex == 0
+                && sources[0].recipeId == "craft.weapon.001",
+            "getRecipesProducing starts with authored first category");
+        assert(sources[1].category == "基础防具" && sources[1].recipeIndex == 0
+                && sources[2].recipeIndex == 1,
+            "getRecipesProducing keeps exact indexes inside authored category");
+        assert(sources[2].title == "防具图纸二",
+            "getRecipesProducing projects exact authored title");
+        _root.改装分类顺序 = undefined;
+        SynthesisIndex.reset();
+        assert(SynthesisIndex.getRecipesProducing("嵌套产物").length == 0,
+            "getRecipesProducing fails closed without authored category registry");
+        _root.改装清单 = savedList;
+        _root.改装分类顺序 = savedOrder;
         SynthesisIndex.reset();
     }
 }

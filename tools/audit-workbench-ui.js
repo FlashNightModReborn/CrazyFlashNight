@@ -139,6 +139,7 @@ var REQUIRED_FILES = [
     'launcher/web/modules/kshop-catalog-presenter.js',
     'launcher/web/modules/kshop-owned-inventory-presenter.js',
     'launcher/web/modules/kshop-tooltip-presenter.js',
+    'launcher/web/modules/kshop-procurement-navigation.js',
     'launcher/web/modules/npcshop-material-navigation.js',
     'launcher/web/modules/npcshop-secondary-pages.js',
     'launcher/web/modules/crafting-detail-presenter.js',
@@ -1071,6 +1072,7 @@ if (exists(registryRel)) {
         'modules/kshop-catalog-presenter.js',
         'modules/kshop-owned-inventory-presenter.js',
         'modules/kshop-tooltip-presenter.js',
+        'modules/kshop-procurement-navigation.js',
         'modules/kshop.js'
     ], 'WB022', 'KShop presenter modules must load before the facade', registryRel);
     var workbenchBootOrder = [

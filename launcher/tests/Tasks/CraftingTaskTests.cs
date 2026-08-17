@@ -19,6 +19,12 @@ namespace Launcher.Tests.Tasks
             var payload = new JObject { ["v"] = 1 };
             if (cmd == "tooltip" || cmd == "materialDetail") payload["itemName"] = "不锈钢材";
             else if (cmd == "materials") { }
+            else if (cmd == "setPlan")
+            {
+                payload["recipeId"] = "craft.weapon.004";
+                payload["plannedCrafts"] = 1;
+                payload["expectedRevision"] = 0;
+            }
             else
             {
                 payload["category"] = "武器合成";
@@ -50,6 +56,7 @@ namespace Launcher.Tests.Tasks
         [InlineData("materialDetail", "craftingMaterialDetail")]
         [InlineData("preview", "craftingPreview")]
         [InlineData("tooltip", "craftingTooltip")]
+        [InlineData("setPlan", "craftingPlanSet")]
         [InlineData("commit", "craftingCommit")]
         public void WebRequest_MapsStrictCommands(string cmd, string expectedAction)
         {
@@ -702,6 +709,56 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void PreviewNestedCraftingSources_RequireExactUniqueOccurrenceIdentity()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+                task.HandleWebRequest("preview", Request("preview", "craft.nested.valid"));
+                JObject valid = PreviewResponse((int)sent[sent.Count - 1]["callId"]);
+                valid["materials"][0]["craftingSources"] = new JArray(
+                    new JObject
+                    {
+                        ["category"] = "武器合成", ["recipeIndex"] = 1,
+                        ["recipeId"] = "craft.weapon.nested", ["title"] = "嵌套图纸"
+                    },
+                    new JObject
+                    {
+                        ["category"] = "基础防具", ["recipeIndex"] = 2,
+                        ["recipeId"] = "craft.armor.nested", ["title"] = "替代图纸"
+                    });
+                task.HandleFlashResponse(valid, null);
+                Assert.True(posted[posted.Count - 1].Value<bool>("success"));
+
+                Action<JObject>[] mutations =
+                {
+                    value => value["materials"][0]["craftingSources"][0]["category"] = "未知分类",
+                    value => value["materials"][0]["craftingSources"][0]["recipeId"] = "craft.Weapon.bad",
+                    value => value["materials"][0]["craftingSources"][1]["recipeId"] = "craft.weapon.nested",
+                    value => value["materials"][0]["craftingSources"][0]["legacyProduct"] = "嵌套产物",
+                    value => value["materials"][0]["procurement"]["equippedOwned"] = 1,
+                    value => value["materials"][0]["procurement"]["battleBoxMaxEnhancement"] = 1,
+                    value => { ((JObject)value["materials"][0]["procurement"])
+                        .Remove("battleBoxOwned"); }
+                };
+                for (int index = 0; index < mutations.Length; index++)
+                {
+                    task.HandleWebRequest("preview", Request("preview", "craft.nested.bad." + index));
+                    JObject malformed = (JObject)valid.DeepClone();
+                    malformed["callId"] = sent[sent.Count - 1]["callId"];
+                    mutations[index](malformed);
+                    task.HandleFlashResponse(malformed, null);
+                    Assert.Equal("malformed_response",
+                        posted[posted.Count - 1].Value<string>("error"));
+                }
+            }
+        }
+
+        [Fact]
         public void IdentityTriples_ArePreservedWhileNearShapeExtraAndCoercionFailClosed()
         {
             var sent = new List<JObject>();
@@ -815,8 +872,16 @@ namespace Launcher.Tests.Tasks
                 coerced["payload"]["recipeIndex"] = "3";
                 task.HandleWebRequest("preview", coerced);
 
+                JObject extraPlan = Request("setPlan", "craft.request.plan-extra");
+                extraPlan["payload"]["displayName"] = "伪字段";
+                task.HandleWebRequest("setPlan", extraPlan);
+
+                JObject overflowingPlan = Request("setPlan", "craft.request.plan-overflow");
+                overflowingPlan["payload"]["expectedRevision"] = 9007199254740991L;
+                task.HandleWebRequest("setPlan", overflowingPlan);
+
                 Assert.Equal(0, sends);
-                Assert.Equal(3, posted.Count);
+                Assert.Equal(5, posted.Count);
                 foreach (JObject response in posted)
                     Assert.Equal("invalid_payload", (string)response["error"]);
             }
@@ -1025,6 +1090,39 @@ namespace Launcher.Tests.Tasks
                 WebOverlayForm.ResolvePanelDomainRoute("close", "crafting"));
         }
 
+        [Fact]
+        public void RecipeShopLease_UsesLatestPreviewSourceWithoutMaterialCatalogSession()
+        {
+            var sent = new List<JObject>();
+            using var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; });
+            task.BindMaterialShopNavigationOwner("crafting", DefaultPanelInstanceId);
+            task.HandleWebRequest("preview", Request("preview", "craft.recipe.route.preview"));
+            int fid = Assert.Single(sent).Value<int>("callId");
+            task.HandleFlashResponse(
+                RecipeNavigationPreviewResponse(fid, "战术握把"), null);
+
+            Assert.False(task.TryAcquireRecipeShopNavigationLease(
+                "crafting", DefaultPanelInstanceId, "recipe.route.wrong",
+                "武器合成", 3, "战术握把", "错误商人", 57,
+                false, null, null, out _));
+            Assert.True(task.TryAcquireRecipeShopNavigationLease(
+                "crafting", DefaultPanelInstanceId, "recipe.route.npc",
+                "武器合成", 3, "战术握把", "迷之盔甲君", 57,
+                false, null, null, out var npcWitness));
+            Assert.True(task.IsMaterialShopNavigationLeaseCurrent(npcWitness));
+            Assert.True(task.ReleaseMaterialShopNavigationLease(npcWitness));
+
+            Assert.True(task.TryAcquireRecipeShopNavigationLease(
+                "crafting", DefaultPanelInstanceId, "recipe.route.kshop",
+                "武器合成", 3, "战术握把", null, 7,
+                true, "k-material-7", "材料", out var kshopWitness));
+            Assert.True(task.IsMaterialShopNavigationLeaseCurrent(kshopWitness));
+            task.BindMaterialShopNavigationOwner("crafting", "panel.crafting.instance.2");
+            Assert.False(task.IsMaterialShopNavigationLeaseCurrent(kshopWitness));
+        }
+
         private static JObject PreviewResponse(int fid)
         {
             return new JObject
@@ -1129,7 +1227,8 @@ namespace Launcher.Tests.Tasks
                 ["acceptedPlan"] = preview["acceptedPlan"].DeepClone(),
                 ["outputReceipt"] = OutputReceiptFromPlan(
                     preview["acceptedPlan"] as JObject),
-                ["balance"] = new JObject { ["money"] = 10, ["kpoints"] = 2 }
+                ["balance"] = new JObject { ["money"] = 10, ["kpoints"] = 2 },
+                ["procurement"] = CommitProcurementState()
             };
         }
 
@@ -1141,13 +1240,16 @@ namespace Launcher.Tests.Tasks
                 ["category"] = "武器合成", ["gender"] = "男",
                 ["balance"] = new JObject { ["money"] = 10, ["kpoints"] = 2 },
                 ["skills"] = new JObject { ["reverseLevel"] = 0, ["smithEnabled"] = false, ["smithLevel"] = 0 },
+                ["procurement"] = PlanSummary(),
                 ["note"] = "改装后的装备默认强化等级为 1",
                 ["recipes"] = new JArray
                 {
                     new JObject
                     {
-                        ["recipeIndex"] = 3, ["title"] = "秋月图纸", ["batchEligible"] = false,
+                        ["recipeId"] = "craft.weapon.004", ["recipeIndex"] = 3,
+                        ["title"] = "秋月图纸", ["batchEligible"] = false,
                         ["canCraftOne"] = true, ["availability"] = "ready", ["materialCount"] = 2,
+                        ["owned"] = OwnedSummary(1), ["plannedCrafts"] = 0,
                         ["output"] = ProjectedItem(
                             "光棱射线弹-强化", "棱镜折射阵列", "全光谱棱镜阵列", true, false),
                         ["baseCost"] = new JObject { ["money"] = 10, ["kpoints"] = 2 }
@@ -1258,7 +1360,177 @@ namespace Launcher.Tests.Tasks
                 ["name"] = name, ["displayName"] = displayName, ["icon"] = icon,
                 ["itemKind"] = "stack", ["required"] = 2, ["owned"] = 1,
                 ["maxEnhancement"] = 0, ["isQuantity"] = true, ["tier"] = "",
-                ["consumed"] = true, ["enough"] = false, ["storageKind"] = storageKind
+                ["consumed"] = true, ["enough"] = false, ["storageKind"] = storageKind,
+                ["craftingSources"] = new JArray(),
+                ["procurement"] = Demand(name)
+            };
+        }
+
+        internal static JObject RecipeNavigationPreviewResponse(
+            int fid, string materialName)
+        {
+            JObject response = PreviewResponse(fid);
+            JObject material = (JObject)response["materials"][0];
+            material["name"] = materialName;
+            material["displayName"] = materialName;
+            material["icon"] = materialName;
+            material["itemKind"] = "equipment";
+            material["required"] = 1;
+            material["owned"] = 0;
+            material["maxEnhancement"] = 0;
+            material["isQuantity"] = false;
+            material["storageKind"] = "unavailable";
+            JObject demand = Demand(materialName);
+            demand["required"] = 1;
+            demand["usableOwned"] = 0;
+            demand["totalOwned"] = 0;
+            demand["craftRequired"] = 1;
+            demand["reasons"][0]["required"] = 1;
+            demand["sources"] = new JArray(
+                new JObject
+                {
+                    ["kind"] = "npcshop",
+                    ["shopId"] = "迷之盔甲君",
+                    ["catalogIndex"] = 57,
+                    ["label"] = "迷之盔甲君"
+                },
+                new JObject
+                {
+                    ["kind"] = "kshop",
+                    ["catalogIndex"] = 7,
+                    ["entryId"] = "k-material-7",
+                    ["category"] = "材料",
+                    ["label"] = "材料"
+                });
+            material["procurement"] = demand;
+            return response;
+        }
+
+        [Fact]
+        public void SetPlan_UsesStableIdentityAndOccThenRequiresExactMutationReceipt()
+        {
+            var sent = new List<JObject>();
+            string web = null;
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => web = value);
+                task.HandleWebRequest("setPlan", Request("setPlan", "craft.plan.ok"));
+
+                JObject command = Assert.Single(sent);
+                Assert.Equal("craftingPlanSet", command.Value<string>("action"));
+                Assert.Equal("craft.weapon.004", command.Value<string>("recipeId"));
+                Assert.Equal(1, command.Value<int>("plannedCrafts"));
+                Assert.Equal(0, command.Value<long>("expectedRevision"));
+                Assert.Equal("write_pending", task.WriteState);
+
+                task.HandleFlashResponse(SetPlanResponse(command.Value<int>("callId")), null);
+                JObject accepted = JObject.Parse(web);
+                AssertOwnerTuple(accepted, "setPlan", "craft.plan.ok");
+                Assert.True(accepted.Value<bool>("success"));
+                Assert.Equal(1, accepted.Value<long>("revision"));
+                Assert.Equal("craft.weapon.004", accepted.Value<string>("recipeId"));
+                Assert.Equal(1, accepted.Value<int>("plannedCrafts"));
+                Assert.Equal("idle", task.WriteState);
+
+                JObject second = Request("setPlan", "craft.plan.bad-revision");
+                second["payload"]["expectedRevision"] = 1;
+                second["payload"]["plannedCrafts"] = 0;
+                task.HandleWebRequest("setPlan", second);
+                JObject malformed = SetPlanResponse(sent[sent.Count - 1].Value<int>("callId"));
+                malformed["revision"] = 7;
+                malformed["plannedCrafts"] = 0;
+                task.HandleFlashResponse(malformed, null);
+
+                JObject rejected = JObject.Parse(web);
+                Assert.Equal("malformed_response", rejected.Value<string>("error"));
+                Assert.True(rejected.Value<bool>("requiresReconcile"));
+                Assert.Equal("needs_reconcile", task.WriteState);
+            }
+        }
+
+        private static JObject PlanSummary()
+        {
+            return new JObject
+            {
+                ["revision"] = 0,
+                ["directShopNavigation"] = false
+            };
+        }
+
+        private static JObject CommitProcurementState()
+        {
+            return new JObject
+            {
+                ["revision"] = 0,
+                ["plannedCrafts"] = 0,
+                ["changed"] = false
+            };
+        }
+
+        private static JObject SetPlanResponse(int fid)
+        {
+            return new JObject
+            {
+                ["task"] = "crafting_response",
+                ["callId"] = fid,
+                ["success"] = true,
+                ["v"] = 1,
+                ["revision"] = 1,
+                ["recipeId"] = "craft.weapon.004",
+                ["plannedCrafts"] = 1
+            };
+        }
+
+        private static JObject OwnedSummary(int bag)
+        {
+            return new JObject
+            {
+                ["bag"] = bag,
+                ["drug"] = 0,
+                ["equipped"] = 0,
+                ["battleBox"] = 0,
+                ["material"] = 0,
+                ["information"] = 0,
+                ["usable"] = bag,
+                ["total"] = bag,
+                ["usableMaxEnhancement"] = bag > 0 ? 1 : 0,
+                ["totalMaxEnhancement"] = bag > 0 ? 1 : 0
+            };
+        }
+
+        private static JObject Demand(string itemName)
+        {
+            return new JObject
+            {
+                ["itemName"] = itemName,
+                ["required"] = 2,
+                ["requiredEnhancement"] = 0,
+                ["usableOwned"] = 1,
+                ["equippedOwned"] = 0,
+                ["battleBoxOwned"] = 0,
+                ["totalOwned"] = 1,
+                ["usableMaxEnhancement"] = 0,
+                ["equippedMaxEnhancement"] = 0,
+                ["battleBoxMaxEnhancement"] = 0,
+                ["totalMaxEnhancement"] = 0,
+                ["obtainMissing"] = 1,
+                ["relocateMissing"] = 0,
+                ["needsEnhancement"] = false,
+                ["craftRequired"] = 2,
+                ["taskRequired"] = 0,
+                ["plannedRecipeCount"] = 1,
+                ["activeTaskCount"] = 0,
+                ["reasons"] = new JArray(new JObject
+                {
+                    ["kind"] = "craft",
+                    ["sourceId"] = "craft.weapon.004",
+                    ["label"] = "秋月图纸",
+                    ["required"] = 2,
+                    ["mode"] = "consume"
+                }),
+                ["sources"] = new JArray()
             };
         }
 

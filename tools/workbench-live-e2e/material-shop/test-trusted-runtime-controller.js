@@ -27,6 +27,8 @@ class FakeRunner {
     this.windowListCounts = new Map();
     this.grants = new Map();
     this.actions = new Map();
+    this.inputLeaseAttempts = 0;
+    this.panelOpenAttempts = 0;
     this._uncertainWrite = false;
   }
 
@@ -168,6 +170,21 @@ class FakeRunner {
       return observation;
     }
     if (method === "lease.acquire") {
+      if (params.kind === "gui_input") {
+        this.inputLeaseAttempts += 1;
+        if (this.inputLeaseAttempts
+            <= (this.options.inputNotQuiescentFailures || 0)) {
+          const error = new Error("input is not quiescent");
+          error.code = "trusted_runner_rpc_error";
+          error.details = { rpcError: { code: -32000,
+            message: "input is not quiescent", data: Object.assign({
+              reasonCode: "input_not_quiescent",
+              reconcileKind: "none",
+              retryable: true,
+            }, this.options.inputNotQuiescentErrorData || {}) } };
+          throw error;
+        }
+      }
       return {
         leaseId: id("lease_" + this.calls.length),
         ownerClientId: id("owner"),
@@ -191,6 +208,20 @@ class FakeRunner {
       };
     }
     if (["panel.open", "input.click", "input.press_key", "input.type_text"].includes(method)) {
+      if (method === "panel.open") {
+        this.panelOpenAttempts += 1;
+        if (this.panelOpenAttempts <= (this.options.panelOpenStaleFocusFailures || 0)) {
+          const error = new Error("focus changed after the Launcher observation");
+          error.code = "trusted_runner_rpc_error";
+          error.details = { rpcError: { code: -32000,
+            message: "focus changed after the Launcher observation", data: Object.assign({
+              reasonCode: "stale_focus",
+              reconcileKind: "none",
+              retryable: true,
+            }, this.options.staleFocusErrorData || {}) } };
+          throw error;
+        }
+      }
       this.actions.set(params.actionId, params);
       if (method === "input.click" && this.options.authoritativeClickError) {
         const error = new Error("authoritative click rejection");
@@ -447,6 +478,98 @@ test("retries only exact transient WebOverlay capture unavailability on one bind
   assert.ok(calls.every((entry) => assert.deepEqual(entry.params, calls[0].params) === undefined));
   assert.equal(runner.calls.filter((entry) => entry.method === "observation.grant.issue").length, 1);
   assert.equal(runner.calls.filter((entry) => entry.method === "window.list").length, 1);
+});
+
+test("retries exact input-not-quiescent with a fresh WGC observation", async () => {
+  const runner = new FakeRunner({ inputNotQuiescentFailures: 2 });
+  const controller = await Controller.start(preparation(), {
+    createRunner: () => runner,
+  });
+  const result = await controller.pressKey({
+    key: "ArrowRight", modifiers: [], repeat: 1,
+    reason: "Move after transient tooltip activity",
+  });
+  assert.equal(result.action.operation, "input.press_key");
+  assert.equal(runner.calls.filter((entry) => entry.method === "lease.acquire").length, 3);
+  assert.equal(runner.calls.filter((entry) => entry.method === "observation.capture").length, 3);
+  assert.equal(runner.calls.filter((entry) => entry.method === "input.press_key").length, 1);
+  assert.equal(result.action.observationId, id("observation_3"));
+  assert.deepEqual(Controller.INPUT_NOT_QUIESCENT_RETRY_DELAYS_MS, [100, 200, 400]);
+});
+
+test("retries exact rejected stale-focus panel.open with a fresh Launcher observation", async () => {
+  const runner = new FakeRunner({ panelOpenStaleFocusFailures: 2 });
+  const controller = await Controller.start(preparation(), {
+    createRunner: () => runner,
+  });
+  const result = await controller.openMaterials("Open after transient focus churn");
+  assert.equal(result.action.operation, "panel.open");
+  assert.equal(runner.calls.filter((entry) => entry.method === "panel.open").length, 3);
+  assert.equal(runner.calls.filter((entry) => entry.method === "lease.acquire").length, 3);
+  assert.equal(runner.calls.filter((entry) => entry.method === "observation.capture").length, 3);
+  assert.equal(result.action.observationId, id("observation_3"));
+  assert.deepEqual(Controller.STALE_FOCUS_RETRY_DELAYS_MS, [100, 200, 400]);
+});
+
+test("does not retry near stale-focus panel.open errors", async (t) => {
+  for (const [name, staleFocusErrorData] of [
+    ["reason", { reasonCode: "stale_observation" }],
+    ["retryable", { retryable: false }],
+    ["reconcile", { reconcileKind: "visual_ambiguous" }],
+  ]) {
+    await t.test(name, async () => {
+      const runner = new FakeRunner({
+        panelOpenStaleFocusFailures: 1,
+        staleFocusErrorData,
+      });
+      const controller = await Controller.start(preparation(), {
+        createRunner: () => runner,
+      });
+      await assert.rejects(controller.openMaterials("Reject near stale-focus tuple"), {
+        code: "trusted_runner_rpc_error",
+      });
+      assert.equal(runner.calls.filter((entry) => entry.method === "panel.open").length, 1);
+      assert.equal(runner.calls.filter((entry) => entry.method === "lease.acquire").length, 1);
+      assert.equal(runner.calls.filter((entry) => entry.method === "observation.capture").length, 1);
+    });
+  }
+});
+
+test("bounds exact stale-focus retries at four total panel.open attempts", async () => {
+  const runner = new FakeRunner({ panelOpenStaleFocusFailures: 4 });
+  const controller = await Controller.start(preparation(), {
+    createRunner: () => runner,
+  });
+  await assert.rejects(controller.openMaterials("Bound persistent stale focus"), {
+    code: "trusted_runner_rpc_error",
+  });
+  assert.equal(runner.calls.filter((entry) => entry.method === "panel.open").length, 4);
+  assert.equal(runner.calls.filter((entry) => entry.method === "observation.capture").length, 4);
+});
+
+test("does not retry near input-not-quiescent errors", async (t) => {
+  for (const [name, inputNotQuiescentErrorData] of [
+    ["reason", { reasonCode: "stale_observation" }],
+    ["retryable", { retryable: false }],
+    ["reconcile", { reconcileKind: "visual_ambiguous" }],
+  ]) {
+    await t.test(name, async () => {
+      const runner = new FakeRunner({
+        inputNotQuiescentFailures: 1,
+        inputNotQuiescentErrorData,
+      });
+      const controller = await Controller.start(preparation(), {
+        createRunner: () => runner,
+      });
+      await assert.rejects(controller.pressKey({
+        key: "ArrowRight", modifiers: [], repeat: 1,
+        reason: "Reject near transient tuple",
+      }), { code: "trusted_runner_rpc_error" });
+      assert.equal(runner.calls.filter((entry) => entry.method === "lease.acquire").length, 1);
+      assert.equal(runner.calls.filter((entry) => entry.method === "observation.capture").length, 1);
+      assert.equal(runner.calls.filter((entry) => entry.method === "input.press_key").length, 0);
+    });
+  }
 });
 
 test("bounds WebOverlay capture-unavailable retries at four total attempts", async () => {

@@ -14,7 +14,7 @@ const LOADED_SCHEMA = "workbench-live-e2e.crafting.loaded-production.v4";
 const FONT_ENVIRONMENT_SCHEMA = "workbench-live-e2e.crafting.font-environment.v1";
 const ICON_PROJECTION_SCHEMA = "workbench-live-e2e.crafting.icon-resource-projection.v1";
 const AS2_ALGORITHM_CONTRACT_SCHEMA =
-  "workbench-live-e2e.crafting.as2-algorithm-contract.v3";
+  "workbench-live-e2e.crafting.as2-algorithm-contract.v4";
 const HEX64 = /^[a-f0-9]{64}$/;
 const GIT_OID = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/;
 const REQUIRED_SOURCE_PHASES = Object.freeze([
@@ -65,6 +65,7 @@ const PANELS_IMPORT_STYLE_WEB = Object.freeze([
   "launcher/web/css/workbench/core.css",
   "launcher/web/css/workbench/profiles.css",
   "launcher/web/css/panels/features.css",
+  "launcher/web/css/panels/stage-select.css",
   "launcher/web/css/workbench/portraits.css",
   "launcher/web/css/workbench/arena.css",
   "launcher/web/css/workbench/inventory.css",
@@ -82,6 +83,13 @@ const PANELS_IMPORT_STYLE_WEB = Object.freeze([
   "launcher/web/css/workbench/motion.css",
   "launcher/web/css/hairdresser.css",
   "launcher/web/css/workbench/utilities.css",
+]);
+
+// Stylesheets loaded by panels outside the Crafting journey may still declare
+// cfn-fonts.local resources that belong to the one global font-pack manifest.
+// Bind those declarations without pretending that Crafting loaded the sheet.
+const FONT_DECLARATION_STYLE_WEB = Object.freeze([
+  "launcher/web/css/task_panel.css",
 ]);
 
 const CRAFTING_LAZY_WEB = Object.freeze([
@@ -119,12 +127,17 @@ const ORGANIZER_LAZY_WEB = Object.freeze([
 
 const HOST_FILES = Object.freeze([
   "launcher/src/Tasks/CraftingTask.cs",
+  "launcher/src/Tasks/MaterialShopAccessTask.cs",
+  "launcher/src/Tasks/NpcShopTask.cs",
+  "launcher/src/Tasks/ShopTask.cs",
   "launcher/src/Tasks/InventoryTask.cs",
   "launcher/src/Tasks/PanelPendingCallTracker.cs",
   "launcher/src/Tasks/PanelBridge.cs",
   "launcher/src/Guardian/AuthorityLogFormatter.cs",
+  "launcher/src/Guardian/MaterialShopNavigationCoordinator.cs",
   "launcher/src/Guardian/PanelHostController.cs",
   "launcher/src/Guardian/PanelRequestOwnerLifecycle.cs",
+  "launcher/src/Guardian/ProcurementProjectionValidator.cs",
   "launcher/src/Guardian/WebOverlayForm.cs",
   "launcher/src/Guardian/LauncherCommandRouter.cs",
   "launcher/src/Guardian/LogManager.cs",
@@ -135,6 +148,7 @@ const HOST_FILES = Object.freeze([
 
 const AS2_FILES = Object.freeze([
   "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+  "scripts/类定义/org/flashNight/arki/item/ProcurementPlanService.as",
   "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
   "scripts/类定义/org/flashNight/arki/item/BaseItem.as",
   "scripts/类定义/org/flashNight/arki/item/EquipmentUtil.as",
@@ -153,25 +167,28 @@ const AS2_FILES = Object.freeze([
   "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
   "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
   "scripts/类定义/LiteJSON.as",
+  "scripts/逻辑系统分区/商城系统_WebView.as",
+  "scripts/逻辑系统分区/商店系统_兼容.as",
 ]);
 
-// Reviewed v2 literals. Capture validates current bytes against these constants; it never
-// derives a replacement contract from the source being tested.
+// Reviewed v4 literals. ItemUtil.require/acquire include bounded stack validation and the
+// same-name equipped-grenade acquisition path. Capture validates current bytes against
+// these constants; it never derives a replacement contract from the source being tested.
 const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "require", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 11, signatureTokenSha256: "789fd14ed13d8e749ae5a448e181a786fa1c295e6e127363aeeb2d3d6c9e455b",
     returnTokenCount: 2, returnTokenSha256: "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
-    bodyTokenCount: 601, bodyTokenSha256: "9d6be98ad3f4336de5d0e77a4024bb8210f1eb787809e6be78e7bc661004e844",
-    tokenCount: 612, normalizedTokenSha256: "7575a7101d448ac41380fcb2352586207fc8326140ab2475659aedad7bd59d98" },
+    bodyTokenCount: 1055, bodyTokenSha256: "9b3fba89be011711c8a80481cf1daf45b27d778f53b48487cf15734148f0313a",
+    tokenCount: 1066, normalizedTokenSha256: "be49a9398ce96a0910e69a88de4b8e552d1d068571e94ee84b31ded0133f87f4" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "acquire", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 11, signatureTokenSha256: "0a2f1ddbfa02223e41bdb15bdc60ed981c3e7178d8e96af343bbf3b22422694c",
     returnTokenCount: 2, returnTokenSha256: "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
-    bodyTokenCount: 701, bodyTokenSha256: "60ab3525d6eaaac255ecc8b1df76afebd35a108eccc77d5d2624bebe29432ea1",
-    tokenCount: 712, normalizedTokenSha256: "d666ebbfb09cf1f08d10e0ccc8d00228b6a8fb66b61ec4ed33be3c3c3de7f00e" },
+    bodyTokenCount: 830, bodyTokenSha256: "2ddfd3de815af09e1c2b4262ef9e9ffab05db90f2726fa7b33c7b5023fd71e21",
+    tokenCount: 841, normalizedTokenSha256: "400fd377f6a8545ef346c94d4e3e1bdf921ecfa50e3cc87e33ed0339276e2bbe" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "contain", classDepth: 0, memberDepth: 1,
@@ -247,15 +264,15 @@ const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
     functionName: "executeCommit", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 11, signatureTokenSha256: "f3460d8207d6a51216e63393b8296b927f3a9954d91c9a3f942a2eb3acf12dcf",
     returnTokenCount: 2, returnTokenSha256: "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
-    bodyTokenCount: 728, bodyTokenSha256: "942b0e6fcc0fb739b9ae57a383e715fcef7cf236c2d577b6ffdf75e434c42e61",
-    tokenCount: 739, normalizedTokenSha256: "6ed800fd3cdbfede032e6fb429400bdeddb2b02053453ba4bf1921e6750e8426" },
+    bodyTokenCount: 760, bodyTokenSha256: "cb1012db337f96edb8f7dd0aceed84e04f7f85d128390e96453e86ba4ff72d5e",
+    tokenCount: 771, normalizedTokenSha256: "220405bdc6c035e56aece08b2c49017e33088243134aaf3eddc19573eaf12af4" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
     className: "org.flashNight.arki.item.CraftingPanelService", modifiers: ["private", "static"],
     functionName: "buildPlan", classDepth: 0, memberDepth: 1,
-    signatureTokenCount: 27, signatureTokenSha256: "33d3439b80c3c761359c4c200b8e03d8a9860499e91b69dd29be9267e4113624",
+    signatureTokenCount: 35, signatureTokenSha256: "5d50ad9c988a154d08609f547cdb8588efc0568ccbf4bbf5189b3903ee9adcb4",
     returnTokenCount: 2, returnTokenSha256: "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
-    bodyTokenCount: 998, bodyTokenSha256: "fa5036d772416705fcd65b7983ee1bc30cbad52f20dac25f19fbe6caf8935ce0",
-    tokenCount: 1025, normalizedTokenSha256: "8a5f9674813f9e3ce0803d9073e941993d6ca46aa90d061fa125cf5bd9e672eb" },
+    bodyTokenCount: 1032, bodyTokenSha256: "66f257c8fc54504c04970b7b33e33da4e4b0f87305073c2162924196009ed682",
+    tokenCount: 1067, normalizedTokenSha256: "3f2f180529830e0ccd61cd4376f89a9b1e0be6136856bac42b6d5a536d26bb19" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
     className: "org.flashNight.arki.item.CraftingPanelService", modifiers: ["private", "static"],
     functionName: "projectOutputDeliveryAfterSubmit", classDepth: 0, memberDepth: 1,
@@ -805,6 +822,30 @@ function deriveConditionalWebResources(root, stylePaths) {
   return { assetPaths, fontUrls: Array.from(new Set(fontUrls)).sort() };
 }
 
+function deriveFontUrls(root, stylePaths) {
+  const fontUrls = [];
+  stylePaths.forEach((relativePath) => {
+    const text = exactText(root, relativePath, "source_style_resource_invalid");
+    Array.from(text.matchAll(/url\(\s*(?:(['"])(.*?)\1|([^'"\s][^)]*?))\s*\)/gi))
+      .map((match) => String(match[2] || match[3] || "").trim())
+      .filter((reference) => reference && !reference.startsWith("data:")
+        && !reference.startsWith("#"))
+      .forEach((reference) => {
+        if (/^https:\/\/cfn-fonts\.local\/[A-Za-z0-9._-]+$/.test(reference)) {
+          fontUrls.push(reference);
+          return;
+        }
+        if (/^[a-z][a-z0-9+.-]*:/i.test(reference) || reference.startsWith("//")) {
+          fail("source_css_external_resource_invalid", "source_identity",
+            "production CSS declares an ungoverned external resource", {
+              parent: relativePath, reference,
+            });
+        }
+      });
+  });
+  return Array.from(new Set(fontUrls)).sort();
+}
+
 function deriveIdlePrewarmResources(root, overlayText) {
   const calls = Array.from(overlayText.matchAll(
     /\bMapPanelData\.prewarmAssets\(\s*(['"])([^'"]+)\1\s*\)/g));
@@ -997,10 +1038,11 @@ function descriptors(root) {
   const styles = verifyOverlayStyleInventory(root);
   const allStyles = styles.overlayStyles.concat(styles.imports);
   const conditional = deriveConditionalWebResources(root, allStyles);
+  const fontUrls = deriveFontUrls(root, allStyles.concat(FONT_DECLARATION_STYLE_WEB));
   const overlayText = exactText(root, "launcher/web/overlay.html",
     "source_idle_prewarm_declaration_invalid");
   const idlePrewarm = deriveIdlePrewarmResources(root, overlayText);
-  parseFontManifest(root, conditional.fontUrls);
+  parseFontManifest(root, fontUrls);
   validateIconManifest(root);
   RuntimeProducer.verifyBuildFileInventory(root);
   const shared = OVERLAY_STARTUP_WEB.filter((entry) => CRAFTING_LAZY_WEB.includes(entry));
@@ -1029,6 +1071,9 @@ function descriptors(root) {
       .map((relativePath) => ({ role: "organizer_lazy_web", relativePath })),
     ...styles.overlayStyles.map((relativePath) => ({ role: "overlay_stylesheet", relativePath })),
     ...styles.imports.map((relativePath) => ({ role: "panels_import_stylesheet", relativePath })),
+    ...FONT_DECLARATION_STYLE_WEB.map((relativePath) => ({
+      role: "font_declaration_stylesheet", relativePath,
+    })),
     ...idlePrewarm.map((relativePath) => ({ role: "idle_prewarm_image", relativePath })),
     ...conditional.assetPaths.map((relativePath) => ({ role: "css_conditional_asset", relativePath })),
     { role: "font_pack_manifest", relativePath: "launcher/web/assets/fonts/font-pack-manifest.json" },
@@ -1306,9 +1351,10 @@ function fontEnvironmentRoot(root, environment) {
 function captureFontEnvironment(root, closure, environment) {
   const manifest = assertBoundCurrentFile(root, closure, "font_pack_manifest",
     "launcher/web/assets/fonts/font-pack-manifest.json", "source_font_manifest_mismatch");
-  const stylePaths = styleFiles(closure).map((entry) => entry.locator.slice("root:".length));
-  const conditional = deriveConditionalWebResources(root, stylePaths);
-  const resources = parseFontManifest(root, conditional.fontUrls);
+  const stylePaths = styleFiles(closure)
+    .concat(roleFiles(closure, "font_declaration_stylesheet"))
+    .map((entry) => entry.locator.slice("root:".length));
+  const resources = parseFontManifest(root, deriveFontUrls(root, stylePaths));
   const mappingRoot = fontEnvironmentRoot(root, environment || process.env);
   const installed = [];
   resources.forEach((entry) => {

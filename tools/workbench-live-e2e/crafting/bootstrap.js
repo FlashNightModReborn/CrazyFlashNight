@@ -248,5 +248,9 @@ async function dispatch(argv) {
 dispatch(process.argv.slice(2)).catch((error) => {
   console.error(error && error.isUsageError ? error.message
     : error && error.stack || error && error.message || String(error));
+  if (error && !error.isUsageError && (error.code || error.phase || error.details)) {
+    console.error(JSON.stringify({ code: error.code || null, phase: error.phase || null,
+      details: error.details || null }, null, 2));
+  }
   process.exitCode = error && error.isUsageError ? 2 : 1;
 });

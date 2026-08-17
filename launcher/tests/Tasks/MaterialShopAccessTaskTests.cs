@@ -47,6 +47,100 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void ProcurementAuthorization_BindsStableRecipeTupleAndExactReceipt()
+        {
+            string sent = null;
+            MaterialShopAccessTask.Result observed = null;
+            using var task = new MaterialShopAccessTask(
+                () => true,
+                payload => { sent = payload; return true; });
+
+            Assert.True(task.TryAuthorize(
+                ProcurementRequest(),
+                () => true,
+                value => observed = value,
+                out int fid));
+
+            JObject wire = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal(
+                new[]
+                {
+                    "task", "action", "callId", "v", "materialName",
+                    "shopId", "catalogIndex", "recipeId",
+                    "category", "recipeIndex"
+                },
+                wire.Properties().Select(p => p.Name));
+            Assert.Equal("craftingProcurementShopAuthorize", wire.Value<string>("action"));
+            Assert.Equal("craft.weapon.004", wire.Value<string>("recipeId"));
+            Assert.Equal("武器合成", wire.Value<string>("category"));
+            Assert.Equal(3, wire.Value<int>("recipeIndex"));
+
+            task.HandleFlashResponse(ProcurementAllow(fid), _ => { });
+
+            Assert.NotNull(observed);
+            Assert.Equal(MaterialShopAccessTask.ResultKind.Allowed, observed.Kind);
+            Assert.Equal("战术握把", observed.ItemName);
+            Assert.Equal(0, task.PendingCount);
+        }
+
+        [Fact]
+        public void ProcurementAllowResponse_RejectsAnyRecipeTupleDrift()
+        {
+            foreach (Action<JObject> mutate in new Action<JObject>[]
+            {
+                value => value["recipeId"] = "craft.weapon.005",
+                value => value["category"] = "属性武器",
+                value => value["recipeIndex"] = 4,
+                value => value["reason"] = "indexed_live_match"
+            })
+            {
+                MaterialShopAccessTask.Result observed = null;
+                using var task = ConnectedTask();
+                task.TryAuthorize(
+                    ProcurementRequest(),
+                    () => true,
+                    value => observed = value,
+                    out int fid);
+                JObject response = ProcurementAllow(fid);
+                mutate(response);
+
+                task.HandleFlashResponse(response, _ => { });
+
+                Assert.Equal(MaterialShopAccessTask.ResultKind.MalformedResponse, observed.Kind);
+            }
+        }
+
+        [Fact]
+        public void KShopProcurementAuthorization_BindsExactCatalogAndRecipeTuple()
+        {
+            string sent = null;
+            MaterialShopAccessTask.Result observed = null;
+            using var task = new MaterialShopAccessTask(
+                () => true,
+                payload => { sent = payload; return true; });
+
+            Assert.True(task.TryAuthorize(
+                KShopProcurementRequest(), () => true,
+                value => observed = value, out int fid));
+
+            JObject wire = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("craftingProcurementKShopAuthorize",
+                wire.Value<string>("action"));
+            Assert.Null(wire["shopId"]);
+            Assert.Null(wire["materialSnapshotId"]);
+            Assert.Equal(11, wire.Count);
+            Assert.Equal("k-material-7", wire.Value<string>("entryId"));
+            Assert.Equal("材料", wire.Value<string>("kshopCategory"));
+            Assert.Equal("武器合成", wire.Value<string>("recipeCategory"));
+
+            task.HandleFlashResponse(KShopProcurementAllow(fid), _ => { });
+
+            Assert.NotNull(observed);
+            Assert.Equal(MaterialShopAccessTask.ResultKind.Allowed, observed.Kind);
+            Assert.Equal("战术握把", observed.ItemName);
+        }
+
+        [Fact]
         public void FidAllocator_UsesMaxWrapsAndSkipsPending()
         {
             var sent = new List<JObject>();
@@ -250,6 +344,36 @@ namespace CF7Launcher.Tests.Tasks
             };
         }
 
+        private static MaterialShopAccessTask.Request ProcurementRequest()
+        {
+            return new MaterialShopAccessTask.Request
+            {
+                MaterialName = "战术握把",
+                ShopId = "迷之盔甲君",
+                CatalogIndex = 57,
+                IsProcurement = true,
+                RecipeId = "craft.weapon.004",
+                Category = "武器合成",
+                RecipeIndex = 3
+            };
+        }
+
+        private static MaterialShopAccessTask.Request KShopProcurementRequest()
+        {
+            return new MaterialShopAccessTask.Request
+            {
+                MaterialName = "战术握把",
+                CatalogIndex = 7,
+                IsProcurement = true,
+                IsKShop = true,
+                EntryId = "k-material-7",
+                KShopCategory = "材料",
+                RecipeId = "craft.weapon.004",
+                Category = "武器合成",
+                RecipeIndex = 3
+            };
+        }
+
         private static JObject Allow(int fid, int catalogIndex = 57)
         {
             return new JObject
@@ -265,6 +389,38 @@ namespace CF7Launcher.Tests.Tasks
                 ["shopId"] = "迷之盔甲君",
                 ["catalogIndex"] = catalogIndex,
                 ["itemName"] = "战术握把"
+            };
+        }
+
+        private static JObject ProcurementAllow(int fid)
+        {
+            JObject response = Allow(fid);
+            response.Remove("materialSnapshotId");
+            response["reason"] = "procurement_indexed_live_match";
+            response["recipeId"] = "craft.weapon.004";
+            response["category"] = "武器合成";
+            response["recipeIndex"] = 3;
+            return response;
+        }
+
+        private static JObject KShopProcurementAllow(int fid)
+        {
+            return new JObject
+            {
+                ["task"] = "material_shop_access_response",
+                ["callId"] = fid,
+                ["success"] = true,
+                ["v"] = 1,
+                ["decision"] = "allow",
+                ["reason"] = "procurement_kshop_indexed_live_match",
+                ["materialName"] = "战术握把",
+                ["catalogIndex"] = 7,
+                ["entryId"] = "k-material-7",
+                ["category"] = "材料",
+                ["itemName"] = "战术握把",
+                ["recipeId"] = "craft.weapon.004",
+                ["recipeCategory"] = "武器合成",
+                ["recipeIndex"] = 3
             };
         }
     }

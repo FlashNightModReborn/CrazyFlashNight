@@ -75,13 +75,16 @@ window.Bridge={
          lifecycle:window.Panels&&Panels.getLifecycle?Panels.getLifecycle():null
        });
      }
-     if(message&&message.type==='panel'&&message.cmd==='open_npc_shop'
-         &&message.panel==='crafting'&&!message.domain){
-       var navigationFailure=String(window.__nextMaterialShopNavigationFailure||'');
+      if(message&&message.type==='panel'
+          &&(message.cmd==='open_npc_shop'||message.cmd==='open_procurement_shop'
+            ||message.cmd==='open_procurement_kshop')
+          &&message.panel==='crafting'&&!message.domain){
+        var navigationCommand=message.cmd;
+        var navigationFailure=String(window.__nextMaterialShopNavigationFailure||'');
        window.__nextMaterialShopNavigationFailure='';
        if(window.__dropNextMaterialShopNavigation){window.__dropNextMaterialShopNavigation=false;return true}
-       if(navigationFailure){setTimeout(function(){emit({type:'panel_resp',panel:'crafting',
-         cmd:'open_npc_shop',callId:message.callId,panelInstanceId:message.panelInstanceId,
+        if(navigationFailure){setTimeout(function(){emit({type:'panel_resp',panel:'crafting',
+          cmd:navigationCommand,callId:message.callId,panelInstanceId:message.panelInstanceId,
          success:false,error:navigationFailure})},8);return true}
        if(window.__mockMaterialShopNavigationCommit){
          window.__mockMaterialShopNavigationCommit=false;
@@ -128,10 +131,14 @@ window.PanelTooltip=(function(){
   function bind(node,options,scope){
     var cache=options.cache||{},key=String(options.key||''),item=options.item,destroyed=false;
     function enter(e){
-      if(cache[key]){__tooltipStats.cacheHits++;__tooltipStats.richRenders++;options.renderRich(item,cache[key]);return}
-      options.renderBasic(item);__tooltipStats.fetches++;options.fetch(item,function(response){
+      if(cache[key]&&typeof options.renderRich==='function'){
+        __tooltipStats.cacheHits++;__tooltipStats.richRenders++;options.renderRich(item,cache[key]);return}
+      if(typeof options.renderBasic==='function')options.renderBasic(item);
+      if(typeof options.fetch!=='function')return;
+      __tooltipStats.fetches++;options.fetch(item,function(response){
         if(destroyed||scope&&scope.disposed)return;
-        if(response&&response.success){cache[key]=response;__tooltipStats.richRenders++;options.renderRich(item,response)}
+        if(response&&response.success&&typeof options.renderRich==='function'){
+          cache[key]=response;__tooltipStats.richRenders++;options.renderRich(item,response)}
       })
     }
     node.addEventListener('pointerenter',enter);__tooltipStats.bindings++;
@@ -148,8 +155,10 @@ window.PanelTooltip=(function(){
     _visible:false,showAtMouse:function(){this._visible=true},followMouse:function(){},hide:function(){this._visible=false},
     isVisible:function(){return this._visible},updateContent:function(){},dynamicIconHtml:function(){return ''},
     staticIconUrl:function(){return ''},inferLayoutType:function(){return 'narrow'},buildItemRichHtml:function(){return '<div>rich</div>'},
+    bindAsync:function(node,options){return bind(node,options,null)},
     bindAsyncHover:function(node,options){return bind(node,options,null)},releaseTree:releaseTree,
     createScope:function(label){var scope={label:label,disposed:false,bindings:[],
+      bindAsync:function(node,options){return scope.disposed?null:bind(node,options,scope)},
       bindAsyncHover:function(node,options){return scope.disposed?null:bind(node,options,scope)},
       releaseTree:function(root){return releaseTree(root,scope)},
       dispose:function(){if(scope.disposed)return false;scope.disposed=true;scope.bindings.slice().forEach(function(binding){binding.destroy()});scope.bindings=[];return true}};
@@ -239,7 +248,9 @@ if(window.__craftingHarnessScenario==='pg-craft-current-coverage'
     requestClose:function(){return false}
   };
 }
-  var money=1000,materials=2,commitCount=0,lastAcceptedPlan=null;window.__specialWeaponMode='';
+  var money=1000,materials=2,commitCount=0,lastAcceptedPlan=null,planRevision=0,
+    plannedCraftsByRecipe={};window.__specialWeaponMode='';window.__previewEnhancementLevel=null;
+  window.__procurementDirectShopNavigation=true;
   var identityMode=window.__craftingHarnessScenario==='pg-crafting-identity';
   var legacyMaterialsMode=window.__craftingHarnessScenario==='pg-materials-v1';
   var materialRecipeScenario=window.__craftingHarnessScenario==='pg-material-recipe-jump';
@@ -299,15 +310,25 @@ function availability(index){
   if(index===0){if(materials<2)return'material_missing';if(money<90)return'insufficient_money';return'ready'}
   return materials>=1?'ready':'material_missing'
 }
-  function recipe(index,value){value.canCraftOne=availability(index)==='ready';value.availability=availability(index);return value}
+  function recipeIdFor(index){return index===0?'craft.weapon-synthesis.test-sidearm':'craft.weapon-synthesis.test-consumable'}
+  function ownedSummary(index){return index===0
+    ?{bag:1,drug:0,equipped:1,battleBox:1,material:0,information:0,usable:1,total:3,
+      usableMaxEnhancement:2,totalMaxEnhancement:7}
+    :{bag:0,drug:2,equipped:0,battleBox:0,material:0,information:0,usable:2,total:2,
+      usableMaxEnhancement:0,totalMaxEnhancement:0}}
+  function recipe(index,value){var recipeId=recipeIdFor(index);value.recipeId=recipeId;
+    value.owned=ownedSummary(index);value.plannedCrafts=Number(plannedCraftsByRecipe[recipeId]||0);
+    value.canCraftOne=availability(index)==='ready';value.availability=availability(index);return value}
   function weaponOutput(preview){
     var identity=__specialWeaponMode==='dual'
       ?{name:'炎寒对剑',displayName:'炎寒对剑',icon:'炎寒对剑',requiredLevel:12,actionType:'双刀',setId:'',setName:''}
       :__specialWeaponMode==='sheath'
         ?{name:'血刀配鞘版',displayName:'血刀-入鞘',icon:'血刀-入鞘',requiredLevel:24,actionType:'疾影',setId:'',setName:''}
         :{name:'异形女王毒刺',displayName:'新测试枪',icon:'异形女王毒刺',requiredLevel:12,actionType:'',setId:'test_sidearm',setName:'测试侧武器套装'};
+    var enhancement=preview&&window.__previewEnhancementLevel!=null
+      ?Number(window.__previewEnhancementLevel):preview?5:1;
     return{name:identity.name,displayName:identity.displayName,icon:identity.icon,itemKind:'equipment',
-      value:preview?5:1,quantity:1,enhancementLevel:preview?5:1,requiredLevel:identity.requiredLevel,
+      value:enhancement,quantity:1,enhancementLevel:enhancement,requiredLevel:identity.requiredLevel,
       majorType:'武器',use:'刀',actionType:identity.actionType,weaponType:'刀',
       setId:identity.setId,setName:identity.setName,setOrder:0}
   }
@@ -316,9 +337,51 @@ function availability(index){
       value:3*count,quantity:3*count,enhancementLevel:0,requiredLevel:1,
       majorType:'消耗品',use:'药剂',actionType:'',weaponType:'',setId:'',setName:'',setOrder:0}
   }
-  function projectedMaterial(name,required,owned,consumed,enough,storageKind){
+  function catalogOutput(output){var result=JSON.parse(JSON.stringify(output));delete result.requiredLevel;return result}
+  function procurementDemand(name,required,owned,consumed){
+    var sources=name==='测试矿石'?[{kind:'npcshop',shopId:'迷之盔甲君',catalogIndex:57,label:'迷之盔甲君'},
+      {kind:'npcshop',shopId:'Shop Girl',catalogIndex:58,label:'Shop Girl'},
+      {kind:'kshop',catalogIndex:4,entryId:'mat-shop-4',
+        category:'材料',label:'材料'}]:[];
+    return{itemName:name,required:required,requiredEnhancement:0,usableOwned:owned,
+      equippedOwned:0,battleBoxOwned:0,totalOwned:owned,
+      usableMaxEnhancement:0,equippedMaxEnhancement:0,battleBoxMaxEnhancement:0,
+      totalMaxEnhancement:0,obtainMissing:Math.max(0,required-owned),
+      relocateMissing:0,needsEnhancement:false,craftRequired:required,taskRequired:0,
+      plannedRecipeCount:0,activeTaskCount:0,reasons:[{kind:'craft',sourceId:'current',
+        label:'当前合成',required:required,mode:consumed?'consume':'retain'}],sources:sources}
+  }
+  function projectedMaterial(name,required,owned,consumed,enough,storageKind,craftingSources){
     return{name:name,displayName:name,icon:name,itemKind:'stack',required:required,owned:owned,
-      maxEnhancement:0,isQuantity:true,tier:'',consumed:consumed,enough:enough,storageKind:storageKind}
+      maxEnhancement:0,isQuantity:true,tier:'',consumed:consumed,enough:enough,storageKind:storageKind,
+      craftingSources:craftingSources||[],
+      procurement:procurementDemand(name,required,owned,consumed)}
+  }
+  function projectedEquipmentMaterial(name,requiredEnhancement,usableOwned,totalOwned,
+      usableMaxEnhancement,totalMaxEnhancement,equippedOwned,battleBoxOwned,
+      equippedMaxEnhancement,battleBoxMaxEnhancement){
+    equippedOwned=Math.max(0,Number(equippedOwned)||0);
+    battleBoxOwned=Math.max(0,Number(battleBoxOwned)||0);
+    equippedMaxEnhancement=Math.max(0,Number(equippedMaxEnhancement)||0);
+    battleBoxMaxEnhancement=Math.max(0,Number(battleBoxMaxEnhancement)||0);
+    var enough=usableOwned>0&&usableMaxEnhancement>=requiredEnhancement;
+    var needsEnhancement=totalMaxEnhancement<requiredEnhancement;
+    var relocateMissing=!needsEnhancement&&usableMaxEnhancement<requiredEnhancement
+      &&totalOwned>usableOwned?1:0;
+    return{name:name,displayName:name,icon:'异形女王毒刺',itemKind:'equipment',
+      required:requiredEnhancement,owned:usableOwned,maxEnhancement:usableMaxEnhancement,
+      isQuantity:false,tier:'',consumed:true,enough:enough,storageKind:usableOwned>0?'bag':'unavailable',
+      craftingSources:[],
+      procurement:{itemName:name,required:1,requiredEnhancement:requiredEnhancement,
+        usableOwned:usableOwned,equippedOwned:equippedOwned,battleBoxOwned:battleBoxOwned,
+        totalOwned:totalOwned,usableMaxEnhancement:usableMaxEnhancement,
+        equippedMaxEnhancement:equippedMaxEnhancement,
+        battleBoxMaxEnhancement:battleBoxMaxEnhancement,
+        totalMaxEnhancement:totalMaxEnhancement,
+        obtainMissing:totalOwned>0?0:1,relocateMissing:relocateMissing,
+        needsEnhancement:needsEnhancement,
+        craftRequired:1,taskRequired:0,plannedRecipeCount:0,activeTaskCount:0,
+        reasons:[{kind:'craft',sourceId:'current',label:'当前合成',required:1,mode:'consume'}],sources:[]}}
   }
   function deliveryFor(output){
     return output.use==='药剂'
@@ -347,13 +410,28 @@ function availability(index){
     receipt.confirmProjection.lastUpdate=Date.now();
     return receipt
   }
-function snapshot(){return{success:true,v:1,category:'武器合成',gender:'女',note:'铁匠效果：减少货币消耗',
+function snapshot(category){
+  category=String(category||'武器合成');
+  if(category==='基础防具'){
+    var nestedRecipe=recipe(1,{recipeIndex:0,title:'测试药剂替代图纸',batchEligible:true,
+      output:catalogOutput(stackOutput(1)),baseCost:{money:0,kpoints:0},materialCount:1});
+    nestedRecipe.recipeId='craft.basic-armor.test-consumable';
+    nestedRecipe.plannedCrafts=Number(plannedCraftsByRecipe[nestedRecipe.recipeId]||0);
+    return{success:true,v:1,category:category,gender:'女',note:'跨分类嵌套配方',
+      procurement:{revision:planRevision,directShopNavigation:window.__procurementDirectShopNavigation===true},
+      balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},
+      recipes:[nestedRecipe]}
+  }
+  return{success:true,v:1,category:'武器合成',gender:'女',
+    note:window.__previewEnhancementLevel===1
+      ?'改装后的装备默认强化等级为 1':'铁匠效果：减少货币消耗',
+    procurement:{revision:planRevision,directShopNavigation:window.__procurementDirectShopNavigation===true},
     balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},recipes:[
-    recipe(0,{recipeIndex:0,title:'新测试枪图纸',batchEligible:false,output:weaponOutput(false),baseCost:{money:100,kpoints:0},materialCount:2}),
-    recipe(1,{recipeIndex:1,title:'测试药剂图纸',batchEligible:true,output:stackOutput(1),baseCost:{money:0,kpoints:0},materialCount:1})
+    recipe(0,{recipeIndex:0,title:'新测试枪图纸',batchEligible:false,output:catalogOutput(weaponOutput(false)),baseCost:{money:100,kpoints:0},materialCount:2}),
+    recipe(1,{recipeIndex:1,title:'测试药剂图纸',batchEligible:true,output:catalogOutput(stackOutput(1)),baseCost:{money:0,kpoints:0},materialCount:1})
   ]}}
-function materialRecipeSnapshot(){
-  var value=snapshot(),mode=String(window.__materialRecipeSnapshotMode||'');
+function materialRecipeSnapshot(category){
+  var value=snapshot(category),mode=String(window.__materialRecipeSnapshotMode||'');
   window.__materialRecipeSnapshotMode='';
   if(mode==='filtered_first')value.recipes=[value.recipes[1],value.recipes[0]];
   else if(mode==='category_mismatch')value.category='烹饪';
@@ -368,8 +446,21 @@ function materialRecipeSnapshot(){
   }
   return value
 }
-function preview(index,count){
+function preview(index,count,category){
+  category=String(category||'武器合成');
   count=Number(count)||1;
+  if(category==='基础防具'){
+    var nestedOutput=stackOutput(count),nestedMaterial=projectedMaterial(
+      '测试矿石',count,materials,true,materials>=count,'material_collection');
+    var nestedDelivery=deliveryFor(nestedOutput),nestedCanCommit=materials>=count;
+    return{success:true,v:1,category:category,recipeIndex:index,craftCount:count,
+      batchEligible:true,maxCraftCount:Math.min(99,materials),output:nestedOutput,
+      materials:[nestedMaterial],cost:{money:0,kpoints:0},
+      balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},
+      levelAllowed:true,enoughMaterials:nestedCanCommit,enoughMoney:true,enoughKpoints:true,
+      enoughSpace:true,canCommit:nestedCanCommit,
+      blockingError:nestedCanCommit?'':'material_missing',outputDelivery:nestedDelivery}
+  }
   var batch=index===1,max=batch?Math.min(99,materials):1;
   var enoughMaterials=index===0?materials>=2:materials>=count;
   var enoughMoney=index!==0||money>=90;
@@ -378,6 +469,21 @@ function preview(index,count){
     ?[projectedMaterial('测试图纸',1,1,false,true,'information_collection'),
       projectedMaterial('测试矿石',2,materials,true,materials>=2,'material_collection')]
     :[projectedMaterial('测试矿石',count,materials,true,enoughMaterials,'material_collection')];
+  if(index===0&&window.__craftingHarnessScenario==='pg-crafting-procurement'){
+    materialPlan.push(projectedEquipmentMaterial('缺失的测试装备',1,0,0,0,0));
+    materialPlan.push(projectedEquipmentMaterial('强化不足的测试装备',13,1,1,1,1));
+    materialPlan.push(projectedEquipmentMaterial(
+      '战备箱中的测试装备',1,0,1,0,1,0,1,0,1));
+    materialPlan.push(projectedEquipmentMaterial(
+      '已装备的测试装备',1,0,1,0,1,1,0,1,0));
+    materialPlan.push(projectedMaterial('测试药剂',1,0,true,false,'unavailable',[
+      {category:'武器合成',recipeIndex:1,
+        recipeId:'craft.weapon-synthesis.test-consumable',title:'测试药剂图纸'},
+      {category:'基础防具',recipeIndex:0,
+        recipeId:'craft.basic-armor.test-consumable',title:'测试药剂替代图纸'}
+    ]));
+    enoughMaterials=false
+  }
   var cost={money:index===0?90:0,kpoints:0},outputDelivery=deliveryFor(output);
   var canCommit=enoughMaterials&&enoughMoney&&outputDelivery.available;
   var result={success:true,v:1,category:'武器合成',recipeIndex:index,craftCount:count,
@@ -471,7 +577,9 @@ function materialCatalogV2(){
     modFacetIds:{grade:'high',scope:'firearm',role:'mechanism'},
     recipePurposeIds:identityMode?['recipe:武器合成']:['recipe:烹饪','recipe:武器合成'],
     directPurposeIds:firstDirectPurposeIds,structuredPurposeCount:normalUseCount+firstDirectPurposeIds.length,
-    sourceCount:materialRecipeScenario?5:4,dropVariantCount:6,useCount:normalUseCount,hasSourceSummary:true};
+    sourceCount:materialRecipeScenario?5
+      :window.__craftingHarnessScenario==='pg-crafting-procurement'?5:4,
+    dropVariantCount:6,useCount:normalUseCount,hasSourceSummary:true};
   if(!identityMalformed){first.displayName=identityMode?identity.displayName:'测试矿石';first.icon=identityMode?identity.icon:'测试矿石'}
   var emptyDirectPurposeIds=materialInfrastructureScenario?['system:infrastructure_upgrade']:[];
   var result=[first,{name:'空用途材料',displayName:'空用途材料',icon:'空用途材料',owned:0,
@@ -518,6 +626,9 @@ function v2IndexedSources(materialName){var sources=[
   {kind:'enemy',sourceKey:'lp1|5:enemy|8:敌人-测试乙',sourceOrder:3,enemyType:'敌人-测试乙',displayName:'测试敌人乙',
     chanceModel:'enemy_prd_with_reverse_bonus',variants:[enemyVariant(0,3,1,3),enemyVariant(1,5,4,null)]}
 ];
+  if(window.__craftingHarnessScenario==='pg-crafting-procurement')sources.push({
+    kind:'kshop',sourceKey:'lp1|5:kshop|1:4',sourceOrder:4,catalogIndex:4,
+    entryId:'k-material-4',category:'材料',priceK:12});
   if(materialRecipeScenario)sources.push({kind:'craft',sourceKey:'lp1|5:craft|4:武器合成|1:0',
     sourceOrder:4,category:'武器合成',recipeIndex:0,productName:materialName,price:90,kpoints:0});
   return sources
@@ -608,8 +719,18 @@ function respond(message){
   }
   var result={type:'panel_resp',domain:'crafting',panel:message.panel,
     panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId};
-  if(message.cmd==='snapshot')Object.assign(result,materialRecipeSnapshot());
-  else if(message.cmd==='preview')Object.assign(result,preview(message.payload.recipeIndex,message.payload.craftCount));
+  if(message.cmd==='snapshot')Object.assign(result,materialRecipeSnapshot(message.payload&&message.payload.category));
+  else if(message.cmd==='preview')Object.assign(result,preview(message.payload.recipeIndex,
+    message.payload.craftCount,message.payload.category));
+  else if(message.cmd==='setPlan'){
+    var requestedRecipeId=String(message.payload.recipeId||''),requestedPlan=Number(message.payload.plannedCrafts),
+      expectedRevision=Number(message.payload.expectedRevision);
+    if(expectedRevision!==planRevision)Object.assign(result,{success:false,error:'stale_state'});
+    else{planRevision++;if(requestedPlan>0)plannedCraftsByRecipe[requestedRecipeId]=requestedPlan;
+      else delete plannedCraftsByRecipe[requestedRecipeId];
+      Object.assign(result,{success:true,v:1,revision:planRevision,recipeId:requestedRecipeId,
+        plannedCrafts:requestedPlan})}
+  }
   else if(message.cmd==='tooltip')Object.assign(result,{success:true,v:1,itemName:message.payload.itemName,displayName:message.payload.itemName,descHTML:'说明',introHTML:'简介'});
   else if(message.cmd==='materials'){
     if(emptyMaterialCatalogOnce){emptyMaterialCatalogOnce=false;
@@ -640,11 +761,16 @@ function respond(message){
     var accepted=JSON.parse(JSON.stringify(lastAcceptedPlan));
     commitCount++;
     if(accepted.recipeIndex===0){materials-=2;money-=90}else materials-=accepted.craftCount;
+    var committedRecipeId=recipeIdFor(accepted.recipeIndex),plannedBefore=Number(plannedCraftsByRecipe[committedRecipeId]||0),
+      plannedAfter=Math.max(0,plannedBefore-accepted.craftCount),planChanged=plannedBefore>0;
+    if(planChanged){planRevision++;if(plannedAfter>0)plannedCraftsByRecipe[committedRecipeId]=plannedAfter;
+      else delete plannedCraftsByRecipe[committedRecipeId]}
     Object.assign(result,{success:true,v:1,operation:'commit',category:accepted.category,
       recipeIndex:accepted.recipeIndex,craftCount:accepted.craftCount,
       crafted:JSON.parse(JSON.stringify(accepted.output)),acceptedPlan:accepted,
       outputReceipt:outputReceiptFor(accepted),
-      balance:{money:money,kpoints:100}})
+      balance:{money:money,kpoints:100},
+      procurement:{revision:planRevision,plannedCrafts:plannedAfter,changed:planChanged}})
   }
   emit(result)
 }
@@ -672,6 +798,15 @@ function respond(message){
 (async function(){var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}function wait(){return new Promise(function(r){setTimeout(r,35)})}async function waitFor(test,timeout){var deadline=Date.now()+(timeout||1000);while(Date.now()<deadline){if(test())return true;await wait()}return false}
  function quantityButton(label){return document.querySelector('.crafting-quantity-inputs button[aria-label^="'+label+'"]')}
 var harnessVisualMode=new URLSearchParams(location.search).get('visual');
+if(harnessVisualMode==='procurement'){
+  localStorage.removeItem('cf7.itemgrid.mode.crafting-recipes');
+  materials=0;window.__procurementDirectShopNavigation=true;
+  Panels.open('crafting',{category:'武器合成',panelInstanceId:'crafting.visual.procurement'});
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy
+    &&document.querySelectorAll('.crafting-material-row').length>=2
+    &&document.querySelectorAll('.crafting-material-shop-btn[data-shop-portrait-source="manifest"]').length===2},1800);
+  window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
+}
 if(harnessVisualMode==='materials'||harnessVisualMode==='materials-full'
     ||harnessVisualMode==='materials-help'||harnessVisualMode==='materials-uses'){
   Panels.open('crafting',{view:'materials',source:'visual-harness'});
@@ -1906,7 +2041,354 @@ async function runPgMaterialShopNavigation(){
     Panels.getActive()===null&&sameLifecycle(Panels.getLastClosedLifecycle(),replacementTuple));
   window.__materialShopAccessMode='unavailable'
 }
+async function runPgCraftingProcurement(){
+  if(Panels.getActive())Panels.close();
+  localStorage.removeItem('cf7.itemgrid.mode.crafting-recipes');
+  materials=0;money=1000;planRevision=0;plannedCraftsByRecipe={};
+  window.__previewEnhancementLevel=1;
+  window.__procurementDirectShopNavigation=true;
+  window.__materialShopAccessMode='full';
+  Panels.open('crafting',{category:'武器合成',panelInstanceId:'crafting.pg.procurement.1'});
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy
+    &&document.querySelectorAll('.crafting-recipe-card').length===2
+    &&document.querySelector('.crafting-plan-btn')},1800);
+
+  var panel=document.querySelector('.crafting-panel'),grid=document.querySelector('.crafting-catalog-grid');
+  var fullButton=document.querySelector('.item-grid-mode-option[data-layout-mode="full"]');
+  var compactButton=document.querySelector('.item-grid-mode-option[data-layout-mode="compact"]');
+  ok('PG procurement recipe catalog defaults to full independently from the compact material archive',
+    panel&&panel.getAttribute('data-layout-mode')==='full'&&fullButton
+      &&fullButton.getAttribute('aria-pressed')==='true'&&grid&&!grid.classList.contains('item-grid-compact'));
+
+  var cards=document.querySelectorAll('.crafting-recipe-card'),ownedBadges=document.querySelectorAll('.crafting-card-owned');
+  var outputSummary=document.querySelector('.crafting-output-card p');
+  var detailMeta=document.querySelector('.crafting-detail-view .workbench-view-meta');
+  var outputIconButton=document.querySelector('.crafting-output-icon');
+  var outputIconImage=outputIconButton&&outputIconButton.querySelector(
+    '.kshop-icon,.kshop-icon-placeholder');
+  ok('PG procurement full cards and detail expose total owned plus bag equipped and accessible BattleBox breakdown',
+    cards.length===2&&ownedBadges.length===2&&ownedBadges[0].textContent==='3'
+      &&ownedBadges[1].textContent==='2'&&cards[0].getAttribute('aria-label').indexOf('当前持有 3')>=0
+      &&outputSummary&&outputSummary.textContent.indexOf('需求等级 12')>=0
+      &&outputSummary.textContent.indexOf('持有 3')>=0
+      &&outputSummary.textContent.indexOf('背包 1')>=0
+      &&outputSummary.textContent.indexOf('已装备 1')>=0
+      &&outputSummary.textContent.indexOf('战备箱 1')>=0
+      &&outputSummary.textContent.indexOf('强化 +1')<0
+      &&detailMeta&&detailMeta.textContent==='提交前会再次校验材料与费用'
+      &&outputIconButton&&outputIconButton.offsetWidth===68
+      &&parseFloat(getComputedStyle(outputIconButton).borderTopWidth)===0
+      &&outputIconImage&&outputIconImage.offsetWidth===64&&outputIconImage.offsetHeight===64,
+    JSON.stringify({cards:[cards[0]&&cards[0].getAttribute('aria-label'),cards[1]&&cards[1].getAttribute('aria-label')],
+      detail:outputSummary&&outputSummary.textContent,meta:detailMeta&&detailMeta.textContent}));
+
+  compactButton.click();await wait();
+  var compactCard=document.querySelector('.crafting-recipe-card');
+  var compactColumns=getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/);
+  ok('PG procurement compact mode persists an exact ten-column 54px icon-first recipe grid while retaining owned and plan badges',
+    panel.getAttribute('data-layout-mode')==='compact'&&grid.classList.contains('item-grid-compact')
+      &&localStorage.getItem('cf7.itemgrid.mode.crafting-recipes')==='compact'
+      &&compactColumns.length===10&&getComputedStyle(compactCard).height==='54px'
+      &&compactCard.querySelector('.crafting-card-owned')
+      &&compactCard.querySelector('.crafting-card-planned'),
+    JSON.stringify({columns:compactColumns,height:getComputedStyle(compactCard).height}));
+  fullButton.click();await wait();
+  ok('PG procurement explicit full selection restores authored recipe-card density',
+    panel.getAttribute('data-layout-mode')==='full'&&!grid.classList.contains('item-grid-compact')
+      &&localStorage.getItem('cf7.itemgrid.mode.crafting-recipes')==='full'
+      &&getComputedStyle(document.querySelector('.crafting-recipe-card')).height==='78px');
+
+  var setPlanBefore=__sent.filter(function(message){return message.cmd==='setPlan'}).length;
+  document.querySelector('.crafting-plan-btn').focus();
+  document.querySelector('.crafting-plan-btn').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();var badge=document.querySelector('.crafting-card-planned:not([hidden])');
+    return !state.planBusy&&badge&&document.querySelector('.crafting-plan-btn').getAttribute('aria-pressed')==='true'},1200);
+  var setPlanMessages=__sent.filter(function(message){return message.cmd==='setPlan'}),setPlan=setPlanMessages[setPlanBefore];
+  var markedBadge=document.querySelector('.crafting-card-planned:not([hidden])'),markedButton=document.querySelector('.crafting-plan-btn');
+  ok('PG procurement mark writes one OCC-guarded stable recipe identity and projects the saved badge',
+    setPlanMessages.length===setPlanBefore+1&&setPlan&&setPlan.payload.recipeId==='craft.weapon-synthesis.test-sidearm'
+      &&setPlan.payload.plannedCrafts===1&&setPlan.payload.expectedRevision===0
+      &&markedBadge&&markedBadge.textContent==='标 1'
+      &&markedButton&&markedButton.textContent.indexOf('待合成 ×1')>=0
+      &&document.querySelector('.crafting-plan-status[data-state="success"]')
+      &&document.querySelector('.crafting-plan-status').textContent.indexOf('已保存')>=0
+      &&document.activeElement===markedButton,
+    JSON.stringify({message:setPlan,state:CraftingPanel.debugState(),toasts:__toasts.slice(-3)}));
+
+  var increment=document.querySelector('[data-plan-action="increment"]');
+  increment.focus();increment.click();
+  await waitFor(function(){return !CraftingPanel.debugState().planBusy
+    &&document.querySelector('.crafting-plan-btn').textContent.indexOf('待合成 ×2')>=0},1200);
+  var incrementMessage=__sent.filter(function(message){return message.cmd==='setPlan'}).slice(-1)[0];
+  var decrement=document.querySelector('[data-plan-action="decrement"]');
+  decrement.focus();decrement.click();
+  await waitFor(function(){return !CraftingPanel.debugState().planBusy
+    &&document.querySelector('.crafting-plan-btn').textContent.indexOf('待合成 ×1')>=0},1200);
+  var decrementMessage=__sent.filter(function(message){return message.cmd==='setPlan'}).slice(-1)[0];
+  var restoredDecrement=document.querySelector('[data-plan-action="decrement"]');
+  var restoredPlan=document.querySelector('.crafting-plan-control');
+  var restoredPlanButton=document.querySelector('.crafting-plan-btn');
+  var restoredIncrement=document.querySelector('[data-plan-action="increment"]');
+  var restoredPlanRect=restoredPlan.getBoundingClientRect();
+  var restoredDecrementRect=restoredDecrement.getBoundingClientRect();
+  var restoredPlanButtonRect=restoredPlanButton.getBoundingClientRect();
+  var restoredIncrementRect=restoredIncrement.getBoundingClientRect();
+  var liveTooltipBindings=Array.prototype.slice.call(document.querySelectorAll('*'))
+    .filter(function(node){return !!node.__panelTooltipBinding}).length;
+  var outstandingTooltipBindings=__tooltipStats.bindings-__tooltipStats.destroyed;
+  ok('PG procurement plan controls persist multiple copies and decrement without collapsing the recipe identity',
+    incrementMessage&&incrementMessage.payload.recipeId==='craft.weapon-synthesis.test-sidearm'
+      &&incrementMessage.payload.plannedCrafts===2&&incrementMessage.payload.expectedRevision===1
+      &&decrementMessage&&decrementMessage.payload.recipeId==='craft.weapon-synthesis.test-sidearm'
+      &&decrementMessage.payload.plannedCrafts===1&&decrementMessage.payload.expectedRevision===2
+      &&document.querySelector('.crafting-card-planned:not([hidden])').textContent==='标 1'
+      &&restoredPlanButton.textContent==='待合成 ×1'
+      &&restoredPlan.offsetHeight<=26
+      &&Math.abs(restoredDecrementRect.right-restoredPlanButtonRect.left)<=1
+      &&Math.abs(restoredPlanButtonRect.right-restoredIncrementRect.left)<=1
+      &&document.activeElement===restoredDecrement
+      &&outstandingTooltipBindings===liveTooltipBindings,
+    JSON.stringify({increment:incrementMessage,decrement:decrementMessage,
+      planGeometry:{height:restoredPlanRect.height,layoutHeight:restoredPlan.offsetHeight,
+        decrementRight:restoredDecrementRect.right,buttonLeft:restoredPlanButtonRect.left,
+        buttonRight:restoredPlanButtonRect.right,incrementLeft:restoredIncrementRect.left},
+      planLabel:restoredPlanButton.textContent,active:document.activeElement&&document.activeElement.outerHTML,
+      tooltipBindings:{outstanding:outstandingTooltipBindings,live:liveTooltipBindings}}));
+
+  var shortage=document.querySelector('.crafting-material-row.procurement-needed');
+  await waitFor(function(){return shortage.querySelectorAll(
+    '.crafting-material-shop-btn[data-shop-portrait-source="manifest"]').length===2},500);
+  var directButtons=Array.prototype.slice.call(
+    shortage.querySelectorAll('.crafting-material-shop-btn:not(:disabled)'));
+  var directButton=directButtons.filter(function(button){return button.getAttribute('data-shop-label')==='迷之盔甲君'})[0];
+  var secondNpcButton=directButtons.filter(function(button){return button.getAttribute('data-shop-label')==='Shop Girl'})[0];
+  var directKShopButton=directButtons.filter(function(button){return button.getAttribute('data-procurement-source')==='kshop'})[0];
+  var shortageNote=shortage.querySelector('.crafting-material-copy small');
+  ok('PG procurement uses one quantity fraction plus project tooltips for exact NPC and KShop destinations',
+    shortage&&shortageNote&&shortageNote.textContent==='0/2'
+      &&!shortageNote.hasAttribute('title')
+      &&shortageNote.getAttribute('data-crafting-tooltip').indexOf('需购 ×2 · 当前合成')>=0
+      &&directButton&&!directButton.hasAttribute('title')
+      &&directButton.getAttribute('data-crafting-tooltip')==='迷之盔甲君 · 前往购买'
+      &&secondNpcButton&&!secondNpcButton.hasAttribute('title')
+      &&secondNpcButton.getAttribute('data-crafting-tooltip')==='Shop Girl · 前往购买'
+      &&directKShopButton&&!directKShopButton.hasAttribute('title')
+      &&directKShopButton.getAttribute('data-crafting-tooltip')==='K 点商城 · 前往购买'
+      &&shortageNote.__panelTooltipBinding&&directButton.__panelTooltipBinding
+      &&!shortage.querySelector('.crafting-material-source-chip'));
+  var materialRows=Array.prototype.slice.call(document.querySelectorAll('.crafting-material-row'));
+  var rowHeights=materialRows.map(function(row){return row.offsetHeight});
+  var materialIcons=materialRows.map(function(row){return row.firstElementChild});
+  var npcPortrait=directButton;
+  var secondNpcPortrait=secondNpcButton;
+  var sourceActions=shortage.querySelector('.crafting-material-source-actions');
+  var sourceRect=sourceActions.getBoundingClientRect();
+  var sourceButtons=Array.prototype.slice.call(sourceActions.children);
+  var visibleActionsFit=sourceButtons.every(function(button){var rect=button.getBoundingClientRect();
+    return rect.left>=sourceRect.left-.5&&rect.right<=sourceRect.right+.5});
+  ok('PG procurement material cards stay compact while three single-layer shop squares fit and mount exact portraits',
+    materialRows.length===7&&rowHeights.every(function(height){return height===48})
+      &&materialRows.every(function(row){return row.scrollHeight<=row.clientHeight})
+      &&materialIcons.every(function(icon,index){return icon
+        &&icon.parentElement===materialRows[index]
+        &&icon.classList.contains('crafting-material-icon')
+        &&icon.offsetWidth===28&&icon.offsetHeight===28})
+      &&sourceActions&&sourceActions.children.length===3
+      &&visibleActionsFit&&getComputedStyle(sourceActions).scrollbarWidth==='none'
+      &&directButton.offsetWidth===materialIcons[0].offsetWidth
+      &&directButton.offsetHeight===materialIcons[0].offsetHeight
+      &&directButton.children.length===1&&directButton.firstElementChild.tagName==='IMG'
+      &&secondNpcButton.children.length===1&&secondNpcButton.firstElementChild.tagName==='IMG'
+      &&directKShopButton.children.length===0&&directKShopButton.textContent==='K'
+      &&!shortage.querySelector('.crafting-material-shop-portrait')
+      &&npcPortrait&&npcPortrait.getAttribute('data-shop-portrait-source')==='manifest'
+      &&secondNpcPortrait&&secondNpcPortrait.getAttribute('data-shop-portrait-source')==='manifest'
+      &&__portraitHarness.shopCalls.some(function(call){return call.container===npcPortrait
+        &&call.identity==='迷之盔甲君'})
+      &&__portraitHarness.shopCalls.some(function(call){return call.container===secondNpcPortrait
+        &&call.identity==='Shop Girl'}),
+    JSON.stringify({heights:rowHeights,
+      rowBoxes:materialRows.map(function(row){return{client:row.clientHeight,scroll:row.scrollHeight}}),
+      materialIcons:materialIcons.map(function(icon){return icon&&{
+        tag:icon.tagName,width:icon.offsetWidth,height:icon.offsetHeight,
+        direct:icon.parentElement&&icon.parentElement.classList.contains('crafting-material-row')}}),
+      sourceBox:sourceActions&&{client:sourceActions.clientWidth,scroll:sourceActions.scrollWidth,
+        children:sourceActions.children.length,gap:getComputedStyle(sourceActions).gap,
+        padding:getComputedStyle(sourceActions).padding,border:getComputedStyle(sourceActions).border,
+        rect:(function(){var rect=sourceActions.getBoundingClientRect();return{left:rect.left,right:rect.right,width:rect.width}})(),
+        buttons:Array.prototype.map.call(sourceActions.children,function(button){var style=getComputedStyle(button),rect=button.getBoundingClientRect();
+          return{offset:button.offsetWidth,client:button.clientWidth,width:style.width,
+            minWidth:style.minWidth,marginLeft:style.marginLeft,marginRight:style.marginRight,
+            left:rect.left,right:rect.right}})},
+      portraitSources:[npcPortrait&&npcPortrait.getAttribute('data-shop-portrait-source'),
+        secondNpcPortrait&&secondNpcPortrait.getAttribute('data-shop-portrait-source')],
+      shopCalls:__portraitHarness.shopCalls.map(function(call){return call.identity})}));
+
+  var missingEquipment=document.querySelector('[data-material-name="缺失的测试装备"] .crafting-material-status');
+  var weakEquipment=document.querySelector('[data-material-name="强化不足的测试装备"] .crafting-material-status');
+  var battleBoxEquipment=document.querySelector('[data-material-name="战备箱中的测试装备"] .crafting-material-status');
+  var equippedEquipment=document.querySelector('[data-material-name="已装备的测试装备"] .crafting-material-status');
+  ok('PG procurement separates quantity, missing equipment and enhancement shortage without overloading one number',
+    shortageNote.getAttribute('data-material-status')==='quantity-shortage'
+      &&shortageNote.querySelector('.crafting-material-quantity-value')
+      &&missingEquipment&&missingEquipment.textContent==='缺少装备'
+      &&missingEquipment.getAttribute('data-material-status')==='equipment-missing'
+      &&weakEquipment&&weakEquipment.textContent==='+1/+13'
+      &&weakEquipment.getAttribute('data-material-status')==='enhancement-shortage'
+      &&weakEquipment.querySelectorAll('.crafting-material-enhancement-value').length===2
+      &&battleBoxEquipment&&battleBoxEquipment.textContent==='合成前需要从战备箱取出'
+      &&battleBoxEquipment.getAttribute('data-relocation-source')==='battlebox'
+      &&battleBoxEquipment.getAttribute('aria-label').indexOf('这里只是合成前指引，不会自动移动装备')>=0
+      &&battleBoxEquipment.getAttribute('aria-label').indexOf('从战备箱取出 1 件')>=0
+      &&equippedEquipment&&equippedEquipment.textContent==='合成前需要卸下装备'
+      &&equippedEquipment.getAttribute('data-relocation-source')==='equipped'
+      &&equippedEquipment.getAttribute('aria-label').indexOf('这里只是合成前指引，不会自动移动装备')>=0
+      &&equippedEquipment.getAttribute('aria-label').indexOf('卸下当前已装备的 1 件')>=0
+      &&!document.querySelector('.crafting-material-row.bad .crafting-material-mark')
+      &&Array.prototype.slice.call(document.querySelectorAll('.crafting-material-row.ok .crafting-material-mark'))
+        .every(function(mark){return mark.textContent==='✓'})
+      &&!missingEquipment.hasAttribute('title')&&!weakEquipment.hasAttribute('title')
+      &&missingEquipment.__panelTooltipBinding&&weakEquipment.__panelTooltipBinding,
+    JSON.stringify({quantity:shortageNote.textContent,missing:missingEquipment&&missingEquipment.textContent,
+      enhancement:weakEquipment&&weakEquipment.textContent,
+      battleBox:battleBoxEquipment&&battleBoxEquipment.textContent,
+      equipped:equippedEquipment&&equippedEquipment.textContent}));
+
+  window.__nextMaterialShopNavigationFailure='access_denied';
+  var v2CatalogBefore=__sent.filter(function(message){return message.domain==='crafting'&&message.cmd==='materials'&&message.payload.v===2}).length;
+  var v2DetailBefore=__sent.filter(function(message){return message.domain==='crafting'&&message.cmd==='materialDetail'&&message.payload.v===2}).length;
+  directButton.click();
+  await waitFor(function(){return __sent.some(function(message){return message.cmd==='open_procurement_shop'})
+    &&CraftingPanel.debugState().procurementNavigation===null},1500);
+  var procurementMessage=__sent.filter(function(message){return message.cmd==='open_procurement_shop'}).slice(-1)[0];
+  var v2CatalogAfter=__sent.filter(function(message){return message.domain==='crafting'&&message.cmd==='materials'&&message.payload.v===2}).length;
+  var v2DetailAfter=__sent.filter(function(message){return message.domain==='crafting'&&message.cmd==='materialDetail'&&message.payload.v===2}).length;
+  ok('PG procurement direct route emits the exact preview-authored recipe/shop tuple without a material-archive preflight',
+    v2CatalogAfter===v2CatalogBefore&&v2DetailAfter===v2DetailBefore&&procurementMessage
+      &&Object.keys(procurementMessage).sort().join(',')==='callId,catalogIndex,category,cmd,materialName,panel,panelInstanceId,recipeId,recipeIndex,shopId,source,type'
+      &&procurementMessage.source==='crafting_recipe'
+      &&procurementMessage.recipeId==='craft.weapon-synthesis.test-sidearm'
+      &&procurementMessage.category==='武器合成'&&procurementMessage.recipeIndex===0
+      &&procurementMessage.materialName==='测试矿石'
+      &&procurementMessage.shopId==='迷之盔甲君'&&procurementMessage.catalogIndex===57,
+    JSON.stringify({catalogDelta:v2CatalogAfter-v2CatalogBefore,
+      detailDelta:v2DetailAfter-v2DetailBefore,navigation:procurementMessage}));
+  ok('PG procurement denied Host replacement returns to an interactive recipe owner with the motorcycle-specific explanation',
+    Panels.getActive()==='crafting'&&!CraftingPanel.debugState().procurementNavigation
+      &&__toasts.some(function(value){return value.indexOf('摩托车或越野车基建')>=0})
+      &&document.querySelector('.crafting-plan-btn')&&!document.querySelector('.crafting-plan-btn').disabled);
+
+  window.__nextMaterialShopNavigationFailure='stale_source';
+  var kshopCatalogBefore=__sent.filter(function(message){return message.domain==='crafting'
+    &&message.cmd==='materials'&&message.payload.v===2}).length;
+  var kshopDetailBefore=__sent.filter(function(message){return message.domain==='crafting'
+    &&message.cmd==='materialDetail'&&message.payload.v===2}).length;
+  directKShopButton=Array.prototype.slice.call(
+    document.querySelectorAll('.crafting-material-shop-btn:not(:disabled)'))
+    .filter(function(button){return button.getAttribute('data-procurement-source')==='kshop'})[0];
+  directKShopButton.click();
+  await waitFor(function(){return __sent.some(function(message){return message.cmd==='open_procurement_kshop'})
+    &&CraftingPanel.debugState().procurementNavigation===null},1500);
+  var kshopMessage=__sent.filter(function(message){return message.cmd==='open_procurement_kshop'}).slice(-1)[0];
+  var kshopCatalogAfter=__sent.filter(function(message){return message.domain==='crafting'
+    &&message.cmd==='materials'&&message.payload.v===2}).length;
+  var kshopDetailAfter=__sent.filter(function(message){return message.domain==='crafting'
+    &&message.cmd==='materialDetail'&&message.payload.v===2}).length;
+  ok('PG procurement KShop route emits the exact preview-authored catalog plus recipe tuple without a material-archive preflight',
+    kshopCatalogAfter===kshopCatalogBefore&&kshopDetailAfter===kshopDetailBefore&&kshopMessage
+      &&Object.keys(kshopMessage).sort().join(',')==='callId,catalogIndex,cmd,entryId,kshopCategory,materialName,panel,panelInstanceId,recipeCategory,recipeId,recipeIndex,source,type'
+      &&kshopMessage.source==='crafting_recipe'
+      &&kshopMessage.materialName==='测试矿石'&&kshopMessage.catalogIndex===4
+      &&kshopMessage.entryId==='mat-shop-4'&&kshopMessage.kshopCategory==='材料'
+      &&kshopMessage.recipeId==='craft.weapon-synthesis.test-sidearm'
+      &&kshopMessage.recipeCategory==='武器合成'&&kshopMessage.recipeIndex===0,
+    JSON.stringify({catalogDelta:kshopCatalogAfter-kshopCatalogBefore,
+      detailDelta:kshopDetailAfter-kshopDetailBefore,navigation:kshopMessage}));
+
+  var unmarkBefore=__sent.filter(function(message){return message.cmd==='setPlan'}).length;
+  document.querySelector('.crafting-plan-btn').click();
+  await waitFor(function(){return !CraftingPanel.debugState().planBusy
+    &&document.querySelector('.crafting-plan-btn').getAttribute('aria-pressed')==='false'},1200);
+  var unmark=__sent.filter(function(message){return message.cmd==='setPlan'})[unmarkBefore];
+  ok('PG procurement unmark advances the same revision and removes the saved card marker',
+    unmark&&unmark.payload.recipeId==='craft.weapon-synthesis.test-sidearm'
+      &&unmark.payload.plannedCrafts===0&&unmark.payload.expectedRevision===3
+      &&document.querySelector('.crafting-plan-btn').textContent==='待合成 ×0'
+      &&!document.querySelector('.crafting-card-planned:not([hidden])'));
+
+  var nestedRow=document.querySelector('[data-material-name="测试药剂"]');
+  var nestedButtons=Array.prototype.slice.call(nestedRow.querySelectorAll(
+    '.crafting-material-crafting-btn[data-procurement-source="crafting"]'));
+  var nestedTooltips=nestedButtons.map(function(button){return button.getAttribute('data-crafting-tooltip')});
+  ok('PG procurement nested material exposes separate aligned wrench squares with project tooltips for every exact producer',
+    nestedButtons.length===2
+      &&nestedButtons.every(function(button){return button.offsetWidth===28&&button.offsetHeight===28
+        &&button.textContent.indexOf('🔧')>=0&&!button.hasAttribute('title')
+        &&button.__panelTooltipBinding})
+      &&nestedTooltips[0]!==nestedTooltips[1]
+      &&nestedButtons[0].parentElement===nestedRow.querySelector('.crafting-material-source-actions'),
+    JSON.stringify({buttons:nestedButtons.map(function(button){return{
+      category:button.getAttribute('data-crafting-category'),
+      recipeId:button.getAttribute('data-crafting-recipe-id'),tooltip:button.getAttribute('data-crafting-tooltip'),
+      width:button.offsetWidth,height:button.offsetHeight}})}));
+
+  var snapshotsBeforeSame=__sent.filter(function(message){return message.cmd==='snapshot'}).length;
+  var sameButton=nestedButtons.filter(function(button){return button.getAttribute(
+    'data-crafting-category')==='武器合成'})[0];
+  sameButton.click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.category==='武器合成'
+    &&state.selectedIndex===1&&!state.previewBusy},1500);
+  var focusedSame=document.activeElement;
+  ok('PG procurement same-category nested route clears no authority boundary and focuses the exact existing recipe card',
+    __sent.filter(function(message){return message.cmd==='snapshot'}).length===snapshotsBeforeSame
+      &&CraftingPanel.debugState().selectedIndex===1
+      &&focusedSame&&focusedSame.getAttribute('data-workbench-key')==='1');
+
+  document.querySelector('[data-workbench-key="0"]').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.selectedIndex===0
+    &&!state.previewBusy},1500);
+  var crossRow=document.querySelector('[data-material-name="测试药剂"]');
+  var crossButton=Array.prototype.slice.call(crossRow.querySelectorAll(
+    '.crafting-material-crafting-btn')).filter(function(button){return button.getAttribute(
+      'data-crafting-category')==='基础防具'})[0];
+  var snapshotsBeforeCross=__sent.filter(function(message){return message.cmd==='snapshot'}).length;
+  crossButton.click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return state.category==='基础防具'
+    &&state.selectedIndex===0&&!state.previewBusy&&state.nestedRecipeNavigation===null},1800);
+  var crossSnapshot=__sent.filter(function(message){return message.cmd==='snapshot'}).slice(-1)[0];
+  var focusedCross=document.activeElement;
+  ok('PG procurement cross-category nested route requests the authored category then verifies and focuses the exact recipe',
+    __sent.filter(function(message){return message.cmd==='snapshot'}).length===snapshotsBeforeCross+1
+      &&crossSnapshot&&crossSnapshot.payload.category==='基础防具'
+      &&CraftingPanel.debugState().category==='基础防具'
+      &&focusedCross&&focusedCross.getAttribute('data-workbench-key')==='0'
+      &&document.querySelectorAll('.crafting-recipe-card').length===1,
+    JSON.stringify({snapshot:crossSnapshot,state:CraftingPanel.debugState(),
+      focused:focusedCross&&focusedCross.getAttribute('data-workbench-key')}));
+
+  Panels.close();await wait();
+  window.__procurementDirectShopNavigation=false;
+  Panels.open('crafting',{category:'武器合成',panelInstanceId:'crafting.pg.procurement.locked'});
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy
+    &&document.querySelector('.crafting-material-shop-btn')},1800);
+  var gated=document.querySelector('.crafting-material-shop-btn[data-procurement-source="npcshop"]');
+  ok('PG procurement no-motor state keeps the source visible but disables direct travel with an explicit gate',
+    gated&&gated.disabled
+      &&gated.getAttribute('data-shop-label')==='迷之盔甲君'
+      &&gated.getAttribute('data-shop-state')==='locked'
+      &&!gated.hasAttribute('title')
+      &&gated.getAttribute('data-crafting-tooltip')==='迷之盔甲君 · 需摩托车'
+      &&gated.getAttribute('aria-label').indexOf('摩托车或越野车基建')>=0);
+  Panels.close();materials=2;window.__procurementDirectShopNavigation=true;
+  window.__previewEnhancementLevel=null;
+  window.__materialShopAccessMode='unavailable';
+}
 try{
+  if(window.__craftingHarnessScenario==='pg-crafting-procurement'){
+    await runPgCraftingProcurement();
+    var procurementResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
+    window.__qaResult=procurementResult;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(procurementResult,null,2);return
+  }
   if(window.__craftingHarnessScenario==='pg-craft-current-coverage'){
     await runPgCraftCurrentCoverage();
     var pgResult={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};
@@ -1972,7 +2454,11 @@ try{
       &&recipeHelpModal.textContent.indexOf('Esc')>=0);
   document.querySelector('.workbench-modal-action[data-action="close"]').click();
   ok('recipe help restores its header focus',document.activeElement===recipeHelpButton);
-  document.querySelector('[data-filter-path="set"]').click();var setRootCount=document.querySelectorAll('.crafting-recipe-card').length;document.querySelector('[data-filter-path="set/test_sidearm"]').click();await wait();var setBreadcrumb=document.querySelector('.crafting-catalog-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="set"]'),setBreadcrumbCurrent=document.querySelector('.crafting-catalog-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="set/test_sidearm"][aria-current="page"]');
+  document.querySelector('[data-filter-path="set"]').click();
+  await waitFor(function(){return document.querySelector('[data-filter-path="set/test_sidearm"]')});
+  var setRootCount=document.querySelectorAll('.crafting-recipe-card').length,
+    setBranch=document.querySelector('[data-filter-path="set/test_sidearm"]');
+  if(setBranch)setBranch.click();await wait();var setBreadcrumb=document.querySelector('.crafting-catalog-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="set"]'),setBreadcrumbCurrent=document.querySelector('.crafting-catalog-view .workbench-view-breadcrumb-host [data-filter-breadcrumb-path="set/test_sidearm"][aria-current="page"]');
   ok('set branch filters recipes locally and exposes title breadcrumb',setRootCount===1&&document.querySelectorAll('.crafting-recipe-card').length===1&&CraftingPanel.debugState().filterPath.join('/')==='set/test_sidearm'&&setBreadcrumb&&setBreadcrumbCurrent);
   setBreadcrumb.click();document.querySelector('[data-filter-path=""]').click();await wait();
   ok('auto previews first recipe',__sent.some(function(x){return x.domain==='crafting'&&x.cmd==='preview'&&x.payload.recipeIndex===0}));
@@ -2085,7 +2571,7 @@ try{
   var missingAnimationControl=Array.from(document.querySelectorAll('.crafting-inspector-control')).find(function(x){return x.textContent==='无动效'});
   ok('missing current icon degrades to an explicit non-animated state',document.querySelector('.crafting-inspector-missing')&&document.querySelector('.crafting-inspector-missing').textContent==='检视素材缺失'&&missingAnimationControl&&missingAnimationControl.disabled);
   document.querySelector('.workbench-modal-action[data-action="close"]').click();Icons.html=liveIconHtml;recipeCardsAfterInspector[0].click();await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('强化 +5')>=0});
-  ok('marks retained blueprint',document.querySelector('.crafting-material-list').textContent.indexOf('图纸保留')>=0);
+  ok('marks retained blueprint compactly',document.querySelector('.crafting-material-list').textContent.indexOf('· 保留')>=0);
   ok('renders Flash adjusted cost',document.querySelector('.crafting-cost-summary').textContent.indexOf('90')>=0);
   var firstMaterial=document.querySelector('.crafting-material-row');firstMaterial.dispatchEvent(new PointerEvent('pointerenter',{bubbles:true}));await wait();
   ok('tooltip uses crafting domain',__sent.some(function(x){return x.cmd==='tooltip'&&x.payload.itemName==='测试图纸'}));
@@ -2128,12 +2614,30 @@ try{
   var detailScrollProbe=document.querySelector('.crafting-detail-body'),detailScrollStyle=detailScrollProbe.style.cssText;
   var stableQuantity=document.querySelector('.crafting-quantity-inputs'),stableCommitBar=document.querySelector('.crafting-commit-bar'),stableCommit=document.querySelector('.crafting-commit-btn');
   var stableViewChrome=document.querySelector('.crafting-detail-view .workbench-view-chrome');
+  var stableQuantityPanel=stableQuantity&&stableQuantity.closest('.crafting-quantity-panel');
+  var stableQuantityInput=stableQuantity&&stableQuantity.querySelector('.workbench-quantity-number');
+  var stableQuantityRange=stableQuantity&&stableQuantity.querySelector('.workbench-quantity-range-shell');
+  var stableQuantityScale=stableQuantity&&stableQuantity.querySelector('.workbench-quantity-scale');
+  var stablePlusFive=stableQuantity&&Array.prototype.slice.call(stableQuantity.querySelectorAll('button'))
+    .filter(function(button){return button.getAttribute('aria-label')==='增加 5'})[0];
+  var stableQuantityPanelRect=stableQuantityPanel&&stableQuantityPanel.getBoundingClientRect();
+  var stableQuantityInputRect=stableQuantityInput&&stableQuantityInput.getBoundingClientRect();
+  var stableQuantityRangeRect=stableQuantityRange&&stableQuantityRange.getBoundingClientRect();
   ok('stack recipe exposes one shared protocol-wide quantity control',
-    stableQuantity&&!stableQuantity.closest('.crafting-quantity-panel').hidden
+    stableQuantity&&stableQuantityPanel&&!stableQuantityPanel.hidden
       &&stableQuantity.getAttribute('data-max')==='99'
       &&stableQuantity.getAttribute('data-slider-max')==='99'
-      &&stableQuantity.getAttribute('data-preset-max')==='30',
-    stableQuantity&&stableQuantity.outerHTML);
+      &&stableQuantity.getAttribute('data-preset-max')==='30'
+      &&stableQuantityPanel.querySelector('.crafting-quantity-hint').textContent==='可合成 30'
+      &&stablePlusFive&&stablePlusFive.hidden
+      &&getComputedStyle(stableQuantityScale).display==='none'
+      &&stableQuantityPanel.offsetHeight<=38
+      &&Math.abs(stableQuantityInputRect.top-stableQuantityRangeRect.top)<=1,
+    stableQuantity&&JSON.stringify({html:stableQuantity.outerHTML,
+      panelHeight:stableQuantityPanelRect&&stableQuantityPanelRect.height,
+      panelLayoutHeight:stableQuantityPanel&&stableQuantityPanel.offsetHeight,
+      inputTop:stableQuantityInputRect&&stableQuantityInputRect.top,
+      rangeTop:stableQuantityRangeRect&&stableQuantityRangeRect.top}));
   document.querySelectorAll('.crafting-recipe-card')[0].click();
   await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().selectedIndex===0});
   ok('non-batch recipes hide rather than rebuild the quantity control',
@@ -2575,21 +3079,28 @@ try{
       &&archiveSummary.textContent.indexOf('敌人与关卡均可掉落')>=0
       &&document.querySelector('.crafting-material-sources > h3').textContent==='已发现来源'
       &&document.querySelectorAll('.crafting-material-source-card[data-material-source-key]').length===4);
-  await waitFor(function(){return __portraitHarness.coldSettles===3},500);
+  await waitFor(function(){var portraits=document.querySelectorAll('.crafting-material-source-portrait');
+    return portraits.length===3&&Array.prototype.every.call(portraits,function(node){
+      return node.getAttribute('data-enemy-portrait-source')==='manifest'
+        ||node.getAttribute('data-shop-portrait-source')==='manifest'})},500);
   var sourcePortraits=document.querySelectorAll('.crafting-material-source-portrait');
   var sourcePortraitImages=document.querySelectorAll('.crafting-material-source-portrait img');
+  var archiveEnemyPortraitCalls=__portraitHarness.enemyCalls.filter(function(call){
+    return call.container.classList.contains('crafting-material-source-portrait')});
+  var archiveShopPortraitCalls=__portraitHarness.shopCalls.filter(function(call){
+    return call.container.classList.contains('crafting-material-source-portrait')});
   ok('structured v2 sources mount one exact portrait per enemy or shop card, never per occurrence',
-    __portraitHarness.enemyCalls.length===2&&__portraitHarness.shopCalls.length===1
+    archiveEnemyPortraitCalls.length===2&&archiveShopPortraitCalls.length===1
       &&sourcePortraits.length===3
       &&document.querySelectorAll('[data-material-source-kind="enemy"] .crafting-material-source-portrait').length===2
       &&document.querySelectorAll('[data-material-source-kind="shop"] .crafting-material-source-portrait').length===1
-      &&__portraitHarness.enemyCalls[0].identity==='敌人-测试甲'
-      &&__portraitHarness.enemyCalls[1].identity==='敌人-测试乙'
-      &&__portraitHarness.enemyCalls.every(function(call){return call.context.consumer==='crafting'
+      &&archiveEnemyPortraitCalls[0].identity==='敌人-测试甲'
+      &&archiveEnemyPortraitCalls[1].identity==='敌人-测试乙'
+      &&archiveEnemyPortraitCalls.every(function(call){return call.context.consumer==='crafting'
         &&call.context.legacyUrl==='assets/pets/pet_locked.png'})
-      &&__portraitHarness.shopCalls[0].identity==='迷之盔甲君',
-    JSON.stringify({enemy:__portraitHarness.enemyCalls.map(function(call){return call.identity}),
-      shop:__portraitHarness.shopCalls.map(function(call){return call.identity}),portraits:sourcePortraits.length}));
+      &&archiveShopPortraitCalls[0].identity==='迷之盔甲君',
+    JSON.stringify({enemy:archiveEnemyPortraitCalls.map(function(call){return call.identity}),
+      shop:archiveShopPortraitCalls.map(function(call){return call.identity}),portraits:sourcePortraits.length}));
   var portraitRects=Array.prototype.map.call(sourcePortraits,function(node){var rect=node.getBoundingClientRect();
     return{width:rect.width,height:rect.height}});
   ok('source portraits are decorative fixed geometry and preserve source-card semantics',
@@ -2602,7 +3113,7 @@ try{
     JSON.stringify(portraitRects));
   ok('summary prose and undisclosed data never trigger portrait discovery or resource hints',
     archiveSummary.textContent.indexOf('敌人与关卡均可掉落')>=0
-      &&__portraitHarness.enemyCalls.length===2&&__portraitHarness.shopCalls.length===1
+      &&archiveEnemyPortraitCalls.length===2&&archiveShopPortraitCalls.length===1
       &&document.querySelectorAll('link[rel="prefetch"],link[rel="preload"][as="image"]').length===0
       &&performance.getEntriesByType('resource').filter(function(entry){return /enemy-portraits\/manifest|shop-portraits\/manifest/.test(entry.name)}).length===0);
   ok('material detail renders recipe uses with one compact complete ingredient preview',

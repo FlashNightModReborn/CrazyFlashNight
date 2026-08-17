@@ -2,10 +2,16 @@
   "schema": "workbench-live-e2e.crafting.browser-module-inventory.v1",
   "nodeVersion": "v20.12.2",
   "expectedScenarioNamesSha256": {
-    "baseline": "3d1a058b1f017f48f4b721a6ffcbdb25867852bcb7ad5804ae1332e101ce0540",
+    "baseline": "12e9d3e38f838a888cc5a525a940a646cd0cae32bf7232d5a35f4b5b7a42aee0",
     "coverage": "32c3f6f927d495a99fc48f742b0afc7b9d110b37ee9d88a765ae8e9626100e12",
     "fault": "d219b30e8b5f3e14d1faa2275b4a9cad5588e70883914cc1c7e4c72213b1d6ff",
-    "identity": "3859b4b0ecdd7e0e2d20cfc5198fe50fc88c75186a2f883a86e4d59d5bd4e6e9"
+    "identity": "3859b4b0ecdd7e0e2d20cfc5198fe50fc88c75186a2f883a86e4d59d5bd4e6e9",
+    "legacy": "de58d904e104d89a4d62b586ff5764670d867e351b1b95ee89fdfbe984d90230",
+    "sessionLock": "9355ad2c3e0ed403ef63453232816425f94f219112b7cac397dca481a9cf5c14",
+    "recipeJump": "9d7279f65925b52df1bb658213e75ab3f68eaae57ec2bdf33cfd74fae1998df4",
+    "materialShop": "f02340f95dcd6b73c3c30b09580910f505481c6ea1f5591b047b43766de30889",
+    "infrastructure": "011b490b2d41c3edf4524ea191bf01e17841e6f0d1afabd149ef76f19f56a1b5",
+    "procurement": "8e0be03d3a920805745629f79ccee4214febad6f355c4d9ea48367bb4dc7141b"
   },
   "builtins": [
     "assert",

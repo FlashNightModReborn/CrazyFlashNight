@@ -851,7 +851,7 @@
             : (selected ? '待购 ×' + intents[String(item.catalogIndex)].quantity : '点击加入待购'));
         var lockTitle = atLimit ? '已达持有上限'
             : (item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁');
-        return options.workbench.ItemCard.renderCatalog({
+        var card = options.workbench.ItemCard.renderCatalog({
             skin:'npcshop', item:item, id:item.catalogIndex,
             iconHtml:options.iconHtml(item.icon, 'kshop-icon'),
             name:item.displayName,
@@ -865,6 +865,11 @@
             balanceSummary:item.balanceSummary,
             markerText:markerText
         });
+        if (options.components && options.components.ProcurementHighlight) {
+            options.components.ProcurementHighlight.decorateCard(
+                card, item.procurement, options.document || document);
+        }
+        return card;
     }
 
     function syncCatalogIntentCard(options, item, targetNode) {

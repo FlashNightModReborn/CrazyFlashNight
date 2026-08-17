@@ -95,6 +95,11 @@ namespace CF7Launcher.Tasks
         private double? _knownBalance;
         private CheckoutAuthority _checkoutAuthority;
         private readonly object _lock = new object();
+        private string _navigationOwnerPanel;
+        private string _navigationOwnerPanelInstanceId;
+        private string _navigationLeaseToken;
+        private bool _navigationLeaseTransferred;
+        private long _navigationGeneration;
         private volatile bool _disposed;
 
         public ShopTask(XmlSocketServer socket)
@@ -128,6 +133,106 @@ namespace CF7Launcher.Tasks
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
+
+        internal void BindMaterialShopNavigationOwner(
+            string panelName,
+            string panelInstanceId)
+        {
+            lock (_lock)
+            {
+                if (_disposed) return;
+                if (string.Equals(_navigationOwnerPanel, panelName, StringComparison.Ordinal)
+                    && string.Equals(_navigationOwnerPanelInstanceId, panelInstanceId,
+                        StringComparison.Ordinal)) return;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = panelName;
+                _navigationOwnerPanelInstanceId = panelInstanceId;
+                _navigationGeneration++;
+            }
+        }
+
+        internal bool TryAcquireMaterialShopNavigationLease(
+            string panelName,
+            string panelInstanceId,
+            string leaseToken,
+            out MaterialShopSettlementWitness witness)
+        {
+            witness = null;
+            lock (_lock)
+            {
+                if (_disposed || string.IsNullOrEmpty(leaseToken)
+                    || _navigationLeaseToken != null
+                    || !string.Equals(_navigationOwnerPanel, panelName,
+                        StringComparison.Ordinal)
+                    || !string.Equals(_navigationOwnerPanelInstanceId, panelInstanceId,
+                        StringComparison.Ordinal)
+                    || _pending.Count != 0 || _writeGate != WriteGateState.Idle)
+                    return false;
+                _navigationLeaseToken = leaseToken;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                witness = new MaterialShopSettlementWitness
+                {
+                    TaskName = "kshop",
+                    LeaseToken = leaseToken,
+                    OwnerPanel = panelName,
+                    OwnerPanelInstanceId = panelInstanceId,
+                    Generation = _navigationGeneration
+                };
+                return true;
+            }
+        }
+
+        internal bool IsMaterialShopNavigationLeaseCurrent(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                return MatchesMaterialShopNavigationLeaseLocked(witness)
+                    && !_disposed && !_navigationLeaseTransferred
+                    && string.Equals(witness.OwnerPanel, _navigationOwnerPanel,
+                        StringComparison.Ordinal)
+                    && string.Equals(witness.OwnerPanelInstanceId,
+                        _navigationOwnerPanelInstanceId, StringComparison.Ordinal)
+                    && _pending.Count == 0 && _writeGate == WriteGateState.Idle;
+            }
+        }
+
+        internal bool ReleaseMaterialShopNavigationLease(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                if (!MatchesMaterialShopNavigationLeaseLocked(witness)) return false;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                return true;
+            }
+        }
+
+        internal bool TransferMaterialShopNavigationLease(
+            MaterialShopSettlementWitness witness)
+        {
+            lock (_lock)
+            {
+                if (!MatchesMaterialShopNavigationLeaseLocked(witness)
+                    || _navigationLeaseTransferred) return false;
+                _navigationLeaseTransferred = true;
+                return true;
+            }
+        }
+
+        private bool MatchesMaterialShopNavigationLeaseLocked(
+            MaterialShopSettlementWitness witness)
+        {
+            return witness != null
+                && string.Equals(witness.TaskName, "kshop", StringComparison.Ordinal)
+                && string.Equals(witness.LeaseToken, _navigationLeaseToken,
+                    StringComparison.Ordinal)
+                && witness.Generation == _navigationGeneration;
+        }
 
         public void Dispose()
         {
@@ -203,7 +308,12 @@ namespace CF7Launcher.Tasks
             string localError = null;
             lock (_lock)
             {
-                if (_activeWebCallIds.Contains(webCallId) || _recentWebCallIds.Contains(webCallId))
+                if (_navigationLeaseToken != null)
+                {
+                    RememberRecentLocked(webCallId);
+                    localError = "busy";
+                }
+                else if (_activeWebCallIds.Contains(webCallId) || _recentWebCallIds.Contains(webCallId))
                 {
                     LogManager.Log("[ShopTask] duplicate/replayed callId ignored: " + webCallId);
                     return;
@@ -358,6 +468,11 @@ namespace CF7Launcher.Tasks
         {
             lock (_lock)
             {
+                _navigationGeneration++;
+                _navigationLeaseToken = null;
+                _navigationLeaseTransferred = false;
+                _navigationOwnerPanel = null;
+                _navigationOwnerPanelInstanceId = null;
                 if (_writeGate == WriteGateState.WritePending)
                     EnterNeedsReconcileLocked();
 
@@ -1192,12 +1307,26 @@ namespace CF7Launcher.Tasks
                 JObject item = token as JObject;
                 bool hasSummary = item != null
                     && item.Property("balanceSummary") != null;
-                if (!(hasSummary
+                bool hasProcurement = item != null
+                    && item.Property("procurement") != null;
+                if (!((hasSummary && hasProcurement)
+                        ? HasExactKeys(item,
+                            "idx", "id", "item", "type", "price", "displayname",
+                            "majorType", "subType", "actionType", "weaponType",
+                            "setId", "setName", "setOrder", "level", "icon",
+                            "maxQuantity", "balanceSummary", "procurement")
+                        : hasSummary
                         ? HasExactKeys(item,
                             "idx", "id", "item", "type", "price", "displayname",
                             "majorType", "subType", "actionType", "weaponType",
                             "setId", "setName", "setOrder", "level", "icon",
                             "maxQuantity", "balanceSummary")
+                        : hasProcurement
+                        ? HasExactKeys(item,
+                            "idx", "id", "item", "type", "price", "displayname",
+                            "majorType", "subType", "actionType", "weaponType",
+                            "setId", "setName", "setOrder", "level", "icon",
+                            "maxQuantity", "procurement")
                         : HasExactKeys(item,
                             "idx", "id", "item", "type", "price", "displayname",
                             "majorType", "subType", "actionType", "weaponType",
@@ -1228,7 +1357,10 @@ namespace CF7Launcher.Tasks
                     || !TryReadInteger(
                         item["maxQuantity"], 0, MAX_PURCHASE_QUANTITY, out maximum)
                     || (hasSummary && !TrySanitizeBalanceSummary(
-                        item["balanceSummary"] as JObject, out summary))) return false;
+                        item["balanceSummary"] as JObject, out summary))
+                    || (hasProcurement && !ProcurementProjectionValidator.IsDemand(
+                        item["procurement"] as JObject,
+                        item.Value<string>("item")))) return false;
                 var projected = new JObject
                 {
                     ["idx"] = idx,
@@ -1249,6 +1381,8 @@ namespace CF7Launcher.Tasks
                     ["maxQuantity"] = maximum
                 };
                 if (summary != null) projected["balanceSummary"] = summary;
+                if (hasProcurement)
+                    projected["procurement"] = item["procurement"].DeepClone();
                 clean.Add(projected);
                 index[idx] = projected;
             }

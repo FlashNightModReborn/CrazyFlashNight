@@ -36,6 +36,7 @@ const BAG_CONTAINER = "背包";
 const BATTLEBOX_CONTAINER = "战备箱";
 const CALL_ID_RE = /^[A-Za-z0-9._:-]{1,96}$/;
 const OWNER_RE = /^[A-Za-z0-9._~-]{1,160}$/;
+const RECIPE_ID_RE = /^craft\.[a-z0-9.-]{1,90}$/;
 const AVAILABILITY_CODES = new Set([
   "ready", "level_locked", "material_missing", "insufficient_money",
   "insufficient_kpoint", "inventory_full", "output_projection_failed",
@@ -212,11 +213,14 @@ function validateRequest(message, owner, category, phase) {
 }
 
 function validateRecipe(value, phase) {
-  exactKeys(value, ["recipeIndex", "title", "output", "baseCost", "materialCount",
-    "batchEligible", "canCraftOne", "availability"], [],
+  exactKeys(value, ["recipeId", "recipeIndex", "title", "output", "owned",
+    "plannedCrafts", "baseCost", "materialCount", "batchEligible", "canCraftOne",
+    "availability"], [],
   "recipe_projection_keys_invalid", phase);
-  if (!integerIn(value.recipeIndex, 0, 999)
+  if (!RECIPE_ID_RE.test(String(value.recipeId || ""))
+      || !integerIn(value.recipeIndex, 0, 999)
       || !boundedText(value.title, 256, false)
+      || !integerIn(value.plannedCrafts, 0, 99)
       || !integerIn(value.materialCount, 0, 999)
       || typeof value.batchEligible !== "boolean" || typeof value.canCraftOne !== "boolean") {
     fail("recipe_projection_invalid", phase, "recipe projection is malformed");
@@ -226,13 +230,124 @@ function validateRecipe(value, phase) {
     fail("recipe_availability_invalid", phase, "recipe availability is not authoritative");
   }
   validateProjectedItem(value.output, false, phase);
+  validateOwnedSummary(value.owned, phase);
   requireCost(value.baseCost, phase);
+  return value;
+}
+
+function validateOwnedSummary(value, phase) {
+  const keys = ["bag", "drug", "equipped", "battleBox", "material", "information",
+    "usable", "total", "usableMaxEnhancement", "totalMaxEnhancement"];
+  exactKeys(value, keys, [], "owned_summary_keys_invalid", phase);
+  if (!keys.every((key) => integerIn(value[key], 0, Number.MAX_SAFE_INTEGER))) {
+    fail("owned_summary_invalid", phase, "owned summary is malformed");
+  }
+  const collection = value.material > 0 || value.information > 0;
+  const valid = collection
+    ? !(value.material > 0 && value.information > 0)
+      && value.bag === 0 && value.drug === 0 && value.equipped === 0
+      && value.battleBox === 0 && value.usable === value.material + value.information
+      && value.total === value.usable && value.usableMaxEnhancement === 0
+      && value.totalMaxEnhancement === 0
+    : value.usable === value.bag + value.drug
+      && value.total === value.usable + value.equipped + value.battleBox
+      && value.totalMaxEnhancement >= value.usableMaxEnhancement;
+  if (!valid) fail("owned_summary_invalid", phase, "owned summary totals are inconsistent");
+  return value;
+}
+
+function validatePlanSummary(value, phase) {
+  exactKeys(value, ["revision", "directShopNavigation"], [],
+    "plan_summary_keys_invalid", phase);
+  if (!integerIn(value.revision, 0, Number.MAX_SAFE_INTEGER)
+      || typeof value.directShopNavigation !== "boolean") {
+    fail("plan_summary_invalid", phase, "plan summary is malformed");
+  }
+  return value;
+}
+
+function validateCraftingSources(value, phase) {
+  if (!Array.isArray(value) || value.length > 32) {
+    fail("crafting_sources_invalid", phase, "crafting sources are malformed");
+  }
+  const recipeIds = new Set();
+  const occurrences = new Set();
+  value.forEach((source) => {
+    exactKeys(source, ["category", "recipeIndex", "recipeId", "title"], [],
+      "crafting_source_keys_invalid", phase);
+    const occurrence = source.category + "\u0000" + source.recipeIndex;
+    if (!CATEGORY_SET.has(source.category) || !integerIn(source.recipeIndex, 0, 999)
+        || !RECIPE_ID_RE.test(String(source.recipeId || ""))
+        || !boundedText(source.title, 256, false)
+        || recipeIds.has(source.recipeId) || occurrences.has(occurrence)) {
+      fail("crafting_source_invalid", phase, "crafting source identity is malformed");
+    }
+    recipeIds.add(source.recipeId);
+    occurrences.add(occurrence);
+  });
+  return value;
+}
+
+function validateProcurementDemand(value, itemName, phase) {
+  const integerKeys = ["required", "requiredEnhancement", "usableOwned",
+    "equippedOwned", "battleBoxOwned", "totalOwned", "usableMaxEnhancement",
+    "equippedMaxEnhancement", "battleBoxMaxEnhancement", "totalMaxEnhancement",
+    "obtainMissing", "relocateMissing",
+    "craftRequired", "taskRequired", "plannedRecipeCount", "activeTaskCount"];
+  exactKeys(value, ["itemName"].concat(integerKeys, ["needsEnhancement", "reasons", "sources"]),
+    [], "procurement_demand_keys_invalid", phase);
+  if (value.itemName !== itemName || !boundedText(value.itemName, 128, false)
+      || typeof value.needsEnhancement !== "boolean"
+      || !integerKeys.every((key) => integerIn(value[key], 0, Number.MAX_SAFE_INTEGER))
+      || value.totalOwned !== value.usableOwned + value.equippedOwned + value.battleBoxOwned
+      || value.totalMaxEnhancement < value.usableMaxEnhancement
+      || value.totalMaxEnhancement < value.equippedMaxEnhancement
+      || value.totalMaxEnhancement < value.battleBoxMaxEnhancement
+      || (value.equippedOwned === 0 && value.equippedMaxEnhancement !== 0)
+      || (value.battleBoxOwned === 0 && value.battleBoxMaxEnhancement !== 0)
+      || value.obtainMissing > Math.max(1, value.required)
+      || value.relocateMissing > Math.max(1, value.required)
+      || value.relocateMissing > value.equippedOwned + value.battleBoxOwned
+      || !Array.isArray(value.reasons) || value.reasons.length < 1 || value.reasons.length > 64
+      || !Array.isArray(value.sources) || value.sources.length > 32) {
+    fail("procurement_demand_invalid", phase, "procurement demand is malformed");
+  }
+  value.reasons.forEach((reason) => {
+    exactKeys(reason, ["kind", "sourceId", "label", "required", "mode"], [],
+      "procurement_reason_keys_invalid", phase);
+    if (!['craft', 'task'].includes(reason.kind)
+        || !boundedText(reason.sourceId, 128, false)
+        || !boundedText(reason.label, 256, false)
+        || !integerIn(reason.required, 1, Number.MAX_SAFE_INTEGER)
+        || !['consume', 'retain', 'submit', 'contain'].includes(reason.mode)) {
+      fail("procurement_reason_invalid", phase, "procurement reason is malformed");
+    }
+  });
+  const seen = new Set();
+  value.sources.forEach((source) => {
+    const npc = source && source.kind === "npcshop";
+    exactKeys(source, npc ? ["kind", "shopId", "catalogIndex", "label"]
+      : ["kind", "catalogIndex", "entryId", "category", "label"], [],
+    "procurement_source_keys_invalid", phase);
+    const valid = npc
+      ? boundedText(source.shopId, 80, false)
+      : source.kind === "kshop" && boundedText(source.entryId, 256, false)
+        && boundedText(source.category, 128, true);
+    const identity = source.kind + "\u0000" + (source.shopId || "")
+      + "\u0000" + source.catalogIndex;
+    if (!valid || !integerIn(source.catalogIndex, 0, 999999)
+        || !boundedText(source.label, 256, false) || seen.has(identity)) {
+      fail("procurement_source_invalid", phase, "procurement source is malformed");
+    }
+    seen.add(identity);
+  });
   return value;
 }
 
 function validateMaterial(value, phase) {
   exactKeys(value, ["name", "displayName", "icon", "itemKind", "required", "owned",
-    "maxEnhancement", "isQuantity", "tier", "consumed", "enough", "storageKind"], [],
+    "maxEnhancement", "isQuantity", "tier", "consumed", "enough", "storageKind",
+    "craftingSources", "procurement"], [],
   "material_projection_keys_invalid", phase);
   if (!finiteNonNegative(value.required)
       || !finiteNonNegative(value.owned) || typeof value.consumed !== "boolean"
@@ -243,6 +358,8 @@ function validateMaterial(value, phase) {
     fail("material_projection_invalid", phase, "material projection is malformed");
   }
   identityTriple(value, phase);
+  validateCraftingSources(value.craftingSources, phase);
+  validateProcurementDemand(value.procurement, value.name, phase);
   return value;
 }
 
@@ -376,7 +493,8 @@ function validateResponse(message, request, phase) {
   }
   if (request.cmd === "snapshot") {
     exactKeys(message, ["type", "domain", "panel", "panelInstanceId", "cmd", "callId",
-      "success", "v", "category", "gender", "recipes", "balance", "skills", "note"],
+      "success", "v", "category", "gender", "recipes", "balance", "skills",
+      "procurement", "note"],
     [], "snapshot_response_keys_invalid", phase);
     if (message.category !== request.payload.category || !Array.isArray(message.recipes)
         || message.recipes.length < 1 || new Set(message.recipes.map((entry) => entry.recipeIndex)).size
@@ -384,9 +502,13 @@ function validateResponse(message, request, phase) {
         || !boundedText(message.note, 2000, true)) {
       fail("snapshot_response_invalid", phase, "snapshot response is malformed");
     }
+    if (new Set(message.recipes.map((entry) => entry.recipeId)).size !== message.recipes.length) {
+      fail("snapshot_response_invalid", phase, "snapshot recipe identities are duplicated");
+    }
     message.recipes.forEach((entry) => validateRecipe(entry, phase));
     requireBalance(message.balance, phase);
     requireSkills(message.skills, phase);
+    validatePlanSummary(message.procurement, phase);
   } else if (request.cmd === "preview") {
     exactKeys(message, ["type", "domain", "panel", "panelInstanceId", "cmd", "callId",
       "success", "v", "category", "recipeIndex", "craftCount", "batchEligible",
@@ -427,7 +549,8 @@ function validateResponse(message, request, phase) {
   } else if (request.cmd === "commit") {
     exactKeys(message, ["type", "domain", "panel", "panelInstanceId", "cmd", "callId",
       "success", "v", "operation", "category", "recipeIndex", "craftCount", "crafted",
-      "acceptedPlan", "outputReceipt", "balance"], [], "commit_response_keys_invalid", phase);
+      "acceptedPlan", "outputReceipt", "balance", "procurement"], [],
+    "commit_response_keys_invalid", phase);
     if (message.operation !== "commit" || message.category !== request.payload.category
         || !integerIn(message.recipeIndex, 0, 999) || !integerIn(message.craftCount, 1, 99)) {
       fail("commit_response_invalid", phase, "commit response postcondition is malformed");
@@ -442,6 +565,13 @@ function validateResponse(message, request, phase) {
         "crafted output quantity is inconsistent with the authoritative craft count");
     }
     requireBalance(message.balance, phase);
+    exactKeys(message.procurement, ["revision", "plannedCrafts", "changed"], [],
+      "commit_procurement_keys_invalid", phase);
+    if (!integerIn(message.procurement.revision, 0, Number.MAX_SAFE_INTEGER)
+        || !integerIn(message.procurement.plannedCrafts, 0, 99)
+        || typeof message.procurement.changed !== "boolean") {
+      fail("commit_procurement_invalid", phase, "commit procurement state is malformed");
+    }
   }
   return message;
 }

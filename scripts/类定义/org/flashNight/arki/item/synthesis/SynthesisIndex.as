@@ -13,6 +13,7 @@
  *   - getRecipe(synthesisKey) → recipe Object | null   （正向：产物 → 配方）
  *   - getRecipesUsing(inputName) → String[]            （反向：材料 → 产物名列表，字典序）
  *   - getRecipeUses(inputName) → Object[]               （exact：材料 → recipe occurrence）
+ *   - getRecipesProducing(outputName) → Object[]        （exact：产物 → recipe occurrence）
  *   - reset() → Void                                   （测试钩子，重建反向索引）
  *
  * 反向索引由懒加载构建，O(配方数 × 平均材料数)。CF7:ME 不支持运行时
@@ -26,6 +27,7 @@ class org.flashNight.arki.item.synthesis.SynthesisIndex {
 
     private static var _craftToIndex:Object = null;
     private static var _recipeUseIndex:Object = null;
+    private static var _recipeOutputIndex:Object = null;
 
     /**
      * 正向：根据合成键取配方对象。
@@ -59,10 +61,21 @@ class org.flashNight.arki.item.synthesis.SynthesisIndex {
         return arr ? arr : [];
     }
 
+    /**
+     * 逐 authored category registry 反查某个产物的所有精确配方 occurrence。
+     * 返回顺序与 data/crafting/list.xml 一致；同名产物不会被 legacy map 后写覆盖。
+     */
+    public static function getRecipesProducing(outputName:String):Array {
+        ensureRecipeOutputIndex();
+        var arr:Array = _recipeOutputIndex[outputName];
+        return arr ? arr : [];
+    }
+
     /** 测试钩子：清空反向索引，下次 getRecipesUsing 触发懒加载重建。 */
     public static function reset():Void {
         _craftToIndex = null;
         _recipeUseIndex = null;
+        _recipeOutputIndex = null;
     }
 
     /**
@@ -119,6 +132,37 @@ class org.flashNight.arki.item.synthesis.SynthesisIndex {
                         productName: String(recipe.name)
                     });
                 }
+            }
+        }
+    }
+
+    /**
+     * 构建 output → [{category,recipeIndex,recipeId,title}] exact occurrence 索引。
+     * category 顺序只能来自 authored registry；缺失时 fail closed，禁止 for-in 猜顺序。
+     */
+    private static function ensureRecipeOutputIndex():Void {
+        if (_recipeOutputIndex != null) return;
+        _recipeOutputIndex = {};
+        if (!_root.改装清单 || !(_root.改装分类顺序 instanceof Array)) return;
+        for (var categoryOrder:Number = 0;
+                categoryOrder < _root.改装分类顺序.length; categoryOrder++) {
+            var category:String = String(_root.改装分类顺序[categoryOrder] || "");
+            if (category == "") continue;
+            var recipes:Array = _root.改装清单[category];
+            if (!(recipes instanceof Array)) continue;
+            for (var recipeIndex:Number = 0; recipeIndex < recipes.length; recipeIndex++) {
+                var recipe:Object = recipes[recipeIndex];
+                if (!recipe) continue;
+                var outputName:String = String(recipe.name || "");
+                var recipeId:String = String(recipe.recipeId || "");
+                if (outputName == "" || recipeId == "") continue;
+                if (!_recipeOutputIndex[outputName]) _recipeOutputIndex[outputName] = [];
+                _recipeOutputIndex[outputName].push({
+                    category:category,
+                    recipeIndex:recipeIndex,
+                    recipeId:recipeId,
+                    title:String(recipe.title || recipe.name)
+                });
             }
         }
     }

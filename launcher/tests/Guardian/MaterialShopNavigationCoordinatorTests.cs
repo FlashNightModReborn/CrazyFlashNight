@@ -47,11 +47,14 @@ namespace CF7Launcher.Tests.Guardian
             internal readonly MaterialShopAccessTask Access;
             internal readonly InventoryTask Inventory;
             internal readonly NpcShopTask NpcShop;
+            internal readonly ShopTask Shop;
             internal readonly CraftingTaskMaterialsV2Tests.Harness CraftingHarness;
             internal readonly MaterialShopNavigationCoordinator Coordinator;
             internal long Now;
             internal Func<long> Clock;
             internal int NextInstance;
+            internal int KShopOpenCount;
+            internal int KShopCloseCount;
             internal readonly string SourceInstance;
 
             internal Harness(bool deliverPanelPost = true)
@@ -72,6 +75,7 @@ namespace CF7Launcher.Tests.Guardian
                         NpcWire.Add(JObject.Parse(value.TrimEnd('\0')));
                         return true;
                     });
+                Shop = new ShopTask(() => true, _ => true);
                 Access = new MaterialShopAccessTask(
                     () => true,
                     value =>
@@ -109,12 +113,17 @@ namespace CF7Launcher.Tests.Guardian
                         return deadline;
                     },
                     () => "panel.material.target." + (++NextInstance));
+                Coordinator.ConfigureKShopNavigation(
+                    Shop,
+                    () => { KShopOpenCount++; return true; },
+                    () => KShopCloseCount++);
                 Host.SetExactReplacePosterForTests(value =>
                 {
                     PanelPosts.Add(JObject.Parse(value));
                     return deliverPanelPost;
                 });
                 BindOwners("crafting", SourceInstance);
+                PrimeRecipePreview();
             }
 
             internal void BindOwners(string panel, string instance)
@@ -122,6 +131,7 @@ namespace CF7Launcher.Tests.Guardian
                 CraftingHarness.Task.BindMaterialShopNavigationOwner(panel, instance);
                 Inventory.BindMaterialShopNavigationOwner(panel, instance);
                 NpcShop.BindMaterialShopNavigationOwner(panel, instance);
+                Shop.BindMaterialShopNavigationOwner(panel, instance);
             }
 
             internal void Pump()
@@ -135,6 +145,18 @@ namespace CF7Launcher.Tests.Guardian
             {
                 int fid = Authority[Authority.Count - 1].Value<int>("callId");
                 Access.HandleFlashResponse(AllowResponse(fid), null);
+            }
+
+            internal void AllowProcurement()
+            {
+                int fid = Authority[Authority.Count - 1].Value<int>("callId");
+                Access.HandleFlashResponse(ProcurementAllowResponse(fid), null);
+            }
+
+            internal void AllowKShopProcurement()
+            {
+                int fid = Authority[Authority.Count - 1].Value<int>("callId");
+                Access.HandleFlashResponse(KShopProcurementAllowResponse(fid), null);
             }
 
             internal JObject LastWeb()
@@ -151,11 +173,31 @@ namespace CF7Launcher.Tests.Guardian
                 NpcShop.HandleFlashResponse(NpcSnapshotResponse(fid), null);
             }
 
+            internal void PrimeRecipePreview()
+            {
+                int fid = CraftingHarness.Send(
+                    "preview",
+                    "recipe.navigation.preview",
+                    new JObject
+                    {
+                        ["v"] = 1,
+                        ["category"] = "武器合成",
+                        ["recipeIndex"] = 3,
+                        ["craftCount"] = 2
+                    },
+                    SourceInstance);
+                CraftingHarness.Task.HandleFlashResponse(
+                    CraftingTaskTests.RecipeNavigationPreviewResponse(
+                        fid, "战术握把"), null);
+                Assert.True(CraftingHarness.LastWeb().Value<bool>("success"));
+            }
+
             public void Dispose()
             {
                 Coordinator.Dispose();
                 Access.Dispose();
                 NpcShop.Dispose();
+                Shop.Dispose();
                 Inventory.Dispose();
                 CraftingHarness.Dispose();
                 Host.Dispose();
@@ -167,20 +209,44 @@ namespace CF7Launcher.Tests.Guardian
         {
             JObject forward = Forward("panel.crafting");
             JObject reverse = Reverse("panel.npcshop");
+            JObject procurementForward = ProcurementForward("panel.crafting");
+            JObject recipeReverse = RecipeReverse("panel.npcshop");
+            JObject kshopForward = KShopProcurementForward("panel.crafting");
+            JObject kshopReverse = KShopRecipeReverse("panel.kshop");
             JObject close = Close("panel.npcshop", "escape");
             JObject systemClose = SystemClose("panel.npcshop");
 
             Assert.True(MaterialShopNavigationCoordinator.IsValidForwardEnvelope(forward));
             Assert.True(MaterialShopNavigationCoordinator.IsValidReverseEnvelope(reverse));
+            Assert.True(MaterialShopNavigationCoordinator
+                .IsValidProcurementForwardEnvelope(procurementForward));
+            Assert.True(MaterialShopNavigationCoordinator
+                .IsValidRecipeReverseEnvelope(recipeReverse));
+            Assert.True(MaterialShopNavigationCoordinator
+                .IsValidProcurementKShopForwardEnvelope(kshopForward));
+            Assert.True(MaterialShopNavigationCoordinator
+                .IsValidKShopRecipeReverseEnvelope(kshopReverse));
             Assert.True(MaterialShopNavigationCoordinator.IsValidNpcShopOuterCloseEnvelope(close));
             Assert.True(MaterialShopNavigationCoordinator
                 .IsValidNpcShopSystemFailureCloseEnvelope(systemClose));
 
             forward["preferredItemName"] = "战术握把";
             reverse["materialName"] = "战术握把";
+            procurementForward["recipeIndex"] = 1000;
+            recipeReverse["materialName"] = "战术握把";
+            kshopForward["entryId"] = "";
+            kshopReverse["panel"] = "npcshop";
             close["reason"] = "keyboard";
             Assert.False(MaterialShopNavigationCoordinator.IsValidForwardEnvelope(forward));
             Assert.False(MaterialShopNavigationCoordinator.IsValidReverseEnvelope(reverse));
+            Assert.False(MaterialShopNavigationCoordinator
+                .IsValidProcurementForwardEnvelope(procurementForward));
+            Assert.False(MaterialShopNavigationCoordinator
+                .IsValidRecipeReverseEnvelope(recipeReverse));
+            Assert.False(MaterialShopNavigationCoordinator
+                .IsValidProcurementKShopForwardEnvelope(kshopForward));
+            Assert.False(MaterialShopNavigationCoordinator
+                .IsValidKShopRecipeReverseEnvelope(kshopReverse));
             Assert.False(MaterialShopNavigationCoordinator.IsValidNpcShopOuterCloseEnvelope(close));
             systemClose["reason"] = "mount_failed";
             Assert.False(MaterialShopNavigationCoordinator
@@ -258,6 +324,123 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal("materials", craftingInit.Value<string>("view"));
             Assert.Equal("npcshop_return", craftingInit.Value<string>("source"));
             Assert.Equal("战术握把", craftingInit.Value<string>("preferredMaterialName"));
+        }
+
+        [Fact]
+        public void ProcurementForwardAndRecipeReturn_CommitExactStableRecipeRoute()
+        {
+            using var harness = new Harness();
+            harness.Coordinator.HandleForward(ProcurementForward(harness.SourceInstance));
+
+            JObject authority = Assert.Single(harness.Authority);
+            Assert.Equal("craftingProcurementShopAuthorize",
+                authority.Value<string>("action"));
+            Assert.Equal("craft.weapon.004", authority.Value<string>("recipeId"));
+            Assert.Equal("武器合成", authority.Value<string>("category"));
+            Assert.Equal(3, authority.Value<int>("recipeIndex"));
+
+            harness.AllowProcurement();
+            harness.Pump();
+
+            Assert.Equal("npcshop", harness.Host.ActivePanelName);
+            string npcInstance = harness.Host.ActivePanelInstanceId;
+            Assert.True(harness.Coordinator.HasMaterialReturnRoute(npcInstance));
+            JObject npcInit = (JObject)Assert.Single(harness.PanelPosts)["initData"];
+            Assert.Equal(11, npcInit.Count);
+            Assert.Equal("crafting_procurement", npcInit.Value<string>("source"));
+            Assert.Equal("crafting_recipe", npcInit.Value<string>("navigationOrigin"));
+            Assert.True(npcInit.Value<bool>("canReturnCraftingRecipe"));
+            Assert.Equal("武器合成", npcInit.Value<string>("returnRecipeCategory"));
+            Assert.Equal(3, npcInit.Value<int>("returnRecipeIndex"));
+
+            harness.CraftingHarness.Task.ClearPending();
+            harness.Inventory.ClearPending();
+            harness.Coordinator.OnPanelChanged("npcshop", npcInstance);
+            harness.BindOwners("npcshop", npcInstance);
+            harness.PrimeNpcCatalog(npcInstance);
+            harness.Coordinator.HandleReverse(RecipeReverse(npcInstance));
+            harness.Pump();
+
+            Assert.Equal("crafting", harness.Host.ActivePanelName);
+            Assert.False(harness.Coordinator.HasMaterialReturnRoute(npcInstance));
+            Assert.Empty(harness.Web);
+            JObject craftingInit = (JObject)harness.PanelPosts[1]["initData"];
+            Assert.Equal(8, craftingInit.Count);
+            Assert.Equal("recipes", craftingInit.Value<string>("view"));
+            Assert.Equal("武器合成", craftingInit.Value<string>("category"));
+            Assert.Equal(3, craftingInit.Value<int>("preferredRecipeIndex"));
+            Assert.Equal(1, craftingInit.Value<int>("preferredCraftCount"));
+        }
+
+        [Fact]
+        public void ProcurementInfrastructureDenial_ReturnsExactFailureAndKeepsCraftingOwner()
+        {
+            using var harness = new Harness();
+            harness.Coordinator.HandleForward(ProcurementForward(harness.SourceInstance));
+            int fid = Assert.Single(harness.Authority).Value<int>("callId");
+
+            harness.Access.HandleFlashResponse(
+                new JObject
+                {
+                    ["task"] = "material_shop_access_response",
+                    ["callId"] = fid,
+                    ["success"] = false,
+                    ["v"] = 1,
+                    ["decision"] = "deny",
+                    ["error"] = "access_denied"
+                },
+                null);
+
+            JObject failure = harness.LastWeb();
+            Assert.Equal("open_procurement_shop", failure.Value<string>("cmd"));
+            Assert.Equal("access_denied", failure.Value<string>("error"));
+            Assert.Equal(harness.SourceInstance,
+                failure.Value<string>("panelInstanceId"));
+            Assert.Equal("crafting", harness.Host.ActivePanelName);
+            Assert.Empty(harness.PanelPosts);
+        }
+
+        [Fact]
+        public void KShopProcurementForwardAndReturn_PreserveExactTargetAndPauseLease()
+        {
+            using var harness = new Harness();
+            harness.Coordinator.HandleForward(
+                KShopProcurementForward(harness.SourceInstance));
+
+            JObject authority = Assert.Single(harness.Authority);
+            Assert.Equal("craftingProcurementKShopAuthorize",
+                authority.Value<string>("action"));
+            Assert.Equal("k-material-7", authority.Value<string>("entryId"));
+            Assert.Equal("材料", authority.Value<string>("kshopCategory"));
+
+            harness.AllowKShopProcurement();
+            harness.Pump();
+
+            Assert.Equal(1, harness.KShopOpenCount);
+            Assert.Equal("kshop", harness.Host.ActivePanelName);
+            string kshopInstance = harness.Host.ActivePanelInstanceId;
+            Assert.True(harness.Coordinator.HasKShopReturnRoute(kshopInstance));
+            JObject kshopInit = (JObject)Assert.Single(harness.PanelPosts)["initData"];
+            Assert.Equal("战术握把", kshopInit.Value<string>("preferredItemName"));
+            Assert.Equal(7, kshopInit.Value<int>("preferredCatalogIndex"));
+            Assert.Equal("k-material-7", kshopInit.Value<string>("preferredEntryId"));
+            Assert.Equal("材料", kshopInit.Value<string>("preferredKShopCategory"));
+            Assert.True(kshopInit.Value<bool>("canReturnCraftingRecipe"));
+
+            harness.CraftingHarness.Task.ClearPending();
+            harness.Inventory.ClearPending();
+            harness.Coordinator.OnPanelChanged("kshop", kshopInstance);
+            harness.BindOwners("kshop", kshopInstance);
+            harness.Coordinator.HandleReverse(KShopRecipeReverse(kshopInstance));
+            harness.Pump();
+
+            Assert.Equal("crafting", harness.Host.ActivePanelName);
+            Assert.Equal(1, harness.KShopCloseCount);
+            Assert.False(harness.Coordinator.HasKShopReturnRoute(kshopInstance));
+            JObject craftingInit = (JObject)harness.PanelPosts[1]["initData"];
+            Assert.Equal("kshop_return", craftingInit.Value<string>("source"));
+            Assert.Equal("武器合成", craftingInit.Value<string>("category"));
+            Assert.Equal(3, craftingInit.Value<int>("preferredRecipeIndex"));
         }
 
         [Fact]
@@ -828,6 +1011,69 @@ namespace CF7Launcher.Tests.Guardian
             };
         }
 
+        private static JObject ProcurementForward(string instance)
+        {
+            return new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "crafting",
+                ["cmd"] = "open_procurement_shop",
+                ["callId"] = "procurement.open.1",
+                ["panelInstanceId"] = instance,
+                ["source"] = "crafting_recipe",
+                ["materialName"] = "战术握把",
+                ["shopId"] = "迷之盔甲君",
+                ["catalogIndex"] = 57,
+                ["recipeId"] = "craft.weapon.004",
+                ["category"] = "武器合成",
+                ["recipeIndex"] = 3
+            };
+        }
+
+        private static JObject RecipeReverse(string instance)
+        {
+            return new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "npcshop",
+                ["cmd"] = "return_crafting_recipe",
+                ["callId"] = "procurement.return.1",
+                ["panelInstanceId"] = instance
+            };
+        }
+
+        private static JObject KShopProcurementForward(string instance)
+        {
+            return new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "crafting",
+                ["cmd"] = "open_procurement_kshop",
+                ["callId"] = "procurement.kshop.open.1",
+                ["panelInstanceId"] = instance,
+                ["source"] = "crafting_recipe",
+                ["materialName"] = "战术握把",
+                ["catalogIndex"] = 7,
+                ["entryId"] = "k-material-7",
+                ["kshopCategory"] = "材料",
+                ["recipeId"] = "craft.weapon.004",
+                ["recipeCategory"] = "武器合成",
+                ["recipeIndex"] = 3
+            };
+        }
+
+        private static JObject KShopRecipeReverse(string instance)
+        {
+            return new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "kshop",
+                ["cmd"] = "return_crafting_recipe",
+                ["callId"] = "procurement.kshop.return.1",
+                ["panelInstanceId"] = instance
+            };
+        }
+
         private static JObject Close(string instance, string reason)
         {
             return new JObject
@@ -866,6 +1112,38 @@ namespace CF7Launcher.Tests.Guardian
                 ["shopId"] = "迷之盔甲君",
                 ["catalogIndex"] = 57,
                 ["itemName"] = "战术握把"
+            };
+        }
+
+        private static JObject ProcurementAllowResponse(int fid)
+        {
+            JObject response = AllowResponse(fid);
+            response.Remove("materialSnapshotId");
+            response["reason"] = "procurement_indexed_live_match";
+            response["recipeId"] = "craft.weapon.004";
+            response["category"] = "武器合成";
+            response["recipeIndex"] = 3;
+            return response;
+        }
+
+        private static JObject KShopProcurementAllowResponse(int fid)
+        {
+            return new JObject
+            {
+                ["task"] = "material_shop_access_response",
+                ["callId"] = fid,
+                ["success"] = true,
+                ["v"] = 1,
+                ["decision"] = "allow",
+                ["reason"] = "procurement_kshop_indexed_live_match",
+                ["materialName"] = "战术握把",
+                ["catalogIndex"] = 7,
+                ["entryId"] = "k-material-7",
+                ["category"] = "材料",
+                ["itemName"] = "战术握把",
+                ["recipeId"] = "craft.weapon.004",
+                ["recipeCategory"] = "武器合成",
+                ["recipeIndex"] = 3
             };
         }
 

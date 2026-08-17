@@ -17,7 +17,7 @@ const NPCSHOP_SECONDARY_SOURCE=path.join(WEB,'modules','npcshop-secondary-pages.
 const NPCSHOP_RUNTIME_SOURCE=path.join(WEB,'modules','npcshop-runtime.js');
 const NPCSHOP_MATERIAL_NAVIGATION_SOURCE=path.join(WEB,'modules','npcshop-material-navigation.js');
 const PANEL_CONTRACT_SOURCE=path.join(ROOT,'launcher','contracts','panel-contracts.v2.json');
-const KSHOP_MODULE_SOURCES=['kshop-cart-controller.js','kshop-catalog-presenter.js','kshop-owned-inventory-presenter.js','kshop-tooltip-presenter.js'];
+const KSHOP_MODULE_SOURCES=['kshop-cart-controller.js','kshop-catalog-presenter.js','kshop-owned-inventory-presenter.js','kshop-tooltip-presenter.js','kshop-procurement-navigation.js'];
 const INVENTORY_WORKBENCH_MODULE_SOURCES=['inventory-workbench-config.js','inventory-workbench-preparation-menu.js','inventory-workbench-navigation.js','inventory-workbench-header.js','inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js','inventory-tuning-scope.js','inventory-storage-workbench.js'];
 
 function audit(){
@@ -232,7 +232,7 @@ async function run(){
       throw new Error('harness failed: '+JSON.stringify(bad));
     }
     if(MATERIAL_NAVIGATION_ONLY){
-      if(result.result.total!==21)throw new Error('PG-MATERIAL-NAVIGATION must contain exactly 21 checks, got '+result.result.total);
+      if(result.result.total!==23)throw new Error('PG-MATERIAL-NAVIGATION must contain exactly 23 checks, got '+result.result.total);
       if(errors.length)throw new Error('page errors: '+errors.join(' | '));
       if(failed.length)throw new Error('failed requests: '+failed.join(' | '));
       output={passed:result.result.passed,total:result.result.total,contractQuantity:contractQuantity,
@@ -251,7 +251,7 @@ async function run(){
       const bad=materialNavigation.result?materialNavigation.result.checks.filter(c=>!c.ok):[];
       throw new Error('material navigation harness failed: '+JSON.stringify(bad));
     }
-    if(materialNavigation.result.total!==21)throw new Error('PG-MATERIAL-NAVIGATION must contain exactly 21 checks, got '+materialNavigation.result.total);
+    if(materialNavigation.result.total!==23)throw new Error('PG-MATERIAL-NAVIGATION must contain exactly 23 checks, got '+materialNavigation.result.total);
     const reducedMotion=await probeReducedSecondaryPages(page,origin,contractQuantity);
     if(reducedMotion.some(result=>!result.pass)){
       throw new Error('reduced-motion secondary-page probe failed: '+JSON.stringify(reducedMotion));

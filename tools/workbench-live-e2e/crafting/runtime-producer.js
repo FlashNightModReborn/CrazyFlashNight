@@ -17,6 +17,7 @@ const BUILD_FILES = Object.freeze([
   { role: "runtime_producer_source", relativePath: ".gitattributes" },
   { role: "runtime_producer_source", relativePath: "launcher/build-runtime-candidate.ps1" },
   { role: "runtime_producer_source", relativePath: "launcher/native/assert-pinned-tools.bat" },
+  { role: "runtime_producer_source", relativePath: "launcher/native/build-audio-v2.ps1" },
   { role: "runtime_producer_source", relativePath: "launcher/native/build.bat" },
   { role: "runtime_producer_source", relativePath: "launcher/native/bootstrap/build.bat" },
   { role: "runtime_producer_source", relativePath: "launcher/native/sol_parser/.cargo/config.toml" },

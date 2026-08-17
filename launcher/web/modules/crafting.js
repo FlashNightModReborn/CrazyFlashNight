@@ -6,14 +6,16 @@ var CraftingPanel = (function() {
     var _materialSnapshotIntentGeneration = 0, _materialSessionVersion = 0,
         _materialSnapshotId = '';
     var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
-    var _busy = false, _previewBusy = false, _organizerBusy = false, _organizerMounted = false;
+    var _busy = false, _previewBusy = false, _planBusy = false,
+        _organizerBusy = false, _organizerMounted = false;
+    var _planFocusRecipeId = '', _planFocusAction = '', _planFeedback = null;
     var _needsReconcile = false, _needsRefresh = false, _reconcileEpoch = 0, _generation = 0;
     var _previewFlight = null, _previewQueued = null, _checkpointRetryIntent = null;
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _craftableToggle = null, _tooltipCache = {};
     var _inspector = null, _tooltipScope = null;
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
     var _craftableOnly = false;
-    var _densityController = null, _helpAction = null, _materialsDensityToggle = null;
+    var _densityController = null, _helpAction = null, _densityToggle = null;
     var _returnCharacterBuildButton = null, _returnNavigationTimer = null;
     var _returnMaterialsButton = null, _materialRecipeReturn = null;
     var _panelInstanceId = '', _canReturnCharacterBuild = false;
@@ -21,6 +23,9 @@ var CraftingPanel = (function() {
         _recipeSnapshotIntent = null;
     var _materialShopNavigation = null, _materialShopNavigationTimer = null,
         _materialShopNavigationGeneration = 0, _materialShopNavigationSequence = 0;
+    var _procurementNavigation = null, _procurementNavigationTimer = null,
+        _procurementNavigationGeneration = 0, _procurementNavigationSequence = 0;
+    var _nestedRecipeNavigation = null, _nestedRecipeNavigationGeneration = 0;
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
     var ORGANIZER_DEPS = [
         'modules/inventory-runtime.js',
@@ -37,6 +42,7 @@ var CraftingPanel = (function() {
         sessionNonce:_config.sessionNonce
     });
     Bridge.on('panel_resp', handleMaterialShopNavigationFailure);
+    Bridge.on('panel_resp', handleProcurementShopNavigationFailure);
 
     Panels.register('crafting', {
         create:createDOM,
@@ -103,18 +109,16 @@ var CraftingPanel = (function() {
             _returnMaterialsButton.addEventListener('click', returnToMaterials);
             _shell.addHeaderAction(_returnMaterialsButton);
         }
-        _materialsDensityToggle = null;
-        if (_mode === 'materials') {
-            _densityController = new Workbench.GridDensityController({
-                panelId:'crafting-materials',
-                defaultMode:'compact'
-            });
-            root.setAttribute('data-layout-mode', _densityController.mode);
-            _materialsDensityToggle = _densityController.createToggle(function(mode) {
-                root.setAttribute('data-layout-mode', mode);
-            });
-            _shell.addHeaderAction(_materialsDensityToggle);
-        }
+        _densityToggle = null;
+        _densityController = new Workbench.GridDensityController({
+            panelId:_mode === 'materials' ? 'crafting-materials' : 'crafting-recipes',
+            defaultMode:_mode === 'materials' ? 'compact' : 'full'
+        });
+        root.setAttribute('data-layout-mode', _densityController.mode);
+        _densityToggle = _densityController.createToggle(function(mode) {
+            root.setAttribute('data-layout-mode', mode);
+        });
+        _shell.addHeaderAction(_densityToggle);
         _returnCharacterBuildButton = null;
         if (_canReturnCharacterBuild) {
             _returnCharacterBuildButton = document.createElement('button');
@@ -142,8 +146,8 @@ var CraftingPanel = (function() {
             kind:'crafting-help',
             ariaLabel:'查看合成工作台帮助',
             title:'合成工作台帮助',
-            message:'选择配方后，右侧会显示权威材料、费用、容量与产物预览。批量配方可用 − / +、+5、“最大”、数字输入或滑杆选择 1–99 份；核算期间仍可继续调整，提交会等最新份数核算完成。',
-            detail:'数字输入按 Enter 确认、按 Esc 撤回未确认文字。滑杆可用方向键逐份调整，Shift + 方向键每次 5 份，Page Up / Page Down 跨数量级，Home / End 到两端。“只看可合成”只筛选当前目录；“背包 / 战备箱”返回后会重新核算原配方。',
+            message:'选择配方后，右侧会显示权威材料、费用、容量与产物预览。批量配方可用 − / +、“最大”、数字输入或滑杆选择 1–99 份；99 是单次原子提交的协议保护上限，不是物品持有上限。核算期间仍可继续调整，提交会等最新份数核算完成。',
+            detail:'完整模式显示当前总持有量与位置明细；紧凑模式固定每行 10 个图标，适合同屏浏览成套配方。待合成标记两侧的 − / + 可设置 0–99 件，金币商店与 K 点商城会按标记数量高亮仍需购买的材料；进行中任务的提交/持有物资也会纳入高亮。缺失材料旁的扳手可前往它的合成配方：同分类直接定位，跨分类会先读取并核对目标配方。\n数字输入按 Enter 确认、按 Esc 撤回未确认文字。滑杆可用方向键逐份调整，Shift + 方向键每次 5 份，Page Up / Page Down 跨数量级，Home / End 到两端。“只看可合成”只筛选当前目录；“背包 / 战备箱”返回后会重新核算原配方。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'back'}]
         }});
         var close = document.createElement('button');
@@ -208,6 +212,7 @@ var CraftingPanel = (function() {
             renderItem:renderRecipeCard,
             bindItem:bindRecipeCard
         });
+        if (_densityController) _densityController.register(_catalogRenderer);
         root.appendChild(chrome.root); root.appendChild(_catalogRenderer.root);
         return {instanceKey:'crafting:catalog', instancePolicy:'singletonByBinding', allowedSlots:['L'],
             viewKind:'catalog', root:root, chrome:chrome,
@@ -221,9 +226,12 @@ var CraftingPanel = (function() {
             document:document,
             iconHtml:iconHtml,
             bindTooltip:bindTooltip,
+            releaseTooltips:releaseTooltipTree,
             renderMaterialRow:renderMaterialRow,
             onInspect:openInspector,
             onQuantityChange:setCraftCount,
+            onPlanToggle:toggleSelectedPlan,
+            onPlanAdjust:adjustSelectedPlan,
             onCommit:commitCraft,
             onRender:renderDetail
         });
@@ -249,7 +257,22 @@ var CraftingPanel = (function() {
         availability.className = 'crafting-card-availability ' + (ready ? 'ready' : 'blocked');
         availability.textContent = ready ? '可合成' : availabilityText(recipe.availability);
         availability.setAttribute('aria-label', ready ? '当前资源可合成 1 份' : errorMessage(recipe.availability));
-        node.appendChild(icon); node.appendChild(copy); node.appendChild(availability); return node;
+        var owned = document.createElement('span');
+        owned.className = 'crafting-card-owned';
+        owned.textContent = formatNumber(recipe.owned && recipe.owned.total);
+        owned.setAttribute('data-owned', String(Number(recipe.owned && recipe.owned.total || 0)));
+        owned.setAttribute('aria-label', ownedSummaryText(recipe.owned));
+        var planned = document.createElement('span');
+        planned.className = 'crafting-card-planned';
+        planned.hidden = !(Number(recipe.plannedCrafts) > 0);
+        planned.textContent = '标 ' + Number(recipe.plannedCrafts || 0);
+        node.setAttribute('aria-label', String(output.displayName || '未命名产物')
+            + '，当前持有 ' + Number(recipe.owned && recipe.owned.total || 0)
+            + (Number(recipe.plannedCrafts) > 0
+                ? '，已标记 ' + Number(recipe.plannedCrafts) + ' 份' : '')
+            + '，' + (ready ? '可合成' : availabilityText(recipe.availability)));
+        node.appendChild(icon); node.appendChild(copy); node.appendChild(owned);
+        node.appendChild(planned); node.appendChild(availability); return node;
     }
 
     function bindRecipeCard(node, recipe) {
@@ -301,14 +324,16 @@ var CraftingPanel = (function() {
     }
 
     function onFilterChange(path) {
-        if (_busy || _previewBusy || _organizerBusy) return;
+        if (_busy || _previewBusy || _planBusy || _organizerBusy
+                || _procurementNavigation || _nestedRecipeNavigation) return;
         _filterPath = path.slice();
         cue('select');
         applyCatalogFilter();
     }
 
     function toggleCraftableOnly() {
-        if (_busy || _previewBusy || _organizerBusy) return;
+        if (_busy || _previewBusy || _planBusy || _organizerBusy
+                || _procurementNavigation || _nestedRecipeNavigation) return;
         _craftableOnly = !_craftableOnly;
         cue('toggle');
         applyCatalogFilter();
@@ -327,7 +352,8 @@ var CraftingPanel = (function() {
     }
 
     function selectRecipe(recipeIndex) {
-        if (_busy || recipeIndex < 0) return;
+        if (_busy || _planBusy || _procurementNavigation || _nestedRecipeNavigation
+                || recipeIndex < 0) return;
         _selectedIndex = recipeIndex; _craftCount = 1; _preview = null; clearPreviewCheckpoint();
         if (_catalogRenderer) _catalogRenderer.setSelectedKey(String(recipeIndex));
         cue('select');
@@ -450,7 +476,9 @@ var CraftingPanel = (function() {
         var output = preview && preview.output;
         var previewCurrent = previewMatchesCurrent();
         var cost = preview && preview.cost || {};
-        var canCommit = !_busy && !_previewBusy && !_organizerBusy && !_needsReconcile && !_needsRefresh
+        var canCommit = !_busy && !_previewBusy && !_planBusy && !_organizerBusy
+            && !_procurementNavigation && !_nestedRecipeNavigation
+            && !_needsReconcile && !_needsRefresh
             && previewCurrent && preview.canCommit === true && !!preview.craftToken;
         var commitStatus = detailCommitStatus(selected, preview, previewCurrent);
         var commitState = canCommit ? 'ready'
@@ -466,15 +494,33 @@ var CraftingPanel = (function() {
             selected:selected,
             title:(output && output.displayName) || recipeOutput.displayName || '合成详情',
             kicker:'权威核算',
-            meta:_snapshot && _snapshot.note ? _snapshot.note : '提交前会再次校验',
+            meta:detailMetaText(_snapshot),
             emptyText:_previewBusy ? '正在向 Flash 核算材料与容量…' : '等待权威预览',
             previewState:previewState,
             pending:_previewBusy,
             output:output || null,
-            outputSummary:output ? (output.itemKind === 'equipment'
-                ? '装备强化 +' + Number(output.enhancementLevel || 1)
-                    + ' · 需求等级 ' + Number(output.requiredLevel || 0)
-                : '产出数量 ×' + Number(output.quantity || output.value || 1)) : '',
+            outputMeta:output ? outputMetaSegments(output, recipe && recipe.owned) : [],
+            recipeId:recipe && recipe.recipeId || '',
+            plannedCrafts:Number(recipe && recipe.plannedCrafts) || 0,
+            planLabel:_planBusy ? '同步中…'
+                : '待合成 ×' + Number(recipe && recipe.plannedCrafts || 0),
+            planPressed:Number(recipe && recipe.plannedCrafts) > 0,
+            planDisabled:_planBusy || _busy || _previewBusy || _organizerBusy
+                || !!_procurementNavigation || !!_nestedRecipeNavigation
+                || _needsReconcile || _needsRefresh,
+            planAriaLabel:Number(recipe && recipe.plannedCrafts) > 0
+                ? '取消标记 ' + String(recipeOutput.displayName || '当前配方')
+                : '标记待合成 ' + String(recipeOutput.displayName || '当前配方'),
+            planDecrementAriaLabel:'减少一件待合成标记；当前 '
+                + Number(recipe && recipe.plannedCrafts || 0) + ' 件',
+            planIncrementAriaLabel:'增加一件待合成标记；当前 '
+                + Number(recipe && recipe.plannedCrafts || 0) + ' 件',
+            planStatus:_planFeedback && recipe
+                    && _planFeedback.recipeId === String(recipe.recipeId || '')
+                ? _planFeedback.text : '',
+            planStatusKind:_planFeedback && recipe
+                    && _planFeedback.recipeId === String(recipe.recipeId || '')
+                ? _planFeedback.kind : 'idle',
             materials:preview && preview.materials || [],
             moneyText:formatNumber(cost.money),
             kpointsText:formatNumber(cost.kpoints),
@@ -482,15 +528,41 @@ var CraftingPanel = (function() {
             batchEligible:!!(recipe && recipe.batchEligible === true),
             craftCount:_craftCount,
             presetMax:preview ? Number(preview.maxCraftCount) || 0 : 0,
-            quantityDisabled:_busy || _organizerBusy || _needsReconcile || _needsRefresh,
+            quantityDisabled:_busy || _planBusy || _organizerBusy || !!_procurementNavigation
+                || !!_nestedRecipeNavigation
+                || _needsReconcile || _needsRefresh,
             canCommit:canCommit,
-            commitBusy:_busy || _previewBusy,
+            commitBusy:_busy || _previewBusy || _planBusy || !!_procurementNavigation
+                || !!_nestedRecipeNavigation,
             commitLabel:_busy ? '提交中…' : '确认合成',
             commitStatus:commitStatus,
             commitState:commitState,
             commitAriaLabel:'确认合成 ' + _craftCount + ' 份',
             commitTitle:'确认合成'
         });
+        restorePlanButtonFocus(recipe);
+    }
+
+    function restorePlanButtonFocus(recipe) {
+        if (!_planFocusRecipeId || _planBusy || !recipe
+                || String(recipe.recipeId || '') !== _planFocusRecipeId) {
+            if (recipe && String(recipe.recipeId || '') !== _planFocusRecipeId) {
+                _planFocusRecipeId = '';
+                _planFocusAction = '';
+            }
+            return;
+        }
+        var action = _planFocusAction === 'decrement' || _planFocusAction === 'increment'
+            ? _planFocusAction : 'toggle';
+        var button = _detailView && _detailView.root
+            ? _detailView.root.querySelector('[data-plan-action="' + action + '"]') : null;
+        if (button && button.disabled && action !== 'toggle') {
+            button = _detailView.root.querySelector('[data-plan-action="toggle"]');
+        }
+        if (!button || button.disabled || typeof button.focus !== 'function') return;
+        try { button.focus({preventScroll:true}); } catch (error) { button.focus(); }
+        _planFocusRecipeId = '';
+        _planFocusAction = '';
     }
 
     function openInspector(output, gender, returnFocusTarget) {
@@ -513,15 +585,166 @@ var CraftingPanel = (function() {
         return !!_inspector;
     }
 
+    function toggleSelectedPlan(event) {
+        var recipe = findRecipe(_selectedIndex);
+        var current = Number(recipe && recipe.plannedCrafts || 0);
+        return setSelectedPlan(current > 0 ? 0 : 1, event);
+    }
+
+    function adjustSelectedPlan(delta, event) {
+        var recipe = findRecipe(_selectedIndex);
+        var current = Number(recipe && recipe.plannedCrafts || 0);
+        return setSelectedPlan(current + Number(delta || 0), event);
+    }
+
+    function setSelectedPlan(next, event) {
+        var recipe = findRecipe(_selectedIndex);
+        var procurement = _snapshot && _snapshot.procurement;
+        if (_mode !== 'recipes' || !recipe || !recipe.recipeId || !procurement
+                || _planBusy || _busy || _previewBusy || _organizerBusy
+                || _procurementNavigation || _nestedRecipeNavigation
+                || _needsReconcile || _needsRefresh) return false;
+        next = Math.max(0, Math.min(99, Math.floor(Number(next) || 0)));
+        if (next === Number(recipe.plannedCrafts || 0)) return false;
+        var expectedRevision = Number(procurement.revision);
+        if (!Number.isInteger(expectedRevision) || expectedRevision < 0) return false;
+        _planFocusRecipeId = event && event.currentTarget === document.activeElement
+            ? String(recipe.recipeId) : '';
+        _planFocusAction = _planFocusRecipeId && event.currentTarget
+            ? String(event.currentTarget.getAttribute('data-plan-action') || 'toggle') : '';
+        _planFeedback = {recipeId:String(recipe.recipeId), kind:'pending',
+            text:'保存中…'};
+        _planBusy = true;
+        renderDetail();
+        refreshControls();
+        var preferred = _selectedIndex, preferredCount = _craftCount;
+        var issuing = true;
+        var callId = request('setPlan', {
+            recipeId:String(recipe.recipeId),
+            plannedCrafts:next,
+            expectedRevision:expectedRevision
+        }, function(response) {
+            var dispatched = !issuing;
+            _planBusy = false;
+            if (response.success) {
+                if (_snapshot && _snapshot.procurement) {
+                    _snapshot.procurement.revision = Number(response.revision);
+                }
+                var currentRecipe = findRecipe(preferred);
+                if (currentRecipe && currentRecipe.recipeId === response.recipeId) {
+                    currentRecipe.plannedCrafts = Number(response.plannedCrafts);
+                }
+                var savedCount = Number(response.plannedCrafts) || 0;
+                _planFeedback = {recipeId:String(response.recipeId), kind:'success',
+                    text:savedCount > 0
+                        ? '已保存，商城按此数量高亮。'
+                        : '已取消标记。'};
+                toast(savedCount > 0 ? '待合成数量已设为 ' + savedCount + '；相关商店材料将高亮。'
+                    : '已取消待合成标记。');
+                renderCatalog({preserveScroll:true, forceItemRender:true});
+                renderDetail();
+                refreshControls();
+                return;
+            }
+            if (isWriteAmbiguous(response, dispatched)
+                    || requiresAuthorityRefresh(response)) {
+                _needsRefresh = true;
+                _planFeedback = {recipeId:String(recipe.recipeId), kind:'pending',
+                    text:'正在核对标记结果…'};
+                toast(isWriteAmbiguous(response, dispatched)
+                    ? '标记结果不明确，正在向 Flash 对账。'
+                    : errorMessage(response.error));
+                refreshSnapshot(preferred, preferredCount);
+                return;
+            }
+            _planFeedback = {recipeId:String(recipe.recipeId), kind:'error',
+                text:'标记未保存：' + errorMessage(response.error)};
+            toast(errorMessage(response.error));
+            renderDetail();
+            refreshControls();
+        });
+        issuing = false;
+        if (!callId) {
+            _planBusy = false;
+            _planFeedback = {recipeId:String(recipe.recipeId), kind:'error',
+                text:'标记未保存：启动器连接不可用。'};
+            renderDetail();
+            refreshControls();
+            return false;
+        }
+        return true;
+    }
+
     function setCraftCount(value) {
         var recipe = findRecipe(_selectedIndex);
-        if (_busy || _organizerBusy || _needsReconcile || _needsRefresh
+        if (_busy || _planBusy || _organizerBusy || _procurementNavigation
+                || _nestedRecipeNavigation
+                || _needsReconcile || _needsRefresh
                 || !recipe || recipe.batchEligible !== true) return false;
         var next = Math.max(1, Math.min(99, Math.floor(Number(value) || 1)));
         if (next === _craftCount) return false;
         _craftCount = next;
         requestPreview();
         return true;
+    }
+
+    function ownedSummaryText(owned) {
+        owned = owned || {};
+        var parts = [];
+        function add(label, value) {
+            value = Number(value || 0);
+            if (value > 0) parts.push(label + ' ' + formatNumber(value));
+        }
+        add('背包', owned.bag);
+        add('快捷栏', owned.drug);
+        add('已装备', owned.equipped);
+        add('战备箱', owned.battleBox);
+        add('材料栏', owned.material);
+        add('情报栏', owned.information);
+        return '当前总持有 ' + formatNumber(owned.total)
+            + (parts.length ? '（' + parts.join(' · ') + '）' : '');
+    }
+
+    function ownedInlineText(owned) {
+        owned = owned || {};
+        var parts = [];
+        function add(label, value) {
+            value = Number(value || 0);
+            if (value > 0) parts.push(label + ' ' + formatNumber(value));
+        }
+        add('背包', owned.bag);
+        add('快捷栏', owned.drug);
+        add('已装备', owned.equipped);
+        add('战备箱', owned.battleBox);
+        add('材料栏', owned.material);
+        add('情报栏', owned.information);
+        return '持有 ' + formatNumber(owned.total)
+            + (parts.length ? '（' + parts.join(' · ') + '）' : '');
+    }
+
+    function outputMetaSegments(output, owned) {
+        output = output || {};
+        var equipment = output.itemKind === 'equipment';
+        var segments = [];
+        if (equipment) {
+            segments.push({kind:'level', text:'需求等级 ' + Number(output.requiredLevel || 0)});
+        } else {
+            segments.push({kind:'quantity',
+                text:'产出 ×' + Number(output.quantity || output.value || 1)});
+        }
+        segments.push({kind:'owned', text:ownedInlineText(owned)});
+        var enhancement = Number(output.enhancementLevel || 1);
+        if (equipment && enhancement > 1) {
+            segments.push({kind:'enhancement', text:'强化 +' + enhancement});
+        }
+        return segments;
+    }
+
+    function detailMetaText(snapshot) {
+        var note = snapshot && snapshot.note ? String(snapshot.note) : '';
+        return note === '改装后的装备默认强化等级为 1'
+            ? '提交前会再次校验材料与费用'
+            : note || '提交前会再次校验材料与费用';
     }
 
     function samePreviewIntent(left, right) {
@@ -577,7 +800,9 @@ var CraftingPanel = (function() {
         if (!selected) return '请先选择配方';
         if (_needsReconcile) return '状态需要重新核对，暂不可提交';
         if (_needsRefresh) return '配方状态已变化，正在重新同步';
+        if (_nestedRecipeNavigation) return '正在定位嵌套合成配方';
         if (_busy) return '正在提交，请稍候';
+        if (_planBusy) return '正在同步待合成标记';
         if (_previewBusy) return '正在核算 ' + _craftCount + ' 份；仍可调整数量';
         if (!preview) return '等待权威预览';
         if (!previewCurrent) {
@@ -589,27 +814,279 @@ var CraftingPanel = (function() {
             : errorMessage(preview.blockingError);
     }
 
+    function appendMaterialMetric(note, current, required, valueClass) {
+        var currentNode = document.createElement('span');
+        currentNode.className = valueClass + ' is-current';
+        currentNode.textContent = current;
+        var separator = document.createElement('span');
+        separator.className = 'crafting-material-status-separator';
+        separator.textContent = '/';
+        var requiredNode = document.createElement('span');
+        requiredNode.className = valueClass + ' is-required';
+        requiredNode.textContent = required;
+        note.appendChild(currentNode);
+        note.appendChild(separator);
+        note.appendChild(requiredNode);
+    }
+
+    function renderMaterialStatus(note, material, procurement) {
+        var owned = Math.max(0, Number(material.owned) || 0);
+        var required = Math.max(0, Number(material.required) || 0);
+        if (material.itemKind !== 'equipment' || material.isQuantity) {
+            note.className = 'crafting-material-status is-quantity';
+            appendMaterialMetric(note, formatNumber(owned), formatNumber(required),
+                'crafting-material-quantity-value');
+            if (material.consumed === false) {
+                var retained = document.createElement('span');
+                retained.className = 'crafting-material-retained';
+                retained.textContent = ' · 保留';
+                note.appendChild(retained);
+            }
+            note.setAttribute('data-material-status', material.enough ? 'ready' : 'quantity-shortage');
+            var quantityText = '数量：持有 ' + formatNumber(owned)
+                + '，需要 ' + formatNumber(required);
+            if (material.consumed === false) quantityText += '；该材料不消耗';
+            note.setAttribute('aria-label', quantityText);
+            return quantityText;
+        }
+
+        var totalOwned = procurement ? Math.max(0, Number(procurement.totalOwned) || 0) : owned;
+        var requiredEnhancement = procurement
+            ? Math.max(0, Number(procurement.requiredEnhancement) || 0) : required;
+        if (!requiredEnhancement) requiredEnhancement = Math.max(1, required || 1);
+        var totalMaxEnhancement = procurement
+            ? Math.max(0, Number(procurement.totalMaxEnhancement) || 0)
+            : Math.max(0, Number(material.maxEnhancement) || 0);
+        var needsEnhancement = procurement
+            ? procurement.needsEnhancement === true
+            : totalMaxEnhancement < requiredEnhancement;
+        var needsRelocation = procurement && Number(procurement.relocateMissing || 0) > 0;
+
+        note.className = 'crafting-material-status is-equipment';
+        if (totalOwned <= 0) {
+            note.classList.add('is-missing');
+            note.textContent = '缺少装备';
+            note.setAttribute('data-material-status', 'equipment-missing');
+            note.setAttribute('aria-label', '未持有所需装备');
+            return '未持有所需装备';
+        }
+        if (needsEnhancement || totalMaxEnhancement < requiredEnhancement) {
+            note.classList.add('is-enhancement');
+            appendMaterialMetric(note, '+' + totalMaxEnhancement, '+' + requiredEnhancement,
+                'crafting-material-enhancement-value');
+            note.setAttribute('data-material-status', 'enhancement-shortage');
+            var enhancementText = '强化度：当前最高 +' + totalMaxEnhancement
+                + '，要求 +' + requiredEnhancement;
+            note.setAttribute('aria-label', enhancementText);
+            return enhancementText;
+        }
+        if (needsRelocation || !material.enough) {
+            note.classList.add('is-relocate');
+            var relocation = typeof WorkbenchComponents !== 'undefined'
+                && WorkbenchComponents.ProcurementHighlight
+                && typeof WorkbenchComponents.ProcurementHighlight.relocation === 'function'
+                ? WorkbenchComponents.ProcurementHighlight.relocation(procurement) : null;
+            note.textContent = relocation ? relocation.shortText : '合成前需要移回背包';
+            note.setAttribute('data-material-status', 'equipment-relocate');
+            note.setAttribute('data-relocation-source', relocation
+                ? relocation.source : 'unknown');
+            var relocationText = relocation ? relocation.detail
+                : '这里只是合成前指引，不会自动移动装备；请将所需装备移回背包后再合成';
+            note.setAttribute('aria-label', relocationText);
+            return relocationText;
+        }
+        note.classList.add('is-ready');
+        note.textContent = '装备满足';
+        note.setAttribute('data-material-status', 'ready');
+        note.setAttribute('aria-label', '已持有符合强化要求的装备');
+        return '已持有符合强化要求的装备';
+    }
+
+    function buildAnnotationTooltipHtml(value) {
+        return '<div class="crafting-simple-tooltip">'
+            + escapeHtml(String(value || '')).replace(/\r?\n/g, '<br>') + '</div>';
+    }
+
+    function bindAnnotationTooltip(node, value, key, placement) {
+        if (!node || !value || typeof PanelTooltip === 'undefined') return;
+        var tooltipBinder = _tooltipScope || PanelTooltip;
+        if (!tooltipBinder || typeof tooltipBinder.bindAsync !== 'function') return;
+        node.removeAttribute('title');
+        node.setAttribute('data-crafting-tooltip', String(value));
+        tooltipBinder.bindAsync(node, {
+            profile:'simple-tooltip',
+            key:'crafting-annotation:' + String(key || value),
+            item:String(value),
+            renderBasic:buildAnnotationTooltipHtml,
+            placement:placement || 'left'
+        });
+    }
+
     function renderMaterialRow(material) {
         var row = document.createElement('div'); row.className = 'crafting-material-row ' + (material.enough ? 'ok' : 'bad');
-        var icon = document.createElement('span'); icon.className = 'crafting-material-icon';
-        icon.innerHTML = iconHtml(material.icon, 'kshop-icon');
+        row.setAttribute('data-material-name', String(material.name || ''));
+        var iconSource = document.createElement('span');
+        iconSource.innerHTML = iconHtml(material.icon, 'kshop-icon');
+        var icon = iconSource.firstElementChild;
+        if (!icon) {
+            icon = document.createElement('span');
+            icon.className = 'kshop-icon-placeholder';
+        }
+        icon.classList.add('crafting-material-icon');
         var copy = document.createElement('span'); copy.className = 'crafting-material-copy';
         var name = document.createElement('b'); name.textContent = material.displayName || '未命名材料';
         var note = document.createElement('small');
-        if (material.itemKind === 'equipment' && !material.isQuantity) {
-            note.textContent = '最高 +' + Number(material.maxEnhancement || 0) + ' / 需要 +' + Number(material.required || 1);
-        } else {
-            note.textContent = formatNumber(material.owned) + ' / ' + formatNumber(material.required)
-                + (material.consumed === false ? ' · 图纸保留' : '');
-        }
+        var procurement = material.procurement || null;
+        var noteTooltipText = renderMaterialStatus(note, material, procurement);
         copy.appendChild(name); copy.appendChild(note);
-        var mark = document.createElement('span'); mark.className = 'crafting-material-mark';
-        mark.textContent = material.enough ? '✓' : '不足';
-        row.appendChild(icon); row.appendChild(copy); row.appendChild(mark); bindTooltip(row, material); return row;
+        var sourceActions = null;
+        if (!material.enough && Array.isArray(material.craftingSources)
+                && material.craftingSources.length) {
+            sourceActions = document.createElement('span');
+            sourceActions.className = 'crafting-material-source-actions';
+            material.craftingSources.forEach(function(source) {
+                if (!source) return;
+                var craftingButton = document.createElement('button');
+                craftingButton.type = 'button';
+                craftingButton.className = 'workbench-mode-btn crafting-material-shop-btn '
+                    + 'crafting-material-crafting-btn';
+                craftingButton.setAttribute('data-procurement-source', 'crafting');
+                craftingButton.setAttribute('data-crafting-category', String(source.category || ''));
+                craftingButton.setAttribute('data-crafting-recipe-index', String(source.recipeIndex));
+                craftingButton.setAttribute('data-crafting-recipe-id', String(source.recipeId || ''));
+                craftingButton.textContent = '🔧︎';
+                var pending = nestedRecipeTargetMatches(_nestedRecipeNavigation, material, source);
+                var canNavigate = canRequestNestedRecipe(material, source);
+                craftingButton.disabled = !canNavigate;
+                if (pending) craftingButton.setAttribute('aria-busy', 'true');
+                var targetLabel = String(source.category || '') + ' · '
+                    + String(source.title || material.displayName || material.name || '目标配方');
+                craftingButton.setAttribute('aria-label', pending
+                    ? '正在定位合成配方：' + targetLabel
+                    : '前往合成：' + String(material.displayName || material.name)
+                        + '，' + targetLabel);
+                craftingButton.addEventListener('click', function() {
+                    requestNestedRecipeNavigation(material, source, craftingButton);
+                });
+                bindAnnotationTooltip(craftingButton,
+                    (pending ? '正在定位 · ' : '前往合成 · ') + targetLabel,
+                    'crafting-source:' + String(source.recipeId || '')
+                        + ':' + String(source.recipeIndex));
+                sourceActions.appendChild(craftingButton);
+            });
+            if (!sourceActions.childNodes.length) sourceActions = null;
+        }
+        var procurementSummary = typeof WorkbenchComponents !== 'undefined'
+            && WorkbenchComponents.ProcurementHighlight
+            ? WorkbenchComponents.ProcurementHighlight.summary(procurement) : null;
+        if (procurementSummary) {
+            row.classList.add(procurementSummary.kind === 'obtain'
+                ? 'procurement-needed' : 'procurement-relocate');
+            note.classList.add('crafting-material-procurement-note');
+            var fullProcurementText = procurementSummary.shortText
+                + (procurementSummary.detail ? '\n' + procurementSummary.detail : '');
+            if (procurementSummary.kind === 'relocate'
+                    && note.getAttribute('data-material-status') === 'equipment-relocate') {
+                noteTooltipText = procurementSummary.detail;
+            } else noteTooltipText += '\n' + fullProcurementText;
+            if (procurementSummary.kind === 'obtain') {
+                if (!sourceActions) {
+                    sourceActions = document.createElement('span');
+                    sourceActions.className = 'crafting-material-source-actions';
+                }
+                (procurement.sources || []).forEach(function(source) {
+                    if (!source) return;
+                    if (source.kind === 'npcshop') {
+                        var shopButton = document.createElement('button');
+                        shopButton.type = 'button';
+                        shopButton.className = 'workbench-mode-btn crafting-material-shop-btn';
+                        shopButton.setAttribute('data-procurement-source', 'npcshop');
+                        var canNavigate = canRequestRecipeShopNavigation(material, source);
+                        var directNavigation = hasDirectRecipeShopNavigation();
+                        var destination = String(source.label || source.shopId || '金币商店');
+                        var shopStateText = canNavigate ? '前往购买'
+                            : directNavigation ? '核算中…' : '需摩托车';
+                        shopButton.setAttribute('data-shop-label', destination);
+                        shopButton.setAttribute('data-shop-state', canNavigate ? 'ready'
+                            : directNavigation ? 'pending' : 'locked');
+                        shopButton.textContent = destination.charAt(0).toUpperCase();
+                        var shopImage = document.createElement('img');
+                        shopImage.alt = '';
+                        shopImage.setAttribute('aria-hidden', 'true');
+                        shopButton.appendChild(shopImage);
+                        shopButton.disabled = !canNavigate;
+                        shopButton.setAttribute('aria-label', canNavigate
+                            ? '前往 ' + destination
+                                + ' 购买 ' + String(material.displayName || material.name)
+                            : directNavigation
+                                ? destination + ' 商店来源正在核算，请稍候'
+                                : '需要摩托车或越野车基建，才能直接前往 '
+                                    + destination + ' 购买 '
+                                    + String(material.displayName || material.name));
+                        shopButton.addEventListener('click', function() {
+                            requestRecipeShopNavigation(material, source, shopButton);
+                        });
+                        bindAnnotationTooltip(shopButton, destination + ' · ' + shopStateText,
+                            'shop:' + String(source.shopId || destination));
+                        if (typeof ShopPortraits !== 'undefined' && ShopPortraits
+                                && typeof ShopPortraits.mount === 'function') {
+                            try {
+                                var portraitMount = ShopPortraits.mount(
+                                    shopButton, shopImage, source.shopId);
+                                if (portraitMount && typeof portraitMount.catch === 'function') {
+                                    portraitMount.catch(function() {});
+                                }
+                            } catch (ignore) {}
+                        }
+                        sourceActions.appendChild(shopButton);
+                    } else if (source.kind === 'kshop') {
+                        var kshopButton = document.createElement('button');
+                        kshopButton.type = 'button';
+                        kshopButton.className = 'workbench-mode-btn crafting-material-shop-btn';
+                        kshopButton.setAttribute('data-procurement-source', 'kshop');
+                        var canOpenKShop = canRequestRecipeShopNavigation(material, source);
+                        var directKShopNavigation = hasDirectRecipeShopNavigation();
+                        var kshopStateText = canOpenKShop ? '前往购买'
+                            : directKShopNavigation ? '核算中…' : '需摩托车';
+                        kshopButton.setAttribute('data-shop-label', 'K 点商城');
+                        kshopButton.setAttribute('data-shop-state', canOpenKShop ? 'ready'
+                            : directKShopNavigation ? 'pending' : 'locked');
+                        kshopButton.classList.add('crafting-material-kshop-btn');
+                        kshopButton.textContent = 'K';
+                        kshopButton.disabled = !canOpenKShop;
+                        kshopButton.setAttribute('aria-label', canOpenKShop
+                            ? '前往 K 点商城购买 '
+                                + String(material.displayName || material.name)
+                            : directKShopNavigation
+                                ? 'K 点商城来源正在核算，请稍候'
+                                : '需要摩托车或越野车基建，才能直接前往 K 点商城');
+                        kshopButton.addEventListener('click', function() {
+                            requestRecipeShopNavigation(material, source, kshopButton);
+                        });
+                        bindAnnotationTooltip(kshopButton, 'K 点商城 · ' + kshopStateText,
+                            'shop:kshop');
+                        sourceActions.appendChild(kshopButton);
+                    }
+                });
+                if (!sourceActions.childNodes.length) sourceActions = null;
+            }
+        }
+        row.appendChild(icon); row.appendChild(copy);
+        if (sourceActions) row.appendChild(sourceActions);
+        if (material.enough) {
+            var mark = document.createElement('span');
+            mark.className = 'crafting-material-mark';
+            mark.textContent = '✓';
+            row.appendChild(mark);
+        }
+        bindAnnotationTooltip(note, noteTooltipText, 'material:' + String(material.name || ''));
+        bindTooltip(row, material); return row;
     }
 
     function commitCraft() {
-        if (_busy || _previewBusy || _needsReconcile || _needsRefresh || !previewMatchesCurrent()
+        if (_busy || _planBusy || _previewBusy || _procurementNavigation
+                || _nestedRecipeNavigation
+                || _needsReconcile || _needsRefresh || !previewMatchesCurrent()
                 || !_preview.canCommit || !_preview.craftToken || !_preview.acceptedPlan) return;
         _busy = true; refreshControls(); renderDetail();
         var preferred = _selectedIndex, preferredCount = _craftCount;
@@ -858,6 +1335,13 @@ var CraftingPanel = (function() {
         return messages[String(error || '')] || '暂时无法前往商店；请重试。';
     }
 
+    function procurementNavigationError(error) {
+        if (String(error || '') === 'access_denied') {
+            return '需要摩托车或越野车基建，才能从配方直接前往商店。';
+        }
+        return materialShopNavigationError(error);
+    }
+
     function requestMaterialShopNavigation(source, opener) {
         source = source || {};
         var selectedName = _materials && _materials.getSelectedName
@@ -978,6 +1462,359 @@ var CraftingPanel = (function() {
                 && typeof _materials.clearShopNavigation === 'function') {
             _materials.clearShopNavigation();
         }
+    }
+
+    function canRequestRecipeShopNavigation(material, source) {
+        var recipe = findRecipe(_selectedIndex);
+        var demand = material && material.procurement;
+        var direct = hasDirectRecipeShopNavigation();
+        if (_mode !== 'recipes' || _procurementNavigation || _nestedRecipeNavigation
+                || _materialShopNavigation
+                || !recipe || !recipe.recipeId || !material || !demand || !direct
+                || _busy || _previewBusy || _planBusy || _organizerBusy
+                || _needsReconcile || _needsRefresh || !_panelInstanceId
+                || !source || (source.kind !== 'npcshop' && source.kind !== 'kshop')
+                || Number(demand.obtainMissing) <= 0
+                || !Array.isArray(demand.sources)
+                || !demand.sources.some(function(candidate) {
+                    if (!candidate || candidate.kind !== source.kind
+                            || Number(candidate.catalogIndex)
+                                !== Number(source.catalogIndex)) return false;
+                    return source.kind === 'npcshop'
+                        ? candidate.shopId === source.shopId
+                        : candidate.entryId === source.entryId
+                            && String(candidate.category || '')
+                                === String(source.category || '');
+                })) return false;
+        if (source.kind === 'kshop'
+                && (typeof source.entryId !== 'string' || !source.entryId)) return false;
+        return true;
+    }
+
+    function hasDirectRecipeShopNavigation() {
+        return !!(_snapshot && _snapshot.procurement
+            && _snapshot.procurement.directShopNavigation === true);
+    }
+
+    function requestRecipeShopNavigation(material, source, opener) {
+        var recipe = findRecipe(_selectedIndex);
+        if (!canRequestRecipeShopNavigation(material, source)) {
+            toast('商店来源仍在核算，请稍候再试。');
+            renderDetail();
+            refreshControls();
+            return false;
+        }
+        var intent = {
+            generation:++_procurementNavigationGeneration,
+            lifecycleGeneration:_generation,
+            panelInstanceId:_panelInstanceId,
+            category:_category,
+            recipeIndex:Number(recipe.recipeIndex),
+            recipeId:String(recipe.recipeId),
+            materialName:String(material.name || ''),
+            shopKind:String(source.kind),
+            shopId:String(source.shopId || ''),
+            entryId:String(source.entryId || ''),
+            kshopCategory:String(source.category || ''),
+            catalogIndex:Number(source.catalogIndex),
+            opener:opener,
+            stage:'navigation',
+            requestCallId:'',
+            navigationCallId:'craft-procurement-shop-'
+                + (++_procurementNavigationSequence)
+        };
+        if (!intent.materialName || intent.catalogIndex < 0
+                || intent.shopKind === 'npcshop' && !intent.shopId
+                || intent.shopKind === 'kshop' && !intent.entryId) return false;
+        var messageFactory = intent.shopKind === 'kshop'
+            ? CraftingRuntime.createProcurementKShopNavigationMessage
+            : CraftingRuntime.createProcurementShopNavigationMessage;
+        var message = messageFactory({
+            callId:intent.navigationCallId,
+            panelInstanceId:intent.panelInstanceId,
+            materialName:intent.materialName,
+            shopId:intent.shopId,
+            catalogIndex:intent.catalogIndex,
+            entryId:intent.entryId,
+            kshopCategory:intent.kshopCategory,
+            recipeId:intent.recipeId,
+            category:intent.category,
+            recipeIndex:intent.recipeIndex
+        });
+        if (!message) return false;
+        _procurementNavigation = intent;
+        renderDetail();
+        refreshControls();
+        var sent = false;
+        try { sent = Bridge.send(message) !== false; }
+        catch (_) { sent = false; }
+        if (!sent) return failProcurementNavigation(intent, 'navigation_unavailable');
+        _procurementNavigationTimer = setTimeout(function() {
+            if (procurementNavigationIsCurrent(intent)) {
+                failProcurementNavigation(intent, 'timeout');
+            }
+        }, CraftingRuntime.NAVIGATION_WATCHDOG_MS);
+        return true;
+    }
+
+    function procurementNavigationIsCurrent(intent) {
+        var recipe = findRecipe(_selectedIndex);
+        return !!intent && _procurementNavigation === intent
+            && intent.generation === _procurementNavigationGeneration
+            && intent.lifecycleGeneration === _generation
+            && intent.panelInstanceId === _panelInstanceId
+            && _mode === 'recipes' && _category === intent.category
+            && _selectedIndex === intent.recipeIndex
+            && recipe && recipe.recipeId === intent.recipeId
+            && (!Panels.getActive || Panels.getActive() === 'crafting');
+    }
+
+    function handleProcurementShopNavigationFailure(data) {
+        var intent = _procurementNavigation;
+        var validateFailure = intent && intent.shopKind === 'kshop'
+            ? CraftingRuntime.validateProcurementKShopNavigationFailure
+            : CraftingRuntime.validateProcurementShopNavigationFailure;
+        if (!procurementNavigationIsCurrent(intent) || intent.stage !== 'navigation'
+                || !validateFailure(data, {
+                    callId:intent.navigationCallId,
+                    panelInstanceId:intent.panelInstanceId
+                })) return false;
+        return failProcurementNavigation(intent, data.error);
+    }
+
+    function failProcurementNavigation(intent, error) {
+        if (!procurementNavigationIsCurrent(intent)) return false;
+        if (intent.requestCallId && _mux && typeof _mux.cancel === 'function') {
+            _mux.cancel(intent.requestCallId);
+        }
+        if (_procurementNavigationTimer !== null) {
+            clearTimeout(_procurementNavigationTimer);
+            _procurementNavigationTimer = null;
+        }
+        _procurementNavigation = null;
+        toast(procurementNavigationError(error));
+        renderDetail();
+        refreshControls();
+        return false;
+    }
+
+    function retireProcurementNavigation() {
+        _procurementNavigationGeneration++;
+        var intent = _procurementNavigation;
+        if (intent && intent.requestCallId && _mux && typeof _mux.cancel === 'function') {
+            _mux.cancel(intent.requestCallId);
+        }
+        if (_procurementNavigationTimer !== null) {
+            clearTimeout(_procurementNavigationTimer);
+            _procurementNavigationTimer = null;
+        }
+        _procurementNavigation = null;
+    }
+
+    function nestedRecipeTargetMatches(intent, material, source) {
+        return !!intent && !!material && !!source
+            && intent.materialName === String(material.name || '')
+            && intent.targetCategory === String(source.category || '')
+            && intent.targetRecipeIndex === Number(source.recipeIndex)
+            && intent.targetRecipeId === String(source.recipeId || '');
+    }
+
+    function previewContainsNestedSource(materialName, source) {
+        if (!_preview || !previewMatchesCurrent() || !Array.isArray(_preview.materials)) return false;
+        return _preview.materials.some(function(material) {
+            return material && material.enough !== true
+                && String(material.name || '') === String(materialName || '')
+                && Array.isArray(material.craftingSources)
+                && material.craftingSources.some(function(candidate) {
+                    return candidate
+                        && String(candidate.category || '') === String(source.category || '')
+                        && Number(candidate.recipeIndex) === Number(source.recipeIndex)
+                        && String(candidate.recipeId || '') === String(source.recipeId || '')
+                        && String(candidate.title || '') === String(source.title || '');
+                });
+        });
+    }
+
+    function canRequestNestedRecipe(material, source) {
+        var recipe = findRecipe(_selectedIndex);
+        return _mode === 'recipes' && !!recipe && !!recipe.recipeId
+            && !!material && material.enough !== true && !!source
+            && !_nestedRecipeNavigation && !_procurementNavigation && !_materialShopNavigation
+            && !_busy && !_previewBusy && !_planBusy && !_organizerBusy
+            && !_needsReconcile && !_needsRefresh && !!_panelInstanceId
+            && previewContainsNestedSource(material.name, source);
+    }
+
+    function requestNestedRecipeNavigation(material, source, opener) {
+        if (!canRequestNestedRecipe(material, source)) {
+            toast('合成来源仍在核算，请稍候再试。');
+            return false;
+        }
+        var currentRecipe = findRecipe(_selectedIndex);
+        var intent = {
+            generation:++_nestedRecipeNavigationGeneration,
+            lifecycleGeneration:_generation,
+            panelInstanceId:_panelInstanceId,
+            sourceCategory:_category,
+            sourceRecipeIndex:_selectedIndex,
+            sourceRecipeId:String(currentRecipe.recipeId || ''),
+            materialName:String(material.name || ''),
+            targetCategory:String(source.category || ''),
+            targetRecipeIndex:Number(source.recipeIndex),
+            targetRecipeId:String(source.recipeId || ''),
+            targetTitle:String(source.title || ''),
+            opener:opener,
+            callId:''
+        };
+        if (intent.targetCategory === _category) {
+            return completeSameCategoryNestedRecipe(intent);
+        }
+        _nestedRecipeNavigation = intent;
+        renderDetail();
+        refreshControls();
+        var callId = request('snapshot', {category:intent.targetCategory}, function(response) {
+            completeNestedRecipeSnapshot(intent, response);
+        });
+        intent.callId = callId || '';
+        if (!callId) return failNestedRecipeNavigation(intent,
+            '启动器连接不可用，暂时无法读取目标配方。');
+        return true;
+    }
+
+    function nestedRecipeNavigationIsCurrent(intent) {
+        var recipe = findRecipe(_selectedIndex);
+        return !!intent && _nestedRecipeNavigation === intent
+            && intent.generation === _nestedRecipeNavigationGeneration
+            && intent.lifecycleGeneration === _generation
+            && intent.panelInstanceId === _panelInstanceId
+            && _mode === 'recipes' && _category === intent.sourceCategory
+            && _selectedIndex === intent.sourceRecipeIndex
+            && recipe && String(recipe.recipeId || '') === intent.sourceRecipeId
+            && previewContainsNestedSource(intent.materialName, {
+                category:intent.targetCategory,
+                recipeIndex:intent.targetRecipeIndex,
+                recipeId:intent.targetRecipeId,
+                title:intent.targetTitle
+            })
+            && (!Panels.getActive || Panels.getActive() === 'crafting');
+    }
+
+    function exactNestedRecipe(response, intent) {
+        if (!response || response.success !== true || Number(response.v) !== 1
+                || String(response.category || '') !== intent.targetCategory
+                || !Array.isArray(response.recipes)) return null;
+        var matches = response.recipes.filter(function(recipe) {
+            return recipe && Number(recipe.recipeIndex) === intent.targetRecipeIndex
+                && String(recipe.recipeId || '') === intent.targetRecipeId
+                && recipe.output
+                && String(recipe.output.name || '') === intent.materialName;
+        });
+        return matches.length === 1 ? matches[0] : null;
+    }
+
+    function completeSameCategoryNestedRecipe(intent) {
+        if (!previewContainsNestedSource(intent.materialName, {
+                category:intent.targetCategory,
+                recipeIndex:intent.targetRecipeIndex,
+                recipeId:intent.targetRecipeId,
+                title:intent.targetTitle
+            })) return false;
+        var target = exactNestedRecipe(_snapshot, intent);
+        if (!target) {
+            toast('配方已变化，未执行定位；请重新核对。');
+            return false;
+        }
+        _filterPath = [];
+        _craftableOnly = false;
+        _selectedIndex = intent.targetRecipeIndex;
+        _craftCount = 1;
+        _preview = null;
+        _planFeedback = null;
+        clearPreviewCheckpoint();
+        rebuildFilterTree();
+        renderCatalog({preserveScroll:false});
+        renderDetail({preserveScroll:false});
+        cue('select');
+        if (!focusExactRecipeCard(intent.targetRecipeIndex)) {
+            _needsRefresh = true;
+            refreshControls();
+            return false;
+        }
+        requestPreview();
+        return true;
+    }
+
+    function completeNestedRecipeSnapshot(intent, response) {
+        if (!nestedRecipeNavigationIsCurrent(intent)) return false;
+        if (!response || response.success !== true) {
+            return failNestedRecipeNavigation(intent, '目标配方读取失败：'
+                + errorMessage(response && response.error));
+        }
+        if (!exactNestedRecipe(response, intent)) {
+            return failNestedRecipeNavigation(intent,
+                '配方已变化，未执行跳转；请重新核对。');
+        }
+        _nestedRecipeNavigationGeneration++;
+        _nestedRecipeNavigation = null;
+        _category = intent.targetCategory;
+        _snapshot = response;
+        _selectedIndex = intent.targetRecipeIndex;
+        _craftCount = 1;
+        _preview = null;
+        _previewFlight = null;
+        _previewQueued = null;
+        clearPreviewCheckpoint();
+        _busy = false;
+        _previewBusy = false;
+        _planBusy = false;
+        _organizerBusy = false;
+        _organizerMounted = false;
+        _needsReconcile = false;
+        _needsRefresh = false;
+        _reconcileEpoch = 0;
+        _filterPath = [];
+        _craftableOnly = false;
+        _planFocusRecipeId = '';
+        _planFocusAction = '';
+        _planFeedback = null;
+        _tooltipCache = {};
+        buildDOM();
+        rebuildFilterTree();
+        applyBalance(response.balance);
+        renderCatalog({preserveScroll:false});
+        renderDetail({preserveScroll:false});
+        cue('select');
+        if (!focusExactRecipeCard(intent.targetRecipeIndex)) {
+            _needsRefresh = true;
+            refreshControls();
+            return false;
+        }
+        requestPreview();
+        return true;
+    }
+
+    function failNestedRecipeNavigation(intent, message) {
+        if (!nestedRecipeNavigationIsCurrent(intent)) return false;
+        _nestedRecipeNavigationGeneration++;
+        _nestedRecipeNavigation = null;
+        toast(message || '目标配方定位失败，请重试。');
+        renderDetail();
+        refreshControls();
+        if (intent.opener && intent.opener.isConnected
+                && typeof intent.opener.focus === 'function') {
+            try { intent.opener.focus({preventScroll:true}); }
+            catch (_) { intent.opener.focus(); }
+        }
+        return false;
+    }
+
+    function retireNestedRecipeNavigation() {
+        _nestedRecipeNavigationGeneration++;
+        var intent = _nestedRecipeNavigation;
+        if (intent && intent.callId && _mux && typeof _mux.cancel === 'function') {
+            _mux.cancel(intent.callId);
+        }
+        _nestedRecipeNavigation = null;
     }
 
     function materialUseIntentIsCurrent(intent, responseCallId) {
@@ -1103,6 +1940,7 @@ var CraftingPanel = (function() {
         clearPreviewCheckpoint();
         _busy = false;
         _previewBusy = false;
+        _planBusy = false;
         _organizerBusy = false;
         _organizerMounted = false;
         _needsReconcile = false;
@@ -1128,7 +1966,8 @@ var CraftingPanel = (function() {
     function returnToMaterials() {
         if (_mode !== 'recipes' || !_materialRecipeReturn
                 || !_materialRecipeReturn.materialName) return false;
-        if (_busy || _previewBusy || _organizerBusy || _organizerMounted
+        if (_busy || _previewBusy || _planBusy || _organizerBusy || _organizerMounted
+                || _procurementNavigation || _nestedRecipeNavigation
                 || _needsReconcile || _needsRefresh) {
             toast('合成状态正在确认，请稍候返回材料。');
             return false;
@@ -1154,6 +1993,7 @@ var CraftingPanel = (function() {
         clearPreviewCheckpoint();
         _busy = false;
         _previewBusy = false;
+        _planBusy = false;
         _organizerBusy = false;
         _organizerMounted = false;
         _needsReconcile = false;
@@ -1196,7 +2036,9 @@ var CraftingPanel = (function() {
     }
 
     function openOrganizer() {
-        if (_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh || !_category) return false;
+        if (_busy || _previewBusy || _planBusy || _procurementNavigation
+                || _nestedRecipeNavigation || _organizerBusy
+                || _needsReconcile || _needsRefresh || !_category) return false;
         _organizerBusy = true; renderDetail(); refreshControls();
         var generation = _generation;
         return !!request('snapshot', {category:_category}, function(response) {
@@ -1367,8 +2209,8 @@ var CraftingPanel = (function() {
             if (_helpAction && _helpAction.button) {
                 _helpAction.button.disabled = !!_materialShopNavigation;
             }
-            if (_materialsDensityToggle) {
-                var densityButtons = _materialsDensityToggle.querySelectorAll('button');
+            if (_densityToggle) {
+                var densityButtons = _densityToggle.querySelectorAll('button');
                 for (var densityIndex = 0; densityIndex < densityButtons.length; densityIndex++) {
                     densityButtons[densityIndex].disabled = !!_materialShopNavigation;
                 }
@@ -1377,28 +2219,59 @@ var CraftingPanel = (function() {
         }
         if (_needsReconcile) _shell.setStatus('需要重新核对', 'error');
         else if (_needsRefresh) _shell.setStatus('需要重新同步', 'error');
+        else if (_nestedRecipeNavigation) _shell.setStatus('正在定位合成配方', 'loading');
+        else if (_procurementNavigation) _shell.setStatus('正在前往商店', 'loading');
         else if (_organizerBusy) _shell.setStatus('正在打开战备箱', 'loading');
+        else if (_planBusy) _shell.setStatus('正在同步标记', 'loading');
         else if (_busy || _previewBusy) _shell.setStatus('权威核算中', 'loading');
         else if (_snapshot) _shell.setStatus('Flash 权威状态', 'idle');
         else _shell.setStatus('同步中', 'loading');
         if (_retryButton) {
             _retryButton.textContent = _needsReconcile ? '重新核对' : '重新同步';
             _retryButton.style.display = _needsReconcile || _needsRefresh ? '' : 'none';
-            _retryButton.disabled = _previewBusy;
+            _retryButton.disabled = _previewBusy || !!_procurementNavigation
+                || !!_nestedRecipeNavigation;
         }
-        if (_organizerButton) _organizerButton.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh;
+        if (_organizerButton) _organizerButton.disabled = _busy || _previewBusy || _planBusy
+            || _organizerBusy || !!_procurementNavigation || !!_nestedRecipeNavigation
+            || _needsReconcile || _needsRefresh;
         if (_returnMaterialsButton) {
-            _returnMaterialsButton.disabled = _busy || _previewBusy
+            _returnMaterialsButton.disabled = _busy || _previewBusy || _planBusy
                 || _organizerBusy || _organizerMounted
+                || !!_procurementNavigation || !!_nestedRecipeNavigation
                 || _needsReconcile || _needsRefresh;
         }
-        if (_filterNavigator) _filterNavigator.setDisabled(_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh);
-        if (_craftableToggle) _craftableToggle.disabled = _busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh;
+        if (_returnCharacterBuildButton && _returnNavigationTimer === null) {
+            _returnCharacterBuildButton.disabled = _busy || _previewBusy || _planBusy
+                || _organizerBusy || !!_procurementNavigation || !!_nestedRecipeNavigation
+                || _needsReconcile || _needsRefresh;
+        }
+        if (_filterNavigator) _filterNavigator.setDisabled(_busy || _previewBusy || _planBusy
+            || _organizerBusy || !!_procurementNavigation || !!_nestedRecipeNavigation
+            || _needsReconcile || _needsRefresh);
+        if (_craftableToggle) _craftableToggle.disabled = _busy || _previewBusy || _planBusy
+            || _organizerBusy || !!_procurementNavigation || !!_nestedRecipeNavigation
+            || _needsReconcile || _needsRefresh;
+        if (_helpAction && _helpAction.button) {
+            _helpAction.button.disabled = !!_procurementNavigation || !!_nestedRecipeNavigation;
+        }
+        if (_densityToggle) {
+            var recipeDensityButtons = _densityToggle.querySelectorAll('button');
+            for (var recipeDensityIndex = 0;
+                    recipeDensityIndex < recipeDensityButtons.length;
+                    recipeDensityIndex++) {
+                recipeDensityButtons[recipeDensityIndex].disabled = _busy || _planBusy
+                    || _organizerBusy || !!_procurementNavigation
+                    || !!_nestedRecipeNavigation;
+            }
+        }
     }
 
     function onOpen(el, initData) {
         _generation++;
         retireMaterialShopNavigation(false);
+        retireProcurementNavigation();
+        retireNestedRecipeNavigation();
         _recipeSnapshotGeneration++;
         _recipeSnapshotCallId = '';
         _recipeSnapshotIntent = null;
@@ -1424,7 +2297,9 @@ var CraftingPanel = (function() {
         _category = nextCategory;
         var preferredIndex = initData && Number(initData.preferredRecipeIndex);
         var preferredCount = initData && Number(initData.preferredCraftCount);
-        _snapshot = null; _preview = null; clearPreviewCheckpoint(); _selectedIndex = -1; _busy = false; _previewBusy = false;
+        _snapshot = null; _preview = null; clearPreviewCheckpoint(); _selectedIndex = -1;
+        _busy = false; _previewBusy = false; _planBusy = false;
+        _planFocusRecipeId = ''; _planFocusAction = ''; _planFeedback = null;
         _previewFlight = null; _previewQueued = null;
         _craftCount = 1; _organizerBusy = false; _organizerMounted = false;
         _needsReconcile = false; _needsRefresh = false; _reconcileEpoch = 0; _tooltipCache = {}; buildDOM();
@@ -1449,6 +2324,8 @@ var CraftingPanel = (function() {
     function cleanup() {
         _generation++; _materialRequestSeq++; _materialSnapshotIntentGeneration++;
         retireMaterialShopNavigation(false);
+        retireProcurementNavigation();
+        retireNestedRecipeNavigation();
         invalidateMaterialUseIntent(true);
         _materialSessionVersion = 0; _materialSnapshotId = ''; _mux.closeSession();
         if (_returnNavigationTimer !== null) {
@@ -1462,7 +2339,8 @@ var CraftingPanel = (function() {
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         if (_shell) _shell.closeModal();
         _inspector = null;
-        _busy = false; _previewBusy = false; _organizerBusy = false;
+        _busy = false; _previewBusy = false; _planBusy = false; _organizerBusy = false;
+        _planFocusRecipeId = ''; _planFocusAction = ''; _planFeedback = null;
         _organizerMounted = false; _snapshot = null; _preview = null;
         clearPreviewCheckpoint(); _needsReconcile = false; _needsRefresh = false; _reconcileEpoch = 0;
         disposeFilterNavigator(); _craftableToggle = null;
@@ -1474,7 +2352,7 @@ var CraftingPanel = (function() {
         _returnCharacterBuildButton = null;
         _returnMaterialsButton = null;
         _materialRecipeReturn = null;
-        _materialsDensityToggle = null;
+        _densityToggle = null;
         _panelInstanceId = '';
         _canReturnCharacterBuild = false;
     }
@@ -1494,7 +2372,10 @@ var CraftingPanel = (function() {
         if (reason === 'escape' && _mode === 'materials' && _materials
                 && typeof _materials.consumeEscape === 'function'
                 && _materials.consumeEscape(document.activeElement)) return true;
-        if (_busy || _organizerBusy) { toast('工作台状态正在确认，请稍候。'); return; }
+        if (_busy || _planBusy || _organizerBusy || _procurementNavigation
+                || _nestedRecipeNavigation) {
+            toast('工作台状态正在确认，请稍候。'); return;
+        }
         if (Bridge.send({type:'panel', cmd:'close', panel:'crafting',
                 panelInstanceId:_panelInstanceId}) === false) {
             toast('启动器连接不可用，工作台保持打开。');
@@ -1509,8 +2390,9 @@ var CraftingPanel = (function() {
     function requestCharacterBuild() {
         if (!_canReturnCharacterBuild || !_panelInstanceId
                 || !_returnCharacterBuildButton) return false;
-        if (_busy || _previewBusy || _organizerBusy || _needsReconcile || _needsRefresh
-                || _recipeSnapshotIntent || _materialShopNavigation) {
+        if (_busy || _previewBusy || _planBusy || _organizerBusy || _needsReconcile || _needsRefresh
+                || _recipeSnapshotIntent || _materialShopNavigation || _procurementNavigation
+                || _nestedRecipeNavigation) {
             toast('材料档案正在确认状态，请稍候。');
             return false;
         }
@@ -1563,6 +2445,18 @@ var CraftingPanel = (function() {
             },
             fetch:function(_, callback) { request('tooltip', {itemName:String(item.name)}, callback); }
         });
+    }
+
+    function releaseTooltipTree(root) {
+        if (!root) return 0;
+        if (_tooltipScope && typeof _tooltipScope.releaseTree === 'function') {
+            return _tooltipScope.releaseTree(root);
+        }
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip
+                && typeof PanelTooltip.releaseTree === 'function') {
+            return PanelTooltip.releaseTree(root);
+        }
+        return 0;
     }
 
     function rememberPreview(response, recipeIndex, craftCount) {
@@ -1669,7 +2563,8 @@ var CraftingPanel = (function() {
     return {debugState:function() { return {mode:_mode, category:_category, selectedIndex:_selectedIndex, craftCount:_craftCount,
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
-        busy:_busy, previewBusy:_previewBusy, organizerBusy:_organizerBusy,
+        busy:_busy, previewBusy:_previewBusy, planBusy:_planBusy,
+        organizerBusy:_organizerBusy,
         organizerMounted:_organizerMounted,
         needsReconcile:_needsReconcile, needsRefresh:_needsRefresh, reconcileEpoch:_reconcileEpoch,
         previewFlight:_previewFlight ? {recipeIndex:_previewFlight.recipeIndex, craftCount:_previewFlight.craftCount} : null,
@@ -1706,6 +2601,28 @@ var CraftingPanel = (function() {
             shopId:_materialShopNavigation.shopId,
             catalogIndex:_materialShopNavigation.catalogIndex,
             sourceKey:_materialShopNavigation.sourceKey
+        } : null,
+        procurementNavigation:_procurementNavigation ? {
+            generation:_procurementNavigation.generation,
+            stage:_procurementNavigation.stage,
+            recipeId:_procurementNavigation.recipeId,
+            materialName:_procurementNavigation.materialName,
+            shopId:_procurementNavigation.shopId,
+            catalogIndex:_procurementNavigation.catalogIndex,
+            entryId:_procurementNavigation.entryId,
+            kshopCategory:_procurementNavigation.kshopCategory,
+            navigationCallId:_procurementNavigation.navigationCallId
+        } : null,
+        nestedRecipeNavigation:_nestedRecipeNavigation ? {
+            generation:_nestedRecipeNavigation.generation,
+            sourceCategory:_nestedRecipeNavigation.sourceCategory,
+            sourceRecipeIndex:_nestedRecipeNavigation.sourceRecipeIndex,
+            sourceRecipeId:_nestedRecipeNavigation.sourceRecipeId,
+            materialName:_nestedRecipeNavigation.materialName,
+            targetCategory:_nestedRecipeNavigation.targetCategory,
+            targetRecipeIndex:_nestedRecipeNavigation.targetRecipeIndex,
+            targetRecipeId:_nestedRecipeNavigation.targetRecipeId,
+            callId:_nestedRecipeNavigation.callId
         } : null,
         materialRecipeReturn:_materialRecipeReturn ? {
             materialName:_materialRecipeReturn.materialName

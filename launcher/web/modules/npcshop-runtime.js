@@ -141,19 +141,33 @@
         var ordinaryKeys = ['mode', 'source', 'debug', 'shopId', 'panelInstanceId'];
         var materialKeys = ordinaryKeys.concat(['preferredItemName',
             'preferredCatalogIndex', 'canReturnCraftingMaterials', 'navigationOrigin']);
+        var procurementKeys = ordinaryKeys.concat(['preferredItemName',
+            'preferredCatalogIndex', 'canReturnCraftingRecipe', 'navigationOrigin',
+            'returnRecipeCategory', 'returnRecipeIndex']);
         var ordinary = exactKeys(value, ordinaryKeys);
         var material = exactKeys(value, materialKeys);
-        if ((!ordinary && !material) || value.mode !== 'runtime'
+        var procurement = exactKeys(value, procurementKeys);
+        if ((!ordinary && !material && !procurement) || value.mode !== 'runtime'
                 || value.debug !== false || !boundedIdentity(value.source, 128)
                 || !boundedIdentity(value.shopId, 80)
                 || !PANEL_INSTANCE_PATTERN.test(String(value.panelInstanceId || ''))) return null;
-        if (ordinary && value.source === 'crafting_materials') return null;
+        if (ordinary && (value.source === 'crafting_materials'
+                || value.source === 'crafting_procurement')) return null;
         if (material && (value.source !== 'crafting_materials'
                 || !boundedIdentity(value.preferredItemName, 128)
                 || !shopCatalogIndex(value.preferredCatalogIndex)
                 || value.canReturnCraftingMaterials !== true
                 || value.navigationOrigin !== 'crafting_materials')) return null;
-        return {kind:material ? 'crafting_materials' : 'ordinary', data:value};
+        if (procurement && (value.source !== 'crafting_procurement'
+                || !boundedIdentity(value.preferredItemName, 128)
+                || !shopCatalogIndex(value.preferredCatalogIndex)
+                || value.canReturnCraftingRecipe !== true
+                || value.navigationOrigin !== 'crafting_recipe'
+                || !boundedIdentity(value.returnRecipeCategory, 256)
+                || !Number.isInteger(value.returnRecipeIndex)
+                || value.returnRecipeIndex < 0 || value.returnRecipeIndex > 999)) return null;
+        return {kind:material ? 'crafting_materials'
+            : procurement ? 'crafting_recipe' : 'ordinary', data:value};
     }
 
     function identityTriple(value, internalField) {
@@ -439,6 +453,14 @@
             callId:String(input.callId), panelInstanceId:String(input.panelInstanceId)};
     }
 
+    function createReturnCraftingRecipeMessage(input) {
+        input = input || {};
+        if (!NAVIGATION_CALL_ID_PATTERN.test(String(input.callId || ''))
+                || !PANEL_INSTANCE_PATTERN.test(String(input.panelInstanceId || ''))) return null;
+        return {type:'panel', panel:'npcshop', cmd:'return_crafting_recipe',
+            callId:String(input.callId), panelInstanceId:String(input.panelInstanceId)};
+    }
+
     function validateReturnCraftingMaterialsFailure(data, expected) {
         expected = expected || {};
         return exactKeys(data, ['type', 'panel', 'cmd', 'callId',
@@ -447,6 +469,20 @@
             && data.panel === 'npcshop'
             && data.cmd === 'return_crafting_materials'
             && data.success === false
+            && NAVIGATION_CALL_ID_PATTERN.test(String(data.callId || ''))
+            && PANEL_INSTANCE_PATTERN.test(String(data.panelInstanceId || ''))
+            && !!RETURN_FAILURE_ERRORS[String(data.error || '')]
+            && (!expected.callId || data.callId === expected.callId)
+            && (!expected.panelInstanceId
+                || data.panelInstanceId === expected.panelInstanceId);
+    }
+
+    function validateReturnCraftingRecipeFailure(data, expected) {
+        expected = expected || {};
+        return exactKeys(data, ['type', 'panel', 'cmd', 'callId',
+                'panelInstanceId', 'success', 'error'])
+            && data.type === 'panel_resp' && data.panel === 'npcshop'
+            && data.cmd === 'return_crafting_recipe' && data.success === false
             && NAVIGATION_CALL_ID_PATTERN.test(String(data.callId || ''))
             && PANEL_INSTANCE_PATTERN.test(String(data.panelInstanceId || ''))
             && !!RETURN_FAILURE_ERRORS[String(data.error || '')]
@@ -473,6 +509,8 @@
         },
         createReturnCraftingMaterialsMessage:createReturnCraftingMaterialsMessage,
         validateReturnCraftingMaterialsFailure:validateReturnCraftingMaterialsFailure,
+        createReturnCraftingRecipeMessage:createReturnCraftingRecipeMessage,
+        validateReturnCraftingRecipeFailure:validateReturnCraftingRecipeFailure,
         isCloseReason:function(value) { return !!CLOSE_REASONS[String(value || '')]; },
         isPanelInstanceId:function(value) {
             return typeof value === 'string' && PANEL_INSTANCE_PATTERN.test(value);

@@ -3771,6 +3771,10 @@ namespace CF7Launcher.Guardian
                 _npcShopTask.BindMaterialShopNavigationOwner(
                     panelName,
                     panelInstanceId);
+            if (_shopTask != null)
+                _shopTask.BindMaterialShopNavigationOwner(
+                    panelName,
+                    panelInstanceId);
         }
 
         private void BindCurrentMaterialShopNavigationOwners()
@@ -3805,6 +3809,7 @@ namespace CF7Launcher.Guardian
             _shopTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            BindCurrentMaterialShopNavigationOwners();
         }
 
         public void SetInventoryTask(InventoryTask task)
@@ -4812,7 +4817,10 @@ namespace CF7Launcher.Guardian
                 parsed.Value<string>("panelInstanceId");
             bool materialShopFlatNavigation =
                 cmd == "open_npc_shop"
-                || cmd == "return_crafting_materials";
+                || cmd == "open_procurement_shop"
+                || cmd == "open_procurement_kshop"
+                || cmd == "return_crafting_materials"
+                || cmd == "return_crafting_recipe";
             if (cmd != "close"
                 && !materialShopFlatNavigation
                 && IsInventoryOwnerPanel(messagePanel)
@@ -4896,7 +4904,8 @@ namespace CF7Launcher.Guardian
                 }
             }
             LogManager.Log(FormatPanelEnvelopeLog(cmd, json));
-            if (cmd == "open_npc_shop")
+            if (cmd == "open_npc_shop" || cmd == "open_procurement_shop"
+                || cmd == "open_procurement_kshop")
             {
                 if (_materialShopNavigationCoordinator != null)
                 {
@@ -4910,14 +4919,18 @@ namespace CF7Launcher.Guardian
                 {
                     RespondMaterialShopNavigationError(
                         parsed,
-                        MaterialShopNavigationCoordinator
+                        (MaterialShopNavigationCoordinator
                             .IsValidForwardEnvelope(parsed)
+                            || MaterialShopNavigationCoordinator
+                                .IsValidProcurementForwardEnvelope(parsed)
+                            || MaterialShopNavigationCoordinator
+                                .IsValidProcurementKShopForwardEnvelope(parsed))
                                 ? "navigation_unavailable"
                                 : "invalid_payload");
                 }
                 return;
             }
-            if (cmd == "return_crafting_materials")
+            if (cmd == "return_crafting_materials" || cmd == "return_crafting_recipe")
             {
                 if (_materialShopNavigationCoordinator != null)
                 {
@@ -4925,14 +4938,18 @@ namespace CF7Launcher.Guardian
                         .HandleReverse(parsed);
                 }
                 else if (HasExactActivePanelOwnerBinding(
-                    parsed, "npcshop")
+                    parsed, messagePanel == "kshop" ? "kshop" : "npcshop")
                     && MaterialShopNavigationCoordinator
                         .HasValidFailureCorrelation(parsed))
                 {
                     RespondMaterialShopNavigationError(
                         parsed,
-                        MaterialShopNavigationCoordinator
+                        (MaterialShopNavigationCoordinator
                             .IsValidReverseEnvelope(parsed)
+                            || MaterialShopNavigationCoordinator
+                                .IsValidRecipeReverseEnvelope(parsed)
+                            || MaterialShopNavigationCoordinator
+                                .IsValidKShopRecipeReverseEnvelope(parsed))
                                 ? "navigation_unavailable"
                                 : "invalid_payload");
                 }
@@ -6264,6 +6281,17 @@ namespace CF7Launcher.Guardian
         {
             if (_socketServer == null || !_socketServer.IsClientReady) return false;
             return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
+        }
+
+        internal bool TryOpenKShopForMaterialNavigation()
+        {
+            return TrySendGameCommand("shopPanelOpen");
+        }
+
+        internal void CloseKShopForMaterialNavigationNoFail()
+        {
+            if (!TrySendGameCommand("shopPanelClose"))
+                _pauseNeedsRestore = true;
         }
 
         private bool TryReleaseGenericWebPanelPause()

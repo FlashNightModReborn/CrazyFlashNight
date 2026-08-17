@@ -50,7 +50,7 @@ function run() {
     assert(report.ok, JSON.stringify(report.errors));
     assert(report.contractVersion === 2, "expected strict panel contract v2");
     assert(report.checked.domains === 4, "expected four governed domains");
-    assert(report.checked.commands === 22, "expected twenty-two governed command mappings");
+    assert(report.checked.commands === 23, "expected twenty-three governed command mappings");
     const hairdresser = contract.domains.find(function (domain) {
       return domain.id === "hairdresser";
     });

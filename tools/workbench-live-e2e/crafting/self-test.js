@@ -681,7 +681,7 @@ function runSelfTests() {
       "browser-resource-inventory.v1.json"), "utf8"));
     assert.strictEqual(resourceInventory.schema,
       "workbench-live-e2e.browser-resource-inventory.v1");
-    assert.strictEqual(resourceInventory.files.length, 57);
+    assert.strictEqual(resourceInventory.files.length, 58);
     assert.strictEqual(resourceInventory.optionalFiles.length, 30);
     assert(resourceInventory.files.includes("modules/crafting/dev/harness.html"));
     assert(resourceInventory.files.includes("modules/crafting.js"));
@@ -705,26 +705,26 @@ function runSelfTests() {
     assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
     assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
     assert.strictEqual(receipt.journalVerification, "VERIFIED");
-    assert.strictEqual(receipt.moduleEntryCount, 374);
+    assert.strictEqual(receipt.moduleEntryCount, 375);
     assert.deepStrictEqual(receipt.result.viewports, [
       {width:1024,height:576}, {width:1366,height:768}, {width:1920,height:1080},
     ]);
     assert.deepStrictEqual(receipt.result.scenarioCounts,
-      {baseline:150,coverage:15,fault:8,identity:10});
-    assert.strictEqual(receipt.result.materialShopScenarioCount, 11);
-    assert.strictEqual(receipt.result.materialShopScenarioNamesSha256.length, 3);
-    assert.strictEqual(new Set(receipt.result.materialShopScenarioNamesSha256).size, 1);
+      {baseline:150,coverage:15,fault:8,identity:10,legacy:6,sessionLock:9,
+        recipeJump:26,materialShop:12,infrastructure:9,procurement:17});
     assert.strictEqual(receipt.result.faultChecks.length, 8);
     assert(receipt.result.faultChecks.every((entry) => entry.ok === true));
+    assert.strictEqual(receipt.result.procurementChecks.length, 17);
+    assert(receipt.result.procurementChecks.every((entry) => entry.ok === true));
     Object.values(receipt.result.scenarioNamesSha256).forEach((digest) =>
       assert(/^[a-f0-9]{64}$/.test(digest)));
     assert.deepStrictEqual(receipt.result.scenarioNamesSha256,
       moduleInventory.expectedScenarioNamesSha256);
     assert(/^[a-f0-9]{64}$/.test(receipt.result.resultSha256));
-    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 57);
-    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 87);
-    assert(receipt.servedResourceClosure.resourceCount >= 57
-      && receipt.servedResourceClosure.resourceCount <= 87);
+    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 58);
+    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 88);
+    assert(receipt.servedResourceClosure.resourceCount >= 58
+      && receipt.servedResourceClosure.resourceCount <= 88);
     assert.strictEqual(receipt.servedResourceClosure.failureCount, 4);
     assert(receipt.browserBinary && receipt.browserBinary.locator.startsWith("external:")
       && /^[a-f0-9]{64}$/.test(receipt.browserBinary.sha256)
@@ -774,16 +774,17 @@ function runSelfTests() {
       result[entry.role] = (result[entry.role] || 0) + 1;
       return result;
     }, {});
-    assert.strictEqual(fingerprint.files.length, 243);
+    assert.strictEqual(fingerprint.files.length, 254);
     assert.deepStrictEqual(roles, { page: 1, overlay_startup_web: 21,
       overlay_startup_crafting_web: 1, lazy_registry: 1,
       crafting_lazy_web: 19, organizer_lazy_web: 6,
-      overlay_stylesheet: 7, panels_import_stylesheet: 23,
+      overlay_stylesheet: 7, panels_import_stylesheet: 24,
+      font_declaration_stylesheet: 1,
       idle_prewarm_image: 15, css_conditional_asset: 6,
       font_pack_manifest: 1, icon_manifest: 1,
-      host_source: 13, runtime_artifact_source: 1, runtime_input_descriptor: 1,
-      runtime_producer_source: 9, runtime_toolchain_lock: 3,
-      as2_source: 19, crafting_data: 13, item_projection_data: 79,
+      host_source: 18, runtime_artifact_source: 1, runtime_input_descriptor: 1,
+      runtime_producer_source: 10, runtime_toolchain_lock: 3,
+      as2_source: 22, crafting_data: 13, item_projection_data: 79,
       production_swf: 3 });
     const records = SourceContract.REQUIRED_SOURCE_PHASES.map((phase, index) => ({
       phase, observedAt: new Date(Date.parse(fingerprint.capturedAt) + index).toISOString(),
@@ -798,7 +799,7 @@ function runSelfTests() {
       variantsPerAnchor: 14, rejected: 336, totalAssertions: 384,
     });
   });
-  positive("source closure includes all authoritative output and inventory algorithm owners", () => {
+  positive("source closure includes grenade-aware acquisition and all authoritative algorithm owners", () => {
     const fingerprint = SourceContract.captureSourceFingerprint(
       path.resolve(__dirname, "..", "..", ".."));
     const locators = new Set(fingerprint.files.map((entry) => entry.locator));
@@ -815,6 +816,36 @@ function runSelfTests() {
       "root:scripts/类定义/org/flashNight/arki/item/equipment/EquipmentConfigManager.as"));
     assert.strictEqual(fingerprint.as2AlgorithmContract.functions.length,
       SourceContract.AS2_ALGORITHM_EXPECTATIONS.length);
+    assert.strictEqual(fingerprint.as2AlgorithmContract.schema,
+      "workbench-live-e2e.crafting.as2-algorithm-contract.v4");
+    const itemRequire = fingerprint.as2AlgorithmContract.functions.find((entry) =>
+      entry.className === "org.flashNight.arki.item.ItemUtil"
+        && entry.functionName === "require");
+    const itemAcquire = fingerprint.as2AlgorithmContract.functions.find((entry) =>
+      entry.className === "org.flashNight.arki.item.ItemUtil"
+        && entry.functionName === "acquire");
+    assert.deepStrictEqual({
+      bodyTokenCount: itemRequire && itemRequire.bodyTokenCount,
+      bodyTokenSha256: itemRequire && itemRequire.bodyTokenSha256,
+      tokenCount: itemRequire && itemRequire.tokenCount,
+      normalizedTokenSha256: itemRequire && itemRequire.normalizedTokenSha256,
+    }, {
+      bodyTokenCount: 1055,
+      bodyTokenSha256: "9b3fba89be011711c8a80481cf1daf45b27d778f53b48487cf15734148f0313a",
+      tokenCount: 1066,
+      normalizedTokenSha256: "be49a9398ce96a0910e69a88de4b8e552d1d068571e94ee84b31ded0133f87f4",
+    });
+    assert.deepStrictEqual({
+      bodyTokenCount: itemAcquire && itemAcquire.bodyTokenCount,
+      bodyTokenSha256: itemAcquire && itemAcquire.bodyTokenSha256,
+      tokenCount: itemAcquire && itemAcquire.tokenCount,
+      normalizedTokenSha256: itemAcquire && itemAcquire.normalizedTokenSha256,
+    }, {
+      bodyTokenCount: 830,
+      bodyTokenSha256: "2ddfd3de815af09e1c2b4262ef9e9ffab05db90f2726fa7b33c7b5023fd71e21",
+      tokenCount: 841,
+      normalizedTokenSha256: "400fd377f6a8545ef346c94d4e3e1bdf921ecfa50e3cc87e33ed0339276e2bbe",
+    });
   });
   positive("late observer listener permits child send before parent response without inventing order", () => {
     const bundle = Fixture.buildValidBundle();

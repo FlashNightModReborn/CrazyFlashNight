@@ -53,11 +53,47 @@ function projectedItem(name, itemKind, quantity) {
     };
 }
 
+function catalogOutput(name, itemKind, quantity) {
+    const value = projectedItem(name, itemKind, quantity);
+    delete value.requiredLevel;
+    return value;
+}
+
+function ownedSummary(bag) {
+    return {bag:bag,drug:0,equipped:0,battleBox:0,material:0,information:0,
+        usable:bag,total:bag,usableMaxEnhancement:0,totalMaxEnhancement:0};
+}
+
+function procurementDemand(name, required, owned) {
+    return {itemName:name,required:required,requiredEnhancement:0,
+        usableOwned:owned,equippedOwned:0,battleBoxOwned:0,totalOwned:owned,
+        usableMaxEnhancement:0,equippedMaxEnhancement:0,
+        battleBoxMaxEnhancement:0,totalMaxEnhancement:0,
+        obtainMissing:Math.max(0,required-owned),relocateMissing:0,needsEnhancement:false,
+        craftRequired:required,taskRequired:0,plannedRecipeCount:0,activeTaskCount:0,
+        reasons:[{kind:'craft',sourceId:'current',label:'当前合成',required:required,
+            mode:'consume'}],sources:[]};
+}
+
+function snapshotResponse() {
+    return {success:true,v:1,category:'武器合成',gender:'男',recipes:[{
+        recipeId:'craft.weapon.test',recipeIndex:0,title:'测试产物',
+        output:catalogOutput('产物','equipment',1),owned:ownedSummary(1),plannedCrafts:0,
+        baseCost:{money:90,kpoints:0},materialCount:1,batchEligible:false,
+        canCraftOne:true,availability:'ready'
+    }],balance:{money:1000,kpoints:100},
+    skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},
+    procurement:{revision:0,directShopNavigation:false},note:''};
+}
+
 function projectedMaterial(name, storageKind, enough) {
+    const owned = enough ? 7 : 0;
     return {
         name:name, displayName:name + ' 展示', icon:name + ' 图标', itemKind:'stack',
-        required:2, owned:enough ? 7 : 0, maxEnhancement:0, isQuantity:true, tier:'',
-        consumed:true, enough:enough, storageKind:storageKind
+        required:2, owned:owned, maxEnhancement:0, isQuantity:true, tier:'',
+        consumed:true, enough:enough, storageKind:storageKind,
+        craftingSources:[],
+        procurement:procurementDemand(name,2,owned)
     };
 }
 
@@ -169,7 +205,8 @@ function commitResponse(authoritativePreview) {
         crafted:clone(preview.output),
         acceptedPlan:preview.acceptedPlan ? clone(preview.acceptedPlan) : null,
         outputReceipt:preview.acceptedPlan ? receiptFor(preview.acceptedPlan) : null,
-        balance:{money:910,kpoints:100}
+        balance:{money:910,kpoints:100},
+        procurement:{revision:0,plannedCrafts:0,changed:false}
     });
 }
 
@@ -283,7 +320,8 @@ function v2InfrastructureDetailResponse(name) {
 }
 
 const cases = [
-    {cmd:'snapshot', response:{success:true,recipes:[{output:triple('产物')}]} , leaves:[['recipes',0,'output']]},
+    {cmd:'snapshot', payload:{v:1,category:'武器合成'}, response:snapshotResponse(),
+        leaves:[['recipes',0,'output']]},
     {cmd:'materials', payload:{v:1},
         response:{success:true,v:1,view:'materials',materials:[v1CatalogMaterial('材料')]} ,
         leaves:[['materials',0]]},
@@ -291,6 +329,9 @@ const cases = [
         leaves:[['material'],['uses',0]]},
     {cmd:'preview', response:previewResponse(true),
         leaves:[['output'],['materials',0]]},
+    {cmd:'setPlan', payload:{v:1,recipeId:'craft.weapon.test',plannedCrafts:1,
+        expectedRevision:0}, response:{success:true,v:1,revision:1,
+        recipeId:'craft.weapon.test',plannedCrafts:1}, leaves:[]},
     {cmd:'commit', response:commitResponse(), leaves:[['crafted']]}
 ];
 
@@ -680,6 +721,99 @@ test('Crafting material failures remain versionless exact business results', () 
 test('Crafting still delivers explicit failure responses without adopting identity data', () => {
     assert.strictEqual(Runtime.validateBusinessResponse({success:false,error:'stale_state'},{cmd:'snapshot'}),true);
     assert.strictEqual(Runtime.validateBusinessResponse({error:'stale_state'},{cmd:'snapshot'}),false);
+});
+
+test('Crafting nested sources require exact unique recipe occurrences', () => {
+    const entry = {cmd:'preview',metadata:{payload:{v:1,category:'武器合成',
+        recipeIndex:0,craftCount:1}}};
+    const valid = previewResponse(false);
+    valid.materials[0].craftingSources = [
+        {category:'武器合成',recipeIndex:1,recipeId:'craft.weapon.nested',title:'嵌套图纸'},
+        {category:'基础防具',recipeIndex:2,recipeId:'craft.armor.nested',title:'替代图纸'}
+    ];
+    assert.strictEqual(Runtime.validateBusinessResponse(valid,entry),true);
+    for (const mutate of [
+        value => { value.materials[0].craftingSources[0].category = '未知分类'; },
+        value => { value.materials[0].craftingSources[0].recipeId = 'craft.Weapon.bad'; },
+        value => { value.materials[0].craftingSources[1].recipeId = 'craft.weapon.nested'; },
+        value => { value.materials[0].craftingSources[1].category = '武器合成';
+            value.materials[0].craftingSources[1].recipeIndex = 1; },
+        value => { value.materials[0].craftingSources[0].legacyProduct = '嵌套产物'; }
+    ]) {
+        const malformed = clone(valid);
+        mutate(malformed);
+        assert.strictEqual(Runtime.validateBusinessResponse(malformed,entry),false);
+    }
+});
+
+test('Crafting snapshot and plan mutation keep procurement identity and revision exact', () => {
+    const snapshotEntry = {cmd:'snapshot',metadata:{payload:{v:1,category:'武器合成'}}};
+    const duplicate = snapshotResponse();
+    duplicate.recipes.push(clone(duplicate.recipes[0]));
+    duplicate.recipes[1].recipeIndex = 1;
+    assert.strictEqual(Runtime.validateBusinessResponse(duplicate,snapshotEntry),false);
+    const ownedExtra = snapshotResponse();
+    ownedExtra.recipes[0].owned.warehouse = 1;
+    assert.strictEqual(Runtime.validateBusinessResponse(ownedExtra,snapshotEntry),false);
+    const sourceCountDrift = previewResponse(false);
+    sourceCountDrift.materials[0].procurement.equippedOwned = 1;
+    assert.strictEqual(Runtime.validateBusinessResponse(sourceCountDrift,
+        {cmd:'preview',metadata:{payload:{v:1,category:'武器合成',recipeIndex:0,craftCount:1}}}),false);
+    const sourceMaximumDrift = previewResponse(false);
+    sourceMaximumDrift.materials[0].procurement.battleBoxMaxEnhancement = 1;
+    assert.strictEqual(Runtime.validateBusinessResponse(sourceMaximumDrift,
+        {cmd:'preview',metadata:{payload:{v:1,category:'武器合成',recipeIndex:0,craftCount:1}}}),false);
+    const planEntry = {cmd:'setPlan',metadata:{payload:{v:1,
+        recipeId:'craft.weapon.test',plannedCrafts:1,expectedRevision:0}}};
+    assert.strictEqual(Runtime.validateBusinessResponse({success:true,v:1,revision:1,
+        recipeId:'craft.weapon.test',plannedCrafts:1},planEntry),true);
+    assert.strictEqual(Runtime.validateBusinessResponse({success:true,v:1,revision:2,
+        recipeId:'craft.weapon.test',plannedCrafts:1},planEntry),false);
+});
+
+test('Crafting procurement-to-shop navigation emits and validates only its exact route', () => {
+    const input = {callId:'procurement-nav.test-1',panelInstanceId:'crafting.test~1',
+        materialName:'战术握把',shopId:'迷之盔甲君',catalogIndex:57,
+        recipeId:'craft.weapon.test',
+        category:'武器合成',recipeIndex:7};
+    const message = Runtime.createProcurementShopNavigationMessage(input);
+    assert.deepStrictEqual(Object.keys(message),['type','panel','cmd','callId',
+        'panelInstanceId','source','materialName','shopId',
+        'catalogIndex','recipeId','category','recipeIndex']);
+    assert.strictEqual(message.cmd,'open_procurement_shop');
+    assert.strictEqual(Runtime.createProcurementShopNavigationMessage(
+        Object.assign({},input,{recipeId:'craft.Weapon.test'})),null);
+    const expected = {callId:input.callId,panelInstanceId:input.panelInstanceId};
+    const failure = {type:'panel_resp',panel:'crafting',cmd:'open_procurement_shop',
+        callId:input.callId,panelInstanceId:input.panelInstanceId,
+        success:false,error:'access_denied'};
+    assert.strictEqual(Runtime.validateProcurementShopNavigationFailure(failure,expected),true);
+    failure.cmd = 'open_npc_shop';
+    assert.strictEqual(Runtime.validateProcurementShopNavigationFailure(failure,expected),false);
+});
+
+test('Crafting procurement-to-KShop navigation binds exact live catalog identity', () => {
+    const input = {callId:'procurement-kshop.test-1',
+        panelInstanceId:'crafting.test~1',
+        materialName:'兽王碎片',catalogIndex:7,
+        entryId:'k-material-7',kshopCategory:'材料',
+        recipeId:'craft.armor.test',category:'进阶防具',recipeIndex:4};
+    const message = Runtime.createProcurementKShopNavigationMessage(input);
+    assert.deepStrictEqual(Object.keys(message),['type','panel','cmd','callId',
+        'panelInstanceId','source','materialName','catalogIndex',
+        'entryId','kshopCategory','recipeId','recipeCategory','recipeIndex']);
+    assert.strictEqual(message.cmd,'open_procurement_kshop');
+    assert.strictEqual(Runtime.createProcurementKShopNavigationMessage(
+        Object.assign({},input,{entryId:''})),null);
+    const expected = {callId:input.callId,panelInstanceId:input.panelInstanceId};
+    const failure = {type:'panel_resp',panel:'crafting',cmd:'open_procurement_kshop',
+        callId:input.callId,panelInstanceId:input.panelInstanceId,
+        success:false,error:'stale_source'};
+    assert.strictEqual(Runtime.validateProcurementKShopNavigationFailure(
+        failure,expected),true);
+    failure.cmd = 'open_procurement_shop';
+    assert.strictEqual(Runtime.validateProcurementKShopNavigationFailure(
+        failure,expected),false);
 });
 
 test('Crafting RequestMux cancel delegates exact call retirement and suppresses its late response', () => {

@@ -360,6 +360,7 @@ _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
     var result:Array = [];
     var shop:Object = _root.shops == undefined ? null : _root.shops[shopId];
     if (shop == null) return result;
+    var procurementIndex:Object = org.flashNight.arki.item.ProcurementPlanService.buildDemandIndex();
     var keys:Array = [];
     for (var key in shop) {
         var index:Number = Number(key);
@@ -404,6 +405,8 @@ _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
             "data"
         );
         if (balanceSummary != null) catalogItem.balanceSummary = balanceSummary;
+        var procurement:Object = procurementIndex.byItem[resolved.itemName];
+        if (procurement != undefined) catalogItem.procurement = procurement;
         result.push(catalogItem);
     }
     return result;

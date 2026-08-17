@@ -1672,6 +1672,121 @@
         return true;
     };
 
+    function procurementReasonLabel(demand) {
+        var labels = [], seen = Object.create(null);
+        var reasons = demand && Array.isArray(demand.reasons) ? demand.reasons : [];
+        for (var index = 0; index < reasons.length; index++) {
+            var label = String(reasons[index] && reasons[index].label || '');
+            if (!label || seen[label]) continue;
+            seen[label] = true;
+            labels.push(label);
+        }
+        return labels.join('、');
+    }
+
+    function procurementRelocation(demand) {
+        if (!demand || typeof demand !== 'object') return null;
+        var quantity = Math.max(0, Number(demand.relocateMissing) || 0);
+        if (!quantity) return null;
+        var battleBox = Math.max(0, Number(demand.battleBoxOwned) || 0);
+        var equipped = Math.max(0, Number(demand.equippedOwned) || 0);
+        var requiredEnhancement = Math.max(0,
+            Number(demand.requiredEnhancement) || 0);
+        var battleBoxMaximum = Math.max(0,
+            Number(demand.battleBoxMaxEnhancement) || 0);
+        var equippedMaximum = Math.max(0,
+            Number(demand.equippedMaxEnhancement) || 0);
+        var fromBattleBox = 0;
+        var fromEquipped = 0;
+
+        // 单件强化门优先选择已证明满足门槛的战备箱装备，避免无谓卸装。
+        if (quantity === 1 && requiredEnhancement > 0) {
+            if (battleBox > 0 && battleBoxMaximum >= requiredEnhancement) {
+                fromBattleBox = 1;
+            } else if (equipped > 0 && equippedMaximum >= requiredEnhancement) {
+                fromEquipped = 1;
+            }
+        }
+        if (!fromBattleBox && !fromEquipped) {
+            fromBattleBox = Math.min(quantity, battleBox);
+            fromEquipped = Math.min(quantity - fromBattleBox, equipped);
+        }
+
+        var enhancementText = requiredEnhancement > 0
+            ? '，强化至少 +' + requiredEnhancement : '';
+        if (fromBattleBox > 0 && !fromEquipped) {
+            return {source:'battlebox', quantity:quantity,
+                fromBattleBox:fromBattleBox, fromEquipped:0,
+                shortText:'合成前需要从战备箱取出' + (quantity > 1 ? ' ×' + quantity : ''),
+                detail:'这里只是合成前指引，不会自动移动装备。合成只消耗背包内装备；请从战备箱取出 '
+                    + quantity + ' 件' + enhancementText};
+        }
+        if (fromEquipped > 0 && !fromBattleBox) {
+            return {source:'equipped', quantity:quantity,
+                fromBattleBox:0, fromEquipped:fromEquipped,
+                shortText:'合成前需要卸下装备' + (quantity > 1 ? ' ×' + quantity : ''),
+                detail:'这里只是合成前指引，不会自动移动装备。合成只消耗背包内装备；请卸下当前已装备的 '
+                    + quantity + ' 件' + enhancementText};
+        }
+        if (fromBattleBox > 0 && fromEquipped > 0) {
+            return {source:'mixed', quantity:quantity,
+                fromBattleBox:fromBattleBox, fromEquipped:fromEquipped,
+                shortText:'合成前：战备箱取出 ×' + fromBattleBox
+                    + ' · 装备栏卸下 ×' + fromEquipped,
+                detail:'这里只是合成前指引，不会自动移动装备。合成只消耗背包内装备；请从战备箱取出 '
+                    + fromBattleBox + ' 件，并卸下已装备的 '
+                    + fromEquipped + ' 件' + enhancementText};
+        }
+        return {source:'unknown', quantity:quantity,
+            fromBattleBox:0, fromEquipped:0,
+            shortText:'合成前需要移回背包' + (quantity > 1 ? ' ×' + quantity : ''),
+            detail:'这里只是合成前指引，不会自动移动装备。合成只消耗背包内装备；请将所需装备移回背包'
+                + enhancementText};
+    }
+
+    function procurementSummary(demand) {
+        if (!demand || typeof demand !== 'object') return null;
+        var obtainMissing = Math.max(0, Number(demand.obtainMissing) || 0);
+        var relocateMissing = Math.max(0, Number(demand.relocateMissing) || 0);
+        if (!obtainMissing && !relocateMissing) return null;
+        var reason = procurementReasonLabel(demand);
+        var task = Number(demand.activeTaskCount || 0) > 0;
+        var planned = Number(demand.plannedRecipeCount || 0) > 0;
+        var reasons = Array.isArray(demand.reasons) ? demand.reasons : [];
+        var hasCraft = reasons.some(function(reason) { return reason && reason.kind === 'craft'; });
+        var relocation = procurementRelocation(demand);
+        var origin = planned && task ? '合成标记与任务'
+            : planned ? '合成标记' : task ? '进行中任务'
+                : hasCraft ? '当前合成' : '采购计划';
+        return {
+            kind:obtainMissing > 0 ? 'obtain' : 'relocate',
+            quantity:obtainMissing > 0 ? obtainMissing : relocateMissing,
+            shortText:obtainMissing > 0
+                ? '需购 ×' + obtainMissing + ' · ' + origin
+                : relocation.shortText,
+            detail:(obtainMissing > 0 ? '仍需购买 ' + obtainMissing : relocation.detail)
+                + (reason ? '；用于：' + reason : '')
+        };
+    }
+
+    function decorateProcurementCard(card, demand, documentRef) {
+        var summary = procurementSummary(demand);
+        if (!card || !summary) return summary;
+        documentRef = documentRef || document;
+        card.classList.add(summary.kind === 'obtain'
+            ? 'procurement-needed' : 'procurement-relocate');
+        card.setAttribute('data-procurement-kind', summary.kind);
+        card.setAttribute('data-procurement-quantity', String(summary.quantity));
+        var badge = documentRef.createElement('span');
+        badge.className = 'item-card-auxiliary procurement-highlight-badge';
+        badge.textContent = summary.shortText;
+        badge.setAttribute('title', summary.detail);
+        card.appendChild(badge);
+        var aria = card.getAttribute('aria-label') || '';
+        card.setAttribute('aria-label', aria + (aria ? '，' : '') + summary.detail);
+        return summary;
+    }
+
     return {
         SecondaryPage: SecondaryPage,
         ChoiceGroup: ChoiceGroup,
@@ -1679,6 +1794,11 @@
         CommitBar: CommitBar,
         HelpAction: HelpAction,
         OwnedInventoryPane: OwnedInventoryPane,
-        QuantityControl: QuantityControl
+        QuantityControl: QuantityControl,
+        ProcurementHighlight: {
+            summary: procurementSummary,
+            relocation: procurementRelocation,
+            decorateCard: decorateProcurementCard
+        }
     };
 });

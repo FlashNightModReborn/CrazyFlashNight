@@ -20,6 +20,14 @@
 })(typeof window !== 'undefined' ? window : globalThis, function(PanelRuntime) {
     'use strict';
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
+    var NAVIGATION_CALL_ID_PATTERN = /^[A-Za-z0-9._-]{1,96}$/;
+    var PANEL_INSTANCE_PATTERN = /^[A-Za-z0-9._~-]{1,128}$/;
+    var NAVIGATION_WATCHDOG_MS = 6500;
+    var NAVIGATION_FAILURES = {
+        invalid_payload:true, stale_source:true, navigation_unavailable:true,
+        access_denied:true, source_not_settled:true, admission_failed:true,
+        timeout:true, busy:true, return_unavailable:true
+    };
 
     function KShopRequestMux(options) {
         options = options || {};
@@ -212,6 +220,127 @@
         return {state:'confirmed',weightLayers:value.weightLayers,formula:1,level:value.level};
     }
 
+    function validRecipeId(value) {
+        return typeof value === 'string' && value.length <= 96
+            && /^craft\.[a-z0-9.-]+$/.test(value);
+    }
+
+    function parseProcurementNavigationInit(value) {
+        value = value || {};
+        if (value.navigationOrigin !== 'crafting_recipe'
+                || value.canReturnCraftingRecipe !== true
+                || !PANEL_INSTANCE_PATTERN.test(String(value.panelInstanceId || ''))
+                || !identityText(value.preferredItemName, 128)
+                || !Number.isSafeInteger(value.preferredCatalogIndex)
+                || value.preferredCatalogIndex < 0 || value.preferredCatalogIndex > 10000
+                || !identityText(value.preferredEntryId, 256)
+                || !identityText(value.preferredKShopCategory, 512)
+                || !identityText(value.returnRecipeCategory, 256)
+                || !Number.isSafeInteger(value.returnRecipeIndex)
+                || value.returnRecipeIndex < 0 || value.returnRecipeIndex > 999) return null;
+        return {
+            panelInstanceId:String(value.panelInstanceId),
+            preferredItemName:String(value.preferredItemName),
+            preferredCatalogIndex:Number(value.preferredCatalogIndex),
+            preferredEntryId:String(value.preferredEntryId),
+            preferredKShopCategory:String(value.preferredKShopCategory),
+            returnRecipeCategory:String(value.returnRecipeCategory),
+            returnRecipeIndex:Number(value.returnRecipeIndex)
+        };
+    }
+
+    function createReturnCraftingRecipeMessage(input) {
+        input = input || {};
+        if (!NAVIGATION_CALL_ID_PATTERN.test(String(input.callId || ''))
+                || !PANEL_INSTANCE_PATTERN.test(String(input.panelInstanceId || '')))
+            return null;
+        return {type:'panel', panel:'kshop', cmd:'return_crafting_recipe',
+            callId:String(input.callId),
+            panelInstanceId:String(input.panelInstanceId)};
+    }
+
+    function validateReturnCraftingRecipeFailure(data, expected) {
+        expected = expected || {};
+        return exactKeys(data, ['type','panel','cmd','callId','panelInstanceId',
+                'success','error'])
+            && data.type === 'panel_resp' && data.panel === 'kshop'
+            && data.cmd === 'return_crafting_recipe' && data.success === false
+            && NAVIGATION_CALL_ID_PATTERN.test(String(data.callId || ''))
+            && PANEL_INSTANCE_PATTERN.test(String(data.panelInstanceId || ''))
+            && !!NAVIGATION_FAILURES[String(data.error || '')]
+            && (!expected.callId || data.callId === expected.callId)
+            && (!expected.panelInstanceId
+                || data.panelInstanceId === expected.panelInstanceId);
+    }
+
+    function nonNegativeSafeInteger(value) {
+        return Number.isSafeInteger(value) && value >= 0;
+    }
+
+    function sanitizeProcurementDemand(value, expectedItemName) {
+        var fields = ['itemName','required','requiredEnhancement','usableOwned',
+            'equippedOwned','battleBoxOwned','totalOwned','usableMaxEnhancement',
+            'equippedMaxEnhancement','battleBoxMaxEnhancement','totalMaxEnhancement',
+            'obtainMissing','relocateMissing',
+            'needsEnhancement','craftRequired','taskRequired','plannedRecipeCount',
+            'activeTaskCount','reasons','sources'];
+        var numbers = ['required','requiredEnhancement','usableOwned','equippedOwned',
+            'battleBoxOwned','totalOwned','usableMaxEnhancement',
+            'equippedMaxEnhancement','battleBoxMaxEnhancement','totalMaxEnhancement',
+            'obtainMissing','relocateMissing','craftRequired','taskRequired',
+            'plannedRecipeCount','activeTaskCount'];
+        if (!exactKeys(value, fields) || value.itemName !== expectedItemName
+                || !identityText(value.itemName,128)
+                || typeof value.needsEnhancement !== 'boolean'
+                || !numbers.every(function(field) {
+                    return nonNegativeSafeInteger(value[field]);
+                }) || value.totalOwned !== value.usableOwned
+                    + value.equippedOwned + value.battleBoxOwned
+                || value.totalMaxEnhancement < value.usableMaxEnhancement
+                || value.totalMaxEnhancement < value.equippedMaxEnhancement
+                || value.totalMaxEnhancement < value.battleBoxMaxEnhancement
+                || value.equippedOwned === 0 && value.equippedMaxEnhancement !== 0
+                || value.battleBoxOwned === 0 && value.battleBoxMaxEnhancement !== 0
+                || value.obtainMissing > Math.max(1,value.required)
+                || value.relocateMissing > Math.max(1,value.required)
+                || value.relocateMissing > value.equippedOwned + value.battleBoxOwned
+                || !Array.isArray(value.reasons) || value.reasons.length < 1
+                || value.reasons.length > 64 || !Array.isArray(value.sources)
+                || value.sources.length > 32) return null;
+        for (var r = 0; r < value.reasons.length; r++) {
+            var reason = value.reasons[r];
+            if (!exactKeys(reason,['kind','sourceId','label','required','mode'])
+                    || (reason.kind !== 'craft' && reason.kind !== 'task')
+                    || !identityText(reason.sourceId,128) || !identityText(reason.label,256)
+                    || !Number.isSafeInteger(reason.required) || reason.required < 1
+                    || ['consume','retain','submit','contain'].indexOf(reason.mode) < 0) return null;
+        }
+        var seen = {};
+        for (var s = 0; s < value.sources.length; s++) {
+            var source = value.sources[s], key;
+            if (source && source.kind === 'npcshop') {
+                if (!exactKeys(source,['kind','shopId','catalogIndex','label'])
+                        || !identityText(source.shopId,80)
+                        || !Number.isSafeInteger(source.catalogIndex)
+                        || source.catalogIndex < 0 || source.catalogIndex > 10000
+                        || !identityText(source.label,256)) return null;
+                key = source.kind + '\u0000' + source.shopId + '\u0000' + source.catalogIndex;
+            } else if (source && source.kind === 'kshop') {
+                if (!exactKeys(source,['kind','catalogIndex','entryId','category','label'])
+                        || !Number.isSafeInteger(source.catalogIndex)
+                        || source.catalogIndex < 0 || source.catalogIndex > 10000
+                        || !identityText(source.entryId,256)
+                        || !safeText(source.category,128,true)
+                        || !identityText(source.label,256)) return null;
+                key = source.kind + '\u0000' + source.catalogIndex
+                    + '\u0000' + source.entryId;
+            } else return null;
+            if (seen[key]) return null;
+            seen[key] = true;
+        }
+        return cloneJson(value);
+    }
+
     function sanitizeCatalog(value) {
         if (!Array.isArray(value) || value.length > 10000) return null;
         var result = [], seen = {};
@@ -219,7 +348,7 @@
             'actionType','weaponType','setId','setName','setOrder','level','icon','maxQuantity'];
         for (var i = 0; i < value.length; i++) {
             var item = value[i];
-            if (!exactKeys(item, fields, ['balanceSummary']) || !isInteger(item.idx)
+            if (!exactKeys(item, fields, ['balanceSummary','procurement']) || !isInteger(item.idx)
                     || item.idx < 0 || item.idx > 10000 || seen[item.idx]
                     || !safeText(item.id,128,false) || !identityText(item.item,128)
                     || !safeText(item.type,128,false) || !isFiniteNumber(item.price) || item.price < 0
@@ -235,6 +364,10 @@
             if (Object.prototype.hasOwnProperty.call(item,'balanceSummary')) {
                 clean.balanceSummary = sanitizeBalanceSummary(item.balanceSummary);
                 if (!clean.balanceSummary) return null;
+            }
+            if (Object.prototype.hasOwnProperty.call(item,'procurement')) {
+                clean.procurement = sanitizeProcurementDemand(item.procurement, item.item);
+                if (!clean.procurement) return null;
             }
             seen[item.idx] = true;
             result.push(clean);
@@ -513,6 +646,10 @@
         sanitizeResponse:sanitizeResponse,
         sanitizeCatalog:sanitizeCatalog,
         sanitizePurchased:sanitizePurchased,
+        NAVIGATION_WATCHDOG_MS:NAVIGATION_WATCHDOG_MS,
+        parseProcurementNavigationInit:parseProcurementNavigationInit,
+        createReturnCraftingRecipeMessage:createReturnCraftingRecipeMessage,
+        validateReturnCraftingRecipeFailure:validateReturnCraftingRecipeFailure,
         sanitizeBulkSnapshot:function(response) {
             return sanitizeBulkBusiness(businessPart(response) || response);
         }

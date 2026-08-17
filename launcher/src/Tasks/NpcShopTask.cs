@@ -968,7 +968,7 @@ namespace CF7Launcher.Tasks
                 if (!HasOnlyKeys(line, "catalogIndex", "itemName", "displayName", "icon",
                         "majorType", "use", "actionType", "weaponType", "setId", "setName",
                         "setOrder", "basePrice", "unitPrice", "maxQuantity", "requiredInfo",
-                        "locked", "balanceSummary"))
+                        "locked", "balanceSummary", "procurement"))
                     return ValidationFailure("catalog", path, "closed_catalog_entry");
                 int integer;
                 if (!TryReadInteger(line["catalogIndex"], 0, 10000, out integer))
@@ -1011,6 +1011,11 @@ namespace CF7Launcher.Tasks
                 if (line.Property("balanceSummary") != null
                     && !IsSafeJsonTree(line["balanceSummary"], 0))
                     return ValidationFailure("catalog", path + ".balanceSummary", "safe_json_tree");
+                if (line.Property("procurement") != null
+                    && !ProcurementProjectionValidator.IsDemand(
+                        line["procurement"] as JObject,
+                        line.Value<string>("itemName")))
+                    return ValidationFailure("catalog", path + ".procurement", "procurement_projection");
             }
             return null;
         }
@@ -1814,7 +1819,7 @@ namespace CF7Launcher.Tasks
                 if (!HasOnlyKeys(line, "catalogIndex", "itemName", "displayName", "icon",
                         "majorType", "use", "actionType", "weaponType", "setId", "setName",
                         "setOrder", "basePrice", "unitPrice", "maxQuantity", "requiredInfo",
-                        "locked", "balanceSummary")
+                        "locked", "balanceSummary", "procurement")
                     || !TryReadInteger(line["catalogIndex"], 0, 10000, out catalogIndex)
                     || !indexes.Add(catalogIndex)
                     || !IsIdentityString(line["itemName"], 128)
@@ -1835,7 +1840,11 @@ namespace CF7Launcher.Tasks
                     || !IsSafeString(line["requiredInfo"], 256, true)
                     || line["locked"] == null || line["locked"].Type != JTokenType.Boolean
                     || (line.Property("balanceSummary") != null
-                        && !IsSafeJsonTree(line["balanceSummary"], 0))) return false;
+                        && !IsSafeJsonTree(line["balanceSummary"], 0))
+                    || (line.Property("procurement") != null
+                        && !ProcurementProjectionValidator.IsDemand(
+                            line["procurement"] as JObject,
+                            line.Value<string>("itemName")))) return false;
             }
             return true;
         }

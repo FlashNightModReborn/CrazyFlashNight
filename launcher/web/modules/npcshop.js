@@ -237,7 +237,8 @@ var NpcShop = (function() {
 
     function renderCatalogCard(item) {
         return NpcShopSecondaryPages.renderCatalogCard({
-            workbench:Workbench, itemFilter:ItemFilter, iconHtml:iconHtml,
+            workbench:Workbench, components:WorkbenchComponents, document:document,
+            itemFilter:ItemFilter, iconHtml:iconHtml,
             getPurchaseIntents:function() { return _purchaseIntents; }
         }, item);
     }

@@ -28,6 +28,13 @@ namespace CF7Launcher.Tasks
             internal string MaterialName;
             internal string ShopId;
             internal int CatalogIndex;
+            internal bool IsProcurement;
+            internal string RecipeId;
+            internal string Category;
+            internal int RecipeIndex;
+            internal bool IsKShop;
+            internal string EntryId;
+            internal string KShopCategory;
         }
 
         internal sealed class Result
@@ -144,14 +151,37 @@ namespace CF7Launcher.Tasks
             var flash = new JObject
             {
                 ["task"] = "cmd",
-                ["action"] = "craftingMaterialShopAuthorize",
+                ["action"] = request.IsKShop
+                    ? "craftingProcurementKShopAuthorize"
+                    : request.IsProcurement
+                        ? "craftingProcurementShopAuthorize"
+                        : "craftingMaterialShopAuthorize",
                 ["callId"] = fid,
-                ["v"] = 1,
-                ["materialSnapshotId"] = request.MaterialSnapshotId,
-                ["materialName"] = request.MaterialName,
-                ["shopId"] = request.ShopId,
-                ["catalogIndex"] = request.CatalogIndex
+                ["v"] = 1
             };
+            if (!request.IsProcurement)
+                flash["materialSnapshotId"] = request.MaterialSnapshotId;
+            flash["materialName"] = request.MaterialName;
+            if (request.IsKShop)
+            {
+                flash["catalogIndex"] = request.CatalogIndex;
+                flash["entryId"] = request.EntryId;
+                flash["kshopCategory"] = request.KShopCategory;
+                flash["recipeId"] = request.RecipeId;
+                flash["recipeCategory"] = request.Category;
+                flash["recipeIndex"] = request.RecipeIndex;
+            }
+            else
+            {
+                flash["shopId"] = request.ShopId;
+                flash["catalogIndex"] = request.CatalogIndex;
+                if (request.IsProcurement)
+                {
+                    flash["recipeId"] = request.RecipeId;
+                    flash["category"] = request.Category;
+                    flash["recipeIndex"] = request.RecipeIndex;
+                }
+            }
             LogManager.Log(
                 AuthorityLogFormatter.FormatFlashCommand(
                     "MaterialShopAccessTask",
@@ -260,7 +290,14 @@ namespace CF7Launcher.Tasks
                 MaterialSnapshotId = request.MaterialSnapshotId,
                 MaterialName = request.MaterialName,
                 ShopId = request.ShopId,
-                CatalogIndex = request.CatalogIndex
+                CatalogIndex = request.CatalogIndex,
+                IsProcurement = request.IsProcurement,
+                RecipeId = request.RecipeId,
+                Category = request.Category,
+                RecipeIndex = request.RecipeIndex,
+                IsKShop = request.IsKShop,
+                EntryId = request.EntryId,
+                KShopCategory = request.KShopCategory
             };
         }
 
@@ -287,20 +324,42 @@ namespace CF7Launcher.Tasks
             bool success = message.Value<bool>("success");
             if (success)
             {
-                if (!HasExactKeys(
-                        message,
-                        "task", "callId", "success", "v", "decision", "reason",
+                string[] successKeys = request.IsKShop
+                    ? new[] { "task", "callId", "success", "v", "decision", "reason",
+                        "materialName", "catalogIndex", "entryId",
+                        "category", "itemName", "recipeId", "recipeCategory", "recipeIndex" }
+                    : request.IsProcurement
+                    ? new[] { "task", "callId", "success", "v", "decision", "reason",
+                        "materialName", "shopId", "catalogIndex",
+                        "itemName", "recipeId", "category", "recipeIndex" }
+                    : new[] { "task", "callId", "success", "v", "decision", "reason",
                         "materialSnapshotId", "materialName", "shopId", "catalogIndex",
-                        "itemName")
+                        "itemName" };
+                if (!HasExactKeys(message, successKeys)
                     || !HasString(message["decision"], "allow")
-                    || !HasString(message["reason"], "indexed_live_match")
-                    || !HasString(message["materialSnapshotId"], request.MaterialSnapshotId)
+                    || !HasString(message["reason"], request.IsKShop
+                        ? "procurement_kshop_indexed_live_match"
+                        : request.IsProcurement
+                            ? "procurement_indexed_live_match"
+                            : "indexed_live_match")
+                    || !request.IsProcurement
+                        && !HasString(message["materialSnapshotId"], request.MaterialSnapshotId)
                     || !HasString(message["materialName"], request.MaterialName)
-                    || !HasString(message["shopId"], request.ShopId)
                     || !HasShopCatalogIndex(
                         message["catalogIndex"],
                         request.CatalogIndex)
-                    || !HasString(message["itemName"], request.MaterialName))
+                    || !HasString(message["itemName"], request.MaterialName)
+                    || request.IsKShop &&
+                        (!HasString(message["entryId"], request.EntryId)
+                        || !HasString(message["category"], request.KShopCategory)
+                        || !HasString(message["recipeId"], request.RecipeId)
+                        || !HasString(message["recipeCategory"], request.Category)
+                        || !HasShopCatalogIndex(message["recipeIndex"], request.RecipeIndex))
+                    || !request.IsKShop && !HasString(message["shopId"], request.ShopId)
+                    || !request.IsKShop && request.IsProcurement &&
+                        (!HasString(message["recipeId"], request.RecipeId)
+                        || !HasString(message["category"], request.Category)
+                        || !HasShopCatalogIndex(message["recipeIndex"], request.RecipeIndex)))
                 {
                     return false;
                 }

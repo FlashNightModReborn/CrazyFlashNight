@@ -19,6 +19,8 @@ const BOUNDED_VISIBLE_WAIT_KINDS = new Set([
 const TARGET_VISIBLE_WAIT_MS = 30_000;
 const TARGET_VISIBLE_POLL_MS = 100;
 const WEB_OVERLAY_CAPTURE_RETRY_DELAYS_MS = Object.freeze([750, 1250, 2000]);
+const INPUT_NOT_QUIESCENT_RETRY_DELAYS_MS = Object.freeze([100, 200, 400]);
+const STALE_FOCUS_RETRY_DELAYS_MS = Object.freeze([100, 200, 400]);
 // The first request includes immutable bundle verification, PowerShell
 // wrapper startup, Guardian construction, and A5 credential gating. Keep
 // ordinary RPC/write actions at 30s; only initial session.status receives a
@@ -100,6 +102,34 @@ function isRetryableWebOverlayCaptureUnavailable(error) {
     && data.reasonCode === "capture_unavailable"
     && data.retryable === true
     && data.reconcileKind === "none";
+}
+
+function isRetryableInputNotQuiescent(error) {
+  const data = error && error.details && error.details.rpcError
+    && error.details.rpcError.data;
+  return error && error.code === "trusted_runner_rpc_error"
+    && isObject(data)
+    && data.reasonCode === "input_not_quiescent"
+    && data.retryable === true
+    && data.reconcileKind === "none";
+}
+
+function isRetryableStaleFocus(error) {
+  const data = error && error.details && error.details.rpcError
+    && error.details.rpcError.data;
+  return error && error.code === "trusted_runner_rpc_error"
+    && isObject(data)
+    && data.reasonCode === "stale_focus"
+    && data.retryable === true
+    && data.reconcileKind === "none";
+}
+
+function actionRetryDelays(error) {
+  if (isRetryableInputNotQuiescent(error)) {
+    return INPUT_NOT_QUIESCENT_RETRY_DELAYS_MS;
+  }
+  if (isRetryableStaleFocus(error)) return STALE_FOCUS_RETRY_DELAYS_MS;
+  return null;
 }
 
 function assertPreparation(preparation) {
@@ -515,10 +545,25 @@ class TrustedRuntimeController {
   }
 
   async openMaterials(reason) {
-    const capture = await this.capture(TARGET_KINDS.launcher);
-    return this._perform("panel.open", capture, "structured_action", {
-      panel: "materials",
-    }, reason || "Open the allow-listed materials route");
+    return this._withFreshActionCapture(TARGET_KINDS.launcher, (capture) =>
+      this._perform("panel.open", capture, "structured_action", {
+        panel: "materials",
+      }, reason || "Open the allow-listed materials route"));
+  }
+
+  async _withFreshActionCapture(kind, operation) {
+    for (let attempt = 0;; attempt += 1) {
+      try {
+        const capture = await this.capture(kind);
+        return await operation(capture);
+      } catch (error) {
+        const delays = actionRetryDelays(error);
+        if (!delays || attempt >= delays.length) {
+          throw error;
+        }
+        await wait(delays[attempt]);
+      }
+    }
   }
 
   async click(options) {
@@ -528,22 +573,23 @@ class TrustedRuntimeController {
       fail("trusted_runtime_input_kind_invalid",
         "guarded click is restricted to WebOverlay or NativeHud");
     }
-    const capture = await this.capture(kind);
-    const point = typeof settings.coordinateProvider === "function"
-      ? settings.coordinateProvider(capture) : settings;
-    const x = point && point.x;
-    const y = point && point.y;
-    if (!Number.isInteger(x) || !Number.isInteger(y)
-        || x < 0 || y < 0 || x >= capture.frame.width || y >= capture.frame.height) {
-      fail("trusted_runtime_click_coordinate_invalid",
-        "click coordinates must be integer pixels inside the fresh observation frame");
-    }
-    return this._perform("input.click", capture, "gui_input", {
-      coordinateSpace: "observation_px",
-      x, y,
-      button: "primary",
-      clickCount: 1,
-    }, settings.reason || "Activate the observed material workbench control");
+    return this._withFreshActionCapture(kind, async (capture) => {
+      const point = typeof settings.coordinateProvider === "function"
+        ? settings.coordinateProvider(capture) : settings;
+      const x = point && point.x;
+      const y = point && point.y;
+      if (!Number.isInteger(x) || !Number.isInteger(y)
+          || x < 0 || y < 0 || x >= capture.frame.width || y >= capture.frame.height) {
+        fail("trusted_runtime_click_coordinate_invalid",
+          "click coordinates must be integer pixels inside the fresh observation frame");
+      }
+      return this._perform("input.click", capture, "gui_input", {
+        coordinateSpace: "observation_px",
+        x, y,
+        button: "primary",
+        clickCount: 1,
+      }, settings.reason || "Activate the observed material workbench control");
+    });
   }
 
   async pressKey(options) {
@@ -562,10 +608,10 @@ class TrustedRuntimeController {
         || !Number.isInteger(repeat) || repeat < 1 || repeat > 16) {
       fail("trusted_runtime_key_invalid", "key, modifiers, or repeat is outside the exact input contract");
     }
-    const capture = await this.capture(kind);
-    return this._perform("input.press_key", capture, "gui_input", {
-      key, modifiers: modifiers.slice(), repeat,
-    }, settings.reason || "Use the observed material workbench keyboard control");
+    return this._withFreshActionCapture(kind, (capture) =>
+      this._perform("input.press_key", capture, "gui_input", {
+        key, modifiers: modifiers.slice(), repeat,
+      }, settings.reason || "Use the observed material workbench keyboard control"));
   }
 
   async typeText(options) {
@@ -580,10 +626,10 @@ class TrustedRuntimeController {
       fail("trusted_runtime_text_invalid",
         "text must be a non-empty string inside the exact input.type_text contract");
     }
-    const capture = await this.capture(kind);
-    return this._perform("input.type_text", capture, "gui_input", {
-      text,
-    }, settings.reason || "Type into the observed material workbench control");
+    return this._withFreshActionCapture(kind, (capture) =>
+      this._perform("input.type_text", capture, "gui_input", {
+        text,
+      }, settings.reason || "Type into the observed material workbench control"));
   }
 
   async finish() {
@@ -627,6 +673,8 @@ module.exports = {
   EXACT_SLOT,
   TARGET_KINDS,
   INITIAL_STATUS_TIMEOUT_MS,
+  INPUT_NOT_QUIESCENT_RETRY_DELAYS_MS,
+  STALE_FOCUS_RETRY_DELAYS_MS,
   WEB_OVERLAY_CAPTURE_RETRY_DELAYS_MS,
   TrustedRuntimeController,
   start,

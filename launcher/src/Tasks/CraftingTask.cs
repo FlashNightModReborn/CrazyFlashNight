@@ -80,6 +80,14 @@ namespace CF7Launcher.Tasks
             public JObject AcceptedPlan;
         }
 
+        private sealed class RecipeNavigationAuthority
+        {
+            public string OwnerPanelInstanceId;
+            public string Category;
+            public int RecipeIndex;
+            public JArray Materials;
+        }
+
         private const int DefaultTimeoutMs = 10000;
         private const long MaxSafeInteger = 9007199254740991L;
         private const int MaxMaterials = 4096;
@@ -87,6 +95,7 @@ namespace CF7Launcher.Tasks
         private const int MaxVariants = 128;
         private const int MaxUses = 1024;
         private const int MaxRecipeIngredients = 64;
+        private const int MaxCraftingSources = 32;
         // Per catalog material/detail references. The taxonomy registry itself is
         // bounded by MaxTaxonomyEntries so future controlled entries remain data-driven.
         private const int MaxDirectPurposes = 128;
@@ -129,6 +138,7 @@ namespace CF7Launcher.Tasks
         private int _previewEpoch;
         private int _materialsRequestEpoch;
         private PreviewAuthority _previewAuthority;
+        private RecipeNavigationAuthority _recipeNavigationAuthority;
         private MaterialsSession _materialsSession;
         private string _navigationOwnerPanel;
         private string _navigationOwnerPanelInstanceId;
@@ -163,6 +173,7 @@ namespace CF7Launcher.Tasks
                 _navigationLeaseTransferred = false;
                 _navigationOwnerPanel = null;
                 _navigationOwnerPanelInstanceId = null;
+                _recipeNavigationAuthority = null;
                 _pendingCalls.Dispose();
             }
         }
@@ -186,6 +197,7 @@ namespace CF7Launcher.Tasks
                 _navigationLeaseTransferred = false;
                 _navigationOwnerPanel = panelName;
                 _navigationOwnerPanelInstanceId = panelInstanceId;
+                _recipeNavigationAuthority = null;
                 _navigationGeneration++;
             }
         }
@@ -245,12 +257,85 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        internal bool TryAcquireRecipeShopNavigationLease(
+            string panelName,
+            string panelInstanceId,
+            string leaseToken,
+            string category,
+            int recipeIndex,
+            string materialName,
+            string shopId,
+            int catalogIndex,
+            bool isKShop,
+            string entryId,
+            string kshopCategory,
+            out MaterialShopSettlementWitness witness)
+        {
+            witness = null;
+            lock (_lock)
+            {
+                if (_disposed
+                    || string.IsNullOrEmpty(leaseToken)
+                    || _navigationLeaseToken != null
+                    || !string.Equals(panelName, "crafting", StringComparison.Ordinal)
+                    || !string.Equals(_navigationOwnerPanel, panelName, StringComparison.Ordinal)
+                    || !string.Equals(
+                        _navigationOwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || _pendingCalls.PendingCount != 0
+                    || !string.Equals(_writeState, "idle", StringComparison.Ordinal)
+                    || _recipeNavigationAuthority == null
+                    || !string.Equals(
+                        _recipeNavigationAuthority.OwnerPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _recipeNavigationAuthority.Category,
+                        category,
+                        StringComparison.Ordinal)
+                    || _recipeNavigationAuthority.RecipeIndex != recipeIndex
+                    || !HasRecipeNavigationSource(
+                        _recipeNavigationAuthority.Materials,
+                        materialName,
+                        shopId,
+                        catalogIndex,
+                        isKShop,
+                        entryId,
+                        kshopCategory))
+                {
+                    return false;
+                }
+                _navigationLeaseToken = leaseToken;
+                _navigationLeaseTransferred = false;
+                _navigationGeneration++;
+                witness = new MaterialShopSettlementWitness
+                {
+                    TaskName = "crafting",
+                    LeaseToken = leaseToken,
+                    OwnerPanel = panelName,
+                    OwnerPanelInstanceId = panelInstanceId,
+                    Generation = _navigationGeneration,
+                    MaterialName = materialName,
+                    ShopId = shopId,
+                    IsRecipeProcurement = true,
+                    RecipeCategory = category,
+                    RecipeIndex = recipeIndex,
+                    CatalogIndex = catalogIndex,
+                    IsKShop = isKShop,
+                    EntryId = entryId,
+                    KShopCategory = kshopCategory
+                };
+                return true;
+            }
+        }
+
         internal bool IsMaterialShopNavigationLeaseCurrent(
             MaterialShopSettlementWitness witness)
         {
             lock (_lock)
             {
-                return witness != null
+                bool common = witness != null
                     && !_disposed
                     && !_navigationLeaseTransferred
                     && string.Equals(witness.TaskName, "crafting", StringComparison.Ordinal)
@@ -268,8 +353,30 @@ namespace CF7Launcher.Tasks
                         _navigationOwnerPanelInstanceId,
                         StringComparison.Ordinal)
                     && _pendingCalls.PendingCount == 0
-                    && string.Equals(_writeState, "idle", StringComparison.Ordinal)
-                    && _materialsSession != null
+                    && string.Equals(_writeState, "idle", StringComparison.Ordinal);
+                if (!common) return false;
+                if (witness.IsRecipeProcurement)
+                {
+                    return _recipeNavigationAuthority != null
+                        && string.Equals(
+                            witness.OwnerPanelInstanceId,
+                            _recipeNavigationAuthority.OwnerPanelInstanceId,
+                            StringComparison.Ordinal)
+                        && string.Equals(
+                            witness.RecipeCategory,
+                            _recipeNavigationAuthority.Category,
+                            StringComparison.Ordinal)
+                        && witness.RecipeIndex == _recipeNavigationAuthority.RecipeIndex
+                        && HasRecipeNavigationSource(
+                            _recipeNavigationAuthority.Materials,
+                            witness.MaterialName,
+                            witness.ShopId,
+                            witness.CatalogIndex,
+                            witness.IsKShop,
+                            witness.EntryId,
+                            witness.KShopCategory);
+                }
+                return _materialsSession != null
                     && _materialsSession.Version == 2
                     && string.Equals(
                         witness.MaterialSnapshotId,
@@ -393,12 +500,15 @@ namespace CF7Launcher.Tasks
                         RespondError(callId, cmd, ownerPanel, ownerPanelInstanceId, "stale_state");
                         return;
                     }
+                    _recipeNavigationAuthority = null;
                 }
                 else if (cmd == "preview" || cmd == "snapshot")
                 {
                     _previewEpoch++;
                     _previewAuthority = null;
+                    _recipeNavigationAuthority = null;
                 }
+                else if (cmd == "setPlan") _recipeNavigationAuthority = null;
                 int materialsRequestEpoch = 0;
                 if (cmd == "materials")
                 {
@@ -465,7 +575,10 @@ namespace CF7Launcher.Tasks
                     && entry.MaterialsRequestEpoch == _materialsRequestEpoch)
                     _materialsSession = selectedMaterialsSession;
                 if (entry.WebCmd == "preview" && entry.PreviewEpoch == _previewEpoch)
+                {
+                    UpdateRecipeNavigationAuthorityLocked(msg, entry, valid);
                     UpdatePreviewAuthorityLocked(msg, entry, valid);
+                }
                 definitiveWrite = entry.IsWrite && valid && IsDefinitiveWriteResponse(msg);
                 if (entry.IsWrite)
                 {
@@ -502,6 +615,7 @@ namespace CF7Launcher.Tasks
                 _navigationOwnerPanelInstanceId = null;
                 _previewEpoch++;
                 _previewAuthority = null;
+                _recipeNavigationAuthority = null;
                 _materialsRequestEpoch++;
                 _materialsSession = null;
                 _pendingCalls.Clear();
@@ -518,6 +632,7 @@ namespace CF7Launcher.Tasks
                 case "materialDetail": action = "craftingMaterialDetail"; return true;
                 case "preview": action = "craftingPreview"; return true;
                 case "tooltip": action = "craftingTooltip"; return true;
+                case "setPlan": action = "craftingPlanSet"; isWrite = true; return true;
                 case "commit": action = "craftingCommit"; isWrite = true; return true;
                 default: action = null; return false;
             }
@@ -556,6 +671,22 @@ namespace CF7Launcher.Tasks
                 string itemName = ReadExactString(payload["itemName"]);
                 if (!IsIdentityText(itemName, 128)) return false;
                 normalized["itemName"] = itemName;
+                return true;
+            }
+            if (cmd == "setPlan")
+            {
+                if (version != 1 || !HasExactKeys(payload, "v", "recipeId",
+                        "plannedCrafts", "expectedRevision")) return false;
+                string recipeId = ReadExactString(payload["recipeId"]);
+                int plannedCrafts;
+                long expectedRevision;
+                if (!ProcurementProjectionValidator.IsRecipeId(payload["recipeId"])
+                    || !TryReadInteger(payload["plannedCrafts"], 0, 99, out plannedCrafts)
+                    || !TryReadLongInteger(payload["expectedRevision"], 0,
+                        9007199254740990L, out expectedRevision)) return false;
+                normalized["recipeId"] = recipeId;
+                normalized["plannedCrafts"] = plannedCrafts;
+                normalized["expectedRevision"] = expectedRevision;
                 return true;
             }
             bool materialNavigationSnapshot = cmd == "snapshot"
@@ -747,6 +878,69 @@ namespace CF7Launcher.Tasks
             };
         }
 
+        private void UpdateRecipeNavigationAuthorityLocked(
+            JObject msg, PendingRequest entry, bool valid)
+        {
+            _recipeNavigationAuthority = null;
+            if (!valid || msg.Value<bool?>("success") != true || entry == null) return;
+            int recipeIndex;
+            JArray materials = msg["materials"] as JArray;
+            if (!TryReadInteger(msg["recipeIndex"], 0, 999, out recipeIndex)
+                || materials == null) return;
+            _recipeNavigationAuthority = new RecipeNavigationAuthority
+            {
+                OwnerPanelInstanceId = entry.OwnerPanelInstanceId,
+                Category = ReadExactString(msg["category"]),
+                RecipeIndex = recipeIndex,
+                Materials = (JArray)materials.DeepClone()
+            };
+        }
+
+        private static bool HasRecipeNavigationSource(
+            JArray materials,
+            string materialName,
+            string shopId,
+            int catalogIndex,
+            bool isKShop,
+            string entryId,
+            string kshopCategory)
+        {
+            if (materials == null || string.IsNullOrEmpty(materialName)) return false;
+            int matches = 0;
+            foreach (JToken materialToken in materials)
+            {
+                JObject material = materialToken as JObject;
+                JObject demand = material != null ? material["procurement"] as JObject : null;
+                JArray sources = demand != null ? demand["sources"] as JArray : null;
+                if (!string.Equals(
+                        ReadExactString(material != null ? material["name"] : null),
+                        materialName,
+                        StringComparison.Ordinal)
+                    || demand == null
+                    || demand.Value<long?>("obtainMissing") <= 0
+                    || sources == null) continue;
+                foreach (JToken sourceToken in sources)
+                {
+                    JObject source = sourceToken as JObject;
+                    if (source == null
+                        || source.Value<int?>("catalogIndex") != catalogIndex) continue;
+                    bool exact = isKShop
+                        ? string.Equals(ReadExactString(source["kind"]), "kshop",
+                                StringComparison.Ordinal)
+                            && string.Equals(ReadExactString(source["entryId"]), entryId,
+                                StringComparison.Ordinal)
+                            && string.Equals(ReadExactString(source["category"]), kshopCategory,
+                                StringComparison.Ordinal)
+                        : string.Equals(ReadExactString(source["kind"]), "npcshop",
+                                StringComparison.Ordinal)
+                            && string.Equals(ReadExactString(source["shopId"]), shopId,
+                                StringComparison.Ordinal);
+                    if (exact) matches++;
+                }
+            }
+            return matches == 1;
+        }
+
         private static bool TrySanitizeResponse(
             JObject msg,
             PendingRequest entry,
@@ -785,6 +979,7 @@ namespace CF7Launcher.Tasks
                     break;
                 case "preview": authoritative = IsAuthoritativePreview(msg, entry); break;
                 case "tooltip": authoritative = IsAuthoritativeTooltip(msg, entry); break;
+                case "setPlan": authoritative = IsAuthoritativeSetPlan(msg, entry); break;
                 case "commit": authoritative = IsAuthoritativeCommit(msg, entry); break;
                 default: authoritative = false; break;
             }
@@ -808,14 +1003,16 @@ namespace CF7Launcher.Tasks
             var recipes = msg["recipes"] as JArray;
             string gender = ReadExactString(msg["gender"]);
             if (!HasExactResponseKeys(msg, "v", "category", "gender", "recipes",
-                    "balance", "skills", "note")
+                    "balance", "skills", "procurement", "note")
                 || !HasProtocolVersion(msg)
                 || !MatchesSelector(msg, entry, "category")
                 || recipes == null || !IsBalance(msg["balance"] as JObject)
                 || !IsSkills(msg["skills"] as JObject)
+                || !ProcurementProjectionValidator.IsPlanSummary(msg["procurement"] as JObject)
                 || !IsSafeOptionalText(ReadExactString(msg["note"]), 2000)
                 || (gender != "男" && gender != "女")) return false;
             var seenIndexes = new HashSet<int>();
+            var seenRecipeIds = new HashSet<string>(StringComparer.Ordinal);
             foreach (JToken token in recipes)
             {
                 var recipe = token as JObject;
@@ -824,8 +1021,11 @@ namespace CF7Launcher.Tasks
                 int recipeIndex;
                 int materialCount;
                 if (recipe == null
-                    || !HasExactKeys(recipe, "recipeIndex", "title", "output", "baseCost",
-                        "materialCount", "batchEligible", "canCraftOne", "availability")
+                    || !HasExactKeys(recipe, "recipeId", "recipeIndex", "title", "output",
+                        "owned", "plannedCrafts", "baseCost", "materialCount",
+                        "batchEligible", "canCraftOne", "availability")
+                    || !ProcurementProjectionValidator.IsRecipeId(recipe["recipeId"])
+                    || !seenRecipeIds.Add(ReadExactString(recipe["recipeId"]))
                     || !TryReadInteger(recipe["recipeIndex"], 0, 999, out recipeIndex)
                     || !seenIndexes.Add(recipeIndex)
                     || !TryReadInteger(recipe["materialCount"], 0, 999, out materialCount)
@@ -833,6 +1033,8 @@ namespace CF7Launcher.Tasks
                     || recipe["canCraftOne"] == null || recipe["canCraftOne"].Type != JTokenType.Boolean
                     || !IsIdentityText(ReadExactString(recipe["title"]), 256)
                     || !IsProjectedItem(output, false)
+                    || !ProcurementProjectionValidator.IsOwnedSummary(recipe["owned"] as JObject)
+                    || !TryReadInteger(recipe["plannedCrafts"], 0, 99, out materialCount)
                     || !IsCost(baseCost)) return false;
                 string availability = ReadExactString(recipe["availability"]);
                 bool canCraftOne = recipe.Value<bool>("canCraftOne");
@@ -1943,13 +2145,31 @@ namespace CF7Launcher.Tasks
                 && IsSafeMultilineText(ReadExactString(msg["introHTML"]), 20000);
         }
 
+        private static bool IsAuthoritativeSetPlan(JObject msg, PendingRequest entry)
+        {
+            if (!HasExactResponseKeys(msg, "v", "revision", "recipeId", "plannedCrafts"))
+                return false;
+            JObject payload = (JObject)msg.DeepClone();
+            payload.Remove("task");
+            payload.Remove("callId");
+            return ProcurementProjectionValidator.IsPlanMutation(payload)
+                && string.Equals(ReadExactString(msg["recipeId"]),
+                    ReadExactString(entry.NormalizedPayload["recipeId"]),
+                    StringComparison.Ordinal)
+                && JToken.DeepEquals(msg["plannedCrafts"],
+                    entry.NormalizedPayload["plannedCrafts"])
+                && msg.Value<long>("revision")
+                    == entry.NormalizedPayload.Value<long>("expectedRevision") + 1;
+        }
+
         private static bool IsAuthoritativeCommit(JObject msg, PendingRequest entry)
         {
             int recipeIndex;
             int craftCount;
             var crafted = msg["crafted"] as JObject;
             if (!HasExactResponseKeys(msg, "v", "operation", "category", "recipeIndex",
-                    "craftCount", "crafted", "acceptedPlan", "outputReceipt", "balance")
+                    "craftCount", "crafted", "acceptedPlan", "outputReceipt", "balance",
+                    "procurement")
                 || !HasProtocolVersion(msg)
                 || !string.Equals(ReadExactString(msg["operation"]), "commit", StringComparison.Ordinal)
                 || !MatchesSelector(msg, entry, "category")
@@ -1958,6 +2178,7 @@ namespace CF7Launcher.Tasks
                 || !TryReadInteger(msg["craftCount"], 1, 99, out craftCount)
                 || !IsProjectedItem(crafted, true)
                 || !IsBalance(msg["balance"] as JObject)
+                || !ProcurementProjectionValidator.IsCommitState(msg["procurement"] as JObject)
                 || recipeIndex != entry.ExpectedPreview.RecipeIndex
                 || craftCount != entry.ExpectedPreview.CraftCount
                 || !string.Equals(ReadExactString(msg["category"]),
@@ -2016,7 +2237,7 @@ namespace CF7Launcher.Tasks
             return requirement != null
                 && HasExactKeys(requirement, "name", "displayName", "icon", "itemKind", "required",
                     "owned", "maxEnhancement", "isQuantity", "tier", "consumed", "enough",
-                    "storageKind")
+                    "storageKind", "craftingSources", "procurement")
                 && IsIdentityTriple(requirement)
                 && IsItemKind(ReadExactString(requirement["itemKind"]))
                 && IsNonNegativeNumber(requirement["required"])
@@ -2024,7 +2245,37 @@ namespace CF7Launcher.Tasks
                 && IsNonNegativeNumber(requirement["maxEnhancement"])
                 && IsSafeOptionalText(ReadExactString(requirement["tier"]), 128)
                 && StorageKinds.Contains(ReadExactString(requirement["storageKind"]))
+                && IsCraftingSources(requirement["craftingSources"] as JArray)
+                && ProcurementProjectionValidator.IsDemand(
+                    requirement["procurement"] as JObject,
+                    ReadExactString(requirement["name"]))
                 && HasExactBooleanFields(requirement, "isQuantity", "consumed", "enough");
+        }
+
+        private static bool IsCraftingSources(JArray sources)
+        {
+            if (sources == null || sources.Count > MaxCraftingSources) return false;
+            var recipeIds = new HashSet<string>(StringComparer.Ordinal);
+            var occurrences = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in sources)
+            {
+                JObject source = token as JObject;
+                int index;
+                string category = source != null
+                    ? ReadExactString(source["category"]) : null;
+                string recipeId = source != null
+                    ? ReadExactString(source["recipeId"]) : null;
+                if (source == null
+                    || !HasExactKeys(source, "category", "recipeIndex", "recipeId", "title")
+                    || !Categories.Contains(category)
+                    || !TryReadInteger(source["recipeIndex"], 0, 999, out index)
+                    || !ProcurementProjectionValidator.IsRecipeId(source["recipeId"])
+                    || !IsIdentityText(ReadExactString(source["title"]), 256)
+                    || !recipeIds.Add(recipeId)
+                    || !occurrences.Add(category + "\0" + index.ToString(CultureInfo.InvariantCulture)))
+                    return false;
+            }
+            return true;
         }
 
         private static bool IsOutputDelivery(JObject delivery, JObject output)

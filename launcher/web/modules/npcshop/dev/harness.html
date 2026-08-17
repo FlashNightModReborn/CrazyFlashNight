@@ -123,10 +123,24 @@ window.Panels=(function(){var specs={},active=null,activeEl=null,openSeq=0;retur
 var balance=10000,materialQty=3,inventorySeq=0,inventoryRevision=1,spaceFreed=false,manualLayout=false;
 window.__navigationLayoutOverride=null;
 var inventorySessionNonce='inventory.harness.session',battleAccessibleCapacity=240;
+function procurementDemand(itemName,options){
+  options=options||{};var planned=!!options.planned,task=!!options.task,reasons=[];
+  if(planned)reasons.push({kind:'craft',sourceId:'craft.weapon.001',label:'测试双枪',required:2,mode:'consume'});
+  if(task)reasons.push({kind:'task',sourceId:'task.7',label:'前线补给',required:3,mode:'submit'});
+  return{itemName:itemName,required:Number(options.required||1),requiredEnhancement:0,
+    usableOwned:Number(options.usableOwned||0),equippedOwned:Number(options.equippedOwned||0),
+    battleBoxOwned:Number(options.battleBoxOwned||0),totalOwned:Number(options.totalOwned||0),
+    usableMaxEnhancement:0,equippedMaxEnhancement:0,battleBoxMaxEnhancement:0,
+    totalMaxEnhancement:0,obtainMissing:Number(options.obtainMissing||0),
+    relocateMissing:Number(options.relocateMissing||0),needsEnhancement:false,
+    craftRequired:planned?2:0,taskRequired:task?3:0,plannedRecipeCount:planned?1:0,
+    activeTaskCount:task?1:0,reasons:reasons,sources:[{kind:'npcshop',shopId:'前治安官',
+      catalogIndex:Number(options.catalogIndex),label:'前治安官'}]}
+}
 var catalog=[
   {catalogIndex:0,itemName:'光棱射线弹-强化',displayName:'棱镜折射阵列',icon:'全光谱棱镜阵列',majorType:'武器',use:'手枪',actionType:'',weaponType:'手枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false,balanceSummary:{state:'confirmed',weightLayers:1,formula:1,level:1}},
-  {catalogIndex:1,itemName:'强化石',displayName:'强化石',icon:'强化石',majorType:'收集品',use:'材料',basePrice:100,unitPrice:100,maxQuantity:100,requiredInfo:'',locked:false,balanceSummary:{state:'review',weightLayers:7,formula:1,level:1}},
-  {catalogIndex:2,itemName:'符线溯源笔记',displayName:'符线溯源笔记',icon:'符线溯源笔记',majorType:'收集品',use:'情报',basePrice:300,unitPrice:300,maxQuantity:100,requiredInfo:'符线档案',locked:true},
+  {catalogIndex:1,itemName:'强化石',displayName:'强化石',icon:'强化石',majorType:'收集品',use:'材料',basePrice:100,unitPrice:100,maxQuantity:100,requiredInfo:'',locked:false,balanceSummary:{state:'review',weightLayers:7,formula:1,level:1},procurement:procurementDemand('强化石',{required:5,totalOwned:1,obtainMissing:4,planned:true,task:true,catalogIndex:1})},
+  {catalogIndex:2,itemName:'符线溯源笔记',displayName:'符线溯源笔记',icon:'符线溯源笔记',majorType:'收集品',use:'情报',basePrice:300,unitPrice:300,maxQuantity:100,requiredInfo:'符线档案',locked:true,procurement:procurementDemand('符线溯源笔记',{required:3,totalOwned:2,battleBoxOwned:2,relocateMissing:1,task:true,catalogIndex:2})},
   {catalogIndex:3,itemName:'训练步枪',displayName:'训练步枪',icon:'训练步枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'突击步枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
   {catalogIndex:4,itemName:'训练霰弹枪',displayName:'训练霰弹枪',icon:'训练霰弹枪',majorType:'武器',use:'长枪',actionType:'',weaponType:'霰弹枪',basePrice:1000,unitPrice:1000,maxQuantity:50,requiredInfo:'',locked:false},
   {catalogIndex:5,itemName:'训练背心',displayName:'训练背心',icon:'训练背心',majorType:'防具',use:'上装装备',actionType:'',weaponType:'',basePrice:500,unitPrice:500,maxQuantity:50,requiredInfo:'',locked:false},
@@ -353,8 +367,14 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
     shopId:'迷之盔甲君',panelInstanceId:'panel.harness.npcshop.a4b.'+suffix,
     preferredItemName:name,preferredCatalogIndex:index,canReturnCraftingMaterials:true,
     navigationOrigin:'crafting_materials'}}
+  function recipeOriginInit(index,name,suffix){return{mode:'runtime',source:'crafting_procurement',debug:false,
+    shopId:'迷之盔甲君',panelInstanceId:'panel.harness.npcshop.recipe.'+suffix,
+    preferredItemName:name,preferredCatalogIndex:index,canReturnCraftingRecipe:true,
+    navigationOrigin:'crafting_recipe',returnRecipeCategory:'进阶防具',returnRecipeIndex:3}}
   function returnNavigationMessages(){return __sent.filter(function(message){return message
     &&message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='return_crafting_materials'})}
+  function recipeReturnNavigationMessages(){return __sent.filter(function(message){return message
+    &&message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='return_crafting_recipe'})}
   function outerCloseMessages(){return __sent.filter(function(message){return message
     &&message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'&&!message.domain})}
   function emitReturnFailure(message,error,extra){var failure={type:'panel_resp',panel:'npcshop',
@@ -574,6 +594,29 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
     }
     ok('PG NPCShop four outer close paths send exact reason and wait for Host commit',
       closeReasons.every(Boolean),JSON.stringify(closeReasons));
+
+    Panels.open('npcshop',recipeOriginInit(1,'强化石','equipment-prerequisite'));
+    await waitForCondition(function(){var state=NpcShop.debugState();return state.inventory.ready
+      &&document.querySelector('[data-navigation-focus]')},'recipe-origin NPC shop',2200);
+    var recipeTarget=document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]');
+    var recipeHint=recipeTarget&&recipeTarget.querySelector('.npcshop-navigation-focus-hint');
+    var recipeReturnButton=document.querySelector('.npcshop-material-return-btn');
+    ok('PG NPCShop accepts a recipe procurement origin and focuses its exact catalog item without a material-archive session',
+      recipeTarget&&recipeTarget.getAttribute('data-navigation-focus')==='true'
+        &&document.activeElement===recipeTarget
+        &&recipeHint&&recipeHint.textContent==='从合成缺口定位'
+        &&recipeReturnButton&&recipeReturnButton.textContent==='← 返回合成配方'
+        &&NpcShop.debugState().catalogNavigation.kind==='crafting_recipe',
+      JSON.stringify(NpcShop.debugState().catalogNavigation));
+    var recipeReturnBefore=recipeReturnNavigationMessages().length;
+    recipeReturnButton.click();await wait();
+    var recipeReturnMessage=recipeReturnNavigationMessages().slice(-1)[0];
+    ok('PG NPCShop recipe procurement return emits the exact owner-bound reverse intent',
+      recipeReturnNavigationMessages().length===recipeReturnBefore+1&&recipeReturnMessage
+        &&Object.keys(recipeReturnMessage).sort().join(',')==='callId,cmd,panel,panelInstanceId,type'
+        &&recipeReturnMessage.panelInstanceId===NpcShop.debugState().panelInstanceId,
+      JSON.stringify(recipeReturnMessage));
+    Panels.close();
   }
   ['settlement','bulk_sale','inventory_full'].forEach(function(topic){try{localStorage.removeItem('cf7.npcshop.guide.v1.'+topic)}catch(error){}});
   try{localStorage.removeItem('cf7.itemgrid.mode.npcshop')}catch(error){}
@@ -758,6 +801,19 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
       &&npcConfirmedCard.querySelector('[data-icon="'+npcIdentityFixture.icon+'"]')
       &&!npcConfirmedCard.querySelector('[data-icon="'+npcIdentityFixture.itemName+'"]'));
   ok('NPC 商店目录与 owned 格复用确认加权徽标，未确认条目不显示正式数字',npcConfirmedBadge&&npcConfirmedBadge.textContent.indexOf('◆+1')>=0&&npcConfirmedCard.getAttribute('aria-label').indexOf('平衡标定已确认')>=0&&npcUnresolvedCard&&!npcUnresolvedCard.querySelector('.balance-weight-badge')&&npcOwnedBalanceBadge&&npcOwnedBalanceBadge.textContent.indexOf('◆0')>=0);
+  var npcProcurementCard=document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]'),npcProcurementBadge=npcProcurementCard&&npcProcurementCard.querySelector('.procurement-highlight-badge');
+  var npcLockedProcurementCard=document.querySelector('.npcshop-catalog-card[data-catalog-index="2"]'),npcLockedProcurementBadge=npcLockedProcurementCard&&npcLockedProcurementCard.querySelector('.procurement-highlight-badge');
+  ok('NPC 商店按 exact itemName 高亮合成标记与进行中任务，并让锁定条目保留取回提示',
+    npcProcurementCard&&npcProcurementCard.classList.contains('procurement-needed')
+      &&npcProcurementCard.getAttribute('data-procurement-quantity')==='4'
+      &&npcProcurementBadge&&npcProcurementBadge.textContent==='需购 ×4 · 合成标记与任务'
+      &&npcProcurementBadge.title.indexOf('测试双枪')>=0&&npcProcurementBadge.title.indexOf('前线补给')>=0
+      &&npcProcurementCard.getAttribute('aria-label').indexOf('仍需购买 4')>=0
+      &&npcLockedProcurementCard&&npcLockedProcurementCard.classList.contains('locked')
+      &&npcLockedProcurementCard.classList.contains('procurement-relocate')
+      &&npcLockedProcurementBadge&&npcLockedProcurementBadge.textContent==='合成前需要从战备箱取出'
+      &&npcLockedProcurementBadge.title.indexOf('这里只是合成前指引，不会自动移动装备')>=0
+      &&npcLockedProcurementBadge.title.indexOf('从战备箱取出 1 件')>=0);
   PanelTooltip.lastHTML='';PanelTooltip.lastRichOptions=null;var npcBalanceRect=npcConfirmedCard.getBoundingClientRect();
   npcConfirmedCard.dispatchEvent(new PointerEvent('pointerenter',{bubbles:false,clientX:npcBalanceRect.left+8,clientY:npcBalanceRect.top+8,pointerId:11,pointerType:'mouse',isPrimary:true}));
   var npcBalanceBasic=PanelTooltip.lastHTML;await wait();var npcBalanceMeta=PanelTooltip.lastRichOptions&&PanelTooltip.lastRichOptions.metaHTML||'',npcBalanceMetaDoc=new DOMParser().parseFromString(npcBalanceMeta,'text/html');
