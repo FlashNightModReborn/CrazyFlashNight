@@ -97,14 +97,17 @@
             '[data-roving-key="' + String(slotKey).replace(/"/g, '\\"') + '"]');
         var reconcile = this._state === 'mutation_reconcile';
         var drug = String(slotKey).indexOf('drug:') === 0;
-        this._commitButton.textContent = reconcile ? '确认' : drug ? '装入' : '装备';
+        this._commitButton.textContent = reconcile ? '确认'
+            : !slotKey ? '先选栏位' : drug ? '装入' : '装备';
         this._commitButton.setAttribute('aria-label', reconcile ? '重新确认结果'
-            : drug ? '装入所选药剂' : '装备所选候选');
+            : !slotKey ? '先选择目标栏位'
+                : drug ? '装入所选药剂' : '装备所选候选');
         this._commitButton.disabled = reconcile ? false
-            : this._state !== 'idle' || !candidate || candidate.blocked === true;
+            : this._state !== 'idle' || !slotKey
+                || !candidate || candidate.blocked === true;
         var occupiedEquipment = !!slot && slot.getAttribute('data-empty') !== 'true'
             && slot.getAttribute('data-slot-kind') !== 'drug';
-        var candidateSelected = !!candidate;
+        var candidateSelected = !!candidate && !!slot;
         var tunable = candidateSelected
             ? candidate.tunable === true && candidate.blocked !== true
             : occupiedEquipment && slot.getAttribute('data-tunable') === 'true'
@@ -139,7 +142,8 @@
         var candidate = this._getCandidate(key);
         this._overlayCopy.parentNode.hidden = !candidate;
         this._overlayCopy.textContent = candidate
-            ? '预览 · ' + String(candidate.name || '候选') : '';
+            ? (this._getSlotKey() ? '预览 · ' : '已选 · ')
+                + String(candidate.name || '候选') : '';
         return candidate;
     };
     ActionView.prototype.setState = function(state) {

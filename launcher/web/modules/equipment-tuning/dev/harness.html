@@ -48,7 +48,7 @@ function modCandidates(){
   var list=[{candidateKey:'mod.base',itemName:'基础导轨',displayName:'通用轨道座',icon:'基础导轨图标',owned:0,available:false,installed:true,availabilityCode:-2,reason:'already_installed',replaceableFrom:[],grade:'low',gradeLabel:'低级',gradeColor:'#006600',scope:'firearm',scopeLabel:'枪械',role:'utility',roleLabel:'结构与功能'}];
   for(var i=1;i<=25;i++){
     var grade=grades[i%grades.length],role=roles[i%roles.length],fixture=i>=3&&i<=5?identityTripleFixtures[i-3]:null;
-    var candidate={candidateKey:fixture?fixture.candidateKey:'mod.test.'+i,itemName:fixture?fixture.itemName:(i===1?'测试瞄具':(i===2?'禁用配件':'测试配件 '+i)),displayName:fixture?fixture.displayName:(i===1?'光学测试瞄具':(i===2?'禁用配件显示':'测试配件显示 '+i)),icon:fixture?fixture.icon:(i===1?'测试瞄具图标':(i===2?'禁用配件图标':'测试配件图标 '+i)),owned:i+1,available:i!==2,installed:false,availabilityCode:i===2?-3:1,reason:i===2?'条件不满足':'',replaceableFrom:i===2?[]:['mod.base'],grade:grade[0],gradeLabel:grade[1],gradeColor:grade[2],scope:i%5===0?'universal':'firearm',scopeLabel:i%5===0?'通用':'枪械',role:role[0],roleLabel:role[1],symbol:role[2]};
+    var candidate={candidateKey:fixture?fixture.candidateKey:'mod.test.'+i,itemName:fixture?fixture.itemName:(i===1?'测试瞄具':(i===2?'禁用配件':'测试配件 '+i)),displayName:fixture?fixture.displayName:(i===1?'光学测试瞄具':(i===2?'禁用配件显示':'测试配件显示 '+i)),icon:fixture?fixture.icon:(i===1?'测试瞄具图标':(i===2?'禁用配件图标':'测试配件图标 '+i)),owned:i>=20?0:i+1,available:i!==2&&i<20,installed:false,availabilityCode:i===2?-3:(i>=20?-1:1),reason:i===2?'条件不满足':(i>=20?'material_missing':''),replaceableFrom:i===2?[]:['mod.base'],grade:grade[0],gradeLabel:grade[1],gradeColor:grade[2],scope:i%5===0?'universal':'firearm',scopeLabel:i%5===0?'通用':'枪械',role:role[0],roleLabel:role[1],symbol:role[2]};
     list.push(candidate)
   }
   return list;
@@ -384,6 +384,18 @@ function respond(message){var result=base(message);
     ok('tier preview renders the tier-granted attribute as an added delta row',document.querySelector('.equipment-tuning-preview:not(.enhance-compact) .equipment-tuning-stats-row')&&document.querySelector('.equipment-tuning-preview .equipment-tuning-stats-row .equipment-tuning-stats-label').textContent==='防御'&&document.querySelector('.equipment-tuning-preview .equipment-tuning-stats-row .equipment-tuning-stats-change').textContent==='— → 80');
     tabs=document.querySelectorAll('.equipment-tuning-tab');tabs[3].click();await wait();
     var renamedMod=document.querySelector('[data-candidate-key="mod.test.1"]');
+    ok('sparse inventory defaults the mod catalog to held candidates without inventing ownership',
+      view.debugState().modFilterPath.join('/')==='ownership/owned'
+      &&document.querySelectorAll('.equipment-tuning-candidate').length===19
+      &&!document.querySelector('[data-candidate-key="mod.test.20"]')
+      &&document.querySelector('.equipment-tuning-filter-count').textContent==='显示 19 / 25');
+    var allModsCrumb=document.querySelector('.equipment-tuning-mod-breadcrumb [data-filter-breadcrumb-path=""]');
+    allModsCrumb.click();await wait();
+    ok('the explicit all-mod catalog remains reachable and labels unowned entries honestly',
+      view.debugState().modFilterPath.length===0
+      &&document.querySelectorAll('.equipment-tuning-candidate').length===25
+      &&document.querySelector('[data-candidate-key="mod.test.20"]')
+      &&document.querySelector('[data-candidate-key="mod.test.20"]').getAttribute('aria-label').indexOf('持有 0')>=0);
     ok('mod view resolves item icon and display identity independently from the internal mod key',
       document.querySelectorAll('.equipment-tuning-candidate').length===25
       &&renamedMod&&renamedMod.querySelector('[data-icon="测试瞄具图标"]')
@@ -492,7 +504,7 @@ function respond(message){var result=base(message);
     var compactBody=document.querySelector('.equipment-tuning-body'),compactGrid=document.querySelector('.equipment-tuning-candidates'),compactTiles=[].slice.call(document.querySelectorAll('.equipment-tuning-candidate'));
     var compactTileMetrics=compactTiles.map(function(node){var rect=node.getBoundingClientRect(),icon=node.querySelector('img,.kshop-icon,.kshop-icon-placeholder'),iconRect=icon.getBoundingClientRect();return{w:rect.width,h:rect.height,iw:iconRect.width,ih:iconRect.height,copy:getComputedStyle(node.querySelector(':scope > span:not(.kshop-icon):not(.equipment-tuning-owned-count)')).display}});
     ok('compact mod catalog matches shared 48px tile and 40px icon contract',compactTileMetrics.length===25&&compactTileMetrics.every(function(m){return Math.abs(m.w-48)<0.1&&Math.abs(m.h-48)<0.1&&Math.abs(m.iw-40)<0.1&&Math.abs(m.ih-40)<0.1&&m.copy==='none'})&&compactTiles.every(function(node){return getComputedStyle(node.querySelector('.equipment-tuning-role-glyph')).display!=='none'}),JSON.stringify(compactTileMetrics));
-    ok('compact candidates keep shared quantity badges',document.querySelectorAll('.equipment-tuning-candidate .equipment-tuning-owned-count').length===25&&[].slice.call(document.querySelectorAll('.equipment-tuning-owned-count')).every(function(node){return getComputedStyle(node).display!=='none'}));
+    ok('compact candidates keep quantity badges only for actually held mods',document.querySelectorAll('.equipment-tuning-candidate .equipment-tuning-owned-count').length===19&&[].slice.call(document.querySelectorAll('.equipment-tuning-owned-count')).every(function(node){return getComputedStyle(node).display!=='none'}));
     ok('tuning view never exposes browser-native title tooltips',document.querySelectorAll('#host [title]').length===0);
     ok('25 compact mod candidates remain reachable without scrolling',compactBody.scrollHeight<=compactBody.clientHeight+1&&compactGrid.getBoundingClientRect().bottom<=compactBody.getBoundingClientRect().bottom+1,JSON.stringify({body:[compactBody.clientHeight,compactBody.scrollHeight],gridBottom:compactGrid.getBoundingClientRect().bottom,bodyBottom:compactBody.getBoundingClientRect().bottom}));
     var blockedCandidate=document.querySelector('.equipment-tuning-candidate.blocked'),blockedTraffic=__sent.filter(function(x){return x.type!=='debug'}).length,blockedToasts=__toasts.length,blockedDiagnosticSeq=(view.debugState().diagnostics.slice(-1)[0]||{}).sequence||0;blockedCandidate.focus({preventScroll:true});blockedCandidate.click();

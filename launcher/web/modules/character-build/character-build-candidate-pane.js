@@ -42,17 +42,22 @@ function(FacetCountsModule) {
 
         prototype._syncCandidateScopeControl = function() {
             if (!this._candidateScopeGroup) return false;
+            var locked = this._interactionState !== 'idle'
+                || this._candidateScopePending();
             this._candidateScopeGroup.update({
                 value:this._candidateScope,
-                disabled:this._interactionState !== 'idle'
-                    || this._candidateScopePending()
+                disabled:locked
             });
+            var compatible = this._candidateScopeGroup.getButton('compatible');
+            if (compatible) compatible.disabled = locked || !this._selectedSlotKey;
             return true;
         };
 
-        prototype._changeCandidateScope = function(scope) {
+        prototype._changeCandidateScope = function(scope, force) {
             scope = normalizeScope(scope);
-            if (!scope || scope === this._candidateScope) return !!scope;
+            if (!scope || (scope === 'compatible' && !this._selectedSlotKey)) return false;
+            if (!force && scope === this._candidateScope
+                    && !(scope === 'backpack' && this._selectedSlotKey)) return true;
             if (this._destroyed || this._interactionState !== 'idle'
                     || this._candidateScopePending()) return false;
 
@@ -60,6 +65,7 @@ function(FacetCountsModule) {
             var previousCandidateState = this._candidateState.debugState();
             var previous = {
                 scope:this._candidateScope,
+                selectedSlotKey:this._selectedSlotKey,
                 requestKey:this._candidateRequestKey,
                 selectedCandidateKey:this._selectedCandidateKey,
                 activeCandidateKey:this._activeCandidateKey,
@@ -72,17 +78,11 @@ function(FacetCountsModule) {
             };
             var previousCandidate = this._candidateByKey(previous.selectedCandidateKey);
             this._candidateScope = scope;
-            if (scroll) scroll.scrollTop = 0;
-
-            if (!this._selectedSlotKey) {
-                if (this._onCandidateScopeChange(scope, null) === false) {
-                    this._candidateScope = previous.scope;
-                    this._syncCandidateScopeControl();
-                    return false;
-                }
-                this._syncCandidateScopeControl();
-                return true;
+            if (scope === 'backpack') {
+                this._selectedSlotKey = '';
+                this._syncSlotSelection();
             }
+            if (scroll) scroll.scrollTop = 0;
 
             this._selectedCandidateKey = '';
             this._activeCandidateKey = '';
@@ -95,13 +95,21 @@ function(FacetCountsModule) {
                 requestKey:this._candidateRequestKey
             });
             this._candidateRequestKey = this._candidateFence + ':'
-                + this._selectedSlotKey + ':' + scope + ':' + (++this._candidateSequence);
+                + (scope === 'backpack' ? 'overview' : this._selectedSlotKey)
+                + ':' + scope + ':' + (++this._candidateSequence);
             this._setCandidateState('loading', [], this._candidateRequestKey);
             this._showBrowsingNotice(scope === 'backpack'
-                ? '正在读取背包全部物品；不兼容物品仅可查看说明…'
+                ? '正在读取背包总览；可把物品拖到高亮的兼容槽位…'
                 : '正在读取与当前槽位兼容的背包候选…');
-            var parts = this._selectedSlotKey.split(':');
-            var selection = {
+            var parts = scope === 'backpack'
+                ? [] : this._selectedSlotKey.split(':');
+            var selection = scope === 'backpack' ? {
+                key:'backpack',
+                kind:'backpack',
+                id:'',
+                requestKey:this._candidateRequestKey,
+                candidateScope:scope
+            } : {
                 key:this._selectedSlotKey,
                 kind:parts.shift(),
                 id:parts.join(':'),
@@ -111,6 +119,7 @@ function(FacetCountsModule) {
             var result = this._onCandidateScopeChange(scope, selection);
             if (result === false || result == null) {
                 this._candidateScope = previous.scope;
+                this._selectedSlotKey = previous.selectedSlotKey;
                 this._candidateRequestKey = previous.requestKey;
                 this._selectedCandidateKey = previous.selectedCandidateKey;
                 this._activeCandidateKey = previous.activeCandidateKey;
@@ -122,9 +131,10 @@ function(FacetCountsModule) {
                     previous.candidates,
                     previous.requestKey);
                 if (scroll) scroll.scrollTop = previous.scrollTop;
+                this._syncSlotSelection();
                 if (previousCandidate) {
                     this._onCandidateSelect(previousCandidate, {
-                        slotKey:this._selectedSlotKey,
+                        slotKey:previous.selectedSlotKey,
                         requestKey:previous.requestKey
                     });
                 }
@@ -135,6 +145,10 @@ function(FacetCountsModule) {
             }
             if (Array.isArray(result)) this.setCandidates(selection.requestKey, result);
             return true;
+        };
+
+        prototype.showBackpackOverview = function() {
+            return this._changeCandidateScope('backpack', true);
         };
 
         prototype._setCandidateState = function(kind, candidates, requestKey) {
@@ -153,7 +167,8 @@ function(FacetCountsModule) {
         };
 
         prototype._candidateByKey = function(key) {
-            return this._selectedSlotKey ? this._candidateState.getCandidate(key) : null;
+            return this._selectedSlotKey || this._candidateScope === 'backpack'
+                ? this._candidateState.getCandidate(key) : null;
         };
 
         prototype._syncSlotSelection = function() {
@@ -220,15 +235,24 @@ function(FacetCountsModule) {
             if (!key) return false;
             this._activeCandidateKey = String(key);
             var candidate = this._candidateByKey(this._activeCandidateKey);
+            var overview = this._candidateScope === 'backpack'
+                && !this._selectedSlotKey;
             this._candidateFocusSummary.textContent = candidate
                 ? candidate.blocked === true
                     ? '浏览：' + text(candidate.name, '未命名候选')
                         + ' · 不可装备 · 点击查看原因'
                     : '浏览：' + text(candidate.name, '未命名候选') + ' · '
-                        + text(candidate.summary, this._activeCandidateKey === this._selectedCandidateKey
-                            ? '已固定预览 · Enter 装备 / Space 取消'
-                            : 'Enter 固定预览 · 双击直接装备')
-                : '单击预览 · 双击直接装备 · 可拖到高亮槽位';
+                        + (overview
+                            ? this._activeCandidateKey === this._selectedCandidateKey
+                                ? '已选择 · 拖到高亮栏位 / Space 取消'
+                                : 'Enter 选择 · 可拖到高亮栏位'
+                            : text(candidate.summary,
+                                this._activeCandidateKey === this._selectedCandidateKey
+                                    ? '已固定预览 · Enter 装备 / Space 取消'
+                                    : 'Enter 固定预览 · 双击直接装备'))
+                : overview
+                    ? '背包总览 · 拖到高亮槽位，或选择栏位进入筛选'
+                    : '单击预览 · 双击直接装备 · 可拖到高亮槽位';
             return true;
         };
         prototype._selectSlot = function(key) {
@@ -237,6 +261,7 @@ function(FacetCountsModule) {
             var changed = this._selectedSlotKey !== nextKey;
             var previousCandidateState = this._candidateState.debugState();
             var previous = {
+                candidateScope:this._candidateScope,
                 selectedSlotKey:this._selectedSlotKey,
                 selectedCandidateKey:this._selectedCandidateKey,
                 activeCandidateKey:this._activeCandidateKey,
@@ -248,6 +273,7 @@ function(FacetCountsModule) {
                 candidates:this._candidateState.getCandidates()
             };
             var previousCandidate = this._candidateByKey(previous.selectedCandidateKey);
+            this._candidateScope = 'compatible';
             this._selectedSlotKey = nextKey;
             this._syncSlotSelection();
             if (changed || this._candidateLoadFailed) {
@@ -271,6 +297,7 @@ function(FacetCountsModule) {
                 };
                 var result = this._onSlotSelect(selection), deferredSelection = result && result.deferSelection === true;
                 if (result === false || result == null || deferredSelection) {
+                    this._candidateScope = previous.candidateScope;
                     this._selectedSlotKey = previous.selectedSlotKey;
                     this._selectedCandidateKey = previous.selectedCandidateKey;
                     this._activeCandidateKey = previous.activeCandidateKey;
@@ -302,10 +329,13 @@ function(FacetCountsModule) {
             return true;
         };
         prototype._retryCandidates = function(requestKey) {
-            if (this._destroyed || !this._candidateLoadFailed || !this._selectedSlotKey
+            if (this._destroyed || !this._candidateLoadFailed
                     || requestKey !== this._candidateRequestKey
                     || this._candidateState.debugState().kind !== 'error') return false;
-            return this._selectSlot(this._selectedSlotKey);
+            return this._selectedSlotKey
+                ? this._selectSlot(this._selectedSlotKey)
+                : this._candidateScope === 'backpack'
+                    ? this.showBackpackOverview() : false;
         };
         prototype._explainBlockedCandidate = function(candidate, context) {
             // 唯一出口是底部状态栏（aria-live）；摘要行与悬浮说明不再复读同一句。
@@ -341,7 +371,8 @@ function(FacetCountsModule) {
 
         prototype.setCandidates = function(requestKey, candidates) {
             if (this._destroyed || !requestKey || requestKey !== this._candidateRequestKey
-                    || !this._selectedSlotKey) return false;
+                    || (!this._selectedSlotKey
+                        && this._candidateScope !== 'backpack')) return false;
             candidates = Array.isArray(candidates) ? candidates.slice() : [];
             this._candidateLoadFailed = false;
             this._candidateFailureCode = '';
@@ -357,7 +388,7 @@ function(FacetCountsModule) {
             } else {
                 this._showBrowsingNotice(candidates.length
                     ? this._candidateScope === 'backpack'
-                        ? '已读取背包全部物品；不兼容物品可查看说明但不能装备。'
+                        ? '背包总览已就绪；可拖到高亮槽位，选择栏位则进入兼容筛选。'
                         : '已读取当前槽位候选；选择候选只会更新临时预览。'
                     : this._candidateScope === 'backpack'
                         ? '当前背包没有可显示的物品。'
@@ -367,7 +398,8 @@ function(FacetCountsModule) {
         };
         prototype.beginCandidateRecovery = function(requestKey) {
             if (this._destroyed || !requestKey || requestKey !== this._candidateRequestKey
-                    || !this._selectedSlotKey) return false;
+                    || (!this._selectedSlotKey
+                        && this._candidateScope !== 'backpack')) return false;
             this._candidateLoadFailed = false;
             this._candidateFailureCode = 'stale_state';
             this._candidateRecoveryPending = true;
@@ -378,7 +410,8 @@ function(FacetCountsModule) {
         };
         prototype.setCandidateFailure = function(requestKey, error) {
             if (this._destroyed || !requestKey || requestKey !== this._candidateRequestKey
-                    || !this._selectedSlotKey) return false;
+                    || (!this._selectedSlotKey
+                        && this._candidateScope !== 'backpack')) return false;
             this._candidateLoadFailed = true;
             this._candidateFailureCode = text(error, 'candidate_read_failed');
             this._candidateRecoveryPending = false;

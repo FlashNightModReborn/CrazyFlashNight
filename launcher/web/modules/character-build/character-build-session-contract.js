@@ -59,6 +59,7 @@
         if (target.kind === 'equipment' && typeof target.slotKey === 'string' && target.slotKey) {
             return 'equipment:' + target.slotKey;
         }
+        if (target.kind === 'backpack' && ownKeys(target, ['kind'])) return 'backpack';
         var slot = integer(target.drugSlot, -1);
         return target.kind === 'drug' && slot >= 0 && slot < 4 ? 'drug:' + slot : '';
     }
@@ -90,8 +91,12 @@
     }
     function validCandidates(payload, target, scope) {
         scope = candidateScope(scope);
+        var expectedTargetKeys = target && target.kind === 'equipment'
+            ? ['kind', 'slotKey'] : target && target.kind === 'drug'
+                ? ['kind', 'drugSlot'] : ['kind'];
         if (!payload || typeof payload !== 'object'
                 || !sameTarget(payload.target, target)
+                || !ownKeys(payload.target, expectedTargetKeys)
                 || !scope || payload.candidateScope !== scope
                 || !Array.isArray(payload.candidates)
                 || integer(payload.backpackVersion, -1) < 0
@@ -102,7 +107,8 @@
             if (!row || typeof row !== 'object'
                     || !Mutation.validItemIdentity(row.item)) return false;
             var universalEquipment = scope === 'backpack'
-                && target && target.kind === 'equipment';
+                && target && (target.kind === 'equipment'
+                    || target.kind === 'backpack');
             var hasEligibility = Object.prototype.hasOwnProperty.call(
                 row, 'equipmentEligibility');
             if (hasEligibility !== universalEquipment) return false;

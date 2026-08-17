@@ -30,6 +30,7 @@
         'modules/character-build-session.js',
         'modules/character-build/character-build-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
+        'modules/character-build/character-build-tuning-ports.js',
         'modules/character-build/character-build-candidate-tooltip.js',
         'modules/character-build/character-build-candidate-state.js',
         'modules/character-build/character-build-facet-counts.js',

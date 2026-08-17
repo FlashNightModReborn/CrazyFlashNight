@@ -27,6 +27,8 @@ function audit(){
   const interaction=readModule('equipment-tuning-interaction.js');
   const writeLifecycle=readModule('equipment-tuning-write-lifecycle.js');
   const loadoutLifecycle=readModule('equipment-tuning-loadout-lifecycle.js');
+  const characterBuildTuning=readModule('character-build/character-build-tuning.js');
+  const characterBuildTuningPorts=readModule('character-build/character-build-tuning-ports.js');
   const sourceMarker=readModule('equipment-tuning-source-marker.js');
   const inspectionViewport=readModule('workbench-inspection-viewport.js');
   const inspector=readModule('equipment-inspector.js');
@@ -102,6 +104,15 @@ function audit(){
       ||!hasAll(workbench,['EquipmentTuningConfirmation.shared.read()','InventoryWorkbenchOwnedView.createView','InventoryWorkbenchOwnedView.createToolbar','new InventoryWorkbenchQuickTransfer.QuickTransferController','_quickTransfer.acceptClick']))throw new Error('inventory workbench split-module composition missing');
   if(!inventoryRuntime.includes('readProjection')||!hasAll(workbench,['_coordinator.readProjection','loadTuningConversionCandidates','loadConversionCandidates:loadTuningConversionCandidates'])
       ||!view.includes('selectConversionTarget')||!render.includes('equipment-tuning-conversion-candidates'))throw new Error('isolated right-pane conversion projection missing');
+  if(!hasAll(model,['function modOwnership','function defaultModFilterPath',"return ['ownership', 'owned']","{id:'ownership', label:'持有'"])
+      ||!hasAll(view,['this._modFilterPath = defaultModFilterPath()'])
+      ||!hasAll(tuningHarness,['sparse inventory defaults the mod catalog to held candidates without inventing ownership','the explicit all-mod catalog remains reachable and labels unowned entries honestly']))
+      throw new Error('owned-by-default mod catalog or sparse-inventory proof missing');
+  if(!hasAll(model,['function tuningSourceSupports',"return !!normalized && isOperation(operation);",'function validLoadoutCommit',"operation === 'convert' && response.noOp !== true"])
+      ||!hasAll(loadoutLifecycle,['barrier.inventorySnapshots',"self._target = null","self._setConversionProjection(true)",'self._targetLevel = nextEnhancementLevel('])
+      ||!hasAll(characterBuildTuningPorts,['function loadConversionCandidates','owner._session.requestCandidates','function openInspector','function closeInspector'])
+      ||!hasAll(characterBuildTuning,['loadConversionCandidates:TuningPorts.loadConversionCandidates.bind(null, this)','handle, snapshots || null, complete, !!needsRefresh']))
+      throw new Error('loadout-to-backpack enhancement conversion or dual-snapshot adoption gate missing');
   if(!hasAll(inventoryRuntime,['normalizeProjectionScope','replaceWindowRequest','normalizeProjectionScope(snapshot.scope) !== normalizeProjectionScope(request.scope)'])
       ||!hasAll(tuningScope,['function Transition','prepareInitial','_captureViewport','Transition.prototype.enter','Transition.prototype.leave','Transition.prototype.restore'])
       ||!hasAll(workbench,["scope:'equipment'",'_tuningScope.enter','_tuningScope.leave','_tuningScope.restore',"setAuthorityDisabled(blocked || _viewMode === 'tuning')"]))throw new Error('equipment-only tuning scope or exact return-state boundary missing');
@@ -191,6 +202,7 @@ function audit(){
     "'modules/character-build-session.js'",
     "'modules/character-build/character-build-action-view.js'",
     "'modules/character-build/character-build-tuning-adapter.js'",
+    "'modules/character-build/character-build-tuning-ports.js'",
     "'modules/character-build/character-build-candidate-tooltip.js'",
     "'modules/character-build/character-build-candidate-state.js'",
     "'modules/character-build/character-build-facet-counts.js'",

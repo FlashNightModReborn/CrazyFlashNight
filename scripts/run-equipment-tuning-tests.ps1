@@ -18,6 +18,8 @@ $tuningSource = Get-RepoText `
     'scripts\类定义\org\flashNight\arki\item\EquipmentTuningService.as'
 $equipmentSource = Get-RepoText `
     'scripts\类定义\org\flashNight\arki\item\itemCollection\EquipmentInventory.as'
+$arrayInventorySource = Get-RepoText `
+    'scripts\类定义\org\flashNight\arki\item\itemCollection\ArrayInventory.as'
 $characterSource = Get-RepoText `
     'scripts\类定义\org\flashNight\arki\item\CharacterBuildService.as'
 $committedSideEffectsCount = [regex]::Matches(
@@ -28,7 +30,7 @@ $loadoutAllowlist = [regex]::Match(
     $tuningSource,
     'private static var _loadoutAllowedOperations:Object = \{[\s\S]*?\};'
 ).Value
-if (($loadoutAllowlist -match 'convert') -or
+if (($loadoutAllowlist -notmatch 'convert:true') -or
         ($loadoutAllowlist -notmatch 'enhance:true') -or
         ($loadoutAllowlist -notmatch 'install_tier:true') -or
         ($loadoutAllowlist -notmatch 'install_mod:true') -or
@@ -37,11 +39,14 @@ if (($loadoutAllowlist -match 'convert') -or
         ($loadoutAllowlist -notmatch 'detach_all_mods:true') -or
         ($tuningSource -notmatch
             'sourceKind:"loadout"[\s\S]{0,220}expectedLoadoutRevision') -or
-        ($tuningSource -notmatch 'inventorySnapshots:\[\]') -or
+        ($tuningSource -notmatch
+            'commitWornConversionPlan\s*\(') -or
+        ($tuningSource -notmatch
+            'inventorySnapshots:inventorySnapshot') -or
         ($tuningSource -notmatch
             'commitWornTuningSynchronization\s*\(') -or
         ($committedSideEffectsCount -ne 4)) {
-    throw 'Worn tuning must keep its exact loadout source, six-operation allowlist, post snapshot, and empty backpack projection.'
+    throw 'Worn tuning must keep its exact loadout source, seven-operation allowlist, post-loadout proof, and cross-container backpack snapshot.'
 }
 if (($equipmentSource -notmatch
         'canApplyWornValueTransaction\s*\(') -or
@@ -51,6 +56,12 @@ if (($equipmentSource -notmatch
             'rollbackWornValueTransaction\s*\(') -or
         ($equipmentSource -notmatch
             'publishWornValueTransaction\s*\(') -or
+        ($arrayInventorySource -notmatch
+            'transactionApplyValueChangesWithReceipt\s*\(') -or
+        ($arrayInventorySource -notmatch
+            'rollbackValueTransaction\s*\(') -or
+        ($arrayInventorySource -notmatch
+            'publishValueTransaction\s*\(') -or
         ($characterSource -notmatch
             'resolveWornTuningSource\s*\(') -or
         ($characterSource -notmatch
@@ -70,12 +81,12 @@ $focusedRun = @{
         'org.flashNight.arki.item.InventoryPanelServiceTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^EquipmentTuningServiceTest Tests Passed: 67\r?$'
+        '(?m)^EquipmentTuningServiceTest Tests Passed: 72\r?$'
         '(?m)^EquipmentTuningServiceTest Tests Failed: 0\r?$'
         '(?m)^InventoryPanelServiceTest Tests Passed: 147\r?$'
         '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'Equipment 67/67, Inventory 147/147'
+    SuccessSummary = 'Equipment 72/72, Inventory 147/147'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

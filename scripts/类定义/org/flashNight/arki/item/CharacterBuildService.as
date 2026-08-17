@@ -8,6 +8,7 @@
  * 守住 captured pause lease。
  */
 class org.flashNight.arki.item.CharacterBuildService {
+    private static var MAX_SAFE_STACK_QUANTITY:Number = 9007199254740991;
     private static var SLOT_KEYS:Array = [
         "头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "颈部装备",
         "长枪", "手枪", "手枪2", "刀", "手雷"
@@ -894,13 +895,17 @@ class org.flashNight.arki.item.CharacterBuildService {
             && params.slotKey != null && String(params.slotKey) != "";
         var hasDrug:Boolean = params.drugSlot != undefined
             && params.drugSlot != null && String(params.drugSlot) != "";
-        if (hasEquipment == hasDrug) return fail("invalid_payload");
+        if (hasEquipment && hasDrug) return fail("invalid_payload");
 
         // Host/Web 必须显式发送 closed enum；缺失与未知值一律拒绝，避免
         // scope 缺省值在协议里形成第三种隐含状态。
         var candidateScope:String = params.candidateScope == undefined
             || params.candidateScope == null ? "" : String(params.candidateScope);
         if (candidateScope != "compatible" && candidateScope != "backpack") {
+            return fail("invalid_payload");
+        }
+        var backpackOverview:Boolean = !hasEquipment && !hasDrug;
+        if (backpackOverview && candidateScope != "backpack") {
             return fail("invalid_payload");
         }
         var includeBackpack:Boolean = candidateScope == "backpack";
@@ -910,7 +915,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (hasEquipment) {
             slotKey = String(params.slotKey);
             if (SLOT_ALLOWLIST[slotKey] !== true) return fail("invalid_slot");
-        } else {
+        } else if (hasDrug) {
             drugSlot = Number(params.drugSlot);
             if (!wholeInRange(drugSlot, 0,
                     org.flashNight.arki.unit.Action.Skill.DrugInputService.SLOT_COUNT - 1)) {
@@ -926,7 +931,8 @@ class org.flashNight.arki.item.CharacterBuildService {
 
         var candidates:Array = [];
         var diagnostics:Array = [];
-        var playerLevel = hasEquipment ? root().等级 : undefined;
+        var playerLevel = hasEquipment || backpackOverview
+            ? root().等级 : undefined;
         var drugCooldownKnown:Boolean = true;
         var drugReady:Boolean = true;
         if (hasDrug) {
@@ -986,7 +992,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             }
             var useName:String = String(itemData.use);
             var equipmentEligibility:Object = null;
-            if (includeBackpack && hasEquipment) {
+            if (includeBackpack && (hasEquipment || backpackOverview)) {
                 equipmentEligibility = buildEquipmentEligibility(
                     item, itemData, playerLevel);
                 if (equipmentEligibility.success !== true) {
@@ -995,9 +1001,14 @@ class org.flashNight.arki.item.CharacterBuildService {
                     continue;
                 }
             }
+            var overviewEquipment:Boolean = backpackOverview
+                && equipmentEligibility.slots.length > 0;
+            var overviewDrug:Boolean = backpackOverview
+                && useName == "药剂";
             var useMatches:Boolean = hasEquipment
                 ? equipmentUseMatchesSlot(useName, slotKey)
-                : useName == "药剂";
+                : hasDrug ? useName == "药剂"
+                : overviewEquipment || overviewDrug;
             // 背包中属于其他目标的正常物品只是被筛掉，不把常态异构背包误报为 degraded。
             if (!useMatches && !includeBackpack) continue;
 
@@ -1005,7 +1016,8 @@ class org.flashNight.arki.item.CharacterBuildService {
             var blockedReason:String = "";
             // 只有 use 已命中当前目标时才检查该目标的实例形状；全量背包里的
             // 普通异构物品是可检视的 target_incompatible，不是数据损坏。
-            var shapeError:String = useMatches && equipmentEligibility == null
+            var shapeError:String = useMatches
+                    && (equipmentEligibility == null || overviewDrug)
                 ? candidateShapeError(
                     item, itemData, hasEquipment, slotKey, playerLevel)
                 : "";
@@ -1017,6 +1029,10 @@ class org.flashNight.arki.item.CharacterBuildService {
             if (!useMatches) {
                 disabled = true;
                 blockedReason = "incompatible_item";
+            } else if (backpackOverview && overviewEquipment) {
+                blockedReason = String(
+                    equipmentEligibility.blockedReason || "");
+                disabled = blockedReason != "";
             } else if (hasEquipment) {
                 // 与现役 ItemUtil.moveItemToEquipment 一致：只读实例有效需求等级，
                 // 绝不把实例 value.level（强化度）当角色等级门。
@@ -1063,7 +1079,8 @@ class org.flashNight.arki.item.CharacterBuildService {
         current.payload = {
             target:hasEquipment
                 ? {kind:"equipment", slotKey:slotKey}
-                : {kind:"drug", drugSlot:drugSlot},
+                : hasDrug ? {kind:"drug", drugSlot:drugSlot}
+                : {kind:"backpack"},
             candidateScope:candidateScope,
             candidates:candidates,
             backpackVersion:Number(backpackSnapshot.containerVersion),
@@ -1231,18 +1248,30 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (targetBefore !== _slotRefs[targetIndex]
                 || sourceItem === targetBefore) return fail("stale_state");
 
+        var merge:Object = slotKey == "手雷" && targetBefore != null
+            ? stackMergeResult(targetBefore, sourceItem)
+            : {success:true, merge:false};
+        if (!merge.success) return merge;
+        var stackMerge:Boolean = merge.merge === true;
+
         var plan:Object = {
             source:_backpackInventory,
             sourceSlot:Number(sourceCheck.slot),
             sourceBefore:sourceItem,
-            sourceAfter:targetBefore,
+            sourceAfter:stackMerge ? null : targetBefore,
             target:_equipmentInventory,
             targetSlot:slotKey,
             targetBefore:targetBefore,
-            targetAfter:sourceItem,
-            sourceChange:targetBefore == null ? "removed" : "replaced",
-            targetChange:targetBefore == null ? "added" : "replaced",
-            drugTarget:false
+            targetAfter:stackMerge ? targetBefore : sourceItem,
+            sourceChange:stackMerge || targetBefore == null
+                ? "removed" : "replaced",
+            targetChange:stackMerge ? "value"
+                : (targetBefore == null ? "added" : "replaced"),
+            drugTarget:false,
+            stackMerge:stackMerge,
+            stackTarget:targetBefore,
+            stackBefore:stackMerge ? Number(targetBefore.value) : 0,
+            stackAfter:stackMerge ? Number(merge.value) : 0
         };
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
@@ -1261,8 +1290,12 @@ class org.flashNight.arki.item.CharacterBuildService {
                 || sourceItem !== _slotRefs[targetIndex]) {
             return fail("invalid_slot");
         }
-        var backpackSlot:Number = firstBackpackVacancy();
-        if (backpackSlot < 0) return fail("backpack_full");
+        var destination:Object = backpackStackDestination(
+            sourceItem, slotKey == "手雷");
+        if (!destination.success) return destination;
+        var backpackSlot:Number = Number(destination.slot);
+        var targetBefore:Object = destination.target;
+        var stackMerge:Boolean = destination.merge === true;
         if (!transactionEndpointsReady(_equipmentInventory,
                 _backpackInventory)) return fail("service_not_ready");
 
@@ -1273,11 +1306,15 @@ class org.flashNight.arki.item.CharacterBuildService {
             sourceAfter:null,
             target:_backpackInventory,
             targetSlot:backpackSlot,
-            targetBefore:null,
-            targetAfter:sourceItem,
+            targetBefore:targetBefore,
+            targetAfter:stackMerge ? targetBefore : sourceItem,
             sourceChange:"removed",
-            targetChange:"added",
-            drugTarget:false
+            targetChange:stackMerge ? "value" : "added",
+            drugTarget:false,
+            stackMerge:stackMerge,
+            stackTarget:targetBefore,
+            stackBefore:stackMerge ? Number(targetBefore.value) : 0,
+            stackAfter:stackMerge ? Number(destination.value) : 0
         };
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
@@ -1343,11 +1380,10 @@ class org.flashNight.arki.item.CharacterBuildService {
         var mergedValue:Number = 0;
         if (targetBefore != null) {
             if (String(targetBefore.name) == String(sourceItem.name)) {
-                mergedValue = Number(targetBefore.value)
-                    + Number(sourceItem.value);
-                if (!finiteNumber(mergedValue) || mergedValue <= 0) {
-                    return fail("incompatible_item");
-                }
+                var merge:Object = stackMergeResult(
+                    targetBefore, sourceItem);
+                if (!merge.success) return merge;
+                mergedValue = Number(merge.value);
                 stackMerge = true;
                 sourceAfter = null;
                 targetAfter = targetBefore;
@@ -1409,8 +1445,11 @@ class org.flashNight.arki.item.CharacterBuildService {
             return fail("stale_state");
         }
         if (!sourceEligibility.success) return sourceEligibility;
-        var backpackSlot:Number = firstBackpackVacancy();
-        if (backpackSlot < 0) return fail("backpack_full");
+        var destination:Object = backpackStackDestination(sourceItem, true);
+        if (!destination.success) return destination;
+        var backpackSlot:Number = Number(destination.slot);
+        var targetBefore:Object = destination.target;
+        var stackMerge:Boolean = destination.merge === true;
         if (!transactionEndpointsReady(_drugInventory,
                 _backpackInventory)) return fail("service_not_ready");
 
@@ -1421,11 +1460,15 @@ class org.flashNight.arki.item.CharacterBuildService {
             sourceAfter:null,
             target:_backpackInventory,
             targetSlot:backpackSlot,
-            targetBefore:null,
-            targetAfter:sourceItem,
+            targetBefore:targetBefore,
+            targetAfter:stackMerge ? targetBefore : sourceItem,
             sourceChange:"removed",
-            targetChange:"added",
-            drugTarget:true
+            targetChange:stackMerge ? "value" : "added",
+            drugTarget:true,
+            stackMerge:stackMerge,
+            stackTarget:targetBefore,
+            stackBefore:stackMerge ? Number(targetBefore.value) : 0,
+            stackAfter:stackMerge ? Number(destination.value) : 0
         };
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
@@ -1732,6 +1775,60 @@ class org.flashNight.arki.item.CharacterBuildService {
             if (_backpackInventory.getItem(String(slot)) == null) return slot;
         }
         return -1;
+    }
+
+    /**
+     * 可堆叠栏位卸下时先找物理序号最小的同名背包堆；只有没有同名堆时
+     * 才占用首个空位。这样满包但已有同名堆仍可完成卸下。
+     */
+    private static function backpackStackDestination(
+        sourceItem:Object, allowMerge:Boolean):Object {
+        var capacity:Number = Math.min(50,
+            Math.floor(Number(_backpackInventory.capacity)));
+        if (allowMerge) {
+            for (var slot:Number = 0; slot < capacity; slot++) {
+                var target:Object =
+                    _backpackInventory.getItem(String(slot));
+                if (target != null
+                        && String(target.name)
+                            == String(sourceItem.name)) {
+                    var merge:Object = stackMergeResult(
+                        target, sourceItem);
+                    if (!merge.success) return merge;
+                    return {
+                        success:true,
+                        slot:slot,
+                        target:target,
+                        merge:true,
+                        value:merge.value
+                    };
+                }
+            }
+        }
+        var vacancy:Number = firstBackpackVacancy();
+        return vacancy < 0
+            ? fail("backpack_full")
+            : {success:true, slot:vacancy, target:null, merge:false};
+    }
+
+    private static function stackMergeResult(target:Object,
+                                              source:Object):Object {
+        if (target == null || source == null
+                || typeof target.name != "string"
+                || typeof source.name != "string"
+                || String(target.name) != String(source.name)) {
+            return {success:true, merge:false};
+        }
+        var targetValue:Number = Number(target.value);
+        var sourceValue:Number = Number(source.value);
+        var mergedValue:Number = targetValue + sourceValue;
+        if (!finiteNumber(targetValue) || targetValue <= 0
+                || !finiteNumber(sourceValue) || sourceValue <= 0
+                || !finiteNumber(mergedValue) || mergedValue <= 0
+                || mergedValue > MAX_SAFE_STACK_QUANTITY) {
+            return fail("incompatible_item");
+        }
+        return {success:true, merge:true, value:mergedValue};
     }
 
     private static function transactionEndpointsReady(source:Object,

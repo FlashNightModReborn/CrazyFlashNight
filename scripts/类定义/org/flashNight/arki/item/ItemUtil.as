@@ -554,11 +554,12 @@ class org.flashNight.arki.item.ItemUtil{
     /*
      * require 函数检索背包是否有足够空位装下物品。
      * 输入值为一个物品数组
-     * 返回带有背包，材料，情报，金币，K点，经验值，技能点7个键的Object。其中背包，材料，情报三项内记录要进行操作的物品栏位和对应物品
+     * 返回带有背包、装备栏、药剂栏、材料、情报与货币/成长字段的 Object。
+     * 装备栏当前只记录“获取同名手雷时补充已装备堆”的窄路由。
      * 若背包空间不足，返回null
      */
     public static function require(itemArray:Array):Object {
-        var list = {金币:0, K点:0, 经验值:0, 技能点:0, 背包:{}, 药剂栏:{}, 材料:{}, 情报:{}};
+        var list = {金币:0, K点:0, 经验值:0, 技能点:0, 背包:{}, 装备栏:{}, 药剂栏:{}, 材料:{}, 情报:{}};
         var mergables:Object = {}; // 用来累计可合并物品的需求：键为物品名，值为总需求数量
         var nonMergeableList:Array = []; // 不可合并物品（如武器、防具）—必须占用新格子
 
@@ -590,15 +591,46 @@ class org.flashNight.arki.item.ItemUtil{
                 list.情报[name] = informationTotal;
             } else if(!isEquipment(name)){
                 // 可合并物品
-                if(mergables[name] != undefined){
-                    mergables[name] += value;
-                } else {
-                    mergables[name] = value;
-                }
+                var stackIncrement:Number = Number(value);
+                var stackTotal:Number = Number(
+                    mergables[name] == undefined ? 0 : mergables[name])
+                    + stackIncrement;
+                if(isNaN(stackIncrement) || !isFinite(stackIncrement)
+                        || stackIncrement <= 0
+                        || isNaN(stackTotal) || !isFinite(stackTotal)
+                        || stackTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
+                mergables[name] = stackTotal;
             } else {
                 // 不可合并物品直接加入列表
                 nonMergeableList.push(itemArray[i]);
             }
+        }
+
+        // 获取同名手雷时优先补充已装备堆；这一步先于药剂栏与背包，
+        // 因而满包也不会阻断一个无需新格子的合法获取。
+        var 装备栏:Object = _root.物品栏.装备栏;
+        var equippedGrenade:Object = 装备栏 == undefined
+            ? null : 装备栏.getItem("手雷");
+        if(equippedGrenade != null
+                && typeof equippedGrenade.name == "string"
+                && mergables[equippedGrenade.name] != undefined){
+            var grenadeIncrement:Number =
+                Number(mergables[equippedGrenade.name]);
+            var grenadeCurrent:Number = Number(equippedGrenade.value);
+            var grenadeTotal:Number = grenadeCurrent + grenadeIncrement;
+            if(isNaN(grenadeIncrement) || !isFinite(grenadeIncrement)
+                    || grenadeIncrement <= 0
+                    || isNaN(grenadeCurrent) || !isFinite(grenadeCurrent)
+                    || grenadeCurrent <= 0
+                    || isNaN(grenadeTotal) || !isFinite(grenadeTotal)
+                    || grenadeTotal > MAX_SAFE_COLLECTION_QUANTITY){
+                return null;
+            }
+            list.装备栏.手雷 = {
+                name:String(equippedGrenade.name),
+                value:grenadeIncrement
+            };
+            delete mergables[equippedGrenade.name];
         }
 
         // 得到药剂栏对象
@@ -608,9 +640,19 @@ class org.flashNight.arki.item.ItemUtil{
         // 这里默认能装进药剂栏的物品均可合并，检查药剂栏中是否已存在相同物品
         for(var i = 0; i < drugindexArr.length; i++){
             var drugItem:Object = drugArr[i];
-            if(mergables[drugItem.name] != undefined && !isNaN(drugItem.value)){
+            if(mergables[drugItem.name] != undefined){
+                var drugCurrent:Number = Number(drugItem.value);
+                var drugIncrement:Number = Number(mergables[drugItem.name]);
+                var drugTotal:Number = drugCurrent + drugIncrement;
+                if(isNaN(drugCurrent) || !isFinite(drugCurrent)
+                        || drugCurrent <= 0
+                        || isNaN(drugTotal) || !isFinite(drugTotal)
+                        || drugTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
                 // 记录：将原有合并堆增加新需求
-                list.药剂栏[drugindexArr[i]] = { name: drugItem.name, value: mergables[drugItem.name] };
+                list.药剂栏[drugindexArr[i]] = {
+                    name:drugItem.name,
+                    value:drugIncrement
+                };
                 // 标记该物品已处理
                 delete mergables[drugItem.name];
             }
@@ -624,9 +666,19 @@ class org.flashNight.arki.item.ItemUtil{
         // 对于剩余的可合并物品，先检查背包中是否已存在相同物品
         for(var i = 0; i < itemArr.length; i++){
             var bagItem:Object = itemArr[i];
-            if(mergables[bagItem.name] != undefined && !isNaN(bagItem.value)){
+            if(mergables[bagItem.name] != undefined){
+                var bagCurrent:Number = Number(bagItem.value);
+                var bagIncrement:Number = Number(mergables[bagItem.name]);
+                var bagTotal:Number = bagCurrent + bagIncrement;
+                if(isNaN(bagCurrent) || !isFinite(bagCurrent)
+                        || bagCurrent <= 0
+                        || isNaN(bagTotal) || !isFinite(bagTotal)
+                        || bagTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
                 // 记录：将原有合并堆增加新需求
-                list.背包[indexArr[i]] = { name: bagItem.name, value: mergables[bagItem.name] };
+                list.背包[indexArr[i]] = {
+                    name:bagItem.name,
+                    value:bagIncrement
+                };
                 // 标记该物品已处理
                 delete mergables[bagItem.name];
             }
@@ -671,6 +723,16 @@ class org.flashNight.arki.item.ItemUtil{
 
         var acquireLastUpdate = new Date().getTime(); // 获取本次获得物品的时间戳
 
+        // require 已锁定同名已装备手雷；任何异常都必须在货币、材料等写入前失败。
+        var 装备栏:Object = _root.物品栏.装备栏;
+        for(var equipmentKey:String in list.装备栏){
+            var equipmentReq:Object = list.装备栏[equipmentKey];
+            var equippedItem:Object = 装备栏.getItem(equipmentKey);
+            if(equippedItem == null
+                    || String(equippedItem.name) != String(equipmentReq.name)
+                    || typeof equippedItem.value != "number") return false;
+        }
+
         //获取
         if(list.金币 > 0) _root.金钱 += list.金币;
         if(list.K点 > 0) _root.虚拟币 += list.K点;
@@ -679,6 +741,13 @@ class org.flashNight.arki.item.ItemUtil{
             _root.主角是否升级(_root.等级,_root.经验值);
         }
         if(list.技能点 > 0) _root.技能点数 += list.技能点;
+
+        // 已装备同名手雷的数量补充。保留原对象引用，并同步最后更新时间。
+        for(var equipmentKey:String in list.装备栏){
+            var equipmentReq:Object = list.装备栏[equipmentKey];
+            装备栏.addValue(equipmentKey, Number(equipmentReq.value));
+            装备栏.getItem(equipmentKey).update(acquireLastUpdate);
+        }
 
         //材料
         var 材料 = _root.收集品栏.材料;
@@ -771,7 +840,7 @@ class org.flashNight.arki.item.ItemUtil{
             }
         }
 
-        // Plan A audit: acquire() 改 金币/K点/经验/技能点/材料/情报/药剂栏/背包 全部 save-relevant
+        // Plan A audit: acquire() 改 金币/K点/经验/技能点/材料/情报/装备栏/药剂栏/背包 全部 save-relevant
         // 字段，必须设 dirtyMark 让 SaveManager 知道需要落盘
         _root.存档系统.dirtyMark = true;
         return true;

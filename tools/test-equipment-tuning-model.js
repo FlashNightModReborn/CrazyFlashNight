@@ -129,7 +129,7 @@ equal(Model.tuningSourceSupports({
 }, 'enhance'), true, 'loadout source admits first-round single-item tuning');
 equal(Model.tuningSourceSupports({
     sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9
-}, 'convert'), false, 'loadout source keeps cross-container conversion out of scope');
+}, 'convert'), true, 'loadout source admits a backpack-target enhancement exchange');
 equal(Model.tuningSnapshotRequest({
     sourceKind:'loadout',sessionGeneration:17,slotKey:'长枪',expectedLoadoutRevision:9
 }), {
@@ -239,11 +239,14 @@ equal(Model.statsDeltaRows(
 equal(Model.modStatus({available:false,reason:'material_missing'}).id, 'material_missing',
     'authoritative unavailable reason maps to filter state');
 const tree = Model.buildModFilterTree([
-    {grade:'low',gradeLabel:'低级',scope:'gun',scopeLabel:'枪械',role:'power',roleLabel:'火力',available:true},
+    {grade:'low',gradeLabel:'低级',scope:'gun',scopeLabel:'枪械',role:'power',roleLabel:'火力',available:true,owned:2},
     {grade:'medium',gradeLabel:'中等',scope:'gun',scopeLabel:'枪械',role:'utility',roleLabel:'功能',
-        available:false,reason:'material_missing'}
+        available:false,reason:'material_missing',owned:0}
 ]);
-equal(tree.children.map(node => node.id), ['grade','scope','role','status'], 'mod filter branches');
+equal(tree.children.map(node => node.id), ['ownership','grade','scope','role','status'], 'mod filter branches include ownership first');
+equal(Model.defaultModFilterPath(), ['ownership','owned'], 'mod catalog defaults to owned candidates');
+equal(Model.modMatchesFilter({owned:1}, ['ownership','owned']), true, 'owned filter includes held mods');
+equal(Model.modMatchesFilter({owned:0}, ['ownership','owned']), false, 'owned filter excludes catalog-only mods');
 equal(Model.modMatchesFilter({grade:'medium'}, ['grade','medium']), true, 'mod grade filter match');
 equal(Model.modMatchesFilter({grade:'low'}, ['grade','medium']), false, 'mod grade filter reject');
 equal(

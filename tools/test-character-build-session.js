@@ -340,6 +340,38 @@ test('subsequent snapshot and candidates carry exact generation and revisions in
     assert.strictEqual(fixture.session.getState(), 'idle');
 });
 
+test('neutral backpack overview carries no slot selector and requires exact backpack target echo', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const target = {kind:'backpack'};
+    let accepted = null;
+    fixture.session.requestCandidates(target, 'backpack', (_, ok, key, scope) => {
+        accepted = {ok, key, scope};
+    });
+    const request = fixture.messages[1];
+    assert.deepStrictEqual(request.payload, {
+        v:1,
+        sessionGeneration:7,
+        candidateScope:'backpack',
+        expectedLoadoutRevision:3,
+        expectedDrugRevision:2
+    });
+    fixture.mux.handleResponse(responseFor(request, {payload:{
+        target,
+        candidateScope:'backpack',
+        candidates:[{
+            physicalSlot:4, disabled:false, blockedReason:'',
+            source:{containerId:'背包', slot:4, expectedLease:'lease.4'},
+            item:itemProjection({majorType:'武器', use:'刀'}),
+            equipmentEligibility:{slots:['刀'], blockedReason:''}
+        }],
+        backpackVersion:8,
+        stateHealth:'ok',
+        diagnostics:[]
+    }}));
+    assert.deepStrictEqual(accepted, {ok:true, key:'backpack', scope:'backpack'});
+});
+
 test('candidate cache is revision fenced and reprojects one authoritative equipment backpack', () => {
     const controller = Object.create(Build.CharacterBuildController.prototype);
     let state = {
@@ -399,6 +431,8 @@ test('candidate cache is revision fenced and reprojects one authoritative equipm
         {kind:'equipment', slotKey:'长枪'}), '');
     assert.strictEqual(Build.candidateCacheTarget(
         {kind:'equipment', slotKey:'长枪'}, 'backpack'), 'equipment:backpack');
+    assert.strictEqual(Build.candidateCacheTarget(
+        {kind:'backpack'}, 'backpack'), 'backpack');
     assert.strictEqual(Build.candidateCacheTarget(
         {kind:'drug', drugSlot:0}), '');
 });

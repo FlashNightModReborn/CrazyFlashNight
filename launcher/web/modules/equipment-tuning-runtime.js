@@ -366,7 +366,9 @@
             var sourceKind = data.after.source.source.sourceKind;
             return data.tuningToken === payload.expectedTuningToken
                 && (sourceKind === 'loadout'
-                ? data.inventorySnapshots.length === 0
+                ? (data.operation === 'convert' && data.noOp !== true
+                    ? data.inventorySnapshots.length === 1
+                    : data.inventorySnapshots.length === 0)
                 : data.inventorySnapshots.length === 1);
         }
         if (cmd === 'tooltip') {

@@ -3,6 +3,8 @@
 const assert = require('assert');
 const Projection = require(
     '../launcher/web/modules/character-build/character-build-projection.js');
+const DropTargets = require(
+    '../launcher/web/modules/character-build/character-build-drop-targets.js');
 
 let passed = 0;
 function check(name, callback) {
@@ -138,7 +140,39 @@ check('one authoritative equipment backpack is reprojected across slots without 
     assert.strictEqual(payload.candidates[1].blockedReason, 'incompatible_item');
 });
 
-check('equipment and drug selectors map without guessing', function() {
+check('neutral backpack overview preserves authoritative cross-slot rows and overview copy', function() {
+    const payload = {
+        target:{kind:'backpack'},
+        candidateScope:'backpack',
+        candidates:[{
+            physicalSlot:2,
+            disabled:false,
+            blockedReason:'',
+            source:{expectedLease:'lease.2'},
+            item:{name:'候选刀',displayName:'候选刀',itemKind:'equipment',use:'刀'},
+            equipmentEligibility:{slots:['刀'],blockedReason:''}
+        },{
+            physicalSlot:3,
+            disabled:true,
+            blockedReason:'incompatible_item',
+            source:{expectedLease:'lease.3'},
+            item:{name:'测试材料',displayName:'测试材料',itemKind:'stack',use:'材料'},
+            equipmentEligibility:{slots:[],blockedReason:''}
+        }]
+    };
+    const rows = Projection.viewCandidates(payload, {kind:'backpack'});
+    assert.strictEqual(rows[0].blocked, false);
+    assert.strictEqual(rows[0].delta, '总览');
+    assert(rows[0].summary.indexOf('拖到高亮栏位') >= 0);
+    assert.strictEqual(rows[0].raw, payload.candidates[0]);
+    assert.strictEqual(rows[1].blocked, true);
+    assert(rows[1].blockedReason.indexOf('不能用于角色构筑') >= 0);
+});
+
+check('backpack, equipment and drug selectors map without guessing', function() {
+    assert.deepStrictEqual(
+        Projection.targetForSelection({kind:'backpack'}),
+        {kind:'backpack'});
     assert.deepStrictEqual(
         Projection.targetForSelection({kind:'weapon', id:'手雷'}),
         {kind:'equipment', slotKey:'手雷'});
@@ -148,6 +182,30 @@ check('equipment and drug selectors map without guessing', function() {
     assert.strictEqual(
         Projection.targetForSelection({kind:'drug', id:'drug5'}),
         null);
+});
+
+check('neutral overview derives exact equipment and drug drop targets without a selected slot', function() {
+    const slots = [
+        {rovingKey:'weapon:刀',kind:'weapon',id:'刀'},
+        {rovingKey:'weapon:长枪',kind:'weapon',id:'长枪'},
+        {rovingKey:'drug:drug1',kind:'drug',id:'drug1'},
+        {rovingKey:'drug:drug2',kind:'drug',id:'drug2'}
+    ];
+    const blade = {blocked:false,raw:{item:{itemKind:'equipment',use:'刀'},
+        equipmentEligibility:{slots:['刀'],blockedReason:''}}};
+    const drug = {blocked:false,raw:{item:{itemKind:'stack',use:'药剂',quantity:3},
+        equipmentEligibility:{slots:[],blockedReason:''}}};
+    const material = {blocked:true,raw:{item:{itemKind:'stack',use:'材料',quantity:2},
+        equipmentEligibility:{slots:[],blockedReason:''}}};
+    assert.deepStrictEqual(
+        DropTargets.resolve('backpack', '', blade, slots).slots,
+        ['weapon:刀']);
+    assert.deepStrictEqual(
+        DropTargets.resolve('backpack', '', drug, slots).slots,
+        ['drug:drug1','drug:drug2']);
+    assert.deepStrictEqual(
+        DropTargets.resolve('backpack', '', material, slots).slots,
+        []);
 });
 
 process.stdout.write(

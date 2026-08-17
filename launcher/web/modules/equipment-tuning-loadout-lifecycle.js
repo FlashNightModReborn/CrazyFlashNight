@@ -7,6 +7,7 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                 || typeof Model.tuningSourceSupports !== 'function'
                 || typeof Model.normalizeTuningSource !== 'function'
                 || typeof Model.sameLoadoutIdentity !== 'function'
+                || typeof Model.validLoadoutCommit !== 'function'
                 || typeof Model.errorMessage !== 'function') {
             throw new Error(
                 'EquipmentTuningLoadoutLifecycle requires a tuning view and model.'
@@ -15,13 +16,7 @@ var EquipmentTuningLoadoutLifecycle = (function() {
         var tuningSourceSupports = Model.tuningSourceSupports;
         var normalizeTuningSource = Model.normalizeTuningSource;
         var errorMessage = Model.errorMessage;
-
-        TuningView.prototype._validLoadoutCommit = function(response) {
-            return !!response && response.success === true && !!response.snapshot
-                && Array.isArray(response.materials)
-                && Array.isArray(response.inventorySnapshots)
-                && response.inventorySnapshots.length === 0;
-        };
+        var nextEnhancementLevel = Model.nextEnhancementLevel;
 
         TuningView.prototype._commitLoadout = function() {
             if (!this._source || this._source.sourceKind !== 'loadout'
@@ -50,7 +45,7 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                 function(response, entry) {
                     settled = true;
                     if (self._inventoryWriteHandle !== write) return;
-                    var exactSuccess = self._validLoadoutCommit(response);
+                    var exactSuccess = Model.validLoadoutCommit(response, operation);
                     var ambiguous = response && response.success === true
                         || EquipmentTuningRuntime.isAmbiguous(response);
                     self._recordDiagnostic('commit_adopted', {
@@ -66,6 +61,8 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                     self._busy = false;
                     if (exactSuccess) {
                         self._snapshot = response.snapshot;
+                        self._targetLevel = nextEnhancementLevel(
+                            response.snapshot);
                         self._needsReconcile = false;
                         self._lastCommitCallId = '';
                         self._setModIntentPhase('committed_syncing');
@@ -74,12 +71,10 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                             callId:String(response.callId || ''),
                             changed:response.noOp !== true,
                             operation:operation,
-                            source:{
-                                sourceKind:'loadout',
-                                sessionGeneration:self._source.sessionGeneration,
-                                slotKey:self._source.slotKey,
-                                expectedLoadoutRevision:self._source.expectedLoadoutRevision
-                            }
+                            inventorySnapshots:response.inventorySnapshots.length > 0
+                                ? response.inventorySnapshots : null,
+                            needsInventoryRefresh:false,
+                            source:normalizeTuningSource(self._source)
                         };
                         self._status = response.noOp ? '调制无变化，正在同步完整构筑'
                             : self._modIntent
@@ -103,12 +98,9 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                             callId:barrierId,
                             changed:true,
                             operation:operation,
-                            source:{
-                                sourceKind:'loadout',
-                                sessionGeneration:self._source.sessionGeneration,
-                                slotKey:self._source.slotKey,
-                                expectedLoadoutRevision:self._source.expectedLoadoutRevision
-                            }
+                            inventorySnapshots:null,
+                            needsInventoryRefresh:operation === 'convert',
+                            source:normalizeTuningSource(self._source)
                         } : null;
                         self._status = barrierId
                             ? '提交结果不明确，先同步完整构筑再完成调制水位对账'
@@ -116,7 +108,20 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                         self._emit();
                         self.render();
                         if (barrierId) self._beginLoadoutRefresh();
-                        else self._finishInventoryWrite(write, false, function() {
+                        else self._finishInventoryWrite(
+                            write, operation === 'convert', function(result) {
+                            if (operation === 'convert'
+                                    && (!result || result.success !== true)) {
+                                self._refreshRetryRequired = true;
+                                self._status = '提交结果不明确，且背包同步失败；请重试';
+                                self._emit();
+                                self.render();
+                                return;
+                            }
+                            if (operation === 'convert') {
+                                self._target = null;
+                                self._targetItem = null;
+                            }
                             self.requestSnapshot();
                         });
                         return;
@@ -125,7 +130,21 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                     self._lastCommitCallId = '';
                     self._modIntent = null;
                     self._status = errorMessage(response && response.error);
-                    self._finishInventoryWrite(write, false, function() {
+                    var staleTarget = operation === 'convert' && response
+                        && (response.error === 'stale_state'
+                            || response.error === 'stale_lease');
+                    self._finishInventoryWrite(write, !!staleTarget, function(result) {
+                        if (staleTarget && (!result || result.success !== true)) {
+                            self._refreshRetryRequired = true;
+                            self._status = '目标已变化，且背包同步失败；请重试';
+                            self._emit();
+                            self.render();
+                            return;
+                        }
+                        if (staleTarget) {
+                            self._target = null;
+                            self._targetItem = null;
+                        }
                         self.requestSnapshot();
                     });
                     self._emit();
@@ -243,11 +262,26 @@ var EquipmentTuningLoadoutLifecycle = (function() {
             this._status = barrier.changed
                 ? '当前装备调制已提交并同步'
                 : '当前装备状态已确认';
-            if (!this._finishInventoryWrite(write, false, function() {
+            if (!this._finishInventoryWrite(
+                    write,
+                    barrier.needsInventoryRefresh === true,
+                    function(result) {
+                if (!result || result.success !== true) {
+                    self._refreshRetryRequired = true;
+                    self._status = '构筑已同步，但背包同步失败；请重试';
+                    self._emit();
+                    self.render();
+                    return;
+                }
+                if (barrier.operation === 'convert') {
+                    self._target = null;
+                    self._targetItem = null;
+                    self._setConversionProjection(true);
+                }
                 self._toast(barrier.changed ? '当前装备调制已提交。' : '当前装备无需变化。');
                 self._emit();
                 self.render();
-            })) {
+            }, barrier.inventorySnapshots)) {
                 this._status = '构筑写锁释放失败，请重新打开面板';
                 this._emit();
                 this.render();

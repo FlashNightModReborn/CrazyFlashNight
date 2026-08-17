@@ -1908,7 +1908,7 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void LoadoutPreview_RejectsConvertBeforeFlashDispatch()
+        public void LoadoutPreview_AdmitsInventoryTargetConvert()
         {
             var sent = new List<JObject>();
             var web = new List<JObject>();
@@ -1936,11 +1936,22 @@ namespace Launcher.Tests.Tasks
                         "convert",
                         source));
 
-                Assert.Empty(sent);
+                JObject command = Assert.Single(sent);
                 Assert.Equal(
-                    "invalid_payload",
-                    (string)Assert.Single(web)[
-                        "error"]);
+                    "equipmentTuningPreview",
+                    (string)command["action"]);
+                Assert.Equal(
+                    "loadout",
+                    (string)command["source"]["sourceKind"]);
+                Assert.Equal(
+                    "inventory",
+                    (string)command["target"]["sourceKind"]);
+                task.HandleFlashResponse(
+                    OperationPreviewResponse(
+                        command, "convert", false),
+                    null);
+                Assert.True(
+                    (bool)Assert.Single(web)["success"]);
             }
         }
 
@@ -2167,6 +2178,55 @@ namespace Launcher.Tests.Tasks
                         42;
                 },
                 true);
+        }
+
+        [Fact]
+        public void LoadoutConvertCommit_RequiresFullTargetBackpackProof()
+        {
+            JObject source =
+                LoadoutSource(
+                    21, "手枪2", 41);
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(
+                        ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                JObject command = PrimeLoadoutConvertCommit(
+                    task, sent, web, source);
+                task.HandleFlashResponse(
+                    LoadoutConvertCommitResponse(
+                        command, source),
+                    null);
+                JObject response = Assert.Single(
+                    web);
+                Assert.True((bool)response["success"]);
+                Assert.Equal(
+                    42,
+                    (int)response["after"]["source"]["source"]
+                        ["expectedLoadoutRevision"]);
+                Assert.Equal(
+                    "lease.target.8.post",
+                    (string)response["after"]["target"]["source"]
+                        ["expectedLease"]);
+                Assert.Single(
+                    (JArray)response["inventorySnapshots"]);
+            }
+
+            AssertMalformedLoadoutConvertCommit(
+                source,
+                response => response["inventorySnapshots"] =
+                    new JArray());
+            AssertMalformedLoadoutConvertCommit(
+                source,
+                response => response["inventorySnapshots"][0]
+                    ["slots"][8]["slotLease"] =
+                        "lease.forged.target");
         }
 
         [Fact]
@@ -3604,6 +3664,76 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        private static JObject PrimeLoadoutConvertCommit(
+            EquipmentTuningTask task,
+            List<JObject> sent,
+            List<JObject> web,
+            JObject source)
+        {
+            task.HandleWebRequest(
+                "snapshot",
+                Request(
+                    "snapshot",
+                    "tune.loadout.convert.snapshot",
+                    null,
+                    source));
+            task.HandleFlashResponse(
+                SnapshotResponse(sent[sent.Count - 1]),
+                null);
+            task.HandleWebRequest(
+                "preview",
+                Request(
+                    "preview",
+                    "tune.loadout.convert.preview",
+                    "convert",
+                    source));
+            task.HandleFlashResponse(
+                OperationPreviewResponse(
+                    sent[sent.Count - 1],
+                    "convert",
+                    false),
+                null);
+            sent.Clear();
+            web.Clear();
+            task.HandleWebRequest(
+                "commit",
+                Request(
+                    "commit",
+                    "tune.loadout.convert.commit"));
+            return Assert.Single(sent);
+        }
+
+        private static void AssertMalformedLoadoutConvertCommit(
+            JObject source,
+            Action<JObject> mutate)
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(
+                value =>
+                {
+                    sent.Add(ParseWire(value));
+                    return true;
+                },
+                web))
+            {
+                JObject command = PrimeLoadoutConvertCommit(
+                    task, sent, web, source);
+                JObject response =
+                    LoadoutConvertCommitResponse(
+                        command, source);
+                mutate(response);
+                task.HandleFlashResponse(
+                    response, null);
+                Assert.Equal(
+                    "malformed_response",
+                    (string)Assert.Single(web)["error"]);
+                Assert.Equal(
+                    "needs_reconcile",
+                    task.WriteState);
+            }
+        }
+
         private static JObject LoadoutSnapshotRequest(
             string callId)
         {
@@ -4337,6 +4467,53 @@ namespace Launcher.Tests.Tasks
                     afterSource,
                     (JObject)response["after"]["source"]["equipment"]);
             response["transactionId"] = "txn.1";
+            return response;
+        }
+
+        private static JObject LoadoutConvertCommitResponse(
+            JObject command,
+            JObject beforeSource)
+        {
+            JObject beforeTarget =
+                Source(8, "lease.target.8");
+            JObject afterSource =
+                BuildPostSource(beforeSource, false);
+            JObject afterTarget =
+                BuildPostSource(beforeTarget, false);
+            OperationFixture fixture =
+                BuildOperationFixture(
+                    "convert", false, 2000);
+            JObject response = CommonResponse(
+                command, "commit", true);
+            response["tuningToken"] =
+                (string)command["expectedTuningToken"];
+            response["operation"] = "convert";
+            response["before"] = OperationProjection(
+                beforeSource,
+                fixture.BeforeSourceEquipment,
+                beforeTarget,
+                fixture.BeforeTargetEquipment);
+            response["after"] = OperationProjection(
+                afterSource,
+                fixture.AfterSourceEquipment,
+                afterTarget,
+                fixture.AfterTargetEquipment);
+            response["materials"] = new JArray();
+            response["removedMods"] = new JArray();
+            response["canCommit"] = false;
+            response["noOp"] = false;
+            response["snapshot"] = SnapshotForEquipment(
+                afterSource,
+                fixture.AfterSourceEquipment,
+                new JArray(),
+                "convert",
+                true);
+            response["inventorySnapshots"] =
+                FullBackpackSnapshots(
+                    afterTarget,
+                    fixture.AfterTargetEquipment);
+            response["transactionId"] =
+                "txn.loadout.convert.1";
             return response;
         }
 

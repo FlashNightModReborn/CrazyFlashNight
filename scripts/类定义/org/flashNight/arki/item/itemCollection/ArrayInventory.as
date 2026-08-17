@@ -177,16 +177,121 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     }
 
     public function transactionApplyValueChanges(changes:Array):Boolean {
-        if (!canApplyValueTransaction(changes)) return false;
-        if (changes.length == 0) return true;
-        for (var i:Number = 0; i < changes.length; i++) {
-            var change:Object = changes[i];
-            var item:Object = items[Number(change.slot)];
-            item.value = change.value;
-            item.lastUpdate = Number(change.lastUpdate);
+        var receipt:Object = transactionApplyValueChangesWithReceipt(changes);
+        return receipt != null && receipt.success === true;
+    }
+
+    /**
+     * 跨容器领域事务使用的可回滚 value receipt。旧 Boolean API 保持兼容，
+     * 新调用方可在另一容器提交失败时恢复 value、lastUpdate 与 raw revision。
+     */
+    public function transactionApplyValueChangesWithReceipt(changes:Array):Object {
+        if (!canApplyValueTransaction(changes)) {
+            return {success:false, rollbackComplete:true};
         }
-        bumpMutationRevision();
-        return true;
+        var beforeRevision:Number = getMutationRevision();
+        var receiptChanges:Array = [];
+        var i:Number;
+        for (i = 0; i < changes.length; i++) {
+            var planned:Object = changes[i];
+            var current:Object = items[Number(planned.slot)];
+            receiptChanges.push({
+                slot:Number(planned.slot),
+                item:current,
+                beforeValue:current.value,
+                beforeLastUpdate:Number(current.lastUpdate),
+                afterValue:planned.value,
+                afterLastUpdate:Number(planned.lastUpdate)
+            });
+        }
+        if (changes.length == 0) {
+            return {
+                success:true,
+                beforeRevision:beforeRevision,
+                revision:beforeRevision,
+                changes:receiptChanges
+            };
+        }
+        try {
+            for (i = 0; i < receiptChanges.length; i++) {
+                var applied:Object = receiptChanges[i];
+                applied.item.value = applied.afterValue;
+                applied.item.lastUpdate = applied.afterLastUpdate;
+            }
+            bumpMutationRevision();
+        } catch (writeError) {
+            var restored:Boolean = true;
+            try {
+                for (i = 0; i < receiptChanges.length; i++) {
+                    var rollback:Object = receiptChanges[i];
+                    rollback.item.value = rollback.beforeValue;
+                    rollback.item.lastUpdate = rollback.beforeLastUpdate;
+                }
+                mutationRevision = beforeRevision;
+            } catch (rollbackError) {
+                restored = false;
+            }
+            return {success:false, rollbackComplete:restored};
+        }
+        return {
+            success:true,
+            beforeRevision:beforeRevision,
+            revision:getMutationRevision(),
+            changes:receiptChanges
+        };
+    }
+
+    /** 只回滚本容器刚签发且未被后续写覆盖的 receipt。 */
+    public function rollbackValueTransaction(receipt:Object):Boolean {
+        if (receipt == null || receipt.success !== true
+                || !(receipt.changes instanceof Array)
+                || getMutationRevision() != Number(receipt.revision)) {
+            return false;
+        }
+        var changes:Array = receipt.changes;
+        var i:Number;
+        for (i = 0; i < changes.length; i++) {
+            var expected:Object = changes[i];
+            var current:Object = items[Number(expected.slot)];
+            if (current == null || current !== expected.item
+                    || current.value !== expected.afterValue
+                    || Number(current.lastUpdate)
+                        != Number(expected.afterLastUpdate)) {
+                return false;
+            }
+        }
+        var restoredCount:Number = 0;
+        try {
+            for (i = 0; i < changes.length; i++) {
+                var change:Object = changes[i];
+                change.item.value = change.beforeValue;
+                change.item.lastUpdate = Number(change.beforeLastUpdate);
+                restoredCount++;
+            }
+            mutationRevision = Number(receipt.beforeRevision);
+        } catch (rollbackError) {
+            try {
+                for (i = 0; i < restoredCount; i++) {
+                    var compensate:Object = changes[i];
+                    compensate.item.value = compensate.afterValue;
+                    compensate.item.lastUpdate = Number(compensate.afterLastUpdate);
+                }
+                mutationRevision = Number(receipt.revision);
+            } catch (compensationError) {
+                // 调用方收到 false 后必须按 authority-unknown 对账。
+            }
+            return false;
+        }
+        return getMutationRevision() == Number(receipt.beforeRevision);
+    }
+
+    /** 跨容器 raw commit 全部成功后统一发布 value 生命周期事件。 */
+    public function publishValueTransaction(receipt:Object):Void {
+        if (receipt == null || receipt.success !== true
+                || !(receipt.changes instanceof Array)) return;
+        for (var i:Number = 0; i < receipt.changes.length; i++) {
+            publishTransactionChange(Number(receipt.changes[i].slot), "value");
+        }
     }
 
     /**

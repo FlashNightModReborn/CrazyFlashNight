@@ -30,6 +30,7 @@ var EquipmentTuningView = (function() {
     var errorMessage = Model.errorMessage;
     var enhancementAvailableMax = Model.enhancementAvailableMax;
     var candidateInstalled = Model.candidateInstalled;
+    var defaultModFilterPath = Model.defaultModFilterPath;
     var Confirmation = typeof EquipmentTuningConfirmation !== 'undefined'
         ? EquipmentTuningConfirmation : null;
     var Components = typeof WorkbenchComponents !== 'undefined'
@@ -101,7 +102,7 @@ var EquipmentTuningView = (function() {
         this._conversionLoading = false;
         this._conversionError = '';
         this._conversionProjectionEpoch = 0;
-        this._modFilterPath = [];
+        this._modFilterPath = defaultModFilterPath();
         this._modNavigator = null;
         this._replaceCandidateKey = '';
         this._replaceCandidateName = '';
@@ -406,7 +407,7 @@ var EquipmentTuningView = (function() {
         this._conversionCandidates = [];
         this._conversionLoading = false;
         this._conversionError = '';
-        this._modFilterPath = [];
+        this._modFilterPath = defaultModFilterPath();
         this._replaceCandidateKey = '';
         this._replaceCandidateName = '';
         this._resetInfoPanel();

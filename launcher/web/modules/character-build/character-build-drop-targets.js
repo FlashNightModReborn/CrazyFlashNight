@@ -42,8 +42,11 @@
      * Returns {slots:[rovingKey...], reason:''|'item_blocked'|'no_target'}.
      */
     function resolve(scope, selectedSlotKey, candidate, slots) {
-        if (!candidate || !selectedSlotKey) return noTarget('no_target');
-        if (scope !== 'backpack') return pinned(selectedSlotKey, candidate);
+        if (!candidate) return noTarget('no_target');
+        if (scope !== 'backpack') {
+            return selectedSlotKey
+                ? pinned(selectedSlotKey, candidate) : noTarget('no_target');
+        }
         var eligibility = candidate.raw && candidate.raw.equipmentEligibility;
         if (eligibility && Array.isArray(eligibility.slots)
                 && eligibility.slots.length) {
@@ -68,8 +71,8 @@
             }
             return drugSlots.length ? {slots:drugSlots, reason:''} : noTarget('no_target');
         }
-        // 其余非装备行（材料等）没有槽位白名单；只允许装入当前已选槽位。
-        return pinned(selectedSlotKey, candidate);
+        // 其余非装备行（材料等）没有合法构筑落点，只提供查看说明。
+        return noTarget(candidate.blocked === true ? 'item_blocked' : 'no_target');
     }
 
     /**

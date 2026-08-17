@@ -102,7 +102,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._selectedTarget = null;
         this._selectedSlotKey = '';
         this._selectedCandidate = null;
-        this._candidateScope = 'compatible';
+        this._candidateScope = 'backpack';
         // Deliberately one recent entry: Host authorizes candidate tooltips only
         // for its latest candidate source set. A multi-key cache would let the UI
         // redisplay rows whose rich-tooltip capability has already been replaced.
@@ -326,7 +326,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._rendererState = this._portraitState(candidate);
         return this._rendererState ? !!this._renderer.render(this._rendererState) : false;
     };
-    CharacterBuildController.prototype._applySnapshot = function(payload, restoreSelection) {
+    CharacterBuildController.prototype._applySnapshot = function(
+            payload, restoreSelection, deferCandidates) {
         this._snapshotPayload = payload;
         this._selectedCandidate = null;
         this._candidateCache = null;
@@ -338,10 +339,17 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._createView().setSnapshot(Projection.viewSnapshot(payload));
         this._ensureRenderer();
         this._renderPortrait(null);
-        if (restoreSelection !== false && this._selectedSlotKey
-                && !this._view.restoreSlot(this._selectedSlotKey)) {
+        var restored = restoreSelection !== false && this._selectedSlotKey
+            && this._view.restoreSlot(this._selectedSlotKey);
+        if (!restored) {
             this._selectedSlotKey = '';
             this._selectedTarget = null;
+            this._candidateScope = 'backpack';
+            this._session.setCandidateScope(this._candidateScope);
+            // Reactivation first paints the cached snapshot, then immediately asks
+            // for a fresh snapshot. Only the fresh adoption may issue the neutral
+            // overview read, otherwise one view mount creates duplicate traffic.
+            if (deferCandidates !== true) this._view.showBackpackOverview();
         }
     };
     CharacterBuildController.prototype._enterTuning = function() {
@@ -370,7 +378,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
     CharacterBuildController.prototype.activate = function(host, panelInstanceId) {
         if (!host || !panelInstanceId) return false;
         if (!this._view) {
-            this._candidateScope = 'compatible';
+            this._candidateScope = 'backpack';
             this._session.setCandidateScope(this._candidateScope);
         }
         this._panelInstanceId = String(panelInstanceId);
@@ -391,7 +399,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 }
             });
         }
-        if (this._snapshotPayload) this._applySnapshot(this._snapshotPayload, false);
+        if (this._snapshotPayload) this._applySnapshot(
+            this._snapshotPayload, false, true);
         if (this._candidateTooltip) this._candidateTooltip.invalidate();
         return !!this._session.refreshSnapshot(function(response, accepted) {
             if (generation === self._mountGeneration
@@ -444,8 +453,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         return this._ports.openModal ? !!this._ports.openModal({
             kind:'character-build-help',
             title:'角色构筑帮助',
-            message:'方向键在槽位或候选组内移动；Enter 或 Space 首次选择只固定预览，Space 始终不提交；双击候选、同一候选再次按 Enter 或使用主按钮才会提交；也可以把候选直接拖到高亮的兼容槽位完成装备。',
-            detail:'兼容范围只接受当前已选槽位；背包范围接受该物品的所有兼容槽位，拖拽期间高亮提示，药剂候选可装入任一高亮药剂槽。占用槽位可显式卸下或调制。写入和结果确认期间会锁定槽位、收纳、个人信息与关闭；未知结果只拉取相应领域的权威快照并越过提交水位，绝不重放写入。',
+            message:'未选择栏位时默认显示背包总览，可把物品直接拖到高亮兼容栏位完成配装。选择任一装备/药剂栏会切换为当前栏位的兼容候选。',
+            detail:'总览不会猜测目标栏位：装备按权威槽位白名单高亮，药剂可放入任一药剂栏，其他物品只供查看。兼容范围中首次 Enter 或 Space 只固定预览，Space 不提交；同一候选再次按 Enter、双击或主按钮才提交。占用栏位可显式卸下或调制；写入结果未知时只拉取权威快照，绝不重放写入。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
         }) : false;
     };

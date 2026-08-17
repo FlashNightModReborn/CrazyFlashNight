@@ -34,12 +34,13 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static var _testFailNext:Boolean = false;
     private static var _testFailNextMaterialCommit:Boolean = false;
     private static var _testFailNextSerialization:Boolean = false;
+    private static var _testFailNextWornConversionBagCommit:Boolean = false;
     private static var _allowedOperations:Object = {
         enhance:true, convert:true, install_tier:true,
         install_mod:true, replace_mod:true, detach_mod:true, detach_all_mods:true
     };
     private static var _loadoutAllowedOperations:Object = {
-        enhance:true, install_tier:true, install_mod:true,
+        enhance:true, convert:true, install_tier:true, install_mod:true,
         replace_mod:true, detach_mod:true, detach_all_mods:true
     };
     private static var _inventorySourceKeys:Object = {
@@ -308,6 +309,11 @@ class org.flashNight.arki.item.EquipmentTuningService {
         timestamp:Number,
         token:String,
         transactionId:String):Object {
+        if (plan.operation == "convert") {
+            return commitWornConversionPlan(
+                plan, source, valueChanges, timestamp,
+                token, transactionId);
+        }
         var equipment:EquipmentInventory =
             EquipmentInventory(source.inventory);
         if (equipment == null
@@ -467,6 +473,232 @@ class org.flashNight.arki.item.EquipmentTuningService {
             plan, materials, materialCommit,
             equipment, equipmentCommit);
         return response;
+    }
+
+    /**
+     * 已穿戴装备与背包装备的强化度原子交换。
+     * 两个容器都签发可回滚 receipt 后才消费一次 Character Build revision；
+     * 成功回包同时携带 post-loadout source 与完整背包 snapshot。
+     */
+    private static function commitWornConversionPlan(
+        plan:Object,
+        source:Object,
+        valueChanges:Array,
+        timestamp:Number,
+        token:String,
+        transactionId:String):Object {
+        var equipment:EquipmentInventory =
+            EquipmentInventory(source.inventory);
+        var bag:ArrayInventory = plan.target == null
+            ? null : ArrayInventory(plan.target.inventory);
+        if (equipment == null || bag == null
+                || plan.target.sourceKind != "inventory"
+                || !(valueChanges instanceof Array)
+                || valueChanges.length != 2
+                || typeof bag.transactionApplyValueChangesWithReceipt
+                    != "function"
+                || typeof bag.rollbackValueTransaction != "function"
+                || typeof bag.publishValueTransaction != "function") {
+            return commitFail("service_not_ready", transactionId);
+        }
+
+        var wornChanges:Array = [valueChanges[0]];
+        var bagChanges:Array = [valueChanges[1]];
+        if (String(wornChanges[0].slot) != String(source.slot)
+                || Number(bagChanges[0].slot)
+                    != Number(plan.target.slot)
+                || !equipment.canApplyWornValueTransaction(wornChanges)
+                || !bag.canApplyValueTransaction(bagChanges)) {
+            return commitFail("stale_state", transactionId);
+        }
+
+        var equipmentCommit:Object = null;
+        try {
+            equipmentCommit =
+                equipment.transactionApplyWornValueChanges(
+                    wornChanges);
+        } catch (equipmentError) {
+            equipmentCommit = {success:false, rollbackComplete:false};
+        }
+        if (equipmentCommit == null
+                || equipmentCommit.success !== true) {
+            return commitFail(
+                equipmentCommit != null
+                    && equipmentCommit.rollbackComplete === true
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
+        }
+
+        var bagCommit:Object = null;
+        try {
+            if (_testFailNextWornConversionBagCommit) {
+                _testFailNextWornConversionBagCommit = false;
+                bagCommit = {success:false, rollbackComplete:true};
+            } else {
+                bagCommit =
+                    bag.transactionApplyValueChangesWithReceipt(
+                        bagChanges);
+            }
+        } catch (bagError) {
+            bagCommit = {success:false, rollbackComplete:false};
+        }
+        if (bagCommit == null || bagCommit.success !== true) {
+            var equipmentRestored:Boolean = false;
+            try {
+                equipmentRestored =
+                    equipment.rollbackWornValueTransaction(
+                        equipmentCommit) === true;
+            } catch (equipmentRollbackError) {
+                equipmentRestored = false;
+            }
+            var bagKnownClean:Boolean = bagCommit != null
+                && bagCommit.rollbackComplete === true;
+            return commitFail(
+                equipmentRestored && bagKnownClean
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
+        }
+
+        var nextLoadoutRevision:Number =
+            Number(source.expectedLoadoutRevision) + 1;
+        var postSource:Object = {
+            sourceKind:"loadout",
+            sessionGeneration:Number(source.sessionGeneration),
+            slotKey:String(source.slot),
+            expectedLoadoutRevision:nextLoadoutRevision
+        };
+        var inventorySnapshot:Object = null;
+        var postTarget:Object = null;
+        var committedSnapshot:Object = null;
+        var response:Object = null;
+        try {
+            inventorySnapshot =
+                InventoryPanelService.buildExternalSnapshot(
+                    "背包", 0, 50);
+            postTarget = refFromInventorySnapshot(
+                inventorySnapshot, Number(plan.target.slot));
+            committedSnapshot = buildTuningSnapshot(
+                source, postSource, plan.materials);
+            response = {
+                success:true,
+                transactionId:transactionId,
+                tuningToken:token,
+                canCommit:false,
+                operation:plan.operation,
+                noOp:false,
+                before:plan.before,
+                after:{
+                    source:{
+                        source:postSource,
+                        equipment:buildEquipmentProjection(
+                            source.item,
+                            plan.changes[0].afterValue,
+                            timestamp)
+                    },
+                    target:{
+                        source:postTarget,
+                        equipment:buildEquipmentProjection(
+                            plan.target.item,
+                            plan.changes[1].afterValue,
+                            timestamp)
+                    }
+                },
+                materials:[],
+                removedMods:[],
+                snapshot:committedSnapshot,
+                inventorySnapshots:inventorySnapshot == null
+                    ? [] : [inventorySnapshot]
+            };
+        } catch (projectionError) {
+            response = null;
+        }
+        if (response == null || inventorySnapshot == null
+                || postTarget == null || committedSnapshot == null
+                || !commitProjectionSerializable(response)) {
+            rollbackWornConversionRawCommit(
+                equipment, equipmentCommit, bag, bagCommit);
+            // buildExternalSnapshot 可能已轮换目标 lease；即使 raw state 恢复，
+            // Web 仍必须刷新背包，不能把它降格成确定未写。
+            return commitFail("needs_reconcile", transactionId);
+        }
+
+        var synced:Object =
+            org.flashNight.arki.item.CharacterBuildService
+                .commitWornTuningSynchronization(
+                    Number(source.sessionGeneration),
+                    String(source.slot),
+                    Number(source.expectedLoadoutRevision),
+                    source.item);
+        if (synced == null || synced.success !== true) {
+            if (synced != null
+                    && synced.authorityObserved === true) {
+                publishCommittedWornConversionSideEffects(
+                    bag, bagCommit, equipment, equipmentCommit);
+                return commitFail(
+                    "needs_reconcile", transactionId);
+            }
+            rollbackWornConversionRawCommit(
+                equipment, equipmentCommit, bag, bagCommit);
+            return commitFail("needs_reconcile", transactionId);
+        }
+        if (Number(synced.loadoutRevision)
+                    != nextLoadoutRevision
+                || synced.liveRefreshDirty !== true) {
+            publishCommittedWornConversionSideEffects(
+                bag, bagCommit, equipment, equipmentCommit);
+            return commitFail("needs_reconcile", transactionId);
+        }
+
+        publishCommittedWornConversionSideEffects(
+            bag, bagCommit, equipment, equipmentCommit);
+        return response;
+    }
+
+    private static function rollbackWornConversionRawCommit(
+        equipment:EquipmentInventory,
+        equipmentCommit:Object,
+        bag:ArrayInventory,
+        bagCommit:Object):Boolean {
+        var bagRestored:Boolean = false;
+        var equipmentRestored:Boolean = false;
+        try {
+            bagRestored = bag.rollbackValueTransaction(
+                bagCommit) === true;
+        } catch (bagRollbackError) {
+            bagRestored = false;
+        }
+        try {
+            equipmentRestored =
+                equipment.rollbackWornValueTransaction(
+                    equipmentCommit) === true;
+        } catch (equipmentRollbackError) {
+            equipmentRestored = false;
+        }
+        return bagRestored && equipmentRestored;
+    }
+
+    private static function publishCommittedWornConversionSideEffects(
+        bag:ArrayInventory,
+        bagCommit:Object,
+        equipment:EquipmentInventory,
+        equipmentCommit:Object):Void {
+        _writeEpoch++;
+        try {
+            markDirty();
+        } catch (dirtyError) {
+            // authority 已提交；保存异常由后续 reconcile/保存策略收敛。
+        }
+        try {
+            bag.publishValueTransaction(bagCommit);
+        } catch (bagPublishError) {
+            // 监听器异常不能反向改变已提交 authority。
+        }
+        try {
+            equipment.publishWornValueTransaction(
+                equipmentCommit);
+        } catch (equipmentPublishError) {
+            // 同上。
+        }
     }
 
     /**
@@ -656,7 +888,18 @@ class org.flashNight.arki.item.EquipmentTuningService {
             fingerprint += "|cap=" + cap + "|cost=" + cost;
         } else if (operation == "convert") {
             if (target == null || !target.success) return fail("invalid_target");
-            if (source.inventory !== target.inventory || source.slot == target.slot) return fail("same_slot");
+            if (source.sourceKind == "inventory") {
+                if (target.sourceKind != "inventory"
+                        || source.inventory !== target.inventory) {
+                    return fail("invalid_target");
+                }
+                if (source.slot == target.slot) return fail("same_slot");
+            } else if (source.sourceKind == "loadout") {
+                if (target.sourceKind != "inventory"
+                        || source.inventory === target.inventory) {
+                    return fail("invalid_target");
+                }
+            } else return fail("invalid_target");
             var sourceRaw:Object = ItemUtil.getRawItemData(sourceItem.name);
             var targetRaw:Object = ItemUtil.getRawItemData(target.item.name);
             if (sourceRaw == null || targetRaw == null || String(sourceRaw.use) != String(targetRaw.use)) {
@@ -1533,6 +1776,10 @@ class org.flashNight.arki.item.EquipmentTuningService {
         _testFailNextSerialization = true;
     }
 
+    public static function testOnlyFailNextWornConversionBagCommit():Void {
+        _testFailNextWornConversionBagCommit = true;
+    }
+
     public static function testOnlyReset():Void {
         _busy = false;
         _sessionPanel = "";
@@ -1548,5 +1795,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
         _testFailNext = false;
         _testFailNextMaterialCommit = false;
         _testFailNextSerialization = false;
+        _testFailNextWornConversionBagCommit = false;
     }
 }

@@ -92,6 +92,7 @@ function(TuningAdapter, CandidateEligibility) {
     function viewCandidates(payload, targetOverride) {
         var rows = payload && payload.candidates || [];
         var target = targetOverride || payload && payload.target || null;
+        var overview = target && target.kind === 'backpack';
         var result = [];
         for (var i = 0; i < rows.length; i++) {
             var row = CandidateEligibility.rowForTarget(
@@ -100,15 +101,18 @@ function(TuningAdapter, CandidateEligibility) {
             var source = row.source || {};
             var blocked = row.disabled === true;
             var blockedReason = blocked
-                ? CandidateEligibility.blockedCopy(row.blockedReason) : '';
+                ? CandidateEligibility.blockedCopy(
+                    row.blockedReason, overview) : '';
             var candidate = {
                 key:'backpack:' + finite(row.physicalSlot, i)
                     + ':' + String(source.expectedLease || i),
                 name:String(item.displayName || '未命名候选'),
                 type:String(item.use || item.itemKind || '背包候选'),
-                delta:'预览',
+                delta:overview ? '总览' : '预览',
                 summary:blockedReason
-                    || '来自背包；首次选择只更新临时纸娃娃预览。',
+                    || (overview
+                        ? '来自背包总览；拖到高亮栏位可直接配装。'
+                        : '来自背包；首次选择只更新临时纸娃娃预览。'),
                 blockedReason:blockedReason,
                 presentation:item,
                 physicalSlot:finite(row.physicalSlot, i),
@@ -127,6 +131,7 @@ function(TuningAdapter, CandidateEligibility) {
 
     function targetForSelection(selection) {
         if (!selection) return null;
+        if (selection.kind === 'backpack') return {kind:'backpack'};
         if (selection.kind === 'drug') {
             var slot = /^drug([1-4])$/.exec(String(selection.id || ''));
             return slot

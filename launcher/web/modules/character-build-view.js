@@ -143,7 +143,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._activeCandidateKey = '';
         this._candidateRequestKey = '';
         this._candidateScope = CandidatePaneModule.normalizeScope(
-            options.candidateScope) || 'compatible';
+            options.candidateScope) || 'backpack';
         this._candidateScopeGroup = null;
         var viewSequence = ++candidateViewSequence;
         this._candidateFence = 'candidate-view-' + viewSequence;
@@ -474,7 +474,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._setCandidateState('unselected', [], '');
         this._notice.textContent = this._snapshot.blocked
             ? text(this._snapshot.blockedReason, '当前候选不满足权威条件。')
-            : '选择槽位与候选可查看临时预览，当前装备保持不变。';
+            : '正在打开背包总览；选择槽位后会切换为该栏位的兼容候选。';
         this._notice.setAttribute('data-notice-kind', this._snapshot.blocked ? 'blocked' : 'browsing');
         this._syncSlotSelection();
         this._syncCandidateSelection();

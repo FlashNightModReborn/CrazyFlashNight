@@ -367,6 +367,8 @@ Panel 的共同边界：
 
 - Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。
 - 业务写入经过领域命令白名单、revision/lease/token 和 AS2/Host 最终裁决；未知结果进入对账，不得假定成功。
+- `workbench view=build` 的 loadout `candidates` 有三种 exact target 形状：`slotKey`、`drugSlot`，或无 selector 且 `candidateScope=backpack`。无 selector 响应必须为 exact `target:{kind:"backpack"}`，Host 独立校验每行 `equipmentEligibility`与装备/药剂/不可装配分类；任何多余键、双 selector、无目标 `compatible` 或误分类行都拒绝整份回包。
+- `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
 - close、Esc、backdrop、导航和 recovery 必须经过同一 lifecycle fence；迟到旧实例不得复活。
 - Workbench 的布局、密度、focus、tooltip、interaction broker 和 CSS 边界以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。
 - AS2/Host/Web 三层迁移、数据权威与旧 Flash UI 退役边界以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。

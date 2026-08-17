@@ -1329,12 +1329,6 @@ namespace CF7Launcher.Tasks
                 {
                     return false;
                 }
-                if (operation == "convert"
-                    && ReadString(source["sourceKind"])
-                        == "loadout")
-                {
-                    return false;
-                }
                 result["operation"] = operation;
                 result["source"] = source;
                 if (operation == "enhance")
@@ -2636,7 +2630,15 @@ namespace CF7Launcher.Tasks
                     entry.Source["sourceKind"])
                 == "loadout")
             {
-                return inventorySnapshots.Count == 0;
+                if (entry.Operation != "convert" || noOp)
+                    return inventorySnapshots.Count == 0;
+                return postTarget != null
+                    && CharacterBuildProtocol
+                        .IsFullBackpackSnapshots(
+                            inventorySnapshots)
+                    && BackpackSubjectMatches(
+                        inventorySnapshots,
+                        after["target"] as JObject);
             }
             return CharacterBuildProtocol
                     .IsFullBackpackSnapshots(

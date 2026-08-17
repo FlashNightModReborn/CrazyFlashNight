@@ -246,7 +246,7 @@
         if (this._state !== 'idle' || !targetKey(target) || !scope) return null;
         var payload = this._basePayload();
         if (target.kind === 'equipment') payload.slotKey = target.slotKey;
-        else payload.drugSlot = integer(target.drugSlot, -1);
+        else if (target.kind === 'drug') payload.drugSlot = integer(target.drugSlot, -1);
         payload.candidateScope = scope;
         payload.expectedLoadoutRevision = this._loadoutRevision;
         payload.expectedDrugRevision = this._drugRevision;
@@ -283,7 +283,7 @@
         this._cancelLoadoutTooltip('superseded');
         var payload = this._basePayload();
         if (target.kind === 'equipment') payload.slotKey = target.slotKey;
-        else payload.drugSlot = integer(target.drugSlot, -1);
+        else if (target.kind === 'drug') payload.drugSlot = integer(target.drugSlot, -1);
         payload.expectedLoadoutRevision = this._loadoutRevision;
         payload.expectedDrugRevision = this._drugRevision;
         var self = this;

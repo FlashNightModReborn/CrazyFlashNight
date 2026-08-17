@@ -96,9 +96,7 @@
 
     function tuningSourceSupports(source, operation) {
         var normalized = normalizeTuningSource(source);
-        if (!normalized || !isOperation(operation)) return false;
-        // Conversion needs a second inventory item and stays outside first-round loadout tuning.
-        return normalized.sourceKind !== 'loadout' || operation !== 'convert';
+        return !!normalized && isOperation(operation);
     }
 
     function tuningSnapshotRequest(source) {
@@ -290,6 +288,23 @@
         if (reason === 'material_missing' || reason === '材料不足') return {id:'material_missing', label:'材料不足', order:1};
         return {id:'blocked', label:'条件不符', order:2};
     }
+
+    function validLoadoutCommit(response, operation) {
+        if (!response || response.success !== true || !response.snapshot) return false;
+        if (!Array.isArray(response.materials)
+                || !Array.isArray(response.inventorySnapshots)) return false;
+        return operation === 'convert' && response.noOp !== true
+            ? response.inventorySnapshots.length === 1
+            : response.inventorySnapshots.length === 0;
+    }
+    function modOwnership(candidate) {
+        return Number(candidate && candidate.owned || 0) > 0
+            ? {id:'owned', label:'已拥有', order:0}
+            : {id:'unowned', label:'未拥有', order:1};
+    }
+    function defaultModFilterPath() {
+        return ['ownership', 'owned'];
+    }
     function normalizeModSymbol(value) {
         value = String(value || 'diamond-outline');
         return /^(triangle|square|circle|diamond|star)-(solid|outline)$/.test(value)
@@ -303,6 +318,9 @@
         candidates = candidates || [];
         var gradeOrder = {low:0, medium:1, high:2, special:3, unknown:9};
         return ItemFilter.branchTree([
+            {id:'ownership', label:'持有', tree:ItemFilter.build(candidates, function(candidate) {
+                return [modOwnership(candidate)];
+            })},
             {id:'grade', label:'档级', tree:ItemFilter.build(candidates, function(candidate) {
                 var value = modSegment(candidate, 'grade', 'gradeLabel', 'unknown', '未知档级', gradeOrder[String(candidate.grade || 'unknown')]);
                 return [value];
@@ -320,6 +338,7 @@
         path = path || [];
         if (path.length < 2) return true;
         var value = String(path[1]);
+        if (path[0] === 'ownership') return modOwnership(candidate).id === value;
         if (path[0] === 'grade') return String(candidate.grade || 'unknown') === value;
         if (path[0] === 'scope') return String(candidate.scope || 'unknown') === value;
         if (path[0] === 'role') return String(candidate.role || 'utility') === value;
@@ -436,6 +455,7 @@
         tuningSourceKey:tuningSourceKey,
         diagnosticAuthoritySourceKey:diagnosticAuthoritySourceKey,
         sameLoadoutIdentity:sameLoadoutIdentity,
+        validLoadoutCommit:validLoadoutCommit,
         tuningSourceSupports:tuningSourceSupports,
         tuningSnapshotRequest:tuningSnapshotRequest,
         loadoutSlotKeys:Object.keys(LOADOUT_SLOT_KEYS),
@@ -461,6 +481,8 @@
         MAX_VISIBLE_MOD_SLOT_CAPACITY:MAX_VISIBLE_MOD_SLOT_CAPACITY,
         compactQuantity:compactQuantity,
         modStatus:modStatus,
+        modOwnership:modOwnership,
+        defaultModFilterPath:defaultModFilterPath,
         normalizeModSymbol:normalizeModSymbol,
         buildModFilterTree:buildModFilterTree,
         modMatchesFilter:modMatchesFilter,

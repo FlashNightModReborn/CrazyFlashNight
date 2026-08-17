@@ -104,6 +104,132 @@ equal(rebindAdapter.selectSlot('手雷', payload.equipment[1].item, 'weapon:手�
 equal(rebindAdapter.debugState().slotKey, '脚部装备',
     'rejected untunable rebind preserves the prior tuning source');
 
+const candidateHeading = {textContent:'候选装备调制'};
+const candidateName = {textContent:'背包长枪'};
+const candidatePane = {
+    ariaLabel:'候选装备调制',
+    setAttribute:function(name, value) {
+        if (name === 'aria-label') this.ariaLabel = String(value);
+    }
+};
+let candidateActive = true;
+let candidateDeactivations = 0;
+let candidateRebindAccepted = true;
+const candidateRebinds = [];
+const candidateAdapter = new TuningModule.CharacterBuildTuning({
+    session:{
+        debugState:function() { return {sessionGeneration:7, loadoutRevision:11}; },
+        getState:function() { return 'idle'; }
+    },
+    view:{
+        root:{querySelectorAll:function() { return []; }},
+        refreshSlotNavigation:function() {}
+    }
+});
+candidateAdapter._active = true;
+candidateAdapter._slotKey = '长枪';
+candidateAdapter._entrySource = {
+    sourceKind:'inventory', containerId:'背包', slot:9, expectedLease:'lease.9'
+};
+candidateAdapter._candidateFlow = {
+    isActive:function() { return candidateActive; },
+    deactivate:function() {
+        candidateActive = false;
+        candidateDeactivations += 1;
+        return {scrollTop:37};
+    }
+};
+candidateAdapter._root = {
+    querySelector:function(selector) {
+        if (selector === '.character-build-tuning-title > span') return candidateHeading;
+        if (selector === '.character-build-tuning-heading h2') return candidateName;
+        return null;
+    }
+};
+candidateAdapter._pane = candidatePane;
+candidateAdapter._tuningView = {
+    canClose:function() { return true; },
+    handleLoadoutSelection:function(source) {
+        candidateRebinds.push(source);
+        return candidateRebindAccepted;
+    },
+    debugState:function() { return {}; }
+};
+equal(candidateAdapter.selectSlot('脚部装备', item({
+    majorType:'防具', use:'脚部装备', name:'测试装甲鞋', displayName:'测试装甲鞋'
+}), 'armor:脚部装备'), true,
+    'idle candidate tuning hands the same embedded session to a loadout source');
+equal({
+    candidateSource:candidateAdapter.debugState().candidateSource,
+    deactivations:candidateDeactivations,
+    slotKey:candidateAdapter.debugState().slotKey,
+    source:candidateRebinds[0],
+    returnState:candidateAdapter._returnState,
+    sourceLabel:candidateHeading.textContent,
+    itemLabel:candidateName.textContent,
+    paneLabel:candidatePane.ariaLabel
+}, {
+    candidateSource:false,
+    deactivations:1,
+    slotKey:'脚部装备',
+    source:{
+        sourceKind:'loadout', sessionGeneration:7,
+        slotKey:'脚部装备', expectedLoadoutRevision:11
+    },
+    returnState:{slotKey:'armor:脚部装备', scrollTop:37},
+    sourceLabel:'当前装备调制',
+    itemLabel:'测试装甲鞋',
+    paneLabel:'当前装备调制'
+}, 'candidate handoff advances source, return identity, visible title and accessible pane atomically');
+
+candidateActive = true;
+candidateAdapter._candidateFlow.isActive = function() { return candidateActive; };
+candidateAdapter._slotKey = '长枪';
+candidateAdapter._entrySource = {
+    sourceKind:'inventory', containerId:'背包', slot:9, expectedLease:'lease.9'
+};
+candidateAdapter._returnState = null;
+candidateAdapter._tuningView.canClose = function() { return false; };
+equal(candidateAdapter.selectSlot('头部装备', item({
+    majorType:'防具', use:'头部装备', displayName:'测试头盔'
+}), 'armor:头部装备'), false,
+    'busy candidate tuning keeps rejecting a source handoff');
+equal({
+    candidateActive:candidateActive,
+    deactivations:candidateDeactivations,
+    rebinds:candidateRebinds.length,
+    slotKey:candidateAdapter.debugState().slotKey
+}, {
+    candidateActive:true,
+    deactivations:1,
+    rebinds:1,
+    slotKey:'长枪'
+}, 'a rejected busy handoff preserves both the candidate owner and current tuning identity');
+
+candidateAdapter._tuningView.canClose = function() { return true; };
+candidateRebindAccepted = false;
+equal(candidateAdapter.selectSlot('头部装备', item({
+    majorType:'防具', use:'头部装备', displayName:'测试头盔'
+}), 'armor:头部装备'), false,
+    'candidate handoff rejects an unaccepted loadout source selection');
+equal({
+    candidateActive:candidateActive,
+    deactivations:candidateDeactivations,
+    rebinds:candidateRebinds.length,
+    slotKey:candidateAdapter.debugState().slotKey,
+    source:candidateAdapter._entrySource,
+    returnState:candidateAdapter._returnState
+}, {
+    candidateActive:true,
+    deactivations:1,
+    rebinds:2,
+    slotKey:'长枪',
+    source:{
+        sourceKind:'inventory', containerId:'背包', slot:9, expectedLease:'lease.9'
+    },
+    returnState:null
+}, 'failed handoff rolls adapter identity back without abandoning the candidate owner');
+
 function fakeElement(attributes) {
     const attrs = Object.assign({}, attributes || {});
     return {

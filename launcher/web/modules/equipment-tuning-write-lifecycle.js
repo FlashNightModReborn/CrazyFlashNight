@@ -62,7 +62,8 @@ var EquipmentTuningWriteLifecycle = (function() {
         TuningView.prototype._finishInventoryWrite = function(
             operation,
             needsRefresh,
-            callback
+            callback,
+            snapshots
         ) {
             if (!operation || this._inventoryWriteHandle !== operation) {
                 return false;
@@ -76,7 +77,8 @@ var EquipmentTuningWriteLifecycle = (function() {
                     self._inventoryWriteHandle = null;
                     self._busy = false;
                     if (typeof callback === 'function') callback(result);
-                }
+                },
+                snapshots
             );
             if (!completed && this._inventoryWriteHandle === operation) {
                 this._inventoryWriteHandle = null;
@@ -266,6 +268,38 @@ var EquipmentTuningWriteLifecycle = (function() {
             if (!this._refreshRetryRequired
                     || !this._allowInteraction('retry')) return false;
             if (this._source && this._source.sourceKind === 'loadout') {
+                if (!this._loadoutBarrier) {
+                    var loadoutSelf = this;
+                    var loadoutCallbackCalled = false;
+                    this._refreshRetryPending = true;
+                    this._status = '正在重试背包同步';
+                    this._emit();
+                    this.render();
+                    var loadoutStarted = this._refreshInventory(function(result) {
+                        loadoutCallbackCalled = true;
+                        loadoutSelf._refreshRetryPending = false;
+                        loadoutSelf._refreshRetryRequired = !result
+                            || result.success !== true;
+                        loadoutSelf._status = loadoutSelf._refreshRetryRequired
+                            ? '背包同步仍未成功，请重试'
+                            : '构筑与背包状态已同步';
+                        if (!loadoutSelf._refreshRetryRequired
+                                && loadoutSelf._operation === 'convert') {
+                            loadoutSelf._target = null;
+                            loadoutSelf._targetItem = null;
+                            loadoutSelf._setConversionProjection(true);
+                        }
+                        loadoutSelf._emit();
+                        loadoutSelf.render();
+                    });
+                    if (!loadoutStarted && !loadoutCallbackCalled) {
+                        this._refreshRetryPending = false;
+                        this._status = '当前无法重试背包同步';
+                        this._emit();
+                        this.render();
+                    }
+                    return !!loadoutStarted;
+                }
                 return this._beginLoadoutRefresh();
             }
             var self = this;

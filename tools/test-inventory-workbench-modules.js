@@ -1200,7 +1200,14 @@ test('inventory writers bind every request response and close to the exact activ
     });
     assert(source.includes('send:function(message) { return Bridge.send(message); }'));
     assert(kshop.includes('send: function(message) { return Bridge.send(message); }'));
-    assert.strictEqual((npcshop.match(/function\(message\) \{ return Bridge\.send\(message\); \}/g) || []).length, 1);
+    assert(npcshop.includes('NpcShopRuntime.createDiagnosticEmitter({'));
+    assert(npcshop.includes('send:function(message) { return Bridge.send(message); }'));
+    assert(npcshop.includes(
+        'NpcShopRuntime.createOwnerChannels(\n        function(message) { return Bridge.send(message); }, _runtimeConfig)'));
+    assert.strictEqual(
+        (npcshop.match(/function\(message\) \{ return Bridge\.send\(message\); \}/g) || []).length,
+        2,
+        'NPC facade must expose exactly the diagnostic and owner-channel Bridge send ports');
 });
 
 process.stdout.write('Inventory workbench modules: ' + passed + '/' + passed + ' passed\n');

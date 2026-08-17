@@ -42,6 +42,8 @@
 
 生产 `DualPaneShell` 必须显式选择上述封闭 profile，并把它投影为稳定 data attribute；壳级 `grid-template-columns/rows`、最小 pane 宽度和决策 footer 结构归 `workbench/profiles.css`，feature 只控制 pane 内部构图。density 只改变实体格呈现，不得隐式改变宏观双栏 split；确需不同 split 时必须定义受控 profile variant、说明领域理由并补真实 feature fixture，不能把它藏在 compact selector 中。
 
+Character Build 的默认浏览态是**无目标背包总览**，不再用“先选一个槽才能看背包”作为 fresh-open 空态。总览保留所有合法背包行：可装备物品与药剂可拖到权威资格投影出的高亮槽，材料等其他行可检视但不生成落点。单击或键盘激活左侧装备/药剂槽只进入该槽的兼容筛选，不提交写入；返回“背包”范围则清除 target 并恢复总览。总览不提供“选物品→点槽即穿戴”快速模式；直接配装的唯一无目标路径是将行拖到高亮槽，仍走同一 Host/AS2 mutation 写门。
+
 生产 consumer / view 映射固定如下，不按 DOM 长相或 feature 名临时猜测：
 
 | consumer / view | profile |
@@ -206,6 +208,10 @@ Character Build 的已选择候选优先成为 tuning action target；只有未�
 数量控件同时接收领域提供的合法意图上限 `A` 与当前可直接提交上限 `E`。数字框、range 与键盘可达完整 `1..A`，`E` 只作为“可用”预设按钮和轨道标记，不能把超出余额/容量但仍合法的预览意图裁掉；最终提交继续由权威 preview 阻断。`A≤200` 使用线性轨道，`A>200` 使用对数位置映射，但 ARIA、方向键与回调始终表达真实数量：方向键 `±1`、Shift+方向键 `±5`、Home/End 到边界、PageUp/PageDown 跳实际数量级节点。数字草稿只接受范围内整数；空值、小数、负数或越界值保留在本地并显示关联错误，不触发 preview。草稿存在时第一次 Esc 只撤销字段编辑，第二次 Esc 才交给二级页；preview 临时锁定后必须复用行和控件节点，恢复原字段焦点与列表滚动。
 
 KShop 只保留一处精确数量编辑入口：目录的单击或 `+` 每次加购 1 件，购物车只显示 `×N`、小计和整行移除，`QuantityControl` 只出现在“核对并结账”的 SecondaryPage。目录数量弹层、购物车 `− / +` 与第二套数字框均属重复入口，禁止恢复；可选拖拽仍只产生加购意图。
+
+调制配件候选是“完整兼容目录 + 权威持有数”，不是“全部已拥有”。筛选树的根层包含“持有 / 档级 / 用途 / 定位 / 状态”；fresh open 固定进入 `持有 / 已拥有`，只显示持有数大于 0 的项。玩家显式返回“持有”根后才显示全目录，其中数量 0 项必须保留明确的未拥有/不可提交状态。候选区标题使用“配件候选”，不得用“可安装配件”暗示所有可见项都已持有。
+
+loadout 强化度交换仍使用同一 exact 背包 target wire。确定成功时，非 no-op convert 必须在一个 external-write 锁内采用 post-loadout 与完整背包 snapshot，清除旧 target 并按轮换后 lease 重读候选；unknown 还要用 fresh loadout、post-callId tuning watermark 与 fresh 背包三段收敛。任一个未收敛前，tab、新 target 和新提交都保持锁定，禁止展示伪成功或重放 token。
 
 ### 5.3 交互真实性与对象身份
 

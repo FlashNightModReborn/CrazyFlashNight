@@ -126,6 +126,7 @@ async function main() {
     activeController._selectedTarget = {kind:'equipment', slotKey:'长枪'};
     activeController._tuning = tunable.controller._tuning;
     activeController._session = {
+        setCandidateScope:function() { return true; },
         requestCandidates:function() {
             candidateRequests += 1;
             return null;
@@ -165,6 +166,7 @@ async function main() {
     sendFailure._selectedSlotKey = 'weapon:长枪';
     sendFailure._selectedTarget = {kind:'equipment', slotKey:'长枪'};
     sendFailure._session = {
+        setCandidateScope:function() { return true; },
         requestCandidates:function() { return null; }
     };
     sendFailure._view = {setCandidateFailure:function() {

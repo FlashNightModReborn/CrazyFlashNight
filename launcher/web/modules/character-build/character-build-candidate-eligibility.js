@@ -11,9 +11,12 @@
 })(typeof window !== 'undefined' ? window : globalThis, function() {
     'use strict';
 
-    function blockedCopy(reason) {
+    function blockedCopy(reason, overview) {
         reason = String(reason || '');
         if (reason === 'incompatible_item') {
+            if (overview === true) {
+                return '此物品不能用于角色构筑；可查看说明，但没有可装入栏位。';
+            }
             return '与当前槽位不兼容；可查看说明，但不能装备。';
         }
         if (reason === 'level_locked') {

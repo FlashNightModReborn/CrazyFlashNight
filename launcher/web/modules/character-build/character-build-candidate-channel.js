@@ -44,6 +44,10 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
     }
     function candidateCacheTarget(target, scope) {
         if (!target || typeof target !== 'object') return '';
+        if (target.kind === 'backpack') {
+            return SessionModule.candidateScope(scope) === 'backpack'
+                ? 'backpack' : '';
+        }
         if (target.kind === 'equipment') {
             scope = SessionModule.candidateScope(scope || 'compatible');
             if (scope === 'backpack') return 'equipment:backpack';
@@ -90,14 +94,25 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
                 key:key,
                 backpackVersion:Number(payload.backpackVersion),
                 payload:scope === 'backpack' && target
-                        && target.kind === 'equipment' ? payload : null,
+                        && (target.kind === 'equipment'
+                            || target.kind === 'backpack') ? payload : null,
                 candidates:candidates.slice()
             };
             return true;
         };
         controller._selectSlot = function(selection) {
             var target = Projection.targetForSelection(selection);
-            if (!target) return false;
+            var scope = SessionModule.candidateScope(
+                selection && selection.candidateScope || 'compatible');
+            if (!target || !scope) return false;
+            var previousScope = this._candidateScope;
+            var previousSlotKey = this._selectedSlotKey;
+            var previousTarget = this._selectedTarget;
+            this._candidateScope = scope;
+            if (!this._session.setCandidateScope(scope)) {
+                this._candidateScope = previousScope;
+                return false;
+            }
             var tuningResult = SlotTransition.handle(this, selection, target, TuningModule);
             if (tuningResult !== null) {
                 if (tuningResult && tuningResult.deferCandidates === true) {
@@ -105,14 +120,15 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
                     this._selectedTarget = target;
                     this._renderPortrait(null);
                 }
+                if (!tuningResult) {
+                    this._candidateScope = previousScope;
+                    this._session.setCandidateScope(previousScope);
+                }
                 return tuningResult;
             }
-            var previousSlotKey = this._selectedSlotKey;
-            var previousTarget = this._selectedTarget;
             this._selectedSlotKey = selection && String(selection.key || '');
             this._selectedTarget = target;
             this._renderPortrait(null);
-            var scope = this._candidateScope;
             var cachedCandidates = this._readCandidateCache(target, scope);
             if (cachedCandidates) return cachedCandidates;
             var self = this, sendRefused = false;
@@ -139,6 +155,8 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
                 // Keep controller and View rollback transactional when transport admission fails.
                 this._selectedSlotKey = previousSlotKey;
                 this._selectedTarget = previousTarget;
+                this._candidateScope = previousScope;
+                this._session.setCandidateScope(previousScope);
                 this._renderPortrait(null);
             }
             return sendRefused ? null : callId;
@@ -148,7 +166,8 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
             scope = SessionModule.candidateScope(scope);
             if (!scope) return false;
             var previousScope = this._candidateScope;
-            if (scope === previousScope) return true;
+            var previousSlotKey = this._selectedSlotKey;
+            var previousTarget = this._selectedTarget;
             this._candidateScope = scope;
             if (!this._session.setCandidateScope(scope)) {
                 this._candidateScope = previousScope;
@@ -156,12 +175,19 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
             }
             this._selectedCandidate = null;
             this._renderPortrait(null);
-            if (!selection || !this._selectedTarget) return true;
+            if (!selection) return true;
 
             var target = Projection.targetForSelection(selection);
-            if (!target
-                    || SessionModule.targetKey(target)
-                        !== SessionModule.targetKey(this._selectedTarget)) {
+            if (!target) {
+                this._candidateScope = previousScope;
+                this._session.setCandidateScope(previousScope);
+                return false;
+            }
+            if (target.kind === 'backpack') {
+                this._selectedSlotKey = '';
+                this._selectedTarget = null;
+            } else if (SessionModule.targetKey(target)
+                    !== SessionModule.targetKey(this._selectedTarget)) {
                 this._candidateScope = previousScope;
                 this._session.setCandidateScope(previousScope);
                 return false;
@@ -192,6 +218,8 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
             if (!callId || sendRefused) {
                 this._candidateScope = previousScope;
                 this._session.setCandidateScope(previousScope);
+                this._selectedSlotKey = previousSlotKey;
+                this._selectedTarget = previousTarget;
                 this._renderPortrait(null);
             }
             return sendRefused ? false : callId;

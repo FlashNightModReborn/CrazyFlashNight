@@ -1302,7 +1302,7 @@ var EquipmentTuningRender = (function() {
             body.appendChild(installedRail);
         }
         var title = element('h3', 'equipment-tuning-section-title');
-        title.textContent = replacementMode ? '选择替换配件' : '可安装配件';
+        title.textContent = replacementMode ? '选择替换配件' : '配件候选';
         body.appendChild(title);
         var availableCandidates = candidates.filter(function(candidate) { return candidate.installed !== true; }).map(function(candidate) {
             if (!replacementMode) return candidate;

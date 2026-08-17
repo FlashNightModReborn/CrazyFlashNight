@@ -65,6 +65,32 @@ function commitResponse(callId) {
     noOp:false,canCommit:false,snapshot:state,
     inventorySnapshots:[backpackSnapshot('lease.2',post)]});
 }
+function loadoutConvertResponse(callId) {
+  const loadoutBefore={sourceKind:'loadout',sessionGeneration:17,
+    slotKey:'手枪',expectedLoadoutRevision:8};
+  const loadoutAfter=Object.assign({},loadoutBefore,{expectedLoadoutRevision:9});
+  const targetBefore=source('lease.target.1');
+  const targetAfter=source('lease.target.2');
+  const sourceBeforeEquipment=equipment(7,[],1000);
+  const sourceAfterEquipment=equipment(5,[],2000);
+  const targetBeforeEquipment=Object.assign(equipment(5,[],1000),{
+    name:'测试手枪B',displayName:'测试手枪乙',icon:'测试手枪图标乙'});
+  const targetAfterEquipment=Object.assign(equipment(7,[],2000),{
+    name:'测试手枪B',displayName:'测试手枪乙',icon:'测试手枪图标乙'});
+  const state=snapshot('lease.ignored',5,[],2000);
+  state.source=loadoutAfter;
+  state.equipment=sourceAfterEquipment;
+  state.enhance.currentLevel=5;
+  return Object.assign(tuple('commit',callId),{
+    operation:'convert',tuningToken:'token.loadout.convert',
+    transactionId:'txn.loadout.convert',
+    before:{source:{source:loadoutBefore,equipment:sourceBeforeEquipment},
+      target:{source:targetBefore,equipment:targetBeforeEquipment}},
+    after:{source:{source:loadoutAfter,equipment:sourceAfterEquipment},
+      target:{source:targetAfter,equipment:targetAfterEquipment}},
+    materials:[],removedMods:[],noOp:false,canCommit:false,snapshot:state,
+    inventorySnapshots:[backpackSnapshot('lease.target.2',targetAfterEquipment)]});
+}
 
 const sent = [];
 const timers = [];
@@ -217,6 +243,18 @@ assert.strictEqual(mux.handleResponse(malformedCommit),false);
 assert.strictEqual(malformedCommitAdopted,null);
 assert.strictEqual(mux.handleResponse(commitResponse(malformedCommitCall)),true);
 assert.strictEqual(malformedCommitAdopted.success,true);
+
+let loadoutConvertAdopted=null;
+const loadoutConvertCall=mux.request('commit',{
+  expectedTuningToken:'token.loadout.convert'
+},value=>{ loadoutConvertAdopted=value; });
+const missingLoadoutTargetProof=loadoutConvertResponse(loadoutConvertCall);
+missingLoadoutTargetProof.inventorySnapshots=[];
+assert.strictEqual(mux.handleResponse(missingLoadoutTargetProof),false);
+assert.strictEqual(loadoutConvertAdopted,null);
+assert.strictEqual(mux.handleResponse(loadoutConvertResponse(loadoutConvertCall)),true);
+assert.strictEqual(loadoutConvertAdopted.after.source.source.expectedLoadoutRevision,9);
+assert.strictEqual(loadoutConvertAdopted.inventorySnapshots.length,1);
 
 let forgedMaterialCommitAdopted=null;
 const forgedMaterialCommitCall=mux.request('commit',{expectedTuningToken:'token.commit'},

@@ -46,6 +46,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testFinalStateEventsAndBusyGuard();
         testStrictSourceKindsAndWornStaleFences();
         testWornCommitAndLiveDirtyBoundary();
+        testWornConversionAcrossBackpack();
         testWornAllowedOperationMatrix();
         testWornRollbackAndUnknownReconcile();
         testPreviewStatRows();
@@ -1499,6 +1500,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         var convertParams:Object = params("worn-convert");
         convertParams.operation = "convert";
         convertParams.source = source;
+        convertParams.target = source;
         var convertDenied:Object =
             EquipmentTuningService.execute(
                 "preview", convertParams);
@@ -1506,7 +1508,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && convertDenied.error
                     == "unsupported_operation"
                 && item.value.level == 1,
-            "loadout 明确拒绝 convert 且零装备写");
+            "loadout convert 仍拒绝非背包 target 且零装备写");
     }
 
     private static function testWornCommitAndLiveDirtyBoundary():Void {
@@ -1568,6 +1570,175 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && fixture.hero.手枪数据 === beforeDerived
                 && _root.refreshCalls == 0,
             "Character hook 精确同步一次；共享 worn item 引用不冒充派生属性已刷新");
+    }
+
+    private static function prepareWornConversion(
+        fixture:Object,
+        view:String,
+        targetSlot:Number):Object {
+        var source:Object = currentWornSource(fixture);
+        var snapshotParams:Object = params(view);
+        snapshotParams.source = source;
+        var snapshot:Object = EquipmentTuningService.execute(
+            "snapshot", snapshotParams);
+        var target:Object = sourceRef(
+            inventorySnapshot(), targetSlot);
+        var previewParams:Object = params(view);
+        previewParams.operation = "convert";
+        previewParams.source = source;
+        previewParams.target = target;
+        var preview:Object = EquipmentTuningService.execute(
+            "preview", previewParams);
+        return {
+            source:source,
+            target:target,
+            snapshot:snapshot,
+            preview:preview
+        };
+    }
+
+    private static function commitPreparedWornConversion(
+        prepared:Object,
+        view:String):Object {
+        var commitParams:Object = params(view);
+        commitParams.expectedTuningToken =
+            prepared.preview.tuningToken;
+        return EquipmentTuningService.execute(
+            "commit", commitParams);
+    }
+
+    private static function testWornConversionAcrossBackpack():Void {
+        resetFixture();
+        var worn:BaseItem = equipment(
+            "测试手枪A", 2, []);
+        var target:BaseItem = equipment(
+            "测试手枪B", 5, []);
+        _root.物品栏.背包.add(0, target);
+        var fixture:Object = installWornFixture(
+            "手枪", worn);
+        var beforeWornRevision:Number =
+            fixture.inventory.getMutationRevision();
+        var beforeBagRevision:Number =
+            _root.物品栏.背包.getMutationRevision();
+        var prepared:Object = prepareWornConversion(
+            fixture, "worn-convert-success", 0);
+        var committed:Object =
+            commitPreparedWornConversion(
+                prepared, "worn-convert-success");
+        var current:Object = CharacterBuildService.snapshot(
+            Number(fixture.opened.sessionGeneration));
+        var postTarget:Object = sourceRef(
+            committed.inventorySnapshots[0], 0);
+        assertTrue(prepared.snapshot.success
+                && prepared.preview.success
+                && committed.success
+                && !committed.noOp
+                && worn.value.level == 5
+                && target.value.level == 2
+                && fixture.inventory.getMutationRevision()
+                    == beforeWornRevision + 1
+                && _root.物品栏.背包.getMutationRevision()
+                    == beforeBagRevision + 1
+                && current.loadoutRevision
+                    == fixture.opened.loadoutRevision + 1
+                && current.liveRefreshDirty,
+            "loadout 与背包强化度以双 receipt 原子交换，两个 raw revision 和一个构筑 revision 各推进一次");
+        assertTrue(committed.inventorySnapshots.length == 1
+                && committed.after.source.source
+                    .expectedLoadoutRevision
+                    == fixture.opened.loadoutRevision + 1
+                && committed.after.target.source.expectedLease
+                    == postTarget.expectedLease
+                && postTarget.expectedLease
+                    != prepared.target.expectedLease
+                && committed.after.source.equipment.level == 5
+                && committed.after.target.equipment.level == 2,
+            "loadout convert 回包同时证明 post-loadout 与轮换 lease 后的完整背包 target");
+
+        resetFixture();
+        worn = equipment("测试手枪A", 2, []);
+        target = equipment("测试手枪B", 5, []);
+        _root.物品栏.背包.add(0, target);
+        fixture = installWornFixture("手枪", worn);
+        prepared = prepareWornConversion(
+            fixture, "worn-convert-rollback", 0);
+        var wornValue:Object = worn.value;
+        var targetValue:Object = target.value;
+        var wornTime:Number = worn.lastUpdate;
+        var targetTime:Number = target.lastUpdate;
+        beforeWornRevision =
+            fixture.inventory.getMutationRevision();
+        beforeBagRevision =
+            _root.物品栏.背包.getMutationRevision();
+        EquipmentTuningService
+            .testOnlyFailNextWornConversionBagCommit();
+        var rolledBack:Object =
+            commitPreparedWornConversion(
+                prepared, "worn-convert-rollback");
+        current = CharacterBuildService.snapshot(
+            Number(fixture.opened.sessionGeneration));
+        assertTrue(!rolledBack.success
+                && rolledBack.error == "commit_failed"
+                && worn.value === wornValue
+                && target.value === targetValue
+                && worn.lastUpdate == wornTime
+                && target.lastUpdate == targetTime
+                && fixture.inventory.getMutationRevision()
+                    == beforeWornRevision
+                && _root.物品栏.背包.getMutationRevision()
+                    == beforeBagRevision
+                && current.loadoutRevision
+                    == fixture.opened.loadoutRevision
+                && !current.liveRefreshDirty,
+            "背包侧提交失败会恢复 worn value/time/revision，且 Character authority 完全不前进");
+
+        resetFixture();
+        worn = equipment("测试手枪A", 2, []);
+        target = equipment("测试手枪B", 5, []);
+        _root.物品栏.背包.add(0, target);
+        fixture = installWornFixture("手枪", worn);
+        prepared = prepareWornConversion(
+            fixture, "worn-convert-stale", 0);
+        target.lastUpdate = Number(target.lastUpdate) + 1;
+        beforeWornRevision =
+            fixture.inventory.getMutationRevision();
+        beforeBagRevision =
+            _root.物品栏.背包.getMutationRevision();
+        var stale:Object = commitPreparedWornConversion(
+            prepared, "worn-convert-stale");
+        assertTrue(!stale.success
+                && stale.error == "stale_state"
+                && worn.value.level == 2
+                && target.value.level == 5
+                && fixture.inventory.getMutationRevision()
+                    == beforeWornRevision
+                && _root.物品栏.背包.getMutationRevision()
+                    == beforeBagRevision,
+            "loadout convert 在 commit 临界区重新验证背包 target，stale target 零交换");
+
+        resetFixture();
+        worn = equipment("测试手枪A", 2, []);
+        target = equipment("测试手枪B", 5, []);
+        _root.物品栏.背包.add(0, target);
+        fixture = installWornFixture("手枪", worn);
+        prepared = prepareWornConversion(
+            fixture, "worn-convert-observed", 0);
+        CharacterBuildService
+            .testOnlyFailNextWornPostcondition();
+        var observed:Object = commitPreparedWornConversion(
+            prepared, "worn-convert-observed");
+        current = CharacterBuildService.snapshot(
+            Number(fixture.opened.sessionGeneration));
+        assertTrue(!observed.success
+                && observed.error == "needs_reconcile"
+                && worn.value.level == 5
+                && target.value.level == 2
+                && current.loadoutRevision
+                    == fixture.opened.loadoutRevision + 1
+                && current.liveRefreshDirty
+                && observed.writeEpoch == 1
+                && _root.存档系统.dirtyMark,
+            "Character authority 已观察跨容器 post-state 后保留双侧提交并要求双快照对账，绝不反向伪装失败");
     }
 
     private static function testWornAllowedOperationMatrix():Void {

@@ -1634,6 +1634,177 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Fact]
+        public void TargetlessBackpackOverviewForwardsNoSelectorAndAcceptsCrossKindRows()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("candidates");
+                request.Remove("slotKey");
+                request["candidateScope"] = "backpack";
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.candidates.backpack-overview",
+                        request));
+
+                JObject flash = Assert.Single(harness.Flash);
+                AssertExactKeys(
+                    flash,
+                    "task", "action", "callId", "v", "panelInstanceId",
+                    "requestCallId", "writeEpoch", "sessionGeneration",
+                    "expectedLoadoutRevision", "expectedDrugRevision",
+                    "candidateScope");
+                Assert.Equal("backpack", flash.Value<string>("candidateScope"));
+                Assert.Null(flash["slotKey"]);
+                Assert.Null(flash["drugSlot"]);
+
+                JObject response = SuccessResponse(
+                    flash,
+                    "candidates",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                response["payload"]["target"] = new JObject
+                {
+                    ["kind"] = "backpack"
+                };
+                response["payload"]["candidates"] = new JArray(
+                    CandidateRow(
+                        2,
+                        CandidateItem("刀", "equipment", 1),
+                        false,
+                        "",
+                        new JArray("刀"),
+                        ""),
+                    CandidateRow(
+                        3,
+                        CandidateItem("药剂", "stack", 2),
+                        false,
+                        "",
+                        new JArray(),
+                        ""),
+                    CandidateRow(
+                        4,
+                        CandidateItem("材料", "stack", 3),
+                        true,
+                        "incompatible_item",
+                        new JArray(),
+                        ""),
+                    CandidateRow(
+                        5,
+                        CandidateItem("上装装备", "equipment", 1),
+                        true,
+                        "level_locked",
+                        new JArray("上装装备"),
+                        "level_locked"));
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.True(web.Value<bool>("success"));
+                Assert.Equal(
+                    "backpack",
+                    web["payload"]["target"].Value<string>("kind"));
+                Assert.Equal(4, ((JArray)web["payload"]["candidates"]).Count);
+            }
+        }
+
+        [Theory]
+        [InlineData("compatible_without_selector")]
+        [InlineData("both_selectors")]
+        [InlineData("overview_extra_key")]
+        public void CandidateIngressRejectsAmbiguousOrNonExactTargetlessPayloads(
+            string mutation)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject payload = ProductionPayload("candidates");
+                if (mutation == "compatible_without_selector")
+                {
+                    payload.Remove("slotKey");
+                }
+                else if (mutation == "both_selectors")
+                {
+                    payload["drugSlot"] = 1;
+                }
+                else
+                {
+                    payload.Remove("slotKey");
+                    payload["candidateScope"] = "backpack";
+                    payload["target"] = "backpack";
+                }
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.candidates.targetless.invalid." + mutation,
+                        payload));
+                Assert.Empty(harness.Flash);
+                Assert.Equal(
+                    "invalid_payload",
+                    Assert.Single(harness.Web).Value<string>("error"));
+            }
+        }
+
+        [Theory]
+        [InlineData("target_extra")]
+        [InlineData("missing_eligibility")]
+        [InlineData("material_enabled")]
+        [InlineData("drug_disabled")]
+        public void TargetlessBackpackOverviewRejectsMalformedOrMisclassifiedRows(
+            string mutation)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("candidates");
+                request.Remove("slotKey");
+                request["candidateScope"] = "backpack";
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.candidates.backpack-overview.invalid." + mutation,
+                        request));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "candidates",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                JObject target = new JObject { ["kind"] = "backpack" };
+                JObject row = CandidateRow(
+                    2,
+                    CandidateItem(
+                        mutation == "drug_disabled" ? "药剂" : "材料",
+                        "stack",
+                        2),
+                    mutation != "material_enabled",
+                    mutation == "material_enabled" ? "" : "incompatible_item",
+                    new JArray(),
+                    "");
+                if (mutation == "target_extra") target["slotKey"] = "长枪";
+                if (mutation == "missing_eligibility")
+                    row.Remove("equipmentEligibility");
+                response["payload"]["target"] = target;
+                response["payload"]["candidates"] = new JArray(row);
+                harness.Task.HandleFlashResponse(response, null);
+                Assert.Equal(
+                    "malformed_response",
+                    Assert.Single(harness.Web).Value<string>("error"));
+            }
+        }
+
         [Theory]
         [InlineData("scope_mismatch")]
         [InlineData("enabled_incompatible")]

@@ -1975,14 +1975,19 @@ namespace CF7Launcher.Guardian
                 HashSet<string> expectedKeys = hasSlotKey
                     ? Set("v", "sessionGeneration", "expectedLoadoutRevision",
                         "expectedDrugRevision", "candidateScope", "slotKey")
-                    : Set("v", "sessionGeneration", "expectedLoadoutRevision",
-                        "expectedDrugRevision", "candidateScope", "drugSlot");
+                    : hasDrugSlot
+                        ? Set("v", "sessionGeneration", "expectedLoadoutRevision",
+                            "expectedDrugRevision", "candidateScope", "drugSlot")
+                        : Set("v", "sessionGeneration", "expectedLoadoutRevision",
+                            "expectedDrugRevision", "candidateScope");
                 long expectedLoadout;
                 long expectedDrug;
                 string candidateScope = ReadString(payload["candidateScope"]);
-                if (hasSlotKey == hasDrugSlot
+                if (hasSlotKey && hasDrugSlot
                     || !IsExactObject(payload, expectedKeys)
                     || (candidateScope != "compatible"
+                        && candidateScope != "backpack")
+                    || (!hasSlotKey && !hasDrugSlot
                         && candidateScope != "backpack")
                     || !TryReadInteger(
                         payload["expectedLoadoutRevision"],
@@ -2011,7 +2016,7 @@ namespace CF7Launcher.Guardian
                     }
                     result["slotKey"] = slotKey;
                 }
-                else
+                else if (hasDrugSlot)
                 {
                     int drugSlot;
                     if (!TryReadInteger(payload["drugSlot"], 0, 3, out drugSlot))
@@ -2546,11 +2551,10 @@ namespace CF7Launcher.Guardian
                     || request["drugSlot"] != null)
                     return false;
             }
-            else
+            else if (kind == "drug")
             {
                 int requestedDrugSlot;
-                if (kind != "drug"
-                    || !IsExactObject(target, Set("kind", "drugSlot"))
+                if (!IsExactObject(target, Set("kind", "drugSlot"))
                     || !TryReadInteger(
                         target["drugSlot"], 0, 3, out targetDrugSlot)
                     || request == null
@@ -2560,9 +2564,23 @@ namespace CF7Launcher.Guardian
                     || requestedDrugSlot != targetDrugSlot)
                     return false;
             }
+            else if (kind == "backpack")
+            {
+                if (!IsExactObject(target, Set("kind"))
+                    || candidateScope != "backpack"
+                    || request == null
+                    || request["slotKey"] != null
+                    || request["drugSlot"] != null)
+                    return false;
+            }
+            else
+            {
+                return false;
+            }
 
             bool universalEquipmentBackpack =
-                candidateScope == "backpack" && kind == "equipment";
+                candidateScope == "backpack"
+                    && (kind == "equipment" || kind == "backpack");
 
             int previousPhysicalSlot = -1;
             foreach (JToken token in candidates)
@@ -2624,6 +2642,7 @@ namespace CF7Launcher.Guardian
                         out quantity))
                     return false;
                 string eligibilityReason = null;
+                string[] eligibleEquipmentSlots = new string[0];
                 if (universalEquipmentBackpack)
                 {
                     JObject eligibility = row["equipmentEligibility"] as JObject;
@@ -2632,6 +2651,7 @@ namespace CF7Launcher.Guardian
                     string[] expectedSlots =
                         CharacterBuildProtocol.CompatibleEquipmentSlotKeys(
                             itemKind, use, majorType, quantity);
+                    eligibleEquipmentSlots = expectedSlots;
                     eligibilityReason = ReadString(
                         eligibility != null ? eligibility["blockedReason"] : null);
                     if (!IsExactObject(
@@ -2678,6 +2698,18 @@ namespace CF7Launcher.Guardian
                 }
                 else
                 {
+                    if (kind == "backpack")
+                    {
+                        bool overviewDrug = itemKind == "stack"
+                            && use == "药剂" && quantity > 0;
+                        string overviewReason = eligibleEquipmentSlots.Length > 0
+                            ? eligibilityReason
+                            : overviewDrug ? "" : "incompatible_item";
+                        if (disabled != (overviewReason.Length != 0)
+                            || blockedReason != overviewReason)
+                            return false;
+                        continue;
+                    }
                     if (universalEquipmentBackpack
                         && (compatible
                             ? (disabled != (eligibilityReason.Length != 0)

@@ -438,7 +438,9 @@ async function runStorageToBuildVisibilityProbe(browser, server, shotDirectory) 
             const state = InventoryWorkbench.debugState();
             return state.view === 'build' && state.build && state.build.mounted
                 && state.build.rendererCount === 1
-                && state.build.view && state.build.view.candidateCount === 1;
+                && state.build.view && state.build.view.candidateCount === 7
+                && state.build.view.candidateScope === 'backpack'
+                && state.build.view.selectedSlotKey === '';
         }, null, {timeout:30000});
         const switched = await page.evaluate(() => {
             const body = document.querySelector('.workbench-shell > .workbench-body');
@@ -690,6 +692,7 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         'modules/character-build-session.js',
         'modules/character-build/character-build-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
+        'modules/character-build/character-build-tuning-ports.js',
         'modules/character-build/character-build-candidate-eligibility.js',
         'modules/character-build/character-build-candidate-state.js',
         'modules/character-build/character-build-facet-counts.js',

@@ -156,6 +156,12 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             if (itemData.data.level > _root.等级) {
                 return false;
             }
+
+            // 同名手雷交还 ItemUtil.acquire 统一合并；快捷拾取不再把旧堆
+            // 强行挪入背包后创建一份新堆。
+            if (use == "手雷" && 装备 == itemName) {
+                return false;
+            }
             
             if (!装备 && use) {
                 // 装备栏为空，直接装备

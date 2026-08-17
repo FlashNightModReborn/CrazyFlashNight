@@ -45,6 +45,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         testLongGunGrenadeWriterPersistence();
         testLootAcquireProjectsOnNewSession();
         testEquipmentMutationMoveSwapAndUnequip();
+        testGrenadeMutationMergeAndFullBackpackUnequip();
         testDrugMutationMoveSwapMergeAndUnequip();
         testMutationPreflightFailuresAndNoSideEffects();
         testMutationRollbackAndDispatcherReentry();
@@ -1460,6 +1461,39 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                     .equipmentEligibility.blockedReason == "level_locked",
             "装备 backpack row 携 AS2 盖章的 canonical 跨槽 eligibility，异类为空且等级锁定不下沉 Web");
 
+        var overviewParams:Object = wireParams(
+            "workbench.candidates.1",
+            "character-build.candidates.overview");
+        overviewParams.sessionGeneration = opened.sessionGeneration;
+        overviewParams.expectedLoadoutRevision = opened.loadoutRevision;
+        overviewParams.expectedDrugRevision = opened.drugRevision;
+        overviewParams.candidateScope = "backpack";
+        var overview:Object = CharacterBuildService.execute(
+            "candidates", overviewParams);
+        check(overview.success
+                && hasOnlyKeys(overview.payload.target, {kind:true})
+                && overview.payload.target.kind == "backpack"
+                && overview.payload.candidates.length == 4
+                && !overview.payload.candidates[0].disabled
+                && !overview.payload.candidates[1].disabled
+                && !overview.payload.candidates[2].disabled
+                && overview.payload.candidates[3].disabled
+                && overview.payload.candidates[3].blockedReason
+                    == "level_locked"
+                && overview.payload.candidates[1]
+                    .equipmentEligibility.slots.length == 2
+                && overview.payload.candidates[2]
+                    .equipmentEligibility.slots.length == 0,
+            "无 selector 的 backpack scope 返回 target=backpack 总览，并区分可装备、药剂与等级阻断");
+        overviewParams.candidateScope = "compatible";
+        overviewParams.requestCallId =
+            "character-build.candidates.overview-compatible";
+        var invalidOverview:Object = CharacterBuildService.execute(
+            "candidates", overviewParams);
+        check(!invalidOverview.success
+                && invalidOverview.error == "invalid_payload",
+            "无目标 candidates 只允许显式 backpack scope，不产生隐式 compatible 目标");
+
         var missingScopeParams:Object = wireParams("workbench.candidates.1",
             "character-build.candidates.scope-missing");
         missingScopeParams.sessionGeneration = opened.sessionGeneration;
@@ -2364,18 +2398,22 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
 
     private static function testLootAcquireProjectsOnNewSession():Void {
         var acquireName:String = "B4拾取新会话投影药剂";
+        var equippedDrugName:String = "B4拾取补充已装药剂";
+        var grenadeName:String = "B4拾取补充已装备手雷";
         var root:Object = fixtureRoot(1);
         var backpack:ArrayInventory =
-            new ArrayInventory(null, 50);
+            new ArrayInventory(null, 1);
         root.物品栏.背包 = backpack;
-        root.物品栏.药剂栏 =
-            new DrugInventory(null, 4);
         root.收集品栏 = {
             材料:new DictCollection({}),
             情报:new DictCollection({})
         };
         registerCatalog(
             root, acquireName, "消耗品", "药剂", 1);
+        registerCatalog(
+            root, equippedDrugName, "消耗品", "药剂", 1);
+        registerCatalog(
+            root, grenadeName, "消耗品", "手雷", 1);
         var itemData:Object = {};
         itemData[acquireName] = {
             name:acquireName,
@@ -2384,8 +2422,37 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             use:"药剂",
             data:{level:1}
         };
+        itemData[equippedDrugName] = {
+            name:equippedDrugName,
+            displayname:equippedDrugName,
+            type:"消耗品",
+            use:"药剂",
+            data:{level:1}
+        };
+        itemData[grenadeName] = {
+            name:grenadeName,
+            displayname:grenadeName,
+            type:"消耗品",
+            use:"手雷",
+            data:{level:1}
+        };
         var binding:Object = bindItemUtilFixture(
             root, itemData, {});
+        var equippedDrug:BaseItem =
+            BaseItem.create(equippedDrugName, 3, 1);
+        root.物品栏.药剂栏 =
+            new DrugInventory(null, 4);
+        // Fixture 用 transactionWrite 保留 exact ref，避免 DrugInventory.add
+        // 走全局 _root.getItemData（本测试只绑定隔离 root 的目录）。
+        root.物品栏.药剂栏.transactionWrite(0, equippedDrug);
+        var equippedGrenade:BaseItem =
+            BaseItem.create(grenadeName, 5, 1);
+        root.物品栏.装备栏 =
+            new EquipmentInventory(null);
+        // EquipmentInventory 无数字索引树；直接布置隔离 fixture
+        // 可保留 exact ref，生产写入仍由 addValue 走真实容器。
+        root.物品栏.装备栏.getItems().手雷 = equippedGrenade;
+        root.gameworld[root.控制目标].手雷 = equippedGrenade;
         var callback:Object =
             writerPersistenceCallbacks(root);
         CharacterBuildService.testOnlyUseRoot(root);
@@ -2397,9 +2464,15 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
 
         var acquired:Boolean =
             ItemUtil.singleAcquire(acquireName, 4);
+        var drugAcquired:Boolean =
+            ItemUtil.singleAcquire(equippedDrugName, 4);
+        var grenadeAcquired:Boolean =
+            ItemUtil.singleAcquire(grenadeName, 4);
+        var synchronized:Object = CharacterBuildService.synchronize(
+            opened.sessionGeneration);
         var finalized:Object = CharacterBuildService.finalize(
             opened.sessionGeneration,
-            opened.loadoutRevision);
+            synchronized.loadoutRevision);
         var reopened:Object = CharacterBuildService.execute(
             "snapshot", wireParams(
                 "workbench.writer.acquire.2",
@@ -2420,13 +2493,26 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 "candidates", params);
         var acquiredRow:Object = findCandidate(
             candidates, acquireName, 0);
-        check(acquired && finalized.success
+        check(acquired && synchronized.success && finalized.success
                 && reopened.success
                 && acquiredRow != null
                 && acquiredRow.item.quantity == 4
                 && countCandidates(
                     candidates, acquireName) == 1,
             "既有正确 dirty 的 ItemUtil.acquire 仅补新 session 真实背包投影，无复制/复活");
+        check(drugAcquired
+                && root.物品栏.药剂栏.getItem("0")
+                    === equippedDrug
+                && equippedDrug.value == 7
+                && backpack.getTotal(equippedDrugName) == 0
+                && reopened.payload.drugs[0].item.quantity == 7,
+            "ItemUtil.acquire 满包获取同名药剂优先补充已装药剂原对象");
+        check(grenadeAcquired
+                && root.物品栏.装备栏.getItem("手雷")
+                    === equippedGrenade
+                && equippedGrenade.value == 9
+                && backpack.getTotal(grenadeName) == 0,
+            "ItemUtil.acquire 获取同名手雷优先补充已装备原对象，不占背包空位");
 
         CharacterBuildService.testOnlyReset();
         restoreItemUtilFixture(binding);
@@ -2622,6 +2708,66 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         __activeMutationRoot = null;
     }
 
+    private static function testGrenadeMutationMergeAndFullBackpackUnequip():Void {
+        var root:Object = fixtureRoot(4);
+        __activeMutationRoot = root;
+        var bag:Object = root.物品栏.背包;
+        bag.capacity = 2;
+        var equipped:Object = root.物品栏.装备栏.getItem("手雷");
+        var same:Object = stack("观察手雷", 4);
+        var other:Object = stack("事务异名手雷", 3);
+        bag.items["0"] = same;
+        bag.items["1"] = other;
+        registerCatalog(root, "事务异名手雷", "消耗品", "手雷", 1);
+        setInstanceData(same, catalog("消耗品", "手雷", 1));
+
+        var fixture:Object = mutationFixture(
+            root, "workbench.mutation.grenade");
+        var opened:Object = fixture.opened;
+        var mergeParams:Object = equipmentMutationParams(
+            "equipEquipment", "workbench.mutation.grenade",
+            opened, "手雷", 0);
+        var merged:Object = CharacterBuildService.execute(
+            "equipEquipment", mergeParams);
+        check(merged.success
+                && root.物品栏.装备栏.getItem("手雷") === equipped
+                && equipped.value == 9 && bag.getItem("0") == null,
+            "equipEquipment 手雷同名装入保留已装备 target ref 并合并数量");
+
+        var backpackSame:Object = stack("观察手雷", 2);
+        setInstanceData(backpackSame,
+            catalog("消耗品", "手雷", 1));
+        bag.transactionWrite(0, backpackSame);
+        var unequipParams:Object = equipmentMutationParams(
+            "unequipEquipment", "workbench.mutation.grenade",
+            merged, "手雷", undefined);
+        var unequipped:Object = CharacterBuildService.execute(
+            "unequipEquipment", unequipParams);
+        check(unequipped.success
+                && unequipped.affectedBackpackSlot == 0
+                && root.物品栏.装备栏.getItem("手雷") == null
+                && bag.getItem("0") === backpackSame
+                && backpackSame.value == 11,
+            "满包卸下手雷仍优先合并物理序号最小的同名背包堆");
+
+        var equipOtherParams:Object = equipmentMutationParams(
+            "equipEquipment", "workbench.mutation.grenade",
+            unequipped, "手雷", 1);
+        var equippedOther:Object = CharacterBuildService.execute(
+            "equipEquipment", equipOtherParams);
+        var swapParams:Object = equipmentMutationParams(
+            "equipEquipment", "workbench.mutation.grenade",
+            equippedOther, "手雷", 0);
+        var swapped:Object = CharacterBuildService.execute(
+            "equipEquipment", swapParams);
+        check(equippedOther.success && swapped.success
+                && root.物品栏.装备栏.getItem("手雷")
+                    === backpackSame
+                && bag.getItem("0") === other,
+            "手雷异名装入保持原有 exact ref swap 语义，不跨名称合并");
+        __activeMutationRoot = null;
+    }
+
     private static function testDrugMutationMoveSwapMergeAndUnequip():Void {
         var root:Object = fixtureRoot(8);
         __activeMutationRoot = root;
@@ -2682,6 +2828,16 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && swapped.drugRevision == merged.drugRevision + 1,
             "equipDrug 异名 stack 复刻现役 swap，old target 回 source 槽");
 
+        bag.capacity = 3;
+        var backpackOther:Object = stack("事务药剂B", 2);
+        var filler:Object = stack("事务药剂填充", 1);
+        setInstanceData(backpackOther,
+            catalog("消耗品", "药剂", 1));
+        setInstanceData(filler,
+            catalog("消耗品", "药剂", 1));
+        bag.transactionWrite(0, backpackOther);
+        bag.transactionWrite(1, filler);
+
         var unequipParams:Object = drugMutationParams(
             "unequipDrug", "workbench.mutation.drug",
             swapped, 0, undefined);
@@ -2690,10 +2846,11 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         check(unequipped.success
                 && unequipped.affectedBackpackSlot == 0
                 && root.物品栏.药剂栏.getItem("0") == null
-                && bag.getItem("0") === other
+                && bag.getItem("0") === backpackOther
+                && backpackOther.value == 5
                 && unequipped.drugRevision
                     == swapped.drugRevision + 1,
-            "unequipDrug 只 move 到首个背包空位，不隐式跨槽 merge");
+            "unequipDrug 在满包中仍优先合并物理序号最小的同名背包堆");
         check(fixture.callback.state.drugCooldownCalls == 4
                 && fixture.callback.state.leaseInvalidations == 4
                 && unequipped.loadoutRevision == loadoutBefore
