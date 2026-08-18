@@ -174,6 +174,17 @@ Character Build 候选区以独立 `ChoiceGroup` 提供“兼容 / 背包”范�
 
 边框不能全部等权。推荐层级为：surface 明度/间距建立主分组，柔线分隔内部，accent 只标识 focus、selected、pending 或主决策。
 
+### 4.3 Elevation、焦点环与卡片表面
+
+`tokens.css` 提供全部由既有 token 派生的共享质感层，禁止为单面板另造一次性阴影或渐变：
+
+- `--wb-shadow-raised`（卡片 hover 浮起）、`--wb-shadow-overlay`（下拉菜单/浮层）；阴影色从 `--wb-bg` 派生，skin 覆盖底色时自动换色。
+- `--wb-inner-highlight`：卡片/按钮顶部 1px 内高光，建立 elevation 而不动几何。
+- `--wb-ring-focus`：统一 `focus-visible` 焦点环（角色色描边 + 微光晕），新控件不得自造焦点样式。
+- `--wb-card-surface` / `--wb-card-surface-hover`：卡片表面渐变对，目录卡、档案卡、hero 卡共用。
+
+hover/focus 反馈只走 paint（阴影、边框、背景、光晕），不用 `transform` 位移，避免干扰命中测试与 tooltip 锚定；需要注意力提示时使用 `motion.css` 的共享 keyframes（如采购需求行的 `wb-glow-attention` 光晕呼吸），周期消费 motion token，reduced-motion 下自动关闭且持久状态仍由边框/图标/文案表达。
+
 ## 5. 状态语言与权威阶段
 
 ### 5.1 规范状态

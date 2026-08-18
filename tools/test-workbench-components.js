@@ -99,9 +99,9 @@ class FakeDocument {
     listenerCount(type) { return (this.listeners[type] || []).length; }
 }
 
-test('exports the seven shared primitives', () => {
+test('exports the eight shared primitives', () => {
     assert.deepStrictEqual(Object.keys(Components).sort(), [
-        'ChoiceGroup', 'CommitBar', 'Dropdown', 'HelpAction', 'OwnedInventoryPane', 'QuantityControl', 'SecondaryPage'
+        'ChoiceGroup', 'CommitBar', 'Dropdown', 'HelpAction', 'OwnedInventoryPane', 'ProcurementHighlight', 'QuantityControl', 'SecondaryPage'
     ]);
 });
 

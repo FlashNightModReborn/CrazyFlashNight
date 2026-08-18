@@ -3,6 +3,11 @@
         0%,100% { opacity:.4; }
         50% { opacity:1; }
     }
+    /* 采购需求行的克制注意力提示：仅光晕呼吸，静态态由 border/inset 条独立可见。 */
+    @keyframes wb-glow-attention {
+        0%,100% { box-shadow:inset 3px 0 0 var(--dls-energetic),0 0 9px color-mix(in srgb,var(--dls-energetic) 12%,transparent); }
+        50% { box-shadow:inset 3px 0 0 var(--dls-energetic),0 0 14px color-mix(in srgb,var(--dls-energetic) 22%,transparent); }
+    }
     @keyframes wb-reject-pulse {
         0%,100% { outline-color:var(--wb-role-reject); }
         50% { outline-color:color-mix(in srgb,var(--wb-role-reject) 68%,var(--wb-text)); }

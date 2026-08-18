@@ -54,4 +54,19 @@
     --wb-scrollbar-thumb: #386474;
     --wb-scrollbar-thumb-border: #56899a;
     --wb-scrollbar-thumb-hover: #56899a;
+
+    /* ── Elevation / 焦点环 / 卡片表面：全部从既有 token 派生，不引入新色相；
+       var() 在消费处解析，skin 覆盖 --wb-bg/--wb-surface 时阴影随之换色。 */
+    --wb-shadow-raised: 0 3px 10px color-mix(in srgb,var(--wb-bg) 68%,transparent),
+        0 1px 3px color-mix(in srgb,var(--wb-bg) 55%,transparent);
+    --wb-shadow-overlay: 0 10px 26px color-mix(in srgb,var(--wb-bg) 74%,transparent),
+        0 2px 8px color-mix(in srgb,var(--wb-bg) 58%,transparent);
+    --wb-inner-highlight: inset 0 1px 0 color-mix(in srgb,var(--wb-text) 6%,transparent);
+    --wb-ring-focus: 0 0 0 1px var(--wb-role-focus), 0 0 10px var(--dls-glow);
+    --wb-card-surface: linear-gradient(145deg,
+        color-mix(in srgb,var(--wb-surface) 93%,var(--wb-text)),
+        color-mix(in srgb,var(--wb-bg) 76%,var(--wb-surface)));
+    --wb-card-surface-hover: linear-gradient(145deg,
+        color-mix(in srgb,var(--wb-surface) 88%,var(--wb-text) 6%),
+        color-mix(in srgb,var(--wb-bg) 68%,var(--wb-surface)));
 }
