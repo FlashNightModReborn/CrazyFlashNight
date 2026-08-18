@@ -20,7 +20,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
     /// （launcher/data/doll-portraits/&lt;hex&gt;.png）尚无该键落盘，则经 C#→WebView2 桥
     /// （WebOverlayForm.TryPostToWeb，type="dollBake"）请求常驻 overlay 的 doll-bake.js
     /// 用 dressup 渲染器烘焙 256×256 胸像；web 侧完成后经 task 桥回传 doll_bake_result，
-    /// 由 DollBakeTask 原子落盘并回调 NotifyResult 清除在飞状态。
+    /// 由 DollBakeTask 先按 exact requestId claim，再在原子落盘终态清除对应在飞状态。
     ///
     /// 降级语义（绝不阻断游戏）：文件已存在直接返回；同键全局单飞去重；在飞上限 64，
     /// 满则丢弃记日志；桥不可用（WebView2 未就绪）不入队、下次事件自然重试；
@@ -33,8 +33,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
         private sealed class InFlight
         {
+            internal string Key;
             internal string RequestId;
             internal Timer Timer;
+            internal bool Completing;
         }
 
         private readonly string _dir;
@@ -43,6 +45,8 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private readonly object _gate = new object();
         private readonly Dictionary<string, InFlight> _inFlight =
             new Dictionary<string, InFlight>(StringComparer.Ordinal);
+        private readonly HashSet<string> _validatedPortraits =
+            new HashSet<string>(StringComparer.Ordinal);
         private long _seq;
         private bool _disposed;
 
@@ -82,11 +86,35 @@ namespace CF7Launcher.Guardian.Hud.Loot
             try
             {
                 string path = Path.Combine(_dir, hex + ".png");
-                if (File.Exists(path)) return;
+                if (File.Exists(path))
+                {
+                    lock (_gate)
+                    {
+                        if (_validatedPortraits.Contains(key)) return;
+                    }
+
+                    string validationError = DollPortraitPngValidator.ValidateFile(path);
+                    if (validationError == null)
+                    {
+                        lock (_gate)
+                        {
+                            if (!_disposed) _validatedPortraits.Add(key);
+                        }
+                        return;
+                    }
+
+                    lock (_gate) _validatedPortraits.Remove(key);
+                    LogManager.Log("[DollBake] invalid cached portrait, rebaking: " + key
+                        + " (" + validationError + ")");
+                }
+                else
+                {
+                    lock (_gate) _validatedPortraits.Remove(key);
+                }
             }
             catch { /* 路径不可达时仍走烘焙流程，落盘由 DollBakeTask 兜底 */ }
 
-            InFlight entry = new InFlight();
+            InFlight entry = new InFlight { Key = key };
             lock (_gate)
             {
                 if (_disposed) return;
@@ -120,12 +148,12 @@ namespace CF7Launcher.Guardian.Hud.Loot
             if (!posted)
             {
                 // WebView2 未就绪：不入队，静默降级；下一次击杀事件自然重试
-                RemoveInFlight(key, null);
+                RemoveInFlight(key, entry);
                 LogManager.Log("[DollBake] bridge unavailable, skipped: " + key);
                 return;
             }
 
-            entry.Timer = new Timer(OnTimeout, key, _requestTimeout, Timeout.InfiniteTimeSpan);
+            ArmTimeout(entry);
         }
 
         /// <summary>
@@ -134,11 +162,45 @@ namespace CF7Launcher.Guardian.Hud.Loot
         /// </summary>
         public Action<string> PortraitReady;
 
-        /// <summary>DollBakeTask 终态回调（清除在飞允许后续重试；成功时触发 PortraitReady）。</summary>
-        internal void NotifyResult(string key, bool success)
+        /// <summary>
+        /// result 写盘前的原子栅栏：只允许当前 key 的 exact requestId 进入 completing。
+        /// completing 期间仍占据单飞槽位，避免验证/写盘窗口内启动同键新请求。
+        /// </summary>
+        internal bool TryBeginResult(string key, string requestId)
         {
-            if (string.IsNullOrEmpty(key)) return;
-            RemoveInFlight(key, null);
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(requestId)) return false;
+            Timer timer = null;
+            lock (_gate)
+            {
+                if (_disposed) return false;
+                InFlight entry;
+                if (!_inFlight.TryGetValue(key, out entry)) return false;
+                if (!string.Equals(entry.RequestId, requestId, StringComparison.Ordinal)) return false;
+                if (entry.Completing) return false;
+                entry.Completing = true;
+                timer = entry.Timer;
+                entry.Timer = null;
+            }
+            DisposeTimer(timer);
+            return true;
+        }
+
+        /// <summary>
+        /// exact result 终态：只移除 TryBeginResult 占用的同一请求；成功时通知图标重探。
+        /// </summary>
+        internal bool CompleteResult(string key, string requestId, bool success)
+        {
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(requestId)) return false;
+            lock (_gate)
+            {
+                InFlight entry;
+                if (!_inFlight.TryGetValue(key, out entry)) return false;
+                if (!entry.Completing
+                    || !string.Equals(entry.RequestId, requestId, StringComparison.Ordinal))
+                    return false;
+                _inFlight.Remove(key);
+                if (success) _validatedPortraits.Add(key);
+            }
             if (success)
             {
                 Action<string> h = PortraitReady;
@@ -147,14 +209,52 @@ namespace CF7Launcher.Guardian.Hud.Loot
                     try { h(key); } catch { }
                 }
             }
+            return true;
+        }
+
+        private void ArmTimeout(InFlight entry)
+        {
+            Timer timer = new Timer(OnTimeout, entry, _requestTimeout, Timeout.InfiniteTimeSpan);
+            bool keep = false;
+            lock (_gate)
+            {
+                InFlight current;
+                if (!_disposed
+                    && _inFlight.TryGetValue(entry.Key, out current)
+                    && ReferenceEquals(current, entry)
+                    && !entry.Completing)
+                {
+                    entry.Timer = timer;
+                    keep = true;
+                }
+            }
+            if (!keep) DisposeTimer(timer);
         }
 
         private void OnTimeout(object state)
         {
-            string key = state as string;
-            if (key == null) return;
-            if (RemoveInFlight(key, null))
-                LogManager.Log("[DollBake] request timeout (" + _requestTimeout.TotalSeconds + "s), dropped: " + key);
+            InFlight expected = state as InFlight;
+            if (expected == null) return;
+
+            bool removed = false;
+            Timer timer = null;
+            lock (_gate)
+            {
+                InFlight current;
+                if (_inFlight.TryGetValue(expected.Key, out current)
+                    && ReferenceEquals(current, expected)
+                    && !current.Completing)
+                {
+                    _inFlight.Remove(expected.Key);
+                    timer = current.Timer;
+                    current.Timer = null;
+                    removed = true;
+                }
+            }
+            DisposeTimer(timer);
+            if (removed)
+                LogManager.Log("[DollBake] request timeout (" + _requestTimeout.TotalSeconds
+                    + "s), dropped: " + expected.Key + " req=" + expected.RequestId);
         }
 
         private bool RemoveInFlight(string key, InFlight expected)
@@ -163,14 +263,17 @@ namespace CF7Launcher.Guardian.Hud.Loot
             lock (_gate)
             {
                 if (!_inFlight.TryGetValue(key, out entry)) return false;
-                if (expected != null && !ReferenceEquals(entry, expected)) return false;
+                if (!ReferenceEquals(entry, expected)) return false;
                 _inFlight.Remove(key);
             }
-            if (entry != null && entry.Timer != null)
-            {
-                try { entry.Timer.Dispose(); } catch { }
-            }
+            DisposeTimer(entry.Timer);
             return true;
+        }
+
+        private static void DisposeTimer(Timer timer)
+        {
+            if (timer == null) return;
+            try { timer.Dispose(); } catch { }
         }
 
         public void Dispose()
@@ -182,14 +285,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 _disposed = true;
                 foreach (KeyValuePair<string, InFlight> kvp in _inFlight) entries.Add(kvp.Value);
                 _inFlight.Clear();
+                _validatedPortraits.Clear();
             }
             for (int i = 0; i < entries.Count; i++)
-            {
-                if (entries[i].Timer != null)
-                {
-                    try { entries[i].Timer.Dispose(); } catch { }
-                }
-            }
+                DisposeTimer(entries[i].Timer);
         }
     }
 

@@ -9,38 +9,81 @@ using CF7Launcher.Guardian;
 namespace CF7Launcher.Guardian.Hud.Loot
 {
     /// <summary>
-    /// Loot feed 渲染单元：左下血条上方的物品获得播报卡（图标 + 名称 + ×n）。
-    /// Native C# GDI+ 单渲染端（P1 决策：无 web fallback，零依赖过渡组件）。
+    /// 左下血条上方的原生物品获得/击杀播报。
     ///
-    /// 数据通路：AS2 _root.发布战利品消息 → socket {"task":"loot"} → LootFeedTask
-    ///   → LootFeedWidget.AddEvent（BeginInvoke 到 UI 线程）→ LootFeedModel → Paint
-    ///
-    /// 视觉：锚底 Flash (5,505)（贴底部 HUD 条顶 512），向上堆叠、新卡在最底；
-    /// 卡片 = 左色条（kind 分色）+ 图标 + 名称 + ×n；超出 5 张折叠"还有 n 条"。
-    /// 闲置时 Visible=false 且 WantsAnimationTick=false，零 tick 成本。
+    /// 渲染遵循“静态提高可读性、动态保持克制”的原则：五个共享槽位、内容驱动的微量化宽度、
+    /// 按位数稳定的计数列；只在短入场、数字区合并反馈、退场及图标首轮动画内重绘。
     /// </summary>
     public sealed class LootFeedWidget : INativeHudWidget, IDisposable
     {
         private const float FlashX = 5f;
-        private const float FlashBottomY = 460f; // 与底部 HUD 条（顶 512）保持距离，远离血球
-        private const float MaxCardW = 190f; // 内容宽度胶囊的宽度上限（超出省略号）
+        private const float FlashBottomY = 460f;
+        private const float MinCardW = 96f;
+        private const float MaxCardW = 220f;
+        private const float CardWidthQuantum = 8f;
         private const float CardH = 26f;
         private const float CardGap = 3f;
-        private const float OverflowRowH = 13f;
-        private const int FadeInMs = 200;
-        private const int PulseMs = 200; // 合并/新卡事件后的动效窗口（计数弹跳 + 底色/色条脉冲）
+        private const float PendingRowH = 15f;
+        private const int FadeInMs = 180;
+        private const float EntryTravel = 4f;
+        private const int CountTransitionMs = 180;
+        private const int IconAnimationMs = 450;
+        private const int BossEmphasisMs = 360;
+        private const int VisualSampleMs = 32; // 与 NativeHud 33 ms 合成上限对齐，实际不超过约 30 fps
+
+        private static readonly string[] CountColumnSamples =
+        {
+            string.Empty,
+            "×9",
+            "×99",
+            "×999",
+            "×9999",
+            "×99999",
+            "×999999",
+            "×9999999",
+            "×99999999",
+            "×999999999",
+            "×9999999999",
+            "×99999999999",
+            "×999999999999",
+            "×9999999999999",
+            "×99999999999999",
+            "×999999999999999",
+            "×9999999999999999",
+            "×99999999999999999",
+            "×999999999999999999",
+            "×9999999999999999999"
+        };
+
+        private sealed class IngressEvent
+        {
+            internal string Kind;
+            internal string Name;
+            internal long Count;
+            internal string Source;
+            internal string Icon;
+            internal int EliteLevel;
+        }
 
         private readonly Control _anchor;
         private readonly FlashCoordinateMapper _mapper;
         private readonly LootFeedModel _model;
         private readonly LootIconCatalog _icons;
-        private long _animMs; // 动画全局时钟（Tick 推进），驱动动画图标帧（png-sequence 均匀帧率 / webp-animated 逐帧时长）
+        private readonly SingleFlightBatchQueue<IngressEvent> _ingressQueue =
+            new SingleFlightBatchQueue<IngressEvent>();
+        private bool _disposed;
 
         private Font _nameFont;
+        private Font _metaFont;
         private float _lastFontScale = -1f;
         private readonly Dictionary<string, int> _textWidthCache =
             new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly StringFormat _nameFormat;
+        private readonly StringFormat _countFormat;
+        private readonly StringFormat _centerFormat;
         private int _lastVisualSignature;
+        private int _lastRepaintAtMs = -1000000;
+        private Rectangle _lastPublishedBounds = Rectangle.Empty;
 
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
@@ -50,12 +93,34 @@ namespace CF7Launcher.Guardian.Hud.Loot
         {
             if (anchor == null) throw new ArgumentNullException("anchor");
             if (icons == null) throw new ArgumentNullException("icons");
+
             _anchor = anchor;
             _icons = icons;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _model = new LootFeedModel();
             _nameFont = NativeHudFonts.CreateUiFont(NameFontPxForScale(1f), FontStyle.Regular, GraphicsUnit.Pixel);
-            _anchor.Resize += delegate { FireBounds(); };
+            _metaFont = NativeHudFonts.CreateUiFont(MetaFontPxForScale(1f), FontStyle.Regular, GraphicsUnit.Pixel);
+
+            _nameFormat = new StringFormat(StringFormat.GenericTypographic)
+            {
+                Trimming = StringTrimming.EllipsisCharacter,
+                LineAlignment = StringAlignment.Center,
+                FormatFlags = StringFormatFlags.NoWrap
+            };
+            _countFormat = new StringFormat(StringFormat.GenericTypographic)
+            {
+                Alignment = StringAlignment.Far,
+                LineAlignment = StringAlignment.Center,
+                FormatFlags = StringFormatFlags.NoWrap
+            };
+            _centerFormat = new StringFormat(StringFormat.GenericTypographic)
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center,
+                FormatFlags = StringFormatFlags.NoWrap
+            };
+
+            _anchor.Resize += OnAnchorResize;
         }
 
         #region INativeHudWidget
@@ -64,161 +129,119 @@ namespace CF7Launcher.Guardian.Hud.Loot
         {
             get
             {
-                if (!Visible) return Rectangle.Empty;
-                if (_anchor == null || !_anchor.IsHandleCreated) return Rectangle.Empty;
+                if (!Visible || _anchor == null || !_anchor.IsHandleCreated)
+                    return Rectangle.Empty;
+
                 EnsureFont();
-                float scale = GetViewportScale();
-                int cards = Math.Min(LootFeedModel.MaxVisibleCards, _model.ActiveCount);
-                float rowsH = cards * (CardH + CardGap);
-                if (_model.OverflowCount > 0) rowsH += OverflowRowH; // 与 Paint 的占位口径一致
-                int scrX, scrBottom;
-                _mapper.FlashToScreen(FlashX, FlashBottomY, out scrX, out scrBottom);
-                int w = MeasureWidestCardPx(scale);
-                int h = Math.Max(4, _mapper.ScaleH(rowsH));
-                return new Rectangle(scrX, scrBottom - h, w, h);
+                float rowsH = _model.ActiveCount * (CardH + CardGap);
+                if (_model.DisplayPendingCount > 0)
+                    rowsH += PendingRowH;
+
+                int screenX, screenBottom;
+                _mapper.FlashToScreen(FlashX, FlashBottomY, out screenX, out screenBottom);
+                int width = MeasureWidestCardPx();
+                int rowsHeight = Math.Max(4, _mapper.ScaleH(rowsH));
+                int entryTravel = Math.Max(1, _mapper.ScaleH(EntryTravel));
+                // 入场从最终位置下方 settle；把最大位移静态纳入 composite bounds，
+                // 避免高 viewport scale 下越过 NativeHud 的 union 矩形而被裁切。
+                return new Rectangle(
+                    screenX, screenBottom - rowsHeight, width, rowsHeight + entryTravel);
             }
         }
 
-        public bool Visible
-        {
-            get { return _model.ActiveCount > 0 || _model.DroppedCount > 0; }
-        }
+        public bool Visible { get { return _model.ActiveCount > 0; } }
 
-        public bool WantsAnimationTick { get { return Visible; } }
+        public bool WantsAnimationTick { get { return _model.WantsTick; } }
 
         public void Tick(int deltaMs)
         {
-            bool had = _model.ActiveCount > 0;
-            _animMs += Math.Max(0, deltaMs);
-            bool removed = _model.Tick(deltaMs);
-            bool has = _model.ActiveCount > 0;
-            if (had != has) FireAnimationStateChanged();
-            if (removed || had != has) FireBounds();
-            if (!has && !had) return;
+            bool wasTicking = WantsAnimationTick;
+            LootFeedModel.Change change = _model.Tick(deltaMs);
 
-            // 重绘门控：仅可视状态实际变化才申请重绘（静态卡零重绘，
-            // 缓解 NativeHud 单一 union 位图在全屏下的重绘放大）
-            int sig = ComputeVisualSignature();
-            if (sig != _lastVisualSignature)
+            if ((change & LootFeedModel.Change.Geometry) != 0)
+                PublishBoundsIfChanged();
+
+            if (wasTicking != WantsAnimationTick)
+                FireAnimationStateChanged();
+
+            if (!Visible)
             {
-                _lastVisualSignature = sig;
-                FireRepaint();
+                _lastVisualSignature = 0;
+                return;
             }
-        }
 
-        /// <summary>
-        /// 可视状态签名：卡片集合/计数、淡出相位（64ms 桶）、脉冲相位（32ms 桶）、
-        /// 入场滑相位（32ms 桶）、动画图标当前帧。任何一项变化 ⇒ 签名变化 ⇒ 触发重绘。
-        /// </summary>
-        private int ComputeVisualSignature()
-        {
-            unchecked
+            // 生命周期仍按 NativeHud 的 16 ms tick 推进；32 ms 采样与 overlay 的 33 ms
+            // 合成上限共同把动态阶段限制在约 30 fps，静态持有阶段签名不变、零重绘。
+            int signature = ComputeVisualSignature();
+            if (signature != _lastVisualSignature
+                && _model.NowMs - _lastRepaintAtMs >= VisualSampleMs)
             {
-                int sig = _model.ActiveCount * 31 + _model.OverflowCount * 7;
-                int now = _model.NowMs;
-                IReadOnlyList<LootFeedModel.LootCard> cards = _model.Cards;
-                int first = Math.Max(0, cards.Count - LootFeedModel.MaxVisibleCards);
-                for (int i = first; i < cards.Count; i++)
-                {
-                    LootFeedModel.LootCard c = cards[i];
-                    sig = sig * 31 + (int)c.Count;
-                    int age = now - c.LastEventMs;
-                    if (age > LootFeedModel.HoldMs)
-                        sig = sig * 31 + ((LootFeedModel.HoldMs + LootFeedModel.FadeMs - age) >> 6);
-                    else if (age < PulseMs)
-                        sig = sig * 31 + 1000 + (age >> 5);
-                    int bornAge = now - c.BornMs;
-                    if (bornAge < FadeInMs)
-                        sig = sig * 31 + 2000 + (bornAge >> 5);
-                    if (!string.IsNullOrEmpty(c.Icon))
-                    {
-                        LootIconCatalog.LootIconFrames fr;
-                        if (_icons.TryGet(c.Icon, out fr) && fr.Animated)
-                            sig = sig * 31 + SelectFrameIndex(fr, _animMs);
-                    }
-                }
-                return sig;
+                _lastVisualSignature = signature;
+                _lastRepaintAtMs = _model.NowMs;
+                FireRepaint();
             }
         }
 
         public void Paint(Graphics g, float dpr, Point hudOrigin)
         {
             if (!Visible) return;
+
             EnsureFont();
             float scale = GetViewportScale();
             int cardH = Math.Max(4, _mapper.ScaleH(CardH));
             int gap = Math.Max(1, _mapper.ScaleH(CardGap));
-            int iconSz = cardH - Px(4, scale) * 2;
-            int padX = Px(6, scale);
-            float shadowOffset = Pxf(1f, scale);
+            int iconSize = Math.Max(4, cardH - Px(3, scale) * 2);
+            int padX = Px(5, scale);
+            int railWidth = Math.Max(1, Px(2, scale));
 
-            int scrX, scrBottom;
-            _mapper.FlashToScreen(FlashX, FlashBottomY, out scrX, out scrBottom);
-            int localX = scrX - hudOrigin.X;
-            int localBottom = scrBottom - hudOrigin.Y;
-            int maxCardW = _mapper.ScaleW(MaxCardW);
-            int barW = BarWidthPx(scale);
+            int screenX, screenBottom;
+            _mapper.FlashToScreen(FlashX, FlashBottomY, out screenX, out screenBottom);
+            int localX = screenX - hudOrigin.X;
+            int y = screenBottom - hudOrigin.Y;
 
-            // 取最新 MaxVisibleCards 张；列表为 旧→新，绘制时新卡在底部
-            IReadOnlyList<LootFeedModel.LootCard> cards = _model.Cards;
-            int total = cards.Count;
-            int first = Math.Max(0, total - LootFeedModel.MaxVisibleCards);
-            int now = _model.NowMs;
-
-            SmoothingMode oldSmooth = g.SmoothingMode;
             TextRenderingHint oldHint = g.TextRenderingHint;
-            InterpolationMode oldInterp = g.InterpolationMode;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
+            InterpolationMode oldInterpolation = g.InterpolationMode;
             g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.InterpolationMode = InterpolationMode.HighQualityBilinear;
             try
             {
-                int y = localBottom;
-
-                for (int i = total - 1; i >= first; i--)
+                IReadOnlyList<LootFeedModel.LootCard> cards = _model.Cards;
+                for (int i = cards.Count - 1; i >= 0; i--)
                 {
                     LootFeedModel.LootCard card = cards[i];
                     y -= cardH;
-                    float a = LootFeedModel.AlphaFor(card, now, FadeInMs);
-                    if (a <= 0.01f) { y -= gap; continue; }
-
-                    // 新卡左滑入场（FadeIn 窗口内二次方缓出，纯时间函数零对象）
-                    int slideOff = 0;
-                    int bornAge = now - card.BornMs;
-                    if (bornAge < FadeInMs)
+                    float alpha = LootFeedModel.AlphaFor(card, FadeInMs);
+                    if (alpha > 0.01f)
                     {
-                        float st = 1f - (float)bornAge / FadeInMs;
-                        slideOff = -(int)(12 * scale * st * st);
+                        float entry = LootFeedModel.SmoothStep(
+                            Math.Min(1f, (float)card.VisibleAgeMs / FadeInMs));
+                        int settleY = (int)Math.Round(Pxf(EntryTravel, scale) * (1f - entry));
+                        int width = MeasureCardWidthPx(card);
+                        Rectangle rect = new Rectangle(localX, y + settleY, width, cardH);
+                        DrawCard(g, card, rect, iconSize, padX, railWidth, scale, alpha);
                     }
-
-                    // 内容宽度胶囊：宽度随图标+文本实测伸缩，短文本不拖黑尾
-                    int cardW = MeasureCardWidthPx(card, iconSz, padX, barW, maxCardW);
-                    Rectangle cardRect = new Rectangle(localX + slideOff, y, cardW, cardH);
-                    DrawCard(g, card, cardRect, iconSz, padX, barW, shadowOffset, scale, a, now);
                     y -= gap;
                 }
 
-                // 溢出折叠行：与卡片同规则先占位再绘制（此前直接画在 y 处，
-                // 行体向下延伸压进顶部卡片区域导致被遮盖）
-                int overflow = _model.OverflowCount;
-                if (overflow > 0)
+                int pending = _model.DisplayPendingCount;
+                if (pending > 0)
                 {
-                    int rowH = Math.Max(4, _mapper.ScaleH(OverflowRowH));
+                    int rowH = Math.Max(4, _mapper.ScaleH(PendingRowH));
                     y -= rowH;
-                    using (SolidBrush brush = new SolidBrush(Color.FromArgb(200, 0xAA, 0xAA, 0xAA)))
-                    using (StringFormat sf = new StringFormat())
+                    using (SolidBrush backing = new SolidBrush(Color.FromArgb(76, 0, 0, 0)))
+                    using (SolidBrush textBrush = new SolidBrush(Color.FromArgb(220, 0xD8, 0xDB, 0xE2)))
                     {
-                        sf.Trimming = StringTrimming.EllipsisCharacter;
-                        RectangleF rect = new RectangleF(localX + padX, y, maxCardW - padX, rowH);
-                        g.DrawString("还有 " + overflow + " 条…", _nameFont, brush, rect, sf);
+                        int width = MeasureWidestCardPx();
+                        g.FillRectangle(backing, localX, y, width, rowH);
+                        g.DrawString("待显示 " + pending + " 项", _metaFont, textBrush,
+                            new RectangleF(localX + padX, y, width - padX * 2, rowH), _nameFormat);
                     }
                 }
             }
             finally
             {
-                g.SmoothingMode = oldSmooth;
                 g.TextRenderingHint = oldHint;
-                g.InterpolationMode = oldInterp;
+                g.InterpolationMode = oldInterpolation;
             }
         }
 
@@ -227,197 +250,373 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
         #endregion
 
-        #region 公共 API（socket 线程入口，内部 marshal 到 UI 线程）
+        #region 公共 API（socket 线程入口）
 
         /// <summary>
-        /// 烘焙完成通知（DollPortraitBakeService.PortraitReady 回调，任意线程）：
-        /// 失效该 ref 的负缓存并申请重绘——仍在存活期内的占位卡片原地升级为胸像。
+        /// 烘焙完成通知：失效纸娃娃负缓存，并只在仍有对应可见卡片时申请重绘。
         /// </summary>
         public void NotifyIconReady(string iconRef)
         {
-            if (string.IsNullOrEmpty(iconRef)) return;
-            if (_anchor == null || _anchor.IsDisposed || !_anchor.IsHandleCreated) return;
+            if (string.IsNullOrEmpty(iconRef) || !CanPostToUi()) return;
             try
             {
                 _anchor.BeginInvoke((Action)(delegate
                 {
+                    if (_disposed) return;
                     _icons.InvalidateDoll(iconRef);
-                    FireRepaint();
+                    IReadOnlyList<LootFeedModel.LootCard> cards = _model.Cards;
+                    for (int i = 0; i < cards.Count; i++)
+                    {
+                        if (cards[i].Icon == iconRef)
+                        {
+                            _lastVisualSignature = ComputeVisualSignature();
+                            _lastRepaintAtMs = _model.NowMs;
+                            FireRepaint();
+                            break;
+                        }
+                    }
                 }));
             }
             catch (InvalidOperationException) { }
         }
 
         /// <summary>
-        /// LootTask 调用点（socket 线程）。BeginInvoke 到 UI 线程再改模型；
-        /// handle 未就绪/已销毁时静默丢弃（刻意不做 early-buffer：loot 事件只在 gameplay 后产生）。
+        /// LootFeedTask 的 socket 线程入口。任意时刻最多只有一个 UI drain 在途；
+        /// 同一批事件只做一次 bounds/重绘判定，避免 BeginInvoke 与 UpdateLayeredWindow 随击杀频率线性增长。
         /// </summary>
-        public void AddEvent(string kind, string name, long count, string source, string icon)
+        public void AddEvent(
+            string kind, string name, long count, string source, string icon, int eliteLevel = 0)
         {
-            if (_anchor == null || _anchor.IsDisposed || !_anchor.IsHandleCreated) return;
-            try
+            if (!CanPostToUi()) return;
+
+            bool shouldPost = _ingressQueue.Enqueue(new IngressEvent
             {
-                _anchor.BeginInvoke((Action)(delegate
-                {
-                    bool had = _model.ActiveCount > 0;
-                    _model.Add(kind, name, icon, count, source);
-                    if (!had && _model.ActiveCount > 0) FireAnimationStateChanged();
-                    FireBounds();
-                    FireRepaint();
-                }));
-            }
-            catch (InvalidOperationException) { }
+                Kind = kind,
+                Name = name,
+                Count = count,
+                Source = source,
+                Icon = icon,
+                EliteLevel = eliteLevel
+            });
+
+            if (shouldPost)
+                PostDrain();
         }
 
         #endregion
 
-        private void DrawCard(Graphics g, LootFeedModel.LootCard card, Rectangle rect,
-            int iconSz, int padX, int barW, float shadowOffset, float scale, float a, int nowMs)
+        private void PostDrain()
         {
-            byte alpha = (byte)Math.Max(0, Math.Min(255, (int)(255 * a)));
-            Color accent = KindColor(card.Kind);
-
-            // 事件脉冲：合并/新卡后 PulseMs 内衰减；割草连杀时卡片持续脉动反馈
-            int eventAge = nowMs - card.LastEventMs;
-            float pulseT = eventAge < PulseMs ? 1f - (float)eventAge / PulseMs : 0f;
-
-            // 半透明黑圆角底（低存在感：信息流背景刻意弱化；脉冲期短暂提亮）
-            using (GraphicsPath path = RoundedRect(rect, Px(4, scale)))
-            using (SolidBrush bg = new SolidBrush(Color.FromArgb((byte)((80 + 70 * pulseT) * a), 12, 12, 16)))
-                g.FillPath(bg, path);
-
-            // 左色条（脉冲期加宽）
-            int barWPulse = barW + (int)Math.Round(2 * scale * pulseT);
-            using (SolidBrush bar = new SolidBrush(Color.FromArgb(alpha, accent.R, accent.G, accent.B)))
-                g.FillRectangle(bar, rect.X, rect.Y + 2, barWPulse, rect.Height - 4);
-
-            // 图标（缺失 → kind 色占位块 + 名称首字）；动画按全局时钟选帧（逐帧时长优先，否则均匀 fps）
-            int iconX = rect.X + padX + barW;
-            int iconY = rect.Y + (rect.Height - iconSz) / 2;
-            Bitmap icon = null;
-            if (!string.IsNullOrEmpty(card.Icon))
+            try
             {
-                LootIconCatalog.LootIconFrames iconFrames;
-                if (_icons.TryGet(card.Icon, out iconFrames) && iconFrames.First != null)
-                {
-                    icon = iconFrames.Frames[SelectFrameIndex(iconFrames, _animMs)];
-                }
+                _anchor.BeginInvoke((Action)DrainIngress);
             }
-            if (icon != null)
+            catch (InvalidOperationException)
             {
-                DrawBitmapAlpha(g, icon, new Rectangle(iconX, iconY, iconSz, iconSz), a);
+                _ingressQueue.Abort();
             }
-            else
+        }
+
+        private void DrainIngress()
+        {
+            if (_disposed)
             {
-                using (SolidBrush ph = new SolidBrush(Color.FromArgb((byte)(70 * a), accent.R, accent.G, accent.B)))
-                    g.FillRectangle(ph, iconX, iconY, iconSz, iconSz);
-                string glyph = string.IsNullOrEmpty(card.Name) ? "?" : card.Name.Substring(0, 1);
-                using (SolidBrush fg = new SolidBrush(Color.FromArgb(alpha, 0xFF, 0xFF, 0xFF)))
-                using (StringFormat sf = new StringFormat())
-                {
-                    sf.Alignment = StringAlignment.Center;
-                    sf.LineAlignment = StringAlignment.Center;
-                    g.DrawString(glyph, _nameFont, fg,
-                        new RectangleF(iconX, iconY, iconSz, iconSz), sf);
-                }
+                _ingressQueue.Abort();
+                return;
             }
 
-            // 名称（白）+ ×n（kind 色常驻；脉冲期放大回弹——割草连杀时的主要反馈）
-            string name = card.Name ?? "";
-            string countStr = card.Count > 1 ? "×" + card.Count : "";
-            float textX = iconX + iconSz + padX;
-            float midY = rect.Y + rect.Height / 2f;
-
-            int nameW = MeasureTextCached(name);
-            int countW = countStr.Length > 0 ? MeasureTextCached(countStr) : 0;
-            int countGap = countStr.Length > 0 ? Px(3, scale) : 0;
-            // 脉冲余量已在卡宽侧承担（MeasureCardWidthPx 同款口径），这里只做减法还原
-            int countReserve = countStr.Length > 0 ? countGap + (int)(countW * 1.45f) : 0;
-            float nameAvailW = Math.Max(8, rect.Right - textX - padX - countReserve);
-
-            using (StringFormat sf = new StringFormat(StringFormat.GenericTypographic))
+            List<IngressEvent> batch = _ingressQueue.BeginDrain();
+            try
             {
-                sf.Trimming = StringTrimming.EllipsisCharacter;
-                sf.LineAlignment = StringAlignment.Center;
-                sf.FormatFlags = StringFormatFlags.NoWrap;
-                byte sa = (byte)Math.Max(0, Math.Min(255, (int)(200 * a)));
-                RectangleF nameRect = new RectangleF(textX, rect.Y, nameAvailW, rect.Height);
-                using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(sa, 0, 0, 0)))
+                bool wasTicking = WantsAnimationTick;
+                bool wasVisible = Visible;
+                LootFeedModel.Change aggregate = LootFeedModel.Change.None;
+                for (int i = 0; i < batch.Count; i++)
                 {
-                    g.DrawString(name, _nameFont, shadowBrush,
-                        new RectangleF(nameRect.X + shadowOffset, nameRect.Y + shadowOffset,
-                            nameRect.Width, nameRect.Height), sf);
+                    IngressEvent item = batch[i];
+                    aggregate |= _model.Add(
+                        item.Kind, item.Name, item.Icon, item.Count, item.Source, item.EliteLevel);
                 }
-                using (SolidBrush fg = new SolidBrush(Color.FromArgb(alpha, 0xFF, 0xFF, 0xFF)))
-                    g.DrawString(name, _nameFont, fg, nameRect, sf);
 
-                if (countStr.Length > 0)
+                if ((aggregate & LootFeedModel.Change.Geometry) != 0 || wasVisible != Visible)
+                    PublishBoundsIfChanged();
+                if (wasTicking != WantsAnimationTick)
+                    FireAnimationStateChanged();
+
+                // 首张卡必须立即可见；已在播放中的 feed 则交给下一次签名 tick 合并重绘。
+                if (!wasVisible && Visible)
                 {
-                    float countX = textX + Math.Min(nameW, nameAvailW) + countGap;
-                    using (SolidBrush countBrush = new SolidBrush(Color.FromArgb(alpha, accent.R, accent.G, accent.B)))
-                    using (SolidBrush countShadow = new SolidBrush(Color.FromArgb(sa, 0, 0, 0)))
-                    using (StringFormat csf = new StringFormat(StringFormat.GenericTypographic))
+                    _lastVisualSignature = ComputeVisualSignature();
+                    _lastRepaintAtMs = _model.NowMs;
+                    FireRepaint();
+                }
+            }
+            catch (Exception ex)
+            {
+                // 事件订阅方异常也不能把 single-flight 永久卡在 scheduled 状态。
+                LogManager.Log("[LootFeed] UI drain error: " + ex.Message);
+            }
+            finally
+            {
+                if (_ingressQueue.CompleteDrain())
+                    PostDrain();
+            }
+        }
+
+        private int ComputeVisualSignature()
+        {
+            unchecked
+            {
+                int signature = _model.ActiveCount * 31 + _model.DisplayPendingCount * 7;
+                IReadOnlyList<LootFeedModel.LootCard> cards = _model.Cards;
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    LootFeedModel.LootCard card = cards[i];
+                    signature = signature * 31 + (int)card.Sequence;
+                    signature = signature * 31 + card.DisplayCount.GetHashCode();
+
+                    if (card.VisibleAgeMs < FadeInMs)
+                        signature = signature * 31 + 1000 + card.VisibleAgeMs / VisualSampleMs;
+                    if (card.FadeElapsedMs > 0)
+                        signature = signature * 31 + 2000 + card.FadeElapsedMs / VisualSampleMs;
+
+                    int countAge = _model.NowMs - card.CountTransitionStartedMs;
+                    if (card.PreviousDisplayCount != card.DisplayCount
+                        && countAge >= 0 && countAge < CountTransitionMs)
+                        signature = signature * 31 + 3000 + countAge / VisualSampleMs;
+
+                    if (card.EliteLevel >= 2 && card.VisibleAgeMs < BossEmphasisMs)
+                        signature = signature * 31 + 4000 + card.VisibleAgeMs / VisualSampleMs;
+
+                    if (card.VisibleAgeMs <= IconAnimationMs && !string.IsNullOrEmpty(card.Icon))
                     {
-                        csf.FormatFlags = StringFormatFlags.NoWrap;
-                        csf.LineAlignment = StringAlignment.Center;
-                        if (pulseT > 0.001f)
+                        LootIconCatalog.LootIconFrames frames;
+                        if (_icons.TryGet(card.Icon, out frames) && frames.Animated)
                         {
-                            // 脉冲期：放大回弹（Graphics 变换，font 复用零分配）
-                            float popS = 1f + 0.45f * pulseT * pulseT;
-                            GraphicsContainer container = g.BeginContainer();
-                            try
-                            {
-                                g.TranslateTransform(countX, midY);
-                                g.ScaleTransform(popS, popS);
-                                float dy = -_nameFont.Height / 2f;
-                                g.DrawString(countStr, _nameFont, countShadow, shadowOffset, dy + shadowOffset, csf);
-                                g.DrawString(countStr, _nameFont, countBrush, 0, dy, csf);
-                            }
-                            finally
-                            {
-                                g.EndContainer(container);
-                            }
-                        }
-                        else
-                        {
-                            // 常规路径：无变换直接绘制（绝大多数帧走这里）
-                            RectangleF countRect = new RectangleF(countX, rect.Y,
-                                rect.Right - countX, rect.Height);
-                            g.DrawString(countStr, _nameFont, countShadow,
-                                new RectangleF(countRect.X + shadowOffset, countRect.Y + shadowOffset,
-                                    countRect.Width, countRect.Height), csf);
-                            g.DrawString(countStr, _nameFont, countBrush, countRect, csf);
+                            int sampleMs = QuantizedIconTime(card.VisibleAgeMs);
+                            signature = signature * 31 + 5000 + SelectFrameIndex(frames, sampleMs);
                         }
                     }
                 }
+                return signature;
             }
         }
 
-        private static string CardText(LootFeedModel.LootCard card)
+        private void DrawCard(
+            Graphics g, LootFeedModel.LootCard card, Rectangle rect,
+            int iconSize, int padX, int railWidth, float scale, float alpha)
         {
-            return card.Count > 1 ? card.Name + " ×" + card.Count : card.Name;
+            Color accent = AccentColor(card);
+            byte fullAlpha = ToAlpha(255f * alpha);
+
+            // 直角低透明底 + 文本区局部加深。静态对比度由底色承担，不依赖脉冲。
+            using (SolidBrush baseBrush = new SolidBrush(Color.FromArgb(ToAlpha(108f * alpha), 8, 10, 14)))
+                g.FillRectangle(baseBrush, rect);
+            using (Pen hairline = new Pen(Color.FromArgb(
+                ToAlpha(70f * alpha), 0xB8, 0xBE, 0xC8), 1f))
+                g.DrawRectangle(hairline, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+
+            int iconX = rect.X + railWidth + padX;
+            int iconY = rect.Y + (rect.Height - iconSize) / 2;
+            int textX = iconX + iconSize + padX;
+            using (SolidBrush contentBrush = new SolidBrush(Color.FromArgb(ToAlpha(58f * alpha), 0, 0, 0)))
+                g.FillRectangle(contentBrush, textX - Px(2, scale), rect.Y + 1,
+                    Math.Max(1, rect.Right - textX + Px(2, scale) - 1), rect.Height - 2);
+
+            DrawRankRail(g, card, rect, railWidth, accent, alpha, scale);
+
+            Bitmap icon = ResolveIcon(card);
+            if (icon != null)
+            {
+                DrawBitmapAlpha(g, icon, new Rectangle(iconX, iconY, iconSize, iconSize), alpha);
+            }
+            else
+            {
+                using (SolidBrush placeholder = new SolidBrush(
+                    Color.FromArgb(ToAlpha(92f * alpha), accent.R, accent.G, accent.B)))
+                    g.FillRectangle(placeholder, iconX, iconY, iconSize, iconSize);
+                string glyph = string.IsNullOrEmpty(card.Name) ? "?" : card.Name.Substring(0, 1);
+                using (SolidBrush glyphBrush = new SolidBrush(Color.FromArgb(fullAlpha, 0xFA, 0xFB, 0xFC)))
+                    g.DrawString(glyph, _nameFont, glyphBrush,
+                        new RectangleF(iconX, iconY, iconSize, iconSize), _centerFormat);
+            }
+
+            DrawRankIconBorder(g, card, new Rectangle(iconX, iconY, iconSize, iconSize), accent, alpha);
+
+            string countSample = CountColumnSample(card.DisplayCount);
+            int countColumnWidth = countSample.Length > 0 ? MeasureTextCached(countSample) : 0;
+            int rightPad = padX;
+            int countGap = countColumnWidth > 0 ? Px(4, scale) : 0;
+            RectangleF countRect = new RectangleF(
+                rect.Right - rightPad - countColumnWidth,
+                rect.Y,
+                countColumnWidth,
+                rect.Height);
+            RectangleF nameRect = new RectangleF(
+                textX,
+                rect.Y,
+                Math.Max(8, countRect.X - countGap - textX),
+                rect.Height);
+
+            using (SolidBrush nameBrush = new SolidBrush(Color.FromArgb(fullAlpha, 0xF4, 0xF6, 0xF8)))
+                g.DrawString(card.Name ?? string.Empty, _nameFont, nameBrush, nameRect, _nameFormat);
+
+            DrawCount(g, card, countRect, accent, alpha);
+        }
+
+        private void DrawRankRail(
+            Graphics g, LootFeedModel.LootCard card, Rectangle rect,
+            int railWidth, Color accent, float alpha, float scale)
+        {
+            byte railAlpha = ToAlpha(235f * alpha);
+            using (SolidBrush rail = new SolidBrush(Color.FromArgb(railAlpha, accent.R, accent.G, accent.B)))
+            {
+                if (card.EliteLevel == 1)
+                {
+                    int segmentH = Math.Max(2, (rect.Height - Px(6, scale)) / 3);
+                    int gap = Math.Max(1, Px(2, scale));
+                    int y = rect.Y + Px(2, scale);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        g.FillRectangle(rail, rect.X, y, railWidth, segmentH);
+                        y += segmentH + gap;
+                    }
+                }
+                else if (card.EliteLevel >= 2)
+                {
+                    g.FillRectangle(rail, rect.X, rect.Y, railWidth, rect.Height);
+                    g.FillRectangle(rail, rect.X + railWidth + 1, rect.Y + 2, 1, rect.Height - 4);
+                    g.FillRectangle(rail, rect.X, rect.Y, rect.Width, 1);
+                    g.FillRectangle(rail, rect.X, rect.Bottom - 1, rect.Width, 1);
+                }
+                else
+                {
+                    g.FillRectangle(rail, rect.X, rect.Y + 2, railWidth, rect.Height - 4);
+                }
+            }
+        }
+
+        private void DrawRankIconBorder(
+            Graphics g, LootFeedModel.LootCard card, Rectangle iconRect,
+            Color accent, float alpha)
+        {
+            if (card.EliteLevel <= 0) return;
+
+            float emphasis = 0f;
+            if (card.EliteLevel >= 2 && card.VisibleAgeMs < BossEmphasisMs)
+                emphasis = 1f - LootFeedModel.SmoothStep(
+                    (float)card.VisibleAgeMs / BossEmphasisMs);
+            byte borderAlpha = ToAlpha((175f + 80f * emphasis) * alpha);
+            using (Pen border = new Pen(Color.FromArgb(borderAlpha, accent.R, accent.G, accent.B), 1f))
+                g.DrawRectangle(border, iconRect.X, iconRect.Y, iconRect.Width - 1, iconRect.Height - 1);
+        }
+
+        private void DrawCount(
+            Graphics g, LootFeedModel.LootCard card, RectangleF rect,
+            Color accent, float alpha)
+        {
+            string current = CountText(card.DisplayCount);
+            int transitionAge = _model.NowMs - card.CountTransitionStartedMs;
+            bool transitioning = card.PreviousDisplayCount != card.DisplayCount
+                && transitionAge >= 0 && transitionAge < CountTransitionMs;
+
+            if (!transitioning)
+            {
+                if (current.Length == 0) return;
+                using (SolidBrush brush = new SolidBrush(
+                    Color.FromArgb(ToAlpha(255f * alpha), accent.R, accent.G, accent.B)))
+                    g.DrawString(current, _nameFont, brush, rect, _countFormat);
+                return;
+            }
+
+            float t = LootFeedModel.SmoothStep((float)transitionAge / CountTransitionMs);
+            float impulse = 1f - t;
+            int impactLevel = CountImpactLevel(card.DisplayCount - card.PreviousDisplayCount);
+            float impactStrength = card.Kind == "kill"
+                ? 0.72f + impactLevel * 0.09f
+                : 0.52f + impactLevel * 0.07f;
+            impactStrength = Math.Min(1f, impactStrength);
+
+            // 反馈只落在数字列：一层很短的色洗 + 1px 底沿，不放大整卡、不制造粒子。
+            if (current.Length > 0 && rect.Width > 0f)
+            {
+                int washAlpha = ToAlpha(44f * alpha * impactStrength * impulse);
+                int streakAlpha = ToAlpha(128f * alpha * impactStrength * impulse);
+                using (SolidBrush wash = new SolidBrush(
+                    Color.FromArgb(washAlpha, accent.R, accent.G, accent.B)))
+                    g.FillRectangle(wash, rect);
+                using (SolidBrush streak = new SolidBrush(
+                    Color.FromArgb(streakAlpha, accent.R, accent.G, accent.B)))
+                    g.FillRectangle(streak, rect.X, rect.Bottom - 1f,
+                        Math.Max(1f, rect.Width * (0.55f + impactLevel * 0.1f)), 1f);
+            }
+
+            string previous = CountText(card.PreviousDisplayCount);
+            if (previous.Length > 0)
+            {
+                using (SolidBrush oldBrush = new SolidBrush(
+                    Color.FromArgb(ToAlpha(178f * alpha * (1f - t)), accent.R, accent.G, accent.B)))
+                {
+                    RectangleF oldRect = rect;
+                    oldRect.Y -= 2f * t;
+                    g.DrawString(previous, _nameFont, oldBrush, oldRect, _countFormat);
+                }
+            }
+            if (current.Length > 0)
+            {
+                Color currentColor = BlendColor(accent, Color.White, 0.34f * impulse * impactStrength);
+                using (SolidBrush newBrush = new SolidBrush(
+                    Color.FromArgb(ToAlpha(255f * alpha * (0.68f + 0.32f * t)),
+                        currentColor.R, currentColor.G, currentColor.B)))
+                {
+                    RectangleF newRect = rect;
+                    newRect.Y += 2f * (1f - t);
+                    g.DrawString(current, _nameFont, newBrush, newRect, _countFormat);
+                }
+            }
+        }
+
+        private Bitmap ResolveIcon(LootFeedModel.LootCard card)
+        {
+            if (string.IsNullOrEmpty(card.Icon)) return null;
+            LootIconCatalog.LootIconFrames frames;
+            if (!_icons.TryGet(card.Icon, out frames) || frames.First == null)
+                return null;
+            if (!frames.Animated)
+                return frames.First;
+
+            int sampleMs = QuantizedIconTime(card.VisibleAgeMs);
+            return frames.Frames[SelectFrameIndex(frames, sampleMs)];
+        }
+
+        private static int QuantizedIconTime(int visibleAgeMs)
+        {
+            int bounded = Math.Max(0, Math.Min(IconAnimationMs, visibleAgeMs));
+            return bounded / VisualSampleMs * VisualSampleMs;
         }
 
         /// <summary>
-        /// 动画选帧：有逐帧时长（webp-animated）按 animMs % 总周期做累计时长查找；
-        /// 否则维持均匀 fps 路径（png-sequence）。非动画/异常输入恒回第 0 帧。
+        /// 动画选帧：逐帧时长优先，否则走均匀 fps。调用方负责把时间限制在首轮动效窗口内。
         /// </summary>
         internal static int SelectFrameIndex(LootIconCatalog.LootIconFrames frames, long animMs)
         {
-            if (frames == null || frames.Frames == null || frames.Frames.Length < 2 || animMs < 0) return 0;
+            if (frames == null || frames.Frames == null || frames.Frames.Length < 2 || animMs < 0)
+                return 0;
+
             int[] durations = frames.DurationMs;
             if (durations != null && durations.Length == frames.Frames.Length)
             {
                 long total = 0;
-                for (int i = 0; i < durations.Length; i++) total += Math.Max(0, durations[i]);
+                for (int i = 0; i < durations.Length; i++)
+                    total += Math.Max(0, durations[i]);
                 if (total > 0)
                 {
-                    long t = animMs % total;
-                    long acc = 0;
+                    long time = animMs % total;
+                    long accumulated = 0;
                     for (int i = 0; i < durations.Length; i++)
                     {
-                        acc += Math.Max(0, durations[i]);
-                        if (t < acc) return i;
+                        accumulated += Math.Max(0, durations[i]);
+                        if (time < accumulated) return i;
                     }
                     return frames.Frames.Length - 1;
                 }
@@ -425,143 +624,219 @@ namespace CF7Launcher.Guardian.Hud.Loot
             return (int)((animMs * (long)frames.Fps) / 1000L % frames.Frames.Length);
         }
 
-        private static int BarWidthPx(float scale)
-        {
-            return Math.Max(2, Px(3, scale));
-        }
-
-        private int MeasureCardWidthPx(LootFeedModel.LootCard card, int iconSz, int padX, int barW, int maxCardW)
+        private int MeasureCardWidthPx(LootFeedModel.LootCard card)
         {
             float scale = GetViewportScale();
-            int nameW = MeasureTextCached(card.Name ?? "");
-            int countW = card.Count > 1 ? MeasureTextCached("×" + card.Count) : 0;
-            // 脉冲余量并入卡宽：×n 脉冲放大 1.45× 由卡片承担，不挤压名字宽度
-            int w = barW + padX + iconSz + padX + nameW
-                + (countW > 0 ? Px(3, scale) + (int)(countW * 1.45f) : 0)
-                + padX + Px(8, scale);
-            return Math.Max(barW + padX + iconSz + padX * 2, Math.Min(w, maxCardW));
+            int cardH = Math.Max(4, _mapper.ScaleH(CardH));
+            int iconSize = Math.Max(4, cardH - Px(3, scale) * 2);
+            int padX = Px(5, scale);
+            int railWidth = Math.Max(1, Px(2, scale));
+            string countSample = CountColumnSample(card.DisplayCount);
+            int countReserve = countSample.Length > 0 ? MeasureTextCached(countSample) : 0;
+            int countGap = countReserve > 0 ? Px(4, scale) : 0;
+            int required = railWidth + padX + iconSize + padX
+                + MeasureTextCached(card.Name ?? string.Empty)
+                + countGap + countReserve + padX;
+
+            int minimum = _mapper.ScaleW(MinCardW);
+            int maximum = _mapper.ScaleW(MaxCardW);
+            int quantum = Math.Max(1, _mapper.ScaleW(CardWidthQuantum));
+            return QuantizeWidthPx(required, minimum, maximum, quantum);
         }
 
-        /// <summary>文本宽度按内容缓存（合并/刷新反复重绘同一字符串，字体重建时清空）。</summary>
-        private int MeasureTextCached(string text)
+        private int MeasureWidestCardPx()
         {
-            if (string.IsNullOrEmpty(text)) return 0;
-            int w;
-            if (_textWidthCache.TryGetValue(text, out w)) return w;
-            w = TextRenderer.MeasureText(text, _nameFont,
-                new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
-            _textWidthCache[text] = w;
-            return w;
-        }
-
-        private int MeasureWidestCardPx(float scale)
-        {
-            int iconSz = Math.Max(4, _mapper.ScaleH(CardH)) - Px(4, scale) * 2;
-            int padX = Px(6, scale);
-            int barW = BarWidthPx(scale);
-            int maxCardW = _mapper.ScaleW(MaxCardW);
-            int widest = maxCardW / 2; // 兜底（overflow-only 等无卡场景）
+            int widest = _mapper.ScaleW(MinCardW);
             IReadOnlyList<LootFeedModel.LootCard> cards = _model.Cards;
-            int first = Math.Max(0, cards.Count - LootFeedModel.MaxVisibleCards);
-            for (int i = first; i < cards.Count; i++)
-            {
-                int w = MeasureCardWidthPx(cards[i], iconSz, padX, barW, maxCardW);
-                if (w > widest) widest = w;
-            }
+            for (int i = 0; i < cards.Count; i++)
+                widest = Math.Max(widest, MeasureCardWidthPx(cards[i]));
             return widest;
         }
 
-        private static void DrawBitmapAlpha(Graphics g, Bitmap bmp, Rectangle dest, float a)
+        private int MeasureTextCached(string text)
         {
-            if (a >= 0.999f)
+            if (string.IsNullOrEmpty(text)) return 0;
+            int width;
+            if (_textWidthCache.TryGetValue(text, out width)) return width;
+            width = TextRenderer.MeasureText(text, _nameFont,
+                new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
+            _textWidthCache[text] = width;
+            return width;
+        }
+
+        private static string CountText(long count)
+        {
+            return count > 1 ? "×" + count : string.Empty;
+        }
+
+        internal static string CountColumnSample(long count)
+        {
+            int bucket = LootFeedModel.CountLayoutBucket(count);
+            return CountColumnSamples[Math.Max(0, Math.Min(CountColumnSamples.Length - 1, bucket))];
+        }
+
+        internal static int QuantizeWidthPx(int required, int minimum, int maximum, int quantum)
+        {
+            minimum = Math.Max(1, minimum);
+            maximum = Math.Max(minimum, maximum);
+            quantum = Math.Max(1, quantum);
+            if (required <= minimum) return minimum;
+            if (required >= maximum) return maximum;
+            int steps = (required - minimum + quantum - 1) / quantum;
+            return Math.Min(maximum, minimum + steps * quantum);
+        }
+
+        internal static int CountImpactLevel(long delta)
+        {
+            if (delta >= 8) return 3;
+            if (delta >= 4) return 2;
+            if (delta >= 2) return 1;
+            return 0;
+        }
+
+        private static Color AccentColor(LootFeedModel.LootCard card)
+        {
+            if (card.EliteLevel >= 2) return Color.FromArgb(0xFF, 0xD1, 0x66);
+            if (card.EliteLevel == 1) return Color.FromArgb(0xFF, 0xB5, 0x47);
+            switch (card.Kind)
             {
-                g.DrawImage(bmp, dest, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel);
+                case "money": return Color.FromArgb(0xFF, 0xD3, 0x4D);
+                case "kpoint": return Color.FromArgb(0x62, 0xD6, 0xFF);
+                case "intel": return Color.FromArgb(0xD5, 0xA6, 0xFF);
+                case "kill": return Color.FromArgb(0xFF, 0x5C, 0x63);
+                default: return Color.FromArgb(0xF2, 0xF4, 0xF7);
+            }
+        }
+
+        private static void DrawBitmapAlpha(Graphics g, Bitmap bitmap, Rectangle destination, float alpha)
+        {
+            if (alpha >= 0.999f)
+            {
+                g.DrawImage(bitmap, destination, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel);
                 return;
             }
-            System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix();
-            cm.Matrix33 = Math.Max(0f, Math.Min(1f, a));
-            System.Drawing.Imaging.ImageAttributes attrs = new System.Drawing.Imaging.ImageAttributes();
-            attrs.SetColorMatrix(cm);
-            g.DrawImage(bmp, dest, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attrs);
-            attrs.Dispose();
-        }
 
-        private static GraphicsPath RoundedRect(Rectangle rect, int radius)
-        {
-            int d = Math.Max(2, radius * 2);
-            GraphicsPath path = new GraphicsPath();
-            path.AddArc(rect.X, rect.Y, d, d, 180, 90);
-            path.AddArc(rect.Right - d, rect.Y, d, d, 270, 90);
-            path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90);
-            path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
-            path.CloseFigure();
-            return path;
-        }
-
-        private static Color KindColor(string kind)
-        {
-            switch (kind)
+            using (System.Drawing.Imaging.ImageAttributes attributes =
+                new System.Drawing.Imaging.ImageAttributes())
             {
-                case "money": return Color.FromArgb(0xFF, 0xCC, 0x00);
-                case "kpoint": return Color.FromArgb(0x66, 0xCC, 0xFF);
-                case "intel": return Color.FromArgb(0xCC, 0x99, 0xFF);
-                case "kill": return Color.FromArgb(0xE5, 0x48, 0x4D); // 击杀：绯红
-                default: return Color.FromArgb(0xF0, 0xF0, 0xF0); // item / equip
+                System.Drawing.Imaging.ColorMatrix matrix = new System.Drawing.Imaging.ColorMatrix();
+                matrix.Matrix33 = Math.Max(0f, Math.Min(1f, alpha));
+                attributes.SetColorMatrix(matrix);
+                g.DrawImage(bitmap, destination, 0, 0, bitmap.Width, bitmap.Height,
+                    GraphicsUnit.Pixel, attributes);
             }
         }
 
         private void EnsureFont()
         {
             float scale = GetViewportScale();
-            if (Math.Abs(scale - _lastFontScale) < 0.01f && _nameFont != null) return;
+            if (Math.Abs(scale - _lastFontScale) < 0.01f && _nameFont != null && _metaFont != null)
+                return;
+
             _lastFontScale = scale;
             if (_nameFont != null) _nameFont.Dispose();
+            if (_metaFont != null) _metaFont.Dispose();
             _nameFont = NativeHudFonts.CreateUiFont(NameFontPxForScale(scale), FontStyle.Regular, GraphicsUnit.Pixel);
-            _textWidthCache.Clear(); // 字号变化后旧宽度全部失效
+            _metaFont = NativeHudFonts.CreateUiFont(MetaFontPxForScale(scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _textWidthCache.Clear();
         }
 
         private float GetViewportScale()
         {
-            float vpX, vpY, vpW, vpH;
-            _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
-            if (vpH <= 0) return 1f;
-            return Math.Max(0.5f, vpH / _mapper.StageHeight);
+            float viewportX, viewportY, viewportW, viewportH;
+            _mapper.CalcViewport(out viewportX, out viewportY, out viewportW, out viewportH);
+            if (viewportH <= 0) return 1f;
+            return Math.Max(0.5f, viewportH / _mapper.StageHeight);
         }
 
-        private static int Px(int basePx, float scale)
+        private void OnAnchorResize(object sender, EventArgs e)
         {
-            return Math.Max(1, (int)Math.Round(basePx * scale));
+            _lastFontScale = -1f;
+            PublishBoundsIfChanged();
+            if (Visible)
+            {
+                _lastVisualSignature = ComputeVisualSignature();
+                _lastRepaintAtMs = _model.NowMs;
+                FireRepaint();
+            }
         }
 
-        private static float Pxf(float basePx, float scale)
+        private bool CanPostToUi()
         {
-            return Math.Max(1f, basePx * scale);
+            return !_disposed && _anchor != null && !_anchor.IsDisposed && _anchor.IsHandleCreated;
+        }
+
+        private void PublishBoundsIfChanged()
+        {
+            Rectangle current = ScreenBounds;
+            if (current == _lastPublishedBounds) return;
+            _lastPublishedBounds = current;
+            FireBounds();
+        }
+
+        private static Color BlendColor(Color from, Color to, float amount)
+        {
+            amount = Math.Max(0f, Math.Min(1f, amount));
+            return Color.FromArgb(
+                (int)Math.Round(from.R + (to.R - from.R) * amount),
+                (int)Math.Round(from.G + (to.G - from.G) * amount),
+                (int)Math.Round(from.B + (to.B - from.B) * amount));
+        }
+
+        private static byte ToAlpha(float value)
+        {
+            return (byte)Math.Max(0, Math.Min(255, (int)Math.Round(value)));
+        }
+
+        private static int Px(int basePixels, float scale)
+        {
+            return Math.Max(1, (int)Math.Round(basePixels * scale));
+        }
+
+        private static float Pxf(float basePixels, float scale)
+        {
+            return Math.Max(1f, basePixels * scale);
         }
 
         internal static float NameFontPxForScale(float scale)
         {
-            return Math.Max(1f, 11f * scale);
+            return Math.Max(1f, 12f * scale);
+        }
+
+        private static float MetaFontPxForScale(float scale)
+        {
+            return Math.Max(1f, 10f * scale);
         }
 
         private void FireBounds()
         {
-            EventHandler h = BoundsOrVisibilityChanged;
-            if (h != null) h(this, EventArgs.Empty);
+            EventHandler handler = BoundsOrVisibilityChanged;
+            if (handler != null) handler(this, EventArgs.Empty);
         }
+
         private void FireRepaint()
         {
-            EventHandler h = RepaintRequested;
-            if (h != null) h(this, EventArgs.Empty);
+            EventHandler handler = RepaintRequested;
+            if (handler != null) handler(this, EventArgs.Empty);
         }
+
         private void FireAnimationStateChanged()
         {
-            EventHandler h = AnimationStateChanged;
-            if (h != null) h(this, EventArgs.Empty);
+            EventHandler handler = AnimationStateChanged;
+            if (handler != null) handler(this, EventArgs.Empty);
         }
 
         public void Dispose()
         {
+            if (_disposed) return;
+            _disposed = true;
+            _anchor.Resize -= OnAnchorResize;
+            _ingressQueue.Abort();
             if (_nameFont != null) { _nameFont.Dispose(); _nameFont = null; }
+            if (_metaFont != null) { _metaFont.Dispose(); _metaFont = null; }
+            _nameFormat.Dispose();
+            _countFormat.Dispose();
+            _centerFormat.Dispose();
             _icons.Dispose();
         }
     }

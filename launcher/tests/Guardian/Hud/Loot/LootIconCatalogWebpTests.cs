@@ -134,6 +134,23 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         }
 
         [Fact]
+        public void TryGet_WebpAnimated_GroupExceedingCacheBudget_FallsBackToStaticFirstFrame()
+        {
+            const long oneFrameBudget = 64L * 64L * 4L;
+            using (LootIconCatalog catalog = new LootIconCatalog(
+                FindIconsDir(), maxCacheBytes: oneFrameBudget))
+            {
+                LootIconCatalog.LootIconFrames frames;
+                Assert.True(catalog.TryGet(AnimatedIconName, out frames));
+                Assert.NotNull(frames);
+                Assert.False(frames.Animated);
+                Assert.Single(frames.Frames);
+                Assert.Null(frames.DurationMs);
+                Assert.Equal(LootIconCatalog.ThumbSize, frames.First.Width);
+            }
+        }
+
+        [Fact]
         public void SelectFrameIndex_PerFrameDurations_UsesCumulativeLookup()
         {
             LootIconCatalog.LootIconFrames frames = new LootIconCatalog.LootIconFrames

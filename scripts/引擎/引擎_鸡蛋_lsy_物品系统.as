@@ -239,6 +239,7 @@ _root.发布击杀播报 = function(unit:MovieClip):Void{
 	var killName:String = null;
 	var iconName:String = null;
 	var dollTuple:Object = null;
+	var eliteLevel:Number = org.flashNight.arki.unit.UnitUtil.getEliteLevel(unit);
 	var enemyInfo:Object = (_root.敌人属性表 != undefined) ? _root.敌人属性表[killKey] : null;
 	if (enemyInfo != null && enemyInfo.displayname != undefined && String(enemyInfo.displayname).length > 0) {
 		killName = String(enemyInfo.displayname);
@@ -271,7 +272,7 @@ _root.发布击杀播报 = function(unit:MovieClip):Void{
 			};
 		}
 	}
-	_root.发布战利品消息("kill", killName, 1, "kill", null, iconName, dollTuple);
+	_root.发布战利品消息("kill", killName, 1, "kill", null, iconName, dollTuple, eliteLevel);
 }
 
 //战利品播报（loot feed）：结构化物品获得事件，经 socket 发往 Launcher LootFeedTask，
@@ -281,8 +282,9 @@ _root.发布击杀播报 = function(unit:MovieClip):Void{
 //source 白名单：pickup / level_reward / quest_reward / loot_box / kill。
 //tier 可选，进阶装备解析进阶名/图标。icon 可选，显式覆盖（击杀播报传敌人头像 ref）。
 //doll 可选（仅击杀播报人形斗士）：外观元组 {face,hair,mask,head,body,leg,hand,foot,neck,gender}，
-//C# 侧据此单点派生 纸娃娃-<hex> 图标键并触发 web 侧运行时胸像烘焙。
-_root.发布战利品消息 = function(kind:String, name:String, count:Number, source:String, tier:String, icon:String, doll:Object):Void{
+//C# 侧据此外观单点派生 纸娃娃-<hex> 图标键并触发 web 侧运行时胸像烘焙；
+//eliteLevel 可选（仅击杀播报）：UnitUtil.getEliteLevel 的 0=普通、1=精英、2=首领。
+_root.发布战利品消息 = function(kind:String, name:String, count:Number, source:String, tier:String, icon:String, doll:Object, eliteLevel:Number):Void{
 	if (name == undefined || count == undefined) return;
 	if (isNaN(Number(count)) || Number(count) <= 0) return;
 	if (_root.server == undefined || _root.server.sendTaskToNode == undefined) return;
@@ -326,6 +328,10 @@ _root.发布战利品消息 = function(kind:String, name:String, count:Number, s
 	};
 	// 纸娃娃外观元组可选挂载（FastJSON 递归序列化嵌套对象；缺省字段 C# 侧按 "" 处理）
 	if (doll != undefined && doll != null) msg.doll = doll;
+	// 等级只作为跨层事实传递；调度优先级与视觉样式仍由 NativeHud 单点决定。
+	if (kind == "kill" && !isNaN(eliteLevel) && eliteLevel >= 0 && eliteLevel <= 2) {
+		msg.eliteLevel = eliteLevel;
+	}
 	_root.server.sendTaskToNode("loot", msg, null);
 }
 

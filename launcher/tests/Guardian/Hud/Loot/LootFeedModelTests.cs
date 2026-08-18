@@ -1,3 +1,4 @@
+using System.Linq;
 using Xunit;
 using CF7Launcher.Guardian.Hud.Loot;
 
@@ -11,159 +12,253 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         }
 
         [Fact]
-        public void Merge_WithinWindow_AccumulatesCountAndRefreshesClock()
+        public void Merge_SameSourceAndRank_AccumulatesWithoutReordering()
         {
-            var m = NewModel();
-            m.Add("money", "金钱", "金钱", 100, "pickup");
-            m.Tick(1000);
-            m.Add("money", "金钱", "金钱", 50, "pickup");
+            var model = NewModel();
+            model.Add("item", "急救包", "急救包", 1, "pickup");
+            model.Add("item", "绷带", "绷带", 1, "pickup");
+            long firstSequence = model.Cards[0].Sequence;
+            long secondSequence = model.Cards[1].Sequence;
 
-            Assert.Equal(1, m.ActiveCount);
-            Assert.Equal(150, m.Cards[0].Count);
-            Assert.Equal(1000, m.Cards[0].LastEventMs);
+            model.Add("item", "急救包", "急救包", 2, "pickup");
+
+            Assert.Equal(2, model.ActiveCount);
+            Assert.Equal(3, model.Cards[0].Count);
+            Assert.Equal(firstSequence, model.Cards[0].Sequence);
+            Assert.Equal(secondSequence, model.Cards[1].Sequence);
         }
 
         [Fact]
-        public void Merge_AfterWindow_CreatesNewCard()
+        public void MergeKey_SeparatesSourceAndEliteLevel()
         {
-            var m = NewModel();
-            m.Add("money", "金钱", "金钱", 100, "pickup");
-            m.Tick(LootFeedModel.MergeWindowMs + 1);
-            m.Add("money", "金钱", "金钱", 50, "pickup");
+            var model = NewModel();
+            model.Add("item", "奖励箱", "奖励箱", 1, "pickup");
+            model.Add("item", "奖励箱", "奖励箱", 1, "quest_reward");
+            model.Add("kill", "左轮", "敌人-左轮", 1, "kill", 0);
+            model.Add("kill", "左轮", "敌人-左轮", 1, "kill", 1);
+            model.Add("kill", "左轮", "敌人-左轮", 1, "kill", 2);
 
-            Assert.Equal(2, m.ActiveCount);
+            Assert.Equal(5, model.ActiveCount);
+            Assert.Equal(new[] { 0, 1, 2 },
+                model.Cards.Where(card => card.Kind == "kill").Select(card => card.EliteLevel).ToArray());
         }
 
         [Fact]
-        public void Merge_DifferentKindOrName_NeverMerges()
+        public void Merge_AfterWindow_CreatesAnotherGuaranteedCard()
         {
-            var m = NewModel();
-            m.Add("money", "金钱", "金钱", 1, "pickup");
-            m.Add("kpoint", "金钱", "金钱", 1, "pickup");
-            m.Add("money", "K点", "金钱", 1, "pickup");
+            var model = NewModel();
+            model.Add("item", "任务奖励", "任务奖励", 1, "quest_reward");
+            model.Tick(LootFeedModel.MergeWindowMs + 1);
+            model.Add("item", "任务奖励", "任务奖励", 1, "quest_reward");
 
-            Assert.Equal(3, m.ActiveCount);
+            Assert.Equal(2, model.ActiveCount);
         }
 
         [Fact]
-        public void Merge_BumpsCardToNewestPosition()
+        public void TwelveQuestRewards_QueueLosslesslyAndPendingDoesNotAge()
         {
-            var m = NewModel();
-            m.Add("item", "急救包", "急救包", 1, "pickup");
-            m.Add("item", "绷带", "绷带", 1, "pickup");
-            m.Add("item", "急救包", "急救包", 2, "pickup");
+            var model = NewModel();
+            for (int i = 0; i < 12; i++)
+                model.Add("item", "任务奖励" + i, "奖励" + i, 1, "quest_reward");
 
-            Assert.Equal(2, m.ActiveCount);
-            Assert.Equal("绷带", m.Cards[0].Name);
-            Assert.Equal("急救包", m.Cards[1].Name);
-            Assert.Equal(3, m.Cards[1].Count);
+            Assert.Equal(LootFeedModel.MaxVisibleCards, model.ActiveCount);
+            Assert.Equal(7, model.PendingCount);
+            Assert.All(model.Cards, card => Assert.Equal(
+                LootFeedModel.RetentionClass.Guaranteed, card.Retention));
+
+            // 远超首批卡的完整生命周期；第二批此时才激活，因此不能按事件出生时间消失。
+            model.Tick(10000);
+            Assert.Equal(LootFeedModel.MaxVisibleCards, model.ActiveCount);
+            Assert.Equal(2, model.PendingCount);
+            Assert.All(model.Cards, card => Assert.Equal(0, card.VisibleAgeMs));
+
+            model.Tick(10000);
+            Assert.Equal(2, model.ActiveCount);
+            Assert.Equal(0, model.PendingCount);
+            Assert.Contains(model.Cards, card => card.Name == "任务奖励10");
+            Assert.Contains(model.Cards, card => card.Name == "任务奖励11");
         }
 
         [Fact]
-        public void Merge_IsFree_UnderRateLimit()
+        public void PendingActivation_RestartsMergeWindow()
         {
-            var m = NewModel();
-            // 同窗口内 1 张新卡 + 远超限额的合并事件，全部应被接受
-            m.Add("money", "金钱", "金钱", 1, "pickup");
-            for (int i = 0; i < LootFeedModel.RateMaxNewCards * 3; i++)
-                m.Add("money", "金钱", "金钱", 1, "pickup");
+            var model = NewModel();
+            for (int i = 0; i < LootFeedModel.MaxVisibleCards; i++)
+                model.Add("item", "任务奖励" + i, "奖励" + i, 1, "quest_reward");
+            model.Add("kill", "精英守卫", "精英守卫", 1, "kill", 1);
 
-            Assert.Equal(1, m.ActiveCount);
-            Assert.Equal(1 + LootFeedModel.RateMaxNewCards * 3, m.Cards[0].Count);
-            Assert.Equal(0, m.DroppedCount);
+            model.Tick(10000);
+            Assert.Single(model.Cards);
+            Assert.Equal("精英守卫", model.Cards[0].Name);
+
+            model.Add("kill", "精英守卫", "精英守卫", 2, "kill", 1);
+            Assert.Single(model.Cards);
+            Assert.Equal(3, model.Cards[0].Count);
         }
 
         [Fact]
-        public void RateLimit_DropsExcessNewCards_IntoOverflow()
+        public void Pickup_PreemptsOrdinaryKillAfterMinimumExposure()
         {
-            var m = NewModel();
-            for (int i = 0; i < LootFeedModel.RateMaxNewCards + 3; i++)
-                m.Add("item", "物品" + i, "物品" + i, 1, "pickup");
+            var model = NewModel();
+            for (int i = 0; i < LootFeedModel.MaxVisibleCards; i++)
+                model.Add("kill", "杂兵" + i, "杂兵" + i, 1, "kill", 0);
 
-            Assert.Equal(LootFeedModel.RateMaxNewCards, m.ActiveCount);
-            Assert.Equal(3, m.DroppedCount);
-            Assert.True(m.OverflowCount >= 3);
+            model.Add("item", "稀有材料", "稀有材料", 1, "pickup");
+            Assert.DoesNotContain(model.Cards, card => card.Name == "稀有材料");
+            Assert.Equal(1, model.PendingCount);
+
+            model.Tick(LootFeedModel.MinPreemptVisibleMs);
+
+            Assert.Contains(model.Cards, card => card.Name == "稀有材料");
+            Assert.Equal(1, model.PendingCount); // 被抢占的杂兵卡仍可恢复显示
         }
 
         [Fact]
-        public void RateLimit_WindowResets()
+        public void Boss_PreemptsScheduledGuaranteedRewardImmediately()
         {
-            var m = NewModel();
-            for (int i = 0; i < LootFeedModel.RateMaxNewCards; i++)
-                m.Add("item", "物品" + i, "物品" + i, 1, "pickup");
-            m.Tick(LootFeedModel.RateWindowMs);
-            m.Add("item", "新物品", "新物品", 1, "pickup");
+            var model = NewModel();
+            for (int i = 0; i < LootFeedModel.MaxVisibleCards; i++)
+                model.Add("item", "任务奖励" + i, "奖励" + i, 1, "quest_reward");
 
-            Assert.Equal(LootFeedModel.RateMaxNewCards + 1, m.ActiveCount);
-            Assert.Equal(0, m.DroppedCount);
+            model.Add("kill", "终极首领", "终极首领", 1, "kill", 2);
+
+            LootFeedModel.LootCard boss = Assert.Single(model.Cards, card => card.EliteLevel == 2);
+            Assert.Equal(LootFeedModel.RetentionClass.Guaranteed, boss.Retention);
+            Assert.Equal(LootFeedModel.UrgencyClass.Immediate, boss.Urgency);
+            Assert.Equal(1, model.PendingCount);
+            Assert.Equal(LootFeedModel.RetentionClass.Guaranteed, model.PendingCards[0].Retention);
         }
 
         [Fact]
-        public void Overflow_IncludesCardsBeyondMaxVisible()
+        public void PriorityReplacement_ReusesVictimSlot()
         {
-            var m = NewModel();
+            var model = NewModel();
+            for (int i = 0; i < LootFeedModel.MaxVisibleCards; i++)
+                model.Add("kill", "杂兵" + i, "杂兵" + i, 1, "kill", 0);
+            model.Tick(LootFeedModel.MinPreemptVisibleMs);
+
+            long[] before = model.Cards.Select(card => card.Sequence).ToArray();
+            model.Add("kill", "精英守卫", "精英守卫", 1, "kill", 1);
+            long[] after = model.Cards.Select(card => card.Sequence).ToArray();
+
+            Assert.NotEqual(before[0], after[0]);
+            Assert.Equal(before.Skip(1), after.Skip(1));
+            Assert.Equal("精英守卫", model.Cards[0].Name);
+        }
+
+        [Fact]
+        public void CountVisualUpdate_IsThrottledButLogicalTotalIsExact()
+        {
+            var model = NewModel();
+            model.Add("money", "金钱", "金钱", 1, "pickup");
+            for (int i = 0; i < 10; i++)
+                model.Add("money", "金钱", "金钱", 1, "pickup");
+
+            Assert.Equal(11, model.Cards[0].Count);
+            Assert.Equal(1, model.Cards[0].DisplayCount);
+
+            model.Tick(LootFeedModel.CountVisualIntervalMs - 1);
+            Assert.Equal(1, model.Cards[0].DisplayCount);
+            model.Tick(1);
+
+            Assert.Equal(11, model.Cards[0].DisplayCount);
+            Assert.Equal(1, model.Cards[0].PreviousDisplayCount);
+            Assert.Equal(LootFeedModel.CountVisualIntervalMs,
+                model.Cards[0].CountTransitionStartedMs);
+        }
+
+        [Fact]
+        public void CountCommit_RequestsGeometryOnlyWhenTheVisibleDigitBucketChanges()
+        {
+            var model = NewModel();
+            model.Add("kill", "杂兵", "杂兵", 1, "kill", 0);
+
+            model.Add("kill", "杂兵", "杂兵", 1, "kill", 0);
+            LootFeedModel.Change toTwo = model.Tick(LootFeedModel.CountVisualIntervalMs);
+            Assert.True((toTwo & LootFeedModel.Change.Geometry) != 0);
+            Assert.Equal(2, model.Cards[0].DisplayCount);
+
+            model.Add("kill", "杂兵", "杂兵", 7, "kill", 0);
+            LootFeedModel.Change toNine = model.Tick(LootFeedModel.CountVisualIntervalMs);
+            Assert.True((toNine & LootFeedModel.Change.Visual) != 0);
+            Assert.True((toNine & LootFeedModel.Change.Geometry) == 0);
+            Assert.Equal(9, model.Cards[0].DisplayCount);
+
+            model.Add("kill", "杂兵", "杂兵", 1, "kill", 0);
+            LootFeedModel.Change toTen = model.Tick(LootFeedModel.CountVisualIntervalMs);
+            Assert.True((toTen & LootFeedModel.Change.Geometry) != 0);
+            Assert.Equal(10, model.Cards[0].DisplayCount);
+        }
+
+        [Theory]
+        [InlineData(0L, 0)]
+        [InlineData(1L, 0)]
+        [InlineData(2L, 1)]
+        [InlineData(9L, 1)]
+        [InlineData(10L, 2)]
+        [InlineData(999L, 3)]
+        [InlineData(1000L, 4)]
+        [InlineData(long.MaxValue, 19)]
+        public void CountLayoutBucket_IsStableWithinOneDigitWidth(long count, int expected)
+        {
+            Assert.Equal(expected, LootFeedModel.CountLayoutBucket(count));
+        }
+
+        [Fact]
+        public void PendingIndicator_ReportsRecoverableCardCountAtEightHertz()
+        {
+            var model = NewModel();
             for (int i = 0; i < LootFeedModel.MaxVisibleCards + 2; i++)
-                m.Add("item", "物品" + i, "物品" + i, 1, "pickup");
+                model.Add("item", "任务奖励" + i, "奖励" + i, 1, "quest_reward");
 
-            Assert.Equal(LootFeedModel.MaxVisibleCards + 2, m.ActiveCount);
-            Assert.Equal(2, m.OverflowCount);
+            Assert.Equal(2, model.PendingCount);
+            Assert.Equal(0, model.DisplayPendingCount);
+            model.Tick(LootFeedModel.CountVisualIntervalMs);
+            Assert.Equal(2, model.DisplayPendingCount);
         }
 
         [Fact]
-        public void Tick_ExpiresCardsAfterHoldPlusFade()
+        public void OrdinaryKills_CompressOnlyIdentityOverflowAndPreserveTotal()
         {
-            var m = NewModel();
-            m.Add("item", "急救包", "急救包", 1, "pickup");
-            m.Tick(LootFeedModel.HoldMs + LootFeedModel.FadeMs);
-            Assert.Equal(1, m.ActiveCount);
-            bool removed = m.Tick(1);
+            var model = NewModel();
+            for (int i = 0; i < LootFeedModel.MaxDistinctOrdinaryKillCards + 2; i++)
+                model.Add("kill", "杂兵" + i, "杂兵" + i, 1, "kill", 0);
 
-            Assert.True(removed);
-            Assert.Equal(0, m.ActiveCount);
+            var all = model.Cards.Concat(model.PendingCards).ToArray();
+            Assert.Equal(LootFeedModel.MaxDistinctOrdinaryKillCards + 1, all.Length);
+            LootFeedModel.LootCard summary = Assert.Single(all, card => card.IsAmbientSummary);
+            Assert.Equal("杂兵击杀", summary.Name);
+            Assert.Equal(2, summary.Count);
+            Assert.Equal(10, all.Sum(card => card.Count));
+            Assert.Equal(LootFeedModel.RetentionClass.Compressible, summary.Retention);
         }
 
         [Fact]
-        public void Tick_DroppedCountResetsWhenFeedClears()
+        public void AlphaFor_UsesSmoothStepForEntryAndExit()
         {
-            var m = NewModel();
-            for (int i = 0; i < LootFeedModel.RateMaxNewCards + 2; i++)
-                m.Add("item", "物品" + i, "物品" + i, 1, "pickup");
-            Assert.Equal(2, m.DroppedCount);
+            var card = new LootFeedModel.LootCard { VisibleAgeMs = 80, FadeElapsedMs = 0 };
+            Assert.Equal(0.5f, LootFeedModel.AlphaFor(card, 160), 3);
 
-            m.Tick(LootFeedModel.HoldMs + LootFeedModel.FadeMs + 1);
+            card.VisibleAgeMs = 160;
+            Assert.Equal(1f, LootFeedModel.AlphaFor(card, 160));
 
-            Assert.Equal(0, m.ActiveCount);
-            Assert.Equal(0, m.DroppedCount);
-            Assert.Equal(0, m.OverflowCount);
-        }
-
-        [Fact]
-        public void AlphaFor_FullAlphaDuringHold_FadesQuadraticallyAfter()
-        {
-            var m = NewModel();
-            m.Add("item", "急救包", "急救包", 1, "pickup");
-            var card = m.Cards[0];
-
-            Assert.Equal(1f, LootFeedModel.AlphaFor(card, LootFeedModel.HoldMs, 200));
-
-            float halfFade = LootFeedModel.AlphaFor(
-                card, LootFeedModel.HoldMs + LootFeedModel.FadeMs / 2, 200);
-            Assert.True(halfFade > 0.2f && halfFade < 0.3f); // (0.5)^2 = 0.25
-
-            Assert.Equal(0f, LootFeedModel.AlphaFor(
-                card, LootFeedModel.HoldMs + LootFeedModel.FadeMs, 200));
+            card.FadeElapsedMs = LootFeedModel.FadeMs / 2;
+            Assert.Equal(0.5f, LootFeedModel.AlphaFor(card, 160), 3);
+            card.FadeElapsedMs = LootFeedModel.FadeMs;
+            Assert.Equal(0f, LootFeedModel.AlphaFor(card, 160));
         }
 
         [Fact]
         public void Add_RejectsInvalidInput()
         {
-            var m = NewModel();
-            m.Add(null, "急救包", null, 1, "pickup");
-            m.Add("item", null, null, 1, "pickup");
-            m.Add("item", "急救包", null, 0, "pickup");
-            m.Add("item", "急救包", null, -5, "pickup");
+            var model = NewModel();
+            model.Add(null, "急救包", null, 1, "pickup");
+            model.Add("item", null, null, 1, "pickup");
+            model.Add("item", "急救包", null, 0, "pickup");
+            model.Add("item", "急救包", null, -5, "pickup");
 
-            Assert.Equal(0, m.ActiveCount);
+            Assert.Equal(0, model.ActiveCount);
+            Assert.Equal(0, model.PendingCount);
         }
     }
 }

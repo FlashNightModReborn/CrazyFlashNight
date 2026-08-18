@@ -10,8 +10,9 @@ namespace CF7Launcher.Tasks
     /// <summary>
     /// doll_bake_result sync handler：常驻 WebView2 overlay 的 doll-bake.js 用 dressup
     /// 渲染器把击杀斗士的外观元组烘焙成 256×256 PNG，经 Web→C# task 桥回传
-    /// {task:"doll_bake_result", payload:{key, pngBase64, requestId?, error?}}，
-    /// 本 task 校验后原子写入运行时缓存目录 launcher/data/doll-portraits/&lt;hex&gt;.png。
+    /// {task:"doll_bake_result", payload:{key, pngBase64, requestId, error?}}。
+    /// requestId 必须与当前 key 的在飞请求 exact 匹配；本 task 完整解码并确认 256×256
+    /// 后才原子写入运行时缓存目录 launcher/data/doll-portraits/&lt;hex&gt;.png。
     ///
     /// 与 IconBakeTask 的差异：无 begin/chunk/end 分块（web 单次 toDataURL 回传）、
     /// 无 manifest（文件存在即注册，LootIconCatalog 第四源按 纸娃娃-&lt;hex&gt; ref 直读）。
@@ -22,7 +23,7 @@ namespace CF7Launcher.Tasks
     {
         // 防御上限：256×256 PNG 的 base64 远超此值即视为异常载荷
         private const int MaxPngBase64Length = 4 * 1024 * 1024;
-        private static readonly byte[] PngMagic = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+        private const int MaxRequestIdLength = 128;
 
         private readonly string _dir;
         private readonly DollPortraitBakeService _bakeService; // 可为 null（测试/降级）
@@ -50,7 +51,9 @@ namespace CF7Launcher.Tasks
         public string Handle(JObject message)
         {
             string key = null;
+            string requestId = null;
             bool ok = false;
+            bool resultClaimed = false;
             try
             {
                 JObject payload = message.Value<JObject>("payload");
@@ -62,7 +65,16 @@ namespace CF7Launcher.Tasks
                 if (!DollBakeTaskKey.TryExtractHex(key, out hex))
                     return BuildError("invalid key: " + (key ?? "<null>"));
 
-                string requestId = payload.Value<string>("requestId");
+                requestId = payload.Value<string>("requestId");
+                if (string.IsNullOrEmpty(requestId) || requestId.Length > MaxRequestIdLength)
+                    return BuildError("invalid requestId");
+                if (_bakeService != null)
+                {
+                    if (!_bakeService.TryBeginResult(key, requestId))
+                        return BuildError("stale or unknown doll bake request");
+                    resultClaimed = true;
+                }
+
                 string webError = payload.Value<string>("error");
                 if (!string.IsNullOrEmpty(webError))
                 {
@@ -79,8 +91,13 @@ namespace CF7Launcher.Tasks
                 byte[] png;
                 try { png = Convert.FromBase64String(b64); }
                 catch (FormatException) { return BuildError("pngBase64 is not valid base64"); }
-                if (png.Length < PngMagic.Length || !HasPngMagic(png))
-                    return BuildError("payload is not a PNG");
+                string pngError = DollPortraitPngValidator.ValidateBytes(png);
+                if (pngError != null)
+                {
+                    LogManager.Log("[DollBakeTask] rejected portrait for " + key
+                        + " req=" + requestId + ": " + pngError);
+                    return BuildError(pngError);
+                }
 
                 if (!Directory.Exists(_dir))
                     Directory.CreateDirectory(_dir);
@@ -124,24 +141,13 @@ namespace CF7Launcher.Tasks
             }
             finally
             {
-                // 任何终态都清除在飞标记（键合法时），允许下一次击杀重试；
-                // 成功（含 unchanged）时经 PortraitReady 驱动占位卡片原地升级
-                if (_bakeService != null && key != null)
+                // 只有已通过 exact key+requestId 栅栏的终态才能清除对应在飞项；
+                // stale/unsolicited 回包不得影响更新请求。成功时驱动占位卡片原地升级。
+                if (_bakeService != null && resultClaimed)
                 {
-                    string hexIgnored;
-                    if (DollBakeTaskKey.TryExtractHex(key, out hexIgnored))
-                    {
-                        try { _bakeService.NotifyResult(key, ok); } catch { }
-                    }
+                    try { _bakeService.CompleteResult(key, requestId, ok); } catch { }
                 }
             }
-        }
-
-        private static bool HasPngMagic(byte[] bytes)
-        {
-            for (int i = 0; i < PngMagic.Length; i++)
-                if (bytes[i] != PngMagic[i]) return false;
-            return true;
         }
 
         private static bool BytesEqual(byte[] a, byte[] b)

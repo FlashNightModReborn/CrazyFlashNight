@@ -8,7 +8,7 @@ namespace CF7Launcher.Tasks
 {
     /// <summary>
     /// Fire-and-forget loot feed 事件处理器（仿 ToastTask）。
-    /// 接收 Flash 发来的 {"task":"loot","payload":{kind,name,count,source,icon,doll?}}
+    /// 接收 Flash 发来的 {"task":"loot","payload":{kind,name,count,source,icon,eliteLevel?,doll?}}
     /// 并转发到 NativeHud LootFeedWidget。Native 单渲染端，无 sink 抽象。
     /// 非法 payload 记日志并丢弃（fail-closed，不抛、不回包）。
     /// 注意与地图战利品箱的 LootTask（loot_response 回包）是两个域，命名勿混淆。
@@ -52,13 +52,16 @@ namespace CF7Launcher.Tasks
                 JObject payload = message["payload"] as JObject;
                 string kind, name, source, icon;
                 long count;
+                int eliteLevel;
                 Dictionary<string, string> doll;
-                if (!TryParsePayload(payload, out kind, out name, out count, out source, out icon, out doll))
+                if (!TryParsePayload(
+                    payload, out kind, out name, out count, out source, out icon,
+                    out eliteLevel, out doll))
                     return null;
                 // 纸娃娃运行时烘焙：doll 元组有效时图标键单点派生，覆盖/忽略 payload.icon
                 if (kind == "kill" && doll != null)
                     icon = DollPortraitKey.Compute(doll);
-                _widget.AddEvent(kind, name, count, source, icon);
+                _widget.AddEvent(kind, name, count, source, icon, eliteLevel);
                 if (kind == "kill" && doll != null && _dollBakeSink != null)
                 {
                     try { _dollBakeSink.EnsurePortrait(doll, icon); }
@@ -81,8 +84,11 @@ namespace CF7Launcher.Tasks
             JObject payload,
             out string kind, out string name, out long count, out string source, out string icon)
         {
+            int eliteLevel;
             Dictionary<string, string> doll;
-            return TryParsePayload(payload, out kind, out name, out count, out source, out icon, out doll);
+            return TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll);
         }
 
         /// <summary>
@@ -94,7 +100,23 @@ namespace CF7Launcher.Tasks
             out string kind, out string name, out long count, out string source, out string icon,
             out Dictionary<string, string> doll)
         {
-            kind = null; name = null; count = 0; source = null; icon = null; doll = null;
+            int eliteLevel;
+            return TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll);
+        }
+
+        /// <summary>
+        /// 完整协议校验。eliteLevel 只对 kill 生效，缺失或非法值按普通敌人 0 降级，
+        /// 不让一个可选的视觉/调度提示破坏既有击杀事件。
+        /// </summary>
+        internal static bool TryParsePayload(
+            JObject payload,
+            out string kind, out string name, out long count, out string source, out string icon,
+            out int eliteLevel, out Dictionary<string, string> doll)
+        {
+            kind = null; name = null; count = 0; source = null; icon = null;
+            eliteLevel = 0; doll = null;
             if (payload == null)
             {
                 LogManager.Log("[LootFeed] missing or non-object payload, dropped");
@@ -126,6 +148,27 @@ namespace CF7Launcher.Tasks
             string rawIcon = payload.Value<string>("icon");
             if (string.IsNullOrEmpty(rawIcon) || rawIcon.Length > MaxIconLength)
                 rawIcon = null;
+
+            if (rawKind == "kill")
+            {
+                JToken rankToken = payload["eliteLevel"];
+                if (rankToken != null && rankToken.Type != JTokenType.Null)
+                {
+                    if (rankToken.Type == JTokenType.Integer)
+                    {
+                        int rawRank;
+                        if (int.TryParse(rankToken.ToString(), out rawRank)
+                            && rawRank >= 0 && rawRank <= 2)
+                            eliteLevel = (int)rawRank;
+                        else
+                            LogManager.Log("[LootFeed] eliteLevel out of range, defaulted to 0");
+                    }
+                    else
+                    {
+                        LogManager.Log("[LootFeed] eliteLevel is not an integer, defaulted to 0");
+                    }
+                }
+            }
 
             kind = rawKind; name = rawName; count = rawCount; source = rawSource; icon = rawIcon;
             doll = ParseDoll(payload["doll"]);

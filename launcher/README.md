@@ -2,7 +2,7 @@
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。
 
-**最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。
+**最后核对代码基线**：post-promotion docs commit `c5108d6c682f3c71562ff37f5c8d3cd37a7c5385`（2026-08-18）；其后的 loot cache / doll result hardening 与本文件同轮维护。
 
 ## 当前真值与阅读顺序
 
@@ -110,6 +110,17 @@ bootstrap preflight
 | V8 | 本地脚本总线和计算模块 | 模块源与加载闭包必须可复验 |
 | named pipe / MCP | CF7 Agent Runtime | 观察 grant 与 write lease 分离，绑定 peer/session/frame/generation |
 
+### Loot feed 与纸娃娃烘焙协议
+
+- AS2 通过 XMLSocket fire-and-forget task `loot` 发送 `{kind,name,count,source,icon,eliteLevel?,doll?}`。`eliteLevel` 只对击杀生效，固定为 `UnitUtil.getEliteLevel` 的 `0=普通 / 1=精英 / 2=首领`；缺失或非法值由 Host 降级为 `0`，AS2 不发送最终优先级。
+- `LootFeedTask` 只把协议事实投影到 NativeHud `LootFeedWidget`；地图面板的 `loot_response` 是另一业务域，任务奖励旧 AS2 弹窗已经退役。常驻 UI 的产品路线固定为原生 UI，`useNativeHud=false` 是待删除 legacy 装配开关，不构成 loot feed 的兼容 fallback 合同。
+- `LootFeedModel` 由 Host 单点定义五槽共享优先级池与可恢复等待队列：任务/通关奖励、开箱物品和 Boss 击杀为 guaranteed，精英击杀与拾取为 exact-aggregate，普通击杀最低且只允许把并发身份溢出压成“杂兵击杀”总数。合并键包含 `kind + name + icon + source + eliteLevel`；等待卡不推进生命周期，高优先级替换复用原槽，`待显示 n 项` 只表示仍在队列中的真实卡片，不再存在限流丢弃或伪 overflow 计数。
+- 绘制采用 5 个 26px 直角卡片、20px 图标与 12px 近白名称。卡宽按内容在 96–220px 内以 8px 微量化；计数为 `1` 时不保留空列，`>1` 时只按当前位数桶保留右对齐列，因此短名称不拖尾、合理长度的奖励名不再被隐藏的 `×99999` 挤压。精英使用琥珀分段轨/头像框，Boss 使用金色双轨/边线与一次性短强调，任务/开箱不会借用 Boss 视觉。
+  入场只做 4px/180ms SmoothStep 垂直归位；计数按 125ms 提交，用 180ms/1–2px SmoothStep 交叉淡化并仅在数字区增加有界色洗/底沿，击杀按本批增量增强但不缩放整卡、不发粒子；退场 280ms，动画图标最多运行 450ms 后冻结。静态持有不申请重绘，视觉签名 32ms 采样且仍受 NativeHud 33ms 合成硬上限约束；socket burst 维持单 UI drain / 单批决策，bounds 只随卡片/等待行或计数位数桶变化。
+- `LootIconCatalog` 从 `launcher/web/icons/manifest.json`、敌人头像 manifest 与 `launcher/data/doll-portraits` 解析图标。64px `Bitmap` 只由有界 LRU 持有，图标帧集不得跨 LRU 淘汰保存位图引用；动画整组超过预算时降级静态首帧。
+- 主角/佣兵击杀缺少预烘焙头像时，Host 发 WebView2 message `{type:"dollBake",key,requestId,tuple}`。Web 只负责渲染，并经 allowlisted task `doll_bake_result` 回传 `{key,requestId,pngBase64|error}`；`requestId` 必须与当前 key 的唯一在飞项 exact 匹配。缺失、foreign、duplicate、timeout 后迟到或无在飞项的回包一律拒绝，且不得清除更新请求。
+- `DollBakeTask` 只接受可完整解码的 exact 256×256 PNG。Web 离屏渲染显式固定 `pixelRatio:1` 并关闭一次性快照的动画循环，使传输尺寸不受宿主 125%、150%、175% DPI 放大。校验通过后才原子写入 `launcher/data/doll-portraits/<hex>.png`；拒绝尺寸/内容时记录 key、requestId 与原因。
+  调度器首次复用历史缓存时执行同一完整校验，旧尺寸或损坏文件不再短路请求而会触发重烘焙；目录读取端也拒绝非 256×256 文件。匹配请求的失败终态只释放该请求以允许重试；成功终态再触发 `PortraitReady`，让仍存活的占位卡重探图标。Web 不拥有任意文件名、缓存路径或跨 key 写权限。
 ### 原生音频平台 v2
 
 原生音频 bridge、格式能力和可观测性以 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)为准。通用 runtime promotion 只证明供应链与部署完整性；Audio H2 仍是独立产品验收，不从通用 promotion 或其他 Panel smoke 外推。

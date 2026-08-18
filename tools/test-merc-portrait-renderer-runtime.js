@@ -47,7 +47,7 @@ function createNode() {
 function createHarness(options) {
     options = options || {};
     const timers = [];
-    const stats = { creates: 0, destroys: 0, loadManifestCalls: 0 };
+    const stats = { creates: 0, destroys: 0, loadManifestCalls: 0, rendererOptions: [] };
     const alpha = new Uint8ClampedArray(200 * 4);
     for (let i = 3; i < alpha.length; i += 4) alpha[i] = 255;
 
@@ -65,6 +65,7 @@ function createHarness(options) {
         buildStateFromEquipment: function(unusedManifest, state) { return state; },
         create: function(canvas, rendererOptions) {
             const index = ++stats.creates;
+            stats.rendererOptions.push(Object.assign({}, rendererOptions));
             canvas.width = rendererOptions.width;
             canvas.height = rendererOptions.height;
             canvas._url = options.dataUrl ? options.dataUrl(index) : 'data:image/png;base64,' + String(index).repeat(8);
@@ -103,6 +104,7 @@ function createHarness(options) {
         setTimeout: setTimer,
         clearTimeout: function(timer) { if (timer) timer.cancelled = true; },
         window: {
+            devicePixelRatio: 1.5,
             CF7_MERC_PORTRAIT_MAX_CONCURRENCY: options.concurrency || 4,
             CF7_MERC_PORTRAIT_CACHE_MAX_ENTRIES: options.cacheEntries || 96,
             CF7_MERC_PORTRAIT_CACHE_MAX_BYTES: options.cacheBytes || (12 * 1024 * 1024)
@@ -140,6 +142,18 @@ function merc(key, overrides) {
 
 (async function() {
     let cases = 0;
+
+    const dpiHarness = createHarness({});
+    const dpiResult = await dpiHarness.api.renderDataUrl(merc('dpi-contract'), { size: 256 });
+    assert(dpiResult.indexOf('data:image/png;base64,') === 0);
+    assert.strictEqual(dpiHarness.stats.rendererOptions.length, 1);
+    assert.strictEqual(dpiHarness.stats.rendererOptions[0].width, 256);
+    assert.strictEqual(dpiHarness.stats.rendererOptions[0].height, 256);
+    assert.strictEqual(dpiHarness.stats.rendererOptions[0].pixelRatio, 1,
+        'snapshot size must be independent of the host devicePixelRatio');
+    assert.strictEqual(dpiHarness.stats.rendererOptions[0].animate, false,
+        'one-shot portrait bake must not schedule an animation loop');
+    cases++;
 
     const exceptionHarness = createHarness({
         concurrency: 4,

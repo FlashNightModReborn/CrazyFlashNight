@@ -333,6 +333,10 @@
                     manifest: manifest,
                     width: size,
                     height: size,
+                    // `size` is the transport contract's physical PNG size. Do not let
+                    // the host WebView's DPI (for example 150%) silently turn 256 into 384.
+                    pixelRatio: 1,
+                    animate: false,
                     fps: 24
                 });
                 tick();

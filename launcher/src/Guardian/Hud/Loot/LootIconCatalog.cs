@@ -37,6 +37,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
     public sealed class LootIconCatalog : IDisposable
     {
         internal const int ThumbSize = 64;
+        private const long ThumbBytes = (long)ThumbSize * ThumbSize * 4L;
         private const double DefaultFps = 24.0;
         /// <summary>doll 源负缓存 TTL（ms）：烘焙异步落盘，到期重探。</summary>
         internal const long DollMissTtlMs = 2000;
@@ -66,8 +67,6 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private readonly string _dollPortraitsDir; // null = 运行时纸娃娃胸像库关闭
         private readonly object _gate = new object();
         private readonly BitmapLruCache _frameCache; // key = uri 文件名（头像用 "portrait:<ref>"，纸娃娃用 "doll:<ref>"）
-        private readonly Dictionary<string, LootIconFrames> _setCache =
-            new Dictionary<string, LootIconFrames>(StringComparer.Ordinal); // key = 图标名
         private readonly HashSet<string> _missing = new HashSet<string>(StringComparer.Ordinal);
         // doll 源专用 TTL 负缓存：ref → 上次 miss 的 NowMs（烘焙异步落盘，到期重探）
         private readonly Dictionary<string, long> _missingDoll =
@@ -84,6 +83,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
             long maxCacheBytes = 24L * 1024 * 1024, string dollPortraitsDir = null)
         {
             if (string.IsNullOrEmpty(iconsDir)) throw new ArgumentException("Icons dir is required.", nameof(iconsDir));
+            if (maxCacheBytes < ThumbBytes)
+                throw new ArgumentOutOfRangeException(nameof(maxCacheBytes),
+                    "Cache must hold at least one decoded loot icon frame.");
             _iconsDir = iconsDir;
             _manifestPath = Path.Combine(iconsDir, "manifest.json");
             _enemyPortraitsDir = string.IsNullOrEmpty(enemyPortraitsDir) ? null : enemyPortraitsDir;
@@ -99,7 +101,6 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
             lock (_gate)
             {
-                if (_setCache.TryGetValue(iconName, out frames)) return true;
                 if (_missing.Contains(iconName)) return false;
                 bool isDollRef = iconName.StartsWith(DollPortraitKey.Prefix, StringComparison.Ordinal);
                 if (isDollRef)
@@ -130,7 +131,6 @@ namespace CF7Launcher.Guardian.Hud.Loot
                             Frames = new Bitmap[] { portrait },
                             Fps = DefaultFps
                         };
-                        _setCache[iconName] = frames;
                         if (isDollRef) _missingDoll.Remove(iconName);
                         return true;
                     }
@@ -155,7 +155,6 @@ namespace CF7Launcher.Guardian.Hud.Loot
                             Fps = entry.Fps > 0 ? entry.Fps : DefaultFps,
                             DurationMs = durationMs
                         };
-                        _setCache[iconName] = frames;
                         return true;
                     }
                 }
@@ -169,6 +168,34 @@ namespace CF7Launcher.Guardian.Hud.Loot
                         return false;
                     }
                     uris = new List<string> { entry.F1 };
+                }
+
+                HashSet<string> uniqueUris = new HashSet<string>(StringComparer.Ordinal);
+                for (int i = 0; i < uris.Count; i++)
+                {
+                    if (!string.IsNullOrEmpty(uris[i])) uniqueUris.Add(uris[i]);
+                }
+                if ((long)uniqueUris.Count * ThumbBytes > _frameCache.MaxBytes)
+                {
+                    // PNG 序列与 WebP 动画遵守相同所有权边界：一次查询返回的整组唯一帧
+                    // 必须能同时驻留于 LRU；重复 URI 只是时间轴 hold，不重复计费。
+                    LogManager.Log("[LootIcon] png sequence exceeds cache budget, using static fallback: "
+                        + iconName + " uniqueFrames=" + uniqueUris.Count);
+                    Bitmap fallback = null;
+                    if (!string.IsNullOrEmpty(entry.F1)) fallback = LoadFrame(entry.F1);
+                    for (int i = 0; fallback == null && i < uris.Count; i++)
+                        fallback = LoadFrame(uris[i]);
+                    if (fallback == null)
+                    {
+                        _missing.Add(iconName);
+                        return false;
+                    }
+                    frames = new LootIconFrames
+                    {
+                        Frames = new Bitmap[] { fallback },
+                        Fps = entry.Fps > 0 ? entry.Fps : DefaultFps
+                    };
+                    return true;
                 }
 
                 List<Bitmap> bitmaps = new List<Bitmap>(uris.Count);
@@ -191,7 +218,6 @@ namespace CF7Launcher.Guardian.Hud.Loot
                     Frames = bitmaps.ToArray(),
                     Fps = entry.Fps > 0 ? entry.Fps : DefaultFps
                 };
-                _setCache[iconName] = frames;
                 return true;
             }
         }
@@ -221,8 +247,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
             if (!_frameCache.TryAdd(uri, bmp))
             {
-                // 超预算（64px 帧 16KB，理论上不会），退化为不缓存直发
-                return bmp;
+                // 构造函数已保证单帧预算；若缓存实现约束变化，宁可丢帧也不返回无所有者位图。
+                bmp.Dispose();
+                return null;
             }
             return bmp;
         }
@@ -276,9 +303,43 @@ namespace CF7Launcher.Guardian.Hud.Loot
                     int height = codec.Info.Height;
                     if (width <= 0 || height <= 0) return null;
 
+                    // LRU 是缩略位图的唯一所有者。整组动画放不下时回退静态首帧，禁止在
+                    // 同一次解码中让后帧淘汰/Dispose 即将返回的前帧。
+                    if ((long)frameCount * ThumbBytes > _frameCache.MaxBytes)
+                    {
+                        LogManager.Log("[LootIcon] animation exceeds cache budget, using static fallback: "
+                            + uri + " frames=" + frameCount);
+                        return null;
+                    }
+
+                    int[] durations = new int[frameCount];
+                    long totalDuration = 0;
+                    for (int i = 0; i < frameCount; i++)
+                    {
+                        durations[i] = Math.Max(0, frameInfos[i].Duration);
+                        totalDuration += durations[i];
+                    }
+
+                    // 帧集元数据不持有 Bitmap；每次命中都从 LRU 重新取得并 touch 全组，
+                    // 避免跨淘汰周期保留已 Dispose 的引用。
+                    Bitmap[] cachedThumbs = new Bitmap[frameCount];
+                    bool allCached = true;
+                    for (int i = 0; i < frameCount; i++)
+                    {
+                        if (!_frameCache.TryGet(uri + "#f" + i, out cachedThumbs[i]))
+                        {
+                            allCached = false;
+                            break;
+                        }
+                    }
+                    if (allCached)
+                    {
+                        durationMs = totalDuration > 0 ? durations : null;
+                        return cachedThumbs;
+                    }
+
                     SKImageInfo decodeInfo = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
                     Bitmap[] composited = new Bitmap[frameCount]; // 全尺寸合成态，供后续帧作 priorFrame
-                    int[] durations = new int[frameCount];
                     try
                     {
                         for (int i = 0; i < frameCount; i++)
@@ -322,7 +383,6 @@ namespace CF7Launcher.Guardian.Hud.Loot
                                 throw;
                             }
                             composited[i] = canvas;
-                            durations[i] = Math.Max(0, frameInfos[i].Duration);
                         }
                     }
                     catch
@@ -339,8 +399,13 @@ namespace CF7Launcher.Guardian.Hud.Loot
                         for (int i = 0; i < frameCount; i++)
                         {
                             thumbs[i] = CreateThumb(composited[i]);
-                            // 超预算退化为不缓存直发（与 LoadFrame 同策略）
-                            _frameCache.TryAdd(uri + "#f" + i, thumbs[i]);
+                            if (!_frameCache.TryAdd(uri + "#f" + i, thumbs[i]))
+                            {
+                                thumbs[i].Dispose();
+                                thumbs[i] = null;
+                                throw new InvalidOperationException(
+                                    "Animation frame cache admission failed after budget preflight: " + uri);
+                            }
                         }
                     }
                     finally
@@ -349,9 +414,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                             if (composited[i] != null) composited[i].Dispose();
                     }
 
-                    long total = 0;
-                    for (int i = 0; i < durations.Length; i++) total += durations[i];
-                    durationMs = total > 0 ? durations : null; // 全 0 时长 → 调用方走均匀 fps
+                    durationMs = totalDuration > 0 ? durations : null; // 全 0 时长 → 调用方走均匀 fps
                     return thumbs;
                 }
             }
@@ -396,7 +459,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
 
             if (!_frameCache.TryAdd(cacheKey, thumb))
-                return thumb; // 超预算退化为不缓存直发（与 LoadFrame 同策略）
+            {
+                thumb.Dispose();
+                return null;
+            }
             return thumb;
         }
 
@@ -431,7 +497,16 @@ namespace CF7Launcher.Guardian.Hud.Loot
             try
             {
                 using (Bitmap full = MapHudImageDecoder.LoadBitmap(path))
+                {
+                    if (full.Width != DollPortraitPngValidator.ExpectedSize
+                        || full.Height != DollPortraitPngValidator.ExpectedSize)
+                    {
+                        LogManager.Log("[LootIcon] invalid doll portrait dimensions for '"
+                            + dollRef + "': " + full.Width + "x" + full.Height);
+                        return null;
+                    }
                     thumb = CreateThumb(full);
+                }
             }
             catch (Exception ex)
             {
@@ -440,7 +515,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
 
             if (!_frameCache.TryAdd(cacheKey, thumb))
-                return thumb; // 超预算退化为不缓存直发（与 LoadFrame 同策略）
+            {
+                thumb.Dispose();
+                return null;
+            }
             return thumb;
         }
 

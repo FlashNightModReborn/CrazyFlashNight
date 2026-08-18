@@ -26,13 +26,35 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             return dir;
         }
 
-        private static void WriteFixturePng(string path)
+        private static void WriteFixturePng(string path, int size = 256)
         {
-            using (Bitmap bmp = new Bitmap(256, 256, PixelFormat.Format32bppArgb))
+            using (Bitmap bmp = new Bitmap(size, size, PixelFormat.Format32bppArgb))
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.Clear(Color.FromArgb(255, 30, 120, 200));
                 bmp.Save(path, ImageFormat.Png);
+            }
+        }
+
+        [Fact]
+        public void TryGet_DollRef_WrongSizedLegacyCacheRejected()
+        {
+            string iconsDir = CreateTempDir();
+            string dollDir = CreateTempDir();
+            try
+            {
+                WriteFixturePng(Path.Combine(dollDir, DollHex + ".png"), 384);
+                using (var catalog = new LootIconCatalog(iconsDir, dollPortraitsDir: dollDir))
+                {
+                    LootIconCatalog.LootIconFrames frames;
+                    Assert.False(catalog.TryGet(DollRef, out frames));
+                    Assert.Null(frames);
+                }
+            }
+            finally
+            {
+                Directory.Delete(iconsDir, true);
+                Directory.Delete(dollDir, true);
             }
         }
 

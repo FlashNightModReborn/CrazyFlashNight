@@ -148,6 +148,83 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Null(icon);
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void TryParse_KillEliteLevel_AcceptsClosedRange(int expectedRank)
+        {
+            var payload = Payload("kill", "精英敌人", 1, "kill", "敌人-精英");
+            payload["eliteLevel"] = expectedRank;
+            string kind, name, source, icon;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll));
+            Assert.Equal(expectedRank, eliteLevel);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(3)]
+        [InlineData(99)]
+        public void TryParse_InvalidKillEliteLevel_DegradesToOrdinary(int invalidRank)
+        {
+            var payload = Payload("kill", "敌人", 1, "kill");
+            payload["eliteLevel"] = invalidRank;
+            string kind, name, source, icon;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll));
+            Assert.Equal(0, eliteLevel);
+        }
+
+        [Fact]
+        public void TryParse_NonIntegerOrNonKillEliteLevel_IsIgnored()
+        {
+            var malformedKill = Payload("kill", "敌人", 1, "kill");
+            malformedKill["eliteLevel"] = "2";
+            var nonKill = Payload("item", "急救包", 1, "pickup");
+            nonKill["eliteLevel"] = 2;
+            string kind, name, source, icon;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                malformedKill, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll));
+            Assert.Equal(0, eliteLevel);
+            Assert.True(LootFeedTask.TryParsePayload(
+                nonKill, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll));
+            Assert.Equal(0, eliteLevel);
+        }
+
+        [Fact]
+        public void TryParse_HugeIntegerEliteLevel_DoesNotDropKillEvent()
+        {
+            var payload = Payload("kill", "敌人", 1, "kill");
+            payload["eliteLevel"] = Newtonsoft.Json.Linq.JToken.Parse(
+                "999999999999999999999999999999999999999999");
+            string kind, name, source, icon;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll));
+            Assert.Equal(0, eliteLevel);
+        }
+
         // ==================== doll 元组（纸娃娃运行时烘焙） ====================
 
         private sealed class RecordingBakeSink : CF7Launcher.Guardian.Hud.Loot.IDollBakeSink

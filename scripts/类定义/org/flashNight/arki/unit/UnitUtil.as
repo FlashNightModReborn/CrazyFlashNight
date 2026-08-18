@@ -92,12 +92,12 @@ class org.flashNight.arki.unit.UnitUtil {
         }
 
         
-        if (!isNaN(resistTbl.精英)) {
-            return 1; // 精英直接返回1
-        }
-        
         if (!isNaN(resistTbl.首领)) {
             return 2; // 首领直接返回2
+        }
+
+        if (!isNaN(resistTbl.精英)) {
+            return 1; // 精英直接返回1
         }
         
         return 0;
