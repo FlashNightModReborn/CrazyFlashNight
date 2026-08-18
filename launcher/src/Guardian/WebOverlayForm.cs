@@ -4700,10 +4700,15 @@ namespace CF7Launcher.Guardian
             string taskName)
         {
             // Positive Web-origin authority list. loot_request is routed directly below and is
-            // intentionally absent from MessageRouter; font_pack is the sole generic Web task.
+            // intentionally absent from MessageRouter; font_pack 与 doll_bake_result
+            // （纸娃娃烘焙回传，DollBakeTask 内有 key 白名单与 PNG 魔数校验）是通用 Web task。
             return string.Equals(
                     taskName,
                     "font_pack",
+                    StringComparison.Ordinal)
+                || string.Equals(
+                    taskName,
+                    "doll_bake_result",
                     StringComparison.Ordinal)
                 || string.Equals(
                     taskName,

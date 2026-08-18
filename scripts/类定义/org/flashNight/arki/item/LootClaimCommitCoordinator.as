@@ -382,7 +382,44 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         var outcome:Object = pending.outcome;
         if (outcome == null) return {success:false, error:"commit_failed"};
         outcome.success = true;
+        // 播报永不破坏提交链路：feed 发射异常只留 trace，不影响已提交结果
+        try {
+            emitLootFeed(pending);
+        } catch (emitError) {
+            trace("[LootClaimCommitCoordinator] loot feed emit failed: " + emitError);
+        }
         return outcome;
+    }
+
+    /**
+     * 战利品箱领取成功的 loot feed 播报。统一收口在 successOutcome：begin/resume/
+     * settleForSceneExpiry 三条提交路径都经此处。_lootFeedEmitted 防重：pending 理论上
+     * 只成功一次，但 resume 可重入，幂等标记保证不会双发卡片。
+     * kind 由包装函数按名称自动推导；ordinary 装备透传 tier 解析进阶名/图标。
+     */
+    private static function emitLootFeed(pending:Object):Void {
+        if (pending == null || pending._lootFeedEmitted === true) return;
+        pending._lootFeedEmitted = true;
+        if (typeof _root.发布战利品消息 != "function") return;
+
+        var kind:String = String(pending.kind);
+        if (kind == "ordinary") {
+            var item:Object = pending.sourceItem;
+            if (item == null) return;
+            // 非堆叠装备 value 不是数字（beginOrdinary 的 isStack 同款判据），每件按 1 计
+            var claimCount:Number = (typeof item.value == "number") ? Number(item.value) : 1;
+            _root.发布战利品消息(null, String(item.name), claimCount, "loot_box", item.tier);
+            return;
+        }
+        var count:Number = Number(pending.quantity);
+        if (kind == "money") {
+            _root.发布战利品消息("money", "金钱", count, "loot_box");
+        } else if (kind == "kpoints") {
+            _root.发布战利品消息("kpoint", "K点", count, "loot_box");
+        } else {
+            // information / 材料 / experience / skill_points：名称自动推导 kind 与图标
+            _root.发布战利品消息(null, String(pending.destinationName), count, "loot_box");
+        }
     }
 
     private static function writeInventory(stage:String, inventory:ArrayInventory,

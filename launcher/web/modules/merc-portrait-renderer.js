@@ -630,6 +630,29 @@
         return portrait;
     }
 
+    /**
+     * 无 DOM 挂载的胸像快照：归一化 merc → buildState → 离屏 canvas → PNG dataURL。
+     * 供 doll-bake 等后台烘焙消费者使用（复用同一归一化/裁剪/渲染队列，
+     * 不进卡片挂载与 _thumbCache 语义）。空渲染/失败 resolve ''，不 reject，
+     * 调用方按静默降级处理。
+     */
+    function renderDataUrl(merc, options) {
+        options = options || {};
+        var size = Number(options.size) || 256;
+        return loadManifest().then(function(manifest) {
+            var state = buildState(merc, {
+                manifest: manifest,
+                fitFields: options.fitFields || BUST_FIT_FIELDS,
+                zoom: options.zoom == null ? 1 : options.zoom,
+                margin: options.margin == null ? 6 : options.margin,
+                vAlign: options.vAlign || 'top'
+            });
+            if (!state) return '';
+            var job = scheduleSnapshot(manifest, state, size, function() { return true; });
+            return job.promise;
+        }).catch(function() { return ''; });
+    }
+
     function updateHost(host, merc, options) {
         options = options || {};
         if (!host) return Promise.resolve(null);
@@ -671,6 +694,7 @@
         buildState: buildState,
         mount: mount,
         create: create,
+        renderDataUrl: renderDataUrl,
         updateHost: updateHost,
         debugState: debugState,
         clear: clearPortrait,

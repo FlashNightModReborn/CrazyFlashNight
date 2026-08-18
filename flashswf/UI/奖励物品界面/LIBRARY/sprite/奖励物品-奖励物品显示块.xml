@@ -66,13 +66,14 @@ on (rollOut) {
 	else if (_parent.物品名 == "金钱")
 	{
 		_root.金钱 += _parent.数量;
+		_root.发布战利品消息("money", "金钱", _parent.数量, "level_reward");
 		_parent._visible = 0;
 		_parent._parent.奖励品[_parent.数组id] = [];
 		_parent._parent.刷新();
 	}
 	else if (_root.itemAcquire([{name:_parent.物品名, value:_parent.数量}]))
 	{
-		_root.发布消息("获得:" + _root.getItemData(_parent.物品名).displayname + " X " + _parent.数量 + "");
+		_root.发布战利品消息("item", _parent.物品名, _parent.数量, "level_reward");
 		_root.播放音效("ammopickup1.wav");
 		_parent._visible = 0;
 		_parent._parent.奖励品[_parent.数组id] = [];

@@ -288,22 +288,19 @@ _root.FinishTask = function(index) {
         _root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
         return false;
     }
-    var rewardList = [];
+    // 任务奖励弹窗已退役：奖励经上方 acquireReward 直接入包，改由 loot feed 逐项播报
+    // （kind 由包装函数按名称推导，tier 装备解析进阶名/图标）。
     for (i = 0; i < rewardSettlement.items.length; i++) {
         var delivered:Object = rewardSettlement.items[i];
-        if(delivered.tier != undefined) {
-            rewardList.push([delivered.name, delivered.value, delivered.tier]);
-        } else {
-            rewardList.push([delivered.name, delivered.value]);
-        }
+        _root.发布战利品消息(null, delivered.name, delivered.value, "quest_reward", delivered.tier);
     }
     if (rewardSettlement.hasOverflow) {
         _root.发布消息(rewardSettlement.overflowMoney > 0
             ? "超出情报持有上限的奖励已折算为金币" + rewardSettlement.overflowMoney + "。"
             : "已达持有上限的情报奖励不再重复计入。");
+        if (rewardSettlement.overflowMoney > 0)
+            _root.发布战利品消息("money", "金钱", rewardSettlement.overflowMoney, "quest_reward");
     }
-    _root.任务奖励提示界面.奖励品 = rewardList;
-    _root.任务奖励提示界面.刷新();
     //消耗任务物品
     var submitItems = taskData.finish_submit_items;
     if (submitItems) {

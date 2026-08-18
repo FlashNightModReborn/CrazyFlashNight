@@ -92,12 +92,13 @@ function 一键领取全部()
       else if(物品名 == "金钱")
       {
          _root.金钱 += 数量;
+         _root.发布战利品消息("money", "金钱", 数量, "level_reward");
          奖励品[i] = [];
          已领取数量++;
       }
       else if(_root.itemAcquire([{name:物品名, value:数量}]))
       {
-         _root.发布消息("获得:" + _root.getItemData(物品名).displayname + " X " + 数量);
+         _root.发布战利品消息("item", 物品名, 数量, "level_reward");
          奖励品[i] = [];
          已领取数量++;
       }

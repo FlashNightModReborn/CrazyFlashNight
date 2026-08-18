@@ -643,6 +643,10 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(
                 WebOverlayForm.IsWebTaskRouterIngressAllowed(
                     "loot_request"));
+            // 纸娃娃烘焙回传（doll-bake.js → DollBakeTask）属通用 Web task
+            Assert.True(
+                WebOverlayForm.IsWebTaskRouterIngressAllowed(
+                    "doll_bake_result"));
         }
 
         [Fact]

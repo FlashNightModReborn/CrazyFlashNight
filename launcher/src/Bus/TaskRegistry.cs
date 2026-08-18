@@ -450,9 +450,11 @@ namespace CF7Launcher.Bus
             HitNumberOverlay hnOverlay,
             AudioTask audio,
             IconBakeTask iconBake,
+            DollBakeTask dollBakeTask,
             ShopTask shopTask,
             InventoryTask inventoryTask,
             LootTask lootTask,
+            LootFeedTask lootFeedTask,
             LootPanelCoordinator lootPanelCoordinator,
             NpcShopTask npcShopTask,
             CraftingTask craftingTask,
@@ -480,8 +482,16 @@ namespace CF7Launcher.Bus
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
             router.RegisterAsync("data_query", dataQuery.HandleAsync);
             router.RegisterSync("toast", toast.Handle);
+            // loot feed（左下物品获得播报）：与地图战利品箱的 "loot_response" 回包是两个域。
+            // 仅 native HUD 路径构造了 widget/task；fallback 模式不注册，事件自然无路由。
+            if (lootFeedTask != null)
+                router.RegisterSync("loot", lootFeedTask.Handle);
             RegisterAudioV2(router, audio);
             router.RegisterSync("icon_bake", iconBake.Handle);
+            // 纸娃娃烘焙结果（web→C#）：overlay doll-bake.js 渲染回传 → 原子落盘。
+            // 与 loot feed 同域的运行时缓存写入；Web ingress 由 IsWebTaskRouterIngressAllowed 放行。
+            if (dollBakeTask != null)
+                router.RegisterSync("doll_bake_result", dollBakeTask.Handle);
             if (benchTask != null)
             {
                 router.RegisterSync("bench_sync", benchTask.HandleSync);

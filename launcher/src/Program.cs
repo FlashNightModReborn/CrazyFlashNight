@@ -1590,6 +1590,7 @@ class Program
         NativeHudOverlay nativeHud = null;
         NativePanelBackdrop backdrop = null;
         PanelHostController panelHost = null;
+        CF7Launcher.Guardian.Hud.Loot.LootFeedWidget lootFeedWidget = null;
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
             playerInfoSurface = null;
         string playerInfoFixtureRaw = Environment.GetEnvironmentVariable(
@@ -1724,6 +1725,19 @@ class Program
             CF7Launcher.Guardian.Hud.ToastWidget toastWidget =
                 new CF7Launcher.Guardian.Hud.ToastWidget(form.FlashHostPanel);
             nativeHud.AddWidget(toastWidget);
+            // LootFeedWidget：左下血条上方的物品获得播报卡（loot feed）。
+            // 图标目录与 ToastWidget 一样属 native 单渲染端资产；launcher/web/icons 自此
+            // 同时是 NativeHud 图标源（IconBakeTask 烘焙产物的首个运行时消费者）。
+            // doll-portraits 为运行时纸娃娃胸像缓存（DollBakeTask 落盘），
+            // 解析 "纸娃娃-<hex>" ref，负缓存 2s TTL 等待异步烘焙落盘。
+            CF7Launcher.Guardian.Hud.Loot.LootIconCatalog lootIconCatalog =
+                new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(
+                    Path.Combine(projectRoot, "launcher", "web", "icons"),
+                    Path.Combine(projectRoot, "launcher", "web", "assets", "enemy-portraits"),
+                    dollPortraitsDir: Path.Combine(projectRoot, "launcher", "data", "doll-portraits"));
+            lootFeedWidget =
+                new CF7Launcher.Guardian.Hud.Loot.LootFeedWidget(form.FlashHostPanel, lootIconCatalog);
+            nativeHud.AddWidget(lootFeedWidget);
             // NotchWidget 顶替原 NotchOverlay 独立 ULW（FPS 药丸 + 工具栏 + 通知栈 + 展开图表）。
             // AudioHudState 在此成为 native HUD 唯一的 BGM 峰值历史；低频包络绘于 FPS 折线背景。
             // INotchSink.AddNotice/SetStatusItem/ClearStatusItem 路由到此 widget。
@@ -1829,6 +1843,18 @@ class Program
             ? (INotchSink)nativeHud
             : webOverlay;
         ToastTask toastTask = new ToastTask(toastSink);
+        // loot feed（左下物品获得播报）：仅 native HUD 路径有 widget；fallback 模式下
+        // lootFeedWidget 为 null，task 不注册（web 过渡组件零依赖，见 P1 决策）。
+        // 纸娃娃运行时烘焙：service 常驻（overlay WebView2 常驻，native HUD 下仅隐藏），
+        // C#→Web 走 TryPostToWeb；桥不可用时 service 内部静默降级。
+        CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService dollBakeService =
+            new CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService(
+                Path.Combine(projectRoot, "launcher", "data", "doll-portraits"),
+                webOverlay.TryPostToWeb);
+        // 烘焙成功 → widget 负缓存失效 + 重绘：存活期内的占位卡片原地升级为胸像
+        if (lootFeedWidget != null)
+            dollBakeService.PortraitReady = lootFeedWidget.NotifyIconReady;
+        LootFeedTask lootFeedTask = lootFeedWidget != null ? new LootFeedTask(lootFeedWidget, dollBakeService) : null;
         // 兼容调用点：AudioTask 不再拥有 gain policy，SetToastSink 当前为 no-op，不能据此
         // 声称会发音量 warning。迁移期恢复入口与退出条件见 docs 中的存档编辑器事件记录。
         CF7Launcher.Tasks.AudioTask.SetToastSink(toastSink);
@@ -1855,6 +1881,8 @@ class Program
         {
             iconBakeTask = new IconBakeTask(projectRoot, notchSink);
         }
+        // 纸娃娃烘焙结果接收：web 渲染回传 → 原子落盘 launcher/data/doll-portraits/
+        DollBakeTask dollBakeTask = new DollBakeTask(projectRoot, dollBakeService);
         ShopTask shopTask = new ShopTask(socketServer);
         InventoryTask inventoryTask = new InventoryTask(socketServer);
         LootPanelCoordinator lootPanelCoordinator = new LootPanelCoordinator(
@@ -2127,7 +2155,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, inventoryTask, lootTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

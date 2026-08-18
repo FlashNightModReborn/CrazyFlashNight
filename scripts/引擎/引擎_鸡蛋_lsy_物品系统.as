@@ -225,6 +225,110 @@ _root.singleSubmit = function(name,value):Boolean{
 	return org.flashNight.arki.item.ItemUtil.singleSubmit(name,value);
 }
 
+//击杀播报（P2）：统一收口于 enemyKilled 事件链（EnemyKilledEventComponent）。
+//同名敌人在 feed 模型合并窗口内累计 ×n；显示名与头像分三档：
+//  敌人属性表命中（敌人-* 类型键）→ displayname + 头像 ref；
+//  未命中但为 敌人-* → 原键名 + 头像 ref；
+//  其余敌方单位（角斗场 主角-男 系斗士等）→ 单位 名字 + 纸娃娃运行时烘焙头像
+//  （AS2 只做字段搬运，C# 单点算键，web 侧 dressup 渲染器烘焙；无 脸型 字段走占位块）。
+_root.发布击杀播报 = function(unit:MovieClip):Void{
+	if (typeof _root.发布战利品消息 != "function") return;
+	if (unit == null) return;
+	var killKey:String = org.flashNight.arki.unit.UnitUtil.getUnitTypeKey(unit);
+	if (killKey == null || killKey.length == 0) return;
+	var killName:String = null;
+	var iconName:String = null;
+	var dollTuple:Object = null;
+	var enemyInfo:Object = (_root.敌人属性表 != undefined) ? _root.敌人属性表[killKey] : null;
+	if (enemyInfo != null && enemyInfo.displayname != undefined && String(enemyInfo.displayname).length > 0) {
+		killName = String(enemyInfo.displayname);
+		iconName = killKey;
+	} else if (killKey.indexOf("敌人-") == 0) {
+		killName = killKey;
+		iconName = killKey;
+	} else {
+		// 其余敌方单位（角斗场 主角-男 系斗士等）：显示名用单位 名字；
+		// 头像不预计算键，只把外观元组（undefined/null 归一为 ""）透传给 C#——
+		// 禁止在此做任何光栅化/哈希，烘焙由 web 侧渲染器异步完成。
+		if (unit.名字 != undefined && String(unit.名字).length > 0) {
+			killName = String(unit.名字);
+		} else {
+			killName = killKey;
+		}
+		if (unit.脸型 != undefined) {
+			var dollField:Function = function(v):String { return v == null ? "" : String(v); };
+			dollTuple = {
+				face: dollField(unit.脸型),
+				hair: dollField(unit.发型),
+				mask: dollField(unit.面具),
+				head: dollField(unit.头部装备),
+				body: dollField(unit.上装装备),
+				leg: dollField(unit.下装装备),
+				hand: dollField(unit.手部装备),
+				foot: dollField(unit.脚部装备),
+				neck: dollField(unit.颈部装备),
+				gender: dollField(unit.性别)
+			};
+		}
+	}
+	_root.发布战利品消息("kill", killName, 1, "kill", null, iconName, dollTuple);
+}
+
+//战利品播报（loot feed）：结构化物品获得事件，经 socket 发往 Launcher LootFeedTask，
+//由 NativeHud LootFeedWidget 渲染为带图标卡片。socket 离线时静默丢弃，不影响入账。
+//kind 可传 null 自动按名称推导（金钱/金币→money、K点→kpoint、情报→intel、其余→item）；
+//显式 kind 白名单（C# 侧校验）：money / kpoint / intel / item / equip / kill。
+//source 白名单：pickup / level_reward / quest_reward / loot_box / kill。
+//tier 可选，进阶装备解析进阶名/图标。icon 可选，显式覆盖（击杀播报传敌人头像 ref）。
+//doll 可选（仅击杀播报人形斗士）：外观元组 {face,hair,mask,head,body,leg,hand,foot,neck,gender}，
+//C# 侧据此单点派生 纸娃娃-<hex> 图标键并触发 web 侧运行时胸像烘焙。
+_root.发布战利品消息 = function(kind:String, name:String, count:Number, source:String, tier:String, icon:String, doll:Object):Void{
+	if (name == undefined || count == undefined) return;
+	if (isNaN(Number(count)) || Number(count) <= 0) return;
+	if (_root.server == undefined || _root.server.sendTaskToNode == undefined) return;
+
+	if (kind == undefined || kind == null || kind == "") {
+		if (name == "金钱" || name == "金币") kind = "money";
+		else if (name == "K点") kind = "kpoint";
+		else if (org.flashNight.arki.item.ItemUtil.isInformation(name)) kind = "intel";
+		else kind = "item";
+	}
+
+	var displayName:String = name;
+	var iconName:String = null;
+	var itemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(name);
+	if (tier != undefined && tier != null && String(tier).length > 0) {
+		// 进阶装备：克隆后应用进阶覆盖（displayname/icon 可能被 tier 改写）
+		var tierData:Object = org.flashNight.arki.item.ItemUtil.getItemData(name);
+		if (tierData != undefined && tierData != null) {
+			org.flashNight.arki.item.equipment.TierSystem.applyTierData(tierData, String(tier), null);
+			itemData = tierData;
+		}
+	}
+	if (itemData != undefined && itemData != null) {
+		if (itemData.displayname != undefined) displayName = itemData.displayname;
+		if (itemData.icon != undefined) iconName = itemData.icon;
+	} else if (kind == "money") {
+		iconName = "金钱";
+	} else if (kind == "kpoint") {
+		iconName = "K点";
+	}
+	if (icon != undefined && icon != null && String(icon).length > 0) {
+		iconName = String(icon);
+	}
+
+	var msg:Object = {
+		kind: String(kind),
+		name: String(displayName),
+		count: Number(count),
+		source: String(source || "unknown"),
+		icon: iconName
+	};
+	// 纸娃娃外观元组可选挂载（FastJSON 递归序列化嵌套对象；缺省字段 C# 侧按 "" 处理）
+	if (doll != undefined && doll != null) msg.doll = doll;
+	_root.server.sendTaskToNode("loot", msg, null);
+}
+
 _root.getRequirementFromTask = function(arr){
     return org.flashNight.arki.item.ItemUtil.getRequirementFromTask(arr);
 }

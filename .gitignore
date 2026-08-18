@@ -17,6 +17,9 @@ bin-release/
 # 写完后会 rename 成 save_repair_dict.json; 误 commit 会污染包并破坏 JSON 校验工具).
 launcher/data/save_repair_dict.json.tmp
 
+# 运行时纸娃娃胸像缓存（DollBakeTask 经 WebView2 烘焙落盘，运行时产物不提交）
+launcher/data/doll-portraits/
+
 # Launcher 历史的 self-contained single-file exe（~146MB）已替换为 FDD + bootstrap 形态；
 # 用户面 CRAZYFLASHER7MercenaryEmpire.exe 现在是 ~134KB 的 native C++ bootstrap，可安全入 git。
 # 老的 146MB blob 仍在 history (Phase 5 commit b487...848e)，需要 history 清理时另开任务
@@ -168,3 +171,6 @@ launcher/web/assets/cursor/native/review/
 
 # linkage_scanner 缓存输出 (跑一次 scan_linkage.py 即重新生成)
 tools/linkage_scanner/_last_output.txt
+
+# Flash publish 生成的 HTML 包装页（与 CRAZYFLASHER7MercenaryEmpire.html、things0.html 同为 byproduct）
+flashswf/UI/奖励物品界面.html

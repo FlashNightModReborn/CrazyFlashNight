@@ -81,6 +81,8 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         var str:String = "获得";
         var itemName:String = target.物品名;
         var value:Number = target.数量;
+        // loot feed 卡片类型（money/kpoint/intel/equip/item），各成功分支赋值
+        var lootKind:String = null;
         
         if (拾取者 && 拾取者.名字) {
             str = 拾取者.名字 + "为你收集了";
@@ -89,9 +91,11 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         if (itemName == "金钱") {
             _root.金钱 += value;
             str += "金钱" + value;
+            lootKind = "money";
         } else if (itemName == "K点") {
             _root.虚拟币 += value;
             str += "K点" + value;
+            lootKind = "kpoint";
         } else if (ItemUtil.isInformation(itemName)) {
             // 生成后到实际拾取之间，其他奖励可能已占用剩余容量；这里再次按逐物品
             // maxvalue 结算，避免同屏多个拾取物越界或变成“捡了但没增加”。
@@ -114,10 +118,13 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
                 str += "，超出部分不再重复计入";
             }
             str += "。";
+            lootKind = "intel";
         } else if (!拾取者 && Key.isDown(_root.组合键) && this.拾取并装备(itemName, value)) {
             str = "已拾取" + itemName;
+            lootKind = "equip";
         } else if (_root.singleAcquire(itemName, value)) {
             str += itemName + value + "个。";
+            lootKind = "item";
         } else {
             _root.发布消息("物品栏空间不足，无法拾取！");
             return;
@@ -126,9 +133,23 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         // 金币/K 点与快捷装备分支不经过 ItemUtil.acquire()，成功拾取后也必须落脏。
         if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
         PickUpManager.claimOneTimePickup(target.一次性领取ID);
-        
-        // 销毁对象
-        _root.发布消息(str);
+
+        // 成功拾取走 loot feed 卡片播报（NativeHud），不再占用左侧文字消息区；
+        // 情报已达上限且零折算时 feed 无新内容，退回旧文本提示。
+        // 注：accepted/overflow/overflowMoney 为情报分支 var（AS2 函数作用域），此处可直接判读。
+        if (lootKind == "intel") {
+            if (accepted > 0) _root.发布战利品消息("intel", itemName, accepted, "pickup");
+            if (overflow > 0 && overflowMoney > 0) {
+                _root.发布战利品消息("money", "金钱", overflowMoney, "pickup");
+            }
+            if (accepted <= 0 && !(overflow > 0 && overflowMoney > 0)) {
+                _root.发布消息(str);
+            }
+        } else if (lootKind != null) {
+            _root.发布战利品消息(lootKind, itemName, value, "pickup");
+        } else {
+            _root.发布消息(str);
+        }
         var 控制对象:MovieClip = TargetCacheManager.findHero();
         target.gotoAndPlay("消失");
         delete this.pickupItemDict[target.index];

@@ -58,6 +58,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.EnemyKil
         // 标记存档数据已变更
         _root.存档系统.dirtyMark = true;
 
+        // loot feed 击杀播报（P2）：与 killStats 共用 enemyKilled 事件链收口，
+        // 语义为"我方（主角/佣兵）击杀"；同一发射点供后续关卡结算击杀展示复用
+        _root.发布击杀播报(hitTarget);
+
         // _root.服务器.发布服务器消息("[KillStats] ", typeKey ,ObjectUtil.stringify(_root.killStats) );
     }
 }
