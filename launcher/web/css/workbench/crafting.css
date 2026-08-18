@@ -89,24 +89,48 @@
     align-items:center;
     gap:9px;
     cursor:pointer;
-    transition:border-color var(--wb-motion-micro) var(--wb-ease-standard),box-shadow var(--wb-motion-micro) var(--wb-ease-standard),background-color var(--wb-motion-micro) var(--wb-ease-standard);
+    clip-path:polygon(0 0,100% 0,100% 100%,10px 100%,0 calc(100% - 10px));
+    transition:border-color var(--wb-motion-micro) var(--wb-ease-standard),box-shadow var(--wb-motion-micro) var(--wb-ease-standard),background-color var(--wb-motion-micro) var(--wb-ease-standard),filter var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .crafting-recipe-card:hover {
     border-color:color-mix(in srgb,var(--wb-accent) 55%,transparent);
     background:var(--wb-card-surface-hover);
-    box-shadow:var(--wb-inner-highlight),var(--wb-shadow-raised),0 0 9px color-mix(in srgb,var(--wb-accent) 10%,transparent);
+    box-shadow:var(--wb-inner-highlight);
+    filter:drop-shadow(0 3px 6px color-mix(in srgb,var(--wb-bg) 60%,transparent)) drop-shadow(0 0 8px color-mix(in srgb,var(--wb-accent) 14%,transparent));
 }
-.crafting-recipe-card:focus-visible { box-shadow:var(--wb-ring-focus); }
+.crafting-recipe-card:focus-visible {
+    border-color:var(--wb-role-focus);
+    filter:drop-shadow(0 0 7px var(--dls-glow));
+}
 .crafting-recipe-card.craftable { border-left:3px solid var(--wb-semantic-success); }
 .crafting-recipe-card.blocked { border-left:3px solid color-mix(in srgb,var(--wb-muted) 52%,var(--wb-bg)); }
+/* 选中态：HUD 锁定框——四角括号浮于卡片外缘，是面板里最强的记忆点信号。 */
 .crafting-recipe-card.workbench-source-selected {
     border-color:var(--crafting-active-border);
     background:linear-gradient(145deg,rgba(var(--dls-crystal-rgb),.10),rgba(var(--dls-crystal-rgb),.04));
-    box-shadow:var(--crafting-active-inset),var(--crafting-active-glow),var(--wb-inner-highlight);
+    box-shadow:var(--crafting-active-inset),var(--wb-inner-highlight);
+}
+.crafting-recipe-card.workbench-source-selected::after {
+    content:"";
+    position:absolute;
+    inset:-3px;
+    pointer-events:none;
+    background:
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) left top/12px 1px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) left top/1px 12px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) right top/12px 1px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) right top/1px 12px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) left bottom/12px 1px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) left bottom/1px 12px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) right bottom/12px 1px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) right bottom/1px 12px;
+    background-repeat:no-repeat;
+    filter:drop-shadow(0 0 3px rgba(var(--dls-crystal-rgb),.5));
 }
 .crafting-recipe-card.workbench-source-selected:hover {
     border-color:var(--dls-crystal-bright);
-    box-shadow:var(--crafting-active-inset),0 0 14px rgba(var(--dls-crystal-rgb),.2),var(--wb-inner-highlight);
+    box-shadow:var(--crafting-active-inset),var(--wb-inner-highlight);
+    filter:drop-shadow(0 0 9px rgba(var(--dls-crystal-rgb),.22));
 }
 .crafting-card-icon,
 .crafting-output-icon {
@@ -128,6 +152,23 @@
     background:linear-gradient(180deg,color-mix(in srgb,var(--wb-surface) 68%,var(--wb-bg)),var(--wb-bg));
     box-shadow:0 0 0 1px color-mix(in srgb,var(--dls-crystal) 26%,transparent),0 0 9px color-mix(in srgb,var(--dls-crystal) 6%,transparent);
     transition:border-color var(--wb-motion-micro) var(--wb-ease-standard),box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.crafting-output-inspect-trigger::before {
+    content:"";
+    position:absolute;
+    inset:-4px;
+    pointer-events:none;
+    background:
+        linear-gradient(var(--dls-crystal),var(--dls-crystal)) left top/9px 1px,
+        linear-gradient(var(--dls-crystal),var(--dls-crystal)) left top/1px 9px,
+        linear-gradient(var(--dls-crystal),var(--dls-crystal)) right top/9px 1px,
+        linear-gradient(var(--dls-crystal),var(--dls-crystal)) right top/1px 9px,
+        linear-gradient(var(--dls-crystal),var(--dls-crystal)) left bottom/9px 1px,
+        linear-gradient(var(--dls-crystal),var(--dls-crystal)) left bottom/1px 9px,
+        linear-gradient(var(--dls-crystal),var(--dls-crystal)) right bottom/9px 1px,
+        linear-gradient(var(--dls-crystal),var(--dls-crystal)) right bottom/1px 9px;
+    background-repeat:no-repeat;
+    filter:drop-shadow(0 0 2px rgba(var(--dls-crystal-rgb),.5));
 }
 .crafting-output-inspect-trigger::after {
     content:"⌕"; position:absolute; right:2px; bottom:2px; width:18px; height:18px;
@@ -196,7 +237,9 @@
 .crafting-catalog-grid.item-grid-compact .crafting-recipe-card {
     width:100%; min-width:0; min-height:54px; height:54px;
     padding:3px; justify-content:center; border-left-width:1px;
+    clip-path:none;
 }
+.crafting-catalog-grid.item-grid-compact .crafting-recipe-card.workbench-source-selected::after { content:none; }
 .crafting-catalog-grid.item-grid-compact .crafting-card-copy,
 .crafting-catalog-grid.item-grid-compact .crafting-card-availability { display:none; }
 .crafting-catalog-grid.item-grid-compact .crafting-card-icon { width:46px; height:46px; }
@@ -247,13 +290,42 @@
 }
 .crafting-material-detail-retry { align-self:center; margin-top:10px; }
 .crafting-output-card {
+    position:relative;
     display:grid; grid-template-columns:68px minmax(0,1fr); gap:8px; padding:10px;
     border:1px solid color-mix(in srgb,var(--dls-crystal) 30%,var(--wb-line));
     border-left:3px solid var(--dls-crystal);
-    background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.07),transparent 62%),color-mix(in srgb,var(--wb-bg) 80%,var(--wb-surface));
-    box-shadow:var(--wb-inner-highlight),0 0 14px color-mix(in srgb,var(--dls-crystal) 7%,transparent);
+    background:
+        radial-gradient(circle at 44px 50%,rgba(var(--dls-crystal-rgb),.15),transparent 60%),
+        linear-gradient(115deg,transparent 34%,color-mix(in srgb,var(--wb-text) 4%,transparent) 46%,transparent 58%),
+        linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.07),transparent 62%),color-mix(in srgb,var(--wb-bg) 80%,var(--wb-surface));
+    box-shadow:var(--wb-inner-highlight);
+    clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%);
+    filter:drop-shadow(0 0 9px color-mix(in srgb,var(--dls-crystal) 8%,transparent));
 }
-.crafting-output-card h2 { margin:0 0 5px; color:color-mix(in srgb,var(--dls-crystal-bright) 55%,var(--wb-text)); font:700 16px/1.2 "Microsoft YaHei",sans-serif; letter-spacing:.03em; }
+/* 三角 HUD 框角（右上让位给切角），与选中卡片的锁定框同族。 */
+.crafting-output-card::after {
+    content:"";
+    position:absolute;
+    inset:3px;
+    pointer-events:none;
+    background:
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) left top/12px 1px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) left top/1px 12px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) left bottom/12px 1px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) left bottom/1px 12px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) right bottom/12px 1px,
+        linear-gradient(var(--dls-crystal-bright),var(--dls-crystal-bright)) right bottom/1px 12px;
+    background-repeat:no-repeat;
+    filter:drop-shadow(0 0 3px rgba(var(--dls-crystal-rgb),.45));
+}
+.crafting-output-card h2 {
+    margin:0 0 1px;
+    padding-bottom:4px;
+    color:color-mix(in srgb,var(--dls-crystal-bright) 55%,var(--wb-text));
+    background:linear-gradient(90deg,color-mix(in srgb,var(--dls-crystal) 58%,transparent),transparent 52%) left bottom/100% 1px no-repeat;
+    font:700 16px/1.2 "Microsoft YaHei",sans-serif;
+    letter-spacing:.03em;
+}
 .crafting-output-card p {
     margin:0;
     color:color-mix(in srgb,var(--wb-text) 68%,var(--wb-muted));
@@ -979,7 +1051,9 @@
 .crafting-material-row.bad {
     grid-template-columns:28px minmax(0,1fr) fit-content(122px);
     border-left:2px solid var(--wb-semantic-danger);
-    background:linear-gradient(90deg,color-mix(in srgb,var(--wb-semantic-danger) 7%,transparent),transparent 52%),color-mix(in srgb,var(--wb-bg) 86%,var(--wb-surface));
+    background:
+        repeating-linear-gradient(135deg,color-mix(in srgb,var(--wb-semantic-danger) 9%,transparent) 0 5px,transparent 5px 11px) left top/26px 100% no-repeat,
+        linear-gradient(90deg,color-mix(in srgb,var(--wb-semantic-danger) 7%,transparent),transparent 52%),color-mix(in srgb,var(--wb-bg) 86%,var(--wb-surface));
 }
 .crafting-panel .crafting-material-row > .crafting-material-icon {
     box-sizing:border-box;
@@ -1137,12 +1211,35 @@
 .crafting-commit-status.ok { color:var(--wb-semantic-success); }
 .crafting-commit-status.bad { color:var(--wb-semantic-danger); }
 .crafting-commit-btn {
+    position:relative;
     min-width:148px; min-height:40px; border:1px solid var(--wb-focus); border-radius:0;
     background:linear-gradient(180deg,color-mix(in srgb,var(--wb-accent) 54%,var(--wb-surface)),var(--wb-accent)); color:var(--wb-bg);
     font:800 13px/1 "Microsoft YaHei",sans-serif; letter-spacing:.14em; cursor:pointer;
+    clip-path:polygon(9px 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%,0 9px);
+    overflow:hidden;
+    transition:filter var(--wb-motion-micro) var(--wb-ease-standard),box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
+/* hover 时一道斜向扫光穿过按钮，强调“唯一主决策”。 */
+.crafting-commit-btn::after {
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:-32%;
+    width:30%;
+    background:linear-gradient(115deg,transparent,color-mix(in srgb,var(--wb-text) 30%,transparent),transparent);
+    pointer-events:none;
+    transform:translateX(0);
+    transition:transform var(--wb-motion-structural) var(--wb-ease-standard);
+}
+.crafting-commit-btn:hover:not(:disabled)::after,
+.crafting-commit-btn:focus-visible:not(:disabled)::after { transform:translateX(440%); }
 .crafting-commit-btn:hover:not(:disabled),
-.crafting-commit-btn:focus-visible { border-color:var(--wb-focus); color:var(--wb-bg); box-shadow:inset 0 0 18px var(--wb-accent-soft),0 0 11px var(--dls-glow); }
+.crafting-commit-btn:focus-visible {
+    border-color:var(--wb-focus); color:var(--wb-bg);
+    box-shadow:inset 0 0 18px var(--wb-accent-soft);
+    filter:drop-shadow(0 0 9px color-mix(in srgb,var(--wb-accent) 30%,transparent));
+}
 .crafting-commit-btn:active:not(:disabled) { box-shadow:inset 0 2px 8px color-mix(in srgb,var(--wb-bg) 45%,transparent); }
 .crafting-commit-btn:disabled { border-color:var(--wb-line); background:var(--wb-surface-2); color:var(--wb-semantic-disabled); cursor:default; }
 
