@@ -2,7 +2,7 @@
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。
 
-**最后核对代码基线**：post-promotion docs commit `c5108d6c682f3c71562ff37f5c8d3cd37a7c5385`（2026-08-18）；其后的 loot cache / doll result hardening 与本文件同轮维护。
+**最后核对代码基线**：loot feed v3 release source commit `1aad619d6c1b3af22e15f50e5329619f7e1b82bd`、promotion commit `22da98aa04ec7b375ad7879ec2155075e0834ea9`（2026-08-19）；动态正式身份与状态继续以本节列出的 manifest、consensus 与 runtime 发布文档为准。
 
 ## 当前真值与阅读顺序
 
