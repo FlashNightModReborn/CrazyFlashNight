@@ -290,6 +290,9 @@ _root.FinishTask = function(index) {
     }
     // 任务奖励弹窗已退役：奖励经上方 acquireReward 直接入包，改由 loot feed 逐项播报
     // （kind 由包装函数按名称推导，tier 装备解析进阶名/图标）。
+    // 原弹窗 刷新() 顺带播放的奖励音效随弹窗一并丢失，此处补回（有奖励才响）。
+    if (rewardSettlement.items.length >= 1)
+        _root.播放音效("levelup-2.wav");
     for (i = 0; i < rewardSettlement.items.length; i++) {
         var delivered:Object = rewardSettlement.items[i];
         _root.发布战利品消息(null, delivered.name, delivered.value, "quest_reward", delivered.tier);
