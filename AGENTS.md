@@ -27,6 +27,7 @@
 - **Unicode 直写**：代码字符串字面量、注释中直接使用 UTF-8 中文字符；除非目标语境明确要求转义（如协议样例、规范文本或必须 escape 的格式），不要写 `\uXXXX` Unicode 转义
 - **可直接修改**：`data/`、`config/` 下 XML（重启生效）
 - **验证矩阵**：不要在本文件背命令清单；统一看 [testing-guide.md](agentsDoc/testing-guide.md)
+- **协作约束**：commit 标题必须全中文（允许保留 `docs:` 等类型前缀），写清改了什么、测试员需要回归什么；`git worktree` 非必要不新建、用后必清理、残留必报告。细则见 [contribution-workflow.md](docs/contribution-workflow.md) 的"提交信息约定"与"worktree 使用纪律"两节
 - **不提交**：`node_modules`，以及未受版本化生成器、manifest 逐文件引用、完整性验证与体积审计共同约束的大型二进制/临时证据。确属游戏运行时且进入上述可复验闭包的正式素材（例如 dressup、portrait 发布资产）是显式例外；`tmp/` 候选、联系表、模型缓存和可由闭包重建的中间产物仍不得借此入库
 - **文档同步规则**：凡是路径迁移、协议变更、测试入口变更、构建门槛变更、新子栈引入 / 淘汰，同轮同步更新对应 canonical doc，并运行 `node tools/validate-doc-governance.js`
 - **协作元约束**：任务粒度、subagent 边界、无人值守执行与验证成本统一看 [agent-harness.md](agentsDoc/agent-harness.md)；人类注意力、同步打断与流程防腐统一看 [human-care.md](agentsDoc/human-care.md)

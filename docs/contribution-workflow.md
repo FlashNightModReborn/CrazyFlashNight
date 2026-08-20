@@ -24,6 +24,25 @@ PR 仍可用于自愿讨论或代码审阅，但不是任何账号的主线前�
 
 普通内容路径不会为了证明“没有 native 变化”而启动 Windows Actions。素材、策划数据、AS2、主 XFL/SWF、独立 Flash 资产、文档与 `launcher/web/**` 的正确性仍由各自格式、编译、harness 与人工验收负责；runtime workflow 不为这些内容提供语义背书。
 
+## 提交信息约定（面向测试员的更新汇总）
+
+本仓库长期停留在 git 测试版，测试员拉取更新后主要依据 **commit 标题**判断"改了什么、需要测什么"，而测试员绝大多数不懂英文。因此：
+
+- **commit 标题必须全中文**（类型前缀如 `docs:` / `chore:` / `feat:` 允许保留，但正文描述必须中文），一句话写清改了什么；
+- 涉及可玩行为变化时，标题或正文要点出**测试员需要回归什么**（例如"恢复任务奖励音效，需回归任务交付时的提示音"）；
+- 发布流程产生的 promotion / release 记录提交同样遵守本约定，不再使用纯英文 conventional commit 标题；
+- agent 代写 commit 时同样适用，禁止默认输出英文标题。
+
+## worktree 使用纪律（防存储耗尽）
+
+滥用 `git worktree` 已多次导致机器存储耗尽死机，必须遵守：
+
+- **非必要不新建**：只有确实需要并行施工/隔离验证（如多 lane 并行、发布列车冻结构建）时才建 worktree；单线改动直接在主工作树进行。
+- 新建前先确认磁盘余量与本机既有 worktree 数量（`git worktree list`）；路径用短根（如 `C:\cf7-*`），仓内深路径会触发 MAX_PATH。
+- **用后必清理**：任务结束（合并完成或废弃）当轮执行 `git worktree remove`（有未提交内容先确认已合入或已备份），随后 `git worktree prune`；分支引用一并删除。
+- 发现历史残留 worktree（含 `%TEMP%` 下的）时列清单报告维护者，确认无未提交工作后清理；不得默默遗留。
+- 每次施工结束时把"worktree 残留检查"列为收尾步骤之一。
+
 ## native 事后审计状态
 
 `config/build/native-change-gate.v1.json` 与 `config/build/runtime-inputs.v2.json` 共同描述 native/runtime 边界：
