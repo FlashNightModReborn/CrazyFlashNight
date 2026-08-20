@@ -177,10 +177,6 @@ namespace CF7Launcher.Guardian
         private readonly INativeCursor _cursor;
         private readonly IPanelEscapeSource _escSource;
         private readonly Func<IntPtr> _flashHwndProvider; // 可空：null 时降级走 placeholder backdrop
-        // Phase 3: NotchOverlay/ToastOverlay 作为常驻 HUD（web 端 #notch/#toast 已被 CSS 隐藏）
-        // panel 打开时 Suspend 让 backdrop 干净遮住；panel 关闭时 SetReady 恢复
-        private readonly NotchOverlay _notchOverlay;
-        private readonly ToastOverlay _toastOverlay;
         private readonly IPanelHudCompanion _hudCompanion;
         private bool _hudCompanionSuspended;
 
@@ -211,6 +207,9 @@ namespace CF7Launcher.Guardian
         private readonly Action<Action> _testPumpDispatcher;
         private readonly Action<Action> _testClosedEventDispatcher;
         private Func<string, bool> _testExactReplacePoster;
+        private string _lastOpenPayloadForTest;
+        /// <summary>测试线束（_testPumpDispatcher）路径下最后一次 DoOpen 的完整 open payload。</summary>
+        internal string LastOpenPayloadForTest { get { return _lastOpenPayloadForTest; } }
         public bool IsPanelOpen { get { return _activePanel != null; } }
         public string ActivePanelName { get { return _activePanel; } }
         public string ActivePanelInstanceId { get { return _activePanelInstanceId; } }
@@ -237,9 +236,7 @@ namespace CF7Launcher.Guardian
             HitNumberOverlay hitNumber,
             INativeCursor cursor,
             IPanelEscapeSource escSource,
-            Func<IntPtr> flashHwndProvider,
-            NotchOverlay notchOverlay,
-            ToastOverlay toastOverlay)
+            Func<IntPtr> flashHwndProvider)
             : this(
                 ownerForm,
                 web,
@@ -250,8 +247,6 @@ namespace CF7Launcher.Guardian
                 cursor,
                 escSource,
                 flashHwndProvider,
-                notchOverlay,
-                toastOverlay,
                 null)
         {
         }
@@ -266,8 +261,6 @@ namespace CF7Launcher.Guardian
             INativeCursor cursor,
             IPanelEscapeSource escSource,
             Func<IntPtr> flashHwndProvider,
-            NotchOverlay notchOverlay,
-            ToastOverlay toastOverlay,
             IPanelHudCompanion hudCompanion)
         {
             if (ownerForm == null) throw new ArgumentNullException("ownerForm");
@@ -284,8 +277,6 @@ namespace CF7Launcher.Guardian
             _cursor = cursor;       // 可空（Program.cs 某些配置下不创建）
             _escSource = escSource; // 可空（fallback hotkey 模式下没有）
             _flashHwndProvider = flashHwndProvider; // 可空（snapshot 不可用时降级 placeholder）
-            _notchOverlay = notchOverlay; // 可空（Phase 3 引入）
-            _toastOverlay = toastOverlay; // 可空（Phase 3 引入）
             _hudCompanion = hudCompanion; // 可空；独立 split surface 仍由 Program 持有/释放
 
             // Backdrop 点击外侧 → web panel_esc（等价 web 端 panels.js 的 backdrop click）
@@ -1796,10 +1787,15 @@ namespace CF7Launcher.Guardian
                         reservedPanelInstanceId)
                         ? NextPanelInstanceId()
                         : reservedPanelInstanceId;
-                ApplyInitDataEnrichers(
-                    name,
-                    initDataJson,
-                    testInstance);
+                string testEnriched =
+                    ApplyInitDataEnrichers(
+                        name,
+                        initDataJson,
+                        testInstance);
+                // 测试可观测 hook：记录与生产 DoOpen 同构的 open payload（enricher 链已应用），
+                // 供单测断言 router/host 的 initData 造型，替代已拆除的 router fallback post。
+                _lastOpenPayloadForTest =
+                    BuildPanelOpenPayload(name, testEnriched, testInstance);
                 _activePanel = name;
                 _activePanelInstanceId =
                     testInstance;
@@ -1844,10 +1840,8 @@ namespace CF7Launcher.Guardian
             // Step 3: backdrop show + 设 panel rect（屏幕坐标，backdrop 内自转 client）
             _backdrop.SetComposedAndShow(composed, anchor);
             _backdrop.SetPanelRect(panelRect);
-            // Step 4: HUD 暂停（NativeHud 容器 + Phase 3 NotchOverlay/ToastOverlay 一并隐藏，让 backdrop 干净遮住）
+            // Step 4: HUD 暂停（NativeHud 容器隐藏，让 backdrop 干净遮住）
             _hud.Suspend();
-            if (_notchOverlay != null) try { _notchOverlay.Suspend(); } catch (Exception ex) { LogManager.Log("[PanelHost] notch.Suspend failed: " + ex.Message); }
-            if (_toastOverlay != null) try { _toastOverlay.Suspend(); } catch (Exception ex) { LogManager.Log("[PanelHost] toast.Suspend failed: " + ex.Message); }
             // Step 5: WebOverlay 切 panel-rect（去 LAYERED+TRANSPARENT、opaque、SetWindowPos HWND_TOP+SWP_FRAMECHANGED、PostToWeb panel_viewport_set）
             _web.ResumeForPanel(panelRect);
             // Step 6: InputShield 进 telemetry（仅记录 panelRect 外 click，不拦截）
@@ -1936,10 +1930,13 @@ namespace CF7Launcher.Guardian
             string instanceId = NextPanelInstanceId();
             if (_testPumpDispatcher != null)
             {
-                ApplyInitDataEnrichers(
-                    name,
-                    initDataJson,
-                    instanceId);
+                string rebindEnriched =
+                    ApplyInitDataEnrichers(
+                        name,
+                        initDataJson,
+                        instanceId);
+                _lastOpenPayloadForTest =
+                    BuildPanelOpenPayload(name, rebindEnriched, instanceId);
                 _activePanelInstanceId =
                     instanceId;
                 PublishPanelChanged(
@@ -2248,15 +2245,13 @@ namespace CF7Launcher.Guardian
             // Step 4: backdrop 隐藏
             try { _backdrop.Hide(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] backdrop.Hide failed: " + ex.Message); }
-            // Step 5: HUD 复活（NativeHud + Phase 3 NotchOverlay/ToastOverlay 一并复显）
+            // Step 5: HUD 复活（NativeHud 复显）
             try { _hud.Resume(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] hud.Resume failed: " + ex.Message); }
             ResumeHudCompanion();
-            if (_notchOverlay != null) try { _notchOverlay.SetReady(); } catch (Exception ex) { LogManager.Log("[PanelHost] notch.SetReady failed: " + ex.Message); }
-            if (_toastOverlay != null) try { _toastOverlay.SetReady(); } catch (Exception ex) { LogManager.Log("[PanelHost] toast.SetReady failed: " + ex.Message); }
             // Step 6: ESC 禁用
             if (_escSource != null) _escSource.SetPanelEscapeEnabled(false);
-            // Step 7: cursor 重新顶置 + 强制刷一次位置（Notch/Toast 的 SetReady HWND_TOP 会把 cursor 压下；
+            // Step 7: cursor 重新顶置 + 强制刷一次位置（HUD 复显的 HWND_TOP 会把 cursor 压下；
             //   且 cursor 上次坐标可能在 panel 矩形内，关闭后该区域无 mouse hook 触发更新——直到玩家动鼠标
             //   才刷新 → 视觉上 cursor "消失，移动后突然出现"。这里主动 ReTop + 用当前真实鼠标位置刷一次）
             ReTopOverlay(_cursor as Form);
@@ -2269,7 +2264,7 @@ namespace CF7Launcher.Guardian
                 null,
                 null);
             PostPanelClosed(closingName, closingInstance);
-            // SuspendAfterPanel 中的首次归还早于 HUD/Notch/Toast/cursor 收尾。
+            // SuspendAfterPanel 中的首次归还早于 HUD/cursor 收尾。
             // 在所有 overlay 稳定后再确认一次 Flash 焦点，避免玩家看到
             // 面板已关闭却无法与游戏 UI 交互。
             try { _web.RestoreFlashInputFocusAfterPanelClose(closingName); }
@@ -2476,8 +2471,6 @@ namespace CF7Launcher.Guardian
             try { _backdrop.Hide(); } catch { }
             try { _hud.Resume(); } catch { }
             ResumeHudCompanion();
-            if (_notchOverlay != null) { try { _notchOverlay.SetReady(); } catch { } }
-            if (_toastOverlay != null) { try { _toastOverlay.SetReady(); } catch { } }
             if (_shield != null) { try { _shield.ExitTelemetryMode(); } catch { } }
             if (_escSource != null) { try { _escSource.SetPanelEscapeEnabled(false); } catch { } }
             string resetClosingName = _activePanel;

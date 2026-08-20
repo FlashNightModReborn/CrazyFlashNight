@@ -57,8 +57,6 @@ function staticAudit(suffixes) {
     const css = source('launcher/web/css/panels/foundation-rest.css');
     const bootTooltip = source('launcher/web/modules/boot-tooltip.js');
     const welcomeCss = source('launcher/web/css/welcome.css');
-    const notch = source('launcher/web/modules/notch.js');
-    const overlayCss = source('launcher/web/css/overlay.css');
     const kshop = source('launcher/web/modules/kshop-tooltip-presenter.js');
     const workbench = source('launcher/web/modules/workbench-primitives.js');
     const intelligence = source('launcher/web/modules/intelligence-panel.js');
@@ -99,8 +97,6 @@ function staticAudit(suffixes) {
         [bootTooltip.includes('var DELAY = 300'), 'BootTooltip short-hint delay changed without audit'],
         [bootTooltip.includes('layer.textContent = text'), 'BootTooltip no longer uses text-only projection'],
         [/\.boot-tooltip\s*\{[^}]*pointer-events\s*:\s*none/s.test(welcomeCss), 'BootTooltip can intercept pointer input'],
-        [notch.includes('function buildTooltipHTML(fps, idx)'), 'Sparkline numeric tooltip source missing'],
-        [/\.spark-tooltip\s*\{[^}]*pointer-events\s*:\s*none/s.test(overlayCss), 'Sparkline tooltip can intercept pointer input'],
         [workbench.includes('balance-tooltip-meta'), 'Workbench balance suffix source missing'],
         [intelligence.includes('已发现 ') && intelligence.includes(' 页</div>'), 'Intelligence page-count suffix source missing'],
         [kshop.includes('flash-tt-lock-banner kshop-tt-lock-banner'), 'KShop lock suffix source missing']

@@ -101,14 +101,12 @@ namespace CF7Launcher.Tests.Guardian
 
 
         [Fact]
-        public void GameToolbar_ModernAndLegacyExposeSameSevenRoutesIncludingMaterialsAndSkills()
+        public void GameToolbar_ExposesSevenRoutesIncludingMaterialsAndSkills()
         {
             string[] modern = NotchWidget.ToolbarRoutesForTest();
-            string[] legacy = NotchOverlay.ToolbarRoutesForTest();
             Assert.Equal(
                 new[] { "TEAM", "TABLET", "WAREHOUSE", "INTELLIGENCE", "MATERIALS", "SKILLS", "SHOP" },
                 modern);
-            Assert.Equal(modern, legacy);
         }
     }
 }

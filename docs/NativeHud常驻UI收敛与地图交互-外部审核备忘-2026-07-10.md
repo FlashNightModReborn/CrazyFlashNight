@@ -75,7 +75,7 @@
 
 ### 2.1 当前装配
 
-`config.toml` 已默认 `useNativeHud=true`。`Program.cs` 注册：
+常驻 UI 固定为 C# NativeHud（`useNativeHud` 装配开关已随 legacy 分支拆除移除）。`Program.cs` 注册：
 
 - `RightContextWidget`
 - `SafeExitPanelWidget`

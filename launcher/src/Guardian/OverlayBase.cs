@@ -98,8 +98,8 @@ namespace CF7Launcher.Guardian
         private LayeredWindowCommitObserverSlot _commitObservation;
 
         /// <summary>
-        /// 是否点击穿透。默认 true（Toast/HitNumber）。
-        /// NotchOverlay 需返回 false 以接收鼠标事件。
+        /// 是否点击穿透。默认 true（HitNumber 等纯展示层）。
+        /// NativeHudOverlay 需返回 false 以接收鼠标事件。
         /// </summary>
         protected virtual bool IsClickThrough { get { return true; } }
 

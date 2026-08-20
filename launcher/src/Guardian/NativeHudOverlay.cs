@@ -629,7 +629,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// P1 perf：tee 路径已解析的 packet 入口；与 string 入口语义等价。
-        /// 三方共享同一份 Pairs/LegacyType，避免 NotchOverlay/WebOverlay/NativeHud 各自再 Split('|')。
+        /// 各方共享同一份 Pairs/LegacyType，避免 WebOverlay/NativeHud 各自再 Split('|')。
         /// </summary>
         public void HandleUiData(UiDataPacket pkt)
         {
@@ -856,7 +856,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// 已有 native consumer 订阅此 category？供 CompositeNotchSink 路由：native 处理的 category
-        /// 不再 forward 给 webOverlay/NotchOverlay，避免双重显示（如 N combo|... 同时弹 ComboWidget 命中条 + NotchOverlay 通知行）。
+        /// 不再 forward 给 webOverlay，避免双重显示（如 N combo|... 同时弹 ComboWidget 命中条 + 通用通知行）。
         /// NotchWidget 注册后视为通用通知 sink（处理所有 category），整路 webOverlay 兜底跳过。
         /// </summary>
         public bool HasNoticeConsumerFor(string category)
@@ -873,7 +873,7 @@ namespace CF7Launcher.Guardian
             //   1. INotchNoticeConsumer fan-out（如 ComboWidget 处理 N combo|...）—— 类别精确订阅
             //   2. NotchWidget 通用通知 sink（接收 INotchNoticeConsumer 未订阅的 category）—— 兜底
             // ⚠ 同一 category 不能两条同时收：ComboWidget 已渲染命中条时 NotchWidget 不再渲染
-            //   通用通知行，避免双重显示（与原 NotchOverlay+ComboWidget 路径行为对齐）。
+            //   通用通知行，避免双重显示。
             if (string.IsNullOrEmpty(category)) return;
             NotchWidget nw = _notchWidget;
             bool hasCategoryConsumer = false;
@@ -990,14 +990,14 @@ namespace CF7Launcher.Guardian
 
         public void AddMessage(string text)
         {
-            // ToastWidget 路由：useNativeHud=true 时 Program.cs 注册 ToastWidget 顶替原 ToastOverlay。
-            // 未注册时（useNativeHud=false 或注册前的窗口期）静默丢弃，与旧 silent stub 行为一致。
+            // ToastWidget 路由：Program.cs 装配时注册 ToastWidget 承载 toast 渲染。
+            // 未注册时（装配窗口期）静默丢弃，与旧 silent stub 行为一致。
             ToastWidget tw = _toastWidget;
             if (tw == null) return;
             if (text == null) return;
             if (!this.IsHandleCreated)
             {
-                // handle 未建期间直接走 widget 内 _earlyBuffer，与 ToastOverlay.AddMessage 早期缓冲对齐
+                // handle 未建期间直接走 widget 内 _earlyBuffer 早期缓冲
                 tw.AddMessage(text);
                 return;
             }

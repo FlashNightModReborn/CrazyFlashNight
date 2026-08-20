@@ -125,7 +125,7 @@ namespace CF7Launcher.Guardian.Hud
                     int w = _collapsed ? WidgetScaler.Px(PIN_W_BASE, Scale) : CardW;
                     int h = _collapsed ? WidgetScaler.Px(PIN_H_BASE, Scale) : CardH;
                     int margin = WidgetScaler.Px(8, Scale);
-                    // 贴 viewport 左下：避开 NotchOverlay 顶部 + QuestNotice 底部居中
+                    // 贴 viewport 左下：避开刘海（NotchWidget）顶部 + QuestNotice 底部居中
                     int x = origin.X + (int)vpX + margin;
                     int y = origin.Y + (int)vpY + Math.Max(0, (int)vpH - h - margin);
                     return new Rectangle(x, y, w, h);

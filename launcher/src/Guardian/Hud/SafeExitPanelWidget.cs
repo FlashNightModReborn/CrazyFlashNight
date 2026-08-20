@@ -171,9 +171,8 @@ namespace CF7Launcher.Guardian.Hud
         internal void SetHoverForTest(int index) { SetHover(index); }
 
         /// <summary>
-        /// useNativeHud=false keeps this widget as a non-rendered Host authority. The fallback
-        /// UiData tee forwards only the packet delta here; this consumer reads changed keys only,
-        /// so it does not need a second process-wide snapshot.
+        /// 本 widget 是 Host 权威但不自渲染；UiData tee 只把 packet delta 转发到这里；
+        /// 本 consumer 只读变化键，因此不需要第二份进程级快照。
         /// </summary>
         internal void HandleUiData(UiDataPacket packet)
         {

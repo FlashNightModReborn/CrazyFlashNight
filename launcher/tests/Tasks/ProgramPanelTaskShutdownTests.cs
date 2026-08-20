@@ -388,7 +388,7 @@ namespace Launcher.Tests.Tasks
                 File.ReadAllText(
                     FindProgramSource());
             Assert.Equal(
-                3,
+                1,
                 CountOccurrences(
                     program,
                     "EmergencyExitReason.HardExitKeyQ"));
@@ -403,13 +403,13 @@ namespace Launcher.Tests.Tasks
                 Slice(
                     program,
                     "LauncherCommandRouter commandRouter = new LauncherCommandRouter(",
-                    "commandRouter.SetFallbackVisualRetire"));
+                    "commandRouter.SetPanelAdmissionGate"));
             Assert.Contains(
                 "config.PreparationNavigationV1",
                 Slice(
                     program,
                     "LauncherCommandRouter commandRouter = new LauncherCommandRouter(",
-                    "commandRouter.SetFallbackVisualRetire"));
+                    "commandRouter.SetPanelAdmissionGate"));
 
             string launcherRouter =
                 File.ReadAllText(
@@ -442,11 +442,6 @@ namespace Launcher.Tests.Tasks
             string guardianDirectory =
                 Path.GetDirectoryName(
                     FindGuardianFormSource());
-            AssertQHardExitPrecedesGenericRouter(
-                File.ReadAllText(
-                    Path.Combine(
-                        guardianDirectory,
-                        "NotchOverlay.cs")));
             AssertQHardExitPrecedesGenericRouter(
                 File.ReadAllText(
                     Path.Combine(

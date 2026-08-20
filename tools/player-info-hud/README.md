@@ -206,7 +206,7 @@ stale generated glyph data.
 
 B0-06 implements an opt-in fixture surface without creating a second runtime
 state authority. `CF7_PLAYER_INFO_FIXTURE_CASE` must be one exact allowlist
-member and is ignored/rejected in bus-only mode or when `useNativeHud=false`.
+member and is ignored/rejected in bus-only mode.
 The resulting `PlayerInfoSplitSurface` is a separate click-through layered
 window; it is never registered in the existing `NativeHudOverlay` union.
 Program does not hide or mutate the old Flash HUD, and the fixture has no

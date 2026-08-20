@@ -195,9 +195,6 @@ namespace CF7Launcher.Tests.Guardian
             int hud = close.IndexOf(
                 "_hud.Resume()",
                 StringComparison.Ordinal);
-            int toast = close.IndexOf(
-                "_toastOverlay.SetReady()",
-                StringComparison.Ordinal);
             int escape = close.IndexOf(
                 "_escSource.SetPanelEscapeEnabled(false)",
                 StringComparison.Ordinal);
@@ -215,8 +212,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(suspend > webClose);
             Assert.True(shield > suspend);
             Assert.True(hud > shield);
-            Assert.True(toast > hud);
-            Assert.True(escape > toast);
+            Assert.True(escape > hud);
             Assert.True(cursor > escape);
             Assert.True(closed > cursor);
             Assert.True(settledRestore > closed);
@@ -411,12 +407,8 @@ namespace CF7Launcher.Tests.Guardian
             int close = helper.IndexOf(
                 "TryRetireCharacterBuildHostVisual(",
                 StringComparison.Ordinal);
-            int clearFallback = helper.IndexOf(
-                "_commandRouter.ClearFallbackPanelInstance();",
-                StringComparison.Ordinal);
             Assert.True(recover >= 0);
             Assert.True(close > recover);
-            Assert.True(clearFallback > recover);
             string retire = Slice(
                 source,
                 "private bool TryRetireCharacterBuildHostVisual(",
@@ -429,9 +421,6 @@ namespace CF7Launcher.Tests.Guardian
                 retire);
             Assert.Contains(
                 "bool trackedVisual = _panelHost != null",
-                helper);
-            Assert.Contains(
-                "_commandRouter.ActiveFallbackPanelName",
                 helper);
             Assert.DoesNotContain(
                 "ActivePanelName == \"workbench\"",
@@ -452,15 +441,19 @@ namespace CF7Launcher.Tests.Guardian
             var flash = new List<string>();
             var router = new LauncherCommandRouter(
                 null, null, null, null, null,
-                delegate(string json) { webPosts.Add(json); },
-                null, null);
-            router.SetFallbackVisualRetire(
-                delegate { return true; });
+                delegate(string json) { webPosts.Add(json); });
             router.SetGameCommandSenderForTests(delegate(string payload)
             {
                 gameCommands.Add(payload);
                 return true;
             });
+            var pumps = new Queue<Action>();
+            using (var host =
+                new PanelHostController(
+                    delegate(Action pump) { pumps.Enqueue(pump); },
+                    delegate(Action fire) { fire(); }))
+            {
+                router.SetPanelHost(host);
 
             using (var task = new CharacterBuildTask(delegate(string payload)
             {
@@ -474,8 +467,10 @@ namespace CF7Launcher.Tests.Guardian
                     "agent_control",
                     null, null, null, null, null,
                     "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+                while (pumps.Count > 0) pumps.Dequeue()();
+                Assert.Equal("workbench", host.ActivePanelName);
                 string buildInstance =
-                    router.ActiveFallbackPanelInstanceId;
+                    host.ActivePanelInstanceId;
                 Assert.True(task.BindPanelInstance(buildInstance));
 
                 Assert.True(task.TryBeginHostAccepted(
@@ -541,27 +536,20 @@ namespace CF7Launcher.Tests.Guardian
                     "nativehud",
                     null, null, null, null, null,
                     "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
-                Assert.Null(
-                    router.ActiveFallbackPanelInstanceId);
-                Assert.Null(
-                    router.ActiveFallbackPanelName);
+                while (pumps.Count > 0) pumps.Dequeue()();
                 Assert.True(task.IsBoundTo(buildInstance));
                 Assert.True(task.RequiresDetachRecovery);
-                Assert.Equal(2, webPosts.Count);
-                JObject visualRetire =
-                    JObject.Parse(webPosts[1]);
-                Assert.Equal("close",
-                    visualRetire.Value<string>("cmd"));
-                Assert.Equal(buildInstance,
-                    visualRetire.Value<string>(
-                        "panelInstanceId"));
+                // Host 视觉已被精确退休：面板不再持有任何活跃实例。
+                Assert.Null(host.ActivePanelName);
+                Assert.Null(host.ActivePanelInstanceId);
 
                 int postsBeforeMap = webPosts.Count;
                 router.RequestOpenPanel(
                     "map", "navigation_stale", null);
+                while (pumps.Count > 0) pumps.Dequeue()();
                 Assert.Equal(postsBeforeMap, webPosts.Count);
-                Assert.Null(router.ActiveFallbackPanelName);
-                Assert.Null(router.ActiveFallbackPanelInstanceId);
+                Assert.Null(host.ActivePanelName);
+                Assert.Null(host.ActivePanelInstanceId);
                 Assert.Equal(
                     commandsBeforeTransition,
                     gameCommands.Count);
@@ -615,10 +603,12 @@ namespace CF7Launcher.Tests.Guardian
 
                 router.RequestOpenPanel(
                     "map", "navigation_stale", null);
+                while (pumps.Count > 0) pumps.Dequeue()();
                 Assert.Equal("map",
-                    router.ActiveFallbackPanelName);
+                    host.ActivePanelName);
                 Assert.NotEqual(buildInstance,
-                    router.ActiveFallbackPanelInstanceId);
+                    host.ActivePanelInstanceId);
+            }
             }
         }
 

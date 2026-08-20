@@ -28,8 +28,6 @@ namespace CF7Launcher.Config
         public string GpuPreference { get; private set; }
         /// <summary>开发用：Ctrl+G 切换 WebView2 opaque + Flash 隐藏的合成成本探针。玩家版必须 false。</summary>
         public bool DevGpuProbeHotkey { get; private set; }
-        /// <summary>开关 Native HUD + PanelHostController 装配。缺 key 时代码 fallback false；随仓 config.toml 当前显式设 true。</summary>
-        public bool UseNativeHud { get; private set; }
         /// <summary>
         /// 临时整备 IA 原子 rollout gate。B7 起代码默认与随仓配置均为 true；
         /// 显式 false 可把整套呈现原子回退到旧 HUD/header/focus；
@@ -39,7 +37,7 @@ namespace CF7Launcher.Config
         /// <summary>
         /// Panel 态是否显式接管前台 + WebView 焦点（默认 true）。
         /// true：ResumeForPanel 剥 WS_EX_NOACTIVATE + SetForegroundWindow(this) + controller.MoveFocus(Programmatic)；
-        ///       DoFullIdleSuspend/DoSoftIdleRestore 关闭时 SetForegroundWindow(Flash) 回推前台。
+        ///       DoFullIdleSuspend 关闭时 SetForegroundWindow(Flash) 回推前台。
         /// false：完全等价旧行为 —— 不剥 NOACTIVATE、不调 SetForegroundWindow/MoveFocus；首次点击仍只切焦点。
         /// 修首次点击失效的"卡手"问题；env CF7_PANEL_TAKE_FG=0 一键回滚。
         /// </summary>
@@ -86,7 +84,6 @@ namespace CF7Launcher.Config
             NativeCursorOverlayEnabled = true;
             GpuPreference = "off";
             DevGpuProbeHotkey = false;
-            UseNativeHud = false;
             PreparationNavigationV1 = true;
             UseDesktopCursorOverlay = true;
             WebOverlayPanelTakeForeground = true;
@@ -134,8 +131,6 @@ namespace CF7Launcher.Config
                         GpuPreference = NormalizeGpuPreference(val, "off");
                     else if (string.Equals(key, "devGpuProbeHotkey", StringComparison.OrdinalIgnoreCase))
                         DevGpuProbeHotkey = ParseBool(val, false);
-                    else if (string.Equals(key, "useNativeHud", StringComparison.OrdinalIgnoreCase))
-                        UseNativeHud = ParseBool(val, false);
                     else if (string.Equals(key, "preparationNavigationV1", StringComparison.OrdinalIgnoreCase))
                         PreparationNavigationV1 = ParseBool(val, false);
                     else if (string.Equals(key, "useDesktopCursorOverlay", StringComparison.OrdinalIgnoreCase))
@@ -213,10 +208,6 @@ namespace CF7Launcher.Config
             string gpuProbe = Environment.GetEnvironmentVariable("CF7_DEV_GPU_PROBE");
             if (!string.IsNullOrEmpty(gpuProbe))
                 DevGpuProbeHotkey = ParseBoolLike(gpuProbe, DevGpuProbeHotkey);
-
-            string nativeHud = Environment.GetEnvironmentVariable("CF7_NATIVE_HUD");
-            if (!string.IsNullOrEmpty(nativeHud))
-                UseNativeHud = ParseBoolLike(nativeHud, UseNativeHud);
 
             string desktopCursor = Environment.GetEnvironmentVariable("CF7_DESKTOP_CURSOR");
             if (!string.IsNullOrEmpty(desktopCursor))

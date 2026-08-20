@@ -6,7 +6,7 @@ namespace CF7Launcher.Guardian
     /// 线程安全的 FPS 环形缓冲。
     ///
     /// 写入：socket 线程（FrameTask.HandleRaw），频率 0.25-1 Hz
-    /// 读取：UI 线程（NotchOverlay 定时器），频率 ~60 Hz
+    /// 读取：UI 线程（NativeHud NotchWidget 渲染循环），频率 ~60 Hz
     ///
     /// 使用 lock 保护——写入极低频，竞争可忽略。
     /// min/max 在被覆盖值命中极值时触发 O(n) 重算。

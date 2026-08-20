@@ -10,8 +10,8 @@ using Xunit;
 namespace CF7Launcher.Tests.Guardian
 {
     /// <summary>
-    /// Router 单测。Flag OFF 路径（_panelHost == null）触发 PostToWeb fallback；
-    /// Flag ON 路径无法在单测里覆盖（PanelHostController 依赖 Form），通过集成测试 + 手测覆盖。
+    /// Router 单测。panel 打开统一经 PanelHostController（用 pump/closedEventDispatcher
+    /// 测试构造器驱动，不创建原生窗口）；PostToWeb fallback 路径已随 useNativeHud=false 分支拆除。
     /// </summary>
     public class LauncherCommandRouterTests
     {
@@ -19,10 +19,59 @@ namespace CF7Launcher.Tests.Guardian
         {
             public List<Keys> SentKeys = new List<Keys>();
             public List<string> Posts = new List<string>();
-            public List<string> ActivePanels = new List<string>();
-            public List<bool> StateCallbacks = new List<bool>();
-            public List<string> VisualRetires = new List<string>();
             public int Fullscreen, Log, Exit;
+        }
+
+        /// <summary>
+        /// PanelHostController 测试线束：同步 pump（打开/关闭调用即完成），
+        /// 保持旧 fallback 测试的同步断言语义。
+        /// </summary>
+        private sealed class HostHarness : IDisposable
+        {
+            public readonly PanelHostController Host;
+
+            public HostHarness(LauncherCommandRouter router)
+            {
+                Host = new PanelHostController(
+                    delegate(Action pump) { pump(); },
+                    delegate(Action fire) { fire(); });
+                router.SetPanelHost(Host);
+            }
+
+            /// <summary>精确关闭当前面板（等价旧 ClearFallbackPanelInstance 的测试语义）。</summary>
+            public void CloseCurrent()
+            {
+                string name = Host.ActivePanelName;
+                string instance = Host.ActivePanelInstanceId;
+                if (name == null || instance == null) return;
+                Assert.True(
+                    Host.TryClosePanelExact(name, instance, null));
+            }
+
+            /// <summary>最后一次 Host 打开的完整 open payload（initData 已含 enricher 结果）。</summary>
+            public JObject LastOpenPayload
+            {
+                get
+                {
+                    string raw = Host.LastOpenPayloadForTest;
+                    Assert.False(string.IsNullOrEmpty(raw));
+                    return JObject.Parse(raw);
+                }
+            }
+
+            /// <summary>生产接线镜像（Program.cs）：skills initData 由 SkillTask 富化。</summary>
+            public void WireSkillsEnricher(SkillTask task)
+            {
+                Host.SetInitDataEnricher(
+                    delegate(string panelName, string initDataJson, string panelInstanceId)
+                    {
+                        return panelName == "skills"
+                            ? task.EnrichPanelInitData(initDataJson, panelInstanceId)
+                            : initDataJson;
+                    });
+            }
+
+            public void Dispose() { Host.Dispose(); }
         }
 
         private static LauncherCommandRouter MakeRouter(
@@ -42,15 +91,8 @@ namespace CF7Launcher.Tests.Guardian
                     c.Posts.Add(s);
                     if (postObserved != null) postObserved(s);
                 },
-                onPanelStateChanged: b => c.StateCallbacks.Add(b),
-                setActivePanel: name => c.ActivePanels.Add(name),
                 preparationNavigationV1:
                     preparationNavigationV1);
-            router.SetFallbackVisualRetire(delegate(string reason)
-            {
-                c.VisualRetires.Add(reason);
-                return true;
-            });
             return router;
         }
 
@@ -107,16 +149,14 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void HELP_OpenPanelFallback_PostsPanelCmdOpen()
+        public void HELP_OpenPanel_OpensThroughHost()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.Dispatch("HELP");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"help\"", c.Posts[0]);
-            Assert.Contains("\"cmd\":\"open\"", c.Posts[0]);
-            Assert.Equal(new[] { "help" }, c.ActivePanels);
-            Assert.Equal(new[] { true }, c.StateCallbacks);
+            Assert.True(harnessR.Host.IsPanelOpen);
+            Assert.Equal("help", harnessR.Host.ActivePanelName);
         }
 
         [Theory]
@@ -131,28 +171,17 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
 
             Assert.True(
                 router.TryOpenAgentPanel(panelName));
 
-            JObject posted =
-                JObject.Parse(Assert.Single(c.Posts));
             Assert.Equal(
                 panelName,
-                (string)posted["panel"]);
-            JObject initData =
-                (JObject)posted["initData"];
-            JProperty identity =
-                Assert.Single(initData.Properties());
-            Assert.Equal(
-                "panelInstanceId",
-                identity.Name);
-            Assert.Equal(
-                (string)posted["panelInstanceId"],
-                (string)identity.Value);
+                harness.Host.ActivePanelName);
             Assert.Matches(
-                "^fallback_[A-Za-z0-9_-]{24}$",
-                (string)posted["panelInstanceId"]);
+                "^panel_[A-Za-z0-9_-]{24}$",
+                harness.Host.ActivePanelInstanceId);
         }
 
         [Theory]
@@ -172,7 +201,6 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(
                 router.TryOpenAgentPanel(panelName));
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -200,7 +228,6 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(
                 "nativehud_materials",
                 router.PendingMaterialOpenOrigin);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -212,7 +239,6 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.False(router.TryOpenAgentPanel("materials"));
             Assert.Null(router.PendingMaterialOpenRequestId);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Theory]
@@ -272,7 +298,6 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.False(router.TryOpenAgentPanel("materials"));
             Assert.Null(router.PendingMaterialOpenRequestId);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Theory]
@@ -293,21 +318,22 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void FallbackPanelChangedPublishesAfterOpenAndClear()
+        public void HostPanelChangedPublishesAfterOpenAndClose()
         {
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             var changed =
                 new List<(string Name, string Instance)>();
-            router.PanelChanged += (name, instance) =>
+            harness.Host.PanelChanged += (name, instance) =>
                 changed.Add((name, instance));
 
             Assert.True(
                 router.TryOpenAgentPanel("help"));
             string instance =
-                router.ActiveFallbackPanelInstanceId;
-            router.ClearFallbackPanelInstance();
+                harness.Host.ActivePanelInstanceId;
+            harness.CloseCurrent();
 
             Assert.Collection(
                 changed,
@@ -326,44 +352,46 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void FallbackPanelInstancesUseFreshCspRngOpaqueIds()
+        public void HostPanelInstancesUseFreshCspRngOpaqueIds()
         {
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
 
             Assert.True(
                 router.TryOpenAgentPanel("help"));
             string first =
-                router.ActiveFallbackPanelInstanceId;
-            router.ClearFallbackPanelInstance();
+                harness.Host.ActivePanelInstanceId;
+            harness.CloseCurrent();
             Assert.True(
                 router.TryOpenAgentPanel("map"));
             string second =
-                router.ActiveFallbackPanelInstanceId;
+                harness.Host.ActivePanelInstanceId;
 
             Assert.Matches(
-                "^fallback_[A-Za-z0-9_-]{24}$",
+                "^panel_[A-Za-z0-9_-]{24}$",
                 first);
             Assert.Matches(
-                "^fallback_[A-Za-z0-9_-]{24}$",
+                "^panel_[A-Za-z0-9_-]{24}$",
                 second);
             Assert.NotEqual(first, second);
         }
 
         [Fact]
-        public void FallbackPanelChangedFailureDoesNotBreakOpen()
+        public void HostPanelChangedFailureDoesNotBreakOpen()
         {
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             int healthySubscriberCalls = 0;
-            router.PanelChanged += delegate
+            harness.Host.PanelChanged += delegate
             {
                 throw new InvalidOperationException(
                     "subscriber failure");
             };
-            router.PanelChanged += delegate
+            harness.Host.PanelChanged += delegate
             {
                 healthySubscriberCalls++;
             };
@@ -372,7 +400,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.TryOpenAgentPanel("help"));
             Assert.Equal(
                 "help",
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.Equal(
                 1,
                 healthySubscriberCalls);
@@ -383,6 +411,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var commands = new List<string>();
             r.SetGameCommandSenderForTests(
                 value =>
@@ -391,13 +420,12 @@ namespace CF7Launcher.Tests.Guardian
                     return true;
                 });
             r.Dispatch("WAREHOUSE");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"workbench\"", c.Posts[0]);
-            Assert.Contains("\"profile\":\"battlebox\"", c.Posts[0]);
-            Assert.Contains("\"view\":\"storage\"", c.Posts[0]);
-            Assert.Contains("\"source\":\"nativehud\"", c.Posts[0]);
-            Assert.Equal(new[] { "workbench" }, c.ActivePanels);
-            Assert.Equal(new[] { true }, c.StateCallbacks);
+            Assert.True(harnessR.Host.IsPanelOpen);
+            JObject open = harnessR.LastOpenPayload;
+            Assert.Equal("workbench", (string)open["panel"]);
+            Assert.Equal("battlebox", (string)open["initData"]["profile"]);
+            Assert.Equal("storage", (string)open["initData"]["view"]);
+            Assert.Equal("nativehud", (string)open["initData"]["source"]);
             Assert.DoesNotContain(
                 commands,
                 payload => payload.Contains(
@@ -409,10 +437,11 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
 
             r.Dispatch("WAREHOUSE");
 
-            Assert.DoesNotContain("tuningAvailable", Assert.Single(c.Posts));
+            Assert.DoesNotContain("tuningAvailable", harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None));
         }
 
         [Fact]
@@ -453,7 +482,6 @@ namespace CF7Launcher.Tests.Guardian
                 "nativehud_materials",
                 r.PendingMaterialOpenOrigin);
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -477,7 +505,6 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Single(c.Posts));
             Assert.Null(
                 r.PendingMaterialOpenRequestId);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -502,7 +529,6 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Single(c.Posts));
             Assert.Null(
                 r.PendingMaterialOpenRequestId);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -581,6 +607,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var commands = new List<string>();
             r.SetGameCommandSenderForTests(
                 delegate(string value)
@@ -591,7 +618,7 @@ namespace CF7Launcher.Tests.Guardian
             r.Dispatch("HELP");
             Assert.Equal(
                 "help",
-                r.ActiveFallbackPanelName);
+                harnessR.Host.ActivePanelName);
             c.Posts.Clear();
             commands.Clear();
 
@@ -749,6 +776,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             var commands =
                 new List<JObject>();
             router.SetGameCommandSenderForTests(
@@ -780,13 +808,8 @@ namespace CF7Launcher.Tests.Guardian
                 router.PendingMaterialOpenRequestId);
             Assert.Equal(
                 "crafting",
-                router.ActiveFallbackPanelName);
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(
-                        c.Posts,
-                        value => value.Contains(
-                            "\"cmd\":\"open\"")));
+                harness.Host.ActivePanelName);
+            JObject opened = harness.LastOpenPayload;
             JObject initData =
                 Assert.IsType<JObject>(
                     opened["initData"]);
@@ -804,16 +827,18 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Null(
                 initData["openRequestId"]);
 
+            string openedInstance =
+                harness.Host.ActivePanelInstanceId;
             RequestNativeMaterials(
                 router,
                 "crafting",
                 "nativehud_materials",
                 "{\"view\":\"materials\"}",
                 openRequestId);
-            Assert.Single(
-                c.Posts,
-                value => value.Contains(
-                    "\"cmd\":\"open\""));
+            // 已消费的 nonce 不再打开：仍是同一实例
+            Assert.Equal(
+                openedInstance,
+                harness.Host.ActivePanelInstanceId);
         }
 
         [Fact]
@@ -822,6 +847,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             router.SetGameCommandSenderForTests(
@@ -855,7 +881,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId,
                 router.PendingMaterialOpenRequestId);
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.Contains(
                 c.Posts,
                 value => value.Contains(
@@ -871,7 +897,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.PendingMaterialOpenRequestId);
             Assert.Equal(
                 "crafting",
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
         }
 
         [Fact]
@@ -881,6 +907,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             using (var task =
                 new CharacterBuildTask(
                     _ => true))
@@ -890,8 +917,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.SetGameCommandSenderForTests(
                     _ => true);
                 string instance =
-                    OpenFallbackBuild(
-                        router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(
                         instance));
@@ -929,10 +955,10 @@ namespace CF7Launcher.Tests.Guardian
                         .PendingCharacterBuildPreparationTarget);
                 Assert.Equal(
                     "workbench",
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.Equal(
                     instance,
-                    router.ActiveFallbackPanelInstanceId);
+                    harness.Host.ActivePanelInstanceId);
                 Assert.Contains(
                     capture.Posts,
                     value => value.Contains(
@@ -955,6 +981,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             router.SetGameCommandSenderForTests(
@@ -985,7 +1012,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.PendingMaterialOpenRequestId);
             Assert.Equal(
                 "map",
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             RequestNativeMaterials(
                 router,
                 "crafting",
@@ -995,15 +1022,8 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Equal(
                 "map",
-                router.ActiveFallbackPanelName);
-            Assert.Single(
-                capture.Posts,
-                value => value.Contains(
-                    "\"panel\":\"map\""));
-            Assert.DoesNotContain(
-                capture.Posts,
-                value => value.Contains(
-                    "\"panel\":\"crafting\""));
+                harness.Host.ActivePanelName);
+            Assert.Empty(capture.Posts);
         }
 
         [Theory]
@@ -1041,6 +1061,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             router.SetGameCommandSenderForTests(
@@ -1080,7 +1101,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Null(
                 router.PendingMaterialOpenRequestId);
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.DoesNotContain(
                 c.Posts,
                 value => value.Contains(
@@ -1099,6 +1120,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter timeoutRouter =
                 MakeRouter(
                     timeoutCapture);
+            using var harnessTimeoutRouter = new HostHarness(timeoutRouter);
             timeoutRouter.MaterialPanelOpenTimeoutMs =
                 25;
             string timeoutCommand =
@@ -1136,7 +1158,7 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"view\":\"materials\"}",
                 timedOutId);
             Assert.Null(
-                timeoutRouter.ActiveFallbackPanelName);
+                harnessTimeoutRouter.Host.ActivePanelName);
             Assert.Contains(
                 timeoutCapture.Posts,
                 value => value.Contains(
@@ -1147,6 +1169,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter cancelRouter =
                 MakeRouter(
                     cancelCapture);
+   using var harnessCancelRouter = new HostHarness(cancelRouter);
             cancelRouter.MaterialPanelOpenTimeoutMs =
                 25;
             string cancelCommand =
@@ -1181,7 +1204,7 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"view\":\"materials\"}",
                 cancelledId);
             Assert.Null(
-                cancelRouter.ActiveFallbackPanelName);
+                harnessCancelRouter.Host.ActivePanelName);
             Assert.Empty(
                 cancelCapture.Posts);
         }
@@ -1192,6 +1215,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             bool admitted =
                 true;
             var commands =
@@ -1228,7 +1252,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Null(
                 router.PendingMaterialOpenRequestId);
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.DoesNotContain(
                 commands,
                 command =>
@@ -1322,6 +1346,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             int sends = 0;
             r.SetGameCommandSenderForTests(
                 delegate
@@ -1342,7 +1367,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(0, sends);
             Assert.Empty(c.Posts);
             Assert.Null(
-                r.ActiveFallbackPanelName);
+                harnessR.Host.ActivePanelName);
         }
 
         [Fact]
@@ -1382,8 +1407,6 @@ namespace CF7Launcher.Tests.Guardian
                     Assert.Single(commands));
             Assert.Equal(6, command.Count);
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
-            Assert.Empty(c.StateCallbacks);
             r.RequestOpenPanel(
                 "workbench",
                 "nativehud_equipment",
@@ -1419,8 +1442,6 @@ namespace CF7Launcher.Tests.Guardian
                 "toast",
                 (string)toast["type"]);
             Assert.Null(toast["panel"]);
-            Assert.Empty(c.ActivePanels);
-            Assert.Empty(c.StateCallbacks);
         }
 
         [Fact]
@@ -1446,7 +1467,6 @@ namespace CF7Launcher.Tests.Guardian
                 r.Dispatch("EQUIP_UI");
 
                 Assert.Empty(c.Posts);
-                Assert.Empty(c.ActivePanels);
                 Assert.True(postObserved.Wait(5000));
                 Assert.Single(c.Posts);
                 Assert.Contains(
@@ -1463,6 +1483,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             // Keep the injected test timeout comfortably above scheduler jitter so
             // an unrelated runner pause cannot race the immediate acknowledgement.
             r.NativeEquipmentBuildOpenTimeoutMs = 500;
@@ -1488,15 +1509,14 @@ namespace CF7Launcher.Tests.Guardian
                     commands[0]));
             System.Threading.Thread.Sleep(650);
 
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
+            JObject opened = harnessR.LastOpenPayload;
             Assert.Equal(
                 "workbench",
                 (string)opened["panel"]);
             Assert.Equal(
                 "build",
                 (string)opened["initData"]["view"]);
+            Assert.Empty(c.Posts);
         }
 
         [Fact]
@@ -1504,6 +1524,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.NativeEquipmentBuildOpenTimeoutMs = 500;
             r.SetGameCommandSenderForTests(
                 delegate(string payload)
@@ -1534,12 +1555,11 @@ namespace CF7Launcher.Tests.Guardian
             r.Dispatch("EQUIP_UI");
             System.Threading.Thread.Sleep(650);
 
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
+            JObject opened = harnessR.LastOpenPayload;
             Assert.Equal(
                 "workbench",
                 (string)opened["panel"]);
+            Assert.Empty(c.Posts);
         }
 
         [Fact]
@@ -1547,6 +1567,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.NativeEquipmentBuildOpenTimeoutMs = 40;
             r.SetGameCommandSenderForTests(
                 delegate(string payload)
@@ -1575,15 +1596,11 @@ namespace CF7Launcher.Tests.Guardian
             r.Dispatch("EQUIP_UI");
             System.Threading.Thread.Sleep(100);
 
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
+            JObject opened = harnessR.LastOpenPayload;
             Assert.Equal(
                 "workbench",
                 opened.Value<string>("panel"));
-            Assert.DoesNotContain(
-                "toast",
-                c.Posts[0]);
+            Assert.Empty(c.Posts);
         }
 
         [Fact]
@@ -1653,7 +1670,6 @@ namespace CF7Launcher.Tests.Guardian
                         commands[0]));
 
                 Assert.Single(c.Posts);
-                Assert.Empty(c.ActivePanels);
             }
         }
 
@@ -1662,6 +1678,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.NativeEquipmentBuildOpenTimeoutMs = 2000;
             var commands = new List<string>();
             r.SetGameCommandSenderForTests(
@@ -1688,15 +1705,10 @@ namespace CF7Launcher.Tests.Guardian
                 ReadWorkbenchOpenRequestId(
                     commands[0]));
 
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
             Assert.Equal(
                 "map",
-                (string)opened["panel"]);
-            Assert.Equal(
-                new[] { "map" },
-                c.ActivePanels);
+                harnessR.Host.ActivePanelName);
+            Assert.Empty(c.Posts);
         }
 
         [Fact]
@@ -1828,6 +1840,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.NativeEquipmentBuildOpenTimeoutMs = 500;
             var commands = new List<string>();
             r.SetGameCommandSenderForTests(
@@ -1844,15 +1857,10 @@ namespace CF7Launcher.Tests.Guardian
                 null);
             System.Threading.Thread.Sleep(650);
 
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
             Assert.Equal(
                 "map",
-                (string)opened["panel"]);
-            Assert.DoesNotContain(
-                "装备服务未就绪",
-                c.Posts[0]);
+                harnessR.Host.ActivePanelName);
+            Assert.Empty(c.Posts);
 
             // Timeout still consumes the pending admission, so a late native ack cannot
             // replace the panel that won the competition.
@@ -1867,10 +1875,10 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"profile\":\"battlebox\",\"view\":\"build\"}",
                 ReadWorkbenchOpenRequestId(
                     commands[0]));
-            Assert.Single(c.Posts);
+            Assert.Empty(c.Posts);
             Assert.Equal(
-                new[] { "map" },
-                c.ActivePanels);
+                "map",
+                harnessR.Host.ActivePanelName);
         }
 
         [Fact]
@@ -1878,6 +1886,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.NativeEquipmentBuildOpenTimeoutMs = 2000;
             var commands = new List<string>();
             r.SetGameCommandSenderForTests(
@@ -1932,9 +1941,7 @@ namespace CF7Launcher.Tests.Guardian
                 ReadWorkbenchOpenRequestId(
                     Assert.Single(commands)));
 
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
+            JObject opened = harnessR.LastOpenPayload;
             Assert.Equal(
                 "workbench",
                 (string)opened["panel"]);
@@ -1945,6 +1952,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var commands =
                 new List<string>();
             r.SetGameCommandSenderForTests(
@@ -1982,9 +1990,7 @@ namespace CF7Launcher.Tests.Guardian
             RequestNativeSkillManage(
                 r,
                 skills.Value<string>("openRequestId"));
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
+            JObject opened = harnessR.LastOpenPayload;
             Assert.Equal(
                 "skills",
                 opened.Value<string>("panel"));
@@ -1995,6 +2001,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var commands =
                 new List<string>();
             r.SetGameCommandSenderForTests(
@@ -2032,9 +2039,7 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 "{\"profile\":\"battlebox\",\"view\":\"build\"}",
                 native.Value<string>("openRequestId"));
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
+            JObject opened = harnessR.LastOpenPayload;
             Assert.Equal(
                 "workbench",
                 opened.Value<string>("panel"));
@@ -2045,6 +2050,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var commands =
                 new List<string>();
             r.SetGameCommandSenderForTests(
@@ -2068,7 +2074,7 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
             string storageInstance =
-                r.ActiveFallbackPanelInstanceId;
+                harnessR.Host.ActivePanelInstanceId;
             Assert.False(
                 string.IsNullOrEmpty(storageInstance));
 
@@ -2083,13 +2089,12 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"profile\":\"battlebox\",\"view\":\"build\"}",
                 staleRequestId);
 
-            Assert.Single(c.Posts);
             Assert.Equal(
                 storageInstance,
-                r.ActiveFallbackPanelInstanceId);
+                harnessR.Host.ActivePanelInstanceId);
             Assert.Equal(
                 "storage",
-                JObject.Parse(c.Posts[0])[
+                harnessR.LastOpenPayload[
                     "initData"].Value<string>("view"));
         }
 
@@ -2098,13 +2103,13 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("crafting", "world_crafting_entry", null, null, null, null, null,
                 "{\"category\":\"武器合成\",\"ignored\":\"x\"}");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"crafting\"", c.Posts[0]);
-            Assert.Contains("\"category\":\"武器合成\"", c.Posts[0]);
-            Assert.DoesNotContain("ignored", c.Posts[0]);
-            Assert.Equal(new[] { "crafting" }, c.ActivePanels);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"crafting\"", open);
+            Assert.Contains("\"category\":\"武器合成\"", open);
+            Assert.DoesNotContain("ignored", open);
         }
 
         [Fact]
@@ -2115,7 +2120,6 @@ namespace CF7Launcher.Tests.Guardian
             r.RequestOpenPanel("crafting", "world_crafting_entry", null, null, null, null, null,
                 "{\"category\":\"未知分类\"}");
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -2124,15 +2128,15 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
 
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("crafting", "nativehud_materials", null, null, null, null, null,
                 "{\"view\":\"materials\"}");
 
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"crafting\"", c.Posts[0]);
-            Assert.Contains("\"view\":\"materials\"", c.Posts[0]);
-            Assert.Contains("\"source\":\"nativehud_materials\"", c.Posts[0]);
-            Assert.DoesNotContain("\"category\"", c.Posts[0]);
-            Assert.Equal(new[] { "crafting" }, c.ActivePanels);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"crafting\"", open);
+            Assert.Contains("\"view\":\"materials\"", open);
+            Assert.Contains("\"source\":\"nativehud_materials\"", open);
+            Assert.DoesNotContain("\"category\"", open);
         }
 
         [Fact]
@@ -2152,7 +2156,6 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"view\":\"materials\",\"category\":\"未知分类\",\"ignored\":\"x\"}");
 
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -2160,6 +2163,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
 
             r.RequestOpenPanel(
                 "hairdresser",
@@ -2171,7 +2175,7 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"ignored\":true}",
                 "{\"ignored\":true}");
 
-            JObject open = JObject.Parse(Assert.Single(c.Posts));
+            JObject open = harnessR.LastOpenPayload;
             Assert.Equal("hairdresser", (string)open["panel"]);
             JObject initData = Assert.IsType<JObject>(open["initData"]);
             Assert.Equal(4, initData.Count);
@@ -2182,7 +2186,7 @@ namespace CF7Launcher.Tests.Guardian
                 (string)open["panelInstanceId"],
                 (string)initData["panelInstanceId"]);
             Assert.Null(initData["ignored"]);
-            Assert.Equal(new[] { "hairdresser" }, c.ActivePanels);
+            Assert.Equal("hairdresser", harnessR.Host.ActivePanelName);
         }
 
         [Theory]
@@ -2206,33 +2210,33 @@ namespace CF7Launcher.Tests.Guardian
                 null);
 
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
-            Assert.Empty(c.StateCallbacks);
         }
 
         [Fact]
-        public void GOBANG_TEST_OpenPanelFallback_IncludesInitData()
+        public void GOBANG_TEST_OpenPanel_IncludesInitData()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.Dispatch("GOBANG_TEST");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"gobang\"", c.Posts[0]);
-            Assert.Contains("\"initData\"", c.Posts[0]);
-            Assert.Contains("\"ruleset\":\"casual\"", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"gobang\"", open);
+            Assert.Contains("\"initData\"", open);
+            Assert.Contains("\"ruleset\":\"casual\"", open);
         }
 
         [Fact]
-        public void INTELLIGENCE_TEST_OpenPanelFallback_IncludesFixtureInitData()
+        public void INTELLIGENCE_TEST_OpenPanel_IncludesFixtureInitData()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.Dispatch("INTELLIGENCE_TEST");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"intelligence\"", c.Posts[0]);
-            Assert.Contains("\"itemName\":\"资料\"", c.Posts[0]);
-            Assert.Contains("\"value\":99", c.Posts[0]);
-            Assert.Contains("\"decryptLevel\":10", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"intelligence\"", open);
+            Assert.Contains("\"itemName\":\"资料\"", open);
+            Assert.Contains("\"value\":99", open);
+            Assert.Contains("\"decryptLevel\":10", open);
         }
 
         [Fact]
@@ -2240,14 +2244,14 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.Dispatch("INTELLIGENCE");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"intelligence\"", c.Posts[0]);
-            Assert.Contains("\"mode\":\"prod\"", c.Posts[0]);
-            Assert.Contains("\"source\":\"runtime\"", c.Posts[0]);
-            Assert.Contains("\"debug\":false", c.Posts[0]);
-            Assert.Equal(new[] { "intelligence" }, c.ActivePanels);
-            Assert.Equal(new[] { true }, c.StateCallbacks);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"intelligence\"", open);
+            Assert.Contains("\"mode\":\"prod\"", open);
+            Assert.Contains("\"source\":\"runtime\"", open);
+            Assert.Contains("\"debug\":false", open);
+            Assert.Equal("intelligence", harnessR.Host.ActivePanelName);
         }
 
         [Fact]
@@ -2259,8 +2263,6 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Single(c.Posts);
             Assert.Contains("任务面板暂时不可用", c.Posts[0]);
-            Assert.Empty(c.ActivePanels);
-            Assert.Empty(c.StateCallbacks);
         }
 
         [Theory]
@@ -2276,7 +2278,6 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Single(c.Posts);
             Assert.Contains("战队面板暂时不可用", c.Posts[0]);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -2284,11 +2285,12 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("map", "as2_request", "page-1");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"map\"", c.Posts[0]);
-            Assert.Contains("\"page\":\"page-1\"", c.Posts[0]);
-            Assert.Contains("\"source\":\"as2_request\"", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"map\"", open);
+            Assert.Contains("\"page\":\"page-1\"", open);
+            Assert.Contains("\"source\":\"as2_request\"", open);
         }
 
         [Fact]
@@ -2296,15 +2298,16 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("stage-select", "as2_base_gate", null, "基地门口");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"stage-select\"", c.Posts[0]);
-            Assert.Contains("\"mode\":\"runtime\"", c.Posts[0]);
-            Assert.Contains("\"fixture\":\"mixed\"", c.Posts[0]);
-            Assert.Contains("\"frameLabel\":\"基地门口\"", c.Posts[0]);
-            Assert.Contains("\"returnFrameLabel\":\"基地门口\"", c.Posts[0]);
-            Assert.Contains("\"source\":\"as2_base_gate\"", c.Posts[0]);
-            Assert.Contains("\"debug\":false", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"stage-select\"", open);
+            Assert.Contains("\"mode\":\"runtime\"", open);
+            Assert.Contains("\"fixture\":\"mixed\"", open);
+            Assert.Contains("\"frameLabel\":\"基地门口\"", open);
+            Assert.Contains("\"returnFrameLabel\":\"基地门口\"", open);
+            Assert.Contains("\"source\":\"as2_base_gate\"", open);
+            Assert.Contains("\"debug\":false", open);
         }
 
         [Fact]
@@ -2312,10 +2315,11 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("stage-select", "as2_legacy_stage_gate", null, "黑铁会总部", "基地车库");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"frameLabel\":\"黑铁会总部\"", c.Posts[0]);
-            Assert.Contains("\"returnFrameLabel\":\"基地车库\"", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"frameLabel\":\"黑铁会总部\"", open);
+            Assert.Contains("\"returnFrameLabel\":\"基地车库\"", open);
         }
 
         [Fact]
@@ -2326,12 +2330,13 @@ namespace CF7Launcher.Tests.Guardian
             // 静默丢弃（"[Router] RequestOpenPanel unsupported panel=tasks"），NPC 点击无反应。
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("tasks", "npc_dungeon", null, null, null, null, null, "{\"view\":\"dungeon\",\"taskId\":20052}");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"tasks\"", c.Posts[0]);
-            Assert.Contains("\"view\":\"dungeon\"", c.Posts[0]);
-            Assert.Contains("\"taskId\":20052", c.Posts[0]);
-            Assert.Contains("\"source\":\"npc_dungeon\"", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"tasks\"", open);
+            Assert.Contains("\"view\":\"dungeon\"", open);
+            Assert.Contains("\"taskId\":20052", open);
+            Assert.Contains("\"source\":\"npc_dungeon\"", open);
         }
 
         [Fact]
@@ -2341,12 +2346,13 @@ namespace CF7Launcher.Tests.Guardian
             // 透传 initData {view:"hire",kind,npcId,initialTab}。无 team 分支会静默丢弃（unsupported panel）。
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("team", "npc_hire", null, null, null, null, null, "{\"view\":\"hire\",\"kind\":\"merc\",\"npcId\":\"敌人123\",\"initialTab\":\"mercenary\"}");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"team\"", c.Posts[0]);
-            Assert.Contains("\"view\":\"hire\"", c.Posts[0]);
-            Assert.Contains("\"kind\":\"merc\"", c.Posts[0]);
-            Assert.Contains("\"source\":\"npc_hire\"", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"team\"", open);
+            Assert.Contains("\"view\":\"hire\"", open);
+            Assert.Contains("\"kind\":\"merc\"", open);
+            Assert.Contains("\"source\":\"npc_hire\"", open);
         }
 
         [Fact]
@@ -2354,15 +2360,16 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("workbench", "dormitory", null, null, null, null, null,
                 "{\"profile\":\"warehouse\",\"rightContainer\":\"任意容器\"}");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"workbench\"", c.Posts[0]);
-            Assert.Contains("\"profile\":\"warehouse\"", c.Posts[0]);
-            Assert.Contains("\"view\":\"storage\"", c.Posts[0]);
-            Assert.DoesNotContain("tuningAvailable", c.Posts[0]);
-            Assert.Contains("\"source\":\"dormitory\"", c.Posts[0]);
-            Assert.DoesNotContain("rightContainer", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"workbench\"", open);
+            Assert.Contains("\"profile\":\"warehouse\"", open);
+            Assert.Contains("\"view\":\"storage\"", open);
+            Assert.DoesNotContain("tuningAvailable", open);
+            Assert.Contains("\"source\":\"dormitory\"", open);
+            Assert.DoesNotContain("rightContainer", open);
         }
 
         [Fact]
@@ -2373,7 +2380,6 @@ namespace CF7Launcher.Tests.Guardian
             r.RequestOpenPanel("workbench", "dormitory", null, null, null, null, null,
                 "{\"profile\":\"仓库\"}");
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -2381,14 +2387,15 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("workbench", "nativehud_equipment", null, null, null, null, null,
                 "{\"profile\":\"battlebox\",\"view\":\"tuning\",\"ignored\":true}");
 
-            Assert.Single(c.Posts);
-            Assert.Contains("\"view\":\"tuning\"", c.Posts[0]);
-            Assert.DoesNotContain("tuningAvailable", c.Posts[0]);
-            Assert.Contains("\"source\":\"nativehud_equipment\"", c.Posts[0]);
-            Assert.DoesNotContain("ignored", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"view\":\"tuning\"", open);
+            Assert.DoesNotContain("tuningAvailable", open);
+            Assert.Contains("\"source\":\"nativehud_equipment\"", open);
+            Assert.DoesNotContain("ignored", open);
         }
 
         [Fact]
@@ -2396,13 +2403,14 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("workbench", "agent_control", null, null, null, null, null,
                 "{\"profile\":\"battlebox\",\"view\":\"tuning\"}");
 
-            Assert.Single(c.Posts);
-            Assert.Contains("\"view\":\"tuning\"", c.Posts[0]);
-            Assert.DoesNotContain("tuningAvailable", c.Posts[0]);
-            Assert.Contains("\"source\":\"agent_control\"", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"view\":\"tuning\"", open);
+            Assert.DoesNotContain("tuningAvailable", open);
+            Assert.Contains("\"source\":\"agent_control\"", open);
         }
 
         [Theory]
@@ -2416,6 +2424,7 @@ namespace CF7Launcher.Tests.Guardian
                 MakeRouter(
                     capture,
                     preparationNavigationV1);
+            using var harness = new HostHarness(router);
 
             router.RequestOpenPanel(
                 "workbench",
@@ -2428,9 +2437,7 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"profile\":\"battlebox\",\"view\":\"build\"}");
 
             JObject opened =
-                JObject.Parse(
-                    Assert.Single(
-                        capture.Posts));
+                harness.LastOpenPayload;
             JObject initData =
                 Assert.IsType<JObject>(
                     opened["initData"]);
@@ -2466,6 +2473,7 @@ namespace CF7Launcher.Tests.Guardian
                 MakeRouter(
                     capture,
                     true);
+            using var harness = new HostHarness(router);
 
             router.RequestOpenPanel(
                 "workbench",
@@ -2478,9 +2486,7 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"profile\":\"battlebox\",\"view\":\"tuning\"}");
 
             JObject opened =
-                JObject.Parse(
-                    Assert.Single(
-                        capture.Posts));
+                harness.LastOpenPayload;
             JObject initData =
                 Assert.IsType<JObject>(
                     opened["initData"]);
@@ -2498,6 +2504,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture accepted = new Capture();
             LauncherCommandRouter router = MakeRouter(accepted);
+            using var harness = new HostHarness(router);
             router.RequestOpenPanel(
                 "workbench",
                 "agent_control",
@@ -2507,7 +2514,7 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 "{\"profile\":\"battlebox\",\"view\":\"build\"}");
-            JObject opened = JObject.Parse(Assert.Single(accepted.Posts));
+            JObject opened = harness.LastOpenPayload;
             Assert.Equal("workbench", (string)opened["panel"]);
             Assert.Equal("battlebox", (string)opened["initData"]["profile"]);
             Assert.Equal("build", (string)opened["initData"]["view"]);
@@ -2516,6 +2523,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture nativeHud = new Capture();
             LauncherCommandRouter nativeRouter =
                 MakeRouter(nativeHud);
+            using var harnessNative = new HostHarness(nativeRouter);
             var nativeCommands =
                 new List<string>();
             nativeRouter.SetGameCommandSenderForTests(
@@ -2539,9 +2547,7 @@ namespace CF7Launcher.Tests.Guardian
                     Assert.Single(
                         nativeCommands)));
             JObject nativeOpened =
-                JObject.Parse(
-                    Assert.Single(
-                        nativeHud.Posts));
+                harnessNative.LastOpenPayload;
             Assert.Equal(
                 "workbench",
                 (string)nativeOpened["panel"]);
@@ -2585,11 +2591,12 @@ namespace CF7Launcher.Tests.Guardian
             Capture capture = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             using (var task =
                 new CharacterBuildTask(_ => true))
             {
                 string instance =
-                    OpenFallbackBuild(router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.TryBindPanelInstance(
                         instance));
@@ -2613,11 +2620,9 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Empty(commands);
                 Assert.Equal(
                     instance,
-                    router.ActiveFallbackPanelInstanceId);
+                    harness.Host.ActivePanelInstanceId);
                 Assert.True(
                     task.IsBoundTo(instance));
-                Assert.Empty(
-                    capture.VisualRetires);
             }
         }
 
@@ -2627,6 +2632,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture capture = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             router.RequestOpenPanel(
                 "workbench",
                 "nativehud",
@@ -2637,7 +2643,7 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
             string storageInstance =
-                router.ActiveFallbackPanelInstanceId;
+                harness.Host.ActivePanelInstanceId;
             using (var task =
                 new CharacterBuildTask(_ => true))
             {
@@ -2671,7 +2677,7 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Empty(capture.Posts);
                 Assert.Equal(
                     storageInstance,
-                    router.ActiveFallbackPanelInstanceId);
+                    harness.Host.ActivePanelInstanceId);
                 Assert.True(
                     task.IsBoundTo(
                         "panel.workbench.build.foreign"));
@@ -2684,11 +2690,12 @@ namespace CF7Launcher.Tests.Guardian
             Capture capture = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             using (var task =
                 new CharacterBuildTask(_ => true))
             {
                 string instance =
-                    OpenFallbackBuild(router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.TryBindPanelInstance(
                         instance));
@@ -2728,9 +2735,7 @@ namespace CF7Launcher.Tests.Guardian
                     task.IsBoundTo(instance));
                 Assert.Equal(
                     instance,
-                    router.ActiveFallbackPanelInstanceId);
-                Assert.Empty(
-                    capture.VisualRetires);
+                    harness.Host.ActivePanelInstanceId);
             }
         }
 
@@ -2740,6 +2745,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture capture = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             bool taskSend = true;
             using (var task =
                 new CharacterBuildTask(
@@ -2749,7 +2755,7 @@ namespace CF7Launcher.Tests.Guardian
                     }))
             {
                 string instance =
-                    OpenFallbackBuild(router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.TryBindPanelInstance(
                         instance));
@@ -2797,9 +2803,7 @@ namespace CF7Launcher.Tests.Guardian
                     task.IsBoundTo(instance));
                 Assert.Equal(
                     instance,
-                    router.ActiveFallbackPanelInstanceId);
-                Assert.Empty(
-                    capture.VisualRetires);
+                    harness.Host.ActivePanelInstanceId);
             }
         }
 
@@ -2808,6 +2812,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture capture = new Capture();
             LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash = new List<string>();
             using (var task = new CharacterBuildTask(delegate(string payload)
             {
@@ -2825,7 +2830,7 @@ namespace CF7Launcher.Tests.Guardian
                     null,
                     null,
                     "{\"profile\":\"battlebox\",\"view\":\"build\"}");
-                string instance = router.ActiveFallbackPanelInstanceId;
+                string instance = harness.Host.ActivePanelInstanceId;
                 Assert.True(task.BindPanelInstance(instance));
                 Assert.True(task.TryBeginHostAccepted(
                     instance,
@@ -2854,8 +2859,8 @@ namespace CF7Launcher.Tests.Guardian
                     snapshotError);
 
                 router.RequestOpenPanel("map", "switch_test", null);
-                Assert.Single(capture.Posts);
-                Assert.Equal(instance, router.ActiveFallbackPanelInstanceId);
+                Assert.Empty(capture.Posts);
+                Assert.Equal(instance, harness.Host.ActivePanelInstanceId);
 
                 Assert.True(task.TryBeginHostAccepted(
                     instance,
@@ -2884,16 +2889,10 @@ namespace CF7Launcher.Tests.Guardian
                     proofError);
 
                 router.RequestOpenPanel("map", "switch_test", null);
-                Assert.Equal(2, capture.Posts.Count);
-                Assert.Contains("\"cmd\":\"close\"", capture.Posts[1]);
-                Assert.Contains("\"panel\":\"workbench\"", capture.Posts[1]);
-                Assert.DoesNotContain("\"panel\":\"map\"", capture.Posts[1]);
+                Assert.Empty(capture.Posts);
                 Assert.True(task.HasBoundPanel);
                 Assert.True(task.RequiresDetachRecovery);
-                Assert.Null(router.ActiveFallbackPanelName);
-                Assert.Equal(
-                    new[] { "character_build_switch" },
-                    capture.VisualRetires);
+                Assert.Null(harness.Host.ActivePanelName);
                 Assert.Equal(3, flash.Count);
                 JObject recovery = JObject.Parse(flash[2]);
                 Assert.Equal(
@@ -2939,14 +2938,11 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.False(task.RequiresDetachRecovery);
                 // External panel requests are edge-triggered UI actions. The handoff request
                 // closes authority A and is intentionally rejected; it is not replayed later.
-                Assert.Equal(2, capture.Posts.Count);
+                Assert.Empty(capture.Posts);
 
                 router.RequestOpenPanel(
                     "map", "switch_test", null);
-                Assert.Equal(3, capture.Posts.Count);
-                Assert.Contains(
-                    "\"panel\":\"map\"",
-                    capture.Posts[2]);
+                Assert.Equal("map", harness.Host.ActivePanelName);
             }
         }
 
@@ -2955,6 +2951,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture capture = new Capture();
             LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
             using (var task = new CharacterBuildTask(_ => true))
             {
                 router.SetCharacterBuildTask(task);
@@ -2968,7 +2965,7 @@ namespace CF7Launcher.Tests.Guardian
                     null,
                     "{\"profile\":\"battlebox\",\"view\":\"build\"}");
                 string instance =
-                    router.ActiveFallbackPanelInstanceId;
+                    harness.Host.ActivePanelInstanceId;
                 Assert.True(task.BindPanelInstance(instance));
                 Assert.True(task.BeginWebViewDetach(0));
                 Assert.True(task.RequiresDetachRecovery);
@@ -2976,10 +2973,10 @@ namespace CF7Launcher.Tests.Guardian
                 router.RequestOpenPanel(
                     "map", "switch_test", null);
 
-                Assert.Single(capture.Posts);
+                Assert.Empty(capture.Posts);
                 Assert.Equal(
                     instance,
-                    router.ActiveFallbackPanelInstanceId);
+                    harness.Host.ActivePanelInstanceId);
             }
         }
 
@@ -2995,6 +2992,7 @@ namespace CF7Launcher.Tests.Guardian
                 MakeRouter(
                     capture,
                     preparationNavigationV1);
+            using var harness = new HostHarness(router);
             var flash = new List<string>();
             var gameCommands = new List<string>();
             var skillFlash = new List<JObject>();
@@ -3015,6 +3013,7 @@ namespace CF7Launcher.Tests.Guardian
             {
                 router.SetCharacterBuildTask(task);
                 router.SetSkillTask(skillTask);
+                harness.WireSkillsEnricher(skillTask);
                 router.SetGameCommandSenderForTests(
                     delegate(string payload)
                     {
@@ -3032,7 +3031,7 @@ namespace CF7Launcher.Tests.Guardian
                     }
                 });
 
-                string instance = OpenFallbackBuild(router);
+                string instance = OpenHostBuild(router, harness);
                 Assert.True(task.BindPanelInstance(instance));
                 PrimeCharacterBuild(task, instance, 9);
                 FinalizeCharacterBuild(task, instance, 9);
@@ -3056,7 +3055,7 @@ namespace CF7Launcher.Tests.Guardian
 
                 Assert.True(
                     task.BeginNormalCloseBarrier(instance));
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.True(
                     task.ContinueDetachRecoveryAfterVisualRetired(0));
                 Assert.Empty(gameCommands);
@@ -3085,7 +3084,7 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.False(
                     router
                         .TryCompleteCharacterBuildSkillsNavigation());
-                Assert.Null(router.ActiveFallbackPanelName);
+                Assert.Null(harness.Host.ActivePanelName);
                 Assert.Single(gameCommands);
                 Assert.Empty(capture.Posts);
 
@@ -3096,7 +3095,7 @@ namespace CF7Launcher.Tests.Guardian
                     router,
                     "skill.open.foreign");
                 Assert.Null(
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.Empty(capture.Posts);
 
                 RequestNativeSkillManage(
@@ -3109,9 +3108,8 @@ namespace CF7Launcher.Tests.Guardian
                         .PendingCharacterBuildSkillsNavigationInstance);
                 Assert.Equal(
                     "skills",
-                    router.ActiveFallbackPanelName);
-                JObject open = JObject.Parse(
-                    Assert.Single(capture.Posts));
+                    harness.Host.ActivePanelName);
+                JObject open = harness.LastOpenPayload;
                 Assert.Equal(
                     "skills",
                     open.Value<string>("panel"));
@@ -3120,7 +3118,7 @@ namespace CF7Launcher.Tests.Guardian
                         "canReturnCharacterBuild"]);
 
                 string skillsInstance =
-                    router.ActiveFallbackPanelInstanceId;
+                    harness.Host.ActivePanelInstanceId;
                 Assert.True(
                     router.TryArmSkillsCharacterBuildNavigation(
                         skillsInstance));
@@ -3132,7 +3130,7 @@ namespace CF7Launcher.Tests.Guardian
                         skillsInstance));
                 Assert.False(
                     router.TryCompleteSkillsCharacterBuildNavigation());
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.False(
                     router.TryCompleteSkillsCharacterBuildNavigation());
 
@@ -3187,9 +3185,7 @@ namespace CF7Launcher.Tests.Guardian
                     "{\"profile\":\"battlebox\",\"view\":\"build\"}",
                     buildRequestId);
                 JObject returnedBuild =
-                    JObject.Parse(
-                        Assert.Single(
-                            capture.Posts));
+                    harness.LastOpenPayload;
                 Assert.Equal(
                     "skills_return",
                     returnedBuild["initData"]
@@ -3295,6 +3291,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var gameCommands =
                 new List<string>();
             using (var task =
@@ -3311,8 +3308,7 @@ namespace CF7Launcher.Tests.Guardian
                         return true;
                     });
                 string instance =
-                    OpenFallbackBuild(
-                        router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(
                         instance));
@@ -3346,10 +3342,10 @@ namespace CF7Launcher.Tests.Guardian
                         instance));
                 Assert.Equal(
                     "workbench",
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.Equal(
                     instance,
-                    router.ActiveFallbackPanelInstanceId);
+                    harness.Host.ActivePanelInstanceId);
                 Assert.Empty(
                     gameCommands);
                 Assert.Empty(
@@ -3364,6 +3360,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var gameCommands =
                 new System.Collections.Concurrent
                     .ConcurrentQueue<JObject>();
@@ -3383,8 +3380,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.CharacterBuildPreparationNavigationTimeoutMs =
                     60;
                 string instance =
-                    OpenFallbackBuild(
-                        router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(
                         instance));
@@ -3427,10 +3423,10 @@ namespace CF7Launcher.Tests.Guardian
                     task.RequiresDetachRecovery);
                 Assert.Equal(
                     "workbench",
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.Equal(
                     instance,
-                    router.ActiveFallbackPanelInstanceId);
+                    harness.Host.ActivePanelInstanceId);
                 Assert.Empty(
                     gameCommands);
                 JObject toast =
@@ -3453,6 +3449,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash =
                 new List<string>();
             var gameCommands =
@@ -3492,8 +3489,7 @@ namespace CF7Launcher.Tests.Guardian
                         }
                     });
                 string instance =
-                    OpenFallbackBuild(
-                        router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(
                         instance));
@@ -3518,7 +3514,7 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.True(
                     task.BeginNormalCloseBarrier(
                         instance));
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.True(
                     task.ContinueDetachRecoveryAfterVisualRetired(
                         0));
@@ -3584,6 +3580,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash =
                 new List<string>();
             var gameCommands =
@@ -3620,8 +3617,7 @@ namespace CF7Launcher.Tests.Guardian
                             .TryCompleteCharacterBuildPreparationNavigation();
                     });
                 string instance =
-                    OpenFallbackBuild(
-                        router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(
                         instance));
@@ -3646,7 +3642,7 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.True(
                     task.BeginNormalCloseBarrier(
                         instance));
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.True(
                     task.ContinueDetachRecoveryAfterVisualRetired(
                         0));
@@ -3707,6 +3703,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash =
                 new List<string>();
             var commands =
@@ -3732,6 +3729,8 @@ namespace CF7Launcher.Tests.Guardian
                 string openRequestId =
                     BeginCharacterBuildMaterialHandoff(
                         router,
+                        harness.Host,
+                        null,
                         task,
                         capture,
                         flash,
@@ -3748,18 +3747,14 @@ namespace CF7Launcher.Tests.Guardian
                     router.PendingMaterialOpenRequestId);
                 Assert.Equal(
                     "crafting",
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.DoesNotContain(
                     commands,
                     command =>
                         command.Value<string>("action")
                             == "openInventoryWorkbench");
                 JObject opened =
-                    JObject.Parse(
-                        Assert.Single(
-                            capture.Posts,
-                            value => value.Contains(
-                                "\"cmd\":\"open\"")));
+                    harness.LastOpenPayload;
                 Assert.Equal(
                     "materials",
                     opened["initData"]
@@ -3779,7 +3774,7 @@ namespace CF7Launcher.Tests.Guardian
                     router
                         .PendingPreparationChildReturnPanelName);
                 Assert.Equal(
-                    router.ActiveFallbackPanelInstanceId,
+                    harness.Host.ActivePanelInstanceId,
                     router
                         .PendingPreparationChildReturnInstance);
             }
@@ -3816,6 +3811,8 @@ namespace CF7Launcher.Tests.Guardian
                         fire();
                     }))
             {
+                router.SetPanelHost(
+                    host);
                 router.SetCharacterBuildTask(
                     task);
                 router.SetGameCommandSenderForTests(
@@ -3828,6 +3825,8 @@ namespace CF7Launcher.Tests.Guardian
                 string openRequestId =
                     BeginCharacterBuildMaterialHandoff(
                         router,
+                        host,
+                        pumps,
                         task,
                         capture,
                         flash,
@@ -3843,8 +3842,6 @@ namespace CF7Launcher.Tests.Guardian
                                 initDataJson));
                         return initDataJson;
                     });
-                router.SetPanelHost(
-                    host);
                 host.SetOpenGate(
                     delegate
                     {
@@ -3930,6 +3927,7 @@ namespace CF7Launcher.Tests.Guardian
                 MakeRouter(
                     capture,
                     preparationNavigationV1: true);
+            using var harness = new HostHarness(router);
             var flash =
                 new List<string>();
             var commands =
@@ -3955,6 +3953,8 @@ namespace CF7Launcher.Tests.Guardian
                 string materialRequestId =
                     BeginCharacterBuildMaterialHandoff(
                         router,
+                        harness.Host,
+                        null,
                         task,
                         capture,
                         flash,
@@ -3967,7 +3967,7 @@ namespace CF7Launcher.Tests.Guardian
                     materialRequestId);
 
                 string childInstance =
-                    router.ActiveFallbackPanelInstanceId;
+                    harness.Host.ActivePanelInstanceId;
                 Assert.False(
                     string.IsNullOrEmpty(
                         childInstance));
@@ -3993,7 +3993,7 @@ namespace CF7Launcher.Tests.Guardian
                             == "openInventoryWorkbench");
 
                 capture.Posts.Clear();
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.True(
                     router
                         .TryCompletePreparationChildCharacterBuildNavigation(
@@ -4029,9 +4029,7 @@ namespace CF7Launcher.Tests.Guardian
                     buildRequestId);
 
                 JObject returnedBuild =
-                    JObject.Parse(
-                        Assert.Single(
-                            capture.Posts));
+                    harness.LastOpenPayload;
                 Assert.Equal(
                     "workbench",
                     returnedBuild.Value<string>(
@@ -4063,6 +4061,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture capture = new Capture();
             LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash = new List<string>();
             var commands = new List<JObject>();
             using (var task = new CharacterBuildTask(
@@ -4081,6 +4080,8 @@ namespace CF7Launcher.Tests.Guardian
                     });
                 string requestId = BeginCharacterBuildMaterialHandoff(
                     router,
+                    harness.Host,
+                    null,
                     task,
                     capture,
                     flash,
@@ -4091,7 +4092,7 @@ namespace CF7Launcher.Tests.Guardian
                     "nativehud_materials",
                     "{\"view\":\"materials\"}",
                     requestId);
-                string sourceCrafting = router.ActiveFallbackPanelInstanceId;
+                string sourceCrafting = harness.Host.ActivePanelInstanceId;
                 const string npcInstance = "panel.npcshop.material";
                 const string returnCrafting = "panel.crafting.material.return";
 
@@ -4179,6 +4180,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash =
                 new List<string>();
             var commands =
@@ -4204,6 +4206,8 @@ namespace CF7Launcher.Tests.Guardian
                 string materialRequestId =
                     BeginCharacterBuildMaterialHandoff(
                         router,
+                        harness.Host,
+                        null,
                         task,
                         capture,
                         flash,
@@ -4215,7 +4219,7 @@ namespace CF7Launcher.Tests.Guardian
                     "{\"view\":\"materials\"}",
                     materialRequestId);
                 string childInstance =
-                    router.ActiveFallbackPanelInstanceId;
+                    harness.Host.ActivePanelInstanceId;
                 Assert.False(
                     string.IsNullOrEmpty(
                         childInstance));
@@ -4276,6 +4280,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter materialRouter =
                 MakeRouter(materials);
+            using var harnessMaterial = new HostHarness(materialRouter);
             RequestNativeMaterials(
                 materialRouter,
                 "crafting",
@@ -4283,9 +4288,7 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"view\":\"materials\"}",
                 null);
             JObject materialOpen =
-                JObject.Parse(
-                    Assert.Single(
-                        materials.Posts));
+                harnessMaterial.LastOpenPayload;
             string materialInstance =
                 materialOpen.Value<string>(
                     "panelInstanceId");
@@ -4305,12 +4308,11 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter intelligenceRouter =
                 MakeRouter(intelligence);
+            using var harnessIntelligence = new HostHarness(intelligenceRouter);
             intelligenceRouter.Dispatch(
                 "INTELLIGENCE");
             JObject intelligenceOpen =
-                JObject.Parse(
-                    Assert.Single(
-                        intelligence.Posts));
+                harnessIntelligence.LastOpenPayload;
             string intelligenceInstance =
                 intelligenceOpen.Value<string>(
                     "panelInstanceId");
@@ -4334,6 +4336,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash =
                 new List<string>();
             var commands =
@@ -4359,6 +4362,8 @@ namespace CF7Launcher.Tests.Guardian
                 string openRequestId =
                     BeginCharacterBuildMaterialHandoff(
                         router,
+                        harness.Host,
+                        null,
                         task,
                         capture,
                         flash,
@@ -4386,7 +4391,7 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Null(
                     router.PendingMaterialOpenRequestId);
                 Assert.Null(
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.Single(
                     commands,
                     command =>
@@ -4415,6 +4420,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             router.CharacterBuildPreparationNavigationTimeoutMs =
                 400;
             router.MaterialPanelOpenTimeoutMs =
@@ -4445,6 +4451,8 @@ namespace CF7Launcher.Tests.Guardian
                 string openRequestId =
                     BeginCharacterBuildMaterialHandoff(
                         router,
+                        harness.Host,
+                        null,
                         task,
                         capture,
                         flash,
@@ -4471,7 +4479,7 @@ namespace CF7Launcher.Tests.Guardian
                     450);
 
                 Assert.Null(
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.Single(
                     commands,
                     command =>
@@ -5500,6 +5508,7 @@ namespace CF7Launcher.Tests.Guardian
                 new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var gameCommands =
                 new System.Collections.Concurrent
                     .ConcurrentQueue<JObject>();
@@ -5519,8 +5528,7 @@ namespace CF7Launcher.Tests.Guardian
                 router.CharacterBuildPreparationNavigationTimeoutMs =
                     60;
                 string instance =
-                    OpenFallbackBuild(
-                        router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(
                         instance));
@@ -5558,7 +5566,7 @@ namespace CF7Launcher.Tests.Guardian
                         instance));
                 Assert.Equal(
                     "workbench",
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.Empty(
                     gameCommands);
                 Assert.Empty(
@@ -5571,10 +5579,11 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture capture = new Capture();
             LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
             using (var task = new CharacterBuildTask(_ => true))
             {
                 router.SetCharacterBuildTask(task);
-                string instance = OpenFallbackBuild(router);
+                string instance = OpenHostBuild(router, harness);
                 Assert.True(task.BindPanelInstance(instance));
                 PrimeCharacterBuild(task, instance, 9);
                 FinalizeCharacterBuild(task, instance, 9);
@@ -5848,6 +5857,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture capture = new Capture();
             LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash = new List<string>();
             var gameCommands = new List<string>();
             using (var task = new CharacterBuildTask(
@@ -5872,7 +5882,7 @@ namespace CF7Launcher.Tests.Guardian
                             .TryCompleteCharacterBuildSkillsNavigation();
                 });
 
-                string instance = OpenFallbackBuild(router);
+                string instance = OpenHostBuild(router, harness);
                 Assert.True(task.BindPanelInstance(instance));
                 PrimeCharacterBuild(task, instance, 9);
                 FinalizeCharacterBuild(task, instance, 9);
@@ -5898,7 +5908,7 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Empty(gameCommands);
                 Assert.Equal(
                     "workbench",
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
             }
         }
 
@@ -5907,6 +5917,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture capture = new Capture();
             LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash = new List<string>();
             var gameCommands = new List<string>();
             using (var task = new CharacterBuildTask(
@@ -5931,7 +5942,7 @@ namespace CF7Launcher.Tests.Guardian
                             .TryCompleteCharacterBuildSkillsNavigation();
                 });
 
-                string instance = OpenFallbackBuild(router);
+                string instance = OpenHostBuild(router, harness);
                 Assert.True(task.BindPanelInstance(instance));
                 PrimeCharacterBuild(task, instance, 9);
                 FinalizeCharacterBuild(task, instance, 9);
@@ -5942,7 +5953,7 @@ namespace CF7Launcher.Tests.Guardian
                         instance));
                 Assert.True(
                     task.BeginNormalCloseBarrier(instance));
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.True(
                     task.ContinueDetachRecoveryAfterVisualRetired(0));
                 router.SetBeforeCharacterBuildSkillsNavigationConsumeForTests(
@@ -5966,7 +5977,7 @@ namespace CF7Launcher.Tests.Guardian
                         .PendingCharacterBuildSkillsNavigationInstance);
                 Assert.Empty(gameCommands);
                 Assert.Null(
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
             }
         }
 
@@ -5976,6 +5987,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture capture = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash = new List<string>();
             var gameCommands = new List<JObject>();
             var pumps = new Queue<Action>();
@@ -6009,7 +6021,7 @@ namespace CF7Launcher.Tests.Guardian
                 });
 
                 string instance =
-                    OpenFallbackBuild(router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(instance));
                 PrimeCharacterBuild(task, instance, 9);
@@ -6021,7 +6033,7 @@ namespace CF7Launcher.Tests.Guardian
                         instance));
                 Assert.True(
                     task.BeginNormalCloseBarrier(instance));
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.True(
                     task.ContinueDetachRecoveryAfterVisualRetired(
                         0));
@@ -6189,6 +6201,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture capture = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash = new List<string>();
             var gameCommands =
                 new System.Collections.Concurrent
@@ -6217,7 +6230,7 @@ namespace CF7Launcher.Tests.Guardian
                     30;
 
                 string instance =
-                    OpenFallbackBuild(router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(instance));
                 PrimeCharacterBuild(task, instance, 9);
@@ -6232,7 +6245,7 @@ namespace CF7Launcher.Tests.Guardian
                         instance));
                 Assert.True(
                     task.BeginNormalCloseBarrier(instance));
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.True(
                     task.ContinueDetachRecoveryAfterVisualRetired(
                         0));
@@ -6286,9 +6299,7 @@ namespace CF7Launcher.Tests.Guardian
                     latest.Value<string>(
                         "openRequestId"));
                 JObject opened =
-                    JObject.Parse(
-                        Assert.Single(
-                            capture.Posts));
+                    harness.LastOpenPayload;
                 Assert.Equal(
                     "skills",
                     opened.Value<string>("panel"));
@@ -6301,6 +6312,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture capture = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(capture);
+            using var harness = new HostHarness(router);
             var flash = new List<string>();
             var gameCommands = new List<JObject>();
             using (var task = new CharacterBuildTask(
@@ -6326,7 +6338,7 @@ namespace CF7Launcher.Tests.Guardian
                 });
 
                 string instance =
-                    OpenFallbackBuild(router);
+                    OpenHostBuild(router, harness);
                 Assert.True(
                     task.BindPanelInstance(instance));
                 PrimeCharacterBuild(task, instance, 9);
@@ -6336,7 +6348,7 @@ namespace CF7Launcher.Tests.Guardian
                         instance));
                 Assert.True(
                     task.BeginNormalCloseBarrier(instance));
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 Assert.True(
                     task.ContinueDetachRecoveryAfterVisualRetired(
                         0));
@@ -6491,7 +6503,6 @@ namespace CF7Launcher.Tests.Guardian
             r.RequestOpenPanel("workbench", source, null, null, null, null, null, extras);
 
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -6516,8 +6527,6 @@ namespace CF7Launcher.Tests.Guardian
                 "\"capacity\":8,\"columns\":4}");
 
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
-            Assert.Empty(c.StateCallbacks);
         }
 
         [Fact]
@@ -6525,14 +6534,15 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.RequestOpenPanel("skills", "world_skill_trainer", null, null, null, null, null,
                 "{\"view\":\"trainer\",\"trainerSession\":\"trainer.session.7\"}");
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"skills\"", c.Posts[0]);
-            Assert.Contains("\"source\":\"world_skill_trainer\"", c.Posts[0]);
-            Assert.Contains("\"view\":\"trainer\"", c.Posts[0]);
-            Assert.Contains("\"trainerSession\":\"trainer.session.7\"", c.Posts[0]);
-            Assert.DoesNotContain("\"openRequestId\"", c.Posts[0]);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"skills\"", open);
+            Assert.Contains("\"source\":\"world_skill_trainer\"", open);
+            Assert.Contains("\"view\":\"trainer\"", open);
+            Assert.Contains("\"trainerSession\":\"trainer.session.7\"", open);
+            Assert.DoesNotContain("\"openRequestId\"", open);
         }
 
         [Fact]
@@ -6583,7 +6593,6 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("稍后重试", c.Posts[0]);
             Assert.DoesNotContain("旧物品界面", c.Posts[0]);
             Assert.DoesNotContain("\"cmd\":\"open\"", c.Posts[0]);
-            Assert.Empty(c.ActivePanels);
         }
 
         [Fact]
@@ -6592,6 +6601,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture notch = new Capture();
             LauncherCommandRouter notchRouter =
                 MakeRouter(notch);
+            using var harnessNotchRouter = new HostHarness(notchRouter);
             using (var notchTask = new SkillTask(
                 () => true,
                 _ => true))
@@ -6599,8 +6609,7 @@ namespace CF7Launcher.Tests.Guardian
                 notchRouter.SetSkillTask(
                     notchTask);
                 string notchInstance =
-                    OpenNativeSkillManage(
-                        notchRouter);
+                    OpenNativeSkillManage(notchRouter, harnessNotchRouter);
                 Assert.False(
                     notchRouter
                         .TryArmSkillsCharacterBuildNavigation(
@@ -6610,6 +6619,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture trainer = new Capture();
             LauncherCommandRouter trainerRouter =
                 MakeRouter(trainer);
+            using (var harnessTrainerRouter = new HostHarness(trainerRouter))
             using (var trainerTask = new SkillTask(
                 () => true,
                 _ => true))
@@ -6620,8 +6630,8 @@ namespace CF7Launcher.Tests.Guardian
                     trainerRouter,
                     "trainer.return.absent");
                 string trainerInstance =
-                    trainerRouter
-                        .ActiveFallbackPanelInstanceId;
+                    harnessTrainerRouter
+                        .Host.ActivePanelInstanceId;
                 Assert.False(
                     string.IsNullOrEmpty(
                         trainerInstance));
@@ -6637,6 +6647,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var commands = new List<string>();
             r.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
             r.SkillOpenTimeoutMs = 20;
@@ -6646,7 +6657,6 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Single(commands);
             Assert.Contains("skillPanelOpen", commands[0]);
             Assert.Empty(c.Posts);
-            Assert.Empty(c.ActivePanels);
             Assert.True(System.Threading.SpinWait.SpinUntil(() => c.Posts.Count == 1, 2000));
             Assert.Contains("技能服务未就绪", c.Posts[0]);
             Assert.DoesNotContain("\"cmd\":\"open\"", c.Posts[0]);
@@ -6658,7 +6668,7 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Single(c.Posts);
             Assert.Null(
-                r.ActiveFallbackPanelName);
+                harnessR.Host.ActivePanelName);
         }
 
         [Fact]
@@ -6666,6 +6676,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             string openRequestId =
                 BeginNativeSkillOpen(r);
 
@@ -6675,19 +6686,16 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Empty(c.Posts);
             Assert.Null(
-                r.ActiveFallbackPanelName);
+                harnessR.Host.ActivePanelName);
 
             RequestNativeSkillManage(
                 r,
                 openRequestId);
 
-            Assert.Single(c.Posts);
-            Assert.Contains(
-                "\"panel\":\"skills\"",
-                c.Posts[0]);
+            Assert.Empty(c.Posts);
             Assert.Equal(
                 "skills",
-                r.ActiveFallbackPanelName);
+                harnessR.Host.ActivePanelName);
         }
 
         [Fact]
@@ -6695,6 +6703,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             string command =
                 null;
             r.SetGameCommandSenderForTests(
@@ -6713,9 +6722,8 @@ namespace CF7Launcher.Tests.Guardian
                 ReadSkillOpenRequestId(command));
             System.Threading.Thread.Sleep(100);
 
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"skills\"", c.Posts[0]);
-            Assert.DoesNotContain("技能服务未就绪", c.Posts[0]);
+            Assert.Equal("skills", harnessR.Host.ActivePanelName);
+            Assert.Empty(c.Posts);
         }
 
         [Fact]
@@ -6723,6 +6731,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var sent = new List<JObject>();
             using (var task = new SkillTask(
                 () => true,
@@ -6733,14 +6742,15 @@ namespace CF7Launcher.Tests.Guardian
                 }))
             {
                 r.SetSkillTask(task);
+                harnessR.WireSkillsEnricher(task);
                 RequestNativeSkillManage(
                     r,
                     BeginNativeSkillOpen(r));
                 string manageInstance =
-                    r.ActiveFallbackPanelInstanceId;
+                    harnessR.Host.ActivePanelInstanceId;
                 Assert.False(
                     string.IsNullOrEmpty(manageInstance));
-                Assert.Single(c.Posts);
+                Assert.Empty(c.Posts);
                 JObject initialCleanup =
                     Assert.Single(sent);
                 Assert.Null(
@@ -6757,10 +6767,10 @@ namespace CF7Launcher.Tests.Guardian
                     r,
                     "trainer.late.after.manage");
 
-                Assert.Single(c.Posts);
+                Assert.Empty(c.Posts);
                 Assert.Equal(
                     manageInstance,
-                    r.ActiveFallbackPanelInstanceId);
+                    harnessR.Host.ActivePanelInstanceId);
                 JObject cleanup =
                     Assert.Single(sent);
                 Assert.Equal(
@@ -6778,6 +6788,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             string openRequestId =
                 BeginNativeSkillOpen(r);
 
@@ -6787,17 +6798,17 @@ namespace CF7Launcher.Tests.Guardian
                 null);
             Assert.Equal(
                 "map",
-                r.ActiveFallbackPanelName);
-            Assert.Single(c.Posts);
+                harnessR.Host.ActivePanelName);
+            Assert.Empty(c.Posts);
 
             RequestNativeSkillManage(
                 r,
                 openRequestId);
 
-            Assert.Single(c.Posts);
+            Assert.Empty(c.Posts);
             Assert.Equal(
                 "map",
-                r.ActiveFallbackPanelName);
+                harnessR.Host.ActivePanelName);
         }
 
         [Fact]
@@ -6866,6 +6877,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             string openRequestId =
                 BeginNativeSkillOpen(r);
 
@@ -6878,7 +6890,7 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Empty(c.Posts);
             Assert.Null(
-                r.ActiveFallbackPanelName);
+                harnessR.Host.ActivePanelName);
         }
 
         [Fact]
@@ -6886,6 +6898,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.SkillOpenTimeoutMs = 20;
             r.SetGameCommandSenderForTests(value =>
             {
@@ -6902,9 +6915,8 @@ namespace CF7Launcher.Tests.Guardian
             r.Dispatch("SKILLS");
             System.Threading.Thread.Sleep(80);
 
-            Assert.Single(c.Posts);
-            Assert.Contains("\"panel\":\"skills\"", c.Posts[0]);
-            Assert.DoesNotContain("技能服务未就绪", c.Posts[0]);
+            Assert.Equal("skills", harnessR.Host.ActivePanelName);
+            Assert.Empty(c.Posts);
         }
 
         [Fact]
@@ -6912,6 +6924,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             r.SkillOpenTimeoutMs = 40;
             r.SetGameCommandSenderForTests(
                 delegate(string value)
@@ -6933,15 +6946,11 @@ namespace CF7Launcher.Tests.Guardian
             r.Dispatch("SKILLS");
             System.Threading.Thread.Sleep(100);
 
-            JObject opened =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
+            JObject opened = harnessR.LastOpenPayload;
             Assert.Equal(
                 "skills",
                 opened.Value<string>("panel"));
-            Assert.DoesNotContain(
-                "toast",
-                c.Posts[0]);
+            Assert.Empty(c.Posts);
         }
 
         [Theory]
@@ -6962,14 +6971,16 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             RequestWorldSkillTrainer(
                 r,
                 "trainer.a");
+            string firstInstance = harnessR.Host.ActivePanelInstanceId;
+            var first = harnessR.LastOpenPayload;
             RequestWorldSkillTrainer(
                 r,
                 "trainer.b");
-            Assert.Single(c.Posts);
-            var first = Newtonsoft.Json.Linq.JObject.Parse(c.Posts[0]);
+            Assert.Equal(firstInstance, harnessR.Host.ActivePanelInstanceId);
             Assert.Equal("trainer.a", (string)first["initData"]["trainerSession"]);
         }
 
@@ -6978,19 +6989,20 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var sent = new List<JObject>();
             using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
             {
                 r.SetSkillTask(task);
+                harnessR.WireSkillsEnricher(task);
                 RequestWorldSkillTrainer(
                     r,
                     "trainer.switch");
-                string trainerInstance = r.ActiveFallbackPanelInstanceId;
+                string trainerInstance = harnessR.Host.ActivePanelInstanceId;
                 task.BindPanelInstance(trainerInstance);
 
                 Assert.True(r.RebindSkillsToManage(trainerInstance, "闪现"));
-                Assert.Equal(2, c.Posts.Count);
-                JObject manage = JObject.Parse(c.Posts[1]);
+                JObject manage = harnessR.LastOpenPayload;
                 Assert.Equal("manage", (string)manage["initData"]["view"]);
                 Assert.Equal("闪现", (string)manage["initData"]["focusSkillKey"]);
                 Assert.True((bool)manage["initData"]["canReturnTrainer"]);
@@ -6998,13 +7010,12 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.NotEqual(trainerInstance, (string)manage["panelInstanceId"]);
                 Assert.Empty(sent); // 返回凭据只暂存在 Host；切换本身不提前清理。
                 Assert.False(r.RebindSkillsToManage(trainerInstance, "闪现"));
-                Assert.Equal(2, c.Posts.Count);
 
                 string manageInstance = (string)manage["panelInstanceId"];
+                Assert.Equal(manageInstance, harnessR.Host.ActivePanelInstanceId);
                 task.BindPanelInstance(manageInstance);
                 Assert.True(r.RebindSkillsToTrainer(manageInstance, "闪现"));
-                Assert.Equal(3, c.Posts.Count);
-                JObject trainer = JObject.Parse(c.Posts[2]);
+                JObject trainer = harnessR.LastOpenPayload;
                 Assert.Equal("trainer", (string)trainer["initData"]["view"]);
                 Assert.Equal("trainer.switch", (string)trainer["initData"]["trainerSession"]);
                 Assert.Equal("闪现", (string)trainer["initData"]["focusSkillKey"]);
@@ -7017,16 +7028,18 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var sent = new List<JObject>();
             var web = new List<JObject>();
             using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
             {
                 task.SetPostToWeb(value => web.Add(JObject.Parse(value)));
                 r.SetSkillTask(task);
-                task.SetCoordinatorSettled(r.FlushDeferredFallbackSkillRebind);
-                OpenNativeSkillManage(r);
-                Assert.Single(c.Posts);
-                string oldInstance = (string)JObject.Parse(c.Posts[0])["panelInstanceId"];
+                harnessR.WireSkillsEnricher(task);
+                task.SetCoordinatorSettled(delegate { harnessR.Host.FlushDeferredRebind("skills"); });
+                OpenNativeSkillManage(r, harnessR);
+                Assert.Empty(c.Posts);
+                string oldInstance = harnessR.Host.ActivePanelInstanceId;
                 task.BindPanelInstance(oldInstance);
                 task.HandleFlashResponse(SkillCleanupAck((int)sent[0]["callId"], 12), null);
 
@@ -7037,8 +7050,8 @@ namespace CF7Launcher.Tests.Guardian
                 RequestWorldSkillTrainer(
                     r,
                     "trainer.new");
-                Assert.Single(c.Posts);
-                Assert.Equal(oldInstance, r.ActiveFallbackPanelInstanceId);
+                Assert.Empty(c.Posts);
+                Assert.Equal(oldInstance, harnessR.Host.ActivePanelInstanceId);
 
                 task.HandleFlashResponse(SkillError(writeFid, "future_error", 12), null);
                 Assert.Equal("needs_reconcile", task.WriteState);
@@ -7052,7 +7065,7 @@ namespace CF7Launcher.Tests.Guardian
                 snapshot["task"] = "skill_response";
                 snapshot["callId"] = reconcileFid;
                 task.HandleFlashResponse(snapshot, null);
-                Assert.Single(c.Posts);
+                Assert.Empty(c.Posts);
                 Assert.Equal(
                     "skillPanelClose",
                     sent[sent.Count - 1]
@@ -7064,10 +7077,10 @@ namespace CF7Launcher.Tests.Guardian
                             "trainerSession"));
                 task.HandleFlashResponse(SkillCleanupAck((int)sent[sent.Count - 1]["callId"], 12), null);
 
-                Assert.Single(c.Posts);
+                Assert.Empty(c.Posts);
                 Assert.Equal(
                     oldInstance,
-                    r.ActiveFallbackPanelInstanceId);
+                    harnessR.Host.ActivePanelInstanceId);
                 Assert.Equal(oldInstance, (string)web[web.Count - 1]["panelInstanceId"]);
             }
         }
@@ -7077,12 +7090,21 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var sent = new List<JObject>();
             using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
             {
                 r.SetSkillTask(task);
-                OpenNativeSkillManage(r);
-                string oldInstance = r.ActiveFallbackPanelInstanceId;
+                // 生产接线镜像：skills initData 由 Host enricher 应用（Program.cs 同款）
+                harnessR.Host.SetInitDataEnricher(
+                    delegate(string panelName, string initDataJson, string panelInstanceId)
+                    {
+                        return panelName == "skills"
+                            ? task.EnrichPanelInitData(initDataJson, panelInstanceId)
+                            : initDataJson;
+                    });
+                OpenNativeSkillManage(r, harnessR);
+                string oldInstance = harnessR.Host.ActivePanelInstanceId;
                 task.BindPanelInstance(oldInstance);
                 JObject write = SkillRequest("equip", "fallback.disconnect.write");
                 write["panelInstanceId"] = oldInstance;
@@ -7090,16 +7112,15 @@ namespace CF7Launcher.Tests.Guardian
                 RequestNativeSkillManage(
                     r,
                     BeginNativeSkillOpen(r));
-                Assert.Single(c.Posts);
+                Assert.Empty(c.Posts);
 
                 task.ClearPending();
-                r.ClearFallbackPanelInstance();
+                harnessR.CloseCurrent();
                 RequestNativeSkillManage(
                     r,
                     BeginNativeSkillOpen(r));
 
-                Assert.Equal(2, c.Posts.Count);
-                JObject recovery = JObject.Parse(c.Posts[1]);
+                JObject recovery = harnessR.LastOpenPayload;
                 Assert.NotEqual(oldInstance, (string)recovery["panelInstanceId"]);
                 Assert.Equal("needs_reconcile", (string)recovery["initData"]["writeState"]);
                 Assert.Equal("fallback.disconnect.write", (string)recovery["initData"]["reconcileAfterCallId"]);
@@ -7107,22 +7128,31 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void FallbackTrainerSwitchToOtherPanel_ClosesScopedCapabilityBeforeFirstBusinessRequest()
+        public void TrainerSwitchToOtherPanel_ClosesScopedCapabilityBeforeFirstBusinessRequest()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
             var sent = new List<JObject>();
             using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
             {
                 r.SetSkillTask(task);
+                harnessR.WireSkillsEnricher(task);
+                // 生产接线镜像：Host 关闭观察器把 skills 关闭转发给 SkillTask（Program.cs 同款）
+                harnessR.Host.SetPanelCloseObserver(
+                    delegate(string panelName, string panelInstanceId)
+                    {
+                        if (panelName == "skills")
+                            task.HandleAuthoritativePanelClosed(panelInstanceId);
+                    });
                 RequestWorldSkillTrainer(
                     r,
                     "trainer.first");
-                Assert.Single(c.Posts);
+                Assert.Equal("skills", harnessR.Host.ActivePanelName);
 
                 r.RequestOpenPanel("map", "switch_test", null);
 
-                Assert.Equal(2, c.Posts.Count);
+                Assert.Equal("map", harnessR.Host.ActivePanelName);
                 Assert.Single(sent);
                 Assert.Equal("skillPanelClose", (string)sent[0]["action"]);
                 Assert.Equal("trainer.first", (string)sent[0]["trainerSession"]);
@@ -7136,6 +7166,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter r = MakeRouter(c);
             var sent = new List<JObject>();
             using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
+            using (var harnessR = new HostHarness(r))
             {
                 r.SetSkillTask(task);
                 task.RequestTrainerCleanup(null);
@@ -7145,8 +7176,7 @@ namespace CF7Launcher.Tests.Guardian
                 RequestWorldSkillTrainer(
                     r,
                     "trainer.candidate.C");
-                Assert.Single(c.Posts);
-                JObject opened = JObject.Parse(c.Posts[0]);
+                JObject opened = harnessR.LastOpenPayload;
                 Assert.Equal("manage", (string)opened["initData"]["view"]);
 
                 task.HandleFlashResponse(SkillCleanupAck((int)sent[0]["callId"], 12), null);
@@ -7187,6 +7217,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             var commands =
                 new List<string>();
             router.SetGameCommandSenderForTests(
@@ -7235,8 +7266,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
 
             JObject open =
-                JObject.Parse(
-                    Assert.Single(c.Posts));
+                harness.LastOpenPayload;
             Assert.Equal(
                 "panel_cmd",
                 open.Value<string>("type"));
@@ -7259,10 +7289,10 @@ namespace CF7Launcher.Tests.Guardian
                 open["initData"]["returnTo"]);
             Assert.Equal(
                 "workbench",
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.False(
                 string.IsNullOrEmpty(
-                    router.ActiveFallbackPanelInstanceId));
+                    harness.Host.ActivePanelInstanceId));
             Assert.Equal(
                 2,
                 commands.Count);
@@ -7280,23 +7310,19 @@ namespace CF7Launcher.Tests.Guardian
                     tuningTask);
                 Assert.True(
                     tuningTask.BindPanelInstance(
-                        router.ActiveFallbackPanelInstanceId));
+                        harness.Host.ActivePanelInstanceId));
                 RequestNativeEquipmentTuning(
                     router,
                     "nativehud_equipment_tuning",
                     "{\"profile\":\"battlebox\",\"view\":\"tuning\"}",
                     openRequestId);
-                Assert.Single(
-                    c.Posts,
-                    value => value.Contains(
-                        "\"cmd\":\"open\""));
                 Assert.DoesNotContain(
                     c.Posts,
                     value => value.Contains(
                         "\"type\":\"toast\""));
                 Assert.Equal(
                     "workbench",
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
             }
         }
 
@@ -7306,6 +7332,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             router.SetGameCommandSenderForTests(
@@ -7326,16 +7353,16 @@ namespace CF7Launcher.Tests.Guardian
                 "{\"profile\":\"battlebox\",\"view\":\"tuning\"}",
                 openRequestId);
 
+            Assert.Equal(
+                "workbench",
+                harness.Host.ActivePanelName);
+
             RequestNativeEquipmentTuning(
                 router,
                 "nativehud_equipment_tuning",
                 "{\"profile\":\"battlebox\",\"view\":\"tuning\"}",
                 openRequestId);
 
-            Assert.Single(
-                c.Posts,
-                value => value.Contains(
-                    "\"cmd\":\"open\""));
             Assert.Single(
                 c.Posts,
                 value => value.Contains(
@@ -7424,6 +7451,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             using (var tuningTask =
@@ -7453,13 +7481,13 @@ namespace CF7Launcher.Tests.Guardian
                     "{\"profile\":\"battlebox\",\"view\":\"tuning\"}",
                     openRequestId);
                 string closedInstance =
-                    router.ActiveFallbackPanelInstanceId;
+                    harness.Host.ActivePanelInstanceId;
                 Assert.True(
                     tuningTask.BindPanelInstance(
                         closedInstance));
                 c.Posts.Clear();
 
-                router.ClearFallbackPanelInstance();
+                harness.CloseCurrent();
                 RequestNativeEquipmentTuning(
                     router,
                     "nativehud_equipment_tuning",
@@ -7467,7 +7495,7 @@ namespace CF7Launcher.Tests.Guardian
                     openRequestId);
 
                 Assert.Null(
-                    router.ActiveFallbackPanelName);
+                    harness.Host.ActivePanelName);
                 Assert.Equal(
                     closedInstance,
                     tuningTask.PanelInstanceId);
@@ -7484,6 +7512,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             using (var tuningTask =
@@ -7513,7 +7542,7 @@ namespace CF7Launcher.Tests.Guardian
                     "{\"profile\":\"battlebox\",\"view\":\"tuning\"}",
                     openRequestId);
                 string activeInstance =
-                    router.ActiveFallbackPanelInstanceId;
+                    harness.Host.ActivePanelInstanceId;
                 Assert.True(
                     tuningTask.BindPanelInstance(
                         "workbench.tuning.wrong"));
@@ -7527,7 +7556,7 @@ namespace CF7Launcher.Tests.Guardian
 
                 Assert.Equal(
                     activeInstance,
-                    router.ActiveFallbackPanelInstanceId);
+                    harness.Host.ActivePanelInstanceId);
                 Assert.NotEqual(
                     activeInstance,
                     tuningTask.PanelInstanceId);
@@ -7544,6 +7573,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             using (var tuningTask =
@@ -7573,7 +7603,7 @@ namespace CF7Launcher.Tests.Guardian
                     "{\"profile\":\"battlebox\",\"view\":\"tuning\"}",
                     openRequestId);
                 string activeInstance =
-                    router.ActiveFallbackPanelInstanceId;
+                    harness.Host.ActivePanelInstanceId;
                 Assert.True(
                     tuningTask.BindPanelInstance(
                         activeInstance));
@@ -7589,7 +7619,7 @@ namespace CF7Launcher.Tests.Guardian
 
                 Assert.Equal(
                     activeInstance,
-                    router.ActiveFallbackPanelInstanceId);
+                    harness.Host.ActivePanelInstanceId);
                 Assert.Equal(
                     activeInstance,
                     tuningTask.PanelInstanceId);
@@ -7620,6 +7650,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             var commands =
                 new List<string>();
             router.SetGameCommandSenderForTests(
@@ -7646,7 +7677,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
 
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.DoesNotContain(
                 c.Posts,
                 value => value.Contains(
@@ -7670,6 +7701,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             var commands =
                 new List<string>();
             router.SetGameCommandSenderForTests(
@@ -7696,7 +7728,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
 
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.DoesNotContain(
                 c.Posts,
                 value => value.Contains(
@@ -7719,6 +7751,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             router.SetGameCommandSenderForTests(
@@ -7750,7 +7783,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
 
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.DoesNotContain(
                 c.Posts,
                 value => value.Contains(
@@ -7832,6 +7865,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             router.SetGameCommandSenderForTests(
@@ -7858,7 +7892,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
 
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.DoesNotContain(
                 c.Posts,
                 value => value.Contains(
@@ -7878,6 +7912,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             string command =
                 null;
             router.SetGameCommandSenderForTests(
@@ -7904,7 +7939,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
 
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.DoesNotContain(
                 c.Posts,
                 value => value.Contains(
@@ -7920,6 +7955,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             router.NativeEquipmentTuningOpenTimeoutMs =
                 30;
             string command =
@@ -7950,7 +7986,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
 
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.DoesNotContain(
                 c.Posts,
                 value => value.Contains(
@@ -7963,6 +7999,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             router.RequestOpenPanel(
                 "tasks",
                 "test",
@@ -7983,7 +8020,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Empty(commands);
             Assert.Equal(
                 "tasks",
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.Single(c.Posts);
             Assert.Contains(
                 "请先关闭当前面板",
@@ -7999,6 +8036,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             var commands =
                 new List<string>();
             router.SetGameCommandSenderForTests(
@@ -8028,11 +8066,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
             Assert.Equal(
                 "workbench",
-                router.ActiveFallbackPanelName);
-            Assert.Single(
-                c.Posts,
-                value => value.Contains(
-                    "\"cmd\":\"open\""));
+                harness.Host.ActivePanelName);
         }
 
         [Fact]
@@ -8041,6 +8075,7 @@ namespace CF7Launcher.Tests.Guardian
             Capture c = new Capture();
             LauncherCommandRouter router =
                 MakeRouter(c);
+            using var harness = new HostHarness(router);
             bool admitted =
                 true;
             var commands =
@@ -8067,7 +8102,7 @@ namespace CF7Launcher.Tests.Guardian
                 openRequestId);
 
             Assert.Null(
-                router.ActiveFallbackPanelName);
+                harness.Host.ActivePanelName);
             Assert.Single(commands);
             Assert.DoesNotContain(
                 commands,
@@ -8079,8 +8114,17 @@ namespace CF7Launcher.Tests.Guardian
                     "\"type\":\"toast\""));
         }
 
-        private static string OpenFallbackBuild(
-            LauncherCommandRouter router)
+        private static string OpenHostBuild(
+            LauncherCommandRouter router,
+            HostHarness harness)
+        {
+            return OpenHostBuild(router, harness.Host, null);
+        }
+
+        private static string OpenHostBuild(
+            LauncherCommandRouter router,
+            PanelHostController host,
+            Queue<Action> pumps)
         {
             router.RequestOpenPanel(
                 "workbench",
@@ -8091,14 +8135,32 @@ namespace CF7Launcher.Tests.Guardian
                 null,
                 null,
                 "{\"profile\":\"battlebox\",\"view\":\"build\"}");
+            DrainPumps(pumps);
             string instance =
-                router.ActiveFallbackPanelInstanceId;
+                host.ActivePanelInstanceId;
             Assert.False(
                 string.IsNullOrEmpty(instance));
             Assert.Equal(
                 "workbench",
-                router.ActiveFallbackPanelName);
+                host.ActivePanelName);
             return instance;
+        }
+
+        private static void DrainPumps(Queue<Action> pumps)
+        {
+            if (pumps == null) return;
+            while (pumps.Count > 0) pumps.Dequeue()();
+        }
+
+        private static void CloseHostCurrent(
+            PanelHostController host,
+            Queue<Action> pumps)
+        {
+            string name = host.ActivePanelName;
+            string instance = host.ActivePanelInstanceId;
+            if (name == null || instance == null) return;
+            Assert.True(host.TryClosePanelExact(name, instance, null));
+            DrainPumps(pumps);
         }
 
         private static string BeginNativeSkillOpen(
@@ -8227,6 +8289,8 @@ namespace CF7Launcher.Tests.Guardian
 
         private static string BeginCharacterBuildMaterialHandoff(
             LauncherCommandRouter router,
+            PanelHostController host,
+            Queue<Action> pumps,
             CharacterBuildTask task,
             Capture capture,
             List<string> flash,
@@ -8234,6 +8298,8 @@ namespace CF7Launcher.Tests.Guardian
         {
             return BeginCharacterBuildMaterialHandoff(
                 router,
+                host,
+                pumps,
                 task,
                 capture,
                 flash,
@@ -8243,6 +8309,8 @@ namespace CF7Launcher.Tests.Guardian
 
         private static string BeginCharacterBuildMaterialHandoff(
             LauncherCommandRouter router,
+            PanelHostController host,
+            Queue<Action> pumps,
             CharacterBuildTask task,
             Capture capture,
             List<string> flash,
@@ -8251,6 +8319,8 @@ namespace CF7Launcher.Tests.Guardian
         {
             return BeginCharacterBuildMaterialHandoff(
                 router,
+                host,
+                pumps,
                 task,
                 capture,
                 flash,
@@ -8260,6 +8330,8 @@ namespace CF7Launcher.Tests.Guardian
 
         private static string BeginCharacterBuildMaterialHandoff(
             LauncherCommandRouter router,
+            PanelHostController host,
+            Queue<Action> pumps,
             CharacterBuildTask task,
             Capture capture,
             List<string> flash,
@@ -8274,8 +8346,7 @@ namespace CF7Launcher.Tests.Guardian
                             .TryCompleteCharacterBuildPreparationNavigation());
                 });
             string instance =
-                OpenFallbackBuild(
-                    router);
+                OpenHostBuild(router, host, pumps);
             Assert.True(
                 task.BindPanelInstance(
                     instance));
@@ -8300,7 +8371,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(
                 task.BeginNormalCloseBarrier(
                     instance));
-            router.ClearFallbackPanelInstance();
+            CloseHostCurrent(host, pumps);
             Assert.True(
                 task.ContinueDetachRecoveryAfterVisualRetired(
                     0));
@@ -8388,13 +8459,14 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         private static string OpenNativeSkillManage(
-            LauncherCommandRouter router)
+            LauncherCommandRouter router,
+            HostHarness harness)
         {
             RequestNativeSkillManage(
                 router,
                 BeginNativeSkillOpen(router));
             string instance =
-                router.ActiveFallbackPanelInstanceId;
+                harness.Host.ActivePanelInstanceId;
             Assert.False(
                 string.IsNullOrEmpty(instance));
             return instance;

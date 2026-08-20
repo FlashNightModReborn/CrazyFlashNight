@@ -89,8 +89,6 @@ namespace CF7Launcher.Tests.Guardian
                     null,
                     null,
                     null,
-                    _ => { },
-                    _ => { },
                     _ => { });
                 Router.SetPanelHost(Host);
                 Clock = () => Now;

@@ -9,12 +9,12 @@ using CF7Launcher.Guardian;
 namespace CF7Launcher.Guardian.Hud
 {
     /// <summary>
-    /// Native toast 渲染单元。承载原 ToastOverlay 的消息流，
-    /// 由 NativeHudOverlay.AddMessage / IToastSink.SetReady 派发；与 ToastOverlay 单独 ULW 路径互斥
-    /// （useNativeHud=true 时 Program.cs 不再实例化 ToastOverlay，本 widget 顶替）。
+    /// Native toast 渲染单元。承载 socket（ToastTask）与 panel-toast 桥接（web 面板 Toast.add）两路消息流，
+    /// 由 NativeHudOverlay.AddMessage / IToastSink.SetReady 派发。
     ///
-    /// 数据通路：socket → WebOverlayForm.AddMessage → (useNativeHud=true) → IToastSink.AddMessage
-    ///   → NativeHudOverlay.AddMessage → ToastWidget.AddMessage
+    /// 数据通路：
+    ///   socket → WebOverlayForm.AddMessage → IToastSink.AddMessage → NativeHudOverlay.AddMessage → ToastWidget.AddMessage
+    ///   面板 → web Toast.add → panel-toast 桥 → WebOverlayForm.AddMessage →（同上）
     ///
     /// 视觉与原 ToastOverlay 严格对齐：
     /// - 锚点 Flash (5,50)，宽 285 base、letterbox 内缩放

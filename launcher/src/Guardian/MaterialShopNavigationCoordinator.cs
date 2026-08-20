@@ -1830,14 +1830,10 @@ namespace CF7Launcher.Guardian
         {
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelName
-                    : null);
+                : null;
             string activeInstance = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelInstanceId
-                    : null);
+                : null;
             return string.Equals(activePanel, panel, StringComparison.Ordinal)
                 && string.Equals(
                     activeInstance,

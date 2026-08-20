@@ -67,21 +67,13 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(
                 expected,
                 NotchWidget.ToolbarRoutesForTest());
-            Assert.Equal(
-                expected,
-                NotchOverlay.ToolbarRoutesForTest());
         }
 
         [Fact]
-        public void RolloutOn_NativeHasFourRowsAndLegacySharesGamePreparationRows()
+        public void RolloutOn_NativeHasFourRows()
         {
             NotchToolbarRow[] native =
                 NotchWidget.ToolbarRowsForTest(
-                    true,
-                    true,
-                    14);
-            NotchToolbarRow[] legacy =
-                NotchOverlay.ToolbarRowsForTest(
                     true,
                     true,
                     14);
@@ -89,11 +81,6 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(
                 new[] { "游戏", "整备", "辅助", "系统" },
                 native.Select(x => x.Label).ToArray());
-            Assert.Equal(
-                new[] { "游戏", "整备" },
-                legacy.Select(x => x.Label).ToArray());
-            AssertRowEqual(native[0], legacy[0]);
-            AssertRowEqual(native[1], legacy[1]);
             Assert.Equal(
                 new[] { "TEAM", "TABLET", "SHOP" },
                 native[0].Actions
@@ -150,20 +137,14 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void RolloutOn_ProgressionProjectionMatchesBothHudImplementations()
+        public void RolloutOn_ProgressionProjectionKeepsMembersVisibleWithReasons()
         {
             NotchToolbarRow native =
                 NotchWidget.ToolbarRowsForTest(
                     true,
                     true,
                     13)[1];
-            NotchToolbarRow legacy =
-                NotchOverlay.ToolbarRowsForTest(
-                    true,
-                    true,
-                    13)[1];
 
-            AssertRowEqual(native, legacy);
             Assert.All(
                 native.Actions,
                 x => Assert.True(x.Visible));
@@ -187,21 +168,10 @@ namespace CF7Launcher.Tests.Guardian
                 NotchWidget.ExpandedToolbarHeightForTest(
                     true,
                     1f);
-            int legacyOld =
-                NotchOverlay.ExpandedToolbarHeightForTest(
-                    false,
-                    1f);
-            int legacyPreparation =
-                NotchOverlay.ExpandedToolbarHeightForTest(
-                    true,
-                    1f);
 
             Assert.Equal(82, nativeOld);
             Assert.Equal(108, nativePreparation);
-            Assert.Equal(28, legacyOld);
-            Assert.Equal(52, legacyPreparation);
             Assert.Equal(26, nativePreparation - nativeOld);
-            Assert.Equal(24, legacyPreparation - legacyOld);
         }
 
         [Fact]
@@ -244,34 +214,6 @@ namespace CF7Launcher.Tests.Guardian
                     actions.Left - notchRight
                     >= RightHudLayout.NotchRightGapBase);
             }
-        }
-
-        private static void AssertRowEqual(
-            NotchToolbarRow expected,
-            NotchToolbarRow actual)
-        {
-            Assert.Equal(expected.Label, actual.Label);
-            Assert.Equal(
-                expected.Actions
-                    .Select(ToComparable)
-                    .ToArray(),
-                actual.Actions
-                    .Select(ToComparable)
-                    .ToArray());
-        }
-
-        private static string ToComparable(
-            NotchToolbarAction action)
-        {
-            return action.Label
-                + "|"
-                + action.CommandKey
-                + "|"
-                + action.Visible
-                + "|"
-                + action.Enabled
-                + "|"
-                + action.Reason;
         }
     }
 }

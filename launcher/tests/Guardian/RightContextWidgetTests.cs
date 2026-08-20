@@ -57,9 +57,7 @@ namespace CF7Launcher.Tests.Guardian
                 onToggleFullscreen: () => { },
                 onToggleLog: () => { },
                 onForceExit: () => { },
-                postToWeb: s => local.Posts.Add(s),
-                onPanelStateChanged: b => { },
-                setActivePanel: name => { });
+                postToWeb: s => local.Posts.Add(s));
             Control anchor = new Control();
             RightContextWidget w = new RightContextWidget(
                 anchor,
@@ -79,9 +77,7 @@ namespace CF7Launcher.Tests.Guardian
                 onToggleFullscreen: () => { },
                 onToggleLog: () => { },
                 onForceExit: () => { },
-                postToWeb: s => cap.Posts.Add(s),
-                onPanelStateChanged: b => { },
-                setActivePanel: name => { });
+                postToWeb: s => cap.Posts.Add(s));
             SafeExitPanelWidget widget = new SafeExitPanelWidget(new Control(), router);
             widget.ForceGameReady(true);
             return widget;
@@ -289,9 +285,7 @@ namespace CF7Launcher.Tests.Guardian
                     onToggleFullscreen: () => { },
                     onToggleLog: () => { },
                     onForceExit: () => { },
-                    postToWeb: s => cap.Posts.Add(s),
-                    onPanelStateChanged: b => { },
-                    setActivePanel: name => { });
+                    postToWeb: s => cap.Posts.Add(s));
                 RightContextWidget right = new RightContextWidget(
                     anchor,
                     router,
@@ -394,9 +388,7 @@ namespace CF7Launcher.Tests.Guardian
                     onToggleFullscreen: () => { },
                     onToggleLog: () => { },
                     onForceExit: () => { },
-                    postToWeb: s => cap.Posts.Add(s),
-                    onPanelStateChanged: b => { },
-                    setActivePanel: name => { });
+                    postToWeb: s => cap.Posts.Add(s));
                 RightContextWidget right = new RightContextWidget(
                     anchor,
                     router,

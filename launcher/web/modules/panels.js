@@ -306,9 +306,6 @@ var Panels = (function() {
         _active = id;
         _activePanelInstanceId = readPanelInstanceId(initData);
         audioEnterPanel(id);
-        setTimeout(function() {
-            if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
-        }, 50);
     }
 
     function rejectPanelMount(id, panel, initData) {
@@ -466,9 +463,6 @@ var Panels = (function() {
         // 视觉与 owner 状态已经先归零；单个旧 panel 的清理异常不能中断
         // incoming panel 的 mount，也不能把 Panels 留在半 active 状态。
         safeCleanupCallback(panel, 'onClose', 'ordinary close');
-        setTimeout(function() {
-            if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
-        }, 50);
     }
 
     function triggerRequestClose(reason) {

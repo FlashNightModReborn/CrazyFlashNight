@@ -2512,9 +2512,7 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
             onToggleFullscreen: () => { },
             onToggleLog: () => { },
             onForceExit: () => { },
-            postToWeb: _ => { },
-            onPanelStateChanged: _ => { },
-            setActivePanel: _ => { });
+            postToWeb: _ => { });
         MapHudDataCatalog catalog = MapHudDataCatalog.LoadFromFile(
             Path.Combine(
                 projectRoot,

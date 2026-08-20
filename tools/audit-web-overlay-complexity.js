@@ -127,11 +127,8 @@ const cssFiles = [
 
 const jsFiles = [
   'launcher/web/modules/map-panel.js',
-  'launcher/web/modules/map-hud.js',
   'launcher/web/modules/panels.js',
-  'launcher/web/modules/notch.js',
   'launcher/web/modules/jukebox/jukebox-panel.js',
-  'launcher/web/modules/sparkline.js',
   'launcher/web/modules/cursor-feedback.js'
 ];
 

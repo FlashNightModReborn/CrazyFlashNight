@@ -278,7 +278,7 @@ layers:
     description: "Launcher 运行时数据（MapHud catalog、存档修复字典、存档 schema）"
     source: "launcher/data/"
     include:
-      # MapHudWidget 启动期加载，缺失 → useNativeHud=true 下 MapHud 静默不可见
+      # MapHudWidget 启动期加载，缺失 → NativeHud 的 MapHud 静默不可见
       - "map_hud_data.json"
       # SaveAutoRepairService 启动期加载，缺失 → 自动修复降级到只读模式
       - "save_repair_dict.json"

@@ -6,15 +6,14 @@ namespace CF7Launcher.Guardian
     /// <summary>
     /// 把单一 INotchSink 入口 fan-out 到多个 sink。
     ///
-    /// 用途：useNativeHud=true 时 N 前缀通知既要送到 NativeHudOverlay（让 ComboWidget 等 INotchNoticeConsumer
-    /// 收到 category="combo" 通知），也要送到 web overlay（兼容旧 NotchOverlay 渲染）。
     /// 任一 sink 抛异常都不影响其他 sink；所有错误进 launcher.log。
     ///
     /// **Category 路由**：第二组 sink 可注入 `AcceptCategory` 谓词；返回 false 时该 category 不路由给本 sink。
-    /// 主用途：native 模式下 nativeHud 已订阅 "combo" → 把 webOverlay 的 combo category 过滤掉，
-    /// 避免 ComboWidget 命中条与 NotchOverlay 普通通知行同时显示。
     ///
     /// SetReady / SetStatusItem / ClearStatusItem 不走 category 路由，所有 sink 都收。
+    ///
+    /// 注：useNativeHud=false 分支拆除后生产侧不再装配本类（notchSink 直接是 NativeHudOverlay）；
+    /// 类保留给 CompositeNotchSinkTests 与潜在的未来 fan-out 需求。
     /// </summary>
     public class CompositeNotchSink : INotchSink
     {

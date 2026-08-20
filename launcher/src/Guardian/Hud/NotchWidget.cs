@@ -11,9 +11,8 @@ using CF7Launcher.Guardian;
 namespace CF7Launcher.Guardian.Hud
 {
     /// <summary>
-    /// Native notch 渲染单元。承载原 NotchOverlay 的「FPS 药丸 + 展开工具栏 + 通知栈 + 展开图表」全部行为，
-    /// 由 NativeHudOverlay 的 widget 容器调度；与 NotchOverlay 单独 ULW 路径互斥
-    /// （useNativeHud=true 时 Program.cs 不再实例化 NotchOverlay，本 widget 顶替）。
+    /// Native notch 渲染单元。承载刘海栏「FPS 药丸 + 展开工具栏 + 通知栈 + 展开图表」全部行为，
+    /// 由 NativeHudOverlay 的 widget 容器调度。
     ///
     /// 视觉与原 NotchOverlay 严格对齐（PaintRow1 / DrawToolbarButtons / DrawOtherMenu / DrawSparkline /
     /// DrawClock / DrawCurrencyPanel / DrawExpandedChart 全部移植）。差异：
@@ -31,7 +30,7 @@ namespace CF7Launcher.Guardian.Hud
 
         #endregion
 
-        #region 常量（与 NotchOverlay 完全一致）
+        #region 常量（与原 GDI+ 刘海实现一致）
 
         private const int CollapsedH = NativeHudTheme.TopBarHeightBase;
         private const int RowPadX = 6;
@@ -1074,7 +1073,7 @@ namespace CF7Launcher.Guardian.Hud
 
         #endregion
 
-        #region 渲染辅助（与 NotchOverlay 严格对齐）
+        #region 渲染辅助（与原 GDI+ 刘海实现严格对齐）
 
         private void GetCurrentSize(out int w, out int h)
         {
@@ -2209,5 +2208,28 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         public void Dispose() { }
+    }
+
+    /// <summary>
+    /// 通知栈行模型（原 NotchOverlay.cs 尾部定义，随 GDI+ 独立 ULW 拆除并入本文件）。
+    /// </summary>
+    public class NotchInfoRow
+    {
+        public string BaseText;
+        public bool IsGame;
+        public int Count;
+        public int PulseMs;
+        public string Category;    // 去重键
+        public string Text;        // 当前显示文字
+        public Color AccentColor;  // 当前文字颜色
+        public bool Persistent;    // true=持久，false=自动过期
+        public int RemainingMs;    // 瞬态专用：剩余毫秒
+        public int AgeMs;          // 已存活毫秒（用于淡入）
+
+        // 平滑过渡：替换旧文字时交叉淡变
+        public string PrevText;        // 被替换的旧文字（null=无过渡）
+        public Color PrevColor;        // 旧文字颜色
+        public int TransitionMs;       // 过渡已进行毫秒
+        public const int TransitionDuration = 400; // 交叉淡变时长
     }
 }

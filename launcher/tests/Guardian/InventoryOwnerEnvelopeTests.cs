@@ -334,8 +334,8 @@ namespace CF7Launcher.Tests.Guardian
                 source,
                 "public void SetPanelHost(PanelHostController host)",
                 "public void ResumeForPanel(");
-            Assert.Contains(
-                "_commandRouter.PanelChanged -= OnAuthoritativePanelChanged;",
+            Assert.DoesNotContain(
+                "_commandRouter.PanelChanged",
                 setHost);
             Assert.Contains(
                 "_panelHost.PanelChanged += OnAuthoritativePanelChanged;",

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
@@ -183,13 +184,12 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void Click_DispatchesTaskMap()
         {
-            // Flag OFF（_panelHost==null）：TASK_MAP → OpenMapPanel → PostToWeb panel_cmd open(map)
+            // TASK_MAP → OpenMapPanel → PanelHost 打开 map 面板
             RouterStub r; MapHudDataCatalog cat;
             MapHudWidget w = MakeWidget(out r, out cat);
             w.SimulateClick();
-            Assert.Single(r.Posts);
-            Assert.Contains("\"panel\":\"map\"", r.Posts[0]);
-            Assert.Contains("\"cmd\":\"open\"", r.Posts[0]);
+            Assert.True(r.Host.IsPanelOpen);
+            Assert.Equal("map", r.Host.ActivePanelName);
         }
 
         // ── collapse API（与 web map-hud.js toggleCollapsed/setCollapsed/isCollapsed 镜像）──
@@ -262,8 +262,8 @@ namespace CF7Launcher.Tests.Guardian
             // 展开态 click（非 close-btn 区域，单测无 anchor 屏幕坐标 → IsPointInCloseBtn=false）→ TASK_MAP
             w.SimulateClick();
             Assert.False(w.IsCollapsed);
-            Assert.Single(r.Posts);
-            Assert.Contains("\"panel\":\"map\"", r.Posts[0]);
+            Assert.True(r.Host.IsPanelOpen);
+            Assert.Equal("map", r.Host.ActivePanelName);
         }
 
         // ── animation ──
@@ -325,6 +325,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             public List<string> Posts = new List<string>();
             public LauncherCommandRouter Router;
+            public readonly PanelHostController Host;
             public RouterStub()
             {
                 List<string> postsLocal = Posts;
@@ -334,9 +335,12 @@ namespace CF7Launcher.Tests.Guardian
                     onToggleFullscreen: () => { },
                     onToggleLog: () => { },
                     onForceExit: () => { },
-                    postToWeb: s => postsLocal.Add(s),
-                    onPanelStateChanged: b => { },
-                    setActivePanel: name => { });
+                    postToWeb: s => postsLocal.Add(s));
+                // 同步泵 PanelHost 测试线束：打开调用即完成，保持断言同步语义
+                Host = new PanelHostController(
+                    delegate(Action pump) { pump(); },
+                    delegate(Action fire) { fire(); });
+                Router.SetPanelHost(Host);
             }
         }
     }

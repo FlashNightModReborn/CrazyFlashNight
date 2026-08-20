@@ -4,7 +4,7 @@ namespace CF7Launcher.Guardian
 {
     /// <summary>
     /// Notch 状态/通知接收接口。
-    /// 解耦 XmlSocketServer 与具体 overlay 实现（GDI+ NotchOverlay 或 WebOverlayForm）。
+    /// 解耦 XmlSocketServer 与具体 overlay 实现（WebOverlayForm 转发到 NativeHud NotchWidget）。
     /// </summary>
     public interface INotchSink
     {

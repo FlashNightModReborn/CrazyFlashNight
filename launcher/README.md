@@ -113,7 +113,7 @@ bootstrap preflight
 ### Loot feed 与纸娃娃烘焙协议
 
 - AS2 通过 XMLSocket fire-and-forget task `loot` 发送 `{kind,name,count,source,icon,eliteLevel?,doll?}`。`eliteLevel` 只对击杀生效，固定为 `UnitUtil.getEliteLevel` 的 `0=普通 / 1=精英 / 2=首领`；缺失或非法值由 Host 降级为 `0`，AS2 不发送最终优先级。
-- `LootFeedTask` 只把协议事实投影到 NativeHud `LootFeedWidget`；地图面板的 `loot_response` 是另一业务域，任务奖励旧 AS2 弹窗已经退役。常驻 UI 的产品路线固定为原生 UI，`useNativeHud=false` 是待删除 legacy 装配开关，不构成 loot feed 的兼容 fallback 合同。
+- `LootFeedTask` 只把协议事实投影到 NativeHud `LootFeedWidget`；地图面板的 `loot_response` 是另一业务域，任务奖励旧 AS2 弹窗已经退役。常驻 UI 已固定为 C# NativeHud（legacy Web 常驻 HUD 与 GDI+ 伴随层已拆除），loot feed 只走 NativeHud 投影。
 - `LootFeedModel` 由 Host 单点定义五槽共享优先级池与可恢复等待队列：任务/通关奖励、开箱物品和 Boss 击杀为 guaranteed，精英击杀与拾取为 exact-aggregate，普通击杀最低且只允许把并发身份溢出压成“杂兵击杀”总数。合并键包含 `kind + name + icon + source + eliteLevel`；等待卡不推进生命周期，高优先级替换复用原槽，`待显示 n 项` 只表示仍在队列中的真实卡片，不再存在限流丢弃或伪 overflow 计数。
 - 绘制采用 5 个 26px 直角卡片、20px 图标与 12px 近白名称。卡宽按内容在 96–220px 内以 8px 微量化；计数为 `1` 时不保留空列，`>1` 时只按当前位数桶保留右对齐列，因此短名称不拖尾、合理长度的奖励名不再被隐藏的 `×99999` 挤压。精英使用琥珀分段轨/头像框，Boss 使用金色双轨/边线与一次性短强调，任务/开箱不会借用 Boss 视觉。
   入场只做 4px/180ms SmoothStep 垂直归位；计数按 125ms 提交，用 180ms/1–2px SmoothStep 交叉淡化并仅在数字区增加有界色洗/底沿，击杀按本批增量增强但不缩放整卡、不发粒子；退场 280ms，动画图标最多运行 450ms 后冻结。静态持有不申请重绘，视觉签名 32ms 采样且仍受 NativeHud 33ms 合成硬上限约束；socket burst 维持单 UI drain / 单批决策，bounds 只随卡片/等待行或计数位数桶变化。
@@ -264,7 +264,6 @@ Web/Node、真实 Edge harness、AS2 runner、Flash CS6 publish-only smoke、can
 | `nativeCursorOverlay` | `true` / `true` | `CF7_NATIVE_CURSOR_OVERLAY` | 原生 cursor 总 gate |
 | `gpuPreference` | `off` / `off` | `CF7_GPU_PREFERENCE` | `off/auto/on` 每应用 GPU 偏好 |
 | `devGpuProbeHotkey` | `false` / `false` | `CF7_DEV_GPU_PROBE` | Ctrl+G 合成诊断，玩家版保持关闭 |
-| `useNativeHud` | `false` / `true` | `CF7_NATIVE_HUD` | Native HUD 与 PanelHost 装配 |
 | `preparationNavigationV1` | `true` / `true` | — | 整备导航 presentation；显式 false 或非法值回退旧 presentation |
 | `useDesktopCursorOverlay` | `true` / 缺省 | `CF7_DESKTOP_CURSOR` | desktop ULW cursor；false 使用旧 anchor-bound 路径 |
 | `webOverlayPanelTakeForeground` | `true` / 缺省 | `CF7_PANEL_TAKE_FG` | Panel 前台与 WebView 焦点接管 |

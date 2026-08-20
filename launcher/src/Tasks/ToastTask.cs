@@ -6,7 +6,7 @@ namespace CF7Launcher.Tasks
 {
     /// <summary>
     /// Fire-and-forget toast 消息处理器。
-    /// 接收 Flash 发来的 {"task":"toast","payload":"消息文本"} 并转发到 ToastOverlay。
+    /// 接收 Flash 发来的 {"task":"toast","payload":"消息文本"} 并转发到 IToastSink（NativeHud ToastWidget）。
     /// </summary>
     public class ToastTask
     {

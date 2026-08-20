@@ -52,11 +52,7 @@ const OVERLAY_STARTUP_WEB = Object.freeze([
   "launcher/web/modules/bridge.js",
   "launcher/web/modules/uidata.js",
   "launcher/web/modules/toast.js",
-  "launcher/web/modules/sparkline.js",
-  "launcher/web/modules/notch.js",
   "launcher/web/modules/cursor-feedback.js",
-  "launcher/web/modules/currency.js",
-  "launcher/web/modules/combo.js",
   "launcher/web/modules/lazy-loader.js",
   "launcher/web/modules/panels.js",
   "launcher/web/modules/panel-scale.js",
@@ -67,7 +63,6 @@ const OVERLAY_STARTUP_WEB = Object.freeze([
   "launcher/web/modules/icons.js",
   "launcher/web/modules/map-panel-data.js",
   "launcher/web/modules/map-fit-presets.js",
-  "launcher/web/modules/map-hud.js",
 ]);
 
 const OVERLAY_STYLE_WEB = Object.freeze([

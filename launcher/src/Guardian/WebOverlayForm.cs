@@ -114,7 +114,7 @@ namespace CF7Launcher.Guardian
             if (panel == "tasks") return "taskPanelClose";
             // team / arena / pets / mercs 故意留 null：普通关闭没有需要 AS2 清理的状态，
             // team 内宠物视图关闭不能调用 petPanelClose，否则会重建旧 Flash 战宠图标。
-            // 关闭 panel 时直接走 _activePanel = null + PanelHost.ClosePanel() 即可。
+            // 关闭 panel 时直接走 PanelHost.ClosePanel() 即可。
             // arena 的定制赛结算页例外：由 close 消息携带 returnBase=true，
             // 走 ShouldReturnBaseOnPanelClose() 的专用回基地命令，不污染普通 close 语义。
             return null;
@@ -870,7 +870,6 @@ namespace CF7Launcher.Guardian
         internal event Action DocumentAdvanced;
         private bool _shown;
         private bool _disposed;
-        private bool _devMode;
         private readonly bool _lowEffectsMode;
         private readonly bool _disableCssAnimations;
         private readonly bool _disableVisualizers;
@@ -885,16 +884,10 @@ namespace CF7Launcher.Guardian
         private readonly bool _panelTakeForeground;
         private readonly string _projectRoot;
 
-        // GDI+ fallback：WebView2 未就绪或初始化失败时，消息转发到 GDI+ overlay
+        // NativeHud 转发目标：toast/notch 消息固定转发给 nativeHud（= IToastSink + INotchSink）。
         private IToastSink _toastFallback;
         private INotchSink _notchFallback;
-        private bool _webFailed; // 初始化永久失败，所有后续消息走 fallback
-        // Phase 3: useNativeHud=true 时让 NotchOverlay/ToastOverlay 一直当常驻 HUD，不再调 SuspendFallback
-        private volatile bool _useNativeHud;
-
-        // IToastSink: 早期消息缓冲（WebView2 初始化前）
-        private readonly List<string> _toastEarlyBuffer = new List<string>();
-        private bool _toastReady;
+        private bool _webFailed; // 初始化永久失败，后续 UiData 仅维护快照
 
         // UI 数据早期缓冲：WebView2 就绪前收到的状态数据，就绪后 flush
         private readonly List<string> _uiDataEarlyBuffer = new List<string>();
@@ -935,26 +928,15 @@ namespace CF7Launcher.Guardian
         private readonly PanelRequestOwnerLifecycle
             _panelRequestOwnerLifecycle =
                 new PanelRequestOwnerLifecycle(IsInventoryOwnerPanel);
-        private string _activePanel;  // null = 无面板, "kshop"/"help"/...
         private bool _pauseNeedsRestore;
         private int _lastSocketDisconnectGeneration;
 
-        // 光照等级（静态 24h 数组，初始化后一次性推送给 JS）
+        // 光照等级（静态 24h 数组，panel 模式下一次性推送给 JS）
         private int[] _lightLevels;
-
-        // INotchSink: FPS 推送 + 按钮委托
-        private FpsRingBuffer _fpsBuffer;
-        private System.Windows.Forms.Timer _fpsTimer;
-        private Action _onToggleFullscreen;
-        private Action _onToggleLog;
-        private Action _onForceExit;
-        private Action<Keys> _onSendKey;
 
         // 游戏命令通道
         private XmlSocketServer _socketServer;
 
-        // BGM 音频可视化轮询
-        private System.Windows.Forms.Timer _audioTimer;
         private System.Windows.Forms.Timer _cursorTimer;
         private System.Windows.Forms.Timer _positionSettleTimer;
         private System.Windows.Forms.Timer _positionLongSettleTimer;
@@ -986,9 +968,7 @@ namespace CF7Launcher.Guardian
         private int _cursorHookLastY = Int32.MinValue;
         private long _lastCursorHookPostTick;
         private string _bgmTitle = ""; // 当前曲目标题（由 UiData bgm: 设置）
-        private bool _wasPlaying;       // 上一 tick 的 playing 状态（trackEnd 检测）
-        private bool _manualStop;       // 手动 stop 标记（防 trackEnd 误判）
-        private bool _bgmPaused;        // 暂停标记（暂停期间不触发 trackEnd）
+        private bool _bgmPaused;        // 暂停标记
 
         // 音乐目录
         private CF7Launcher.Audio.MusicCatalog _musicCatalog;
@@ -1534,62 +1514,13 @@ namespace CF7Launcher.Guardian
             if (old != null) old.Dispose();
         }
 
-        /// <summary>WebView2 初始化失败时，激活 GDI+ fallback 并 flush 早期消息。</summary>
+        /// <summary>Web 通道就绪/恢复后，唤醒 NativeHud toast/notch 渲染端。</summary>
         private void ActivateFallback()
         {
             if (_toastFallback != null)
-            {
-                // 先 SetReady fallback（如果还没 ready）
                 _toastFallback.SetReady();
-                // flush 早期缓冲到 GDI+
-                foreach (string msg in _toastEarlyBuffer)
-                    _toastFallback.AddMessage(msg);
-                _toastEarlyBuffer.Clear();
-            }
             if (_notchFallback != null)
                 _notchFallback.SetReady();
-        }
-
-        /// <summary>Web 通道恢复后，挂起 GDI+ fallback（隐藏 + 停 timer），避免双重 UI。</summary>
-        private void SuspendFallback()
-        {
-            // Phase 3: useNativeHud=true 时不挂起——让 NotchOverlay/ToastOverlay 一直作为常驻 HUD
-            // panel 打开/关闭由 PanelHostController 显式 Suspend/Resume
-            if (_useNativeHud)
-            {
-                LogManager.Log("[WebOverlay] SuspendFallback skipped (useNativeHud active; companions stay live)");
-                return;
-            }
-            var notch = _notchFallback as NotchOverlay;
-            if (notch != null) notch.Suspend();
-            var toast = _toastFallback as ToastOverlay;
-            if (toast != null) toast.Suspend();
-        }
-
-        /// <summary>Phase 3: 由 Program.cs 在 useNativeHud=true 时调用。</summary>
-        public void SetUseNativeHud(bool active)
-        {
-            _useNativeHud = active;
-        }
-
-        /// <summary>useNativeHud 模式下隐藏 web 端 #notch / #toast-container DOM，避免与 NotchOverlay/ToastOverlay 重叠。</summary>
-        private void HideWebHudDomForNativeHud()
-        {
-            if (!_useNativeHud) return;
-            // 注入 CSS 让 #notch、#toast-container 隐藏；保留其他 web UI（cursor 反馈、tooltip、panel 容器等）
-            // 用 CSS 而不删 DOM，便于切回 useNativeHud=false 时不需重建
-            const string css =
-                "(function(){var s=document.getElementById('cf7-native-hud-css');if(s)return;" +
-                "s=document.createElement('style');s.id='cf7-native-hud-css';" +
-                "s.textContent='#notch,#toast-container,#top-right-tools,#safe-exit-panel,#quest-notice-bar,#combo-status,#jukebox-panel,#map-hud,#context-panel{display:none!important;}';" +
-                // 注：currency-gold/kpoint 与 notch-toolbar 当前都在 #notch 内，
-                // 隐藏 #notch 已自动隐藏；C# NotchOverlay 接管刘海栏货币、FPS、row1-right 与 hover toolbar。
-                // #quest-notice-bar 由 C# RightContextWidget 接管 td/tdh/tdn/mm 持久态 + task/announce 一次性事件。
-                // #combo-status 由 C# ComboWidget 接管 combo|... 输入态 + N combo|... 命中态。
-                // #jukebox-panel 折叠标题栏由 C# RightContextWidget 接管；展开 panel 走 JUKEBOX_EXPAND -> PanelHost。
-                "document.head.appendChild(s);})();";
-            try { ExecScript(css); }
-            catch (Exception ex) { LogManager.Log("[WebOverlay] HideWebHudDomForNativeHud failed: " + ex.Message); }
         }
 
         #endregion
@@ -1985,7 +1916,6 @@ namespace CF7Launcher.Guardian
                 {
                     ExecScript("window.dispatchEvent(new Event('resize'));");
                     RequestViewportMetrics(reason);
-                    ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
                     ForceCursorSample("sync:" + reason);
                     if (ShouldLogOverlayContext(dpiChanged || monitorChanged))
                         DpiDiagnostics.LogOverlayContext("WebOverlay.SyncPosition", _coordinateContext);
@@ -2073,6 +2003,13 @@ namespace CF7Launcher.Guardian
                     // C# 响应回到 JS：{ type:'taskResult', task, callId, ...原响应 }
                     HandleWebTaskMessage(parsed, json);
                 }
+                else if (type == "panel-toast")
+                {
+                    // 面板 toast 桥接：web 面板模块 Toast.add 上送原始 Flash htmlText 子集，
+                    // 由 IToastSink → NativeHud ToastWidget 渲染；severity 音效已在 web 侧播放。
+                    string panelToastHtml = parsed != null ? parsed.Value<string>("html") : null;
+                    if (!string.IsNullOrEmpty(panelToastHtml)) AddMessage(panelToastHtml);
+                }
                 else if (type == "panel")
                 {
                     // 先匹配 type=="panel"——避免下面 jukebox 子串 fallback 把含 "panel":"jukebox" 字段的
@@ -2119,14 +2056,12 @@ namespace CF7Launcher.Guardian
                     var oldTimeout = System.Threading.Interlocked.Exchange(ref _reloadTimeout, null);
                     if (oldTimeout != null) oldTimeout.Dispose();
 
-                    // flush 早期缓冲；native HUD idle 下不把消息推给隐藏 Web HUD
-                    if (_toastReady && !_useNativeHud)
-                        FlushToastBuffer();
-                    if (!_useNativeHud || _panelMode)
+                    // flush 早期缓冲：native HUD idle 下不把消息推给隐藏 Web HUD；仅 panel 模式回放
+                    if (_panelMode)
                         FlushUiDataBuffer();
 
-                    // 显示 overlay（如果 SetReady 已先调用）
-                    if (_shown && (!_useNativeHud || _panelMode))
+                    // 显示 overlay（仅在 panel 模式且 SetReady 已先调用时）
+                    if (_shown && _panelMode)
                     {
                         SyncPosition();
                         ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
@@ -2137,7 +2072,7 @@ namespace CF7Launcher.Guardian
                     }
                     else
                     {
-                        if (_useNativeHud && !_shown && !_panelMode)
+                        if (!_shown && !_panelMode)
                             ApplyHiddenWarmupBounds("ready_hidden_native");
                         else
                             SyncPosition("ready_hidden");
@@ -2145,36 +2080,18 @@ namespace CF7Launcher.Guardian
                             _cursorOverlay.SetReady();
                     }
 
-                    // 非开发环境：隐藏"其他"菜单中的开发工具
-                    if (!_devMode)
-                        ExecScript("document.getElementById('notch').classList.add('hide-other')");
-
                     // 一次性推送光照等级静态数据
-                    if (!_useNativeHud || _panelMode)
+                    if (_panelMode)
                         PushLightLevels();
 
                     // 推送音乐目录到 WebView
-                    if (_musicCatalog != null && (!_useNativeHud || _panelMode))
+                    if (_musicCatalog != null && _panelMode)
                         PostToWeb(_musicCatalog.GetFullCatalogJson());
 
-                    // Web 通道恢复：useNativeHud=true 时让 NotchOverlay/ToastOverlay 一直显示作为常驻 HUD；
-                    // 否则挂起 GDI+ fallback 避免双重 UI
-                    if (_useNativeHud)
-                    {
-                        // 让 NotchOverlay/ToastOverlay 显示（与 ActivateFallback 等价但语义清晰）
-                        ActivateFallback();
-                        // 隐藏 web 端 #notch / #toast-container DOM 避免视觉重叠
-                        HideWebHudDomForNativeHud();
-                        EnsureCursorTimer();
-                        ScheduleNativeHudIdleSuspend("web_ready");
-                    }
-                    else
-                    {
-                        SuspendFallback();
-                        RequestViewportMetrics("ready");
-                        ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
-                        EnsureCursorTimer();
-                    }
+                    // Web 通道恢复：唤醒 NativeHud toast/notch 渲染端，随后把隐藏的 Web HUD 冻结到 idle
+                    ActivateFallback();
+                    EnsureCursorTimer();
+                    ScheduleNativeHudIdleSuspend("web_ready");
                 }
             }
             catch (Exception ex)
@@ -3160,17 +3077,11 @@ namespace CF7Launcher.Guardian
             _socketServer = server;
         }
 
-        /// <summary>设置开发模式标志。非开发环境下隐藏"其他"菜单中的开发工具。</summary>
-        public void SetDevMode(bool isDev)
-        {
-            _devMode = isDev;
-        }
-
         internal void SetMusicCatalog(CF7Launcher.Audio.MusicCatalog catalog)
         {
             _musicCatalog = catalog;
             catalog.CatalogChanged += delegate(string updateJson) {
-                if (_webReady && (!_useNativeHud || _panelMode)) PostToWeb(updateJson);
+                if (_webReady && _panelMode) PostToWeb(updateJson);
             };
         }
 
@@ -3195,133 +3106,14 @@ namespace CF7Launcher.Guardian
                 + (prefs.AmbientEnabled ? "true" : "false") + "}");
         }
 
-        /// <summary>
-        /// 注入 Notch 所需的依赖。在 FrameTask 创建后调用。
-        /// </summary>
-        public void SetNotchDependencies(FpsRingBuffer fpsBuffer,
-            Action onToggleFullscreen, Action onToggleLog,
-            Action onForceExit, Action<Keys> onSendKey)
-        {
-            _fpsBuffer = fpsBuffer;
-            _onToggleFullscreen = onToggleFullscreen;
-            _onToggleLog = onToggleLog;
-            _onForceExit = onForceExit;
-            _onSendKey = onSendKey;
-
-            // FPS 推送 timer (1Hz)
-            _fpsTimer = new System.Windows.Forms.Timer();
-            _fpsTimer.Interval = 1000;
-            _fpsTimer.Tick += OnFpsTick;
-
-            // BGM 音频可视化 timer (60ms ≈ 16.7Hz)
-            _audioTimer = new System.Windows.Forms.Timer();
-            _audioTimer.Interval = _disableVisualizers ? 250 : 60;
-            _audioTimer.Tick += OnAudioTick;
-        }
-
-        private void OnFpsTick(object sender, EventArgs e)
-        {
-            if (_frozenForIdle) return;
-            if (!_webReady || _disposed || _fpsBuffer == null) return;
-            if (!_fpsBuffer.HasData) return;
-
-            // 构建 JSON: {type:"fps", value:N, hour:N, points:[...]}
-            System.Text.StringBuilder sb = new System.Text.StringBuilder(256);
-            sb.Append("{\"type\":\"fps\",\"value\":");
-            sb.Append(Math.Round(_fpsBuffer.Latest * 10) / 10.0); // 1 位小数
-            sb.Append(",\"hour\":");
-            sb.Append(_fpsBuffer.GameHour);
-            sb.Append(",\"level\":");
-            sb.Append(_fpsBuffer.PerfLevel);
-            sb.Append(",\"points\":[");
-            int count = _fpsBuffer.Count;
-            int start = Math.Max(0, count - 30);
-            for (int i = start; i < count; i++)
-            {
-                if (i > start) sb.Append(',');
-                sb.Append(Math.Round(_fpsBuffer.GetAt(i) * 10) / 10.0);
-            }
-            sb.Append("]}");
-            PostToWeb(sb.ToString());
-        }
-
-        private void OnAudioTick(object sender, EventArgs e)
-        {
-            if (_frozenForIdle) return;
-            if (!_webReady || _disposed) return;
-
-            try
-            {
-                if (_disableVisualizers)
-                {
-                    int lowEffectsPlaying = Audio.AudioEngine.ma_bridge_bgm_is_playing();
-                    HandleAudioTrackState(lowEffectsPlaying);
-                    return;
-                }
-
-                float peakL, peakR;
-                Audio.AudioEngine.ma_bridge_bgm_get_peak(out peakL, out peakR);
-                int playing = Audio.AudioEngine.ma_bridge_bgm_is_playing();
-                float cursor = Audio.AudioEngine.ma_bridge_bgm_get_cursor();
-                float length = Audio.AudioEngine.ma_bridge_bgm_get_length();
-
-                // 紧凑 JSON: {type:"audio",l:0.5,r:0.4,p:1,c:12.3,d:180.0}
-                System.Text.StringBuilder sb = new System.Text.StringBuilder(128);
-                sb.Append("{\"type\":\"audio\",\"l\":");
-                sb.Append(Math.Round(peakL * 1000) / 1000.0);
-                sb.Append(",\"r\":");
-                sb.Append(Math.Round(peakR * 1000) / 1000.0);
-                sb.Append(",\"p\":");
-                sb.Append(playing);
-                sb.Append(",\"c\":");
-                sb.Append(Math.Round(cursor * 10) / 10.0);
-                sb.Append(",\"d\":");
-                sb.Append(Math.Round(length * 10) / 10.0);
-                sb.Append('}');
-                PostToWeb(sb.ToString());
-
-                // 曲目自然结束检测（排除暂停和手动 stop）
-                bool isPlaying = playing == 1;
-                // Flash 侧 bgm_play/bgm_stop 同样视为 manual stop，防换歌间隙误触 trackEnd
-                if (CF7Launcher.Tasks.AudioTask.FlashBgmChange)
-                {
-                    _manualStop = true;
-                    CF7Launcher.Tasks.AudioTask.FlashBgmChange = false;
-                }
-                if (_wasPlaying && !isPlaying && !_manualStop && !_bgmPaused)
-                {
-                    SendGameCommand("jukeboxTrackEnd");
-                }
-                _wasPlaying = isPlaying;
-                if (isPlaying) { _manualStop = false; _bgmPaused = false; }
-            }
-            catch { }
-        }
-
         /// <summary>设置当前 BGM 标题（由 UiData bgm: 推送）。</summary>
-        private void HandleAudioTrackState(int playing)
-        {
-            bool isPlaying = playing == 1;
-            if (CF7Launcher.Tasks.AudioTask.FlashBgmChange)
-            {
-                _manualStop = true;
-                CF7Launcher.Tasks.AudioTask.FlashBgmChange = false;
-            }
-            if (_wasPlaying && !isPlaying && !_manualStop && !_bgmPaused)
-            {
-                SendGameCommand("jukeboxTrackEnd");
-            }
-            _wasPlaying = isPlaying;
-            if (isPlaying) { _manualStop = false; _bgmPaused = false; }
-        }
-
         public void SetBgmTitle(string title)
         {
             _bgmTitle = title ?? "";
         }
 
         /// <summary>
-        /// JukeboxTitlebarWidget 暂停按钮入口：翻转 _bgmPaused 镜像（HandleAudioTrackState 用它抑制 jukeboxTrackEnd）
+        /// JukeboxTitlebarWidget 暂停按钮入口：翻转 _bgmPaused 镜像
         /// 并直接调 AudioEngine pause/resume。返回最新 paused 状态。
         ///
         /// 与 HandleJukeboxMessage 的 "pause"/"resume" 分支等价（两条入口共享同一权威源）。
@@ -3382,7 +3174,7 @@ namespace CF7Launcher.Guardian
                 // 无冒号的段（旧格式）不进快照，由 buffer 兜底
             }
 
-            bool nativeHudIdle = _useNativeHud && !_panelMode;
+            bool nativeHudIdle = !_panelMode;
             if (_webFailed || !_webReady || _frozenForIdle || nativeHudIdle)
             {
                 // WebView2 未就绪/降级/native idle SW_HIDE+suspend：仅维护快照，不 ExecScript
@@ -3442,11 +3234,8 @@ namespace CF7Launcher.Guardian
                     category, text, accentColor);
                 return;
             }
-            // useNativeHud=true 时始终走 NotchOverlay（web 端 #notch DOM 已隐藏）
-            if (_useNativeHud || _webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.AddNotice(category, text, accentColor); return; }
-            string hex = accentColor.R.ToString("x2") + accentColor.G.ToString("x2") + accentColor.B.ToString("x2");
-            string escaped = text.Replace("\\", "\\\\").Replace("'", "\\'");
-            ExecScript("typeof Notch!=='undefined'&&Notch.addNotice('" + category + "','" + escaped + "','#" + hex + "')");
+            // 常驻 HUD 已由 NativeHud 接管：始终转发（NotchWidget 渲染，web 端无 #notch DOM）
+            if (_notchFallback != null) _notchFallback.AddNotice(category, text, accentColor);
         }
 
         public void SetStatusItem(string id, string label, string subLabel, Color accentColor)
@@ -3457,12 +3246,7 @@ namespace CF7Launcher.Guardian
                     id, label, subLabel, accentColor);
                 return;
             }
-            if (_useNativeHud || _webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.SetStatusItem(id, label, subLabel, accentColor); return; }
-            string text = label;
-            if (!string.IsNullOrEmpty(subLabel)) text += "  " + subLabel;
-            string hex = accentColor.R.ToString("x2") + accentColor.G.ToString("x2") + accentColor.B.ToString("x2");
-            string escaped = text.Replace("\\", "\\\\").Replace("'", "\\'");
-            ExecScript("typeof Notch!=='undefined'&&Notch.setStatus('" + id + "','" + escaped + "','#" + hex + "')");
+            if (_notchFallback != null) _notchFallback.SetStatusItem(id, label, subLabel, accentColor);
         }
 
         public void ClearStatusItem(string id)
@@ -3472,8 +3256,7 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(ClearStatusItem), id);
                 return;
             }
-            if (_useNativeHud || _webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.ClearStatusItem(id); return; }
-            ExecScript("typeof Notch!=='undefined'&&Notch.clearStatus('" + id + "')");
+            if (_notchFallback != null) _notchFallback.ClearStatusItem(id);
         }
 
         #endregion
@@ -3487,37 +3270,8 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(AddMessage), text);
                 return;
             }
-            // useNativeHud=true 或 WebView2 失败 → 永久走 GDI+ fallback（ToastOverlay）
-            if (_useNativeHud || _webFailed)
-            {
-                if (_toastFallback != null) _toastFallback.AddMessage(text);
-                return;
-            }
-            if (!_toastReady)
-            {
-                _toastEarlyBuffer.Add(text);
-                return;
-            }
-            SendToast(text);
-        }
-
-        private void SendToast(string text)
-        {
-            if (!_webReady || _disposed)
-            {
-                // JS 还没 ready → 走 GDI+ fallback，不丢弃
-                if (_toastFallback != null) _toastFallback.AddMessage(text);
-                return;
-            }
-            string escaped = EscapeForJs(text);
-            ExecScript("typeof Toast!=='undefined'&&Toast.add('" + escaped + "')");
-        }
-
-        private void FlushToastBuffer()
-        {
-            foreach (string msg in _toastEarlyBuffer)
-                SendToast(msg);
-            _toastEarlyBuffer.Clear();
+            // toast 渲染固定走 NativeHud ToastWidget（含 panel-toast 桥接回流）
+            if (_toastFallback != null) _toastFallback.AddMessage(text);
         }
 
         #endregion
@@ -3531,38 +3285,15 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             _shown = true;
-            _toastReady = true;
-            if (_useNativeHud)
-            {
-                PerfTrace.Mark("webOverlay.set_ready_native");
-                ActivateFallback();
-                if (_cursorOverlay != null)
-                    _cursorOverlay.SetReady();
-                if (_webReady)
-                {
-                    HideWebHudDomForNativeHud();
-                    EnsureCursorTimer();
-                    ScheduleNativeHudIdleSuspend("set_ready");
-                }
-                return;
-            }
-            if (_webReady)
-                FlushToastBuffer();
-            if (_fpsTimer != null)
-                _fpsTimer.Start();
-            if (_audioTimer != null)
-                _audioTimer.Start();
+            // 常驻 HUD 已由 NativeHud 承载：唤醒渲染端并把隐藏 Web HUD 冻结到 idle。
+            PerfTrace.Mark("webOverlay.set_ready_native");
+            ActivateFallback();
+            if (_cursorOverlay != null)
+                _cursorOverlay.SetReady();
             if (_webReady)
             {
-                SyncPosition();
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
-                SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-                if (_cursorOverlay != null)
-                    _cursorOverlay.SetReady();
-                RequestViewportMetrics("set_ready");
-                ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
                 EnsureCursorTimer();
+                ScheduleNativeHudIdleSuspend("set_ready");
             }
         }
 
@@ -3629,8 +3360,6 @@ namespace CF7Launcher.Guardian
                 }
                 if (_commandRouter != null)
                 {
-                    _commandRouter.PanelChanged -=
-                        OnAuthoritativePanelChanged;
                     _commandRouter
                         .CancelAllPanelNavigationIntents(
                             "web_overlay_dispose");
@@ -3639,18 +3368,6 @@ namespace CF7Launcher.Guardian
                     _panelHost.PanelChanged -=
                         OnAuthoritativePanelChanged;
                 ShowSystemCursor();
-                if (_fpsTimer != null)
-                {
-                    _fpsTimer.Stop();
-                    _fpsTimer.Dispose();
-                    _fpsTimer = null;
-                }
-                if (_audioTimer != null)
-                {
-                    _audioTimer.Stop();
-                    _audioTimer.Dispose();
-                    _audioTimer = null;
-                }
                 if (_cursorTimer != null)
                 {
                     _cursorTimer.Stop();
@@ -3781,14 +3498,10 @@ namespace CF7Launcher.Guardian
         {
             string panelName = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelName
-                    : null);
+                : null;
             string panelInstanceId = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelInstanceId
-                    : null);
+                : null;
             BindMaterialShopNavigationOwners(
                 panelName,
                 panelInstanceId);
@@ -3866,14 +3579,10 @@ namespace CF7Launcher.Guardian
                 coordinator.OnPanelChanged(
                     _panelHost != null
                         ? _panelHost.ActivePanelName
-                        : (_commandRouter != null
-                            ? _commandRouter.ActiveFallbackPanelName
-                            : null),
+                        : null,
                     _panelHost != null
                         ? _panelHost.ActivePanelInstanceId
-                        : (_commandRouter != null
-                            ? _commandRouter.ActiveFallbackPanelInstanceId
-                            : null));
+                        : null);
             }
         }
 
@@ -4029,8 +3738,6 @@ namespace CF7Launcher.Guardian
         {
             if (_panelHost != null)
                 _panelHost.PanelChanged -= OnAuthoritativePanelChanged;
-            if (_commandRouter != null)
-                _commandRouter.PanelChanged -= OnAuthoritativePanelChanged;
             _panelHost = host;
             if (_panelHost != null)
             {
@@ -4039,18 +3746,11 @@ namespace CF7Launcher.Guardian
                     _panelHost.ActivePanelName,
                     _panelHost.ActivePanelInstanceId);
             }
-            else if (_commandRouter != null)
-            {
-                _commandRouter.PanelChanged += OnAuthoritativePanelChanged;
-                OnAuthoritativePanelChanged(
-                    _commandRouter.ActiveFallbackPanelName,
-                    _commandRouter.ActiveFallbackPanelInstanceId);
-            }
         }
 
         /// <summary>
         /// idle → panel 切换。
-        /// Step：解冻 → ResumeWebTimers → 去 EX_LAYERED+TRANSPARENT → TransparencyKey/Empty → opaque BG →
+        /// Step：解冻 → 去 EX_LAYERED+TRANSPARENT → TransparencyKey/Empty → opaque BG →
         ///       SetWindowPos HWND_TOP+SWP_FRAMECHANGED → PostToWeb panel_viewport_set → flush snapshot
         /// 注：用 HWND_TOP 而非 backdropHwnd（MSDN: hWndInsertAfter 是 "precede"，反而把 web 放到 backdrop 之下）。
         /// </summary>
@@ -4064,8 +3764,6 @@ namespace CF7Launcher.Guardian
             _frozenForIdle = false;
             _nativeHudIdleSuspendPending = false;
             _panelViewportRepairAttempts = 0;
-
-            ResumeWebTimers();
 
             // 唤醒 CoreWebView2（如果之前 DoFullIdleSuspend 调过 TrySuspendAsync）
             // SDK 1.0.3856.49 有 Resume()；suspend 状态下未 Resume 调 ExecScript 可能丢弃
@@ -4351,9 +4049,8 @@ namespace CF7Launcher.Guardian
         /// Step：SuspendWebTimers → 冻结 HandleUiData → SW_HIDE → 恢复 EX_LAYERED+TRANSPARENT →
         ///       HWND_NOTOPMOST → TransparencyKey 复原 → DefaultBackgroundColor=Transparent → TrySuspendAsync fire-and-forget
         ///
-        /// closingPanelName：调用方在 _activePanel 被置 null 之前 snapshot 的 panel 名，用于
-        /// [FocusRestore] 日志的 reason 字段归因（DoFullIdleSuspend/DoSoftIdleRestore 里 _activePanel
-        /// 已为 null）。可空，回落到 _activePanel ?? "?"。
+        /// closingPanelName：调用方在 panel 状态清空前 snapshot 的 panel 名，用于
+        /// [FocusRestore] 日志的 reason 字段归因。可空，回落到 "?"。
         /// </summary>
         public void SuspendAfterPanel(string closingPanelName = null)
         {
@@ -4373,7 +4070,7 @@ namespace CF7Launcher.Guardian
             if (_disposed || _panelMode || !_panelTakeForeground
                 || _flashFocusRestorer == null)
                 return false;
-            string panelTag = closingPanelName ?? _activePanel ?? "?";
+            string panelTag = closingPanelName ?? "?";
             try
             {
                 PerfTrace.Mark(
@@ -4403,7 +4100,7 @@ namespace CF7Launcher.Guardian
 
         private void ScheduleNativeHudIdleSuspend(string reason)
         {
-            if (!_useNativeHud || !_webReady || !_shown || _disposed || _panelMode || _frozenForIdle)
+            if (!_webReady || !_shown || _disposed || _panelMode || _frozenForIdle)
                 return;
             if (_nativeHudIdleSuspendPending)
                 return;
@@ -4414,7 +4111,7 @@ namespace CF7Launcher.Guardian
                 BeginInvoke(new Action(delegate()
                 {
                     _nativeHudIdleSuspendPending = false;
-                    if (_disposed || !_useNativeHud || !_webReady || !_shown || _panelMode || _frozenForIdle)
+                    if (_disposed || !_webReady || !_shown || _panelMode || _frozenForIdle)
                         return;
 
                     // reason 是 NativeHud idle 调度上下文（如 "set_ready"），转给 FocusRestore 做归因
@@ -4431,23 +4128,19 @@ namespace CF7Launcher.Guardian
 
         private void DoForceIdleSequence(string closingPanelName)
         {
-            string mode = _useNativeHud ? "full" : "soft";
-            string panelTag = closingPanelName ?? _activePanel ?? "?";
+            const string mode = "full";
+            string panelTag = closingPanelName ?? "?";
             long idleStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("webOverlay.idle_sequence", mode + " panel=" + panelTag);
             _panelMode = false;
             _panelFocusRestoreGate.EndPanel();
 
-            // Phase 4 收尾：useNativeHud=true 时所有常驻 HUD 已迁到 C# widget
+            // 常驻 HUD 已全部迁到 C# widget
             // (Notch/Toast/Currency/Combo/QuestNotice/SafeExitPanel/TopRightTools/JukeboxTitlebar/MapHud)，
             // 整个 SW_HIDE WebView2 + TrySuspendAsync 安全 → 拿回 ~15pp DWM α 地板成本。
-            // useNativeHud=false 仍走 SoftIdleRestore（保留 web HUD 显示）。
             try
             {
-                if (_useNativeHud)
-                    DoFullIdleSuspend(closingPanelName);
-                else
-                    DoSoftIdleRestore(closingPanelName);
+                DoFullIdleSuspend(closingPanelName);
             }
             finally
             {
@@ -4487,12 +4180,11 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// 完整 idle 冻结：SW_HIDE + 恢复 EX_STYLE + 停 timer + 冻结 HandleUiData + TrySuspendAsync。
-        /// 仅 useNativeHud=true 时启用——前提是 NotchOverlay/ToastOverlay 接管 HUD 渲染，
-        /// 玩家在 panel 关闭期间仍能看到 notch/toolbar/退出按钮。
+        /// 常驻 HUD 由 NativeHud widget 渲染，玩家在 panel 关闭期间仍能看到 notch/toolbar/退出按钮。
         /// </summary>
         private void DoFullIdleSuspend(string closingPanelName)
         {
-            string panelTag = closingPanelName ?? _activePanel ?? "?";
+            string panelTag = closingPanelName ?? "?";
             long stepStart;
 
             // 1) 停所有 web-side timer（_cursorTimer 例外，见 SuspendWebTimers 注释）
@@ -4528,7 +4220,7 @@ namespace CF7Launcher.Guardian
             catch (Exception ex) { LogManager.Log("[Panel] DoFullIdleSuspend SetWindowLong failed: " + ex.Message); }
             LogIdleStepDuration("full.ex_style", panelTag, stepStart, 25.0);
 
-            // 5) HWND_NOTOPMOST 防御：意外被唤醒也不浮到 NotchOverlay/HitNumber 之上
+            // 5) HWND_NOTOPMOST 防御：意外被唤醒也不浮到 NativeHud/HitNumber 之上
             stepStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("webOverlay.idle.full.notopmost.start", panelTag);
             try
@@ -4562,70 +4254,11 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        /// <summary>
-        /// 应急 idle restore：仅恢复样式拉回 anchor 矩形，保持 web 可见 + 不冻结。
-        /// useNativeHud=false 时使用（无 NotchOverlay 接管，必须保留 web HUD）。
-        /// </summary>
-        private void DoSoftIdleRestore(string closingPanelName)
-        {
-            string panelTag = closingPanelName ?? _activePanel ?? "?";
-            long stepStart;
-
-            // 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT + WS_EX_NOACTIVATE
-            // 注意此路径**没有 SW_HIDE**——WebOverlay 仍可见但回到 click-through，Flash 必须重新前台
-            // 否则 WASD 走 WebOverlay 不可见 HWND 黑洞。
-            stepStart = Stopwatch.GetTimestamp();
-            PerfTrace.Mark("webOverlay.idle.soft.ex_style.start", panelTag);
-            try
-            {
-                int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                int newEx = NormalizeOverlayExStyle(ex, false, _panelTakeForeground);
-                SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
-                LogManager.Log("[Panel] EX_STYLE idle-soft new=0x" + newEx.ToString("X"));
-            }
-            catch (Exception ex) { LogManager.Log("[Panel] DoSoftIdleRestore SetWindowLong failed: " + ex.Message); }
-            LogIdleStepDuration("soft.ex_style", panelTag, stepStart, 25.0);
-
-            stepStart = Stopwatch.GetTimestamp();
-            PerfTrace.Mark("webOverlay.idle.soft.transparency.start", panelTag);
-            try { this.TransparencyKey = TRANSPARENT_COLOR; } catch { }
-            try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Transparent; } catch { }
-            LogIdleStepDuration("soft.transparency", panelTag, stepStart, 25.0);
-
-            stepStart = Stopwatch.GetTimestamp();
-            PerfTrace.Mark("webOverlay.idle.soft.z_order.start", panelTag);
-            try
-            {
-                SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-            }
-            catch { }
-            LogIdleStepDuration("soft.z_order", panelTag, stepStart, 25.0);
-
-            stepStart = Stopwatch.GetTimestamp();
-            PerfTrace.Mark("webOverlay.idle.soft.sync_position.start", panelTag);
-            try { ScheduleSyncPosition("panel_close"); } catch { }
-            LogIdleStepDuration("soft.sync_position", panelTag, stepStart, 25.0);
-
-            // Flash 回前台：useNativeHud=false 路径必须，因为 WebOverlay 仍可见无 SW_HIDE。
-            // 走 _flashFocusRestorer 统一 primitive。
-            if (_panelTakeForeground && _flashFocusRestorer != null)
-            {
-                stepStart = Stopwatch.GetTimestamp();
-                PerfTrace.Mark("webOverlay.idle.soft.restore_focus.start", panelTag);
-                try { _flashFocusRestorer("panel_close:soft:" + panelTag); }
-                catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
-                LogIdleStepDuration("soft.restore_focus", panelTag, stepStart, 25.0);
-            }
-        }
-
         /// <summary>停所有 web-side timer。新增 timer 字段必须加入此方法 + WebOverlayTimerFreezeAuditTests 清单。
         /// 例外：_cursorTimer 不停——cursor 数据流是纯 C# 鼠标 hook → CursorOverlayForm，与 web frozen 状态无关，
         /// 玩家在 panel 关闭/web SW_HIDE 时仍需要看到 cursor 移动。</summary>
         private void SuspendWebTimers()
         {
-            if (_fpsTimer != null) _fpsTimer.Stop();
-            if (_audioTimer != null) _audioTimer.Stop();
             // _cursorTimer 不停（cursor 渲染独立于 web）
             if (_positionSettleTimer != null) _positionSettleTimer.Stop();
             if (_positionLongSettleTimer != null) _positionLongSettleTimer.Stop();
@@ -4634,14 +4267,6 @@ namespace CF7Launcher.Guardian
                 try { _reloadDebounce.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite); } catch { }
             if (_reloadTimeout != null)
                 try { _reloadTimeout.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite); } catch { }
-        }
-
-        /// <summary>恢复 web-side timer（panel 态）。仅启 fps/audio；cursor/reload 按需 start 由各自 EnsureXxx 入口。</summary>
-        private void ResumeWebTimers()
-        {
-            if (!_panelMode) return;
-            if (_fpsTimer != null) _fpsTimer.Start();
-            if (_audioTimer != null) _audioTimer.Start();
         }
 
         #endregion
@@ -4788,14 +4413,10 @@ namespace CF7Launcher.Guardian
         {
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelName
-                    : null);
+                : null;
             string activePanelInstanceId = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelInstanceId
-                    : null);
+                : null;
             return HasExactPanelOwnerBinding(
                 parsed,
                 expectedPanel,
@@ -4854,9 +4475,7 @@ namespace CF7Launcher.Guardian
             }
             string hostActivePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelName
-                    : null);
+                : null;
             bool characterBuildRecoveryBarrier =
                 _characterBuildTask != null
                 && _characterBuildTask
@@ -4963,9 +4582,9 @@ namespace CF7Launcher.Guardian
             if (cmd == "switch_manage" || cmd == "switch_trainer")
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
-                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                    : null;
                 string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
-                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                    : null;
                 bool valid = cmd == "switch_manage"
                     ? IsValidSkillManageSwitchEnvelope(parsed, activeName, activeInstance)
                     : IsValidSkillTrainerSwitchEnvelope(parsed, activeName, activeInstance);
@@ -4990,9 +4609,9 @@ namespace CF7Launcher.Guardian
             if (domainRoute == PanelDomainRoute.Inventory)
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
-                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                    : null;
                 string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
-                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                    : null;
                 bool hasInventoryContext =
                     HasInventoryPayloadContext(parsed);
                 if (hasInventoryContext)
@@ -5142,9 +4761,9 @@ namespace CF7Launcher.Guardian
             if (domainRoute == PanelDomainRoute.EquipmentTuning)
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
-                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                    : null;
                 string instanceId = _panelHost != null ? _panelHost.ActivePanelInstanceId
-                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                    : null;
                 LogManager.Log("[Panel] Routing domain=equipment_tuning cmd=" + logCmd
                     + " to EquipmentTuningTask, _equipmentTuningTask="
                     + (_equipmentTuningTask != null ? "ok" : "NULL"));
@@ -5174,12 +4793,10 @@ namespace CF7Launcher.Guardian
             if (domainRoute == PanelDomainRoute.Loadout)
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
-                    : (_commandRouter != null
-                        ? _commandRouter.ActiveFallbackPanelName : null);
+                    : null;
                 string instanceId = _panelHost != null
                     ? _panelHost.ActivePanelInstanceId
-                    : (_commandRouter != null
-                        ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                    : null;
                 LogManager.Log("[Panel] Routing domain=loadout cmd=" + logCmd
                     + " to CharacterBuildTask, _characterBuildTask="
                     + (_characterBuildTask != null ? "ok" : "NULL"));
@@ -5218,9 +4835,9 @@ namespace CF7Launcher.Guardian
                 if (_skillTask != null)
                 {
                     string activeName = _panelHost != null ? _panelHost.ActivePanelName
-                        : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                        : null;
                     string instanceId = _panelHost != null ? _panelHost.ActivePanelInstanceId
-                        : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                        : null;
                     if (!IsActiveSkillPanel(activeName, instanceId))
                     {
                         LogManager.Log("[SkillTask] rejected skills domain request outside active skills panel");
@@ -5262,14 +4879,10 @@ namespace CF7Launcher.Guardian
                         {
                             string activeName = _panelHost != null
                                 ? _panelHost.ActivePanelName
-                                : (_commandRouter != null
-                                    ? _commandRouter.ActiveFallbackPanelName
-                                    : _activePanel);
+                                : null;
                             string activeInstance = _panelHost != null
                                 ? _panelHost.ActivePanelInstanceId
-                                : (_commandRouter != null
-                                    ? _commandRouter.ActiveFallbackPanelInstanceId
-                                    : null);
+                                : null;
                             if (!IsValidInventoryOwnerCloseEnvelope(
                                     parsed, activeName, activeInstance))
                             {
@@ -5323,9 +4936,9 @@ namespace CF7Launcher.Guardian
                         if (panel == "workbench")
                         {
                             string activeName = _panelHost != null ? _panelHost.ActivePanelName
-                                : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : _activePanel);
+                                : null;
                             string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
-                                : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                                : null;
                             if (!IsValidWorkbenchCloseEnvelope(parsed, activeName, activeInstance))
                             {
                                 LogManager.Log("[Workbench] rejected stale/malformed close envelope");
@@ -5475,9 +5088,9 @@ namespace CF7Launcher.Guardian
                         }
                         if (panel == "skills")
                         {
-                            string activeName = _panelHost != null ? _panelHost.ActivePanelName : _activePanel;
+                            string activeName = _panelHost != null ? _panelHost.ActivePanelName : null;
                             string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
-                                : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                                : null;
                             if (!IsValidSkillCloseEnvelope(parsed, activeName, activeInstance))
                             {
                                 LogManager.Log("[SkillTask] rejected stale/malformed close envelope");
@@ -5551,18 +5164,12 @@ namespace CF7Launcher.Guardian
                             string activeName =
                                 _panelHost != null
                                     ? _panelHost.ActivePanelName
-                                    : (_commandRouter != null
-                                        ? _commandRouter
-                                            .ActiveFallbackPanelName
-                                        : _activePanel);
+                                    : null;
                             string activeInstance =
                                 _panelHost != null
                                     ? _panelHost
                                         .ActivePanelInstanceId
-                                    : (_commandRouter != null
-                                        ? _commandRouter
-                                            .ActiveFallbackPanelInstanceId
-                                        : null);
+                                    : null;
                             bool requestsCharacterBuild =
                                 string.Equals(
                                     parsed.Value<string>(
@@ -5654,9 +5261,7 @@ namespace CF7Launcher.Guardian
                                 characterBuildPauseReleaseHandled);
                         }
                         // panel close 回流：让 PanelHostController 把 backdrop/HUD/shield 拨回 idle 不变量
-                        // Phase 1 _panelHost._activePanel 始终为 null（PanelHost 未接管打开路径）→ ClosePanel 走 ExecuteCommand 内
-                        // "if (_activePanel == null) return;" 早 return，无副作用
-                        // Phase 2+ PanelHost 真接管打开后，此回流防止 backdrop/HUD 残留半状态
+                        // PanelHost 接管打开后，此回流防止 backdrop/HUD 残留半状态
                         if (_panelHost != null)
                         {
                             // 顺序很关键：必须先清栈再 ClosePanel，否则 ExecuteCommand Close path
@@ -6031,10 +5636,10 @@ namespace CF7Launcher.Guardian
                                 // 请求必须来自当前活跃的 stage-select 实例，且携带同一 panelInstanceId。
                                 string stageSelectActiveName = _panelHost != null
                                     ? _panelHost.ActivePanelName
-                                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelName : null);
+                                    : null;
                                 string stageSelectInstanceId = _panelHost != null
                                     ? _panelHost.ActivePanelInstanceId
-                                    : (_commandRouter != null ? _commandRouter.ActiveFallbackPanelInstanceId : null);
+                                    : null;
                                 if (!IsActiveStageSelectPanel(stageSelectActiveName, stageSelectInstanceId))
                                 {
                                     LogManager.Log("[StageSelectTask] rejected request outside active stage-select panel: cmd=" + cmd);
@@ -6314,16 +5919,13 @@ namespace CF7Launcher.Guardian
             if (panel == "arena" && _arenaTask != null)
                 _arenaTask.ClearPending();
             // stage-select 同位（P3）：close 接受即按精确实例清在途请求，不等 Host 泵执行；
-            // Host 路径下观察器随后以同实例幂等重放，fallback 路径则靠这里兜底。
+            // Host 路径下观察器随后以同实例幂等重放。
             if (panel == "stage-select" && _stageSelectTask != null)
             {
                 string stageSelectClosingInstance =
                     _panelHost != null && _panelHost.ActivePanelName == "stage-select"
                         ? _panelHost.ActivePanelInstanceId
-                        : (_panelHost == null && _commandRouter != null
-                            && _commandRouter.ActiveFallbackPanelName == "stage-select"
-                            ? _commandRouter.ActiveFallbackPanelInstanceId
-                            : null);
+                        : null;
                 if (stageSelectClosingInstance != null)
                     _stageSelectTask.HandleAuthoritativePanelClosed(stageSelectClosingInstance);
             }
@@ -6341,9 +5943,6 @@ namespace CF7Launcher.Guardian
                 TrySendGameCommand("arenaReturnBase");
             if (!pauseReleaseHandled)
                 TryReleaseGenericWebPanelPause();
-            _activePanel = null;
-            if (_commandRouter != null)
-                _commandRouter.ClearFallbackPanelInstance();
             if (_onPanelStateChanged != null)
                 _onPanelStateChanged(false);
         }
@@ -6482,14 +6081,10 @@ namespace CF7Launcher.Guardian
         {
             string panelName = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelName
-                    : _activePanel);
+                : null;
             string panelInstanceId = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelInstanceId
-                    : null);
+                : null;
             bool characterBuildBound = _characterBuildTask != null
                 && _characterBuildTask.HasBoundPanel;
             bool equipmentTuningBound = _equipmentTuningTask != null
@@ -6548,14 +6143,10 @@ namespace CF7Launcher.Guardian
                 return;
             string panelName = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelName
-                    : _activePanel);
+                : null;
             string panelInstanceId = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : (_commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelInstanceId
-                    : null);
+                : null;
             if (!string.Equals(
                     panelName,
                     "skills",
@@ -6596,14 +6187,6 @@ namespace CF7Launcher.Guardian
                 }
                 return;
             }
-
-            if (_commandRouter != null)
-                _commandRouter.ClearFallbackPanelInstance();
-            _activePanel = null;
-            if (_onPanelStateChanged != null)
-                _onPanelStateChanged(false);
-            ForceIdleState(
-                "skills_web_navigation");
         }
 
         private void BeginCharacterBuildWebNavigationRecovery()
@@ -6629,10 +6212,6 @@ namespace CF7Launcher.Guardian
                 ? _panelHost.ActivePanelName : null;
             string trackedInstance = trackedVisual
                 ? _panelHost.ActivePanelInstanceId : null;
-            bool fallbackVisual = _panelHost == null
-                && _commandRouter != null
-                && !string.IsNullOrEmpty(
-                    _commandRouter.ActiveFallbackPanelName);
             int readyGeneration = 0;
             if (_socketServer != null)
                 _socketServer.TryGetReadyGeneration(
@@ -6659,15 +6238,6 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
-            if (fallbackVisual)
-            {
-                _commandRouter.ClearFallbackPanelInstance();
-                _activePanel = null;
-                if (_onPanelStateChanged != null)
-                    _onPanelStateChanged(false);
-                ForceIdleState(
-                    "character_build_navigation");
-            }
             task.ContinueDetachRecoveryAfterVisualRetired(
                 readyGeneration);
         }
@@ -6732,28 +6302,6 @@ namespace CF7Launcher.Guardian
                         ? disconnectingBuild.PanelInstanceId
                         : null);
 
-            // 旧路径（_activePanel != null）仅追踪 web fallback 模式打开的 panel。
-            // PanelHostController 接管的 panel 状态在 PanelHost 内（_panelHost.IsPanelOpen），
-            // 必须独立联动——否则 backdrop / NativeHud Suspend / InputShield telemetry 会残留。
-            if (_activePanel != null)
-            {
-                string fallbackPanel = _activePanel;
-                string fallbackPanelInstance = _commandRouter != null
-                    ? _commandRouter.ActiveFallbackPanelInstanceId : null;
-                if (_activePanel == "skills" && _skillTask != null && _commandRouter != null)
-                {
-                    _skillTask.HandleAuthoritativePanelClosed(fallbackPanelInstance);
-                }
-                string forceClose = BuildPanelForceClosePayload(
-                    fallbackPanel, fallbackPanelInstance, "disconnected");
-                if (forceClose != null) PostToWeb(forceClose);
-                else LogManager.Log("[Workbench] exact force_close suppressed: missing fallback instance");
-                // 只有需要 Flash 交互的面板才需要恢复暂停状态
-                if (_activePanel == "kshop")
-                    _pauseNeedsRestore = true;
-                _activePanel = null;
-                if (_onPanelStateChanged != null) _onPanelStateChanged(false);
-            }
             // PanelHost 接管路径：联动关闭，确保 backdrop/HUD/Shield 都拨回 idle
             bool trackedLootDetach = _panelHost != null && _panelHost.IsPanelOpen
                 && _panelHost.ActivePanelName == "loot" && _lootPanelCoordinator != null;
@@ -6808,9 +6356,6 @@ namespace CF7Launcher.Guardian
                     .ContinueDetachRecoveryAfterVisualRetired(
                         0);
             }
-            // fallback force_close 不经过 Web 的正常 close 回流；必须清掉旧 name/instance，
-            // 否则重连后的 manage 恢复面板会被同名 rebind gate 永久挡住。
-            if (_commandRouter != null) _commandRouter.ClearFallbackPanelInstance();
             if (_shopTask != null) _shopTask.ClearPending();
             if (_inventoryTask != null) _inventoryTask.ClearPending();
             if (_lootTask != null && !trackedLootDetach)
@@ -6880,25 +6425,12 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// 二阶段注入：Program.cs 装配后调本方法绑定 router。
-        /// 未注入时 HandleButtonClick 走旧 inline switch（仅过渡期；Phase 2 装配完成后所有路径都进 router）。
+        /// 未注入时 HandleButtonClick 走旧 inline switch（仅过渡期；装配完成后所有路径都进 router）。
         /// </summary>
         public void SetCommandRouter(LauncherCommandRouter router)
         {
-            if (_commandRouter != null)
-                _commandRouter.PanelChanged -= OnAuthoritativePanelChanged;
             _commandRouter = router;
-            if (_commandRouter != null)
-            {
-                if (_panelHost != null) return;
-                _commandRouter.PanelChanged += OnAuthoritativePanelChanged;
-                OnAuthoritativePanelChanged(
-                    _commandRouter.ActiveFallbackPanelName,
-                    _commandRouter.ActiveFallbackPanelInstanceId);
-            }
         }
-
-        /// <summary>Router fallback 路径（Flag OFF）专用：把 _activePanel 状态从 router 注回 WebOverlay。</summary>
-        public void SetActivePanel(string panelName) { _activePanel = panelName; }
 
         private void HandleButtonClick(string key)
         {
@@ -7185,7 +6717,6 @@ namespace CF7Launcher.Guardian
                     Audio.AudioEngine.ma_bridge_bgm_resume();
                     break;
                 case "stop":
-                    _manualStop = true;
                     _bgmPaused = false;
                     // 不 resume — 直接让 Flash 侧 stopBGM 处理
                     // （native 层 bgm_stop 对已暂停的 sound 同样有效）

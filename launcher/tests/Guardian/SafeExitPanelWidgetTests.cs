@@ -36,9 +36,7 @@ namespace CF7Launcher.Tests.Guardian
                 onToggleFullscreen: () => { },
                 onToggleLog: () => { },
                 onForceExit: () => c.Exit++,
-                postToWeb: s => c.Posts.Add(s),
-                onPanelStateChanged: b => { },
-                setActivePanel: name => { });
+                postToWeb: s => c.Posts.Add(s));
         }
 
         private static SafeExitPanelWidget MakeWidget(out LauncherCommandRouter router, out Capture cap)

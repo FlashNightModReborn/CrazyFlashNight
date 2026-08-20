@@ -44,12 +44,6 @@ devGpuProbeHotkey = false
 # env: CF7_WEB_HOTRELOAD=1 一次性覆盖，不入仓库。
 webOverlayHotReload = false
 
-# Native HUD（Panel-Only 架构 + NotchOverlay/ToastOverlay/RightContextWidget/ComboWidget 接管 web HUD）。
-# 随仓配置当前显式启用；若缺失此 key，代码 fallback 为 false。
-# false = 旧 Web HUD 主路径；true = 启用 C# native HUD + panel host controller。
-# 详见 launcher/README.md「useNativeHud=true」段；env: CF7_NATIVE_HUD=1/0 一次性覆盖。
-useNativeHud = true
-
 # 临时整备 IA 原子 rollout gate。B1-B6 施工期间必须保持 false；
 # B7 已在 Native/legacy HUD、Build header、Host focus 与 Web mapping 同轮切换。
 preparationNavigationV1 = true

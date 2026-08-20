@@ -15,11 +15,11 @@ namespace CF7Launcher.Guardian
     /// - 透传 Flash 内功能键（Q/W/R/P/O）→ _onSendKey
     /// - 全屏 / 日志 / 强退 → _onToggleFullscreen / _onToggleLog / _onForceExit
     /// - 游戏命令 → _socketServer 直发
-    /// - Panel 打开 → _panelHost.OpenPanel（Flag ON）或 PostToWeb panel_cmd open + 旧 state callback（Flag OFF / _panelHost==null）
+    /// - Panel 打开 → _panelHost.OpenPanel
     ///
     /// 关键不变量：
-    /// - Phase 2+ 起 panel 打开必须走 _panelHost.OpenPanel 才能触发 backdrop/EX_STYLE/HUD-suspend 序列；
-    ///   Flag OFF 走 PostToWeb fallback 保证回滚路径行为等价。
+    /// - panel 打开必须走 _panelHost.OpenPanel 才能触发 backdrop/EX_STYLE/HUD-suspend 序列；
+    ///   _panelHost 未注入（装配前窗口期）时打开请求直接拒绝。
     /// - 路由本身不持任何业务状态（_activePanel 等仍在 WebOverlayForm 跟踪，与旧路径一致）。
     /// </summary>
     public class LauncherCommandRouter
@@ -174,18 +174,11 @@ namespace CF7Launcher.Guardian
         private readonly Action _onToggleLog;
         private readonly Action _onForceExit;
         private readonly Action<string> _postToWeb;
-        private readonly Action<bool> _onPanelStateChanged;
-        private readonly Action<string> _setActivePanel;
         private readonly bool _preparationNavigationV1;
         private PanelHostController _panelHost;
-        private string _activeFallbackPanelInstanceId;
-        private string _activeFallbackPanelName;
-        private string _deferredFallbackSkillInitData;
-        internal event Action<string, string> PanelChanged;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private CharacterBuildTask _characterBuildTask;
-        private Func<string, bool> _fallbackVisualRetire;
         private Func<string, bool> _gameCommandSenderOverride;
         private Func<bool> _panelAdmissionGate;
         private readonly object _panelNavigationLifecycleLock =
@@ -249,8 +242,6 @@ namespace CF7Launcher.Guardian
             Action onToggleLog,
             Action onForceExit,
             Action<string> postToWeb,
-            Action<bool> onPanelStateChanged,
-            Action<string> setActivePanel,
             bool preparationNavigationV1 = false)
         {
             _socketServer = socketServer;
@@ -259,8 +250,6 @@ namespace CF7Launcher.Guardian
             _onToggleLog = onToggleLog;
             _onForceExit = onForceExit;
             _postToWeb = postToWeb;
-            _onPanelStateChanged = onPanelStateChanged;
-            _setActivePanel = setActivePanel;
             _preparationNavigationV1 = preparationNavigationV1;
         }
 
@@ -285,10 +274,6 @@ namespace CF7Launcher.Guardian
         internal bool PreparationNavigationV1
         {
             get { return _preparationNavigationV1; }
-        }
-        internal void SetFallbackVisualRetire(Func<string, bool> retire)
-        {
-            _fallbackVisualRetire = retire;
         }
         internal void SetGameCommandSenderForTests(Func<string, bool> sender) { _gameCommandSenderOverride = sender; }
         internal void SetBeforeCharacterBuildSkillsNavigationConsumeForTests(Action action)
@@ -336,8 +321,6 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        internal string ActiveFallbackPanelInstanceId { get { return _activeFallbackPanelInstanceId; } }
-        internal string ActiveFallbackPanelName { get { return _activeFallbackPanelName; } }
         internal string PendingCharacterBuildSkillsNavigationInstance
         {
             get
@@ -1099,10 +1082,10 @@ namespace CF7Launcher.Guardian
             CharacterBuildTask task = _characterBuildTask;
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : _activeFallbackPanelName;
+                : null;
             string activeInstance = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : _activeFallbackPanelInstanceId;
+                : null;
             if (task == null
                 || !task.IsBoundTo(panelInstanceId)
                 || !task.CanRebind
@@ -1262,10 +1245,10 @@ namespace CF7Launcher.Guardian
             }
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : _activeFallbackPanelName;
+                : null;
             string activeInstance = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : _activeFallbackPanelInstanceId;
+                : null;
             if (!string.IsNullOrEmpty(activePanel)
                 || !string.IsNullOrEmpty(activeInstance))
             {
@@ -1593,11 +1576,11 @@ namespace CF7Launcher.Guardian
                     string activePanel =
                         _panelHost != null
                             ? _panelHost.ActivePanelName
-                            : _activeFallbackPanelName;
+                            : null;
                     string activeInstance =
                         _panelHost != null
                             ? _panelHost.ActivePanelInstanceId
-                            : _activeFallbackPanelInstanceId;
+                            : null;
                     bool hostIdle =
                         string.IsNullOrEmpty(activePanel)
                         && string.IsNullOrEmpty(activeInstance)
@@ -1668,10 +1651,10 @@ namespace CF7Launcher.Guardian
             }
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : _activeFallbackPanelName;
+                : null;
             string activeInstance = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : _activeFallbackPanelInstanceId;
+                : null;
             if (!string.Equals(activePanel, "skills", StringComparison.Ordinal)
                 || !string.Equals(activeInstance, panelInstanceId, StringComparison.Ordinal))
             {
@@ -1767,10 +1750,10 @@ namespace CF7Launcher.Guardian
 
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : _activeFallbackPanelName;
+                : null;
             string activeInstance = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : _activeFallbackPanelInstanceId;
+                : null;
             if (string.Equals(activePanel, "skills", StringComparison.Ordinal)
                 && string.Equals(activeInstance, panelInstanceId, StringComparison.Ordinal))
             {
@@ -1898,11 +1881,11 @@ namespace CF7Launcher.Guardian
             string activePanel =
                 _panelHost != null
                     ? _panelHost.ActivePanelName
-                    : _activeFallbackPanelName;
+                    : null;
             string activeInstance =
                 _panelHost != null
                     ? _panelHost.ActivePanelInstanceId
-                    : _activeFallbackPanelInstanceId;
+                    : null;
             if (!string.Equals(
                     activePanel,
                     panelName,
@@ -2034,11 +2017,11 @@ namespace CF7Launcher.Guardian
             string activePanel =
                 _panelHost != null
                     ? _panelHost.ActivePanelName
-                    : _activeFallbackPanelName;
+                    : null;
             string activeInstance =
                 _panelHost != null
                     ? _panelHost.ActivePanelInstanceId
-                    : _activeFallbackPanelInstanceId;
+                    : null;
             if (string.Equals(
                     activePanel,
                     panelName,
@@ -2235,10 +2218,10 @@ namespace CF7Launcher.Guardian
                 }
                 string activePanel = _panelHost != null
                     ? _panelHost.ActivePanelName
-                    : _activeFallbackPanelName;
+                    : null;
                 string activeInstance = _panelHost != null
                     ? _panelHost.ActivePanelInstanceId
-                    : _activeFallbackPanelInstanceId;
+                    : null;
                 if (!string.IsNullOrEmpty(activePanel)
                     || !string.IsNullOrEmpty(activeInstance)
                     || (_panelHost != null
@@ -2289,53 +2272,6 @@ namespace CF7Launcher.Guardian
                 + (reason ?? "unknown")
                 + " gate=preflight_send");
             return false;
-        }
-
-        internal void ClearFallbackPanelInstance()
-        {
-            bool hadPublishedFallback =
-                _activeFallbackPanelName != null
-                || _activeFallbackPanelInstanceId != null;
-            System.Threading.Timer childTimer =
-                null;
-            lock (_panelNavigationLifecycleLock)
-            {
-                if (_preparationChildReturn.Phase
-                        == PreparationChildReturnPhase.Active
-                    && string.Equals(
-                        _preparationChildReturn.PanelName,
-                        _activeFallbackPanelName,
-                        StringComparison.Ordinal)
-                    && string.Equals(
-                        _preparationChildReturn.PanelInstanceId,
-                        _activeFallbackPanelInstanceId,
-                        StringComparison.Ordinal))
-                {
-                    childTimer =
-                        ClearPreparationChildReturnLocked();
-                }
-            }
-            if (childTimer != null)
-                childTimer.Dispose();
-            _activeFallbackPanelInstanceId = null;
-            _activeFallbackPanelName = null;
-            _deferredFallbackSkillInitData = null;
-            ClearSuccessfulNativeEquipmentTuningOpenProof();
-            if (hadPublishedFallback)
-            {
-                PublishPanelChanged(
-                    null,
-                    null);
-            }
-        }
-
-        internal void FlushDeferredFallbackSkillRebind()
-        {
-            if (_panelHost != null || _skillTask == null || !_skillTask.CanRebind) return;
-            string initData = _deferredFallbackSkillInitData;
-            if (initData == null) return;
-            _deferredFallbackSkillInitData = null;
-            OpenPanel("skills", initData);
         }
 
         /// <summary>
@@ -3530,8 +3466,8 @@ namespace CF7Launcher.Guardian
 
         internal bool RebindSkillsToManage(string expectedPanelInstanceId, string focusSkillKey)
         {
-            string activeName = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
-            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId : _activeFallbackPanelInstanceId;
+            string activeName = _panelHost != null ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId : null;
             if (_skillTask == null || activeName != "skills" || string.IsNullOrEmpty(activeInstance)
                 || !string.Equals(activeInstance, expectedPanelInstanceId, StringComparison.Ordinal)
                 || !IsPresentationSkillKey(focusSkillKey)
@@ -3552,8 +3488,8 @@ namespace CF7Launcher.Guardian
 
         internal bool RebindSkillsToTrainer(string expectedPanelInstanceId, string focusSkillKey)
         {
-            string activeName = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
-            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId : _activeFallbackPanelInstanceId;
+            string activeName = _panelHost != null ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId : null;
             string trainerSession;
             if (_skillTask == null || activeName != "skills" || string.IsNullOrEmpty(activeInstance)
                 || !string.Equals(activeInstance, expectedPanelInstanceId, StringComparison.Ordinal)
@@ -3750,8 +3686,8 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 统一 panel 打开入口：Flag ON → _panelHost.OpenPanel（含 backdrop/EX_STYLE/HUD-suspend 序列）；
-        /// Flag OFF → 旧 PostToWeb panel_cmd open + state callback（保留回滚路径）。
+        /// 统一 panel 打开入口：_panelHost.OpenPanel（含 backdrop/EX_STYLE/HUD-suspend 序列）。
+        /// _panelHost 未注入时拒绝打开。
         /// </summary>
         private bool OpenPanel(string panelName, string initDataJson)
         {
@@ -3759,8 +3695,7 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// returnTo 版本：关闭本 panel 后自动 reopen returnToPanel。仅 PanelHostController 路径支持；
-        /// Flag OFF fallback 无 return stack 概念（旧路径已不再生产使用，returnTo 静默忽略）。
+        /// returnTo 版本：关闭本 panel 后自动 reopen returnToPanel。仅 PanelHostController 路径支持。
         /// </summary>
         private bool OpenPanel(
             string panelName,
@@ -3807,9 +3742,9 @@ namespace CF7Launcher.Guardian
                 CancelPendingMaterialOpenIntent(
                     "competing_panel");
             }
-            string currentPanel = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
+            string currentPanel = _panelHost != null ? _panelHost.ActivePanelName : null;
             string currentInstance = _panelHost != null ? _panelHost.ActivePanelInstanceId
-                : _activeFallbackPanelInstanceId;
+                : null;
             bool activeTuning = currentPanel == "workbench"
                 && _equipmentTuningTask != null
                 && !string.IsNullOrEmpty(currentInstance)
@@ -3856,12 +3791,6 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Router] panel switch deferred: equipment tuning request/reconcile is pending");
                 return false;
             }
-            if (activeTuning && panelName == "workbench" && _panelHost == null
-                && !_equipmentTuningTask.CanRebind)
-            {
-                LogManager.Log("[Router] fallback workbench rebind deferred: equipment tuning is pending");
-                return false;
-            }
             if (_panelHost != null)
             {
                 bool accepted;
@@ -3906,77 +3835,8 @@ namespace CF7Launcher.Guardian
                 }
                 return accepted;
             }
-            if (_postToWeb == null) return false;
-            // Fallback has no Host admission boundary, so pause immediately before its Web open.
-            TrySendGameCommand("webPanelPause");
-            // Flag OFF fallback：行为与本 PR 之前等价；returnTo 在该路径下不生效
-            if (activeTuning && panelName != "workbench"
-                && !_equipmentTuningTask.HandlePanelClosed(currentInstance)) return false;
-            if (_activeFallbackPanelName == "skills" && panelName != "skills" && _skillTask != null)
-                _skillTask.HandleAuthoritativePanelClosed(_activeFallbackPanelInstanceId);
-            if (panelName == "skills" && _skillTask != null
-                && _activeFallbackPanelName == "skills" && !_skillTask.CanRebind)
-            {
-                // 保留旧 instance 供其 RequestMux 完成未知写对账；只记最后一次打开意图。
-                _deferredFallbackSkillInitData = initDataJson;
-                LogManager.Log("[Router] fallback skills rebind deferred");
-                return false;
-            }
-            string instanceId =
-                OpaqueIdGenerator.Create("fallback");
-            JObject init;
-            initDataJson =
-                EnrichPreparationChildReturnInitData(
-                    panelName,
-                    initDataJson,
-                    instanceId);
-            if (panelName == "skills" && _skillTask != null)
-                initDataJson = _skillTask.EnrichPanelInitData(initDataJson, instanceId);
-            try { init = string.IsNullOrEmpty(initDataJson) ? new JObject() : JObject.Parse(initDataJson); }
-            catch { init = new JObject(); }
-            init["panelInstanceId"] = instanceId;
-            JObject msg = new JObject
-            {
-                ["type"] = "panel_cmd", ["cmd"] = "open", ["panel"] = panelName,
-                ["panelInstanceId"] = instanceId, ["initData"] = init
-            };
-            PostToWeb(msg.ToString(Formatting.None));
-            // Post 成功返回才切换 Host 盖章实例，避免旧 RequestMux 的在途 reconcile 被提前改绑。
-            _activeFallbackPanelInstanceId = instanceId;
-            _activeFallbackPanelName = panelName;
-            PublishPanelChanged(
-                panelName,
-                instanceId);
-            if (panelName != "skills") _deferredFallbackSkillInitData = null;
-            if (_setActivePanel != null) _setActivePanel(panelName);
-            if (_onPanelStateChanged != null) _onPanelStateChanged(true);
-            ClearSuccessfulNativeEquipmentTuningOpenProof();
-            return true;
-        }
-
-        private void PublishPanelChanged(
-            string panelName,
-            string panelInstanceId)
-        {
-            Action<string, string> changed =
-                PanelChanged;
-            if (changed == null) return;
-            foreach (Action<string, string> subscriber
-                in changed.GetInvocationList())
-            {
-                try
-                {
-                    subscriber(
-                        panelName,
-                        panelInstanceId);
-                }
-                catch (Exception ex)
-                {
-                    LogManager.Log(
-                        "[Router] fallback panel changed event failed: "
-                        + ex.Message);
-                }
-            }
+            // PanelHost 未注入（仅装配前窗口期可达）→ 拒绝打开，不再走 PostToWeb panel_cmd 兜底。
+            return false;
         }
 
         private static bool IsMaterialOpenRequestIdCandidate(
@@ -4048,48 +3908,6 @@ namespace CF7Launcher.Guardian
                         "[Router] character build recovery remains fenced: Host visual retire was not queued");
                 }
             }
-            else
-            {
-                if (!string.IsNullOrEmpty(currentPanel)
-                    && !string.IsNullOrEmpty(currentInstance))
-                {
-                    PostToWeb(new JObject
-                    {
-                        ["type"] = "panel_cmd",
-                        ["cmd"] = "close",
-                        ["panel"] = currentPanel,
-                        ["panelInstanceId"] = currentInstance
-                    }.ToString(Formatting.None));
-                }
-                ClearFallbackPanelInstance();
-                if (_setActivePanel != null) _setActivePanel(null);
-                if (_onPanelStateChanged != null)
-                    _onPanelStateChanged(false);
-                bool visualRetired = false;
-                try
-                {
-                    visualRetired = _fallbackVisualRetire != null
-                        && _fallbackVisualRetire(
-                            "character_build_switch");
-                }
-                catch (Exception ex)
-                {
-                    LogManager.Log(
-                        "[Router] fallback character visual retire failed: "
-                        + ex.Message);
-                }
-                if (visualRetired)
-                {
-                    _characterBuildTask
-                        .ContinueDetachRecoveryAfterVisualRetired(0);
-                }
-                else
-                {
-                    LogManager.Log(
-                        "[Router] character build recovery remains fenced: fallback visual retire not confirmed");
-                }
-            }
-
             LogManager.Log(
                 "[Router] panel switch rejected after starting acknowledged character build close; "
                 + "requested=" + (requestedPanel ?? "<null>")
@@ -4191,21 +4009,12 @@ namespace CF7Launcher.Guardian
                 return false;
             }
 
-            bool hostVisualActiveOrPending =
+            bool activeVisual =
                 _panelHost != null
                 && !_panelHost.IsIdleForTrackedOpen;
-            bool activeVisual =
-                hostVisualActiveOrPending
-                || !string.IsNullOrEmpty(
-                    _activeFallbackPanelName)
-                || !string.IsNullOrEmpty(
-                    _activeFallbackPanelInstanceId);
             if (activeVisual)
             {
-                string active =
-                    hostVisualActiveOrPending
-                        ? _panelHost.ActivePanelName
-                        : _activeFallbackPanelName;
+                string active = _panelHost.ActivePanelName;
                 LogManager.Log(
                     "[Router] MATERIALS rejected: active or pending Web panel visual="
                     + (active ?? "<unknown>"));
@@ -4275,10 +4084,10 @@ namespace CF7Launcher.Guardian
             }
             string activePanel = _panelHost != null
                 ? _panelHost.ActivePanelName
-                : _activeFallbackPanelName;
+                : null;
             string activeInstance = _panelHost != null
                 ? _panelHost.ActivePanelInstanceId
-                : _activeFallbackPanelInstanceId;
+                : null;
             bool exactActiveBuild =
                 string.Equals(
                     activePanel,
@@ -4526,11 +4335,11 @@ namespace CF7Launcher.Guardian
                     string activePanel =
                         _panelHost != null
                             ? _panelHost.ActivePanelName
-                            : _activeFallbackPanelName;
+                            : null;
                     string activeInstance =
                         _panelHost != null
                             ? _panelHost.ActivePanelInstanceId
-                            : _activeFallbackPanelInstanceId;
+                            : null;
                     if (wait.LifecycleEpoch
                             != _panelNavigationLifecycleEpoch)
                     {
@@ -4735,11 +4544,11 @@ namespace CF7Launcher.Guardian
                 string activePanel =
                     _panelHost != null
                         ? _panelHost.ActivePanelName
-                        : _activeFallbackPanelName;
+                        : null;
                 string activeInstance =
                     _panelHost != null
                         ? _panelHost.ActivePanelInstanceId
-                        : _activeFallbackPanelInstanceId;
+                        : null;
                 if (!string.Equals(
                         activePanel,
                         "workbench",
@@ -4895,10 +4704,8 @@ namespace CF7Launcher.Guardian
                     out activePanel,
                     out activeInstance);
             }
-            activePanel =
-                _activeFallbackPanelName;
-            activeInstance =
-                _activeFallbackPanelInstanceId;
+            activePanel = null;
+            activeInstance = null;
             return true;
         }
 
@@ -5101,7 +4908,7 @@ namespace CF7Launcher.Guardian
                 activePanel =
                     _panelHost != null
                         ? _panelHost.ActivePanelName
-                        : _activeFallbackPanelName;
+                        : null;
                 origin =
                     _nativeEquipmentBuildOpen.Origin;
                 timer =
@@ -5655,11 +5462,11 @@ namespace CF7Launcher.Guardian
                         string activePanel =
                             _panelHost != null
                                 ? _panelHost.ActivePanelName
-                                : _activeFallbackPanelName;
+                                : null;
                         string activeInstance =
                             _panelHost != null
                                 ? _panelHost.ActivePanelInstanceId
-                                : _activeFallbackPanelInstanceId;
+                                : null;
                         if (_materialOpen.LifecycleEpoch
                                 != _panelNavigationLifecycleEpoch)
                         {
@@ -6133,7 +5940,7 @@ namespace CF7Launcher.Guardian
                     else if (string.Equals(
                         _panelHost != null
                             ? _panelHost.ActivePanelName
-                            : _activeFallbackPanelName,
+                            : null,
                         "skills",
                         StringComparison.Ordinal))
                     {
@@ -6184,11 +5991,11 @@ namespace CF7Launcher.Guardian
                     string activePanel =
                         _panelHost != null
                             ? _panelHost.ActivePanelName
-                            : _activeFallbackPanelName;
+                            : null;
                     string activeInstance =
                         _panelHost != null
                             ? _panelHost.ActivePanelInstanceId
-                            : _activeFallbackPanelInstanceId;
+                            : null;
                     if (!string.Equals(
                             activePanel,
                             _skillOpenBaselinePanel,
@@ -6271,7 +6078,7 @@ namespace CF7Launcher.Guardian
                 {
                     return;
                 }
-                string active = _panelHost != null ? _panelHost.ActivePanelName : _activeFallbackPanelName;
+                string active = _panelHost != null ? _panelHost.ActivePanelName : null;
                 showToast = active != "skills";
                 origin =
                     _skillOpenOrigin;

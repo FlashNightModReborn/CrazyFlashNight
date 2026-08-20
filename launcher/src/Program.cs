@@ -999,8 +999,7 @@ class Program
         AppConfig config = new AppConfig(projectRoot);
         PerfTrace.Duration("config.load", configStart);
         StartupDiagnostics.Mark("config.load_ok",
-            "useNativeHud=" + config.UseNativeHud
-            + " preparationNavigationV1="
+            "preparationNavigationV1="
             + config.PreparationNavigationV1
             + " webView2DisableGpu=" + config.WebView2DisableGpu
             + " webView2DeveloperMode=" + config.WebView2DeveloperMode
@@ -1377,14 +1376,6 @@ class Program
                 socketServer,
                 musicCatalog);
 
-        // Toast overlay（GDI+ 独立 ULW，仅 useNativeHud=false 时实例化）。
-        // useNativeHud=true 时 ToastWidget 在 NativeHudOverlay 内承载，省一层全屏 layered window。
-        ToastOverlay toastOverlay = null;
-        if (!config.UseNativeHud)
-        {
-            toastOverlay = new ToastOverlay(form, form.FlashHostPanel);
-        }
-
         // V8 持久化 Runtime + 打击伤害数字 overlay
         string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
         V8Runtime v8Runtime;
@@ -1405,25 +1396,6 @@ class Program
         using (PerfTrace.Scope("v8.game_input_init"))
         {
             v8Runtime.InitGameInput();
-        }
-
-        // 刘海 Notch overlay（FPS 显示 + 可展开工具栏）。
-        // useNativeHud=true 时不实例化独立 ULW；下面 if (UseNativeHud) 分支用 NotchWidget 在 NativeHud 内承载，省一层 layered window。
-        NotchOverlay notchOverlay = null;
-        if (!config.UseNativeHud)
-        {
-            notchOverlay = new NotchOverlay(
-                form, form.FlashHostPanel, frameTask.FpsBuffer,
-                projectRoot,
-                new Action(form.ToggleFullscreen),
-                new Action(form.ToggleLog),
-                delegate
-                {
-                    form.EmergencyExit(
-                        GuardianForm.EmergencyExitReason.HardExitKeyQ);
-                },
-                new Action<Keys>(form.HandleButtonClick),
-                config.PreparationNavigationV1);
         }
 
         // Phase 1 (11c): WebView2 全局硬依赖; 入口已预检, 这里 WebOverlayForm 构造异常直接 throw 到上游
@@ -1492,31 +1464,13 @@ class Program
         AgentControlTask agentControlTask = null;
         CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel = null;
         {
-            webOverlay.SetNotchDependencies(frameTask.FpsBuffer,
-                new Action(form.ToggleFullscreen),
-                new Action(form.ToggleLog),
-                delegate
-                {
-                    form.EmergencyExit(
-                        GuardianForm.EmergencyExitReason.HardExitKeyQ);
-                },
-                new Action<Keys>(form.HandleButtonClick));
-
-            // GDI+ fallback：WebView2 初始化失败或未就绪时走这里。
-            // useNativeHud=true 时 toastOverlay/notchOverlay 都为 null；下面 if (UseNativeHud) 分支会用 nativeHud
-            // 同时充当 IToastSink + INotchSink 覆盖（NotchWidget/ToastWidget 接管渲染）。
-            webOverlay.SetFallback(toastOverlay, notchOverlay);
-
-            // 光照等级数据（与 NotchOverlay 共用同一默认值）
+            // 光照等级数据（与 NotchWidget 共用同一默认值）
             webOverlay.SetLightLevels(new int[] {
                 0, 0, 1, 4, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, 7, 7, 7, 7, 7, 4, 1, 0, 0, 0
             });
 
             // 游戏命令通道（pause 等）
             webOverlay.SetSocketServer(socketServer);
-
-            // 开发环境检测：非 git 仓库时隐藏"其他"菜单中的开发工具
-            webOverlay.SetDevMode(SteamOwnershipCheck.IsDevRepository(projectRoot));
 
             // 音乐目录注入
             webOverlay.SetMusicCatalog(musicCatalog);
@@ -1559,8 +1513,8 @@ class Program
             webOverlay.SetCursorOverlay(cursorOverlay);
         }
 
-        // === LauncherCommandRouter 装配（始终装配，Flag OFF 时也用，避免 HandleButtonClick 走两套路径）===
-        // Router 是按钮命令的唯一中枢；Flag OFF 时 OpenPanel 走旧 PostToWeb panel_cmd open 兜底。
+        // === LauncherCommandRouter 装配（始终装配）===
+        // Router 是按钮命令的唯一中枢；所有 panel 打开走 PanelHost.OpenPanel。
         LauncherCommandRouter commandRouter = new LauncherCommandRouter(
             socketServer,
             new Action<Keys>(form.HandleButtonClick),
@@ -1568,25 +1522,16 @@ class Program
             new Action(form.ToggleLog),
             new Action(form.ForceExit),
             new Action<string>(webOverlay.PostToWeb),
-            new Action<bool>(form.HandlePanelStateChanged),
-            new Action<string>(webOverlay.SetActivePanel),
             config.PreparationNavigationV1);
-        commandRouter.SetFallbackVisualRetire(delegate(string reason)
-        {
-            webOverlay.ForceIdleState(reason);
-            return true;
-        });
         commandRouter.SetPanelAdmissionGate(
             delegate
             {
                 return !form.IsShutdownAdmissionClosed;
             });
         webOverlay.SetCommandRouter(commandRouter);
-        if (notchOverlay != null) notchOverlay.SetCommandRouter(commandRouter);
 
-        // === Phase 2: Native HUD + PanelHostController 完整装配（config.useNativeHud）===
-        // Flag OFF：跳过 NativeHud/Backdrop/PanelHost；router 走 PostToWeb 旧路径
-        // Flag ON：完整装配；所有 panel 打开走 PanelHost.OpenPanel → snapshot/backdrop/EX_STYLE/HUD-suspend 序列
+        // === Native HUD + PanelHostController 完整装配（唯一路径）===
+        // 所有 panel 打开走 PanelHost.OpenPanel → snapshot/backdrop/EX_STYLE/HUD-suspend 序列。
         NativeHudOverlay nativeHud = null;
         NativePanelBackdrop backdrop = null;
         PanelHostController panelHost = null;
@@ -1605,12 +1550,6 @@ class Program
                     "[PlayerInfoSplitSurface] fixture request rejected: " +
                     "bus-only mode is not a visual runtime");
             }
-            else if (!config.UseNativeHud)
-            {
-                LogManager.Log(
-                    "[PlayerInfoSplitSurface] fixture request rejected: " +
-                    "useNativeHud=false");
-            }
             else if (!CF7Launcher.Guardian.Hud.PlayerInfo
                 .PlayerInfoSplitSurface.TryResolveFixtureCase(
                     playerInfoFixtureRaw,
@@ -1622,13 +1561,8 @@ class Program
                     "case ID is not an exact allowlist member");
             }
         }
-        if (config.UseNativeHud)
+        // 装配块保留独立作用域，隔离 widget 等局部变量。
         {
-            // Phase 3: 通知 WebOverlay 进入 NativeHud 模式：
-            //   - SetReady 时不调 SuspendFallback，让 NotchOverlay/ToastOverlay 一直作为常驻 HUD
-            //   - 注入 CSS 隐藏 web 端 #notch / #toast-container 避免双重 UI
-            //   - notch/toast 消息走 fallback (NotchOverlay/ToastOverlay) 而不是 web ExecScript
-            webOverlay.SetUseNativeHud(true);
             nativeHud = new NativeHudOverlay(form, form.FlashHostPanel);
             backdrop = new NativePanelBackdrop(form);
             if (playerInfoFixtureCase != null)
@@ -1679,10 +1613,9 @@ class Program
             }
             // flashHwndProvider 在 WebOverlay 构造前已声明（snapshot 路径用），此处复用给 PanelHostController；
             // WebOverlay 自身的焦点回推不走 provider 而走 flashFocusRestorer 统一 primitive。
-            // Phase 3: 注入 NotchOverlay/ToastOverlay，让 PanelHost 在 panel open/close 时显式 Suspend/Resume
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
-                notchOverlay, toastOverlay, playerInfoSurface);
+                playerInfoSurface);
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
@@ -1720,7 +1653,7 @@ class Program
             CF7Launcher.Guardian.Hud.ComboWidget comboWidget =
                 new CF7Launcher.Guardian.Hud.ComboWidget(form.FlashHostPanel);
             nativeHud.AddWidget(comboWidget);
-            // ToastWidget 顶替原 ToastOverlay 全屏 ULW。NativeHudOverlay.AddWidget 自动捕获引用，
+            // ToastWidget 承载 toast 消息流。NativeHudOverlay.AddWidget 自动捕获引用，
             // IToastSink.AddMessage / SetReady 会 fan-out 到此 widget。
             CF7Launcher.Guardian.Hud.ToastWidget toastWidget =
                 new CF7Launcher.Guardian.Hud.ToastWidget(form.FlashHostPanel);
@@ -1738,7 +1671,7 @@ class Program
             lootFeedWidget =
                 new CF7Launcher.Guardian.Hud.Loot.LootFeedWidget(form.FlashHostPanel, lootIconCatalog);
             nativeHud.AddWidget(lootFeedWidget);
-            // NotchWidget 顶替原 NotchOverlay 独立 ULW（FPS 药丸 + 工具栏 + 通知栈 + 展开图表）。
+            // NotchWidget：刘海栏（FPS 药丸 + 工具栏 + 通知栈 + 展开图表）。
             // AudioHudState 在此成为 native HUD 唯一的 BGM 峰值历史；低频包络绘于 FPS 折线背景。
             // INotchSink.AddNotice/SetStatusItem/ClearStatusItem 路由到此 widget。
             CF7Launcher.Guardian.Hud.AudioHudState audioHudState =
@@ -1758,9 +1691,8 @@ class Program
                     config.PreparationNavigationV1);
             notchWidget.SetCommandRouter(commandRouter);
             nativeHud.AddWidget(notchWidget);
-            // 升级 webOverlay 的 toast/notch fallback：先前以 toastOverlay=null/notchOverlay=null 注入，
-            // nativeHud 就绪后接管 IToastSink + INotchSink。webOverlay.AddMessage/AddNotice 在
-            // _useNativeHud=true 时直接转发 _toastFallback / _notchFallback，无需 ExecScript。
+            // webOverlay 的 toast/notch 出口固定指向 nativeHud：WebOverlayForm.AddMessage/AddNotice
+            // 直接转发 _toastFallback / _notchFallback（= nativeHud），无需 ExecScript。
             webOverlay.SetFallback(nativeHud, nativeHud);
             // 刘海 MAPHUD_TOGGLE 只管显示/关闭；卡片尺寸按钮在 compact/expanded 间往返。
             // 两者都只写用户显示偏好；AS2 mm runtimeMapMode 保持只读并继续承担玩法门控。
@@ -1769,11 +1701,10 @@ class Program
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);
 
-            // P1 perf：tee 路径单次 parse 后分发给 3 消费者。
-            // 旧版每条 raw 被三方各自 Split('|')；高频 socket / FrameTask 流下 ~3x 字符串数组分配。
+            // P1 perf：tee 路径单次 parse 后分发给各消费者。
+            // 旧版每条 raw 被各方各自 Split('|')；高频 socket / FrameTask 流下成倍字符串数组分配。
             // 共享 UiDataPacket 后只 split 一次。
             WebOverlayForm capturedWeb = webOverlay;
-            NotchOverlay capturedNotch = notchOverlay; // useNativeHud=true 时为 null，下面 try 中守护
             NativeHudOverlay capturedHud2 = nativeHud;
             Action<string> uiDataTee = delegate(string raw)
             {
@@ -1781,8 +1712,6 @@ class Program
                 CF7Launcher.Guardian.Hud.UiDataPacket pkt = new CF7Launcher.Guardian.Hud.UiDataPacket(raw);
                 try { capturedWeb.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] web UiData throw: " + ex.Message); }
-                try { if (capturedNotch != null) capturedNotch.HandleUiData(pkt); }
-                catch (Exception ex) { LogManager.Log("[Tee] notch UiData throw: " + ex.Message); }
                 try { capturedHud2.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] hud UiData throw: " + ex.Message); }
                 try { if (agentControlTask != null) agentControlTask.ObserveUiData(pkt); }
@@ -1806,18 +1735,6 @@ class Program
             LogManager.Log("[NativeHud] enabled (Phase 5.7: native notch + right context parity)");
             PerfTrace.Mark("native_hud.enabled");
         }
-        else
-        {
-            // Web HUD rollback still uses the same Host-owned one-shot authority. It is not
-            // rendered by NativeHud, but the fallback UiData tee above feeds s/sv deltas so
-            // EXIT_CONFIRM remains exact instead of becoming a raw Bridge capability.
-            safeExitPanel =
-                new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(
-                    form.FlashHostPanel,
-                    commandRouter);
-            LogManager.Log("[NativeHud] disabled (config useNativeHud=false; router goes through PostToWeb fallback)");
-            PerfTrace.Mark("native_hud.disabled");
-        }
         // 必须在 authority 实例化后注入：router SAFEEXIT click → Arm → Saving；
         // sv:2 才赋予一次 EXIT_CONFIRM，send false/throw 则立即进入 Failed。
         commandRouter.OnSafeExitArm =
@@ -1829,22 +1746,17 @@ class Program
 
         // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用
         IToastSink toastSink = webOverlay;
-        // useNativeHud=true：notchSink 直接是 nativeHud。NotchWidget 注册后处理所有 category 的
+        // notchSink 直接是 nativeHud。NotchWidget 注册后处理所有 category 的
         // AddNotice/SetStatusItem/ClearStatusItem，无需再复合 webOverlay：
-        //   - WebOverlayForm.AddNotice/SetStatusItem/ClearStatusItem 在 _useNativeHud=true 时本就 forward
-        //     给 _notchFallback（A.2 起 = nativeHud），把 webOverlay 留在 CompositeNotchSink 里会让
+        //   - WebOverlayForm.AddNotice/SetStatusItem/ClearStatusItem 本就 forward
+        //     给 _notchFallback（= nativeHud），把 webOverlay 留在 CompositeNotchSink 里会让
         //     SetStatusItem/ClearStatusItem 通过 nativeHud→webOverlay→nativeHud 派发两次，徒增
         //     UI 线程 BeginInvoke + NotchWidget upsert/repaint 压力（id 去重避免视觉双显但不省 CPU）。
         //   - AddNotice 由 NotchWidget 通用兜底接管 + INotchNoticeConsumer 精确订阅，duplicate 已被
-        //     NativeHudOverlay.HasNoticeConsumerFor 收口；CompositeNotchSink 的 webOverlay 路径在 A.2 后
-        //     是死路径（AcceptCategory 永远 false）。
-        // useNativeHud=false：保留旧路径，notchSink = webOverlay（ExecScript / GDI+ NotchOverlay 兜底）。
-        INotchSink notchSink = config.UseNativeHud && nativeHud != null
-            ? (INotchSink)nativeHud
-            : webOverlay;
+        //     NativeHudOverlay.HasNoticeConsumerFor 收口。
+        INotchSink notchSink = nativeHud;
         ToastTask toastTask = new ToastTask(toastSink);
-        // loot feed（左下物品获得播报）：仅 native HUD 路径有 widget；fallback 模式下
-        // lootFeedWidget 为 null，task 不注册（web 过渡组件零依赖，见 P1 决策）。
+        // loot feed（左下物品获得播报）：widget 常驻 NativeHud，task 始终注册。
         // 纸娃娃运行时烘焙：service 常驻（overlay WebView2 常驻，native HUD 下仅隐藏），
         // C#→Web 走 TryPostToWeb；桥不可用时 service 内部静默降级。
         CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService dollBakeService =
@@ -1852,9 +1764,8 @@ class Program
                 Path.Combine(projectRoot, "launcher", "data", "doll-portraits"),
                 webOverlay.TryPostToWeb);
         // 烘焙成功 → widget 负缓存失效 + 重绘：存活期内的占位卡片原地升级为胸像
-        if (lootFeedWidget != null)
-            dollBakeService.PortraitReady = lootFeedWidget.NotifyIconReady;
-        LootFeedTask lootFeedTask = lootFeedWidget != null ? new LootFeedTask(lootFeedWidget, dollBakeService) : null;
+        dollBakeService.PortraitReady = lootFeedWidget.NotifyIconReady;
+        LootFeedTask lootFeedTask = new LootFeedTask(lootFeedWidget, dollBakeService);
         // 兼容调用点：AudioTask 不再拥有 gain policy，SetToastSink 当前为 no-op，不能据此
         // 声称会发音量 warning。迁移期恢复入口与退出条件见 docs 中的存档编辑器事件记录。
         CF7Launcher.Tasks.AudioTask.SetToastSink(toastSink);
@@ -1896,8 +1807,7 @@ class Program
         LootTask lootTask = new LootTask(socketServer, lootPanelCoordinator);
         lootPanelCoordinator.SetAdmissionLeaseFactory(
             lootTask.TryAcquirePanelAdmissionLease);
-        if (panelHost != null)
-            panelHost.PanelClosed += lootPanelCoordinator.OnPanelHostClosed;
+        panelHost.PanelClosed += lootPanelCoordinator.OnPanelHostClosed;
         NpcShopTask npcShopTask = new NpcShopTask(socketServer);
         CraftingTask craftingTask = new CraftingTask(socketServer);
         MaterialShopAccessTask materialShopAccessTask =
@@ -1936,7 +1846,7 @@ class Program
         commandRouter.SetSkillTask(skillTask);
         // stageSelectTask 提前到 panelHost 接线块之前声明：关闭观察器 lambda 需要捕获它。
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
-        if (panelHost != null)
+        // panelHost 接线（恒定装配，独立作用域隔离 lambda 捕获）。
         {
             panelHost.SetOpenGate(delegate(string panelName)
             {
@@ -2016,27 +1926,22 @@ class Program
                     .PendingSkillsCharacterBuildNavigationInstance
                     == null)
             {
-                if (panelHost != null)
-                    panelHost.FlushDeferredRebind("skills");
-                commandRouter.FlushDeferredFallbackSkillRebind();
+                panelHost.FlushDeferredRebind("skills");
             }
         });
         equipmentTuningTask.SetCoordinatorSettled(delegate
         {
-            if (panelHost != null) panelHost.FlushDeferredRebind("workbench");
+            panelHost.FlushDeferredRebind("workbench");
         });
         characterBuildTask.SetCoordinatorSettled(delegate
         {
             bool preparationNavigationConsumed =
                 commandRouter
                     .TryCompleteCharacterBuildPreparationNavigation();
-            if (panelHost != null)
+            if (!preparationNavigationConsumed)
             {
-                if (!preparationNavigationConsumed)
-                {
-                    panelHost.FlushDeferredBarrierOpen();
-                    panelHost.FlushDeferredRebind("workbench");
-                }
+                panelHost.FlushDeferredBarrierOpen();
+                panelHost.FlushDeferredRebind("workbench");
             }
         });
         MapTask mapTask = new MapTask(socketServer);
@@ -2083,8 +1988,8 @@ class Program
         });
         agentControlTask.SetActivePanelStatusProvider(delegate
         {
-            string name = panelHost != null ? panelHost.ActivePanelName : commandRouter.ActiveFallbackPanelName;
-            string instanceId = panelHost != null ? panelHost.ActivePanelInstanceId : commandRouter.ActiveFallbackPanelInstanceId;
+            string name = panelHost.ActivePanelName;
+            string instanceId = panelHost.ActivePanelInstanceId;
             return new Newtonsoft.Json.Linq.JObject
             {
                 ["name"] = name == null ? Newtonsoft.Json.Linq.JValue.CreateNull() : (Newtonsoft.Json.Linq.JToken)name,
@@ -2291,9 +2196,7 @@ class Program
             HideOverlayForm(inputShield);
             HideOverlayForm(nativeHud);
             HideOverlayForm(playerInfoSurface);
-            HideOverlayForm(notchOverlay);
             HideOverlayForm(hnOverlay);
-            HideOverlayForm(toastOverlay);
             HideOverlayForm(backdrop);
 
             audioSocketPublisher.Dispose();
@@ -2390,10 +2293,8 @@ class Program
             try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
             try { if (backdrop != null) backdrop.Dispose(); } catch { }
             try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
-            try { if (notchOverlay != null) notchOverlay.Dispose(); } catch { }
             try { hnOverlay.Dispose(); } catch { }
             try { v8Runtime.Dispose(); } catch { }
-            try { if (toastOverlay != null) toastOverlay.Dispose(); } catch { }
             try { File.Delete(portsFile); } catch { }
             LogManager.Shutdown();
             StartupDiagnostics.Mark("bus_only.shutdown_complete");
@@ -2457,7 +2358,7 @@ class Program
         };
 
         // 11b-α: ThreadPool embed + form.Show/Activate + SetReady 整块迁入 GameLaunchFlow.TransitionToEmbedding / TransitionToReady
-        //   (readyWiring 关闭注入 toastOverlay/webOverlay/inputShield/hnOverlay.SetReady)
+        //   (readyWiring 关闭注入 webOverlay/inputShield/hnOverlay.SetReady)
 
         // ArchiveTask 已在 TaskRegistry.RegisterAll 中注册 (line 401-402)
         // Phase A: BootstrapPanel 已在 GuardianForm ctor 内嵌入，不再单独构造 BootstrapForm
@@ -2483,13 +2384,6 @@ class Program
                 // Phase 1 全局硬依赖 WebView2: webOverlay 永不为 null
                 // A.1 (2026-05-24): 每个 SetReady 加 stopwatch, 定位 boot UI 冻最贵段
                 long tOverall = System.Diagnostics.Stopwatch.GetTimestamp();
-                if (toastOverlay != null)
-                {
-                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
-                    using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.toast"))
-                        toastOverlay.SetReady();
-                    LogManager.Log("[RevealProbe] setready.toast " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
-                }
                 {
                     long t = System.Diagnostics.Stopwatch.GetTimestamp();
                     using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.web"))
@@ -2704,7 +2598,6 @@ class Program
         Action agentDocumentAdvanced = null;
         Action<string, string> agentPanelChanged = null;
         EventHandler agentWindowHandleChanged = null;
-        bool agentPanelUsesNativeHost = panelHost != null;
         LauncherAgentRuntimeHost hostCandidate = null;
         try
         {
@@ -2984,16 +2877,8 @@ class Program
                     agentLaunchStateChanged;
                 webOverlay.DocumentAdvanced -=
                     agentDocumentAdvanced;
-                if (agentPanelUsesNativeHost)
-                {
-                    panelHost.PanelChanged -=
-                        agentPanelChanged;
-                }
-                else
-                {
-                    commandRouter.PanelChanged -=
-                        agentPanelChanged;
-                }
+                panelHost.PanelChanged -=
+                    agentPanelChanged;
                 form.HandleCreated -=
                     agentWindowHandleChanged;
                 form.HandleDestroyed -=
@@ -3016,16 +2901,8 @@ class Program
                 agentLaunchStateChanged;
             webOverlay.DocumentAdvanced +=
                 agentDocumentAdvanced;
-            if (agentPanelUsesNativeHost)
-            {
-                panelHost.PanelChanged +=
-                    agentPanelChanged;
-            }
-            else
-            {
-                commandRouter.PanelChanged +=
-                    agentPanelChanged;
-            }
+            panelHost.PanelChanged +=
+                agentPanelChanged;
             form.HandleCreated +=
                 agentWindowHandleChanged;
             form.HandleDestroyed +=
@@ -3043,19 +2920,9 @@ class Program
             }
 
             synchronizeAgentRuntime();
-            if (agentPanelUsesNativeHost)
-            {
-                agentRuntimeHost.SetActivePanel(
-                    panelHost.ActivePanelName,
-                    panelHost.ActivePanelInstanceId);
-            }
-            else
-            {
-                agentRuntimeHost.SetActivePanel(
-                    commandRouter.ActiveFallbackPanelName,
-                    commandRouter
-                        .ActiveFallbackPanelInstanceId);
-            }
+            agentRuntimeHost.SetActivePanel(
+                panelHost.ActivePanelName,
+                panelHost.ActivePanelInstanceId);
             string unattendedSlot =
                 agentRuntimeHost.UnattendedSlot;
             if (!string.IsNullOrWhiteSpace(
@@ -3280,10 +3147,8 @@ class Program
         try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
         try { if (backdrop != null) backdrop.Dispose(); } catch { }
         try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
-        try { notchOverlay.Dispose(); } catch { }
         try { hnOverlay.Dispose(); } catch { }
         try { v8Runtime.Dispose(); } catch { }
-        try { toastOverlay.Dispose(); } catch { }
         try { File.Delete(portsFile); } catch { }
         LogManager.Shutdown();
         StartupDiagnostics.Mark("guardian.shutdown_complete");
