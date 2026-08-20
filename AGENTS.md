@@ -5,9 +5,9 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：常驻 UI NativeHud 收敛 + 发布流水线提速（`useNativeHud=false` 旧分支拆除、面板 toast 原生显示；批量 Git 身份计算、下载路由统一+粘性+停滞检测、attestation 小包默认下载、promotion 重复校验收敛）release source commit `0749ab6665b944515561236a85b867d691d536f4`（tag `runtime-build-v2/20260820-nativehud-convergence-v1`）、release tree `8386ad98d3cd6673a3c6350b8f9ce6652c5ba1de`、request `7F179F8AB1893B9DE3ABE108A6A71A092A6C569CBD1E1E015450DC863DCFB387` 已由本地 X509 `builder-local-b` / `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `32326211406`）完成 v2 双 signer/双故障域 promotion；正式 runtime 绑定 identity `FD744C7D2D96AFF1793CA7A8FA494A1E567EDF26FA19651B49F41353BD2A0973`、closure `64A56DC4F4FA2F980385FCF0759625C061C42FF164865B11C3453845AB7AC4E7`、Core SHA-256 `ECCAB79509BC58F2154DC0D051E41ACA1A14643B61C67D3C9D3D349587F68A2B`，35/35 production receipt SHA-256 `AA0FDDFB21B0979E2E88A77BB36BD568F9CA1161EED78B7D78E439B291ACECF5`；promotion commit `cc9c4c9d103b32a909c7440aac1a896498e237a3` 与 post-promotion audit run `32326874123` 均已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
+**最后核对代码基线**：黑市全目录影子鉴定 v1（固定 `1024×576` 逻辑画布、三舱二选一、自动正交旋转与 Alpha/SDF 锚点、局部纸娃娃、放大检视、休眠军用纳米机器人覆泥及 item 语义 f2 保留）release source commit `12d6ba9eb282106e058c292fc1fdb80a49534de3`（tag `runtime-build-v2/20260820-blackmarket-shadow-v2`）、release tree `a686e935fe390651259c181f05a90d13a87a0264`、request `2CE260E595A621B67DFF2F4004FF8C1707FA408BE11774C44820020605A112B6` 已由本地 X509 `builder-local-b` / `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `32377991018`）完成 v2 双 signer/双故障域 promotion；正式 runtime 绑定 identity `FD740E89652E7D85AB070A949C7362DEEC44AD326FCBD7AE36BFDC95965BB599`、closure `B2EAD052D03C39FB2EF69E47F4E9335EA0EE0E734D88FEB14C31867A6A7E3915`、Core SHA-256 `A1AB8D8A5590F5F4A8A5CDDACF7FD35B4A1B0C7057808F3ED2A6356ADD25F024`，35/35 production receipt SHA-256 `83D7623C52EAFE33B7CBA924CA60D5028FD6216D641418D7301B9023AEA43308`；promotion commit `244b132efa3642f1d807964c9792a6e396399d9b` 与 post-promotion audit run `32379704093` 均已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
 
-**状态边界**：领域工程证据为 Launcher 全量 3896 pass + 3 explicit opt-in skip / 3899 total、发布协议回归 11/11 套件、批量身份 parity 四域×双模式逐字节一致、production policy 35/35、doc governance 与部署后 bundle/consensus/根 bootstrap `--verify-only` 全通过。维护者在同 identity/closure 隔离候选上完成约 76 分钟实机游玩验收（HUD/面板/toast/存档/干净退出），但未在 promotion 后重跑正式业务旅程，故本列车只称 `promoted`，不称 `standard_entry_verified`；旧列车明细统一留在 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)，Audio H2 继续作为专项 `pending`。
+**状态边界**：领域工程证据为 Launcher 全量 3897 pass + 3 explicit opt-in skip / 3900 total、小游戏 51/51、黑市装备/检视 30/30、防具分支 492/492、lazy closure 28/28、strict UI 0 error / 0 warning、panel contract 66/66、production policy 35/35、doc governance 与部署后 worktree/index bundle、consensus、根 bootstrap `--verify-only` 全通过。维护者已在发布前目视确认影子渠道的固定画布、自动聚焦与放大检视有效；但黑市仍是 `SHADOW_MINIGAME_V1 / TUNING_REQUIRED / PRODUCTION_NOT_IMPLEMENTED`，真实余额、存档、掉落、AS2 权威结算及 post-promotion 正式业务旅程均未完成。因此通用 runtime 只称 `promoted`，黑市专项不称 `e2e_verified` 或 `standard_entry_verified`；旧列车明细统一留在 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)，Audio H2 继续作为专项 `pending`。
 
 ---
 
@@ -34,7 +34,7 @@
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `0749ab6665b944515561236a85b867d691d536f4`）
+## Context Packs（按任务最小加载，最后核对 commit `12d6ba9eb282106e058c292fc1fdb80a49534de3`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 

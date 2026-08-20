@@ -2,7 +2,7 @@
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。
 
-**最后核对代码基线**：loot feed v3 release source commit `1aad619d6c1b3af22e15f50e5329619f7e1b82bd`、promotion commit `22da98aa04ec7b375ad7879ec2155075e0834ea9`（2026-08-19）；动态正式身份与状态继续以本节列出的 manifest、consensus 与 runtime 发布文档为准。
+**最后核对代码基线**：黑市全目录影子鉴定 v1 release source commit `12d6ba9eb282106e058c292fc1fdb80a49534de3`、promotion commit `244b132efa3642f1d807964c9792a6e396399d9b`（2026-08-20）；动态正式身份与状态继续以本节列出的 manifest、consensus 与 runtime 发布文档为准。该列车只把 shadow/dev 宿主与资源闭包带入正式 runtime，不表示黑市生产经济、存档、掉落或业务 E2E 已启用。
 
 ## 当前真值与阅读顺序
 
