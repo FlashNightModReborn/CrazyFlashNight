@@ -190,6 +190,10 @@ function Get-Cf7RuntimeV2GitObjectId {
         [Parameter(Mandatory=$true)][string]$RelativePath,
         [ValidateSet('Worktree','Index')][string]$Mode = 'Worktree'
     )
+    # Single-file reference implementation. Domain hashes resolve identities through the
+    # batched paths (Get-Cf7RuntimeV2WorktreeObjectIds / Get-Cf7RuntimeV2IndexObjectIdTable);
+    # this function stays as the semantic baseline, and the batch/single-file equivalence
+    # regression in tools/test-runtime-build-v2.ps1 pins byte-exact parity.
     $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
     if ($Mode -eq 'Index') {
         $rows = @(& git -C $root ls-files -s -- $RelativePath)
@@ -207,6 +211,131 @@ function Get-Cf7RuntimeV2GitObjectId {
     return ([string]$oid[0]).Trim().ToLowerInvariant()
 }
 
+function Get-Cf7RuntimeV2WorktreeObjectIds {
+    param(
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [Parameter(Mandatory=$true)][string[]]$RelativePaths
+    )
+    # Batched worktree identity: one git process consumes every repository-relative path via
+    # --stdin-paths (forward slashes, LF-separated, UTF-8-no-BOM stdin) instead of one process
+    # spawn per file. Byte-equivalent to per-file `hash-object --path=<rel> -- <full>`: under
+    # --stdin-paths Git resolves .gitattributes and file bytes through the same relative path.
+    $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
+    $oids = New-Object 'System.Collections.Generic.List[string]'
+    if ($RelativePaths.Count -eq 0) { return @($oids) }
+    foreach ($relative in $RelativePaths) {
+        if ([string]::IsNullOrEmpty($relative) -or $relative.Contains("`n") -or $relative.Contains("`r") -or
+                $relative.IndexOf([char]0) -ge 0 -or [IO.Path]::IsPathRooted($relative) -or
+                $relative.Contains('\') -or $relative -match '(^|/)\.\.(/|$)') {
+            throw "Runtime input path cannot enter the batch Git identity channel: $relative"
+        }
+    }
+    # Do not pipe the path list through the PowerShell native pipeline: once the console runs
+    # under code page 65001, Windows PowerShell 5.1 prepends a UTF-8 BOM to native stdin and
+    # corrupts the first path. Drive the process directly and write exact bytes instead. The
+    # Process.StandardInput writer is created from Console.InputEncoding, so pin that encoding
+    # to preamble-free UTF-8 before the first access; otherwise its BOM lands on the wire.
+    $stdinBytes = [Text.Encoding]::UTF8.GetBytes(([string]::Join("`n", $RelativePaths) + "`n"))
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = 'git.exe'
+    $psi.Arguments = "-C `"$root`" hash-object --stdin-paths"
+    $psi.UseShellExecute = $false
+    $psi.RedirectStandardInput = $true
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.StandardOutputEncoding = New-Object Text.UTF8Encoding($false)
+    $psi.StandardErrorEncoding = New-Object Text.UTF8Encoding($false)
+    $previousInputEncoding = $null
+    $inputEncodingPinned = $false
+    try {
+        $previousInputEncoding = [Console]::InputEncoding
+        [Console]::InputEncoding = New-Object Text.UTF8Encoding($false)
+        $inputEncodingPinned = $true
+    } catch {
+        # A redirected/non-console stdin may reject code page changes. Continue: the raw
+        # BaseStream write below is still BOM-free unless the console was already UTF-8, and a
+        # corrupt first path fails closed through the git exit code and row checks.
+        $previousInputEncoding = $null
+    }
+    $process = [System.Diagnostics.Process]::Start($psi)
+    try {
+        # Read stdout/stderr asynchronously while writing stdin so a large domain cannot
+        # deadlock on full pipe buffers. If git exits early (for example a path vanished
+        # between enumeration and hashing), the broken stdin pipe must not mask git's error.
+        $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+        $stderrTask = $process.StandardError.ReadToEndAsync()
+        $stdinFailure = $null
+        try {
+            $process.StandardInput.BaseStream.Write($stdinBytes, 0, $stdinBytes.Length)
+            $process.StandardInput.BaseStream.Flush()
+            $process.StandardInput.Close()
+        } catch [System.IO.IOException] {
+            $stdinFailure = $_.Exception.Message
+        }
+        $process.WaitForExit()
+        $stdoutText = [string]$stdoutTask.Result
+        $stderrText = [string]$stderrTask.Result
+        if ($process.ExitCode -ne 0) {
+            throw "Cannot batch-hash runtime inputs ($($RelativePaths.Count) paths): $($stderrText.Trim())"
+        }
+        if ($stdinFailure) {
+            throw "Cannot feed runtime inputs to batch Git identity: $stdinFailure"
+        }
+    } finally {
+        $process.Dispose()
+        if ($inputEncodingPinned) {
+            try { [Console]::InputEncoding = $previousInputEncoding } catch { }
+        }
+    }
+    $rows = @($stdoutText -split "`n" | Where-Object { $_ -ne '' })
+    if ($rows.Count -ne $RelativePaths.Count) {
+        throw "Batch Git identity returned $($rows.Count) rows for $($RelativePaths.Count) runtime inputs."
+    }
+    foreach ($row in $rows) {
+        $trimmed = ([string]$row).Trim()
+        if ($trimmed -notmatch '^[0-9a-fA-F]{40,64}$') { throw "Invalid batch Git identity row: $row" }
+        $oids.Add($trimmed.ToLowerInvariant())
+    }
+    return @($oids)
+}
+
+function Get-Cf7RuntimeV2IndexObjectIdTable {
+    param([Parameter(Mandatory=$true)][string]$ProjectRoot)
+    # Batched index identity: parse one full `ls-files -s` into a stage-0 lookup table instead
+    # of one process spawn per file. Drive the process directly with an explicit UTF-8 stdout
+    # encoding: core.quotepath=false emits raw UTF-8 paths, and the PowerShell 5.1 native
+    # pipeline would decode them through the ambient console code page instead.
+    $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = 'git.exe'
+    $psi.Arguments = "-c core.quotepath=false -C `"$root`" ls-files -s"
+    $psi.UseShellExecute = $false
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.StandardOutputEncoding = New-Object Text.UTF8Encoding($false)
+    $psi.StandardErrorEncoding = New-Object Text.UTF8Encoding($false)
+    $process = [System.Diagnostics.Process]::Start($psi)
+    try {
+        $stdoutText = $process.StandardOutput.ReadToEnd()
+        $stderrText = $process.StandardError.ReadToEnd()
+        $process.WaitForExit()
+        if ($process.ExitCode -ne 0) { throw "Cannot read Git index identities: $($stderrText.Trim())" }
+    } finally {
+        $process.Dispose()
+    }
+    $rows = @($stdoutText -split "`n" | Where-Object { $_ -ne '' })
+    $table = New-Object 'System.Collections.Generic.Dictionary[string,string]' ([StringComparer]::Ordinal)
+    foreach ($row in $rows) {
+        if ([string]$row -notmatch '^[0-9]+\s+([0-9a-fA-F]+)\s+([0-9]+)\t(.+)$') { throw "Invalid Git index row: $row" }
+        if ([string]$Matches[2] -cne '0') { continue }
+        $path = [string]$Matches[3]
+        $oid = ([string]$Matches[1]).ToLowerInvariant()
+        if ($table.ContainsKey($path)) { throw "Git index contains duplicate stage-0 entries: $path" }
+        $table.Add($path, $oid)
+    }
+    return $table
+}
+
 function Get-Cf7RuntimeV2DomainHash {
     param(
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
@@ -215,10 +344,27 @@ function Get-Cf7RuntimeV2DomainHash {
         [string]$ConfigPath
     )
     $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
+    $files = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $root -Domain $Domain -Mode $Mode -ConfigPath $ConfigPath)
+    $oids = @()
+    if ($files.Count -gt 0) {
+        if ($Mode -eq 'Index') {
+            $indexTable = Get-Cf7RuntimeV2IndexObjectIdTable -ProjectRoot $root
+            $resolved = New-Object 'System.Collections.Generic.List[string]'
+            foreach ($relative in $files) {
+                $oid = $null
+                if (-not $indexTable.TryGetValue($relative, [ref]$oid)) {
+                    throw "Runtime input has no unique stage-0 Git index entry: $relative"
+                }
+                $resolved.Add($oid)
+            }
+            $oids = @($resolved)
+        } else {
+            $oids = @(Get-Cf7RuntimeV2WorktreeObjectIds -ProjectRoot $root -RelativePaths $files)
+        }
+    }
     $lines = New-Object 'System.Collections.Generic.List[string]'
-    foreach ($relative in Get-Cf7RuntimeV2DomainFiles -ProjectRoot $root -Domain $Domain -Mode $Mode -ConfigPath $ConfigPath) {
-        $oid = Get-Cf7RuntimeV2GitObjectId -ProjectRoot $root -RelativePath $relative -Mode $Mode
-        $lines.Add("$relative`t$oid")
+    for ($index = 0; $index -lt $files.Count; $index++) {
+        $lines.Add("$($files[$index])`t$($oids[$index])")
     }
     $payload = [string]::Join("`n", $lines.ToArray()) + "`n"
     return Get-Cf7RuntimeV2BytesSha256 -Bytes ([Text.Encoding]::UTF8.GetBytes($payload))

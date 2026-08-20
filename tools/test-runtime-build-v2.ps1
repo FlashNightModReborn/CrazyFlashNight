@@ -404,6 +404,52 @@ try {
         Assert-Equal "Worktree/Index baseline $field" $baseWorktree.$field $baseIndex.$field
     }
 
+    # P1 regression: batched domain identity resolution must stay byte-identical to the
+    # single-file reference implementation, in both modes, for every domain.
+    foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
+        foreach ($parityMode in @('Worktree','Index')) {
+            $domainFiles = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -Domain $domain -Mode $parityMode -ConfigPath $configPath)
+            $referenceOids = @($domainFiles | ForEach-Object { Get-Cf7RuntimeV2GitObjectId -ProjectRoot $testRoot -RelativePath $_ -Mode $parityMode })
+            if ($parityMode -eq 'Index') {
+                $parityTable = Get-Cf7RuntimeV2IndexObjectIdTable -ProjectRoot $testRoot
+                $batchedOids = @($domainFiles | ForEach-Object {
+                    $oid = $null
+                    if (-not $parityTable.TryGetValue($_, [ref]$oid)) { throw "P1 parity lookup miss: $_" }
+                    $oid
+                })
+            } else {
+                $batchedOids = @(Get-Cf7RuntimeV2WorktreeObjectIds -ProjectRoot $testRoot -RelativePaths $domainFiles)
+            }
+            Assert-Equal "P1 batch/single-file oid parity ($domain/$parityMode)" ($referenceOids -join ',') ($batchedOids -join ',')
+        }
+    }
+    $parityArtifactFiles = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -Domain artifactSource -Mode Worktree -ConfigPath $configPath)
+    $parityReferenceOids = @($parityArtifactFiles | ForEach-Object { Get-Cf7RuntimeV2GitObjectId -ProjectRoot $testRoot -RelativePath $_ -Mode Worktree })
+    $consoleInputPinned = $false
+    $previousConsoleInputEncoding = $null
+    try {
+        $previousConsoleInputEncoding = [Console]::InputEncoding
+        [Console]::InputEncoding = New-Object Text.UTF8Encoding($true)
+        $consoleInputPinned = $true
+    } catch { }
+    if ($consoleInputPinned) {
+        try {
+            # A BOM-emitting console input encoding must not leak into the batch stdin channel.
+            $poisonedConsoleOids = @(Get-Cf7RuntimeV2WorktreeObjectIds -ProjectRoot $testRoot -RelativePaths $parityArtifactFiles)
+            Assert-Equal 'P1 batch identity ignores a BOM-emitting console input encoding' ($parityReferenceOids -join ',') ($poisonedConsoleOids -join ',')
+        } finally {
+            try { [Console]::InputEncoding = $previousConsoleInputEncoding } catch { }
+        }
+    }
+    Expect-Failure 'P1 batch identity rejects LF/CR in domain paths' {
+        Get-Cf7RuntimeV2WorktreeObjectIds -ProjectRoot $testRoot -RelativePaths @("src/app.cs`nsrc/evil.cs") | Out-Null
+    }
+    Expect-Failure 'P1 batch identity rejects absolute domain paths' {
+        Get-Cf7RuntimeV2WorktreeObjectIds -ProjectRoot $testRoot -RelativePaths @('C:/absolute/evil.cs') | Out-Null
+    }
+    $parityIndexTable = Get-Cf7RuntimeV2IndexObjectIdTable -ProjectRoot $testRoot
+    Assert-Equal 'P1 index table does not contain untracked paths' $false $parityIndexTable.ContainsKey('src/not-tracked.cs')
+
     Write-TestText (Join-Path $testRoot 'policy.ps1') "Write-Output verify-v2`n"
     $policyChanged = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
     Assert-Equal 'policy isolation artifact' $baseWorktree.artifactSourceHash $policyChanged.artifactSourceHash
@@ -602,6 +648,40 @@ try {
     $mismatchAttestation = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbB -RegistryPath $registryPath -ConfigPath $configPath
     Expect-Failure 'different payload closure consensus' { Test-Cf7RuntimeBuildConsensusV2 -Attestations @($attestationA,$mismatchAttestation) -RegistryPath $registryPath | Out-Null }
     Write-TestText (Join-Path $testRoot 'runtime\payload.dll') 'payload-v1'
+
+    # P3: a caller-pinned expected identity is a comparison anchor, not a blind trust path.
+    $expectedIdentitySource = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
+    $expectedIdentity = [pscustomobject]@{
+        artifactSourceHash = [string]$expectedIdentitySource.artifactSourceHash
+        producerRecipeHash = [string]$expectedIdentitySource.producerRecipeHash
+        toolchainLockHash = [string]$expectedIdentitySource.toolchainLockHash
+        policyHash = [string]$expectedIdentitySource.policyHash
+        buildIdentityHash = [string]$expectedIdentitySource.buildIdentityHash
+    }
+    $expectedIdentityAttestation = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbA -RegistryPath $registryPath -ConfigPath $configPath -ExpectedIdentity $expectedIdentity
+    Assert-Equal 'expected-identity attestation keeps the recomputed payload closure' `
+        $attestationA.payload.payloadClosureHash $expectedIdentityAttestation.payload.payloadClosureHash
+    Assert-Equal 'expected-identity attestation keeps the build identity' `
+        $attestationA.payload.buildIdentityHash $expectedIdentityAttestation.payload.buildIdentityHash
+    Test-Cf7RuntimeBuildAttestationV2 -Attestation $expectedIdentityAttestation -RegistryPath $registryPath | Out-Null
+    $script:checks++
+    $driftedIdentity = $expectedIdentity | ConvertTo-Json | ConvertFrom-Json
+    $driftedIdentity.policyHash = '0' * 64
+    # policyHash is not part of the signed payload; a well-formed but drifted value still
+    # passes shape validation here, and the caller-side request comparison fails closed.
+    $driftedAttestation = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbA -RegistryPath $registryPath -ConfigPath $configPath -ExpectedIdentity $driftedIdentity
+    Assert-Equal 'drifted policy hash leaves the signed build identity unchanged' $attestationA.payload.buildIdentityHash $driftedAttestation.payload.buildIdentityHash
+    Assert-NotEqual 'drifted policy hash differs from the request-pinned value' $expectedIdentitySource.policyHash $driftedIdentity.policyHash
+    $inconsistentIdentity = $expectedIdentity | ConvertTo-Json | ConvertFrom-Json
+    $inconsistentIdentity.buildIdentityHash = 'F' * 64
+    Expect-Failure 'expected identity with a non-reproducible buildIdentityHash fails closed' {
+        New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbA -RegistryPath $registryPath -ConfigPath $configPath -ExpectedIdentity $inconsistentIdentity | Out-Null
+    }
+    $shapelessIdentity = $expectedIdentity | ConvertTo-Json | ConvertFrom-Json
+    $shapelessIdentity.policyHash = 'not-a-hash'
+    Expect-Failure 'expected identity with a malformed field fails closed' {
+        New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $testRoot -DeploymentRoot $testRoot -CertificateThumbprint $thumbA -RegistryPath $registryPath -ConfigPath $configPath -ExpectedIdentity $shapelessIdentity | Out-Null
+    }
 
     $registry.builders[0].epoch = 2
     Write-TestText $registryPath (($registry | ConvertTo-Json -Depth 8) + "`n")

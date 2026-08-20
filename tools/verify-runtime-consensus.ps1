@@ -3,7 +3,8 @@ param(
     [string]$DeploymentRoot,
     [string]$RecordPath,
     [switch]$Staged,
-    [switch]$IntegrityOnly
+    [switch]$IntegrityOnly,
+    [string]$PreVerifiedGitHubProofPath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -162,6 +163,31 @@ try {
     }
 
     $attestations = @($record.attestations)
+    $preVerifiedGitHubProofs = $null
+    if ($PreVerifiedGitHubProofPath) {
+        # Fast path for the promotion transaction only: the caller (promote-runtime-bundle.ps1)
+        # fully verified these exact GitHub wrappers in-process moments ago, including
+        # `gh attestation verify`. The file only skips a repeated Sigstore call for content
+        # that is already proven; every embedded attestation below is still re-bound to the
+        # pre-verified wrapper byte-for-byte. Standalone runs and post-promotion audits omit
+        # the parameter and keep the full replay.
+        if ($Staged) { throw '-PreVerifiedGitHubProofPath cannot attest staged-index verification.' }
+        if (-not (Test-Path -LiteralPath $PreVerifiedGitHubProofPath -PathType Leaf)) {
+            throw "Pre-verified GitHub proof file is missing: $PreVerifiedGitHubProofPath"
+        }
+        $preVerifiedRecord = Get-Content -LiteralPath $PreVerifiedGitHubProofPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ([string]$preVerifiedRecord.schema -ne 'cf7-runtime-github-preverified-proofs.v1') {
+            throw 'Unsupported pre-verified GitHub proof schema.'
+        }
+        if (([string]$preVerifiedRecord.requestId).ToUpperInvariant() -cne ([string]$record.requestId).ToUpperInvariant()) {
+            throw 'Pre-verified GitHub proofs do not bind this consensus record request.'
+        }
+        $preVerifiedGitHubProofs = @($preVerifiedRecord.proofs)
+        $embeddedGitHubCount = @($attestations | Where-Object { [string]$_.schema -eq 'cf7-runtime-github-build-attestation.v2' }).Count
+        if ($preVerifiedGitHubProofs.Count -ne $embeddedGitHubCount) {
+            throw 'Pre-verified GitHub proof set does not cover exactly the consensus record GitHub proofs.'
+        }
+    }
     $verifiedPayloads = @()
     $proofSignerKeys = New-Object 'System.Collections.Generic.List[string]'
     foreach ($attestation in $attestations) {
@@ -175,6 +201,25 @@ try {
         }
         if ([string]$attestation.schema -ne 'cf7-runtime-github-build-attestation.v2') {
             throw "Unsupported producer proof in v2 release consensus: $($attestation.schema)"
+        }
+
+        if ($null -ne $preVerifiedGitHubProofs) {
+            # Structural/binding comparison only: the matching pre-verified wrapper passed the
+            # full Sigstore replay inside the promotion process. Hashing the source domains or
+            # calling `gh attestation verify` again would prove nothing new for these bytes.
+            $preVerifiedMatches = @($preVerifiedGitHubProofs | Where-Object {
+                [string]$_.canonicalPayloadSha256 -ceq [string]$attestation.canonicalPayloadSha256
+            })
+            if ($preVerifiedMatches.Count -ne 1) {
+                throw 'Release consensus GitHub proof was not pre-verified by the promotion process.'
+            }
+            Assert-Cf7RuntimeGitHubProofEquivalentV2 -Expected $preVerifiedMatches[0] -Actual $attestation | Out-Null
+            if ([string]$attestation.payload.releaseTreeOid -ne ([string]$record.releaseTreeOid).ToLowerInvariant()) {
+                throw 'GitHub producer proof releaseTreeOid does not match the release consensus.'
+            }
+            $verifiedPayloads += $attestation.payload
+            $proofSignerKeys.Add('github-oidc:' + ([string]$attestation.payload.builderIdentityHash).ToUpperInvariant())
+            continue
         }
 
         $cloudTemporaryRoot = Join-Path (Join-Path $ProjectRoot 'tmp\runtime-consensus-verify') ([Guid]::NewGuid().ToString('N'))

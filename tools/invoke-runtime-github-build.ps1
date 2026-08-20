@@ -9,8 +9,12 @@ param(
     [string]$GitHubCliPath = 'gh',
     [ValidateRange(0,9223372036854775807)][Int64]$ResumeRunId = 0,
     [string]$PreDownloadedArtifactArchive,
+    [switch]$IncludeCandidateArchive,
     [ValidateRange(1,8)][int]$ArtifactDownloadAttempts = 4,
     [ValidateRange(30,7200)][int]$ArtifactDownloadTimeoutSeconds = 1800,
+    [ValidateSet('','auto','proxy','direct')][string]$GitHubArtifactTransport = '',
+    [ValidateRange(5,300)][int]$ArtifactConnectTimeoutSeconds = 15,
+    [ValidateRange(5,600)][int]$ArtifactStallTimeoutSeconds = 30,
     [ValidateRange(1,600)][int]$DiscoveryTimeoutSeconds = 120,
     [ValidateRange(30,86400)][int]$RunTimeoutSeconds = 21600,
     [ValidateRange(1,300)][int]$PollSeconds = 10,
@@ -20,6 +24,7 @@ param(
 $ErrorActionPreference = 'Stop'
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
 $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
+. (Join-Path $ProjectRoot 'tools\runtime-build-queue-common.ps1')
 $SourceCommitOid = $SourceCommitOid.ToLowerInvariant()
 if (-not $ConfigPath) { $ConfigPath = Join-Path $ProjectRoot 'config\build\runtime-github-builder.v2.json' }
 $ConfigPath = (Resolve-Path -LiteralPath $ConfigPath).Path
@@ -244,14 +249,80 @@ function New-Cf7HttpClient([bool]$UseProxy, [bool]$AllowRedirect, [int]$TimeoutS
     return $client
 }
 
-function Get-Cf7ArtifactRedirect([Uri]$DownloadUri, [string]$Token) {
+function Resolve-Cf7ArtifactTransportMode([AllowNull()][string]$ParameterValue, [AllowNull()][string]$EnvironmentValue) {
+    # The explicit parameter wins over CF7_GITHUB_ARTIFACT_TRANSPORT; both default to auto.
+    $candidate = $ParameterValue
+    if ([string]::IsNullOrWhiteSpace($candidate)) { $candidate = $EnvironmentValue }
+    if ([string]::IsNullOrWhiteSpace($candidate)) { return 'auto' }
+    $normalized = ([string]$candidate).Trim().ToLowerInvariant()
+    if (@('auto','proxy','direct') -notcontains $normalized) {
+        throw "GitHub artifact transport must be auto, proxy, or direct: $candidate"
+    }
+    return $normalized
+}
+
+function Get-Cf7ArtifactRouteCandidates([string]$Mode, [AllowNull()][string]$PersistedRoute, [AllowNull()][string[]]$FailedRoutes) {
+    # One download round's route order. Explicit proxy/direct pins a single route for both the
+    # redirect probe and the data stream. Auto tries the persisted last-known-good route first,
+    # then proxy, then direct; routes that already failed in this receive are demoted to the end.
+    if ($Mode -eq 'proxy' -or $Mode -eq 'direct') { return @($Mode) }
+    $failed = @($FailedRoutes)
+    $ordered = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($route in @($PersistedRoute,'proxy','direct')) {
+        if ($route -ne 'proxy' -and $route -ne 'direct') { continue }
+        if ($failed -contains $route) { continue }
+        if ($ordered.Contains($route)) { continue }
+        $ordered.Add($route)
+    }
+    foreach ($route in $failed) {
+        if (($route -eq 'proxy' -or $route -eq 'direct') -and -not $ordered.Contains($route)) { $ordered.Add($route) }
+    }
+    return @($ordered)
+}
+
+function Get-Cf7ArtifactRouteCachePath([string]$QueueRoot) {
+    return (Join-Path $QueueRoot 'github-artifact-route.v1.json')
+}
+
+function Read-Cf7ArtifactRouteCache([string]$QueueRoot) {
+    # The sticky route is a hint, never an authority: unreadable or malformed content degrades
+    # to a fresh canary probe instead of failing the download.
+    $path = Get-Cf7ArtifactRouteCachePath -QueueRoot $QueueRoot
+    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { return $null }
+    try {
+        $record = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ([string]$record.schema -ne 'cf7-github-artifact-route.v1') { return $null }
+        $route = ([string]$record.route).ToLowerInvariant()
+        if ($route -ne 'proxy' -and $route -ne 'direct') { return $null }
+        return $route
+    } catch { return $null }
+}
+
+function Save-Cf7ArtifactRouteCache([string]$QueueRoot, [string]$Route, [string]$Source) {
+    if ($Route -ne 'proxy' -and $Route -ne 'direct') { throw "Invalid GitHub artifact route for persistence: $Route" }
+    $record = [pscustomobject][ordered]@{
+        schema = 'cf7-github-artifact-route.v1'
+        route = $Route
+        source = $Source
+        updatedAtUtc = [DateTime]::UtcNow.ToString('o')
+    }
+    Write-Cf7QueueJsonAtomic -Path (Get-Cf7ArtifactRouteCachePath -QueueRoot $QueueRoot) -Value $record
+}
+
+function Clear-Cf7ArtifactRouteCache([string]$QueueRoot) {
+    $path = Get-Cf7ArtifactRouteCachePath -QueueRoot $QueueRoot
+    if (Test-Path -LiteralPath $path -PathType Leaf) { Remove-Item -LiteralPath $path -Force }
+}
+
+function Get-Cf7ArtifactRedirect([Uri]$DownloadUri, [string]$Token, [string[]]$RouteCandidates, [int]$TimeoutSeconds) {
     $lastFailureType = 'none'
-    foreach ($useProxy in @($true,$false)) {
+    foreach ($route in @($RouteCandidates)) {
+        $useProxy = ($route -eq 'proxy')
         $client = $null
         $request = $null
         $response = $null
         try {
-            $client = New-Cf7HttpClient -UseProxy $useProxy -AllowRedirect $false -TimeoutSeconds 120
+            $client = New-Cf7HttpClient -UseProxy $useProxy -AllowRedirect $false -TimeoutSeconds $TimeoutSeconds
             $request = New-Object Net.Http.HttpRequestMessage([Net.Http.HttpMethod]::Get, $DownloadUri)
             $request.Headers.Authorization = New-Object Net.Http.Headers.AuthenticationHeaderValue('Bearer', $Token)
             [void]$request.Headers.TryAddWithoutValidation('Accept','application/vnd.github+json')
@@ -266,7 +337,7 @@ function Get-Cf7ArtifactRedirect([Uri]$DownloadUri, [string]$Token) {
                 New-Object Uri($DownloadUri, $response.Headers.Location)
             }
             if ($redirect.Scheme -cne 'https') { throw 'Artifact redirect target is not HTTPS.' }
-            return $redirect
+            return [pscustomobject][ordered]@{ Redirect = $redirect; Route = $route }
         } catch {
             $lastFailureType = $_.Exception.GetType().FullName
         } finally {
@@ -283,7 +354,9 @@ function Invoke-Cf7ArtifactStreamAttempt(
     [string]$PartialPath,
     [Int64]$ExpectedSize,
     [bool]$UseProxy,
-    [int]$TimeoutSeconds
+    [int]$TimeoutSeconds,
+    [int]$ConnectTimeoutSeconds,
+    [int]$StallTimeoutSeconds
 ) {
     $offset = if (Test-Path -LiteralPath $PartialPath -PathType Leaf) { (Get-Item -LiteralPath $PartialPath -Force).Length } else { [Int64]0 }
     if ($offset -lt 0 -or $offset -gt $ExpectedSize) { throw 'Artifact partial length exceeds the metadata size.' }
@@ -300,7 +373,15 @@ function Invoke-Cf7ArtifactStreamAttempt(
         $client = New-Cf7HttpClient -UseProxy $UseProxy -AllowRedirect $false -TimeoutSeconds $TimeoutSeconds
         $request = New-Object Net.Http.HttpRequestMessage([Net.Http.HttpMethod]::Get, $BlobUri)
         if ($offset -gt 0) { $request.Headers.Range = New-Object Net.Http.Headers.RangeHeaderValue($offset, $null) }
-        $response = $client.SendAsync($request, [Net.Http.HttpCompletionOption]::ResponseHeadersRead, $cancellation.Token).GetAwaiter().GetResult()
+        # Connect/first-byte phase: a short dedicated watchdog bounds the wait until response
+        # headers arrive. The long overall timeout must not apply to a dead connection.
+        $connectWatchdog = New-Object Threading.CancellationTokenSource
+        try {
+            $connectWatchdog.CancelAfter([TimeSpan]::FromSeconds($ConnectTimeoutSeconds))
+            $response = $client.SendAsync($request, [Net.Http.HttpCompletionOption]::ResponseHeadersRead, $connectWatchdog.Token).GetAwaiter().GetResult()
+        } finally {
+            $connectWatchdog.Dispose()
+        }
         $status = [int]$response.StatusCode
         $contentLength = $response.Content.Headers.ContentLength
         if ($offset -eq 0) {
@@ -325,17 +406,27 @@ function Invoke-Cf7ArtifactStreamAttempt(
         [Int64]$written = 0
         [Int64]$progressInterval = 5242880
         [Int64]$nextProgress = ([Int64]([Math]::Floor($offset / [double]$progressInterval)) + 1) * $progressInterval
-        while ($true) {
-            $read = $input.ReadAsync($buffer, 0, $buffer.Length, $cancellation.Token).GetAwaiter().GetResult()
-            if ($read -le 0) { break }
-            if ($offset + $written + $read -gt $ExpectedSize) { throw 'Artifact response exceeds the metadata size.' }
-            $output.Write($buffer, 0, $read)
-            $written += $read
-            $received = $offset + $written
-            if ($received -ge $nextProgress) {
-                Write-Host "[RuntimeGitHubBuild] Artifact bytes received=$received expected=$ExpectedSize" -ForegroundColor DarkGray
-                while ($nextProgress -le $received) { $nextProgress += $progressInterval }
+        # Data phase: the stall watchdog aborts the attempt when no byte arrives for
+        # StallTimeoutSeconds; the overall cancellation token remains the hard ceiling.
+        $stallWatchdog = New-Object Threading.CancellationTokenSource
+        $readWatchdog = [Threading.CancellationTokenSource]::CreateLinkedTokenSource($cancellation.Token, $stallWatchdog.Token)
+        try {
+            while ($true) {
+                $stallWatchdog.CancelAfter([TimeSpan]::FromSeconds($StallTimeoutSeconds))
+                $read = $input.ReadAsync($buffer, 0, $buffer.Length, $readWatchdog.Token).GetAwaiter().GetResult()
+                if ($read -le 0) { break }
+                if ($offset + $written + $read -gt $ExpectedSize) { throw 'Artifact response exceeds the metadata size.' }
+                $output.Write($buffer, 0, $read)
+                $written += $read
+                $received = $offset + $written
+                if ($received -ge $nextProgress) {
+                    Write-Host "[RuntimeGitHubBuild] Artifact bytes received=$received expected=$ExpectedSize" -ForegroundColor DarkGray
+                    while ($nextProgress -le $received) { $nextProgress += $progressInterval }
+                }
             }
+        } finally {
+            $readWatchdog.Dispose()
+            $stallWatchdog.Dispose()
         }
         $output.Flush($true)
     } finally {
@@ -383,7 +474,11 @@ function Receive-Cf7ArtifactArchive(
     [string]$TransportRoot,
     [string]$PreDownloadedPath,
     [int]$Attempts,
-    [int]$TimeoutSeconds
+    [int]$TimeoutSeconds,
+    [string]$TransportMode,
+    [int]$ConnectTimeoutSeconds,
+    [int]$StallTimeoutSeconds,
+    [string]$QueueRoot
 ) {
     if (-not (Test-Path -LiteralPath $TransportRoot -PathType Container)) { New-Item -ItemType Directory -Path $TransportRoot -Force | Out-Null }
     $transportItem = Get-Item -LiteralPath $TransportRoot -Force
@@ -401,7 +496,7 @@ function Receive-Cf7ArtifactArchive(
             throw 'Cached artifact archive does not match GitHub metadata.'
         }
         Assert-Cf7ArtifactArchiveIdentity -ArchivePath $archivePath -Metadata $Metadata
-        return $archivePath
+        return [pscustomobject][ordered]@{ ArchivePath = $archivePath; Route = $null }
     }
     if (Test-Path -LiteralPath $partialPath -PathType Leaf) {
         $partial = Get-Item -LiteralPath $partialPath -Force
@@ -415,22 +510,51 @@ function Receive-Cf7ArtifactArchive(
         Copy-Cf7PreDownloadedArtifact -SourcePath $PreDownloadedPath -DestinationPath $partialPath -ExpectedSize ([Int64]$Metadata.Size)
         Assert-Cf7ArtifactArchiveIdentity -ArchivePath $partialPath -Metadata $Metadata
         [IO.File]::Move($partialPath, $archivePath)
-        return $archivePath
+        return [pscustomobject][ordered]@{ ArchivePath = $archivePath; Route = $null }
     }
 
     $token = Get-Cf7GitHubToken
+    $effectiveRoute = $null
     try {
+        $failedRoutes = @()
         for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
-            $useProxy = ($attempt % 2) -eq 0
+            $route = $null
             try {
                 $offset = if (Test-Path -LiteralPath $partialPath -PathType Leaf) { (Get-Item -LiteralPath $partialPath -Force).Length } else { [Int64]0 }
-                Write-Host "[RuntimeGitHubBuild] Artifact transfer attempt=$attempt/$Attempts offset=$offset proxy=$useProxy" -ForegroundColor DarkGray
-                $redirect = Get-Cf7ArtifactRedirect -DownloadUri $Metadata.DownloadUri -Token $token
+                # The redirect probe and the data stream always share one route. In auto mode
+                # the small redirect request doubles as the canary: the persisted
+                # last-known-good route goes first, and the winning route is pinned for the
+                # data stream and persisted again.
+                if ($TransportMode -eq 'auto') {
+                    $persistedRoute = Read-Cf7ArtifactRouteCache -QueueRoot $QueueRoot
+                    $candidates = Get-Cf7ArtifactRouteCandidates -Mode 'auto' -PersistedRoute $persistedRoute -FailedRoutes $failedRoutes
+                    $probe = Get-Cf7ArtifactRedirect -DownloadUri $Metadata.DownloadUri -Token $token -RouteCandidates $candidates -TimeoutSeconds $ConnectTimeoutSeconds
+                    $route = [string]$probe.Route
+                    $redirect = $probe.Redirect
+                    $routeSource = 'canary'
+                    if ($persistedRoute -eq $route) { $routeSource = 'sticky' }
+                    try { Save-Cf7ArtifactRouteCache -QueueRoot $QueueRoot -Route $route -Source $routeSource }
+                    catch { Write-Warning "Could not persist the GitHub artifact route cache: $($_.Exception.Message)" }
+                } else {
+                    $route = $TransportMode
+                    $probe = Get-Cf7ArtifactRedirect -DownloadUri $Metadata.DownloadUri -Token $token -RouteCandidates @($route) -TimeoutSeconds $ConnectTimeoutSeconds
+                    $redirect = $probe.Redirect
+                }
+                Write-Host "[RuntimeGitHubBuild] Artifact transfer attempt=$attempt/$Attempts offset=$offset route=$route mode=$TransportMode" -ForegroundColor DarkGray
                 Invoke-Cf7ArtifactStreamAttempt -BlobUri $redirect -PartialPath $partialPath `
-                    -ExpectedSize ([Int64]$Metadata.Size) -UseProxy $useProxy -TimeoutSeconds $TimeoutSeconds
+                    -ExpectedSize ([Int64]$Metadata.Size) -UseProxy ($route -eq 'proxy') -TimeoutSeconds $TimeoutSeconds `
+                    -ConnectTimeoutSeconds $ConnectTimeoutSeconds -StallTimeoutSeconds $StallTimeoutSeconds
+                $effectiveRoute = $route
                 break
             } catch {
                 $failureType = $_.Exception.GetType().FullName
+                if ($TransportMode -eq 'auto') {
+                    # A failed data route loses its last-known-good status; the next attempt
+                    # re-probes with the failed route demoted.
+                    if ($route) { $failedRoutes += $route }
+                    try { Clear-Cf7ArtifactRouteCache -QueueRoot $QueueRoot }
+                    catch { Write-Warning "Could not invalidate the GitHub artifact route cache: $($_.Exception.Message)" }
+                }
                 if ($attempt -ge $Attempts) {
                     throw "Artifact HTTPS transfer exhausted $Attempts attempts; partial retained (failureType=$failureType)."
                 }
@@ -446,7 +570,7 @@ function Receive-Cf7ArtifactArchive(
     }
     Assert-Cf7ArtifactArchiveIdentity -ArchivePath $partialPath -Metadata $Metadata
     [IO.File]::Move($partialPath, $archivePath)
-    return $archivePath
+    return [pscustomobject][ordered]@{ ArchivePath = $archivePath; Route = $effectiveRoute }
 }
 
 function Test-Cf7ArtifactFile([string]$Root, [string]$Name, [Int64]$MaximumBytes) {
@@ -488,6 +612,53 @@ function Expand-Cf7OuterArtifactSafely([string]$ArchivePath, [string]$Destinatio
             }
             $totalLength += [Int64]$entry.Length
             if ($totalLength -gt 570425344) { throw 'Outer artifact expands beyond the safety limit.' }
+        }
+
+        New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
+        foreach ($entry in $archive.Entries) {
+            $destination = Join-Path $DestinationRoot ([string]$entry.FullName)
+            $input = $entry.Open()
+            try {
+                $output = New-Object IO.FileStream($destination, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+                try { $input.CopyTo($output); $output.Flush($true) } finally { $output.Dispose() }
+            } finally { $input.Dispose() }
+        }
+    } finally { $archive.Dispose() }
+    return (Resolve-Path -LiteralPath $DestinationRoot).Path.TrimEnd('\')
+}
+
+function Expand-Cf7AttestationArtifactSafely([string]$ArchivePath, [string]$DestinationRoot) {
+    # Attestation-only artifact: exactly the deterministic envelope plus its offline Sigstore
+    # bundle. The candidate bytes stay in the separate large artifact (or the local producer
+    # CAS); this small artifact is the default download for proof verification.
+    Add-Type -AssemblyName System.IO.Compression
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    if (Test-Path -LiteralPath $DestinationRoot) { throw "Attestation extraction destination already exists: $DestinationRoot" }
+    $expected = [ordered]@{
+        'runtime-build-envelope.v2.json' = [Int64]16777216
+        'runtime-build-envelope.v2.sigstore.json' = [Int64]16777216
+    }
+    $archive = [IO.Compression.ZipFile]::OpenRead($ArchivePath)
+    try {
+        if ($archive.Entries.Count -ne $expected.Count) { throw 'Attestation artifact archive must contain exactly two files.' }
+        $seen = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+        [Int64]$totalLength = 0
+        foreach ($entry in $archive.Entries) {
+            $raw = ([string]$entry.FullName).Replace('\','/')
+            if (-not $expected.Contains($raw) -or $raw.Contains('/') -or -not $seen.Add($raw)) {
+                throw "Attestation artifact archive contains a path outside the exact file allowlist: $raw"
+            }
+            [uint32]$attributes = ConvertTo-Cf7UInt32Bits -Value ([int]$entry.ExternalAttributes)
+            $unixType = (($attributes -shr 16) -band 0xF000)
+            if ($unixType -eq 0xA000 -or ($attributes -band [uint32][IO.FileAttributes]::ReparsePoint) -ne 0) {
+                throw "Attestation artifact archive contains a link/reparse entry: $raw"
+            }
+            $maximum = [Int64]$expected[$raw]
+            if ($entry.Length -le 0 -or $entry.Length -gt $maximum -or $entry.CompressedLength -lt 0) {
+                throw "Attestation artifact archive entry has an unsafe size: $raw"
+            }
+            $totalLength += [Int64]$entry.Length
+            if ($totalLength -gt 33554432) { throw 'Attestation artifact expands beyond the safety limit.' }
         }
 
         New-Item -ItemType Directory -Path $DestinationRoot -Force | Out-Null
@@ -579,18 +750,24 @@ function Invoke-Cf7ProofVerifier(
     [string]$CandidateRoot,
     [string]$EnvelopePath,
     [string]$BundlePath,
-    [string]$ProofPath
+    [string]$ProofPath,
+    [switch]$WithoutCandidateArchive
 ) {
     $verifier = Join-Path $ProjectRoot 'tools\verify-runtime-github-attestation.ps1'
     if (-not (Test-Path -LiteralPath $verifier -PathType Leaf)) { throw "GitHub runtime verifier is missing: $verifier" }
     $powerShell = (Get-Process -Id $PID).Path
     $arguments = @(
         '-NoProfile','-ExecutionPolicy','Bypass','-File',$verifier,
-        '-ProjectRoot',$ProjectRoot,'-CandidateRoot',$CandidateRoot,
+        '-ProjectRoot',$ProjectRoot,
         '-EnvelopePath',$EnvelopePath,'-BundlePath',$BundlePath,
         '-ExpectedSourceCommitOid',$SourceCommitOid,'-GitHubCliPath',$script:GitHubCli,
         '-OutputPath',$ProofPath
     )
+    if ($WithoutCandidateArchive) {
+        $arguments += '-WithoutCandidateArchive'
+    } else {
+        $arguments += @('-CandidateRoot',$CandidateRoot)
+    }
     $previousPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     try {
@@ -613,7 +790,18 @@ $script:GitHubCli = Resolve-Cf7GitHubCli
 $workflowFile = [IO.Path]::GetFileName([string]$config.signerWorkflow)
 $sourceRefName = ([string]$config.sourceRef) -replace '^refs/(?:heads|tags)/', ''
 $expectedRunTitle = "Runtime cloud builder $SourceCommitOid"
-$artifactName = "runtime-cloud-builder-$SourceCommitOid"
+# Default scope downloads only the small attestation artifact (deterministic envelope plus
+# its Sigstore bundle); the multi-megabyte candidate archive is fetched only on explicit
+# request. The workflow itself pins zip==envelope before signing, and promotion re-verifies
+# the proof against the local candidate bytes, so the proof path needs no candidate payload.
+$artifactScope = if ($IncludeCandidateArchive) { 'candidate-archive' } else { 'attestation-only' }
+$artifactName = if ($IncludeCandidateArchive) {
+    "runtime-cloud-builder-$SourceCommitOid"
+} else {
+    "runtime-cloud-attestation-$SourceCommitOid"
+}
+$artifactTransportMode = Resolve-Cf7ArtifactTransportMode -ParameterValue $GitHubArtifactTransport -EnvironmentValue $env:CF7_GITHUB_ARTIFACT_TRANSPORT
+$artifactQueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot
 
 $head = Invoke-Cf7GitText @('rev-parse','HEAD^{commit}')
 if ($head.ToLowerInvariant() -cne $SourceCommitOid) {
@@ -707,19 +895,30 @@ if (Test-Path -LiteralPath $resultRoot -PathType Container) {
 }
 $transportRoot = Join-Path $resultRoot 'artifact-download'
 $downloadRoot = Join-Path $resultRoot 'signed-artifact'
-$candidateRoot = Join-Path $resultRoot 'candidate'
-Write-Host "[RuntimeGitHubBuild] Receive signed artifact=$artifactName id=$($artifactMetadata.Id) bytes=$($artifactMetadata.Size)" -ForegroundColor Cyan
-$outerArchivePath = Receive-Cf7ArtifactArchive -Metadata $artifactMetadata -TransportRoot $transportRoot `
+Write-Host "[RuntimeGitHubBuild] Receive signed artifact=$artifactName id=$($artifactMetadata.Id) bytes=$($artifactMetadata.Size) scope=$artifactScope" -ForegroundColor Cyan
+$download = Receive-Cf7ArtifactArchive -Metadata $artifactMetadata -TransportRoot $transportRoot `
     -PreDownloadedPath $PreDownloadedArtifactArchive -Attempts $ArtifactDownloadAttempts `
-    -TimeoutSeconds $ArtifactDownloadTimeoutSeconds
-$downloadRoot = Expand-Cf7OuterArtifactSafely -ArchivePath $outerArchivePath -DestinationRoot $downloadRoot
+    -TimeoutSeconds $ArtifactDownloadTimeoutSeconds -TransportMode $artifactTransportMode `
+    -ConnectTimeoutSeconds $ArtifactConnectTimeoutSeconds -StallTimeoutSeconds $ArtifactStallTimeoutSeconds `
+    -QueueRoot $artifactQueueRoot
+$outerArchivePath = [string]$download.ArchivePath
+$artifactRoute = $download.Route
 
-$archivePath = Test-Cf7ArtifactFile -Root $downloadRoot -Name 'runtime-candidate.v2.zip' -MaximumBytes 536870912
-$envelopePath = Test-Cf7ArtifactFile -Root $downloadRoot -Name 'runtime-build-envelope.v2.json' -MaximumBytes 16777216
-$bundlePath = Test-Cf7ArtifactFile -Root $downloadRoot -Name 'runtime-build-envelope.v2.sigstore.json' -MaximumBytes 16777216
-$candidateRoot = Expand-Cf7CandidateArchiveSafely -ArchivePath $archivePath -DestinationRoot $candidateRoot
 $proofPath = Join-Path $resultRoot 'verified-github-proof.v2.json'
-$proof = Invoke-Cf7ProofVerifier -CandidateRoot $candidateRoot -EnvelopePath $envelopePath -BundlePath $bundlePath -ProofPath $proofPath
+if ($IncludeCandidateArchive) {
+    $downloadRoot = Expand-Cf7OuterArtifactSafely -ArchivePath $outerArchivePath -DestinationRoot $downloadRoot
+    $archivePath = Test-Cf7ArtifactFile -Root $downloadRoot -Name 'runtime-candidate.v2.zip' -MaximumBytes 536870912
+    $envelopePath = Test-Cf7ArtifactFile -Root $downloadRoot -Name 'runtime-build-envelope.v2.json' -MaximumBytes 16777216
+    $bundlePath = Test-Cf7ArtifactFile -Root $downloadRoot -Name 'runtime-build-envelope.v2.sigstore.json' -MaximumBytes 16777216
+    $candidateRoot = Expand-Cf7CandidateArchiveSafely -ArchivePath $archivePath -DestinationRoot (Join-Path $resultRoot 'candidate')
+    $proof = Invoke-Cf7ProofVerifier -CandidateRoot $candidateRoot -EnvelopePath $envelopePath -BundlePath $bundlePath -ProofPath $proofPath
+} else {
+    $downloadRoot = Expand-Cf7AttestationArtifactSafely -ArchivePath $outerArchivePath -DestinationRoot $downloadRoot
+    $envelopePath = Test-Cf7ArtifactFile -Root $downloadRoot -Name 'runtime-build-envelope.v2.json' -MaximumBytes 16777216
+    $bundlePath = Test-Cf7ArtifactFile -Root $downloadRoot -Name 'runtime-build-envelope.v2.sigstore.json' -MaximumBytes 16777216
+    $candidateRoot = $null
+    $proof = Invoke-Cf7ProofVerifier -EnvelopePath $envelopePath -BundlePath $bundlePath -ProofPath $proofPath -WithoutCandidateArchive
+}
 
 $result = [pscustomobject][ordered]@{
     schema = 'cf7-runtime-github-build-invocation.v2'
@@ -729,10 +928,13 @@ $result = [pscustomobject][ordered]@{
     runId = $runId
     runUrl = [string]$run.url
     artifactName = $artifactName
+    artifactScope = $artifactScope
     artifactId = [Int64]$artifactMetadata.Id
     artifactArchiveBytes = [Int64]$artifactMetadata.Size
     artifactArchiveSha256 = [string]$artifactMetadata.DigestSha256
     artifactTransport = $(if ($PreDownloadedArtifactArchive) { 'pre-downloaded-outer-archive' } else { 'github-rest-https-resumable' })
+    artifactTransportMode = $artifactTransportMode
+    artifactRoute = $artifactRoute
     outerArchivePath = $outerArchivePath
     resultRoot = $resultRoot
     candidateRoot = $candidateRoot
@@ -746,5 +948,5 @@ $result = [pscustomobject][ordered]@{
 $resultPath = Join-Path $resultRoot 'runtime-github-build-result.v2.json'
 $utf8NoBom = New-Object Text.UTF8Encoding($false)
 [IO.File]::WriteAllText($resultPath, (($result | ConvertTo-Json -Depth 8) + "`n"), $utf8NoBom)
-Write-Host "[RuntimeGitHubBuild] OK run=$runId proof=$proofPath candidate=$candidateRoot" -ForegroundColor Green
+Write-Host "[RuntimeGitHubBuild] OK run=$runId scope=$artifactScope proof=$proofPath candidate=$candidateRoot" -ForegroundColor Green
 if ($Json) { $result | ConvertTo-Json -Depth 8 } else { $result }

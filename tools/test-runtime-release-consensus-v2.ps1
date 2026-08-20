@@ -192,9 +192,10 @@ function New-Cf7ProofSet {
 }
 
 function Invoke-Cf7ConsensusProcess {
-    param([switch]$Staged)
+    param([switch]$Staged, [string]$PreVerifiedGitHubProofPath)
     $arguments = @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $fixtureRoot 'tools\verify-runtime-consensus.ps1'),'-ProjectRoot',$fixtureRoot)
     if ($Staged) { $arguments += '-Staged' }
+    if ($PreVerifiedGitHubProofPath) { $arguments += @('-PreVerifiedGitHubProofPath', $PreVerifiedGitHubProofPath) }
     $previousPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     try {
@@ -730,6 +731,41 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     }
     $verified = Invoke-Cf7ConsensusProcess
     Assert-Cf7Fixture -Condition ($verified.exitCode -eq 0) -Message "fresh mixed consensus record failed: $($verified.output)"
+
+    # P3 fast path: a pre-verified GitHub proof file lets consensus skip the second Sigstore
+    # replay, but only for byte-identical wrappers bound to this request.
+    $recordGitHubProof = @($record.attestations | Where-Object { $_.schema -eq 'cf7-runtime-github-build-attestation.v2' })
+    Assert-Cf7Fixture -Condition ($recordGitHubProof.Count -eq 1) -Message 'release record must contain exactly one GitHub proof for the fast-path fixture'
+    $goodPreVerifiedPath = Join-Path $testRoot 'preverified-good.json'
+    Write-Cf7FixtureJson -Path $goodPreVerifiedPath -Value ([ordered]@{
+        schema='cf7-runtime-github-preverified-proofs.v1'; requestId=$requestId; proofs=@($recordGitHubProof[0])
+    })
+    $fastPath = Invoke-Cf7ConsensusProcess -PreVerifiedGitHubProofPath $goodPreVerifiedPath
+    Assert-Cf7Fixture -Condition ($fastPath.exitCode -eq 0) -Message "pre-verified fast path rejected the promotion-verified wrapper: $($fastPath.output)"
+    $emptyPreVerifiedPath = Join-Path $testRoot 'preverified-empty.json'
+    Write-Cf7FixtureJson -Path $emptyPreVerifiedPath -Value ([ordered]@{
+        schema='cf7-runtime-github-preverified-proofs.v1'; requestId=$requestId; proofs=@()
+    })
+    Assert-Cf7Fixture -Condition ((Invoke-Cf7ConsensusProcess -PreVerifiedGitHubProofPath $emptyPreVerifiedPath).exitCode -ne 0) `
+        -Message 'an empty pre-verified proof set passed the consensus fast path'
+    $tamperedPreVerified = $recordGitHubProof[0] | ConvertTo-Json -Depth 30 | ConvertFrom-Json
+    $tamperedPreVerified.payload.faultDomain = 'tampered-cloud-domain'
+    $tamperedPreVerifiedPath = Join-Path $testRoot 'preverified-tampered.json'
+    Write-Cf7FixtureJson -Path $tamperedPreVerifiedPath -Value ([ordered]@{
+        schema='cf7-runtime-github-preverified-proofs.v1'; requestId=$requestId; proofs=@($tamperedPreVerified)
+    })
+    Assert-Cf7Fixture -Condition ((Invoke-Cf7ConsensusProcess -PreVerifiedGitHubProofPath $tamperedPreVerifiedPath).exitCode -ne 0) `
+        -Message 'a tampered pre-verified wrapper passed the consensus fast path'
+    $wrongRequestPreVerifiedPath = Join-Path $testRoot 'preverified-wrong-request.json'
+    Write-Cf7FixtureJson -Path $wrongRequestPreVerifiedPath -Value ([ordered]@{
+        schema='cf7-runtime-github-preverified-proofs.v1'; requestId=('0' * 64); proofs=@($recordGitHubProof[0])
+    })
+    Assert-Cf7Fixture -Condition ((Invoke-Cf7ConsensusProcess -PreVerifiedGitHubProofPath $wrongRequestPreVerifiedPath).exitCode -ne 0) `
+        -Message 'a pre-verified proof set for another request passed the consensus fast path'
+    Assert-Cf7Fixture -Condition ((Invoke-Cf7ConsensusProcess -PreVerifiedGitHubProofPath (Join-Path $testRoot 'preverified-missing.json')).exitCode -ne 0) `
+        -Message 'a missing pre-verified proof file passed the consensus fast path'
+    Assert-Cf7Fixture -Condition ((Invoke-Cf7ConsensusProcess -Staged -PreVerifiedGitHubProofPath $goodPreVerifiedPath).exitCode -ne 0) `
+        -Message 'the pre-verified fast path was accepted in staged-index mode'
 
     $tampered = [Text.Encoding]::UTF8.GetString($recordOriginalBytes) | ConvertFrom-Json
     ($tampered.attestations | Where-Object { $_.schema -eq 'cf7-runtime-github-build-attestation.v2' }).payload.faultDomain = 'tampered-cloud-domain'

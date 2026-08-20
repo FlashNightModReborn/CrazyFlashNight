@@ -208,6 +208,7 @@ function Invoke-Cf7OneWorkerTurnCore {
     if ($null -eq $request) { return $false }
     $lease = Try-EnterCf7RuntimeRequestLease -QueueRoot $QueueRoot -RequestId ([string]$request.requestId) -WorkerId $WorkerId -LeaseTtlSeconds $LeaseTtlSeconds
     if ($null -eq $lease) { return $false }
+    $workerPhases = [ordered]@{ claimedAtUtc = [DateTime]::UtcNow.ToString('o') }
     $checkoutJobRoot = $null
     $candidate = $null
     try {
@@ -260,8 +261,10 @@ function Invoke-Cf7OneWorkerTurnCore {
         if ($usesSparseBundle) {
             Assert-Cf7WorkerSparseBundleTree -Root $checkout
         }
+        $workerPhases.checkoutReadyAtUtc = [DateTime]::UtcNow.ToString('o')
         $identity = Get-Cf7WorkerV2Identity -Root $checkout
         Assert-Cf7WorkerIdentityMatchesRequest -Identity $identity -Request $request
+        $workerPhases.identityVerifiedAtUtc = [DateTime]::UtcNow.ToString('o')
         Update-Cf7RuntimeRequestLease -Lease $lease
         if ($DryRun) {
             Write-Host "[RuntimeQueueWorker] DRY-RUN request=$($request.requestId) identity=$($request.buildIdentityHash)" -ForegroundColor Yellow
@@ -281,12 +284,53 @@ function Invoke-Cf7OneWorkerTurnCore {
             Invoke-Cf7WorkerProcess -FileName $hostExe -Arguments @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $checkout 'launcher\build-runtime-candidate.ps1'),'-BuilderId',$WorkerId,'-CandidateRoot',$candidate) -WorkingDirectory $checkout -Lease $lease
         }
         if (-not (Test-Path -LiteralPath $candidate -PathType Container)) { throw 'Build command did not create the requested candidate root.' }
-        $after = Get-Cf7WorkerV2Identity -Root $checkout
+        $workerPhases.buildFinishedAtUtc = [DateTime]::UtcNow.ToString('o')
+        # Post-build identity proof. The pinned producer writes its post-build four-domain
+        # identity into the candidate metadata after its own input-drift re-check, so compare
+        # that evidence field by field against the immutable request instead of blindly
+        # trusting it; any mismatch fails closed. A custom BuildCommand that does not emit v2
+        # metadata keeps the full worktree recomputation.
+        $after = $null
+        $candidateMetadataPath = Join-Path $candidate 'runtime-build-metadata.v2.json'
+        if (-not $BuildCommand -and (Test-Path -LiteralPath $candidateMetadataPath -PathType Leaf)) {
+            $candidateMetadata = $null
+            try { $candidateMetadata = Get-Content -LiteralPath $candidateMetadataPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch { $candidateMetadata = $null }
+            if ($null -ne $candidateMetadata -and [string]$candidateMetadata.schema -eq 'cf7-runtime-candidate-metadata.v2') {
+                $after = [pscustomobject]@{
+                    artifactSourceHash=[string]$candidateMetadata.artifactSourceHash
+                    producerRecipeHash=[string]$candidateMetadata.producerRecipeHash
+                    toolchainLockHash=[string]$candidateMetadata.toolchainLockHash
+                    policyHash=[string]$candidateMetadata.policyHash
+                    buildIdentityHash=[string]$candidateMetadata.buildIdentityHash
+                }
+            }
+        }
+        if ($null -eq $after) { $after = Get-Cf7WorkerV2Identity -Root $checkout }
         Assert-Cf7WorkerIdentityMatchesRequest -Identity $after -Request $request
         Update-Cf7RuntimeRequestLease -Lease $lease
-        $attestation = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $checkout -DeploymentRoot $candidate -CertificateThumbprint $CertificateThumbprint -RegistryPath $RegistryPath
+        $attestation = New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $checkout -DeploymentRoot $candidate -CertificateThumbprint $CertificateThumbprint -RegistryPath $RegistryPath -ExpectedIdentity $request
         Test-Cf7RuntimeBuildAttestationV2 -Attestation $attestation -RegistryPath $RegistryPath | Out-Null
         $result = Publish-Cf7RuntimeProducerResult -QueueRoot $QueueRoot -ProjectRoot $checkout -Request $request -Attestation $attestation -CandidateRoot $candidate -RegistryPath $RegistryPath
+        $workerPhases.resultPublishedAtUtc = [DateTime]::UtcNow.ToString('o')
+        try {
+            # Observability sidecar only; the queue result/attestation records stay canonical.
+            $workerPhaseRecord = [pscustomobject]@{
+                schema = 'cf7-runtime-worker-phases.v1'
+                requestId = [string]$request.requestId
+                workerId = $WorkerId
+                claimedAtUtc = [string]$workerPhases.claimedAtUtc
+                checkoutReadyAtUtc = [string]$workerPhases.checkoutReadyAtUtc
+                identityVerifiedAtUtc = [string]$workerPhases.identityVerifiedAtUtc
+                buildFinishedAtUtc = [string]$workerPhases.buildFinishedAtUtc
+                resultPublishedAtUtc = [string]$workerPhases.resultPublishedAtUtc
+                totalSeconds = [Math]::Round(([DateTime]::Parse([string]$workerPhases.resultPublishedAtUtc).ToUniversalTime() - [DateTime]::Parse([string]$workerPhases.claimedAtUtc).ToUniversalTime()).TotalSeconds, 3)
+            }
+            $workerPhasePath = Join-Path (Join-Path (Join-Path $QueueRoot 'results\_phases') ([string]$request.requestId)) `
+                ('worker-' + $WorkerId.Substring(0, [Math]::Min(24, $WorkerId.Length)) + '-' + [Guid]::NewGuid().ToString('N').Substring(0, 16) + '.json')
+            Write-Cf7QueueJsonAtomic -Path $workerPhasePath -Value $workerPhaseRecord
+        } catch {
+            Write-Warning "Could not persist runtime worker phase timings: $($_.Exception.Message)"
+        }
         Write-Host "[RuntimeQueueWorker] OK request=$($request.requestId) signer=$($result.builderKeyId) closure=$($result.payloadClosureHash)" -ForegroundColor Green
         return $true
     } catch {
@@ -340,9 +384,54 @@ function Invoke-Cf7OneWorkerTurn {
     }
 }
 
+function Find-Cf7OrphanedWorkerCheckouts {
+    # Report-only residue sweep. A worker that was killed mid-build (power loss, kill -9)
+    # cannot record its own failure, so a leftover checkout job directory with no result,
+    # no failure record, and no live lease is surfaced for a human. This never deletes
+    # anything: cleanup of orphaned residue stays a deliberate operator action.
+    if (-not (Test-Path -LiteralPath $CheckoutRoot -PathType Container)) { return }
+    $requestsRoot = Join-Path $QueueRoot 'requests'
+    foreach ($directory in @(Get-ChildItem -LiteralPath $CheckoutRoot -Directory -ErrorAction SilentlyContinue)) {
+        try {
+            if ($directory.Name -cnotmatch '^[0-9a-f]{12}-[0-9a-f]{10}-[0-9a-f]{8}$') { continue }
+            $requestPrefix = $directory.Name.Substring(0, 12)
+            $requestDirs = @(Get-ChildItem -LiteralPath $requestsRoot -Directory -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name.StartsWith($requestPrefix, [StringComparison]::OrdinalIgnoreCase) })
+            if ($requestDirs.Count -eq 0) {
+                Write-Host "[RuntimeQueueWorker] Orphaned checkout residue (no request with prefix $requestPrefix): $($directory.FullName)" -ForegroundColor Yellow
+                continue
+            }
+            $orphanRequestId = $requestDirs[0].Name
+            $leaseDirectory = Join-Path (Join-Path $QueueRoot 'leases') $orphanRequestId
+            if ((Test-Path -LiteralPath $leaseDirectory -PathType Container) -and
+                    -not (Test-Cf7LeaseExpired -LeaseDirectory $leaseDirectory)) { continue }
+            $hasOutcome = $false
+            $failureRoot = Join-Path (Join-Path $QueueRoot 'results\_failures') $orphanRequestId
+            if (Test-Path -LiteralPath $failureRoot -PathType Container) {
+                $hasOutcome = @(Get-ChildItem -LiteralPath $failureRoot -Filter 'failure.json' -File -Recurse -ErrorAction SilentlyContinue).Count -gt 0
+            }
+            if (-not $hasOutcome) {
+                try {
+                    $orphanRequest = Read-Cf7RuntimeBuildRequest -QueueRoot $QueueRoot -RequestId $orphanRequestId
+                    $orphanResultsRoot = Join-Path (Join-Path $QueueRoot 'results') ([string]$orphanRequest.buildIdentityHash).ToUpperInvariant()
+                    if (Test-Path -LiteralPath $orphanResultsRoot -PathType Container) {
+                        $hasOutcome = @(Get-ChildItem -LiteralPath $orphanResultsRoot -Filter 'result.json' -File -Recurse -ErrorAction SilentlyContinue).Count -gt 0
+                    }
+                } catch { }
+            }
+            if (-not $hasOutcome) {
+                Write-Host "[RuntimeQueueWorker] Orphaned checkout residue (request $orphanRequestId has no result/failure and no live lease): $($directory.FullName)" -ForegroundColor Yellow
+            }
+        } catch {
+            Write-Warning "Could not inspect runtime checkout residue $($directory.FullName): $($_.Exception.Message)"
+        }
+    }
+}
+
 $mutex = Enter-Cf7RuntimeWorkerMutex -WorkerId $WorkerId
 if ($null -eq $mutex) { throw "A runtime build worker is already active for WorkerId=$WorkerId" }
 try {
+    try { Find-Cf7OrphanedWorkerCheckouts } catch { Write-Warning "Orphaned checkout sweep failed: $($_.Exception.Message)" }
     do {
         $handled = Invoke-Cf7OneWorkerTurn
         if ($Once) { break }

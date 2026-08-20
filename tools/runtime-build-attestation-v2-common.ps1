@@ -148,6 +148,7 @@ function New-Cf7RuntimeBuildAttestationV2 {
         [string]$RegistryPath,
         [ValidateSet('Worktree','Index')][string]$Mode = 'Worktree',
         [string]$ConfigPath,
+        [object]$ExpectedIdentity,
         [DateTime]$CreatedAtUtc = ([DateTime]::UtcNow)
     )
     $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
@@ -164,7 +165,34 @@ function New-Cf7RuntimeBuildAttestationV2 {
         $now = [DateTime]::UtcNow
         if ($now -lt $certificate.NotBefore.ToUniversalTime() -or $now -gt $certificate.NotAfter.ToUniversalTime()) { throw 'Runtime builder certificate is outside its validity period.' }
 
-        $identity = Get-Cf7RuntimeV2Identity -ProjectRoot $root -Mode $Mode -ConfigPath $ConfigPath
+        if ($null -ne $ExpectedIdentity) {
+            # The caller (queue worker) passes the request-pinned identity it already proved
+            # against the frozen checkout. This is a comparison anchor, not blind trust: field
+            # shape is validated here and buildIdentityHash is re-derived from the three domain
+            # hashes; a mismatch fails closed before signing.
+            foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
+                if ($null -eq $ExpectedIdentity.PSObject.Properties[$field] -or
+                        [string]$ExpectedIdentity.$field -notmatch '^[0-9A-Fa-f]{64}$') {
+                    throw "Expected identity has a missing or invalid field: $field"
+                }
+            }
+            $expectedBuildIdentity = Get-Cf7RuntimeV2BuildIdentityHash `
+                -ArtifactSourceHash ([string]$ExpectedIdentity.artifactSourceHash) `
+                -ProducerRecipeHash ([string]$ExpectedIdentity.producerRecipeHash) `
+                -ToolchainLockHash ([string]$ExpectedIdentity.toolchainLockHash)
+            if ($expectedBuildIdentity -ne ([string]$ExpectedIdentity.buildIdentityHash).ToUpperInvariant()) {
+                throw 'Expected identity domain hashes do not reproduce buildIdentityHash.'
+            }
+            $identity = [pscustomobject]@{
+                artifactSourceHash = ([string]$ExpectedIdentity.artifactSourceHash).ToUpperInvariant()
+                producerRecipeHash = ([string]$ExpectedIdentity.producerRecipeHash).ToUpperInvariant()
+                toolchainLockHash = ([string]$ExpectedIdentity.toolchainLockHash).ToUpperInvariant()
+                policyHash = ([string]$ExpectedIdentity.policyHash).ToUpperInvariant()
+                buildIdentityHash = ([string]$ExpectedIdentity.buildIdentityHash).ToUpperInvariant()
+            }
+        } else {
+            $identity = Get-Cf7RuntimeV2Identity -ProjectRoot $root -Mode $Mode -ConfigPath $ConfigPath
+        }
         $closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $root -DeploymentRoot $DeploymentRoot -Mode $Mode -ConfigPath $ConfigPath
         $payload = [pscustomobject][ordered]@{
             schema = 'cf7-runtime-build-attestation-payload.v2'

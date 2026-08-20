@@ -56,6 +56,17 @@ function New-TestCandidateZip([string]$Path, [switch]$MaliciousTraversal) {
     } finally { $archive.Dispose() }
 }
 
+function New-TestAttestationZip([string]$Path, [string]$EnvelopeContent, [switch]$ExtraFile) {
+    Add-Type -AssemblyName System.IO.Compression
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $archive = [IO.Compression.ZipFile]::Open($Path, [IO.Compression.ZipArchiveMode]::Create)
+    try {
+        Add-TestZipEntry $archive 'runtime-build-envelope.v2.json' $EnvelopeContent $null
+        Add-TestZipEntry $archive 'runtime-build-envelope.v2.sigstore.json' '{"bundle":"fixture"}' $null
+        if ($ExtraFile) { Add-TestZipEntry $archive 'runtime-candidate.v2.zip' 'must-not-be-here' $null }
+    } finally { $archive.Dispose() }
+}
+
 function New-TestOuterZip(
     [string]$Path,
     [string]$CandidatePath,
@@ -104,6 +115,8 @@ function New-TestFixture(
     $artifactRoot = Join-Path $controlRoot 'artifact'
     New-Item -ItemType Directory -Path (Join-Path $projectRoot 'tools'),(Join-Path $projectRoot 'config\build'),$artifactRoot -Force | Out-Null
     Copy-Item -LiteralPath $script:helperSource -Destination (Join-Path $projectRoot 'tools\invoke-runtime-github-build.ps1')
+    Copy-Item -LiteralPath (Join-Path $script:repoRoot 'tools\runtime-build-queue-common.ps1') `
+        -Destination (Join-Path $projectRoot 'tools\runtime-build-queue-common.ps1')
 
     $cloudConfig = [ordered]@{
         schema='cf7-runtime-github-builder.v2';enabled=$true;repository='ExampleOrg/ExampleRepo'
@@ -116,10 +129,16 @@ function New-TestFixture(
 param(
     [string]$EnvelopePath, [string]$BundlePath, [string]$CandidateRoot,
     [string]$ProjectRoot, [string]$GitHubCliPath, [string]$ExpectedSourceCommitOid,
-    [string]$OutputPath
+    [string]$OutputPath, [switch]$WithoutCandidateArchive
 )
 $ErrorActionPreference = 'Stop'
-foreach ($path in @($EnvelopePath,$BundlePath,(Join-Path $CandidateRoot 'CRAZYFLASHER7MercenaryEmpire.exe'),(Join-Path $CandidateRoot 'runtime\cf7-runtime-manifest.tsv'))) {
+if ($WithoutCandidateArchive -and -not [string]::IsNullOrWhiteSpace($CandidateRoot)) { throw 'stub rejects CandidateRoot in no-archive mode' }
+$requiredPaths = @($EnvelopePath,$BundlePath)
+if (-not $WithoutCandidateArchive) {
+    if ([string]::IsNullOrWhiteSpace($CandidateRoot)) { throw 'stub requires CandidateRoot outside no-archive mode' }
+    $requiredPaths += @((Join-Path $CandidateRoot 'CRAZYFLASHER7MercenaryEmpire.exe'),(Join-Path $CandidateRoot 'runtime\cf7-runtime-manifest.tsv'))
+}
+foreach ($path in $requiredPaths) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "stub verifier input missing: $path" }
 }
 $envelope = Get-Content -LiteralPath $EnvelopePath -Raw | ConvertFrom-Json
@@ -139,7 +158,7 @@ $wrapper = [pscustomobject][ordered]@{
 $parent = Split-Path -Parent $OutputPath
 if (-not (Test-Path -LiteralPath $parent -PathType Container)) { New-Item -ItemType Directory -Path $parent -Force | Out-Null }
 [IO.File]::WriteAllText($OutputPath, ($wrapper | ConvertTo-Json -Depth 8) + "`n", (New-Object Text.UTF8Encoding($false)))
-[IO.File]::WriteAllText($env:CF7_FAKE_VERIFIER_MARKER, 'called', (New-Object Text.UTF8Encoding($false)))
+[IO.File]::WriteAllText($env:CF7_FAKE_VERIFIER_MARKER, $(if ($WithoutCandidateArchive) { 'called-no-archive' } else { 'called' }), (New-Object Text.UTF8Encoding($false)))
 Write-Output $wrapper
 '@
 
@@ -180,11 +199,15 @@ if ($CliArgs.Count -ge 2 -and $CliArgs[0] -eq 'api') {
     }
     $artifactEndpointPrefix = 'repos/ExampleOrg/ExampleRepo/actions/runs/' + [string]$state.runId + '/artifacts?'
     if ($endpoint.StartsWith($artifactEndpointPrefix, [StringComparison]::Ordinal)) {
-        Write-Output ([ordered]@{
-            total_count=1
-            artifacts=@([ordered]@{
+        $nameMatch = [regex]::Match($endpoint, '[?&]name=([^&]+)')
+        $requestedName = if ($nameMatch.Success) { [Uri]::UnescapeDataString($nameMatch.Groups[1].Value) } else { '' }
+        $attestationName = 'runtime-cloud-attestation-' + [string]$state.sourceCommitOid
+        $builderName = 'runtime-cloud-builder-' + [string]$state.sourceCommitOid
+        $artifacts = @()
+        if ($requestedName -ceq $builderName) {
+            $artifacts = @([ordered]@{
                 id=[Int64]$state.artifactId
-                name=('runtime-cloud-builder-' + [string]$state.sourceCommitOid)
+                name=$builderName
                 size_in_bytes=[Int64]$state.artifactSize
                 digest=[string]$state.artifactDigest
                 expired=[bool]$state.artifactExpired
@@ -194,6 +217,23 @@ if ($CliArgs.Count -ge 2 -and $CliArgs[0] -eq 'api') {
                     head_sha=$(if([bool]$state.wrongArtifactHead){'b' * 40}else{[string]$state.sourceCommitOid})
                 }
             })
+        } elseif ($requestedName -ceq $attestationName) {
+            $artifacts = @([ordered]@{
+                id=[Int64]$state.attestationArtifactId
+                name=$attestationName
+                size_in_bytes=[Int64]$state.attestationArtifactSize
+                digest=[string]$state.attestationArtifactDigest
+                expired=[bool]$state.artifactExpired
+                archive_download_url=('https://api.github.com/repos/ExampleOrg/ExampleRepo/actions/artifacts/' + [string]$state.attestationArtifactId + '/zip')
+                workflow_run=[ordered]@{
+                    id=$(if([bool]$state.wrongArtifactRun){9999}else{[Int64]$state.runId})
+                    head_sha=$(if([bool]$state.wrongArtifactHead){'b' * 40}else{[string]$state.sourceCommitOid})
+                }
+            })
+        }
+        Write-Output ([ordered]@{
+            total_count=$artifacts.Count
+            artifacts=$artifacts
         } | ConvertTo-Json -Depth 6 -Compress)
         exit 0
     }
@@ -246,6 +286,8 @@ exit /b %ERRORLEVEL%
     New-TestCandidateZip -Path $candidatePath -MaliciousTraversal:$MaliciousInnerTraversal
     New-TestOuterZip -Path $outerArchivePath -CandidatePath $candidatePath -EnvelopeContent $envelopeContent `
         -MaliciousTraversal:$MaliciousOuterTraversal -MaliciousLink:$MaliciousOuterLink -ExtraFile:$ExtraOuterFile
+    $attestationArchivePath = Join-Path $controlRoot 'runtime-cloud-attestation.zip'
+    New-TestAttestationZip -Path $attestationArchivePath -EnvelopeContent $envelopeContent
     $statePath = Join-Path $controlRoot 'state.json'
     $logPath = Join-Path $controlRoot 'calls.jsonl'
     $markerPath = Join-Path $controlRoot 'verifier.marker'
@@ -260,6 +302,9 @@ exit /b %ERRORLEVEL%
         createdAt=[DateTime]::UtcNow.ToString('o'); artifactRoot=$artifactRoot; artifactId=8442
         artifactSize=(Get-Item -LiteralPath $outerArchivePath).Length + $MetadataSizeDelta
         artifactDigest=$(if($WrongArtifactDigest){'sha256:' + ('0' * 64)}else{'sha256:' + (Get-FileHash -LiteralPath $outerArchivePath -Algorithm SHA256).Hash.ToLowerInvariant()})
+        attestationArtifactId=8443
+        attestationArtifactSize=(Get-Item -LiteralPath $attestationArchivePath).Length
+        attestationArtifactDigest=('sha256:' + (Get-FileHash -LiteralPath $attestationArchivePath -Algorithm SHA256).Hash.ToLowerInvariant())
         artifactExpired=[bool]$ExpiredArtifact; wrongArtifactRun=[bool]$WrongArtifactRun
         wrongArtifactHead=[bool]$WrongArtifactHead; logPath=$logPath
     }
@@ -269,19 +314,22 @@ exit /b %ERRORLEVEL%
         CaseRoot=$caseRoot; ProjectRoot=$projectRoot; ControlRoot=$controlRoot
         SourceCommit=$sourceCommit; FakeGh=(Join-Path $controlRoot 'fake-gh.cmd')
         StatePath=$statePath; LogPath=$logPath; MarkerPath=$markerPath; OutputRoot=(Join-Path $caseRoot 'output')
-        ArtifactArchive=$outerArchivePath
+        ArtifactArchive=$outerArchivePath; AttestationArchive=$attestationArchivePath
     }
 }
 
-function Invoke-TestHelper($Fixture, [switch]$ResumeRun) {
+function Invoke-TestHelper($Fixture, [switch]$ResumeRun, [switch]$AttestationOnly, [string[]]$ExtraArguments) {
+    $preDownloaded = if ($AttestationOnly) { $Fixture.AttestationArchive } else { $Fixture.ArtifactArchive }
     $arguments = @(
         '-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $Fixture.ProjectRoot 'tools\invoke-runtime-github-build.ps1'),
         '-ProjectRoot',$Fixture.ProjectRoot,'-SourceCommitOid',$Fixture.SourceCommit,
         '-OutputRoot',$Fixture.OutputRoot,'-GitHubCliPath',$Fixture.FakeGh,
-        '-PreDownloadedArtifactArchive',$Fixture.ArtifactArchive,
+        '-PreDownloadedArtifactArchive',$preDownloaded,
         '-DiscoveryTimeoutSeconds','5','-RunTimeoutSeconds','30','-PollSeconds','1'
     )
     if ($ResumeRun) { $arguments += @('-ResumeRunId','4242') }
+    if (-not $AttestationOnly) { $arguments += '-IncludeCandidateArchive' }
+    if ($ExtraArguments) { $arguments += $ExtraArguments }
     $oldState = $env:CF7_FAKE_GH_STATE
     $oldMarker = $env:CF7_FAKE_VERIFIER_MARKER
     $env:CF7_FAKE_GH_STATE = $Fixture.StatePath
@@ -467,7 +515,218 @@ try {
         Assert-Test (@($calls | Where-Object { $_[0] -eq 'run' -and $_[1] -eq 'download' }).Count -eq 0) 'changed wait head SHA must not download artifacts'
     }
 
-    Run-Test 'keeps the resumable HTTPS transport contract explicit in the helper source' {
+    Run-Test 'default scope downloads only the attestation artifact and verifies without a candidate' {
+        $fixture = New-TestFixture -CompleteAfterViews 1
+        $result = Invoke-TestHelper $fixture -AttestationOnly
+        Assert-Test ($result.ExitCode -eq 0) $result.Output
+        $resultPath = Join-Path $fixture.OutputRoot 'run-4242\runtime-github-build-result.v2.json'
+        Assert-Test (Test-Path -LiteralPath $resultPath -PathType Leaf) 'attestation-only result metadata missing'
+        $metadata = Get-Content -LiteralPath $resultPath -Raw | ConvertFrom-Json
+        Assert-Test ([Int64]$metadata.artifactId -eq 8443) 'default scope did not select the small attestation artifact'
+        Assert-Test ([string]$metadata.artifactName -ceq ('runtime-cloud-attestation-' + $fixture.SourceCommit)) 'default scope artifact name mismatch'
+        Assert-Test ([string]$metadata.artifactScope -ceq 'attestation-only') 'default scope label mismatch'
+        Assert-Test ([string]$metadata.artifactTransportMode -ceq 'auto') 'default transport mode must be auto'
+        Assert-Test ($null -eq $metadata.candidateRoot -or [string]::IsNullOrWhiteSpace([string]$metadata.candidateRoot)) 'attestation-only scope must not materialize a candidate root'
+        Assert-Test (Test-Path -LiteralPath ([string]$metadata.envelopePath) -PathType Leaf) 'envelope missing from the small artifact extraction'
+        Assert-Test (Test-Path -LiteralPath ([string]$metadata.bundlePath) -PathType Leaf) 'sigstore bundle missing from the small artifact extraction'
+        Assert-Test ([IO.File]::ReadAllText($fixture.MarkerPath) -eq 'called-no-archive') 'verifier did not run in no-archive mode'
+        Assert-Test (-not (Test-Path -LiteralPath (Join-Path $fixture.OutputRoot 'run-4242\candidate'))) 'attestation-only scope extracted a candidate archive'
+        $calls = @(Get-TestCalls $fixture)
+        Assert-Test (@($calls | Where-Object { $_[0] -eq 'api' -and [string]$_[-1] -like '*artifacts?*' }).Count -eq 1) 'attestation-only scope must query artifact metadata exactly once'
+    }
+
+    Run-Test 'attestation-only scope rejects unexpected files inside the small artifact' {
+        $fixture = New-TestFixture -CompleteAfterViews 1
+        Remove-Item -LiteralPath $fixture.AttestationArchive -Force
+        New-TestAttestationZip -Path $fixture.AttestationArchive -EnvelopeContent (([ordered]@{ sourceCommitOid=$fixture.SourceCommit } | ConvertTo-Json -Compress) + "`n") -ExtraFile
+        $state = Get-Content -LiteralPath $fixture.StatePath -Raw | ConvertFrom-Json
+        $state.attestationArtifactSize = (Get-Item -LiteralPath $fixture.AttestationArchive).Length
+        $state.attestationArtifactDigest = 'sha256:' + (Get-FileHash -LiteralPath $fixture.AttestationArchive -Algorithm SHA256).Hash.ToLowerInvariant()
+        Set-TestFile $fixture.StatePath (($state | ConvertTo-Json -Depth 6) + "`n")
+        $result = Invoke-TestHelper $fixture -AttestationOnly
+        Assert-Test ($result.ExitCode -ne 0) 'attestation artifact with an unexpected member unexpectedly passed'
+        Assert-Test ($result.Output -match 'exactly two files|exact file allowlist') $result.Output
+        Assert-Test (-not (Test-Path -LiteralPath $fixture.MarkerPath)) 'verifier must not run after an unsafe attestation artifact'
+    }
+
+    $helperTokens = $null
+    $helperParseErrors = $null
+    $helperAst = [Management.Automation.Language.Parser]::ParseFile($script:helperSource, [ref]$helperTokens, [ref]$helperParseErrors)
+    Assert-Test (@($helperParseErrors).Count -eq 0) 'helper script must parse for route unit tests'
+    foreach ($functionName in @(
+        'Resolve-Cf7ArtifactTransportMode','Get-Cf7ArtifactRouteCandidates','Get-Cf7ArtifactRouteCachePath',
+        'Read-Cf7ArtifactRouteCache','Save-Cf7ArtifactRouteCache','Clear-Cf7ArtifactRouteCache',
+        'New-Cf7HttpClient','Get-Cf7ArtifactRedirect','Invoke-Cf7ArtifactStreamAttempt'
+    )) {
+        $functionAsts = @($helperAst.FindAll({
+            param($node)
+            $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq $functionName
+        }, $true))
+        Assert-Test ($functionAsts.Count -eq 1) "helper must export exactly one $functionName"
+        Invoke-Expression $functionAsts[0].Extent.Text
+    }
+    . (Join-Path $repoRoot 'tools\runtime-build-queue-common.ps1')
+
+    Run-Test 'artifact transport mode resolves parameter, environment, and fail-closed validation' {
+        Assert-Test ((Resolve-Cf7ArtifactTransportMode -ParameterValue '' -EnvironmentValue $null) -eq 'auto') 'default transport must be auto'
+        Assert-Test ((Resolve-Cf7ArtifactTransportMode -ParameterValue 'proxy' -EnvironmentValue 'direct') -eq 'proxy') 'parameter must override environment'
+        Assert-Test ((Resolve-Cf7ArtifactTransportMode -ParameterValue '' -EnvironmentValue 'direct') -eq 'direct') 'environment must apply when parameter is empty'
+        Assert-Test ((Resolve-Cf7ArtifactTransportMode -ParameterValue 'AUTO' -EnvironmentValue $null) -eq 'auto') 'transport value must normalize case'
+        $rejected = $false
+        try { Resolve-Cf7ArtifactTransportMode -ParameterValue '' -EnvironmentValue 'bogus' | Out-Null } catch { $rejected = $true }
+        Assert-Test $rejected 'unknown transport value must fail closed'
+    }
+
+    Run-Test 'artifact route candidates order the sticky route first and demote failed routes' {
+        Assert-Test (((Get-Cf7ArtifactRouteCandidates -Mode 'auto' -PersistedRoute $null -FailedRoutes @()) -join ',') -ceq 'proxy,direct') 'auto without a sticky route must probe proxy then direct'
+        Assert-Test (((Get-Cf7ArtifactRouteCandidates -Mode 'auto' -PersistedRoute 'direct' -FailedRoutes @()) -join ',') -ceq 'direct,proxy') 'sticky route must come first'
+        Assert-Test (((Get-Cf7ArtifactRouteCandidates -Mode 'auto' -PersistedRoute 'direct' -FailedRoutes @('direct')) -join ',') -ceq 'proxy,direct') 'failed route must be demoted behind fresh candidates'
+        Assert-Test (((Get-Cf7ArtifactRouteCandidates -Mode 'proxy' -PersistedRoute 'direct' -FailedRoutes @()) -join ',') -ceq 'proxy') 'explicit proxy must pin one route'
+        Assert-Test (((Get-Cf7ArtifactRouteCandidates -Mode 'direct' -PersistedRoute 'proxy' -FailedRoutes @('proxy')) -join ',') -ceq 'direct') 'explicit direct must pin one route'
+    }
+
+    Run-Test 'artifact route cache persists, validates, and invalidates' {
+        $cacheQueue = Join-Path $testRoot ('route-cache-' + [Guid]::NewGuid().ToString('N'))
+        Assert-Test ($null -eq (Read-Cf7ArtifactRouteCache -QueueRoot $cacheQueue)) 'missing cache must read as absent'
+        Save-Cf7ArtifactRouteCache -QueueRoot $cacheQueue -Route 'direct' -Source 'canary'
+        Assert-Test ((Read-Cf7ArtifactRouteCache -QueueRoot $cacheQueue) -eq 'direct') 'persisted route must round-trip'
+        $cacheRecord = Get-Content -LiteralPath (Get-Cf7ArtifactRouteCachePath -QueueRoot $cacheQueue) -Raw | ConvertFrom-Json
+        Assert-Test ([string]$cacheRecord.schema -eq 'cf7-github-artifact-route.v1' -and -not [string]::IsNullOrWhiteSpace([string]$cacheRecord.updatedAtUtc)) 'cache record must carry schema and timestamp'
+        Set-TestFile (Get-Cf7ArtifactRouteCachePath -QueueRoot $cacheQueue) '{"schema":"cf7-github-artifact-route.v1","route":"bogus"}'
+        Assert-Test ($null -eq (Read-Cf7ArtifactRouteCache -QueueRoot $cacheQueue)) 'a tampered route value must be ignored'
+        Set-TestFile (Get-Cf7ArtifactRouteCachePath -QueueRoot $cacheQueue) 'not json'
+        Assert-Test ($null -eq (Read-Cf7ArtifactRouteCache -QueueRoot $cacheQueue)) 'corrupt cache JSON must be ignored'
+        Save-Cf7ArtifactRouteCache -QueueRoot $cacheQueue -Route 'proxy' -Source 'sticky'
+        Clear-Cf7ArtifactRouteCache -QueueRoot $cacheQueue
+        Assert-Test (-not (Test-Path -LiteralPath (Get-Cf7ArtifactRouteCachePath -QueueRoot $cacheQueue))) 'invalidation must remove the cache file'
+    }
+
+    function New-TestRawHttpServer([scriptblock]$Handler) {
+        $listener = New-Object Net.Sockets.TcpListener([Net.IPAddress]::Loopback, 0)
+        $listener.Start()
+        $server = [System.Management.Automation.PowerShell]::Create()
+        [void]$server.AddScript($Handler).AddArgument($listener)
+        return [pscustomobject]@{
+            Listener = $listener
+            Port = ([Net.IPEndPoint]$listener.LocalEndpoint).Port
+            Server = $server
+            Handle = $server.BeginInvoke()
+        }
+    }
+    function Close-TestRawHttpServer($Server) {
+        try { $Server.Listener.Stop() } catch { }
+        try { [void]$Server.Handle.AsyncWaitHandle.WaitOne(20000) } catch { }
+        try { $Server.Server.EndInvoke($Server.Handle) } catch { }
+        try { $Server.Server.Dispose() } catch { }
+    }
+    $readThenStallServer = {
+        param($listener)
+        $client = $listener.AcceptTcpClient()
+        try {
+            $stream = $client.GetStream()
+            $buffer = New-Object byte[] 65536
+            $header = ''
+            while (-not $header.Contains("`r`n`r`n")) {
+                $read = $stream.Read($buffer, 0, $buffer.Length)
+                if ($read -le 0) { return }
+                $header += [Text.Encoding]::ASCII.GetString($buffer, 0, $read)
+            }
+            $head = [Text.Encoding]::ASCII.GetBytes("HTTP/1.1 200 OK`r`nContent-Length: 1048576`r`nConnection: close`r`n`r`n")
+            $stream.Write($head, 0, $head.Length)
+            $body = [Text.Encoding]::ASCII.GetBytes('partial-payload')
+            $stream.Write($body, 0, $body.Length)
+            $stream.Flush()
+            Start-Sleep -Seconds 6
+        } finally {
+            try { $client.Close() } catch { }
+        }
+    }
+
+    Run-Test 'stalled artifact stream aborts the attempt and retains the partial bytes' {
+        $server = New-TestRawHttpServer -Handler $readThenStallServer
+        $partialPath = Join-Path $testRoot ('stall-' + [Guid]::NewGuid().ToString('N') + '.partial')
+        $watch = [System.Diagnostics.Stopwatch]::StartNew()
+        try {
+            $failed = $false
+            try {
+                Invoke-Cf7ArtifactStreamAttempt -BlobUri ("http://127.0.0.1:$($server.Port)/blob") -PartialPath $partialPath `
+                    -ExpectedSize 1048576 -UseProxy $false -TimeoutSeconds 120 -ConnectTimeoutSeconds 10 -StallTimeoutSeconds 1
+            } catch { $failed = $true }
+            $watch.Stop()
+            Assert-Test $failed 'a stalled data phase must abort the attempt'
+            Assert-Test ($watch.Elapsed.TotalSeconds -lt 30) "stall detection took too long: $($watch.Elapsed.TotalSeconds)s"
+            Assert-Test ((Get-Item -LiteralPath $partialPath -Force).Length -eq 15) 'stall abort must retain the already-received partial bytes'
+        } finally {
+            Close-TestRawHttpServer $server
+        }
+    }
+
+    Run-Test 'a header-less connection dies at the connect watchdog instead of the attempt ceiling' {
+        $silentServer = {
+            param($listener)
+            $client = $listener.AcceptTcpClient()
+            try { Start-Sleep -Seconds 6 } finally { try { $client.Close() } catch { } }
+        }
+        $server = New-TestRawHttpServer -Handler $silentServer
+        $partialPath = Join-Path $testRoot ('connect-' + [Guid]::NewGuid().ToString('N') + '.partial')
+        $watch = [System.Diagnostics.Stopwatch]::StartNew()
+        try {
+            $failed = $false
+            try {
+                Invoke-Cf7ArtifactStreamAttempt -BlobUri ("http://127.0.0.1:$($server.Port)/blob") -PartialPath $partialPath `
+                    -ExpectedSize 1048576 -UseProxy $false -TimeoutSeconds 120 -ConnectTimeoutSeconds 1 -StallTimeoutSeconds 10
+            } catch { $failed = $true }
+            $watch.Stop()
+            Assert-Test $failed 'a header-less connection must fail the attempt'
+            Assert-Test ($watch.Elapsed.TotalSeconds -lt 30) "connect watchdog took too long: $($watch.Elapsed.TotalSeconds)s"
+            Assert-Test (-not (Test-Path -LiteralPath $partialPath)) 'connect failure must not create a partial file'
+        } finally {
+            Close-TestRawHttpServer $server
+        }
+    }
+
+    Run-Test 'redirect probe reports the winning route and fails closed without candidates' {
+        $redirectServer = {
+            param($listener)
+            $client = $listener.AcceptTcpClient()
+            try {
+                $stream = $client.GetStream()
+                $buffer = New-Object byte[] 65536
+                $header = ''
+                while (-not $header.Contains("`r`n`r`n")) {
+                    $read = $stream.Read($buffer, 0, $buffer.Length)
+                    if ($read -le 0) { return }
+                    $header += [Text.Encoding]::ASCII.GetString($buffer, 0, $read)
+                }
+                $head = [Text.Encoding]::ASCII.GetBytes("HTTP/1.1 302 Found`r`nLocation: https://example.invalid/payload.zip`r`nContent-Length: 0`r`nConnection: close`r`n`r`n")
+                $stream.Write($head, 0, $head.Length)
+                $stream.Flush()
+            } finally {
+                try { $client.Close() } catch { }
+            }
+        }
+        $server = New-TestRawHttpServer -Handler $redirectServer
+        try {
+            $probe = Get-Cf7ArtifactRedirect -DownloadUri ([Uri]"http://127.0.0.1:$($server.Port)/actions/artifacts/1/zip") `
+                -Token 'fixture-token' -RouteCandidates @('direct') -TimeoutSeconds 10
+            Assert-Test ($probe.Route -eq 'direct') 'redirect probe must report the route that produced the redirect'
+            Assert-Test ($probe.Redirect.Host -eq 'example.invalid') 'redirect probe must surface the redirect target'
+        } finally {
+            Close-TestRawHttpServer $server
+        }
+        $closedListener = New-Object Net.Sockets.TcpListener([Net.IPAddress]::Loopback, 0)
+        $closedListener.Start()
+        $closedPort = ([Net.IPEndPoint]$closedListener.LocalEndpoint).Port
+        $closedListener.Stop()
+        $failed = $false
+        try {
+            Get-Cf7ArtifactRedirect -DownloadUri ([Uri]"http://127.0.0.1:$closedPort/actions/artifacts/1/zip") `
+                -Token 'fixture-token' -RouteCandidates @('direct') -TimeoutSeconds 5 | Out-Null
+        } catch { $failed = $true }
+        Assert-Test $failed 'redirect probe must fail closed when every route candidate fails'
+    }
+
+    Run-Test 'keeps the unified-route resumable HTTPS transport contract explicit in the helper source' {
         $source = Get-Content -LiteralPath $script:helperSource -Raw -Encoding UTF8
         foreach ($required in @(
             'StatusCode]::PartialContent',
@@ -476,10 +735,24 @@ try {
             '[IO.FileMode]::Append',
             'Artifact bytes received=',
             'Get-Cf7ArtifactRedirect',
-            '($attempt % 2) -eq 0'
+            'Resolve-Cf7ArtifactTransportMode',
+            'Get-Cf7ArtifactRouteCandidates',
+            'github-artifact-route.v1.json',
+            'CF7_GITHUB_ARTIFACT_TRANSPORT',
+            '$connectWatchdog.CancelAfter',
+            '$stallWatchdog.CancelAfter',
+            'CreateLinkedTokenSource',
+            '-UseProxy ($route -eq ''proxy'')',
+            'Route = $route',
+            'Save-Cf7ArtifactRouteCache',
+            'Clear-Cf7ArtifactRouteCache',
+            'Expand-Cf7AttestationArtifactSafely',
+            'runtime-cloud-attestation-',
+            '-WithoutCandidateArchive'
         )) {
             Assert-Test ($source.Contains($required)) "helper source lacks transport contract token: $required"
         }
+        Assert-Test (-not $source.Contains('($attempt % 2) -eq 0')) 'odd/even proxy alternation must be gone'
     }
 } finally {
     $resolvedTestRoot = [IO.Path]::GetFullPath($testRoot).TrimEnd('\')

@@ -1,20 +1,28 @@
 param(
     [Parameter(Mandatory=$true)][string]$EnvelopePath,
     [Parameter(Mandatory=$true)][string]$BundlePath,
-    [Parameter(Mandatory=$true)][string]$CandidateRoot,
+    [string]$CandidateRoot,
     [string]$ProjectRoot,
     [string]$ConfigPath,
     [string]$GitHubCliPath = 'gh',
     [ValidatePattern('^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$')][string]$ExpectedSourceCommitOid,
     [ValidateSet('Worktree','Index')][string]$SourceMode = 'Worktree',
     [switch]$ReplayFromReleaseRecord,
+    [switch]$WithoutCandidateArchive,
     [string]$OutputPath
 )
 
 $ErrorActionPreference = 'Stop'
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
 $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
-$CandidateRoot = (Resolve-Path -LiteralPath $CandidateRoot).Path.TrimEnd('\')
+if ($WithoutCandidateArchive) {
+    if (-not [string]::IsNullOrWhiteSpace($CandidateRoot)) { throw '-WithoutCandidateArchive forbids CandidateRoot.' }
+    if ($SourceMode -eq 'Index') { throw '-WithoutCandidateArchive cannot bind Index-mode candidate bytes.' }
+    if ($ReplayFromReleaseRecord) { throw '-WithoutCandidateArchive is not a release-record replay mode; promotion replays against real candidate bytes.' }
+} else {
+    if ([string]::IsNullOrWhiteSpace($CandidateRoot)) { throw 'CandidateRoot is required unless -WithoutCandidateArchive is selected.' }
+    $CandidateRoot = (Resolve-Path -LiteralPath $CandidateRoot).Path.TrimEnd('\')
+}
 $EnvelopePath = (Resolve-Path -LiteralPath $EnvelopePath).Path
 $BundlePath = (Resolve-Path -LiteralPath $BundlePath).Path
 if (-not $ConfigPath) { $ConfigPath = Join-Path $ProjectRoot 'config\build\runtime-github-builder.v2.json' }
@@ -148,7 +156,7 @@ function ConvertTo-Cf7GitHubNormalizedPayloadText {
     return [string]::Join('', $parts.ToArray())
 }
 
-if ($SourceMode -eq 'Index' -and $CandidateRoot -ne $ProjectRoot) {
+if ($SourceMode -eq 'Index' -and -not $WithoutCandidateArchive -and $CandidateRoot -ne $ProjectRoot) {
     throw 'Index source mode requires CandidateRoot to equal ProjectRoot.'
 }
 $config = Read-Cf7GitHubBuilderConfig
@@ -200,14 +208,23 @@ $identity = Get-Cf7RuntimeV2Identity -ProjectRoot $ProjectRoot -Mode $SourceMode
 foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','buildIdentityHash')) {
     if ([string]$envelope.$field -cne [string]$identity.$field) { throw "GitHub runtime envelope/source identity mismatch: $field" }
 }
-$closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot -Mode $SourceMode
-if ([string]$closure.payloadClosureHash -cne [string]$envelope.payloadClosureHash) { throw 'GitHub runtime candidate bytes do not match the attested payload closure.' }
-Assert-Cf7FileInventoriesEqual -Expected @($envelope.files) -Actual @($closure.files)
-$manifest = Read-Cf7CandidateManifestV2
-foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','buildIdentityHash','payloadClosureHash')) {
-    if ([string]$manifest.metadata[$field] -cne [string]$envelope.$field) { throw "GitHub runtime candidate manifest/envelope mismatch: $field" }
+if (-not $WithoutCandidateArchive) {
+    $closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot -Mode $SourceMode
+    if ([string]$closure.payloadClosureHash -cne [string]$envelope.payloadClosureHash) { throw 'GitHub runtime candidate bytes do not match the attested payload closure.' }
+    Assert-Cf7FileInventoriesEqual -Expected @($envelope.files) -Actual @($closure.files)
+    $manifest = Read-Cf7CandidateManifestV2
+    foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','buildIdentityHash','payloadClosureHash')) {
+        if ([string]$manifest.metadata[$field] -cne [string]$envelope.$field) { throw "GitHub runtime candidate manifest/envelope mismatch: $field" }
+    }
+    Assert-Cf7FileInventoriesEqual -Expected @($envelope.files) -Actual @($manifest.files)
 }
-Assert-Cf7FileInventoriesEqual -Expected @($envelope.files) -Actual @($manifest.files)
+# Trust-root boundary for -WithoutCandidateArchive: the Sigstore provenance signs the
+# deterministic envelope (with its per-file SHA-256 inventory), and the pinned cloud workflow
+# asserts archive bytes == envelope before signing, so a successful run binds the archive to
+# this envelope. Local candidate byte equality is deferred to the promotion path, which
+# replays this proof against the real candidate root with full per-file hashing. The archive
+# byte assertion is intentionally not repeated here; every other check (canonical envelope,
+# config/source/tree binding, local source identity, gh attestation verify) is unchanged.
 
 $bundleBytes = [IO.File]::ReadAllBytes($BundlePath)
 if ($bundleBytes.Length -eq 0) { throw 'GitHub runtime attestation bundle is empty.' }

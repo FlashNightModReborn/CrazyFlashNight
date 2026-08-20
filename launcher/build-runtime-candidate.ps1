@@ -173,8 +173,17 @@ function Test-Cf7SameFormalDeploymentSnapshot {
 $liveCorePath = Join-Path $projectRoot 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll'
 $formalDeploymentBefore = Get-Cf7FormalDeploymentSnapshot -Root $projectRoot
 
+# Per-stage timing observability: cumulative marks are converted to per-stage seconds in the
+# candidate metadata below.
+$stageWatch = [System.Diagnostics.Stopwatch]::StartNew()
+$stageMarks = New-Object 'System.Collections.Generic.Dictionary[string,double]' ([StringComparer]::Ordinal)
+function Mark-Cf7ProducerStage([string]$Name) {
+    $script:stageMarks[$Name] = $script:stageWatch.Elapsed.TotalSeconds
+}
+
 # The environment gate selects byte-pinned tools and normalizes process state.
 . (Join-Path $projectRoot 'tools\check-runtime-build-env.ps1') -ProjectRoot $projectRoot -Mode RuntimePublish
+Mark-Cf7ProducerStage 'environmentGate'
 . $v2Common
 
 foreach ($requiredFunction in @(
@@ -197,10 +206,12 @@ if ($BuilderId -notmatch '^[a-z0-9][a-z0-9._-]{1,127}$') {
 $artifactSourceHash = Get-Cf7RuntimeArtifactSourceHash -ProjectRoot $projectRoot -Mode Worktree
 $producerRecipeHash = Get-Cf7RuntimeProducerRecipeHash -ProjectRoot $projectRoot -Mode Worktree
 $toolchainLockHash = Get-Cf7RuntimeToolchainLockHashV2 -ProjectRoot $projectRoot -Mode Worktree
+$policyHash = Get-Cf7RuntimePolicyHash -ProjectRoot $projectRoot -Mode Worktree
 $buildIdentityHash = Get-Cf7RuntimeV2BuildIdentityHash `
     -ArtifactSourceHash $artifactSourceHash `
     -ProducerRecipeHash $producerRecipeHash `
     -ToolchainLockHash $toolchainLockHash
+Mark-Cf7ProducerStage 'identityBefore'
 
 $candidateBase = [IO.Path]::GetFullPath((Join-Path $projectRoot 'tmp\runtime-candidates\v2')).TrimEnd('\')
 foreach ($candidatePathSegment in @(
@@ -369,12 +380,15 @@ try {
     }
     $env:CF7_MINIAUDIO_REPRO_SOURCE_DIR = $canonicalNativeSource
     Invoke-Cf7Batch -Path (Join-Path $launcherDir 'native\build.bat')
+    Mark-Cf7ProducerStage 'miniaudio'
 
     Write-Host '[2/5] Build deterministic sol_parser.dll...' -ForegroundColor Yellow
     Invoke-Cf7Batch -Path (Join-Path $launcherDir 'native\sol_parser\build.bat')
+    Mark-Cf7ProducerStage 'solParser'
 
     Write-Host '[3/5] Build deterministic native bootstrap...' -ForegroundColor Yellow
     Invoke-Cf7Batch -Path (Join-Path $launcherDir 'native\bootstrap\build.bat')
+    Mark-Cf7ProducerStage 'bootstrap'
 
     Write-Host '[4/5] Publish managed Core into isolated output...' -ForegroundColor Yellow
     $dotnet = $env:CF7_DOTNET_EXE
@@ -402,6 +416,7 @@ try {
 
     Get-ChildItem -LiteralPath $publishDir -File -Filter '*.pdb' -ErrorAction SilentlyContinue |
         ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force }
+    Mark-Cf7ProducerStage 'dotnetPublish'
 
     Write-Host '[5/5] Assemble immutable candidate and manifest...' -ForegroundColor Yellow
     $runtimeDir = Join-Path $deploymentRoot 'runtime'
@@ -454,15 +469,19 @@ try {
         (Join-Path $runtimeDir 'cf7-runtime-manifest.tsv'),
         ([string]::Join("`n", [string[]]$manifestLines.ToArray()) + "`n"),
         $utf8NoBom)
+    Mark-Cf7ProducerStage 'assemble'
 
     $finalArtifactSourceHash = Get-Cf7RuntimeArtifactSourceHash -ProjectRoot $projectRoot -Mode Worktree
     $finalProducerRecipeHash = Get-Cf7RuntimeProducerRecipeHash -ProjectRoot $projectRoot -Mode Worktree
     $finalToolchainLockHash = Get-Cf7RuntimeToolchainLockHashV2 -ProjectRoot $projectRoot -Mode Worktree
+    $finalPolicyHash = Get-Cf7RuntimePolicyHash -ProjectRoot $projectRoot -Mode Worktree
     if ($finalArtifactSourceHash -ne $artifactSourceHash -or
             $finalProducerRecipeHash -ne $producerRecipeHash -or
-            $finalToolchainLockHash -ne $toolchainLockHash) {
+            $finalToolchainLockHash -ne $toolchainLockHash -or
+            $finalPolicyHash -ne $policyHash) {
         throw 'Runtime producer inputs changed while the candidate was being built.'
     }
+    Mark-Cf7ProducerStage 'identityAfter'
 
     # The bootstrap is linked as a Windows GUI application. PowerShell's call operator
     # can return before such a process exits, leaving $LASTEXITCODE stale. Use an
@@ -510,15 +529,31 @@ try {
     if (Test-Path -LiteralPath $candidateLogs) {
         throw 'Candidate diagnostic logs remained after successful verification cleanup.'
     }
+    Mark-Cf7ProducerStage 'bootstrapVerify'
 
+    $stageOrder = @(
+        'environmentGate','identityBefore','miniaudio','solParser','bootstrap',
+        'dotnetPublish','assemble','identityAfter','bootstrapVerify'
+    )
+    $stageSeconds = [ordered]@{}
+    $previousMark = 0.0
+    foreach ($stageName in $stageOrder) {
+        $mark = 0.0
+        if ($stageMarks.ContainsKey($stageName)) { $mark = $stageMarks[$stageName] }
+        $stageSeconds[$stageName] = [Math]::Round($mark - $previousMark, 3)
+        $previousMark = $mark
+    }
     $metadata = [ordered]@{
         schema = 'cf7-runtime-candidate-metadata.v2'
         builderLabel = $BuilderId
         artifactSourceHash = $artifactSourceHash
         producerRecipeHash = $producerRecipeHash
         toolchainLockHash = $toolchainLockHash
+        policyHash = $policyHash
         buildIdentityHash = $buildIdentityHash
         payloadClosureHash = [string]$payload.payloadClosureHash
+        stageSeconds = $stageSeconds
+        totalSeconds = [Math]::Round($stageWatch.Elapsed.TotalSeconds, 3)
         createdAtUtc = [DateTime]::UtcNow.ToString('o')
     }
     [IO.File]::WriteAllText(

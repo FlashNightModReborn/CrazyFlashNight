@@ -201,7 +201,26 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
         Assert-Cf7Test ($tamperedText -cne $canonicalEnvelopeText) "tamper fixture replacement: $($case[0])"
         Write-Cf7TestText $tamperedEnvelope $tamperedText
         Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $tamperedEnvelope -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } "tampered envelope identity must fail: $($case[0])"
+        Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -EnvelopePath $tamperedEnvelope -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit -WithoutCandidateArchive } "tampered envelope identity must fail in no-archive mode: $($case[0])"
     }
+
+    # No-archive mode: the provenance-signed envelope plus the cloud-side archive==envelope
+    # assertion carry the proof; candidate bytes stay local to the producing builders.
+    $noArchiveWrapperPath = Join-Path $testRoot 'github-attestation-wrapper-noarchive.json'
+    $noArchiveWrapper = & $verifier -ProjectRoot $fixtureRoot -EnvelopePath $envelopeA -BundlePath $bundlePath `
+        -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit `
+        -WithoutCandidateArchive -OutputPath $noArchiveWrapperPath
+    Assert-Cf7Test ([string]$noArchiveWrapper.schema -ceq 'cf7-runtime-github-build-attestation.v2') 'no-archive wrapper schema'
+    Assert-Cf7Test ([string]$noArchiveWrapper.canonicalPayloadSha256 -ceq [string]$wrapper.canonicalPayloadSha256) 'no-archive mode must reproduce the same normalized proof'
+    Assert-Cf7Test ([string]$noArchiveWrapper.payload.payloadClosureHash -ceq [string]$closure.payloadClosureHash) 'no-archive mode keeps the attested payload closure'
+    Assert-Cf7Test (Test-Path -LiteralPath $noArchiveWrapperPath -PathType Leaf) 'no-archive mode must still write the normalized proof'
+    Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } 'missing CandidateRoot outside no-archive mode must fail'
+    Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -WithoutCandidateArchive -ExpectedSourceCommitOid $sourceCommit } 'no-archive mode must reject a CandidateRoot'
+    Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -WithoutCandidateArchive -ReplayFromReleaseRecord } 'no-archive mode must reject release-record replay'
+    Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -WithoutCandidateArchive -SourceMode Index } 'no-archive mode must reject Index source mode'
+    $env:CF7_FAKE_GH_MODE = 'fail'
+    Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit -WithoutCandidateArchive } 'no-archive mode must still fail closed on gh verification failure'
+    $env:CF7_FAKE_GH_MODE = 'ok'
 
     $invalidBundlePath = Join-Path $testRoot 'bundle-invalid.json'
     Write-Cf7TestText $invalidBundlePath '{not-json}'
@@ -281,6 +300,14 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $signedArtifact = [regex]::Match($workflowText, '(?ms)- name: Upload signed cloud builder result.*?retention-days:\s*(\d+)').Groups[1].Value
     Assert-Cf7Test ($diagnosticsArtifact -ceq '7' -and $unsignedArtifact -ceq '1' -and $signedArtifact -ceq '7') `
         'cloud artifact retention must be diagnostics=7d, unsigned=1d, signed=7d'
+    $attestationArtifact = [regex]::Match($workflowText, '(?ms)- name: Upload signed cloud attestation.*?retention-days:\s*(\d+)')
+    Assert-Cf7Test ($attestationArtifact.Success -and $attestationArtifact.Groups[1].Value -ceq '7') 'cloud attestation-only artifact must exist with retention=7d'
+    Assert-Cf7Test ($workflowText.Contains('name: runtime-cloud-attestation-${{ needs.build.outputs.source_commit }}')) 'cloud attestation artifact name must bind the source commit'
+    Assert-Cf7Test ($attestJobText.Contains('Upload signed cloud attestation')) 'attestation artifact upload must live in the attested job'
+    Assert-Cf7Test (-not $attestationArtifact.Value.Contains('runtime-candidate.v2.zip')) 'attestation-only artifact must not carry the candidate archive'
+    Assert-Cf7Test ($attestationArtifact.Value.Contains('runtime-build-envelope.v2.json') -and $attestationArtifact.Value.Contains('runtime-build-envelope.v2.sigstore.json')) 'attestation artifact must carry the envelope and the sigstore bundle'
+    Assert-Cf7Test ($attestJobText.IndexOf('Validate staged cloud identity and archive layout', [StringComparison]::Ordinal) -lt
+        $attestJobText.IndexOf('Upload signed cloud attestation', [StringComparison]::Ordinal)) 'the zip==envelope archive assertion must run before the attestation-only artifact is trusted'
     Assert-Cf7Test ($workflowText.IndexOf('CF7_CANDIDATE_ROOT=$candidate', [StringComparison]::Ordinal) -lt
         $workflowText.IndexOf('-File .\launcher\build-runtime-candidate.ps1', [StringComparison]::Ordinal)) `
         'cloud candidate path must be exported before the producer can fail'

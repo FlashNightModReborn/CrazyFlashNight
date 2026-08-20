@@ -141,6 +141,11 @@ $previousGitIndexFile = $env:GIT_INDEX_FILE
 $temporaryRequest = $null
 $refCreated = $false
 
+$requestId = $null
+$requestStartedAtUtc = [DateTime]::UtcNow
+$requestIdentityAtUtc = $null
+$requestBundleAtUtc = $null
+
 try {
     $sourceCommitOid = ([string](Invoke-Cf7RequestGit -Arguments @('rev-parse', "$Treeish^{commit}") | Select-Object -First 1)).Trim().ToLowerInvariant()
     if ($SourceKind -eq 'Index') {
@@ -166,6 +171,7 @@ try {
         }
     }
     $bundleIndex = Join-Path $requestsRoot ('.bundle.' + [Guid]::NewGuid().ToString('N') + '.index')
+    $requestIdentityAtUtc = [DateTime]::UtcNow
     $bundleTreeOid = New-Cf7RequestBundleTree -Entries $bundleEntries -IndexPath $bundleIndex
     $bundleIndex = $null
     $requestCommitOid = New-Cf7RequestSnapshotCommit -TreeOid $bundleTreeOid
@@ -190,6 +196,7 @@ try {
     $bundlePath = Join-Path $temporaryRequest 'source.bundle'
     Invoke-Cf7RequestGit -Arguments @('bundle','create',$bundlePath,$temporaryRef) | Out-Null
     Invoke-Cf7RequestGit -Arguments @('bundle','verify',$bundlePath) | Out-Null
+    $requestBundleAtUtc = [DateTime]::UtcNow
     $request = [pscustomobject]@{
         schema='cf7-runtime-build-request.v2'; requestId=$requestId; sourceKind=$SourceKind
         releaseTreeOid=$releaseTreeOid; sourceCommitOid=$sourceCommitOid; requestCommitOid=$requestCommitOid; bundleTreeOid=$bundleTreeOid
@@ -203,6 +210,14 @@ try {
     }
     Assert-Cf7RuntimeBuildRequest -Request $request | Out-Null
     Write-Cf7QueueUtf8File -Path (Join-Path $temporaryRequest 'request.json') -Text (($request | ConvertTo-Json -Depth 8) + "`n")
+    # Observability sidecar: additive only; request.json keeps its strict v2 schema.
+    $requestPhases = [pscustomobject]@{
+        schema='cf7-runtime-request-phases.v1'; requestId=$requestId
+        startedAtUtc=$requestStartedAtUtc.ToString('o'); identityComputedAtUtc=$requestIdentityAtUtc.ToString('o')
+        bundleCreatedAtUtc=$requestBundleAtUtc.ToString('o'); publishedAtUtc=[DateTime]::UtcNow.ToString('o')
+        totalSeconds=[Math]::Round(([DateTime]::UtcNow - $requestStartedAtUtc).TotalSeconds, 3)
+    }
+    Write-Cf7QueueUtf8File -Path (Join-Path $temporaryRequest 'request.phases.json') -Text (($requestPhases | ConvertTo-Json -Depth 4) + "`n")
     if (-not (Publish-Cf7QueueDirectory -TemporaryDirectory $temporaryRequest -DestinationDirectory $destination)) {
         if (Test-Path -LiteralPath $temporaryRequest) { Remove-Item -LiteralPath $temporaryRequest -Recurse -Force }
         $request = Read-Cf7RuntimeBuildRequest -QueueRoot $QueueRoot -RequestId $requestId

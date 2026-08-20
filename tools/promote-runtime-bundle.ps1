@@ -317,6 +317,8 @@ function Select-Cf7PromotionUniqueEntries {
 }
 
 $QueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot -QueueRoot $QueueRoot
+$promoteStartedAtUtc = [DateTime]::UtcNow
+$promotePhases = [ordered]@{ startedAtUtc = $promoteStartedAtUtc.ToString('o') }
 $requestDirectory = Get-Cf7RuntimeRequestDirectory -QueueRoot $QueueRoot -RequestId $RequestId
 $requestPath = Join-Path $requestDirectory 'request.json'
 $requestBundlePath = Join-Path $requestDirectory 'source.bundle'
@@ -366,6 +368,7 @@ foreach ($requiredCheck in @('release-tree-materialized','tracked-tree-readonly'
 
 $verifiedEntries = @()
 $githubWrapperInputs = @()
+$verifiedGitHubWrappers = @()
 $proofInputSnapshots = New-Object 'System.Collections.Generic.List[object]'
 $identityResultsRoot = Join-Path (Join-Path $QueueRoot 'results') ([string]$request.buildIdentityHash).ToUpperInvariant()
 if (Test-Path -LiteralPath $identityResultsRoot -PathType Container) {
@@ -477,10 +480,30 @@ if ($VerifyOnly) {
 }
 
 $verifyBundle = Join-Path $ProjectRoot 'tools\verify-runtime-bundle-v2.ps1'
-& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifyBundle `
-    -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot
-if ($LASTEXITCODE -ne 0) { throw 'Candidate runtime bundle v2 verification failed.' }
-$candidateClosure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot
+$candidateInventoryPath = Join-Path ([IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')) ('cf7-runtime-candidate-inventory-' + [Guid]::NewGuid().ToString('N') + '.json')
+try {
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifyBundle `
+        -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot -FileInventoryPath $candidateInventoryPath
+    if ($LASTEXITCODE -ne 0) { throw 'Candidate runtime bundle v2 verification failed.' }
+    if (-not (Test-Path -LiteralPath $candidateInventoryPath -PathType Leaf)) {
+        throw 'Candidate bundle verifier did not emit the verified file inventory.'
+    }
+    $candidateInventory = Get-Content -LiteralPath $candidateInventoryPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ([string]$candidateInventory.schema -ne 'cf7-runtime-bundle-file-inventory.v2') {
+        throw 'Candidate bundle verifier emitted an unrecognized file inventory.'
+    }
+    # The verifier hashed every candidate file in the pass above; reuse those verified rows
+    # instead of re-hashing the whole candidate. TOCTOU basis: any byte drift after this point
+    # is still pinned by the staged-copy per-file verification and by the final live consensus
+    # recomputation (payload closure + manifest SHA-256), both of which read fresh bytes.
+    $candidateClosure = [pscustomobject][ordered]@{
+        schema = 'cf7-runtime-payload-closure.v2'
+        payloadClosureHash = Get-Cf7RuntimeV2CanonicalClosureHash -Files @($candidateInventory.files)
+        files = @($candidateInventory.files)
+    }
+} finally {
+    if (Test-Path -LiteralPath $candidateInventoryPath -PathType Leaf) { Remove-Item -LiteralPath $candidateInventoryPath -Force }
+}
 $candidatePayloadHash = ([string]$candidateClosure.payloadClosureHash).ToUpperInvariant()
 $candidateManifestPath = Join-Path $CandidateRoot 'runtime\cf7-runtime-manifest.tsv'
 $candidateManifestSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $candidateManifestPath).Hash.ToUpperInvariant()
@@ -528,12 +551,14 @@ foreach ($input in $githubWrapperInputs) {
             }
         }
         $verifiedEntries += [pscustomobject]@{ proof=$verifiedWrapper; payload=$verifiedWrapper.payload }
+        $verifiedGitHubWrappers += $verifiedWrapper
     } finally {
         if (Test-Path -LiteralPath $temporaryRoot) { Remove-Item -LiteralPath $temporaryRoot -Recurse -Force }
     }
 }
 
 $verifiedEntries = @(Select-Cf7PromotionUniqueEntries -Entries $verifiedEntries)
+$promotePhases.attestationsVerifiedAtUtc = [DateTime]::UtcNow.ToString('o')
 $consensus = Test-Cf7RuntimeVerifiedPayloadConsensusV2 `
     -Payloads @($verifiedEntries | ForEach-Object { $_.payload }) `
     -MinimumConsensus 2
@@ -689,8 +714,12 @@ Copy-Item -LiteralPath (Join-Path $CandidateRoot 'runtime') -Destination $stageR
 Copy-Item -LiteralPath (Join-Path $CandidateRoot 'CRAZYFLASHER7MercenaryEmpire.exe') `
     -Destination (Join-Path $stageRoot 'CRAZYFLASHER7MercenaryEmpire.exe')
 
+# The staged copy is verified per-file against the manifest. The worktree identity domains
+# were already proven against the immutable request above and the worktree is pinned by the
+# release-tree diff; the final live consensus verification recomputes them anyway, so this
+# pass skips only the domain-hash recompute, never the payload bytes.
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifyBundle `
-    -ProjectRoot $ProjectRoot -DeploymentRoot $stageRoot
+    -ProjectRoot $ProjectRoot -DeploymentRoot $stageRoot -IntegrityOnly
 if ($LASTEXITCODE -ne 0) { throw 'Staged promotion copy failed bundle verification.' }
 
 $manifestPath = Join-Path $stageRoot 'runtime\cf7-runtime-manifest.tsv'
@@ -737,9 +766,37 @@ try {
     Move-Item -LiteralPath $nextConsensusRecord -Destination $consensusRecordPath
     $installedConsensusRecord = $true
 
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifyBundle -ProjectRoot $ProjectRoot
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifyBundle -ProjectRoot $ProjectRoot -IntegrityOnly
     if ($LASTEXITCODE -ne 0) { throw 'Promoted runtime bundle failed final verification.' }
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1') -ProjectRoot $ProjectRoot
+    # The GitHub proofs inside the consensus record were fully verified in this process
+    # moments ago (Sigstore replay against the candidate above). Hand the exact verified
+    # wrappers to the final consensus pass so it can skip a second `gh attestation verify`;
+    # the consensus verifier still re-binds the record to those wrappers structurally and
+    # recomputes identity/closure/manifest itself. Without this file the verifier performs
+    # the full replay, which remains the standalone and post-promotion-audit behavior.
+    $preVerifiedProofs = New-Object 'System.Collections.Generic.List[object]'
+    foreach ($recordedProof in @($attestations)) {
+        if ([string]$recordedProof.schema -ne 'cf7-runtime-github-build-attestation.v2') { continue }
+        $matches = @($verifiedGitHubWrappers | Where-Object {
+            [string]$_.canonicalPayloadSha256 -ceq [string]$recordedProof.canonicalPayloadSha256
+        })
+        if ($matches.Count -lt 1) { throw 'Consensus record carries a GitHub proof this process did not verify.' }
+        Assert-Cf7RuntimeGitHubProofEquivalentV2 -Expected $matches[0] -Actual $recordedProof | Out-Null
+        $preVerifiedProofs.Add($matches[0])
+    }
+    $preVerifiedProofsPath = $null
+    if ($preVerifiedProofs.Count -gt 0) {
+        $preVerifiedProofsPath = Join-Path $transactionRoot 'github-preverified-proofs.json'
+        $preVerifiedRecord = [pscustomobject][ordered]@{
+            schema = 'cf7-runtime-github-preverified-proofs.v1'
+            requestId = ([string]$request.requestId).ToUpperInvariant()
+            proofs = $preVerifiedProofs.ToArray()
+        }
+        Write-Cf7QueueJsonAtomic -Path $preVerifiedProofsPath -Value $preVerifiedRecord -Depth 30
+    }
+    $consensusArguments = @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1'),'-ProjectRoot',$ProjectRoot)
+    if ($preVerifiedProofsPath) { $consensusArguments += @('-PreVerifiedGitHubProofPath',$preVerifiedProofsPath) }
+    & powershell.exe @consensusArguments
     if ($LASTEXITCODE -ne 0) { throw 'Promoted runtime consensus record failed final verification.' }
     # CRAZYFLASHER7MercenaryEmpire.exe is a GUI-subsystem executable. Wait on the
     # process handle explicitly; the PowerShell call operator may otherwise return
@@ -798,3 +855,21 @@ try {
 
 Write-Host "[RuntimePromotion] OK request=$($request.requestId) signers=$($consensus.signerIdentities.Count) payload=$($consensus.payloadClosureHash)" -ForegroundColor Green
 Write-Host "[RuntimePromotion] Recoverable previous bundle: $backupRoot" -ForegroundColor DarkGray
+try {
+    # Observability sidecar only; the deployed consensus record remains the authority.
+    $promotePhases.completedAtUtc = [DateTime]::UtcNow.ToString('o')
+    $promotePhases.totalSeconds = [Math]::Round(([DateTime]::Parse([string]$promotePhases.completedAtUtc).ToUniversalTime() - $promoteStartedAtUtc).TotalSeconds, 3)
+    $promotePhaseRecord = [pscustomobject]@{
+        schema = 'cf7-runtime-promotion-phases.v1'
+        requestId = ([string]$request.requestId).ToUpperInvariant()
+        startedAtUtc = [string]$promotePhases.startedAtUtc
+        attestationsVerifiedAtUtc = [string]$promotePhases.attestationsVerifiedAtUtc
+        completedAtUtc = [string]$promotePhases.completedAtUtc
+        totalSeconds = [double]$promotePhases.totalSeconds
+    }
+    $promotePhasePath = Join-Path (Join-Path (Join-Path $QueueRoot 'results\_phases') ([string]$request.requestId)) `
+        ('promotion-' + [Guid]::NewGuid().ToString('N').Substring(0, 16) + '.json')
+    Write-Cf7QueueJsonAtomic -Path $promotePhasePath -Value $promotePhaseRecord
+} catch {
+    Write-Warning "Could not persist runtime promotion phase timings: $($_.Exception.Message)"
+}

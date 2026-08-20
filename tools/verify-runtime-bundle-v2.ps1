@@ -3,6 +3,7 @@ param(
     [string]$DeploymentRoot,
     [switch]$Staged,
     [switch]$IntegrityOnly,
+    [string]$FileInventoryPath,
     [switch]$Json
 )
 
@@ -167,5 +168,18 @@ if ($errors.Count -gt 0) {
     foreach ($message in $errors) { Write-Host "[RuntimeBundleV2] MISMATCH $message" -ForegroundColor Red }
     Write-Host "[RuntimeBundleV2] FAIL state=invalid mode=$($result.mode)" -ForegroundColor Red
     exit 2
+}
+if ($FileInventoryPath) {
+    # The rows above were byte-verified against the deployment in this pass; a caller may
+    # reuse them as the payload closure inventory instead of hashing every file again.
+    $inventory = [ordered]@{ schema = 'cf7-runtime-bundle-file-inventory.v2'; files = @($fileRows) }
+    $inventoryParent = Split-Path -Parent $FileInventoryPath
+    if ($inventoryParent -and -not (Test-Path -LiteralPath $inventoryParent -PathType Container)) {
+        New-Item -ItemType Directory -Path $inventoryParent -Force | Out-Null
+    }
+    [IO.File]::WriteAllText(
+        $FileInventoryPath,
+        (($inventory | ConvertTo-Json -Depth 5) + "`n"),
+        (New-Object Text.UTF8Encoding($false)))
 }
 Write-Host "[RuntimeBundleV2] OK state=$state mode=$($result.mode) files=$($fileRows.Count) payload=$actualPayloadClosureHash" -ForegroundColor Green

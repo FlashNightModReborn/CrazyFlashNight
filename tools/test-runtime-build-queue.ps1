@@ -483,6 +483,29 @@ try {
         'worker did not clean its machine-local isolated checkout'
     $checks++
 
+    # Orphaned checkout residue from a killed worker is reported and never deleted.
+    $orphanCheckoutRoot = Join-Path $TestTempRoot ('qO-' + [Guid]::NewGuid().ToString('N').Substring(0,8))
+    $externalCheckoutRoots.Add($orphanCheckoutRoot)
+    New-Item -ItemType Directory -Path $orphanCheckoutRoot -Force | Out-Null
+    $orphanLeaf = ([string]$requestA.requestId).Substring(0,12).ToLowerInvariant() + '-abcdef0123-456789ab'
+    $orphanJobDir = Join-Path $orphanCheckoutRoot $orphanLeaf
+    New-Item -ItemType Directory -Path $orphanJobDir -Force | Out-Null
+    New-Item -ItemType Directory -Path (Join-Path $orphanCheckoutRoot 'not-a-job-dir') -Force | Out-Null
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $orphanOutput = @(& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $workerScript `
+            -ProjectRoot $fixtureRepo -QueueRoot $queueRoot -CheckoutRoot $orphanCheckoutRoot `
+            -WorkerId 'orphan-scan-worker' -Once -DryRun -LeaseTtlSeconds 30 -HeartbeatSeconds 2 2>&1)
+        $orphanExit = $LASTEXITCODE
+    } finally { $ErrorActionPreference = $previousPreference }
+    Assert-QueueTest ($orphanExit -eq 0) "orphan-scan worker dry-run failed: $($orphanOutput -join ' ')"
+    $orphanOutputText = ($orphanOutput | ForEach-Object { [string]$_ }) -join "`n"
+    Assert-QueueTest ($orphanOutputText.Contains('Orphaned checkout residue')) 'orphaned checkout residue was not reported'
+    Assert-QueueTest (-not $orphanOutputText.Contains('not-a-job-dir')) 'orphan sweep must ignore non-job directories'
+    Assert-QueueTest (Test-Path -LiteralPath $orphanJobDir -PathType Container) 'orphan sweep must never delete residue'
+    $checks++
+
     $leaseA = Try-EnterCf7RuntimeRequestLease -QueueRoot $queueRoot -RequestId ([string]$requestA.requestId) -WorkerId 'lease-worker-a' -LeaseTtlSeconds 30
     $leaseBlocked = Try-EnterCf7RuntimeRequestLease -QueueRoot $queueRoot -RequestId ([string]$requestA.requestId) -WorkerId 'lease-worker-b' -LeaseTtlSeconds 30
     Assert-QueueTest ($null -ne $leaseA -and $null -eq $leaseBlocked) 'lease competition admitted two workers'

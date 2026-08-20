@@ -317,3 +317,17 @@ jobs:
             cloud-output/runtime-build-envelope.v2.sigstore.json
           if-no-files-found: error
           retention-days: 7
+
+      # Small attestation-only artifact: the deterministic envelope plus its offline Sigstore
+      # bundle. The default local proof path downloads this instead of the multi-megabyte
+      # candidate archive; the archive/envelope byte equality assertion above has already
+      # pinned the candidate bytes to the signed envelope for this run.
+      - name: Upload signed cloud attestation
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: runtime-cloud-attestation-${{ needs.build.outputs.source_commit }}
+          path: |
+            cloud-output/runtime-build-envelope.v2.json
+            cloud-output/runtime-build-envelope.v2.sigstore.json
+          if-no-files-found: error
+          retention-days: 7
