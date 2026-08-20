@@ -657,6 +657,21 @@
         }).catch(function() { return ''; });
     }
 
+    /**
+     * 为已经由共享业务检视器解析完成的 dressup state 生成一次性 PNG。
+     * 调用方必须负责 state 的 fitFields / drawFields / rig 语义；本层只复用
+     * 与佣兵头像相同的有界渲染队列、异步图片收敛和透明像素检查。
+     */
+    function renderStateDataUrl(state, options) {
+        options = options || {};
+        var size = Number(options.size) || 256;
+        if (!state) return Promise.resolve('');
+        return loadManifest().then(function(manifest) {
+            var job = scheduleSnapshot(manifest, state, size, function() { return true; });
+            return job.promise;
+        }).catch(function() { return ''; });
+    }
+
     function updateHost(host, merc, options) {
         options = options || {};
         if (!host) return Promise.resolve(null);
@@ -699,6 +714,7 @@
         mount: mount,
         create: create,
         renderDataUrl: renderDataUrl,
+        renderStateDataUrl: renderStateDataUrl,
         updateHost: updateHost,
         debugState: debugState,
         clear: clearPortrait,

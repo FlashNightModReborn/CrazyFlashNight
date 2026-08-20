@@ -367,6 +367,7 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `lockbox` | minigame | `modules/minigames/lockbox/lockbox-panel.js` |
 | `pinalign` | minigame | `modules/minigames/pinalign/pinalign-panel.js` |
 | `gobang` | minigame | `modules/minigames/gobang/gobang-panel.js` |
+| `blackmarket` | minigame | `modules/minigames/blackmarket/blackmarket-panel.js` |
 | `intelligence` | 业务 Panel | `modules/intelligence-panel.js` |
 | `arena` | 工作台 | `modules/arena-panel.js` |
 | `team` | 工作台 | `modules/team/team-panel.js` |
@@ -385,9 +386,9 @@ Panel 的共同边界：
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
 
-Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)和 [gobang](web/modules/minigames/gobang/README.md)。统一 QA 入口及是否需要真实 Host/Flash 以 [testing guide](../agentsDoc/testing-guide.md)为准。
-
-新增、删除、改名 Panel，或改变 lazy closure 的最终注册模块时，必须同步本表；治理脚本会与源码 exact-set 比对。
+Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)和[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)。
+其中 `blackmarket` 只允许 `dev + shadowOnly` 测试入口，不是正式经济 Panel；lazy closure 在 core 后加载 dressup、共享 inspection viewport、`EquipmentInspector`、merc portrait、equipment preview、inspection focus 与 item surface。五类非颈部防具复用 `fieldsByGender → fit/draw` 局部取景，武器优先复用完整/复合 dressup 商品图；缺失装备素材仅以保 Alpha 锐化图标作影子回退。
+面板与主 SWF 共用固定 `1024×576` 逻辑画布，仅由 `PanelScale` 整体缩放；检视按旋转后物品包围盒与污泥外扩自动聚焦，变换不重跑污泥或改变购买选择。切组、无共同性别或失败时封存且不显示原图，像素按能力走独立 worker。统一 QA 入口见 [testing guide](../agentsDoc/testing-guide.md)；Panel 或 lazy closure 变更必须同步本表并通过 exact-set 治理。
 
 ## 存档编辑与诊断
 

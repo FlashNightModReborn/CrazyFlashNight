@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5657 unique assets -->
+  <!-- 5667 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -40,6 +40,7 @@
   <asset id="_loc119_" swf="flashswf/arts/things0.swf" symbolName="神秘文件夹/神秘影片剪辑" />
   <asset id="buff详细图标" swf="flashswf/arts/新版人物文字信息.swf" symbolName="素材-buff详细图标/buff详细图标" />
   <asset id="fm92刺弹炮弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/fm刺弹炮弹文件/fm92刺弹炮弹" />
+  <asset id="fm直射刺弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/fm直射刺弹素材/fm直射刺弹" />
   <asset id="fsc7炮弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/fsc7炮弹文件/fsc7炮弹" />
   <asset id="fs配置素材" swf="flashswf/arts/new/fs配置素材.swf" />
   <asset id="g18" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/一部分武器1/武器本体/g18战术版/g18" />
@@ -138,9 +139,16 @@
   <asset id="兵器攻击容器-月光斩" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-月光斩" />
   <asset id="兵器攻击容器-次元斩" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/↓R兵攻容器-次元斩" />
   <asset id="兵器攻击容器-狂乱龙卷" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-狂乱龙卷" />
+  <asset id="兵器攻击容器-狂暴切割" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-狂暴切割" />
   <asset id="兵器攻击容器-狂野1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招" />
   <asset id="兵器攻击容器-猎影十字" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-猎影十字" />
   <asset id="兵器攻击容器-疾影1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" />
+  <asset id="兵器攻击容器-疾影上挑" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-疾影上挑" />
+  <asset id="兵器攻击容器-疾影剑气" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-疾影剑气" />
+  <asset id="兵器攻击容器-疾影剑舞" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-疾影剑舞" />
+  <asset id="兵器攻击容器-疾影十字" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-疾影十字" />
+  <asset id="兵器攻击容器-疾影后撤" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-疾影后撤" />
+  <asset id="兵器攻击容器-疾影突进" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-疾影突进" />
   <asset id="兵器攻击容器-疾空旋风破" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-疾空旋风破" />
   <asset id="兵器攻击容器-百万突刺" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-百万突刺" />
   <asset id="兵器攻击容器-百裂刺" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-百裂刺" />
@@ -3419,6 +3427,8 @@
   <asset id="拼刀火花" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="特效-击中效果组/拼刀火花" />
   <asset id="挂机功能菜单" swf="flashswf/UI/基地特殊UI合集.swf" />
   <asset id="摩羯之力" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/12.星座轮盘/摩羯之力" />
+  <asset id="支援飞弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/支援飞弹文件/支援飞弹" />
+  <asset id="支援飞弹爆炸" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/支援飞弹爆炸素材/支援飞弹爆炸" />
   <asset id="敌人-92式终结者" swf="flashswf/arts/new/92式终结者.swf" />
   <asset id="敌人-ArmsArchai" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="敌人-ArmsArius" swf="flashswf/arts/new/天网豪华单间.swf" />
@@ -3517,7 +3527,7 @@
   <asset id="敌人-方舟兽王" swf="flashswf/arts/things5.swf" />
   <asset id="敌人-方舟兽王虎" swf="flashswf/arts/things5.swf" />
   <asset id="敌人-方舟卫士" swf="flashswf/arts/things6.swf" />
-  <asset id="敌人-方舟妖姬" swf="flashswf/arts/things7.swf" />
+  <asset id="敌人-方舟妖姬原版素材" swf="flashswf/arts/things7.swf" />
   <asset id="敌人-方舟巨人" swf="flashswf/arts/things6.swf" />
   <asset id="敌人-方舟巨人兵" swf="flashswf/arts/things7.swf" />
   <asset id="敌人-方舟护士" swf="flashswf/arts/things6.swf" />
@@ -5730,7 +5740,7 @@
     <source swf="flashswf/arts/new/素材库-地图元件.swf" orphan="true" />
   </duplicate>
 
-  <!-- 87 CONFLICTS: same ID in multiple SWFs (live sources >= 2) -->
+  <!-- 88 CONFLICTS: same ID in multiple SWFs (live sources >= 2) -->
   <conflict id="公共素材位3">
     <source swf="flashswf/arts/new/公共素材位3.swf" />
     <source swf="flashswf/arts/公共素材位3.swf" />
@@ -5896,6 +5906,10 @@
   <conflict id="敌人-巨臂僵尸">
     <source swf="flashswf/arts/new/3XD做的npc.swf" symbolName="巨臂僵尸/敌人-巨臂僵尸" />
     <source swf="flashswf/arts/公共素材位3.swf" symbolName="巨臂僵尸文件/敌人-巨臂僵尸" />
+  </conflict>
+  <conflict id="敌人-方舟妖姬">
+    <source swf="flashswf/arts/new/方舟妖姬新.swf" />
+    <source swf="flashswf/arts/new/蓝环章鱼烧.swf" symbolName="A.个人编辑单位/敌人-方舟妖姬" />
   </conflict>
   <conflict id="枪-手枪-COLT PYTHON">
     <source swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/枪-手枪-COLT PYTHON" />

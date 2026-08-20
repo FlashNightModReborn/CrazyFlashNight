@@ -239,6 +239,18 @@ test('zoom, pan, reset, controls, and resize transform only the declared target'
     assert.strictEqual(offsetProbe.camera.debugState().panX, 0);
     action(offsetProbe.camera.controls, 'reset').dispatch('click');
     assert.strictEqual(offsetProbe.camera.debugState().panX, 28);
+
+    const expandedProbe = setup({
+        defaultZoom:1,
+        resetOffset() { return {panX:96, panY:-72}; },
+        panBounds() { return {x:120, y:90}; }
+    });
+    expandedProbe.camera.activate({reset:true});
+    assert.strictEqual(expandedProbe.camera.debugState().panX, 96);
+    assert.strictEqual(expandedProbe.camera.debugState().panY, -72);
+    expandedProbe.camera.shift(999, -999);
+    assert.strictEqual(expandedProbe.camera.debugState().panX, 120);
+    assert.strictEqual(expandedProbe.camera.debugState().panY, -90);
 });
 
 test('wheel, keyboard, drag, pointercancel, and lost capture share one bounded state', () => {

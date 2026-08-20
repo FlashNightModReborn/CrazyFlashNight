@@ -2462,6 +2462,13 @@ namespace CF7Launcher.Guardian
                 case "GOBANG_TEST":
                     OpenPanel("gobang", "{\"mode\":\"dev\",\"source\":\"runtime\",\"ruleset\":\"casual\",\"difficulty\":\"normal\",\"playerRole\":1,\"aiEnabled\":true,\"debug\":true}");
                     break;
+                case "BLACKMARKET_TEST":
+                    {
+                        uint shadowSeed = unchecked((uint)Environment.TickCount);
+                        string initData = "{\"mode\":\"dev\",\"source\":\"runtime\",\"shadowOnly\":true,\"seed\":\"runtime-" + shadowSeed + "\",\"debug\":true}";
+                        OpenPanel("blackmarket", initData);
+                    }
+                    break;
                 case "INTELLIGENCE_TEST":
                     OpenPanel("intelligence", "{\"mode\":\"dev\",\"source\":\"runtime\",\"itemName\":\"资料\",\"value\":99,\"decryptLevel\":10,\"pcName\":\"测试玩家\",\"debug\":true}");
                     break;

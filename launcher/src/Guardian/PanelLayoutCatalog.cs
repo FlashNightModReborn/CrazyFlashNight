@@ -36,6 +36,7 @@ namespace CF7Launcher.Guardian
                 case "lockbox":  return Centered(anchorScreenRect, 720, 600);
                 case "pinalign": return Centered(anchorScreenRect, 600, 480);
                 case "gobang":   return Centered(anchorScreenRect, 720, 720);
+                case "blackmarket": return anchorScreenRect;
                 default:         return Centered(anchorScreenRect, 800, 600);
             }
             #pragma warning restore 0162

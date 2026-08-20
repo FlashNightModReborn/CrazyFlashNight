@@ -112,6 +112,13 @@ def main() -> None:
     transparent_rgb_a.putpixel((0, 0), (255, 80, 20, 1))
     assert bake.rgba_render_digest(transparent_rgb_a) != bake.rgba_render_digest(transparent_rgb_b)
 
+    transparent_canvas_a = Image.new("RGBA", (128, 128), (255, 80, 20, 0))
+    transparent_canvas_b = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    close, stats = bake.image_diff_images(transparent_canvas_a, transparent_canvas_b)
+    assert close and stats.exact and not stats.micro and stats.changed_pixels == 0
+    close, stats = bake.full_image_diff_images(transparent_canvas_a, transparent_canvas_b)
+    assert close and stats.exact and not stats.micro and stats.changed_pixels == 0
+
     # A normal bake may ignore a tiny pixel delta to preserve established layout,
     # but an explicit/source-authorized refresh must write it exactly so the result
     # can become a trustworthy provenance root.

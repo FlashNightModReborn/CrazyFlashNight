@@ -89,7 +89,7 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Equal(5, widget.OtherMenuItemCountForTest);
 
                 widget.OpenOtherMenuForTest(1);
-                Assert.Equal(7, widget.OtherMenuItemCountForTest);
+                Assert.Equal(8, widget.OtherMenuItemCountForTest);
                 widget.OpenOtherMenuForTest(2);
                 Assert.Equal(4, widget.OtherMenuItemCountForTest);
 

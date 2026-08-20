@@ -5715,6 +5715,11 @@ namespace CF7Launcher.Guardian
                             LogManager.Log("[Lockbox] minigame_session payload=redacted");
                             break;
                         }
+                        else if (string.Equals(game, "blackmarket", StringComparison.OrdinalIgnoreCase))
+                        {
+                            LogManager.Log("[BlackMarket] minigame_session payload=redacted");
+                            break;
+                        }
                         else if (string.Equals(game, "pinalign", StringComparison.OrdinalIgnoreCase)) prefix = "PinAlign";
                         else if (string.Equals(game, "gobang", StringComparison.OrdinalIgnoreCase)) prefix = "Gobang";
                         else prefix = "Minigame";

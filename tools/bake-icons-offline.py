@@ -1934,9 +1934,10 @@ def image_diff_images(reference: Image.Image, candidate: Image.Image) -> tuple[b
         return True, stats
 
     for i in range(0, len(existing_bytes), 4):
-        r_delta = abs(existing_bytes[i] - new_bytes[i])
-        g_delta = abs(existing_bytes[i + 1] - new_bytes[i + 1])
-        b_delta = abs(existing_bytes[i + 2] - new_bytes[i + 2])
+        both_fully_transparent = existing_bytes[i + 3] == 0 and new_bytes[i + 3] == 0
+        r_delta = 0 if both_fully_transparent else abs(existing_bytes[i] - new_bytes[i])
+        g_delta = 0 if both_fully_transparent else abs(existing_bytes[i + 1] - new_bytes[i + 1])
+        b_delta = 0 if both_fully_transparent else abs(existing_bytes[i + 2] - new_bytes[i + 2])
         a_delta = abs(existing_bytes[i + 3] - new_bytes[i + 3])
         if r_delta == 0 and g_delta == 0 and b_delta == 0 and a_delta == 0:
             continue
@@ -1956,7 +1957,10 @@ def image_diff_images(reference: Image.Image, candidate: Image.Image) -> tuple[b
         ):
             return False, stats
 
-    stats.micro = stats.changed_pixels > 0
+    if stats.changed_pixels == 0:
+        stats.exact = True
+        return True, stats
+    stats.micro = True
     return True, stats
 
 
@@ -1974,9 +1978,10 @@ def full_image_diff_images(reference: Image.Image, candidate: Image.Image) -> tu
         return True, stats
 
     for index in range(0, len(existing_bytes), 4):
-        red_delta = abs(existing_bytes[index] - new_bytes[index])
-        green_delta = abs(existing_bytes[index + 1] - new_bytes[index + 1])
-        blue_delta = abs(existing_bytes[index + 2] - new_bytes[index + 2])
+        both_fully_transparent = existing_bytes[index + 3] == 0 and new_bytes[index + 3] == 0
+        red_delta = 0 if both_fully_transparent else abs(existing_bytes[index] - new_bytes[index])
+        green_delta = 0 if both_fully_transparent else abs(existing_bytes[index + 1] - new_bytes[index + 1])
+        blue_delta = 0 if both_fully_transparent else abs(existing_bytes[index + 2] - new_bytes[index + 2])
         alpha_delta = abs(existing_bytes[index + 3] - new_bytes[index + 3])
         if red_delta == 0 and green_delta == 0 and blue_delta == 0 and alpha_delta == 0:
             continue
@@ -1987,7 +1992,10 @@ def full_image_diff_images(reference: Image.Image, candidate: Image.Image) -> tu
         stats.max_channel_delta = max(stats.max_channel_delta, max_delta)
         stats.total_channel_delta += red_delta + green_delta + blue_delta + alpha_delta
 
-    stats.micro = stats.changed_pixels > 0
+    if stats.changed_pixels == 0:
+        stats.exact = True
+        return True, stats
+    stats.micro = True
     return False, stats
 
 
@@ -2432,8 +2440,29 @@ def png_is_fully_transparent(path: Path) -> bool:
 
 def normalized_frame_digest(source_png: Path, profile_size: tuple[int, int] | None) -> str:
     normalized = normalize_icon(source_png, profile_size)
-    digest = zlib.crc32(normalized.tobytes()) & 0xFFFFFFFF
-    return f"{normalized.width}x{normalized.height}:{digest:08x}"
+    return f"{normalized.width}x{normalized.height}:{rgba_render_digest(normalized)}"
+
+
+def stopped_item_has_semantic_frame2(
+    target: IconTarget,
+    *,
+    parent_frame1_stop: bool,
+    frame1: Path | None,
+    frame2: Path | None,
+    profile_size: tuple[int, int] | None,
+) -> bool:
+    """Keep a distinct item f2 addressable without turning it into playback animation."""
+    if not parent_frame1_stop or target.scope not in ("item", "item-tier"):
+        return False
+    if frame1 is None or frame2 is None or png_is_fully_transparent(frame2):
+        return False
+    return normalized_frame_digest(frame1, profile_size) != normalized_frame_digest(frame2, profile_size)
+
+
+def static_frame_pairs(parent_frame1_stop: bool, preserve_semantic_frame2: bool) -> tuple[tuple[int, str], ...]:
+    if parent_frame1_stop and not preserve_semantic_frame2:
+        return ((1, "f1"),)
+    return ((1, "f1"), (2, "f2"))
 
 
 def icon_animation_audit(
@@ -3909,6 +3938,14 @@ def main() -> int:
             parent_info = sprite_graph.get(char_id) if sprite_graph else None
             parent_frame_count = int((parent_info or {}).get("frameCount") or len(exported_frames) or 0)
             parent_frame1_stop = has_plain_frame1_stop(timeline_controls, char_id)
+            exported_f2 = find_exported_frame(tmp_dir, swf_rel, char_id, 2)
+            preserve_semantic_frame2 = stopped_item_has_semantic_frame2(
+                target,
+                parent_frame1_stop=parent_frame1_stop,
+                frame1=f1,
+                frame2=exported_f2,
+                profile_size=target_content_profile_size,
+            )
             if len(exported_frames) > 1 or nested_audit["nestedAnimatedDescendantCount"] > 0:
                 audit_payload = {
                     "name": target.name,
@@ -3923,6 +3960,7 @@ def main() -> int:
                 if parent_frame1_stop and len(exported_frames) > 1:
                     audit_payload["staticReason"] = "frame1_plain_stop"
                     audit_payload["collapsedFrameCount"] = len(exported_frames) - 1
+                    audit_payload["semanticFrame2Preserved"] = bool(preserve_semantic_frame2)
                 record_issue(report, "animationAudit", audit_payload)
                 report["counts"]["multi_frame_symbols"] += 1 if len(exported_frames) > 1 else 0
                 report["counts"]["animation_candidates"] += (
@@ -4200,12 +4238,26 @@ def main() -> int:
                 ):
                     entry.pop(stale_key, None)
                 if parent_frame1_stop:
-                    stale_f2 = entry.pop("f2", None)
+                    stale_f2 = None if preserve_semantic_frame2 else entry.pop("f2", None)
                     entry["playback"] = "static-first-frame"
                     entry["animated"] = False
                     entry["frameCount"] = 1
                     report["counts"]["frame1_stop_static_entries"] += 1
-                    if stale_f2:
+                    if preserve_semantic_frame2:
+                        record_issue(
+                            report,
+                            "frame1StopSemanticF2",
+                            {
+                                "name": target.name,
+                                "linkageId": target.linkage_id,
+                                "scope": target.scope,
+                                "swf": swf_rel,
+                                "characterId": char_id,
+                                "preservedFrame": "f2",
+                            },
+                        )
+                        report["counts"]["frame1_stop_semantic_f2_preserved"] += 1
+                    elif stale_f2:
                         record_issue(
                             report,
                             "frame1StopStatic",
@@ -4219,7 +4271,7 @@ def main() -> int:
                             },
                         )
                         report["counts"]["frame1_stop_removed_f2_manifest"] += 1
-                frame_pairs = ((1, "f1"),) if parent_frame1_stop else ((1, "f1"), (2, "f2"))
+                frame_pairs = static_frame_pairs(parent_frame1_stop, preserve_semantic_frame2)
                 for frame_number, frame_key in frame_pairs:
                     source_frame = find_exported_frame(tmp_dir, swf_rel, char_id, frame_number)
                     if source_frame is None:
@@ -4426,6 +4478,7 @@ def main() -> int:
         "nestedIconCanvasUnsupported",
         "nestedIconLayeredUnsupported",
         "frame1StopStatic",
+        "frame1StopSemanticF2",
         "animatedIconSizeSamples",
         "animatedIconBudgetSkipped",
         "animatedVisualStaticDowngraded",

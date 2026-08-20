@@ -6,7 +6,7 @@
  * 加载完成后调 registerFn() —— 由于各 panel.js 是顶层 IIFE 自注册风格，registerFn 通常空函数即可。
  *
  * 共享依赖：
- *  - minigames/shared/host-bridge.js 被 lockbox / pinalign / gobang 共用，
+ *  - minigames/shared/host-bridge.js 被 lockbox / pinalign / gobang / blackmarket 共用，
  *    LazyLoader 内置 url 去重，列多次只会真正加载一次。
  *
  * 不在这里管：
@@ -252,6 +252,22 @@
          'modules/minigames/gobang/core/index.js',
          'modules/minigames/gobang/gobang-audio.js',
          'modules/minigames/gobang/gobang-panel.js'],
+        noop);
+
+    // ── blackmarket（全量目录影子测试；防具复用 battle-rig 纸娃娃，仍无正式写入）──
+    Panels.registerLazy('blackmarket',
+        ['modules/minigames/shared/host-bridge.js',
+         'modules/minigames/blackmarket/core/index.js',
+         'modules/asset-timeline.js',
+         'modules/dressup-doll-renderer.js',
+         'modules/workbench-inspection-viewport.js',
+         'modules/equipment-inspector.js',
+         'modules/merc-data.js',
+         'modules/merc-portrait-renderer.js',
+         'modules/minigames/blackmarket/visual/equipment-preview.js',
+         'modules/minigames/blackmarket/visual/inspection-focus.js',
+         'modules/minigames/blackmarket/visual/item-surface.js',
+         'modules/minigames/blackmarket/blackmarket-panel.js'],
         noop);
 
     // ── intelligence ──

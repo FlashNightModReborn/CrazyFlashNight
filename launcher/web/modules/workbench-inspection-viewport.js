@@ -3,6 +3,8 @@
  *
  * The camera owns transient pointer/wheel/keyboard presentation state only.
  * It never creates a renderer, duplicates a Canvas, or persists domain state.
+ * Consumers with intentionally off-centre evidence may provide panBounds(state, camera)
+ * to enlarge the default scaled-viewport pan envelope without changing existing users.
  */
 (function(root, factory) {
     'use strict';
@@ -63,6 +65,8 @@
             ? options.onChange : function() {};
         this._resetOffset = typeof options.resetOffset === 'function'
             ? options.resetOffset : null;
+        this._panBounds = typeof options.panBounds === 'function'
+            ? options.panBounds : null;
         this._state = {
             zoom:this._defaultZoom,
             panX:0,
@@ -173,10 +177,16 @@
     Camera.prototype._limits = function() {
         var width = this.viewport.clientWidth || 1;
         var height = this.viewport.clientHeight || 1;
-        return {
+        var limits = {
             x:Math.max(0, width * (this._state.zoom - 1) / 2),
             y:Math.max(0, height * (this._state.zoom - 1) / 2)
         };
+        if (this._panBounds) {
+            var expanded = this._panBounds(this.debugState(), this) || {};
+            limits.x = Math.max(limits.x, Math.max(0, number(expanded.x, 0)));
+            limits.y = Math.max(limits.y, Math.max(0, number(expanded.y, 0)));
+        }
+        return limits;
     };
 
     Camera.prototype._syncControls = function() {

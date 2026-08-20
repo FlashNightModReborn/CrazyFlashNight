@@ -2226,6 +2226,21 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void BLACKMARKET_TEST_OpenPanel_IsDevShadowOnly()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            r.Dispatch("BLACKMARKET_TEST");
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"blackmarket\"", open);
+            Assert.Contains("\"mode\":\"dev\"", open);
+            Assert.Contains("\"source\":\"runtime\"", open);
+            Assert.Contains("\"shadowOnly\":true", open);
+            Assert.Contains("\"seed\":\"runtime-", open);
+        }
+
+        [Fact]
         public void INTELLIGENCE_TEST_OpenPanel_IncludesFixtureInitData()
         {
             Capture c = new Capture();

@@ -4,8 +4,11 @@ from __future__ import annotations
 import importlib.util
 import json
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
+
+from PIL import Image
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -137,6 +140,84 @@ def main() -> None:
     fixed_goto_controls = {1: {"frameScripts": {1: ["stop(); gotoAndStop(5);"]}, "clipActions": []}}
     fixed_goto_playback = dressup.playback_metadata(fixed_goto_controls, {}, 1, 11, "auto")
     assert fixed_goto_playback["playback"] == "loop"
+
+    with tempfile.TemporaryDirectory(prefix="cf7-stopped-item-f2-") as temp_text:
+        temp_dir = Path(temp_text)
+        frame1 = temp_dir / "frame1.png"
+        frame2 = temp_dir / "frame2.png"
+        duplicate_frame2 = temp_dir / "frame2-duplicate.png"
+        hidden_rgb_duplicate_frame2 = temp_dir / "frame2-hidden-rgb-duplicate.png"
+        transparent_frame2 = temp_dir / "frame2-transparent.png"
+        Image.new("RGBA", (8, 8), (80, 120, 160, 255)).save(frame1)
+        Image.new("RGBA", (8, 8), (160, 120, 80, 255)).save(frame2)
+        Image.new("RGBA", (8, 8), (80, 120, 160, 255)).save(duplicate_frame2)
+        hidden_rgb_duplicate = Image.new("RGBA", (8, 8), (80, 120, 160, 255))
+        hidden_rgb_duplicate.putpixel((0, 0), (255, 40, 20, 0))
+        hidden_rgb_duplicate.save(hidden_rgb_duplicate_frame2)
+        frame1_with_transparent_pixel = Image.open(frame1).convert("RGBA")
+        frame1_with_transparent_pixel.putpixel((0, 0), (0, 0, 0, 0))
+        frame1_with_transparent_pixel.save(frame1)
+        duplicate_with_transparent_pixel = Image.open(duplicate_frame2).convert("RGBA")
+        duplicate_with_transparent_pixel.putpixel((0, 0), (0, 0, 0, 0))
+        duplicate_with_transparent_pixel.save(duplicate_frame2)
+        Image.new("RGBA", (8, 8), (0, 0, 0, 0)).save(transparent_frame2)
+
+        item_target = icons.IconTarget("item", "item-linkage", "item", "test")
+        item_tier_target = icons.IconTarget("item-tier", "item-tier-linkage", "item-tier", "test")
+        skill_target = icons.IconTarget("skill", "skill-linkage", "skill", "test")
+
+        assert icons.stopped_item_has_semantic_frame2(
+            item_target,
+            parent_frame1_stop=True,
+            frame1=frame1,
+            frame2=frame2,
+            profile_size=(8, 8),
+        )
+        assert icons.stopped_item_has_semantic_frame2(
+            item_tier_target,
+            parent_frame1_stop=True,
+            frame1=frame1,
+            frame2=frame2,
+            profile_size=(8, 8),
+        )
+        assert not icons.stopped_item_has_semantic_frame2(
+            skill_target,
+            parent_frame1_stop=True,
+            frame1=frame1,
+            frame2=frame2,
+            profile_size=(8, 8),
+        )
+        assert not icons.stopped_item_has_semantic_frame2(
+            item_target,
+            parent_frame1_stop=False,
+            frame1=frame1,
+            frame2=frame2,
+            profile_size=(8, 8),
+        )
+        assert not icons.stopped_item_has_semantic_frame2(
+            item_target,
+            parent_frame1_stop=True,
+            frame1=frame1,
+            frame2=duplicate_frame2,
+            profile_size=(8, 8),
+        )
+        assert not icons.stopped_item_has_semantic_frame2(
+            item_target,
+            parent_frame1_stop=True,
+            frame1=frame1,
+            frame2=hidden_rgb_duplicate_frame2,
+            profile_size=(8, 8),
+        )
+        assert not icons.stopped_item_has_semantic_frame2(
+            item_target,
+            parent_frame1_stop=True,
+            frame1=frame1,
+            frame2=transparent_frame2,
+            profile_size=(8, 8),
+        )
+        assert icons.static_frame_pairs(True, True) == ((1, "f1"), (2, "f2"))
+        assert icons.static_frame_pairs(True, False) == ((1, "f1"),)
+        assert icons.static_frame_pairs(False, False) == ((1, "f1"), (2, "f2"))
 
     explicit_play_controls = {1: {"frameScripts": {1: ["stop(); play();"]}, "clipActions": []}}
     explicit_play_playback = dressup.playback_metadata(explicit_play_controls, {}, 1, 11, "auto")

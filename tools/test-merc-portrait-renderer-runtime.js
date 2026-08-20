@@ -47,7 +47,13 @@ function createNode() {
 function createHarness(options) {
     options = options || {};
     const timers = [];
-    const stats = { creates: 0, destroys: 0, loadManifestCalls: 0, rendererOptions: [] };
+    const stats = {
+        creates: 0,
+        destroys: 0,
+        loadManifestCalls: 0,
+        rendererOptions: [],
+        renderStates: []
+    };
     const alpha = new Uint8ClampedArray(200 * 4);
     for (let i = 3; i < alpha.length; i += 4) alpha[i] = 255;
 
@@ -73,7 +79,10 @@ function createHarness(options) {
                 ? options.createRenderer(index, canvas)
                 : { render: function() { return { pendingImages: 0, failedImages: 0 }; } };
             return {
-                render: function(state) { return implementation.render(state); },
+                render: function(state) {
+                    stats.renderStates.push(state);
+                    return implementation.render(state);
+                },
                 destroy: function() {
                     stats.destroys++;
                     if (implementation.destroy) implementation.destroy();
@@ -153,6 +162,25 @@ function merc(key, overrides) {
         'snapshot size must be independent of the host devicePixelRatio');
     assert.strictEqual(dpiHarness.stats.rendererOptions[0].animate, false,
         'one-shot portrait bake must not schedule an animation loop');
+    cases++;
+
+    const focusedStateHarness = createHarness({});
+    const focusedState = {
+        gender: '男',
+        keyMap: { '身体': '黄金骑士牙狼胸甲-身体' },
+        fitFields: ['身体', '上臂', '左下臂', '右下臂'],
+        drawFields: ['身体', '上臂', '左下臂', '右下臂'],
+        rig: 'battle',
+        stateLabel: '空手站立',
+        zoom: 0.88,
+        margin: 24
+    };
+    const focusedUrl = await focusedStateHarness.api.renderStateDataUrl(focusedState, { size: 320 });
+    assert(focusedUrl.indexOf('data:image/png;base64,') === 0);
+    assert.strictEqual(focusedStateHarness.stats.renderStates.length, 1);
+    assert.strictEqual(focusedStateHarness.stats.renderStates[0], focusedState,
+        'resolved equipment focus state must reach the snapshot renderer unchanged');
+    assert.strictEqual(focusedStateHarness.stats.rendererOptions[0].width, 320);
     cases++;
 
     const exceptionHarness = createHarness({

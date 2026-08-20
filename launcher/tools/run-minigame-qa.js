@@ -35,6 +35,16 @@ function getSuites() {
             args: [
                 require("../web/modules/minigames/gobang/core/index.js")
             ]
+        },
+        blackmarket: {
+            suite: require("../web/modules/minigames/blackmarket/dev/qa-suite.js"),
+            args: [
+                require("../web/modules/minigames/blackmarket/core/index.js"),
+                require("../web/data/black-market-shadow-catalog.v1.json"),
+                require("../web/modules/minigames/blackmarket/visual/item-surface.js"),
+                require("../web/modules/minigames/blackmarket/visual/equipment-preview.js"),
+                require("../web/assets/dressup/manifest.json")
+            ]
         }
     };
 }
