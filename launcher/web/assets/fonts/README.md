@@ -1,8 +1,10 @@
 # Launcher Web / Native HUD 字体资源
 
-本目录下的字体由 `launcher/web/css/panels.css` 的 `@font-face` 与 C# `NativeHudFonts` 共用。Web 用于情报系统多 skin 表达力；Native HUD 只读取思源宋体。文件**缺失也不会破坏渲染**——Web 使用 `font-display: swap`，Native 使用系统字体回退链。
+本目录下的字体由 `launcher/web/css/panels/foundation-top.css`、`launcher/web/css/task_panel.css` 的 `@font-face` 与 C# `NativeHudFonts` 共用。Web 用于情报系统多 skin 表达力与任务面板标题；Native HUD 只读取思源宋体。文件**缺失也不会破坏渲染**——Web 使用 `font-display: swap`，Native 使用系统字体回退链。
 
-字体清单的权威源是 [`font-pack-manifest.json`](font-pack-manifest.json)（FontPackTask 按需下载到 `%LOCALAPPDATA%/CF7FlashNight/fonts/`，cfn-fonts.local 虚拟主机优先映射该目录）。本 README 是人类可读说明，新增/修改字体时**两处都要改**。
+字体清单的当前权威源是 [`font-pack-manifest.json`](font-pack-manifest.json)（FontPackTask 按需下载到 `%LOCALAPPDATA%/CF7FlashNight/fonts/`，cfn-fonts.local 虚拟主机优先映射该目录）。本 README 是人类可读说明；新增/修改字体时必须同步 manifest、实际 `@font-face` / role 声明和本文，并复核依赖字体清单的 production closure。
+
+根 `fonts/`、XML 真源、语义角色与 `fontctl` CLI 的目标架构见 [`C# / Web 字体资产目录、语义角色解析与低负担创作工作流 ADR`](../../../../docs/字体资产目录与语义角色解析-ADR-2026-08-20.md)。该 ADR 当前为 `PROPOSED / PILOT_REQUIRED / NOT_IMPLEMENTED`；在正式 cutover 前，本目录和现有 manifest 仍是当前实现真相。目标架构只收口 C# / Web runtime；Flash / FLA / XFL 作者字体保持 legacy 且不进入本轮目录、工具或 Gate。
 
 ## 字体矩阵
 
@@ -23,11 +25,11 @@
 | `source-han-serif-cn-regular.otf` | Source Han Serif CN Regular（思源宋体） | dossier / 官方资料集 / Native HUD 常用中文 / `--intel-font-archive` | 11.1 MB | SIL OFL 1.1 | `expressive-archive` |
 | `source-han-serif-cn-heavy.otf` | Source Han Serif CN Heavy（思源宋体重黑） | 任务面板标题字重（对齐 Flash 原版任务栏内嵌 Heavy）；`@font-face` 在 `css/task_panel.css`（面板自包含，不进 panels.css） | 11.9 MB | SIL OFL 1.1 | `expressive-archive-heavy` |
 
-**Group 总量**：essential 92 KB（shipped）+ expressive 24.5 MB + expressive-handwriting 53.6 MB（猫啃 6.1 + 清松1 8.5 + 清松7 8.8 + 清松8 7.7 + 4 旧字 22.5）+ expressive-archive 11.1 MB + expressive-archive-heavy 11.9 MB ≈ **101 MB 全矩阵**
+**Group 总量**：essential 92 KB（shipped）+ expressive 24.48 MiB + expressive-handwriting 66.72 MiB + expressive-archive 11.09 MiB + expressive-archive-heavy 11.31 MiB = **113.69 MiB 全矩阵**（以 manifest 的逐文件 `bytes` 求和；各 group 现有 `totalBytes=0`，运行时自行重算）。
 
 ## CSS 角色绑定
 
-`panels.css` 顶部声明了一组字体角色变量，使用方在 .intel-* 选择器里 `font-family: var(--intel-font-X)` 引用即可。变量内置完整 fallback 链，未安装时自动落回系统字体（STKaiti / SimSun / Consolas）。
+`panels/foundation-top.css` 声明了一组字体角色变量，使用方在 `.intel-*` 选择器里 `font-family: var(--intel-font-X)` 引用即可。变量内置完整 fallback 链，未安装时自动落回系统字体（STKaiti / SimSun / Consolas）。
 
 ```css
 --intel-font-body:     'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', serif;
@@ -43,7 +45,7 @@
 --intel-font-mono:     'JetBrains Mono', Consolas, 'Courier New', monospace;
 ```
 
-绑定到具体 skin / block 的工作（"字体角色绑定"）单列任务，本次只完成**矩阵储备**：manifest 注册 + @font-face 声明 + 变量声明。
+字体角色已在情报 skin / block 中局部使用，但尚未覆盖 Web CSS、Canvas / 动态 SVG、C# 与数据 `FONT FACE` 的全部消费者；当前变量不是项目级完整字体注册表。全面收口范围与 Gate 以字体 ADR 为准。
 
 ### 三档差异化人设手写体（2026-05-05 落地）
 
@@ -97,7 +99,7 @@ pyftsubset launcher/web/assets/fonts/lxgw-wenkai-screen.ttf \
 - 衬线路径：`'Source Han Serif CN' → 'Noto Serif CJK SC' → 'SimSun' → '宋体' → 'serif'`
 - Native HUD：FontPack AppData OTF → 系统 Source Han / Noto Serif → SimSun → Microsoft YaHei；不读取 `闪7重置版字体`（该目录仅服务 Flash CS6/FLa 编辑）。
 - 标题手写：`'Ma Shan Zheng' → 'Zhi Mang Xing' → 'STKaiti' → ...`
-- 批注手写：`'Klee One' → 'LXGW WenKai Screen' → 'STKaiti' → ...`
+- 批注手写：`'MaokenYingBiKaiShuJ' → 'LXGW WenKai Screen' → 'STKaiti' → ...`
 - 戏剧草书：`'Liu Jian Mao Cao' → 'Ma Shan Zheng' → 'STKaiti' → ...`
 
 ## 何时该考虑把字体打包进发行版
@@ -110,6 +112,6 @@ pyftsubset launcher/web/assets/fonts/lxgw-wenkai-screen.ttf \
 
 1. 下载字体到本地，`sha256sum` 计算 SHA256（小写）+ 记录 byte 大小
 2. `font-pack-manifest.json` 加 group/file 条目（urls 多镜像优先）
-3. `panels.css` 加 `@font-face`（src 走 `https://cfn-fonts.local/<name>`）
+3. 在实际消费的 stylesheet 加 `@font-face`（情报走 `panels/foundation-top.css`，任务 Heavy 走 `task_panel.css`；src 使用 `https://cfn-fonts.local/<name>`）
 4. 必要时新增 `--intel-font-<role>` 变量并补 fallback 链
 5. 更新本 README 表格 + fallback 链段落
