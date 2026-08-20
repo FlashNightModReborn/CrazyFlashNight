@@ -7,6 +7,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.UnitComponent.Aggro.SilenceStrategyFactory;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
+import org.flashNight.arki.component.StatHandler.DodgeHandler;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.gesh.object.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
@@ -616,6 +617,23 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         // 计算击倒率（使用统一的武器冲击力计算函数）
         bulletProps.击倒率 = calculateWeaponImpact(parentRef, weaponType, wd.击倒率, weaponTypeTag);
+
+        // 子弹固化实际发射武器的命中率，避免双枪两手都回退到单位最后一次写入的
+        // generic 命中率。基础加成来自非武器装备，手枪/手枪2加成分别独立投影。
+        var baseAccuracy:Number = Number(parentRef.基础命中率);
+        if (baseAccuracy > 0 && isFinite(baseAccuracy)) {
+            var baseAccuracyBonus:Number = Number(parentRef.基础命中加成);
+            if (!isFinite(baseAccuracyBonus)) baseAccuracyBonus = 0;
+            var weaponAccuracyBonus:Number = Number(parentRef[weaponType + "命中加成"]);
+            if (!isFinite(weaponAccuracyBonus)) weaponAccuracyBonus = 0;
+            bulletProps.命中率 = Math.max(
+                baseAccuracy * (1 + (baseAccuracyBonus + weaponAccuracyBonus) / 100),
+                DodgeHandler.HIT_RATE_LIMIT
+            );
+        } else if (isFinite(Number(parentRef.命中率))) {
+            // 非纸娃娃旧单位没有基底字段时保持 legacy generic 回退。
+            bulletProps.命中率 = Number(parentRef.命中率);
+        }
 
         // 处理动态参数：伤害类型、魔法伤害属性、毒、吸血、击溃（击溃对应 bulletProps.血量上限击溃）
         var optionalKeys:Array = ["伤害类型", "魔法伤害属性", "毒", "吸血", "击溃"];

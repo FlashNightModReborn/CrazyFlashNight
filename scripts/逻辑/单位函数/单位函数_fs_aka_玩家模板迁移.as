@@ -158,6 +158,24 @@ _root.刷新人物装扮 = function(目标) {
     目标人物.hasDressup = true;
     目标人物.enableShoot = true;
 
+    // 全量重建会有意替换 dispatcher / BuffManager；这里只携带不应被装备刷新治愈或重置的
+    // 小型运行态包。HP/MP 保存比例而非绝对值，防止反复换装凭空补血，同时保留合法溢出。
+    var 旧hp:Number = Number(目标人物.hp);
+    var 旧hp满血值:Number = Number(目标人物.hp满血值);
+    var 保留hp比例:Boolean = isFinite(旧hp) && isFinite(旧hp满血值) && 旧hp满血值 > 0;
+    var hp比例:Number = 保留hp比例 ? Math.max(旧hp, 0) / 旧hp满血值 : 0;
+    var 旧mp:Number = Number(目标人物.mp);
+    var 旧mp满血值:Number = Number(目标人物.mp满血值);
+    var 保留mp比例:Boolean = isFinite(旧mp) && isFinite(旧mp满血值) && 旧mp满血值 > 0;
+    var mp比例:Number = 保留mp比例 ? Math.max(旧mp, 0) / 旧mp满血值 : 0;
+
+    var 战斗损伤:Number = Number(目标人物.hp满血值战斗损伤);
+    if (!isFinite(战斗损伤) || 战斗损伤 < 0) 战斗损伤 = 0;
+    var 旧剩余冲击力:Number = Number(目标人物.remainingImpactForce);
+    var 保留剩余冲击力:Boolean = isFinite(旧剩余冲击力) && 旧剩余冲击力 >= 0;
+    var 旧受击时间:Number = Number(目标人物.lastHitTime);
+    var 保留受击时间:Boolean = isFinite(旧受击时间);
+
     if (!目标人物.新版人物文字信息) {
         目标人物.新版人物文字信息 = 目标人物.人物文字信息;
         目标人物.新版人物文字信息._name = "新版人物文字信息";
@@ -169,15 +187,30 @@ _root.刷新人物装扮 = function(目标) {
 
     StaticInitializer.initializeUnit(目标人物); // 包含了整理后的刷新装扮函数
 
-    //佣兵战力强化修正                                                                                                              
-    if (目标人物.是否为敌人 == false && _root.控制目标 != 目标) {
-        目标人物.mp满血值 /= 10;
-        目标人物.mp = Math.min(目标人物.mp, 目标人物.mp满血值);
-    }
-
     目标人物.读取基础被动效果();
     目标人物.buff.初始();
     目标人物.buff.更新();
+
+    // 击溃是战斗运行态损伤：先完成装备、角色系数、被动与 legacy buff 的最大值重建，
+    // 再扣除累计绝对损伤。低 HP 装备触底时不吞掉损伤，未来换回高 HP 装备仍需承担。
+    目标人物.hp满血值战斗损伤 = 战斗损伤;
+    if (战斗损伤 > 0 && isFinite(Number(目标人物.hp满血值))) {
+        目标人物.hp满血值 = Math.max(
+            org.flashNight.arki.component.Damage.CrumbleDamageHandle.MIN_MAX_HP,
+            目标人物.hp满血值 - 战斗损伤
+        );
+    }
+
+    if (保留hp比例 && isFinite(Number(目标人物.hp满血值)) && 目标人物.hp满血值 > 0) {
+        目标人物.hp = 目标人物.hp满血值 * hp比例;
+    }
+    if (保留mp比例 && isFinite(Number(目标人物.mp满血值)) && 目标人物.mp满血值 > 0) {
+        目标人物.mp = 目标人物.mp满血值 * mp比例;
+    }
+    if (保留剩余冲击力) 目标人物.remainingImpactForce = 旧剩余冲击力;
+    if (保留受击时间) 目标人物.lastHitTime = 旧受击时间;
+    org.flashNight.arki.component.StatHandler.ImpactHandler.refreshImpactDerived(目标人物);
+
     if (目标人物.变形手枪) {
         目标人物.变形手枪.切换武器形态为当前模式();
     }
@@ -659,14 +692,11 @@ _root.主角函数.根据等级初始数值 = function(等级值) {
     this.mp基本满血值 = _root.根据等级计算值(this.mp_min, this.mp_max, 等级值);
     this.hp满血值 = this.hp基本满血值 + this.hp满血值装备加层;
     this.mp满血值 = this.mp基本满血值 + this.mp满血值装备加层;
-    if (this.是否为敌人 == false && _root.控制目标 != this._name) {
-        this.hp满血值 *= 3;
-        this.mp满血值 /= 10;
-    }
     this.空手攻击力 = _root.根据等级计算值(this.空手攻击力_min, this.空手攻击力_max, 等级值);
     this.基本防御力 = _root.根据等级计算值(this.基本防御力_min, this.基本防御力_max, 等级值);
     this.防御力 = this.基本防御力 + this.装备防御力;
     this.躲闪率 = _root.根据等级计算值(this.躲闪率_min, this.躲闪率_max, 等级值, true, true); // 允许小数，且在60级后不再增长防止出现小于1的躲闪率
+    this.基础躲闪率 = this.躲闪率;
     _root.刷新人物装扮(this._name);
 };
 
@@ -2126,7 +2156,8 @@ _root.初始化玩家模板 = function() {
     重量 = 0;
     基础命中率 = 10;
     命中率 = 基础命中率;
-    韧性系数 = 1;
+    基础韧性系数 = 1;
+    韧性系数 = 基础韧性系数;
     血包数量 = 3;
     血包使用间隔 = 8 * _root.帧计时器.帧率;
     血包恢复比例 = 33;
@@ -2689,7 +2720,8 @@ _root.初始化佣兵NPC模板 = function() {
     重量 = 0;
     基础命中率 = 10;
     命中率 = 基础命中率;
-    韧性系数 = 1;
+    基础韧性系数 = 1;
+    韧性系数 = 基础韧性系数;
 
     操控编号 = -1;
 

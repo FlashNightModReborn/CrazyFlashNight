@@ -148,11 +148,16 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
         var impactForceSnapshot:Number = hitTarget.remainingImpactForce;
         var impactCapSnapshot:Number = hitTarget.韧性上限;
         var impactStaggerSnapshot:Number = hitTarget.impactStaggerBoundary;
+        var actualHit:Boolean = DamageResult.hasActualHit(damageResult);
 
         // 若目标既不处于浮空也不处于倒地状态，执行常规冲击处理
         if (!(hitTarget.浮空 || hitTarget.倒地)) {
         // if (hitTarget.状态 !== "击倒" || hitTarget.状态 !== "倒地") {
-            ImpactHandler.settleImpactForce(hitTarget.损伤值, bullet.击倒率, hitTarget);
+            // 普通 MISS 与联弹全段 MISS 都不能消费旧的损伤值并累计冲击。
+            // 零伤害但真实命中的击倒率 0 仍保留“必破韧”语义。
+            if (actualHit) {
+                ImpactHandler.settleImpactForce(hitTarget.损伤值, bullet.击倒率, hitTarget);
+            }
             impactForceSnapshot = hitTarget.remainingImpactForce;
             impactCapSnapshot = hitTarget.韧性上限;
             impactStaggerSnapshot = hitTarget.impactStaggerBoundary;
@@ -165,7 +170,7 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
                 if (!bloodEnabled) {
                     queueKnockdownDiagnostic(hitTarget, bullet, damageResult, hitDirection, isRigid, impactReason);
                 }
-            } else if (damageResult.dodgeStatus == "躲闪") {
+            } else if (!actualHit) {
                 // 目标成功躲闪，执行被击移动效果
                 impactReason = "DODGE";
                 hitTarget.被击移动(hitDirection, bullet.水平击退速度, 3);

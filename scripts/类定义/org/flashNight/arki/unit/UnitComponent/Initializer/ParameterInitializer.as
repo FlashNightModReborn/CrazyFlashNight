@@ -7,9 +7,18 @@
         var currentFrame:Number = _root.帧计时器.当前帧数;
 
         if (isNaN(target.重量)) target.重量 = 60;
-        if (isNaN(target.韧性系数)) target.韧性系数 = 1;
+
+        // 装备刷新只能从稳定基底重建派生值，不能把上一次派生结果再次当作基底。
+        // 旧单位只带 live 字段时在首次初始化捕获一次，之后由模板/等级初始化维护基底。
+        if (!isFinite(Number(target.基础韧性系数))) {
+            target.基础韧性系数 = isFinite(Number(target.韧性系数)) ? Number(target.韧性系数) : 1;
+        }
+        if (!isFinite(Number(target.韧性系数))) target.韧性系数 = target.基础韧性系数;
         if (isNaN(target.命中率)) target.命中率 = 10;
-        if (isNaN(target.躲闪率)) target.躲闪率 = 999;
+        if (!isFinite(Number(target.基础躲闪率))) {
+            target.基础躲闪率 = isFinite(Number(target.躲闪率)) ? Number(target.躲闪率) : 999;
+        }
+        if (!isFinite(Number(target.躲闪率))) target.躲闪率 = target.基础躲闪率;
         if (isNaN(target.等级)) target.等级 = 1;
 
         // 承伤系数：用于统一控制目标受到伤害的倍率
@@ -25,6 +34,9 @@
 
         if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;
         if (isNaN(target.lastHitTime)) target.lastHitTime = currentFrame;
+        if (!isFinite(Number(target.hp满血值战斗损伤)) || target.hp满血值战斗损伤 < 0) {
+            target.hp满血值战斗损伤 = 0;
+        }
 
         if(isNaN(target.threat)) target.threat = 10;
         if(isNaN(target.threatThreshold)) target.threatThreshold = 5;

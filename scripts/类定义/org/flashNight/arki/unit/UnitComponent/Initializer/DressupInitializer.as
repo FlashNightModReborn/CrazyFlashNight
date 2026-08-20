@@ -336,13 +336,20 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         target.hp满血值 = target.hp基本满血值 + target.hp满血值装备加层;
         target.mp满血值 = target.mp基本满血值 + target.mp满血值装备加层;
+
+        // 佣兵系数属于装备投影的一部分，必须在每次全量重建时从基础值一次性计算。
+        // 放在调用侧追加会导致首刷与换装结果分叉（历史上 HP×3 丢失而 MP/10 重复补丁）。
+        if (target.是否为敌人 == false && _root.控制目标 != target._name) {
+            target.hp满血值 *= 3;
+            target.mp满血值 /= 10;
+        }
         
         target.防御力 = target.基本防御力 + target.装备防御力;
 
         target.命中率 = Math.max(target.基础命中率 * (1 + target.命中加成 / 100), DodgeHandler.HIT_RATE_LIMIT);
-        target.韧性系数 = target.韧性系数 * (1 + target.韧性加成 / 100);
+        target.韧性系数 = target.基础韧性系数 * (1 + target.韧性加成 / 100);
 
-        target.躲闪率 = DodgeHandler.applyDodgeBonus(target.躲闪率, target.闪避加成);
+        target.躲闪率 = DodgeHandler.applyDodgeBonus(target.基础躲闪率, target.闪避加成);
         if (target.懒闪避 > 0.95) {
             target.懒闪避 = 0.95;
         }

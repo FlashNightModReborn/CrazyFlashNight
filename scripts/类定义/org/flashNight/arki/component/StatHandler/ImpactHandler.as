@@ -11,6 +11,84 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
     public static var IMPACT_DECAY_DFRAME:Number = IMPACT_DECAY_FRAME * 2; // 衰减最大帧数（两倍衰减时间）
 
     /**
+     * 韧性上限的唯一公式入口。
+     * 防御按伤害链实际使用的完整数值参与计算，保证战斗、头顶条与个人信息面板一致。
+     */
+    public static function calculateImpactCap(target:Object):Number {
+        if (!target) return 0;
+
+        var toughness:Number = Number(target.韧性系数);
+        var hp:Number = Number(target.hp);
+        var defense:Number = Number(target.防御力);
+        if (!isFinite(toughness) || toughness < 0) toughness = 0;
+        if (!isFinite(hp) || hp <= 0) return 0;
+        // DamageCalculator 在实际承伤前会把非正防御归一到 1；这里沿用同一边界，
+        // 避免个人信息/头顶条在异常配置下先显示另一套韧性上限。
+        if (!(defense > 0) || !isFinite(defense)) defense = 1;
+
+        var damageRatio:Number = DamageResistanceHandler.defenseDamageRatio(defense);
+        if (!(damageRatio > 0) || !isFinite(damageRatio)) return 0;
+
+        var cap:Number = toughness * hp / damageRatio;
+        return (cap > 0 && isFinite(cap)) ? cap : 0;
+    }
+
+    private static function calculateStaggerFromCap(target:Object, cap:Number):Number {
+        if (!(cap > 0)) return 0;
+
+        var dodgeRate:Number = Number(target.躲闪率);
+        if (!(dodgeRate > 0) || !isFinite(dodgeRate)) {
+            dodgeRate = DodgeHandler.DODGE_RATE_LIMIT;
+        }
+        return cap / IMPACT_STAGGER_COEFFICIENT / dodgeRate;
+    }
+
+    /** 由同一韧性上限与反向躲闪参数计算踉跄阈值。 */
+    public static function calculateImpactStaggerBoundary(target:Object):Number {
+        return calculateStaggerFromCap(target, calculateImpactCap(target));
+    }
+
+    /**
+     * 从当前权威属性与冲击残量重建派生字段，不推进时间也不触发状态改变。
+     * 换装降低上限时仅把显示夹到 0；下一次真实命中仍由 ImpactStateHandler 判定破韧。
+     */
+    public static function refreshImpactDerived(target:Object):Void {
+        if (!target) return;
+
+        var cap:Number = calculateImpactCap(target);
+        var remaining:Number = Number(target.remainingImpactForce);
+        if (!isFinite(remaining)) {
+            remaining = remaining > 0 ? cap + 1 : 0;
+        } else if (remaining < 0) {
+            remaining = 0;
+        }
+
+        target.remainingImpactForce = remaining;
+        target.韧性上限 = cap;
+        target.impactStaggerBoundary = calculateStaggerFromCap(target, cap);
+
+        if (cap > 0) {
+            var loadRatio:Number = remaining / cap;
+            if (loadRatio < 0) loadRatio = 0;
+            else if (loadRatio > 1) loadRatio = 1;
+            target.nonlinearMappingResilience = 1 - Math.sqrt(loadRatio);
+        } else {
+            target.nonlinearMappingResilience = 0;
+        }
+    }
+
+    private static function applyImpactDecay(target:Object, intervalFrames:Number):Void {
+        if (!(intervalFrames > IMPACT_DECAY_FRAME)) return;
+
+        if (intervalFrames >= IMPACT_DECAY_DFRAME) {
+            target.remainingImpactForce = 0;
+        } else {
+            var decayFactor:Number = (IMPACT_DECAY_DFRAME - intervalFrames) / IMPACT_DECAY_DFRAME;
+            target.remainingImpactForce *= decayFactor;
+        }
+    }
+
+    /**
      * 结算冲击力
      * -----------------------------
      * 根据伤害值和击倒率计算冲击力，并累加到目标的剩余冲击力中。
@@ -29,15 +107,31 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
      *        - 韧性上限（目标的冲击韧性上限）
      */
     public static function settleImpactForce(damage:Number, knockRate:Number, target:Object):Void {
+        var remaining:Number = Number(target.remainingImpactForce);
+        if (!isFinite(remaining) || remaining < 0) remaining = 0;
+
         // 若击倒率为0或无效，直接设置冲击力超出韧性上限
-        if (knockRate == 0 || !isFinite(knockRate)) {
-            target.remainingImpactForce = target.韧性上限 + 1;
+        if (!(knockRate > 0) || !isFinite(knockRate)) {
+            var cap:Number = Number(target.韧性上限);
+            if (!isFinite(cap) || cap < 0) cap = calculateImpactCap(target);
+            target.remainingImpactForce = cap + 1;
+            return;
+        }
+
+        if (!(damage > 0) || !isFinite(damage)) {
+            target.remainingImpactForce = remaining;
             return;
         }
 
         // 计算冲击力，并累加到目标的剩余冲击力中
         var impactForce:Number = damage * IMPACT_COEFFICIENT / knockRate;
-        target.remainingImpactForce += impactForce;
+        if (isFinite(impactForce)) {
+            target.remainingImpactForce = remaining + impactForce;
+        } else {
+            var overflowCap:Number = Number(target.韧性上限);
+            if (!isFinite(overflowCap) || overflowCap < 0) overflowCap = calculateImpactCap(target);
+            target.remainingImpactForce = overflowCap + 1;
+        }
     }
 
     /**
@@ -66,31 +160,20 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
      *        - hp（当前生命值）
      *        - 防御力
      */
-    public static function refreshImpactForce(target:Object):Void {
+    public static function refreshImpactForce(target:Object, actualHit:Boolean):Void {
         // 获取当前帧数（假设全局有帧计时器）
         var currentFrame:Number = _root.帧计时器.当前帧数;
 
-        // 计算韧性上限：考虑生命值、韧性系数及防御力影响
-        // target.韧性上限 = target.韧性系数 * target.hp / DamageResistanceHandler.defenseDamageRatio(target.防御力);
-
         // 计算自上次受击以来的帧数间隔
         var intervalFrames:Number = currentFrame - target.lastHitTime;
+        applyImpactDecay(target, intervalFrames);
 
-        // 当间隔超过衰减起始帧数时，进行冲击力衰减处理
-        if (intervalFrames > IMPACT_DECAY_FRAME) {
-            // 如果间隔帧数达到或超过最大衰减帧数，则直接将剩余冲击力归零
-            if (intervalFrames >= IMPACT_DECAY_DFRAME) {
-                target.remainingImpactForce = 0;
-            } else {
-                // 否则，intervalFrames < IMPACT_DECAY_DFRAME，系数必然位于(0,1)之间
-                var decayFactor:Number = (IMPACT_DECAY_DFRAME - intervalFrames) / IMPACT_DECAY_DFRAME;
-                // 直接乘以衰减系数即可，无需额外判断负值
-                target.remainingImpactForce *= decayFactor;
-            }
-        }
+        // HitUpdater 在伤害结算后调用本方法，因此本次命中使用扣血后的 HP 上限。
+        refreshImpactDerived(target);
 
-        // 更新目标的上次受击帧数为当前帧数
-        target.lastHitTime = currentFrame;
+        // 只有真实命中才开启新的冲击残留窗口。MISS 只允许把既有残量衰减到当前帧，
+        // 不得靠连续擦碰无限延后衰减。
+        if (actualHit !== false) target.lastHitTime = currentFrame;
     }
 
     /**
@@ -113,20 +196,8 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
         // 获取当前帧数
         var currentFrame:Number = _root.帧计时器.当前帧数;
         var intervalFrames:Number = currentFrame - target.lastHitTime;
-        target.韧性上限 = target.韧性系数 * target.hp / DamageResistanceHandler.defenseDamageRatio(target.防御力);
-        target.nonlinearMappingResilience = (1 - Math.sqrt(target.remainingImpactForce / target.韧性上限));
-        target.impactStaggerBoundary = target.韧性上限 / IMPACT_STAGGER_COEFFICIENT / target.躲闪率;
-
-        // 当间隔超过衰减起始帧数时，开始计算衰减
-        if (intervalFrames > IMPACT_DECAY_FRAME) {
-            // 当间隔达到或超过最大衰减帧数时，直接归零
-            if (intervalFrames >= IMPACT_DECAY_DFRAME) {
-                target.remainingImpactForce = 0;
-            } else {
-                // 否则，intervalFrames < IMPACT_DECAY_DFRAME，衰减系数必定位于(0,1)
-                var decayFactor:Number = (IMPACT_DECAY_DFRAME - intervalFrames) / IMPACT_DECAY_DFRAME;
-                target.remainingImpactForce *= decayFactor;
-            }
-        }
+        applyImpactDecay(target, intervalFrames);
+        // 先衰减再更新派生显示，避免头顶韧性条永远慢一帧。
+        refreshImpactDerived(target);
     }
 }

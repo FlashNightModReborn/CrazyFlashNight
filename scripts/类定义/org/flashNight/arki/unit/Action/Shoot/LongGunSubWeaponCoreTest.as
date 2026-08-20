@@ -37,6 +37,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testImpactZeroPreservesForcedKnockdown();
         testImpactChainAddsEquipmentGunpowerAfterShotgunMultiplier();
         testEquipmentGunpowerRequiresImpactChain();
+        testWeaponSpecificAccuracyProjection();
         testConfigureUnitRestoresStoredReloadCount();
         testDirtyRefreshUpdatesRuntimeBridgeFields();
         testPrepareManBulletPropsRefreshesRuntimeStatsBySignature();
@@ -157,6 +158,41 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         assert(ok, "configureUnit accepts subweapon without impact chain");
         assert(unit.副武器子弹威力 == 1000, "equipment gunpower does not affect subweapon without impact chain");
+    }
+
+    private static function testWeaponSpecificAccuracyProjection():Void {
+        var unit:Object = {
+            _name:"accuracyFixture",
+            是否为敌人:false,
+            被动技能:{},
+            基础命中率:10,
+            基础命中加成:20,
+            手枪命中加成:30,
+            手枪2命中加成:-10,
+            手枪数据:{weapontype:"手枪"},
+            手枪2数据:{weapontype:"手枪"}
+        };
+        var weaponData:Array = [];
+        weaponData.split = 1;
+        weaponData.diffusion = 0;
+        weaponData.sound = "";
+        weaponData.muzzle = "";
+        weaponData.bullet = "普通子弹";
+        weaponData.velocity = 10;
+        weaponData.bullethit = "";
+        weaponData.power = 100;
+        weaponData.bulletsize = 10;
+        weaponData.impact = 50;
+        weaponData.targethit = "";
+
+        var mainProps:Object = ShootInitCore.generateBulletProps(
+            unit, "手枪", weaponData, {});
+        var subProps:Object = ShootInitCore.generateBulletProps(
+            unit, "手枪2", weaponData, {});
+        assert(Math.abs(mainProps.命中率 - 15) < 0.0001,
+            "main-hand bullet projects base plus main-hand accuracy");
+        assert(Math.abs(subProps.命中率 - 11) < 0.0001,
+            "off-hand bullet projects base plus off-hand accuracy independently");
     }
 
     private static function testConfigureUnitRestoresStoredReloadCount():Void {

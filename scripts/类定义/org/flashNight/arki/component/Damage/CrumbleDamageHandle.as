@@ -97,6 +97,12 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
             // 将击溃伤害添加到子弹的额外效果伤害中
             bullet.additionalEffectDamage += crumbleAmount;
 
+            // 记录本次实际生效的绝对损伤，供装备全量重建后重新投影。
+            // 该字段只在战斗运行态携带；触底时不丢弃累计值，避免换低 HP 装备洗掉击溃。
+            var carriedLoss:Number = Number(target.hp满血值战斗损伤);
+            if (!isFinite(carriedLoss) || carriedLoss < 0) carriedLoss = 0;
+            target.hp满血值战斗损伤 = carriedLoss + crumbleAmount;
+
             // 减少满血值并增加损伤值
             target.hp满血值 -= crumbleAmount;
             target.损伤值 += crumbleAmount;

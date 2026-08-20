@@ -1,4 +1,8 @@
 ﻿
+import org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+import org.flashNight.arki.component.StatHandler.ImpactHandler;
+import org.flashNight.arki.component.StatHandler.DamageResistanceHandler;
+
 /** PlayerInfoProvider 结构化 snapshot 与 legacy renderer 回归。 */
 class org.flashNight.arki.unit.PlayerInfoProviderTest {
     private static var _passed:Number = 0;
@@ -18,6 +22,8 @@ class org.flashNight.arki.unit.PlayerInfoProviderTest {
         trace("=== PlayerInfoProviderTest start ===");
 
         installFixture();
+        testTenacityFormulaAndDerivedState();
+        testDressupProjectionIsIdempotent();
         testStructuredShapeOrderAndRawValues();
         testStyledTitleProjection();
         testLegacyRendererParity();
@@ -122,6 +128,112 @@ class org.flashNight.arki.unit.PlayerInfoProviderTest {
         target.负重滑块 = {};
         if (sentinel !== undefined) target.sentinel = sentinel;
         return target;
+    }
+
+    private static function testTenacityFormulaAndDerivedState():Void {
+        var expectedCap:Number = _hero.韧性系数 * _hero.hp
+            / DamageResistanceHandler.defenseDamageRatio(_hero.防御力);
+        var observedCap:Number = org.flashNight.arki.unit.PlayerInfoProvider
+            .getTenacityLimitValue(_hero);
+        var expectedStagger:Number = expectedCap / 2 / _hero.躲闪率;
+
+        _hero.remainingImpactForce = expectedCap / 4;
+        ImpactHandler.refreshImpactDerived(_hero);
+        check(Math.abs(observedCap - expectedCap) < 0.0001
+                && Math.abs(_hero.韧性上限 - expectedCap) < 0.0001,
+            "个人信息与战斗使用完整防御力及同一韧性上限公式");
+        check(Math.abs(org.flashNight.arki.unit.PlayerInfoProvider
+                    .getStaggerTenacityValue(_hero) - expectedStagger) < 0.0001
+                && Math.abs(_hero.impactStaggerBoundary - expectedStagger) < 0.0001
+                && Math.abs(_hero.nonlinearMappingResilience - 0.5) < 0.0001,
+            "踉跄阈值与韧性条派生字段共享当前权威属性");
+
+        _hero.remainingImpactForce = expectedCap * 4;
+        ImpactHandler.refreshImpactDerived(_hero);
+        check(_hero.nonlinearMappingResilience == 0,
+            "冲击残量越过上限时韧性条夹到零而不产生 NaN/负宽度");
+        _hero.remainingImpactForce = 0;
+        ImpactHandler.refreshImpactDerived(_hero);
+
+        var originalDefense:Number = _hero.防御力;
+        _hero.防御力 = -999;
+        var normalizedCap:Number = _hero.韧性系数 * _hero.hp
+            / DamageResistanceHandler.defenseDamageRatio(1);
+        check(Math.abs(ImpactHandler.calculateImpactCap(_hero) - normalizedCap) < 0.0001,
+            "异常非正防御与实际伤害链统一归一到1");
+        _hero.防御力 = originalDefense;
+
+        // focused TestLoader 的帧计时器外壳不接受属性写入；本用例临时替换并完整恢复。
+        var originalFrameTimer = _root.帧计时器;
+        var currentFrame:Number = 1000;
+        _root.帧计时器 = {当前帧数:currentFrame};
+        var missTarget:Object = {
+            hp:100, 防御力:300, 韧性系数:1, 躲闪率:1,
+            remainingImpactForce:50, lastHitTime:currentFrame - 300
+        };
+        ImpactHandler.refreshImpactForce(missTarget, false);
+        check(missTarget.remainingImpactForce == 0
+                && missTarget.lastHitTime == currentFrame - 300,
+            "MISS 推进既有冲击衰减但不重置残留窗口"
+                + " remaining=" + missTarget.remainingImpactForce
+                + " last=" + missTarget.lastHitTime + " current=" + currentFrame);
+
+        missTarget.remainingImpactForce = 50;
+        missTarget.lastHitTime = currentFrame - 300;
+        ImpactHandler.refreshImpactForce(missTarget, true);
+        check(missTarget.remainingImpactForce == 0
+                && missTarget.lastHitTime == currentFrame,
+            "真实命中在衰减旧残量后刷新冲击残留窗口"
+                + " remaining=" + missTarget.remainingImpactForce
+                + " last=" + missTarget.lastHitTime + " current=" + currentFrame);
+        _root.帧计时器 = originalFrameTimer;
+    }
+
+    private static function testDressupProjectionIsIdempotent():Void {
+        var target:MovieClip = _root.createEmptyMovieClip(
+            "__dressupProjectionTest", _root.getNextHighestDepth());
+        target.等级 = 50;
+        target.体重 = 70;
+        target.是否为敌人 = false;
+        target.hp基本满血值 = 1000;
+        target.mp基本满血值 = 100;
+        target.基本防御力 = 300;
+        target.基础命中率 = 10;
+        target.基础韧性系数 = 1.2;
+        target.基础躲闪率 = 5;
+        target.攻击模式 = "空手";
+        target.area = {_height:1};
+        target._yscale = 100;
+        target.根据模式重新读取武器加成 = function(mode:String):Void {};
+
+        var dataKeys:Array = [
+            "头部装备数据", "上装装备数据", "手部装备数据", "下装装备数据",
+            "脚部装备数据", "颈部装备数据", "长枪数据", "手枪数据",
+            "手枪2数据", "刀数据", "手雷数据"
+        ];
+        for (var i:Number = 0; i < dataKeys.length; i++) {
+            target[dataKeys[i]] = {data:{}};
+        }
+        target.上装装备数据 = {
+            data:{hp:100, mp:20, toughness:50, evasion:5}
+        };
+
+        DressupInitializer.updateProperties(target);
+        var firstToughness:Number = target.韧性系数;
+        var firstDodge:Number = target.躲闪率;
+        var firstHpMax:Number = target.hp满血值;
+        var firstMpMax:Number = target.mp满血值;
+        DressupInitializer.updateProperties(target);
+
+        check(Math.abs(firstToughness - 2.04) < 0.0001
+                && Math.abs(target.韧性系数 - firstToughness) < 0.0001
+                && Math.abs(firstDodge - (5 / 1.05)) < 0.0001
+                && Math.abs(target.躲闪率 - firstDodge) < 0.0001,
+            "重复装扮刷新始终从基础韧性/躲闪投影，不发生乘算漂移");
+        check(firstHpMax == 3300 && target.hp满血值 == firstHpMax
+                && firstMpMax == 12 && target.mp满血值 == firstMpMax,
+            "佣兵 HP×3 与 MP/10 在装备投影内一次性且可重复");
+        target.removeMovieClip();
     }
 
     private static function expectedKeys():Array {

@@ -274,8 +274,7 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
 
     /** 获得未经 k 单位格式化的韧性上限。 */
     public static function getTenacityLimitValue(unit:MovieClip):Number {
-        return unit.韧性系数 * unit.hp
-            / DamageResistanceHandler.defenseDamageRatio(unit.防御力 / 1000);
+        return ImpactHandler.calculateImpactCap(unit);
     }
 
     public static function getTenacityLimit(unit:MovieClip):String {
@@ -284,8 +283,7 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
 
     /** 获得未经 k 单位格式化的踉跄韧性。 */
     public static function getStaggerTenacityValue(unit:MovieClip):Number {
-        // 踉跄判定阈值 = 韧性上限 / 2 / 躲闪率
-        return getTenacityLimitValue(unit) / 2 / unit.躲闪率;
+        return ImpactHandler.calculateImpactStaggerBoundary(unit);
     }
 
     public static function getStaggerTenacity(unit:MovieClip):String {

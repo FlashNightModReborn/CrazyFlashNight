@@ -25,6 +25,7 @@ _root.敌人函数.根据等级初始数值 = function(等级值) {
     this.基本防御力 = _root.根据等级计算值(this.基本防御力_min, this.基本防御力_max, 等级值);
     this.防御力 = this.基本防御力 + this.装备防御力;
     this.躲闪率 = _root.根据等级计算值(this.躲闪率_min, this.躲闪率_max, 等级值, true, true); // 允许小数，且在60级后不再增长防止出现小于1的躲闪率
+    this.基础躲闪率 = this.躲闪率;
     if (isNaN(this.hp))
         this.hp = this.hp满血值;
 };
@@ -613,6 +614,8 @@ _root.初始化敌人模板 = function() {
         this.重量 = 敌人属性.重量;
     if (isNaN(this.韧性系数))
         this.韧性系数 = 敌人属性.韧性系数;
+    if (isNaN(this.基础韧性系数))
+        this.基础韧性系数 = this.韧性系数;
     //label
     if (!this.label)
         this.label = new Object();
