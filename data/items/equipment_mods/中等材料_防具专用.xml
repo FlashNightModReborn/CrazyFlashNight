@@ -51,6 +51,14 @@
         <tag>外覆加固</tag>
     </mod>
 
+    <!-- 韧性与粘结协同平衡备忘：
+         韧性系数 S = 1.2 + Σtoughness / 100；防御既降低扣血速率，也降低破韧输入，
+         因此橡胶的基础值需要明显高于旧值10，才有独立构筑价值。
+         单件设为 toughness50 + evasion5；粘结基底再追加40，使“背带+橡胶+强力胶”在
+         未计闪避和抗性时的代表性纯物理破韧预算，比“背带+橡胶+碳纤维”约低0.6%至1.7%，
+         保留碳纤维的综合属性优势，同时把材料放大价值留给强力胶，而不让强力胶自身提供韧性。
+         按五件橡胶、三面各50韧性枪盾计算，总韧性440、S = 5.6；少一件橡胶为390、S = 5.1，
+         用于形成全韧性路线的档位差。运行时没有统一硬阈值，仍需按敌人伤害、冲击力与攻击频率复验。 -->
     <mod>
         <name>高耐力橡胶</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
@@ -58,15 +66,25 @@
             <merge>
                 <magicdefence>
                     <冷>5</冷>
-                    <热>5</热>
                     <电>10</电>
                 </magicdefence>
             </merge>
             <flat>
-                <toughness>10</toughness>
+                <toughness>50</toughness>
+                <evasion>5</evasion>
             </flat>
+            <!-- 粘结协同使用显式固定加值；属性运算序列中 multiplier 早于 flat，
+                 不能用 toughness multiplier 放大本插件的基础50。 -->
+            <tagSwitch>
+                <tag name="粘结基底">
+                    <flat>
+                        <toughness>40</toughness>
+                    </flat>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>弹性体聚合物,提供冷热电抗性与韧性。</description>
+        <description>弹性体聚合物,提供冷电抗性、韧性与闪避。
+        在粘结基底支持下可获得额外韧性。</description>
         <tag>缓冲层</tag>
     </mod>
 
@@ -92,6 +110,7 @@
     <mod>
         <name>强力胶</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <!-- 空手加成为已确认的有意设计，强力胶本体不提供韧性；冲击抗性与空手加成承担独立收益，粘结基底由适配材料显式消费。 -->
         <stats>
             <merge>
                 <magicdefence>
@@ -102,8 +121,10 @@
                 <punch>6</punch>
             </percentage>
         </stats>
-        <description>高分子粘结剂,提供冲击抗性与韧性。</description>
-        <tag>缓冲层</tag>
+        <provideTags>粘结基底</provideTags>
+        <description>高分子粘结剂,提供冲击抗性并强化空手打击。
+        作为粘结基底,可增强同件防具上适配材料的性能。</description>
+        <tag>粘结层</tag>
     </mod>
 
     <mod>
