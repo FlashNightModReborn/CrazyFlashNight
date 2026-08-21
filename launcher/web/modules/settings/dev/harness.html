@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Settings Web Panel Harness</title>
+  <link rel="stylesheet" href="/launcher/web/css/panels.css">
+  <link rel="stylesheet" href="/launcher/web/css/settings-panel.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050807;color:#eaf4ee}
+    #harness-tools{position:fixed;z-index:1000;right:8px;top:8px;display:flex;gap:5px;padding:6px;border:1px solid #48685a;border-radius:6px;background:#09120fee;font:11px/1.2 "Microsoft YaHei UI",sans-serif}
+    #harness-tools button{padding:5px 8px;border:1px solid #527864;border-radius:4px;color:#dff4e8;background:#173326;cursor:pointer}
+    #harness-log{position:fixed;z-index:999;right:8px;bottom:8px;width:420px;max-height:120px;overflow:auto;margin:0;padding:7px;border:1px solid #354d42;border-radius:5px;background:#050b09e8;color:#8fb8a1;font:10px/1.3 Consolas,monospace;white-space:pre-wrap;pointer-events:none}
+  </style>
+</head>
+<body>
+<div id="panel-container" data-panel="settings">
+  <div id="panel-backdrop"></div>
+  <div id="panel-content"></div>
+</div>
+<div id="panel-tooltip" aria-hidden="true"></div>
+<div id="harness-tools">
+  <button id="toggle-mode" type="button">切到挑战模式</button>
+  <button id="toggle-save" type="button">模拟保存失败</button>
+  <button id="toggle-revive" type="button">复活入口：可用</button>
+  <button id="reopen" type="button">重新打开</button>
+</div>
+<pre id="harness-log">Settings harness ready.</pre>
+<script>
+(function(){
+  'use strict';
+  var ids=[
+    '上键','下键','左键','右键','A键','B键','C键','键1','键2','键3','键4','键5',
+    '快捷物品栏键1','快捷物品栏键2','快捷物品栏键3','快捷物品栏键4',
+    '快捷技能栏键1','快捷技能栏键2','快捷技能栏键3','快捷技能栏键4',
+    '快捷技能栏键5','快捷技能栏键6','快捷技能栏键7','快捷技能栏键8',
+    '快捷技能栏键9','快捷技能栏键10','快捷技能栏键11','快捷技能栏键12',
+    '切换武器键','互动键','武器技能键','飞行键','武器变形键','奔跑键','组合键'
+  ];
+  var codes=[87,83,65,68,74,75,82,49,50,51,52,53,55,56,57,48,32,85,73,79,80,76,72,71,67,66,78,77,191,69,70,18,81,16,17];
+  var keyNames={8:'Backspace',9:'Tab',13:'Enter',16:'Shift',17:'Control',18:'Alt',32:'Spacebar',37:'左方向键',38:'上方向键',39:'右方向键',40:'下方向键'};
+  for(var digit=48;digit<=57;digit++)keyNames[digit]=String.fromCharCode(digit);
+  for(var letter=65;letter<=90;letter++)keyNames[letter]=String.fromCharCode(letter);
+  keyNames[191]='/?';
+  var allowed=Object.keys(keyNames).map(function(code){return{code:Number(code),name:keyNames[code]}});
+  var handlers={},sent=[],durable=true,previewBaseline=null;
+  function buildEntryPreview(){
+    var canvas=document.createElement('canvas');canvas.width=1024;canvas.height=576;
+    var ctx=canvas.getContext('2d');ctx.scale(2,2);
+    var sky=ctx.createLinearGradient(0,0,0,288);
+    sky.addColorStop(0,'#425f77');sky.addColorStop(.56,'#182839');sky.addColorStop(1,'#111116');
+    ctx.fillStyle=sky;ctx.fillRect(0,0,512,288);
+    ctx.fillStyle='#293128';ctx.fillRect(0,188,512,100);
+    ctx.fillStyle='#0d1116';ctx.fillRect(0,232,512,56);
+    ctx.fillStyle='#d2a45f';ctx.fillRect(48,122,118,66);ctx.fillStyle='#69452e';ctx.fillRect(63,138,89,50);
+    ctx.fillStyle='#5f7882';ctx.fillRect(318,92,146,96);ctx.fillStyle='#24343c';ctx.fillRect(335,112,112,76);
+    ctx.fillStyle='#d7d9c4';ctx.fillRect(242,145,18,52);ctx.fillStyle='#2b3137';ctx.fillRect(236,179,30,28);
+    ctx.fillStyle='#f0a43a';ctx.fillRect(18,18,178,5);ctx.font='14px Consolas';ctx.fillText('ENTRY FLASH SNAPSHOT',18,43);
+    return{v:1,source:'entry_flash_snapshot',width:1024,height:576,dataUrl:canvas.toDataURL('image/jpeg',.9)}
+  }
+  var flashPreview=buildEntryPreview();
+  var model={
+    revision:7,
+    challengeMode:false,
+    reviveAvailable:true,
+    settings:{
+      setGlobalVolume:80,setBGMVolume:60,'性能等级上限':1,'是否阴影':true,
+      '是否视觉元素':true,'是否打击数字特效':true,cameraZoomToggle:false,
+      basicZoomScale:1,'开启昼夜系统':true,'暂停昼夜系统':false,
+      '使用滤镜渲染':true,'立绘类型':1,jukeboxOverride:false,
+      jukeboxTrueRandom:false,jukeboxPlayMode:'albumLoop'
+    },
+    keys:ids.map(function(id,index){return{id:id,label:index===0?'undefined':id,keyCode:codes[index],keyName:keyNames[codes[index]]||String(codes[index])}}),
+    hostPrefs:{introEnabled:true,sfxEnabled:true,ambientEnabled:true,uiFontScale:1,mapDisplayPreference:'auto'}
+  };
+  function clone(value){return JSON.parse(JSON.stringify(value))}
+  function help(){
+    var modes=[
+      {command:'hardmode',description:'切换到困难模式',effectScope:'save'},
+      {command:'easymode',description:'切换到简单模式',effectScope:'save'},
+      {command:'challengemode',description:'切换到挑战模式',effectScope:'save'}
+    ];
+    return model.challengeMode?modes:modes.concat([
+      {command:'status / scene',description:'查看玩家或场景状态',effectScope:'read'},
+      {command:'heal / god',description:'回血或切换无敌（本次运行）',effectScope:'session'},
+      {command:'#level:15 / #gold:99999 / #sp:99',description:'修改角色进度',effectScope:'save'},
+      {command:'#give:物品名,数量',description:'给予物品',effectScope:'save'},
+      {command:'#task:链名,进度',description:'修改任务链进度',effectScope:'save'},
+      {command:'#spawn:兵种,等级 / #tp:x,y',description:'召唤或传送（当前场景）',effectScope:'session'},
+      {command:'#get:路径 / #eval:表达式',description:'高级只读诊断',effectScope:'read'},
+      {command:'#set / #_root / #func',description:'高级原始控制，影响范围未知',effectScope:'unknown'}
+    ])
+  }
+  function snapshot(){return{
+    success:true,v:1,operation:'snapshot',revision:model.revision,
+    settings:clone(model.settings),keys:clone(model.keys),
+    defaultKeys:model.keys.map(function(row){return{id:row.id,keyCode:row.keyCode}}),
+    allowedKeyCodes:clone(allowed),hostPrefs:clone(model.hostPrefs),
+    challengeMode:model.challengeMode,modeLabel:model.challengeMode?'挑战':'困难',
+    cheatHelp:help(),forceControls:{returnBaseAvailable:true,
+      tryReviveAvailable:model.reviveAvailable,resurrectionRestricted:false},
+    previewActive:previewBaseline!==null,migrationPending:false
+  }}
+  function log(message){
+    var text=typeof message==='string'?message:JSON.stringify(message);
+    var output=document.getElementById('harness-log');
+    output.textContent=(text+'\n'+output.textContent).slice(0,7000)
+  }
+  function emit(message,response){
+    var data=Object.assign({type:'panel_resp',panel:'settings',domain:'settings',
+      cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId},response);
+    setTimeout(function(){(handlers.panel_resp||[]).slice().forEach(function(handler){handler(data)})},35)
+  }
+  window.__SETTINGS_CONFIG__={requestTimeoutMs:1200,sessionNonce:'settings.harness',
+    cheatHelpUrl:'/launcher/web/help/cheat-codes.md'};
+  window.Bridge={
+    on:function(type,handler){(handlers[type]||(handlers[type]=[])).push(handler)},
+    off:function(type,handler){var list=handlers[type]||[],index=list.indexOf(handler);if(index>=0)list.splice(index,1)},
+    send:function(message){
+      sent.push(clone(message));log({cmd:message.cmd,payload:message.payload||{}});
+      if(message.cmd==='close')return true;
+      if(message.domain!=='settings')return false;
+      var payload=message.payload||{};
+      if(message.cmd==='snapshot')emit(message,snapshot());
+      else if(message.cmd==='preview'){
+        if(previewBaseline===null)previewBaseline={global:model.settings.setGlobalVolume,bgm:model.settings.setBGMVolume};
+        emit(message,{success:true,v:1,operation:'preview',previewActive:true,
+          globalVolume:payload.globalVolume,bgmVolume:payload.bgmVolume,samplePlayed:payload.sample==='sfx'});
+      }else if(message.cmd==='cancel'){
+        previewBaseline=null;emit(message,{success:true,v:1,operation:'cancel',previewRestored:true,previewActive:false});
+      }else if(message.cmd==='apply'){
+        if(payload.expectedRevision!==model.revision){emit(message,Object.assign(snapshot(),{success:false,error:'stale_state',operation:'apply'}));return true}
+        model.settings=clone(payload.settings);model.keys=payload.keys.map(function(row,index){return{id:row.id,label:ids[index],keyCode:row.keyCode,keyName:keyNames[row.keyCode]||String(row.keyCode)}});
+        model.revision++;previewBaseline=null;
+        emit(message,Object.assign(snapshot(),{success:durable,applied:true,durable:durable,operation:'apply',error:durable?undefined:'save_failed',needsSaveRetry:!durable}));
+      }else if(message.cmd==='save')emit(message,{success:durable,v:1,operation:'save',durable:durable,revision:model.revision,error:durable?undefined:'save_failed'});
+      else if(message.cmd==='host_set'){
+        model.hostPrefs[payload.key]=payload.value;emit(message,{success:true,v:1,operation:'host_set',key:payload.key,currentValue:payload.value,hostPrefs:clone(model.hostPrefs)});
+      }else if(message.cmd==='cheat'){
+        if(payload.command==='challengemode')model.challengeMode=true;
+        if(payload.command==='hardmode'||payload.command==='easymode')model.challengeMode=false;
+        emit(message,{success:true,v:1,operation:'cheat',accepted:true,command:payload.command,
+          effectScope:'session',challengeMode:model.challengeMode,modeLabel:model.challengeMode?'挑战':'困难',
+          cheatHelp:help(),message:'Harness：命令已模拟执行。'});
+      }else if(message.cmd==='return_base'||message.cmd==='try_revive')emit(message,{success:true,v:1,operation:message.cmd,closePanel:true,promptOpened:message.cmd==='try_revive'});
+      else emit(message,{success:false,v:1,error:'unsupported_cmd'});
+      return true
+    }
+  };
+  window.Toast={add:function(message){log('Toast: '+message)}};
+  window.BootstrapAudio={cue:function(name){log('cue: '+name)}};
+  window.Panels=(function(){
+    var specs={},active=null;
+    return{
+      register:function(id,spec){specs[id]=spec},
+      open:function(id){
+        var initData={panelInstanceId:'settings.harness.'+Date.now(),flashPreview:clone(flashPreview)};
+        if(active===id){if(specs[id].onRebind)specs[id].onRebind(document.getElementById('panel-content'),initData);return}
+        if(active&&specs[active]&&specs[active].onClose)specs[active].onClose();
+        active=id;var host=document.getElementById('panel-content');host.innerHTML='';host.appendChild(specs[id].create());
+        specs[id].onOpen(host,initData)
+      },
+      close:function(){if(active&&specs[active]&&specs[active].onClose)specs[active].onClose();active=null;document.getElementById('panel-content').innerHTML=''},
+      requestClose:function(){return active&&specs[active]&&specs[active].onRequestClose?specs[active].onRequestClose():false},
+      getActive:function(){return active},_specs:specs
+    }
+  })();
+  window.__settingsHarness={model:model,sent:sent,reopen:function(){Panels.open('settings')}};
+  document.getElementById('toggle-mode').onclick=function(){model.challengeMode=!model.challengeMode;this.textContent=model.challengeMode?'切到普通模式':'切到挑战模式';Panels.open('settings')};
+  document.getElementById('toggle-save').onclick=function(){durable=!durable;this.textContent=durable?'模拟保存失败':'恢复保存成功'};
+  document.getElementById('toggle-revive').onclick=function(){model.reviveAvailable=!model.reviveAvailable;this.textContent='复活入口：'+(model.reviveAvailable?'可用':'不可用');Panels.open('settings')};
+  document.getElementById('reopen').onclick=function(){Panels.open('settings')};
+})();
+</script>
+<script src="/launcher/web/lib/marked.min.js"></script>
+<script src="/launcher/web/modules/panel-runtime.js"></script>
+<script src="/launcher/web/modules/panel-scale.js"></script>
+<script src="/launcher/web/modules/tooltip.js"></script>
+<script src="/launcher/web/modules/settings-preferences.js"></script>
+<script src="/launcher/web/modules/settings-runtime.js"></script>
+<script src="/launcher/web/modules/settings-panel.js"></script>
+<script>Panels.open('settings');</script>
+</body>
+</html>

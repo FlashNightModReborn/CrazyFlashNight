@@ -196,7 +196,7 @@ namespace CF7Launcher.Tests.Guardian
                 "private void DoRebind(string name, string initDataJson)");
 
             int captureBackdrop = open.IndexOf(
-                "Bitmap composed = CaptureBackdrop(anchor);",
+                "Bitmap composed = CaptureBackdrop(",
                 StringComparison.Ordinal);
             Assert.True(captureBackdrop >= 0);
             int productionComment = open.IndexOf(

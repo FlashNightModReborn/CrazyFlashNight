@@ -148,8 +148,15 @@ F5 binds authorization to the data and target authority a method actually consum
   lease must resolve exactly one current `RuntimeOwned` Launcher target, contain
   only capability/operation `panel.open`, have TTL at most 30 seconds and
   `maximumActions:1`, and omit renewal. Production accepts only the closed panel
-  allow-list `help`, `map`, `tasks`, `team`, `jukebox`, and `materials`. The
-  `materials` name reuses the fixed `nativehud_materials` Host-to-AS2
+  allow-list `help`, `map`, `tasks`, `team`, `jukebox`, `settings`,
+  `settings_camera_preview`, and `materials`. `settings` opens the Host-owned
+  Web settings panel. `settings_camera_preview` maps to the same panel with the
+  fixed `initialView:"camera_preview"` only after its authoritative snapshot;
+  it applies/saves nothing and adds no Flash pixel/input capability. A real
+  entry-frame diagnostic first waits for stable Flash geometry through a
+  metadata-only grant plus `window.list`, then observes the result through a
+  fresh WebOverlay WGC grant. The `materials` name reuses the fixed
+  `nativehud_materials` Host-to-AS2
   `openMaterialUI` nonce/tuple route; it does not directly open a Web panel. It binds no
   `NativeInputGuard` lease and emits no mouse or keyboard packet. The terminal
   `input_dispatched / broker_dispatch` receipt proves broker dispatch only; a

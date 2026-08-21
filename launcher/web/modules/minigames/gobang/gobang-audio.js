@@ -11,9 +11,20 @@ var GobangAudio = (function() {
     var _muted = false;
     var _storageKey = "cf7.gobang.audio.muted";
 
+    function reloadPreference() {
+        var next = false;
+        try {
+            if (typeof localStorage !== "undefined") {
+                next = localStorage.getItem(_storageKey) === "1";
+            }
+        } catch (e) { next = false; }
+        _muted = next;
+        return _muted;
+    }
+
     try {
         if (typeof localStorage !== "undefined") {
-            _muted = localStorage.getItem(_storageKey) === "1";
+            reloadPreference();
         }
     } catch (e) { /* no-op */ }
 
@@ -273,6 +284,7 @@ var GobangAudio = (function() {
 
     return {
         unlock: unlock,
+        reloadPreference: reloadPreference,
         isMuted: isMuted,
         setMuted: setMuted,
         toggleMuted: toggleMuted,

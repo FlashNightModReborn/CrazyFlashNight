@@ -4,9 +4,8 @@ using Xunit;
 namespace CF7Launcher.Tests.Guardian
 {
     /// <summary>
-    /// 默认假设：所有 DPI-aware 模式下 GetClientRect 返回物理像素，不缩放。
-    /// 与 MS 文档对齐；硬编码"V1=逻辑像素"假设会在 PMv1/SystemAware 下错误放大 1.25-1.5x。
-    /// 若 Phase 2 启动期探针发现某模式实际偏差 → 修 ComputePhysicalSize 加分支 + 在此测试加 case 固化。
+    /// 输出保持 GetClientRect 的物理尺寸；只有 DPI Unaware 的 GDI 源缓冲按
+    /// windowDpi/monitorDpi 还原后再拉伸，避免右侧/底部黑区。
     /// </summary>
     public class FlashSnapshotDpiTests
     {
@@ -38,7 +37,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void Unaware_NoScaling()
+        public void Unaware_OutputRemainsPhysical()
         {
             int pw, ph;
             FlashSnapshot.ComputePhysicalSize(1024, 576, EffectiveDpiAwareness.Unaware, 96u, out pw, out ph);
@@ -53,6 +52,86 @@ namespace CF7Launcher.Tests.Guardian
             FlashSnapshot.ComputePhysicalSize(1280, 720, EffectiveDpiAwareness.Unknown, 96u, out pw, out ph);
             Assert.Equal(1280, pw);
             Assert.Equal(720, ph);
+        }
+
+        [Fact]
+        public void Unaware_150Percent_UsesVirtualizedLogicalSource()
+        {
+            int sourceW, sourceH;
+            FlashSnapshot.ComputeCaptureSourceSize(
+                1600,
+                900,
+                EffectiveDpiAwareness.Unaware,
+                96u,
+                144u,
+                144u,
+                out sourceW,
+                out sourceH);
+
+            Assert.Equal(1067, sourceW);
+            Assert.Equal(600, sourceH);
+        }
+
+        [Fact]
+        public void Unaware_125Percent_UsesVirtualizedLogicalSource()
+        {
+            int sourceW, sourceH;
+            FlashSnapshot.ComputeCaptureSourceSize(
+                1280,
+                720,
+                EffectiveDpiAwareness.Unaware,
+                96u,
+                120u,
+                120u,
+                out sourceW,
+                out sourceH);
+
+            Assert.Equal(1024, sourceW);
+            Assert.Equal(576, sourceH);
+        }
+
+        [Theory]
+        [InlineData(EffectiveDpiAwareness.PerMonitorV2, 144u, 144u)]
+        [InlineData(EffectiveDpiAwareness.PerMonitor, 144u, 144u)]
+        [InlineData(EffectiveDpiAwareness.SystemAware, 144u, 144u)]
+        [InlineData(EffectiveDpiAwareness.Unknown, 144u, 144u)]
+        [InlineData(EffectiveDpiAwareness.Unaware, 96u, 96u)]
+        public void NonVirtualizedSource_RemainsOneToOne(
+            EffectiveDpiAwareness awareness,
+            uint monitorDpiX,
+            uint monitorDpiY)
+        {
+            int sourceW, sourceH;
+            FlashSnapshot.ComputeCaptureSourceSize(
+                1600,
+                900,
+                awareness,
+                96u,
+                monitorDpiX,
+                monitorDpiY,
+                out sourceW,
+                out sourceH);
+
+            Assert.Equal(1600, sourceW);
+            Assert.Equal(900, sourceH);
+        }
+
+        [Fact]
+        public void Unaware_AnisotropicMonitorDpi_ScalesOnlyAffectedAxis()
+        {
+            int sourceW, sourceH;
+            FlashSnapshot.ComputeCaptureSourceSize(
+                1600,
+                900,
+                EffectiveDpiAwareness.Unaware,
+                96u,
+                144u,
+                96u,
+                out sourceW,
+                out sourceH);
+
+            Assert.Equal(1067, sourceW);
+            Assert.Equal(900, sourceH);
         }
     }
 }

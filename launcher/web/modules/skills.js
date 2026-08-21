@@ -100,6 +100,7 @@ var SkillsPanel = (function() {
 
     function beginOpen(initData) {
         cleanupView(false);
+        _loadoutConfirmationMode = readLoadoutConfirmationMode();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('skills', {profile:'dense-inspect'}) : null;
         _initData = initData || {};

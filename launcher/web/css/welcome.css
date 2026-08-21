@@ -7,16 +7,16 @@
      --dls-dim ↔ --dls-crystal-dim), 改名成本大于收益, 保留本地名不改;
      --rust 族 / --bone 是欢迎页特有风味色, 游戏内语义对应 --wb-semantic-danger / --dls-energetic
      (数值有意偏离, 不统一). */
-  --dls: #3dd5ff;
-  --dls-deep: #1e90b3;
-  --dls-dim: #0f4a5c;
-  --rust: #b83a2e;
-  --rust-deep: #7d2418;
-  --rust-dim: #3a130d;
-  --bone: #c8b28a;
-  --dust: #6a6258;
-  --bg0: #05070a;
-  --bg1: #0c0e12;
+  --dls: var(--dls-crystal);
+  --dls-deep: var(--dls-crystal-deep);
+  --dls-dim: var(--dls-crystal-dim);
+  --rust: var(--launcher-rust);
+  --rust-deep: var(--launcher-rust-deep);
+  --rust-dim: var(--launcher-rust-dim);
+  --bone: var(--launcher-bone);
+  --dust: var(--launcher-dust);
+  --bg0: var(--launcher-bg-0);
+  --bg1: var(--launcher-bg-1);
   /* slots 空槽卡点阵纹理色 (参考 task_panel.css --task-card-dots 思路, token 化) */
   --slot-empty-dot: rgba(61,213,255,.13);
 }

@@ -23,6 +23,7 @@ using CF7Launcher.Data;
 using CF7Launcher.Tasks;
 using CF7Launcher.V8;
 using Microsoft.Web.WebView2.Core;
+using Newtonsoft.Json.Linq;
 
 class Program
 {
@@ -1541,6 +1542,7 @@ class Program
         NativeHudOverlay nativeHud = null;
         NativePanelBackdrop backdrop = null;
         PanelHostController panelHost = null;
+        CF7Launcher.Guardian.Hud.RightContextWidget rightContext = null;
         CF7Launcher.Guardian.Hud.Loot.LootFeedWidget lootFeedWidget = null;
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
             playerInfoSurface = null;
@@ -1636,8 +1638,7 @@ class Program
             string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
             CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
                 CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFileAsync(mapHudJsonPath);
-            CF7Launcher.Guardian.Hud.RightContextWidget rightContext =
-                new CF7Launcher.Guardian.Hud.RightContextWidget(
+            rightContext = new CF7Launcher.Guardian.Hud.RightContextWidget(
                     form.FlashHostPanel,
                     commandRouter,
                     mapCatalog,
@@ -1833,6 +1834,19 @@ class Program
             webOverlay.TryOpenKShopForMaterialNavigation,
             webOverlay.CloseKShopForMaterialNavigationNoFail);
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
+        SettingsTask settingsTask = new SettingsTask(socketServer, userPrefs);
+        settingsTask.SetHostPreferenceApplied(delegate(string key, JToken value)
+        {
+            if (key == "sfxEnabled" || key == "ambientEnabled")
+                webOverlay.PushAudioPrefs();
+            if (key == "mapDisplayPreference" && rightContext != null
+                && value != null && value.Type == JTokenType.String)
+            {
+                rightContext.SetMapDisplayPreference(
+                    CF7Launcher.Guardian.Hud.MapDisplayPolicy.ParsePreference(
+                        value.Value<string>()));
+            }
+        });
         EquipmentTuningTask equipmentTuningTask = new EquipmentTuningTask(socketServer);
         commandRouter.SetEquipmentTuningTask(equipmentTuningTask);
         CharacterBuildTask characterBuildTask = new CharacterBuildTask(socketServer);
@@ -1890,6 +1904,7 @@ class Program
                 if (panelName == "workbench" && equipmentTuningTask.HasBoundPanel)
                     equipmentTuningTask.HandlePanelClosed(panelInstanceId);
                 if (panelName == "hairdresser") hairdresserTask.ClearPending();
+                if (panelName == "settings") settingsTask.HandleAuthoritativePanelClosed(panelInstanceId);
             });
             panelHost.PanelClosed += delegate(
                 string panelName,
@@ -2063,7 +2078,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2080,6 +2095,7 @@ class Program
         webOverlay.SetMaterialShopNavigationCoordinator(
             materialShopNavigationCoordinator);
         webOverlay.SetHairdresserTask(hairdresserTask);
+        webOverlay.SetSettingsTask(settingsTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
         webOverlay.SetCharacterBuildTask(characterBuildTask);
         webOverlay.SetSkillTask(skillTask);
@@ -2217,6 +2233,7 @@ class Program
             npcShopTask.Dispose();
             craftingTask.Dispose();
             hairdresserTask.Dispose();
+            settingsTask.Dispose();
             equipmentTuningTask.Dispose();
             characterBuildTask.Dispose();
             mapTask.Dispose();
@@ -2282,6 +2299,7 @@ class Program
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
             try { hairdresserTask.Dispose(); } catch { }
+            try { settingsTask.Dispose(); } catch { }
             try { lootPanelCoordinator.Dispose(); } catch { }
             try { equipmentTuningTask.Dispose(); } catch { }
             try { characterBuildTask.Dispose(); } catch { }
@@ -3136,6 +3154,7 @@ class Program
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
         try { hairdresserTask.Dispose(); } catch { }
+        try { settingsTask.Dispose(); } catch { }
         try { lootPanelCoordinator.Dispose(); } catch { }
         try { equipmentTuningTask.Dispose(); } catch { }
         try { characterBuildTask.Dispose(); } catch { }

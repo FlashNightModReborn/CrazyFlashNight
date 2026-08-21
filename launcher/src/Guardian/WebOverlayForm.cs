@@ -162,6 +162,7 @@ namespace CF7Launcher.Guardian
             NpcShop,
             Crafting,
             Hairdresser,
+            Settings,
             EquipmentTuning,
             Loadout,
             Skills,
@@ -178,6 +179,7 @@ namespace CF7Launcher.Guardian
             if (domain == "npcshop") return PanelDomainRoute.NpcShop;
             if (domain == "crafting") return PanelDomainRoute.Crafting;
             if (domain == "hairdresser") return PanelDomainRoute.Hairdresser;
+            if (domain == "settings") return PanelDomainRoute.Settings;
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
             if (domain == "loadout") return PanelDomainRoute.Loadout;
             if (domain == "skills") return PanelDomainRoute.Skills;
@@ -914,6 +916,7 @@ namespace CF7Launcher.Guardian
         private MaterialShopNavigationCoordinator
             _materialShopNavigationCoordinator;
         private HairdresserTask _hairdresserTask;
+        private SettingsTask _settingsTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private CharacterBuildTask _characterBuildTask;
         private SkillTask _skillTask;
@@ -3554,6 +3557,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetSettingsTask(SettingsTask task)
+        {
+            _settingsTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetEquipmentTuningTask(EquipmentTuningTask task)
         {
             _equipmentTuningTask = task;
@@ -4385,6 +4395,36 @@ namespace CF7Launcher.Guardian
                 activePanelInstanceId);
         }
 
+        private void TryHandleSettingsPanelClose(JObject parsed)
+        {
+            string activeName = _panelHost != null
+                ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId : null;
+            if (_panelHost == null || _settingsTask == null
+                || !HasOnlyObjectKeys(parsed,
+                    new[] { "type", "panel", "cmd", "panelInstanceId" })
+                || activeName != "settings"
+                || string.IsNullOrEmpty(activeInstance)
+                || !HasExactStringValue(parsed["panelInstanceId"], activeInstance))
+            {
+                LogManager.Log(
+                    "[SettingsTask] rejected stale/malformed close envelope");
+                return;
+            }
+            bool closeQueued = _panelHost.TryClosePanelExact(
+                "settings", activeInstance, false,
+                delegate(bool closed)
+                {
+                    if (!closed) return;
+                    _settingsTask.HandleAuthoritativePanelClosed(activeInstance);
+                    CommitAcceptedPanelCloseEffects("settings", false, false);
+                });
+            if (!closeQueued)
+                LogManager.Log(
+                    "[SettingsTask] exact Host close was not queued");
+        }
+
         private void HandlePanelMessage(string json)
         {
             JObject parsed;
@@ -4719,6 +4759,28 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "hairdresser_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Settings)
+            {
+                string activeName = _panelHost != null ? _panelHost.ActivePanelName : null;
+                string instanceId = _panelHost != null ? _panelHost.ActivePanelInstanceId : null;
+                if (activeName != "settings" || string.IsNullOrEmpty(instanceId))
+                {
+                    RespondPanelDomainError(parsed, "panel_not_active");
+                    return;
+                }
+                if (!HasExactActivePanelOwnerBinding(parsed, "settings"))
+                {
+                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_settingsTask == null || !_settingsTask.BindPanelInstance(instanceId))
+                {
+                    RespondPanelDomainError(parsed, "settings_unavailable");
+                    return;
+                }
+                _settingsTask.HandleWebRequest(cmd, parsed);
+                return;
+            }
             if (domainRoute == PanelDomainRoute.EquipmentTuning)
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
@@ -4821,6 +4883,11 @@ namespace CF7Launcher.Guardian
                 case "close":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
+                        if (panel == "settings")
+                        {
+                            TryHandleSettingsPanelClose(parsed);
+                            return;
+                        }
                         bool characterBuildPauseReleaseHandled = false;
                         bool characterBuildVisualRetirePending = false;
                         bool navigateCharacterBuild = false;
@@ -6329,6 +6396,7 @@ namespace CF7Launcher.Guardian
             if (_npcShopTask != null) _npcShopTask.ClearPending();
             if (_craftingTask != null) _craftingTask.ClearPending();
             if (_hairdresserTask != null) _hairdresserTask.ClearPending();
+            if (_settingsTask != null) _settingsTask.ClearPending();
             if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();
             if (_skillTask != null) _skillTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();

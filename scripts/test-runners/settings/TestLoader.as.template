@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId settings Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.ui.GameSettingsPanelServiceTest.runAllTests();
+trace("FocusedTestRunId settings Complete: __FOCUSED_RUN_ID__");

@@ -159,7 +159,8 @@
 #panel-container[data-panel="workbench"] #panel-content,
 #panel-container[data-panel="npcshop"] #panel-content,
 #panel-container[data-panel="crafting"] #panel-content,
-#panel-container[data-panel="skills"] #panel-content {
+#panel-container[data-panel="skills"] #panel-content,
+#panel-container[data-panel="settings"] #panel-content {
     inset: 0;
 }
 #panel-container[data-panel="kshop"] #panel-backdrop {
@@ -171,6 +172,7 @@
 #panel-container[data-panel="npcshop"] #panel-backdrop { background:#09090a; }
 #panel-container[data-panel="crafting"] #panel-backdrop { background:#09090a; }
 #panel-container[data-panel="skills"] #panel-backdrop { background:#070a0d; }
+#panel-container[data-panel="settings"] #panel-backdrop { background:var(--cp-bg); }
 
 #panel-container[data-panel="help"] #panel-content {
     inset: 0;

@@ -254,6 +254,14 @@
          'modules/minigames/gobang/gobang-panel.js'],
         noop);
 
+    // ── 游戏设置（AS2 权威游戏设置/35 键 + Host/Web 本机偏好）──
+    Panels.registerLazy('settings',
+        ['modules/panel-runtime.js',
+         'modules/settings-preferences.js',
+         'modules/settings-runtime.js',
+         'modules/settings-panel.js'],
+        noop);
+
     // ── blackmarket（全量目录影子测试；防具复用 battle-rig 纸娃娃，仍无正式写入）──
     Panels.registerLazy('blackmarket',
         ['modules/minigames/shared/host-bridge.js',

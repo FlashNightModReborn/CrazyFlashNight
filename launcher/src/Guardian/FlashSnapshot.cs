@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -9,10 +10,10 @@ namespace CF7Launcher.Guardian
     /// <summary>
     /// Flash HWND BitBlt 截图 + DPI 探针 + letterbox 检测 + 强制 alpha=255。
     ///
-    /// DPI 策略：默认假设所有 DPI-aware 模式下 GetClientRect 返回物理像素（按 MS 文档）；
-    /// 启动期前 5 次记录探针 log（GetClientRect/GetDpiForWindow/awareness/物理尺寸），
-    /// 若实测发现某模式需要缩放分支 → 在 ComputePhysicalSize 加 case + 单测固化（TDD）。
-    /// 不预先硬编码"V1 vs 非 V1"分支。
+    /// DPI 策略：输出始终保持 GetClientRect 的物理尺寸。对于 DPI Unaware 的 Flash SA，
+    /// GDI client DC 暴露的是 96-DPI 逻辑缓冲；在高 DPI 显示器上直接按物理尺寸 BitBlt
+    /// 会把右侧/底部留黑。该模式按 windowDpi/monitorDpi 计算源缓冲，并 StretchBlt 回
+    /// 物理输出尺寸；其他 awareness 模式仍按 1:1 捕获。
     ///
     /// Letterbox 用已知 16:9 设计宽高比检测，不做像素扫描——返回 contentRect 让 backdrop
     /// 仅对内容区做 dim，letterbox 黑边保留原样。
@@ -30,9 +31,22 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
-        [DllImport("gdi32.dll")]
+        [DllImport("gdi32.dll", SetLastError = true)]
         private static extern bool BitBlt(IntPtr hdcDest, int xDest, int yDest, int wDest, int hDest,
             IntPtr hdcSrc, int xSrc, int ySrc, uint rop);
+
+        [DllImport("gdi32.dll", SetLastError = true)]
+        private static extern bool StretchBlt(
+            IntPtr hdcDest, int xDest, int yDest, int wDest, int hDest,
+            IntPtr hdcSrc, int xSrc, int ySrc, int wSrc, int hSrc,
+            uint rop);
+
+        [DllImport("gdi32.dll", SetLastError = true)]
+        private static extern int SetStretchBltMode(IntPtr hdc, int mode);
+
+        [DllImport("gdi32.dll", SetLastError = true)]
+        private static extern bool SetBrushOrgEx(
+            IntPtr hdc, int x, int y, out POINT previous);
 
         // Win10 1607+; older systems get 96 fallback via try/catch
         [DllImport("user32.dll")]
@@ -41,7 +55,11 @@ namespace CF7Launcher.Guardian
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT { public int left, top, right, bottom; }
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT { public int x, y; }
+
         private const uint SRCCOPY = 0x00CC0020;
+        private const int HALFTONE = 4;
 
         #endregion
 
@@ -51,6 +69,19 @@ namespace CF7Launcher.Guardian
             public Rectangle ContentRect;
             public int PhysicalW;
             public int PhysicalH;
+            public int SourceW;
+            public int SourceH;
+        }
+
+        internal struct FrameSampleStats
+        {
+            public int AverageLuminance;
+            public int MinimumLuminance;
+            public int MaximumLuminance;
+            public int Variance;
+            public int HighlightCount;
+            public int SampleCount;
+            public bool IsLikelyBlack;
         }
 
         private const float DESIGN_ASPECT = 1024f / 576f; // 16:9
@@ -89,15 +120,35 @@ namespace CF7Launcher.Guardian
 
             EffectiveDpiAwareness awareness = DpiAwarenessBootstrap.GetEffectiveAwarenessForWindow(flashHwnd);
             uint dpi = SafeGetDpiForWindow(flashHwnd);
+            uint monitorDpiX = 96u;
+            uint monitorDpiY = 96u;
+            DpiDiagnostics.TryGetMonitorDpi(
+                DpiDiagnostics.GetMonitorFromWindow(flashHwnd),
+                out monitorDpiX,
+                out monitorDpiY);
             int physicalW, physicalH;
             ComputePhysicalSize(rectW, rectH, awareness, dpi, out physicalW, out physicalH);
+            int sourceW, sourceH;
+            ComputeCaptureSourceSize(
+                physicalW,
+                physicalH,
+                awareness,
+                dpi,
+                monitorDpiX,
+                monitorDpiY,
+                out sourceW,
+                out sourceH);
+            bool virtualizedScale = sourceW != physicalW || sourceH != physicalH;
 
             if (ShouldLogDpiProbe())
             {
                 LogManager.Log("[FlashSnapshot] probe: client=" + rectW + "x" + rectH
                     + " awareness=" + awareness
-                    + " dpi=" + dpi
-                    + " physical=" + physicalW + "x" + physicalH);
+                    + " windowDpi=" + dpi
+                    + " monitorDpi=" + monitorDpiX + "x" + monitorDpiY
+                    + " source=" + sourceW + "x" + sourceH
+                    + " output=" + physicalW + "x" + physicalH
+                    + " virtualizedScale=" + virtualizedScale);
             }
 
             Bitmap bmp = new Bitmap(physicalW, physicalH, PixelFormat.Format32bppArgb);
@@ -114,7 +165,67 @@ namespace CF7Launcher.Guardian
                         try
                         {
                             dstDC = g.GetHdc();
-                            BitBlt(dstDC, 0, 0, physicalW, physicalH, srcDC, 0, 0, SRCCOPY);
+                            bool copied;
+                            if (virtualizedScale)
+                            {
+                                int previousMode = SetStretchBltMode(dstDC, HALFTONE);
+                                POINT previousOrigin;
+                                bool hasPreviousOrigin = SetBrushOrgEx(
+                                    dstDC,
+                                    0,
+                                    0,
+                                    out previousOrigin);
+                                try
+                                {
+                                    copied = StretchBlt(
+                                        dstDC,
+                                        0,
+                                        0,
+                                        physicalW,
+                                        physicalH,
+                                        srcDC,
+                                        0,
+                                        0,
+                                        sourceW,
+                                        sourceH,
+                                        SRCCOPY);
+                                }
+                                finally
+                                {
+                                    if (hasPreviousOrigin)
+                                    {
+                                        POINT ignored;
+                                        SetBrushOrgEx(
+                                            dstDC,
+                                            previousOrigin.x,
+                                            previousOrigin.y,
+                                            out ignored);
+                                    }
+                                    if (previousMode != 0)
+                                        SetStretchBltMode(dstDC, previousMode);
+                                }
+                            }
+                            else
+                            {
+                                copied = BitBlt(
+                                    dstDC,
+                                    0,
+                                    0,
+                                    physicalW,
+                                    physicalH,
+                                    srcDC,
+                                    0,
+                                    0,
+                                    SRCCOPY);
+                            }
+                            if (!copied)
+                            {
+                                throw new Win32Exception(
+                                    Marshal.GetLastWin32Error(),
+                                    virtualizedScale
+                                        ? "StretchBlt failed while capturing Flash"
+                                        : "BitBlt failed while capturing Flash");
+                            }
                         }
                         finally
                         {
@@ -132,6 +243,8 @@ namespace CF7Launcher.Guardian
                 result.ContentRect = contentRect;
                 result.PhysicalW = physicalW;
                 result.PhysicalH = physicalH;
+                result.SourceW = sourceW;
+                result.SourceH = sourceH;
                 bmp = null; // ownership transferred
                 return result;
             }
@@ -142,15 +255,63 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 探针数据驱动的 DPI 缩放决策。internal static 便于 InternalsVisibleTo 单测。
-        /// 默认：所有 awareness 模式下 GetClientRect = physical pixels（与 MS 文档对齐），不缩放。
-        /// 若 Phase 2 启动期探针发现某模式实际偏差 → 在此函数加分支 + 单测覆盖。
+        /// 输出保持 GetClientRect 的物理像素尺寸。internal static 便于单测。
         /// </summary>
         internal static void ComputePhysicalSize(int clientW, int clientH, EffectiveDpiAwareness awareness, uint dpi,
                                                  out int physicalW, out int physicalH)
         {
             physicalW = clientW;
             physicalH = clientH;
+        }
+
+        /// <summary>
+        /// 计算 GDI 源 DC 的实际逻辑缓冲尺寸。DPI Unaware 窗口在高 DPI 显示器上由
+        /// Windows 虚拟化放大：GetClientRect 对 PMv2 Host 可见的是物理尺寸，但该窗口
+        /// 的 client DC 仍以 windowDpi（通常 96）解释。其他 awareness 或无有效高 DPI
+        /// 差值时保持 1:1，避免重复缩放 DPI-aware 窗口。
+        /// </summary>
+        internal static void ComputeCaptureSourceSize(
+            int outputW,
+            int outputH,
+            EffectiveDpiAwareness awareness,
+            uint windowDpi,
+            uint monitorDpiX,
+            uint monitorDpiY,
+            out int sourceW,
+            out int sourceH)
+        {
+            sourceW = outputW;
+            sourceH = outputH;
+            if (outputW <= 0
+                || outputH <= 0
+                || awareness != EffectiveDpiAwareness.Unaware
+                || windowDpi < 72u
+                || (monitorDpiX <= windowDpi
+                    && monitorDpiY <= windowDpi))
+            {
+                return;
+            }
+
+            if (monitorDpiX > windowDpi)
+            {
+                sourceW = Math.Max(
+                    1,
+                    Math.Min(
+                        outputW,
+                        (int)Math.Round(
+                            outputW * (double)windowDpi / monitorDpiX,
+                            MidpointRounding.AwayFromZero)));
+            }
+            if (monitorDpiY > windowDpi)
+            {
+                sourceH = Math.Max(
+                    1,
+                    Math.Min(
+                        outputH,
+                        (int)Math.Round(
+                            outputH * (double)windowDpi / monitorDpiY,
+                            MidpointRounding.AwayFromZero)));
+            }
         }
 
         /// <summary>
@@ -210,34 +371,64 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 黑帧检测：在 contentRect 内 10x10 固定均匀网格采样，不查 alpha。
-        /// 平均亮度 < 30 视为黑帧（Flash SA 偶发空窗）。
+        /// 黑帧检测：在 contentRect 内 16x16 固定均匀网格采样，不查 alpha。
+        /// Flash 游戏本身有大量低亮场景，不能再把“平均亮度低于 30”直接等同空帧。
+        /// 只有低亮且近乎均匀、没有成组高光或有效对比的画面才视为 BitBlt 空黑帧。
         /// </summary>
         public static bool IsLikelyBlackFrame(Bitmap b, Rectangle? contentRect)
         {
-            if (b == null) return true;
-            Rectangle area = contentRect.HasValue ? contentRect.Value : new Rectangle(0, 0, b.Width, b.Height);
-            if (area.Width <= 0 || area.Height <= 0) return true;
+            return AnalyzeFrame(b, contentRect).IsLikelyBlack;
+        }
 
-            const int GRID = 10;
+        internal static FrameSampleStats AnalyzeFrame(Bitmap b, Rectangle? contentRect)
+        {
+            FrameSampleStats stats = new FrameSampleStats
+            {
+                MinimumLuminance = 255,
+                IsLikelyBlack = true
+            };
+            if (b == null) return stats;
+
+            Rectangle bounds = new Rectangle(0, 0, b.Width, b.Height);
+            Rectangle requested = contentRect.HasValue ? contentRect.Value : bounds;
+            Rectangle area = Rectangle.Intersect(bounds, requested);
+            if (area.Width <= 0 || area.Height <= 0) return stats;
+
+            const int GRID = 16;
+            const int HIGHLIGHT_LUMINANCE = 52;
             long lumSum = 0;
-            int count = 0;
+            long lumSquaredSum = 0;
             for (int gy = 0; gy < GRID; gy++)
             {
                 for (int gx = 0; gx < GRID; gx++)
                 {
-                    int x = area.X + (area.Width * gx) / GRID + area.Width / (GRID * 2);
-                    int y = area.Y + (area.Height * gy) / GRID + area.Height / (GRID * 2);
-                    if (x < area.X) x = area.X;
+                    int x = area.X + (area.Width * (gx * 2 + 1)) / (GRID * 2);
+                    int y = area.Y + (area.Height * (gy * 2 + 1)) / (GRID * 2);
                     if (x > area.Right - 1) x = area.Right - 1;
-                    if (y < area.Y) y = area.Y;
                     if (y > area.Bottom - 1) y = area.Bottom - 1;
                     Color c = b.GetPixel(x, y);
-                    lumSum += (c.R + c.G + c.B) / 3;
-                    count++;
+                    int luminance = (c.R + c.G + c.B) / 3;
+                    lumSum += luminance;
+                    lumSquaredSum += luminance * luminance;
+                    if (luminance < stats.MinimumLuminance) stats.MinimumLuminance = luminance;
+                    if (luminance > stats.MaximumLuminance) stats.MaximumLuminance = luminance;
+                    if (luminance >= HIGHLIGHT_LUMINANCE) stats.HighlightCount++;
+                    stats.SampleCount++;
                 }
             }
-            return count > 0 && (lumSum / count) < 30;
+
+            if (stats.SampleCount <= 0) return stats;
+            stats.AverageLuminance = (int)(lumSum / stats.SampleCount);
+            double average = (double)lumSum / stats.SampleCount;
+            double variance = (double)lumSquaredSum / stats.SampleCount - average * average;
+            stats.Variance = (int)Math.Round(Math.Max(0d, variance));
+            int span = stats.MaximumLuminance - stats.MinimumLuminance;
+            bool hasGroupedHighlights = stats.HighlightCount >= 2;
+            bool hasVisibleContrast = span >= 18 && stats.Variance >= 24;
+            stats.IsLikelyBlack = stats.AverageLuminance < 30
+                && !hasGroupedHighlights
+                && !hasVisibleContrast;
+            return stats;
         }
 
         /// <summary>

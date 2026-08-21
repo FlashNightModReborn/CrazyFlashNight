@@ -30,6 +30,7 @@ namespace CF7Launcher.Bus
     ///   stage_select_response JSON async AS2↔C# (选关 Web panel 测试入口)
     ///   arena_response  JSON async AS2↔C# (角斗场 Web panel 测试入口)
     ///   hairdresser_response JSON async AS2↔C# (基地理发店 Web panel 运行态)
+    ///   settings_response JSON async AS2↔C# (设置 Web panel 运行态)
     ///   pet_response    JSON async AS2↔C# (战宠 Web panel 运行态)
     ///   merc_response   JSON async AS2↔C# (佣兵 Web panel 运行态)
     ///   task_response   JSON async AS2↔C# (任务 Web panel 运行态)
@@ -460,6 +461,7 @@ namespace CF7Launcher.Bus
             CraftingTask craftingTask,
             MaterialShopAccessTask materialShopAccessTask,
             HairdresserTask hairdresserTask,
+            SettingsTask settingsTask,
             EquipmentTuningTask equipmentTuningTask,
             CharacterBuildTask characterBuildTask,
             SkillTask skillTask,
@@ -530,6 +532,10 @@ namespace CF7Launcher.Bus
             // 基地理发店 domain 回包路由
             if (hairdresserTask != null)
                 router.RegisterAsync("hairdresser_response", hairdresserTask.HandleFlashResponse);
+
+            // 游戏设置 / 键位 / 调试救援 domain 回包路由
+            if (settingsTask != null)
+                router.RegisterAsync("settings_response", settingsTask.HandleFlashResponse);
 
             // 装备调制 domain 回包路由
             if (equipmentTuningTask != null)
@@ -775,6 +781,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "crafting_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "material_shop_access_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "hairdresser_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "settings_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "loadout_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "skill_response",    "json_async","AS2<->C#",false, first);

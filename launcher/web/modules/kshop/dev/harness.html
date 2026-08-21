@@ -1560,6 +1560,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         addEquipment();
         Panels.close();
+        try { localStorage.setItem('cf7.itemgrid.mode.kshop', 'compact'); } catch (e) {}
         Host.reset();
         Host.state.cart = [{idx:1,qty:2}];
         Host.delays.bulkQuery = 140;
@@ -1573,6 +1574,13 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             && loadingCheckout && loadingCheckout.disabled
             && countCmd('saveCart') === 0 && countCmd('checkoutCommit') === 0;
         await waitFor(function(){ return KShop.debugState().shopReady; }, 500);
+        var reopenedDensityToggle = document.querySelector('.item-grid-mode-toggle');
+        var reopenedCompactDensityOption = reopenedDensityToggle
+            && reopenedDensityToggle.querySelector('[data-layout-mode="compact"]');
+        assert('kshop-ui2-density-reopen','设置聚合修改的密度在 K 商店重开时同步网格与切换控件',
+            document.querySelector('.kshop-grid').classList.contains('item-grid-compact')
+                && reopenedCompactDensityOption
+                && reopenedCompactDensityOption.getAttribute('aria-pressed') === 'true');
         assert('kshop-ui2e','重开必须等待新 bulkQuery 后才恢复购物车编辑与结账',
             loadingGateBlocked && KShop.debugState().cartCount === 1
                 && !document.querySelector('#kshop-checkout').disabled,
@@ -2336,11 +2344,12 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var invCompactDensityOption = invDensityToggle && invDensityToggle.querySelector('[data-layout-mode="compact"]');
         var backpackGrid = document.querySelector('.inventory-owned-backpack .inventory-owned-grid');
         var warehouseGrid = document.querySelector('.inventory-owned-warehouse .inventory-owned-grid');
-        assert('kshop-ui8z','库存子视图继承玩家刚才选择的完整布局偏好',
+        assert('kshop-ui8z','库存子视图继承设置聚合在重开时选择的紧凑布局偏好',
             invDensityToggle && invFullDensityOption && invCompactDensityOption
-                && invFullDensityOption.getAttribute('aria-pressed') === 'true' && backpackGrid
-                && !backpackGrid.classList.contains('item-grid-compact')
-                && warehouseGrid && !warehouseGrid.classList.contains('item-grid-compact'));
+                && invCompactDensityOption.getAttribute('aria-pressed') === 'true' && backpackGrid
+                && backpackGrid.classList.contains('item-grid-compact')
+                && warehouseGrid && warehouseGrid.classList.contains('item-grid-compact'));
+        invFullDensityOption.click();
         invCompactDensityOption.click();
         var ownedCompact = document.querySelector('.inventory-owned-backpack .inventory-owned-grid').classList.contains('item-grid-compact')
             && document.querySelector('.inventory-owned-warehouse .inventory-owned-grid').classList.contains('item-grid-compact');

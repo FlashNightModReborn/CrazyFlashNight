@@ -255,7 +255,7 @@ var GobangPanel = (function() {
         _sessionSequence += 1;
         _sessionId = "gobang-" + _sessionSequence + "-" + (Date.now() >>> 0);
         var a = audio();
-        if (a) { a.unlock(); a.sessionOpen(); }
+        if (a) { a.reloadPreference(); syncAudioToggle(); a.unlock(); a.sessionOpen(); }
         startNewGame(merge(DEFAULT_INIT, initData || {}), true);
     }
 

@@ -314,6 +314,23 @@ namespace CF7Launcher.Guardian
                 case "team":
                 case "jukebox":
                     return OpenPanel(panelName, null);
+                case "settings":
+                    return OpenPanel(
+                        "settings",
+                        new JObject
+                        {
+                            ["source"] = "agent_runtime_settings",
+                            ["dev"] = false
+                        }.ToString(Formatting.None));
+                case "settings_camera_preview":
+                    return OpenPanel(
+                        "settings",
+                        new JObject
+                        {
+                            ["source"] = "agent_runtime_settings",
+                            ["dev"] = false,
+                            ["initialView"] = "camera_preview"
+                        }.ToString(Formatting.None));
                 case "materials":
                     return RouteMaterialUi();
                 default:
@@ -2360,7 +2377,7 @@ namespace CF7Launcher.Guardian
                         PostToWeb("{\"type\":\"toast\",\"text\":\"战队面板暂时不可用\"}");
                     break;
                 case "TABLET": SendGameCommand("toggleTablet"); break;
-                case "GAMESETTINGS": SendGameCommand("openSettings"); break;
+                case "GAMESETTINGS": OpenSettingsPanel("nativehud_settings"); break;
                 case "JUKEBOX": SendGameCommand("openJukebox"); break;
                 case "JUKEBOX_EXPAND":
                     // Phase 5：launcher/web/modules/jukebox/jukebox-panel.js 已注册 Panels.register('jukebox')，
@@ -2643,6 +2660,11 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "hairdresser", StringComparison.OrdinalIgnoreCase))
             {
                 OpenHairdresserPanel(safeSource);
+                return;
+            }
+            if (string.Equals(panelName, "settings", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenSettingsPanel(safeSource);
                 return;
             }
             if (string.Equals(panelName, "skills", StringComparison.OrdinalIgnoreCase))
@@ -3335,6 +3357,22 @@ namespace CF7Launcher.Guardian
                 ["debug"] = false
             };
             OpenPanel("hairdresser", initData.ToString(Formatting.None));
+        }
+
+        private void OpenSettingsPanel(string source)
+        {
+            if (!string.Equals(source, "as2_settings_request", StringComparison.Ordinal)
+                && !string.Equals(source, "nativehud_settings", StringComparison.Ordinal))
+            {
+                LogManager.Log("[Router] OpenSettingsPanel rejected source=" + source);
+                return;
+            }
+            var initData = new JObject
+            {
+                ["source"] = source,
+                ["dev"] = false
+            };
+            OpenPanel("settings", initData.ToString(Formatting.None));
         }
 
         private static bool IsCraftingCategory(string category)

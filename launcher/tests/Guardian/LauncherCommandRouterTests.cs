@@ -165,7 +165,8 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("tasks")]
         [InlineData("team")]
         [InlineData("jukebox")]
-        public void AgentPanelOpen_UsesNarrowNoInitWhitelist(
+        [InlineData("settings")]
+        public void AgentPanelOpen_UsesNarrowWhitelist(
             string panelName)
         {
             Capture c = new Capture();
@@ -184,10 +185,33 @@ namespace CF7Launcher.Tests.Guardian
                 harness.Host.ActivePanelInstanceId);
         }
 
+        [Fact]
+        public void AgentPanelOpen_SettingsCameraPreview_MapsToExactSettingsView()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
+
+            Assert.True(
+                router.TryOpenAgentPanel("settings_camera_preview"));
+
+            Assert.Equal("settings", harness.Host.ActivePanelName);
+            JObject initData = harness.LastOpenPayload["initData"] as JObject;
+            Assert.NotNull(initData);
+            Assert.Equal(
+                "agent_runtime_settings",
+                initData.Value<string>("source"));
+            Assert.False(initData.Value<bool>("dev"));
+            Assert.Equal(
+                "camera_preview",
+                initData.Value<string>("initialView"));
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
         [InlineData("HELP")]
+        [InlineData("settings-camera-preview")]
         [InlineData("skills")]
         [InlineData("workbench")]
         [InlineData("../help")]

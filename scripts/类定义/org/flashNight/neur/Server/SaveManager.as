@@ -8,6 +8,7 @@ import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import LiteJSON;
 import JSON;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+import org.flashNight.arki.key.KeyManager;
 /**
  * SaveManager — 存档系统统一管理器（单例）
  *
@@ -210,6 +211,7 @@ class org.flashNight.neur.Server.SaveManager {
 
     // ==================== 状态 ====================
     private var _dirtyMark:Boolean;
+    private var _settingsMigrationPending:Boolean;
     private var _lastSaveHash:String;
     private var _liteJson:LiteJSON;
     private var _jsonParser:JSON;
@@ -257,6 +259,7 @@ class org.flashNight.neur.Server.SaveManager {
     // ==================== 构造 ====================
     private function SaveManager() {
         _dirtyMark = false;
+        _settingsMigrationPending = false;
         _lastSaveHash = "";
         _liteJson = new LiteJSON();
         _jsonParser = new JSON(false);
@@ -514,6 +517,8 @@ class org.flashNight.neur.Server.SaveManager {
             _dirtyMark = false;
             _root.存档系统.dirtyMark = false;
             _root.存盘标志 = 1;
+            _settingsMigrationPending = false;
+            KeyManager.clearPendingKeySettingsMigration();
         }
 
         _root.mydata = mydata;
@@ -1225,6 +1230,8 @@ class org.flashNight.neur.Server.SaveManager {
     public function newCharacter():Boolean {
         // deleteSlot() 禁用了存档，新建角色时恢复
         _root.允许存档 = true;
+        _settingsMigrationPending = false;
+        KeyManager.clearPendingKeySettingsMigration();
 
         // ext 命名空间主防线：新建角色无条件清空 _saveExt（成就/宠物购买次数等 per-character 数据）。
         // 覆盖「删档→新建」与「坏档→新建」两条路径（后者不经 deleteSlot，unpackGameState 已写入
@@ -1445,6 +1452,9 @@ class org.flashNight.neur.Server.SaveManager {
      */
     private function _applyCore(mydata:Object):Boolean {
         if (!validateMydata(mydata)) return false;
+        // 每次切换存档都从该存档重新判定迁移，不能继承上一个角色的待保存 latch。
+        _settingsMigrationPending = false;
+        KeyManager.clearPendingKeySettingsMigration();
         _root.mydata = mydata;
         if (!(mydata[0][10] instanceof Array)) mydata[0][10] = [];
         if (!(mydata[0][12] instanceof Array)) mydata[0][12] = [];
@@ -1542,6 +1552,11 @@ class org.flashNight.neur.Server.SaveManager {
         // 键值设定
         if (主角储存数据[10].length > 0) {
             _root.键值设定 = 主角储存数据[10];
+        }
+        // 读档后必须刷新逻辑键缓存与订阅的物理投影。旧实现只替换数组，
+        // 导致 _root 键码和 KeyManager 仍停留在启动默认值。
+        if (typeof _root.刷新键值设定 == "function") {
+            _root.刷新键值设定();
         }
 
         // 难度模式
@@ -2013,8 +2028,10 @@ class org.flashNight.neur.Server.SaveManager {
         if (!isNaN(s.setGlobalVolume)) _root.soundEffectManager.setGlobalVolume(s.setGlobalVolume);
         if (!isNaN(s.setBGMVolume)) _root.soundEffectManager.setBGMVolume(s.setBGMVolume);
         if (!isNaN(s.性能等级上限)) {
-            var cap:Number = Math.round(s.性能等级上限);
+            var rawPerformance:Number = Number(s.性能等级上限);
+            var cap:Number = Math.round(rawPerformance);
             cap = (cap >= 2) ? 1 : (cap < 0) ? 0 : cap;
+            if (rawPerformance != cap) _settingsMigrationPending = true;
             _root.帧计时器.性能等级上限 = cap;
         }
         if (s.cameraZoomToggle || s.cameraZoomToggle === false) _root.cameraZoomToggle = s.cameraZoomToggle;
@@ -2031,6 +2048,21 @@ class org.flashNight.neur.Server.SaveManager {
         if (s.jukeboxOverride || s.jukeboxOverride === false) sem.setJukeboxOverride(s.jukeboxOverride);
         if (s.jukeboxTrueRandom || s.jukeboxTrueRandom === false) sem.setTrueRandom(s.jukeboxTrueRandom);
         if (s.jukeboxPlayMode) sem.setPlayMode(s.jukeboxPlayMode);
+    }
+
+    /** 只读查询：设置读档归一是否仍未经过成功落盘。 */
+    public function hasPendingSettingsMigration():Boolean {
+        return _settingsMigrationPending;
+    }
+
+    /** 设置权威服务在读档外发现旧值时，通过同一 per-save latch 登记待持久化。 */
+    public function markSettingsMigrationPending():Void {
+        _settingsMigrationPending = true;
+    }
+
+    /** focused fixture 与权威存盘协调使用；生产清理由 _doSaveAll 成功分支负责。 */
+    public function clearPendingSettingsMigration():Void {
+        _settingsMigrationPending = false;
     }
 
     public function initInventory():Object {

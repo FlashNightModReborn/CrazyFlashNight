@@ -200,6 +200,30 @@
       "sourceChecks": []
     },
     {
+      "id": "settings",
+      "wireDomain": "settings",
+      "hostTask": "launcher/src/Tasks/SettingsTask.cs",
+      "flashResponseTask": "settings_response",
+      "hostResponseHandler": "settingsTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.ui.GameSettingsPanelService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/ui/GameSettingsPanelService.as"
+      ],
+      "commands": [
+        { "cmd": "snapshot", "action": "settingsSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "preview", "action": "settingsPreviewAudio", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "apply", "action": "settingsApply", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "cancel", "action": "settingsCancel", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "save", "action": "settingsSave", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "cheat", "action": "settingsCheat", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "return_base", "action": "settingsReturnBase", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "try_revive", "action": "settingsTryRevive", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
+    },
+    {
       "id": "kshop",
       "wireDomain": "shop",
       "hostTask": "launcher/src/Tasks/ShopTask.cs",

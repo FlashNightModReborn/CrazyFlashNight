@@ -21,11 +21,11 @@ $focusedRun = @{
         'org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^--- LongGunSubWeaponCoreTest: 472/472 passed, 0 failed ---\r?$'
+        '(?m)^--- LongGunSubWeaponCoreTest: 474/474 passed, 0 failed ---\r?$'
         '(?m)^--- ManualCooldownServiceTest: 50/50 passed, 0 failed ---\r?$'
         '(?m)^--- DrugInputServiceTest: 19/19 passed, 0 failed ---\r?$'
     )
-    SuccessSummary = 'LongGun 472/472, ManualCooldown 50/50, DrugInput 19/19'
+    SuccessSummary = 'LongGun 474/474, ManualCooldown 50/50, DrugInput 19/19'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

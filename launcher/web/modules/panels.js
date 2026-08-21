@@ -44,6 +44,7 @@ var Panels = (function() {
     function panelCloseMessage(id, initData, reason) {
         var closeMessage = {type:'panel', cmd:'close', panel:id};
         if (id === 'skills' || id === 'crafting' || id === 'kshop'
+                || id === 'settings'
                 || id === 'npcshop') {
             closeMessage.panelInstanceId = readPanelInstanceId(initData);
             if (id === 'npcshop' && isNpcShopOuterCloseReason(reason)) {
@@ -60,6 +61,7 @@ var Panels = (function() {
 
     function hostOwnsPanelMount(id, initData) {
         return id === 'loot' || id === 'workbench' || id === 'skills'
+            || id === 'settings'
             || id === 'crafting' || id === 'kshop' || id === 'npcshop';
     }
 

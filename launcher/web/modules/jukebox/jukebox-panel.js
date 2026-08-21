@@ -326,6 +326,7 @@
 
     function onOpen() {
         _opened = true;
+        applyTheme(loadTheme());
         // CRT 开机动画：class 重触发（元素常驻，每次 open 重放一次；perf-low-effects 全局禁用动画）
         _el.classList.remove('is-booting');
         void _el.offsetWidth;

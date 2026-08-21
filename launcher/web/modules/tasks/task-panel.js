@@ -347,6 +347,8 @@
     // ═══════════════════════════════════════════════════════════
     function onOpen(el, initData) {
         _session++;
+        try { _dialogueMode = localStorage.getItem('cf7.dialogueMode') === 'brief' ? 'brief' : 'rich'; }
+        catch (dialoguePreferenceError) { _dialogueMode = 'rich'; }
         _tasks = [];
         _activeIndex = -1;
         _filterMode = 'all';

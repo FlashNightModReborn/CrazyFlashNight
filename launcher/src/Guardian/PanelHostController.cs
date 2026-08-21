@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -199,6 +201,13 @@ namespace CF7Launcher.Guardian
 
         private volatile string _activePanel; // null = closed
         private volatile string _activePanelInstanceId;
+        // 仅在 settings 实例存活期间保留进入面板时的原分辨率裁切快照；不写磁盘、不进日志。
+        private string _activeSettingsPreviewDataUrl;
+        private int _activeSettingsPreviewWidth;
+        private int _activeSettingsPreviewHeight;
+        internal const int SettingsPreviewMaximumWidth = 4096;
+        internal const int SettingsPreviewMaximumHeight = 2304;
+        internal const int SettingsPreviewMaximumDataUriCharacters = 8 * 1024 * 1024;
         private bool _trackedOpenReserved;
         private bool _exactReplaceReserved;
         private volatile string _trackedLeasePanelName;
@@ -1699,11 +1708,23 @@ namespace CF7Launcher.Guardian
         /// FlashSnapshot.Capture + ComposeBackdrop。失败/无 flashHwnd 时降级纯暗 dim 占位。
         /// 黑帧检测命中 → 提高 dim 强度兜底，避免玩家看到全黑无对比。
         /// </summary>
-        private Bitmap CaptureBackdrop(Rectangle anchor)
+        private Bitmap CaptureBackdrop(
+            Rectangle anchor,
+            bool captureSettingsPreview,
+            out string settingsPreviewDataUrl,
+            out int settingsPreviewWidth,
+            out int settingsPreviewHeight)
         {
+            settingsPreviewDataUrl = null;
+            settingsPreviewWidth = 0;
+            settingsPreviewHeight = 0;
             IntPtr flashHwnd = (_flashHwndProvider != null) ? _flashHwndProvider() : IntPtr.Zero;
             if (flashHwnd == IntPtr.Zero)
+            {
+                if (captureSettingsPreview)
+                    LogManager.Log("[PanelHost] settings entry preview rejected: flash_hwnd_unavailable");
                 return ComposePlaceholderBackdrop(anchor);
+            }
             FlashSnapshot.SnapshotResult snap = null;
             try
             {
@@ -1716,7 +1737,39 @@ namespace CF7Launcher.Guardian
             }
             try
             {
-                bool isBlack = FlashSnapshot.IsLikelyBlackFrame(snap.FullSnapshot, snap.ContentRect);
+                FlashSnapshot.FrameSampleStats sample =
+                    FlashSnapshot.AnalyzeFrame(snap.FullSnapshot, snap.ContentRect);
+                bool isBlack = sample.IsLikelyBlack;
+                if (captureSettingsPreview)
+                {
+                    LogManager.Log(
+                        "[PanelHost] settings entry preview sample: accepted="
+                        + (!isBlack)
+                        + " mean=" + sample.AverageLuminance
+                        + " range=" + sample.MinimumLuminance + "-" + sample.MaximumLuminance
+                        + " variance=" + sample.Variance
+                        + " highlights=" + sample.HighlightCount + "/" + sample.SampleCount);
+                }
+                if (captureSettingsPreview && !isBlack)
+                {
+                    try
+                    {
+                        settingsPreviewDataUrl = EncodePanelPreviewDataUri(
+                            snap.FullSnapshot,
+                            snap.ContentRect,
+                            out settingsPreviewWidth,
+                            out settingsPreviewHeight);
+                        LogManager.Log(
+                            "[PanelHost] settings entry preview encoded: size="
+                            + settingsPreviewWidth + "x" + settingsPreviewHeight
+                            + " chars=" + settingsPreviewDataUrl.Length);
+                    }
+                    catch (Exception ex)
+                    {
+                        // 快照预览是体验增强；失败不得阻断现役 backdrop/open 序列。
+                        LogManager.Log("[PanelHost] settings entry preview encode failed: " + ex.Message);
+                    }
+                }
                 byte dimAlpha = isBlack ? (byte)220 : (byte)160;
                 return FlashSnapshot.ComposeBackdrop(snap.FullSnapshot, snap.ContentRect, dimAlpha);
             }
@@ -1724,6 +1777,109 @@ namespace CF7Launcher.Guardian
             {
                 if (snap.FullSnapshot != null) snap.FullSnapshot.Dispose();
             }
+        }
+
+        internal static string EncodePanelPreviewDataUri(
+            Bitmap fullSnapshot,
+            Rectangle contentRect,
+            out int previewWidth,
+            out int previewHeight)
+        {
+            previewWidth = 0;
+            previewHeight = 0;
+            if (fullSnapshot == null) throw new ArgumentNullException("fullSnapshot");
+            Rectangle bounds = new Rectangle(0, 0, fullSnapshot.Width, fullSnapshot.Height);
+            Rectangle source = Rectangle.Intersect(contentRect, bounds);
+            if (source.Width <= 0 || source.Height <= 0) source = bounds;
+            if (!AreSettingsPreviewDimensionsValid(source.Width, source.Height))
+                throw new InvalidOperationException(
+                    "settings preview dimensions outside bounded 16:9 contract: "
+                    + source.Width + "x" + source.Height);
+            previewWidth = source.Width;
+            previewHeight = source.Height;
+            using (var preview = fullSnapshot.Clone(source, PixelFormat.Format24bppRgb))
+            {
+                using (var stream = new MemoryStream())
+                {
+                    ImageCodecInfo jpegCodec = null;
+                    ImageCodecInfo[] encoders = ImageCodecInfo.GetImageEncoders();
+                    for (int i = 0; i < encoders.Length; i++)
+                    {
+                        if (encoders[i].FormatID == ImageFormat.Jpeg.Guid)
+                        {
+                            jpegCodec = encoders[i];
+                            break;
+                        }
+                    }
+                    if (jpegCodec == null) throw new InvalidOperationException("JPEG encoder unavailable");
+                    using (var parameters = new EncoderParameters(1))
+                    {
+                        parameters.Param[0] = new EncoderParameter(
+                            System.Drawing.Imaging.Encoder.Quality,
+                            90L);
+                        preview.Save(stream, jpegCodec, parameters);
+                    }
+                    string dataUrl = "data:image/jpeg;base64," + Convert.ToBase64String(stream.ToArray());
+                    if (dataUrl.Length > SettingsPreviewMaximumDataUriCharacters)
+                        throw new InvalidOperationException(
+                            "settings preview data URI exceeds bounded contract: " + dataUrl.Length);
+                    return dataUrl;
+                }
+            }
+        }
+
+        internal static bool AreSettingsPreviewDimensionsValid(int width, int height)
+        {
+            if (width <= 0 || height <= 0
+                || width > SettingsPreviewMaximumWidth
+                || height > SettingsPreviewMaximumHeight)
+                return false;
+            long aspectError = Math.Abs((long)width * 9L - (long)height * 16L);
+            return aspectError <= 16L;
+        }
+
+        internal static string AttachSettingsFlashPreview(
+            string panelName,
+            string initDataJson,
+            string dataUrl,
+            int width,
+            int height)
+        {
+            if (!string.Equals(panelName, "settings", StringComparison.Ordinal)) return initDataJson;
+            JObject initData;
+            try
+            {
+                initData = string.IsNullOrEmpty(initDataJson)
+                    ? new JObject()
+                    : JObject.Parse(initDataJson);
+            }
+            catch (JsonException)
+            {
+                initData = new JObject();
+            }
+            // settings 的截图字段只允许 Host 生成；先移除任何调用方同名输入。
+            initData.Remove("flashPreview");
+            if (string.IsNullOrEmpty(dataUrl)
+                || dataUrl.Length > SettingsPreviewMaximumDataUriCharacters
+                || !AreSettingsPreviewDimensionsValid(width, height)
+                || !dataUrl.StartsWith("data:image/jpeg;base64,", StringComparison.Ordinal))
+                return initData.ToString(Formatting.None);
+            initData["flashPreview"] = new JObject
+            {
+                ["v"] = 1,
+                ["source"] = "entry_flash_snapshot",
+                ["width"] = width,
+                ["height"] = height,
+                ["dataUrl"] = dataUrl
+            };
+            return initData.ToString(Formatting.None);
+        }
+
+        private void ClearActiveSettingsPreview()
+        {
+            _activeSettingsPreviewDataUrl = null;
+            _activeSettingsPreviewWidth = 0;
+            _activeSettingsPreviewHeight = 0;
         }
 
         private Bitmap ComposePlaceholderBackdrop(Rectangle anchor)
@@ -1836,7 +1992,25 @@ namespace CF7Launcher.Guardian
             Rectangle panelRect = PanelLayoutCatalog.GetRect(name, anchor);
 
             // Step 1-2: snapshot + compose（带 dim + letterbox 黑边保留 + 黑帧兜底）
-            Bitmap composed = CaptureBackdrop(anchor);
+            string settingsPreviewDataUrl;
+            int settingsPreviewWidth;
+            int settingsPreviewHeight;
+            Bitmap composed = CaptureBackdrop(
+                anchor,
+                string.Equals(name, "settings", StringComparison.Ordinal),
+                out settingsPreviewDataUrl,
+                out settingsPreviewWidth,
+                out settingsPreviewHeight);
+            if (string.Equals(name, "settings", StringComparison.Ordinal))
+            {
+                _activeSettingsPreviewDataUrl = settingsPreviewDataUrl;
+                _activeSettingsPreviewWidth = settingsPreviewWidth;
+                _activeSettingsPreviewHeight = settingsPreviewHeight;
+            }
+            else
+            {
+                ClearActiveSettingsPreview();
+            }
             // Step 3: backdrop show + 设 panel rect（屏幕坐标，backdrop 内自转 client）
             _backdrop.SetComposedAndShow(composed, anchor);
             _backdrop.SetPanelRect(panelRect);
@@ -1856,6 +2030,12 @@ namespace CF7Launcher.Guardian
                     name,
                     initDataJson,
                     instanceId);
+            initDataJson = AttachSettingsFlashPreview(
+                name,
+                initDataJson,
+                _activeSettingsPreviewDataUrl,
+                _activeSettingsPreviewWidth,
+                _activeSettingsPreviewHeight);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             bool delivered = true;
             try
@@ -1950,6 +2130,12 @@ namespace CF7Launcher.Guardian
                     name,
                     initDataJson,
                     instanceId);
+            initDataJson = AttachSettingsFlashPreview(
+                name,
+                initDataJson,
+                _activeSettingsPreviewDataUrl,
+                _activeSettingsPreviewWidth,
+                _activeSettingsPreviewHeight);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             bool delivered = false;
             try { delivered = _web.TryPostToWeb(payload); }
@@ -2184,6 +2370,7 @@ namespace CF7Launcher.Guardian
                     catch { }
                 }
                 ResumeHudCompanion();
+                ClearActiveSettingsPreview();
                 _activePanel = null;
                 _activePanelInstanceId = null;
                 PublishPanelChanged(
@@ -2260,6 +2447,7 @@ namespace CF7Launcher.Guardian
 
             _activePanel = null;
             _activePanelInstanceId = null;
+            ClearActiveSettingsPreview();
             PublishPanelChanged(
                 null,
                 null);
@@ -2281,6 +2469,7 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             _disposed = true;
+            ClearActiveSettingsPreview();
             try
             {
                 if (_ownerForm != null)
@@ -2477,6 +2666,7 @@ namespace CF7Launcher.Guardian
             string resetClosingInstance = _activePanelInstanceId;
             _activePanel = null;
             _activePanelInstanceId = null;
+            ClearActiveSettingsPreview();
             _trackedLeasePanelName = null;
             _trackedLeaseInstanceId = null;
             if (resetClosingName != null

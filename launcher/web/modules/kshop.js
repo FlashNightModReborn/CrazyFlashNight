@@ -113,7 +113,7 @@ var KShop = (function() {
     var _dragTooltipSuppressed = false;
     var _ownedTooltipSelectionSuppressed = false;
     var _tooltipScope = null;
-    var _layoutMode = 'full', _densityController = null;
+    var _layoutMode = 'full', _densityController = null, _layoutToggle = null;
     var _el, _shellEl, _grid, _balanceEl, _checkoutBtn, _loadingEl;
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
     var _procurementNavigation = KShopProcurementNavigation.create({
@@ -502,8 +502,8 @@ var KShop = (function() {
         if (_densityController) _densityController.destroy();
         _densityController = new Workbench.GridDensityController({panelId:'kshop'});
         _layoutMode = _densityController.mode;
-        var layoutToggle = _densityController.createToggle(function(mode) { _layoutMode = mode; });
-        _workbenchShell.addHeaderAction(layoutToggle);
+        _layoutToggle = _densityController.createToggle(function(mode) { _layoutMode = mode; });
+        _workbenchShell.addHeaderAction(_layoutToggle);
 
         _workbenchHelp = new WorkbenchComponents.HelpAction({shell:_workbenchShell});
 
@@ -690,6 +690,12 @@ var KShop = (function() {
         if (!/^[A-Za-z0-9._~-]{1,128}$/.test(_panelInstanceId)) {
             _panelInstanceId = '';
             return false;
+        }
+        var savedLayoutMode = Workbench.ItemGrid.getLayoutMode('kshop', 'compact');
+        if (_densityController) _densityController.setMode(savedLayoutMode);
+        _layoutMode = _densityController ? _densityController.mode : savedLayoutMode;
+        if (_layoutToggle && typeof _layoutToggle.setLayoutMode === 'function') {
+            _layoutToggle.setLayoutMode(_layoutMode);
         }
         _procurementNavigation.configure(initData);
         if (_scaleHandle) _scaleHandle.detach();

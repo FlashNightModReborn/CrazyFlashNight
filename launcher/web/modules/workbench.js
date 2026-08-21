@@ -894,6 +894,11 @@
 
         addOption('full', '完整', '显示名称、价格与物品状态');
         addOption('compact', '紧凑', '使用完整图标瓦片，一屏查看更多物品');
+        group.setLayoutMode = function(mode) {
+            if (mode !== 'full' && mode !== 'compact') return false;
+            updateSelection(mode);
+            return true;
+        };
         updateSelection(currentMode);
         return group;
     };

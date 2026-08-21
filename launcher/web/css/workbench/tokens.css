@@ -38,6 +38,19 @@
     --wb-role-pending: var(--wb-semantic-warning);
     --wb-role-disabled: var(--wb-semantic-disabled);
 
+    /* Launcher 首屏“黑铁终端”色板。
+       bootstrap 与少数明确复用启动器外壳语言的面板共同消费，避免各自复制色值。 */
+    --launcher-rust: #b83a2e;
+    --launcher-rust-rgb: 184,58,46;
+    --launcher-rust-deep: #7d2418;
+    --launcher-rust-dim: #3a130d;
+    --launcher-bone: #c8b28a;
+    --launcher-bone-rgb: 200,178,138;
+    --launcher-dust: #6a6258;
+    --launcher-bg-0: #05070a;
+    --launcher-bg-1: #0c0e12;
+    --launcher-copy: #d4d8dc;
+
     /* 动效语言：微交互、状态、结构、拒绝、等待、环境核心。 */
     --wb-motion-micro: 100ms;
     --wb-motion-standard: 160ms;

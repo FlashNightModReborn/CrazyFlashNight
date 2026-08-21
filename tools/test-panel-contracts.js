@@ -49,8 +49,8 @@ function run() {
     const report = validator.validateRepository({ root: ROOT, contract: clone(contract) });
     assert(report.ok, JSON.stringify(report.errors));
     assert(report.contractVersion === 2, "expected strict panel contract v2");
-    assert(report.checked.domains === 4, "expected four governed domains");
-    assert(report.checked.commands === 23, "expected twenty-three governed command mappings");
+    assert(report.checked.domains === 5, "expected five governed domains");
+    assert(report.checked.commands === 31, "expected thirty-one governed command mappings");
     const hairdresser = contract.domains.find(function (domain) {
       return domain.id === "hairdresser";
     });
@@ -64,6 +64,17 @@ function run() {
       && hairdresser.sourceChecks.length === 0
       && !contract.vectors.hairdresser,
       "hairdresser must not invent numeric boundaries or filler vectors");
+    const settings = contract.domains.find(function (domain) {
+      return domain.id === "settings";
+    });
+    assert(settings && settings.hostPayloadMode === "normalized"
+      && settings.commands.length === 8,
+      "settings must keep the normalized eight-command Flash boundary");
+    assert(settings.commands[0].cmd === "snapshot"
+      && settings.commands[1].cmd === "preview"
+      && settings.commands[2].cmd === "apply"
+      && settings.commands[7].cmd === "try_revive",
+      "settings command order and rescue boundary must remain explicit");
     const kshop = contract.domains.find(function (domain) {
       return domain.id === "kshop";
     });

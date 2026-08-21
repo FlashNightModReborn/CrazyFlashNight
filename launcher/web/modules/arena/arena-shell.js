@@ -272,6 +272,9 @@
     function onOpen(el, initData) {
         if (S._scaleHandle) S._scaleHandle.detach();
         S._scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(S._shellEl, 1024, 576) : null;
+        if (S._density && typeof Workbench !== 'undefined' && Workbench.ItemGrid) {
+            S._density.setMode(Workbench.ItemGrid.getLayoutMode('arena', 'compact'));
+        }
         S._session++;
         S._pendingReq = {};
         S._busy = false;

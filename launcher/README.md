@@ -63,9 +63,7 @@ CRAZYFLASHER7MercenaryEmpire.exe        native bootstrap，用户唯一正式入
    └─ GuardianForm + Flash SA + WebView2/V8 + Native HUD/Panel + Bus
 ```
 
-Bootstrap 使用纯 Win32/CRT，在启动 Core 前验证正式 runtime manifest、必要文件和 .NET Desktop Runtime。它把绝对项目根以 `--project-root` 传给 Core，并把剩余参数继续转发。
-
-Bootstrap 启动 Core 后保留 5 秒早退观察窗：Core 非零或未知退出时写启动失败摘要；Core 仍在运行时 bootstrap 才退出。长跑进程始终是 `runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe`。
+Bootstrap 使用纯 Win32/CRT，在启动 Core 前验证正式 runtime manifest、必要文件和 .NET Desktop Runtime。它把绝对项目根以 `--project-root` 传给 Core，并把剩余参数继续转发。启动 Core 后保留 5 秒早退观察窗：Core 非零或未知退出时写启动失败摘要；Core 仍在运行时 bootstrap 才退出。长跑进程始终是 `runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe`。
 
 关键日志：
 
@@ -357,6 +355,7 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `npcshop` | 工作台 | `modules/npcshop.js` |
 | `crafting` | 工作台 | `modules/crafting.js` |
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |
+| `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |
 | `help` | 工具 Panel | `modules/help-panel.js` |
 | `jukebox` | 工具 Panel | `modules/jukebox/jukebox-panel.js` |
@@ -373,7 +372,6 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `team` | 工作台 | `modules/team/team-panel.js` |
 | `tasks` | 业务 Panel | `modules/tasks/task-panel.js` |
 <!-- launcher-panel-registry:end -->
-
 Panel 的共同边界：
 
 - Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。
@@ -382,10 +380,13 @@ Panel 的共同边界：
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
 - close、Esc、backdrop、导航和 recovery 必须经过同一 lifecycle fence；迟到旧实例不得复活。
 - Workbench 的布局、密度、focus、tooltip、interaction broker 和 CSS 边界以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。
+- `settings` 在 `1024×576` anchor 内全屏复用游戏启动前 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不再为页签另起一行或保留重复“作弊码”页；玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
+  默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。35 键使用双列分区板和紧邻标签的控件，键名/键值至少 12px 且全部落在基准画布同屏。Host 只在打开设置时把已有 16:9 Flash 进入帧以原始裁切像素、JPEG quality 90 编成实例内静态图，最大 `4096×2304 / 8 MiB`，拒绝均匀近黑帧并保留暗色结构化画面；不再降采样为 `512×288`。
+  Flash SA 为 DPI Unaware 且显示器 DPI 高于窗口 DPI 时，输出仍保持 `GetClientRect` 的物理尺寸，但 GDI 源缓冲按 `windowDpi/monitorDpi` 换算并用 `StretchBlt` 还原到物理输出；其他 awareness 保持 1:1。捕获日志同时记录 source/output，`BitBlt/StretchBlt` 返回 false 必须显式失败，不能交付带静默黑边的位图。
+  镜头倍率使用全屏二级模拟器，入口基线按 16:9 填满舞台并保留自然像素；动态镜头关闭时仍按基础倍率预览。点歌器规则与 Web 主题集中在“本机与 Web”。Agent Runtime 仅允许 exact `settings` 与 `settings_camera_preview`；后者固定映射到 `settings + initialView:"camera_preview"`。闭环先用 Flash metadata-only grant + `window.list` 等待 surface 稳定，再用 fresh WebOverlay WGC 验证；它不授予 Flash pixels/input，也不应用或保存设置。
 - AS2/Host/Web 三层迁移、数据权威与旧 Flash UI 退役边界以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
-
 Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)和[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)。
 其中 `blackmarket` 只允许 `dev + shadowOnly` 测试入口，不是正式经济 Panel；lazy closure 在 core 后加载 dressup、共享 inspection viewport、`EquipmentInspector`、merc portrait、equipment preview、inspection focus 与 item surface。五类非颈部防具复用 `fieldsByGender → fit/draw` 局部取景，武器优先复用完整/复合 dressup 商品图；缺失装备素材仅以保 Alpha 锐化图标作影子回退。
 面板与主 SWF 共用固定 `1024×576` 逻辑画布，仅由 `PanelScale` 整体缩放；检视按旋转后物品包围盒与污泥外扩自动聚焦，变换不重跑污泥或改变购买选择。切组、无共同性别或失败时封存且不显示原图，像素按能力走独立 worker。统一 QA 入口见 [testing guide](../agentsDoc/testing-guide.md)；Panel 或 lazy closure 变更必须同步本表并通过 exact-set 治理。
@@ -426,5 +427,4 @@ chcp.com 65001 | Out-Null
 node tools/validate-doc-governance.js
 git diff --check
 ```
-
 发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。

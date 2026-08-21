@@ -57,6 +57,7 @@ _root.加载引导界面 = function(filename){
 // ============================================================
 if (_root.gameCommands == undefined) _root.gameCommands = {};
 org.flashNight.arki.ui.HairdresserPanelService.install();
+org.flashNight.arki.ui.GameSettingsPanelService.install();
 
 _root.gameCommands["togglePause"] = function() {
     _root.暂停 = !_root.暂停;  // watch 自动 pushUiState("p:0/1")
@@ -189,8 +190,10 @@ _root.gameCommands["openMaterialUI"] = function(params) {
     }
 };
 
-_root.gameCommands["openSettings"] = function() {
-    _root.系统设置界面._visible = !_root.系统设置界面._visible;
+// 设置已迁移为 Host 挂载的 Web Panel；游戏设置与键位仍由 AS2 判定。
+// 旧 SWF 仅作不可达归档，不再双路由。
+_root.gameCommands["openSettings"] = function():Boolean {
+    return org.flashNight.arki.ui.GameSettingsPanelService.openPanel();
 };
 
 _root.gameCommands["openJukebox"] = function() {

@@ -233,7 +233,14 @@ fresh WebOverlay observation may support visual reconciliation; it does not
 turn the earlier broker-dispatch receipt into domain or causal proof.
 
 Production accepts only panel names `help`, `map`, `tasks`, `team`, `jukebox`,
-and `materials`. `materials` reuses the fixed Host-to-AS2 `openMaterialUI`
+`settings`, `settings_camera_preview`, and `materials`. `settings` opens the
+Host-owned Web settings surface; `settings_camera_preview` is an exact diagnostic
+alias that maps to that same panel with `initialView:"camera_preview"` after the
+authoritative settings snapshot arrives. Neither name applies or saves settings,
+and neither creates Flash pixel/input authority. A runner that needs the entry
+Flash image must first use a metadata-only Flash grant plus `window.list` to wait
+past the startup `200×101` surface, then verify the visible result with a fresh
+WebOverlay WGC grant. `materials` reuses the fixed Host-to-AS2 `openMaterialUI`
 handshake with the `nativehud_materials` origin; it is not a direct Web-panel
 open. Its dispatch receipt must be followed by a fresh WebOverlay observation
 of the exact crafting/materials result. Every production panel-instance producer, including PanelHost, the
