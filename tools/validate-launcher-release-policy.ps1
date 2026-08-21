@@ -200,6 +200,12 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-npc-shops.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'item-set-metadata' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-item-sets.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'font-catalog-schema-and-assets' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\fontctl\cli.js'), 'validate', '--json') `
+        -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'font-catalog-generated-current' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\fontctl\cli.js'), 'generate', '--check', '--json') `
+        -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'arena-meta-teams-current' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\derive-arena-meta-teams.js'), '--check') -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'arena-factions-current' -FilePath $node `
@@ -321,7 +327,9 @@ function Get-Cf7ProductionChecks {
         'modules\dressup\dressup-panel.js', 'assets\dressup\manifest.json',
         'modules\portrait-resolver.js', 'assets\enemy-portraits\manifest.json',
         'modules\shop-portrait-resolver.js', 'assets\shop-portraits\manifest.json',
-        'modules\dialogue\dialogue-view.js', 'assets\dialogue-portraits\manifest.json'
+        'modules\dialogue\dialogue-view.js', 'assets\dialogue-portraits\manifest.json',
+        'generated\font-catalog.json', 'generated\font-catalog.css', 'generated\font-catalog.js',
+        'assets\fonts\font-pack-manifest.json'
     )
     $checks += New-Cf7RequiredPathsCheck -Name 'required-web-runtime-assets' `
         -Root (Join-Path $ProjectRoot 'launcher\web') -Paths $requiredWebPaths
@@ -345,6 +353,14 @@ function Get-Cf7ProductionChecks {
     $checks += New-Cf7RequiredPathsCheck -Name 'required-launcher-data-assets' `
         -Root (Join-Path $ProjectRoot 'launcher\data') `
         -Paths @('map_hud_data.json', 'save_repair_dict.json', 'save_schema.json')
+    $checks += New-Cf7RequiredPathsCheck -Name 'required-font-runtime-assets' `
+        -Root (Join-Path $ProjectRoot 'fonts') `
+        -Paths @(
+            'README.md', 'fonts.xml', 'fonts.xsd',
+            'licenses\JetBrainsMono-OFL-1.1.txt', 'licenses\SourceHanSerif-OFL-1.1.txt',
+            'permanent\runtime\jetbrains-mono.woff2',
+            'permanent\runtime\source-han-serif-cn-regular.otf'
+        )
     $checks += New-Cf7CommandCheck -Name 'save-repair-dictionary-current' -FilePath $npm `
         -Arguments @('run', 'verify', '--silent') `
         -WorkingDirectory (Join-Path $ProjectRoot 'tools\cf7-save-repair-dict-build')

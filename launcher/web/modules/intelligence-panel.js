@@ -549,11 +549,27 @@ var IntelligencePanel = (function() {
         } else {
             _refs.content.removeAttribute('data-writer-voice');
         }
+        applyFontContext(_refs.content, _snapshot.skin, _snapshot.writerVoice);
         renderIcon();
         renderCatalogPanel();
         renderPageList();
         renderPage();
         scheduleScaleUpdate();
+    }
+
+    function applyFontContext(element, skin, writerVoice) {
+        if (!element || !window.CF7FontCatalog
+            || typeof window.CF7FontCatalog.applyRoleContext !== 'function') return;
+        var presets = [];
+        if (skin === 'diary') presets.push('intelligence.diary');
+        var voices = {
+            neat: 'intelligence.neat',
+            rough: 'intelligence.rough',
+            plain: 'intelligence.plain',
+            weary: 'intelligence.weary'
+        };
+        if (voices[writerVoice]) presets.push(voices[writerVoice]);
+        window.CF7FontCatalog.applyRoleContext(element, { presets: presets });
     }
 
     function renderIcon() {
@@ -619,6 +635,7 @@ var IntelligencePanel = (function() {
         _refs.content.setAttribute('data-skin', term.skin || 'paper');
         if (term.writerVoice) _refs.content.setAttribute('data-writer-voice', term.writerVoice);
         else _refs.content.removeAttribute('data-writer-voice');
+        applyFontContext(_refs.content, term.skin, term.writerVoice);
         if (typeof IntelligenceComponentRenderer !== 'undefined') {
             IntelligenceComponentRenderer.render(_refs.content, term.blocks || [], {
                 pcName: _pcName,

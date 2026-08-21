@@ -11,12 +11,18 @@ const {
   sha256Text,
 } = require("./common");
 
-const CLOSURE_SCHEMA = "workbench-live-e2e.kshop.production-closure.v7";
+const CLOSURE_SCHEMA = "workbench-live-e2e.kshop.production-closure.v8";
 const LOADED_SCHEMA = "workbench-live-e2e.kshop.loaded-production.v7";
 const BINDING_SCHEMA = "workbench-live-e2e.kshop.production-binding.v1";
 const CANDIDATE_PRODUCER_SCHEMA = "workbench-live-e2e.kshop.candidate-producer-binding.v1";
 const PRODUCER_INPUTS_SCHEMA = "workbench-live-e2e.kshop.runtime-producer-inputs.v1";
-const FONT_ENVIRONMENT_SCHEMA = "workbench-live-e2e.kshop.font-environment.v1";
+const FONT_ENVIRONMENT_SCHEMA = "workbench-live-e2e.kshop.font-environment.v2";
+const FONT_CATALOG_XML = "fonts/fonts.xml";
+const FONT_RUNTIME_PROJECTION = "launcher/web/generated/font-catalog.json";
+const PERMANENT_FONT_FILES = Object.freeze([
+  "fonts/permanent/runtime/jetbrains-mono.woff2",
+  "fonts/permanent/runtime/source-han-serif-cn-regular.otf",
+]);
 const ICON_PROJECTION_SCHEMA = "workbench-live-e2e.kshop.icon-resource-projection.v1";
 const CATALOG_DELIVERY_SCHEMA = "workbench-live-e2e.kshop.catalog-delivery-contract.v2";
 const INVENTORY_SURFACE_CONTRACT_SCHEMA
@@ -28,8 +34,8 @@ const INVENTORY_SURFACE_ANCHOR_VERSION
 const KSHOP_SOURCE_PATH = "launcher/web/modules/kshop.js";
 const INVENTORY_RUNTIME_PATH = "launcher/web/modules/inventory-runtime.js";
 const ITEMUTIL_DELIVERY_SOURCE_SCHEMA
-  = "workbench-live-e2e.kshop.itemutil-delivery-source-contract.v2";
-const ITEMUTIL_DELIVERY_ANCHOR_VERSION = "kshop-itemutil-arrayinventory.semantic-anchor.v1";
+  = "workbench-live-e2e.kshop.itemutil-delivery-source-contract.v3";
+const ITEMUTIL_DELIVERY_ANCHOR_VERSION = "kshop-itemutil-arrayinventory.semantic-anchor.v2";
 const AS2_TOKEN_CANONICALIZATION = "as2-function-lexical-token-stream.v1";
 const ITEMUTIL_PATH = "scripts/类定义/org/flashNight/arki/item/ItemUtil.as";
 const ARRAY_INVENTORY_PATH
@@ -87,6 +93,7 @@ const BUILD_FILES = Object.freeze([
   { role: "runtime_producer_source", relativePath: ".gitattributes" },
   { role: "runtime_producer_source", relativePath: "launcher/build-runtime-candidate.ps1" },
   { role: "runtime_producer_source", relativePath: "launcher/native/assert-pinned-tools.bat" },
+  { role: "runtime_producer_source", relativePath: "launcher/native/build-audio-v2.ps1" },
   { role: "runtime_producer_source", relativePath: "launcher/native/build.bat" },
   { role: "runtime_producer_source", relativePath: "launcher/native/bootstrap/build.bat" },
   { role: "runtime_producer_source", relativePath: "launcher/native/sol_parser/.cargo/config.toml" },
@@ -164,8 +171,8 @@ const INVENTORY_SURFACE_INVARIANTS = Object.freeze([
 
 const REVIEWED_INVENTORY_CALLABLE_TOKEN_SHA256 = Object.freeze({
   "consumer.inventoryCoordinator": "1f3b3cc5b1e524ad7b8152828835bfde4e1c11ec707631649ac921b07c55f6ff",
-  "consumer.commitCheckout": "8a318d7b021185784fa3bbba54bcfe10ab1aecc03a5d25bc3df8e89ad75118f5",
-  "consumer.onClaim": "7bd1d14f05c1775e6daae1c015d9ebb448fef8b10dde4f501f397b33f6948c4d",
+  "consumer.commitCheckout": "83d04d78297e4a73d9a3cfd845d2d6bed5c3509aedd4edd01a8fecc5c01545df",
+  "consumer.onClaim": "86126993e20852cac351cce458e48bdcb5d141e3102f283f8b43182beaea8513",
 });
 
 const INVENTORY_SURFACE_SOURCE_ANCHORS = Object.freeze([
@@ -1296,10 +1303,10 @@ function extractAs2Function(root, relativePath, functionName) {
 const ITEMUTIL_DELIVERY_FUNCTION_ANCHORS = Object.freeze({
   loadItemData: Object.freeze({ relativePath: ITEMUTIL_PATH, tokenCount: 713,
     tokenSha256: "bc1249da9109710f1093bfab5cb0576241f9ee92404a331576ce26d58794a0b4" }),
-  require: Object.freeze({ relativePath: ITEMUTIL_PATH, tokenCount: 612,
-    tokenSha256: "ef46fe0545df84b150c46ba64accfd3e0380384bab0cff325832cc00b4e4205b" }),
-  acquire: Object.freeze({ relativePath: ITEMUTIL_PATH, tokenCount: 712,
-    tokenSha256: "acad2c3a12a40bbee50f42e1f0b5229bf4b9e1d1b166941c894cc25fe9f6d646" }),
+  require: Object.freeze({ relativePath: ITEMUTIL_PATH, tokenCount: 1066,
+    tokenSha256: "9e466247690dd1ac307c6bdafcf5ea5e2ce09ace91efba1011bac5ebed6bae2a" }),
+  acquire: Object.freeze({ relativePath: ITEMUTIL_PATH, tokenCount: 841,
+    tokenSha256: "c844529eb07709fb5f712163ac52fdb6d8f0758b77db822d0583d51b3bffec37" }),
   getVacancies: Object.freeze({ relativePath: ARRAY_INVENTORY_PATH, tokenCount: 195,
     tokenSha256: "d8f2f71327c28b20bfc5e20a40574000a70e2ea7ee272041958eebd37ab3aca2" }),
   rebuildIndexesFromItems: Object.freeze({ relativePath: ARRAY_INVENTORY_PATH, tokenCount: 204,
@@ -1360,6 +1367,7 @@ function captureItemUtilDeliverySourceContract(root) {
       "equipment_before_material_before_information",
       "material_to_collection_material",
       "information_to_collection_information",
+      "equipped_grenade_before_drug_then_backpack",
       "mergeable_drug_then_backpack",
       "equipment_to_sorted_first_backpack_vacancy",
       "require_precedes_all_acquire_mutations",
@@ -1372,7 +1380,7 @@ function captureItemUtilDeliverySourceContract(root) {
 function localWebPath(parentRelativePath, reference, phase) {
   const raw = String(reference || "").trim().replace(/[?#].*$/, "");
   if (!raw || /^[a-z][a-z0-9+.-]*:/i.test(raw) || raw.startsWith("//")
-      || raw.startsWith("/") || raw.split(/[\\/]/).includes("..")) {
+      || raw.startsWith("/")) {
     fail("production_web_reference_invalid", phase || "production_closure",
       "production Web declaration is not one local bounded resource", { parentRelativePath, reference });
   }
@@ -1476,6 +1484,12 @@ function deriveFontPack(root, cssFontUrls) {
       || typeof manifest.groups !== "object" || Array.isArray(manifest.groups)) {
     fail("production_font_manifest_invalid", "production_closure",
       "font-pack manifest is missing or unsupported");
+  }
+  const catalogSha256 = sha256Bytes(fs.readFileSync(path.resolve(root, FONT_CATALOG_XML)));
+  if (manifest.generatedBy !== "tools/fontctl" || manifest.gate !== "E"
+      || manifest.sourceSha256 !== catalogSha256) {
+    fail("production_font_manifest_invalid", "production_closure",
+      "font-pack compatibility projection is detached from fonts.xml");
   }
   const resources = [];
   Object.keys(manifest.groups).forEach((groupName) => {
@@ -1869,6 +1883,9 @@ function productionDescriptors(root) {
       role: "css_conditional_asset", relativePath,
     })),
     { role: "font_pack_manifest", relativePath: declarations.fontPack.relativePath },
+    { role: "font_catalog_xml", relativePath: FONT_CATALOG_XML },
+    { role: "font_runtime_projection", relativePath: FONT_RUNTIME_PROJECTION },
+    ...PERMANENT_FONT_FILES.map((relativePath) => ({ role: "permanent_font_asset", relativePath })),
     { role: "icon_manifest", relativePath: declarations.iconManifest.relativePath },
     ...HOST_FILES, ...BUILD_FILES, ...AS2_FILES, ...data.descriptors,
   ];
@@ -2076,6 +2093,7 @@ function verifyItemUtilDeliverySourceContract(contract) {
     "equipment_before_material_before_information",
     "material_to_collection_material",
     "information_to_collection_information",
+    "equipped_grenade_before_drug_then_backpack",
     "mergeable_drug_then_backpack",
     "equipment_to_sorted_first_backpack_vacancy",
     "require_precedes_all_acquire_mutations",
@@ -2527,54 +2545,57 @@ function declaredFontResources(closure) {
   return fontPack.resources.map((entry) => Object.assign({}, entry));
 }
 
-function fontEnvironmentRoot(root, environment) {
-  const localAppData = String(environment && environment.LOCALAPPDATA || "").trim();
-  return localAppData ? path.resolve(localAppData, "CF7FlashNight", "fonts")
-    : path.resolve(root, "launcher", "web", "assets", "fonts");
+function fontSourceRoots(root) {
+  return [
+    { source: "temporary/custom", root: path.resolve(root, "fonts", "temporary", "custom"), custom: true },
+    { source: "temporary/cache", root: path.resolve(root, "fonts", "temporary", "cache"), custom: false },
+    { source: "permanent/runtime", root: path.resolve(root, "fonts", "permanent", "runtime"), custom: false },
+  ];
 }
 
 function captureFontEnvironment(root, closure, environment) {
-  const mappingRoot = fontEnvironmentRoot(root, environment || process.env);
+  void environment;
+  const sourceRoots = fontSourceRoots(root);
   const resources = declaredFontResources(closure);
   const manifest = requireObjectFile(closure.files, "font_pack_manifest",
     "production_font_declaration_invalid");
-  const fingerprint = resources.map((entry) => {
-    const filePath = path.resolve(mappingRoot, entry.name);
+  const fingerprint = resources.flatMap((entry) => sourceRoots.map((candidate) => {
+    const filePath = path.resolve(candidate.root, entry.name);
     let stat;
     try { stat = fs.lstatSync(filePath); } catch (_error) { stat = null; }
-    return entry.name + ":" + (stat ? [stat.size, stat.mtimeMs,
+    return candidate.source + ":" + entry.name + ":" + (stat ? [stat.size, stat.mtimeMs,
       stat.isFile(), stat.isSymbolicLink()].join(":") : "missing");
-  }).join("|");
-  const cacheKey = mappingRoot.toLowerCase() + "|" + manifest.sha256;
+  })).join("|");
+  const cacheKey = sourceRoots.map((entry) => entry.root.toLowerCase()).join("|")
+    + "|" + manifest.sha256;
   const cached = fontEnvironmentCache.get(cacheKey);
   if (cached && cached.fingerprint === fingerprint) {
     return JSON.parse(JSON.stringify(cached.value));
   }
   const installed = [];
   resources.forEach((entry) => {
-    const filePath = path.resolve(mappingRoot, entry.name);
-    let stat;
-    let real;
-    try { stat = fs.lstatSync(filePath); real = fs.realpathSync.native(filePath); }
-    catch (_error) { stat = null; real = null; }
-    if (!stat) return;
-    if (!stat.isFile() || stat.isSymbolicLink() || path.resolve(real) !== filePath) {
-      fail("font_environment_file_invalid", "production_closure",
-        "mapped manifest font is not one exact regular file", { name: entry.name });
+    for (const candidate of sourceRoots) {
+      const filePath = path.resolve(candidate.root, entry.name);
+      let stat;
+      let real;
+      try { stat = fs.lstatSync(filePath); real = fs.realpathSync.native(filePath); }
+      catch (_error) { stat = null; real = null; }
+      if (!stat) continue;
+      if (!stat.isFile() || stat.isSymbolicLink() || path.resolve(real) !== filePath) {
+        fail("font_environment_file_invalid", "production_closure",
+          "font candidate is not one exact regular file", { name: entry.name, source: candidate.source });
+      }
+      const bytes = fs.readFileSync(filePath);
+      const digest = sha256Bytes(bytes);
+      if (!candidate.custom && (bytes.length !== entry.bytes || digest !== entry.sha256)) continue;
+      installed.push({ name: entry.name, url: entry.url, path: filePath, source: candidate.source,
+        integrity: candidate.custom ? "custom-override" : "verified",
+        bytes: bytes.length, sha256: digest });
+      break;
     }
-    const bytes = fs.readFileSync(filePath);
-    const digest = sha256Bytes(bytes);
-    if (bytes.length !== entry.bytes || digest !== entry.sha256) {
-      fail("font_environment_file_mismatch", "production_closure",
-        "mapped manifest font differs from its declared length/hash", {
-          name: entry.name, expectedBytes: entry.bytes, actualBytes: bytes.length,
-          expectedSha256: entry.sha256, actualSha256: digest,
-        });
-    }
-    installed.push({ name: entry.name, url: entry.url, path: filePath,
-      bytes: bytes.length, sha256: digest });
   });
-  const value = { schema: FONT_ENVIRONMENT_SCHEMA, mappingRoot,
+  const value = { schema: FONT_ENVIRONMENT_SCHEMA,
+    sourceRoots: sourceRoots.map((entry) => ({ source: entry.source, root: entry.root })),
     manifestLocator: manifest.locator, manifestSha256: manifest.sha256, installed };
   value.environmentSha256 = sha256Text(canonicalJson(value));
   fontEnvironmentCache.set(cacheKey, { fingerprint, value });

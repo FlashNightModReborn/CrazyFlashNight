@@ -274,6 +274,21 @@ layers:
       # 烘焙/导出审计报告（开发产物，非运行时加载）
       - "assets/**/report.json"
 
+  - name: runtime-fonts
+    description: "C#/Web 字体真源、许可证与常驻运行时字体（临时覆盖/缓存整体排除）"
+    source: "fonts/"
+    include:
+      - "README.md"
+      - "fonts.xml"
+      - "fonts.xsd"
+      - "licenses/*.txt"
+      - "permanent/runtime/*.otf"
+      - "permanent/runtime/*.ttf"
+      - "permanent/runtime/*.woff"
+      - "permanent/runtime/*.woff2"
+    exclude:
+      - "temporary/**"
+
   - name: launcher-data
     description: "Launcher 运行时数据（MapHud catalog、存档修复字典、存档 schema）"
     source: "launcher/data/"
@@ -322,10 +337,9 @@ layers:
     exclude: []
 
   - name: root-dirs
-    description: "根目录文件夹（字体、教程、fscommand 启动桥）"
+    description: "根目录文件夹（教程、fscommand 启动桥；Flash 作者字体不再进入 C#/Web 玩家包）"
     source: "."
     include:
-      - "闪7重置版字体/**"
       - "0.说明文件与教程/**"
       # fscommand/launch_rag.bat：当前为 RAG dev 桥，同时给后续 DLC 预留外部进程启动通道，
       # 分发包必须保留；DLC 缺位时 fscommand("exec") 静默失败即可

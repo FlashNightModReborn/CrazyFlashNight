@@ -111,6 +111,13 @@ foreach ($step in $nodeSteps) {
         -WorkingDirectory $ProjectRoot
 }
 
+$fontCtl = Join-Path $ProjectRoot 'tools\fontctl\cli.js'
+if (-not (Test-Path -LiteralPath $fontCtl -PathType Leaf)) {
+    throw "Font catalog generator missing: $fontCtl"
+}
+Invoke-Cf7PrepareCommand -Name 'derive Gate E font runtime projections' -FilePath $nodePath `
+    -Arguments @($fontCtl, 'generate', '--json') -WorkingDirectory $ProjectRoot
+
 $repairDictDir = Join-Path $ProjectRoot 'tools\cf7-save-repair-dict-build'
 if (-not (Test-Path -LiteralPath (Join-Path $repairDictDir 'package.json') -PathType Leaf)) {
     throw "Save repair dictionary generator missing: $repairDictDir"
@@ -154,7 +161,11 @@ $generatedOutputs = @(
     'launcher/web/modules/arena-unit-param-presets.js',
     'launcher/web/modules/arena-custom-presets.js',
     'launcher/data/save_repair_dict.json',
-    'launcher/data/save_schema.json'
+    'launcher/data/save_schema.json',
+    'launcher/web/generated/font-catalog.json',
+    'launcher/web/generated/font-catalog.css',
+    'launcher/web/generated/font-catalog.js',
+    'launcher/web/assets/fonts/font-pack-manifest.json'
 )
 
 $stale = @()

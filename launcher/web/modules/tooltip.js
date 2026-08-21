@@ -988,7 +988,10 @@ var PanelTooltip = (function() {
         var face = node.getAttribute('face');
         if (face) {
             var f = face.replace(/[^\w一-龥 \-]/g, '').replace(/\s+/g, ' ');   // 仅字母/数字/中文/空格/连字符
-            if (f) style.push("font-family:'" + f + "'");
+            var mapped = f && window.CF7FontCatalog && typeof window.CF7FontCatalog.legacyFamily === 'function'
+                ? window.CF7FontCatalog.legacyFamily(f)
+                : null;
+            if (mapped) style.push('font-family:' + mapped);
         }
         return style.join(';');
     }

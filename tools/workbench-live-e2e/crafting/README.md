@@ -4,6 +4,8 @@
 
 本目录只提供 Crafting 的生产取证、复验与 fail-closed Gate，不修改 Host、AS2、Web 业务实现，也不自行批准上线。共享 `runtime-module-journal` 的既有准入结论只覆盖共享 API；Crafting consumer 仍须取得独立 live receipt，并由不同作者完成终局审阅。
 
+2026-08-21 字体 Gate E current-tree 复核：`bootstrap.js --check` 为 `266/266`；production closure v8 精确覆盖 257 个文件，browser child 闭合 376 项 module manifest、72 个实际资源与 1,477 次 occurrence。闭包现在同时绑定 `fonts/fonts.xml`、XML-hash catalog/compatibility projection、两项 permanent 实体及 generated CSS/JS；独立浏览器仅忽略自身缺少 Host exact-set handler 导致的 `cfn-fonts.local` 请求失败，不把空响应冒充字体字节。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文若仍以“当前”描述 2026-08-08 或更早的 243-file/旧资源数，只是历史合同解释，均由本段取代。
+
 历史审计结果保留如下，均不得替代当前 Gate：
 
 - `18/18`（3 个正例、15 个负例）：`Superseded / Reopened`；

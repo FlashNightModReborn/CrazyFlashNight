@@ -3849,7 +3849,7 @@ html.perf-low-effects .map-panel-close-btn::before {
     border: 1px solid rgba(60, 200, 100, 0.32);
     border-radius: 0;
     padding: 1px 4px;
-    font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    font-family: var(--cf7-font-web-intelligence-terminal);
     letter-spacing: 0.02em;
     text-shadow: 0 0 4px rgba(80, 230, 120, 0.45);
 }
@@ -3859,7 +3859,7 @@ html.perf-low-effects .map-panel-close-btn::before {
     color: #5dd57a;
     background: #0a0f0c;
     padding: 0 3px;
-    font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    font-family: var(--cf7-font-web-intelligence-terminal);
     text-shadow: 0 0 4px rgba(80, 230, 120, 0.45);
 }
 
@@ -4587,7 +4587,7 @@ html.perf-low-effects .map-panel-close-btn::before {
    适合：临终遗言段、人物告别、悲剧定格、宿命陈述。 */
 .intel-h5-outburst-lament {
     color: #4a3530;
-    font-family: var(--intel-font-emotional);
+    font-family: var(--intel-font-outburst);
     font-size: 1.34em;
     line-height: 1.3;
     letter-spacing: 0.06em;

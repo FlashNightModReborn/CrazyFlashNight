@@ -4,6 +4,8 @@
 
 本目录提供 KShop A3 的隔离旅程编排、被动观察和证据验签。当前生产树已输出真正的 `event=panel_exact_close_completed`；verifier 要求首进程与重启进程各有且仅有一份同 owner 收据，并验证 `close request → [PanelHost] closed: kshop → completion receipt`。首进程收据必须早于 archive，重启进程收据必须是相关 Host 尾记录。
 
+2026-08-21 字体 Gate E current-tree 复核：`bootstrap.js --check` 为 `249/249`；production closure v8 精确覆盖 205 个文件，browser child 为 `151/151`，闭合 370 项 module manifest、83 个实际资源与 314 次 occurrence。闭包现在同时绑定 `fonts/fonts.xml`、XML-hash catalog/compatibility projection、两项 permanent 实体及 generated CSS/JS；独立浏览器只允许其缺少 Host exact-set handler 所导致的 `cfn-fonts.local` 请求失败。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文 v7、198-file、150/150 等旧“当前”快照保留作历史解释，均由本段取代。
+
 P5 另增加一条不购买、不领取、不保存的旧存档读回旅程：[`../kshop-legacy-readback.js`](../kshop-legacy-readback.js) 只把显式授权的 seed 逐字节复制到专用 `cf7_agent_*` 槽，绑定 exact candidate 后，以真实 WebView2 和物理 GUI 输入完成同进程两次开关及新进程第三次读回。关闭证据只接受两种现役入口：命中可见且 enabled 的 header close button 的 `isTrusted` 左键 click，或紧邻 exact close request、哈希连续且已经隐藏面板的 Host `panel_esc`；后者在报告中固定标记 `browserIsTrusted:false / physicalInputAttestation:false`，不能冒充浏览器 DOM 物理点击，实际 Escape 操作仍由外部 GUI 执行记录证明。它固定核对 catalog 数量、K 点、历史待领取投影、原始数字字符串、clone 商城字段与玩家原档 SHA-256；任何 KShop 写命令、原档字节变化、clone 商城变化或跨次投影漂移都 fail closed。该入口用于旧存档只读兼容回归，不替代下文带一次购买、SAFEEXIT 和完整 Inventory surface 的 canonical A3 写旅程。关闭判定的纯函数反例先跑 `node tools/workbench-live-e2e/kshop-legacy-readback.self-test.js`，当前为 **7/7**。
 
 ```powershell

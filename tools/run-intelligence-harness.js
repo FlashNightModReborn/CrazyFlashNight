@@ -12,6 +12,7 @@ function parseArgs(argv) {
     const args = {
         browser: 'edge',
         viewport: '1366x768',
+        scale: 1,
         caseId: '',
         headed: false
     };
@@ -25,6 +26,13 @@ function parseArgs(argv) {
             i += 1;
         } else if (arg === '--case') {
             args.caseId = argv[i + 1] || '';
+            i += 1;
+        } else if (arg === '--scale') {
+            args.scale = Number(argv[i + 1]);
+            if (![1, 1.25, 1.5, 1.75].includes(args.scale)) {
+                printHelp(1, '--scale must be one of 1, 1.25, 1.5, 1.75');
+                return null;
+            }
             i += 1;
         } else if (arg === '--headed') {
             args.headed = true;
@@ -41,7 +49,7 @@ function parseArgs(argv) {
 
 function printHelp(exitCode, error) {
     if (error) console.error(error);
-    console.error('usage: node tools/run-intelligence-harness.js [--browser edge|chrome] [--viewport 1366x768] [--case <id>] [--headed]');
+    console.error('usage: node tools/run-intelligence-harness.js [--browser edge|chrome] [--viewport 1366x768] [--scale 1|1.25|1.5|1.75] [--case <id>] [--headed]');
     process.exit(exitCode);
 }
 
@@ -86,7 +94,7 @@ async function main() {
         executablePath,
         headless: !args.headed
     });
-    const page = await browser.newPage({ viewport });
+    const page = await browser.newPage({ viewport, deviceScaleFactor: args.scale });
     const failedRequests = [];
     const pageErrors = [];
     page.on('requestfailed', request => {
@@ -118,6 +126,7 @@ async function main() {
         browser: args.browser,
         executablePath,
         viewport: args.viewport,
+        scale: args.scale,
         qa: result,
         failedRequests,
         brokenImages,

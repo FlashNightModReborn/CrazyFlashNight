@@ -130,7 +130,7 @@ async function run() {
   const filteredAssertions = filteredIds.map((id) =>
     qaResults.filter((entry) => entry && entry.id === id));
   if (!result || !result.qa || result.qa.passed !== result.qa.total
-      || result.qa.total !== 150 || result.qa.failed !== 0
+      || result.qa.total !== 151 || result.qa.failed !== 0
       || assertionIds.some((id) => typeof id !== "string" || !id)
       || new Set(assertionIds).size !== assertionIds.length
       || filteredAssertions.some((entries) => entries.length !== 1 || entries[0].pass !== true)

@@ -8,13 +8,15 @@ using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CF7Launcher.Fonts;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Tasks
 {
     /// <summary>
-    /// 字体包按需下载。manifest 列出 group → files，每个 file 带 SHA256 + 镜像 url 列表 + 可选 shipped fallback。
-    /// 落盘到 %LOCALAPPDATA%/CF7FlashNight/fonts/，WebOverlayForm 把该目录挂为 cfn-fonts.local 虚拟主机优先映射。
+    /// 字体包按需下载。由 fonts.xml 生成的兼容投影列出 group → files，
+    /// 每个 file 带 SHA256 + 镜像 url 列表。下载只落盘到 fonts/temporary/cache；
+    /// WebView2 只通过 RuntimeFontCatalog exact-set handler 读取。
     ///
     /// 协议（async via MessageRouter）：
     ///   { task:"font_pack", payload:{ op:"status" } }
@@ -27,8 +29,9 @@ namespace CF7Launcher.Tasks
     public class FontPackTask
     {
         private readonly string _projectRoot;
-        private readonly string _shippedFontsDir;   // launcher/web/assets/fonts (兜底 + manifest 来源)
-        private readonly string _appDataFontsDir;   // %LOCALAPPDATA%/CF7FlashNight/fonts (优先目录)
+        private readonly string _cacheFontsDir;
+        private readonly string _permanentFontsDir;
+        private readonly string _catalogPath;
         private readonly string _manifestPath;
         private readonly INotchSink _notchSink;
         private readonly IToastSink _toastSink;
@@ -43,8 +46,9 @@ namespace CF7Launcher.Tasks
         private long _lastProgressTickMs;
         private const int PROGRESS_THROTTLE_MS = 250;
         private const int DOWNLOAD_BUFFER = 64 * 1024;
+        private const int MAX_REDIRECTS = 5;
 
-        public string AppDataFontsDir { get { return _appDataFontsDir; } }
+        public string CacheFontsDir { get { return _cacheFontsDir; } }
 
         public void SetProgressSink(Action<JObject> sink)
         {
@@ -68,34 +72,14 @@ namespace CF7Launcher.Tasks
             _projectRoot = projectRoot;
             _notchSink = notchSink;
             _toastSink = toastSink;
-            _shippedFontsDir = Path.Combine(projectRoot, "launcher", "web", "assets", "fonts");
-            _manifestPath = Path.Combine(_shippedFontsDir, "font-pack-manifest.json");
-
-            string baseAppData;
-            try
-            {
-                baseAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            }
-            catch { baseAppData = null; }
-
-            if (string.IsNullOrEmpty(baseAppData))
-            {
-                _appDataFontsDir = _shippedFontsDir;
-                LogManager.Log("[FontPack] LOCALAPPDATA unavailable, AppData fonts dir = shipped dir");
-            }
-            else
-            {
-                _appDataFontsDir = Path.Combine(baseAppData, "CF7FlashNight", "fonts");
-                try { Directory.CreateDirectory(_appDataFontsDir); }
-                catch (Exception ex)
-                {
-                    LogManager.Log("[FontPack] Failed to create AppData fonts dir: " + ex.Message);
-                    _appDataFontsDir = _shippedFontsDir;
-                }
-            }
+            _manifestPath = Path.Combine(projectRoot, "launcher", "web", "assets", "fonts", "font-pack-manifest.json");
+            _catalogPath = Path.Combine(projectRoot, "fonts", "fonts.xml");
+            _cacheFontsDir = Path.Combine(projectRoot, "fonts", "temporary", "cache");
+            _permanentFontsDir = Path.Combine(projectRoot, "fonts", "permanent", "runtime");
+            try { Directory.CreateDirectory(_cacheFontsDir); }
+            catch (Exception ex) { LogManager.Log("[FontPack] Failed to create cache dir: " + ex.Message); }
 
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-            EnsureShippedFallbacksAvailable("ctor");
         }
 
         public void HandleAsync(JObject message, Action<string> respond)
@@ -149,8 +133,8 @@ namespace CF7Launcher.Tasks
 
         private string HandleStatus()
         {
-            LogManager.Log("[FontPack] status entry: appData=" + _appDataFontsDir
-                + " shipped=" + _shippedFontsDir);
+            LogManager.Log("[FontPack] status entry: cache=" + _cacheFontsDir
+                + " permanent=" + _permanentFontsDir);
             JObject manifest;
             string err;
             if (!TryLoadManifest(out manifest, out err))
@@ -214,8 +198,9 @@ namespace CF7Launcher.Tasks
             resp["success"] = true;
             resp["task"] = "font_pack";
             resp["op"] = "status";
-            resp["fontsDir"] = _appDataFontsDir;
-            resp["shippedDir"] = _shippedFontsDir;
+            resp["fontsDir"] = _cacheFontsDir;
+            resp["cacheDir"] = _cacheFontsDir;
+            resp["permanentDir"] = _permanentFontsDir;
             resp["downloadInProgress"] = _downloadInProgress;
             resp["groups"] = groupsArr;
             return resp.ToString(Formatting.None);
@@ -231,7 +216,7 @@ namespace CF7Launcher.Tasks
             LogManager.Log("[FontPack] download_group entry: group=" + (groupName ?? "(null)")
                 + " progressSink=" + (_progressSink != null ? "ON" : "OFF")
                 + " inProgress=" + _downloadInProgress
-                + " appData=" + _appDataFontsDir);
+                + " cache=" + _cacheFontsDir);
             if (string.IsNullOrEmpty(groupName))
                 return BuildError("missing group", "download_group");
 
@@ -464,25 +449,29 @@ namespace CF7Launcher.Tasks
             err = null;
             string name = fileEntry.Value<string>("name");
             string expectedSha = (fileEntry.Value<string>("sha256") ?? "").ToLowerInvariant();
+            long expectedBytes = fileEntry.Value<long?>("bytes") ?? 0L;
             JArray urls = fileEntry.Value<JArray>("urls");
-            bool shippedFallback = fileEntry.Value<bool?>("shippedFallback") ?? false;
             if (!IsSafeFontFileName(name))
             {
                 err = "unsafe_file_name";
                 return false;
             }
-            try { Directory.CreateDirectory(_appDataFontsDir); }
+            if (!IsSha256(expectedSha) || expectedBytes < 1 || expectedBytes > RuntimeFontCatalog.MaxFontBytes)
+            {
+                err = "invalid_integrity_contract";
+                return false;
+            }
+            try { Directory.CreateDirectory(_cacheFontsDir); }
             catch (Exception ex)
             {
                 err = "cannot_create_fonts_dir: " + ex.Message;
                 return false;
             }
 
-            string targetPath = Path.Combine(_appDataFontsDir, name);
-            string tmpPath = targetPath + ".download.tmp";
+            string targetPath = Path.Combine(_cacheFontsDir, name);
 
             // 已存在且校验通过：跳过
-            if (File.Exists(targetPath) && VerifySha256(targetPath, expectedSha))
+            if (VerifyFile(targetPath, expectedSha, expectedBytes))
                 return true;
 
             List<string> attemptedErrors = new List<string>();
@@ -496,13 +485,15 @@ namespace CF7Launcher.Tasks
                     string url = t.Value<string>();
                     if (string.IsNullOrEmpty(url)) continue;
 
+                    string tmpPath = Path.Combine(_cacheFontsDir,
+                        "." + name + ".download." + Guid.NewGuid().ToString("N") + ".tmp");
                     string downloadErr;
-                    if (TryDownloadUrl(url, tmpPath, ctx, out downloadErr))
+                    if (TryDownloadUrl(url, tmpPath, expectedBytes, ctx, out downloadErr))
                     {
                         if (IsCancelled()) { err = "cancelled"; try { File.Delete(tmpPath); } catch { } return false; }
-                        if (!VerifySha256(tmpPath, expectedSha))
+                        if (!VerifyFile(tmpPath, expectedSha, expectedBytes))
                         {
-                            attemptedErrors.Add(url + " :: sha256_mismatch");
+                            attemptedErrors.Add(url + " :: integrity_mismatch");
                             try { File.Delete(tmpPath); } catch { }
                             continue;
                         }
@@ -512,37 +503,10 @@ namespace CF7Launcher.Tasks
                     }
                     else
                     {
+                        try { if (File.Exists(tmpPath)) File.Delete(tmpPath); } catch { }
                         if (downloadErr == "cancelled") { err = "cancelled"; return false; }
                         attemptedErrors.Add(url + " :: " + downloadErr);
                     }
-                }
-            }
-
-            // 2) shippedFallback：从 launcher/web/assets/fonts/ 复制
-            if (shippedFallback)
-            {
-                string shippedPath = Path.Combine(_shippedFontsDir, name);
-                if (File.Exists(shippedPath) && VerifySha256(shippedPath, expectedSha))
-                {
-                    try
-                    {
-                        File.Copy(shippedPath, tmpPath, true);
-                        string moveErr;
-                        if (TryMoveAtomic(tmpPath, targetPath, out moveErr))
-                        {
-                            LogManager.Log("[FontPack] " + name + " — copied from shipped fallback");
-                            return true;
-                        }
-                        attemptedErrors.Add("shipped_fallback :: move_failed: " + moveErr);
-                    }
-                    catch (Exception ex)
-                    {
-                        attemptedErrors.Add("shipped_fallback :: copy_failed: " + ex.Message);
-                    }
-                }
-                else
-                {
-                    attemptedErrors.Add("shipped_fallback :: not_present_or_sha_mismatch");
                 }
             }
 
@@ -554,7 +518,7 @@ namespace CF7Launcher.Tasks
         /// 流式下载：HttpWebRequest + 64KB buffer + 每 chunk 检查 cancel + 节流推进度。
         /// 返回 false / err="cancelled" 时上层应判断为用户取消，不再做后续 url 重试。
         /// </summary>
-        private bool TryDownloadUrl(string url, string destPath, DownloadCtx ctx, out string err)
+        private bool TryDownloadUrl(string url, string destPath, long expectedBytes, DownloadCtx ctx, out string err)
         {
             err = null;
             LogManager.Log("[FontPack] HTTP GET " + url + " → " + destPath);
@@ -563,22 +527,49 @@ namespace CF7Launcher.Tasks
             FileStream dst = null;
             try
             {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.UserAgent = "CF7Launcher-FontPack/1.0";
-                req.Timeout = 30000;
-                req.ReadWriteTimeout = 30000;
-                req.AllowAutoRedirect = true;
-                resp = (HttpWebResponse)req.GetResponse();
+                Uri current;
+                if (!TryValidateDownloadUri(url, out current, out err)) return false;
+                for (int redirect = 0; ; redirect++)
+                {
+                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(current);
+                    req.UserAgent = "CF7Launcher-FontPack/2.0";
+                    req.Timeout = 30000;
+                    req.ReadWriteTimeout = 30000;
+                    req.AllowAutoRedirect = false;
+                    resp = (HttpWebResponse)req.GetResponse();
+                    int status = (int)resp.StatusCode;
+                    if (status == 301 || status == 302 || status == 303 || status == 307 || status == 308)
+                    {
+                        if (redirect >= MAX_REDIRECTS) { err = "redirect_limit"; return false; }
+                        string location = resp.Headers[HttpResponseHeader.Location];
+                        Uri next;
+                        Uri validatedNext;
+                        if (string.IsNullOrEmpty(location)
+                            || !Uri.TryCreate(current, location, out next)
+                            || !TryValidateDownloadUri(next.AbsoluteUri, out validatedNext, out err)) return false;
+                        resp.Close();
+                        resp = null;
+                        current = validatedNext;
+                        continue;
+                    }
+                    if (status != 200) { err = "http_" + status; return false; }
+                    break;
+                }
 
                 long contentLength = resp.ContentLength;  // -1 if unknown
                 LogManager.Log("[FontPack] HTTP " + (int)resp.StatusCode + " content-length="
                     + contentLength + " final-uri=" + resp.ResponseUri);
-                long fileBytesTotalForUi = contentLength > 0 ? contentLength : ctx.FileBytesTotal;
+                if (contentLength > 0 && contentLength != expectedBytes)
+                {
+                    err = "content_length_mismatch:" + contentLength;
+                    return false;
+                }
+                long fileBytesTotalForUi = expectedBytes;
                 if (ctx != null && fileBytesTotalForUi > 0)
                     ctx.FileBytesTotal = fileBytesTotalForUi;
 
                 src = resp.GetResponseStream();
-                dst = new FileStream(destPath, FileMode.Create, FileAccess.Write, FileShare.None, DOWNLOAD_BUFFER);
+                dst = new FileStream(destPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, DOWNLOAD_BUFFER);
 
                 byte[] buffer = new byte[DOWNLOAD_BUFFER];
                 long downloaded = 0;
@@ -593,8 +584,19 @@ namespace CF7Launcher.Tasks
                     }
                     dst.Write(buffer, 0, read);
                     downloaded += read;
+                    if (downloaded > expectedBytes || downloaded > RuntimeFontCatalog.MaxFontBytes)
+                    {
+                        err = "response_too_large";
+                        return false;
+                    }
                     if (ctx != null) EmitProgress(ctx, downloaded, false);
                 }
+                if (downloaded != expectedBytes)
+                {
+                    err = "response_bytes_mismatch:" + downloaded;
+                    return false;
+                }
+                dst.Flush(true);
                 return true;
             }
             catch (Exception ex)
@@ -615,24 +617,37 @@ namespace CF7Launcher.Tasks
         private static bool TryMoveAtomic(string srcPath, string dstPath, out string err)
         {
             err = null;
+            string backup = dstPath + "." + Guid.NewGuid().ToString("N") + ".bak";
+            bool movedExisting = false;
             try
             {
-                if (File.Exists(dstPath)) File.Delete(dstPath);
+                if (File.Exists(dstPath))
+                {
+                    File.Move(dstPath, backup);
+                    movedExisting = true;
+                }
                 File.Move(srcPath, dstPath);
+                if (movedExisting) File.Delete(backup);
                 return true;
             }
             catch (Exception ex)
             {
+                try { if (File.Exists(srcPath)) File.Delete(srcPath); } catch { }
+                if (movedExisting && !File.Exists(dstPath) && File.Exists(backup))
+                    try { File.Move(backup, dstPath); } catch { }
                 err = ex.Message;
                 return false;
             }
         }
 
-        private static bool VerifySha256(string filePath, string expectedHex)
+        private static bool VerifyFile(string filePath, string expectedHex, long expectedBytes)
         {
-            if (string.IsNullOrEmpty(expectedHex)) return true; // manifest 未声明 sha 时不卡门
+            if (!IsSha256(expectedHex) || expectedBytes < 1 || expectedBytes > RuntimeFontCatalog.MaxFontBytes)
+                return false;
             try
             {
+                FileInfo info = new FileInfo(filePath);
+                if (!info.Exists || info.Length != expectedBytes) return false;
                 using (FileStream fs = File.OpenRead(filePath))
                 using (SHA256 sha = SHA256.Create())
                 {
@@ -645,13 +660,46 @@ namespace CF7Launcher.Tasks
             catch { return false; }
         }
 
+        private static bool IsSha256(string value)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length != 64) return false;
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
+                if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))) return false;
+            }
+            return true;
+        }
+
+        private static bool TryValidateDownloadUri(string value, out Uri uri, out string err)
+        {
+            err = null;
+            if (!Uri.TryCreate(value, UriKind.Absolute, out uri)
+                || !string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+            {
+                err = "url_scheme";
+                return false;
+            }
+            if (!string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Fragment))
+            {
+                err = "url_unsafe";
+                return false;
+            }
+            string host = uri.Host.ToLowerInvariant();
+            if (!RuntimeFontCatalog.IsAllowedDownloadHost(host))
+            {
+                err = "host_not_allowed:" + host;
+                return false;
+            }
+            return true;
+        }
+
         // ================================================================
         // helpers
         // ================================================================
 
         /// <summary>
-        /// 解析字体文件实际位置。WebView2 只映射 AppData primary；shippedFallback 文件必须先复制进
-        /// primary 才能视为 installed，避免 status 显示已安装但 cfn-fonts.local 实际 404。
+        /// 解析字体文件实际位置。与 Web/native 共用 catalog 来源优先级和完整性判断。
         /// </summary>
         private bool TryResolveExisting(JObject fileEntry, out string resolved)
         {
@@ -665,100 +713,26 @@ namespace CF7Launcher.Tasks
                 return false;
             }
             string expectedSha = (fileEntry.Value<string>("sha256") ?? "").ToLowerInvariant();
+            long expectedBytes = fileEntry.Value<long?>("bytes") ?? 0L;
 
-            string appDataPath = Path.Combine(_appDataFontsDir, name);
-            if (File.Exists(appDataPath))
+            RuntimeFontCatalog.ResolvedAsset catalogResolved = RuntimeFontCatalog.ResolveFile(name);
+            if (catalogResolved != null)
             {
-                if (VerifySha256(appDataPath, expectedSha))
-                {
-                    resolved = appDataPath;
-                    return true;
-                }
-                LogManager.Log("[FontPack] existing appData font sha mismatch: " + appDataPath);
-                if (!SameDirectory(_appDataFontsDir, _shippedFontsDir))
-                    try { File.Delete(appDataPath); } catch { }
+                resolved = catalogResolved.Path;
+                return true;
             }
 
-            if (!SameDirectory(_appDataFontsDir, _shippedFontsDir)
-                && (fileEntry.Value<bool?>("shippedFallback") ?? false))
+            string cachePath = Path.Combine(_cacheFontsDir, name);
+            if (File.Exists(cachePath))
             {
-                EnsureOneShippedFallback(fileEntry, "resolve");
-                if (File.Exists(appDataPath) && VerifySha256(appDataPath, expectedSha))
+                if (VerifyFile(cachePath, expectedSha, expectedBytes))
                 {
-                    resolved = appDataPath;
+                    resolved = cachePath;
                     return true;
                 }
-            }
-
-            if (SameDirectory(_appDataFontsDir, _shippedFontsDir))
-            {
-                string shippedPath = Path.Combine(_shippedFontsDir, name);
-                if (File.Exists(shippedPath) && VerifySha256(shippedPath, expectedSha))
-                {
-                    resolved = shippedPath;
-                    return true;
-                }
+                LogManager.Log("[FontPack] existing cache font sha mismatch: " + cachePath);
             }
             return false;
-        }
-
-        private void EnsureShippedFallbacksAvailable(string trigger)
-        {
-            JObject manifest;
-            string err;
-            if (!TryLoadManifest(out manifest, out err))
-            {
-                LogManager.Log("[FontPack] shipped fallback bootstrap skipped (" + trigger + "): " + err);
-                return;
-            }
-            EnsureShippedFallbacksAvailable(manifest, trigger);
-        }
-
-        private void EnsureShippedFallbacksAvailable(JObject manifest, string trigger)
-        {
-            if (manifest == null || SameDirectory(_appDataFontsDir, _shippedFontsDir)) return;
-            JObject groupsObj = manifest.Value<JObject>("groups");
-            if (groupsObj == null) return;
-            foreach (var kvp in groupsObj)
-            {
-                JObject g = kvp.Value as JObject;
-                if (g == null) continue;
-                JArray files = g.Value<JArray>("files");
-                if (files == null) continue;
-                foreach (JToken t in files)
-                {
-                    JObject f = t as JObject;
-                    if (f == null || !(f.Value<bool?>("shippedFallback") ?? false)) continue;
-                    EnsureOneShippedFallback(f, trigger);
-                }
-            }
-        }
-
-        private void EnsureOneShippedFallback(JObject fileEntry, string trigger)
-        {
-            string name = fileEntry.Value<string>("name");
-            if (!IsSafeFontFileName(name)) return;
-            string expectedSha = (fileEntry.Value<string>("sha256") ?? "").ToLowerInvariant();
-            string src = Path.Combine(_shippedFontsDir, name);
-            string dst = Path.Combine(_appDataFontsDir, name);
-            if (File.Exists(dst) && VerifySha256(dst, expectedSha)) return;
-            if (!File.Exists(src) || !VerifySha256(src, expectedSha)) return;
-
-            try
-            {
-                Directory.CreateDirectory(_appDataFontsDir);
-                string tmp = dst + ".shipped.tmp";
-                File.Copy(src, tmp, true);
-                string moveErr;
-                if (TryMoveAtomic(tmp, dst, out moveErr))
-                    LogManager.Log("[FontPack] shipped fallback copied: " + name + " (" + trigger + ")");
-                else
-                    LogManager.Log("[FontPack] shipped fallback move failed: " + name + " :: " + moveErr);
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[FontPack] shipped fallback copy failed: " + name + " :: " + ex.Message);
-            }
         }
 
         private static bool IsSafeFontFileName(string name)
@@ -775,21 +749,6 @@ namespace CF7Launcher.Tasks
                 || string.Equals(ext, ".woff2", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static bool SameDirectory(string a, string b)
-        {
-            if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b)) return false;
-            try
-            {
-                string fa = Path.GetFullPath(a).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                string fb = Path.GetFullPath(b).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                return string.Equals(fa, fb, StringComparison.OrdinalIgnoreCase);
-            }
-            catch
-            {
-                return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
-            }
-        }
-
         private bool TryLoadManifest(out JObject manifest, out string err)
         {
             manifest = null;
@@ -802,6 +761,31 @@ namespace CF7Launcher.Tasks
             try
             {
                 manifest = JObject.Parse(File.ReadAllText(_manifestPath, Encoding.UTF8));
+                if (manifest.Value<int?>("schemaVersion") != 1
+                    || !string.Equals(manifest.Value<string>("generatedBy"), "tools/fontctl", StringComparison.Ordinal)
+                    || !string.Equals(manifest.Value<string>("gate"), "E", StringComparison.Ordinal)
+                    || manifest.Value<JObject>("groups") == null
+                    || !File.Exists(_catalogPath))
+                {
+                    err = "manifest_shape_or_source_invalid";
+                    manifest = null;
+                    return false;
+                }
+                string expectedSourceHash;
+                using (FileStream stream = File.OpenRead(_catalogPath))
+                using (SHA256 sha = SHA256.Create())
+                {
+                    byte[] hash = sha.ComputeHash(stream);
+                    StringBuilder builder = new StringBuilder(hash.Length * 2);
+                    for (int i = 0; i < hash.Length; i++) builder.Append(hash[i].ToString("x2"));
+                    expectedSourceHash = builder.ToString();
+                }
+                if (!string.Equals(manifest.Value<string>("sourceSha256"), expectedSourceHash, StringComparison.Ordinal))
+                {
+                    err = "manifest_source_sha256_mismatch";
+                    manifest = null;
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)

@@ -1961,7 +1961,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 &&hasStructuralTransition(settlementEntryMotion,'transform'),
             JSON.stringify(settlementEntryMotion));
         await waitFor(function(){ return document.querySelector('.kshop-settlement-page.active'); },300);
-        await wait(220);
+        await waitFor(function(){
+            var motion=secondaryMotionSnapshot(document.querySelector('.kshop-settlement-page.active'));
+            return motion.opacity===1&&motion.pointerEvents==='auto'&&motion.transform==='none';
+        },700);
         settlementNode = document.querySelector('.kshop-settlement-page.active');
         var settlementVisible = !!settlementNode;
         var settlementPlayerCopy = settlementNode && !/(BATCH|COMMIT|AS2|写请求)/.test(settlementNode.innerText)

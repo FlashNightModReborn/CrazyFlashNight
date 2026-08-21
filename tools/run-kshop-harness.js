@@ -122,7 +122,7 @@ function auditArchitectureBoundaries() {
         INVENTORY_WORKBENCH_MODULE_SOURCES.map(file => fs.readFileSync(file, 'utf8'))
     ).join('\n');
     const panelsSource = fs.readFileSync(PANELS_SOURCE, 'utf8');
-    const panelsCssSource = readCssBundle(PANELS_CSS_SOURCE, {rootDir:path.join(WEB_ROOT, 'css')});
+    const panelsCssSource = readCssBundle(PANELS_CSS_SOURCE, {rootDir:WEB_ROOT});
     if (kshopSource.includes('same_container_unsupported')) {
         throw new Error('KShop still rejects generic same-container owned transfer');
     }
@@ -1047,7 +1047,10 @@ async function run() {
     const pageErrors = [];
     const failedRequests = [];
     page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-    page.on('requestfailed', request => failedRequests.push(request.url()));
+    page.on('requestfailed', request => {
+        const target = request.url();
+        if (!/^https?:\/\/cfn-fonts\.local\//i.test(target)) failedRequests.push(target);
+    });
     const visualMode = visualArg ? visualArg.slice('--visual='.length) : '';
     const batchVisualMatch = /^battlebox-batch(?:-(0|1|5|50))?$/.exec(visualMode);
     const expectedBatchCount = batchVisualMatch ? Number(batchVisualMatch[1] || 5) : null;
@@ -1222,9 +1225,21 @@ async function run() {
     if (qa.failed || !semanticBusyMotion.pass || !equipmentInspectorMotion.pass
             || !reducedSecondaryMotion.pass || !ownedInventoryScrollbar.pass || tooltipFailed
             || pageErrors.length || failedRequests.length) {
-        const error = new Error('KShop browser harness failed');
+        const failureSummary = {
+            qa:{passed:qa.passed,total:qa.total,failed:qa.failed,
+                failedIds:(qa.results || []).filter(entry => !entry.pass).map(entry => entry.id)},
+            semanticBusyMotion:!!semanticBusyMotion.pass,
+            equipmentInspectorMotion:!!equipmentInspectorMotion.pass,
+            reducedSecondaryMotion:!!reducedSecondaryMotion.pass,
+            ownedInventoryScrollbar:!!ownedInventoryScrollbar.pass,
+            tooltipFailed:!!tooltipFailed,
+            pageErrors,
+            failedRequests
+        };
+        const error = new Error('KShop browser harness failed: ' + JSON.stringify(failureSummary));
         error.exitCode = 1;
         error.result = output;
+        error.failureSummary = failureSummary;
         throw error;
     }
     return output;

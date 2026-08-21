@@ -299,8 +299,11 @@ var IntelligenceHarnessQA = (function() {
                     api.assertEqual(devbar.offsetHeight, 0, 'devbar takes no layout space');
                     var reader = document.querySelector('.intel-reader');
                     var content = document.querySelector('.intel-content');
-                    api.assert(content.getBoundingClientRect().height >= 460, 'reader area expanded vertically');
-                    api.assert(reader.getBoundingClientRect().height >= 540, 'reader frame expanded vertically');
+                    var panelRect = document.querySelector('.intelligence-panel').getBoundingClientRect();
+                    var readerRect = reader.getBoundingClientRect();
+                    var contentRect = content.getBoundingClientRect();
+                    api.assert(readerRect.height >= panelRect.height * 0.68, 'reader frame uses available viewport height');
+                    api.assert(contentRect.height >= readerRect.height * 0.82, 'reader content uses available frame height');
                     host.open({ itemName: '资料', value: 99, decryptLevel: 10, debug: true });
                     return waitReady(api).then(function(stateDev) {
                         api.assert(stateDev.devbarVisible, 'devbar visible in dev mode');

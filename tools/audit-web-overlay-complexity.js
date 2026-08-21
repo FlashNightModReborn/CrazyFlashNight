@@ -16,7 +16,7 @@ const root = path.resolve(__dirname, '..');
 function read(rel) {
   const absolute = path.join(root, rel);
   if (rel === 'launcher/web/css/panels.css') {
-    return readCssBundle(absolute, {rootDir:path.join(root, 'launcher', 'web', 'css')});
+    return readCssBundle(absolute, {rootDir:path.join(root, 'launcher', 'web')});
   }
   return fs.readFileSync(absolute, 'utf8');
 }

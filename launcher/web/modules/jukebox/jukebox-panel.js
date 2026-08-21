@@ -760,7 +760,9 @@
         // 字符缓慢明灭
         ctx.globalAlpha = 0.35 + 0.25 * Math.sin(oscPhase * 0.15);
         ctx.fillStyle = palette.standbyText;
-        ctx.font = (10 * dpr) + 'px Consolas, "Courier New", monospace';
+        ctx.font = window.CF7FontCatalog && typeof window.CF7FontCatalog.canvasFont === 'function'
+            ? window.CF7FontCatalog.canvasFont('web.overlay.mono', 10 * dpr, { weight: 400 })
+            : (10 * dpr) + 'px Consolas, "Courier New", monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('- STANDBY -', w / 2, midY - 12 * dpr);

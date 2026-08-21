@@ -4,6 +4,8 @@
 
 本目录只实现 NPC Shop A3 的生产取证和离线复验工具，不修改 Host、AS2、Web 业务实现。共享 runtime admission 已冻结为 `FROZEN-v2 / GO`；这只批准 shared API，不能代替 NPC consumer 独立审阅、live receipt 或 A3 GO。当前离线工具本身不启动 Launcher/Game。
 
+2026-08-21 字体 Gate E current-tree 复核：`bootstrap.js --check` 为 `149/149`；production closure / Inventory surface / source contract 已升至 `v13 / v11 / v9` 并精确覆盖 185 个文件，browser child 为 baseline `130/130` + material navigation `23/23` + reduced-motion `2/2`，闭合 328 项 module manifest、41 个实际资源与 165 次 occurrence。闭包现在同时绑定 `fonts/fonts.xml`、XML-hash catalog/compatibility projection、两项 permanent 实体及 generated CSS/JS；独立浏览器只允许其缺少 Host exact-set handler 所导致的 `cfn-fonts.local` 请求失败。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文 v12/v10/v8、180-file、129/129 等旧“当前”快照保留作历史解释，均由本段取代。
+
 ## 唯一入口与当前 Gate
 
 唯一 bootstrap：

@@ -6,7 +6,7 @@ const path = require("path");
 const Evidence = require("../lib/evidence-artifact");
 const { fail } = require("./common");
 
-const CLOSURE_SCHEMA = "workbench-live-e2e.equipment.production-closure.v5";
+const CLOSURE_SCHEMA = "workbench-live-e2e.equipment.production-closure.v6";
 const BINDING_SCHEMA = "workbench-live-e2e.equipment.production-binding.v2";
 const LOADED_SCHEMA = "workbench-live-e2e.equipment.loaded-production.v6";
 const PRODUCER_INPUTS_SCHEMA = "workbench-live-e2e.equipment.runtime-producer-inputs.v1";
@@ -17,6 +17,12 @@ const MOD_LIST = "data/items/equipment_mods/list.xml";
 const LAZY_REGISTRY_WEB = "launcher/web/modules/panels-lazy-registry.js";
 const ICON_MANIFEST = "launcher/web/icons/manifest.json";
 const FONT_MANIFEST = "launcher/web/assets/fonts/font-pack-manifest.json";
+const FONT_CATALOG_XML = "fonts/fonts.xml";
+const FONT_RUNTIME_PROJECTION = "launcher/web/generated/font-catalog.json";
+const PERMANENT_FONT_FILES = Object.freeze([
+  "fonts/permanent/runtime/jetbrains-mono.woff2",
+  "fonts/permanent/runtime/source-han-serif-cn-regular.otf",
+]);
 const SHA256_RE = /^[A-F0-9]{64}$/;
 const producerInputsCache = new Map();
 
@@ -49,11 +55,13 @@ const OVERLAY_STARTUP_WEB = Object.freeze([
   "launcher/web/modules/game-ui-behavior.js",
   "launcher/web/lib/marked.min.js",
   "launcher/web/modules/perf-frame-limiter.js",
+  "launcher/web/generated/font-catalog.js",
   "launcher/web/modules/bridge.js",
   "launcher/web/modules/uidata.js",
   "launcher/web/modules/toast.js",
   "launcher/web/modules/cursor-feedback.js",
   "launcher/web/modules/lazy-loader.js",
+  "launcher/web/modules/doll-bake.js",
   "launcher/web/modules/panels.js",
   "launcher/web/modules/panel-scale.js",
   "launcher/web/modules/audio.js",
@@ -73,15 +81,19 @@ const OVERLAY_STYLE_WEB = Object.freeze([
   "launcher/web/modules/minigames/lockbox/lockbox.css",
   "launcher/web/modules/minigames/pinalign/pinalign.css",
   "launcher/web/modules/minigames/gobang/gobang.css",
+  "launcher/web/modules/minigames/blackmarket/blackmarket.css",
 ]);
 
 const PANELS_IMPORT_STYLE_WEB = Object.freeze([
+  "launcher/web/generated/font-catalog.css",
   "launcher/web/css/panels/foundation-top.css",
   "launcher/web/css/workbench/tokens.css",
   "launcher/web/css/panels/foundation-rest.css",
   "launcher/web/css/workbench/core.css",
   "launcher/web/css/workbench/profiles.css",
   "launcher/web/css/panels/features.css",
+  "launcher/web/css/panels/stage-select.css",
+  "launcher/web/css/workbench/portraits.css",
   "launcher/web/css/workbench/arena.css",
   "launcher/web/css/workbench/inventory.css",
   "launcher/web/css/workbench/skins.css",
@@ -161,6 +173,7 @@ const BUILD_FILES = Object.freeze([
   { role: "runtime_producer_source", relativePath: ".gitattributes" },
   { role: "runtime_producer_source", relativePath: "launcher/build-runtime-candidate.ps1" },
   { role: "runtime_producer_source", relativePath: "launcher/native/assert-pinned-tools.bat" },
+  { role: "runtime_producer_source", relativePath: "launcher/native/build-audio-v2.ps1" },
   { role: "runtime_producer_source", relativePath: "launcher/native/build.bat" },
   { role: "runtime_producer_source", relativePath: "launcher/native/bootstrap/build.bat" },
   { role: "runtime_producer_source", relativePath: "launcher/native/sol_parser/.cargo/config.toml" },
@@ -219,7 +232,7 @@ function verifyOverlayStartupInventory(root) {
   let match;
   while ((match = pattern.exec(text)) !== null) {
     const source = match[1];
-    if (!/^(?:modules|lib)\/[A-Za-z0-9._/-]+\.js$/.test(source)
+    if (!/^(?:modules|lib|generated)\/[A-Za-z0-9._/-]+\.js$/.test(source)
         || source.split("/").some((entry) => !entry || entry === "." || entry === "..")) {
       fail("production_startup_inventory_invalid", "production_closure",
         "overlay.html contains an unsafe direct script source", { source });
@@ -284,13 +297,14 @@ function verifyOverlayStyleInventory(root) {
   const imports = Array.from(panels.matchAll(/@import\s+url\("([^"]+)"\);/g))
     .map((entry) => entry[1]);
   if ((panels.match(/@import\b/g) || []).length !== imports.length
-      || imports.some((source) => !/^\.\/[A-Za-z0-9._/-]+\.css$/.test(source)
-        || source.slice(2).split("/").some((entry) => !entry || entry === "." || entry === ".."))) {
+      || imports.some((source) => source !== "../generated/font-catalog.css"
+        && (!/^\.\/[A-Za-z0-9._/-]+\.css$/.test(source)
+          || source.slice(2).split("/").some((entry) => !entry || entry === "." || entry === "..")))) {
     fail("production_style_inventory_invalid", "production_closure",
       "panels.css contains an unsupported import declaration", { imports });
   }
   const panelStyles = imports.map((source) =>
-    path.posix.normalize("launcher/web/css/" + source.slice(2)));
+    path.posix.normalize(path.posix.join("launcher/web/css", source)));
   if (Evidence.canonicalJson(panelStyles) !== Evidence.canonicalJson(PANELS_IMPORT_STYLE_WEB)) {
     fail("production_style_inventory_invalid", "production_closure",
       "panels.css import order drifted from the closed production graph", {
@@ -627,8 +641,9 @@ function productionFiles(root) {
     })),
     { role: "icon_manifest", relativePath: ICON_MANIFEST },
     { role: "font_manifest", relativePath: FONT_MANIFEST },
-    { role: "font_fallback_asset",
-      relativePath: "launcher/web/assets/fonts/jetbrains-mono.woff2" },
+    { role: "font_catalog_xml", relativePath: FONT_CATALOG_XML },
+    { role: "font_runtime_projection", relativePath: FONT_RUNTIME_PROJECTION },
+    ...PERMANENT_FONT_FILES.map((relativePath) => ({ role: "permanent_font_asset", relativePath })),
     ...BASE_PREWARM_ASSETS.map((relativePath) => ({
       role: "page_fixed_image", relativePath,
     })),
@@ -761,6 +776,12 @@ function exactIconResource(root, name, fileName, required) {
 
 function capturedFontRoutes(root) {
   const manifest = exactJson(root, FONT_MANIFEST, "font_resource_manifest_invalid");
+  const catalogSha256 = Evidence.sha256Bytes(fs.readFileSync(path.resolve(root, FONT_CATALOG_XML)));
+  if (manifest.generatedBy !== "tools/fontctl" || manifest.gate !== "E"
+      || manifest.sourceSha256 !== catalogSha256) {
+    fail("font_resource_manifest_invalid", "production_closure",
+      "font compatibility projection is detached from fonts.xml");
+  }
   const routes = [];
   const names = new Set();
   Object.values(manifest.groups || {}).forEach((group) => {

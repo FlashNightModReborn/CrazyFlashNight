@@ -21,6 +21,9 @@
  */
 
 (function () {
+  const archiveFontStack = window.CF7FontCatalog && typeof window.CF7FontCatalog.role === 'function'
+    ? window.CF7FontCatalog.role('web.intelligence.archive')
+    : "STSong, SimSun, serif";
   const FACTIONS = {
     iron: {
       name: '黑铁会',
@@ -35,7 +38,7 @@
           <circle cx="250" cy="12" r="9"/>
           <circle cx="250" cy="12" r="11" opacity=".45"/>
           <text x="250" y="16.5" text-anchor="middle" fill="#b83a2e"
-                font-family="STSong,SimSun,'Noto Serif CJK SC',serif" font-size="11" font-weight="700">道</text>
+                font-family='${archiveFontStack}' font-size="11" font-weight="700">道</text>
           <g stroke="#c8b28a" stroke-width=".5">
             <path d="M 232 8 L 237 8 M 232 12 L 234 12 M 235 12 L 237 12 M 232 16 L 237 16"/>
             <path d="M 263 8 L 268 8 M 263 12 L 265 12 M 266 12 L 268 12 M 263 16 L 268 16"/>

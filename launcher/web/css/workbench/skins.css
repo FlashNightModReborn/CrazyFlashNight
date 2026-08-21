@@ -289,7 +289,7 @@
     --wb-muted:#939393;
     --wb-accent:#e5e5e5;
     --wb-accent-soft:rgba(255,255,255,.12);
-    --wb-serif:"思源宋体 CN Heavy","Source Han Serif CN","Microsoft YaHei",serif;
+    --wb-serif:var(--cf7-font-web-workbench-title);
     color:var(--wb-text);
     background:
         linear-gradient(180deg,rgba(10,10,11,.18),rgba(4,4,5,.55)),

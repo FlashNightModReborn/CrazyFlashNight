@@ -130,7 +130,7 @@
        11→13px + 字距 2px（对齐标题 letter-spacing 语言），min-height 27px 结构不动。
        外审二轮 P2-3：链内补 bundled 'Source Han Serif CN'（foundation-top 注册的 400 面）——
        未装系统思源宋体的机器不再直接掉雅黑；字重声明不动（合成加粗兜底，装有真 Heavy 仍优先） */
-    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", "Microsoft YaHei", sans-serif;
+    font-family: var(--cf7-font-web-workbench-title);
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 2px;
@@ -412,7 +412,7 @@
     transform: translateY(-50%);
 }
 .team-workbench[data-workbench-skin="team"] .workbench-title {
-    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", "Microsoft YaHei", sans-serif;
+    font-family: var(--cf7-font-web-workbench-title);
     letter-spacing: 2px;
     text-shadow: 1px 1px 2px color-mix(in srgb, var(--wb-bg) 75%, transparent);
 }
@@ -606,7 +606,7 @@
     display: flex;   /* Phase K：名 + Lv 同排 flex——名字可缩 ellipsis、Lv 固定不缩 */
     align-items: baseline;
     gap: 4px;
-    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", "Microsoft YaHei", sans-serif;
+    font-family: var(--cf7-font-web-workbench-title);
     font-size: 13px;
 }
 /* Phase K：名字文本独占可缩轨（ellipsis 只裁名字不裁 Lv）；
@@ -2114,7 +2114,7 @@
 /* Phase J：merc 卡名回归思源宋体 13px（旧版名册宋体重黑名签语言；
    与 pet 卡名 / tab / header 标题同族字链，nowrap 省略号逻辑不变） */
 .team-workbench .team-merc-card .team-entity-name {
-    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", "Microsoft YaHei", sans-serif;
+    font-family: var(--cf7-font-web-workbench-title);
     font-size: 13px;
 }
 .team-workbench .team-merc-rowcard .team-merc-row-bands {
@@ -2683,7 +2683,7 @@
 .team-workbench[data-workbench-skin="team"] .team-advance-title,
 .team-workbench[data-workbench-skin="team"] .team-advance-section-title,
 .team-workbench[data-workbench-skin="team"] .team-entity-name {
-    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", "Microsoft YaHei", sans-serif;
+    font-family: var(--cf7-font-web-workbench-title);
 }
 
 /* ── 装备 rich tooltip 宿主（#panel-tooltip 在 shell 外：rootClass 钩子 + team 面板域限定；

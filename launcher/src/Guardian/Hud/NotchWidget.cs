@@ -481,9 +481,9 @@ namespace CF7Launcher.Guardian.Hud
                         g.DrawLine(separator, Px(4, scale), row1H, w - Px(4, scale), row1H);
                 }
 
-                using (Font fpsFont = new Font("Consolas", Pxf(13f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
+                using (Font fpsFont = NativeHudFonts.CreateRoleFont("native.hud.mono", Pxf(13f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
                 using (Font textFont = NativeHudFonts.CreateUiFont(Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-                using (Font monoFont = new Font("Consolas", Pxf(12f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
+                using (Font monoFont = NativeHudFonts.CreateRoleFont("native.hud.mono", Pxf(12f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
                 {
                     PaintRow1(g, row1H, scale, fpsFont, textFont, monoFont);
                     if (_gameReady && toolbarH > 2)
@@ -586,8 +586,8 @@ namespace CF7Launcher.Guardian.Hud
                 {
                     int chartH = ExpandedChartHeight(scale);
                     Rectangle chartRect = new Rectangle(0, h - chartH, w, chartH);
-                    using (Font chartLabelFont = new Font("Consolas", Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-                    using (Font chartHintFont = new Font("Consolas", Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+                    using (Font chartLabelFont = NativeHudFonts.CreateRoleFont("native.hud.mono", Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+                    using (Font chartHintFont = NativeHudFonts.CreateRoleFont("native.hud.mono", Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
                     {
                         DrawExpandedChart(g, chartRect, scale, chartLabelFont, chartHintFont);
                     }

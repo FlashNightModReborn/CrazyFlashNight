@@ -162,7 +162,7 @@ namespace CF7Launcher.Guardian.Hud
             {
                 if (_baseTools15Bold != null) return;
                 _baseTools15Bold     = NativeHudFonts.CreateUiFont(14f, FontStyle.Bold, GraphicsUnit.Pixel);
-                _baseToolsIcon15     = new Font("Segoe UI Symbol", 14f,   FontStyle.Bold, GraphicsUnit.Pixel);
+                _baseToolsIcon15     = NativeHudFonts.CreateRoleFont("native.hud.symbol", 14f, FontStyle.Bold, GraphicsUnit.Pixel);
                 _baseMapLabel115Bold = NativeHudFonts.CreateUiFont(11.5f, FontStyle.Bold, GraphicsUnit.Pixel);
                 _baseQuest12         = NativeHudFonts.CreateUiFont(12f, FontStyle.Regular, GraphicsUnit.Pixel);
                 _baseNoticeJuke11    = NativeHudFonts.CreateUiFont(11f, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -207,7 +207,7 @@ namespace CF7Launcher.Guardian.Hud
             if (Math.Abs(scale - _cachedFontScale) < 0.001f && _fontTools15Bold != null) return;
             DisposeFonts();
             _fontTools15Bold     = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(14f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
-            _fontToolsIcon15     = new Font("Segoe UI Symbol", WidgetScaler.Pxf(14f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
+            _fontToolsIcon15     = NativeHudFonts.CreateRoleFont("native.hud.symbol", WidgetScaler.Pxf(14f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
             _fontMapLabel115Bold = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
             _fontQuest12         = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _fontNoticeJuke11    = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel);

@@ -46,7 +46,7 @@ function audit(){
   const registry=readModule('panels-lazy-registry.js');
   const registryWorkbench=between(registry,"Panels.registerLazy('workbench'","Panels.registerLazy('loot'");
   const tuningHarness=fs.readFileSync(path.join(WEB,'modules','equipment-tuning','dev','harness.html'),'utf8');
-  const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
+  const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:WEB});
   const infoProjection=between(render,'TuningView.prototype._renderHeader','TuningView.prototype._renderInstalledState');
   const operationTransition=between(view,'TuningView.prototype.setOperation','TuningView.prototype._selectReplacementCandidate');
   if(!hasAll(runtime,["domain:'equipment_tuning'",'panelInstanceId','viewSessionId',"'disconnected') return !!"]))throw new Error('strict tuning mux or definitive disconnect rule missing');
@@ -286,7 +286,7 @@ async function run(){
     const viewports=[[1024,576],[1366,768],[1920,1080]],runs=[];let motionProof=null;
     for(const viewport of viewports){
       const page=await browser.newPage({viewport:{width:viewport[0],height:viewport[1]}}),errors=[],failed=[];
-      page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failed.push(r.url()));
+      page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>{const target=r.url();if(!/^https?:\/\/cfn-fonts\.local\//i.test(target))failed.push(target)});
       await page.goto('http://127.0.0.1:'+s.address().port+'/modules/equipment-tuning/dev/harness.html',{waitUntil:'load'});
       await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:20000});
       const result=await page.evaluate(()=>({result:window.__qaResult,error:window.__qaError}));

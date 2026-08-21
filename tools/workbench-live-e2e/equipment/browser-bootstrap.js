@@ -152,7 +152,7 @@ async function run() {
     const checks = entry && Array.isArray(entry.checks) ? entry.checks : [];
     const names = checks.map((check) => check && check.name);
     if (!entry || canonicalJson(entry.viewport) !== canonicalJson(expectedViewports[index])
-        || entry.total !== 129 || entry.passed !== 129 || checks.length !== 129
+        || entry.total !== 137 || entry.passed !== 137 || checks.length !== 137
         || checks.some((check) => !check || check.ok !== true)
         || names.some((name) => typeof name !== "string" || !name)
         || new Set(names).size !== names.length) {
@@ -208,7 +208,7 @@ async function run() {
     servedResourceClosure:servedResourceReceipt,
     result:{
       viewports:result.viewports,
-      checkCount:129,
+      checkCount:137,
       checkNamesSha256,
       criticalChecks:CRITICAL_CHECK_NAMES.map((name) => {
         const check = firstChecks.get(name);

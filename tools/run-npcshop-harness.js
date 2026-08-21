@@ -27,7 +27,7 @@ function audit(){
   const materialNavigation=fs.readFileSync(NPCSHOP_MATERIAL_NAVIGATION_SOURCE,'utf8');
   const harness=fs.readFileSync(path.join(WEB,'modules','npcshop','dev','harness.html'),'utf8');
   const panelUi=panel+'\n'+secondary+'\n'+materialNavigation;
-  const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
+  const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:WEB});
   if(!['bag','material','intelligence'].every(v=>panel.includes("viewId:'"+v+"'")))throw new Error('right-view sibling contract missing');
   if(!runtime.includes("muxOptions('inventory', 'npc-inv')")
       ||!runtime.includes("options.domain || 'npcshop'"))throw new Error('npcshop/inventory domain mux missing');
@@ -209,7 +209,7 @@ async function run(){
   try{
     const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[],failed=[];
     page.on('pageerror',e=>errors.push(e.message));
-    page.on('requestfailed',r=>failed.push(r.url()));
+    page.on('requestfailed',r=>{const target=r.url();if(!/^https?:\/\/cfn-fonts\.local\//i.test(target))failed.push(target)});
     const origin='http://127.0.0.1:'+s.address().port;
     const initialQuery=MATERIAL_NAVIGATION_ONLY?'?scenario=pg-material-navigation&contractQuantity=':'?contractQuantity=';
     await page.goto(origin+'/modules/npcshop/dev/harness.html'+initialQuery

@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using CF7Launcher.Diagnostic;
+using CF7Launcher.Fonts;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 
@@ -111,6 +112,7 @@ namespace CF7Launcher.Guardian
                 _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
                     "bootstrap.local", _webDir,
                     CoreWebView2HostResourceAccessKind.Allow);
+                RuntimeFontCatalog.RegisterWebResources(_webView.CoreWebView2, "BootstrapPanel");
 
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
                 _webView.CoreWebView2.NavigationCompleted += OnNavigationCompleted;

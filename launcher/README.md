@@ -11,7 +11,7 @@
 - [runtime release consensus](../config/build/runtime-release-consensus.json)：request、release tree、build identity、payload closure、签名共识与 promotion 时间。
 - [runtime manifest](../runtime/cf7-runtime-manifest.tsv)：正式入口与 `runtime/` 的逐文件大小、SHA-256 和构建身份。
 - [runtime build reproducibility](../docs/runtime-build-reproducibility.md)：当前发布列车、状态边界、双 signer/双 faultDomain 流程和历史列车。
-- [testing guide](../agentsDoc/testing-guide.md)：当前验证矩阵及专项 E2E 边界。
+- [testing guide](../agentsDoc/testing-guide.md)：当前验证矩阵及专项 E2E 边界；C#/Web 字体改动另读 [字体 Gate E ADR](../docs/字体资产目录与语义角色解析-ADR-2026-08-20.md)、[字体目录](../fonts/README.md) 与 [fontctl](../tools/fontctl/README.md)。Web/Native 消费者、打包层和生产闭包已切换，维护者人工观感已接受；正式部署状态仍只读 runtime consensus 与标准入口证据。
 
 新接手建议依次阅读：本文的“系统边界” → “运行架构” → “源码职责地图” → “构建、候选与发布” → “测试入口与证据边界”。改 AS2/Web Panel 再读 [AS2 → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；改双栏工作台交互或样式再读 [Workbench UI System](../agentsDoc/workbench-ui-system.md)。
 
@@ -82,14 +82,12 @@ Bootstrap 启动 Core 后保留 5 秒早退观察窗：Core 非零或未知退�
 
 ```text
 bootstrap preflight
-  → Core 最早期 runtime 自校验
-  → WebView2 fail-closed 预检
-  → GuardianForm / BootstrapPanel
+  → Core runtime 自校验、字体 catalog / XML-hash projection 校验与 custom/cache/permanent 来源解析
+  → WebView2 fail-closed 预检 → GuardianForm / BootstrapPanel
   → Steam、Flash trust、Audio、Bus、Task registry
   → save list / ready / prewarm
   → Flash title receipt
-  → reveal
-  → runtime panels and HUD
+  → reveal → runtime panels and HUD
 ```
 
 `publish_done.marker`、进程存在或页面加载完成都不能单独代表成功。真实启动结论必须绑定新鲜日志、实际进程路径和对应 runtime identity。
@@ -141,6 +139,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [CRAZYFLASHER7MercenaryEmpire.csproj](CRAZYFLASHER7MercenaryEmpire.csproj) | Host 编译边界、依赖、嵌入资源和确定性构建设置 |
 | [src/Program.cs](src/Program.cs) | Core 入口、运行模式、依赖装配和启动顺序 |
 | [src/Guardian](src/Guardian/) | 窗口、启动 UI、WebView2、Native HUD、Panel、焦点和命令路由 |
+| [src/Fonts](src/Fonts/) | XML-hash runtime 投影、字体来源解析、Native role 创建与 WebView2 exact-set 资源处理 |
 | [src/Tasks](src/Tasks/) | Flash/Host 任务实现与领域消息处理 |
 | [src/Bus](src/Bus/) | HTTP、XMLSocket、V8 和消息总线 |
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
@@ -221,6 +220,7 @@ Runner 先验证 exact SDK resolver 与 `xunit.runner.json`，再从仓库根执
 | `Contracts/` | 跨层 schema 与固定 envelope |
 | `Diagnostic/` | runtime verifier、诊断与报告合同 |
 | `Fixtures/` | 测试数据与共享 fixture |
+| `Fonts/` | 字体投影、来源优先级、完整性、fallback 与重启边界 |
 | `Guardian/` | 窗口、HUD、Panel、焦点、DPI、地图和输入 |
 | `Infrastructure/` | 进程、文件、时间和平台设施 |
 | `Save/` | Protocol 2、SOL 定位、备份与 repair |

@@ -5,17 +5,24 @@ const fs = require("fs");
 const path = require("path");
 const { canonicalJson, fail, isPlainObject, sha256Bytes, sha256Text } = require("./common");
 
-const CLOSURE_SCHEMA = "workbench-live-e2e.npc.production-closure.v12";
+const CLOSURE_SCHEMA = "workbench-live-e2e.npc.production-closure.v13";
 const INVENTORY_SURFACE_CONTRACT_SCHEMA =
-  "workbench-live-e2e.npc.production-inventory-surface.v10";
+  "workbench-live-e2e.npc.production-inventory-surface.v11";
 const INVENTORY_SURFACE_SOURCE_SCHEMA =
-  "workbench-live-e2e.npc.production-inventory-source-anchors.v8";
+  "workbench-live-e2e.npc.production-inventory-source-anchors.v9";
 const BINDING_SCHEMA = "workbench-live-e2e.npc.production-binding.v3";
 const SHOP_BINDING_SCHEMA = "workbench-live-e2e.npc.actual-shop-binding.v1";
 const LOADED_SCHEMA = "workbench-live-e2e.npc.loaded-production.v6";
 const CANDIDATE_PRODUCER_SCHEMA = "workbench-live-e2e.npc.candidate-producer-binding.v2";
 const RUNTIME_INPUTS_SCHEMA = "workbench-live-e2e.npc.runtime-inputs.v1";
 const SHA256_RE = /^[A-F0-9]{64}$/;
+const FONT_MANIFEST = "launcher/web/assets/fonts/font-pack-manifest.json";
+const FONT_CATALOG_XML = "fonts/fonts.xml";
+const FONT_RUNTIME_PROJECTION = "launcher/web/generated/font-catalog.json";
+const PERMANENT_FONT_FILES = Object.freeze([
+  "fonts/permanent/runtime/jetbrains-mono.woff2",
+  "fonts/permanent/runtime/source-han-serif-cn-regular.otf",
+]);
 const artifactSourceCache = new Map();
 const runtimeInputCache = new Map();
 const resourceFileCache = new Map();
@@ -318,7 +325,7 @@ const INVENTORY_SURFACE_REQUIRED_DEPTHS = Object.freeze({
   "provider:projection_same_version": 2,
 });
 const INVENTORY_SURFACE_ACTIVE_PREFIX_SHA256 = Object.freeze({
-  "consumer:npc_retry_listener": "405972e0a36a33f39d43462624c74f3bd80ac3fb33c75483ac4eacfa054f084f",
+  "consumer:npc_retry_listener": "caabcc44aba4b8cf67c1272241190464fc8e385343361015bf2d90f6f9b74dbe",
   "consumer:npc_open_settlement_write_fence": "e5d1a0c959bafb40d2a62355e1e62f5dd1a2986ba7faf3f6e84ad59ebaf76658",
   "consumer:npc_preview_write_fence": "7e118abcfaf69d7e73589655a615097dea2c517bcf0e4debc0794fae969c0017",
   "consumer:npc_commit_write_fence": "082eafd4f7d79b4f18ff27e975da0ac6cc74e0cd4a479b82cf34b92c0cc8b03b",
@@ -333,8 +340,8 @@ const INVENTORY_SURFACE_ACTIVE_PREFIX_SHA256 = Object.freeze({
 // of the three audited production sources requires an explicit review and pin
 // refresh in the same current tree.
 const INVENTORY_SURFACE_EXACT_SOURCE_SHA256 = Object.freeze({
-  consumer: "44bb9282250ac95c2172c5deb6ffdfb17bf0b362708cc147c47bf8970870c418",
-  adapter: "4b4126bf03939e1d259c81b4325a979a1c0caa97f778ba1f7ddc93cc1da5fe79",
+  consumer: "608b00e128225a6560ba5b256ef87d80bd292748a06fa133bbeef2c986ef963c",
+  adapter: "181d09a56c429cbb196ea8d84e3b537b2d8faded468193d91e2a14641079f487",
   provider: "b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
 });
 const INVENTORY_SURFACE_ORDER_GROUPS = Object.freeze([
@@ -364,8 +371,8 @@ const INVENTORY_SURFACE_ORDER_GROUPS = Object.freeze([
   ]) }),
 ]);
 const EXPECTED_RUNTIME_DOMAIN_COUNTS = Object.freeze({
-  artifactSource: 302,
-  producerRecipe: 9,
+  artifactSource: 775,
+  producerRecipe: 10,
   toolchainLock: 3,
 });
 
@@ -1052,7 +1059,7 @@ function declaredWebDependencies(root) {
   const bootSources = Array.from(overlay.matchAll(
     /<script\b[^>]*\bsrc\s*=\s*['"]([^'"]+)['"][^>]*>/gi)).map((match) => match[1]);
   if (!bootSources.length || new Set(bootSources).size !== bootSources.length
-      || bootSources.some((source) => !/^(?:modules|lib)\/[A-Za-z0-9._/-]+\.js$/.test(source)
+      || bootSources.some((source) => !/^(?:modules|lib|generated)\/[A-Za-z0-9._/-]+\.js$/.test(source)
         || source.includes("..") || source.startsWith("/"))) {
     fail("production_overlay_boot_invalid", "production_closure",
       "Overlay startup script inventory is empty, duplicated, or outside the local JS contract", {
@@ -1146,6 +1153,10 @@ function productionFiles(root) {
     { role: "page", relativePath: "launcher/web/overlay.html" },
     ...web,
     ...styles,
+    { role: "font_pack_manifest", relativePath: FONT_MANIFEST },
+    { role: "font_catalog_xml", relativePath: FONT_CATALOG_XML },
+    { role: "font_runtime_projection", relativePath: FONT_RUNTIME_PROJECTION },
+    ...PERMANENT_FONT_FILES.map((relativePath) => ({ role: "permanent_font_asset", relativePath })),
     ...HOST_FILES.map((relativePath) => ({ role: "host_source", relativePath })),
     ...BUILD_FILES.map((relativePath) => ({ role: "build_source", relativePath })),
     ...AS2_FILES.map((relativePath) => ({ role: "as2_source", relativePath })),
@@ -1908,7 +1919,7 @@ function loadedResourcePolicy(root, closure, iconNames) {
       relativePath: "launcher/web/" + relativePath }))));
 
   const conditional = [];
-  const fontCss = readExactText(root, "launcher/web/css/panels/foundation-top.css").text;
+  const fontCss = readExactText(root, "launcher/web/generated/font-catalog.css").text;
   const fontUrls = Array.from(fontCss.matchAll(/src\s*:\s*url\(\s*['"]([^'"]+)['"]\s*\)/gi))
     .map((match) => match[1]).filter((url) => url.startsWith("https://cfn-fonts.local/"));
   if (!fontUrls.length || new Set(fontUrls).size !== fontUrls.length) {
@@ -1917,11 +1928,16 @@ function loadedResourcePolicy(root, closure, iconNames) {
   }
   let fontManifest;
   try {
-    fontManifest = JSON.parse(readExactText(root,
-      "launcher/web/assets/fonts/font-pack-manifest.json").text);
+    fontManifest = JSON.parse(readExactText(root, FONT_MANIFEST).text);
   } catch (_error) {
     fail("production_conditional_font_policy_invalid", "production_closure",
       "font-pack manifest cannot be parsed");
+  }
+  const fontCatalogSha256 = sha256Bytes(fs.readFileSync(path.resolve(root, FONT_CATALOG_XML)));
+  if (!fontManifest || fontManifest.generatedBy !== "tools/fontctl" || fontManifest.gate !== "E"
+      || fontManifest.sourceSha256 !== fontCatalogSha256) {
+    fail("production_conditional_font_policy_invalid", "production_closure",
+      "font-pack compatibility projection is detached from fonts.xml");
   }
   const manifestFonts = [];
   Object.keys(fontManifest && fontManifest.groups || {}).forEach((groupName) => {
@@ -1938,6 +1954,12 @@ function loadedResourcePolicy(root, closure, iconNames) {
     }
     fontByName.set(entry.name, entry);
   });
+  const manifestUrls = Array.from(fontByName.keys())
+    .map((name) => "https://cfn-fonts.local/" + name).sort();
+  if (canonicalJson(manifestUrls) !== canonicalJson(fontUrls.slice().sort())) {
+    fail("production_conditional_font_policy_invalid", "production_closure",
+      "generated CSS font URLs and compatibility projection are not one exact set");
+  }
   fontUrls.forEach((url) => {
     const name = decodeURIComponent(new URL(url).pathname.slice(1));
     const source = fontByName.get(name);

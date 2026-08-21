@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontCatalog version="1" gate="A" runtimeAuthority="false">
+  <downloadPolicy><allowedHost name="example.invalid"/></downloadPolicy>
+  <exclusions>
+    <path glob="scripts/**" reason="test-boundary"/>
+    <path glob="flashswf/**" reason="test-boundary"/>
+    <path glob="闪7重置版字体/**" reason="test-boundary"/>
+  </exclusions>
+  <fonts>
+    <font id="alpha" label="甲" file="alpha.ttf" format="ttf" targets="web" license="OFL-1.1" group="test" residency="on-demand" shippedFallback="false">
+      <face id="alpha-400" family="Alpha" weight="400" style="normal" stretch="normal" classification="migrate"/>
+      <download priority="1" url="https://example.invalid/alpha.ttf" bytes="1" sha256="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+    </font>
+  </fonts>
+  <roles>
+    <role id="web.test.body" label="测试" status="pilot_pending" allowPresetOverride="true">
+      <use face="alpha-400"/>
+      <systemFallback family="SimSun" classification="system-owned"/>
+      <genericFallback family="serif" classification="system-owned"/>
+    </role>
+  </roles>
+  <presets>
+    <preset id="test.default" label="测试预设" status="pilot_pending">
+      <bind role="web.test.body" face="alpha-400"/>
+    </preset>
+  </presets>
+  <rawFamilies>
+    <family name="Alpha" classification="migrate"/>
+    <family name="SimSun" classification="system-owned"/>
+    <family name="serif" classification="system-owned"/>
+    <family name="PlayerInfoPathGlyphAtlas" classification="path-glyph"/>
+  </rawFamilies>
+</fontCatalog>

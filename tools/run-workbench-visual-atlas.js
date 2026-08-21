@@ -152,8 +152,8 @@ function printText(report) {
         var failedRequests = [];
         page.on('pageerror', function (error) { pageErrors.push(error && error.message ? error.message : String(error)); });
         page.on('requestfailed', function (request) { failedRequests.push(request.url()); });
-        // cfn-fonts.local 是生产 FontPackTask 的虚拟主机（%LOCALAPPDATA%/CF7FlashNight/fonts/ 映射），
-        // atlas 沙盒无此主机；按 bridge.js「字体加载失败安静回退系统字体」的既定语义路由为空 200，
+        // cfn-fonts.local 是生产 RuntimeFontCatalog 的 XML exact-set 资源入口；
+        // atlas 沙盒没有 Host handler；按 bridge.js「字体加载失败安静回退系统字体」的既定语义路由为空 200，
         // 避免 DNS 失败污染 requestfailed 信号（P4 arena 场景族引入真实面板 CSS 后首次触达该字体）。
         await page.route('https://cfn-fonts.local/*', function (route) {
             route.fulfill({status:200, contentType:'font/ttf', body:''});

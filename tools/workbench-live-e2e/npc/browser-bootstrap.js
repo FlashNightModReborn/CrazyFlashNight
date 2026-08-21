@@ -133,11 +133,11 @@ async function run() {
   const checkNames = checks.map((entry) => entry && entry.name);
   const criticalChecks = CRITICAL_CHECK_NAMES.map((name) =>
     checks.filter((entry) => entry && entry.name === name));
-  if (!result || result.passed !== result.total || result.total !== 129
+  if (!result || result.passed !== result.total || result.total !== 130
       || result.materialNavigationPassed !== result.materialNavigationTotal
-      || result.materialNavigationTotal !== 21
+      || result.materialNavigationTotal !== 23
       || result.reducedPassed !== result.reducedTotal || result.reducedTotal !== 2
-      || result.contractQuantity !== 4549 || checks.length !== 129
+      || result.contractQuantity !== 4549 || checks.length !== 130
       || checkNames.some((name) => typeof name !== "string" || !name)
       || new Set(checkNames).size !== checkNames.length
       || checks.some((entry) => entry.ok !== true)

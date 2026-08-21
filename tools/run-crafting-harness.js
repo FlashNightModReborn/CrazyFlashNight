@@ -32,7 +32,7 @@ function audit(){
   const craftingServicePath=path.join(ROOT,'scripts','类定义','org','flashNight','arki','item','CraftingPanelService.as');
   const craftingServiceBytes=fs.readFileSync(craftingServicePath);
   const craftingService=craftingServiceBytes.toString('utf8').replace(/\r\n/g,'\n');
-  const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:path.join(WEB,'css')});
+  const css=readCssBundle(path.join(WEB,'css','panels.css'),{rootDir:WEB});
   const registry=fs.readFileSync(path.join(WEB,'modules','panels-lazy-registry.js'),'utf8');
   const inventoryWorkbench=INVENTORY_WORKBENCH_MODULES
     .map(name=>fs.readFileSync(path.join(WEB,'modules',name),'utf8')).join('\n');
@@ -370,7 +370,7 @@ function server(resourceLedger){return new Promise(resolve=>{const s=http.create
 async function runViewport(browser,serverInstance,viewport,query){
   const page=await browser.newPage({viewport}),errors=[],failed=[];
   page.on('pageerror',error=>errors.push(error.message));
-  page.on('requestfailed',request=>failed.push(request.url()));
+  page.on('requestfailed',request=>{const target=request.url();if(!/^https?:\/\/cfn-fonts\.local\//i.test(target))failed.push(target)});
   try{
     await page.goto('http://127.0.0.1:'+serverInstance.address().port+'/modules/crafting/dev/harness.html'+(query||''),{waitUntil:'load'});
     const doneWait={timeout:60000};

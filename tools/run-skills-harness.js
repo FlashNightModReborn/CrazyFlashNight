@@ -57,7 +57,7 @@ function staticAudit() {
     const workbenchPrimitives = read('launcher/web/modules/workbench-primitives.js');
     const panels = read('launcher/web/modules/panels.js');
     const registry = read('launcher/web/modules/panels-lazy-registry.js');
-    const css = readCssBundle(path.join(ROOT, 'launcher/web/css/panels.css'), {rootDir:path.join(ROOT, 'launcher/web/css')});
+    const css = readCssBundle(path.join(ROOT, 'launcher/web/css/panels.css'), {rootDir:path.join(ROOT, 'launcher/web')});
     const build = read('launcher/build.ps1');
     const releasePolicy = read('tools/validate-launcher-release-policy.ps1');
     if (!panel.includes("Panels.register('skills'") || !panel.includes('new Workbench.DualPaneShell')) throw new Error('skills production panel registration/shell missing');
@@ -347,7 +347,10 @@ async function runViewport(browser, server, viewport) {
     const page = await browser.newPage({viewport});
     const pageErrors = [], failedRequests = [];
     page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-    page.on('requestfailed', request => failedRequests.push(request.url()));
+    page.on('requestfailed', request => {
+        const target = request.url();
+        if (!/^https?:\/\/cfn-fonts\.local\//i.test(target)) failedRequests.push(target);
+    });
     await page.goto(`http://127.0.0.1:${server.address().port}/modules/skills/dev/harness.html`, {waitUntil:'load'});
     await page.waitForFunction(() => window.__qaDone === true, null, {timeout:20000});
     const state = await page.evaluate(() => ({result:window.__qaResult,error:window.__qaError}));

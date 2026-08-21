@@ -540,7 +540,7 @@ function runSelfTests() {
       "browser-resource-inventory.v1.json"), "utf8"));
     assert.strictEqual(resourceInventory.schema,
       "workbench-live-e2e.browser-resource-inventory.v1");
-    assert.strictEqual(resourceInventory.files.length, 41);
+    assert.strictEqual(resourceInventory.files.length, 44);
     assert.strictEqual(resourceInventory.optionalFiles, undefined);
     assert(resourceInventory.files.includes("modules/equipment-tuning/dev/harness.html"));
     assert(resourceInventory.files.includes("modules/equipment-tuning-view.js"));
@@ -565,11 +565,11 @@ function runSelfTests() {
     assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
     assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
     assert.strictEqual(receipt.journalVerification, "VERIFIED");
-    assert.strictEqual(receipt.moduleEntryCount, 328);
+    assert.strictEqual(receipt.moduleEntryCount, 331);
     assert.deepStrictEqual(receipt.result.viewports, [
       {width:1024,height:576}, {width:1366,height:768}, {width:1920,height:1080},
     ]);
-    assert.strictEqual(receipt.result.checkCount, 129);
+    assert.strictEqual(receipt.result.checkCount, 137);
     assert.strictEqual(receipt.result.checkNamesSha256.length, 3);
     assert.strictEqual(new Set(receipt.result.checkNamesSha256).size, 1);
     receipt.result.checkNamesSha256.forEach((digest) =>
@@ -588,10 +588,10 @@ function runSelfTests() {
     ]);
     assert(receipt.result.criticalChecks.every((entry) => entry.ok === true));
     assert.strictEqual(receipt.result.motionProof.pass, true);
-    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 41);
-    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 41);
-    assert.strictEqual(receipt.servedResourceClosure.resourceCount, 41);
-    assert.strictEqual(receipt.servedResourceClosure.occurrenceCount, 124);
+    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 44);
+    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 44);
+    assert.strictEqual(receipt.servedResourceClosure.resourceCount, 44);
+    assert.strictEqual(receipt.servedResourceClosure.occurrenceCount, 133);
     assert.strictEqual(receipt.servedResourceClosure.failureCount, 1);
     assert(receipt.browserBinary && receipt.browserBinary.locator.startsWith("external:")
       && /^[a-f0-9]{64}$/.test(receipt.browserBinary.sha256)
@@ -673,12 +673,12 @@ function runSelfTests() {
     assert.deepStrictEqual(styles.panelStyles, ProductionClosure.PANELS_IMPORT_STYLE_WEB);
     const closure = ProductionClosure.captureProductionClosure(REPOSITORY_ROOT,
       "2026-08-04T00:00:00.000Z");
-    assert.strictEqual(closure.files.length, 162);
-    assert.strictEqual(ProductionClosure.scriptFiles(closure).length, 56);
-    assert.strictEqual(ProductionClosure.styleFiles(closure).length, 29);
+    assert.strictEqual(closure.files.length, 167);
+    assert.strictEqual(ProductionClosure.scriptFiles(closure).length, 53);
+    assert.strictEqual(ProductionClosure.styleFiles(closure).length, 33);
     assert.strictEqual(closure.pageResourceContract.fixedImages.length, 15);
     assert.strictEqual(closure.pageResourceContract.conditionalAssets.length, 4);
-    assert.strictEqual(closure.pageResourceContract.fonts.length, 13);
+    assert.strictEqual(closure.pageResourceContract.fonts.length, 14);
     assert.strictEqual(closure.pageResourceContract.iconRoutes.length, 1575);
     assert.strictEqual(closure.producerInputs.domains.artifactSource.files.some((entry) =>
       entry.relativePath === "launcher/src/Tasks/EquipmentTuningTask.cs"), true);

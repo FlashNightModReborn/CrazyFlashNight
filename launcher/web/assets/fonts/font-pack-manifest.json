@@ -1,207 +1,209 @@
 {
-    "schemaVersion": 1,
-    "updated": "2026-05-04",
-    "comment": "字体包清单 — FontPackTask 按 group 下载到 %LOCALAPPDATA%/CF7FlashNight/fonts/，cfn-fonts.local 虚拟主机优先映射该目录，缺失文件 fallback 到 launcher/web/assets/fonts/。urls 顺序即 fallback 顺序，sha256 全小写校验。",
-    "groups": {
-        "essential": {
-            "label": "基础字体包",
-            "description": "情报系统核心表达力。等宽 + terminal / mojibake 字形。",
-            "totalBytes": 0,
-            "files": [
-                {
-                    "name": "jetbrains-mono.woff2",
-                    "label": "JetBrains Mono Regular（terminal / mojibake mask）",
-                    "license": "Apache-2.0",
-                    "bytes": 92380,
-                    "sha256": "f1a7a03672cdd494ce0d5543fac6e4360fe22403c6de297fdc2e55a815f7baff",
-                    "urls": [
-                        "https://github.com/JetBrains/JetBrainsMono/raw/v2.304/fonts/webfonts/JetBrainsMono-Regular.woff2"
-                    ],
-                    "shippedFallback": true
-                }
-            ]
-        },
-        "expressive": {
-            "label": "表达力字体（霞鹜文楷）",
-            "description": "霞鹜文楷 Screen 全字符集。dossier 朱印 / 批注 / mask=garble 罕用 CJK。",
-            "totalBytes": 0,
-            "files": [
-                {
-                    "name": "lxgw-wenkai-screen.ttf",
-                    "label": "LXGW WenKai Screen v1.522 全字符集",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 25673994,
-                    "sha256": "cd1a6fa39c4ea42fd8f4e289945789b0e510cf7016435640f8893cdad9b220f3",
-                    "urls": [
-                        "https://github.com/lxgw/LxgwWenKai-Screen/releases/download/v1.522/LXGWWenKaiScreen.ttf"
-                    ],
-                    "shippedFallback": false
-                }
-            ]
-        },
-        "expressive-handwriting": {
-            "label": "手写字体矩阵",
-            "description": "中文私人批注 / 标题手写 / 失控短句。猫啃硬笔楷书做 note 主选（GB2312 全字符简中覆盖），Ma Shan Zheng / Zhi Mang Xing 做大字标题，Liu Jian Mao Cao 做 outburst inline 节点的戏剧性短句。Klee One 保留作日文场景备用，已从 --intel-font-note 链移除。",
-            "totalBytes": 0,
-            "files": [
-                {
-                    "name": "maoken-yingbi-kaishu.ttf",
-                    "label": "猫啃硬笔楷书 v0.20（中文 note 主选 / diary 全文 / 私人手记）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 6394236,
-                    "sha256": "68fb84b7a7eb2c1ffab59e7b75c90176c95bc1a078c4a1f66bd516c60ac75e1a",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/maoken-fonts/MaokenYingBiKaiShuJ@main/MaokenYingBiKaiShuJ_0.20.ttf",
-                        "https://github.com/maoken-fonts/MaokenYingBiKaiShuJ/raw/main/MaokenYingBiKaiShuJ_0.20.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "klee-one-regular.ttf",
-                    "label": "Klee One Regular（日文场景备用——简中字符覆盖不全，已从 --intel-font-note 链中移除）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 8724204,
-                    "sha256": "bf4063f030cc2ae6adf0a11424a1888e5c0eb4438f1f6d02f52294af868e9b3a",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/kleeone/KleeOne-Regular.ttf",
-                        "https://github.com/google/fonts/raw/main/ofl/kleeone/KleeOne-Regular.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "ma-shan-zheng-regular.ttf",
-                    "label": "Ma Shan Zheng Regular（标题手写 / 戏剧性大字）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 5858048,
-                    "sha256": "b844c59bf20bf530e41c20d6ff12b383b23a2e553b9b68cc89f070869213155d",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/mashanzheng/MaShanZheng-Regular.ttf",
-                        "https://github.com/google/fonts/raw/main/ofl/mashanzheng/MaShanZheng-Regular.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "zhi-mang-xing-regular.ttf",
-                    "label": "Zhi Mang Xing Regular（标题随性手写）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 4063532,
-                    "sha256": "644e0cae9b40f0b10ab729a01bd32032e3973bac22be3dccae01bf6ae7fde969",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/zhimangxing/ZhiMangXing-Regular.ttf",
-                        "https://github.com/google/fonts/raw/main/ofl/zhimangxing/ZhiMangXing-Regular.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "jason-handwriting-7.ttf",
-                    "label": "清松手写体 7 号 飘逸（情绪极性 / outburst lament 哀痛 / 临终独白 / --intel-font-emotional）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 9254640,
-                    "sha256": "415a3b569ae977de87377a892f250e53c8d12139e0f47ef7cadd8a8a359c288e",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting7.ttf",
-                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting7.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "jason-handwriting-1.ttf",
-                    "label": "清松手写体 1 号 圆体（neat 端正商务 / 文员/雇主笔迹 / --intel-font-character-neat）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 8921060,
-                    "sha256": "de76a15b1e2c1a7050d061485e28195f5b682d45e37499cf730c2b8554c44cf3",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting1.ttf",
-                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting1.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "jason-handwriting-8.ttf",
-                    "label": "清松手写体 8 号 Casual（rough 随性匆忙 / 雇佣兵/盗贼笔迹 / --intel-font-character-rough）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 8030664,
-                    "sha256": "1437de4a5fee29a5c6b43450df56e734af9cddb5b3a68d236cf5f42be178c93f",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting8.ttf",
-                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting8.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "jason-handwriting-2.ttf",
-                    "label": "清松手写体 2 号 不规则（plain 朴拙未受训 / 浑浑噩噩小市民笔迹 / --intel-font-character-plain）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 5378712,
-                    "sha256": "b67dce349d32e92e4ee7befeb0339d04ca69551bb523e60cfb5ea8f5fbd5d669",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting2.ttf",
-                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting2.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "jason-handwriting-9.ttf",
-                    "label": "清松手写体 9 号（weary 疲惫涣散 / 流民/逃难者笔迹 / --intel-font-character-weary）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 8379644,
-                    "sha256": "b50728e2c7442a76a661c4d43c8ec22142e8edc83909a9d40b7c25d04bd04cf5",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting9.ttf",
-                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting9.ttf"
-                    ],
-                    "shippedFallback": false
-                },
-                {
-                    "name": "liu-jian-mao-cao-regular.ttf",
-                    "label": "Liu Jian Mao Cao Regular（失控短句 / outburst 戏剧草书）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 4951804,
-                    "sha256": "cab396b91a5b7c0b4005a35891180d06e6751f5ac261fe680aec65c1ae209033",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/liujianmaocao/LiuJianMaoCao-Regular.ttf",
-                        "https://github.com/google/fonts/raw/main/ofl/liujianmaocao/LiuJianMaoCao-Regular.ttf"
-                    ],
-                    "shippedFallback": false
-                }
-            ]
-        },
-        "expressive-archive": {
-            "label": "正式档案衬线",
-            "description": "思源宋体 CN Regular。dossier / 官方资料集 / Native HUD 常用中文的正式衬线感。",
-            "totalBytes": 0,
-            "files": [
-                {
-                    "name": "source-han-serif-cn-regular.otf",
-                    "label": "Source Han Serif CN Regular（思源宋体 / dossier 正式档案）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 11626108,
-                    "sha256": "3754ea669c530e2473354f8f6d9f79680a44d7e26ec7d00eeabee4a7e0753c5d",
-                    "urls": [
-                        "https://github.com/adobe-fonts/source-han-serif/raw/release/SubsetOTF/CN/SourceHanSerifCN-Regular.otf"
-                    ],
-                    "shippedFallback": false
-                }
-            ]
-        },
-        "expressive-archive-heavy": {
-            "label": "思源宋体 Heavy（任务面板标题字重）",
-            "description": "Source Han Serif CN Heavy。任务面板标题/卡面衬线重黑——对齐 Flash 原版任务栏界面内嵌 SourceHanSerifSC-Heavy 的标题重量感；独立 group 不影响 Native HUD 读取的 expressive-archive(Regular)。",
-            "totalBytes": 0,
-            "files": [
-                {
-                    "name": "source-han-serif-cn-heavy.otf",
-                    "label": "Source Han Serif CN Heavy（思源宋体重黑 / 任务面板标题）",
-                    "license": "SIL-OFL-1.1",
-                    "bytes": 11862952,
-                    "sha256": "053e911fdb1a55d4d8512a1f11203f1fb9a7291e34bc260474b8c80358c69fa6",
-                    "urls": [
-                        "https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-serif@release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf",
-                        "https://github.com/adobe-fonts/source-han-serif/raw/release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf"
-                    ],
-                    "shippedFallback": false
-                }
-            ]
+  "schemaVersion": 1,
+  "generatedBy": "tools/fontctl",
+  "sourceSha256": "3e422d97556a8e050adab7ffb79b16537bba45295482c4afb429e30691464c74",
+  "gate": "E",
+  "comment": "Generated compatibility projection. Edit fonts/fonts.xml and run fontctl generate.",
+  "groups": {
+    "essential": {
+      "label": "基础字体包",
+      "description": "等宽、terminal 与乱码遮罩所需的基础字体。",
+      "totalBytes": 92380,
+      "files": [
+        {
+          "name": "jetbrains-mono.woff2",
+          "label": "JetBrains Mono Regular（terminal / mojibake mask）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 92380,
+          "sha256": "f1a7a03672cdd494ce0d5543fac6e4360fe22403c6de297fdc2e55a815f7baff",
+          "urls": [
+            "https://github.com/JetBrains/JetBrainsMono/raw/v2.304/fonts/webfonts/JetBrainsMono-Regular.woff2"
+          ],
+          "shippedFallback": true
         }
+      ]
+    },
+    "expressive": {
+      "label": "表达力字体（霞鹜文楷）",
+      "description": "情报正文、批注与罕用 CJK 的通用表达字体。",
+      "totalBytes": 25673994,
+      "files": [
+        {
+          "name": "lxgw-wenkai-screen.ttf",
+          "label": "LXGW WenKai Screen v1.522 全字符集",
+          "license": "SIL-OFL-1.1",
+          "bytes": 25673994,
+          "sha256": "cd1a6fa39c4ea42fd8f4e289945789b0e510cf7016435640f8893cdad9b220f3",
+          "urls": [
+            "https://github.com/lxgw/LxgwWenKai-Screen/releases/download/v1.522/LXGWWenKaiScreen.ttf"
+          ],
+          "shippedFallback": false
+        }
+      ]
+    },
+    "expressive-handwriting": {
+      "label": "手写字体矩阵",
+      "description": "私人批注、人物笔迹、标题手写与失控短句。",
+      "totalBytes": 69956544,
+      "files": [
+        {
+          "name": "maoken-yingbi-kaishu.ttf",
+          "label": "猫啃硬笔楷书 v0.20（中文 note 主选 / diary 全文 / 私人手记）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 6394236,
+          "sha256": "68fb84b7a7eb2c1ffab59e7b75c90176c95bc1a078c4a1f66bd516c60ac75e1a",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/maoken-fonts/MaokenYingBiKaiShuJ@main/MaokenYingBiKaiShuJ_0.20.ttf",
+            "https://github.com/maoken-fonts/MaokenYingBiKaiShuJ/raw/main/MaokenYingBiKaiShuJ_0.20.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "klee-one-regular.ttf",
+          "label": "Klee One Regular（日文场景备用——简中字符覆盖不全，已从 --intel-font-note 链中移除）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 8724204,
+          "sha256": "bf4063f030cc2ae6adf0a11424a1888e5c0eb4438f1f6d02f52294af868e9b3a",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/kleeone/KleeOne-Regular.ttf",
+            "https://github.com/google/fonts/raw/main/ofl/kleeone/KleeOne-Regular.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "ma-shan-zheng-regular.ttf",
+          "label": "Ma Shan Zheng Regular（标题手写 / 戏剧性大字）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 5858048,
+          "sha256": "b844c59bf20bf530e41c20d6ff12b383b23a2e553b9b68cc89f070869213155d",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/mashanzheng/MaShanZheng-Regular.ttf",
+            "https://github.com/google/fonts/raw/main/ofl/mashanzheng/MaShanZheng-Regular.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "zhi-mang-xing-regular.ttf",
+          "label": "Zhi Mang Xing Regular（标题随性手写）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 4063532,
+          "sha256": "644e0cae9b40f0b10ab729a01bd32032e3973bac22be3dccae01bf6ae7fde969",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/zhimangxing/ZhiMangXing-Regular.ttf",
+            "https://github.com/google/fonts/raw/main/ofl/zhimangxing/ZhiMangXing-Regular.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "jason-handwriting-7.ttf",
+          "label": "清松手写体 7 号 飘逸（情绪极性 / outburst lament 哀痛 / 临终独白 / --intel-font-emotional）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 9254640,
+          "sha256": "415a3b569ae977de87377a892f250e53c8d12139e0f47ef7cadd8a8a359c288e",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting7.ttf",
+            "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting7.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "jason-handwriting-1.ttf",
+          "label": "清松手写体 1 号 圆体（neat 端正商务 / 文员/雇主笔迹 / --intel-font-character-neat）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 8921060,
+          "sha256": "de76a15b1e2c1a7050d061485e28195f5b682d45e37499cf730c2b8554c44cf3",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting1.ttf",
+            "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting1.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "jason-handwriting-8.ttf",
+          "label": "清松手写体 8 号 Casual（rough 随性匆忙 / 雇佣兵/盗贼笔迹 / --intel-font-character-rough）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 8030664,
+          "sha256": "1437de4a5fee29a5c6b43450df56e734af9cddb5b3a68d236cf5f42be178c93f",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting8.ttf",
+            "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting8.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "jason-handwriting-2.ttf",
+          "label": "清松手写体 2 号 不规则（plain 朴拙未受训 / 浑浑噩噩小市民笔迹 / --intel-font-character-plain）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 5378712,
+          "sha256": "b67dce349d32e92e4ee7befeb0339d04ca69551bb523e60cfb5ea8f5fbd5d669",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting2.ttf",
+            "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting2.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "jason-handwriting-9.ttf",
+          "label": "清松手写体 9 号（weary 疲惫涣散 / 流民/逃难者笔迹 / --intel-font-character-weary）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 8379644,
+          "sha256": "b50728e2c7442a76a661c4d43c8ec22142e8edc83909a9d40b7c25d04bd04cf5",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting9.ttf",
+            "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting9.ttf"
+          ],
+          "shippedFallback": false
+        },
+        {
+          "name": "liu-jian-mao-cao-regular.ttf",
+          "label": "Liu Jian Mao Cao Regular（失控短句 / outburst 戏剧草书）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 4951804,
+          "sha256": "cab396b91a5b7c0b4005a35891180d06e6751f5ac261fe680aec65c1ae209033",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/liujianmaocao/LiuJianMaoCao-Regular.ttf",
+            "https://github.com/google/fonts/raw/main/ofl/liujianmaocao/LiuJianMaoCao-Regular.ttf"
+          ],
+          "shippedFallback": false
+        }
+      ]
+    },
+    "expressive-archive": {
+      "label": "正式档案衬线",
+      "description": "正式资料、档案与 Native HUD 常用中文的衬线字体。",
+      "totalBytes": 11626108,
+      "files": [
+        {
+          "name": "source-han-serif-cn-regular.otf",
+          "label": "Source Han Serif CN Regular（思源宋体 / dossier 正式档案）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 11626108,
+          "sha256": "3754ea669c530e2473354f8f6d9f79680a44d7e26ec7d00eeabee4a7e0753c5d",
+          "urls": [
+            "https://github.com/adobe-fonts/source-han-serif/raw/release/SubsetOTF/CN/SourceHanSerifCN-Regular.otf"
+          ],
+          "shippedFallback": false
+        }
+      ]
+    },
+    "expressive-archive-heavy": {
+      "label": "正式档案重黑",
+      "description": "任务标题与卡面衬线重黑字体。",
+      "totalBytes": 11862952,
+      "files": [
+        {
+          "name": "source-han-serif-cn-heavy.otf",
+          "label": "Source Han Serif CN Heavy（思源宋体重黑 / 任务面板标题）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 11862952,
+          "sha256": "053e911fdb1a55d4d8512a1f11203f1fb9a7291e34bc260474b8c80358c69fa6",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-serif@release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf",
+            "https://github.com/adobe-fonts/source-han-serif/raw/release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf"
+          ],
+          "shippedFallback": false
+        }
+      ]
     }
+  }
 }

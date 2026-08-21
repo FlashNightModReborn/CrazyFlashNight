@@ -263,11 +263,11 @@ namespace CF7Launcher.Guardian.Hud
             lock (_baseFontLock)
             {
                 if (_baseTypedFont != null) return;
-                _baseTypedFont   = new Font("Microsoft YaHei", TYPED_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel);
-                _baseRemainFont  = new Font("Microsoft YaHei", REMAIN_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
-                _baseNameFont    = new Font("Microsoft YaHei", NAME_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
-                _baseHitFont     = new Font("Microsoft YaHei", HIT_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel);
-                _baseHitTagFont  = new Font("Microsoft YaHei", HIT_TAG_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseTypedFont   = NativeHudFonts.CreateRoleFont("native.combo.body", TYPED_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel);
+                _baseRemainFont  = NativeHudFonts.CreateRoleFont("native.combo.body", REMAIN_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseNameFont    = NativeHudFonts.CreateRoleFont("native.combo.body", NAME_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseHitFont     = NativeHudFonts.CreateRoleFont("native.combo.body", HIT_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel);
+                _baseHitTagFont  = NativeHudFonts.CreateRoleFont("native.combo.body", HIT_TAG_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
             }
         }
 
@@ -281,11 +281,11 @@ namespace CF7Launcher.Guardian.Hud
             float namePx   = WidgetScaler.Pxf(NAME_FONT_BASE_PX, scale);
             float hitPx    = WidgetScaler.Pxf(HIT_FONT_BASE_PX, scale);
             float hitTagPx = WidgetScaler.Pxf(HIT_TAG_FONT_BASE_PX, scale);
-            _scaledTypedFont  = new Font("Microsoft YaHei", typedPx, FontStyle.Bold, GraphicsUnit.Pixel);
-            _scaledRemainFont = new Font("Microsoft YaHei", remainPx, FontStyle.Regular, GraphicsUnit.Pixel);
-            _scaledNameFont   = new Font("Microsoft YaHei", namePx, FontStyle.Regular, GraphicsUnit.Pixel);
-            _scaledHitFont    = new Font("Microsoft YaHei", hitPx, FontStyle.Bold, GraphicsUnit.Pixel);
-            _scaledHitTagFont = new Font("Microsoft YaHei", hitTagPx, FontStyle.Regular, GraphicsUnit.Pixel);
+            _scaledTypedFont  = NativeHudFonts.CreateRoleFont("native.combo.body", typedPx, FontStyle.Bold, GraphicsUnit.Pixel);
+            _scaledRemainFont = NativeHudFonts.CreateRoleFont("native.combo.body", remainPx, FontStyle.Regular, GraphicsUnit.Pixel);
+            _scaledNameFont   = NativeHudFonts.CreateRoleFont("native.combo.body", namePx, FontStyle.Regular, GraphicsUnit.Pixel);
+            _scaledHitFont    = NativeHudFonts.CreateRoleFont("native.combo.body", hitPx, FontStyle.Bold, GraphicsUnit.Pixel);
+            _scaledHitTagFont = NativeHudFonts.CreateRoleFont("native.combo.body", hitTagPx, FontStyle.Regular, GraphicsUnit.Pixel);
             _cachedScale = scale;
         }
 
@@ -1303,9 +1303,9 @@ namespace CF7Launcher.Guardian.Hud
                 // （后者会破坏实例 cache，下一次 Paint 还要重建）
                 using (Bitmap measureBitmap = new Bitmap(1, 1))
                 using (Graphics measureG = Graphics.FromImage(measureBitmap))
-                using (Font typedFont = new Font("Microsoft YaHei", WidgetScaler.Pxf(TYPED_FONT_BASE_PX, scale), FontStyle.Bold, GraphicsUnit.Pixel))
-                using (Font remainFont = new Font("Microsoft YaHei", WidgetScaler.Pxf(REMAIN_FONT_BASE_PX, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-                using (Font nameFont = new Font("Microsoft YaHei", WidgetScaler.Pxf(NAME_FONT_BASE_PX, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+                using (Font typedFont = NativeHudFonts.CreateRoleFont("native.combo.body", WidgetScaler.Pxf(TYPED_FONT_BASE_PX, scale), FontStyle.Bold, GraphicsUnit.Pixel))
+                using (Font remainFont = NativeHudFonts.CreateRoleFont("native.combo.body", WidgetScaler.Pxf(REMAIN_FONT_BASE_PX, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+                using (Font nameFont = NativeHudFonts.CreateRoleFont("native.combo.body", WidgetScaler.Pxf(NAME_FONT_BASE_PX, scale), FontStyle.Regular, GraphicsUnit.Pixel))
                 {
                     StringFormat fmt = FMT_INPUT_ALIGN;
                     float contentW = MeasureInputContentWidth(measureG, typedFont, remainFont, nameFont, scale);

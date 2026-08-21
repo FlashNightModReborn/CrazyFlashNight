@@ -1376,12 +1376,14 @@ test("NPC browser journeys execute under an independently verified child module 
     "browser-resource-inventory.v1.json"), "utf8"));
   assert.strictEqual(resourceInventory.schema,
     "workbench-live-e2e.browser-resource-inventory.v1");
-  assert.strictEqual(resourceInventory.files.length, 39);
+  assert.strictEqual(resourceInventory.files.length, 41);
   assert(resourceInventory.files.includes("modules/npcshop/dev/harness.html"));
   assert(resourceInventory.files.includes("modules/npcshop.js"));
   assert(resourceInventory.files.includes("modules/npcshop-runtime.js"));
   assert(resourceInventory.files.includes("modules/npcshop-material-navigation.js"));
   assert(resourceInventory.files.includes("css/workbench/portraits.css"));
+  assert(resourceInventory.files.includes("css/panels/stage-select.css"));
+  assert(resourceInventory.files.includes("generated/font-catalog.css"));
   assert.deepStrictEqual(resourceInventory.files, resourceInventory.files.slice().sort());
   const result = childProcess.spawnSync(process.execPath,
     [bootstrapPath], {
@@ -1400,13 +1402,13 @@ test("NPC browser journeys execute under an independently verified child module 
   assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
   assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
   assert.strictEqual(receipt.journalVerification, "VERIFIED");
-  assert.strictEqual(receipt.moduleEntryCount, 326);
+  assert.strictEqual(receipt.moduleEntryCount, 328);
   assert.deepStrictEqual({passed:receipt.result.passed, total:receipt.result.total,
     materialNavigationPassed:receipt.result.materialNavigationPassed,
     materialNavigationTotal:receipt.result.materialNavigationTotal,
     reducedPassed:receipt.result.reducedPassed, reducedTotal:receipt.result.reducedTotal,
     contractQuantity:receipt.result.contractQuantity},
-  {passed:129, total:129, materialNavigationPassed:21, materialNavigationTotal:21,
+  {passed:130, total:130, materialNavigationPassed:23, materialNavigationTotal:23,
     reducedPassed:2, reducedTotal:2, contractQuantity:4549});
   assert.strictEqual(receipt.result.checkNamesSha256,
     moduleInventory.expectedCheckNamesSha256);
@@ -1424,8 +1426,8 @@ test("NPC browser journeys execute under an independently verified child module 
   ]);
   assert.strictEqual(receipt.servedResourceClosure.schema,
     "workbench-live-e2e.browser-resource-closure-receipt.v1");
-  assert.strictEqual(receipt.servedResourceClosure.resourceCount, 39);
-  assert(receipt.servedResourceClosure.occurrenceCount >= 39);
+  assert.strictEqual(receipt.servedResourceClosure.resourceCount, 41);
+  assert(receipt.servedResourceClosure.occurrenceCount >= 41);
   assert.strictEqual(receipt.servedResourceClosure.failureCount, 1);
   ["inventorySha256", "resourcesSha256", "occurrencesSha256", "failuresSha256",
     "evidenceSha256"].forEach((field) =>
@@ -1536,12 +1538,12 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
     "root:launcher/web/modules/npcshop-runtime.js",
     "root:launcher/web/css/panels.css",
     "root:launcher/web/css/workbench/core.css"].forEach((locator) => assert(locators.has(locator), locator));
-  assert.strictEqual(bundle.productionClosure.declarations.bootWeb.length, 23);
+  assert.strictEqual(bundle.productionClosure.declarations.bootWeb.length, 20);
   assert.strictEqual(bundle.productionClosure.declarations.npcLazyWeb.length, 14);
-  assert.strictEqual(bundle.productionClosure.declarations.styleWeb.length, 30);
+  assert.strictEqual(bundle.productionClosure.declarations.styleWeb.length, 33);
   const physicalSurface = bundle.productionClosure.semanticContracts.inventoryPhysicalSurface;
   assert.strictEqual(physicalSurface.schema,
-    "workbench-live-e2e.npc.production-inventory-surface.v10");
+    "workbench-live-e2e.npc.production-inventory-surface.v11");
   assert.strictEqual(physicalSurface.consumer.locator, "root:launcher/web/modules/npcshop.js");
   assert.strictEqual(physicalSurface.adapter.locator,
     "root:launcher/web/modules/npcshop-runtime.js");
@@ -1576,20 +1578,20 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
   assert(physicalSurface.projection.pairedCoherence.includes("exactPhysicalSlot"));
   assert(physicalSurface.projection.failureFence.includes("synchronousDuplicate"));
   assert.strictEqual(physicalSurface.sourceContract.schema,
-    "workbench-live-e2e.npc.production-inventory-source-anchors.v8");
+    "workbench-live-e2e.npc.production-inventory-source-anchors.v9");
   assert.strictEqual(physicalSurface.sourceContract.tokenCanonicalization,
     "exact-source-byte-pin-plus-js-binding-depth-active-prefix-rewrite-fence.v5");
   assert.strictEqual(physicalSurface.sourceContract.bindingGuards.length, 20);
   assert.deepStrictEqual(physicalSurface.sourceContract.closedSourceBytes, {
     policy:"exact_utf8_bytes_governance_pin",
     expected:{
-      consumer:"44bb9282250ac95c2172c5deb6ffdfb17bf0b362708cc147c47bf8970870c418",
-      adapter:"4b4126bf03939e1d259c81b4325a979a1c0caa97f778ba1f7ddc93cc1da5fe79",
+      consumer:"608b00e128225a6560ba5b256ef87d80bd292748a06fa133bbeef2c986ef963c",
+      adapter:"181d09a56c429cbb196ea8d84e3b537b2d8faded468193d91e2a14641079f487",
       provider:"b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
     },
     actual:{
-      consumer:"44bb9282250ac95c2172c5deb6ffdfb17bf0b362708cc147c47bf8970870c418",
-      adapter:"4b4126bf03939e1d259c81b4325a979a1c0caa97f778ba1f7ddc93cc1da5fe79",
+      consumer:"608b00e128225a6560ba5b256ef87d80bd292748a06fa133bbeef2c986ef963c",
+      adapter:"181d09a56c429cbb196ea8d84e3b537b2d8faded468193d91e2a14641079f487",
       provider:"b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
     },
   });
@@ -2602,7 +2604,7 @@ test("fifth-round raw resources and final detach source are an exact closure", (
     const icons = policy.required.filter((entry) =>
       entry.reason.startsWith("authority_projected_icon:"));
     assert.strictEqual(idle.length, 15);
-    assert.strictEqual(fonts.length, 13);
+    assert.strictEqual(fonts.length, 14);
     assert.strictEqual(skins.length, 2);
     assert(icons.length > 0);
     assert(loaded.resourceOccurrences.some((entry) =>

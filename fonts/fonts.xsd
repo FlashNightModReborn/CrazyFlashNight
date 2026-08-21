@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:simpleType name="catalogId">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z0-9]+([.-][a-z0-9]+)*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="nonEmptyString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontFileName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^/\\]+\.(ttf|otf|woff|woff2)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="sha256">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9a-f]{64}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="classification">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="migrate"/>
+      <xs:enumeration value="compatibility"/>
+      <xs:enumeration value="system-owned"/>
+      <xs:enumeration value="path-glyph"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="status">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="pilot_pending"/>
+      <xs:enumeration value="accepted"/>
+      <xs:enumeration value="compatibility"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="implementationGate">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A"/>
+      <xs:enumeration value="B"/>
+      <xs:enumeration value="C"/>
+      <xs:enumeration value="D"/>
+      <xs:enumeration value="E"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontFormat">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ttf"/>
+      <xs:enumeration value="otf"/>
+      <xs:enumeration value="woff"/>
+      <xs:enumeration value="woff2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontTarget">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="web"/>
+      <xs:enumeration value="native"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontTargets">
+    <xs:list itemType="fontTarget"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontResidency">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="permanent"/>
+      <xs:enumeration value="on-demand"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontStyle">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="normal"/>
+      <xs:enumeration value="italic"/>
+      <xs:enumeration value="oblique"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontStretch">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ultra-condensed"/>
+      <xs:enumeration value="extra-condensed"/>
+      <xs:enumeration value="condensed"/>
+      <xs:enumeration value="semi-condensed"/>
+      <xs:enumeration value="normal"/>
+      <xs:enumeration value="semi-expanded"/>
+      <xs:enumeration value="expanded"/>
+      <xs:enumeration value="extra-expanded"/>
+      <xs:enumeration value="ultra-expanded"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontWeight">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:maxInclusive value="1000"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="allowedHostType">
+    <xs:attribute name="name" type="nonEmptyString" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="exclusionType">
+    <xs:attribute name="glob" type="nonEmptyString" use="required"/>
+    <xs:attribute name="reason" type="nonEmptyString" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="groupType">
+    <xs:attribute name="id" type="catalogId" use="required"/>
+    <xs:attribute name="label" type="nonEmptyString" use="required"/>
+    <xs:attribute name="description" type="nonEmptyString" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="faceType">
+    <xs:attribute name="id" type="catalogId" use="required"/>
+    <xs:attribute name="family" type="nonEmptyString" use="required"/>
+    <xs:attribute name="weight" type="fontWeight" use="required"/>
+    <xs:attribute name="style" type="fontStyle" use="required"/>
+    <xs:attribute name="stretch" type="fontStretch" use="required"/>
+    <xs:attribute name="classification" type="classification" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="downloadType">
+    <xs:attribute name="priority" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="url" type="xs:anyURI" use="required"/>
+    <xs:attribute name="bytes" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="sha256" type="sha256" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="integrityType">
+    <xs:attribute name="bytes" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="sha256" type="sha256" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="fontType">
+    <xs:sequence>
+      <xs:element name="integrity" type="integrityType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="face" type="faceType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="download" type="downloadType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="catalogId" use="required"/>
+    <xs:attribute name="label" type="nonEmptyString" use="required"/>
+    <xs:attribute name="file" type="fontFileName" use="required"/>
+    <xs:attribute name="format" type="fontFormat" use="required"/>
+    <xs:attribute name="targets" type="fontTargets" use="required"/>
+    <xs:attribute name="license" type="nonEmptyString" use="required"/>
+    <xs:attribute name="group" type="nonEmptyString" use="required"/>
+    <xs:attribute name="residency" type="fontResidency" use="required"/>
+    <xs:attribute name="shippedFallback" type="xs:boolean" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="faceReferenceType">
+    <xs:attribute name="face" type="catalogId" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="roleReferenceType">
+    <xs:attribute name="role" type="catalogId" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="familyFallbackType">
+    <xs:attribute name="family" type="nonEmptyString" use="required"/>
+    <xs:attribute name="classification" type="classification" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="roleType">
+    <xs:sequence>
+      <xs:element name="use" type="faceReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="roleFallback" type="roleReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="systemFallback" type="familyFallbackType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="genericFallback" type="familyFallbackType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="catalogId" use="required"/>
+    <xs:attribute name="label" type="nonEmptyString" use="required"/>
+    <xs:attribute name="status" type="status" use="required"/>
+    <xs:attribute name="allowPresetOverride" type="xs:boolean" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="bindType">
+    <xs:attribute name="role" type="catalogId" use="required"/>
+    <xs:attribute name="face" type="catalogId" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="presetType">
+    <xs:sequence>
+      <xs:element name="bind" type="bindType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="catalogId" use="required"/>
+    <xs:attribute name="label" type="nonEmptyString" use="required"/>
+    <xs:attribute name="status" type="status" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="aliasType">
+    <xs:attribute name="name" type="nonEmptyString" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="rawFamilyType">
+    <xs:sequence>
+      <xs:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="nonEmptyString" use="required"/>
+    <xs:attribute name="classification" type="classification" use="required"/>
+    <xs:attribute name="role" type="catalogId" use="optional"/>
+  </xs:complexType>
+
+  <xs:element name="fontCatalog">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="downloadPolicy">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="allowedHost" type="allowedHostType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="exclusions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="path" type="exclusionType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="groups" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="group" type="groupType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="fonts">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="font" type="fontType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="roles">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="role" type="roleType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="presets">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="preset" type="presetType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="rawFamilies">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="family" type="rawFamilyType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="version" use="required" fixed="1"/>
+      <xs:attribute name="gate" type="implementationGate" use="required"/>
+      <xs:attribute name="runtimeAuthority" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

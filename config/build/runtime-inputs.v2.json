@@ -173,9 +173,27 @@
         "launcher/web/modules/arena-meta-rosters.js",
         "launcher/web/modules/arena-unit-catalog.js",
         "launcher/web/modules/arena-unit-param-presets.js",
-        "launcher/web/modules/arena-custom-presets.js"
+        "launcher/web/modules/arena-custom-presets.js",
+        "fonts/README.md",
+        "fonts/fonts.xml",
+        "fonts/fonts.xsd",
+        "fonts/licenses/JetBrainsMono-OFL-1.1.txt",
+        "fonts/licenses/SourceHanSerif-OFL-1.1.txt",
+        "fonts/permanent/runtime/jetbrains-mono.woff2",
+        "fonts/permanent/runtime/source-han-serif-cn-regular.otf",
+        "launcher/web/generated/font-catalog.css",
+        "launcher/web/generated/font-catalog.js",
+        "launcher/web/generated/font-catalog.json",
+        "launcher/web/assets/fonts/font-pack-manifest.json",
+        "tools/cf7-packer/pack.config.yaml"
       ],
       "trees": [
+        {
+          "path": "tools/fontctl",
+          "includeExtensions": [".js", ".json", ".py"],
+          "excludePaths": [],
+          "excludePrefixes": ["tools/fontctl/tests/"]
+        },
         {
           "path": "launcher/native/tests",
           "includeExtensions": [".c", ".cpp", ".ps1"],

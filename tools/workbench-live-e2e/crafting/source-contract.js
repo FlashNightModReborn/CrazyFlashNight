@@ -7,11 +7,17 @@ const Evidence = require("../lib/evidence-artifact");
 const { fail } = require("./common");
 const RuntimeProducer = require("./runtime-producer");
 
-const SOURCE_FINGERPRINT_SCHEMA = "workbench-live-e2e.crafting.source-fingerprint.v7";
-const SOURCE_CLOSURE_SCHEMA = "workbench-live-e2e.crafting.source-closure.v7";
+const SOURCE_FINGERPRINT_SCHEMA = "workbench-live-e2e.crafting.source-fingerprint.v8";
+const SOURCE_CLOSURE_SCHEMA = "workbench-live-e2e.crafting.source-closure.v8";
 const SOURCE_BINDING_SCHEMA = "workbench-live-e2e.crafting.source-binding.v2";
 const LOADED_SCHEMA = "workbench-live-e2e.crafting.loaded-production.v4";
-const FONT_ENVIRONMENT_SCHEMA = "workbench-live-e2e.crafting.font-environment.v1";
+const FONT_ENVIRONMENT_SCHEMA = "workbench-live-e2e.crafting.font-environment.v2";
+const FONT_CATALOG_XML = "fonts/fonts.xml";
+const FONT_RUNTIME_PROJECTION = "launcher/web/generated/font-catalog.json";
+const PERMANENT_FONT_FILES = Object.freeze([
+  "fonts/permanent/runtime/jetbrains-mono.woff2",
+  "fonts/permanent/runtime/source-han-serif-cn-regular.otf",
+]);
 const ICON_PROJECTION_SCHEMA = "workbench-live-e2e.crafting.icon-resource-projection.v1";
 const AS2_ALGORITHM_CONTRACT_SCHEMA =
   "workbench-live-e2e.crafting.as2-algorithm-contract.v4";
@@ -27,11 +33,13 @@ const OVERLAY_STARTUP_WEB = Object.freeze([
   "launcher/web/modules/game-ui-behavior.js",
   "launcher/web/lib/marked.min.js",
   "launcher/web/modules/perf-frame-limiter.js",
+  "launcher/web/generated/font-catalog.js",
   "launcher/web/modules/bridge.js",
   "launcher/web/modules/uidata.js",
   "launcher/web/modules/toast.js",
   "launcher/web/modules/cursor-feedback.js",
   "launcher/web/modules/lazy-loader.js",
+  "launcher/web/modules/doll-bake.js",
   "launcher/web/modules/panels.js",
   "launcher/web/modules/panel-scale.js",
   "launcher/web/modules/audio.js",
@@ -51,9 +59,11 @@ const OVERLAY_STYLE_WEB = Object.freeze([
   "launcher/web/modules/minigames/lockbox/lockbox.css",
   "launcher/web/modules/minigames/pinalign/pinalign.css",
   "launcher/web/modules/minigames/gobang/gobang.css",
+  "launcher/web/modules/minigames/blackmarket/blackmarket.css",
 ]);
 
 const PANELS_IMPORT_STYLE_WEB = Object.freeze([
+  "launcher/web/generated/font-catalog.css",
   "launcher/web/css/panels/foundation-top.css",
   "launcher/web/css/workbench/tokens.css",
   "launcher/web/css/panels/foundation-rest.css",
@@ -768,7 +778,7 @@ function verifyOverlayStyleInventory(root) {
   }
   const panels = exactText(root, "launcher/web/css/panels.css", "source_style_inventory_invalid");
   const imports = Array.from(panels.matchAll(/@import\s+url\("([^"]+)"\);/g))
-    .map((entry) => path.posix.normalize("launcher/web/css/" + entry[1].slice(2)));
+    .map((entry) => path.posix.normalize(path.posix.join("launcher/web/css", entry[1])));
   if ((panels.match(/@import\b/g) || []).length !== imports.length
       || Evidence.canonicalJson(imports) !== Evidence.canonicalJson(PANELS_IMPORT_STYLE_WEB)) {
     fail("source_style_inventory_invalid", "source_identity",
@@ -903,6 +913,12 @@ function parseFontManifest(root, expectedFontUrls) {
   if (!manifest || manifest.schemaVersion !== 1 || !Evidence.isPlainObject(manifest.groups)) {
     fail("source_font_manifest_invalid", "source_identity",
       "font-pack manifest is missing or unsupported");
+  }
+  const catalogBytes = fs.readFileSync(path.resolve(root, FONT_CATALOG_XML));
+  if (manifest.generatedBy !== "tools/fontctl" || manifest.gate !== "E"
+      || manifest.sourceSha256 !== Evidence.sha256Bytes(catalogBytes)) {
+    fail("source_font_manifest_stale", "source_identity",
+      "font-pack compatibility projection is detached from fonts.xml");
   }
   const resources = [];
   Object.keys(manifest.groups).forEach((groupName) => {
@@ -1072,6 +1088,9 @@ function descriptors(root) {
     ...idlePrewarm.map((relativePath) => ({ role: "idle_prewarm_image", relativePath })),
     ...conditional.assetPaths.map((relativePath) => ({ role: "css_conditional_asset", relativePath })),
     { role: "font_pack_manifest", relativePath: "launcher/web/assets/fonts/font-pack-manifest.json" },
+    { role: "font_catalog_xml", relativePath: FONT_CATALOG_XML },
+    { role: "font_runtime_projection", relativePath: FONT_RUNTIME_PROJECTION },
+    ...PERMANENT_FONT_FILES.map((relativePath) => ({ role: "permanent_font_asset", relativePath })),
     { role: "icon_manifest", relativePath: "launcher/web/icons/manifest.json" },
     ...HOST_FILES.map((relativePath) => ({ role: "host_source", relativePath })),
     ...RuntimeProducer.BUILD_FILES,
@@ -1337,10 +1356,12 @@ function assertBoundCurrentFile(root, closure, role, relativePath, code) {
   return bound;
 }
 
-function fontEnvironmentRoot(root, environment) {
-  const localAppData = String(environment && environment.LOCALAPPDATA || "").trim();
-  return localAppData ? path.resolve(localAppData, "CF7FlashNight", "fonts")
-    : path.resolve(root, "launcher", "web", "assets", "fonts");
+function fontSourceRoots(root) {
+  return [
+    { source: "temporary/custom", root: path.resolve(root, "fonts", "temporary", "custom"), custom: true },
+    { source: "temporary/cache", root: path.resolve(root, "fonts", "temporary", "cache"), custom: false },
+    { source: "permanent/runtime", root: path.resolve(root, "fonts", "permanent", "runtime"), custom: false },
+  ];
 }
 
 function captureFontEnvironment(root, closure, environment) {
@@ -1350,29 +1371,32 @@ function captureFontEnvironment(root, closure, environment) {
     .concat(roleFiles(closure, "font_declaration_stylesheet"))
     .map((entry) => entry.locator.slice("root:".length));
   const resources = parseFontManifest(root, deriveFontUrls(root, stylePaths));
-  const mappingRoot = fontEnvironmentRoot(root, environment || process.env);
+  void environment;
+  const sourceRoots = fontSourceRoots(root);
   const installed = [];
   resources.forEach((entry) => {
-    const filePath = path.resolve(mappingRoot, entry.name);
-    let stat;
-    let real;
-    try { stat = fs.lstatSync(filePath); real = fs.realpathSync.native(filePath); }
-    catch (_error) { stat = null; real = null; }
-    if (!stat) return;
-    if (!stat.isFile() || stat.isSymbolicLink() || path.resolve(real) !== filePath) {
-      fail("font_environment_file_invalid", "source_identity",
-        "mapped manifest font is not one exact regular file", { name: entry.name });
+    for (const candidate of sourceRoots) {
+      const filePath = path.resolve(candidate.root, entry.name);
+      let stat;
+      let real;
+      try { stat = fs.lstatSync(filePath); real = fs.realpathSync.native(filePath); }
+      catch (_error) { stat = null; real = null; }
+      if (!stat) continue;
+      if (!stat.isFile() || stat.isSymbolicLink() || path.resolve(real) !== filePath) {
+        fail("font_environment_file_invalid", "source_identity",
+          "font candidate is not one exact regular file", { name: entry.name, source: candidate.source });
+      }
+      const bytes = fs.readFileSync(filePath);
+      const digest = Evidence.sha256Bytes(bytes);
+      if (!candidate.custom && (bytes.length !== entry.bytes || digest !== entry.sha256)) continue;
+      installed.push({ name: entry.name, url: entry.url, path: filePath, source: candidate.source,
+        integrity: candidate.custom ? "custom-override" : "verified",
+        bytes: bytes.length, sha256: digest });
+      break;
     }
-    const bytes = fs.readFileSync(filePath);
-    const digest = Evidence.sha256Bytes(bytes);
-    if (bytes.length !== entry.bytes || digest !== entry.sha256) {
-      fail("font_environment_file_mismatch", "source_identity",
-        "mapped manifest font differs from its declared bytes", { name: entry.name });
-    }
-    installed.push({ name: entry.name, url: entry.url, path: filePath,
-      bytes: bytes.length, sha256: digest });
   });
-  const value = { schema: FONT_ENVIRONMENT_SCHEMA, mappingRoot,
+  const value = { schema: FONT_ENVIRONMENT_SCHEMA,
+    sourceRoots: sourceRoots.map((entry) => ({ source: entry.source, root: entry.root })),
     manifestLocator: manifest.locator, manifestSha256: manifest.sha256, installed };
   value.environmentSha256 = Evidence.sha256Text(Evidence.canonicalJson(value));
   return value;

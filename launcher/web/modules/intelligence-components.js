@@ -448,6 +448,10 @@ var IntelligenceComponentRenderer = (function() {
         var span = document.createElement('span');
         var tone = OUTBURST_TONES[node.tone] ? node.tone : 'panic';
         span.className = 'intel-h5-outburst intel-h5-outburst-' + tone;
+        if (tone === 'lament' && window.CF7FontCatalog
+            && typeof window.CF7FontCatalog.applyRoleContext === 'function') {
+            window.CF7FontCatalog.applyRoleContext(span, { presets: ['intelligence.lament'] });
+        }
         var text = typeof node.text === 'string' ? node.text : '';
         if (text) {
             span.appendChild(document.createTextNode(displayText(text, context)));

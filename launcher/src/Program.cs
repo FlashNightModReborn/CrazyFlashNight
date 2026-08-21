@@ -948,6 +948,12 @@ class Program
         LogManager.InitFileLog(projectRoot);
         StartupDiagnostics.Mark("launcher_log.early_ready", "path=" + LogManager.LogFilePath);
         LogManager.Log("[Guardian] Early file log ready before WebView2 precheck");
+        CF7Launcher.Fonts.RuntimeFontCatalog.Configure(projectRoot);
+        StartupDiagnostics.Mark(
+            "font_catalog.configure",
+            CF7Launcher.Fonts.RuntimeFontCatalog.IsReady
+                ? "ready"
+                : "fallback=" + CF7Launcher.Fonts.RuntimeFontCatalog.Failure);
         PerfTrace.Init(projectRoot);
         PerfTrace.Mark("guardian.run_start");
 
@@ -2049,15 +2055,12 @@ class Program
 
         BenchTask benchTask = new BenchTask(socketServer);
 
-        // 字体包：按需下载到 %LOCALAPPDATA%/CF7FlashNight/fonts/，WebOverlay 把该目录映射为 cfn-fonts.local
+        // 字体包：按需下载到 fonts/temporary/cache；WebView2 由 catalog exact-set handler 暴露。
         FontPackTask fontPackTask;
         using (PerfTrace.Scope("task.font_pack_init"))
         {
             fontPackTask = new FontPackTask(projectRoot, notchSink, toastSink);
         }
-        webOverlay.SetFontsDir(fontPackTask.AppDataFontsDir,
-            Path.Combine(projectRoot, "launcher", "web", "assets", "fonts"));
-
         using (PerfTrace.Scope("task.registry_register_all"))
         {
             TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);

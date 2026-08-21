@@ -21,14 +21,8 @@
   --slot-empty-dot: rgba(61,213,255,.13);
 }
 
-/* ── B 期: 本地 JetBrains Mono (shipped 资产, 相对路径直引, 无需 cfn-fonts.local) ──
-   @font-face 范式参考 foundation-top.css; .mono-num 只用于数字 / 编号 / 版本类文本, 中文正文不动. */
-@font-face{
-  font-family:'JetBrains Mono';
-  src:url('../assets/fonts/jetbrains-mono.woff2') format('woff2');
-  font-weight:400;font-style:normal;font-display:swap;
-}
-.mono-num{font-family:'JetBrains Mono',Consolas,monospace}
+/* 数字 / 编号 / 版本类文本使用 catalog 的通用 Web 等宽 role。 */
+.mono-num{font-family:var(--cf7-font-web-overlay-mono)}
 
 html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 

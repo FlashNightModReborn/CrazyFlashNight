@@ -8,15 +8,6 @@
    动效缓动双轨：--task-ease-slide（位移入场，近似原版 acceleration=-100 强缓出）/ --task-ease（弹窗与装饰）。
    ═══════════════════════════════════════════════════════════════ */
 
-/* 思源宋体 Heavy：原版任务栏内嵌 SourceHanSerifSC-Heavy 的 web 等价（font-pack-manifest: expressive-archive-heavy，
-   经 cfn-fonts.local 按需下载提供；未下载/未安装时沿 --task-serif 链回落系统字体，不阻断渲染） */
-@font-face {
-    font-family: 'Source Han Serif CN Heavy';
-    src: url('https://cfn-fonts.local/source-han-serif-cn-heavy.otf') format('opentype');
-    font-weight: 400 900;
-    font-display: swap;
-}
-
 /* ── 设计 token ── */
 .task-panel-scale-shell {
     --task-text: #cccccc;
@@ -49,7 +40,8 @@
     --task-scroll-track: rgba(217, 217, 217, 0.03);
     --task-scroll-thumb: rgba(217, 217, 217, 0.22);
     --task-scroll-thumb-hover: rgba(217, 217, 217, 0.45);
-    --task-serif: "思源宋体 CN Heavy", "Source Han Serif CN Heavy", "Source Han Serif CN", "Source Han Serif SC", "Songti SC", serif;
+    --task-serif: var(--cf7-font-web-task-body);
+    --task-title-serif: var(--cf7-font-web-task-title);
     /* 缓动双轨：--task-ease（Quint，弹窗/装饰）；--task-ease-slide（Quad ≈ Flash acceleration=-100 最大缓出，位移入场专用） */
     --task-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --task-ease-slide: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -105,7 +97,7 @@
     border: none;
     border-bottom: 2px solid transparent;
     color: var(--task-text-dim);
-    font-family: var(--task-serif);
+    font-family: var(--task-title-serif);
     font-size: 20px;
     letter-spacing: 1px;
     cursor: pointer;

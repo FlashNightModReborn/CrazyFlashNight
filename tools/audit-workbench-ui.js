@@ -16,7 +16,7 @@ function abs(rel) { return path.join(ROOT, rel); }
 function exists(rel) { return fs.existsSync(abs(rel)); }
 function read(rel) {
     if (rel === 'launcher/web/css/panels.css') {
-        return cssBundleReader.readCssBundle(abs(rel), {rootDir:abs('launcher/web/css')});
+        return cssBundleReader.readCssBundle(abs(rel), {rootDir:abs('launcher/web')});
     }
     return fs.readFileSync(abs(rel), 'utf8');
 }
@@ -226,7 +226,7 @@ if (exists('launcher/web/css/panels.css')) {
     metrics.panelsCssLines = css.split(/\r?\n/).length - (css.endsWith('\n') ? 1 : 0);
     metrics.panelsCssAggregateLines = metrics.panelsCssLines;
     metrics.panelsCssFacadeLines = fs.readFileSync(abs(cssRel), 'utf8').split(/\r?\n/).length - 1;
-    var resolvedCss = cssBundleReader.resolveCssBundle(abs(cssRel), {rootDir:abs('launcher/web/css')});
+    var resolvedCss = cssBundleReader.resolveCssBundle(abs(cssRel), {rootDir:abs('launcher/web')});
     metrics.panelsCssFragments = resolvedCss.files.slice(1).map(function (file) {
         var source = fs.readFileSync(file, 'utf8');
         return {

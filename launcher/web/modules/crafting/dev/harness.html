@@ -2482,7 +2482,7 @@ try{
   ok('inspector resolves armor by authoritative save gender',armorMale.kind==='armor'&&armorMale.gender==='男'&&armorFemale.kind==='armor'&&armorFemale.gender==='女');
   ok('armor never borrows opposite gender branch',strictGenderFallback.kind==='icon'&&strictGenderFallback.reason==='gender_branch_missing');
   ok('unmapped neck armor and non-equipment fall back to current icon',neckFallback.kind==='icon'&&otherFallback.kind==='icon',JSON.stringify({neck:neckFallback,other:otherFallback}));
-  await wait();var inspectorRafBaseline=__rafStats.active;
+  await waitFor(function(){return __rafStats.active<=1},600);var inspectorRafBaseline=__rafStats.active;
   document.querySelector('.crafting-output-inspect-trigger').click();
   await waitFor(function(){return document.querySelector('.crafting-inspector[data-source="weapon"] canvas')},3000);
   var inspector=document.querySelector('.crafting-inspector'),inspectorViewport=document.querySelector('.crafting-inspector-viewport'),inspectorModal=document.querySelector('.workbench-modal[data-modal-kind="crafting-inspector"]');

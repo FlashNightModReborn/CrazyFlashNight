@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using CF7Launcher.Guardian.Hud;
 
 namespace CF7Launcher.Guardian
 {
@@ -485,9 +486,9 @@ namespace CF7Launcher.Guardian
         private const int FONT_IDX_LABEL  = 1;
         private const int FONT_IDX_EMOJI  = 2;
 
-        private const string FONT_NUMBER = "Arial Black";
-        private const string FONT_LABEL  = "Microsoft YaHei";
-        private const string FONT_EMOJI  = "Segoe UI Symbol";
+        private const string ROLE_NUMBER = "native.combat.number";
+        private const string ROLE_LABEL  = "native.combat.label";
+        private const string ROLE_EMOJI  = "native.hud.symbol";
         private const FontStyle FONT_LABEL_STYLE = FontStyle.Bold;
 
         private class TextSegment
@@ -594,15 +595,15 @@ namespace CF7Launcher.Guardian
             if (_fontCache.TryGetValue(key, out f))
                 return f;
 
-            string family;
+            string role;
             switch (fontIdx)
             {
-                case FONT_IDX_EMOJI:  family = FONT_EMOJI;  break;
-                case FONT_IDX_LABEL:  family = FONT_LABEL;  break;
-                default:              family = FONT_NUMBER;  break;
+                case FONT_IDX_EMOJI:  role = ROLE_EMOJI;  break;
+                case FONT_IDX_LABEL:  role = ROLE_LABEL;  break;
+                default:              role = ROLE_NUMBER; break;
             }
 
-            f = new Font(family, pt, style);
+            f = NativeHudFonts.CreateRoleFont(role, pt, style, GraphicsUnit.Point);
             _fontCache[key] = f;
             return f;
         }

@@ -1,5 +1,7 @@
 # 项目技术架构总览
 
+> **字体 Gate E（2026-08-21）**：根 `fonts/fonts.xml` 是 C#/Web runtime authority，表达 14 asset、28 个语义 role、9 个 `accepted` preset 与 `permanent/on-demand` residency。`fontctl generate` 产出 XML-hash 绑定的 `launcher/web/generated/font-catalog.{json,css,js}` 和 FontPack 兼容 manifest；`RuntimeFontCatalog` 在 WebView2/Native HUD 构造前加载投影，按 `temporary/custom → temporary/cache → permanent/runtime → system fallback` 解析，并用 exact-set `WebResourceRequested` handler 提供字体。Web CSS/Canvas/动态 SVG/Tooltip 与 Native HUD/Combo/HitNumber/mono/symbol 均走 role。JetBrains Mono 和 Source Han Serif CN Regular 为常驻，其余按需；旧 AppData 导入和 Web 字体副本已退役，打包层收 permanent 并排除 temporary。Flash/AS2/FLA/XFL 和 legacy 作者字体不在该图内。机器 Gate 与维护者人工观感已通过；正式部署状态以 runtime consensus 和标准入口证据为准。
+
 **文档角色**：系统拓扑 canonical doc。  
 **最后核对代码基线**：commit `04718fa57afb64836e95893f0c4ff821d25ca043`（2026-08-16）。
 

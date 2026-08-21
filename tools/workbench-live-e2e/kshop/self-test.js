@@ -1662,7 +1662,7 @@ function runSelfTests() {
       "browser-resource-inventory.v1.json"), "utf8"));
     assert.strictEqual(resourceInventory.schema,
       "workbench-live-e2e.browser-resource-inventory.v1");
-    assert.strictEqual(resourceInventory.files.length, 79);
+    assert.strictEqual(resourceInventory.files.length, 83);
     assert(resourceInventory.files.includes("modules/kshop/dev/harness.html"));
     assert(resourceInventory.files.includes("modules/kshop.js"));
     assert(resourceInventory.files.includes("modules/equipment-tuning-loadout-lifecycle.js"));
@@ -1690,9 +1690,9 @@ function runSelfTests() {
     assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
     assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
     assert.strictEqual(receipt.journalVerification, "VERIFIED");
-    assert.strictEqual(receipt.moduleEntryCount, 366);
+    assert.strictEqual(receipt.moduleEntryCount, 370);
     assert.deepStrictEqual({passed:receipt.result.passed, total:receipt.result.total,
-      failed:receipt.result.failed}, {passed:150, total:150, failed:0});
+      failed:receipt.result.failed}, {passed:151, total:151, failed:0});
     assert.strictEqual(receipt.result.assertionIdsSha256,
       moduleInventory.expectedAssertionIdsSha256);
     assert(/^[a-f0-9]{64}$/.test(receipt.result.resultSha256));
@@ -1700,8 +1700,8 @@ function runSelfTests() {
     assert(receipt.result.filteredAssertions.every((entry) => entry.pass === true));
     assert.strictEqual(receipt.servedResourceClosure.schema,
       "workbench-live-e2e.browser-resource-closure-receipt.v1");
-    assert.strictEqual(receipt.servedResourceClosure.resourceCount, 79);
-    assert(receipt.servedResourceClosure.occurrenceCount >= 79);
+    assert.strictEqual(receipt.servedResourceClosure.resourceCount, 83);
+    assert(receipt.servedResourceClosure.occurrenceCount >= 83);
     assert.strictEqual(receipt.servedResourceClosure.failureCount, 1);
     ["inventorySha256", "resourcesSha256", "occurrencesSha256", "failuresSha256",
       "evidenceSha256"].forEach((field) =>
@@ -1818,26 +1818,27 @@ function runSelfTests() {
       (error) => error && error.code === "evidence_mode_invalid");
   });
 
-  test("production surface inventory is the frozen 198-file current baseline", () => {
+  test("production surface inventory is the frozen 205-file current baseline", () => {
     const roles = Object.create(null);
     ProductionClosure.PRODUCTION_FILES.forEach((entry) => {
       roles[entry.role] = (roles[entry.role] || 0) + 1;
     });
-    assert.strictEqual(ProductionClosure.PRODUCTION_FILES.length, 198);
+    assert.strictEqual(ProductionClosure.PRODUCTION_FILES.length, 205);
     assert.deepStrictEqual(Object.assign({}, roles), {
-      page: 1, overlay_script: 22, lazy_registry: 1, kshop_lazy_web: 17,
-      style_entry: 7, style_import: 22, idle_prewarm_image: 15,
-      css_conditional_asset: 6, font_pack_manifest: 1, icon_manifest: 1,
+      page: 1, overlay_script: 19, lazy_registry: 1, kshop_lazy_web: 18,
+      style_entry: 8, style_import: 25, idle_prewarm_image: 15,
+      css_conditional_asset: 6, font_pack_manifest: 1, font_catalog_xml: 1,
+      font_runtime_projection: 1, permanent_font_asset: 2, icon_manifest: 1,
       host_composition: 1, host: 13,
       runtime_artifact_source: 1, runtime_input_descriptor: 1,
-      runtime_producer_source: 9, runtime_toolchain_lock: 3,
+      runtime_producer_source: 10, runtime_toolchain_lock: 3,
       as2_manifest: 2, as2_source: 2, as2_dependency: 5, as2_swf: 1,
       kshop_data_manifest: 1, kshop_data: 13,
       item_data_manifest: 1, item_data: 52,
     });
     const closure = ProductionClosure.captureProductionClosure(PRODUCTION_ROOT,
       "2026-08-04T00:00:00.000Z");
-    assert.strictEqual(closure.schema, "workbench-live-e2e.kshop.production-closure.v7");
+    assert.strictEqual(closure.schema, "workbench-live-e2e.kshop.production-closure.v8");
     assert.deepStrictEqual(Object.keys(closure.semanticContracts),
       ["inventoryPhysicalSurface"]);
     assert.strictEqual(closure.semanticContracts.inventoryPhysicalSurface.schema,
@@ -1856,7 +1857,7 @@ function runSelfTests() {
     assert.strictEqual(sourceContract.equipmentPoststate,
       "ArrayInventory.getVacancies.first-vacancy.v1");
     assert.strictEqual(sourceContract.semanticAnchorVersion,
-      "kshop-itemutil-arrayinventory.semantic-anchor.v1");
+      "kshop-itemutil-arrayinventory.semantic-anchor.v2");
     assert.strictEqual(sourceContract.tokenCanonicalization,
       "as2-function-lexical-token-stream.v1");
     assert.strictEqual(Object.keys(sourceContract.functionSha256).length, 7);
@@ -1893,7 +1894,7 @@ function runSelfTests() {
     assert.deepStrictEqual({ artifactSource: producer.domains.artifactSource.fileCount,
       producerRecipe: producer.domains.producerRecipe.fileCount,
       toolchainLock: producer.domains.toolchainLock.fileCount },
-    { artifactSource: 298, producerRecipe: 9, toolchainLock: 3 });
+    { artifactSource: 775, producerRecipe: 10, toolchainLock: 3 });
     assert.match(producer.buildIdentityHash, /^[A-F0-9]{64}$/);
   });
 
@@ -3489,8 +3490,8 @@ function runSelfTests() {
     const loaded = bundle.runtime.first.loadedProduction;
     const expected = ProductionClosure.expectedStaticResourceSet(bundle.productionClosure);
     assert.strictEqual(expected.filter((entry) => entry.type === "Image").length, 15);
-    assert.strictEqual(expected.filter((entry) => entry.type === "Script").length, 40);
-    assert.strictEqual(expected.length, 85);
+    assert.strictEqual(expected.filter((entry) => entry.type === "Script").length, 38);
+    assert.strictEqual(expected.length, 87);
     const fixedUrls = new Set(expected.map((entry) => entry.url));
     assert.deepStrictEqual(loaded.rawResourceOccurrences.filter((entry) => fixedUrls.has(entry.url))
       .map((entry) => ({

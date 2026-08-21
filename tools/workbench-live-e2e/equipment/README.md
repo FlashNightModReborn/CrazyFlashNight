@@ -4,6 +4,8 @@
 
 本目录只提供 A3 Equipment 调制的生产写旅程工具、证据合同和离线负例。它不修改 Host、Web、AS2 或存档业务实现；截至 2026-08-04 未运行真实写旅程，也没有访问或改写真实玩家存档。
 
+2026-08-21 字体 Gate E current-tree 复核：`bootstrap.js --check` 为 `504/504`；production closure v6 精确覆盖 167 个文件，browser child 的现役三视口门为 `137/137`，闭合 331 项 module manifest、44 个实际资源与 133 次 occurrence。闭包现在同时绑定 `fonts/fonts.xml`、XML-hash catalog/compatibility projection、两项 permanent 实体及 generated CSS/JS；独立浏览器只允许其缺少 Host exact-set handler 所导致的 `cfn-fonts.local` 请求失败。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文 162-file、129/129 等旧“当前”快照保留作历史解释，均由本段取代。
+
 ## 当前门槛
 
 - 历史作者自测 `244/244`、`306/306`、`324/324`、`360/360`、第四轮 `404/404`、第五轮 `444/444` 及第六轮 `489/489` 全部保留为 `Superseded / Reopened` 审计痕迹，不删除既有 before/preview/commit/fresh/restart、50 槽背包、lease/version/epoch/sequence 或旧反例合同。第七轮 `503/503`（正例 19、负例 484）也固定为 `Superseded / Reopened`：它虽关闭 Page 跨分组重排、raw tool detach 后置、非权威 icon 注入和旧 PNG 重放四个阻断，但尚未把真实浏览器执行放入独立子进程 journal。2026-08-05 的 `504/504` 及其回执现因共享样式与 producer 输入变化保留为历史。2026-08-08 current canonical 仍为 `504/504`（正例 20、负例 484）：父 manifest `8a48ec40f1103b798050dfbcb327265f5ab85c76ad73dc2dd6c3edaffa2397bc`、父 journal `c9a07f6ea0aea42d31bd5812c2c99c76fa8d30811710d25df61ac847a1665788`、父回执 `1a4b6bce1eb12a5da5d046818dad6ff939c54964abf0ddbc5060c60315af3332`；该结果只允许记为 `AUTHOR OFFLINE_VERIFIED`，须由不同作者重新审阅后才可形成独立结论。

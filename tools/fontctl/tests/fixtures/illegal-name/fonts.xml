@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontCatalog version="1" gate="A" runtimeAuthority="false">
+  <downloadPolicy><allowedHost name="example.invalid"/></downloadPolicy>
+  <exclusions><path glob="scripts/**" reason="test"/><path glob="flashswf/**" reason="test"/><path glob="闪7重置版字体/**" reason="test"/></exclusions>
+  <fonts><font id="Alpha bad" label="甲" file="alpha.ttf" format="ttf" targets="web" license="OFL-1.1" group="test" residency="on-demand" shippedFallback="false"><face id="alpha-400" family="Alpha" weight="400" style="normal" stretch="normal" classification="migrate"/><download priority="1" url="https://example.invalid/alpha.ttf" bytes="1" sha256="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/></font></fonts>
+  <roles><role id="web.test.body" label="测试" status="pilot_pending" allowPresetOverride="false"><use face="alpha-400"/><genericFallback family="serif" classification="system-owned"/></role></roles>
+  <presets/>
+  <rawFamilies><family name="Alpha" classification="migrate"/><family name="serif" classification="system-owned"/><family name="PlayerInfoPathGlyphAtlas" classification="path-glyph"/></rawFamilies>
+</fontCatalog>

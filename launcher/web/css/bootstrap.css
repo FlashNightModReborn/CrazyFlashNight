@@ -209,7 +209,7 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .schema-form input.invalid { border-color: var(--rust); background: rgba(184,58,46,0.08); box-shadow: 0 0 6px rgba(184,58,46,0.2); }
 .schema-form .hint { grid-column: 2; color: var(--dust); font-size: var(--fs-xs); margin-top: -4px; }
 .schema-form .hint.warn { color: #d08040; }
-.schema-form .readonly-val { color: var(--dust); padding: 4px 0; font-family: 'JetBrains Mono', Consolas, monospace; }
+.schema-form .readonly-val { color: var(--dust); padding: 4px 0; font-family: var(--cf7-font-web-overlay-mono); }
 .schema-form select {
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0,0 L10,0 L5,6 Z' fill='%233dd5ff'/></svg>");
@@ -219,7 +219,7 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 /* 数字输入 / readonly-val 用 JetBrains Mono (welcome.css 已注册 @font-face);
    .modal-content 前缀用于压过 welcome.css .modal-content .schema-form input 的 Consolas 设定 */
 .modal-content .schema-form input[type="number"],
-.modal-content .schema-form span.readonly-val { font-family: 'JetBrains Mono', Consolas, monospace; }
+.modal-content .schema-form span.readonly-val { font-family: var(--cf7-font-web-overlay-mono); }
 
 /* Phase 2a: 高级模式 textarea */
 .raw-editor { width: 100%; box-sizing: border-box; min-height: 300px; max-height: 50vh;
@@ -341,7 +341,7 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .audio-row .audio-num {
   width: 56px; padding: 3px 6px; font-size: var(--fs-sm); background: var(--bg1);
   border: 1px solid var(--dls-dim); color: #d4d8dc; border-radius: 0; text-align: right;
-  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-family: var(--cf7-font-web-overlay-mono);
   transition: border-color var(--wb-motion-standard) var(--wb-ease-standard), box-shadow var(--wb-motion-standard) var(--wb-ease-standard);
 }
 .audio-row .audio-num:focus { border-color: var(--dls); outline: none; box-shadow: 0 0 6px rgba(61,213,255,0.2); }

@@ -681,7 +681,7 @@ function runSelfTests() {
       "browser-resource-inventory.v1.json"), "utf8"));
     assert.strictEqual(resourceInventory.schema,
       "workbench-live-e2e.browser-resource-inventory.v1");
-    assert.strictEqual(resourceInventory.files.length, 58);
+    assert.strictEqual(resourceInventory.files.length, 59);
     assert.strictEqual(resourceInventory.optionalFiles.length, 30);
     assert(resourceInventory.files.includes("modules/crafting/dev/harness.html"));
     assert(resourceInventory.files.includes("modules/crafting.js"));
@@ -705,7 +705,7 @@ function runSelfTests() {
     assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
     assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
     assert.strictEqual(receipt.journalVerification, "VERIFIED");
-    assert.strictEqual(receipt.moduleEntryCount, 375);
+    assert.strictEqual(receipt.moduleEntryCount, 376);
     assert.deepStrictEqual(receipt.result.viewports, [
       {width:1024,height:576}, {width:1366,height:768}, {width:1920,height:1080},
     ]);
@@ -721,10 +721,10 @@ function runSelfTests() {
     assert.deepStrictEqual(receipt.result.scenarioNamesSha256,
       moduleInventory.expectedScenarioNamesSha256);
     assert(/^[a-f0-9]{64}$/.test(receipt.result.resultSha256));
-    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 58);
-    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 88);
-    assert(receipt.servedResourceClosure.resourceCount >= 58
-      && receipt.servedResourceClosure.resourceCount <= 88);
+    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 59);
+    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 89);
+    assert(receipt.servedResourceClosure.resourceCount >= 59
+      && receipt.servedResourceClosure.resourceCount <= 89);
     assert.strictEqual(receipt.servedResourceClosure.failureCount, 4);
     assert(receipt.browserBinary && receipt.browserBinary.locator.startsWith("external:")
       && /^[a-f0-9]{64}$/.test(receipt.browserBinary.sha256)
@@ -774,14 +774,15 @@ function runSelfTests() {
       result[entry.role] = (result[entry.role] || 0) + 1;
       return result;
     }, {});
-    assert.strictEqual(fingerprint.files.length, 254);
-    assert.deepStrictEqual(roles, { page: 1, overlay_startup_web: 21,
+    assert.strictEqual(fingerprint.files.length, 257);
+    assert.deepStrictEqual(roles, { page: 1, overlay_startup_web: 18,
       overlay_startup_crafting_web: 1, lazy_registry: 1,
       crafting_lazy_web: 19, organizer_lazy_web: 6,
-      overlay_stylesheet: 7, panels_import_stylesheet: 24,
+      overlay_stylesheet: 8, panels_import_stylesheet: 25,
       font_declaration_stylesheet: 1,
       idle_prewarm_image: 15, css_conditional_asset: 6,
-      font_pack_manifest: 1, icon_manifest: 1,
+      font_pack_manifest: 1, font_catalog_xml: 1,
+      font_runtime_projection: 1, permanent_font_asset: 2, icon_manifest: 1,
       host_source: 18, runtime_artifact_source: 1, runtime_input_descriptor: 1,
       runtime_producer_source: 10, runtime_toolchain_lock: 3,
       as2_source: 22, crafting_data: 13, item_projection_data: 79,

@@ -12,6 +12,7 @@ const WEB_ROOT = path.join(ROOT, 'launcher', 'web');
 const CSS_ROOT = path.join(ROOT, 'launcher', 'web', 'css');
 const ENTRY = path.join(CSS_ROOT, 'panels.css');
 const IMPORTS = [
+    '../generated/font-catalog.css',
     './panels/foundation-top.css',
     './workbench/tokens.css',
     './panels/foundation-rest.css',
@@ -144,7 +145,11 @@ if (JSON.stringify(actualImports) !== JSON.stringify(IMPORTS)) {
 
 let result;
 try {
-    result = resolveCssBundle(ENTRY, {rootDir:CSS_ROOT});
+    // panels.css deliberately imports the generated font catalog from the
+    // sibling web/generated directory. Keep the safety boundary at web/, not
+    // css/, so the canonical import is accepted without allowing a web-root
+    // escape.
+    result = resolveCssBundle(ENTRY, {rootDir:WEB_ROOT});
 } catch (error) {
     fail(error.message || String(error));
 }

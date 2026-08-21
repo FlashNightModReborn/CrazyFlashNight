@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>CF7:ME</title>
 <!-- 设计 token canonical 源: 纯 :root 变量声明, 无 @font-face / 选择器副作用, 直接引入保持数值同步 -->
+<link rel="stylesheet" href="generated/font-catalog.css">
 <link rel="stylesheet" href="css/workbench/tokens.css">
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/welcome.css">
@@ -177,6 +178,7 @@
 <button class="intro-skip" id="intro-skip">跳 过 &middot; ESC</button>
 
 <!-- 版本号 / CHANNEL 标签: 唯一配置点在 config/version.js, 加载时同步填充上面的 #version-* 节点 -->
+<script src="generated/font-catalog.js"></script>
 <script src="config/version.js"></script>
 
 <!-- Web Audio 合成的 UI 音效 (独立于 bootstrap-main.js, 先加载以便 main 能直接引 BootstrapAudio) -->
