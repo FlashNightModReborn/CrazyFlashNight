@@ -2,7 +2,7 @@
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。
 
-**最后核对代码基线**：黑市全目录影子鉴定 v1 release source commit `12d6ba9eb282106e058c292fc1fdb80a49534de3`、promotion commit `244b132efa3642f1d807964c9792a6e396399d9b`（2026-08-20）；动态正式身份与状态继续以本节列出的 manifest、consensus 与 runtime 发布文档为准。该列车只把 shadow/dev 宿主与资源闭包带入正式 runtime，不表示黑市生产经济、存档、掉落或业务 E2E 已启用。
+**最后核对代码基线**：T800 托管长枪 release source `d049daed44a537ef586f9e6254fcb824b98c4ee1`、promotion `a22490867ebd03b931c3066141c0954b02be25da`（2026-08-22）；动态正式身份只读下列 manifest、consensus 与 runtime 文档。维护者已在同 Core 候选接受托管交互、M134/XM214 视觉与变速，formal identity/trusted shutdown 通过；正式入口未重跑武器命令，专项不称 `standard_entry_verified`。
 
 ## 当前真值与阅读顺序
 
