@@ -536,7 +536,12 @@ _root.战宠进阶函数.常驻淬毒 = {
 		if(!this.已常驻淬毒 && _root.当前为战斗地图 && this.宠物属性.常驻淬毒 && this.宠物属性.常驻淬毒.启用){
 			if(this.宠物属性.常驻淬毒.来源 == "玩家"){
 				if(_root.金钱 >= _root.战宠进阶函数.常驻淬毒.消耗金币){
-					_root.金钱 -= _root.战宠进阶函数.常驻淬毒.消耗金币;
+					var poisonCost:Number = Number(_root.战宠进阶函数.常驻淬毒.消耗金币);
+					_root.金钱 -= poisonCost;
+					org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+						-poisonCost, 0,
+						{source:"pet_service", reason:"persistent_poison"});
+					if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 					_root.发布消息("战宠"+this.名字+"消耗金币"+_root.战宠进阶函数.常驻淬毒.消耗金币+"淬毒");
 					if(this.淬毒){
 						this.淬毒 += _root.战宠进阶函数.常驻淬毒.效果;

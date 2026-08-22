@@ -3,6 +3,7 @@ import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
@@ -409,7 +410,7 @@ class org.flashNight.arki.item.ItemUtil{
      * 任务、成就与脚本奖励的原子入口。商城和合成仍使用 acquire() 的严格容量
      * 语义，避免先扣款再折算。
      */
-    public static function acquireReward(itemArray:Array):Object{
+    public static function acquireReward(itemArray:Array, context:Object):Object{
         var plan:Object = planRewardAcquire(itemArray);
         if(plan == null){
             return {success:false, error:"invalid_reward", items:[],
@@ -419,7 +420,7 @@ class org.flashNight.arki.item.ItemUtil{
             plan.success = true;
             return plan;
         }
-        plan.success = acquire(plan.items);
+        plan.success = acquire(plan.items, context);
         if(!plan.success) plan.error = "inventory_full";
         return plan;
     }
@@ -566,11 +567,29 @@ class org.flashNight.arki.item.ItemUtil{
         // 遍历要求数组，区分材料、情报、可合并与不可合并物品
         for(var i = 0; i < itemArray.length; i++){
             var name:String = itemArray[i].name;
-            var value:Number = itemArray[i].value;
+            var value:Number = Number(itemArray[i].value);
             if(name == "金币" || name == "K点" || name == "经验值" || name == "技能点"){
-                list[name] = value;
+                var scalarTotal:Number = Number(list[name]) + value;
+                var scalarCurrent:Number;
+                if(name == "金币") scalarCurrent = Number(_root.金钱);
+                else if(name == "K点") scalarCurrent = Number(_root.虚拟币);
+                else if(name == "经验值") scalarCurrent = Number(_root.经验值);
+                else scalarCurrent = Number(_root.技能点数);
+                if(isNaN(value) || !isFinite(value) || value <= 0
+                        || Math.floor(value) != value
+                        || isNaN(scalarTotal) || !isFinite(scalarTotal)
+                        || Math.floor(scalarTotal) != scalarTotal
+                        || scalarTotal > MAX_SAFE_COLLECTION_QUANTITY
+                        || isNaN(scalarCurrent) || !isFinite(scalarCurrent)
+                        || Math.floor(scalarCurrent) != scalarCurrent
+                        || scalarCurrent + scalarTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
+                // 同名标量奖励聚合，避免资产 last-wins、回执 merge-sum 的账实分叉。
+                list[name] = scalarTotal;
                 continue;
             }
+            // 未知物品必须在任何写入前失败，不能由 BaseItem.create(null) 演化成
+            // “实际未入包、调用方却收到成功与获得回执”。
+            if(!isItem(name)) return null;
             if(isMaterial(name)){
                 if(isNaN(value) || !isFinite(value) || value <= 0
                         || Math.floor(value) != value
@@ -580,7 +599,9 @@ class org.flashNight.arki.item.ItemUtil{
                 if(isNaN(materialTotal) || !isFinite(materialTotal)
                         || Math.floor(materialTotal) != materialTotal
                         || materialTotal > MAX_SAFE_COLLECTION_QUANTITY
-                        || isNaN(materialCurrent) || materialCurrent < 0
+                        || isNaN(materialCurrent) || !isFinite(materialCurrent)
+                        || materialCurrent < 0
+                        || Math.floor(materialCurrent) != materialCurrent
                         || materialCurrent + materialTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
                 list.材料[name] = materialTotal;
             } else if(isInformation(name)){
@@ -597,11 +618,16 @@ class org.flashNight.arki.item.ItemUtil{
                     + stackIncrement;
                 if(isNaN(stackIncrement) || !isFinite(stackIncrement)
                         || stackIncrement <= 0
+                        || Math.floor(stackIncrement) != stackIncrement
                         || isNaN(stackTotal) || !isFinite(stackTotal)
+                        || Math.floor(stackTotal) != stackTotal
                         || stackTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
                 mergables[name] = stackTotal;
             } else {
                 // 不可合并物品直接加入列表
+                if(isNaN(value) || !isFinite(value) || value <= 0
+                        || Math.floor(value) != value
+                        || value > MAX_SAFE_COLLECTION_QUANTITY) return null;
                 nonMergeableList.push(itemArray[i]);
             }
         }
@@ -620,9 +646,12 @@ class org.flashNight.arki.item.ItemUtil{
             var grenadeTotal:Number = grenadeCurrent + grenadeIncrement;
             if(isNaN(grenadeIncrement) || !isFinite(grenadeIncrement)
                     || grenadeIncrement <= 0
+                    || Math.floor(grenadeIncrement) != grenadeIncrement
                     || isNaN(grenadeCurrent) || !isFinite(grenadeCurrent)
                     || grenadeCurrent <= 0
+                    || Math.floor(grenadeCurrent) != grenadeCurrent
                     || isNaN(grenadeTotal) || !isFinite(grenadeTotal)
+                    || Math.floor(grenadeTotal) != grenadeTotal
                     || grenadeTotal > MAX_SAFE_COLLECTION_QUANTITY){
                 return null;
             }
@@ -646,7 +675,9 @@ class org.flashNight.arki.item.ItemUtil{
                 var drugTotal:Number = drugCurrent + drugIncrement;
                 if(isNaN(drugCurrent) || !isFinite(drugCurrent)
                         || drugCurrent <= 0
+                        || Math.floor(drugCurrent) != drugCurrent
                         || isNaN(drugTotal) || !isFinite(drugTotal)
+                        || Math.floor(drugTotal) != drugTotal
                         || drugTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
                 // 记录：将原有合并堆增加新需求
                 list.药剂栏[drugindexArr[i]] = {
@@ -672,7 +703,9 @@ class org.flashNight.arki.item.ItemUtil{
                 var bagTotal:Number = bagCurrent + bagIncrement;
                 if(isNaN(bagCurrent) || !isFinite(bagCurrent)
                         || bagCurrent <= 0
+                        || Math.floor(bagCurrent) != bagCurrent
                         || isNaN(bagTotal) || !isFinite(bagTotal)
+                        || Math.floor(bagTotal) != bagTotal
                         || bagTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
                 // 记录：将原有合并堆增加新需求
                 list.背包[indexArr[i]] = {
@@ -717,7 +750,7 @@ class org.flashNight.arki.item.ItemUtil{
      * 若成功获得所有物品，返回true
      * 若背包空间不足，返回false
      */
-    public static function acquire(itemArray:Array):Boolean {
+    public static function acquire(itemArray:Array, context:Object):Boolean {
         var list = ItemUtil.require(itemArray);
         if(list == null) return false;
 
@@ -732,6 +765,12 @@ class org.flashNight.arki.item.ItemUtil{
                     || String(equippedItem.name) != String(equipmentReq.name)
                     || typeof equippedItem.value != "number") return false;
         }
+
+        // 即使调用方没有显式领域事务，acquire 自身也要在首个资产写入前建立
+        // 短事务，使升级强存盘延迟到同批货币/材料/背包全部写完之后。
+        var assetTransaction:Object = PlayerAssetTransaction.current();
+        var implicitAssetTransaction:Boolean = assetTransaction == null;
+        if(implicitAssetTransaction) assetTransaction = PlayerAssetTransaction.begin(context);
 
         //获取
         if(list.金币 > 0) _root.金钱 += list.金币;
@@ -843,6 +882,10 @@ class org.flashNight.arki.item.ItemUtil{
         // Plan A audit: acquire() 改 金币/K点/经验/技能点/材料/情报/装备栏/药剂栏/背包 全部 save-relevant
         // 字段，必须设 dirtyMark 让 SaveManager 知道需要落盘
         _root.存档系统.dirtyMark = true;
+        // 可选消费者只看已完成写入后的 detached receipt；显式领域事务存在时先缓冲，
+        // 由最外层 commit 决定是否发布，避免制作/交易回滚产生幽灵播报。
+        PlayerAssetTransaction.recordItems("gain", itemArray, context);
+        if(implicitAssetTransaction) PlayerAssetTransaction.commit(assetTransaction);
         return true;
     }
 
@@ -969,15 +1012,17 @@ class org.flashNight.arki.item.ItemUtil{
      * 若背包和材料栏没有足够物品，返回false
      * 支持装备数量扣除（使用##语法时）
      */
-    public static function submit(itemArray:Array):Boolean{
+    public static function submit(itemArray:Array, context:Object):Boolean{
         var list = ItemUtil.contain(itemArray);
         if(list == null) return false;
         var wrote:Boolean = false;
+        var committedLosses:Array = [];
         //材料
         var 材料 = _root.收集品栏.材料;
         for(var name in list.材料){
             var value = list.材料[name];
             材料.addValue(name,-value);
+            committedLosses.push({name:name, value:value, kind:"material"});
             wrote = true;
         }
         //情报不需要提交
@@ -997,6 +1042,9 @@ class org.flashNight.arki.item.ItemUtil{
         for(var i in list.背包){
             var item = 背包.getItem(i);
             var originalReq = itemMap[item.name];
+            var removedName:String = String(item.name);
+            var removedValue:Number = Number(list.背包[i]);
+            var removedEquipment:Boolean = isEquipment(removedName);
 
             // 如果是装备且使用##语法（数量模式），或者是装备但list中记录的是1（数量模式的标记）
             if(isNaN(item.value) || (isEquipment(item.name) && list.背包[i] == 1 && originalReq && originalReq.isQuantity)){
@@ -1004,17 +1052,33 @@ class org.flashNight.arki.item.ItemUtil{
             } else {
                 背包.addValue(i, -list.背包[i]);  // 减少数量
             }
+            var lossEntry:Object = {
+                name:removedName,
+                value:removedEquipment ? 1 : removedValue
+            };
+            if (removedEquipment) {
+                lossEntry.kind = "equip";
+                lossEntry.isQuantity = true;
+                if (item.value != null && item.value.tier != undefined) {
+                    lossEntry.tier = item.value.tier;
+                }
+            }
+            committedLosses.push(lossEntry);
             wrote = true;
         }
         //药剂栏
         var 药剂栏 = _root.物品栏.药剂栏;
         for(var i in list.药剂栏){
             var item = 药剂栏.getItem(i);
+            var removedDrugName:String = String(item.name);
+            var removedDrugValue:Number = Number(list.药剂栏[i]);
             if(isNaN(item.value)) 药剂栏.remove(i);
             else 药剂栏.addValue(i, -list.药剂栏[i]);
+            committedLosses.push({name:removedDrugName, value:removedDrugValue});
             wrote = true;
         }
         if(wrote && _root.存档系统) _root.存档系统.dirtyMark = true;
+        if(wrote) PlayerAssetTransaction.recordItems("loss", committedLosses, context);
         return true;
     }
 
@@ -1023,16 +1087,16 @@ class org.flashNight.arki.item.ItemUtil{
         return ItemUtil.require([{name:__name,value:__value}]);
     }
     //获得单个物品
-    public static function singleAcquire(__name:String,__value:Number):Boolean{
-        return ItemUtil.acquire([{name:__name,value:__value}]);
+    public static function singleAcquire(__name:String,__value:Number, context:Object):Boolean{
+        return ItemUtil.acquire([{name:__name,value:__value}], context);
     }
     //检索是否持有单个物品
     public static function singleContain(__name:String,__value:Number):Object{
         return ItemUtil.contain([{name:__name,value:__value}]);
     }
     //提交单个物品
-    public static function singleSubmit(__name:String,__value:Number):Boolean{
-        return ItemUtil.submit([{name:__name,value:__value}]);
+    public static function singleSubmit(__name:String,__value:Number, context:Object):Boolean{
+        return ItemUtil.submit([{name:__name,value:__value}], context);
     }
 
     

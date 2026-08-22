@@ -34,6 +34,7 @@ function runHarness(options = {}) {
   const configPath = "file:///flash-config/Commands/flash_project_path.cfg";
   const targetCfg = `${projectURI}/scripts/compile_target.cfg`;
   const modeCfg = `${projectURI}/scripts/compile_mode.cfg`;
+  const quitCfg = `${projectURI}/scripts/compile_quit_after_publish.cfg`;
   const doneMarker = `${projectURI}/scripts/publish_done.marker`;
   const errorMarker = `${projectURI}/scripts/publish_error.marker`;
   const reopenMarker = `${projectURI}/scripts/compile_reopen.marker`;
@@ -43,15 +44,18 @@ function runHarness(options = {}) {
   const files = new Map([
     [configPath, projectURI],
     [targetCfg, targetURI],
-    [modeCfg, "publish"],
+    [modeCfg, options.compileMode || "publish"],
     [targetURI, "PROXY-CS5"],
     [canonicalTargetURI, "PROXY-CS5"],
   ]);
+  if (options.quitAfterPublish) files.set(quitCfg, "quit");
   const traces = [];
   const opened = [];
   const closed = [];
   const outputSaves = [];
   const published = [];
+  const tested = [];
+  const quitCalls = [];
 
   const document = {
     name: "asLoader.xfl",
@@ -60,7 +64,7 @@ function runHarness(options = {}) {
       published.push(this.name);
     },
     testMovie() {
-      throw new Error("unexpected testMovie");
+      tested.push(this.name);
     },
   };
 
@@ -106,6 +110,9 @@ function runHarness(options = {}) {
     getDocumentDOM() {
       return this.documents[0] || null;
     },
+    quit(saveChanges) {
+      quitCalls.push(saveChanges);
+    },
   };
 
   const FLfile = {
@@ -141,6 +148,8 @@ function runHarness(options = {}) {
     closed,
     outputSaves,
     published,
+    tested,
+    quitCalls,
     canonicalTargetURI,
     doneMarker,
     errorMarker,
@@ -165,12 +174,38 @@ function testTwoPhaseCanonicalOpenAndPublish() {
   assert.deepEqual(publishPhase.opened, [publishPhase.canonicalTargetURI]);
   assert.match(publishPhase.opened[0], /Program%20Files/);
   assert.doesNotMatch(publishPhase.opened[0], /\s/);
-  assert.equal(publishPhase.closed.length, 0);
+  assert.deepEqual(publishPhase.closed, [publishPhase.canonicalTargetURI]);
   assert.deepEqual(publishPhase.published, ["asLoader.xfl"]);
+  assert.deepEqual(publishPhase.tested, []);
+  assert.deepEqual(publishPhase.quitCalls, []);
   assert.equal(publishPhase.files.get(publishPhase.doneMarker), "ok");
   assert.equal(publishPhase.files.has(publishPhase.errorMarker), false);
   assert.equal(publishPhase.files.get(publishPhase.compilerErrorsLog), "0 errors, 0 warnings");
   assert.ok(publishPhase.outputSaves.includes(publishPhase.outputLog));
+}
+
+function testExplicitQuitRunsAfterSuccessfulPublish() {
+  const quitPhase = runHarness({
+    initialDocuments: false,
+    quitAfterPublish: true,
+  });
+  assert.deepEqual(quitPhase.published, ["asLoader.xfl"]);
+  assert.deepEqual(quitPhase.closed, [quitPhase.canonicalTargetURI]);
+  assert.equal(quitPhase.files.get(quitPhase.doneMarker), "ok");
+  assert.deepEqual(quitPhase.quitCalls, [false]);
+  assert.match(quitPhase.files.get(quitPhase.outputLog), /quit Flash after completed publish/);
+}
+
+function testMovieKeepsDebugTargetOpen() {
+  const testPhase = runHarness({
+    initialDocuments: false,
+    compileMode: "test",
+  });
+  assert.deepEqual(testPhase.opened, [testPhase.canonicalTargetURI]);
+  assert.deepEqual(testPhase.published, []);
+  assert.deepEqual(testPhase.tested, ["asLoader.xfl"]);
+  assert.deepEqual(testPhase.closed, []);
+  assert.equal(testPhase.files.get(testPhase.doneMarker), "ok");
 }
 
 function testOpenFailureTerminatesImmediately() {
@@ -187,9 +222,13 @@ function testPowerShellHandshakeIsBounded() {
   assert.match(compileTestSource, /\$reopenRequestCount -ge 1/);
   assert.match(compileTestSource, /\$reopenTargetUri -ceq \$targetUri/);
   assert.match(compileTestSource, /JSFL 已关闭目标；触发二阶段重开/);
+  assert.match(compileTestSource, /QuitFlashAfterPublish/);
+  assert.match(compileTestSource, /compile_quit_after_publish\.cfg/);
 }
 
 testTwoPhaseCanonicalOpenAndPublish();
+testExplicitQuitRunsAfterSuccessfulPublish();
+testMovieKeepsDebugTargetOpen();
 testOpenFailureTerminatesImmediately();
 testPowerShellHandshakeIsBounded();
-console.log("[flash-compile-jsfl] ok 3/3");
+console.log("[flash-compile-jsfl] ok 5/5");

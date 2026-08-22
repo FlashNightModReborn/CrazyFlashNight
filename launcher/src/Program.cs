@@ -1665,7 +1665,7 @@ class Program
             CF7Launcher.Guardian.Hud.ToastWidget toastWidget =
                 new CF7Launcher.Guardian.Hud.ToastWidget(form.FlashHostPanel);
             nativeHud.AddWidget(toastWidget);
-            // LootFeedWidget：左下血条上方的物品获得播报卡（loot feed）。
+            // LootFeedWidget：左下血条上方的双向玩家物资/击杀播报卡（loot feed）。
             // 图标目录与 ToastWidget 一样属 native 单渲染端资产；launcher/web/icons 自此
             // 同时是 NativeHud 图标源（IconBakeTask 烘焙产物的首个运行时消费者）。
             // doll-portraits 为运行时纸娃娃胸像缓存（DollBakeTask 落盘），
@@ -1763,7 +1763,7 @@ class Program
         //     NativeHudOverlay.HasNoticeConsumerFor 收口。
         INotchSink notchSink = nativeHud;
         ToastTask toastTask = new ToastTask(toastSink);
-        // loot feed（左下物品获得播报）：widget 常驻 NativeHud，task 始终注册。
+        // loot feed（左下双向物资/击杀播报）：widget 常驻 NativeHud，task 始终注册。
         // 纸娃娃运行时烘焙：service 常驻（overlay WebView2 常驻，native HUD 下仅隐藏），
         // C#→Web 走 TryPostToWeb；桥不可用时 service 内部静默降级。
         CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService dollBakeService =

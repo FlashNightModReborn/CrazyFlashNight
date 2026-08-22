@@ -129,11 +129,25 @@ function main() {
 	// mode 与 target 属于同一轮一次性指令；必须在任何 target/doc early return 前一并消费，
 	// 否则一次坏目标会把 publish 模式泄漏给后续手工触发。
 	var modeCfg = projectURI + "/scripts/compile_mode.cfg";
+	var quitCfg = projectURI + "/scripts/compile_quit_after_publish.cfg";
 	var compileMode = "test";
 	if (FLfile.exists(modeCfg)) {
 		var _m = FLfile.read(modeCfg);
 		FLfile.remove(modeCfg);
 		if (_m) compileMode = _m.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "");
+	}
+	var quitAfterPublish = false;
+	if (FLfile.exists(quitCfg)) {
+		var _q = FLfile.read(quitCfg);
+		FLfile.remove(quitCfg);
+		_q = _q ? _q.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "") : "";
+		if (_q != "quit" || compileMode != "publish") {
+			fl.trace("[compile] ERROR: invalid quit-after-publish request");
+			fl.outputPanel.save(outputLog);
+			FLfile.write(errorMarker, "invalid quit-after-publish request");
+			return;
+		}
+		quitAfterPublish = true;
 	}
 
 	var doc;
@@ -234,10 +248,25 @@ function main() {
 		else doc.testMovie();
 		if (fl.compilerErrors) fl.compilerErrors.save(compilerErrorsLog);
 	}
+	// Flash CS6 是 32 位进程；连续批量发布大型 XFL 时，保留每个已发布文档会让
+	// 地址空间持续上涨并最终撞墙。publish-only 已经把磁盘 XML 视为 source of
+	// truth，因此在诊断落盘后关闭当前目标，不保存 IDE 内存态。testMovie 目标仍
+	// 保持打开，方便读取 trace 和继续调试。
+	if (compileMode == "publish") {
+		compileRuntimeState.phase = "close_published_target";
+		fl.trace("[compile] close published target: " + doc.name);
+		fl.closeDocument(doc, false);
+	}
+	if (quitAfterPublish) {
+		fl.trace("[compile] quit Flash after completed publish");
+	}
 	fl.trace("[compile] done");
 	fl.outputPanel.save(outputLog);
 	FLfile.write(doneMarker, "ok");
 	compileRuntimeState.phase = "complete";
+	if (quitAfterPublish) {
+		fl.quit(false);
+	}
 }
 
 // 直接执行时（eval 调用）也能工作

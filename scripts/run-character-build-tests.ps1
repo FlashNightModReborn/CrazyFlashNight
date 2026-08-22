@@ -30,7 +30,7 @@ $drugWriter = [regex]::Match(
 ).Value
 $submitWriter = [regex]::Match(
     $itemUtilSource,
-    'public static function submit\(itemArray:Array\):Boolean\{[\s\S]*?public static function singleRequire'
+    'public static function submit\(itemArray:Array,\s*context:Object\):Boolean\{[\s\S]*?public static function singleRequire'
 ).Value
 $grenadeWriter = [regex]::Match(
     $longGunSkillSource,
@@ -45,11 +45,11 @@ $grenadeDirtyCount = [regex]::Matches(
     '存档系统\.dirtyMark\s*=\s*true'
 ).Count
 if (($drugWriter -notmatch
-        'inventory\.addValue\(String\(slotIndex\),\s*-1\)[\s\S]{0,420}存档系统\.dirtyMark\s*=\s*true') -or
+        'inventory\.addValue\(String\(slotIndex\),\s*-1\)[\s\S]{0,720}PlayerAssetTransaction\.recordEffect\([\s\S]{0,420}存档系统\.dirtyMark\s*=\s*true[\s\S]{0,160}PlayerAssetTransaction\.commit\(assetTransaction\)') -or
         ($submitWriter -notmatch 'var wrote:Boolean\s*=\s*false') -or
         ([regex]::Matches($submitWriter, 'wrote\s*=\s*true').Count -ne 3) -or
         ($submitWriter -notmatch
-            'if\(wrote && _root\.存档系统\) _root\.存档系统\.dirtyMark = true;[\s\S]{0,80}return true') -or
+            'if\(wrote && _root\.存档系统\) _root\.存档系统\.dirtyMark = true;[\s\S]{0,180}PlayerAssetTransaction\.recordItems\("loss", committedLosses, context\);[\s\S]{0,80}return true') -or
         ($grenadeWriter -notmatch
             'grenadeItem\.value\s*-=\s*1[\s\S]{0,220}dirtyMark\s*=\s*true') -or
         ($grenadeWriter -notmatch

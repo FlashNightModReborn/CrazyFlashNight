@@ -5550,7 +5550,7 @@
   <asset id="裂地拳" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/裂地拳" />
   <asset id="装备箱" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="箱子素材/装备箱/装备箱" />
   <asset id="觉醒霸体特效原先" swf="flashswf/arts/things0.swf" symbolName="sprite/觉醒霸体特效原先" />
-  <asset id="计时器" swf="flashswf/levels/基地场景合集.swf" symbolName="sprite/Symbol 2448" />
+  <asset id="计时器" swf="flashswf/levels/基地场景合集.swf" symbolName="sprite/计时器" />
   <asset id="诛神闪电" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="子弹-持续组/诛神闪电" />
   <asset id="诺亚军阀实验体" swf="flashswf/arts/new/诺亚军阀实验体.swf" />
   <asset id="调试用失败定位" swf="flashswf/arts/new/fs配置素材.swf" />
@@ -5677,7 +5677,7 @@
   <!-- 16 DUPLICATES: same ID, same SWF, multiple symbolNames -->
   <duplicate id="npc">
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/npc" orphan="true" />
-    <source swf="flashswf/levels/基地场景合集.swf" symbolName="sprite/Symbol 2364" />
+    <source swf="flashswf/levels/基地场景合集.swf" symbolName="sprite/npc" />
   </duplicate>
   <duplicate id="兵器攻击容器-棍棒1连招">
     <source swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招" />

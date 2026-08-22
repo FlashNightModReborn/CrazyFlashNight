@@ -44,5 +44,19 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         {
             Assert.Equal(expected, LootFeedWidget.CountImpactLevel(delta));
         }
+
+        [Theory]
+        [InlineData("gain", "item", 1L, "")]
+        [InlineData("gain", "item", 2L, "×2")]
+        [InlineData("loss", "item", 1L, "−1")]
+        [InlineData("loss", "item", 25L, "−25")]
+        [InlineData("neutral", "kill", 1L, "")]
+        [InlineData("neutral", "kill", 3L, "×3")]
+        public void CountText_ShowsExplicitSignedLoss(
+            string direction, string kind, long count, string expected)
+        {
+            Assert.Equal(expected,
+                LootFeedWidget.CountTextForTest(direction, kind, count));
+        }
     }
 }

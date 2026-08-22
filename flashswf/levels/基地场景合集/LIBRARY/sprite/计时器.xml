@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2448" itemID="6597607e-00000b60" linkageExportForAS="true" linkageIdentifier="计时器" lastModified="1737284275">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/计时器" itemID="6597607e-00000b60" linkageExportForAS="true" linkageIdentifier="计时器" lastModified="1737284275">
   <timeline>
-    <DOMTimeline name="Symbol 2448">
+    <DOMTimeline name="计时器">
       <layers>
         <DOMLayer name="Script Layer" color="#7781B2" current="true" isSelected="true">
           <frames>
@@ -9,12 +9,14 @@
                 <script><![CDATA[function 训练结束加经验值(值)
 {
 	_root.经验值 = Number(_root.经验值) + 值;
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 	_root.发布消息(_root.获得翻译("属性得到提升，请刷新场景后查看！"));
 	_root.健身房主角是否升级();
 }
 function 训练结束加技能点(值)
 {
 	_root.技能点数 = Number(_root.技能点数) + 值;
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 	_root.发布消息(_root.获得翻译("获得技能点：") + 值);
 }
 function 计时结束()
@@ -112,6 +114,10 @@ function 虚拟币支付(amount, 商品编号, 训练毫秒, 增加经验, 挂�
 	if (_root.虚拟币 >= amount)
 	{
 		_root.虚拟币 -= amount;
+		org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+			0, -Number(amount),
+			{source:"gym_training", reason:"experience_training", mergeScope:"operation"});
+		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 		_root.联机2015发送传言("K点消费");
 		_root.发布消息(_root.获得翻译("支付成功！"));
 		_root.播放音效("收银机.mp3");
@@ -130,6 +136,10 @@ function 虚拟币支付2(amount, 商品编号, 训练毫秒, 增加技能点, �
 	if (_root.虚拟币 >= amount)
 	{
 		_root.虚拟币 -= amount;
+		org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+			0, -Number(amount),
+			{source:"gym_training", reason:"skill_training", mergeScope:"operation"});
+		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 		_root.发布消息(_root.获得翻译("支付成功！"));
 		_root.播放音效("收银机.mp3");
 		_root.gameworld.挂机计时器.挂机项目 = 挂机项目;

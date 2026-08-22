@@ -12,6 +12,7 @@ import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.equipment.EquipmentStatProjector;
 
 /** 装备调制唯一权威写服务；Web 只提交不可信意图。 */
@@ -270,6 +271,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
 
         _writeEpoch++;
         markDirty();
+        publishCommittedMaterialEffects(
+            fresh, materialCommit, transactionId);
         if (fresh.achievementMetric != "") AchievementMetrics.record(fresh.achievementMetric, 1);
         for (i = 0; i < fresh.affectedSlots.length; i++) {
             InventoryPanelService.invalidateExternalSlot("背包", Number(fresh.affectedSlots[i]));
@@ -443,7 +446,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
                 // baseline=post / raw=pre 的二次漂移，只能保留 authority 对账。
                 publishCommittedWornSideEffects(
                     plan, materials, materialCommit,
-                    equipment, equipmentCommit);
+                    equipment, equipmentCommit, transactionId);
                 return commitFail(
                     "needs_reconcile", transactionId);
             }
@@ -465,13 +468,13 @@ class org.flashNight.arki.item.EquipmentTuningService {
             // 绝不能反向伪装成确定未写。
             publishCommittedWornSideEffects(
                 plan, materials, materialCommit,
-                equipment, equipmentCommit);
+                equipment, equipmentCommit, transactionId);
             return commitFail("needs_reconcile", transactionId);
         }
 
         publishCommittedWornSideEffects(
             plan, materials, materialCommit,
-            equipment, equipmentCommit);
+            equipment, equipmentCommit, transactionId);
         return response;
     }
 
@@ -712,13 +715,16 @@ class org.flashNight.arki.item.EquipmentTuningService {
         materials:Object,
         materialCommit:Object,
         equipment:EquipmentInventory,
-        equipmentCommit:Object):Void {
+        equipmentCommit:Object,
+        transactionId:String):Void {
         _writeEpoch++;
         try {
             markDirty();
         } catch (dirtyError) {
             // authority 已提交；dirty 写异常只允许由后续 reconcile/保存策略收敛。
         }
+        publishCommittedMaterialEffects(
+            plan, materialCommit, transactionId);
         try {
             if (plan.achievementMetric != "") {
                 AchievementMetrics.record(
@@ -739,6 +745,33 @@ class org.flashNight.arki.item.EquipmentTuningService {
         } catch (equipmentPublishError) {
             // 同上；未知响应通过 snapshot reconcile 收敛。
         }
+    }
+
+    /**
+     * 只投影材料事务的真实所有权变化。配件安装/拆卸/替换只是“材料栏 ↔ 装备槽”
+     * 迁移，玩家始终拥有同一配件，不得伪装成获得或失去；强化石、进阶材料等
+     * 不可回收消耗仍按最终 delta 发布。
+     */
+    private static function publishCommittedMaterialEffects(
+        plan:Object, materialCommit:Object, transactionId:String):Void {
+        if (materialCommit == null || !(materialCommit.changes instanceof Array)) return;
+        if (plan.operation == "install_mod" || plan.operation == "replace_mod"
+                || plan.operation == "detach_mod"
+                || plan.operation == "detach_all_mods") return;
+        var context:Object = {
+            source:"equipment_tuning", reason:String(plan.operation),
+            operationId:String(transactionId), mergeScope:"operation"
+        };
+        var assetTransaction:Object = PlayerAssetTransaction.begin(context);
+        for (var i:Number = 0; i < materialCommit.changes.length; i++) {
+            var change:Object = materialCommit.changes[i];
+            var delta:Number = Number(change.delta);
+            if (delta == 0 || isNaN(delta)) continue;
+            PlayerAssetTransaction.recordEffect(
+                delta > 0 ? "gain" : "loss", "material", String(change.key),
+                Math.abs(delta), context);
+        }
+        PlayerAssetTransaction.commit(assetTransaction);
     }
 
     private static function rollbackWornRawCommit(

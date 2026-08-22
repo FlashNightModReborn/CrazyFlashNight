@@ -185,7 +185,8 @@ _root.主动战技函数.长枪.气锤地雷 = {初始化: null,
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return ItemUtil.singleSubmit("能量电池", 1);
+            return ItemUtil.singleSubmit("能量电池", 1,
+                {source:"skill_cost", reason:"air_hammer_mine"});
         },
         释放: function(自机) {
             var 子弹属性 = new Object();
@@ -232,7 +233,8 @@ _root.主动战技函数.长枪.混凝土切割机超载打击 = {初始化: fun
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return ItemUtil.singleSubmit("强化石", 1);
+            return ItemUtil.singleSubmit("强化石", 1,
+                {source:"skill_cost", reason:"overload_strike"});
         },
 
         释放: function(自机)
@@ -259,7 +261,8 @@ _root.主动战技函数.长枪.MACSIII超载打击 = {初始化: function(自�
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return ItemUtil.singleSubmit("强化石", 1);
+            return ItemUtil.singleSubmit("强化石", 1,
+                {source:"skill_cost", reason:"macsiii_overload"});
         },
 
         释放: function(自机)
@@ -343,7 +346,8 @@ _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return ItemUtil.singleSubmit("强化石", 1);
+            return ItemUtil.singleSubmit("强化石", 1,
+                {source:"skill_cost", reason:"spear_edge"});
         },
 
         释放: function(自机) {
@@ -543,7 +547,8 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
                 return false;
 
             // 优先尝试从背包/药剂栏扣除消耗品
-            if (ItemUtil.singleSubmit(自机.其他消耗物品, 1)) {
+            if (ItemUtil.singleSubmit(自机.其他消耗物品, 1,
+                    {source:"weapon_cost", reason:"alternate_ammo"})) {
                 return true;
             }
 
@@ -558,12 +563,19 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
                     if (!isNaN(grenadeItem.value) && grenadeItem.value > 1) {
                         grenadeItem.value -= 1;
                         if (_root.存档系统) _root.存档系统.dirtyMark = true;
+                        org.flashNight.arki.item.PlayerAssetTransaction.recordEffect("loss", "item",
+                            String(grenadeItem.name), 1,
+                            {source:"weapon_cost", reason:"alternate_ammo"});
                         return true;
                     }
                     // 如果只有1个或是装备类型,直接移除并刷新装扮
                     else {
                         装备栏.remove("手雷");
                         if (_root.存档系统) _root.存档系统.dirtyMark = true;
+                        org.flashNight.arki.item.PlayerAssetTransaction.recordEffect("loss",
+                            ItemUtil.isEquipment(String(grenadeItem.name)) ? "equip" : "item",
+                            String(grenadeItem.name), 1,
+                            {source:"weapon_cost", reason:"alternate_ammo"});
                         _root.刷新人物装扮(自机._name);
                         return true;
                     }

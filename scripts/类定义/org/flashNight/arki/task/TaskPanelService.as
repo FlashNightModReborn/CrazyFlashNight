@@ -45,6 +45,7 @@
  */
 import org.flashNight.arki.task.TaskUtil;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import LiteJSON;
 
 class org.flashNight.arki.task.TaskPanelService {
@@ -1070,6 +1071,9 @@ class org.flashNight.arki.task.TaskPanelService {
         // 扣费（与 虚拟币支付 同序：扣金钱契约金；K点路径再扣虚拟币）
         _root.金钱 -= deposit;
         if (kDeposit > 0) _root.虚拟币 -= kDeposit;
+        org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+            -deposit, -kDeposit,
+            {source:"task_entry", reason:"dungeon_enter", mergeScope:"operation"});
         if (typeof _root.获取虚拟币值 == "function") _root.获取虚拟币值();
         // ⚠ 扣费改写了 金钱/虚拟币（权威存档态），必须显式标脏。重进同一副本时 AddTask 命中
         //   已在进行的任务会 return false 且只在实际 push 后才 dirtyMark（通信_鸡蛋_任务系统.as:419-421），

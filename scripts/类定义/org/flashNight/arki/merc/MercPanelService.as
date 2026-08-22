@@ -368,32 +368,54 @@ class org.flashNight.arki.merc.MercPanelService {
             return;
         }
 
-        // 扣款
-        _root.金钱 -= goldPrice;
-        if (kPrice > 0) {
-            _root.虚拟币 -= kPrice;
+        // 扣款、池移除与槽位写入组成一个领域事务；成就等可选消费者在
+        // 提交后执行，避免埋点异常造成真实扣款但零播报。
+        var assetContext:Object = {
+            source:"mercenary_service", reason:"recruit", mergeScope:"operation"
+        };
+        var assetTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
+        var moneyBeforeHire:Number = Number(_root.金钱);
+        var kpointsBeforeHire:Number = Number(_root.虚拟币);
+        try {
+            // 扣款
+            _root.金钱 -= goldPrice;
+            if (kPrice > 0) {
+                _root.虚拟币 -= kPrice;
+            }
+
+            // 从可雇佣兵池移除
+            pool.splice(poolIndex, 1);
+
+            // 写入选定槽位（targetSlot 在 [0,佣兵个数限制) 内，保证落在快照/进场读窗口内）
+            _root.同伴数据[targetSlot] = merc;
+
+            // 初始化出战信息（默认不出战），与 同伴数据 同下标并行
+            if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
+            _root.佣兵是否出战信息[targetSlot] = 0;
+
+            // 同伴数 以实际有效项重算，杜绝与 同伴数据 发散（issue #7 bug1 根因之一）
+            _root.同伴数 = countCompanions();
+            // Plan A audit: handleRecruit 写 金钱/虚拟币/同伴数据/同伴数/佣兵是否出战信息，全部 save-relevant，必须标脏
+            _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeHire,
+                Number(_root.虚拟币) - kpointsBeforeHire, assetContext);
+        } catch (hireError) {
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeHire,
+                Number(_root.虚拟币) - kpointsBeforeHire, assetContext);
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            throw hireError;
         }
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         // 成就记账（埋点 #12，雇佣成功分支=扣款后）
         if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
             org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣次数", 1);
             org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣花费金币", goldPrice);
         }
-
-        // 从可雇佣兵池移除
-        pool.splice(poolIndex, 1);
-
-        // 写入选定槽位（targetSlot 在 [0,佣兵个数限制) 内，保证落在快照/进场读窗口内）
-        _root.同伴数据[targetSlot] = merc;
-
-        // 初始化出战信息（默认不出战），与 同伴数据 同下标并行
-        if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
-        _root.佣兵是否出战信息[targetSlot] = 0;
-
-        // 同伴数 以实际有效项重算，杜绝与 同伴数据 发散（issue #7 bug1 根因之一）
-        _root.同伴数 = countCompanions();
-        // Plan A audit: handleRecruit 写 金钱/虚拟币/同伴数据/同伴数/佣兵是否出战信息，全部 save-relevant，必须标脏
-        _root.存档系统.dirtyMark = true;
 
         var mercName:String = String(merc[1]);
 
@@ -439,7 +461,9 @@ class org.flashNight.arki.merc.MercPanelService {
         }
 
         // 扣 1 枚复活币（材料栏权威扣减；不足时 singleSubmit 返回 false）
-        if (!ItemUtil.singleSubmit("复活币", 1)) {
+        if (!ItemUtil.singleSubmit("复活币", 1, {
+                source:"mercenary_service", reason:"revive"
+            })) {
             sendResponse({
                 task: "merc_response",
                 callId: callId,
@@ -888,24 +912,44 @@ class org.flashNight.arki.merc.MercPanelService {
             return;
         }
 
-        // 扣费 + 写入（复刻 雇佣佣兵:183-198）
-        _root.金钱 -= goldPrice;
-        _root.买佣兵(merc[2], Math.floor(goldPrice * 0.8));
-        _root.同伴数据[slot] = merc;
-        _root.佣兵是否出战信息[slot] = 1;   // ⚠ 世界内雇佣默认出战（=1），与 roster handleHire(=0) 不同
-        _root.同伴数 = countCompanions();
-        // 扣 金钱 + 写 同伴数据/佣兵是否出战信息/同伴数，全 save-relevant，必须标脏
-        _root.存档系统.dirtyMark = true;
+        // 扣费、写槽与可雇池迁移先形成一个权威事务事实。旧的 买佣兵 回调可能抛错；
+        // 异常时按当前余额提交真实损失，避免半开事务或“已扣款但零播报”。
+        var assetContext:Object = {
+            source:"mercenary_service", reason:"world_hire", mergeScope:"operation"
+        };
+        var assetTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
+        var moneyBeforeWorldHire:Number = Number(_root.金钱);
+        try {
+            // 扣费 + 写入（复刻 雇佣佣兵:183-198）
+            _root.金钱 -= goldPrice;
+            _root.买佣兵(merc[2], Math.floor(goldPrice * 0.8));
+            _root.同伴数据[slot] = merc;
+            _root.佣兵是否出战信息[slot] = 1;   // ⚠ 世界内雇佣默认出战（=1），与 roster handleHire(=0) 不同
+            _root.同伴数 = countCompanions();
 
-        // 颈部装备老项链 → 军牌映射（复刻 雇佣佣兵:209-216）
-        if (merc[11] == "角斗高手项链") merc[11] = "战斗专家军牌";
-        else if (merc[11] == "角斗王者项链") merc[11] = "战斗狂人军牌";
+            // 颈部装备老项链 → 军牌映射（复刻 雇佣佣兵:209-216）
+            if (merc[11] == "角斗高手项链") merc[11] = "战斗专家军牌";
+            else if (merc[11] == "角斗王者项链") merc[11] = "战斗狂人军牌";
 
-        // 从可雇佣兵池移除（复刻 雇佣佣兵:217-232）
-        if (merc[19] && merc[19].是否杂交 == false) {
-            spliceFromPool(_root.可雇佣兵, merc);
-            if (merc[19].隐藏) spliceFromPool(_root.隐藏的可雇佣兵, merc);
+            // 从可雇佣兵池移除（复刻 雇佣佣兵:217-232）
+            if (merc[19] && merc[19].是否杂交 == false) {
+                spliceFromPool(_root.可雇佣兵, merc);
+                if (merc[19].隐藏) spliceFromPool(_root.隐藏的可雇佣兵, merc);
+            }
+
+            // 扣 金钱 + 写 同伴数据/佣兵是否出战信息/同伴数，全 save-relevant，必须标脏
+            _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeWorldHire, 0, assetContext);
+        } catch (worldHireError) {
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeWorldHire, 0, assetContext);
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            throw worldHireError;
         }
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         // 成就记账（对齐 handleHire 埋点 #12）
         if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {

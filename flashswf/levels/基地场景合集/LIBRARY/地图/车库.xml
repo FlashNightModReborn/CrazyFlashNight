@@ -201,7 +201,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2364" centerPoint3DX="449.35" centerPoint3DY="427.05">
+                <DOMSymbolInstance libraryItemName="sprite/npc" centerPoint3DX="449.35" centerPoint3DY="427.05">
                   <matrix>
                     <Matrix tx="361.05" ty="303"/>
                   </matrix>
@@ -275,6 +275,9 @@ onClipEvent(load){
 			}
 			_root.金钱 -= 8000;
 			_root.基建系统.infrastructure.自行车 = 1;
+			_root.记录玩家货币变化(
+				-8000, 0, {source:"vehicle_service", reason:"buy_bicycle", mergeScope:"operation"});
+			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			return true;
 		};
 		_root.确认通用面板.启动();
@@ -322,6 +325,9 @@ onClipEvent (load) {
 				}
 				_root.金钱 -= 35000;
 				_root.基建系统.infrastructure.摩托车 = 1;
+				_root.记录玩家货币变化(
+					-35000, 0, {source:"vehicle_service", reason:"buy_motorcycle", mergeScope:"operation"});
+				if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			}
 			else
 			{
@@ -376,6 +382,9 @@ onClipEvent (load) {
 				}
 				_root.金钱 -= 500000;
 				_root.基建系统.infrastructure.越野车 = 1;
+				_root.记录玩家货币变化(
+					-500000, 0, {source:"vehicle_service", reason:"buy_offroad", mergeScope:"operation"});
+				if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			}
 			else
 			{

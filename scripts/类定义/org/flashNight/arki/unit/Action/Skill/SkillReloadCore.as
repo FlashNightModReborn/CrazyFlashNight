@@ -55,7 +55,9 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
             var clipName:String = weaponAttr.clipname;
 
             // 尝试提交（消耗）1个弹夹道具
-            if (ItemUtil.singleSubmit(clipName, 1)) {
+            if (ItemUtil.singleSubmit(clipName, 1, {
+                    source:"reload", reason:"skill_reload", mergeScope:"operation"
+                })) {
                 // 提交成功，重置已发射数
                 weapon.value.shot = 0;
                 if (weapon == unit.长枪) {

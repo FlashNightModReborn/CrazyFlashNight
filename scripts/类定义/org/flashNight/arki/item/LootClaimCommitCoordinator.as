@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 
 /**
  * Loot claim 的双资源提交协调器。目的写成功、source 删除失败时先尝试回滚；只有观察到
@@ -382,7 +383,7 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         var outcome:Object = pending.outcome;
         if (outcome == null) return {success:false, error:"commit_failed"};
         outcome.success = true;
-        // 播报永不破坏提交链路：feed 发射异常只留 trace，不影响已提交结果
+        // 消费者回执永不破坏提交链路：异常只留 trace，不影响已提交结果。
         try {
             emitLootFeed(pending);
         } catch (emitError) {
@@ -392,33 +393,37 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
     }
 
     /**
-     * 战利品箱领取成功的 loot feed 播报。统一收口在 successOutcome：begin/resume/
+     * 战利品箱领取成功的资产事务回执。统一收口在 successOutcome：begin/resume/
      * settleForSceneExpiry 三条提交路径都经此处。_lootFeedEmitted 防重：pending 理论上
      * 只成功一次，但 resume 可重入，幂等标记保证不会双发卡片。
-     * kind 由包装函数按名称自动推导；ordinary 装备透传 tier 解析进阶名/图标。
+     * operationId 沿用领取幂等键，Host 即使遇到恢复重入也可安全去重。
      */
     private static function emitLootFeed(pending:Object):Void {
         if (pending == null || pending._lootFeedEmitted === true) return;
         pending._lootFeedEmitted = true;
-        if (typeof _root.发布战利品消息 != "function") return;
+        var context:Object = {
+            source:"loot_box", reason:"claim",
+            operationId:String(pending.operationId), mergeScope:"operation"
+        };
 
         var kind:String = String(pending.kind);
         if (kind == "ordinary") {
             var item:Object = pending.sourceItem;
             if (item == null) return;
-            // 非堆叠装备 value 不是数字（beginOrdinary 的 isStack 同款判据），每件按 1 计
-            var claimCount:Number = (typeof item.value == "number") ? Number(item.value) : 1;
-            _root.发布战利品消息(null, String(item.name), claimCount, "loot_box", item.tier);
+            PlayerAssetTransaction.recordItems("gain", [item], context);
             return;
         }
+        // 经验/技能点属于进度聚合，不混入物资双向播报。
+        if (kind == "experience" || kind == "skill_points") return;
         var count:Number = Number(pending.quantity);
         if (kind == "money") {
-            _root.发布战利品消息("money", "金钱", count, "loot_box");
+            PlayerAssetTransaction.recordEffect("gain", "money", "金钱", count, context);
         } else if (kind == "kpoints") {
-            _root.发布战利品消息("kpoint", "K点", count, "loot_box");
+            PlayerAssetTransaction.recordEffect("gain", "kpoint", "K点", count, context);
         } else {
-            // information / 材料 / experience / skill_points：名称自动推导 kind 与图标
-            _root.发布战利品消息(null, String(pending.destinationName), count, "loot_box");
+            PlayerAssetTransaction.recordEffect("gain",
+                kind == "information" ? "intel" : "material",
+                String(pending.destinationName), count, context);
         }
     }
 

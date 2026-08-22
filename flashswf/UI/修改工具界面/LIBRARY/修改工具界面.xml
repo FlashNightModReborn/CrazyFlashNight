@@ -460,6 +460,9 @@ onClipEvent (unload) {
 		_root.虚拟币 = 0;
 	}
 	_root.虚拟币 += 100000;
+	_root.记录玩家货币变化(
+		0, 100000, {source:"cheat", reason:"modifier_grant", mergeScope:"operation"});
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 }
 ]]></script>
                   </Actionscript>
@@ -478,6 +481,9 @@ onClipEvent (unload) {
 		_root.金钱 = 0;
 	}
 	_root.金钱 += 100000;
+	_root.记录玩家货币变化(
+		100000, 0, {source:"cheat", reason:"modifier_grant", mergeScope:"operation"});
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 }
 ]]></script>
                   </Actionscript>

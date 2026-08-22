@@ -18,6 +18,7 @@ namespace CF7Launcher.Tests.Bus
             }
 
             Assert.Contains("shop_response", names);
+            Assert.Contains("loot", names);
             Assert.Contains("map_response", names);
             Assert.Contains("stage_select_response", names);
             Assert.Contains("arena_response", names);

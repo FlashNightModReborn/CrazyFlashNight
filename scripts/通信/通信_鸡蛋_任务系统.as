@@ -281,45 +281,62 @@ _root.FinishTask = function(index) {
             itemArray[i].value = Math.floor(itemValue * 0.5);
         // if(_root.isEasyMode()) itemArray[i].value = Math.floor(itemValue * 1.5);
     }
+    // 两阶段预检：奖励写入只会增加持有量，因此先锁定交付物存在性后，
+    // 后续 acquireReward 不可能让 submit 从“足够”变成“不足”。这样既不先扣
+    // 任务物，也不允许配置错误走成“领奖但未交付”。
+    var submitItems = taskData.finish_submit_items;
+    var submitItemArray:Array = submitItems
+        ? org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems) : null;
+    if (submitItemArray != null
+            && org.flashNight.arki.item.ItemUtil.contain(submitItemArray) == null) {
+        _root.发布消息("任务交付物品不足，无法完成任务！");
+        return false;
+    }
+    // 奖励入账、任务物品交付与任务完成属于同一个玩家资产操作。外层事务
+    // 延迟消费者回执，避免奖励刚入包、任务尚未完成时提前播报；失败预检不留卡片。
+    var assetTransaction:Object =
+        org.flashNight.arki.item.PlayerAssetTransaction.begin({
+            source:"quest_reward", reason:"quest_complete", mergeScope:"operation"
+        });
     // 获得奖励：情报按逐物品 maxvalue 截断，同批超出量按 price 折算为金币。
     var rewardSettlement:Object =
-        org.flashNight.arki.item.ItemUtil.acquireReward(itemArray);
+        org.flashNight.arki.item.ItemUtil.acquireReward(itemArray, {
+            source:"quest_reward", reason:"quest_complete"
+        });
     if (!rewardSettlement.success) {
+        org.flashNight.arki.item.PlayerAssetTransaction.rollback(assetTransaction);
         _root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
         return false;
     }
-    // 任务奖励弹窗已退役：奖励经上方 acquireReward 直接入包，改由 loot feed 逐项播报
-    // （kind 由包装函数按名称推导，tier 装备解析进阶名/图标）。
-    // 原弹窗 刷新() 顺带播放的奖励音效随弹窗一并丢失，此处补回（有奖励才响）。
-    if (rewardSettlement.items.length >= 1)
-        _root.播放音效("levelup-2.wav");
-    for (i = 0; i < rewardSettlement.items.length; i++) {
-        var delivered:Object = rewardSettlement.items[i];
-        _root.发布战利品消息(null, delivered.name, delivered.value, "quest_reward", delivered.tier);
-    }
-    if (rewardSettlement.hasOverflow) {
-        _root.发布消息(rewardSettlement.overflowMoney > 0
-            ? "超出情报持有上限的奖励已折算为金币" + rewardSettlement.overflowMoney + "。"
-            : "已达持有上限的情报奖励不再重复计入。");
-        if (rewardSettlement.overflowMoney > 0)
-            _root.发布战利品消息("money", "金钱", rewardSettlement.overflowMoney, "quest_reward");
-    }
     //消耗任务物品
-    var submitItems = taskData.finish_submit_items;
-    if (submitItems) {
-        var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems);
-        var result = org.flashNight.arki.item.ItemUtil.submit(itemArray);
+    if (submitItemArray != null) {
+        var result = org.flashNight.arki.item.ItemUtil.submit(submitItemArray, {
+            source:"quest_turn_in", reason:"quest_complete"
+        });
         if (!result) {
-            _root.发布消息("交付任务物品异常！");
+            // 已通过同步 contain 预检，正常执行不应抵达；保留可观测错误，
+            // 但资产回执仍按已经发生的奖励事实提交，避免泄漏事务栈。
+            _root.发布消息("交付任务物品异常，请重新进入场景后检查任务状态！");
         }
     }
-    _root.SetDialogue(TaskUtil.getTaskText(taskData.finish_conversation));
-    //移除已完成的任务
-    _root.UpdateTaskProgress(taskID);
+    // 先完成任务幂等状态，再提交资产回执与事务内延迟的升级强存盘。
+    // 这里只写权威任务状态；UI 投影和对话等任意回调全部移到事务提交之后。
+    _root.提交任务完成状态(taskID, taskData.chain);
     _root.tasks_to_do.splice(index, 1);
     // Plan A audit: FinishTask 写 tasks_to_do + 通过 acquire/UpdateTaskProgress 已标脏；
     // 此处显式补标确保 splice 后状态被标脏（UpdateTaskProgress 标脏路径见其内补标）
     _root.存档系统.dirtyMark = true;
+    org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+    // 奖励弹窗已退役：音效与提示都是可选投影，必须晚于权威状态和资产回执提交。
+    if (rewardSettlement.items.length >= 1)
+        _root.播放音效("levelup-2.wav");
+    if (rewardSettlement.hasOverflow) {
+        _root.发布消息(rewardSettlement.overflowMoney > 0
+            ? "超出情报持有上限的奖励已折算为金币" + rewardSettlement.overflowMoney + "。"
+            : "已达持有上限的情报奖励不再重复计入。");
+    }
+    _root.UpdateTaskProgress();
+    _root.SetDialogue(TaskUtil.getTaskText(taskData.finish_conversation));
     //检索是否可以接取任务链的下一个任务
     var isTaskInChain = false;
     var chainDict = TaskUtil.task_chains[taskData.chain[0]];
@@ -451,21 +468,27 @@ _root.DeleteTask = function(index) {
     return true;
 }
 
-_root.UpdateTaskProgress = function(id) {
-    if (id != null) {
-        var chain = TaskUtil.getTaskData(id).chain;
-        if (!isNaN(chain[1]) && (_root.task_chains_progress[chain[0]] < chain[1] || _root.task_chains_progress[chain[0]] == null)) {
-            _root.task_chains_progress[chain[0]] = chain[1];
+// 任务完成的权威状态写入与 UI 投影分离。资产事务只调用本函数，避免把
+// 后勤按钮等可选 UI 回调放进“奖励 + 交付 + 完成任务”的 finality 边界。
+_root.提交任务完成状态 = function(id, chain) {
+    if (_root.task_chains_progress == undefined) _root.task_chains_progress = {};
+    if (_root.tasks_finished == undefined) _root.tasks_finished = {};
+    if (!isNaN(chain[1]) && (_root.task_chains_progress[chain[0]] < chain[1] || _root.task_chains_progress[chain[0]] == null)) {
+        _root.task_chains_progress[chain[0]] = chain[1];
+        _root.tasks_finished[String(id)] = 1;
+    } else {
+        if (isNaN(_root.tasks_finished[String(id)])) {
             _root.tasks_finished[String(id)] = 1;
         } else {
-            if (isNaN(_root.tasks_finished[String(id)])) {
-                _root.tasks_finished[String(id)] = 1;
-            } else {
-                _root.tasks_finished[String(id)] += 1;
-            }
+            _root.tasks_finished[String(id)] += 1;
         }
-        // Plan A audit: UpdateTaskProgress 写 task_chains_progress / tasks_finished，必须标脏
-        _root.存档系统.dirtyMark = true;
+    }
+    _root.存档系统.dirtyMark = true;
+}
+
+_root.UpdateTaskProgress = function(id) {
+    if (id != null) {
+        _root.提交任务完成状态(id, TaskUtil.getTaskData(id).chain);
     }
     if (isNaN(_root.task_chains_progress.主线)) {
         _root.task_chains_progress.主线 = 0;

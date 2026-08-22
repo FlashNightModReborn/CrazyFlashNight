@@ -121,8 +121,14 @@ function 换弹夹()
 		var 剩余显示手雷数 = _root.物品栏.装备栏.getValue("手雷");
 		if (剩余显示手雷数 > 0)
 		{
+			var 消耗手雷名 = _root.物品栏.装备栏.getNameString("手雷");
 			_root.物品栏.装备栏.addValue("手雷",-1);
 			剩余显示手雷数--;
+			_root.记录玩家物资变化(
+				"loss", _root.玩家物品是否装备(消耗手雷名) ? "equip" : "item",
+				String(消耗手雷名), 1,
+				{source:"weapon_cost", reason:"grenade_throw", mergeScope:"operation"});
+			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余显示手雷数;
 		}
 	}
@@ -258,8 +264,14 @@ function 换弹夹()
 		var 剩余显示手雷数 = _root.物品栏.装备栏.getValue("手雷");
 		if (剩余显示手雷数 > 0)
 		{
+			var 消耗手雷名 = _root.物品栏.装备栏.getNameString("手雷");
 			_root.物品栏.装备栏.addValue("手雷",-1);
 			剩余显示手雷数--;
+			_root.记录玩家物资变化(
+				"loss", _root.玩家物品是否装备(消耗手雷名) ? "equip" : "item",
+				String(消耗手雷名), 1,
+				{source:"weapon_cost", reason:"grenade_lob", mergeScope:"operation"});
+			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余显示手雷数;
 		}
 	}
@@ -396,8 +408,14 @@ function 换弹夹()
 		var 剩余显示手雷数 = _root.物品栏.装备栏.getValue("手雷");
 		if (剩余显示手雷数 > 0)
 		{
+			var 消耗手雷名 = _root.物品栏.装备栏.getNameString("手雷");
 			_root.物品栏.装备栏.addValue("手雷",-1);
 			剩余显示手雷数--;
+			_root.记录玩家物资变化(
+				"loss", _root.玩家物品是否装备(消耗手雷名) ? "equip" : "item",
+				String(消耗手雷名), 1,
+				{source:"weapon_cost", reason:"throwing_weapon", mergeScope:"operation"});
+			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余显示手雷数;
 		}
 	}
@@ -529,8 +547,14 @@ function 换弹夹()
 		var 剩余显示手雷数 = _root.物品栏.装备栏.getValue("手雷");
 		if (剩余显示手雷数 > 0)
 		{
+			var 消耗手雷名 = _root.物品栏.装备栏.getNameString("手雷");
 			_root.物品栏.装备栏.addValue("手雷",-1);
 			剩余显示手雷数--;
+			_root.记录玩家物资变化(
+				"loss", _root.玩家物品是否装备(消耗手雷名) ? "equip" : "item",
+				String(消耗手雷名), 1,
+				{source:"weapon_cost", reason:"throwing_weapon_lob", mergeScope:"operation"});
+			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余显示手雷数;
 		}
 	}

@@ -295,6 +295,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
             // 枪械师战术换弹：回收未用弹药
             var gs:Object = parentRef.被动技能.枪械师;
+            var hadReloadCount:Boolean = weaponValue.reloadCount != undefined;
+            var reloadCountBefore = weaponValue.reloadCount;
             if (gs && gs.启用
                 && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1)) {
                 // 免费换弹完成（shot已重置，reloadCount已扣减）
@@ -303,9 +305,19 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 return;
             }
 
-            // 正常换弹：重置射击次数，消耗弹匣
+            // 正常换弹：库存提交成功才允许重置 shot。动画开始时的 contain 只是
+            // 预检，不能代替此处最终提交门，否则陈旧库存会变成免费补弹。
+            if (!ItemUtil.singleSubmit(target.使用弹匣名称, 1, {
+                source:"reload", reason:"magazine_reload", mergeScope:"operation"
+            })) {
+                if (hadReloadCount) weaponValue.reloadCount = reloadCountBefore;
+                else delete weaponValue.reloadCount;
+                target.剩余弹匣数 = ItemUtil.getTotal(target.使用弹匣名称);
+                rootRef.发布消息("弹匣不足，换弹失败！");
+                ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
+                return;
+            }
             weaponValue.shot = 0;
-            ItemUtil.singleSubmit(target.使用弹匣名称, 1);
 
             // 更新剩余弹匣数
             target.剩余弹匣数 = ItemUtil.getTotal(target.使用弹匣名称);
@@ -540,16 +552,27 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
                 // 枪械师战术换弹：回收未用弹药
                 var gs:Object = parentRef.被动技能.枪械师;
+                var hadReloadCount:Boolean = weaponValue.reloadCount != undefined;
+                var reloadCountBefore = weaponValue.reloadCount;
                 var isFreeReload:Boolean = (gs && gs.启用)
                     && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1);
 
                 if (!isFreeReload) {
-                    // 正常换弹：重置射击次数，消耗弹匣
-                    weaponValue.shot = 0;
-                    // 安全守卫：通过战术兜底进入但回收不足时，确认弹匣存在再消耗
-                    if (ItemUtil.singleContain(that[magNameProp], 1) != null) {
-                        ItemUtil.singleSubmit(that[magNameProp], 1);
+                    // 最终库存提交是 shot 清零的唯一门；预检到动画帧之间库存可能变化。
+                    if (!ItemUtil.singleSubmit(that[magNameProp], 1, {
+                        source:"reload", reason:"dual_magazine_reload",
+                        mergeScope:"operation"
+                    })) {
+                        if (hadReloadCount) weaponValue.reloadCount = reloadCountBefore;
+                        else delete weaponValue.reloadCount;
+                        that.主手剩余弹匣数 = ItemUtil.getTotal(that.主手使用弹匣名称);
+                        that.副手剩余弹匣数 = ItemUtil.getTotal(that.副手使用弹匣名称);
+                        rootRef.发布消息("弹匣不足，换弹失败！");
+                        ReloadManager.updateAmmoDisplay(that, parentRef, rootRef);
+                        stateManager.updateState();
+                        return;
                     }
+                    weaponValue.shot = 0;
                 }
 
                 // 更新弹匣数量（两把枪都需要更新）
@@ -1113,7 +1136,15 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 var magName:String = target[magNameProp];
 
                 if (ItemUtil.singleContain(magName, 1) != null) {
-                    ItemUtil.singleSubmit(magName, 1);
+                    if (!ItemUtil.singleSubmit(magName, 1, {
+                        source:"reload", reason:"dual_per_round_reload",
+                        mergeScope:"operation"
+                    })) {
+                        _root.发布消息("弹匣不足，换弹失败！");
+                        target.reloadFrameControlActive = false;
+                        target.gotoAndPlay(target.reloadEndFrame);
+                        return;
+                    }
                     weaponValue.reloadCount = capacity;
 
                     // 更新两手剩余弹匣数（考虑同弹匣共享库存）
@@ -1228,7 +1259,15 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 // 预缓存弹匣名称（AS2性能优化：减少3次属性访问）
                 var magName:String = target.使用弹匣名称;
                 if (ItemUtil.singleContain(magName, 1) != null) {
-                    ItemUtil.singleSubmit(magName, 1);
+                    if (!ItemUtil.singleSubmit(magName, 1, {
+                        source:"reload", reason:"per_round_reload",
+                        mergeScope:"operation"
+                    })) {
+                        _root.发布消息("弹匣不足，换弹失败！");
+                        target.reloadFrameControlActive = false;
+                        target.gotoAndPlay(target.reloadEndFrame);
+                        return;
+                    }
                     weaponValue.reloadCount = capacity;
                     target.剩余弹匣数 = ItemUtil.getTotal(magName);
                 } else {

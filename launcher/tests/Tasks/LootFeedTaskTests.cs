@@ -18,6 +18,17 @@ namespace CF7Launcher.Tests.Tasks
             return p;
         }
 
+        private static JObject VersionOnePayload(
+            string kind, string name, long count, string source)
+        {
+            JObject payload = Payload(kind, name, count, source);
+            payload["v"] = 1;
+            payload["direction"] = kind == "kill" ? "neutral" : "gain";
+            payload["operationId"] = "test-operation";
+            payload["itemKey"] = name;
+            return payload;
+        }
+
         [Fact]
         public void TryParse_ValidPayload_PassesThrough()
         {
@@ -61,6 +72,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("money")]
         [InlineData("kpoint")]
         [InlineData("intel")]
+        [InlineData("material")]
         [InlineData("item")]
         [InlineData("equip")]
         [InlineData("kill")]
@@ -100,14 +112,14 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void TryParse_CountClampedToMax()
+        public void TryParse_CountWithinSafeIntegerRange_RemainsExact()
         {
             string kind, name, source, icon;
             long count;
             Assert.True(LootFeedTask.TryParsePayload(
                 Payload("money", "金钱", 1000000),
                 out kind, out name, out count, out source, out icon));
-            Assert.Equal(99999, count);
+            Assert.Equal(1000000, count);
         }
 
         [Fact]
@@ -116,7 +128,7 @@ namespace CF7Launcher.Tests.Tasks
             string kind, name, source, icon;
             long count;
             Assert.True(LootFeedTask.TryParsePayload(
-                Payload("item", "急救包", 1, "cheat"),
+                Payload("item", "急救包", 1, "not_registered"),
                 out kind, out name, out count, out source, out icon));
             Assert.Equal("unknown", source);
         }
@@ -125,7 +137,34 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("pickup")]
         [InlineData("level_reward")]
         [InlineData("quest_reward")]
+        [InlineData("achievement_reward")]
+        [InlineData("quest_turn_in")]
+        [InlineData("inventory_discard")]
+        [InlineData("equipment_tuning")]
         [InlineData("loot_box")]
+        [InlineData("npc_shop_purchase")]
+        [InlineData("npc_shop_sale")]
+        [InlineData("kshop_purchase")]
+        [InlineData("kshop_claim")]
+        [InlineData("crafting")]
+        [InlineData("consumable_effect")]
+        [InlineData("pet_service")]
+        [InlineData("mercenary_service")]
+        [InlineData("reload")]
+        [InlineData("skill_cost")]
+        [InlineData("weapon_cost")]
+        [InlineData("item_use")]
+        [InlineData("task_entry")]
+        [InlineData("arena_entry")]
+        [InlineData("arena_reward")]
+        [InlineData("base_upgrade")]
+        [InlineData("tavern_purchase")]
+        [InlineData("vehicle_service")]
+        [InlineData("gym_training")]
+        [InlineData("appearance_service")]
+        [InlineData("player_revive")]
+        [InlineData("cheat")]
+        [InlineData("system_reward")]
         [InlineData("kill")]
         public void TryParse_AllWhitelistedSources_Accepted(string goodSource)
         {
@@ -135,6 +174,236 @@ namespace CF7Launcher.Tests.Tasks
                 Payload("item", "急救包", 1, goodSource),
                 out kind, out name, out count, out source, out icon));
             Assert.Equal(goodSource, source);
+        }
+
+        [Fact]
+        public void TryParse_FractionalOrStringCount_Rejected()
+        {
+            string kind, name, source, icon;
+            long count;
+            Assert.False(LootFeedTask.TryParsePayload(
+                Payload("money", "金钱", 1.5),
+                out kind, out name, out count, out source, out icon));
+            Assert.False(LootFeedTask.TryParsePayload(
+                Payload("money", "金钱", "2"),
+                out kind, out name, out count, out source, out icon));
+        }
+
+        [Fact]
+        public void TryParse_IntegerBeyondInt64_ClampsToJavascriptSafeMaximum()
+        {
+            var payload = Payload("money", "金钱", 1);
+            payload["count"] = JToken.Parse("999999999999999999999999999999999999999999");
+            string kind, name, source, icon;
+            long count;
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon));
+            Assert.Equal(9007199254740991L, count);
+        }
+
+        [Fact]
+        public void TryParse_VersionOneCountBeyondJavascriptSafeMaximumRejected()
+        {
+            var payload = VersionOnePayload("money", "金钱", 1, "pickup");
+            payload["count"] = JToken.Parse("9007199254740992");
+            string kind, name, source, icon;
+            long count;
+
+            Assert.False(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon));
+        }
+
+        [Fact]
+        public void TryParse_BidirectionalMetadata_PreservesPositiveMagnitude()
+        {
+            var payload = Payload("item", "步枪弹匣", 2, "reload", "步枪弹匣");
+            payload["direction"] = "loss";
+            payload["tier"] = "二阶";
+            payload["operationId"] = "reload-17";
+            payload["mergeScope"] = "reload-17";
+            payload["reason"] = "reload";
+            payload["itemKey"] = "5.56mm弹匣";
+            string kind, name, source, icon, direction, tier, operationId, mergeScope, reason, itemKey;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll, out direction, out tier,
+                out operationId, out mergeScope, out reason, out itemKey));
+            Assert.Equal("loss", direction);
+            Assert.Equal(2, count);
+            Assert.Equal("二阶", tier);
+            Assert.Equal("reload-17", operationId);
+            Assert.Equal("reload-17", mergeScope);
+            Assert.Equal("reload", reason);
+            Assert.Equal("5.56mm弹匣", itemKey);
+        }
+
+        [Fact]
+        public void TryParse_VersionOneAcceptedButUnknownOrMalformedVersionRejected()
+        {
+            string kind, name, source, icon;
+            long count;
+            var current = VersionOnePayload("item", "急救包", 1, "pickup");
+            Assert.True(LootFeedTask.TryParsePayload(
+                current, out kind, out name, out count, out source, out icon));
+
+            current["v"] = 2;
+            Assert.False(LootFeedTask.TryParsePayload(
+                current, out kind, out name, out count, out source, out icon));
+            current["v"] = "1";
+            Assert.False(LootFeedTask.TryParsePayload(
+                current, out kind, out name, out count, out source, out icon));
+            current["v"] = JValue.CreateNull();
+            Assert.False(LootFeedTask.TryParsePayload(
+                current, out kind, out name, out count, out source, out icon));
+        }
+
+        [Theory]
+        [InlineData("kind")]
+        [InlineData("name")]
+        [InlineData("source")]
+        [InlineData("direction")]
+        [InlineData("icon")]
+        [InlineData("tier")]
+        [InlineData("operationId")]
+        [InlineData("mergeScope")]
+        [InlineData("reason")]
+        [InlineData("itemKey")]
+        public void TryParse_VersionOnePresentNonStringTextRejected(string propertyName)
+        {
+            string kind, name, source, icon;
+            long count;
+            var payload = VersionOnePayload("item", "急救包", 1, "pickup");
+            payload[propertyName] = 7;
+
+            Assert.False(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon));
+        }
+
+        [Fact]
+        public void TryParse_PresentOverlongIdentityMetadataRejected()
+        {
+            string kind, name, source, icon;
+            long count;
+            var payload = VersionOnePayload("item", "急救包", 1, "pickup");
+            payload["operationId"] = new string('x', 97);
+
+            Assert.False(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon));
+        }
+
+        [Fact]
+        public void DedupeKey_DistinguishesCommittedEffectsWithinOneOperation()
+        {
+            string material = LootFeedTask.BuildDedupeIdentity(
+                "craft-17", "loss", "material", "铁片", null,
+                "crafting", "material_cost", "operation");
+            string fee = LootFeedTask.BuildDedupeIdentity(
+                "craft-17", "loss", "material", "铁片", null,
+                "crafting", "service_fee", "operation");
+            string otherScope = LootFeedTask.BuildDedupeIdentity(
+                "craft-17", "loss", "material", "铁片", null,
+                "crafting", "material_cost", "separate-card");
+
+            Assert.NotEqual(material, fee);
+            Assert.NotEqual(material, otherScope);
+        }
+
+        [Fact]
+        public void TryParse_LegacyPayload_UsesDisplayNameAsFallbackItemKey()
+        {
+            string kind, name, source, icon, direction, tier, operationId, mergeScope, reason, itemKey;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                Payload("item", "急救包", 1, "pickup"),
+                out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll, out direction, out tier,
+                out operationId, out mergeScope, out reason, out itemKey));
+            Assert.Equal("急救包", itemKey);
+        }
+
+        [Theory]
+        [InlineData("source")]
+        [InlineData("direction")]
+        [InlineData("operationId")]
+        [InlineData("itemKey")]
+        public void TryParse_VersionOneMissingRequiredIdentityField_Rejected(
+            string propertyName)
+        {
+            string kind, name, source, icon;
+            long count;
+            JObject payload = VersionOnePayload("item", "急救包", 1, "pickup");
+            payload.Remove(propertyName);
+
+            Assert.False(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon));
+        }
+
+        [Fact]
+        public void TryParse_VersionOneUnknownSourceRejected_LegacyStillDegrades()
+        {
+            string kind, name, source, icon;
+            long count;
+            JObject current = VersionOnePayload(
+                "item", "急救包", 1, "not_registered");
+            Assert.False(LootFeedTask.TryParsePayload(
+                current, out kind, out name, out count, out source, out icon));
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                Payload("item", "急救包", 1, "not_registered"),
+                out kind, out name, out count, out source, out icon));
+            Assert.Equal("unknown", source);
+        }
+
+        [Theory]
+        [InlineData("neutral", "item")]
+        [InlineData("loss", "kill")]
+        [InlineData("gain", "kill")]
+        [InlineData("sideways", "item")]
+        public void TryParse_InvalidDirectionKindCombination_Rejected(
+            string directionValue, string kindValue)
+        {
+            var payload = Payload(kindValue, "目标", 1,
+                kindValue == "kill" ? "kill" : "pickup");
+            payload["direction"] = directionValue;
+            string kind, name, source, icon, direction, tier, operationId, mergeScope, reason;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.False(LootFeedTask.TryParsePayload(
+                payload, out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll, out direction, out tier,
+                out operationId, out mergeScope, out reason));
+        }
+
+        [Fact]
+        public void TryParse_LegacyDirection_DefaultsByKind()
+        {
+            string kind, name, source, icon, direction, tier, operationId, mergeScope, reason;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.True(LootFeedTask.TryParsePayload(
+                Payload("item", "急救包", 1, "pickup"),
+                out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll, out direction, out tier,
+                out operationId, out mergeScope, out reason));
+            Assert.Equal("gain", direction);
+            Assert.True(LootFeedTask.TryParsePayload(
+                Payload("kill", "敌人", 1, "kill"),
+                out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll, out direction, out tier,
+                out operationId, out mergeScope, out reason));
+            Assert.Equal("neutral", direction);
         }
 
         [Fact]
@@ -428,6 +697,63 @@ namespace CF7Launcher.Tests.Tasks
                     Assert.Null(task.Handle(msg));
                     // doll 仅在 kind=="kill" 时派生图标/触发烘焙
                     Assert.Empty(sink.Keys);
+                }
+            }
+            finally
+            {
+                System.IO.Directory.Delete(tempDir, true);
+            }
+        }
+
+        [Fact]
+        public void Handle_DedupeWindowDropsExactReplayAndStaysBounded()
+        {
+            string tempDir = CreateTempDir();
+            try
+            {
+                using (var catalog = new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(tempDir))
+                {
+                    var widget = new CF7Launcher.Guardian.Hud.Loot.LootFeedWidget(
+                        new System.Windows.Forms.Control(), catalog);
+                    var task = new LootFeedTask(widget);
+                    for (int i = 0; i < 513; i++)
+                    {
+                        var payload = VersionOnePayload("item", "急救包", 1, "pickup");
+                        payload["operationId"] = "pickup-" + i;
+                        var message = new JObject { ["payload"] = payload };
+                        task.Handle(message);
+                        if (i == 0) task.Handle((JObject)message.DeepClone());
+                    }
+
+                    Assert.Equal(512, task.DedupeEntryCountForTest);
+                }
+            }
+            finally
+            {
+                System.IO.Directory.Delete(tempDir, true);
+            }
+        }
+
+        [Fact]
+        public void Handle_DivergentReplayForSameCommittedEffectIsDropped()
+        {
+            string tempDir = CreateTempDir();
+            try
+            {
+                using (var catalog = new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(tempDir))
+                {
+                    var widget = new CF7Launcher.Guardian.Hud.Loot.LootFeedWidget(
+                        new System.Windows.Forms.Control(), catalog);
+                    var task = new LootFeedTask(widget);
+                    JObject payload = VersionOnePayload("item", "急救包", 1, "pickup");
+                    payload["operationId"] = "pickup-conflict";
+                    task.Handle(new JObject { ["payload"] = payload });
+
+                    JObject conflicting = (JObject)payload.DeepClone();
+                    conflicting["count"] = 2;
+                    task.Handle(new JObject { ["payload"] = conflicting });
+
+                    Assert.Equal(1, task.DedupeEntryCountForTest);
                 }
             }
             finally

@@ -72,9 +72,11 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target script
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flashswf/UI/玩家信息界面/玩家信息界面.xfl' -PublishOnly -VerifySwf 'flashswf/UI/玩家信息界面.swf'
 ```
 
-`test`|`testloader` → `scripts/TestLoader`（`doc.testMovie()`）；`publish`|`asloader` → `scripts/asLoader`（隐式 **publish-only** + 自动 `-VerifySwf scripts/asLoader.swf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（隐式 **publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。因此 `publish/asloader/main` 别名都可省略 `-PublishOnly`；只有任意显式 FLA/XFL 路径需要禁止 testMovie 时才额外传该开关。多个目标可同时开在 CS6，`-Target` 决定编哪个，无需手动切到前台。
+`test`|`testloader` → `scripts/TestLoader`（`doc.testMovie()`）；`publish`|`asloader` → `scripts/asLoader`（隐式 **publish-only** + 自动 `-VerifySwf scripts/asLoader.swf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（隐式 **publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。因此 `publish/asloader/main` 别名都可省略 `-PublishOnly`；只有任意显式 FLA/XFL 路径需要禁止 testMovie 时才额外传该开关。`-Target` 决定编哪个，无需手动切到前台；publish-only 在诊断落盘后自动以“不保存”关闭本轮目标，避免批量发布大型 XFL 时撞 Flash CS6 32 位地址空间，TestLoader/testMovie 则保持打开供调试。
 
-显式目标若已经在 CS6 打开，`compile_action.jsfl` 会先以“不保存”关闭，写入一次性 `compile_reopen.marker`；`compile_test.ps1` 校验 exact 目标与模式后最多重触发一次，再从磁盘打开并编译，确保外部编辑的 XFL XML 是 source of truth。关闭与重开必须分属两次 JSFL 调用：Flash CS6 在同一调用栈内关闭并立即重开 XFL 时可能直接中止宿主脚本。比较 cfg URI 与 `doc.pathURI` 时只做纯字符串 URI 解码、斜杠和大小写归一化；不要对所有已打开文档调用 `FLfile` 平台路径转换，未保存或含非 ASCII 路径的其他 XFL 可能让 CS6 绕过 JavaScript `try/catch` 整体中止。中文路径在两处可能分别表现为直写 Unicode 与 percent-encoded URI；不归一会漏关带 `*` 的旧文档，使 `doc.publish()` 复用旧 symbol 缓存。部分独立 XFL 在重开时会弹缺失字体确认框，计划任务会一直等不到 terminal marker；编译时间异常拉长时先截图/检查 CS6 前台并人工确认，不要重复触发多个编译任务。`-VerifySwf` 只能证明文件被重写，关键 XML 帧脚本还应以 FFDec 导出 script 检查新增标志串是否进入 SWF。
+批量发布大 XFL 时可额外传 `-QuitFlashAfterPublish`。该开关只接受 publish-only：JSFL 必须先完成 `doc.publish()`、保存 Compiler Errors、关闭目标并写 terminal marker，之后才 `fl.quit(false)`；调用方看到成功返回后再用既有 `FlashCS6Task` 启动干净实例。测试模式、畸形/残留 cfg 或 terminal 前退出都 fail-closed，不能用进程退出替代 SWF 刷新与 Compiler `0/0`。
+
+显式目标若已经在 CS6 打开，`compile_action.jsfl` 会先以“不保存”关闭，写入一次性 `compile_reopen.marker`；`compile_test.ps1` 校验 exact 目标与模式后最多重触发一次，再从磁盘打开并编译，确保外部编辑的 XFL XML 是 source of truth。关闭与重开必须分属两次 JSFL 调用：Flash CS6 在同一调用栈内关闭并立即重开 XFL 时可能直接中止宿主脚本。publish-only 在完成发布、保存 Compiler Errors 后还会关闭刚发布的目标；该尾部关闭发生在 terminal marker 之前，关闭失败不能伪装成成功。比较 cfg URI 与 `doc.pathURI` 时只做纯字符串 URI 解码、斜杠和大小写归一化；不要对所有已打开文档调用 `FLfile` 平台路径转换，未保存或含非 ASCII 路径的其他 XFL 可能让 CS6 绕过 JavaScript `try/catch` 整体中止。中文路径在两处可能分别表现为直写 Unicode 与 percent-encoded URI；不归一会漏关带 `*` 的旧文档，使 `doc.publish()` 复用旧 symbol 缓存。部分独立 XFL 在重开时会弹缺失字体确认框，计划任务会一直等不到 terminal marker；编译时间异常拉长时先截图/检查 CS6 前台并人工确认，不要重复触发多个编译任务。`-VerifySwf` 只能证明文件被重写，关键 XML 帧脚本还应以 FFDec 导出 script 检查新增标志串是否进入 SWF。
 
 > ⚠️ **编译单元归属铁律（踩过坑）**：`scripts/类定义/` 下的 **类**（如 `*PanelService`）与 `scripts/逻辑系统分区/*_WebView.as`、`scripts/展现/UI交互/*.as` 这些 **boot `#include` 脚本** 都编进 **asLoader**——asLoader 编译 class + 把方法注入 `_root`（`_root.gameCommands.*` 等）全局提供给主文件和其他 SWF 使用。**改这些必须 `-Target publish`（asLoader），`-Target main` 不会生效！** `-Target main` 只编主文件 FLA 自身的元件 / 时间轴帧脚本（如 `Symbol 1770`、主文件库元件增删）。判断方法：被改的东西在 `asLoaderManifest`(`grep 文件名 scripts/asLoaderManifest/`) 里 → 用 `publish`；路径属于 `CRAZYFLASHER7MercenaryEmpire/` → 用 `main`；路径属于 `flashswf/UI/*`、`flashswf/levels/*`、`flashswf/arts/*` 这类独立 XFL → 找同目录 `.xfl` 和 `PublishSettings.xml` 输出 SWF，用显式 `-Target <xfl> -PublishOnly -VerifySwf <swf>`；两边都动了 → 分别编。验证可 `ffdec -export script` 后 grep 改动标志串确认进了哪个 SWF。
 
@@ -98,7 +100,7 @@ bash scripts/compile_test.sh -TimeoutSeconds 120
 
 `compile_test.ps1` 在 `Start-ScheduledTask` 前先写本轮 exact-owned in-flight `scripts/compile_state_uncertain.marker`；`[TIMEOUT]`、触发后的 host 崩溃或其它非 terminal 退出都会保留它，后续编译在仓库 mutex 内 fail-closed。terminal 路径只删除内容仍与本轮 in-flight body 完全相同的文件，避免旧 lease child 擦掉另一故障刚写入的新闸。非 terminal 路径保留 `compile_target.cfg` / `compile_mode.cfg` 给迟到 JSFL 按原目标消费，不能提前删 target 后让它回退并误编当前活动文档。focused / map / Gobang / protocol scratch writer 另在改写 `TestLoader.as` 前创建 `scripts/.testloader-scratch-recovery/<token>.as`、验证原件 SHA-256，并写 `scripts/testloader_scratch_inflight.marker`；普通编译见该 marker 一律拒绝，只有 installed/original SHA-256 均验证后才删除 marker 与 sidecar。先确认 Flash / `CompileTriggerTask` / 旧 test player 已静止并核对迟到的 marker、SWF 与 diagnostics；若 scratch marker 仍在，按其中 `backup_path/original_sha256/had_runner` 恢复 `scripts/TestLoader.as`，不能只删闸或把遗留 scratch 当原件。完成这些人工复核后再删除 compile uncertain marker；下轮在触发前会清理未被迟到 JSFL 消费的旧 cfg。lease 不是鉴权，marker 是人工复核与恢复材料，不会自动猜测覆盖。
 
-二阶段重开请求是事务内握手，不是 terminal 成功证据。marker 正文固定为两行 exact `targetURI` + `test|publish`；PowerShell 只接受与本轮目标/模式一致的一次请求，漂移、畸形或第二次请求立即失败并清理本轮 cfg。首次 JSFL 返回后才允许重新触发计划任务，防止同一宿主调用栈内 close/open；成功、已知失败等 terminal 路径都会清理该 marker，timeout/nonterminal 则继续由 uncertain marker 阻断后续编译。协议静态回归入口为 `node tools/test-flash-compile-jsfl.js`。
+二阶段重开请求是事务内握手，不是 terminal 成功证据。marker 正文固定为两行 exact `targetURI` + `test|publish`；PowerShell 只接受与本轮目标/模式一致的一次请求，漂移、畸形或第二次请求立即失败并清理本轮 cfg。首次 JSFL 返回后才允许重新触发计划任务，防止同一宿主调用栈内 close/open；成功、已知失败等 terminal 路径都会清理该 marker，timeout/nonterminal 则继续由 uncertain marker 阻断后续编译。可选 `compile_quit_after_publish.cfg` 只接受 exact `quit` 且读取即删，PowerShell finally 也会清理未消费指令，避免迟到退出污染下一轮。协议静态回归入口为 `node tools/test-flash-compile-jsfl.js`。
 
 仓库内唯一受支持的人工编译入口是 `compile_test.ps1` / `compile_test.sh`；`cf7_compile_loader.jsfl` 与 `compile_action.jsfl` 只是该事务内部组件，不应单独打开或执行。旧诊断入口 `test_publish.jsfl`、`test_trace.jsfl` 以及绕过事务的 `train_cycle.sh` 已删除；Gobang 长耗时回归改走持同一仓库 mutex 的 `gobang_trainer_cycle.ps1`。
 
@@ -116,6 +118,7 @@ compile_test.ps1 / compile_test.sh
     → compile_action.jsfl（目标原本未打开，或二阶段重触发）从磁盘打开目标
         → 清空独立 Compiler Errors 面板并删除旧导出
         → 按 compile_mode.cfg 选择 doc.testMovie() 或 doc.publish()
+        → publish-only 保存诊断后关闭本轮目标；testMovie 保持打开
         → fl.compilerErrors.save()（只保存本轮诊断）
         → 仅当唯一汇总可解析、warnings=0、且汇总前逐行含「32K」的诊断数恰等于 errors 时重试一次
           → 首轮诊断先 trace 到 Output Panel；混合/多行上下文/汇总后文本/不可解析格式均不重试

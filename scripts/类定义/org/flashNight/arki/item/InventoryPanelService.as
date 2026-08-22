@@ -3,6 +3,7 @@
 import org.flashNight.gesh.tooltip.TooltipComposer;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 import org.flashNight.arki.item.equipment.TierSystem;
 
@@ -278,6 +279,9 @@ class org.flashNight.arki.item.InventoryPanelService {
 
         invalidateSlot(sourceCheck.containerId, sourceCheck.slot);
         markDirty();
+        PlayerAssetTransaction.recordItems("loss", [oldItem], {
+            source:"inventory_discard", reason:"discard", mergeScope:"operation"
+        });
         sourceCheck.inventory.publishTransactionChange(sourceCheck.slot, "removed");
         var snapshots:Array = [buildSnapshot("背包", sourceCheck.inventory, 0, Math.min(50, sourceCheck.inventory.capacity), "all")];
         _busy = false;

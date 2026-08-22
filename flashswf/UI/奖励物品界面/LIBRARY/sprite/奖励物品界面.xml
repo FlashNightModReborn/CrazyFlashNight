@@ -73,6 +73,8 @@ function 一键领取全部()
 {
    var 已领取数量 = 0;
    var 领取失败 = false;
+   var assetContext = {source:"level_reward", reason:"claim_all", mergeScope:"operation"};
+   var assetTransaction = _root.开始玩家物资事务(assetContext);
    var i = 0;
    while(i < 奖励品.length)
    {
@@ -86,19 +88,23 @@ function 一键领取全部()
       if(物品名 == "经验")
       {
          _root.经验值 += 数量;
+         if(_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
          奖励品[i] = [];
          已领取数量++;
       }
       else if(物品名 == "金钱")
       {
          _root.金钱 += 数量;
-         _root.发布战利品消息("money", "金钱", 数量, "level_reward");
+         _root.记录玩家货币变化(
+            Number(数量), 0, assetContext);
+         if(_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
          奖励品[i] = [];
          已领取数量++;
       }
-      else if(_root.itemAcquire([{name:物品名, value:数量}]))
+      else if(_root.itemAcquire([{
+         name:物品名, value:数量, tier:奖励品[i][2]
+      }], assetContext))
       {
-         _root.发布战利品消息("item", 物品名, 数量, "level_reward");
          奖励品[i] = [];
          已领取数量++;
       }
@@ -109,6 +115,7 @@ function 一键领取全部()
       }
       i++;
    }
+   _root.提交玩家物资事务(assetTransaction);
    if(已领取数量 > 0)
    {
       _root.播放音效("ammopickup1.wav");

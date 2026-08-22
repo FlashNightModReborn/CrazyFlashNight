@@ -43,7 +43,8 @@ _root.装备生命周期函数.公社爆燃钻矛初始化 = function(ref:Object
     // 订阅战技触发事件
     target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
         if (mode != "兵器") return;
-        var hasFuel:Boolean = ItemUtil.singleSubmit("火焰喷射器燃料罐", 1);
+        var hasFuel:Boolean = ItemUtil.singleSubmit("火焰喷射器燃料罐", 1,
+            {source:"weapon_cost", reason:"weapon_skill"});
 
         //_root.发布消息("公社爆燃钻矛触发，燃料罐状态：" + (hasFuel ? "有" : "无"));
         if(!hasFuel) return;

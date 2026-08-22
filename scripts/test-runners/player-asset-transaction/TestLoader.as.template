@@ -1,0 +1,4 @@
+﻿// 玩家资产事务 focused runner；BOM 必须保留。
+trace("FocusedTestRunId player-asset-transaction Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.item.PlayerAssetTransactionTest.runAllTests();
+trace("FocusedTestRunId player-asset-transaction Complete: __FOCUSED_RUN_ID__");

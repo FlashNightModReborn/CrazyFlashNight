@@ -22,7 +22,7 @@
               <Actionscript>
                 <script><![CDATA[/*if (_root.控制目标 == _parent._name)
 {
-	if (_root.singleSubmit("觉醒晶体", 3))
+	if (_root.singleSubmit("觉醒晶体", 3, {source:"skill_cost", reason:"awakening_skill"}))
 	{
 		_root.发布消息("消耗 觉醒晶体 3个");
 	}

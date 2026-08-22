@@ -29,7 +29,7 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         }
 
         [Fact]
-        public void MergeKey_SeparatesSourceAndEliteLevel()
+        public void VisualMerge_SeparatesSchedulingPolicyAndEliteLevel()
         {
             var model = NewModel();
             model.Add("item", "奖励箱", "奖励箱", 1, "pickup");
@@ -44,6 +44,160 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         }
 
         [Fact]
+        public void VisualMerge_CombinesRawSourcesWithEqualPolicyAndIsolatesUnknown()
+        {
+            var standard = NewModel();
+            standard.Add("item", "急救包", "急救包", 1, "pickup", 0,
+                "gain", null, "急救包");
+            standard.Add("item", "急救包", "急救包", 1, "npc_shop_purchase", 0,
+                "gain", null, "急救包");
+            Assert.Equal(2, Assert.Single(standard.Cards).Count);
+
+            var guaranteed = NewModel();
+            guaranteed.Add("item", "奖励箱", "奖励箱", 1, "quest_reward", 0,
+                "gain", null, "奖励箱");
+            guaranteed.Add("item", "奖励箱", "奖励箱", 1, "level_reward", 0,
+                "gain", null, "奖励箱");
+            Assert.Equal(2, Assert.Single(guaranteed.Cards).Count);
+
+            var unknown = NewModel();
+            unknown.Add("item", "急救包", "急救包", 1, "pickup", 0,
+                "gain", null, "急救包");
+            unknown.Add("item", "急救包", "急救包", 1, "unknown", 0,
+                "gain", null, "急救包");
+            Assert.Equal(2, unknown.ActiveCount);
+        }
+
+        [Fact]
+        public void VisualMerge_SeparatesDirectionAndTier()
+        {
+            var model = NewModel();
+            model.Add("item", "步枪弹匣", "步枪弹匣", 1, "reload", 0,
+                "gain", null, "步枪弹匣");
+            model.Add("item", "步枪弹匣", "步枪弹匣", 1, "reload", 0,
+                "loss", null, "步枪弹匣");
+            model.Add("item", "步枪弹匣", "步枪弹匣", 1, "reload", 0,
+                "loss", null, "步枪弹匣");
+            model.Add("equip", "战术背心", "战术背心", 1, "quest_reward", 0,
+                "gain", "一阶", "战术背心");
+            model.Add("equip", "战术背心", "战术背心", 1, "quest_reward", 0,
+                "gain", "二阶", "战术背心");
+
+            Assert.Equal(4, model.ActiveCount);
+            Assert.Equal(new[] { "gain", "loss", "gain", "gain" },
+                model.Cards.Select(card => card.Direction).ToArray());
+            LootFeedModel.LootCard loss = Assert.Single(
+                model.Cards, card => card.Direction == "loss");
+            Assert.Equal(2, loss.Count);
+        }
+
+        [Fact]
+        public void MergeKey_UsesCanonicalItemKeyInsteadOfDisplayName()
+        {
+            var model = NewModel();
+            model.Add("item", "同名展示", "图标", 1, "pickup", 0,
+                "gain", null, "item.alpha");
+            model.Add("item", "同名展示", "图标", 1, "pickup", 0,
+                "gain", null, "item.beta");
+
+            Assert.Equal(2, model.ActiveCount);
+            Assert.Equal(new[] { "item.alpha", "item.beta" },
+                model.Cards.Select(card => card.ItemKey).ToArray());
+        }
+
+        [Fact]
+        public void VisualMerge_SeparatesPresentationEvenWithSameCanonicalItemKey()
+        {
+            var names = NewModel();
+            names.Add("item", "展示甲", "图标", 1, "pickup", 0,
+                "gain", null, "canonical.item");
+            names.Add("item", "展示乙", "图标", 1, "pickup", 0,
+                "gain", null, "canonical.item");
+            Assert.Equal(2, names.ActiveCount);
+
+            var icons = NewModel();
+            icons.Add("item", "相同展示", "图标甲", 1, "pickup", 0,
+                "gain", null, "canonical.item");
+            icons.Add("item", "相同展示", "图标乙", 1, "pickup", 0,
+                "gain", null, "canonical.item");
+            Assert.Equal(2, icons.ActiveCount);
+        }
+
+        [Fact]
+        public void ReloadLoss_RepeatedOperationsAggregateIntoOneVisibleCard()
+        {
+            var model = NewModel();
+            model.Add("item", "冲锋枪钢芯穿甲弹", "冲锋枪钢芯穿甲弹", 1, "reload", 0,
+                "loss", null, "冲锋枪钢芯穿甲弹");
+            model.Add("item", "冲锋枪钢芯穿甲弹", "冲锋枪钢芯穿甲弹", 1, "reload", 0,
+                "loss", null, "冲锋枪钢芯穿甲弹");
+
+            LootFeedModel.LootCard card = Assert.Single(model.Cards);
+            Assert.Equal("loss", card.Direction);
+            Assert.Equal(2, card.Count);
+            Assert.Equal(LootFeedModel.RetentionClass.ExactAggregate, card.Retention);
+            Assert.Equal(LootFeedModel.UrgencyClass.Immediate, card.Urgency);
+        }
+
+        [Fact]
+        public void Gain_RepeatedCommittedEventsAggregateIntoOneVisibleCard()
+        {
+            var model = NewModel();
+            model.Add("item", "急救包", "急救包", 1, "pickup", 0,
+                "gain", null, "急救包");
+            model.Add("item", "急救包", "急救包", 1, "npc_shop_purchase", 0,
+                "gain", null, "急救包");
+
+            LootFeedModel.LootCard card = Assert.Single(model.Cards);
+            Assert.Equal("gain", card.Direction);
+            Assert.Equal(2, card.Count);
+        }
+
+        [Fact]
+        public void ReloadLoss_IsImmediateExactFeedback()
+        {
+            var model = NewModel();
+            model.Add("item", "步枪弹匣", "步枪弹匣", 1, "reload", 0,
+                "loss", null, "步枪弹匣");
+
+            LootFeedModel.LootCard card = Assert.Single(model.Cards);
+            Assert.Equal(LootFeedModel.RetentionClass.ExactAggregate, card.Retention);
+            Assert.Equal(LootFeedModel.UrgencyClass.Immediate, card.Urgency);
+        }
+
+        [Fact]
+        public void ReloadLoss_PreemptsFreshPromptPoolImmediately()
+        {
+            var model = NewModel();
+            for (int i = 0; i < LootFeedModel.MaxVisibleCards; i++)
+                model.Add("item", "任务奖励" + i, "奖励" + i, 1, "quest_reward");
+
+            model.Add("item", "步枪弹匣", "步枪弹匣", 1, "reload", 0,
+                "loss", null, "步枪弹匣");
+
+            Assert.Contains(model.Cards,
+                card => card.ItemKey == "步枪弹匣" && card.Direction == "loss"
+                    && card.Urgency == LootFeedModel.UrgencyClass.Immediate);
+            Assert.Equal(1, model.PendingCount);
+            Assert.Equal(LootFeedModel.RetentionClass.Guaranteed,
+                model.PendingCards[0].Retention);
+        }
+
+        [Fact]
+        public void Loss_RepeatedCommittedEventsAggregatePositiveMagnitude()
+        {
+            var model = NewModel();
+            model.Add("item", "能量电池", "能量电池", 1, "skill_cost", 0,
+                "loss", null, "能量电池");
+            model.Add("item", "能量电池", "能量电池", 2, "skill_cost", 0,
+                "loss", null, "能量电池");
+
+            LootFeedModel.LootCard card = Assert.Single(model.Cards);
+            Assert.Equal("loss", card.Direction);
+            Assert.Equal(3, card.Count);
+        }
+
+        [Fact]
         public void Merge_AfterWindow_CreatesAnotherGuaranteedCard()
         {
             var model = NewModel();
@@ -52,6 +206,22 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             model.Add("item", "任务奖励", "任务奖励", 1, "quest_reward");
 
             Assert.Equal(2, model.ActiveCount);
+        }
+
+        [Fact]
+        public void ReloadLoss_AfterWindow_StartsFreshCardInsteadOfAggregating()
+        {
+            var model = NewModel();
+            model.Add("item", "冲锋枪钢芯穿甲弹", "冲锋枪钢芯穿甲弹", 1,
+                "reload", 0, "loss", null, "冲锋枪钢芯穿甲弹");
+            long firstSequence = model.Cards[0].Sequence;
+            model.Tick(LootFeedModel.MergeWindowMs + 1);
+            model.Add("item", "冲锋枪钢芯穿甲弹", "冲锋枪钢芯穿甲弹", 1,
+                "reload", 0, "loss", null, "冲锋枪钢芯穿甲弹");
+
+            LootFeedModel.LootCard card = Assert.Single(model.Cards);
+            Assert.NotEqual(firstSequence, card.Sequence);
+            Assert.Equal(1, card.Count);
         }
 
         [Fact]
@@ -190,6 +360,31 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             Assert.Equal(10, model.Cards[0].DisplayCount);
         }
 
+        [Fact]
+        public void LossCountCommit_OneToTwoIsVisualOnlyAndNineToTenChangesGeometry()
+        {
+            var model = NewModel();
+            model.Add("item", "步枪弹匣", "步枪弹匣", 1, "reload", 0,
+                "loss", null, "步枪弹匣");
+
+            model.Add("item", "步枪弹匣", "步枪弹匣", 1, "reload", 0,
+                "loss", null, "步枪弹匣");
+            LootFeedModel.Change toTwo = model.Tick(LootFeedModel.CountVisualIntervalMs);
+            Assert.True((toTwo & LootFeedModel.Change.Visual) != 0);
+            Assert.True((toTwo & LootFeedModel.Change.Geometry) == 0);
+
+            model.Add("item", "步枪弹匣", "步枪弹匣", 7, "reload", 0,
+                "loss", null, "步枪弹匣");
+            LootFeedModel.Change toNine = model.Tick(LootFeedModel.CountVisualIntervalMs);
+            Assert.True((toNine & LootFeedModel.Change.Visual) != 0);
+            Assert.True((toNine & LootFeedModel.Change.Geometry) == 0);
+
+            model.Add("item", "步枪弹匣", "步枪弹匣", 1, "reload", 0,
+                "loss", null, "步枪弹匣");
+            LootFeedModel.Change toTen = model.Tick(LootFeedModel.CountVisualIntervalMs);
+            Assert.True((toTen & LootFeedModel.Change.Geometry) != 0);
+        }
+
         [Theory]
         [InlineData(0L, 0)]
         [InlineData(1L, 0)]
@@ -202,6 +397,16 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         public void CountLayoutBucket_IsStableWithinOneDigitWidth(long count, int expected)
         {
             Assert.Equal(expected, LootFeedModel.CountLayoutBucket(count));
+        }
+
+        [Theory]
+        [InlineData(1L, 1)]
+        [InlineData(2L, 1)]
+        [InlineData(9L, 1)]
+        [InlineData(10L, 2)]
+        public void LossCountLayoutBucket_IncludesTheAlwaysVisibleMagnitude(long count, int expected)
+        {
+            Assert.Equal(expected, LootFeedModel.CountLayoutBucket(count, "loss"));
         }
 
         [Fact]
@@ -259,6 +464,19 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
 
             Assert.Equal(0, model.ActiveCount);
             Assert.Equal(0, model.PendingCount);
+        }
+
+        [Theory]
+        [InlineData("neutral", "item")]
+        [InlineData("gain", "kill")]
+        [InlineData("loss", "kill")]
+        [InlineData("sideways", "item")]
+        public void Add_RejectsInvalidDirectionKindCombination(string direction, string kind)
+        {
+            var model = NewModel();
+            model.Add(kind, "目标", null, 1, kind == "kill" ? "kill" : "pickup",
+                0, direction);
+            Assert.Equal(0, model.ActiveCount);
         }
     }
 }

@@ -56,8 +56,8 @@ _root.健身房主角是否升级 = function()
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
 		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
-		// Plan A: 升级必达，绕过 debounce 立即同步落盘
-		_root.强制存盘();
+		// 资产事务内的升级延迟到领域提交后强存盘，避免奖励已落盘而任务完成态尚未落盘。
+		org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
 	}
 }
 
@@ -99,8 +99,8 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
 		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
-		// Plan A: 升级必达，绕过 debounce 立即同步落盘
-		_root.强制存盘();
+		// 资产事务内的升级延迟到领域提交后强存盘；普通战斗/健身路径仍立即执行。
+		org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
 	}
 }
 

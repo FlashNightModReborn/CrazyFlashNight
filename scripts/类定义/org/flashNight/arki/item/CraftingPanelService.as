@@ -4,6 +4,7 @@ import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.MaterialArchiveProjector;
 import org.flashNight.arki.item.ProcurementPlanService;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -463,46 +464,82 @@ class org.flashNight.arki.item.CraftingPanelService {
             money:Number(_root.金钱), kpoints:Number(_root.虚拟币),
             dirty:_root.存档系统 == undefined ? undefined : _root.存档系统.dirtyMark};
 
-        if (!ItemUtil.submit(current.requirements)) return fail("material_missing");
-        var actualRequire:Object = ItemUtil.singleRequire(current.output.name, current.output.value);
-        var actualDelivery:Object = projectOutputDelivery(
-            current.output.name, current.output.value, actualRequire);
-        if (!deepEqual(actualDelivery, plan.outputDelivery, 0)) {
-            restoreState(backup);
-            return fail("stale_state");
-        }
-        var targetBefore:Object = readOutputTarget(actualDelivery);
-        if (!outputTargetMatchesMode(targetBefore, current.output.name, actualDelivery)) {
-            restoreState(backup);
-            return fail("stale_state");
-        }
-        var beforeQuantity:Number = targetBefore == null ? 0 : Number(targetBefore.value);
-        if (!ItemUtil.singleAcquire(current.output.name, current.output.value)) {
-            restoreState(backup);
-            return fail("inventory_full");
-        }
-        var outputReceipt:Object = null;
-        if (requiresPhysicalOutputReceipt(actualDelivery)) {
-            outputReceipt = InventoryPanelService.buildOutputReceipt(readOutputTarget(actualDelivery));
-            if (!outputReceiptMatchesPrototype(outputReceipt, plan.acceptedPlan.outputPrototype,
-                    actualDelivery, beforeQuantity)) {
+        var assetContext:Object = {
+            source:"crafting", reason:"craft_commit", mergeScope:"operation"
+        };
+        var assetTransaction:Object = PlayerAssetTransaction.begin(assetContext);
+        try {
+            if (!ItemUtil.submit(current.requirements, assetContext)) {
+                PlayerAssetTransaction.rollback(assetTransaction);
+                return fail("material_missing");
+            }
+            var actualRequire:Object = ItemUtil.singleRequire(current.output.name, current.output.value);
+            var actualDelivery:Object = projectOutputDelivery(
+                current.output.name, current.output.value, actualRequire);
+            if (!deepEqual(actualDelivery, plan.outputDelivery, 0)) {
                 restoreState(backup);
+                PlayerAssetTransaction.rollback(assetTransaction);
                 return fail("stale_state");
             }
-        } else if (plan.acceptedPlan.outputPrototype != null) {
+            var targetBefore:Object = readOutputTarget(actualDelivery);
+            if (!outputTargetMatchesMode(targetBefore, current.output.name, actualDelivery)) {
+                restoreState(backup);
+                PlayerAssetTransaction.rollback(assetTransaction);
+                return fail("stale_state");
+            }
+            var beforeQuantity:Number = targetBefore == null ? 0 : Number(targetBefore.value);
+            if (!ItemUtil.singleAcquire(current.output.name, current.output.value, assetContext)) {
+                restoreState(backup);
+                PlayerAssetTransaction.rollback(assetTransaction);
+                return fail("inventory_full");
+            }
+            var outputReceipt:Object = null;
+            if (requiresPhysicalOutputReceipt(actualDelivery)) {
+                outputReceipt = InventoryPanelService.buildOutputReceipt(readOutputTarget(actualDelivery));
+                if (!outputReceiptMatchesPrototype(outputReceipt, plan.acceptedPlan.outputPrototype,
+                        actualDelivery, beforeQuantity)) {
+                    restoreState(backup);
+                    PlayerAssetTransaction.rollback(assetTransaction);
+                    return fail("stale_state");
+                }
+            } else if (plan.acceptedPlan.outputPrototype != null) {
+                restoreState(backup);
+                PlayerAssetTransaction.rollback(assetTransaction);
+                return fail("stale_state");
+            }
+            _root.金钱 = Number(backup.money) - Number(current.cost.money);
+            _root.虚拟币 = Number(backup.kpoints) - Number(current.cost.kpoints);
+            if (Number(current.cost.money) > 0) {
+                PlayerAssetTransaction.recordEffect("loss", "money", "金钱",
+                    Number(current.cost.money), assetContext);
+            }
+            if (Number(current.cost.kpoints) > 0) {
+                PlayerAssetTransaction.recordEffect("loss", "kpoint", "K点",
+                    Number(current.cost.kpoints), assetContext);
+            }
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            var procurement:Object = ProcurementPlanService.consumeCompleted(
+                String(resolved.recipe.recipeId || ""), Number(current.craftCount));
+            var successResponse:Object = {success:true, v:1, operation:"commit", category:category,
+                recipeIndex:Number(current.recipeIndex), craftCount:Number(current.craftCount),
+                crafted:current.output, acceptedPlan:plan.acceptedPlan,
+                outputReceipt:outputReceipt, balance:buildBalance(), procurement:procurement};
+        } catch (commitError) {
             restoreState(backup);
-            return fail("stale_state");
+            PlayerAssetTransaction.rollback(assetTransaction);
+            trace("[CraftingPanelService] asset commit failed: " + commitError);
+            return fail("commit_failed");
         }
-        _root.金钱 = Number(backup.money) - Number(current.cost.money);
-        _root.虚拟币 = Number(backup.kpoints) - Number(current.cost.kpoints);
-        if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-        if (_root.soundEffectManager != undefined) _root.soundEffectManager.playSound("收银机.mp3");
-        var procurement:Object = ProcurementPlanService.consumeCompleted(
-            String(resolved.recipe.recipeId || ""), Number(current.craftCount));
-        return {success:true, v:1, operation:"commit", category:category,
-            recipeIndex:Number(current.recipeIndex), craftCount:Number(current.craftCount),
-            crafted:current.output, acceptedPlan:plan.acceptedPlan,
-            outputReceipt:outputReceipt, balance:buildBalance(), procurement:procurement};
+        // commit 之后绝不进入资产恢复 catch：消费者/强存盘异常不能把已发布或
+        // 已耐久的事实恢复成旧资产状态。
+        PlayerAssetTransaction.commit(assetTransaction);
+        // 音效属于提交后的可选副作用；失败不能回滚已提交资产或制造幽灵回执。
+        try {
+            if (_root.soundEffectManager != undefined) _root.soundEffectManager.playSound("收银机.mp3");
+        } catch (soundError) {
+            trace("[CraftingPanelService] post-commit sound failed: " + soundError);
+        }
+        return successResponse;
     }
 
     private static function restoreState(backup:Object):Void {

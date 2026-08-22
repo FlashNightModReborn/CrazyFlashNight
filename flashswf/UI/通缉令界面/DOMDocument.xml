@@ -191,7 +191,11 @@ function 买一杯酒(对象)
 	}
 	if (_root.金钱 >= 对象.价格)
 	{
+		var assetContext = {source:"tavern_purchase", reason:"buy_drink", mergeScope:"operation"};
 		_root.金钱 -= 对象.价格;
+		_root.记录玩家货币变化(
+			-Number(对象.价格), 0, assetContext);
+		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 		_root.SetDialogue(对象.对话[对象.对话index], true);
 		对象.对话index += 1;
 		对象.显示文字 = "$" + 对象.价格 + " (" + 对象.对话index + "/" + 对象.对话.length + ")";
@@ -1083,6 +1087,9 @@ on(rollOut){
 	function 对话完毕回调函数(){
 		if(_root.收集品栏.情报.getValue("酒泡氤氲") == 0){
 			_root.收集品栏.情报.add("酒泡氤氲",1);
+			_root.记录玩家物资变化(
+				"gain", "intel", "酒泡氤氲", 1,
+				{source:"tavern_purchase", reason:"beer_intelligence"});
 			_root.最上层发布文字提示("已将对话整理为新的情报页面");
 		}
 	}
@@ -1123,6 +1130,9 @@ on (release) {
 	function 对话完毕回调函数(){
 		if(_root.收集品栏.情报.getValue("酒泡氤氲") == 1){
 			_root.收集品栏.情报.addValue("酒泡氤氲",1);
+			_root.记录玩家物资变化(
+				"gain", "intel", "酒泡氤氲", 1,
+				{source:"tavern_purchase", reason:"cocktail_intelligence"});
 			_root.最上层发布文字提示("已将对话整理为新的情报页面");
 		}
 	}

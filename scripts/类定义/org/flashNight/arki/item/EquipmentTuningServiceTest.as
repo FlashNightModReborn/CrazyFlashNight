@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.EquipmentInventory;
@@ -40,6 +41,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testStaleMaterialAndFailureRollback();
         testCandidateAvailabilityRequiresOwnedMaterial();
         testWebCommitOperationMatrix();
+        testOwnershipFlowProjection();
         testTierProgression();
         testWebInstallModAndTooltip();
         testDetachPolicySemantics();
@@ -126,6 +128,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         InventoryPanelService.testOnlyReset();
         EquipmentTuningService.testOnlyReset();
         CharacterBuildService.testOnlyReset();
+        PlayerAssetTransaction.resetForTests();
     }
 
     private static function testSnapshotGenderNormalization():Void {
@@ -989,6 +992,53 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && _root.收集品栏.材料.getValue("基础导轨") == 1
                 && _root.收集品栏.材料.getValue("普通握把") == 1,
             "Web detach_all_mods 原子返还全部配件");
+    }
+
+    private static function testOwnershipFlowProjection():Void {
+        resetFixture();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var item:BaseItem = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.add("普通握把", 1);
+        var result:Object = webCommit(
+            "ownership-install", "install_mod", 0, -1,
+            "普通握把", undefined);
+        assertTrue(result.commit.success && receipts.length == 0,
+            "配件从材料栏嵌入装备属于纯迁移，不发布 loss");
+
+        resetFixture();
+        receipts = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        item = equipment("测试手枪A", 1, ["基础导轨","普通握把"]);
+        _root.物品栏.背包.add(0, item);
+        result = webCommit(
+            "ownership-detach", "detach_all_mods", 0, -1,
+            "", undefined);
+        assertTrue(result.commit.success && receipts.length == 0,
+            "配件从装备返还材料栏属于纯迁移，不发布 gain");
+
+        resetFixture();
+        receipts = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        item = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.add("强化石", 10);
+        result = webCommit(
+            "ownership-enhance", "enhance", 0, -1,
+            "", 2);
+        assertTrue(result.commit.success && receipts.length == 1
+                && receipts[0].effects.length == 1
+                && receipts[0].effects[0].direction == "loss"
+                && receipts[0].effects[0].name == "强化石"
+                && receipts[0].effects[0].count == 1,
+            "不可回收强化材料仍发布真实 loss");
     }
 
     private static function testDetachPolicySemantics():Void {

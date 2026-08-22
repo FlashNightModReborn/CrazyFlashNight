@@ -68,6 +68,10 @@ _root.关卡回调函数.角斗场计算敌人数 = function(){
 _root.关卡回调函数.角斗场获胜 = function(){
 	if(_root.角斗场对手类型 == "escalation") return; // 爬升走奖池/拿钱台结算，不在此处发奖
 	_root.金钱 += _root.角斗场奖金;
+	org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+		Number(_root.角斗场奖金), 0,
+		{source:"arena_reward", reason:"victory", mergeScope:"operation"});
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 	_root.最上层发布文字提示("你赢了！获得奖金" + _root.角斗场奖金 + "元！");
 }
 
@@ -296,6 +300,10 @@ _root.角斗场拿钱 = function(){
 	if(st == undefined || st.phase != "decision") return;
 	st.phase = "done";
 	_root.金钱 += st.pot;
+	org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+		Number(st.pot), 0,
+		{source:"arena_reward", reason:"escalation_cashout", mergeScope:"operation"});
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 	_root.最上层发布文字提示("拿钱离场！获得奖池 " + st.pot + " 元（共闯 " + st.round + " 波）");
 	_root.角斗场爬升清理();
 	StageManager.instance.clearStage();

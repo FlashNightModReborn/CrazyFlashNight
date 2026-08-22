@@ -46,7 +46,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
             internal string Kind;
             internal string Name;
             internal string Icon;
-            internal string Source;
+            internal string Direction;
+            internal string Tier;
+            internal string ItemKey;
             internal int EliteLevel;
             internal long Count;
             internal long DisplayCount;
@@ -61,6 +63,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
             internal int Priority;
             internal RetentionClass Retention;
             internal UrgencyClass Urgency;
+            internal int BaseHoldMs;
+            internal bool IsUnknownSource;
+            internal bool IsDetailedOrdinaryKill;
             internal bool IsAmbientSummary;
         }
 
@@ -88,15 +93,26 @@ namespace CF7Launcher.Guardian.Hud.Loot
         }
 
         internal Change Add(
-            string kind, string name, string icon, long count, string source, int eliteLevel = 0)
+            string kind, string name, string icon, long count, string source,
+            int eliteLevel = 0, string direction = null, string tier = null,
+            string itemKey = null)
         {
             if (string.IsNullOrEmpty(kind) || string.IsNullOrEmpty(name) || count <= 0)
                 return Change.None;
 
+            if (string.IsNullOrEmpty(direction)) direction = kind == "kill" ? "neutral" : "gain";
+            if ((direction != "gain" && direction != "loss" && direction != "neutral")
+                || (kind == "kill" && direction != "neutral")
+                || (kind != "kill" && direction == "neutral"))
+                return Change.None;
+
             source = string.IsNullOrEmpty(source) ? "unknown" : source;
+            tier = string.IsNullOrEmpty(tier) ? null : tier;
+            itemKey = string.IsNullOrEmpty(itemKey) ? name : itemKey;
             eliteLevel = kind == "kill" ? Math.Max(0, Math.Min(2, eliteLevel)) : 0;
 
-            LootCard existing = FindMergeTarget(kind, name, icon, source, eliteLevel);
+            LootCard existing = FindMergeTarget(
+                kind, name, icon, source, eliteLevel, direction, tier, itemKey);
             if (existing != null)
                 return MergeInto(existing, count);
 
@@ -110,10 +126,12 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
                 name = "杂兵击杀";
                 icon = null;
+                itemKey = "kill:ambient";
                 isAmbientSummary = true;
             }
 
-            LootCard card = CreateCard(kind, name, icon, count, source, eliteLevel);
+            LootCard card = CreateCard(
+                kind, name, icon, count, source, eliteLevel, direction, tier, itemKey);
             card.IsAmbientSummary = isAmbientSummary;
             _pending.Add(card);
 
@@ -211,12 +229,14 @@ namespace CF7Launcher.Guardian.Hud.Loot
         }
 
         /// <summary>
-        /// 计数列的稳定几何桶：1 不显示计数，2..9 为一位，10..99 为两位，以此类推。
+        /// 计数列的稳定几何桶：gain/neutral 的 1 不显示计数；loss 的 −1 从一开始
+        /// 就有一位数字列。2..9 为一位，10..99 为两位，以此类推。
         /// 只有跨桶时才需要发布 bounds，同一位数内的割草累计仍是纯视觉更新。
         /// </summary>
-        internal static int CountLayoutBucket(long count)
+        internal static int CountLayoutBucket(long count, string direction = null)
         {
-            if (count <= 1) return 0;
+            if (count <= 0) return 0;
+            if (count == 1 && direction != "loss") return 0;
             int digits = 0;
             long value = count;
             do
@@ -228,19 +248,23 @@ namespace CF7Launcher.Guardian.Hud.Loot
         }
 
         private LootCard FindMergeTarget(
-            string kind, string name, string icon, string source, int eliteLevel)
+            string kind, string name, string icon, string source, int eliteLevel,
+            string direction, string tier, string itemKey)
         {
             for (int i = _active.Count - 1; i >= 0; i--)
             {
                 LootCard card = _active[i];
-                if (Matches(card, kind, name, icon, source, eliteLevel)
+                if (Matches(card, kind, name, icon, source, eliteLevel,
+                        direction, tier, itemKey)
                     && _nowMs - card.LastEventMs <= MergeWindowMs)
                     return card;
             }
             for (int i = _pending.Count - 1; i >= 0; i--)
             {
                 LootCard card = _pending[i];
-                if (Matches(card, kind, name, icon, source, eliteLevel))
+                if (Matches(card, kind, name, icon, source, eliteLevel,
+                        direction, tier, itemKey)
+                    && _nowMs - card.LastEventMs <= MergeWindowMs)
                     return card;
             }
             return null;
@@ -254,7 +278,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
             if (_active.IndexOf(card) < 0)
                 return Change.None;
 
-            card.RemainingHoldMs = HoldFor(card.Kind, card.Source, card.EliteLevel);
+            card.RemainingHoldMs = card.BaseHoldMs;
             card.FadeElapsedMs = 0;
             if (_nowMs - card.LastDisplayCommitMs >= CountVisualIntervalMs)
             {
@@ -265,19 +289,23 @@ namespace CF7Launcher.Guardian.Hud.Loot
         }
 
         private LootCard CreateCard(
-            string kind, string name, string icon, long count, string source, int eliteLevel)
+            string kind, string name, string icon, long count, string source, int eliteLevel,
+            string direction, string tier, string itemKey)
         {
             RetentionClass retention;
             UrgencyClass urgency;
             int priority;
             ResolvePolicy(kind, source, eliteLevel, out retention, out urgency, out priority);
+            int holdMs = HoldFor(kind, source, eliteLevel);
 
             return new LootCard
             {
                 Kind = kind,
                 Name = name,
                 Icon = icon,
-                Source = source,
+                Direction = direction,
+                Tier = tier,
+                ItemKey = itemKey,
                 EliteLevel = eliteLevel,
                 Count = count,
                 DisplayCount = count,
@@ -285,11 +313,15 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 CountTransitionStartedMs = -1000000,
                 LastDisplayCommitMs = _nowMs,
                 LastEventMs = _nowMs,
-                RemainingHoldMs = HoldFor(kind, source, eliteLevel),
+                RemainingHoldMs = holdMs,
                 Sequence = _nextSequence++,
                 Priority = priority,
                 Retention = retention,
-                Urgency = urgency
+                Urgency = urgency,
+                BaseHoldMs = holdMs,
+                IsUnknownSource = source == "unknown",
+                IsDetailedOrdinaryKill = kind == "kill" && source == "kill"
+                    && eliteLevel == 0
             };
         }
 
@@ -392,21 +424,21 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
         private bool CommitDisplayCount(LootCard card)
         {
-            int previousBucket = CountLayoutBucket(card.DisplayCount);
+            int previousBucket = CountLayoutBucket(card.DisplayCount, card.Direction);
             card.PreviousDisplayCount = card.DisplayCount;
             card.DisplayCount = card.Count;
             card.CountTransitionStartedMs = _nowMs;
             card.LastDisplayCommitMs = _nowMs;
-            return previousBucket != CountLayoutBucket(card.DisplayCount);
+            return previousBucket != CountLayoutBucket(card.DisplayCount, card.Direction);
         }
 
         private int CountDetailedOrdinaryKills()
         {
             int count = 0;
             for (int i = 0; i < _active.Count; i++)
-                if (IsDetailedOrdinaryKill(_active[i])) count++;
+                if (IsDetailedOrdinaryKillCard(_active[i])) count++;
             for (int i = 0; i < _pending.Count; i++)
-                if (IsDetailedOrdinaryKill(_pending[i])) count++;
+                if (IsDetailedOrdinaryKillCard(_pending[i])) count++;
             return count;
         }
 
@@ -419,20 +451,48 @@ namespace CF7Launcher.Guardian.Hud.Loot
             return null;
         }
 
-        private static bool IsDetailedOrdinaryKill(LootCard card)
+        private static bool IsDetailedOrdinaryKillCard(LootCard card)
         {
-            return card.Kind == "kill" && card.Source == "kill"
-                && card.EliteLevel == 0 && !card.IsAmbientSummary;
+            return card.IsDetailedOrdinaryKill && !card.IsAmbientSummary;
         }
 
         private static bool Matches(
-            LootCard card, string kind, string name, string icon, string source, int eliteLevel)
+            LootCard card, string kind, string name, string icon, string source, int eliteLevel,
+            string direction, string tier, string itemKey)
         {
+            // operation scope, reason and raw source provenance belong to receipt idempotency /
+            // audit identity. Visual layout compares the derived scheduling policy instead, so
+            // equal-policy committed events share one card without crossing urgency boundaries.
             return card.Kind == kind
                 && card.Name == name
                 && card.Icon == icon
-                && card.Source == source
-                && card.EliteLevel == eliteLevel;
+                && card.Direction == direction
+                && card.Tier == tier
+                && card.ItemKey == itemKey
+                && card.EliteLevel == eliteLevel
+                && HasSameVisualPolicy(card, kind, source, eliteLevel);
+        }
+
+        private static bool HasSameVisualPolicy(
+            LootCard card, string kind, string source, int eliteLevel)
+        {
+            // unknown 是 legacy/损坏输入的隔离舱；即使当前调度参数碰巧相同，也不与
+            // 已知 v1 来源聚合。普通击杀的身份压缩同样不能跨 detailed 边界。
+            if (card.IsUnknownSource != (source == "unknown")) return false;
+            bool incomingDetailedKill = kind == "kill" && source == "kill"
+                && eliteLevel == 0;
+            if (card.IsDetailedOrdinaryKill != incomingDetailedKill) return false;
+
+            RetentionClass incomingRetention;
+            UrgencyClass incomingUrgency;
+            int incomingPriority;
+            ResolvePolicy(kind, source, eliteLevel,
+                out incomingRetention, out incomingUrgency, out incomingPriority);
+
+            return card.Retention == incomingRetention
+                && card.Urgency == incomingUrgency
+                && card.Priority == incomingPriority
+                && card.BaseHoldMs == HoldFor(kind, source, eliteLevel);
         }
 
         private static void ResolvePolicy(
@@ -451,6 +511,14 @@ namespace CF7Launcher.Guardian.Hud.Loot
             {
                 retention = RetentionClass.Guaranteed;
                 urgency = UrgencyClass.Prompt;
+                priority = 3;
+                return;
+            }
+
+            if (source == "reload")
+            {
+                retention = RetentionClass.ExactAggregate;
+                urgency = UrgencyClass.Immediate;
                 priority = 3;
                 return;
             }

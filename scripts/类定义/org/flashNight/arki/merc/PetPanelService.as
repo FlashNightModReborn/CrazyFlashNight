@@ -21,6 +21,7 @@
  *   - 使用 LiteJSON 序列化（与 ArenaPanelService 相同）
  */
 import LiteJSON;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 
 class org.flashNight.arki.merc.PetPanelService {
     private static var _json:LiteJSON;
@@ -327,30 +328,55 @@ class org.flashNight.arki.merc.PetPanelService {
             return;
         }
 
-        // 执行购买
-        if (price > 0) _root.金钱 -= price;
-        if (kprice > 0) _root.虚拟币 -= kprice;
+        // 资产扣款、涨价计数与宠物落槽先组成一个领域事务；成就/UI 等可选
+        // 回调只能在提交后执行，不能造成真实扣款却没有回执。
+        var assetContext:Object = {
+            source:"pet_service", reason:"adopt", mergeScope:"operation"
+        };
+        var assetTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
+        var moneyBeforeAdopt:Number = Number(_root.金钱);
+        var kpointsBeforeAdopt:Number = Number(_root.虚拟币);
+        try {
+            // 执行购买
+            if (price > 0) _root.金钱 -= price;
+            if (kprice > 0) _root.虚拟币 -= kprice;
 
-        // 创建宠物信息并填入空位
-        var initialLevel:Number = Number(petDef.InitialLevel) || 1;
-        var newPet:Array = [petId, initialLevel, 200, 0, 0, {}];
+            // 创建宠物信息并填入空位
+            var initialLevel:Number = Number(petDef.InitialLevel) || 1;
+            var newPet:Array = [petId, initialLevel, 200, 0, 0, {}];
 
-        // 涨价：记已购次数（持久于存档），不再原地改写 宠物库.Price 配置。
-        // 副作用更正：旧实现改写 宠物库.Price 会连带抬高 刷怪系统 算的可雇用宠物价；
-        // 改为基于次数计算后，刷怪价回到基础价（解除该意外耦合）。
-        if (Number(petDef.IncreasePrice) > 0) {
-            incrementPetPurchaseCount(petId);
+            // 涨价：记已购次数（持久于存档），不再原地改写 宠物库.Price 配置。
+            // 副作用更正：旧实现改写 宠物库.Price 会连带抬高 刷怪系统 算的可雇用宠物价；
+            // 改为基于次数计算后，刷怪价回到基础价（解除该意外耦合）。
+            if (Number(petDef.IncreasePrice) > 0) {
+                incrementPetPurchaseCount(petId);
+            }
+
+            _root.宠物信息[emptySlot] = newPet;
+            // Plan A audit: handleBuy 写 金钱/虚拟币/宠物信息/购买次数，必须标脏
+            _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeAdopt,
+                Number(_root.虚拟币) - kpointsBeforeAdopt, assetContext);
+        } catch (adoptError) {
+            // 宠物领域没有通用逆操作；异常时按当前权威余额提交已发生的损失，
+            // 绝不能把事务栈与真实扣款一起留在半开状态。
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeAdopt,
+                Number(_root.虚拟币) - kpointsBeforeAdopt, assetContext);
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            throw adoptError;
         }
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
-        _root.宠物信息[emptySlot] = newPet;
         // 成就记账（埋点 #9，领养成功无条件计数；口径=web 面板领养，关卡内 NPC 雇宠帧脚本不计。
         // 不复用上方 宠物购买次数——那是 IncreasePrice>0 才记的涨价口径，两口径隔离）
         if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
             org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养次数", 1);
             org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养花费金币", price);
         }
-        // Plan A audit: handleBuy 写 金钱/虚拟币/宠物信息/购买次数，必须标脏
-        _root.存档系统.dirtyMark = true;
 
         // 刷新宠物UI
         if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
@@ -526,20 +552,41 @@ class org.flashNight.arki.merc.PetPanelService {
             }
         }
 
-        // 执行进阶
+        // 执行进阶。方案脚本仍持有货币写权；服务层以提交前后权威差值统一出回执。
+        var moneyBeforeAdvance:Number = Number(_root.金钱);
+        var kpointsBeforeAdvance:Number = Number(_root.虚拟币);
+        var assetContext:Object = {
+            source:"pet_service", reason:"advance_" + schemeName,
+            mergeScope:"operation"
+        };
+        var assetTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
         var execFn:Function = scheme.执行;
-        if (typeof execFn == "function") {
-            execFn.call(ctx);
-        }
-
-        // 成就记账（埋点 #10，仅非反复型方案——开关型(影子刺客发色/常驻淬毒)可反复切换，计数会被刷；
-        // 金额不顺带：影子刺客二次免费会失真）
-        if (!isSchemeRepeatable(schemeName, scheme) && org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("宠物进阶次数", 1);
+        try {
+            if (typeof execFn == "function") execFn.call(ctx);
+        } catch (advanceError) {
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeAdvance,
+                Number(_root.虚拟币) - kpointsBeforeAdvance,
+                assetContext);
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            throw advanceError;
         }
 
         // 进阶 执行 写入 金钱 / 宠物属性（均存档字段），标脏
         _root.存档系统.dirtyMark = true;
+        org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+            Number(_root.金钱) - moneyBeforeAdvance,
+            Number(_root.虚拟币) - kpointsBeforeAdvance,
+            assetContext);
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+
+        // 成就记账（埋点 #10，仅非反复型方案——开关型(影子刺客发色/常驻淬毒)可反复切换，计数会被刷；
+        // 金额不顺带：影子刺客二次免费会失真）。消费者回执先闭合，避免可选埋点异常泄漏事务栈。
+        if (!isSchemeRepeatable(schemeName, scheme) && org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("宠物进阶次数", 1);
+        }
 
         // 刷新宠物单位（如果已出战）
         if (ctx.当前宠物信息[4] == 1) {
@@ -636,8 +683,26 @@ class org.flashNight.arki.merc.PetPanelService {
             return;
         }
 
-        _root.金钱 -= expandCost;
-        _root.开宠物格子();
+        var assetContext:Object = {
+            source:"pet_service", reason:"expand_slot", mergeScope:"operation"
+        };
+        var assetTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
+        var moneyBeforeExpand:Number = Number(_root.金钱);
+        try {
+            _root.金钱 -= expandCost;
+            _root.开宠物格子();
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeExpand, 0, assetContext);
+        } catch (expandError) {
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeExpand, 0, assetContext);
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            throw expandError;
+        }
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         sendResponse({
             task: "pet_response",
@@ -763,10 +828,27 @@ class org.flashNight.arki.merc.PetPanelService {
             return;
         }
 
-        _root.金钱 -= cost;
-        petInfo[2] = 200;
-        // 金钱 / 宠物体力(petInfo[2]) 均存档字段，标脏
-        _root.存档系统.dirtyMark = true;
+        var assetContext:Object = {
+            source:"pet_service", reason:"restore_stamina", mergeScope:"operation"
+        };
+        var assetTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
+        var moneyBeforeRestore:Number = Number(_root.金钱);
+        try {
+            _root.金钱 -= cost;
+            petInfo[2] = 200;
+            // 金钱 / 宠物体力(petInfo[2]) 均存档字段，标脏
+            _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeRestore, 0, assetContext);
+        } catch (restoreError) {
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeRestore, 0, assetContext);
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            throw restoreError;
+        }
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         sendResponse({
             task: "pet_response",
@@ -825,7 +907,9 @@ class org.flashNight.arki.merc.PetPanelService {
         if (stoneCost <= 0) stoneCost = 1;
 
         // 扣除灵石
-        if (!_root.singleSubmit("战宠灵石", stoneCost)) {
+        if (!_root.singleSubmit("战宠灵石", stoneCost, {
+                source:"pet_service", reason:"level_up"
+            })) {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_stones", cost: stoneCost });
             return;
         }
@@ -911,15 +995,27 @@ class org.flashNight.arki.merc.PetPanelService {
             _root.删除场景宠物();
         }
 
-        // 返还灵石
+        // 返还灵石与清空宠物槽属于同一个领域提交；singleAcquire 在外层事务内
+        // 只缓冲 gain，直到宠物所有权状态已经清除才发布。
+        var deleteContext:Object = {
+            source:"pet_service", reason:"delete_refund", mergeScope:"operation"
+        };
+        var deleteTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(deleteContext);
         if (stoneRefund > 0) {
-            _root.singleAcquire("战宠灵石", stoneRefund);
+            if (!_root.singleAcquire("战宠灵石", stoneRefund, deleteContext)) {
+                org.flashNight.arki.item.PlayerAssetTransaction.rollback(deleteTransaction);
+                sendResponse({task:"pet_response", callId:callId,
+                    success:false, error:"inventory_full", refund:stoneRefund});
+                return;
+            }
         }
 
         // 清空槽位
         _root.宠物信息[slotIndex] = [];
         // 删除宠物 + 返还灵石均存档字段；返还为 0 时 singleAcquire 不触发标脏，故此处独立标脏
         _root.存档系统.dirtyMark = true;
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(deleteTransaction);
 
         // 重建场上其他出战宠物
         var hasDeployed:Boolean = false;
@@ -1027,16 +1123,35 @@ class org.flashNight.arki.merc.PetPanelService {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_gold", goldPrice: goldPrice, currentGold: Number(_root.金钱) });
             return;
         }
-        _root.金钱 -= goldPrice;   // ← 顺手修：原版 雇佣宠物 漏此行（gate-but-no-charge）
+        // 扣款与宠物落槽必须先形成一个权威事务事实。模式判定等旧函数可能抛错；
+        // 即使领域状态只能保留为已发生的部分结果，也不能留下真实扣款却没有回执。
+        var assetContext:Object = {
+            source:"pet_service", reason:"world_adopt", mergeScope:"operation"
+        };
+        var assetTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
+        var moneyBeforeWorldAdopt:Number = Number(_root.金钱);
+        try {
+            _root.金钱 -= goldPrice;   // ← 顺手修：原版 雇佣宠物 漏此行（gate-but-no-charge）
 
-        // 写入 + 出战上限处理（复刻 雇佣宠物:250-262）。petData = NPC.宠物数据 直接落槽（已是 宠物信息 格式）
-        _root.宠物信息[slot] = petData;
-        _root.最大宠物出战数 = Math.min(_root.等级 / 5, 5);
-        if (_root.isChallengeMode() == true) _root.最大宠物出战数 = _root.等级 / 35;
-        if (_root.isEasyMode() == true) _root.最大宠物出战数 = 5 + _root.等级 / 5;
-        if (_root.出战宠物id库.length >= _root.最大宠物出战数) _root.宠物信息[slot][4] = 0;
-        // 扣 金钱 + 写 宠物信息 全 save-relevant，必须标脏
-        _root.存档系统.dirtyMark = true;
+            // 写入 + 出战上限处理（复刻 雇佣宠物:250-262）。petData = NPC.宠物数据 直接落槽（已是 宠物信息 格式）
+            _root.宠物信息[slot] = petData;
+            _root.最大宠物出战数 = Math.min(_root.等级 / 5, 5);
+            if (_root.isChallengeMode() == true) _root.最大宠物出战数 = _root.等级 / 35;
+            if (_root.isEasyMode() == true) _root.最大宠物出战数 = 5 + _root.等级 / 5;
+            if (_root.出战宠物id库.length >= _root.最大宠物出战数) _root.宠物信息[slot][4] = 0;
+            // 扣 金钱 + 写 宠物信息 全 save-relevant，必须标脏
+            _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeWorldAdopt, 0, assetContext);
+        } catch (worldAdoptError) {
+            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                Number(_root.金钱) - moneyBeforeWorldAdopt, 0, assetContext);
+            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            throw worldAdoptError;
+        }
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         // 成就记账（对齐 handleAdopt 埋点 #9）
         if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {

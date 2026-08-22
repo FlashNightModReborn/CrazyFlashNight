@@ -1122,7 +1122,8 @@ _root.技能函数.火舞旋风攻击 = function(){
 	}
 	//消耗燃料罐
 	if (_parent._name == _root.控制目标){
-		if (ItemUtil.singleSubmit("火焰喷射器燃料罐",1)){
+		if (ItemUtil.singleSubmit("火焰喷射器燃料罐", 1,
+			{source:"skill_cost", reason:"fire_whirlwind"})){
 			子弹属性.子弹种类 = "火舞旋风";
 			子弹属性.伤害类型 = "魔法";
 			子弹属性.魔法伤害属性 = "热";
@@ -1156,7 +1157,9 @@ _root.技能函数.掌炮攻击 = function(){
 	子弹.击倒率 = 0.1;
 	子弹.击中后子弹的效果 = "";
 	子弹.击中地图效果 = "";
-	if(_parent.Mark3消耗能量电池 && _parent._name == _root.控制目标 && ItemUtil.singleSubmit("能量电池",1)){
+	if(_parent.Mark3消耗能量电池 && _parent._name == _root.控制目标
+		&& ItemUtil.singleSubmit("能量电池", 1,
+			{source:"skill_cost", reason:"palm_cannon"})){
 		子弹.击倒率 = 0.01;
 		子弹.子弹威力 += 8000;
 		子弹.伤害类型 = "魔法";
@@ -1317,7 +1320,8 @@ _root.技能函数.能量盾释放 = function(target:Object, 技能等级:Number
 
 	// === 消耗扣除（玩家需要能量电池，NPC无消耗） ===
 	// 注：消耗品存在性已在释放条件中检查，此处直接扣除
-	if (isPlayer && !_root.singleSubmit("能量电池", 1)) {
+	if (isPlayer && !_root.singleSubmit("能量电池", 1,
+			{source:"skill_cost", reason:"energy_shield"})) {
 		return false;  // 理论上不会到这里，除非释放条件检查后物品被消耗
 	}
 

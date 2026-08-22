@@ -694,9 +694,12 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (!canPayFireCosts(unit, config, state)) return false;
 
         if (config.consumeMode == "onFire") {
-            if (config.fireCost > 0 && !ItemUtil.singleSubmit(config.reserveName, config.fireCost)) return false;
+            if (config.fireCost > 0 && !ItemUtil.singleSubmit(config.reserveName,
+                    config.fireCost, {source:"weapon_cost", reason:"subweapon_fire"})) return false;
         } else if (config.consumeTiming == "linkedFirstFire" && !state.groupPaid) {
-            if (config.clipCostPerLoad > 0 && !ItemUtil.singleSubmit(config.reserveName, config.clipCostPerLoad)) return false;
+            if (config.clipCostPerLoad > 0 && !ItemUtil.singleSubmit(config.reserveName,
+                    config.clipCostPerLoad,
+                    {source:"weapon_cost", reason:"subweapon_linked_first_fire"})) return false;
             state.groupPaid = true;
         }
 
@@ -736,11 +739,24 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             return false;
         }
 
+        var weaponValue:Object = unit.长枪副武器.value;
+        var weaponHadReloadCount:Boolean = weaponValue.reloadCount != undefined;
+        var weaponReloadCountBefore = weaponValue.reloadCount;
+        var stateHadReloadCount:Boolean = state.reloadCount != undefined;
+        var stateReloadCountBefore = state.reloadCount;
         var tacticalFreeReload:Boolean = applyTacticalRecovery(unit, config, state);
         if (tacticalFreeReload) {
             state.groupPaid = true;
         } else if (config.consumeMode == "onLoadGroup" && (config.consumeTiming == "onReloadCommit" || manual)) {
-            if (config.clipCostPerLoad > 0 && !ItemUtil.singleSubmit(config.reserveName, config.clipCostPerLoad)) {
+            if (config.clipCostPerLoad > 0 && !ItemUtil.singleSubmit(config.reserveName,
+                    config.clipCostPerLoad,
+                    {source:"reload", reason:"subweapon_reload", mergeScope:"operation"})) {
+                // 付费提交失败时撤销本次战术回收尝试；否则重复按换弹会累计同一
+                // 未卸弹匣并最终免费补满，造成无真实损失的弹药注入。
+                if (weaponHadReloadCount) weaponValue.reloadCount = weaponReloadCountBefore;
+                else delete weaponValue.reloadCount;
+                if (stateHadReloadCount) state.reloadCount = stateReloadCountBefore;
+                else delete state.reloadCount;
                 updateAmmoDisplay(unit);
                 return false;
             }

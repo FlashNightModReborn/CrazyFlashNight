@@ -59,6 +59,7 @@ on (rollOut) {
 	if (_parent.物品名 == "经验")
 	{
 		_root.经验值 += _parent.数量;
+		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 		_parent._visible = 0;
 		_parent._parent.奖励品[_parent.数组id] = [];
 		_parent._parent.刷新();
@@ -66,14 +67,18 @@ on (rollOut) {
 	else if (_parent.物品名 == "金钱")
 	{
 		_root.金钱 += _parent.数量;
-		_root.发布战利品消息("money", "金钱", _parent.数量, "level_reward");
+		_root.记录玩家货币变化(
+			Number(_parent.数量), 0,
+			{source:"level_reward", reason:"single_claim", mergeScope:"operation"});
+		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 		_parent._visible = 0;
 		_parent._parent.奖励品[_parent.数组id] = [];
 		_parent._parent.刷新();
 	}
-	else if (_root.itemAcquire([{name:_parent.物品名, value:_parent.数量}]))
+	else if (_root.itemAcquire([{
+		name:_parent.物品名, value:_parent.数量, tier:_parent.阶数
+	}], {source:"level_reward", reason:"single_claim", mergeScope:"operation"}))
 	{
-		_root.发布战利品消息("item", _parent.物品名, _parent.数量, "level_reward");
 		_root.播放音效("ammopickup1.wav");
 		_parent._visible = 0;
 		_parent._parent.奖励品[_parent.数组id] = [];

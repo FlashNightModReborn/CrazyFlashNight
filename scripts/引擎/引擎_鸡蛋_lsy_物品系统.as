@@ -205,24 +205,24 @@ _root.仓库栏总数 = 1240;
 
 
 //对新物品提交与获取函数的引用
-_root.itemAcquire = function(itemArray):Boolean{
-	return org.flashNight.arki.item.ItemUtil.acquire(itemArray);
+_root.itemAcquire = function(itemArray, context):Boolean{
+	return org.flashNight.arki.item.ItemUtil.acquire(itemArray, context);
 }
 _root.itemContain = function(itemArray):Object{
 	return org.flashNight.arki.item.ItemUtil.contain(itemArray);
 }
-_root.itemSubmit = function(itemArray):Boolean{
-	return org.flashNight.arki.item.ItemUtil.submit(itemArray);
+_root.itemSubmit = function(itemArray, context):Boolean{
+	return org.flashNight.arki.item.ItemUtil.submit(itemArray, context);
 }
 
-_root.singleAcquire = function(name,value):Boolean{
-	return org.flashNight.arki.item.ItemUtil.singleAcquire(name,value);
+_root.singleAcquire = function(name,value,context):Boolean{
+	return org.flashNight.arki.item.ItemUtil.singleAcquire(name,value,context);
 }
 _root.singleContain = function(name,value):Object{
 	return org.flashNight.arki.item.ItemUtil.singleContain(name,value);
 }
-_root.singleSubmit = function(name,value):Boolean{
-	return org.flashNight.arki.item.ItemUtil.singleSubmit(name,value);
+_root.singleSubmit = function(name,value,context):Boolean{
+	return org.flashNight.arki.item.ItemUtil.singleSubmit(name,value,context);
 }
 
 //击杀播报（P2）：统一收口于 enemyKilled 事件链（EnemyKilledEventComponent）。
@@ -275,24 +275,75 @@ _root.发布击杀播报 = function(unit:MovieClip):Void{
 	_root.发布战利品消息("kill", killName, 1, "kill", null, iconName, dollTuple, eliteLevel);
 }
 
-//战利品播报（loot feed）：结构化物品获得事件，经 socket 发往 Launcher LootFeedTask，
-//由 NativeHud LootFeedWidget 渲染为带图标卡片。socket 离线时静默丢弃，不影响入账。
-//kind 可传 null 自动按名称推导（金钱/金币→money、K点→kpoint、情报→intel、其余→item）；
-//显式 kind 白名单（C# 侧校验）：money / kpoint / intel / item / equip / kill。
-//source 白名单：pickup / level_reward / quest_reward / loot_box / kill。
+// 独立 XFL/SWF 不直接依赖 scripts/类定义 的 classpath：资产时间轴只调用这组
+// asLoader 注入的 _root 门面，由主运行时统一选择 PlayerAssetTransaction/ItemUtil
+// 的实际版本。领域内的 .as 服务仍可直接使用类库，不必绕回 _root。
+_root.开始玩家物资事务 = function(context:Object):Object {
+	return org.flashNight.arki.item.PlayerAssetTransaction.begin(context);
+}
+
+_root.提交玩家物资事务 = function(transaction:Object):Object {
+	return org.flashNight.arki.item.PlayerAssetTransaction.commit(transaction);
+}
+
+_root.回滚玩家物资事务 = function(transaction:Object):Boolean {
+	return org.flashNight.arki.item.PlayerAssetTransaction.rollback(transaction);
+}
+
+_root.记录玩家物资变化 = function(direction:String, kind:String, name:String,
+		count:Number, context:Object):Void {
+	org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(
+		direction, kind, name, count, context);
+}
+
+_root.记录玩家货币变化 = function(moneyDelta:Number, kpointDelta:Number,
+		context:Object):Void {
+	org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+		moneyDelta, kpointDelta, context);
+}
+
+_root.玩家物品是否装备 = function(itemName:String):Boolean {
+	return org.flashNight.arki.item.ItemUtil.isEquipment(itemName);
+}
+
+// 健身房的七个延迟完成按钮共用同一个金币提交点，避免每个 XFL 帧脚本各自
+// 扣款、标脏和拼装回执。技能点/K点路径仍由挂机计时器自己的权威支付函数处理。
+_root.结算健身金币消耗 = function(rawCost):Boolean {
+	var cost:Number = Number(rawCost);
+	var moneyBefore:Number = Number(_root.金钱);
+	if (isNaN(cost) || !isFinite(cost) || cost <= 0 || Math.floor(cost) != cost
+			|| isNaN(moneyBefore) || !isFinite(moneyBefore)) return false;
+	_root.金钱 = moneyBefore - cost;
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+	_root.记录玩家货币变化(
+		Number(_root.金钱) - moneyBefore, 0,
+		{source:"gym_training", reason:"training_complete", mergeScope:"operation"});
+	return true;
+}
+
+//玩家物资流动播报：只消费 PlayerAssetTransaction 已提交回执；socket 离线时静默
+//丢弃，不影响权威资产。旧发布战利品消息保留为 gain/kill 兼容 façade。
+//kind 可传 null 自动按名称推导；显式 kind 白名单由 Host 与 canonical 文档共同冻结。
+//source 是权威变化原因枚举，新增领域必须同时更新 Host/parser 测试与协议文档。
 //tier 可选，进阶装备解析进阶名/图标。icon 可选，显式覆盖（击杀播报传敌人头像 ref）。
 //doll 可选（仅击杀播报人形斗士）：外观元组 {face,hair,mask,head,body,leg,hand,foot,neck,gender}，
 //C# 侧据此外观单点派生 纸娃娃-<hex> 图标键并触发 web 侧运行时胸像烘焙；
 //eliteLevel 可选（仅击杀播报）：UnitUtil.getEliteLevel 的 0=普通、1=精英、2=首领。
-_root.发布战利品消息 = function(kind:String, name:String, count:Number, source:String, tier:String, icon:String, doll:Object, eliteLevel:Number):Void{
+_root.发布物资变更消息 = function(direction:String, kind:String, name:String, count:Number,
+		source:String, tier:String, icon:String, operationId:String,
+		mergeScope:String, reason:String, doll:Object, eliteLevel:Number,
+		protocolVersion:Number):Void{
 	if (name == undefined || count == undefined) return;
 	if (isNaN(Number(count)) || Number(count) <= 0) return;
+	if (direction != "gain" && direction != "loss" && direction != "neutral") return;
 	if (_root.server == undefined || _root.server.sendTaskToNode == undefined) return;
 
 	if (kind == undefined || kind == null || kind == "") {
 		if (name == "金钱" || name == "金币") kind = "money";
 		else if (name == "K点") kind = "kpoint";
 		else if (org.flashNight.arki.item.ItemUtil.isInformation(name)) kind = "intel";
+		else if (org.flashNight.arki.item.ItemUtil.isMaterial(name)) kind = "material";
+		else if (org.flashNight.arki.item.ItemUtil.isEquipment(name)) kind = "equip";
 		else kind = "item";
 	}
 
@@ -319,20 +370,52 @@ _root.发布战利品消息 = function(kind:String, name:String, count:Number, s
 		iconName = String(icon);
 	}
 
-	var msg:Object = {
-		kind: String(kind),
-		name: String(displayName),
-		count: Number(count),
-		source: String(source || "unknown"),
-		icon: iconName
-	};
-	// 纸娃娃外观元组可选挂载（FastJSON 递归序列化嵌套对象；缺省字段 C# 侧按 "" 处理）
-	if (doll != undefined && doll != null) msg.doll = doll;
-	// 等级只作为跨层事实传递；调度优先级与视觉样式仍由 NativeHud 单点决定。
-	if (kind == "kill" && !isNaN(eliteLevel) && eliteLevel >= 0 && eliteLevel <= 2) {
-		msg.eliteLevel = eliteLevel;
-	}
+	var msg:Object = org.flashNight.arki.item.PlayerAssetWireProjector.buildMessage({
+		version:protocolVersion,
+		direction:direction,
+		kind:kind,
+		itemKey:name,
+		name:displayName,
+		count:count,
+		source:String(source || "unknown"),
+		icon:iconName,
+		tier:tier,
+		operationId:operationId,
+		mergeScope:mergeScope,
+		reason:reason,
+		doll:doll,
+		eliteLevel:eliteLevel
+	});
 	_root.server.sendTaskToNode("loot", msg, null);
+}
+
+// 已提交回执的唯一生产消费者出口。回执中的 name 仍为权威物品键；展示名、tier
+// 覆盖和 icon 只在发送边界解析，事务基座不携带易变 catalog 对象。
+_root.发布物资事务回执 = function(receipt:Object):Void{
+	org.flashNight.arki.item.PlayerAssetWireProjector.forEachEffect(
+		receipt,
+		function(effect:Object, effectIndex:Number):Void {
+			_root.发布物资变更消息(
+				String(effect.direction), String(effect.kind), String(effect.name),
+				Number(effect.count), String(effect.source || receipt.source || "unknown"),
+				String(effect.tier || ""), null, String(receipt.operationId || ""),
+				String(effect.mergeScope || ""), String(effect.reason || receipt.reason || ""),
+				null, 0, Number(receipt.version));
+		},
+		function(effectPublishError, effectIndex:Number):Void {
+			// 单个 catalog/tier/socket 投影失败只丢该 effect，不能吞掉同一已提交
+			// receipt 中后续彼此独立的物资事实。
+			trace("[PlayerAssetTransaction] effect " + effectIndex
+				+ " publish failed: " + effectPublishError);
+		}
+	);
+}
+
+_root.发布战利品消息 = function(kind:String, name:String, count:Number, source:String,
+		tier:String, icon:String, doll:Object, eliteLevel:Number):Void{
+	var direction:String = kind == "kill" ? "neutral" : "gain";
+	_root.发布物资变更消息(direction, kind, name, count, source, tier, icon,
+		null, null, null, doll, eliteLevel);
 }
 
 _root.getRequirementFromTask = function(arr){

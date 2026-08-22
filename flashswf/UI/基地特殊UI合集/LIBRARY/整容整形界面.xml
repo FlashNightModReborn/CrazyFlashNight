@@ -29,6 +29,10 @@ function 虚拟币支付(amount, 商品编号)
 	if (_root.虚拟币 >= amount)
 	{
 		_root.虚拟币 -= amount;
+		_root.记录玩家货币变化(
+			0, -Number(amount),
+			{source:"appearance_service", reason:"plastic_surgery", mergeScope:"operation"});
+		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 		_root.发布消息(_root.获得翻译("支付成功！"));
 		_root.播放音效("收银机.mp3");
 		整形();

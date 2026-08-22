@@ -64,7 +64,8 @@ _root.cheatFunction.getallmods = function(){
 	for(var i=0; i<modlist.length; i++){
 		acarr.push({name:modlist[i], value:1});
 	}
-	org.flashNight.arki.item.ItemUtil.acquire(acarr);
+	org.flashNight.arki.item.ItemUtil.acquire(acarr,
+		{source:"cheat", reason:"cheat_grant"});
 	_root.最上层发布文字提示("获得所有配件材料各1个");
 }
 
@@ -75,7 +76,8 @@ _root.cheatFunction.getallintelligence = function(){
 		var maxValue = intelligenceDict[name]; // 获取该情报的最大值
 		acarr.push({name: name, value: maxValue});
 	}
-	org.flashNight.arki.item.ItemUtil.acquire(acarr);
+	org.flashNight.arki.item.ItemUtil.acquire(acarr,
+		{source:"cheat", reason:"cheat_grant"});
 	_root.最上层发布文字提示("获得所有情报(满额)");
 }
 
@@ -514,7 +516,12 @@ _root.cheatCode = function(作弊码){
 		}
 	}else if(作弊码.indexOf("#gold:")>-1){
 		var goldVal:Number = Number(作弊码.split("#gold:")[1].split(" ").join(""));
+		var goldBefore:Number = Number(_root.金钱);
 		_root.金钱 = goldVal;
+		org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+			goldVal - goldBefore, 0,
+			{source:"cheat", reason:"cheat_set_gold", mergeScope:"operation"});
+		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 		_root.最上层发布文字提示("金钱设置为: " + _root.金钱);
 	}else if(作弊码.indexOf("#sp:")>-1){
 		var spVal:Number = Number(作弊码.split("#sp:")[1].split(" ").join(""));
@@ -524,7 +531,8 @@ _root.cheatCode = function(作弊码){
 		var giveParts:Array = 作弊码.split("#give:")[1].split(",");
 		var giveName:String = giveParts[0];
 		var giveCount:Number = (giveParts.length > 1) ? Number(giveParts[1]) : 1;
-		org.flashNight.arki.item.ItemUtil.acquire([{name: giveName, value: giveCount}]);
+		org.flashNight.arki.item.ItemUtil.acquire([{name: giveName, value: giveCount}],
+			{source:"cheat", reason:"cheat_grant"});
 		_root.最上层发布文字提示("获得: " + giveName + " x" + giveCount);
 	}else if(作弊码.indexOf("#spawn:")>-1){
 		var spawnParts:Array = 作弊码.split("#spawn:")[1].split(",");

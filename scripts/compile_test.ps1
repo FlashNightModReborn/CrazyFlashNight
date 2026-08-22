@@ -18,7 +18,10 @@ param(
     [string]$Target = '',
     # 对任意 -Target 强制 publish-only（doc.publish() 而非 testMovie）：编译产出 SWF + Compiler Errors，
     # 不启动测试播放器。publish/asloader 与 main 目标已隐含 publish；资源 FLA（如 things0）想避免弹播放器时显式加此开关。
-    [switch]$PublishOnly
+    [switch]$PublishOnly,
+    # Flash CS6 为 32 位进程；批量发布大型 XFL 时可在本轮 publish 的 SWF/诊断/terminal marker
+    # 全部落盘后优雅退出 IDE，下一轮再由 FlashCS6Task 启动干净实例。testMovie 模式禁止使用。
+    [switch]$QuitFlashAfterPublish
 )
 
 $ErrorActionPreference = 'Stop'
@@ -294,8 +297,10 @@ try {
 #   不传 -Target → 删除该文件 → JSFL 回退「当前活动文档」（向后兼容）。传 -Target → JSFL 读到后删除，避免旧目标残留。
 $TargetCfg = Join-Path $ScriptDir 'compile_target.cfg'
 $ModeCfg = Join-Path $ScriptDir 'compile_mode.cfg'
+$QuitCfg = Join-Path $ScriptDir 'compile_quit_after_publish.cfg'
 Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
 Remove-Item -Path $ModeCfg -ErrorAction SilentlyContinue
+Remove-Item -Path $QuitCfg -ErrorAction SilentlyContinue
 Remove-Item -Path $ReopenMarker -ErrorAction SilentlyContinue
 $targetUri = ''
 $isTestLoaderTarget = $false
@@ -353,6 +358,10 @@ if ($Target) {
     }
 } else {
     Write-Host '[INFO] 编译目标: Flash 当前活动文档（未指定 -Target）'
+}
+if ($QuitFlashAfterPublish -and $compileMode -ne 'publish') {
+    Write-Host '[ERROR] -QuitFlashAfterPublish 只允许用于 publish-only 目标。'
+    exit 1
 }
 
 # [asLoader 重构 P0] 预编译 BOM 门：被 #include 的 .as 丢 BOM 会被 CS6 静默跳过
@@ -443,6 +452,9 @@ if ($targetUri) {
 # publish 模式（main）→ 写 compile_mode.cfg，compile_action.jsfl 读到后用 doc.publish() 而非 testMovie。
 if ($compileMode -eq 'publish') {
     [System.IO.File]::WriteAllText($ModeCfg, $compileMode, (New-Object System.Text.UTF8Encoding($false)))
+}
+if ($QuitFlashAfterPublish) {
+    [System.IO.File]::WriteAllText($QuitCfg, 'quit', (New-Object System.Text.UTF8Encoding($false)))
 }
 $inFlightUncertainBody = Write-CompileUncertain ('in-flight; target={0}' -f $Target)
 $compileTriggered = $true
@@ -571,10 +583,10 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         }
 
         if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure) {
-            Remove-Item -Path $TargetCfg, $ModeCfg, $ReopenMarker -ErrorAction SilentlyContinue
+            Remove-Item -Path $TargetCfg, $ModeCfg, $QuitCfg, $ReopenMarker -ErrorAction SilentlyContinue
             exit 1
         }
-        Remove-Item -Path $TargetCfg, $ModeCfg, $ReopenMarker -ErrorAction SilentlyContinue
+        Remove-Item -Path $TargetCfg, $ModeCfg, $QuitCfg, $ReopenMarker -ErrorAction SilentlyContinue
         exit 0
     }
 
@@ -584,7 +596,7 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         Write-Host '[ERROR] 编译失败:'
         Get-Content -Path $ErrorMarker -Encoding UTF8
         Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
-        Remove-Item -Path $TargetCfg, $ModeCfg, $ReopenMarker -ErrorAction SilentlyContinue
+        Remove-Item -Path $TargetCfg, $ModeCfg, $QuitCfg, $ReopenMarker -ErrorAction SilentlyContinue
         exit 1
     }
 
@@ -607,7 +619,7 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             Remove-OwnedCompileUncertain -ExpectedBody $inFlightUncertainBody
             Write-Host '[ERROR] JSFL 二阶段重开请求畸形、目标漂移或重复；拒绝再次触发。'
             Write-Host ('        body: {0}' -f ($reopenBody -replace "[\r\n]+", ' | '))
-            Remove-Item -Path $TargetCfg, $ModeCfg, $ReopenMarker -ErrorAction SilentlyContinue
+            Remove-Item -Path $TargetCfg, $ModeCfg, $QuitCfg, $ReopenMarker -ErrorAction SilentlyContinue
             exit 1
         }
 
@@ -639,6 +651,7 @@ Write-Host '  - 慢 CPU / 低压平板编译未结束 → 用 -TimeoutSeconds �
 $nonTerminalUncertainWritten = $true
 exit 1
 } finally {
+    Remove-Item -LiteralPath $QuitCfg -ErrorAction SilentlyContinue
     if ($compileTriggered -and -not $compileTerminalObserved -and
         -not $nonTerminalUncertainWritten) {
         [void](Write-CompileUncertain ('compile_test exited before a terminal marker; target={0}' -f $Target))

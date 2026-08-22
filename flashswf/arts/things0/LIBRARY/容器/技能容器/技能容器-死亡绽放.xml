@@ -115,7 +115,7 @@ function 手枪换弹()
 	手枪射击许可 = false;
 	if (_parent._name == _root.控制目标)
 	{
-		if (_root.singleSubmit(使用弹夹名称, 1))
+		if (_root.singleSubmit(使用弹夹名称, 1, {source:"reload", reason:"death_bloom", mergeScope:"operation"}))
 		{
 			_parent.手枪.value.shot = 0;
 			手枪射击许可 = true;
@@ -132,7 +132,7 @@ function 手枪2换弹()
 	手枪2射击许可 = false;
 	if (_parent._name == _root.控制目标)
 	{
-		if (_root.singleSubmit(使用弹夹名称_2, 1))
+		if (_root.singleSubmit(使用弹夹名称_2, 1, {source:"reload", reason:"death_bloom", mergeScope:"operation"}))
 		{
 			_parent.手枪2.value.shot = 0;
 			手枪2射击许可 = true;

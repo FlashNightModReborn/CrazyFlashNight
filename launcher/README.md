@@ -108,11 +108,11 @@ bootstrap preflight
 
 ### Loot feed 与纸娃娃烘焙协议
 
-- AS2 通过 XMLSocket fire-and-forget task `loot` 发送 `{kind,name,count,source,icon,eliteLevel?,doll?}`。`eliteLevel` 只对击杀生效，固定为 `UnitUtil.getEliteLevel` 的 `0=普通 / 1=精英 / 2=首领`；缺失或非法值由 Host 降级为 `0`，AS2 不发送最终优先级。
-- `LootFeedTask` 只把协议事实投影到 NativeHud `LootFeedWidget`；地图面板的 `loot_response` 是另一业务域，任务奖励旧 AS2 弹窗已经退役。常驻 UI 已固定为 C# NativeHud（legacy Web 常驻 HUD 与 GDI+ 伴随层已拆除），loot feed 只走 NativeHud 投影。
-- `LootFeedModel` 由 Host 单点定义五槽共享优先级池与可恢复等待队列：任务/通关奖励、开箱物品和 Boss 击杀为 guaranteed，精英击杀与拾取为 exact-aggregate，普通击杀最低且只允许把并发身份溢出压成“杂兵击杀”总数。合并键包含 `kind + name + icon + source + eliteLevel`；等待卡不推进生命周期，高优先级替换复用原槽，`待显示 n 项` 只表示仍在队列中的真实卡片，不再存在限流丢弃或伪 overflow 计数。
-- 绘制采用 5 个 26px 直角卡片、20px 图标与 12px 近白名称。卡宽按内容在 96–220px 内以 8px 微量化；计数为 `1` 时不保留空列，`>1` 时只按当前位数桶保留右对齐列，因此短名称不拖尾、合理长度的奖励名不再被隐藏的 `×99999` 挤压。精英使用琥珀分段轨/头像框，Boss 使用金色双轨/边线与一次性短强调，任务/开箱不会借用 Boss 视觉。
-  入场只做 4px/180ms SmoothStep 垂直归位；计数按 125ms 提交，用 180ms/1–2px SmoothStep 交叉淡化并仅在数字区增加有界色洗/底沿，击杀按本批增量增强但不缩放整卡、不发粒子；退场 280ms，动画图标最多运行 450ms 后冻结。静态持有不申请重绘，视觉签名 32ms 采样且仍受 NativeHud 33ms 合成硬上限约束；socket burst 维持单 UI drain / 单批决策，bounds 只随卡片/等待行或计数位数桶变化。
+- AS2 所有权变化由 `PlayerAssetTransaction` 在领域最外层提交后生成 detached receipt，再经 XMLSocket fire-and-forget `loot` v1 发送 `{v,direction,kind,itemKey,name,count,source,operationId,icon?,tier?,mergeScope?,reason?}`。完全缺 `v` 的旧格式只为现役 kill/gain 兼容；v1 错型、缺必填、未知 source 或非 safe 正整数均 fail-closed。
+- `LootFeedTask` 只把已提交事实投影到 NativeHud `LootFeedWidget`；资产写入/回滚仍由 AS2 领域权威负责，消费者失败不能反向破坏资产。地图 `loot_response` 是另一业务域，常驻 feed 无 Web fallback。范围、source 表、所有权排除项与存档终点见[玩家物资事务与双向播报 ADR](../docs/玩家物资事务与双向播报-ADR-2026-08-22.md)。
+- `LootFeedModel` 统一五槽池与可恢复队列；视觉键为 `direction/kind/itemKey/tier/派生调度策略/eliteLevel`，且展示名/图标须一致。`operationId/reason/mergeScope/raw source` 只留在 Host 幂等与审计层；跨 raw source 仅在策略完全相同且都非 `unknown` 时合并。`reload` 为 immediate exact-aggregate；Host 按 operation/effect 去重并拒绝冲突重放。
+- 绘制采用 5 个 26px 直角卡、20px 图标与 12px 名称，宽度在 96–220px 内按 8px 微量化。gain 沿用 `×N` 且一件省略数量；loss 使用珊瑚红 `−N`，一件也明确显示 `−1`。精英使用琥珀分段轨，Boss 使用金色双轨；任务、开箱与普通物资不借用 Boss 视觉。
+  入场只做 4px/180ms SmoothStep 垂直归位；计数按 125ms 提交，用 180ms/1–2px SmoothStep 交叉淡化并仅在数字区增加有界色洗/底沿，击杀按本批增量增强但不缩放整卡、不发粒子；退场 280ms，动画图标最多运行 450ms 后冻结。静态持有不申请重绘，视觉签名 32ms 采样且仍受 NativeHud 33ms 合成硬上限约束；socket burst 维持单 UI drain / 单批决策，bounds 只随卡片/等待行或方向感知的计数位数桶变化（gain `1→2`、loss `9→10` 才跨桶）。
 - `LootIconCatalog` 从 `launcher/web/icons/manifest.json`、敌人头像 manifest 与 `launcher/data/doll-portraits` 解析图标。64px `Bitmap` 只由有界 LRU 持有，图标帧集不得跨 LRU 淘汰保存位图引用；动画整组超过预算时降级静态首帧。
 - 主角/佣兵击杀缺少预烘焙头像时，Host 发 WebView2 message `{type:"dollBake",key,requestId,tuple}`。Web 只负责渲染，并经 allowlisted task `doll_bake_result` 回传 `{key,requestId,pngBase64|error}`；`requestId` 必须与当前 key 的唯一在飞项 exact 匹配。缺失、foreign、duplicate、timeout 后迟到或无在飞项的回包一律拒绝，且不得清除更新请求。
 - `DollBakeTask` 只接受可完整解码的 exact 256×256 PNG。Web 离屏渲染显式固定 `pixelRatio:1` 并关闭一次性快照的动画循环，使传输尺寸不受宿主 125%、150%、175% DPI 放大。校验通过后才原子写入 `launcher/data/doll-portraits/<hex>.png`；拒绝尺寸/内容时记录 key、requestId 与原因。

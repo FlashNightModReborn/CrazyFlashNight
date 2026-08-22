@@ -92,16 +92,20 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             _root.金钱 += value;
             str += "金钱" + value;
             lootKind = "money";
+            PlayerAssetTransaction.recordEffect("gain", "money", "金钱", value,
+                {source:"pickup", reason:"world_pickup"});
         } else if (itemName == "K点") {
             _root.虚拟币 += value;
             str += "K点" + value;
             lootKind = "kpoint";
+            PlayerAssetTransaction.recordEffect("gain", "kpoint", "K点", value,
+                {source:"pickup", reason:"world_pickup"});
         } else if (ItemUtil.isInformation(itemName)) {
             // 生成后到实际拾取之间，其他奖励可能已占用剩余容量；这里再次按逐物品
             // maxvalue 结算，避免同屏多个拾取物越界或变成“捡了但没增加”。
             var settlement:Object = ItemUtil.acquireReward([
                 {name:itemName, value:value}
-            ]);
+            ], {source:"pickup", reason:"world_pickup"});
             if (!settlement.success) {
                 _root.发布消息("情报结算失败，暂时无法拾取！");
                 return;
@@ -121,8 +125,14 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             lootKind = "intel";
         } else if (!拾取者 && Key.isDown(_root.组合键) && this.拾取并装备(itemName, value)) {
             str = "已拾取" + itemName;
-            lootKind = "equip";
-        } else if (_root.singleAcquire(itemName, value)) {
+            // 手雷虽然占用装备槽，领域上仍是可堆叠物品；按实际拾取数量播报。
+            // 武器/防具才固定为一件，避免把一组手雷错误显示成 ×1 装备。
+            lootKind = ItemUtil.isEquipment(itemName) ? "equip" : "item";
+            var quickCount:Number = lootKind == "equip" ? 1 : value;
+            PlayerAssetTransaction.recordEffect("gain", lootKind, itemName, quickCount,
+                {source:"pickup", reason:"quick_equip"});
+        } else if (_root.singleAcquire(itemName, value,
+                {source:"pickup", reason:"world_pickup"})) {
             str += itemName + value + "个。";
             lootKind = "item";
         } else {
@@ -134,20 +144,14 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
         PickUpManager.claimOneTimePickup(target.一次性领取ID);
 
-        // 成功拾取走 loot feed 卡片播报（NativeHud），不再占用左侧文字消息区；
-        // 情报已达上限且零折算时 feed 无新内容，退回旧文本提示。
+        // 成功变化由资产事务回执统一驱动 NativeHud；情报已达上限且零折算时
+        // 没有实际资产变化，退回旧文本提示。
         // 注：accepted/overflow/overflowMoney 为情报分支 var（AS2 函数作用域），此处可直接判读。
         if (lootKind == "intel") {
-            if (accepted > 0) _root.发布战利品消息("intel", itemName, accepted, "pickup");
-            if (overflow > 0 && overflowMoney > 0) {
-                _root.发布战利品消息("money", "金钱", overflowMoney, "pickup");
-            }
             if (accepted <= 0 && !(overflow > 0 && overflowMoney > 0)) {
                 _root.发布消息(str);
             }
-        } else if (lootKind != null) {
-            _root.发布战利品消息(lootKind, itemName, value, "pickup");
-        } else {
+        } else if (lootKind == null) {
             _root.发布消息(str);
         }
         var 控制对象:MovieClip = TargetCacheManager.findHero();

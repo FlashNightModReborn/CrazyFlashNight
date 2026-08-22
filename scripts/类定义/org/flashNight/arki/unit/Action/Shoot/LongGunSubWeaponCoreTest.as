@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.equipment.SubweaponDataUtil;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
@@ -89,6 +90,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testSubweaponTacticalRecoveryAccumulatesOnPaidReload();
         testSubweaponTacticalRecoveryFreeReloadWithoutReserve();
         testLinkedReloadRequiresReserve();
+        testMainReloadSubmitFailurePreservesStateAndOnlyPublishesCommittedLoss();
+        testTubeReloadConsumesReserveExactlyOnce();
         testReloadKeyMarksCombinedReloadWhenBothNeedAmmo();
         testGunslingerLevel9StillLinksPartialSubweaponReload();
         testGunslingerLevel10SkipsLinkedReloadWhenSubweaponNotEmpty();
@@ -1521,6 +1524,92 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(!ok, "linked reload fails when reserve is unavailable");
         assert(unit.长枪副武器状态.loaded == 0, "linked reload does not refill without reserve");
         assert(unit.长枪副武器状态.groupPaid == true, "failed linked reload keeps previous payment state");
+        restoreMockInventory();
+    }
+
+    private static function testMainReloadSubmitFailurePreservesStateAndOnlyPublishesCommittedLoss():Void {
+        installMockInventory("主武器弹匣", 1);
+        var unit:Object = makeUnit();
+        unit.被动技能.枪械师 = {启用:true, 等级:10};
+        unit.长枪 = {value:{shot:29, reloadCount:7}};
+        unit.长枪弹匣容量 = 30;
+        unit.长枪属性 = {reloadType:"normal", reloadPenalty:50,
+            bullet:"普通", split:1};
+        unit.man = makeReloadClip(unit);
+        installMockHero(unit);
+        var receipts:Array = [];
+        PlayerAssetTransaction.resetForTests();
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+
+        ReloadManager.startReload(unit.man, unit, _root);
+        assert(unit.man.playFrame == "换弹匣",
+            "main reload race fixture passes animation-time reserve precheck");
+        // 模拟动画期间库存被另一权威操作消耗；最终 submit 必须 fail-closed。
+        _root.物品栏.背包.items[0] = null;
+        ReloadManager.reloadMagazine(unit.man, unit, _root);
+        assert(unit.长枪.value.shot == 29,
+            "failed main reload submit keeps fired-count authority unchanged");
+        assert(unit.长枪.value.reloadCount == 7,
+            "failed main reload submit restores tactical recovery pool");
+        assert(receipts.length == 0,
+            "failed main reload submit emits no phantom loss receipt");
+
+        _root.物品栏.背包.items[0] = {name:"主武器弹匣", value:1};
+        ReloadManager.reloadMagazine(unit.man, unit, _root);
+        assert(unit.长枪.value.shot == 0,
+            "successful retry refills only after authoritative reserve submit");
+        assert(ItemUtil.getTotal("主武器弹匣") == 0,
+            "successful retry consumes exactly one reserve magazine");
+        assert(receipts.length == 1 && receipts[0].effects.length == 1
+                && receipts[0].effects[0].direction == "loss"
+                && receipts[0].effects[0].source == "reload"
+                && receipts[0].effects[0].count == 1,
+            "successful reload publishes one exact loss receipt");
+
+        PlayerAssetTransaction.resetForTests();
+        restoreMockHero();
+        restoreMockInventory();
+    }
+
+    private static function testTubeReloadConsumesReserveExactlyOnce():Void {
+        installMockInventory("主武器弹匣", 1);
+        var unit:Object = makeUnit();
+        unit.长枪 = {value:{shot:2, reloadCount:0}};
+        unit.长枪弹匣容量 = 5;
+        unit.长枪属性 = {reloadType:"tube", reloadPenalty:50,
+            bullet:"普通", split:1};
+        unit.man = makeReloadClip(unit);
+        unit.man.perRoundReload = true;
+        unit.man.reloadFrameControlActive = true;
+        unit.man.reloadEndFrame = 74;
+        unit.man.reloadLoopBackFrame = 51;
+        installMockHero(unit);
+        var receipts:Array = [];
+        PlayerAssetTransaction.resetForTests();
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+
+        ReloadManager.handleReloadGate(unit.man);
+        assert(unit.长枪.value.shot == 1 && unit.长枪.value.reloadCount == 4,
+            "tube reload first cycle injects one round from committed pool");
+        assert(ItemUtil.getTotal("主武器弹匣") == 0,
+            "tube reload acquires its pool by consuming one reserve magazine");
+        assert(receipts.length == 1 && receipts[0].effects.length == 1
+                && receipts[0].effects[0].direction == "loss"
+                && receipts[0].effects[0].count == 1,
+            "tube reload publishes reserve loss once when pool is acquired");
+
+        ReloadManager.handleReloadGate(unit.man);
+        assert(unit.长枪.value.shot == 0 && unit.长枪.value.reloadCount == 3,
+            "tube reload later cycle consumes existing pool without another reserve");
+        assert(receipts.length == 1,
+            "tube reload later cycle does not duplicate loss receipt");
+
+        PlayerAssetTransaction.resetForTests();
+        restoreMockHero();
         restoreMockInventory();
     }
 

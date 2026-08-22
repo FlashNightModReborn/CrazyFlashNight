@@ -602,16 +602,27 @@ _root.UI系统.NPC商店WebView.executeBuy = function(params:Object):Object {
     var total:Number = Math.floor(basePrice * quantity * this.getBuyMultiplier());
     if (isNaN(_root.金钱) || isNaN(total) || total > Number(_root.金钱)) return this.fail("insufficient_money");
     var destination:String = this.resolvePurchaseDestination(itemName);
-    if (!org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, quantity)) {
+    var assetContext:Object = {
+        source:"npc_shop_purchase", reason:"legacy_buy", mergeScope:"operation"
+    };
+    var assetTransaction:Object =
+        org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
+    if (!org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, quantity, assetContext)) {
+        org.flashNight.arki.item.PlayerAssetTransaction.rollback(assetTransaction);
         return this.fail(destination == "intelligence" ? "destination_full" : "inventory_full");
     }
     _root.金钱 -= total;
+    if (total > 0) {
+        org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(
+            "loss", "money", "金钱", total, assetContext);
+    }
+    _root.存档系统.dirtyMark = true;
+    org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
     if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
         org.flashNight.arki.achievement.AchievementMetrics.record("购买物品次数", 1);
         org.flashNight.arki.achievement.AchievementMetrics.record("购买花费金币", total);
     }
     _root.soundEffectManager.playSound("收银机.mp3");
-    _root.存档系统.dirtyMark = true;
     var state:Object = this.buildState(shopId);
     if (!state.success) return state;
     state.operation = "buy";
@@ -699,18 +710,39 @@ _root.UI系统.NPC商店WebView.executeBatchSell = function(params:Object):Objec
             return this.fail("stale_state");
         }
     }
+    var assetContext:Object = {
+        source:"npc_shop_sale", reason:"batch_sell", mergeScope:"operation"
+    };
+    var assetTransaction:Object =
+        org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
     for (var j:Number = 0; j < plan.entries.length; j++) {
         var sellEntry:Object = plan.entries[j];
         bag.remove(String(sellEntry.slot));
-        org.flashNight.arki.item.InventoryPanelService.invalidateExternalSlot("背包", Number(sellEntry.slot));
-        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("出售次数", 1);
-            org.flashNight.arki.achievement.AchievementMetrics.record("出售所得金币", Number(sellEntry.money));
+        var soldEffect:Object = {
+            name:String(sellEntry.name), value:Number(sellEntry.count)
+        };
+        if (org.flashNight.arki.item.ItemUtil.isEquipment(String(sellEntry.name))) {
+            soldEffect.kind = "equip";
+            soldEffect.isQuantity = true;
+            if (sellEntry.ref.value != undefined && sellEntry.ref.value.tier != undefined)
+                soldEffect.tier = sellEntry.ref.value.tier;
         }
+        org.flashNight.arki.item.PlayerAssetTransaction.recordItems(
+            "loss", [soldEffect], assetContext);
+        org.flashNight.arki.item.InventoryPanelService.invalidateExternalSlot("背包", Number(sellEntry.slot));
     }
     _root.金钱 += Number(plan.totalMoney);
-    _root.soundEffectManager.playSound("收银机.mp3");
+    if (Number(plan.totalMoney) > 0) {
+        org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(
+            "gain", "money", "金钱", Number(plan.totalMoney), assetContext);
+    }
     _root.存档系统.dirtyMark = true;
+    org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+    if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+        org.flashNight.arki.achievement.AchievementMetrics.record("出售次数", plan.entries.length);
+        org.flashNight.arki.achievement.AchievementMetrics.record("出售所得金币", Number(plan.totalMoney));
+    }
+    _root.soundEffectManager.playSound("收银机.mp3");
     this.batchPlan = null;
     var state:Object = this.buildState(String(params.shopId));
     if (!state.success) return state;
@@ -918,6 +950,7 @@ _root.UI系统.NPC商店WebView.resolveTradeSale = function(request:Object):Obje
 _root.UI系统.NPC商店WebView.buildAcquireItems = function(purchases:Array, sales:Array):Array {
     var result:Array = [];
     var collectionTotals:Object = {};
+    var ownershipTotals:Object = {};
     for (var i:Number = 0; i < purchases.length; i++) {
         var purchase:Object = purchases[i];
         if (org.flashNight.arki.item.ItemUtil.isEquipment(purchase.itemName)) {
@@ -927,6 +960,8 @@ _root.UI系统.NPC商店WebView.buildAcquireItems = function(purchases:Array, sa
         } else if (org.flashNight.arki.item.ItemUtil.isMaterial(purchase.itemName)
                 || org.flashNight.arki.item.ItemUtil.isInformation(purchase.itemName)) {
             collectionTotals[purchase.itemName] = Number(collectionTotals[purchase.itemName] || 0)
+                + Number(purchase.quantity);
+            ownershipTotals[purchase.itemName] = Number(ownershipTotals[purchase.itemName] || 0)
                 + Number(purchase.quantity);
         } else {
             result.push({name:purchase.itemName, value:purchase.quantity});
@@ -941,7 +976,13 @@ _root.UI系统.NPC商店WebView.buildAcquireItems = function(purchases:Array, sa
         }
     }
     for (var collectionName:String in collectionTotals) {
-        result.push({name:collectionName, value:Number(collectionTotals[collectionName])});
+        // returnedMods 是玩家原已拥有的装备内嵌配件，只迁回 collection；
+        // ownershipDelta 仅保留本次真正购买的数量，防止迁移被播成新获得。
+        result.push({
+            name:collectionName,
+            value:Number(collectionTotals[collectionName]),
+            ownershipDelta:Number(ownershipTotals[collectionName] || 0)
+        });
     }
     return result;
 };
@@ -1235,13 +1276,35 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
     this.tradePlan = null;
     var validation:Object = this.validateTradePlan(plan);
     if (!validation.success) return validation;
+    var purchaseContext:Object = {
+        source:"npc_shop_purchase", reason:"trade_commit", mergeScope:"operation"
+    };
+    var saleContext:Object = {
+        source:"npc_shop_sale", reason:"trade_commit", mergeScope:"operation"
+    };
+    var assetTransaction:Object =
+        org.flashNight.arki.item.PlayerAssetTransaction.begin(purchaseContext);
     for (var i:Number = 0; i < plan.sales.length; i++) {
         var sale:Object = plan.sales[i];
         if (sale.full) sale.collection.remove(sale.key);
         else sale.collection.addValue(sale.key, -sale.quantity);
+        var soldEffect:Object = {
+            name:String(sale.itemName), value:Number(sale.quantity)
+        };
+        if (sale.kind == "material") {
+            soldEffect.kind = "material";
+        } else if (org.flashNight.arki.item.ItemUtil.isEquipment(String(sale.itemName))) {
+            soldEffect.kind = "equip";
+            soldEffect.isQuantity = true;
+            if (sale.ref.value != undefined && sale.ref.value.tier != undefined)
+                soldEffect.tier = sale.ref.value.tier;
+        }
+        org.flashNight.arki.item.PlayerAssetTransaction.recordItems(
+            "loss", [soldEffect], saleContext);
     }
-    if (!org.flashNight.arki.item.ItemUtil.acquire(plan.acquireItems)) {
+    if (!org.flashNight.arki.item.ItemUtil.acquire(plan.acquireItems, purchaseContext)) {
         this.rollbackTradeSales(plan);
+        org.flashNight.arki.item.PlayerAssetTransaction.rollback(assetTransaction);
         return this.fail("inventory_full");
     }
     for (var j:Number = 0; j < plan.sales.length; j++) {
@@ -1252,6 +1315,14 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
         }
     }
     _root.金钱 = Number(plan.balance) + Number(plan.sellTotal) - Number(plan.buyTotal);
+    var moneyDelta:Number = Number(plan.sellTotal) - Number(plan.buyTotal);
+    if (moneyDelta != 0) {
+        org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(
+            moneyDelta > 0 ? "gain" : "loss", "money", "金钱", Math.abs(moneyDelta),
+            moneyDelta > 0 ? saleContext : purchaseContext);
+    }
+    if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+    org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
     if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
         if (plan.purchases.length > 0) {
             org.flashNight.arki.achievement.AchievementMetrics.record("购买物品次数", plan.purchases.length);
@@ -1263,7 +1334,6 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
         }
     }
     _root.soundEffectManager.playSound("收银机.mp3");
-    _root.存档系统.dirtyMark = true;
     // 结算已同时提交购买、出售与余额；与 KShop checkout 一致，必须立即把
     // 完整 mydata 作为一个存档事务落盘，不能只等场景切换或面板关闭兜底。
     _root.强制存盘();

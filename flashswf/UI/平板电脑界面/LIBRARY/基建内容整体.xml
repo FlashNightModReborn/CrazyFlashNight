@@ -66,14 +66,27 @@ function 基建升级(){
 		_root.发布消息("金币不足！");
 		return;
 	}
+	var assetContext = {
+		source:"base_upgrade", reason:"infrastructure_upgrade",
+		mergeScope:"operation"
+	};
+	var assetTransaction = _root.开始玩家物资事务(assetContext);
 	if(当前等级数据.Material.length > 0){
 		var itemArr = _root.getRequirementFromTask(this.材料需求数组);
-		if(!_root.itemSubmit(itemArr)){
+		if(!_root.itemSubmit(itemArr, assetContext)){
+			_root.回滚玩家物资事务(assetTransaction);
 			_root.发布消息("材料不足！");
 			return;
 		}
 	}
+	if(当前等级数据.Price > 0){
+		_root.金钱 -= Number(当前等级数据.Price);
+		_root.记录玩家货币变化(
+			-Number(当前等级数据.Price), 0, assetContext);
+	}
 	_root.基建系统.infrastructure[this.currentName]++;
+	if(_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+	_root.提交玩家物资事务(assetTransaction);
 	this.刷新基建数据(this.currentName);
 }
 

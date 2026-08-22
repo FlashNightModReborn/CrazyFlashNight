@@ -102,7 +102,7 @@ if (_parent.手枪2属性.power)
 {
 	if (_parent._name == _root.控制目标)
 	{
-		if (_root.singleSubmit(使用弹夹名称, 1))
+		if (_root.singleSubmit(使用弹夹名称, 1, {source:"reload", reason:"tracking_shot", mergeScope:"operation"}))
 		{
 			_parent.手枪.value.shot = 0;
 			手枪射击许可 = true;
@@ -118,7 +118,7 @@ function 手枪2换弹()
 {
 	if (_parent._name == _root.控制目标)
 	{
-		if (_root.singleSubmit(使用弹夹名称_2, 1))
+		if (_root.singleSubmit(使用弹夹名称_2, 1, {source:"reload", reason:"tracking_shot", mergeScope:"operation"}))
 		{
 			_parent.手枪2.value.shot = 0;
 			手枪2射击许可 = true;

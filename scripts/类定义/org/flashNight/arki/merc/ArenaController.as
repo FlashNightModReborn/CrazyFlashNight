@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.merc.*;
 import org.flashNight.arki.scene.StageManager;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 
 /*
  * 决斗场+佣兵库请求链。
@@ -196,6 +197,10 @@ class org.flashNight.arki.merc.ArenaController {
 
     private static function enterArenaCommon():Void {
         _root.金钱 -= _root.押金;
+        org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+            -Number(_root.押金), 0,
+            {source:"arena_entry", reason:"deposit", mergeScope:"operation"});
+        if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
         _root.最上层发布文字提示("已扣除押金" + _root.押金);
         _root.当前通关的关卡 = "";
         _root.当前关卡名 = "DEATH MATCH角斗场";

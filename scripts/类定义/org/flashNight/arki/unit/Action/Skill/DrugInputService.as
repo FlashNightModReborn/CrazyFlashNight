@@ -1,6 +1,7 @@
 ﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/DrugInputService.as
 
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 
 /**
  * @class DrugInputService
@@ -96,15 +97,48 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             return result;
         }
 
-        if (root && root.使用药剂) root.使用药剂(itemName);
-        result.cooldownStarted = ManualCooldownService.start(cooldownKey, Number(root.吃药冷却时间));
+        var assetContext:Object = {
+            source:"item_use", reason:"drug_use", mergeScope:"operation"
+        };
+        var assetTransaction:Object = PlayerAssetTransaction.begin(assetContext);
         var quantityBefore:Number = Number(item.value);
-        inventory.addValue(String(slotIndex), -1);
-        result.used = true;
-        var remaining:Object = inventory.getItem(String(slotIndex));
-        if ((remaining !== item || Number(remaining.value) != quantityBefore)
-                && root && root.存档系统) {
-            root.存档系统.dirtyMark = true;
+        var remaining:Object;
+        var lossRecorded:Boolean = false;
+        try {
+            if (root && root.使用药剂) root.使用药剂(itemName);
+            result.cooldownStarted = ManualCooldownService.start(cooldownKey, Number(root.吃药冷却时间));
+            inventory.addValue(String(slotIndex), -1);
+            result.used = true;
+            remaining = inventory.getItem(String(slotIndex));
+            var quantityAfter:Number = remaining == null ? 0 : Number(remaining.value);
+            var committedLoss:Number = quantityBefore - quantityAfter;
+            if (committedLoss > 0 && Math.floor(committedLoss) == committedLoss) {
+                PlayerAssetTransaction.recordEffect(
+                    "loss", "item", itemName, committedLoss, assetContext);
+                lossRecorded = true;
+            }
+            if ((remaining !== item || Number(remaining.value) != quantityBefore)
+                    && root && root.存档系统) {
+                root.存档系统.dirtyMark = true;
+            }
+            PlayerAssetTransaction.commit(assetTransaction);
+        } catch (useError) {
+            // 领域效果没有通用逆操作；异常时必须按当前权威库存提交已经发生的事实，
+            // 不能 rollback 回执后留下“真实扣药但零播报”或泄漏全局事务栈。
+            remaining = inventory.getItem(String(slotIndex));
+            var failedQuantityAfter:Number = remaining == null ? 0 : Number(remaining.value);
+            var failedCommittedLoss:Number = quantityBefore - failedQuantityAfter;
+            if (!lossRecorded && failedCommittedLoss > 0
+                    && Math.floor(failedCommittedLoss) == failedCommittedLoss) {
+                PlayerAssetTransaction.recordEffect(
+                    "loss", "item", itemName, failedCommittedLoss, assetContext);
+            }
+            if ((remaining !== item || Number(remaining.value) != quantityBefore)
+                    && root && root.存档系统) {
+                root.存档系统.dirtyMark = true;
+            }
+            PlayerAssetTransaction.commit(assetTransaction);
+            throw useError;
         }
 
         if (!remaining) {

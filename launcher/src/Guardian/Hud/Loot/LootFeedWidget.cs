@@ -9,7 +9,7 @@ using CF7Launcher.Guardian;
 namespace CF7Launcher.Guardian.Hud.Loot
 {
     /// <summary>
-    /// 左下血条上方的原生物品获得/击杀播报。
+    /// 左下血条上方的原生双向玩家物资/击杀播报。
     ///
     /// 渲染遵循“静态提高可读性、动态保持克制”的原则：五个共享槽位、内容驱动的微量化宽度、
     /// 按位数稳定的计数列；只在短入场、数字区合并反馈、退场及图标首轮动画内重绘。
@@ -63,6 +63,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
             internal string Source;
             internal string Icon;
             internal int EliteLevel;
+            internal string Direction;
+            internal string Tier;
+            internal string ItemKey;
         }
 
         private readonly Control _anchor;
@@ -285,7 +288,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
         /// 同一批事件只做一次 bounds/重绘判定，避免 BeginInvoke 与 UpdateLayeredWindow 随击杀频率线性增长。
         /// </summary>
         public void AddEvent(
-            string kind, string name, long count, string source, string icon, int eliteLevel = 0)
+            string kind, string name, long count, string source, string icon,
+            int eliteLevel = 0, string direction = null, string tier = null,
+            string itemKey = null)
         {
             if (!CanPostToUi()) return;
 
@@ -296,7 +301,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 Count = count,
                 Source = source,
                 Icon = icon,
-                EliteLevel = eliteLevel
+                EliteLevel = eliteLevel,
+                Direction = direction,
+                Tier = tier,
+                ItemKey = itemKey
             });
 
             if (shouldPost)
@@ -335,7 +343,8 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 {
                     IngressEvent item = batch[i];
                     aggregate |= _model.Add(
-                        item.Kind, item.Name, item.Icon, item.Count, item.Source, item.EliteLevel);
+                        item.Kind, item.Name, item.Icon, item.Count, item.Source,
+                        item.EliteLevel, item.Direction, item.Tier, item.ItemKey);
                 }
 
                 if ((aggregate & LootFeedModel.Change.Geometry) != 0 || wasVisible != Visible)
@@ -443,7 +452,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
             DrawRankIconBorder(g, card, new Rectangle(iconX, iconY, iconSize, iconSize), accent, alpha);
 
-            string countSample = CountColumnSample(card.DisplayCount);
+            string countSample = CountColumnSample(card);
             int countColumnWidth = countSample.Length > 0 ? MeasureTextCached(countSample) : 0;
             int rightPad = padX;
             int countGap = countColumnWidth > 0 ? Px(4, scale) : 0;
@@ -515,7 +524,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
             Graphics g, LootFeedModel.LootCard card, RectangleF rect,
             Color accent, float alpha)
         {
-            string current = CountText(card.DisplayCount);
+            string current = CountText(card);
             int transitionAge = _model.NowMs - card.CountTransitionStartedMs;
             bool transitioning = card.PreviousDisplayCount != card.DisplayCount
                 && transitionAge >= 0 && transitionAge < CountTransitionMs;
@@ -551,7 +560,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                         Math.Max(1f, rect.Width * (0.55f + impactLevel * 0.1f)), 1f);
             }
 
-            string previous = CountText(card.PreviousDisplayCount);
+            string previous = CountText(card.Direction, card.Kind, card.PreviousDisplayCount);
             if (previous.Length > 0)
             {
                 using (SolidBrush oldBrush = new SolidBrush(
@@ -631,7 +640,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
             int iconSize = Math.Max(4, cardH - Px(3, scale) * 2);
             int padX = Px(5, scale);
             int railWidth = Math.Max(1, Px(2, scale));
-            string countSample = CountColumnSample(card.DisplayCount);
+            string countSample = CountColumnSample(card);
             int countReserve = countSample.Length > 0 ? MeasureTextCached(countSample) : 0;
             int countGap = countReserve > 0 ? Px(4, scale) : 0;
             int required = railWidth + padX + iconSize + padX
@@ -664,15 +673,34 @@ namespace CF7Launcher.Guardian.Hud.Loot
             return width;
         }
 
-        private static string CountText(long count)
+        private static string CountText(LootFeedModel.LootCard card)
         {
+            return CountText(card.Direction, card.Kind, card.DisplayCount);
+        }
+
+        private static string CountText(string direction, string kind, long count)
+        {
+            if (direction == "loss") return "−" + count;
             return count > 1 ? "×" + count : string.Empty;
+        }
+
+        private static string CountColumnSample(LootFeedModel.LootCard card)
+        {
+            if (card.Direction != "loss") return CountColumnSample(card.DisplayCount);
+            int digits = Math.Max(1,
+                LootFeedModel.CountLayoutBucket(card.DisplayCount, card.Direction));
+            return "−" + new string('9', digits);
         }
 
         internal static string CountColumnSample(long count)
         {
             int bucket = LootFeedModel.CountLayoutBucket(count);
             return CountColumnSamples[Math.Max(0, Math.Min(CountColumnSamples.Length - 1, bucket))];
+        }
+
+        internal static string CountTextForTest(string direction, string kind, long count)
+        {
+            return CountText(direction, kind, count);
         }
 
         internal static int QuantizeWidthPx(int required, int minimum, int maximum, int quantum)
@@ -698,6 +726,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
         {
             if (card.EliteLevel >= 2) return Color.FromArgb(0xFF, 0xD1, 0x66);
             if (card.EliteLevel == 1) return Color.FromArgb(0xFF, 0xB5, 0x47);
+            if (card.Direction == "loss") return Color.FromArgb(0xFF, 0x78, 0x68);
             switch (card.Kind)
             {
                 case "money": return Color.FromArgb(0xFF, 0xD3, 0x4D);

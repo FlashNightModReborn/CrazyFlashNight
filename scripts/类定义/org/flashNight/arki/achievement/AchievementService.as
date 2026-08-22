@@ -25,6 +25,7 @@ import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.json.LoadJson.AchievementDataLoader;
 import org.flashNight.arki.task.TaskUtil;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.achievement.ObjectiveEvaluator;
 import LiteJSON;
 
@@ -333,12 +334,18 @@ class org.flashNight.arki.achievement.AchievementService {
         var rewardsArr:Array = (def.rewards != undefined) ? def.rewards : [];
         var ok:Boolean = true;
         var rewardSettlement:Object = null;
+        var assetContext:Object = {
+            source:"achievement_reward", reason:"achievement_claim",
+            mergeScope:"operation"
+        };
+        var assetTransaction:Object = PlayerAssetTransaction.begin(assetContext);
         if (rewardsArr.length > 0) {
             rewardSettlement =
-                ItemUtil.acquireReward(ItemUtil.getRequirementFromTask(rewardsArr));
+                ItemUtil.acquireReward(ItemUtil.getRequirementFromTask(rewardsArr), assetContext);
             ok = rewardSettlement.success === true;
         }
         if (!ok) {
+            PlayerAssetTransaction.rollback(assetTransaction);
             sendResponse(claimResp(callId, false, "inventory_full", null));
             return;
         }
@@ -346,6 +353,7 @@ class org.flashNight.arki.achievement.AchievementService {
         a.claimed[idStr] = 1;
         a.unl[idStr] = 1;
         _root.存档系统.dirtyMark = true;
+        PlayerAssetTransaction.commit(assetTransaction);
         sendResponse(claimResp(callId, true, undefined,
             rewardSettlement == null
                 ? parseRewards(def)
