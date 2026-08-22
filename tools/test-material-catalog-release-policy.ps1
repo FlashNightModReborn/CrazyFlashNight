@@ -23,7 +23,9 @@ $infrastructureUiMatches = @(Get-ChildItem -LiteralPath (Join-Path $projectRoot 
     -Recurse -File -Filter '*.xml' | Where-Object {
         $source = [IO.File]::ReadAllText($_.FullName, [Text.Encoding]::UTF8)
         $source.Contains('_root.getRequirementFromTask(this.') -and
-            $source.Contains('_root.itemSubmit(itemArr)')
+            $source.Contains('var assetTransaction = _root.') -and
+            $source.Contains('_root.itemSubmit(itemArr, assetContext)') -and
+            $source.Contains('(assetTransaction);')
     })
 if ($infrastructureUiMatches.Count -ne 1) {
     throw "Expected exactly one InfrastructureUpgradeUI evidence file, found $($infrastructureUiMatches.Count)."

@@ -138,6 +138,39 @@ def main():
         "infrastructure sidecar closure drift",
     )
 
+    infrastructure_ui_raw = producer.read_bytes(producer.INFRASTRUCTURE_UI_PATH)
+    transaction_evidence = (
+        "var assetTransaction = _root.开始玩家物资事务(assetContext)",
+        "_root.itemSubmit(itemArr, assetContext)",
+        "_root.提交玩家物资事务(assetTransaction)",
+        "_root.回滚玩家物资事务(assetTransaction)",
+    )
+    original_read_bytes = producer.read_bytes
+    try:
+        for snippet in transaction_evidence:
+            snippet_bytes = snippet.encode("utf-8")
+            require(
+                snippet_bytes in infrastructure_ui_raw,
+                f"production infrastructure transaction evidence missing: {snippet}",
+            )
+
+            def read_without_evidence(path: Path, missing=snippet_bytes) -> bytes:
+                if path == producer.INFRASTRUCTURE_UI_PATH:
+                    return infrastructure_ui_raw.replace(missing, b"", 1)
+                return original_read_bytes(path)
+
+            producer.read_bytes = read_without_evidence
+            expect_gate_failure(
+                producer,
+                f"missing infrastructure transaction evidence: {snippet}",
+                lambda: producer.load_infrastructure_upgrade_facts(
+                    {material.name for material in first.catalog.materials}
+                ),
+                "InfrastructureUpgradeUI evidence missing",
+            )
+    finally:
+        producer.read_bytes = original_read_bytes
+
     type_counts = {
         type_id: sum(
             1 for material in first.catalog.materials if material.type_id == type_id

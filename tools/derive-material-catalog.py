@@ -525,7 +525,10 @@ def load_infrastructure_upgrade_facts(
     for snippet in (
         "function 生成材料需求数组()",
         "_root.getRequirementFromTask(this.材料需求数组)",
-        "_root.itemSubmit(itemArr)",
+        "var assetTransaction = _root.开始玩家物资事务(assetContext)",
+        "_root.itemSubmit(itemArr, assetContext)",
+        "_root.提交玩家物资事务(assetTransaction)",
+        "_root.回滚玩家物资事务(assetTransaction)",
     ):
         require(
             snippet in ui_text,
